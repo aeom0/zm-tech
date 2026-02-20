@@ -1,0 +1,87 @@
+{
+  "expo": {
+    "name": "ZM Lash & Nails Beauty",
+    "slug": "zm-lash-nails",
+    "version": "1.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/logo/logo-positivo.png",
+    "scheme": "zmlash",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.zmlash.beauty"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#7B2D8E",
+        "foregroundImage": "./assets/images/logo/logo-positivo.png"
+      },
+      "package": "com.zmlashandnails.beauty",
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "googleServicesFile": "./google-services.json"
+    },
+    "web": {
+      "output": "single",
+      "favicon": "./assets/images/logo/logo-original.png",
+      "bundler": "metro",
+      "build": {
+        "babel": {
+          "include": ["@expo/vector-icons"]
+        }
+      },
+      "splash": {
+        "image": "./assets/images/logo/logo-positivo.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#7B2D8E"
+      },
+      "name": "ZM Lash & Nails Beauty",
+      "shortName": "ZM Beauty",
+      "description": "Sistema de gestión para salón de belleza",
+      "themeColor": "#7B2D8E",
+      "backgroundColor": "#FFFFFF",
+      "display": "standalone",
+      "orientation": "any",
+      "startUrl": ".",
+      "scope": "/"
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/logo/logo-positivo.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#7B2D8E",
+          "dark": {
+            "backgroundColor": "#1A1A1A"
+          }
+        }
+      ],
+      "expo-web-browser",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/logo/logo-positivo.png",
+          "color": "#7B2D8E",
+          "sounds": []
+        }
+      ]
+    ],
+    "experiments": {
+      "reactCompiler": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "9010264e-afe3-40ed-855e-0dd277f868c1"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/9010264e-afe3-40ed-855e-0dd277f868c1"
+    }
+  }
+}

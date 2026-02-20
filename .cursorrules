@@ -1,0 +1,108 @@
+# Cursor AI Rules - ZM Lash & Nails Beauty
+
+## Contexto del Proyecto
+
+Aplicación de gestión para salón de belleza (centro de estética) en Perú. Monorepo: apps/mobile (Expo), apps/web (Next.js), packages/shared-schema.
+- **Stack**: React Native (Expo SDK 54) + Supabase (PostgREST) + Express 5 (legacy/web/WhatsApp) + TypeScript
+- **Estructura**: Monorepo Yarn 4 — `apps/mobile/`, `apps/web/`, `packages/shared-schema/`, `server/`
+- **Entorno**: WSL (Ubuntu), Node 22 (.nvmrc), Yarn 4
+- **Negocio**: Perú — moneda S/, horario L-S 10:00–19:00, D previa cita 10:30–13:00; categorías: Extensiones de Pestañas, Lifting, Cejas y Rostro, Uñas, Microblading, Depilación
+
+## Directrices de Documentación
+
+**NO crear archivos .md sin solicitud explícita**:
+- NO generar guías, tutoriales o READMEs automáticamente
+- NO crear documentación en la raíz del proyecto sin que se pida
+- Proporcionar instrucciones en el chat cuando baste
+- Solo crear documentación cuando se solicite: "crea una guía", "documenta esto"
+- Si hace falta documentar: usar `docs/` o referencias en `replit.md` / `README.md` existentes
+
+**Sí crear automáticamente**:
+- Código fuente (componentes, hooks, utils, pantallas)
+- Migraciones o cambios de esquema (Drizzle)
+- Archivos de configuración necesarios para el proyecto
+
+## Convenciones de Código
+
+### Naming
+- Componentes: PascalCase (`CitaCard.tsx`, `ServicioForm.tsx`)
+- Hooks: camelCase con prefijo `use` (`useCitas.ts`, `useServicios.ts`)
+- Utils/lib: camelCase o kebab-case (`query-client.ts`, `format-date.ts`)
+- Types: PascalCase (interfaces y tipos exportados)
+- Base de datos: **snake_case** en columnas retornadas por Supabase (`category_id`, `min_stock`, `created_at`); interfaces en screens deben usar snake_case para propiedades de BD
+
+### Imports
+```typescript
+// Mobile (apps/mobile): alias @/
+import { Button, Card } from "@/components/Button";
+import { useTheme } from "@/hooks/useTheme";
+import { supabase } from "@/lib/supabase";
+import type { Appointment } from "@zm/shared-schema";
+
+// Web (apps/web): alias @/
+// Server: shared para esquema
+import { db } from "./db";
+import * as schema from "@zm/shared-schema";
+```
+
+### Componentes
+- Props tipadas con `interface`, hooks primero, callbacks con `useCallback`
+- Estilos desde `apps/mobile/constants/theme.ts` (Colors, Spacing, Typography, etc.)
+- Iconos: Lucide React cuando se añadan
+
+## Stack
+
+### Mobile (apps/mobile/)
+- Expo SDK 54, React 19.1, React Native 0.81.5
+- React Navigation v7; `RootStackNavigator` → siempre `Auth` (Splash → Login → Main tabs). Sin LandingScreen.
+- `metro.config.js` configurado para monorepo (watchFolders + nodeModulesPaths)
+- TanStack Query + **Supabase** (conexión directa PostgREST; sin Express intermedio)
+- Estilos: StyleSheet + tema en `constants/theme.ts`; soporte dark/light, violeta (#7B2D8E) y dorado (#D4AF37)
+- Responsive: `hooks/useResponsive.ts` — `isTablet` (≥768px) activo en Dashboard, Agenda, Finanzas
+
+### Web (apps/web/)
+- Next.js 15 + React 19, Tailwind CSS
+- Landing pública (zmlashnails.com) + panel `/finanzas` (auth Supabase, solo dev/owner)
+
+### Servidor (server/)
+- Express 5, TypeScript (tsx en dev)
+- Drizzle ORM + PostgreSQL (DATABASE_URL)
+- Rutas API bajo `/api/*`; WhatsApp; CORS para localhost y Replit
+
+### Compartido (packages/shared-schema/)
+- `src/schema.ts`: tablas Drizzle, relaciones, schemas Zod (drizzle-zod)
+
+## Comandos Útiles
+
+```bash
+# Desarrollo
+yarn dev              # Server + mobile en paralelo
+yarn server:dev       # Solo backend (puerto 5000)
+yarn mobile:dev       # Solo Expo (apps/mobile)
+yarn web:dev          # Solo Next.js (apps/web)
+
+# Base de datos
+yarn db:push          # Aplicar esquema Drizzle a PostgreSQL
+
+# Calidad
+yarn lint             # ESLint
+yarn check:types      # TypeScript (tsc --noEmit)
+yarn format           # Prettier
+```
+
+## Paths
+
+- Raíz: `/home/alber/ZM-Lash-and-Nails-Beauty` (WSL)
+- Mobile: `apps/mobile/` (screens, components, hooks, lib, constants, navigation, metro.config.js)
+- Web: `apps/web/`
+- Servidor: `server/`
+- Esquema compartido: `packages/shared-schema/src/schema.ts`
+- Documentación: `replit.md`, `README.md`, `CLAUDE.md`
+
+## Comportamiento AI
+
+- Resolver errores de conexión y variables de entorno (.env) en desarrollo
+- Ayudar con Supabase, Drizzle, Express y React Native/Expo
+- Mantener nombres de negocio en español (citas, servicios, chicas, inventario, finanzas)
+- Textos de UI en español; jerga natural venezolana cuando encaje
+- No crear documentación automática; no duplicar scripts; priorizar soluciones directas en código

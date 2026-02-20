@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "installCommand": "corepack enable && yarn install",
+  "buildCommand": "yarn web:build",
+  "framework": "nextjs",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- apps/web/ packages/shared-schema/"
+}
