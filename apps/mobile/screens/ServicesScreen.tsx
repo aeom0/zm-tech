@@ -20,6 +20,7 @@ import * as Haptics from "expo-haptics";
 
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
+import { useTenant } from "@/contexts/TenantContext";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import { apiRequest, queryClient } from "@/lib/query-client";
 
@@ -43,6 +44,8 @@ export default function ServicesScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
+  const { config } = useTenant();
+  const currencySymbol = config.locale.currency.symbol;
 
   const [filterCategoryId, setFilterCategoryId] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -216,7 +219,7 @@ export default function ServicesScreen() {
         </View>
       </View>
       <ThemedText style={[styles.servicePrice, { color: Colors.light.gold }]}>
-        S/{parseFloat(service.price).toFixed(0)}
+        {currencySymbol}{parseFloat(service.price).toFixed(0)}
       </ThemedText>
     </Pressable>
   );
@@ -464,7 +467,7 @@ export default function ServicesScreen() {
                 <ThemedText
                   style={[styles.inputLabel, { color: theme.textSecondary }]}
                 >
-                  Precio (S/)
+                  {`Precio (${currencySymbol})`}
                 </ThemedText>
                 <TextInput
                   style={[

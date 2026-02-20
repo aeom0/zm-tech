@@ -7,6 +7,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTenant } from "@/contexts/TenantContext";
 import { Spacing } from "@/constants/theme";
 
 export default function ProfileScreen() {
@@ -14,6 +15,7 @@ export default function ProfileScreen() {
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
   const { logout } = useAuth();
+  const { config } = useTenant();
 
   return (
     <ThemedView
@@ -32,7 +34,7 @@ export default function ProfileScreen() {
           Perfil
         </ThemedText>
         <ThemedText style={[styles.subtitle, { color: theme.textSecondary }]}>
-          Panel de gestión ZM Lash & Nails
+          Panel de gestión {config.businessName}
         </ThemedText>
 
         <View style={styles.logoutSection}>

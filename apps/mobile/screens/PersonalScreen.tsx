@@ -18,6 +18,7 @@ import * as Haptics from "expo-haptics";
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTenant } from "@/contexts/TenantContext";
 import { apiRequest, queryClient } from "@/lib/query-client";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 
@@ -33,6 +34,7 @@ interface Employee {
   is_active: boolean;
 }
 
+// Los dos primeros colores se sobreescriben en runtime con los del tenant
 const PRESET_COLORS = [
   "#7B2D8E",
   "#D4AF37",
@@ -47,6 +49,7 @@ export default function PersonalScreen() {
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
   const { isAdmin } = useAuth();
+  const { config } = useTenant();
 
   const [modalVisible, setModalVisible] = useState(false);
   const [editing, setEditing] = useState<Employee | null>(null);
@@ -54,8 +57,8 @@ export default function PersonalScreen() {
     name: "",
     email: "",
     phone: "",
-    color: "#7B2D8E",
-    commission_percentage: "40",
+    color: config.theme.primaryColor,
+    commission_percentage: String(config.commissions.defaultStaffPercent),
     notes: "",
     is_active: true,
   });

@@ -9,6 +9,7 @@ import { StatusBar } from "expo-status-bar";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/query-client";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { TenantProvider } from "@/contexts/TenantContext";
 import { useNotifications } from "@/hooks/useNotifications";
 
 import RootStackNavigator from "@/navigation/RootStackNavigator";
@@ -36,9 +37,11 @@ export default function App() {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <AppContent />
-        </AuthProvider>
+        <TenantProvider>
+          <AuthProvider>
+            <AppContent />
+          </AuthProvider>
+        </TenantProvider>
       </QueryClientProvider>
     </ErrorBoundary>
   );

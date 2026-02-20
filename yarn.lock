@@ -2912,6 +2912,14 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@salonpro/tenant-config@workspace:*, @salonpro/tenant-config@workspace:packages/tenant-config":
+  version: 0.0.0-use.local
+  resolution: "@salonpro/tenant-config@workspace:packages/tenant-config"
+  dependencies:
+    typescript: "npm:*"
+  languageName: unknown
+  linkType: soft
+
 "@sinclair/typebox@npm:^0.27.8":
   version: 0.27.8
   resolution: "@sinclair/typebox@npm:0.27.8"
@@ -8693,6 +8701,7 @@ __metadata:
     "@react-navigation/elements": "npm:^2.6.3"
     "@react-navigation/native": "npm:^7.1.8"
     "@react-navigation/native-stack": "npm:^7.3.16"
+    "@salonpro/tenant-config": "workspace:*"
     "@supabase/supabase-js": "npm:^2.95.3"
     "@tanstack/react-query": "npm:^5.90.7"
     "@types/react": "npm:~19.1.0"
@@ -10354,6 +10363,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"salonpro@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "salonpro@workspace:."
+  dependencies:
+    "@types/node": "npm:24.10.0"
+    "@types/pg": "npm:^8.16.0"
+    "@zm/shared-schema": "workspace:*"
+    concurrently: "npm:^9.1.2"
+    dotenv: "npm:^16.4.5"
+    drizzle-kit: "npm:^0.31.4"
+    drizzle-orm: "npm:^0.39.3"
+    expo: "npm:^54.0.33"
+    expo-updates: "npm:~29.0.16"
+    prettier: "npm:3.6.2"
+    typescript: "npm:~5.9.2"
+  languageName: unknown
+  linkType: soft
+
 "sax@npm:>=0.6.0":
   version: 1.4.3
   resolution: "sax@npm:1.4.3"
@@ -11376,7 +11403,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:~5.9.2":
+"typescript@npm:*, typescript@npm:~5.9.2":
   version: 5.9.3
   resolution: "typescript@npm:5.9.3"
   bin:
@@ -11386,7 +11413,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A~5.9.2#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A*#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A~5.9.2#optional!builtin<compat/typescript>":
   version: 5.9.3
   resolution: "typescript@patch:typescript@npm%3A5.9.3#optional!builtin<compat/typescript>::version=5.9.3&hash=5786d5"
   bin:
@@ -12065,24 +12092,6 @@ __metadata:
   checksum: 10c0/dceb44c28578b31641e13695d200d34ec4ab3966a5729814d5445b194933c096b7ced71494ce53a0e8820685d1d010df8b2422e5bf2cdea7e469d97ffbea306f
   languageName: node
   linkType: hard
-
-"zm-lash-nails-beauty@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "zm-lash-nails-beauty@workspace:."
-  dependencies:
-    "@types/node": "npm:24.10.0"
-    "@types/pg": "npm:^8.16.0"
-    "@zm/shared-schema": "workspace:*"
-    concurrently: "npm:^9.1.2"
-    dotenv: "npm:^16.4.5"
-    drizzle-kit: "npm:^0.31.4"
-    drizzle-orm: "npm:^0.39.3"
-    expo: "npm:^54.0.33"
-    expo-updates: "npm:~29.0.16"
-    prettier: "npm:3.6.2"
-    typescript: "npm:~5.9.2"
-  languageName: unknown
-  linkType: soft
 
 "zod-validation-error@npm:^3.4.0":
   version: 3.5.4

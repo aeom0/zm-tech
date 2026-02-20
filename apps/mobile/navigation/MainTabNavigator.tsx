@@ -10,7 +10,8 @@ import AgendaScreen from "@/screens/AgendaScreen";
 import ServicesScreen from "@/screens/ServicesScreen";
 import MoreStackNavigator from "@/navigation/MoreStackNavigator";
 import { useTheme } from "@/hooks/useTheme";
-import { Colors, Spacing } from "@/constants/theme";
+import { useTenant } from "@/contexts/TenantContext";
+import { Spacing } from "@/constants/theme";
 
 export type MainTabParamList = {
   Dashboard: undefined;
@@ -24,9 +25,10 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 export default function MainTabNavigator() {
   const { theme, isDark } = useTheme();
   const insets = useSafeAreaInsets();
+  const { config } = useTenant();
 
   const screenOptions = {
-    tabBarActiveTintColor: Colors.light.violet,
+    tabBarActiveTintColor: config.theme.primaryColor,
     tabBarInactiveTintColor: theme.textMuted,
     tabBarStyle: {
       position: "absolute" as const,
@@ -80,7 +82,7 @@ export default function MainTabNavigator() {
         component={DashboardScreen}
         options={{
           title: "Inicio",
-          headerTitle: "ZM Lash & Nails",
+          headerTitle: config.businessName,
           tabBarIcon: ({ color }) => (
             <Feather name="home" size={22} color={color} />
           ),

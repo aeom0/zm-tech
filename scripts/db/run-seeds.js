@@ -26,13 +26,13 @@ async function main() {
   const pool = new Pool({ connectionString: url });
 
   try {
-    console.log("Ejecutando seed-services.sql...");
-    await runSql(pool, path.join(dir, "seed-services.sql"));
-    console.log("seed-services.sql listo.\n");
+    console.log("Ejecutando seed-services-template.sql...");
+    await runSql(pool, path.join(dir, "seed-services-template.sql"));
+    console.log("seed-services-template.sql listo.\n");
 
-    console.log("Ejecutando seed-employees.sql...");
-    await runSql(pool, path.join(dir, "seed-employees.sql"));
-    console.log("seed-employees.sql listo.\n");
+    console.log("Ejecutando seed-employees-template.sql...");
+    await runSql(pool, path.join(dir, "seed-employees-template.sql"));
+    console.log("seed-employees-template.sql listo.\n");
 
     console.log("Seeds ejecutados correctamente.");
   } catch (err) {

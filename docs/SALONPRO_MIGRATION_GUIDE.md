@@ -1,7 +1,7 @@
 # SalonPro — Guía de Migración para Claude
 
 > **Fecha de inicio**: 2026-02-19
-> **Estado actual**: FASE 1 completada ✅ | FASE 2–6 pendientes
+> **Estado actual**: FASES 1–5 completadas ✅ | FASE 6 pendiente
 
 ---
 
@@ -53,7 +53,7 @@ Se identificaron ~180+ referencias hardcodeadas al salón original distribuidas 
 
 ---
 
-### ⏳ FASE 2 — Crear paquete `packages/tenant-config/`
+### ✅ FASE 2 — Crear paquete `packages/tenant-config/`
 
 **Instrucciones detalladas:**
 
@@ -168,7 +168,7 @@ Agregar `"@salonpro/tenant-config": "workspace:*"` como dependencia en:
 
 ---
 
-### ⏳ FASE 3 — Integrar TenantConfig en la app mobile
+### ✅ FASE 3 — Integrar TenantConfig en la app mobile
 
 #### 3.1 Crear `apps/mobile/context/TenantContext.tsx`
 
@@ -212,7 +212,7 @@ Envolver el árbol de navegación con `<TenantProvider>` en `apps/mobile/App.tsx
 
 ---
 
-### ⏳ FASE 4 — Limpieza de seeds y datos específicos
+### ✅ FASE 4 — Limpieza de seeds y datos específicos
 
 Acciones en `scripts/db/`:
 
@@ -231,7 +231,7 @@ Actualizar `README.md` raíz:
 
 ---
 
-### ⏳ FASE 5 — Onboarding flow (pantallas nuevas)
+### ✅ FASE 5 — Onboarding flow (pantallas nuevas)
 
 Crear en `apps/mobile/screens/onboarding/`:
 
@@ -255,7 +255,7 @@ UI `OnboardingBusinessTypeScreen`:
 
 ---
 
-### ⏳ FASE 6 — Schema de BD actualizado
+### ⏳ FASE 6 — Schema de BD actualizado (pendiente)
 
 En `packages/shared-schema/src/schema.ts`, agregar tabla:
 

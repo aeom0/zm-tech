@@ -17,11 +17,13 @@ import { ThemedView } from "@/components/ThemedView";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
 import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTenant } from "@/contexts/TenantContext";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 
 export function LoginScreen() {
   const { theme } = useTheme();
   const { login } = useAuth();
+  const { config } = useTenant();
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -124,7 +126,7 @@ export function LoginScreen() {
                 />
                 <TextInput
                   style={[styles.input, { color: theme.text }]}
-                  placeholder="tu-usuario@zmlashnails.com"
+                  placeholder={`tu-usuario@${config.contact.email?.split("@")[1] ?? "tusalon.com"}`}
                   placeholderTextColor={theme.textMuted}
                   value={usuario}
                   onChangeText={(text) => {

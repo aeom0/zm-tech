@@ -20,6 +20,7 @@ import * as Haptics from "expo-haptics";
 
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
+import { useTenant } from "@/contexts/TenantContext";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import { apiRequest, queryClient } from "@/lib/query-client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -49,6 +50,8 @@ export default function InventoryScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
+  const { config } = useTenant();
+  const currencySymbol = config.locale.currency.symbol;
   const { isAdmin } = useAuth();
 
   const [selectedTab, setSelectedTab] = useState<InventoryCategory>("unas");
@@ -496,7 +499,7 @@ export default function InventoryScreen() {
                 <ThemedText
                   style={[styles.inputLabel, { color: theme.textSecondary }]}
                 >
-                  Costo (S/)
+                  {`Costo (${currencySymbol})`}
                 </ThemedText>
                 <TextInput
                   style={[

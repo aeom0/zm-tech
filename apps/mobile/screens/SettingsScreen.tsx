@@ -6,6 +6,7 @@ import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
+import { useTenant } from "@/contexts/TenantContext";
 import { Spacing } from "@/constants/theme";
 
 const APP_VERSION = "1.0.0";
@@ -14,6 +15,7 @@ export default function SettingsScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
+  const { config } = useTenant();
 
   return (
     <View
@@ -56,7 +58,7 @@ export default function SettingsScreen() {
         ]}
       >
         <ThemedText style={[styles.aboutTitle, { color: theme.text }]}>
-          ZM Lash & Nails Beauty
+          {config.businessName}
         </ThemedText>
         <ThemedText style={[styles.aboutText, { color: theme.textSecondary }]}>
           Panel de gestión para el salón. Citas, servicios, inventario y

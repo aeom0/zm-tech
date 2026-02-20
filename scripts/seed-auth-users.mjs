@@ -4,6 +4,11 @@
  * Ejecutar una sola vez: node scripts/seed-auth-users.mjs
  *
  * Service role key: Supabase Dashboard → Settings → API → service_role (secret)
+ *
+ * INSTRUCCIONES:
+ * Reemplaza los emails y nombres ficticios de abajo con los datos reales
+ * de tu equipo antes de ejecutar este script.
+ * Los employee_id deben coincidir con los IDs del seed-employees-template.sql.
  */
 
 import "dotenv/config";
@@ -19,40 +24,48 @@ if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
   process.exit(1);
 }
 
-const PASSWORD_INICIAL = process.env.SEED_AUTH_PASSWORD || "Zmlash2025!";
+// Cambia esta contraseña antes de ejecutar en producción
+const PASSWORD_INICIAL = process.env.SEED_AUTH_PASSWORD || "SalonPro2025!";
 
+// ─── Reemplaza estos datos con los de tu equipo ───────────────────────────────
 const USUARIOS = [
   {
-    email: "alberto@zmlashnails.com",
-    full_name: "Alberto Orta",
+    // Desarrollador / administrador técnico (acceso total, sin employee_id)
+    email: "dev@ejemplo.com",
+    full_name: "Administrador",
     role: "dev",
     employee_id: null,
   },
   {
-    email: "vanessa@zmlashnails.com",
-    full_name: "Vanessa Douglas",
+    // Dueño/a del negocio (acceso total + perfil de empleado)
+    email: "propietario@ejemplo.com",
+    full_name: "Propietario/a",
     role: "owner",
-    employee_id: "emp-vanessa",
+    employee_id: "emp-propietario",
   },
   {
-    email: "romina@zmlashnails.com",
-    full_name: "Romina Melgar",
+    // Personal 1 (acceso limitado: Agenda + Mis ganancias)
+    email: "empleado1@ejemplo.com",
+    full_name: "Empleado/a 1",
     role: "staff",
-    employee_id: "emp-romina",
+    employee_id: "emp-uno",
   },
   {
-    email: "stephani@zmlashnails.com",
-    full_name: "Stephani Manrique",
+    // Personal 2
+    email: "empleado2@ejemplo.com",
+    full_name: "Empleado/a 2",
     role: "staff",
-    employee_id: "emp-sthefani",
+    employee_id: "emp-dos",
   },
   {
-    email: "yosaida@zmlashnails.com",
-    full_name: "Yosaida del Valle",
+    // Personal 3
+    email: "empleado3@ejemplo.com",
+    full_name: "Empleado/a 3",
     role: "staff",
-    employee_id: "emp-yosaida",
+    employee_id: "emp-tres",
   },
 ];
+// ─────────────────────────────────────────────────────────────────────────────
 
 async function crearUsuario(email, password) {
   const res = await fetch(`${SUPABASE_URL}/auth/v1/admin/users`, {

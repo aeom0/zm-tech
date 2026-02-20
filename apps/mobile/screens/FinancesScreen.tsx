@@ -25,6 +25,7 @@ import Svg, { Path, Circle, Line } from "react-native-svg";
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { useResponsive } from "@/hooks/useResponsive";
+import { useTenant } from "@/contexts/TenantContext";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import { apiRequest, queryClient } from "@/lib/query-client";
 import { supabase } from "@/lib/supabase";
@@ -103,6 +104,8 @@ export default function FinancesScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
+  const { config } = useTenant();
+  const currencySymbol = config.locale.currency.symbol;
   const { isAdmin } = useAuth();
   const { isTablet } = useResponsive();
   // Puede estar en tab Finanzas (legacy) o dentro del stack Más
@@ -523,7 +526,7 @@ export default function FinancesScreen() {
   const handleDelete = (payment: Payment) => {
     Alert.alert(
       "Eliminar pago",
-      `¿Eliminar pago de S/${parseFloat(payment.amount).toFixed(2)}?`,
+      `¿Eliminar pago de ${currencySymbol}${parseFloat(payment.amount).toFixed(2)}?`,
       [
         { text: "Cancelar", style: "cancel" },
         {
@@ -610,7 +613,7 @@ export default function FinancesScreen() {
               style={[styles.chartYLabelText, { color: theme.textMuted }]}
               numberOfLines={1}
             >
-              S/{formatCurrency(maxValue)}
+              {currencySymbol}{formatCurrency(maxValue)}
             </ThemedText>
           </View>
         )}
@@ -744,7 +747,7 @@ export default function FinancesScreen() {
                 numberOfLines={1}
                 adjustsFontSizeToFit
               >
-                S/ {formatCurrency(totalRevenue)}
+                {currencySymbol} {formatCurrency(totalRevenue)}
               </ThemedText>
             </View>
             <View style={styles.revenueMeta}>
@@ -772,7 +775,7 @@ export default function FinancesScreen() {
                       { color: theme.primary },
                     ]}
                   >
-                    Adelantos 20%: S/ {formatCurrency(totalAbono)}
+                    Adelantos 20%: {currencySymbol} {formatCurrency(totalAbono)}
                   </ThemedText>
                 </View>
               )}
@@ -797,7 +800,7 @@ export default function FinancesScreen() {
                 <ThemedText
                   style={[styles.chartSubtitle, { color: theme.textMuted }]}
                 >
-                  Total: S/
+                  Total: {currencySymbol}
                   {formatCurrency(
                     chartDataByPeriod.reduce((s, d) => s + d.total, 0),
                   )}
@@ -846,7 +849,7 @@ export default function FinancesScreen() {
                     <ThemedText
                       style={[styles.desgloseLabel, { color: theme.textMuted }]}
                     >
-                      Generado S/ {formatCurrency(row.generado)}
+                      Generado {currencySymbol} {formatCurrency(row.generado)}
                     </ThemedText>
                     <ThemedText
                       style={[
@@ -854,7 +857,7 @@ export default function FinancesScreen() {
                         { color: Colors.light.gold },
                       ]}
                     >
-                      Pagado S/ {formatCurrency(row.pagado)}
+                      Pagado {currencySymbol} {formatCurrency(row.pagado)}
                     </ThemedText>
                     {row.pendiente > 0.01 && (
                       <ThemedText
@@ -863,7 +866,7 @@ export default function FinancesScreen() {
                           { color: theme.primary, fontWeight: "600" },
                         ]}
                       >
-                        Pendiente S/ {formatCurrency(row.pendiente)}
+                        Pendiente {currencySymbol} {formatCurrency(row.pendiente)}
                       </ThemedText>
                     )}
                   </View>
@@ -1008,7 +1011,7 @@ export default function FinancesScreen() {
                           { color: theme.textMuted },
                         ]}
                       >
-                        Servicio total S/
+                        Servicio total {currencySymbol}
                         {parseFloat(payment.service_total).toFixed(0)}
                       </ThemedText>
                     ) : null}
@@ -1020,7 +1023,7 @@ export default function FinancesScreen() {
                             { color: theme.primary, fontWeight: "600" },
                           ]}
                         >
-                          Pendiente S/ {pendiente.toFixed(2)}
+                          Pendiente {currencySymbol} {pendiente.toFixed(2)}
                         </ThemedText>
                         {isAdmin && (
                           <Pressable
@@ -1062,7 +1065,7 @@ export default function FinancesScreen() {
                   <ThemedText
                     style={[styles.paymentAmount, { color: Colors.light.gold }]}
                   >
-                    S/{parseFloat(payment.amount).toFixed(2)}
+                    {currencySymbol}{parseFloat(payment.amount).toFixed(2)}
                   </ThemedText>
                 </Pressable>
               );
@@ -1221,7 +1224,7 @@ export default function FinancesScreen() {
                   <ThemedText
                     style={[styles.inputLabel, { color: theme.textSecondary }]}
                   >
-                    Valor total del servicio (S/)
+                    {`Valor total del servicio (${currencySymbol})`}
                   </ThemedText>
                   <TextInput
                     style={[
@@ -1253,7 +1256,7 @@ export default function FinancesScreen() {
                           { color: theme.textMuted },
                         ]}
                       >
-                        20% = S/
+                        {`20% = ${currencySymbol}`}
                       </ThemedText>
                       <ThemedText
                         style={[
@@ -1271,7 +1274,7 @@ export default function FinancesScreen() {
                   <ThemedText
                     style={[styles.inputLabel, { color: theme.textSecondary }]}
                   >
-                    Monto (S/)
+                    {`Monto (${currencySymbol})`}
                   </ThemedText>
                   <TextInput
                     style={[
@@ -1429,7 +1432,7 @@ export default function FinancesScreen() {
                           ]}
                           numberOfLines={1}
                         >
-                          {formatShortDate(apt.date)} · S/
+                          {formatShortDate(apt.date)} · {currencySymbol}
                           {parseFloat(apt.price).toFixed(0)}
                         </ThemedText>
                         {abono && pendienteApt != null && (
@@ -1444,7 +1447,7 @@ export default function FinancesScreen() {
                               },
                             ]}
                           >
-                            Pendiente S/{pendienteApt.toFixed(0)}
+                            Pendiente {currencySymbol}{pendienteApt.toFixed(0)}
                           </ThemedText>
                         )}
                       </Pressable>

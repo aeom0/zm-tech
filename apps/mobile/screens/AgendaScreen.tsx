@@ -23,6 +23,7 @@ import * as Haptics from "expo-haptics";
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { useResponsive } from "@/hooks/useResponsive";
+import { useTenant } from "@/contexts/TenantContext";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 import { apiRequest, queryClient } from "@/lib/query-client";
 import { supabase } from "@/lib/supabase";
@@ -69,6 +70,8 @@ export default function AgendaScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
+  const { config } = useTenant();
+  const currencySymbol = config.locale.currency.symbol;
   const { isTablet, width } = useResponsive();
 
   const TIME_COL_W = isTablet ? 64 : 50;
@@ -1007,7 +1010,7 @@ export default function AgendaScreen() {
                               },
                             ]}
                           >
-                            S/ {service.price} · {service.duration} min
+                            {currencySymbol} {service.price} · {service.duration} min
                           </ThemedText>
                         </Pressable>
                       );
@@ -1208,7 +1211,7 @@ export default function AgendaScreen() {
                         { color: Colors.light.gold },
                       ]}
                     >
-                      S/ {selectedService?.price || "0"}
+                      {currencySymbol} {selectedService?.price || "0"}
                     </ThemedText>
                   </View>
                 </View>

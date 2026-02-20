@@ -29,6 +29,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ThemedText } from "@/components/ThemedText";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTenant } from "@/contexts/TenantContext";
 import { useHaptics } from "@/hooks/useHaptics";
 import { useResponsive } from "@/hooks/useResponsive";
 import { useTheme } from "@/hooks/useTheme";
@@ -92,6 +93,8 @@ export default function DashboardScreen() {
   const { isTablet } = useResponsive();
   const haptics = useHaptics();
   const { profile } = useAuth();
+  const { config } = useTenant();
+  const currencySymbol = config.locale.currency.symbol;
 
   const today = new Date();
   const startOfDay = new Date(today.setHours(0, 0, 0, 0)).toISOString();
@@ -323,7 +326,7 @@ export default function DashboardScreen() {
         {/* Precio + duración */}
         <View style={styles.rowRight}>
           <ThemedText style={[styles.rowPrice, { color: theme.gold }]}>
-            S/{parseFloat(appointment.price).toFixed(0)}
+            {currencySymbol}{parseFloat(appointment.price).toFixed(0)}
           </ThemedText>
           <ThemedText style={[styles.rowDuration, { color: theme.textMuted }]}>
             {appointment.duration}m
@@ -350,7 +353,7 @@ export default function DashboardScreen() {
       <StatCard
         icon="dollar-sign"
         label="Ingresos hoy"
-        value={`S/${stats?.todayRevenue?.toFixed(0) || "0"}`}
+        value={`${currencySymbol}${stats?.todayRevenue?.toFixed(0) || "0"}`}
         color={theme.gold}
         subtitle={completedToday.length > 0 ? `${completedToday.length} pagos` : undefined}
         style={animatedItems[1]}
@@ -487,8 +490,10 @@ export default function DashboardScreen() {
             {formatDate()}
           </ThemedText>
         </View>
-        <View style={[styles.logoMark, { backgroundColor: `${Colors.light.violet}12` }]}>
-          <ThemedText style={[styles.logoLetter, { color: Colors.light.violet }]}>ZM</ThemedText>
+        <View style={[styles.logoMark, { backgroundColor: `${config.theme.primaryColor}12` }]}>
+          <ThemedText style={[styles.logoLetter, { color: config.theme.primaryColor }]}>
+            {config.businessName.slice(0, 2).toUpperCase()}
+          </ThemedText>
         </View>
       </AnimatedView>
 
@@ -561,7 +566,7 @@ export default function DashboardScreen() {
                     </View>
                     <View style={[styles.modalMetaChip, { backgroundColor: `${theme.gold}18` }]}>
                       <ThemedText style={[styles.modalMetaText, { color: theme.gold, fontWeight: "700" }]}>
-                        S/{parseFloat(String(selectedAppointment.price)).toFixed(0)}
+                        {currencySymbol}{parseFloat(String(selectedAppointment.price)).toFixed(0)}
                       </ThemedText>
                     </View>
                   </View>

@@ -3,6 +3,7 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
 import { supabase } from "@/lib/supabase";
+import { useTenant } from "@/contexts/TenantContext";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -14,7 +15,10 @@ Notifications.setNotificationHandler({
   }),
 });
 
-async function registerForPushNotifications(): Promise<string | null> {
+async function registerForPushNotifications(
+  channelName: string,
+  lightColor: string,
+): Promise<string | null> {
   if (!Device.isDevice) {
     return null;
   }
@@ -33,10 +37,10 @@ async function registerForPushNotifications(): Promise<string | null> {
 
   if (Platform.OS === "android") {
     await Notifications.setNotificationChannelAsync("default", {
-      name: "ZM Lash & Nails",
+      name: channelName,
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
-      lightColor: "#7B2D8E",
+      lightColor,
     });
   }
 
@@ -47,11 +51,15 @@ async function registerForPushNotifications(): Promise<string | null> {
 export function useNotifications(userId: string | null) {
   const notificationListener = useRef<Notifications.EventSubscription | null>(null);
   const responseListener = useRef<Notifications.EventSubscription | null>(null);
+  const { config } = useTenant();
 
   useEffect(() => {
     if (!userId) return;
 
-    registerForPushNotifications().then(async (token) => {
+    registerForPushNotifications(
+      config.businessName,
+      config.theme.primaryColor,
+    ).then(async (token) => {
       if (!token) return;
 
       await supabase

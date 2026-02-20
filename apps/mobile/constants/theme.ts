@@ -1,4 +1,5 @@
 import { Platform } from "react-native";
+import type { TenantConfig } from "@salonpro/tenant-config";
 
 export const Colors = {
   light: {
@@ -178,3 +179,40 @@ export const Shadows = {
     elevation: 4,
   },
 };
+
+// Devuelve una paleta de colores basada en la config del tenant.
+// Los tokens neutros (fondos, textos, bordes) son fijos; solo primary y accent
+// se toman de la config para mantener el contraste y la coherencia visual.
+export function createTheme(config: TenantConfig, isDark: boolean) {
+  const base = Colors[isDark ? "dark" : "light"];
+  return {
+    ...base,
+    primary: isDark
+      ? lightenHex(config.theme.primaryColor, 0.3)
+      : config.theme.primaryColor,
+    accent: config.theme.accentColor,
+    violet: isDark
+      ? lightenHex(config.theme.primaryColor, 0.3)
+      : config.theme.primaryColor,
+    link: isDark
+      ? lightenHex(config.theme.primaryColor, 0.3)
+      : config.theme.primaryColor,
+    tabIconSelected: isDark
+      ? lightenHex(config.theme.primaryColor, 0.3)
+      : config.theme.primaryColor,
+    info: isDark
+      ? lightenHex(config.theme.primaryColor, 0.3)
+      : config.theme.primaryColor,
+    gold: config.theme.accentColor,
+    warning: config.theme.accentColor,
+  };
+}
+
+// Aclarado muy simple para modo oscuro: aumenta la luminosidad mezclando con blanco.
+function lightenHex(hex: string, amount: number): string {
+  const num = parseInt(hex.replace("#", ""), 16);
+  const r = Math.min(255, (num >> 16) + Math.round(255 * amount));
+  const g = Math.min(255, ((num >> 8) & 0xff) + Math.round(255 * amount));
+  const b = Math.min(255, (num & 0xff) + Math.round(255 * amount));
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
+}
