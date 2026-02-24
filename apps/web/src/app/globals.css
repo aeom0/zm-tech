@@ -51,3 +51,56 @@ html {
   background-color: #7b2d8e30;
   color: #1a1a1a;
 }
+
+/* ─── Scroll reveal animations ──────────────────────────────────────────── */
+
+/* Sube desde abajo con fade */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+/* Aparece con fade puro */
+.reveal-fade {
+  opacity: 0;
+  transition: opacity 0.7s ease;
+}
+
+/* Entra desde la izquierda */
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-32px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+/* Entra desde la derecha */
+.reveal-right {
+  opacity: 0;
+  transform: translateX(32px);
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+/* Estado final — aplicado por IntersectionObserver */
+.revealed {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Respeta preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  .reveal-up,
+  .reveal-fade,
+  .reveal-left,
+  .reveal-right {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

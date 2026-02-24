@@ -1,3 +1,5 @@
+import { RevealWrapper } from "@/components/ui/RevealWrapper";
+
 const PAINS = [
   {
     emoji: "📱",
@@ -38,39 +40,43 @@ export function PainSection() {
     <section className="px-4 py-20 md:py-28 bg-zinc-50 dark:bg-zinc-900/30">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-14">
-          <span className="text-accent font-semibold text-sm uppercase tracking-widest">
-            El problema
-          </span>
-          <h2 className="text-3xl md:text-5xl font-bold mt-3 text-zinc-900 dark:text-zinc-100">
-            ¿Cómo gestionas tu negocio hoy?
-          </h2>
-          <p className="text-zinc-500 dark:text-zinc-400 mt-4 max-w-xl mx-auto">
-            Si te identificas con alguna de estas situaciones, SalonPro es para ti.
-          </p>
-        </div>
+        <RevealWrapper variant="up">
+          <div className="text-center mb-14">
+            <span className="text-accent font-semibold text-sm uppercase tracking-widest">
+              El problema
+            </span>
+            <h2 className="text-3xl md:text-5xl font-bold mt-3 text-zinc-900 dark:text-zinc-100">
+              ¿Cómo gestionas tu negocio hoy?
+            </h2>
+            <p className="text-zinc-500 dark:text-zinc-400 mt-4 max-w-xl mx-auto">
+              Si te identificas con alguna de estas situaciones, SalonPro es para ti.
+            </p>
+          </div>
+        </RevealWrapper>
 
         {/* Dos columnas: dolor → solución */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           {/* Dolores */}
           <div className="space-y-4">
-            {PAINS.map((pain) => (
-              <div
-                key={pain.title}
-                className={`flex items-start gap-4 p-5 rounded-2xl border ${pain.color}`}
-              >
-                <span className="text-3xl flex-shrink-0">{pain.emoji}</span>
-                <div>
-                  <h3 className={`font-bold ${pain.textColor}`}>{pain.title}</h3>
-                  <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
-                    {pain.description}
-                  </p>
+            {PAINS.map((pain, i) => (
+              <RevealWrapper key={pain.title} variant="left" delay={i * 100}>
+                <div
+                  className={`flex items-start gap-4 p-5 rounded-2xl border ${pain.color}`}
+                >
+                  <span className="text-3xl flex-shrink-0">{pain.emoji}</span>
+                  <div>
+                    <h3 className={`font-bold ${pain.textColor}`}>{pain.title}</h3>
+                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+                      {pain.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </RevealWrapper>
             ))}
           </div>
 
           {/* Flecha + Solución */}
+          <RevealWrapper variant="right">
           <div className="flex flex-col items-center gap-6">
             <div className="hidden lg:flex flex-col items-center gap-2 text-zinc-400">
               <div className="w-0.5 h-8 bg-zinc-300 dark:bg-zinc-700" />
@@ -99,6 +105,7 @@ export function PainSection() {
               </a>
             </div>
           </div>
+          </RevealWrapper>
         </div>
       </div>
     </section>

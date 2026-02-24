@@ -42,7 +42,7 @@ export function PricingCard({ plan, annual }: Props) {
       <div className="mb-6">
         <div className="flex items-end gap-1">
           <span
-            className={`text-5xl font-bold ${
+            className={`text-5xl font-bold tabular-nums transition-all duration-300 ${
               plan.highlighted ? "text-white" : "text-zinc-900 dark:text-zinc-100"
             }`}
           >
@@ -56,15 +56,15 @@ export function PricingCard({ plan, annual }: Props) {
             /mes
           </span>
         </div>
-        {annual && (
+        <div className={`overflow-hidden transition-all duration-300 ${annual ? "max-h-6 opacity-100 mt-1" : "max-h-0 opacity-0"}`}>
           <p
-            className={`text-xs mt-1 ${
+            className={`text-xs ${
               plan.highlighted ? "text-white/60" : "text-zinc-400"
             }`}
           >
             ${plan.monthlyPrice}/mes si pagas mensual
           </p>
-        )}
+        </div>
       </div>
 
       <ul className="space-y-3 mb-8 flex-1">

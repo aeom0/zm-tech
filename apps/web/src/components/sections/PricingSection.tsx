@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { PLANS, COMPARISON_FEATURES } from "@/lib/constants";
 import { PricingCard } from "@/components/ui/PricingCard";
+import { RevealWrapper } from "@/components/ui/RevealWrapper";
 
 export function PricingSection() {
   const [annual, setAnnual] = useState(false);
@@ -12,6 +13,7 @@ export function PricingSection() {
     <section id="precios" className="px-4 py-20 md:py-28 bg-white dark:bg-zinc-950">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
+        <RevealWrapper variant="up">
         <div className="text-center mb-12">
           <span className="text-accent font-semibold text-sm uppercase tracking-widest">
             Precios
@@ -26,42 +28,53 @@ export function PricingSection() {
           {/* Toggle mensual / anual */}
           <div className="flex items-center justify-center gap-3 mt-8">
             <span
-              className={`text-sm font-medium ${
-                !annual ? "text-zinc-900 dark:text-zinc-100" : "text-zinc-400"
+              className={`text-sm font-medium transition-colors duration-300 ${
+                !annual ? "text-zinc-900 dark:text-zinc-100" : "text-zinc-400 dark:text-zinc-600"
               }`}
             >
               Mensual
             </span>
             <button
               onClick={() => setAnnual(!annual)}
-              className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${
+              className={`relative w-14 h-7 rounded-full transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
                 annual ? "bg-primary" : "bg-zinc-300 dark:bg-zinc-700"
               }`}
               aria-label="Cambiar entre mensual y anual"
+              role="switch"
+              aria-checked={annual}
             >
               <span
-                className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-300 ${
-                  annual ? "translate-x-6" : ""
+                className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-300 ${
+                  annual ? "translate-x-7" : ""
                 }`}
               />
             </button>
             <span
-              className={`text-sm font-medium ${
-                annual ? "text-zinc-900 dark:text-zinc-100" : "text-zinc-400"
+              className={`text-sm font-medium transition-colors duration-300 ${
+                annual ? "text-zinc-900 dark:text-zinc-100" : "text-zinc-400 dark:text-zinc-600"
               }`}
             >
               Anual
-              <span className="ml-2 bg-accent/20 text-accent text-xs font-bold px-2 py-0.5 rounded-full">
+              <span
+                className={`ml-2 text-xs font-bold px-2 py-0.5 rounded-full transition-all duration-300 ${
+                  annual
+                    ? "bg-accent text-black"
+                    : "bg-accent/20 text-accent"
+                }`}
+              >
                 −20%
               </span>
             </span>
           </div>
         </div>
+        </RevealWrapper>
 
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end mb-12">
-          {PLANS.map((plan) => (
-            <PricingCard key={plan.name} plan={plan} annual={annual} />
+          {PLANS.map((plan, i) => (
+            <RevealWrapper key={plan.name} variant="up" delay={i * 100}>
+              <PricingCard plan={plan} annual={annual} />
+            </RevealWrapper>
           ))}
         </div>
 

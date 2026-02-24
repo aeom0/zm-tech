@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { FAQS } from "@/lib/constants";
+import { RevealWrapper } from "@/components/ui/RevealWrapper";
 
 export function FaqSection() {
   const [open, setOpen] = useState<number | null>(null);
@@ -10,20 +11,22 @@ export function FaqSection() {
     <section id="faq" className="px-4 py-20 md:py-28 bg-zinc-50 dark:bg-zinc-900/30">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-12">
-          <span className="text-accent font-semibold text-sm uppercase tracking-widest">
-            Preguntas frecuentes
-          </span>
-          <h2 className="text-3xl md:text-5xl font-bold mt-3 text-zinc-900 dark:text-zinc-100">
-            Resolvemos tus dudas
-          </h2>
-        </div>
+        <RevealWrapper variant="up">
+          <div className="text-center mb-12">
+            <span className="text-accent font-semibold text-sm uppercase tracking-widest">
+              Preguntas frecuentes
+            </span>
+            <h2 className="text-3xl md:text-5xl font-bold mt-3 text-zinc-900 dark:text-zinc-100">
+              Resolvemos tus dudas
+            </h2>
+          </div>
+        </RevealWrapper>
 
         {/* Acordeón */}
         <div className="space-y-3">
           {FAQS.map((faq, i) => (
+            <RevealWrapper key={i} variant="up" delay={i * 60}>
             <div
-              key={i}
               className="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 overflow-hidden"
             >
               <button
@@ -50,10 +53,12 @@ export function FaqSection() {
                 </div>
               )}
             </div>
+            </RevealWrapper>
           ))}
         </div>
 
         {/* CTA debajo */}
+        <RevealWrapper variant="up" delay={100}>
         <div className="text-center mt-10">
           <p className="text-zinc-500 dark:text-zinc-400 text-sm mb-3">
             ¿Tienes más preguntas?
@@ -67,6 +72,7 @@ export function FaqSection() {
             💬 Escribir por WhatsApp
           </a>
         </div>
+        </RevealWrapper>
       </div>
     </section>
   );
