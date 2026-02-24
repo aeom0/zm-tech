@@ -182,7 +182,8 @@ Flujo de arranque: `AuthGate` → Splash → (no auth) Login | (auth, no config)
 ## Notas para Desarrollo
 
 - **Autenticación**: Supabase Auth (email + contraseña). `AuthContext` con sesión, perfil (role, employee_id). Login en `LoginScreen`; logout en Perfil o menú Más. Roles en tabla `profiles` (dev, owner, staff)
-- **Moneda**: viene de `config.locale.currency.symbol` — NO hardcodear `S/`
+- **Moneda (mobile)**: viene de `config.locale.currency.symbol` — NO hardcodear `S/`
+- **Moneda (web/landing)**: usa `$` USD como símbolo estándar internacional — NO hardcodear `S/`
 - **Terminología del personal**: viene de `config.terminology.staff` — NO hardcodear "chicas"
 - **Nombre del negocio**: viene de `config.businessName` — NO hardcodear nombre específico
 - **Colores**: vienen de `config.theme.primaryColor` / `accentColor` — NO hardcodear `#7B2D8E` ni `#D4AF37`
@@ -197,6 +198,7 @@ Flujo de arranque: `AuthGate` → Splash → (no auth) Login | (auth, no config)
 - **Fase 4 — limpieza de seeds**: `seed-{services,employees}.sql` renombrados a `*-example.sql`; creados `*-template.sql` genéricos para los 4 tipos de negocio; `seed-auth-users.mjs` con emails `@ejemplo.com`; contraseña inicial `SalonPro2025!`.
 - **Fase 5 — onboarding flow**: 5 pantallas en `screens/onboarding/`; `AuthGate` orquesta el flujo; `TenantContext` agrega `isConfigured` + `markConfigured()` con clave `@salonpro/tenant_configured` en AsyncStorage.
 - **Fase 6 — pendiente**: tabla `tenant_settings` en Supabase.
+- **Landing web**: landing pública completa en `apps/web` con Next.js 15 App Router; secciones Hero (mockup animado), Pain Points, Features, Social Proof, Pricing (toggle mensual/anual), FAQ, CTA, Footer; scroll reveal con IntersectionObserver; moneda `$` USD en toda la landing.
 
 ## Historial anterior (v1.1.0)
 
