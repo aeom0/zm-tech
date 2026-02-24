@@ -3,10 +3,10 @@ import { TestimonialCard } from "@/components/ui/TestimonialCard";
 import { RevealWrapper } from "@/components/ui/RevealWrapper";
 
 const METRICS = [
-  { value: "500+", label: "Negocios activos" },
-  { value: "98%", label: "Satisfacción" },
-  { value: "40%", label: "Menos ausencias" },
-  { value: "2h", label: "Ahorradas por semana" },
+  { value: "Beta", label: "Acceso anticipado abierto" },
+  { value: "50", label: "Primeros negocios con 40% off" },
+  { value: "14 días", label: "Prueba gratuita sin tarjeta" },
+  { value: "LATAM", label: "Venezuela · Perú · Colombia" },
 ];
 
 export function SocialProofSection() {

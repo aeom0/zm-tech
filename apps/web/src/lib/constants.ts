@@ -51,7 +51,7 @@ export const TESTIMONIALS = [
     country: "Venezuela 🇻🇪",
     avatar: "CM",
     color: "#1A237E",
-    text: "Antes manejaba todo en un cuaderno y WhatsApp. Ahora mis citas están organizadas, sé exactamente cuánto gané esta semana y mis clientes llegan puntuales. SalonPro cambió mi negocio.",
+    text: "Estamos en la beta desde hace unas semanas y ya no puedo imaginar volver al cuaderno. Las citas organizadas, las comisiones calculadas solas y mis clientes llegando puntuales. Va por buen camino.",
     stars: 5,
   },
   {
@@ -60,7 +60,7 @@ export const TESTIMONIALS = [
     country: "Perú 🇵🇪",
     avatar: "VT",
     color: "#E91E8C",
-    text: "Tengo 3 chicas trabajando y antes calculaba las comisiones a mano cada fin de mes. Ahora SalonPro lo hace automático. Me ahorro 2 horas cada semana y no cometo errores.",
+    text: "Lo probamos antes del lanzamiento oficial y nos enganchó. Tengo 3 especialistas y antes calculaba las comisiones a mano cada fin de mes. Ahora SalonPro lo hace solo. El equipo está encantado.",
     stars: 5,
   },
   {
@@ -69,7 +69,7 @@ export const TESTIMONIALS = [
     country: "Colombia 🇨🇴",
     avatar: "AG",
     color: "#6A1B9A",
-    text: "Lo mejor es que funciona en mi celular como en el computador. Mis clientas pueden ver disponibilidad y yo recibo la notificación al instante. Totalmente recomendado para cualquier salón.",
+    text: "Entré al acceso anticipado y fue la mejor decisión. Funciona perfecto en el celular y me da el control que necesitaba. Todavía están puliendo detalles pero el producto tiene mucho potencial.",
     stars: 5,
   },
 ];
