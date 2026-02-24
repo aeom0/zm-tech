@@ -2,37 +2,34 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ZM Lash & Nails Beauty | Salón de belleza en Santiago de Surco, Lima",
+  title: "SalonPro — Gestión inteligente para barberías, spas y peluquerías",
   description:
-    "Salón de belleza en Santiago de Surco, Lima. Extensiones de pestañas, lifting, microblading, uñas en gel y depilación. CC. Las Plazuelas de Surco. Agenda por WhatsApp.",
+    "Plataforma SaaS para gestionar agenda, personal, inventario y finanzas de tu salón de belleza. 14 días gratis. Sin tarjeta de crédito.",
   keywords: [
-    "salón de belleza Santiago de Surco",
-    "salón de belleza Lima",
-    "extensiones de pestañas Surco",
-    "lifting de pestañas Lima",
-    "microblading cejas",
-    "uñas en gel Surco",
-    "manicure Lima",
-    "depilación Lima",
-    "ZM Lash and Nails",
-    "Las Plazuelas de Surco",
+    "software para barberías",
+    "app para salón de belleza",
+    "gestión de spa",
+    "software peluquería LATAM",
+    "agenda digital salón",
+    "control de inventario belleza",
+    "SalonPro",
   ],
   icons: {
     icon: "/favicon.png",
   },
   openGraph: {
-    title: "ZM Lash & Nails Beauty | Tu belleza, nuestra pasión",
+    title: "SalonPro — Gestión inteligente para tu negocio de belleza",
     description:
-      "Salón de belleza en Lima especializado en pestañas, cejas, uñas y micropigmentación. +500 clientas felices.",
+      "Agenda, personal, inventario y finanzas en un solo lugar. Sin papeles, sin WhatsApp, sin caos. Prueba 14 días gratis.",
     type: "website",
-    locale: "es_PE",
-    siteName: "ZM Lash & Nails Beauty",
+    locale: "es_419",
+    siteName: "SalonPro",
   },
   twitter: {
     card: "summary_large_image",
-    title: "ZM Lash & Nails Beauty",
+    title: "SalonPro — App para barberías, spas y peluquerías",
     description:
-      "Salón de belleza en Lima. Pestañas, cejas, uñas y micropigmentación.",
+      "Gestiona tu salón de belleza desde el celular. Agenda, finanzas, personal e inventario en una sola app.",
   },
   robots: {
     index: true,
@@ -55,55 +52,8 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
           rel="stylesheet"
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "BeautySalon",
-              name: "ZM Lash & Nails Beauty",
-              description:
-                "Salón de belleza especializado en extensiones de pestañas, lifting, microblading, uñas y depilación en Lima, Perú.",
-              address: {
-                "@type": "PostalAddress",
-                streetAddress:
-                  "Calle Artesanos 150, Local 205, CC. Las Plazuelas de Surco",
-                addressLocality: "Santiago de Surco",
-                addressRegion: "Lima",
-                addressCountry: "PE",
-              },
-              openingHoursSpecification: [
-                {
-                  "@type": "OpeningHoursSpecification",
-                  dayOfWeek: [
-                    "Monday",
-                    "Tuesday",
-                    "Wednesday",
-                    "Thursday",
-                    "Friday",
-                    "Saturday",
-                  ],
-                  opens: "10:00",
-                  closes: "19:00",
-                },
-                {
-                  "@type": "OpeningHoursSpecification",
-                  dayOfWeek: "Sunday",
-                  opens: "10:30",
-                  closes: "13:00",
-                },
-              ],
-              priceRange: "S/ 20 - S/ 320",
-              aggregateRating: {
-                "@type": "AggregateRating",
-                ratingValue: "4.9",
-                reviewCount: "500",
-              },
-            }),
-          }}
         />
       </head>
       <body className="antialiased font-sans">{children}</body>

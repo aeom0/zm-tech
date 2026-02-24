@@ -1,0 +1,105 @@
+import type { Plan } from "@/lib/constants";
+
+type Props = {
+  plan: Plan;
+  annual: boolean;
+};
+
+export function PricingCard({ plan, annual }: Props) {
+  const price = annual ? plan.annualPrice : plan.monthlyPrice;
+
+  return (
+    <div
+      className={`relative flex flex-col rounded-2xl p-8 transition-all duration-300 ${
+        plan.highlighted
+          ? "bg-primary text-white ring-4 ring-primary/30 shadow-2xl shadow-primary/20 scale-105"
+          : "bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-sm hover:shadow-lg"
+      }`}
+    >
+      {plan.highlighted && (
+        <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-accent text-black text-xs font-bold px-4 py-1.5 rounded-full">
+          ⭐ MÁS POPULAR
+        </span>
+      )}
+
+      <div className="mb-6">
+        <h3
+          className={`text-xl font-bold ${
+            plan.highlighted ? "text-white" : "text-zinc-900 dark:text-zinc-100"
+          }`}
+        >
+          {plan.name}
+        </h3>
+        <p
+          className={`text-sm mt-1 ${
+            plan.highlighted ? "text-white/70" : "text-zinc-500"
+          }`}
+        >
+          {plan.description}
+        </p>
+      </div>
+
+      <div className="mb-6">
+        <div className="flex items-end gap-1">
+          <span
+            className={`text-5xl font-bold ${
+              plan.highlighted ? "text-white" : "text-zinc-900 dark:text-zinc-100"
+            }`}
+          >
+            ${price}
+          </span>
+          <span
+            className={`text-sm mb-2 ${
+              plan.highlighted ? "text-white/70" : "text-zinc-500"
+            }`}
+          >
+            /mes
+          </span>
+        </div>
+        {annual && (
+          <p
+            className={`text-xs mt-1 ${
+              plan.highlighted ? "text-white/60" : "text-zinc-400"
+            }`}
+          >
+            ${plan.monthlyPrice}/mes si pagas mensual
+          </p>
+        )}
+      </div>
+
+      <ul className="space-y-3 mb-8 flex-1">
+        {plan.features.map((feat) => (
+          <li key={feat} className="flex items-start gap-2.5 text-sm">
+            <span
+              className={`mt-0.5 flex-shrink-0 ${
+                plan.highlighted ? "text-accent" : "text-primary"
+              }`}
+            >
+              ✓
+            </span>
+            <span
+              className={
+                plan.highlighted ? "text-white/90" : "text-zinc-600 dark:text-zinc-400"
+              }
+            >
+              {feat}
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      <a
+        href="#"
+        className={`block text-center font-bold py-3.5 rounded-full transition-all duration-200 ${
+          plan.highlighted
+            ? "bg-accent text-black hover:bg-accent/90 hover:scale-105"
+            : plan.ctaSecondary
+            ? "border-2 border-primary text-primary hover:bg-primary hover:text-white"
+            : "bg-primary text-white hover:bg-primary/90"
+        }`}
+      >
+        {plan.cta}
+      </a>
+    </div>
+  );
+}
