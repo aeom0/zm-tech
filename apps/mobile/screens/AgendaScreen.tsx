@@ -26,7 +26,6 @@ import { useResponsive } from "@/hooks/useResponsive";
 import { useTenant } from "@/contexts/TenantContext";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 import { apiRequest, queryClient } from "@/lib/query-client";
-import { supabase } from "@/lib/supabase";
 
 const HOURS = Array.from({ length: 10 }, (_, i) => i + 10);
 const DAYS_ES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];

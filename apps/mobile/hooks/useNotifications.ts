@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import { Platform } from "react-native";
-import { supabase } from "@/lib/supabase";
+// push_token sync deshabilitado en modo Express (sin tabla profiles)
 import { useTenant } from "@/contexts/TenantContext";
 
 Notifications.setNotificationHandler({
@@ -62,10 +62,8 @@ export function useNotifications(userId: string | null) {
     ).then(async (token) => {
       if (!token) return;
 
-      await supabase
-        .from("profiles")
-        .update({ push_token: token })
-        .eq("id", userId);
+      // TODO: guardar push_token en BD cuando se implemente auth
+      console.log("Push token obtenido:", token);
     });
 
     notificationListener.current = Notifications.addNotificationReceivedListener(

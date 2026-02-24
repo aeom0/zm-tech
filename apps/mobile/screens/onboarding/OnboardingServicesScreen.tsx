@@ -11,7 +11,7 @@ import Animated, { FadeInDown } from "react-native-reanimated";
 import { ThemedText } from "@/components/ThemedText";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
-import { supabase } from "@/lib/supabase";
+import { apiRequest } from "@/lib/query-client";
 
 interface Categoria {
   id: string;
@@ -74,14 +74,12 @@ export default function OnboardingServicesScreen({
 
     setGuardando(true);
     try {
-      const rows = seleccionadas.map((c, i) => ({
-        name: c.nombre,
-        order: i + 1,
-      }));
-      const { error } = await supabase
-        .from("service_categories")
-        .insert(rows);
-      if (error) throw error;
+      for (const [i, c] of seleccionadas.entries()) {
+        await apiRequest("POST", "/api/service-categories", {
+          name: c.nombre,
+          order: i + 1,
+        });
+      }
       onNext();
     } catch {
       // Si falla (ej. categorías ya existen), continuar de todos modos

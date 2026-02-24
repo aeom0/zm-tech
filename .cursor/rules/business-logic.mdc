@@ -1,0 +1,58 @@
+---
+description: Lógica de negocio del salón de belleza (citas, servicios, inventario, finanzas)
+globs:
+  - "apps/mobile/**/hooks/**/*"
+  - "apps/mobile/**/screens/**/*"
+  - "server/**/*"
+  - "packages/shared-schema/**/*"
+alwaysApply: false
+---
+
+# Business Logic ZM Lash & Nails Beauty
+
+## Contexto de negocio
+
+- **Ubicación**: Perú
+- **Moneda**: Soles (S/)
+- **Horario**: L-S 10:00 AM – 7:00 PM; Domingo previa cita 10:30 AM – 1:00 PM
+- **Categorías de servicios**: Extensiones de Pestañas, Lifting, Cejas y Rostro, Uñas, Microblading, Depilación
+
+## Entidades principales
+
+### Chicas (employees)
+- Personal del salón con color de identificación (`color`), activo/inactivo.
+- En UI y mensajes se usa "chicas" en lugar de "empleadas".
+- Relación: una chica tiene muchas citas.
+
+### Categorías y servicios
+- **Categorías**: ordenables (`order`); Extensiones de Pestañas, Lifting, Cejas y Rostro, Uñas, Microblading, Depilación.
+- **Servicios**: nombre, categoría, precio (decimal), duración (minutos), activo.
+
+### Clientes
+- Nombre, teléfono, email, notas. Sin auth; datos de contacto para citas.
+
+### Citas (appointments)
+- Cliente (id o nombre), chica (employee), servicio, fecha/hora, duración, precio, estado.
+- **Estados**: p. ej. `scheduled`, `completed`, `cancelled`, `no_show`.
+- Evitar solapamientos: usar endpoint de disponibilidad antes de crear.
+
+### Inventario
+- Artículos con: nombre, tipo (countable, etc.), cantidad, stock mínimo, unidad, precio opcional.
+- Alertas cuando cantidad &lt; minStock.
+
+### Pagos
+- Vinculados a cita (opcional), monto, método (cash, etc.), fecha, notas.
+
+## Reglas de negocio a respetar
+
+1. **Citas**: duración y precio pueden venir del servicio; comprobar disponibilidad (anti-overbooking).
+2. **Inventario**: no permitir cantidad negativa; considerar alertas de stock bajo en dashboard.
+3. **Pagos**: asociar a cita cuando aplique; método y monto obligatorios.
+4. **Servicios**: precios y duraciones en la misma unidad que en el front (S/, minutos).
+5. **Chicas**: color para identificación visual en agenda/UI; solo activas en listas operativas.
+
+## API relevante
+
+- Dashboard: `GET /api/dashboard/stats`
+- CRUD: chicas (employees), servicios, categorías, clientes, citas, inventario, pagos
+- Disponibilidad: `GET /api/appointments/check-availability`

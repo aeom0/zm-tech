@@ -28,7 +28,6 @@ import { useResponsive } from "@/hooks/useResponsive";
 import { useTenant } from "@/contexts/TenantContext";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import { apiRequest, queryClient } from "@/lib/query-client";
-import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 import type { CompositeNavigationProp } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";

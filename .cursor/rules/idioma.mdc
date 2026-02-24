@@ -1,0 +1,27 @@
+---
+description: Idioma, locale y jerga para la UI (español, Venezuela/Perú)
+globs:
+  - "apps/mobile/**/*"
+  - "apps/web/**/*"
+  - "**/constants/**/*"
+alwaysApply: false
+---
+
+# Idioma y locale ZM Lash & Nails Beauty
+
+## Idioma
+
+- **UI y mensajes**: Siempre en español.
+- **Jerga**: Lenguaje natural y cotidiano; se puede usar jerga venezolana en textos de interfaz cuando encaje con las preferencias del usuario (ej. "guardar", "listo", "chévere").
+- **Negocio**: El negocio está en Perú — moneda S/, horario L-S 10:00–19:00 y D previa cita 10:30–13:00; formatos coherentes.
+
+## Nombres de negocio en código
+
+- Variables y comentarios de negocio en español cuando ayude a lectura: ej. `citas`, `servicios`, `chicas`, `inventario`, `finanzas`, `stockMínimo`, `precio`, `duración`.
+- Nombres técnicos (hooks, tipos exportados) pueden seguir en inglés si ya están así (ej. `useTheme`, `Appointment`); nuevos módulos de negocio pueden usar español si se prefiere consistencia.
+
+## Formato
+
+- Moneda: S/ para soles (Perú).
+- Fechas/horas: Formato claro para el usuario (ej. DD/MM/YYYY o similar según diseño).
+- Números: Separador de miles y decimales coherente con locale (ej. 1 234,56 o 1,234.56 según convención del diseño).

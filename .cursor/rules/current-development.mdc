@@ -1,0 +1,60 @@
+---
+description: Estado actual del desarrollo — v1.1.0, Supabase directo, sin Express
+globs:
+  - "apps/**/*"
+  - "packages/**/*"
+  - ".env.example"
+alwaysApply: true
+---
+
+# Estado actual — ZM Lash & Nails Beauty v1.1.0
+
+## Origen y entorno
+
+- **MVP**: Generado en Replit; migrado a monorepo local (Yarn 4) en WSL.
+- **Entorno**: Node 22 (.nvmrc), Yarn 4; Expo en 8081.
+- **Variables**: `.env` desde `.env.example`; Supabase: `EXPO_PUBLIC_SUPABASE_URL` y `EXPO_PUBLIC_SUPABASE_ANON_KEY` para mobile.
+- **Base de datos**: Supabase PostgreSQL (proyecto `udelxwwnyivknslueerr`) — mobile conecta directo vía PostgREST. Schema en `packages/shared-schema/src/schema.ts`; `yarn db:push` para aplicar.
+- **IMPORTANTE**: El servidor Express (`server/`) fue eliminado en v1.1.0. No existe más. `yarn dev` lanza solo Expo.
+
+## Stack operativo
+
+- **Mobile (apps/mobile)**: Expo SDK 54, Supabase directo, TanStack Query; tema en `constants/theme.ts`. **snake_case** en propiedades de datos de BD.
+- **Web (apps/web)**: Next.js 15, Tailwind, Supabase Auth.
+- **Push Notifications**: `expo-notifications` + `expo-device`. Hook `useNotifications` guarda FCM token en `profiles.push_token`. Edge Function `send-notification` + trigger DB `trg_notify_appointment_assigned`.
+- **Scripts**: `yarn dev` (solo mobile), `yarn mobile:dev`, `yarn web:dev`, `yarn db:push`.
+
+## Pantallas y API
+
+- Tabs: Inicio (Dashboard), Agenda, Servicios, Más, Perfil.
+- Tab **Más**: menú con Finanzas, Chicas (personal y comisión %), Inventario, Configuración, Cerrar sesión (Finanzas/Chicas/Inventario solo para dev/owner).
+- Pantallas: MoreHomeScreen, MoreStackNavigator, PersonalScreen (Chicas), SettingsScreen, InventoryScreen, FinancesScreen.
+- Mobile: Supabase Auth (email/password) + PostgREST; tabla `profiles` (rol, employee_id); RLS por rol.
+
+## Navegación web (mobile en browser)
+
+- `RootStackNavigator` arranca siempre en `Auth` — no hay LandingScreen, fue eliminada.
+- La landing pública del salón es exclusiva de `apps/web` (Next.js, zmlashnails.com).
+- `apps/mobile/metro.config.js`: `watchFolders = [workspaceRoot, ...(config.watchFolders ?? [])]` — pasa expo-doctor 17/17.
+- Para ver la app en browser: `yarn start` desde `apps/mobile` → presionar `w`. Usar DevTools ≥768px para simular tablet.
+
+## UI Tablet
+
+- Hook `useResponsive()` en `apps/mobile/hooks/useResponsive.ts`: breakpoints mobile (<768), tablet (768–1024), desktop (1024–1440), wide (≥1440).
+- Dashboard: layout 2 columnas (citas | stats), stat cards, modal centrado en tablet.
+- Agenda: vista columnas por chica (hora × empleada), navegación día a día, modal centrado.
+- Finanzas: KPIs y lista de pagos en 2 columnas, modal centrado.
+- Patrón: importar `useResponsive`, usar `isTablet` para condicionar estilos y layouts.
+
+## Build y deploy
+
+- EAS build: `eas build --platform android --profile production` → genera `.apk`
+- OTA update: `eas update --channel production --message "..."`
+- `runtimeVersion: { policy: "appVersion" }` — versión actual: **1.1.0**
+- `eas.json` production: `buildType: "apk"`, `autoIncrement: true`
+
+## Reglas de trabajo
+
+- No crear documentación .md sin que se pida; no duplicar scripts; nombres de negocio en español.
+- Cursor rules en `.cursor/rules/*.mdc`; raíz en `.cursorrules`.
+- No tocar `server/` — fue eliminado intencionalmente.

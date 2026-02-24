@@ -1,0 +1,29 @@
+---
+description: Optimizaciones de rendimiento en cliente y servidor
+globs:
+  - "apps/mobile/**/*"
+  - "apps/web/**/*"
+  - "server/**/*"
+alwaysApply: false
+---
+
+# Performance ZM Lash & Nails Beauty
+
+## Cliente (React Native / Expo)
+
+- **Listas**: Usar `FlatList` para listas largas; evitar mapear arrays grandes a componentes.
+- **Handlers**: `useCallback` para funciones pasadas a hijos o a `FlatList.renderItem`/`keyExtractor`.
+- **Cálculos costosos**: `useMemo` para datos derivados que dependan de props/estado.
+- **Re-renders**: `React.memo` en componentes que reciben props estables y se re-renderizan mucho.
+- **Imágenes**: Optimizar tamaño/caché si se añaden muchas imágenes (Expo Image o similar).
+
+## Servidor (Express)
+
+- **Queries**: Seleccionar solo columnas necesarias con Drizzle; evitar `select *` en listados grandes.
+- **Conexiones**: Pool de PostgreSQL ya configurado en `server/db.ts`; no abrir conexiones extra por request.
+- **Logging**: Request logging actual está bien; no loguear cuerpos grandes en producción.
+
+## TanStack Query
+
+- Aprovechar `staleTime` y `gcTime`; configuración en `apps/mobile/lib/query-client.ts` o equivalente.
+- Invalidar queries tras mutaciones (ej. `queryClient.invalidateQueries`) para actualizar listas tras crear/editar/eliminar.

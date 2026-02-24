@@ -1,0 +1,48 @@
+---
+description: Patrones para la app móvil React Native (Expo) - navegación y componentes
+globs:
+  - "apps/mobile/**/*.tsx"
+  - "apps/mobile/**/*.ts"
+alwaysApply: false
+---
+
+# Mobile Patterns ZM Lash & Nails Beauty
+
+## Estructura de la app
+
+- **Navegación**: React Navigation v7 — bottom tabs (Inicio, Agenda, Servicios, Más, Perfil). Tab Más = MoreStackNavigator (menú: Finanzas, Chicas, Inventario, Configuración, Perfil, Cerrar sesión).
+- **Root**: `RootStackNavigator` → siempre arranca en `Auth` (Splash → Login → Main). No hay `LandingScreen` en mobile.
+- **Pantallas**: `apps/mobile/screens/`; stacks en `apps/mobile/navigation/` (MoreStackNavigator, ProfileStackNavigator).
+- **API**: TanStack Query + Supabase (PostgREST) desde `@/lib/supabase`; `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`.
+
+## Responsive / Tablet
+
+- Hook `useResponsive()` en `@/hooks/useResponsive` — retorna `{ isTablet, isDesktop, width, height, ... }`.
+- Breakpoints: mobile <768px, tablet 768–1024px, desktop >1024px.
+- Patrón para layouts tablet:
+  ```tsx
+  const { isTablet } = useResponsive();
+  // condicionar flexDirection, numColumns, width de cards, etc.
+  ```
+- Modales en tablet: `justifyContent: "center"`, `alignItems: "center"`, `width: 480–560`.
+- Screens con soporte tablet: Dashboard, Agenda, Finanzas.
+- **No** usar `Platform.OS === "web"` para lógica de layout — usar `isTablet`/`isDesktop` del hook.
+
+## Componentes
+
+- Estilos con `StyleSheet`; tema desde `useTheme()` y `apps/mobile/constants/theme.ts`.
+- Listas: `FlatList` para listas grandes; `keyExtractor` estable; `renderItem` con `useCallback` si hace falta.
+- Feedback: loading states, mensajes de error; opcional Expo Haptics en acciones principales.
+- Accesibilidad: labels y roles cuando apliquen; áreas táctiles mínimas razonables.
+
+## Performance
+
+- `useCallback` para handlers pasados a hijos o a FlatList.
+- `useMemo` para datos derivados costosos.
+- Evitar re-renders innecesarios; componentes pesados con `React.memo` si se identifica cuello de botella.
+
+## Navegación
+
+- Tabs como raíz; cada tab puede tener su stack (lista → detalle → formulario).
+- Encabezados: usar `HeaderTitle` o opciones de stack (transparentes/blur según diseño).
+- Parámetros de ruta tipados cuando se definan tipos de navegación.

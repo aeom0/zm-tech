@@ -1,13 +1,9 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
-} from "react";
-import type { Session } from "@supabase/supabase-js";
-
-import { supabase } from "@/lib/supabase";
+/**
+ * AuthContext — modo desarrollo sin Supabase.
+ * Usuario hardcodeado con rol "owner" para ver toda la UI.
+ * Reemplazar con JWT real cuando se implemente auth.
+ */
+import React, { createContext, useContext, useState } from "react";
 
 type Role = "dev" | "owner" | "staff";
 
@@ -26,165 +22,51 @@ type AuthContextType = {
   role: Role | null;
   profile: AuthProfile | null;
   isAdmin: boolean;
-  login: (
-    email: string,
-    password: string,
-  ) => Promise<{ ok: boolean; error?: string }>;
+  login: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
   logout: () => Promise<void>;
+};
+
+const DEV_PROFILE: AuthProfile = {
+  id: "dev-user-1",
+  role: "owner",
+  employee_id: null,
+  full_name: "Propietario/a",
+  avatar_url: null,
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [profile, setProfile] = useState<AuthProfile | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
-  const loadProfile = useCallback(async (userId: string) => {
-    try {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("id, role, employee_id, full_name, avatar_url")
-        .eq("id", userId)
-        .maybeSingle();
-
-      if (error) {
-        console.warn("Error cargando perfil:", error.message);
-        setProfile(null);
-        return;
-      }
-
-      if (!data) {
-        // Aún no hay perfil creado para este usuario
-        setProfile(null);
-        return;
-      }
-
-      if (
-        data.role === "dev" ||
-        data.role === "owner" ||
-        data.role === "staff"
-      ) {
-        setProfile(data as AuthProfile);
-      } else {
-        setProfile(null);
-      }
-    } catch (err) {
-      console.warn("Error inesperado cargando perfil:", err);
-      setProfile(null);
+  const login = async (
+    email: string,
+    password: string,
+  ): Promise<{ ok: boolean; error?: string }> => {
+    if (!email.trim() || !password.trim()) {
+      return { ok: false, error: "Correo y contraseña requeridos" };
     }
-  }, []);
+    // Aceptar cualquier credencial en modo dev
+    setProfile(DEV_PROFILE);
+    setIsAuthenticated(true);
+    return { ok: true };
+  };
 
-  useEffect(() => {
-    let isMounted = true;
+  const logout = async () => {
+    setIsAuthenticated(false);
+    setProfile(null);
+  };
 
-    const init = async () => {
-      try {
-        const { data, error } = await supabase.auth.getSession();
-        if (error) {
-          console.warn("Error recuperando sesión:", error.message);
-        }
-        if (!isMounted) return;
-
-        setSession(data.session ?? null);
-        if (data.session?.user) {
-          await loadProfile(data.session.user.id);
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    init();
-
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (_event, newSession) => {
-        setSession(newSession);
-        if (newSession?.user) {
-          await loadProfile(newSession.user.id);
-        } else {
-          setProfile(null);
-        }
-      },
-    );
-
-    return () => {
-      isMounted = false;
-      authListener.subscription.unsubscribe();
-    };
-  }, [loadProfile]);
-
-  const login = useCallback(
-    async (
-      email: string,
-      password: string,
-    ): Promise<{ ok: boolean; error?: string }> => {
-      const trimmedEmail = email.trim();
-
-      if (!trimmedEmail || !password.trim()) {
-        return { ok: false, error: "Correo y contraseña requeridos" };
-      }
-
-      try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: trimmedEmail,
-          password,
-        });
-
-        if (error) {
-          const message = error.message || "";
-          // Mapeo rápido a mensaje más humano en español
-          if (/invalid login credentials/i.test(message)) {
-            return { ok: false, error: "Correo o contraseña incorrectos" };
-          }
-          return {
-            ok: false,
-            error:
-              "No se pudo iniciar sesión. Verifica tus datos o intenta más tarde.",
-          };
-        }
-
-        if (data.session?.user) {
-          await loadProfile(data.session.user.id);
-        }
-
-        return { ok: true };
-      } catch {
-        return { ok: false, error: "Error de conexión" };
-      }
-    },
-    [loadProfile],
-  );
-
-  const logout = useCallback(async () => {
-    try {
-      await supabase.auth.signOut();
-    } catch (err) {
-      console.warn("Error cerrando sesión:", err);
-    } finally {
-      setSession(null);
-      setProfile(null);
-    }
-  }, []);
-
-  const role: Role | null =
-    profile &&
-    (profile.role === "dev" ||
-      profile.role === "owner" ||
-      profile.role === "staff")
-      ? profile.role
-      : null;
-
+  const role: Role | null = profile?.role ?? null;
   const isAdmin = role === "dev" || role === "owner";
 
   return (
     <AuthContext.Provider
       value={{
-        isAuthenticated: !!session,
-        isLoading,
-        userId: session?.user?.id ?? null,
+        isAuthenticated,
+        isLoading: false,
+        userId: profile?.id ?? null,
         role,
         profile,
         isAdmin,

@@ -1,0 +1,47 @@
+---
+description: Patrones de UI y tema del cliente (Expo/React Native)
+globs:
+  - "apps/mobile/components/**/*"
+  - "apps/mobile/screens/**/*"
+  - "apps/mobile/constants/**/*"
+alwaysApply: false
+---
+
+# UI Patterns ZM Lash & Nails Beauty
+
+## Design system
+
+- **Tema**: `apps/mobile/constants/theme.ts` — Colors (light/dark), Spacing, Typography, BorderRadius, Fonts, Shadows.
+- **Paleta**: Violeta primario `#7B2D8E`, acento dorado `#D4AF37`; soporte modo claro/oscuro.
+- **Componentes base**: Usar los de `apps/mobile/components/` (Button, Card, ThemedText, ThemedView, Spacer, HeaderTitle, etc.).
+
+## Uso del tema
+
+```typescript
+import { useTheme } from "@/hooks/useTheme";
+import { Spacing, BorderRadius } from "@/constants/theme";
+
+const { colors } = useTheme();
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: colors.backgroundDefault,
+    padding: Spacing.lg,
+    borderRadius: BorderRadius.md,
+  },
+});
+```
+
+## Convenciones
+
+- **Iconos**: Lucide React cuando se añadan; mantener estilo limpio y profesional.
+- **Textos**: Español; jerga venezolana natural cuando encaje con las preferencias del usuario.
+- **Diseño**: Limpio, sin adornos innecesarios; dark/light según sistema o preferencia.
+- **Formularios**: Labels claros, estados de carga/error; feedback táctil (Expo Haptics) donde aporte.
+
+## Patrones de componentes
+
+- Props tipadas con `interface`; `loading` y `disabled` cuando aplique.
+- Callbacks con nombres descriptivos: `onGuardar`, `onCerrar`, `onSeleccionar`.
+- Listas largas: FlatList con keyExtractor y renderItem optimizados.
+- Modales/alertas: controlados por estado (visible, onCerrar); accesibles.
