@@ -84,19 +84,34 @@ yarn db:seed
 
 ## Estructura del Proyecto
 
+Este monorepo usa la convención estándar `apps/` para aplicaciones y `packages/` para librerías compartidas.
+
+> **Nota para Claude Chat (integración GitHub):** Las carpetas se muestran con su nombre técnico en el árbol de archivos. La siguiente tabla explica qué es cada una:
+
+| Carpeta en GitHub | Qué contiene | Tecnología |
+|-------------------|-------------|-----------|
+| `apps/mobile/` | **App Móvil (Expo)** — la aplicación principal para iOS, Android y Web | React Native 0.81 + Expo SDK 54 |
+| `apps/web/` | **Web (Next.js)** — landing pública del salón + panel `/finanzas` | Next.js 15 + Tailwind CSS |
+| `packages/shared-schema/` | **Schema Compartido** — tablas de base de datos y validaciones | Drizzle ORM + Zod |
+| `packages/tenant-config/` | **Config de Tenant** — presets y configuración multi-tenant | TypeScript |
+| `server/` | **Servidor Express** — API backend (modo desarrollo) | Node.js + Express |
+| `scripts/` | **Scripts de base de datos** — seeds y migraciones | SQL + Node.js |
+| `docs/` | **Documentación** — guías de migración y diseño | Markdown |
+
 ```
 ├── apps/
-│   ├── mobile/               # App React Native/Expo
+│   ├── mobile/               # App Móvil (Expo) — iOS + Android + Web
 │   │   ├── contexts/         # AuthContext, TenantContext
-│   │   ├── screens/
-│   │   │   └── onboarding/   # Flujo de configuración inicial
+│   │   ├── screens/          # Dashboard, Agenda, Servicios, Finanzas, Inventario
+│   │   │   └── onboarding/   # Flujo de configuración inicial (5 pasos)
 │   │   ├── navigation/       # RootStack, MainTabs, MoreStack
 │   │   ├── hooks/            # useTheme, useResponsive, useTenant…
 │   │   └── constants/        # theme.ts con createTheme(config)
-│   └── web/                  # Landing pública + panel /finanzas
+│   └── web/                  # Web (Next.js) — landing pública + panel /finanzas
 ├── packages/
-│   ├── shared-schema/        # @zm/shared-schema — Drizzle + Zod
-│   └── tenant-config/        # @salonpro/tenant-config — TenantConfig + presets
+│   ├── shared-schema/        # Schema Compartido — @zm/shared-schema (Drizzle + Zod)
+│   └── tenant-config/        # Config de Tenant — @salonpro/tenant-config + 4 presets
+├── server/                   # Servidor Express — API backend para desarrollo
 ├── scripts/
 │   ├── seed-auth-users.mjs   # Crea usuarios en Supabase Auth
 │   └── db/
@@ -165,4 +180,4 @@ DATABASE_URL=postgresql://user:pass@host:5432/nombre_bd
 
 ---
 
-**Versión**: 1.1.0 · **Licencia**: Privado · **Plataformas**: iOS · Android · Web
+**Versión**: 1.2.0 · **Licencia**: Privado · **Plataformas**: iOS · Android · Web
