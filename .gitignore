@@ -3,6 +3,9 @@
 # dependencies
 node_modules/
 
+# Turborepo
+.turbo/
+
 # Yarn 4
 .yarn/cache
 .yarn/install-state.gz

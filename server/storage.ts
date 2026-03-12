@@ -10,7 +10,7 @@ import {
   type Appointment, type InsertAppointment,
   type InventoryItem, type InsertInventoryItem,
   type Payment, type InsertPayment,
-} from "@zm/shared-schema";
+} from "@salonpro/shared-schema";
 
 // ── Employees ──────────────────────────────────────────────────────────────
 export async function getEmployees(): Promise<Employee[]> {

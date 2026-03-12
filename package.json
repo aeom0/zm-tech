@@ -27,7 +27,7 @@
     "format": "prettier --write \"**/*.{js,ts,tsx,css,json}\""
   },
   "dependencies": {
-    "@zm/shared-schema": "workspace:*",
+    "@salonpro/shared-schema": "workspace:*",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.39.3",
     "expo-updates": "~29.0.16"

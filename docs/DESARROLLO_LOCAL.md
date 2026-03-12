@@ -1,0 +1,79 @@
+# Desarrollo Local — SalonPro
+
+## Problema de conectividad TCP en WSL
+
+El host directo de Supabase (`db.[ref].supabase.co:5432`) solo resuelve en IPv6.
+WSL2 en Windows no enruta IPv6 hacia internet por defecto, por lo que herramientas
+que usan TCP directo (Drizzle Kit, psql, Supabase CLI `db push`) fallan con:
+
+```
+Error: connect ENETUNREACH [IPv6]:5432
+```
+
+## Cómo aplicar migraciones de schema
+
+### Opción A — SQL Editor del Dashboard (siempre funciona)
+
+1. Ve a [supabase.com](https://supabase.com) → tu proyecto → **SQL Editor**
+2. Escribe o pega el SQL de la migración
+3. Ejecuta con **Run**
+
+Para generar el SQL a partir del schema Drizzle sin aplicarlo:
+```bash
+yarn drizzle-kit generate
+# El SQL queda en ./migrations/
+```
+
+### Opción B — yarn db:push con conectividad directa
+
+Funciona desde Linux nativo, macOS, o WSL con IPv6 habilitado.
+
+```bash
+yarn db:push
+```
+
+Requiere que `DATABASE_URL` en `.env` apunte al host directo:
+```
+DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[REF].supabase.co:5432/postgres
+```
+
+### Opción C — Supabase CLI via API (sin TCP)
+
+El CLI usa la API REST de Supabase para algunas operaciones pero `db push`
+también requiere TCP para el rol temporal. No funciona en WSL con IPv6 bloqueado.
+
+Cuando haya conectividad, se puede ejecutar:
+```bash
+npx supabase link --project-ref [REF] --password [DB_PASSWORD]
+npx supabase db push
+```
+
+## Seeds y usuarios Auth
+
+Los seeds y la creación de usuarios **no requieren TCP** — usan la API REST:
+
+```bash
+# Cargar servicios y empleados de ejemplo
+node scripts/db/run-seeds-api.js   # (si se crea este helper)
+
+# O directamente el script de usuarios:
+node scripts/seed-auth-users.mjs
+```
+
+El script `seed-auth-users.mjs` usa `fetch` contra `/auth/v1/admin/users`
+y `/rest/v1/profiles`, por lo que funciona en cualquier entorno.
+
+## Variables de entorno requeridas
+
+Ver [`.env.example`](../.env.example) en la raíz. Para migraciones solo se necesita:
+
+```
+DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[REF].supabase.co:5432/postgres
+```
+
+Para seeds y scripts de Auth:
+```
+SUPABASE_URL=https://[REF].supabase.co
+SUPABASE_SERVICE_ROLE_KEY=[service_role key]
+SEED_AUTH_PASSWORD=SalonPro2025!
+```

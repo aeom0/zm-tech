@@ -3094,6 +3094,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@salonpro/shared-schema@workspace:*, @salonpro/shared-schema@workspace:packages/shared-schema":
+  version: 0.0.0-use.local
+  resolution: "@salonpro/shared-schema@workspace:packages/shared-schema"
+  dependencies:
+    "@types/node": "npm:24.10.0"
+    drizzle-zod: "npm:^0.7.0"
+    typescript: "npm:~5.9.2"
+    zod: "npm:^3.24.2"
+  peerDependencies:
+    drizzle-orm: ^0.39.3
+  languageName: unknown
+  linkType: soft
+
 "@salonpro/tenant-config@workspace:*, @salonpro/tenant-config@workspace:packages/tenant-config":
   version: 0.0.0-use.local
   resolution: "@salonpro/tenant-config@workspace:packages/tenant-config"
@@ -3882,19 +3895,6 @@ __metadata:
   checksum: 10c0/e768623de72c95d3dae6b5da8e33dda0d81665047811b5498d23a328d45b13feb5536fe921d0308b96a4a8dd8addf80b1f6ef466508051c0b581e63e0dc74ed5
   languageName: node
   linkType: hard
-
-"@zm/shared-schema@workspace:*, @zm/shared-schema@workspace:packages/shared-schema":
-  version: 0.0.0-use.local
-  resolution: "@zm/shared-schema@workspace:packages/shared-schema"
-  dependencies:
-    "@types/node": "npm:24.10.0"
-    drizzle-zod: "npm:^0.7.0"
-    typescript: "npm:~5.9.2"
-    zod: "npm:^3.24.2"
-  peerDependencies:
-    drizzle-orm: ^0.39.3
-  languageName: unknown
-  linkType: soft
 
 "abbrev@npm:^4.0.0":
   version: 4.0.0
@@ -11025,9 +11025,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "salonpro@workspace:."
   dependencies:
+    "@salonpro/shared-schema": "workspace:*"
     "@types/node": "npm:24.10.0"
     "@types/pg": "npm:^8.16.0"
-    "@zm/shared-schema": "workspace:*"
     concurrently: "npm:^9.1.2"
     dotenv: "npm:^16.4.5"
     drizzle-kit: "npm:^0.31.4"
@@ -11177,10 +11177,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "server@workspace:server"
   dependencies:
+    "@salonpro/shared-schema": "workspace:*"
     "@types/cors": "npm:^2.8.17"
     "@types/express": "npm:^5.0.3"
     "@types/pg": "npm:^8.16.0"
-    "@zm/shared-schema": "workspace:*"
     cors: "npm:^2.8.5"
     dotenv: "npm:^16.4.5"
     drizzle-orm: "npm:^0.39.3"

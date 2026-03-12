@@ -1,5 +1,5 @@
 {
-  "name": "@zm/shared-schema",
+  "name": "@salonpro/shared-schema",
   "version": "1.0.0",
   "private": true,
   "main": "./src/schema.ts",
@@ -8,6 +8,8 @@
     ".": "./src/schema.ts"
   },
   "scripts": {
+    "build": "tsc --noEmit",
+    "lint": "tsc --noEmit",
     "check:types": "tsc --noEmit"
   },
   "dependencies": {
