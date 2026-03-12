@@ -1,7 +1,7 @@
 # SalonPro — Guía de Migración para Claude
 
 > **Fecha de inicio**: 2026-02-19
-> **Estado actual**: FASES 1–6 completadas ✅
+> **Estado actual**: FASES 1–6 completadas ✅ | FASE 7 pendiente
 
 ---
 
@@ -255,35 +255,73 @@ UI `OnboardingBusinessTypeScreen`:
 
 ---
 
-### ✅ FASE 6 — Schema de BD actualizado
+### ✅ FASE 6 — Schema de BD actualizado *(completada 2026-03-12)*
 
-En `packages/shared-schema/src/schema.ts`, agregar tabla:
+Tabla `tenant_settings` agregada a `packages/shared-schema/src/schema.ts` con defaults
+neutros LATAM (USD/$, país vacío, idioma `es`, terminología `especialistas`).
 
-```typescript
-export const tenantSettings = pgTable('tenant_settings', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  businessName: text('business_name').notNull(),
-  businessType: text('business_type').notNull(),
-  primaryColor: text('primary_color').notNull().default('#7B2D8E'),
-  accentColor: text('accent_color').notNull().default('#D4AF37'),
-  currencyCode: text('currency_code').notNull().default('PEN'),
-  currencySymbol: text('currency_symbol').notNull().default('S/'),
-  country: text('country').notNull().default('PE'),
-  language: text('language').notNull().default('es-PE'),
-  staffTerminology: text('staff_terminology').notNull().default('chicas'),
-  staffSingularTerminology: text('staff_singular_terminology').notNull().default('chica'),
-  appointmentTerminology: text('appointment_terminology').notNull().default('cita'),
-  businessHours: jsonb('business_hours'),
-  contactInfo: jsonb('contact_info'),
-  commissionStaff: integer('commission_staff').notNull().default(60),
-  commissionHouse: integer('commission_house').notNull().default(40),
-  isConfigured: boolean('is_configured').notNull().default(false),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
-});
+Aplicada manualmente en Supabase vía SQL Editor (proyecto `xidjomlxpuosupymcsaj`).
+Restricción: puerto 5432 bloqueado en WSL → usar SQL Editor del Dashboard para DDL.
+Ver `docs/DESARROLLO_LOCAL.md` para el procedimiento completo.
+
+---
+
+### ⏳ FASE 7 — Pendientes
+
+#### FASE 7A — RLS en tenant_settings
+
+Agregar políticas Row Level Security en Supabase para que cada owner
+solo pueda leer y escribir su propio registro.
+
+SQL a ejecutar en SQL Editor del Dashboard:
+```sql
+-- Habilitar RLS
+ALTER TABLE tenant_settings ENABLE ROW LEVEL SECURITY;
+
+-- Owner lee su propio registro
+CREATE POLICY "owner puede leer su tenant"
+  ON tenant_settings FOR SELECT
+  USING (auth.uid() IN (
+    SELECT id FROM profiles WHERE role IN ('owner', 'dev')
+  ));
+
+-- Owner crea/actualiza su propio registro
+CREATE POLICY "owner puede escribir su tenant"
+  ON tenant_settings FOR ALL
+  USING (auth.uid() IN (
+    SELECT id FROM profiles WHERE role IN ('owner', 'dev')
+  ));
 ```
 
-Aplicar migración en Supabase con `apply_migration`.
+#### FASE 7B — Integrar tenant_settings con onboarding
+
+Al completar el flujo de 5 pasos (OnboardingCompleteScreen), guardar
+la config también en Supabase además de AsyncStorage.
+
+- En `TenantContext.tsx`: al llamar `markConfigured()`, hacer upsert en `tenant_settings`
+- En `useTenant()`: al iniciar, si no hay config en AsyncStorage, intentar leer de Supabase
+- Esto permite recuperar la config al reinstalar la app o cambiar de dispositivo
+
+#### FASE 7C — Prueba integral de la app móvil
+
+Con `yarn mobile:dev` contra el proyecto Supabase `xidjomlxpuosupymcsaj`:
+
+- Login con `dev@ejemplo.com` / `SalonPro2025!` (creado por seed-auth-users.mjs)
+- Login con `propietario@ejemplo.com` / `SalonPro2025!`
+- Verificar que el onboarding fluya los 5 pasos y guarde en tenant_settings
+- Verificar Dashboard con datos reales (employees, services, appointments)
+- Verificar Agenda, Servicios, Inventario, Finanzas
+- Verificar navegación Más → Personal, Inventario, Finanzas (solo dev/owner)
+
+#### FASE 7D — Landing web SalonPro (apps/web)
+
+La landing actual (`apps/web`) tiene diseño de conversión general.
+Actualizar/refinar con:
+
+- **Pricing tiers**: Basic, Pro, Elite con trial 14 días sin tarjeta
+- Diseño mobile-first orientado a conversión LATAM (Venezuela piloto)
+- CTA enfocado en "prueba gratis 14 días"
+- Testimonios/social proof con casos de uso reales de Venezuela
 
 ---
 
@@ -327,5 +365,7 @@ yarn lint:fix
   pero NO debe modificarse — es solo referencia.
 - Este repo (`/home/alber/salonpro`) es donde se hacen TODOS los cambios.
 - Supabase del proyecto original: `udelxwwnyivknslueerr` — NO reutilizar, crear uno nuevo para SalonPro.
-- Las variables de entorno de SalonPro deben configurarse en un nuevo `.env` (no commiteado).
-- `apps/mobile/lib/supabase.ts` tiene el URL hardcodeado — debe moverse a variables de entorno.
+- Las variables de entorno de SalonPro están en `.env` (no commiteado). Ver `.env.example` para referencia.
+- `apps/mobile/lib/supabase.ts` ✅ ya usa `process.env.EXPO_PUBLIC_SUPABASE_*` (corregido en sesión 2026-03-12).
+- Proyecto Supabase activo: `xidjomlxpuosupymcsaj` — URL: `https://xidjomlxpuosupymcsaj.supabase.co`
+- Restricción de entorno: puerto 5432 bloqueado en WSL (solo IPv6). Usar SQL Editor del Dashboard para DDL. Ver `docs/DESARROLLO_LOCAL.md`.
