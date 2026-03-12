@@ -8,6 +8,7 @@ import {
   boolean,
   decimal,
   uuid,
+  jsonb,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -206,6 +207,34 @@ export const insertPaymentSchema = createInsertSchema(payments).omit({
   id: true,
 });
 
+export const tenantSettings = pgTable("tenant_settings", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  businessName: text("business_name").notNull(),
+  businessType: text("business_type").notNull(),
+  primaryColor: text("primary_color").notNull().default("#7B2D8E"),
+  accentColor: text("accent_color").notNull().default("#D4AF37"),
+  currencyCode: text("currency_code").notNull().default("PEN"),
+  currencySymbol: text("currency_symbol").notNull().default("S/"),
+  country: text("country").notNull().default("PE"),
+  language: text("language").notNull().default("es-PE"),
+  staffTerminology: text("staff_terminology").notNull().default("chicas"),
+  staffSingularTerminology: text("staff_singular_terminology").notNull().default("chica"),
+  appointmentTerminology: text("appointment_terminology").notNull().default("cita"),
+  businessHours: jsonb("business_hours"),
+  contactInfo: jsonb("contact_info"),
+  commissionStaff: integer("commission_staff").notNull().default(60),
+  commissionHouse: integer("commission_house").notNull().default(40),
+  isConfigured: boolean("is_configured").notNull().default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertTenantSettingsSchema = createInsertSchema(tenantSettings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export type Employee = typeof employees.$inferSelect;
 export type InsertEmployee = z.infer<typeof insertEmployeeSchema>;
 export type ServiceCategory = typeof serviceCategories.$inferSelect;
@@ -223,3 +252,5 @@ export type InsertWhatsappSession = z.infer<typeof insertWhatsappSessionSchema>;
 export type Payment = typeof payments.$inferSelect;
 export type InsertPayment = z.infer<typeof insertPaymentSchema>;
 export type Profile = typeof profiles.$inferSelect;
+export type TenantSettings = typeof tenantSettings.$inferSelect;
+export type InsertTenantSettings = z.infer<typeof insertTenantSettingsSchema>;
