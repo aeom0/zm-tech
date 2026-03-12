@@ -1,7 +1,7 @@
 # SalonPro — Guía de Migración para Claude
 
 > **Fecha de inicio**: 2026-02-19
-> **Estado actual**: FASES 1–5 completadas ✅ | FASE 6 pendiente
+> **Estado actual**: FASES 1–6 completadas ✅
 
 ---
 
@@ -255,7 +255,7 @@ UI `OnboardingBusinessTypeScreen`:
 
 ---
 
-### ⏳ FASE 6 — Schema de BD actualizado (pendiente)
+### ✅ FASE 6 — Schema de BD actualizado
 
 En `packages/shared-schema/src/schema.ts`, agregar tabla:
 
