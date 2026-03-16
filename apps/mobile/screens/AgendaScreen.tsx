@@ -25,7 +25,8 @@ import { useTheme } from "@/hooks/useTheme";
 import { useResponsive } from "@/hooks/useResponsive";
 import { useTenant } from "@/contexts/TenantContext";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
-import { apiRequest, queryClient } from "@/lib/query-client";
+import { queryClient } from "@/lib/query-client";
+import { supabase } from "@/lib/supabase";
 
 const HOURS = Array.from({ length: 10 }, (_, i) => i + 10);
 const DAYS_ES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
@@ -115,14 +116,13 @@ export default function AgendaScreen() {
     isLoading,
     refetch,
   } = useQuery<Appointment[]>({
-    queryKey: ["/api/appointments"],
-    // Traemos todas las citas y filtramos por semana en el cliente
-    // para evitar que citas pasadas "desaparezcan" por diferencias
-    // de zona horaria o rangos de fecha en Supabase.
+    queryKey: ["appointments"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("appointments")
-        .select("*")
+        .select(
+          "id, client_name, client_phone, client_document, date, duration, price, status, employee_id, service_id",
+        )
         .order("date", { ascending: true });
 
       if (error) {
@@ -138,11 +138,21 @@ export default function AgendaScreen() {
     isLoading: employeesLoading,
     error: employeesError,
   } = useQuery<Employee[]>({
-    queryKey: ["/api/employees"],
+    queryKey: ["employees"],
   });
 
   const { data: categories = [] } = useQuery<ServiceCategory[]>({
-    queryKey: ["/api/service-categories"],
+    queryKey: ["service_categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("service_categories")
+        .select("id, name, order")
+        .order("order", { ascending: true });
+      if (error) {
+        throw new Error(error.message);
+      }
+      return (data ?? []) as ServiceCategory[];
+    },
   });
 
   const {
@@ -150,7 +160,17 @@ export default function AgendaScreen() {
     isLoading: servicesLoading,
     error: servicesError,
   } = useQuery<Service[]>({
-    queryKey: ["/api/services"],
+    queryKey: ["services"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("services")
+        .select("id, name, price, duration, category_id")
+        .order("created_at", { ascending: true });
+      if (error) {
+        throw new Error(error.message);
+      }
+      return (data ?? []) as Service[];
+    },
   });
 
   const servicesByCategory = useMemo(() => {
@@ -183,13 +203,38 @@ export default function AgendaScreen() {
   }, [appointmentIdParam, appointments, navigation]);
 
   const createMutation = useMutation({
-    mutationFn: async (data: Record<string, unknown>) => {
-      const res = await apiRequest("POST", "/api/appointments", data);
-      return res.json();
+    mutationFn: async (data: {
+      client_name: string;
+      client_phone?: string;
+      client_document?: string;
+      service_id: string;
+      employee_id: string;
+      date: string;
+      duration: number;
+      price: string;
+      status: string;
+    }) => {
+      const payload = {
+        client_name: data.client_name,
+        client_phone: data.client_phone ?? null,
+        client_document: data.client_document ?? null,
+        service_id: data.service_id,
+        employee_id: data.employee_id,
+        date: data.date,
+        duration: data.duration,
+        price: data.price,
+        status: data.status,
+      };
+
+      const { error } = await supabase.from("appointments").insert(payload);
+
+      if (error) {
+        throw new Error(error.message);
+      }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/appointments"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] });
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard_stats"] });
       setModalVisible(false);
       setFormData({
         clientName: "",
@@ -208,11 +253,17 @@ export default function AgendaScreen() {
 
   const deleteAppointmentMutation = useMutation({
     mutationFn: async (id: string) => {
-      await apiRequest("DELETE", `/api/appointments/${id}`);
+      const { error } = await supabase
+        .from("appointments")
+        .delete()
+        .eq("id", id);
+      if (error) {
+        throw new Error(error.message);
+      }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/appointments"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] });
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard_stats"] });
       setDetailModalVisible(false);
       setAppointmentDetail(null);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -224,12 +275,17 @@ export default function AgendaScreen() {
 
   const updateAppointmentMutation = useMutation({
     mutationFn: async ({ id, date }: { id: string; date: string }) => {
-      const res = await apiRequest("PUT", `/api/appointments/${id}`, { date });
-      return res.json();
+      const { error } = await supabase
+        .from("appointments")
+        .update({ date })
+        .eq("id", id);
+      if (error) {
+        throw new Error(error.message);
+      }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/appointments"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] });
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard_stats"] });
       setDetailModalVisible(false);
       setAppointmentDetail(null);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Text } from "react-native";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -9,7 +9,7 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 import * as SplashScreenExpo from "expo-splash-screen";
-import { Colors, Spacing } from "@/constants/theme";
+import { Spacing } from "@/constants/theme";
 
 SplashScreenExpo.preventAutoHideAsync?.();
 
@@ -89,27 +89,17 @@ export function SplashScreenComponent({ onFinish }: SplashScreenProps) {
 
   return (
     <View style={styles.container}>
-      {/* Decorative circles */}
-      <View style={styles.circleTopRight} />
-      <View style={styles.circleBottomLeft} />
-
       <Animated.View style={[styles.logoContainer, logoAnimatedStyle]}>
-        <Image
-          source={require("@/assets/images/logo/logo-positivo.png")}
-          style={styles.logo}
-          resizeMode="contain"
-        />
+        <Text style={styles.wordmark}>SalonPro</Text>
       </Animated.View>
 
       <Animated.View style={taglineAnimatedStyle}>
         <Animated.Text style={styles.tagline}>
-          Tu belleza, nuestra pasión
+          Configura tu salón en minutos
         </Animated.Text>
-        <View style={styles.divider}>
-          <View style={styles.dividerLine} />
-          <View style={styles.dividerDot} />
-          <View style={styles.dividerLine} />
-        </View>
+        <Animated.Text style={styles.subtagline}>
+          Agenda, equipo e inventario en un solo lugar.
+        </Animated.Text>
       </Animated.View>
     </View>
   );
@@ -120,60 +110,31 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: Colors.light.violet,
+    backgroundColor: "#111318",
     paddingHorizontal: Spacing["2xl"],
-  },
-  circleTopRight: {
-    position: "absolute",
-    top: -80,
-    right: -80,
-    width: 250,
-    height: 250,
-    borderRadius: 125,
-    backgroundColor: "rgba(255,255,255,0.06)",
-  },
-  circleBottomLeft: {
-    position: "absolute",
-    bottom: -60,
-    left: -60,
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: "rgba(212,175,55,0.1)",
   },
   logoContainer: {
     alignItems: "center",
     justifyContent: "center",
   },
-  logo: {
-    width: 240,
-    height: 140,
-    maxWidth: "85%",
+  wordmark: {
+    fontSize: 34,
+    fontWeight: "800",
+    letterSpacing: -1,
+    color: "#FFFFFF",
   },
   tagline: {
     color: "rgba(255,255,255,0.85)",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "500",
     textAlign: "center",
     marginTop: Spacing.xl,
     letterSpacing: 0.5,
   },
-  divider: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: Spacing.lg,
-    gap: Spacing.sm,
-  },
-  dividerLine: {
-    width: 30,
-    height: 1,
-    backgroundColor: "rgba(212,175,55,0.5)",
-  },
-  dividerDot: {
-    width: 5,
-    height: 5,
-    borderRadius: 2.5,
-    backgroundColor: Colors.light.gold,
+  subtagline: {
+    color: "rgba(255,255,255,0.55)",
+    fontSize: 12,
+    textAlign: "center",
+    marginTop: Spacing.sm,
   },
 });

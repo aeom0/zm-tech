@@ -22,7 +22,8 @@ import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { useTenant } from "@/contexts/TenantContext";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
-import { apiRequest, queryClient } from "@/lib/query-client";
+import { queryClient } from "@/lib/query-client";
+import { supabase } from "@/lib/supabase";
 
 interface Service {
   id: string;
@@ -63,22 +64,58 @@ export default function ServicesScreen() {
     refetch,
     error: servicesError,
   } = useQuery<Service[]>({
-    queryKey: ["/api/services"],
+    queryKey: ["services"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("services")
+        .select("id, name, category_id, price, duration, is_active")
+        .order("created_at", { ascending: true });
+      if (error) {
+        throw new Error(error.message);
+      }
+      return (data ?? []) as Service[];
+    },
   });
 
   const { data: categories = [], error: categoriesError } = useQuery<
     Category[]
   >({
-    queryKey: ["/api/service-categories"],
+    queryKey: ["service_categories"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("service_categories")
+        .select("id, name, order")
+        .order("order", { ascending: true });
+      if (error) {
+        throw new Error(error.message);
+      }
+      return (data ?? []) as Category[];
+    },
   });
 
   const createMutation = useMutation({
-    mutationFn: async (data: any) => {
-      const res = await apiRequest("POST", "/api/services", data);
-      return res.json();
+    mutationFn: async (data: {
+      name: string;
+      category_id: string;
+      price: string;
+      duration: number;
+    }) => {
+      const payload = {
+        name: data.name,
+        category_id: data.category_id || null,
+        price: data.price,
+        duration: data.duration,
+        is_active: true,
+      };
+
+      const { error } = await supabase.from("services").insert(payload);
+
+      if (error) {
+        throw new Error(error.message);
+      }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/services"] });
+      queryClient.invalidateQueries({ queryKey: ["services"] });
       closeModal();
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     },
@@ -88,12 +125,36 @@ export default function ServicesScreen() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: any }) => {
-      const res = await apiRequest("PUT", `/api/services/${id}`, data);
-      return res.json();
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: {
+        name: string;
+        category_id: string;
+        price: string;
+        duration: number;
+      };
+    }) => {
+      const payload = {
+        name: data.name,
+        category_id: data.category_id || null,
+        price: data.price,
+        duration: data.duration,
+      };
+
+      const { error } = await supabase
+        .from("services")
+        .update(payload)
+        .eq("id", id);
+
+      if (error) {
+        throw new Error(error.message);
+      }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/services"] });
+      queryClient.invalidateQueries({ queryKey: ["services"] });
       closeModal();
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     },
@@ -101,10 +162,13 @@ export default function ServicesScreen() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      await apiRequest("DELETE", `/api/services/${id}`);
+      const { error } = await supabase.from("services").delete().eq("id", id);
+      if (error) {
+        throw new Error(error.message);
+      }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/services"] });
+      queryClient.invalidateQueries({ queryKey: ["services"] });
       closeModal();
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     },

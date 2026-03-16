@@ -19,7 +19,8 @@ import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTenant } from "@/contexts/TenantContext";
-import { apiRequest, queryClient } from "@/lib/query-client";
+import { queryClient } from "@/lib/query-client";
+import { supabase } from "@/lib/supabase";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 
 interface Employee {
@@ -64,7 +65,19 @@ export default function PersonalScreen() {
   });
 
   const { data: employees = [], isLoading } = useQuery<Employee[]>({
-    queryKey: ["/api/employees"],
+    queryKey: ["employees"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("employees")
+        .select("*")
+        .order("created_at", { ascending: true });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      return (data ?? []) as Employee[];
+    },
   });
 
   const updateMutation = useMutation({
@@ -73,13 +86,27 @@ export default function PersonalScreen() {
       data,
     }: {
       id: string;
-      data: Record<string, unknown>;
+      data: {
+        name: string;
+        email: string | null;
+        phone: string | null;
+        color: string;
+        commission_percentage: number;
+        notes: string | null;
+        is_active: boolean;
+      };
     }) => {
-      const res = await apiRequest("PUT", `/api/employees/${id}`, data);
-      return res.json();
+      const { error } = await supabase
+        .from("employees")
+        .update(data)
+        .eq("id", id);
+
+      if (error) {
+        throw new Error(error.message);
+      }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/employees"] });
+      queryClient.invalidateQueries({ queryKey: ["employees"] });
       closeModal();
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     },

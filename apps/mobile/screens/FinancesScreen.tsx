@@ -27,8 +27,9 @@ import { useTheme } from "@/hooks/useTheme";
 import { useResponsive } from "@/hooks/useResponsive";
 import { useTenant } from "@/contexts/TenantContext";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
-import { apiRequest, queryClient } from "@/lib/query-client";
+import { queryClient } from "@/lib/query-client";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/lib/supabase";
 import type { CompositeNavigationProp } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { MainTabParamList } from "@/navigation/MainTabNavigator";
@@ -161,9 +162,52 @@ export default function FinancesScreen() {
     refetch,
   } = useQuery<Payment[]>({
     queryKey: [
-      "/api/payments",
-      `?startDate=${currentRange.start}&endDate=${currentRange.end}`,
+      "payments",
+      currentRange.start,
+      currentRange.end,
+      isAdmin ? "admin" : userId,
     ],
+    queryFn: async () => {
+      let query = supabase
+        .from("payments")
+        .select(
+          "id, appointment_id, amount, method, date, notes, is_abono, service_total",
+        )
+        .gte("date", currentRange.start)
+        .lte("date", currentRange.end)
+        .order("date", { ascending: false });
+
+      // Staff: filtrar por citas propias (via appointments + profiles.employee_id)
+      if (!isAdmin && userId) {
+        const { data: prof } = await supabase
+          .from("profiles")
+          .select("employee_id")
+          .eq("id", userId)
+          .maybeSingle();
+
+        if (prof?.employee_id) {
+          const { data: aptIds, error: aptError } = await supabase
+            .from("appointments")
+            .select("id")
+            .eq("employee_id", prof.employee_id);
+          if (aptError) {
+            throw new Error(aptError.message);
+          }
+          const ids = (aptIds ?? []).map((a) => a.id);
+          if (ids.length > 0) {
+            query = query.in("appointment_id", ids);
+          } else {
+            return [];
+          }
+        }
+      }
+
+      const { data, error } = await query;
+      if (error) {
+        throw new Error(error.message);
+      }
+      return (data ?? []) as Payment[];
+    },
   });
 
   // Citas recientes/próximas para enlazar pagos y mostrar cliente/servicio en cada pago.
@@ -209,8 +253,18 @@ export default function FinancesScreen() {
 
   // Empleadas para desglose por chica (solo admin).
   const { data: employeesList = [] } = useQuery<EmployeeOption[]>({
-    queryKey: ["/api/employees"],
+    queryKey: ["employees"],
     enabled: isAdmin,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("employees")
+        .select("id, name")
+        .order("created_at", { ascending: true });
+      if (error) {
+        throw new Error(error.message);
+      }
+      return (data ?? []) as EmployeeOption[];
+    },
   });
 
   const serviceNameById = useMemo(() => {
@@ -344,7 +398,7 @@ export default function FinancesScreen() {
   const { data: revenueData = [] } = useQuery<
     { date: string; total: number }[]
   >({
-    queryKey: ["/api/dashboard/revenue"],
+    queryKey: ["dashboard_revenue"],
   });
 
   const totalRevenue = useMemo(
@@ -366,14 +420,34 @@ export default function FinancesScreen() {
   }, [revenueData, period]);
 
   const createMutation = useMutation({
-    mutationFn: async (data: Record<string, unknown>) => {
-      const res = await apiRequest("POST", "/api/payments", data);
-      return res.json();
+    mutationFn: async (data: {
+      amount: string;
+      method: string;
+      date: string;
+      notes: string | null;
+      is_abono: boolean;
+      service_total: number | null;
+      appointment_id: string | null;
+    }) => {
+      const payload = {
+        amount: data.amount,
+        method: data.method,
+        date: data.date,
+        notes: data.notes,
+        is_abono: data.is_abono,
+        service_total: data.service_total,
+        appointment_id: data.appointment_id,
+      };
+
+      const { error } = await supabase.from("payments").insert(payload);
+      if (error) {
+        throw new Error(error.message);
+      }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/payments"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/revenue"] });
+      queryClient.invalidateQueries({ queryKey: ["payments"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard_stats"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard_revenue"] });
       closeModal();
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     },
@@ -387,15 +461,28 @@ export default function FinancesScreen() {
       data,
     }: {
       id: string;
-      data: Record<string, unknown>;
+      data: {
+        amount: string;
+        method: string;
+        date: string;
+        notes: string | null;
+        is_abono: boolean;
+        service_total: number | null;
+        appointment_id: string | null;
+      };
     }) => {
-      const res = await apiRequest("PUT", `/api/payments/${id}`, data);
-      return res.json();
+      const { error } = await supabase
+        .from("payments")
+        .update(data)
+        .eq("id", id);
+      if (error) {
+        throw new Error(error.message);
+      }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/payments"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/revenue"] });
+      queryClient.invalidateQueries({ queryKey: ["payments"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard_stats"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard_revenue"] });
       closeModal();
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     },
@@ -405,12 +492,15 @@ export default function FinancesScreen() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      await apiRequest("DELETE", `/api/payments/${id}`);
+      const { error } = await supabase.from("payments").delete().eq("id", id);
+      if (error) {
+        throw new Error(error.message);
+      }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/payments"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/revenue"] });
+      queryClient.invalidateQueries({ queryKey: ["payments"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard_stats"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard_revenue"] });
       closeModal();
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     },

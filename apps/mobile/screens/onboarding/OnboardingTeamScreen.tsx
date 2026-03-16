@@ -12,7 +12,7 @@ import Animated, { FadeInDown } from "react-native-reanimated";
 import { ThemedText } from "@/components/ThemedText";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
-import { apiRequest } from "@/lib/query-client";
+import { supabase } from "@/lib/supabase";
 
 const COLORES_EMPLEADO = [
   "#7B2D8E", "#E91E8C", "#1A237E", "#00695C",
@@ -53,17 +53,27 @@ export default function OnboardingTeamScreen({
 
     setGuardando(true);
     try {
-      await apiRequest("POST", "/api/employees", {
+      const { error } = await supabase.from("employees").insert({
         name: nombreFinal,
         email: email.trim() || null,
+        phone: null,
         color,
         role: "employee",
-        commissionPercentage: pct,
-        isActive: true,
+        commission_percentage: pct,
+        notes: null,
+        is_active: true,
       });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
       onNext();
     } catch (e: unknown) {
-      Alert.alert("Error", e instanceof Error ? e.message : "No se pudo guardar el empleado.");
+      Alert.alert(
+        "Error",
+        e instanceof Error ? e.message : "No se pudo guardar el empleado.",
+      );
     } finally {
       setGuardando(false);
     }

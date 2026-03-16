@@ -35,15 +35,15 @@ function AppContent() {
 
 export default function App() {
   return (
-    <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <TenantProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <TenantProvider>
+          <ErrorBoundary>
             <AppContent />
-          </TenantProvider>
-        </AuthProvider>
-      </QueryClientProvider>
-    </ErrorBoundary>
+          </ErrorBoundary>
+        </TenantProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }
 

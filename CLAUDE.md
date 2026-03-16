@@ -18,8 +18,8 @@ Este archivo proporciona orientación a Claude Code (claude.ai/code) para trabaj
 - **React Native Reanimated 4** para animaciones
 
 ### Backend
-- **Supabase** (PostgREST) — la app móvil se conecta directo, sin Express intermedio
-- **Node.js 22** (especificado en `.nvmrc`)
+- **Supabase** (PostgREST) — la app móvil se conecta directo a todas las entidades de negocio (employees, service_categories, services, clients, appointments, inventory_items, payments, profiles, tenant_settings)
+- **Node.js 22** (especificado en `.nvmrc`) para scripts y migrations (Drizzle), sin servidor Express activo para mobile
 
 ### Base de Datos
 - **Supabase PostgreSQL** — crear proyecto nuevo por tenant; NO reutilizar `udelxwwnyivknslueerr` (es de ZM Lash & Nails)
@@ -117,7 +117,7 @@ Tablas principales en `packages/shared-schema/src/schema.ts`:
 - **inventory_items** - Productos y suministros
 - **payments** - Registros financieros
 
-RLS en Supabase: profiles (lectura propia; admins ven/editan todos), employees (todos autenticados leen; solo admins escriben), appointments (staff/dev/owner leen y escriben), payments e inventory_items (solo dev/owner).
+RLS en Supabase (mobile ya migrado 100% a estas tablas): profiles (lectura propia; admins ven/editan todos), employees (todos autenticados leen; solo admins escriben), appointments (staff/dev/owner leen y escriben), payments e inventory_items (solo dev/owner), tenant_settings (solo dev/owner).
 
 ## Sistema de Tenant (`@salonpro/tenant-config`)
 
@@ -197,7 +197,8 @@ Flujo de arranque: `AuthGate` → Splash → (no auth) Login | (auth, no config)
 - **Fase 3 — integración TenantContext**: `TenantProvider` en `App.tsx`; `useTenant()` en todos los screens; `createTheme(config, isDark)` en `constants/theme.ts`; `useTheme()` actualizado. Eliminadas todas las referencias hardcodeadas a ZM Lash: nombre, colores, moneda `S/`, canal de notificaciones Android.
 - **Fase 4 — limpieza de seeds**: `seed-{services,employees}.sql` renombrados a `*-example.sql`; creados `*-template.sql` genéricos para los 4 tipos de negocio; `seed-auth-users.mjs` con emails `@ejemplo.com`; contraseña inicial `SalonPro2025!`.
 - **Fase 5 — onboarding flow**: 5 pantallas en `screens/onboarding/`; `AuthGate` orquesta el flujo; `TenantContext` agrega `isConfigured` + `markConfigured()` con clave `@salonpro/tenant_configured` en AsyncStorage.
-- **Fase 6 — pendiente**: tabla `tenant_settings` en Supabase.
+- **Fase 6 — tenant_settings**: tabla `tenant_settings` en Supabase con RLS y sincronización desde el onboarding (`tenantSettingsService` y `TenantContext`).
+- **Fase 7 — Supabase full-mobile**: todos los flujos mobile (Onboarding, Dashboard, Agenda, Servicios, Personal, Finanzas, Inventario) usan Supabase directo; eliminado el cliente Express (`apiRequest`, `/api/*`) y actualizadas las `queryKey` de React Query (`employees`, `services`, `service_categories`, `appointments`, `payments`, `inventory_items`, `dashboard_stats`, `dashboard_revenue`).
 - **Landing web**: landing pública completa en `apps/web` con Next.js 15 App Router; secciones Hero (mockup animado), Pain Points, Features, Social Proof, Pricing (toggle mensual/anual), FAQ, CTA, Footer; scroll reveal con IntersectionObserver; moneda `$` USD en toda la landing.
 
 ## Historial anterior (v1.1.0)

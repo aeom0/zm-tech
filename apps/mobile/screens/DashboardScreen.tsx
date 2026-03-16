@@ -33,7 +33,8 @@ import { useTenant } from "@/contexts/TenantContext";
 import { useHaptics } from "@/hooks/useHaptics";
 import { useResponsive } from "@/hooks/useResponsive";
 import { useTheme } from "@/hooks/useTheme";
-import { apiRequest, queryClient } from "@/lib/query-client";
+import { queryClient } from "@/lib/query-client";
+import { supabase } from "@/lib/supabase";
 import type { MainTabParamList } from "@/navigation/MainTabNavigator";
 
 interface DashboardStats {
@@ -105,7 +106,7 @@ export default function DashboardScreen() {
     isLoading: statsLoading,
     refetch: refetchStats,
   } = useQuery<DashboardStats>({
-    queryKey: ["/api/dashboard/stats"],
+    queryKey: ["dashboard_stats"],
   });
 
   const {
@@ -113,11 +114,35 @@ export default function DashboardScreen() {
     isLoading: appointmentsLoading,
     refetch: refetchAppointments,
   } = useQuery<Appointment[]>({
-    queryKey: ["/api/appointments", `?startDate=${startOfDay}&endDate=${endOfDay}`],
+    queryKey: ["appointments_today", startOfDay, endOfDay],
   });
 
-  const { data: employees = [] } = useQuery<any[]>({ queryKey: ["/api/employees"] });
-  const { data: services = [] } = useQuery<any[]>({ queryKey: ["/api/services"] });
+  const { data: employees = [] } = useQuery<any[]>({
+    queryKey: ["employees"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("employees")
+        .select("id, name, color")
+        .order("created_at", { ascending: true });
+      if (error) {
+        throw new Error(error.message);
+      }
+      return data ?? [];
+    },
+  });
+
+  const { data: services = [] } = useQuery<any[]>({
+    queryKey: ["services"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("services")
+        .select("id, name, price, duration, category_id");
+      if (error) {
+        throw new Error(error.message);
+      }
+      return data ?? [];
+    },
+  });
 
   const navigation = useNavigation<BottomTabNavigationProp<MainTabParamList, "Dashboard">>();
   const [modalVisible, setModalVisible] = useState(false);
@@ -125,25 +150,49 @@ export default function DashboardScreen() {
 
   const updateAppointmentMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: { status: string } }) => {
-      const res = await apiRequest("PUT", `/api/appointments/${id}`, data);
-      return res.json();
+      const { error } = await supabase
+        .from("appointments")
+        .update({ status: data.status })
+        .eq("id", id);
+      if (error) {
+        throw new Error(error.message);
+      }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/appointments"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] });
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard_stats"] });
     },
     onError: (e: Error) => Alert.alert("Error", e.message || "No se pudo actualizar"),
   });
 
   const createPaymentMutation = useMutation({
-    mutationFn: async (data: Record<string, unknown>) => {
-      const res = await apiRequest("POST", "/api/payments", data);
-      return res.json();
+    mutationFn: async (data: {
+      appointment_id: string;
+      amount: string;
+      method: string;
+      date: string;
+      notes: string;
+    }) => {
+      const payload = {
+        appointment_id: data.appointment_id,
+        amount: data.amount,
+        method: data.method,
+        date: data.date,
+        notes: data.notes,
+        is_abono: false,
+        service_total: null,
+      };
+
+      const { error } = await supabase.from("payments").insert(payload);
+
+      if (error) {
+        throw new Error(error.message);
+      }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/payments"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/stats"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/dashboard/revenue"] });
+      queryClient.invalidateQueries({ queryKey: ["payments"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard_stats"] });
+      queryClient.invalidateQueries({ queryKey: ["dashboard_revenue"] });
     },
     onError: (e: Error) => Alert.alert("Error", e.message || "No se pudo registrar el pago"),
   });

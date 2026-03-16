@@ -11,7 +11,7 @@ import Animated, { FadeInDown } from "react-native-reanimated";
 import { ThemedText } from "@/components/ThemedText";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
-import { apiRequest } from "@/lib/query-client";
+import { supabase } from "@/lib/supabase";
 
 interface Categoria {
   id: string;
@@ -67,6 +67,7 @@ export default function OnboardingServicesScreen({
 
   const guardar = async () => {
     const seleccionadas = categorias.filter((c) => c.seleccionada);
+
     if (seleccionadas.length === 0) {
       onNext();
       return;
@@ -74,14 +75,25 @@ export default function OnboardingServicesScreen({
 
     setGuardando(true);
     try {
-      for (const [i, c] of seleccionadas.entries()) {
-        await apiRequest("POST", "/api/service-categories", {
-          name: c.nombre,
-          order: i + 1,
-        });
+      const payload = seleccionadas.map((c, index) => ({
+        name: c.nombre,
+        order: index + 1,
+      }));
+
+      const { error } = await supabase.from("service_categories").insert(payload);
+
+      if (error) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          "[OnboardingServices] error al crear categorías en Supabase, continuando de todos modos",
+          error,
+        );
       }
+
       onNext();
-    } catch {
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.warn("[OnboardingServices] excepción inesperada al crear categorías", error);
       // Si falla (ej. categorías ya existen), continuar de todos modos
       onNext();
     } finally {

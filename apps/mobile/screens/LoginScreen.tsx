@@ -120,7 +120,7 @@ export function LoginScreen() {
                     styles.passwordInput,
                   ]}
                   placeholder="••••••••"
-                  placeholderTextColor={theme.textMuted}
+                  placeholderTextColor="rgba(255,255,255,0.25)"
                   value={password}
                   onChangeText={(text) => {
                     setPassword(text);
