@@ -10,6 +10,11 @@ import {
   type TenantConfig,
   defaultTenantConfig,
 } from "@salonpro/tenant-config";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  fetchTenantSettings,
+  upsertTenantSettings,
+} from "@/services/tenantSettingsService";
 
 const STORAGE_KEY = "@salonpro/tenant_config";
 const CONFIGURED_KEY = "@salonpro/tenant_configured";
@@ -17,7 +22,7 @@ const CONFIGURED_KEY = "@salonpro/tenant_configured";
 interface TenantContextValue {
   config: TenantConfig;
   updateTenant: (partial: Partial<TenantConfig>) => Promise<void>;
-  markConfigured: () => Promise<void>;
+  markConfigured: () => Promise<{ ok: boolean; error?: string }>;
   isConfigured: boolean;
   isLoading: boolean;
 }
@@ -25,24 +30,57 @@ interface TenantContextValue {
 const TenantContext = createContext<TenantContextValue | null>(null);
 
 export function TenantProvider({ children }: { children: React.ReactNode }) {
+  const { userId } = useAuth();
   const [config, setConfig] = useState<TenantConfig>(defaultTenantConfig);
   const [isConfigured, setIsConfigured] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([
-      AsyncStorage.getItem(STORAGE_KEY),
-      AsyncStorage.getItem(CONFIGURED_KEY),
-    ])
-      .then(([raw, configured]) => {
+    let isMounted = true;
+
+    const load = async () => {
+      try {
+        const [raw, configured] = await Promise.all([
+          AsyncStorage.getItem(STORAGE_KEY),
+          AsyncStorage.getItem(CONFIGURED_KEY),
+        ]);
+
+        if (!isMounted) return;
+
         if (raw) {
           const parsed = JSON.parse(raw) as Partial<TenantConfig>;
           setConfig((prev) => ({ ...prev, ...parsed }));
         }
-        setIsConfigured(configured === "true");
-      })
-      .finally(() => setIsLoading(false));
-  }, []);
+
+        const localConfigured = configured === "true";
+        setIsConfigured(localConfigured);
+
+        // Si no hay marca local pero sí usuario, intentamos sincronizar desde Supabase
+        if (!localConfigured && userId) {
+          try {
+            const remoteConfig = await fetchTenantSettings(userId);
+            if (remoteConfig && isMounted) {
+              await updateTenant(remoteConfig);
+              await AsyncStorage.setItem(CONFIGURED_KEY, "true");
+              setIsConfigured(true);
+            }
+          } catch {
+            // En caso de error remoto, seguimos con flujo local (onboarding)
+          }
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void load();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [userId, updateTenant]);
 
   const updateTenant = useCallback(async (partial: Partial<TenantConfig>) => {
     setConfig((prev) => {
@@ -53,9 +91,26 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const markConfigured = useCallback(async () => {
-    await AsyncStorage.setItem(CONFIGURED_KEY, "true");
-    setIsConfigured(true);
-  }, []);
+    if (!userId) {
+      return { ok: false, error: "No hay usuario autenticado para guardar la configuración." };
+    }
+
+    try {
+      await upsertTenantSettings(config, userId);
+      await AsyncStorage.setItem(CONFIGURED_KEY, "true");
+      setIsConfigured(true);
+      return { ok: true as const };
+    } catch (error) {
+      // Log en desarrollo para depurar fallos al guardar configuración remota
+      // eslint-disable-next-line no-console
+      console.error("[TenantContext] Error al hacer upsert de tenant_settings", error);
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Ocurrió un error al guardar la configuración en la nube.";
+      return { ok: false as const, error: message };
+    }
+  }, [config, userId]);
 
   return (
     <TenantContext.Provider

@@ -1,5 +1,11 @@
-import React, { useEffect } from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  StyleSheet,
+  Pressable,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import Animated, {
   FadeInDown,
   useSharedValue,
@@ -21,6 +27,7 @@ export default function OnboardingCompleteScreen({
   onFinish,
 }: OnboardingCompleteScreenProps) {
   const { config, markConfigured } = useTenant();
+  const [saving, setSaving] = useState(false);
 
   const emojiScale = useSharedValue(0);
   const emojiOpacity = useSharedValue(0);
@@ -36,8 +43,34 @@ export default function OnboardingCompleteScreen({
   }));
 
   const handleFinish = async () => {
-    await markConfigured();
-    onFinish();
+    if (saving) {
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const result = await markConfigured();
+      if (!result.ok) {
+        Alert.alert(
+          "No pudimos guardar tu configuración",
+          result.error ?? "Inténtalo de nuevo en un momento.",
+          [
+            { text: "Cancelar", style: "cancel" },
+            {
+              text: "Reintentar",
+              onPress: () => {
+                void handleFinish();
+              },
+            },
+          ],
+        );
+        return;
+      }
+
+      onFinish();
+    } finally {
+      setSaving(false);
+    }
   };
 
   const emoji =
@@ -87,15 +120,22 @@ export default function OnboardingCompleteScreen({
       <Animated.View entering={FadeInDown.delay(900).duration(500)}>
         <Pressable
           onPress={handleFinish}
+          disabled={saving}
           style={({ pressed }) => [
             styles.boton,
             { backgroundColor: config.theme.accentColor },
-            pressed && styles.botonPressed,
+            pressed && !saving && styles.botonPressed,
           ]}
         >
           <ThemedText style={styles.botonTexto}>
-            Ir al panel →
+            {saving ? "Guardando configuración..." : "Ir al panel →"}
           </ThemedText>
+          {saving && (
+            <ActivityIndicator
+              color={Colors.light.text}
+              style={styles.botonLoader}
+            />
+          )}
         </Pressable>
       </Animated.View>
     </View>
@@ -200,12 +240,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing["3xl"],
     paddingVertical: Spacing.lg,
     alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: Spacing.sm,
   },
   botonPressed: { opacity: 0.85 },
   botonTexto: {
     fontSize: 17,
     fontWeight: "700",
     color: Colors.light.text,
+  },
+  botonLoader: {
+    marginLeft: Spacing.xs,
   },
 });
 
