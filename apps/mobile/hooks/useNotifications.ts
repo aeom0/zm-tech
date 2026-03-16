@@ -20,6 +20,8 @@ async function registerForPushNotifications(
   lightColor: string,
 ): Promise<string | null> {
   if (!Device.isDevice) {
+    // eslint-disable-next-line no-console
+    console.log("[Notifications] No es un dispositivo físico, se omite registro de push");
     return null;
   }
 
@@ -32,6 +34,11 @@ async function registerForPushNotifications(
   }
 
   if (finalStatus !== "granted") {
+    // eslint-disable-next-line no-console
+    console.log(
+      "[Notifications] Permisos de notificaciones no concedidos, estado:",
+      finalStatus,
+    );
     return null;
   }
 
@@ -45,6 +52,8 @@ async function registerForPushNotifications(
   }
 
   const tokenData = await Notifications.getDevicePushTokenAsync();
+  // eslint-disable-next-line no-console
+  console.log("[Notifications] Push token nativo obtenido:", tokenData.data);
   return tokenData.data;
 }
 

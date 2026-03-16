@@ -7,23 +7,17 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-  Image,
 } from "react-native";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
-import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/contexts/AuthContext";
-import { useTenant } from "@/contexts/TenantContext";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 
 export function LoginScreen() {
-  const { theme } = useTheme();
   const { login } = useAuth();
-  const { config } = useTenant();
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -46,7 +40,7 @@ export function LoginScreen() {
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <View style={styles.container}>
       <KeyboardAwareScrollViewCompat
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
@@ -61,34 +55,8 @@ export function LoginScreen() {
             entering={FadeInUp.duration(600)}
             style={styles.brandSection}
           >
-            <View
-              style={[styles.logoWrapper, { backgroundColor: theme.primary }]}
-            >
-              <Image
-                source={require("@/assets/images/logo/logo-positivo.png")}
-                style={styles.logo}
-                resizeMode="contain"
-              />
-            </View>
-            <View style={styles.divider}>
-              <View
-                style={[styles.dividerLine, { backgroundColor: theme.border }]}
-              />
-              <View
-                style={[
-                  styles.dividerDot,
-                  { backgroundColor: Colors.light.gold },
-                ]}
-              />
-              <View
-                style={[styles.dividerLine, { backgroundColor: theme.border }]}
-              />
-            </View>
-            <ThemedText
-              style={[styles.welcomeText, { color: theme.textSecondary }]}
-            >
-              Panel de Gestión
-            </ThemedText>
+            <ThemedText style={styles.wordmark}>SalonPro</ThemedText>
+            <ThemedText style={styles.brandSubtitle}>Panel de gestión</ThemedText>
           </Animated.View>
 
           {/* Form Card */}
@@ -96,38 +64,26 @@ export function LoginScreen() {
             entering={FadeInDown.duration(600).delay(200)}
             style={[
               styles.card,
-              {
-                backgroundColor: theme.card,
-                borderColor: theme.border,
-                ...Shadows.md,
-              },
+              Shadows.md,
             ]}
           >
             <View style={styles.inputGroup}>
-              <ThemedText
-                style={[styles.label, { color: theme.textSecondary }]}
-              >
-                Correo electrónico
-              </ThemedText>
+              <ThemedText style={styles.label}>Correo electrónico</ThemedText>
               <View
                 style={[
                   styles.inputWrapper,
-                  {
-                    backgroundColor: theme.backgroundSecondary,
-                    borderColor: theme.border,
-                  },
                 ]}
               >
                 <Feather
                   name="user"
                   size={18}
-                  color={theme.textMuted}
+                  color="rgba(255,255,255,0.35)"
                   style={styles.inputIcon}
                 />
                 <TextInput
-                  style={[styles.input, { color: theme.text }]}
-                  placeholder={`tu-usuario@${config.contact.email?.split("@")[1] ?? "tusalon.com"}`}
-                  placeholderTextColor={theme.textMuted}
+                  style={styles.input}
+                  placeholder="tu-usuario@tusalon.com"
+                  placeholderTextColor="rgba(255,255,255,0.25)"
                   value={usuario}
                   onChangeText={(text) => {
                     setUsuario(text);
@@ -143,30 +99,25 @@ export function LoginScreen() {
 
             <View style={styles.inputGroup}>
               <ThemedText
-                style={[styles.label, { color: theme.textSecondary }]}
+                style={styles.label}
               >
                 Contraseña
               </ThemedText>
               <View
                 style={[
                   styles.inputWrapper,
-                  {
-                    backgroundColor: theme.backgroundSecondary,
-                    borderColor: theme.border,
-                  },
                 ]}
               >
                 <Feather
                   name="lock"
                   size={18}
-                  color={theme.textMuted}
+                  color="rgba(255,255,255,0.35)"
                   style={styles.inputIcon}
                 />
                 <TextInput
                   style={[
                     styles.input,
                     styles.passwordInput,
-                    { color: theme.text },
                   ]}
                   placeholder="••••••••"
                   placeholderTextColor={theme.textMuted}
@@ -186,7 +137,7 @@ export function LoginScreen() {
                   <Feather
                     name={showPassword ? "eye-off" : "eye"}
                     size={20}
-                    color={theme.textMuted}
+                    color="rgba(255,255,255,0.5)"
                   />
                 </Pressable>
               </View>
@@ -197,11 +148,11 @@ export function LoginScreen() {
                 entering={FadeInDown.duration(300)}
                 style={[
                   styles.errorBox,
-                  { backgroundColor: theme.error + "15" },
+                    { backgroundColor: Colors.dark.error + "15" },
                 ]}
               >
-                <Feather name="alert-circle" size={16} color={theme.error} />
-                <ThemedText style={[styles.errorText, { color: theme.error }]}>
+                  <Feather name="alert-circle" size={16} color={Colors.dark.error} />
+                  <ThemedText style={[styles.errorText, { color: Colors.dark.error }]}>
                   {error}
                 </ThemedText>
               </Animated.View>
@@ -212,32 +163,33 @@ export function LoginScreen() {
               disabled={loading}
               style={({ pressed }) => [
                 styles.submitButton,
-                { backgroundColor: theme.primary },
+                { backgroundColor: "#FFFFFF" },
                 pressed && { opacity: 0.9 },
                 loading && { opacity: 0.7 },
               ]}
             >
               {loading ? (
-                <ActivityIndicator color="#FFFFFF" size="small" />
+                <ActivityIndicator color="#000000" size="small" />
               ) : (
                 <>
                   <ThemedText style={styles.submitButtonText}>
                     Entrar
                   </ThemedText>
-                  <Feather name="arrow-right" size={18} color="#FFFFFF" />
+                  <Feather name="arrow-right" size={18} color="#000000" />
                 </>
               )}
             </Pressable>
           </Animated.View>
         </KeyboardAvoidingView>
       </KeyboardAwareScrollViewCompat>
-    </ThemedView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.dark.backgroundRoot,
   },
   scroll: {
     flex: 1,
@@ -256,68 +208,52 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: Spacing["3xl"],
   },
-  logoWrapper: {
-    width: 140,
-    height: 140,
-    borderRadius: 70,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: Spacing.xl,
+  wordmark: {
+    fontSize: 32,
+    fontWeight: "800",
+    letterSpacing: -1,
+    color: "#FFFFFF",
+    marginBottom: Spacing.xs,
   },
-  logo: {
-    width: 100,
-    height: 60,
-  },
-  divider: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.sm,
-    marginBottom: Spacing.md,
-  },
-  dividerLine: {
-    width: 24,
-    height: 1,
-  },
-  dividerDot: {
-    width: 5,
-    height: 5,
-    borderRadius: 2.5,
-  },
-  welcomeText: {
-    fontSize: 15,
-    fontWeight: "500",
-    letterSpacing: 0.3,
+  brandSubtitle: {
+    fontSize: 13,
+    color: "rgba(255,255,255,0.55)",
   },
   card: {
     borderRadius: BorderRadius.lg,
-    borderWidth: 1,
+    borderWidth: 0.5,
     padding: Spacing.xl,
+    backgroundColor: "rgba(255,255,255,0.05)",
+    borderColor: "rgba(255,255,255,0.1)",
   },
   inputGroup: {
     marginBottom: Spacing.lg,
   },
   label: {
-    fontSize: 13,
+    fontSize: 11,
+    letterSpacing: 0.8,
     fontWeight: "600",
-    marginBottom: Spacing.sm,
+    marginBottom: Spacing.xs,
     textTransform: "uppercase",
-    letterSpacing: 0.5,
+    color: "rgba(255,255,255,0.4)",
   },
   inputWrapper: {
     flexDirection: "row",
     alignItems: "center",
-    height: Spacing.inputHeight,
-    borderRadius: BorderRadius.sm,
-    borderWidth: 1,
+    borderRadius: 12,
+    borderWidth: 0.5,
     paddingHorizontal: Spacing.md,
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderColor: "rgba(255,255,255,0.1)",
   },
   inputIcon: {
     marginRight: Spacing.sm,
   },
   input: {
     flex: 1,
-    height: "100%",
-    fontSize: 16,
+    height: 46,
+    fontSize: 15,
+    color: "#FFFFFF",
   },
   passwordInput: {
     paddingRight: 40,
@@ -330,7 +266,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: Spacing.sm,
     padding: Spacing.md,
-    borderRadius: BorderRadius.xs,
+    borderRadius: BorderRadius.sm,
     marginBottom: Spacing.lg,
   },
   errorText: {
@@ -340,7 +276,7 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     height: Spacing.buttonHeight,
-    borderRadius: BorderRadius.full,
+    borderRadius: 12,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
@@ -348,8 +284,8 @@ const styles = StyleSheet.create({
     marginTop: Spacing.sm,
   },
   submitButtonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
+    color: "#000000",
+    fontSize: 15,
     fontWeight: "600",
   },
 });

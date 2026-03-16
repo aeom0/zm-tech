@@ -1,23 +1,23 @@
 {
   "expo": {
-    "name": "ZM Lash & Nails Beauty",
-    "slug": "zm-lash-nails",
+    "name": "SalonPro",
+    "slug": "salonpro-mobile",
     "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/logo/logo-positivo.png",
-    "scheme": "zmlash",
+    "scheme": "salonpro",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.zmlash.beauty"
+      "bundleIdentifier": "com.salonpro.app"
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#7B2D8E",
         "foregroundImage": "./assets/images/logo/logo-positivo.png"
       },
-      "package": "com.zmlashandnails.beauty",
+      "package": "com.salonpro.app",
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "googleServicesFile": "./google-services.json"

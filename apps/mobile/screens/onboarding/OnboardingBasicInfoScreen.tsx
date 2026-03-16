@@ -65,7 +65,17 @@ export default function OnboardingBasicInfoScreen({
       showsVerticalScrollIndicator={false}
     >
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-        <ThemedText style={styles.paso}>Paso 2 de 4</ThemedText>
+        <View style={styles.dotsRow}>
+          {[0, 1, 2, 3, 4].map((index) => (
+            <View
+              key={index}
+              style={[
+                styles.dot,
+                index === 1 ? styles.dotActive : styles.dotInactive,
+              ]}
+            />
+          ))}
+        </View>
         <ThemedText style={styles.titulo}>Datos de tu negocio</ThemedText>
         <ThemedText style={styles.subtitulo}>
           Personaliza el nombre y los colores que verás en toda la app.
@@ -78,7 +88,7 @@ export default function OnboardingBasicInfoScreen({
         <TextInput
           style={[styles.input, error ? styles.inputError : null]}
           placeholder="Ej. Spa Bella, Barbería Clásica…"
-          placeholderTextColor={Colors.light.textMuted}
+          placeholderTextColor="rgba(255,255,255,0.25)"
           value={nombre}
           onChangeText={(t) => { setNombre(t); setError(null); }}
           autoCapitalize="words"
@@ -98,20 +108,19 @@ export default function OnboardingBasicInfoScreen({
               key={c.valor}
               onPress={() => setColorPrimario(c.valor)}
               style={[
-                styles.colorChip,
-                { backgroundColor: c.valor },
-                colorPrimario === c.valor && styles.colorChipSeleccionado,
+                styles.colorChipWrapper,
+                colorPrimario === c.valor && styles.colorChipWrapperSeleccionado,
               ]}
             >
-              {colorPrimario === c.valor && (
-                <ThemedText style={styles.colorCheck}>✓</ThemedText>
-              )}
+              <View
+                style={[
+                  styles.colorChip,
+                  { backgroundColor: c.valor },
+                ]}
+              />
             </Pressable>
           ))}
         </View>
-        <ThemedText style={styles.colorNombre}>
-          {COLORES_PRIMARIOS.find((c) => c.valor === colorPrimario)?.label ?? colorPrimario}
-        </ThemedText>
       </Animated.View>
 
       {/* Color de acento */}
@@ -123,27 +132,19 @@ export default function OnboardingBasicInfoScreen({
               key={c.valor}
               onPress={() => setColorAcento(c.valor)}
               style={[
-                styles.colorChip,
-                { backgroundColor: c.valor, borderColor: Colors.light.border },
-                colorAcento === c.valor && styles.colorChipSeleccionado,
+                styles.colorChipWrapper,
+                colorAcento === c.valor && styles.colorChipWrapperSeleccionado,
               ]}
             >
-              {colorAcento === c.valor && (
-                <ThemedText
-                  style={[
-                    styles.colorCheck,
-                    { color: c.valor === "#FFFFFF" ? Colors.light.text : Colors.light.white },
-                  ]}
-                >
-                  ✓
-                </ThemedText>
-              )}
+              <View
+                style={[
+                  styles.colorChip,
+                  { backgroundColor: c.valor },
+                ]}
+              />
             </Pressable>
           ))}
         </View>
-        <ThemedText style={styles.colorNombre}>
-          {COLORES_ACENTO.find((c) => c.valor === colorAcento)?.label ?? colorAcento}
-        </ThemedText>
       </Animated.View>
 
       {/* Vista previa de colores */}
@@ -162,13 +163,10 @@ export default function OnboardingBasicInfoScreen({
       {/* Botones */}
       <Animated.View entering={FadeInDown.delay(400).duration(400)} style={styles.botones}>
         <Pressable onPress={onBack} style={styles.botonSecundario}>
-          <ThemedText style={styles.botonSecundarioTexto}>← Atrás</ThemedText>
+          <ThemedText style={styles.botonSecundarioTexto}>Atrás</ThemedText>
         </Pressable>
-        <Pressable
-          onPress={continuar}
-          style={[styles.botonPrimario, { backgroundColor: colorPrimario }]}
-        >
-          <ThemedText style={styles.botonPrimarioTexto}>Continuar →</ThemedText>
+        <Pressable onPress={continuar} style={styles.botonPrimario}>
+          <ThemedText style={styles.botonPrimarioTexto}>Continuar</ThemedText>
         </Pressable>
       </Animated.View>
     </ScrollView>
@@ -176,7 +174,7 @@ export default function OnboardingBasicInfoScreen({
 }
 
 const styles = StyleSheet.create({
-  scroll: { flex: 1, backgroundColor: Colors.light.backgroundRoot },
+  scroll: { flex: 1, backgroundColor: "#111318" },
   container: {
     paddingHorizontal: Spacing.lg,
     paddingBottom: Spacing["3xl"],
@@ -185,103 +183,124 @@ const styles = StyleSheet.create({
     paddingTop: Spacing["3xl"],
     paddingBottom: Spacing.xl,
   },
-  paso: {
-    fontSize: 13,
-    color: Colors.light.textMuted,
-    marginBottom: Spacing.sm,
-    fontWeight: "600",
-    letterSpacing: 1,
-    textTransform: "uppercase",
+  dotsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: Spacing.lg,
+  },
+  dot: {
+    height: 3,
+    borderRadius: 2,
+  },
+  dotActive: {
+    width: 20,
+    backgroundColor: "#FFFFFF",
+  },
+  dotInactive: {
+    width: 6,
+    backgroundColor: "rgba(255,255,255,0.2)",
   },
   titulo: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: "700",
-    color: Colors.light.text,
-    marginBottom: Spacing.sm,
+    color: "#FFFFFF",
+    marginBottom: 8,
   },
   subtitulo: {
-    fontSize: 15,
-    color: Colors.light.textSecondary,
-    lineHeight: 22,
+    fontSize: 13,
+    color: "rgba(255,255,255,0.45)",
+    lineHeight: 20,
+    marginBottom: 24,
   },
   campo: { marginBottom: Spacing.xl },
   label: {
-    fontSize: 14,
+    fontSize: 10,
     fontWeight: "600",
-    color: Colors.light.text,
-    marginBottom: Spacing.sm,
+    textTransform: "uppercase",
+    letterSpacing: 0.8,
+    color: "rgba(255,255,255,0.35)",
+    marginBottom: 8,
   },
   input: {
-    backgroundColor: Colors.light.card,
-    borderWidth: 1.5,
-    borderColor: Colors.light.border,
-    borderRadius: BorderRadius.xs,
+    backgroundColor: "rgba(255,255,255,0.05)",
+    borderWidth: 0.5,
+    borderColor: "rgba(255,255,255,0.1)",
+    borderRadius: 10,
     paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
-    fontSize: 16,
-    color: Colors.light.text,
+    paddingVertical: 12,
+    fontSize: 15,
+    color: "#FFFFFF",
   },
   inputError: { borderColor: Colors.light.error },
-  errorText: { color: Colors.light.error, fontSize: 13, marginTop: 4 },
+  errorText: { color: Colors.light.error, fontSize: 12, marginTop: 4 },
   paleta: { flexDirection: "row", flexWrap: "wrap", gap: Spacing.sm },
-  colorChip: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    borderWidth: 2,
-    borderColor: "transparent",
+  colorChipWrapper: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    padding: 3,
     alignItems: "center",
     justifyContent: "center",
   },
-  colorChipSeleccionado: { borderColor: Colors.light.text, borderWidth: 2.5 },
-  colorCheck: { color: Colors.light.white, fontSize: 18, fontWeight: "700" },
-  colorNombre: { fontSize: 13, color: Colors.light.textMuted, marginTop: Spacing.sm },
+  colorChipWrapperSeleccionado: {
+    borderWidth: 1.5,
+    borderColor: "rgba(255,255,255,0.7)",
+  },
+  colorChip: {
+    width: 28,
+    height: 28,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   preview: {
     borderRadius: BorderRadius.md,
-    padding: Spacing.xl,
+    padding: 14,
     marginBottom: Spacing.xl,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
   previewNombre: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "700",
-    color: Colors.light.white,
+    color: "#FFFFFF",
     flex: 1,
   },
   previewTag: {
-    borderRadius: BorderRadius.full,
+    borderRadius: 999,
     paddingHorizontal: Spacing.md,
     paddingVertical: 4,
   },
-  previewTagText: { fontSize: 12, fontWeight: "600", color: Colors.light.text },
+  previewTagText: { fontSize: 11, fontWeight: "600", color: "#000000" },
   botones: {
     flexDirection: "row",
     gap: Spacing.md,
   },
   botonSecundario: {
     flex: 1,
-    borderWidth: 1.5,
-    borderColor: Colors.light.border,
-    borderRadius: BorderRadius.xs,
-    paddingVertical: Spacing.md,
+    borderWidth: 0.5,
+    borderColor: "rgba(255,255,255,0.2)",
+    borderRadius: 10,
+    paddingVertical: 15,
     alignItems: "center",
   },
   botonSecundarioTexto: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "600",
-    color: Colors.light.text,
+    color: "rgba(255,255,255,0.6)",
   },
   botonPrimario: {
     flex: 2,
-    borderRadius: BorderRadius.xs,
-    paddingVertical: Spacing.md,
+    borderRadius: 10,
+    paddingVertical: 15,
     alignItems: "center",
+    backgroundColor: "#FFFFFF",
   },
   botonPrimarioTexto: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "700",
-    color: Colors.light.white,
+    color: "#000000",
   },
 });

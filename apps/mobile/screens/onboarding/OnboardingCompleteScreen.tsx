@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -6,17 +6,11 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import Animated, {
-  FadeInDown,
-  useSharedValue,
-  useAnimatedStyle,
-  withDelay,
-  withSpring,
-  withTiming,
-} from "react-native-reanimated";
+import Animated, { FadeInDown } from "react-native-reanimated";
+import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
-import { Colors, Spacing, BorderRadius } from "@/constants/theme";
+import { Spacing, BorderRadius } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 
 interface OnboardingCompleteScreenProps {
@@ -28,19 +22,6 @@ export default function OnboardingCompleteScreen({
 }: OnboardingCompleteScreenProps) {
   const { config, markConfigured } = useTenant();
   const [saving, setSaving] = useState(false);
-
-  const emojiScale = useSharedValue(0);
-  const emojiOpacity = useSharedValue(0);
-
-  useEffect(() => {
-    emojiOpacity.value = withDelay(200, withTiming(1, { duration: 400 }));
-    emojiScale.value = withDelay(200, withSpring(1, { damping: 8, stiffness: 120 }));
-  }, [emojiOpacity, emojiScale]);
-
-  const emojiStyle = useAnimatedStyle(() => ({
-    opacity: emojiOpacity.value,
-    transform: [{ scale: emojiScale.value }],
-  }));
 
   const handleFinish = async () => {
     if (saving) {
@@ -73,205 +54,188 @@ export default function OnboardingCompleteScreen({
     }
   };
 
-  const emoji =
-    config.businessType === "barbershop"
-      ? "✂️"
-      : config.businessType === "hair-salon"
-        ? "💇"
-        : config.businessType === "full-aesthetic"
-          ? "🌿"
-          : "💅";
+  const categoriasPorTipo: Record<string, number> = {
+    "spa-nails": 4,
+    barbershop: 4,
+    "hair-salon": 4,
+    "full-aesthetic": 5,
+  };
+
+  const categoriasCount = categoriasPorTipo[config.businessType] ?? 0;
+  const especialistasCount = 1;
+  const serviciosCount = 0;
 
   return (
-    <View style={[styles.container, { backgroundColor: config.theme.primaryColor }]}>
-      {/* Círculos decorativos */}
-      <View style={styles.circleTopRight} />
-      <View style={styles.circleBottomLeft} />
-
-      <Animated.View style={[styles.emojiWrap, emojiStyle]}>
-        <ThemedText style={styles.emoji}>{emoji}</ThemedText>
-      </Animated.View>
-
-      <Animated.View entering={FadeInDown.delay(400).duration(500)} style={styles.textos}>
+    <View style={styles.container}>
+      <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
+        <View style={styles.dotsRow}>
+          {[0, 1, 2, 3, 4].map((index) => (
+            <View
+              key={index}
+              style={[
+                styles.dot,
+                index === 4 ? styles.dotActive : styles.dotInactive,
+              ]}
+            />
+          ))}
+        </View>
+        <View style={styles.iconCheck}>
+          <Feather name="check" size={26} color="rgba(255,255,255,0.9)" />
+        </View>
         <ThemedText style={styles.titulo}>¡Todo listo!</ThemedText>
         <ThemedText style={styles.nombre}>{config.businessName}</ThemedText>
         <ThemedText style={styles.subtitulo}>
-          Tu app está configurada y lista para gestionar{" "}
+          Tu app está configurada y lista para empezar a registrar{" "}
           {config.terminology.appointment}s, {config.terminology.staff} y servicios.
         </ThemedText>
       </Animated.View>
 
-      <Animated.View entering={FadeInDown.delay(700).duration(500)} style={styles.resumen}>
-        <ResumenItem
-          icono="🏪"
-          texto={`Tipo: ${etiquetaTipo(config.businessType)}`}
-        />
-        <ResumenItem
-          icono="🎨"
-          texto={`Color: ${config.theme.primaryColor}`}
-          colorMuestra={config.theme.primaryColor}
-        />
-        <ResumenItem
-          icono="💬"
-          texto={`Personal: "${config.terminology.staff}"`}
-        />
+      <Animated.View entering={FadeInDown.delay(200).duration(400)} style={styles.statsGrid}>
+        <View style={styles.statTile}>
+          <ThemedText style={styles.statNumber}>{categoriasCount}</ThemedText>
+          <ThemedText style={styles.statLabel}>Categorías</ThemedText>
+        </View>
+        <View style={styles.statTile}>
+          <ThemedText style={styles.statNumber}>{serviciosCount}</ThemedText>
+          <ThemedText style={styles.statLabel}>Servicios</ThemedText>
+        </View>
+        <View style={styles.statTile}>
+          <ThemedText style={styles.statNumber}>{especialistasCount}</ThemedText>
+          <ThemedText style={styles.statLabel}>
+            {config.terminology.staffSingular.toUpperCase()}
+          </ThemedText>
+        </View>
+        <View style={styles.statTile}>
+          <ThemedText style={styles.statNumber}>—</ThemedText>
+          <ThemedText style={styles.statLabel}>Citas hoy</ThemedText>
+        </View>
       </Animated.View>
 
-      <Animated.View entering={FadeInDown.delay(900).duration(500)}>
+      <Animated.View entering={FadeInDown.delay(400).duration(400)} style={styles.footer}>
         <Pressable
           onPress={handleFinish}
           disabled={saving}
           style={({ pressed }) => [
             styles.boton,
-            { backgroundColor: config.theme.accentColor },
             pressed && !saving && styles.botonPressed,
           ]}
         >
-          <ThemedText style={styles.botonTexto}>
-            {saving ? "Guardando configuración..." : "Ir al panel →"}
-          </ThemedText>
-          {saving && (
-            <ActivityIndicator
-              color={Colors.light.text}
-              style={styles.botonLoader}
-            />
+          {saving ? (
+            <>
+              <ActivityIndicator color="#000000" style={styles.botonLoader} />
+              <ThemedText style={styles.botonTexto}>Guardando configuración…</ThemedText>
+            </>
+          ) : (
+            <ThemedText style={styles.botonTexto}>Ir al panel</ThemedText>
           )}
         </Pressable>
       </Animated.View>
     </View>
   );
 }
-
-function ResumenItem({
-  icono,
-  texto,
-  colorMuestra,
-}: {
-  icono: string;
-  texto: string;
-  colorMuestra?: string;
-}) {
-  return (
-    <View style={resumenStyles.fila}>
-      <ThemedText style={resumenStyles.icono}>{icono}</ThemedText>
-      <ThemedText style={resumenStyles.texto}>{texto}</ThemedText>
-      {colorMuestra && (
-        <View
-          style={[resumenStyles.muestra, { backgroundColor: colorMuestra }]}
-        />
-      )}
-    </View>
-  );
-}
-
-function etiquetaTipo(tipo: string): string {
-  const mapa: Record<string, string> = {
-    "spa-nails":       "Spa / Uñas",
-    "barbershop":      "Barbería",
-    "hair-salon":      "Peluquería",
-    "full-aesthetic":  "Estética Integral",
-  };
-  return mapa[tipo] ?? tipo;
-}
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: Spacing.xl,
-    gap: Spacing.xl,
-  },
-  circleTopRight: {
-    position: "absolute",
-    top: -80,
-    right: -80,
-    width: 250,
-    height: 250,
-    borderRadius: 125,
-    backgroundColor: "rgba(255,255,255,0.06)",
-  },
-  circleBottomLeft: {
-    position: "absolute",
-    bottom: -60,
-    left: -60,
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: "rgba(255,255,255,0.06)",
-  },
-  emojiWrap: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: "rgba(255,255,255,0.15)",
-    alignItems: "center",
+    backgroundColor: "#111318",
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing["3xl"],
     justifyContent: "center",
   },
-  emoji: { fontSize: 48 },
-  textos: { alignItems: "center", gap: Spacing.sm },
+  header: {
+    alignItems: "center",
+    marginBottom: Spacing["2xl"],
+  },
+  dotsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: Spacing.lg,
+  },
+  dot: {
+    height: 3,
+    borderRadius: 2,
+  },
+  dotActive: {
+    width: 20,
+    backgroundColor: "#FFFFFF",
+  },
+  dotInactive: {
+    width: 6,
+    backgroundColor: "rgba(255,255,255,0.2)",
+  },
+  iconCheck: {
+    width: 52,
+    height: 52,
+    borderRadius: 16,
+    backgroundColor: "rgba(255,255,255,0.07)",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: Spacing.lg,
+  },
   titulo: {
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: "800",
-    color: Colors.light.white,
+    color: "#FFFFFF",
     textAlign: "center",
   },
   nombre: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "700",
     color: "rgba(255,255,255,0.9)",
     textAlign: "center",
   },
   subtitulo: {
-    fontSize: 15,
+    fontSize: 13,
     color: "rgba(255,255,255,0.75)",
     textAlign: "center",
-    lineHeight: 22,
+    lineHeight: 20,
+    marginTop: Spacing.sm,
   },
-  resumen: {
-    backgroundColor: "rgba(255,255,255,0.12)",
-    borderRadius: BorderRadius.md,
-    padding: Spacing.lg,
-    width: "100%",
-    gap: Spacing.sm,
+  statsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: Spacing.md,
+    marginBottom: Spacing["2xl"],
+  },
+  statTile: {
+    width: "48%",
+    backgroundColor: "rgba(255,255,255,0.05)",
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: "rgba(255,255,255,0.08)",
+    padding: 12,
+  },
+  statNumber: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#FFFFFF",
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 9,
+    color: "rgba(255,255,255,0.35)",
+    textTransform: "uppercase",
+    letterSpacing: 0.6,
+  },
+  footer: {
+    marginTop: Spacing.md,
   },
   boton: {
-    borderRadius: BorderRadius.sm,
-    paddingHorizontal: Spacing["3xl"],
-    paddingVertical: Spacing.lg,
+    borderRadius: 10,
+    paddingVertical: 15,
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "center",
     gap: Spacing.sm,
+    backgroundColor: "#FFFFFF",
   },
   botonPressed: { opacity: 0.85 },
   botonTexto: {
-    fontSize: 17,
+    fontSize: 14,
     fontWeight: "700",
-    color: Colors.light.text,
+    color: "#000000",
   },
   botonLoader: {
     marginLeft: Spacing.xs,
-  },
-});
-
-const resumenStyles = StyleSheet.create({
-  fila: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.sm,
-  },
-  icono: { fontSize: 18 },
-  texto: {
-    fontSize: 14,
-    color: "rgba(255,255,255,0.85)",
-    flex: 1,
-  },
-  muestra: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.4)",
   },
 });

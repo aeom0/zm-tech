@@ -77,7 +77,17 @@ export default function OnboardingTeamScreen({
       showsVerticalScrollIndicator={false}
     >
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-        <ThemedText style={styles.paso}>Paso 3 de 4</ThemedText>
+        <View style={styles.dotsRow}>
+          {[0, 1, 2, 3, 4].map((index) => (
+            <View
+              key={index}
+              style={[
+                styles.dot,
+                index === 2 ? styles.dotActive : styles.dotInactive,
+              ]}
+            />
+          ))}
+        </View>
         <ThemedText style={styles.titulo}>Agrega tu primer {staffLabel}</ThemedText>
         <ThemedText style={styles.subtitulo}>
           Puedes agregar más desde Más → {config.terminology.staff} después de configurar.
@@ -90,7 +100,7 @@ export default function OnboardingTeamScreen({
         <TextInput
           style={styles.input}
           placeholder={`Nombre del ${staffLabel}`}
-          placeholderTextColor={Colors.light.textMuted}
+          placeholderTextColor="rgba(255,255,255,0.25)"
           value={nombre}
           onChangeText={setNombre}
           autoCapitalize="words"
@@ -103,7 +113,7 @@ export default function OnboardingTeamScreen({
         <TextInput
           style={styles.input}
           placeholder="correo@ejemplo.com"
-          placeholderTextColor={Colors.light.textMuted}
+          placeholderTextColor="rgba(255,255,255,0.25)"
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
@@ -119,7 +129,7 @@ export default function OnboardingTeamScreen({
         <TextInput
           style={styles.input}
           placeholder="Ej. 60"
-          placeholderTextColor={Colors.light.textMuted}
+          placeholderTextColor="rgba(255,255,255,0.25)"
           value={comision}
           onChangeText={setComision}
           keyboardType="number-pad"
@@ -139,14 +149,16 @@ export default function OnboardingTeamScreen({
               key={c}
               onPress={() => setColor(c)}
               style={[
-                styles.colorChip,
-                { backgroundColor: c },
-                color === c && styles.colorChipSeleccionado,
+                styles.colorChipWrapper,
+                color === c && styles.colorChipWrapperSeleccionado,
               ]}
             >
-              {color === c && (
-                <ThemedText style={styles.colorCheck}>✓</ThemedText>
-              )}
+              <View
+                style={[
+                  styles.colorChip,
+                  { backgroundColor: c },
+                ]}
+              />
             </Pressable>
           ))}
         </View>
@@ -155,19 +167,18 @@ export default function OnboardingTeamScreen({
       {/* Botones */}
       <Animated.View entering={FadeInDown.delay(340).duration(400)} style={styles.botones}>
         <Pressable onPress={onBack} style={styles.botonSecundario}>
-          <ThemedText style={styles.botonSecundarioTexto}>← Atrás</ThemedText>
+          <ThemedText style={styles.botonSecundarioTexto}>Atrás</ThemedText>
         </Pressable>
         <Pressable
           onPress={guardar}
           disabled={guardando}
           style={[
             styles.botonPrimario,
-            { backgroundColor: config.theme.primaryColor },
             guardando && styles.botonDisabled,
           ]}
         >
           <ThemedText style={styles.botonPrimarioTexto}>
-            {guardando ? "Guardando…" : "Continuar →"}
+            {guardando ? "Guardando…" : "Continuar"}
           </ThemedText>
         </Pressable>
       </Animated.View>
@@ -180,7 +191,7 @@ export default function OnboardingTeamScreen({
 }
 
 const styles = StyleSheet.create({
-  scroll: { flex: 1, backgroundColor: Colors.light.backgroundRoot },
+  scroll: { flex: 1, backgroundColor: "#111318" },
   container: {
     paddingHorizontal: Spacing.lg,
     paddingBottom: Spacing["3xl"],
@@ -189,59 +200,80 @@ const styles = StyleSheet.create({
     paddingTop: Spacing["3xl"],
     paddingBottom: Spacing.xl,
   },
-  paso: {
-    fontSize: 13,
-    color: Colors.light.textMuted,
-    marginBottom: Spacing.sm,
-    fontWeight: "600",
-    letterSpacing: 1,
-    textTransform: "uppercase",
+  dotsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: Spacing.lg,
+  },
+  dot: {
+    height: 3,
+    borderRadius: 2,
+  },
+  dotActive: {
+    width: 20,
+    backgroundColor: "#FFFFFF",
+  },
+  dotInactive: {
+    width: 6,
+    backgroundColor: "rgba(255,255,255,0.2)",
   },
   titulo: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: "700",
-    color: Colors.light.text,
-    marginBottom: Spacing.sm,
+    color: "#FFFFFF",
+    marginBottom: 8,
   },
   subtitulo: {
-    fontSize: 15,
-    color: Colors.light.textSecondary,
-    lineHeight: 22,
+    fontSize: 13,
+    color: "rgba(255,255,255,0.45)",
+    lineHeight: 20,
+    marginBottom: 24,
   },
   campo: { marginBottom: Spacing.xl },
   label: {
-    fontSize: 14,
+    fontSize: 10,
     fontWeight: "600",
-    color: Colors.light.text,
-    marginBottom: Spacing.sm,
+    textTransform: "uppercase",
+    letterSpacing: 0.8,
+    color: "rgba(255,255,255,0.35)",
+    marginBottom: 8,
   },
   input: {
-    backgroundColor: Colors.light.card,
-    borderWidth: 1.5,
-    borderColor: Colors.light.border,
-    borderRadius: BorderRadius.xs,
+    backgroundColor: "rgba(255,255,255,0.05)",
+    borderWidth: 0.5,
+    borderColor: "rgba(255,255,255,0.1)",
+    borderRadius: 10,
     paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
-    fontSize: 16,
-    color: Colors.light.text,
+    paddingVertical: 12,
+    fontSize: 15,
+    color: "#FFFFFF",
   },
   hint: {
-    fontSize: 13,
-    color: Colors.light.textMuted,
+    fontSize: 12,
+    color: "rgba(255,255,255,0.45)",
     marginTop: 6,
   },
   paleta: { flexDirection: "row", flexWrap: "wrap", gap: Spacing.sm },
-  colorChip: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    borderWidth: 2,
-    borderColor: "transparent",
+  colorChipWrapper: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    padding: 3,
     alignItems: "center",
     justifyContent: "center",
   },
-  colorChipSeleccionado: { borderColor: Colors.light.text, borderWidth: 2.5 },
-  colorCheck: { color: Colors.light.white, fontSize: 18, fontWeight: "700" },
+  colorChipWrapperSeleccionado: {
+    borderWidth: 1.5,
+    borderColor: "rgba(255,255,255,0.7)",
+  },
+  colorChip: {
+    width: 28,
+    height: 28,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   botones: {
     flexDirection: "row",
     gap: Spacing.md,
@@ -249,33 +281,34 @@ const styles = StyleSheet.create({
   },
   botonSecundario: {
     flex: 1,
-    borderWidth: 1.5,
-    borderColor: Colors.light.border,
-    borderRadius: BorderRadius.xs,
-    paddingVertical: Spacing.md,
+    borderWidth: 0.5,
+    borderColor: "rgba(255,255,255,0.2)",
+    borderRadius: 10,
+    paddingVertical: 15,
     alignItems: "center",
   },
   botonSecundarioTexto: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "600",
-    color: Colors.light.text,
+    color: "rgba(255,255,255,0.6)",
   },
   botonPrimario: {
     flex: 2,
-    borderRadius: BorderRadius.xs,
-    paddingVertical: Spacing.md,
+    borderRadius: 10,
+    paddingVertical: 15,
     alignItems: "center",
+    backgroundColor: "#FFFFFF",
   },
   botonPrimarioTexto: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "700",
-    color: Colors.light.white,
+    color: "#000000",
   },
   botonDisabled: { opacity: 0.6 },
   saltarBtn: { alignItems: "center", paddingVertical: Spacing.md },
   saltarTexto: {
     fontSize: 14,
-    color: Colors.light.textMuted,
+    color: "rgba(255,255,255,0.5)",
     textDecorationLine: "underline",
   },
 });

@@ -92,7 +92,17 @@ export default function OnboardingServicesScreen({
   return (
     <View style={styles.container}>
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-        <ThemedText style={styles.paso}>Paso 4 de 4</ThemedText>
+        <View style={styles.dotsRow}>
+          {[0, 1, 2, 3, 4].map((index) => (
+            <View
+              key={index}
+              style={[
+                styles.dot,
+                index === 3 ? styles.dotActive : styles.dotInactive,
+              ]}
+            />
+          ))}
+        </View>
         <ThemedText style={styles.titulo}>
           Categorías de servicios
         </ThemedText>
@@ -121,14 +131,11 @@ export default function OnboardingServicesScreen({
               <View
                 style={[
                   styles.checkbox,
-                  cat.seleccionada && {
-                    backgroundColor: config.theme.primaryColor,
-                    borderColor: config.theme.primaryColor,
-                  },
+                    cat.seleccionada && styles.checkboxSelected,
                 ]}
               >
                 {cat.seleccionada && (
-                  <ThemedText style={styles.checkMark}>✓</ThemedText>
+                    <ThemedText style={styles.checkMark}>✓</ThemedText>
                 )}
               </View>
               <ThemedText style={styles.itemNombre}>{cat.nombre}</ThemedText>
@@ -142,22 +149,21 @@ export default function OnboardingServicesScreen({
         style={styles.botones}
       >
         <Pressable onPress={onBack} style={styles.botonSecundario}>
-          <ThemedText style={styles.botonSecundarioTexto}>← Atrás</ThemedText>
+          <ThemedText style={styles.botonSecundarioTexto}>Atrás</ThemedText>
         </Pressable>
         <Pressable
           onPress={guardar}
           disabled={guardando}
           style={[
             styles.botonPrimario,
-            { backgroundColor: config.theme.primaryColor },
             guardando && styles.botonDisabled,
           ]}
         >
           {guardando ? (
-            <ActivityIndicator color={Colors.light.white} size="small" />
+            <ActivityIndicator color="#000000" size="small" />
           ) : (
             <ThemedText style={styles.botonPrimarioTexto}>
-              Finalizar →
+              Finalizar
             </ThemedText>
           )}
         </Pressable>
@@ -169,31 +175,41 @@ export default function OnboardingServicesScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.backgroundRoot,
+    backgroundColor: "#111318",
     paddingHorizontal: Spacing.lg,
   },
   header: {
     paddingTop: Spacing["3xl"],
     paddingBottom: Spacing.xl,
   },
-  paso: {
-    fontSize: 13,
-    color: Colors.light.textMuted,
-    marginBottom: Spacing.sm,
-    fontWeight: "600",
-    letterSpacing: 1,
-    textTransform: "uppercase",
+  dotsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: Spacing.lg,
+  },
+  dot: {
+    height: 3,
+    borderRadius: 2,
+  },
+  dotActive: {
+    width: 20,
+    backgroundColor: "#FFFFFF",
+  },
+  dotInactive: {
+    width: 6,
+    backgroundColor: "rgba(255,255,255,0.2)",
   },
   titulo: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: "700",
-    color: Colors.light.text,
-    marginBottom: Spacing.sm,
+    color: "#FFFFFF",
+    marginBottom: 8,
   },
   subtitulo: {
-    fontSize: 15,
-    color: Colors.light.textSecondary,
-    lineHeight: 22,
+    fontSize: 13,
+    color: "rgba(255,255,255,0.45)",
+    lineHeight: 20,
   },
   lista: {
     gap: Spacing.sm,
@@ -202,37 +218,41 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: Colors.light.card,
-    borderRadius: BorderRadius.xs,
-    borderWidth: 1.5,
-    borderColor: Colors.light.border,
+    backgroundColor: "rgba(255,255,255,0.03)",
+    borderRadius: 10,
+    borderWidth: 0.5,
+    borderColor: "rgba(255,255,255,0.12)",
     padding: Spacing.lg,
     gap: Spacing.md,
   },
   itemSeleccionado: {
-    borderColor: Colors.light.violet,
-    backgroundColor: Colors.light.primaryLight,
+    borderColor: "rgba(255,255,255,0.7)",
+    backgroundColor: "rgba(255,255,255,0.06)",
   },
   itemPressed: { opacity: 0.8 },
   checkbox: {
-    width: 24,
-    height: 24,
-    borderRadius: 6,
-    borderWidth: 2,
-    borderColor: Colors.light.border,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    borderWidth: 0.5,
+    borderColor: "rgba(255,255,255,0.5)",
     alignItems: "center",
     justifyContent: "center",
   },
+  checkboxSelected: {
+    backgroundColor: "#FFFFFF",
+    borderColor: "#FFFFFF",
+  },
   checkMark: {
-    color: Colors.light.white,
-    fontSize: 13,
+    color: "#000000",
+    fontSize: 11,
     fontWeight: "700",
-    lineHeight: 16,
+    lineHeight: 14,
   },
   itemNombre: {
     fontSize: 16,
     fontWeight: "500",
-    color: Colors.light.text,
+    color: "#FFFFFF",
   },
   botones: {
     flexDirection: "row",
@@ -242,28 +262,29 @@ const styles = StyleSheet.create({
   },
   botonSecundario: {
     flex: 1,
-    borderWidth: 1.5,
-    borderColor: Colors.light.border,
-    borderRadius: BorderRadius.xs,
-    paddingVertical: Spacing.md,
+    borderWidth: 0.5,
+    borderColor: "rgba(255,255,255,0.2)",
+    borderRadius: 10,
+    paddingVertical: 15,
     alignItems: "center",
   },
   botonSecundarioTexto: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "600",
-    color: Colors.light.text,
+    color: "rgba(255,255,255,0.6)",
   },
   botonPrimario: {
     flex: 2,
-    borderRadius: BorderRadius.xs,
-    paddingVertical: Spacing.md,
+    borderRadius: 10,
+    paddingVertical: 15,
     alignItems: "center",
     justifyContent: "center",
+    backgroundColor: "#FFFFFF",
   },
   botonPrimarioTexto: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "700",
-    color: Colors.light.white,
+    color: "#000000",
   },
   botonDisabled: { opacity: 0.6 },
 });

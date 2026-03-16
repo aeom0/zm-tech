@@ -37,11 +37,11 @@ export default function App() {
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
-        <TenantProvider>
-          <AuthProvider>
+        <AuthProvider>
+          <TenantProvider>
             <AppContent />
-          </AuthProvider>
-        </TenantProvider>
+          </TenantProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </ErrorBoundary>
   );

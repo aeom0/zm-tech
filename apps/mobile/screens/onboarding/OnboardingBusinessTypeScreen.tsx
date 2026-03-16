@@ -6,9 +6,10 @@ import {
   ScrollView,
 } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
-import { Colors, Spacing, BorderRadius } from "@/constants/theme";
+import { Spacing, BorderRadius } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 import {
   spaNavilsPreset,
@@ -27,28 +28,28 @@ interface OnboardingBusinessTypeScreenProps {
 const TIPOS = [
   {
     key: "spa-nails" as BusinessType,
-    emoji: "💅",
+    icon: "droplet" as const,
     nombre: "Spa / Uñas",
     descripcion: "Uñas, pestañas, cejas y tratamientos de belleza",
     preset: spaNavilsPreset,
   },
   {
     key: "barbershop" as BusinessType,
-    emoji: "✂️",
+    icon: "scissors" as const,
     nombre: "Barbería",
     descripcion: "Cortes, afeitado, arreglo de barba y bigote",
     preset: barbershopPreset,
   },
   {
     key: "hair-salon" as BusinessType,
-    emoji: "💇",
+    icon: "user" as const,
     nombre: "Peluquería",
     descripcion: "Cortes, color, peinados y tratamientos capilares",
     preset: hairSalonPreset,
   },
   {
     key: "full-aesthetic" as BusinessType,
-    emoji: "🌿",
+    icon: "shield" as const,
     nombre: "Estética Integral",
     descripcion: "Servicios de belleza y bienestar completos",
     preset: fullAestheticPreset,
@@ -74,7 +75,17 @@ export default function OnboardingBusinessTypeScreen({
   return (
     <View style={styles.container}>
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-        <ThemedText style={styles.paso}>Paso 1 de 4</ThemedText>
+        <View style={styles.dotsRow}>
+          {[0, 1, 2, 3, 4].map((index) => (
+            <View
+              key={index}
+              style={[
+                styles.dot,
+                index === 0 ? styles.dotActive : styles.dotInactive,
+              ]}
+            />
+          ))}
+        </View>
         <ThemedText style={styles.titulo}>
           ¿Qué tipo de negocio tienes?
         </ThemedText>
@@ -102,7 +113,13 @@ export default function OnboardingBusinessTypeScreen({
                   pressed && styles.cardPressed,
                 ]}
               >
-                <ThemedText style={styles.emoji}>{tipo.emoji}</ThemedText>
+                <View style={styles.iconWrapper}>
+                  <Feather
+                    name={tipo.icon}
+                    size={18}
+                    color="rgba(255,255,255,0.6)"
+                  />
+                </View>
                 <View style={styles.cardTexto}>
                   <ThemedText style={styles.cardNombre}>
                     {tipo.nombre}
@@ -111,11 +128,16 @@ export default function OnboardingBusinessTypeScreen({
                     {tipo.descripcion}
                   </ThemedText>
                 </View>
-                {seleccionado && (
-                  <View style={styles.check}>
-                    <ThemedText style={styles.checkMark}>✓</ThemedText>
-                  </View>
-                )}
+                <View
+                  style={[
+                    styles.check,
+                    seleccionado && styles.checkSelected,
+                  ]}
+                >
+                  {seleccionado && (
+                    <Feather name="check" size={10} color="#000000" />
+                  )}
+                </View>
               </Pressable>
             </Animated.View>
           );
@@ -128,31 +150,42 @@ export default function OnboardingBusinessTypeScreen({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.light.backgroundRoot,
+    backgroundColor: "#111318",
     paddingHorizontal: Spacing.lg,
   },
   header: {
     paddingTop: Spacing["3xl"],
     paddingBottom: Spacing.xl,
   },
-  paso: {
-    fontSize: 13,
-    color: Colors.light.textMuted,
-    marginBottom: Spacing.sm,
-    fontWeight: "600",
-    letterSpacing: 1,
-    textTransform: "uppercase",
+  dotsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    marginBottom: Spacing.lg,
+  },
+  dot: {
+    height: 3,
+    borderRadius: 2,
+  },
+  dotActive: {
+    width: 20,
+    backgroundColor: "#FFFFFF",
+  },
+  dotInactive: {
+    width: 6,
+    backgroundColor: "rgba(255,255,255,0.2)",
   },
   titulo: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: "700",
-    color: Colors.light.text,
-    marginBottom: Spacing.sm,
+    color: "#FFFFFF",
+    marginBottom: 8,
   },
   subtitulo: {
-    fontSize: 15,
-    color: Colors.light.textSecondary,
-    lineHeight: 22,
+    fontSize: 13,
+    color: "rgba(255,255,255,0.45)",
+    lineHeight: 20,
+    marginBottom: 24,
   },
   cards: {
     gap: Spacing.md,
@@ -161,48 +194,54 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: Colors.light.card,
-    borderRadius: BorderRadius.md,
-    borderWidth: 2,
-    borderColor: Colors.light.border,
-    padding: Spacing.lg,
+    backgroundColor: "transparent",
+    borderRadius: 12,
+    borderWidth: 0.5,
+    borderColor: "rgba(255,255,255,0.1)",
+    padding: 14,
+    marginBottom: 8,
     gap: Spacing.md,
   },
   cardSeleccionado: {
-    borderColor: Colors.light.violet,
-    backgroundColor: Colors.light.primaryLight,
+    borderColor: "rgba(255,255,255,0.5)",
+    backgroundColor: "rgba(255,255,255,0.05)",
   },
   cardPressed: {
     opacity: 0.85,
   },
-  emoji: {
-    fontSize: 36,
+  iconWrapper: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: "rgba(255,255,255,0.07)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   cardTexto: {
     flex: 1,
   },
   cardNombre: {
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: "600",
-    color: Colors.light.text,
+    color: "#FFFFFF",
     marginBottom: 2,
   },
   cardDesc: {
-    fontSize: 13,
-    color: Colors.light.textSecondary,
+    fontSize: 12,
+    color: "rgba(255,255,255,0.6)",
     lineHeight: 18,
   },
   check: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: Colors.light.violet,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    borderWidth: 0.5,
+    borderColor: "rgba(255,255,255,0.7)",
     alignItems: "center",
     justifyContent: "center",
   },
-  checkMark: {
-    color: Colors.light.white,
-    fontSize: 14,
-    fontWeight: "700",
+  checkSelected: {
+    backgroundColor: "#FFFFFF",
+    borderColor: "#FFFFFF",
   },
 });
