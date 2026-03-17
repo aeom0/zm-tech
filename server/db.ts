@@ -4,7 +4,8 @@ import * as schema from "@salonpro/shared-schema";
 
 const pool = new Pool({
   connectionString:
-    process.env.DATABASE_URL ?? "postgresql://alber:salonpro@localhost:5432/salonpro",
+    process.env.DATABASE_URL ??
+    "postgresql://alber:salonpro@localhost:5432/salonpro",
 });
 
 export const db = drizzle(pool, { schema });

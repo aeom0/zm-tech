@@ -13,20 +13,20 @@ import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 
 const COLORES_PRIMARIOS = [
-  { label: "Violeta",   valor: "#7B2D8E" },
-  { label: "Rosa",      valor: "#E91E8C" },
-  { label: "Azul",      valor: "#1A237E" },
-  { label: "Verde",     valor: "#00695C" },
-  { label: "Naranja",   valor: "#E65100" },
-  { label: "Rojo",      valor: "#B71C1C" },
+  { label: "Violeta", valor: "#7B2D8E" },
+  { label: "Rosa", valor: "#E91E8C" },
+  { label: "Azul", valor: "#1A237E" },
+  { label: "Verde", valor: "#00695C" },
+  { label: "Naranja", valor: "#E65100" },
+  { label: "Rojo", valor: "#B71C1C" },
 ];
 
 const COLORES_ACENTO = [
-  { label: "Dorado",    valor: "#D4AF37" },
-  { label: "Amarillo",  valor: "#F9A825" },
-  { label: "Plateado",  valor: "#9E9E9E" },
-  { label: "Blanco",    valor: "#FFFFFF" },
-  { label: "Cobre",     valor: "#BF6516" },
+  { label: "Dorado", valor: "#D4AF37" },
+  { label: "Amarillo", valor: "#F9A825" },
+  { label: "Plateado", valor: "#9E9E9E" },
+  { label: "Blanco", valor: "#FFFFFF" },
+  { label: "Cobre", valor: "#BF6516" },
 ];
 
 interface OnboardingBasicInfoScreenProps {
@@ -39,7 +39,9 @@ export default function OnboardingBasicInfoScreen({
   onBack,
 }: OnboardingBasicInfoScreenProps) {
   const { config, updateTenant } = useTenant();
-  const [nombre, setNombre] = useState(config.businessName === "Mi Salón" ? "" : config.businessName);
+  const [nombre, setNombre] = useState(
+    config.businessName === "Mi Salón" ? "" : config.businessName,
+  );
   const [colorPrimario, setColorPrimario] = useState(config.theme.primaryColor);
   const [colorAcento, setColorAcento] = useState(config.theme.accentColor);
   const [error, setError] = useState<string | null>(null);
@@ -52,7 +54,11 @@ export default function OnboardingBasicInfoScreen({
     }
     await updateTenant({
       businessName: nombreFinal,
-      theme: { ...config.theme, primaryColor: colorPrimario, accentColor: colorAcento },
+      theme: {
+        ...config.theme,
+        primaryColor: colorPrimario,
+        accentColor: colorAcento,
+      },
     });
     onNext();
   };
@@ -83,24 +89,31 @@ export default function OnboardingBasicInfoScreen({
       </Animated.View>
 
       {/* Nombre */}
-      <Animated.View entering={FadeInDown.delay(100).duration(400)} style={styles.campo}>
+      <Animated.View
+        entering={FadeInDown.delay(100).duration(400)}
+        style={styles.campo}
+      >
         <ThemedText style={styles.label}>Nombre del negocio *</ThemedText>
         <TextInput
           style={[styles.input, error ? styles.inputError : null]}
           placeholder="Ej. Spa Bella, Barbería Clásica…"
           placeholderTextColor="rgba(255,255,255,0.25)"
           value={nombre}
-          onChangeText={(t) => { setNombre(t); setError(null); }}
+          onChangeText={(t) => {
+            setNombre(t);
+            setError(null);
+          }}
           autoCapitalize="words"
           returnKeyType="done"
         />
-        {error && (
-          <ThemedText style={styles.errorText}>{error}</ThemedText>
-        )}
+        {error && <ThemedText style={styles.errorText}>{error}</ThemedText>}
       </Animated.View>
 
       {/* Color primario */}
-      <Animated.View entering={FadeInDown.delay(180).duration(400)} style={styles.campo}>
+      <Animated.View
+        entering={FadeInDown.delay(180).duration(400)}
+        style={styles.campo}
+      >
         <ThemedText style={styles.label}>Color principal</ThemedText>
         <View style={styles.paleta}>
           {COLORES_PRIMARIOS.map((c) => (
@@ -109,22 +122,21 @@ export default function OnboardingBasicInfoScreen({
               onPress={() => setColorPrimario(c.valor)}
               style={[
                 styles.colorChipWrapper,
-                colorPrimario === c.valor && styles.colorChipWrapperSeleccionado,
+                colorPrimario === c.valor &&
+                  styles.colorChipWrapperSeleccionado,
               ]}
             >
-              <View
-                style={[
-                  styles.colorChip,
-                  { backgroundColor: c.valor },
-                ]}
-              />
+              <View style={[styles.colorChip, { backgroundColor: c.valor }]} />
             </Pressable>
           ))}
         </View>
       </Animated.View>
 
       {/* Color de acento */}
-      <Animated.View entering={FadeInDown.delay(260).duration(400)} style={styles.campo}>
+      <Animated.View
+        entering={FadeInDown.delay(260).duration(400)}
+        style={styles.campo}
+      >
         <ThemedText style={styles.label}>Color de acento</ThemedText>
         <View style={styles.paleta}>
           {COLORES_ACENTO.map((c) => (
@@ -136,12 +148,7 @@ export default function OnboardingBasicInfoScreen({
                 colorAcento === c.valor && styles.colorChipWrapperSeleccionado,
               ]}
             >
-              <View
-                style={[
-                  styles.colorChip,
-                  { backgroundColor: c.valor },
-                ]}
-              />
+              <View style={[styles.colorChip, { backgroundColor: c.valor }]} />
             </Pressable>
           ))}
         </View>
@@ -161,7 +168,10 @@ export default function OnboardingBasicInfoScreen({
       </Animated.View>
 
       {/* Botones */}
-      <Animated.View entering={FadeInDown.delay(400).duration(400)} style={styles.botones}>
+      <Animated.View
+        entering={FadeInDown.delay(400).duration(400)}
+        style={styles.botones}
+      >
         <Pressable onPress={onBack} style={styles.botonSecundario}>
           <ThemedText style={styles.botonSecundarioTexto}>Atrás</ThemedText>
         </Pressable>

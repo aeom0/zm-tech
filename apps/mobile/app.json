@@ -19,8 +19,7 @@
       },
       "package": "com.salonpro.app",
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false,
-      "googleServicesFile": "./google-services.json"
+      "predictiveBackGestureEnabled": false
     },
     "web": {
       "output": "single",
@@ -28,7 +27,9 @@
       "bundler": "metro",
       "build": {
         "babel": {
-          "include": ["@expo/vector-icons"]
+          "include": [
+            "@expo/vector-icons"
+          ]
         }
       },
       "splash": {
@@ -73,15 +74,11 @@
       "reactCompiler": true
     },
     "extra": {
+      "expoFontTimeout": 20000,
       "eas": {
-        "projectId": "9010264e-afe3-40ed-855e-0dd277f868c1"
+        "projectId": "ff07d991-dcd2-446c-9b5b-9d5809855619"
       }
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/9010264e-afe3-40ed-855e-0dd277f868c1"
-    }
+    "owner": "aeom0"
   }
 }

@@ -33,7 +33,9 @@ export function SocialProofSection() {
                 <p className="text-4xl md:text-5xl font-bold text-primary mb-2">
                   {m.value}
                 </p>
-                <p className="text-sm text-zinc-500 dark:text-zinc-400">{m.label}</p>
+                <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                  {m.label}
+                </p>
               </div>
             </RevealWrapper>
           ))}

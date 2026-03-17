@@ -12,7 +12,6 @@ export function HeroSection() {
       <div className="relative z-10 w-full max-w-6xl mx-auto px-4 pt-24 pb-16">
         {/* Layout: columna en mobile, 2 columnas en desktop */}
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-
           {/* Columna izquierda — texto */}
           <div className="flex-1 text-center lg:text-left">
             {/* Badge */}
@@ -33,8 +32,8 @@ export function HeroSection() {
 
             {/* Subtítulo */}
             <p className="text-lg text-white/70 max-w-xl mx-auto lg:mx-0 mb-10 leading-relaxed">
-              Agenda, personal, inventario y finanzas en un solo lugar.
-              Sin papeles, sin WhatsApp, sin caos.
+              Agenda, personal, inventario y finanzas en un solo lugar. Sin
+              papeles, sin WhatsApp, sin caos.
             </p>
 
             {/* CTAs */}
@@ -71,7 +70,6 @@ export function HeroSection() {
           <div className="flex-shrink-0 w-full max-w-[300px] lg:max-w-[320px]">
             <AppMockup />
           </div>
-
         </div>
       </div>
 

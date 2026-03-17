@@ -217,9 +217,15 @@ export const tenantSettings = pgTable("tenant_settings", {
   currencySymbol: text("currency_symbol").notNull().default("$"),
   country: text("country").notNull().default(""),
   language: text("language").notNull().default("es"),
-  staffTerminology: text("staff_terminology").notNull().default("especialistas"),
-  staffSingularTerminology: text("staff_singular_terminology").notNull().default("especialista"),
-  appointmentTerminology: text("appointment_terminology").notNull().default("cita"),
+  staffTerminology: text("staff_terminology")
+    .notNull()
+    .default("especialistas"),
+  staffSingularTerminology: text("staff_singular_terminology")
+    .notNull()
+    .default("especialista"),
+  appointmentTerminology: text("appointment_terminology")
+    .notNull()
+    .default("cita"),
   businessHours: jsonb("business_hours"),
   contactInfo: jsonb("contact_info"),
   commissionStaff: integer("commission_staff").notNull().default(60),
@@ -229,7 +235,9 @@ export const tenantSettings = pgTable("tenant_settings", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertTenantSettingsSchema = createInsertSchema(tenantSettings).omit({
+export const insertTenantSettingsSchema = createInsertSchema(
+  tenantSettings,
+).omit({
   id: true,
   createdAt: true,
   updatedAt: true,

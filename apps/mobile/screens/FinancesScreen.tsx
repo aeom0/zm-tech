@@ -702,7 +702,8 @@ export default function FinancesScreen() {
               style={[styles.chartYLabelText, { color: theme.textMuted }]}
               numberOfLines={1}
             >
-              {currencySymbol}{formatCurrency(maxValue)}
+              {currencySymbol}
+              {formatCurrency(maxValue)}
             </ThemedText>
           </View>
         )}
@@ -955,7 +956,8 @@ export default function FinancesScreen() {
                           { color: theme.primary, fontWeight: "600" },
                         ]}
                       >
-                        Pendiente {currencySymbol} {formatCurrency(row.pendiente)}
+                        Pendiente {currencySymbol}{" "}
+                        {formatCurrency(row.pendiente)}
                       </ThemedText>
                     )}
                   </View>
@@ -1154,7 +1156,8 @@ export default function FinancesScreen() {
                   <ThemedText
                     style={[styles.paymentAmount, { color: Colors.light.gold }]}
                   >
-                    {currencySymbol}{parseFloat(payment.amount).toFixed(2)}
+                    {currencySymbol}
+                    {parseFloat(payment.amount).toFixed(2)}
                   </ThemedText>
                 </Pressable>
               );
@@ -1536,7 +1539,8 @@ export default function FinancesScreen() {
                               },
                             ]}
                           >
-                            Pendiente {currencySymbol}{pendienteApt.toFixed(0)}
+                            Pendiente {currencySymbol}
+                            {pendienteApt.toFixed(0)}
                           </ThemedText>
                         )}
                       </Pressable>

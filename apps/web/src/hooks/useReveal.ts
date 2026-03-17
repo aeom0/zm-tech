@@ -13,7 +13,7 @@ type Options = {
  * en globals.css (.reveal-up, .reveal-fade, etc.).
  */
 export function useReveal<T extends HTMLElement = HTMLDivElement>(
-  options: Options = {}
+  options: Options = {},
 ) {
   const { threshold = 0.15, delay = 0 } = options;
   const ref = useRef<T>(null);
@@ -33,7 +33,7 @@ export function useReveal<T extends HTMLElement = HTMLDivElement>(
           observer.disconnect();
         }
       },
-      { threshold }
+      { threshold },
     );
 
     observer.observe(el);

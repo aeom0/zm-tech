@@ -283,7 +283,8 @@ export default function ServicesScreen() {
         </View>
       </View>
       <ThemedText style={[styles.servicePrice, { color: Colors.light.gold }]}>
-        {currencySymbol}{parseFloat(service.price).toFixed(0)}
+        {currencySymbol}
+        {parseFloat(service.price).toFixed(0)}
       </ThemedText>
     </Pressable>
   );

@@ -15,8 +15,14 @@ import { useTenant } from "@/contexts/TenantContext";
 import { supabase } from "@/lib/supabase";
 
 const COLORES_EMPLEADO = [
-  "#7B2D8E", "#E91E8C", "#1A237E", "#00695C",
-  "#E65100", "#B71C1C", "#F9A825", "#0277BD",
+  "#7B2D8E",
+  "#E91E8C",
+  "#1A237E",
+  "#00695C",
+  "#E65100",
+  "#B71C1C",
+  "#F9A825",
+  "#0277BD",
 ];
 
 interface OnboardingTeamScreenProps {
@@ -98,14 +104,20 @@ export default function OnboardingTeamScreen({
             />
           ))}
         </View>
-        <ThemedText style={styles.titulo}>Agrega tu primer {staffLabel}</ThemedText>
+        <ThemedText style={styles.titulo}>
+          Agrega tu primer {staffLabel}
+        </ThemedText>
         <ThemedText style={styles.subtitulo}>
-          Puedes agregar más desde Más → {config.terminology.staff} después de configurar.
+          Puedes agregar más desde Más → {config.terminology.staff} después de
+          configurar.
         </ThemedText>
       </Animated.View>
 
       {/* Nombre */}
-      <Animated.View entering={FadeInDown.delay(100).duration(400)} style={styles.campo}>
+      <Animated.View
+        entering={FadeInDown.delay(100).duration(400)}
+        style={styles.campo}
+      >
         <ThemedText style={styles.label}>Nombre *</ThemedText>
         <TextInput
           style={styles.input}
@@ -118,7 +130,10 @@ export default function OnboardingTeamScreen({
       </Animated.View>
 
       {/* Email */}
-      <Animated.View entering={FadeInDown.delay(160).duration(400)} style={styles.campo}>
+      <Animated.View
+        entering={FadeInDown.delay(160).duration(400)}
+        style={styles.campo}
+      >
         <ThemedText style={styles.label}>Email (opcional)</ThemedText>
         <TextInput
           style={styles.input}
@@ -132,7 +147,10 @@ export default function OnboardingTeamScreen({
       </Animated.View>
 
       {/* Comisión */}
-      <Animated.View entering={FadeInDown.delay(220).duration(400)} style={styles.campo}>
+      <Animated.View
+        entering={FadeInDown.delay(220).duration(400)}
+        style={styles.campo}
+      >
         <ThemedText style={styles.label}>
           Comisión del {staffLabel} (%)
         </ThemedText>
@@ -151,7 +169,10 @@ export default function OnboardingTeamScreen({
       </Animated.View>
 
       {/* Color */}
-      <Animated.View entering={FadeInDown.delay(280).duration(400)} style={styles.campo}>
+      <Animated.View
+        entering={FadeInDown.delay(280).duration(400)}
+        style={styles.campo}
+      >
         <ThemedText style={styles.label}>Color en el calendario</ThemedText>
         <View style={styles.paleta}>
           {COLORES_EMPLEADO.map((c) => (
@@ -163,29 +184,24 @@ export default function OnboardingTeamScreen({
                 color === c && styles.colorChipWrapperSeleccionado,
               ]}
             >
-              <View
-                style={[
-                  styles.colorChip,
-                  { backgroundColor: c },
-                ]}
-              />
+              <View style={[styles.colorChip, { backgroundColor: c }]} />
             </Pressable>
           ))}
         </View>
       </Animated.View>
 
       {/* Botones */}
-      <Animated.View entering={FadeInDown.delay(340).duration(400)} style={styles.botones}>
+      <Animated.View
+        entering={FadeInDown.delay(340).duration(400)}
+        style={styles.botones}
+      >
         <Pressable onPress={onBack} style={styles.botonSecundario}>
           <ThemedText style={styles.botonSecundarioTexto}>Atrás</ThemedText>
         </Pressable>
         <Pressable
           onPress={guardar}
           disabled={guardando}
-          style={[
-            styles.botonPrimario,
-            guardando && styles.botonDisabled,
-          ]}
+          style={[styles.botonPrimario, guardando && styles.botonDisabled]}
         >
           <ThemedText style={styles.botonPrimarioTexto}>
             {guardando ? "Guardando…" : "Continuar"}

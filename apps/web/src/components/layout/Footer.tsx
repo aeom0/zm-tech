@@ -20,8 +20,8 @@ export function Footer() {
               </span>
             </div>
             <p className="text-zinc-400 text-sm leading-relaxed">
-              Plataforma de gestión para barberías, spas, peluquerías y estéticas
-              en LATAM. Organiza tu negocio desde el celular.
+              Plataforma de gestión para barberías, spas, peluquerías y
+              estéticas en LATAM. Organiza tu negocio desde el celular.
             </p>
           </div>
 

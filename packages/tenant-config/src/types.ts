@@ -1,6 +1,6 @@
 export interface TenantConfig {
   businessName: string;
-  businessType: 'spa-nails' | 'barbershop' | 'hair-salon' | 'full-aesthetic';
+  businessType: "spa-nails" | "barbershop" | "hair-salon" | "full-aesthetic";
   logo?: string;
   tagline?: string;
 
@@ -14,14 +14,14 @@ export interface TenantConfig {
     currency: { code: string; symbol: string };
     country: string;
     timezone: string;
-    language: 'es' | 'es-PE' | 'es-VE' | 'es-CO' | 'pt-BR';
+    language: "es" | "es-PE" | "es-VE" | "es-CO" | "pt-BR";
   };
 
   terminology: {
-    staff: string;         // "chicas" | "barberos" | "estilistas" | "especialistas"
+    staff: string; // "chicas" | "barberos" | "estilistas" | "especialistas"
     staffSingular: string;
-    appointment: string;   // "cita" | "turno" | "reserva"
-    client: string;        // "cliente" | "clienta"
+    appointment: string; // "cita" | "turno" | "reserva"
+    client: string; // "cliente" | "clienta"
   };
 
   contact: {

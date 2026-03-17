@@ -1,26 +1,24 @@
-import { useCallback } from 'react';
-import * as Haptics from 'expo-haptics';
+import { useCallback } from "react";
+import * as Haptics from "expo-haptics";
 
 export function useHaptics() {
   const trigger = useCallback(
-    (
-      type: Haptics.ImpactFeedbackStyle | Haptics.NotificationFeedbackType
-    ) => {
+    (type: Haptics.ImpactFeedbackStyle | Haptics.NotificationFeedbackType) => {
       if (
         Object.values(Haptics.ImpactFeedbackStyle).includes(
-          type as Haptics.ImpactFeedbackStyle
+          type as Haptics.ImpactFeedbackStyle,
         )
       ) {
         Haptics.impactAsync(type as Haptics.ImpactFeedbackStyle);
       } else if (
         Object.values(Haptics.NotificationFeedbackType).includes(
-          type as Haptics.NotificationFeedbackType
+          type as Haptics.NotificationFeedbackType,
         )
       ) {
         Haptics.notificationAsync(type as Haptics.NotificationFeedbackType);
       }
     },
-    []
+    [],
   );
 
   const success = useCallback(() => {

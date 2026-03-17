@@ -21,7 +21,9 @@ async function registerForPushNotifications(
 ): Promise<string | null> {
   if (!Device.isDevice) {
     // eslint-disable-next-line no-console
-    console.log("[Notifications] No es un dispositivo físico, se omite registro de push");
+    console.log(
+      "[Notifications] No es un dispositivo físico, se omite registro de push",
+    );
     return null;
   }
 
@@ -58,7 +60,9 @@ async function registerForPushNotifications(
 }
 
 export function useNotifications(userId: string | null) {
-  const notificationListener = useRef<Notifications.EventSubscription | null>(null);
+  const notificationListener = useRef<Notifications.EventSubscription | null>(
+    null,
+  );
   const responseListener = useRef<Notifications.EventSubscription | null>(null);
   const { config } = useTenant();
 
@@ -75,17 +79,21 @@ export function useNotifications(userId: string | null) {
       console.log("Push token obtenido:", token);
     });
 
-    notificationListener.current = Notifications.addNotificationReceivedListener(
-      (notification) => {
-        console.log("Notificación recibida:", notification.request.content.title);
-      },
-    );
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        console.log(
+          "Notificación recibida:",
+          notification.request.content.title,
+        );
+      });
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(
-      (response) => {
-        console.log("Notificación abierta:", response.notification.request.content.title);
-      },
-    );
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(
+          "Notificación abierta:",
+          response.notification.request.content.title,
+        );
+      });
 
     return () => {
       notificationListener.current?.remove();

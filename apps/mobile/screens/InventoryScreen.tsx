@@ -606,41 +606,41 @@ export default function InventoryScreen() {
               Categoría
             </ThemedText>
             <View style={[styles.row, { marginBottom: 0 }]}>
-              {(["unas", "pestanas_cejas", "insumos"] as InventoryCategory[]).map(
-                (cat) => (
-                  <Pressable
-                    key={cat}
+              {(
+                ["unas", "pestanas_cejas", "insumos"] as InventoryCategory[]
+              ).map((cat) => (
+                <Pressable
+                  key={cat}
+                  style={[
+                    styles.categoryChip,
+                    {
+                      backgroundColor:
+                        formData.category === cat
+                          ? theme.primary
+                          : theme.backgroundSecondary,
+                      borderColor:
+                        formData.category === cat
+                          ? theme.primary
+                          : theme.border,
+                    },
+                  ]}
+                  onPress={() =>
+                    setFormData((prev) => ({ ...prev, category: cat }))
+                  }
+                >
+                  <ThemedText
                     style={[
-                      styles.categoryChip,
+                      styles.categoryChipText,
                       {
-                        backgroundColor:
-                          formData.category === cat
-                            ? theme.primary
-                            : theme.backgroundSecondary,
-                        borderColor:
-                          formData.category === cat
-                            ? theme.primary
-                            : theme.border,
+                        color:
+                          formData.category === cat ? "#FFFFFF" : theme.text,
                       },
                     ]}
-                    onPress={() =>
-                      setFormData((prev) => ({ ...prev, category: cat }))
-                    }
                   >
-                    <ThemedText
-                      style={[
-                        styles.categoryChipText,
-                        {
-                          color:
-                            formData.category === cat ? "#FFFFFF" : theme.text,
-                        },
-                      ]}
-                    >
-                      {CATEGORY_LABELS[cat]}
-                    </ThemedText>
-                  </Pressable>
-                ),
-              )}
+                    {CATEGORY_LABELS[cat]}
+                  </ThemedText>
+                </Pressable>
+              ))}
             </View>
 
             <Pressable

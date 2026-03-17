@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  View,
-  StyleSheet,
-  Pressable,
-  ScrollView,
-} from "react-native";
+import { View, StyleSheet, Pressable, ScrollView } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
 
@@ -129,10 +124,7 @@ export default function OnboardingBusinessTypeScreen({
                   </ThemedText>
                 </View>
                 <View
-                  style={[
-                    styles.check,
-                    seleccionado && styles.checkSelected,
-                  ]}
+                  style={[styles.check, seleccionado && styles.checkSelected]}
                 >
                   {seleccionado && (
                     <Feather name="check" size={10} color="#000000" />

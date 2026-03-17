@@ -1065,7 +1065,8 @@ export default function AgendaScreen() {
                               },
                             ]}
                           >
-                            {currencySymbol} {service.price} · {service.duration} min
+                            {currencySymbol} {service.price} ·{" "}
+                            {service.duration} min
                           </ThemedText>
                         </Pressable>
                       );

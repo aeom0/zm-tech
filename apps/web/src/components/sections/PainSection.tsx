@@ -49,7 +49,8 @@ export function PainSection() {
               ¿Cómo gestionas tu negocio hoy?
             </h2>
             <p className="text-zinc-500 dark:text-zinc-400 mt-4 max-w-xl mx-auto">
-              Si te identificas con alguna de estas situaciones, SalonPro es para ti.
+              Si te identificas con alguna de estas situaciones, SalonPro es
+              para ti.
             </p>
           </div>
         </RevealWrapper>
@@ -65,7 +66,9 @@ export function PainSection() {
                 >
                   <span className="text-3xl flex-shrink-0">{pain.emoji}</span>
                   <div>
-                    <h3 className={`font-bold ${pain.textColor}`}>{pain.title}</h3>
+                    <h3 className={`font-bold ${pain.textColor}`}>
+                      {pain.title}
+                    </h3>
                     <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
                       {pain.description}
                     </p>
@@ -77,34 +80,37 @@ export function PainSection() {
 
           {/* Flecha + Solución */}
           <RevealWrapper variant="right">
-          <div className="flex flex-col items-center gap-6">
-            <div className="hidden lg:flex flex-col items-center gap-2 text-zinc-400">
-              <div className="w-0.5 h-8 bg-zinc-300 dark:bg-zinc-700" />
-              <span className="text-3xl">→</span>
-            </div>
+            <div className="flex flex-col items-center gap-6">
+              <div className="hidden lg:flex flex-col items-center gap-2 text-zinc-400">
+                <div className="w-0.5 h-8 bg-zinc-300 dark:bg-zinc-700" />
+                <span className="text-3xl">→</span>
+              </div>
 
-            <div className="w-full bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-8 text-white shadow-xl shadow-primary/20">
-              <div className="text-4xl mb-4">✂️</div>
-              <h3 className="text-2xl font-bold mb-2">Con SalonPro</h3>
-              <p className="text-white/80 mb-6 text-sm">
-                Todo organizado, en tu celular, en tiempo real.
-              </p>
-              <ul className="space-y-3">
-                {SOLUTIONS.map((s) => (
-                  <li key={s.text} className="flex items-center gap-3 text-sm">
-                    <span className="text-accent text-lg">{s.emoji}</span>
-                    <span>{s.text}</span>
-                  </li>
-                ))}
-              </ul>
-              <a
-                href="#precios"
-                className="inline-block mt-6 bg-accent text-black font-bold px-6 py-3 rounded-full text-sm hover:bg-accent/90 transition-colors"
-              >
-                Probar 14 días gratis
-              </a>
+              <div className="w-full bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-8 text-white shadow-xl shadow-primary/20">
+                <div className="text-4xl mb-4">✂️</div>
+                <h3 className="text-2xl font-bold mb-2">Con SalonPro</h3>
+                <p className="text-white/80 mb-6 text-sm">
+                  Todo organizado, en tu celular, en tiempo real.
+                </p>
+                <ul className="space-y-3">
+                  {SOLUTIONS.map((s) => (
+                    <li
+                      key={s.text}
+                      className="flex items-center gap-3 text-sm"
+                    >
+                      <span className="text-accent text-lg">{s.emoji}</span>
+                      <span>{s.text}</span>
+                    </li>
+                  ))}
+                </ul>
+                <a
+                  href="#precios"
+                  className="inline-block mt-6 bg-accent text-black font-bold px-6 py-3 rounded-full text-sm hover:bg-accent/90 transition-colors"
+                >
+                  Probar 14 días gratis
+                </a>
+              </div>
             </div>
-          </div>
           </RevealWrapper>
         </div>
       </div>

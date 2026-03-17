@@ -22,7 +22,7 @@ interface Categoria {
 // Categorías sugeridas por tipo de negocio
 const CATEGORIAS_POR_TIPO: Record<string, string[]> = {
   "spa-nails": ["Uñas", "Pestañas", "Cejas y Rostro", "Depilación"],
-  "barbershop": ["Cortes", "Barba y Bigote", "Tratamientos", "Color y Tintura"],
+  barbershop: ["Cortes", "Barba y Bigote", "Tratamientos", "Color y Tintura"],
   "hair-salon": ["Cortes", "Color", "Tratamientos", "Peinados"],
   "full-aesthetic": [
     "Tratamientos Faciales",
@@ -80,7 +80,9 @@ export default function OnboardingServicesScreen({
         order: index + 1,
       }));
 
-      const { error } = await supabase.from("service_categories").insert(payload);
+      const { error } = await supabase
+        .from("service_categories")
+        .insert(payload);
 
       if (error) {
         // eslint-disable-next-line no-console
@@ -93,7 +95,10 @@ export default function OnboardingServicesScreen({
       onNext();
     } catch (error) {
       // eslint-disable-next-line no-console
-      console.warn("[OnboardingServices] excepción inesperada al crear categorías", error);
+      console.warn(
+        "[OnboardingServices] excepción inesperada al crear categorías",
+        error,
+      );
       // Si falla (ej. categorías ya existen), continuar de todos modos
       onNext();
     } finally {
@@ -115,9 +120,7 @@ export default function OnboardingServicesScreen({
             />
           ))}
         </View>
-        <ThemedText style={styles.titulo}>
-          Categorías de servicios
-        </ThemedText>
+        <ThemedText style={styles.titulo}>Categorías de servicios</ThemedText>
         <ThemedText style={styles.subtitulo}>
           Estas categorías aparecerán en tu catálogo. Puedes editarlas después.
         </ThemedText>
@@ -143,11 +146,11 @@ export default function OnboardingServicesScreen({
               <View
                 style={[
                   styles.checkbox,
-                    cat.seleccionada && styles.checkboxSelected,
+                  cat.seleccionada && styles.checkboxSelected,
                 ]}
               >
                 {cat.seleccionada && (
-                    <ThemedText style={styles.checkMark}>✓</ThemedText>
+                  <ThemedText style={styles.checkMark}>✓</ThemedText>
                 )}
               </View>
               <ThemedText style={styles.itemNombre}>{cat.nombre}</ThemedText>
@@ -166,17 +169,12 @@ export default function OnboardingServicesScreen({
         <Pressable
           onPress={guardar}
           disabled={guardando}
-          style={[
-            styles.botonPrimario,
-            guardando && styles.botonDisabled,
-          ]}
+          style={[styles.botonPrimario, guardando && styles.botonDisabled]}
         >
           {guardando ? (
             <ActivityIndicator color="#000000" size="small" />
           ) : (
-            <ThemedText style={styles.botonPrimarioTexto}>
-              Finalizar
-            </ThemedText>
+            <ThemedText style={styles.botonPrimarioTexto}>Finalizar</ThemedText>
           )}
         </Pressable>
       </Animated.View>

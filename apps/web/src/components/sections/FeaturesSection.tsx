@@ -10,7 +10,10 @@ export function FeaturesSection() {
   const [activeType, setActiveType] = useState(BUSINESS_TYPES[0].id);
 
   return (
-    <section id="funciones" className="px-4 py-20 md:py-28 bg-white dark:bg-zinc-950">
+    <section
+      id="funciones"
+      className="px-4 py-20 md:py-28 bg-white dark:bg-zinc-950"
+    >
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <RevealWrapper variant="up">
@@ -22,7 +25,8 @@ export function FeaturesSection() {
               Todo lo que tu negocio necesita
             </h2>
             <p className="text-zinc-500 dark:text-zinc-400 mt-4 max-w-xl mx-auto">
-              Diseñado para barberías, spas, peluquerías y centros estéticos en LATAM.
+              Diseñado para barberías, spas, peluquerías y centros estéticos en
+              LATAM.
             </p>
           </div>
         </RevealWrapper>

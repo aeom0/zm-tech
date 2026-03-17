@@ -35,6 +35,14 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
   const [isConfigured, setIsConfigured] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  const updateTenant = useCallback(async (partial: Partial<TenantConfig>) => {
+    setConfig((prev) => {
+      const next = { ...prev, ...partial };
+      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      return next;
+    });
+  }, []);
+
   useEffect(() => {
     let isMounted = true;
 
@@ -82,17 +90,12 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
     };
   }, [userId, updateTenant]);
 
-  const updateTenant = useCallback(async (partial: Partial<TenantConfig>) => {
-    setConfig((prev) => {
-      const next = { ...prev, ...partial };
-      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      return next;
-    });
-  }, []);
-
   const markConfigured = useCallback(async () => {
     if (!userId) {
-      return { ok: false, error: "No hay usuario autenticado para guardar la configuración." };
+      return {
+        ok: false,
+        error: "No hay usuario autenticado para guardar la configuración.",
+      };
     }
 
     try {
@@ -103,7 +106,10 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
     } catch (error) {
       // Log en desarrollo para depurar fallos al guardar configuración remota
       // eslint-disable-next-line no-console
-      console.error("[TenantContext] Error al hacer upsert de tenant_settings", error);
+      console.error(
+        "[TenantContext] Error al hacer upsert de tenant_settings",
+        error,
+      );
       const message =
         error instanceof Error
           ? error.message

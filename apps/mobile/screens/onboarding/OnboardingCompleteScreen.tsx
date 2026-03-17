@@ -86,11 +86,15 @@ export default function OnboardingCompleteScreen({
         <ThemedText style={styles.nombre}>{config.businessName}</ThemedText>
         <ThemedText style={styles.subtitulo}>
           Tu app está configurada y lista para empezar a registrar{" "}
-          {config.terminology.appointment}s, {config.terminology.staff} y servicios.
+          {config.terminology.appointment}s, {config.terminology.staff} y
+          servicios.
         </ThemedText>
       </Animated.View>
 
-      <Animated.View entering={FadeInDown.delay(200).duration(400)} style={styles.statsGrid}>
+      <Animated.View
+        entering={FadeInDown.delay(200).duration(400)}
+        style={styles.statsGrid}
+      >
         <View style={styles.statTile}>
           <ThemedText style={styles.statNumber}>{categoriasCount}</ThemedText>
           <ThemedText style={styles.statLabel}>Categorías</ThemedText>
@@ -100,7 +104,9 @@ export default function OnboardingCompleteScreen({
           <ThemedText style={styles.statLabel}>Servicios</ThemedText>
         </View>
         <View style={styles.statTile}>
-          <ThemedText style={styles.statNumber}>{especialistasCount}</ThemedText>
+          <ThemedText style={styles.statNumber}>
+            {especialistasCount}
+          </ThemedText>
           <ThemedText style={styles.statLabel}>
             {config.terminology.staffSingular.toUpperCase()}
           </ThemedText>
@@ -111,7 +117,10 @@ export default function OnboardingCompleteScreen({
         </View>
       </Animated.View>
 
-      <Animated.View entering={FadeInDown.delay(400).duration(400)} style={styles.footer}>
+      <Animated.View
+        entering={FadeInDown.delay(400).duration(400)}
+        style={styles.footer}
+      >
         <Pressable
           onPress={handleFinish}
           disabled={saving}
@@ -123,7 +132,9 @@ export default function OnboardingCompleteScreen({
           {saving ? (
             <>
               <ActivityIndicator color="#000000" style={styles.botonLoader} />
-              <ThemedText style={styles.botonTexto}>Guardando configuración…</ThemedText>
+              <ThemedText style={styles.botonTexto}>
+                Guardando configuración…
+              </ThemedText>
             </>
           ) : (
             <ThemedText style={styles.botonTexto}>Ir al panel</ThemedText>

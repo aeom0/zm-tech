@@ -68,9 +68,18 @@ const useStaggeredAnimation = (isLoading: boolean, count: number) => {
     if (!isLoading) {
       animations.forEach((anim, index) => {
         const delay = index * 80;
-        anim.opacity.value = withDelay(delay, withTiming(1, { duration: 350, easing: Easing.out(Easing.ease) }));
-        anim.translateY.value = withDelay(delay, withSpring(0, { damping: 18, stiffness: 200 }));
-        anim.scale.value = withDelay(delay, withSpring(1, { damping: 18, stiffness: 200 }));
+        anim.opacity.value = withDelay(
+          delay,
+          withTiming(1, { duration: 350, easing: Easing.out(Easing.ease) }),
+        );
+        anim.translateY.value = withDelay(
+          delay,
+          withSpring(0, { damping: 18, stiffness: 200 }),
+        );
+        anim.scale.value = withDelay(
+          delay,
+          withSpring(1, { damping: 18, stiffness: 200 }),
+        );
       });
     }
   }, [isLoading]);
@@ -82,7 +91,7 @@ const useStaggeredAnimation = (isLoading: boolean, count: number) => {
         { translateY: anim.translateY.value },
         { scale: anim.scale.value },
       ],
-    }))
+    })),
   );
 };
 
@@ -144,12 +153,20 @@ export default function DashboardScreen() {
     },
   });
 
-  const navigation = useNavigation<BottomTabNavigationProp<MainTabParamList, "Dashboard">>();
+  const navigation =
+    useNavigation<BottomTabNavigationProp<MainTabParamList, "Dashboard">>();
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment | null>(null);
 
   const updateAppointmentMutation = useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: { status: string } }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string;
+      data: { status: string };
+    }) => {
       const { error } = await supabase
         .from("appointments")
         .update({ status: data.status })
@@ -162,7 +179,8 @@ export default function DashboardScreen() {
       queryClient.invalidateQueries({ queryKey: ["appointments"] });
       queryClient.invalidateQueries({ queryKey: ["dashboard_stats"] });
     },
-    onError: (e: Error) => Alert.alert("Error", e.message || "No se pudo actualizar"),
+    onError: (e: Error) =>
+      Alert.alert("Error", e.message || "No se pudo actualizar"),
   });
 
   const createPaymentMutation = useMutation({
@@ -194,7 +212,8 @@ export default function DashboardScreen() {
       queryClient.invalidateQueries({ queryKey: ["dashboard_stats"] });
       queryClient.invalidateQueries({ queryKey: ["dashboard_revenue"] });
     },
-    onError: (e: Error) => Alert.alert("Error", e.message || "No se pudo registrar el pago"),
+    onError: (e: Error) =>
+      Alert.alert("Error", e.message || "No se pudo registrar el pago"),
   });
 
   const handleMarkCompleted = (appointment: Appointment) => {
@@ -219,7 +238,7 @@ export default function DashboardScreen() {
           refetchAppointments();
           haptics.success();
         },
-      }
+      },
     );
   };
 
@@ -281,8 +300,10 @@ export default function DashboardScreen() {
 
   const upcomingAppointments = appointments
     .filter((a) => a.status === "scheduled")
-    .sort((a, b) =>
-      parseAppointmentDate(a.date).getTime() - parseAppointmentDate(b.date).getTime()
+    .sort(
+      (a, b) =>
+        parseAppointmentDate(a.date).getTime() -
+        parseAppointmentDate(b.date).getTime(),
     );
 
   const completedToday = appointments.filter((a) => a.status === "completed");
@@ -319,7 +340,9 @@ export default function DashboardScreen() {
       <View style={[styles.statIconBg, { backgroundColor: color + "18" }]}>
         <Feather name={icon as any} size={isTablet ? 22 : 18} color={color} />
       </View>
-      <ThemedText style={[styles.statValue, { color, fontSize: isTablet ? 26 : 22 }]}>
+      <ThemedText
+        style={[styles.statValue, { color, fontSize: isTablet ? 26 : 22 }]}
+      >
         {value}
       </ThemedText>
       <ThemedText style={[styles.statLabel, { color: theme.textSecondary }]}>
@@ -334,15 +357,25 @@ export default function DashboardScreen() {
   );
 
   // ─── Appointment Row ───────────────────────────────────────────────────────
-  const AppointmentRow = ({ appointment, index }: { appointment: Appointment; index: number }) => {
+  const AppointmentRow = ({
+    appointment,
+    index,
+  }: {
+    appointment: Appointment;
+    index: number;
+  }) => {
     const empColor = getEmployeeColor(appointment.employee_id);
-    const isLast = index === upcomingAppointments.slice(0, isTablet ? 8 : 5).length - 1;
+    const isLast =
+      index === upcomingAppointments.slice(0, isTablet ? 8 : 5).length - 1;
 
     return (
       <Pressable
         style={({ pressed }) => [
           styles.appointmentRow,
-          { borderBottomColor: theme.border, borderBottomWidth: isLast ? 0 : 1 },
+          {
+            borderBottomColor: theme.border,
+            borderBottomWidth: isLast ? 0 : 1,
+          },
           pressed && { opacity: 0.75 },
         ]}
         onPress={() => {
@@ -363,10 +396,16 @@ export default function DashboardScreen() {
 
         {/* Info */}
         <View style={styles.rowInfo}>
-          <ThemedText style={[styles.rowClient, { color: theme.text }]} numberOfLines={1}>
+          <ThemedText
+            style={[styles.rowClient, { color: theme.text }]}
+            numberOfLines={1}
+          >
             {appointment.client_name}
           </ThemedText>
-          <ThemedText style={[styles.rowService, { color: theme.textSecondary }]} numberOfLines={1}>
+          <ThemedText
+            style={[styles.rowService, { color: theme.textSecondary }]}
+            numberOfLines={1}
+          >
             {getServiceName(appointment.service_id)}
             {isTablet && ` · ${getEmployeeName(appointment.employee_id)}`}
           </ThemedText>
@@ -375,14 +414,20 @@ export default function DashboardScreen() {
         {/* Precio + duración */}
         <View style={styles.rowRight}>
           <ThemedText style={[styles.rowPrice, { color: theme.gold }]}>
-            {currencySymbol}{parseFloat(appointment.price).toFixed(0)}
+            {currencySymbol}
+            {parseFloat(appointment.price).toFixed(0)}
           </ThemedText>
           <ThemedText style={[styles.rowDuration, { color: theme.textMuted }]}>
             {appointment.duration}m
           </ThemedText>
         </View>
 
-        <Feather name="chevron-right" size={14} color={theme.textMuted} style={{ marginLeft: 4 }} />
+        <Feather
+          name="chevron-right"
+          size={14}
+          color={theme.textMuted}
+          style={{ marginLeft: 4 }}
+        />
       </Pressable>
     );
   };
@@ -390,7 +435,12 @@ export default function DashboardScreen() {
   // ─── Loading skeleton ──────────────────────────────────────────────────────
   if (isLoading) {
     return (
-      <View style={[styles.loadingContainer, { backgroundColor: theme.backgroundRoot }]}>
+      <View
+        style={[
+          styles.loadingContainer,
+          { backgroundColor: theme.backgroundRoot },
+        ]}
+      >
         <ActivityIndicator size="large" color={Colors.light.violet} />
       </View>
     );
@@ -404,7 +454,11 @@ export default function DashboardScreen() {
         label="Ingresos hoy"
         value={`${currencySymbol}${stats?.todayRevenue?.toFixed(0) || "0"}`}
         color={theme.gold}
-        subtitle={completedToday.length > 0 ? `${completedToday.length} pagos` : undefined}
+        subtitle={
+          completedToday.length > 0
+            ? `${completedToday.length} pagos`
+            : undefined
+        }
         style={animatedItems[1]}
       />
       <StatCard
@@ -438,12 +492,16 @@ export default function DashboardScreen() {
       <View style={styles.cardHeader}>
         <View>
           <ThemedText style={styles.cardTitle}>Próximas citas</ThemedText>
-          <ThemedText style={[styles.cardSubtitle, { color: theme.textSecondary }]}>
+          <ThemedText
+            style={[styles.cardSubtitle, { color: theme.textSecondary }]}
+          >
             {formatDate()}
           </ThemedText>
         </View>
         {upcomingAppointments.length > 0 && (
-          <View style={[styles.badge, { backgroundColor: `${theme.primary}18` }]}>
+          <View
+            style={[styles.badge, { backgroundColor: `${theme.primary}18` }]}
+          >
             <ThemedText style={[styles.badgeText, { color: theme.primary }]}>
               {upcomingAppointments.length}
             </ThemedText>
@@ -458,17 +516,23 @@ export default function DashboardScreen() {
             style={styles.emptyImage}
             resizeMode="contain"
           />
-          <ThemedText style={[styles.emptyTitle, { color: theme.textSecondary }]}>
+          <ThemedText
+            style={[styles.emptyTitle, { color: theme.textSecondary }]}
+          >
             Todo despejado por hoy
           </ThemedText>
-          <ThemedText style={[styles.emptySubtitle, { color: theme.textMuted }]}>
+          <ThemedText
+            style={[styles.emptySubtitle, { color: theme.textMuted }]}
+          >
             No hay citas programadas
           </ThemedText>
         </View>
       ) : (
         upcomingAppointments
           .slice(0, isTablet ? 8 : 5)
-          .map((appt, i) => <AppointmentRow key={appt.id} appointment={appt} index={i} />)
+          .map((appt, i) => (
+            <AppointmentRow key={appt.id} appointment={appt} index={i} />
+          ))
       )}
 
       {upcomingAppointments.length > (isTablet ? 8 : 5) && (
@@ -485,31 +549,37 @@ export default function DashboardScreen() {
     </AnimatedView>
   );
 
-  const lowStockBanner = stats && stats.lowStockItems > 0 ? (
-    <AnimatedView
-      style={[
-        styles.alertBanner,
-        {
-          backgroundColor: isDark ? "#3A2800" : "#FFF8E7",
-          borderColor: theme.gold,
-        },
-        animatedItems[4],
-      ]}
-    >
-      <View style={[styles.alertIcon, { backgroundColor: `${theme.gold}20` }]}>
-        <Feather name="alert-triangle" size={16} color={theme.gold} />
-      </View>
-      <View style={{ flex: 1 }}>
-        <ThemedText style={[styles.alertTitle, { color: theme.gold }]}>
-          Stock bajo
-        </ThemedText>
-        <ThemedText style={[styles.alertBody, { color: theme.textSecondary }]}>
-          {stats.lowStockItems} producto{stats.lowStockItems > 1 ? "s" : ""} necesitan reposición
-        </ThemedText>
-      </View>
-      <Feather name="chevron-right" size={16} color={theme.gold} />
-    </AnimatedView>
-  ) : null;
+  const lowStockBanner =
+    stats && stats.lowStockItems > 0 ? (
+      <AnimatedView
+        style={[
+          styles.alertBanner,
+          {
+            backgroundColor: isDark ? "#3A2800" : "#FFF8E7",
+            borderColor: theme.gold,
+          },
+          animatedItems[4],
+        ]}
+      >
+        <View
+          style={[styles.alertIcon, { backgroundColor: `${theme.gold}20` }]}
+        >
+          <Feather name="alert-triangle" size={16} color={theme.gold} />
+        </View>
+        <View style={{ flex: 1 }}>
+          <ThemedText style={[styles.alertTitle, { color: theme.gold }]}>
+            Stock bajo
+          </ThemedText>
+          <ThemedText
+            style={[styles.alertBody, { color: theme.textSecondary }]}
+          >
+            {stats.lowStockItems} producto{stats.lowStockItems > 1 ? "s" : ""}{" "}
+            necesitan reposición
+          </ThemedText>
+        </View>
+        <Feather name="chevron-right" size={16} color={theme.gold} />
+      </AnimatedView>
+    ) : null;
 
   return (
     <ScrollView
@@ -533,14 +603,25 @@ export default function DashboardScreen() {
       <AnimatedView style={[styles.header, animatedItems[5]]}>
         <View>
           <ThemedText style={[styles.greeting, { color: theme.textSecondary }]}>
-            {getGreeting()}{profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}
+            {getGreeting()}
+            {profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}
           </ThemedText>
-          <ThemedText style={[styles.dateText, { color: theme.text }]} numberOfLines={1}>
+          <ThemedText
+            style={[styles.dateText, { color: theme.text }]}
+            numberOfLines={1}
+          >
             {formatDate()}
           </ThemedText>
         </View>
-        <View style={[styles.logoMark, { backgroundColor: `${config.theme.primaryColor}12` }]}>
-          <ThemedText style={[styles.logoLetter, { color: config.theme.primaryColor }]}>
+        <View
+          style={[
+            styles.logoMark,
+            { backgroundColor: `${config.theme.primaryColor}12` },
+          ]}
+        >
+          <ThemedText
+            style={[styles.logoLetter, { color: config.theme.primaryColor }]}
+          >
             {config.businessName.slice(0, 2).toUpperCase()}
           </ThemedText>
         </View>
@@ -549,9 +630,7 @@ export default function DashboardScreen() {
       {/* ── Layout tablet: 2 columnas / teléfono: apilado ── */}
       {isTablet ? (
         <View style={styles.tabletLayout}>
-          <View style={styles.tabletLeft}>
-            {appointmentsCard}
-          </View>
+          <View style={styles.tabletLeft}>{appointmentsCard}</View>
           <View style={styles.tabletRight}>
             {statsRow}
             {lowStockBanner}
@@ -562,16 +641,21 @@ export default function DashboardScreen() {
           {statsRow}
           <View style={{ height: Spacing.lg }} />
           {appointmentsCard}
-          {lowStockBanner && (
-            <View style={{ height: Spacing.lg }} />
-          )}
+          {lowStockBanner && <View style={{ height: Spacing.lg }} />}
           {lowStockBanner}
         </>
       )}
 
       {/* ── Modal detalle cita ── */}
-      <Modal visible={modalVisible} animationType="slide" transparent statusBarTranslucent>
-        <View style={[styles.modalOverlay, isTablet && styles.modalOverlayTablet]}>
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        transparent
+        statusBarTranslucent
+      >
+        <View
+          style={[styles.modalOverlay, isTablet && styles.modalOverlayTablet]}
+        >
           <View
             style={[
               styles.modalContent,
@@ -583,10 +667,18 @@ export default function DashboardScreen() {
               <>
                 <View style={styles.modalHandle} />
                 <View style={styles.modalHeader}>
-                  <ThemedText style={styles.modalTitle}>Detalle de cita</ThemedText>
+                  <ThemedText style={styles.modalTitle}>
+                    Detalle de cita
+                  </ThemedText>
                   <Pressable
-                    onPress={() => { setModalVisible(false); setSelectedAppointment(null); }}
-                    style={[styles.modalCloseBtn, { backgroundColor: theme.backgroundSecondary }]}
+                    onPress={() => {
+                      setModalVisible(false);
+                      setSelectedAppointment(null);
+                    }}
+                    style={[
+                      styles.modalCloseBtn,
+                      { backgroundColor: theme.backgroundSecondary },
+                    ]}
                     hitSlop={8}
                   >
                     <Feather name="x" size={18} color={theme.textSecondary} />
@@ -594,28 +686,66 @@ export default function DashboardScreen() {
                 </View>
 
                 <View style={[styles.modalBody, { borderColor: theme.border }]}>
-                  <ThemedText style={[styles.modalClient, { color: theme.text }]}>
+                  <ThemedText
+                    style={[styles.modalClient, { color: theme.text }]}
+                  >
                     {selectedAppointment.client_name}
                   </ThemedText>
-                  <ThemedText style={[styles.modalService, { color: theme.textSecondary }]}>
+                  <ThemedText
+                    style={[
+                      styles.modalService,
+                      { color: theme.textSecondary },
+                    ]}
+                  >
                     {getServiceName(selectedAppointment.service_id)}
                   </ThemedText>
                   <View style={styles.modalMeta}>
-                    <View style={[styles.modalMetaChip, { backgroundColor: `${theme.primary}12` }]}>
+                    <View
+                      style={[
+                        styles.modalMetaChip,
+                        { backgroundColor: `${theme.primary}12` },
+                      ]}
+                    >
                       <Feather name="clock" size={12} color={theme.primary} />
-                      <ThemedText style={[styles.modalMetaText, { color: theme.primary }]}>
+                      <ThemedText
+                        style={[styles.modalMetaText, { color: theme.primary }]}
+                      >
                         {formatTime(selectedAppointment.date)}
                       </ThemedText>
                     </View>
-                    <View style={[styles.modalMetaChip, { backgroundColor: `${theme.primary}12` }]}>
-                      <Feather name="activity" size={12} color={theme.primary} />
-                      <ThemedText style={[styles.modalMetaText, { color: theme.primary }]}>
+                    <View
+                      style={[
+                        styles.modalMetaChip,
+                        { backgroundColor: `${theme.primary}12` },
+                      ]}
+                    >
+                      <Feather
+                        name="activity"
+                        size={12}
+                        color={theme.primary}
+                      />
+                      <ThemedText
+                        style={[styles.modalMetaText, { color: theme.primary }]}
+                      >
                         {selectedAppointment.duration} min
                       </ThemedText>
                     </View>
-                    <View style={[styles.modalMetaChip, { backgroundColor: `${theme.gold}18` }]}>
-                      <ThemedText style={[styles.modalMetaText, { color: theme.gold, fontWeight: "700" }]}>
-                        {currencySymbol}{parseFloat(String(selectedAppointment.price)).toFixed(0)}
+                    <View
+                      style={[
+                        styles.modalMetaChip,
+                        { backgroundColor: `${theme.gold}18` },
+                      ]}
+                    >
+                      <ThemedText
+                        style={[
+                          styles.modalMetaText,
+                          { color: theme.gold, fontWeight: "700" },
+                        ]}
+                      >
+                        {currencySymbol}
+                        {parseFloat(String(selectedAppointment.price)).toFixed(
+                          0,
+                        )}
                       </ThemedText>
                     </View>
                   </View>
@@ -631,16 +761,26 @@ export default function DashboardScreen() {
                   ) : (
                     <>
                       <Feather name="check-circle" size={16} color="#FFF" />
-                      <ThemedText style={styles.modalBtnText}>Marcar completada</ThemedText>
+                      <ThemedText style={styles.modalBtnText}>
+                        Marcar completada
+                      </ThemedText>
                     </>
                   )}
                 </Pressable>
                 <Pressable
-                  style={[styles.modalBtnOutline, { borderColor: theme.primary }]}
+                  style={[
+                    styles.modalBtnOutline,
+                    { borderColor: theme.primary },
+                  ]}
                   onPress={() => handleEditInAgenda(selectedAppointment)}
                 >
                   <Feather name="edit-2" size={16} color={theme.primary} />
-                  <ThemedText style={[styles.modalBtnOutlineText, { color: theme.primary }]}>
+                  <ThemedText
+                    style={[
+                      styles.modalBtnOutlineText,
+                      { color: theme.primary },
+                    ]}
+                  >
                     Editar en Agenda
                   </ThemedText>
                 </Pressable>

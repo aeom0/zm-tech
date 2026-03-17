@@ -16,7 +16,12 @@ import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollV
 import { useAuth } from "@/contexts/AuthContext";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 
-export function LoginScreen() {
+interface LoginScreenProps {
+  /** Llamado tras login exitoso (ej. para avanzar en onboarding) */
+  onSuccess?: () => void;
+}
+
+export function LoginScreen({ onSuccess }: LoginScreenProps = {}) {
   const { login } = useAuth();
   const [usuario, setUsuario] = useState("");
   const [password, setPassword] = useState("");
@@ -31,6 +36,8 @@ export function LoginScreen() {
       const result = await login(usuario.trim(), password);
       if (!result.ok) {
         setError(result.error ?? "Error al iniciar sesión");
+      } else {
+        onSuccess?.();
       }
     } catch {
       setError("Error de conexión");
@@ -56,24 +63,19 @@ export function LoginScreen() {
             style={styles.brandSection}
           >
             <ThemedText style={styles.wordmark}>SalonPro</ThemedText>
-            <ThemedText style={styles.brandSubtitle}>Panel de gestión</ThemedText>
+            <ThemedText style={styles.brandSubtitle}>
+              Panel de gestión
+            </ThemedText>
           </Animated.View>
 
           {/* Form Card */}
           <Animated.View
             entering={FadeInDown.duration(600).delay(200)}
-            style={[
-              styles.card,
-              Shadows.md,
-            ]}
+            style={[styles.card, Shadows.md]}
           >
             <View style={styles.inputGroup}>
               <ThemedText style={styles.label}>Correo electrónico</ThemedText>
-              <View
-                style={[
-                  styles.inputWrapper,
-                ]}
-              >
+              <View style={[styles.inputWrapper]}>
                 <Feather
                   name="user"
                   size={18}
@@ -98,16 +100,8 @@ export function LoginScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <ThemedText
-                style={styles.label}
-              >
-                Contraseña
-              </ThemedText>
-              <View
-                style={[
-                  styles.inputWrapper,
-                ]}
-              >
+              <ThemedText style={styles.label}>Contraseña</ThemedText>
+              <View style={[styles.inputWrapper]}>
                 <Feather
                   name="lock"
                   size={18}
@@ -115,10 +109,7 @@ export function LoginScreen() {
                   style={styles.inputIcon}
                 />
                 <TextInput
-                  style={[
-                    styles.input,
-                    styles.passwordInput,
-                  ]}
+                  style={[styles.input, styles.passwordInput]}
                   placeholder="••••••••"
                   placeholderTextColor="rgba(255,255,255,0.25)"
                   value={password}
@@ -148,11 +139,17 @@ export function LoginScreen() {
                 entering={FadeInDown.duration(300)}
                 style={[
                   styles.errorBox,
-                    { backgroundColor: Colors.dark.error + "15" },
+                  { backgroundColor: Colors.dark.error + "15" },
                 ]}
               >
-                  <Feather name="alert-circle" size={16} color={Colors.dark.error} />
-                  <ThemedText style={[styles.errorText, { color: Colors.dark.error }]}>
+                <Feather
+                  name="alert-circle"
+                  size={16}
+                  color={Colors.dark.error}
+                />
+                <ThemedText
+                  style={[styles.errorText, { color: Colors.dark.error }]}
+                >
                   {error}
                 </ThemedText>
               </Animated.View>

@@ -57,7 +57,7 @@ function ProfileCard() {
           uri:
             profile.avatar_url ||
             `https://ui-avatars.com/api/?name=${encodeURIComponent(
-              profile.full_name || "User"
+              profile.full_name || "User",
             )}&background=random`,
         }}
         style={styles.avatar}
@@ -80,7 +80,12 @@ interface MenuItemProps {
   isDestructive?: boolean;
 }
 
-function MenuRow({ icon, label, onPress, isDestructive = false }: MenuItemProps) {
+function MenuRow({
+  icon,
+  label,
+  onPress,
+  isDestructive = false,
+}: MenuItemProps) {
   const { theme } = useTheme();
   const haptics = useHaptics();
 
@@ -104,10 +109,7 @@ function MenuRow({ icon, label, onPress, isDestructive = false }: MenuItemProps)
       onPress={handlePress}
     >
       <View
-        style={[
-          styles.menuIconWrap,
-          { backgroundColor: `${iconColor}18` },
-        ]}
+        style={[styles.menuIconWrap, { backgroundColor: `${iconColor}18` }]}
       >
         <Feather name={icon} size={22} color={iconColor} />
       </View>

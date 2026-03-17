@@ -22,7 +22,10 @@ type AuthContextType = {
   role: Role | null;
   profile: AuthProfile | null;
   isAdmin: boolean;
-  login: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
+  login: (
+    email: string,
+    password: string,
+  ) => Promise<{ ok: boolean; error?: string }>;
   logout: () => Promise<void>;
 };
 

@@ -6,7 +6,10 @@ const router = Router();
 // ── Mock auth middleware (sin auth real por ahora) ─────────────────────────
 // Cualquier request tiene rol "owner" automáticamente
 router.use((_req, res, next) => {
-  (res.locals as Record<string, unknown>).user = { id: "dev-user", role: "owner" };
+  (res.locals as Record<string, unknown>).user = {
+    id: "dev-user",
+    role: "owner",
+  };
   next();
 });
 
@@ -121,7 +124,7 @@ router.get("/appointments", async (req, res) => {
   const { dateFrom, dateTo, employeeId } = req.query as Record<string, string>;
   const appts = await store.getAppointments({
     dateFrom: dateFrom ? new Date(dateFrom) : undefined,
-    dateTo:   dateTo   ? new Date(dateTo)   : undefined,
+    dateTo: dateTo ? new Date(dateTo) : undefined,
     employeeId: employeeId ?? undefined,
   });
   res.json(appts);

@@ -10,10 +10,34 @@ const SCREENS = [
     subtitle: "Lunes 24 feb · 6 citas",
     accent: "#E91E8C",
     items: [
-      { name: "María G.", service: "Extensiones vol. ruso", time: "10:00", color: "#E91E8C", done: true },
-      { name: "Carla M.", service: "Pedicure especial", time: "11:30", color: "#7B2D8E", done: true },
-      { name: "Sofía R.", service: "Lifting + tinte", time: "13:00", color: "#00695C", done: false },
-      { name: "Andrea P.", service: "Uñas en gel", time: "15:00", color: "#D4AF37", done: false },
+      {
+        name: "María G.",
+        service: "Extensiones vol. ruso",
+        time: "10:00",
+        color: "#E91E8C",
+        done: true,
+      },
+      {
+        name: "Carla M.",
+        service: "Pedicure especial",
+        time: "11:30",
+        color: "#7B2D8E",
+        done: true,
+      },
+      {
+        name: "Sofía R.",
+        service: "Lifting + tinte",
+        time: "13:00",
+        color: "#00695C",
+        done: false,
+      },
+      {
+        name: "Andrea P.",
+        service: "Uñas en gel",
+        time: "15:00",
+        color: "#D4AF37",
+        done: false,
+      },
     ],
     tab: "📅",
   },
@@ -23,10 +47,34 @@ const SCREENS = [
     subtitle: "Febrero 2026",
     accent: "#D4AF37",
     items: [
-      { name: "Ingresos hoy", service: "$ 420", time: "↑ 12%", color: "#00695C", done: true },
-      { name: "Esta semana", service: "$ 1,840", time: "↑ 8%", color: "#00695C", done: true },
-      { name: "Este mes", service: "$ 6,240", time: "↑ 15%", color: "#00695C", done: false },
-      { name: "Comisiones", service: "$ 936", time: "↓ 3%", color: "#E91E8C", done: false },
+      {
+        name: "Ingresos hoy",
+        service: "$ 420",
+        time: "↑ 12%",
+        color: "#00695C",
+        done: true,
+      },
+      {
+        name: "Esta semana",
+        service: "$ 1,840",
+        time: "↑ 8%",
+        color: "#00695C",
+        done: true,
+      },
+      {
+        name: "Este mes",
+        service: "$ 6,240",
+        time: "↑ 15%",
+        color: "#00695C",
+        done: false,
+      },
+      {
+        name: "Comisiones",
+        service: "$ 936",
+        time: "↓ 3%",
+        color: "#E91E8C",
+        done: false,
+      },
     ],
     tab: "💰",
   },
@@ -36,10 +84,34 @@ const SCREENS = [
     subtitle: "4 especialistas activas",
     accent: "#7B2D8E",
     items: [
-      { name: "Vanessa", service: "3 citas hoy", time: "$ 180", color: "#E91E8C", done: true },
-      { name: "Stephani", service: "2 citas hoy", time: "$ 95", color: "#7B2D8E", done: true },
-      { name: "Yosaida", service: "2 citas hoy", time: "$ 90", color: "#00BCD4", done: false },
-      { name: "Romina", service: "1 cita hoy", time: "$ 55", color: "#D4AF37", done: false },
+      {
+        name: "Vanessa",
+        service: "3 citas hoy",
+        time: "$ 180",
+        color: "#E91E8C",
+        done: true,
+      },
+      {
+        name: "Stephani",
+        service: "2 citas hoy",
+        time: "$ 95",
+        color: "#7B2D8E",
+        done: true,
+      },
+      {
+        name: "Yosaida",
+        service: "2 citas hoy",
+        time: "$ 90",
+        color: "#00BCD4",
+        done: false,
+      },
+      {
+        name: "Romina",
+        service: "1 cita hoy",
+        time: "$ 55",
+        color: "#D4AF37",
+        done: false,
+      },
     ],
     tab: "👥",
   },
@@ -68,8 +140,10 @@ export function AppMockup() {
     <div className="relative max-w-[280px] mx-auto">
       {/* Marco del teléfono */}
       <div className="bg-gradient-to-b from-zinc-700 to-zinc-900 rounded-[2.8rem] p-[3px] shadow-2xl shadow-black/60 ring-1 ring-white/10">
-        <div className="bg-[#0A0712] rounded-[2.5rem] overflow-hidden" style={{ aspectRatio: "9/19" }}>
-
+        <div
+          className="bg-[#0A0712] rounded-[2.5rem] overflow-hidden"
+          style={{ aspectRatio: "9/19" }}
+        >
           {/* Status bar */}
           <div className="flex items-center justify-between px-5 pt-3 pb-1 flex-shrink-0">
             <span className="text-white/50 text-[10px] font-medium">9:41</span>
@@ -78,7 +152,11 @@ export function AppMockup() {
             <div className="flex items-center gap-1">
               <div className="flex gap-0.5 items-end h-3">
                 {[2, 3, 4, 3].map((h, i) => (
-                  <div key={i} className="w-1 bg-white/40 rounded-sm" style={{ height: `${h * 3}px` }} />
+                  <div
+                    key={i}
+                    className="w-1 bg-white/40 rounded-sm"
+                    style={{ height: `${h * 3}px` }}
+                  />
                 ))}
               </div>
               <div className="w-4 h-2.5 border border-white/40 rounded-sm ml-1 relative">
@@ -106,8 +184,12 @@ export function AppMockup() {
                 >
                   ✂️ SalonPro
                 </div>
-                <div className="text-white text-sm font-bold">{screen.label}</div>
-                <div className="text-white/50 text-[10px] mt-0.5">{screen.subtitle}</div>
+                <div className="text-white text-sm font-bold">
+                  {screen.label}
+                </div>
+                <div className="text-white/50 text-[10px] mt-0.5">
+                  {screen.subtitle}
+                </div>
               </div>
               <div
                 className="w-8 h-8 rounded-xl flex items-center justify-center text-white text-sm"
@@ -125,7 +207,8 @@ export function AppMockup() {
                   className="h-1 rounded-full transition-all duration-500"
                   style={{
                     width: i === current ? "20px" : "6px",
-                    backgroundColor: i === current ? screen.accent : "rgba(255,255,255,0.2)",
+                    backgroundColor:
+                      i === current ? screen.accent : "rgba(255,255,255,0.2)",
                   }}
                 />
               ))}
@@ -147,14 +230,24 @@ export function AppMockup() {
                     {item.name[0]}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-white text-[11px] font-semibold truncate">{item.name}</div>
-                    <div className="text-white/50 text-[10px] truncate">{item.service}</div>
+                    <div className="text-white text-[11px] font-semibold truncate">
+                      {item.name}
+                    </div>
+                    <div className="text-white/50 text-[10px] truncate">
+                      {item.service}
+                    </div>
                   </div>
                   <div className="flex-shrink-0 flex flex-col items-end gap-0.5">
-                    <span className="text-[10px] text-white/60">{item.time}</span>
+                    <span className="text-[10px] text-white/60">
+                      {item.time}
+                    </span>
                     <div
                       className="w-1.5 h-1.5 rounded-full"
-                      style={{ backgroundColor: item.done ? "#22c55e" : `${screen.accent}80` }}
+                      style={{
+                        backgroundColor: item.done
+                          ? "#22c55e"
+                          : `${screen.accent}80`,
+                      }}
                     />
                   </div>
                 </div>
@@ -172,12 +265,15 @@ export function AppMockup() {
             }}
           >
             {TABS.map((icon, i) => {
-              const isActive = i === 1 && screen.id === "agenda"
-                || i === 0 && screen.id === "finanzas"
-                || i === 3 && screen.id === "personal";
+              const isActive =
+                (i === 1 && screen.id === "agenda") ||
+                (i === 0 && screen.id === "finanzas") ||
+                (i === 3 && screen.id === "personal");
               return (
                 <div key={icon} className="flex flex-col items-center gap-0.5">
-                  <span className={`text-base transition-all ${isActive ? "scale-125" : "opacity-40"}`}>
+                  <span
+                    className={`text-base transition-all ${isActive ? "scale-125" : "opacity-40"}`}
+                  >
                     {icon}
                   </span>
                   {isActive && (
@@ -190,7 +286,6 @@ export function AppMockup() {
               );
             })}
           </div>
-
         </div>
       </div>
 
@@ -221,10 +316,7 @@ export function AppMockup() {
           {screen.id === "finanzas" && "Vs. mes anterior"}
           {screen.id === "personal" && "Satisfacción"}
         </div>
-        <div
-          className="text-sm font-bold"
-          style={{ color: screen.accent }}
-        >
+        <div className="text-sm font-bold" style={{ color: screen.accent }}>
           {screen.id === "agenda" && "87% hoy"}
           {screen.id === "finanzas" && "+15% 📈"}
           {screen.id === "personal" && "4.9 ⭐"}
