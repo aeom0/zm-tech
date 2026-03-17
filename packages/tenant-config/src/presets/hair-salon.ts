@@ -15,7 +15,7 @@ export const hairSalonPreset: TenantConfig = {
     currency: { code: "PEN", symbol: "S/" },
     country: "PE",
     timezone: "America/Lima",
-    language: "es-PE",
+    language: "es-VE",
   },
 
   terminology: {

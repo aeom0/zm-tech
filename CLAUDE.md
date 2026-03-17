@@ -6,7 +6,7 @@ Este archivo proporciona orientación a Claude Code (claude.ai/code) para trabaj
 
 **SalonPro** es una plataforma SaaS multi-tenant para gestión de salones de belleza, barberías y peluquerías en LATAM. Originada desde **ZM Lash & Nails Beauty** (Lima, Perú) y convertida en producto genérico y comercializable.
 
-**Idioma**: Toda la interfaz, respuestas de API y documentación están en **español (es-PE)**.
+**Idioma**: Toda la interfaz, respuestas de API y documentación están en **español neutro LATAM (es-VE)**.
 
 ## Stack Tecnológico
 
@@ -35,7 +35,7 @@ Este archivo proporciona orientación a Claude Code (claude.ai/code) para trabaj
 │   │   ├── components/     # Componentes UI reutilizables
 │   │   ├── contexts/       # AuthContext, TenantContext
 │   │   ├── screens/        # Dashboard, Agenda, Servicios, Finanzas, Inventario…
-│   │   │   └── onboarding/ # Flujo de configuración inicial (5 pasos)
+│   │   │   └── onboarding/ # Flujo de configuración inicial (wizard multi‑paso)
 │   │   ├── navigation/     # RootStackNavigator, MainTabNavigator, MoreStackNavigator
 │   │   ├── hooks/          # useTheme, useResponsive, useNotifications, useTenant
 │   │   ├── metro.config.js # Configuración Metro para monorepo
@@ -133,16 +133,23 @@ El paquete `packages/tenant-config` define la interface `TenantConfig` y cuatro 
 ### Hooks y contextos clave
 - `useTenant()` — accede a `config`, `updateTenant`, `markConfigured`, `isConfigured`, `isLoading`
 - `useTheme()` — retorna `createTheme(config, isDark)`: colores primary/accent dinámicos
-- `config.locale.currency.symbol` — símbolo de moneda (reemplaza `S/` hardcodeado)
-- `config.terminology.staff` — "chicas" | "barberos" | "estilistas" | "especialistas"
+- `config.locale.currency.symbol` — símbolo de moneda (reemplaza cualquier moneda hardcodeada)
+- `config.terminology.staff` — terminología dinámica del personal por tipo de negocio (por defecto `"Profesionales"`)
 
-### Flujo de onboarding
-Al primer inicio (sin `@salonpro/tenant_configured` en AsyncStorage):
+### Flujo de onboarding (mobile)
+
+Al primer inicio (sin `@salonpro/tenant_configured` en AsyncStorage) o cuando se fuerza en desarrollo:
+0. **OnboardingEntryScreen** — pantalla de entrada:
+   - "Crear nuevo negocio" (wizard completo)
+   - "Ya tengo cuenta" (abre `LoginScreen` clásico; si el tenant ya está configurado → va directo al panel)
 1. **OnboardingBusinessTypeScreen** — elige tipo → aplica preset
 2. **OnboardingBasicInfoScreen** — nombre + colores con preview
 3. **OnboardingTeamScreen** — primer empleado (guarda en Supabase, omitible)
-4. **OnboardingServicesScreen** — categorías sugeridas (se insertan en Supabase)
-5. **OnboardingCompleteScreen** — éxito → llama `markConfigured()` → App principal
+4. **OnboardingServicesScreen** — categorías sugeridas (intenta insert en `service_categories`; en dev se toleran errores RLS y se continua)
+5. **OnboardingAuthScreen** — registro/login final con el mismo look del onboarding; usa `AuthContext.login`
+6. **OnboardingCompleteScreen** — éxito → llama `markConfigured()` → upsert en `tenant_settings` + marca local
+
+En desarrollo se puede forzar siempre el onboarding con `EXPO_PUBLIC_FORCE_ONBOARDING=true` (aunque ya exista config remota).
 
 ## Sistema de Diseño
 
@@ -163,7 +170,7 @@ Valores por defecto (preset `spa-nails`):
 - Error Boundaries con UI de fallback
 - Código específico por plataforma: `.web.ts`, `.ios.ts`
 - `snake_case` para propiedades de Supabase; `camelCase` en TypeScript
-- Comentarios en español (es-PE)
+- Comentarios en español neutro LATAM (es-VE)
 - `useResponsive()` hook para UI tablet (≥768px)
 
 ### Compartido
@@ -174,14 +181,35 @@ Valores por defecto (preset `spa-nails`):
 
 5 tabs: **Inicio** (Dashboard), **Agenda**, **Servicios**, **Más** (menú), **Perfil**.
 
-- **Más** abre un stack con menú: Finanzas, Personal (comisión % editable), Inventario, Configuración, Perfil, Cerrar sesión. Finanzas, Personal e Inventario solo visibles para rol dev/owner.
-- **Perfil**: pantalla de usuario y cierre de sesión.
+- **Más** abre un stack con menú (para rol dev/owner):
+  1. Validación de Pagos
+  2. Asignar Profesionales (terminología dinámica via `config.terminology.staff`)
+  3. Finanzas
+  4. Profesionales
+  5. Clientes
+  6. Inventario
+  7. Enviar Promo WA (solo si `config.features.whatsapp` está activo)
+  8. Configuración
+  9. Mi Perfil
+  10. Cerrar sesión
+- Para rol staff se muestran solo las opciones relevantes de cuenta (Configuración, Mi Perfil, Cerrar sesión).
 
-Flujo de arranque: `AuthGate` → Splash → (no auth) Login | (auth, no config) Onboarding | (auth, config) MainTabNavigator.
+Flujo de arranque (mobile):
+- `AuthGate` → Splash.
+- Si **tenant no configurado** (o `EXPO_PUBLIC_FORCE_ONBOARDING=true` y aún no se completó el wizard en esta sesión):
+  - `OnboardingEntryScreen` → (nuevo) wizard pasos 1–6 descritos arriba.
+- Si **tenant configurado** pero sin sesión:
+  - `LoginScreen` clásico.
+- Si **tenant configurado + sesión**:
+  - `MainTabNavigator`.
 
 ## Notas para Desarrollo
 
-- **Autenticación**: Supabase Auth (email + contraseña). `AuthContext` con sesión, perfil (role, employee_id). Login en `LoginScreen`; logout en Perfil o menú Más. Roles en tabla `profiles` (dev, owner, staff)
+- **Autenticación (estado actual)**: `AuthContext` está en **modo desarrollo**, sin Supabase Auth real:
+  - Acepta cualquier email/contraseña no vacíos y crea un perfil dev/owner con un UUID fijo.
+  - Esto permite probar navegación, RLS y flujos de negocio sin montar aún Supabase Auth en mobile.
+  - `LoginScreen` (clásico) se usa para "Ya tengo cuenta" y para re‑ingreso cuando el tenant ya está configurado.
+  - `OnboardingAuthScreen` reutiliza `AuthContext.login` pero con UI alineada al onboarding.
 - **Moneda (mobile)**: viene de `config.locale.currency.symbol` — NO hardcodear `S/`
 - **Moneda (web/landing)**: usa `$` USD como símbolo estándar internacional — NO hardcodear `S/`
 - **Terminología del personal**: viene de `config.terminology.staff` — NO hardcodear "chicas"
@@ -194,12 +222,19 @@ Flujo de arranque: `AuthGate` → Splash → (no auth) Login | (auth, no config)
 ## Cambios Recientes (feb 2026 — v1.2.0 — migración SalonPro)
 
 - **Fase 2 — paquete `@salonpro/tenant-config`**: `TenantConfig` interface + `defaultTenantConfig` + 4 presets (spa-nails, barbershop, hair-salon, full-aesthetic). Registrado como workspace en `apps/mobile`.
-- **Fase 3 — integración TenantContext**: `TenantProvider` en `App.tsx`; `useTenant()` en todos los screens; `createTheme(config, isDark)` en `constants/theme.ts`; `useTheme()` actualizado. Eliminadas todas las referencias hardcodeadas a ZM Lash: nombre, colores, moneda `S/`, canal de notificaciones Android.
+- **Fase 3 — integración TenantContext**: `TenantProvider` en `App.tsx`; `useTenant()` en todos los screens; `createTheme(config, isDark)` en `constants/theme.ts`; `useTheme()` actualizado. Eliminadas todas las referencias hardcodeadas al salón original: nombre, colores, moneda local, canal de notificaciones Android.
 - **Fase 4 — limpieza de seeds**: `seed-{services,employees}.sql` renombrados a `*-example.sql`; creados `*-template.sql` genéricos para los 4 tipos de negocio; `seed-auth-users.mjs` con emails `@ejemplo.com`; contraseña inicial `SalonPro2025!`.
 - **Fase 5 — onboarding flow**: 5 pantallas en `screens/onboarding/`; `AuthGate` orquesta el flujo; `TenantContext` agrega `isConfigured` + `markConfigured()` con clave `@salonpro/tenant_configured` en AsyncStorage.
 - **Fase 6 — tenant_settings**: tabla `tenant_settings` en Supabase con RLS y sincronización desde el onboarding (`tenantSettingsService` y `TenantContext`).
 - **Fase 7 — Supabase full-mobile**: todos los flujos mobile (Onboarding, Dashboard, Agenda, Servicios, Personal, Finanzas, Inventario) usan Supabase directo; eliminado el cliente Express (`apiRequest`, `/api/*`) y actualizadas las `queryKey` de React Query (`employees`, `services`, `service_categories`, `appointments`, `payments`, `inventory_items`, `dashboard_stats`, `dashboard_revenue`).
 - **Landing web**: landing pública completa en `apps/web` con Next.js 15 App Router; secciones Hero (mockup animado), Pain Points, Features, Social Proof, Pricing (toggle mensual/anual), FAQ, CTA, Footer; scroll reveal con IntersectionObserver; moneda `$` USD en toda la landing.
+
+## Cambios Recientes (mar 2026 — v1.3.0)
+
+- **Limpieza ZM**: eliminación de referencias directas a colores, moneda y nombres específicos del salón original en código vivo; defaults de `tenant_settings` y `TenantConfig` ahora son genéricos (USD, es-VE, `"Profesionales"` como terminología base).
+- **Moneda y locale dinámicos**: helper `formatCurrency` en mobile y uso consistente de `config.locale.language` para fechas y números; se elimina cualquier dependencia de `es-PE`/moneda fija en UI.
+- **Módulo Clientes (mobile)**: nuevo `ClientsScreen` con hooks (`useClientsData`, `useClientDetail`), KPIs globales, segmentos (VIP, regulares, en riesgo, nuevos) y detalle por cliente (historial de citas y métricas).
+- **Pantalla Más v1.7**: menú de administración ampliado (Validación de Pagos, Asignar Profesionales, Finanzas, Profesionales, Clientes, Inventario, Enviar Promo WA) con badges para pagos pendientes y citas sin profesional, y terminología de personal siempre tomada de `config.terminology.staff`.
 
 ## Historial anterior (v1.1.0)
 

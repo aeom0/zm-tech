@@ -8,7 +8,6 @@ import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
-  Image,
   Modal,
   Pressable,
   RefreshControl,
@@ -263,7 +262,7 @@ export default function DashboardScreen() {
   };
 
   const formatDate = () => {
-    return new Date().toLocaleDateString("es-PE", {
+    return new Date().toLocaleDateString(config.locale.language, {
       weekday: "long",
       day: "numeric",
       month: "long",
@@ -278,7 +277,7 @@ export default function DashboardScreen() {
   };
 
   const formatTime = (dateString: string) =>
-    parseAppointmentDate(dateString).toLocaleTimeString("es-PE", {
+    parseAppointmentDate(dateString).toLocaleTimeString(config.locale.language, {
       hour: "2-digit",
       minute: "2-digit",
     });
@@ -511,11 +510,9 @@ export default function DashboardScreen() {
 
       {upcomingAppointments.length === 0 ? (
         <View style={styles.emptyState}>
-          <Image
-            source={require("../assets/images/empty-appointments.png")}
-            style={styles.emptyImage}
-            resizeMode="contain"
-          />
+          <View style={styles.emptyIconCircle}>
+            <Feather name="calendar" size={24} color={theme.textMuted} />
+          </View>
           <ThemedText
             style={[styles.emptyTitle, { color: theme.textSecondary }]}
           >
@@ -975,11 +972,14 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing["3xl"],
     paddingHorizontal: Spacing.xl,
   },
-  emptyImage: {
-    width: 100,
-    height: 100,
+  emptyIconCircle: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: Spacing.lg,
-    opacity: 0.7,
+    backgroundColor: "#E5E7EB40",
   },
   emptyTitle: {
     fontSize: 16,

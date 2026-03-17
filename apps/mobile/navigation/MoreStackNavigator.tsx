@@ -5,6 +5,7 @@ import MoreHomeScreen from "@/screens/MoreHomeScreen";
 import FinancesScreen from "@/screens/FinancesScreen";
 import InventoryScreen from "@/screens/InventoryScreen";
 import ProfileScreen from "@/screens/ProfileScreen";
+import ClientsScreen from "@/screens/ClientsScreen";
 import { useScreenOptions } from "@/hooks/useScreenOptions";
 
 import PersonalScreen from "@/screens/PersonalScreen";
@@ -14,6 +15,7 @@ export type MoreStackParamList = {
   MoreHome: undefined;
   Finanzas: undefined;
   Chicas: undefined;
+  Clients: undefined;
   Inventario: undefined;
   Configuracion: undefined;
   Perfil: undefined;
@@ -43,6 +45,11 @@ export default function MoreStackNavigator() {
         name="Chicas"
         component={PersonalScreen}
         options={{ title: "Chicas" }}
+      />
+      <Stack.Screen
+        name="Clients"
+        component={ClientsScreen}
+        options={{ title: "Clientes" }}
       />
       <Stack.Screen
         name="Inventario"

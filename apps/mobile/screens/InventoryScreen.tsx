@@ -5,7 +5,6 @@ import {
   ScrollView,
   Pressable,
   RefreshControl,
-  Image,
   Modal,
   TextInput,
   Alert,
@@ -432,11 +431,9 @@ export default function InventoryScreen() {
       >
         {filteredItems.length === 0 && !isLoading ? (
           <View style={styles.emptyState}>
-            <Image
-              source={require("../assets/images/empty-inventory.png")}
-              style={styles.emptyImage}
-              resizeMode="contain"
-            />
+            <View style={styles.emptyIconCircle}>
+              <Feather name="package" size={28} color={theme.textMuted} />
+            </View>
             <ThemedText
               style={[styles.emptyTitle, { color: theme.textSecondary }]}
             >
@@ -693,10 +690,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: Spacing["5xl"],
   },
-  emptyImage: {
-    width: 200,
-    height: 200,
+  emptyIconCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: Spacing.lg,
+    backgroundColor: "#E5E7EB40",
   },
   emptyTitle: {
     fontSize: 18,

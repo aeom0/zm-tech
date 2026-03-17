@@ -4,7 +4,6 @@
     "slug": "salonpro-mobile",
     "version": "1.1.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
     "scheme": "salonpro",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,17 +12,12 @@
       "bundleIdentifier": "com.salonpro.app"
     },
     "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#6366f1",
-        "foregroundImage": "./assets/images/icon.png"
-      },
       "package": "com.salonpro.app",
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
     "web": {
       "output": "single",
-      "favicon": "./assets/images/favicon.png",
       "bundler": "metro",
       "build": {
         "babel": {
@@ -31,11 +25,6 @@
             "@expo/vector-icons"
           ]
         }
-      },
-      "splash": {
-        "image": "./assets/images/splash-icon.png",
-        "resizeMode": "contain",
-        "backgroundColor": "#6366f1"
       },
       "name": "SalonPro",
       "shortName": "SalonPro",
@@ -51,9 +40,6 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
           "backgroundColor": "#6366f1",
           "dark": {
             "backgroundColor": "#1A1A1A"
@@ -61,14 +47,7 @@
         }
       ],
       "expo-web-browser",
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/images/icon.png",
-          "color": "#6366f1",
-          "sounds": []
-        }
-      ]
+      "expo-notifications"
     ],
     "experiments": {
       "reactCompiler": true

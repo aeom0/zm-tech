@@ -445,7 +445,7 @@ export default function AgendaScreen() {
   };
 
   const formatDate = (date: Date) => {
-    return date.toLocaleDateString("es-PE", {
+    return date.toLocaleDateString(config.locale.language, {
       weekday: "long",
       day: "numeric",
       month: "long",
@@ -471,7 +471,7 @@ export default function AgendaScreen() {
             </Pressable>
             <Pressable onPress={goToToday} style={styles.dayTitleContainer}>
               <ThemedText style={[styles.weekTitle, { fontSize: 18 }]}>
-                {selectedDate.toLocaleDateString("es-PE", {
+                {selectedDate.toLocaleDateString(config.locale.language, {
                   weekday: "long",
                   day: "numeric",
                   month: "long",
@@ -499,12 +499,12 @@ export default function AgendaScreen() {
             </Pressable>
             <Pressable onPress={goToToday}>
               <ThemedText style={styles.weekTitle}>
-                {weekDays[0].toLocaleDateString("es-PE", {
+                {weekDays[0].toLocaleDateString(config.locale.language, {
                   month: "short",
                   day: "numeric",
                 })}{" "}
                 -{" "}
-                {weekDays[6].toLocaleDateString("es-PE", {
+                {weekDays[6].toLocaleDateString(config.locale.language, {
                   month: "short",
                   day: "numeric",
                 })}
@@ -1261,14 +1261,14 @@ export default function AgendaScreen() {
                     >
                       Precio
                     </ThemedText>
-                    <ThemedText
-                      style={[
-                        styles.summaryPrice,
-                        { color: Colors.light.gold },
-                      ]}
-                    >
-                      {currencySymbol} {selectedService?.price || "0"}
-                    </ThemedText>
+                  <ThemedText
+                    style={[
+                      styles.summaryPrice,
+                      { color: Colors.light.gold },
+                    ]}
+                  >
+                    {currencySymbol} {selectedService?.price || "0"}
+                  </ThemedText>
                   </View>
                 </View>
               )}

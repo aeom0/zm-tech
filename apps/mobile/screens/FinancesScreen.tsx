@@ -5,7 +5,6 @@ import {
   ScrollView,
   Pressable,
   RefreshControl,
-  Image,
   Dimensions,
   Modal,
   TextInput,
@@ -26,6 +25,7 @@ import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { useResponsive } from "@/hooks/useResponsive";
 import { useTenant } from "@/contexts/TenantContext";
+import { formatCurrency } from "@/utils/format";
 import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
 import { queryClient } from "@/lib/query-client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -89,13 +89,6 @@ const CHART_INNER_WIDTH =
   CHART_WIDTH - CHART_PADDING.left - CHART_PADDING.right;
 const CHART_INNER_HEIGHT =
   CHART_HEIGHT - CHART_PADDING.top - CHART_PADDING.bottom;
-
-function formatCurrency(value: number): string {
-  return value.toLocaleString("es-PE", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-}
 
 const DAYS_SHORT = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 
@@ -629,7 +622,7 @@ export default function FinancesScreen() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("es-PE", {
+    return date.toLocaleDateString(config.locale.language, {
       day: "numeric",
       month: "short",
       hour: "2-digit",
@@ -643,7 +636,7 @@ export default function FinancesScreen() {
 
   const formatShortDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("es-PE", {
+    return date.toLocaleDateString(config.locale.language, {
       weekday: "short",
       day: "numeric",
       month: "short",
@@ -698,13 +691,12 @@ export default function FinancesScreen() {
       <View style={styles.chartWrapper}>
         {maxValue > 0 && (
           <View style={styles.chartYLabel}>
-            <ThemedText
-              style={[styles.chartYLabelText, { color: theme.textMuted }]}
-              numberOfLines={1}
-            >
-              {currencySymbol}
-              {formatCurrency(maxValue)}
-            </ThemedText>
+          <ThemedText
+            style={[styles.chartYLabelText, { color: theme.textMuted }]}
+            numberOfLines={1}
+          >
+            {formatCurrency(maxValue, config)}
+          </ThemedText>
           </View>
         )}
         <Svg width={CHART_WIDTH} height={CHART_HEIGHT} style={styles.chartSvg}>
@@ -837,7 +829,7 @@ export default function FinancesScreen() {
                 numberOfLines={1}
                 adjustsFontSizeToFit
               >
-                {currencySymbol} {formatCurrency(totalRevenue)}
+                {formatCurrency(totalRevenue, config)}
               </ThemedText>
             </View>
             <View style={styles.revenueMeta}>
@@ -865,7 +857,7 @@ export default function FinancesScreen() {
                       { color: theme.primary },
                     ]}
                   >
-                    Adelantos 20%: {currencySymbol} {formatCurrency(totalAbono)}
+                    Adelantos 20%: {formatCurrency(totalAbono, config)}
                   </ThemedText>
                 </View>
               )}
@@ -890,9 +882,10 @@ export default function FinancesScreen() {
                 <ThemedText
                   style={[styles.chartSubtitle, { color: theme.textMuted }]}
                 >
-                  Total: {currencySymbol}
+                  Total:{" "}
                   {formatCurrency(
                     chartDataByPeriod.reduce((s, d) => s + d.total, 0),
+                    config,
                   )}
                 </ThemedText>
               )}
@@ -939,7 +932,7 @@ export default function FinancesScreen() {
                     <ThemedText
                       style={[styles.desgloseLabel, { color: theme.textMuted }]}
                     >
-                      Generado {currencySymbol} {formatCurrency(row.generado)}
+                      Generado {formatCurrency(row.generado, config)}
                     </ThemedText>
                     <ThemedText
                       style={[
@@ -947,18 +940,17 @@ export default function FinancesScreen() {
                         { color: Colors.light.gold },
                       ]}
                     >
-                      Pagado {currencySymbol} {formatCurrency(row.pagado)}
+                      Pagado {formatCurrency(row.pagado, config)}
                     </ThemedText>
                     {row.pendiente > 0.01 && (
-                      <ThemedText
-                        style={[
-                          styles.desgloseLabel,
-                          { color: theme.primary, fontWeight: "600" },
-                        ]}
-                      >
-                        Pendiente {currencySymbol}{" "}
-                        {formatCurrency(row.pendiente)}
-                      </ThemedText>
+                        <ThemedText
+                          style={[
+                            styles.desgloseLabel,
+                            { color: theme.primary, fontWeight: "600" },
+                          ]}
+                        >
+                          Pendiente {formatCurrency(row.pendiente, config)}
+                        </ThemedText>
                     )}
                   </View>
                 </View>
@@ -978,11 +970,9 @@ export default function FinancesScreen() {
 
         {payments.length === 0 ? (
           <View style={styles.emptyState}>
-            <Image
-              source={require("../assets/images/empty-finances.png")}
-              style={styles.emptyImage}
-              resizeMode="contain"
-            />
+            <View style={styles.emptyIconCircle}>
+              <Feather name="credit-card" size={28} color={theme.textMuted} />
+            </View>
             <ThemedText
               style={[styles.emptyTitle, { color: theme.textSecondary }]}
             >
@@ -1829,10 +1819,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: Spacing["3xl"],
   },
-  emptyImage: {
-    width: 160,
-    height: 160,
+  emptyIconCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: Spacing.lg,
+    backgroundColor: "#E5E7EB40",
   },
   emptyTitle: {
     fontSize: 16,

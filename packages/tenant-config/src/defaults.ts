@@ -9,20 +9,20 @@ export const defaultTenantConfig: TenantConfig = {
 
   theme: {
     primaryColor: "#E91E8C",
-    accentColor: "#D4AF37",
+    accentColor: "#FFD700",
     darkMode: false,
   },
 
   locale: {
-    currency: { code: "PEN", symbol: "S/" },
-    country: "PE",
-    timezone: "America/Lima",
-    language: "es-PE",
+    currency: { code: "USD", symbol: "$" },
+    country: "VE",
+    timezone: "America/Caracas",
+    language: "es-VE",
   },
 
   terminology: {
-    staff: "chicas",
-    staffSingular: "especialista",
+    staff: "Profesionales",
+    staffSingular: "profesional",
     appointment: "cita",
     client: "clienta",
   },

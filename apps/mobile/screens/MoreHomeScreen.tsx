@@ -21,6 +21,9 @@ import { useAuth, Role } from "@/contexts/AuthContext";
 import { useHaptics } from "@/hooks/useHaptics";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 import type { MoreStackParamList } from "@/navigation/MoreStackNavigator";
+import { useTenant } from "@/contexts/TenantContext";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
 
 type Nav = NativeStackNavigationProp<MoreStackParamList, "MoreHome">;
 
@@ -78,6 +81,7 @@ interface MenuItemProps {
   label: string;
   onPress: () => void;
   isDestructive?: boolean;
+  badgeCount?: number;
 }
 
 function MenuRow({
@@ -85,6 +89,7 @@ function MenuRow({
   label,
   onPress,
   isDestructive = false,
+  badgeCount,
 }: MenuItemProps) {
   const { theme } = useTheme();
   const haptics = useHaptics();
@@ -113,9 +118,23 @@ function MenuRow({
       >
         <Feather name={icon} size={22} color={iconColor} />
       </View>
-      <ThemedText style={[styles.menuLabel, { color: theme.text }]}>
-        {label}
-      </ThemedText>
+      <View style={styles.menuLabelContainer}>
+        <ThemedText style={[styles.menuLabel, { color: theme.text }]}>
+          {label}
+        </ThemedText>
+        {typeof badgeCount === "number" && badgeCount > 0 && (
+          <View
+            style={[
+              styles.badge,
+              { backgroundColor: theme.primary },
+            ]}
+          >
+            <ThemedText style={styles.badgeText}>
+              {badgeCount}
+            </ThemedText>
+          </View>
+        )}
+      </View>
       <Feather name="chevron-right" size={20} color={theme.textMuted} />
     </Pressable>
   );
@@ -129,6 +148,40 @@ export default function MoreHomeScreen() {
   const { isAdmin, logout } = useAuth();
   const navigation = useNavigation<Nav>();
   const haptics = useHaptics();
+  const { config } = useTenant();
+
+  const { data: paymentValidationCount = 0 } = useQuery<number>({
+    queryKey: ["appointments_payment_submitted_count"],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from("appointments")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "payment_submitted");
+      if (error) {
+        throw new Error(error.message);
+      }
+      return count ?? 0;
+    },
+  });
+
+  const { data: unassignedCount = 0 } = useQuery<number>({
+    queryKey: ["appointments_unassigned_last_7_days"],
+    queryFn: async () => {
+      const now = new Date();
+      const from = new Date();
+      from.setDate(now.getDate() - 7);
+      const { count, error } = await supabase
+        .from("appointments")
+        .select("id", { count: "exact", head: true })
+        .gte("date", from.toISOString())
+        .lte("date", now.toISOString())
+        .is("employee_id", null);
+      if (error) {
+        throw new Error(error.message);
+      }
+      return count ?? 0;
+    },
+  });
 
   const handleLogout = () => {
     haptics.warning();
@@ -162,20 +215,49 @@ export default function MoreHomeScreen() {
             Administración
           </ThemedText>
           <MenuRow
-            icon="trending-up"
+            icon="credit-card"
+            label="Validación de Pagos"
+            onPress={() => navigation.navigate("Finanzas")}
+            badgeCount={paymentValidationCount}
+          />
+          <MenuRow
+            icon="users"
+            label={`Asignar ${config.terminology.staff || "Profesionales"}`}
+            onPress={() => navigation.navigate("Chicas")}
+            badgeCount={unassignedCount}
+          />
+          <MenuRow
+            icon="bar-chart-2"
             label="Finanzas"
             onPress={() => navigation.navigate("Finanzas")}
           />
           <MenuRow
-            icon="users"
-            label="Chicas"
+            icon="user-check"
+            label={config.terminology.staff || "Profesionales"}
             onPress={() => navigation.navigate("Chicas")}
+          />
+          <MenuRow
+            icon="users"
+            label="Clientes"
+            onPress={() => navigation.navigate("Clients")}
           />
           <MenuRow
             icon="package"
             label="Inventario"
             onPress={() => navigation.navigate("Inventario")}
           />
+          {config.features?.whatsapp && (
+            <MenuRow
+              icon="megaphone"
+              label="Enviar Promo WA"
+              onPress={() => {
+                Alert.alert(
+                  "Próximamente",
+                  "El envío masivo de promociones por WhatsApp estará disponible en una próxima versión.",
+                );
+              }}
+            />
+          )}
         </>
       )}
 
@@ -241,9 +323,28 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginRight: Spacing.md,
   },
-  menuLabel: {
+  menuLabelContainer: {
     flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  menuLabel: {
     fontSize: 16,
     fontWeight: "500",
+  },
+  badge: {
+    minWidth: 20,
+    paddingHorizontal: Spacing.xs,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.full,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: Spacing.sm,
+  },
+  badgeText: {
+    color: "#FFFFFF",
+    fontSize: 11,
+    fontWeight: "700",
   },
 });

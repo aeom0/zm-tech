@@ -19,9 +19,9 @@ const SCREENS = [
       },
       {
         name: "Carla M.",
-        service: "Pedicure especial",
+        service: "Servicio de manos y pies",
         time: "11:30",
-        color: "#7B2D8E",
+        color: "#6A1B9A",
         done: true,
       },
       {
@@ -33,9 +33,9 @@ const SCREENS = [
       },
       {
         name: "Andrea P.",
-        service: "Uñas en gel",
+        service: "Color y tratamiento",
         time: "15:00",
-        color: "#D4AF37",
+        color: "#FFD700",
         done: false,
       },
     ],
@@ -45,7 +45,7 @@ const SCREENS = [
     id: "finanzas",
     label: "Finanzas",
     subtitle: "Febrero 2026",
-    accent: "#D4AF37",
+    accent: "#FFD700",
     items: [
       {
         name: "Ingresos hoy",
@@ -80,36 +80,36 @@ const SCREENS = [
   },
   {
     id: "personal",
-    label: "Mi Equipo",
-    subtitle: "4 especialistas activas",
-    accent: "#7B2D8E",
+    label: "Mi equipo",
+    subtitle: "4 profesionales activas",
+    accent: "#6A1B9A",
     items: [
       {
-        name: "Vanessa",
+        name: "Ana",
         service: "3 citas hoy",
         time: "$ 180",
         color: "#E91E8C",
         done: true,
       },
       {
-        name: "Stephani",
+        name: "Luis",
         service: "2 citas hoy",
         time: "$ 95",
-        color: "#7B2D8E",
+        color: "#6A1B9A",
         done: true,
       },
       {
-        name: "Yosaida",
+        name: "Carla",
         service: "2 citas hoy",
         time: "$ 90",
         color: "#00BCD4",
         done: false,
       },
       {
-        name: "Romina",
+        name: "Diego",
         service: "1 cita hoy",
         time: "$ 55",
-        color: "#D4AF37",
+        color: "#FFD700",
         done: false,
       },
     ],
