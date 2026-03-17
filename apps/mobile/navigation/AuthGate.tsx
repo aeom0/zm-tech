@@ -10,8 +10,10 @@ import OnboardingBasicInfoScreen from "@/screens/onboarding/OnboardingBasicInfoS
 import OnboardingTeamScreen from "@/screens/onboarding/OnboardingTeamScreen";
 import OnboardingServicesScreen from "@/screens/onboarding/OnboardingServicesScreen";
 import OnboardingCompleteScreen from "@/screens/onboarding/OnboardingCompleteScreen";
+import OnboardingAuthScreen from "@/screens/onboarding/OnboardingAuthScreen";
+import OnboardingEntryScreen from "@/screens/onboarding/OnboardingEntryScreen";
 
-/** Pasos: 1 = Tipo negocio, 2 = Datos básicos, 3 = Equipo, 4 = Servicios, 5 = Login/Crear cuenta, 6 = Listo */
+/** Pasos wizard: 1 = Tipo negocio, 2 = Datos básicos, 3 = Equipo, 4 = Servicios, 5 = Registro/Login, 6 = Listo */
 type PasoOnboarding = 1 | 2 | 3 | 4 | 5 | 6;
 
 /**
@@ -28,6 +30,9 @@ export default function AuthGate() {
   const [paso, setPaso] = useState<PasoOnboarding>(1);
   const [onboardingSessionDone, setOnboardingSessionDone] = useState(false);
 
+  type EntryChoice = "none" | "new" | "existing";
+  const [entryChoice, setEntryChoice] = useState<EntryChoice>("none");
+
   // Flag de desarrollo para obligar a pasar por el onboarding completo
   const forceOnboardingDev =
     __DEV__ && process.env.EXPO_PUBLIC_FORCE_ONBOARDING === "true";
@@ -40,6 +45,33 @@ export default function AuthGate() {
   // Primero: si no está configurado, o si en desarrollo forzamos onboarding
   // (forceOnboardingDev solo fuerza mientras no se haya completado esta sesión)
   if (!isConfigured || (forceOnboardingDev && !onboardingSessionDone)) {
+    // Pantalla de entrada: elegir entre nuevo negocio o ya tengo cuenta
+    if (entryChoice === "none") {
+      return (
+        <OnboardingEntryScreen
+          onCreateNew={() => setEntryChoice("new")}
+          onLoginExisting={() => setEntryChoice("existing")}
+        />
+      );
+    }
+
+    // Usuario indica que ya tiene cuenta → pantalla de login clásica,
+    // pero envuelta en el flujo de onboarding.
+    if (entryChoice === "existing") {
+      return (
+        <LoginScreen
+          onSuccess={() => {
+            // Si al iniciar sesión el tenant ya está configurado,
+            // TenantContext marcará isConfigured=true y este branch dejará de ejecutarse.
+            // Si no lo está (caso raro), continuamos por el wizard desde el principio.
+            setEntryChoice("new");
+            setPaso(1);
+          }}
+        />
+      );
+    }
+
+    // entryChoice === "new" → flujo de wizard completo
     if (paso === 1) {
       return <OnboardingBusinessTypeScreen onNext={() => setPaso(2)} />;
     }
@@ -70,7 +102,12 @@ export default function AuthGate() {
     // Paso 5: crear cuenta / iniciar sesión antes de guardar en la nube
     if (paso === 5) {
       if (!isAuthenticated) {
-        return <LoginScreen onSuccess={() => setPaso(6)} />;
+        return (
+          <OnboardingAuthScreen
+            onSuccess={() => setPaso(6)}
+            onBack={() => setPaso(4)}
+          />
+        );
       }
       // Si ya hay sesión (por ejemplo, usuario vuelve al onboarding), saltamos al último paso
       return (

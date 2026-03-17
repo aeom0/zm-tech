@@ -64,7 +64,7 @@ export function LoginScreen({ onSuccess }: LoginScreenProps = {}) {
           >
             <ThemedText style={styles.wordmark}>SalonPro</ThemedText>
             <ThemedText style={styles.brandSubtitle}>
-              Panel de gestión
+              Ingresa a tu salón
             </ThemedText>
           </Animated.View>
 
@@ -170,7 +170,7 @@ export function LoginScreen({ onSuccess }: LoginScreenProps = {}) {
               ) : (
                 <>
                   <ThemedText style={styles.submitButtonText}>
-                    Entrar
+                    Entrar al panel
                   </ThemedText>
                   <Feather name="arrow-right" size={18} color="#000000" />
                 </>

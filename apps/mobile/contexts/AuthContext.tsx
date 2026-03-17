@@ -30,7 +30,8 @@ type AuthContextType = {
 };
 
 const DEV_PROFILE: AuthProfile = {
-  id: "dev-user-1",
+  // UUID válido para que Supabase acepte el id en tenant_settings
+  id: "00000000-0000-0000-0000-000000000001",
   role: "owner",
   employee_id: null,
   full_name: "Propietario/a",
