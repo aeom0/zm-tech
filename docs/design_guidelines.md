@@ -1,4 +1,6 @@
-# ZM Lash & Nails Beauty - Guía de Diseño del Dashboard Administrativo
+# SalonPro — Guía de Diseño del Dashboard Administrativo
+
+> En SalonPro los colores y terminología vienen del **tenant** (preset o config guardada en `tenant_settings`). Esta guía describe la estética de referencia (violeta/dorado); la app usa `createTheme(config)` según el preset elegido en el onboarding.
 
 ## 1. Identidad de Marca
 

@@ -1,7 +1,7 @@
 # SalonPro — Guía de Migración para Claude
 
 > **Fecha de inicio**: 2026-02-19
-> **Estado actual**: FASES 1–6 completadas ✅ | FASE 7 pendiente
+> **Estado actual**: FASES 1–6 completadas ✅ | FASE 7: 7A (RLS) y 7B (tenant_settings en onboarding) completados; 7C (pruebas integrales) y 7D (landing) pendientes
 
 ---
 
@@ -266,9 +266,9 @@ Ver `docs/DESARROLLO_LOCAL.md` para el procedimiento completo.
 
 ---
 
-### ⏳ FASE 7 — Pendientes
+### FASE 7 — RLS e integración (parcialmente completada)
 
-#### FASE 7A — RLS en tenant_settings
+#### FASE 7A — RLS en tenant_settings ✅
 
 Agregar políticas Row Level Security en Supabase para que cada owner
 solo pueda leer y escribir su propio registro.
@@ -293,16 +293,11 @@ CREATE POLICY "owner puede escribir su tenant"
   ));
 ```
 
-#### FASE 7B — Integrar tenant_settings con onboarding
+#### FASE 7B — Integrar tenant_settings con onboarding ✅
 
-Al completar el flujo de 5 pasos (OnboardingCompleteScreen), guardar
-la config también en Supabase además de AsyncStorage.
+Implementado: al completar el flujo de 5 pasos se hace upsert en `tenant_settings` y se marca config en AsyncStorage. TenantContext sincroniza al terminar onboarding y carga desde Supabase al arranque si hay sesión y no hay config local.
 
-- En `TenantContext.tsx`: al llamar `markConfigured()`, hacer upsert en `tenant_settings`
-- En `useTenant()`: al iniciar, si no hay config en AsyncStorage, intentar leer de Supabase
-- Esto permite recuperar la config al reinstalar la app o cambiar de dispositivo
-
-#### FASE 7C — Prueba integral de la app móvil
+#### FASE 7C — Prueba integral de la app móvil ⏳
 
 Con `yarn mobile:dev` contra el proyecto Supabase `xidjomlxpuosupymcsaj`:
 
@@ -313,7 +308,7 @@ Con `yarn mobile:dev` contra el proyecto Supabase `xidjomlxpuosupymcsaj`:
 - Verificar Agenda, Servicios, Inventario, Finanzas
 - Verificar navegación Más → Personal, Inventario, Finanzas (solo dev/owner)
 
-#### FASE 7D — Landing web SalonPro (apps/web)
+#### FASE 7D — Landing web SalonPro (apps/web) ⏳
 
 La landing actual (`apps/web`) tiene diseño de conversión general.
 Actualizar/refinar con:

@@ -1,5 +1,7 @@
 # Desarrollo Local — SalonPro
 
+**Proyecto Supabase**: `xidjomlxpuosupymcsaj` · URL: `https://xidjomlxpuosupymcsaj.supabase.co`
+
 ## Problema de conectividad TCP en WSL
 
 El host directo de Supabase (`db.[ref].supabase.co:5432`) solo resuelve en IPv6.
@@ -32,9 +34,9 @@ Funciona desde Linux nativo, macOS, o WSL con IPv6 habilitado.
 yarn db:push
 ```
 
-Requiere que `DATABASE_URL` en `.env` apunte al host directo:
+Requiere que `DATABASE_URL` en `.env` apunte al host directo (reemplazar `[REF]` por `xidjomlxpuosupymcsaj`):
 ```
-DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[REF].supabase.co:5432/postgres
+DATABASE_URL=postgresql://postgres:[PASSWORD]@db.xidjomlxpuosupymcsaj.supabase.co:5432/postgres
 ```
 
 ### Opción C — Supabase CLI via API (sin TCP)
@@ -42,11 +44,13 @@ DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[REF].supabase.co:5432/postgres
 El CLI usa la API REST de Supabase para algunas operaciones pero `db push`
 también requiere TCP para el rol temporal. No funciona en WSL con IPv6 bloqueado.
 
-Cuando haya conectividad, se puede ejecutar:
+Cuando haya conectividad, se puede ejecutar (proyecto SalonPro):
 ```bash
-npx supabase link --project-ref [REF] --password [DB_PASSWORD]
+npx supabase link --project-ref xidjomlxpuosupymcsaj --password [DB_PASSWORD]
 npx supabase db push
 ```
+
+**Alternativa sin TCP**: usar el MCP de Supabase en Cursor (servidor **supabase-salonpro**) para `list_tables`, `execute_sql` o `apply_migration` contra este proyecto.
 
 ## Seeds y usuarios Auth
 

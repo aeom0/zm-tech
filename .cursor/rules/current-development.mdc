@@ -1,5 +1,5 @@
 ---
-description: Estado actual del desarrollo — v1.1.0, Supabase directo, sin Express
+description: Estado actual del desarrollo SalonPro — Supabase directo, onboarding, tenant_settings
 globs:
   - "apps/**/*"
   - "packages/**/*"
@@ -7,54 +7,36 @@ globs:
 alwaysApply: true
 ---
 
-# Estado actual — ZM Lash & Nails Beauty v1.1.0
+# Estado actual — SalonPro
 
 ## Origen y entorno
 
-- **MVP**: Generado en Replit; migrado a monorepo local (Yarn 4) en WSL.
+- **Proyecto**: SaaS multi-tenant para salones/barberías/peluquerías en LATAM. Basado en ZM Lash & Nails Beauty.
 - **Entorno**: Node 22 (.nvmrc), Yarn 4; Expo en 8081.
-- **Variables**: `.env` desde `.env.example`; Supabase: `EXPO_PUBLIC_SUPABASE_URL` y `EXPO_PUBLIC_SUPABASE_ANON_KEY` para mobile.
-- **Base de datos**: Supabase PostgreSQL (proyecto `udelxwwnyivknslueerr`) — mobile conecta directo vía PostgREST. Schema en `packages/shared-schema/src/schema.ts`; `yarn db:push` para aplicar.
-- **IMPORTANTE**: El servidor Express (`server/`) fue eliminado en v1.1.0. No existe más. `yarn dev` lanza solo Expo.
+- **Variables**: `.env` desde `.env.example`; Supabase: `EXPO_PUBLIC_SUPABASE_URL` y `EXPO_PUBLIC_SUPABASE_ANON_KEY` (proyecto `xidjomlxpuosupymcsaj`).
+- **Base de datos**: Supabase PostgreSQL (proyecto `xidjomlxpuosupymcsaj`). Mobile y web conectan directo vía PostgREST. Schema en `packages/shared-schema`; tabla `tenant_settings` para config del tenant; `yarn db:push` para aplicar.
+- **Sin Express**: No hay servidor intermedio. Todo va contra Supabase.
 
 ## Stack operativo
 
-- **Mobile (apps/mobile)**: Expo SDK 54, Supabase directo, TanStack Query; tema en `constants/theme.ts`. **snake_case** en propiedades de datos de BD.
-- **Web (apps/web)**: Next.js 15, Tailwind, Supabase Auth.
-- **Push Notifications**: `expo-notifications` + `expo-device`. Hook `useNotifications` guarda FCM token en `profiles.push_token`. Edge Function `send-notification` + trigger DB `trg_notify_appointment_assigned`.
-- **Scripts**: `yarn dev` (solo mobile), `yarn mobile:dev`, `yarn web:dev`, `yarn db:push`.
+- **Mobile (apps/mobile)**: Expo SDK 54, Supabase directo, TanStack Query. Tema en `constants/theme.ts` (onboarding oscuro #111318). **snake_case** en datos de BD.
+- **Auth + Tenant**: AuthProvider fuera de TenantProvider. Al terminar onboarding se hace upsert en `tenant_settings` y guardado en AsyncStorage; al arranque con sesión se carga tenant desde Supabase si no hay config local.
+- **Web (apps/web)**: Next.js 15, Tailwind, Supabase Auth. Landing + panel `/finanzas`.
+- **Scripts**: `yarn mobile:dev`, `yarn web:dev`, `yarn db:push`, `yarn db:seed`.
 
-## Pantallas y API
+## Pantallas y flujo
 
+- **Auth**: Splash → Login (tema oscuro) → si no hay config tenant: Onboarding 5 pasos (tipo negocio, nombre/colores, primer empleado, categorías, resumen) → Main tabs. Si ya hay config: Main tabs.
 - Tabs: Inicio (Dashboard), Agenda, Servicios, Más, Perfil.
-- Tab **Más**: menú con Finanzas, Chicas (personal y comisión %), Inventario, Configuración, Cerrar sesión (Finanzas/Chicas/Inventario solo para dev/owner).
-- Pantallas: MoreHomeScreen, MoreStackNavigator, PersonalScreen (Chicas), SettingsScreen, InventoryScreen, FinancesScreen.
-- Mobile: Supabase Auth (email/password) + PostgREST; tabla `profiles` (rol, employee_id); RLS por rol.
+- Tab **Más**: Finanzas, Personal (empleados), Inventario, Configuración (editar tenant), Cerrar sesión. Finanzas/Personal/Inventario según rol (dev/owner/staff).
+- Mobile: Supabase Auth + PostgREST; tabla `profiles` (rol, employee_id); RLS con `get_my_role()`; `tenant_settings` para configuración del negocio.
 
-## Navegación web (mobile en browser)
+## MCP
 
-- `RootStackNavigator` arranca siempre en `Auth` — no hay LandingScreen, fue eliminada.
-- La landing pública del salón es exclusiva de `apps/web` (Next.js, zmlashnails.com).
-- `apps/mobile/metro.config.js`: `watchFolders = [workspaceRoot, ...(config.watchFolders ?? [])]` — pasa expo-doctor 17/17.
-- Para ver la app en browser: `yarn start` desde `apps/mobile` → presionar `w`. Usar DevTools ≥768px para simular tablet.
-
-## UI Tablet
-
-- Hook `useResponsive()` en `apps/mobile/hooks/useResponsive.ts`: breakpoints mobile (<768), tablet (768–1024), desktop (1024–1440), wide (≥1440).
-- Dashboard: layout 2 columnas (citas | stats), stat cards, modal centrado en tablet.
-- Agenda: vista columnas por chica (hora × empleada), navegación día a día, modal centrado.
-- Finanzas: KPIs y lista de pagos en 2 columnas, modal centrado.
-- Patrón: importar `useResponsive`, usar `isTablet` para condicionar estilos y layouts.
-
-## Build y deploy
-
-- EAS build: `eas build --platform android --profile production` → genera `.apk`
-- OTA update: `eas update --channel production --message "..."`
-- `runtimeVersion: { policy: "appVersion" }` — versión actual: **1.1.0**
-- `eas.json` production: `buildType: "apk"`, `autoIncrement: true`
+- Dos servidores en `.cursor/mcp.json`: **supabase-salonpro** (este proyecto) y **supabase-zm** (referencia). Para BD de SalonPro usar siempre supabase-salonpro (list_tables, execute_sql, etc.). Cursor puede mostrar nombres con prefijo del workspace.
 
 ## Reglas de trabajo
 
 - No crear documentación .md sin que se pida; no duplicar scripts; nombres de negocio en español.
 - Cursor rules en `.cursor/rules/*.mdc`; raíz en `.cursorrules`.
-- No tocar `server/` — fue eliminado intencionalmente.
+- Si aparece "Invalid API key" en la app: comprobar que `EXPO_PUBLIC_SUPABASE_ANON_KEY` en `.env` coincida con la anon key del proyecto `xidjomlxpuosupymcsaj` en el dashboard de Supabase; reiniciar Expo con `npx expo start -c`.

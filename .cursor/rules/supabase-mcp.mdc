@@ -1,23 +1,25 @@
 ---
-description: Uso de MCP Supabase para consultas y gestión del proyecto
+description: Uso de MCP Supabase para SalonPro y referencia ZM (dos proyectos)
 globs:
   - "packages/shared-schema/**/*"
   - "apps/mobile/**/*"
-  - "server/**/*"
+  - "apps/web/**/*"
 alwaysApply: false
 ---
 
-# Supabase MCP - ZM Lash & Nails Beauty
+# Supabase MCP - SalonPro
 
 ## Configuración
 
-- **MCP Supabase** configurado en `.cursor/mcp.json` (proyecto `udelxwwnyivknslueerr`).
-- Autenticación: Cursor solicita login en Supabase la primera vez (flujo OAuth en navegador).
+- **Dos MCP** en `.cursor/mcp.json`: `supabase-salonpro` (proyecto `xidjomlxpuosupymcsaj`) y `supabase-zm` (proyecto `udelxwwnyivknslueerr`).
+- **En este repo (SalonPro)** usar siempre el servidor **supabase-salonpro** para list_tables, execute_sql, apply_migration, generate_typescript_types. Así se opera sobre la BD correcta.
+- Cursor puede mostrar nombres con prefijo del workspace (ej. `project-0-SalonPro (raíz)-supabase-salonpro`). Elegir el servidor que corresponda a SalonPro.
+- Autenticación: Cursor solicita login en Supabase la primera vez (OAuth en navegador).
 - Verificación: Settings > Cursor Settings > Tools & MCP; reiniciar IDE si no detecta herramientas.
 
 ## Herramientas útiles
 
-- `list_tables` — Ver tablas en la BD
+- `list_tables` — Ver tablas en la BD (sin argumentos; el proyecto viene de la URL del MCP)
 - `execute_sql` — Ejecutar consultas SQL
 - `generate_typescript_types` — Generar tipos TS desde el schema
 - `list_migrations` / `apply_migration` — Migraciones
@@ -25,6 +27,6 @@ alwaysApply: false
 
 ## Uso recomendado
 
-- Usar MCP para explorar schema, ejecutar consultas de prueba o generar tipos.
+- Usar el MCP **supabase-salonpro** para explorar schema, ejecutar consultas de prueba o generar tipos en SalonPro.
 - No ejecutar escrituras destructivas sin revisar; aprobar tool calls manualmente.
-- Proyecto scoped: solo accede a `udelxwwnyivknslueerr` (ZM Lash & Nails).
+- Si necesitas consultar la BD de ZM (udelxwwnyivknslueerr), usar el servidor **supabase-zm** en lugar de supabase-salonpro.

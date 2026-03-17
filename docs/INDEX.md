@@ -1,142 +1,72 @@
-# 📚 Índice de Documentación
+# Índice de Documentación — SalonPro
 
-Documentación completa del sistema ZM Lash & Nails Beauty.
+Documentación del sistema SalonPro (SaaS multi-tenant para salones/barberías/peluquerías en LATAM).
 
-## 📖 Documentación Principal
+## Documentación principal
 
-### [CLAUDE.md](../CLAUDE.md)
-**Para: Claude Code / Asistentes IA**
-**Ubicación: Raíz del proyecto**
+### [README.md](README.md) (este directorio)
+Setup inicial: requisitos, variables de entorno, scripts, estructura.
 
-Guía rápida para trabajar con este proyecto:
-- Stack tecnológico
-- Estructura del proyecto
-- Comandos principales
-- Arquitectura de la base de datos
-- API endpoints
-- Sistema de diseño
+### [README.md](../README.md) (raíz)
+Descripción del producto, tipos de negocio, inicio rápido, stack, variables de entorno, roles.
 
-### [replit.md](replit.md)
-**Para: Desarrolladores / Arquitectura**
+### [DESARROLLO_LOCAL.md](DESARROLLO_LOCAL.md)
+Desarrollo local: WSL, migraciones sin TCP (SQL Editor), seeds, variables.
 
-Documentación técnica completa:
-- Arquitectura del sistema
-- Referencia completa de API
-- Configuración de deployment
-- Integraciones (WhatsApp, n8n)
-- Información del negocio
+### [SALONPRO_MIGRATION_GUIDE.md](SALONPRO_MIGRATION_GUIDE.md)
+Guía de migración ZM → SalonPro: fases, tenant_config, onboarding, tenant_settings.
 
 ### [design_guidelines.md](design_guidelines.md)
-**Para: Diseñadores / Frontend**
+Sistema de diseño y especificaciones UI/UX (paleta, tipografía, componentes). Los colores reales vienen del preset del tenant.
 
-Sistema de diseño y especificaciones UI/UX:
-- Paleta de colores (Violeta + Oro)
-- Tipografía y espaciado
-- Componentes reutilizables
-- Navegación y flujos
-- Guías de animación
-
-### [COMPARACION_PROYECTOS_Y_MEJORAS.md](COMPARACION_PROYECTOS_Y_MEJORAS.md)
-**Para: Arquitectura / Decisiones de producto**
-
-Comparación con IA Scout360 y sugerencias para diferenciación web/mobile (ZM ya es monorepo).
+### [DEPLOYMENT.md](DEPLOYMENT.md)
+Despliegue: Supabase (backend), Vercel (web), EAS (móvil).
 
 ### [MONOREPO_MIGRACION.md](MONOREPO_MIGRACION.md)
-**Para: Desarrollo / Migración**
+Estructura del monorepo y comandos (sin servidor Express).
 
-Guía de la migración a monorepo: estructura actual, comandos, Vercel, carpetas antiguas.
+### [COMPARACION_PROYECTOS_Y_MEJORAS.md](COMPARACION_PROYECTOS_Y_MEJORAS.md)
+Comparación con otros proyectos (ZM, Scout360); nota: SalonPro usa 100% Supabase.
 
-### [README.md](README.md)
-**Para: Setup inicial**
+### [replit.md](replit.md)
+Documentación técnica heredada de ZM; en SalonPro el backend es Supabase (PostgREST + Auth), no Express.
 
-Instrucciones de configuración original:
-- Instalación de dependencias
-- Configuración de PostgreSQL
-- Variables de entorno
-- Primeros pasos
-
-## 🗂️ Organización de Archivos
+## Organización de archivos
 
 ```
-CLAUDE.md                    # Guía para Claude Code (raíz)
-
 docs/
-├── INDEX.md                         # Este archivo
-├── COMPARACION_PROYECTOS_Y_MEJORAS.md  # Comparación IA Scout360 vs ZM, web/mobile
-├── replit.md                        # Documentación técnica completa
-├── design_guidelines.md             # Sistema de diseño
-└── README.md                        # Setup inicial
-
-scripts/
-├── build.js                 # Build de producción
-└── db/
-    ├── seed-services.sql    # 58 servicios (LISTA DE PRECIOS ZM)
-    └── seed-employees.sql   # 4 chicas con comisiones
+├── INDEX.md                    # Este archivo
+├── README.md                   # Setup inicial
+├── DESARROLLO_LOCAL.md         # Migraciones, seeds, WSL
+├── SALONPRO_MIGRATION_GUIDE.md # Fases de migración
+├── design_guidelines.md        # Diseño UI/UX
+├── DEPLOYMENT.md               # Deploy Supabase / Vercel / EAS
+├── MONOREPO_MIGRACION.md       # Monorepo, comandos
+├── COMPARACION_PROYECTOS_Y_MEJORAS.md
+└── replit.md                   # Referencia técnica (origen ZM)
 
 .cursor/
-├── README.md                # Info sobre Cursor AI
-└── rules/                   # Reglas de desarrollo
-    ├── arquitectura.mdc
-    ├── business-logic.mdc
-    ├── idioma.mdc
-    └── ... (más reglas)
+├── README.md                   # Reglas Cursor, MCP (dos proyectos Supabase)
+└── rules/*.mdc
 ```
 
-## 🎯 Guías por Rol
+## Referencias rápidas
 
-### Para Desarrolladores Backend
-1. Leer [replit.md](replit.md) - Sección "Arquitectura del Sistema"
-2. Revisar [CLAUDE.md](../CLAUDE.md) - Sección "Stack Tecnológico"
-3. Consultar API endpoints en [replit.md](replit.md)
-
-### Para Desarrolladores Frontend
-1. Leer [design_guidelines.md](design_guidelines.md) - Sistema completo
-2. Revisar [CLAUDE.md](../CLAUDE.md) - Sección "Patrones Importantes"
-3. Ver estructura de navegación en [design_guidelines.md](design_guidelines.md)
-
-### Para DevOps / Deployment
-1. Leer [replit.md](replit.md) - Sección "Configuración"
-2. Revisar [README.md](README.md) - Setup de base de datos
-3. Configurar variables de entorno según `.env.example`
-
-### Para Product Managers
-1. Leer [replit.md](replit.md) - Información del negocio
-2. Revisar servicios en `scripts/db/seed-services.sql`
-3. Ver esquema de comisiones en `scripts/db/seed-employees.sql`
-
-## 🔧 Referencias Rápidas
-
-### Base de Datos
-- **Scripts de seed**: `scripts/db/`
-- **Schema TypeScript**: `shared/schema.ts`
-- **Migraciones**: `drizzle.config.ts`
+### Base de datos (Supabase)
+- **Proyecto**: `xidjomlxpuosupymcsaj`
+- **Schema**: `packages/shared-schema/src/schema.ts`
+- **Seeds**: `scripts/db/` (editar templates antes de `yarn db:seed`)
+- **Migraciones**: `yarn db:push` o SQL Editor (ver DESARROLLO_LOCAL.md)
 
 ### API
-- **Rutas**: `server/routes.ts`
-- **Storage**: `server/storage.ts`
-- **WhatsApp**: `server/whatsapp.ts`
+- No hay Express. Cliente usa **Supabase** (`supabase.from('tabla').select()`) desde `apps/mobile/lib/supabase.ts` y TanStack Query.
 
 ### Frontend
-- **Componentes**: `apps/mobile/components/`
-- **Pantallas**: `apps/mobile/screens/`
-- **Navegación**: `apps/mobile/navigation/`
-- **Auth**: `apps/mobile/contexts/AuthContext.tsx`
-- **Theme**: `apps/mobile/constants/theme.ts`
+- **Mobile**: `apps/mobile/` — components, screens, navigation, contexts, hooks, constants
+- **Web**: `apps/web/` — Next.js App Router
+- **Tema**: `apps/mobile/constants/theme.ts`; tenant: `TenantContext` + `tenant_settings`
 
-## 📞 Información de Contacto
+### MCP (Cursor)
+- Dos servidores en `.cursor/mcp.json`: **supabase-salonpro** (este proyecto) y **supabase-zm** (referencia). Para BD de SalonPro usar supabase-salonpro.
 
-- **Ubicación**: Lima, Perú
-- **Horario**: Lunes a Sábado, 9 AM - 8 PM
-- **Moneda**: Soles (S/)
-- **WhatsApp**: +584144940417
-
-## 🔄 Actualizaciones
-
-Este índice se actualiza con cada cambio significativo en la documentación.
-
-**Última actualización**: 2025-02-13
-
-- Auth: Splash + Login para mobile (admin/admin123), logout en Perfil
-- Terminología: empleadas → chicas en toda la app
-- Servicios: catálogo actualizado según LISTA DE PRECIOS ZM (~58 servicios)
-- tsconfig: mobile con `module: "esnext"` (config independiente)
+**Última actualización**: 2026-03

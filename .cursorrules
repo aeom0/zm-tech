@@ -1,12 +1,13 @@
-# Cursor AI Rules - ZM Lash & Nails Beauty
+# Cursor AI Rules - SalonPro
 
 ## Contexto del Proyecto
 
-Aplicación de gestión para salón de belleza (centro de estética) en Perú. Monorepo: apps/mobile (Expo), apps/web (Next.js), packages/shared-schema.
-- **Stack**: React Native (Expo SDK 54) + Supabase (PostgREST) + Express 5 (legacy/web/WhatsApp) + TypeScript
-- **Estructura**: Monorepo Yarn 4 — `apps/mobile/`, `apps/web/`, `packages/shared-schema/`, `server/`
+Sistema de gestión integral para salones de belleza, barberías y peluquerías en LATAM. SaaS multi-tenant. Monorepo: apps/mobile (Expo), apps/web (Next.js), packages/shared-schema, packages/tenant-config.
+- **Stack**: React Native (Expo SDK 54) + Supabase (PostgREST + Auth) + TypeScript
+- **Estructura**: Monorepo Yarn 4 — `apps/mobile/`, `apps/web/`, `packages/shared-schema/`, `packages/tenant-config/`. Sin servidor Express
 - **Entorno**: WSL (Ubuntu), Node 22 (.nvmrc), Yarn 4
-- **Negocio**: Perú — moneda S/, horario L-S 10:00–19:00, D previa cita 10:30–13:00; categorías: Extensiones de Pestañas, Lifting, Cejas y Rostro, Uñas, Microblading, Depilación
+- **Supabase**: Proyecto `xidjomlxpuosupymcsaj`. Config de tenant en tabla `tenant_settings` y en AsyncStorage tras onboarding (5 pasos)
+- **Negocio**: Multi-tipo (spa-nails, barbershop, hair-salon, full-aesthetic); textos y jerga en español (venezolana cuando encaje)
 
 ## Directrices de Documentación
 
@@ -14,8 +15,8 @@ Aplicación de gestión para salón de belleza (centro de estética) en Perú. M
 - NO generar guías, tutoriales o READMEs automáticamente
 - NO crear documentación en la raíz del proyecto sin que se pida
 - Proporcionar instrucciones en el chat cuando baste
-- Solo crear documentación cuando se solicite: "crea una guía", "documenta esto"
-- Si hace falta documentar: usar `docs/` o referencias en `replit.md` / `README.md` existentes
+- Solo crear documentación cuando se solicite
+- Si hace falta documentar: usar `docs/` o referencias en `README.md`
 
 **Sí crear automáticamente**:
 - Código fuente (componentes, hooks, utils, pantallas)
@@ -25,84 +26,77 @@ Aplicación de gestión para salón de belleza (centro de estética) en Perú. M
 ## Convenciones de Código
 
 ### Naming
-- Componentes: PascalCase (`CitaCard.tsx`, `ServicioForm.tsx`)
-- Hooks: camelCase con prefijo `use` (`useCitas.ts`, `useServicios.ts`)
-- Utils/lib: camelCase o kebab-case (`query-client.ts`, `format-date.ts`)
-- Types: PascalCase (interfaces y tipos exportados)
-- Base de datos: **snake_case** en columnas retornadas por Supabase (`category_id`, `min_stock`, `created_at`); interfaces en screens deben usar snake_case para propiedades de BD
+- Componentes: PascalCase
+- Hooks: camelCase con prefijo `use`
+- Utils/lib: camelCase o kebab-case
+- Types: PascalCase
+- Base de datos: **snake_case** en columnas de Supabase; interfaces con snake_case para propiedades de BD
+- Nombres de negocio en español (citas, servicios, empleados, inventario, finanzas)
 
 ### Imports
 ```typescript
 // Mobile (apps/mobile): alias @/
-import { Button, Card } from "@/components/Button";
 import { useTheme } from "@/hooks/useTheme";
 import { supabase } from "@/lib/supabase";
-import type { Appointment } from "@zm/shared-schema";
+import type { Appointment } from "@salonpro/shared-schema";
 
 // Web (apps/web): alias @/
-// Server: shared para esquema
-import { db } from "./db";
-import * as schema from "@zm/shared-schema";
+// Compartido: @salonpro/shared-schema, @salonpro/tenant-config
 ```
 
 ### Componentes
-- Props tipadas con `interface`, hooks primero, callbacks con `useCallback`
-- Estilos desde `apps/mobile/constants/theme.ts` (Colors, Spacing, Typography, etc.)
-- Iconos: Lucide React cuando se añadan
+- Props tipadas con `interface`; estilos desde `constants/theme.ts`
+- Iconos: Lucide React. Diseño limpio, sin adornos innecesarios; soporte dark/light
 
 ## Stack
 
 ### Mobile (apps/mobile/)
-- Expo SDK 54, React 19.1, React Native 0.81.5
-- React Navigation v7; `RootStackNavigator` → siempre `Auth` (Splash → Login → Main tabs). Sin LandingScreen.
-- `metro.config.js` configurado para monorepo (watchFolders + nodeModulesPaths)
-- TanStack Query + **Supabase** (conexión directa PostgREST; sin Express intermedio)
-- Estilos: StyleSheet + tema en `constants/theme.ts`; soporte dark/light, violeta (#7B2D8E) y dorado (#D4AF37)
-- Responsive: `hooks/useResponsive.ts` — `isTablet` (≥768px) activo en Dashboard, Agenda, Finanzas
+- Expo SDK 54, React 19, React Native 0.81
+- React Navigation v7; Auth (Splash → Login → Onboarding 5 pasos o Main tabs)
+- TanStack Query + Supabase (PostgREST directo)
+- TenantContext: sync con `tenant_settings` al terminar onboarding; carga remota al arranque si hay sesión
+- Tema en `constants/theme.ts` (ej. fondo #111318 en onboarding)
 
 ### Web (apps/web/)
 - Next.js 15 + React 19, Tailwind CSS
-- Landing pública (zmlashnails.com) + panel `/finanzas` (auth Supabase, solo dev/owner)
+- Landing pública + panel `/finanzas` (auth Supabase)
 
-### Servidor (server/)
-- Express 5, TypeScript (tsx en dev)
-- Drizzle ORM + PostgreSQL (DATABASE_URL)
-- Rutas API bajo `/api/*`; WhatsApp; CORS para localhost y Replit
-
-### Compartido (packages/shared-schema/)
-- `src/schema.ts`: tablas Drizzle, relaciones, schemas Zod (drizzle-zod)
+### Compartido
+- `packages/shared-schema`: tablas Drizzle + Zod (employees, services, appointments, tenant_settings, etc.)
+- `packages/tenant-config`: presets por tipo de negocio (spa-nails, barbershop, hair-salon, full-aesthetic)
 
 ## Comandos Útiles
 
 ```bash
-# Desarrollo
-yarn dev              # Server + mobile en paralelo
-yarn server:dev       # Solo backend (puerto 5000)
-yarn mobile:dev       # Solo Expo (apps/mobile)
-yarn web:dev          # Solo Next.js (apps/web)
-
-# Base de datos
-yarn db:push          # Aplicar esquema Drizzle a PostgreSQL
-
-# Calidad
-yarn lint             # ESLint
-yarn check:types      # TypeScript (tsc --noEmit)
-yarn format           # Prettier
+yarn mobile:dev       # Expo (apps/mobile)
+yarn web:dev          # Next.js (apps/web)
+yarn db:push          # Aplicar esquema Drizzle a Supabase
+yarn db:seed          # Seeds (editar templates antes)
+yarn lint
+yarn check:types
+yarn format
 ```
 
 ## Paths
 
-- Raíz: `/home/alber/ZM-Lash-and-Nails-Beauty` (WSL)
-- Mobile: `apps/mobile/` (screens, components, hooks, lib, constants, navigation, metro.config.js)
+- Raíz: `/home/alber/salonpro`
+- Mobile: `apps/mobile/` (screens, contexts, navigation, lib, constants)
 - Web: `apps/web/`
-- Servidor: `server/`
-- Esquema compartido: `packages/shared-schema/src/schema.ts`
-- Documentación: `replit.md`, `README.md`, `CLAUDE.md`
+- Schema: `packages/shared-schema/src/schema.ts`
+- Tenant config: `packages/tenant-config/`
+- Documentación: `README.md`, `.cursor/README.md`
+
+## MCP Supabase
+
+En `.cursor/mcp.json` hay **dos** servidores MCP:
+- **supabase-zm** — proyecto ZM (`udelxwwnyivknslueerr`). Usar cuando se trabaje en repo ZM o se consulte esa BD.
+- **supabase-salonpro** — proyecto SalonPro (`xidjomlxpuosupymcsaj`). Usar para este repo: list_tables, execute_sql, apply_migration, generate_typescript_types.
+
+Cursor puede mostrar los nombres con prefijo del workspace (ej. `project-0-SalonPro (raíz)-supabase-salonpro`). Para BD de SalonPro, usar el servidor que apunta a `xidjomlxpuosupymcsaj`.
 
 ## Comportamiento AI
 
 - Resolver errores de conexión y variables de entorno (.env) en desarrollo
-- Ayudar con Supabase, Drizzle, Express y React Native/Expo
-- Mantener nombres de negocio en español (citas, servicios, chicas, inventario, finanzas)
-- Textos de UI en español; jerga natural venezolana cuando encaje
+- Ayudar con Supabase, Drizzle y React Native/Expo
+- Mantener nombres de negocio en español; textos de UI en español (jerga venezolana cuando encaje)
 - No crear documentación automática; no duplicar scripts; priorizar soluciones directas en código

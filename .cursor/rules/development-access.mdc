@@ -1,5 +1,5 @@
 ---
-description: Acceso a archivos de desarrollo y .env para depuración
+description: Acceso a archivos de desarrollo y .env para depuración (SalonPro)
 globs:
   - "**/.env"
   - "**/.env.local"
@@ -9,19 +9,19 @@ globs:
 alwaysApply: true
 ---
 
-# Development Access ZM Lash & Nails Beauty
+# Development Access - SalonPro
 
 ## Permisos para desarrollo
 
-- Tienes acceso completo a archivos de desarrollo, incluido `.env` y `.env.local`, para depurar conexión a la base de datos, API y variables de Expo.
+- Tienes acceso completo a archivos de desarrollo, incluido `.env` y `.env.local`, para depurar conexión a Supabase, variables de Expo y Next.js.
 - Los archivos `.env` son para desarrollo local; no incluir secretos de producción en el repo (`.env` está en `.gitignore`).
-- Ayudar a resolver errores de `DATABASE_URL`, `EXPO_PUBLIC_API_URL`, CORS y arranque del servidor/cliente cuando el usuario trabaje en local.
+- Ayudar a resolver errores de `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, y arranque de mobile/web cuando el usuario trabaje en local.
 
 ## Contexto
 
-- **Supabase**: Mobile conecta directo; proyecto `udelxwwnyivknslueerr`. Variables: `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`.
-- **Express**: Drizzle + PostgreSQL vía `DATABASE_URL`; rutas /api/* y WhatsApp.
-- **Web**: `EXPO_PUBLIC_API_URL` o `EXPO_PUBLIC_DOMAIN` si consume API Express.
+- **Supabase**: Proyecto SalonPro `xidjomlxpuosupymcsaj`. Mobile y web conectan directo (PostgREST + Auth). No hay servidor Express.
+- **Mobile**: Variables `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` en `.env` (raíz o apps/mobile).
+- **Web**: Variables `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` en `apps/web/.env.local` si aplica.
 
 ## Seguridad
 

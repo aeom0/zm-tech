@@ -1,5 +1,5 @@
 ---
-description: Arquitectura del proyecto ZM Lash & Nails Beauty (monorepo) v1.1.0
+description: Arquitectura del proyecto SalonPro (monorepo) — SaaS multi-tenant, Supabase
 globs:
   - "apps/**/*"
   - "packages/**/*"
@@ -9,82 +9,67 @@ globs:
 alwaysApply: false
 ---
 
-# Arquitectura ZM Lash & Nails Beauty v1.1.0
+# Arquitectura SalonPro
 
 ## Estructura del Repo (monorepo)
 
 ```
-ZM-Lash-and-Nails-Beauty/
+salonpro/
 ├── apps/
 │   ├── web/              # Landing y panel /finanzas (Next.js 15 + React 19)
-│   │   └── src/app/      # App Router; / = landing, /finanzas = panel admin
-│   └── mobile/           # App Expo (React Native) — gestión del salón
-│       ├── App.tsx        # Entry: QueryClient + AuthProvider + Navigation
-│       ├── app.json       # version 1.1.0, FCM, EAS, runtimeVersion
-│       ├── eas.json       # Perfiles: development / preview / production (.apk)
-│       ├── metro.config.js # Monorepo: watchFolders merge + nodeModulesPaths
-│       ├── google-services.json  # FCM Android
-│       ├── components/   # UI reutilizable (ThemedText, Card, Button, etc.)
-│       ├── screens/      # Dashboard, Agenda, Servicios, Inventario, Finanzas,
-│       │                 # MoreHome, Personal, Settings, Login, Splash, Perfil
-│       ├── navigation/   # RootStackNavigator → Auth o Main tabs
-│       ├── hooks/        # useTheme, useResponsive, useHaptics, useNotifications
-│       ├── contexts/     # AuthContext (sesión + perfil + rol)
-│       ├── lib/          # supabase.ts, query-client.ts
-│       └── constants/    # theme.ts (Colors, Spacing, Typography, BorderRadius)
+│   └── mobile/            # App Expo (React Native) — gestión del salón
+│       ├── App.tsx        # Entry: QueryClient + AuthProvider + TenantProvider + Navigation
+│       ├── contexts/     # AuthContext, TenantContext (sync con tenant_settings)
+│       ├── screens/      # Dashboard, Agenda, Servicios, Finanzas, Inventario, onboarding/
+│       ├── navigation/   # RootStack → Auth (Splash, Login, Onboarding 5 pasos, Main tabs)
+│       ├── hooks/        # useTheme, useResponsive, useTenant…
+│       ├── lib/          # supabase.ts, query-client.ts (solo Supabase; sin Express)
+│       └── constants/    # theme.ts
 ├── packages/
-│   └── shared-schema/    # @zm/shared-schema — tablas Drizzle + schemas Zod
-│       └── src/schema.ts
-├── scripts/db/           # Seeds SQL (servicios, empleados)
-└── package.json          # workspaces: apps/*, packages/*
+│   ├── shared-schema/    # @salonpro/shared-schema — Drizzle + Zod (tenant_settings, employees, services, etc.)
+│   └── tenant-config/    # @salonpro/tenant-config — presets por tipo de negocio
+├── scripts/db/           # Seeds SQL (editar templates antes de yarn db:seed)
+└── docs/
 ```
 
-> **IMPORTANTE**: `server/` fue eliminado en v1.1.0. No hay Express. La app mobile conecta directo a Supabase.
+**IMPORTANTE**: No hay servidor Express. La app mobile y web conectan directo a Supabase (proyecto `xidjomlxpuosupymcsaj`).
 
 ## Stack
 
-### Web (apps/web)
-- **Framework**: Next.js 15 + App Router + React 19
-- **Estilos**: Tailwind CSS (tema violeta/dorado)
-- **Uso**: Landing pública (zmlashnails.com) + panel `/finanzas` (auth Supabase, solo dev/owner)
-- **Variables**: `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` en `apps/web/.env.local`
-
 ### Mobile (apps/mobile)
-- **Framework**: Expo SDK 54, React 19.1, React Native 0.81.5
-- **Versión app**: 1.1.0
-- **Navegación**: React Navigation v7; `RootStackNavigator` → siempre `Auth` (Splash → Login → Main tabs). Sin LandingScreen.
-- **Metro**: `metro.config.js` — `watchFolders = [workspaceRoot, ...(config.watchFolders ?? [])]` (pasa expo-doctor 17/17)
-- **Estado servidor**: TanStack Query + **Supabase** (PostgREST directo); `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`
-- **Estilos**: StyleSheet + tema en `constants/theme.ts` (modo claro/oscuro, violeta/dorado)
-- **Responsive**: `hooks/useResponsive.ts` — `isTablet` (≥768px) activo en Dashboard, Agenda, Finanzas
-- **Datos**: Interfaces usan `snake_case` para columnas de Supabase (ej. `category_id`, `min_stock`)
-- **Push**: `expo-notifications` + `expo-device`; hook `useNotifications` registra token FCM en `profiles.push_token`
+- Expo SDK 54, React 19, React Native 0.81
+- Navegación: Auth → Splash → Login → Onboarding (5 pasos) o Main tabs
+- Estado servidor: TanStack Query + Supabase (PostgREST). QueryKeys: employees, services, service_categories, appointments, payments, inventory_items, dashboard_stats, tenant_settings
+- TenantContext: al terminar onboarding hace upsert en `tenant_settings` y guarda en AsyncStorage; al arranque con sesión carga tenant desde Supabase si no hay config local
+- Tema: constants/theme.ts (ej. onboarding oscuro #111318); soporte dark/light
+- Responsive: useResponsive (isTablet ≥768px)
+- Datos: snake_case para columnas de Supabase
+
+### Web (apps/web)
+- Next.js 15, Tailwind, Supabase Auth
+- Landing pública + panel `/finanzas`
 
 ### Base de datos (Supabase)
-- **Proyecto**: `udelxwwnyivknslueerr`. Mobile conecta directo vía PostgREST.
-- **Esquema**: `packages/shared-schema/src/schema.ts` (employees, service_categories, services, clients, appointments, inventory_items, payments, profiles)
-- **Migraciones**: Drizzle Kit; `yarn db:push`. Supabase retorna columnas en snake_case.
-- **RLS**: por rol (dev / owner / staff) en todas las tablas sensibles
-- **Edge Functions**: `send-notification` (FCM push via JWT), `whatsapp-webhook`
-- **Trigger**: `trg_notify_appointment_assigned` → pg_net → `send-notification` al asignar cita
+- **Proyecto**: `xidjomlxpuosupymcsaj`
+- Tablas: profiles, tenant_settings, employees, service_categories, services, clients, appointments, payments, inventory_items. RLS por rol (dev/owner/staff) y tenant cuando aplique
+- Helper `get_my_role()` para RLS; tenant_settings con business_type, display_name, primary_color, etc.
+- Migraciones: Drizzle; `yarn db:push`
 
 ## Scripts (raíz)
 
-- `yarn dev` — solo Expo (mobile)
-- `yarn web:dev` — solo Next.js (apps/web)
-- `yarn mobile:dev` — solo Expo (apps/mobile)
-- `yarn web:build` — build Next.js (landing)
-- `yarn db:push` — aplicar esquema Drizzle a PostgreSQL
+- `yarn mobile:dev` — Expo
+- `yarn web:dev` — Next.js
+- `yarn db:push` — aplicar esquema Drizzle
+- `yarn db:seed` — cargar seeds (editar templates antes)
 - `yarn lint` / `yarn format` / `yarn check:types`
 
 ## Patrones
 
 ### Imports
-- **Web**: `@/` → `src/` dentro de apps/web
-- **Mobile**: `@/` → raíz de apps/mobile (componentes, hooks, screens, lib, constants)
-- **Mobile API**: Supabase client desde `@/lib/supabase`; TanStack Query con `supabase.from(...).select(...)` directamente
+- Mobile: `@/` → raíz de apps/mobile
+- Schema: `@salonpro/shared-schema`; tenant: `@salonpro/tenant-config`
+- API: Supabase desde `@/lib/supabase`; TanStack Query con `supabase.from(...).select(...)` directamente
 
 ### Naming
-- Componentes/hooks/types: PascalCase o camelCase (useX)
-- Archivos: PascalCase para componentes, camelCase o kebab-case para utils
-- DB: snake_case en PostgreSQL; en schema Drizzle camelCase en JS/TS
+- Componentes/hooks: PascalCase / camelCase (useX)
+- DB: snake_case en PostgreSQL y en interfaces de datos de BD

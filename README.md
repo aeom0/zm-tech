@@ -42,14 +42,15 @@ yarn web:dev
 
 ## Configuración del Tenant
 
-Al iniciar la app por primera vez (sin config guardada), se muestra el **onboarding de 4 pasos**:
+Al iniciar la app por primera vez (sin config guardada), se muestra el **onboarding de 5 pasos**:
 
 1. **Tipo de negocio** — elige entre los 4 tipos; aplica el preset correspondiente
 2. **Nombre y colores** — personaliza nombre, color primario y de acento
 3. **Primer empleado** — agrega al primer miembro del equipo (opcional)
 4. **Categorías de servicios** — confirma las categorías sugeridas por tipo
+5. **Resumen** — revisión y confirmación; al terminar se persiste en `tenant_settings` (Supabase) y en AsyncStorage (`@salonpro/tenant_config`)
 
-La configuración se guarda en `AsyncStorage` (`@salonpro/tenant_config`) y es editable después desde Configuración.
+La configuración se sincroniza con la tabla `tenant_settings` en Supabase y es editable después desde Configuración.
 
 Para configurar manualmente, edita los seeds antes de ejecutarlos:
 
@@ -74,7 +75,7 @@ yarn db:seed
 - **Navegación**: React Navigation 7 (bottom tabs + native stacks)
 - **Estado servidor**: TanStack React Query v5
 - **Animaciones**: React Native Reanimated 4
-- **Backend**: Supabase (Auth + PostgREST) — sin servidor Express
+- **Backend**: Supabase (Auth + PostgREST) — sin servidor Express. Proyecto: `xidjomlxpuosupymcsaj`
 - **Schema compartido**: Drizzle ORM + Zod (`packages/shared-schema`)
 - **Config de tenant**: `packages/tenant-config` (`@salonpro/tenant-config`)
 - **Web**: Next.js (`apps/web`) — landing pública + panel `/finanzas`
@@ -94,7 +95,7 @@ Este monorepo usa la convención estándar `apps/` para aplicaciones y `packages
 | `apps/web/` | **Web (Next.js)** — landing pública del salón + panel `/finanzas` | Next.js 15 + Tailwind CSS |
 | `packages/shared-schema/` | **Schema Compartido** — tablas de base de datos y validaciones | Drizzle ORM + Zod |
 | `packages/tenant-config/` | **Config de Tenant** — presets y configuración multi-tenant | TypeScript |
-| `server/` | **Servidor Express** — API backend (modo desarrollo) | Node.js + Express |
+| `server/` | *(No usado)* — La app conecta directo a Supabase; no hay Express | — |
 | `scripts/` | **Scripts de base de datos** — seeds y migraciones | SQL + Node.js |
 | `docs/` | **Documentación** — guías de migración y diseño | Markdown |
 
@@ -111,7 +112,7 @@ Este monorepo usa la convención estándar `apps/` para aplicaciones y `packages
 ├── packages/
 │   ├── shared-schema/        # Schema Compartido — @zm/shared-schema (Drizzle + Zod)
 │   └── tenant-config/        # Config de Tenant — @salonpro/tenant-config + 4 presets
-├── server/                   # Servidor Express — API backend para desarrollo
+├── (sin server/)             # Backend 100% Supabase; no hay Express
 ├── scripts/
 │   ├── seed-auth-users.mjs   # Crea usuarios en Supabase Auth
 │   └── db/
@@ -177,6 +178,7 @@ DATABASE_URL=postgresql://user:pass@host:5432/nombre_bd
 - [Guía de migración ZM → SalonPro](docs/SALONPRO_MIGRATION_GUIDE.md)
 - [Lineamientos de diseño](docs/design_guidelines.md)
 - [CLAUDE.md](CLAUDE.md) — instrucciones para Claude Code
+- [.cursor/README.md](.cursor/README.md) — reglas Cursor y MCP (dos proyectos Supabase: ZM y SalonPro)
 
 ---
 

@@ -1,12 +1,12 @@
-# ZM Lash & Nails Beauty
+# SalonPro — Setup inicial
 
-App de gestión para salón de belleza: agenda, servicios, inventario y finanzas. Frontend con React Native (Expo) y backend Express + PostgreSQL (Drizzle).
+App de gestión para salones de belleza, barberías y peluquerías (LATAM). Frontend React Native (Expo) + Next.js; backend **Supabase** (Auth + PostgREST). Sin servidor Express.
 
 ## Requisitos
 
-- **Node.js** 20+ (recomendado 22; en el repo hay `.nvmrc`: `nvm use`)
-- **PostgreSQL** 16 (local o servicio cloud)
-- **npm** (viene con Node)
+- **Node.js** 22+ (recomendado: `nvm use`, hay `.nvmrc`)
+- **Yarn** 4 (Berry)
+- Cuenta **Supabase** (proyecto SalonPro: `xidjomlxpuosupymcsaj`)
 
 ## Desarrollo local
 
@@ -14,8 +14,8 @@ App de gestión para salón de belleza: agenda, servicios, inventario y finanzas
 
 ```bash
 git clone <repo>
-cd ZM-Lash-and-Nails-Beauty
-npm install
+cd salonpro
+yarn install
 ```
 
 ### 2. Variables de entorno
@@ -24,63 +24,56 @@ npm install
 cp .env.example .env
 ```
 
-Editar `.env` y definir al menos:
+Editar `.env` y definir:
 
-- **`DATABASE_URL`**: conexión PostgreSQL, ej.  
-  `postgresql://usuario:clave@localhost:5432/zm_lash_nails`
-- **`EXPO_PUBLIC_API_URL`**: URL del API para el cliente, en local:  
-  `http://localhost:5000`
+- **`EXPO_PUBLIC_SUPABASE_URL`**: `https://xidjomlxpuosupymcsaj.supabase.co`
+- **`EXPO_PUBLIC_SUPABASE_ANON_KEY`**: clave anon del proyecto en Supabase Dashboard
+
+Para seeds o scripts con servicio: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SEED_AUTH_PASSWORD`.
 
 ### 3. Base de datos
 
-Crear la base en PostgreSQL y aplicar el esquema:
+El schema se aplica con Drizzle. En WSL puede fallar la conexión TCP directa (IPv6). Opciones:
+
+- **SQL Editor** del Dashboard Supabase: pegar y ejecutar el SQL generado por `yarn drizzle-kit generate`
+- **`yarn db:push`** si tienes conectividad a `db.xidjomlxpuosupymcsaj.supabase.co:5432`
+
+Ver [DESARROLLO_LOCAL.md](DESARROLLO_LOCAL.md) para detalle.
+
+### 4. Arrancar apps
 
 ```bash
-npm run db:push
+# App móvil (Expo)
+yarn mobile:dev
+
+# Web (Next.js) — landing + panel /finanzas
+yarn web:dev
 ```
 
-### 4. Arrancar backend y Expo
-
-**Opción A – Un solo comando (recomendado):**
-
-```bash
-npm run dev
-```
-
-Arranca el servidor en el puerto 5000 y Expo en 8081.
-
-**Opción B – Dos terminales:**
-
-```bash
-# Terminal 1: backend
-npm run server:dev
-
-# Terminal 2: cliente Expo
-npm run expo:dev
-```
-
-Abrir en el navegador la URL que muestre Expo (por defecto web en `http://localhost:8081`) o escanear el QR con Expo Go en el móvil.
+Abrir la URL que muestre Expo (web en 8081) o escanear QR con Expo Go.
 
 ## Scripts útiles
 
 | Script | Descripción |
 |--------|-------------|
-| `npm run dev` | Backend + Expo en paralelo (local) |
-| `npm run server:dev` | Solo backend Express (puerto 5000) |
-| `npm run expo:dev` | Solo cliente Expo (localhost) |
-| `npm run db:push` | Aplicar esquema Drizzle a PostgreSQL |
-| `npm run lint` | Linter |
-| `npm run check:types` | Verificar tipos TypeScript |
-
-En Replit se puede usar `npm run expo:dev:replit` para el flujo con dominio Replit.
+| `yarn mobile:dev` | Expo (app móvil) |
+| `yarn web:dev` | Next.js (landing + panel) |
+| `yarn db:push` | Aplicar schema Drizzle a Supabase |
+| `yarn db:seed` | Cargar seeds (editar templates antes) |
+| `yarn lint` | ESLint |
+| `yarn check:types` | TypeScript |
+| `yarn format` | Prettier |
 
 ## Estructura resumida
 
-- **`client/`** – App React Native (Expo): pantallas, navegación, hooks, tema.
-- **`server/`** – API Express: rutas, storage, DB.
-- **`shared/`** – Esquema Drizzle y tipos compartidos.
+- **`apps/mobile/`** — App Expo: pantallas, navegación, contexts (Auth, Tenant), hooks, tema.
+- **`apps/web/`** — Next.js: landing pública + panel `/finanzas`.
+- **`packages/shared-schema/`** — Schema Drizzle + Zod (tenant_settings, employees, services, etc.).
+- **`packages/tenant-config/`** — Presets por tipo de negocio (spa-nails, barbershop, hair-salon, full-aesthetic).
 
-Documentación detallada de arquitectura, endpoints y negocio: **[replit.md](./replit.md)**.
+No hay carpeta `server/`: todo el backend es Supabase.
+
+Documentación: [INDEX.md](INDEX.md), [DESARROLLO_LOCAL.md](DESARROLLO_LOCAL.md), [design_guidelines.md](design_guidelines.md).
 
 ## Licencia
 

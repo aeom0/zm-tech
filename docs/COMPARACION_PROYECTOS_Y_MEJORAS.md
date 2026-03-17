@@ -2,6 +2,8 @@
 
 Documento de comparación entre ambos proyectos y sugerencias para reforzar la diferenciación entre producto web y producto móvil.
 
+> **Nota (SalonPro)**: Este repo (**SalonPro**) es un fork de ZM pero ya **no usa Express**. Backend 100% **Supabase** (Auth + PostgREST). Estructura: `apps/mobile`, `apps/web`, `packages/shared-schema` (@salonpro), `packages/tenant-config` (@salonpro); no hay `server/`. La tabla siguiente describe ZM en su momento (Express + PostgreSQL); en SalonPro el “backend” es Supabase (proyecto `xidjomlxpuosupymcsaj`).
+
 ---
 
 ## 1. Resumen de estructuras
@@ -11,7 +13,7 @@ Documento de comparación entre ambos proyectos y sugerencias para reforzar la d
 | **Tipo** | Monorepo (Yarn workspaces + Turbo) | Monorepo (npm workspaces) |
 | **Web** | App dedicada: `apps/web` (Next.js 16) | App dedicada: `apps/web` (Next.js 15) — landing |
 | **Mobile** | App dedicada: `apps/mobile` (Expo) | App dedicada: `apps/mobile` (Expo) |
-| **Backend** | Supabase (BaaS) | Express + PostgreSQL (Drizzle) en raíz |
+| **Backend** | Supabase (BaaS) | ZM: Express + PostgreSQL. **SalonPro**: Supabase (BaaS) |
 | **Compartido** | `packages/`: shared-types, shared-utils, shared-config, shared-ui | `packages/shared-schema` (@zm/shared-schema) |
 | **Scripts** | `yarn web:dev`, `yarn mobile:dev`, `yarn build` (Turbo) | `npm run web:dev`, `npm run mobile:dev`, `npm run build` |
 

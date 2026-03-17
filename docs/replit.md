@@ -1,4 +1,10 @@
-# ZM Lash & Nails Beauty
+# Documentación técnica (origen ZM)
+
+> **SalonPro**: Este documento proviene de ZM Lash & Nails Beauty. En **SalonPro** no hay backend Express: el backend es **Supabase** (Auth + PostgREST). Las secciones de “Arquitectura Backend” y “Endpoints” ya no aplican tal cual; la API es el cliente Supabase (`supabase.from('tabla').select()`) y las tablas en `packages/shared-schema`. Ver [README.md](README.md) y [INDEX.md](INDEX.md) para la estructura actual.
+
+---
+
+# ZM Lash & Nails Beauty (referencia)
 
 ## Información del Proyecto
 
@@ -6,7 +12,7 @@
 
 ## Descripción General
 
-ZM Lash & Nails Beauty es una aplicación de gestión para salón de belleza, construida como app multiplataforma React Native/Expo con backend Express. La app proporciona un dashboard administrativo para gestionar citas, personal, servicios, inventario y finanzas de un centro de estética ubicado en Perú. El diseño sigue una estética lujosa con tonos violeta y dorado, con sensación de spa premium.
+ZM Lash & Nails Beauty es una aplicación de gestión para salón de belleza, construida como app multiplataforma React Native/Expo. En ZM el backend era Express; en SalonPro el backend es Supabase. La app proporciona un dashboard administrativo para gestionar citas, personal, servicios, inventario y finanzas. El diseño sigue una estética lujosa con tonos violeta y dorado, con sensación de spa premium.
 
 ## Preferencias del Usuario
 
@@ -43,17 +49,13 @@ Estilo de comunicación preferido: Lenguaje simple y cotidiano en español.
 - Expo Haptics para retroalimentación táctil
 - Expo Blur para efectos de cristal
 
-### Arquitectura Backend
+### Arquitectura Backend (ZM: Express · SalonPro: Supabase)
 
-**Framework**: Express 5 con TypeScript
-- Diseño de API RESTful
-- CORS configurado para entorno de desarrollo Expo
-- Corre en el puerto 5000
+**En SalonPro**: No hay Express. Backend = **Supabase** (Auth + PostgREST). Esquema en `packages/shared-schema/src/schema.ts`; cliente desde `apps/mobile/lib/supabase.ts` y TanStack Query.
 
-**Base de Datos**: PostgreSQL con Drizzle ORM
-- Esquema definido en `shared/schema.ts`
-- Consultas type-safe con Drizzle
-- Integración con Zod para validación vía drizzle-zod
+**En ZM (referencia)**:
+- **Framework**: Express 5 con TypeScript (puerto 5000)
+- **Base de Datos**: PostgreSQL con Drizzle ORM; esquema en `shared/schema.ts` (ZM) o `packages/shared-schema` (SalonPro)
 
 **Modelos de Datos**:
 - Chicas (personal con codificación de colores; en UI y mensajes se usa "chicas" en lugar de "empleadas")
@@ -65,6 +67,9 @@ Estilo de comunicación preferido: Lenguaje simple y cotidiano en español.
 
 ### Organización del Código
 
+**SalonPro**: `apps/mobile/`, `apps/web/`, `packages/shared-schema/`, `packages/tenant-config/`. No hay `server/` ni `client/`.
+
+**ZM (referencia)**:
 ```
 client/           # Código de la app React Native
 ├── components/   # Componentes UI reutilizables

@@ -1,47 +1,43 @@
-# Cursor Rules - ZM Lash & Nails Beauty
+# Cursor Rules - SalonPro
 
-Directrices y reglas de desarrollo para Cursor en este proyecto. Sincronizadas con CLAUDE.md; monorepo apps/mobile, apps/web, packages/shared-schema; Supabase como backend de mobile.
+Directrices y reglas de desarrollo para Cursor en este proyecto. Monorepo apps/mobile, apps/web, packages/shared-schema, packages/tenant-config. Backend 100% Supabase (proyecto `xidjomlxpuosupymcsaj`).
 
 ## Estructura
 
 ```
 .cursor/
 ├── README.md           # Este archivo
-├── mcp.json            # MCP Supabase (proyecto udelxwwnyivknslueerr)
+├── mcp.json            # Dos MCP Supabase: supabase-zm + supabase-salonpro
 └── rules/
-    ├── arquitectura.mdc       # Estructura repo, stack, patrones
+    ├── arquitectura.mdc       # Estructura repo, stack, patrones SalonPro
     ├── business-logic.mdc    # Negocio: citas, servicios, inventario, finanzas
     ├── ui-patterns.mdc       # Tema, componentes, diseño
     ├── mobile-patterns.mdc   # Expo/React Native, navegación, listas
     ├── performance.mdc      # Optimización cliente/servidor
-    ├── testing.mdc          # Patrones de tests (cuando se añadan)
-    ├── current-development.mdc  # Estado actual (MVP, local, stack)
-    ├── idioma.mdc            # Español, jerga, locale Perú/S/
+    ├── testing.mdc          # Patrones de tests
+    ├── current-development.mdc  # Estado actual (onboarding, tenant_settings, stack)
+    ├── idioma.mdc            # Español, jerga venezolana
     ├── development-access.mdc   # Acceso .env y archivos de desarrollo
-    └── supabase-mcp.mdc        # Uso de MCP Supabase (list_tables, execute_sql, etc.)
+    └── supabase-mcp.mdc        # Uso de MCP Supabase (dos proyectos)
 ```
 
 ## Raíz del proyecto
 
-- **`.cursorrules`**: Reglas globales (documentación, convenciones, stack, comandos, paths). Cursor las aplica siempre.
+- **`.cursorrules`**: Reglas globales (documentación, convenciones, stack, comandos, paths, MCP). Cursor las aplica siempre.
 
 ## Formato de los .mdc
 
-Cada archivo en `rules/` usa frontmatter:
+Cada archivo en `rules/` usa frontmatter con `description`, `globs` y opcionalmente `alwaysApply: true`.
 
-```yaml
----
-description: Descripción breve
-globs:
-  - "client/**/*"
-  - "server/**/*"
-alwaysApply: false   # true solo para reglas que deban aplicarse en todo el repo
----
-```
+## MCP Supabase — Dos proyectos
 
-- **globs**: Archivos o carpetas en los que la regla es relevante (ahora usan `apps/mobile/`, `apps/web/`, `packages/`).
-- **alwaysApply**: Si es `true`, Cursor considera la regla en cualquier contexto (ej. `current-development.mdc`, `development-access.mdc`).
+El archivo `.cursor/mcp.json` define **dos** servidores:
 
-## MCP Supabase
+| Clave en mcp.json   | Proyecto Supabase        | Uso en este repo (SalonPro)     |
+|---------------------|---------------------------|----------------------------------|
+| `supabase-salonpro` | `xidjomlxpuosupymcsaj`    | **Sí** — BD, SQL, tipos, migraciones |
+| `supabase-zm`       | `udelxwwnyivknslueerr`    | Solo referencia/consulta ZM     |
 
-El archivo `.cursor/mcp.json` configura el servidor MCP de Supabase scoped al proyecto ZM. Tras añadirlo, Cursor te pedirá autenticarte en Supabase (navegador). Luego podrás usar herramientas como `list_tables`, `execute_sql`, `generate_typescript_types` para explorar y trabajar con la BD.
+- Para trabajar en **SalonPro**: usar el servidor **supabase-salonpro** (list_tables, execute_sql, apply_migration, generate_typescript_types). El proyecto ya viene configurado en la URL del MCP; no hace falta pasar `project_id`.
+- Cursor puede mostrar nombres con prefijo del workspace (ej. `project-0-SalonPro (raíz)-supabase-salonpro`). Elegir el que corresponda a SalonPro para no mezclar BDs.
+- Autenticación: Cursor solicita login en Supabase la primera vez (OAuth en navegador).
