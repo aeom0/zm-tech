@@ -1,29 +1,29 @@
 {
   "expo": {
-    "name": "ZM Lash & Nails Beauty",
-    "slug": "zm-lash-nails",
-    "version": "1.0.0",
+    "name": "SalonPro",
+    "slug": "salonpro",
+    "version": "1.2.0",
     "orientation": "portrait",
-    "icon": "./assets/images/logo/logo-original.png",
-    "scheme": "zmlash",
+    "icon": "./assets/images/icon.png",
+    "scheme": "salonpro",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.zmlash.beauty"
+      "bundleIdentifier": "com.salonpro.app"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#7B2D8E",
-        "foregroundImage": "./assets/images/logo/logo-original.png"
+        "backgroundColor": "#6366f1",
+        "foregroundImage": "./assets/images/icon.png"
       },
-      "package": "com.zmlash.beauty",
+      "package": "com.salonpro.app",
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
     "web": {
       "output": "single",
-      "favicon": "./assets/images/logo/logo-original.png",
+      "favicon": "./assets/images/favicon.png",
       "bundler": "metro",
       "build": {
         "babel": {
@@ -31,14 +31,14 @@
         }
       },
       "splash": {
-        "image": "./assets/images/logo/logo-original.png",
+        "image": "./assets/images/splash-icon.png",
         "resizeMode": "contain",
-        "backgroundColor": "#7B2D8E"
+        "backgroundColor": "#6366f1"
       },
-      "name": "ZM Lash & Nails Beauty",
-      "shortName": "ZM Beauty",
-      "description": "Sistema de gestión para salón de belleza",
-      "themeColor": "#7B2D8E",
+      "name": "SalonPro",
+      "shortName": "SalonPro",
+      "description": "Gestión de salones de belleza y centros de estética",
+      "themeColor": "#6366f1",
       "backgroundColor": "#FFFFFF",
       "display": "standalone",
       "orientation": "any",
@@ -49,10 +49,10 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/logo/logo-original.png",
+          "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#7B2D8E",
+          "backgroundColor": "#6366f1",
           "dark": {
             "backgroundColor": "#1A1A1A"
           }

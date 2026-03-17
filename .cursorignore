@@ -1,0 +1,54 @@
+# Dependencias y Logs
+**/node_modules/
+**/npm-debug.log
+**/yarn-error.log
+**/.pnpm-store/
+
+# Archivos de bloqueo
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
+bun.lockb
+
+# Build outputs y Cache
+**/.expo/
+**/.next/
+**/dist/
+**/build/
+**/out/
+**/.cache/
+**/.metro/
+**/coverage/
+**/.docusaurus/
+
+# Expo / React Native - Carpetas Nativas
+**/android/
+**/ios/
+
+# Supabase
+**/supabase/.branches/
+**/supabase/seed.sql
+
+# Drizzle generated
+**/drizzle/meta/
+
+# Sistema e IDE
+**/.DS_Store
+**/.git/
+**/.idea/
+**/.vscode/extensions.json
+
+# Assets Binarios
+**/*.png
+**/*.jpg
+**/*.jpeg
+**/*.gif
+**/*.ico
+**/*.svg
+**/*.ttf
+**/*.otf
+**/*.woff
+**/*.woff2
+**/*.mp4
+**/*.mov
+**/*.pdf

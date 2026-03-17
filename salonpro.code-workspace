@@ -1,20 +1,8 @@
 {
   "folders": [
     {
-      "name": "SalonPro (raíz)",
+      "name": "SalonPro",
       "path": "."
-    },
-    {
-      "name": "📱 Mobile (Expo)",
-      "path": "apps/mobile"
-    },
-    {
-      "name": "🌐 Web (Next.js)",
-      "path": "apps/web"
-    },
-    {
-      "name": "📦 Shared Schema",
-      "path": "packages/shared-schema"
     }
   ],
   "settings": {
@@ -58,7 +46,7 @@
         "name": "Expo Go (Android)",
         "request": "launch",
         "type": "reactnative",
-        "cwd": "${workspaceFolder:📱 Mobile (Expo)}"
+        "cwd": "${workspaceFolder}/apps/mobile"
       }
     ]
   }

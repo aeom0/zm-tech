@@ -58,3 +58,7 @@ app-example
 # generated native folders
 /ios
 /android
+.cursor/mcp.json
+
+# Supabase CLI cache
+supabase/.temp/
