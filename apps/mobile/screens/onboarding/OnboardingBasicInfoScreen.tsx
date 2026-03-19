@@ -9,6 +9,8 @@ import {
 import Animated, { FadeInDown } from "react-native-reanimated";
 
 import { ThemedText } from "@/components/ThemedText";
+import { GradientButton } from "@/components/GradientButton";
+import { GradientProgressDots } from "@/components/GradientProgressDots";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 
@@ -71,17 +73,7 @@ export default function OnboardingBasicInfoScreen({
       showsVerticalScrollIndicator={false}
     >
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-        <View style={styles.dotsRow}>
-          {[0, 1, 2, 3, 4].map((index) => (
-            <View
-              key={index}
-              style={[
-                styles.dot,
-                index === 1 ? styles.dotActive : styles.dotInactive,
-              ]}
-            />
-          ))}
-        </View>
+        <GradientProgressDots total={5} current={1} />
         <ThemedText style={styles.titulo}>Datos de tu negocio</ThemedText>
         <ThemedText style={styles.subtitulo}>
           Personaliza el nombre y los colores que verás en toda la app.
@@ -175,9 +167,11 @@ export default function OnboardingBasicInfoScreen({
         <Pressable onPress={onBack} style={styles.botonSecundario}>
           <ThemedText style={styles.botonSecundarioTexto}>Atrás</ThemedText>
         </Pressable>
-        <Pressable onPress={continuar} style={styles.botonPrimario}>
-          <ThemedText style={styles.botonPrimarioTexto}>Continuar</ThemedText>
-        </Pressable>
+        <GradientButton
+          label="Continuar"
+          onPress={continuar}
+          style={styles.botonPrimarioWrapper}
+        />
       </Animated.View>
     </ScrollView>
   );
@@ -192,24 +186,6 @@ const styles = StyleSheet.create({
   header: {
     paddingTop: Spacing["3xl"],
     paddingBottom: Spacing.xl,
-  },
-  dotsRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginBottom: Spacing.lg,
-  },
-  dot: {
-    height: 3,
-    borderRadius: 2,
-  },
-  dotActive: {
-    width: 20,
-    backgroundColor: "#FFFFFF",
-  },
-  dotInactive: {
-    width: 6,
-    backgroundColor: "rgba(255,255,255,0.2)",
   },
   titulo: {
     fontSize: 24,
@@ -301,16 +277,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "rgba(255,255,255,0.6)",
   },
-  botonPrimario: {
+  botonPrimarioWrapper: {
     flex: 2,
-    borderRadius: 10,
-    paddingVertical: 15,
-    alignItems: "center",
-    backgroundColor: "#FFFFFF",
-  },
-  botonPrimarioTexto: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: "#000000",
   },
 });

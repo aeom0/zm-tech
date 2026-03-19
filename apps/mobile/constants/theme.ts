@@ -208,6 +208,30 @@ export function createTheme(config: TenantConfig, isDark: boolean) {
   };
 }
 
+export const Gradients = {
+  onboarding: {
+    // Dirección: 135° (esquina sup-izq → inf-der)
+    // Aplicar en: botones CTA, progress dots activos, checkboxes, bordes activos
+    start: '#E91E8C',   // Magenta
+    mid2:  '#9C27B0',   // Púrpura (posición ~35%)
+    mid:   '#3D3D8F',   // Índigo (posición ~65%)
+    end:   '#1565C0',   // Azul profundo
+
+    // Array listo para LinearGradient de expo-linear-gradient
+    colors: ['#E91E8C', '#9C27B0', '#3D3D8F', '#1565C0'] as const,
+
+    // Posiciones normalizadas
+    locations: [0, 0.35, 0.65, 1] as const,
+
+    // Para sombra del botón CTA
+    shadow: '#E91E8C44',
+
+    // Coordenadas para LinearGradient (135°)
+    linearStart: { x: 0, y: 0 },
+    linearEnd:   { x: 1, y: 1 },
+  },
+} as const;
+
 // Aclarado muy simple para modo oscuro: aumenta la luminosidad mezclando con blanco.
 function lightenHex(hex: string, amount: number): string {
   const num = parseInt(hex.replace("#", ""), 16);

@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import {
   View,
   StyleSheet,
-  Pressable,
-  ActivityIndicator,
   Alert,
 } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
+import { GradientButton } from "@/components/GradientButton";
+import { GradientProgressDots } from "@/components/GradientProgressDots";
 import { Spacing, BorderRadius } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 
@@ -68,17 +68,7 @@ export default function OnboardingCompleteScreen({
   return (
     <View style={styles.container}>
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-        <View style={styles.dotsRow}>
-          {[0, 1, 2, 3, 4].map((index) => (
-            <View
-              key={index}
-              style={[
-                styles.dot,
-                index === 4 ? styles.dotActive : styles.dotInactive,
-              ]}
-            />
-          ))}
-        </View>
+        <GradientProgressDots total={5} current={4} />
         <View style={styles.iconCheck}>
           <Feather name="check" size={26} color="rgba(255,255,255,0.9)" />
         </View>
@@ -121,25 +111,12 @@ export default function OnboardingCompleteScreen({
         entering={FadeInDown.delay(400).duration(400)}
         style={styles.footer}
       >
-        <Pressable
+        <GradientButton
+          label="Ir al panel"
           onPress={handleFinish}
-          disabled={saving}
-          style={({ pressed }) => [
-            styles.boton,
-            pressed && !saving && styles.botonPressed,
-          ]}
-        >
-          {saving ? (
-            <>
-              <ActivityIndicator color="#000000" style={styles.botonLoader} />
-              <ThemedText style={styles.botonTexto}>
-                Guardando configuración…
-              </ThemedText>
-            </>
-          ) : (
-            <ThemedText style={styles.botonTexto}>Ir al panel</ThemedText>
-          )}
-        </Pressable>
+          loading={saving}
+          showArrow={false}
+        />
       </Animated.View>
     </View>
   );
@@ -155,24 +132,6 @@ const styles = StyleSheet.create({
   header: {
     alignItems: "center",
     marginBottom: Spacing["2xl"],
-  },
-  dotsRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginBottom: Spacing.lg,
-  },
-  dot: {
-    height: 3,
-    borderRadius: 2,
-  },
-  dotActive: {
-    width: 20,
-    backgroundColor: "#FFFFFF",
-  },
-  dotInactive: {
-    width: 6,
-    backgroundColor: "rgba(255,255,255,0.2)",
   },
   iconCheck: {
     width: 52,
@@ -230,23 +189,5 @@ const styles = StyleSheet.create({
   },
   footer: {
     marginTop: Spacing.md,
-  },
-  boton: {
-    borderRadius: 10,
-    paddingVertical: 15,
-    alignItems: "center",
-    flexDirection: "row",
-    justifyContent: "center",
-    gap: Spacing.sm,
-    backgroundColor: "#FFFFFF",
-  },
-  botonPressed: { opacity: 0.85 },
-  botonTexto: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: "#000000",
-  },
-  botonLoader: {
-    marginLeft: Spacing.xs,
   },
 });

@@ -4,7 +4,6 @@ import {
   StyleSheet,
   TextInput,
   Pressable,
-  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
@@ -12,6 +11,8 @@ import Animated, { FadeInDown } from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
+import { GradientButton } from "@/components/GradientButton";
+import { GradientProgressDots } from "@/components/GradientProgressDots";
 import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
 import { useAuth } from "@/contexts/AuthContext";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
@@ -67,15 +68,7 @@ export default function OnboardingAuthScreen({
         >
           <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
             <View style={styles.dotsRow}>
-              {[0, 1, 2, 3, 4].map((index) => (
-                <View
-                  key={index}
-                  style={[
-                    styles.dot,
-                    index === 4 ? styles.dotActive : styles.dotInactive,
-                  ]}
-                />
-              ))}
+              <GradientProgressDots total={5} current={4} />
             </View>
             <ThemedText style={styles.titulo}>
               Crea tu acceso a SalonPro
@@ -180,26 +173,12 @@ export default function OnboardingAuthScreen({
               >
                 <ThemedText style={styles.secondaryButtonText}>Atrás</ThemedText>
               </Pressable>
-              <Pressable
+              <GradientButton
+                label="Crear cuenta y seguir"
                 onPress={handleSubmit}
-                disabled={loading}
-                style={({ pressed }) => [
-                  styles.primaryButton,
-                  pressed && !loading && { opacity: 0.9 },
-                  loading && { opacity: 0.7 },
-                ]}
-              >
-                {loading ? (
-                  <ActivityIndicator color="#000000" size="small" />
-                ) : (
-                  <>
-                    <ThemedText style={styles.primaryButtonText}>
-                      Crear cuenta y seguir
-                    </ThemedText>
-                    <Feather name="arrow-right" size={16} color="#000000" />
-                  </>
-                )}
-              </Pressable>
+                loading={loading}
+                style={styles.primaryButtonWrapper}
+              />
             </View>
           </Animated.View>
         </KeyboardAvoidingView>
@@ -234,18 +213,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     marginBottom: Spacing.lg,
-  },
-  dot: {
-    width: 7,
-    height: 7,
-    borderRadius: 999,
-    marginHorizontal: 4,
-  },
-  dotInactive: {
-    backgroundColor: "rgba(255,255,255,0.18)",
-  },
-  dotActive: {
-    backgroundColor: "#FFFFFF",
   },
   titulo: {
     fontSize: 22,
@@ -336,20 +303,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
   },
-  primaryButton: {
+  primaryButtonWrapper: {
     flex: 1.4,
-    height: 44,
-    borderRadius: 999,
-    backgroundColor: "#FFFFFF",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: Spacing.sm,
-  },
-  primaryButtonText: {
-    color: "#000000",
-    fontSize: 14,
-    fontWeight: "600",
   },
 });
 

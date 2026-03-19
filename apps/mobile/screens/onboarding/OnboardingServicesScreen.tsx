@@ -4,12 +4,13 @@ import {
   StyleSheet,
   Pressable,
   ScrollView,
-  ActivityIndicator,
 } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
 import { ThemedText } from "@/components/ThemedText";
-import { Colors, Spacing, BorderRadius } from "@/constants/theme";
+import { GradientButton } from "@/components/GradientButton";
+import { GradientProgressDots } from "@/components/GradientProgressDots";
+import { Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 import { supabase } from "@/lib/supabase";
 
@@ -109,17 +110,7 @@ export default function OnboardingServicesScreen({
   return (
     <View style={styles.container}>
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-        <View style={styles.dotsRow}>
-          {[0, 1, 2, 3, 4].map((index) => (
-            <View
-              key={index}
-              style={[
-                styles.dot,
-                index === 3 ? styles.dotActive : styles.dotInactive,
-              ]}
-            />
-          ))}
-        </View>
+        <GradientProgressDots total={5} current={3} />
         <ThemedText style={styles.titulo}>Categorías de servicios</ThemedText>
         <ThemedText style={styles.subtitulo}>
           Estas categorías aparecerán en tu catálogo. Puedes editarlas después.
@@ -166,17 +157,12 @@ export default function OnboardingServicesScreen({
         <Pressable onPress={onBack} style={styles.botonSecundario}>
           <ThemedText style={styles.botonSecundarioTexto}>Atrás</ThemedText>
         </Pressable>
-        <Pressable
+        <GradientButton
+          label="Finalizar"
           onPress={guardar}
-          disabled={guardando}
-          style={[styles.botonPrimario, guardando && styles.botonDisabled]}
-        >
-          {guardando ? (
-            <ActivityIndicator color="#000000" size="small" />
-          ) : (
-            <ThemedText style={styles.botonPrimarioTexto}>Finalizar</ThemedText>
-          )}
-        </Pressable>
+          loading={guardando}
+          style={styles.botonPrimarioWrapper}
+        />
       </Animated.View>
     </View>
   );
@@ -191,24 +177,6 @@ const styles = StyleSheet.create({
   header: {
     paddingTop: Spacing["3xl"],
     paddingBottom: Spacing.xl,
-  },
-  dotsRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginBottom: Spacing.lg,
-  },
-  dot: {
-    height: 3,
-    borderRadius: 2,
-  },
-  dotActive: {
-    width: 20,
-    backgroundColor: "#FFFFFF",
-  },
-  dotInactive: {
-    width: 6,
-    backgroundColor: "rgba(255,255,255,0.2)",
   },
   titulo: {
     fontSize: 24,
@@ -283,18 +251,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "rgba(255,255,255,0.6)",
   },
-  botonPrimario: {
+  botonPrimarioWrapper: {
     flex: 2,
-    borderRadius: 10,
-    paddingVertical: 15,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#FFFFFF",
   },
-  botonPrimarioTexto: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: "#000000",
-  },
-  botonDisabled: { opacity: 0.6 },
 });

@@ -10,7 +10,9 @@ import {
 import Animated, { FadeInDown } from "react-native-reanimated";
 
 import { ThemedText } from "@/components/ThemedText";
-import { Colors, Spacing, BorderRadius } from "@/constants/theme";
+import { GradientButton } from "@/components/GradientButton";
+import { GradientProgressDots } from "@/components/GradientProgressDots";
+import { Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 import { supabase } from "@/lib/supabase";
 
@@ -93,17 +95,7 @@ export default function OnboardingTeamScreen({
       showsVerticalScrollIndicator={false}
     >
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-        <View style={styles.dotsRow}>
-          {[0, 1, 2, 3, 4].map((index) => (
-            <View
-              key={index}
-              style={[
-                styles.dot,
-                index === 2 ? styles.dotActive : styles.dotInactive,
-              ]}
-            />
-          ))}
-        </View>
+        <GradientProgressDots total={5} current={2} />
         <ThemedText style={styles.titulo}>
           Agrega tu primer {staffLabel}
         </ThemedText>
@@ -198,15 +190,12 @@ export default function OnboardingTeamScreen({
         <Pressable onPress={onBack} style={styles.botonSecundario}>
           <ThemedText style={styles.botonSecundarioTexto}>Atrás</ThemedText>
         </Pressable>
-        <Pressable
+        <GradientButton
+          label="Continuar"
           onPress={guardar}
-          disabled={guardando}
-          style={[styles.botonPrimario, guardando && styles.botonDisabled]}
-        >
-          <ThemedText style={styles.botonPrimarioTexto}>
-            {guardando ? "Guardando…" : "Continuar"}
-          </ThemedText>
-        </Pressable>
+          loading={guardando}
+          style={styles.botonPrimarioWrapper}
+        />
       </Animated.View>
 
       <Pressable onPress={onNext} style={styles.saltarBtn}>
@@ -225,24 +214,6 @@ const styles = StyleSheet.create({
   header: {
     paddingTop: Spacing["3xl"],
     paddingBottom: Spacing.xl,
-  },
-  dotsRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginBottom: Spacing.lg,
-  },
-  dot: {
-    height: 3,
-    borderRadius: 2,
-  },
-  dotActive: {
-    width: 20,
-    backgroundColor: "#FFFFFF",
-  },
-  dotInactive: {
-    width: 6,
-    backgroundColor: "rgba(255,255,255,0.2)",
   },
   titulo: {
     fontSize: 24,
@@ -318,19 +289,9 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "rgba(255,255,255,0.6)",
   },
-  botonPrimario: {
+  botonPrimarioWrapper: {
     flex: 2,
-    borderRadius: 10,
-    paddingVertical: 15,
-    alignItems: "center",
-    backgroundColor: "#FFFFFF",
   },
-  botonPrimarioTexto: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: "#000000",
-  },
-  botonDisabled: { opacity: 0.6 },
   saltarBtn: { alignItems: "center", paddingVertical: Spacing.md },
   saltarTexto: {
     fontSize: 14,

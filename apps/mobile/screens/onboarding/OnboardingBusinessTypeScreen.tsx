@@ -4,6 +4,7 @@ import Animated, { FadeInDown } from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
+import { GradientProgressDots } from "@/components/GradientProgressDots";
 import { Spacing, BorderRadius } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 import {
@@ -70,17 +71,7 @@ export default function OnboardingBusinessTypeScreen({
   return (
     <View style={styles.container}>
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-        <View style={styles.dotsRow}>
-          {[0, 1, 2, 3, 4].map((index) => (
-            <View
-              key={index}
-              style={[
-                styles.dot,
-                index === 0 ? styles.dotActive : styles.dotInactive,
-              ]}
-            />
-          ))}
-        </View>
+        <GradientProgressDots total={5} current={0} />
         <ThemedText style={styles.titulo}>
           ¿Qué tipo de negocio tienes?
         </ThemedText>
@@ -148,24 +139,6 @@ const styles = StyleSheet.create({
   header: {
     paddingTop: Spacing["3xl"],
     paddingBottom: Spacing.xl,
-  },
-  dotsRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginBottom: Spacing.lg,
-  },
-  dot: {
-    height: 3,
-    borderRadius: 2,
-  },
-  dotActive: {
-    width: 20,
-    backgroundColor: "#FFFFFF",
-  },
-  dotInactive: {
-    width: 6,
-    backgroundColor: "rgba(255,255,255,0.2)",
   },
   titulo: {
     fontSize: 24,
