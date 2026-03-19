@@ -1,106 +1,120 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { useTenant } from "@/contexts/TenantContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { Spacing } from "@/constants/theme";
-
-const APP_VERSION = "1.0.0";
+import { SettingsSection } from "./settings/components/SettingsSection";
+import { SettingsRow } from "./settings/components/SettingsRow";
+import { ThemeRow } from "./settings/components/ThemeRow";
+import { BuildInfoCard } from "./settings/components/BuildInfoCard";
+import { TokenWarningBanner } from "./settings/components/TokenWarningBanner";
+import { useAppInfo } from "./settings/hooks/useAppInfo";
 
 export default function SettingsScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
   const { config } = useTenant();
+  const { profile, role } = useAuth();
+  const appInfo = useAppInfo();
+
+  const isAdmin = role === "dev" || role === "owner";
 
   return (
-    <View
+    <ScrollView
       style={[
         styles.container,
         {
           backgroundColor: theme.backgroundRoot,
-          paddingTop: headerHeight + Spacing.xl,
-          paddingBottom: tabBarHeight + Spacing.xl,
         },
       ]}
+      contentContainerStyle={{
+        paddingTop: headerHeight + Spacing.xl,
+        paddingBottom: tabBarHeight + Spacing["3xl"],
+        paddingHorizontal: Spacing.lg,
+      }}
+      showsVerticalScrollIndicator={false}
     >
-      <View
-        style={[
-          styles.card,
-          {
-            backgroundColor: theme.backgroundDefault,
-            borderColor: theme.border,
-          },
-        ]}
-      >
-        <View style={styles.row}>
-          <Feather name="info" size={20} color={theme.textMuted} />
-          <ThemedText style={[styles.label, { color: theme.textSecondary }]}>
-            Versión
-          </ThemedText>
-        </View>
-        <ThemedText style={[styles.value, { color: theme.text }]}>
-          {APP_VERSION}
-        </ThemedText>
-      </View>
+      <SettingsSection title="Apariencia">
+        <ThemeRow />
+      </SettingsSection>
 
-      <View
-        style={[
-          styles.card,
-          {
-            backgroundColor: theme.backgroundDefault,
-            borderColor: theme.border,
-          },
-        ]}
-      >
-        <ThemedText style={[styles.aboutTitle, { color: theme.text }]}>
-          {config.businessName}
-        </ThemedText>
-        <ThemedText style={[styles.aboutText, { color: theme.textSecondary }]}>
-          Panel de gestión para el salón. Citas, servicios, inventario y
-          finanzas en un solo lugar.
+      {isAdmin && (
+        <SettingsSection title="Negocio">
+          <SettingsRow
+            label="Nombre comercial"
+            value={config.businessName}
+            variant="value"
+          />
+          <SettingsRow
+            label="Tipo de negocio"
+            value={config.businessType}
+            variant="value"
+          />
+          <SettingsRow
+            label="Moneda"
+            value={config.locale.currency.symbol}
+            variant="value"
+          />
+        </SettingsSection>
+      )}
+
+      <SettingsSection title="Cuenta">
+        <SettingsRow
+          label="Nombre"
+          value={profile?.full_name ?? "—"}
+          variant="value"
+        />
+        <SettingsRow
+          label="Rol"
+          value={role ?? "—"}
+          variant="value"
+        />
+      </SettingsSection>
+
+      {isAdmin && (
+        <SettingsSection title="Sistema">
+          <SettingsRow
+            label="Versión app"
+            value={appInfo.appVersion}
+            variant="value"
+          />
+          <SettingsRow
+            label="Canal EAS"
+            value={appInfo.channel}
+            variant="value"
+          />
+          <SettingsRow
+            label="Runtime"
+            value={appInfo.runtimeVersion}
+            variant="value"
+          />
+          <BuildInfoCard visible={isAdmin} />
+        </SettingsSection>
+      )}
+
+      {config.features?.whatsapp && (
+        <SettingsSection title="WhatsApp">
+          <TokenWarningBanner />
+        </SettingsSection>
+      )}
+
+      <View style={{ marginTop: Spacing.lg, alignItems: "center" }}>
+        <ThemedText type="small" style={{ color: theme.textMuted }}>
+          {config.businessName} · SalonPro
         </ThemedText>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: Spacing.lg,
-  },
-  card: {
-    padding: Spacing.xl,
-    borderRadius: 12,
-    borderWidth: 1,
-    marginBottom: Spacing.lg,
-  },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.sm,
-    marginBottom: Spacing.xs,
-  },
-  label: {
-    fontSize: 13,
-    fontWeight: "500",
-  },
-  value: {
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  aboutTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: Spacing.sm,
-  },
-  aboutText: {
-    fontSize: 14,
-    lineHeight: 22,
   },
 });

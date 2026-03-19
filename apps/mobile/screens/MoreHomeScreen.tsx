@@ -162,25 +162,30 @@ export default function MoreHomeScreen() {
       }
       return count ?? 0;
     },
+    refetchInterval: 60_000,
+    enabled: isAdmin,
   });
 
   const { data: unassignedCount = 0 } = useQuery<number>({
     queryKey: ["appointments_unassigned_last_7_days"],
     queryFn: async () => {
       const now = new Date();
-      const from = new Date();
-      from.setDate(now.getDate() - 7);
+      const end = new Date();
+      end.setDate(now.getDate() + 7);
       const { count, error } = await supabase
         .from("appointments")
         .select("id", { count: "exact", head: true })
-        .gte("date", from.toISOString())
-        .lte("date", now.toISOString())
+        .gte("date", now.toISOString())
+        .lt("date", end.toISOString())
+        .neq("status", "cancelled")
         .is("employee_id", null);
       if (error) {
         throw new Error(error.message);
       }
       return count ?? 0;
     },
+    refetchInterval: 60_000,
+    enabled: isAdmin,
   });
 
   const handleLogout = () => {
@@ -217,13 +222,23 @@ export default function MoreHomeScreen() {
           <MenuRow
             icon="credit-card"
             label="Validación de Pagos"
-            onPress={() => navigation.navigate("Finanzas")}
+            onPress={() =>
+              Alert.alert(
+                "Validación de Pagos",
+                `Hay ${paymentValidationCount} pago(s) pendiente(s) de aprobación. Esta sección estará disponible próximamente.`,
+              )
+            }
             badgeCount={paymentValidationCount}
           />
           <MenuRow
             icon="users"
             label={`Asignar ${config.terminology.staff || "Profesionales"}`}
-            onPress={() => navigation.navigate("Chicas")}
+            onPress={() =>
+              Alert.alert(
+                `Asignar ${config.terminology.staff || "Profesionales"}`,
+                `Hay ${unassignedCount} cita(s) sin asignar en los próximos 7 días. Esta sección estará disponible próximamente.`,
+              )
+            }
             badgeCount={unassignedCount}
           />
           <MenuRow
@@ -234,7 +249,7 @@ export default function MoreHomeScreen() {
           <MenuRow
             icon="user-check"
             label={config.terminology.staff || "Profesionales"}
-            onPress={() => navigation.navigate("Chicas")}
+            onPress={() => navigation.navigate("Personal")}
           />
           <MenuRow
             icon="users"

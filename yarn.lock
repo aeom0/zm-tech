@@ -6564,6 +6564,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-clipboard@npm:~8.0.8":
+  version: 8.0.8
+  resolution: "expo-clipboard@npm:8.0.8"
+  peerDependencies:
+    expo: "*"
+    react: "*"
+    react-native: "*"
+  checksum: 10c0/afd16183bee237c825ed594320dd4eccd1b8cbcdf6fa993b80c946a7dc26adcdd48a847bd57e7150f176866a6e351a898efe87188793ef0982382ba1e32fb6fb
+  languageName: node
+  linkType: hard
+
 "expo-constants@npm:~18.0.12, expo-constants@npm:~18.0.13, expo-constants@npm:~18.0.9":
   version: 18.0.13
   resolution: "expo-constants@npm:18.0.13"
@@ -9790,6 +9801,7 @@ __metadata:
     eslint-plugin-prettier: "npm:^5.5.4"
     expo: "npm:~54.0.33"
     expo-blur: "npm:~15.0.8"
+    expo-clipboard: "npm:~8.0.8"
     expo-constants: "npm:~18.0.9"
     expo-dev-client: "npm:~6.0.20"
     expo-device: "npm:^8.0.10"

@@ -14,7 +14,7 @@ import SettingsScreen from "@/screens/SettingsScreen";
 export type MoreStackParamList = {
   MoreHome: undefined;
   Finanzas: undefined;
-  Chicas: undefined;
+  Personal: undefined;
   Clients: undefined;
   Inventario: undefined;
   Configuracion: undefined;
@@ -42,9 +42,9 @@ export default function MoreStackNavigator() {
         options={{ title: "Finanzas" }}
       />
       <Stack.Screen
-        name="Chicas"
+        name="Personal"
         component={PersonalScreen}
-        options={{ title: "Chicas" }}
+        options={{ title: "Personal" }}
       />
       <Stack.Screen
         name="Clients"

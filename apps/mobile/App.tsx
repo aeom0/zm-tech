@@ -11,6 +11,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/query-client";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { TenantProvider } from "@/contexts/TenantContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import { useNotifications } from "@/hooks/useNotifications";
 
 import RootStackNavigator from "@/navigation/RootStackNavigator";
@@ -81,15 +82,17 @@ function AppContent() {
 
 export default function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <TenantProvider>
-          <ErrorBoundary>
-            <AppContent />
-          </ErrorBoundary>
-        </TenantProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+    <TenantProvider>
+      <ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <ErrorBoundary>
+              <AppContent />
+            </ErrorBoundary>
+          </AuthProvider>
+        </QueryClientProvider>
+      </ThemeProvider>
+    </TenantProvider>
   );
 }
 
