@@ -229,6 +229,16 @@ Flujo de arranque (mobile):
 - **Fase 7 — Supabase full-mobile**: todos los flujos mobile (Onboarding, Dashboard, Agenda, Servicios, Personal, Finanzas, Inventario) usan Supabase directo; eliminado el cliente Express (`apiRequest`, `/api/*`) y actualizadas las `queryKey` de React Query (`employees`, `services`, `service_categories`, `appointments`, `payments`, `inventory_items`, `dashboard_stats`, `dashboard_revenue`).
 - **Landing web**: landing pública completa en `apps/web` con Next.js 15 App Router; secciones Hero (mockup animado), Pain Points, Features, Social Proof, Pricing (toggle mensual/anual), FAQ, CTA, Footer; scroll reveal con IntersectionObserver; moneda `$` USD en toda la landing.
 
+## Cambios Recientes (mar 2026 — v1.3.2 — Fase 10: ValidacionPagosScreen)
+
+- **ValidacionPagosScreen**: pantalla completa de validación de pagos con spinner per-row independiente por fila.
+  - `screens/validacion/types.ts` — `PendingAppointment`, `VerificationAction`, `RowLoadingState`.
+  - `screens/validacion/hooks/useValidacionData.ts` — citas `payment_submitted`, enriquecimiento en memoria, mutación que inserta en `appointment_verifications` y actualiza `appointments.status`.
+  - `screens/validacion/components/ValidacionRow.tsx` — card con franja de color del empleado, botones Aprobar/Rechazar con `ActivityIndicator` per-row.
+  - `screens/ValidacionPagosScreen.tsx` — orquestador con `FlatList`, `RefreshControl` y empty state.
+- **Tabla `appointment_verifications`**: registra cada acción de verificación (`approved`/`rejected`) con RLS para `owner`/`dev`; FK `appointment_id text` para compatibilidad con el esquema existente.
+- **Navegación**: `ValidacionPagos` en `MoreStackParamList`; placeholder `Alert.alert` reemplazado por navegación real.
+
 ## Cambios Recientes (mar 2026 — v1.3.1 — correcciones post-verificación)
 
 - **SVG logos sin fondo hardcodeado**: eliminado `<rect fill="#0F0F0F"/>` de `logo.svg` y `logo-icon.svg`; los SVG ahora son transparentes y el fondo es responsabilidad del contexto donde se usen.

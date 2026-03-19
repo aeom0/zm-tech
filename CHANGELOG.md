@@ -5,6 +5,19 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ---
 
+## [1.3.2] — 2026-03-19
+
+### Añadido
+- **Fase 10 — ValidacionPagosScreen**: pantalla completa de validación de pagos con spinner per-row (Aprobar / Rechazar independientes por fila).
+  - `screens/validacion/types.ts` — interfaces `PendingAppointment`, `VerificationAction`, `RowLoadingState`.
+  - `screens/validacion/hooks/useValidacionData.ts` — React Query: lista de citas `payment_submitted`, enriquecimiento en memoria con nombre de servicio y empleado, mutación `verifyMutation` que inserta en `appointment_verifications` y actualiza `appointments.status`.
+  - `screens/validacion/components/ValidacionRow.tsx` — card con franja de color del empleado, datos de la cita y botones Aprobar/Rechazar con `ActivityIndicator` per-row.
+  - `screens/ValidacionPagosScreen.tsx` — orquestador con `FlatList`, `RefreshControl`, estado `rowLoading` per-row y empty state "Todo al día".
+- **Tabla `appointment_verifications`** en Supabase: registra cada acción de verificación (`approved`/`rejected`) con RLS para roles `owner`/`dev`. FK `appointment_id` como `text` para compatibilidad con el esquema existente.
+- **Navegación**: `ValidacionPagos` añadida a `MoreStackParamList`; menú "Validación de Pagos" en `MoreHomeScreen` navega a la pantalla real (reemplaza el `Alert.alert` placeholder).
+
+---
+
 ## [1.3.1] — 2026-03-19
 
 ### Añadido

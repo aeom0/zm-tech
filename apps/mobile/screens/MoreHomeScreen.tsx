@@ -185,12 +185,7 @@ export default function MoreHomeScreen() {
           <MenuRow
             icon="credit-card"
             label="Validación de Pagos"
-            onPress={() =>
-              Alert.alert(
-                "Validación de Pagos",
-                `Hay ${paymentValidationCount} pago(s) pendiente(s) de aprobación. Esta sección estará disponible próximamente.`,
-              )
-            }
+            onPress={() => navigation.navigate("ValidacionPagos")}
             badgeCount={paymentValidationCount}
           />
           <MenuRow
