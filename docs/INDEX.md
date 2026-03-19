@@ -28,8 +28,6 @@ Estructura del monorepo y comandos (sin servidor Express).
 ### [COMPARACION_PROYECTOS_Y_MEJORAS.md](COMPARACION_PROYECTOS_Y_MEJORAS.md)
 Comparación con otros proyectos (ZM, Scout360); nota: SalonPro usa 100% Supabase.
 
-### [replit.md](replit.md)
-Documentación técnica heredada de ZM; en SalonPro el backend es Supabase (PostgREST + Auth), no Express.
 
 ## Organización de archivos
 
@@ -42,8 +40,7 @@ docs/
 ├── design_guidelines.md        # Diseño UI/UX
 ├── DEPLOYMENT.md               # Deploy Supabase / Vercel / EAS
 ├── MONOREPO_MIGRACION.md       # Monorepo, comandos
-├── COMPARACION_PROYECTOS_Y_MEJORAS.md
-└── replit.md                   # Referencia técnica (origen ZM)
+└── COMPARACION_PROYECTOS_Y_MEJORAS.md
 
 .cursor/
 ├── README.md                   # Reglas Cursor, MCP (dos proyectos Supabase)
@@ -69,4 +66,9 @@ docs/
 ### MCP (Cursor)
 - Dos servidores en `.cursor/mcp.json`: **supabase-salonpro** (este proyecto) y **supabase-zm** (referencia). Para BD de SalonPro usar supabase-salonpro.
 
-**Última actualización**: 2026-03
+### Assets de marca
+- `apps/web/public/logo.svg` — horizontal, fondos oscuros (transparente)
+- `apps/web/public/logo-light.svg` — horizontal, fondos claros
+- `apps/web/public/logo-icon.svg` — símbolo solo, fondos oscuros (transparente)
+
+**Última actualización**: 2026-03-19

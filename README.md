@@ -182,4 +182,18 @@ DATABASE_URL=postgresql://user:pass@host:5432/nombre_bd
 
 ---
 
-**Versión**: 1.2.0 · **Licencia**: Privado · **Plataformas**: iOS · Android · Web
+## Assets de Marca
+
+Los SVGs del logo están en `apps/web/public/`:
+
+| Archivo | Uso |
+|---------|-----|
+| `logo.svg` | Logo horizontal (símbolo + wordmark) — para fondos oscuros |
+| `logo-light.svg` | Logo horizontal — para fondos claros |
+| `logo-icon.svg` | Solo símbolo (cuadrado) — para fondos oscuros |
+
+> Los SVG no incluyen fondo propio. El contexto de uso es responsable del color de fondo.
+
+---
+
+**Versión**: 1.3.1 · **Licencia**: Privado · **Plataformas**: iOS · Android · Web

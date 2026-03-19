@@ -7,12 +7,12 @@ globs:
 alwaysApply: false
 ---
 
-# UI Patterns ZM Lash & Nails Beauty
+# UI Patterns SalonPro
 
 ## Design system
 
 - **Tema**: `apps/mobile/constants/theme.ts` — Colors (light/dark), Spacing, Typography, BorderRadius, Fonts, Shadows.
-- **Paleta**: Violeta primario `#7B2D8E`, acento dorado `#D4AF37`; soporte modo claro/oscuro.
+- **Paleta**: dinámica según `TenantConfig.theme` (primary + accent via `createTheme(config, isDark)`); soporte modo claro/oscuro. Preset por defecto: primario `#E91E8C`, acento `#D4AF37`.
 - **Componentes base**: Usar los de `apps/mobile/components/` (Button, Card, ThemedText, ThemedView, Spacer, HeaderTitle, etc.).
 
 ## Uso del tema

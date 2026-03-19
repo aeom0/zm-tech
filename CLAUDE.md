@@ -229,6 +229,13 @@ Flujo de arranque (mobile):
 - **Fase 7 — Supabase full-mobile**: todos los flujos mobile (Onboarding, Dashboard, Agenda, Servicios, Personal, Finanzas, Inventario) usan Supabase directo; eliminado el cliente Express (`apiRequest`, `/api/*`) y actualizadas las `queryKey` de React Query (`employees`, `services`, `service_categories`, `appointments`, `payments`, `inventory_items`, `dashboard_stats`, `dashboard_revenue`).
 - **Landing web**: landing pública completa en `apps/web` con Next.js 15 App Router; secciones Hero (mockup animado), Pain Points, Features, Social Proof, Pricing (toggle mensual/anual), FAQ, CTA, Footer; scroll reveal con IntersectionObserver; moneda `$` USD en toda la landing.
 
+## Cambios Recientes (mar 2026 — v1.3.1 — correcciones post-verificación)
+
+- **SVG logos sin fondo hardcodeado**: eliminado `<rect fill="#0F0F0F"/>` de `logo.svg` y `logo-icon.svg`; los SVG ahora son transparentes y el fondo es responsabilidad del contexto donde se usen.
+- **`logo-light.svg`**: nueva variante horizontal para fondos claros en `apps/web/public/`; fills/strokes invertidos a `#0F0F0F` con las mismas opacidades; gradiente central y wordmark adaptados.
+- **Auditoría "Chicas"**: confirmado que no existen referencias a `"Chicas"` hardcodeadas en `.ts`/`.tsx`; terminología de personal proviene siempre de `config.terminology.staff`.
+- **`replit.md` eliminado**: archivo heredado de ZM Lash & Nails removido de `docs/`; `docs/INDEX.md` actualizado.
+
 ## Cambios Recientes (mar 2026 — v1.3.0)
 
 - **Limpieza ZM**: eliminación de referencias directas a colores, moneda y nombres específicos del salón original en código vivo; defaults de `tenant_settings` y `TenantConfig` ahora son genéricos (USD, es-VE, `"Profesionales"` como terminología base).
