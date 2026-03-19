@@ -1,4 +1,6 @@
 // apps/web/src/components/ui/GradientButton.tsx
+"use client";
+
 import React from "react";
 
 interface GradientButtonProps {
