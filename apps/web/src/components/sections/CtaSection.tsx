@@ -1,4 +1,5 @@
 import { RevealWrapper } from "@/components/ui/RevealWrapper";
+import { GradientButton } from "@/components/ui/GradientButton";
 
 export function CtaSection() {
   return (
@@ -27,12 +28,9 @@ export function CtaSection() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-4">
-            <a
-              href="#precios"
-              className="inline-flex items-center justify-center gap-2 bg-accent text-black font-bold px-10 py-5 rounded-full text-lg hover:bg-accent/90 hover:scale-105 hover:shadow-xl hover:shadow-accent/25 transition-all duration-300"
-            >
-              Comenzar ahora — 14 días gratis
-            </a>
+            <GradientButton href="#precios" size="lg">
+              Comenzar ahora — 14 días gratis ✨
+            </GradientButton>
           </div>
 
           <p className="text-white/40 text-sm mt-4">

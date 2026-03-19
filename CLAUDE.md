@@ -229,6 +229,17 @@ Flujo de arranque (mobile):
 - **Fase 7 — Supabase full-mobile**: todos los flujos mobile (Onboarding, Dashboard, Agenda, Servicios, Personal, Finanzas, Inventario) usan Supabase directo; eliminado el cliente Express (`apiRequest`, `/api/*`) y actualizadas las `queryKey` de React Query (`employees`, `services`, `service_categories`, `appointments`, `payments`, `inventory_items`, `dashboard_stats`, `dashboard_revenue`).
 - **Landing web**: landing pública completa en `apps/web` con Next.js 15 App Router; secciones Hero (mockup animado), Pain Points, Features, Social Proof, Pricing (toggle mensual/anual), FAQ, CTA, Footer; scroll reveal con IntersectionObserver; moneda `$` USD en toda la landing.
 
+## Cambios Recientes (mar 2026 — v1.4.0 — Fase 12: Landing Web Rediseño LATAM)
+
+- **`GradientButton` component** (`apps/web/src/components/ui/GradientButton.tsx`): botón reutilizable con gradiente 135° `#E91E8C → #9C27B0 → #3D3D8F → #1565C0`; variante `outline` para CTAs secundarios; props `size` (sm/md/lg) y `className`.
+- **`DemoSection`** (`apps/web/src/components/sections/DemoSection.tsx`): sección interactiva con 4 tabs (Agenda, Finanzas, Personal, Inventario); mockup de celular animado por tab con franja de color, badges de estado y glow; stats de impacto por módulo; CTA inline contextual.
+- **Navbar**: logo SVG real (`/logo.svg` en fondo oscuro, `/logo-light.svg` al hacer scroll); link "Demo" agregado; CTA "Empezar gratis" usa `GradientButton`; hamburger mobile con menú oscuro backdrop-blur.
+- **HeroSection**: headline rediseñado para LATAM ("El software que tu salón merece / y que tus clientes van a notar.") con gradiente en texto; CTAs reemplazados por `GradientButton` + variante outline ("Ver demo en vivo →").
+- **CtaSection**: CTA principal usa `GradientButton` en lugar de botón `bg-accent`.
+- **PricingCard**: botón del plan destacado (Pro) usa gradiente via `style` inline.
+- **Footer**: logo SVG real con `next/image` en lugar de emoji + texto hardcodeado.
+- **page.tsx**: `<DemoSection />` insertada entre `<FeaturesSection />` y `<SocialProofSection />`.
+
 ## Cambios Recientes (mar 2026 — v1.3.3 — Fase 11: AsignarProfesionalesScreen)
 
 - **AsignarProfesionalesScreen**: pantalla completa para asignar un profesional a citas sin `employee_id` en los próximos 7 días.

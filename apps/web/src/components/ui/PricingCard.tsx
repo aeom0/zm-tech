@@ -96,13 +96,21 @@ export function PricingCard({ plan, annual }: Props) {
 
       <a
         href="#"
-        className={`block text-center font-bold py-3.5 rounded-full transition-all duration-200 ${
+        className={`block text-center font-bold py-3.5 rounded-full transition-all duration-200 hover:opacity-90 hover:scale-[1.02] ${
           plan.highlighted
-            ? "bg-accent text-black hover:bg-accent/90 hover:scale-105"
+            ? "text-white shadow-lg"
             : plan.ctaSecondary
-              ? "border-2 border-primary text-primary hover:bg-primary hover:text-white"
-              : "bg-primary text-white hover:bg-primary/90"
+              ? "border-2 border-zinc-300 dark:border-zinc-700 text-zinc-700 dark:text-zinc-300 hover:border-primary hover:text-primary"
+              : "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 hover:bg-zinc-200 dark:hover:bg-zinc-700"
         }`}
+        style={
+          plan.highlighted
+            ? {
+                background:
+                  "linear-gradient(135deg, #E91E8C 0%, #9C27B0 35%, #3D3D8F 70%, #1565C0 100%)",
+              }
+            : {}
+        }
       >
         {plan.cta}
       </a>

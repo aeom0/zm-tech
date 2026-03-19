@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const NAV_LINKS = [
   { label: "Funciones", href: "#funciones" },
   { label: "Precios", href: "#precios" },
@@ -14,10 +16,13 @@ export function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-2xl">✂️</span>
-              <span className="font-bold text-xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                SalonPro
-              </span>
+              <Image
+                src="/logo.svg"
+                alt="SalonPro"
+                width={130}
+                height={32}
+                className="h-8 w-auto"
+              />
             </div>
             <p className="text-zinc-400 text-sm leading-relaxed">
               Plataforma de gestión para barberías, spas, peluquerías y

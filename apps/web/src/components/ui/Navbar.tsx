@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
+import { GradientButton } from "@/components/ui/GradientButton";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -14,6 +16,7 @@ export function Navbar() {
 
   const links = [
     { label: "Funciones", href: "#funciones" },
+    { label: "Demo", href: "#demo" },
     { label: "Precios", href: "#precios" },
     { label: "FAQ", href: "#faq" },
   ];
@@ -28,11 +31,15 @@ export function Navbar() {
     >
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
-        <a href="#" className="flex items-center gap-2 group">
-          <span className="text-2xl">✂️</span>
-          <span className="font-bold text-xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-            SalonPro
-          </span>
+        <a href="#" className="flex items-center group">
+          <Image
+            src={scrolled ? "/logo-light.svg" : "/logo.svg"}
+            alt="SalonPro"
+            width={140}
+            height={36}
+            priority
+            className="h-8 w-auto transition-opacity duration-300"
+          />
         </a>
 
         {/* Links — desktop */}
@@ -55,17 +62,18 @@ export function Navbar() {
         {/* CTA — desktop */}
         <div className="hidden md:flex items-center gap-3">
           <a
-            href="#precios"
-            className="text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors"
+            href="#"
+            className={`text-sm font-medium transition-colors hover:text-primary ${
+              scrolled
+                ? "text-zinc-600 dark:text-zinc-400"
+                : "text-white/70 hover:text-white"
+            }`}
           >
             Iniciar sesión
           </a>
-          <a
-            href="#precios"
-            className="bg-primary text-white text-sm font-semibold px-5 py-2 rounded-full hover:bg-primary/90 transition-colors"
-          >
+          <GradientButton href="#precios" size="sm">
             Empezar gratis
-          </a>
+          </GradientButton>
         </div>
 
         {/* Hamburger — mobile */}
@@ -75,45 +83,44 @@ export function Navbar() {
           aria-label="Menú"
         >
           <div className="space-y-1.5">
-            <span
-              className={`block w-6 h-0.5 transition-all duration-300 ${
-                scrolled ? "bg-zinc-800 dark:bg-zinc-200" : "bg-white"
-              } ${menuOpen ? "rotate-45 translate-y-2" : ""}`}
-            />
-            <span
-              className={`block w-6 h-0.5 transition-all duration-300 ${
-                scrolled ? "bg-zinc-800 dark:bg-zinc-200" : "bg-white"
-              } ${menuOpen ? "opacity-0" : ""}`}
-            />
-            <span
-              className={`block w-6 h-0.5 transition-all duration-300 ${
-                scrolled ? "bg-zinc-800 dark:bg-zinc-200" : "bg-white"
-              } ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`}
-            />
+            {[0, 1, 2].map((i) => (
+              <span
+                key={i}
+                className={`block w-6 h-0.5 transition-all duration-300 ${
+                  scrolled ? "bg-zinc-800 dark:bg-zinc-200" : "bg-white"
+                } ${
+                  menuOpen && i === 0
+                    ? "rotate-45 translate-y-2"
+                    : menuOpen && i === 1
+                      ? "opacity-0"
+                      : menuOpen && i === 2
+                        ? "-rotate-45 -translate-y-2"
+                        : ""
+                }`}
+              />
+            ))}
           </div>
         </button>
       </div>
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden bg-white dark:bg-zinc-950 border-t border-zinc-200 dark:border-zinc-800 px-4 py-4 space-y-3">
+        <div className="md:hidden bg-zinc-950/95 backdrop-blur-md border-t border-zinc-800 px-4 py-6 space-y-4">
           {links.map((l) => (
             <a
               key={l.href}
               href={l.href}
               onClick={() => setMenuOpen(false)}
-              className="block text-zinc-700 dark:text-zinc-300 font-medium py-2"
+              className="block text-white/90 font-medium py-2 hover:text-white transition-colors"
             >
               {l.label}
             </a>
           ))}
-          <a
-            href="#precios"
-            onClick={() => setMenuOpen(false)}
-            className="block w-full text-center bg-primary text-white font-semibold px-5 py-3 rounded-full mt-2"
-          >
-            Empezar gratis
-          </a>
+          <div className="pt-2">
+            <GradientButton href="#precios" size="md" className="w-full justify-center">
+              Empezar gratis — 14 días
+            </GradientButton>
+          </div>
         </div>
       )}
     </header>
