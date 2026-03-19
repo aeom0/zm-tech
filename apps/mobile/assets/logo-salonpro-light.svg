@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100" fill="none">
+  <rect width="400" height="100" fill="#FFFFFF"/>
+
+  <defs>
+    <linearGradient id="trapCenter" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0F0F0F" stop-opacity="1.00"/>
+      <stop offset="100%" stop-color="#0F0F0F" stop-opacity="0.60"/>
+    </linearGradient>
+    <clipPath id="clipHoriz">
+      <rect x="0" y="14.63" width="400" height="85.37"/>
+    </clipPath>
+  </defs>
+
+  <!-- Mismo símbolo que horizontal, misma transformación de escala/posición -->
+  <!-- color base #0F0F0F sobre fondo blanco, mismas opacidades relativas -->
+  <g transform="matrix(0.8791,0,0,1.0141,-2.746,-12.874)">
+    <!-- CORONA IZQUIERDA -->
+    <path d="M 35,26.5 L 14.5,43.5 L 45.25,43.5 L 47,26.5"
+          fill="none" stroke="#0F0F0F" stroke-width="1.2" stroke-opacity="0.90"
+          stroke-linecap="butt" clip-path="url(#clipHoriz)"/>
+
+    <!-- CORONA CENTRAL -->
+    <path d="M 47,27.1 L 73,27.1 L 74.75,44.1 L 45.25,44.1 Z"
+          fill="url(#trapCenter)"/>
+
+    <!-- CORONA DERECHA -->
+    <path d="M 73,26.5 L 74.75,43.5 L 105.5,43.5 L 85,26.5"
+          fill="none" stroke="#0F0F0F" stroke-width="1.2" stroke-opacity="0.35"
+          stroke-linecap="butt" clip-path="url(#clipHoriz)"/>
+
+    <!-- PABELLÓN IZQUIERDO -->
+    <path d="M 14.5,45.5 L 45.25,45.5 L 60,97.5 Z"
+          fill="#0F0F0F" fill-opacity="0.70"/>
+
+    <!-- PABELLÓN DERECHO -->
+    <path d="M 74.75,45.5 L 105.5,45.5 L 60,97.5 Z"
+          fill="#0F0F0F" fill-opacity="0.18"/>
+  </g>
+
+  <!-- WORDMARK en oscuro -->
+  <text x="106" y="57"
+        font-family="system-ui, -apple-system, sans-serif"
+        font-size="28" fill="#0F0F0F"><tspan font-weight="600">Salon</tspan><tspan font-weight="300" fill-opacity="0.75">Pro</tspan></text>
+
+  <!-- TAGLINE -->
+  <text x="172" y="74"
+        font-family="system-ui, -apple-system, sans-serif"
+        font-size="9" fill="#0F0F0F" fill-opacity="0.30"
+        letter-spacing="3" text-anchor="middle">GESTIÓN INTELIGENTE</text>
+</svg>
