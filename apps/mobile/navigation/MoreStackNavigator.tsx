@@ -11,10 +11,12 @@ import { useScreenOptions } from "@/hooks/useScreenOptions";
 import PersonalScreen from "@/screens/PersonalScreen";
 import SettingsScreen from "@/screens/SettingsScreen";
 import ValidacionPagosScreen from "@/screens/ValidacionPagosScreen";
+import AsignarProfesionalesScreen from "@/screens/AsignarProfesionalesScreen";
 
 export type MoreStackParamList = {
   MoreHome: undefined;
   ValidacionPagos: undefined;
+  AsignarProfesionales: undefined;
   Finanzas: undefined;
   Personal: undefined;
   Clients: undefined;
@@ -42,6 +44,11 @@ export default function MoreStackNavigator() {
         name="ValidacionPagos"
         component={ValidacionPagosScreen}
         options={{ title: "Validación de Pagos" }}
+      />
+      <Stack.Screen
+        name="AsignarProfesionales"
+        component={AsignarProfesionalesScreen}
+        options={{ title: "Asignar Profesionales" }}
       />
       <Stack.Screen
         name="Finanzas"

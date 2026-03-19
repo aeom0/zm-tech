@@ -191,12 +191,7 @@ export default function MoreHomeScreen() {
           <MenuRow
             icon="users"
             label={`Asignar ${config.terminology.staff || "Profesionales"}`}
-            onPress={() =>
-              Alert.alert(
-                `Asignar ${config.terminology.staff || "Profesionales"}`,
-                `Hay ${unassignedCount} cita(s) sin asignar en los próximos 7 días. Esta sección estará disponible próximamente.`,
-              )
-            }
+            onPress={() => navigation.navigate("AsignarProfesionales")}
             badgeCount={unassignedCount}
           />
           <MenuRow

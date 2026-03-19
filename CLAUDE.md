@@ -229,6 +229,15 @@ Flujo de arranque (mobile):
 - **Fase 7 — Supabase full-mobile**: todos los flujos mobile (Onboarding, Dashboard, Agenda, Servicios, Personal, Finanzas, Inventario) usan Supabase directo; eliminado el cliente Express (`apiRequest`, `/api/*`) y actualizadas las `queryKey` de React Query (`employees`, `services`, `service_categories`, `appointments`, `payments`, `inventory_items`, `dashboard_stats`, `dashboard_revenue`).
 - **Landing web**: landing pública completa en `apps/web` con Next.js 15 App Router; secciones Hero (mockup animado), Pain Points, Features, Social Proof, Pricing (toggle mensual/anual), FAQ, CTA, Footer; scroll reveal con IntersectionObserver; moneda `$` USD en toda la landing.
 
+## Cambios Recientes (mar 2026 — v1.3.3 — Fase 11: AsignarProfesionalesScreen)
+
+- **AsignarProfesionalesScreen**: pantalla completa para asignar un profesional a citas sin `employee_id` en los próximos 7 días.
+  - `screens/asignar/types.ts` — `UnassignedAppointment`, `RowAssignState`.
+  - `screens/asignar/hooks/useAsignarData.ts` — citas sin asignar con rango 7 días (refetch 30s), empleados activos (`queryKey: ['employees', 'active']` para evitar colisión con query sin filtro), enriquecimiento de nombre de servicio en memoria, mutación que actualiza `appointments.employee_id` e invalida badges.
+  - `screens/asignar/components/AsignarRow.tsx` — card con chips horizontales de color por empleado, botón confirmar con `ActivityIndicator` per-row; `EmptyState` extraído fuera del componente padre para evitar remount.
+  - `screens/AsignarProfesionalesScreen.tsx` — orquestador con `FlatList`, `RefreshControl` y empty state con terminología dinámica (`config.terminology.appointment` / `staffSingular`).
+- **Navegación**: `AsignarProfesionales: undefined` en `MoreStackParamList`; `Alert.alert` placeholder en `MoreHomeScreen` reemplazado por `navigation.navigate("AsignarProfesionales")`.
+
 ## Cambios Recientes (mar 2026 — v1.3.2 — Fase 10: ValidacionPagosScreen)
 
 - **ValidacionPagosScreen**: pantalla completa de validación de pagos con spinner per-row independiente por fila.
