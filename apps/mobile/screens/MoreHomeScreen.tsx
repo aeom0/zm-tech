@@ -22,8 +22,7 @@ import { useHaptics } from "@/hooks/useHaptics";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 import type { MoreStackParamList } from "@/navigation/MoreStackNavigator";
 import { useTenant } from "@/contexts/TenantContext";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
+import { usePendingBadgeCount } from "@/hooks/usePendingBadgeCount";
 
 type Nav = NativeStackNavigationProp<MoreStackParamList, "MoreHome">;
 
@@ -150,43 +149,7 @@ export default function MoreHomeScreen() {
   const haptics = useHaptics();
   const { config } = useTenant();
 
-  const { data: paymentValidationCount = 0 } = useQuery<number>({
-    queryKey: ["appointments_payment_submitted_count"],
-    queryFn: async () => {
-      const { count, error } = await supabase
-        .from("appointments")
-        .select("id", { count: "exact", head: true })
-        .eq("status", "payment_submitted");
-      if (error) {
-        throw new Error(error.message);
-      }
-      return count ?? 0;
-    },
-    refetchInterval: 60_000,
-    enabled: isAdmin,
-  });
-
-  const { data: unassignedCount = 0 } = useQuery<number>({
-    queryKey: ["appointments_unassigned_last_7_days"],
-    queryFn: async () => {
-      const now = new Date();
-      const end = new Date();
-      end.setDate(now.getDate() + 7);
-      const { count, error } = await supabase
-        .from("appointments")
-        .select("id", { count: "exact", head: true })
-        .gte("date", now.toISOString())
-        .lt("date", end.toISOString())
-        .neq("status", "cancelled")
-        .is("employee_id", null);
-      if (error) {
-        throw new Error(error.message);
-      }
-      return count ?? 0;
-    },
-    refetchInterval: 60_000,
-    enabled: isAdmin,
-  });
+  const { paymentValidationCount, unassignedCount } = usePendingBadgeCount();
 
   const handleLogout = () => {
     haptics.warning();

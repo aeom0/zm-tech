@@ -11,6 +11,7 @@ import ServicesScreen from "@/screens/ServicesScreen";
 import MoreStackNavigator from "@/navigation/MoreStackNavigator";
 import { useTheme } from "@/hooks/useTheme";
 import { useTenant } from "@/contexts/TenantContext";
+import { usePendingBadgeCount } from "@/hooks/usePendingBadgeCount";
 import { Spacing } from "@/constants/theme";
 
 export type MainTabParamList = {
@@ -26,6 +27,7 @@ export default function MainTabNavigator() {
   const { theme, isDark } = useTheme();
   const insets = useSafeAreaInsets();
   const { config } = useTenant();
+  const { tabBadgeCount } = usePendingBadgeCount();
 
   const screenOptions = {
     tabBarActiveTintColor: config.theme.primaryColor,
@@ -119,6 +121,16 @@ export default function MainTabNavigator() {
           tabBarIcon: ({ color }) => (
             <Feather name="menu" size={22} color={color} />
           ),
+          tabBarBadge: tabBadgeCount > 0 ? tabBadgeCount : undefined,
+          tabBarBadgeStyle: {
+            backgroundColor: config.theme.primaryColor,
+            color: "#FFFFFF",
+            fontSize: 10,
+            fontWeight: "700",
+            minWidth: 18,
+            height: 18,
+            borderRadius: 9,
+          },
         }}
       />
     </Tab.Navigator>
