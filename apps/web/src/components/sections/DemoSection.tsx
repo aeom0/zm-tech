@@ -56,6 +56,19 @@ const DEMO_TABS = [
       { value: "Automático", label: "Alerta cuando el stock baja" },
     ],
   },
+  {
+    id: "whatsapp",
+    label: "💬 WhatsApp",
+    title: "Agenda por WhatsApp",
+    description:
+      "El bot atiende a tus clientes 24/7: responde preguntas, muestra el catálogo, toma la cita y envía confirmación. Con IA para conversaciones naturales en español.",
+    mockupBg: "#0B1418",
+    accent: "#25D366",
+    stats: [
+      { value: "24/7", label: "Disponible sin intervención humana" },
+      { value: "−60%", label: "Citas perdidas por falta de respuesta" },
+    ],
+  },
 ];
 
 function DemoMockup({ tab }: { tab: (typeof DEMO_TABS)[0] }) {

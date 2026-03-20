@@ -7,6 +7,12 @@ export const BUSINESS_TYPES = [
 
 export const FEATURES = [
   {
+    emoji: "💬",
+    title: "Bot WhatsApp 24/7",
+    description:
+      "Tus clientes agendan solos por WhatsApp. Con IA integrada que responde preguntas libres sobre servicios, precios y disponibilidad.",
+  },
+  {
     emoji: "📅",
     title: "Agenda Visual",
     description:
@@ -80,6 +86,8 @@ export type Plan = {
   annualPrice: number;
   description: string;
   features: string[];
+  wabaFeatures: string[];
+  wabaConversations: number | "unlimited";
   highlighted: boolean;
   cta: string;
   ctaSecondary?: boolean;
@@ -99,6 +107,12 @@ export const PLANS: Plan[] = [
       "App móvil (iOS + Android)",
       "Soporte por email",
     ],
+    wabaFeatures: [
+      "Bot WhatsApp 24/7",
+      "50 conversaciones/mes incluidas",
+      "Add-on: +50 conv. por $4",
+    ],
+    wabaConversations: 50,
     highlighted: false,
     cta: "Empezar gratis",
   },
@@ -117,6 +131,12 @@ export const PLANS: Plan[] = [
       "Comisiones automáticas",
       "Soporte prioritario",
     ],
+    wabaFeatures: [
+      "Bot WhatsApp 24/7 + IA",
+      "300 conversaciones/mes incluidas",
+      "Envío de promos masivas por WA",
+    ],
+    wabaConversations: 300,
     highlighted: true,
     cta: "Empezar gratis",
   },
@@ -135,11 +155,24 @@ export const PLANS: Plan[] = [
       "Manager dedicado",
       "SLA garantizado",
     ],
+    wabaFeatures: [
+      "Bot WhatsApp 24/7 + IA avanzada",
+      "Conversaciones ilimitadas",
+      "Flujo de pago por captura WA",
+      "Foto previa al servicio por WA",
+    ],
+    wabaConversations: "unlimited",
     highlighted: false,
     cta: "Contactar ventas",
     ctaSecondary: true,
   },
 ];
+
+export const WABA_ADDON_TIERS = [
+  { conversations: 50, price: 4, label: "Pack básico" },
+  { conversations: 200, price: 12, label: "Pack estándar · −25%" },
+  { conversations: 500, price: 24, label: "Pack pro · −40%" },
+] as const;
 
 export const FAQS = [
   {
@@ -172,9 +205,24 @@ export const FAQS = [
     answer:
       "Todos los planes incluyen soporte por email con respuesta en menos de 24 horas. El plan Pro tiene soporte prioritario (menos de 4 horas). Elite incluye un manager dedicado con WhatsApp directo.",
   },
+  {
+    question: "¿Necesito WhatsApp Business API para usar el bot?",
+    answer:
+      "Sí. El bot funciona con WhatsApp Business API (WABA) de Meta — diferente a la app WhatsApp Business normal. Desde SalonPro te guiamos paso a paso para conectar tu número. El proceso toma menos de 15 minutos y Meta lo aprueba en 1-2 días hábiles.",
+  },
+  {
+    question: "¿Qué pasa cuando se agotan las conversaciones del mes?",
+    answer:
+      "El bot notifica al dueño del negocio por la app antes de llegar al límite. Puedes comprar packs adicionales desde Configuración (50 conv/$4, 200/$12, 500/$24) o activar la compra automática para que nunca se interrumpa el servicio.",
+  },
 ];
 
-export const COMPARISON_FEATURES = [
+export const COMPARISON_FEATURES: {
+  label: string;
+  basic: boolean | string;
+  pro: boolean | string;
+  elite: boolean | string;
+}[] = [
   { label: "App móvil (iOS + Android)", basic: true, pro: true, elite: true },
   { label: "Agenda de citas", basic: true, pro: true, elite: true },
   { label: "Catálogo de servicios", basic: true, pro: true, elite: true },
@@ -188,4 +236,9 @@ export const COMPARISON_FEATURES = [
   { label: "Branding personalizado", basic: false, pro: false, elite: true },
   { label: "API + Integraciones", basic: false, pro: false, elite: true },
   { label: "Manager dedicado", basic: false, pro: false, elite: true },
+  { label: "Bot WhatsApp 24/7", basic: true, pro: true, elite: true },
+  { label: "Conversaciones incluidas/mes", basic: "50", pro: "300", elite: "∞" },
+  { label: "Add-on conversaciones extra", basic: true, pro: true, elite: false },
+  { label: "IA (Claude) para preguntas libres", basic: true, pro: true, elite: true },
+  { label: "Envío de promos por WhatsApp", basic: false, pro: true, elite: true },
 ];

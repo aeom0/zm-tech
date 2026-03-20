@@ -7,6 +7,10 @@ type Props = {
 
 export function PricingCard({ plan, annual }: Props) {
   const price = annual ? plan.annualPrice : plan.monthlyPrice;
+  const wabaLabel =
+    plan.wabaConversations === "unlimited"
+      ? "Conversaciones ilimitadas"
+      : `${plan.wabaConversations} conversaciones/mes`;
 
   return (
     <div
@@ -22,6 +26,7 @@ export function PricingCard({ plan, annual }: Props) {
         </span>
       )}
 
+      {/* Nombre y descripción */}
       <div className="mb-6">
         <h3
           className={`text-xl font-bold ${
@@ -39,39 +44,43 @@ export function PricingCard({ plan, annual }: Props) {
         </p>
       </div>
 
-      <div className="mb-6">
+      {/* Precio */}
+      <div className="mb-4">
         <div className="flex items-end gap-1">
           <span
             className={`text-5xl font-bold tabular-nums transition-all duration-300 ${
-              plan.highlighted
-                ? "text-white"
-                : "text-zinc-900 dark:text-zinc-100"
+              plan.highlighted ? "text-white" : "text-zinc-900 dark:text-zinc-100"
             }`}
           >
             ${price}
           </span>
-          <span
-            className={`text-sm mb-2 ${
-              plan.highlighted ? "text-white/70" : "text-zinc-500"
-            }`}
-          >
+          <span className={`text-sm mb-2 ${plan.highlighted ? "text-white/70" : "text-zinc-500"}`}>
             /mes
           </span>
         </div>
         <div
           className={`overflow-hidden transition-all duration-300 ${annual ? "max-h-6 opacity-100 mt-1" : "max-h-0 opacity-0"}`}
         >
-          <p
-            className={`text-xs ${
-              plan.highlighted ? "text-white/60" : "text-zinc-400"
-            }`}
-          >
+          <p className={`text-xs ${plan.highlighted ? "text-white/60" : "text-zinc-400"}`}>
             ${plan.monthlyPrice}/mes si pagas mensual
           </p>
         </div>
       </div>
 
-      <ul className="space-y-3 mb-8 flex-1">
+      {/* Badge WABA — siempre visible */}
+      <div
+        className={`flex items-center gap-2 text-xs font-semibold px-3 py-2 rounded-xl mb-6 ${
+          plan.highlighted
+            ? "bg-white/10 text-white"
+            : "bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/20"
+        }`}
+      >
+        <span>💬</span>
+        <span>{wabaLabel}</span>
+      </div>
+
+      {/* Features principales */}
+      <ul className="space-y-3 mb-4 flex-1">
         {plan.features.map((feat) => (
           <li key={feat} className="flex items-start gap-2.5 text-sm">
             <span
@@ -83,8 +92,43 @@ export function PricingCard({ plan, annual }: Props) {
             </span>
             <span
               className={
+                plan.highlighted ? "text-white/90" : "text-zinc-600 dark:text-zinc-400"
+              }
+            >
+              {feat}
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      {/* Divisor WABA */}
+      <div
+        className={`flex items-center gap-2 text-xs font-semibold mb-3 ${
+          plan.highlighted ? "text-white/50" : "text-zinc-400"
+        }`}
+      >
+        <div
+          className={`flex-1 h-px ${
+            plan.highlighted ? "bg-white/10" : "bg-zinc-200 dark:bg-zinc-700"
+          }`}
+        />
+        <span>WhatsApp Bot</span>
+        <div
+          className={`flex-1 h-px ${
+            plan.highlighted ? "bg-white/10" : "bg-zinc-200 dark:bg-zinc-700"
+          }`}
+        />
+      </div>
+
+      {/* Features WABA destacadas */}
+      <ul className="space-y-2.5 mb-8">
+        {plan.wabaFeatures.map((feat) => (
+          <li key={feat} className="flex items-start gap-2.5 text-sm">
+            <span className="mt-0.5 flex-shrink-0 text-[#25D366]">✦</span>
+            <span
+              className={
                 plan.highlighted
-                  ? "text-white/90"
+                  ? "text-white/85"
                   : "text-zinc-600 dark:text-zinc-400"
               }
             >
@@ -94,6 +138,7 @@ export function PricingCard({ plan, annual }: Props) {
         ))}
       </ul>
 
+      {/* CTA */}
       <a
         href="#"
         className={`block text-center font-bold py-3.5 rounded-full transition-all duration-200 hover:opacity-90 hover:scale-[1.02] ${
