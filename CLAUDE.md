@@ -229,6 +229,15 @@ Flujo de arranque (mobile):
 - **Fase 7 — Supabase full-mobile**: todos los flujos mobile (Onboarding, Dashboard, Agenda, Servicios, Personal, Finanzas, Inventario) usan Supabase directo; eliminado el cliente Express (`apiRequest`, `/api/*`) y actualizadas las `queryKey` de React Query (`employees`, `services`, `service_categories`, `appointments`, `payments`, `inventory_items`, `dashboard_stats`, `dashboard_revenue`).
 - **Landing web**: landing pública completa en `apps/web` con Next.js 15 App Router; secciones Hero (mockup animado), Pain Points, Features, Social Proof, Pricing (toggle mensual/anual), FAQ, CTA, Footer; scroll reveal con IntersectionObserver; moneda `$` USD en toda la landing.
 
+## Cambios Recientes (mar 2026 — v1.4.1 — Fase 12B: Bot WABA en Landing Web)
+
+- **`WABAPreview` component** (`apps/web/src/components/ui/WABAPreview.tsx`): conversación animada tipo WhatsApp (4 mensajes, loop automático ~5s); header estilo WABA con avatar gradiente; badge "24/7".
+- **`constants.ts`** — tipo `Plan` extendido con `wabaFeatures: string[]` y `wabaConversations: number | 'unlimited'`; `PLANS` actualizado con bundles por plan (50 / 300 / ∞ conv.); nueva constante `WABA_ADDON_TIERS` (3 packs extra); feature "Bot WhatsApp 24/7" al inicio de `FEATURES`; 5 filas WABA en `COMPARISON_FEATURES` (tipo `boolean | string`); 2 FAQs sobre WABA.
+- **`PricingCard`**: badge WABA con conteo de conversaciones siempre visible; sección "WhatsApp Bot" con divisor y features en verde `#25D366`; features principales separadas de features WABA.
+- **`PricingSection`**: estado `showAddon` + bloque desplegable con los 3 packs add-on (`WABA_ADDON_TIERS`); tabla comparativa actualizada para renderizar celdas `string`.
+- **`FeaturesSection`**: card hero full-width oscura (bg `zinc-950`) con texto + `WABAPreview` a la derecha, insertada antes del grid de features.
+- **`DemoSection`**: tab "💬 WhatsApp" agregado (5º tab) con `accent: "#25D366"` y mockup en fondo `#0B1418`.
+
 ## Cambios Recientes (mar 2026 — v1.4.0 — Fase 12: Landing Web Rediseño LATAM)
 
 - **`GradientButton` component** (`apps/web/src/components/ui/GradientButton.tsx`): botón reutilizable con gradiente 135° `#E91E8C → #9C27B0 → #3D3D8F → #1565C0`; variante `outline` para CTAs secundarios; props `size` (sm/md/lg) y `className`.
