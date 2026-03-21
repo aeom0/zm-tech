@@ -9,6 +9,8 @@ import {
   decimal,
   uuid,
   jsonb,
+  check,
+  index,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
@@ -126,6 +128,62 @@ export const payments = pgTable("payments", {
   serviceTotal: decimal("service_total", { precision: 10, scale: 2 }),
 });
 
+/** Bundles de servicios (IDs en service_ids; sin FK compuesta en PG) */
+export const packs = pgTable("packs", {
+  id: varchar("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  description: text("description"),
+  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+  serviceIds: text("service_ids")
+    .array()
+    .notNull()
+    .default(sql`'{}'::text[]`),
+  isActive: boolean("is_active").notNull().default(true),
+});
+
+/** Promociones con precio total calculado y vigencia opcional */
+export const promotions = pgTable("promotions", {
+  id: varchar("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description"),
+  badge: text("badge"),
+  accentColor: text("accent_color"),
+  promoPrice: decimal("promo_price", { precision: 10, scale: 2 }).notNull(),
+  isActive: boolean("is_active").notNull().default(true),
+  expiresAt: timestamp("expires_at", { withTimezone: true }),
+});
+
+/** Líneas de promo: ítem de catálogo (servicio o pack) con precio descontado por unidad */
+export const promotionItems = pgTable(
+  "promotion_items",
+  {
+    id: varchar("id")
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    promoId: varchar("promo_id")
+      .notNull()
+      .references(() => promotions.id, { onDelete: "cascade" }),
+    itemType: text("item_type").notNull(),
+    itemId: varchar("item_id").notNull(),
+    quantity: integer("quantity").notNull().default(1),
+    discountedPrice: decimal("discounted_price", {
+      precision: 10,
+      scale: 2,
+    }).notNull(),
+  },
+  (table) => ({
+    promoIdIdx: index("promotion_items_promo_id_idx").on(table.promoId),
+    itemTypeCheck: check(
+      "promotion_items_item_type_check",
+      sql`${table.itemType} IN ('service', 'pack')`,
+    ),
+  }),
+);
+
 export const employeesRelations = relations(employees, ({ many }) => ({
   appointments: many(appointments),
 }));
@@ -178,6 +236,17 @@ export const profilesRelations = relations(profiles, ({ one }) => ({
   }),
 }));
 
+export const promotionsRelations = relations(promotions, ({ many }) => ({
+  items: many(promotionItems),
+}));
+
+export const promotionItemsRelations = relations(promotionItems, ({ one }) => ({
+  promotion: one(promotions, {
+    fields: [promotionItems.promoId],
+    references: [promotions.id],
+  }),
+}));
+
 export const insertEmployeeSchema = createInsertSchema(employees).omit({
   id: true,
   createdAt: true,
@@ -206,6 +275,16 @@ export const insertWhatsappSessionSchema = createInsertSchema(
 export const insertPaymentSchema = createInsertSchema(payments).omit({
   id: true,
 });
+
+export const insertPackSchema = createInsertSchema(packs).omit({
+  id: true,
+});
+export const insertPromotionSchema = createInsertSchema(promotions).omit({
+  id: true,
+});
+export const insertPromotionItemSchema = createInsertSchema(
+  promotionItems,
+).omit({ id: true });
 
 export const tenantSettings = pgTable("tenant_settings", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -259,6 +338,12 @@ export type WhatsappSession = typeof whatsappSessions.$inferSelect;
 export type InsertWhatsappSession = z.infer<typeof insertWhatsappSessionSchema>;
 export type Payment = typeof payments.$inferSelect;
 export type InsertPayment = z.infer<typeof insertPaymentSchema>;
+export type Pack = typeof packs.$inferSelect;
+export type InsertPack = z.infer<typeof insertPackSchema>;
+export type Promotion = typeof promotions.$inferSelect;
+export type InsertPromotion = z.infer<typeof insertPromotionSchema>;
+export type PromotionItem = typeof promotionItems.$inferSelect;
+export type InsertPromotionItem = z.infer<typeof insertPromotionItemSchema>;
 export type Profile = typeof profiles.$inferSelect;
 export type TenantSettings = typeof tenantSettings.$inferSelect;
 export type InsertTenantSettings = z.infer<typeof insertTenantSettingsSchema>;
