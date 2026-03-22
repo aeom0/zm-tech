@@ -40,7 +40,7 @@ Este archivo proporciona orientación a Claude Code (claude.ai/code) para trabaj
 │   │   ├── hooks/          # useTheme, useResponsive, useNotifications, useTenant
 │   │   ├── metro.config.js # Configuración Metro para monorepo
 │   │   └── constants/      # theme.ts con Colors + createTheme(config)
-│   └── web/                # Landing pública + panel /finanzas (Next.js)
+│   └── web/                # Landing + /dashboard + /finanzas (Next.js)
 ├── packages/
 │   ├── shared-schema/      # @zm/shared-schema — tablas Drizzle + schemas Zod
 │   └── tenant-config/      # @salonpro/tenant-config — TenantConfig + presets
@@ -228,6 +228,12 @@ Flujo de arranque (mobile):
 - **Fase 6 — tenant_settings**: tabla `tenant_settings` en Supabase con RLS y sincronización desde el onboarding (`tenantSettingsService` y `TenantContext`).
 - **Fase 7 — Supabase full-mobile**: todos los flujos mobile (Onboarding, Dashboard, Agenda, Servicios, Personal, Finanzas, Inventario) usan Supabase directo; eliminado el cliente Express (`apiRequest`, `/api/*`) y actualizadas las `queryKey` de React Query (`employees`, `services`, `service_categories`, `appointments`, `payments`, `inventory_items`, `dashboard_stats`, `dashboard_revenue`).
 - **Landing web**: landing pública completa en `apps/web` con Next.js 15 App Router; secciones Hero (mockup animado), Pain Points, Features, Social Proof, Pricing (toggle mensual/anual), FAQ, CTA, Footer; scroll reveal con IntersectionObserver; moneda `$` USD en toda la landing.
+
+## Cambios Recientes (mar 2026 — v1.4.2 — Fase 13: Dashboard de métricas web)
+
+- **Ruta `/dashboard`** (`apps/web/src/app/dashboard/`): panel de KPIs (citas e ingresos hoy/mes, sin asignar, gráfico ingresos 7 días en CSS, próximas citas, top 5 servicios del mes). Cliente `"use client"`; datos vía `useDashboardData.ts` — **queries Supabase separadas** y combinación en memoria (sin joins profundos PostgREST). Nombre del negocio desde `tenant_settings` (`business_name`, fila `id` = usuario Auth) y moneda `currency_symbol`; helper `formatCurrency` en `apps/web/src/lib/format.ts`.
+- **Auth y roles**: layout con `FinanzasAuthWrapper`; sin sesión → `/finanzas/login`; `owner`/`dev` ven el panel; **staff** autenticado → `router.replace("/")` sin pantalla de error (no revelar la ruta). Enlace **Dashboard** en header de `/finanzas`.
+- **Nota**: agrupación del gráfico por día usa calendario local del navegador; comentario TODO en código para alinear con timezone del tenant cuando exista.
 
 ## Cambios Recientes (mar 2026 — v1.4.1 — Fase 12B: Bot WABA en Landing Web)
 

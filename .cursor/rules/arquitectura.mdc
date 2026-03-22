@@ -16,7 +16,7 @@ alwaysApply: false
 ```
 salonpro/
 ├── apps/
-│   ├── web/              # Landing y panel /finanzas (Next.js 15 + React 19)
+│   ├── web/              # Landing + /dashboard + /finanzas (Next.js 15 + React 19)
 │   └── mobile/            # App Expo (React Native) — gestión del salón
 │       ├── App.tsx        # Entry: QueryClient + AuthProvider + TenantProvider + Navigation
 │       ├── contexts/     # AuthContext, TenantContext (sync con tenant_settings)
@@ -47,12 +47,12 @@ salonpro/
 
 ### Web (apps/web)
 - Next.js 15, Tailwind, Supabase Auth
-- Landing pública + panel `/finanzas`
+- Landing pública + `/dashboard` (métricas) + `/finanzas`; login `/finanzas/login`; paneles admin solo owner/dev
 
 ### Base de datos (Supabase)
 - **Proyecto**: `xidjomlxpuosupymcsaj`
 - Tablas: profiles, tenant_settings, employees, service_categories, services, clients, appointments, payments, inventory_items. RLS por rol (dev/owner/staff) y tenant cuando aplique
-- Helper `get_my_role()` para RLS; tenant_settings con business_type, display_name, primary_color, etc.
+- Helper `get_my_role()` para RLS; `tenant_settings` con `business_name`, `business_type`, colores, moneda, etc.
 - Migraciones: Drizzle; `yarn db:push`
 
 ## Scripts (raíz)

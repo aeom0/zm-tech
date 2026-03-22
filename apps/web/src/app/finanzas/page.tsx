@@ -152,6 +152,12 @@ export default function FinanzasPage() {
               <TrendingUp className="w-4 h-4 text-[var(--primary)]" />
               Finanzas
             </span>
+            <Link
+              href="/dashboard"
+              className="text-sm font-medium text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors ml-1 pl-3 border-l border-zinc-200 dark:border-zinc-700"
+            >
+              Dashboard
+            </Link>
           </div>
           <div className="flex items-center gap-3">
             {profile?.full_name && (

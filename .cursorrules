@@ -59,7 +59,7 @@ import type { Appointment } from "@salonpro/shared-schema";
 
 ### Web (apps/web/)
 - Next.js 15 + React 19, Tailwind CSS
-- Landing pública + panel `/finanzas` (auth Supabase)
+- Landing pública + `/dashboard` (métricas KPIs) + `/finanzas` — auth Supabase; login compartido `/finanzas/login`; solo `owner`/`dev` (staff → `router.replace("/")` en dashboard sin UI de “acceso denegado”)
 
 ### Compartido
 - `packages/shared-schema`: tablas Drizzle + Zod (employees, services, appointments, tenant_settings, etc.)

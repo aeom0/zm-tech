@@ -78,7 +78,7 @@ yarn db:seed
 - **Backend**: Supabase (Auth + PostgREST) — sin servidor Express. Proyecto: `xidjomlxpuosupymcsaj`
 - **Schema compartido**: Drizzle ORM + Zod (`packages/shared-schema`)
 - **Config de tenant**: `packages/tenant-config` (`@salonpro/tenant-config`)
-- **Web**: Next.js (`apps/web`) — landing pública + panel `/finanzas`
+- **Web**: Next.js (`apps/web`) — landing pública + paneles `/dashboard` (KPIs) y `/finanzas` (solo rol `owner`/`dev`; login en `/finanzas/login`)
 - **Monorepo**: Yarn Workspaces
 
 ---
@@ -92,7 +92,7 @@ Este monorepo usa la convención estándar `apps/` para aplicaciones y `packages
 | Carpeta en GitHub | Qué contiene | Tecnología |
 |-------------------|-------------|-----------|
 | `apps/mobile/` | **App Móvil (Expo)** — la aplicación principal para iOS, Android y Web | React Native 0.81 + Expo SDK 54 |
-| `apps/web/` | **Web (Next.js)** — landing pública del salón + panel `/finanzas` | Next.js 15 + Tailwind CSS |
+| `apps/web/` | **Web (Next.js)** — landing + `/dashboard` + `/finanzas` (auth Supabase) | Next.js 15 + Tailwind CSS |
 | `packages/shared-schema/` | **Schema Compartido** — tablas de base de datos y validaciones | Drizzle ORM + Zod |
 | `packages/tenant-config/` | **Config de Tenant** — presets y configuración multi-tenant | TypeScript |
 | `server/` | *(No usado)* — La app conecta directo a Supabase; no hay Express | — |
@@ -108,7 +108,7 @@ Este monorepo usa la convención estándar `apps/` para aplicaciones y `packages
 │   │   ├── navigation/       # RootStack, MainTabs, MoreStack
 │   │   ├── hooks/            # useTheme, useResponsive, useTenant…
 │   │   └── constants/        # theme.ts con createTheme(config)
-│   └── web/                  # Web (Next.js) — landing pública + panel /finanzas
+│   └── web/                  # Web (Next.js) — landing + /dashboard + /finanzas
 ├── packages/
 │   ├── shared-schema/        # Schema Compartido — @zm/shared-schema (Drizzle + Zod)
 │   └── tenant-config/        # Config de Tenant — @salonpro/tenant-config + 4 presets
@@ -167,9 +167,9 @@ DATABASE_URL=postgresql://user:pass@host:5432/nombre_bd
 
 | Rol | Acceso |
 |-----|--------|
-| `dev` | Total — administrador técnico |
-| `owner` | Total — dueño/a del negocio |
-| `staff` | Limitado — Agenda + Mis ganancias |
+| `dev` | Total — administrador técnico; web: `/dashboard`, `/finanzas` |
+| `owner` | Total — dueño/a del negocio; web: `/dashboard`, `/finanzas` |
+| `staff` | Limitado — Agenda + Mis ganancias; sin paneles web admin (redirige a `/` si intenta `/dashboard`) |
 
 ---
 
@@ -196,4 +196,4 @@ Los SVGs del logo están en `apps/web/public/`:
 
 ---
 
-**Versión**: 1.3.1 · **Licencia**: Privado · **Plataformas**: iOS · Android · Web
+**Versión**: 1.4.2 · **Licencia**: Privado · **Plataformas**: iOS · Android · Web
