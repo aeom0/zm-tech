@@ -22,11 +22,14 @@ Sistema de diseño y especificaciones UI/UX (paleta, tipografía, componentes). 
 ### [DEPLOYMENT.md](DEPLOYMENT.md)
 Despliegue: Supabase (backend), Vercel (web), EAS (móvil).
 
+### [INSTALACION_BETA.md](INSTALACION_BETA.md)
+Instalación / notas de beta (si aplica al flujo actual).
+
 ### [MONOREPO_MIGRACION.md](MONOREPO_MIGRACION.md)
 Estructura del monorepo y comandos (sin servidor Express).
 
-### [COMPARACION_PROYECTOS_Y_MEJORAS.md](COMPARACION_PROYECTOS_Y_MEJORAS.md)
-Comparación con otros proyectos (ZM, Scout360); nota: SalonPro usa 100% Supabase.
+### [SALONPRO_V1.3_PLAN.md](SALONPRO_V1.3_PLAN.md)
+Plan de funcionalidades v1.3 (referencia histórica / roadmap parcial).
 
 
 ## Organización de archivos
@@ -40,7 +43,8 @@ docs/
 ├── design_guidelines.md        # Diseño UI/UX
 ├── DEPLOYMENT.md               # Deploy Supabase / Vercel / EAS
 ├── MONOREPO_MIGRACION.md       # Monorepo, comandos
-└── COMPARACION_PROYECTOS_Y_MEJORAS.md
+├── INSTALACION_BETA.md         # Beta / instalación
+└── SALONPRO_V1.3_PLAN.md       # Plan v1.3 (referencia)
 
 .cursor/
 ├── README.md                   # Reglas Cursor, MCP (dos proyectos Supabase)
@@ -60,8 +64,10 @@ docs/
 
 ### Frontend
 - **Mobile**: `apps/mobile/` — components, screens, navigation, contexts, hooks, constants
+- **Pantallas modulares (mobile)**: varias rutas bajo `apps/mobile/screens/<feature>/` agrupan `types`, `hooks`, `components` y estilos; el archivo `*Screen.tsx` en `screens/` actúa como orquestador (p. ej. `agenda/`, `dashboard/`, `finances/`, `inventory/`).
 - **Web**: `apps/web/` — Next.js App Router
 - **Tema**: `apps/mobile/constants/theme.ts`; tenant: `TenantContext` + `tenant_settings`
+- **TenantConfig** (`@salonpro/tenant-config`): incluye `features?.whatsapp` (promo WA en Más / ajustes cuando aplique)
 
 ### MCP (Cursor)
 - Dos servidores en `.cursor/mcp.json`: **supabase-salonpro** (este proyecto) y **supabase-zm** (referencia). Para BD de SalonPro usar supabase-salonpro.
@@ -71,4 +77,4 @@ docs/
 - `apps/web/public/logo-light.svg` — horizontal, fondos claros
 - `apps/web/public/logo-icon.svg` — símbolo solo, fondos oscuros (transparente)
 
-**Última actualización**: 2026-03-19
+**Última actualización**: 2026-03-21

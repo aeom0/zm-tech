@@ -82,17 +82,17 @@ function AppContent() {
 
 export default function App() {
   return (
-    <TenantProvider>
-      <ThemeProvider>
-        <QueryClientProvider client={queryClient}>
-          <AuthProvider>
+    <AuthProvider>
+      <TenantProvider>
+        <ThemeProvider>
+          <QueryClientProvider client={queryClient}>
             <ErrorBoundary>
               <AppContent />
             </ErrorBoundary>
-          </AuthProvider>
-        </QueryClientProvider>
-      </ThemeProvider>
-    </TenantProvider>
+          </QueryClientProvider>
+        </ThemeProvider>
+      </TenantProvider>
+    </AuthProvider>
   );
 }
 

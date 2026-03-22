@@ -17,9 +17,13 @@ import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollV
 import { useAuth } from "@/contexts/AuthContext";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 
+type AuthFlow = "wizard" | "returning";
+
 interface OnboardingAuthScreenProps {
   onSuccess: () => void;
   onBack: () => void;
+  /** "wizard" = paso 5 del onboarding; "returning" = ya tengo cuenta (misma UI que el resto del wizard) */
+  flow?: AuthFlow;
 }
 
 /**
@@ -30,7 +34,9 @@ interface OnboardingAuthScreenProps {
 export default function OnboardingAuthScreen({
   onSuccess,
   onBack,
+  flow = "wizard",
 }: OnboardingAuthScreenProps) {
+  const esRegreso = flow === "returning";
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -66,16 +72,22 @@ export default function OnboardingAuthScreen({
           behavior={Platform.OS === "ios" ? "padding" : undefined}
           style={styles.inner}
         >
-          <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-            <View style={styles.dotsRow}>
-              <GradientProgressDots total={5} current={4} />
-            </View>
+          <Animated.View
+            entering={FadeInDown.duration(400)}
+            style={styles.header}
+          >
+            {!esRegreso ? (
+              <View style={styles.dotsRow}>
+                <GradientProgressDots total={5} current={4} />
+              </View>
+            ) : null}
             <ThemedText style={styles.titulo}>
-              Crea tu acceso a SalonPro
+              {esRegreso ? "Entra con tu cuenta" : "Crea tu acceso a SalonPro"}
             </ThemedText>
             <ThemedText style={styles.subtitulo}>
-              Usaremos estos datos para que solo tú y tu equipo puedan entrar a
-              la app.
+              {esRegreso
+                ? "Si ya configuraste tu negocio, entras y sigues donde lo dejaste."
+                : "Usaremos estos datos para que solo tú y tu equipo puedan entrar a la app."}
             </ThemedText>
           </Animated.View>
 
@@ -171,10 +183,12 @@ export default function OnboardingAuthScreen({
                   pressed && { opacity: 0.8 },
                 ]}
               >
-                <ThemedText style={styles.secondaryButtonText}>Atrás</ThemedText>
+                <ThemedText style={styles.secondaryButtonText}>
+                  Atrás
+                </ThemedText>
               </Pressable>
               <GradientButton
-                label="Crear cuenta y seguir"
+                label={esRegreso ? "Entrar" : "Crear cuenta y seguir"}
                 onPress={handleSubmit}
                 loading={loading}
                 style={styles.primaryButtonWrapper}
@@ -307,4 +321,3 @@ const styles = StyleSheet.create({
     flex: 1.4,
   },
 });
-

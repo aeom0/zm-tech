@@ -18,10 +18,10 @@ type PasoOnboarding = 1 | 2 | 3 | 4 | 5 | 6;
 
 /**
  * Flujo completo de la app:
- *   Splash → (no configurado) Onboarding pasos 1-4 (tipo/datos/equipo/servicios) → paso 5 Login → paso 6 Listo
- *           → (configurado, no auth) Login
+ *   Splash → (no configurado) Entrada → nuevo negocio (pasos 1-4) → paso 5 auth → paso 6 listo;
+ *           o "ya tengo cuenta" → OnboardingAuthScreen (mismo look del wizard), no LoginScreen aislado.
+ *           → (configurado, no auth) LoginScreen clásico
  *           → (configurado, auth) MainTabNavigator
- * Tras el splash el usuario ve primero el onboarding; el login es un paso interno antes de guardar en la nube.
  */
 export default function AuthGate() {
   const { isAuthenticated } = useAuth();
@@ -55,15 +55,13 @@ export default function AuthGate() {
       );
     }
 
-    // Usuario indica que ya tiene cuenta → pantalla de login clásica,
-    // pero envuelta en el flujo de onboarding.
+    // Usuario indica que ya tiene cuenta → mismo look onboarding (no LoginScreen aislado)
     if (entryChoice === "existing") {
       return (
-        <LoginScreen
+        <OnboardingAuthScreen
+          flow="returning"
+          onBack={() => setEntryChoice("none")}
           onSuccess={() => {
-            // Si al iniciar sesión el tenant ya está configurado,
-            // TenantContext marcará isConfigured=true y este branch dejará de ejecutarse.
-            // Si no lo está (caso raro), continuamos por el wizard desde el principio.
             setEntryChoice("new");
             setPaso(1);
           }}
@@ -130,7 +128,7 @@ export default function AuthGate() {
     );
   }
 
-  // Ya configurado pero sin sesión → login para volver a entrar
+  // Ya configurado pero sin sesión → login clásico (fuera del wizard)
   if (!isAuthenticated) {
     return <LoginScreen />;
   }

@@ -1,17 +1,11 @@
 import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  RefreshControl,
-} from "react-native";
+import { View, StyleSheet, ScrollView, RefreshControl } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
-import { useTenant } from "@/contexts/TenantContext";
 import { Spacing } from "@/constants/theme";
 import { useClientsData } from "./clients/hooks/useClientsData";
 import type { ClientSegment, ClientWithMetrics } from "./clients/types";
@@ -26,7 +20,6 @@ export default function ClientsScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
-  const { config } = useTenant();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [segment, setSegment] = useState<ClientSegment>("all");
@@ -34,8 +27,10 @@ export default function ClientsScreen() {
     useState<ClientWithMetrics | null>(null);
   const [detailVisible, setDetailVisible] = useState(false);
 
-  const { clients, filteredClients, kpis, isLoading, isError } =
-    useClientsData(searchQuery, segment);
+  const { clients, filteredClients, kpis, isLoading, isError } = useClientsData(
+    searchQuery,
+    segment,
+  );
 
   const handleOpenDetail = (client: ClientWithMetrics) => {
     setSelectedClient(client);
@@ -48,12 +43,7 @@ export default function ClientsScreen() {
   };
 
   return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: theme.backgroundRoot },
-      ]}
-    >
+    <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{
@@ -70,14 +60,10 @@ export default function ClientsScreen() {
           />
         }
       >
-        <ThemedText
-          style={[styles.title, { color: theme.text }]}
-        >
+        <ThemedText style={[styles.title, { color: theme.text }]}>
           Clientes
         </ThemedText>
-        <ThemedText
-          style={[styles.subtitle, { color: theme.textSecondary }]}
-        >
+        <ThemedText style={[styles.subtitle, { color: theme.textSecondary }]}>
           Revisa el comportamiento de tus clientes y segmenta por frecuencia.
         </ThemedText>
 
@@ -87,19 +73,13 @@ export default function ClientsScreen() {
           totalCount={clients.length}
         />
 
-        <ClientFilterBar
-          segment={segment}
-          onSegmentChange={setSegment}
-        />
+        <ClientFilterBar segment={segment} onSegmentChange={setSegment} />
 
         <ClientKPIStrip kpis={kpis} />
 
         {isError ? (
-          <ThemedText
-            style={[styles.errorText, { color: theme.error }]}
-          >
-            Hubo un problema al cargar los clientes. Intenta de nuevo más
-            tarde.
+          <ThemedText style={[styles.errorText, { color: theme.error }]}>
+            Hubo un problema al cargar los clientes. Intenta de nuevo más tarde.
           </ThemedText>
         ) : filteredClients.length === 0 && !isLoading ? (
           <View style={styles.emptyState}>
@@ -168,4 +148,3 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
 });
-

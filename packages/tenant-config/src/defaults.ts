@@ -43,4 +43,8 @@ export const defaultTenantConfig: TenantConfig = {
     defaultStaffPercent: 40,
     defaultHousePercent: 60,
   },
+
+  features: {
+    whatsapp: false,
+  },
 };

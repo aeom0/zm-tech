@@ -77,7 +77,7 @@ yarn db:seed
 - **Animaciones**: React Native Reanimated 4
 - **Backend**: Supabase (Auth + PostgREST) — sin servidor Express. Proyecto: `xidjomlxpuosupymcsaj`
 - **Schema compartido**: Drizzle ORM + Zod (`packages/shared-schema`)
-- **Config de tenant**: `packages/tenant-config` (`@salonpro/tenant-config`)
+- **Config de tenant**: `packages/tenant-config` (`@salonpro/tenant-config`) — presets, `TenantConfig` (incluye `features?.whatsapp` para promo WA / ajustes)
 - **Web**: Next.js (`apps/web`) — landing pública + paneles `/dashboard` (KPIs) y `/finanzas` (solo rol `owner`/`dev`; login en `/finanzas/login`)
 - **Monorepo**: Yarn Workspaces
 
@@ -103,8 +103,13 @@ Este monorepo usa la convención estándar `apps/` para aplicaciones y `packages
 ├── apps/
 │   ├── mobile/               # App Móvil (Expo) — iOS + Android + Web
 │   │   ├── contexts/         # AuthContext, TenantContext
-│   │   ├── screens/          # Dashboard, Agenda, Servicios, Finanzas, Inventario
-│   │   │   └── onboarding/   # Flujo de configuración inicial (5 pasos)
+│   │   ├── screens/          # Pantallas orquestadoras + módulos por feature
+│   │   │   ├── agenda/       # Tipos, hooks, componentes (AgendaScreen delgado)
+│   │   │   ├── dashboard/    # KPIs, citas, modal — hooks + componentes
+│   │   │   ├── finances/     # Estilos, tipos, constantes (FinancesScreen delgado)
+│   │   │   ├── inventory/    # Inventario por tabs — hooks + componentes
+│   │   │   ├── onboarding/ # Flujo de configuración inicial (5 pasos)
+│   │   │   └── …           # validacion/, asignar/, clients/, settings/, etc.
 │   │   ├── navigation/       # RootStack, MainTabs, MoreStack
 │   │   ├── hooks/            # useTheme, useResponsive, useTenant…
 │   │   └── constants/        # theme.ts con createTheme(config)
@@ -175,8 +180,10 @@ DATABASE_URL=postgresql://user:pass@host:5432/nombre_bd
 
 ## Documentación
 
+- [Índice de docs](docs/INDEX.md) — mapa de guías en `docs/`
 - [Guía de migración ZM → SalonPro](docs/SALONPRO_MIGRATION_GUIDE.md)
 - [Lineamientos de diseño](docs/design_guidelines.md)
+- [Desarrollo local / migraciones](docs/DESARROLLO_LOCAL.md)
 - [CLAUDE.md](CLAUDE.md) — instrucciones para Claude Code
 - [.cursor/README.md](.cursor/README.md) — reglas Cursor y MCP (dos proyectos Supabase: ZM y SalonPro)
 
@@ -196,4 +203,4 @@ Los SVGs del logo están en `apps/web/public/`:
 
 ---
 
-**Versión**: 1.4.2 · **Licencia**: Privado · **Plataformas**: iOS · Android · Web
+**Versión**: 1.4.3 · **Licencia**: Privado · **Plataformas**: iOS · Android · Web

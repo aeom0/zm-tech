@@ -1,41 +1,15 @@
-import React, { useState, useCallback } from 'react';
-import {
-  View,
-  FlatList,
-  StyleSheet,
-  RefreshControl,
-} from 'react-native';
-import { useHeaderHeight } from '@react-navigation/elements';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { Feather } from '@expo/vector-icons';
+import React, { useState, useCallback, useRef } from "react";
+import { View, FlatList, StyleSheet, RefreshControl } from "react-native";
+import { useHeaderHeight } from "@react-navigation/elements";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
-import { ThemedText } from '@/components/ThemedText';
-import { useTheme } from '@/hooks/useTheme';
-import { Spacing } from '@/constants/theme';
-import { AsignarRow } from './asignar/components/AsignarRow';
-import { useAsignarData } from './asignar/hooks/useAsignarData';
-import type { UnassignedAppointment, RowAssignState } from './asignar/types';
-import type { TenantConfig } from '@salonpro/tenant-config';
-
-interface EmptyStateProps {
-  theme: ReturnType<typeof useTheme>['theme'];
-  terminology: TenantConfig['terminology'];
-}
-
-function EmptyState({ theme, terminology }: EmptyStateProps) {
-  return (
-    <View style={styles.empty}>
-      <Feather name="users" size={48} color={theme.success} />
-      <ThemedText style={[styles.emptyTitle, { color: theme.text }]}>
-        Todo asignado
-      </ThemedText>
-      <ThemedText style={[styles.emptySub, { color: theme.textMuted }]}>
-        No hay {terminology.appointment}s sin{' '}
-        {terminology.staffSingular} en los próximos 7 días.
-      </ThemedText>
-    </View>
-  );
-}
+import { useTheme } from "@/hooks/useTheme";
+import { Spacing } from "@/constants/theme";
+import { AsignarRow } from "./asignar/components/AsignarRow";
+import { AsignarEmptyState } from "./asignar/components/AsignarEmptyState";
+import { AsignarLoadingPlaceholder } from "./asignar/components/AsignarLoadingPlaceholder";
+import { useAsignarData } from "./asignar/hooks/useAsignarData";
+import type { UnassignedAppointment, RowAssignState } from "./asignar/types";
 
 export default function AsignarProfesionalesScreen() {
   const headerHeight = useHeaderHeight();
@@ -44,24 +18,27 @@ export default function AsignarProfesionalesScreen() {
   const { employees, unassigned, isLoading, refetch, assignMutation, config } =
     useAsignarData();
 
-  // Estado de guardado por fila
   const [rowSaving, setRowSaving] = useState<RowAssignState>({});
+  /** Evita doble submit y mantiene estable `handleAssign` (sin depender de rowSaving) */
+  const pendingIdsRef = useRef<Set<string>>(new Set());
 
   const handleAssign = useCallback(
     async (appointmentId: string, employeeId: string) => {
-      if (rowSaving[appointmentId]) return;
-      setRowSaving(prev => ({ ...prev, [appointmentId]: true }));
+      if (pendingIdsRef.current.has(appointmentId)) return;
+      pendingIdsRef.current.add(appointmentId);
+      setRowSaving((prev) => ({ ...prev, [appointmentId]: true }));
       try {
         await assignMutation.mutateAsync({ appointmentId, employeeId });
       } finally {
-        setRowSaving(prev => {
+        pendingIdsRef.current.delete(appointmentId);
+        setRowSaving((prev) => {
           const next = { ...prev };
           delete next[appointmentId];
           return next;
         });
       }
     },
-    [rowSaving, assignMutation],
+    [assignMutation],
   );
 
   const renderItem = useCallback(
@@ -70,7 +47,7 @@ export default function AsignarProfesionalesScreen() {
         item={item}
         employees={employees}
         isSaving={rowSaving[item.id] ?? false}
-        onAssign={employeeId => handleAssign(item.id, employeeId)}
+        onAssign={(employeeId) => handleAssign(item.id, employeeId)}
         locale={config.locale.language}
       />
     ),
@@ -81,17 +58,19 @@ export default function AsignarProfesionalesScreen() {
     <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
       <FlatList
         data={unassigned}
-        keyExtractor={item => item.id}
+        keyExtractor={(item) => item.id}
         renderItem={renderItem}
         contentContainerStyle={{
           paddingTop: headerHeight + Spacing.lg,
-          paddingBottom: tabBarHeight + Spacing['3xl'],
+          paddingBottom: tabBarHeight + Spacing["3xl"],
           paddingHorizontal: Spacing.lg,
           flexGrow: 1,
         }}
         ListEmptyComponent={
-          isLoading ? null : (
-            <EmptyState theme={theme} terminology={config.terminology} />
+          isLoading ? (
+            <AsignarLoadingPlaceholder color={theme.primary} />
+          ) : (
+            <AsignarEmptyState terminology={config.terminology} />
           )
         }
         refreshControl={
@@ -109,19 +88,4 @@ export default function AsignarProfesionalesScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  empty: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: Spacing.md,
-    paddingTop: Spacing['5xl'],
-  },
-  emptyTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  emptySub: {
-    fontSize: 14,
-    textAlign: 'center',
-  },
 });

@@ -5,7 +5,7 @@
  */
 import React, { createContext, useContext, useState } from "react";
 
-type Role = "dev" | "owner" | "staff";
+export type Role = "dev" | "owner" | "staff";
 
 interface AuthProfile {
   id: string;

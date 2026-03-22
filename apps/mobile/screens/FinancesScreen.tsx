@@ -1,11 +1,9 @@
 import React, { useState, useMemo } from "react";
 import {
   View,
-  StyleSheet,
   ScrollView,
   Pressable,
   RefreshControl,
-  Dimensions,
   Modal,
   TextInput,
   Alert,
@@ -26,7 +24,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { useResponsive } from "@/hooks/useResponsive";
 import { useTenant } from "@/contexts/TenantContext";
 import { formatCurrency } from "@/utils/format";
-import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
+import { Colors, Spacing } from "@/constants/theme";
 import { queryClient } from "@/lib/query-client";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
@@ -35,62 +33,25 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { MainTabParamList } from "@/navigation/MainTabNavigator";
 import type { MoreStackParamList } from "@/navigation/MoreStackNavigator";
 
-interface Payment {
-  id: string;
-  appointment_id: string | null;
-  amount: string;
-  method: string;
-  date: string;
-  notes: string | null;
-  is_abono?: boolean;
-  service_total?: string | null;
-}
-
-type Period = "today" | "week" | "month";
-
-interface AppointmentOption {
-  id: string;
-  client_name: string;
-  date: string;
-  status: string;
-  price: string;
-  service_id: string | null;
-  employee_id: string | null;
-}
-
-interface ServiceOption {
-  id: string;
-  name: string;
-}
-
-interface EmployeeOption {
-  id: string;
-  name: string;
-}
-
-const PAYMENT_METHODS = [
-  { id: "cash", label: "Efectivo", icon: "dollar-sign" as const },
-  { id: "card", label: "Tarjeta", icon: "credit-card" as const },
-  { id: "yape", label: "Yape", icon: "smartphone" as const },
-  { id: "plin", label: "Plin", icon: "smartphone" as const },
-  { id: "transfer", label: "Transferencia", icon: "smartphone" as const },
-];
-
-// Tipo de pago: pago libre, adelanto WhatsApp (20%), o completar el 80% restante
-type PaymentType = "full" | "abono" | "completar";
-
-const ABONO_PERCENT = 0.2;
-
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
-const CHART_WIDTH = SCREEN_WIDTH - Spacing.lg * 2 - Spacing.xl * 2;
-const CHART_HEIGHT = 160;
-const CHART_PADDING = { top: 8, right: 24, bottom: 28, left: 8 };
-const CHART_INNER_WIDTH =
-  CHART_WIDTH - CHART_PADDING.left - CHART_PADDING.right;
-const CHART_INNER_HEIGHT =
-  CHART_HEIGHT - CHART_PADDING.top - CHART_PADDING.bottom;
-
-const DAYS_SHORT = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+import {
+  ABONO_PERCENT,
+  CHART_HEIGHT,
+  CHART_INNER_HEIGHT,
+  CHART_INNER_WIDTH,
+  CHART_PADDING,
+  CHART_WIDTH,
+  DAYS_SHORT,
+  PAYMENT_METHODS,
+} from "./finances/constants";
+import { financesStyles as styles } from "./finances/financesStyles";
+import type {
+  FinancesAppointmentOption,
+  FinancesEmployeeOption,
+  FinancesPayment,
+  FinancesPaymentType,
+  FinancesPeriod,
+  FinancesServiceOption,
+} from "./finances/types";
 
 export default function FinancesScreen() {
   const insets = useSafeAreaInsets();
@@ -99,7 +60,7 @@ export default function FinancesScreen() {
   const { theme } = useTheme();
   const { config } = useTenant();
   const currencySymbol = config.locale.currency.symbol;
-  const { isAdmin } = useAuth();
+  const { isAdmin, userId } = useAuth();
   const { isTablet } = useResponsive();
   // Puede estar en tab Finanzas (legacy) o dentro del stack Más
   const navigation =
@@ -110,10 +71,12 @@ export default function FinancesScreen() {
       >
     >();
 
-  const [period, setPeriod] = useState<Period>("week");
+  const [period, setPeriod] = useState<FinancesPeriod>("week");
   const [modalVisible, setModalVisible] = useState(false);
-  const [editingPayment, setEditingPayment] = useState<Payment | null>(null);
-  const [paymentType, setPaymentType] = useState<PaymentType>("full");
+  const [editingPayment, setEditingPayment] = useState<FinancesPayment | null>(
+    null,
+  );
+  const [paymentType, setPaymentType] = useState<FinancesPaymentType>("full");
   const [formData, setFormData] = useState({
     amount: "",
     serviceTotal: "",
@@ -123,9 +86,6 @@ export default function FinancesScreen() {
   const [selectedAppointmentId, setSelectedAppointmentId] = useState<
     string | null
   >(null);
-
-  // Derived helpers for backward compat
-  const isAbono = paymentType === "abono";
 
   const dateRanges = useMemo(() => {
     const now = new Date();
@@ -153,7 +113,7 @@ export default function FinancesScreen() {
     data: payments = [],
     isLoading,
     refetch,
-  } = useQuery<Payment[]>({
+  } = useQuery<FinancesPayment[]>({
     queryKey: [
       "payments",
       currentRange.start,
@@ -199,13 +159,14 @@ export default function FinancesScreen() {
       if (error) {
         throw new Error(error.message);
       }
-      return (data ?? []) as Payment[];
+      return (data ?? []) as FinancesPayment[];
     },
   });
 
   // Citas recientes/próximas para enlazar pagos y mostrar cliente/servicio en cada pago.
-  const { userId } = useAuth();
-  const { data: recentAppointments = [] } = useQuery<AppointmentOption[]>({
+  const { data: recentAppointments = [] } = useQuery<
+    FinancesAppointmentOption[]
+  >({
     queryKey: ["/finances/recent-appointments", isAdmin ? "admin" : userId],
     queryFn: async () => {
       let q = supabase
@@ -228,24 +189,24 @@ export default function FinancesScreen() {
 
       const { data, error } = await q;
       if (error) throw new Error(error.message);
-      return (data ?? []) as AppointmentOption[];
+      return (data ?? []) as FinancesAppointmentOption[];
     },
   });
 
   // Servicios (id, name) para mostrar nombre en pagos vinculados a cita.
-  const { data: servicesList = [] } = useQuery<ServiceOption[]>({
+  const { data: servicesList = [] } = useQuery<FinancesServiceOption[]>({
     queryKey: ["/finances/services"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("services")
         .select("id, name");
       if (error) throw new Error(error.message);
-      return (data ?? []) as ServiceOption[];
+      return (data ?? []) as FinancesServiceOption[];
     },
   });
 
   // Empleadas para desglose por chica (solo admin).
-  const { data: employeesList = [] } = useQuery<EmployeeOption[]>({
+  const { data: employeesList = [] } = useQuery<FinancesEmployeeOption[]>({
     queryKey: ["employees"],
     enabled: isAdmin,
     queryFn: async () => {
@@ -256,7 +217,7 @@ export default function FinancesScreen() {
       if (error) {
         throw new Error(error.message);
       }
-      return (data ?? []) as EmployeeOption[];
+      return (data ?? []) as FinancesEmployeeOption[];
     },
   });
 
@@ -501,7 +462,10 @@ export default function FinancesScreen() {
       Alert.alert("Error", e.message || "No se pudo eliminar el pago"),
   });
 
-  const openNewPayment = (prefillAptId?: string, prefillType?: PaymentType) => {
+  const openNewPayment = (
+    prefillAptId?: string,
+    prefillType?: FinancesPaymentType,
+  ) => {
     setEditingPayment(null);
     setPaymentType(prefillType ?? "full");
     const apt = prefillAptId
@@ -525,7 +489,7 @@ export default function FinancesScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   };
 
-  const openEditPayment = (payment: Payment) => {
+  const openEditPayment = (payment: FinancesPayment) => {
     setEditingPayment(payment);
     setPaymentType(payment.is_abono ? "abono" : "full");
     setFormData({
@@ -605,7 +569,7 @@ export default function FinancesScreen() {
     }
   };
 
-  const handleDelete = (payment: Payment) => {
+  const handleDelete = (payment: FinancesPayment) => {
     Alert.alert(
       "Eliminar pago",
       `¿Eliminar pago de ${currencySymbol}${parseFloat(payment.amount).toFixed(2)}?`,
@@ -691,12 +655,12 @@ export default function FinancesScreen() {
       <View style={styles.chartWrapper}>
         {maxValue > 0 && (
           <View style={styles.chartYLabel}>
-          <ThemedText
-            style={[styles.chartYLabelText, { color: theme.textMuted }]}
-            numberOfLines={1}
-          >
-            {formatCurrency(maxValue, config)}
-          </ThemedText>
+            <ThemedText
+              style={[styles.chartYLabelText, { color: theme.textMuted }]}
+              numberOfLines={1}
+            >
+              {formatCurrency(maxValue, config)}
+            </ThemedText>
           </View>
         )}
         <Svg width={CHART_WIDTH} height={CHART_HEIGHT} style={styles.chartSvg}>
@@ -752,7 +716,13 @@ export default function FinancesScreen() {
     );
   };
 
-  const PeriodButton = ({ value, label }: { value: Period; label: string }) => (
+  const PeriodButton = ({
+    value,
+    label,
+  }: {
+    value: FinancesPeriod;
+    label: string;
+  }) => (
     <Pressable
       style={[
         styles.periodButton,
@@ -943,14 +913,14 @@ export default function FinancesScreen() {
                       Pagado {formatCurrency(row.pagado, config)}
                     </ThemedText>
                     {row.pendiente > 0.01 && (
-                        <ThemedText
-                          style={[
-                            styles.desgloseLabel,
-                            { color: theme.primary, fontWeight: "600" },
-                          ]}
-                        >
-                          Pendiente {formatCurrency(row.pendiente, config)}
-                        </ThemedText>
+                      <ThemedText
+                        style={[
+                          styles.desgloseLabel,
+                          { color: theme.primary, fontWeight: "600" },
+                        ]}
+                      >
+                        Pendiente {formatCurrency(row.pendiente, config)}
+                      </ThemedText>
                     )}
                   </View>
                 </View>
@@ -1208,17 +1178,17 @@ export default function FinancesScreen() {
                     {(
                       [
                         {
-                          id: "full" as PaymentType,
+                          id: "full" as FinancesPaymentType,
                           label: "Pago completo",
                           icon: "check-circle" as const,
                         },
                         {
-                          id: "abono" as PaymentType,
+                          id: "abono" as FinancesPaymentType,
                           label: "Adelanto 20%",
                           icon: "smartphone" as const,
                         },
                         {
-                          id: "completar" as PaymentType,
+                          id: "completar" as FinancesPaymentType,
                           label: "Completar 80%",
                           icon: "refresh-cw" as const,
                         },
@@ -1651,487 +1621,3 @@ export default function FinancesScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  periodSelector: {
-    flexDirection: "row",
-    gap: Spacing.sm,
-    marginBottom: Spacing.xl,
-  },
-  periodButton: {
-    flex: 1,
-    paddingVertical: Spacing.sm,
-    borderRadius: BorderRadius.full,
-    alignItems: "center",
-  },
-  periodText: {
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  revenueCard: {
-    padding: Spacing.xl,
-    borderRadius: BorderRadius.lg,
-    borderWidth: 1,
-    alignItems: "center",
-    marginBottom: Spacing.lg,
-    ...Shadows.md,
-  },
-  revenueCardHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.sm,
-    marginBottom: Spacing.sm,
-  },
-  revenueLabel: {
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  revenueRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    minHeight: 48,
-  },
-  revenueAmount: {
-    fontSize: 36,
-    fontWeight: "700",
-  },
-  revenueMeta: {
-    marginTop: Spacing.sm,
-    alignItems: "center",
-    gap: 2,
-  },
-  periodLabel: {
-    fontSize: 12,
-  },
-  transactionCount: {
-    fontSize: 12,
-  },
-  abonoIndicator: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.xs,
-    marginTop: Spacing.sm,
-  },
-  abonoIndicatorText: {
-    fontSize: 12,
-    fontWeight: "600",
-  },
-  chartCard: {
-    padding: Spacing.xl,
-    borderRadius: BorderRadius.lg,
-    borderWidth: 1,
-    marginBottom: Spacing.xl,
-    ...Shadows.sm,
-  },
-  chartCardHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexWrap: "wrap",
-    marginBottom: Spacing.lg,
-    gap: Spacing.sm,
-  },
-  chartTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  chartSubtitle: {
-    fontSize: 13,
-    fontWeight: "500",
-  },
-  desgloseRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: Spacing.md,
-    borderRadius: BorderRadius.md,
-    borderWidth: 1,
-  },
-  desgloseName: {
-    fontSize: 15,
-    fontWeight: "600",
-    flex: 1,
-  },
-  desgloseAmounts: {
-    alignItems: "flex-end",
-    gap: 2,
-  },
-  desgloseLabel: {
-    fontSize: 12,
-  },
-  chartWrapper: {
-    position: "relative",
-  },
-  chartYLabel: {
-    position: "absolute",
-    top: CHART_PADDING.top,
-    right: 0,
-    zIndex: 1,
-  },
-  chartYLabelText: {
-    fontSize: 10,
-    fontWeight: "600",
-  },
-  chartSvg: {
-    alignSelf: "center",
-  },
-  chartXLabels: {
-    flexDirection: "row",
-    marginTop: -CHART_PADDING.bottom + Spacing.xs,
-    paddingHorizontal: CHART_PADDING.left,
-  },
-  chartXLabelItem: {
-    alignItems: "center",
-  },
-  chartXLabelText: {
-    fontSize: 10,
-    fontWeight: "500",
-  },
-  noChartData: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  noChartText: {
-    fontSize: 14,
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: Spacing.lg,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-  },
-  paymentCount: {
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  emptyState: {
-    alignItems: "center",
-    paddingVertical: Spacing["3xl"],
-  },
-  emptyIconCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: Spacing.lg,
-    backgroundColor: "#E5E7EB40",
-  },
-  emptyTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: Spacing.xs,
-  },
-  emptySubtitle: {
-    fontSize: 14,
-  },
-  paymentCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: Spacing.lg,
-    borderRadius: BorderRadius.lg,
-    borderWidth: 1,
-    marginBottom: Spacing.sm,
-    ...Shadows.sm,
-  },
-  paymentInfo: {
-    flex: 1,
-  },
-  paymentHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.sm,
-    marginBottom: 4,
-    flexWrap: "wrap",
-  },
-  methodBadge: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  paymentMethod: {
-    fontSize: 15,
-    fontWeight: "600",
-  },
-  abonoBadge: {
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 2,
-    borderRadius: BorderRadius.xs,
-  },
-  abonoBadgeText: {
-    fontSize: 11,
-    fontWeight: "600",
-  },
-  paymentDate: {
-    fontSize: 12,
-    marginLeft: 36,
-  },
-  paymentNotes: {
-    fontSize: 12,
-    marginLeft: 36,
-    marginTop: 2,
-  },
-  paymentLinkedAppointment: {
-    fontSize: 12,
-    marginLeft: 36,
-    marginTop: 2,
-    fontStyle: "italic",
-  },
-  paymentAmount: {
-    fontSize: 18,
-    fontWeight: "700",
-  },
-  fab: {
-    position: "absolute",
-    right: Spacing.lg,
-    bottom: 100,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: "center",
-    justifyContent: "center",
-    ...Shadows.lg,
-  },
-  kpiRowTablet: {
-    flexDirection: "row",
-    gap: Spacing.md,
-    alignItems: "flex-start",
-  },
-  paymentsGridTablet: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: Spacing.md,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "flex-end",
-  },
-  modalOverlayTablet: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalContent: {
-    borderTopLeftRadius: BorderRadius.xl,
-    borderTopRightRadius: BorderRadius.xl,
-    paddingHorizontal: Spacing.xl,
-    paddingTop: Spacing.xl,
-    maxHeight: "90%",
-  },
-  modalContentTablet: {
-    borderRadius: BorderRadius.xl,
-    width: 560,
-    maxHeight: "80%",
-    paddingBottom: Spacing.xl,
-  },
-  modalHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: Spacing.xl,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "700",
-  },
-  closeButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  paymentTypeRow: {
-    flexDirection: "row",
-    gap: Spacing.sm,
-    marginBottom: Spacing.lg,
-    flexWrap: "wrap",
-  },
-  paymentTypeChip: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.xs,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    borderRadius: BorderRadius.full,
-    borderWidth: 1.5,
-    flex: 1,
-    minWidth: 100,
-    justifyContent: "center",
-  },
-  paymentTypeChipText: {
-    fontSize: 12,
-    fontWeight: "600",
-  },
-  abonoChipDot: {
-    width: 7,
-    height: 7,
-    borderRadius: 4,
-    backgroundColor: Colors.light.gold,
-    marginBottom: 2,
-  },
-  pendienteRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.sm,
-    marginLeft: 36,
-    marginTop: 2,
-    flexWrap: "wrap",
-  },
-  completarBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 3,
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 2,
-    borderRadius: BorderRadius.xs,
-    borderWidth: 1,
-  },
-  completarBtnText: {
-    fontSize: 10,
-    fontWeight: "700",
-  },
-  abonoToggle: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.sm,
-    padding: Spacing.lg,
-    borderRadius: BorderRadius.md,
-    borderWidth: 1,
-    marginBottom: Spacing.xl,
-  },
-  abonoToggleText: {
-    fontSize: 15,
-    fontWeight: "600",
-  },
-  inputLabel: {
-    fontSize: 14,
-    fontWeight: "600",
-    marginBottom: Spacing.sm,
-    marginTop: Spacing.md,
-  },
-  input: {
-    height: 48,
-    borderRadius: BorderRadius.sm,
-    borderWidth: 1,
-    paddingHorizontal: Spacing.lg,
-    fontSize: 16,
-  },
-  inputMultiline: {
-    minHeight: 72,
-    paddingVertical: Spacing.md,
-  },
-  abonoResult: {
-    flexDirection: "row",
-    alignItems: "baseline",
-    padding: Spacing.md,
-    borderRadius: BorderRadius.sm,
-    marginTop: Spacing.sm,
-    gap: Spacing.xs,
-  },
-  abonoResultLabel: {
-    fontSize: 14,
-  },
-  abonoResultAmount: {
-    fontSize: 20,
-    fontWeight: "700",
-  },
-  methodRow: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: Spacing.sm,
-  },
-  methodChip: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.xs,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    borderRadius: BorderRadius.full,
-    borderWidth: 1,
-  },
-  methodChipText: {
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  noAppointmentsText: {
-    fontSize: 13,
-  },
-  appointmentChipsContainer: {
-    paddingVertical: Spacing.sm,
-    paddingRight: Spacing.lg,
-    gap: Spacing.sm,
-  },
-  appointmentChip: {
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
-    borderRadius: BorderRadius.md,
-    borderWidth: 1,
-    marginRight: Spacing.sm,
-    maxWidth: 220,
-  },
-  appointmentChipText: {
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  appointmentChipSubText: {
-    fontSize: 11,
-    marginTop: 2,
-  },
-  deleteButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: Spacing.sm,
-    padding: Spacing.lg,
-    borderRadius: BorderRadius.sm,
-    borderWidth: 1,
-    marginTop: Spacing.xl,
-  },
-  deleteButtonText: {
-    fontSize: 15,
-    fontWeight: "600",
-  },
-  linkAppointmentButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: Spacing.sm,
-    padding: Spacing.lg,
-    borderRadius: BorderRadius.sm,
-    borderWidth: 1,
-    marginTop: Spacing.lg,
-  },
-  linkAppointmentButtonText: {
-    fontSize: 15,
-    fontWeight: "600",
-  },
-  submitButton: {
-    height: 52,
-    borderRadius: BorderRadius.full,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: Spacing.sm,
-    marginBottom: Spacing["3xl"],
-  },
-  submitButtonText: {
-    color: "#FFFFFF",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-});

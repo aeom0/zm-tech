@@ -7,7 +7,6 @@ import {
   Alert,
   Image,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
@@ -122,15 +121,8 @@ function MenuRow({
           {label}
         </ThemedText>
         {typeof badgeCount === "number" && badgeCount > 0 && (
-          <View
-            style={[
-              styles.badge,
-              { backgroundColor: theme.primary },
-            ]}
-          >
-            <ThemedText style={styles.badgeText}>
-              {badgeCount}
-            </ThemedText>
+          <View style={[styles.badge, { backgroundColor: theme.primary }]}>
+            <ThemedText style={styles.badgeText}>{badgeCount}</ThemedText>
           </View>
         )}
       </View>
@@ -140,7 +132,6 @@ function MenuRow({
 }
 
 export default function MoreHomeScreen() {
-  const insets = useSafeAreaInsets();
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
@@ -216,7 +207,7 @@ export default function MoreHomeScreen() {
           />
           {config.features?.whatsapp && (
             <MenuRow
-              icon="megaphone"
+              icon="send"
               label="Enviar Promo WA"
               onPress={() => {
                 Alert.alert(

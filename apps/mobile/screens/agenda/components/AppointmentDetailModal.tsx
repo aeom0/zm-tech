@@ -1,0 +1,279 @@
+import React from "react";
+import {
+  View,
+  Modal,
+  ScrollView,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
+import { Feather } from "@expo/vector-icons";
+
+import { ThemedText } from "@/components/ThemedText";
+import { Spacing } from "@/constants/theme";
+
+import { AGENDA_HOURS, DAYS_ES } from "../constants";
+import type { AgendaAppointment, AgendaService } from "../types";
+import { agendaStyles as styles } from "../agendaStyles";
+
+type Theme = {
+  backgroundDefault: string;
+  backgroundSecondary: string;
+  border: string;
+  text: string;
+  textSecondary: string;
+  textMuted: string;
+  primary: string;
+  error: string;
+};
+
+interface AppointmentDetailModalProps {
+  visible: boolean;
+  onClose: () => void;
+  isTablet: boolean;
+  theme: Theme;
+  appointment: AgendaAppointment | null;
+  services: AgendaService[];
+  weekDays: Date[];
+  rescheduleDate: Date | null;
+  rescheduleHour: number;
+  onRescheduleDate: (d: Date) => void;
+  onRescheduleHour: (h: number) => void;
+  onReschedule: () => void;
+  onDelete: () => void;
+  updatePending: boolean;
+  deletePending: boolean;
+}
+
+export function AppointmentDetailModal({
+  visible,
+  onClose,
+  isTablet,
+  theme,
+  appointment,
+  services,
+  weekDays,
+  rescheduleDate,
+  rescheduleHour,
+  onRescheduleDate,
+  onRescheduleHour,
+  onReschedule,
+  onDelete,
+  updatePending,
+  deletePending,
+}: AppointmentDetailModalProps) {
+  return (
+    <Modal visible={visible} animationType="slide" transparent>
+      <View
+        style={[styles.modalOverlay, isTablet && styles.modalOverlayTablet]}
+      >
+        <View
+          style={[
+            styles.modalContent,
+            { backgroundColor: theme.backgroundDefault },
+            isTablet && styles.modalContentTablet,
+          ]}
+        >
+          {appointment ? (
+            <>
+              <View style={styles.modalHeader}>
+                <ThemedText style={styles.modalTitle}>Cita</ThemedText>
+                <Pressable
+                  onPress={onClose}
+                  style={[
+                    styles.closeButton,
+                    { backgroundColor: theme.backgroundSecondary },
+                  ]}
+                >
+                  <Feather name="x" size={20} color={theme.textSecondary} />
+                </Pressable>
+              </View>
+              <View
+                style={[
+                  styles.summaryCard,
+                  {
+                    backgroundColor: theme.backgroundSecondary,
+                    borderColor: theme.border,
+                  },
+                ]}
+              >
+                <ThemedText
+                  style={[styles.summaryLabel, { color: theme.textMuted }]}
+                >
+                  Clienta
+                </ThemedText>
+                <ThemedText
+                  style={[styles.summaryValue, { color: theme.text }]}
+                >
+                  {appointment.client_name}
+                </ThemedText>
+                {appointment.client_phone ? (
+                  <ThemedText
+                    style={[
+                      styles.summaryValue,
+                      { color: theme.text, fontSize: 14 },
+                    ]}
+                  >
+                    Tel: {appointment.client_phone}
+                  </ThemedText>
+                ) : null}
+                {appointment.client_document ? (
+                  <ThemedText
+                    style={[
+                      styles.summaryValue,
+                      { color: theme.text, fontSize: 14 },
+                    ]}
+                  >
+                    DNI: {appointment.client_document}
+                  </ThemedText>
+                ) : null}
+                <ThemedText
+                  style={[
+                    styles.summaryLabel,
+                    { color: theme.textMuted, marginTop: Spacing.md },
+                  ]}
+                >
+                  Servicio
+                </ThemedText>
+                <ThemedText
+                  style={[styles.summaryValue, { color: theme.text }]}
+                >
+                  {services.find((s) => s.id === appointment.service_id)
+                    ?.name ?? "—"}
+                </ThemedText>
+                <ThemedText
+                  style={[
+                    styles.summaryLabel,
+                    { color: theme.textMuted, marginTop: Spacing.sm },
+                  ]}
+                >
+                  {new Date(appointment.date).toLocaleString("es-VE", {
+                    weekday: "short",
+                    day: "numeric",
+                    month: "short",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </ThemedText>
+              </View>
+
+              <View style={styles.formSection}>
+                <ThemedText
+                  style={[styles.sectionLabel, { color: theme.textSecondary }]}
+                >
+                  Reprogramar a
+                </ThemedText>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.chipsContainer}
+                >
+                  {weekDays.map((d) => {
+                    const isSelected =
+                      rescheduleDate?.toDateString() === d.toDateString();
+                    return (
+                      <Pressable
+                        key={d.toISOString()}
+                        style={[
+                          styles.serviceChip,
+                          { borderColor: theme.border },
+                          isSelected && {
+                            backgroundColor: theme.primary,
+                            borderColor: theme.primary,
+                          },
+                        ]}
+                        onPress={() => onRescheduleDate(d)}
+                      >
+                        <ThemedText
+                          style={[
+                            styles.serviceChipName,
+                            isSelected && { color: "#FFFFFF" },
+                          ]}
+                        >
+                          {DAYS_ES[d.getDay()]} {d.getDate()}
+                        </ThemedText>
+                      </Pressable>
+                    );
+                  })}
+                </ScrollView>
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={[
+                    styles.chipsContainer,
+                    { marginTop: Spacing.sm },
+                  ]}
+                >
+                  {AGENDA_HOURS.map((h) => {
+                    const isSelected = rescheduleHour === h;
+                    return (
+                      <Pressable
+                        key={h}
+                        style={[
+                          styles.employeeChip,
+                          { borderColor: theme.border },
+                          isSelected && {
+                            backgroundColor: theme.primary,
+                            borderColor: theme.primary,
+                          },
+                        ]}
+                        onPress={() => onRescheduleHour(h)}
+                      >
+                        <ThemedText
+                          style={[
+                            styles.employeeChipName,
+                            isSelected && { color: "#FFFFFF" },
+                          ]}
+                        >
+                          {h}:00
+                        </ThemedText>
+                      </Pressable>
+                    );
+                  })}
+                </ScrollView>
+              </View>
+
+              <Pressable
+                style={[
+                  styles.submitButton,
+                  {
+                    backgroundColor: theme.primary,
+                    marginBottom: Spacing.sm,
+                  },
+                ]}
+                onPress={onReschedule}
+                disabled={updatePending}
+              >
+                {updatePending ? (
+                  <ActivityIndicator color="#FFFFFF" />
+                ) : (
+                  <>
+                    <Feather name="calendar" size={18} color="#FFFFFF" />
+                    <ThemedText style={styles.submitButtonText}>
+                      Reprogramar
+                    </ThemedText>
+                  </>
+                )}
+              </Pressable>
+              <Pressable
+                style={[styles.submitButton, { backgroundColor: theme.error }]}
+                onPress={onDelete}
+                disabled={deletePending}
+              >
+                {deletePending ? (
+                  <ActivityIndicator color="#FFFFFF" />
+                ) : (
+                  <>
+                    <Feather name="trash-2" size={18} color="#FFFFFF" />
+                    <ThemedText style={styles.submitButtonText}>
+                      Eliminar cita
+                    </ThemedText>
+                  </>
+                )}
+              </Pressable>
+            </>
+          ) : null}
+        </View>
+      </View>
+    </Modal>
+  );
+}

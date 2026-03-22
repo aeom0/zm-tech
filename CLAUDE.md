@@ -235,6 +235,13 @@ Flujo de arranque (mobile):
 - **Auth y roles**: layout con `FinanzasAuthWrapper`; sin sesión → `/finanzas/login`; `owner`/`dev` ven el panel; **staff** autenticado → `router.replace("/")` sin pantalla de error (no revelar la ruta). Enlace **Dashboard** en header de `/finanzas`.
 - **Nota**: agrupación del gráfico por día usa calendario local del navegador; comentario TODO en código para alinear con timezone del tenant cuando exista.
 
+## Cambios Recientes (mar 2026 — v1.4.3 — Modularización mobile + TenantConfig)
+
+- **Pantallas en módulos** (`apps/mobile/screens/`): `agenda/`, `dashboard/`, `finances/`, `inventory/` con `types`, `hooks`, `components` y estilos; `AgendaScreen`, `DashboardScreen`, `FinancesScreen`, `InventoryScreen` como orquestadores finos. Queries de dashboard con `queryFn` para `dashboard_stats` y `appointments_today`.
+- **`TenantConfig`**: campo opcional `features?.whatsapp` (default `whatsapp: false` en `defaultTenantConfig`) para UI de promo WA / ajustes.
+- **`AuthContext`**: export de tipo `Role` para consumo en pantallas (p. ej. `MoreHomeScreen`).
+- **Ajustes varios**: icono Feather válido en menú promo WA (`send`); formato Prettier en varios screens.
+
 ## Cambios Recientes (mar 2026 — v1.4.1 — Fase 12B: Bot WABA en Landing Web)
 
 - **`WABAPreview` component** (`apps/web/src/components/ui/WABAPreview.tsx`): conversación animada tipo WhatsApp (4 mensajes, loop automático ~5s); header estilo WABA con avatar gradiente; badge "24/7".

@@ -43,6 +43,11 @@ export interface TenantConfig {
     defaultHousePercent: number;
   };
 
+  /** Módulos opcionales (p. ej. promo WhatsApp en Más / ajustes) */
+  features?: {
+    whatsapp?: boolean;
+  };
+
   supabase?: {
     url: string;
     anonKey: string;

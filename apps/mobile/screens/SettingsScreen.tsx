@@ -70,11 +70,7 @@ export default function SettingsScreen() {
           value={profile?.full_name ?? "—"}
           variant="value"
         />
-        <SettingsRow
-          label="Rol"
-          value={role ?? "—"}
-          variant="value"
-        />
+        <SettingsRow label="Rol" value={role ?? "—"} variant="value" />
       </SettingsSection>
 
       {isAdmin && (

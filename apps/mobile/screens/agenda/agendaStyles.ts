@@ -1,0 +1,345 @@
+import { StyleSheet } from "react-native";
+
+import { BorderRadius, Spacing } from "@/constants/theme";
+
+export const agendaStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing.md,
+  },
+  navButton: {
+    padding: Spacing.sm,
+  },
+  weekTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  dayHeaders: {
+    flexDirection: "row",
+    paddingHorizontal: Spacing.sm,
+    borderBottomWidth: 1,
+  },
+  statusFilterContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: Spacing.sm,
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.sm,
+    paddingBottom: Spacing.xs,
+  },
+  statusChip: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+  },
+  statusChipText: {
+    fontSize: 12,
+    fontWeight: "600",
+  },
+  dayTitleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.sm,
+    flex: 1,
+    justifyContent: "center",
+  },
+  todayBadge: {
+    fontSize: 12,
+    fontWeight: "600",
+    borderWidth: 1,
+    borderRadius: BorderRadius.full,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 2,
+  },
+  employeeHeaders: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    paddingVertical: Spacing.sm,
+  },
+  empHeader: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderLeftWidth: 3,
+    paddingVertical: Spacing.xs,
+    gap: 4,
+  },
+  empDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  empHeaderName: {
+    fontSize: 13,
+    fontWeight: "600",
+  },
+  empSlot: {
+    borderLeftWidth: 0.5,
+    paddingHorizontal: 4,
+    paddingVertical: 4,
+  },
+  aptBlock: {
+    borderLeftWidth: 3,
+    borderRadius: 6,
+    padding: 6,
+    marginBottom: 4,
+  },
+  aptClient: {
+    fontSize: 13,
+    fontWeight: "600",
+  },
+  aptService: {
+    fontSize: 11,
+    marginTop: 1,
+  },
+  aptSub: {
+    fontSize: 10,
+    marginTop: 1,
+  },
+  timeColumn: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  dayHeader: {
+    flex: 1,
+    alignItems: "center",
+    paddingVertical: Spacing.sm,
+  },
+  dayName: {
+    fontSize: 11,
+    fontWeight: "500",
+  },
+  dayNumber: {
+    fontSize: 16,
+    fontWeight: "500",
+  },
+  calendarContainer: {
+    flex: 1,
+  },
+  hourRow: {
+    flexDirection: "row",
+    minHeight: 56,
+    paddingHorizontal: Spacing.sm,
+  },
+  timeText: {
+    fontSize: 11,
+  },
+  timeSlot: {
+    flex: 1,
+    borderWidth: 0.5,
+    borderRadius: 4,
+    margin: 1,
+    padding: 2,
+    minHeight: 56,
+  },
+  appointmentChip: {
+    paddingHorizontal: 4,
+    paddingVertical: 2,
+    borderRadius: 4,
+    borderLeftWidth: 3,
+    marginBottom: 2,
+  },
+  chipName: {
+    fontSize: 10,
+    fontWeight: "600",
+  },
+  chipSub: {
+    fontSize: 8,
+    fontWeight: "500",
+    marginTop: 1,
+  },
+  chipEmployee: {
+    fontSize: 8,
+    fontWeight: "500",
+  },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "flex-end",
+  },
+  modalOverlayTablet: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    borderTopLeftRadius: BorderRadius.xl,
+    borderTopRightRadius: BorderRadius.xl,
+    paddingHorizontal: Spacing.xl,
+    paddingTop: Spacing.xl,
+    maxHeight: "85%",
+  },
+  modalContentTablet: {
+    borderRadius: BorderRadius.xl,
+    width: 560,
+    maxHeight: "80%",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: Spacing.xl,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: "700",
+  },
+  modalSubtitle: {
+    fontSize: 13,
+    marginTop: 2,
+  },
+  closeButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  formSection: {
+    marginBottom: Spacing.xl,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.sm,
+    marginBottom: Spacing.md,
+  },
+  sectionLabel: {
+    fontSize: 13,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  input: {
+    height: 48,
+    borderRadius: BorderRadius.sm,
+    borderWidth: 1,
+    paddingHorizontal: Spacing.lg,
+    fontSize: 16,
+  },
+  chipsContainer: {
+    gap: Spacing.sm,
+    paddingRight: Spacing.lg,
+  },
+  emptyState: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.sm,
+    padding: Spacing.lg,
+    borderRadius: BorderRadius.sm,
+  },
+  emptyText: {
+    fontSize: 13,
+    flex: 1,
+  },
+
+  serviceChip: {
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.sm,
+    borderWidth: 1,
+    minWidth: 120,
+  },
+  serviceChipName: {
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  serviceChipDetail: {
+    fontSize: 11,
+    marginTop: 2,
+  },
+
+  employeeChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1.5,
+    gap: Spacing.sm,
+  },
+  employeeAvatar: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  employeeInitial: {
+    fontSize: 13,
+    fontWeight: "700",
+  },
+  employeeChipName: {
+    fontSize: 14,
+    fontWeight: "600",
+  },
+
+  summaryCard: {
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    padding: Spacing.lg,
+    marginBottom: Spacing.sm,
+  },
+  summaryTitle: {
+    fontSize: 12,
+    fontWeight: "600",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+    marginBottom: Spacing.md,
+  },
+  summaryRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: Spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(0,0,0,0.05)",
+  },
+  summaryRowLast: {
+    borderBottomWidth: 0,
+  },
+  summaryLabel: {
+    fontSize: 13,
+  },
+  summaryValue: {
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  summaryEmployeeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.sm,
+  },
+  summaryDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  summaryPrice: {
+    fontSize: 18,
+    fontWeight: "700",
+  },
+
+  submitButton: {
+    height: 52,
+    borderRadius: BorderRadius.full,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: Spacing.sm,
+    marginBottom: Spacing["3xl"],
+  },
+  submitButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+});

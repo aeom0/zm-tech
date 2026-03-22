@@ -1,49 +1,38 @@
-import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Pressable,
-  RefreshControl,
-  Modal,
-  TextInput,
-  Alert,
-  ActivityIndicator,
-} from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useHeaderHeight } from "@react-navigation/elements";
+import React, { useCallback, useMemo, useState } from "react";
+import { Alert, RefreshControl, ScrollView, View } from "react-native";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { Feather } from "@expo/vector-icons";
+import { useHeaderHeight } from "@react-navigation/elements";
 import * as Haptics from "expo-haptics";
 
-import { ThemedText } from "@/components/ThemedText";
-import { useTheme } from "@/hooks/useTheme";
-import { useTenant } from "@/contexts/TenantContext";
-import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
-import { queryClient } from "@/lib/query-client";
+import { Colors, Spacing } from "@/constants/theme";
 import { useAuth } from "@/contexts/AuthContext";
-import { supabase } from "@/lib/supabase";
+import { useTenant } from "@/contexts/TenantContext";
+import { useTheme } from "@/hooks/useTheme";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-type InventoryCategory = "unas" | "pestanas_cejas" | "insumos";
+import { InventoryAccessDenied } from "./inventory/components/InventoryAccessDenied";
+import { InventoryCategoryTabs } from "./inventory/components/InventoryCategoryTabs";
+import { InventoryEmptyState } from "./inventory/components/InventoryEmptyState";
+import { InventoryFab } from "./inventory/components/InventoryFab";
+import { InventoryItemCard } from "./inventory/components/InventoryItemCard";
+import { InventoryItemModal } from "./inventory/components/InventoryItemModal";
+import { useInventoryMutations } from "./inventory/hooks/useInventoryMutations";
+import { useInventoryItemsQuery } from "./inventory/hooks/useInventoryQueries";
+import { inventoryStyles as styles } from "./inventory/inventoryStyles";
+import type {
+  InventoryCategory,
+  InventoryFormState,
+  InventoryItem,
+} from "./inventory/types";
 
-interface InventoryItem {
-  id: string;
-  name: string;
-  type: string;
-  category: InventoryCategory;
-  quantity: number;
-  min_stock: number;
-  unit: string;
-  price: string | null;
-  cost: string | null;
-}
-
-const CATEGORY_LABELS: Record<InventoryCategory, string> = {
-  unas: "Uñas",
-  pestanas_cejas: "Pestañas y Cejas",
-  insumos: "Insumos",
-};
+const defaultForm = (): InventoryFormState => ({
+  name: "",
+  category: "unas",
+  quantity: "0",
+  minStock: "5",
+  unit: "unidad",
+  cost: "",
+});
 
 export default function InventoryScreen() {
   const insets = useSafeAreaInsets();
@@ -57,160 +46,27 @@ export default function InventoryScreen() {
   const [selectedTab, setSelectedTab] = useState<InventoryCategory>("unas");
   const [modalVisible, setModalVisible] = useState(false);
   const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
-  const [formData, setFormData] = useState({
-    name: "",
-    category: "unas" as InventoryCategory,
-    quantity: "0",
-    minStock: "5",
-    unit: "unidad",
-    cost: "",
-  });
+  const [formData, setFormData] = useState<InventoryFormState>(defaultForm);
+
+  const closeModal = useCallback(() => {
+    setModalVisible(false);
+    setEditingItem(null);
+  }, []);
 
   const {
-    data: items = [],
-    isLoading,
-    refetch,
-  } = useQuery<InventoryItem[]>({
-    queryKey: ["inventory_items"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("inventory_items")
-        .select(
-          "id, name, type, category, quantity, min_stock, unit, price, cost",
-        )
-        .order("created_at", { ascending: true });
-      if (error) {
-        throw new Error(error.message);
-      }
-      return (data ?? []) as InventoryItem[];
-    },
-  });
+    createMutation,
+    updateMutation,
+    adjustQuantityMutation,
+    deleteMutation,
+  } = useInventoryMutations({ onCreateOrUpdateSuccess: closeModal });
 
-  const createMutation = useMutation({
-    mutationFn: async (data: {
-      name: string;
-      category: InventoryCategory;
-      quantity: number;
-      min_stock: number;
-      unit: string;
-      cost: number | null;
-    }) => {
-      const payload = {
-        name: data.name,
-        type: "countable",
-        category: data.category,
-        quantity: data.quantity,
-        min_stock: data.min_stock,
-        unit: data.unit,
-        price: null,
-        cost: data.cost,
-      };
-
-      const { error } = await supabase.from("inventory_items").insert(payload);
-      if (error) {
-        throw new Error(error.message);
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["inventory_items"] });
-      queryClient.invalidateQueries({ queryKey: ["dashboard_stats"] });
-      closeModal();
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    },
-  });
-
-  const updateMutation = useMutation({
-    mutationFn: async ({
-      id,
-      data,
-    }: {
-      id: string;
-      data: {
-        name: string;
-        category: InventoryCategory;
-        quantity: number;
-        min_stock: number;
-        unit: string;
-        cost: number | null;
-      };
-    }) => {
-      const payload = {
-        name: data.name,
-        category: data.category,
-        quantity: data.quantity,
-        min_stock: data.min_stock,
-        unit: data.unit,
-        cost: data.cost,
-      };
-
-      const { error } = await supabase
-        .from("inventory_items")
-        .update(payload)
-        .eq("id", id);
-      if (error) {
-        throw new Error(error.message);
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["inventory_items"] });
-      queryClient.invalidateQueries({ queryKey: ["dashboard_stats"] });
-      closeModal();
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    },
-  });
-
-  const adjustQuantityMutation = useMutation({
-    mutationFn: async ({ id, delta }: { id: string; delta: number }) => {
-      const { data, error } = await supabase
-        .from("inventory_items")
-        .select("quantity")
-        .eq("id", id)
-        .maybeSingle();
-      if (error) {
-        throw new Error(error.message);
-      }
-      const current = data?.quantity ?? 0;
-      const next = Math.max(0, current + delta);
-      const { error: updateError } = await supabase
-        .from("inventory_items")
-        .update({ quantity: next })
-        .eq("id", id);
-      if (updateError) {
-        throw new Error(updateError.message);
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["inventory_items"] });
-      queryClient.invalidateQueries({ queryKey: ["dashboard_stats"] });
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from("inventory_items")
-        .delete()
-        .eq("id", id);
-      if (error) {
-        throw new Error(error.message);
-      }
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["inventory_items"] });
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    },
-  });
+  const { data: items = [], isLoading, refetch } = useInventoryItemsQuery();
 
   const openNewItem = () => {
     setEditingItem(null);
     setFormData({
-      name: "",
+      ...defaultForm(),
       category: selectedTab,
-      quantity: "0",
-      minStock: "5",
-      unit: "unidad",
-      cost: "",
     });
     setModalVisible(true);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -230,11 +86,6 @@ export default function InventoryScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
-  const closeModal = () => {
-    setModalVisible(false);
-    setEditingItem(null);
-  };
-
   const handleSubmit = () => {
     if (!formData.name.trim()) {
       Alert.alert("Error", "Ingresa el nombre del producto");
@@ -244,8 +95,8 @@ export default function InventoryScreen() {
     const data = {
       name: formData.name,
       category: formData.category,
-      quantity: parseInt(formData.quantity),
-      min_stock: parseInt(formData.minStock),
+      quantity: parseInt(formData.quantity, 10),
+      min_stock: parseInt(formData.minStock, 10),
       unit: formData.unit,
       cost: formData.cost ? parseFloat(formData.cost) : null,
     };
@@ -268,150 +119,27 @@ export default function InventoryScreen() {
     ]);
   };
 
-  const filteredItems = items.filter((item) => item.category === selectedTab);
+  const filteredItems = useMemo(
+    () => items.filter((item) => item.category === selectedTab),
+    [items, selectedTab],
+  );
 
-  const ItemCard = ({ item }: { item: InventoryItem }) => {
-    const isLowStock = item.quantity <= item.min_stock;
-
-    return (
-      <Pressable
-        style={({ pressed }) => [
-          styles.itemCard,
-          {
-            backgroundColor: theme.backgroundDefault,
-            borderColor: isLowStock ? Colors.light.warning : theme.border,
-            transform: [{ scale: pressed ? 0.98 : 1 }],
-          },
-        ]}
-        onPress={() => openEditItem(item)}
-        onLongPress={() => handleDelete(item)}
-      >
-        <View style={styles.itemInfo}>
-          <View style={styles.itemHeader}>
-            <ThemedText style={styles.itemName}>{item.name}</ThemedText>
-            {isLowStock && (
-              <View
-                style={[
-                  styles.warningBadge,
-                  { backgroundColor: Colors.light.warning + "20" },
-                ]}
-              >
-                <Feather
-                  name="alert-triangle"
-                  size={12}
-                  color={Colors.light.warning}
-                />
-              </View>
-            )}
-          </View>
-          <ThemedText style={[styles.itemUnit, { color: theme.textMuted }]}>
-            {item.unit}
-          </ThemedText>
-        </View>
-
-        <View style={styles.quantityControls}>
-          <Pressable
-            style={[styles.quantityButton, { borderColor: theme.border }]}
-            onPress={() =>
-              adjustQuantityMutation.mutate({ id: item.id, delta: -1 })
-            }
-          >
-            <Feather name="minus" size={18} color={theme.text} />
-          </Pressable>
-          <ThemedText
-            style={[
-              styles.quantityText,
-              isLowStock && { color: Colors.light.warning },
-            ]}
-          >
-            {item.quantity}
-          </ThemedText>
-          <Pressable
-            style={[styles.quantityButton, { borderColor: theme.border }]}
-            onPress={() =>
-              adjustQuantityMutation.mutate({ id: item.id, delta: 1 })
-            }
-          >
-            <Feather name="plus" size={18} color={theme.text} />
-          </Pressable>
-        </View>
-      </Pressable>
-    );
-  };
-
-  // Solo admins (dev/owner) pueden ver y gestionar inventario.
   if (!isAdmin) {
-    return (
-      <View
-        style={[styles.container, { backgroundColor: theme.backgroundRoot }]}
-      >
-        <View
-          style={{
-            flex: 1,
-            alignItems: "center",
-            justifyContent: "center",
-            paddingHorizontal: Spacing.lg,
-          }}
-        >
-          <Feather
-            name="lock"
-            size={32}
-            color={theme.textMuted}
-            style={{ marginBottom: Spacing.md }}
-          />
-          <ThemedText
-            style={{ fontSize: 16, textAlign: "center", color: theme.text }}
-          >
-            El inventario solo se maneja desde administración.
-          </ThemedText>
-          <ThemedText
-            style={{
-              fontSize: 13,
-              textAlign: "center",
-              marginTop: Spacing.sm,
-              color: theme.textSecondary,
-            }}
-          >
-            Cualquier ajuste de productos o insumos se coordina con la dueña.
-          </ThemedText>
-        </View>
-      </View>
-    );
+    return <InventoryAccessDenied theme={theme} />;
   }
 
   return (
     <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
-      <View style={[styles.tabBar, { paddingTop: headerHeight + Spacing.sm }]}>
-        {(["unas", "pestanas_cejas", "insumos"] as InventoryCategory[]).map(
-          (cat) => (
-            <Pressable
-              key={cat}
-              style={[
-                styles.tab,
-                {
-                  backgroundColor:
-                    selectedTab === cat
-                      ? theme.primary
-                      : theme.backgroundSecondary,
-                },
-              ]}
-              onPress={() => {
-                setSelectedTab(cat);
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-              }}
-            >
-              <ThemedText
-                style={[
-                  styles.tabText,
-                  { color: selectedTab === cat ? "#FFFFFF" : theme.text },
-                ]}
-              >
-                {CATEGORY_LABELS[cat]}
-              </ThemedText>
-            </Pressable>
-          ),
-        )}
-      </View>
+      <InventoryCategoryTabs
+        selectedTab={selectedTab}
+        onSelect={setSelectedTab}
+        headerPaddingTop={headerHeight}
+        theme={{
+          primary: theme.primary,
+          backgroundSecondary: theme.backgroundSecondary,
+          text: theme.text,
+        }}
+      />
 
       <ScrollView
         style={styles.scrollView}
@@ -430,404 +158,39 @@ export default function InventoryScreen() {
         }
       >
         {filteredItems.length === 0 && !isLoading ? (
-          <View style={styles.emptyState}>
-            <View style={styles.emptyIconCircle}>
-              <Feather name="package" size={28} color={theme.textMuted} />
-            </View>
-            <ThemedText
-              style={[styles.emptyTitle, { color: theme.textSecondary }]}
-            >
-              Inventario vacío
-            </ThemedText>
-            <ThemedText
-              style={[styles.emptySubtitle, { color: theme.textMuted }]}
-            >
-              Agrega ítems de {CATEGORY_LABELS[selectedTab].toLowerCase()}
-            </ThemedText>
-          </View>
+          <InventoryEmptyState selectedTab={selectedTab} theme={theme} />
         ) : (
-          filteredItems.map((item) => <ItemCard key={item.id} item={item} />)
+          filteredItems.map((item) => (
+            <InventoryItemCard
+              key={item.id}
+              item={item}
+              theme={theme}
+              onPress={() => openEditItem(item)}
+              onLongPress={() => handleDelete(item)}
+              onDecrement={() =>
+                adjustQuantityMutation.mutate({ id: item.id, delta: -1 })
+              }
+              onIncrement={() =>
+                adjustQuantityMutation.mutate({ id: item.id, delta: 1 })
+              }
+            />
+          ))
         )}
       </ScrollView>
 
-      <Pressable
-        style={[styles.fab, { backgroundColor: Colors.light.violet }]}
-        onPress={openNewItem}
-      >
-        <Feather name="plus" size={24} color={Colors.light.white} />
-      </Pressable>
+      <InventoryFab onPress={openNewItem} />
 
-      <Modal visible={modalVisible} animationType="slide" transparent>
-        <View style={styles.modalOverlay}>
-          <View
-            style={[
-              styles.modalContent,
-              { backgroundColor: theme.backgroundDefault },
-            ]}
-          >
-            <View style={styles.modalHeader}>
-              <ThemedText style={styles.modalTitle}>
-                {editingItem ? "Editar Producto" : "Nuevo Producto"}
-              </ThemedText>
-              <Pressable onPress={closeModal}>
-                <Feather name="x" size={24} color={theme.text} />
-              </Pressable>
-            </View>
-
-            <ThemedText
-              style={[styles.inputLabel, { color: theme.textSecondary }]}
-            >
-              Nombre
-            </ThemedText>
-            <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: theme.backgroundSecondary,
-                  color: theme.text,
-                  borderColor: theme.border,
-                },
-              ]}
-              placeholder="Nombre del producto"
-              placeholderTextColor={theme.textMuted}
-              value={formData.name}
-              onChangeText={(text) =>
-                setFormData((prev) => ({ ...prev, name: text }))
-              }
-            />
-
-            <View style={styles.row}>
-              <View style={styles.halfInput}>
-                <ThemedText
-                  style={[styles.inputLabel, { color: theme.textSecondary }]}
-                >
-                  Cantidad
-                </ThemedText>
-                <TextInput
-                  style={[
-                    styles.input,
-                    {
-                      backgroundColor: theme.backgroundSecondary,
-                      color: theme.text,
-                      borderColor: theme.border,
-                    },
-                  ]}
-                  placeholder="0"
-                  placeholderTextColor={theme.textMuted}
-                  keyboardType="number-pad"
-                  value={formData.quantity}
-                  onChangeText={(text) =>
-                    setFormData((prev) => ({ ...prev, quantity: text }))
-                  }
-                />
-              </View>
-              <View style={styles.halfInput}>
-                <ThemedText
-                  style={[styles.inputLabel, { color: theme.textSecondary }]}
-                >
-                  Stock Mínimo
-                </ThemedText>
-                <TextInput
-                  style={[
-                    styles.input,
-                    {
-                      backgroundColor: theme.backgroundSecondary,
-                      color: theme.text,
-                      borderColor: theme.border,
-                    },
-                  ]}
-                  placeholder="5"
-                  placeholderTextColor={theme.textMuted}
-                  keyboardType="number-pad"
-                  value={formData.minStock}
-                  onChangeText={(text) =>
-                    setFormData((prev) => ({ ...prev, minStock: text }))
-                  }
-                />
-              </View>
-            </View>
-
-            <View style={styles.row}>
-              <View style={styles.halfInput}>
-                <ThemedText
-                  style={[styles.inputLabel, { color: theme.textSecondary }]}
-                >
-                  Unidad
-                </ThemedText>
-                <TextInput
-                  style={[
-                    styles.input,
-                    {
-                      backgroundColor: theme.backgroundSecondary,
-                      color: theme.text,
-                      borderColor: theme.border,
-                    },
-                  ]}
-                  placeholder="unidad, caja..."
-                  placeholderTextColor={theme.textMuted}
-                  value={formData.unit}
-                  onChangeText={(text) =>
-                    setFormData((prev) => ({ ...prev, unit: text }))
-                  }
-                />
-              </View>
-              <View style={styles.halfInput}>
-                <ThemedText
-                  style={[styles.inputLabel, { color: theme.textSecondary }]}
-                >
-                  {`Costo (${currencySymbol})`}
-                </ThemedText>
-                <TextInput
-                  style={[
-                    styles.input,
-                    {
-                      backgroundColor: theme.backgroundSecondary,
-                      color: theme.text,
-                      borderColor: theme.border,
-                    },
-                  ]}
-                  placeholder="0.00"
-                  placeholderTextColor={theme.textMuted}
-                  keyboardType="decimal-pad"
-                  value={formData.cost}
-                  onChangeText={(text) =>
-                    setFormData((prev) => ({ ...prev, cost: text }))
-                  }
-                />
-              </View>
-            </View>
-
-            <ThemedText
-              style={[styles.inputLabel, { color: theme.textSecondary }]}
-            >
-              Categoría
-            </ThemedText>
-            <View style={[styles.row, { marginBottom: 0 }]}>
-              {(
-                ["unas", "pestanas_cejas", "insumos"] as InventoryCategory[]
-              ).map((cat) => (
-                <Pressable
-                  key={cat}
-                  style={[
-                    styles.categoryChip,
-                    {
-                      backgroundColor:
-                        formData.category === cat
-                          ? theme.primary
-                          : theme.backgroundSecondary,
-                      borderColor:
-                        formData.category === cat
-                          ? theme.primary
-                          : theme.border,
-                    },
-                  ]}
-                  onPress={() =>
-                    setFormData((prev) => ({ ...prev, category: cat }))
-                  }
-                >
-                  <ThemedText
-                    style={[
-                      styles.categoryChipText,
-                      {
-                        color:
-                          formData.category === cat ? "#FFFFFF" : theme.text,
-                      },
-                    ]}
-                  >
-                    {CATEGORY_LABELS[cat]}
-                  </ThemedText>
-                </Pressable>
-              ))}
-            </View>
-
-            <Pressable
-              style={[
-                styles.submitButton,
-                { backgroundColor: Colors.light.violet },
-              ]}
-              onPress={handleSubmit}
-              disabled={createMutation.isPending || updateMutation.isPending}
-            >
-              {createMutation.isPending || updateMutation.isPending ? (
-                <ActivityIndicator color={Colors.light.white} />
-              ) : (
-                <ThemedText style={styles.submitButtonText}>
-                  {editingItem ? "Guardar" : "Agregar"}
-                </ThemedText>
-              )}
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
+      <InventoryItemModal
+        visible={modalVisible}
+        editingItem={editingItem}
+        formData={formData}
+        setFormData={setFormData}
+        currencySymbol={currencySymbol}
+        isSubmitting={createMutation.isPending || updateMutation.isPending}
+        theme={theme}
+        onClose={closeModal}
+        onSubmit={handleSubmit}
+      />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  tabBar: {
-    flexDirection: "row",
-    paddingHorizontal: Spacing.lg,
-    paddingBottom: Spacing.md,
-    gap: Spacing.sm,
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: Spacing.sm,
-    borderRadius: BorderRadius.full,
-    alignItems: "center",
-  },
-  tabText: {
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  scrollView: {
-    flex: 1,
-  },
-  emptyState: {
-    alignItems: "center",
-    paddingVertical: Spacing["5xl"],
-  },
-  emptyIconCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: Spacing.lg,
-    backgroundColor: "#E5E7EB40",
-  },
-  emptyTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: Spacing.xs,
-  },
-  emptySubtitle: {
-    fontSize: 14,
-  },
-  itemCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: Spacing.lg,
-    borderRadius: BorderRadius.lg,
-    borderWidth: 1,
-    marginBottom: Spacing.sm,
-    ...Shadows.sm,
-  },
-  itemInfo: {
-    flex: 1,
-  },
-  itemHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.sm,
-  },
-  itemName: {
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  warningBadge: {
-    padding: 4,
-    borderRadius: BorderRadius.xs,
-  },
-  itemUnit: {
-    fontSize: 12,
-    marginTop: 2,
-  },
-  quantityControls: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: Spacing.md,
-  },
-  quantityButton: {
-    width: 36,
-    height: 36,
-    borderRadius: BorderRadius.sm,
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  quantityText: {
-    fontSize: 18,
-    fontWeight: "700",
-    minWidth: 30,
-    textAlign: "center",
-  },
-  fab: {
-    position: "absolute",
-    right: Spacing.lg,
-    bottom: 100,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: "center",
-    justifyContent: "center",
-    ...Shadows.lg,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    justifyContent: "flex-end",
-  },
-  modalContent: {
-    borderTopLeftRadius: BorderRadius.xl,
-    borderTopRightRadius: BorderRadius.xl,
-    padding: Spacing.xl,
-  },
-  modalHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: Spacing.lg,
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "600",
-  },
-  inputLabel: {
-    fontSize: 14,
-    fontWeight: "500",
-    marginBottom: Spacing.sm,
-    marginTop: Spacing.md,
-  },
-  input: {
-    height: 48,
-    borderRadius: BorderRadius.sm,
-    borderWidth: 1,
-    paddingHorizontal: Spacing.lg,
-    fontSize: 16,
-  },
-  row: {
-    flexDirection: "row",
-    gap: Spacing.md,
-  },
-  halfInput: {
-    flex: 1,
-  },
-  submitButton: {
-    height: 52,
-    borderRadius: BorderRadius.full,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: Spacing["2xl"],
-  },
-  submitButtonText: {
-    color: Colors.light.white,
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  categoryChip: {
-    flex: 1,
-    paddingVertical: Spacing.sm,
-    borderRadius: BorderRadius.sm,
-    borderWidth: 1,
-    alignItems: "center",
-  },
-  categoryChipText: {
-    fontSize: 12,
-    fontWeight: "600",
-  },
-});

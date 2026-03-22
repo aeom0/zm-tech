@@ -1,26 +1,25 @@
-import React, { useState, useCallback } from 'react';
-import {
-  View,
-  FlatList,
-  StyleSheet,
-  RefreshControl,
-} from 'react-native';
-import { useHeaderHeight } from '@react-navigation/elements';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { Feather } from '@expo/vector-icons';
+import React, { useState, useCallback } from "react";
+import { View, FlatList, StyleSheet, RefreshControl } from "react-native";
+import { useHeaderHeight } from "@react-navigation/elements";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { Feather } from "@expo/vector-icons";
 
-import { ThemedText } from '@/components/ThemedText';
-import { useTheme } from '@/hooks/useTheme';
-import { Spacing } from '@/constants/theme';
-import { ValidacionRow } from './validacion/components/ValidacionRow';
-import { useValidacionData } from './validacion/hooks/useValidacionData';
-import type { PendingAppointment, VerificationAction, RowLoadingState } from './validacion/types';
+import { ThemedText } from "@/components/ThemedText";
+import { useTheme } from "@/hooks/useTheme";
+import { Spacing } from "@/constants/theme";
+import { ValidacionRow } from "./validacion/components/ValidacionRow";
+import { useValidacionData } from "./validacion/hooks/useValidacionData";
+import type {
+  PendingAppointment,
+  VerificationAction,
+  RowLoadingState,
+} from "./validacion/types";
 
 export default function ValidacionPagosScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
-  const { pending, isLoading, isError, refetch, verifyMutation } = useValidacionData();
+  const { pending, isLoading, refetch, verifyMutation } = useValidacionData();
 
   // Estado per-row: { [appointmentId]: 'approved' | 'rejected' | null }
   const [rowLoading, setRowLoading] = useState<RowLoadingState>({});
@@ -28,11 +27,11 @@ export default function ValidacionPagosScreen() {
   const handleVerify = useCallback(
     async (appointmentId: string, action: VerificationAction) => {
       if (rowLoading[appointmentId]) return; // ya procesando este item
-      setRowLoading(prev => ({ ...prev, [appointmentId]: action }));
+      setRowLoading((prev) => ({ ...prev, [appointmentId]: action }));
       try {
         await verifyMutation.mutateAsync({ appointmentId, action });
       } finally {
-        setRowLoading(prev => {
+        setRowLoading((prev) => {
           const next = { ...prev };
           delete next[appointmentId];
           return next;
@@ -47,8 +46,8 @@ export default function ValidacionPagosScreen() {
       <ValidacionRow
         item={item}
         loadingAction={rowLoading[item.id] ?? null}
-        onApprove={() => handleVerify(item.id, 'approved')}
-        onReject={() => handleVerify(item.id, 'rejected')}
+        onApprove={() => handleVerify(item.id, "approved")}
+        onReject={() => handleVerify(item.id, "rejected")}
       />
     ),
     [rowLoading, handleVerify],
@@ -70,11 +69,11 @@ export default function ValidacionPagosScreen() {
     <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
       <FlatList
         data={pending}
-        keyExtractor={item => item.id}
+        keyExtractor={(item) => item.id}
         renderItem={renderItem}
         contentContainerStyle={{
           paddingTop: headerHeight + Spacing.lg,
-          paddingBottom: tabBarHeight + Spacing['3xl'],
+          paddingBottom: tabBarHeight + Spacing["3xl"],
           paddingHorizontal: Spacing.lg,
           flexGrow: 1,
         }}
@@ -96,17 +95,17 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   empty: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     gap: Spacing.md,
-    paddingTop: Spacing['5xl'],
+    paddingTop: Spacing["5xl"],
   },
   emptyTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   emptySub: {
     fontSize: 14,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
