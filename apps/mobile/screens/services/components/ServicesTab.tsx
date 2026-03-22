@@ -314,7 +314,10 @@ export function ServicesTab() {
               category.services.length > 0 && (
                 <View key={category.id} style={styles.section}>
                   <ThemedText
-                    style={[styles.catTitle, { color: theme.primary }]}
+                    style={[
+                      styles.catTitle,
+                      { color: category.color ?? theme.primary },
+                    ]}
                   >
                     {category.name}
                   </ThemedText>

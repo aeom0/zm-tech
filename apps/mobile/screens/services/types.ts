@@ -1,7 +1,9 @@
-/** Coincide con public.service_categories (id, name, order) en SalonPro */
+/** Coincide con public.service_categories en SalonPro */
 export interface ServiceCategory {
   id: string;
   name: string;
+  color: string | null;
+  icon: string | null;
   order: number;
 }
 

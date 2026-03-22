@@ -35,6 +35,8 @@ export const serviceCategories = pgTable("service_categories", {
     .primaryKey()
     .default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
+  color: text("color").default("#6B7280"),
+  icon: text("icon").default("scissors"),
   order: integer("order").notNull().default(0),
 });
 

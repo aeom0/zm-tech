@@ -45,7 +45,7 @@ export function useServicesData() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("service_categories")
-        .select("id, name, order")
+        .select("id, name, color, icon, order")
         .order("order", { ascending: true });
       if (error) {
         throw new Error(error.message);
