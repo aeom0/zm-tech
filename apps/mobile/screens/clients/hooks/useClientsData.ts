@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { supabase } from "@/lib/supabase";
-import { useTenant } from "@/contexts/TenantContext";
 import type {
   Client,
   ClientWithMetrics,
@@ -39,8 +38,6 @@ export function useClientsData(
   searchQuery: string,
   segment: ClientSegment,
 ): UseClientsDataResult {
-  const { config } = useTenant();
-
   const {
     data: clients = [],
     isLoading: clientsLoading,
@@ -81,9 +78,7 @@ export function useClientsData(
     queryFn: async () => {
       const { data, error } = await supabase
         .from("appointments")
-        .select(
-          "id, client_id, client_name, date, status, price, service_id",
-        )
+        .select("id, client_id, client_name, date, status, price, service_id")
         .order("date", { ascending: true });
 
       if (error) {
@@ -154,7 +149,6 @@ export function useClientsData(
       }
 
       const now = new Date();
-      const THIRTY_DAYS = 30;
       const FORTY_FIVE_DAYS = 45;
       const vipVisitsThreshold = 5;
 
@@ -194,8 +188,7 @@ export function useClientsData(
 
           let daysSinceLastVisit: number | null = null;
           if (lastVisitDate) {
-            const diffMs =
-              now.getTime() - new Date(lastVisitDate).getTime();
+            const diffMs = now.getTime() - new Date(lastVisitDate).getTime();
             daysSinceLastVisit = Math.floor(diffMs / (1000 * 60 * 60 * 24));
           }
 
@@ -208,9 +201,8 @@ export function useClientsData(
                 (serviceFrequency[apt.service_id] ?? 0) + 1;
             }
             const [favServiceId] =
-              Object.entries(serviceFrequency).sort(
-                (a, b) => b[1] - a[1],
-              )[0] ?? [];
+              Object.entries(serviceFrequency).sort((a, b) => b[1] - a[1])[0] ??
+              [];
             favoriteService = favServiceId ?? null;
           }
 
@@ -244,8 +236,7 @@ export function useClientsData(
         (sum, c) => sum + c.total_spent,
         0,
       );
-      const avgTicket =
-        totalClients > 0 ? totalRevenue / totalClients : 0;
+      const avgTicket = totalClients > 0 ? totalRevenue / totalClients : 0;
 
       const kpisLocal: ClientKPIs = {
         total_clients: totalClients,
@@ -289,7 +280,9 @@ export function useClientsData(
 
       switch (segment) {
         case "vip":
-          return c.total_visits >= vipVisitsThreshold || c.total_spent >= 5 * 50;
+          return (
+            c.total_visits >= vipVisitsThreshold || c.total_spent >= 5 * 50
+          );
         case "regular":
           return c.total_visits >= 2 && c.total_visits < vipVisitsThreshold;
         case "at_risk":
@@ -297,8 +290,7 @@ export function useClientsData(
         case "new":
           if (!c.last_visit_date) return false;
           return (
-            (now.getTime() -
-              new Date(c.last_visit_date).getTime()) /
+            (now.getTime() - new Date(c.last_visit_date).getTime()) /
               (1000 * 60 * 60 * 24) <
             THIRTY_DAYS
           );
@@ -316,4 +308,3 @@ export function useClientsData(
     isError: clientsError || aptsError || paymentsError,
   };
 }
-

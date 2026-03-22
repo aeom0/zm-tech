@@ -25,7 +25,9 @@ interface UseClientDetailResult {
   isError: boolean;
 }
 
-export function useClientDetail(clientId: string | null): UseClientDetailResult {
+export function useClientDetail(
+  clientId: string | null,
+): UseClientDetailResult {
   const {
     data: rows = [],
     isLoading,
@@ -80,12 +82,8 @@ export function useClientDetail(clientId: string | null): UseClientDetailResult 
 
   if (appointments.length > 0) {
     const total_visits = appointments.length;
-    const total_spent = appointments.reduce(
-      (sum, a) => sum + a.amount_paid,
-      0,
-    );
-    const avg_ticket =
-      total_visits > 0 ? total_spent / total_visits : 0;
+    const total_spent = appointments.reduce((sum, a) => sum + a.amount_paid, 0);
+    const avg_ticket = total_visits > 0 ? total_spent / total_visits : 0;
 
     const serviceFrequency: Record<string, number> = {};
     for (const apt of appointments) {
@@ -94,8 +92,7 @@ export function useClientDetail(clientId: string | null): UseClientDetailResult 
       serviceFrequency[name] = (serviceFrequency[name] ?? 0) + 1;
     }
     const [favoriteName] =
-      Object.entries(serviceFrequency).sort((a, b) => b[1] - a[1])[0] ??
-      [];
+      Object.entries(serviceFrequency).sort((a, b) => b[1] - a[1])[0] ?? [];
 
     metrics = {
       total_visits,
@@ -112,4 +109,3 @@ export function useClientDetail(clientId: string | null): UseClientDetailResult 
     isError,
   };
 }
-

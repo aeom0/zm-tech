@@ -1,14 +1,17 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Gradients } from '@/constants/theme';
+import React from "react";
+import { View, StyleSheet } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { Gradients } from "@/constants/theme";
 
 interface GradientProgressDotsProps {
   total: number;
   current: number; // 0-indexed
 }
 
-export function GradientProgressDots({ total, current }: GradientProgressDotsProps) {
+export function GradientProgressDots({
+  total,
+  current,
+}: GradientProgressDotsProps) {
   const g = Gradients.onboarding;
 
   return (
@@ -34,9 +37,9 @@ export function GradientProgressDots({ total, current }: GradientProgressDotsPro
 
 const styles = StyleSheet.create({
   row: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 6,
-    alignItems: 'center',
+    alignItems: "center",
   },
   dotActive: {
     width: 60,
@@ -47,6 +50,6 @@ const styles = StyleSheet.create({
     width: 60,
     height: 4,
     borderRadius: 2,
-    backgroundColor: 'rgba(255,255,255,0.18)',
+    backgroundColor: "rgba(255,255,255,0.18)",
   },
 });

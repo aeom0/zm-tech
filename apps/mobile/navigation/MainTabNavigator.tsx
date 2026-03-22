@@ -12,7 +12,6 @@ import MoreStackNavigator from "@/navigation/MoreStackNavigator";
 import { useTheme } from "@/hooks/useTheme";
 import { useTenant } from "@/contexts/TenantContext";
 import { usePendingBadgeCount } from "@/hooks/usePendingBadgeCount";
-import { Spacing } from "@/constants/theme";
 
 export type MainTabParamList = {
   Dashboard: undefined;

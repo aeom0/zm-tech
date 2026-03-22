@@ -1,16 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
   Pressable,
   ActivityIndicator,
   ScrollView,
-} from 'react-native';
-import { Feather } from '@expo/vector-icons';
-import { ThemedText } from '@/components/ThemedText';
-import { useTheme } from '@/hooks/useTheme';
-import { Spacing, BorderRadius } from '@/constants/theme';
-import type { UnassignedAppointment } from '../types';
+} from "react-native";
+import { Feather } from "@expo/vector-icons";
+import { ThemedText } from "@/components/ThemedText";
+import { useTheme } from "@/hooks/useTheme";
+import { Spacing, BorderRadius } from "@/constants/theme";
+import type { UnassignedAppointment } from "../types";
 
 interface Employee {
   id: string;
@@ -34,18 +34,20 @@ export function AsignarRow({
   locale,
 }: AsignarRowProps) {
   const { theme } = useTheme();
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(
+    null,
+  );
 
   const fecha = new Date(item.date).toLocaleString(locale, {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 
   const selectedEmployeeName = selectedEmployeeId
-    ? employees.find(e => e.id === selectedEmployeeId)?.name.split(' ')[0]
+    ? employees.find((e) => e.id === selectedEmployeeId)?.name.split(" ")[0]
     : undefined;
 
   const handleConfirm = () => {
@@ -78,7 +80,7 @@ export function AsignarRow({
         <View
           style={[
             styles.warningBadge,
-            { backgroundColor: theme.warning + '20' },
+            { backgroundColor: theme.warning + "20" },
           ]}
         >
           <Feather name="alert-circle" size={14} color={theme.warning} />
@@ -91,7 +93,7 @@ export function AsignarRow({
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.chipsContainer}
       >
-        {employees.map(emp => {
+        {employees.map((emp) => {
           const isSelected = selectedEmployeeId === emp.id;
           return (
             <Pressable
@@ -102,26 +104,24 @@ export function AsignarRow({
                 styles.chip,
                 {
                   backgroundColor: isSelected
-                    ? emp.color + 'CC'
+                    ? emp.color + "CC"
                     : theme.backgroundSecondary,
                   borderColor: isSelected ? emp.color : theme.border,
                   opacity: pressed ? 0.8 : 1,
                 },
               ]}
             >
-              {isSelected && (
-                <Feather name="check" size={12} color="#FFFFFF" />
-              )}
+              {isSelected && <Feather name="check" size={12} color="#FFFFFF" />}
               <ThemedText
                 style={[
                   styles.chipText,
                   {
-                    color: isSelected ? '#FFFFFF' : theme.textSecondary,
-                    fontWeight: isSelected ? '600' : '400',
+                    color: isSelected ? "#FFFFFF" : theme.textSecondary,
+                    fontWeight: isSelected ? "600" : "400",
                   },
                 ]}
               >
-                {emp.name.split(' ')[0]}
+                {emp.name.split(" ")[0]}
               </ThemedText>
             </Pressable>
           );
@@ -166,8 +166,8 @@ const styles = StyleSheet.create({
     gap: Spacing.md,
   },
   infoRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+    flexDirection: "row",
+    alignItems: "flex-start",
     gap: Spacing.sm,
   },
   infoMain: {
@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
   },
   clientName: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   meta: {
     fontSize: 13,
@@ -185,16 +185,16 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: BorderRadius.xs,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   chipsContainer: {
     gap: Spacing.sm,
     paddingRight: Spacing.sm,
   },
   chip: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 5,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.xs,
@@ -205,16 +205,16 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   btnConfirm: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     gap: Spacing.sm,
     height: 44,
     borderRadius: BorderRadius.md,
   },
   btnText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

@@ -105,7 +105,6 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
       return { ok: true as const };
     } catch (error) {
       // Log en desarrollo para depurar fallos al guardar configuración remota
-      // eslint-disable-next-line no-console
       console.error(
         "[TenantContext] Error al hacer upsert de tenant_settings",
         error,

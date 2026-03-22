@@ -24,4 +24,3 @@ export interface ClientKPIs {
   at_risk_count: number;
   avg_ticket: number;
 }
-

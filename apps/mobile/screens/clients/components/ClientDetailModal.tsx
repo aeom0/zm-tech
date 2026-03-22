@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  View,
-  StyleSheet,
-  Modal,
-  Pressable,
-  ScrollView,
-} from "react-native";
+import { View, StyleSheet, Modal, Pressable, ScrollView } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
@@ -27,9 +21,7 @@ export function ClientDetailModal({ visible, client, onClose }: Props) {
   const { theme } = useTheme();
   const { config } = useTenant();
 
-  const { appointments, metrics, isLoading } = useClientDetail(
-    client?.id ?? null,
-  );
+  const { appointments, metrics } = useClientDetail(client?.id ?? null);
 
   if (!client) return null;
 
@@ -37,10 +29,7 @@ export function ClientDetailModal({ visible, client, onClose }: Props) {
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.overlay}>
         <View
-          style={[
-            styles.content,
-            { backgroundColor: theme.backgroundDefault },
-          ]}
+          style={[styles.content, { backgroundColor: theme.backgroundDefault }]}
         >
           <View style={styles.header}>
             <View>
@@ -115,10 +104,7 @@ export function ClientDetailModal({ visible, client, onClose }: Props) {
                   <ThemedText
                     style={[styles.metricValue, { color: theme.info }]}
                   >
-                    {formatCurrency(
-                      metrics?.avg_ticket ?? 0,
-                      config,
-                    )}
+                    {formatCurrency(metrics?.avg_ticket ?? 0, config)}
                   </ThemedText>
                 </View>
                 <View style={styles.metric}>
@@ -250,4 +236,3 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xl,
   },
 });
-

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Pressable,
   Text,
@@ -6,10 +6,15 @@ import {
   ActivityIndicator,
   ViewStyle,
   TextStyle,
-} from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { Feather } from '@expo/vector-icons';
-import { Gradients, Spacing, BorderRadius, Typography } from '@/constants/theme';
+} from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { Feather } from "@expo/vector-icons";
+import {
+  Gradients,
+  Spacing,
+  BorderRadius,
+  Typography,
+} from "@/constants/theme";
 
 interface GradientButtonProps {
   label: string;
@@ -67,7 +72,7 @@ export function GradientButton({
 
 const styles = StyleSheet.create({
   pressable: {
-    width: '100%',
+    width: "100%",
     borderRadius: BorderRadius.sm,
     shadowColor: Gradients.onboarding.shadow,
     shadowOffset: { width: 0, height: 8 },
@@ -85,15 +90,15 @@ const styles = StyleSheet.create({
   gradient: {
     height: 56,
     borderRadius: BorderRadius.sm,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     gap: Spacing.sm,
     paddingHorizontal: Spacing.xl,
   },
   label: {
     ...Typography.body,
-    fontWeight: '700',
-    color: '#FFFFFF',
+    fontWeight: "700",
+    color: "#FFFFFF",
   },
 });

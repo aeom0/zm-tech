@@ -75,15 +75,15 @@ export function ClientKPIStrip({ kpis }: Props) {
           ]}
         >
           <View
-            style={[
-              styles.iconWrap,
-              { backgroundColor: `${card.color}18` },
-            ]}
+            style={[styles.iconWrap, { backgroundColor: `${card.color}18` }]}
           >
             <Feather name={card.icon} size={16} color={card.color} />
           </View>
           <ThemedText
-            style={[styles.value, { color: card.id === "risk" ? theme.error : card.color }]}
+            style={[
+              styles.value,
+              { color: card.id === "risk" ? theme.error : card.color },
+            ]}
             numberOfLines={1}
           >
             {card.value}
@@ -131,4 +131,3 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 });
-

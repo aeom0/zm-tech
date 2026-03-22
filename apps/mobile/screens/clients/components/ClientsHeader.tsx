@@ -64,9 +64,7 @@ export function ClientsHeader({
             onPress={onAddClientPress}
           >
             <Feather name="user-plus" size={16} color="#FFFFFF" />
-            <ThemedText style={styles.addButtonText}>
-              Agregar
-            </ThemedText>
+            <ThemedText style={styles.addButtonText}>Agregar</ThemedText>
           </Pressable>
         )}
       </View>
@@ -113,4 +111,3 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
-

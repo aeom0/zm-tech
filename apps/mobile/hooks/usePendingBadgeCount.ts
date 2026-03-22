@@ -1,6 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/contexts/AuthContext';
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/contexts/AuthContext";
 
 /**
  * Devuelve los conteos de badges para el tab Más y sus items.
@@ -12,12 +12,12 @@ export function usePendingBadgeCount() {
 
   // Citas con pago enviado pendiente de validación
   const { data: paymentValidationCount = 0 } = useQuery<number>({
-    queryKey: ['badges', 'payment_submitted'],
+    queryKey: ["badges", "payment_submitted"],
     queryFn: async () => {
       const { count, error } = await supabase
-        .from('appointments')
-        .select('id', { count: 'exact', head: true })
-        .eq('status', 'payment_submitted');
+        .from("appointments")
+        .select("id", { count: "exact", head: true })
+        .eq("status", "payment_submitted");
       if (error) throw new Error(error.message);
       return count ?? 0;
     },
@@ -27,18 +27,18 @@ export function usePendingBadgeCount() {
 
   // Citas SIN profesional asignado en los próximos 7 días (hacia adelante)
   const { data: unassignedCount = 0 } = useQuery<number>({
-    queryKey: ['badges', 'unassigned_next_7_days'],
+    queryKey: ["badges", "unassigned_next_7_days"],
     queryFn: async () => {
       const now = new Date();
       const end = new Date();
       end.setDate(now.getDate() + 7);
       const { count, error } = await supabase
-        .from('appointments')
-        .select('id', { count: 'exact', head: true })
-        .gte('date', now.toISOString())
-        .lt('date', end.toISOString())
-        .neq('status', 'cancelled')
-        .is('employee_id', null);
+        .from("appointments")
+        .select("id", { count: "exact", head: true })
+        .gte("date", now.toISOString())
+        .lt("date", end.toISOString())
+        .neq("status", "cancelled")
+        .is("employee_id", null);
       if (error) throw new Error(error.message);
       return count ?? 0;
     },

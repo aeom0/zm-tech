@@ -25,15 +25,12 @@ export function ClientAppointmentRow({
   const { theme } = useTheme();
   const { config } = useTenant();
 
-  const dateLabel = new Date(date).toLocaleString(
-    config.locale.language,
-    {
-      day: "numeric",
-      month: "short",
-      hour: "2-digit",
-      minute: "2-digit",
-    },
-  );
+  const dateLabel = new Date(date).toLocaleString(config.locale.language, {
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   const statusConfig =
     status === "completed"
@@ -56,9 +53,7 @@ export function ClientAppointmentRow({
         <ThemedText style={[styles.service, { color: theme.text }]}>
           {serviceName ?? "Servicio"}
         </ThemedText>
-        <ThemedText
-          style={[styles.date, { color: theme.textMuted }]}
-        >
+        <ThemedText style={[styles.date, { color: theme.textMuted }]}>
           {dateLabel}
         </ThemedText>
         {professionalName && (
@@ -70,9 +65,7 @@ export function ClientAppointmentRow({
         )}
       </View>
       <View style={styles.right}>
-        <ThemedText
-          style={[styles.amount, { color: theme.gold }]}
-        >
+        <ThemedText style={[styles.amount, { color: theme.gold }]}>
           {formatCurrency(amountPaid, config)}
         </ThemedText>
         <View
@@ -82,10 +75,7 @@ export function ClientAppointmentRow({
           ]}
         >
           <ThemedText
-            style={[
-              styles.statusText,
-              { color: statusConfig.color },
-            ]}
+            style={[styles.statusText, { color: statusConfig.color }]}
           >
             {statusConfig.label}
           </ThemedText>
@@ -139,4 +129,3 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
-

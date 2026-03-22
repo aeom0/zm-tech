@@ -18,7 +18,10 @@ function getSegmentForClient(client: ClientWithMetrics): ClientSegment {
   const vipVisitsThreshold = 5;
   const days = client.days_since_last_visit ?? Infinity;
 
-  if (client.total_visits >= vipVisitsThreshold || client.total_spent >= 5 * 50) {
+  if (
+    client.total_visits >= vipVisitsThreshold ||
+    client.total_spent >= 5 * 50
+  ) {
     return "vip";
   }
   if (client.total_visits >= 2 && client.total_visits < vipVisitsThreshold) {
@@ -70,15 +73,8 @@ export function ClientCard({ client, segment, onPress }: Props) {
       ]}
       onPress={onPress}
     >
-      <View
-        style={[
-          styles.avatar,
-          { backgroundColor: `${theme.primary}18` },
-        ]}
-      >
-        <ThemedText
-          style={[styles.avatarText, { color: theme.primary }]}
-        >
+      <View style={[styles.avatar, { backgroundColor: `${theme.primary}18` }]}>
+        <ThemedText style={[styles.avatarText, { color: theme.primary }]}>
           {client.name.charAt(0).toUpperCase()}
         </ThemedText>
       </View>
@@ -89,17 +85,9 @@ export function ClientCard({ client, segment, onPress }: Props) {
           </ThemedText>
           {badge && (
             <View
-              style={[
-                styles.badge,
-                { backgroundColor: `${badge.color}18` },
-              ]}
+              style={[styles.badge, { backgroundColor: `${badge.color}18` }]}
             >
-              <ThemedText
-                style={[
-                  styles.badgeText,
-                  { color: badge.color },
-                ]}
-              >
+              <ThemedText style={[styles.badgeText, { color: badge.color }]}>
                 {badge.label}
               </ThemedText>
             </View>
@@ -113,22 +101,14 @@ export function ClientCard({ client, segment, onPress }: Props) {
             Última visita: {lastVisitLabel}
           </ThemedText>
           <ThemedText
-            style={[
-              styles.meta,
-              { color: theme.textSecondary },
-            ]}
+            style={[styles.meta, { color: theme.textSecondary }]}
             numberOfLines={1}
           >
             Visitas: {client.total_visits}
           </ThemedText>
         </View>
         <View style={styles.bottomRow}>
-          <ThemedText
-            style={[
-              styles.amount,
-              { color: theme.gold },
-            ]}
-          >
+          <ThemedText style={[styles.amount, { color: theme.gold }]}>
             {formatCurrency(client.total_spent, config)}
           </ThemedText>
           {client.phone ? (
@@ -213,4 +193,3 @@ const styles = StyleSheet.create({
     fontSize: 11,
   },
 });
-
