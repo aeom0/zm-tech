@@ -48,6 +48,14 @@ export interface TenantConfig {
     whatsapp?: boolean;
   };
 
+  /** Integraciones externas (metadatos no sensibles; no guardar secretos en claro si no aplica) */
+  integrations?: {
+    waba?: {
+      /** Expiración del token de WhatsApp Business (ISO 8601), si se conoce */
+      tokenExpiry?: string;
+    };
+  };
+
   supabase?: {
     url: string;
     anonKey: string;

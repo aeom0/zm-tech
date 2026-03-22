@@ -16,7 +16,6 @@ import { useNotifications } from "@/hooks/useNotifications";
 
 import RootStackNavigator from "@/navigation/RootStackNavigator";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { SplashScreenComponent } from "@/screens/SplashScreen";
 
 /** Tiempo máximo de espera para cargar la fuente de iconos (evita "6000ms timeout" en web) */
 const FONT_LOAD_TIMEOUT_MS = 12_000;
@@ -32,14 +31,13 @@ function useIconFontReady(): boolean {
     let cancelled = false;
     let loadPromise: Promise<void>;
     try {
-      const fontAsset =
-        require("@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Feather.ttf");
+      const fontAsset = require("@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Feather.ttf");
       loadPromise = Font.loadAsync(fontAsset);
     } catch {
       loadPromise = Promise.resolve();
     }
     const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error("font_timeout")), FONT_LOAD_TIMEOUT_MS)
+      setTimeout(() => reject(new Error("font_timeout")), FONT_LOAD_TIMEOUT_MS),
     );
     Promise.race([loadPromise, timeoutPromise])
       .catch(() => {

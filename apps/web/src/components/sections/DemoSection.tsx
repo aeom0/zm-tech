@@ -89,7 +89,9 @@ function DemoMockup({ tab }: { tab: (typeof DEMO_TABS)[0] }) {
 
       {/* Header de pantalla */}
       <div className="px-6 pb-4 border-b border-white/10">
-        <p className="text-white/50 text-xs uppercase tracking-widest mb-1">SalonPro</p>
+        <p className="text-white/50 text-xs uppercase tracking-widest mb-1">
+          SalonPro
+        </p>
         <h3 className="text-white font-bold text-lg">{tab.title}</h3>
       </div>
 

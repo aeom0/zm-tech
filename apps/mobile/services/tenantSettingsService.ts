@@ -24,8 +24,8 @@ function mapConfigToRow(config: TenantConfig, userId: string) {
   };
 }
 
-// Mapea fila de tenant_settings a TenantConfig (camelCase)
-function mapRowToConfig(row: {
+/** Fila de `tenant_settings` usada al hidratar TenantConfig (coincide con el SELECT) */
+export type TenantSettingsRow = {
   business_name: string;
   business_type: TenantConfig["businessType"];
   primary_color: string;
@@ -41,7 +41,10 @@ function mapRowToConfig(row: {
   contact_info: TenantConfig["contact"];
   commission_staff: number;
   commission_house: number;
-}): TenantConfig {
+};
+
+// Mapea fila de tenant_settings a TenantConfig (camelCase)
+function mapRowToConfig(row: TenantSettingsRow): TenantConfig {
   return {
     businessName: row.business_name,
     businessType: row.business_type,
@@ -94,29 +97,14 @@ export async function upsertTenantSettings(
 export async function fetchTenantSettings(
   userId: string,
 ): Promise<TenantConfig | null> {
+  // String literal en .select() para que PostgREST infiera el resultado (no GenericStringError)
   const { data, error } = await supabase
     .from("tenant_settings")
     .select(
-      [
-        "business_name",
-        "business_type",
-        "primary_color",
-        "accent_color",
-        "currency_code",
-        "currency_symbol",
-        "country",
-        "language",
-        "staff_terminology",
-        "staff_singular_terminology",
-        "appointment_terminology",
-        "business_hours",
-        "contact_info",
-        "commission_staff",
-        "commission_house",
-      ].join(","),
+      "business_name, business_type, primary_color, accent_color, currency_code, currency_symbol, country, language, staff_terminology, staff_singular_terminology, appointment_terminology, business_hours, contact_info, commission_staff, commission_house",
     )
     .eq("id", userId)
-    .maybeSingle();
+    .maybeSingle<TenantSettingsRow>();
 
   if (error) {
     throw new Error(error.message);

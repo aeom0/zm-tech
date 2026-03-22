@@ -237,8 +237,28 @@ export const COMPARISON_FEATURES: {
   { label: "API + Integraciones", basic: false, pro: false, elite: true },
   { label: "Manager dedicado", basic: false, pro: false, elite: true },
   { label: "Bot WhatsApp 24/7", basic: true, pro: true, elite: true },
-  { label: "Conversaciones incluidas/mes", basic: "50", pro: "300", elite: "∞" },
-  { label: "Add-on conversaciones extra", basic: true, pro: true, elite: false },
-  { label: "IA (Claude) para preguntas libres", basic: true, pro: true, elite: true },
-  { label: "Envío de promos por WhatsApp", basic: false, pro: true, elite: true },
+  {
+    label: "Conversaciones incluidas/mes",
+    basic: "50",
+    pro: "300",
+    elite: "∞",
+  },
+  {
+    label: "Add-on conversaciones extra",
+    basic: true,
+    pro: true,
+    elite: false,
+  },
+  {
+    label: "IA (Claude) para preguntas libres",
+    basic: true,
+    pro: true,
+    elite: true,
+  },
+  {
+    label: "Envío de promos por WhatsApp",
+    basic: false,
+    pro: true,
+    elite: true,
+  },
 ];

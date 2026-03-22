@@ -55,18 +55,24 @@ export function FeaturesSection() {
                 </div>
                 <h3 className="text-2xl md:text-3xl font-bold text-white mb-3 leading-tight">
                   Tu salón agenda solo,{" "}
-                  <span className="text-[#25D366]">24/7</span>,{" "}
-                  por WhatsApp
+                  <span className="text-[#25D366]">24/7</span>, por WhatsApp
                 </h3>
                 <p className="text-zinc-400 text-sm leading-relaxed max-w-md mx-auto md:mx-0">
-                  Los clientes agendan, preguntan y reciben confirmación directo en WhatsApp.
-                  Con IA integrada (Claude) para responder preguntas libres sobre servicios y disponibilidad.
-                  Sin que la dueña tenga que contestar a las 2am.
+                  Los clientes agendan, preguntan y reciben confirmación directo
+                  en WhatsApp. Con IA integrada (Claude) para responder
+                  preguntas libres sobre servicios y disponibilidad. Sin que la
+                  dueña tenga que contestar a las 2am.
                 </p>
                 <div className="flex flex-wrap gap-3 mt-5 justify-center md:justify-start">
-                  <span className="text-xs text-zinc-400 bg-zinc-800 px-3 py-1.5 rounded-full">✓ Todos los planes</span>
-                  <span className="text-xs text-zinc-400 bg-zinc-800 px-3 py-1.5 rounded-full">✓ Sin código extra</span>
-                  <span className="text-xs text-zinc-400 bg-zinc-800 px-3 py-1.5 rounded-full">✓ IA incluida</span>
+                  <span className="text-xs text-zinc-400 bg-zinc-800 px-3 py-1.5 rounded-full">
+                    ✓ Todos los planes
+                  </span>
+                  <span className="text-xs text-zinc-400 bg-zinc-800 px-3 py-1.5 rounded-full">
+                    ✓ Sin código extra
+                  </span>
+                  <span className="text-xs text-zinc-400 bg-zinc-800 px-3 py-1.5 rounded-full">
+                    ✓ IA incluida
+                  </span>
                 </div>
               </div>
               {/* Preview derecha */}

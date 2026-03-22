@@ -112,7 +112,8 @@ export function PricingSection() {
             {showAddon && (
               <div className="px-6 pb-6">
                 <p className="text-sm text-zinc-500 dark:text-zinc-400 mb-4">
-                  Packs adicionales disponibles en todos los planes cuando se agota el bundle mensual.
+                  Packs adicionales disponibles en todos los planes cuando se
+                  agota el bundle mensual.
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {WABA_ADDON_TIERS.map((tier) => (
@@ -130,8 +131,12 @@ export function PricingSection() {
                     </div>
                   ))}
                   <div className="bg-white dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800 p-4 text-center">
-                    <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">∞</p>
-                    <p className="text-sm font-semibold text-[#25D366] mt-0.5">Incluido</p>
+                    <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+                      ∞
+                    </p>
+                    <p className="text-sm font-semibold text-[#25D366] mt-0.5">
+                      Incluido
+                    </p>
                     <p className="text-xs text-zinc-400 mt-1">Plan Elite</p>
                   </div>
                 </div>
@@ -202,7 +207,9 @@ export function PricingSection() {
                             ) : val ? (
                               <span className="text-primary font-bold">✓</span>
                             ) : (
-                              <span className="text-zinc-300 dark:text-zinc-700">—</span>
+                              <span className="text-zinc-300 dark:text-zinc-700">
+                                —
+                              </span>
                             )}
                           </td>
                         );

@@ -52,7 +52,9 @@ export default function DashboardPage() {
   if (authLoading) {
     return (
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center">
-        <div className="text-zinc-500 dark:text-zinc-400 text-sm">Cargando…</div>
+        <div className="text-zinc-500 dark:text-zinc-400 text-sm">
+          Cargando…
+        </div>
       </div>
     );
   }
@@ -62,7 +64,9 @@ export default function DashboardPage() {
   if (!isAdmin) {
     return (
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex items-center justify-center">
-        <div className="text-zinc-500 dark:text-zinc-400 text-sm">Cargando…</div>
+        <div className="text-zinc-500 dark:text-zinc-400 text-sm">
+          Cargando…
+        </div>
       </div>
     );
   }
@@ -150,9 +154,7 @@ export default function DashboardPage() {
             label="Sin asignar"
             value={data.citasSinAsignar}
             subvalue={
-              data.isLoading
-                ? undefined
-                : `${data.citasMes} citas en el mes`
+              data.isLoading ? undefined : `${data.citasMes} citas en el mes`
             }
             icon={<UserX className="w-4 h-4" />}
             accentColor="text-amber-500"

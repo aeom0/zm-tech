@@ -87,7 +87,7 @@ export function ServicesTab() {
     (payload: ServicePayload) => {
       if (editing) {
         updateMutation.mutate(
-          { id: editing.id, data: payload },
+          { id: editing.id, payload },
           {
             onSuccess: () => {
               closeModal();

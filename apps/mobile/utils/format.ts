@@ -20,4 +20,3 @@ export function formatCurrency(amount: number, config: TenantConfig): string {
 
   return `${symbol} ${formatted.replace(/[^\d.,-]+/g, "").trim()}`;
 }
-

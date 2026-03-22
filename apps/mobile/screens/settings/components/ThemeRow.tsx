@@ -44,9 +44,7 @@ export function ThemeRow() {
               style={({ pressed }) => [
                 styles.segment,
                 {
-                  backgroundColor: isActive
-                    ? theme.primary
-                    : "transparent",
+                  backgroundColor: isActive ? theme.primary : "transparent",
                   opacity: pressed ? 0.9 : 1,
                 },
               ]}
@@ -99,4 +97,3 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
-

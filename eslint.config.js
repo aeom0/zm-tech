@@ -8,11 +8,16 @@ module.exports = defineConfig([
   expoConfig,
   eslintPluginPrettierRecommended,
   {
-    files: ["apps/mobile/**/*.{ts,tsx,js,jsx}"],
+    files: ["apps/**/*.{ts,tsx,js,jsx}"],
     settings: {
       "import/resolver": {
         typescript: {
-          project: path.join(__dirname, "apps/mobile/tsconfig.json"),
+          // Varias entradas: el resolver elige el tsconfig según la ruta del archivo (monorepo)
+          project: [
+            path.join(__dirname, "apps/mobile/tsconfig.json"),
+            path.join(__dirname, "apps/web/tsconfig.json"),
+          ],
+          noWarnOnMultipleProjects: true,
         },
       },
     },

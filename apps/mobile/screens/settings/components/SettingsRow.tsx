@@ -35,10 +35,7 @@ export function SettingsRow({
     <View style={styles.row}>
       {icon ? (
         <View
-          style={[
-            styles.iconWrap,
-            { backgroundColor: `${theme.primary}18` },
-          ]}
+          style={[styles.iconWrap, { backgroundColor: `${theme.primary}18` }]}
         >
           <Feather name={icon} size={18} color={theme.primary} />
         </View>
@@ -77,15 +74,13 @@ export function SettingsRow({
     </View>
   );
 
-  const isPressable = (variant === "navigate" || variant === "action") && !!onPress;
+  const isPressable =
+    (variant === "navigate" || variant === "action") && !!onPress;
 
   if (!isPressable) {
     return (
       <View
-        style={[
-          styles.container,
-          { backgroundColor: theme.backgroundDefault },
-        ]}
+        style={[styles.container, { backgroundColor: theme.backgroundDefault }]}
       >
         {content}
       </View>
@@ -143,4 +138,3 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
 });
-

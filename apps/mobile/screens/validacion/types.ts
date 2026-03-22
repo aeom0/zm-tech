@@ -12,7 +12,7 @@ export interface PendingAppointment {
   employeeColor?: string;
 }
 
-export type VerificationAction = 'approved' | 'rejected';
+export type VerificationAction = "approved" | "rejected";
 
 export interface RowLoadingState {
   [appointmentId: string]: VerificationAction | null;

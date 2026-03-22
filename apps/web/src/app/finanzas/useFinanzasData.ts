@@ -78,7 +78,6 @@ export function useFinanzasData(): FinanzasData {
           .gte("date", startOfMonth.toISOString())
           .order("date", { ascending: false });
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const mapped: PaymentRow[] = (pData ?? []).map((p: any) => {
           const apt = Array.isArray(p.appointments)
             ? p.appointments[0]
@@ -118,7 +117,6 @@ export function useFinanzasData(): FinanzasData {
           .gte("date", startOfMonth.toISOString());
 
         setRawAppointments(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (aData ?? []).map((a: any) => {
             const emp = Array.isArray(a.employees)
               ? a.employees[0]

@@ -92,9 +92,8 @@ const emptyData: Omit<DashboardData, "isLoading"> = {
 };
 
 export function useDashboardData(): DashboardData {
-  const [state, setState] = useState<Omit<DashboardData, "isLoading">>(
-    emptyData,
-  );
+  const [state, setState] =
+    useState<Omit<DashboardData, "isLoading">>(emptyData);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -240,10 +239,7 @@ export function useDashboardData(): DashboardData {
 
         const aptMonth = aptMonthServicesRes.data ?? [];
         const serviceList = servicesRes.data ?? [];
-        const serviceById: Record<
-          string,
-          { name: string; price: string }
-        > = {};
+        const serviceById: Record<string, { name: string; price: string }> = {};
         for (const s of serviceList) {
           serviceById[s.id] = { name: s.name, price: s.price };
         }

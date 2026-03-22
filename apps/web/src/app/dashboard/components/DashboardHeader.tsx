@@ -18,8 +18,7 @@ export function DashboardHeader({
   userDisplayName,
   isLoading,
 }: DashboardHeaderProps) {
-  const nombre =
-    userDisplayName?.trim().split(/\s+/)[0] ?? "equipo";
+  const nombre = userDisplayName?.trim().split(/\s+/)[0] ?? "equipo";
   const negocio = tenantName?.trim() || "tu negocio";
 
   return (
@@ -35,7 +34,10 @@ export function DashboardHeader({
             {saludoPorHora()}, {nombre}
           </h1>
           <p className="text-zinc-500 dark:text-zinc-400 text-sm">
-            Resumen de <span className="font-medium text-zinc-700 dark:text-zinc-300">{negocio}</span>
+            Resumen de{" "}
+            <span className="font-medium text-zinc-700 dark:text-zinc-300">
+              {negocio}
+            </span>
           </p>
         </>
       )}

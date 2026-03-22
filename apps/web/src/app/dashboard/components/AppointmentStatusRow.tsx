@@ -35,10 +35,7 @@ function formatearFechaCita(iso: string): string {
   return fecha;
 }
 
-const BADGE: Record<
-  string,
-  { label: string; className: string }
-> = {
+const BADGE: Record<string, { label: string; className: string }> = {
   scheduled: {
     label: "Agendada",
     className:

@@ -1,8 +1,8 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { supabase } from '@/lib/supabase';
-import { useAuth } from '@/contexts/AuthContext';
-import { useTenant } from '@/contexts/TenantContext';
-import type { PendingAppointment, VerificationAction } from '../types';
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@/contexts/AuthContext";
+import { useTenant } from "@/contexts/TenantContext";
+import type { PendingAppointment, VerificationAction } from "../types";
 
 export function useValidacionData() {
   const { userId } = useAuth();
@@ -10,13 +10,15 @@ export function useValidacionData() {
   const queryClient = useQueryClient();
 
   // Empleados y servicios para enriquecer nombres
-  const { data: employees = [] } = useQuery<{ id: string; name: string; color: string }[]>({
-    queryKey: ['employees'],
+  const { data: employees = [] } = useQuery<
+    { id: string; name: string; color: string }[]
+  >({
+    queryKey: ["employees"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('employees')
-        .select('id, name, color')
-        .order('created_at', { ascending: true });
+        .from("employees")
+        .select("id, name, color")
+        .order("created_at", { ascending: true });
       if (error) throw new Error(error.message);
       return data ?? [];
     },
@@ -24,11 +26,11 @@ export function useValidacionData() {
   });
 
   const { data: services = [] } = useQuery<{ id: string; name: string }[]>({
-    queryKey: ['services'],
+    queryKey: ["services"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('services')
-        .select('id, name');
+        .from("services")
+        .select("id, name");
       if (error) throw new Error(error.message);
       return data ?? [];
     },
@@ -42,13 +44,13 @@ export function useValidacionData() {
     isError,
     refetch,
   } = useQuery<PendingAppointment[]>({
-    queryKey: ['validacion_pagos_pending'],
+    queryKey: ["validacion_pagos_pending"],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('appointments')
-        .select('id, client_name, date, price, service_id, employee_id, notes')
-        .eq('status', 'payment_submitted')
-        .order('date', { ascending: true });
+        .from("appointments")
+        .select("id, client_name, date, price, service_id, employee_id, notes")
+        .eq("status", "payment_submitted")
+        .order("date", { ascending: true });
       if (error) throw new Error(error.message);
       return (data ?? []) as PendingAppointment[];
     },
@@ -56,14 +58,20 @@ export function useValidacionData() {
   });
 
   // Enriquecer con nombres en memoria
-  const employeeById = Object.fromEntries(employees.map(e => [e.id, e]));
-  const serviceById = Object.fromEntries(services.map(s => [s.id, s]));
+  const employeeById = Object.fromEntries(employees.map((e) => [e.id, e]));
+  const serviceById = Object.fromEntries(services.map((s) => [s.id, s]));
 
-  const pending: PendingAppointment[] = rawPending.map(apt => ({
+  const pending: PendingAppointment[] = rawPending.map((apt) => ({
     ...apt,
-    serviceName: apt.service_id ? (serviceById[apt.service_id]?.name ?? '—') : '—',
-    employeeName: apt.employee_id ? (employeeById[apt.employee_id]?.name ?? '—') : 'Sin asignar',
-    employeeColor: apt.employee_id ? (employeeById[apt.employee_id]?.color ?? undefined) : undefined,
+    serviceName: apt.service_id
+      ? (serviceById[apt.service_id]?.name ?? "—")
+      : "—",
+    employeeName: apt.employee_id
+      ? (employeeById[apt.employee_id]?.name ?? "—")
+      : "Sin asignar",
+    employeeColor: apt.employee_id
+      ? (employeeById[apt.employee_id]?.color ?? undefined)
+      : undefined,
   }));
 
   // Mutación: aprobar o rechazar una cita — per-row
@@ -77,7 +85,7 @@ export function useValidacionData() {
     }) => {
       // 1. Registrar en appointment_verifications
       const { error: verifyError } = await supabase
-        .from('appointment_verifications')
+        .from("appointment_verifications")
         .insert({
           appointment_id: appointmentId,
           verified_by: userId!,
@@ -86,18 +94,20 @@ export function useValidacionData() {
       if (verifyError) throw new Error(verifyError.message);
 
       // 2. Actualizar status en appointments
-      const newStatus = action === 'approved' ? 'completed' : 'cancelled';
+      const newStatus = action === "approved" ? "completed" : "cancelled";
       const { error: updateError } = await supabase
-        .from('appointments')
+        .from("appointments")
         .update({ status: newStatus })
-        .eq('id', appointmentId);
+        .eq("id", appointmentId);
       if (updateError) throw new Error(updateError.message);
     },
     onSuccess: () => {
       // Invalida badges Y la lista de pendientes
-      queryClient.invalidateQueries({ queryKey: ['validacion_pagos_pending'] });
-      queryClient.invalidateQueries({ queryKey: ['badges', 'payment_submitted'] });
-      queryClient.invalidateQueries({ queryKey: ['appointments'] });
+      queryClient.invalidateQueries({ queryKey: ["validacion_pagos_pending"] });
+      queryClient.invalidateQueries({
+        queryKey: ["badges", "payment_submitted"],
+      });
+      queryClient.invalidateQueries({ queryKey: ["appointments"] });
     },
   });
 

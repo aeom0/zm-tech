@@ -5,14 +5,16 @@ import { useTheme } from "@/hooks/useTheme";
 import { Spacing, BorderRadius } from "@/constants/theme";
 import type { SettingsSectionProps } from "../types";
 
-export function SettingsSection({ title, footer, children }: SettingsSectionProps) {
+export function SettingsSection({
+  title,
+  footer,
+  children,
+}: SettingsSectionProps) {
   const { theme } = useTheme();
 
   return (
     <View style={styles.container}>
-      <ThemedText
-        style={[styles.title, { color: theme.textSecondary }]}
-      >
+      <ThemedText style={[styles.title, { color: theme.textSecondary }]}>
         {title}
       </ThemedText>
       <View
@@ -60,4 +62,3 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.xs,
   },
 });
-
