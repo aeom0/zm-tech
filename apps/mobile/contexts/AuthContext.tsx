@@ -1,9 +1,10 @@
 /**
- * AuthContext — modo desarrollo sin Supabase.
- * Usuario hardcodeado con rol "owner" para ver toda la UI.
- * Reemplazar con JWT real cuando se implemente auth.
+ * AuthContext — Supabase Auth + fila en `profiles`.
  */
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import type { Session } from "@supabase/supabase-js";
+
+import { supabase } from "@/lib/supabase";
 
 export type Role = "dev" | "owner" | "staff";
 
@@ -29,20 +30,40 @@ type AuthContextType = {
   logout: () => Promise<void>;
 };
 
-const DEV_PROFILE: AuthProfile = {
-  // UUID válido para que Supabase acepte el id en tenant_settings
-  id: "00000000-0000-0000-0000-000000000001",
-  role: "owner",
-  employee_id: null,
-  full_name: "Propietario/a",
-  avatar_url: null,
-};
-
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<AuthProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfile = async (userId: string) => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("id, role, employee_id, full_name, avatar_url")
+        .eq("id", userId)
+        .single();
+      if (data) setProfile(data as AuthProfile);
+    };
+
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+      if (data.session) void fetchProfile(data.session.user.id);
+      setIsLoading(false);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      if (__DEV__) console.log("[AUTH]", event);
+      setSession(session);
+      if (session) void fetchProfile(session.user.id);
+      else setProfile(null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const login = async (
     email: string,
@@ -51,26 +72,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!email.trim() || !password.trim()) {
       return { ok: false, error: "Correo y contraseña requeridos" };
     }
-    // Aceptar cualquier credencial en modo dev
-    setProfile(DEV_PROFILE);
-    setIsAuthenticated(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (error) return { ok: false, error: error.message };
     return { ok: true };
   };
 
   const logout = async () => {
-    setIsAuthenticated(false);
-    setProfile(null);
+    await supabase.auth.signOut();
   };
 
   const role: Role | null = profile?.role ?? null;
   const isAdmin = role === "dev" || role === "owner";
+  const isAuthenticated = session !== null && profile !== null;
+  const userId = session?.user.id ?? null;
 
   return (
     <AuthContext.Provider
       value={{
         isAuthenticated,
-        isLoading: false,
-        userId: profile?.id ?? null,
+        isLoading,
+        userId,
         role,
         profile,
         isAdmin,
