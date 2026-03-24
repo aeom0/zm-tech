@@ -91,12 +91,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     setPreference: handleSetPreference,
   };
 
-  // Mientras no se hidrate, igual exponemos un valor consistente ("auto")
-  // para no bloquear el render inicial.
-  if (!hydrated) {
-    return <>{children}</>;
-  }
-
+  // Siempre Provider: antes de hidratar, preference es 'auto' y resolved sigue al sistema.
   return (
     <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
   );
