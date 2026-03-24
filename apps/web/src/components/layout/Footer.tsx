@@ -15,13 +15,13 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
           {/* Brand */}
           <div>
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center mb-4">
               <Image
-                src="/logo.svg"
+                src="/logo-diamondSparkle.svg"
                 alt="SalonPro"
-                width={130}
-                height={32}
-                className="h-8 w-auto"
+                width={34}
+                height={39}
+                className="h-9 w-auto"
               />
             </div>
             <p className="text-zinc-400 text-sm leading-relaxed">

@@ -5,6 +5,28 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ---
 
+## [1.4.4] — 2026-03-24
+
+### Añadido
+- Marca **diamante** (`logo-diamondSparkle.svg` y variantes `positive` / `negative` en `apps/web/public/`; copias en `apps/mobile/assets/`).
+- `apps/web/public/favicon.png` y regeneración de `splash-icon.png` / íconos raíz alineados al diamante.
+- `apps/mobile/app.json`: `icon`, `updates.url` (`https://u.expo.dev/<projectId>`) para EAS Update y canales.
+- Scripts `build:preview:android` y `build:preview:ios` en `apps/mobile/package.json`.
+
+### Cambiado
+- **Web**: Navbar y Footer usan solo el diamante (`next/image`); en barra clara tras scroll (modo claro) se aplica `invert` al mismo SVG.
+- **Mobile**: splash in-app con PNG del diamante; sin wordmark “SalonPro” en el bloque del logo; `expo-splash-screen` con fondo `#111318`.
+- **`apps/mobile/eas.json`**: perfil `preview` con `EXPO_PUBLIC_SUPABASE_URL` (anon key vía entornos Expo).
+- **Raíz `app.json`**: splash `#111318`, adaptive Android con `android-icon-foreground.png` regenerado.
+
+### Eliminado
+- `eas.json` duplicado en la raíz del monorepo (config EAS solo en `apps/mobile/eas.json`).
+- Logos horizontales web (`logo.svg`, `logo-light.svg`, `logo-icon.svg`), `GemaStudio.png`.
+- Assets mobile obsoletos (`logo-salonpro*`, `logo.svg`, `compare.html`, carpeta `apps/mobile/assets/images/` duplicada).
+- `assets/images/android-icon-background.png` y `android-icon-monochrome.png` en raíz (foreground + íconos unificados al diamante).
+
+---
+
 ## [1.3.2] — 2026-03-19
 
 ### Añadido

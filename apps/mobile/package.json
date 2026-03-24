@@ -13,6 +13,8 @@
     "web": "expo start --web",
     "build": "expo export",
     "build:dev:android": "eas build --profile development --platform android",
+    "build:preview:android": "eas build --profile preview --platform android",
+    "build:preview:ios": "eas build --profile preview --platform ios",
     "lint": "npx expo lint",
     "check:types": "tsc --noEmit"
   },

@@ -35,14 +35,13 @@ alwaysApply: true
 
 - Dos servidores en `.cursor/mcp.json`: **supabase-salonpro** (este proyecto) y **supabase-zm** (referencia). Para BD de SalonPro usar siempre supabase-salonpro (list_tables, execute_sql, etc.). Cursor puede mostrar nombres con prefijo del workspace.
 
-## Assets de marca (logos SVG)
+## Assets de marca (diamante + wordmark en UI)
 
-Archivos en `apps/web/public/`:
-- `logo.svg` — horizontal con wordmark, **fondos oscuros** (transparente, sin `<rect>` de fondo)
-- `logo-light.svg` — horizontal con wordmark, **fondos claros** (fills `#0F0F0F`)
-- `logo-icon.svg` — solo símbolo cuadrado, **fondos oscuros** (transparente)
+En `apps/web/public/`:
+- **`logo-diamondSparkle.svg`** — marca por defecto (solo diamante, sin texto en el asset; fondos oscuros / transparentes).
+- `logo-diamondSparkle-positive.svg` / `negative` — opcionales para export o redes (no sustituyen al principal en UI salvo necesidad).
 
-Los SVG no llevan fondo propio; el contexto de uso decide el color de fondo.
+Navbar (landing): mismo `logo-diamondSparkle.svg`; con header claro tras scroll (modo claro) aplicar `invert`; en `dark:` sin invert. Footer y splash: mismo SVG / PNG derivado. `favicon.png` desde el diamante principal.
 
 ## Reglas de trabajo
 

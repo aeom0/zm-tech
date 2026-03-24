@@ -192,9 +192,10 @@ salonpro/
 │       │       ├── constants.ts              # PLANS, WABA_ADDON_TIERS, FEATURES
 │       │       └── format.ts                 # formatCurrency (panel dashboard/finanzas)
 │       └── public/
-│           ├── logo.svg          # horizontal, fondos oscuros (sin rect de fondo)
-│           ├── logo-light.svg    # horizontal, fondos claros (fills #0F0F0F)
-│           └── logo-icon.svg     # solo símbolo, fondos oscuros
+│           ├── logo-diamondSparkle.svg   # marca principal (solo símbolo)
+│           ├── logo-diamondSparkle-positive.svg
+│           ├── logo-diamondSparkle-negative.svg
+│           └── favicon.png
 │
 ├── packages/
 │   ├── shared-schema/            # @salonpro/shared-schema
@@ -453,15 +454,16 @@ BorderRadius: { sm: 6, md: 10, lg: 16, xl: 24, full: 9999 }
 | hairSalonPreset | hair-salon | #6A1B9A |
 | fullAestheticPreset | full-aesthetic | #00695C |
 
-### Logos SVG (`apps/web/public/`)
+### Marca (`apps/web/public/`)
 
 | Archivo | Uso |
 |---|---|
-| logo.svg | Horizontal, fondos oscuros — transparente, sin rect de fondo |
-| logo-light.svg | Horizontal, fondos claros — fills #0F0F0F |
-| logo-icon.svg | Solo simbolo, fondos oscuros — transparente |
+| logo-diamondSparkle.svg | **Principal** — diamante claro, fondos oscuros / transparentes (Navbar/Footer) |
+| logo-diamondSparkle-positive.svg | Export / materiales (fondo claro en el lienzo) |
+| logo-diamondSparkle-negative.svg | Preview / redes (fondo negro en el lienzo) |
+| favicon.png | Favicon (raster desde el diamante) |
 
-Nunca agregar `<rect fill="..."/>` de fondo a los SVGs.
+El símbolo no incluye texto “SalonPro”; el wordmark en UI solo donde aplique. Los SVG de marca no deben añadir `<rect>` de fondo salvo variantes positive/negative pensadas para export.
 
 ### Componentes UI mobile
 

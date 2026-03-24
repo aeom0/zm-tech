@@ -31,14 +31,20 @@ export function Navbar() {
     >
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
-        <a href="#" className="flex items-center group">
+        <a
+          href="#"
+          className="flex items-center group min-w-0"
+          aria-label="SalonPro — inicio"
+        >
           <Image
-            src={scrolled ? "/logo-light.svg" : "/logo.svg"}
+            src="/logo-diamondSparkle.svg"
             alt="SalonPro"
-            width={140}
-            height={36}
+            width={34}
+            height={39}
             priority
-            className="h-8 w-auto transition-opacity duration-300"
+            className={`h-9 w-auto shrink-0 transition-[filter] duration-300 ${
+              scrolled ? "invert dark:invert-0" : ""
+            }`}
           />
         </a>
 

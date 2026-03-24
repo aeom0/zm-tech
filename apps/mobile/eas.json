@@ -20,6 +20,9 @@
       "channel": "preview",
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "https://xidjomlxpuosupymcsaj.supabase.co"
       }
     },
     "production": {

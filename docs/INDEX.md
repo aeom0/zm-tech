@@ -73,8 +73,10 @@ docs/
 - Dos servidores en `.cursor/mcp.json`: **supabase-salonpro** (este proyecto) y **supabase-zm** (referencia). Para BD de SalonPro usar supabase-salonpro.
 
 ### Assets de marca
-- `apps/web/public/logo.svg` — horizontal, fondos oscuros (transparente)
-- `apps/web/public/logo-light.svg` — horizontal, fondos claros
-- `apps/web/public/logo-icon.svg` — símbolo solo, fondos oscuros (transparente)
+- `apps/web/public/logo-diamondSparkle.svg` — símbolo principal (sin texto en el SVG)
+- `apps/web/public/logo-diamondSparkle-positive.svg` / `negative` — variantes para materiales o redes
 
-**Última actualización**: 2026-03-21
+### EAS (build móvil)
+- Configuración única: `apps/mobile/eas.json` (ejecutar `eas build` desde `apps/mobile`)
+
+**Última actualización**: 2026-03-24

@@ -73,7 +73,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 > Features que deben estar en la beta desde el día uno.
 
 ### 4. EAS Build beta (P0 para distribución)
-- Configurar `eas.json` con perfil `preview` → APK firmado para Android
+- Configurar `apps/mobile/eas.json` con perfil `preview` → APK firmado para Android (`yarn workspace mobile build:preview:android`)
 - Canal de distribución: internal testing (Google Play internal track o URL directa)
 - Verificar que auth real funciona en build nativo (no solo Expo Go)
 - PR-04

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { View, StyleSheet, Text } from "react-native";
+import { View, StyleSheet } from "react-native";
+import { Image } from "expo-image";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -90,7 +91,13 @@ export function SplashScreenComponent({ onFinish }: SplashScreenProps) {
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.logoContainer, logoAnimatedStyle]}>
-        <Text style={styles.wordmark}>SalonPro</Text>
+        <Image
+          source={require("@/assets/splash-icon.png")}
+          style={styles.logoImage}
+          contentFit="contain"
+          accessibilityLabel="SalonPro"
+          accessibilityIgnoresInvertColors
+        />
       </Animated.View>
 
       <Animated.View style={taglineAnimatedStyle}>
@@ -117,18 +124,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  wordmark: {
-    fontSize: 34,
-    fontWeight: "800",
-    letterSpacing: -1,
-    color: "#FFFFFF",
+  logoImage: {
+    width: 112,
+    height: 112,
   },
   tagline: {
     color: "rgba(255,255,255,0.85)",
     fontSize: 14,
     fontWeight: "500",
     textAlign: "center",
-    marginTop: Spacing.xl,
+    marginTop: Spacing.lg,
     letterSpacing: 0.5,
   },
   subtagline: {

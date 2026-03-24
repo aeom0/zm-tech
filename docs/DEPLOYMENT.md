@@ -47,9 +47,11 @@ vercel --prod
 
 ## Deployment móvil (EAS Build)
 
+La configuración de EAS vive **solo** en `apps/mobile/eas.json` (no hay `eas.json` en la raíz del monorepo). Los comandos `eas build` / `eas update` deben ejecutarse desde `apps/mobile` (o con `--project-dir apps/mobile`).
+
 ### 1. Variables de entorno
 
-En el proyecto EAS o en `eas.json` (env en cada profile), definir:
+En **expo.dev** (variables por entorno: development / preview / production) y, si aplica, en `apps/mobile/eas.json` bajo `build.<profile>.env`, definir:
 
 - `EXPO_PUBLIC_SUPABASE_URL=https://xidjomlxpuosupymcsaj.supabase.co`
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJ...`
@@ -61,6 +63,8 @@ cd apps/mobile
 eas build --platform android --profile production
 # o
 eas build --platform ios --profile production
+# preview interno (APK Android)
+yarn build:preview:android
 ```
 
 ### 3. OTA (actualizaciones JS)

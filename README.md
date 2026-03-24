@@ -237,16 +237,17 @@ limit 20;
 
 ## Assets de Marca
 
-Los SVGs del logo están en `apps/web/public/`:
+Marca principal: solo el símbolo en `logo-diamondSparkle.svg` (sin texto en el asset). Navbar / footer / splash usan ese archivo; en barra clara (scroll, modo claro) el SVG se invierte con CSS para contraste.
 
 | Archivo | Uso |
 |---------|-----|
-| `logo.svg` | Logo horizontal (símbolo + wordmark) — para fondos oscuros |
-| `logo-light.svg` | Logo horizontal — para fondos claros |
-| `logo-icon.svg` | Solo símbolo (cuadrado) — para fondos oscuros |
+| `logo-diamondSparkle.svg` | **Principal** — diamante claro, fondos oscuros o transparentes |
+| `logo-diamondSparkle-positive.svg` | Opcional — export con fondo claro (p. ej. materiales) |
+| `logo-diamondSparkle-negative.svg` | Opcional — preview con fondo negro (redes) |
+| `favicon.png` | Favicon (desde `logo-diamondSparkle.svg`) |
 
-> Los SVG no incluyen fondo propio. El contexto de uso es responsable del color de fondo.
+En `apps/mobile/assets/`: misma pieza + `splash-icon.png` raster del diamante.
 
 ---
 
-**Versión**: 1.4.3 · **Licencia**: Privado · **Plataformas**: iOS · Android · Web
+**Versión**: 1.4.4 · **Licencia**: Privado · **Plataformas**: iOS · Android · Web

@@ -235,6 +235,12 @@ Flujo de arranque (mobile):
 - **Auth y roles**: layout con `FinanzasAuthWrapper`; sin sesión → `/finanzas/login`; `owner`/`dev` ven el panel; **staff** autenticado → `router.replace("/")` sin pantalla de error (no revelar la ruta). Enlace **Dashboard** en header de `/finanzas`.
 - **Nota**: agrupación del gráfico por día usa calendario local del navegador; comentario TODO en código para alinear con timezone del tenant cuando exista.
 
+## Cambios Recientes (mar 2026 — v1.4.4 — Marca diamante + EAS)
+
+- **Marca (web/mobile)**: símbolo único **`/logo-diamondSparkle.svg`** (sin texto en el asset). Navbar (`next/image`): barra clara tras scroll en modo claro aplica **`invert`** al mismo SVG; en `dark:` sin invert. Footer y splash mobile solo el diamante (PNG `splash-icon.png` / `assets`). Eliminados `logo.svg`, `logo-light.svg`, `logo-icon.svg` y logos legacy en mobile.
+- **EAS**: un solo **`apps/mobile/eas.json`** (eliminado `eas.json` en raíz). `app.json` mobile: `icon`, **`updates.url`** para canales (`preview` / `production`). Perfil `preview` con env de Supabase URL; `EXPO_PUBLIC_SUPABASE_ANON_KEY` (y demás) vía **entornos del proyecto en expo.dev**. Scripts `yarn build:preview:android|ios` en el workspace mobile.
+- **Raíz `app.json` / `assets/images`**: íconos y splash alineados al diamante; adaptive Android usa `android-icon-foreground.png`.
+
 ## Cambios Recientes (mar 2026 — v1.4.3 — Modularización mobile + TenantConfig)
 
 - **Pantallas en módulos** (`apps/mobile/screens/`): `agenda/`, `dashboard/`, `finances/`, `inventory/` con `types`, `hooks`, `components` y estilos; `AgendaScreen`, `DashboardScreen`, `FinancesScreen`, `InventoryScreen` como orquestadores finos. Queries de dashboard con `queryFn` para `dashboard_stats` y `appointments_today`.
@@ -255,11 +261,11 @@ Flujo de arranque (mobile):
 
 - **`GradientButton` component** (`apps/web/src/components/ui/GradientButton.tsx`): botón reutilizable con gradiente 135° `#E91E8C → #9C27B0 → #3D3D8F → #1565C0`; variante `outline` para CTAs secundarios; props `size` (sm/md/lg) y `className`.
 - **`DemoSection`** (`apps/web/src/components/sections/DemoSection.tsx`): sección interactiva con 4 tabs (Agenda, Finanzas, Personal, Inventario); mockup de celular animado por tab con franja de color, badges de estado y glow; stats de impacto por módulo; CTA inline contextual.
-- **Navbar**: logo SVG real (`/logo.svg` en fondo oscuro, `/logo-light.svg` al hacer scroll); link "Demo" agregado; CTA "Empezar gratis" usa `GradientButton`; hamburger mobile con menú oscuro backdrop-blur.
+- **Navbar**: ícono diamante `/logo-diamondSparkle.svg` (ver v1.4.4 para barra clara/`invert`); link "Demo"; CTA "Empezar gratis" con `GradientButton`; hamburger mobile con menú oscuro backdrop-blur.
 - **HeroSection**: headline rediseñado para LATAM ("El software que tu salón merece / y que tus clientes van a notar.") con gradiente en texto; CTAs reemplazados por `GradientButton` + variante outline ("Ver demo en vivo →").
 - **CtaSection**: CTA principal usa `GradientButton` en lugar de botón `bg-accent`.
 - **PricingCard**: botón del plan destacado (Pro) usa gradiente via `style` inline.
-- **Footer**: logo SVG real con `next/image` en lugar de emoji + texto hardcodeado.
+- **Footer**: diamante con `next/image` (sin wordmark en el asset; ver v1.4.4).
 - **page.tsx**: `<DemoSection />` insertada entre `<FeaturesSection />` y `<SocialProofSection />`.
 
 ## Cambios Recientes (mar 2026 — v1.3.3 — Fase 11: AsignarProfesionalesScreen)
@@ -283,8 +289,7 @@ Flujo de arranque (mobile):
 
 ## Cambios Recientes (mar 2026 — v1.3.1 — correcciones post-verificación)
 
-- **SVG logos sin fondo hardcodeado**: eliminado `<rect fill="#0F0F0F"/>` de `logo.svg` y `logo-icon.svg`; los SVG ahora son transparentes y el fondo es responsabilidad del contexto donde se usen.
-- **`logo-light.svg`**: nueva variante horizontal para fondos claros en `apps/web/public/`; fills/strokes invertidos a `#0F0F0F` con las mismas opacidades; gradiente central y wordmark adaptados.
+- **Histórico — logos horizontales** (`logo.svg`, `logo-light.svg`, `logo-icon.svg`): sin `<rect>` de fondo en horizontal/icon; **sustituidos en v1.4.4** por marca diamante (`logo-diamondSparkle*.svg`).
 - **Auditoría "Chicas"**: confirmado que no existen referencias a `"Chicas"` hardcodeadas en `.ts`/`.tsx`; terminología de personal proviene siempre de `config.terminology.staff`.
 - **`replit.md` eliminado**: archivo heredado de ZM Lash & Nails removido de `docs/`; `docs/INDEX.md` actualizado.
 
