@@ -1,202 +1,236 @@
-# ROADMAP SalonPro (2026)
+# ROADMAP SalonPro (2026) — ruta a beta v1.5
 
 ## Objetivo
 
-Convertir SalonPro en una plataforma SaaS multi-tenant estable, segura y escalable para salones en LATAM, priorizando:  
-1) confiabilidad operativa diaria, 2) seguridad/auth real, 3) velocidad de producto, 4) calidad de ingeniería.
+Llegar a la primera beta de producción lo antes posible, intercalando estabilización técnica mínima con las features que realmente desbloquean el lanzamiento. No hay "primero limpiar todo y luego features" — cada sprint entrega valor concreto.
 
 ---
 
 ## Principios de ejecución
 
-- Priorizar impacto de negocio y reducción de riesgo técnico.
-- Entregar en incrementos pequeños, con criterios de aceptación claros.
-- Evitar regresiones con quality gates (lint, typecheck, tests críticos).
+- **Beta primero**: cada decisión se toma preguntando si acerca o aleja la beta.
+- Estabilizar lo mínimo indispensable, no lo perfecto.
+- Features y deuda técnica en paralelo cuando no hay dependencia entre sí.
+- Entregar en incrementos pequeños con criterios de aceptación claros.
 - Mantener consistencia multi-tenant (moneda, terminología, branding, permisos).
+- Quality gate mínimo: `yarn check:types` antes de todo commit.
 
 ---
 
-## Estado actual (resumen)
+## Estado actual (v1.4.3 — mar 2026)
 
-- Monorepo funcional con `apps/mobile`, `apps/web`, `packages/shared-schema`, `packages/tenant-config`.
-- Funcionalidades core implementadas: onboarding, agenda, servicios, clientes, inventario, finanzas, dashboard web.
-- Riesgos principales detectados:
-  - Auth móvil en modo desarrollo (sin enforcement real de sesión/roles de Supabase).
-  - Inconsistencias de defaults entre `tenant-config` y `tenant_settings`.
-  - Pantallas/hook críticos con complejidad alta y manejo de errores mejorable.
-  - Cobertura de testing/CI insuficiente para escalar sin regresiones.
+### Completado
+- Monorepo funcional: `apps/mobile`, `apps/web`, `packages/shared-schema`, `packages/tenant-config`
+- Core mobile: onboarding, agenda, servicios, clientes, inventario, finanzas, validación pagos, asignar profesionales
+- Core web: `/finanzas`, `/` (landing), dashboard métricas (KPIs, gráfico 7 días, top servicios, próximas citas)
+- Design system Lunaris completo, gradiente, logos SVG
+- RLS 9 tablas con `get_my_role()`, `usePendingBadgeCount`, badges en tab Más
+- Bot WABA en landing (WABAPreview, PricingCard con tiers)
 
----
+### Riesgos activos bloqueantes para beta
+- Auth móvil en **modo desarrollo** — sin enforcement real de sesión/roles Supabase
+- `ThemeContext`: posibles crashes intermitentes de arranque si consumers renderizan antes del provider
+- Defaults inconsistentes entre `tenant-config` y `tenant_settings` en DB
 
-## Fase 0 - Estabilización crítica (0 a 2 semanas)
-
-### Prioridad P0
-
-1. **Autenticación real en mobile**
-   - Reemplazar login mock por Supabase Auth real.
-   - Enlazar correctamente sesión, perfil (`profiles`) y control de roles.
-   - Asegurar que flujos protegidos no dependan de estado local inseguro.
-
-2. **Corrección de riesgo de hidratación de tema**
-   - Garantizar que `ThemeContext` siempre provea provider antes de renderizar consumidores.
-   - Evitar crashes intermitentes al iniciar la app.
-
-3. **Consistencia multi-tenant de defaults**
-   - Unificar comisión staff/casa, terminología y locale entre:
-     - `packages/tenant-config`
-     - `tenant_settings` (schema/DB)
-   - Definir una única fuente de verdad para defaults.
-
-4. **Validación operativa de citas**
-   - Implementar validación de disponibilidad al crear/reprogramar citas.
-   - Evitar solapamientos y conflictos de agenda.
-
-### Criterios de aceptación
-
-- Usuario real puede iniciar/cerrar sesión en mobile y web con el mismo comportamiento de permisos.
-- No hay crasheos de arranque relacionados con tema/context.
-- Defaults visibles en onboarding/settings coinciden con datos persistidos en DB.
-- Intentos de doble reserva son bloqueados con feedback claro en UI.
+### Pendiente de beta
+- EAS Build (sin APK firmado no hay distribución real)
+- Validación de disponibilidad al crear/reprogramar citas (anti-solapamiento)
+- Web `/servicios` CRUD completo
+- Notificaciones push FCM end-to-end
+- Bot WABA multi-tenant (Edge Function)
 
 ---
 
-## Fase 1 - Calidad base y confianza de release (2 a 6 semanas)
+## Sprint 1 — semanas 1–2 · P0 desbloqueante
 
-### Prioridad P0/P1
+> Sin esto no hay beta. Todo lo demás depende de auth real.
 
-1. **Pipeline CI mínimo obligatorio**
-   - Crear workflows para PR con:
-     - `yarn lint`
-     - typecheck real de workspaces (`apps/*`, `packages/*`, `server`)
-     - build web
-   - Fallo de checks bloquea merge.
+### 1. Auth real en mobile (P0 máxima prioridad)
+- Reemplazar login mock por Supabase Auth real
+- Enlazar sesión ↔ `profiles` ↔ roles (`dev` | `owner` | `staff`)
+- Flujos protegidos no dependen de estado local inseguro
+- PR-01
 
-2. **Estrategia de migraciones versionadas**
-   - Formalizar uso de migraciones Drizzle versionadas en repo.
-   - Reducir dependencia de `db:push` directo en entornos compartidos.
+### 2. ThemeContext hydration fix (P0)
+- Garantizar que el provider envuelve a todos los consumers antes del primer render
+- Eliminar crasheos intermitentes de arranque
+- PR-02
 
-3. **Manejo de errores robusto**
-   - Mejorar hooks de datos críticos (`dashboard`, `finanzas`, módulos mobile).
-   - Mostrar estados de error/reintento en UI (no silenciosos).
+### 3. Defaults multi-tenant (P0)
+- Unificar comisión, terminología y locale entre `packages/tenant-config` y `tenant_settings` (DB)
+- Una única fuente de verdad; los defaults visibles en onboarding/settings coinciden con lo persistido
+- PR-03
 
-4. **Estandarización de query keys**
-   - Definir convención única y migrar módulos con naming inconsistente.
-   - Asegurar invalidaciones predecibles.
-
-### Criterios de aceptación
-
-- Toda PR dispara checks automáticos y reporta resultados.
-- Cambios de DB quedan trazables por migración.
-- Pantallas críticas tienen UX clara en error/timeout/retry.
-- Mutaciones invalidan caché de forma consistente.
+### Criterios de aceptación Sprint 1
+- Usuario real puede iniciar/cerrar sesión en mobile y web con el mismo comportamiento de permisos
+- No hay crasheos de arranque relacionados con tema/context
+- Defaults visibles en onboarding coinciden con datos en DB
 
 ---
 
-## Fase 2 - Escalabilidad funcional (6 a 10 semanas)
+## Sprint 2 — semanas 2–4 · features beta core
 
-### Prioridad P1
+> Features que deben estar en la beta desde el día uno.
 
-1. **Refactor de módulos de alta complejidad**
-   - Partir pantallas monolíticas (especialmente finanzas mobile) en:
-     - hooks de negocio
-     - componentes presentacionales
-     - utilidades puras tipadas
+### 4. EAS Build beta (P0 para distribución)
+- Configurar `eas.json` con perfil `preview` → APK firmado para Android
+- Canal de distribución: internal testing (Google Play internal track o URL directa)
+- Verificar que auth real funciona en build nativo (no solo Expo Go)
+- PR-04
 
-2. **Optimización de consultas**
-   - Reducir trabajo pesado en cliente cuando sea posible.
-   - Mejorar filtros, agregaciones y payload para módulos de clientes/finanzas/dashboard.
-   - Resolver desfase por timezone en dashboard web.
+### 5. Anti-solapamiento de citas (P1)
+- Validar disponibilidad del profesional al crear o reprogramar citas
+- Bloquear intentos de doble reserva con feedback claro en UI
+- Respetar `config.locale.timezone` (no hardcodear `America/Lima`)
+- PR-05
 
-3. **Limpieza de legado**
-   - Eliminar/aislar navegación y pantallas legacy no usadas.
-   - Corregir naming técnico inconsistente (ejemplo: typos heredados de presets).
+### 6. Web `/servicios` CRUD completo (P1)
+- Categorías (create, edit, reorder)
+- Servicios por categoría (create, edit, toggle active, precio con coma decimal LATAM)
+- Packs (create, edit, seleccionar servicios)
+- Promos (create, edit, añadir ítems desde service/pack)
+- PR-06
 
-4. **Consistencia de branding y copy**
-   - Remover textos legacy de marca anterior en web/finanzas.
-   - Alinear terminología al modelo multi-tenant configurable.
-
-### Criterios de aceptación
-
-- Reducción de complejidad en módulos críticos (archivos más pequeños y testeables).
-- Mejora medible de tiempo de carga y/o menor cantidad de consultas pesadas.
-- Sin referencias legacy en interfaces públicas.
+### Criterios de aceptación Sprint 2
+- APK descargable e instalable en Android físico con auth funcional
+- Intentos de doble reserva son bloqueados con feedback claro
+- CRUD de servicios y packs funcional desde la web
 
 ---
 
-## Fase 3 - Madurez de producto (10 a 16 semanas)
+## Sprint 3 — semanas 4–6 · calidad mínima + features beta
 
-### Prioridad P1/P2
+> Dos carriles en paralelo: deuda técnica mínima y features que completan la beta.
 
-1. **Testing por capas**
-   - Unit tests: utilidades y reglas de negocio clave.
-   - Integración: hooks de datos/mutaciones con casos críticos.
-   - E2E/smoke: auth, onboarding, agenda y dashboard.
+### 3A — Calidad mínima (carril estabilización)
 
-2. **Notificaciones push completas**
-   - Persistencia de token.
-   - Flujo end-to-end validado para casos de negocio prioritarios.
+#### 7. CI básico obligatorio (P1)
+- Workflow GitHub Actions para PRs: `yarn lint` + typecheck workspaces + build web
+- Fallo de checks bloquea merge
+- PR-07
 
-3. **Web growth + experiencia**
-   - SEO técnico completo (sitemap, robots, metadata mejorada, structured data).
-   - Mejoras de accesibilidad en tabs, acordeones y tablas.
-   - Ajustes de performance en landing (hidratar solo lo necesario).
+#### 8. Error handling robusto en pantallas críticas (P1)
+- Hooks de dashboard, finanzas y agenda: estados de error/retry visibles en UI
+- Sin errores silenciosos ni pantallas en blanco ante fallo de red
+- PR-08
 
-4. **Normalización de dependencias y DX**
-   - Alinear versiones transversales (TypeScript, Supabase JS, pg, ESLint stack).
-   - Endurecer scripts de salud del monorepo (`ci:*`, validaciones rápidas locales).
+### 3B — Features beta (carril producto)
 
-### Criterios de aceptación
+#### 9. Notificaciones push FCM v1 end-to-end (P1)
+- `getDevicePushTokenAsync()` → persistir token en `profiles.push_token`
+- Trigger DB `trg_notify_appointment_assigned` → Edge Function `send-notification`
+- Validado en build nativo (token FCM, no Expo Push)
+- PR-09
 
-- Cobertura mínima definida para dominios críticos y ejecutada en CI.
-- Notificaciones funcionando de punta a punta en ambientes de prueba.
-- Mejoras SEO/a11y validadas con herramientas automáticas y revisión manual.
+#### 10. Bot WABA multi-tenant — Edge Function (P1)
+- Port de `whatsapp-webhook` de ZM a SalonPro con arquitectura multi-tenant
+- Catálogo dinámico desde DB del tenant activo
+- Templates configurables desde `tenant_settings`
+- Plantilla por defecto: `promo_salonpro_v1`
+- CORS + respuesta 200 inmediata a Meta antes de procesar
+- PR-10
+
+### Criterios de aceptación Sprint 3
+- Todo PR dispara checks automáticos y reporta resultados
+- Pantallas críticas tienen UX clara en error/timeout/retry
+- Notificaciones funcionando de punta a punta en build nativo
+- Bot WABA responde con catálogo del tenant correcto
+
+---
+
+## Beta gate — v1.5.0
+
+> Estos son los criterios mínimos para declarar la primera beta de producción.
+
+| Criterio | Sprint |
+|---|---|
+| Auth Supabase real funcionando en build nativo | Sprint 1 |
+| Sin crasheos de arranque en ThemeContext | Sprint 1 |
+| EAS Build: APK descargable e instalable | Sprint 2 |
+| Citas sin solapamiento, con feedback en UI | Sprint 2 |
+| CI verde en todo PR | Sprint 3A |
+| Push notifications E2E en build nativo | Sprint 3B |
+
+---
+
+## Sprint 4 — semanas 6–10 · post-beta, escalar
+
+> Una vez en beta, se itera sobre calidad y nuevas features de crecimiento.
+
+### Refactor módulos de alta complejidad (P2)
+- Partir `FinancesScreen` mobile en hooks + components + utils tipados
+- Reducir complejidad y mejorar testabilidad
+
+### PromoMasivaScreen (P2 — requiere WABA activo)
+- Stepper 5 pasos: configurar → segmentar → preview → enviando → resultado
+- Segmentación: `todas` | `vip` | `nuevas` | `en_riesgo`
+- Edge Function `send-promo-whatsapp` con polling de progreso
+
+### Optimización de queries (P2)
+- Reducir trabajo pesado en cliente para módulos de clientes, finanzas y dashboard
+- Resolver desfase de timezone en dashboard web (usar `config.locale.timezone`)
+- Estandarizar convención de query keys de TanStack Query
+
+### Testing por capas (P2)
+- Unit tests: utilidades y reglas de negocio clave
+- Integración: hooks de datos/mutaciones con casos críticos
+- E2E smoke: auth, onboarding, agenda y dashboard
+
+### SEO + accesibilidad web (P3)
+- Sitemap, robots, metadata mejorada, structured data
+- Mejoras de accesibilidad en tabs, acordeones y tablas de la landing
+- Performance: hidratar solo lo necesario
+
+---
+
+## Orden de PRs — primer mes
+
+| PR | Descripción | Sprint | Prioridad |
+|---|---|---|---|
+| PR-01 | Auth real mobile + ajustes de permisos | 1 | P0 |
+| PR-02 | Fix ThemeContext hydration | 1 | P0 |
+| PR-03 | Unificación defaults tenant-config/DB | 1 | P0 |
+| PR-04 | EAS Build beta + canal internal testing | 2 | P0 |
+| PR-05 | Validación anti-solapamiento de citas | 2 | P1 |
+| PR-06 | Web /servicios CRUD completo | 2 | P1 |
+| PR-07 | CI básico GitHub Actions | 3A | P1 |
+| PR-08 | Error handling dashboard/finanzas/agenda | 3A | P1 |
+| PR-09 | Push notifications FCM v1 E2E | 3B | P1 |
+| PR-10 | Bot WABA multi-tenant Edge Function | 3B | P1 |
 
 ---
 
 ## Backlog continuo (siempre activo)
 
-- Observabilidad funcional (errores de UI y fallas de red) con priorización semanal.
-- Revisión de RLS y permisos por rol ante cada nueva feature.
-- Performance budget para pantallas y rutas críticas.
-- Hardening de TypeScript (reducir `any` y casts inseguros).
+- Revisión de RLS y permisos por rol ante cada nueva feature
+- TypeScript hardening: reducir `any` y casts inseguros
+- Observabilidad funcional (errores de UI y fallas de red)
+- Performance budget para pantallas y rutas críticas
+- Migraciones Drizzle versionadas en repo (reducir dependencia de `db:push`)
+- Limpieza de legado: pantallas y rutas no usadas, naming inconsistente
+- Branding: eliminar textos legacy de marca anterior en web/finanzas
 
 ---
 
-## Métricas de éxito (KPIs de ingeniería y producto)
+## Métricas de éxito (beta)
 
-- **Confiabilidad**
-  - Caída de errores críticos en producción.
-  - Menor tasa de fallos en flujos auth/onboarding/agenda.
-
-- **Velocidad de entrega**
-  - Lead time PR -> deploy.
-  - Porcentaje de PRs que pasan CI en primer intento.
-
-- **Calidad**
-  - Cobertura en módulos críticos.
-  - Disminución de regresiones reportadas por versión.
-
-- **Experiencia de usuario**
-  - Menor fricción en login y agenda.
-  - Mejora en tiempos de carga de dashboard y finanzas.
-
----
-
-## Orden sugerido de PRs (primer mes)
-
-1. PR-01: Auth real mobile + ajustes de permisos.
-2. PR-02: Fix ThemeContext hydration + hardening de arranque.
-3. PR-03: Unificación de defaults tenant-config/DB.
-4. PR-04: Validación anti-solapamiento de citas.
-5. PR-05: CI básico + typecheck completo de workspaces.
-6. PR-06: Migraciones versionadas + guía operativa mínima en scripts existentes.
-7. PR-07: Error handling dashboard/finanzas.
-8. PR-08: Convención de query keys + migración inicial.
+| Métrica | Objetivo |
+|---|---|
+| Crasheos en arranque | 0 en build nativo |
+| Flujo auth → agenda completo | sin errores en happy path |
+| CI: PRs que pasan en primer intento | > 80% |
+| Tiempo de carga dashboard mobile | < 2s en red 4G |
+| Citas con solapamiento creadas | 0 |
 
 ---
 
 ## Notas de gestión
 
-- Este roadmap prioriza reducción de riesgo antes de expansión funcional.
-- Cada fase puede replanificarse semanalmente según hallazgos de producción.
-- Si una tarea P0 queda incompleta, no se recomienda avanzar de fase.
+- Si una tarea P0 queda incompleta, no se avanza de sprint.
+- EAS Build (PR-04) puede ejecutarse en paralelo con PR-02 y PR-03 una vez que PR-01 esté completo.
+- Bot WABA (PR-10) requiere cuenta Meta Business activa para validación E2E; el código puede estar listo antes.
+- `PromoMasivaScreen` queda fuera de la beta v1.5 — requiere WABA validado en producción.
+
+---
+
+*Actualizado: marzo 2026. Generado con análisis de estado real del repo aeom0/salonpro v1.4.3.*
