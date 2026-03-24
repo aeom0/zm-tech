@@ -4,14 +4,16 @@ import {
   StyleSheet,
   TextInput,
   Pressable,
-  ScrollView,
   Alert,
 } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
 import { ThemedText } from "@/components/ThemedText";
-import { GradientButton } from "@/components/GradientButton";
-import { GradientProgressDots } from "@/components/GradientProgressDots";
+import {
+  OnboardingLayout,
+  OnboardingProgressDots,
+  GradientCTAButton,
+} from "@/screens/onboarding/components";
 import { Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 import { supabase } from "@/lib/supabase";
@@ -88,14 +90,9 @@ export default function OnboardingTeamScreen({
   };
 
   return (
-    <ScrollView
-      style={styles.scroll}
-      contentContainerStyle={styles.container}
-      keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}
-    >
+    <OnboardingLayout scrollable>
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-        <GradientProgressDots total={5} current={2} />
+        <OnboardingProgressDots currentStep={3} />
         <ThemedText style={styles.titulo}>
           Agrega tu primer {staffLabel}
         </ThemedText>
@@ -105,7 +102,6 @@ export default function OnboardingTeamScreen({
         </ThemedText>
       </Animated.View>
 
-      {/* Nombre */}
       <Animated.View
         entering={FadeInDown.delay(100).duration(400)}
         style={styles.campo}
@@ -121,7 +117,6 @@ export default function OnboardingTeamScreen({
         />
       </Animated.View>
 
-      {/* Email */}
       <Animated.View
         entering={FadeInDown.delay(160).duration(400)}
         style={styles.campo}
@@ -138,7 +133,6 @@ export default function OnboardingTeamScreen({
         />
       </Animated.View>
 
-      {/* Comisión */}
       <Animated.View
         entering={FadeInDown.delay(220).duration(400)}
         style={styles.campo}
@@ -160,7 +154,6 @@ export default function OnboardingTeamScreen({
         </ThemedText>
       </Animated.View>
 
-      {/* Color */}
       <Animated.View
         entering={FadeInDown.delay(280).duration(400)}
         style={styles.campo}
@@ -172,48 +165,48 @@ export default function OnboardingTeamScreen({
               key={c}
               onPress={() => setColor(c)}
               style={[
-                styles.colorChipWrapper,
-                color === c && styles.colorChipWrapperSeleccionado,
+                styles.swatchOuter,
+                color === c && styles.swatchOuterSelected,
               ]}
             >
-              <View style={[styles.colorChip, { backgroundColor: c }]} />
+              <View style={[styles.swatch, { backgroundColor: c }]} />
             </Pressable>
           ))}
         </View>
       </Animated.View>
 
-      {/* Botones */}
       <Animated.View
         entering={FadeInDown.delay(340).duration(400)}
         style={styles.botones}
       >
-        <Pressable onPress={onBack} style={styles.botonSecundario}>
-          <ThemedText style={styles.botonSecundarioTexto}>Atrás</ThemedText>
-        </Pressable>
-        <GradientButton
+        <GradientCTAButton
+          variant="outline"
+          label="Atrás"
+          onPress={onBack}
+          style={styles.btnFlex}
+        />
+        <GradientCTAButton
           label="Continuar"
+          icon="arrow-right"
           onPress={guardar}
           loading={guardando}
-          style={styles.botonPrimarioWrapper}
+          style={styles.btnFlexWide}
         />
       </Animated.View>
 
-      <Pressable onPress={onNext} style={styles.saltarBtn}>
-        <ThemedText style={styles.saltarTexto}>Omitir este paso</ThemedText>
-      </Pressable>
-    </ScrollView>
+      <GradientCTAButton
+        variant="outline"
+        label="Omitir"
+        onPress={onNext}
+        style={styles.omitir}
+      />
+    </OnboardingLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  scroll: { flex: 1, backgroundColor: "#111318" },
-  container: {
-    paddingHorizontal: Spacing.lg,
-    paddingBottom: Spacing["3xl"],
-  },
   header: {
-    paddingTop: Spacing["3xl"],
-    paddingBottom: Spacing.xl,
+    paddingBottom: Spacing.lg,
   },
   titulo: {
     fontSize: 24,
@@ -225,7 +218,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "rgba(255,255,255,0.45)",
     lineHeight: 20,
-    marginBottom: 24,
+    marginBottom: Spacing.md,
   },
   campo: { marginBottom: Spacing.xl },
   label: {
@@ -251,51 +244,42 @@ const styles = StyleSheet.create({
     color: "rgba(255,255,255,0.45)",
     marginTop: 6,
   },
-  paleta: { flexDirection: "row", flexWrap: "wrap", gap: Spacing.sm },
-  colorChipWrapper: {
-    width: 34,
-    height: 34,
-    borderRadius: 10,
-    padding: 3,
-    alignItems: "center",
-    justifyContent: "center",
+  paleta: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
   },
-  colorChipWrapperSeleccionado: {
-    borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.7)",
-  },
-  colorChip: {
-    width: 28,
-    height: 28,
+  swatchOuter: {
+    width: 44,
+    height: 44,
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "transparent",
+  },
+  swatchOuterSelected: {
+    borderColor: "#FFFFFF",
+  },
+  swatch: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
   },
   botones: {
     flexDirection: "row",
     gap: Spacing.md,
     marginBottom: Spacing.md,
   },
-  botonSecundario: {
+  btnFlex: {
     flex: 1,
-    borderWidth: 0.5,
-    borderColor: "rgba(255,255,255,0.2)",
-    borderRadius: 10,
-    paddingVertical: 15,
-    alignItems: "center",
   },
-  botonSecundarioTexto: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "rgba(255,255,255,0.6)",
-  },
-  botonPrimarioWrapper: {
+  btnFlexWide: {
     flex: 2,
   },
-  saltarBtn: { alignItems: "center", paddingVertical: Spacing.md },
-  saltarTexto: {
-    fontSize: 14,
-    color: "rgba(255,255,255,0.5)",
-    textDecorationLine: "underline",
+  omitir: {
+    alignSelf: "center",
+    marginBottom: Spacing["2xl"],
+    minWidth: 200,
   },
 });

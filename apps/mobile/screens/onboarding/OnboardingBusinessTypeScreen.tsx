@@ -4,8 +4,11 @@ import Animated, { FadeInDown } from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
-import { GradientProgressDots } from "@/components/GradientProgressDots";
-import { Spacing, BorderRadius } from "@/constants/theme";
+import {
+  OnboardingLayout,
+  OnboardingProgressDots,
+} from "@/screens/onboarding/components";
+import { Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 import {
   spaNavilsPreset,
@@ -19,6 +22,23 @@ type BusinessType = TenantConfig["businessType"];
 
 interface OnboardingBusinessTypeScreenProps {
   onNext: () => void;
+}
+
+function hexToRgba(hex: string, alpha: number): string {
+  const h = hex.replace("#", "");
+  const full =
+    h.length === 3
+      ? h
+          .split("")
+          .map((c) => c + c)
+          .join("")
+      : h;
+  if (full.length !== 6) return `rgba(255,255,255,${alpha})`;
+  const n = parseInt(full, 16);
+  const r = (n >> 16) & 255;
+  const g = (n >> 8) & 255;
+  const b = n & 255;
+  return `rgba(${r},${g},${b},${alpha})`;
 }
 
 const TIPOS = [
@@ -69,9 +89,9 @@ export default function OnboardingBusinessTypeScreen({
   };
 
   return (
-    <View style={styles.container}>
+    <OnboardingLayout scrollable={false}>
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-        <GradientProgressDots total={5} current={0} />
+        <OnboardingProgressDots currentStep={1} />
         <ThemedText style={styles.titulo}>
           ¿Qué tipo de negocio tienes?
         </ThemedText>
@@ -81,11 +101,14 @@ export default function OnboardingBusinessTypeScreen({
       </Animated.View>
 
       <ScrollView
+        style={styles.scroll}
         contentContainerStyle={styles.cards}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         {TIPOS.map((tipo, i) => {
           const seleccionado = config.businessType === tipo.key;
+          const primary = tipo.preset.theme.primaryColor;
           return (
             <Animated.View
               key={tipo.key}
@@ -95,17 +118,27 @@ export default function OnboardingBusinessTypeScreen({
                 onPress={() => seleccionar(tipo)}
                 style={({ pressed }) => [
                   styles.card,
-                  seleccionado && styles.cardSeleccionado,
+                  {
+                    borderColor: seleccionado
+                      ? primary
+                      : "rgba(255,255,255,0.12)",
+                    backgroundColor: seleccionado
+                      ? hexToRgba(primary, 0.1)
+                      : "rgba(255,255,255,0.05)",
+                  },
                   pressed && styles.cardPressed,
                 ]}
               >
-                <View style={styles.iconWrapper}>
-                  <Feather
-                    name={tipo.icon}
-                    size={18}
-                    color="rgba(255,255,255,0.6)"
-                  />
-                </View>
+                <Feather
+                  name={tipo.icon}
+                  size={22}
+                  color={
+                    seleccionado
+                      ? primary
+                      : "rgba(255,255,255,0.65)"
+                  }
+                  style={styles.cardIcon}
+                />
                 <View style={styles.cardTexto}>
                   <ThemedText style={styles.cardNombre}>
                     {tipo.nombre}
@@ -115,30 +148,30 @@ export default function OnboardingBusinessTypeScreen({
                   </ThemedText>
                 </View>
                 <View
-                  style={[styles.check, seleccionado && styles.checkSelected]}
+                  style={[
+                    styles.check,
+                    seleccionado && {
+                      backgroundColor: primary,
+                      borderColor: primary,
+                    },
+                  ]}
                 >
-                  {seleccionado && (
-                    <Feather name="check" size={10} color="#000000" />
-                  )}
+                  {seleccionado ? (
+                    <Feather name="check" size={12} color="#FFFFFF" />
+                  ) : null}
                 </View>
               </Pressable>
             </Animated.View>
           );
         })}
       </ScrollView>
-    </View>
+    </OnboardingLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#111318",
-    paddingHorizontal: Spacing.lg,
-  },
   header: {
-    paddingTop: Spacing["3xl"],
-    paddingBottom: Spacing.xl,
+    paddingBottom: Spacing.lg,
   },
   titulo: {
     fontSize: 24,
@@ -150,37 +183,28 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "rgba(255,255,255,0.45)",
     lineHeight: 20,
-    marginBottom: 24,
+    marginBottom: 8,
+  },
+  scroll: {
+    flex: 1,
   },
   cards: {
     gap: Spacing.md,
-    paddingBottom: Spacing["3xl"],
+    paddingBottom: Spacing["2xl"],
   },
   card: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "transparent",
-    borderRadius: 12,
+    borderRadius: 16,
     borderWidth: 0.5,
-    borderColor: "rgba(255,255,255,0.1)",
-    padding: 14,
-    marginBottom: 8,
+    padding: Spacing.lg,
     gap: Spacing.md,
   },
-  cardSeleccionado: {
-    borderColor: "rgba(255,255,255,0.5)",
-    backgroundColor: "rgba(255,255,255,0.05)",
-  },
   cardPressed: {
-    opacity: 0.85,
+    opacity: 0.88,
   },
-  iconWrapper: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    backgroundColor: "rgba(255,255,255,0.07)",
-    alignItems: "center",
-    justifyContent: "center",
+  cardIcon: {
+    marginRight: Spacing.xs,
   },
   cardTexto: {
     flex: 1,
@@ -197,16 +221,12 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   check: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
+    width: 22,
+    height: 22,
+    borderRadius: 6,
     borderWidth: 0.5,
-    borderColor: "rgba(255,255,255,0.7)",
+    borderColor: "rgba(255,255,255,0.35)",
     alignItems: "center",
     justifyContent: "center",
-  },
-  checkSelected: {
-    backgroundColor: "#FFFFFF",
-    borderColor: "#FFFFFF",
   },
 });

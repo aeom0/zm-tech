@@ -1,15 +1,13 @@
 import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  Pressable,
-  ScrollView,
-} from "react-native";
+import { View, StyleSheet, Pressable, ScrollView } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
 import { ThemedText } from "@/components/ThemedText";
-import { GradientButton } from "@/components/GradientButton";
-import { GradientProgressDots } from "@/components/GradientProgressDots";
+import {
+  OnboardingLayout,
+  OnboardingProgressDots,
+  GradientCTAButton,
+} from "@/screens/onboarding/components";
 import { Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 import { supabase } from "@/lib/supabase";
@@ -20,7 +18,6 @@ interface Categoria {
   seleccionada: boolean;
 }
 
-// Categorías sugeridas por tipo de negocio
 const CATEGORIAS_POR_TIPO: Record<string, string[]> = {
   "spa-nails": ["Uñas", "Pestañas", "Cejas y Rostro", "Depilación"],
   barbershop: ["Cortes", "Barba y Bigote", "Tratamientos", "Color y Tintura"],
@@ -100,7 +97,6 @@ export default function OnboardingServicesScreen({
         "[OnboardingServices] excepción inesperada al crear categorías",
         error,
       );
-      // Si falla (ej. categorías ya existen), continuar de todos modos
       onNext();
     } finally {
       setGuardando(false);
@@ -108,9 +104,9 @@ export default function OnboardingServicesScreen({
   };
 
   return (
-    <View style={styles.container}>
+    <OnboardingLayout scrollable={false}>
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-        <GradientProgressDots total={5} current={3} />
+        <OnboardingProgressDots currentStep={4} />
         <ThemedText style={styles.titulo}>Categorías de servicios</ThemedText>
         <ThemedText style={styles.subtitulo}>
           Estas categorías aparecerán en tu catálogo. Puedes editarlas después.
@@ -118,8 +114,10 @@ export default function OnboardingServicesScreen({
       </Animated.View>
 
       <ScrollView
+        style={styles.listWrap}
         contentContainerStyle={styles.lista}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         {categorias.map((cat, i) => (
           <Animated.View
@@ -140,9 +138,9 @@ export default function OnboardingServicesScreen({
                   cat.seleccionada && styles.checkboxSelected,
                 ]}
               >
-                {cat.seleccionada && (
+                {cat.seleccionada ? (
                   <ThemedText style={styles.checkMark}>✓</ThemedText>
-                )}
+                ) : null}
               </View>
               <ThemedText style={styles.itemNombre}>{cat.nombre}</ThemedText>
             </Pressable>
@@ -154,29 +152,27 @@ export default function OnboardingServicesScreen({
         entering={FadeInDown.delay(400).duration(400)}
         style={styles.botones}
       >
-        <Pressable onPress={onBack} style={styles.botonSecundario}>
-          <ThemedText style={styles.botonSecundarioTexto}>Atrás</ThemedText>
-        </Pressable>
-        <GradientButton
-          label="Finalizar"
+        <GradientCTAButton
+          variant="outline"
+          label="Atrás"
+          onPress={onBack}
+          style={styles.btnFlex}
+        />
+        <GradientCTAButton
+          label="Continuar"
+          icon="arrow-right"
           onPress={guardar}
           loading={guardando}
-          style={styles.botonPrimarioWrapper}
+          style={styles.btnFlexWide}
         />
       </Animated.View>
-    </View>
+    </OnboardingLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#111318",
-    paddingHorizontal: Spacing.lg,
-  },
   header: {
-    paddingTop: Spacing["3xl"],
-    paddingBottom: Spacing.xl,
+    paddingBottom: Spacing.lg,
   },
   titulo: {
     fontSize: 24,
@@ -189,9 +185,12 @@ const styles = StyleSheet.create({
     color: "rgba(255,255,255,0.45)",
     lineHeight: 20,
   },
+  listWrap: {
+    flex: 1,
+  },
   lista: {
     gap: Spacing.sm,
-    paddingBottom: Spacing.xl,
+    paddingBottom: Spacing.lg,
   },
   item: {
     flexDirection: "row",
@@ -235,23 +234,13 @@ const styles = StyleSheet.create({
   botones: {
     flexDirection: "row",
     gap: Spacing.md,
-    paddingBottom: Spacing["2xl"],
     paddingTop: Spacing.md,
+    paddingBottom: Spacing.sm,
   },
-  botonSecundario: {
+  btnFlex: {
     flex: 1,
-    borderWidth: 0.5,
-    borderColor: "rgba(255,255,255,0.2)",
-    borderRadius: 10,
-    paddingVertical: 15,
-    alignItems: "center",
   },
-  botonSecundarioTexto: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "rgba(255,255,255,0.6)",
-  },
-  botonPrimarioWrapper: {
+  btnFlexWide: {
     flex: 2,
   },
 });

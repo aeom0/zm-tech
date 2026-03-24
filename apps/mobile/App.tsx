@@ -71,7 +71,11 @@ function AppContent() {
           <NavigationContainer>
             <RootStackNavigator />
           </NavigationContainer>
-          <StatusBar style="auto" />
+          <StatusBar
+            style="light"
+            backgroundColor="transparent"
+            translucent
+          />
         </KeyboardProvider>
       </GestureHandlerRootView>
     </SafeAreaProvider>

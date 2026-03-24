@@ -1,20 +1,24 @@
 import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  Alert,
-} from "react-native";
+import { View, StyleSheet, Alert, Text } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
-import { GradientButton } from "@/components/GradientButton";
-import { GradientProgressDots } from "@/components/GradientProgressDots";
-import { Spacing, BorderRadius } from "@/constants/theme";
+import {
+  OnboardingLayout,
+  OnboardingProgressDots,
+  GradientCTAButton,
+} from "@/screens/onboarding/components";
+import { Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 
 interface OnboardingCompleteScreenProps {
   onFinish: () => void;
+}
+
+interface StatItem {
+  label: string;
+  value: string;
 }
 
 export default function OnboardingCompleteScreen({
@@ -54,21 +58,19 @@ export default function OnboardingCompleteScreen({
     }
   };
 
-  const categoriasPorTipo: Record<string, number> = {
-    "spa-nails": 4,
-    barbershop: 4,
-    "hair-salon": 4,
-    "full-aesthetic": 5,
-  };
+  const miembrosEquipo = 1;
 
-  const categoriasCount = categoriasPorTipo[config.businessType] ?? 0;
-  const especialistasCount = 1;
-  const serviciosCount = 0;
+  const stats: StatItem[] = [
+    { value: "0", label: "Servicios configurados" },
+    { value: String(miembrosEquipo), label: "Miembros del equipo" },
+    { value: "Free", label: "Plan activo" },
+    { value: "14", label: "Días de trial" },
+  ];
 
   return (
-    <View style={styles.container}>
-      <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-        <GradientProgressDots total={5} current={4} />
+    <OnboardingLayout centered>
+      <Animated.View entering={FadeInDown.duration(400)} style={styles.topBlock}>
+        <OnboardingProgressDots currentStep={6} />
         <View style={styles.iconCheck}>
           <Feather name="check" size={26} color="rgba(255,255,255,0.9)" />
         </View>
@@ -79,59 +81,36 @@ export default function OnboardingCompleteScreen({
           {config.terminology.appointment}s, {config.terminology.staff} y
           servicios.
         </ThemedText>
-      </Animated.View>
 
-      <Animated.View
-        entering={FadeInDown.delay(200).duration(400)}
-        style={styles.statsGrid}
-      >
-        <View style={styles.statTile}>
-          <ThemedText style={styles.statNumber}>{categoriasCount}</ThemedText>
-          <ThemedText style={styles.statLabel}>Categorías</ThemedText>
-        </View>
-        <View style={styles.statTile}>
-          <ThemedText style={styles.statNumber}>{serviciosCount}</ThemedText>
-          <ThemedText style={styles.statLabel}>Servicios</ThemedText>
-        </View>
-        <View style={styles.statTile}>
-          <ThemedText style={styles.statNumber}>
-            {especialistasCount}
-          </ThemedText>
-          <ThemedText style={styles.statLabel}>
-            {config.terminology.staffSingular.toUpperCase()}
-          </ThemedText>
-        </View>
-        <View style={styles.statTile}>
-          <ThemedText style={styles.statNumber}>—</ThemedText>
-          <ThemedText style={styles.statLabel}>Citas hoy</ThemedText>
+        <View style={styles.statsRow}>
+          {stats.map((stat) => (
+            <View key={stat.label} style={styles.statTile}>
+              <Text style={styles.statValue}>{stat.value}</Text>
+              <Text style={styles.statLabel}>{stat.label}</Text>
+            </View>
+          ))}
         </View>
       </Animated.View>
 
-      <Animated.View
-        entering={FadeInDown.delay(400).duration(400)}
-        style={styles.footer}
-      >
-        <GradientButton
-          label="Ir al panel"
+      <Animated.View entering={FadeInDown.delay(280).duration(400)}>
+        <GradientCTAButton
+          label="Ir al panel principal"
+          icon="arrow-right"
           onPress={handleFinish}
           loading={saving}
-          showArrow={false}
+          style={styles.cta}
         />
       </Animated.View>
-    </View>
+    </OnboardingLayout>
   );
 }
+
 const styles = StyleSheet.create({
-  container: {
+  topBlock: {
     flex: 1,
-    backgroundColor: "#111318",
-    paddingHorizontal: Spacing.lg,
-    paddingBottom: Spacing["3xl"],
     justifyContent: "center",
-  },
-  header: {
     alignItems: "center",
-    marginBottom: Spacing["2xl"],
+    paddingBottom: Spacing.lg,
   },
   iconCheck: {
     width: 52,
@@ -153,6 +132,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "rgba(255,255,255,0.9)",
     textAlign: "center",
+    marginTop: Spacing.xs,
   },
   subtitulo: {
     fontSize: 13,
@@ -160,34 +140,37 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 20,
     marginTop: Spacing.sm,
+    paddingHorizontal: Spacing.sm,
   },
-  statsGrid: {
+  statsRow: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: Spacing.md,
-    marginBottom: Spacing["2xl"],
+    gap: 12,
+    marginTop: 24,
+    width: "100%",
+    justifyContent: "center",
   },
   statTile: {
-    width: "48%",
-    backgroundColor: "rgba(255,255,255,0.05)",
-    borderRadius: 10,
+    width: "47%",
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderRadius: 16,
     borderWidth: 0.5,
-    borderColor: "rgba(255,255,255,0.08)",
-    padding: 12,
+    borderColor: "rgba(255,255,255,0.12)",
+    padding: 20,
+    alignItems: "center",
   },
-  statNumber: {
-    fontSize: 22,
+  statValue: {
+    fontSize: 28,
     fontWeight: "700",
     color: "#FFFFFF",
-    marginBottom: 4,
   },
   statLabel: {
-    fontSize: 9,
-    color: "rgba(255,255,255,0.35)",
-    textTransform: "uppercase",
-    letterSpacing: 0.6,
+    fontSize: 12,
+    color: "rgba(255,255,255,0.5)",
+    marginTop: 4,
+    textAlign: "center",
   },
-  footer: {
-    marginTop: Spacing.md,
+  cta: {
+    width: "100%",
   },
 });

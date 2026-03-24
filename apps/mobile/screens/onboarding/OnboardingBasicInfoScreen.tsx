@@ -1,16 +1,13 @@
 import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  TextInput,
-  Pressable,
-  ScrollView,
-} from "react-native";
+import { View, StyleSheet, TextInput, Pressable } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
 import { ThemedText } from "@/components/ThemedText";
-import { GradientButton } from "@/components/GradientButton";
-import { GradientProgressDots } from "@/components/GradientProgressDots";
+import {
+  OnboardingLayout,
+  OnboardingProgressDots,
+  GradientCTAButton,
+} from "@/screens/onboarding/components";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 
@@ -66,21 +63,15 @@ export default function OnboardingBasicInfoScreen({
   };
 
   return (
-    <ScrollView
-      style={styles.scroll}
-      contentContainerStyle={styles.container}
-      keyboardShouldPersistTaps="handled"
-      showsVerticalScrollIndicator={false}
-    >
+    <OnboardingLayout scrollable>
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-        <GradientProgressDots total={5} current={1} />
+        <OnboardingProgressDots currentStep={2} />
         <ThemedText style={styles.titulo}>Datos de tu negocio</ThemedText>
         <ThemedText style={styles.subtitulo}>
           Personaliza el nombre y los colores que verás en toda la app.
         </ThemedText>
       </Animated.View>
 
-      {/* Nombre */}
       <Animated.View
         entering={FadeInDown.delay(100).duration(400)}
         style={styles.campo}
@@ -98,10 +89,9 @@ export default function OnboardingBasicInfoScreen({
           autoCapitalize="words"
           returnKeyType="done"
         />
-        {error && <ThemedText style={styles.errorText}>{error}</ThemedText>}
+        {error ? <ThemedText style={styles.errorText}>{error}</ThemedText> : null}
       </Animated.View>
 
-      {/* Color primario */}
       <Animated.View
         entering={FadeInDown.delay(180).duration(400)}
         style={styles.campo}
@@ -113,18 +103,16 @@ export default function OnboardingBasicInfoScreen({
               key={c.valor}
               onPress={() => setColorPrimario(c.valor)}
               style={[
-                styles.colorChipWrapper,
-                colorPrimario === c.valor &&
-                  styles.colorChipWrapperSeleccionado,
+                styles.swatchOuter,
+                colorPrimario === c.valor && styles.swatchOuterSelected,
               ]}
             >
-              <View style={[styles.colorChip, { backgroundColor: c.valor }]} />
+              <View style={[styles.swatch, { backgroundColor: c.valor }]} />
             </Pressable>
           ))}
         </View>
       </Animated.View>
 
-      {/* Color de acento */}
       <Animated.View
         entering={FadeInDown.delay(260).duration(400)}
         style={styles.campo}
@@ -136,17 +124,16 @@ export default function OnboardingBasicInfoScreen({
               key={c.valor}
               onPress={() => setColorAcento(c.valor)}
               style={[
-                styles.colorChipWrapper,
-                colorAcento === c.valor && styles.colorChipWrapperSeleccionado,
+                styles.swatchOuter,
+                colorAcento === c.valor && styles.swatchOuterSelected,
               ]}
             >
-              <View style={[styles.colorChip, { backgroundColor: c.valor }]} />
+              <View style={[styles.swatch, { backgroundColor: c.valor }]} />
             </Pressable>
           ))}
         </View>
       </Animated.View>
 
-      {/* Vista previa de colores */}
       <Animated.View
         entering={FadeInDown.delay(320).duration(400)}
         style={[styles.preview, { backgroundColor: colorPrimario }]}
@@ -159,33 +146,30 @@ export default function OnboardingBasicInfoScreen({
         </View>
       </Animated.View>
 
-      {/* Botones */}
       <Animated.View
         entering={FadeInDown.delay(400).duration(400)}
         style={styles.botones}
       >
-        <Pressable onPress={onBack} style={styles.botonSecundario}>
-          <ThemedText style={styles.botonSecundarioTexto}>Atrás</ThemedText>
-        </Pressable>
-        <GradientButton
+        <GradientCTAButton
+          variant="outline"
+          label="Atrás"
+          onPress={onBack}
+          style={styles.btnFlex}
+        />
+        <GradientCTAButton
           label="Continuar"
+          icon="arrow-right"
           onPress={continuar}
-          style={styles.botonPrimarioWrapper}
+          style={styles.btnFlexWide}
         />
       </Animated.View>
-    </ScrollView>
+    </OnboardingLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  scroll: { flex: 1, backgroundColor: "#111318" },
-  container: {
-    paddingHorizontal: Spacing.lg,
-    paddingBottom: Spacing["3xl"],
-  },
   header: {
-    paddingTop: Spacing["3xl"],
-    paddingBottom: Spacing.xl,
+    paddingBottom: Spacing.lg,
   },
   titulo: {
     fontSize: 24,
@@ -197,7 +181,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "rgba(255,255,255,0.45)",
     lineHeight: 20,
-    marginBottom: 24,
+    marginBottom: Spacing.md,
   },
   campo: { marginBottom: Spacing.xl },
   label: {
@@ -220,25 +204,28 @@ const styles = StyleSheet.create({
   },
   inputError: { borderColor: Colors.light.error },
   errorText: { color: Colors.light.error, fontSize: 12, marginTop: 4 },
-  paleta: { flexDirection: "row", flexWrap: "wrap", gap: Spacing.sm },
-  colorChipWrapper: {
-    width: 34,
-    height: 34,
-    borderRadius: 10,
-    padding: 3,
-    alignItems: "center",
-    justifyContent: "center",
+  paleta: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
   },
-  colorChipWrapperSeleccionado: {
-    borderWidth: 1.5,
-    borderColor: "rgba(255,255,255,0.7)",
-  },
-  colorChip: {
-    width: 28,
-    height: 28,
+  swatchOuter: {
+    width: 44,
+    height: 44,
     borderRadius: 8,
+    padding: 0,
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "transparent",
+  },
+  swatchOuterSelected: {
+    borderColor: "#FFFFFF",
+  },
+  swatch: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
   },
   preview: {
     borderRadius: BorderRadius.md,
@@ -263,21 +250,12 @@ const styles = StyleSheet.create({
   botones: {
     flexDirection: "row",
     gap: Spacing.md,
+    marginBottom: Spacing["2xl"],
   },
-  botonSecundario: {
+  btnFlex: {
     flex: 1,
-    borderWidth: 0.5,
-    borderColor: "rgba(255,255,255,0.2)",
-    borderRadius: 10,
-    paddingVertical: 15,
-    alignItems: "center",
   },
-  botonSecundarioTexto: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "rgba(255,255,255,0.6)",
-  },
-  botonPrimarioWrapper: {
+  btnFlexWide: {
     flex: 2,
   },
 });
