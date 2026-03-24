@@ -106,6 +106,34 @@ export const whatsappSessions = pgTable("whatsapp_sessions", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export const wabaInboundMessages = pgTable(
+  "waba_inbound_messages",
+  {
+    id: varchar("id")
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    waMessageId: text("wa_message_id"),
+    fromPhone: text("from_phone").notNull(),
+    profileName: text("profile_name"),
+    messageType: text("message_type").notNull().default("unknown"),
+    messageText: text("message_text"),
+    messageTimestamp: timestamp("message_timestamp", { withTimezone: true }),
+    rawPayload: jsonb("raw_payload").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    waMessageIdIdx: index("waba_inbound_messages_wa_message_id_idx").on(
+      table.waMessageId,
+    ),
+    fromPhoneIdx: index("waba_inbound_messages_from_phone_idx").on(
+      table.fromPhone,
+    ),
+    createdAtIdx: index("waba_inbound_messages_created_at_idx").on(
+      table.createdAt,
+    ),
+  }),
+);
+
 // Tabla de perfiles vinculada a Supabase Auth (auth.users)
 // y opcionalmente a una chica en employees.
 export const profiles = pgTable("profiles", {
@@ -277,6 +305,12 @@ export const insertWhatsappSessionSchema = createInsertSchema(
 export const insertPaymentSchema = createInsertSchema(payments).omit({
   id: true,
 });
+export const insertWabaInboundMessageSchema = createInsertSchema(
+  wabaInboundMessages,
+).omit({
+  id: true,
+  createdAt: true,
+});
 
 export const insertPackSchema = createInsertSchema(packs).omit({
   id: true,
@@ -340,6 +374,10 @@ export type WhatsappSession = typeof whatsappSessions.$inferSelect;
 export type InsertWhatsappSession = z.infer<typeof insertWhatsappSessionSchema>;
 export type Payment = typeof payments.$inferSelect;
 export type InsertPayment = z.infer<typeof insertPaymentSchema>;
+export type WabaInboundMessage = typeof wabaInboundMessages.$inferSelect;
+export type InsertWabaInboundMessage = z.infer<
+  typeof insertWabaInboundMessageSchema
+>;
 export type Pack = typeof packs.$inferSelect;
 export type InsertPack = z.infer<typeof insertPackSchema>;
 export type Promotion = typeof promotions.$inferSelect;

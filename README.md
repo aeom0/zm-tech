@@ -164,6 +164,52 @@ SEED_AUTH_PASSWORD=TuPasswordSeguro123!
 
 # Base de datos (Drizzle migrations)
 DATABASE_URL=postgresql://user:pass@host:5432/nombre_bd
+
+# Webhook WABA (apps/web)
+SUPABASE_SERVICE_ROLE_KEY=eyJ...
+META_WABA_VERIFY_TOKEN=token_de_verificacion_meta
+```
+
+---
+
+## Webhook WABA (Meta)
+
+SalonPro incluye un endpoint para recibir mensajes entrantes de WhatsApp Cloud API y almacenarlos en Supabase.
+
+- Endpoint: `POST /api/waba/webhook` (recepción de eventos)
+- Verificación Meta: `GET /api/waba/webhook` (challenge de `hub.*`)
+- Tabla destino: `public.waba_inbound_messages`
+
+Campos guardados por mensaje:
+
+- `wa_message_id`
+- `from_phone`
+- `profile_name`
+- `message_type`
+- `message_text`
+- `message_timestamp`
+- `raw_payload`
+- `created_at`
+
+Pasos en Meta Developers:
+
+1. Ir a tu app de Meta > Webhooks > seleccionar `whatsapp_business_account`.
+2. Configurar callback URL: `https://tu-dominio.com/api/waba/webhook`.
+3. Configurar verify token igual a `META_WABA_VERIFY_TOKEN`.
+4. Suscribir al campo `messages`.
+
+Consulta rápida de auditoría:
+
+```sql
+select
+  created_at,
+  from_phone,
+  profile_name,
+  message_type,
+  message_text
+from public.waba_inbound_messages
+order by created_at desc
+limit 20;
 ```
 
 ---
