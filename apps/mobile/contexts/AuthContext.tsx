@@ -32,26 +32,39 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+/** Beta / preview: cierra sesión al arrancar para exigir login cada apertura. */
+const FORCE_FRESH_START =
+  process.env.EXPO_PUBLIC_FORCE_FRESH_START === "true";
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<AuthProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
+
     const fetchProfile = async (userId: string) => {
       const { data } = await supabase
         .from("profiles")
         .select("id, role, employee_id, full_name, avatar_url")
         .eq("id", userId)
         .single();
-      if (data) setProfile(data as AuthProfile);
+      if (!cancelled && data) setProfile(data as AuthProfile);
     };
 
-    supabase.auth.getSession().then(({ data }) => {
+    const init = async () => {
+      if (FORCE_FRESH_START) {
+        await supabase.auth.signOut();
+      }
+      const { data } = await supabase.auth.getSession();
+      if (cancelled) return;
       setSession(data.session);
       if (data.session) void fetchProfile(data.session.user.id);
       setIsLoading(false);
-    });
+    };
+
+    void init();
 
     const {
       data: { subscription },
@@ -62,7 +75,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       else setProfile(null);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const login = async (

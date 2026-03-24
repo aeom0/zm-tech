@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -19,6 +20,10 @@ import {
 const STORAGE_KEY = "@salonpro/tenant_config";
 const CONFIGURED_KEY = "@salonpro/tenant_configured";
 
+/** Beta / preview: ignora AsyncStorage de dev y fuerza onboarding (quitar en production estable). */
+const FORCE_FRESH_START =
+  process.env.EXPO_PUBLIC_FORCE_FRESH_START === "true";
+
 interface TenantContextValue {
   config: TenantConfig;
   updateTenant: (partial: Partial<TenantConfig>) => Promise<void>;
@@ -34,6 +39,7 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
   const [config, setConfig] = useState<TenantConfig>(defaultTenantConfig);
   const [isConfigured, setIsConfigured] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const freshStartDoneRef = useRef(false);
 
   const updateTenant = useCallback(async (partial: Partial<TenantConfig>) => {
     setConfig((prev) => {
@@ -48,6 +54,11 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
 
     const load = async () => {
       try {
+        if (FORCE_FRESH_START && !freshStartDoneRef.current) {
+          freshStartDoneRef.current = true;
+          await AsyncStorage.multiRemove([STORAGE_KEY, CONFIGURED_KEY]);
+        }
+
         const [raw, configured] = await Promise.all([
           AsyncStorage.getItem(STORAGE_KEY),
           AsyncStorage.getItem(CONFIGURED_KEY),
