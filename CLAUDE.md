@@ -256,9 +256,9 @@ Flujo de arranque (mobile):
 
 - **Mobile (Agenda)**: chequeo de disponibilidad y guard para evitar solapes al crear/reprogramar (mitiga race conditions).
 
-## Cambios Recientes (mar 2026 — Web: panel /panel)
+## Cambios Recientes (mar 2026 — Web: panel /panel + PR-06B)
 
-- **Web**: área autenticada en `/panel` con login en `/login`; primera sección `/panel/servicios` (CRUD de `service_categories` y `services`, toggle inline `is_active`). Tabs Packs/Promos quedan como Próximamente (PR-06B).
+- **Web**: área autenticada en `/panel` con login en `/login`. **`/panel/servicios`**: CRUD `service_categories` y `services` (toggle `is_active`, PR-06); CRUD **`packs`**, **`promotions`** y **`promotion_items`** (PR-06B). Código en `apps/web/src/app/panel/servicios/`: módulos históricos en `hooks/` y `components/`; packs/promos en `_services/`, `_hooks/`, `_components/` (imports cruzados a `hooks/useServicios` donde aplica). Tab activo y deep link: **`?tab=categorias|servicios|packs|promos`**.
 
 ## Cambios Recientes (mar 2026 — v1.4.3 — Modularización mobile + TenantConfig)
 

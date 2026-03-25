@@ -21,7 +21,7 @@ alwaysApply: true
 
 - **Mobile (apps/mobile)**: Expo SDK 54, Supabase directo, TanStack Query. Tema en `constants/theme.ts` (onboarding oscuro #111318). **snake_case** en datos de BD.
 - **Auth + Tenant**: AuthProvider fuera de TenantProvider. Al terminar onboarding se hace upsert en `tenant_settings` y guardado en AsyncStorage; al arranque con sesión se carga tenant desde Supabase si no hay config local.
-- **Web (apps/web)**: Next.js 15, Tailwind, Supabase Auth. Landing + `/dashboard` (KPIs, `useDashboardData`, queries PostgREST separadas + join en memoria) + `/finanzas`. Auth wrapper compartido (`FinanzasAuthWrapper`). Sin sesión → `/finanzas/login`. Staff en `/dashboard` → redirect a `/`. **TODO timezone tenant**: gráfico 7 días usa fecha local del navegador vs `timestamptz` UTC — posible desfase de un día en bordes hasta fase con timezone dinámico.
+- **Web (apps/web)**: Next.js 15, Tailwind, Supabase Auth. Landing + `/dashboard` (KPIs, `useDashboardData`, queries PostgREST separadas + join en memoria) + `/finanzas` + **panel** `/panel` (login `/login`, guard SSR). **`/panel/servicios`**: CRUD categorías/servicios (`hooks/`, `components/`), packs/promos (`_hooks/`, `_services/`, `_components/`; PostgREST directo), tab activo vía **`?tab=`**. Auth wrapper compartido (`FinanzasAuthWrapper`) en `/finanzas` y `/dashboard`. Sin sesión → `/finanzas/login`. Staff en `/dashboard` → redirect a `/`. **TODO timezone tenant**: gráfico 7 días usa fecha local del navegador vs `timestamptz` UTC — posible desfase de un día en bordes hasta fase con timezone dinámico.
 - **Scripts**: `yarn mobile:dev`, `yarn web:dev`, `yarn db:push`, `yarn db:seed`.
 
 ## Pantallas y flujo

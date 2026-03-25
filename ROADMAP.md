@@ -89,7 +89,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 - Servicios por categoría (create, edit, toggle active, precio con coma decimal LATAM)
 - Packs (create, edit, seleccionar servicios)
 - Promos (create, edit, añadir ítems desde service/pack)
-- PR-06
+- **Estado**: entregado en **`/panel/servicios`** — PR-06 (categorías + servicios) y **PR-06B** (packs + promos + `promotion_items`). *Pendiente opcional*: reorder de categorías explícito en UI si no está cubierto.
 
 ### Criterios de aceptación Sprint 2
 - APK descargable e instalable en Android físico con auth funcional
@@ -192,7 +192,8 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 | PR-03 | Unificación defaults tenant-config/DB | 1 | P0 |
 | PR-04 | EAS Build beta + canal internal testing | 2 | P0 |
 | PR-05 | Validación anti-solapamiento de citas | 2 | P1 |
-| PR-06 | Web /servicios CRUD completo | 2 | P1 |
+| PR-06 | Web `/panel/servicios` — categorías + servicios | 2 | P1 |
+| PR-06B | Web `/panel/servicios` — packs + promos (`promotion_items`) | 2 | P1 |
 | PR-07 | CI básico GitHub Actions | 3A | P1 |
 | PR-08 | Error handling dashboard/finanzas/agenda | 3A | P1 |
 | PR-09 | Push notifications FCM v1 E2E | 3B | P1 |

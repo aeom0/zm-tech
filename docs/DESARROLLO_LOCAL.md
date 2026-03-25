@@ -85,3 +85,9 @@ SUPABASE_URL=https://[REF].supabase.co
 SUPABASE_SERVICE_ROLE_KEY=[service_role key]
 SEED_AUTH_PASSWORD=SalonPro2025!
 ```
+
+## Web — panel de catálogo (`/panel/servicios`)
+
+- Desarrollo: `yarn web:dev` (puerto 3000). Variables en **`apps/web/.env.local`**: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+- Rutas bajo **`/panel/*`** exigen sesión (guard SSR); sin login redirige a **`/login`**.
+- **`/panel/servicios`**: tabs categorías, servicios, packs y promos; deep link con **`?tab=categorias|servicios|packs|promos`**. Los datos van a tablas `service_categories`, `services`, `packs`, `promotions`, `promotion_items` vía PostgREST (RLS según rol).

@@ -12,7 +12,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 - Scripts **`yarn db:generate`** y **`yarn db:studio`** en la raíz del monorepo.
 - Carpeta **`migrations/`** en la raíz (salida prevista de Drizzle Kit) con `.gitkeep`.
 - SQL de referencia **`scripts/db/migrations/20260324_advisor_rls_performance.sql`**: `search_path` en funciones públicas, índices FK, políticas RLS consolidadas y patrón initplan seguro para `auth.uid()` (ya aplicado en proyecto Supabase SalonPro vía MCP).
-- **Web (panel)**: nueva ruta autenticada **`/panel/servicios`** con **CRUD de Categorías y Servicios** (incluye toggle inline `is_active`). Tabs **Packs** y **Promos** quedan visibles como *Próximamente* (PR-06B).
+- **Web (panel)**: ruta autenticada **`/panel/servicios`** — CRUD de **`service_categories`** y **`services`** (toggle inline `is_active`, PR-06) más CRUD de **`packs`**, **`promotions`** y **`promotion_items`** (PR-06B; Supabase directo, TanStack Query). Tabs con título tipo *Catálogo de Servicios › …* y tab activo sincronizado con query **`?tab=`** (`categorias` | `servicios` | `packs` | `promos`).
 - **Web (auth)**: login básico en **`/login`** para acceso al panel y layout SSR con guard de sesión.
 - **Mobile (Agenda)**: chequeo de disponibilidad y **bloqueo de solapes** al crear/reprogramar citas (incluye guard previo al insert/update para evitar race conditions).
 - **Mobile (Personal/Finanzas)**: soporte de **pagos de empleados** por modo `commission` / `salary` / `mixed`, con utilidades de cálculo de nómina y badge de modo en UI.

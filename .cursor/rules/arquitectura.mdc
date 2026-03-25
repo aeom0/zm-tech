@@ -48,10 +48,11 @@ salonpro/
 ### Web (apps/web)
 - Next.js 15, Tailwind, Supabase Auth
 - Landing pública + `/dashboard` (métricas) + `/finanzas`; login `/finanzas/login`; paneles admin solo owner/dev
+- Panel **`/panel`** (login **`/login`**): catálogo en **`/panel/servicios`** (categorías, servicios, packs, promos; PostgREST + TanStack Query)
 
 ### Base de datos (Supabase)
 - **Proyecto**: `xidjomlxpuosupymcsaj`
-- Tablas: profiles, tenant_settings, employees, service_categories, services, clients, appointments, payments, inventory_items. RLS por rol (dev/owner/staff) y tenant cuando aplique
+- Tablas: profiles, tenant_settings, employees, service_categories, services, **packs**, **promotions**, **promotion_items**, clients, appointments, payments, inventory_items. RLS por rol (dev/owner/staff) y tenant cuando aplique
 - Helper `get_my_role()` para RLS; `tenant_settings` con `business_name`, `business_type`, colores, moneda, etc.
 - Migraciones: Drizzle; `yarn db:push`
 

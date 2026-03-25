@@ -4,7 +4,7 @@ El proyecto está organizado como monorepo: **apps** (mobile, web) y **packages*
 
 ## Estructura actual
 
-- **apps/web** — Next.js 15, landing pública y paneles `/finanzas`, `/dashboard` y `/panel` (login en `/login`; primera sección `/panel/servicios`).
+- **apps/web** — Next.js 15, landing pública y paneles `/finanzas`, `/dashboard` y `/panel` (login en `/login`; **`/panel/servicios`**: CRUD catálogo incl. packs y promos; query `?tab=`).
 - **apps/mobile** — Expo, app de gestión del salón (Dashboard, Agenda, Servicios, Inventario, Finanzas, onboarding).
 - **packages/shared-schema** — Schema Drizzle + Zod compartido (`@salonpro/shared-schema`). Tablas: tenant_settings, employees, service_categories, services, clients, appointments, payments, inventory_items, profiles.
 - **packages/tenant-config** — Presets por tipo de negocio (`@salonpro/tenant-config`).
