@@ -10,7 +10,7 @@ type WabaMessage = {
 };
 
 type WabaValue = {
-  contacts?: Array<{ profile?: { name?: string } }>;
+  contacts?: { profile?: { name?: string } }[];
   messages?: WabaMessage[];
 };
 
@@ -19,7 +19,7 @@ function extractValues(payload: unknown): WabaValue[] {
 
   const root = payload as {
     object?: string;
-    entry?: Array<{ changes?: Array<{ value?: WabaValue }> }>;
+    entry?: { changes?: { value?: WabaValue }[] }[];
   };
 
   if (

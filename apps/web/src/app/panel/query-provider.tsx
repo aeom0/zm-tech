@@ -11,4 +11,3 @@ export function PanelQueryProvider({
   const [qc] = useState(() => new QueryClient());
   return <QueryClientProvider client={qc}>{children}</QueryClientProvider>;
 }
-
