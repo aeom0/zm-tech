@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   View,
   StyleSheet,
+  Text,
   TextInput,
   Pressable,
   Alert,
@@ -16,6 +17,7 @@ import {
 } from "@/screens/onboarding/components";
 import { Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
+import { useTheme } from "@/hooks/useTheme";
 import { supabase } from "@/lib/supabase";
 
 const COLORES_EMPLEADO = [
@@ -39,15 +41,15 @@ export default function OnboardingTeamScreen({
   onBack,
 }: OnboardingTeamScreenProps) {
   const { config } = useTenant();
+  const { theme } = useTheme();
   const staffLabel = config.terminology.staffSingular;
 
   const [nombre, setNombre] = useState("");
-  const [email, setEmail] = useState("");
-  const [comision, setComision] = useState(
-    String(config.commissions.defaultStaffPercent),
-  );
   const [color, setColor] = useState(config.theme.primaryColor);
   const [guardando, setGuardando] = useState(false);
+  const [empleadosAgregados, setEmpleadosAgregados] = useState<
+    Array<{ id: string; name: string; color: string }>
+  >([]);
 
   const guardar = async () => {
     const nombreFinal = nombre.trim();
@@ -55,30 +57,33 @@ export default function OnboardingTeamScreen({
       Alert.alert("Campo requerido", "El nombre es obligatorio.");
       return;
     }
-    const pct = parseInt(comision, 10);
-    if (isNaN(pct) || pct < 0 || pct > 100) {
-      Alert.alert("Comisión inválida", "Debe ser un número entre 0 y 100.");
-      return;
-    }
 
     setGuardando(true);
     try {
-      const { error } = await supabase.from("employees").insert({
-        name: nombreFinal,
-        email: email.trim() || null,
-        phone: null,
-        color,
-        role: "employee",
-        commission_percentage: pct,
-        notes: null,
-        is_active: true,
-      });
+      const { data, error } = await supabase
+        .from("employees")
+        .insert({
+          name: nombreFinal,
+          color,
+          is_active: true,
+          payment_mode: "commission",
+          commission_percentage: null,
+          salary_amount: null,
+        })
+        .select("id, name, color")
+        .single();
 
       if (error) {
         throw new Error(error.message);
       }
 
-      onNext();
+      if (data) {
+        setEmpleadosAgregados((prev) => [
+          ...prev,
+          { id: data.id, name: data.name, color: data.color },
+        ]);
+      }
+      setNombre("");
     } catch (e: unknown) {
       Alert.alert(
         "Error",
@@ -118,43 +123,6 @@ export default function OnboardingTeamScreen({
       </Animated.View>
 
       <Animated.View
-        entering={FadeInDown.delay(160).duration(400)}
-        style={styles.campo}
-      >
-        <ThemedText style={styles.label}>Email (opcional)</ThemedText>
-        <TextInput
-          style={styles.input}
-          placeholder="correo@ejemplo.com"
-          placeholderTextColor="rgba(255,255,255,0.25)"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-      </Animated.View>
-
-      <Animated.View
-        entering={FadeInDown.delay(220).duration(400)}
-        style={styles.campo}
-      >
-        <ThemedText style={styles.label}>
-          Comisión del {staffLabel} (%)
-        </ThemedText>
-        <TextInput
-          style={styles.input}
-          placeholder="Ej. 60"
-          placeholderTextColor="rgba(255,255,255,0.25)"
-          value={comision}
-          onChangeText={setComision}
-          keyboardType="number-pad"
-          maxLength={3}
-        />
-        <ThemedText style={styles.hint}>
-          El {100 - (parseInt(comision, 10) || 0)}% restante es para el negocio.
-        </ThemedText>
-      </Animated.View>
-
-      <Animated.View
         entering={FadeInDown.delay(280).duration(400)}
         style={styles.campo}
       >
@@ -186,11 +154,43 @@ export default function OnboardingTeamScreen({
           style={styles.btnFlex}
         />
         <GradientCTAButton
-          label="Continuar"
-          icon="arrow-right"
+          label={`Agregar ${config.terminology.staffSingular}`}
+          icon="plus"
           onPress={guardar}
           loading={guardando}
           style={styles.btnFlexWide}
+          disabled={!nombre.trim()}
+        />
+      </Animated.View>
+
+      {empleadosAgregados.length > 0 && (
+        <Animated.View entering={FadeInDown.delay(80).duration(300)}>
+          <View style={styles.empleadosList}>
+            {empleadosAgregados.map((e) => (
+              <View key={e.id} style={styles.empleadoRow}>
+                <View style={[styles.empleadoSwatch, { backgroundColor: e.color }]} />
+                <ThemedText style={styles.empleadoName} numberOfLines={1}>
+                  {e.name}
+                </ThemedText>
+              </View>
+            ))}
+          </View>
+
+          <Text style={[styles.hint, { color: theme.textMuted }]}>
+            💡 El modo de pago de cada{" "}
+            {config.terminology.staffSingular.toLowerCase()} se configura en Más →{" "}
+            {config.terminology.staff} después del registro.
+          </Text>
+        </Animated.View>
+      )}
+
+      <Animated.View entering={FadeInDown.delay(90).duration(300)}>
+        <GradientCTAButton
+          label="Continuar"
+          icon="arrow-right"
+          onPress={onNext}
+          disabled={empleadosAgregados.length === 0}
+          style={styles.continueBtn}
         />
       </Animated.View>
 
@@ -249,8 +249,35 @@ const styles = StyleSheet.create({
   },
   hint: {
     fontSize: 12,
-    color: "rgba(255,255,255,0.45)",
-    marginTop: 6,
+    textAlign: "center",
+    marginTop: 8,
+    paddingHorizontal: 16,
+  },
+  empleadosList: {
+    marginTop: Spacing.md,
+    gap: Spacing.sm,
+    paddingHorizontal: Spacing.lg,
+  },
+  empleadoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.sm,
+  },
+  empleadoSwatch: {
+    width: 14,
+    height: 14,
+    borderRadius: 999,
+  },
+  empleadoName: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#FFFFFF",
+  },
+  continueBtn: {
+    marginTop: Spacing.md,
+    alignSelf: "center",
+    minWidth: 260,
   },
   paleta: {
     flexDirection: "row",

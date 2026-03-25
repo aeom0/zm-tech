@@ -32,7 +32,7 @@ interface Employee {
   phone: string | null;
   color: string;
   role: string;
-  commission_percentage: number;
+  commission_percentage: number | null;
   payment_mode: PaymentMode;
   salary_amount: string | null;
   notes: string | null;
@@ -98,7 +98,7 @@ export default function PersonalScreen() {
         email: string | null;
         phone: string | null;
         color: string;
-        commission_percentage: number;
+        commission_percentage: number | null;
         payment_mode: PaymentMode;
         salary_amount: number | null;
         notes: string | null;
@@ -131,7 +131,10 @@ export default function PersonalScreen() {
       email: emp.email ?? "",
       phone: emp.phone ?? "",
       color: emp.color || config.theme.primaryColor,
-      commission_percentage: String(emp.commission_percentage),
+      commission_percentage:
+        emp.commission_percentage != null
+          ? String(emp.commission_percentage)
+          : String(config.commissions.defaultStaffPercent),
       paymentMode: emp.payment_mode ?? "commission",
       salary_amount: emp.salary_amount != null ? String(emp.salary_amount) : "",
       notes: emp.notes ?? "",
@@ -154,7 +157,7 @@ export default function PersonalScreen() {
       return;
     }
 
-    let commissionPercentage = 0;
+    let commissionPercentage: number | null = null;
     if (form.paymentMode !== "salary") {
       const commission = parseInt(form.commission_percentage, 10);
       if (

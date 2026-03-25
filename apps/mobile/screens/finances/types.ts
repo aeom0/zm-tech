@@ -32,7 +32,7 @@ export interface FinancesEmployeeOption {
   id: string;
   name: string;
   payment_mode: PaymentMode;
-  commission_percentage: number;
+  commission_percentage: number | null;
   salary_amount: string | null;
 }
 

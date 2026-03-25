@@ -24,7 +24,7 @@ export const employees = pgTable("employees", {
   phone: text("phone"),
   color: text("color").notNull().default("#FFD700"),
   role: text("role").notNull().default("employee"),
-  commissionPercentage: integer("commission_percentage").notNull().default(0),
+  commissionPercentage: integer("commission_percentage").default(0),
   paymentMode: text("payment_mode")
     .$type<"commission" | "salary" | "mixed">()
     .default("commission")
