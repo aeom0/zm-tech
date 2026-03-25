@@ -171,6 +171,10 @@ export const profiles = pgTable(
   }),
 );
 
+/**
+ * Pagos registrados en caja. En Postgres (SalonPro) no existe `employee_id` aquí:
+ * el profesional se obtiene de `appointments.employee_id` usando `appointment_id`.
+ */
 export const payments = pgTable(
   "payments",
   {
