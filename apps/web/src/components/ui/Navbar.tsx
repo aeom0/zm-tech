@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { GradientButton } from "@/components/ui/GradientButton";
+import { NavbarDashboardLink } from "@/components/ui/NavbarDashboardLink";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -63,6 +64,7 @@ export function Navbar() {
               {l.label}
             </a>
           ))}
+          <NavbarDashboardLink scrolled={scrolled} />
         </nav>
 
         {/* CTA — desktop */}
@@ -122,6 +124,9 @@ export function Navbar() {
               {l.label}
             </a>
           ))}
+          <div onClick={() => setMenuOpen(false)} className="py-2">
+            <NavbarDashboardLink scrolled={false} />
+          </div>
           <div className="pt-2">
             <GradientButton
               href="#precios"
