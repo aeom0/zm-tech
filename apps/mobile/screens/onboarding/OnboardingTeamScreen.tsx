@@ -92,13 +92,13 @@ export default function OnboardingTeamScreen({
   return (
     <OnboardingLayout scrollable>
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
+        <ThemedText style={styles.badge}>PASO 3 DE 4</ThemedText>
         <OnboardingProgressDots currentStep={3} />
         <ThemedText style={styles.titulo}>
           Agrega tu primer {staffLabel}
         </ThemedText>
         <ThemedText style={styles.subtitulo}>
-          Puedes agregar más desde Más → {config.terminology.staff} después de
-          configurar.
+          Puedes agregar más después de configurar.
         </ThemedText>
       </Animated.View>
 
@@ -206,36 +206,44 @@ export default function OnboardingTeamScreen({
 
 const styles = StyleSheet.create({
   header: {
-    paddingBottom: Spacing.lg,
+    paddingBottom: Spacing["2xl"],
+  },
+  badge: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#E91E8C",
+    letterSpacing: 1,
+    marginBottom: Spacing.sm,
+    textTransform: "uppercase",
   },
   titulo: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "700",
     color: "#FFFFFF",
-    marginBottom: 8,
+    marginBottom: Spacing.sm,
+    lineHeight: 34,
   },
   subtitulo: {
-    fontSize: 13,
-    color: "rgba(255,255,255,0.45)",
-    lineHeight: 20,
-    marginBottom: Spacing.md,
+    fontSize: 15,
+    color: "rgba(255,255,255,0.55)",
+    lineHeight: 22,
   },
   campo: { marginBottom: Spacing.xl },
   label: {
-    fontSize: 10,
-    fontWeight: "600",
+    fontSize: 12,
+    fontWeight: "500",
     textTransform: "uppercase",
-    letterSpacing: 0.8,
-    color: "rgba(255,255,255,0.35)",
+    letterSpacing: 0.5,
+    color: "rgba(255,255,255,0.5)",
     marginBottom: 8,
   },
   input: {
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(255,255,255,0.06)",
     borderWidth: 0.5,
-    borderColor: "rgba(255,255,255,0.1)",
-    borderRadius: 10,
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: 12,
+    borderColor: "rgba(255,255,255,0.15)",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
     fontSize: 15,
     color: "#FFFFFF",
   },
@@ -247,11 +255,11 @@ const styles = StyleSheet.create({
   paleta: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 10,
+    gap: 12,
   },
   swatchOuter: {
-    width: 44,
-    height: 44,
+    width: 48,
+    height: 48,
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
@@ -262,9 +270,9 @@ const styles = StyleSheet.create({
     borderColor: "#FFFFFF",
   },
   swatch: {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
+    width: 44,
+    height: 44,
+    borderRadius: 6,
   },
   botones: {
     flexDirection: "row",

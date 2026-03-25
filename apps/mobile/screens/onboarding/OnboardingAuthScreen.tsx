@@ -8,6 +8,7 @@ import {
   OnboardingLayout,
   OnboardingProgressDots,
   GradientCTAButton,
+  DiamondSparkle,
 } from "@/screens/onboarding/components";
 import { useAuth } from "@/contexts/AuthContext";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
@@ -53,19 +54,27 @@ export default function OnboardingAuthScreen({
   return (
     <OnboardingLayout scrollable>
       <View style={styles.inner}>
-        <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-          {!esRegreso ? (
+        {/* Logo o dots según flujo */}
+        <Animated.View entering={FadeInDown.duration(400)} style={styles.logoRow}>
+          {esRegreso ? (
             <View style={styles.dotsRow}>
               <OnboardingProgressDots currentStep={5} />
             </View>
-          ) : null}
+          ) : (
+            <View style={styles.logoWrap}>
+              <DiamondSparkle size={52} />
+            </View>
+          )}
+        </Animated.View>
+
+        <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
           <ThemedText style={styles.titulo}>
-            {esRegreso ? "Entra con tu cuenta" : "Crea tu acceso a SalonPro"}
+            {esRegreso ? "Entra con tu cuenta" : "Crea tu cuenta"}
           </ThemedText>
           <ThemedText style={styles.subtitulo}>
             {esRegreso
               ? "Si ya configuraste tu negocio, entras y sigues donde lo dejaste."
-              : "Usaremos estos datos para que solo tú y tu equipo puedan entrar a la app."}
+              : "El último paso para activar tu negocio"}
           </ThemedText>
         </Animated.View>
 
@@ -84,7 +93,7 @@ export default function OnboardingAuthScreen({
               />
               <TextInput
                 style={styles.input}
-                placeholder="tu-correo@tusalon.com"
+                placeholder="correo@ejemplo.com"
                 placeholderTextColor="rgba(255,255,255,0.25)"
                 value={email}
                 onChangeText={(text) => {
@@ -161,7 +170,7 @@ export default function OnboardingAuthScreen({
               style={styles.btnHalf}
             />
             <GradientCTAButton
-              label={esRegreso ? "Entrar" : "Crear cuenta y seguir"}
+              label={esRegreso ? "Entrar" : "Crear cuenta y continuar"}
               icon="arrow-right"
               onPress={handleSubmit}
               loading={loading}
@@ -169,6 +178,21 @@ export default function OnboardingAuthScreen({
             />
           </View>
         </Animated.View>
+
+        {/* Link "¿Ya tienes cuenta? Inicia sesión" */}
+        {!esRegreso ? (
+          <Animated.View
+            entering={FadeInDown.delay(200).duration(400)}
+            style={styles.loginLinkWrap}
+          >
+            <ThemedText style={styles.loginLinkText}>
+              ¿Ya tienes cuenta?{" "}
+              <ThemedText style={styles.loginLinkHighlight} onPress={onBack}>
+                Inicia sesión
+              </ThemedText>
+            </ThemedText>
+          </Animated.View>
+        ) : null}
       </View>
     </OnboardingLayout>
   );
@@ -182,25 +206,34 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingBottom: Spacing["2xl"],
   },
-  header: {
+  logoRow: {
+    alignItems: "center",
     marginBottom: Spacing["2xl"],
+  },
+  logoWrap: {
+    alignItems: "center",
   },
   dotsRow: {
     flexDirection: "row",
     justifyContent: "center",
-    marginBottom: Spacing.lg,
+  },
+  header: {
+    marginBottom: Spacing["2xl"],
+    alignItems: "center",
   },
   titulo: {
-    fontSize: 22,
+    fontSize: 28,
     fontWeight: "700",
     color: "#FFFFFF",
     textAlign: "center",
     marginBottom: Spacing.sm,
+    lineHeight: 34,
   },
   subtitulo: {
-    fontSize: 14,
-    color: "rgba(255,255,255,0.7)",
+    fontSize: 15,
+    color: "rgba(255,255,255,0.55)",
     textAlign: "center",
+    lineHeight: 22,
   },
   card: {
     borderRadius: BorderRadius.lg,
@@ -213,12 +246,12 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.lg,
   },
   label: {
-    fontSize: 11,
-    letterSpacing: 0.8,
-    fontWeight: "600",
-    marginBottom: Spacing.xs,
+    fontSize: 12,
+    fontWeight: "500",
+    letterSpacing: 0.5,
+    marginBottom: 8,
     textTransform: "uppercase",
-    color: "rgba(255,255,255,0.45)",
+    color: "rgba(255,255,255,0.5)",
   },
   inputWrapper: {
     flexDirection: "row",
@@ -227,14 +260,14 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     paddingHorizontal: Spacing.md,
     backgroundColor: "rgba(255,255,255,0.06)",
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: "rgba(255,255,255,0.15)",
   },
   inputIcon: {
     marginRight: Spacing.sm,
   },
   input: {
     flex: 1,
-    height: 46,
+    height: 48,
     fontSize: 15,
     color: "#FFFFFF",
   },
@@ -269,5 +302,18 @@ const styles = StyleSheet.create({
   },
   btnPrimary: {
     flex: 1.4,
+  },
+  loginLinkWrap: {
+    marginTop: Spacing.lg,
+    alignItems: "center",
+  },
+  loginLinkText: {
+    fontSize: 14,
+    color: "rgba(255,255,255,0.55)",
+    textAlign: "center",
+  },
+  loginLinkHighlight: {
+    color: "#E91E8C",
+    fontWeight: "600",
   },
 });

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, StyleSheet, Pressable, ScrollView } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
 import {
@@ -103,13 +104,16 @@ export default function OnboardingServicesScreen({
     }
   };
 
+  const seleccionadasCount = categorias.filter((c) => c.seleccionada).length;
+
   return (
     <OnboardingLayout scrollable={false}>
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
+        <ThemedText style={styles.badge}>PASO 4 DE 4</ThemedText>
         <OnboardingProgressDots currentStep={4} />
-        <ThemedText style={styles.titulo}>Categorías de servicios</ThemedText>
+        <ThemedText style={styles.titulo}>Servicios que ofreces</ThemedText>
         <ThemedText style={styles.subtitulo}>
-          Estas categorías aparecerán en tu catálogo. Puedes editarlas después.
+          Selecciona las categorías para tu negocio
         </ThemedText>
       </Animated.View>
 
@@ -139,13 +143,29 @@ export default function OnboardingServicesScreen({
                 ]}
               >
                 {cat.seleccionada ? (
-                  <ThemedText style={styles.checkMark}>✓</ThemedText>
+                  <Feather name="check" size={12} color="#FFFFFF" />
                 ) : null}
               </View>
               <ThemedText style={styles.itemNombre}>{cat.nombre}</ThemedText>
             </Pressable>
           </Animated.View>
         ))}
+
+        {/* Contador de seleccionadas */}
+        {seleccionadasCount > 0 ? (
+          <Animated.View
+            entering={FadeInDown.duration(300)}
+            style={styles.contadorWrap}
+          >
+            <Feather name="heart" size={13} color="#E91E8C" />
+            <ThemedText style={styles.contador}>
+              {seleccionadasCount}{" "}
+              {seleccionadasCount === 1
+                ? "categoría seleccionada"
+                : "categorías seleccionadas"}
+            </ThemedText>
+          </Animated.View>
+        ) : null}
       </ScrollView>
 
       <Animated.View
@@ -172,18 +192,27 @@ export default function OnboardingServicesScreen({
 
 const styles = StyleSheet.create({
   header: {
-    paddingBottom: Spacing.lg,
+    paddingBottom: Spacing["2xl"],
+  },
+  badge: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#E91E8C",
+    letterSpacing: 1,
+    marginBottom: Spacing.sm,
+    textTransform: "uppercase",
   },
   titulo: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "700",
     color: "#FFFFFF",
-    marginBottom: 8,
+    marginBottom: Spacing.sm,
+    lineHeight: 34,
   },
   subtitulo: {
-    fontSize: 13,
-    color: "rgba(255,255,255,0.45)",
-    lineHeight: 20,
+    fontSize: 15,
+    color: "rgba(255,255,255,0.55)",
+    lineHeight: 22,
   },
   listWrap: {
     flex: 1,
@@ -198,38 +227,46 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.03)",
     borderRadius: 10,
     borderWidth: 0.5,
-    borderColor: "rgba(255,255,255,0.12)",
-    padding: Spacing.lg,
+    borderColor: "rgba(255,255,255,0.10)",
+    paddingVertical: 10,
+    paddingHorizontal: 16,
     gap: Spacing.md,
   },
   itemSeleccionado: {
-    borderColor: "rgba(255,255,255,0.7)",
-    backgroundColor: "rgba(255,255,255,0.06)",
+    borderColor: "#E91E8C",
+    backgroundColor: "rgba(233,30,140,0.07)",
   },
   itemPressed: { opacity: 0.8 },
   checkbox: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
+    width: 22,
+    height: 22,
+    borderRadius: 6,
     borderWidth: 0.5,
-    borderColor: "rgba(255,255,255,0.5)",
+    borderColor: "rgba(255,255,255,0.35)",
     alignItems: "center",
     justifyContent: "center",
   },
   checkboxSelected: {
-    backgroundColor: "#FFFFFF",
-    borderColor: "#FFFFFF",
-  },
-  checkMark: {
-    color: "#000000",
-    fontSize: 11,
-    fontWeight: "700",
-    lineHeight: 14,
+    backgroundColor: "#E91E8C",
+    borderColor: "#E91E8C",
   },
   itemNombre: {
-    fontSize: 16,
+    flex: 1,
+    fontSize: 15,
     fontWeight: "500",
     color: "#FFFFFF",
+  },
+  contadorWrap: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.xs,
+    marginTop: Spacing.sm,
+    paddingHorizontal: Spacing.xs,
+  },
+  contador: {
+    fontSize: 13,
+    color: "#E91E8C",
+    fontWeight: "500",
   },
   botones: {
     flexDirection: "row",

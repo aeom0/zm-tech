@@ -6,6 +6,7 @@ import { ThemedText } from "@/components/ThemedText";
 import {
   OnboardingLayout,
   GradientCTAButton,
+  DiamondSparkle,
 } from "@/screens/onboarding/components";
 import { Spacing } from "@/constants/theme";
 
@@ -23,24 +24,39 @@ export default function OnboardingEntryScreen({
 }: OnboardingEntryScreenProps) {
   return (
     <OnboardingLayout centered>
+      {/* Logo + tagline pequeño */}
       <Animated.View
         entering={FadeInUp.duration(500)}
-        style={styles.topSection}
+        style={styles.logoSection}
       >
-        <ThemedText style={styles.wordmark}>SalonPro</ThemedText>
-        <ThemedText style={styles.tagline}>
-          Configura tu salón en unos minutos.
+        <DiamondSparkle size={64} />
+        <ThemedText style={styles.taglineSmall}>
+          Tu negocio en un solo lugar
         </ThemedText>
       </Animated.View>
 
+      {/* Hero title — ocupa el espacio central */}
       <Animated.View
-        entering={FadeInDown.duration(500).delay(120)}
+        entering={FadeInDown.duration(500).delay(80)}
+        style={styles.heroSection}
+      >
+        <ThemedText style={styles.heroTitle}>Gestiona tu salón</ThemedText>
+        <ThemedText style={styles.heroHighlight}>
+          con estilo y precisión
+        </ThemedText>
+        <ThemedText style={styles.heroSub}>
+          Citas, personal, finanzas e inventario{"\n"}todo en tu bolsillo.
+        </ThemedText>
+      </Animated.View>
+
+      {/* Botones al fondo */}
+      <Animated.View
+        entering={FadeInDown.duration(500).delay(160)}
         style={styles.bottomSection}
       >
         <GradientCTAButton
           label="Crear nuevo negocio"
           onPress={onCreateNew}
-          icon="star"
           style={styles.btnFull}
         />
         <GradientCTAButton
@@ -55,24 +71,32 @@ export default function OnboardingEntryScreen({
 }
 
 const styles = StyleSheet.create({
-  topSection: {
+  logoSection: {
+    alignItems: "center",
+    gap: Spacing.sm,
+  },
+  heroSection: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
   },
-  wordmark: {
-    fontSize: 34,
-    fontWeight: "800",
-    letterSpacing: -1,
+  heroTitle: {
+    fontSize: 32,
+    fontWeight: "700",
     color: "#FFFFFF",
-    marginBottom: Spacing.xs,
-    marginTop: 0,
+    lineHeight: 40,
   },
-  tagline: {
-    fontSize: 14,
-    color: "rgba(255,255,255,0.7)",
-    textAlign: "center",
-    paddingHorizontal: Spacing.md,
+  heroHighlight: {
+    fontSize: 32,
+    fontWeight: "700",
+    color: "#E91E8C",
+    lineHeight: 40,
+  },
+  heroSub: {
+    fontSize: 13,
+    color: "rgba(255,255,255,0.45)",
+    lineHeight: 20,
+    marginTop: Spacing.lg,
   },
   bottomSection: {
     gap: 12,
@@ -80,5 +104,10 @@ const styles = StyleSheet.create({
   },
   btnFull: {
     width: "100%",
+  },
+  taglineSmall: {
+    fontSize: 13,
+    color: "rgba(255,255,255,0.45)",
+    textAlign: "center",
   },
 });

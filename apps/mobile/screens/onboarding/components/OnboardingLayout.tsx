@@ -34,7 +34,7 @@ export function OnboardingLayout({
     backgroundColor: ONBOARDING_BG,
     paddingTop: insets.top + Spacing.lg,
     paddingBottom: insets.bottom + Spacing.lg,
-    paddingHorizontal: Spacing.xl,
+    paddingHorizontal: Spacing["2xl"],
   };
 
   if (scrollable) {

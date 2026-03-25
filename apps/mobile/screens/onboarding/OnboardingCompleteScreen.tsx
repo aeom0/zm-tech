@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { View, StyleSheet, Alert, Text } from "react-native";
+import { View, StyleSheet, Alert } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
 
 import { ThemedText } from "@/components/ThemedText";
 import {
@@ -12,6 +13,13 @@ import {
 import { Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 
+const GRADIENT_COLORS = [
+  "#E91E8C",
+  "#9C27B0",
+  "#3D3D8F",
+  "#1565C0",
+] as const;
+
 interface OnboardingCompleteScreenProps {
   onFinish: () => void;
 }
@@ -20,6 +28,12 @@ interface StatItem {
   label: string;
   value: string;
 }
+
+const FEATURES = [
+  { icon: "calendar" as const, text: "Agenda y citas en tiempo real" },
+  { icon: "trending-up" as const, text: "Finanzas y reportes detallados" },
+  { icon: "users" as const, text: "Gestión de equipo y comisiones" },
+];
 
 export default function OnboardingCompleteScreen({
   onFinish,
@@ -58,44 +72,65 @@ export default function OnboardingCompleteScreen({
     }
   };
 
-  const miembrosEquipo = 1;
-
   const stats: StatItem[] = [
-    { value: "0", label: "Servicios configurados" },
-    { value: String(miembrosEquipo), label: "Miembros del equipo" },
-    { value: "Free", label: "Plan activo" },
-    { value: "14", label: "Días de trial" },
+    { value: "3", label: "Categorías" },
+    { value: "1", label: "Profesional" },
+    { value: "—", label: "Citas hoy" },
   ];
 
   return (
     <OnboardingLayout centered>
       <Animated.View entering={FadeInDown.duration(400)} style={styles.topBlock}>
         <OnboardingProgressDots currentStep={6} />
-        <View style={styles.iconCheck}>
-          <Feather name="check" size={26} color="rgba(255,255,255,0.9)" />
-        </View>
-        <ThemedText style={styles.titulo}>¡Todo listo!</ThemedText>
-        <ThemedText style={styles.nombre}>{config.businessName}</ThemedText>
-        <ThemedText style={styles.subtitulo}>
-          Tu app está configurada y lista para empezar a registrar{" "}
-          {config.terminology.appointment}s, {config.terminology.staff} y
-          servicios.
-        </ThemedText>
 
+        {/* Círculo gradiente con check */}
+        <LinearGradient
+          colors={[...GRADIENT_COLORS]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.checkCircle}
+        >
+          <Feather name="check" size={36} color="#FFFFFF" />
+        </LinearGradient>
+
+        <View style={styles.textBlock}>
+          <ThemedText style={styles.titulo}>¡Todo listo!</ThemedText>
+          <ThemedText style={styles.nombre}>{config.businessName}</ThemedText>
+          <ThemedText style={styles.subtitulo}>
+            Tu negocio está configurado y listo{"\n"}para recibir clientes
+          </ThemedText>
+        </View>
+
+        {/* Stat tiles horizontales */}
         <View style={styles.statsRow}>
           {stats.map((stat) => (
             <View key={stat.label} style={styles.statTile}>
-              <Text style={styles.statValue}>{stat.value}</Text>
-              <Text style={styles.statLabel}>{stat.label}</Text>
+              <ThemedText style={styles.statValue}>{stat.value}</ThemedText>
+              <ThemedText style={styles.statLabel}>{stat.label}</ThemedText>
+            </View>
+          ))}
+        </View>
+
+        {/* Lista de features */}
+        <View style={styles.featuresList}>
+          {FEATURES.map((f) => (
+            <View key={f.text} style={styles.featureRow}>
+              <View style={styles.featureIconBg}>
+                <Feather name={f.icon} size={15} color="#E91E8C" />
+              </View>
+              <ThemedText style={styles.featureText}>{f.text}</ThemedText>
             </View>
           ))}
         </View>
       </Animated.View>
 
-      <Animated.View entering={FadeInDown.delay(280).duration(400)}>
+      <Animated.View
+        entering={FadeInDown.delay(280).duration(400)}
+        style={styles.ctaWrap}
+      >
         <GradientCTAButton
           label="Ir al panel principal"
-          icon="arrow-right"
+          icon="grid"
           onPress={handleFinish}
           loading={saving}
           style={styles.cta}
@@ -110,65 +145,100 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingBottom: Spacing.lg,
   },
-  iconCheck: {
-    width: 52,
-    height: 52,
-    borderRadius: 16,
-    backgroundColor: "rgba(255,255,255,0.07)",
+  checkCircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: Spacing.lg,
+    marginTop: Spacing["2xl"],
+    marginBottom: Spacing["2xl"],
+  },
+  textBlock: {
+    alignItems: "center",
+    gap: Spacing.xs,
+    marginBottom: Spacing["2xl"],
   },
   titulo: {
-    fontSize: 24,
-    fontWeight: "800",
+    fontSize: 32,
+    fontWeight: "700",
     color: "#FFFFFF",
     textAlign: "center",
   },
   nombre: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "700",
-    color: "rgba(255,255,255,0.9)",
+    color: "#E91E8C",
     textAlign: "center",
     marginTop: Spacing.xs,
   },
   subtitulo: {
-    fontSize: 13,
-    color: "rgba(255,255,255,0.75)",
+    fontSize: 15,
+    color: "rgba(255,255,255,0.55)",
     textAlign: "center",
-    lineHeight: 20,
+    lineHeight: 22,
     marginTop: Spacing.sm,
-    paddingHorizontal: Spacing.sm,
+    maxWidth: "80%",
   },
   statsRow: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
-    marginTop: 24,
+    gap: Spacing.md,
+    marginBottom: Spacing["2xl"],
     width: "100%",
     justifyContent: "center",
   },
   statTile: {
-    width: "47%",
+    flex: 1,
     backgroundColor: "rgba(255,255,255,0.06)",
-    borderRadius: 16,
+    borderRadius: 20,
     borderWidth: 0.5,
     borderColor: "rgba(255,255,255,0.12)",
-    padding: 20,
+    paddingVertical: Spacing.lg,
+    paddingHorizontal: Spacing.md,
     alignItems: "center",
   },
   statValue: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: "700",
     color: "#FFFFFF",
   },
   statLabel: {
-    fontSize: 12,
-    color: "rgba(255,255,255,0.5)",
-    marginTop: 4,
+    fontSize: 11,
+    color: "rgba(255,255,255,0.45)",
+    marginTop: 6,
     textAlign: "center",
+  },
+  featuresList: {
+    width: "100%",
+    gap: Spacing.sm,
+  },
+  featureRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.md,
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderRadius: 12,
+    borderWidth: 0.5,
+    borderColor: "rgba(255,255,255,0.08)",
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+  },
+  featureIconBg: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: "rgba(233,30,140,0.12)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  featureText: {
+    fontSize: 14,
+    color: "rgba(255,255,255,0.8)",
+    fontWeight: "500",
+  },
+  ctaWrap: {
+    marginTop: Spacing["3xl"],
   },
   cta: {
     width: "100%",

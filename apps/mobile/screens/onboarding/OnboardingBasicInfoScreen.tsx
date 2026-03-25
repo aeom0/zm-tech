@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, StyleSheet, TextInput, Pressable } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
 import {
@@ -65,10 +66,11 @@ export default function OnboardingBasicInfoScreen({
   return (
     <OnboardingLayout scrollable>
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
+        <ThemedText style={styles.badge}>PASO 2 DE 4</ThemedText>
         <OnboardingProgressDots currentStep={2} />
-        <ThemedText style={styles.titulo}>Datos de tu negocio</ThemedText>
+        <ThemedText style={styles.titulo}>Cuéntanos sobre tu negocio</ThemedText>
         <ThemedText style={styles.subtitulo}>
-          Personaliza el nombre y los colores que verás en toda la app.
+          Elige el nombre y la identidad visual
         </ThemedText>
       </Animated.View>
 
@@ -113,8 +115,27 @@ export default function OnboardingBasicInfoScreen({
         </View>
       </Animated.View>
 
+      {/* Preview card glassmorphic */}
       <Animated.View
         entering={FadeInDown.delay(260).duration(400)}
+        style={[
+          styles.previewCard,
+          { borderColor: colorPrimario + "40" },
+        ]}
+      >
+        <View
+          style={[styles.previewIconBg, { backgroundColor: colorPrimario + "33" }]}
+        >
+          <Feather name="scissors" size={28} color={colorPrimario} />
+        </View>
+        <ThemedText style={styles.previewNombre}>
+          {nombre.trim() || "Mi Salón Hermoso"}
+        </ThemedText>
+        <ThemedText style={styles.previewSub}>Vista previa de tu marca</ThemedText>
+      </Animated.View>
+
+      <Animated.View
+        entering={FadeInDown.delay(340).duration(400)}
         style={styles.campo}
       >
         <ThemedText style={styles.label}>Color de acento</ThemedText>
@@ -135,19 +156,7 @@ export default function OnboardingBasicInfoScreen({
       </Animated.View>
 
       <Animated.View
-        entering={FadeInDown.delay(320).duration(400)}
-        style={[styles.preview, { backgroundColor: colorPrimario }]}
-      >
-        <ThemedText style={styles.previewNombre}>
-          {nombre.trim() || "Tu negocio"}
-        </ThemedText>
-        <View style={[styles.previewTag, { backgroundColor: colorAcento }]}>
-          <ThemedText style={styles.previewTagText}>Vista previa</ThemedText>
-        </View>
-      </Animated.View>
-
-      <Animated.View
-        entering={FadeInDown.delay(400).duration(400)}
+        entering={FadeInDown.delay(420).duration(400)}
         style={styles.botones}
       >
         <GradientCTAButton
@@ -169,36 +178,44 @@ export default function OnboardingBasicInfoScreen({
 
 const styles = StyleSheet.create({
   header: {
-    paddingBottom: Spacing.lg,
+    paddingBottom: Spacing["2xl"],
+  },
+  badge: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#E91E8C",
+    letterSpacing: 1,
+    marginBottom: Spacing.sm,
+    textTransform: "uppercase",
   },
   titulo: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: "700",
     color: "#FFFFFF",
-    marginBottom: 8,
+    marginBottom: Spacing.sm,
+    lineHeight: 34,
   },
   subtitulo: {
-    fontSize: 13,
-    color: "rgba(255,255,255,0.45)",
-    lineHeight: 20,
-    marginBottom: Spacing.md,
+    fontSize: 15,
+    color: "rgba(255,255,255,0.55)",
+    lineHeight: 22,
   },
   campo: { marginBottom: Spacing.xl },
   label: {
-    fontSize: 10,
-    fontWeight: "600",
+    fontSize: 12,
+    fontWeight: "500",
     textTransform: "uppercase",
-    letterSpacing: 0.8,
-    color: "rgba(255,255,255,0.35)",
+    letterSpacing: 0.5,
+    color: "rgba(255,255,255,0.5)",
     marginBottom: 8,
   },
   input: {
-    backgroundColor: "rgba(255,255,255,0.05)",
+    backgroundColor: "rgba(255,255,255,0.06)",
     borderWidth: 0.5,
-    borderColor: "rgba(255,255,255,0.1)",
-    borderRadius: 10,
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: 12,
+    borderColor: "rgba(255,255,255,0.15)",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
     fontSize: 15,
     color: "#FFFFFF",
   },
@@ -207,11 +224,11 @@ const styles = StyleSheet.create({
   paleta: {
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 10,
+    gap: 12,
   },
   swatchOuter: {
-    width: 44,
-    height: 44,
+    width: 48,
+    height: 48,
     borderRadius: 8,
     padding: 0,
     alignItems: "center",
@@ -223,30 +240,37 @@ const styles = StyleSheet.create({
     borderColor: "#FFFFFF",
   },
   swatch: {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
+    width: 44,
+    height: 44,
+    borderRadius: 6,
   },
-  preview: {
-    borderRadius: BorderRadius.md,
-    padding: 14,
+  previewCard: {
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderRadius: 16,
+    borderWidth: 0.5,
+    padding: Spacing.lg,
     marginBottom: Spacing.xl,
-    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    gap: Spacing.sm,
+  },
+  previewIconBg: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: "center",
+    justifyContent: "center",
   },
   previewNombre: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: "700",
     color: "#FFFFFF",
-    flex: 1,
+    textAlign: "center",
   },
-  previewTag: {
-    borderRadius: 999,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: 4,
+  previewSub: {
+    fontSize: 12,
+    color: "rgba(255,255,255,0.4)",
+    textAlign: "center",
   },
-  previewTagText: { fontSize: 11, fontWeight: "600", color: "#000000" },
   botones: {
     flexDirection: "row",
     gap: Spacing.md,
