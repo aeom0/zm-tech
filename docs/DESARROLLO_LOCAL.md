@@ -22,9 +22,13 @@ Error: connect ENETUNREACH [IPv6]:5432
 
 Para generar el SQL a partir del schema Drizzle sin aplicarlo:
 ```bash
-yarn drizzle-kit generate
-# El SQL queda en ./migrations/
+yarn db:generate
+# El SQL queda en ./migrations/ (configurado en drizzle.config.ts)
 ```
+
+### SQL de RLS / advisors (referencia)
+
+El archivo **`scripts/db/migrations/20260324_advisor_rls_performance.sql`** documenta y reproduce (si lo ejecutas entero) los cambios de **Database Advisor** ya aplicados en el proyecto Supabase SalonPro: `search_path` en funciones, índices de FK, políticas RLS unificadas. En WSL sin IPv6 a TCP, suele aplicarse con el **SQL Editor** del dashboard o con **MCP Supabase** (`apply_migration`) desde Cursor.
 
 ### Opción B — yarn db:push con conectividad directa
 

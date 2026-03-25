@@ -35,8 +35,9 @@ Para seeds o scripts con servicio: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, 
 
 El schema se aplica con Drizzle. En WSL puede fallar la conexión TCP directa (IPv6). Opciones:
 
-- **SQL Editor** del Dashboard Supabase: pegar y ejecutar el SQL generado por `yarn drizzle-kit generate`
+- **SQL Editor** del Dashboard Supabase: pegar y ejecutar el SQL generado por **`yarn db:generate`** (sale en `./migrations/`)
 - **`yarn db:push`** si tienes conectividad a `db.xidjomlxpuosupymcsaj.supabase.co:5432`
+- Referencia RLS/advisors ya aplicados en remoto: `scripts/db/migrations/20260324_advisor_rls_performance.sql`
 
 Ver [DESARROLLO_LOCAL.md](DESARROLLO_LOCAL.md) para detalle.
 
@@ -59,6 +60,8 @@ Abrir la URL que muestre Expo (web en 8081) o escanear QR con Expo Go.
 | `yarn mobile:dev` | Expo (app móvil) |
 | `yarn web:dev` | Next.js (landing + panel) |
 | `yarn db:push` | Aplicar schema Drizzle a Supabase |
+| `yarn db:generate` | Generar migraciones SQL en `./migrations/` |
+| `yarn db:studio` | Drizzle Studio |
 | `yarn db:seed` | Cargar seeds (editar templates antes) |
 | `yarn lint` | ESLint |
 | `yarn check:types` | TypeScript |

@@ -55,9 +55,10 @@ docs/
 
 ### Base de datos (Supabase)
 - **Proyecto**: `xidjomlxpuosupymcsaj`
-- **Schema**: `packages/shared-schema/src/schema.ts`
+- **Schema**: `packages/shared-schema/src/schema.ts` (`yarn db:push`; opcional `yarn db:generate` / `yarn db:studio`)
 - **Seeds**: `scripts/db/` (editar templates antes de `yarn db:seed`)
-- **Migraciones**: `yarn db:push` o SQL Editor (ver DESARROLLO_LOCAL.md)
+- **Migraciones**: `yarn db:push` o SQL Editor / MCP (ver DESARROLLO_LOCAL.md)
+- **SQL de referencia RLS/advisors**: `scripts/db/migrations/20260324_advisor_rls_performance.sql`
 
 ### API
 - No hay Express. Cliente usa **Supabase** (`supabase.from('tabla').select()`) desde `apps/mobile/lib/supabase.ts` y TanStack Query.
@@ -79,4 +80,4 @@ docs/
 ### EAS (build móvil)
 - Configuración única: `apps/mobile/eas.json` (ejecutar `eas build` desde `apps/mobile`)
 
-**Última actualización**: 2026-03-24
+**Última actualización**: 2026-03-25

@@ -40,17 +40,24 @@ export const serviceCategories = pgTable("service_categories", {
   order: integer("order").notNull().default(0),
 });
 
-export const services = pgTable("services", {
-  id: varchar("id")
-    .primaryKey()
-    .default(sql`gen_random_uuid()`),
-  name: text("name").notNull(),
-  categoryId: varchar("category_id").references(() => serviceCategories.id),
-  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
-  duration: integer("duration").notNull(),
-  isActive: boolean("is_active").notNull().default(true),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+export const services = pgTable(
+  "services",
+  {
+    id: varchar("id")
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    name: text("name").notNull(),
+    categoryId: varchar("category_id").references(() => serviceCategories.id),
+    price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+    duration: integer("duration").notNull(),
+    isActive: boolean("is_active").notNull().default(true),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    // Alineado con índices FK en Supabase (Database Advisor)
+    categoryIdIdx: index("idx_services_category_id").on(table.categoryId),
+  }),
+);
 
 export const clients = pgTable("clients", {
   id: varchar("id")
@@ -63,24 +70,32 @@ export const clients = pgTable("clients", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-export const appointments = pgTable("appointments", {
-  id: varchar("id")
-    .primaryKey()
-    .default(sql`gen_random_uuid()`),
-  clientId: varchar("client_id").references(() => clients.id),
-  clientName: text("client_name").notNull(),
-  clientPhone: text("client_phone"),
-  clientDocument: text("client_document"),
-  employeeId: varchar("employee_id").references(() => employees.id),
-  serviceId: varchar("service_id").references(() => services.id),
-  date: timestamp("date").notNull(),
-  duration: integer("duration").notNull(),
-  price: decimal("price", { precision: 10, scale: 2 }).notNull(),
-  status: text("status").notNull().default("scheduled"),
-  notes: text("notes"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  completedAt: timestamp("completed_at"),
-});
+export const appointments = pgTable(
+  "appointments",
+  {
+    id: varchar("id")
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    clientId: varchar("client_id").references(() => clients.id),
+    clientName: text("client_name").notNull(),
+    clientPhone: text("client_phone"),
+    clientDocument: text("client_document"),
+    employeeId: varchar("employee_id").references(() => employees.id),
+    serviceId: varchar("service_id").references(() => services.id),
+    date: timestamp("date").notNull(),
+    duration: integer("duration").notNull(),
+    price: decimal("price", { precision: 10, scale: 2 }).notNull(),
+    status: text("status").notNull().default("scheduled"),
+    notes: text("notes"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    completedAt: timestamp("completed_at"),
+  },
+  (table) => ({
+    clientIdIdx: index("idx_appointments_client_id").on(table.clientId),
+    employeeIdIdx: index("idx_appointments_employee_id").on(table.employeeId),
+    serviceIdIdx: index("idx_appointments_service_id").on(table.serviceId),
+  }),
+);
 
 export const inventoryItems = pgTable("inventory_items", {
   id: varchar("id")
@@ -136,27 +151,72 @@ export const wabaInboundMessages = pgTable(
 
 // Tabla de perfiles vinculada a Supabase Auth (auth.users)
 // y opcionalmente a una chica en employees.
-export const profiles = pgTable("profiles", {
-  id: uuid("id").primaryKey(),
-  role: text("role").notNull(), // dev | owner | staff
-  employeeId: varchar("employee_id").references(() => employees.id),
-  fullName: text("full_name"),
-  avatarUrl: text("avatar_url"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+export const profiles = pgTable(
+  "profiles",
+  {
+    id: uuid("id").primaryKey(),
+    role: text("role").notNull(), // dev | owner | staff
+    employeeId: varchar("employee_id").references(() => employees.id),
+    fullName: text("full_name"),
+    avatarUrl: text("avatar_url"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => ({
+    employeeIdIdx: index("idx_profiles_employee_id").on(table.employeeId),
+  }),
+);
 
-export const payments = pgTable("payments", {
-  id: varchar("id")
-    .primaryKey()
-    .default(sql`gen_random_uuid()`),
-  appointmentId: varchar("appointment_id").references(() => appointments.id),
-  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
-  method: text("method").notNull().default("cash"),
-  date: timestamp("date").defaultNow().notNull(),
-  notes: text("notes"),
-  isAbono: boolean("is_abono").notNull().default(false),
-  serviceTotal: decimal("service_total", { precision: 10, scale: 2 }),
-});
+export const payments = pgTable(
+  "payments",
+  {
+    id: varchar("id")
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    appointmentId: varchar("appointment_id").references(() => appointments.id),
+    amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+    method: text("method").notNull().default("cash"),
+    date: timestamp("date").defaultNow().notNull(),
+    notes: text("notes"),
+    isAbono: boolean("is_abono").notNull().default(false),
+    serviceTotal: decimal("service_total", { precision: 10, scale: 2 }),
+  },
+  (table) => ({
+    appointmentIdIdx: index("idx_payments_appointment_id").on(
+      table.appointmentId,
+    ),
+  }),
+);
+
+/** Registro de aprobación/rechazo de pago (validación admin); RLS en Supabase */
+export const appointmentVerifications = pgTable(
+  "appointment_verifications",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    appointmentId: text("appointment_id")
+      .notNull()
+      .references(() => appointments.id, { onDelete: "cascade" }),
+    // En BD: FK a auth.users; aquí sin .references para no duplicar constraint al hacer push
+    verifiedBy: uuid("verified_by").notNull(),
+    verifiedAt: timestamp("verified_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    action: text("action").notNull(),
+    notes: text("notes"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => ({
+    appointmentIdx: index("idx_appt_verif_appointment").on(
+      table.appointmentId,
+    ),
+    verifiedByIdx: index("idx_appt_verif_verified_by").on(table.verifiedBy),
+    actionCheck: check(
+      "appointment_verifications_action_check",
+      sql`${table.action} IN ('approved', 'rejected')`,
+    ),
+  }),
+);
 
 /** Bundles de servicios (IDs en service_ids; sin FK compuesta en PG) */
 export const packs = pgTable("packs", {
@@ -237,7 +297,7 @@ export const clientsRelations = relations(clients, ({ many }) => ({
   appointments: many(appointments),
 }));
 
-export const appointmentsRelations = relations(appointments, ({ one }) => ({
+export const appointmentsRelations = relations(appointments, ({ one, many }) => ({
   client: one(clients, {
     fields: [appointments.clientId],
     references: [clients.id],
@@ -250,7 +310,18 @@ export const appointmentsRelations = relations(appointments, ({ one }) => ({
     fields: [appointments.serviceId],
     references: [services.id],
   }),
+  verifications: many(appointmentVerifications),
 }));
+
+export const appointmentVerificationsRelations = relations(
+  appointmentVerifications,
+  ({ one }) => ({
+    appointment: one(appointments, {
+      fields: [appointmentVerifications.appointmentId],
+      references: [appointments.id],
+    }),
+  }),
+);
 
 export const paymentsRelations = relations(payments, ({ one }) => ({
   appointment: one(appointments, {
@@ -304,6 +375,13 @@ export const insertWhatsappSessionSchema = createInsertSchema(
 ).omit({ updatedAt: true });
 export const insertPaymentSchema = createInsertSchema(payments).omit({
   id: true,
+});
+export const insertAppointmentVerificationSchema = createInsertSchema(
+  appointmentVerifications,
+).omit({
+  id: true,
+  verifiedAt: true,
+  createdAt: true,
 });
 export const insertWabaInboundMessageSchema = createInsertSchema(
   wabaInboundMessages,
@@ -374,6 +452,11 @@ export type WhatsappSession = typeof whatsappSessions.$inferSelect;
 export type InsertWhatsappSession = z.infer<typeof insertWhatsappSessionSchema>;
 export type Payment = typeof payments.$inferSelect;
 export type InsertPayment = z.infer<typeof insertPaymentSchema>;
+export type AppointmentVerification =
+  typeof appointmentVerifications.$inferSelect;
+export type InsertAppointmentVerification = z.infer<
+  typeof insertAppointmentVerificationSchema
+>;
 export type WabaInboundMessage = typeof wabaInboundMessages.$inferSelect;
 export type InsertWabaInboundMessage = z.infer<
   typeof insertWabaInboundMessageSchema

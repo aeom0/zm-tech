@@ -241,6 +241,12 @@ Flujo de arranque (mobile):
 - **EAS**: un solo **`apps/mobile/eas.json`** (eliminado `eas.json` en raíz). `app.json` mobile: `icon`, **`updates.url`** para canales (`preview` / `production`). Perfil `preview` con env de Supabase URL; `EXPO_PUBLIC_SUPABASE_ANON_KEY` (y demás) vía **entornos del proyecto en expo.dev**. Scripts `yarn build:preview:android|ios` en el workspace mobile.
 - **Raíz `app.json` / `assets/images`**: íconos y splash alineados al diamante; adaptive Android usa `android-icon-foreground.png`.
 
+## Cambios Recientes (mar 2026 — v1.4.5 — Supabase Advisors + Drizzle alineado)
+
+- **Supabase (remoto)**: correcciones **Security / Performance Advisor** — `search_path` fijo en `update_updated_at_column`, `get_my_role`, `block_role_change_for_non_dev`; índices en FKs (`appointments`, `payments`, `profiles`, `services`); RLS consolidada (una política por comando por tabla) y políticas con `(SELECT auth.uid())` donde el linter lo pedía. *Leaked password protection* queda como limitación de plan Free si aplica.
+- **Drizzle** (`packages/shared-schema/src/schema.ts`): mismos índices declarados; tabla **`appointment_verifications`** + Zod/relaciones; scripts **`yarn db:generate`** y **`yarn db:studio`**; carpeta **`migrations/`** para salida de generate.
+- **Documentación SQL**: `scripts/db/migrations/20260324_advisor_rls_performance.sql` como referencia; `README.md`, `CHANGELOG.md`, `docs/DESARROLLO_LOCAL.md`, `docs/INDEX.md` actualizados.
+
 ## Cambios Recientes (mar 2026 — v1.4.3 — Modularización mobile + TenantConfig)
 
 - **Pantallas en módulos** (`apps/mobile/screens/`): `agenda/`, `dashboard/`, `finances/`, `inventory/` con `types`, `hooks`, `components` y estilos; `AgendaScreen`, `DashboardScreen`, `FinancesScreen`, `InventoryScreen` como orquestadores finos. Queries de dashboard con `queryFn` para `dashboard_stats` y `appointments_today`.

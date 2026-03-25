@@ -76,7 +76,7 @@ yarn db:seed
 - **Estado servidor**: TanStack React Query v5
 - **Animaciones**: React Native Reanimated 4
 - **Backend**: Supabase (Auth + PostgREST) — sin servidor Express. Proyecto: `xidjomlxpuosupymcsaj`
-- **Schema compartido**: Drizzle ORM + Zod (`packages/shared-schema`)
+- **Schema compartido**: Drizzle ORM + Zod (`packages/shared-schema`) — índices FK y tabla `appointment_verifications` alineados con Supabase; RLS/funciones documentadas en `scripts/db/migrations/20260324_advisor_rls_performance.sql` (aplicación remota vía MCP o SQL Editor si aplica)
 - **Config de tenant**: `packages/tenant-config` (`@salonpro/tenant-config`) — presets, `TenantConfig` (incluye `features?.whatsapp` para promo WA / ajustes)
 - **Web**: Next.js (`apps/web`) — landing pública + paneles `/dashboard` (KPIs) y `/finanzas` (solo rol `owner`/`dev`; login en `/finanzas/login`)
 - **Monorepo**: Yarn Workspaces
@@ -121,10 +121,12 @@ Este monorepo usa la convención estándar `apps/` para aplicaciones y `packages
 ├── scripts/
 │   ├── seed-auth-users.mjs   # Crea usuarios en Supabase Auth
 │   └── db/
+│       ├── migrations/                # SQL de referencia (p. ej. RLS / advisors ya aplicados en remoto)
 │       ├── seed-services-template.sql   # Servicios genéricos (editar antes de usar)
 │       ├── seed-services-example.sql    # Referencia: servicios de ZM Lash & Nails
 │       ├── seed-employees-template.sql  # Empleados genéricos (editar antes de usar)
 │       └── seed-employees-example.sql   # Referencia: equipo de ZM Lash & Nails
+├── migrations/                        # Salida de `yarn db:generate` (Drizzle Kit)
 └── docs/
     ├── SALONPRO_MIGRATION_GUIDE.md  # Plan de migración ZM → SalonPro
     └── design_guidelines.md         # Sistema de diseño
@@ -138,7 +140,9 @@ Este monorepo usa la convención estándar `apps/` para aplicaciones y `packages
 |--------|-------------|
 | `yarn mobile:dev` | Inicia Expo (app móvil) |
 | `yarn web:dev` | Inicia Next.js (web) |
-| `yarn db:push` | Aplica schema a PostgreSQL vía Drizzle |
+| `yarn db:push` | Aplica schema a PostgreSQL vía Drizzle (`packages/shared-schema`) |
+| `yarn db:generate` | Genera migraciones SQL versionadas en `./migrations/` (Drizzle Kit) |
+| `yarn db:studio` | Abre Drizzle Studio contra `DATABASE_URL` |
 | `yarn db:seed` | Carga datos de ejemplo (templates) |
 | `yarn check:types` | Type checking TypeScript |
 | `yarn lint` | Verifica código con ESLint |
@@ -250,4 +254,4 @@ En `apps/mobile/assets/`: misma pieza + `splash-icon.png` raster del diamante.
 
 ---
 
-**Versión**: 1.4.4 · **Licencia**: Privado · **Plataformas**: iOS · Android · Web
+**Versión**: 1.4.5 · **Licencia**: Privado · **Plataformas**: iOS · Android · Web
