@@ -1,10 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { ServiciosTabBar, type TabId } from "./components/ServiciosTabBar";
 import { CategoriasTab } from "./components/CategoriasTab";
 import { ServiciosTab } from "./components/ServiciosTab";
+import { PacksTab } from "./_components/tabs/PacksTab";
+import { PromosTab } from "./_components/tabs/PromosTab";
 import { CategoriaModal } from "./components/CategoriaModal";
 import { ServicioModal } from "./components/ServicioModal";
 
@@ -18,6 +21,8 @@ import { useUpsertServicio, type ServicioRow } from "./hooks/useServicios";
 
 export default function PanelServiciosPage() {
   const [activeTab, setActiveTab] = useState<TabId>("categorias");
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const categoriasQuery = useCategorias();
   const upsertCategoria = useUpsertCategoria();
@@ -37,17 +42,54 @@ export default function PanelServiciosPage() {
   );
 
   const [servicioModalOpen, setServicioModalOpen] = useState(false);
-  const [servicioEditing, setServicioEditing] = useState<ServicioRow | null>(null);
+  const [servicioEditing, setServicioEditing] = useState<ServicioRow | null>(
+    null,
+  );
   const [servicioDefaultCategoryId, setServicioDefaultCategoryId] = useState<
     string | undefined
   >(undefined);
 
+  const TAB_LABELS: Record<TabId, string> = useMemo(
+    () => ({
+      categorias: "Categorías",
+      servicios: "Servicios",
+      packs: "Packs",
+      promos: "Promos",
+    }),
+    [],
+  );
+
   const headerTitle = useMemo(() => {
-    if (activeTab === "categorias") return "Servicios · Categorías";
-    if (activeTab === "servicios") return "Servicios · Servicios";
-    if (activeTab === "packs") return "Servicios · Packs";
-    return "Servicios · Promos";
-  }, [activeTab]);
+    return `Catálogo de Servicios › ${TAB_LABELS[activeTab]}`;
+  }, [activeTab, TAB_LABELS]);
+
+  useEffect(() => {
+    const raw = searchParams.get("tab");
+    if (!raw) return;
+    const next = raw.toLowerCase();
+    const allowed: TabId[] = ["categorias", "servicios", "packs", "promos"];
+    if (!allowed.includes(next as TabId)) return;
+    setActiveTab((prev) => (prev === (next as TabId) ? prev : (next as TabId)));
+  }, [searchParams]);
+
+  function handleTabChange(tab: TabId) {
+    // Evita que queden modales abiertos al navegar a otra sección.
+    if (tab !== "categorias") {
+      setCategoriaModalOpen(false);
+      setCategoriaEditing(null);
+      setCategoriaDeletingId(null);
+    }
+    if (tab !== "servicios") {
+      setServicioModalOpen(false);
+      setServicioEditing(null);
+      setServicioDefaultCategoryId(undefined);
+    }
+
+    setActiveTab(tab);
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", tab);
+    router.replace(`?${params.toString()}`, { scroll: false });
+  }
 
   const openNewCategoria = () => {
     setCategoriaEditing(null);
@@ -76,11 +118,11 @@ export default function PanelServiciosPage() {
         <div className="text-xs text-zinc-500">Panel</div>
         <h1 className="text-2xl font-bold text-white">{headerTitle}</h1>
         <p className="text-sm text-zinc-400 mt-1">
-          Configura categorías y servicios. Packs y promos van en el próximo sprint.
+          Configura tu catálogo: categorías, servicios, packs y promos.
         </p>
       </div>
 
-      <ServiciosTabBar activeTab={activeTab} onChange={setActiveTab} />
+      <ServiciosTabBar activeTab={activeTab} onChange={handleTabChange} />
 
       {activeTab === "categorias" && (
         <CategoriasTab
@@ -107,14 +149,8 @@ export default function PanelServiciosPage() {
         />
       )}
 
-      {(activeTab === "packs" || activeTab === "promos") && (
-        <div className="rounded-2xl border border-white/[0.08] bg-zinc-900 p-8">
-          <div className="text-sm font-semibold text-white">Próximamente</div>
-          <div className="text-sm text-zinc-400 mt-1">
-            Esto se implementa en <span className="text-zinc-200">PR-06B</span>.
-          </div>
-        </div>
-      )}
+      {activeTab === "packs" && <PacksTab />}
+      {activeTab === "promos" && <PromosTab />}
 
       <CategoriaModal
         open={categoriaModalOpen}
@@ -144,4 +180,3 @@ export default function PanelServiciosPage() {
     </div>
   );
 }
-

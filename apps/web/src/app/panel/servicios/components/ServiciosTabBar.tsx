@@ -5,8 +5,8 @@ type TabId = "categorias" | "servicios" | "packs" | "promos";
 const TABS: { id: TabId; label: string; disabled?: boolean }[] = [
   { id: "categorias", label: "Categorías" },
   { id: "servicios", label: "Servicios" },
-  { id: "packs", label: "Packs*", disabled: true },
-  { id: "promos", label: "Promos*", disabled: true },
+  { id: "packs", label: "Packs" },
+  { id: "promos", label: "Promos" },
 ];
 
 export function ServiciosTabBar({
@@ -44,4 +44,3 @@ export function ServiciosTabBar({
 }
 
 export type { TabId };
-
