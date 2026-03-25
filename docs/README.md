@@ -47,7 +47,7 @@ Ver [DESARROLLO_LOCAL.md](DESARROLLO_LOCAL.md) para detalle.
 # App móvil (Expo)
 yarn mobile:dev
 
-# Web (Next.js) — landing + panel /finanzas
+# Web (Next.js) — landing + paneles (/finanzas, /dashboard, /panel)
 yarn web:dev
 ```
 
@@ -70,7 +70,7 @@ Abrir la URL que muestre Expo (web en 8081) o escanear QR con Expo Go.
 ## Estructura resumida
 
 - **`apps/mobile/`** — App Expo: pantallas, navegación, contexts (Auth, Tenant), hooks, tema.
-- **`apps/web/`** — Next.js: landing pública + panel `/finanzas`.
+- **`apps/web/`** — Next.js: landing pública + panel `/finanzas` y `/dashboard` + panel admin `/panel` (login `/login`; primera sección `/panel/servicios`).
 - **`packages/shared-schema/`** — Schema Drizzle + Zod (tenant_settings, employees, services, etc.).
 - **`packages/tenant-config/`** — Presets por tipo de negocio (spa-nails, barbershop, hair-salon, full-aesthetic).
 

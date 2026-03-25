@@ -40,9 +40,9 @@ Este archivo proporciona orientación a Claude Code (claude.ai/code) para trabaj
 │   │   ├── hooks/          # useTheme, useResponsive, useNotifications, useTenant
 │   │   ├── metro.config.js # Configuración Metro para monorepo
 │   │   └── constants/      # theme.ts con Colors + createTheme(config)
-│   └── web/                # Landing + /dashboard + /finanzas (Next.js)
+│   └── web/                # Landing + /dashboard + /finanzas + /panel (Next.js)
 ├── packages/
-│   ├── shared-schema/      # @zm/shared-schema — tablas Drizzle + schemas Zod
+│   ├── shared-schema/      # @salonpro/shared-schema — tablas Drizzle + schemas Zod
 │   └── tenant-config/      # @salonpro/tenant-config — TenantConfig + presets
 ├── scripts/
 │   ├── seed-auth-users.mjs             # Crea usuarios en Supabase Auth
@@ -246,6 +246,19 @@ Flujo de arranque (mobile):
 - **Supabase (remoto)**: correcciones **Security / Performance Advisor** — `search_path` fijo en `update_updated_at_column`, `get_my_role`, `block_role_change_for_non_dev`; índices en FKs (`appointments`, `payments`, `profiles`, `services`); RLS consolidada (una política por comando por tabla) y políticas con `(SELECT auth.uid())` donde el linter lo pedía. *Leaked password protection* queda como limitación de plan Free si aplica.
 - **Drizzle** (`packages/shared-schema/src/schema.ts`): mismos índices declarados; tabla **`appointment_verifications`** + Zod/relaciones; scripts **`yarn db:generate`** y **`yarn db:studio`**; carpeta **`migrations/`** para salida de generate.
 - **Documentación SQL**: `scripts/db/migrations/20260324_advisor_rls_performance.sql` como referencia; `README.md`, `CHANGELOG.md`, `docs/DESARROLLO_LOCAL.md`, `docs/INDEX.md` actualizados.
+
+## Cambios Recientes (mar 2026 — PR-13: pagos de empleados)
+
+- **Mobile (Personal/Finanzas)**: soporte de pagos por modo `commission` / `salary` / `mixed`, con utilidades de cálculo de nómina (`packages/shared-schema/src/utils/payroll.ts`) y badge del modo en UI.
+- **Onboarding (Equipo)**: simplificado — ya no captura comisión/salario; el modo de pago se configura después en Personal.
+
+## Cambios Recientes (mar 2026 — Agenda: disponibilidad + no solapes)
+
+- **Mobile (Agenda)**: chequeo de disponibilidad y guard para evitar solapes al crear/reprogramar (mitiga race conditions).
+
+## Cambios Recientes (mar 2026 — Web: panel /panel)
+
+- **Web**: área autenticada en `/panel` con login en `/login`; primera sección `/panel/servicios` (CRUD de `service_categories` y `services`, toggle inline `is_active`). Tabs Packs/Promos quedan como Próximamente (PR-06B).
 
 ## Cambios Recientes (mar 2026 — v1.4.3 — Modularización mobile + TenantConfig)
 

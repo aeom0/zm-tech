@@ -66,7 +66,7 @@ docs/
 ### Frontend
 - **Mobile**: `apps/mobile/` — components, screens, navigation, contexts, hooks, constants
 - **Pantallas modulares (mobile)**: varias rutas bajo `apps/mobile/screens/<feature>/` agrupan `types`, `hooks`, `components` y estilos; el archivo `*Screen.tsx` en `screens/` actúa como orquestador (p. ej. `agenda/`, `dashboard/`, `finances/`, `inventory/`).
-- **Web**: `apps/web/` — Next.js App Router
+- **Web**: `apps/web/` — Next.js App Router (landing pública + `/dashboard`, `/finanzas` y `/panel/servicios`)
 - **Tema**: `apps/mobile/constants/theme.ts`; tenant: `TenantContext` + `tenant_settings`
 - **TenantConfig** (`@salonpro/tenant-config`): incluye `features?.whatsapp` (promo WA en Más / ajustes cuando aplique)
 

@@ -14,11 +14,14 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 - SQL de referencia **`scripts/db/migrations/20260324_advisor_rls_performance.sql`**: `search_path` en funciones públicas, índices FK, políticas RLS consolidadas y patrón initplan seguro para `auth.uid()` (ya aplicado en proyecto Supabase SalonPro vía MCP).
 - **Web (panel)**: nueva ruta autenticada **`/panel/servicios`** con **CRUD de Categorías y Servicios** (incluye toggle inline `is_active`). Tabs **Packs** y **Promos** quedan visibles como *Próximamente* (PR-06B).
 - **Web (auth)**: login básico en **`/login`** para acceso al panel y layout SSR con guard de sesión.
+- **Mobile (Agenda)**: chequeo de disponibilidad y **bloqueo de solapes** al crear/reprogramar citas (incluye guard previo al insert/update para evitar race conditions).
+- **Mobile (Personal/Finanzas)**: soporte de **pagos de empleados** por modo `commission` / `salary` / `mixed`, con utilidades de cálculo de nómina y badge de modo en UI.
 
 ### Cambiado
 - **Drizzle**: índices `idx_appointments_*`, `idx_payments_appointment_id`, `idx_profiles_employee_id`, `idx_services_category_id` e índices `idx_appt_verif_*` declarados en `schema.ts` para coincidir con la base remota y con `yarn db:push`.
 - **`drizzle.config.ts`**: comentarios que distinguen `db:push` vs `db:generate` y remiten al SQL de advisors/RLS.
 - **Supabase Web**: cliente actualizado para usar `@supabase/ssr` (browser + server) y soportar guard SSR por cookies en App Router.
+- **Onboarding (Equipo)**: simplificado — ya no captura comisión/salario; el modo de pago se configura luego en **Personal**.
 
 ### Notas
 - **Security Advisor**: puede seguir mostrando *Leaked Password Protection* en plan Free de Supabase Auth; el resto de avisos de funciones `search_path` y performance RLS/FK quedaron atendidos en remoto según el SQL anterior.
