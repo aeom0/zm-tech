@@ -22,6 +22,8 @@ import { useTenant } from "@/contexts/TenantContext";
 import { queryClient } from "@/lib/query-client";
 import { supabase } from "@/lib/supabase";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
+import type { PaymentMode } from "@salonpro/shared-schema";
+import { EmployeePaymentBadge } from "@/screens/personal/components/EmployeePaymentBadge";
 
 interface Employee {
   id: string;
@@ -31,19 +33,11 @@ interface Employee {
   color: string;
   role: string;
   commission_percentage: number;
+  payment_mode: PaymentMode;
+  salary_amount: string | null;
   notes: string | null;
   is_active: boolean;
 }
-
-// Los dos primeros colores se sobreescriben en runtime con los del tenant
-const PRESET_COLORS = [
-  "#7B2D8E",
-  "#D4AF37",
-  "#4CAF50",
-  "#2196F3",
-  "#E91E63",
-  "#FF9800",
-];
 
 export default function PersonalScreen() {
   const headerHeight = useHeaderHeight();
@@ -51,6 +45,17 @@ export default function PersonalScreen() {
   const { theme } = useTheme();
   const { isAdmin } = useAuth();
   const { config } = useTenant();
+  const currencySymbol = config.locale.currency.symbol;
+
+  const presetColors = [
+    config.theme.primaryColor,
+    config.theme.accentColor,
+    "#4CAF50",
+    "#2196F3",
+    "#E91E63",
+    "#FF9800",
+  ];
+  const staffSingular = config.terminology.staffSingular || "Profesional";
 
   const [modalVisible, setModalVisible] = useState(false);
   const [editing, setEditing] = useState<Employee | null>(null);
@@ -59,7 +64,9 @@ export default function PersonalScreen() {
     email: "",
     phone: "",
     color: config.theme.primaryColor,
+    paymentMode: "commission" as PaymentMode,
     commission_percentage: String(config.commissions.defaultStaffPercent),
+    salary_amount: "",
     notes: "",
     is_active: true,
   });
@@ -92,6 +99,8 @@ export default function PersonalScreen() {
         phone: string | null;
         color: string;
         commission_percentage: number;
+        payment_mode: PaymentMode;
+        salary_amount: number | null;
         notes: string | null;
         is_active: boolean;
       };
@@ -107,6 +116,7 @@ export default function PersonalScreen() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["employees"] });
+      queryClient.invalidateQueries({ queryKey: ["employees", "active"] });
       closeModal();
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     },
@@ -120,8 +130,10 @@ export default function PersonalScreen() {
       name: emp.name,
       email: emp.email ?? "",
       phone: emp.phone ?? "",
-      color: emp.color || "#7B2D8E",
+      color: emp.color || config.theme.primaryColor,
       commission_percentage: String(emp.commission_percentage),
+      paymentMode: emp.payment_mode ?? "commission",
+      salary_amount: emp.salary_amount != null ? String(emp.salary_amount) : "",
       notes: emp.notes ?? "",
       is_active: emp.is_active,
     });
@@ -141,10 +153,33 @@ export default function PersonalScreen() {
       Alert.alert("Error", "El nombre es obligatorio");
       return;
     }
-    const commission = parseInt(form.commission_percentage, 10);
-    if (Number.isNaN(commission) || commission < 0 || commission > 100) {
-      Alert.alert("Error", "La comisión debe ser un número entre 0 y 100");
-      return;
+
+    let commissionPercentage = 0;
+    if (form.paymentMode !== "salary") {
+      const commission = parseInt(form.commission_percentage, 10);
+      if (
+        Number.isNaN(commission) ||
+        commission < 0 ||
+        commission > 100
+      ) {
+        Alert.alert(
+          "Error",
+          "La comisión debe ser un número entre 0 y 100",
+        );
+        return;
+      }
+      commissionPercentage = commission;
+    }
+
+    let salaryAmount: number | null = null;
+    if (form.paymentMode !== "commission") {
+      const raw = form.salary_amount.trim().replace(",", ".");
+      const parsed = raw ? parseFloat(raw) : NaN;
+      if (Number.isNaN(parsed) || parsed < 0) {
+        Alert.alert("Error", "Ingresa un salario válido (>= 0)");
+        return;
+      }
+      salaryAmount = parsed;
     }
 
     updateMutation.mutate({
@@ -153,8 +188,11 @@ export default function PersonalScreen() {
         name,
         email: form.email.trim() || null,
         phone: form.phone.trim() || null,
-        color: form.color.trim() || "#7B2D8E",
-        commission_percentage: commission,
+        color: form.color.trim() || config.theme.primaryColor,
+        commission_percentage: commissionPercentage,
+        payment_mode: form.paymentMode,
+        salary_amount:
+          form.paymentMode !== "commission" ? salaryAmount : null,
         notes: form.notes.trim() || null,
         is_active: form.is_active,
       },
@@ -187,7 +225,8 @@ export default function PersonalScreen() {
         showsVerticalScrollIndicator={false}
       >
         <ThemedText style={[styles.hint, { color: theme.textSecondary }]}>
-          Toca una chica para editar nombre, correo, comisión % y más.
+          Toca a una {staffSingular.toLowerCase()} para editar nombre, correo,
+          comisión % y más.
         </ThemedText>
 
         {isLoading ? (
@@ -213,7 +252,15 @@ export default function PersonalScreen() {
               onPress={() => openEdit(emp)}
             >
               <View style={styles.cardMain}>
-                <ThemedText style={styles.cardName}>{emp.name}</ThemedText>
+                <View style={styles.nameRow}>
+                  <ThemedText style={styles.cardName}>{emp.name}</ThemedText>
+                  <EmployeePaymentBadge
+                    mode={emp.payment_mode ?? "commission"}
+                    percentage={
+                      emp.payment_mode === "salary" ? null : emp.commission_percentage
+                    }
+                  />
+                </View>
                 {emp.email ? (
                   <ThemedText
                     style={[styles.cardEmail, { color: theme.textMuted }]}
@@ -222,18 +269,6 @@ export default function PersonalScreen() {
                   </ThemedText>
                 ) : null}
                 <View style={styles.badges}>
-                  <View
-                    style={[
-                      styles.badge,
-                      { backgroundColor: theme.primary + "20" },
-                    ]}
-                  >
-                    <ThemedText
-                      style={[styles.badgeText, { color: theme.primary }]}
-                    >
-                      {emp.commission_percentage}% comisión
-                    </ThemedText>
-                  </View>
                   {!emp.is_active && (
                     <View
                       style={[
@@ -266,7 +301,7 @@ export default function PersonalScreen() {
           >
             <View style={styles.modalHeader}>
               <ThemedText style={styles.modalTitle}>
-                {editing ? "Editar chica" : "Nueva chica"}
+                {editing ? `Editar ${staffSingular}` : `Nuevo ${staffSingular}`}
               </ThemedText>
               <Pressable onPress={closeModal} hitSlop={12}>
                 <Feather name="x" size={24} color={theme.textSecondary} />
@@ -297,7 +332,7 @@ export default function PersonalScreen() {
               <ThemedText
                 style={[styles.fieldLabel, { color: theme.textSecondary }]}
               >
-                Correo (@zmlashnails.com)
+                Correo
               </ThemedText>
               <TextInput
                 style={[
@@ -308,7 +343,7 @@ export default function PersonalScreen() {
                     borderColor: theme.border,
                   },
                 ]}
-                placeholder="romina@zmlashnails.com"
+                placeholder="nombre@correo.com"
                 placeholderTextColor={theme.textMuted}
                 value={form.email}
                 onChangeText={(t) => setForm((f) => ({ ...f, email: t }))}
@@ -330,7 +365,7 @@ export default function PersonalScreen() {
                     borderColor: theme.border,
                   },
                 ]}
-                placeholder="+51 999 999 999"
+                placeholder="Ej. +1 555 123 4567"
                 placeholderTextColor={theme.textMuted}
                 value={form.phone}
                 onChangeText={(t) => setForm((f) => ({ ...f, phone: t }))}
@@ -340,25 +375,99 @@ export default function PersonalScreen() {
               <ThemedText
                 style={[styles.fieldLabel, { color: theme.textSecondary }]}
               >
-                Comisión (%)
+                Modo de pago
               </ThemedText>
-              <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: theme.backgroundSecondary,
-                    color: theme.text,
-                    borderColor: theme.border,
-                  },
-                ]}
-                placeholder="40"
-                placeholderTextColor={theme.textMuted}
-                value={form.commission_percentage}
-                onChangeText={(t) =>
-                  setForm((f) => ({ ...f, commission_percentage: t }))
-                }
-                keyboardType="number-pad"
-              />
+              <View style={styles.paymentModeRow}>
+                {(
+                  [
+                    { id: "commission" as PaymentMode, label: "Comisión" },
+                    { id: "salary" as PaymentMode, label: "Salario fijo" },
+                    { id: "mixed" as PaymentMode, label: "Mixto" },
+                  ] as const
+                ).map((opt) => {
+                  const selected = form.paymentMode === opt.id;
+                  return (
+                    <Pressable
+                      key={opt.id}
+                      style={[
+                        styles.paymentModeChip,
+                        {
+                          borderColor: selected ? theme.primary : theme.border,
+                          backgroundColor: selected
+                            ? theme.primary + "15"
+                            : theme.backgroundSecondary,
+                        },
+                      ]}
+                      onPress={() => setForm((f) => ({ ...f, paymentMode: opt.id }))}
+                    >
+                      <ThemedText
+                        style={[
+                          styles.paymentModeChipText,
+                          {
+                            color: selected ? theme.primary : theme.text,
+                          },
+                        ]}
+                      >
+                        {opt.label}
+                      </ThemedText>
+                    </Pressable>
+                  );
+                })}
+              </View>
+
+              {form.paymentMode !== "salary" && (
+                <>
+                  <ThemedText
+                    style={[styles.fieldLabel, { color: theme.textSecondary }]}
+                  >
+                    Comisión (%)
+                  </ThemedText>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      {
+                        backgroundColor: theme.backgroundSecondary,
+                        color: theme.text,
+                        borderColor: theme.border,
+                      },
+                    ]}
+                    placeholder="40"
+                    placeholderTextColor={theme.textMuted}
+                    value={form.commission_percentage}
+                    onChangeText={(t) =>
+                      setForm((f) => ({ ...f, commission_percentage: t }))
+                    }
+                    keyboardType="number-pad"
+                  />
+                </>
+              )}
+
+              {form.paymentMode !== "commission" && (
+                <>
+                  <ThemedText
+                    style={[styles.fieldLabel, { color: theme.textSecondary }]}
+                  >
+                    {`Salario fijo (${currencySymbol})`}
+                  </ThemedText>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      {
+                        backgroundColor: theme.backgroundSecondary,
+                        color: theme.text,
+                        borderColor: theme.border,
+                      },
+                    ]}
+                    placeholder="800"
+                    placeholderTextColor={theme.textMuted}
+                    value={form.salary_amount}
+                    onChangeText={(t) =>
+                      setForm((f) => ({ ...f, salary_amount: t }))
+                    }
+                    keyboardType="decimal-pad"
+                  />
+                </>
+              )}
 
               <ThemedText
                 style={[styles.fieldLabel, { color: theme.textSecondary }]}
@@ -366,7 +475,7 @@ export default function PersonalScreen() {
                 Color (hex)
               </ThemedText>
               <View style={styles.colorRow}>
-                {PRESET_COLORS.map((c) => (
+                {presetColors.map((c) => (
                   <Pressable
                     key={c}
                     style={[
@@ -387,7 +496,7 @@ export default function PersonalScreen() {
                     borderColor: theme.border,
                   },
                 ]}
-                placeholder="#7B2D8E"
+                placeholder={config.theme.primaryColor}
                 placeholderTextColor={theme.textMuted}
                 value={form.color}
                 onChangeText={(t) => setForm((f) => ({ ...f, color: t }))}
@@ -479,7 +588,13 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   cardMain: { flex: 1 },
-  cardName: { fontSize: 16, fontWeight: "600", marginBottom: 2 },
+  cardName: { fontSize: 16, fontWeight: "600", marginBottom: 0 },
+  nameRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: Spacing.xs,
+  },
   cardEmail: { fontSize: 13, marginBottom: Spacing.sm },
   badges: { flexDirection: "row", flexWrap: "wrap", gap: Spacing.xs },
   badge: {
@@ -518,6 +633,23 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: Spacing.xs,
     marginTop: Spacing.md,
+  },
+  paymentModeRow: {
+    flexDirection: "row",
+    gap: Spacing.sm,
+    marginBottom: Spacing.sm,
+  },
+  paymentModeChip: {
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingVertical: 10,
+    paddingHorizontal: Spacing.sm,
+    alignItems: "center",
+  },
+  paymentModeChipText: {
+    fontSize: 13,
+    fontWeight: "600",
   },
   input: {
     height: 48,

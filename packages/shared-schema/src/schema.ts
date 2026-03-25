@@ -25,6 +25,11 @@ export const employees = pgTable("employees", {
   color: text("color").notNull().default("#FFD700"),
   role: text("role").notNull().default("employee"),
   commissionPercentage: integer("commission_percentage").notNull().default(0),
+  paymentMode: text("payment_mode")
+    .$type<"commission" | "salary" | "mixed">()
+    .default("commission")
+    .notNull(),
+  salaryAmount: decimal("salary_amount", { precision: 10, scale: 2 }),
   notes: text("notes"),
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -348,10 +353,18 @@ export const promotionItemsRelations = relations(promotionItems, ({ one }) => ({
   }),
 }));
 
-export const insertEmployeeSchema = createInsertSchema(employees).omit({
-  id: true,
-  createdAt: true,
-});
+const paymentModeEnum = z.enum(["commission", "salary", "mixed"]);
+
+export const insertEmployeeSchema = createInsertSchema(employees)
+  .omit({
+    id: true,
+    createdAt: true,
+  })
+  .extend({
+    // `drizzle-zod` infiere `payment_mode` como `string`. Sobrescribimos
+    // para que TS/Drizzle queden alineados con el union de negocio.
+    paymentMode: paymentModeEnum.default("commission"),
+  });
 export const insertServiceCategorySchema = createInsertSchema(
   serviceCategories,
 ).omit({ id: true });

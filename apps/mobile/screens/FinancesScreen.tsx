@@ -28,6 +28,7 @@ import { Colors, Spacing } from "@/constants/theme";
 import { queryClient } from "@/lib/query-client";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
+import { calculateEmployeeEarnings } from "@salonpro/shared-schema";
 import type { CompositeNavigationProp } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { MainTabParamList } from "@/navigation/MainTabNavigator";
@@ -212,12 +213,44 @@ export default function FinancesScreen() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("employees")
-        .select("id, name")
+        .select("id, name, payment_mode, commission_percentage, salary_amount")
         .order("created_at", { ascending: true });
       if (error) {
         throw new Error(error.message);
       }
       return (data ?? []) as FinancesEmployeeOption[];
+    },
+  });
+
+  const { data: myEmployee = null } = useQuery<FinancesEmployeeOption | null>({
+    queryKey: ["my_employee", userId],
+    enabled: !isAdmin && !!userId,
+    queryFn: async () => {
+      const { data: prof, error: profError } = await supabase
+        .from("profiles")
+        .select("employee_id")
+        .eq("id", userId)
+        .maybeSingle();
+
+      if (profError) {
+        throw new Error(profError.message);
+      }
+
+      if (!prof?.employee_id) return null;
+
+      const { data: emp, error: empError } = await supabase
+        .from("employees")
+        .select(
+          "id, name, payment_mode, commission_percentage, salary_amount",
+        )
+        .eq("id", prof.employee_id)
+        .maybeSingle();
+
+      if (empError) {
+        throw new Error(empError.message);
+      }
+
+      return (emp ?? null) as FinancesEmployeeOption | null;
     },
   });
 
@@ -305,48 +338,77 @@ export default function FinancesScreen() {
   // Desglose por chica: generado (precio citas), pagado (suma pagos de sus citas), pendiente.
   const desglosePorChica = useMemo(() => {
     if (!isAdmin || employeesList.length === 0) return [];
+    const byEmployeeActivity: Record<
+      string,
+      { generado: number; pagado: number; pendiente: number }
+    > = {};
+    for (const emp of employeesList) {
+      byEmployeeActivity[emp.id] = { generado: 0, pagado: 0, pendiente: 0 };
+    }
+
     const paidByApt: Record<string, number> = {};
     for (const p of payments) {
       const aid = p.appointment_id;
       if (!aid) continue;
       paidByApt[aid] = (paidByApt[aid] ?? 0) + parseFloat(String(p.amount));
     }
-    const aptById: Record<
-      string,
-      { employee_id: string | null; price: number }
-    > = {};
-    for (const a of appointmentsInPeriod) {
-      aptById[a.id] = {
-        employee_id: a.employee_id,
-        price: parseFloat(String(a.price)),
-      };
-    }
-    const byEmployee: Record<
-      string,
-      { generado: number; pagado: number; pendiente: number }
-    > = {};
-    for (const emp of employeesList) {
-      byEmployee[emp.id] = { generado: 0, pagado: 0, pendiente: 0 };
-    }
+
     for (const a of appointmentsInPeriod) {
       const eid = a.employee_id;
-      if (!eid || !byEmployee[eid]) continue;
+      if (!eid || !byEmployeeActivity[eid]) continue;
       const price = parseFloat(String(a.price));
       const paid = paidByApt[a.id] ?? 0;
-      byEmployee[eid].generado += price;
-      byEmployee[eid].pagado += paid;
-      byEmployee[eid].pendiente += Math.max(0, price - paid);
+      byEmployeeActivity[eid].generado += price;
+      byEmployeeActivity[eid].pagado += paid;
+      byEmployeeActivity[eid].pendiente += Math.max(0, price - paid);
     }
+
     return employeesList
       .filter((e) => {
-        const r = byEmployee[e.id];
+        const r = byEmployeeActivity[e.id];
         return r && (r.generado > 0 || r.pagado > 0);
       })
-      .map((e) => ({
-        id: e.id,
-        name: e.name,
-        ...byEmployee[e.id],
-      }));
+      .map((e) => {
+        const activity = byEmployeeActivity[e.id];
+
+        const paymentMode = e.payment_mode ?? "commission";
+        const commissionPercentage =
+          paymentMode === "salary"
+            ? null
+            : e.commission_percentage != null
+              ? Number(e.commission_percentage)
+              : null;
+        const salaryAmount = e.salary_amount
+          ? parseFloat(String(e.salary_amount))
+          : null;
+
+        const generadoRes = calculateEmployeeEarnings({
+          paymentAmount: activity.generado,
+          paymentMode,
+          commissionPercentage,
+          salaryAmount,
+        });
+        const pagadoRes = calculateEmployeeEarnings({
+          paymentAmount: activity.pagado,
+          paymentMode,
+          commissionPercentage,
+          salaryAmount,
+        });
+        const pendienteRes = calculateEmployeeEarnings({
+          paymentAmount: activity.pendiente,
+          paymentMode,
+          commissionPercentage,
+          salaryAmount,
+        });
+
+        return {
+          id: e.id,
+          name: e.name,
+          generado: generadoRes.employeeEarns,
+          pagado: pagadoRes.employeeEarns,
+          pendiente: pendienteRes.employeeEarns,
+        };
+      });
   }, [isAdmin, employeesList, payments, appointmentsInPeriod]);
 
   const { data: revenueData = [] } = useQuery<
@@ -360,6 +422,31 @@ export default function FinancesScreen() {
     [payments],
   );
 
+  const employeeEarningsTotal = useMemo(() => {
+    if (!payments.length) return 0;
+    if (!myEmployee) return 0;
+
+    const paymentMode = myEmployee.payment_mode ?? "commission";
+    const commissionPercentage =
+      paymentMode === "salary"
+        ? null
+        : myEmployee.commission_percentage ?? null;
+    const salaryAmount = myEmployee.salary_amount
+      ? parseFloat(String(myEmployee.salary_amount))
+      : null;
+
+    return payments.reduce((sum, p) => {
+      const paymentAmount = parseFloat(String(p.amount));
+      const result = calculateEmployeeEarnings({
+        paymentAmount,
+        paymentMode,
+        commissionPercentage,
+        salaryAmount,
+      });
+      return sum + result.employeeEarns;
+    }, 0);
+  }, [payments, myEmployee]);
+
   const totalAbono = useMemo(
     () =>
       payments
@@ -367,6 +454,32 @@ export default function FinancesScreen() {
         .reduce((sum, p) => sum + parseFloat(String(p.amount)), 0),
     [payments],
   );
+
+  const employeeEarningsAbonoTotal = useMemo(() => {
+    if (!myEmployee) return 0;
+
+    const paymentMode = myEmployee.payment_mode ?? "commission";
+    const commissionPercentage =
+      paymentMode === "salary"
+        ? null
+        : myEmployee.commission_percentage ?? null;
+    const salaryAmount = myEmployee.salary_amount
+      ? parseFloat(String(myEmployee.salary_amount))
+      : null;
+
+    return payments
+      .filter((p) => p.is_abono)
+      .reduce((sum, p) => {
+        const paymentAmount = parseFloat(String(p.amount));
+        const result = calculateEmployeeEarnings({
+          paymentAmount,
+          paymentMode,
+          commissionPercentage,
+          salaryAmount,
+        });
+        return sum + result.employeeEarns;
+      }, 0);
+  }, [payments, myEmployee]);
 
   const chartDataByPeriod = useMemo(() => {
     const days = period === "today" ? 7 : period === "week" ? 7 : 30;
@@ -799,7 +912,10 @@ export default function FinancesScreen() {
                 numberOfLines={1}
                 adjustsFontSizeToFit
               >
-                {formatCurrency(totalRevenue, config)}
+                {formatCurrency(
+                  isStaffOnly ? employeeEarningsTotal : totalRevenue,
+                  config,
+                )}
               </ThemedText>
             </View>
             <View style={styles.revenueMeta}>
@@ -827,7 +943,11 @@ export default function FinancesScreen() {
                       { color: theme.primary },
                     ]}
                   >
-                    Adelantos 20%: {formatCurrency(totalAbono, config)}
+                    Adelantos 20%:{" "}
+                    {formatCurrency(
+                      isStaffOnly ? employeeEarningsAbonoTotal : totalAbono,
+                      config,
+                    )}
                   </ThemedText>
                 </View>
               )}
@@ -877,7 +997,7 @@ export default function FinancesScreen() {
           >
             <View style={styles.chartCardHeader}>
               <ThemedText style={styles.chartTitle}>
-                Por chica (período)
+                Por {config.terminology.staffSingular.toLowerCase()} (período)
               </ThemedText>
             </View>
             <View style={{ gap: Spacing.sm }}>

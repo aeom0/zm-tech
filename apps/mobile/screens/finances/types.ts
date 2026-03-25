@@ -1,3 +1,5 @@
+import type { PaymentMode } from "@salonpro/shared-schema";
+
 export interface FinancesPayment {
   id: string;
   appointment_id: string | null;
@@ -29,6 +31,9 @@ export interface FinancesServiceOption {
 export interface FinancesEmployeeOption {
   id: string;
   name: string;
+  payment_mode: PaymentMode;
+  commission_percentage: number;
+  salary_amount: string | null;
 }
 
 /** Pago libre, adelanto WhatsApp (20%), o completar el 80% restante */
