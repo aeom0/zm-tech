@@ -16,8 +16,11 @@ import {
   useDeleteCategoria,
   useUpsertCategoria,
   type CategoriaRow,
-} from "./hooks/useCategorias";
-import { useUpsertServicio, type ServicioRow } from "./hooks/useServicios";
+} from "@/hooks/servicios/useCategorias";
+import {
+  useUpsertServicio,
+  type ServicioRow,
+} from "@/hooks/servicios/useServicios";
 
 export default function PanelServiciosPage() {
   const [activeTab, setActiveTab] = useState<TabId>("categorias");

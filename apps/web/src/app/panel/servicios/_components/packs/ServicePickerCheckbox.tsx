@@ -1,6 +1,6 @@
 "use client";
 
-import { useServicios } from "../../hooks/useServicios";
+import { useServicios } from "@/hooks/servicios/useServicios";
 
 interface Props {
   selectedIds: string[];

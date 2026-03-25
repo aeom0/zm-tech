@@ -3,7 +3,7 @@
 import { Plus, Sparkles } from "lucide-react";
 import { useState } from "react";
 
-import { usePromos } from "../../_hooks/usePromos";
+import { usePromos } from "@/hooks/servicios/usePromos";
 import type { Promotion } from "../../_services/promosService";
 import { PromoCard } from "../promos/PromoCard";
 import { PromoFormModal } from "../promos/PromoFormModal";

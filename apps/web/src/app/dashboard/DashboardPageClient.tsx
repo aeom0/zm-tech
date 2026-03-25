@@ -1,12 +1,12 @@
 "use client";
 
-import { useDashboardAppointments } from "./_hooks/useDashboardAppointments";
-import { useDashboardClients } from "./_hooks/useDashboardClients";
-import type { PeriodKey } from "./_hooks/useDashboardPeriod";
-import { useDashboardPeriod } from "./_hooks/useDashboardPeriod";
-import { useDashboardRevenue } from "./_hooks/useDashboardRevenue";
-import { useDashboardTenant } from "./_hooks/useDashboardTenant";
-import { useDashboardTopStaff } from "./_hooks/useDashboardTopStaff";
+import { useDashboardAppointments } from "@/hooks/dashboard/useDashboardAppointments";
+import { useDashboardClients } from "@/hooks/dashboard/useDashboardClients";
+import type { PeriodKey } from "@/hooks/dashboard/useDashboardPeriod";
+import { useDashboardPeriod } from "@/hooks/dashboard/useDashboardPeriod";
+import { useDashboardRevenue } from "@/hooks/dashboard/useDashboardRevenue";
+import { useDashboardTenant } from "@/hooks/dashboard/useDashboardTenant";
+import { useDashboardTopStaff } from "@/hooks/dashboard/useDashboardTopStaff";
 import { AppointmentsStatusCard } from "./_components/AppointmentsStatusCard";
 import { ClientsOverviewCard } from "./_components/ClientsOverviewCard";
 import { DashboardShell } from "./_components/DashboardShell";

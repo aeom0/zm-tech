@@ -2,7 +2,7 @@
 
 import { CalendarRange } from "lucide-react";
 
-import type { AppointmentsByStatus } from "../_hooks/useDashboardAppointments";
+import type { AppointmentsByStatus } from "@/hooks/dashboard/useDashboardAppointments";
 
 import { MetricSkeleton } from "./MetricSkeleton";
 

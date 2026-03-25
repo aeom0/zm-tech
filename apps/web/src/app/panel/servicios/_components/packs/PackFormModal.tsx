@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { useCreatePack, useUpdatePack } from "../../_hooks/usePacks";
+import { useCreatePack, useUpdatePack } from "@/hooks/servicios/usePacks";
 import type { Pack } from "../../_services/packsService";
 import { ServicePickerCheckbox } from "./ServicePickerCheckbox";
 

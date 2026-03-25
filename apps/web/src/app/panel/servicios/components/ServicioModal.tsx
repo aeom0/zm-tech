@@ -3,8 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { X } from "lucide-react";
 
-import type { CategoriaRow } from "../hooks/useCategorias";
-import type { ServicioRow } from "../hooks/useServicios";
+import type { CategoriaRow } from "@/hooks/servicios/useCategorias";
+import type { ServicioRow } from "@/hooks/servicios/useServicios";
 
 export function ServicioModal({
   open,
@@ -146,7 +146,9 @@ export function ServicioModal({
                 step={15}
                 min={15}
                 value={duration}
-                onChange={(e) => setDuration(parseInt(e.target.value || "0", 10))}
+                onChange={(e) =>
+                  setDuration(parseInt(e.target.value || "0", 10))
+                }
                 className="w-full px-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
               />
             </div>
@@ -203,4 +205,3 @@ export function ServicioModal({
     </div>
   );
 }
-

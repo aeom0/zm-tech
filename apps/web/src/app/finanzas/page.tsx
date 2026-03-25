@@ -17,7 +17,7 @@ import {
   Banknote,
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useFinanzasData } from "./useFinanzasData";
+import { useFinanzasData } from "@/hooks/finanzas/useFinanzasData";
 
 const METHOD_LABELS: Record<string, string> = {
   cash: "Efectivo",

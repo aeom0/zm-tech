@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { useCreatePromo, useUpdatePromo } from "../../_hooks/usePromos";
+import { useCreatePromo, useUpdatePromo } from "@/hooks/servicios/usePromos";
 import type { PromoItemInput, Promotion } from "../../_services/promosService";
 import { PromoItemRow } from "./PromoItemRow";
 

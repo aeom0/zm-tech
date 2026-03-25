@@ -2,8 +2,8 @@
 
 import { X } from "lucide-react";
 
-import { usePacks } from "../../_hooks/usePacks";
-import { useServicios } from "../../hooks/useServicios";
+import { usePacks } from "@/hooks/servicios/usePacks";
+import { useServicios } from "@/hooks/servicios/useServicios";
 import type { PromoItemInput } from "../../_services/promosService";
 
 interface Props {

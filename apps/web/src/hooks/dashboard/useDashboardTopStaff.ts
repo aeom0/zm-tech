@@ -13,6 +13,10 @@ export interface TopStaffEntry {
   revenue: number;
 }
 
+/**
+ * Top por ingresos: `public.payments` no define `employee_id` (mismo criterio que Drizzle).
+ * Aquí se enlaza `appointment_id` → `appointments.employee_id` en memoria, sin joins anidados en PostgREST.
+ */
 export function useDashboardTopStaff(dateRange: DateRange) {
   return useQuery({
     queryKey: ["dashboard_top_staff", dateRange],

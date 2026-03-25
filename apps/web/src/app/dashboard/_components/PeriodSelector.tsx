@@ -1,6 +1,9 @@
 "use client";
 
-import type { DateRange, PeriodKey } from "../_hooks/useDashboardPeriod";
+import type {
+  DateRange,
+  PeriodKey,
+} from "@/hooks/dashboard/useDashboardPeriod";
 
 const TABS: { key: PeriodKey; label: string }[] = [
   { key: "week", label: "Semana" },

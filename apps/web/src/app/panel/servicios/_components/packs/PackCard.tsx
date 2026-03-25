@@ -3,7 +3,7 @@
 import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 
-import { useDeletePack, useTogglePackActive } from "../../_hooks/usePacks";
+import { useDeletePack, useTogglePackActive } from "@/hooks/servicios/usePacks";
 import type { Pack } from "../../_services/packsService";
 import { SavingIndicator } from "../shared/SavingIndicator";
 

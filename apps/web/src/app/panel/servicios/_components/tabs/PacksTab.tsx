@@ -3,7 +3,7 @@
 import { Package, Plus } from "lucide-react";
 import { useState } from "react";
 
-import { usePacks } from "../../_hooks/usePacks";
+import { usePacks } from "@/hooks/servicios/usePacks";
 import type { Pack } from "../../_services/packsService";
 import { PackCard } from "../packs/PackCard";
 import { PackFormModal } from "../packs/PackFormModal";

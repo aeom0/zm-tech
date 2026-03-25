@@ -79,7 +79,13 @@ export function useToggleServicio() {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
+    mutationFn: async ({
+      id,
+      is_active,
+    }: {
+      id: string;
+      is_active: boolean;
+    }) => {
       if (!supabase) throw new Error("Supabase no está configurado");
       const { error } = await supabase
         .from("services")
@@ -103,4 +109,3 @@ export function useDeleteServicio() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["web_servicios"] }),
   });
 }
-

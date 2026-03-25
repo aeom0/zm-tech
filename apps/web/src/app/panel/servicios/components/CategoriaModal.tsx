@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { X } from "lucide-react";
 
-import type { CategoriaRow } from "../hooks/useCategorias";
+import type { CategoriaRow } from "@/hooks/servicios/useCategorias";
 
 export function CategoriaModal({
   open,
@@ -16,7 +16,12 @@ export function CategoriaModal({
   initial: CategoriaRow | null;
   isSaving: boolean;
   onClose: () => void;
-  onSave: (payload: { id?: string; name: string; color: string; icon?: string | null }) => void;
+  onSave: (payload: {
+    id?: string;
+    name: string;
+    color: string;
+    icon?: string | null;
+  }) => void;
 }) {
   const title = initial ? "Editar categoría" : "Nueva categoría";
 
@@ -24,7 +29,10 @@ export function CategoriaModal({
   const [color, setColor] = useState("#E91E8C");
   const [icon, setIcon] = useState("");
 
-  const canSubmit = useMemo(() => name.trim().length > 0 && !!color, [name, color]);
+  const canSubmit = useMemo(
+    () => name.trim().length > 0 && !!color,
+    [name, color],
+  );
 
   useEffect(() => {
     if (!open) return;
@@ -139,4 +147,3 @@ export function CategoriaModal({
     </div>
   );
 }
-

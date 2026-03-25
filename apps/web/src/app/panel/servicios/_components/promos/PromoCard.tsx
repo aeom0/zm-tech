@@ -3,7 +3,10 @@
 import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 
-import { useDeletePromo, useTogglePromoActive } from "../../_hooks/usePromos";
+import {
+  useDeletePromo,
+  useTogglePromoActive,
+} from "@/hooks/servicios/usePromos";
 import type { Promotion } from "../../_services/promosService";
 import { SavingIndicator } from "../shared/SavingIndicator";
 

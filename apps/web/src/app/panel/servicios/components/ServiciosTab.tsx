@@ -3,9 +3,13 @@
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 
-import type { CategoriaRow } from "../hooks/useCategorias";
-import type { ServicioRow } from "../hooks/useServicios";
-import { useDeleteServicio, useServicios, useToggleServicio } from "../hooks/useServicios";
+import type { CategoriaRow } from "@/hooks/servicios/useCategorias";
+import type { ServicioRow } from "@/hooks/servicios/useServicios";
+import {
+  useDeleteServicio,
+  useServicios,
+  useToggleServicio,
+} from "@/hooks/servicios/useServicios";
 import { ServiceToggle } from "./ServiceToggle";
 
 function fmtUsd(price: string) {
@@ -23,9 +27,9 @@ export function ServiciosTab({
   onNew: (defaults?: Partial<ServicioRow>) => void;
   onEdit: (svc: ServicioRow) => void;
 }) {
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | undefined>(
-    undefined,
-  );
+  const [selectedCategoryId, setSelectedCategoryId] = useState<
+    string | undefined
+  >(undefined);
 
   const serviciosQuery = useServicios(selectedCategoryId);
   const toggleMutation = useToggleServicio();
@@ -72,7 +76,9 @@ export function ServiciosTab({
           }
           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#E91E8C] hover:bg-[#C2185B] text-white text-sm font-semibold transition-colors disabled:opacity-60"
           disabled={categorias.length === 0}
-          title={categorias.length === 0 ? "Crea una categoría primero" : undefined}
+          title={
+            categorias.length === 0 ? "Crea una categoría primero" : undefined
+          }
         >
           <Plus className="w-4 h-4" />
           Nuevo
@@ -268,7 +274,8 @@ export function ServiciosTab({
           <div className="md:hidden space-y-3">
             {servicios.map((s) => {
               const cat = categoriasById.get(s.category_id);
-              const isBusy = toggleMutation.isPending || deleteMutation.isPending;
+              const isBusy =
+                toggleMutation.isPending || deleteMutation.isPending;
               return (
                 <div
                   key={s.id}
@@ -343,4 +350,3 @@ export function ServiciosTab({
     </section>
   );
 }
-

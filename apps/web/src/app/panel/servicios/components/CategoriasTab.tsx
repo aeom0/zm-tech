@@ -3,7 +3,7 @@
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 
-import type { CategoriaRow } from "../hooks/useCategorias";
+import type { CategoriaRow } from "@/hooks/servicios/useCategorias";
 import { supabase } from "@/lib/supabase";
 
 export function CategoriasTab({
@@ -166,4 +166,3 @@ export function CategoriasTab({
     </section>
   );
 }
-
