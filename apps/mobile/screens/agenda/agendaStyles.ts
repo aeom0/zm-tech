@@ -342,4 +342,19 @@ export const agendaStyles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
   },
+
+  availabilityBanner: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.sm,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+    padding: Spacing.md,
+    marginBottom: Spacing.sm,
+  },
+  availabilityBannerText: {
+    fontSize: 13,
+    flex: 1,
+    fontWeight: "600",
+  },
 });

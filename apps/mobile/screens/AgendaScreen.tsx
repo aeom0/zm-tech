@@ -25,6 +25,7 @@ import {
   useServicesByCategory,
 } from "./agenda/hooks/useAgendaQueries";
 import { useAgendaMutations } from "./agenda/hooks/useAgendaMutations";
+import { useAvailabilityCheck } from "./agenda/hooks/useAvailabilityCheck";
 import { AgendaHeader } from "./agenda/components/AgendaHeader";
 import { AgendaWeekDayHeaders } from "./agenda/components/AgendaWeekDayHeaders";
 import { AgendaEmployeeHeaders } from "./agenda/components/AgendaEmployeeHeaders";
@@ -206,6 +207,8 @@ export default function AgendaScreen() {
     updateAppointmentMutation.mutate({
       id: appointmentDetail.id,
       date: newDate.toISOString(),
+      employee_id: appointmentDetail.employee_id,
+      duration: appointmentDetail.duration,
     });
   };
 
@@ -241,6 +244,37 @@ export default function AgendaScreen() {
       status: "scheduled",
     });
   };
+
+  const candidateStartDate = useMemo(() => {
+    if (!modalVisible) return null;
+    const d = new Date(selectedDate);
+    d.setHours(selectedHour, 0, 0, 0);
+    return d;
+  }, [modalVisible, selectedDate, selectedHour]);
+
+  const availability = useAvailabilityCheck({
+    employeeId: formData.employeeId,
+    startDate: candidateStartDate,
+    durationMinutes: selectedService?.duration || 60,
+    enabled: modalVisible && !!formData.employeeId && !!formData.serviceId,
+    staleTimeMs: 30_000,
+  });
+
+  const rescheduleStartDate = useMemo(() => {
+    if (!detailModalVisible || !appointmentDetail || !rescheduleDate) return null;
+    const d = new Date(rescheduleDate);
+    d.setHours(rescheduleHour, 0, 0, 0);
+    return d;
+  }, [appointmentDetail, detailModalVisible, rescheduleDate, rescheduleHour]);
+
+  const rescheduleAvailability = useAvailabilityCheck({
+    employeeId: appointmentDetail?.employee_id ?? "",
+    startDate: rescheduleStartDate,
+    durationMinutes: appointmentDetail?.duration ?? 60,
+    excludeAppointmentId: appointmentDetail?.id ?? null,
+    enabled: detailModalVisible && !!appointmentDetail && !!rescheduleDate,
+    staleTimeMs: 30_000,
+  });
 
   const formatDateLabel = (date: Date) => {
     return date.toLocaleDateString(config.locale.language, {
@@ -337,6 +371,9 @@ export default function AgendaScreen() {
         formatDateLabel={formatDateLabel}
         onSubmit={handleCreateAppointment}
         createPending={createMutation.isPending}
+        availabilityStatus={availability.status}
+        isBusy={availability.isBusy}
+        busyUntilLabel={availability.busyUntilLabel}
         staffSingular={config.terminology.staffSingular}
         staffPlural={config.terminology.staff}
         clientLabel={config.terminology.client}
@@ -358,6 +395,9 @@ export default function AgendaScreen() {
         onDelete={handleDeleteAppointment}
         updatePending={updateAppointmentMutation.isPending}
         deletePending={deleteAppointmentMutation.isPending}
+        availabilityStatus={rescheduleAvailability.status}
+        isBusy={rescheduleAvailability.isBusy}
+        busyUntilLabel={rescheduleAvailability.busyUntilLabel}
       />
     </View>
   );

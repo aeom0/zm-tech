@@ -42,6 +42,9 @@ interface AppointmentDetailModalProps {
   onDelete: () => void;
   updatePending: boolean;
   deletePending: boolean;
+  availabilityStatus?: "idle" | "checking" | "free" | "busy" | "error";
+  busyUntilLabel?: string | null;
+  isBusy?: boolean;
 }
 
 export function AppointmentDetailModal({
@@ -60,7 +63,13 @@ export function AppointmentDetailModal({
   onDelete,
   updatePending,
   deletePending,
+  availabilityStatus = "idle",
+  busyUntilLabel = null,
+  isBusy = false,
 }: AppointmentDetailModalProps) {
+  const disableReschedule =
+    updatePending || isBusy || availabilityStatus === "checking";
+
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View
@@ -232,6 +241,26 @@ export function AppointmentDetailModal({
                 </ScrollView>
               </View>
 
+              {availabilityStatus === "busy" ? (
+                <View
+                  style={[
+                    styles.availabilityBanner,
+                    {
+                      backgroundColor: theme.backgroundSecondary,
+                      borderColor: theme.border,
+                    },
+                  ]}
+                >
+                  <Feather name="alert-triangle" size={18} color={theme.text} />
+                  <ThemedText
+                    style={[styles.availabilityBannerText, { color: theme.text }]}
+                  >
+                    Horario ocupado
+                    {busyUntilLabel ? `. Termina a las ${busyUntilLabel}` : ""}.
+                  </ThemedText>
+                </View>
+              ) : null}
+
               <Pressable
                 style={[
                   styles.submitButton,
@@ -239,17 +268,18 @@ export function AppointmentDetailModal({
                     backgroundColor: theme.primary,
                     marginBottom: Spacing.sm,
                   },
+                  disableReschedule && { opacity: 0.65 },
                 ]}
                 onPress={onReschedule}
-                disabled={updatePending}
+                disabled={disableReschedule}
               >
-                {updatePending ? (
+                {updatePending || availabilityStatus === "checking" ? (
                   <ActivityIndicator color="#FFFFFF" />
                 ) : (
                   <>
                     <Feather name="calendar" size={18} color="#FFFFFF" />
                     <ThemedText style={styles.submitButtonText}>
-                      Reprogramar
+                      {isBusy ? "Horario ocupado" : "Reprogramar"}
                     </ThemedText>
                   </>
                 )}

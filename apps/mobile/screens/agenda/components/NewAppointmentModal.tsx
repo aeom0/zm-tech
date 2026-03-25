@@ -51,6 +51,9 @@ interface NewAppointmentModalProps {
   formatDateLabel: (d: Date) => string;
   onSubmit: () => void;
   createPending: boolean;
+  availabilityStatus?: "idle" | "checking" | "free" | "busy" | "error";
+  busyUntilLabel?: string | null;
+  isBusy?: boolean;
   staffSingular: string;
   staffPlural: string;
   /** p. ej. terminology.client — "clienta" / "cliente" */
@@ -81,12 +84,17 @@ export function NewAppointmentModal({
   formatDateLabel,
   onSubmit,
   createPending,
+  availabilityStatus = "idle",
+  busyUntilLabel = null,
+  isBusy = false,
   staffSingular,
   staffPlural,
   clientLabel,
 }: NewAppointmentModalProps) {
   const clientSectionTitle =
     clientLabel.charAt(0).toUpperCase() + clientLabel.slice(1);
+
+  const disableSubmit = createPending || isBusy || availabilityStatus === "checking";
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
@@ -170,24 +178,41 @@ export function NewAppointmentModal({
                 staffSingular={staffSingular}
               />
             ) : null}
+
+            {availabilityStatus === "busy" ? (
+              <View
+                style={[
+                  styles.availabilityBanner,
+                  {
+                    backgroundColor: theme.backgroundSecondary,
+                    borderColor: theme.border,
+                  },
+                ]}
+              >
+                <Feather name="alert-triangle" size={18} color={theme.text} />
+                <ThemedText style={[styles.availabilityBannerText, { color: theme.text }]}>
+                  Horario ocupado{busyUntilLabel ? `. Termina a las ${busyUntilLabel}` : ""}.
+                </ThemedText>
+              </View>
+            ) : null}
           </ScrollView>
 
           <Pressable
             style={[
               styles.submitButton,
               { backgroundColor: theme.primary },
-              createPending && { opacity: 0.7 },
+              disableSubmit && { opacity: 0.65 },
             ]}
             onPress={onSubmit}
-            disabled={createPending}
+            disabled={disableSubmit}
           >
-            {createPending ? (
+            {createPending || availabilityStatus === "checking" ? (
               <ActivityIndicator color="#FFFFFF" />
             ) : (
               <>
                 <Feather name="calendar" size={18} color="#FFFFFF" />
                 <ThemedText style={styles.submitButtonText}>
-                  Crear Cita
+                  {isBusy ? "Horario ocupado" : "Crear Cita"}
                 </ThemedText>
               </>
             )}
