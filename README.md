@@ -79,6 +79,7 @@ yarn db:seed
 - **Schema compartido**: Drizzle ORM + Zod (`packages/shared-schema`) — índices FK y tabla `appointment_verifications` alineados con Supabase; RLS/funciones documentadas en `scripts/db/migrations/20260324_advisor_rls_performance.sql` (aplicación remota vía MCP o SQL Editor si aplica)
 - **Config de tenant**: `packages/tenant-config` (`@salonpro/tenant-config`) — presets, `TenantConfig` (incluye `features?.whatsapp` para promo WA / ajustes)
 - **Web**: Next.js (`apps/web`) — landing pública + paneles `/dashboard` (KPIs) y `/finanzas` (solo rol `owner`/`dev`; login en `/finanzas/login`)
+- **Web (panel)**: área autenticada en `/panel` — primera sección **`/panel/servicios`** (CRUD categorías + servicios). Packs/Promos quedan como *Próximamente* (PR-06B).
 - **Monorepo**: Yarn Workspaces
 
 ---
@@ -225,6 +226,12 @@ limit 20;
 | `dev` | Total — administrador técnico; web: `/dashboard`, `/finanzas` |
 | `owner` | Total — dueño/a del negocio; web: `/dashboard`, `/finanzas` |
 | `staff` | Limitado — Agenda + Mis ganancias; sin paneles web admin (redirige a `/` si intenta `/dashboard`) |
+
+### Panel web `/panel`
+
+- **Login**: `GET /login` (Supabase Auth email/password).
+- **Guard SSR**: rutas bajo `/panel/*` validan sesión desde Server Components; sin sesión redirige a `/login`.
+- **Servicios**: `GET /panel/servicios` — CRUD de `service_categories` y `services` (toggle inline `is_active`).
 
 ---
 

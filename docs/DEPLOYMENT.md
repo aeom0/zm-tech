@@ -36,6 +36,7 @@ El output está en `apps/web/.next`.
 - Variables de entorno en Vercel:
   - `NEXT_PUBLIC_SUPABASE_URL=https://xidjomlxpuosupymcsaj.supabase.co`
   - `NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...` (anon key del proyecto)
+  - (Opcional) Si se usan cookies SSR de Supabase, no requiere variables extra: se maneja con `@supabase/ssr` y cookies de sesión.
 
 ### 3. Deploy
 
@@ -44,6 +45,11 @@ vercel --prod
 ```
 
 (o push a la rama conectada si está configurado el deploy automático).
+
+### Rutas protegidas (panel)
+
+- `GET /login` — login del panel (email/password Supabase).
+- `GET /panel/*` — guard SSR basado en cookies (sin sesión redirige a `/login`).
 
 ## Deployment móvil (EAS Build)
 
