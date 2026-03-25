@@ -14,15 +14,9 @@ export interface PayrollResult {
   label: string; // Texto descriptivo para UI
 }
 
-export function calculateEmployeeEarnings(
-  input: PayrollInput,
-): PayrollResult {
-  const {
-    paymentAmount,
-    paymentMode,
-    commissionPercentage,
-    salaryAmount,
-  } = input;
+export function calculateEmployeeEarnings(input: PayrollInput): PayrollResult {
+  const { paymentAmount, paymentMode, commissionPercentage, salaryAmount } =
+    input;
 
   switch (paymentMode) {
     case "commission": {
@@ -50,9 +44,10 @@ export function calculateEmployeeEarnings(
         salonEarns: paymentAmount - employeeEarns,
         mode: "mixed",
         label:
-          salaryAmount != null ? `${salaryAmount} + ${pct}%` : `${pct}% + salario`,
+          salaryAmount != null
+            ? `${salaryAmount} + ${pct}%`
+            : `${pct}% + salario`,
       };
     }
   }
 }
-

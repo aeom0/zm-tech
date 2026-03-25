@@ -160,15 +160,8 @@ export default function PersonalScreen() {
     let commissionPercentage: number | null = null;
     if (form.paymentMode !== "salary") {
       const commission = parseInt(form.commission_percentage, 10);
-      if (
-        Number.isNaN(commission) ||
-        commission < 0 ||
-        commission > 100
-      ) {
-        Alert.alert(
-          "Error",
-          "La comisión debe ser un número entre 0 y 100",
-        );
+      if (Number.isNaN(commission) || commission < 0 || commission > 100) {
+        Alert.alert("Error", "La comisión debe ser un número entre 0 y 100");
         return;
       }
       commissionPercentage = commission;
@@ -194,8 +187,7 @@ export default function PersonalScreen() {
         color: form.color.trim() || config.theme.primaryColor,
         commission_percentage: commissionPercentage,
         payment_mode: form.paymentMode,
-        salary_amount:
-          form.paymentMode !== "commission" ? salaryAmount : null,
+        salary_amount: form.paymentMode !== "commission" ? salaryAmount : null,
         notes: form.notes.trim() || null,
         is_active: form.is_active,
       },
@@ -260,7 +252,9 @@ export default function PersonalScreen() {
                   <EmployeePaymentBadge
                     mode={emp.payment_mode ?? "commission"}
                     percentage={
-                      emp.payment_mode === "salary" ? null : emp.commission_percentage
+                      emp.payment_mode === "salary"
+                        ? null
+                        : emp.commission_percentage
                     }
                   />
                 </View>
@@ -401,7 +395,9 @@ export default function PersonalScreen() {
                             : theme.backgroundSecondary,
                         },
                       ]}
-                      onPress={() => setForm((f) => ({ ...f, paymentMode: opt.id }))}
+                      onPress={() =>
+                        setForm((f) => ({ ...f, paymentMode: opt.id }))
+                      }
                     >
                       <ThemedText
                         style={[

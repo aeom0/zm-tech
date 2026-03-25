@@ -2,12 +2,7 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
-const GRADIENT_COLORS = [
-  "#E91E8C",
-  "#9C27B0",
-  "#3D3D8F",
-  "#1565C0",
-] as const;
+const GRADIENT_COLORS = ["#E91E8C", "#9C27B0", "#3D3D8F", "#1565C0"] as const;
 
 const TOTAL_STEPS = 7;
 

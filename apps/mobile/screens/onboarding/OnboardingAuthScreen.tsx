@@ -55,7 +55,10 @@ export default function OnboardingAuthScreen({
     <OnboardingLayout scrollable>
       <View style={styles.inner}>
         {/* Logo o dots según flujo */}
-        <Animated.View entering={FadeInDown.duration(400)} style={styles.logoRow}>
+        <Animated.View
+          entering={FadeInDown.duration(400)}
+          style={styles.logoRow}
+        >
           {esRegreso ? (
             <View style={styles.dotsRow}>
               <OnboardingProgressDots currentStep={5} />
@@ -67,7 +70,10 @@ export default function OnboardingAuthScreen({
           )}
         </Animated.View>
 
-        <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
+        <Animated.View
+          entering={FadeInDown.duration(400)}
+          style={styles.header}
+        >
           <ThemedText style={styles.titulo}>
             {esRegreso ? "Entra con tu cuenta" : "Crea tu cuenta"}
           </ThemedText>

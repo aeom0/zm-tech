@@ -12,12 +12,7 @@ import { Feather } from "@expo/vector-icons";
 
 import { BorderRadius, Spacing } from "@/constants/theme";
 
-const GRADIENT_COLORS = [
-  "#E91E8C",
-  "#9C27B0",
-  "#3D3D8F",
-  "#1565C0",
-] as const;
+const GRADIENT_COLORS = ["#E91E8C", "#9C27B0", "#3D3D8F", "#1565C0"] as const;
 
 type FeatherName = React.ComponentProps<typeof Feather>["name"];
 

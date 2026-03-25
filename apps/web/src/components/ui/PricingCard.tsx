@@ -49,19 +49,25 @@ export function PricingCard({ plan, annual }: Props) {
         <div className="flex items-end gap-1">
           <span
             className={`text-5xl font-bold tabular-nums transition-all duration-300 ${
-              plan.highlighted ? "text-white" : "text-zinc-900 dark:text-zinc-100"
+              plan.highlighted
+                ? "text-white"
+                : "text-zinc-900 dark:text-zinc-100"
             }`}
           >
             ${price}
           </span>
-          <span className={`text-sm mb-2 ${plan.highlighted ? "text-white/70" : "text-zinc-500"}`}>
+          <span
+            className={`text-sm mb-2 ${plan.highlighted ? "text-white/70" : "text-zinc-500"}`}
+          >
             /mes
           </span>
         </div>
         <div
           className={`overflow-hidden transition-all duration-300 ${annual ? "max-h-6 opacity-100 mt-1" : "max-h-0 opacity-0"}`}
         >
-          <p className={`text-xs ${plan.highlighted ? "text-white/60" : "text-zinc-400"}`}>
+          <p
+            className={`text-xs ${plan.highlighted ? "text-white/60" : "text-zinc-400"}`}
+          >
             ${plan.monthlyPrice}/mes si pagas mensual
           </p>
         </div>
@@ -92,7 +98,9 @@ export function PricingCard({ plan, annual }: Props) {
             </span>
             <span
               className={
-                plan.highlighted ? "text-white/90" : "text-zinc-600 dark:text-zinc-400"
+                plan.highlighted
+                  ? "text-white/90"
+                  : "text-zinc-600 dark:text-zinc-400"
               }
             >
               {feat}

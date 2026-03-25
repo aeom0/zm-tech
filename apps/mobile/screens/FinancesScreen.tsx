@@ -240,9 +240,7 @@ export default function FinancesScreen() {
 
       const { data: emp, error: empError } = await supabase
         .from("employees")
-        .select(
-          "id, name, payment_mode, commission_percentage, salary_amount",
-        )
+        .select("id, name, payment_mode, commission_percentage, salary_amount")
         .eq("id", prof.employee_id)
         .maybeSingle();
 
@@ -430,7 +428,7 @@ export default function FinancesScreen() {
     const commissionPercentage =
       paymentMode === "salary"
         ? null
-        : myEmployee.commission_percentage ?? null;
+        : (myEmployee.commission_percentage ?? null);
     const salaryAmount = myEmployee.salary_amount
       ? parseFloat(String(myEmployee.salary_amount))
       : null;
@@ -462,7 +460,7 @@ export default function FinancesScreen() {
     const commissionPercentage =
       paymentMode === "salary"
         ? null
-        : myEmployee.commission_percentage ?? null;
+        : (myEmployee.commission_percentage ?? null);
     const salaryAmount = myEmployee.salary_amount
       ? parseFloat(String(myEmployee.salary_amount))
       : null;

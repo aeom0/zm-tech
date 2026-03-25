@@ -212,9 +212,7 @@ export const appointmentVerifications = pgTable(
       .notNull(),
   },
   (table) => ({
-    appointmentIdx: index("idx_appt_verif_appointment").on(
-      table.appointmentId,
-    ),
+    appointmentIdx: index("idx_appt_verif_appointment").on(table.appointmentId),
     verifiedByIdx: index("idx_appt_verif_verified_by").on(table.verifiedBy),
     actionCheck: check(
       "appointment_verifications_action_check",
@@ -302,21 +300,24 @@ export const clientsRelations = relations(clients, ({ many }) => ({
   appointments: many(appointments),
 }));
 
-export const appointmentsRelations = relations(appointments, ({ one, many }) => ({
-  client: one(clients, {
-    fields: [appointments.clientId],
-    references: [clients.id],
+export const appointmentsRelations = relations(
+  appointments,
+  ({ one, many }) => ({
+    client: one(clients, {
+      fields: [appointments.clientId],
+      references: [clients.id],
+    }),
+    employee: one(employees, {
+      fields: [appointments.employeeId],
+      references: [employees.id],
+    }),
+    service: one(services, {
+      fields: [appointments.serviceId],
+      references: [services.id],
+    }),
+    verifications: many(appointmentVerifications),
   }),
-  employee: one(employees, {
-    fields: [appointments.employeeId],
-    references: [employees.id],
-  }),
-  service: one(services, {
-    fields: [appointments.serviceId],
-    references: [services.id],
-  }),
-  verifications: many(appointmentVerifications),
-}));
+);
 
 export const appointmentVerificationsRelations = relations(
   appointmentVerifications,

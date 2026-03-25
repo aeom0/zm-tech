@@ -13,12 +13,7 @@ import {
 import { Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 
-const GRADIENT_COLORS = [
-  "#E91E8C",
-  "#9C27B0",
-  "#3D3D8F",
-  "#1565C0",
-] as const;
+const GRADIENT_COLORS = ["#E91E8C", "#9C27B0", "#3D3D8F", "#1565C0"] as const;
 
 interface OnboardingCompleteScreenProps {
   onFinish: () => void;
@@ -80,7 +75,10 @@ export default function OnboardingCompleteScreen({
 
   return (
     <OnboardingLayout centered>
-      <Animated.View entering={FadeInDown.duration(400)} style={styles.topBlock}>
+      <Animated.View
+        entering={FadeInDown.duration(400)}
+        style={styles.topBlock}
+      >
         <OnboardingProgressDots currentStep={6} />
 
         {/* Círculo gradiente con check */}

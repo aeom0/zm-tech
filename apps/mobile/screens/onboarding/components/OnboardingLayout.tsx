@@ -55,7 +55,9 @@ export function OnboardingLayout({
   }
 
   return (
-    <View style={[containerStyle, centered && styles.centered]}>{children}</View>
+    <View style={[containerStyle, centered && styles.centered]}>
+      {children}
+    </View>
   );
 }
 

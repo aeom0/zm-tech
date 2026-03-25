@@ -5,4 +5,3 @@ export type EmployeeRow = Employee & {
   paymentMode: PaymentMode;
   salaryAmount: string | null;
 };
-

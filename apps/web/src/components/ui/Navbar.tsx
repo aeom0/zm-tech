@@ -123,7 +123,11 @@ export function Navbar() {
             </a>
           ))}
           <div className="pt-2">
-            <GradientButton href="#precios" size="md" className="w-full justify-center">
+            <GradientButton
+              href="#precios"
+              size="md"
+              className="w-full justify-center"
+            >
               Empezar gratis — 14 días
             </GradientButton>
           </div>

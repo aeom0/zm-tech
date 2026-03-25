@@ -33,8 +33,7 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 /** Beta / preview: cierra sesión al arrancar para exigir login cada apertura. */
-const FORCE_FRESH_START =
-  process.env.EXPO_PUBLIC_FORCE_FRESH_START === "true";
+const FORCE_FRESH_START = process.env.EXPO_PUBLIC_FORCE_FRESH_START === "true";
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);

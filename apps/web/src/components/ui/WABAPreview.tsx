@@ -46,7 +46,9 @@ export function WABAPreview() {
           SP
         </div>
         <div>
-          <p className="text-white text-sm font-semibold leading-none">SalonPro Bot</p>
+          <p className="text-white text-sm font-semibold leading-none">
+            SalonPro Bot
+          </p>
           <p className="text-[#8696A0] text-xs mt-0.5">en línea</p>
         </div>
       </div>
@@ -57,7 +59,9 @@ export function WABAPreview() {
           <div
             key={i}
             className={`transition-all duration-500 ${
-              visible > i ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+              visible > i
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-2"
             } flex ${msg.from === "client" ? "justify-end" : "justify-start"}`}
           >
             <div

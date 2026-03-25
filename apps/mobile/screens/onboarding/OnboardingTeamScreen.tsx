@@ -168,7 +168,9 @@ export default function OnboardingTeamScreen({
           <View style={styles.empleadosList}>
             {empleadosAgregados.map((e) => (
               <View key={e.id} style={styles.empleadoRow}>
-                <View style={[styles.empleadoSwatch, { backgroundColor: e.color }]} />
+                <View
+                  style={[styles.empleadoSwatch, { backgroundColor: e.color }]}
+                />
                 <ThemedText style={styles.empleadoName} numberOfLines={1}>
                   {e.name}
                 </ThemedText>
@@ -178,8 +180,8 @@ export default function OnboardingTeamScreen({
 
           <Text style={[styles.hint, { color: theme.textMuted }]}>
             💡 El modo de pago de cada{" "}
-            {config.terminology.staffSingular.toLowerCase()} se configura en Más →{" "}
-            {config.terminology.staff} después del registro.
+            {config.terminology.staffSingular.toLowerCase()} se configura en Más
+            → {config.terminology.staff} después del registro.
           </Text>
         </Animated.View>
       )}

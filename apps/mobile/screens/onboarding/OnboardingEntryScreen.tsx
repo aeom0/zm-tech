@@ -1,6 +1,7 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
+import { LinearGradient } from "expo-linear-gradient";
 
 import { ThemedText } from "@/components/ThemedText";
 import {
@@ -29,7 +30,13 @@ export default function OnboardingEntryScreen({
         entering={FadeInUp.duration(500)}
         style={styles.logoSection}
       >
-        <DiamondSparkle size={64} />
+        <View style={styles.logoStack}>
+          <LinearGradient
+            colors={["rgba(233, 30, 140, 0.24)", "rgba(21, 101, 192, 0.24)"]}
+            style={styles.logoGlow}
+          />
+          <DiamondSparkle size={96} />
+        </View>
         <ThemedText style={styles.taglineSmall}>
           Tu negocio en un solo lugar
         </ThemedText>
@@ -73,7 +80,20 @@ export default function OnboardingEntryScreen({
 const styles = StyleSheet.create({
   logoSection: {
     alignItems: "center",
-    gap: Spacing.sm,
+    gap: Spacing.md,
+  },
+  logoStack: {
+    width: 160,
+    height: 160,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+  },
+  logoGlow: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    borderRadius: 999,
   },
   heroSection: {
     flex: 1,
@@ -81,19 +101,19 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   heroTitle: {
-    fontSize: 32,
+    fontSize: 42,
     fontWeight: "700",
     color: "#FFFFFF",
-    lineHeight: 40,
+    lineHeight: 48,
   },
   heroHighlight: {
-    fontSize: 32,
+    fontSize: 42,
     fontWeight: "700",
     color: "#E91E8C",
-    lineHeight: 40,
+    lineHeight: 48,
   },
   heroSub: {
-    fontSize: 13,
+    fontSize: 14,
     color: "rgba(255,255,255,0.45)",
     lineHeight: 20,
     marginTop: Spacing.lg,
@@ -106,8 +126,9 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   taglineSmall: {
-    fontSize: 13,
-    color: "rgba(255,255,255,0.45)",
+    fontSize: 16,
+    color: "rgba(255,255,255,0.55)",
     textAlign: "center",
+    lineHeight: 22,
   },
 });

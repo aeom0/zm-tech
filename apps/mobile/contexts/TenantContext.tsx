@@ -21,8 +21,7 @@ const STORAGE_KEY = "@salonpro/tenant_config";
 const CONFIGURED_KEY = "@salonpro/tenant_configured";
 
 /** Beta / preview: ignora AsyncStorage de dev y fuerza onboarding (quitar en production estable). */
-const FORCE_FRESH_START =
-  process.env.EXPO_PUBLIC_FORCE_FRESH_START === "true";
+const FORCE_FRESH_START = process.env.EXPO_PUBLIC_FORCE_FRESH_START === "true";
 
 interface TenantContextValue {
   config: TenantConfig;

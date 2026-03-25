@@ -5,4 +5,3 @@ export interface SettingsSectionProps {
 }
 
 export type SettingsRowVariant = "value" | "navigate" | "action" | "toggle";
-

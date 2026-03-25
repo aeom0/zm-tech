@@ -22,7 +22,10 @@ function extractValues(payload: unknown): WabaValue[] {
     entry?: Array<{ changes?: Array<{ value?: WabaValue }> }>;
   };
 
-  if (root.object !== "whatsapp_business_account" || !Array.isArray(root.entry)) {
+  if (
+    root.object !== "whatsapp_business_account" ||
+    !Array.isArray(root.entry)
+  ) {
     return [];
   }
 
@@ -128,5 +131,8 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  return NextResponse.json({ ok: true, inserted: rows.length }, { status: 200 });
+  return NextResponse.json(
+    { ok: true, inserted: rows.length },
+    { status: 200 },
+  );
 }

@@ -9,7 +9,7 @@ import {
   OnboardingProgressDots,
   GradientCTAButton,
 } from "@/screens/onboarding/components";
-import { Colors, Spacing, BorderRadius } from "@/constants/theme";
+import { Colors, Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 
 const COLORES_PRIMARIOS = [
@@ -68,7 +68,9 @@ export default function OnboardingBasicInfoScreen({
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
         <ThemedText style={styles.badge}>PASO 2 DE 4</ThemedText>
         <OnboardingProgressDots currentStep={2} />
-        <ThemedText style={styles.titulo}>Cuéntanos sobre tu negocio</ThemedText>
+        <ThemedText style={styles.titulo}>
+          Cuéntanos sobre tu negocio
+        </ThemedText>
         <ThemedText style={styles.subtitulo}>
           Elige el nombre y la identidad visual
         </ThemedText>
@@ -91,7 +93,9 @@ export default function OnboardingBasicInfoScreen({
           autoCapitalize="words"
           returnKeyType="done"
         />
-        {error ? <ThemedText style={styles.errorText}>{error}</ThemedText> : null}
+        {error ? (
+          <ThemedText style={styles.errorText}>{error}</ThemedText>
+        ) : null}
       </Animated.View>
 
       <Animated.View
@@ -118,20 +122,22 @@ export default function OnboardingBasicInfoScreen({
       {/* Preview card glassmorphic */}
       <Animated.View
         entering={FadeInDown.delay(260).duration(400)}
-        style={[
-          styles.previewCard,
-          { borderColor: colorPrimario + "40" },
-        ]}
+        style={[styles.previewCard, { borderColor: colorPrimario + "40" }]}
       >
         <View
-          style={[styles.previewIconBg, { backgroundColor: colorPrimario + "33" }]}
+          style={[
+            styles.previewIconBg,
+            { backgroundColor: colorPrimario + "33" },
+          ]}
         >
           <Feather name="scissors" size={28} color={colorPrimario} />
         </View>
         <ThemedText style={styles.previewNombre}>
           {nombre.trim() || "Mi Salón Hermoso"}
         </ThemedText>
-        <ThemedText style={styles.previewSub}>Vista previa de tu marca</ThemedText>
+        <ThemedText style={styles.previewSub}>
+          Vista previa de tu marca
+        </ThemedText>
       </Animated.View>
 
       <Animated.View
