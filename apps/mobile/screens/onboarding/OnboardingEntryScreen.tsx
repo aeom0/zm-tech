@@ -1,13 +1,13 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
-import { LinearGradient } from "expo-linear-gradient";
 
 import { ThemedText } from "@/components/ThemedText";
 import {
   OnboardingLayout,
   GradientCTAButton,
   DiamondSparkle,
+  NebulosaGlow,
 } from "@/screens/onboarding/components";
 import { Spacing } from "@/constants/theme";
 
@@ -19,14 +19,10 @@ interface OnboardingEntryScreenProps {
 /**
  * Entrada al onboarding: fondo sólido #111318, CTAs Lunaris.
  *
- * Glow: dos LinearGradient superpuestos en cruz simulando desvanecimiento radial.
- *   - Capa H: transparent → magenta(centro) → transparent  (izq→der)
- *   - Capa V: transparent → azul(centro)    → transparent  (arr→aba)
- *   Resultado: color muy suave en el centro, bordes completamente disueltos.
+ * Halo: NebulosaGlow (SVG radiales magenta + cian + feGaussianBlur) detrás del diamante;
+ * sin overflow/borderRadius que recorten el aura.
  *
- * Diamante: fotocromático, 304px (~95% del glow de 320px).
- * Desplazado 10px hacia abajo para dar aire al sparkle superior.
- * logoSection ocupa la mitad superior centrada (flex:1 + justifyContent:center).
+ * Diamante: fotocromático; desplazado 10px abajo para aire al sparkle superior.
  */
 export default function OnboardingEntryScreen({
   onCreateNew,
@@ -40,35 +36,7 @@ export default function OnboardingEntryScreen({
         style={styles.logoSection}
       >
         <View style={styles.logoStack}>
-          {/* Capa 1 — gradiente horizontal: transparent → magenta → transparent */}
-          <LinearGradient
-            colors={[
-              "transparent",
-              "rgba(233, 30, 140, 0.04)",
-              "rgba(233, 30, 140, 0.18)",
-              "rgba(233, 30, 140, 0.04)",
-              "transparent",
-            ]}
-            locations={[0, 0.25, 0.5, 0.75, 1]}
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 1, y: 0.5 }}
-            style={styles.logoGlow}
-          />
-          {/* Capa 2 — gradiente vertical: transparent → azul → transparent */}
-          <LinearGradient
-            colors={[
-              "transparent",
-              "rgba(21, 101, 192, 0.03)",
-              "rgba(21, 101, 192, 0.13)",
-              "rgba(21, 101, 192, 0.03)",
-              "transparent",
-            ]}
-            locations={[0, 0.25, 0.5, 0.75, 1]}
-            start={{ x: 0.5, y: 0 }}
-            end={{ x: 0.5, y: 1 }}
-            style={styles.logoGlow}
-          />
-          {/* Diamante fotocromático — desplazado 10px abajo para dar aire al sparkle */}
+          <NebulosaGlow size={320} />
           <View style={styles.diamondWrapper}>
             <DiamondSparkle size={312} />
           </View>
@@ -83,7 +51,8 @@ export default function OnboardingEntryScreen({
         entering={FadeInDown.duration(500).delay(80)}
         style={styles.heroSection}
       >
-        <ThemedText style={styles.heroTitle}>Gestiona tu salón</ThemedText>
+        <ThemedText style={styles.heroBrand}>SalonPro</ThemedText>
+        <ThemedText style={styles.heroTitle}>Gestiona tu estudio</ThemedText>
         <ThemedText style={styles.heroHighlight}>
           con estilo y precisión
         </ThemedText>
@@ -127,12 +96,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     position: "relative",
   },
-  logoGlow: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    borderRadius: 999,
-  },
   /**
    * Wrapper del diamante: desplaza el SVG 10px hacia abajo dentro del stack
    * para que el sparkle superior quede visible sobre el borde del glow.
@@ -146,6 +109,14 @@ const styles = StyleSheet.create({
   heroSection: {
     alignItems: "flex-start",
     paddingBottom: Spacing.lg,
+  },
+  /** Wordmark discreto encima del titular */
+  heroBrand: {
+    fontSize: 13,
+    fontWeight: "600",
+    letterSpacing: 3.5,
+    color: "rgba(255,255,255,0.52)",
+    marginBottom: Spacing.sm,
   },
   heroTitle: {
     fontSize: 42,
