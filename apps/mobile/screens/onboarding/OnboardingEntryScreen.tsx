@@ -42,21 +42,35 @@ export default function OnboardingEntryScreen({
         <View style={styles.logoStack}>
           {/* Capa 1 — gradiente horizontal: transparent → magenta → transparent */}
           <LinearGradient
-            colors={["transparent", "rgba(233, 30, 140, 0.20)", "transparent"]}
+            colors={[
+              "transparent",
+              "rgba(233, 30, 140, 0.04)",
+              "rgba(233, 30, 140, 0.18)",
+              "rgba(233, 30, 140, 0.04)",
+              "transparent",
+            ]}
+            locations={[0, 0.25, 0.5, 0.75, 1]}
             start={{ x: 0, y: 0.5 }}
             end={{ x: 1, y: 0.5 }}
             style={styles.logoGlow}
           />
           {/* Capa 2 — gradiente vertical: transparent → azul → transparent */}
           <LinearGradient
-            colors={["transparent", "rgba(21, 101, 192, 0.15)", "transparent"]}
+            colors={[
+              "transparent",
+              "rgba(21, 101, 192, 0.03)",
+              "rgba(21, 101, 192, 0.13)",
+              "rgba(21, 101, 192, 0.03)",
+              "transparent",
+            ]}
+            locations={[0, 0.25, 0.5, 0.75, 1]}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
             style={styles.logoGlow}
           />
           {/* Diamante fotocromático — desplazado 10px abajo para dar aire al sparkle */}
           <View style={styles.diamondWrapper}>
-            <DiamondSparkle size={304} />
+            <DiamondSparkle size={312} />
           </View>
         </View>
         <ThemedText style={styles.taglineSmall}>
