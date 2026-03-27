@@ -3,7 +3,7 @@
     "name": "SalonPro",
     "slug": "salonpro-mobile",
     "version": "1.1.0",
-    "icon": "./assets/splash-icon.png",
+    "icon": "./assets/icon.png",
     "runtimeVersion": {
       "policy": "sdkVersion"
     },
@@ -45,12 +45,13 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/splash-icon.png",
+          "image": "./assets/splash-logo.png",
+          "imageWidth": 600,
           "resizeMode": "contain",
           "backgroundColor": "#111318",
           "dark": {
             "backgroundColor": "#111318",
-            "image": "./assets/splash-icon.png"
+            "image": "./assets/splash-logo.png"
           }
         }
       ],

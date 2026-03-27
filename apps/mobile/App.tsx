@@ -6,6 +6,7 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import * as Font from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
 
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/query-client";
@@ -19,6 +20,15 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 /** Tiempo máximo de espera para cargar la fuente de iconos (evita "6000ms timeout" en web) */
 const FONT_LOAD_TIMEOUT_MS = 12_000;
+
+/**
+ * Tiempo extra que el splash permanece visible después de que los recursos
+ * están listos. Da tiempo a que el usuario aprecie el splash antes de entrar.
+ */
+const SPLASH_EXTRA_DELAY_MS = 1_200;
+
+// Mantener el splash visible hasta que nosotros decidamos ocultarlo
+SplashScreen.preventAutoHideAsync();
 
 /**
  * Precarga la fuente Feather (usada por @expo/vector-icons) con timeout y catch
@@ -58,6 +68,15 @@ function AppContent() {
   const { userId } = useAuth();
   useNotifications(userId);
   const fontReady = useIconFontReady();
+
+  useEffect(() => {
+    if (!fontReady) return;
+    // Delay adicional para que el splash sea visible el tiempo suficiente
+    const timer = setTimeout(() => {
+      SplashScreen.hideAsync();
+    }, SPLASH_EXTRA_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [fontReady]);
 
   // Mientras la fuente carga, no renderizamos nada (el splash nativo ya está visible)
   if (!fontReady) {
