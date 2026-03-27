@@ -40,35 +40,55 @@ export default function OnboardingEntryScreen({
         style={styles.logoSection}
       >
         <View style={styles.logoStack}>
-          {/* Capa 1 — gradiente horizontal: transparent → magenta → transparent */}
+          {/* Núcleo blanco — punto de luz central muy suave */}
           <LinearGradient
             colors={[
-              "transparent",
-              "rgba(233, 30, 140, 0.04)",
-              "rgba(233, 30, 140, 0.18)",
-              "rgba(233, 30, 140, 0.04)",
+              "rgba(255, 255, 255, 0.10)",
+              "rgba(255, 255, 255, 0.02)",
               "transparent",
             ]}
-            locations={[0, 0.25, 0.5, 0.75, 1]}
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 1, y: 0.5 }}
+            locations={[0, 0.35, 1]}
+            start={{ x: 0.5, y: 0.5 }}
+            end={{ x: 1, y: 1 }}
             style={styles.logoGlow}
           />
-          {/* Capa 2 — gradiente vertical: transparent → azul → transparent */}
+          {/* Capa magenta — diagonal ↘ */}
           <LinearGradient
             colors={[
-              "transparent",
-              "rgba(21, 101, 192, 0.03)",
-              "rgba(21, 101, 192, 0.13)",
-              "rgba(21, 101, 192, 0.03)",
+              "rgba(233, 30, 140, 0.22)",
+              "rgba(233, 30, 140, 0.06)",
               "transparent",
             ]}
-            locations={[0, 0.25, 0.5, 0.75, 1]}
-            start={{ x: 0.5, y: 0 }}
-            end={{ x: 0.5, y: 1 }}
+            locations={[0, 0.4, 1]}
+            start={{ x: 0.5, y: 0.5 }}
+            end={{ x: 1, y: 1 }}
             style={styles.logoGlow}
           />
-          {/* Diamante fotocromático — desplazado 10px abajo para dar aire al sparkle */}
+          {/* Capa azul — diagonal ↗ */}
+          <LinearGradient
+            colors={[
+              "rgba(21, 101, 192, 0.18)",
+              "rgba(21, 101, 192, 0.04)",
+              "transparent",
+            ]}
+            locations={[0, 0.4, 1]}
+            start={{ x: 0.5, y: 0.5 }}
+            end={{ x: 0, y: 1 }}
+            style={styles.logoGlow}
+          />
+          {/* Capa violeta — arriba para el sparkle */}
+          <LinearGradient
+            colors={[
+              "rgba(156, 39, 176, 0.12)",
+              "rgba(156, 39, 176, 0.03)",
+              "transparent",
+            ]}
+            locations={[0, 0.3, 1]}
+            start={{ x: 0.5, y: 0.5 }}
+            end={{ x: 0.5, y: 0 }}
+            style={styles.logoGlow}
+          />
+          {/* Diamante fotocromático */}
           <View style={styles.diamondWrapper}>
             <DiamondSparkle size={312} />
           </View>
@@ -126,11 +146,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
+    overflow: "hidden",
+    borderRadius: 999,
   },
   logoGlow: {
     position: "absolute",
-    width: "150%",
-    height: "150%",
+    width: "280%",
+    height: "280%",
   },
   /**
    * Wrapper del diamante: desplaza el SVG 10px hacia abajo dentro del stack
