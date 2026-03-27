@@ -18,6 +18,8 @@ interface OnboardingEntryScreenProps {
 
 /**
  * Entrada al onboarding: fondo sólido #111318, CTAs Lunaris.
+ * Glow: LinearGradient lineal izquierda→derecha (magenta #E91E8C → azul #1565C0).
+ * Diamante fotocromático, tamaño = 90% del glow (144px sobre 160px).
  */
 export default function OnboardingEntryScreen({
   onCreateNew,
@@ -31,11 +33,15 @@ export default function OnboardingEntryScreen({
         style={styles.logoSection}
       >
         <View style={styles.logoStack}>
+          {/* Glow lineal: magenta → azul, izquierda → derecha */}
           <LinearGradient
-            colors={["rgba(233, 30, 140, 0.24)", "rgba(21, 101, 192, 0.24)"]}
+            colors={["rgba(233, 30, 140, 0.30)", "rgba(21, 101, 192, 0.30)"]}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
             style={styles.logoGlow}
           />
-          <DiamondSparkle size={96} />
+          {/* Diamante fotocromático — 90% del diámetro del glow (144/160) */}
+          <DiamondSparkle size={144} />
         </View>
         <ThemedText style={styles.taglineSmall}>
           Tu negocio en un solo lugar
