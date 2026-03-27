@@ -9,18 +9,22 @@ export function NavbarDashboardLink({ scrolled }: { scrolled: boolean }) {
   const [authed, setAuthed] = useState(false);
 
   useEffect(() => {
+    // supabase puede ser null si las env vars no están configuradas
     if (!supabase) return;
 
+    // Capturamos la instancia en una variable local para que TS la trate
+    // como no-null dentro de todos los closures de este efecto
+    const client = supabase;
     let mounted = true;
 
     const sync = async () => {
-      const { data } = await supabase.auth.getSession();
+      const { data } = await client.auth.getSession();
       if (mounted) setAuthed(!!data.session);
     };
 
     void sync();
 
-    const { data: sub } = supabase.auth.onAuthStateChange((_evt, session) => {
+    const { data: sub } = client.auth.onAuthStateChange((_evt, session) => {
       setAuthed(!!session);
     });
 
