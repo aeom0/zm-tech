@@ -22,10 +22,11 @@ interface OnboardingEntryScreenProps {
  * Glow: dos LinearGradient superpuestos en cruz simulando desvanecimiento radial.
  *   - Capa H: transparent → magenta(centro) → transparent  (izq→der)
  *   - Capa V: transparent → azul(centro)    → transparent  (arr→aba)
- *   Resultado: color vibrante en el centro, bordes completamente disueltos.
+ *   Resultado: color muy suave en el centro, bordes completamente disueltos.
  *
- * Diamante: fotocromático, 152px (~95% del glow de 160px).
+ * Diamante: fotocromático, 304px (~95% del glow de 320px).
  * Desplazado 10px hacia abajo para dar aire al sparkle superior.
+ * logoSection ocupa la mitad superior centrada (flex:1 + justifyContent:center).
  */
 export default function OnboardingEntryScreen({
   onCreateNew,
@@ -41,29 +42,21 @@ export default function OnboardingEntryScreen({
         <View style={styles.logoStack}>
           {/* Capa 1 — gradiente horizontal: transparent → magenta → transparent */}
           <LinearGradient
-            colors={[
-              "transparent",
-              "rgba(233, 30, 140, 0.45)",
-              "transparent",
-            ]}
+            colors={["transparent", "rgba(233, 30, 140, 0.20)", "transparent"]}
             start={{ x: 0, y: 0.5 }}
             end={{ x: 1, y: 0.5 }}
             style={styles.logoGlow}
           />
           {/* Capa 2 — gradiente vertical: transparent → azul → transparent */}
           <LinearGradient
-            colors={[
-              "transparent",
-              "rgba(21, 101, 192, 0.35)",
-              "transparent",
-            ]}
+            colors={["transparent", "rgba(21, 101, 192, 0.15)", "transparent"]}
             start={{ x: 0.5, y: 0 }}
             end={{ x: 0.5, y: 1 }}
             style={styles.logoGlow}
           />
           {/* Diamante fotocromático — desplazado 10px abajo para dar aire al sparkle */}
           <View style={styles.diamondWrapper}>
-            <DiamondSparkle size={152} />
+            <DiamondSparkle size={304} />
           </View>
         </View>
         <ThemedText style={styles.taglineSmall}>
@@ -108,12 +101,14 @@ export default function OnboardingEntryScreen({
 
 const styles = StyleSheet.create({
   logoSection: {
+    flex: 1,
     alignItems: "center",
+    justifyContent: "center",
     gap: Spacing.md,
   },
   logoStack: {
-    width: 160,
-    height: 160,
+    width: 320,
+    height: 320,
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
@@ -130,14 +125,13 @@ const styles = StyleSheet.create({
    */
   diamondWrapper: {
     position: "absolute",
-    top: 10,          // desplazamiento hacia abajo
+    top: 10, // desplazamiento hacia abajo
     alignItems: "center",
     justifyContent: "center",
   },
   heroSection: {
-    flex: 1,
-    justifyContent: "center",
     alignItems: "flex-start",
+    paddingBottom: Spacing.lg,
   },
   heroTitle: {
     fontSize: 42,

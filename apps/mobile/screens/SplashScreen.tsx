@@ -92,7 +92,7 @@ export function SplashScreenComponent({ onFinish }: SplashScreenProps) {
     <View style={styles.container}>
       <Animated.View style={[styles.logoContainer, logoAnimatedStyle]}>
         <Image
-          source={require("@/assets/splash-icon.png")}
+          source={require("@/assets/splash-logo.png")}
           style={styles.logoImage}
           contentFit="contain"
           accessibilityLabel="SalonPro"
