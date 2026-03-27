@@ -129,9 +129,8 @@ const styles = StyleSheet.create({
   },
   logoGlow: {
     position: "absolute",
-    width: "100%",
-    height: "100%",
-    borderRadius: 999,
+    width: "150%",
+    height: "150%",
   },
   /**
    * Wrapper del diamante: desplaza el SVG 10px hacia abajo dentro del stack
