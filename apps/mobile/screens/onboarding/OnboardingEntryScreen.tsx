@@ -18,8 +18,14 @@ interface OnboardingEntryScreenProps {
 
 /**
  * Entrada al onboarding: fondo sólido #111318, CTAs Lunaris.
- * Glow: LinearGradient lineal izquierda→derecha (magenta #E91E8C → azul #1565C0).
- * Diamante fotocromático, tamaño = 90% del glow (144px sobre 160px).
+ *
+ * Glow: dos LinearGradient superpuestos en cruz simulando desvanecimiento radial.
+ *   - Capa H: transparent → magenta(centro) → transparent  (izq→der)
+ *   - Capa V: transparent → azul(centro)    → transparent  (arr→aba)
+ *   Resultado: color vibrante en el centro, bordes completamente disueltos.
+ *
+ * Diamante: fotocromático, 152px (~95% del glow de 160px).
+ * Desplazado 10px hacia abajo para dar aire al sparkle superior.
  */
 export default function OnboardingEntryScreen({
   onCreateNew,
@@ -33,15 +39,32 @@ export default function OnboardingEntryScreen({
         style={styles.logoSection}
       >
         <View style={styles.logoStack}>
-          {/* Glow lineal: magenta → azul, izquierda → derecha */}
+          {/* Capa 1 — gradiente horizontal: transparent → magenta → transparent */}
           <LinearGradient
-            colors={["rgba(233, 30, 140, 0.30)", "rgba(21, 101, 192, 0.30)"]}
+            colors={[
+              "transparent",
+              "rgba(233, 30, 140, 0.45)",
+              "transparent",
+            ]}
             start={{ x: 0, y: 0.5 }}
             end={{ x: 1, y: 0.5 }}
             style={styles.logoGlow}
           />
-          {/* Diamante fotocromático — 90% del diámetro del glow (144/160) */}
-          <DiamondSparkle size={144} />
+          {/* Capa 2 — gradiente vertical: transparent → azul → transparent */}
+          <LinearGradient
+            colors={[
+              "transparent",
+              "rgba(21, 101, 192, 0.35)",
+              "transparent",
+            ]}
+            start={{ x: 0.5, y: 0 }}
+            end={{ x: 0.5, y: 1 }}
+            style={styles.logoGlow}
+          />
+          {/* Diamante fotocromático — desplazado 10px abajo para dar aire al sparkle */}
+          <View style={styles.diamondWrapper}>
+            <DiamondSparkle size={152} />
+          </View>
         </View>
         <ThemedText style={styles.taglineSmall}>
           Tu negocio en un solo lugar
@@ -100,6 +123,16 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     borderRadius: 999,
+  },
+  /**
+   * Wrapper del diamante: desplaza el SVG 10px hacia abajo dentro del stack
+   * para que el sparkle superior quede visible sobre el borde del glow.
+   */
+  diamondWrapper: {
+    position: "absolute",
+    top: 10,          // desplazamiento hacia abajo
+    alignItems: "center",
+    justifyContent: "center",
   },
   heroSection: {
     flex: 1,
