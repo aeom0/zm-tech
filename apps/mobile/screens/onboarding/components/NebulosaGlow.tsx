@@ -18,24 +18,23 @@ interface NebulosaGlowProps {
 /**
  * Halo tipo nebulosa detrás del diamante.
  *
- * Dos elipses verticales solapadas horizontalmente:
- *   - Magenta (#E91E8C) centrada a la izquierda
- *   - Azul Lunaris (#1565C0) centrada a la derecha
- *
- * Opacidades suaves + blur fuerte (stdDeviation=45) para evitar
- * bordes definidos — la nebulosa se desvanece naturalmente.
+ * Dos círculos casi perfectos (rx=ry) levemente desplazados del centro:
+ *   - Magenta (#E91E8C) cx ligeramente a la izquierda
+ *   - Azul Lunaris (#1565C0) cx ligeramente a la derecha
+ * Muy solapados → se perciben como un solo círculo con transición de color.
+ * Blur parejo en todas direcciones (región -80%) → sin bordes definidos.
  */
 export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
   const s = size;
   const ratio = s / 420;
 
-  const mCx  = 140 * ratio;
-  const bCx  = 280 * ratio;
+  const mCx  = 175 * ratio;
+  const bCx  = 245 * ratio;
   const cy   = 210 * ratio;
-  const rx   = 130 * ratio;
-  const ry   = 200 * ratio;
-  const blur = 45 * ratio;
-  const fPad = 160 * ratio;
+  const r    = 155 * ratio;  // rx = ry → círculo perfecto
+  const gScale = 175 * ratio;
+  const blur = 42 * ratio;
+  const fPad = s * 0.8;      // región generosa para blur parejo
 
   return (
     <Svg
@@ -51,12 +50,12 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
           id="glowMagenta"
           cx={mCx}
           cy={cy}
-          rx={rx}
-          ry={ry}
+          rx={gScale}
+          ry={gScale}
           gradientUnits="userSpaceOnUse"
         >
-          <Stop offset="0"   stopColor="#E91E8C" stopOpacity={0.55} />
-          <Stop offset="0.5" stopColor="#E91E8C" stopOpacity={0.20} />
+          <Stop offset="0"   stopColor="#E91E8C" stopOpacity={0.60} />
+          <Stop offset="0.5" stopColor="#E91E8C" stopOpacity={0.25} />
           <Stop offset="1"   stopColor="#E91E8C" stopOpacity={0} />
         </RadialGradient>
 
@@ -65,16 +64,16 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
           id="glowBlue"
           cx={bCx}
           cy={cy}
-          rx={rx}
-          ry={ry}
+          rx={gScale}
+          ry={gScale}
           gradientUnits="userSpaceOnUse"
         >
-          <Stop offset="0"   stopColor="#1565C0" stopOpacity={0.55} />
-          <Stop offset="0.5" stopColor="#1565C0" stopOpacity={0.20} />
+          <Stop offset="0"   stopColor="#1565C0" stopOpacity={0.60} />
+          <Stop offset="0.5" stopColor="#1565C0" stopOpacity={0.25} />
           <Stop offset="1"   stopColor="#1565C0" stopOpacity={0} />
         </RadialGradient>
 
-        {/* Región del filtro generosa para que el blur no recorte los bordes */}
+        {/* Región generosa (-80%) para que el blur sea parejo en todas direcciones */}
         <Filter
           id="nebulaBlur"
           x={-fPad}
@@ -88,8 +87,8 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
       </Defs>
 
       <G filter="url(#nebulaBlur)">
-        <Ellipse cx={mCx} cy={cy} rx={rx} ry={ry} fill="url(#glowMagenta)" />
-        <Ellipse cx={bCx} cy={cy} rx={rx} ry={ry} fill="url(#glowBlue)" />
+        <Ellipse cx={mCx} cy={cy} rx={r} ry={r} fill="url(#glowMagenta)" />
+        <Ellipse cx={bCx} cy={cy} rx={r} ry={r} fill="url(#glowBlue)" />
       </G>
     </Svg>
   );

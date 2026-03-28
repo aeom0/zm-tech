@@ -19,10 +19,11 @@ interface OnboardingEntryScreenProps {
 /**
  * Entrada al onboarding: fondo sólido #111318, CTAs Lunaris.
  *
- * Halo: NebulosaGlow 420px (elipses verticales solapadas magenta+azul)
- * posicionado con left/top -50 para centrar el overflow sobre el stack 320px.
+ * Halo: NebulosaGlow 420px (círculos concéntricos magenta+azul solapados)
+ * centrado sobre logoStack 320px con left/top -50.
  *
- * Diamante: fotocromático 200px; desplazado 10px abajo para aire al sparkle.
+ * Diamante: 260px — impactante, centrado exactamente en el glow.
+ * top: 0 para que quede en el centro vertical del stack.
  */
 export default function OnboardingEntryScreen({
   onCreateNew,
@@ -30,7 +31,7 @@ export default function OnboardingEntryScreen({
 }: OnboardingEntryScreenProps) {
   return (
     <OnboardingLayout centered>
-      {/* Logo + tagline pequeño */}
+      {/* Logo + tagline */}
       <Animated.View
         entering={FadeInUp.duration(500)}
         style={styles.logoSection}
@@ -38,7 +39,7 @@ export default function OnboardingEntryScreen({
         <View style={styles.logoStack}>
           <NebulosaGlow size={420} />
           <View style={styles.diamondWrapper}>
-            <DiamondSparkle size={200} />
+            <DiamondSparkle size={260} />
           </View>
         </View>
         <ThemedText style={styles.taglineSmall}>
