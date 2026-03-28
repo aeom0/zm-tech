@@ -22,7 +22,7 @@ interface OnboardingEntryScreenProps {
  * Halo: NebulosaGlow 420px (elipses verticales solapadas magenta+azul)
  * posicionado con left/top -50 para centrar el overflow sobre el stack 320px.
  *
- * Diamante: fotocromático 152px; desplazado 10px abajo para aire al sparkle.
+ * Diamante: fotocromático 200px; desplazado 10px abajo para aire al sparkle.
  */
 export default function OnboardingEntryScreen({
   onCreateNew,
@@ -36,10 +36,9 @@ export default function OnboardingEntryScreen({
         style={styles.logoSection}
       >
         <View style={styles.logoStack}>
-          {/* Glow 420px centrado sobre stack 320px */}
           <NebulosaGlow size={420} />
           <View style={styles.diamondWrapper}>
-            <DiamondSparkle size={152} />
+            <DiamondSparkle size={200} />
           </View>
         </View>
         <ThemedText style={styles.taglineSmall}>

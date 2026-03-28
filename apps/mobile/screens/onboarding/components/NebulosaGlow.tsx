@@ -18,28 +18,24 @@ interface NebulosaGlowProps {
 /**
  * Halo tipo nebulosa detrás del diamante.
  *
- * Dos elipses verticales (rx < ry) solapadas horizontalmente:
+ * Dos elipses verticales solapadas horizontalmente:
  *   - Magenta (#E91E8C) centrada a la izquierda
  *   - Azul Lunaris (#1565C0) centrada a la derecha
- * Al solaparse generan una mancha continua más ancha que alta,
- * acompañando la forma del diamante.
  *
- * Valores aprobados visualmente:
- *   cx: 140 / 280  (sobre base 420)
- *   rx: 160, ry: 260
- *   blur stdDeviation: 30
+ * Opacidades suaves + blur fuerte (stdDeviation=45) para evitar
+ * bordes definidos — la nebulosa se desvanece naturalmente.
  */
 export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
   const s = size;
-  // Escalar los valores aprobados (base 420) proporcionalmente al size
   const ratio = s / 420;
-  const mCx = 140 * ratio;
-  const bCx = 280 * ratio;
-  const cy  = 210 * ratio;
-  const rx  = 160 * ratio;
-  const ry  = 260 * ratio;
-  const blur = 30 * ratio;
-  const fPad = 120 * ratio;
+
+  const mCx  = 140 * ratio;
+  const bCx  = 280 * ratio;
+  const cy   = 210 * ratio;
+  const rx   = 130 * ratio;
+  const ry   = 200 * ratio;
+  const blur = 45 * ratio;
+  const fPad = 160 * ratio;
 
   return (
     <Svg
@@ -59,8 +55,8 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
           ry={ry}
           gradientUnits="userSpaceOnUse"
         >
-          <Stop offset="0"   stopColor="#E91E8C" stopOpacity={0.80} />
-          <Stop offset="0.5" stopColor="#E91E8C" stopOpacity={0.35} />
+          <Stop offset="0"   stopColor="#E91E8C" stopOpacity={0.55} />
+          <Stop offset="0.5" stopColor="#E91E8C" stopOpacity={0.20} />
           <Stop offset="1"   stopColor="#E91E8C" stopOpacity={0} />
         </RadialGradient>
 
@@ -73,11 +69,12 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
           ry={ry}
           gradientUnits="userSpaceOnUse"
         >
-          <Stop offset="0"   stopColor="#1565C0" stopOpacity={0.80} />
-          <Stop offset="0.5" stopColor="#1565C0" stopOpacity={0.35} />
+          <Stop offset="0"   stopColor="#1565C0" stopOpacity={0.55} />
+          <Stop offset="0.5" stopColor="#1565C0" stopOpacity={0.20} />
           <Stop offset="1"   stopColor="#1565C0" stopOpacity={0} />
         </RadialGradient>
 
+        {/* Región del filtro generosa para que el blur no recorte los bordes */}
         <Filter
           id="nebulaBlur"
           x={-fPad}
