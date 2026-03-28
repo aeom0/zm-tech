@@ -1,8 +1,8 @@
 import React from "react";
 import { StyleSheet } from "react-native";
 import Svg, {
-  Circle,
   Defs,
+  Ellipse,
   FeGaussianBlur,
   Filter,
   G,
@@ -11,23 +11,35 @@ import Svg, {
 } from "react-native-svg";
 
 interface NebulosaGlowProps {
-  /** Lado del cuadrado del halo (coincide con logoStack). */
+  /** Lado del cuadrado del halo. Desde EntryScreen se pasa 420. */
   size?: number;
 }
 
 /**
- * Halo tipo nebulosa detrás del diamante: dos radiales (magenta + cian)
- * con opacidad 0 antes del borde del gradiente y desenfoque gaussiano para mezcla suave.
+ * Halo tipo nebulosa detrás del diamante.
+ *
+ * Dos elipses verticales (rx < ry) solapadas horizontalmente:
+ *   - Magenta (#E91E8C) centrada a la izquierda
+ *   - Azul Lunaris (#1565C0) centrada a la derecha
+ * Al solaparse generan una mancha continua más ancha que alta,
+ * acompañando la forma del diamante.
+ *
+ * Valores aprobados visualmente:
+ *   cx: 140 / 280  (sobre base 420)
+ *   rx: 160, ry: 260
+ *   blur stdDeviation: 30
  */
-export function NebulosaGlow({ size = 320 }: NebulosaGlowProps) {
+export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
   const s = size;
-  const mCx = s * 0.42;
-  const mCy = s * 0.36;
-  const mR = s * 0.5;
-  const cCx = s * 0.58;
-  const cCy = s * 0.56;
-  const cR = s * 0.46;
-  const fPad = s * 0.42;
+  // Escalar los valores aprobados (base 420) proporcionalmente al size
+  const ratio = s / 420;
+  const mCx = 140 * ratio;
+  const bCx = 280 * ratio;
+  const cy  = 210 * ratio;
+  const rx  = 160 * ratio;
+  const ry  = 260 * ratio;
+  const blur = 30 * ratio;
+  const fPad = 120 * ratio;
 
   return (
     <Svg
@@ -38,32 +50,34 @@ export function NebulosaGlow({ size = 320 }: NebulosaGlowProps) {
       pointerEvents="none"
     >
       <Defs>
+        {/* Magenta — token gradient-onboarding-start */}
         <RadialGradient
-          id="nebulaMagenta"
+          id="glowMagenta"
           cx={mCx}
-          cy={mCy}
-          r={mR}
+          cy={cy}
+          rx={rx}
+          ry={ry}
           gradientUnits="userSpaceOnUse"
         >
-          <Stop offset="0" stopColor="#E91E8C" stopOpacity={0.52} />
-          <Stop offset="0.38" stopColor="#E91E8C" stopOpacity={0.22} />
-          <Stop offset="0.66" stopColor="#E91E8C" stopOpacity={0.06} />
-          <Stop offset="0.86" stopColor="#E91E8C" stopOpacity={0} />
-          <Stop offset="1" stopColor="#E91E8C" stopOpacity={0} />
+          <Stop offset="0"   stopColor="#E91E8C" stopOpacity={0.80} />
+          <Stop offset="0.5" stopColor="#E91E8C" stopOpacity={0.35} />
+          <Stop offset="1"   stopColor="#E91E8C" stopOpacity={0} />
         </RadialGradient>
+
+        {/* Azul — token gradient-onboarding-end */}
         <RadialGradient
-          id="nebulaCyan"
-          cx={cCx}
-          cy={cCy}
-          r={cR}
+          id="glowBlue"
+          cx={bCx}
+          cy={cy}
+          rx={rx}
+          ry={ry}
           gradientUnits="userSpaceOnUse"
         >
-          <Stop offset="0" stopColor="#00F2FF" stopOpacity={0.42} />
-          <Stop offset="0.36" stopColor="#00F2FF" stopOpacity={0.16} />
-          <Stop offset="0.64" stopColor="#00F2FF" stopOpacity={0.05} />
-          <Stop offset="0.84" stopColor="#00F2FF" stopOpacity={0} />
-          <Stop offset="1" stopColor="#00F2FF" stopOpacity={0} />
+          <Stop offset="0"   stopColor="#1565C0" stopOpacity={0.80} />
+          <Stop offset="0.5" stopColor="#1565C0" stopOpacity={0.35} />
+          <Stop offset="1"   stopColor="#1565C0" stopOpacity={0} />
         </RadialGradient>
+
         <Filter
           id="nebulaBlur"
           x={-fPad}
@@ -72,12 +86,13 @@ export function NebulosaGlow({ size = 320 }: NebulosaGlowProps) {
           height={s + fPad * 2}
           filterUnits="userSpaceOnUse"
         >
-          <FeGaussianBlur in="SourceGraphic" stdDeviation={35} />
+          <FeGaussianBlur in="SourceGraphic" stdDeviation={blur} />
         </Filter>
       </Defs>
+
       <G filter="url(#nebulaBlur)">
-        <Circle cx={mCx} cy={mCy} r={mR} fill="url(#nebulaMagenta)" />
-        <Circle cx={cCx} cy={cCy} r={cR} fill="url(#nebulaCyan)" />
+        <Ellipse cx={mCx} cy={cy} rx={rx} ry={ry} fill="url(#glowMagenta)" />
+        <Ellipse cx={bCx} cy={cy} rx={rx} ry={ry} fill="url(#glowBlue)" />
       </G>
     </Svg>
   );
@@ -86,7 +101,8 @@ export function NebulosaGlow({ size = 320 }: NebulosaGlowProps) {
 const styles = StyleSheet.create({
   svg: {
     position: "absolute",
-    left: 0,
-    top: 0,
+    // Centra el SVG (420) sobre el logoStack (320): (420-320)/2 = 50
+    left: -50,
+    top: -50,
   },
 });

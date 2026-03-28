@@ -19,10 +19,10 @@ interface OnboardingEntryScreenProps {
 /**
  * Entrada al onboarding: fondo sólido #111318, CTAs Lunaris.
  *
- * Halo: NebulosaGlow (SVG radiales magenta + cian + feGaussianBlur) detrás del diamante;
- * sin overflow/borderRadius que recorten el aura.
+ * Halo: NebulosaGlow 420px (elipses verticales solapadas magenta+azul)
+ * posicionado con left/top -50 para centrar el overflow sobre el stack 320px.
  *
- * Diamante: fotocromático; desplazado 10px abajo para aire al sparkle superior.
+ * Diamante: fotocromático 152px; desplazado 10px abajo para aire al sparkle.
  */
 export default function OnboardingEntryScreen({
   onCreateNew,
@@ -36,9 +36,10 @@ export default function OnboardingEntryScreen({
         style={styles.logoSection}
       >
         <View style={styles.logoStack}>
-          <NebulosaGlow size={320} />
+          {/* Glow 420px centrado sobre stack 320px */}
+          <NebulosaGlow size={420} />
           <View style={styles.diamondWrapper}>
-            <DiamondSparkle size={312} />
+            <DiamondSparkle size={152} />
           </View>
         </View>
         <ThemedText style={styles.taglineSmall}>
@@ -46,7 +47,7 @@ export default function OnboardingEntryScreen({
         </ThemedText>
       </Animated.View>
 
-      {/* Hero title — ocupa el espacio central */}
+      {/* Hero title */}
       <Animated.View
         entering={FadeInDown.duration(500).delay(80)}
         style={styles.heroSection}
@@ -61,7 +62,7 @@ export default function OnboardingEntryScreen({
         </ThemedText>
       </Animated.View>
 
-      {/* Botones al fondo */}
+      {/* Botones */}
       <Animated.View
         entering={FadeInDown.duration(500).delay(160)}
         style={styles.bottomSection}
@@ -88,6 +89,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: Spacing.md,
+    overflow: "visible",
   },
   logoStack: {
     width: 320,
@@ -95,14 +97,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
+    overflow: "visible",
   },
-  /**
-   * Wrapper del diamante: desplaza el SVG 10px hacia abajo dentro del stack
-   * para que el sparkle superior quede visible sobre el borde del glow.
-   */
   diamondWrapper: {
     position: "absolute",
-    top: 10, // desplazamiento hacia abajo
+    top: 10,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -110,7 +109,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     paddingBottom: Spacing.lg,
   },
-  /** Wordmark discreto encima del titular */
   heroBrand: {
     fontSize: 13,
     fontWeight: "600",
