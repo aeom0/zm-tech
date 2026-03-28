@@ -1,29 +1,33 @@
 import React from "react";
 import { StyleSheet } from "react-native";
-import Svg, { Defs, LinearGradient, Rect, Stop } from "react-native-svg";
+import Svg, {
+  Circle,
+  Defs,
+  FeGaussianBlur,
+  Filter,
+  G,
+  RadialGradient,
+  Stop,
+} from "react-native-svg";
 
 interface NebulosaGlowProps {
-  /**
-   * Lado del cuadrado del halo.
-   * Debe ser >= logoStack para que el glow sangre fuera del diamante.
-   * Desde OnboardingEntryScreen se pasa size = logoStack * 1.4
-   */
+  /** Lado del cuadrado del halo (coincide con logoStack). */
   size?: number;
 }
 
 /**
- * Halo tipo nebulosa con dirección estrictamente horizontal (0°).
- *
- * Usa LinearGradient SVG — dos capas superpuestas:
- *   1. Magenta (#E91E8C) de izquierda a derecha, desvanece al 60%
- *   2. Azul (#1565C0) de derecha a izquierda, desvanece al 60%
- * La mezcla en el centro produce el efecto magenta-índigo-azul del mockup.
- *
- * Sin feGaussianBlur (no funciona en Android).
- * El SVG se posiciona centrado sobre el logoStack con left/top negativos.
+ * Halo tipo nebulosa detrás del diamante: dos radiales (magenta + cian)
+ * con opacidad 0 antes del borde del gradiente y desenfoque gaussiano para mezcla suave.
  */
-export function NebulosaGlow({ size = 448 }: NebulosaGlowProps) {
+export function NebulosaGlow({ size = 320 }: NebulosaGlowProps) {
   const s = size;
+  const mCx = s * 0.42;
+  const mCy = s * 0.36;
+  const mR = s * 0.5;
+  const cCx = s * 0.58;
+  const cCy = s * 0.56;
+  const cR = s * 0.46;
+  const fPad = s * 0.42;
 
   return (
     <Svg
@@ -34,42 +38,47 @@ export function NebulosaGlow({ size = 448 }: NebulosaGlowProps) {
       pointerEvents="none"
     >
       <Defs>
-        {/* Magenta: izquierda (opaco) → derecha (transparente) */}
-        <LinearGradient
-          id="glowMagenta"
-          x1="0"
-          y1="0.5"
-          x2="1"
-          y2="0.5"
-          gradientUnits="objectBoundingBox"
+        <RadialGradient
+          id="nebulaMagenta"
+          cx={mCx}
+          cy={mCy}
+          r={mR}
+          gradientUnits="userSpaceOnUse"
         >
-          <Stop offset="0" stopColor="#E91E8C" stopOpacity={0.85} />
-          <Stop offset="0.45" stopColor="#E91E8C" stopOpacity={0.4} />
-          <Stop offset="0.75" stopColor="#E91E8C" stopOpacity={0.08} />
+          <Stop offset="0" stopColor="#E91E8C" stopOpacity={0.52} />
+          <Stop offset="0.38" stopColor="#E91E8C" stopOpacity={0.22} />
+          <Stop offset="0.66" stopColor="#E91E8C" stopOpacity={0.06} />
+          <Stop offset="0.86" stopColor="#E91E8C" stopOpacity={0} />
           <Stop offset="1" stopColor="#E91E8C" stopOpacity={0} />
-        </LinearGradient>
-
-        {/* Azul: derecha (opaco) → izquierda (transparente) */}
-        <LinearGradient
-          id="glowBlue"
-          x1="1"
-          y1="0.5"
-          x2="0"
-          y2="0.5"
-          gradientUnits="objectBoundingBox"
+        </RadialGradient>
+        <RadialGradient
+          id="nebulaCyan"
+          cx={cCx}
+          cy={cCy}
+          r={cR}
+          gradientUnits="userSpaceOnUse"
         >
-          <Stop offset="0" stopColor="#1565C0" stopOpacity={0.85} />
-          <Stop offset="0.45" stopColor="#1565C0" stopOpacity={0.4} />
-          <Stop offset="0.75" stopColor="#1565C0" stopOpacity={0.08} />
-          <Stop offset="1" stopColor="#1565C0" stopOpacity={0} />
-        </LinearGradient>
+          <Stop offset="0" stopColor="#00F2FF" stopOpacity={0.42} />
+          <Stop offset="0.36" stopColor="#00F2FF" stopOpacity={0.16} />
+          <Stop offset="0.64" stopColor="#00F2FF" stopOpacity={0.05} />
+          <Stop offset="0.84" stopColor="#00F2FF" stopOpacity={0} />
+          <Stop offset="1" stopColor="#00F2FF" stopOpacity={0} />
+        </RadialGradient>
+        <Filter
+          id="nebulaBlur"
+          x={-fPad}
+          y={-fPad}
+          width={s + fPad * 2}
+          height={s + fPad * 2}
+          filterUnits="userSpaceOnUse"
+        >
+          <FeGaussianBlur in="SourceGraphic" stdDeviation={35} />
+        </Filter>
       </Defs>
-
-      {/* Capa magenta — izquierda */}
-      <Rect x={0} y={0} width={s} height={s} fill="url(#glowMagenta)" />
-
-      {/* Capa azul — derecha, superpuesta con mezcla por opacidad */}
-      <Rect x={0} y={0} width={s} height={s} fill="url(#glowBlue)" />
+      <G filter="url(#nebulaBlur)">
+        <Circle cx={mCx} cy={mCy} r={mR} fill="url(#nebulaMagenta)" />
+        <Circle cx={cCx} cy={cCy} r={cR} fill="url(#nebulaCyan)" />
+      </G>
     </Svg>
   );
 }
@@ -77,7 +86,6 @@ export function NebulosaGlow({ size = 448 }: NebulosaGlowProps) {
 const styles = StyleSheet.create({
   svg: {
     position: "absolute",
-    // Se calcula en OnboardingEntryScreen con el offset correcto
     left: 0,
     top: 0,
   },
