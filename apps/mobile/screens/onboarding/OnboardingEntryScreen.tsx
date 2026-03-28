@@ -19,10 +19,11 @@ interface OnboardingEntryScreenProps {
 /**
  * Entrada al onboarding: fondo sólido #111318, CTAs Lunaris.
  *
- * Halo: NebulosaGlow (SVG radiales magenta + cian + feGaussianBlur) detrás del diamante;
- * sin overflow/borderRadius que recorten el aura.
+ * Halo: NebulosaGlow size=420 (más grande que el stack de 320)
+ * se centra con left/top negativos en NebulosaGlow.styles para que el
+ * glow sangre hacia los bordes — magenta sup-izq, azul Lunaris inf-der.
  *
- * Diamante: fotocromático; desplazado 10px abajo para aire al sparkle superior.
+ * Diamante: fotocromático 152px; desplazado 10px abajo para aire al sparkle superior.
  */
 export default function OnboardingEntryScreen({
   onCreateNew,
@@ -36,9 +37,10 @@ export default function OnboardingEntryScreen({
         style={styles.logoSection}
       >
         <View style={styles.logoStack}>
-          <NebulosaGlow size={320} />
+          {/* size=420 > stack 320 → glow con overflow controlado */}
+          <NebulosaGlow size={420} />
           <View style={styles.diamondWrapper}>
-            <DiamondSparkle size={312} />
+            <DiamondSparkle size={152} />
           </View>
         </View>
         <ThemedText style={styles.taglineSmall}>
@@ -95,6 +97,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
+    // overflow visible para que el glow (420px) sangre fuera del stack
+    overflow: "visible",
   },
   /**
    * Wrapper del diamante: desplaza el SVG 10px hacia abajo dentro del stack
@@ -102,7 +106,7 @@ const styles = StyleSheet.create({
    */
   diamondWrapper: {
     position: "absolute",
-    top: 10, // desplazamiento hacia abajo
+    top: 10,
     alignItems: "center",
     justifyContent: "center",
   },
