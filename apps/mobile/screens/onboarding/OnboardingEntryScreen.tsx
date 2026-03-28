@@ -16,14 +16,20 @@ interface OnboardingEntryScreenProps {
   onLoginExisting: () => void;
 }
 
+// Tamaño base del stack del diamante
+const STACK_SIZE = 320;
+// El glow es 1.4x el stack — sangra ~64px a cada lado
+const GLOW_SIZE = Math.round(STACK_SIZE * 1.4); // 448
+const GLOW_OFFSET = (GLOW_SIZE - STACK_SIZE) / 2; // 64
+
 /**
  * Entrada al onboarding: fondo sólido #111318, CTAs Lunaris.
  *
- * Halo: NebulosaGlow size=420 (más grande que el stack de 320)
- * se centra con left/top negativos en NebulosaGlow.styles para que el
- * glow sangre hacia los bordes — magenta sup-izq, azul Lunaris inf-der.
+ * Halo: NebulosaGlow con LinearGradient horizontal puro (0°)
+ * magenta izquierda → azul derecha, sin feGaussianBlur.
+ * Se posiciona con left/top negativos para centrar el overflow.
  *
- * Diamante: fotocromático 152px; desplazado 10px abajo para aire al sparkle superior.
+ * Diamante: fotocromático 152px; desplazado 10px abajo.
  */
 export default function OnboardingEntryScreen({
   onCreateNew,
@@ -31,14 +37,22 @@ export default function OnboardingEntryScreen({
 }: OnboardingEntryScreenProps) {
   return (
     <OnboardingLayout centered>
-      {/* Logo + tagline pequeño */}
+      {/* Logo + tagline */}
       <Animated.View
         entering={FadeInUp.duration(500)}
         style={styles.logoSection}
       >
         <View style={styles.logoStack}>
-          {/* size=420 > stack 320 → glow con overflow controlado */}
-          <NebulosaGlow size={420} />
+          {/* Glow más grande que el stack, centrado con offset negativo */}
+          <NebulosaGlow
+            size={GLOW_SIZE}
+          />
+          <View
+            style={[
+              styles.glowPositioner,
+              { left: -GLOW_OFFSET, top: -GLOW_OFFSET },
+            ]}
+          />
           <View style={styles.diamondWrapper}>
             <DiamondSparkle size={152} />
           </View>
@@ -48,7 +62,7 @@ export default function OnboardingEntryScreen({
         </ThemedText>
       </Animated.View>
 
-      {/* Hero title — ocupa el espacio central */}
+      {/* Hero title */}
       <Animated.View
         entering={FadeInDown.duration(500).delay(80)}
         style={styles.heroSection}
@@ -63,7 +77,7 @@ export default function OnboardingEntryScreen({
         </ThemedText>
       </Animated.View>
 
-      {/* Botones al fondo */}
+      {/* Botones */}
       <Animated.View
         entering={FadeInDown.duration(500).delay(160)}
         style={styles.bottomSection}
@@ -90,20 +104,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: Spacing.md,
+    // overflow visible para que el glow (448px) escape del stack (320px)
+    overflow: "visible",
   },
   logoStack: {
-    width: 320,
-    height: 320,
+    width: STACK_SIZE,
+    height: STACK_SIZE,
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
-    // overflow visible para que el glow (420px) sangre fuera del stack
     overflow: "visible",
   },
-  /**
-   * Wrapper del diamante: desplaza el SVG 10px hacia abajo dentro del stack
-   * para que el sparkle superior quede visible sobre el borde del glow.
-   */
+  // View vacío que no hace nada — el glow ya está absoluto en NebulosaGlow
+  glowPositioner: {
+    position: "absolute",
+    width: GLOW_SIZE,
+    height: GLOW_SIZE,
+    pointerEvents: "none",
+  },
   diamondWrapper: {
     position: "absolute",
     top: 10,
@@ -114,7 +132,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     paddingBottom: Spacing.lg,
   },
-  /** Wordmark discreto encima del titular */
   heroBrand: {
     fontSize: 13,
     fontWeight: "600",
