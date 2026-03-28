@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import MaskedView from "@react-native-masked-view/masked-view";
 import { ThemedText } from "@/components/ThemedText";
 import { DiamondSparkle } from "./DiamondSparkle";
 import { NebulosaGlow } from "./NebulosaGlow";
@@ -8,16 +9,11 @@ import { Spacing } from "@/constants/theme";
 
 const STACK_SIZE = 320;
 const GLOW_SIZE = 420;
-
-// Tokens Lunaris
-const GRADIENT: [string, string, string] = ["#E91E8C", "#9C27B0", "#1565C0"];
+const GRADIENT_COLORS: [string, string, string] = ["#E91E8C", "#9C27B0", "#1565C0"];
 
 /**
  * Componente compartido entre OnboardingEntryScreen y SplashScreen.
- * NebulosaGlow + DiamondSparkle + wordmark "SalonPro" + tagline.
- *
- * Gradiente en texto via LinearGradient absoluto sobre Text transparente
- * (no requiere @react-native-masked-view).
+ * NebulosaGlow + DiamondSparkle + wordmark "SalonPro" con gradiente + tagline.
  */
 export function DiamondHero() {
   return (
@@ -30,16 +26,22 @@ export function DiamondHero() {
         </View>
       </View>
 
-      {/* Wordmark SalonPro con gradiente */}
-      <View style={styles.wordmarkContainer}>
+      {/* Wordmark SalonPro — gradiente dentro de las letras */}
+      <MaskedView
+        style={styles.maskedWordmark}
+        maskElement={
+          <View style={styles.maskCenter}>
+            <Text style={styles.wordmark}>SalonPro</Text>
+          </View>
+        }
+      >
         <LinearGradient
-          colors={GRADIENT}
+          colors={GRADIENT_COLORS}
           start={{ x: 0, y: 0.5 }}
           end={{ x: 1, y: 0.5 }}
-          style={StyleSheet.absoluteFillObject}
+          style={styles.gradientFill}
         />
-        <Text style={styles.wordmark}>SalonPro</Text>
-      </View>
+      </MaskedView>
 
       {/* Tagline */}
       <ThemedText style={styles.tagline}>
@@ -68,20 +70,24 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  wordmarkContainer: {
-    borderRadius: 4,
-    overflow: "hidden", // necesario para que LinearGradient quede recortado al texto
-    paddingHorizontal: 2,
-    paddingVertical: 1,
+  maskedWordmark: {
+    height: 44,
+  },
+  maskCenter: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "transparent",
   },
   wordmark: {
     fontSize: 36,
     fontWeight: "700",
     letterSpacing: -0.5,
-    color: "rgba(255,255,255,0.92)",
-    // El gradiente queda detrás del texto via absoluteFillObject
-    // En RN puro no hay clip-to-text nativo sin masked-view,
-    // por lo que el gradiente es el fondo del contenedor
+    color: "black", // define la forma del mask — el color no importa
+  },
+  gradientFill: {
+    flex: 1,
+    width: 220,
   },
   tagline: {
     fontSize: 15,
