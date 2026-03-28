@@ -1,8 +1,7 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 import { LinearGradient } from "expo-linear-gradient";
-import MaskedView from "@react-native-masked-view/masked-view";
 
 import { ThemedText } from "@/components/ThemedText";
 import {
@@ -16,6 +15,8 @@ interface OnboardingEntryScreenProps {
   onCreateNew: () => void;
   onLoginExisting: () => void;
 }
+
+const GRADIENT: [string, string, string] = ["#E91E8C", "#9C27B0", "#1565C0"];
 
 export default function OnboardingEntryScreen({
   onCreateNew,
@@ -38,22 +39,16 @@ export default function OnboardingEntryScreen({
       >
         <ThemedText style={styles.heroTitle}>Gestiona tu estudio</ThemedText>
 
-        {/* "con estilo y precisión" con gradiente magenta→azul */}
-        <MaskedView
-          style={styles.maskedView}
-          maskElement={
-            <ThemedText style={styles.heroHighlightMask}>
-              con estilo y precisión
-            </ThemedText>
-          }
-        >
+        {/* "con estilo y precisión" — fondo gradiente + texto blanco encima */}
+        <View style={styles.highlightContainer}>
           <LinearGradient
-            colors={["#E91E8C", "#9C27B0", "#1565C0"]}
+            colors={GRADIENT}
             start={{ x: 0, y: 0.5 }}
             end={{ x: 1, y: 0.5 }}
-            style={styles.gradientFill}
+            style={StyleSheet.absoluteFillObject}
           />
-        </MaskedView>
+          <Text style={styles.heroHighlight}>con estilo y precisión</Text>
+        </View>
 
         <ThemedText style={styles.heroSub}>
           Citas, personal, finanzas e inventario{"\n"}todo en tu bolsillo.
@@ -98,19 +93,19 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     lineHeight: 48,
   },
-  maskedView: {
-    height: 52,
+  highlightContainer: {
+    borderRadius: 6,
+    overflow: "hidden",
+    marginTop: 2,
+    alignSelf: "flex-start",
+    paddingHorizontal: 4,
+    paddingVertical: 2,
   },
-  heroHighlightMask: {
+  heroHighlight: {
     fontSize: 42,
     fontWeight: "700",
+    color: "#FFFFFF",
     lineHeight: 48,
-    color: "#000000",
-    backgroundColor: "transparent",
-  },
-  gradientFill: {
-    flex: 1,
-    width: 340,
   },
   heroSub: {
     fontSize: 14,
