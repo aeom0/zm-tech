@@ -31,22 +31,35 @@ export function Navbar() {
       }`}
     >
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-        {/* Logo */}
+
+        {/* Logo — ícono + wordmark + badge */}
         <a
           href="#"
-          className="flex items-center group min-w-0"
+          className="flex items-center gap-2.5 group"
           aria-label="SalonPro — inicio"
         >
           <Image
             src="/logo-diamondSparkle.svg"
             alt="SalonPro"
-            width={34}
-            height={39}
+            width={44}
+            height={50}
             priority
-            className={`h-9 w-auto shrink-0 transition-[filter] duration-300 ${
-              scrolled ? "invert dark:invert-0" : ""
-            }`}
+            className="h-11 w-auto shrink-0"
           />
+          <span
+            className="text-[19px] font-bold tracking-tight"
+            style={{
+              background: "linear-gradient(90deg, #E91E8C, #9C27B0, #1565C0)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
+            SalonPro
+          </span>
+          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full border border-[#E91E8C]/30 bg-[#E91E8C]/10 text-[#E91E8C] tracking-wide">
+            Beta
+          </span>
         </a>
 
         {/* Links — desktop */}
@@ -55,10 +68,10 @@ export function Navbar() {
             <a
               key={l.href}
               href={l.href}
-              className={`text-sm font-medium transition-colors hover:text-primary ${
+              className={`text-sm font-medium transition-colors hover:text-white ${
                 scrolled
-                  ? "text-zinc-700 dark:text-zinc-300"
-                  : "text-white/90 hover:text-white"
+                  ? "text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white"
+                  : "text-white/70 hover:text-white"
               }`}
             >
               {l.label}
@@ -71,14 +84,16 @@ export function Navbar() {
         <div className="hidden md:flex items-center gap-3">
           <a
             href="#"
-            className={`text-sm font-medium transition-colors hover:text-primary ${
+            className={`text-sm font-medium transition-colors ${
               scrolled
-                ? "text-zinc-600 dark:text-zinc-400"
-                : "text-white/70 hover:text-white"
+                ? "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
+                : "text-white/60 hover:text-white"
             }`}
           >
             Iniciar sesión
           </a>
+          {/* Divider */}
+          <span className="w-px h-5 bg-white/15 dark:bg-white/10" />
           <GradientButton href="#precios" size="sm">
             Empezar gratis
           </GradientButton>
