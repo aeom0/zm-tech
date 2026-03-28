@@ -16,30 +16,25 @@ interface OnboardingEntryScreenProps {
   onLoginExisting: () => void;
 }
 
-/**
- * Entrada al onboarding: fondo sólido #111318, CTAs Lunaris.
- *
- * Halo: NebulosaGlow 420px (círculos concéntricos magenta+azul solapados)
- * centrado sobre logoStack 320px con left/top -50.
- *
- * Diamante: 260px — impactante, centrado exactamente en el glow.
- * top: 0 para que quede en el centro vertical del stack.
- */
+const STACK_SIZE = 320;
+const GLOW_SIZE  = 420;
+const GLOW_OFFSET = (GLOW_SIZE - STACK_SIZE) / 2; // 50 — coincide con left/top del SVG
+
 export default function OnboardingEntryScreen({
   onCreateNew,
   onLoginExisting,
 }: OnboardingEntryScreenProps) {
   return (
     <OnboardingLayout centered>
-      {/* Logo + tagline */}
       <Animated.View
         entering={FadeInUp.duration(500)}
         style={styles.logoSection}
       >
         <View style={styles.logoStack}>
-          <NebulosaGlow size={420} />
+          <NebulosaGlow size={GLOW_SIZE} />
+          {/* DiamondSparkle 320px centrado exactamente en el glow */}
           <View style={styles.diamondWrapper}>
-            <DiamondSparkle size={260} />
+            <DiamondSparkle size={320} />
           </View>
         </View>
         <ThemedText style={styles.taglineSmall}>
@@ -47,7 +42,6 @@ export default function OnboardingEntryScreen({
         </ThemedText>
       </Animated.View>
 
-      {/* Hero title */}
       <Animated.View
         entering={FadeInDown.duration(500).delay(80)}
         style={styles.heroSection}
@@ -62,7 +56,6 @@ export default function OnboardingEntryScreen({
         </ThemedText>
       </Animated.View>
 
-      {/* Botones */}
       <Animated.View
         entering={FadeInDown.duration(500).delay(160)}
         style={styles.bottomSection}
@@ -92,8 +85,8 @@ const styles = StyleSheet.create({
     overflow: "visible",
   },
   logoStack: {
-    width: 320,
-    height: 320,
+    width: STACK_SIZE,
+    height: STACK_SIZE,
     alignItems: "center",
     justifyContent: "center",
     position: "relative",
@@ -101,7 +94,6 @@ const styles = StyleSheet.create({
   },
   diamondWrapper: {
     position: "absolute",
-    top: 10,
     alignItems: "center",
     justifyContent: "center",
   },

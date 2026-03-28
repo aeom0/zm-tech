@@ -18,23 +18,24 @@ interface NebulosaGlowProps {
 /**
  * Halo tipo nebulosa detrás del diamante.
  *
- * Dos círculos casi perfectos (rx=ry) levemente desplazados del centro:
- *   - Magenta (#E91E8C) cx ligeramente a la izquierda
- *   - Azul Lunaris (#1565C0) cx ligeramente a la derecha
+ * Dos círculos perfectos (rx=ry) con 50px de separación total entre centros,
+ * simétricos respecto al centro del SVG:
+ *   - Magenta (#E91E8C) cx = centro - 25
+ *   - Azul Lunaris (#1565C0) cx = centro + 25
  * Muy solapados → se perciben como un solo círculo con transición de color.
- * Blur parejo en todas direcciones (región -80%) → sin bordes definidos.
  */
 export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
   const s = size;
   const ratio = s / 420;
+  const center = s / 2;
 
-  const mCx  = 175 * ratio;
-  const bCx  = 245 * ratio;
-  const cy   = 210 * ratio;
-  const r    = 155 * ratio;  // rx = ry → círculo perfecto
+  const mCx   = center - 25 * ratio;  // 185 en base 420
+  const bCx   = center + 25 * ratio;  // 235 en base 420
+  const cy    = center;
+  const r     = 155 * ratio;
   const gScale = 175 * ratio;
-  const blur = 42 * ratio;
-  const fPad = s * 0.8;      // región generosa para blur parejo
+  const blur  = 42 * ratio;
+  const fPad  = s * 0.8;
 
   return (
     <Svg
@@ -45,7 +46,6 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
       pointerEvents="none"
     >
       <Defs>
-        {/* Magenta — token gradient-onboarding-start */}
         <RadialGradient
           id="glowMagenta"
           cx={mCx}
@@ -59,7 +59,6 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
           <Stop offset="1"   stopColor="#E91E8C" stopOpacity={0} />
         </RadialGradient>
 
-        {/* Azul — token gradient-onboarding-end */}
         <RadialGradient
           id="glowBlue"
           cx={bCx}
@@ -73,7 +72,6 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
           <Stop offset="1"   stopColor="#1565C0" stopOpacity={0} />
         </RadialGradient>
 
-        {/* Región generosa (-80%) para que el blur sea parejo en todas direcciones */}
         <Filter
           id="nebulaBlur"
           x={-fPad}
@@ -97,7 +95,6 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
 const styles = StyleSheet.create({
   svg: {
     position: "absolute",
-    // Centra el SVG (420) sobre el logoStack (320): (420-320)/2 = 50
     left: -50,
     top: -50,
   },
