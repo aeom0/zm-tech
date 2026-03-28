@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
-import { Image } from "expo-image";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -10,7 +9,7 @@ import Animated, {
   runOnJS,
 } from "react-native-reanimated";
 import * as SplashScreenExpo from "expo-splash-screen";
-import { Spacing } from "@/constants/theme";
+import { DiamondHero } from "@/screens/onboarding/components";
 
 SplashScreenExpo.preventAutoHideAsync?.();
 
@@ -18,12 +17,14 @@ type SplashScreenProps = {
   onFinish: () => void;
 };
 
+/**
+ * SplashScreen React — reutiliza DiamondHero (glow + diamante + SalonPro + tagline).
+ * Animación: fade in del hero completo, luego fade out antes de onFinish.
+ * Total: ~2000ms.
+ */
 export function SplashScreenComponent({ onFinish }: SplashScreenProps) {
-  const logoScale = useSharedValue(0.6);
-  const logoOpacity = useSharedValue(0);
-  const taglineOpacity = useSharedValue(0);
-  const taglineTranslateY = useSharedValue(15);
-  const shimmerTranslate = useSharedValue(-200);
+  const opacity = useSharedValue(0);
+  const scale = useSharedValue(0.92);
 
   useEffect(() => {
     let cancelled = false;
@@ -31,82 +32,36 @@ export function SplashScreenComponent({ onFinish }: SplashScreenProps) {
     async function animate() {
       await SplashScreenExpo.hideAsync?.();
 
-      // Logo fade in + scale
-      logoOpacity.value = withTiming(1, {
-        duration: 600,
-        easing: Easing.out(Easing.cubic),
-      });
-      logoScale.value = withTiming(1, {
-        duration: 700,
-        easing: Easing.out(Easing.back(1.2)),
-      });
+      // Fade in + escala sutil
+      opacity.value = withTiming(1, { duration: 600, easing: Easing.out(Easing.cubic) });
+      scale.value   = withTiming(1, { duration: 700, easing: Easing.out(Easing.back(1.1)) });
 
-      // Tagline slide up
-      taglineOpacity.value = withDelay(400, withTiming(1, { duration: 500 }));
-      taglineTranslateY.value = withDelay(
-        400,
-        withTiming(0, { duration: 500, easing: Easing.out(Easing.cubic) }),
-      );
+      // Fade out antes de terminar
+      opacity.value = withDelay(1200, withTiming(0, { duration: 400 }));
 
-      // Shimmer effect on logo
-      shimmerTranslate.value = withDelay(
-        600,
-        withTiming(200, { duration: 800, easing: Easing.inOut(Easing.ease) }),
-      );
-
-      // Finish after animation
       const timer = setTimeout(() => {
-        if (!cancelled) {
-          runOnJS(onFinish)();
-        }
-      }, 1800);
+        if (!cancelled) runOnJS(onFinish)();
+      }, 2000);
 
       return () => clearTimeout(timer);
     }
 
-    const t = setTimeout(animate, 200);
+    const t = setTimeout(animate, 100);
     return () => {
       cancelled = true;
       clearTimeout(t);
     };
-  }, [
-    onFinish,
-    logoScale,
-    logoOpacity,
-    taglineOpacity,
-    taglineTranslateY,
-    shimmerTranslate,
-  ]);
+  }, [onFinish, opacity, scale]);
 
-  const logoAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: logoOpacity.value,
-    transform: [{ scale: logoScale.value }],
-  }));
-
-  const taglineAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: taglineOpacity.value,
-    transform: [{ translateY: taglineTranslateY.value }],
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [{ scale: scale.value }],
   }));
 
   return (
     <View style={styles.container}>
-      <Animated.View style={[styles.logoContainer, logoAnimatedStyle]}>
-        <Image
-          source={require("@/assets/splash-logo.png")}
-          style={styles.logoImage}
-          contentFit="contain"
-          accessibilityLabel="SalonPro"
-          accessibilityIgnoresInvertColors
-        />
-      </Animated.View>
-
-      <Animated.View style={taglineAnimatedStyle}>
-        <Animated.Text style={styles.tagline}>
-          Configura tu salón en minutos
-        </Animated.Text>
-        <Animated.Text style={styles.subtagline}>
-          Agenda, equipo e inventario en un solo lugar.
-        </Animated.Text>
+      <Animated.View style={[styles.hero, animatedStyle]}>
+        <DiamondHero />
       </Animated.View>
     </View>
   );
@@ -118,28 +73,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#111318",
-    paddingHorizontal: Spacing["2xl"],
   },
-  logoContainer: {
+  hero: {
     alignItems: "center",
-    justifyContent: "center",
-  },
-  logoImage: {
-    width: 112,
-    height: 112,
-  },
-  tagline: {
-    color: "rgba(255,255,255,0.85)",
-    fontSize: 14,
-    fontWeight: "500",
-    textAlign: "center",
-    marginTop: Spacing.lg,
-    letterSpacing: 0.5,
-  },
-  subtagline: {
-    color: "rgba(255,255,255,0.55)",
-    fontSize: 12,
-    textAlign: "center",
-    marginTop: Spacing.sm,
+    overflow: "visible",
   },
 });

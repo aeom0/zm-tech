@@ -3,3 +3,4 @@ export { OnboardingProgressDots } from "./OnboardingProgressDots";
 export { GradientCTAButton } from "./GradientCTAButton";
 export { DiamondSparkle } from "./DiamondSparkle";
 export { NebulosaGlow } from "./NebulosaGlow";
+export { DiamondHero } from "./DiamondHero";

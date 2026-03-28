@@ -1,13 +1,14 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
+import { LinearGradient } from "expo-linear-gradient";
+import MaskedView from "@react-native-masked-view/masked-view";
 
 import { ThemedText } from "@/components/ThemedText";
 import {
   OnboardingLayout,
   GradientCTAButton,
-  DiamondSparkle,
-  NebulosaGlow,
+  DiamondHero,
 } from "@/screens/onboarding/components";
 import { Spacing } from "@/constants/theme";
 
@@ -16,46 +17,50 @@ interface OnboardingEntryScreenProps {
   onLoginExisting: () => void;
 }
 
-const STACK_SIZE = 320;
-const GLOW_SIZE  = 420;
-const GLOW_OFFSET = (GLOW_SIZE - STACK_SIZE) / 2; // 50 — coincide con left/top del SVG
-
 export default function OnboardingEntryScreen({
   onCreateNew,
   onLoginExisting,
 }: OnboardingEntryScreenProps) {
   return (
     <OnboardingLayout centered>
+      {/* Diamante + glow + SalonPro + tagline */}
       <Animated.View
         entering={FadeInUp.duration(500)}
         style={styles.logoSection}
       >
-        <View style={styles.logoStack}>
-          <NebulosaGlow size={GLOW_SIZE} />
-          {/* DiamondSparkle 320px centrado exactamente en el glow */}
-          <View style={styles.diamondWrapper}>
-            <DiamondSparkle size={320} />
-          </View>
-        </View>
-        <ThemedText style={styles.taglineSmall}>
-          Tu negocio en un solo lugar
-        </ThemedText>
+        <DiamondHero />
       </Animated.View>
 
+      {/* Hero text */}
       <Animated.View
         entering={FadeInDown.duration(500).delay(80)}
         style={styles.heroSection}
       >
-        <ThemedText style={styles.heroBrand}>SalonPro</ThemedText>
         <ThemedText style={styles.heroTitle}>Gestiona tu estudio</ThemedText>
-        <ThemedText style={styles.heroHighlight}>
-          con estilo y precisión
-        </ThemedText>
+
+        {/* "con estilo y precisión" con gradiente magenta→azul */}
+        <MaskedView
+          style={styles.maskedView}
+          maskElement={
+            <ThemedText style={styles.heroHighlightMask}>
+              con estilo y precisión
+            </ThemedText>
+          }
+        >
+          <LinearGradient
+            colors={["#E91E8C", "#9C27B0", "#1565C0"]}
+            start={{ x: 0, y: 0.5 }}
+            end={{ x: 1, y: 0.5 }}
+            style={styles.gradientFill}
+          />
+        </MaskedView>
+
         <ThemedText style={styles.heroSub}>
           Citas, personal, finanzas e inventario{"\n"}todo en tu bolsillo.
         </ThemedText>
       </Animated.View>
 
+      {/* Botones */}
       <Animated.View
         entering={FadeInDown.duration(500).delay(160)}
         style={styles.bottomSection}
@@ -81,32 +86,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    gap: Spacing.md,
     overflow: "visible",
-  },
-  logoStack: {
-    width: STACK_SIZE,
-    height: STACK_SIZE,
-    alignItems: "center",
-    justifyContent: "center",
-    position: "relative",
-    overflow: "visible",
-  },
-  diamondWrapper: {
-    position: "absolute",
-    alignItems: "center",
-    justifyContent: "center",
   },
   heroSection: {
     alignItems: "flex-start",
     paddingBottom: Spacing.lg,
-  },
-  heroBrand: {
-    fontSize: 13,
-    fontWeight: "600",
-    letterSpacing: 3.5,
-    color: "rgba(255,255,255,0.52)",
-    marginBottom: Spacing.sm,
   },
   heroTitle: {
     fontSize: 42,
@@ -114,11 +98,19 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     lineHeight: 48,
   },
-  heroHighlight: {
+  maskedView: {
+    height: 52,
+  },
+  heroHighlightMask: {
     fontSize: 42,
     fontWeight: "700",
-    color: "#E91E8C",
     lineHeight: 48,
+    color: "#000000",
+    backgroundColor: "transparent",
+  },
+  gradientFill: {
+    flex: 1,
+    width: 340,
   },
   heroSub: {
     fontSize: 14,
@@ -132,11 +124,5 @@ const styles = StyleSheet.create({
   },
   btnFull: {
     width: "100%",
-  },
-  taglineSmall: {
-    fontSize: 16,
-    color: "rgba(255,255,255,0.55)",
-    textAlign: "center",
-    lineHeight: 22,
   },
 });
