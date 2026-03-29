@@ -1,5 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
+import MaskedView from "@react-native-masked-view/masked-view";
+import { LinearGradient } from "expo-linear-gradient";
 import { DiamondSparkle } from "./DiamondSparkle";
 import { NebulosaGlow } from "./NebulosaGlow";
 import { Spacing } from "@/constants/theme";
@@ -7,14 +9,25 @@ import { Spacing } from "@/constants/theme";
 const STACK_SIZE = 320;
 const GLOW_SIZE = 420;
 
+/** Colores del gradiente Lunaris (135°) */
+const LUNARIS: readonly [string, string, string, string] = [
+  "#E91E8C",
+  "#9C27B0",
+  "#3D3D8F",
+  "#1565C0",
+];
+
 interface DiamondHeroProps {
   /** Mostrar wordmark "SalonPro" y tagline debajo del diamante. Default: true */
   showText?: boolean;
 }
 
 /**
- * Componente compartido entre OnboardingEntryScreen y la splash nativa (vía assets).
- * NebulosaGlow + DiamondSparkle + wordmark "SalonPro" blanco + tagline.
+ * Componente compartido entre OnboardingEntryScreen y SplashScreen.
+ * NebulosaGlow + DiamondSparkle + wordmark SalonPro + tagline.
+ *
+ * Wordmark: "Salon" Poppins ExtraBold blanco + "Pro" Poppins ExtraBold
+ * con gradiente Lunaris vía MaskedView.
  */
 export function DiamondHero({ showText = true }: DiamondHeroProps) {
   return (
@@ -29,12 +42,30 @@ export function DiamondHero({ showText = true }: DiamondHeroProps) {
 
       {showText && (
         <>
-          {/* Wordmark SalonPro — tipografía mixta, todo blanco */}
+          {/* Wordmark SalonPro */}
           <View style={styles.wordmarkRow}>
-            {/* "Salon" — serif elegante via fontWeight 300 + letterSpacing amplio */}
+            {/* "Salon" — Poppins ExtraBold, blanco puro */}
             <Text style={styles.wordmarkSalon}>Salon</Text>
-            {/* "Pro" — sans-serif bold condensado */}
-            <Text style={styles.wordmarkPro}>Pro</Text>
+
+            {/* "Pro" — Poppins ExtraBold, gradiente Lunaris */}
+            <MaskedView
+              maskElement={
+                <Text style={[styles.wordmarkPro, styles.wordmarkProMask]}>
+                  Pro
+                </Text>
+              }
+            >
+              <LinearGradient
+                colors={LUNARIS}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.proGradient}
+              >
+                <Text style={[styles.wordmarkPro, styles.wordmarkProTransparent]}>
+                  Pro
+                </Text>
+              </LinearGradient>
+            </MaskedView>
           </View>
 
           {/* Tagline */}
@@ -46,6 +77,8 @@ export function DiamondHero({ showText = true }: DiamondHeroProps) {
     </View>
   );
 }
+
+const WORDMARK_SIZE = 38;
 
 const styles = StyleSheet.create({
   container: {
@@ -69,22 +102,27 @@ const styles = StyleSheet.create({
   wordmarkRow: {
     flexDirection: "row",
     alignItems: "baseline",
-    gap: 2,
+    gap: 0,
   },
-  // "Salon" — peso ligero, letras separadas, aspecto editorial/lujo
   wordmarkSalon: {
-    fontSize: 38,
-    fontWeight: "300",
-    letterSpacing: 6,
+    fontFamily: "Poppins_800ExtraBold",
+    fontSize: WORDMARK_SIZE,
     color: "#FFFFFF",
-    textTransform: "uppercase",
+    includeFontPadding: false,
   },
-  // "Pro" — bold, sin separación, contraste de peso
   wordmarkPro: {
-    fontSize: 38,
-    fontWeight: "800",
-    letterSpacing: -1,
-    color: "#FFFFFF",
+    fontFamily: "Poppins_800ExtraBold",
+    fontSize: WORDMARK_SIZE,
+    includeFontPadding: false,
+  },
+  wordmarkProMask: {
+    color: "#000000",
+  },
+  wordmarkProTransparent: {
+    color: "transparent",
+  },
+  proGradient: {
+    borderRadius: 0,
   },
   tagline: {
     fontSize: 13,

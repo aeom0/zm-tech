@@ -7,6 +7,10 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import {
+  Poppins_700Bold,
+  Poppins_800ExtraBold,
+} from "@expo-google-fonts/poppins";
 
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/query-client";
@@ -18,7 +22,7 @@ import { useNotifications } from "@/hooks/useNotifications";
 import RootStackNavigator from "@/navigation/RootStackNavigator";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 
-/** Tiempo máximo de espera para cargar la fuente de iconos (evita "6000ms timeout" en web) */
+/** Tiempo máximo de espera para cargar fuentes (evita "6000ms timeout" en web) */
 const FONT_LOAD_TIMEOUT_MS = 12_000;
 
 /**
@@ -31,31 +35,40 @@ const SPLASH_EXTRA_DELAY_MS = 1_200;
 SplashScreen.preventAutoHideAsync();
 
 /**
- * Precarga la fuente Feather (usada por @expo/vector-icons) con timeout y catch
- * para que no quede la app atascada en "bundling 100%" por timeout de expo-font.
+ * Precarga Feather (iconos) + Poppins (wordmark) con timeout global.
+ * Si alguna fuente falla o excede el timeout, la app continúa igual.
  */
-function useIconFontReady(): boolean {
+function useFontsReady(): boolean {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
-    let loadPromise: Promise<void>;
-    try {
-      const fontAsset = require("@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Feather.ttf");
-      loadPromise = Font.loadAsync(fontAsset);
-    } catch {
-      loadPromise = Promise.resolve();
-    }
-    const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error("font_timeout")), FONT_LOAD_TIMEOUT_MS),
-    );
-    Promise.race([loadPromise, timeoutPromise])
-      .catch(() => {
+
+    const loadFonts = async () => {
+      try {
+        const featherAsset = require(
+          "@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Feather.ttf",
+        );
+        await Font.loadAsync({
+          // Feather icons
+          Feather: featherAsset,
+          // Poppins — wordmark SalonPro
+          Poppins_700Bold,
+          Poppins_800ExtraBold,
+        });
+      } catch {
         // Timeout o error: seguimos igual para no bloquear la app
-      })
-      .then(() => {
-        if (!cancelled) setReady(true);
-      });
+      }
+    };
+
+    const timeoutPromise = new Promise<void>((resolve) =>
+      setTimeout(resolve, FONT_LOAD_TIMEOUT_MS),
+    );
+
+    Promise.race([loadFonts(), timeoutPromise]).then(() => {
+      if (!cancelled) setReady(true);
+    });
+
     return () => {
       cancelled = true;
     };
@@ -67,19 +80,17 @@ function useIconFontReady(): boolean {
 function AppContent() {
   const { userId } = useAuth();
   useNotifications(userId);
-  const fontReady = useIconFontReady();
+  const fontsReady = useFontsReady();
 
   useEffect(() => {
-    if (!fontReady) return;
-    // Delay adicional para que el splash sea visible el tiempo suficiente
+    if (!fontsReady) return;
     const timer = setTimeout(() => {
       SplashScreen.hideAsync();
     }, SPLASH_EXTRA_DELAY_MS);
     return () => clearTimeout(timer);
-  }, [fontReady]);
+  }, [fontsReady]);
 
-  // Mientras la fuente carga, no renderizamos nada (el splash nativo ya está visible)
-  if (!fontReady) {
+  if (!fontsReady) {
     return null;
   }
 
