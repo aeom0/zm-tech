@@ -26,7 +26,7 @@ interface DiamondHeroProps {
  * Componente compartido entre OnboardingEntryScreen y SplashScreen.
  * NebulosaGlow + DiamondSparkle + wordmark SalonPro + tagline.
  *
- * Wordmark: "Salon" Poppins ExtraBold blanco + "Pro" Poppins ExtraBold
+ * Wordmark: "Salon" Poppins ExtraBold blanco + "Pro" Poppins Light (300)
  * con gradiente Lunaris vía MaskedView.
  */
 export function DiamondHero({ showText = true }: DiamondHeroProps) {
@@ -47,7 +47,7 @@ export function DiamondHero({ showText = true }: DiamondHeroProps) {
             {/* "Salon" — Poppins ExtraBold, blanco puro */}
             <Text style={styles.wordmarkSalon}>Salon</Text>
 
-            {/* "Pro" — Poppins ExtraBold, gradiente Lunaris */}
+            {/* "Pro" — Poppins Light (300), gradiente Lunaris, mismo tamaño que Salon */}
             <MaskedView
               maskElement={
                 <Text style={[styles.wordmarkPro, styles.wordmarkProMask]}>
@@ -60,11 +60,7 @@ export function DiamondHero({ showText = true }: DiamondHeroProps) {
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 style={styles.proGradient}
-              >
-                <Text style={[styles.wordmarkPro, styles.wordmarkProTransparent]}>
-                  Pro
-                </Text>
-              </LinearGradient>
+              />
             </MaskedView>
           </View>
 
@@ -111,18 +107,17 @@ const styles = StyleSheet.create({
     includeFontPadding: false,
   },
   wordmarkPro: {
-    fontFamily: "Poppins_800ExtraBold",
+    fontFamily: "Poppins_300Light",
     fontSize: WORDMARK_SIZE,
     includeFontPadding: false,
   },
   wordmarkProMask: {
-    color: "#000000",
-  },
-  wordmarkProTransparent: {
-    color: "transparent",
+    color: "#FFFFFF",
+    backgroundColor: "transparent",
   },
   proGradient: {
-    borderRadius: 0,
+    width: 90,
+    height: WORDMARK_SIZE + 12,
   },
   tagline: {
     fontSize: 13,

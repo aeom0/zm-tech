@@ -8,6 +8,7 @@ import { StatusBar } from "expo-status-bar";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { Poppins_800ExtraBold } from "@expo-google-fonts/poppins/800ExtraBold";
+import { Poppins_300Light } from "@expo-google-fonts/poppins/300Light";
 
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/query-client";
@@ -49,6 +50,7 @@ function useFontsReady(): boolean {
         await Font.loadAsync({
           Feather: featherAsset,
           Poppins_800ExtraBold,
+          Poppins_300Light,
         });
       } catch {
         // Timeout o error: seguimos igual para no bloquear la app

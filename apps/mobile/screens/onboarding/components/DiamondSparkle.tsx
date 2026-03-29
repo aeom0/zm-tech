@@ -1,7 +1,7 @@
 import React from "react";
 import { SvgXml } from "react-native-svg";
 
-const SVG_SOURCE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 300">
+const SVG_SOURCE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -8 260 290">
   <defs>
     <linearGradient id="g-tabla" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="1.0"/>
@@ -75,6 +75,9 @@ interface DiamondSparkleProps {
   size?: number;
 }
 
+// viewBox es 260×290 → ratio alto/ancho = 290/260 ≈ 1.115
+const ASPECT = 290 / 260;
+
 export function DiamondSparkle({ size = 64 }: DiamondSparkleProps) {
-  return <SvgXml xml={SVG_SOURCE} width={size} height={size} />;
+  return <SvgXml xml={SVG_SOURCE} width={size} height={size * ASPECT} />;
 }

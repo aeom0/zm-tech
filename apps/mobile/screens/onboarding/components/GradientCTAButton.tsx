@@ -43,12 +43,20 @@ export function GradientCTAButton({
         onPress={onPress}
         disabled={isDisabled}
         style={({ pressed }) => [
-          styles.outlineBtn,
           { opacity: pressed || isDisabled ? 0.7 : 1 },
           style,
         ]}
       >
-        <Text style={styles.outlineLabel}>{label}</Text>
+        <LinearGradient
+          colors={[...GRADIENT_COLORS]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.outlineGradientBorder}
+        >
+          <View style={styles.outlineInner}>
+            <Text style={styles.outlineLabel}>{label}</Text>
+          </View>
+        </LinearGradient>
       </Pressable>
     );
   }
@@ -109,16 +117,19 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     letterSpacing: 0.3,
   },
-  outlineBtn: {
+  outlineGradientBorder: {
+    borderRadius: BorderRadius.lg,
+    padding: 1.5,
+  },
+  outlineInner: {
     paddingVertical: 14,
     paddingHorizontal: Spacing.xl,
     alignItems: "center",
-    borderRadius: BorderRadius.lg,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    borderRadius: BorderRadius.lg - 1.5,
+    backgroundColor: "#0D0D12",
   },
   outlineLabel: {
-    color: "rgba(255,255,255,0.75)",
+    color: "rgba(255,255,255,0.85)",
     fontSize: 15,
     fontWeight: "500",
   },

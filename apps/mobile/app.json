@@ -21,7 +21,11 @@
     "android": {
       "package": "com.salonpro.app",
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#111318"
+      }
     },
     "web": {
       "output": "single",
