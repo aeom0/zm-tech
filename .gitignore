@@ -66,4 +66,4 @@ app-example
 # Supabase CLI cache
 supabase/.temp/
 .vercel
-eas.json
+/eas.json
