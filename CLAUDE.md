@@ -235,6 +235,14 @@ Flujo de arranque (mobile):
 - **Auth y roles**: layout con `FinanzasAuthWrapper`; sin sesión → `/finanzas/login`; `owner`/`dev` ven el panel; **staff** autenticado → `router.replace("/")` sin pantalla de error (no revelar la ruta). Enlace **Dashboard** en header de `/finanzas`.
 - **Nota**: agrupación del gráfico por día usa calendario local del navegador; comentario TODO en código para alinear con timezone del tenant cuando exista.
 
+## Cambios Recientes (mar 2026 — v1.4.6 — Splash/Icono rediseño + OnboardingEntry polish)
+
+- **Splash nativa** (`assets/splash-logo.png`, 900×900): regenerada con `DiamondSparkle` + `NebulosaGlow` perfectamente co-centrados (bounding box completo incluyendo sparkle y=-4); fondo `#111318`; sin textos. Reemplaza el PNG anterior que mostraba el diamante sesgado y cortado.
+- **Ícono launcher** (`assets/icon.png`, 1024×1024): regenerado con misma composición diamante+nebulosa; fondo `#111318` (elimina fondo blanco previo); diamante ocupa ~70% del canvas con márgenes simétricos.
+- **`SplashScreenComponent` eliminada** de `AuthGate`: la splash nativa cubre el tiempo de carga de AsyncStorage; `hideAsync()` se llama cuando `tenantLoading` pasa a `false` vía `useEffect`. Archivo `SplashScreen.tsx` queda en repo pero ya no se usa en el flujo.
+- **`DiamondHero`**: eliminado `MaskedView`/gradiente del wordmark "SalonPro"; tipografía mixta — `Salon` en weight 300 + letterSpacing 6 uppercase, `Pro` en weight 800 letterSpacing -1; todo blanco. Prop `showText` (default `true`) para reutilizar solo el diamante+glow sin textos.
+- **`OnboardingEntryScreen`**: restaurado gradiente magenta→azul en "con estilo y precisión" con altura `maskedHighlight: 58` y `lineHeight: 54` para evitar corte de descendentes; font-weight 300 + letterSpacing 0.5.
+
 ## Cambios Recientes (mar 2026 — v1.4.4 — Marca diamante + EAS)
 
 - **Marca (web/mobile)**: símbolo único **`/logo-diamondSparkle.svg`** (sin texto en el asset). Navbar (`next/image`): barra clara tras scroll en modo claro aplica **`invert`** al mismo SVG; en `dark:` sin invert. Footer y splash mobile solo el diamante (PNG `splash-icon.png` / `assets`). Eliminados `logo.svg`, `logo-light.svg`, `logo-icon.svg` y logos legacy en mobile.

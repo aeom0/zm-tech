@@ -261,7 +261,8 @@ export default function AgendaScreen() {
   });
 
   const rescheduleStartDate = useMemo(() => {
-    if (!detailModalVisible || !appointmentDetail || !rescheduleDate) return null;
+    if (!detailModalVisible || !appointmentDetail || !rescheduleDate)
+      return null;
     const d = new Date(rescheduleDate);
     d.setHours(rescheduleHour, 0, 0, 0);
     return d;

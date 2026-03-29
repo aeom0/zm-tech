@@ -48,7 +48,7 @@ export default function OnboardingTeamScreen({
   const [color, setColor] = useState(config.theme.primaryColor);
   const [guardando, setGuardando] = useState(false);
   const [empleadosAgregados, setEmpleadosAgregados] = useState<
-    Array<{ id: string; name: string; color: string }>
+    { id: string; name: string; color: string }[]
   >([]);
 
   const guardar = async () => {

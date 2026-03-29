@@ -29,13 +29,13 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
   const ratio = s / 420;
   const center = s / 2;
 
-  const mCx   = center - 25 * ratio;  // 185 en base 420
-  const bCx   = center + 25 * ratio;  // 235 en base 420
-  const cy    = center;
-  const r     = 155 * ratio;
+  const mCx = center - 25 * ratio; // 185 en base 420
+  const bCx = center + 25 * ratio; // 235 en base 420
+  const cy = center;
+  const r = 155 * ratio;
   const gScale = 175 * ratio;
-  const blur  = 42 * ratio;
-  const fPad  = s * 0.8;
+  const blur = 42 * ratio;
+  const fPad = s * 0.8;
 
   return (
     <Svg
@@ -54,9 +54,9 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
           ry={gScale}
           gradientUnits="userSpaceOnUse"
         >
-          <Stop offset="0"   stopColor="#E91E8C" stopOpacity={0.60} />
+          <Stop offset="0" stopColor="#E91E8C" stopOpacity={0.6} />
           <Stop offset="0.5" stopColor="#E91E8C" stopOpacity={0.25} />
-          <Stop offset="1"   stopColor="#E91E8C" stopOpacity={0} />
+          <Stop offset="1" stopColor="#E91E8C" stopOpacity={0} />
         </RadialGradient>
 
         <RadialGradient
@@ -67,9 +67,9 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
           ry={gScale}
           gradientUnits="userSpaceOnUse"
         >
-          <Stop offset="0"   stopColor="#1565C0" stopOpacity={0.60} />
+          <Stop offset="0" stopColor="#1565C0" stopOpacity={0.6} />
           <Stop offset="0.5" stopColor="#1565C0" stopOpacity={0.25} />
-          <Stop offset="1"   stopColor="#1565C0" stopOpacity={0} />
+          <Stop offset="1" stopColor="#1565C0" stopOpacity={0} />
         </RadialGradient>
 
         <Filter

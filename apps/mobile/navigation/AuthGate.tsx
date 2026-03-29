@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import * as SplashScreenExpo from "expo-splash-screen";
 import MainTabNavigator from "@/navigation/MainTabNavigator";
-import { SplashScreenComponent } from "@/screens/SplashScreen";
 import { LoginScreen } from "@/screens/LoginScreen";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTenant } from "@/contexts/TenantContext";
+
+SplashScreenExpo.preventAutoHideAsync?.();
 
 import OnboardingBusinessTypeScreen from "@/screens/onboarding/OnboardingBusinessTypeScreen";
 import OnboardingBasicInfoScreen from "@/screens/onboarding/OnboardingBasicInfoScreen";
@@ -18,15 +20,15 @@ type PasoOnboarding = 1 | 2 | 3 | 4 | 5 | 6;
 
 /**
  * Flujo completo de la app:
- *   Splash → (no configurado) Entrada → nuevo negocio (pasos 1-4) → paso 5 auth → paso 6 listo;
- *           o "ya tengo cuenta" → OnboardingAuthScreen (mismo look del wizard), no LoginScreen aislado.
+ *   (no configurado) Entrada → nuevo negocio (pasos 1-4) → paso 5 auth → paso 6 listo;
+ *           o "ya tengo cuenta" → OnboardingAuthScreen (mismo look del wizard).
  *           → (configurado, no auth) LoginScreen clásico
  *           → (configurado, auth) MainTabNavigator
+ * La splash nativa (expo-splash-screen) cubre el tiempo de carga inicial.
  */
 export default function AuthGate() {
   const { isAuthenticated } = useAuth();
   const { isConfigured, isLoading: tenantLoading } = useTenant();
-  const [splashDone, setSplashDone] = useState(false);
   const [paso, setPaso] = useState<PasoOnboarding>(1);
   const [onboardingSessionDone, setOnboardingSessionDone] = useState(false);
 
@@ -37,10 +39,15 @@ export default function AuthGate() {
   const forceOnboardingDev =
     __DEV__ && process.env.EXPO_PUBLIC_FORCE_ONBOARDING === "true";
 
-  // Mientras el TenantContext carga AsyncStorage, mostramos el splash
-  if (!splashDone || tenantLoading) {
-    return <SplashScreenComponent onFinish={() => setSplashDone(true)} />;
-  }
+  // Ocultar splash nativa cuando el tenant termina de cargar
+  useEffect(() => {
+    if (!tenantLoading) {
+      SplashScreenExpo.hideAsync?.();
+    }
+  }, [tenantLoading]);
+
+  // Mientras AsyncStorage carga, la splash nativa cubre la pantalla
+  if (tenantLoading) return null;
 
   // Primero: si no está configurado, o si en desarrollo forzamos onboarding
   // (forceOnboardingDev solo fuerza mientras no se haya completado esta sesión)

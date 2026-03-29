@@ -253,7 +253,10 @@ export function AppointmentDetailModal({
                 >
                   <Feather name="alert-triangle" size={18} color={theme.text} />
                   <ThemedText
-                    style={[styles.availabilityBannerText, { color: theme.text }]}
+                    style={[
+                      styles.availabilityBannerText,
+                      { color: theme.text },
+                    ]}
                   >
                     Horario ocupado
                     {busyUntilLabel ? `. Termina a las ${busyUntilLabel}` : ""}.

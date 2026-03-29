@@ -17,7 +17,11 @@ interface OnboardingEntryScreenProps {
   onLoginExisting: () => void;
 }
 
-const GRADIENT_COLORS: [string, string, string] = ["#E91E8C", "#9C27B0", "#1565C0"];
+const GRADIENT_COLORS: [string, string, string] = [
+  "#E91E8C",
+  "#9C27B0",
+  "#1565C0",
+];
 
 export default function OnboardingEntryScreen({
   onCreateNew,
@@ -97,13 +101,14 @@ const styles = StyleSheet.create({
     paddingBottom: Spacing.lg,
   },
   heroTitle: {
-    fontSize: 42,
+    fontSize: 38,
     fontWeight: "700",
     color: "#FFFFFF",
-    lineHeight: 48,
+    lineHeight: 46,
   },
+  // Altura generosa para que "precisión" con su descendente no se corte
   maskedHighlight: {
-    height: 52,
+    height: 58,
     marginTop: 2,
   },
   maskLeft: {
@@ -113,14 +118,15 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   heroHighlightMask: {
-    fontSize: 42,
-    fontWeight: "700",
-    lineHeight: 48,
+    fontSize: 38,
+    fontWeight: "300",
+    letterSpacing: 0.5,
+    lineHeight: 54,
     color: "black",
   },
   gradientFill: {
     flex: 1,
-    width: 380,
+    width: 400,
   },
   heroSub: {
     fontSize: 14,

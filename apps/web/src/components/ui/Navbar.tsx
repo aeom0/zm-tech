@@ -31,7 +31,6 @@ export function Navbar() {
       }`}
     >
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-
         {/* Logo — ícono + wordmark + badge */}
         <a
           href="#"

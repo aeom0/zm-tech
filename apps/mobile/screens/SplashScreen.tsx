@@ -33,8 +33,14 @@ export function SplashScreenComponent({ onFinish }: SplashScreenProps) {
       await SplashScreenExpo.hideAsync?.();
 
       // Fade in + escala sutil
-      opacity.value = withTiming(1, { duration: 600, easing: Easing.out(Easing.cubic) });
-      scale.value   = withTiming(1, { duration: 700, easing: Easing.out(Easing.back(1.1)) });
+      opacity.value = withTiming(1, {
+        duration: 600,
+        easing: Easing.out(Easing.cubic),
+      });
+      scale.value = withTiming(1, {
+        duration: 700,
+        easing: Easing.out(Easing.back(1.1)),
+      });
 
       // Fade out antes de terminar
       opacity.value = withDelay(1200, withTiming(0, { duration: 400 }));

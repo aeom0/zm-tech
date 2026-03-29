@@ -1,21 +1,22 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import MaskedView from "@react-native-masked-view/masked-view";
-import { ThemedText } from "@/components/ThemedText";
 import { DiamondSparkle } from "./DiamondSparkle";
 import { NebulosaGlow } from "./NebulosaGlow";
 import { Spacing } from "@/constants/theme";
 
 const STACK_SIZE = 320;
 const GLOW_SIZE = 420;
-const GRADIENT_COLORS: [string, string, string] = ["#E91E8C", "#9C27B0", "#1565C0"];
+
+interface DiamondHeroProps {
+  /** Mostrar wordmark "SalonPro" y tagline debajo del diamante. Default: true */
+  showText?: boolean;
+}
 
 /**
- * Componente compartido entre OnboardingEntryScreen y SplashScreen.
- * NebulosaGlow + DiamondSparkle + wordmark "SalonPro" con gradiente + tagline.
+ * Componente compartido entre OnboardingEntryScreen y la splash nativa (vía assets).
+ * NebulosaGlow + DiamondSparkle + wordmark "SalonPro" blanco + tagline.
  */
-export function DiamondHero() {
+export function DiamondHero({ showText = true }: DiamondHeroProps) {
   return (
     <View style={styles.container}>
       {/* Glow + diamante */}
@@ -26,27 +27,22 @@ export function DiamondHero() {
         </View>
       </View>
 
-      {/* Wordmark SalonPro — gradiente dentro de las letras */}
-      <MaskedView
-        style={styles.maskedWordmark}
-        maskElement={
-          <View style={styles.maskCenter}>
-            <Text style={styles.wordmark}>SalonPro</Text>
+      {showText && (
+        <>
+          {/* Wordmark SalonPro — tipografía mixta, todo blanco */}
+          <View style={styles.wordmarkRow}>
+            {/* "Salon" — serif elegante via fontWeight 300 + letterSpacing amplio */}
+            <Text style={styles.wordmarkSalon}>Salon</Text>
+            {/* "Pro" — sans-serif bold condensado */}
+            <Text style={styles.wordmarkPro}>Pro</Text>
           </View>
-        }
-      >
-        <LinearGradient
-          colors={GRADIENT_COLORS}
-          start={{ x: 0, y: 0.5 }}
-          end={{ x: 1, y: 0.5 }}
-          style={styles.gradientFill}
-        />
-      </MaskedView>
 
-      {/* Tagline */}
-      <ThemedText style={styles.tagline}>
-        Pule tu negocio, Brilla en cada servicio.
-      </ThemedText>
+          {/* Tagline */}
+          <Text style={styles.tagline}>
+            Pule tu negocio · Brilla en cada servicio
+          </Text>
+        </>
+      )}
     </View>
   );
 }
@@ -70,29 +66,31 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  maskedWordmark: {
-    height: 44,
+  wordmarkRow: {
+    flexDirection: "row",
+    alignItems: "baseline",
+    gap: 2,
   },
-  maskCenter: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "transparent",
+  // "Salon" — peso ligero, letras separadas, aspecto editorial/lujo
+  wordmarkSalon: {
+    fontSize: 38,
+    fontWeight: "300",
+    letterSpacing: 6,
+    color: "#FFFFFF",
+    textTransform: "uppercase",
   },
-  wordmark: {
-    fontSize: 36,
-    fontWeight: "700",
-    letterSpacing: -0.5,
-    color: "black", // define la forma del mask — el color no importa
-  },
-  gradientFill: {
-    flex: 1,
-    width: 220,
+  // "Pro" — bold, sin separación, contraste de peso
+  wordmarkPro: {
+    fontSize: 38,
+    fontWeight: "800",
+    letterSpacing: -1,
+    color: "#FFFFFF",
   },
   tagline: {
-    fontSize: 15,
-    color: "rgba(255,255,255,0.55)",
+    fontSize: 13,
+    fontWeight: "400",
+    color: "rgba(255,255,255,0.45)",
     textAlign: "center",
-    lineHeight: 22,
+    letterSpacing: 0.5,
   },
 });

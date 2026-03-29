@@ -94,7 +94,8 @@ export function NewAppointmentModal({
   const clientSectionTitle =
     clientLabel.charAt(0).toUpperCase() + clientLabel.slice(1);
 
-  const disableSubmit = createPending || isBusy || availabilityStatus === "checking";
+  const disableSubmit =
+    createPending || isBusy || availabilityStatus === "checking";
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
@@ -190,8 +191,11 @@ export function NewAppointmentModal({
                 ]}
               >
                 <Feather name="alert-triangle" size={18} color={theme.text} />
-                <ThemedText style={[styles.availabilityBannerText, { color: theme.text }]}>
-                  Horario ocupado{busyUntilLabel ? `. Termina a las ${busyUntilLabel}` : ""}.
+                <ThemedText
+                  style={[styles.availabilityBannerText, { color: theme.text }]}
+                >
+                  Horario ocupado
+                  {busyUntilLabel ? `. Termina a las ${busyUntilLabel}` : ""}.
                 </ThemedText>
               </View>
             ) : null}

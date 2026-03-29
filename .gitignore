@@ -65,3 +65,4 @@ app-example
 
 # Supabase CLI cache
 supabase/.temp/
+.vercel

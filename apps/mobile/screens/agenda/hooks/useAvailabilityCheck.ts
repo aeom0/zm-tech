@@ -182,4 +182,3 @@ export function useAvailabilityCheck(args: {
     busyUntilLabel: query.data?.label ?? null,
   };
 }
-
