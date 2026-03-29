@@ -7,10 +7,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import * as Font from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import {
-  Poppins_700Bold,
-  Poppins_800ExtraBold,
-} from "@expo-google-fonts/poppins";
+import { Poppins_800ExtraBold } from "@expo-google-fonts/poppins/800ExtraBold";
 
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/query-client";
@@ -35,7 +32,7 @@ const SPLASH_EXTRA_DELAY_MS = 1_200;
 SplashScreen.preventAutoHideAsync();
 
 /**
- * Precarga Feather (iconos) + Poppins (wordmark) con timeout global.
+ * Precarga Feather (iconos) + Poppins_800ExtraBold (wordmark) con timeout global.
  * Si alguna fuente falla o excede el timeout, la app continúa igual.
  */
 function useFontsReady(): boolean {
@@ -50,10 +47,7 @@ function useFontsReady(): boolean {
           "@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Feather.ttf",
         );
         await Font.loadAsync({
-          // Feather icons
           Feather: featherAsset,
-          // Poppins — wordmark SalonPro
-          Poppins_700Bold,
           Poppins_800ExtraBold,
         });
       } catch {
