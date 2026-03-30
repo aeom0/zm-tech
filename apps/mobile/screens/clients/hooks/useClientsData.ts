@@ -206,6 +206,15 @@ export function useClientsData(
             favoriteService = favServiceId ?? null;
           }
 
+          const is_vip =
+            totalVisits >= vipVisitsThreshold || totalSpent >= 5 * 50;
+          const is_at_risk =
+            daysSinceLastVisit != null && daysSinceLastVisit > FORTY_FIVE_DAYS;
+          const is_new =
+            lastVisitDate != null &&
+            now.getTime() - new Date(lastVisitDate).getTime() <
+              30 * 24 * 60 * 60 * 1000;
+
           return {
             ...client,
             total_visits: totalVisits,
@@ -213,6 +222,9 @@ export function useClientsData(
             last_visit_date: lastVisitDate,
             favorite_service: favoriteService,
             days_since_last_visit: daysSinceLastVisit,
+            is_vip,
+            is_new,
+            is_at_risk,
           };
         },
       );

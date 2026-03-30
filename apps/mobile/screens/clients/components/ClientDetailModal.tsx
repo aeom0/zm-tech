@@ -21,9 +21,9 @@ export function ClientDetailModal({ visible, client, onClose }: Props) {
   const { theme } = useTheme();
   const { config } = useTenant();
 
-  const { data: appointments = [], isLoading } = useClientDetail(
-    client?.id ?? null,
-  );
+  const { data, isLoading } = useClientDetail(client?.id ?? null);
+  // queryFn puede devolver null; el default de destructuring no cubre null
+  const appointments = data ?? [];
 
   if (!client) return null;
 
