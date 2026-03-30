@@ -21,9 +21,25 @@ export function ClientDetailModal({ visible, client, onClose }: Props) {
   const { theme } = useTheme();
   const { config } = useTenant();
 
-  const { appointments, metrics } = useClientDetail(client?.id ?? null);
+  const { data: appointments = [], isLoading } = useClientDetail(
+    client?.id ?? null,
+  );
 
   if (!client) return null;
+
+  // Calcular métricas desde el historial enriquecido
+  const total_visits = appointments.length;
+  const total_spent = appointments.reduce((sum, a) => sum + a.total_paid, 0);
+  const avg_ticket = total_visits > 0 ? total_spent / total_visits : 0;
+
+  const serviceFrequency: Record<string, number> = {};
+  for (const apt of appointments) {
+    for (const svc of apt.services) {
+      serviceFrequency[svc.name] = (serviceFrequency[svc.name] ?? 0) + 1;
+    }
+  }
+  const [favoriteName] =
+    Object.entries(serviceFrequency).sort((a, b) => b[1] - a[1])[0] ?? [];
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
@@ -75,7 +91,7 @@ export function ClientDetailModal({ visible, client, onClose }: Props) {
                   <ThemedText
                     style={[styles.metricValue, { color: theme.text }]}
                   >
-                    {metrics?.total_visits ?? client.total_visits}
+                    {isLoading ? "..." : total_visits}
                   </ThemedText>
                 </View>
                 <View style={styles.metric}>
@@ -87,10 +103,7 @@ export function ClientDetailModal({ visible, client, onClose }: Props) {
                   <ThemedText
                     style={[styles.metricValue, { color: theme.gold }]}
                   >
-                    {formatCurrency(
-                      metrics?.total_spent ?? client.total_spent,
-                      config,
-                    )}
+                    {isLoading ? "..." : formatCurrency(total_spent, config)}
                   </ThemedText>
                 </View>
               </View>
@@ -104,7 +117,7 @@ export function ClientDetailModal({ visible, client, onClose }: Props) {
                   <ThemedText
                     style={[styles.metricValue, { color: theme.info }]}
                   >
-                    {formatCurrency(metrics?.avg_ticket ?? 0, config)}
+                    {isLoading ? "..." : formatCurrency(avg_ticket, config)}
                   </ThemedText>
                 </View>
                 <View style={styles.metric}>
@@ -117,7 +130,7 @@ export function ClientDetailModal({ visible, client, onClose }: Props) {
                     style={[styles.metricValue, { color: theme.text }]}
                     numberOfLines={2}
                   >
-                    {metrics?.favorite_service ?? "—"}
+                    {isLoading ? "..." : (favoriteName ?? "—")}
                   </ThemedText>
                 </View>
               </View>
@@ -134,7 +147,7 @@ export function ClientDetailModal({ visible, client, onClose }: Props) {
               </ThemedText>
             </View>
 
-            {appointments.length === 0 ? (
+            {appointments.length === 0 && !isLoading ? (
               <ThemedText
                 style={[styles.emptyText, { color: theme.textMuted }]}
               >
@@ -144,11 +157,7 @@ export function ClientDetailModal({ visible, client, onClose }: Props) {
               appointments.map((apt) => (
                 <ClientAppointmentRow
                   key={apt.id}
-                  date={apt.date}
-                  serviceName={apt.service_name}
-                  professionalName={apt.employee_name}
-                  status={apt.status}
-                  amountPaid={apt.amount_paid}
+                  appointment={apt}
                 />
               ))
             )}

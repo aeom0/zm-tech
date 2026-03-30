@@ -196,11 +196,6 @@ export default function MoreHomeScreen() {
             onPress={() => navigation.navigate("Personal")}
           />
           <MenuRow
-            icon="users"
-            label="Clientes"
-            onPress={() => navigation.navigate("Clients")}
-          />
-          <MenuRow
             icon="package"
             label="Inventario"
             onPress={() => navigation.navigate("Inventario")}

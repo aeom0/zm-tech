@@ -6,24 +6,18 @@ import { useTheme } from "@/hooks/useTheme";
 import { Spacing, BorderRadius } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 import { formatCurrency } from "@/utils/format";
+import type { AppointmentHistory } from "../types";
 
 interface Props {
-  date: string;
-  serviceName: string | null;
-  professionalName: string | null;
-  status: string;
-  amountPaid: number;
+  appointment: AppointmentHistory;
 }
 
-export function ClientAppointmentRow({
-  date,
-  serviceName,
-  professionalName,
-  status,
-  amountPaid,
-}: Props) {
+export function ClientAppointmentRow({ appointment }: Props) {
   const { theme } = useTheme();
   const { config } = useTenant();
+
+  const { date, status, services, employee_name, employee_color, total_paid, pending_amount } =
+    appointment;
 
   const dateLabel = new Date(date).toLocaleString(config.locale.language, {
     day: "numeric",
@@ -39,6 +33,11 @@ export function ClientAppointmentRow({
         ? { label: "Cancelado", color: theme.error }
         : { label: "Pendiente", color: theme.warning };
 
+  const serviceLabel =
+    services.length > 0
+      ? services.map((s) => s.name).join(" · ")
+      : "Servicio";
+
   return (
     <View
       style={[
@@ -50,24 +49,39 @@ export function ClientAppointmentRow({
       ]}
     >
       <View style={styles.left}>
-        <ThemedText style={[styles.service, { color: theme.text }]}>
-          {serviceName ?? "Servicio"}
+        <ThemedText style={[styles.service, { color: theme.text }]} numberOfLines={2}>
+          {serviceLabel}
         </ThemedText>
         <ThemedText style={[styles.date, { color: theme.textMuted }]}>
           {dateLabel}
         </ThemedText>
-        {professionalName && (
-          <ThemedText
-            style={[styles.professional, { color: theme.textSecondary }]}
-          >
-            {professionalName}
-          </ThemedText>
+        {employee_name && (
+          <View style={styles.empRow}>
+            {employee_color && (
+              <View
+                style={[
+                  styles.empDot,
+                  { backgroundColor: employee_color },
+                ]}
+              />
+            )}
+            <ThemedText
+              style={[styles.professional, { color: theme.textSecondary }]}
+            >
+              {employee_name}
+            </ThemedText>
+          </View>
         )}
       </View>
       <View style={styles.right}>
         <ThemedText style={[styles.amount, { color: theme.gold }]}>
-          {formatCurrency(amountPaid, config)}
+          {formatCurrency(total_paid, config)}
         </ThemedText>
+        {pending_amount > 0 && (
+          <ThemedText style={[styles.pending, { color: theme.error }]}>
+            -{formatCurrency(pending_amount, config)}
+          </ThemedText>
+        )}
         <View
           style={[
             styles.statusBadge,
@@ -111,13 +125,27 @@ const styles = StyleSheet.create({
   date: {
     fontSize: 12,
   },
+  empRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 3,
+    gap: 4,
+  },
+  empDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
   professional: {
     fontSize: 12,
-    marginTop: 2,
   },
   amount: {
     fontSize: 14,
     fontWeight: "700",
+  },
+  pending: {
+    fontSize: 11,
+    fontWeight: "600",
   },
   statusBadge: {
     paddingHorizontal: Spacing.sm,

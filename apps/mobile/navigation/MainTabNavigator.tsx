@@ -8,15 +8,18 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import DashboardScreen from "@/screens/DashboardScreen";
 import AgendaScreen from "@/screens/AgendaScreen";
 import ServicesScreen from "@/screens/ServicesScreen";
+import ClientsScreen from "@/screens/ClientsScreen";
 import MoreStackNavigator from "@/navigation/MoreStackNavigator";
 import { useTheme } from "@/hooks/useTheme";
 import { useTenant } from "@/contexts/TenantContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { usePendingBadgeCount } from "@/hooks/usePendingBadgeCount";
 
 export type MainTabParamList = {
   Dashboard: undefined;
   Agenda: { appointmentId?: string };
   Services: undefined;
+  Clients: undefined;
   More: undefined;
 };
 
@@ -26,6 +29,7 @@ export default function MainTabNavigator() {
   const { theme, isDark } = useTheme();
   const insets = useSafeAreaInsets();
   const { config } = useTenant();
+  const { isAdmin } = useAuth();
   const { tabBadgeCount } = usePendingBadgeCount();
 
   const screenOptions = {
@@ -111,6 +115,19 @@ export default function MainTabNavigator() {
           ),
         }}
       />
+      {isAdmin && (
+        <Tab.Screen
+          name="Clients"
+          component={ClientsScreen}
+          options={{
+            title: "Clientes",
+            headerTitle: "Clientes",
+            tabBarIcon: ({ color }) => (
+              <Feather name="users" size={22} color={color} />
+            ),
+          }}
+        />
+      )}
       <Tab.Screen
         name="More"
         component={MoreStackNavigator}
