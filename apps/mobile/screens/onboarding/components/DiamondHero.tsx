@@ -26,8 +26,9 @@ interface DiamondHeroProps {
  * Componente compartido entre OnboardingEntryScreen y SplashScreen.
  * NebulosaGlow + DiamondSparkle + wordmark SalonPro + tagline.
  *
- * Wordmark: "Salon" Poppins ExtraBold blanco + "Pro" Poppins Light (300)
- * con gradiente Lunaris vía MaskedView.
+ * Wordmark: "Salon" Poppins ExtraBold blanco + "Pro" con gradiente Lunaris
+ * vía MaskedView. Ambas palabras alineadas al pie (flex-end) para evitar
+ * que "Pro" flote como exponente debido a diferencias en métricas de fuente.
  */
 export function DiamondHero({ showText = true }: DiamondHeroProps) {
   return (
@@ -47,7 +48,7 @@ export function DiamondHero({ showText = true }: DiamondHeroProps) {
             {/* "Salon" — Poppins ExtraBold, blanco puro */}
             <Text style={styles.wordmarkSalon}>Salon</Text>
 
-            {/* "Pro" — Poppins Light (300), gradiente Lunaris, mismo tamaño que Salon */}
+            {/* "Pro" — Poppins ExtraBold, gradiente Lunaris vía MaskedView */}
             <MaskedView
               maskElement={
                 <Text style={[styles.wordmarkPro, styles.wordmarkProMask]}>
@@ -97,7 +98,10 @@ const styles = StyleSheet.create({
   },
   wordmarkRow: {
     flexDirection: "row",
-    alignItems: "baseline",
+    // flex-end ancla ambas palabras al pie del contenedor,
+    // evitando que diferencias en métricas de Poppins ExtraBold vs Light
+    // provoquen que "Pro" flote como si fuera un exponente.
+    alignItems: "flex-end",
     gap: 0,
   },
   wordmarkSalon: {
@@ -107,7 +111,7 @@ const styles = StyleSheet.create({
     includeFontPadding: false,
   },
   wordmarkPro: {
-    fontFamily: "Poppins_300Light",
+    fontFamily: "Poppins_800ExtraBold",
     fontSize: WORDMARK_SIZE,
     includeFontPadding: false,
   },

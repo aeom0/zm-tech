@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, StyleSheet, Pressable, ScrollView } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
@@ -7,6 +7,7 @@ import { ThemedText } from "@/components/ThemedText";
 import {
   OnboardingLayout,
   OnboardingProgressDots,
+  GradientCTAButton,
 } from "@/screens/onboarding/components";
 import { Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
@@ -77,7 +78,15 @@ export default function OnboardingBusinessTypeScreen({
 }: OnboardingBusinessTypeScreenProps) {
   const { config, updateTenant } = useTenant();
 
-  const seleccionar = async (tipo: (typeof TIPOS)[0]) => {
+  // Estado local de selección — NO navega al instante.
+  // El usuario selecciona el tipo y luego presiona "Continuar".
+  const [tipoSeleccionado, setTipoSeleccionado] = useState<BusinessType>(
+    config.businessType,
+  );
+
+  const continuar = async () => {
+    const tipo = TIPOS.find((t) => t.key === tipoSeleccionado);
+    if (!tipo) return;
     await updateTenant({
       businessType: tipo.key,
       theme: tipo.preset.theme,
@@ -108,7 +117,7 @@ export default function OnboardingBusinessTypeScreen({
         keyboardShouldPersistTaps="handled"
       >
         {TIPOS.map((tipo, i) => {
-          const seleccionado = config.businessType === tipo.key;
+          const seleccionado = tipoSeleccionado === tipo.key;
           const primary = tipo.preset.theme.primaryColor;
           return (
             <Animated.View
@@ -116,7 +125,7 @@ export default function OnboardingBusinessTypeScreen({
               entering={FadeInDown.delay(i * 80).duration(400)}
             >
               <Pressable
-                onPress={() => seleccionar(tipo)}
+                onPress={() => setTipoSeleccionado(tipo.key)}
                 style={({ pressed }) => [
                   styles.card,
                   {
@@ -173,6 +182,18 @@ export default function OnboardingBusinessTypeScreen({
           );
         })}
       </ScrollView>
+
+      {/* Botón Continuar — mismo patrón que el resto del onboarding */}
+      <Animated.View
+        entering={FadeInDown.delay(400).duration(400)}
+        style={styles.footer}
+      >
+        <GradientCTAButton
+          label="Continuar"
+          icon="arrow-right"
+          onPress={continuar}
+        />
+      </Animated.View>
     </OnboardingLayout>
   );
 }
@@ -206,7 +227,7 @@ const styles = StyleSheet.create({
   },
   cards: {
     gap: Spacing.md,
-    paddingBottom: Spacing["2xl"],
+    paddingBottom: Spacing.md,
   },
   card: {
     flexDirection: "row",
@@ -250,5 +271,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 12,
     right: 12,
+  },
+  footer: {
+    paddingTop: Spacing.md,
+    paddingBottom: Spacing["2xl"],
   },
 });
