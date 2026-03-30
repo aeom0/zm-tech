@@ -61,6 +61,13 @@
           }
         }
       ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "SalonPro usa tu galería para poner foto al personal en la agenda.",
+          "cameraPermission": "SalonPro puede usar la cámara si quieres tomar la foto del personal."
+        }
+      ],
       "expo-web-browser",
       "expo-notifications",
       [

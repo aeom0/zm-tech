@@ -1,71 +1,69 @@
 import React from "react";
-import { View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { Image } from "expo-image";
 
 import { ThemedText } from "@/components/ThemedText";
+import { Spacing } from "@/constants/theme";
 
 import type { AgendaEmployee } from "../types";
-import { agendaStyles as styles } from "../agendaStyles";
+import { abbreviateStaffRole } from "../agendaUtils";
 
-interface AgendaEmployeeHeadersProps {
+interface OwnerStaffAvatarStripProps {
   employees: AgendaEmployee[];
-  timeColWidth: number;
-  columnWidth: number;
   theme: {
     text: string;
+    textMuted: string;
     border: string;
-    backgroundDefault: string;
     backgroundSecondary: string;
   };
+  columnWidth: number;
 }
 
-export function AgendaEmployeeHeaders({
+export function OwnerStaffAvatarStrip({
   employees,
-  timeColWidth,
-  columnWidth,
   theme,
-}: AgendaEmployeeHeadersProps) {
+  columnWidth,
+}: OwnerStaffAvatarStripProps) {
+  if (employees.length === 0) return null;
+
   return (
-    <View
-      style={[
-        styles.employeeHeaders,
-        {
-          borderBottomColor: theme.border,
-          backgroundColor: theme.backgroundDefault,
-        },
-      ]}
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{
+        paddingHorizontal: Spacing.sm,
+        paddingVertical: Spacing.sm,
+        gap: Spacing.md,
+        alignItems: "flex-start",
+      }}
     >
-      <View style={{ width: timeColWidth }} />
       {employees.map((emp) => {
         const initial = (emp.name?.trim().split(/\s+/)[0] ?? "?").slice(0, 1);
-        const uri = emp.avatar_url?.trim();
+        const abbr = abbreviateStaffRole(emp.role);
         return (
           <View
             key={emp.id}
-            style={[
-              styles.empHeader,
-              {
-                width: columnWidth,
-                borderLeftColor: emp.color,
-              },
-            ]}
+            style={{
+              width: Math.max(72, Math.min(columnWidth, 120)),
+              alignItems: "center",
+            }}
           >
             <View
               style={{
-                width: 36,
-                height: 36,
-                borderRadius: 18,
+                width: 44,
+                height: 44,
+                borderRadius: 22,
                 borderWidth: 2,
                 borderColor: emp.color,
                 backgroundColor: theme.backgroundSecondary,
-                overflow: "hidden",
                 alignItems: "center",
                 justifyContent: "center",
+                overflow: "hidden",
               }}
             >
-              {uri ? (
+              {emp.avatar_url?.trim() ? (
                 <Image
-                  source={{ uri }}
+                  source={{ uri: emp.avatar_url.trim() }}
                   style={{ width: "100%", height: "100%" }}
                   contentFit="cover"
                   transition={120}
@@ -74,7 +72,7 @@ export function AgendaEmployeeHeaders({
                 <ThemedText
                   style={{
                     color: emp.color,
-                    fontSize: 14,
+                    fontSize: 16,
                     fontWeight: "700",
                   }}
                 >
@@ -83,14 +81,21 @@ export function AgendaEmployeeHeaders({
               )}
             </View>
             <ThemedText
-              style={[styles.empHeaderName, { color: theme.text }]}
               numberOfLines={1}
+              style={{
+                marginTop: 4,
+                fontSize: 12,
+                fontWeight: "600",
+                color: theme.text,
+                textAlign: "center",
+                maxWidth: "100%",
+              }}
             >
-              {emp.name.split(" ")[0]}
+              {emp.name.split(" ")[0]} ({abbr})
             </ThemedText>
           </View>
         );
       })}
-    </View>
+    </ScrollView>
   );
 }

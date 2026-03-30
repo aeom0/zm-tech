@@ -5,6 +5,18 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ---
 
+## [1.4.7] — 2026-03-30
+
+### Añadido
+- **Empleados — foto de perfil**: columna `employees.avatar_url`, bucket público Supabase **`employee-avatars`** (RLS: lectura abierta; escritura solo `dev`/`owner`), migración `scripts/db/migrations/202603301200_employee_avatar_url_storage.sql` (también aplicable vía MCP `apply_migration`).
+- **Mobile — Personal**: `expo-image-picker` (galería/cámara, recorte 1:1), subida con `apps/mobile/lib/employeeAvatar.ts`, preview en lista y modal; quitar foto borra referencia y el objeto en Storage cuando la URL es del bucket.
+- **Mobile — Agenda**: misma foto en **cabecera por profesional (tablet / vista semana legacy)** (`AgendaEmployeeHeaders`) y en **franja de equipo (vista dueño)** (`OwnerStaffAvatarStrip`); query `employees` incluye `avatar_url`.
+
+### Cambiado
+- `app.json`: plugin `expo-image-picker` con textos de permiso en español.
+
+---
+
 ## [1.4.6] — 2026-03-30
 
 ### Añadido

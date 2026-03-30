@@ -30,6 +30,12 @@ yarn db:generate
 
 El archivo **`scripts/db/migrations/20260324_advisor_rls_performance.sql`** documenta y reproduce (si lo ejecutas entero) los cambios de **Database Advisor** ya aplicados en el proyecto Supabase SalonPro: `search_path` en funciones, índices de FK, políticas RLS unificadas. En WSL sin IPv6 a TCP, suele aplicarse con el **SQL Editor** del dashboard o con **MCP Supabase** (`apply_migration`) desde Cursor.
 
+### Avatar del personal (Storage)
+
+- **`scripts/db/migrations/202603301200_employee_avatar_url_storage.sql`**: añade `employees.avatar_url`, crea bucket **`employee-avatars`** (público, imágenes) y políticas de Storage para que solo `dev`/`owner` suban o borren archivos.
+- Otro proyecto Supabase: ejecutar ese SQL en el editor o `apply_migration` con el mismo contenido.
+- La app móvil sube archivos con la **anon key** autenticada; si falta el bucket o las políticas, fallará el guardado de la foto en Personal.
+
 ### Opción B — yarn db:push con conectividad directa
 
 Funciona desde Linux nativo, macOS, o WSL con IPv6 habilitado.

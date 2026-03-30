@@ -18,6 +18,7 @@ export interface AgendaEmployee {
   name: string;
   color: string;
   role: string;
+  avatar_url?: string | null;
 }
 
 export interface AgendaService {

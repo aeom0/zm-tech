@@ -50,7 +50,7 @@ Al iniciar la app por primera vez (sin config guardada), se muestra el **onboard
 4. **Categorías de servicios** — confirma las categorías sugeridas por tipo
 5. **Resumen** — revisión y confirmación; al terminar se persiste en `tenant_settings` (Supabase) y en AsyncStorage (`@salonpro/tenant_config`)
 
-La configuración se sincroniza con la tabla `tenant_settings` en Supabase y es editable después desde Configuración (incluye **horario de trabajo**: zona horaria IANA + franja por día en `business_hours`, también en el panel web `/panel/horarios`). La **Agenda** móvil usa esa zona y franja para el calendario y las citas (`@salonpro/tenant-config`: Luxon + `working-schedule`).
+La configuración se sincroniza con la tabla `tenant_settings` en Supabase y es editable después desde Configuración (incluye **horario de trabajo**: zona horaria IANA + franja por día en `business_hours`, también en el panel web `/panel/horarios`). La **Agenda** móvil usa esa zona y franja para el calendario y las citas (`@salonpro/tenant-config`: Luxon + `working-schedule`). Las **fotos del personal** (`employees.avatar_url`) se configuran en Más → Personal y se guardan en el bucket Storage **`employee-avatars`** (ver `scripts/db/migrations/202603301200_employee_avatar_url_storage.sql`).
 
 Para configurar manualmente, edita los seeds antes de ejecutarlos:
 

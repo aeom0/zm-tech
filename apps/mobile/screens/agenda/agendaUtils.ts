@@ -83,3 +83,38 @@ export function getServiceName(
   const service = services.find((s) => s.id === serviceId);
   return service?.name ?? "";
 }
+
+/** Citas del día en zona, opcionalmente filtradas por profesionales y estado. */
+export function filterAppointmentsForOwnerDay(
+  appointments: AgendaAppointment[],
+  date: Date,
+  employeeIds: string[],
+  statusFilter: AgendaStatusFilter,
+  timeZone: string,
+): AgendaAppointment[] {
+  return appointments.filter((apt) => {
+    const aptDate = new Date(apt.date);
+    if (!esMismoDiaCalendarioEnZona(aptDate, date, timeZone)) return false;
+    if (employeeIds.length > 0 && !employeeIds.includes(apt.employee_id)) {
+      return false;
+    }
+    if (statusFilter !== "all" && apt.status !== statusFilter) return false;
+    return true;
+  });
+}
+
+export function sortAppointmentsByStart(
+  appointments: AgendaAppointment[],
+): AgendaAppointment[] {
+  return [...appointments].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+  );
+}
+
+/** Abreviatura corta para badge debajo del avatar (ej. rol o inicial). */
+export function abbreviateStaffRole(role: string | undefined | null): string {
+  const r = (role ?? "").trim();
+  if (!r) return "•";
+  const word = r.split(/\s+/)[0] ?? r;
+  return word.slice(0, 1).toUpperCase();
+}

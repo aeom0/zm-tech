@@ -13,6 +13,8 @@ import { isToday } from "../agendaUtils";
 
 interface AgendaHeaderProps {
   isTablet: boolean;
+  /** En teléfono: navegar día a día (vista dueño/profesional) en lugar de saltar semana. */
+  mobileDayMode?: boolean;
   theme: {
     primary: string;
     backgroundRoot: string;
@@ -29,6 +31,7 @@ interface AgendaHeaderProps {
 
 export function AgendaHeader({
   isTablet,
+  mobileDayMode = false,
   theme,
   language,
   timeZone,
@@ -49,13 +52,22 @@ export function AgendaHeader({
         },
       ]}
     >
-      {isTablet ? (
+      {isTablet || mobileDayMode ? (
         <>
           <Pressable onPress={() => onChangeDay(-1)} style={styles.navButton}>
-            <Feather name="chevron-left" size={28} color={theme.primary} />
+            <Feather
+              name="chevron-left"
+              size={isTablet ? 28 : 24}
+              color={theme.primary}
+            />
           </Pressable>
           <Pressable onPress={onGoToToday} style={styles.dayTitleContainer}>
-            <ThemedText style={[styles.weekTitle, { fontSize: 18 }]}>
+            <ThemedText
+              style={[
+                styles.weekTitle,
+                { fontSize: isTablet ? 18 : 16 },
+              ]}
+            >
               {formatoFechaLargaEnZona(selectedDate, language, timeZone)}
             </ThemedText>
             {!isToday(selectedDate, timeZone) && (
@@ -70,7 +82,11 @@ export function AgendaHeader({
             )}
           </Pressable>
           <Pressable onPress={() => onChangeDay(1)} style={styles.navButton}>
-            <Feather name="chevron-right" size={28} color={theme.primary} />
+            <Feather
+              name="chevron-right"
+              size={isTablet ? 28 : 24}
+              color={theme.primary}
+            />
           </Pressable>
         </>
       ) : (

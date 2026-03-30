@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   StyleSheet,
@@ -14,6 +14,8 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Feather } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import * as ImagePicker from "expo-image-picker";
+import { Image } from "expo-image";
 
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
@@ -21,6 +23,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTenant } from "@/contexts/TenantContext";
 import { queryClient } from "@/lib/query-client";
 import { supabase } from "@/lib/supabase";
+import {
+  borrarAvatarSiEsStorage,
+  subirAvatarEmpleadoDefault,
+} from "@/lib/employeeAvatar";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 import type { PaymentMode } from "@salonpro/shared-schema";
 import { EmployeePaymentBadge } from "@/screens/personal/components/EmployeePaymentBadge";
@@ -37,6 +43,7 @@ interface Employee {
   salary_amount: string | null;
   notes: string | null;
   is_active: boolean;
+  avatar_url?: string | null;
 }
 
 export default function PersonalScreen() {
@@ -59,6 +66,9 @@ export default function PersonalScreen() {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [editing, setEditing] = useState<Employee | null>(null);
+  const [pendingAvatarUri, setPendingAvatarUri] = useState<string | null>(null);
+  const [removeAvatar, setRemoveAvatar] = useState(false);
+  const ultimoMimeAvatarRef = useRef<string>("image/jpeg");
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -103,6 +113,7 @@ export default function PersonalScreen() {
         salary_amount: number | null;
         notes: string | null;
         is_active: boolean;
+        avatar_url: string | null;
       };
     }) => {
       const { error } = await supabase
@@ -126,6 +137,8 @@ export default function PersonalScreen() {
 
   const openEdit = (emp: Employee) => {
     setEditing(emp);
+    setPendingAvatarUri(null);
+    setRemoveAvatar(false);
     setForm({
       name: emp.name,
       email: emp.email ?? "",
@@ -147,9 +160,62 @@ export default function PersonalScreen() {
   const closeModal = () => {
     setModalVisible(false);
     setEditing(null);
+    setPendingAvatarUri(null);
+    setRemoveAvatar(false);
   };
 
-  const handleSave = () => {
+  const elegirFotoGaleria = async () => {
+    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!perm.granted) {
+      Alert.alert(
+        "Permiso",
+        "Necesitamos acceso a la galería para elegir la foto.",
+      );
+      return;
+    }
+    const res = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.85,
+    });
+    if (res.canceled || !res.assets[0]?.uri) return;
+    const asset = res.assets[0];
+    setPendingAvatarUri(asset.uri);
+    setRemoveAvatar(false);
+    ultimoMimeAvatarRef.current = asset.mimeType ?? "image/jpeg";
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
+
+  const tomarFotoCamara = async () => {
+    const perm = await ImagePicker.requestCameraPermissionsAsync();
+    if (!perm.granted) {
+      Alert.alert(
+        "Permiso",
+        "Necesitamos acceso a la cámara para tomar la foto.",
+      );
+      return;
+    }
+    const res = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.85,
+    });
+    if (res.canceled || !res.assets[0]?.uri) return;
+    const asset = res.assets[0];
+    setPendingAvatarUri(asset.uri);
+    setRemoveAvatar(false);
+    ultimoMimeAvatarRef.current = asset.mimeType ?? "image/jpeg";
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  };
+
+  const previewAvatarUri =
+    removeAvatar || !editing
+      ? null
+      : pendingAvatarUri ??
+        (editing.avatar_url?.trim() ? editing.avatar_url.trim() : null);
+
+  const handleSave = async () => {
     if (!editing) return;
     const name = form.name.trim();
     if (!name) {
@@ -178,6 +244,32 @@ export default function PersonalScreen() {
       salaryAmount = parsed;
     }
 
+    let avatar_url: string | null = editing.avatar_url?.trim() || null;
+    if (removeAvatar) {
+      try {
+        await borrarAvatarSiEsStorage(supabase, editing.avatar_url);
+      } catch {
+        /* ignorar fallo de borrado en Storage */
+      }
+      avatar_url = null;
+    } else if (pendingAvatarUri) {
+      try {
+        await borrarAvatarSiEsStorage(supabase, editing.avatar_url);
+        const { publicUrl } = await subirAvatarEmpleadoDefault(
+          editing.id,
+          pendingAvatarUri,
+          ultimoMimeAvatarRef.current,
+        );
+        avatar_url = publicUrl;
+      } catch (e) {
+        Alert.alert(
+          "Error al subir la foto",
+          e instanceof Error ? e.message : "Intenta de nuevo.",
+        );
+        return;
+      }
+    }
+
     updateMutation.mutate({
       id: editing.id,
       data: {
@@ -190,6 +282,7 @@ export default function PersonalScreen() {
         salary_amount: form.paymentMode !== "commission" ? salaryAmount : null,
         notes: form.notes.trim() || null,
         is_active: form.is_active,
+        avatar_url,
       },
     });
   };
@@ -220,8 +313,8 @@ export default function PersonalScreen() {
         showsVerticalScrollIndicator={false}
       >
         <ThemedText style={[styles.hint, { color: theme.textSecondary }]}>
-          Toca a una {staffSingular.toLowerCase()} para editar nombre, correo,
-          comisión % y más.
+          Toca a una {staffSingular.toLowerCase()} para editar datos, modo de pago
+          y foto para la agenda.
         </ThemedText>
 
         {isLoading ? (
@@ -246,6 +339,26 @@ export default function PersonalScreen() {
               ]}
               onPress={() => openEdit(emp)}
             >
+              <View
+                style={[
+                  styles.cardAvatarWrap,
+                  { borderColor: emp.color, backgroundColor: theme.backgroundSecondary },
+                ]}
+              >
+                {emp.avatar_url?.trim() ? (
+                  <Image
+                    source={{ uri: emp.avatar_url.trim() }}
+                    style={styles.cardAvatarImg}
+                    contentFit="cover"
+                  />
+                ) : (
+                  <ThemedText
+                    style={[styles.cardAvatarLetter, { color: emp.color }]}
+                  >
+                    {(emp.name?.trim().split(/\s+/)[0] ?? "?").slice(0, 1).toUpperCase()}
+                  </ThemedText>
+                )}
+              </View>
               <View style={styles.cardMain}>
                 <View style={styles.nameRow}>
                   <ThemedText style={styles.cardName}>{emp.name}</ThemedText>
@@ -306,6 +419,80 @@ export default function PersonalScreen() {
             </View>
 
             <ScrollView showsVerticalScrollIndicator={false}>
+              <ThemedText
+                style={[styles.fieldLabel, { color: theme.textSecondary }]}
+              >
+                Foto (agenda y lista)
+              </ThemedText>
+              <View style={styles.avatarEditorRow}>
+                <View
+                  style={[
+                    styles.avatarPreviewRing,
+                    {
+                      borderColor: editing?.color ?? theme.primary,
+                      backgroundColor: theme.backgroundSecondary,
+                    },
+                  ]}
+                >
+                  {previewAvatarUri ? (
+                    <Image
+                      source={{ uri: previewAvatarUri }}
+                      style={styles.avatarPreviewImg}
+                      contentFit="cover"
+                    />
+                  ) : (
+                    <Feather name="user" size={36} color={theme.textMuted} />
+                  )}
+                </View>
+                <View style={styles.avatarActions}>
+                  <Pressable
+                    style={[styles.avatarBtn, { borderColor: theme.border }]}
+                    onPress={elegirFotoGaleria}
+                  >
+                    <Feather name="image" size={18} color={theme.primary} />
+                    <ThemedText style={[styles.avatarBtnText, { color: theme.primary }]}>
+                      Galería
+                    </ThemedText>
+                  </Pressable>
+                  <Pressable
+                    style={[styles.avatarBtn, { borderColor: theme.border }]}
+                    onPress={tomarFotoCamara}
+                  >
+                    <Feather name="camera" size={18} color={theme.primary} />
+                    <ThemedText style={[styles.avatarBtnText, { color: theme.primary }]}>
+                      Cámara
+                    </ThemedText>
+                  </Pressable>
+                  {(editing?.avatar_url?.trim() || pendingAvatarUri) && !removeAvatar ? (
+                    <Pressable
+                      style={[styles.avatarBtn, { borderColor: theme.error }]}
+                      onPress={() => {
+                        setRemoveAvatar(true);
+                        setPendingAvatarUri(null);
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      }}
+                    >
+                      <Feather name="trash-2" size={18} color={theme.error} />
+                      <ThemedText style={[styles.avatarBtnText, { color: theme.error }]}>
+                        Quitar foto
+                      </ThemedText>
+                    </Pressable>
+                  ) : null}
+                  {removeAvatar ? (
+                    <Pressable
+                      onPress={() => {
+                        setRemoveAvatar(false);
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      }}
+                    >
+                      <ThemedText style={{ color: theme.link, fontSize: 13 }}>
+                        Deshacer quitar foto
+                      </ThemedText>
+                    </Pressable>
+                  ) : null}
+                </View>
+              </View>
+
               <ThemedText
                 style={[styles.fieldLabel, { color: theme.textSecondary }]}
               >
@@ -586,6 +773,18 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: Spacing.sm,
   },
+  cardAvatarWrap: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    borderWidth: 2,
+    marginRight: Spacing.md,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cardAvatarImg: { width: "100%", height: "100%" },
+  cardAvatarLetter: { fontSize: 20, fontWeight: "700" },
   cardMain: { flex: 1 },
   cardName: { fontSize: 16, fontWeight: "600", marginBottom: 0 },
   nameRow: {
@@ -627,6 +826,33 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xl,
   },
   modalTitle: { fontSize: 20, fontWeight: "700" },
+  avatarEditorRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.md,
+    marginBottom: Spacing.sm,
+  },
+  avatarPreviewRing: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    borderWidth: 3,
+    overflow: "hidden",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  avatarPreviewImg: { width: "100%", height: "100%" },
+  avatarActions: { flex: 1, gap: Spacing.sm },
+  avatarBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.sm,
+    paddingVertical: 10,
+    paddingHorizontal: Spacing.md,
+    borderRadius: BorderRadius.sm,
+    borderWidth: 1,
+  },
+  avatarBtnText: { fontSize: 14, fontWeight: "600" },
   fieldLabel: {
     fontSize: 13,
     fontWeight: "600",

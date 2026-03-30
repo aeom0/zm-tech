@@ -17,11 +17,12 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 
 ---
 
-## Estado actual (v1.4.3 — mar 2026)
+## Estado actual (v1.4.7 — mar 2026)
 
 ### Completado
 - Monorepo funcional: `apps/mobile`, `apps/web`, `packages/shared-schema`, `packages/tenant-config`
-- Core mobile: onboarding, agenda, servicios, clientes, inventario, finanzas, validación pagos, asignar profesionales
+- Core mobile: onboarding, agenda (vista dueño grilla día + columna por profesional, vista staff timeline; línea de hora actual), servicios, clientes, inventario, finanzas, validación pagos, asignar profesionales
+- **Personal / agenda**: foto opcional por empleado (`avatar_url` + Storage `employee-avatars`), editable en Más → Personal; visible en cabeceras de agenda y franja de equipo
 - Core web: `/finanzas`, `/` (landing), dashboard métricas (KPIs, gráfico 7 días, top servicios, próximas citas)
 - Design system Lunaris completo, gradiente, logos SVG
 - RLS 9 tablas con `get_my_role()`, `usePendingBadgeCount`, badges en tab Más

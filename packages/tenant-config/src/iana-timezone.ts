@@ -118,6 +118,13 @@ export function horaCalendarioEnZona(date: Date, timeZone: string): number {
   return DateTime.fromJSDate(date, { zone: z }).hour;
 }
 
+/** Minutos desde medianoche (0–1439) en la zona IANA del negocio. */
+export function minutosDelDiaEnZona(date: Date, timeZone: string): number {
+  const z = zonaIANASegura(timeZone);
+  const dt = DateTime.fromJSDate(date, { zone: z });
+  return dt.hour * 60 + dt.minute;
+}
+
 /** Instante para guardar en BD: inicio de `horaEntera` en la fecha de columna (tenant). */
 export function instanteCitaEnZona(
   fechaColumnaInicioDia: Date,

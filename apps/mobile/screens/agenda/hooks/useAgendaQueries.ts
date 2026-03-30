@@ -42,7 +42,7 @@ export function useAgendaQueries() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("employees")
-        .select("id, name, color, role")
+        .select("id, name, color, role, avatar_url")
         .order("created_at", { ascending: true });
 
       if (error) {

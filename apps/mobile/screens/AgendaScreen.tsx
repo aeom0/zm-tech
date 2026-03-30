@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
-import { View, Alert } from "react-native";
+import { View, Alert, ActivityIndicator } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useRoute, useNavigation } from "@react-navigation/native";
@@ -9,6 +9,7 @@ import * as Haptics from "expo-haptics";
 import { useTheme } from "@/hooks/useTheme";
 import { useResponsive } from "@/hooks/useResponsive";
 import { useTenant } from "@/contexts/TenantContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { Spacing } from "@/constants/theme";
 import {
   defaultTenantConfig,
@@ -45,6 +46,9 @@ import { AgendaWeekDayHeaders } from "./agenda/components/AgendaWeekDayHeaders";
 import { AgendaEmployeeHeaders } from "./agenda/components/AgendaEmployeeHeaders";
 import { AgendaStatusFilter as AgendaStatusFilterBar } from "./agenda/components/AgendaStatusFilter";
 import { AgendaCalendarGrid } from "./agenda/components/AgendaCalendarGrid";
+import { OwnerDayGrid } from "./agenda/components/OwnerDayGrid";
+import { OwnerStaffAvatarStrip } from "./agenda/components/OwnerStaffAvatarStrip";
+import { StaffAgendaTimelineView } from "./agenda/components/StaffAgendaTimelineView";
 import { NewAppointmentModal } from "./agenda/components/NewAppointmentModal";
 import { AppointmentDetailModal } from "./agenda/components/AppointmentDetailModal";
 
@@ -53,8 +57,14 @@ export default function AgendaScreen() {
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
   const { config } = useTenant();
+  const { role, profile, isAdmin, isLoading: authLoading } = useAuth();
   const currencySymbol = config.locale.currency.symbol;
   const { isTablet, width } = useResponsive();
+
+  const ownerVista = !authLoading && isAdmin;
+  const staffVista = !authLoading && role === "staff";
+  const legacyWeekCalendar = !authLoading && !ownerVista && !staffVista;
+  const mobileDayMode = !isTablet && (ownerVista || staffVista);
 
   const TIME_COL_W = isTablet ? 64 : 50;
 
@@ -360,6 +370,62 @@ export default function AgendaScreen() {
   const empColWidth =
     (width - TIME_COL_W - Spacing.sm * 2) / Math.max(employees.length, 1);
 
+  const ownerColWidth = useMemo(() => {
+    const disponible = width - TIME_COL_W - Spacing.md;
+    const n = Math.max(employees.length, 1);
+    return Math.max(104, Math.min(140, disponible / n));
+  }, [width, employees.length]);
+
+  const staffNombreMostrado = useMemo(() => {
+    const nombre = profile?.full_name?.trim();
+    if (nombre) return nombre;
+    if (profile?.employee_id) {
+      const emp = employees.find((e) => e.id === profile.employee_id);
+      if (emp?.name) return emp.name;
+    }
+    return config.terminology.staffSingular;
+  }, [
+    profile?.full_name,
+    profile?.employee_id,
+    employees,
+    config.terminology.staffSingular,
+  ]);
+
+  const openNewAppointmentForStaff = useCallback(() => {
+    const primeraHora =
+      agendaHours.find((h) =>
+        esCeldaAgendaEnHorarioLaboral(
+          selectedDate,
+          h,
+          businessHoursNorm,
+          tenantTz,
+        ),
+      ) ?? agendaHours[0] ?? 9;
+    setSelectedHour(primeraHora);
+    const firstCategoryId = categories[0]?.id ?? "";
+    const firstServiceInCategory = firstCategoryId
+      ? services.find((s) => s.category_id === firstCategoryId)
+      : services[0];
+    setFormData({
+      clientName: "",
+      clientPhone: "",
+      clientDocument: "",
+      categoryId: firstCategoryId,
+      serviceId: firstServiceInCategory?.id ?? "",
+      employeeId: profile?.employee_id ?? "",
+    });
+    setModalVisible(true);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  }, [
+    agendaHours,
+    selectedDate,
+    businessHoursNorm,
+    tenantTz,
+    categories,
+    services,
+    profile?.employee_id,
+  ]);
+
   const closeDetailModal = () => {
     setDetailModalVisible(false);
     setAppointmentDetail(null);
@@ -391,6 +457,7 @@ export default function AgendaScreen() {
     <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
       <AgendaHeader
         isTablet={isTablet}
+        mobileDayMode={mobileDayMode}
         theme={theme}
         language={config.locale.language}
         timeZone={tenantTz}
@@ -402,57 +469,135 @@ export default function AgendaScreen() {
         onGoToToday={goToToday}
       />
 
-      {!isTablet && (
-        <AgendaWeekDayHeaders
-          weekDays={weekDays}
+      {authLoading ? (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+          <ActivityIndicator size="large" color={theme.primary} />
+        </View>
+      ) : ownerVista ? (
+        <>
+          <OwnerStaffAvatarStrip
+            employees={employees}
+            theme={theme}
+            columnWidth={ownerColWidth}
+          />
+          <AgendaStatusFilterBar
+            statusFilter={statusFilter}
+            onChange={setStatusFilter}
+            theme={theme}
+          />
+          <OwnerDayGrid
+            timeColWidth={TIME_COL_W}
+            columnWidth={ownerColWidth}
+            tabBarHeight={tabBarHeight}
+            selectedDate={selectedDate}
+            agendaHours={agendaHours}
+            businessHours={businessHoursNorm}
+            timeZone={tenantTz}
+            language={config.locale.language}
+            appointments={appointments}
+            employees={employees}
+            services={services}
+            statusFilter={statusFilter}
+            isLoading={isLoading}
+            onRefresh={refetch}
+            theme={{
+              primary: theme.primary,
+              text: theme.text,
+              textSecondary: theme.textSecondary,
+              textMuted: theme.textMuted,
+              border: theme.border,
+              backgroundRoot: theme.backgroundRoot,
+              backgroundSecondary: theme.backgroundSecondary,
+              card: theme.card,
+            }}
+            onOpenNew={openNewAppointment}
+            onOpenDetail={openAppointmentDetail}
+          />
+        </>
+      ) : staffVista ? (
+        <StaffAgendaTimelineView
+          staffEmployeeId={profile?.employee_id ?? null}
+          staffDisplayName={staffNombreMostrado}
+          staffSingularLabel={config.terminology.staffSingular.toLowerCase()}
+          tabBarHeight={tabBarHeight}
+          selectedDate={selectedDate}
           timeZone={tenantTz}
-          timeColWidth={TIME_COL_W}
-          theme={theme}
+          language={config.locale.language}
+          appointments={appointments}
+          services={services}
+          isLoading={isLoading}
+          onRefresh={refetch}
+          theme={{
+            primary: theme.primary,
+            accent: theme.accent,
+            text: theme.text,
+            textSecondary: theme.textSecondary,
+            textMuted: theme.textMuted,
+            border: theme.border,
+            backgroundRoot: theme.backgroundRoot,
+            backgroundSecondary: theme.backgroundSecondary,
+            card: theme.card,
+            success: theme.success,
+            warning: theme.warning,
+          }}
+          onOpenDetail={openAppointmentDetail}
+          onPressNew={openNewAppointmentForStaff}
         />
+      ) : (
+        <>
+          {!isTablet && (
+            <AgendaWeekDayHeaders
+              weekDays={weekDays}
+              timeZone={tenantTz}
+              timeColWidth={TIME_COL_W}
+              theme={theme}
+            />
+          )}
+
+          {isTablet && (
+            <AgendaEmployeeHeaders
+              employees={employees}
+              timeColWidth={TIME_COL_W}
+              columnWidth={empColWidth}
+              theme={theme}
+            />
+          )}
+
+          <AgendaStatusFilterBar
+            statusFilter={statusFilter}
+            onChange={setStatusFilter}
+            theme={theme}
+          />
+
+          <AgendaCalendarGrid
+            isTablet={isTablet}
+            width={width}
+            timeColWidth={TIME_COL_W}
+            tabBarHeight={tabBarHeight}
+            selectedDate={selectedDate}
+            weekDays={weekDays}
+            agendaHours={agendaHours}
+            businessHours={businessHoursNorm}
+            timeZone={tenantTz}
+            appointments={appointments}
+            employees={employees}
+            services={services}
+            statusFilter={statusFilter}
+            isLoading={isLoading}
+            onRefresh={refetch}
+            theme={{
+              primary: theme.primary,
+              text: theme.text,
+              textSecondary: theme.textSecondary,
+              textMuted: theme.textMuted,
+              border: theme.border,
+              backgroundRoot: theme.backgroundRoot,
+            }}
+            onOpenNew={openNewAppointment}
+            onOpenDetail={openAppointmentDetail}
+          />
+        </>
       )}
-
-      {isTablet && (
-        <AgendaEmployeeHeaders
-          employees={employees}
-          timeColWidth={TIME_COL_W}
-          columnWidth={empColWidth}
-          theme={theme}
-        />
-      )}
-
-      <AgendaStatusFilterBar
-        statusFilter={statusFilter}
-        onChange={setStatusFilter}
-        theme={theme}
-      />
-
-      <AgendaCalendarGrid
-        isTablet={isTablet}
-        width={width}
-        timeColWidth={TIME_COL_W}
-        tabBarHeight={tabBarHeight}
-        selectedDate={selectedDate}
-        weekDays={weekDays}
-        agendaHours={agendaHours}
-        businessHours={businessHoursNorm}
-        timeZone={tenantTz}
-        appointments={appointments}
-        employees={employees}
-        services={services}
-        statusFilter={statusFilter}
-        isLoading={isLoading}
-        onRefresh={refetch}
-        theme={{
-          primary: theme.primary,
-          text: theme.text,
-          textSecondary: theme.textSecondary,
-          textMuted: theme.textMuted,
-          border: theme.border,
-          backgroundRoot: theme.backgroundRoot,
-        }}
-        onOpenNew={openNewAppointment}
-        onOpenDetail={openAppointmentDetail}
-      />
 
       <NewAppointmentModal
         visible={modalVisible}

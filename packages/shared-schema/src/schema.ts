@@ -31,6 +31,8 @@ export const employees = pgTable("employees", {
     .notNull(),
   salaryAmount: decimal("salary_amount", { precision: 10, scale: 2 }),
   notes: text("notes"),
+  /** URL pública en Storage (bucket `employee-avatars`) o enlace externo. */
+  avatarUrl: text("avatar_url"),
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
