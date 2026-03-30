@@ -437,6 +437,7 @@ export const tenantSettings = pgTable("tenant_settings", {
     .default("cliente"),
   tagline: text("tagline").notNull().default(""),
   featuresWhatsapp: boolean("features_whatsapp").notNull().default(false),
+  logoUrl: text("logo_url").notNull().default(""),
   staffTerminology: text("staff_terminology")
     .notNull()
     .default("especialistas"),

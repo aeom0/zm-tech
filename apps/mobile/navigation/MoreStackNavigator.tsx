@@ -12,6 +12,7 @@ import SettingsScreen from "@/screens/SettingsScreen";
 import HorariosTrabajoScreen from "@/screens/HorariosTrabajoScreen";
 import ValidacionPagosScreen from "@/screens/ValidacionPagosScreen";
 import AsignarProfesionalesScreen from "@/screens/AsignarProfesionalesScreen";
+import LogoNegocioScreen from "@/screens/settings/LogoNegocioScreen";
 
 export type MoreStackParamList = {
   MoreHome: undefined;
@@ -22,6 +23,7 @@ export type MoreStackParamList = {
   Inventario: undefined;
   Configuracion: undefined;
   HorariosTrabajo: undefined;
+  LogoNegocio: undefined;
   Perfil: undefined;
 };
 
@@ -68,12 +70,17 @@ export default function MoreStackNavigator() {
       <Stack.Screen
         name="Configuracion"
         component={SettingsScreen}
-        options={{ title: "Configuración" }}
+        options={{ title: "Datos del negocio" }}
       />
       <Stack.Screen
         name="HorariosTrabajo"
         component={HorariosTrabajoScreen}
         options={{ title: "Horario de trabajo" }}
+      />
+      <Stack.Screen
+        name="LogoNegocio"
+        component={LogoNegocioScreen}
+        options={{ title: "Logo del negocio" }}
       />
       <Stack.Screen
         name="Perfil"

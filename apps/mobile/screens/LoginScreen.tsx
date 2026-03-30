@@ -1,39 +1,59 @@
+/**
+ * LoginScreen — Pantalla de login rediseñada con identidad Lunaris.
+ *
+ * Comportamiento visual:
+ * - Usa OnboardingLayout (mismo bg #111318, SafeArea, scroll con KeyboardAvoiding)
+ * - Hero: logo del tenant si config.logo existe → Image circular
+ *         fallback: DiamondSparkle size={72}
+ * - Bajo el hero: businessName del tenant en texto blanco + subtítulo muted
+ * - Formulario en card glassmorphism (igual a OnboardingAuthScreen)
+ * - CTA: GradientCTAButton primary con gradiente Lunaris (no botón blanco)
+ * - Link inferior "¿No tienes cuenta? Crea tu negocio" → onCreateBusiness?()
+ * - Botón "¿Olvidaste tu contraseña?" sutil entre campos y CTA
+ * - Animaciones: FadeInUp para hero, FadeInDown para card y link
+ */
 import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  TextInput,
-  Pressable,
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
+import { View, StyleSheet, TextInput, Pressable, Image } from "react-native";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
-import { KeyboardAwareScrollViewCompat } from "@/components/KeyboardAwareScrollViewCompat";
+import {
+  OnboardingLayout,
+  GradientCTAButton,
+  DiamondSparkle,
+} from "@/screens/onboarding/components";
 import { useAuth } from "@/contexts/AuthContext";
-import { Colors, Spacing, BorderRadius, Shadows } from "@/constants/theme";
+import { useTenant } from "@/contexts/TenantContext";
+import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 
 interface LoginScreenProps {
-  /** Llamado tras login exitoso (ej. para avanzar en onboarding) */
   onSuccess?: () => void;
+  onCreateBusiness?: () => void;
 }
 
-export function LoginScreen({ onSuccess }: LoginScreenProps = {}) {
+const LOGO_SIZE = 80;
+
+export function LoginScreen({
+  onSuccess,
+  onCreateBusiness,
+}: LoginScreenProps = {}) {
   const { login } = useAuth();
-  const [usuario, setUsuario] = useState("");
+  const { config } = useTenant();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const hasLogo = Boolean(config.logo);
+  const businessName = config.businessName || "SalonPro";
+
   const handleLogin = async () => {
     setError(null);
     setLoading(true);
     try {
-      const result = await login(usuario.trim(), password);
+      const result = await login(email.trim(), password);
       if (!result.ok) {
         setError(result.error ?? "Error al iniciar sesión");
       } else {
@@ -47,192 +67,191 @@ export function LoginScreen({ onSuccess }: LoginScreenProps = {}) {
   };
 
   return (
-    <View style={styles.container}>
-      <KeyboardAwareScrollViewCompat
-        style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
-      >
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
-          style={styles.form}
+    <OnboardingLayout scrollable>
+      <View style={styles.inner}>
+        <Animated.View entering={FadeInUp.duration(500)} style={styles.heroWrap}>
+          {hasLogo ? (
+            <Image
+              source={{ uri: config.logo }}
+              style={styles.logoImage}
+              resizeMode="cover"
+            />
+          ) : (
+            <DiamondSparkle size={72} />
+          )}
+        </Animated.View>
+
+        <Animated.View
+          entering={FadeInUp.duration(500).delay(80)}
+          style={styles.brandText}
         >
-          {/* Logo & Brand */}
-          <Animated.View
-            entering={FadeInUp.duration(600)}
-            style={styles.brandSection}
-          >
-            <ThemedText style={styles.wordmark}>SalonPro</ThemedText>
-            <ThemedText style={styles.brandSubtitle}>
-              Ingresa a tu salón
-            </ThemedText>
-          </Animated.View>
+          <ThemedText style={styles.businessName}>{businessName}</ThemedText>
+          <ThemedText style={styles.brandSub}>Ingresa a tu panel</ThemedText>
+        </Animated.View>
 
-          {/* Form Card */}
-          <Animated.View
-            entering={FadeInDown.duration(600).delay(200)}
-            style={[styles.card, Shadows.md]}
-          >
-            <View style={styles.inputGroup}>
-              <ThemedText style={styles.label}>Correo electrónico</ThemedText>
-              <View style={[styles.inputWrapper]}>
-                <Feather
-                  name="user"
-                  size={18}
-                  color="rgba(255,255,255,0.35)"
-                  style={styles.inputIcon}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="tu-usuario@tusalon.com"
-                  placeholderTextColor="rgba(255,255,255,0.25)"
-                  value={usuario}
-                  onChangeText={(text) => {
-                    setUsuario(text);
-                    setError(null);
-                  }}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  keyboardType="email-address"
-                  editable={!loading}
-                />
-              </View>
+        <Animated.View
+          entering={FadeInDown.duration(500).delay(160)}
+          style={styles.card}
+        >
+          <View style={styles.inputGroup}>
+            <ThemedText style={styles.label}>Correo electrónico</ThemedText>
+            <View style={styles.inputWrapper}>
+              <Feather
+                name="mail"
+                size={18}
+                color="rgba(255,255,255,0.4)"
+                style={styles.inputIcon}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="correo@ejemplo.com"
+                placeholderTextColor="rgba(255,255,255,0.25)"
+                value={email}
+                onChangeText={(t) => {
+                  setEmail(t);
+                  setError(null);
+                }}
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="email-address"
+                editable={!loading}
+              />
             </View>
+          </View>
 
-            <View style={styles.inputGroup}>
-              <ThemedText style={styles.label}>Contraseña</ThemedText>
-              <View style={[styles.inputWrapper]}>
-                <Feather
-                  name="lock"
-                  size={18}
-                  color="rgba(255,255,255,0.35)"
-                  style={styles.inputIcon}
-                />
-                <TextInput
-                  style={[styles.input, styles.passwordInput]}
-                  placeholder="••••••••"
-                  placeholderTextColor="rgba(255,255,255,0.25)"
-                  value={password}
-                  onChangeText={(text) => {
-                    setPassword(text);
-                    setError(null);
-                  }}
-                  secureTextEntry={!showPassword}
-                  editable={!loading}
-                />
-                <Pressable
-                  onPress={() => setShowPassword((p) => !p)}
-                  style={styles.eyeButton}
-                  hitSlop={12}
-                >
-                  <Feather
-                    name={showPassword ? "eye-off" : "eye"}
-                    size={20}
-                    color="rgba(255,255,255,0.5)"
-                  />
-                </Pressable>
-              </View>
-            </View>
-
-            {error ? (
-              <Animated.View
-                entering={FadeInDown.duration(300)}
-                style={[
-                  styles.errorBox,
-                  { backgroundColor: Colors.dark.error + "15" },
-                ]}
+          <View style={styles.inputGroup}>
+            <ThemedText style={styles.label}>Contraseña</ThemedText>
+            <View style={styles.inputWrapper}>
+              <Feather
+                name="lock"
+                size={18}
+                color="rgba(255,255,255,0.4)"
+                style={styles.inputIcon}
+              />
+              <TextInput
+                style={[styles.input, styles.passwordInput]}
+                placeholder="••••••••"
+                placeholderTextColor="rgba(255,255,255,0.25)"
+                value={password}
+                onChangeText={(t) => {
+                  setPassword(t);
+                  setError(null);
+                }}
+                secureTextEntry={!showPassword}
+                editable={!loading}
+              />
+              <Pressable
+                onPress={() => setShowPassword((p) => !p)}
+                style={styles.eyeButton}
+                hitSlop={12}
               >
                 <Feather
-                  name="alert-circle"
-                  size={16}
-                  color={Colors.dark.error}
+                  name={showPassword ? "eye-off" : "eye"}
+                  size={18}
+                  color="rgba(255,255,255,0.5)"
                 />
-                <ThemedText
-                  style={[styles.errorText, { color: Colors.dark.error }]}
-                >
-                  {error}
-                </ThemedText>
-              </Animated.View>
-            ) : null}
+              </Pressable>
+            </View>
+          </View>
 
-            <Pressable
-              onPress={handleLogin}
-              disabled={loading}
-              style={({ pressed }) => [
-                styles.submitButton,
-                { backgroundColor: "#FFFFFF" },
-                pressed && { opacity: 0.9 },
-                loading && { opacity: 0.7 },
-              ]}
+          <Pressable style={styles.forgotWrap}>
+            <ThemedText style={styles.forgotText}>
+              ¿Olvidaste tu contraseña?
+            </ThemedText>
+          </Pressable>
+
+          {error ? (
+            <Animated.View
+              entering={FadeInDown.duration(300)}
+              style={styles.errorBox}
             >
-              {loading ? (
-                <ActivityIndicator color="#000000" size="small" />
-              ) : (
-                <>
-                  <ThemedText style={styles.submitButtonText}>
-                    Entrar al panel
-                  </ThemedText>
-                  <Feather name="arrow-right" size={18} color="#000000" />
-                </>
-              )}
-            </Pressable>
+              <Feather name="alert-circle" size={16} color={Colors.dark.error} />
+              <ThemedText style={[styles.errorText, { color: Colors.dark.error }]}>
+                {error}
+              </ThemedText>
+            </Animated.View>
+          ) : null}
+
+          <GradientCTAButton
+            label="Entrar al panel"
+            icon="arrow-right"
+            onPress={handleLogin}
+            loading={loading}
+            style={styles.cta}
+          />
+        </Animated.View>
+
+        {onCreateBusiness ? (
+          <Animated.View
+            entering={FadeInDown.duration(500).delay(240)}
+            style={styles.createWrap}
+          >
+            <ThemedText style={styles.createText}>
+              ¿No tienes cuenta?{" "}
+              <ThemedText style={styles.createLink} onPress={onCreateBusiness}>
+                Crea tu negocio
+              </ThemedText>
+            </ThemedText>
           </Animated.View>
-        </KeyboardAvoidingView>
-      </KeyboardAwareScrollViewCompat>
-    </View>
+        ) : null}
+      </View>
+    </OnboardingLayout>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.dark.backgroundRoot,
-  },
-  scroll: {
-    flex: 1,
-  },
-  scrollContent: {
-    flexGrow: 1,
-    justifyContent: "center",
-    padding: Spacing.xl,
-  },
-  form: {
-    maxWidth: 400,
+  inner: {
+    maxWidth: 420,
     width: "100%",
     alignSelf: "center",
+    flexGrow: 1,
+    paddingBottom: Spacing["2xl"],
   },
-  brandSection: {
+  heroWrap: {
     alignItems: "center",
-    marginBottom: Spacing["3xl"],
+    marginBottom: Spacing.xl,
+    marginTop: Spacing.lg,
   },
-  wordmark: {
-    fontSize: 32,
-    fontWeight: "800",
-    letterSpacing: -1,
+  logoImage: {
+    width: LOGO_SIZE,
+    height: LOGO_SIZE,
+    borderRadius: LOGO_SIZE / 2,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.15)",
+  },
+  brandText: {
+    alignItems: "center",
+    marginBottom: Spacing["2xl"],
+  },
+  businessName: {
+    fontSize: 26,
+    fontWeight: "700",
     color: "#FFFFFF",
+    textAlign: "center",
     marginBottom: Spacing.xs,
+    letterSpacing: -0.5,
   },
-  brandSubtitle: {
-    fontSize: 13,
-    color: "rgba(255,255,255,0.55)",
+  brandSub: {
+    fontSize: 14,
+    color: "rgba(255,255,255,0.45)",
+    textAlign: "center",
   },
   card: {
     borderRadius: BorderRadius.lg,
-    borderWidth: 0.5,
     padding: Spacing.xl,
-    backgroundColor: "rgba(255,255,255,0.05)",
-    borderColor: "rgba(255,255,255,0.1)",
-  },
-  inputGroup: {
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderWidth: 0.5,
+    borderColor: "rgba(255,255,255,0.12)",
     marginBottom: Spacing.lg,
   },
+  inputGroup: { marginBottom: Spacing.lg },
   label: {
-    fontSize: 11,
-    letterSpacing: 0.8,
-    fontWeight: "600",
-    marginBottom: Spacing.xs,
+    fontSize: 12,
+    fontWeight: "500",
+    letterSpacing: 0.5,
+    marginBottom: 8,
     textTransform: "uppercase",
-    color: "rgba(255,255,255,0.4)",
+    color: "rgba(255,255,255,0.5)",
   },
   inputWrapper: {
     flexDirection: "row",
@@ -241,23 +260,18 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     paddingHorizontal: Spacing.md,
     backgroundColor: "rgba(255,255,255,0.06)",
-    borderColor: "rgba(255,255,255,0.1)",
+    borderColor: "rgba(255,255,255,0.15)",
   },
-  inputIcon: {
-    marginRight: Spacing.sm,
+  inputIcon: { marginRight: Spacing.sm },
+  input: { flex: 1, height: 48, fontSize: 15, color: "#FFFFFF" },
+  passwordInput: { paddingRight: 36 },
+  eyeButton: { padding: Spacing.xs },
+  forgotWrap: {
+    alignItems: "flex-end",
+    marginTop: -Spacing.sm,
+    marginBottom: Spacing.lg,
   },
-  input: {
-    flex: 1,
-    height: 46,
-    fontSize: 15,
-    color: "#FFFFFF",
-  },
-  passwordInput: {
-    paddingRight: 40,
-  },
-  eyeButton: {
-    padding: Spacing.xs,
-  },
+  forgotText: { fontSize: 13, color: "rgba(255,255,255,0.4)" },
   errorBox: {
     flexDirection: "row",
     alignItems: "center",
@@ -265,24 +279,15 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     borderRadius: BorderRadius.sm,
     marginBottom: Spacing.lg,
+    backgroundColor: Colors.dark.error + "15",
   },
-  errorText: {
-    fontSize: 13,
-    fontWeight: "500",
-    flex: 1,
+  errorText: { fontSize: 13, fontWeight: "500", flex: 1 },
+  cta: { marginTop: Spacing.sm },
+  createWrap: { alignItems: "center", marginTop: Spacing.lg },
+  createText: {
+    fontSize: 14,
+    color: "rgba(255,255,255,0.5)",
+    textAlign: "center",
   },
-  submitButton: {
-    height: Spacing.buttonHeight,
-    borderRadius: 12,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: Spacing.sm,
-    marginTop: Spacing.sm,
-  },
-  submitButtonText: {
-    color: "#000000",
-    fontSize: 15,
-    fontWeight: "600",
-  },
+  createLink: { color: "#E91E8C", fontWeight: "600" },
 });

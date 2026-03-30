@@ -36,6 +36,22 @@ El archivo **`scripts/db/migrations/20260324_advisor_rls_performance.sql`** docu
 - Otro proyecto Supabase: ejecutar ese SQL en el editor o `apply_migration` con el mismo contenido.
 - La app móvil sube archivos con la **anon key** autenticada; si falta el bucket o las políticas, fallará el guardado de la foto en Personal.
 
+### Logo del negocio (Storage)
+
+- **Schema (DB)**: `tenant_settings.logo_url text not null default ''`.
+  - Migración (SQL Editor o MCP `apply_migration`):
+
+```sql
+ALTER TABLE tenant_settings
+  ADD COLUMN IF NOT EXISTS logo_url text NOT NULL DEFAULT '';
+```
+
+- **Bucket**: crear manualmente en **Storage → Buckets**:
+  - Nombre: **`tenant-logos`**
+  - Público: **true**
+  - MIME types permitidos: `image/jpeg, image/png, image/webp`
+- **App móvil**: el upload usa Supabase Storage (usuario autenticado) y guarda la URL pública en `tenant_settings.logo_url` vía `TenantContext.updateTenant(..., { syncRemote: true })`.
+
 ### Opción B — yarn db:push con conectividad directa
 
 Funciona desde Linux nativo, macOS, o WSL con IPv6 habilitado.

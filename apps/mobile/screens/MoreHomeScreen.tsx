@@ -6,6 +6,7 @@ import {
   Pressable,
   Alert,
   Image,
+  Switch,
 } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
@@ -16,6 +17,7 @@ import { Feather } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
 import { Card } from "@/components/Card";
 import { useTheme } from "@/hooks/useTheme";
+import { useThemePreference } from "@/contexts/ThemeContext";
 import { useAuth, Role } from "@/contexts/AuthContext";
 import { useHaptics } from "@/hooks/useHaptics";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
@@ -31,6 +33,9 @@ const roleDisplay: Record<Role, string> = {
   staff: "Staff",
 };
 
+// ──────────────────────────────────────────────
+// ProfileCard: igual que antes
+// ──────────────────────────────────────────────
 function ProfileCard() {
   const { profile } = useAuth();
   const navigation = useNavigation<Nav>();
@@ -38,14 +43,12 @@ function ProfileCard() {
 
   if (!profile) return null;
 
-  const handlePress = () => {
-    haptics.light();
-    navigation.navigate("Perfil");
-  };
-
   return (
     <Card
-      onPress={handlePress}
+      onPress={() => {
+        haptics.light();
+        navigation.navigate("Perfil");
+      }}
       style={{
         padding: Spacing.lg,
         flexDirection: "row",
@@ -74,12 +77,16 @@ function ProfileCard() {
   );
 }
 
-interface MenuItemProps {
+// ──────────────────────────────────────────────
+// MenuRow genérico
+// ──────────────────────────────────────────────
+interface MenuRowProps {
   icon: keyof typeof Feather.glyphMap;
   label: string;
   onPress: () => void;
   isDestructive?: boolean;
   badgeCount?: number;
+  rightElement?: React.ReactNode;
 }
 
 function MenuRow({
@@ -88,15 +95,10 @@ function MenuRow({
   onPress,
   isDestructive = false,
   badgeCount,
-}: MenuItemProps) {
+  rightElement,
+}: MenuRowProps) {
   const { theme } = useTheme();
   const haptics = useHaptics();
-
-  const handlePress = () => {
-    haptics.light();
-    onPress();
-  };
-
   const iconColor = isDestructive ? theme.error : theme.primary;
 
   return (
@@ -109,11 +111,12 @@ function MenuRow({
           opacity: pressed ? 0.9 : 1,
         },
       ]}
-      onPress={handlePress}
+      onPress={() => {
+        haptics.light();
+        onPress();
+      }}
     >
-      <View
-        style={[styles.menuIconWrap, { backgroundColor: `${iconColor}18` }]}
-      >
+      <View style={[styles.menuIconWrap, { backgroundColor: `${iconColor}18` }]}>
         <Feather name={icon} size={22} color={iconColor} />
       </View>
       <View style={styles.menuLabelContainer}>
@@ -126,31 +129,32 @@ function MenuRow({
           </View>
         )}
       </View>
-      <Feather name="chevron-right" size={20} color={theme.textMuted} />
+      {rightElement ?? (
+        <Feather name="chevron-right" size={20} color={theme.textMuted} />
+      )}
     </Pressable>
   );
 }
 
+// ──────────────────────────────────────────────
+// Componente principal
+// ──────────────────────────────────────────────
 export default function MoreHomeScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
-  const { theme } = useTheme();
+  const { theme, isDark } = useTheme();
+  const { setPreference } = useThemePreference();
   const { isAdmin, logout } = useAuth();
   const navigation = useNavigation<Nav>();
   const haptics = useHaptics();
   const { config } = useTenant();
-
   const { paymentValidationCount, unassignedCount } = usePendingBadgeCount();
 
   const handleLogout = () => {
     haptics.warning();
     Alert.alert("Cerrar sesión", "¿Estás seguro de que quieres salir?", [
       { text: "Cancelar", style: "cancel" },
-      {
-        text: "Cerrar sesión",
-        style: "destructive",
-        onPress: () => logout(),
-      },
+      { text: "Cerrar sesión", style: "destructive", onPress: () => logout() },
     ]);
   };
 
@@ -166,10 +170,38 @@ export default function MoreHomeScreen() {
     >
       <ProfileCard />
 
+      {/* ── MI NEGOCIO (solo owner/dev) ── */}
+      {isAdmin && (
+        <>
+          <ThemedText style={[styles.sectionTitle, { color: theme.textSecondary }]}>
+            Mi negocio
+          </ThemedText>
+          <MenuRow
+            icon="image"
+            label="Logo del negocio"
+            onPress={() => navigation.navigate("LogoNegocio")}
+          />
+          <MenuRow
+            icon="clock"
+            label="Horario de trabajo"
+            onPress={() => navigation.navigate("HorariosTrabajo")}
+          />
+          <MenuRow
+            icon="briefcase"
+            label="Datos del negocio"
+            onPress={() => navigation.navigate("Configuracion")}
+          />
+        </>
+      )}
+
+      {/* ── ADMINISTRACIÓN (solo owner/dev) ── */}
       {isAdmin && (
         <>
           <ThemedText
-            style={[styles.sectionTitle, { color: theme.textSecondary }]}
+            style={[
+              styles.sectionTitle,
+              { color: theme.textSecondary, marginTop: Spacing["2xl"] },
+            ]}
           >
             Administración
           </ThemedText>
@@ -204,33 +236,58 @@ export default function MoreHomeScreen() {
             <MenuRow
               icon="send"
               label="Enviar Promo WA"
-              onPress={() => {
+              onPress={() =>
                 Alert.alert(
                   "Próximamente",
                   "El envío masivo de promociones por WhatsApp estará disponible en una próxima versión.",
-                );
-              }}
+                )
+              }
             />
           )}
         </>
       )}
 
+      {/* ── MI TURNO (solo staff) ── */}
+      {!isAdmin && (
+        <>
+          <ThemedText style={[styles.sectionTitle, { color: theme.textSecondary }]}>
+            Mi turno
+          </ThemedText>
+          <MenuRow
+            icon="calendar"
+            label="Ver mi agenda"
+            onPress={() => {
+              navigation.getParent()?.navigate("Agenda");
+            }}
+          />
+        </>
+      )}
+
+      {/* ── CUENTA (todos los roles) ── */}
       <ThemedText
         style={[
           styles.sectionTitle,
-          { marginTop: isAdmin ? Spacing["2xl"] : 0 },
-          { color: theme.textSecondary },
+          { color: theme.textSecondary, marginTop: Spacing["2xl"] },
         ]}
       >
-        Cuenta y Preferencias
+        Cuenta
       </ThemedText>
+
       <MenuRow
-        icon="settings"
-        label="Configuración"
-        onPress={() => navigation.navigate("Configuracion")}
+        icon={isDark ? "moon" : "sun"}
+        label="Apariencia"
+        onPress={() => setPreference(isDark ? "light" : "dark")}
+        rightElement={
+          <Switch
+            value={isDark}
+            onValueChange={(val) => setPreference(val ? "dark" : "light")}
+            trackColor={{ true: theme.primary, false: theme.border }}
+            thumbColor="#FFFFFF"
+          />
+        }
       />
 
-      <View style={{ marginTop: Spacing["2xl"] }}>
+      <View style={{ marginTop: Spacing.md }}>
         <MenuRow
           icon="log-out"
           label="Cerrar sesión"
@@ -243,9 +300,7 @@ export default function MoreHomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: { flex: 1 },
   avatar: {
     width: 50,
     height: 50,
@@ -283,10 +338,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  menuLabel: {
-    fontSize: 16,
-    fontWeight: "500",
-  },
+  menuLabel: { fontSize: 16, fontWeight: "500" },
   badge: {
     minWidth: 20,
     paddingHorizontal: Spacing.xs,
@@ -296,9 +348,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginLeft: Spacing.sm,
   },
-  badgeText: {
-    color: "#FFFFFF",
-    fontSize: 11,
-    fontWeight: "700",
-  },
+  badgeText: { color: "#FFFFFF", fontSize: 11, fontWeight: "700" },
 });
