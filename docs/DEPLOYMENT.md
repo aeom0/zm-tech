@@ -78,6 +78,8 @@ yarn build:preview:android
 ```bash
 cd apps/mobile
 npx eas-cli@latest update --branch production --message "Descripción"
+# canal preview (builds con perfil preview)
+npx eas-cli@latest update --branch preview --message "Descripción"
 ```
 
 ## Seguridad
@@ -95,4 +97,4 @@ npx eas-cli@latest update --branch production --message "Descripción"
 
 ---
 
-**Última actualización**: 2026-03
+**Última actualización**: 2026-03-30

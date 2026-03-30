@@ -11,7 +11,16 @@ import { Feather } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
 import { Spacing } from "@/constants/theme";
 
-import { AGENDA_HOURS, DAYS_ES } from "../constants";
+import type { TenantConfig } from "@salonpro/tenant-config";
+import {
+  diaDelMesEnZona,
+  diaTieneFranjaAgenda,
+  esCeldaAgendaEnHorarioLaboral,
+  indiceDiaSemanaJSEnZona,
+  zonaIANASegura,
+} from "@salonpro/tenant-config";
+
+import { DAYS_ES } from "../constants";
 import type { AgendaAppointment, AgendaService } from "../types";
 import { agendaStyles as styles } from "../agendaStyles";
 
@@ -33,6 +42,9 @@ interface AppointmentDetailModalProps {
   theme: Theme;
   appointment: AgendaAppointment | null;
   services: AgendaService[];
+  agendaHours: number[];
+  businessHours: TenantConfig["businessHours"];
+  timeZone: string;
   weekDays: Date[];
   rescheduleDate: Date | null;
   rescheduleHour: number;
@@ -54,6 +66,9 @@ export function AppointmentDetailModal({
   theme,
   appointment,
   services,
+  agendaHours,
+  businessHours,
+  timeZone,
   weekDays,
   rescheduleDate,
   rescheduleHour,
@@ -67,8 +82,20 @@ export function AppointmentDetailModal({
   busyUntilLabel = null,
   isBusy = false,
 }: AppointmentDetailModalProps) {
+  const enFranjaConfigurada =
+    !!rescheduleDate &&
+    esCeldaAgendaEnHorarioLaboral(
+      rescheduleDate,
+      rescheduleHour,
+      businessHours,
+      timeZone,
+    );
+
   const disableReschedule =
-    updatePending || isBusy || availabilityStatus === "checking";
+    updatePending ||
+    isBusy ||
+    availabilityStatus === "checking" ||
+    !enFranjaConfigurada;
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
@@ -156,6 +183,7 @@ export function AppointmentDetailModal({
                   ]}
                 >
                   {new Date(appointment.date).toLocaleString("es-VE", {
+                    timeZone: zonaIANASegura(timeZone),
                     weekday: "short",
                     day: "numeric",
                     month: "short",
@@ -179,6 +207,12 @@ export function AppointmentDetailModal({
                   {weekDays.map((d) => {
                     const isSelected =
                       rescheduleDate?.toDateString() === d.toDateString();
+                    const diaConFranja = diaTieneFranjaAgenda(
+                      d,
+                      agendaHours,
+                      businessHours,
+                      timeZone,
+                    );
                     return (
                       <Pressable
                         key={d.toISOString()}
@@ -189,8 +223,11 @@ export function AppointmentDetailModal({
                             backgroundColor: theme.primary,
                             borderColor: theme.primary,
                           },
+                          !diaConFranja && { opacity: 0.4 },
                         ]}
-                        onPress={() => onRescheduleDate(d)}
+                        onPress={() => {
+                          if (diaConFranja) onRescheduleDate(d);
+                        }}
                       >
                         <ThemedText
                           style={[
@@ -198,7 +235,8 @@ export function AppointmentDetailModal({
                             isSelected && { color: "#FFFFFF" },
                           ]}
                         >
-                          {DAYS_ES[d.getDay()]} {d.getDate()}
+                          {DAYS_ES[indiceDiaSemanaJSEnZona(d, timeZone)]}{" "}
+                          {diaDelMesEnZona(d, timeZone)}
                         </ThemedText>
                       </Pressable>
                     );
@@ -212,8 +250,16 @@ export function AppointmentDetailModal({
                     { marginTop: Spacing.sm },
                   ]}
                 >
-                  {AGENDA_HOURS.map((h) => {
+                  {agendaHours.map((h) => {
                     const isSelected = rescheduleHour === h;
+                    const horaPermitida =
+                      !!rescheduleDate &&
+                      esCeldaAgendaEnHorarioLaboral(
+                        rescheduleDate,
+                        h,
+                        businessHours,
+                        timeZone,
+                      );
                     return (
                       <Pressable
                         key={h}
@@ -224,8 +270,11 @@ export function AppointmentDetailModal({
                             backgroundColor: theme.primary,
                             borderColor: theme.primary,
                           },
+                          !horaPermitida && { opacity: 0.35 },
                         ]}
-                        onPress={() => onRescheduleHour(h)}
+                        onPress={() => {
+                          if (horaPermitida) onRescheduleHour(h);
+                        }}
                       >
                         <ThemedText
                           style={[
@@ -239,6 +288,16 @@ export function AppointmentDetailModal({
                     );
                   })}
                 </ScrollView>
+                {rescheduleDate && !enFranjaConfigurada ? (
+                  <ThemedText
+                    style={[
+                      styles.summaryLabel,
+                      { color: theme.error, marginTop: Spacing.sm },
+                    ]}
+                  >
+                    Ese día u hora está fuera de la franja configurada del negocio.
+                  </ThemedText>
+                ) : null}
               </View>
 
               {availabilityStatus === "busy" ? (

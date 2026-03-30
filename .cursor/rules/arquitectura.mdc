@@ -16,7 +16,7 @@ alwaysApply: false
 ```
 salonpro/
 ├── apps/
-│   ├── web/              # Landing + /dashboard + /finanzas (Next.js 15 + React 19)
+│   ├── web/              # Landing + /dashboard + /finanzas + /panel (Next.js 15 + React 19)
 │   └── mobile/            # App Expo (React Native) — gestión del salón
 │       ├── App.tsx        # Entry: QueryClient + AuthProvider + TenantProvider + Navigation
 │       ├── contexts/     # AuthContext, TenantContext (sync con tenant_settings)
@@ -27,7 +27,7 @@ salonpro/
 │       └── constants/    # theme.ts
 ├── packages/
 │   ├── shared-schema/    # @salonpro/shared-schema — Drizzle + Zod (tenant_settings, employees, services, etc.)
-│   └── tenant-config/    # @salonpro/tenant-config — presets por tipo de negocio
+│   └── tenant-config/    # @salonpro/tenant-config — presets, working-schedule, iana-timezone (Luxon)
 ├── scripts/db/           # Seeds SQL (editar templates antes de yarn db:seed)
 └── docs/
 ```
@@ -48,7 +48,7 @@ salonpro/
 ### Web (apps/web)
 - Next.js 15, Tailwind, Supabase Auth
 - Landing pública + `/dashboard` (métricas) + `/finanzas`; login `/finanzas/login`; paneles admin solo owner/dev
-- Panel **`/panel`** (login **`/login`**): catálogo en **`/panel/servicios`** (categorías, servicios, packs, promos; PostgREST + TanStack Query)
+- Panel **`/panel`** (login **`/login`**): **`/panel/servicios`** (categorías, servicios, packs, promos; PostgREST + TanStack Query); **`/panel/horarios`** (`timezone`, `business_hours` en `tenant_settings`)
 
 ### Base de datos (Supabase)
 - **Proyecto**: `xidjomlxpuosupymcsaj`

@@ -2,6 +2,8 @@ import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
@@ -14,6 +16,7 @@ import { ThemeRow } from "./settings/components/ThemeRow";
 import { BuildInfoCard } from "./settings/components/BuildInfoCard";
 import { TokenWarningBanner } from "./settings/components/TokenWarningBanner";
 import { useAppInfo } from "./settings/hooks/useAppInfo";
+import type { MoreStackParamList } from "@/navigation/MoreStackNavigator";
 
 export default function SettingsScreen() {
   const headerHeight = useHeaderHeight();
@@ -22,6 +25,8 @@ export default function SettingsScreen() {
   const { config } = useTenant();
   const { profile, role } = useAuth();
   const appInfo = useAppInfo();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<MoreStackParamList>>();
 
   const isAdmin = role === "dev" || role === "owner";
 
@@ -60,6 +65,12 @@ export default function SettingsScreen() {
             label="Moneda"
             value={config.locale.currency.symbol}
             variant="value"
+          />
+          <SettingsRow
+            label="Horario de trabajo"
+            description="Zona horaria y apertura por día"
+            variant="navigate"
+            onPress={() => navigation.navigate("HorariosTrabajo")}
           />
         </SettingsSection>
       )}

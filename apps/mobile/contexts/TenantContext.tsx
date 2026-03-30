@@ -10,6 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   type TenantConfig,
   defaultTenantConfig,
+  mergeTenantConfig,
 } from "@salonpro/tenant-config";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -25,7 +26,10 @@ const FORCE_FRESH_START = process.env.EXPO_PUBLIC_FORCE_FRESH_START === "true";
 
 interface TenantContextValue {
   config: TenantConfig;
-  updateTenant: (partial: Partial<TenantConfig>) => Promise<void>;
+  updateTenant: (
+    partial: Partial<TenantConfig>,
+    options?: { syncRemote?: boolean },
+  ) => Promise<void>;
   markConfigured: () => Promise<{ ok: boolean; error?: string }>;
   isConfigured: boolean;
   isLoading: boolean;
@@ -40,13 +44,23 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
   const freshStartDoneRef = useRef(false);
 
-  const updateTenant = useCallback(async (partial: Partial<TenantConfig>) => {
-    setConfig((prev) => {
-      const next = { ...prev, ...partial };
-      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      return next;
-    });
-  }, []);
+  const updateTenant = useCallback(
+    async (
+      partial: Partial<TenantConfig>,
+      options?: { syncRemote?: boolean },
+    ) => {
+      let next: TenantConfig | null = null;
+      setConfig((prev) => {
+        next = mergeTenantConfig(prev, partial);
+        void AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+        return next;
+      });
+      if (options?.syncRemote && userId && next) {
+        await upsertTenantSettings(next, userId);
+      }
+    },
+    [userId],
+  );
 
   useEffect(() => {
     let isMounted = true;

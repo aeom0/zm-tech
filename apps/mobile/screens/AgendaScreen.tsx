@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { View, Alert } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
@@ -10,6 +10,20 @@ import { useTheme } from "@/hooks/useTheme";
 import { useResponsive } from "@/hooks/useResponsive";
 import { useTenant } from "@/contexts/TenantContext";
 import { Spacing } from "@/constants/theme";
+import {
+  defaultTenantConfig,
+  esCeldaAgendaEnHorarioLaboral,
+  formatoFechaLargaEnZona,
+  horaCalendarioEnZona,
+  horasVisiblesParaAgenda,
+  inicioDiaDelInstanteEnZona,
+  inicioDiaHoyEnZonaIANA,
+  instanteCitaEnZona,
+  normalizarHorarioSemanal,
+  sumarDiasEnZonaIANA,
+  sumarSemanasEnZonaIANA,
+  zonaIANASegura,
+} from "@salonpro/tenant-config";
 import type { MainTabParamList } from "@/navigation/MainTabNavigator";
 
 import { agendaStyles as styles } from "./agenda/agendaStyles";
@@ -44,7 +58,16 @@ export default function AgendaScreen() {
 
   const TIME_COL_W = isTablet ? 64 : 50;
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const tenantTz = useMemo(
+    () => zonaIANASegura(config.locale.timezone),
+    [config.locale.timezone],
+  );
+
+  const [selectedDate, setSelectedDate] = useState<Date>(() =>
+    inicioDiaHoyEnZonaIANA(
+      zonaIANASegura(defaultTenantConfig.locale.timezone),
+    ),
+  );
   const [modalVisible, setModalVisible] = useState(false);
   const [detailModalVisible, setDetailModalVisible] = useState(false);
   const [appointmentDetail, setAppointmentDetail] =
@@ -54,9 +77,27 @@ export default function AgendaScreen() {
   const [selectedHour, setSelectedHour] = useState(9);
   const [statusFilter, setStatusFilter] =
     useState<AgendaStatusFilterType>("all");
-  const [formData, setFormData] = useState<AgendaFormState>(emptyAgendaForm);
+  const [formData, setFormData] = useState<AgendaFormState>(emptyAgendaForm());
 
-  const { weekDays } = useAgendaCalendar(selectedDate);
+  const tzAnteriorRef = useRef(tenantTz);
+  useEffect(() => {
+    if (tzAnteriorRef.current !== tenantTz) {
+      tzAnteriorRef.current = tenantTz;
+      setSelectedDate(inicioDiaHoyEnZonaIANA(tenantTz));
+    }
+  }, [tenantTz]);
+
+  const { weekDays } = useAgendaCalendar(selectedDate, tenantTz);
+
+  const businessHoursNorm = useMemo(
+    () => normalizarHorarioSemanal(config.businessHours),
+    [config.businessHours],
+  );
+
+  const agendaHours = useMemo(
+    () => horasVisiblesParaAgenda(config.businessHours),
+    [config.businessHours],
+  );
 
   const {
     appointments,
@@ -124,9 +165,9 @@ export default function AgendaScreen() {
       const apt = appointments.find((a) => a.id === appointmentIdParam);
       if (apt) {
         setAppointmentDetail(apt);
-        const aptDate = new Date(apt.date);
-        setRescheduleDate(aptDate);
-        setRescheduleHour(aptDate.getHours());
+        const aptInst = new Date(apt.date);
+        setRescheduleDate(inicioDiaDelInstanteEnZona(aptInst, tenantTz));
+        setRescheduleHour(horaCalendarioEnZona(aptInst, tenantTz));
         setDetailModalVisible(true);
       }
       (
@@ -135,24 +176,20 @@ export default function AgendaScreen() {
         }
       ).setParams({ appointmentId: undefined });
     }
-  }, [appointmentIdParam, appointments, navigation]);
+  }, [appointmentIdParam, appointments, navigation, tenantTz]);
 
   const changeWeek = (delta: number) => {
-    const newDate = new Date(selectedDate);
-    newDate.setDate(newDate.getDate() + delta * 7);
-    setSelectedDate(newDate);
+    setSelectedDate((prev) => sumarSemanasEnZonaIANA(prev, delta, tenantTz));
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
   const goToToday = () => {
-    setSelectedDate(new Date());
+    setSelectedDate(inicioDiaHoyEnZonaIANA(tenantTz));
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
   const changeDay = (delta: number) => {
-    const newDate = new Date(selectedDate);
-    newDate.setDate(newDate.getDate() + delta);
-    setSelectedDate(newDate);
+    setSelectedDate((prev) => sumarDiasEnZonaIANA(prev, delta, tenantTz));
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
@@ -177,9 +214,9 @@ export default function AgendaScreen() {
 
   const openAppointmentDetail = (apt: AgendaAppointment) => {
     setAppointmentDetail(apt);
-    const aptDate = new Date(apt.date);
-    setRescheduleDate(aptDate);
-    setRescheduleHour(aptDate.getHours());
+    const aptInst = new Date(apt.date);
+    setRescheduleDate(inicioDiaDelInstanteEnZona(aptInst, tenantTz));
+    setRescheduleHour(horaCalendarioEnZona(aptInst, tenantTz));
     setDetailModalVisible(true);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
@@ -202,8 +239,25 @@ export default function AgendaScreen() {
 
   const handleReschedule = () => {
     if (!appointmentDetail || !rescheduleDate) return;
-    const newDate = new Date(rescheduleDate);
-    newDate.setHours(rescheduleHour, 0, 0, 0);
+    if (
+      !esCeldaAgendaEnHorarioLaboral(
+        rescheduleDate,
+        rescheduleHour,
+        businessHoursNorm,
+        tenantTz,
+      )
+    ) {
+      Alert.alert(
+        "Fuera de horario",
+        "Ese día u hora está fuera de la franja del negocio. Elige otra opción o actualiza el horario en Configuración.",
+      );
+      return;
+    }
+    const newDate = instanteCitaEnZona(
+      rescheduleDate,
+      rescheduleHour,
+      tenantTz,
+    );
     updateAppointmentMutation.mutate({
       id: appointmentDetail.id,
       date: newDate.toISOString(),
@@ -229,8 +283,26 @@ export default function AgendaScreen() {
       return;
     }
 
-    const appointmentDate = new Date(selectedDate);
-    appointmentDate.setHours(selectedHour, 0, 0, 0);
+    if (
+      !esCeldaAgendaEnHorarioLaboral(
+        selectedDate,
+        selectedHour,
+        businessHoursNorm,
+        tenantTz,
+      )
+    ) {
+      Alert.alert(
+        "Fuera de horario",
+        "Esa hora está fuera de la franja configurada. Elige otra celda o ajusta el horario en Configuración.",
+      );
+      return;
+    }
+
+    const appointmentDate = instanteCitaEnZona(
+      selectedDate,
+      selectedHour,
+      tenantTz,
+    );
 
     createMutation.mutate({
       client_name: formData.clientName.trim(),
@@ -247,10 +319,8 @@ export default function AgendaScreen() {
 
   const candidateStartDate = useMemo(() => {
     if (!modalVisible) return null;
-    const d = new Date(selectedDate);
-    d.setHours(selectedHour, 0, 0, 0);
-    return d;
-  }, [modalVisible, selectedDate, selectedHour]);
+    return instanteCitaEnZona(selectedDate, selectedHour, tenantTz);
+  }, [modalVisible, selectedDate, selectedHour, tenantTz]);
 
   const availability = useAvailabilityCheck({
     employeeId: formData.employeeId,
@@ -263,10 +333,14 @@ export default function AgendaScreen() {
   const rescheduleStartDate = useMemo(() => {
     if (!detailModalVisible || !appointmentDetail || !rescheduleDate)
       return null;
-    const d = new Date(rescheduleDate);
-    d.setHours(rescheduleHour, 0, 0, 0);
-    return d;
-  }, [appointmentDetail, detailModalVisible, rescheduleDate, rescheduleHour]);
+    return instanteCitaEnZona(rescheduleDate, rescheduleHour, tenantTz);
+  }, [
+    appointmentDetail,
+    detailModalVisible,
+    rescheduleDate,
+    rescheduleHour,
+    tenantTz,
+  ]);
 
   const rescheduleAvailability = useAvailabilityCheck({
     employeeId: appointmentDetail?.employee_id ?? "",
@@ -277,13 +351,11 @@ export default function AgendaScreen() {
     staleTimeMs: 30_000,
   });
 
-  const formatDateLabel = (date: Date) => {
-    return date.toLocaleDateString(config.locale.language, {
-      weekday: "long",
-      day: "numeric",
-      month: "long",
-    });
-  };
+  const formatDateLabel = useCallback(
+    (date: Date) =>
+      formatoFechaLargaEnZona(date, config.locale.language, tenantTz),
+    [config.locale.language, tenantTz],
+  );
 
   const empColWidth =
     (width - TIME_COL_W - Spacing.sm * 2) / Math.max(employees.length, 1);
@@ -293,12 +365,35 @@ export default function AgendaScreen() {
     setAppointmentDetail(null);
   };
 
+  const handleRescheduleDatePick = useCallback(
+    (d: Date) => {
+      setRescheduleDate(d);
+      if (
+        !esCeldaAgendaEnHorarioLaboral(
+          d,
+          rescheduleHour,
+          businessHoursNorm,
+          tenantTz,
+        )
+      ) {
+        const first = agendaHours.find((h) =>
+          esCeldaAgendaEnHorarioLaboral(d, h, businessHoursNorm, tenantTz),
+        );
+        if (first !== undefined) {
+          setRescheduleHour(first);
+        }
+      }
+    },
+    [agendaHours, businessHoursNorm, rescheduleHour, tenantTz],
+  );
+
   return (
     <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
       <AgendaHeader
         isTablet={isTablet}
         theme={theme}
         language={config.locale.language}
+        timeZone={tenantTz}
         selectedDate={selectedDate}
         weekDays={weekDays}
         paddingTop={headerHeight + Spacing.sm}
@@ -310,6 +405,7 @@ export default function AgendaScreen() {
       {!isTablet && (
         <AgendaWeekDayHeaders
           weekDays={weekDays}
+          timeZone={tenantTz}
           timeColWidth={TIME_COL_W}
           theme={theme}
         />
@@ -337,13 +433,23 @@ export default function AgendaScreen() {
         tabBarHeight={tabBarHeight}
         selectedDate={selectedDate}
         weekDays={weekDays}
+        agendaHours={agendaHours}
+        businessHours={businessHoursNorm}
+        timeZone={tenantTz}
         appointments={appointments}
         employees={employees}
         services={services}
         statusFilter={statusFilter}
         isLoading={isLoading}
         onRefresh={refetch}
-        theme={theme}
+        theme={{
+          primary: theme.primary,
+          text: theme.text,
+          textSecondary: theme.textSecondary,
+          textMuted: theme.textMuted,
+          border: theme.border,
+          backgroundRoot: theme.backgroundRoot,
+        }}
         onOpenNew={openNewAppointment}
         onOpenDetail={openAppointmentDetail}
       />
@@ -387,10 +493,13 @@ export default function AgendaScreen() {
         theme={theme}
         appointment={appointmentDetail}
         services={services}
+        agendaHours={agendaHours}
+        businessHours={businessHoursNorm}
+        timeZone={tenantTz}
         weekDays={weekDays}
         rescheduleDate={rescheduleDate}
         rescheduleHour={rescheduleHour}
-        onRescheduleDate={setRescheduleDate}
+        onRescheduleDate={handleRescheduleDatePick}
         onRescheduleHour={setRescheduleHour}
         onReschedule={handleReschedule}
         onDelete={handleDeleteAppointment}

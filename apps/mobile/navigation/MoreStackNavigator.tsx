@@ -9,6 +9,7 @@ import { useScreenOptions } from "@/hooks/useScreenOptions";
 
 import PersonalScreen from "@/screens/PersonalScreen";
 import SettingsScreen from "@/screens/SettingsScreen";
+import HorariosTrabajoScreen from "@/screens/HorariosTrabajoScreen";
 import ValidacionPagosScreen from "@/screens/ValidacionPagosScreen";
 import AsignarProfesionalesScreen from "@/screens/AsignarProfesionalesScreen";
 
@@ -20,6 +21,7 @@ export type MoreStackParamList = {
   Personal: undefined;
   Inventario: undefined;
   Configuracion: undefined;
+  HorariosTrabajo: undefined;
   Perfil: undefined;
 };
 
@@ -67,6 +69,11 @@ export default function MoreStackNavigator() {
         name="Configuracion"
         component={SettingsScreen}
         options={{ title: "Configuración" }}
+      />
+      <Stack.Screen
+        name="HorariosTrabajo"
+        component={HorariosTrabajoScreen}
+        options={{ title: "Horario de trabajo" }}
       />
       <Stack.Screen
         name="Perfil"

@@ -20,15 +20,15 @@ alwaysApply: true
 ## Stack operativo
 
 - **Mobile (apps/mobile)**: Expo SDK 54, Supabase directo, TanStack Query. Tema en `constants/theme.ts` (onboarding oscuro #111318). **snake_case** en datos de BD.
-- **Auth + Tenant**: AuthProvider fuera de TenantProvider. Al terminar onboarding se hace upsert en `tenant_settings` y guardado en AsyncStorage; al arranque con sesión se carga tenant desde Supabase si no hay config local.
-- **Web (apps/web)**: Next.js 15, Tailwind, Supabase Auth. Landing + `/dashboard` (KPIs, `useDashboardData`, queries PostgREST separadas + join en memoria) + `/finanzas` + **panel** `/panel` (login `/login`, guard SSR). **`/panel/servicios`**: CRUD categorías/servicios (`hooks/`, `components/`), packs/promos (`_hooks/`, `_services/`, `_components/`; PostgREST directo), tab activo vía **`?tab=`**. Auth wrapper compartido (`FinanzasAuthWrapper`) en `/finanzas` y `/dashboard`. Sin sesión → `/finanzas/login`. Staff en `/dashboard` → redirect a `/`. **TODO timezone tenant**: gráfico 7 días usa fecha local del navegador vs `timestamptz` UTC — posible desfase de un día en bordes hasta fase con timezone dinámico.
+- **Auth + Tenant**: AuthProvider fuera de TenantProvider. Al terminar onboarding se hace upsert en `tenant_settings` y guardado en AsyncStorage; al arranque con sesión se carga tenant desde Supabase si no hay config local. **`updateTenant(partial, { syncRemote: true })`** fusiona con `mergeTenantConfig` y opcionalmente hace upsert (p. ej. pantalla **Horario de trabajo**).
+- **Web (apps/web)**: Next.js 15, Tailwind, Supabase Auth. Landing + `/dashboard` (KPIs, `useDashboardData`, queries PostgREST separadas + join en memoria) + `/finanzas` + **panel** `/panel` (login `/login`, guard SSR). **`/panel/servicios`**: CRUD categorías/servicios, packs/promos (PostgREST), tab **`?tab=`**. **`/panel/horarios`**: edita `timezone` + `business_hours` en `tenant_settings`. Auth wrapper compartido (`FinanzasAuthWrapper`) en `/finanzas` y `/dashboard`. Sin sesión → `/finanzas/login`. Staff en `/dashboard` → redirect a `/`. **Pendiente (web dashboard KPIs)**: gráfico 7 días puede seguir usando calendario local del navegador; mobile **Agenda** ya usa `config.locale.timezone` (Luxon en `@salonpro/tenant-config`) para semana, celdas, citas y franja laboral.
 - **Scripts**: `yarn mobile:dev`, `yarn web:dev`, `yarn db:push`, `yarn db:seed`.
 
 ## Pantallas y flujo
 
 - **Auth**: Splash → Login (tema oscuro) → si no hay config tenant: Onboarding 5 pasos (tipo negocio, nombre/colores, primer empleado, categorías, resumen) → Main tabs. Si ya hay config: Main tabs.
 - Tabs: Inicio (Dashboard), Agenda, Servicios, Más, Perfil.
-- Tab **Más**: Finanzas, Personal (empleados), Inventario, Configuración (editar tenant), Cerrar sesión. Finanzas/Personal/Inventario según rol (dev/owner/staff).
+- Tab **Más**: Finanzas, Personal (empleados), Inventario, Configuración (incl. acceso a **Horario de trabajo**: zona IANA + `business_hours`), Cerrar sesión. Finanzas/Personal/Inventario según rol (dev/owner/staff).
 - Mobile: Supabase Auth + PostgREST; tabla `profiles` (rol, employee_id); RLS con `get_my_role()`; `tenant_settings` para configuración del negocio.
 
 ## MCP

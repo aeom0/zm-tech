@@ -4,7 +4,9 @@ import { View, ScrollView, Pressable, RefreshControl } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { Spacing } from "@/constants/theme";
 
-import { AGENDA_HOURS } from "../constants";
+import type { TenantConfig } from "@salonpro/tenant-config";
+import { esCeldaAgendaEnHorarioLaboral } from "@salonpro/tenant-config";
+
 import type {
   AgendaAppointment,
   AgendaEmployee,
@@ -27,6 +29,11 @@ interface AgendaCalendarGridProps {
   tabBarHeight: number;
   selectedDate: Date;
   weekDays: Date[];
+  /** Horas enteras mostradas (derivadas de `horasVisiblesParaAgenda`). */
+  agendaHours: number[];
+  businessHours: TenantConfig["businessHours"];
+  /** IANA del tenant (`config.locale.timezone`). */
+  timeZone: string;
   appointments: AgendaAppointment[];
   employees: AgendaEmployee[];
   services: AgendaService[];
@@ -39,6 +46,7 @@ interface AgendaCalendarGridProps {
     textSecondary: string;
     textMuted: string;
     border: string;
+    backgroundRoot: string;
   };
   onOpenNew: (date: Date, hour: number) => void;
   onOpenDetail: (apt: AgendaAppointment) => void;
@@ -51,6 +59,9 @@ export function AgendaCalendarGrid({
   tabBarHeight,
   selectedDate,
   weekDays,
+  agendaHours,
+  businessHours,
+  timeZone,
   appointments,
   employees,
   services,
@@ -73,11 +84,17 @@ export function AgendaCalendarGrid({
         />
       }
     >
-      {AGENDA_HOURS.map((hour) => {
+      {agendaHours.map((hour) => {
         if (isTablet) {
           const empColWidth =
             (width - timeColWidth - Spacing.sm * 2) /
             Math.max(employees.length, 1);
+          const dentroFila = esCeldaAgendaEnHorarioLaboral(
+            selectedDate,
+            hour,
+            businessHours,
+            timeZone,
+          );
           const maxInRow = Math.max(
             1,
             ...employees.map(
@@ -88,6 +105,7 @@ export function AgendaCalendarGrid({
                   hour,
                   e.id,
                   statusFilter,
+                  timeZone,
                 ).length,
             ),
           );
@@ -114,9 +132,10 @@ export function AgendaCalendarGrid({
                   hour,
                   emp.id,
                   statusFilter,
+                  timeZone,
                 );
                 return (
-                  <Pressable
+                  <View
                     key={emp.id}
                     style={[
                       styles.empSlot,
@@ -124,9 +143,15 @@ export function AgendaCalendarGrid({
                         width: empColWidth,
                         borderColor: theme.border,
                         minHeight: rowMinHeight,
+                        flexDirection: "column",
                       },
+                      !dentroFila
+                        ? {
+                            opacity: 0.5,
+                            backgroundColor: theme.backgroundRoot,
+                          }
+                        : null,
                     ]}
-                    onPress={() => onOpenNew(selectedDate, hour)}
                   >
                     {apts.map((apt) => (
                       <Pressable
@@ -165,7 +190,16 @@ export function AgendaCalendarGrid({
                         ) : null}
                       </Pressable>
                     ))}
-                  </Pressable>
+                    {dentroFila ? (
+                      <Pressable
+                        style={{
+                          flexGrow: 1,
+                          minHeight: apts.length > 0 ? 24 : 48,
+                        }}
+                        onPress={() => onOpenNew(selectedDate, hour)}
+                      />
+                    ) : null}
+                  </View>
                 );
               })}
             </View>
@@ -176,8 +210,13 @@ export function AgendaCalendarGrid({
           1,
           ...weekDays.map(
             (d) =>
-              getAppointmentsForSlot(appointments, d, hour, statusFilter)
-                .length,
+              getAppointmentsForSlot(
+                appointments,
+                d,
+                hour,
+                statusFilter,
+                timeZone,
+              ).length,
           ),
         );
         const rowMinHeight = 56 + maxInSlot * 28;
@@ -192,17 +231,35 @@ export function AgendaCalendarGrid({
               </ThemedText>
             </View>
             {weekDays.map((date, dayIndex) => {
+              const dentro = esCeldaAgendaEnHorarioLaboral(
+                date,
+                hour,
+                businessHours,
+                timeZone,
+              );
               const slotAppointments = getAppointmentsForSlot(
                 appointments,
                 date,
                 hour,
                 statusFilter,
+                timeZone,
               );
               return (
-                <Pressable
+                <View
                   key={dayIndex}
-                  style={[styles.timeSlot, { borderColor: theme.border }]}
-                  onPress={() => onOpenNew(date, hour)}
+                  style={[
+                    styles.timeSlot,
+                    {
+                      borderColor: theme.border,
+                      flexDirection: "column",
+                    },
+                    !dentro
+                      ? {
+                          opacity: 0.52,
+                          backgroundColor: theme.backgroundRoot,
+                        }
+                      : null,
+                  ]}
                 >
                   {slotAppointments.map((apt) => (
                     <Pressable
@@ -249,7 +306,16 @@ export function AgendaCalendarGrid({
                       </ThemedText>
                     </Pressable>
                   ))}
-                </Pressable>
+                  {dentro ? (
+                    <Pressable
+                      style={{
+                        flexGrow: 1,
+                        minHeight: slotAppointments.length > 0 ? 20 : 48,
+                      }}
+                      onPress={() => onOpenNew(date, hour)}
+                    />
+                  ) : null}
+                </View>
               );
             })}
           </View>

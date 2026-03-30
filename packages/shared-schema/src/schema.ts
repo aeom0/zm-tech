@@ -428,6 +428,13 @@ export const tenantSettings = pgTable("tenant_settings", {
   currencySymbol: text("currency_symbol").notNull().default("$"),
   country: text("country").notNull().default(""),
   language: text("language").notNull().default("es"),
+  /** IANA, ej. America/Caracas — migración manual si la columna aún no existe en un proyecto */
+  timezone: text("timezone").notNull().default("America/Caracas"),
+  clientTerminology: text("client_terminology")
+    .notNull()
+    .default("cliente"),
+  tagline: text("tagline").notNull().default(""),
+  featuresWhatsapp: boolean("features_whatsapp").notNull().default(false),
   staffTerminology: text("staff_terminology")
     .notNull()
     .default("especialistas"),

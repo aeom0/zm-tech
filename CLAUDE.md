@@ -116,6 +116,7 @@ Tablas principales en `packages/shared-schema/src/schema.ts`:
 - **appointments** - Citas programadas con verificación de disponibilidad
 - **inventory_items** - Productos y suministros
 - **payments** - Registros financieros
+- **tenant_settings** - Config del negocio: entre otras, `timezone` (IANA), `business_hours` (franja por día), `client_terminology`, `tagline`, `features_whatsapp`; alineado con `TenantConfig` y upserts desde mobile/web panel
 
 RLS en Supabase (mobile ya migrado 100% a estas tablas): profiles (lectura propia; admins ven/editan todos), employees (todos autenticados leen; solo admins escriben), appointments (staff/dev/owner leen y escriben), payments e inventory_items (solo dev/owner), tenant_settings (solo dev/owner).
 
@@ -129,6 +130,10 @@ El paquete `packages/tenant-config` define la interface `TenantConfig` y cuatro 
 | `barbershopPreset` | `barbershop` | #1A237E |
 | `hairSalonPreset` | `hair-salon` | #6A1B9A |
 | `fullAestheticPreset` | `full-aesthetic` | #00695C |
+
+### Paquete (helpers agenda / horario)
+- **`working-schedule.ts`**: `business_hours`, validación HH:MM, `mergeTenantConfig`, `horasVisiblesParaAgenda`, celdas en franja laboral.
+- **`iana-timezone.ts`**: Luxon 3 — semana/día en `locale.timezone`, `instanteCitaEnZona` para persistir citas correctamente.
 
 ### Hooks y contextos clave
 - `useTenant()` — accede a `config`, `updateTenant`, `markConfigured`, `isConfigured`, `isLoading`

@@ -6,7 +6,7 @@ Sistema de gestión integral para salones de belleza, barberías y peluquerías 
 - **Stack**: React Native (Expo SDK 54) + Supabase (PostgREST + Auth) + TypeScript
 - **Estructura**: Monorepo Yarn 4 — `apps/mobile/`, `apps/web/`, `packages/shared-schema/`, `packages/tenant-config/`. Sin servidor Express
 - **Entorno**: WSL (Ubuntu), Node 22 (.nvmrc), Yarn 4
-- **Supabase**: Proyecto `xidjomlxpuosupymcsaj`. Config de tenant en tabla `tenant_settings` y en AsyncStorage tras onboarding (5 pasos)
+- **Supabase**: Proyecto `xidjomlxpuosupymcsaj`. Config de tenant en tabla `tenant_settings` y en AsyncStorage tras onboarding (5 pasos); **horario**: `timezone` + `business_hours` (mobile HorariosTrabajo, web `/panel/horarios`); agenda móvil con Luxon en `@salonpro/tenant-config`
 - **Negocio**: Multi-tipo (spa-nails, barbershop, hair-salon, full-aesthetic); textos y jerga en español (venezolana cuando encaje)
 
 ## Directrices de Documentación

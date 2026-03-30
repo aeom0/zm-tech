@@ -66,9 +66,9 @@ docs/
 ### Frontend
 - **Mobile**: `apps/mobile/` — components, screens, navigation, contexts, hooks, constants
 - **Pantallas modulares (mobile)**: varias rutas bajo `apps/mobile/screens/<feature>/` agrupan `types`, `hooks`, `components` y estilos; el archivo `*Screen.tsx` en `screens/` actúa como orquestador (p. ej. `agenda/`, `dashboard/`, `finances/`, `inventory/`).
-- **Web**: `apps/web/` — Next.js App Router (landing pública + `/dashboard`, `/finanzas` y **`/panel/servicios`**: categorías, servicios, packs y promos con Supabase + TanStack Query; ver `?tab=`)
+- **Web**: `apps/web/` — Next.js App Router (landing pública + `/dashboard`, `/finanzas` y panel **`/panel`**: **`/panel/servicios`** (categorías, servicios, packs, promos; `?tab=`) y **`/panel/horarios`** (zona IANA + `business_hours`))
 - **Tema**: `apps/mobile/constants/theme.ts`; tenant: `TenantContext` + `tenant_settings`
-- **TenantConfig** (`@salonpro/tenant-config`): incluye `features?.whatsapp` (promo WA en Más / ajustes cuando aplique)
+- **TenantConfig** (`@salonpro/tenant-config`): presets, **`working-schedule`** (franja laboral), **`iana-timezone`** (Luxon: agenda y citas en `locale.timezone`); `features?.whatsapp` (promo WA cuando aplique)
 
 ### MCP (Cursor)
 - Dos servidores en `.cursor/mcp.json`: **supabase-salonpro** (este proyecto) y **supabase-zm** (referencia). Para BD de SalonPro usar supabase-salonpro.
@@ -80,4 +80,4 @@ docs/
 ### EAS (build móvil)
 - Configuración única: `apps/mobile/eas.json` (ejecutar `eas build` desde `apps/mobile`)
 
-**Última actualización**: 2026-03-25
+**Última actualización**: 2026-03-30

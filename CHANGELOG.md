@@ -5,6 +5,23 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ---
 
+## [1.4.6] — 2026-03-30
+
+### Añadido
+- **Config horario de trabajo**: zona horaria IANA (`tenant_settings.timezone`, ya mapeada en mobile) + **`business_hours`** por día editables.
+  - **Mobile**: pantalla **`HorariosTrabajo`** (stack Más → Configuración → “Horario de trabajo”); `TenantContext.updateTenant(..., { syncRemote: true })` persiste en Supabase.
+  - **Web (panel)**: **`/panel/horarios`** — mismo modelo (`timezone`, `business_hours`); nav lateral “Horario”; dependencia `@salonpro/tenant-config` en `apps/web`.
+- **`@salonpro/tenant-config`**: módulos **`working-schedule.ts`** (validación HH:MM, `mergeTenantConfig`, `horasVisiblesParaAgenda`, bloqueo por franja) e **`iana-timezone.ts`** (Luxon 3: semana/día en zona del tenant, `instanteCitaEnZona`, `zonaIANASegura`, formateos Intl con `timeZone`).
+- **Agenda (mobile)**: grilla alineada al **calendario y reloj del negocio** (`config.locale.timezone`); celdas fuera de franja atenuadas y sin alta; citas filtradas por día/hora en esa zona; alta/reprogramación con instante correcto para BD.
+- **Drizzle (`tenant_settings`)**: columnas documentadas para alinear con remoto: **`timezone`**, **`client_terminology`**, **`tagline`**, **`features_whatsapp`**.
+
+### Cambiado
+- **`TenantContext`**: fusiones profundas con `mergeTenantConfig`; `updateTenant(partial, { syncRemote?: boolean })`.
+- **Mobile**: eliminado `AGENDA_HOURS` fijo en `agenda/constants.ts`; rango de filas desde `horasVisiblesParaAgenda`.
+- **`apps/web/package.json`**: `yarn.lock` por workspace `tenant-config` + Luxon.
+
+---
+
 ## [1.4.5] — 2026-03-25
 
 ### Añadido

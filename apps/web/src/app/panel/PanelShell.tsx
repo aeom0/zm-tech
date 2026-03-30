@@ -11,6 +11,7 @@ import {
   Wrench,
   Sparkles,
   LayoutGrid,
+  Clock,
 } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
@@ -36,6 +37,11 @@ export function PanelShell({
 
   const navItems = useMemo<NavItem[]>(
     () => [
+      {
+        label: "Horario",
+        href: "/panel/horarios",
+        icon: <Clock className="w-4 h-4" />,
+      },
       {
         label: "Servicios",
         href: "/panel/servicios",
@@ -215,7 +221,9 @@ export function PanelShell({
                 <Menu className="w-5 h-5 text-zinc-200" />
               </button>
               <div className="text-sm font-semibold text-white">
-                Panel · Servicios
+                {pathname?.startsWith("/panel/horarios")
+                  ? "Panel · Horario"
+                  : "Panel · Servicios"}
               </div>
               <div className="w-10" />
             </div>

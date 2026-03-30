@@ -1,20 +1,12 @@
 import { useMemo } from "react";
 
-export function useAgendaCalendar(selectedDate: Date) {
-  const weekStart = useMemo(() => {
-    const date = new Date(selectedDate);
-    const day = date.getDay();
-    date.setDate(date.getDate() - day);
-    return date;
-  }, [selectedDate]);
+import { calcularSemanaAgenda } from "@salonpro/tenant-config";
 
-  const weekDays = useMemo(() => {
-    return Array.from({ length: 7 }, (_, i) => {
-      const date = new Date(weekStart);
-      date.setDate(date.getDate() + i);
-      return date;
-    });
-  }, [weekStart]);
+export function useAgendaCalendar(selectedDate: Date, timeZone: string) {
+  const { weekStart, weekDays } = useMemo(
+    () => calcularSemanaAgenda(selectedDate, timeZone),
+    [selectedDate, timeZone],
+  );
 
   return { weekStart, weekDays };
 }

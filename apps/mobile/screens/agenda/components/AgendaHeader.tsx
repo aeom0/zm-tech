@@ -3,6 +3,11 @@ import { View, Pressable } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
+import {
+  formatoFechaCortaEnZona,
+  formatoFechaLargaEnZona,
+} from "@salonpro/tenant-config";
+
 import { agendaStyles as styles } from "../agendaStyles";
 import { isToday } from "../agendaUtils";
 
@@ -13,6 +18,7 @@ interface AgendaHeaderProps {
     backgroundRoot: string;
   };
   language: string;
+  timeZone: string;
   selectedDate: Date;
   weekDays: Date[];
   paddingTop: number;
@@ -25,6 +31,7 @@ export function AgendaHeader({
   isTablet,
   theme,
   language,
+  timeZone,
   selectedDate,
   weekDays,
   paddingTop,
@@ -49,13 +56,9 @@ export function AgendaHeader({
           </Pressable>
           <Pressable onPress={onGoToToday} style={styles.dayTitleContainer}>
             <ThemedText style={[styles.weekTitle, { fontSize: 18 }]}>
-              {selectedDate.toLocaleDateString(language, {
-                weekday: "long",
-                day: "numeric",
-                month: "long",
-              })}
+              {formatoFechaLargaEnZona(selectedDate, language, timeZone)}
             </ThemedText>
-            {!isToday(selectedDate) && (
+            {!isToday(selectedDate, timeZone) && (
               <ThemedText
                 style={[
                   styles.todayBadge,
@@ -77,15 +80,9 @@ export function AgendaHeader({
           </Pressable>
           <Pressable onPress={onGoToToday}>
             <ThemedText style={styles.weekTitle}>
-              {weekDays[0].toLocaleDateString(language, {
-                month: "short",
-                day: "numeric",
-              })}{" "}
+              {formatoFechaCortaEnZona(weekDays[0], language, timeZone)}{" "}
               -{" "}
-              {weekDays[6].toLocaleDateString(language, {
-                month: "short",
-                day: "numeric",
-              })}
+              {formatoFechaCortaEnZona(weekDays[6], language, timeZone)}
             </ThemedText>
           </Pressable>
           <Pressable onPress={() => onChangeWeek(1)} style={styles.navButton}>
