@@ -2,18 +2,16 @@ import React, { useState } from "react";
 import { View, StyleSheet, Alert } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { Feather } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 
 import { ThemedText } from "@/components/ThemedText";
 import {
   OnboardingLayout,
   OnboardingProgressDots,
   GradientCTAButton,
+  DiamondHero,
 } from "@/screens/onboarding/components";
 import { Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
-
-const GRADIENT_COLORS = ["#E91E8C", "#9C27B0", "#3D3D8F", "#1565C0"] as const;
 
 interface OnboardingCompleteScreenProps {
   onFinish: () => void;
@@ -81,15 +79,16 @@ export default function OnboardingCompleteScreen({
       >
         <OnboardingProgressDots currentStep={6} />
 
-        {/* Círculo gradiente con check */}
-        <LinearGradient
-          colors={[...GRADIENT_COLORS]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.checkCircle}
-        >
-          <Feather name="check" size={36} color="#FFFFFF" />
-        </LinearGradient>
+        {/*
+          DiamondHero en modo sólo-ícono (showText=false).
+          Scale 0.55 para que el diamante quede ~176dp de visual —
+          proporcional y sin ocupar toda la pantalla en la pantalla de cierre.
+        */}
+        <View style={styles.heroWrap}>
+          <View style={styles.heroScale}>
+            <DiamondHero showText={false} />
+          </View>
+        </View>
 
         <View style={styles.textBlock}>
           <ThemedText style={styles.titulo}>¡Todo listo!</ThemedText>
@@ -144,14 +143,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  checkCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    alignItems: "center",
+  heroWrap: {
+    // Contenedor que limita el espacio vertical del DiamondHero escalado
+    height: 180,
     justifyContent: "center",
-    marginTop: Spacing["2xl"],
-    marginBottom: Spacing["2xl"],
+    alignItems: "center",
+    marginTop: Spacing.xl,
+    marginBottom: Spacing.md,
+    overflow: "visible",
+  },
+  heroScale: {
+    // Escala el bloque completo (glow + diamante) al 55% para que encaje
+    // como elemento decorativo sin dominar la pantalla de cierre
+    transform: [{ scale: 0.55 }],
   },
   textBlock: {
     alignItems: "center",

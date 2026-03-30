@@ -34,6 +34,23 @@ interface OnboardingBasicInfoScreenProps {
   onBack: () => void;
 }
 
+function hexToRgba(hex: string, alpha: number): string {
+  const h = hex.replace("#", "");
+  const full =
+    h.length === 3
+      ? h
+          .split("")
+          .map((c) => c + c)
+          .join("")
+      : h;
+  if (full.length !== 6) return `rgba(255,255,255,${alpha})`;
+  const n = parseInt(full, 16);
+  const r = (n >> 16) & 255;
+  const g = (n >> 8) & 255;
+  const b = n & 255;
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
 export default function OnboardingBasicInfoScreen({
   onNext,
   onBack,
@@ -45,6 +62,10 @@ export default function OnboardingBasicInfoScreen({
   const [colorPrimario, setColorPrimario] = useState(config.theme.primaryColor);
   const [colorAcento, setColorAcento] = useState(config.theme.accentColor);
   const [error, setError] = useState<string | null>(null);
+
+  // Encuentra el label del color de acento activo
+  const acentoLabel =
+    COLORES_ACENTO.find((c) => c.valor === colorAcento)?.label ?? "Acento";
 
   const continuar = async () => {
     const nombreFinal = nombre.trim();
@@ -119,25 +140,64 @@ export default function OnboardingBasicInfoScreen({
         </View>
       </Animated.View>
 
-      {/* Preview card glassmorphic */}
+      {/* Preview card — reacciona a colorPrimario Y colorAcento */}
       <Animated.View
         entering={FadeInDown.delay(260).duration(400)}
-        style={[styles.previewCard, { borderColor: colorPrimario + "40" }]}
+        style={[
+          styles.previewCard,
+          { borderColor: hexToRgba(colorPrimario, 0.35) },
+        ]}
       >
+        {/* Fondo tintado con color primario */}
+        <View
+          style={[
+            StyleSheet.absoluteFill,
+            {
+              backgroundColor: hexToRgba(colorPrimario, 0.08),
+              borderRadius: 16,
+            },
+          ]}
+        />
+
+        {/* Ícono — star, neutro para cualquier tipo de negocio */}
         <View
           style={[
             styles.previewIconBg,
-            { backgroundColor: colorPrimario + "33" },
+            { backgroundColor: hexToRgba(colorPrimario, 0.18) },
           ]}
         >
-          <Feather name="scissors" size={28} color={colorPrimario} />
+          <Feather name="star" size={26} color={colorPrimario} />
         </View>
+
         <ThemedText style={styles.previewNombre}>
-          {nombre.trim() || "Mi Salón Hermoso"}
+          {nombre.trim() || "Mi Estudio Profesional"}
         </ThemedText>
+
+        {/* Badge de acento — muestra el color activo */}
+        <View
+          style={[
+            styles.acentoBadge,
+            { backgroundColor: hexToRgba(colorAcento, 0.18) },
+          ]}
+        >
+          <View
+            style={[styles.acentoDot, { backgroundColor: colorAcento }]}
+          />
+          <ThemedText
+            style={[styles.acentoLabel, { color: colorAcento }]}
+          >
+            {acentoLabel}
+          </ThemedText>
+        </View>
+
         <ThemedText style={styles.previewSub}>
           Vista previa de tu marca
         </ThemedText>
+
+        {/* Barra de acento en el borde inferior */}
+        <View
+          style={[styles.accentBar, { backgroundColor: colorAcento }]}
+        />
       </Animated.View>
 
       <Animated.View
@@ -251,13 +311,15 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   previewCard: {
-    backgroundColor: "rgba(255,255,255,0.06)",
     borderRadius: 16,
     borderWidth: 0.5,
     padding: Spacing.lg,
+    paddingBottom: Spacing.lg + 3, // espacio para la accentBar
     marginBottom: Spacing.xl,
     alignItems: "center",
     gap: Spacing.sm,
+    overflow: "hidden",
+    position: "relative",
   },
   previewIconBg: {
     width: 56,
@@ -272,10 +334,35 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     textAlign: "center",
   },
+  acentoBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 20,
+  },
+  acentoDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  acentoLabel: {
+    fontSize: 11,
+    fontWeight: "600",
+    letterSpacing: 0.3,
+  },
   previewSub: {
     fontSize: 12,
     color: "rgba(255,255,255,0.4)",
     textAlign: "center",
+  },
+  accentBar: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 3,
   },
   botones: {
     flexDirection: "row",

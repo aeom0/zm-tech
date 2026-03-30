@@ -143,6 +143,7 @@ export default function OnboardingTeamScreen({
         </View>
       </Animated.View>
 
+      {/* Botón agregar + atrás en la misma fila */}
       <Animated.View
         entering={FadeInDown.delay(340).duration(400)}
         style={styles.botones}
@@ -186,22 +187,25 @@ export default function OnboardingTeamScreen({
         </Animated.View>
       )}
 
-      <Animated.View entering={FadeInDown.delay(90).duration(300)}>
+      {/* Continuar y Omitir en la misma fila al fondo — mismo patrón del onboarding */}
+      <Animated.View
+        entering={FadeInDown.delay(90).duration(300)}
+        style={styles.footer}
+      >
+        <GradientCTAButton
+          variant="outline"
+          label="Omitir"
+          onPress={onNext}
+          style={styles.btnFlex}
+        />
         <GradientCTAButton
           label="Continuar"
           icon="arrow-right"
           onPress={onNext}
           disabled={empleadosAgregados.length === 0}
-          style={styles.continueBtn}
+          style={styles.btnFlexWide}
         />
       </Animated.View>
-
-      <GradientCTAButton
-        variant="outline"
-        label="Omitir"
-        onPress={onNext}
-        style={styles.omitir}
-      />
     </OnboardingLayout>
   );
 }
@@ -276,11 +280,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#FFFFFF",
   },
-  continueBtn: {
-    marginTop: Spacing.md,
-    alignSelf: "center",
-    minWidth: 260,
-  },
   paleta: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -308,15 +307,16 @@ const styles = StyleSheet.create({
     gap: Spacing.md,
     marginBottom: Spacing.md,
   },
+  footer: {
+    flexDirection: "row",
+    gap: Spacing.md,
+    marginTop: Spacing.xl,
+    marginBottom: Spacing["2xl"],
+  },
   btnFlex: {
     flex: 1,
   },
   btnFlexWide: {
     flex: 2,
-  },
-  omitir: {
-    alignSelf: "center",
-    marginBottom: Spacing["2xl"],
-    minWidth: 200,
   },
 });
