@@ -168,8 +168,8 @@ export default function PanelHorariosPage() {
           </div>
           <p className="mt-2 text-sm text-zinc-400 max-w-prose">
             Define la zona horaria del negocio y la franja de apertura por día.
-            Los cambios aplican en el panel y quedan en Supabase para la app móvil
-            cuando sincronice.
+            Los cambios aplican en el panel y quedan en Supabase para la app
+            móvil cuando sincronice.
           </p>
         </div>
         <button
@@ -206,7 +206,9 @@ export default function PanelHorariosPage() {
         <h2 className="text-sm font-semibold text-zinc-200 mb-2">
           Zona horaria
         </h2>
-        <p className="text-xs text-zinc-500 mb-3">Seleccionada: {draftTimezone}</p>
+        <p className="text-xs text-zinc-500 mb-3">
+          Seleccionada: {draftTimezone}
+        </p>
         <div className="rounded-xl border border-white/[0.08] bg-white/[0.02] overflow-hidden divide-y divide-white/[0.06]">
           {zonasVisibles.map((z) => {
             const sel = z.value === draftTimezone;
@@ -269,7 +271,9 @@ export default function PanelHorariosPage() {
                       </span>
                       <input
                         value={slot.open}
-                        onChange={(e) => setHorasDia(dia, "open", e.target.value)}
+                        onChange={(e) =>
+                          setHorasDia(dia, "open", e.target.value)
+                        }
                         placeholder="09:00"
                         className="mt-1 w-full rounded-lg border border-white/[0.1] bg-[#0F0F0F] px-3 py-2 text-sm text-white placeholder:text-zinc-600"
                         maxLength={5}
