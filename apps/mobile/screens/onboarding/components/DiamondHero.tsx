@@ -4,18 +4,10 @@ import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 import { DiamondSparkle } from "./DiamondSparkle";
 import { NebulosaGlow } from "./NebulosaGlow";
-import { Spacing } from "@/constants/theme";
+import { Gradients, Spacing } from "@/constants/theme";
 
 const STACK_SIZE = 320;
 const GLOW_SIZE = 420;
-
-/** Colores del gradiente Lunaris (135°) */
-const LUNARIS: readonly [string, string, string, string] = [
-  "#E91E8C",
-  "#9C27B0",
-  "#3D3D8F",
-  "#1565C0",
-];
 
 interface DiamondHeroProps {
   /** Mostrar wordmark "SalonPro" y tagline debajo del diamante. Default: true */
@@ -30,6 +22,8 @@ interface DiamondHeroProps {
  * MaskedView hereda el tamaño del LinearGradient — si proGradient.height > fontSize
  * el bloque de Pro es más alto que Salon y con flex-end queda más abajo.
  * Solución: lineHeight === fontSize === proGradient.height === WORDMARK_SIZE.
+ *
+ * Gradiente: consume Gradients.onboarding desde theme.ts — fuente de verdad única.
  */
 export function DiamondHero({ showText = true }: DiamondHeroProps) {
   return (
@@ -60,9 +54,10 @@ export function DiamondHero({ showText = true }: DiamondHeroProps) {
               }
             >
               <LinearGradient
-                colors={LUNARIS}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
+                colors={[...Gradients.onboarding.colors]}
+                locations={[...Gradients.onboarding.locations]}
+                start={Gradients.onboarding.linearStart}
+                end={Gradients.onboarding.linearEnd}
                 style={styles.proGradient}
               />
             </MaskedView>
@@ -107,8 +102,6 @@ const styles = StyleSheet.create({
   wordmarkSalon: {
     fontFamily: "Poppins_800ExtraBold",
     fontSize: WORDMARK_SIZE,
-    // lineHeight === fontSize: elimina el padding vertical interno de Text
-    // para que la altura del bloque coincida exactamente con la del MaskedView.
     lineHeight: WORDMARK_SIZE,
     color: "#FFFFFF",
     includeFontPadding: false,
@@ -116,7 +109,6 @@ const styles = StyleSheet.create({
   wordmarkPro: {
     fontFamily: "Poppins_800ExtraBold",
     fontSize: WORDMARK_SIZE,
-    // lineHeight === fontSize: el bloque del mask mide igual que wordmarkSalon.
     lineHeight: WORDMARK_SIZE,
     includeFontPadding: false,
   },
@@ -126,9 +118,6 @@ const styles = StyleSheet.create({
   },
   proGradient: {
     width: 90,
-    // height === WORDMARK_SIZE: MaskedView hereda este tamaño.
-    // Si fuera mayor (ej. +12), el bloque de Pro sería más alto que Salon
-    // y con alignItems:flex-end quedaría visualmente más abajo.
     height: WORDMARK_SIZE,
   },
   tagline: {
