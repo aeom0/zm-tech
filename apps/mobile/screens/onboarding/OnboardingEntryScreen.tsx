@@ -51,6 +51,7 @@ export default function OnboardingEntryScreen({
         >
           <LinearGradient
             colors={[...Gradients.onboarding.colors]}
+            locations={[...Gradients.onboarding.locations]}
             start={Gradients.onboarding.linearStart}
             end={Gradients.onboarding.linearEnd}
             style={styles.gradientFill}

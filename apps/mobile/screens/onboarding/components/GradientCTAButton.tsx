@@ -47,6 +47,7 @@ export function GradientCTAButton({
       >
         <LinearGradient
           colors={[...Gradients.onboarding.colors]}
+          locations={[...Gradients.onboarding.locations]}
           start={Gradients.onboarding.linearStart}
           end={Gradients.onboarding.linearEnd}
           style={styles.outlineGradientBorder}
@@ -71,6 +72,7 @@ export function GradientCTAButton({
     >
       <LinearGradient
         colors={[...Gradients.onboarding.colors]}
+        locations={[...Gradients.onboarding.locations]}
         start={Gradients.onboarding.linearStart}
         end={Gradients.onboarding.linearEnd}
         style={styles.gradient}
