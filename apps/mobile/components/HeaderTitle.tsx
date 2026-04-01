@@ -1,8 +1,10 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import MaskedView from "@react-native-masked-view/masked-view";
 
 import { ThemedText } from "@/components/ThemedText";
-import { Spacing, BorderRadius } from "@/constants/theme";
+import { BorderRadius, Gradients, Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 
 interface HeaderTitleProps {
@@ -11,6 +13,34 @@ interface HeaderTitleProps {
 
 export function HeaderTitle({ title }: HeaderTitleProps) {
   const { config } = useTenant();
+
+  const isBrandTitle = title === "SalonPro";
+
+  if (isBrandTitle) {
+    return (
+      <View style={[styles.container, styles.brandContainer]}>
+        <View style={styles.wordmarkRow}>
+          <Text style={styles.wordmarkSalon}>Salon</Text>
+          <MaskedView
+            style={styles.maskedPro}
+            maskElement={
+              <View style={styles.maskCenter}>
+                <Text style={styles.wordmarkProMask}>Pro</Text>
+              </View>
+            }
+          >
+            <LinearGradient
+              colors={[...Gradients.onboarding.colors]}
+              locations={[...Gradients.onboarding.locations]}
+              start={Gradients.onboarding.linearStart}
+              end={Gradients.onboarding.linearEnd}
+              style={styles.gradientFill}
+            />
+          </MaskedView>
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -37,6 +67,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
   },
+  brandContainer: {
+    justifyContent: "center",
+    flex: 1,
+  },
   iconFallback: {
     width: 28,
     height: 28,
@@ -52,5 +86,35 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 17,
     fontWeight: "600",
+  },
+  wordmarkRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  wordmarkSalon: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#FFFFFF",
+    letterSpacing: -0.3,
+  },
+  maskedPro: {
+    height: 26,
+  },
+  maskCenter: {
+    flex: 1,
+    alignItems: "flex-start",
+    justifyContent: "center",
+    backgroundColor: "transparent",
+  },
+  wordmarkProMask: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "black",
+    letterSpacing: -0.3,
+    lineHeight: 24,
+  },
+  gradientFill: {
+    flex: 1,
+    width: 60,
   },
 });

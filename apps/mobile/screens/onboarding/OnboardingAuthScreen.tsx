@@ -319,7 +319,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   loginLinkHighlight: {
-    color: "#E91E8C",
+    color: "#40E0D0",
     fontWeight: "600",
   },
 });

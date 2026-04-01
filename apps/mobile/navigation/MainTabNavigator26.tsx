@@ -30,7 +30,7 @@ export default function MainTabNavigator26() {
               <Feather
                 name="home"
                 size={22}
-                color={focused ? "#7B2D8E" : "#8A8A8A"}
+                color={focused ? "#0B7B72" : "#8A8A8A"}
               />
             ),
           } as any
@@ -46,7 +46,7 @@ export default function MainTabNavigator26() {
               <Feather
                 name="user"
                 size={22}
-                color={focused ? "#7B2D8E" : "#8A8A8A"}
+                color={focused ? "#0B7B72" : "#8A8A8A"}
               />
             ),
           } as any

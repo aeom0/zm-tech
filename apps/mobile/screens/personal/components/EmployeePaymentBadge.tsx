@@ -11,9 +11,9 @@ const MODE_CONFIG: Record<
   PaymentMode,
   { label: (pct?: number | null) => string; color: string }
 > = {
-  commission: { label: (pct) => `${pct ?? 0}%`, color: "#E91E8C" },
-  salary: { label: () => "Fijo", color: "#1565C0" },
-  mixed: { label: (pct) => `S+${pct ?? 0}%`, color: "#9C27B0" },
+  commission: { label: (pct) => `${pct ?? 0}%`, color: "#40E0D0" },
+  salary: { label: () => "Fijo", color: "#1E88E5" },
+  mixed: { label: (pct) => `S+${pct ?? 0}%`, color: "#00897B" },
 };
 
 export function EmployeePaymentBadge({ mode, percentage }: Props) {

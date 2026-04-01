@@ -113,7 +113,7 @@ export default function OnboardingCompleteScreen({
           {FEATURES.map((f) => (
             <View key={f.text} style={styles.featureRow}>
               <View style={styles.featureIconBg}>
-                <Feather name={f.icon} size={15} color="#E91E8C" />
+                <Feather name={f.icon} size={15} color="#40E0D0" />
               </View>
               <ThemedText style={styles.featureText}>{f.text}</ThemedText>
             </View>
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
   nombre: {
     fontSize: 17,
     fontWeight: "700",
-    color: "#E91E8C",
+    color: "#40E0D0",
     textAlign: "center",
     marginTop: Spacing.xs,
   },
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "rgba(233,30,140,0.12)",
+    backgroundColor: "rgba(64,224,208,0.12)",
     alignItems: "center",
     justifyContent: "center",
   },

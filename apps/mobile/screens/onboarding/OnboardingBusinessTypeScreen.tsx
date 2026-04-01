@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
   badge: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#E91E8C",
+    color: "#40E0D0",
     letterSpacing: 1,
     marginBottom: Spacing.sm,
     textTransform: "uppercase",

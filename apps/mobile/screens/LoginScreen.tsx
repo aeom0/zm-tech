@@ -289,5 +289,5 @@ const styles = StyleSheet.create({
     color: "rgba(255,255,255,0.5)",
     textAlign: "center",
   },
-  createLink: { color: "#E91E8C", fontWeight: "600" },
+  createLink: { color: "#40E0D0", fontWeight: "600" },
 });

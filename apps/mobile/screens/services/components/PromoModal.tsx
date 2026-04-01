@@ -365,7 +365,7 @@ export function PromoModal({
                     borderColor: theme.border,
                   },
                 ]}
-                placeholder="#E91E8C"
+                placeholder="#40E0D0"
                 placeholderTextColor={theme.textMuted}
                 autoCapitalize="none"
                 value={accentColor}

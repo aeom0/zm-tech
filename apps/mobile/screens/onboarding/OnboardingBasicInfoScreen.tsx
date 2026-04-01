@@ -13,8 +13,8 @@ import { Colors, Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 
 const COLORES_PRIMARIOS = [
-  { label: "Violeta", valor: "#7B2D8E" },
-  { label: "Rosa", valor: "#E91E8C" },
+  { label: "Verde azulado", valor: "#0B7B72" },
+  { label: "Turquesa", valor: "#40E0D0" },
   { label: "Azul", valor: "#1A237E" },
   { label: "Verde", valor: "#00695C" },
   { label: "Naranja", valor: "#E65100" },
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
   badge: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#E91E8C",
+    color: "#40E0D0",
     letterSpacing: 1,
     marginBottom: Spacing.sm,
     textTransform: "uppercase",

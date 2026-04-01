@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
-const GRADIENT_COLORS = ["#E91E8C", "#9C27B0", "#3D3D8F", "#1565C0"] as const;
+import { Gradients } from "@/constants/theme";
 
 const TOTAL_STEPS = 7;
 
@@ -24,9 +24,10 @@ export function OnboardingProgressDots({
           return (
             <LinearGradient
               key={index}
-              colors={[...GRADIENT_COLORS]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
+              colors={[...Gradients.onboarding.colors]}
+              locations={[...Gradients.onboarding.locations]}
+              start={Gradients.onboarding.linearStart}
+              end={Gradients.onboarding.linearEnd}
               style={styles.dotActive}
             />
           );

@@ -21,8 +21,8 @@ import { useTheme } from "@/hooks/useTheme";
 import { supabase } from "@/lib/supabase";
 
 const COLORES_EMPLEADO = [
-  "#7B2D8E",
-  "#E91E8C",
+  "#0B7B72",
+  "#40E0D0",
   "#1A237E",
   "#00695C",
   "#E65100",
@@ -217,7 +217,7 @@ const styles = StyleSheet.create({
   badge: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#E91E8C",
+    color: "#40E0D0",
     letterSpacing: 1,
     marginBottom: Spacing.sm,
     textTransform: "uppercase",

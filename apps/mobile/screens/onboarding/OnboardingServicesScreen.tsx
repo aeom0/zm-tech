@@ -157,7 +157,7 @@ export default function OnboardingServicesScreen({
             entering={FadeInDown.duration(300)}
             style={styles.contadorWrap}
           >
-            <Feather name="heart" size={13} color="#E91E8C" />
+            <Feather name="heart" size={13} color="#40E0D0" />
             <ThemedText style={styles.contador}>
               {seleccionadasCount}{" "}
               {seleccionadasCount === 1
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   badge: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#E91E8C",
+    color: "#40E0D0",
     letterSpacing: 1,
     marginBottom: Spacing.sm,
     textTransform: "uppercase",
@@ -233,8 +233,8 @@ const styles = StyleSheet.create({
     gap: Spacing.md,
   },
   itemSeleccionado: {
-    borderColor: "#E91E8C",
-    backgroundColor: "rgba(233,30,140,0.07)",
+    borderColor: "#40E0D0",
+    backgroundColor: "rgba(64,224,208,0.07)",
   },
   itemPressed: { opacity: 0.8 },
   checkbox: {
@@ -247,8 +247,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   checkboxSelected: {
-    backgroundColor: "#E91E8C",
-    borderColor: "#E91E8C",
+    backgroundColor: "#40E0D0",
+    borderColor: "#40E0D0",
   },
   itemNombre: {
     flex: 1,
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
   },
   contador: {
     fontSize: 13,
-    color: "#E91E8C",
+    color: "#40E0D0",
     fontWeight: "500",
   },
   botones: {

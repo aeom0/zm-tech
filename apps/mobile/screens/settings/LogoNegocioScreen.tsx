@@ -133,10 +133,17 @@ export default function LogoNegocioScreen() {
           <View
             style={[
               styles.logoPlaceholder,
-              { backgroundColor: "rgba(233,30,140,0.15)" },
+              {
+                backgroundColor: `${theme.primary}26`,
+                borderColor: `${theme.primary}4D`,
+              },
             ]}
           >
-            <ThemedText style={styles.logoInitials}>{initials}</ThemedText>
+            <ThemedText
+              style={[styles.logoInitials, { color: theme.primary }]}
+            >
+              {initials}
+            </ThemedText>
           </View>
         )}
         {uploading && (
@@ -157,13 +164,15 @@ export default function LogoNegocioScreen() {
         style={({ pressed }) => [
           styles.pickButton,
           {
-            borderColor: "rgba(233,30,140,0.6)",
+            borderColor: `${theme.primary}99`,
             opacity: pressed || uploading ? 0.7 : 1,
           },
         ]}
       >
-        <Feather name="upload" size={18} color="#E91E8C" />
-        <ThemedText style={[styles.pickButtonLabel, { color: "#E91E8C" }]}>
+        <Feather name="upload" size={18} color={theme.primary} />
+        <ThemedText
+          style={[styles.pickButtonLabel, { color: theme.primary }]}
+        >
           {currentLogo ? "Cambiar logo" : "Subir logo"}
         </ThemedText>
       </Pressable>
@@ -224,9 +233,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: "rgba(233,30,140,0.3)",
+    borderColor: "rgba(255,255,255,0.12)",
   },
-  logoInitials: { fontSize: 38, fontWeight: "700", color: "#E91E8C" },
+  logoInitials: { fontSize: 38, fontWeight: "700" },
   uploadOverlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0,0,0,0.5)",

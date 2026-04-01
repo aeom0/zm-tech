@@ -9,7 +9,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 
 import { ThemedText } from "@/components/ThemedText";
-import { Spacing, BorderRadius } from "@/constants/theme";
+import { BorderRadius, Gradients, Spacing } from "@/constants/theme";
 import {
   esCeldaAgendaEnHorarioLaboral,
   esHoyEnZonaIANA,
@@ -33,9 +33,10 @@ import { agendaStyles as sharedStyles } from "../agendaStyles";
 
 const HOUR_ROW_HEIGHT = 64;
 
-const GRADIENT_PAIRS: ReadonlyArray<readonly [string, string]> = [
-  ["#40E0D0", "#007AFF"],
-  ["#E91E8C", "#6A1B9A"],
+/** Tintes de cabecera de columna (primer stop Lunaris y teal medio). */
+const COLUMN_TOP_TINTS = [
+  Gradients.onboarding.start,
+  Gradients.onboarding.mid2,
 ] as const;
 
 interface OwnerDayGridProps {
@@ -185,8 +186,9 @@ export function OwnerDayGrid({
               const empApts = dayAppointments.filter(
                 (a) => a.employee_id === emp.id,
               );
-              const [g0] =
-                GRADIENT_PAIRS[empIndex % GRADIENT_PAIRS.length] ?? GRADIENT_PAIRS[0];
+              const g0 =
+                COLUMN_TOP_TINTS[empIndex % COLUMN_TOP_TINTS.length] ??
+                COLUMN_TOP_TINTS[0];
 
               return (
                 <View
