@@ -10,10 +10,10 @@ export const Colors = {
     textMuted: "#8A8A8A",
     buttonText: "#FFFFFF",
     tabIconDefault: "#8A8A8A",
-    tabIconSelected: "#7B2D8E",
-    link: "#7B2D8E",
-    primary: "#7B2D8E",
-    primaryLight: "#E8D4ED",
+    tabIconSelected: "#0B7B72",
+    link: "#0B7B72",
+    primary: "#0B7B72",
+    primaryLight: "#D0F5F2",
     accent: "#D4AF37",
     accentLight: "#F5E6D3",
     backgroundRoot: "#FFFFFF",
@@ -24,14 +24,14 @@ export const Colors = {
     success: "#4CAF50",
     warning: "#D4AF37",
     error: "#D32F2F",
-    info: "#7B2D8E",
+    info: "#0B7B72",
     white: "#FFFFFF",
     black: "#1A1A1A",
     gold: "#D4AF37",
-    violet: "#7B2D8E",
-    violetDark: "#5A1F6A",
-    violetLight: "#9B4DB0",
-    cardShadow: "rgba(123,45,142,0.08)",
+    violet: "#0B7B72",
+    violetDark: "#076B62",
+    violetLight: "#26C6DA",
+    cardShadow: "rgba(64,224,208,0.08)",
   },
   dark: {
     text: "#F5F5F5",
@@ -41,10 +41,10 @@ export const Colors = {
     textMuted: "#707070",
     buttonText: "#FFFFFF",
     tabIconDefault: "#707070",
-    tabIconSelected: "#AD7FBC",
-    link: "#AD7FBC",
-    primary: "#AD7FBC",
-    primaryLight: "#382F40",
+    tabIconSelected: "#4DD9CA",
+    link: "#4DD9CA",
+    primary: "#4DD9CA",
+    primaryLight: "#0D3B38",
     accent: "#C7A84D",
     accentLight: "#3A3324",
     backgroundRoot: "#121212",
@@ -55,13 +55,13 @@ export const Colors = {
     success: "#66BB6A",
     warning: "#C7A84D",
     error: "#EF5350",
-    info: "#AD7FBC",
+    info: "#4DD9CA",
     white: "#FFFFFF",
     black: "#121212",
     gold: "#C7A84D",
-    violet: "#AD7FBC",
-    violetDark: "#7B2D8E",
-    violetLight: "#D4A0E0",
+    violet: "#4DD9CA",
+    violetDark: "#00897B",
+    violetLight: "#80DEEA",
     cardShadow: "rgba(0,0,0,0.4)",
   },
 };
@@ -158,21 +158,21 @@ export const Fonts = Platform.select({
 
 export const Shadows = {
   sm: {
-    shadowColor: "#7B2D8E",
+    shadowColor: "#40E0D0",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 1,
   },
   md: {
-    shadowColor: "#7B2D8E",
+    shadowColor: "#40E0D0",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 2,
   },
   lg: {
-    shadowColor: "#7B2D8E",
+    shadowColor: "#40E0D0",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.12,
     shadowRadius: 8,
@@ -212,21 +212,17 @@ export const Gradients = {
   onboarding: {
     // Dirección: 135° (esquina sup-izq → inf-der)
     // Aplicar en: botones CTA, progress dots activos, checkboxes, bordes activos
-    start: "#E91E8C", // Magenta
-    mid2: "#9C27B0", // Púrpura (posición ~35%)
-    mid: "#3D3D8F", // Índigo (posición ~65%)
-    end: "#1565C0", // Azul profundo
+    start: "#40E0D0",
+    mid2: "#00897B",
+    mid: "#1E88E5",
+    end: "#3949AB",
 
-    // Array listo para LinearGradient de expo-linear-gradient
-    colors: ["#E91E8C", "#9C27B0", "#3D3D8F", "#1565C0"] as const,
+    colors: ["#40E0D0", "#00897B", "#1E88E5", "#3949AB"] as const,
 
-    // Posiciones normalizadas
     locations: [0, 0.35, 0.65, 1] as const,
 
-    // Para sombra del botón CTA
-    shadow: "#E91E8C44",
+    shadow: "#40E0D044",
 
-    // Coordenadas para LinearGradient (135°)
     linearStart: { x: 0, y: 0 },
     linearEnd: { x: 1, y: 1 },
   },

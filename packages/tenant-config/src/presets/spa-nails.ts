@@ -6,7 +6,7 @@ export const spaNavilsPreset: TenantConfig = {
   tagline: "Uñas y pestañas con estilo",
 
   theme: {
-    primaryColor: "#E91E8C",
+    primaryColor: "#40E0D0",
     accentColor: "#D4AF37",
     darkMode: false,
   },

@@ -10,18 +10,12 @@ import {
   GradientCTAButton,
   DiamondHero,
 } from "@/screens/onboarding/components";
-import { Spacing } from "@/constants/theme";
+import { Gradients, Spacing } from "@/constants/theme";
 
 interface OnboardingEntryScreenProps {
   onCreateNew: () => void;
   onLoginExisting: () => void;
 }
-
-const GRADIENT_COLORS: [string, string, string] = [
-  "#E91E8C",
-  "#9C27B0",
-  "#1565C0",
-];
 
 export default function OnboardingEntryScreen({
   onCreateNew,
@@ -56,9 +50,9 @@ export default function OnboardingEntryScreen({
           }
         >
           <LinearGradient
-            colors={GRADIENT_COLORS}
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 1, y: 0.5 }}
+            colors={[...Gradients.onboarding.colors]}
+            start={Gradients.onboarding.linearStart}
+            end={Gradients.onboarding.linearEnd}
             style={styles.gradientFill}
           />
         </MaskedView>

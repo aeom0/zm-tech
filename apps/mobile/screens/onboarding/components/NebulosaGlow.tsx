@@ -20,8 +20,8 @@ interface NebulosaGlowProps {
  *
  * Dos círculos perfectos (rx=ry) con 50px de separación total entre centros,
  * simétricos respecto al centro del SVG:
- *   - Magenta (#E91E8C) cx = centro - 25
- *   - Azul Lunaris (#1565C0) cx = centro + 25
+ *   - Turquesa (#40E0D0) cx = centro - 25
+ *   - Índigo Lunaris (#3949AB) cx = centro + 25
  * Muy solapados → se perciben como un solo círculo con transición de color.
  */
 export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
@@ -47,29 +47,29 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
     >
       <Defs>
         <RadialGradient
-          id="glowMagenta"
+          id="glowTurquoise"
           cx={mCx}
           cy={cy}
           rx={gScale}
           ry={gScale}
           gradientUnits="userSpaceOnUse"
         >
-          <Stop offset="0" stopColor="#E91E8C" stopOpacity={0.6} />
-          <Stop offset="0.5" stopColor="#E91E8C" stopOpacity={0.25} />
-          <Stop offset="1" stopColor="#E91E8C" stopOpacity={0} />
+          <Stop offset="0" stopColor="#40E0D0" stopOpacity={0.6} />
+          <Stop offset="0.5" stopColor="#40E0D0" stopOpacity={0.25} />
+          <Stop offset="1" stopColor="#40E0D0" stopOpacity={0} />
         </RadialGradient>
 
         <RadialGradient
-          id="glowBlue"
+          id="glowIndigo"
           cx={bCx}
           cy={cy}
           rx={gScale}
           ry={gScale}
           gradientUnits="userSpaceOnUse"
         >
-          <Stop offset="0" stopColor="#1565C0" stopOpacity={0.6} />
-          <Stop offset="0.5" stopColor="#1565C0" stopOpacity={0.25} />
-          <Stop offset="1" stopColor="#1565C0" stopOpacity={0} />
+          <Stop offset="0" stopColor="#3949AB" stopOpacity={0.6} />
+          <Stop offset="0.5" stopColor="#3949AB" stopOpacity={0.25} />
+          <Stop offset="1" stopColor="#3949AB" stopOpacity={0} />
         </RadialGradient>
 
         <Filter
@@ -85,8 +85,8 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
       </Defs>
 
       <G filter="url(#nebulaBlur)">
-        <Ellipse cx={mCx} cy={cy} rx={r} ry={r} fill="url(#glowMagenta)" />
-        <Ellipse cx={bCx} cy={cy} rx={r} ry={r} fill="url(#glowBlue)" />
+        <Ellipse cx={mCx} cy={cy} rx={r} ry={r} fill="url(#glowTurquoise)" />
+        <Ellipse cx={bCx} cy={cy} rx={r} ry={r} fill="url(#glowIndigo)" />
       </G>
     </Svg>
   );

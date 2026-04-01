@@ -6,7 +6,7 @@ export const fullAestheticPreset: TenantConfig = {
   tagline: "Bienestar y belleza en un solo lugar",
 
   theme: {
-    primaryColor: "#00695C",
+    primaryColor: "#00897B",
     accentColor: "#FFD700",
     darkMode: false,
   },

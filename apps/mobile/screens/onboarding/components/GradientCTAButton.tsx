@@ -10,9 +10,7 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import { Feather } from "@expo/vector-icons";
 
-import { BorderRadius, Spacing } from "@/constants/theme";
-
-const GRADIENT_COLORS = ["#E91E8C", "#9C27B0", "#3D3D8F", "#1565C0"] as const;
+import { BorderRadius, Gradients, Spacing } from "@/constants/theme";
 
 type FeatherName = React.ComponentProps<typeof Feather>["name"];
 
@@ -48,9 +46,9 @@ export function GradientCTAButton({
         ]}
       >
         <LinearGradient
-          colors={[...GRADIENT_COLORS]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
+          colors={[...Gradients.onboarding.colors]}
+          start={Gradients.onboarding.linearStart}
+          end={Gradients.onboarding.linearEnd}
           style={styles.outlineGradientBorder}
         >
           <View style={styles.outlineInner}>
@@ -72,9 +70,9 @@ export function GradientCTAButton({
       ]}
     >
       <LinearGradient
-        colors={[...GRADIENT_COLORS]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
+        colors={[...Gradients.onboarding.colors]}
+        start={Gradients.onboarding.linearStart}
+        end={Gradients.onboarding.linearEnd}
         style={styles.gradient}
       >
         {loading ? (
