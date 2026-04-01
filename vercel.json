@@ -3,5 +3,5 @@
   "installCommand": "corepack enable && yarn install",
   "buildCommand": "yarn web:build",
   "framework": "nextjs",
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- apps/web/ packages/shared-schema/"
+  "ignoreCommand": "bash -c 'if [ -z \"$VERCEL_GIT_PREVIOUS_SHA\" ]; then exit 1; fi; git diff --quiet \"$VERCEL_GIT_PREVIOUS_SHA\" \"$VERCEL_GIT_COMMIT_SHA\" -- apps/web/ packages/shared-schema/ packages/tenant-config/ vercel.json'"
 }
