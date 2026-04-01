@@ -6,6 +6,7 @@ import MaskedView from "@react-native-masked-view/masked-view";
 import { ThemedText } from "@/components/ThemedText";
 import { BorderRadius, Gradients, Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
+import { useTheme } from "@/hooks/useTheme";
 
 interface HeaderTitleProps {
   title: string;
@@ -13,6 +14,7 @@ interface HeaderTitleProps {
 
 export function HeaderTitle({ title }: HeaderTitleProps) {
   const { config } = useTenant();
+  const { theme } = useTheme();
 
   const isBrandTitle = title === "SalonPro";
 
@@ -20,7 +22,7 @@ export function HeaderTitle({ title }: HeaderTitleProps) {
     return (
       <View style={[styles.container, styles.brandContainer]}>
         <View style={styles.wordmarkRow}>
-          <Text style={styles.wordmarkSalon}>Salon</Text>
+          <Text style={[styles.wordmarkSalon, { color: theme.text }]}>Salon</Text>
           <MaskedView
             style={styles.maskedPro}
             maskElement={
@@ -94,8 +96,9 @@ const styles = StyleSheet.create({
   wordmarkSalon: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#FFFFFF",
     letterSpacing: -0.3,
+    // color se pasa como prop inline desde { color: theme.text }
+    // para respetar light/dark mode sin romper MaskedView
   },
   maskedPro: {
     height: 26,
