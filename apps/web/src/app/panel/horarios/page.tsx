@@ -13,6 +13,8 @@ import {
   validarHorarioCompleto,
 } from "@salonpro/tenant-config";
 
+import { LUNARIS } from "@/lib/theme";
+
 export default function PanelHorariosPage() {
   const [cargando, setCargando] = useState(true);
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
@@ -140,7 +142,10 @@ export default function PanelHorariosPage() {
   if (cargando) {
     return (
       <div className="flex items-center gap-3 text-zinc-300">
-        <Loader2 className="w-5 h-5 animate-spin text-[#E91E8C]" />
+        <Loader2
+          className="w-5 h-5 animate-spin"
+          style={{ color: LUNARIS.primary }}
+        />
         Cargando horario…
       </div>
     );
@@ -163,7 +168,7 @@ export default function PanelHorariosPage() {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-white font-semibold text-lg">
-            <Clock className="w-5 h-5 text-[#E91E8C]" />
+            <Clock className="w-5 h-5" style={{ color: LUNARIS.primary }} />
             Horario de trabajo
           </div>
           <p className="mt-2 text-sm text-zinc-400 max-w-prose">
@@ -176,7 +181,7 @@ export default function PanelHorariosPage() {
           type="button"
           onClick={() => void guardar()}
           disabled={guardando}
-          className="shrink-0 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#E91E8C] hover:bg-[#d41e7a] disabled:opacity-60 text-white text-sm font-semibold transition-colors"
+          className="shrink-0 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#40E0D0] hover:bg-[#00897B] disabled:opacity-60 text-white text-sm font-semibold transition-colors"
         >
           {guardando ? (
             <>
@@ -220,7 +225,7 @@ export default function PanelHorariosPage() {
                 className={[
                   "w-full text-left px-4 py-3 text-sm transition-colors",
                   sel
-                    ? "bg-[#E91E8C]/15 text-[#E91E8C] font-medium"
+                    ? "bg-[#40E0D0]/15 text-[#40E0D0] font-medium"
                     : "text-zinc-300 hover:bg-white/[0.04]",
                 ].join(" ")}
               >
@@ -232,7 +237,7 @@ export default function PanelHorariosPage() {
         <button
           type="button"
           onClick={() => setZonasExpandidas((v) => !v)}
-          className="mt-2 text-xs text-[#E91E8C] hover:underline"
+          className="mt-2 text-xs text-[#40E0D0] hover:underline"
         >
           {zonasExpandidas ? "Ver menos" : "Ver más zonas"}
         </button>
@@ -259,7 +264,7 @@ export default function PanelHorariosPage() {
                       type="checkbox"
                       checked={abierto}
                       onChange={(e) => setDiaAbierto(dia, e.target.checked)}
-                      className="rounded border-white/20 bg-white/[0.06] accent-[#E91E8C] w-4 h-4"
+                      className="rounded border-white/20 bg-white/[0.06] accent-[#40E0D0] w-4 h-4"
                     />
                   </label>
                 </div>

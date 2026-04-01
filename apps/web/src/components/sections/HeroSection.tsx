@@ -1,6 +1,7 @@
 import { BUSINESS_TYPES } from "@/lib/constants";
 import { AppMockup } from "@/components/ui/AppMockup";
 import { GradientButton } from "@/components/ui/GradientButton";
+import { LUNARIS } from "@/lib/theme";
 
 export function HeroSection() {
   return (
@@ -27,8 +28,7 @@ export function HeroSection() {
               <span
                 className="bg-clip-text text-transparent"
                 style={{
-                  backgroundImage:
-                    "linear-gradient(135deg, #E91E8C 0%, #9C27B0 35%, #3D3D8F 70%, #1565C0 100%)",
+                  backgroundImage: LUNARIS.gradient.css,
                 }}
               >
                 salón merece

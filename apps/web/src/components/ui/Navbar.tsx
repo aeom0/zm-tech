@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { GradientButton } from "@/components/ui/GradientButton";
 import { NavbarDashboardLink } from "@/components/ui/NavbarDashboardLink";
+import { LUNARIS } from "@/lib/theme";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -46,17 +47,33 @@ export function Navbar() {
             className="h-11 w-auto shrink-0"
           />
           <span
-            className="text-[19px] font-bold tracking-tight"
+            className={`font-bold tracking-tight text-[19px] ${
+              scrolled ? "text-zinc-900 dark:text-white" : "text-white"
+            }`}
+          >
+            Salon
+          </span>
+          <span
             style={{
-              background: "linear-gradient(90deg, #E91E8C, #9C27B0, #1565C0)",
+              background: LUNARIS.gradient.css90,
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
+              fontWeight: 700,
+              fontSize: "19px",
+              letterSpacing: "-0.025em",
             }}
           >
-            SalonPro
+            Pro
           </span>
-          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full border border-[#E91E8C]/30 bg-[#E91E8C]/10 text-[#E91E8C] tracking-wide">
+          <span
+            style={{
+              border: `1px solid ${LUNARIS.badge.border}`,
+              background: LUNARIS.badge.bg,
+              color: LUNARIS.badge.text,
+            }}
+            className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full tracking-wide"
+          >
             Beta
           </span>
         </a>

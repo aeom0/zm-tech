@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useFinanzasData } from "@/hooks/finanzas/useFinanzasData";
+import { LUNARIS } from "@/lib/theme";
 
 const METHOD_LABELS: Record<string, string> = {
   cash: "Efectivo",
@@ -423,7 +424,7 @@ export default function FinanzasPage() {
                                   className="w-2 h-2 rounded-full flex-shrink-0"
                                   style={{
                                     backgroundColor:
-                                      p.employee_color ?? "#7B2D8E",
+                                      p.employee_color ?? LUNARIS.primaryDark,
                                   }}
                                 />
                                 {p.employee_name}

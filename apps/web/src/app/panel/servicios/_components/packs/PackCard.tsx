@@ -59,7 +59,7 @@ export function PackCard({ pack, onEdit }: Props) {
               {pack.description}
             </p>
           ) : null}
-          <p className="mt-1 text-sm font-semibold text-[#E91E8C]">
+          <p className="mt-1 text-sm font-semibold text-[#40E0D0]">
             {Number(pack.price).toLocaleString("es-VE", {
               minimumFractionDigits: 2,
             })}
@@ -75,7 +75,7 @@ export function PackCard({ pack, onEdit }: Props) {
           <button
             type="button"
             onClick={() => void handleToggle()}
-            className={`relative h-4 w-8 rounded-full transition-colors ${pack.is_active ? "bg-[#E91E8C]" : "bg-white/20"}`}
+            className={`relative h-4 w-8 rounded-full transition-colors ${pack.is_active ? "bg-[#40E0D0]" : "bg-white/20"}`}
             aria-label={pack.is_active ? "Desactivar pack" : "Activar pack"}
           >
             <span

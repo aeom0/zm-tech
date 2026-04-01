@@ -30,7 +30,7 @@ export function ServicePickerCheckbox({ selectedIds, onChange }: Props) {
             type="checkbox"
             checked={selectedIds.includes(svc.id)}
             onChange={() => toggle(svc.id)}
-            className="accent-[#E91E8C]"
+            className="accent-[#40E0D0]"
           />
           <span className="text-sm text-white/80">{svc.name}</span>
           <span className="ml-auto text-xs text-white/40">

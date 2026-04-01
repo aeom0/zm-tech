@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --primary: #7b2d8e;
+  --primary: #00897b;
   --accent: #d4af37;
   --background: #ffffff;
   --foreground: #1a1a1a;
@@ -38,17 +38,17 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #7b2d8e40;
+  background: #40e0d040;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #7b2d8e80;
+  background: #40e0d080;
 }
 
 /* Selection color */
 ::selection {
-  background-color: #7b2d8e30;
+  background-color: #40e0d030;
   color: #1a1a1a;
 }
 

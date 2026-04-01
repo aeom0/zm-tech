@@ -35,7 +35,7 @@ export function PacksTab() {
             setEditing(null);
             setModalOpen(true);
           }}
-          className="inline-flex items-center gap-2 rounded-lg bg-[#E91E8C] px-3 py-1.5 text-sm text-white transition-colors hover:bg-[#C2185B]"
+          className="inline-flex items-center gap-2 rounded-lg bg-[#40E0D0] px-3 py-1.5 text-sm text-white transition-colors hover:bg-[#00897B]"
         >
           <Plus className="h-4 w-4" />
           Nuevo pack

@@ -1,4 +1,5 @@
 import type { Plan } from "@/lib/constants";
+import { LUNARIS } from "@/lib/theme";
 
 type Props = {
   plan: Plan;
@@ -159,8 +160,7 @@ export function PricingCard({ plan, annual }: Props) {
         style={
           plan.highlighted
             ? {
-                background:
-                  "linear-gradient(135deg, #E91E8C 0%, #9C27B0 35%, #3D3D8F 70%, #1565C0 100%)",
+                background: LUNARIS.gradient.css,
               }
             : {}
         }

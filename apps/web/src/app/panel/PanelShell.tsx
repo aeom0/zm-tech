@@ -107,7 +107,7 @@ export function PanelShell({
                 className={[
                   "w-8 h-8 rounded-xl flex items-center justify-center border",
                   isActive
-                    ? "bg-[#E91E8C]/15 border-[#E91E8C]/30 text-[#E91E8C]"
+                    ? "bg-[#40E0D0]/15 border-[#40E0D0]/30 text-[#40E0D0]"
                     : "bg-white/[0.04] border-white/[0.08] text-zinc-300",
                 ].join(" ")}
               >

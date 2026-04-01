@@ -22,7 +22,7 @@ export function ServiceToggle({
       className={[
         "relative inline-flex h-6 w-11 items-center rounded-full border transition-colors",
         checked
-          ? "bg-[#E91E8C] border-[#E91E8C]/60"
+          ? "bg-[#40E0D0] border-[#40E0D0]/60"
           : "bg-zinc-700 border-white/[0.10]",
         disabled ? "opacity-60 cursor-not-allowed" : "cursor-pointer",
       ].join(" ")}

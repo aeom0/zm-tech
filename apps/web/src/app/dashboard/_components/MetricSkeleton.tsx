@@ -1,5 +1,4 @@
-const LUNARIS_GRADIENT =
-  "linear-gradient(135deg, #E91E8C 0%, #9C27B0 35%, #3D3D8F 70%, #1565C0 100%)";
+import { LUNARIS } from "@/lib/theme";
 
 interface MetricSkeletonProps {
   variant: "card" | "list-item" | "bar";
@@ -42,7 +41,7 @@ export function MetricSkeleton({
     >
       <div
         className="h-full w-1/3 animate-pulse"
-        style={{ background: LUNARIS_GRADIENT, opacity: 0.35 }}
+        style={{ background: LUNARIS.gradient.css, opacity: 0.35 }}
       />
     </div>
   );

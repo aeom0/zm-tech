@@ -6,6 +6,8 @@ import { formatDashboardCurrency } from "@/lib/dashboardCurrency";
 
 import type { TopStaffEntry } from "@/hooks/dashboard/useDashboardTopStaff";
 
+import { LUNARIS } from "@/lib/theme";
+
 import { MetricSkeleton } from "./MetricSkeleton";
 
 interface TopStaffCardProps {
@@ -52,7 +54,7 @@ export function TopStaffCard({
                 ? row.color.startsWith("#")
                   ? row.color
                   : `#${row.color}`
-                : "#9C27B0";
+                : LUNARIS.primaryMid;
             return (
               <li key={row.employeeId} className="flex items-center gap-3">
                 <span

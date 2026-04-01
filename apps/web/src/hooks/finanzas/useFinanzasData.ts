@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { supabase } from "@/lib/supabase";
+import { LUNARIS } from "@/lib/theme";
 
 export interface PaymentRow {
   id: string;
@@ -203,7 +204,7 @@ export function useFinanzasData(): FinanzasData {
         byEmp[apt.employee_id] = {
           id: apt.employee_id,
           name: apt.employee_name ?? apt.employee_id,
-          color: apt.employee_color ?? "#7B2D8E",
+          color: apt.employee_color ?? LUNARIS.primaryDark,
           generado: 0,
           pagado: 0,
           pendiente: 0,

@@ -105,7 +105,7 @@ export default function LoginPage() {
                     autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#40E0D0] focus:border-transparent"
                     placeholder="tu@correo.com"
                     required
                   />
@@ -127,7 +127,7 @@ export default function LoginPage() {
                     autoComplete="current-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#40E0D0] focus:border-transparent"
                     placeholder="••••••••"
                     required
                   />
@@ -137,7 +137,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 rounded-xl bg-[#E91E8C] hover:bg-[#C2185B] text-white font-semibold focus:outline-none focus:ring-2 focus:ring-[#E91E8C] focus:ring-offset-2 focus:ring-offset-[#0F0F0F] disabled:opacity-60 transition-colors"
+                className="w-full py-3 rounded-xl bg-[#40E0D0] hover:bg-[#00897B] text-white font-semibold focus:outline-none focus:ring-2 focus:ring-[#40E0D0] focus:ring-offset-2 focus:ring-offset-[#0F0F0F] disabled:opacity-60 transition-colors"
               >
                 {loading ? "Entrando…" : "Entrar"}
               </button>

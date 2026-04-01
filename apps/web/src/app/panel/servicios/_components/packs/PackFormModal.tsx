@@ -81,7 +81,7 @@ export function PackFormModal({ open, pack, onClose }: Props) {
           <div>
             <label className="mb-1 block text-xs text-white/50">Nombre *</label>
             <input
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#E91E8C] focus:outline-none"
+              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#40E0D0] focus:outline-none"
               value={form.name}
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
               placeholder="Ej: Pack novias"
@@ -93,7 +93,7 @@ export function PackFormModal({ open, pack, onClose }: Props) {
               Descripción
             </label>
             <textarea
-              className="w-full resize-none rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#E91E8C] focus:outline-none"
+              className="w-full resize-none rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#40E0D0] focus:outline-none"
               value={form.description}
               onChange={(e) =>
                 setForm((f) => ({ ...f, description: e.target.value }))
@@ -106,7 +106,7 @@ export function PackFormModal({ open, pack, onClose }: Props) {
           <div>
             <label className="mb-1 block text-xs text-white/50">Precio *</label>
             <input
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#E91E8C] focus:outline-none"
+              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#40E0D0] focus:outline-none"
               value={form.price}
               onChange={(e) =>
                 setForm((f) => ({ ...f, price: e.target.value }))
@@ -135,7 +135,7 @@ export function PackFormModal({ open, pack, onClose }: Props) {
               onChange={(e) =>
                 setForm((f) => ({ ...f, is_active: e.target.checked }))
               }
-              className="accent-[#E91E8C]"
+              className="accent-[#40E0D0]"
             />
             <span className="text-sm text-white/70">Activo</span>
           </label>
@@ -153,7 +153,7 @@ export function PackFormModal({ open, pack, onClose }: Props) {
             type="button"
             onClick={() => void handleSubmit()}
             disabled={isPending}
-            className="rounded-lg bg-[#E91E8C] px-4 py-2 text-sm text-white transition-colors hover:bg-[#C2185B] disabled:opacity-50"
+            className="rounded-lg bg-[#40E0D0] px-4 py-2 text-sm text-white transition-colors hover:bg-[#00897B] disabled:opacity-50"
           >
             {isPending ? "Guardando..." : pack ? "Actualizar" : "Crear pack"}
           </button>

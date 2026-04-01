@@ -4,15 +4,13 @@ import type {
   DateRange,
   PeriodKey,
 } from "@/hooks/dashboard/useDashboardPeriod";
+import { LUNARIS } from "@/lib/theme";
 
 const TABS: { key: PeriodKey; label: string }[] = [
   { key: "week", label: "Semana" },
   { key: "month", label: "Mes" },
   { key: "custom", label: "Personalizado" },
 ];
-
-const LUNARIS_BG =
-  "linear-gradient(135deg, #E91E8C 0%, #9C27B0 35%, #3D3D8F 70%, #1565C0 100%)";
 
 interface PeriodSelectorProps {
   period: PeriodKey;
@@ -47,7 +45,7 @@ export function PeriodSelector({
               style={
                 active
                   ? {
-                      background: LUNARIS_BG,
+                      background: LUNARIS.gradient.css,
                     }
                   : undefined
               }

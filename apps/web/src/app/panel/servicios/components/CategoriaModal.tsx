@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { X } from "lucide-react";
 
 import type { CategoriaRow } from "@/hooks/servicios/useCategorias";
+import { LUNARIS } from "@/lib/theme";
 
 export function CategoriaModal({
   open,
@@ -26,7 +27,7 @@ export function CategoriaModal({
   const title = initial ? "Editar categoría" : "Nueva categoría";
 
   const [name, setName] = useState("");
-  const [color, setColor] = useState("#E91E8C");
+  const [color, setColor] = useState<string>(LUNARIS.primary);
   const [icon, setIcon] = useState("");
 
   const canSubmit = useMemo(
@@ -37,7 +38,7 @@ export function CategoriaModal({
   useEffect(() => {
     if (!open) return;
     setName(initial?.name ?? "");
-    setColor(initial?.color ?? "#E91E8C");
+    setColor(initial?.color ?? LUNARIS.primary);
     setIcon(initial?.icon ?? "");
   }, [open, initial]);
 
@@ -78,7 +79,7 @@ export function CategoriaModal({
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+              className="w-full px-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#40E0D0] focus:border-transparent"
               placeholder="Ej. Uñas"
               autoFocus
             />
@@ -99,8 +100,8 @@ export function CategoriaModal({
                 <input
                   value={color}
                   onChange={(e) => setColor(e.target.value)}
-                  className="flex-1 px-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
-                  placeholder="#E91E8C"
+                  className="flex-1 px-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#40E0D0] focus:border-transparent"
+                  placeholder="#40E0D0"
                 />
               </div>
             </div>
@@ -112,7 +113,7 @@ export function CategoriaModal({
               <input
                 value={icon}
                 onChange={(e) => setIcon(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+                className="w-full px-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#40E0D0] focus:border-transparent"
                 placeholder="Feather: scissors"
               />
             </div>
@@ -138,7 +139,7 @@ export function CategoriaModal({
                 icon: icon.trim() ? icon.trim() : null,
               })
             }
-            className="px-4 py-2 rounded-xl bg-[#E91E8C] hover:bg-[#C2185B] text-white transition-colors text-sm font-semibold disabled:opacity-60"
+            className="px-4 py-2 rounded-xl bg-[#40E0D0] hover:bg-[#00897B] text-white transition-colors text-sm font-semibold disabled:opacity-60"
           >
             {isSaving ? "Guardando…" : "Guardar"}
           </button>

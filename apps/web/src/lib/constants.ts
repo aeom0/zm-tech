@@ -65,7 +65,7 @@ export const TESTIMONIALS = [
     role: "Directora de Spa & Nails",
     country: "Perú 🇵🇪",
     avatar: "VT",
-    color: "#E91E8C",
+    color: "#40E0D0",
     text: "Lo probamos antes del lanzamiento oficial y nos enganchó. Tengo 3 especialistas y antes calculaba las comisiones a mano cada fin de mes. Ahora SalonPro lo hace solo. El equipo está encantado.",
     stars: 5,
   },

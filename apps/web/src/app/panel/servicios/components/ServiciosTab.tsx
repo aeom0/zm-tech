@@ -74,7 +74,7 @@ export function ServiciosTab({
                 : undefined,
             )
           }
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#E91E8C] hover:bg-[#C2185B] text-white text-sm font-semibold transition-colors disabled:opacity-60"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#40E0D0] hover:bg-[#00897B] text-white text-sm font-semibold transition-colors disabled:opacity-60"
           disabled={categorias.length === 0}
           title={
             categorias.length === 0 ? "Crea una categoría primero" : undefined
@@ -161,7 +161,7 @@ export function ServiciosTab({
                   : undefined,
               )
             }
-            className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#E91E8C] hover:bg-[#C2185B] text-white text-sm font-semibold transition-colors"
+            className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#40E0D0] hover:bg-[#00897B] text-white text-sm font-semibold transition-colors"
           >
             <Plus className="w-4 h-4" />
             Nuevo servicio

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { RevealWrapper } from "@/components/ui/RevealWrapper";
+import { LUNARIS } from "@/lib/theme";
 
 const DEMO_TABS = [
   {
@@ -11,7 +12,7 @@ const DEMO_TABS = [
     description:
       "Vista diaria y semanal por profesional. Arrastra para reprogramar, toca para ver detalles. Sin conflictos, sin doble-reservas.",
     mockupBg: "#1A1A2E",
-    accent: "#E91E8C",
+    accent: LUNARIS.primary,
     stats: [
       { value: "−40%", label: "Ausencias con recordatorio push" },
       { value: "3x", label: "Más rápido que un cuaderno" },
@@ -24,7 +25,7 @@ const DEMO_TABS = [
     description:
       "Ingresos por día, semana y mes. Comisiones calculadas automáticamente. Cierra el mes en segundos, sin Excel ni calculadora.",
     mockupBg: "#0A1628",
-    accent: "#3D3D8F",
+    accent: LUNARIS.indigo,
     stats: [
       { value: "100%", label: "Comisiones calculadas solas" },
       { value: "<2 min", label: "Para cerrar el mes" },
@@ -37,7 +38,7 @@ const DEMO_TABS = [
     description:
       "Perfiles por profesional, horarios, servicios asignados y rendimiento. Cada uno ve solo lo que le corresponde desde su celular.",
     mockupBg: "#0F1A10",
-    accent: "#1565C0",
+    accent: LUNARIS.primaryMid,
     stats: [
       { value: "0", label: "Conflictos de agenda entre profesionales" },
       { value: "∞", label: "Profesionales soportados en plan Elite" },
@@ -50,7 +51,7 @@ const DEMO_TABS = [
     description:
       "Alertas automáticas de stock bajo. Registro de uso por servicio. Deja de perder plata por falta de control de materiales.",
     mockupBg: "#1A0F0A",
-    accent: "#9C27B0",
+    accent: LUNARIS.primaryDark,
     stats: [
       { value: "−30%", label: "Desperdicio de insumos" },
       { value: "Automático", label: "Alerta cuando el stock baja" },
@@ -142,7 +143,7 @@ function DemoMockup({ tab }: { tab: (typeof DEMO_TABS)[0] }) {
         <div
           className="mt-4 w-full h-12 rounded-2xl flex items-center justify-center"
           style={{
-            background: `linear-gradient(135deg, ${tab.accent} 0%, #1565C0 100%)`,
+            background: `linear-gradient(135deg, ${tab.accent} 0%, ${LUNARIS.indigo} 100%)`,
           }}
         >
           <span className="text-white font-bold text-sm">Ver todo →</span>
@@ -200,8 +201,7 @@ export function DemoSection() {
                 style={
                   activeTab === tab.id
                     ? {
-                        background:
-                          "linear-gradient(135deg, #E91E8C 0%, #9C27B0 35%, #3D3D8F 70%, #1565C0 100%)",
+                        background: LUNARIS.gradient.css,
                       }
                     : {}
                 }

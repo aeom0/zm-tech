@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { useCreatePromo, useUpdatePromo } from "@/hooks/servicios/usePromos";
 import type { PromoItemInput, Promotion } from "../../_services/promosService";
+import { LUNARIS } from "@/lib/theme";
 import { PromoItemRow } from "./PromoItemRow";
 
 interface Props {
@@ -26,7 +27,7 @@ const EMPTY: FormState = {
   title: "",
   description: "",
   badge: "",
-  accent_color: "#E91E8C",
+  accent_color: LUNARIS.primary,
   promo_price: "",
   is_active: true,
   expires_at: "",
@@ -58,7 +59,7 @@ export function PromoFormModal({ open, promo, onClose }: Props) {
       title: promo.title,
       description: promo.description ?? "",
       badge: promo.badge ?? "",
-      accent_color: promo.accent_color ?? "#E91E8C",
+      accent_color: promo.accent_color ?? LUNARIS.primary,
       promo_price: String(promo.promo_price).replace(".", ","),
       is_active: promo.is_active,
       expires_at: promo.expires_at ? promo.expires_at.split("T")[0] : "",
@@ -122,7 +123,7 @@ export function PromoFormModal({ open, promo, onClose }: Props) {
           <div className="col-span-2">
             <label className="mb-1 block text-xs text-white/50">Titulo *</label>
             <input
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#E91E8C] focus:outline-none"
+              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#40E0D0] focus:outline-none"
               value={form.title}
               onChange={(e) =>
                 setForm((f) => ({ ...f, title: e.target.value }))
@@ -134,7 +135,7 @@ export function PromoFormModal({ open, promo, onClose }: Props) {
           <div>
             <label className="mb-1 block text-xs text-white/50">Badge</label>
             <input
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#E91E8C] focus:outline-none"
+              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#40E0D0] focus:outline-none"
               value={form.badge}
               onChange={(e) =>
                 setForm((f) => ({ ...f, badge: e.target.value }))
@@ -165,7 +166,7 @@ export function PromoFormModal({ open, promo, onClose }: Props) {
               Precio total promo *
             </label>
             <input
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#E91E8C] focus:outline-none"
+              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#40E0D0] focus:outline-none"
               value={form.promo_price}
               onChange={(e) =>
                 setForm((f) => ({ ...f, promo_price: e.target.value }))
@@ -179,7 +180,7 @@ export function PromoFormModal({ open, promo, onClose }: Props) {
             <label className="mb-1 block text-xs text-white/50">Expira</label>
             <input
               type="date"
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#E91E8C] focus:outline-none"
+              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#40E0D0] focus:outline-none"
               value={form.expires_at}
               onChange={(e) =>
                 setForm((f) => ({ ...f, expires_at: e.target.value }))
@@ -192,7 +193,7 @@ export function PromoFormModal({ open, promo, onClose }: Props) {
               Descripcion
             </label>
             <textarea
-              className="w-full resize-none rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#E91E8C] focus:outline-none"
+              className="w-full resize-none rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#40E0D0] focus:outline-none"
               value={form.description}
               onChange={(e) =>
                 setForm((f) => ({ ...f, description: e.target.value }))
@@ -209,7 +210,7 @@ export function PromoFormModal({ open, promo, onClose }: Props) {
             <button
               type="button"
               onClick={() => setItems((prev) => [...prev, { ...EMPTY_ITEM }])}
-              className="text-xs text-[#E91E8C] transition-colors hover:text-[#ff4daf]"
+              className="text-xs text-[#40E0D0] transition-colors hover:text-[#5ee8dc]"
             >
               + Agregar item
             </button>
@@ -240,7 +241,7 @@ export function PromoFormModal({ open, promo, onClose }: Props) {
             onChange={(e) =>
               setForm((f) => ({ ...f, is_active: e.target.checked }))
             }
-            className="accent-[#E91E8C]"
+            className="accent-[#40E0D0]"
           />
           <span className="text-sm text-white/70">Activa</span>
         </label>
@@ -257,7 +258,7 @@ export function PromoFormModal({ open, promo, onClose }: Props) {
             type="button"
             onClick={() => void handleSubmit()}
             disabled={isPending}
-            className="px-4 py-2 text-sm rounded-lg bg-[#E91E8C] text-white transition-colors hover:bg-[#C2185B] disabled:opacity-50"
+            className="px-4 py-2 text-sm rounded-lg bg-[#40E0D0] text-white transition-colors hover:bg-[#00897B] disabled:opacity-50"
           >
             {isPending ? "Guardando..." : promo ? "Actualizar" : "Crear promo"}
           </button>

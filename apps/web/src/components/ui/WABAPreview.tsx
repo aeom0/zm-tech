@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { LUNARIS } from "@/lib/theme";
 
 const MESSAGES = [
   { from: "client", text: "Hola, quiero una cita para mañana 💅", delay: 0 },
@@ -42,7 +43,10 @@ export function WABAPreview() {
     <div className="relative bg-[#0B1418] rounded-2xl overflow-hidden border border-white/10 max-w-[280px] mx-auto shadow-2xl">
       {/* Header tipo WA */}
       <div className="flex items-center gap-3 px-4 py-3 bg-[#1F2C34] border-b border-white/5">
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#E91E8C] to-[#1565C0] flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
+        <div
+          className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+          style={{ background: LUNARIS.gradient.css }}
+        >
           SP
         </div>
         <div>

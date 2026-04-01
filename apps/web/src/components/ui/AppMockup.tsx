@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { LUNARIS } from "@/lib/theme";
 
 // Tres pantallas de la app que rotan en loop
 const SCREENS = [
@@ -8,13 +9,13 @@ const SCREENS = [
     id: "agenda",
     label: "Agenda del día",
     subtitle: "Lunes 24 feb · 6 citas",
-    accent: "#E91E8C",
+    accent: LUNARIS.primary,
     items: [
       {
         name: "María G.",
         service: "Extensiones vol. ruso",
         time: "10:00",
-        color: "#E91E8C",
+        color: LUNARIS.primary,
         done: true,
       },
       {
@@ -72,7 +73,7 @@ const SCREENS = [
         name: "Comisiones",
         service: "$ 936",
         time: "↓ 3%",
-        color: "#E91E8C",
+        color: LUNARIS.primary,
         done: false,
       },
     ],
@@ -88,7 +89,7 @@ const SCREENS = [
         name: "Ana",
         service: "3 citas hoy",
         time: "$ 180",
-        color: "#E91E8C",
+        color: LUNARIS.primary,
         done: true,
       },
       {

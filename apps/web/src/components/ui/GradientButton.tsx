@@ -2,6 +2,7 @@
 "use client";
 
 import React from "react";
+import { LUNARIS } from "@/lib/theme";
 
 interface GradientButtonProps {
   href: string;
@@ -39,13 +40,12 @@ export function GradientButton({
     <a
       href={href}
       style={{
-        background:
-          "linear-gradient(135deg, #40E0D0 0%, #00897B 35%, #1E88E5 65%, #3949AB 100%)",
+        background: LUNARIS.gradient.css,
       }}
       className={`inline-flex items-center justify-center gap-2 font-bold rounded-full text-white hover:opacity-90 hover:scale-105 hover:shadow-xl transition-all duration-300 ${sizeClasses[size]} ${className}`}
       onMouseEnter={(e) => {
         (e.currentTarget as HTMLAnchorElement).style.boxShadow =
-          "0 8px 30px rgba(64,224,208,0.30)";
+          `0 8px 30px ${LUNARIS.gradient.glow}`;
       }}
       onMouseLeave={(e) => {
         (e.currentTarget as HTMLAnchorElement).style.boxShadow = "none";

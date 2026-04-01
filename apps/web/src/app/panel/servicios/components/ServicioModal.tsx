@@ -94,7 +94,7 @@ export function ServicioModal({
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+              className="w-full px-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#40E0D0] focus:border-transparent"
               placeholder="Ej. Manicure clásica"
               autoFocus
             />
@@ -108,7 +108,7 @@ export function ServicioModal({
               <select
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+                className="w-full px-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-[#40E0D0] focus:border-transparent"
               >
                 {categorias.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -126,7 +126,7 @@ export function ServicioModal({
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 inputMode="decimal"
-                className="w-full px-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+                className="w-full px-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#40E0D0] focus:border-transparent"
                 placeholder="15,50"
               />
               <div className="text-[11px] text-zinc-500 mt-1">
@@ -149,7 +149,7 @@ export function ServicioModal({
                 onChange={(e) =>
                   setDuration(parseInt(e.target.value || "0", 10))
                 }
-                className="w-full px-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#E91E8C] focus:border-transparent"
+                className="w-full px-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#40E0D0] focus:border-transparent"
               />
             </div>
 
@@ -165,7 +165,7 @@ export function ServicioModal({
                 className={[
                   "w-full px-4 py-2.5 rounded-xl border transition-colors text-sm font-semibold",
                   isActive
-                    ? "bg-[#E91E8C]/15 border-[#E91E8C]/30 text-[#E91E8C]"
+                    ? "bg-[#40E0D0]/15 border-[#40E0D0]/30 text-[#40E0D0]"
                     : "bg-white/[0.03] border-white/[0.10] text-zinc-300",
                 ].join(" ")}
               >
@@ -196,7 +196,7 @@ export function ServicioModal({
                 is_active: isActive,
               })
             }
-            className="px-4 py-2 rounded-xl bg-[#E91E8C] hover:bg-[#C2185B] text-white transition-colors text-sm font-semibold disabled:opacity-60"
+            className="px-4 py-2 rounded-xl bg-[#40E0D0] hover:bg-[#00897B] text-white transition-colors text-sm font-semibold disabled:opacity-60"
           >
             {isSaving ? "Guardando…" : "Guardar"}
           </button>
