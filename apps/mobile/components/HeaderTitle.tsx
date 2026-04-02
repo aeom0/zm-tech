@@ -22,7 +22,9 @@ export function HeaderTitle({ title }: HeaderTitleProps) {
     return (
       <View style={[styles.container, styles.brandContainer]}>
         <View style={styles.wordmarkRow}>
-          <Text style={[styles.wordmarkSalon, { color: theme.text }]}>Salon</Text>
+          <Text style={[styles.wordmarkSalon, { color: theme.text }]}>
+            Salon
+          </Text>
           <MaskedView
             style={styles.maskedPro}
             maskElement={
