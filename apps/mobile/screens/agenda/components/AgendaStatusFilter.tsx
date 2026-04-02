@@ -11,6 +11,7 @@ const OPTIONS: { id: StatusFilter; label: string }[] = [
   { id: "all", label: "Todas" },
   { id: "scheduled", label: "Pendientes" },
   { id: "completed", label: "Completadas" },
+  { id: "cancelled", label: "Canceladas" },
 ];
 
 interface AgendaStatusFilterProps {

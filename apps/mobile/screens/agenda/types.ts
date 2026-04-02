@@ -17,7 +17,6 @@ export interface AgendaEmployee {
   id: string;
   name: string;
   color: string;
-  role: string;
   avatar_url?: string | null;
 }
 
@@ -35,7 +34,16 @@ export interface AgendaServiceCategory {
   order: number;
 }
 
-export type AgendaStatusFilter = "all" | "scheduled" | "completed";
+/**
+ * all       → todas las citas
+ * scheduled → pendientes (status = 'scheduled')
+ * completed → completadas
+ * cancelled → canceladas + no_show
+ */
+export type AgendaStatusFilter = "all" | "scheduled" | "completed" | "cancelled";
+
+/** Vista del owner: día individual o semana completa */
+export type OwnerViewMode = "day" | "week";
 
 export interface AgendaFormState {
   clientName: string;

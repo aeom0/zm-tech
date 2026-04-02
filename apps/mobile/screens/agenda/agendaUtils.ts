@@ -36,8 +36,7 @@ export function getAppointmentsForSlot(
     const aptDate = new Date(apt.date);
     const sameDay = esMismoDiaCalendarioEnZona(aptDate, date, timeZone);
     const sameHour = horaCalendarioEnZona(aptDate, timeZone) === hour;
-    const statusMatches =
-      statusFilter === "all" ? true : apt.status === statusFilter;
+    const statusMatches = matchesStatusFilter(apt.status, statusFilter);
     return sameDay && sameHour && statusMatches;
   });
 }
@@ -54,8 +53,7 @@ export function getAptsForEmpSlot(
     const aptDate = new Date(apt.date);
     const sameDay = esMismoDiaCalendarioEnZona(aptDate, date, timeZone);
     const sameHour = horaCalendarioEnZona(aptDate, timeZone) === hour;
-    const statusMatches =
-      statusFilter === "all" ? true : apt.status === statusFilter;
+    const statusMatches = matchesStatusFilter(apt.status, statusFilter);
     return sameDay && sameHour && statusMatches && apt.employee_id === empId;
   });
 }
@@ -98,7 +96,7 @@ export function filterAppointmentsForOwnerDay(
     if (employeeIds.length > 0 && !employeeIds.includes(apt.employee_id)) {
       return false;
     }
-    if (statusFilter !== "all" && apt.status !== statusFilter) return false;
+    if (!matchesStatusFilter(apt.status, statusFilter)) return false;
     return true;
   });
 }
@@ -111,10 +109,15 @@ export function sortAppointmentsByStart(
   );
 }
 
-/** Abreviatura corta para badge debajo del avatar (ej. rol o inicial). */
-export function abbreviateStaffRole(role: string | undefined | null): string {
-  const r = (role ?? "").trim();
-  if (!r) return "•";
-  const word = r.split(/\s+/)[0] ?? r;
-  return word.slice(0, 1).toUpperCase();
+/**
+ * Centraliza la lógica de filtro por status.
+ * "cancelled" agrupa: cancelled + no_show
+ */
+export function matchesStatusFilter(
+  status: string,
+  filter: AgendaStatusFilter,
+): boolean {
+  if (filter === "all") return true;
+  if (filter === "cancelled") return status === "cancelled" || status === "no_show";
+  return status === filter;
 }

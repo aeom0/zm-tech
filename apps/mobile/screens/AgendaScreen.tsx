@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
-import { View, Alert, ActivityIndicator } from "react-native";
+import { View, Alert, ActivityIndicator, ScrollView } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useRoute, useNavigation } from "@react-navigation/native";
@@ -33,6 +33,7 @@ import {
   type AgendaAppointment,
   type AgendaFormState,
   type AgendaStatusFilter as AgendaStatusFilterType,
+  type OwnerViewMode,
 } from "./agenda/types";
 import { useAgendaCalendar } from "./agenda/hooks/useAgendaCalendar";
 import {
@@ -42,13 +43,13 @@ import {
 import { useAgendaMutations } from "./agenda/hooks/useAgendaMutations";
 import { useAvailabilityCheck } from "./agenda/hooks/useAvailabilityCheck";
 import { AgendaHeader } from "./agenda/components/AgendaHeader";
-import type { OwnerViewMode } from "./agenda/components/AgendaHeader";
 import { AgendaWeekDayHeaders } from "./agenda/components/AgendaWeekDayHeaders";
 import { AgendaEmployeeHeaders } from "./agenda/components/AgendaEmployeeHeaders";
 import { AgendaStatusFilter as AgendaStatusFilterBar } from "./agenda/components/AgendaStatusFilter";
 import { AgendaCalendarGrid } from "./agenda/components/AgendaCalendarGrid";
 import { OwnerDayGrid } from "./agenda/components/OwnerDayGrid";
 import { OwnerWeekGrid } from "./agenda/components/OwnerWeekGrid";
+import { OwnerStaffAvatarStrip } from "./agenda/components/OwnerStaffAvatarStrip";
 import { StaffAgendaTimelineView } from "./agenda/components/StaffAgendaTimelineView";
 import { NewAppointmentModal } from "./agenda/components/NewAppointmentModal";
 import { AppointmentDetailModal } from "./agenda/components/AppointmentDetailModal";
@@ -90,6 +91,12 @@ export default function AgendaScreen() {
   const [statusFilter, setStatusFilter] =
     useState<AgendaStatusFilterType>("all");
   const [formData, setFormData] = useState<AgendaFormState>(emptyAgendaForm());
+
+  // Refs para sincronizar scroll avatar strip ↔ grid de columnas
+  const avatarStripRef = useRef<ScrollView>(null);
+  const gridScrollRef = useRef<ScrollView>(null);
+  const isSyncingFromGrid = useRef(false);
+  const isSyncingFromStrip = useRef(false);
 
   const tzAnteriorRef = useRef(tenantTz);
   useEffect(() => {
@@ -205,21 +212,17 @@ export default function AgendaScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
-  /** Toggle day ↔ week solo para el owner */
   const toggleOwnerViewMode = useCallback(() => {
     setOwnerViewMode((prev) => (prev === "day" ? "week" : "day"));
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   }, []);
 
-  /** Al tocar un día en la vista semanal → volver a vista diaria en ese día */
-  const handleSelectDayFromWeek = useCallback(
-    (date: Date) => {
-      setSelectedDate(date);
-      setOwnerViewMode("day");
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    },
-    [],
-  );
+  /** Al tocar un día en la vista semanal → ir a ese día en vista diaria */
+  const handleWeekDaySelect = useCallback((date: Date) => {
+    setSelectedDate(date);
+    setOwnerViewMode("day");
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+  }, []);
 
   const openNewAppointment = (date: Date, hour: number) => {
     setSelectedDate(date);
@@ -385,14 +388,11 @@ export default function AgendaScreen() {
     [config.locale.language, tenantTz],
   );
 
-  const empColWidth =
-    (width - TIME_COL_W - Spacing.sm * 2) / Math.max(employees.length, 1);
-
-  const ownerColWidth = useMemo(() => {
+  const empColWidth = useMemo(() => {
     const disponible = width - TIME_COL_W - Spacing.md;
     const n = Math.max(employees.length, 1);
     return Math.max(104, Math.min(140, disponible / n));
-  }, [width, employees.length]);
+  }, [width, employees.length, TIME_COL_W]);
 
   const staffNombreMostrado = useMemo(() => {
     const nombre = profile?.full_name?.trim();
@@ -471,17 +471,29 @@ export default function AgendaScreen() {
     [agendaHours, businessHoursNorm, rescheduleHour, tenantTz],
   );
 
+  // Sincronización de scroll entre avatar strip y grid
+  const handleGridScroll = useCallback((x: number) => {
+    if (isSyncingFromStrip.current) return;
+    isSyncingFromGrid.current = true;
+    avatarStripRef.current?.scrollTo({ x, animated: false });
+    requestAnimationFrame(() => { isSyncingFromGrid.current = false; });
+  }, []);
+
+  const handleStripScroll = useCallback((x: number) => {
+    if (isSyncingFromGrid.current) return;
+    isSyncingFromStrip.current = true;
+    gridScrollRef.current?.scrollTo({ x, animated: false });
+    requestAnimationFrame(() => { isSyncingFromStrip.current = false; });
+  }, []);
+
   return (
     <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
       <AgendaHeader
         isTablet={isTablet}
         mobileDayMode={mobileDayMode}
-        theme={{
-          primary: theme.primary,
-          backgroundRoot: theme.backgroundRoot,
-          border: theme.border,
-          textMuted: theme.textMuted,
-        }}
+        ownerViewMode={ownerVista ? ownerViewMode : undefined}
+        onToggleOwnerViewMode={ownerVista ? toggleOwnerViewMode : undefined}
+        theme={theme}
         language={config.locale.language}
         timeZone={tenantTz}
         selectedDate={selectedDate}
@@ -490,8 +502,6 @@ export default function AgendaScreen() {
         onChangeWeek={changeWeek}
         onChangeDay={changeDay}
         onGoToToday={goToToday}
-        ownerViewMode={ownerVista ? ownerViewMode : undefined}
-        onToggleOwnerView={ownerVista ? toggleOwnerViewMode : undefined}
       />
 
       {authLoading ? (
@@ -500,6 +510,16 @@ export default function AgendaScreen() {
         </View>
       ) : ownerVista ? (
         <>
+          {/* En vista semanal no mostramos el avatar strip ni el status filter */}
+          {ownerViewMode === "day" && (
+            <OwnerStaffAvatarStrip
+              employees={employees}
+              theme={theme}
+              columnWidth={empColWidth}
+              scrollRef={avatarStripRef as React.RefObject<ScrollView>}
+              onScroll={handleStripScroll}
+            />
+          )}
           <AgendaStatusFilterBar
             statusFilter={statusFilter}
             onChange={setStatusFilter}
@@ -507,11 +527,8 @@ export default function AgendaScreen() {
           />
           {ownerViewMode === "week" ? (
             <OwnerWeekGrid
-              timeColWidth={TIME_COL_W}
               tabBarHeight={tabBarHeight}
               weekDays={weekDays}
-              agendaHours={agendaHours}
-              businessHours={businessHoursNorm}
               timeZone={tenantTz}
               language={config.locale.language}
               appointments={appointments}
@@ -530,14 +547,13 @@ export default function AgendaScreen() {
                 backgroundSecondary: theme.backgroundSecondary,
                 card: theme.card,
               }}
-              onOpenNew={openNewAppointment}
+              onSelectDay={handleWeekDaySelect}
               onOpenDetail={openAppointmentDetail}
-              onSelectDay={handleSelectDayFromWeek}
             />
           ) : (
             <OwnerDayGrid
               timeColWidth={TIME_COL_W}
-              columnWidth={ownerColWidth}
+              columnWidth={empColWidth}
               tabBarHeight={tabBarHeight}
               selectedDate={selectedDate}
               agendaHours={agendaHours}
@@ -562,6 +578,8 @@ export default function AgendaScreen() {
               }}
               onOpenNew={openNewAppointment}
               onOpenDetail={openAppointmentDetail}
+              gridScrollRef={gridScrollRef as React.RefObject<ScrollView>}
+              onGridScroll={handleGridScroll}
             />
           )}
         </>
@@ -609,7 +627,7 @@ export default function AgendaScreen() {
             <AgendaEmployeeHeaders
               employees={employees}
               timeColWidth={TIME_COL_W}
-              columnWidth={empColWidth}
+              columnWidth={(width - TIME_COL_W - Spacing.sm * 2) / Math.max(employees.length, 1)}
               theme={theme}
             />
           )}

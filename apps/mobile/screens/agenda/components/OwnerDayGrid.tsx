@@ -1,12 +1,10 @@
-import React, { useMemo, useRef, useCallback } from "react";
+import React, { useMemo, useRef } from "react";
 import {
   View,
   ScrollView,
   Pressable,
   StyleSheet,
   RefreshControl,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -32,7 +30,6 @@ import {
 } from "../agendaUtils";
 import { useAgendaClockTick } from "../hooks/useAgendaClockTick";
 import { agendaStyles as sharedStyles } from "../agendaStyles";
-import { OwnerStaffAvatarStrip } from "./OwnerStaffAvatarStrip";
 
 const HOUR_ROW_HEIGHT = 64;
 
@@ -63,6 +60,9 @@ interface OwnerDayGridProps {
   };
   onOpenNew: (date: Date, hour: number) => void;
   onOpenDetail: (apt: AgendaAppointment) => void;
+  /** Ref externo del ScrollView horizontal — para sincronizar con el avatar strip */
+  gridScrollRef?: React.RefObject<ScrollView>;
+  onGridScroll?: (x: number) => void;
 }
 
 function formatHourLabel(
@@ -97,6 +97,8 @@ export function OwnerDayGrid({
   theme,
   onOpenNew,
   onOpenDetail,
+  gridScrollRef,
+  onGridScroll,
 }: OwnerDayGridProps) {
   const gridStartMin = useMemo(
     () => Math.min(...agendaHours) * 60,
@@ -136,24 +138,7 @@ export function OwnerDayGrid({
   }, [isTodayInTz, now, timeZone, gridStartMin, gridEndMin, pxPerMinute]);
 
   const colW = Math.max(columnWidth, 104);
-
-  // --- Sincronización de scroll horizontal strip <-> grid ---
-  const avatarStripRef = useRef<ScrollView>(null);
-  const gridScrollRef = useRef<ScrollView>(null);
-  const isSyncingRef = useRef(false);
-
-  const handleGridScroll = useCallback(
-    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
-      if (isSyncingRef.current) return;
-      isSyncingRef.current = true;
-      avatarStripRef.current?.scrollTo({
-        x: e.nativeEvent.contentOffset.x,
-        animated: false,
-      });
-      isSyncingRef.current = false;
-    },
-    [],
-  );
+  const totalGridWidth = colW * employees.length;
 
   return (
     <ScrollView
@@ -167,19 +152,8 @@ export function OwnerDayGrid({
         />
       }
     >
-      {/* Avatar strip sincronizado con el scroll horizontal del grid */}
-      <View style={{ flexDirection: "row" }}>
-        <View style={{ width: timeColWidth }} />
-        <OwnerStaffAvatarStrip
-          employees={employees}
-          theme={theme}
-          columnWidth={colW}
-          scrollRef={avatarStripRef}
-        />
-      </View>
-
       <View style={{ flexDirection: "row", alignItems: "stretch" }}>
-        {/* Columna de horas */}
+        {/* Columna de horas — fija */}
         <View style={{ width: timeColWidth }}>
           {agendaHours.map((hour) => (
             <View
@@ -202,17 +176,17 @@ export function OwnerDayGrid({
           ))}
         </View>
 
-        {/* Grid de columnas por profesional */}
+        {/* Columnas de empleados — scroll horizontal */}
         <ScrollView
           ref={gridScrollRef}
           horizontal
           showsHorizontalScrollIndicator
           nestedScrollEnabled
-          style={{ flex: 1 }}
-          onScroll={handleGridScroll}
           scrollEventThrottle={16}
+          onScroll={onGridScroll ? (e) => onGridScroll(e.nativeEvent.contentOffset.x) : undefined}
+          style={{ flex: 1 }}
         >
-          <View style={{ flexDirection: "row", height: totalHeight, position: "relative" }}>
+          <View style={{ flexDirection: "row", height: totalHeight, width: totalGridWidth, position: "relative" }}>
             {employees.map((emp) => {
               const empApts = dayAppointments.filter(
                 (a) => a.employee_id === emp.id,
@@ -265,15 +239,9 @@ export function OwnerDayGrid({
                     const start = new Date(apt.date);
                     const startMin = minutosDelDiaEnZona(start, timeZone);
                     const endMin = startMin + apt.duration;
-                    const top = Math.max(
-                      0,
-                      (startMin - gridStartMin) * pxPerMinute,
-                    );
+                    const top = Math.max(0, (startMin - gridStartMin) * pxPerMinute);
                     const bottom = (endMin - gridStartMin) * pxPerMinute;
-                    const height = Math.max(
-                      28,
-                      Math.min(bottom, totalHeight) - top,
-                    );
+                    const height = Math.max(28, Math.min(bottom, totalHeight) - top);
                     if (top >= totalHeight) return null;
 
                     const serviceName = getServiceName(services, apt.service_id);
@@ -296,13 +264,13 @@ export function OwnerDayGrid({
                         <View
                           style={{
                             flex: 1,
+                            padding: Spacing.sm,
                             borderRadius: BorderRadius.md,
                             borderWidth: 1,
-                            borderColor: emp.color + "66",
                             borderLeftWidth: 4,
+                            borderColor: emp.color + "44",
                             borderLeftColor: emp.color,
-                            backgroundColor: emp.color + "1A",
-                            padding: Spacing.sm,
+                            backgroundColor: emp.color + "18",
                           }}
                         >
                           <ThemedText
@@ -331,7 +299,7 @@ export function OwnerDayGrid({
                             numberOfLines={1}
                             style={{
                               fontSize: 10,
-                              marginTop: 4,
+                              marginTop: 2,
                               color: theme.textMuted,
                             }}
                           >
@@ -349,7 +317,7 @@ export function OwnerDayGrid({
               );
             })}
 
-            {/* Línea "ahora" — una sola vez, se extiende a lo ancho de todas las columnas */}
+            {/* Línea "ahora" — una sola vez, sobre todo el grid */}
             {nowLineTop !== null && (
               <View
                 pointerEvents="none"

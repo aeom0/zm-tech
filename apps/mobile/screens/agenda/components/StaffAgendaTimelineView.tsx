@@ -208,7 +208,7 @@ export function StaffAgendaTimelineView({
                     hour: "numeric",
                     minute: "2-digit",
                   }).format(new Date(siguiente.date))}{" "}
-                  — {siguiente.client_name}
+                  · {siguiente.client_name}
                 </ThemedText>
                 <ThemedText
                   style={{
@@ -218,16 +218,7 @@ export function StaffAgendaTimelineView({
                   }}
                   numberOfLines={2}
                 >
-                  {getServiceName(services, siguiente.service_id) || "Servicio"}
-                </ThemedText>
-                <ThemedText
-                  style={{
-                    fontSize: 12,
-                    color: theme.textMuted,
-                    marginTop: 2,
-                  }}
-                >
-                  {siguiente.duration} min · {siguiente.price}
+                  {getServiceName(services, siguiente.service_id) || "—"}
                 </ThemedText>
               </View>
             </View>
@@ -235,8 +226,7 @@ export function StaffAgendaTimelineView({
         ) : myDayApts.length > 0 ? (
           <View style={{ marginBottom: Spacing.lg }}>
             <ThemedText style={{ color: theme.textMuted, fontSize: 14 }}>
-              No quedan citas pendientes hoy en el horario actual. Revisa la
-              lista de abajo.
+              No quedan citas pendientes hoy en el horario actual.
             </ThemedText>
           </View>
         ) : (
@@ -247,13 +237,13 @@ export function StaffAgendaTimelineView({
           </View>
         )}
 
-        {/* Timeline vertical */}
-        <View style={{ position: "relative", paddingLeft: 20 }}>
-          {/* Línea vertical centrada en x=5 del espacio reservado de 12px */}
+        {/* Timeline */}
+        <View style={{ position: "relative", paddingLeft: Spacing.lg }}>
+          {/* Línea vertical — centrada en x=6 del contenedor */}
           <View
             style={{
               position: "absolute",
-              left: 5,
+              left: 6,
               top: 12,
               bottom: 12,
               width: 2,
@@ -270,7 +260,7 @@ export function StaffAgendaTimelineView({
               minute: "2-digit",
             }).format(start);
             const { label: estadoLabel, tone } = descripcionEstado(apt.status);
-            const statusColor =
+            const accentColor =
               tone === "ok"
                 ? theme.success
                 : tone === "wait"
@@ -283,32 +273,35 @@ export function StaffAgendaTimelineView({
                 style={{
                   flexDirection: "row",
                   marginBottom: Spacing.md,
-                  alignItems: "flex-start",
+                  alignItems: "stretch",
                 }}
               >
-                {/* Hora */}
-                <ThemedText
-                  style={{
-                    width: 48,
-                    fontSize: 12,
-                    fontWeight: "700",
-                    color: theme.textMuted,
-                    textAlign: "right",
-                    paddingRight: Spacing.sm,
-                    paddingTop: 3,
-                  }}
-                >
-                  {timeLabel}
-                </ThemedText>
-
-                {/* Dot — centrado sobre la línea (left:5, width:2 → centro en 6px; dot de 10px con marginLeft:-4 queda centrado) */}
+                {/* Columna hora */}
                 <View
                   style={{
-                    width: 12,
+                    width: 52,
+                    alignItems: "flex-end",
+                    paddingRight: Spacing.sm,
+                    paddingTop: 6,
+                  }}
+                >
+                  <ThemedText
+                    style={{
+                      fontSize: 12,
+                      fontWeight: "700",
+                      color: theme.textMuted,
+                    }}
+                  >
+                    {timeLabel}
+                  </ThemedText>
+                </View>
+
+                {/* Dot alineado con la línea (left:6, centro en x=7) */}
+                <View
+                  style={{
+                    width: 14,
                     alignItems: "center",
-                    paddingTop: 5,
-                    marginLeft: -6,
-                    marginRight: 6,
+                    paddingTop: 6,
                   }}
                 >
                   <View
@@ -316,7 +309,7 @@ export function StaffAgendaTimelineView({
                       width: 10,
                       height: 10,
                       borderRadius: 5,
-                      backgroundColor: statusColor,
+                      backgroundColor: accentColor,
                       borderWidth: 2,
                       borderColor: theme.backgroundRoot,
                     }}
@@ -326,16 +319,17 @@ export function StaffAgendaTimelineView({
                 {/* Card de cita */}
                 <Pressable
                   onPress={() => onOpenDetail(apt)}
-                  style={{ flex: 1 }}
+                  style={{ flex: 1, marginLeft: Spacing.sm }}
                 >
                   <View
                     style={{
                       borderRadius: BorderRadius.md,
+                      overflow: "hidden",
                       borderWidth: StyleSheet.hairlineWidth,
                       borderColor: theme.border,
                       borderLeftWidth: 4,
-                      borderLeftColor: statusColor,
-                      backgroundColor: theme.card,
+                      borderLeftColor: accentColor,
+                      backgroundColor: theme.backgroundSecondary,
                       padding: Spacing.md,
                     }}
                   >
@@ -365,16 +359,7 @@ export function StaffAgendaTimelineView({
                           }}
                           numberOfLines={2}
                         >
-                          {getServiceName(services, apt.service_id) || "Servicio"}
-                        </ThemedText>
-                        <ThemedText
-                          style={{
-                            fontSize: 11,
-                            color: theme.textMuted,
-                            marginTop: 2,
-                          }}
-                        >
-                          {apt.duration} min · {apt.price}
+                          {getServiceName(services, apt.service_id) || "—"}
                         </ThemedText>
                       </View>
                       <View
@@ -395,7 +380,7 @@ export function StaffAgendaTimelineView({
                           style={{
                             fontSize: 11,
                             fontWeight: "600",
-                            color: statusColor,
+                            color: accentColor,
                           }}
                         >
                           {estadoLabel}

@@ -1,8 +1,9 @@
 /**
- * OwnerWeekGrid — vista semanal del owner.
- * Muestra 7 columnas (lun-dom) con los chips de cita por día.
- * Toque en una cita → onOpenDetail. Toque en un slot vacío → onOpenNew.
- * Toque en la cabecera de un día → onSelectDay (vuelve a la vista diaria).
+ * OwnerWeekGrid — vista semanal compacta para el owner.
+ *
+ * Muestra 7 columnas (lun–dom) con las citas del día como chips.
+ * Tocar un día navega a la vista diaria de ese día.
+ * Tocar una cita abre el detalle.
  */
 import React, { useMemo } from "react";
 import {
@@ -16,11 +17,8 @@ import {
 import { ThemedText } from "@/components/ThemedText";
 import { BorderRadius, Spacing } from "@/constants/theme";
 import {
-  esCeldaAgendaEnHorarioLaboral,
   esMismoDiaCalendarioEnZona,
   esHoyEnZonaIANA,
-  minutosDelDiaEnZona,
-  instanteCitaEnZona,
   type TenantConfig,
 } from "@salonpro/tenant-config";
 
@@ -30,18 +28,11 @@ import type {
   AgendaService,
   AgendaStatusFilter,
 } from "../types";
-import { getServiceName } from "../agendaUtils";
-import { useAgendaClockTick } from "../hooks/useAgendaClockTick";
-import { agendaStyles as sharedStyles } from "../agendaStyles";
-
-const HOUR_ROW_HEIGHT = 56;
+import { getServiceName, matchesStatusFilter } from "../agendaUtils";
 
 interface OwnerWeekGridProps {
-  timeColWidth: number;
   tabBarHeight: number;
   weekDays: Date[];
-  agendaHours: number[];
-  businessHours: TenantConfig["businessHours"];
   timeZone: string;
   language: string;
   appointments: AgendaAppointment[];
@@ -60,18 +51,28 @@ interface OwnerWeekGridProps {
     backgroundSecondary: string;
     card: string;
   };
-  onOpenNew: (date: Date, hour: number) => void;
-  onOpenDetail: (apt: AgendaAppointment) => void;
-  /** Al tocar la cabecera de un día, vuelve a la vista diaria en ese día */
+  /** Al tocar una columna de día → ir a vista diaria de ese día */
   onSelectDay: (date: Date) => void;
+  onOpenDetail: (apt: AgendaAppointment) => void;
+}
+
+function dayName(date: Date, language: string, timeZone: string): string {
+  return new Intl.DateTimeFormat(language, {
+    timeZone,
+    weekday: "short",
+  }).format(date);
+}
+
+function dayNumber(date: Date, language: string, timeZone: string): string {
+  return new Intl.DateTimeFormat(language, {
+    timeZone,
+    day: "numeric",
+  }).format(date);
 }
 
 export function OwnerWeekGrid({
-  timeColWidth,
   tabBarHeight,
   weekDays,
-  agendaHours,
-  businessHours,
   timeZone,
   language,
   appointments,
@@ -81,65 +82,33 @@ export function OwnerWeekGrid({
   isLoading,
   onRefresh,
   theme,
-  onOpenNew,
-  onOpenDetail,
   onSelectDay,
+  onOpenDetail,
 }: OwnerWeekGridProps) {
-  const gridStartMin = useMemo(() => Math.min(...agendaHours) * 60, [agendaHours]);
-  const gridEndMin = useMemo(() => Math.max(...agendaHours) * 60 + 60, [agendaHours]);
-  const totalHeight = agendaHours.length * HOUR_ROW_HEIGHT;
-  const pxPerMinute = HOUR_ROW_HEIGHT / 60;
+  const employeeColorMap = useMemo(() => {
+    const m: Record<string, string> = {};
+    for (const e of employees) m[e.id] = e.color;
+    return m;
+  }, [employees]);
 
-  // La semana puede contener hoy
-  const todayIndex = useMemo(
-    () => weekDays.findIndex((d) => esHoyEnZonaIANA(d, timeZone)),
-    [weekDays, timeZone],
-  );
-  const now = useAgendaClockTick(todayIndex >= 0);
-
-  const nowLineTop = useMemo(() => {
-    if (todayIndex < 0) return null;
-    const m = minutosDelDiaEnZona(now, timeZone);
-    if (m < gridStartMin || m > gridEndMin) return null;
-    return (m - gridStartMin) * pxPerMinute;
-  }, [todayIndex, now, timeZone, gridStartMin, gridEndMin, pxPerMinute]);
-
-  const filteredApts = useMemo(() => {
-    return appointments.filter((apt) => {
-      if (statusFilter !== "all" && apt.status !== statusFilter) return false;
-      return weekDays.some((d) =>
-        esMismoDiaCalendarioEnZona(new Date(apt.date), d, timeZone),
-      );
-    });
-  }, [appointments, weekDays, statusFilter, timeZone]);
-
-  const dayNames = useMemo(
-    () =>
-      weekDays.map((d) =>
-        new Intl.DateTimeFormat(language, {
-          timeZone,
-          weekday: "short",
+  /** Citas por día, ya filtradas */
+  const aptsByDay = useMemo(() => {
+    return weekDays.map((day) =>
+      appointments
+        .filter((apt) => {
+          const aptDate = new Date(apt.date);
+          return (
+            esMismoDiaCalendarioEnZona(aptDate, day, timeZone) &&
+            matchesStatusFilter(apt.status, statusFilter)
+          );
         })
-          .format(d)
-          .slice(0, 3),
-      ),
-    [weekDays, language, timeZone],
-  );
-
-  const dayNumbers = useMemo(
-    () =>
-      weekDays.map((d) =>
-        new Intl.DateTimeFormat(language, {
-          timeZone,
-          day: "numeric",
-        }).format(d),
-      ),
-    [weekDays, language, timeZone],
-  );
+        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()),
+    );
+  }, [appointments, weekDays, timeZone, statusFilter]);
 
   return (
     <ScrollView
-      style={sharedStyles.calendarContainer}
+      style={{ flex: 1 }}
       contentContainerStyle={{ paddingBottom: tabBarHeight + Spacing.xl }}
       refreshControl={
         <RefreshControl
@@ -149,37 +118,31 @@ export function OwnerWeekGrid({
         />
       }
     >
-      {/* Cabeceras de días — toque navega a vista diaria */}
+      {/* Cabeceras de días */}
       <View
         style={{
           flexDirection: "row",
           borderBottomWidth: StyleSheet.hairlineWidth,
           borderBottomColor: theme.border,
-          marginBottom: 2,
         }}
       >
-        <View style={{ width: timeColWidth }} />
         {weekDays.map((day, i) => {
-          const isToday = todayIndex === i;
+          const isToday = esHoyEnZonaIANA(day, timeZone);
           return (
             <Pressable
               key={i}
+              style={{ flex: 1, alignItems: "center", paddingVertical: Spacing.sm }}
               onPress={() => onSelectDay(day)}
-              style={{
-                flex: 1,
-                alignItems: "center",
-                paddingVertical: Spacing.sm,
-              }}
             >
               <ThemedText
                 style={{
                   fontSize: 11,
-                  fontWeight: "600",
+                  fontWeight: "500",
                   color: isToday ? theme.primary : theme.textMuted,
                   textTransform: "uppercase",
                 }}
               >
-                {dayNames[i]}
+                {dayName(day, language, timeZone)}
               </ThemedText>
               <View
                 style={[
@@ -201,7 +164,7 @@ export function OwnerWeekGrid({
                     color: isToday ? "#FFFFFF" : theme.text,
                   }}
                 >
-                  {dayNumbers[i]}
+                  {dayNumber(day, language, timeZone)}
                 </ThemedText>
               </View>
             </Pressable>
@@ -209,114 +172,59 @@ export function OwnerWeekGrid({
         })}
       </View>
 
-      {/* Grid horario */}
-      <View style={{ flexDirection: "row", alignItems: "stretch" }}>
-        {/* Columna de horas */}
-        <View style={{ width: timeColWidth }}>
-          {agendaHours.map((hour) => (
-            <View
-              key={hour}
+      {/* Cuerpo — columnas con chips de citas */}
+      <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+        {weekDays.map((day, i) => {
+          const dayApts = aptsByDay[i] ?? [];
+          return (
+            <Pressable
+              key={i}
               style={{
-                height: HOUR_ROW_HEIGHT,
-                borderBottomWidth: StyleSheet.hairlineWidth,
-                borderBottomColor: theme.border,
-                justifyContent: "flex-start",
-                paddingTop: 3,
-                alignItems: "center",
+                flex: 1,
+                minHeight: 200,
+                borderLeftWidth: i === 0 ? 0 : StyleSheet.hairlineWidth,
+                borderLeftColor: theme.border,
+                paddingHorizontal: 3,
+                paddingTop: Spacing.sm,
+                gap: 4,
               }}
+              onPress={() => onSelectDay(day)}
             >
-              <ThemedText style={{ fontSize: 10, color: theme.textMuted, fontWeight: "600" }}>
-                {new Intl.DateTimeFormat(language, {
-                  timeZone,
-                  hour: "numeric",
-                  minute: "2-digit",
-                }).format(instanteCitaEnZona(weekDays[0] ?? new Date(), hour, timeZone))}
-              </ThemedText>
-            </View>
-          ))}
-        </View>
-
-        {/* Columnas por día */}
-        <View style={{ flex: 1, flexDirection: "row", position: "relative" }}>
-          {weekDays.map((day, dayIdx) => {
-            const isToday = todayIndex === dayIdx;
-            const dayApts = filteredApts.filter((apt) =>
-              esMismoDiaCalendarioEnZona(new Date(apt.date), day, timeZone),
-            );
-
-            return (
-              <View
-                key={dayIdx}
-                style={{
-                  flex: 1,
-                  height: totalHeight,
-                  borderLeftWidth: StyleSheet.hairlineWidth,
-                  borderLeftColor: theme.border,
-                  position: "relative",
-                  backgroundColor: isToday ? theme.primary + "08" : "transparent",
-                }}
-              >
-                {agendaHours.map((hour) => {
-                  const enHorario = esCeldaAgendaEnHorarioLaboral(
-                    day,
-                    hour,
-                    businessHours,
+              {dayApts.length === 0 ? (
+                <ThemedText
+                  style={{
+                    fontSize: 10,
+                    color: theme.textMuted,
+                    textAlign: "center",
+                    marginTop: Spacing.md,
+                  }}
+                >
+                  —
+                </ThemedText>
+              ) : (
+                dayApts.map((apt) => {
+                  const empColor = employeeColorMap[apt.employee_id] ?? theme.primary;
+                  const svcName = getServiceName(services, apt.service_id);
+                  const timeLabel = new Intl.DateTimeFormat(language, {
                     timeZone,
-                  );
-                  return (
-                    <View
-                      key={hour}
-                      style={{
-                        height: HOUR_ROW_HEIGHT,
-                        borderBottomWidth: StyleSheet.hairlineWidth,
-                        borderBottomColor: theme.border,
-                        backgroundColor: enHorario ? "transparent" : theme.backgroundRoot + "88",
-                        opacity: enHorario ? 1 : 0.5,
-                      }}
-                    >
-                      {enHorario && (
-                        <Pressable
-                          style={StyleSheet.absoluteFill}
-                          onPress={() => onOpenNew(day, hour)}
-                          accessibilityRole="button"
-                          accessibilityLabel={`Nueva cita ${hour}:00`}
-                        />
-                      )}
-                    </View>
-                  );
-                })}
-
-                {dayApts.map((apt) => {
-                  const start = new Date(apt.date);
-                  const startMin = minutosDelDiaEnZona(start, timeZone);
-                  const endMin = startMin + apt.duration;
-                  const top = Math.max(0, (startMin - gridStartMin) * pxPerMinute);
-                  const bottom = (endMin - gridStartMin) * pxPerMinute;
-                  const height = Math.max(20, Math.min(bottom, totalHeight) - top);
-                  if (top >= totalHeight) return null;
-
-                  const emp = employees.find((e) => e.id === apt.employee_id);
-                  const empColor = emp?.color ?? theme.primary;
-                  const serviceName = getServiceName(services, apt.service_id);
+                    hour: "numeric",
+                    minute: "2-digit",
+                  }).format(new Date(apt.date));
 
                   return (
                     <Pressable
                       key={apt.id}
-                      onPress={() => onOpenDetail(apt)}
+                      onPress={(e) => {
+                        e.stopPropagation();
+                        onOpenDetail(apt);
+                      }}
                       style={{
-                        position: "absolute",
-                        left: 1,
-                        right: 1,
-                        top,
-                        height,
-                        zIndex: 4,
                         borderRadius: BorderRadius.sm,
-                        overflow: "hidden",
-                        backgroundColor: empColor + "22",
                         borderLeftWidth: 3,
                         borderLeftColor: empColor,
-                        paddingHorizontal: 3,
-                        paddingVertical: 2,
+                        backgroundColor: empColor + "18",
+                        paddingHorizontal: 4,
+                        paddingVertical: 3,
                       }}
                     >
                       <ThemedText
@@ -327,39 +235,25 @@ export function OwnerWeekGrid({
                           color: theme.text,
                         }}
                       >
-                        {serviceName || apt.client_name}
+                        {timeLabel}
                       </ThemedText>
-                      {height > 32 && (
-                        <ThemedText
-                          numberOfLines={1}
-                          style={{ fontSize: 9, color: theme.textMuted, marginTop: 1 }}
-                        >
-                          {apt.client_name}
-                        </ThemedText>
-                      )}
+                      <ThemedText
+                        numberOfLines={1}
+                        style={{
+                          fontSize: 9,
+                          color: theme.textSecondary,
+                          marginTop: 1,
+                        }}
+                      >
+                        {svcName || apt.client_name}
+                      </ThemedText>
                     </Pressable>
                   );
-                })}
-              </View>
-            );
-          })}
-
-          {/* Línea "ahora" — una sola vez a lo ancho de todos los días */}
-          {nowLineTop !== null && todayIndex >= 0 && (
-            <View
-              pointerEvents="none"
-              style={{
-                position: "absolute",
-                left: 0,
-                right: 0,
-                top: nowLineTop - 1,
-                height: 2,
-                backgroundColor: "#FF3B30",
-                zIndex: 12,
-              }}
-            />
-          )}
-        </View>
+                })
+              )}
+            </Pressable>
+          );
+        })}
       </View>
     </ScrollView>
   );

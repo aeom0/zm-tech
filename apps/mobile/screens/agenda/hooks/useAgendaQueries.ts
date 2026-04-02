@@ -27,10 +27,7 @@ export function useAgendaQueries() {
         )
         .order("date", { ascending: true });
 
-      if (error) {
-        throw new Error(error.message);
-      }
-
+      if (error) throw new Error(error.message);
       return (data ?? []) as AgendaAppointment[];
     },
   });
@@ -46,13 +43,11 @@ export function useAgendaQueries() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from("employees")
-        .select("id, name, color, role, avatar_url")
+        .select("id, name, color, avatar_url")
+        .eq("is_active", true)
         .order("created_at", { ascending: true });
 
-      if (error) {
-        throw new Error(error.message);
-      }
-
+      if (error) throw new Error(error.message);
       return (data ?? []) as AgendaEmployee[];
     },
   });
@@ -66,9 +61,7 @@ export function useAgendaQueries() {
         .from("service_categories")
         .select("id, name, order")
         .order("order", { ascending: true });
-      if (error) {
-        throw new Error(error.message);
-      }
+      if (error) throw new Error(error.message);
       return (data ?? []) as AgendaServiceCategory[];
     },
   });
@@ -86,9 +79,7 @@ export function useAgendaQueries() {
         .from("services")
         .select("id, name, price, duration, category_id")
         .order("created_at", { ascending: true });
-      if (error) {
-        throw new Error(error.message);
-      }
+      if (error) throw new Error(error.message);
       return (data ?? []) as AgendaService[];
     },
   });
