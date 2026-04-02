@@ -4,8 +4,8 @@ import { View, ScrollView, Pressable, RefreshControl } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { Spacing } from "@/constants/theme";
 
-import type { TenantConfig } from "@salonpro/tenant-config";
-import { esCeldaAgendaEnHorarioLaboral } from "@salonpro/tenant-config";
+import type { TenantConfig, TimeFormatPreference } from "@salonpro/tenant-config";
+import { esCeldaAgendaEnHorarioLaboral, formatoHoraAgendaSlot } from "@salonpro/tenant-config";
 
 import type {
   AgendaAppointment,
@@ -34,6 +34,8 @@ interface AgendaCalendarGridProps {
   businessHours: TenantConfig["businessHours"];
   /** IANA del tenant (`config.locale.timezone`). */
   timeZone: string;
+  language: TenantConfig["locale"]["language"];
+  timeFormat: TimeFormatPreference;
   appointments: AgendaAppointment[];
   employees: AgendaEmployee[];
   services: AgendaService[];
@@ -62,6 +64,8 @@ export function AgendaCalendarGrid({
   agendaHours,
   businessHours,
   timeZone,
+  language,
+  timeFormat,
   appointments,
   employees,
   services,
@@ -75,7 +79,10 @@ export function AgendaCalendarGrid({
   return (
     <ScrollView
       style={styles.calendarContainer}
-      contentContainerStyle={{ paddingBottom: tabBarHeight + Spacing.xl }}
+      contentContainerStyle={{
+        paddingBottom: tabBarHeight + Spacing.xl,
+        paddingHorizontal: Spacing.md,
+      }}
       refreshControl={
         <RefreshControl
           refreshing={isLoading}
@@ -87,8 +94,7 @@ export function AgendaCalendarGrid({
       {agendaHours.map((hour) => {
         if (isTablet) {
           const empColWidth =
-            (width - timeColWidth - Spacing.sm * 2) /
-            Math.max(employees.length, 1);
+            (width - timeColWidth - Spacing.md * 2) / Math.max(employees.length, 1);
           const dentroFila = esCeldaAgendaEnHorarioLaboral(
             selectedDate,
             hour,
@@ -119,10 +125,19 @@ export function AgendaCalendarGrid({
                 <ThemedText
                   style={[
                     styles.timeText,
-                    { color: theme.textMuted, fontSize: 12 },
+                    { color: theme.textMuted, fontSize: 11 },
                   ]}
+                  numberOfLines={2}
+                  adjustsFontSizeToFit
+                  minimumFontScale={0.8}
                 >
-                  {hour}:00
+                  {formatoHoraAgendaSlot(
+                    selectedDate,
+                    hour,
+                    timeZone,
+                    language,
+                    timeFormat,
+                  )}
                 </ThemedText>
               </View>
               {employees.map((emp) => {
@@ -226,8 +241,19 @@ export function AgendaCalendarGrid({
             style={[styles.hourRow, { minHeight: rowMinHeight }]}
           >
             <View style={[styles.timeColumn, { width: timeColWidth }]}>
-              <ThemedText style={[styles.timeText, { color: theme.textMuted }]}>
-                {hour}:00
+              <ThemedText
+                style={[styles.timeText, { color: theme.textMuted }]}
+                numberOfLines={2}
+                adjustsFontSizeToFit
+                minimumFontScale={0.8}
+              >
+                {formatoHoraAgendaSlot(
+                  weekDays[0] ?? selectedDate,
+                  hour,
+                  timeZone,
+                  language,
+                  timeFormat,
+                )}
               </ThemedText>
             </View>
             {weekDays.map((date, dayIndex) => {

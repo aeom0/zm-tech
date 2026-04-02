@@ -1,3 +1,5 @@
+export type TimeFormatPreference = "12" | "24";
+
 export interface TenantConfig {
   businessName: string;
   businessType: "spa-nails" | "barbershop" | "hair-salon" | "full-aesthetic";
@@ -15,6 +17,8 @@ export interface TenantConfig {
     country: string;
     timezone: string;
     language: "es" | "es-PE" | "es-VE" | "es-CO" | "pt-BR";
+    /** Reloj en agenda y pantallas de horario: 24 h (default) o 12 h con am/pm */
+    timeFormat?: TimeFormatPreference;
   };
 
   terminology: {

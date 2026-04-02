@@ -12,10 +12,12 @@ import { ThemedText } from "@/components/ThemedText";
 import { Spacing } from "@/constants/theme";
 
 import type { TenantConfig } from "@salonpro/tenant-config";
+import type { TimeFormatPreference } from "@salonpro/tenant-config";
 import {
   diaDelMesEnZona,
   diaTieneFranjaAgenda,
   esCeldaAgendaEnHorarioLaboral,
+  formatoHoraAgendaSlot,
   indiceDiaSemanaJSEnZona,
   zonaIANASegura,
 } from "@salonpro/tenant-config";
@@ -45,6 +47,8 @@ interface AppointmentDetailModalProps {
   agendaHours: number[];
   businessHours: TenantConfig["businessHours"];
   timeZone: string;
+  language: TenantConfig["locale"]["language"];
+  timeFormat: TimeFormatPreference;
   weekDays: Date[];
   rescheduleDate: Date | null;
   rescheduleHour: number;
@@ -69,6 +73,8 @@ export function AppointmentDetailModal({
   agendaHours,
   businessHours,
   timeZone,
+  language,
+  timeFormat,
   weekDays,
   rescheduleDate,
   rescheduleHour,
@@ -182,14 +188,15 @@ export function AppointmentDetailModal({
                     { color: theme.textMuted, marginTop: Spacing.sm },
                   ]}
                 >
-                  {new Date(appointment.date).toLocaleString("es-VE", {
+                  {new Intl.DateTimeFormat(language, {
                     timeZone: zonaIANASegura(timeZone),
                     weekday: "short",
                     day: "numeric",
                     month: "short",
-                    hour: "2-digit",
+                    hour: "numeric",
                     minute: "2-digit",
-                  })}
+                    hour12: timeFormat === "12",
+                  }).format(new Date(appointment.date))}
                 </ThemedText>
               </View>
 
@@ -282,7 +289,15 @@ export function AppointmentDetailModal({
                             isSelected && { color: "#FFFFFF" },
                           ]}
                         >
-                          {h}:00
+                          {rescheduleDate
+                            ? formatoHoraAgendaSlot(
+                                rescheduleDate,
+                                h,
+                                zonaIANASegura(timeZone),
+                                language,
+                                timeFormat,
+                              )
+                            : `${h}:00`}
                         </ThemedText>
                       </Pressable>
                     );

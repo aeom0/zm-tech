@@ -28,10 +28,11 @@ export const agendaStyles = StyleSheet.create({
   statusFilterContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: "flex-start",
+    flexGrow: 0,
     gap: Spacing.sm,
-    paddingHorizontal: Spacing.lg,
-    paddingTop: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    paddingTop: Spacing.xs,
     paddingBottom: Spacing.xs,
   },
   statusChip: {
@@ -63,6 +64,7 @@ export const agendaStyles = StyleSheet.create({
     flexDirection: "row",
     borderBottomWidth: 1,
     paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.md,
   },
   empHeader: {
     alignItems: "center",
@@ -105,7 +107,8 @@ export const agendaStyles = StyleSheet.create({
   },
   timeColumn: {
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
+    paddingTop: 4,
   },
   dayHeader: {
     flex: 1,
@@ -126,7 +129,7 @@ export const agendaStyles = StyleSheet.create({
   hourRow: {
     flexDirection: "row",
     minHeight: 56,
-    paddingHorizontal: Spacing.sm,
+    paddingHorizontal: 0,
   },
   timeText: {
     fontSize: 11,

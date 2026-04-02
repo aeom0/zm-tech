@@ -13,9 +13,11 @@ import { BorderRadius, Spacing } from "@/constants/theme";
 import {
   esCeldaAgendaEnHorarioLaboral,
   esHoyEnZonaIANA,
-  instanteCitaEnZona,
+  formatoHoraAgendaSlot,
+  formatoHoraInstanteEnZona,
   minutosDelDiaEnZona,
   type TenantConfig,
+  type TimeFormatPreference,
 } from "@salonpro/tenant-config";
 
 import type {
@@ -41,7 +43,8 @@ interface OwnerDayGridProps {
   agendaHours: number[];
   businessHours: TenantConfig["businessHours"];
   timeZone: string;
-  language: string;
+  language: TenantConfig["locale"]["language"];
+  timeFormat: TimeFormatPreference;
   appointments: AgendaAppointment[];
   employees: AgendaEmployee[];
   services: AgendaService[];
@@ -65,20 +68,6 @@ interface OwnerDayGridProps {
   onGridScroll?: (x: number) => void;
 }
 
-function formatHourLabel(
-  fechaColumna: Date,
-  hour: number,
-  locale: string,
-  tz: string,
-): string {
-  const inst = instanteCitaEnZona(fechaColumna, hour, tz);
-  return new Intl.DateTimeFormat(locale, {
-    timeZone: tz,
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(inst);
-}
-
 export function OwnerDayGrid({
   timeColWidth,
   columnWidth,
@@ -88,6 +77,7 @@ export function OwnerDayGrid({
   businessHours,
   timeZone,
   language,
+  timeFormat,
   appointments,
   employees,
   services,
@@ -143,7 +133,10 @@ export function OwnerDayGrid({
   return (
     <ScrollView
       style={sharedStyles.calendarContainer}
-      contentContainerStyle={{ paddingBottom: tabBarHeight + Spacing.xl }}
+      contentContainerStyle={{
+        paddingBottom: tabBarHeight + Spacing.xl,
+        paddingHorizontal: Spacing.md,
+      }}
       refreshControl={
         <RefreshControl
           refreshing={isLoading}
@@ -168,9 +161,12 @@ export function OwnerDayGrid({
               }}
             >
               <ThemedText
-                style={{ fontSize: 11, color: theme.textMuted, fontWeight: "600" }}
+                style={{ fontSize: 10, color: theme.textMuted, fontWeight: "600" }}
+                numberOfLines={2}
+                adjustsFontSizeToFit
+                minimumFontScale={0.85}
               >
-                {formatHourLabel(selectedDate, hour, language, timeZone)}
+                {formatoHoraAgendaSlot(selectedDate, hour, timeZone, language, timeFormat)}
               </ThemedText>
             </View>
           ))}
@@ -303,11 +299,7 @@ export function OwnerDayGrid({
                               color: theme.textMuted,
                             }}
                           >
-                            {new Intl.DateTimeFormat(language, {
-                              timeZone,
-                              hour: "numeric",
-                              minute: "2-digit",
-                            }).format(start)}
+                            {formatoHoraInstanteEnZona(start, timeZone, language, timeFormat)}
                           </ThemedText>
                         </View>
                       </Pressable>

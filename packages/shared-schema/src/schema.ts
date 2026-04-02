@@ -432,6 +432,8 @@ export const tenantSettings = pgTable("tenant_settings", {
   language: text("language").notNull().default("es"),
   /** IANA, ej. America/Caracas — migración manual si la columna aún no existe en un proyecto */
   timezone: text("timezone").notNull().default("America/Caracas"),
+  /** `12` | `24` — cómo mostrar horas en agenda / UI */
+  timeFormat: text("time_format").notNull().default("24"),
   clientTerminology: text("client_terminology")
     .notNull()
     .default("cliente"),

@@ -16,6 +16,7 @@ export const spaNavilsPreset: TenantConfig = {
     country: "PE",
     timezone: "America/Lima",
     language: "es-VE",
+    timeFormat: "24",
   },
 
   terminology: {

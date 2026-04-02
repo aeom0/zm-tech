@@ -37,9 +37,9 @@ export function OwnerStaffAvatarStrip({
       scrollEventThrottle={16}
       onScroll={onScroll ? (e) => onScroll(e.nativeEvent.contentOffset.x) : undefined}
       contentContainerStyle={{
-        paddingHorizontal: Spacing.sm,
-        paddingVertical: Spacing.sm,
-        gap: Spacing.md,
+        paddingHorizontal: Spacing.md,
+        paddingVertical: 4,
+        gap: Spacing.sm,
         alignItems: "flex-start",
       }}
     >

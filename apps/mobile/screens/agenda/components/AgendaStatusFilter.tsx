@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Pressable, StyleSheet } from "react-native";
+import { Pressable, StyleSheet, ScrollView } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
 
@@ -33,7 +33,13 @@ export function AgendaStatusFilter({
   theme,
 }: AgendaStatusFilterProps) {
   return (
-    <View style={styles.statusFilterContainer}>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      style={{ flexGrow: 0, maxHeight: 48 }}
+      contentContainerStyle={styles.statusFilterContainer}
+      keyboardShouldPersistTaps="handled"
+    >
       {OPTIONS.map((opt) => {
         const isActive = statusFilter === opt.id;
         return (
@@ -72,6 +78,6 @@ export function AgendaStatusFilter({
           </Pressable>
         );
       })}
-    </View>
+    </ScrollView>
   );
 }

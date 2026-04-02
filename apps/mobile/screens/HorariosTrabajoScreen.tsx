@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   Alert,
   ScrollView,
+  Pressable,
   StyleSheet,
   Switch,
   TextInput,
@@ -19,7 +20,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { useTenant } from "@/contexts/TenantContext";
 import { Spacing, BorderRadius } from "@/constants/theme";
 import type { MoreStackParamList } from "@/navigation/MoreStackNavigator";
-import type { TenantConfig } from "@salonpro/tenant-config";
+import type { TenantConfig, TimeFormatPreference } from "@salonpro/tenant-config";
 import {
   CLAVES_DIA_LABORAL,
   ETIQUETA_DIA_LABORAL,
@@ -38,6 +39,9 @@ export default function HorariosTrabajoScreen() {
   const { config, updateTenant } = useTenant();
 
   const [draftTimezone, setDraftTimezone] = useState(config.locale.timezone);
+  const [draftTimeFormat, setDraftTimeFormat] = useState<TimeFormatPreference>(
+    () => (config.locale.timeFormat === "12" ? "12" : "24"),
+  );
   const [draftHours, setDraftHours] = useState<TenantConfig["businessHours"]>(
     () => normalizarHorarioSemanal(config.businessHours),
   );
@@ -47,8 +51,9 @@ export default function HorariosTrabajoScreen() {
   useFocusEffect(
     useCallback(() => {
       setDraftTimezone(config.locale.timezone);
+      setDraftTimeFormat(config.locale.timeFormat === "12" ? "12" : "24");
       setDraftHours(normalizarHorarioSemanal(config.businessHours));
-    }, [config.locale.timezone, config.businessHours]),
+    }, [config.locale.timezone, config.locale.timeFormat, config.businessHours]),
   );
 
   const guardar = useCallback(async () => {
@@ -61,19 +66,19 @@ export default function HorariosTrabajoScreen() {
     try {
       await updateTenant(
         {
-          locale: { ...config.locale, timezone: draftTimezone },
+          locale: { ...config.locale, timezone: draftTimezone, timeFormat: draftTimeFormat },
           businessHours: draftHours,
         },
         { syncRemote: true },
       );
-      Alert.alert("Listo", "Horario y zona horaria guardados.");
+      Alert.alert("Listo", "Horario, zona horaria y formato de hora guardados.");
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Error al guardar.";
       Alert.alert("No se pudo guardar", msg);
     } finally {
       setGuardando(false);
     }
-  }, [config.locale, draftHours, draftTimezone, updateTenant]);
+  }, [config.locale, draftHours, draftTimeFormat, draftTimezone, updateTenant]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -182,7 +187,32 @@ export default function HorariosTrabajoScreen() {
         {zonasExpandidas ? "Ver menos" : "Ver más zonas"}
       </ThemedText>
 
-      <ThemedText type="h4" style={{ marginBottom: Spacing.md }}>
+      <ThemedText type="h4" style={{ marginBottom: Spacing.sm }}>
+        Formato de hora en la app
+      </ThemedText>
+      <ThemedText
+        type="small"
+        style={{ color: theme.textMuted, marginBottom: Spacing.md }}
+      >
+        Cómo se muestran las horas en la agenda (los horarios de apertura/cierre
+        siguen en 24 h para que sea fácil editarlos).
+      </ThemedText>
+      <View style={styles.formatRow}>
+        <PressableChip
+          label="24 horas (recomendado)"
+          selected={draftTimeFormat === "24"}
+          onPress={() => setDraftTimeFormat("24")}
+          theme={theme}
+        />
+        <PressableChip
+          label="12 horas (AM / PM)"
+          selected={draftTimeFormat === "12"}
+          onPress={() => setDraftTimeFormat("12")}
+          theme={theme}
+        />
+      </View>
+
+      <ThemedText type="h4" style={{ marginBottom: Spacing.md, marginTop: Spacing.xl }}>
         Por día
       </ThemedText>
 
@@ -267,8 +297,66 @@ export default function HorariosTrabajoScreen() {
   );
 }
 
+function PressableChip({
+  label,
+  selected,
+  onPress,
+  theme,
+}: {
+  label: string;
+  selected: boolean;
+  onPress: () => void;
+  theme: {
+    primary: string;
+    border: string;
+    text: string;
+    backgroundDefault: string;
+  };
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [
+        chipStyles.chip,
+        {
+          borderColor: selected ? theme.primary : theme.border,
+          backgroundColor: selected ? `${theme.primary}22` : theme.backgroundDefault,
+          opacity: pressed ? 0.88 : 1,
+        },
+      ]}
+    >
+      <ThemedText
+        style={{
+          fontSize: 14,
+          fontWeight: "600",
+          color: selected ? theme.primary : theme.text,
+        }}
+      >
+        {label}
+      </ThemedText>
+    </Pressable>
+  );
+}
+
+const chipStyles = StyleSheet.create({
+  chip: {
+    flex: 1,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.sm,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1.5,
+    minHeight: 48,
+    justifyContent: "center",
+  },
+});
+
 const styles = StyleSheet.create({
   root: { flex: 1 },
+  formatRow: {
+    flexDirection: "row",
+    gap: Spacing.sm,
+    marginBottom: Spacing.lg,
+  },
   card: {
     borderRadius: BorderRadius.lg,
     borderWidth: StyleSheet.hairlineWidth,

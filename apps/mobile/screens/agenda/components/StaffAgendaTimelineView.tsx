@@ -11,7 +11,12 @@ import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
 import { Gradients, Spacing, BorderRadius } from "@/constants/theme";
-import { esHoyEnZonaIANA } from "@salonpro/tenant-config";
+import {
+  esHoyEnZonaIANA,
+  formatoHoraInstanteEnZona,
+  type TenantConfig,
+  type TimeFormatPreference,
+} from "@salonpro/tenant-config";
 
 import type { AgendaAppointment, AgendaService } from "../types";
 import {
@@ -29,7 +34,8 @@ interface StaffAgendaTimelineViewProps {
   tabBarHeight: number;
   selectedDate: Date;
   timeZone: string;
-  language: string;
+  language: TenantConfig["locale"]["language"];
+  timeFormat: TimeFormatPreference;
   appointments: AgendaAppointment[];
   services: AgendaService[];
   isLoading: boolean;
@@ -180,6 +186,7 @@ export function StaffAgendaTimelineView({
   selectedDate,
   timeZone,
   language,
+  timeFormat,
   appointments,
   services,
   isLoading,
@@ -312,11 +319,12 @@ export function StaffAgendaTimelineView({
                       marginTop: 4,
                     }}
                   >
-                    {new Intl.DateTimeFormat(language, {
+                    {formatoHoraInstanteEnZona(
+                      new Date(siguiente.date),
                       timeZone,
-                      hour: "numeric",
-                      minute: "2-digit",
-                    }).format(new Date(siguiente.date))}{" "}
+                      language,
+                      timeFormat,
+                    )}{" "}
                     · {siguiente.client_name}
                   </ThemedText>
                   <ThemedText
@@ -377,11 +385,12 @@ export function StaffAgendaTimelineView({
 
           {myDayApts.map((apt) => {
             const start = new Date(apt.date);
-            const timeLabel = new Intl.DateTimeFormat(language, {
+            const timeLabel = formatoHoraInstanteEnZona(
+              start,
               timeZone,
-              hour: "numeric",
-              minute: "2-digit",
-            }).format(start);
+              language,
+              timeFormat,
+            );
             const { label: estadoLabel, tone } = descripcionEstado(apt.status);
             const accentColor =
               tone === "ok"

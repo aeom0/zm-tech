@@ -18,6 +18,7 @@ export const defaultTenantConfig: TenantConfig = {
     country: "VE",
     timezone: "America/Caracas",
     language: "es-VE",
+    timeFormat: "24",
   },
 
   terminology: {

@@ -19,6 +19,9 @@ import { BorderRadius, Spacing } from "@/constants/theme";
 import {
   esMismoDiaCalendarioEnZona,
   esHoyEnZonaIANA,
+  formatoHoraInstanteEnZona,
+  type TenantConfig,
+  type TimeFormatPreference,
 } from "@salonpro/tenant-config";
 
 import type {
@@ -33,7 +36,8 @@ interface OwnerWeekGridProps {
   tabBarHeight: number;
   weekDays: Date[];
   timeZone: string;
-  language: string;
+  language: TenantConfig["locale"]["language"];
+  timeFormat: TimeFormatPreference;
   appointments: AgendaAppointment[];
   employees: AgendaEmployee[];
   services: AgendaService[];
@@ -62,19 +66,12 @@ function fmtDayNum(date: Date, language: string, timeZone: string): string {
   return new Intl.DateTimeFormat(language, { timeZone, day: "numeric" }).format(date);
 }
 
-function fmtTime(date: Date, language: string, timeZone: string): string {
-  return new Intl.DateTimeFormat(language, {
-    timeZone,
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(date);
-}
-
 export function OwnerWeekGrid({
   tabBarHeight,
   weekDays,
   timeZone,
   language,
+  timeFormat,
   appointments,
   employees,
   services,
@@ -108,7 +105,10 @@ export function OwnerWeekGrid({
   return (
     <ScrollView
       style={{ flex: 1 }}
-      contentContainerStyle={{ paddingBottom: tabBarHeight + Spacing.xl }}
+      contentContainerStyle={{
+        paddingBottom: tabBarHeight + Spacing.xl,
+        paddingHorizontal: Spacing.md,
+      }}
       refreshControl={
         <RefreshControl
           refreshing={isLoading}
@@ -242,7 +242,12 @@ export function OwnerWeekGrid({
                 dayApts.map((apt) => {
                   const empColor = employeeColorMap[apt.employee_id] ?? theme.primary;
                   const svcName = getServiceName(services, apt.service_id);
-                  const timeLabel = fmtTime(new Date(apt.date), language, timeZone);
+                  const timeLabel = formatoHoraInstanteEnZona(
+                    new Date(apt.date),
+                    timeZone,
+                    language,
+                    timeFormat,
+                  );
 
                   return (
                     <Pressable

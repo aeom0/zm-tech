@@ -6,6 +6,7 @@
  *   ADD COLUMN IF NOT EXISTS client_terminology text   NOT NULL DEFAULT 'cliente',
  *   ADD COLUMN IF NOT EXISTS tagline            text    NOT NULL DEFAULT '',
  *   ADD COLUMN IF NOT EXISTS features_whatsapp  boolean NOT NULL DEFAULT false;
+ *   ADD COLUMN IF NOT EXISTS time_format       text    NOT NULL DEFAULT '24';
  */
 import { supabase } from "@/lib/supabase";
 import type { TenantConfig } from "@salonpro/tenant-config";
@@ -23,6 +24,7 @@ function mapConfigToRow(config: TenantConfig, userId: string) {
     country: config.locale.country,
     language: config.locale.language,
     timezone: config.locale.timezone,
+    time_format: config.locale.timeFormat === "12" ? "12" : "24",
     client_terminology: config.terminology.client,
     staff_terminology: config.terminology.staff,
     staff_singular_terminology: config.terminology.staffSingular,
@@ -49,6 +51,7 @@ export type TenantSettingsRow = {
   country: string;
   language: TenantConfig["locale"]["language"];
   timezone: string;
+  time_format: string;
   client_terminology: string;
   staff_terminology: string;
   staff_singular_terminology: string;
@@ -82,6 +85,7 @@ function mapRowToConfig(row: TenantSettingsRow): TenantConfig {
       country: row.country,
       timezone: row.timezone ?? "America/Caracas",
       language: row.language,
+      timeFormat: row.time_format === "12" ? "12" : "24",
     },
     terminology: {
       staff: row.staff_terminology,
@@ -125,7 +129,7 @@ export async function fetchTenantSettings(
   const { data, error } = await supabase
     .from("tenant_settings")
     .select(
-      "business_name, business_type, primary_color, accent_color, currency_code, currency_symbol, country, language, timezone, client_terminology, staff_terminology, staff_singular_terminology, appointment_terminology, business_hours, contact_info, commission_staff, commission_house, tagline, features_whatsapp, logo_url",
+      "business_name, business_type, primary_color, accent_color, currency_code, currency_symbol, country, language, timezone, time_format, client_terminology, staff_terminology, staff_singular_terminology, appointment_terminology, business_hours, contact_info, commission_staff, commission_house, tagline, features_whatsapp, logo_url",
     )
     .eq("id", userId)
     .maybeSingle<TenantSettingsRow>();

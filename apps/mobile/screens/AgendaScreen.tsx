@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
 import { View, Alert, ActivityIndicator, ScrollView } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useRoute, useNavigation } from "@react-navigation/native";
@@ -58,6 +59,7 @@ import { AppointmentDetailModal } from "./agenda/components/AppointmentDetailMod
 export default function AgendaScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
+  const insets = useSafeAreaInsets();
   const { theme } = useTheme();
   const { config } = useTenant();
   const { role, profile, isAdmin, isLoading: authLoading } = useAuth();
@@ -68,7 +70,8 @@ export default function AgendaScreen() {
   const staffVista = !authLoading && role === "staff";
   const mobileDayMode = !isTablet && (ownerVista || staffVista);
 
-  const TIME_COL_W = isTablet ? 64 : 50;
+  const timeFormatReloj = config.locale.timeFormat === "12" ? "12" : "24";
+  const TIME_COL_W = isTablet ? 72 : 58;
 
   const tenantTz = useMemo(
     () => zonaIANASegura(config.locale.timezone),
@@ -293,10 +296,12 @@ export default function AgendaScreen() {
   );
 
   const empColWidth = useMemo(() => {
-    const disponible = width - TIME_COL_W - Spacing.md;
+    const borde =
+      Math.max(insets.left, Spacing.xs) + Math.max(insets.right, Spacing.xs) + Spacing.md * 2;
+    const disponible = width - TIME_COL_W - borde;
     const n = Math.max(employees.length, 1);
     return Math.max(104, Math.min(140, disponible / n));
-  }, [width, employees.length, TIME_COL_W]);
+  }, [width, employees.length, TIME_COL_W, insets.left, insets.right]);
 
   const staffNombreMostrado = useMemo(() => {
     const nombre = profile?.full_name?.trim();
@@ -358,7 +363,16 @@ export default function AgendaScreen() {
   }, []);
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: theme.backgroundRoot,
+          paddingLeft: Math.max(insets.left, Spacing.xs),
+          paddingRight: Math.max(insets.right, Spacing.xs),
+        },
+      ]}
+    >
       <AgendaHeader
         isTablet={isTablet}
         mobileDayMode={mobileDayMode}
@@ -423,6 +437,7 @@ export default function AgendaScreen() {
               weekDays={weekDays}
               timeZone={tenantTz}
               language={config.locale.language}
+              timeFormat={timeFormatReloj}
               appointments={appointments}
               employees={employees}
               services={services}
@@ -452,6 +467,7 @@ export default function AgendaScreen() {
               businessHours={businessHoursNorm}
               timeZone={tenantTz}
               language={config.locale.language}
+              timeFormat={timeFormatReloj}
               appointments={appointments}
               employees={employees}
               services={services}
@@ -484,6 +500,7 @@ export default function AgendaScreen() {
           selectedDate={selectedDate}
           timeZone={tenantTz}
           language={config.locale.language}
+          timeFormat={timeFormatReloj}
           appointments={appointments}
           services={services}
           isLoading={isLoading}
@@ -519,7 +536,9 @@ export default function AgendaScreen() {
             <AgendaEmployeeHeaders
               employees={employees}
               timeColWidth={TIME_COL_W}
-              columnWidth={(width - TIME_COL_W - Spacing.sm * 2) / Math.max(employees.length, 1)}
+              columnWidth={
+                (width - TIME_COL_W - Spacing.md * 2) / Math.max(employees.length, 1)
+              }
               theme={theme}
             />
           )}
@@ -538,6 +557,8 @@ export default function AgendaScreen() {
             agendaHours={agendaHours}
             businessHours={businessHoursNorm}
             timeZone={tenantTz}
+            language={config.locale.language}
+            timeFormat={timeFormatReloj}
             appointments={appointments}
             employees={employees}
             services={services}
@@ -600,6 +621,8 @@ export default function AgendaScreen() {
         agendaHours={agendaHours}
         businessHours={businessHoursNorm}
         timeZone={tenantTz}
+        language={config.locale.language}
+        timeFormat={timeFormatReloj}
         weekDays={weekDays}
         rescheduleDate={rescheduleDate}
         rescheduleHour={rescheduleHour}

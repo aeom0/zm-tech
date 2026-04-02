@@ -4,7 +4,10 @@ import { useCallback, useEffect, useState } from "react";
 import { Clock, Loader2 } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
-import type { TenantConfig } from "@salonpro/tenant-config";
+import type {
+  TenantConfig,
+  TimeFormatPreference,
+} from "@salonpro/tenant-config";
 import {
   CLAVES_DIA_LABORAL,
   ETIQUETA_DIA_LABORAL,
@@ -26,6 +29,8 @@ export default function PanelHorariosPage() {
   const [guardando, setGuardando] = useState(false);
   const [mensaje, setMensaje] = useState<string | null>(null);
   const [zonasExpandidas, setZonasExpandidas] = useState(false);
+  const [draftTimeFormat, setDraftTimeFormat] =
+    useState<TimeFormatPreference>("24");
 
   const cargar = useCallback(async () => {
     if (!supabase) {
@@ -48,7 +53,7 @@ export default function PanelHorariosPage() {
 
       const { data, error } = await supabase
         .from("tenant_settings")
-        .select("timezone, business_hours")
+        .select("timezone, business_hours, time_format")
         .eq("id", uid)
         .maybeSingle();
 
@@ -67,6 +72,8 @@ export default function PanelHorariosPage() {
             data.business_hours as TenantConfig["businessHours"] | null,
           ),
         );
+        const tf = (data as { time_format?: string | null }).time_format;
+        setDraftTimeFormat(tf === "12" ? "12" : "24");
       }
     } catch (e) {
       setErrorCarga(e instanceof Error ? e.message : "Error al cargar.");
@@ -124,6 +131,7 @@ export default function PanelHorariosPage() {
         .update({
           timezone: draftTimezone,
           business_hours: draftHours,
+          time_format: draftTimeFormat,
           updated_at: new Date().toISOString(),
         })
         .eq("id", userId);
@@ -206,6 +214,42 @@ export default function PanelHorariosPage() {
           {mensaje}
         </div>
       ) : null}
+
+      <section>
+        <h2 className="text-sm font-semibold text-zinc-200 mb-2">
+          Formato de hora en la app
+        </h2>
+        <p className="text-xs text-zinc-500 mb-3 max-w-prose">
+          Cómo se muestran las horas en la agenda móvil. Los horarios de
+          apertura siguen en 24 h al editarlos.
+        </p>
+        <div className="flex flex-wrap gap-3 mb-8">
+          <button
+            type="button"
+            onClick={() => setDraftTimeFormat("24")}
+            className={[
+              "rounded-xl border px-4 py-3 text-sm font-medium transition-colors",
+              draftTimeFormat === "24"
+                ? "border-[#40E0D0] bg-[#40E0D0]/15 text-[#40E0D0]"
+                : "border-white/[0.12] text-zinc-300 hover:bg-white/[0.04]",
+            ].join(" ")}
+          >
+            24 horas
+          </button>
+          <button
+            type="button"
+            onClick={() => setDraftTimeFormat("12")}
+            className={[
+              "rounded-xl border px-4 py-3 text-sm font-medium transition-colors",
+              draftTimeFormat === "12"
+                ? "border-[#40E0D0] bg-[#40E0D0]/15 text-[#40E0D0]"
+                : "border-white/[0.12] text-zinc-300 hover:bg-white/[0.04]",
+            ].join(" ")}
+          >
+            12 horas (AM / PM)
+          </button>
+        </div>
+      </section>
 
       <section>
         <h2 className="text-sm font-semibold text-zinc-200 mb-2">
