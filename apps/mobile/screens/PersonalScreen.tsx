@@ -66,6 +66,7 @@ export default function PersonalScreen() {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [editing, setEditing] = useState<Employee | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
   const [pendingAvatarUri, setPendingAvatarUri] = useState<string | null>(null);
   const [removeAvatar, setRemoveAvatar] = useState(false);
   const ultimoMimeAvatarRef = useRef<string>("image/jpeg");
@@ -95,6 +96,57 @@ export default function PersonalScreen() {
 
       return (data ?? []) as Employee[];
     },
+  });
+
+  const createMutation = useMutation({
+    mutationFn: async (data: {
+      name: string;
+      email: string | null;
+      phone: string | null;
+      color: string;
+      commission_percentage: number | null;
+      payment_mode: PaymentMode;
+      salary_amount: number | null;
+      notes: string | null;
+      is_active: boolean;
+      avatar_url: string | null;
+    }) => {
+      const { error } = await supabase.from("employees").insert(data);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["employees"] });
+      queryClient.invalidateQueries({ queryKey: ["employees", "active"] });
+      closeModal();
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    },
+    onError: (e: Error) =>
+      Alert.alert("Error", e.message || "No se pudo crear"),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (emp: Employee) => {
+      if (emp.avatar_url?.trim()) {
+        try {
+          await borrarAvatarSiEsStorage(supabase, emp.avatar_url);
+        } catch {
+          /* ignorar fallo de borrado en Storage */
+        }
+      }
+      const { error } = await supabase
+        .from("employees")
+        .delete()
+        .eq("id", emp.id);
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["employees"] });
+      queryClient.invalidateQueries({ queryKey: ["employees", "active"] });
+      closeModal();
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    },
+    onError: (e: Error) =>
+      Alert.alert("Error", e.message || "No se pudo eliminar"),
   });
 
   const updateMutation = useMutation({
@@ -137,6 +189,7 @@ export default function PersonalScreen() {
 
   const openEdit = (emp: Employee) => {
     setEditing(emp);
+    setIsCreating(false);
     setPendingAvatarUri(null);
     setRemoveAvatar(false);
     setForm({
@@ -157,11 +210,48 @@ export default function PersonalScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
+  const openCreate = () => {
+    setEditing(null);
+    setIsCreating(true);
+    setPendingAvatarUri(null);
+    setRemoveAvatar(false);
+    setForm({
+      name: "",
+      email: "",
+      phone: "",
+      color: config.theme.primaryColor,
+      paymentMode: "commission" as PaymentMode,
+      commission_percentage: String(config.commissions.defaultStaffPercent),
+      salary_amount: "",
+      notes: "",
+      is_active: true,
+    });
+    setModalVisible(true);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  };
+
   const closeModal = () => {
     setModalVisible(false);
     setEditing(null);
+    setIsCreating(false);
     setPendingAvatarUri(null);
     setRemoveAvatar(false);
+  };
+
+  const confirmDelete = () => {
+    if (!editing) return;
+    Alert.alert(
+      `Eliminar ${staffSingular}`,
+      `¿Eliminar a ${editing.name}? Esta acción no se puede deshacer.`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: () => deleteMutation.mutate(editing),
+        },
+      ],
+    );
   };
 
   const elegirFotoGaleria = async () => {
@@ -216,7 +306,7 @@ export default function PersonalScreen() {
         (editing.avatar_url?.trim() ? editing.avatar_url.trim() : null);
 
   const handleSave = async () => {
-    if (!editing) return;
+    if (!isCreating && !editing) return;
     const name = form.name.trim();
     if (!name) {
       Alert.alert("Error", "El nombre es obligatorio");
@@ -243,6 +333,43 @@ export default function PersonalScreen() {
       }
       salaryAmount = parsed;
     }
+
+    const sharedData = {
+      name,
+      email: form.email.trim() || null,
+      phone: form.phone.trim() || null,
+      color: form.color.trim() || config.theme.primaryColor,
+      commission_percentage: commissionPercentage,
+      payment_mode: form.paymentMode,
+      salary_amount: form.paymentMode !== "commission" ? salaryAmount : null,
+      notes: form.notes.trim() || null,
+      is_active: form.is_active,
+    };
+
+    if (isCreating) {
+      let avatar_url: string | null = null;
+      if (pendingAvatarUri) {
+        try {
+          const tempId = `temp_${Date.now()}`;
+          const { publicUrl } = await subirAvatarEmpleadoDefault(
+            tempId,
+            pendingAvatarUri,
+            ultimoMimeAvatarRef.current,
+          );
+          avatar_url = publicUrl;
+        } catch (e) {
+          Alert.alert(
+            "Error al subir la foto",
+            e instanceof Error ? e.message : "Intenta de nuevo.",
+          );
+          return;
+        }
+      }
+      createMutation.mutate({ ...sharedData, avatar_url });
+      return;
+    }
+
+    if (!editing) return;
 
     let avatar_url: string | null = editing.avatar_url?.trim() || null;
     if (removeAvatar) {
@@ -272,18 +399,7 @@ export default function PersonalScreen() {
 
     updateMutation.mutate({
       id: editing.id,
-      data: {
-        name,
-        email: form.email.trim() || null,
-        phone: form.phone.trim() || null,
-        color: form.color.trim() || config.theme.primaryColor,
-        commission_percentage: commissionPercentage,
-        payment_mode: form.paymentMode,
-        salary_amount: form.paymentMode !== "commission" ? salaryAmount : null,
-        notes: form.notes.trim() || null,
-        is_active: form.is_active,
-        avatar_url,
-      },
+      data: { ...sharedData, avatar_url },
     });
   };
 
@@ -400,6 +516,15 @@ export default function PersonalScreen() {
           ))
         )}
       </ScrollView>
+
+      {/* FAB agregar profesional */}
+      <Pressable
+        style={[styles.fab, { backgroundColor: theme.primary }]}
+        onPress={openCreate}
+        hitSlop={8}
+      >
+        <Feather name="plus" size={26} color="#FFF" />
+      </Pressable>
 
       <Modal visible={modalVisible} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
@@ -739,9 +864,9 @@ export default function PersonalScreen() {
               <Pressable
                 style={[styles.saveBtn, { backgroundColor: theme.primary }]}
                 onPress={handleSave}
-                disabled={updateMutation.isPending}
+                disabled={createMutation.isPending || updateMutation.isPending}
               >
-                {updateMutation.isPending ? (
+                {createMutation.isPending || updateMutation.isPending ? (
                   <ActivityIndicator color="#FFF" />
                 ) : (
                   <>
@@ -750,6 +875,25 @@ export default function PersonalScreen() {
                   </>
                 )}
               </Pressable>
+
+              {!isCreating && editing && (
+                <Pressable
+                  style={[styles.deleteBtn, { borderColor: theme.error }]}
+                  onPress={confirmDelete}
+                  disabled={deleteMutation.isPending}
+                >
+                  {deleteMutation.isPending ? (
+                    <ActivityIndicator color={theme.error} />
+                  ) : (
+                    <>
+                      <Feather name="trash-2" size={16} color={theme.error} />
+                      <ThemedText style={[styles.deleteBtnText, { color: theme.error }]}>
+                        Eliminar {staffSingular}
+                      </ThemedText>
+                    </>
+                  )}
+                </Pressable>
+              )}
             </ScrollView>
           </View>
         </View>
@@ -915,4 +1059,30 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xl,
   },
   saveBtnText: { color: "#FFF", fontSize: 16, fontWeight: "600" },
+  deleteBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: Spacing.sm,
+    height: 48,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+    marginBottom: Spacing.xl,
+  },
+  deleteBtnText: { fontSize: 15, fontWeight: "600" },
+  fab: {
+    position: "absolute",
+    right: Spacing.xl,
+    bottom: Spacing["3xl"],
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: "center",
+    justifyContent: "center",
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
 });
