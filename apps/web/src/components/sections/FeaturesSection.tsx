@@ -65,12 +65,17 @@ export function FeaturesSection() {
                   dueña tenga que contestar a las 2am.
                 </p>
                 <div className="flex flex-wrap gap-3 mt-5 justify-center md:justify-start">
-                  {["Todos los planes", "Sin código extra", "IA incluida"].map((label) => (
-                    <span key={label} className="inline-flex items-center gap-1.5 text-xs text-zinc-400 bg-zinc-800 px-3 py-1.5 rounded-full">
-                      <Check size={11} strokeWidth={2.5} />
-                      {label}
-                    </span>
-                  ))}
+                  {["Todos los planes", "Sin código extra", "IA incluida"].map(
+                    (label) => (
+                      <span
+                        key={label}
+                        className="inline-flex items-center gap-1.5 text-xs text-zinc-400 bg-zinc-800 px-3 py-1.5 rounded-full"
+                      >
+                        <Check size={11} strokeWidth={2.5} />
+                        {label}
+                      </span>
+                    ),
+                  )}
                 </div>
               </div>
               {/* Preview derecha */}

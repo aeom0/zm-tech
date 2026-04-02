@@ -206,7 +206,11 @@ export function PricingSection() {
                                 {val}
                               </span>
                             ) : val ? (
-                              <Check size={16} strokeWidth={2.5} className="text-primary mx-auto" />
+                              <Check
+                                size={16}
+                                strokeWidth={2.5}
+                                className="text-primary mx-auto"
+                              />
                             ) : (
                               <span className="text-zinc-300 dark:text-zinc-700">
                                 —

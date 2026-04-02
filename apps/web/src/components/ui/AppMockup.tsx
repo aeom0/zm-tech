@@ -1,7 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Calendar, DollarSign, Users, Home, Scissors, MoreHorizontal, User, Bell, TrendingUp, Star } from "lucide-react";
+import {
+  Calendar,
+  DollarSign,
+  Users,
+  Home,
+  Scissors,
+  MoreHorizontal,
+  User,
+  Bell,
+  TrendingUp,
+  Star,
+} from "lucide-react";
 import { LUNARIS } from "@/lib/theme";
 
 // Tres pantallas de la app que rotan en loop
@@ -328,7 +339,10 @@ export function AppMockup() {
           {screen.id === "finanzas" && "Vs. mes anterior"}
           {screen.id === "personal" && "Satisfacción"}
         </div>
-        <div className="text-sm font-bold flex items-center gap-1" style={{ color: screen.accent }}>
+        <div
+          className="text-sm font-bold flex items-center gap-1"
+          style={{ color: screen.accent }}
+        >
           {screen.id === "agenda" && "87% hoy"}
           {screen.id === "finanzas" && (
             <>

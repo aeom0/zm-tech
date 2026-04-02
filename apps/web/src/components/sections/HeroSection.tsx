@@ -21,7 +21,11 @@ export function HeroSection() {
           <div className="flex-1 text-center lg:text-left">
             {/* Badge */}
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white/90 text-sm font-medium px-4 py-2 rounded-full mb-8">
-              <Zap size={15} strokeWidth={2} className="text-accent flex-shrink-0" />
+              <Zap
+                size={15}
+                strokeWidth={2}
+                className="text-accent flex-shrink-0"
+              />
               <span>Gestión inteligente para tu negocio</span>
             </div>
 
@@ -61,13 +65,17 @@ export function HeroSection() {
             {/* Tipos de negocio */}
             <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
               {BUSINESS_TYPES.map((t) => {
-                const IconComponent = (LucideIcons as unknown as Record<string, LucideIcon>)[t.icon];
+                const IconComponent = (
+                  LucideIcons as unknown as Record<string, LucideIcon>
+                )[t.icon];
                 return (
                   <div
                     key={t.id}
                     className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white/80 text-sm px-4 py-2 rounded-full"
                   >
-                    {IconComponent && <IconComponent size={14} strokeWidth={2} />}
+                    {IconComponent && (
+                      <IconComponent size={14} strokeWidth={2} />
+                    )}
                     <span>{t.label}</span>
                   </div>
                 );

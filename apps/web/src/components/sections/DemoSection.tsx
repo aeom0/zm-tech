@@ -1,7 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Calendar, DollarSign, Users, Package, MessageCircle, type LucideIcon } from "lucide-react";
+import {
+  Calendar,
+  DollarSign,
+  Users,
+  Package,
+  MessageCircle,
+  type LucideIcon,
+} from "lucide-react";
 import { RevealWrapper } from "@/components/ui/RevealWrapper";
 import { LUNARIS } from "@/lib/theme";
 

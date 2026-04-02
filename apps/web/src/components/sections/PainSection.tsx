@@ -1,4 +1,10 @@
-import { Smartphone, BookOpen, TrendingDown, CheckCircle, Scissors } from "lucide-react";
+import {
+  Smartphone,
+  BookOpen,
+  TrendingDown,
+  CheckCircle,
+  Scissors,
+} from "lucide-react";
 import { RevealWrapper } from "@/components/ui/RevealWrapper";
 
 const PAINS = [
@@ -106,7 +112,11 @@ export function PainSection() {
                       key={s.text}
                       className="flex items-center gap-3 text-sm"
                     >
-                      <CheckCircle size={18} strokeWidth={2} className="text-accent flex-shrink-0" />
+                      <CheckCircle
+                        size={18}
+                        strokeWidth={2}
+                        className="text-accent flex-shrink-0"
+                      />
                       <span>{s.text}</span>
                     </li>
                   ))}

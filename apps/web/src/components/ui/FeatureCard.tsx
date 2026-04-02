@@ -9,7 +9,9 @@ type Props = {
 };
 
 export function FeatureCard({ icon, title, description, index }: Props) {
-  const IconComponent = (LucideIcons as unknown as Record<string, LucideIcon>)[icon];
+  const IconComponent = (LucideIcons as unknown as Record<string, LucideIcon>)[
+    icon
+  ];
 
   return (
     <div

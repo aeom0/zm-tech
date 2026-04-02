@@ -19,7 +19,9 @@ export function BusinessTypeTab({ types, active, onChange }: Props) {
   return (
     <div className="flex flex-wrap justify-center gap-2">
       {types.map((t) => {
-        const IconComponent = (LucideIcons as unknown as Record<string, LucideIcon>)[t.icon];
+        const IconComponent = (
+          LucideIcons as unknown as Record<string, LucideIcon>
+        )[t.icon];
         return (
           <button
             key={t.id}

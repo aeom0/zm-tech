@@ -135,7 +135,11 @@ export function PricingCard({ plan, annual }: Props) {
       <ul className="space-y-2.5 mb-8">
         {plan.wabaFeatures.map((feat) => (
           <li key={feat} className="flex items-start gap-2.5 text-sm">
-            <Sparkles size={13} strokeWidth={2} className="mt-0.5 flex-shrink-0 text-[#25D366]" />
+            <Sparkles
+              size={13}
+              strokeWidth={2}
+              className="mt-0.5 flex-shrink-0 text-[#25D366]"
+            />
             <span
               className={
                 plan.highlighted
