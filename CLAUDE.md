@@ -126,7 +126,7 @@ El paquete `packages/tenant-config` define la interface `TenantConfig` y cuatro 
 
 | Preset | Tipo | Color primario |
 |--------|------|----------------|
-| `spaNavilsPreset` | `spa-nails` | #E91E8C |
+| `spaNavilsPreset` | `spa-nails` | #40E0D0 |
 | `barbershopPreset` | `barbershop` | #1A237E |
 | `hairSalonPreset` | `hair-salon` | #6A1B9A |
 | `fullAestheticPreset` | `full-aesthetic` | #00695C |
@@ -159,9 +159,11 @@ En desarrollo se puede forzar siempre el onboarding con `EXPO_PUBLIC_FORCE_ONBOA
 ## Sistema de Diseño
 
 **Paleta de colores**: dinámica según `TenantConfig.theme` (primary + accent).
-Valores por defecto (preset `spa-nails`):
-- **Primario**: #E91E8C
-- **Acento**: #D4AF37
+Valores del preset `spa-nails` (archivo `presets/spa-nails.ts`):
+- **Primario**: #40E0D0 (Lunaris turquesa)
+- **Acento**: según preset (p. ej. dorado en UI)
+
+**Web (marketing / landing)**: paleta **Lunaris** en `apps/web/src/lib/theme.ts` (`LUNARIS`), alineada con **`Gradients.onboarding`** en `apps/mobile/constants/theme.ts`.
 
 `createTheme(config, isDark)` en `constants/theme.ts` sobreescribe `primary`, `accent`, `violet`, `gold`, `warning`, `link`, `tabIconSelected` e `info` con los colores del tenant.
 
@@ -219,10 +221,17 @@ Flujo de arranque (mobile):
 - **Moneda (web/landing)**: usa `$` USD como símbolo estándar internacional — NO hardcodear `S/`
 - **Terminología del personal**: viene de `config.terminology.staff` — NO hardcodear "chicas"
 - **Nombre del negocio**: viene de `config.businessName` — NO hardcodear nombre específico
-- **Colores**: vienen de `config.theme.primaryColor` / `accentColor` — NO hardcodear `#7B2D8E` ni `#D4AF37`
+- **Colores**: vienen de `config.theme.primaryColor` / `accentColor` — NO hardcodear violeta/magenta legacy (`#7B2D8E`, `#E91E8C`) ni sustituir el acento del tenant sin criterio
 - **Multiplataforma**: Un solo código para iOS, Android y Web
 - **TypeScript**: `apps/mobile/tsconfig.json` usa `module: "esnext"` (sin extender expo/tsconfig.base.json)
 - Usar `nvm use` para asegurar la versión correcta de Node
+
+## Cambios Recientes (abr 2026 — v1.4.8 — Lunaris web + Vercel + DiamondHero)
+
+- **Web — `LUNARIS`**: nuevo `apps/web/src/lib/theme.ts`; landing (Navbar Salon/Pro, `GradientButton`, Hero, Demo, PricingCard, `WABAPreview`, `AppMockup`), panel (`/panel/*`), `/login`, `/dashboard`, `/finanzas` migrados de magenta (`#E91E8C`) a turquesa (`#40E0D0` / `#00897B`). Tailwind `primary` `#00897B`, `globals.css` scrollbar/selection turquesa.
+- **Vercel**: eliminado `ignoreCommand` en `vercel.json` (evita `fatal: bad object` en shallow clone); cada push a `main` construye la web.
+- **Mobile — `DiamondHero`**: usa `Gradients.onboarding.colors` / `locations` y `linearStart`/`linearEnd` desde `constants/theme.ts` (sin duplicar stops locales).
+- **Changelog**: ver `[1.4.8]` en `CHANGELOG.md`.
 
 ## Cambios Recientes (feb 2026 — v1.2.0 — migración SalonPro)
 
@@ -246,7 +255,7 @@ Flujo de arranque (mobile):
 - **Ícono launcher** (`assets/icon.png`, 1024×1024): regenerado con misma composición diamante+nebulosa; fondo `#111318` (elimina fondo blanco previo); diamante ocupa ~70% del canvas con márgenes simétricos.
 - **`SplashScreenComponent` eliminada** de `AuthGate`: la splash nativa cubre el tiempo de carga de AsyncStorage; `hideAsync()` se llama cuando `tenantLoading` pasa a `false` vía `useEffect`. Archivo `SplashScreen.tsx` queda en repo pero ya no se usa en el flujo.
 - **`DiamondHero`**: eliminado `MaskedView`/gradiente del wordmark "SalonPro"; tipografía mixta — `Salon` en weight 300 + letterSpacing 6 uppercase, `Pro` en weight 800 letterSpacing -1; todo blanco. Prop `showText` (default `true`) para reutilizar solo el diamante+glow sin textos.
-- **`OnboardingEntryScreen`**: restaurado gradiente magenta→azul en "con estilo y precisión" con altura `maskedHighlight: 58` y `lineHeight: 54` para evitar corte de descendentes; font-weight 300 + letterSpacing 0.5.
+- **`OnboardingEntryScreen`**: gradiente Lunaris (turquesa→índigo) en "con estilo y precisión" vía tokens de tema; altura `maskedHighlight: 58` y `lineHeight: 54` para evitar corte de descendentes; font-weight 300 + letterSpacing 0.5.
 
 ## Cambios Recientes (mar 2026 — v1.4.4 — Marca diamante + EAS)
 
@@ -291,7 +300,7 @@ Flujo de arranque (mobile):
 
 ## Cambios Recientes (mar 2026 — v1.4.0 — Fase 12: Landing Web Rediseño LATAM)
 
-- **`GradientButton` component** (`apps/web/src/components/ui/GradientButton.tsx`): botón reutilizable con gradiente 135° `#E91E8C → #9C27B0 → #3D3D8F → #1565C0`; variante `outline` para CTAs secundarios; props `size` (sm/md/lg) y `className`.
+- **`GradientButton` component** (`apps/web/src/components/ui/GradientButton.tsx`): botón reutilizable con gradiente Lunaris (`LUNARIS.gradient.css`, 135°); variante `outline` para CTAs secundarios; props `size` (sm/md/lg) y `className`. *(Histórico v1.4.0: gradiente magenta multi-stop; sustituido en v1.4.8.)*
 - **`DemoSection`** (`apps/web/src/components/sections/DemoSection.tsx`): sección interactiva con 4 tabs (Agenda, Finanzas, Personal, Inventario); mockup de celular animado por tab con franja de color, badges de estado y glow; stats de impacto por módulo; CTA inline contextual.
 - **Navbar**: ícono diamante `/logo-diamondSparkle.svg` (ver v1.4.4 para barra clara/`invert`); link "Demo"; CTA "Empezar gratis" con `GradientButton`; hamburger mobile con menú oscuro backdrop-blur.
 - **HeroSection**: headline rediseñado para LATAM ("El software que tu salón merece / y que tus clientes van a notar.") con gradiente en texto; CTAs reemplazados por `GradientButton` + variante outline ("Ver demo en vivo →").

@@ -5,6 +5,25 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ---
 
+## [1.4.8] — 2026-04-01
+
+### Añadido
+- **Web — paleta Lunaris (fuente de verdad)**: `apps/web/src/lib/theme.ts` exporta **`LUNARIS`** (gradiente 135°/90°, `primary` `#40E0D0`, `primaryDark`, `badge`, `glow`, etc.). Landing, panel, login, `/dashboard` y `/finanzas` consumen estos tokens o clases Tailwind alineadas (`#40E0D0` / `#00897B`).
+- **Tailwind / globals (web)**: `primary` → `#00897B`, `primaryLight` → `#B2DFDB`; scrollbar y `::selection` con tintes turquesa.
+
+### Cambiado
+- **Navbar (landing)**: wordmark **Salon** + **Pro** con gradiente Lunaris; badge Beta con `LUNARIS.badge`.
+- **Mobile — `DiamondHero` / onboarding**: gradientes desde **`Gradients.onboarding`** en `constants/theme.ts` (sin array hardcodeado local); dirección 135° unificada (`linearStart` / `linearEnd`).
+- **Vercel**: eliminado **`ignoreCommand`** en `vercel.json` — el diff contra `VERCEL_GIT_PREVIOUS_SHA` en checkout **shallow** provocaba `fatal: bad object` y builds en ERROR. Cada push a `main` ejecuta build de la web (sin omitir por paths).
+
+### Corregido
+- **Web**: Prettier en `/panel/horarios` para pasar lint en CI/Vercel.
+
+### Notas
+- **`defaultTenantConfig`** (`packages/tenant-config/src/defaults.ts`) puede seguir con `primaryColor` heredado hasta alineación explícita; el **preset `spa-nails`** (`presets/spa-nails.ts`) usa ya **`#40E0D0`**.
+
+---
+
 ## [1.4.7] — 2026-03-30
 
 ### Añadido

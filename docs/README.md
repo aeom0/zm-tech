@@ -70,7 +70,7 @@ Abrir la URL que muestre Expo (web en 8081) o escanear QR con Expo Go.
 ## Estructura resumida
 
 - **`apps/mobile/`** — App Expo: pantallas, navegación, contexts (Auth, Tenant), hooks, tema.
-- **`apps/web/`** — Next.js: landing pública + panel `/finanzas` y `/dashboard` + panel admin `/panel` (login `/login`; **`/panel/servicios`**: categorías, servicios, packs y promos; `?tab=`).
+- **`apps/web/`** — Next.js: landing pública + panel `/finanzas` y `/dashboard` + panel admin `/panel` (login `/login`; **`/panel/servicios`**, **`/panel/horarios`**). Marca: **`src/lib/theme.ts`** (`LUNARIS`).
 - **`packages/shared-schema/`** — Schema Drizzle + Zod (tenant_settings, employees, services, etc.).
 - **`packages/tenant-config/`** — Presets por tipo de negocio (spa-nails, barbershop, hair-salon, full-aesthetic).
 

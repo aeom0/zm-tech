@@ -134,7 +134,7 @@ export interface TenantConfig {
 
 | Preset | Negocio ejemplo | Color primario | Color acento | Staff | Cita |
 |--------|----------------|----------------|--------------|-------|------|
-| `spa-nails.ts` | "Spa Bella" | #E91E8C | #D4AF37 | "chicas" / "especialista" | "cita" |
+| `spa-nails.ts` | "Spa Bella" | #40E0D0 | #D4AF37 | "chicas" / "especialista" | "cita" |
 | `barbershop.ts` | "Barbería Clásica" | #1A237E | #F9A825 | "barberos" / "barbero" | "turno" |
 | `hair-salon.ts` | "Salón de Estilo" | #6A1B9A | #9E9E9E | "estilistas" / "estilista" | "cita" |
 | `full-aesthetic.ts` | "Centro Estético Integral" | #00695C | #FFD700 | "especialistas" / "especialista" | "cita" |

@@ -15,7 +15,7 @@ Directrices y reglas de desarrollo para Cursor en este proyecto. Monorepo apps/m
     ├── mobile-patterns.mdc   # Expo/React Native, navegación, listas
     ├── performance.mdc      # Optimización cliente/servidor
     ├── testing.mdc          # Patrones de tests
-    ├── current-development.mdc  # Estado actual (onboarding, tenant_settings, stack)
+    ├── current-development.mdc  # Estado actual (Lunaris web `theme.ts`, Vercel builds, onboarding, tenant_settings)
     ├── idioma.mdc            # Español, jerga venezolana
     ├── development-access.mdc   # Acceso .env y archivos de desarrollo
     └── supabase-mcp.mdc        # Uso de MCP Supabase (dos proyectos)

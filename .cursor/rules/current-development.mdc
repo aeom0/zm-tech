@@ -19,9 +19,9 @@ alwaysApply: true
 
 ## Stack operativo
 
-- **Mobile (apps/mobile)**: Expo SDK 54, Supabase directo, TanStack Query. Tema en `constants/theme.ts` (onboarding oscuro #111318). **snake_case** en datos de BD.
+- **Mobile (apps/mobile)**: Expo SDK 54, Supabase directo, TanStack Query. Tema en `constants/theme.ts` (onboarding oscuro #111318); **`Gradients.onboarding`** define el gradiente Lunaris (turquesa → índigo) para CTAs/onboarding (`DiamondHero` y pantallas relacionadas). **snake_case** en datos de BD.
 - **Auth + Tenant**: AuthProvider fuera de TenantProvider. Al terminar onboarding se hace upsert en `tenant_settings` y guardado en AsyncStorage; al arranque con sesión se carga tenant desde Supabase si no hay config local. **`updateTenant(partial, { syncRemote: true })`** fusiona con `mergeTenantConfig` y opcionalmente hace upsert (p. ej. pantalla **Horario de trabajo**).
-- **Web (apps/web)**: Next.js 15, Tailwind, Supabase Auth. Landing + `/dashboard` (KPIs, `useDashboardData`, queries PostgREST separadas + join en memoria) + `/finanzas` + **panel** `/panel` (login `/login`, guard SSR). **`/panel/servicios`**: CRUD categorías/servicios, packs/promos (PostgREST), tab **`?tab=`**. **`/panel/horarios`**: edita `timezone` + `business_hours` en `tenant_settings`. Auth wrapper compartido (`FinanzasAuthWrapper`) en `/finanzas` y `/dashboard`. Sin sesión → `/finanzas/login`. Staff en `/dashboard` → redirect a `/`. **Pendiente (web dashboard KPIs)**: gráfico 7 días puede seguir usando calendario local del navegador; mobile **Agenda** ya usa `config.locale.timezone` (Luxon en `@salonpro/tenant-config`) para semana, celdas, citas y franja laboral.
+- **Web (apps/web)**: Next.js 15, Tailwind, Supabase Auth. **Marca / marketing**: paleta **Lunaris turquesa** centralizada en **`apps/web/src/lib/theme.ts`** (`LUNARIS`: gradiente, `primary` `#40E0D0`, `primaryDark` `#00897B`, badge, glow). Navbar landing: **Salon** (texto) + **Pro** (gradiente); `GradientButton` y secciones hero/demo/pricing usan `LUNARIS.gradient`. Tailwind `primary`/`primaryLight` alineados a teal/turquesa; panel/login/dashboard/finanzas sin magenta legacy (`#E91E8C`). Landing + `/dashboard` (KPIs, `useDashboardData`, queries PostgREST separadas + join en memoria) + `/finanzas` + **panel** `/panel` (login `/login`, guard SSR). **`/panel/servicios`**: CRUD categorías/servicios, packs/promos (PostgREST), tab **`?tab=`**. **`/panel/horarios`**: edita `timezone` + `business_hours` en `tenant_settings`. Auth wrapper compartido (`FinanzasAuthWrapper`) en `/finanzas` y `/dashboard`. Sin sesión → `/finanzas/login`. Staff en `/dashboard` → redirect a `/`. **Vercel**: sin `ignoreCommand` en `vercel.json` — cada push a `main` construye la web (evita `bad object` en clone shallow). **Pendiente (web dashboard KPIs)**: gráfico 7 días puede seguir usando calendario local del navegador; mobile **Agenda** ya usa `config.locale.timezone` (Luxon en `@salonpro/tenant-config`) para semana, celdas, citas y franja laboral.
 - **Scripts**: `yarn mobile:dev`, `yarn web:dev`, `yarn db:push`, `yarn db:seed`.
 
 ## Pantallas y flujo
@@ -41,7 +41,7 @@ En `apps/web/public/`:
 - **`logo-diamondSparkle.svg`** — marca por defecto (solo diamante, sin texto en el asset; fondos oscuros / transparentes).
 - `logo-diamondSparkle-positive.svg` / `negative` — opcionales para export o redes (no sustituyen al principal en UI salvo necesidad).
 
-Navbar (landing): mismo `logo-diamondSparkle.svg`; con header claro tras scroll (modo claro) aplicar `invert`; en `dark:` sin invert. Footer y splash: mismo SVG / PNG derivado. `favicon.png` desde el diamante principal.
+Navbar (landing): mismo `logo-diamondSparkle.svg`; wordmark **Salon** + **Pro** (gradiente `LUNARIS.gradient.css90`); badge Beta con `LUNARIS.badge`. Con header claro tras scroll (modo claro) aplicar `invert` al diamante; en `dark:` sin invert; texto **Salon** legible en barra clara (`text-zinc-900` / `dark:text-white`). Footer y splash: mismo SVG / PNG derivado. `favicon.png` desde el diamante principal.
 
 ## Reglas de trabajo
 

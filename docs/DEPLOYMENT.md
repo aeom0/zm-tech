@@ -46,6 +46,8 @@ vercel --prod
 
 (o push a la rama conectada si está configurado el deploy automático).
 
+**Build en Vercel (monorepo)**: en la raíz del repo, **`vercel.json` no usa `ignoreCommand`** para omitir builds por paths: cada push a la rama de producción (p. ej. `main`) dispara **`yarn web:build`**. Motivo: los `git diff` contra `VERCEL_GIT_PREVIOUS_SHA` fallaban en checkouts **shallow** (`fatal: bad object`). Si necesitas ahorrar minutos, valorar otras estrategias (p. ej. Turborepo remote cache) en lugar de omitir el build por diff.
+
 ### Rutas protegidas (panel)
 
 - `GET /login` — login del panel (email/password Supabase).
@@ -97,4 +99,4 @@ npx eas-cli@latest update --branch preview --message "Descripción"
 
 ---
 
-**Última actualización**: 2026-03-30
+**Última actualización**: 2026-04-01

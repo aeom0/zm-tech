@@ -67,7 +67,7 @@ docs/
 - **Mobile**: `apps/mobile/` — components, screens, navigation, contexts, hooks, constants
 - **Pantallas modulares (mobile)**: varias rutas bajo `apps/mobile/screens/<feature>/` agrupan `types`, `hooks`, `components` y estilos; el archivo `*Screen.tsx` en `screens/` actúa como orquestador (p. ej. `agenda/`, `dashboard/`, `finances/`, `inventory/`).
 - **Web**: `apps/web/` — Next.js App Router (landing pública + `/dashboard`, `/finanzas` y panel **`/panel`**: **`/panel/servicios`** (categorías, servicios, packs, promos; `?tab=`) y **`/panel/horarios`** (zona IANA + `business_hours`))
-- **Tema**: `apps/mobile/constants/theme.ts`; tenant: `TenantContext` + `tenant_settings`
+- **Tema / marca**: mobile — `apps/mobile/constants/theme.ts` + **`Gradients.onboarding`** (Lunaris); web — **`apps/web/src/lib/theme.ts`** (`LUNARIS`, gradientes y primarios turquesa). Tenant en runtime: `TenantContext` + `tenant_settings` + `@salonpro/tenant-config`
 - **TenantConfig** (`@salonpro/tenant-config`): presets, **`working-schedule`** (franja laboral), **`iana-timezone`** (Luxon: agenda y citas en `locale.timezone`); `features?.whatsapp` (promo WA cuando aplique)
 
 ### MCP (Cursor)

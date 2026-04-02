@@ -210,7 +210,7 @@ salonpro/
 │           ├── defaults.ts       # defaultTenantConfig
 │           ├── index.ts
 │           └── presets/
-│               ├── spa-nails.ts      # #E91E8C
+│               ├── spa-nails.ts      # #40E0D0 (Lunaris)
 │               ├── barbershop.ts     # #1A237E
 │               ├── hair-salon.ts     # #6A1B9A
 │               └── full-aesthetic.ts # #00695C
@@ -434,7 +434,7 @@ BorderRadius: { sm: 6, md: 10, lg: 16, xl: 24, full: 9999 }
 
 ```
 135 grados — stops:
-  0%   #E91E8C  (magenta)
+  0%   #40E0D0  (turquesa Lunaris)
  35%   #9C27B0  (purple)
  70%   #3D3D8F  (indigo)
 100%   #1565C0  (azul)
@@ -449,7 +449,7 @@ BorderRadius: { sm: 6, md: 10, lg: 16, xl: 24, full: 9999 }
 
 | Preset | businessType | Color primario |
 |---|---|---|
-| spaNavilsPreset | spa-nails | #E91E8C |
+| spaNavilsPreset | spa-nails | #40E0D0 |
 | barbershopPreset | barbershop | #1A237E |
 | hairSalonPreset | hair-salon | #6A1B9A |
 | fullAestheticPreset | full-aesthetic | #00695C |

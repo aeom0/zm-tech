@@ -78,8 +78,8 @@ yarn db:seed
 - **Backend**: Supabase (Auth + PostgREST) — sin servidor Express. Proyecto: `xidjomlxpuosupymcsaj`
 - **Schema compartido**: Drizzle ORM + Zod (`packages/shared-schema`) — índices FK y tabla `appointment_verifications` alineados con Supabase; RLS/funciones documentadas en `scripts/db/migrations/20260324_advisor_rls_performance.sql` (aplicación remota vía MCP o SQL Editor si aplica)
 - **Config de tenant**: `packages/tenant-config` (`@salonpro/tenant-config`) — presets, `TenantConfig` (incluye `features?.whatsapp` para promo WA / ajustes)
-- **Web**: Next.js (`apps/web`) — landing pública + paneles `/dashboard` (KPIs) y `/finanzas` (solo rol `owner`/`dev`; login en `/finanzas/login`)
-- **Web (panel)**: área autenticada en `/panel` — primera sección **`/panel/servicios`**: CRUD categorías + servicios (PR-06), packs + promos con ítems (PR-06B); tab activo vía **`?tab=`**.
+- **Web**: Next.js (`apps/web`) — landing pública + paneles `/dashboard` (KPIs) y `/finanzas` (solo rol `owner`/`dev`; login en `/finanzas/login`). **Paleta de marca (Lunaris)**: `apps/web/src/lib/theme.ts` (`LUNARIS`) — gradientes, `#40E0D0` / `#00897B`, glow; alineada con `Gradients.onboarding` en mobile.
+- **Web (panel)**: área autenticada en `/panel` — primera sección **`/panel/servicios`**: CRUD categorías + servicios (PR-06), packs + promos con ítems (PR-06B); tab activo vía **`?tab=`**. **`/panel/horarios`**: zona IANA + `business_hours`.
 - **Monorepo**: Yarn Workspaces
 
 ---

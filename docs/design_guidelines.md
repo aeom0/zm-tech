@@ -1,6 +1,6 @@
 # SalonPro — Guía de Diseño del Dashboard Administrativo
 
-> En SalonPro los colores y terminología vienen del **tenant** (preset o config guardada en `tenant_settings`). Esta guía describe la estética de referencia (violeta/dorado); la app usa `createTheme(config)` según el preset elegido en el onboarding.
+> En SalonPro los colores y terminología vienen del **tenant** (preset o config guardada en `tenant_settings`). La **marca producto SalonPro** usa la línea **Lunaris** (turquesa → índigo): mobile `Gradients.onboarding` en `constants/theme.ts`; web `LUNARIS` en `apps/web/src/lib/theme.ts`. La app usa `createTheme(config)` según el preset elegido en el onboarding.
 
 ## 1. Identidad de Marca
 
@@ -8,7 +8,7 @@
 
 **Dirección Estética**: **Lujoso/refinado** - Estética de spa premium con elegancia contenida. Piensa en la recepción de un salón de belleza de alta gama combinado con una herramienta de productividad moderna. La interfaz debe sentirse sofisticada y calmante, nunca desordenada o barata.
 
-**Elemento Memorable**: Paleta rica en violeta y negro con acentos dorados elegantes en acciones clave (agendar cita, completar pago) contra un lienzo blanco limpio. La vista de calendario es la protagonista - espaciosa, respirable, con las citas apareciendo como tarjetas pulidas.
+**Elemento Memorable**: Primario **turquesa/teal** (Lunaris) con acentos del tenant (p. ej. dorado) en acciones clave; lienzo claro u oscuro según modo. La vista de calendario es la protagonista: espaciosa, respirable, citas como tarjetas pulidas.
 
 ## 2. Arquitectura de Navegación
 
@@ -25,10 +25,15 @@
 
 ## 3. Paleta de Colores
 
-**Colores Primarios**:
-- Primario (Violeta): `#7B2D8E` - Color principal de marca, usado para CTAs, estados activos
-- Primario Claro: `#E8D4ED` - Estados hover, resaltados sutiles
-- Primario Oscuro: `#5A1F6A` - Estados presionados, énfasis
+**Referencia marca / marketing (alineada mobile + web)**:
+- Turquesa Lunaris: `#40E0D0` — primario destacado (preset spa-nails, landing)
+- Teal: `#00897B` — primario oscuro / hover (Tailwind `primary` en web)
+- Índigo (gradiente): `#3949AB` — cierre del gradiente Lunaris
+
+**Colores Primarios (UI tenant — ejemplo spa-nails tras onboarding)**:
+- Primario: según `TenantConfig.theme.primaryColor` (preset spa-nails: `#40E0D0`)
+- Primario Claro: tintes derivados o `#B2DFDB` (web `primaryLight`)
+- Primario Oscuro: `#00897B` o estados presionados del tema
 
 **Colores de Acento**:
 - Dorado: `#D4AF37` - Acentos premium, indicadores de éxito, precios
@@ -36,7 +41,7 @@
 
 **Neutros**:
 - Fondo: `#FFFFFF` - Lienzo principal
-- Superficie: `#F8F5FA` - Tarjetas, elementos elevados (tinte violeta sutil)
+- Superficie: `#F8F5FA` - Tarjetas, elementos elevados (tinte neutro / sutil)
 - Borde: `#E0D6E5` - Divisores, contornos de tarjetas
 - Texto Primario: `#1A1A1A` - Títulos, texto importante (casi negro)
 - Texto Secundario: `#4A4A4A` - Descripciones, etiquetas
@@ -47,7 +52,7 @@
 - Éxito: `#4CAF50` - Citas completadas
 - Advertencia: `#D4AF37` - Alertas de stock bajo (usa dorado)
 - Error: `#D32F2F` - Cancelaciones, alertas críticas
-- Info: `#7B2D8E` - Mensajes informativos (usa violeta)
+- Info: tono primario del tenant o turquesa `#40E0D0` en superficies de marca
 
 ## 4. Tipografía
 
@@ -70,12 +75,12 @@
 - Fondo: Blanco (#FFFFFF)
 - Borde: 1px solid #E0D6E5
 - Radio de Borde: 16px
-- Sombra: Sombra sutil con tinte violeta
+- Sombra: Sombra sutil (tinte neutro o del primario del tenant)
 - Padding: 16-20px
 
 **Botones**:
-- Primario: Fondo violeta (#7B2D8E), texto blanco
-- Secundario: Fondo blanco, borde y texto violeta
+- Primario: Fondo primario del tenant (p. ej. turquesa #40E0D0), texto blanco
+- Secundario: Fondo blanco, borde y texto primario del tenant
 - Acento: Fondo dorado (#D4AF37), texto blanco
 - Radio de Borde: Completo (forma de píldora)
 - Altura: 52px
@@ -83,13 +88,13 @@
 **Campos de Entrada**:
 - Fondo: #F8F5FA
 - Borde: 1px solid #E0D6E5
-- Borde en Focus: #7B2D8E
+- Borde en Focus: primario del tenant o #40E0D0
 - Radio de Borde: 12px
 - Altura: 48px
 
 **Íconos**:
 - Usar íconos Feather de @expo/vector-icons
-- Activo/Seleccionado: Violeta (#7B2D8E)
+- Activo/Seleccionado: Primario del tenant (Lunaris / turquesa si aplica)
 - Inactivo: Gris atenuado (#8A8A8A)
 - Acciones de acento: Dorado (#D4AF37)
 
