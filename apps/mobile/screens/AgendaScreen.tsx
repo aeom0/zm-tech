@@ -47,6 +47,7 @@ import { AgendaWeekDayHeaders } from "./agenda/components/AgendaWeekDayHeaders";
 import { AgendaEmployeeHeaders } from "./agenda/components/AgendaEmployeeHeaders";
 import { AgendaStatusFilter as AgendaStatusFilterBar } from "./agenda/components/AgendaStatusFilter";
 import { AgendaCalendarGrid } from "./agenda/components/AgendaCalendarGrid";
+import { AgendaDayKPIStrip } from "./agenda/components/AgendaDayKPIStrip";
 import { OwnerDayGrid } from "./agenda/components/OwnerDayGrid";
 import { OwnerWeekGrid } from "./agenda/components/OwnerWeekGrid";
 import { OwnerStaffAvatarStrip } from "./agenda/components/OwnerStaffAvatarStrip";
@@ -75,23 +76,18 @@ export default function AgendaScreen() {
   );
 
   const [selectedDate, setSelectedDate] = useState<Date>(() =>
-    inicioDiaHoyEnZonaIANA(
-      zonaIANASegura(defaultTenantConfig.locale.timezone),
-    ),
+    inicioDiaHoyEnZonaIANA(zonaIANASegura(defaultTenantConfig.locale.timezone)),
   );
   const [ownerViewMode, setOwnerViewMode] = useState<OwnerViewMode>("day");
   const [modalVisible, setModalVisible] = useState(false);
   const [detailModalVisible, setDetailModalVisible] = useState(false);
-  const [appointmentDetail, setAppointmentDetail] =
-    useState<AgendaAppointment | null>(null);
+  const [appointmentDetail, setAppointmentDetail] = useState<AgendaAppointment | null>(null);
   const [rescheduleDate, setRescheduleDate] = useState<Date | null>(null);
   const [rescheduleHour, setRescheduleHour] = useState<number>(10);
   const [selectedHour, setSelectedHour] = useState(9);
-  const [statusFilter, setStatusFilter] =
-    useState<AgendaStatusFilterType>("all");
+  const [statusFilter, setStatusFilter] = useState<AgendaStatusFilterType>("all");
   const [formData, setFormData] = useState<AgendaFormState>(emptyAgendaForm());
 
-  // Refs para sincronizar scroll avatar strip ↔ grid
   const avatarStripRef = useRef<ScrollView>(null);
   const gridScrollRef = useRef<ScrollView>(null);
   const isSyncingFromGrid = useRef(false);
@@ -111,27 +107,18 @@ export default function AgendaScreen() {
     () => normalizarHorarioSemanal(config.businessHours),
     [config.businessHours],
   );
-
   const agendaHours = useMemo(
     () => horasVisiblesParaAgenda(config.businessHours),
     [config.businessHours],
   );
 
   const {
-    appointments,
-    isLoading,
-    refetch,
-    employees,
-    employeesLoading,
-    employeesError,
-    categories,
-    services,
-    servicesLoading,
-    servicesError,
+    appointments, isLoading, refetch,
+    employees, employeesLoading, employeesError,
+    categories, services, servicesLoading, servicesError,
   } = useAgendaQueries();
 
   const servicesByCategory = useServicesByCategory(services, formData.categoryId);
-
   const selectedCategory = useMemo(
     () => categories.find((c) => c.id === formData.categoryId),
     [categories, formData.categoryId],
@@ -145,18 +132,9 @@ export default function AgendaScreen() {
     [employees, formData.employeeId],
   );
 
-  const onCreateSuccess = useCallback(() => {
-    setModalVisible(false);
-    setFormData(emptyAgendaForm());
-  }, []);
-  const onDeleteSuccess = useCallback(() => {
-    setDetailModalVisible(false);
-    setAppointmentDetail(null);
-  }, []);
-  const onUpdateSuccess = useCallback(() => {
-    setDetailModalVisible(false);
-    setAppointmentDetail(null);
-  }, []);
+  const onCreateSuccess = useCallback(() => { setModalVisible(false); setFormData(emptyAgendaForm()); }, []);
+  const onDeleteSuccess = useCallback(() => { setDetailModalVisible(false); setAppointmentDetail(null); }, []);
+  const onUpdateSuccess = useCallback(() => { setDetailModalVisible(false); setAppointmentDetail(null); }, []);
 
   const { createMutation, deleteAppointmentMutation, updateAppointmentMutation } =
     useAgendaMutations({ onCreateSuccess, onDeleteSuccess, onUpdateSuccess });
@@ -212,9 +190,7 @@ export default function AgendaScreen() {
       ? services.find((s) => s.category_id === firstCategoryId)
       : services[0];
     setFormData({
-      clientName: "",
-      clientPhone: "",
-      clientDocument: "",
+      clientName: "", clientPhone: "", clientDocument: "",
       categoryId: firstCategoryId,
       serviceId: firstServiceInCategory?.id ?? "",
       employeeId: employees.length > 0 ? employees[0].id : "",
@@ -239,29 +215,15 @@ export default function AgendaScreen() {
       `¿Eliminar la cita de ${appointmentDetail.client_name}?`,
       [
         { text: "Cancelar", style: "cancel" },
-        {
-          text: "Eliminar",
-          style: "destructive",
-          onPress: () => deleteAppointmentMutation.mutate(appointmentDetail.id),
-        },
+        { text: "Eliminar", style: "destructive", onPress: () => deleteAppointmentMutation.mutate(appointmentDetail.id) },
       ],
     );
   };
 
   const handleReschedule = () => {
     if (!appointmentDetail || !rescheduleDate) return;
-    if (
-      !esCeldaAgendaEnHorarioLaboral(
-        rescheduleDate,
-        rescheduleHour,
-        businessHoursNorm,
-        tenantTz,
-      )
-    ) {
-      Alert.alert(
-        "Fuera de horario",
-        "Ese día u hora está fuera de la franja del negocio. Elige otra opción o actualiza el horario en Configuración.",
-      );
+    if (!esCeldaAgendaEnHorarioLaboral(rescheduleDate, rescheduleHour, businessHoursNorm, tenantTz)) {
+      Alert.alert("Fuera de horario", "Ese día u hora está fuera de la franja del negocio.");
       return;
     }
     const newDate = instanteCitaEnZona(rescheduleDate, rescheduleHour, tenantTz);
@@ -274,30 +236,14 @@ export default function AgendaScreen() {
   };
 
   const handleCreateAppointment = () => {
-    if (!formData.clientName.trim()) {
-      Alert.alert("Error", "Ingresa el nombre de la clienta");
-      return;
-    }
-    if (!formData.serviceId) {
-      Alert.alert("Error", "Selecciona un servicio");
-      return;
-    }
+    if (!formData.clientName.trim()) { Alert.alert("Error", "Ingresa el nombre de la clienta"); return; }
+    if (!formData.serviceId) { Alert.alert("Error", "Selecciona un servicio"); return; }
     if (!formData.employeeId) {
       Alert.alert("Error", `Selecciona ${config.terminology.staffSingular.toLowerCase()}`);
       return;
     }
-    if (
-      !esCeldaAgendaEnHorarioLaboral(
-        selectedDate,
-        selectedHour,
-        businessHoursNorm,
-        tenantTz,
-      )
-    ) {
-      Alert.alert(
-        "Fuera de horario",
-        "Esa hora está fuera de la franja configurada. Elige otra celda o ajusta el horario en Configuración.",
-      );
+    if (!esCeldaAgendaEnHorarioLaboral(selectedDate, selectedHour, businessHoursNorm, tenantTz)) {
+      Alert.alert("Fuera de horario", "Esa hora está fuera de la franja configurada.");
       return;
     }
     const appointmentDate = instanteCitaEnZona(selectedDate, selectedHour, tenantTz);
@@ -373,9 +319,7 @@ export default function AgendaScreen() {
       ? services.find((s) => s.category_id === firstCategoryId)
       : services[0];
     setFormData({
-      clientName: "",
-      clientPhone: "",
-      clientDocument: "",
+      clientName: "", clientPhone: "", clientDocument: "",
       categoryId: firstCategoryId,
       serviceId: firstServiceInCategory?.id ?? "",
       employeeId: profile?.employee_id ?? "",
@@ -384,10 +328,7 @@ export default function AgendaScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   }, [agendaHours, selectedDate, businessHoursNorm, tenantTz, categories, services, profile?.employee_id]);
 
-  const closeDetailModal = () => {
-    setDetailModalVisible(false);
-    setAppointmentDetail(null);
-  };
+  const closeDetailModal = () => { setDetailModalVisible(false); setAppointmentDetail(null); };
 
   const handleRescheduleDatePick = useCallback(
     (d: Date) => {
@@ -449,11 +390,33 @@ export default function AgendaScreen() {
               onScroll={handleStripScroll}
             />
           )}
+
+          {/* KPI strip — solo en vista diaria */}
+          {ownerViewMode === "day" && (
+            <AgendaDayKPIStrip
+              selectedDate={selectedDate}
+              timeZone={tenantTz}
+              appointments={appointments}
+              statusFilter={statusFilter}
+              currencySymbol={currencySymbol}
+              theme={{
+                primary: theme.primary,
+                text: theme.text,
+                textSecondary: theme.textSecondary,
+                textMuted: theme.textMuted,
+                border: theme.border,
+                backgroundSecondary: theme.backgroundSecondary,
+                warning: theme.warning,
+              }}
+            />
+          )}
+
           <AgendaStatusFilterBar
             statusFilter={statusFilter}
             onChange={setStatusFilter}
             theme={theme}
           />
+
           {ownerViewMode === "week" ? (
             <OwnerWeekGrid
               tabBarHeight={tabBarHeight}
