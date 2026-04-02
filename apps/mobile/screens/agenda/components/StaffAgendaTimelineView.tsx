@@ -37,6 +37,7 @@ interface StaffAgendaTimelineViewProps {
   services: AgendaService[];
   isLoading: boolean;
   onRefresh: () => void;
+  currencySymbol: string;
   theme: {
     primary: string;
     accent: string;
@@ -70,6 +71,16 @@ function descripcionEstado(
   return { label: "Confirmado", tone: "ok" };
 }
 
+/** Formatea duración en minutos → '45 min' | '1 h 30 min' */
+function formatDuration(minutes: number): string {
+  if (minutes <= 0) return "";
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  if (h === 0) return `${m} min`;
+  if (m === 0) return `${h} h`;
+  return `${h} h ${m} min`;
+}
+
 export function StaffAgendaTimelineView({
   staffEmployeeId,
   staffDisplayName,
@@ -82,6 +93,7 @@ export function StaffAgendaTimelineView({
   services,
   isLoading,
   onRefresh,
+  currencySymbol,
   theme,
   onOpenDetail,
   onPressNew,
@@ -117,11 +129,7 @@ export function StaffAgendaTimelineView({
       <View
         style={[
           sharedStyles.calendarContainer,
-          {
-            padding: Spacing.xl,
-            justifyContent: "center",
-            alignItems: "center",
-          },
+          { padding: Spacing.xl, justifyContent: "center", alignItems: "center" },
         ]}
       >
         <ThemedText style={{ color: theme.textSecondary, textAlign: "center" }}>
@@ -160,6 +168,7 @@ export function StaffAgendaTimelineView({
           Mi agenda — {staffDisplayName.split(" ")[0] ?? staffDisplayName}
         </ThemedText>
 
+        {/* Hero: próxima cita */}
         {siguiente ? (
           <LinearGradient
             colors={Gradients.onboarding.colors}
@@ -216,10 +225,29 @@ export function StaffAgendaTimelineView({
                     color: theme.textSecondary,
                     marginTop: 4,
                   }}
-                  numberOfLines={2}
+                  numberOfLines={1}
                 >
                   {getServiceName(services, siguiente.service_id) || "—"}
                 </ThemedText>
+                {/* Duración + precio */}
+                <View style={{ flexDirection: "row", gap: Spacing.md, marginTop: Spacing.sm }}>
+                  {siguiente.duration > 0 && (
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+                      <Feather name="clock" size={12} color={theme.textMuted} />
+                      <ThemedText style={{ fontSize: 12, color: theme.textMuted }}>
+                        {formatDuration(siguiente.duration)}
+                      </ThemedText>
+                    </View>
+                  )}
+                  {parseFloat(siguiente.price) > 0 && (
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+                      <Feather name="tag" size={12} color={theme.textMuted} />
+                      <ThemedText style={{ fontSize: 12, color: theme.textMuted }}>
+                        {currencySymbol} {parseFloat(siguiente.price).toFixed(2)}
+                      </ThemedText>
+                    </View>
+                  )}
+                </View>
               </View>
             </View>
           </LinearGradient>
@@ -239,7 +267,6 @@ export function StaffAgendaTimelineView({
 
         {/* Timeline */}
         <View style={{ position: "relative", paddingLeft: Spacing.lg }}>
-          {/* Línea vertical — centrada en x=6 del contenedor */}
           <View
             style={{
               position: "absolute",
@@ -276,7 +303,7 @@ export function StaffAgendaTimelineView({
                   alignItems: "stretch",
                 }}
               >
-                {/* Columna hora */}
+                {/* Hora */}
                 <View
                   style={{
                     width: 52,
@@ -286,24 +313,14 @@ export function StaffAgendaTimelineView({
                   }}
                 >
                   <ThemedText
-                    style={{
-                      fontSize: 12,
-                      fontWeight: "700",
-                      color: theme.textMuted,
-                    }}
+                    style={{ fontSize: 12, fontWeight: "700", color: theme.textMuted }}
                   >
                     {timeLabel}
                   </ThemedText>
                 </View>
 
-                {/* Dot alineado con la línea (left:6, centro en x=7) */}
-                <View
-                  style={{
-                    width: 14,
-                    alignItems: "center",
-                    paddingTop: 6,
-                  }}
-                >
+                {/* Dot */}
+                <View style={{ width: 14, alignItems: "center", paddingTop: 6 }}>
                   <View
                     style={{
                       width: 10,
@@ -316,7 +333,7 @@ export function StaffAgendaTimelineView({
                   />
                 </View>
 
-                {/* Card de cita */}
+                {/* Card */}
                 <Pressable
                   onPress={() => onOpenDetail(apt)}
                   style={{ flex: 1, marginLeft: Spacing.sm }}
@@ -324,7 +341,6 @@ export function StaffAgendaTimelineView({
                   <View
                     style={{
                       borderRadius: BorderRadius.md,
-                      overflow: "hidden",
                       borderWidth: StyleSheet.hairlineWidth,
                       borderColor: theme.border,
                       borderLeftWidth: 4,
@@ -357,10 +373,28 @@ export function StaffAgendaTimelineView({
                             color: theme.textSecondary,
                             marginTop: 4,
                           }}
-                          numberOfLines={2}
+                          numberOfLines={1}
                         >
                           {getServiceName(services, apt.service_id) || "—"}
                         </ThemedText>
+                        {/* Duración */}
+                        {apt.duration > 0 && (
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                              gap: 4,
+                              marginTop: 4,
+                            }}
+                          >
+                            <Feather name="clock" size={11} color={theme.textMuted} />
+                            <ThemedText
+                              style={{ fontSize: 11, color: theme.textMuted }}
+                            >
+                              {formatDuration(apt.duration)}
+                            </ThemedText>
+                          </View>
+                        )}
                       </View>
                       <View
                         style={{
@@ -395,6 +429,7 @@ export function StaffAgendaTimelineView({
         </View>
       </ScrollView>
 
+      {/* FAB Nueva cita */}
       <Pressable
         onPress={onPressNew}
         style={{

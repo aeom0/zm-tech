@@ -1,9 +1,9 @@
 /**
  * OwnerWeekGrid — vista semanal compacta para el owner.
  *
- * Muestra 7 columnas (lun–dom) con las citas del día como chips.
- * Tocar un día navega a la vista diaria de ese día.
- * Tocar una cita abre el detalle.
+ * 7 columnas (lun–dom). Header de cada día con nombre abreviado, número
+ * y badge con total de citas. Columna de hoy con fondo sutil.
+ * Tocar columna → vista diaria. Tocar chip → detalle de cita.
  */
 import React, { useMemo } from "react";
 import {
@@ -19,7 +19,6 @@ import { BorderRadius, Spacing } from "@/constants/theme";
 import {
   esMismoDiaCalendarioEnZona,
   esHoyEnZonaIANA,
-  type TenantConfig,
 } from "@salonpro/tenant-config";
 
 import type {
@@ -51,22 +50,23 @@ interface OwnerWeekGridProps {
     backgroundSecondary: string;
     card: string;
   };
-  /** Al tocar una columna de día → ir a vista diaria de ese día */
   onSelectDay: (date: Date) => void;
   onOpenDetail: (apt: AgendaAppointment) => void;
 }
 
-function dayName(date: Date, language: string, timeZone: string): string {
-  return new Intl.DateTimeFormat(language, {
-    timeZone,
-    weekday: "short",
-  }).format(date);
+function fmtWeekday(date: Date, language: string, timeZone: string): string {
+  return new Intl.DateTimeFormat(language, { timeZone, weekday: "short" }).format(date);
 }
 
-function dayNumber(date: Date, language: string, timeZone: string): string {
+function fmtDayNum(date: Date, language: string, timeZone: string): string {
+  return new Intl.DateTimeFormat(language, { timeZone, day: "numeric" }).format(date);
+}
+
+function fmtTime(date: Date, language: string, timeZone: string): string {
   return new Intl.DateTimeFormat(language, {
     timeZone,
-    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
   }).format(date);
 }
 
@@ -91,7 +91,6 @@ export function OwnerWeekGrid({
     return m;
   }, [employees]);
 
-  /** Citas por día, ya filtradas */
   const aptsByDay = useMemo(() => {
     return weekDays.map((day) =>
       appointments
@@ -128,28 +127,33 @@ export function OwnerWeekGrid({
       >
         {weekDays.map((day, i) => {
           const isToday = esHoyEnZonaIANA(day, timeZone);
+          const count = aptsByDay[i]?.length ?? 0;
           return (
             <Pressable
               key={i}
               style={{ flex: 1, alignItems: "center", paddingVertical: Spacing.sm }}
               onPress={() => onSelectDay(day)}
             >
+              {/* Nombre del día */}
               <ThemedText
                 style={{
-                  fontSize: 11,
-                  fontWeight: "500",
+                  fontSize: 10,
+                  fontWeight: "600",
                   color: isToday ? theme.primary : theme.textMuted,
                   textTransform: "uppercase",
+                  letterSpacing: 0.4,
                 }}
               >
-                {dayName(day, language, timeZone)}
+                {fmtWeekday(day, language, timeZone)}
               </ThemedText>
+
+              {/* Círculo con número */}
               <View
                 style={[
                   {
-                    width: 28,
-                    height: 28,
-                    borderRadius: 14,
+                    width: 26,
+                    height: 26,
+                    borderRadius: 13,
                     alignItems: "center",
                     justifyContent: "center",
                     marginTop: 2,
@@ -159,23 +163,54 @@ export function OwnerWeekGrid({
               >
                 <ThemedText
                   style={{
-                    fontSize: 15,
+                    fontSize: 14,
                     fontWeight: isToday ? "700" : "500",
                     color: isToday ? "#FFFFFF" : theme.text,
                   }}
                 >
-                  {dayNumber(day, language, timeZone)}
+                  {fmtDayNum(day, language, timeZone)}
                 </ThemedText>
               </View>
+
+              {/* Badge contador de citas */}
+              {count > 0 ? (
+                <View
+                  style={{
+                    marginTop: 3,
+                    backgroundColor: isToday
+                      ? theme.primary + "30"
+                      : theme.backgroundSecondary,
+                    borderRadius: 8,
+                    paddingHorizontal: 5,
+                    paddingVertical: 1,
+                    minWidth: 18,
+                    alignItems: "center",
+                  }}
+                >
+                  <ThemedText
+                    style={{
+                      fontSize: 9,
+                      fontWeight: "700",
+                      color: isToday ? theme.primary : theme.textMuted,
+                    }}
+                  >
+                    {count}
+                  </ThemedText>
+                </View>
+              ) : (
+                <View style={{ height: 14, marginTop: 3 }} />
+              )}
             </Pressable>
           );
         })}
       </View>
 
-      {/* Cuerpo — columnas con chips de citas */}
+      {/* Cuerpo — columnas */}
       <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
         {weekDays.map((day, i) => {
           const dayApts = aptsByDay[i] ?? [];
+          const isToday = esHoyEnZonaIANA(day, timeZone);
+
           return (
             <Pressable
               key={i}
@@ -187,6 +222,7 @@ export function OwnerWeekGrid({
                 paddingHorizontal: 3,
                 paddingTop: Spacing.sm,
                 gap: 4,
+                backgroundColor: isToday ? theme.primary + "08" : "transparent",
               }}
               onPress={() => onSelectDay(day)}
             >
@@ -197,6 +233,7 @@ export function OwnerWeekGrid({
                     color: theme.textMuted,
                     textAlign: "center",
                     marginTop: Spacing.md,
+                    opacity: 0.5,
                   }}
                 >
                   —
@@ -205,11 +242,7 @@ export function OwnerWeekGrid({
                 dayApts.map((apt) => {
                   const empColor = employeeColorMap[apt.employee_id] ?? theme.primary;
                   const svcName = getServiceName(services, apt.service_id);
-                  const timeLabel = new Intl.DateTimeFormat(language, {
-                    timeZone,
-                    hour: "numeric",
-                    minute: "2-digit",
-                  }).format(new Date(apt.date));
+                  const timeLabel = fmtTime(new Date(apt.date), language, timeZone);
 
                   return (
                     <Pressable
@@ -227,26 +260,42 @@ export function OwnerWeekGrid({
                         paddingVertical: 3,
                       }}
                     >
-                      <ThemedText
-                        numberOfLines={1}
-                        style={{
-                          fontSize: 10,
-                          fontWeight: "700",
-                          color: theme.text,
-                        }}
-                      >
-                        {timeLabel}
-                      </ThemedText>
+                      {/* Hora */}
                       <ThemedText
                         numberOfLines={1}
                         style={{
                           fontSize: 9,
-                          color: theme.textSecondary,
+                          fontWeight: "700",
+                          color: theme.textMuted,
+                        }}
+                      >
+                        {timeLabel}
+                      </ThemedText>
+                      {/* Servicio o cliente */}
+                      <ThemedText
+                        numberOfLines={1}
+                        style={{
+                          fontSize: 10,
+                          fontWeight: "600",
+                          color: theme.text,
                           marginTop: 1,
                         }}
                       >
                         {svcName || apt.client_name}
                       </ThemedText>
+                      {/* Cliente (solo si hay nombre de servicio) */}
+                      {!!svcName && (
+                        <ThemedText
+                          numberOfLines={1}
+                          style={{
+                            fontSize: 9,
+                            color: theme.textSecondary,
+                            marginTop: 1,
+                          }}
+                        >
+                          {apt.client_name}
+                        </ThemedText>
+                      )}
                     </Pressable>
                   );
                 })

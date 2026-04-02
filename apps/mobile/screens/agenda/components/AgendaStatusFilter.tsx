@@ -1,8 +1,10 @@
 import React from "react";
-import { View, Pressable } from "react-native";
+import { View, Pressable, StyleSheet } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
 
 import { ThemedText } from "@/components/ThemedText";
+import { Gradients } from "@/constants/theme";
 
 import type { AgendaStatusFilter as StatusFilter } from "../types";
 import { agendaStyles as styles } from "../agendaStyles";
@@ -37,24 +39,32 @@ export function AgendaStatusFilter({
         return (
           <Pressable
             key={opt.id}
-            style={[
-              styles.statusChip,
-              {
-                backgroundColor: isActive
-                  ? theme.primary
-                  : theme.backgroundSecondary,
-                borderColor: isActive ? theme.primary : theme.border,
-              },
-            ]}
             onPress={() => {
               onChange(opt.id);
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             }}
+            style={[
+              styles.statusChip,
+              !isActive && {
+                backgroundColor: theme.backgroundSecondary,
+                borderColor: theme.border,
+              },
+              isActive && { borderColor: "transparent", overflow: "hidden" },
+            ]}
           >
+            {isActive ? (
+              <LinearGradient
+                colors={Gradients.onboarding.colors}
+                start={Gradients.onboarding.linearStart}
+                end={Gradients.onboarding.linearEnd}
+                locations={[...Gradients.onboarding.locations]}
+                style={StyleSheet.absoluteFill}
+              />
+            ) : null}
             <ThemedText
               style={[
                 styles.statusChipText,
-                { color: isActive ? "#FFFFFF" : theme.text },
+                { color: isActive ? "#FFFFFF" : theme.text, zIndex: 1 },
               ]}
             >
               {opt.label}
