@@ -1,12 +1,12 @@
 import React from "react";
 import { ScrollView, View } from "react-native";
 import { Image } from "expo-image";
+import type { ScrollView as RNScrollView } from "react-native";
 
 import { ThemedText } from "@/components/ThemedText";
 import { Spacing } from "@/constants/theme";
 
 import type { AgendaEmployee } from "../types";
-import { abbreviateStaffRole } from "../agendaUtils";
 
 interface OwnerStaffAvatarStripProps {
   employees: AgendaEmployee[];
@@ -17,19 +17,27 @@ interface OwnerStaffAvatarStripProps {
     backgroundSecondary: string;
   };
   columnWidth: number;
+  /** Ref para sincronizar scroll horizontal con OwnerDayGrid */
+  scrollRef?: React.RefObject<RNScrollView>;
+  /** Callback para propagar el scroll al grid */
+  onScroll?: (x: number) => void;
 }
 
 export function OwnerStaffAvatarStrip({
   employees,
   theme,
   columnWidth,
+  scrollRef,
+  onScroll,
 }: OwnerStaffAvatarStripProps) {
   if (employees.length === 0) return null;
 
   return (
     <ScrollView
+      ref={scrollRef}
       horizontal
       showsHorizontalScrollIndicator={false}
+      scrollEnabled={false}
       contentContainerStyle={{
         paddingHorizontal: Spacing.sm,
         paddingVertical: Spacing.sm,
@@ -39,7 +47,7 @@ export function OwnerStaffAvatarStrip({
     >
       {employees.map((emp) => {
         const initial = (emp.name?.trim().split(/\s+/)[0] ?? "?").slice(0, 1);
-        const abbr = abbreviateStaffRole(emp.role);
+        const firstName = emp.name?.trim().split(/\s+/)[0] ?? emp.name;
         return (
           <View
             key={emp.id}
@@ -91,7 +99,7 @@ export function OwnerStaffAvatarStrip({
                 maxWidth: "100%",
               }}
             >
-              {emp.name.split(" ")[0]} ({abbr})
+              {firstName}
             </ThemedText>
           </View>
         );

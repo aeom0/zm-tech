@@ -1,15 +1,17 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useRef, useCallback } from "react";
 import {
   View,
   ScrollView,
   Pressable,
   StyleSheet,
   RefreshControl,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 
 import { ThemedText } from "@/components/ThemedText";
-import { BorderRadius, Gradients, Spacing } from "@/constants/theme";
+import { BorderRadius, Spacing } from "@/constants/theme";
 import {
   esCeldaAgendaEnHorarioLaboral,
   esHoyEnZonaIANA,
@@ -30,14 +32,9 @@ import {
 } from "../agendaUtils";
 import { useAgendaClockTick } from "../hooks/useAgendaClockTick";
 import { agendaStyles as sharedStyles } from "../agendaStyles";
+import { OwnerStaffAvatarStrip } from "./OwnerStaffAvatarStrip";
 
 const HOUR_ROW_HEIGHT = 64;
-
-/** Tintes de cabecera de columna (primer stop Lunaris y teal medio). */
-const COLUMN_TOP_TINTS = [
-  Gradients.onboarding.start,
-  Gradients.onboarding.mid2,
-] as const;
 
 interface OwnerDayGridProps {
   timeColWidth: number;
@@ -140,6 +137,24 @@ export function OwnerDayGrid({
 
   const colW = Math.max(columnWidth, 104);
 
+  // --- Sincronización de scroll horizontal strip <-> grid ---
+  const avatarStripRef = useRef<ScrollView>(null);
+  const gridScrollRef = useRef<ScrollView>(null);
+  const isSyncingRef = useRef(false);
+
+  const handleGridScroll = useCallback(
+    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+      if (isSyncingRef.current) return;
+      isSyncingRef.current = true;
+      avatarStripRef.current?.scrollTo({
+        x: e.nativeEvent.contentOffset.x,
+        animated: false,
+      });
+      isSyncingRef.current = false;
+    },
+    [],
+  );
+
   return (
     <ScrollView
       style={sharedStyles.calendarContainer}
@@ -152,7 +167,19 @@ export function OwnerDayGrid({
         />
       }
     >
+      {/* Avatar strip sincronizado con el scroll horizontal del grid */}
+      <View style={{ flexDirection: "row" }}>
+        <View style={{ width: timeColWidth }} />
+        <OwnerStaffAvatarStrip
+          employees={employees}
+          theme={theme}
+          columnWidth={colW}
+          scrollRef={avatarStripRef}
+        />
+      </View>
+
       <View style={{ flexDirection: "row", alignItems: "stretch" }}>
+        {/* Columna de horas */}
         <View style={{ width: timeColWidth }}>
           {agendaHours.map((hour) => (
             <View
@@ -175,20 +202,21 @@ export function OwnerDayGrid({
           ))}
         </View>
 
+        {/* Grid de columnas por profesional */}
         <ScrollView
+          ref={gridScrollRef}
           horizontal
           showsHorizontalScrollIndicator
           nestedScrollEnabled
           style={{ flex: 1 }}
+          onScroll={handleGridScroll}
+          scrollEventThrottle={16}
         >
-          <View style={{ flexDirection: "row", height: totalHeight }}>
-            {employees.map((emp, empIndex) => {
+          <View style={{ flexDirection: "row", height: totalHeight, position: "relative" }}>
+            {employees.map((emp) => {
               const empApts = dayAppointments.filter(
                 (a) => a.employee_id === emp.id,
               );
-              const g0 =
-                COLUMN_TOP_TINTS[empIndex % COLUMN_TOP_TINTS.length] ??
-                COLUMN_TOP_TINTS[0];
 
               return (
                 <View
@@ -256,8 +284,8 @@ export function OwnerDayGrid({
                         onPress={() => onOpenDetail(apt)}
                         style={{
                           position: "absolute",
-                          left: 4,
-                          right: 4,
+                          left: 3,
+                          right: 3,
                           top,
                           height,
                           zIndex: 4,
@@ -265,19 +293,16 @@ export function OwnerDayGrid({
                           overflow: "hidden",
                         }}
                       >
-                        <LinearGradient
-                          colors={[
-                            `${g0}CC`,
-                            `${theme.card}F0`,
-                          ]}
-                          start={{ x: 0, y: 0 }}
-                          end={{ x: 1, y: 1 }}
+                        <View
                           style={{
                             flex: 1,
-                            padding: Spacing.sm,
                             borderRadius: BorderRadius.md,
                             borderWidth: 1,
-                            borderColor: emp.color + "55",
+                            borderColor: emp.color + "66",
+                            borderLeftWidth: 4,
+                            borderLeftColor: emp.color,
+                            backgroundColor: emp.color + "1A",
+                            padding: Spacing.sm,
                           }}
                         >
                           <ThemedText
@@ -288,18 +313,20 @@ export function OwnerDayGrid({
                               color: theme.text,
                             }}
                           >
-                            {serviceName}
+                            {serviceName || apt.client_name}
                           </ThemedText>
-                          <ThemedText
-                            numberOfLines={1}
-                            style={{
-                              fontSize: 11,
-                              marginTop: 2,
-                              color: theme.textSecondary,
-                            }}
-                          >
-                            — {apt.client_name}
-                          </ThemedText>
+                          {!!serviceName && (
+                            <ThemedText
+                              numberOfLines={1}
+                              style={{
+                                fontSize: 11,
+                                marginTop: 2,
+                                color: theme.textSecondary,
+                              }}
+                            >
+                              {apt.client_name}
+                            </ThemedText>
+                          )}
                           <ThemedText
                             numberOfLines={1}
                             style={{
@@ -314,28 +341,29 @@ export function OwnerDayGrid({
                               minute: "2-digit",
                             }).format(start)}
                           </ThemedText>
-                        </LinearGradient>
+                        </View>
                       </Pressable>
                     );
                   })}
-
-                  {nowLineTop !== null ? (
-                    <View
-                      pointerEvents="none"
-                      style={{
-                        position: "absolute",
-                        left: 0,
-                        right: 0,
-                        top: nowLineTop - 1,
-                        height: 2,
-                        backgroundColor: "#FF3B30",
-                        zIndex: 12,
-                      }}
-                    />
-                  ) : null}
                 </View>
               );
             })}
+
+            {/* Línea "ahora" — una sola vez, se extiende a lo ancho de todas las columnas */}
+            {nowLineTop !== null && (
+              <View
+                pointerEvents="none"
+                style={{
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  top: nowLineTop - 1,
+                  height: 2,
+                  backgroundColor: "#FF3B30",
+                  zIndex: 12,
+                }}
+              />
+            )}
           </View>
         </ScrollView>
       </View>

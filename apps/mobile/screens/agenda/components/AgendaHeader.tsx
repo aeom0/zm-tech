@@ -7,9 +7,12 @@ import {
   formatoFechaCortaEnZona,
   formatoFechaLargaEnZona,
 } from "@salonpro/tenant-config";
+import { Spacing } from "@/constants/theme";
 
 import { agendaStyles as styles } from "../agendaStyles";
 import { isToday } from "../agendaUtils";
+
+export type OwnerViewMode = "day" | "week";
 
 interface AgendaHeaderProps {
   isTablet: boolean;
@@ -18,6 +21,8 @@ interface AgendaHeaderProps {
   theme: {
     primary: string;
     backgroundRoot: string;
+    border: string;
+    textMuted: string;
   };
   language: string;
   timeZone: string;
@@ -27,6 +32,10 @@ interface AgendaHeaderProps {
   onChangeWeek: (delta: number) => void;
   onChangeDay: (delta: number) => void;
   onGoToToday: () => void;
+  /** Solo para el owner: modo actual de la vista */
+  ownerViewMode?: OwnerViewMode;
+  /** Callback al tocar la etiqueta de fecha — toggle day/week para el owner */
+  onToggleOwnerView?: () => void;
 }
 
 export function AgendaHeader({
@@ -41,7 +50,12 @@ export function AgendaHeader({
   onChangeWeek,
   onChangeDay,
   onGoToToday,
+  ownerViewMode,
+  onToggleOwnerView,
 }: AgendaHeaderProps) {
+  const showOwnerToggle = ownerViewMode !== undefined && !!onToggleOwnerView;
+  const isWeekMode = ownerViewMode === "week";
+
   return (
     <View
       style={[
@@ -54,34 +68,83 @@ export function AgendaHeader({
     >
       {isTablet || mobileDayMode ? (
         <>
-          <Pressable onPress={() => onChangeDay(-1)} style={styles.navButton}>
+          {/* Flecha izquierda */}
+          <Pressable
+            onPress={() => isWeekMode ? onChangeWeek(-1) : onChangeDay(-1)}
+            style={styles.navButton}
+          >
             <Feather
               name="chevron-left"
               size={isTablet ? 28 : 24}
               color={theme.primary}
             />
           </Pressable>
-          <Pressable onPress={onGoToToday} style={styles.dayTitleContainer}>
-            <ThemedText
-              style={[
-                styles.weekTitle,
-                { fontSize: isTablet ? 18 : 16 },
-              ]}
+
+          {/* Centro: fecha + badge Hoy + pill de modo (day/week) */}
+          <View style={[styles.dayTitleContainer, { gap: Spacing.xs }]}>
+            <Pressable
+              onPress={showOwnerToggle ? onToggleOwnerView : onGoToToday}
+              style={styles.dayTitleContainer}
             >
-              {formatoFechaLargaEnZona(selectedDate, language, timeZone)}
-            </ThemedText>
-            {!isToday(selectedDate, timeZone) && (
               <ThemedText
                 style={[
-                  styles.todayBadge,
-                  { color: theme.primary, borderColor: theme.primary },
+                  styles.weekTitle,
+                  { fontSize: isTablet ? 18 : 16 },
                 ]}
               >
-                Hoy
+                {isWeekMode
+                  ? `${formatoFechaCortaEnZona(weekDays[0], language, timeZone)} – ${formatoFechaCortaEnZona(weekDays[6], language, timeZone)}`
+                  : formatoFechaLargaEnZona(selectedDate, language, timeZone)}
               </ThemedText>
+              {!isWeekMode && !isToday(selectedDate, timeZone) && (
+                <ThemedText
+                  style={[
+                    styles.todayBadge,
+                    { color: theme.primary, borderColor: theme.primary },
+                  ]}
+                >
+                  Hoy
+                </ThemedText>
+              )}
+            </Pressable>
+
+            {/* Pill modo — solo para owner */}
+            {showOwnerToggle && (
+              <Pressable
+                onPress={onToggleOwnerView}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 3,
+                  backgroundColor: theme.primary + "18",
+                  borderRadius: 999,
+                  paddingHorizontal: 8,
+                  paddingVertical: 3,
+                }}
+              >
+                <Feather
+                  name={isWeekMode ? "calendar" : "grid"}
+                  size={12}
+                  color={theme.primary}
+                />
+                <ThemedText
+                  style={{
+                    fontSize: 11,
+                    fontWeight: "600",
+                    color: theme.primary,
+                  }}
+                >
+                  {isWeekMode ? "Semana" : "Día"}
+                </ThemedText>
+              </Pressable>
             )}
-          </Pressable>
-          <Pressable onPress={() => onChangeDay(1)} style={styles.navButton}>
+          </View>
+
+          {/* Flecha derecha */}
+          <Pressable
+            onPress={() => isWeekMode ? onChangeWeek(1) : onChangeDay(1)}
+            style={styles.navButton}
+          >
             <Feather
               name="chevron-right"
               size={isTablet ? 28 : 24}

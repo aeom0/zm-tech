@@ -208,7 +208,7 @@ export function StaffAgendaTimelineView({
                     hour: "numeric",
                     minute: "2-digit",
                   }).format(new Date(siguiente.date))}{" "}
-                  ({siguiente.client_name})
+                  — {siguiente.client_name}
                 </ThemedText>
                 <ThemedText
                   style={{
@@ -218,7 +218,16 @@ export function StaffAgendaTimelineView({
                   }}
                   numberOfLines={2}
                 >
-                  {getServiceName(services, siguiente.service_id)}
+                  {getServiceName(services, siguiente.service_id) || "Servicio"}
+                </ThemedText>
+                <ThemedText
+                  style={{
+                    fontSize: 12,
+                    color: theme.textMuted,
+                    marginTop: 2,
+                  }}
+                >
+                  {siguiente.duration} min · {siguiente.price}
                 </ThemedText>
               </View>
             </View>
@@ -233,12 +242,14 @@ export function StaffAgendaTimelineView({
         ) : (
           <View style={{ marginBottom: Spacing.lg }}>
             <ThemedText style={{ color: theme.textMuted, fontSize: 14 }}>
-              No tienes citas este día. Toca “Nueva cita” para agendar.
+              No tienes citas este día. Toca "Nueva cita" para agendar.
             </ThemedText>
           </View>
         )}
 
-        <View style={{ position: "relative", paddingLeft: Spacing.lg }}>
+        {/* Timeline vertical */}
+        <View style={{ position: "relative", paddingLeft: 20 }}>
+          {/* Línea vertical centrada en x=5 del espacio reservado de 12px */}
           <View
             style={{
               position: "absolute",
@@ -259,7 +270,7 @@ export function StaffAgendaTimelineView({
               minute: "2-digit",
             }).format(start);
             const { label: estadoLabel, tone } = descripcionEstado(apt.status);
-            const empColor =
+            const statusColor =
               tone === "ok"
                 ? theme.success
                 : tone === "wait"
@@ -272,31 +283,32 @@ export function StaffAgendaTimelineView({
                 style={{
                   flexDirection: "row",
                   marginBottom: Spacing.md,
-                  alignItems: "stretch",
+                  alignItems: "flex-start",
                 }}
               >
-                <View
+                {/* Hora */}
+                <ThemedText
                   style={{
-                    width: 56,
-                    alignItems: "flex-end",
+                    width: 48,
+                    fontSize: 12,
+                    fontWeight: "700",
+                    color: theme.textMuted,
+                    textAlign: "right",
                     paddingRight: Spacing.sm,
+                    paddingTop: 3,
                   }}
                 >
-                  <ThemedText
-                    style={{
-                      fontSize: 12,
-                      fontWeight: "700",
-                      color: theme.textMuted,
-                    }}
-                  >
-                    {timeLabel}
-                  </ThemedText>
-                </View>
+                  {timeLabel}
+                </ThemedText>
+
+                {/* Dot — centrado sobre la línea (left:5, width:2 → centro en 6px; dot de 10px con marginLeft:-4 queda centrado) */}
                 <View
                   style={{
                     width: 12,
                     alignItems: "center",
-                    paddingTop: 4,
+                    paddingTop: 5,
+                    marginLeft: -6,
+                    marginRight: 6,
                   }}
                 >
                   <View
@@ -304,27 +316,26 @@ export function StaffAgendaTimelineView({
                       width: 10,
                       height: 10,
                       borderRadius: 5,
-                      backgroundColor: empColor,
+                      backgroundColor: statusColor,
                       borderWidth: 2,
                       borderColor: theme.backgroundRoot,
                     }}
                   />
                 </View>
+
+                {/* Card de cita */}
                 <Pressable
                   onPress={() => onOpenDetail(apt)}
                   style={{ flex: 1 }}
                 >
-                  <LinearGradient
-                    colors={[`${theme.backgroundSecondary}FF`, `${theme.card}FF`]}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
+                  <View
                     style={{
                       borderRadius: BorderRadius.md,
-                      overflow: "hidden",
                       borderWidth: StyleSheet.hairlineWidth,
                       borderColor: theme.border,
                       borderLeftWidth: 4,
-                      borderLeftColor: empColor,
+                      borderLeftColor: statusColor,
+                      backgroundColor: theme.card,
                       padding: Spacing.md,
                     }}
                   >
@@ -354,7 +365,16 @@ export function StaffAgendaTimelineView({
                           }}
                           numberOfLines={2}
                         >
-                          {getServiceName(services, apt.service_id)}
+                          {getServiceName(services, apt.service_id) || "Servicio"}
+                        </ThemedText>
+                        <ThemedText
+                          style={{
+                            fontSize: 11,
+                            color: theme.textMuted,
+                            marginTop: 2,
+                          }}
+                        >
+                          {apt.duration} min · {apt.price}
                         </ThemedText>
                       </View>
                       <View
@@ -375,14 +395,14 @@ export function StaffAgendaTimelineView({
                           style={{
                             fontSize: 11,
                             fontWeight: "600",
-                            color: empColor,
+                            color: statusColor,
                           }}
                         >
                           {estadoLabel}
                         </ThemedText>
                       </View>
                     </View>
-                  </LinearGradient>
+                  </View>
                 </Pressable>
               </View>
             );

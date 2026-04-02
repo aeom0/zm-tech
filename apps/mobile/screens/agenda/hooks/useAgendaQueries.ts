@@ -17,6 +17,8 @@ export function useAgendaQueries() {
     refetch,
   } = useQuery<AgendaAppointment[]>({
     queryKey: ["appointments"],
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("appointments")
@@ -39,6 +41,8 @@ export function useAgendaQueries() {
     error: employeesError,
   } = useQuery<AgendaEmployee[]>({
     queryKey: ["employees"],
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("employees")
@@ -55,6 +59,8 @@ export function useAgendaQueries() {
 
   const { data: categories = [] } = useQuery<AgendaServiceCategory[]>({
     queryKey: ["service_categories"],
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("service_categories")
@@ -73,6 +79,8 @@ export function useAgendaQueries() {
     error: servicesError,
   } = useQuery<AgendaService[]>({
     queryKey: ["services"],
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("services")

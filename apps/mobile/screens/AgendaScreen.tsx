@@ -42,12 +42,13 @@ import {
 import { useAgendaMutations } from "./agenda/hooks/useAgendaMutations";
 import { useAvailabilityCheck } from "./agenda/hooks/useAvailabilityCheck";
 import { AgendaHeader } from "./agenda/components/AgendaHeader";
+import type { OwnerViewMode } from "./agenda/components/AgendaHeader";
 import { AgendaWeekDayHeaders } from "./agenda/components/AgendaWeekDayHeaders";
 import { AgendaEmployeeHeaders } from "./agenda/components/AgendaEmployeeHeaders";
 import { AgendaStatusFilter as AgendaStatusFilterBar } from "./agenda/components/AgendaStatusFilter";
 import { AgendaCalendarGrid } from "./agenda/components/AgendaCalendarGrid";
 import { OwnerDayGrid } from "./agenda/components/OwnerDayGrid";
-import { OwnerStaffAvatarStrip } from "./agenda/components/OwnerStaffAvatarStrip";
+import { OwnerWeekGrid } from "./agenda/components/OwnerWeekGrid";
 import { StaffAgendaTimelineView } from "./agenda/components/StaffAgendaTimelineView";
 import { NewAppointmentModal } from "./agenda/components/NewAppointmentModal";
 import { AppointmentDetailModal } from "./agenda/components/AppointmentDetailModal";
@@ -78,6 +79,7 @@ export default function AgendaScreen() {
       zonaIANASegura(defaultTenantConfig.locale.timezone),
     ),
   );
+  const [ownerViewMode, setOwnerViewMode] = useState<OwnerViewMode>("day");
   const [modalVisible, setModalVisible] = useState(false);
   const [detailModalVisible, setDetailModalVisible] = useState(false);
   const [appointmentDetail, setAppointmentDetail] =
@@ -202,6 +204,22 @@ export default function AgendaScreen() {
     setSelectedDate((prev) => sumarDiasEnZonaIANA(prev, delta, tenantTz));
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
+
+  /** Toggle day ↔ week solo para el owner */
+  const toggleOwnerViewMode = useCallback(() => {
+    setOwnerViewMode((prev) => (prev === "day" ? "week" : "day"));
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  }, []);
+
+  /** Al tocar un día en la vista semanal → volver a vista diaria en ese día */
+  const handleSelectDayFromWeek = useCallback(
+    (date: Date) => {
+      setSelectedDate(date);
+      setOwnerViewMode("day");
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    },
+    [],
+  );
 
   const openNewAppointment = (date: Date, hour: number) => {
     setSelectedDate(date);
@@ -458,7 +476,12 @@ export default function AgendaScreen() {
       <AgendaHeader
         isTablet={isTablet}
         mobileDayMode={mobileDayMode}
-        theme={theme}
+        theme={{
+          primary: theme.primary,
+          backgroundRoot: theme.backgroundRoot,
+          border: theme.border,
+          textMuted: theme.textMuted,
+        }}
         language={config.locale.language}
         timeZone={tenantTz}
         selectedDate={selectedDate}
@@ -467,6 +490,8 @@ export default function AgendaScreen() {
         onChangeWeek={changeWeek}
         onChangeDay={changeDay}
         onGoToToday={goToToday}
+        ownerViewMode={ownerVista ? ownerViewMode : undefined}
+        onToggleOwnerView={ownerVista ? toggleOwnerViewMode : undefined}
       />
 
       {authLoading ? (
@@ -475,44 +500,70 @@ export default function AgendaScreen() {
         </View>
       ) : ownerVista ? (
         <>
-          <OwnerStaffAvatarStrip
-            employees={employees}
-            theme={theme}
-            columnWidth={ownerColWidth}
-          />
           <AgendaStatusFilterBar
             statusFilter={statusFilter}
             onChange={setStatusFilter}
             theme={theme}
           />
-          <OwnerDayGrid
-            timeColWidth={TIME_COL_W}
-            columnWidth={ownerColWidth}
-            tabBarHeight={tabBarHeight}
-            selectedDate={selectedDate}
-            agendaHours={agendaHours}
-            businessHours={businessHoursNorm}
-            timeZone={tenantTz}
-            language={config.locale.language}
-            appointments={appointments}
-            employees={employees}
-            services={services}
-            statusFilter={statusFilter}
-            isLoading={isLoading}
-            onRefresh={refetch}
-            theme={{
-              primary: theme.primary,
-              text: theme.text,
-              textSecondary: theme.textSecondary,
-              textMuted: theme.textMuted,
-              border: theme.border,
-              backgroundRoot: theme.backgroundRoot,
-              backgroundSecondary: theme.backgroundSecondary,
-              card: theme.card,
-            }}
-            onOpenNew={openNewAppointment}
-            onOpenDetail={openAppointmentDetail}
-          />
+          {ownerViewMode === "week" ? (
+            <OwnerWeekGrid
+              timeColWidth={TIME_COL_W}
+              tabBarHeight={tabBarHeight}
+              weekDays={weekDays}
+              agendaHours={agendaHours}
+              businessHours={businessHoursNorm}
+              timeZone={tenantTz}
+              language={config.locale.language}
+              appointments={appointments}
+              employees={employees}
+              services={services}
+              statusFilter={statusFilter}
+              isLoading={isLoading}
+              onRefresh={refetch}
+              theme={{
+                primary: theme.primary,
+                text: theme.text,
+                textSecondary: theme.textSecondary,
+                textMuted: theme.textMuted,
+                border: theme.border,
+                backgroundRoot: theme.backgroundRoot,
+                backgroundSecondary: theme.backgroundSecondary,
+                card: theme.card,
+              }}
+              onOpenNew={openNewAppointment}
+              onOpenDetail={openAppointmentDetail}
+              onSelectDay={handleSelectDayFromWeek}
+            />
+          ) : (
+            <OwnerDayGrid
+              timeColWidth={TIME_COL_W}
+              columnWidth={ownerColWidth}
+              tabBarHeight={tabBarHeight}
+              selectedDate={selectedDate}
+              agendaHours={agendaHours}
+              businessHours={businessHoursNorm}
+              timeZone={tenantTz}
+              language={config.locale.language}
+              appointments={appointments}
+              employees={employees}
+              services={services}
+              statusFilter={statusFilter}
+              isLoading={isLoading}
+              onRefresh={refetch}
+              theme={{
+                primary: theme.primary,
+                text: theme.text,
+                textSecondary: theme.textSecondary,
+                textMuted: theme.textMuted,
+                border: theme.border,
+                backgroundRoot: theme.backgroundRoot,
+                backgroundSecondary: theme.backgroundSecondary,
+                card: theme.card,
+              }}
+              onOpenNew={openNewAppointment}
+              onOpenDetail={openAppointmentDetail}
+            />
+          )}
         </>
       ) : staffVista ? (
         <StaffAgendaTimelineView
