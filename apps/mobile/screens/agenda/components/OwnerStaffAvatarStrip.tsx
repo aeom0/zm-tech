@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, View, Pressable } from "react-native";
 import { Image } from "expo-image";
 
 import { ThemedText } from "@/components/ThemedText";
@@ -18,6 +18,7 @@ interface OwnerStaffAvatarStripProps {
   columnWidth: number;
   scrollRef?: React.RefObject<ScrollView>;
   onScroll?: (x: number) => void;
+  onEmployeePress?: (employeeId: string, index: number) => void;
 }
 
 export function OwnerStaffAvatarStrip({
@@ -26,6 +27,7 @@ export function OwnerStaffAvatarStrip({
   columnWidth,
   scrollRef,
   onScroll,
+  onEmployeePress,
 }: OwnerStaffAvatarStripProps) {
   if (employees.length === 0) return null;
 
@@ -45,17 +47,19 @@ export function OwnerStaffAvatarStrip({
         alignItems: "flex-start",
       }}
     >
-      {employees.map((emp) => {
+      {employees.map((emp, index) => {
         const firstName = (emp.name?.trim().split(/\s+/)[0] ?? "?");
         const initial = firstName.slice(0, 1).toUpperCase();
 
         return (
-          <View
+          <Pressable
             key={emp.id}
-            style={{
+            onPress={() => onEmployeePress?.(emp.id, index)}
+            style={({ pressed }) => ({
               width: Math.max(72, Math.min(columnWidth, 120)),
               alignItems: "center",
-            }}
+              opacity: pressed ? 0.7 : 1,
+            })}
           >
             <View
               style={{
@@ -102,7 +106,7 @@ export function OwnerStaffAvatarStrip({
             >
               {firstName}
             </ThemedText>
-          </View>
+          </Pressable>
         );
       })}
     </ScrollView>

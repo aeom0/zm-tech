@@ -362,6 +362,12 @@ export default function AgendaScreen() {
     requestAnimationFrame(() => { isSyncingFromStrip.current = false; });
   }, []);
 
+  const handleEmployeePress = useCallback((employeeId: string, index: number) => {
+    const x = index * empColWidth;
+    avatarStripRef.current?.scrollTo({ x, animated: true });
+    gridScrollRef.current?.scrollTo({ x, animated: true });
+  }, [empColWidth]);
+
   return (
     <View
       style={[
@@ -403,6 +409,7 @@ export default function AgendaScreen() {
                 columnWidth={empColWidth}
                 scrollRef={avatarStripRef as React.RefObject<ScrollView>}
                 onScroll={handleStripScroll}
+                onEmployeePress={handleEmployeePress}
               />
             </View>
           )}

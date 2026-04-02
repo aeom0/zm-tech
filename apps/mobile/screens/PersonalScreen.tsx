@@ -519,7 +519,7 @@ export default function PersonalScreen() {
 
       {/* FAB agregar profesional */}
       <Pressable
-        style={[styles.fab, { backgroundColor: theme.primary }]}
+        style={[styles.fab, { backgroundColor: theme.primary, bottom: tabBarHeight + Spacing.lg }]}
         onPress={openCreate}
         hitSlop={8}
       >
@@ -543,7 +543,7 @@ export default function PersonalScreen() {
               </Pressable>
             </View>
 
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: Spacing["3xl"] }}>
               <ThemedText
                 style={[styles.fieldLabel, { color: theme.textSecondary }]}
               >
