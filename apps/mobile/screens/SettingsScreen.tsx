@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
@@ -10,66 +10,83 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Spacing } from "@/constants/theme";
 import { SettingsSection } from "./settings/components/SettingsSection";
 import { SettingsRow } from "./settings/components/SettingsRow";
+import { CurrencyPickerModal } from "./settings/components/CurrencyPickerModal";
+import type { Moneda } from "./settings/constants";
 
 export default function SettingsScreen() {
   const headerHeight = useHeaderHeight();
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
-  const { config } = useTenant();
+  const { config, updateTenant } = useTenant();
   const { profile, role } = useAuth();
+
+  const [modalMonedaVisible, setModalMonedaVisible] = useState(false);
 
   const isAdmin = role === "dev" || role === "owner";
 
+  const handleSeleccionarMoneda = async (moneda: Moneda) => {
+    await updateTenant(
+      { locale: { ...config.locale, currency: { code: moneda.code, symbol: moneda.symbol } } },
+      { syncRemote: true },
+    );
+  };
+
   return (
-    <ScrollView
-      style={[
-        styles.container,
-        {
-          backgroundColor: theme.backgroundRoot,
-        },
-      ]}
-      contentContainerStyle={{
-        paddingTop: headerHeight + Spacing.xl,
-        paddingBottom: tabBarHeight + Spacing["3xl"],
-        paddingHorizontal: Spacing.lg,
-      }}
-      showsVerticalScrollIndicator={false}
-    >
-      {isAdmin && (
-        <SettingsSection title="Negocio">
+    <>
+      <ScrollView
+        style={[styles.container, { backgroundColor: theme.backgroundRoot }]}
+        contentContainerStyle={{
+          paddingTop: headerHeight + Spacing.xl,
+          paddingBottom: tabBarHeight + Spacing["3xl"],
+          paddingHorizontal: Spacing.lg,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
+        {isAdmin && (
+          <SettingsSection title="Negocio">
+            <SettingsRow
+              label="Nombre comercial"
+              value={config.businessName}
+              variant="value"
+            />
+            <SettingsRow
+              label="Tipo de negocio"
+              value={config.businessType}
+              variant="value"
+            />
+            <SettingsRow
+              label="Moneda"
+              value={`${config.locale.currency.symbol} · ${config.locale.currency.code}`}
+              variant="navigate"
+              icon="dollar-sign"
+              onPress={() => setModalMonedaVisible(true)}
+            />
+          </SettingsSection>
+        )}
+
+        <SettingsSection title="Cuenta">
           <SettingsRow
-            label="Nombre comercial"
-            value={config.businessName}
+            label="Nombre"
+            value={profile?.full_name ?? "—"}
             variant="value"
           />
-          <SettingsRow
-            label="Tipo de negocio"
-            value={config.businessType}
-            variant="value"
-          />
-          <SettingsRow
-            label="Moneda"
-            value={config.locale.currency.symbol}
-            variant="value"
-          />
+          <SettingsRow label="Rol" value={role ?? "—"} variant="value" />
         </SettingsSection>
-      )}
 
-      <SettingsSection title="Cuenta">
-        <SettingsRow
-          label="Nombre"
-          value={profile?.full_name ?? "—"}
-          variant="value"
-        />
-        <SettingsRow label="Rol" value={role ?? "—"} variant="value" />
-      </SettingsSection>
+        <View style={{ marginTop: Spacing.lg, alignItems: "center" }}>
+          <ThemedText type="small" style={{ color: theme.textMuted }}>
+            {config.businessName} · SalonPro
+          </ThemedText>
+        </View>
+      </ScrollView>
 
-      <View style={{ marginTop: Spacing.lg, alignItems: "center" }}>
-        <ThemedText type="small" style={{ color: theme.textMuted }}>
-          {config.businessName} · SalonPro
-        </ThemedText>
-      </View>
-    </ScrollView>
+      <CurrencyPickerModal
+        visible={modalMonedaVisible}
+        currentCode={config.locale.currency.code}
+        onSelect={handleSeleccionarMoneda}
+        onClose={() => setModalMonedaVisible(false)}
+      />
+    </>
   );
 }
 

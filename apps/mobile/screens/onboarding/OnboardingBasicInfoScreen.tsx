@@ -11,6 +11,7 @@ import {
 } from "@/screens/onboarding/components";
 import { Colors, Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
+import { MONEDAS_LATAM } from "@/screens/settings/constants";
 
 const COLORES_PRIMARIOS = [
   { label: "Verde azulado", valor: "#0B7B72" },
@@ -61,7 +62,10 @@ export default function OnboardingBasicInfoScreen({
   );
   const [colorPrimario, setColorPrimario] = useState(config.theme.primaryColor);
   const [colorAcento, setColorAcento] = useState(config.theme.accentColor);
+  const [monedaCode, setMonedaCode] = useState(config.locale.currency.code);
   const [error, setError] = useState<string | null>(null);
+
+  const monedaActual = MONEDAS_LATAM.find((m) => m.code === monedaCode) ?? MONEDAS_LATAM[0];
 
   // Encuentra el label del color de acento activo
   const acentoLabel =
@@ -79,6 +83,10 @@ export default function OnboardingBasicInfoScreen({
         ...config.theme,
         primaryColor: colorPrimario,
         accentColor: colorAcento,
+      },
+      locale: {
+        ...config.locale,
+        currency: { code: monedaActual.code, symbol: monedaActual.symbol },
       },
     });
     onNext();
@@ -120,7 +128,50 @@ export default function OnboardingBasicInfoScreen({
       </Animated.View>
 
       <Animated.View
-        entering={FadeInDown.delay(180).duration(400)}
+        entering={FadeInDown.delay(160).duration(400)}
+        style={styles.campo}
+      >
+        <ThemedText style={styles.label}>Moneda</ThemedText>
+        <View style={styles.monedasWrap}>
+          {MONEDAS_LATAM.map((m) => {
+            const activa = m.code === monedaCode;
+            return (
+              <Pressable
+                key={m.code}
+                onPress={() => setMonedaCode(m.code)}
+                style={[
+                  styles.monedaChip,
+                  activa && styles.monedaChipActiva,
+                ]}
+              >
+                <ThemedText
+                  style={[
+                    styles.monedaSymbol,
+                    activa && styles.monedaSymbolActiva,
+                  ]}
+                >
+                  {m.symbol}
+                </ThemedText>
+                <ThemedText
+                  style={[
+                    styles.monedaCode,
+                    activa && styles.monedaCodeActiva,
+                  ]}
+                  numberOfLines={1}
+                >
+                  {m.code}
+                </ThemedText>
+              </Pressable>
+            );
+          })}
+        </View>
+        <ThemedText style={styles.monedaHint}>
+          {monedaActual.nombre} · {monedaActual.pais}
+        </ThemedText>
+      </Animated.View>
+
+      <Animated.View
+        entering={FadeInDown.delay(240).duration(400)}
         style={styles.campo}
       >
         <ThemedText style={styles.label}>Color principal</ThemedText>
@@ -142,7 +193,7 @@ export default function OnboardingBasicInfoScreen({
 
       {/* Preview card — reacciona a colorPrimario Y colorAcento */}
       <Animated.View
-        entering={FadeInDown.delay(260).duration(400)}
+        entering={FadeInDown.delay(320).duration(400)}
         style={[
           styles.previewCard,
           { borderColor: hexToRgba(colorPrimario, 0.35) },
@@ -201,7 +252,7 @@ export default function OnboardingBasicInfoScreen({
       </Animated.View>
 
       <Animated.View
-        entering={FadeInDown.delay(340).duration(400)}
+        entering={FadeInDown.delay(400).duration(400)}
         style={styles.campo}
       >
         <ThemedText style={styles.label}>Color de acento</ThemedText>
@@ -222,7 +273,7 @@ export default function OnboardingBasicInfoScreen({
       </Animated.View>
 
       <Animated.View
-        entering={FadeInDown.delay(420).duration(400)}
+        entering={FadeInDown.delay(480).duration(400)}
         style={styles.botones}
       >
         <GradientCTAButton
@@ -374,5 +425,46 @@ const styles = StyleSheet.create({
   },
   btnFlexWide: {
     flex: 2,
+  },
+  monedasWrap: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+  },
+  monedaChip: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.12)",
+    backgroundColor: "rgba(255,255,255,0.06)",
+  },
+  monedaChipActiva: {
+    borderColor: "#40E0D0",
+    backgroundColor: "rgba(64,224,208,0.12)",
+  },
+  monedaSymbol: {
+    fontSize: 13,
+    fontWeight: "700",
+    color: "rgba(255,255,255,0.55)",
+  },
+  monedaSymbolActiva: {
+    color: "#40E0D0",
+  },
+  monedaCode: {
+    fontSize: 11,
+    fontWeight: "500",
+    color: "rgba(255,255,255,0.4)",
+  },
+  monedaCodeActiva: {
+    color: "#40E0D0",
+  },
+  monedaHint: {
+    fontSize: 12,
+    color: "rgba(255,255,255,0.35)",
+    marginTop: 6,
   },
 });
