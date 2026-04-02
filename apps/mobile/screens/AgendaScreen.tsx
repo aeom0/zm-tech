@@ -396,13 +396,15 @@ export default function AgendaScreen() {
       ) : ownerVista ? (
         <>
           {ownerViewMode === "day" && (
-            <OwnerStaffAvatarStrip
-              employees={employees}
-              theme={theme}
-              columnWidth={empColWidth}
-              scrollRef={avatarStripRef as React.RefObject<ScrollView>}
-              onScroll={handleStripScroll}
-            />
+            <View style={{ flexGrow: 0 }}>
+              <OwnerStaffAvatarStrip
+                employees={employees}
+                theme={theme}
+                columnWidth={empColWidth}
+                scrollRef={avatarStripRef as React.RefObject<ScrollView>}
+                onScroll={handleStripScroll}
+              />
+            </View>
           )}
 
           {/* KPI strip — solo en vista diaria */}

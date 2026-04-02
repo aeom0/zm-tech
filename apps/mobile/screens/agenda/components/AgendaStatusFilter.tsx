@@ -36,7 +36,7 @@ export function AgendaStatusFilter({
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
-      style={{ flexGrow: 0, maxHeight: 48 }}
+      style={{ flexGrow: 0, flexShrink: 0 }}
       contentContainerStyle={styles.statusFilterContainer}
       keyboardShouldPersistTaps="handled"
     >
@@ -72,6 +72,7 @@ export function AgendaStatusFilter({
                 styles.statusChipText,
                 { color: isActive ? "#FFFFFF" : theme.text, zIndex: 1 },
               ]}
+              numberOfLines={1}
             >
               {opt.label}
             </ThemedText>

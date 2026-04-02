@@ -1,10 +1,10 @@
 /**
  * AgendaDayKPIStrip — métricas del día para la vista owner.
  *
- * Tres cards compactas en fila horizontal (scroll si hace falta).
+ * Tres cards en una fila; cada una flex:1 para ocupar todo el ancho útil.
  */
 import React, { useMemo } from "react";
-import { View, ScrollView } from "react-native";
+import { View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
@@ -44,41 +44,43 @@ function KPICard({ label, value, icon, accent, theme }: KPICardProps) {
   return (
     <View
       style={{
+        flex: 1,
+        minWidth: 0,
         backgroundColor: theme.backgroundSecondary,
         borderRadius: BorderRadius.md,
         borderWidth: 1,
         borderColor: theme.border,
-        paddingHorizontal: Spacing.sm,
-        paddingVertical: 6,
-        minWidth: 92,
-        maxWidth: 132,
+        paddingHorizontal: 6,
+        paddingVertical: Spacing.sm,
         flexDirection: "row",
         alignItems: "center",
-        gap: Spacing.xs,
+        gap: 6,
       }}
     >
       <View
         style={{
-          width: 24,
-          height: 24,
-          borderRadius: 12,
+          width: 28,
+          height: 28,
+          borderRadius: 14,
           backgroundColor: color + "18",
           alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <Feather name={icon} size={12} color={color} />
+        <Feather name={icon} size={13} color={color} />
       </View>
       <View style={{ flex: 1, minWidth: 0 }}>
         <ThemedText
-          style={{ fontSize: 9, fontWeight: "600", color: theme.textMuted, letterSpacing: 0.2 }}
-          numberOfLines={1}
+          style={{ fontSize: 10, fontWeight: "600", color: theme.textMuted }}
+          numberOfLines={2}
         >
           {label}
         </ThemedText>
         <ThemedText
-          style={{ fontSize: 14, fontWeight: "700", color: theme.text, marginTop: 1 }}
+          style={{ fontSize: 14, fontWeight: "700", color: theme.text, marginTop: 2 }}
           numberOfLines={1}
+          adjustsFontSizeToFit
+          minimumFontScale={0.75}
         >
           {value}
         </ThemedText>
@@ -122,17 +124,14 @@ export function AgendaDayKPIStrip({
   );
 
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      style={{ flexGrow: 0, maxHeight: 52 }}
-      contentContainerStyle={{
-        paddingHorizontal: Spacing.md,
-        paddingVertical: 4,
+    <View
+      style={{
+        flexDirection: "row",
         gap: Spacing.sm,
-        alignItems: "center",
+        paddingHorizontal: Spacing.md,
+        paddingTop: 2,
+        paddingBottom: Spacing.xs,
       }}
-      keyboardShouldPersistTaps="handled"
     >
       <KPICard label="Citas" value={String(filteredCount)} icon="calendar" theme={theme} />
       <KPICard
@@ -148,6 +147,6 @@ export function AgendaDayKPIStrip({
         accent={unassignedCount > 0 ? theme.warning : theme.textMuted}
         theme={theme}
       />
-    </ScrollView>
+    </View>
   );
 }
