@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { Calendar, DollarSign, Users, Home, Scissors, MoreHorizontal, User, Bell, TrendingUp, Star } from "lucide-react";
 import { LUNARIS } from "@/lib/theme";
 
 // Tres pantallas de la app que rotan en loop
@@ -40,7 +41,7 @@ const SCREENS = [
         done: false,
       },
     ],
-    tab: "📅",
+    TabIcon: Calendar,
   },
   {
     id: "finanzas",
@@ -77,7 +78,7 @@ const SCREENS = [
         done: false,
       },
     ],
-    tab: "💰",
+    TabIcon: DollarSign,
   },
   {
     id: "personal",
@@ -114,11 +115,17 @@ const SCREENS = [
         done: false,
       },
     ],
-    tab: "👥",
+    TabIcon: Users,
   },
 ];
 
-const TABS = ["🏠", "📅", "💅", "⋯", "👤"];
+const TABS = [
+  { Icon: Home, id: "home" },
+  { Icon: Calendar, id: "agenda" },
+  { Icon: Scissors, id: "services" },
+  { Icon: MoreHorizontal, id: "more" },
+  { Icon: User, id: "profile" },
+];
 
 export function AppMockup() {
   const [current, setCurrent] = useState(0);
@@ -180,10 +187,11 @@ export function AppMockup() {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <div
-                  className="text-xs font-bold mb-0.5"
+                  className="flex items-center gap-1 text-xs font-bold mb-0.5"
                   style={{ color: screen.accent }}
                 >
-                  ✂️ SalonPro
+                  <Scissors size={11} strokeWidth={2} />
+                  <span>SalonPro</span>
                 </div>
                 <div className="text-white text-sm font-bold">
                   {screen.label}
@@ -193,10 +201,10 @@ export function AppMockup() {
                 </div>
               </div>
               <div
-                className="w-8 h-8 rounded-xl flex items-center justify-center text-white text-sm"
+                className="w-8 h-8 rounded-xl flex items-center justify-center text-white"
                 style={{ backgroundColor: `${screen.accent}30` }}
               >
-                🔔
+                <Bell size={14} strokeWidth={2} />
               </div>
             </div>
 
@@ -265,18 +273,19 @@ export function AppMockup() {
               backdropFilter: "blur(8px)",
             }}
           >
-            {TABS.map((icon, i) => {
+            {TABS.map(({ Icon, id }, i) => {
               const isActive =
                 (i === 1 && screen.id === "agenda") ||
                 (i === 0 && screen.id === "finanzas") ||
                 (i === 3 && screen.id === "personal");
               return (
-                <div key={icon} className="flex flex-col items-center gap-0.5">
-                  <span
-                    className={`text-base transition-all ${isActive ? "scale-125" : "opacity-40"}`}
-                  >
-                    {icon}
-                  </span>
+                <div key={id} className="flex flex-col items-center gap-0.5">
+                  <Icon
+                    size={16}
+                    strokeWidth={isActive ? 2.5 : 1.75}
+                    className={`transition-all ${isActive ? "scale-125" : "opacity-40"}`}
+                    color={isActive ? screen.accent : "white"}
+                  />
                   {isActive && (
                     <div
                       className="w-1 h-1 rounded-full"
@@ -301,10 +310,12 @@ export function AppMockup() {
         className="absolute -right-4 top-16 bg-white dark:bg-zinc-900 rounded-2xl px-3 py-2 shadow-xl text-xs font-medium text-zinc-800 dark:text-zinc-200 border border-zinc-100 dark:border-zinc-800 whitespace-nowrap transition-all duration-500"
         style={{ opacity: animating ? 0 : 1 }}
       >
-        <span className="mr-1">🔔</span>
-        {screen.id === "agenda" && "Cita en 30 min"}
-        {screen.id === "finanzas" && "Ingreso registrado"}
-        {screen.id === "personal" && "Comisión calculada"}
+        <span className="inline-flex items-center gap-1.5">
+          <Bell size={11} strokeWidth={2} className="text-zinc-500" />
+          {screen.id === "agenda" && "Cita en 30 min"}
+          {screen.id === "finanzas" && "Ingreso registrado"}
+          {screen.id === "personal" && "Comisión calculada"}
+        </span>
       </div>
 
       {/* Etiqueta flotante — métrica */}
@@ -317,10 +328,18 @@ export function AppMockup() {
           {screen.id === "finanzas" && "Vs. mes anterior"}
           {screen.id === "personal" && "Satisfacción"}
         </div>
-        <div className="text-sm font-bold" style={{ color: screen.accent }}>
+        <div className="text-sm font-bold flex items-center gap-1" style={{ color: screen.accent }}>
           {screen.id === "agenda" && "87% hoy"}
-          {screen.id === "finanzas" && "+15% 📈"}
-          {screen.id === "personal" && "4.9 ⭐"}
+          {screen.id === "finanzas" && (
+            <>
+              +15% <TrendingUp size={12} strokeWidth={2.5} />
+            </>
+          )}
+          {screen.id === "personal" && (
+            <>
+              4.9 <Star size={11} strokeWidth={2} className="fill-current" />
+            </>
+          )}
         </div>
       </div>
     </div>

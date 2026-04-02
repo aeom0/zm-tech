@@ -1,13 +1,24 @@
 "use client";
 
 import { useState } from "react";
+import { Calendar, DollarSign, Users, Package, MessageCircle, type LucideIcon } from "lucide-react";
 import { RevealWrapper } from "@/components/ui/RevealWrapper";
 import { LUNARIS } from "@/lib/theme";
 
-const DEMO_TABS = [
+const DEMO_TABS: {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+  title: string;
+  description: string;
+  mockupBg: string;
+  accent: string;
+  stats: { value: string; label: string }[];
+}[] = [
   {
     id: "agenda",
-    label: "📅 Agenda",
+    label: "Agenda",
+    icon: Calendar,
     title: "Citas sin caos",
     description:
       "Vista diaria y semanal por profesional. Arrastra para reprogramar, toca para ver detalles. Sin conflictos, sin doble-reservas.",
@@ -20,7 +31,8 @@ const DEMO_TABS = [
   },
   {
     id: "finanzas",
-    label: "💰 Finanzas",
+    label: "Finanzas",
+    icon: DollarSign,
     title: "Tu caja, clara y al día",
     description:
       "Ingresos por día, semana y mes. Comisiones calculadas automáticamente. Cierra el mes en segundos, sin Excel ni calculadora.",
@@ -33,7 +45,8 @@ const DEMO_TABS = [
   },
   {
     id: "personal",
-    label: "👥 Personal",
+    label: "Personal",
+    icon: Users,
     title: "Tu equipo, coordinado",
     description:
       "Perfiles por profesional, horarios, servicios asignados y rendimiento. Cada uno ve solo lo que le corresponde desde su celular.",
@@ -46,7 +59,8 @@ const DEMO_TABS = [
   },
   {
     id: "inventario",
-    label: "📦 Inventario",
+    label: "Inventario",
+    icon: Package,
     title: "Nunca más sin insumos",
     description:
       "Alertas automáticas de stock bajo. Registro de uso por servicio. Deja de perder plata por falta de control de materiales.",
@@ -59,7 +73,8 @@ const DEMO_TABS = [
   },
   {
     id: "whatsapp",
-    label: "💬 WhatsApp",
+    label: "WhatsApp",
+    icon: MessageCircle,
     title: "Agenda por WhatsApp",
     description:
       "El bot atiende a tus clientes 24/7: responde preguntas, muestra el catálogo, toma la cita y envía confirmación. Con IA para conversaciones naturales en español.",
@@ -193,7 +208,7 @@ export function DemoSection() {
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 ${
+                className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 ${
                   activeTab === tab.id
                     ? "text-white shadow-lg"
                     : "bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700"
@@ -206,6 +221,7 @@ export function DemoSection() {
                     : {}
                 }
               >
+                <tab.icon size={15} strokeWidth={2} />
                 {tab.label}
               </button>
             ))}
@@ -255,7 +271,7 @@ export function DemoSection() {
                 className="inline-flex items-center gap-2 text-sm font-semibold transition-colors"
                 style={{ color: currentTab.accent }}
               >
-                Empezar con {currentTab.label.split(" ")[1]} gratis →
+                Empezar con {currentTab.label} gratis →
               </a>
             </div>
           </RevealWrapper>

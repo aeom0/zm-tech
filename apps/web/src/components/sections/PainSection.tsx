@@ -1,38 +1,42 @@
+import { Smartphone, BookOpen, TrendingDown, CheckCircle, Scissors } from "lucide-react";
 import { RevealWrapper } from "@/components/ui/RevealWrapper";
 
 const PAINS = [
   {
-    emoji: "📱",
+    icon: Smartphone,
     title: "Citas por WhatsApp que se pierden",
     description:
       "Mensajes enterrados entre conversaciones, doble booking sin querer, clientes que no aparecen.",
     color: "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900",
     textColor: "text-red-700 dark:text-red-400",
+    iconColor: "text-red-500",
   },
   {
-    emoji: "📓",
+    icon: BookOpen,
     title: "Cuadernos que nadie entiende",
     description:
       "Letra ilegible, tachones, páginas perdidas. No sabes quién atendió qué ni cuánto cobró.",
     color:
       "bg-orange-50 dark:bg-orange-950/30 border-orange-200 dark:border-orange-900",
     textColor: "text-orange-700 dark:text-orange-400",
+    iconColor: "text-orange-500",
   },
   {
-    emoji: "💸",
+    icon: TrendingDown,
     title: "No sabes cuánto ganaste este mes",
     description:
       "Las platas pasan por mil manos. Al final del mes no cuadra nada y el estrés se acumula.",
     color:
       "bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-900",
     textColor: "text-yellow-700 dark:text-yellow-500",
+    iconColor: "text-yellow-500",
   },
 ];
 
 const SOLUTIONS = [
-  { emoji: "✅", text: "Agenda digital sin conflictos" },
-  { emoji: "✅", text: "Historial de clientes automático" },
-  { emoji: "✅", text: "Finanzas en tiempo real" },
+  { text: "Agenda digital sin conflictos" },
+  { text: "Historial de clientes automático" },
+  { text: "Finanzas en tiempo real" },
 ];
 
 export function PainSection() {
@@ -64,7 +68,9 @@ export function PainSection() {
                 <div
                   className={`flex items-start gap-4 p-5 rounded-2xl border ${pain.color}`}
                 >
-                  <span className="text-3xl flex-shrink-0">{pain.emoji}</span>
+                  <div className={`flex-shrink-0 mt-0.5 ${pain.iconColor}`}>
+                    <pain.icon size={28} strokeWidth={1.75} />
+                  </div>
                   <div>
                     <h3 className={`font-bold ${pain.textColor}`}>
                       {pain.title}
@@ -87,7 +93,9 @@ export function PainSection() {
               </div>
 
               <div className="w-full bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-8 text-white shadow-xl shadow-primary/20">
-                <div className="text-4xl mb-4">✂️</div>
+                <div className="mb-4 text-white/80">
+                  <Scissors size={36} strokeWidth={1.5} />
+                </div>
                 <h3 className="text-2xl font-bold mb-2">Con SalonPro</h3>
                 <p className="text-white/80 mb-6 text-sm">
                   Todo organizado, en tu celular, en tiempo real.
@@ -98,7 +106,7 @@ export function PainSection() {
                       key={s.text}
                       className="flex items-center gap-3 text-sm"
                     >
-                      <span className="text-accent text-lg">{s.emoji}</span>
+                      <CheckCircle size={18} strokeWidth={2} className="text-accent flex-shrink-0" />
                       <span>{s.text}</span>
                     </li>
                   ))}

@@ -226,6 +226,16 @@ Flujo de arranque (mobile):
 - **TypeScript**: `apps/mobile/tsconfig.json` usa `module: "esnext"` (sin extender expo/tsconfig.base.json)
 - Usar `nvm use` para asegurar la versión correcta de Node
 
+## Cambios Recientes (abr 2026 — Web: eliminación de emojis + íconos Lucide)
+
+- **Web — sin emojis**: toda la landing y el panel web usan íconos SVG de **Lucide React**. `BUSINESS_TYPES` y `FEATURES` en `constants.ts` usan prop `icon` (nombre Lucide, ej. `"Scissors"`, `"Calendar"`) en lugar de `emoji`. Componentes afectados: `FeatureCard`, `BusinessTypeTab` (renderizado dinámico con `LucideIcons as unknown as Record<string, LucideIcon>`), `HeroSection` (badge con `<Zap>`, ✨ eliminado del CTA), `PainSection` (`Smartphone`, `BookOpen`, `TrendingDown`, `CheckCircle`, `Scissors`), `FeaturesSection` (`MessageCircle`, `Check`), `DemoSection` (tabs tipados con `LucideIcon`), `CtaSection`, `FaqSection`, `PricingSection` (`ChevronDown`, `Check`), `PricingCard` (`Star`, `MessageCircle`, `Check`, `Sparkles`), `AppMockup` (tabs `Home/Calendar/Scissors/MoreHorizontal/User`, header `Bell`, métricas `TrendingUp`+`Star`), `WABAPreview` (texto limpio sin caracteres Unicode decorativos).
+
+## Cambios Recientes (abr 2026 — v1.4.9 — Moneda LATAM + Personal CRUD + Agenda KPI/formato)
+
+- **Mobile — selector de moneda multi-LATAM** (`SettingsScreen` + `OnboardingBasicInfoScreen`): `CurrencyPickerModal` pageSheet con 19 monedas LATAM; persiste `locale.currency` (`code` + `symbol`) en `TenantConfig` con `syncRemote`. Constantes en `apps/mobile/screens/settings/constants.ts`.
+- **Mobile — Personal (CRUD completo)**: FAB "+" crea nuevo profesional (formulario completo); botón "Eliminar" en modal con confirmación; `createMutation` (INSERT) + `deleteMutation` (DELETE + limpieza avatar en Storage). `handleSave` distingue creación vs edición.
+- **Mobile — Agenda (KPI + UI compacta + formato 12/24 h)**: nuevo `AgendaDayKPIStrip` con 3 métricas del día (citas, ingresos `currencySymbol`, sin asignar con badge warning); UI compacta con safe-area; `locale.timeFormat` (12|24) expuesto en `display-time.ts`, grids owner/staff/calendar y modal detalle; `tenant_settings.time_format` en Drizzle schema + SQL `scripts/db/migrations/20260402_tenant_time_format.sql`; panel web `/panel/horarios` expone el picker de formato.
+
 ## Cambios Recientes (abr 2026 — v1.4.8 — Lunaris web + Vercel + DiamondHero)
 
 - **Web — `LUNARIS`**: nuevo `apps/web/src/lib/theme.ts`; landing (Navbar Salon/Pro, `GradientButton`, Hero, Demo, PricingCard, `WABAPreview`, `AppMockup`), panel (`/panel/*`), `/login`, `/dashboard`, `/finanzas` migrados de magenta (`#E91E8C`) a turquesa (`#40E0D0` / `#00897B`). Tailwind `primary` `#00897B`, `globals.css` scrollbar/selection turquesa.

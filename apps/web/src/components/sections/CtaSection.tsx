@@ -29,7 +29,7 @@ export function CtaSection() {
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-4">
             <GradientButton href="#precios" size="lg">
-              Comenzar ahora — 14 días gratis ✨
+              Comenzar ahora — 14 días gratis
             </GradientButton>
           </div>
 

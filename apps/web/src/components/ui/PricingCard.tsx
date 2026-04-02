@@ -1,5 +1,6 @@
 import type { Plan } from "@/lib/constants";
 import { LUNARIS } from "@/lib/theme";
+import { Star, MessageCircle, Check, Sparkles } from "lucide-react";
 
 type Props = {
   plan: Plan;
@@ -22,8 +23,9 @@ export function PricingCard({ plan, annual }: Props) {
       }`}
     >
       {plan.highlighted && (
-        <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-accent text-black text-xs font-bold px-4 py-1.5 rounded-full">
-          ⭐ MÁS POPULAR
+        <span className="absolute -top-4 left-1/2 -translate-x-1/2 inline-flex items-center gap-1.5 bg-accent text-black text-xs font-bold px-4 py-1.5 rounded-full">
+          <Star size={11} strokeWidth={2.5} className="fill-black" />
+          MÁS POPULAR
         </span>
       )}
 
@@ -82,7 +84,7 @@ export function PricingCard({ plan, annual }: Props) {
             : "bg-[#25D366]/10 text-[#25D366] border border-[#25D366]/20"
         }`}
       >
-        <span>💬</span>
+        <MessageCircle size={13} strokeWidth={2} className="flex-shrink-0" />
         <span>{wabaLabel}</span>
       </div>
 
@@ -90,13 +92,13 @@ export function PricingCard({ plan, annual }: Props) {
       <ul className="space-y-3 mb-4 flex-1">
         {plan.features.map((feat) => (
           <li key={feat} className="flex items-start gap-2.5 text-sm">
-            <span
+            <Check
+              size={14}
+              strokeWidth={2.5}
               className={`mt-0.5 flex-shrink-0 ${
                 plan.highlighted ? "text-accent" : "text-primary"
               }`}
-            >
-              ✓
-            </span>
+            />
             <span
               className={
                 plan.highlighted
@@ -133,7 +135,7 @@ export function PricingCard({ plan, annual }: Props) {
       <ul className="space-y-2.5 mb-8">
         {plan.wabaFeatures.map((feat) => (
           <li key={feat} className="flex items-start gap-2.5 text-sm">
-            <span className="mt-0.5 flex-shrink-0 text-[#25D366]">✦</span>
+            <Sparkles size={13} strokeWidth={2} className="mt-0.5 flex-shrink-0 text-[#25D366]" />
             <span
               className={
                 plan.highlighted

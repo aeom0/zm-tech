@@ -5,6 +5,27 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ---
 
+## [Unreleased] — 2026-04-02
+
+### Cambiado
+- **Web — eliminación de emojis**: toda la landing y el panel web ahora usan íconos SVG de **Lucide React** en lugar de emojis Unicode. Afecta `constants.ts` (`BUSINESS_TYPES` y `FEATURES` cambian prop `emoji` → `icon`), `FeatureCard`, `BusinessTypeTab`, `HeroSection`, `PainSection`, `FeaturesSection`, `DemoSection`, `CtaSection`, `FaqSection`, `PricingSection`, `PricingCard`, `AppMockup` y `WABAPreview`.
+
+### Añadido
+- **Mobile — selector de moneda multi-LATAM** (`feat(settings+onboarding)`): lista de 19 monedas LATAM (USD por defecto); seleccionable desde Ajustes (`CurrencyPickerModal` pageSheet) y desde el onboarding paso 2 (chips). Persiste `code + symbol` en `TenantConfig` con `syncRemote`.
+- **Mobile — gestión de profesionales** (`feat(personal)`): FAB "+" crea nuevo empleado (formulario completo); botón "Eliminar" en modal de edición con confirmación y limpieza de avatar en Storage. `createMutation` (INSERT) y `deleteMutation` (DELETE).
+
+### Corregido
+- **Mobile — Agenda** (`fix(agenda)`): KPI fila flex 1/3 sin `ScrollView`; avatar strip `flexGrow 0`; filtro estado con padding/gap más chico (11 px), sin `maxHeight` que recortaba los chips; scroll horizontal se mantiene en pantallas angostas.
+
+---
+
+## [1.4.9] — 2026-04-02
+
+### Añadido
+- **Mobile — Agenda KPI + UI compacta** (`feat(agenda+tenant)`): `AgendaDayKPIStrip` (3 métricas: citas, ingresos, sin asignar); agenda más compacta con safe-area; selector `locale.timeFormat` (12|24) en helpers, grids y modal detalle; `HorariosTrabajo` actualizado con picker de formato; `tenant_settings.time_format` en Drizzle y SQL de migración.
+
+---
+
 ## [1.4.8] — 2026-04-01
 
 ### Añadido

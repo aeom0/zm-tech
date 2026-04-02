@@ -1,49 +1,49 @@
 export const BUSINESS_TYPES = [
-  { id: "barbershop", label: "Barbería", emoji: "✂️" },
-  { id: "spa-nails", label: "Spa & Nails", emoji: "💅" },
-  { id: "hair-salon", label: "Peluquería", emoji: "💇" },
-  { id: "aesthetic", label: "Estética", emoji: "🌿" },
+  { id: "barbershop", label: "Barbería", icon: "Scissors" },
+  { id: "spa-nails", label: "Spa & Nails", icon: "Sparkles" },
+  { id: "hair-salon", label: "Peluquería", icon: "Zap" },
+  { id: "aesthetic", label: "Estética", icon: "Leaf" },
 ];
 
 export const FEATURES = [
   {
-    emoji: "💬",
+    icon: "MessageCircle",
     title: "Bot WhatsApp 24/7",
     description:
       "Tus clientes agendan solos por WhatsApp. Con IA integrada que responde preguntas libres sobre servicios, precios y disponibilidad.",
   },
   {
-    emoji: "📅",
+    icon: "Calendar",
     title: "Agenda Visual",
     description:
       "Citas sin conflictos con vista por empleado. Reprogramar es arrastrar y soltar.",
   },
   {
-    emoji: "👥",
+    icon: "Users",
     title: "Gestión de Personal",
     description:
       "Comisiones automáticas, horarios y rendimiento de cada miembro del equipo.",
   },
   {
-    emoji: "💰",
+    icon: "DollarSign",
     title: "Control de Finanzas",
     description:
       "Ingresos diarios, semanales y mensuales. Cierra el mes en segundos.",
   },
   {
-    emoji: "📦",
+    icon: "Package",
     title: "Inventario Inteligente",
     description:
       "Alertas de stock bajo automáticas. Nunca más te quedes sin insumos.",
   },
   {
-    emoji: "🔔",
+    icon: "Bell",
     title: "Notificaciones Push",
     description:
       "Recordatorios automáticos a clientes. Reduce las ausencias hasta un 40%.",
   },
   {
-    emoji: "📊",
+    icon: "BarChart2",
     title: "Reportes de Crecimiento",
     description:
       "Métricas claras que te dicen qué servicios son más rentables y cuándo crecer.",
@@ -54,7 +54,7 @@ export const TESTIMONIALS = [
   {
     name: "Carlos Mendoza",
     role: "Dueño de Barbería",
-    country: "Venezuela 🇻🇪",
+    country: "Venezuela",
     avatar: "CM",
     color: "#1A237E",
     text: "Estamos en la beta desde hace unas semanas y ya no puedo imaginar volver al cuaderno. Las citas organizadas, las comisiones calculadas solas y mis clientes llegando puntuales. Va por buen camino.",
@@ -63,7 +63,7 @@ export const TESTIMONIALS = [
   {
     name: "Valeria Torres",
     role: "Directora de Spa & Nails",
-    country: "Perú 🇵🇪",
+    country: "Perú",
     avatar: "VT",
     color: "#40E0D0",
     text: "Lo probamos antes del lanzamiento oficial y nos enganchó. Tengo 3 especialistas y antes calculaba las comisiones a mano cada fin de mes. Ahora SalonPro lo hace solo. El equipo está encantado.",
@@ -72,7 +72,7 @@ export const TESTIMONIALS = [
   {
     name: "Andrea Gómez",
     role: "Estilista y Emprendedora",
-    country: "Colombia 🇨🇴",
+    country: "Colombia",
     avatar: "AG",
     color: "#6A1B9A",
     text: "Entré al acceso anticipado y fue la mejor decisión. Funciona perfecto en el celular y me da el control que necesitaba. Todavía están puliendo detalles pero el producto tiene mucho potencial.",

@@ -2,6 +2,9 @@ import { BUSINESS_TYPES } from "@/lib/constants";
 import { AppMockup } from "@/components/ui/AppMockup";
 import { GradientButton } from "@/components/ui/GradientButton";
 import { LUNARIS } from "@/lib/theme";
+import * as LucideIcons from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+import { Zap } from "lucide-react";
 
 export function HeroSection() {
   return (
@@ -18,7 +21,7 @@ export function HeroSection() {
           <div className="flex-1 text-center lg:text-left">
             {/* Badge */}
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white/90 text-sm font-medium px-4 py-2 rounded-full mb-8">
-              <span>🚀</span>
+              <Zap size={15} strokeWidth={2} className="text-accent flex-shrink-0" />
               <span>Gestión inteligente para tu negocio</span>
             </div>
 
@@ -48,7 +51,7 @@ export function HeroSection() {
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-10">
               <GradientButton href="#precios" size="lg">
-                Comenzar gratis — 14 días ✨
+                Comenzar gratis — 14 días
               </GradientButton>
               <GradientButton href="#demo" size="lg" outline>
                 Ver demo en vivo →
@@ -57,15 +60,18 @@ export function HeroSection() {
 
             {/* Tipos de negocio */}
             <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
-              {BUSINESS_TYPES.map((t) => (
-                <div
-                  key={t.id}
-                  className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white/80 text-sm px-4 py-2 rounded-full"
-                >
-                  <span>{t.emoji}</span>
-                  <span>{t.label}</span>
-                </div>
-              ))}
+              {BUSINESS_TYPES.map((t) => {
+                const IconComponent = (LucideIcons as unknown as Record<string, LucideIcon>)[t.icon];
+                return (
+                  <div
+                    key={t.id}
+                    className="flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 text-white/80 text-sm px-4 py-2 rounded-full"
+                  >
+                    {IconComponent && <IconComponent size={14} strokeWidth={2} />}
+                    <span>{t.label}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { PLANS, COMPARISON_FEATURES, WABA_ADDON_TIERS } from "@/lib/constants";
 import { PricingCard } from "@/components/ui/PricingCard";
 import { RevealWrapper } from "@/components/ui/RevealWrapper";
+import { MessageCircle, ChevronDown, Check } from "lucide-react";
 
 export function PricingSection() {
   const [annual, setAnnual] = useState(false);
@@ -97,16 +98,16 @@ export function PricingSection() {
               className="w-full flex items-center justify-between px-6 py-4 text-sm font-medium"
             >
               <span className="flex items-center gap-2 text-[#25D366] font-semibold">
-                <span>💬</span>
+                <MessageCircle size={15} strokeWidth={2} />
                 <span>¿Necesitas más conversaciones de WhatsApp?</span>
               </span>
-              <span
+              <ChevronDown
+                size={16}
+                strokeWidth={2}
                 className={`text-[#25D366] transition-transform duration-300 ${
                   showAddon ? "rotate-180" : ""
                 }`}
-              >
-                ▼
-              </span>
+              />
             </button>
 
             {showAddon && (
@@ -152,13 +153,13 @@ export function PricingSection() {
             className="w-full flex items-center justify-between px-6 py-4 text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-900 transition-colors"
           >
             <span>Ver comparativa completa de planes</span>
-            <span
+            <ChevronDown
+              size={16}
+              strokeWidth={2}
               className={`transition-transform duration-300 ${
                 showComparison ? "rotate-180" : ""
               }`}
-            >
-              ▼
-            </span>
+            />
           </button>
 
           {showComparison && (
@@ -205,7 +206,7 @@ export function PricingSection() {
                                 {val}
                               </span>
                             ) : val ? (
-                              <span className="text-primary font-bold">✓</span>
+                              <Check size={16} strokeWidth={2.5} className="text-primary mx-auto" />
                             ) : (
                               <span className="text-zinc-300 dark:text-zinc-700">
                                 —

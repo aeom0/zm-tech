@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FAQS } from "@/lib/constants";
 import { RevealWrapper } from "@/components/ui/RevealWrapper";
+import { MessageCircle } from "lucide-react";
 
 export function FaqSection() {
   const [open, setOpen] = useState<number | null>(null);
@@ -70,7 +71,8 @@ export function FaqSection() {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-green-500 text-white font-semibold px-6 py-3 rounded-full text-sm hover:bg-green-600 transition-colors"
             >
-              💬 Escribir por WhatsApp
+              <MessageCircle size={16} strokeWidth={2} />
+              Escribir por WhatsApp
             </a>
           </div>
         </RevealWrapper>

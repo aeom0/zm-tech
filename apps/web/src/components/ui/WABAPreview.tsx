@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { LUNARIS } from "@/lib/theme";
 
 const MESSAGES = [
-  { from: "client", text: "Hola, quiero una cita para mañana 💅", delay: 0 },
+  { from: "client", text: "Hola, quiero una cita para mañana", delay: 0 },
   {
     from: "bot",
     text: "¡Hola! Tenemos disponibilidad mañana a las 11am, 2pm y 4pm. ¿Cuál te va bien?",
@@ -13,7 +13,7 @@ const MESSAGES = [
   { from: "client", text: "A las 2pm", delay: 1700 },
   {
     from: "bot",
-    text: "✅ Cita confirmada para mañana a las 2pm. ¡Te esperamos!",
+    text: "Cita confirmada para mañana a las 2pm. ¡Te esperamos!",
     delay: 2500,
   },
 ] as const;
