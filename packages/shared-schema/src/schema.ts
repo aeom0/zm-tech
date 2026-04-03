@@ -420,43 +420,66 @@ export const insertPromotionItemSchema = createInsertSchema(
   promotionItems,
 ).omit({ id: true });
 
-export const tenantSettings = pgTable("tenant_settings", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  businessName: text("business_name").notNull(),
-  businessType: text("business_type").notNull(),
-  primaryColor: text("primary_color").notNull().default("#E91E8C"),
-  accentColor: text("accent_color").notNull().default("#FFD700"),
-  currencyCode: text("currency_code").notNull().default("USD"),
-  currencySymbol: text("currency_symbol").notNull().default("$"),
-  country: text("country").notNull().default(""),
-  language: text("language").notNull().default("es"),
-  /** IANA, ej. America/Caracas — migración manual si la columna aún no existe en un proyecto */
-  timezone: text("timezone").notNull().default("America/Caracas"),
-  /** `12` | `24` — cómo mostrar horas en agenda / UI */
-  timeFormat: text("time_format").notNull().default("24"),
-  clientTerminology: text("client_terminology")
-    .notNull()
-    .default("cliente"),
-  tagline: text("tagline").notNull().default(""),
-  featuresWhatsapp: boolean("features_whatsapp").notNull().default(false),
-  logoUrl: text("logo_url").notNull().default(""),
-  staffTerminology: text("staff_terminology")
-    .notNull()
-    .default("especialistas"),
-  staffSingularTerminology: text("staff_singular_terminology")
-    .notNull()
-    .default("especialista"),
-  appointmentTerminology: text("appointment_terminology")
-    .notNull()
-    .default("cita"),
-  businessHours: jsonb("business_hours"),
-  contactInfo: jsonb("contact_info"),
-  commissionStaff: integer("commission_staff").notNull().default(60),
-  commissionHouse: integer("commission_house").notNull().default(40),
-  isConfigured: boolean("is_configured").notNull().default(false),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+export const tenantSettings = pgTable(
+  "tenant_settings",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    businessName: text("business_name").notNull(),
+    businessType: text("business_type").notNull(),
+    primaryColor: text("primary_color").notNull().default("#E91E8C"),
+    accentColor: text("accent_color").notNull().default("#FFD700"),
+    currencyCode: text("currency_code").notNull().default("USD"),
+    currencySymbol: text("currency_symbol").notNull().default("$"),
+    country: text("country").notNull().default(""),
+    language: text("language").notNull().default("es"),
+    /** IANA, ej. America/Caracas — migración manual si la columna aún no existe en un proyecto */
+    timezone: text("timezone").notNull().default("America/Caracas"),
+    /** `12` | `24` — cómo mostrar horas en agenda / UI */
+    timeFormat: text("time_format").notNull().default("24"),
+    clientTerminology: text("client_terminology").notNull().default("cliente"),
+    tagline: text("tagline").notNull().default(""),
+    featuresWhatsapp: boolean("features_whatsapp").notNull().default(false),
+    logoUrl: text("logo_url").notNull().default(""),
+    staffTerminology: text("staff_terminology")
+      .notNull()
+      .default("especialistas"),
+    staffSingularTerminology: text("staff_singular_terminology")
+      .notNull()
+      .default("especialista"),
+    appointmentTerminology: text("appointment_terminology")
+      .notNull()
+      .default("cita"),
+    businessHours: jsonb("business_hours"),
+    contactInfo: jsonb("contact_info"),
+    commissionStaff: integer("commission_staff").notNull().default(60),
+    commissionHouse: integer("commission_house").notNull().default(40),
+    isConfigured: boolean("is_configured").notNull().default(false),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+
+    /** Slug para URL pública /s/[slug] */
+    slug: text("slug").unique(),
+    webEnabled: boolean("web_enabled").notNull().default(false),
+    webTemplate: text("web_template").notNull().default("elegant"),
+    customDomain: text("custom_domain").unique(),
+    webServices: jsonb("web_services").default(sql`'[]'::jsonb`),
+    webReviews: jsonb("web_reviews").default(sql`'[]'::jsonb`),
+    webHeroTagline: text("web_hero_tagline"),
+    webAbout: text("web_about"),
+    webInstagram: text("web_instagram"),
+    webWhatsapp: text("web_whatsapp"),
+    webAddress: text("web_address"),
+    webCity: text("web_city"),
+    webStatClients: text("web_stat_clients").notNull().default("500+"),
+    webStatRating: text("web_stat_rating").notNull().default("4.9"),
+    webStatYears: text("web_stat_years").notNull().default("3+"),
+  },
+  (table) => ({
+    webEnabledIdx: index("idx_tenant_settings_web_enabled").on(
+      table.webEnabled,
+    ),
+  }),
+);
 
 export const insertTenantSettingsSchema = createInsertSchema(
   tenantSettings,

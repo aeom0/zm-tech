@@ -77,7 +77,12 @@ function KPICard({ label, value, icon, accent, theme }: KPICardProps) {
           {label}
         </ThemedText>
         <ThemedText
-          style={{ fontSize: 14, fontWeight: "700", color: theme.text, marginTop: 2 }}
+          style={{
+            fontSize: 14,
+            fontWeight: "700",
+            color: theme.text,
+            marginTop: 2,
+          }}
           numberOfLines={1}
           adjustsFontSizeToFit
           minimumFontScale={0.75}
@@ -106,7 +111,9 @@ export function AgendaDayKPIStrip({
   );
 
   const filteredCount = useMemo(
-    () => dayApts.filter((apt) => matchesStatusFilter(apt.status, statusFilter)).length,
+    () =>
+      dayApts.filter((apt) => matchesStatusFilter(apt.status, statusFilter))
+        .length,
     [dayApts, statusFilter],
   );
 
@@ -133,7 +140,12 @@ export function AgendaDayKPIStrip({
         paddingBottom: Spacing.xs,
       }}
     >
-      <KPICard label="Citas" value={String(filteredCount)} icon="calendar" theme={theme} />
+      <KPICard
+        label="Citas"
+        value={String(filteredCount)}
+        icon="calendar"
+        theme={theme}
+      />
       <KPICard
         label="Ingresos"
         value={`${currencySymbol} ${totalRevenue.toFixed(2)}`}
