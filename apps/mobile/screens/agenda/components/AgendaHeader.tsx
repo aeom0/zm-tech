@@ -116,10 +116,12 @@ export function AgendaHeader({
         }
       >
         {isWeekMode ? (
-          // Vista semanal → mostrar rango de la semana
           <View style={{ alignItems: "center", gap: 2 }}>
-            <ThemedText style={[styles.weekTitle, { fontSize: isTablet ? 18 : 15 }]}>
-              {formatoFechaCortaEnZona(weekDays[0], language, timeZone)}{" – "}
+            <ThemedText
+              style={[styles.weekTitle, { fontSize: isTablet ? 18 : 15 }]}
+            >
+              {formatoFechaCortaEnZona(weekDays[0], language, timeZone)}
+              {" – "}
               {formatoFechaCortaEnZona(weekDays[6], language, timeZone)}
             </ThemedText>
             <ThemedText
@@ -135,7 +137,6 @@ export function AgendaHeader({
             </ThemedText>
           </View>
         ) : (
-          // Vista diaria → mostrar fecha larga
           <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
             <View style={{ alignItems: "center" }}>
               <ThemedText

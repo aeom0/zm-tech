@@ -14,11 +14,14 @@ interface OwnerStaffAvatarStripProps {
     textMuted: string;
     border: string;
     backgroundSecondary: string;
+    primary: string;
   };
   columnWidth: number;
   scrollRef?: React.RefObject<ScrollView>;
   onScroll?: (x: number) => void;
   onEmployeePress?: (employeeId: string, index: number) => void;
+  /** Fila activa como filtro de citas; null = todos */
+  selectedEmployeeId?: string | null;
 }
 
 export function OwnerStaffAvatarStrip({
@@ -28,6 +31,7 @@ export function OwnerStaffAvatarStrip({
   scrollRef,
   onScroll,
   onEmployeePress,
+  selectedEmployeeId = null,
 }: OwnerStaffAvatarStripProps) {
   if (employees.length === 0) return null;
 
@@ -66,8 +70,9 @@ export function OwnerStaffAvatarStrip({
                 width: 44,
                 height: 44,
                 borderRadius: 22,
-                borderWidth: 2,
-                borderColor: emp.color,
+                borderWidth: selectedEmployeeId === emp.id ? 3 : 2,
+                borderColor:
+                  selectedEmployeeId === emp.id ? theme.primary : emp.color,
                 backgroundColor: theme.backgroundSecondary,
                 alignItems: "center",
                 justifyContent: "center",

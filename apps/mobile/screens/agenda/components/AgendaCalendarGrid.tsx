@@ -4,8 +4,14 @@ import { View, ScrollView, Pressable, RefreshControl } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { Spacing } from "@/constants/theme";
 
-import type { TenantConfig, TimeFormatPreference } from "@salonpro/tenant-config";
-import { esCeldaAgendaEnHorarioLaboral, formatoHoraAgendaSlot } from "@salonpro/tenant-config";
+import type {
+  TenantConfig,
+  TimeFormatPreference,
+} from "@salonpro/tenant-config";
+import {
+  esCeldaAgendaEnHorarioLaboral,
+  formatoHoraAgendaSlot,
+} from "@salonpro/tenant-config";
 
 import type {
   AgendaAppointment,
@@ -94,7 +100,8 @@ export function AgendaCalendarGrid({
       {agendaHours.map((hour) => {
         if (isTablet) {
           const empColWidth =
-            (width - timeColWidth - Spacing.md * 2) / Math.max(employees.length, 1);
+            (width - timeColWidth - Spacing.md * 2) /
+            Math.max(employees.length, 1);
           const dentroFila = esCeldaAgendaEnHorarioLaboral(
             selectedDate,
             hour,

@@ -89,6 +89,10 @@ export default function AgendaScreen() {
   const [rescheduleHour, setRescheduleHour] = useState<number>(10);
   const [selectedHour, setSelectedHour] = useState(9);
   const [statusFilter, setStatusFilter] = useState<AgendaStatusFilterType>("all");
+  /** Filtro por columna de empleado (owner día / grid tablet): solo citas de ese id; null = todos */
+  const [employeeColumnFilterId, setEmployeeColumnFilterId] = useState<
+    string | null
+  >(null);
   const [formData, setFormData] = useState<AgendaFormState>(emptyAgendaForm());
 
   const avatarStripRef = useRef<ScrollView>(null);
@@ -120,6 +124,13 @@ export default function AgendaScreen() {
     employees, employeesLoading, employeesError,
     categories, services, servicesLoading, servicesError,
   } = useAgendaQueries();
+
+  const appointmentsDisplayed = useMemo(() => {
+    if (!employeeColumnFilterId) return appointments;
+    return appointments.filter(
+      (a) => a.employee_id === employeeColumnFilterId,
+    );
+  }, [appointments, employeeColumnFilterId]);
 
   const servicesByCategory = useServicesByCategory(services, formData.categoryId);
   const selectedCategory = useMemo(
@@ -184,6 +195,16 @@ export default function AgendaScreen() {
     setOwnerViewMode("day");
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
   }, []);
+
+  useEffect(() => {
+    if (ownerVista && ownerViewMode === "week") {
+      setEmployeeColumnFilterId(null);
+    }
+  }, [ownerVista, ownerViewMode]);
+
+  useEffect(() => {
+    if (staffVista) setEmployeeColumnFilterId(null);
+  }, [staffVista]);
 
   const openNewAppointment = (date: Date, hour: number) => {
     setSelectedDate(date);
@@ -362,11 +383,25 @@ export default function AgendaScreen() {
     requestAnimationFrame(() => { isSyncingFromStrip.current = false; });
   }, []);
 
-  const handleEmployeePress = useCallback((employeeId: string, index: number) => {
-    const x = index * empColWidth;
-    avatarStripRef.current?.scrollTo({ x, animated: true });
-    gridScrollRef.current?.scrollTo({ x, animated: true });
-  }, [empColWidth]);
+  const handleEmployeePress = useCallback(
+    (employeeId: string, index: number) => {
+      setEmployeeColumnFilterId((prev) =>
+        prev === employeeId ? null : employeeId,
+      );
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      const x = index * empColWidth;
+      avatarStripRef.current?.scrollTo({ x, animated: true });
+      gridScrollRef.current?.scrollTo({ x, animated: true });
+    },
+    [empColWidth],
+  );
+
+  const handleEmployeeHeaderPress = useCallback((employeeId: string) => {
+    setEmployeeColumnFilterId((prev) =>
+      prev === employeeId ? null : employeeId,
+    );
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+  }, []);
 
   return (
     <View
@@ -410,6 +445,7 @@ export default function AgendaScreen() {
                 scrollRef={avatarStripRef as React.RefObject<ScrollView>}
                 onScroll={handleStripScroll}
                 onEmployeePress={handleEmployeePress}
+                selectedEmployeeId={employeeColumnFilterId}
               />
             </View>
           )}
@@ -419,7 +455,7 @@ export default function AgendaScreen() {
             <AgendaDayKPIStrip
               selectedDate={selectedDate}
               timeZone={tenantTz}
-              appointments={appointments}
+              appointments={appointmentsDisplayed}
               statusFilter={statusFilter}
               currencySymbol={currencySymbol}
               theme={{
@@ -447,7 +483,7 @@ export default function AgendaScreen() {
               timeZone={tenantTz}
               language={config.locale.language}
               timeFormat={timeFormatReloj}
-              appointments={appointments}
+              appointments={appointmentsDisplayed}
               employees={employees}
               services={services}
               statusFilter={statusFilter}
@@ -477,7 +513,7 @@ export default function AgendaScreen() {
               timeZone={tenantTz}
               language={config.locale.language}
               timeFormat={timeFormatReloj}
-              appointments={appointments}
+              appointments={appointmentsDisplayed}
               employees={employees}
               services={services}
               statusFilter={statusFilter}
@@ -549,6 +585,8 @@ export default function AgendaScreen() {
                 (width - TIME_COL_W - Spacing.md * 2) / Math.max(employees.length, 1)
               }
               theme={theme}
+              selectedEmployeeId={employeeColumnFilterId}
+              onEmployeePress={handleEmployeeHeaderPress}
             />
           )}
           <AgendaStatusFilterBar
@@ -568,7 +606,7 @@ export default function AgendaScreen() {
             timeZone={tenantTz}
             language={config.locale.language}
             timeFormat={timeFormatReloj}
-            appointments={appointments}
+            appointments={appointmentsDisplayed}
             employees={employees}
             services={services}
             statusFilter={statusFilter}

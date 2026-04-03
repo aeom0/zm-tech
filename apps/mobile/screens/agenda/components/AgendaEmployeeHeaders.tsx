@@ -1,6 +1,7 @@
 import React from "react";
-import { View } from "react-native";
+import { View, Pressable } from "react-native";
 import { Image } from "expo-image";
+import * as Haptics from "expo-haptics";
 
 import { ThemedText } from "@/components/ThemedText";
 
@@ -16,7 +17,11 @@ interface AgendaEmployeeHeadersProps {
     border: string;
     backgroundDefault: string;
     backgroundSecondary: string;
+    primary: string;
   };
+  /** Toca un empleado para filtrar solo sus citas; null = todos */
+  selectedEmployeeId?: string | null;
+  onEmployeePress?: (employeeId: string) => void;
 }
 
 export function AgendaEmployeeHeaders({
@@ -24,6 +29,8 @@ export function AgendaEmployeeHeaders({
   timeColWidth,
   columnWidth,
   theme,
+  selectedEmployeeId = null,
+  onEmployeePress,
 }: AgendaEmployeeHeadersProps) {
   return (
     <View
@@ -39,24 +46,17 @@ export function AgendaEmployeeHeaders({
       {employees.map((emp) => {
         const initial = (emp.name?.trim().split(/\s+/)[0] ?? "?").slice(0, 1);
         const uri = emp.avatar_url?.trim();
-        return (
-          <View
-            key={emp.id}
-            style={[
-              styles.empHeader,
-              {
-                width: columnWidth,
-                borderLeftColor: emp.color,
-              },
-            ]}
-          >
+        const selected = selectedEmployeeId === emp.id;
+
+        const inner = (
+          <>
             <View
               style={{
                 width: 36,
                 height: 36,
                 borderRadius: 18,
-                borderWidth: 2,
-                borderColor: emp.color,
+                borderWidth: selected ? 3 : 2,
+                borderColor: selected ? theme.primary : emp.color,
                 backgroundColor: theme.backgroundSecondary,
                 overflow: "hidden",
                 alignItems: "center",
@@ -88,6 +88,39 @@ export function AgendaEmployeeHeaders({
             >
               {emp.name.split(" ")[0]}
             </ThemedText>
+          </>
+        );
+
+        return (
+          <View
+            key={emp.id}
+            style={[
+              styles.empHeader,
+              {
+                width: columnWidth,
+                borderLeftColor: emp.color,
+              },
+            ]}
+          >
+            {onEmployeePress ? (
+              <Pressable
+                onPress={() => {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                  onEmployeePress(emp.id);
+                }}
+                accessibilityRole="button"
+                accessibilityState={{ selected }}
+                accessibilityLabel={`Filtrar citas de ${emp.name}`}
+                style={({ pressed }) => ({
+                  alignItems: "center",
+                  opacity: pressed ? 0.85 : 1,
+                })}
+              >
+                {inner}
+              </Pressable>
+            ) : (
+              inner
+            )}
           </View>
         );
       })}
