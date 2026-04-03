@@ -1,7 +1,7 @@
 # SKILL: SalonPro — Contexto Permanente para Claude Code
 
 > Lee este archivo **antes de tocar cualquier archivo del repo**.
-> Fuente: código real del repositorio + docs internas · Versión: v1.4.2 · Actualizado: marzo 2026
+> Fuente: código real del repositorio + docs internas · Versión: v1.4.9 · Actualizado: abril 2026
 
 ---
 
@@ -34,7 +34,7 @@ expo-linear-gradient ^14.x           ← CTAs con gradiente Lunaris
 expo-image-picker    SDK 54          ← result.assets[0].uri (NO result.uri)
 expo-blur            blur en tab bar iOS
 Feather icons        (@expo/vector-icons) ← iconografía principal
-Lucide React         (alternativa en nuevos componentes)
+Lucide React         (web — iconografía principal; mobile: Feather icons)
 Node                 22 (.nvmrc)
 ```
 
@@ -87,11 +87,11 @@ salonpro/
 │   │   │   ├── AuthContext.tsx        # Auth Supabase (modo dev aceptable por ahora)
 │   │   │   └── TenantContext.tsx      # Config tenant, markConfigured(), updateTenant()
 │   │   ├── screens/
-│   │   │   ├── DashboardScreen.tsx
-│   │   │   ├── AgendaScreen.tsx
+│   │   │   ├── DashboardScreen.tsx    # orquestador — módulo dashboard/
+│   │   │   ├── AgendaScreen.tsx       # orquestador — módulo agenda/
 │   │   │   ├── ServicesScreen.tsx
-│   │   │   ├── FinancesScreen.tsx
-│   │   │   ├── InventoryScreen.tsx
+│   │   │   ├── FinancesScreen.tsx     # orquestador — módulo finances/
+│   │   │   ├── InventoryScreen.tsx    # orquestador — módulo inventory/
 │   │   │   ├── PersonalScreen.tsx
 │   │   │   ├── MoreHomeScreen.tsx
 │   │   │   ├── SettingsScreen.tsx
@@ -123,10 +123,20 @@ salonpro/
 │   │   │   │   ├── types.ts
 │   │   │   │   ├── hooks/useValidacionData.ts
 │   │   │   │   └── components/ValidacionRow.tsx
-│   │   │   └── asignar/               # módulo asignar profesionales
-│   │   │       ├── types.ts
-│   │   │       ├── hooks/useAsignarData.ts
-│   │   │       └── components/AsignarRow.tsx
+│   │   │   ├── asignar/               # módulo asignar profesionales
+│   │   │   │   ├── types.ts
+│   │   │   │   ├── hooks/useAsignarData.ts
+│   │   │   │   └── components/AsignarRow.tsx
+│   │   │   ├── agenda/                # módulo agenda modularizado
+│   │   │   │   ├── types.ts
+│   │   │   │   ├── hooks/
+│   │   │   │   └── components/
+│   │   │   │       └── AgendaDayKPIStrip.tsx  # 3 KPIs del día (citas, ingresos, sin asignar)
+│   │   │   ├── dashboard/             # módulo dashboard modularizado
+│   │   │   ├── finances/              # módulo finanzas modularizado
+│   │   │   └── inventory/             # módulo inventario modularizado
+│   │   ├── screens/settings/
+│   │   │   └── constants.ts           # 19 monedas LATAM para CurrencyPickerModal
 │   │   ├── navigation/
 │   │   │   ├── RootStackNavigator.tsx  # AuthGate → Onboarding o Main
 │   │   │   ├── MainTabNavigator.tsx    # 4 tabs + badge en "Más"
@@ -165,10 +175,18 @@ salonpro/
 │       │   │   │   ├── layout.tsx      # FinanzasAuthWrapper
 │       │   │   │   ├── useDashboardData.ts
 │       │   │   │   └── components/
-│       │   │   └── finanzas/           # panel + login /finanzas/login
-│       │   │       ├── page.tsx
-│       │   │       ├── layout.tsx
-│       │   │       └── login/page.tsx
+│       │   │   ├── finanzas/           # panel + login /finanzas/login
+│       │   │   │   ├── page.tsx
+│       │   │   │   ├── layout.tsx
+│       │   │   │   └── login/page.tsx
+│       │   │   └── panel/              # área autenticada
+│       │   │       ├── servicios/      # CRUD categorías, servicios, packs, promos (?tab=)
+│       │   │       │   ├── hooks/
+│       │   │       │   ├── components/
+│       │   │       │   ├── _services/  # packs + promotions
+│       │   │       │   ├── _hooks/
+│       │   │       │   └── _components/
+│       │   │       └── horarios/       # picker formato 12/24h + business_hours
 │       │   ├── components/
 │       │   │   ├── sections/
 │       │   │   │   ├── HeroSection.tsx
@@ -550,7 +568,9 @@ appointments       -- id, client_id, client_name, client_phone, employee_id,
 appointment_services -- id, appointment_id, service_id, employee_id, price, duration
 payments           -- id, appointment_id, employee_id, amount, method, date, is_abono
 inventory_items    -- id, name, category, quantity, min_stock, unit, price
-tenant_settings    -- id, key, value, created_at  (RLS: solo dev/owner)
+tenant_settings    -- id(uuid=auth.uid), business_name, timezone, business_hours(json),
+                   --   currency_symbol, time_format(12|24), client_terminology,
+                   --   tagline, features_whatsapp  (RLS: solo dev/owner)
 
 -- Bot WABA:
 whatsapp_sessions        -- phone_number, state(json), updated_at
@@ -722,7 +742,7 @@ yarn db:seed         # seeds template
 
 ---
 
-## 13. Estado de fases (mar 2026)
+## 13. Estado de fases (abr 2026)
 
 ### Completadas
 - Fases 1 al 6: Migracion ZM → SalonPro, monorepo, @salonpro/tenant-config, onboarding, tenant_settings
@@ -734,13 +754,19 @@ yarn db:seed         # seeds template
 - Fase 12: Landing web rediseno LATAM + GradientButton
 - Fase 12B: Bot WABA en landing (WABAPreview, PricingCard con WABA, add-on tiers)
 - Rediseno onboarding: dark theme Lunaris, Feather icons, pill dots, stat tiles 2x2
+- Fase 13: Dashboard metricas web (KPIs hoy/mes, grafico 7 dias, top servicios)
+- Web panel /servicios: CRUD categorias, servicios, packs, promos (?tab= deep link)
+- Web panel /horarios: picker formato 12/24h + tenant_settings.time_format
+- v1.4.8: Lunaris web (#40E0D0), Vercel, DiamondHero sin MaskedView
+- v1.4.9: Selector moneda multi-LATAM (19 monedas), Personal CRUD completo,
+          Agenda KPI strip (AgendaDayKPIStrip), locale.timeFormat (12|24),
+          emojis → iconos Lucide en web (FeatureCard, BusinessTypeTab, HeroSection, etc.)
 
 ### Proximas
-- Fase 13: Dashboard metricas web
 - Fase 14: EAS Build beta
 - Fase 15: Bot WABA multi-tenant (Edge Function)
-- Web panel /servicios (CRUD completo)
 - PromoMasivaScreen (requiere WABA activo)
+- Auth Supabase real en mobile (AuthContext modo dev actual)
 
 ---
 
@@ -759,9 +785,11 @@ yarn db:seed         # seeds template
 11. Ejecutar DDL solo desde Supabase Dashboard SQL Editor (WSL bloquea 5432)
 12. Escribir comentarios en espanol con prefijo de modulo en logs: [WABA], [AUTH]
 13. Usar formatCurrency(amount, config) para todo formateo de moneda
-14. Feather icons como iconografia principal en mobile
+14. Feather icons como iconografia principal en mobile; Lucide React en web
 15. Gradiente solo en elementos interactivos, nunca en fondos de pantalla
 16. Rutas de navegacion con nombres neutros: "Personal", "Clients", no "Chicas"
+17. Usar config.locale.timeFormat (12|24) para formato de hora — NO hardcodear AM/PM
+18. Iconos Lucide en web via LucideIcons as Record<string, LucideIcon> — NO emojis en UI web"
 
 ---
 
@@ -785,6 +813,8 @@ yarn db:seed         # seeds template
 16. Olvidar CORS headers en Edge Functions con acceso desde web
 17. result.cancelled (typo SDK menor a 48): usar result.canceled
 18. Duplicar tipos manualmente: inferir desde Drizzle/Zod como fuente de verdad
+19. Emojis en web UI: toda iconografia web usa Lucide React (ver v1.4.9)
+20. Hardcodear formato de hora (12h/AM-PM): viene de config.locale.timeFormat
 
 ---
 
@@ -806,4 +836,4 @@ Para BD de SalonPro: siempre usar supabase-salonpro, nunca supabase-zm.
 
 ---
 
-*Generado: marzo 2026. Para actualizar: re-ejecutar analisis del repo con Claude Code o claude.ai*
+*Generado: marzo 2026. Actualizado: abril 2026 (v1.4.9). Para actualizar: re-ejecutar analisis del repo con Claude Code o claude.ai*
