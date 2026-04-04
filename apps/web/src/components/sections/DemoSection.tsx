@@ -7,10 +7,15 @@ import {
   Users,
   Package,
   MessageCircle,
+  Scissors,
+  Sparkles,
+  Zap,
+  Leaf,
   type LucideIcon,
 } from "lucide-react";
 import { RevealWrapper } from "@/components/ui/RevealWrapper";
 import { LUNARIS } from "@/lib/theme";
+import { DemoBusinessPicker } from "@/components/ui/DemoBusinessPicker";
 
 const DEMO_TABS: {
   id: string;
@@ -118,7 +123,7 @@ function DemoMockup({ tab }: { tab: (typeof DEMO_TABS)[0] }) {
         <h3 className="text-white font-bold text-lg">{tab.title}</h3>
       </div>
 
-      {/* Contenido simulado — filas de datos */}
+      {/* Contenido simulado */}
       <div className="p-4 space-y-3">
         {[...Array(4)].map((_, i) => (
           <div
@@ -126,15 +131,10 @@ function DemoMockup({ tab }: { tab: (typeof DEMO_TABS)[0] }) {
             className="flex items-center gap-3 p-3 rounded-xl"
             style={{ backgroundColor: "rgba(255,255,255,0.05)" }}
           >
-            {/* Franja de color del empleado */}
             <div
               className="w-1 self-stretch rounded-full flex-shrink-0"
-              style={{
-                backgroundColor: tab.accent,
-                opacity: 1 - i * 0.2,
-              }}
+              style={{ backgroundColor: tab.accent, opacity: 1 - i * 0.2 }}
             />
-            {/* Info */}
             <div className="flex-1 min-w-0">
               <div
                 className="h-2.5 rounded-full mb-2"
@@ -151,7 +151,6 @@ function DemoMockup({ tab }: { tab: (typeof DEMO_TABS)[0] }) {
                 }}
               />
             </div>
-            {/* Badge */}
             <div
               className="px-2.5 py-1 rounded-full text-xs font-semibold flex-shrink-0"
               style={{ backgroundColor: tab.accent + "40", color: tab.accent }}
@@ -160,8 +159,6 @@ function DemoMockup({ tab }: { tab: (typeof DEMO_TABS)[0] }) {
             </div>
           </div>
         ))}
-
-        {/* Botón CTA simulado */}
         <div
           className="mt-4 w-full h-12 rounded-2xl flex items-center justify-center"
           style={{
@@ -172,7 +169,6 @@ function DemoMockup({ tab }: { tab: (typeof DEMO_TABS)[0] }) {
         </div>
       </div>
 
-      {/* Glow reflection en la parte inferior */}
       <div
         className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
         style={{
@@ -222,9 +218,7 @@ export function DemoSection() {
                 }`}
                 style={
                   activeTab === tab.id
-                    ? {
-                        background: LUNARIS.gradient.css,
-                      }
+                    ? { background: LUNARIS.gradient.css }
                     : {}
                 }
               >
@@ -235,14 +229,12 @@ export function DemoSection() {
           </div>
         </RevealWrapper>
 
-        {/* Contenido principal: mockup + info */}
+        {/* Contenido: mockup + info */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* Mockup */}
           <RevealWrapper variant="up" delay={150}>
             <DemoMockup tab={currentTab} />
           </RevealWrapper>
 
-          {/* Texto + stats */}
           <RevealWrapper variant="up" delay={200}>
             <div className="space-y-8">
               <div>
@@ -253,8 +245,6 @@ export function DemoSection() {
                   {currentTab.description}
                 </p>
               </div>
-
-              {/* Stats */}
               <div className="grid grid-cols-2 gap-4">
                 {currentTab.stats.map((stat) => (
                   <div
@@ -271,8 +261,6 @@ export function DemoSection() {
                   </div>
                 ))}
               </div>
-
-              {/* CTA inline */}
               <a
                 href="#precios"
                 className="inline-flex items-center gap-2 text-sm font-semibold transition-colors"
@@ -283,6 +271,30 @@ export function DemoSection() {
             </div>
           </RevealWrapper>
         </div>
+
+        {/* ── Separador ── */}
+        <RevealWrapper variant="up" delay={100}>
+          <div className="mt-24 pt-16 border-t border-zinc-800">
+            <div className="text-center mb-12">
+              <span
+                className="inline-block text-sm font-semibold uppercase tracking-widest mb-3"
+                style={{ color: LUNARIS.primary }}
+              >
+                Sandbox en vivo
+              </span>
+              <h2 className="text-3xl md:text-4xl font-bold text-white">
+                Pruébalo con tu tipo de negocio
+              </h2>
+              <p className="text-zinc-400 mt-4 max-w-lg mx-auto">
+                Elige el negocio que más se parece al tuyo. Entra, explora,
+                modifica lo que quieras — los datos se restablecen solos al
+                cerrar sesión.
+              </p>
+            </div>
+
+            <DemoBusinessPicker />
+          </div>
+        </RevealWrapper>
       </div>
     </section>
   );
