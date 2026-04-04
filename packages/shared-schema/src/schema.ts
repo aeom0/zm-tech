@@ -458,6 +458,8 @@ export const tenantSettings = pgTable(
     commissionStaff: integer("commission_staff").notNull().default(60),
     commissionHouse: integer("commission_house").notNull().default(40),
     isConfigured: boolean("is_configured").notNull().default(false),
+    /** Cuenta demo (reset al logout vía Edge reset-demo-tenant) */
+    isDemo: boolean("is_demo").notNull().default(false),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at").defaultNow(),
 
