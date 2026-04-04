@@ -11,25 +11,12 @@ import {
   GradientCTAButton,
 } from "@/screens/onboarding/components";
 import { CustomColorPickerModal } from "@/screens/onboarding/components/CustomColorPickerModal";
+import {
+  COLORES_ACENTO,
+  COLORES_PRIMARIOS,
+} from "@/screens/onboarding/constants/colores-onboarding";
 import { Colors, Gradients, Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
-
-const COLORES_PRIMARIOS = [
-  { label: "Verde azulado", valor: "#0B7B72" },
-  { label: "Turquesa", valor: "#40E0D0" },
-  { label: "Azul", valor: "#1A237E" },
-  { label: "Magenta", valor: "#FF00FF" },
-  { label: "Naranja", valor: "#E65100" },
-  { label: "Rojo", valor: "#B71C1C" },
-];
-
-const COLORES_ACENTO = [
-  { label: "Dorado", valor: "#D4AF37" },
-  { label: "Amarillo", valor: "#F9A825" },
-  { label: "Plateado", valor: "#9E9E9E" },
-  { label: "Blanco", valor: "#FFFFFF" },
-  { label: "Cobre", valor: "#BF6516" },
-];
 
 interface OnboardingBasicInfoScreenProps {
   onNext: () => void;
@@ -362,18 +349,17 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     gap: 12,
   },
-  /** 6 sugeridos + custom en una sola fila (flex reparte el ancho). */
+  /** 6 sugeridos + custom en una sola fila; aspectRatio 1 = cuadrados (ancho vía flex). */
   paletaPrimaria: {
     flexDirection: "row",
     flexWrap: "nowrap",
     gap: 4,
-    alignItems: "stretch",
-    height: 42,
+    alignItems: "center",
   },
   swatchOuterPrimaria: {
     flex: 1,
     minWidth: 0,
-    height: 42,
+    aspectRatio: 1,
     borderRadius: 8,
     overflow: "hidden",
     borderWidth: 2,

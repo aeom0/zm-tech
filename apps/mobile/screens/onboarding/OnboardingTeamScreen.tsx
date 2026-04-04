@@ -8,6 +8,8 @@ import {
   Alert,
 } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import { LinearGradient } from "expo-linear-gradient";
+import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
 import {
@@ -15,21 +17,12 @@ import {
   OnboardingProgressDots,
   GradientCTAButton,
 } from "@/screens/onboarding/components";
-import { Spacing } from "@/constants/theme";
+import { CustomColorPickerModal } from "@/screens/onboarding/components/CustomColorPickerModal";
+import { COLORES_PRIMARIOS } from "@/screens/onboarding/constants/colores-onboarding";
+import { Gradients, Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 import { useTheme } from "@/hooks/useTheme";
 import { supabase } from "@/lib/supabase";
-
-const COLORES_EMPLEADO = [
-  "#0B7B72",
-  "#40E0D0",
-  "#1A237E",
-  "#00695C",
-  "#E65100",
-  "#B71C1C",
-  "#F9A825",
-  "#0277BD",
-];
 
 interface OnboardingTeamScreenProps {
   onNext: () => void;
@@ -46,10 +39,13 @@ export default function OnboardingTeamScreen({
 
   const [nombre, setNombre] = useState("");
   const [color, setColor] = useState(config.theme.primaryColor);
+  const [modalColorVisible, setModalColorVisible] = useState(false);
   const [guardando, setGuardando] = useState(false);
   const [empleadosAgregados, setEmpleadosAgregados] = useState<
     { id: string; name: string; color: string }[]
   >([]);
+
+  const esColorDePaleta = COLORES_PRIMARIOS.some((c) => c.valor === color);
 
   const guardar = async () => {
     const nombreFinal = nombre.trim();
@@ -66,9 +62,6 @@ export default function OnboardingTeamScreen({
           name: nombreFinal,
           color,
           is_active: true,
-          payment_mode: "commission",
-          commission_percentage: null,
-          salary_amount: null,
         })
         .select("id, name, color")
         .single();
@@ -127,21 +120,55 @@ export default function OnboardingTeamScreen({
         style={styles.campo}
       >
         <ThemedText style={styles.label}>Color en el calendario</ThemedText>
-        <View style={styles.paleta}>
-          {COLORES_EMPLEADO.map((c) => (
+        <View style={styles.paletaFila}>
+          {COLORES_PRIMARIOS.map((c) => (
             <Pressable
-              key={c}
-              onPress={() => setColor(c)}
+              key={c.valor}
+              onPress={() => setColor(c.valor)}
               style={[
-                styles.swatchOuter,
-                color === c && styles.swatchOuterSelected,
+                styles.swatchOuterFila,
+                color === c.valor &&
+                  esColorDePaleta &&
+                  styles.swatchOuterSelected,
               ]}
             >
-              <View style={[styles.swatch, { backgroundColor: c }]} />
+              <View style={[styles.swatchFila, { backgroundColor: c.valor }]} />
             </Pressable>
           ))}
+          <Pressable
+            onPress={() => setModalColorVisible(true)}
+            style={[
+              styles.swatchOuterFila,
+              !esColorDePaleta && styles.swatchOuterSelected,
+            ]}
+            accessibilityLabel="Elegir color personalizado en calendario"
+          >
+            <LinearGradient
+              colors={[...Gradients.onboarding.colors]}
+              start={Gradients.onboarding.linearStart}
+              end={Gradients.onboarding.linearEnd}
+              style={styles.swatchCustomFila}
+            >
+              <Feather
+                name="sliders"
+                size={16}
+                color="rgba(255,255,255,0.95)"
+              />
+            </LinearGradient>
+          </Pressable>
         </View>
       </Animated.View>
+
+      <CustomColorPickerModal
+        visible={modalColorVisible}
+        initialHex={color}
+        titulo="Color en calendario personalizado"
+        onClose={() => setModalColorVisible(false)}
+        onConfirm={(hex) => {
+          setColor(hex);
+          setModalColorVisible(false);
+        }}
+      />
 
       {/* Botón agregar + atrás en la misma fila */}
       <Animated.View
@@ -280,27 +307,42 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#FFFFFF",
   },
-  paleta: {
+  /** 6 sugeridos + custom en una fila (mismo patrón que paso 2). */
+  paletaFila: {
     flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 12,
-  },
-  swatchOuter: {
-    width: 48,
-    height: 48,
-    borderRadius: 8,
+    flexWrap: "nowrap",
+    gap: 4,
     alignItems: "center",
-    justifyContent: "center",
+  },
+  swatchOuterFila: {
+    flex: 1,
+    minWidth: 0,
+    aspectRatio: 1,
+    borderRadius: 8,
+    overflow: "hidden",
     borderWidth: 2,
     borderColor: "transparent",
   },
   swatchOuterSelected: {
     borderColor: "#FFFFFF",
   },
-  swatch: {
-    width: 44,
-    height: 44,
-    borderRadius: 6,
+  swatchFila: {
+    ...StyleSheet.absoluteFillObject,
+    top: 2,
+    left: 2,
+    right: 2,
+    bottom: 2,
+    borderRadius: 5,
+  },
+  swatchCustomFila: {
+    ...StyleSheet.absoluteFillObject,
+    top: 2,
+    left: 2,
+    right: 2,
+    bottom: 2,
+    borderRadius: 5,
+    alignItems: "center",
+    justifyContent: "center",
   },
   botones: {
     flexDirection: "row",
