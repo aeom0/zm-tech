@@ -42,4 +42,7 @@ export const barbershopPreset: TenantConfig = {
     defaultStaffPercent: 50,
     defaultHousePercent: 50,
   },
+
+  businessSubtype: undefined,
+  serviceCategories: ["cortes", "barba-afeitado"],
 };

@@ -3,6 +3,27 @@ export type TimeFormatPreference = "12" | "24";
 export interface TenantConfig {
   businessName: string;
   businessType: "spa-nails" | "barbershop" | "hair-salon" | "full-aesthetic";
+  businessSubtype?:
+    | "brow-lash"
+    | "nails-only"
+    | "spa-full"
+    | "barber-lounge"
+    | "color-studio"
+    | "multi-service"
+    | "med-aesthetic";
+  serviceCategories?: Array<
+    | "cortes"
+    | "barba-afeitado"
+    | "coloracion"
+    | "unas"
+    | "cejas-pestanas"
+    | "depilacion"
+    | "masajes"
+    | "faciales"
+    | "spa"
+    | "gaming"
+    | "otros"
+  >;
   logo?: string;
   tagline?: string;
 

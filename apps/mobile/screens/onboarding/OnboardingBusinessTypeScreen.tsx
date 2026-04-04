@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Pressable, ScrollView } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
-import { Feather } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import Feather from "@expo/vector-icons/Feather";
 
 import { ThemedText } from "@/components/ThemedText";
 import {
@@ -10,6 +11,7 @@ import {
   GradientCTAButton,
 } from "@/screens/onboarding/components";
 import { Spacing } from "@/constants/theme";
+import { useTheme } from "@/hooks/useTheme";
 import { useTenant } from "@/contexts/TenantContext";
 import {
   spaNavilsPreset,
@@ -73,9 +75,50 @@ const TIPOS = [
   },
 ];
 
+/** Gradiente horizontal Lunaris para chip de subtype activo (onboarding). */
+const SUBTYPE_CHIP_GRADIENT = [
+  "#E91E8C",
+  "#9C27B0",
+  "#3D3D8F",
+  "#1565C0",
+] as const;
+
+const SUBTYPES: Partial<
+  Record<
+    BusinessType,
+    Array<{
+      key: TenantConfig["businessSubtype"] | undefined;
+      label: string;
+    }>
+  >
+> = {
+  "spa-nails": [
+    { key: undefined, label: "General" },
+    { key: "brow-lash", label: "Cejas & Pestañas" },
+    { key: "nails-only", label: "Solo Uñas" },
+    { key: "spa-full", label: "Spa Completo" },
+  ],
+  barbershop: [
+    { key: undefined, label: "General" },
+    { key: "barber-lounge", label: "Barber Lounge" },
+  ],
+  "hair-salon": [
+    { key: undefined, label: "General" },
+    { key: "color-studio", label: "Color Studio" },
+    { key: "multi-service", label: "Multi-Servicio" },
+  ],
+  "full-aesthetic": [
+    { key: undefined, label: "General" },
+    { key: "med-aesthetic", label: "Med-Estética" },
+  ],
+};
+
+const CHIP_PILL_RADIUS = 999;
+
 export default function OnboardingBusinessTypeScreen({
   onNext,
 }: OnboardingBusinessTypeScreenProps) {
+  const { theme } = useTheme();
   const { config, updateTenant } = useTenant();
 
   // Estado local de selección — NO navega al instante.
@@ -83,12 +126,24 @@ export default function OnboardingBusinessTypeScreen({
   const [tipoSeleccionado, setTipoSeleccionado] = useState<BusinessType>(
     config.businessType,
   );
+  const [selectedSubtype, setSelectedSubtype] = useState<
+    TenantConfig["businessSubtype"]
+  >(undefined);
+
+  useEffect(() => {
+    setSelectedSubtype(undefined);
+  }, [tipoSeleccionado]);
+
+  const opcionesSubtype = SUBTYPES[tipoSeleccionado];
+  const mostrarSubtypes =
+    opcionesSubtype != null && opcionesSubtype.length > 1;
 
   const continuar = async () => {
     const tipo = TIPOS.find((t) => t.key === tipoSeleccionado);
     if (!tipo) return;
     await updateTenant({
       businessType: tipo.key,
+      businessSubtype: selectedSubtype,
       theme: tipo.preset.theme,
       terminology: tipo.preset.terminology,
       businessHours: tipo.preset.businessHours,
@@ -181,6 +236,79 @@ export default function OnboardingBusinessTypeScreen({
             </Animated.View>
           );
         })}
+
+        {mostrarSubtypes && opcionesSubtype ? (
+          <Animated.View
+            key={`subtypes-${tipoSeleccionado}`}
+            entering={FadeInDown.duration(250)}
+            style={styles.subtypeBloque}
+          >
+            <ThemedText
+              type="small"
+              style={[
+                styles.subtypeLabel,
+                { color: theme.textSecondary, marginBottom: 10 },
+              ]}
+            >
+              ¿Qué tipo de negocio?
+            </ThemedText>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              nestedScrollEnabled
+              contentContainerStyle={styles.subtypeChipsContent}
+            >
+              {opcionesSubtype.map((opt) => {
+                const activo = selectedSubtype === opt.key;
+                return (
+                  <Pressable
+                    key={opt.label}
+                    onPress={() => setSelectedSubtype(opt.key)}
+                    style={({ pressed }) => [
+                      pressed && styles.chipPressed,
+                      styles.chipOuter,
+                    ]}
+                  >
+                    {activo ? (
+                      <LinearGradient
+                        colors={[...SUBTYPE_CHIP_GRADIENT]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.chipGradient}
+                      >
+                        <ThemedText
+                          type="small"
+                          style={styles.chipTextoActivo}
+                          lightColor="#FFFFFF"
+                          darkColor="#FFFFFF"
+                        >
+                          {opt.label}
+                        </ThemedText>
+                      </LinearGradient>
+                    ) : (
+                      <View
+                        style={[
+                          styles.chipInactivo,
+                          { borderColor: "rgba(255,255,255,0.12)" },
+                        ]}
+                      >
+                        <ThemedText
+                          type="small"
+                          style={[
+                            styles.chipTextoInactivo,
+                            { color: theme.textSecondary },
+                          ]}
+                        >
+                          {opt.label}
+                        </ThemedText>
+                      </View>
+                    )}
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+          </Animated.View>
+        ) : null}
       </ScrollView>
 
       {/* Botón Continuar — mismo patrón que el resto del onboarding */}
@@ -228,6 +356,44 @@ const styles = StyleSheet.create({
   cards: {
     gap: Spacing.md,
     paddingBottom: Spacing.md,
+  },
+  subtypeBloque: {
+    marginTop: Spacing.md,
+  },
+  subtypeLabel: {
+    fontSize: 13,
+  },
+  subtypeChipsContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingRight: Spacing.sm,
+  },
+  chipOuter: {
+    marginRight: Spacing.sm,
+    borderRadius: CHIP_PILL_RADIUS,
+    overflow: "hidden",
+  },
+  chipPressed: {
+    opacity: 0.88,
+  },
+  chipGradient: {
+    borderRadius: CHIP_PILL_RADIUS,
+    paddingHorizontal: 14,
+    paddingVertical: Spacing.sm,
+  },
+  chipInactivo: {
+    borderRadius: CHIP_PILL_RADIUS,
+    paddingHorizontal: 14,
+    paddingVertical: Spacing.sm,
+    backgroundColor: "rgba(255,255,255,0.06)",
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  chipTextoActivo: {
+    fontSize: 13,
+    fontWeight: "600",
+  },
+  chipTextoInactivo: {
+    fontSize: 13,
   },
   card: {
     flexDirection: "row",

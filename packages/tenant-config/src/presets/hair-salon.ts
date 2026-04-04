@@ -42,4 +42,7 @@ export const hairSalonPreset: TenantConfig = {
     defaultStaffPercent: 45,
     defaultHousePercent: 55,
   },
+
+  businessSubtype: undefined,
+  serviceCategories: ["cortes", "coloracion"],
 };

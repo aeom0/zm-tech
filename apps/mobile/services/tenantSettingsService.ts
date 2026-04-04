@@ -17,6 +17,8 @@ function mapConfigToRow(config: TenantConfig, userId: string) {
     id: userId,
     business_name: config.businessName,
     business_type: config.businessType,
+    business_subtype: config.businessSubtype ?? null,
+    service_categories: config.serviceCategories ?? [],
     primary_color: config.theme.primaryColor,
     accent_color: config.theme.accentColor,
     currency_code: config.locale.currency.code,
@@ -44,6 +46,8 @@ function mapConfigToRow(config: TenantConfig, userId: string) {
 export type TenantSettingsRow = {
   business_name: string;
   business_type: TenantConfig["businessType"];
+  business_subtype?: string | null;
+  service_categories?: string[];
   primary_color: string;
   accent_color: string;
   currency_code: string;
@@ -70,6 +74,10 @@ function mapRowToConfig(row: TenantSettingsRow): TenantConfig {
   return {
     businessName: row.business_name,
     businessType: row.business_type,
+    businessSubtype:
+      (row.business_subtype as TenantConfig["businessSubtype"]) ?? undefined,
+    serviceCategories:
+      (row.service_categories as TenantConfig["serviceCategories"]) ?? [],
     tagline: row.tagline ?? "",
     logo: row.logo_url ?? "",
     theme: {
@@ -129,7 +137,7 @@ export async function fetchTenantSettings(
   const { data, error } = await supabase
     .from("tenant_settings")
     .select(
-      "business_name, business_type, primary_color, accent_color, currency_code, currency_symbol, country, language, timezone, time_format, client_terminology, staff_terminology, staff_singular_terminology, appointment_terminology, business_hours, contact_info, commission_staff, commission_house, tagline, features_whatsapp, logo_url",
+      "business_name, business_type, business_subtype, service_categories, primary_color, accent_color, currency_code, currency_symbol, country, language, timezone, time_format, client_terminology, staff_terminology, staff_singular_terminology, appointment_terminology, business_hours, contact_info, commission_staff, commission_house, tagline, features_whatsapp, logo_url",
     )
     .eq("id", userId)
     .maybeSingle<TenantSettingsRow>();

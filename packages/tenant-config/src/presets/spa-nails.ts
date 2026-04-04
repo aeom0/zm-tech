@@ -42,4 +42,7 @@ export const spaNavilsPreset: TenantConfig = {
     defaultStaffPercent: 40,
     defaultHousePercent: 60,
   },
+
+  businessSubtype: undefined,
+  serviceCategories: ["unas", "cejas-pestanas", "spa", "depilacion"],
 };

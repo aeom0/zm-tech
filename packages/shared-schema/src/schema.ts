@@ -426,6 +426,10 @@ export const tenantSettings = pgTable(
     id: uuid("id").defaultRandom().primaryKey(),
     businessName: text("business_name").notNull(),
     businessType: text("business_type").notNull(),
+    businessSubtype: text("business_subtype"),
+    serviceCategories: jsonb("service_categories")
+      .$type<string[]>()
+      .default([]),
     primaryColor: text("primary_color").notNull().default("#E91E8C"),
     accentColor: text("accent_color").notNull().default("#FFD700"),
     currencyCode: text("currency_code").notNull().default("USD"),
