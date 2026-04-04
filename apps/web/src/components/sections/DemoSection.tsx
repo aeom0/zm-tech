@@ -71,7 +71,7 @@ const DEMO_TABS: {
     icon: Package,
     title: "Nunca más sin insumos",
     description:
-      "Alertas automáticas de stock bajo. Registro de uso por servicio. Deja de perder plata por falta de control de materiales.",
+      "Alertas automáticas de stock bajo. Registro de uso por servicio. Deja de perder dinero por falta de control de materiales.",
     mockupBg: "#1A0F0A",
     accent: LUNARIS.primaryDark,
     stats: [
@@ -276,7 +276,7 @@ export function DemoSection() {
                 className="inline-block text-sm font-semibold uppercase tracking-widest mb-3"
                 style={{ color: LUNARIS.primary }}
               >
-                Sandbox en vivo
+                Cuenta demo
               </span>
               <h2 className="text-3xl md:text-4xl font-bold text-white">
                 Pruébalo con tu tipo de negocio

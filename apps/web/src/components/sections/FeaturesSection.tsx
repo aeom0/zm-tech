@@ -52,7 +52,7 @@ export function FeaturesSection() {
               <div className="flex-1 text-center md:text-left">
                 <div className="inline-flex items-center gap-2 bg-[#25D366]/10 border border-[#25D366]/20 text-[#25D366] text-xs font-semibold px-3 py-1.5 rounded-full mb-4">
                   <MessageCircle size={13} strokeWidth={2} />
-                  <span>Nuevo · Bot WhatsApp Business</span>
+                  <span>Nuevo · WhatsApp Business + asistente IA</span>
                 </div>
                 <h3 className="text-2xl md:text-3xl font-bold text-white mb-3 leading-tight">
                   Tu salón agenda solo,{" "}
@@ -61,11 +61,11 @@ export function FeaturesSection() {
                 <p className="text-zinc-400 text-sm leading-relaxed max-w-md mx-auto md:mx-0">
                   Los clientes agendan, preguntan y reciben confirmación directo
                   en WhatsApp. Con IA integrada (Claude) para responder
-                  preguntas libres sobre servicios y disponibilidad. Sin que la
-                  dueña tenga que contestar a las 2am.
+                  preguntas libres sobre servicios y disponibilidad. Sin que el
+                  propietario tenga que contestar a las 2:00.
                 </p>
                 <div className="flex flex-wrap gap-3 mt-5 justify-center md:justify-start">
-                  {["Todos los planes", "Sin código extra", "IA incluida"].map(
+                  {["Todos los planes", "Sin programación", "IA incluida"].map(
                     (label) => (
                       <span
                         key={label}

@@ -93,7 +93,7 @@ function LoginForm() {
             </h1>
             <p className="text-zinc-600 dark:text-zinc-400 mt-1 text-sm">
               {isDemo
-                ? "Sandbox en vivo \u00b7 Los datos se restablecen al cerrar sesi\u00f3n"
+                ? "Cuenta demo \u00b7 Los datos se restablecen al cerrar sesi\u00f3n"
                 : "Panel de finanzas \u00b7 Solo administraci\u00f3n"}
             </p>
           </div>

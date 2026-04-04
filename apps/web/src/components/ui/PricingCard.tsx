@@ -123,7 +123,7 @@ export function PricingCard({ plan, annual }: Props) {
             plan.highlighted ? "bg-white/10" : "bg-zinc-200 dark:bg-zinc-700"
           }`}
         />
-        <span>WhatsApp Bot</span>
+        <span>WhatsApp · Asistente IA</span>
         <div
           className={`flex-1 h-px ${
             plan.highlighted ? "bg-white/10" : "bg-zinc-200 dark:bg-zinc-700"

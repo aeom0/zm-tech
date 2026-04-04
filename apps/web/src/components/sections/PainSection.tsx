@@ -12,7 +12,7 @@ const PAINS = [
     icon: Smartphone,
     title: "Citas por WhatsApp que se pierden",
     description:
-      "Mensajes enterrados entre conversaciones, doble booking sin querer, clientes que no aparecen.",
+      "Mensajes enterrados entre conversaciones, citas duplicadas sin querer, clientes que no aparecen.",
     color: "bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900",
     textColor: "text-red-700 dark:text-red-400",
     iconColor: "text-red-500",
@@ -31,7 +31,7 @@ const PAINS = [
     icon: TrendingDown,
     title: "No sabes cuánto ganaste este mes",
     description:
-      "Las platas pasan por mil manos. Al final del mes no cuadra nada y el estrés se acumula.",
+      "El dinero pasa por muchas manos. Al final del mes las cuentas no cierran y el estrés se acumula.",
     color:
       "bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-900",
     textColor: "text-yellow-700 dark:text-yellow-500",

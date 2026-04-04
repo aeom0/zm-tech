@@ -8,7 +8,7 @@ export const BUSINESS_TYPES = [
 export const FEATURES = [
   {
     icon: "MessageCircle",
-    title: "Bot WhatsApp 24/7",
+    title: "WhatsApp 24/7 con asistente IA",
     description:
       "Tus clientes agendan solos por WhatsApp. Con IA integrada que responde preguntas libres sobre servicios, precios y disponibilidad.",
   },
@@ -53,7 +53,7 @@ export const FEATURES = [
 export const TESTIMONIALS = [
   {
     name: "Carlos Mendoza",
-    role: "Dueño de Barbería",
+    role: "Propietario de barbería",
     country: "Venezuela",
     avatar: "CM",
     color: "#1A237E",
@@ -66,7 +66,7 @@ export const TESTIMONIALS = [
     country: "Perú",
     avatar: "VT",
     color: "#40E0D0",
-    text: "Lo probamos antes del lanzamiento oficial y nos enganchó. Tengo 3 especialistas y antes calculaba las comisiones a mano cada fin de mes. Ahora SalonPro lo hace solo. El equipo está encantado.",
+    text: "Lo probamos antes del lanzamiento oficial y nos convenció. Tengo 3 especialistas y antes calculaba las comisiones a mano cada fin de mes. Ahora SalonPro lo hace solo. El equipo está encantado.",
     stars: 5,
   },
   {
@@ -108,7 +108,7 @@ export const PLANS: Plan[] = [
       "Soporte por email",
     ],
     wabaFeatures: [
-      "Bot WhatsApp 24/7",
+      "WhatsApp 24/7 con asistente IA",
       "50 conversaciones/mes incluidas",
       "Add-on: +50 conv. por $4",
     ],
@@ -132,7 +132,7 @@ export const PLANS: Plan[] = [
       "Soporte prioritario",
     ],
     wabaFeatures: [
-      "Bot WhatsApp 24/7 + IA",
+      "WhatsApp 24/7 con asistente IA",
       "300 conversaciones/mes incluidas",
       "Envío de promos masivas por WA",
     ],
@@ -156,7 +156,7 @@ export const PLANS: Plan[] = [
       "SLA garantizado",
     ],
     wabaFeatures: [
-      "Bot WhatsApp 24/7 + IA avanzada",
+      "WhatsApp 24/7 con asistente IA avanzada",
       "Conversaciones ilimitadas",
       "Flujo de pago por captura WA",
       "Foto previa al servicio por WA",
@@ -178,7 +178,7 @@ export const FAQS = [
   {
     question: "¿Necesito conocimientos técnicos para configurarlo?",
     answer:
-      "No. SalonPro está diseñado para que cualquier dueño de negocio lo configure en menos de 10 minutos. El onboarding te guía paso a paso: tipo de negocio, servicios, equipo y listo.",
+      "No. SalonPro está diseñado para que cualquier propietario de negocio lo configure en menos de 10 minutos. El onboarding te guía paso a paso: tipo de negocio, servicios, equipo y listo.",
   },
   {
     question: "¿Funciona en iOS y Android?",
@@ -213,7 +213,7 @@ export const FAQS = [
   {
     question: "¿Qué pasa cuando se agotan las conversaciones del mes?",
     answer:
-      "El bot notifica al dueño del negocio por la app antes de llegar al límite. Puedes comprar packs adicionales desde Configuración (50 conv/$4, 200/$12, 500/$24) o activar la compra automática para que nunca se interrumpa el servicio.",
+      "El bot notifica al propietario del negocio por la app antes de llegar al límite. Puedes comprar packs adicionales desde Configuración (50 conv/$4, 200/$12, 500/$24) o activar la compra automática para que nunca se interrumpa el servicio.",
   },
 ];
 
@@ -236,7 +236,7 @@ export const COMPARISON_FEATURES: {
   { label: "Branding personalizado", basic: false, pro: false, elite: true },
   { label: "API + Integraciones", basic: false, pro: false, elite: true },
   { label: "Manager dedicado", basic: false, pro: false, elite: true },
-  { label: "Bot WhatsApp 24/7", basic: true, pro: true, elite: true },
+  { label: "WhatsApp y asistente IA 24/7", basic: true, pro: true, elite: true },
   {
     label: "Conversaciones incluidas/mes",
     basic: "50",
