@@ -105,6 +105,38 @@ DATABASE_URL=postgresql://user:pass@host:5432/nombre_bd
 
 Web (Next.js) usa `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` en `apps/web/.env.local`.
 
+### Usuarios de prueba (seed actual — abr 2026)
+
+Contraseña universal: `SalonPro2025!`  
+Proyecto Supabase dev: `xidjomlxpuosupymcsaj`
+
+**dev@ejemplo.com** — rol `dev` — sin tenant_settings, siempre onboarding
+
+**Demos (rol `owner`, is_demo = true):**
+
+- `demo.salon@ejemplo.com` → Salón Glamour (hair-salon, COP)
+- `demo.nails@ejemplo.com` → Nail & Glow Spa (spa-nails, PEN)
+- `demo.barberia@ejemplo.com` → The Sharp Cut (barbershop, MXN)
+- `demo.estetica@ejemplo.com` → Aura Estética (full-aesthetic, USD/VE)
+
+**Staff con login (rol `staff`):**
+
+- `staff.salon1/2@ejemplo.com` → Salón Glamour
+- `staff.nails1/2@ejemplo.com` → Nail & Glow Spa
+- `staff.barber1/2@ejemplo.com` → The Sharp Cut
+- `staff.estetica1/2@ejemplo.com` → Aura Estética
+
+**Sandbox demo:** `is_demo=true` → `DemoBanner` en app →
+logout dispara Edge Function `reset-demo-tenant` →
+`seed_demo_tenant(uid)` restaura datos efímeros.
+Reset NO toca `employees` (datos estructurales).
+
+**TD pendiente:** centralizar `resetIfDemo()` en `AuthContext.logout`
+leyendo `is_demo` directo de BD, en vez de llamarlo desde
+`MoreHomeScreen` y `ProfileScreen` por separado.
+
+Detalle extendido: `scripts/db/seeds/README.md`.
+
 ## Arquitectura de la Base de Datos
 
 Tablas principales en `packages/shared-schema/src/schema.ts`:
@@ -254,7 +286,7 @@ Flujo de arranque (mobile):
 
 - **Fase 2 — paquete `@salonpro/tenant-config`**: `TenantConfig` interface + `defaultTenantConfig` + 4 presets (spa-nails, barbershop, hair-salon, full-aesthetic). Registrado como workspace en `apps/mobile`.
 - **Fase 3 — integración TenantContext**: `TenantProvider` en `App.tsx`; `useTenant()` en todos los screens; `createTheme(config, isDark)` en `constants/theme.ts`; `useTheme()` actualizado. Eliminadas todas las referencias hardcodeadas al salón original: nombre, colores, moneda local, canal de notificaciones Android.
-- **Fase 4 — limpieza de seeds**: `seed-{services,employees}.sql` renombrados a `*-example.sql`; creados `*-template.sql` genéricos para los 4 tipos de negocio; `seed-auth-users.mjs` con emails `@ejemplo.com`; contraseña inicial `SalonPro2025!`.
+- **Fase 4 — limpieza de seeds**: `seed-{services,employees}.sql` renombrados a `*-example.sql`; creados `*-template.sql` genéricos para los 4 tipos de negocio; `seed-auth-users.mjs` con emails `@ejemplo.com`; contraseña inicial `SalonPro2025!`. Cuentas demo multi-tenant, `is_demo`, reset Edge: ver `scripts/db/seeds/README.md` y **### Usuarios de prueba** en Configuración del Entorno.
 - **Fase 5 — onboarding flow**: 5 pantallas en `screens/onboarding/`; `AuthGate` orquesta el flujo; `TenantContext` agrega `isConfigured` + `markConfigured()` con clave `@salonpro/tenant_configured` en AsyncStorage.
 - **Fase 6 — tenant_settings**: tabla `tenant_settings` en Supabase con RLS y sincronización desde el onboarding (`tenantSettingsService` y `TenantContext`).
 - **Fase 7 — Supabase full-mobile**: todos los flujos mobile (Onboarding, Dashboard, Agenda, Servicios, Personal, Finanzas, Inventario) usan Supabase directo; eliminado el cliente Express (`apiRequest`, `/api/*`) y actualizadas las `queryKey` de React Query (`employees`, `services`, `service_categories`, `appointments`, `payments`, `inventory_items`, `dashboard_stats`, `dashboard_revenue`).

@@ -64,6 +64,9 @@ app-example
 /android
 .cursor/mcp.json
 
+# Payload auxiliar MCP (duplica scripts/db/migrations/*.sql)
+scripts/db/.apply_seed_demo_args.json
+
 # Supabase CLI cache
 supabase/.temp/
 .vercel
