@@ -213,7 +213,7 @@ export default function OnboardingBusinessTypeScreen({
                   >
                     <Feather
                       name={tipo.icon}
-                      size={28}
+                      size={26}
                       color={seleccionado ? primary : Onboarding.iconInactive}
                     />
                   </View>
@@ -367,9 +367,6 @@ export default function OnboardingBusinessTypeScreen({
                 color={Onboarding.textMuted}
               />
             </Pressable>
-            <ThemedText style={styles.monedaHint}>
-              Se guarda al pulsar Continuar
-            </ThemedText>
           </Animated.View>
         </View>
 
@@ -378,11 +375,12 @@ export default function OnboardingBusinessTypeScreen({
           entering={FadeInDown.delay(400).duration(400)}
           style={styles.footer}
         >
-          <GradientCTAButton
-            label="Continuar"
-            icon="arrow-right"
-            onPress={continuar}
-          />
+        <GradientCTAButton
+          label="Continuar"
+          icon="arrow-right"
+          onPress={continuar}
+          compact
+        />
         </Animated.View>
       </OnboardingLayout>
 
@@ -398,31 +396,31 @@ export default function OnboardingBusinessTypeScreen({
 
 const styles = StyleSheet.create({
   header: {
-    paddingBottom: Spacing["2xl"],
+    paddingBottom: Spacing.xl,
   },
   badge: {
     fontSize: 11,
     fontWeight: "600",
     letterSpacing: 1,
-    marginBottom: Spacing.sm,
+    marginBottom: Spacing.xs,
     textTransform: "uppercase",
   },
   titulo: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: "700",
-    marginBottom: Spacing.sm,
-    lineHeight: 34,
+    marginBottom: Spacing.xs + 2,
+    lineHeight: 32,
   },
   subtitulo: {
-    fontSize: 15,
-    lineHeight: 22,
+    fontSize: 14,
+    lineHeight: 20,
   },
   cardsColumn: {
-    gap: Spacing.md,
-    paddingBottom: Spacing.md,
+    gap: Spacing.sm + 2,
+    paddingBottom: Spacing.sm,
   },
   subtypeBloque: {
-    marginTop: Spacing.md,
+    marginTop: Spacing.sm + 2,
   },
   subtypeLabel: {
     fontSize: 13,
@@ -464,15 +462,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: BorderRadius.card,
     borderWidth: 0.5,
-    padding: Spacing.lg,
-    gap: Spacing.md,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.md + 2,
+    gap: Spacing.sm + 2,
   },
   cardPressed: {
     opacity: 0.88,
   },
   iconBg: {
-    width: 48,
-    height: 48,
+    width: 44,
+    height: 44,
     borderRadius: BorderRadius.full,
     alignItems: "center",
     justifyContent: "center",
@@ -481,35 +480,35 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   cardNombre: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: "600",
-    marginBottom: Spacing.xs,
+    marginBottom: 2,
   },
   cardDesc: {
-    fontSize: 13,
-    lineHeight: 18,
+    fontSize: 12,
+    lineHeight: 16,
   },
   check: {
-    width: 22,
-    height: 22,
+    width: 20,
+    height: 20,
     borderRadius: BorderRadius.full,
     borderWidth: 0.5,
     alignItems: "center",
     justifyContent: "center",
     position: "absolute",
-    top: Spacing.md,
-    right: Spacing.md,
+    top: Spacing.sm + 2,
+    right: Spacing.sm + 2,
   },
   footer: {
-    paddingTop: Spacing.md,
-    paddingBottom: Spacing["2xl"],
+    paddingTop: Spacing.sm + 2,
+    paddingBottom: Spacing.lg + Spacing.xs,
   },
   monedaCampo: {
-    marginTop: Spacing.sm,
+    marginTop: Spacing.xs,
   },
   monedaLabel: {
-    fontSize: 13,
-    marginBottom: Spacing.sm,
+    fontSize: 12,
+    marginBottom: Spacing.xs + 2,
   },
   monedaSelector: {
     flexDirection: "row",
@@ -519,8 +518,8 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: Onboarding.chipBorder,
     borderRadius: BorderRadius.card,
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.md + 2,
+    paddingVertical: Spacing.sm + 2,
   },
   monedaSelectorPressed: {
     opacity: 0.88,
@@ -537,13 +536,13 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   monedaSelectorSymbol: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: "700",
     color: Onboarding.text,
-    minWidth: 36,
+    minWidth: 32,
   },
   monedaSelectorTitulo: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "600",
     color: Onboarding.text,
   },
@@ -551,10 +550,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: Onboarding.textSubtle,
     marginTop: 2,
-  },
-  monedaHint: {
-    fontSize: 12,
-    color: Onboarding.textMuted,
-    marginTop: Spacing.sm,
   },
 });

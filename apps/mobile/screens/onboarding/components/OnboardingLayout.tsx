@@ -38,22 +38,39 @@ export function OnboardingLayout({
   const containerStyle = [paddingCanvas, styles.fill];
 
   if (scrollable) {
-    // NUNCA poner flex:1 en contentContainerStyle del ScrollView: impide scroll cuando el
-    // contenido es más alto que la pantalla (el contenedor se “pega” a la ventana).
+    // El inset superior va en un contenedor FIJO: si insets.top vive solo en contentContainerStyle,
+    // al hacer scroll el contenido sube y en Android/iOS puede meterse bajo la barra de estado.
+    const scrollInnerPadding = {
+      backgroundColor: Onboarding.canvasBackground,
+      paddingTop: Spacing.lg,
+      paddingBottom: insets.bottom + Spacing.lg,
+      paddingHorizontal: Spacing["2xl"],
+    };
+
     return (
       <KeyboardAvoidingView
         style={styles.flexRoot}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <ScrollView
-          style={styles.flexRoot}
-          contentContainerStyle={[paddingCanvas, styles.scrollContentGrow]}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-          nestedScrollEnabled
+        <View
+          style={[
+            styles.flexRoot,
+            {
+              paddingTop: insets.top,
+              backgroundColor: Onboarding.canvasBackground,
+            },
+          ]}
         >
-          {children}
-        </ScrollView>
+          <ScrollView
+            style={styles.flexRoot}
+            contentContainerStyle={[scrollInnerPadding, styles.scrollContentGrow]}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+            nestedScrollEnabled
+          >
+            {children}
+          </ScrollView>
+        </View>
       </KeyboardAvoidingView>
     );
   }

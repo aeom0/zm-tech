@@ -22,6 +22,8 @@ interface GradientCTAButtonProps {
   icon?: FeatherName;
   variant?: "primary" | "outline";
   style?: ViewStyle;
+  /** Padding vertical un poco menor (p. ej. onboarding en pantallas bajas). */
+  compact?: boolean;
 }
 
 export function GradientCTAButton({
@@ -32,8 +34,11 @@ export function GradientCTAButton({
   icon,
   variant = "primary",
   style,
+  compact = false,
 }: GradientCTAButtonProps) {
   const isDisabled = disabled || loading;
+  const padVPrimary = compact ? 13 : 16;
+  const padVOutline = compact ? 11 : 14;
 
   if (variant === "outline") {
     return (
@@ -52,7 +57,7 @@ export function GradientCTAButton({
           end={Gradients.onboarding.linearEnd}
           style={styles.outlineGradientBorder}
         >
-          <View style={styles.outlineInner}>
+          <View style={[styles.outlineInner, { paddingVertical: padVOutline }]}>
             <Text style={styles.outlineLabel}>{label}</Text>
           </View>
         </LinearGradient>
@@ -75,7 +80,7 @@ export function GradientCTAButton({
         locations={[...Gradients.onboarding.locations]}
         start={Gradients.onboarding.linearStart}
         end={Gradients.onboarding.linearEnd}
-        style={styles.gradient}
+        style={[styles.gradient, { paddingVertical: padVPrimary }]}
       >
         {loading ? (
           <ActivityIndicator color="#fff" size="small" />
@@ -98,7 +103,6 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   gradient: {
-    paddingVertical: 16,
     paddingHorizontal: Spacing.xl,
     alignItems: "center",
     justifyContent: "center",
@@ -122,7 +126,6 @@ const styles = StyleSheet.create({
     padding: 1.5,
   },
   outlineInner: {
-    paddingVertical: 14,
     paddingHorizontal: Spacing.xl,
     alignItems: "center",
     borderRadius: BorderRadius.lg - 1.5,
