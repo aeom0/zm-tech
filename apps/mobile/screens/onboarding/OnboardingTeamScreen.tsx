@@ -22,7 +22,6 @@ import { COLORES_PRIMARIOS } from "@/screens/onboarding/constants/colores-onboar
 import { Gradients, Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 import { useTheme } from "@/hooks/useTheme";
-import { supabase } from "@/lib/supabase";
 
 interface OnboardingTeamScreenProps {
   onNext: () => void;
@@ -33,58 +32,27 @@ export default function OnboardingTeamScreen({
   onNext,
   onBack,
 }: OnboardingTeamScreenProps) {
-  const { config } = useTenant();
+  const { config, pendingOnboardingEmployees, addPendingOnboardingEmployee } =
+    useTenant();
   const { theme } = useTheme();
   const staffLabel = config.terminology.staffSingular;
 
   const [nombre, setNombre] = useState("");
   const [color, setColor] = useState(config.theme.primaryColor);
   const [modalColorVisible, setModalColorVisible] = useState(false);
-  const [guardando, setGuardando] = useState(false);
-  const [empleadosAgregados, setEmpleadosAgregados] = useState<
-    { id: string; name: string; color: string }[]
-  >([]);
 
   const esColorDePaleta = COLORES_PRIMARIOS.some((c) => c.valor === color);
 
-  const guardar = async () => {
+  /** Sin Supabase aquí: el paso 3 va antes del login; RLS solo permite owner/dev. */
+  const guardar = () => {
     const nombreFinal = nombre.trim();
     if (!nombreFinal) {
       Alert.alert("Campo requerido", "El nombre es obligatorio.");
       return;
     }
 
-    setGuardando(true);
-    try {
-      const { data, error } = await supabase
-        .from("employees")
-        .insert({
-          name: nombreFinal,
-          color,
-          is_active: true,
-        })
-        .select("id, name, color")
-        .single();
-
-      if (error) {
-        throw new Error(error.message);
-      }
-
-      if (data) {
-        setEmpleadosAgregados((prev) => [
-          ...prev,
-          { id: data.id, name: data.name, color: data.color },
-        ]);
-      }
-      setNombre("");
-    } catch (e: unknown) {
-      Alert.alert(
-        "Error",
-        e instanceof Error ? e.message : "No se pudo guardar el empleado.",
-      );
-    } finally {
-      setGuardando(false);
-    }
+    addPendingOnboardingEmployee({ name: nombreFinal, color });
+    setNombre("");
   };
 
   return (
@@ -185,16 +153,15 @@ export default function OnboardingTeamScreen({
           label={`Agregar ${config.terminology.staffSingular}`}
           icon="plus"
           onPress={guardar}
-          loading={guardando}
           style={styles.btnFlexWide}
           disabled={!nombre.trim()}
         />
       </Animated.View>
 
-      {empleadosAgregados.length > 0 && (
+      {pendingOnboardingEmployees.length > 0 && (
         <Animated.View entering={FadeInDown.delay(80).duration(300)}>
           <View style={styles.empleadosList}>
-            {empleadosAgregados.map((e) => (
+            {pendingOnboardingEmployees.map((e) => (
               <View key={e.id} style={styles.empleadoRow}>
                 <View
                   style={[styles.empleadoSwatch, { backgroundColor: e.color }]}
@@ -207,9 +174,8 @@ export default function OnboardingTeamScreen({
           </View>
 
           <Text style={[styles.hint, { color: theme.textMuted }]}>
-            💡 El modo de pago de cada{" "}
-            {config.terminology.staffSingular.toLowerCase()} se configura en Más
-            → {config.terminology.staff} después del registro.
+            Se guardarán en la nube al crear tu cuenta. El modo de pago lo
+            ajustas después en Más → {config.terminology.staff}.
           </Text>
         </Animated.View>
       )}
@@ -229,7 +195,7 @@ export default function OnboardingTeamScreen({
           label="Continuar"
           icon="arrow-right"
           onPress={onNext}
-          disabled={empleadosAgregados.length === 0}
+          disabled={pendingOnboardingEmployees.length === 0}
           style={styles.btnFlexWide}
         />
       </Animated.View>

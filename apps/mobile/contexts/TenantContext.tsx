@@ -17,12 +17,21 @@ import {
   fetchTenantSettings,
   upsertTenantSettings,
 } from "@/services/tenantSettingsService";
+import { insertEmpleadosTrasOnboarding } from "@/services/onboardingEmployeesService";
+import { queryClient } from "@/lib/query-client";
 
 const STORAGE_KEY = "@salonpro/tenant_config";
 const CONFIGURED_KEY = "@salonpro/tenant_configured";
 
 /** Beta / preview: ignora AsyncStorage de dev y fuerza onboarding (quitar en production estable). */
 const FORCE_FRESH_START = process.env.EXPO_PUBLIC_FORCE_FRESH_START === "true";
+
+/** Empleados capturados en paso 3 sin sesión; se insertan en BD al `markConfigured`. */
+export interface PendingOnboardingEmployee {
+  id: string;
+  name: string;
+  color: string;
+}
 
 interface TenantContextValue {
   config: TenantConfig;
@@ -33,16 +42,35 @@ interface TenantContextValue {
   markConfigured: () => Promise<{ ok: boolean; error?: string }>;
   isConfigured: boolean;
   isLoading: boolean;
+  pendingOnboardingEmployees: PendingOnboardingEmployee[];
+  addPendingOnboardingEmployee: (row: Omit<PendingOnboardingEmployee, "id">) => void;
 }
 
 const TenantContext = createContext<TenantContextValue | null>(null);
+
+function nuevoIdPendiente(): string {
+  return `pend-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+}
 
 export function TenantProvider({ children }: { children: React.ReactNode }) {
   const { userId } = useAuth();
   const [config, setConfig] = useState<TenantConfig>(defaultTenantConfig);
   const [isConfigured, setIsConfigured] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [pendingOnboardingEmployees, setPendingOnboardingEmployees] = useState<
+    PendingOnboardingEmployee[]
+  >([]);
   const freshStartDoneRef = useRef(false);
+
+  const addPendingOnboardingEmployee = useCallback(
+    (row: Omit<PendingOnboardingEmployee, "id">) => {
+      setPendingOnboardingEmployees((prev) => [
+        ...prev,
+        { ...row, id: nuevoIdPendiente() },
+      ]);
+    },
+    [],
+  );
 
   const updateTenant = useCallback(
     async (
@@ -70,6 +98,7 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
         if (FORCE_FRESH_START && !freshStartDoneRef.current) {
           freshStartDoneRef.current = true;
           await AsyncStorage.multiRemove([STORAGE_KEY, CONFIGURED_KEY]);
+          setPendingOnboardingEmployees([]);
         }
 
         const [raw, configured] = await Promise.all([
@@ -124,6 +153,26 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
 
     try {
       await upsertTenantSettings(config, userId);
+
+      if (pendingOnboardingEmployees.length > 0) {
+        const empResult = await insertEmpleadosTrasOnboarding(
+          pendingOnboardingEmployees.map(({ name, color }) => ({ name, color })),
+        );
+        if (!empResult.ok) {
+          return {
+            ok: false as const,
+            error:
+              empResult.message.includes("row-level security") ||
+              empResult.message.includes("RLS")
+                ? "No se pudo guardar el equipo (permisos). Revisa tu sesión o contacta soporte."
+                : `No se pudo guardar el equipo: ${empResult.message}`,
+          };
+        }
+        setPendingOnboardingEmployees([]);
+        void queryClient.invalidateQueries({ queryKey: ["employees"] });
+        void queryClient.invalidateQueries({ queryKey: ["employees", "active"] });
+      }
+
       await AsyncStorage.setItem(CONFIGURED_KEY, "true");
       setIsConfigured(true);
       return { ok: true as const };
@@ -156,11 +205,19 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
           "Ocurrió un error al guardar la configuración en la nube. Inténtalo de nuevo.",
       };
     }
-  }, [config, userId]);
+  }, [config, userId, pendingOnboardingEmployees]);
 
   return (
     <TenantContext.Provider
-      value={{ config, updateTenant, markConfigured, isConfigured, isLoading }}
+      value={{
+        config,
+        updateTenant,
+        markConfigured,
+        isConfigured,
+        isLoading,
+        pendingOnboardingEmployees,
+        addPendingOnboardingEmployee,
+      }}
     >
       {children}
     </TenantContext.Provider>
