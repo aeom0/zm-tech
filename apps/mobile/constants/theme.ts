@@ -21,6 +21,8 @@ export const Colors = {
     backgroundSecondary: "#F0EBF3",
     backgroundTertiary: "#E8D4ED",
     border: "#E0D6E5",
+    /** Superficie sobre fondo default (listas, chips suaves) */
+    backgroundSubtle: "rgba(0,0,0,0.04)",
     success: "#4CAF50",
     warning: "#D4AF37",
     error: "#D32F2F",
@@ -52,6 +54,7 @@ export const Colors = {
     backgroundSecondary: "#2A2530",
     backgroundTertiary: "#352840",
     border: "#3D3545",
+    backgroundSubtle: "rgba(255,255,255,0.04)",
     success: "#66BB6A",
     warning: "#C7A84D",
     error: "#EF5350",
@@ -84,6 +87,8 @@ export const BorderRadius = {
   xs: 8,
   sm: 12,
   md: 18,
+  /** Cards de lista (onboarding, etc.) */
+  card: 20,
   lg: 24,
   xl: 30,
   "2xl": 40,
@@ -211,7 +216,7 @@ export function createTheme(config: TenantConfig, isDark: boolean) {
 export const Gradients = {
   onboarding: {
     // Dirección: 135° (esquina sup-izq → inf-der)
-    // Aplicar en: botones CTA, progress dots activos, checkboxes, bordes activos
+    // Aplicar en: botones CTA, progress dots activos, checkboxes, bordes activos (Lunaris turquesa)
     start: "#40E0D0",
     mid2: "#00897B",
     mid: "#1E88E5",
@@ -226,6 +231,25 @@ export const Gradients = {
     linearStart: { x: 0, y: 0 },
     linearEnd: { x: 1, y: 1 },
   },
+} as const;
+
+/**
+ * Tokens para canvas oscuro fijo (#111318), p. ej. onboarding.
+ * No dependen de claro/oscuro del sistema: el layout fuerza fondo oscuro.
+ */
+export const Onboarding = {
+  canvasBackground: "#111318",
+  lunarisAccent: Gradients.onboarding.start,
+  text: Colors.dark.text,
+  textMuted: "rgba(255,255,255,0.55)",
+  textSubtle: "rgba(255,255,255,0.5)",
+  iconInactive: "rgba(255,255,255,0.65)",
+  border: "rgba(255,255,255,0.10)",
+  /** Superficie de card sin seleccionar (mismo valor que Colors.dark.backgroundSubtle) */
+  cardBackground: Colors.dark.backgroundSubtle,
+  chipBackground: "rgba(255,255,255,0.06)",
+  chipBorder: "rgba(255,255,255,0.12)",
+  checkBorder: "rgba(255,255,255,0.25)",
 } as const;
 
 // Aclarado muy simple para modo oscuro: aumenta la luminosidad mezclando con blanco.

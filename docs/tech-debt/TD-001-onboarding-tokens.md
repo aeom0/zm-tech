@@ -1,5 +1,7 @@
 # TD-001 — Migrar valores mágicos a tokens en OnboardingBusinessTypeScreen
 
+**Estado:** Resuelto (2026-04-03) — tokens `Onboarding`, `BorderRadius.card`, `Colors.*.backgroundSubtle`; layout alineado a `Onboarding.canvasBackground`.
+
 **Archivo:** `apps/mobile/screens/onboarding/OnboardingBusinessTypeScreen.tsx`  
 **Detectado por:** Cursor Agent (post-implementación subtypes, 2026-04-03)  
 **Prioridad:** Baja — no afecta funcionalidad ni tipos  

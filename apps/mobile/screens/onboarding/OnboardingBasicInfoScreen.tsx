@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, StyleSheet, TextInput, Pressable } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import { LinearGradient } from "expo-linear-gradient";
 import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
@@ -9,6 +10,7 @@ import {
   OnboardingProgressDots,
   GradientCTAButton,
 } from "@/screens/onboarding/components";
+import { CustomColorPickerModal } from "@/screens/onboarding/components/CustomColorPickerModal";
 import { Colors, Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 import { MONEDAS_LATAM } from "@/screens/settings/constants";
@@ -64,12 +66,20 @@ export default function OnboardingBasicInfoScreen({
   const [colorAcento, setColorAcento] = useState(config.theme.accentColor);
   const [monedaCode, setMonedaCode] = useState(config.locale.currency.code);
   const [error, setError] = useState<string | null>(null);
+  const [selectorColor, setSelectorColor] = useState<"primary" | "accent" | null>(
+    null,
+  );
 
   const monedaActual = MONEDAS_LATAM.find((m) => m.code === monedaCode) ?? MONEDAS_LATAM[0];
 
+  const esPrimarioDePaleta = COLORES_PRIMARIOS.some(
+    (c) => c.valor === colorPrimario,
+  );
+  const esAcentoDePaleta = COLORES_ACENTO.some((c) => c.valor === colorAcento);
+
   // Encuentra el label del color de acento activo
   const acentoLabel =
-    COLORES_ACENTO.find((c) => c.valor === colorAcento)?.label ?? "Acento";
+    COLORES_ACENTO.find((c) => c.valor === colorAcento)?.label ?? "Personalizado";
 
   const continuar = async () => {
     const nombreFinal = nombre.trim();
@@ -182,12 +192,29 @@ export default function OnboardingBasicInfoScreen({
               onPress={() => setColorPrimario(c.valor)}
               style={[
                 styles.swatchOuter,
-                colorPrimario === c.valor && styles.swatchOuterSelected,
+                colorPrimario === c.valor && esPrimarioDePaleta && styles.swatchOuterSelected,
               ]}
             >
               <View style={[styles.swatch, { backgroundColor: c.valor }]} />
             </Pressable>
           ))}
+          <Pressable
+            onPress={() => setSelectorColor("primary")}
+            style={[
+              styles.swatchOuter,
+              !esPrimarioDePaleta && styles.swatchOuterSelected,
+            ]}
+            accessibilityLabel="Elegir color personalizado principal"
+          >
+            <LinearGradient
+              colors={["#E91E8C", "#9C27B0", "#3D3D8F", "#1565C0"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.swatchCustom}
+            >
+              <Feather name="sliders" size={20} color="rgba(255,255,255,0.95)" />
+            </LinearGradient>
+          </Pressable>
         </View>
       </Animated.View>
 
@@ -263,14 +290,51 @@ export default function OnboardingBasicInfoScreen({
               onPress={() => setColorAcento(c.valor)}
               style={[
                 styles.swatchOuter,
-                colorAcento === c.valor && styles.swatchOuterSelected,
+                colorAcento === c.valor && esAcentoDePaleta && styles.swatchOuterSelected,
               ]}
             >
               <View style={[styles.swatch, { backgroundColor: c.valor }]} />
             </Pressable>
           ))}
+          <Pressable
+            onPress={() => setSelectorColor("accent")}
+            style={[
+              styles.swatchOuter,
+              !esAcentoDePaleta && styles.swatchOuterSelected,
+            ]}
+            accessibilityLabel="Elegir color personalizado de acento"
+          >
+            <LinearGradient
+              colors={["#E91E8C", "#9C27B0", "#3D3D8F", "#1565C0"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.swatchCustom}
+            >
+              <Feather name="sliders" size={20} color="rgba(255,255,255,0.95)" />
+            </LinearGradient>
+          </Pressable>
         </View>
       </Animated.View>
+
+      <CustomColorPickerModal
+        visible={selectorColor !== null}
+        initialHex={
+          selectorColor === "accent" ? colorAcento : colorPrimario
+        }
+        titulo={
+          selectorColor === "accent"
+            ? "Color de acento personalizado"
+            : "Color principal personalizado"
+        }
+        onClose={() => setSelectorColor(null)}
+        onConfirm={(hex) => {
+          if (selectorColor === "accent") {
+            setColorAcento(hex);
+          } else if (selectorColor === "primary") {
+            setColorPrimario(hex);
+          }
+        }}
+      />
 
       <Animated.View
         entering={FadeInDown.delay(480).duration(400)}
@@ -360,6 +424,13 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 6,
+  },
+  swatchCustom: {
+    width: 44,
+    height: 44,
+    borderRadius: 6,
+    alignItems: "center",
+    justifyContent: "center",
   },
   previewCard: {
     borderRadius: 16,

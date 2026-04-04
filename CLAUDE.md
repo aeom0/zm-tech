@@ -226,6 +226,13 @@ Flujo de arranque (mobile):
 - **TypeScript**: `apps/mobile/tsconfig.json` usa `module: "esnext"` (sin extender expo/tsconfig.base.json)
 - Usar `nvm use` para asegurar la versión correcta de Node
 
+## Cambios Recientes (abr 2026 — Onboarding: subtype, tenant_settings, tokens TD-001, color HSV)
+
+- **`@salonpro/tenant-config`**: `businessSubtype` y `serviceCategories` opcionales; presets con defaults; `tenant_settings` en Drizzle + SQL `20260403_tenant_subtype_categories.sql` + `tenantSettingsService` mapea `business_subtype` / `service_categories`.
+- **Onboarding paso 1**: `OnboardingBusinessTypeScreen` — chips de subtype por `businessType`, `FadeInDown`, gradiente en chip activo; TD-001: tokens **`Onboarding`**, **`BorderRadius`**, `OnboardingLayout` → `Onboarding.canvasBackground`.
+- **Onboarding paso 2**: `CustomColorPickerModal` + `lib/color-hsv.ts` + `@react-native-community/slider` para color fuera de la paleta fija.
+- **Docs**: `docs/tech-debt/TD-001-onboarding-tokens.md` resuelto; `docs/INDEX.md` enlaza `tech-debt/`.
+
 ## Cambios Recientes (abr 2026 — Web: eliminación de emojis + íconos Lucide)
 
 - **Web — sin emojis**: toda la landing y el panel web usan íconos SVG de **Lucide React**. `BUSINESS_TYPES` y `FEATURES` en `constants.ts` usan prop `icon` (nombre Lucide, ej. `"Scissors"`, `"Calendar"`) en lugar de `emoji`. Componentes afectados: `FeatureCard`, `BusinessTypeTab` (renderizado dinámico con `LucideIcons as unknown as Record<string, LucideIcon>`), `HeroSection` (badge con `<Zap>`, ✨ eliminado del CTA), `PainSection` (`Smartphone`, `BookOpen`, `TrendingDown`, `CheckCircle`, `Scissors`), `FeaturesSection` (`MessageCircle`, `Check`), `DemoSection` (tabs tipados con `LucideIcon`), `CtaSection`, `FaqSection`, `PricingSection` (`ChevronDown`, `Check`), `PricingCard` (`Star`, `MessageCircle`, `Check`, `Sparkles`), `AppMockup` (tabs `Home/Calendar/Scissors/MoreHorizontal/User`, header `Bell`, métricas `TrendingUp`+`Star`), `WABAPreview` (texto limpio sin caracteres Unicode decorativos).

@@ -5,14 +5,18 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ---
 
-## [Unreleased] — 2026-04-02
+## [Unreleased] — 2026-04-03
 
 ### Cambiado
 - **Web — eliminación de emojis**: toda la landing y el panel web ahora usan íconos SVG de **Lucide React** en lugar de emojis Unicode. Afecta `constants.ts` (`BUSINESS_TYPES` y `FEATURES` cambian prop `emoji` → `icon`), `FeatureCard`, `BusinessTypeTab`, `HeroSection`, `PainSection`, `FeaturesSection`, `DemoSection`, `CtaSection`, `FaqSection`, `PricingSection`, `PricingCard`, `AppMockup` y `WABAPreview`.
+- **Mobile — onboarding (TD-001)**: `OnboardingBusinessTypeScreen` usa tokens **`Onboarding`**, **`BorderRadius.card`**, **`BorderRadius.full`** y **`Colors.*.backgroundSubtle`**; `OnboardingLayout` toma el fondo de **`Onboarding.canvasBackground`** (`#111318`).
 
 ### Añadido
 - **Mobile — selector de moneda multi-LATAM** (`feat(settings+onboarding)`): lista de 19 monedas LATAM (USD por defecto); seleccionable desde Ajustes (`CurrencyPickerModal` pageSheet) y desde el onboarding paso 2 (chips). Persiste `code + symbol` en `TenantConfig` con `syncRemote`.
 - **Mobile — gestión de profesionales** (`feat(personal)`): FAB "+" crea nuevo empleado (formulario completo); botón "Eliminar" en modal de edición con confirmación y limpieza de avatar en Storage. `createMutation` (INSERT) y `deleteMutation` (DELETE).
+- **Mobile — color personalizado en onboarding (paso 2)**: swatch con gradiente + ícono que abre **`CustomColorPickerModal`** (matiz / saturación / brillo vía HSV); dependencia **`@react-native-community/slider`**; utilidades en **`apps/mobile/lib/color-hsv.ts`**.
+- **`constants/theme.ts`**: objeto **`Onboarding`** (canvas, textos, bordes, chips, `lunarisAccent` alineado a `Gradients.onboarding.start`); **`BorderRadius.card`**; **`backgroundSubtle`** en paletas claro/oscuro.
+- **Documentación**: `docs/tech-debt/TD-001-onboarding-tokens.md` marcado como resuelto; índice en `docs/INDEX.md` enlaza **`docs/tech-debt/`**.
 
 ### Corregido
 - **Mobile — Agenda** (`fix(agenda)`): KPI fila flex 1/3 sin `ScrollView`; avatar strip `flexGrow 0`; filtro estado con padding/gap más chico (11 px), sin `maxHeight` que recortaba los chips; scroll horizontal se mantiene en pantallas angostas.

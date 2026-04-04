@@ -36,6 +36,10 @@ El archivo **`scripts/db/migrations/20260324_advisor_rls_performance.sql`** docu
 - Otro proyecto Supabase: ejecutar ese SQL en el editor o `apply_migration` con el mismo contenido.
 - La app móvil sube archivos con la **anon key** autenticada; si falta el bucket o las políticas, fallará el guardado de la foto en Personal.
 
+### Tenant: subtype y categorías de servicio (`tenant_settings`)
+
+- **`scripts/db/migrations/20260403_tenant_subtype_categories.sql`**: columnas **`business_subtype`** (text, nullable) y **`service_categories`** (jsonb, default `[]`). Aplicar en **SQL Editor** o MCP **`apply_migration`** (proyecto SalonPro). El mapeo mobile está en `apps/mobile/services/tenantSettingsService.ts`; el schema Drizzle en `packages/shared-schema`.
+
 ### Logo del negocio (Storage)
 
 - **Schema (DB)**: `tenant_settings.logo_url text not null default ''`.

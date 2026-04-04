@@ -10,8 +10,7 @@ import {
   OnboardingProgressDots,
   GradientCTAButton,
 } from "@/screens/onboarding/components";
-import { Spacing } from "@/constants/theme";
-import { useTheme } from "@/hooks/useTheme";
+import { BorderRadius, Colors, Onboarding, Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 import {
   spaNavilsPreset,
@@ -113,12 +112,9 @@ const SUBTYPES: Partial<
   ],
 };
 
-const CHIP_PILL_RADIUS = 999;
-
 export default function OnboardingBusinessTypeScreen({
   onNext,
 }: OnboardingBusinessTypeScreenProps) {
-  const { theme } = useTheme();
   const { config, updateTenant } = useTenant();
 
   // Estado local de selección — NO navega al instante.
@@ -155,12 +151,14 @@ export default function OnboardingBusinessTypeScreen({
   return (
     <OnboardingLayout scrollable={false}>
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-        <ThemedText style={styles.badge}>PASO 1 DE 4</ThemedText>
+        <ThemedText style={[styles.badge, { color: Onboarding.lunarisAccent }]}>
+          PASO 1 DE 4
+        </ThemedText>
         <OnboardingProgressDots currentStep={1} />
-        <ThemedText style={styles.titulo}>
+        <ThemedText style={[styles.titulo, { color: Onboarding.text }]}>
           ¿Qué tipo de negocio tienes?
         </ThemedText>
-        <ThemedText style={styles.subtitulo}>
+        <ThemedText style={[styles.subtitulo, { color: Onboarding.textMuted }]}>
           Personalizamos todo según tu tipo de salón
         </ThemedText>
       </Animated.View>
@@ -186,10 +184,10 @@ export default function OnboardingBusinessTypeScreen({
                   {
                     borderColor: seleccionado
                       ? primary
-                      : "rgba(255,255,255,0.10)",
+                      : Onboarding.border,
                     backgroundColor: seleccionado
                       ? hexToRgba(primary, 0.1)
-                      : "rgba(255,255,255,0.04)",
+                      : Onboarding.cardBackground,
                   },
                   pressed && styles.cardPressed,
                 ]}
@@ -206,15 +204,17 @@ export default function OnboardingBusinessTypeScreen({
                   <Feather
                     name={tipo.icon}
                     size={28}
-                    color={seleccionado ? primary : "rgba(255,255,255,0.65)"}
+                    color={seleccionado ? primary : Onboarding.iconInactive}
                   />
                 </View>
 
                 <View style={styles.cardTexto}>
-                  <ThemedText style={styles.cardNombre}>
+                  <ThemedText style={[styles.cardNombre, { color: Onboarding.text }]}>
                     {tipo.nombre}
                   </ThemedText>
-                  <ThemedText style={styles.cardDesc}>
+                  <ThemedText
+                    style={[styles.cardDesc, { color: Onboarding.textSubtle }]}
+                  >
                     {tipo.descripcion}
                   </ThemedText>
                 </View>
@@ -225,11 +225,15 @@ export default function OnboardingBusinessTypeScreen({
                     styles.check,
                     seleccionado
                       ? { backgroundColor: primary, borderColor: primary }
-                      : { borderColor: "rgba(255,255,255,0.25)" },
+                      : { borderColor: Onboarding.checkBorder },
                   ]}
                 >
                   {seleccionado ? (
-                    <Feather name="check" size={12} color="#FFFFFF" />
+                    <Feather
+                      name="check"
+                      size={12}
+                      color={Colors.dark.white}
+                    />
                   ) : null}
                 </View>
               </Pressable>
@@ -247,7 +251,7 @@ export default function OnboardingBusinessTypeScreen({
               type="small"
               style={[
                 styles.subtypeLabel,
-                { color: theme.textSecondary, marginBottom: 10 },
+                { color: Onboarding.textMuted, marginBottom: Spacing.sm + 2 },
               ]}
             >
               ¿Qué tipo de negocio?
@@ -279,8 +283,8 @@ export default function OnboardingBusinessTypeScreen({
                         <ThemedText
                           type="small"
                           style={styles.chipTextoActivo}
-                          lightColor="#FFFFFF"
-                          darkColor="#FFFFFF"
+                          lightColor={Colors.dark.white}
+                          darkColor={Colors.dark.white}
                         >
                           {opt.label}
                         </ThemedText>
@@ -289,14 +293,14 @@ export default function OnboardingBusinessTypeScreen({
                       <View
                         style={[
                           styles.chipInactivo,
-                          { borderColor: "rgba(255,255,255,0.12)" },
+                          { borderColor: Onboarding.chipBorder },
                         ]}
                       >
                         <ThemedText
                           type="small"
                           style={[
                             styles.chipTextoInactivo,
-                            { color: theme.textSecondary },
+                            { color: Onboarding.textMuted },
                           ]}
                         >
                           {opt.label}
@@ -333,7 +337,6 @@ const styles = StyleSheet.create({
   badge: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#40E0D0",
     letterSpacing: 1,
     marginBottom: Spacing.sm,
     textTransform: "uppercase",
@@ -341,13 +344,11 @@ const styles = StyleSheet.create({
   titulo: {
     fontSize: 28,
     fontWeight: "700",
-    color: "#FFFFFF",
     marginBottom: Spacing.sm,
     lineHeight: 34,
   },
   subtitulo: {
     fontSize: 15,
-    color: "rgba(255,255,255,0.55)",
     lineHeight: 22,
   },
   scroll: {
@@ -370,22 +371,22 @@ const styles = StyleSheet.create({
   },
   chipOuter: {
     marginRight: Spacing.sm,
-    borderRadius: CHIP_PILL_RADIUS,
+    borderRadius: BorderRadius.full,
     overflow: "hidden",
   },
   chipPressed: {
     opacity: 0.88,
   },
   chipGradient: {
-    borderRadius: CHIP_PILL_RADIUS,
-    paddingHorizontal: 14,
+    borderRadius: BorderRadius.full,
+    paddingHorizontal: Spacing.md + 2,
     paddingVertical: Spacing.sm,
   },
   chipInactivo: {
-    borderRadius: CHIP_PILL_RADIUS,
-    paddingHorizontal: 14,
+    borderRadius: BorderRadius.full,
+    paddingHorizontal: Spacing.md + 2,
     paddingVertical: Spacing.sm,
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: Onboarding.chipBackground,
     borderWidth: StyleSheet.hairlineWidth,
   },
   chipTextoActivo: {
@@ -398,7 +399,7 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 20,
+    borderRadius: BorderRadius.card,
     borderWidth: 0.5,
     padding: Spacing.lg,
     gap: Spacing.md,
@@ -409,7 +410,7 @@ const styles = StyleSheet.create({
   iconBg: {
     width: 48,
     height: 48,
-    borderRadius: 24,
+    borderRadius: BorderRadius.full,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -419,24 +420,22 @@ const styles = StyleSheet.create({
   cardNombre: {
     fontSize: 16,
     fontWeight: "600",
-    color: "#FFFFFF",
-    marginBottom: 4,
+    marginBottom: Spacing.xs,
   },
   cardDesc: {
     fontSize: 13,
-    color: "rgba(255,255,255,0.5)",
     lineHeight: 18,
   },
   check: {
     width: 22,
     height: 22,
-    borderRadius: 11,
+    borderRadius: BorderRadius.full,
     borderWidth: 0.5,
     alignItems: "center",
     justifyContent: "center",
     position: "absolute",
-    top: 12,
-    right: 12,
+    top: Spacing.md,
+    right: Spacing.md,
   },
   footer: {
     paddingTop: Spacing.md,

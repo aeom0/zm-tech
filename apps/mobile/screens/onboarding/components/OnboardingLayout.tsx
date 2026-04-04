@@ -8,9 +8,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { Spacing } from "@/constants/theme";
-
-const ONBOARDING_BG = "#111318";
+import { Onboarding, Spacing } from "@/constants/theme";
 
 interface OnboardingLayoutProps {
   children: React.ReactNode;
@@ -31,7 +29,7 @@ export function OnboardingLayout({
 
   const containerStyle = {
     flex: 1,
-    backgroundColor: ONBOARDING_BG,
+    backgroundColor: Onboarding.canvasBackground,
     paddingTop: insets.top + Spacing.lg,
     paddingBottom: insets.bottom + Spacing.lg,
     paddingHorizontal: Spacing["2xl"],
@@ -64,7 +62,7 @@ export function OnboardingLayout({
 const styles = StyleSheet.create({
   flexRoot: {
     flex: 1,
-    backgroundColor: ONBOARDING_BG,
+    backgroundColor: Onboarding.canvasBackground,
   },
   scrollGrow: {
     flexGrow: 1,

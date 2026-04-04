@@ -73,7 +73,12 @@ eas build --platform android --profile production
 eas build --platform ios --profile production
 # preview interno (APK Android)
 yarn build:preview:android
+
+# CI / sin prompts (requiere EXPO_TOKEN en el entorno)
+eas build --profile preview --platform android --non-interactive
 ```
+
+El flag **`--non-interactive`** evita preguntas en terminal; en máquinas sin sesión `eas login`, define **`EXPO_TOKEN`** (Expo → Access tokens).
 
 ### 3. OTA (actualizaciones JS)
 
