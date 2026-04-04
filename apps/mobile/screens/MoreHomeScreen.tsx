@@ -24,6 +24,7 @@ import { Colors, Spacing, BorderRadius } from "@/constants/theme";
 import type { MoreStackParamList } from "@/navigation/MoreStackNavigator";
 import { useTenant } from "@/contexts/TenantContext";
 import { usePendingBadgeCount } from "@/hooks/usePendingBadgeCount";
+import { useDemoReset } from "@/hooks/useDemoReset";
 
 type Nav = NativeStackNavigationProp<MoreStackParamList, "MoreHome">;
 
@@ -145,6 +146,7 @@ export default function MoreHomeScreen() {
   const { theme, isDark } = useTheme();
   const { setPreference } = useThemePreference();
   const { isAdmin, logout } = useAuth();
+  const { resetIfDemo } = useDemoReset();
   const navigation = useNavigation<Nav>();
   const haptics = useHaptics();
   const { config } = useTenant();
@@ -154,7 +156,14 @@ export default function MoreHomeScreen() {
     haptics.warning();
     Alert.alert("Cerrar sesión", "¿Estás seguro de que quieres salir?", [
       { text: "Cancelar", style: "cancel" },
-      { text: "Cerrar sesión", style: "destructive", onPress: () => logout() },
+      {
+        text: "Cerrar sesión",
+        style: "destructive",
+        onPress: async () => {
+          await resetIfDemo();
+          await logout();
+        },
+      },
     ]);
   };
 

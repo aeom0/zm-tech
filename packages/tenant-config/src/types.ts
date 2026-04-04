@@ -68,6 +68,9 @@ export interface TenantConfig {
     defaultHousePercent: number;
   };
 
+  /** Cuenta sandbox demo (reset de datos al cerrar sesión vía Edge) */
+  isDemo?: boolean;
+
   /** Módulos opcionales (p. ej. promo WhatsApp en Más / ajustes) */
   features?: {
     whatsapp?: boolean;

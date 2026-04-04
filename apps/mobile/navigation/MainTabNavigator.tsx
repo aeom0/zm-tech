@@ -2,7 +2,7 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Feather } from "@expo/vector-icons";
 import { BlurView } from "expo-blur";
-import { Platform, StyleSheet } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import DashboardScreen from "@/screens/DashboardScreen";
@@ -14,6 +14,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { useTenant } from "@/contexts/TenantContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePendingBadgeCount } from "@/hooks/usePendingBadgeCount";
+import { DemoBanner } from "@/components/DemoBanner";
 
 export type MainTabParamList = {
   Dashboard: undefined;
@@ -78,10 +79,13 @@ export default function MainTabNavigator() {
   };
 
   return (
-    <Tab.Navigator
-      initialRouteName="Dashboard"
-      screenOptions={screenOptions as any}
-    >
+    <View style={styles.root}>
+      <DemoBanner />
+      <Tab.Navigator
+        initialRouteName="Dashboard"
+        screenOptions={screenOptions as any}
+        style={styles.tabs}
+      >
       <Tab.Screen
         name="Dashboard"
         component={DashboardScreen}
@@ -150,5 +154,11 @@ export default function MainTabNavigator() {
         }}
       />
     </Tab.Navigator>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  root: { flex: 1 },
+  tabs: { flex: 1 },
+});

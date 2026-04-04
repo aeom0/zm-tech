@@ -8,6 +8,7 @@ import { ThemedView } from "@/components/ThemedView";
 import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTenant } from "@/contexts/TenantContext";
+import { useDemoReset } from "@/hooks/useDemoReset";
 import { Spacing } from "@/constants/theme";
 
 export default function ProfileScreen() {
@@ -15,7 +16,13 @@ export default function ProfileScreen() {
   const tabBarHeight = useBottomTabBarHeight();
   const { theme } = useTheme();
   const { logout } = useAuth();
+  const { resetIfDemo } = useDemoReset();
   const { config } = useTenant();
+
+  const handleLogout = async () => {
+    await resetIfDemo();
+    await logout();
+  };
 
   return (
     <ThemedView
@@ -39,7 +46,7 @@ export default function ProfileScreen() {
 
         <View style={styles.logoutSection}>
           <Pressable
-            onPress={logout}
+            onPress={handleLogout}
             style={({ pressed }) => [
               styles.logoutButton,
               {

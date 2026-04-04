@@ -67,6 +67,7 @@ export type TenantSettingsRow = {
   tagline: string;
   features_whatsapp: boolean;
   logo_url: string;
+  is_demo?: boolean | null;
 };
 
 // Mapea fila de tenant_settings a TenantConfig (camelCase)
@@ -110,6 +111,7 @@ function mapRowToConfig(row: TenantSettingsRow): TenantConfig {
     features: {
       whatsapp: row.features_whatsapp ?? false,
     },
+    isDemo: row.is_demo ?? false,
   };
 }
 
@@ -137,7 +139,7 @@ export async function fetchTenantSettings(
   const { data, error } = await supabase
     .from("tenant_settings")
     .select(
-      "business_name, business_type, business_subtype, service_categories, primary_color, accent_color, currency_code, currency_symbol, country, language, timezone, time_format, client_terminology, staff_terminology, staff_singular_terminology, appointment_terminology, business_hours, contact_info, commission_staff, commission_house, tagline, features_whatsapp, logo_url",
+      "business_name, business_type, business_subtype, service_categories, primary_color, accent_color, currency_code, currency_symbol, country, language, timezone, time_format, client_terminology, staff_terminology, staff_singular_terminology, appointment_terminology, business_hours, contact_info, commission_staff, commission_house, tagline, features_whatsapp, logo_url, is_demo",
     )
     .eq("id", userId)
     .maybeSingle<TenantSettingsRow>();

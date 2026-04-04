@@ -210,6 +210,7 @@ export function mergeTenantConfig(
     features: partial.features
       ? { ...prev.features, ...partial.features }
       : prev.features,
+    isDemo: partial.isDemo !== undefined ? partial.isDemo : prev.isDemo,
     integrations: partial.integrations
       ? { ...prev.integrations, ...partial.integrations }
       : prev.integrations,

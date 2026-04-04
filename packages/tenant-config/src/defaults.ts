@@ -48,4 +48,6 @@ export const defaultTenantConfig: TenantConfig = {
   features: {
     whatsapp: false,
   },
+
+  isDemo: false,
 };
