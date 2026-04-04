@@ -108,8 +108,9 @@ function LoginForm() {
                 color: "#E91E8C",
               }}
             >
-              <span className="font-semibold">Modo demo activo</span> \u00b7 Puedes
-              explorar y modificar libremente. Todo se restaura al hacer
+              <span className="font-semibold">Modo demo activo</span>
+              {" · "}
+              Puedes explorar y modificar libremente. Todo se restaura al hacer
               logout.
             </div>
           )}
@@ -154,7 +155,7 @@ function LoginForm() {
                 htmlFor="password"
                 className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5"
               >
-                Contrase\u00f1a
+                Contraseña
               </label>
               <div className="relative">
                 <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400" />
@@ -181,7 +182,11 @@ function LoginForm() {
                   : "var(--primary)",
               }}
             >
-              {loading ? "Entrando\u2026" : isDemo ? "Entrar al demo" : "Entrar"}
+              {loading
+                ? "Entrando\u2026"
+                : isDemo
+                  ? "Entrar al demo"
+                  : "Entrar"}
             </button>
           </form>
 

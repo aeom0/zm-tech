@@ -7,10 +7,6 @@ import {
   Users,
   Package,
   MessageCircle,
-  Scissors,
-  Sparkles,
-  Zap,
-  Leaf,
   type LucideIcon,
 } from "lucide-react";
 import { RevealWrapper } from "@/components/ui/RevealWrapper";

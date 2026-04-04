@@ -1,8 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Scissors, Sparkles, Zap, Leaf, ArrowRight, RefreshCw } from "lucide-react";
-import { LUNARIS } from "@/lib/theme";
+import {
+  Scissors,
+  Sparkles,
+  Zap,
+  Leaf,
+  ArrowRight,
+  RefreshCw,
+} from "lucide-react";
 
 const DEMO_BUSINESSES = [
   {
@@ -94,9 +100,7 @@ export function DemoBusinessPicker() {
                   ? `${biz.accent}15`
                   : "rgba(255,255,255,0.03)",
                 borderColor: isSelected ? biz.accent : "rgba(255,255,255,0.08)",
-                boxShadow: isSelected
-                  ? `0 0 24px ${biz.accent}30`
-                  : "none",
+                boxShadow: isSelected ? `0 0 24px ${biz.accent}30` : "none",
               }}
             >
               {/* Ícono */}
@@ -110,7 +114,9 @@ export function DemoBusinessPicker() {
               </div>
 
               {/* Info */}
-              <p className="text-white font-bold text-base mb-0.5">{biz.name}</p>
+              <p className="text-white font-bold text-base mb-0.5">
+                {biz.name}
+              </p>
               <p className="text-zinc-400 text-xs mb-3">{biz.type}</p>
 
               {/* Pills de info */}
@@ -171,8 +177,7 @@ export function DemoBusinessPicker() {
                   className="flex-shrink-0 px-3 py-2 rounded-xl text-xs font-semibold border transition-colors"
                   style={{
                     borderColor: `${selectedBiz.accent}60`,
-                    color:
-                      copied === "email" ? selectedBiz.accent : "#71717a",
+                    color: copied === "email" ? selectedBiz.accent : "#71717a",
                     backgroundColor:
                       copied === "email"
                         ? `${selectedBiz.accent}15`
