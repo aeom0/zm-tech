@@ -84,7 +84,6 @@ export default function OnboardingServicesScreen({
         .insert(payload);
 
       if (error) {
-        // eslint-disable-next-line no-console
         console.warn(
           "[OnboardingServices] error al crear categorías en Supabase, continuando de todos modos",
           error,
@@ -93,7 +92,6 @@ export default function OnboardingServicesScreen({
 
       onNext();
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.warn(
         "[OnboardingServices] excepción inesperada al crear categorías",
         error,

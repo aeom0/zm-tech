@@ -11,9 +11,8 @@ import {
   GradientCTAButton,
 } from "@/screens/onboarding/components";
 import { CustomColorPickerModal } from "@/screens/onboarding/components/CustomColorPickerModal";
-import { Colors, Spacing } from "@/constants/theme";
+import { Colors, Gradients, Spacing } from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
-import { MONEDAS_LATAM } from "@/screens/settings/constants";
 
 const COLORES_PRIMARIOS = [
   { label: "Verde azulado", valor: "#0B7B72" },
@@ -64,14 +63,10 @@ export default function OnboardingBasicInfoScreen({
   );
   const [colorPrimario, setColorPrimario] = useState(config.theme.primaryColor);
   const [colorAcento, setColorAcento] = useState(config.theme.accentColor);
-  const [monedaCode, setMonedaCode] = useState(config.locale.currency.code);
   const [error, setError] = useState<string | null>(null);
-  const [selectorColor, setSelectorColor] = useState<"primary" | "accent" | null>(
-    null,
-  );
-
-  const monedaActual = MONEDAS_LATAM.find((m) => m.code === monedaCode) ?? MONEDAS_LATAM[0];
-
+  const [selectorColor, setSelectorColor] = useState<
+    "primary" | "accent" | null
+  >(null);
   const esPrimarioDePaleta = COLORES_PRIMARIOS.some(
     (c) => c.valor === colorPrimario,
   );
@@ -79,7 +74,8 @@ export default function OnboardingBasicInfoScreen({
 
   // Encuentra el label del color de acento activo
   const acentoLabel =
-    COLORES_ACENTO.find((c) => c.valor === colorAcento)?.label ?? "Personalizado";
+    COLORES_ACENTO.find((c) => c.valor === colorAcento)?.label ??
+    "Personalizado";
 
   const continuar = async () => {
     const nombreFinal = nombre.trim();
@@ -93,10 +89,6 @@ export default function OnboardingBasicInfoScreen({
         ...config.theme,
         primaryColor: colorPrimario,
         accentColor: colorAcento,
-      },
-      locale: {
-        ...config.locale,
-        currency: { code: monedaActual.code, symbol: monedaActual.symbol },
       },
     });
     onNext();
@@ -138,49 +130,6 @@ export default function OnboardingBasicInfoScreen({
       </Animated.View>
 
       <Animated.View
-        entering={FadeInDown.delay(160).duration(400)}
-        style={styles.campo}
-      >
-        <ThemedText style={styles.label}>Moneda</ThemedText>
-        <View style={styles.monedasWrap}>
-          {MONEDAS_LATAM.map((m) => {
-            const activa = m.code === monedaCode;
-            return (
-              <Pressable
-                key={m.code}
-                onPress={() => setMonedaCode(m.code)}
-                style={[
-                  styles.monedaChip,
-                  activa && styles.monedaChipActiva,
-                ]}
-              >
-                <ThemedText
-                  style={[
-                    styles.monedaSymbol,
-                    activa && styles.monedaSymbolActiva,
-                  ]}
-                >
-                  {m.symbol}
-                </ThemedText>
-                <ThemedText
-                  style={[
-                    styles.monedaCode,
-                    activa && styles.monedaCodeActiva,
-                  ]}
-                  numberOfLines={1}
-                >
-                  {m.code}
-                </ThemedText>
-              </Pressable>
-            );
-          })}
-        </View>
-        <ThemedText style={styles.monedaHint}>
-          {monedaActual.nombre} · {monedaActual.pais}
-        </ThemedText>
-      </Animated.View>
-
-      <Animated.View
         entering={FadeInDown.delay(240).duration(400)}
         style={styles.campo}
       >
@@ -192,7 +141,9 @@ export default function OnboardingBasicInfoScreen({
               onPress={() => setColorPrimario(c.valor)}
               style={[
                 styles.swatchOuter,
-                colorPrimario === c.valor && esPrimarioDePaleta && styles.swatchOuterSelected,
+                colorPrimario === c.valor &&
+                  esPrimarioDePaleta &&
+                  styles.swatchOuterSelected,
               ]}
             >
               <View style={[styles.swatch, { backgroundColor: c.valor }]} />
@@ -207,12 +158,16 @@ export default function OnboardingBasicInfoScreen({
             accessibilityLabel="Elegir color personalizado principal"
           >
             <LinearGradient
-              colors={["#E91E8C", "#9C27B0", "#3D3D8F", "#1565C0"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
+              colors={[...Gradients.onboarding.colors]}
+              start={Gradients.onboarding.linearStart}
+              end={Gradients.onboarding.linearEnd}
               style={styles.swatchCustom}
             >
-              <Feather name="sliders" size={20} color="rgba(255,255,255,0.95)" />
+              <Feather
+                name="sliders"
+                size={20}
+                color="rgba(255,255,255,0.95)"
+              />
             </LinearGradient>
           </Pressable>
         </View>
@@ -258,12 +213,8 @@ export default function OnboardingBasicInfoScreen({
             { backgroundColor: hexToRgba(colorAcento, 0.18) },
           ]}
         >
-          <View
-            style={[styles.acentoDot, { backgroundColor: colorAcento }]}
-          />
-          <ThemedText
-            style={[styles.acentoLabel, { color: colorAcento }]}
-          >
+          <View style={[styles.acentoDot, { backgroundColor: colorAcento }]} />
+          <ThemedText style={[styles.acentoLabel, { color: colorAcento }]}>
             {acentoLabel}
           </ThemedText>
         </View>
@@ -273,9 +224,7 @@ export default function OnboardingBasicInfoScreen({
         </ThemedText>
 
         {/* Barra de acento en el borde inferior */}
-        <View
-          style={[styles.accentBar, { backgroundColor: colorAcento }]}
-        />
+        <View style={[styles.accentBar, { backgroundColor: colorAcento }]} />
       </Animated.View>
 
       <Animated.View
@@ -290,7 +239,9 @@ export default function OnboardingBasicInfoScreen({
               onPress={() => setColorAcento(c.valor)}
               style={[
                 styles.swatchOuter,
-                colorAcento === c.valor && esAcentoDePaleta && styles.swatchOuterSelected,
+                colorAcento === c.valor &&
+                  esAcentoDePaleta &&
+                  styles.swatchOuterSelected,
               ]}
             >
               <View style={[styles.swatch, { backgroundColor: c.valor }]} />
@@ -305,12 +256,16 @@ export default function OnboardingBasicInfoScreen({
             accessibilityLabel="Elegir color personalizado de acento"
           >
             <LinearGradient
-              colors={["#E91E8C", "#9C27B0", "#3D3D8F", "#1565C0"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
+              colors={[...Gradients.onboarding.colors]}
+              start={Gradients.onboarding.linearStart}
+              end={Gradients.onboarding.linearEnd}
               style={styles.swatchCustom}
             >
-              <Feather name="sliders" size={20} color="rgba(255,255,255,0.95)" />
+              <Feather
+                name="sliders"
+                size={20}
+                color="rgba(255,255,255,0.95)"
+              />
             </LinearGradient>
           </Pressable>
         </View>
@@ -318,9 +273,7 @@ export default function OnboardingBasicInfoScreen({
 
       <CustomColorPickerModal
         visible={selectorColor !== null}
-        initialHex={
-          selectorColor === "accent" ? colorAcento : colorPrimario
-        }
+        initialHex={selectorColor === "accent" ? colorAcento : colorPrimario}
         titulo={
           selectorColor === "accent"
             ? "Color de acento personalizado"
@@ -496,46 +449,5 @@ const styles = StyleSheet.create({
   },
   btnFlexWide: {
     flex: 2,
-  },
-  monedasWrap: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 8,
-  },
-  monedaChip: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    paddingHorizontal: 10,
-    paddingVertical: 7,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.12)",
-    backgroundColor: "rgba(255,255,255,0.06)",
-  },
-  monedaChipActiva: {
-    borderColor: "#40E0D0",
-    backgroundColor: "rgba(64,224,208,0.12)",
-  },
-  monedaSymbol: {
-    fontSize: 13,
-    fontWeight: "700",
-    color: "rgba(255,255,255,0.55)",
-  },
-  monedaSymbolActiva: {
-    color: "#40E0D0",
-  },
-  monedaCode: {
-    fontSize: 11,
-    fontWeight: "500",
-    color: "rgba(255,255,255,0.4)",
-  },
-  monedaCodeActiva: {
-    color: "#40E0D0",
-  },
-  monedaHint: {
-    fontSize: 12,
-    color: "rgba(255,255,255,0.35)",
-    marginTop: 6,
   },
 });

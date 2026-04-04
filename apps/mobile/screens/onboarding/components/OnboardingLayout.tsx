@@ -45,6 +45,7 @@ export function OnboardingLayout({
           contentContainerStyle={[containerStyle, styles.scrollGrow]}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
+          nestedScrollEnabled
         >
           {children}
         </ScrollView>

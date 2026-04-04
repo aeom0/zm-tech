@@ -10,7 +10,14 @@ import {
   OnboardingProgressDots,
   GradientCTAButton,
 } from "@/screens/onboarding/components";
-import { BorderRadius, Colors, Onboarding, Spacing } from "@/constants/theme";
+import { CurrencyPickerModal } from "@/screens/settings/components/CurrencyPickerModal";
+import {
+  BorderRadius,
+  Colors,
+  Gradients,
+  Onboarding,
+  Spacing,
+} from "@/constants/theme";
 import { useTenant } from "@/contexts/TenantContext";
 import {
   spaNavilsPreset,
@@ -19,6 +26,7 @@ import {
   fullAestheticPreset,
   type TenantConfig,
 } from "@salonpro/tenant-config";
+import { MONEDAS_LATAM, type Moneda } from "@/screens/settings/constants";
 
 type BusinessType = TenantConfig["businessType"];
 
@@ -53,14 +61,14 @@ const TIPOS = [
   },
   {
     key: "barbershop" as BusinessType,
-    icon: "scissors" as const,
+    icon: "user" as const,
     nombre: "Barbería",
     descripcion: "Cortes, barba, afeitado clásico",
     preset: barbershopPreset,
   },
   {
     key: "hair-salon" as BusinessType,
-    icon: "user" as const,
+    icon: "scissors" as const,
     nombre: "Peluquería",
     descripcion: "Cortes, peinados, coloración",
     preset: hairSalonPreset,
@@ -74,23 +82,12 @@ const TIPOS = [
   },
 ];
 
-/** Gradiente horizontal Lunaris para chip de subtype activo (onboarding). */
-const SUBTYPE_CHIP_GRADIENT = [
-  "#E91E8C",
-  "#9C27B0",
-  "#3D3D8F",
-  "#1565C0",
-] as const;
+type SubtypeOpcion = {
+  key: TenantConfig["businessSubtype"] | undefined;
+  label: string;
+};
 
-const SUBTYPES: Partial<
-  Record<
-    BusinessType,
-    Array<{
-      key: TenantConfig["businessSubtype"] | undefined;
-      label: string;
-    }>
-  >
-> = {
+const SUBTYPES: Partial<Record<BusinessType, SubtypeOpcion[]>> = {
   "spa-nails": [
     { key: undefined, label: "General" },
     { key: "brow-lash", label: "Cejas & Pestañas" },
@@ -122,17 +119,21 @@ export default function OnboardingBusinessTypeScreen({
   const [tipoSeleccionado, setTipoSeleccionado] = useState<BusinessType>(
     config.businessType,
   );
-  const [selectedSubtype, setSelectedSubtype] = useState<
-    TenantConfig["businessSubtype"]
-  >(undefined);
+  const [selectedSubtype, setSelectedSubtype] =
+    useState<TenantConfig["businessSubtype"]>(undefined);
+  /** Moneda: solo memoria local hasta Continuar (el modal no llama updateTenant). */
+  const [monedaCode, setMonedaCode] = useState(config.locale.currency.code);
+  const [modalMonedaVisible, setModalMonedaVisible] = useState(false);
+
+  const monedaActual =
+    MONEDAS_LATAM.find((m) => m.code === monedaCode) ?? MONEDAS_LATAM[0];
 
   useEffect(() => {
     setSelectedSubtype(undefined);
   }, [tipoSeleccionado]);
 
   const opcionesSubtype = SUBTYPES[tipoSeleccionado];
-  const mostrarSubtypes =
-    opcionesSubtype != null && opcionesSubtype.length > 1;
+  const mostrarSubtypes = opcionesSubtype != null && opcionesSubtype.length > 1;
 
   const continuar = async () => {
     const tipo = TIPOS.find((t) => t.key === tipoSeleccionado);
@@ -144,189 +145,254 @@ export default function OnboardingBusinessTypeScreen({
       terminology: tipo.preset.terminology,
       businessHours: tipo.preset.businessHours,
       commissions: tipo.preset.commissions,
+      locale: {
+        ...config.locale,
+        currency: { code: monedaActual.code, symbol: monedaActual.symbol },
+      },
     });
     onNext();
   };
 
-  return (
-    <OnboardingLayout scrollable={false}>
-      <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-        <ThemedText style={[styles.badge, { color: Onboarding.lunarisAccent }]}>
-          PASO 1 DE 4
-        </ThemedText>
-        <OnboardingProgressDots currentStep={1} />
-        <ThemedText style={[styles.titulo, { color: Onboarding.text }]}>
-          ¿Qué tipo de negocio tienes?
-        </ThemedText>
-        <ThemedText style={[styles.subtitulo, { color: Onboarding.textMuted }]}>
-          Personalizamos todo según tu tipo de salón
-        </ThemedText>
-      </Animated.View>
+  const onSeleccionarMoneda = (moneda: Moneda) => {
+    setMonedaCode(moneda.code);
+  };
 
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.cards}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
-        {TIPOS.map((tipo, i) => {
-          const seleccionado = tipoSeleccionado === tipo.key;
-          const primary = tipo.preset.theme.primaryColor;
-          return (
+  return (
+    <>
+      <OnboardingLayout scrollable>
+        <Animated.View
+          entering={FadeInDown.duration(400)}
+          style={styles.header}
+        >
+          <ThemedText
+            style={[styles.badge, { color: Onboarding.lunarisAccent }]}
+          >
+            PASO 1 DE 4
+          </ThemedText>
+          <OnboardingProgressDots currentStep={1} />
+          <ThemedText style={[styles.titulo, { color: Onboarding.text }]}>
+            ¿Qué tipo de negocio tienes?
+          </ThemedText>
+          <ThemedText
+            style={[styles.subtitulo, { color: Onboarding.textMuted }]}
+          >
+            Personalizamos todo según tu tipo de salón
+          </ThemedText>
+        </Animated.View>
+
+        <View style={styles.cardsColumn}>
+          {TIPOS.map((tipo, i) => {
+            const seleccionado = tipoSeleccionado === tipo.key;
+            const primary = tipo.preset.theme.primaryColor;
+            return (
+              <Animated.View
+                key={tipo.key}
+                entering={FadeInDown.delay(i * 80).duration(400)}
+              >
+                <Pressable
+                  onPress={() => setTipoSeleccionado(tipo.key)}
+                  style={({ pressed }) => [
+                    styles.card,
+                    {
+                      borderColor: seleccionado ? primary : Onboarding.border,
+                      backgroundColor: seleccionado
+                        ? hexToRgba(primary, 0.1)
+                        : Onboarding.cardBackground,
+                    },
+                    pressed && styles.cardPressed,
+                  ]}
+                >
+                  {/* Ícono con fondo circular */}
+                  <View
+                    style={[
+                      styles.iconBg,
+                      {
+                        backgroundColor: hexToRgba(primary, 0.15),
+                      },
+                    ]}
+                  >
+                    <Feather
+                      name={tipo.icon}
+                      size={28}
+                      color={seleccionado ? primary : Onboarding.iconInactive}
+                    />
+                  </View>
+
+                  <View style={styles.cardTexto}>
+                    <ThemedText
+                      style={[styles.cardNombre, { color: Onboarding.text }]}
+                    >
+                      {tipo.nombre}
+                    </ThemedText>
+                    <ThemedText
+                      style={[
+                        styles.cardDesc,
+                        { color: Onboarding.textSubtle },
+                      ]}
+                    >
+                      {tipo.descripcion}
+                    </ThemedText>
+                  </View>
+
+                  {/* Check absolute top-right */}
+                  <View
+                    style={[
+                      styles.check,
+                      seleccionado
+                        ? { backgroundColor: primary, borderColor: primary }
+                        : { borderColor: Onboarding.checkBorder },
+                    ]}
+                  >
+                    {seleccionado ? (
+                      <Feather
+                        name="check"
+                        size={12}
+                        color={Colors.dark.white}
+                      />
+                    ) : null}
+                  </View>
+                </Pressable>
+              </Animated.View>
+            );
+          })}
+
+          {mostrarSubtypes && opcionesSubtype ? (
             <Animated.View
-              key={tipo.key}
-              entering={FadeInDown.delay(i * 80).duration(400)}
+              key={`subtypes-${tipoSeleccionado}`}
+              entering={FadeInDown.duration(250)}
+              style={styles.subtypeBloque}
             >
-              <Pressable
-                onPress={() => setTipoSeleccionado(tipo.key)}
-                style={({ pressed }) => [
-                  styles.card,
-                  {
-                    borderColor: seleccionado
-                      ? primary
-                      : Onboarding.border,
-                    backgroundColor: seleccionado
-                      ? hexToRgba(primary, 0.1)
-                      : Onboarding.cardBackground,
-                  },
-                  pressed && styles.cardPressed,
+              <ThemedText
+                type="small"
+                style={[
+                  styles.subtypeLabel,
+                  { color: Onboarding.textMuted, marginBottom: Spacing.sm + 2 },
                 ]}
               >
-                {/* Ícono con fondo circular */}
-                <View
-                  style={[
-                    styles.iconBg,
-                    {
-                      backgroundColor: hexToRgba(primary, 0.15),
-                    },
-                  ]}
-                >
-                  <Feather
-                    name={tipo.icon}
-                    size={28}
-                    color={seleccionado ? primary : Onboarding.iconInactive}
-                  />
-                </View>
-
-                <View style={styles.cardTexto}>
-                  <ThemedText style={[styles.cardNombre, { color: Onboarding.text }]}>
-                    {tipo.nombre}
-                  </ThemedText>
-                  <ThemedText
-                    style={[styles.cardDesc, { color: Onboarding.textSubtle }]}
-                  >
-                    {tipo.descripcion}
-                  </ThemedText>
-                </View>
-
-                {/* Check absolute top-right */}
-                <View
-                  style={[
-                    styles.check,
-                    seleccionado
-                      ? { backgroundColor: primary, borderColor: primary }
-                      : { borderColor: Onboarding.checkBorder },
-                  ]}
-                >
-                  {seleccionado ? (
-                    <Feather
-                      name="check"
-                      size={12}
-                      color={Colors.dark.white}
-                    />
-                  ) : null}
-                </View>
-              </Pressable>
+                ¿Qué tipo de negocio?
+              </ThemedText>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                nestedScrollEnabled
+                contentContainerStyle={styles.subtypeChipsContent}
+              >
+                {opcionesSubtype.map((opt) => {
+                  const activo = selectedSubtype === opt.key;
+                  return (
+                    <Pressable
+                      key={opt.label}
+                      onPress={() => setSelectedSubtype(opt.key)}
+                      style={({ pressed }) => [
+                        pressed && styles.chipPressed,
+                        styles.chipOuter,
+                      ]}
+                    >
+                      {activo ? (
+                        <LinearGradient
+                          colors={[...Gradients.onboarding.colors]}
+                          start={{ x: 0, y: 0 }}
+                          end={{ x: 1, y: 0 }}
+                          style={styles.chipGradient}
+                        >
+                          <ThemedText
+                            type="small"
+                            style={styles.chipTextoActivo}
+                            lightColor={Colors.dark.white}
+                            darkColor={Colors.dark.white}
+                          >
+                            {opt.label}
+                          </ThemedText>
+                        </LinearGradient>
+                      ) : (
+                        <View
+                          style={[
+                            styles.chipInactivo,
+                            { borderColor: Onboarding.chipBorder },
+                          ]}
+                        >
+                          <ThemedText
+                            type="small"
+                            style={[
+                              styles.chipTextoInactivo,
+                              { color: Onboarding.textMuted },
+                            ]}
+                          >
+                            {opt.label}
+                          </ThemedText>
+                        </View>
+                      )}
+                    </Pressable>
+                  );
+                })}
+              </ScrollView>
             </Animated.View>
-          );
-        })}
+          ) : null}
 
-        {mostrarSubtypes && opcionesSubtype ? (
           <Animated.View
-            key={`subtypes-${tipoSeleccionado}`}
-            entering={FadeInDown.duration(250)}
-            style={styles.subtypeBloque}
+            entering={FadeInDown.delay(120).duration(400)}
+            style={styles.monedaCampo}
           >
             <ThemedText
               type="small"
-              style={[
-                styles.subtypeLabel,
-                { color: Onboarding.textMuted, marginBottom: Spacing.sm + 2 },
-              ]}
+              style={[styles.monedaLabel, { color: Onboarding.textMuted }]}
             >
-              ¿Qué tipo de negocio?
+              Moneda
             </ThemedText>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              nestedScrollEnabled
-              contentContainerStyle={styles.subtypeChipsContent}
+            <Pressable
+              onPress={() => setModalMonedaVisible(true)}
+              style={({ pressed }) => [
+                styles.monedaSelector,
+                pressed && styles.monedaSelectorPressed,
+              ]}
+              accessibilityRole="button"
+              accessibilityLabel="Elegir moneda"
             >
-              {opcionesSubtype.map((opt) => {
-                const activo = selectedSubtype === opt.key;
-                return (
-                  <Pressable
-                    key={opt.label}
-                    onPress={() => setSelectedSubtype(opt.key)}
-                    style={({ pressed }) => [
-                      pressed && styles.chipPressed,
-                      styles.chipOuter,
-                    ]}
-                  >
-                    {activo ? (
-                      <LinearGradient
-                        colors={[...SUBTYPE_CHIP_GRADIENT]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={styles.chipGradient}
-                      >
-                        <ThemedText
-                          type="small"
-                          style={styles.chipTextoActivo}
-                          lightColor={Colors.dark.white}
-                          darkColor={Colors.dark.white}
-                        >
-                          {opt.label}
-                        </ThemedText>
-                      </LinearGradient>
-                    ) : (
-                      <View
-                        style={[
-                          styles.chipInactivo,
-                          { borderColor: Onboarding.chipBorder },
-                        ]}
-                      >
-                        <ThemedText
-                          type="small"
-                          style={[
-                            styles.chipTextoInactivo,
-                            { color: Onboarding.textMuted },
-                          ]}
-                        >
-                          {opt.label}
-                        </ThemedText>
-                      </View>
-                    )}
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
+              <View style={styles.monedaSelectorIzq}>
+                <ThemedText style={styles.monedaSelectorSymbol}>
+                  {monedaActual.symbol}
+                </ThemedText>
+                <View style={styles.monedaSelectorTextos}>
+                  <ThemedText style={styles.monedaSelectorTitulo}>
+                    {monedaActual.nombre}
+                  </ThemedText>
+                  <ThemedText style={styles.monedaSelectorSub}>
+                    {monedaActual.pais} · {monedaActual.code}
+                  </ThemedText>
+                </View>
+              </View>
+              <Feather
+                name="chevron-down"
+                size={20}
+                color={Onboarding.textMuted}
+              />
+            </Pressable>
+            <ThemedText style={styles.monedaHint}>
+              Se guarda al pulsar Continuar
+            </ThemedText>
           </Animated.View>
-        ) : null}
-      </ScrollView>
+        </View>
 
-      {/* Botón Continuar — mismo patrón que el resto del onboarding */}
-      <Animated.View
-        entering={FadeInDown.delay(400).duration(400)}
-        style={styles.footer}
-      >
-        <GradientCTAButton
-          label="Continuar"
-          icon="arrow-right"
-          onPress={continuar}
-        />
-      </Animated.View>
-    </OnboardingLayout>
+        {/* Botón Continuar — mismo patrón que el resto del onboarding */}
+        <Animated.View
+          entering={FadeInDown.delay(400).duration(400)}
+          style={styles.footer}
+        >
+          <GradientCTAButton
+            label="Continuar"
+            icon="arrow-right"
+            onPress={continuar}
+          />
+        </Animated.View>
+      </OnboardingLayout>
+
+      <CurrencyPickerModal
+        visible={modalMonedaVisible}
+        currentCode={monedaCode}
+        onSelect={onSeleccionarMoneda}
+        onClose={() => setModalMonedaVisible(false)}
+      />
+    </>
   );
 }
 
@@ -351,10 +417,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 22,
   },
-  scroll: {
-    flex: 1,
-  },
-  cards: {
+  cardsColumn: {
     gap: Spacing.md,
     paddingBottom: Spacing.md,
   },
@@ -440,5 +503,58 @@ const styles = StyleSheet.create({
   footer: {
     paddingTop: Spacing.md,
     paddingBottom: Spacing["2xl"],
+  },
+  monedaCampo: {
+    marginTop: Spacing.sm,
+  },
+  monedaLabel: {
+    fontSize: 13,
+    marginBottom: Spacing.sm,
+  },
+  monedaSelector: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: Onboarding.chipBackground,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: Onboarding.chipBorder,
+    borderRadius: BorderRadius.card,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
+  },
+  monedaSelectorPressed: {
+    opacity: 0.88,
+  },
+  monedaSelectorIzq: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: Spacing.md,
+    flex: 1,
+    minWidth: 0,
+  },
+  monedaSelectorTextos: {
+    flex: 1,
+    minWidth: 0,
+  },
+  monedaSelectorSymbol: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: Onboarding.text,
+    minWidth: 36,
+  },
+  monedaSelectorTitulo: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: Onboarding.text,
+  },
+  monedaSelectorSub: {
+    fontSize: 12,
+    color: Onboarding.textSubtle,
+    marginTop: 2,
+  },
+  monedaHint: {
+    fontSize: 12,
+    color: Onboarding.textMuted,
+    marginTop: Spacing.sm,
   },
 });
