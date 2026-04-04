@@ -11,11 +11,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { ThemedText } from "@/components/ThemedText";
 import { BorderRadius, Onboarding, Spacing } from "@/constants/theme";
-import {
-  hexToRgb,
-  hsvToHex,
-  rgbToHsv,
-} from "@/lib/color-hsv";
+import { hexToRgb, hsvToHex, rgbToHsv } from "@/lib/color-hsv";
 
 export interface CustomColorPickerModalProps {
   visible: boolean;
@@ -43,8 +39,7 @@ export function CustomColorPickerModal({
 
   useEffect(() => {
     if (!visible) return;
-    const rgb =
-      hexToRgb(initialHex) ?? hexToRgb(Onboarding.lunarisAccent);
+    const rgb = hexToRgb(initialHex) ?? hexToRgb(Onboarding.lunarisAccent);
     if (rgb) {
       const next = rgbToHsv(rgb.r, rgb.g, rgb.b);
       setH(next.h);
@@ -135,13 +130,19 @@ export function CustomColorPickerModal({
           <View style={styles.acciones}>
             <Pressable
               onPress={onClose}
-              style={({ pressed }) => [styles.btnSec, pressed && styles.pressed]}
+              style={({ pressed }) => [
+                styles.btnSec,
+                pressed && styles.pressed,
+              ]}
             >
               <ThemedText style={styles.btnSecTexto}>Cancelar</ThemedText>
             </Pressable>
             <Pressable
               onPress={aplicar}
-              style={({ pressed }) => [styles.btnPri, pressed && styles.pressed]}
+              style={({ pressed }) => [
+                styles.btnPri,
+                pressed && styles.pressed,
+              ]}
             >
               <ThemedText
                 style={styles.btnPriTexto}
