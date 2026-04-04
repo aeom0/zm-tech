@@ -1,104 +1,200 @@
-# Cursor AI Rules - SalonPro
+# Cursor AI Rules - SalonPro v1.3.0
+
+## PRIORIDAD DE LECTURA
+
+1. Lee este archivo completo antes de responder
+2. Usa @codebase para encontrar archivos relevantes antes de pedirlos
+3. Respuestas: código directo primero, explicación breve después si es necesaria
+4. NUNCA generes código sin antes verificar los patrones existentes en el repo
+
+---
 
 ## Contexto del Proyecto
 
-Sistema de gestión integral para salones de belleza, barberías y peluquerías en LATAM. SaaS multi-tenant. Monorepo: apps/mobile (Expo), apps/web (Next.js), packages/shared-schema, packages/tenant-config.
-- **Stack**: React Native (Expo SDK 54) + Supabase (PostgREST + Auth) + TypeScript
-- **Estructura**: Monorepo Yarn 4 — `apps/mobile/`, `apps/web/`, `packages/shared-schema/`, `packages/tenant-config/`. Sin servidor Express
-- **Entorno**: WSL (Ubuntu), Node 22 (.nvmrc), Yarn 4
-- **Supabase**: Proyecto `xidjomlxpuosupymcsaj`. Config de tenant en tabla `tenant_settings` y en AsyncStorage tras onboarding (5 pasos); **horario**: `timezone` + `business_hours` (mobile HorariosTrabajo, web `/panel/horarios`); agenda móvil con Luxon en `@salonpro/tenant-config`
-- **Negocio**: Multi-tipo (spa-nails, barbershop, hair-salon, full-aesthetic); textos y jerga en español (venezolana cuando encaje)
+SaaS multi-tenant para salones de belleza, barberías y estéticas en LATAM.
 
-## Directrices de Documentación
+- **Monorepo**: Yarn 4 + Turborepo — `apps/mobile/`, `apps/web/`, `packages/shared-schema/`, `packages/tenant-config/`
+- **Stack**: React Native (Expo SDK 54) + Next.js 15 + Supabase (PostgREST + Auth) + Drizzle ORM + TypeScript
+- **Entorno**: WSL Ubuntu, Node 22 (.nvmrc), Yarn 4
+- **Supabase**: Proyecto `xidjomlxpuosupymcsaj`
+- **Negocio**: Multi-tipo (spa-nails, barbershop, hair-salon, full-aesthetic); UI en español (venezolana cuando encaje)
 
-**NO crear archivos .md sin solicitud explícita**:
-- NO generar guías, tutoriales o READMEs automáticamente
-- NO crear documentación en la raíz del proyecto sin que se pida
-- Proporcionar instrucciones en el chat cuando baste
-- Solo crear documentación cuando se solicite
-- Si hace falta documentar: usar `docs/` o referencias en `README.md`
+---
 
-**Sí crear automáticamente**:
-- Código fuente (componentes, hooks, utils, pantallas)
-- Migraciones o cambios de esquema (Drizzle)
-- Archivos de configuración necesarios para el proyecto
+## Paths
+
+| Área           | Ruta                                   |
+| -------------- | -------------------------------------- |
+| Raíz           | `/home/alber/salonpro`                 |
+| Mobile         | `apps/mobile/`                         |
+| Web            | `apps/web/`                            |
+| Schema Drizzle | `packages/shared-schema/src/schema.ts` |
+| Tenant config  | `packages/tenant-config/`              |
+| Tema mobile    | `apps/mobile/constants/theme.ts`       |
+| Tema web       | `apps/web/src/lib/theme.ts` (LUNARIS)  |
+
+---
+
+## Arquitectura y Capas (OBLIGATORIO)
+
+Separar SIEMPRE en capas. No mezclar lógica con presentación:
+
+```
+UI (componentes) → Hooks (lógica) → Services/lib (Supabase) → Types (shared-schema)
+```
+
+**Patrón correcto:**
+
+```typescript
+// ✅ Hook separado
+export function useCitas() {
+  return useQuery({ queryKey: ['citas'], queryFn: () => citasService.getAll() })
+}
+
+// ✅ Servicio separado
+export const citasService = {
+  getAll: () => supabase.from('appointments').select('*')
+}
+
+// ✅ Componente limpio
+export function ListaCitas() {
+  const { data } = useCitas()
+  return <FlatList data={data} ... />
+}
+```
+
+**Patrón prohibido:**
+
+```typescript
+// ❌ Lógica mezclada con UI
+export function ListaCitas() {
+  const [citas, setCitas] = useState([])
+  useEffect(() => {
+    supabase.from('appointments').select('*').then(...)
+  }, [])
+}
+```
+
+---
 
 ## Convenciones de Código
 
 ### Naming
-- Componentes: PascalCase
-- Hooks: camelCase con prefijo `use`
-- Utils/lib: camelCase o kebab-case
-- Types: PascalCase
-- Base de datos: **snake_case** en columnas de Supabase; interfaces con snake_case para propiedades de BD
-- Nombres de negocio en español (citas, servicios, empleados, inventario, finanzas)
+
+- Componentes: `PascalCase`
+- Hooks: `camelCase` con prefijo `use`
+- Servicios: `camelCase` con sufijo `Service`
+- Types/Interfaces: `PascalCase`
+- BD Supabase: `snake_case` en columnas e interfaces de BD
+- Nombres de negocio: español (citas, servicios, empleados, horarios, finanzas)
 
 ### Imports
+
 ```typescript
 // Mobile (apps/mobile): alias @/
 import { useTheme } from "@/hooks/useTheme";
 import { supabase } from "@/lib/supabase";
 import type { Appointment } from "@salonpro/shared-schema";
 
-// Web (apps/web): alias @/
-// Compartido: @salonpro/shared-schema, @salonpro/tenant-config
+// Paquetes compartidos
+import { tenantConfig } from "@salonpro/tenant-config";
 ```
 
 ### Componentes
-- Props tipadas con `interface`; estilos desde `constants/theme.ts`
-- Iconos: Lucide React. Diseño limpio, sin adornos innecesarios; soporte dark/light
 
-## Stack
+- Props tipadas SIEMPRE con `interface`, nunca `type` inline
+- Estilos desde `constants/theme.ts` (mobile) o `lib/theme.ts` LUNARIS (web)
+- Iconos: Lucide React únicamente
+- Soporte dark/light obligatorio
+
+---
+
+## Stack por App
 
 ### Mobile (apps/mobile/)
+
 - Expo SDK 54, React 19, React Native 0.81
-- React Navigation v7; Auth (Splash → Login → Onboarding 5 pasos o Main tabs)
-- TanStack Query + Supabase (PostgREST directo)
-- TenantContext: sync con `tenant_settings` al terminar onboarding; carga remota al arranque si hay sesión
-- Tema en `constants/theme.ts` (ej. fondo #111318 en onboarding)
+- React Navigation v7
+- TanStack Query + Supabase PostgREST directo
+- Flujo auth: `Splash → Login → Onboarding (5 pasos) → Main tabs`
+- TenantContext: sync con `tenant_settings` al terminar onboarding
+- Fondo onboarding: `#111318`
 
 ### Web (apps/web/)
-- Next.js 15 + React 19, Tailwind CSS
-- **Marca Lunaris**: `apps/web/src/lib/theme.ts` (`LUNARIS`) — gradientes y primarios turquesa (`#40E0D0`, `#00897B`); Navbar Salon+Pro, CTAs y panel alineados; sin hardcodear magenta `#E91E8C` en UI nueva
-- Landing pública + `/dashboard` (métricas KPIs) + `/finanzas` — auth Supabase; login compartido `/finanzas/login`; solo `owner`/`dev` (staff → `router.replace("/")` en dashboard sin UI de “acceso denegado”)
-- **Vercel**: sin `ignoreCommand` en `vercel.json` — cada push a `main` construye la web (evita errores con shallow git)
 
-### Compartido
-- `packages/shared-schema`: tablas Drizzle + Zod (employees, services, appointments, tenant_settings, etc.)
-- `packages/tenant-config`: presets por tipo de negocio (spa-nails, barbershop, hair-salon, full-aesthetic)
+- Next.js 15 + React 19 + Tailwind CSS
+- **Marca Lunaris**: turquesa `#40E0D0`, `#00897B` — NO hardcodear `#E91E8C` en UI nueva
+- Rutas: Landing `/` + `/dashboard` (KPIs) + `/finanzas`
+- Auth: Supabase; roles `owner`/`dev` — staff → redirect `"/"`
+- Vercel: sin `ignoreCommand` en `vercel.json`
 
-## Comandos Útiles
+### Packages compartidos
+
+- `shared-schema`: tablas Drizzle + Zod (employees, services, appointments, tenant_settings)
+- `tenant-config`: presets por tipo de negocio
+
+---
+
+## MCP Supabase
+
+`.cursor/mcp.json` tiene dos servidores:
+
+- **supabase-salonpro** → `xidjomlxpuosupymcsaj` ← **USAR ESTE para SalonPro**
+- **supabase-zm** → `udelxwwnyivknslueerr` ← solo para consultas ZM
+
+Cursor puede mostrarlos con prefijo: `project-0-SalonPro (raíz)-supabase-salonpro`
+
+---
+
+## Comandos
 
 ```bash
-yarn mobile:dev       # Expo (apps/mobile)
-yarn web:dev          # Next.js (apps/web)
-yarn db:push          # Aplicar esquema Drizzle a Supabase
-yarn db:seed          # Seeds (editar templates antes)
+yarn mobile:dev       # Expo dev server
+yarn web:dev          # Next.js dev server
+yarn db:push          # Aplicar schema Drizzle → Supabase
+yarn db:seed          # Seeds (revisar templates antes)
 yarn lint
 yarn check:types
 yarn format
 ```
 
-## Paths
+---
 
-- Raíz: `/home/alber/salonpro`
-- Mobile: `apps/mobile/` (screens, contexts, navigation, lib, constants)
-- Web: `apps/web/`
-- Schema: `packages/shared-schema/src/schema.ts`
-- Tenant config: `packages/tenant-config/`
-- Documentación: `README.md`, `.cursor/README.md`
+## Reglas de Comportamiento AI
 
-## MCP Supabase
+### HACER ✅
 
-En `.cursor/mcp.json` hay **dos** servidores MCP:
-- **supabase-zm** — proyecto ZM (`udelxwwnyivknslueerr`). Usar cuando se trabaje en repo ZM o se consulte esa BD.
-- **supabase-salonpro** — proyecto SalonPro (`xidjomlxpuosupymcsaj`). Usar para este repo: list_tables, execute_sql, apply_migration, generate_typescript_types.
+- Código directo y modular, sin boilerplate innecesario
+- Verificar patrones existentes con @codebase antes de crear nuevos
+- Respetar separación de capas (UI / hooks / services / types)
+- Reutilizar componentes de `packages/` antes de crear nuevos
+- Respuestas cortas: código primero, contexto después si es necesario
+- Nombres de negocio y UI en español
 
-Cursor puede mostrar los nombres con prefijo del workspace (ej. `project-0-SalonPro (raíz)-supabase-salonpro`). Para BD de SalonPro, usar el servidor que apunta a `xidjomlxpuosupymcsaj`.
+### NO HACER ❌
 
-## Comportamiento AI
+- NO crear archivos `.md` sin solicitud explícita
+- NO generar READMEs, guías ni tutoriales automáticamente
+- NO duplicar scripts o utilidades ya existentes
+- NO hardcodear strings — usar constantes o i18n
+- NO mezclar lógica con componentes visuales
+- NO usar modelos de datos distintos a los definidos en `shared-schema`
+- NO crear migraciones Drizzle sin confirmar con el usuario primero
 
-- Resolver errores de conexión y variables de entorno (.env) en desarrollo
-- Ayudar con Supabase, Drizzle y React Native/Expo
-- Mantener nombres de negocio en español; textos de UI en español (jerga venezolana cuando encaje)
-- No crear documentación automática; no duplicar scripts; priorizar soluciones directas en código
+---
+
+## Errores Frecuentes a Evitar
+
+```typescript
+// ❌ Snake_case en props de componente
+<CitaCard cita_id={id} />
+
+// ✅ camelCase en props
+<CitaCard citaId={id} />
+
+// ❌ Import directo de supabase en componente
+import { supabase } from "@/lib/supabase" // dentro de un componente
+
+// ✅ Siempre a través de un hook o service
+import { useCitas } from "@/hooks/useCitas"
+```
