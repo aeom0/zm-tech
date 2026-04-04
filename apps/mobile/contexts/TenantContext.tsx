@@ -53,7 +53,7 @@ function nuevoIdPendiente(): string {
 }
 
 export function TenantProvider({ children }: { children: React.ReactNode }) {
-  const { userId } = useAuth();
+  const { userId, isAdmin } = useAuth();
   const [config, setConfig] = useState<TenantConfig>(defaultTenantConfig);
   const [isConfigured, setIsConfigured] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -155,6 +155,13 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
       await upsertTenantSettings(config, userId);
 
       if (pendingOnboardingEmployees.length > 0) {
+        if (!isAdmin) {
+          return {
+            ok: false as const,
+            error:
+              "Tu cuenta no tiene permiso para registrar equipo (se requiere rol dueño). Entra con la cuenta del negocio o pide acceso al administrador.",
+          };
+        }
         const empResult = await insertEmpleadosTrasOnboarding(
           pendingOnboardingEmployees.map(({ name, color }) => ({ name, color })),
         );
@@ -205,7 +212,7 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
           "Ocurrió un error al guardar la configuración en la nube. Inténtalo de nuevo.",
       };
     }
-  }, [config, userId, pendingOnboardingEmployees]);
+  }, [config, userId, isAdmin, pendingOnboardingEmployees]);
 
   return (
     <TenantContext.Provider
