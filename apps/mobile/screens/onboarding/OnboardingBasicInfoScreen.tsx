@@ -18,7 +18,7 @@ const COLORES_PRIMARIOS = [
   { label: "Verde azulado", valor: "#0B7B72" },
   { label: "Turquesa", valor: "#40E0D0" },
   { label: "Azul", valor: "#1A237E" },
-  { label: "Verde", valor: "#00695C" },
+  { label: "Magenta", valor: "#FF00FF" },
   { label: "Naranja", valor: "#E65100" },
   { label: "Rojo", valor: "#B71C1C" },
 ];
@@ -134,25 +134,27 @@ export default function OnboardingBasicInfoScreen({
         style={styles.campo}
       >
         <ThemedText style={styles.label}>Color principal</ThemedText>
-        <View style={styles.paleta}>
+        <View style={styles.paletaPrimaria}>
           {COLORES_PRIMARIOS.map((c) => (
             <Pressable
               key={c.valor}
               onPress={() => setColorPrimario(c.valor)}
               style={[
-                styles.swatchOuter,
+                styles.swatchOuterPrimaria,
                 colorPrimario === c.valor &&
                   esPrimarioDePaleta &&
                   styles.swatchOuterSelected,
               ]}
             >
-              <View style={[styles.swatch, { backgroundColor: c.valor }]} />
+              <View
+                style={[styles.swatchPrimaria, { backgroundColor: c.valor }]}
+              />
             </Pressable>
           ))}
           <Pressable
             onPress={() => setSelectorColor("primary")}
             style={[
-              styles.swatchOuter,
+              styles.swatchOuterPrimaria,
               !esPrimarioDePaleta && styles.swatchOuterSelected,
             ]}
             accessibilityLabel="Elegir color personalizado principal"
@@ -161,11 +163,11 @@ export default function OnboardingBasicInfoScreen({
               colors={[...Gradients.onboarding.colors]}
               start={Gradients.onboarding.linearStart}
               end={Gradients.onboarding.linearEnd}
-              style={styles.swatchCustom}
+              style={styles.swatchCustomPrimaria}
             >
               <Feather
                 name="sliders"
-                size={20}
+                size={16}
                 color="rgba(255,255,255,0.95)"
               />
             </LinearGradient>
@@ -359,6 +361,41 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 12,
+  },
+  /** 6 sugeridos + custom en una sola fila (flex reparte el ancho). */
+  paletaPrimaria: {
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    gap: 4,
+    alignItems: "stretch",
+    height: 42,
+  },
+  swatchOuterPrimaria: {
+    flex: 1,
+    minWidth: 0,
+    height: 42,
+    borderRadius: 8,
+    overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "transparent",
+  },
+  swatchPrimaria: {
+    ...StyleSheet.absoluteFillObject,
+    top: 2,
+    left: 2,
+    right: 2,
+    bottom: 2,
+    borderRadius: 5,
+  },
+  swatchCustomPrimaria: {
+    ...StyleSheet.absoluteFillObject,
+    top: 2,
+    left: 2,
+    right: 2,
+    bottom: 2,
+    borderRadius: 5,
+    alignItems: "center",
+    justifyContent: "center",
   },
   swatchOuter: {
     width: 48,
