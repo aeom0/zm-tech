@@ -52,7 +52,7 @@ export async function resolveTenantFromPhoneNumberId(
   }
   if (!data) return null;
 
-  const row = data as Record<string, unknown>;
+  const row = data as unknown as Record<string, unknown>;
   const token = row.waba_access_token;
   const verify = row.waba_verify_token;
   if (typeof token !== "string" || !token || typeof verify !== "string" || !verify) {

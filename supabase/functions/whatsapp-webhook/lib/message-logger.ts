@@ -21,7 +21,7 @@ export function logOutMessage(
   msg_type: "text" | "interactive" | "image" = "text",
 ): void {
   if (!_supabase || !_tenantId) return;
-  _supabase
+  void _supabase
     .from("wa_messages")
     .insert({
       tenant_id: _tenantId,
@@ -31,6 +31,8 @@ export function logOutMessage(
       content: content.slice(0, 2000),
       step_before: null,
     })
-    .then(() => {})
-    .catch(() => {});
+    .then(
+      () => {},
+      () => {},
+    );
 }

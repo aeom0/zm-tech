@@ -481,7 +481,7 @@ export function logMessage(
   content: string,
   opts?: { msg_type?: string; step_before?: string },
 ): void {
-  supabase
+  void supabase
     .from("wa_messages")
     .insert({
       tenant_id: tenantId,
@@ -491,8 +491,10 @@ export function logMessage(
       content: content.slice(0, 2000),
       step_before: opts?.step_before ?? null,
     })
-    .then(() => {})
-    .catch(() => {});
+    .then(
+      () => {},
+      () => {},
+    );
 }
 
 export async function isRecurringClient(
@@ -525,6 +527,10 @@ export async function getLastCompletedService(
     .order("date", { ascending: false })
     .limit(1);
   if (!data || data.length === 0) return null;
-  const svc = (data[0] as { services: { name: string } | null }).services;
-  return svc?.name ?? null;
+  const row = data[0] as unknown as {
+    services: { name: string } | { name: string }[] | null;
+  };
+  const s = row.services;
+  const name = Array.isArray(s) ? s[0]?.name : s?.name;
+  return name ?? null;
 }

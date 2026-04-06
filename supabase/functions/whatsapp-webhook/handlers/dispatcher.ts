@@ -149,7 +149,10 @@ async function proceedToBookingWithCurrentCart(
         });
       }
     }
-    summary = formatCartSummaryFromLines(lines);
+    summary = formatCartSummaryFromLines(
+      lines,
+      tenantRecord.currency_code,
+    );
     const ids = await expandCartItemsToServiceIds(
       supabase,
       tenantId,
@@ -185,7 +188,10 @@ async function proceedToBookingWithCurrentCart(
       ids,
       validServices,
     ) as SvcRowAgenda[];
-    summary = formatCartSummary(orderedServices);
+    summary = formatCartSummary(
+      orderedServices,
+      tenantRecord.currency_code,
+    );
   }
 
   const totalMin = orderedServices.reduce(
@@ -723,9 +729,8 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
         phoneNumber,
         haikuRuntime.rate_limit_per_hour,
       );
-      const greeting =
-        (!rateLimited &&
-          (await generateWelcomeGreeting(
+      const generated = !rateLimited
+        ? await generateWelcomeGreeting(
             haikuRuntime,
             firstName,
             promoTitles,
@@ -734,13 +739,17 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
             phoneNumber,
             tenantId,
             tenantRecord.timezone,
-          ))) ??
-        getFallbackGreeting(
-          firstName,
-          false,
-          haikuRuntime,
-          tenantRecord.timezone,
-        );
+          )
+        : null;
+      const greeting =
+        generated && generated.trim().length > 0
+          ? generated
+          : getFallbackGreeting(
+              firstName,
+              false,
+              haikuRuntime,
+              tenantRecord.timezone,
+            );
       await sendMessage(phoneNumber, greeting);
       await sendMenuWithPromos(phoneNumber, menuCtx);
       await sendMessage(
@@ -1353,7 +1362,10 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
           });
         }
       }
-      const summary = formatCartSummaryFromLines(lines);
+      const summary = formatCartSummaryFromLines(
+        lines,
+        tenantRecord.currency_code,
+      );
       await sendCartOptions(phoneNumber, summary, true, wa);
     }
     return;

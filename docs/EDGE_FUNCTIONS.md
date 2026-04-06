@@ -20,6 +20,17 @@ supabase secrets set ANTHROPIC_API_KEY=<key>
 
 Los **tokens WABA por negocio** no van en secrets globales: van en `tenant_settings.waba_access_token` y `waba_verify_token` por fila.
 
+### Deno local (typecheck)
+
+Instalación: `curl -fsSL https://deno.land/install.sh | sh` y agregar `export PATH="$HOME/.deno/bin:$PATH"` al shell.
+
+Desde la carpeta de la función (usa `deno.json` local y no el `tsconfig` de Expo):
+
+```bash
+cd supabase/functions/whatsapp-webhook
+deno check index.ts
+```
+
 ### Deploy
 
 ```bash
