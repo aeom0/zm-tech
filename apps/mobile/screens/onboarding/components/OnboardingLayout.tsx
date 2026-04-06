@@ -63,7 +63,10 @@ export function OnboardingLayout({
         >
           <ScrollView
             style={styles.flexRoot}
-            contentContainerStyle={[scrollInnerPadding, styles.scrollContentGrow]}
+            contentContainerStyle={[
+              scrollInnerPadding,
+              styles.scrollContentGrow,
+            ]}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
             nestedScrollEnabled

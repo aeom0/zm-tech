@@ -236,7 +236,12 @@ export const COMPARISON_FEATURES: {
   { label: "Branding personalizado", basic: false, pro: false, elite: true },
   { label: "API + Integraciones", basic: false, pro: false, elite: true },
   { label: "Manager dedicado", basic: false, pro: false, elite: true },
-  { label: "WhatsApp y asistente IA 24/7", basic: true, pro: true, elite: true },
+  {
+    label: "WhatsApp y asistente IA 24/7",
+    basic: true,
+    pro: true,
+    elite: true,
+  },
   {
     label: "Conversaciones incluidas/mes",
     basic: "50",

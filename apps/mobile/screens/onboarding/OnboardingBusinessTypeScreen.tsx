@@ -375,12 +375,12 @@ export default function OnboardingBusinessTypeScreen({
           entering={FadeInDown.delay(400).duration(400)}
           style={styles.footer}
         >
-        <GradientCTAButton
-          label="Continuar"
-          icon="arrow-right"
-          onPress={continuar}
-          compact
-        />
+          <GradientCTAButton
+            label="Continuar"
+            icon="arrow-right"
+            onPress={continuar}
+            compact
+          />
         </Animated.View>
       </OnboardingLayout>
 
