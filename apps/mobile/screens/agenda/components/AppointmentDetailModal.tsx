@@ -11,8 +11,8 @@ import { Feather } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
 import { Spacing } from "@/constants/theme";
 
-import type { TenantConfig } from "@salonpro/tenant-config";
-import type { TimeFormatPreference } from "@salonpro/tenant-config";
+import type { TenantConfig } from "@geemastudio/tenant-config";
+import type { TimeFormatPreference } from "@geemastudio/tenant-config";
 import {
   diaDelMesEnZona,
   diaTieneFranjaAgenda,
@@ -20,7 +20,7 @@ import {
   formatoHoraAgendaSlot,
   indiceDiaSemanaJSEnZona,
   zonaIANASegura,
-} from "@salonpro/tenant-config";
+} from "@geemastudio/tenant-config";
 
 import { DAYS_ES } from "../constants";
 import type { AgendaAppointment, AgendaService } from "../types";

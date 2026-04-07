@@ -26,8 +26,8 @@ salonpro/
 │       ├── lib/          # supabase.ts, query-client.ts (solo Supabase; sin Express)
 │       └── constants/    # theme.ts
 ├── packages/
-│   ├── shared-schema/    # @salonpro/shared-schema — Drizzle + Zod (tenant_settings, employees, services, etc.)
-│   └── tenant-config/    # @salonpro/tenant-config — presets, working-schedule, iana-timezone (Luxon)
+│   ├── shared-schema/    # @geemastudio/shared-schema — Drizzle + Zod (tenant_settings, employees, services, etc.)
+│   └── tenant-config/    # @geemastudio/tenant-config — presets, working-schedule, iana-timezone (Luxon)
 ├── scripts/db/           # Seeds SQL (editar templates antes de yarn db:seed)
 └── docs/
 ```
@@ -68,7 +68,7 @@ salonpro/
 
 ### Imports
 - Mobile: `@/` → raíz de apps/mobile
-- Schema: `@salonpro/shared-schema`; tenant: `@salonpro/tenant-config`
+- Schema: `@geemastudio/shared-schema`; tenant: `@geemastudio/tenant-config`
 - API: Supabase desde `@/lib/supabase`; TanStack Query con `supabase.from(...).select(...)` directamente
 
 ### Naming

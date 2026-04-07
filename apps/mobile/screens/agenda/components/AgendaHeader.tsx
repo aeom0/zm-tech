@@ -7,7 +7,7 @@ import { ThemedText } from "@/components/ThemedText";
 import {
   formatoFechaCortaEnZona,
   formatoFechaLargaEnZona,
-} from "@salonpro/tenant-config";
+} from "@geemastudio/tenant-config";
 
 import { agendaStyles as styles } from "../agendaStyles";
 import { isToday } from "../agendaUtils";

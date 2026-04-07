@@ -1,4 +1,4 @@
-import type { TenantConfig } from "@salonpro/tenant-config";
+import type { TenantConfig } from "@geemastudio/tenant-config";
 
 export function formatCurrency(amount: number, config: TenantConfig): string {
   const safeAmount = Number.isFinite(amount) ? amount : 0;

@@ -1,7 +1,7 @@
 import {
   CLAVES_DIA_LABORAL,
   ETIQUETA_DIA_LABORAL,
-} from "@salonpro/tenant-config";
+} from "@geemastudio/tenant-config";
 import type { BusinessHoursConfig } from "@/types/tenant-landing";
 
 export interface DayEntry {

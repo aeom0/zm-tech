@@ -7,14 +7,14 @@ import { supabase } from "@/lib/supabase";
 import type {
   TenantConfig,
   TimeFormatPreference,
-} from "@salonpro/tenant-config";
+} from "@geemastudio/tenant-config";
 import {
   CLAVES_DIA_LABORAL,
   ETIQUETA_DIA_LABORAL,
   ZONAS_HORARIAS_SUGERIDAS,
   normalizarHorarioSemanal,
   validarHorarioCompleto,
-} from "@salonpro/tenant-config";
+} from "@geemastudio/tenant-config";
 
 import { LUNARIS } from "@/lib/theme";
 

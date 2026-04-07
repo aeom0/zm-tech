@@ -28,7 +28,7 @@ import { Colors, Spacing } from "@/constants/theme";
 import { queryClient } from "@/lib/query-client";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
-import { calculateEmployeeEarnings } from "@salonpro/shared-schema";
+import { calculateEmployeeEarnings } from "@geemastudio/shared-schema";
 import type { CompositeNavigationProp } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import type { MainTabParamList } from "@/navigation/MainTabNavigator";

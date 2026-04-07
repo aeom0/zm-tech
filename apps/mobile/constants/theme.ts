@@ -1,5 +1,5 @@
 import { Platform } from "react-native";
-import type { TenantConfig } from "@salonpro/tenant-config";
+import type { TenantConfig } from "@geemastudio/tenant-config";
 
 export const Colors = {
   light: {

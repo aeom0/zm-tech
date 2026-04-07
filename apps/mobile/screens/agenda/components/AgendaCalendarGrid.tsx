@@ -7,11 +7,11 @@ import { Spacing } from "@/constants/theme";
 import type {
   TenantConfig,
   TimeFormatPreference,
-} from "@salonpro/tenant-config";
+} from "@geemastudio/tenant-config";
 import {
   esCeldaAgendaEnHorarioLaboral,
   formatoHoraAgendaSlot,
-} from "@salonpro/tenant-config";
+} from "@geemastudio/tenant-config";
 
 import type {
   AgendaAppointment,

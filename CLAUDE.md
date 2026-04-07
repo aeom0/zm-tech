@@ -42,8 +42,8 @@ Este archivo proporciona orientación a Claude Code (claude.ai/code) para trabaj
 │   │   └── constants/      # theme.ts con Colors + createTheme(config)
 │   └── web/                # Landing + /dashboard + /finanzas + /panel (Next.js)
 ├── packages/
-│   ├── shared-schema/      # @salonpro/shared-schema — tablas Drizzle + schemas Zod
-│   └── tenant-config/      # @salonpro/tenant-config — TenantConfig + presets
+│   ├── shared-schema/      # @geemastudio/shared-schema — tablas Drizzle + schemas Zod
+│   └── tenant-config/      # @geemastudio/tenant-config — TenantConfig + presets
 ├── scripts/
 │   ├── seed-auth-users.mjs             # Crea usuarios en Supabase Auth
 │   └── db/
@@ -152,7 +152,7 @@ Tablas principales en `packages/shared-schema/src/schema.ts`:
 
 RLS en Supabase (mobile ya migrado 100% a estas tablas): profiles (lectura propia; admins ven/editan todos), employees (todos autenticados leen; solo admins escriben), appointments (staff/dev/owner leen y escriben), payments e inventory_items (solo dev/owner), tenant_settings (solo dev/owner).
 
-## Sistema de Tenant (`@salonpro/tenant-config`)
+## Sistema de Tenant (`@geemastudio/tenant-config`)
 
 El paquete `packages/tenant-config` define la interface `TenantConfig` y cuatro presets:
 
@@ -175,7 +175,7 @@ El paquete `packages/tenant-config` define la interface `TenantConfig` y cuatro 
 
 ### Flujo de onboarding (mobile)
 
-Al primer inicio (sin `@salonpro/tenant_configured` en AsyncStorage) o cuando se fuerza en desarrollo:
+Al primer inicio (sin `@geemastudio/tenant_configured` en AsyncStorage) o cuando se fuerza en desarrollo:
 0. **OnboardingEntryScreen** — pantalla de entrada:
    - "Crear nuevo negocio" (wizard completo)
    - "Ya tengo cuenta" (abre `LoginScreen` clásico; si el tenant ya está configurado → va directo al panel)
@@ -260,7 +260,7 @@ Flujo de arranque (mobile):
 
 ## Cambios Recientes (abr 2026 — Onboarding: subtype, tenant_settings, tokens TD-001, color HSV)
 
-- **`@salonpro/tenant-config`**: `businessSubtype` y `serviceCategories` opcionales; presets con defaults; `tenant_settings` en Drizzle + SQL `20260403_tenant_subtype_categories.sql` + `tenantSettingsService` mapea `business_subtype` / `service_categories`.
+- **`@geemastudio/tenant-config`**: `businessSubtype` y `serviceCategories` opcionales; presets con defaults; `tenant_settings` en Drizzle + SQL `20260403_tenant_subtype_categories.sql` + `tenantSettingsService` mapea `business_subtype` / `service_categories`.
 - **Onboarding paso 1**: `OnboardingBusinessTypeScreen` — chips de subtype por `businessType`, `FadeInDown`, gradiente en chip activo; TD-001: tokens **`Onboarding`**, **`BorderRadius`**, `OnboardingLayout` → `Onboarding.canvasBackground`.
 - **Onboarding paso 2**: `CustomColorPickerModal` + `lib/color-hsv.ts` + `@react-native-community/slider` para color fuera de la paleta fija.
 - **Docs**: `docs/tech-debt/TD-001-onboarding-tokens.md` resuelto; `docs/INDEX.md` enlaza `tech-debt/`.
@@ -284,10 +284,10 @@ Flujo de arranque (mobile):
 
 ## Cambios Recientes (feb 2026 — v1.2.0 — migración SalonPro)
 
-- **Fase 2 — paquete `@salonpro/tenant-config`**: `TenantConfig` interface + `defaultTenantConfig` + 4 presets (spa-nails, barbershop, hair-salon, full-aesthetic). Registrado como workspace en `apps/mobile`.
+- **Fase 2 — paquete `@geemastudio/tenant-config`**: `TenantConfig` interface + `defaultTenantConfig` + 4 presets (spa-nails, barbershop, hair-salon, full-aesthetic). Registrado como workspace en `apps/mobile`.
 - **Fase 3 — integración TenantContext**: `TenantProvider` en `App.tsx`; `useTenant()` en todos los screens; `createTheme(config, isDark)` en `constants/theme.ts`; `useTheme()` actualizado. Eliminadas todas las referencias hardcodeadas al salón original: nombre, colores, moneda local, canal de notificaciones Android.
 - **Fase 4 — limpieza de seeds**: `seed-{services,employees}.sql` renombrados a `*-example.sql`; creados `*-template.sql` genéricos para los 4 tipos de negocio; `seed-auth-users.mjs` con emails `@ejemplo.com`; contraseña inicial `SalonPro2025!`. Cuentas demo multi-tenant, `is_demo`, reset Edge: ver `scripts/db/seeds/README.md` y **### Usuarios de prueba** en Configuración del Entorno.
-- **Fase 5 — onboarding flow**: 5 pantallas en `screens/onboarding/`; `AuthGate` orquesta el flujo; `TenantContext` agrega `isConfigured` + `markConfigured()` con clave `@salonpro/tenant_configured` en AsyncStorage.
+- **Fase 5 — onboarding flow**: 5 pantallas en `screens/onboarding/`; `AuthGate` orquesta el flujo; `TenantContext` agrega `isConfigured` + `markConfigured()` con clave `@geemastudio/tenant_configured` en AsyncStorage.
 - **Fase 6 — tenant_settings**: tabla `tenant_settings` en Supabase con RLS y sincronización desde el onboarding (`tenantSettingsService` y `TenantContext`).
 - **Fase 7 — Supabase full-mobile**: todos los flujos mobile (Onboarding, Dashboard, Agenda, Servicios, Personal, Finanzas, Inventario) usan Supabase directo; eliminado el cliente Express (`apiRequest`, `/api/*`) y actualizadas las `queryKey` de React Query (`employees`, `services`, `service_categories`, `appointments`, `payments`, `inventory_items`, `dashboard_stats`, `dashboard_revenue`).
 - **Landing web**: landing pública completa en `apps/web` con Next.js 15 App Router; secciones Hero (mockup animado), Pain Points, Features, Social Proof, Pricing (toggle mensual/anual), FAQ, CTA, Footer; scroll reveal con IntersectionObserver; moneda `$` USD en toda la landing.

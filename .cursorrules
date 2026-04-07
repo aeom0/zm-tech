@@ -25,7 +25,7 @@ SaaS multi-tenant para salones de belleza, barberías y estéticas en LATAM.
 
 | Área           | Ruta                                   |
 | -------------- | -------------------------------------- |
-| Raíz           | `/home/alber/salonpro`                 |
+| Raíz           | `/home/alber/geemastudio`               |
 | Mobile         | `apps/mobile/`                         |
 | Web            | `apps/web/`                            |
 | Schema Drizzle | `packages/shared-schema/src/schema.ts` |
@@ -94,10 +94,10 @@ export function ListaCitas() {
 // Mobile (apps/mobile): alias @/
 import { useTheme } from "@/hooks/useTheme";
 import { supabase } from "@/lib/supabase";
-import type { Appointment } from "@salonpro/shared-schema";
+import type { Appointment } from "@geemastudio/shared-schema";
 
 // Paquetes compartidos
-import { tenantConfig } from "@salonpro/tenant-config";
+import { tenantConfig } from "@geemastudio/tenant-config";
 ```
 
 ### Componentes

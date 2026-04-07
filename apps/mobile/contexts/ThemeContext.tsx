@@ -10,10 +10,14 @@ import {
   ColorSchemeName,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  ASYNC_STORAGE_THEME_PREFERENCE,
+  migrateLegacyAsyncStorageKeys,
+} from "@/lib/asyncStorageKeys";
 
 export type ThemePreference = "auto" | "light" | "dark";
 
-const STORAGE_KEY = "@salonpro/theme_preference";
+const STORAGE_KEY = ASYNC_STORAGE_THEME_PREFERENCE;
 
 interface ThemeContextValue {
   preference: ThemePreference;
@@ -38,6 +42,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 
     const hydrate = async () => {
       try {
+        await migrateLegacyAsyncStorageKeys();
         const stored = await AsyncStorage.getItem(STORAGE_KEY);
         if (!cancelled && stored) {
           if (stored === "light" || stored === "dark" || stored === "auto") {

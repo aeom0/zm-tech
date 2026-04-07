@@ -1,4 +1,4 @@
-import type { PaymentMode } from "@salonpro/shared-schema";
+import type { PaymentMode } from "@geemastudio/shared-schema";
 
 export interface FinancesPayment {
   id: string;

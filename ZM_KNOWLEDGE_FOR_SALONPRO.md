@@ -295,7 +295,7 @@ apps/mobile/screens/settings/
 ```typescript
 // apps/mobile/contexts/ThemeContext.tsx
 export type ThemePreference = "auto" | "light" | "dark";
-const STORAGE_KEY = "@zm_theme_preference";  // → cambiar a "@salonpro/theme_preference"
+const STORAGE_KEY = "@zm_theme_preference";  // → cambiar a "@geemastudio/theme_preference"
 
 // En SalonPro: reemplazar STORAGE_KEY y exportar igual
 export function ThemeProvider({ children }: { children: React.ReactNode })
@@ -951,7 +951,7 @@ Al portear cualquier pantalla de ZM a SalonPro, verificar:
 - [ ] `"es-PE"` → `config.locale.language`
 - [ ] Lima UTC-5 hardcodeado → `config.locale.timezone`
 - [ ] `@zmlashnails.com` → dominio configurable o eliminado
-- [ ] AsyncStorage key `@zm_*` → `@salonpro/*`
+- [ ] AsyncStorage key `@zm_*` → `@geemastudio/*`
 - [ ] Canal Android `"ZM Lash & Nails"` → `config.businessName` o genérico
 - [ ] Links hardcodeados (WhatsApp, Instagram) → `config.contact.*` si existe
 

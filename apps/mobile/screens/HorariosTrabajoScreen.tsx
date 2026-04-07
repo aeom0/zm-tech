@@ -20,14 +20,14 @@ import { useTheme } from "@/hooks/useTheme";
 import { useTenant } from "@/contexts/TenantContext";
 import { Spacing, BorderRadius } from "@/constants/theme";
 import type { MoreStackParamList } from "@/navigation/MoreStackNavigator";
-import type { TenantConfig, TimeFormatPreference } from "@salonpro/tenant-config";
+import type { TenantConfig, TimeFormatPreference } from "@geemastudio/tenant-config";
 import {
   CLAVES_DIA_LABORAL,
   ETIQUETA_DIA_LABORAL,
   ZONAS_HORARIAS_SUGERIDAS,
   normalizarHorarioSemanal,
   validarHorarioCompleto,
-} from "@salonpro/tenant-config";
+} from "@geemastudio/tenant-config";
 
 type Nav = NativeStackNavigationProp<MoreStackParamList, "HorariosTrabajo">;
 

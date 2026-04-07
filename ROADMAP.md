@@ -236,4 +236,4 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 
 ---
 
-*Actualizado: marzo 2026. Generado con análisis de estado real del repo aeom0/salonpro v1.4.3.*
+*Actualizado: marzo 2026. Generado con análisis de estado real del repo aeom0/geemastudio v1.4.3.*

@@ -54,8 +54,8 @@ Turborepo            ^2.x
 Workspaces:
   apps/mobile
   apps/web
-  packages/shared-schema   → @salonpro/shared-schema   (antes: @zm/shared-schema)
-  packages/tenant-config   → @salonpro/tenant-config
+  packages/shared-schema   → @geemastudio/shared-schema   (antes: @zm/shared-schema)
+  packages/tenant-config   → @geemastudio/tenant-config
 ```
 
 ### Backend / Infra
@@ -79,7 +79,7 @@ IA:        Claude claude-haiku-4-5-20251001 — MAX_TOKENS=350, timeout=5000ms
 ## 3. Estructura de carpetas
 
 ```
-salonpro/
+geemastudio/
 ├── apps/
 │   ├── mobile/
 │   │   ├── App.tsx                   # Entry: QueryClient > AuthProvider > TenantProvider > Navigation
@@ -216,13 +216,13 @@ salonpro/
 │           └── favicon.png
 │
 ├── packages/
-│   ├── shared-schema/            # @salonpro/shared-schema
+│   ├── shared-schema/            # @geemastudio/shared-schema
 │   │   └── src/
 │   │       ├── schema.ts         # Drizzle schema — fuente de verdad
 │   │       ├── types.ts          # tipos inferidos
 │   │       └── index.ts
 │   │
-│   └── tenant-config/            # @salonpro/tenant-config
+│   └── tenant-config/            # @geemastudio/tenant-config
 │       └── src/
 │           ├── types.ts          # TenantConfig interface completa
 │           ├── defaults.ts       # defaultTenantConfig
@@ -275,9 +275,9 @@ salonpro/
 | Columnas BD Supabase | snake_case | `employee_id`, `created_at` |
 | Props interfaces TS | snake_case si viene de BD, camelCase si es UI | mixto |
 | Imports mobile | alias `@/` | `import { useTheme } from "@/hooks/useTheme"` |
-| Imports packages | `@salonpro/*` | `from "@salonpro/tenant-config"` |
+| Imports packages | `@geemastudio/*` | `from "@geemastudio/tenant-config"` |
 | Rutas de navegacion | PascalCase o CamelCase generico | `"Personal"` NO `"Chicas"` |
-| AsyncStorage keys | `@salonpro/*` | `@salonpro/tenant_configured` |
+| AsyncStorage keys | `@geemastudio/*` | `@geemastudio/tenant_configured` |
 | Comentarios codigo | Espanol con prefijo modulo en logs | `console.log('[WABA]', ...)` |
 
 ---
@@ -312,7 +312,7 @@ const tz     = "America/Lima";  // hardcodeado en lugar de config.locale.timezon
 - [ ] `"#7B2D8E"` → `config.theme.primaryColor`
 - [ ] `"es-PE"` / locale fijo → `config.locale.language`
 - [ ] `"America/Lima"` hardcodeado → `config.locale.timezone`
-- [ ] `@zm_*` AsyncStorage → `@salonpro/*`
+- [ ] `@zm_*` AsyncStorage → `@geemastudio/*`
 - [ ] Ruta `"Chicas"` → `"Personal"`
 
 ### 5.2 Capas de la arquitectura mobile
@@ -745,7 +745,7 @@ yarn db:seed         # seeds template
 ## 13. Estado de fases (abr 2026)
 
 ### Completadas
-- Fases 1 al 6: Migracion ZM → SalonPro, monorepo, @salonpro/tenant-config, onboarding, tenant_settings
+- Fases 1 al 6: Migracion ZM → SalonPro, monorepo, @geemastudio/tenant-config, onboarding, tenant_settings
 - Fase 7A+7B: RLS 9 tablas con get_my_role(), onboarding conectado a Supabase
 - Fase 8: SettingsScreen modular + ThemeContext (useColorScheme, light|dark|auto)
 - Fase 9: usePendingBadgeCount + badge en tab Mas
@@ -804,7 +804,7 @@ yarn db:seed         # seeds template
 7. Logica de negocio en screens: va en hooks o services, nunca en el JSX
 8. Supabase directo en screens: siempre mediado por hook o service
 9. any en TypeScript: usar unknown + type guards
-10. Keys AsyncStorage con prefijo @zm_*: usar @salonpro/*
+10. Keys AsyncStorage con prefijo @zm_*: usar @geemastudio/*
 11. Nombre de ruta "Chicas": usar "Personal" (ya corregido en el repo)
 12. Gradiente en fondos de pantalla completa: solo en CTAs e interactivos
 13. Crear archivos .md sin que se pida: no generar docs automaticamente

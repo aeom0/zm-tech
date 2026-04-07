@@ -25,7 +25,7 @@ import {
   sumarDiasEnZonaIANA,
   sumarSemanasEnZonaIANA,
   zonaIANASegura,
-} from "@salonpro/tenant-config";
+} from "@geemastudio/tenant-config";
 import type { MainTabParamList } from "@/navigation/MainTabNavigator";
 
 import { agendaStyles as styles } from "./agenda/agendaStyles";

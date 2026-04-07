@@ -3,7 +3,7 @@ import {
   esMismoDiaCalendarioEnZona,
   esHoyEnZonaIANA,
   horaCalendarioEnZona,
-} from "@salonpro/tenant-config";
+} from "@geemastudio/tenant-config";
 
 import type {
   AgendaAppointment,

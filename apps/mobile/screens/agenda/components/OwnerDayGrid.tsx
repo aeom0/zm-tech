@@ -18,7 +18,7 @@ import {
   minutosDelDiaEnZona,
   type TenantConfig,
   type TimeFormatPreference,
-} from "@salonpro/tenant-config";
+} from "@geemastudio/tenant-config";
 
 import type {
   AgendaAppointment,

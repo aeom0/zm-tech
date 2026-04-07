@@ -11,7 +11,7 @@ Este repositorio es la versión genérica y comercializable de **ZM Lash & Nails
 (salón de belleza en Perú). El objetivo es convertirlo en un producto **SaaS multi-tenant**
 para gestión de salones de belleza, barberías y peluquerías en LATAM.
 
-**Repo GitHub**: https://github.com/aeom0/salonpro
+**Repo GitHub**: https://github.com/aeom0/geemastudio
 
 ---
 
@@ -61,7 +61,7 @@ Crear la siguiente estructura de archivos:
 
 ```
 packages/tenant-config/
-├── package.json          (name: "@salonpro/tenant-config")
+├── package.json          (name: "@geemastudio/tenant-config")
 ├── tsconfig.json
 └── src/
     ├── index.ts          ← exporta todo
@@ -149,7 +149,7 @@ Horarios típicos:
 
 ```json
 {
-  "name": "@salonpro/tenant-config",
+  "name": "@geemastudio/tenant-config",
   "version": "1.0.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -162,7 +162,7 @@ Horarios típicos:
 }
 ```
 
-Agregar `"@salonpro/tenant-config": "workspace:*"` como dependencia en:
+Agregar `"@geemastudio/tenant-config": "workspace:*"` como dependencia en:
 - `apps/mobile/package.json`
 - `packages/shared-schema/package.json` (si se necesita)
 
@@ -173,7 +173,7 @@ Agregar `"@salonpro/tenant-config": "workspace:*"` como dependencia en:
 #### 3.1 Crear `apps/mobile/context/TenantContext.tsx`
 
 - Provee el `TenantConfig` activo a toda la app vía React Context
-- Lee de `AsyncStorage` (clave: `@salonpro/tenant_config`)
+- Lee de `AsyncStorage` (clave: `@geemastudio/tenant_config`)
 - Si no hay config guardada → usa preset `spa-nails` por defecto
 - Hook exportado: `useTenant()` → retorna `{ config, updateTenant, isLoading }`
 - `updateTenant(partial)` → merge + guarda en AsyncStorage
@@ -244,7 +244,7 @@ OnboardingCompleteScreen.tsx       ← paso 5: listo, ir al dashboard
 ```
 
 Lógica:
-- Solo se muestra si `AsyncStorage` no tiene `@salonpro/tenant_configured: true`
+- Solo se muestra si `AsyncStorage` no tiene `@geemastudio/tenant_configured: true`
 - Al completar: guarda config en AsyncStorage + Supabase tabla `tenant_settings`
 - `RootStackNavigator` verifica si hay config → Onboarding o App principal
 
@@ -358,7 +358,7 @@ yarn lint:fix
 
 - El proyecto original (ZM Lash & Nails) está en `/home/alber/ZM-Lash-and-Nails-Beauty`
   pero NO debe modificarse — es solo referencia.
-- Este repo (`/home/alber/salonpro`) es donde se hacen TODOS los cambios.
+- Este repo (`/home/alber/geemastudio`) es donde se hacen TODOS los cambios.
 - Supabase del proyecto original: `udelxwwnyivknslueerr` — NO reutilizar, crear uno nuevo para SalonPro.
 - Las variables de entorno de SalonPro están en `.env` (no commiteado). Ver `.env.example` para referencia.
 - `apps/mobile/lib/supabase.ts` ✅ ya usa `process.env.EXPO_PUBLIC_SUPABASE_*` (corregido en sesión 2026-03-12).

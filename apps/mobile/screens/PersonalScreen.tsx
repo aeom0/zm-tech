@@ -28,7 +28,7 @@ import {
   subirAvatarEmpleadoDefault,
 } from "@/lib/employeeAvatar";
 import { Colors, Spacing, BorderRadius } from "@/constants/theme";
-import type { PaymentMode } from "@salonpro/shared-schema";
+import type { PaymentMode } from "@geemastudio/shared-schema";
 import { EmployeePaymentBadge } from "@/screens/personal/components/EmployeePaymentBadge";
 
 interface Employee {

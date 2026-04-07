@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import type { PaymentMode } from "@salonpro/shared-schema";
+import type { PaymentMode } from "@geemastudio/shared-schema";
 
 interface Props {
   mode: PaymentMode;

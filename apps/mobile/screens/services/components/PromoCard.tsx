@@ -3,7 +3,7 @@ import { View, Pressable, StyleSheet, ActivityIndicator } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
-import type { TenantConfig } from "@salonpro/tenant-config";
+import type { TenantConfig } from "@geemastudio/tenant-config";
 import { formatCurrency } from "@/utils/format";
 import { Shadows } from "@/constants/theme";
 

@@ -11,7 +11,7 @@ import {
   type TenantConfig,
   defaultTenantConfig,
   mergeTenantConfig,
-} from "@salonpro/tenant-config";
+} from "@geemastudio/tenant-config";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   fetchTenantSettings,
@@ -19,9 +19,15 @@ import {
 } from "@/services/tenantSettingsService";
 import { insertEmpleadosTrasOnboarding } from "@/services/onboardingEmployeesService";
 import { queryClient } from "@/lib/query-client";
+import {
+  ALL_TENANT_ASYNC_KEYS,
+  ASYNC_STORAGE_TENANT_CONFIGURED,
+  ASYNC_STORAGE_TENANT_CONFIG,
+  migrateLegacyAsyncStorageKeys,
+} from "@/lib/asyncStorageKeys";
 
-const STORAGE_KEY = "@salonpro/tenant_config";
-const CONFIGURED_KEY = "@salonpro/tenant_configured";
+const STORAGE_KEY = ASYNC_STORAGE_TENANT_CONFIG;
+const CONFIGURED_KEY = ASYNC_STORAGE_TENANT_CONFIGURED;
 
 /** Beta / preview: ignora AsyncStorage de dev y fuerza onboarding (quitar en production estable). */
 const FORCE_FRESH_START = process.env.EXPO_PUBLIC_FORCE_FRESH_START === "true";
@@ -95,9 +101,11 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
 
     const load = async () => {
       try {
+        await migrateLegacyAsyncStorageKeys();
+
         if (FORCE_FRESH_START && !freshStartDoneRef.current) {
           freshStartDoneRef.current = true;
-          await AsyncStorage.multiRemove([STORAGE_KEY, CONFIGURED_KEY]);
+          await AsyncStorage.multiRemove([...ALL_TENANT_ASYNC_KEYS]);
           setPendingOnboardingEmployees([]);
         }
 

@@ -22,7 +22,7 @@ import {
   type InsertInventoryItem,
   type Payment,
   type InsertPayment,
-} from "@salonpro/shared-schema";
+} from "@geemastudio/shared-schema";
 
 // ── Employees ──────────────────────────────────────────────────────────────
 export async function getEmployees(): Promise<Employee[]> {

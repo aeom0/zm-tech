@@ -14,7 +14,7 @@ App de gestión para salones de belleza, barberías y peluquerías (LATAM). Fron
 
 ```bash
 git clone <repo>
-cd salonpro
+cd geemastudio
 yarn install
 ```
 
