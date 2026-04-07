@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "SalonPro — Gestión inteligente para barberías, spas y peluquerías",
+  title: "GeemaStudio — Gestión inteligente para barberías, spas y peluquerías",
   description:
     "Plataforma SaaS para gestionar agenda, personal, inventario y finanzas de tu salón de belleza. 14 días gratis. Sin tarjeta de crédito.",
   keywords: [
@@ -12,22 +12,22 @@ export const metadata: Metadata = {
     "software peluquería LATAM",
     "agenda digital salón",
     "control de inventario belleza",
-    "SalonPro",
+    "GeemaStudio",
   ],
   icons: {
     icon: "/favicon.png",
   },
   openGraph: {
-    title: "SalonPro — Gestión inteligente para tu negocio de belleza",
+    title: "GeemaStudio — Gestión inteligente para tu negocio de belleza",
     description:
       "Agenda, personal, inventario y finanzas en un solo lugar. Sin papeles, sin WhatsApp, sin caos. Prueba 14 días gratis.",
     type: "website",
     locale: "es_419",
-    siteName: "SalonPro",
+    siteName: "GeemaStudio",
   },
   twitter: {
     card: "summary_large_image",
-    title: "SalonPro — App para barberías, spas y peluquerías",
+    title: "GeemaStudio — App para barberías, spas y peluquerías",
     description:
       "Gestiona tu salón de belleza desde el celular. Agenda, finanzas, personal e inventario en una sola app.",
   },

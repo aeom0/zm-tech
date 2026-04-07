@@ -10,7 +10,7 @@
     "check:types": "tsc --noEmit"
   },
   "dependencies": {
-    "@salonpro/tenant-config": "workspace:*",
+    "@geemastudio/tenant-config": "workspace:*",
     "@supabase/ssr": "^0.9.0",
     "@supabase/supabase-js": "^2.100.0",
     "@tanstack/react-query": "^5.95.2",

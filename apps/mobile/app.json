@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "SalonPro",
-    "slug": "salonpro-mobile",
+    "name": "GeemaStudio",
+    "slug": "geemastudio-mobile",
     "version": "1.1.0",
     "icon": "./assets/icon.png",
     "runtimeVersion": {
@@ -11,15 +11,15 @@
       "url": "https://u.expo.dev/ff07d991-dcd2-446c-9b5b-9d5809855619"
     },
     "orientation": "portrait",
-    "scheme": "salonpro",
+    "scheme": "geemastudio",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.salonpro.app"
+      "bundleIdentifier": "com.geemastudio.app"
     },
     "android": {
-      "package": "com.salonpro.app",
+      "package": "com.geemastudio.app",
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "adaptiveIcon": {
@@ -37,8 +37,8 @@
           ]
         }
       },
-      "name": "SalonPro",
-      "shortName": "SalonPro",
+      "name": "GeemaStudio",
+      "shortName": "GeemaStudio",
       "description": "Gestión de salones de belleza y centros de estética",
       "themeColor": "#6366f1",
       "backgroundColor": "#FFFFFF",
@@ -64,8 +64,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "SalonPro usa tu galería para poner foto al personal en la agenda.",
-          "cameraPermission": "SalonPro puede usar la cámara si quieres tomar la foto del personal."
+          "photosPermission": "GeemaStudio usa tu galería para poner foto al personal en la agenda.",
+          "cameraPermission": "GeemaStudio puede usar la cámara si quieres tomar la foto del personal."
         }
       ],
       "expo-web-browser",

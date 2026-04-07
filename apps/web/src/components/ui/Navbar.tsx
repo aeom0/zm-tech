@@ -36,11 +36,11 @@ export function Navbar() {
         <a
           href="#"
           className="flex items-center gap-2.5 group"
-          aria-label="SalonPro — inicio"
+          aria-label="GeemaStudio — inicio"
         >
           <Image
             src="/logo-diamondSparkle.svg"
-            alt="SalonPro"
+            alt="GeemaStudio"
             width={44}
             height={50}
             priority
@@ -51,7 +51,7 @@ export function Navbar() {
               scrolled ? "text-zinc-900 dark:text-white" : "text-white"
             }`}
           >
-            Salon
+            Geema
           </span>
           <span
             style={{
@@ -64,7 +64,7 @@ export function Navbar() {
               letterSpacing: "-0.025em",
             }}
           >
-            Pro
+            Studio
           </span>
           <span
             style={{
