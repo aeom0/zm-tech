@@ -1,9 +1,4 @@
-import {
-  Smartphone,
-  BookOpen,
-  TrendingDown,
-  CheckCircle,
-} from "lucide-react";
+import { Smartphone, BookOpen, TrendingDown, CheckCircle } from "lucide-react";
 import Image from "next/image";
 import { RevealWrapper } from "@/components/ui/RevealWrapper";
 

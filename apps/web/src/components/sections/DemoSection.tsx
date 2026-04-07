@@ -170,7 +170,9 @@ function PhoneShell({
               </span>
             </span>
           </div>
-          <p className="text-white text-[13px] font-bold leading-tight">{title}</p>
+          <p className="text-white text-[13px] font-bold leading-tight">
+            {title}
+          </p>
           <p className="text-white/40 text-[9px] mt-0.5">{subtitle}</p>
         </div>
         {headerRight ?? (
@@ -235,10 +237,34 @@ function AgendaMockup({ accent }: { accent: string }) {
   const days = ["L", "M", "X", "J", "V", "S", "D"];
   const selectedDay = 3; // jueves
   const appointments = [
-    { time: "10:00", client: "María G.", service: "Vol. ruso", color: accent, status: "done" },
-    { time: "11:30", client: "Carla M.", service: "Manos y pies", color: "#6A1B9A", status: "done" },
-    { time: "13:00", client: "Sofía R.", service: "Lifting + tinte", color: "#E91E8C", status: "next" },
-    { time: "15:00", client: "Andrea P.", service: "Color y tratam.", color: "#F59E0B", status: "pending" },
+    {
+      time: "10:00",
+      client: "María G.",
+      service: "Vol. ruso",
+      color: accent,
+      status: "done",
+    },
+    {
+      time: "11:30",
+      client: "Carla M.",
+      service: "Manos y pies",
+      color: "#6A1B9A",
+      status: "done",
+    },
+    {
+      time: "13:00",
+      client: "Sofía R.",
+      service: "Lifting + tinte",
+      color: "#E91E8C",
+      status: "next",
+    },
+    {
+      time: "15:00",
+      client: "Andrea P.",
+      service: "Color y tratam.",
+      color: "#F59E0B",
+      status: "pending",
+    },
   ];
 
   return (
@@ -258,10 +284,7 @@ function AgendaMockup({ accent }: { accent: string }) {
         {/* Selector de días */}
         <div className="flex gap-1 justify-between">
           {days.map((d, i) => (
-            <div
-              key={d}
-              className="flex flex-col items-center gap-0.5 flex-1"
-            >
+            <div key={d} className="flex flex-col items-center gap-0.5 flex-1">
               <span className="text-white/30 text-[8px]">{d}</span>
               <div
                 className="w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold"
@@ -281,17 +304,32 @@ function AgendaMockup({ accent }: { accent: string }) {
         <div className="grid grid-cols-3 gap-1.5 pt-1">
           {[
             { label: "Citas", value: "6", icon: Clock, color: accent },
-            { label: "Listas", value: "2", icon: CheckCircle, color: "#22c55e" },
-            { label: "Sin asig.", value: "1", icon: AlertTriangle, color: "#F59E0B" },
+            {
+              label: "Listas",
+              value: "2",
+              icon: CheckCircle,
+              color: "#22c55e",
+            },
+            {
+              label: "Sin asig.",
+              value: "1",
+              icon: AlertTriangle,
+              color: "#F59E0B",
+            },
           ].map(({ label, value, icon: Icon, color }) => (
             <div
               key={label}
               className="rounded-xl p-1.5 flex flex-col items-center gap-0.5"
-              style={{ backgroundColor: `${color}15`, border: `1px solid ${color}30` }}
+              style={{
+                backgroundColor: `${color}15`,
+                border: `1px solid ${color}30`,
+              }}
             >
               <Icon size={10} color={color} strokeWidth={2} />
               <span className="text-white text-[11px] font-bold">{value}</span>
-              <span style={{ color }} className="text-[8px] font-medium">{label}</span>
+              <span style={{ color }} className="text-[8px] font-medium">
+                {label}
+              </span>
             </div>
           ))}
         </div>
@@ -315,8 +353,12 @@ function AgendaMockup({ accent }: { accent: string }) {
                 {apt.time}
               </span>
               <div className="flex-1 min-w-0">
-                <p className="text-white text-[10px] font-semibold truncate">{apt.client}</p>
-                <p className="text-white/40 text-[8px] truncate">{apt.service}</p>
+                <p className="text-white text-[10px] font-semibold truncate">
+                  {apt.client}
+                </p>
+                <p className="text-white/40 text-[8px] truncate">
+                  {apt.service}
+                </p>
               </div>
               <div
                 className="w-1.5 h-1.5 rounded-full flex-shrink-0"
@@ -342,9 +384,24 @@ function FinanzasMockup({ accent }: { accent: string }) {
   const bars = [40, 65, 55, 80, 70, 95, 75];
   const days = ["L", "M", "X", "J", "V", "S", "D"];
   const payments = [
-    { client: "María G.", amount: "$ 85", method: "Efectivo", color: "#22c55e" },
-    { client: "Carla M.", amount: "$ 120", method: "Tarjeta", color: LUNARIS.primaryMid },
-    { client: "Sofía R.", amount: "$ 65", method: "Efectivo", color: "#22c55e" },
+    {
+      client: "María G.",
+      amount: "$ 85",
+      method: "Efectivo",
+      color: "#22c55e",
+    },
+    {
+      client: "Carla M.",
+      amount: "$ 120",
+      method: "Tarjeta",
+      color: LUNARIS.primaryMid,
+    },
+    {
+      client: "Sofía R.",
+      amount: "$ 65",
+      method: "Efectivo",
+      color: "#22c55e",
+    },
   ];
 
   return (
@@ -373,7 +430,10 @@ function FinanzasMockup({ accent }: { accent: string }) {
         {/* Ingreso principal */}
         <div
           className="rounded-2xl p-3 text-center"
-          style={{ backgroundColor: "rgba(255,255,255,0.05)", border: `1px solid ${accent}30` }}
+          style={{
+            backgroundColor: "rgba(255,255,255,0.05)",
+            border: `1px solid ${accent}30`,
+          }}
         >
           <p className="text-white/40 text-[9px] mb-0.5">Ingresos este mes</p>
           <p className="font-bold text-2xl" style={{ color: accent }}>
@@ -381,7 +441,9 @@ function FinanzasMockup({ accent }: { accent: string }) {
           </p>
           <div className="flex items-center justify-center gap-1 mt-0.5">
             <TrendingUp size={9} color="#22c55e" strokeWidth={2.5} />
-            <span className="text-[9px] text-green-400 font-semibold">+15% vs. mes anterior</span>
+            <span className="text-[9px] text-green-400 font-semibold">
+              +15% vs. mes anterior
+            </span>
           </div>
         </div>
 
@@ -390,10 +452,15 @@ function FinanzasMockup({ accent }: { accent: string }) {
           className="rounded-xl p-2.5"
           style={{ backgroundColor: "rgba(255,255,255,0.04)" }}
         >
-          <p className="text-white/40 text-[8px] mb-2">Ingresos últimos 7 días</p>
+          <p className="text-white/40 text-[8px] mb-2">
+            Ingresos últimos 7 días
+          </p>
           <div className="flex items-end gap-1 h-10">
             {bars.map((h, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center gap-0.5">
+              <div
+                key={i}
+                className="flex-1 flex flex-col items-center gap-0.5"
+              >
                 <div
                   className="w-full rounded-sm"
                   style={{
@@ -409,7 +476,9 @@ function FinanzasMockup({ accent }: { accent: string }) {
 
         {/* Últimos pagos */}
         <div className="space-y-1">
-          <p className="text-white/30 text-[8px] font-semibold uppercase tracking-wider">Últimos pagos</p>
+          <p className="text-white/30 text-[8px] font-semibold uppercase tracking-wider">
+            Últimos pagos
+          </p>
           {payments.map((p) => (
             <div
               key={p.client}
@@ -423,9 +492,13 @@ function FinanzasMockup({ accent }: { accent: string }) {
                 {p.client[0]}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-white text-[9px] font-semibold truncate">{p.client}</p>
+                <p className="text-white text-[9px] font-semibold truncate">
+                  {p.client}
+                </p>
               </div>
-              <span className="text-[9px] font-bold" style={{ color: accent }}>{p.amount}</span>
+              <span className="text-[9px] font-bold" style={{ color: accent }}>
+                {p.amount}
+              </span>
               <span
                 className="text-[8px] px-1.5 py-0.5 rounded-full"
                 style={{ backgroundColor: `${p.color}20`, color: p.color }}
@@ -443,10 +516,38 @@ function FinanzasMockup({ accent }: { accent: string }) {
 // ── Personal ───────────────────────────────────────────────────────────────
 function PersonalMockup({ accent }: { accent: string }) {
   const staff = [
-    { name: "Ana Torres", role: "Estilista", citas: 3, ingreso: "$ 180", color: accent, initials: "AT" },
-    { name: "Luis Mora", role: "Colorista", citas: 2, ingreso: "$ 95", color: "#6A1B9A", initials: "LM" },
-    { name: "Carla Vega", role: "Manicurista", citas: 2, ingreso: "$ 90", color: "#00BCD4", initials: "CV" },
-    { name: "Diego Ruiz", role: "Estilista", citas: 1, ingreso: "$ 55", color: "#F59E0B", initials: "DR" },
+    {
+      name: "Ana Torres",
+      role: "Estilista",
+      citas: 3,
+      ingreso: "$ 180",
+      color: accent,
+      initials: "AT",
+    },
+    {
+      name: "Luis Mora",
+      role: "Colorista",
+      citas: 2,
+      ingreso: "$ 95",
+      color: "#6A1B9A",
+      initials: "LM",
+    },
+    {
+      name: "Carla Vega",
+      role: "Manicurista",
+      citas: 2,
+      ingreso: "$ 90",
+      color: "#00BCD4",
+      initials: "CV",
+    },
+    {
+      name: "Diego Ruiz",
+      role: "Estilista",
+      citas: 1,
+      ingreso: "$ 55",
+      color: "#F59E0B",
+      initials: "DR",
+    },
   ];
 
   return (
@@ -461,9 +562,14 @@ function PersonalMockup({ accent }: { accent: string }) {
             <div
               key={label}
               className="rounded-xl p-2 text-center"
-              style={{ backgroundColor: `${color}12`, border: `1px solid ${color}25` }}
+              style={{
+                backgroundColor: `${color}12`,
+                border: `1px solid ${color}25`,
+              }}
             >
-              <p className="font-bold text-sm" style={{ color }}>{value}</p>
+              <p className="font-bold text-sm" style={{ color }}>
+                {value}
+              </p>
               <p className="text-white/40 text-[8px] mt-0.5">{label}</p>
             </div>
           ))}
@@ -474,7 +580,10 @@ function PersonalMockup({ accent }: { accent: string }) {
           <div
             key={s.name}
             className="flex items-center gap-2.5 rounded-xl px-2.5 py-2"
-            style={{ backgroundColor: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.07)" }}
+            style={{
+              backgroundColor: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.07)",
+            }}
           >
             <div
               className="w-8 h-8 rounded-xl flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0"
@@ -483,11 +592,15 @@ function PersonalMockup({ accent }: { accent: string }) {
               {s.initials}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-white text-[10px] font-semibold truncate">{s.name}</p>
+              <p className="text-white text-[10px] font-semibold truncate">
+                {s.name}
+              </p>
               <p className="text-white/40 text-[8px]">{s.role}</p>
             </div>
             <div className="flex flex-col items-end gap-0.5">
-              <span className="text-[9px] font-bold" style={{ color: s.color }}>{s.ingreso}</span>
+              <span className="text-[9px] font-bold" style={{ color: s.color }}>
+                {s.ingreso}
+              </span>
               <span className="text-white/30 text-[8px]">{s.citas} citas</span>
             </div>
           </div>
@@ -502,13 +615,29 @@ function InventarioMockup({ accent }: { accent: string }) {
   const tabs = ["Uñas", "Pestañas", "Insumos"];
   const items = [
     { name: "Gel UV Rosa Nude", unit: "und", qty: 3, min: 5, lowStock: true },
-    { name: "Acetona Premium", unit: "litros", qty: 12, min: 3, lowStock: false },
+    {
+      name: "Acetona Premium",
+      unit: "litros",
+      qty: 12,
+      min: 3,
+      lowStock: false,
+    },
     { name: "Limas de uña", unit: "paq.", qty: 2, min: 4, lowStock: true },
-    { name: "Top coat brillante", unit: "und", qty: 8, min: 2, lowStock: false },
+    {
+      name: "Top coat brillante",
+      unit: "und",
+      qty: 8,
+      min: 2,
+      lowStock: false,
+    },
   ];
 
   return (
-    <PhoneShell accent={accent} title="Inventario" subtitle="2 productos con stock bajo">
+    <PhoneShell
+      accent={accent}
+      title="Inventario"
+      subtitle="2 productos con stock bajo"
+    >
       <div className="px-3 pt-2 space-y-2">
         {/* Tabs de categoría */}
         <div className="flex gap-1">
@@ -519,7 +648,10 @@ function InventarioMockup({ accent }: { accent: string }) {
               style={
                 i === 0
                   ? { backgroundColor: accent, color: "#000" }
-                  : { backgroundColor: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.4)" }
+                  : {
+                      backgroundColor: "rgba(255,255,255,0.07)",
+                      color: "rgba(255,255,255,0.4)",
+                    }
               }
             >
               {t}
@@ -530,10 +662,15 @@ function InventarioMockup({ accent }: { accent: string }) {
         {/* Alerta stock bajo */}
         <div
           className="flex items-center gap-2 rounded-xl px-3 py-2"
-          style={{ backgroundColor: "rgba(245,158,11,0.12)", border: "1px solid rgba(245,158,11,0.3)" }}
+          style={{
+            backgroundColor: "rgba(245,158,11,0.12)",
+            border: "1px solid rgba(245,158,11,0.3)",
+          }}
         >
           <AlertTriangle size={11} color="#F59E0B" strokeWidth={2} />
-          <span className="text-[9px] font-semibold text-yellow-400">2 productos bajo mínimo</span>
+          <span className="text-[9px] font-semibold text-yellow-400">
+            2 productos bajo mínimo
+          </span>
         </div>
 
         {/* Items de inventario */}
@@ -551,12 +688,16 @@ function InventarioMockup({ accent }: { accent: string }) {
             >
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1">
-                  <p className="text-white text-[9px] font-semibold truncate">{item.name}</p>
+                  <p className="text-white text-[9px] font-semibold truncate">
+                    {item.name}
+                  </p>
                   {item.lowStock && (
                     <AlertTriangle size={8} color="#F59E0B" strokeWidth={2.5} />
                   )}
                 </div>
-                <p className="text-white/30 text-[8px]">{item.unit} · mín. {item.min}</p>
+                <p className="text-white/30 text-[8px]">
+                  {item.unit} · mín. {item.min}
+                </p>
               </div>
               {/* Controles de cantidad */}
               <div className="flex items-center gap-1 flex-shrink-0">
@@ -564,7 +705,11 @@ function InventarioMockup({ accent }: { accent: string }) {
                   className="w-5 h-5 rounded-md flex items-center justify-center"
                   style={{ backgroundColor: "rgba(255,255,255,0.08)" }}
                 >
-                  <Minus size={8} color="rgba(255,255,255,0.6)" strokeWidth={2.5} />
+                  <Minus
+                    size={8}
+                    color="rgba(255,255,255,0.6)"
+                    strokeWidth={2.5}
+                  />
                 </div>
                 <span
                   className="text-[11px] font-bold w-5 text-center"
@@ -591,18 +736,31 @@ function InventarioMockup({ accent }: { accent: string }) {
 function WhatsAppMockup({ accent }: { accent: string }) {
   const messages = [
     { from: "client", text: "Hola! Quiero reservar para mañana 💅" },
-    { from: "bot", text: "¡Hola! Soy el asistente de Nail & Glow. ¿A qué hora prefieres?" },
+    {
+      from: "bot",
+      text: "¡Hola! Soy el asistente de Nail & Glow. ¿A qué hora prefieres?",
+    },
     { from: "client", text: "A las 11am si es posible" },
-    { from: "bot", text: "✅ Listo, Sofía. Cita confirmada para mañana 11:00 am — Manicure completa. Te mando recordatorio 1h antes." },
+    {
+      from: "bot",
+      text: "✅ Listo, Sofía. Cita confirmada para mañana 11:00 am — Manicure completa. Te mando recordatorio 1h antes.",
+    },
   ];
 
   return (
-    <PhoneShell accent={accent} title="Bot WhatsApp" subtitle="Respuestas automáticas 24/7">
+    <PhoneShell
+      accent={accent}
+      title="Bot WhatsApp"
+      subtitle="Respuestas automáticas 24/7"
+    >
       <div className="flex flex-col h-full px-2 pt-1 pb-2">
         {/* Header estilo WABA */}
         <div
           className="flex items-center gap-2 rounded-xl px-2.5 py-2 mb-2"
-          style={{ backgroundColor: "rgba(37,211,102,0.1)", border: "1px solid rgba(37,211,102,0.2)" }}
+          style={{
+            backgroundColor: "rgba(37,211,102,0.1)",
+            border: "1px solid rgba(37,211,102,0.2)",
+          }}
         >
           <div
             className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0"
@@ -611,7 +769,9 @@ function WhatsAppMockup({ accent }: { accent: string }) {
             <MessageCircle size={12} color="white" strokeWidth={2} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-white text-[9px] font-bold">Nail &amp; Glow Spa</p>
+            <p className="text-white text-[9px] font-bold">
+              Nail &amp; Glow Spa
+            </p>
             <p className="text-green-400 text-[8px]">● En línea · bot activo</p>
           </div>
           <span
@@ -642,7 +802,9 @@ function WhatsAppMockup({ accent }: { accent: string }) {
                       : "none",
                 }}
               >
-                <p className="text-white text-[9px] leading-relaxed">{msg.text}</p>
+                <p className="text-white text-[9px] leading-relaxed">
+                  {msg.text}
+                </p>
               </div>
             </div>
           ))}
@@ -651,15 +813,27 @@ function WhatsAppMockup({ accent }: { accent: string }) {
         {/* Input simulado */}
         <div
           className="flex items-center gap-2 rounded-full px-3 py-1.5 mt-2"
-          style={{ backgroundColor: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)" }}
+          style={{
+            backgroundColor: "rgba(255,255,255,0.07)",
+            border: "1px solid rgba(255,255,255,0.1)",
+          }}
         >
-          <span className="text-white/20 text-[9px] flex-1">Escribe un mensaje…</span>
+          <span className="text-white/20 text-[9px] flex-1">
+            Escribe un mensaje…
+          </span>
           <div
             className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
             style={{ backgroundColor: accent }}
           >
             <svg width="8" height="8" viewBox="0 0 24 24" fill="white">
-              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+              <path
+                d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"
+                stroke="white"
+                strokeWidth="2.5"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </div>
         </div>
