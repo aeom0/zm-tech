@@ -1,4 +1,4 @@
--- SalonPro Fase 16 — Landing públicas por tenant (slug + plantilla)
+-- GeemaStudio Fase 16 — Landing públicas por tenant (slug + plantilla)
 -- Ejecutar en Supabase SQL Editor o: yarn db:push tras alinear Drizzle
 -- Nota: PostgreSQL no soporta CREATE POLICY IF NOT EXISTS; usar DROP + CREATE.
 

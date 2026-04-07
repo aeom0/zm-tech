@@ -1,6 +1,6 @@
-# Guía de Deployment — SalonPro
+# Guía de Deployment — GeemaStudio
 
-SalonPro no tiene servidor propio. El backend es **Supabase** (Auth + PostgREST). Se despliegan solo el frontend web y la app móvil.
+GeemaStudio no tiene servidor propio. El backend es **Supabase** (Auth + PostgREST). Se despliegan solo el frontend web y la app móvil.
 
 ## Requisitos previos
 

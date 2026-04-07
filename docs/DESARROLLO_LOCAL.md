@@ -1,4 +1,4 @@
-# Desarrollo Local — SalonPro
+# Desarrollo Local — GeemaStudio
 
 **Proyecto Supabase**: `xidjomlxpuosupymcsaj` · URL: `https://xidjomlxpuosupymcsaj.supabase.co`
 
@@ -28,7 +28,7 @@ yarn db:generate
 
 ### SQL de RLS / advisors (referencia)
 
-El archivo **`scripts/db/migrations/20260324_advisor_rls_performance.sql`** documenta y reproduce (si lo ejecutas entero) los cambios de **Database Advisor** ya aplicados en el proyecto Supabase SalonPro: `search_path` en funciones, índices de FK, políticas RLS unificadas. En WSL sin IPv6 a TCP, suele aplicarse con el **SQL Editor** del dashboard o con **MCP Supabase** (`apply_migration`) desde Cursor.
+El archivo **`scripts/db/migrations/20260324_advisor_rls_performance.sql`** documenta y reproduce (si lo ejecutas entero) los cambios de **Database Advisor** ya aplicados en el proyecto Supabase GeemaStudio: `search_path` en funciones, índices de FK, políticas RLS unificadas. En WSL sin IPv6 a TCP, suele aplicarse con el **SQL Editor** del dashboard o con **MCP Supabase** (`apply_migration`) desde Cursor.
 
 ### Avatar del personal (Storage)
 
@@ -38,7 +38,7 @@ El archivo **`scripts/db/migrations/20260324_advisor_rls_performance.sql`** docu
 
 ### Tenant: subtype y categorías de servicio (`tenant_settings`)
 
-- **`scripts/db/migrations/20260403_tenant_subtype_categories.sql`**: columnas **`business_subtype`** (text, nullable) y **`service_categories`** (jsonb, default `[]`). Aplicar en **SQL Editor** o MCP **`apply_migration`** (proyecto SalonPro). El mapeo mobile está en `apps/mobile/services/tenantSettingsService.ts`; el schema Drizzle en `packages/shared-schema`.
+- **`scripts/db/migrations/20260403_tenant_subtype_categories.sql`**: columnas **`business_subtype`** (text, nullable) y **`service_categories`** (jsonb, default `[]`). Aplicar en **SQL Editor** o MCP **`apply_migration`** (proyecto GeemaStudio). El mapeo mobile está en `apps/mobile/services/tenantSettingsService.ts`; el schema Drizzle en `packages/shared-schema`.
 
 ### Logo del negocio (Storage)
 
@@ -74,13 +74,13 @@ DATABASE_URL=postgresql://postgres:[PASSWORD]@db.xidjomlxpuosupymcsaj.supabase.c
 El CLI usa la API REST de Supabase para algunas operaciones pero `db push`
 también requiere TCP para el rol temporal. No funciona en WSL con IPv6 bloqueado.
 
-Cuando haya conectividad, se puede ejecutar (proyecto SalonPro):
+Cuando haya conectividad, se puede ejecutar (proyecto GeemaStudio):
 ```bash
 npx supabase link --project-ref xidjomlxpuosupymcsaj --password [DB_PASSWORD]
 npx supabase db push
 ```
 
-**Alternativa sin TCP**: usar el MCP de Supabase en Cursor (servidor **supabase-salonpro**) para `list_tables`, `execute_sql` o `apply_migration` contra este proyecto.
+**Alternativa sin TCP**: usar el MCP de Supabase en Cursor (servidor **supabase-geemastudio**) para `list_tables`, `execute_sql` o `apply_migration` contra este proyecto.
 
 ## Seeds y usuarios Auth
 
@@ -109,7 +109,7 @@ Para seeds y scripts de Auth:
 ```
 SUPABASE_URL=https://[REF].supabase.co
 SUPABASE_SERVICE_ROLE_KEY=[service_role key]
-SEED_AUTH_PASSWORD=SalonPro2025!
+SEED_AUTH_PASSWORD=Geema2025!
 ```
 
 ## Web — panel de catálogo (`/panel/servicios`)

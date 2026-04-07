@@ -1,4 +1,4 @@
-/** Coincide con public.service_categories en SalonPro */
+/** Coincide con public.service_categories en GeemaStudio */
 export interface ServiceCategory {
   id: string;
   name: string;

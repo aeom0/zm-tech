@@ -1,6 +1,6 @@
-# Índice de Documentación — SalonPro
+# Índice de Documentación — GeemaStudio
 
-Documentación del sistema SalonPro (SaaS multi-tenant para salones/barberías/peluquerías en LATAM).
+Documentación del sistema GeemaStudio (SaaS multi-tenant para salones/barberías/peluquerías en LATAM).
 
 ## Documentación principal
 
@@ -75,7 +75,7 @@ docs/
 - **TenantConfig** (`@geemastudio/tenant-config`): presets, **`working-schedule`** (franja laboral), **`iana-timezone`** (Luxon: agenda y citas en `locale.timezone`); `features?.whatsapp` (promo WA cuando aplique)
 
 ### MCP (Cursor)
-- Dos servidores en `.cursor/mcp.json`: **supabase-salonpro** (este proyecto) y **supabase-zm** (referencia). Para BD de SalonPro usar supabase-salonpro.
+- Dos servidores en `.cursor/mcp.json`: **supabase-geemastudio** (este proyecto) y **supabase-zm** (referencia). Para BD de GeemaStudio usar supabase-geemastudio.
 
 ### Assets de marca
 - `apps/web/public/logo-diamondSparkle.svg` — símbolo principal (sin texto en el SVG)

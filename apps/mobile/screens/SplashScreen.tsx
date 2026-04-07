@@ -18,7 +18,7 @@ type SplashScreenProps = {
 };
 
 /**
- * SplashScreen React — reutiliza DiamondHero (glow + diamante + SalonPro + tagline).
+ * SplashScreen React — reutiliza DiamondHero (glow + diamante + GeemaStudio + tagline).
  * Animación: fade in del hero completo, luego fade out antes de onFinish.
  * Total: ~2000ms.
  */

@@ -1,4 +1,4 @@
-# Changelog — SalonPro
+# Changelog — GeemaStudio
 
 Todos los cambios notables se documentan en este archivo.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
@@ -84,7 +84,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 - Tabla **`appointment_verifications`** en `packages/shared-schema` (Drizzle + Zod + relaciones con `appointments`), alineada con Supabase.
 - Scripts **`yarn db:generate`** y **`yarn db:studio`** en la raíz del monorepo.
 - Carpeta **`migrations/`** en la raíz (salida prevista de Drizzle Kit) con `.gitkeep`.
-- SQL de referencia **`scripts/db/migrations/20260324_advisor_rls_performance.sql`**: `search_path` en funciones públicas, índices FK, políticas RLS consolidadas y patrón initplan seguro para `auth.uid()` (ya aplicado en proyecto Supabase SalonPro vía MCP).
+- SQL de referencia **`scripts/db/migrations/20260324_advisor_rls_performance.sql`**: `search_path` en funciones públicas, índices FK, políticas RLS consolidadas y patrón initplan seguro para `auth.uid()` (ya aplicado en proyecto Supabase GeemaStudio vía MCP).
 - **Web (panel)**: ruta autenticada **`/panel/servicios`** — CRUD de **`service_categories`** y **`services`** (toggle inline `is_active`, PR-06) más CRUD de **`packs`**, **`promotions`** y **`promotion_items`** (PR-06B; Supabase directo, TanStack Query). Tabs con título tipo *Catálogo de Servicios › …* y tab activo sincronizado con query **`?tab=`** (`categorias` | `servicios` | `packs` | `promos`).
 - **Web (auth)**: login básico en **`/login`** para acceso al panel y layout SSR con guard de sesión.
 - **Mobile (Agenda)**: chequeo de disponibilidad y **bloqueo de solapes** al crear/reprogramar citas (incluye guard previo al insert/update para evitar race conditions).
@@ -111,14 +111,14 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ### Cambiado
 - **Web**: Navbar y Footer usan solo el diamante (`next/image`); en barra clara tras scroll (modo claro) se aplica `invert` al mismo SVG.
-- **Mobile**: splash in-app con PNG del diamante; sin wordmark “SalonPro” en el bloque del logo; `expo-splash-screen` con fondo `#111318`.
+- **Mobile**: splash in-app con PNG del diamante; sin wordmark “GeemaStudio” en el bloque del logo; `expo-splash-screen` con fondo `#111318`.
 - **`apps/mobile/eas.json`**: perfil `preview` con `EXPO_PUBLIC_SUPABASE_URL` (anon key vía entornos Expo).
 - **Raíz `app.json`**: splash `#111318`, adaptive Android con `android-icon-foreground.png` regenerado.
 
 ### Eliminado
 - `eas.json` duplicado en la raíz del monorepo (config EAS solo en `apps/mobile/eas.json`).
 - Logos horizontales web (`logo.svg`, `logo-light.svg`, `logo-icon.svg`), `GemaStudio.png`.
-- Assets mobile obsoletos (`logo-salonpro*`, `logo.svg`, `compare.html`, carpeta `apps/mobile/assets/images/` duplicada).
+- Assets mobile obsoletos (`logo-geemastudio*`, `logo.svg`, `compare.html`, carpeta `apps/mobile/assets/images/` duplicada).
 - `assets/images/android-icon-background.png` y `android-icon-monochrome.png` en raíz (foreground + íconos unificados al diamante).
 
 ---
@@ -146,7 +146,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 - Confirmada ausencia de `"Chicas"` hardcodeado en `.ts`/`.tsx`; terminología de personal proviene siempre de `config.terminology.staff`.
 
 ### Eliminado
-- `docs/replit.md` — archivo heredado de ZM Lash & Nails; ya no relevante para SalonPro (backend 100% Supabase).
+- `docs/replit.md` — archivo heredado de ZM Lash & Nails; ya no relevante para GeemaStudio (backend 100% Supabase).
 
 ---
 

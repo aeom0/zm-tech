@@ -1,4 +1,4 @@
-# Migración a monorepo — SalonPro
+# Migración a monorepo — GeemaStudio
 
 El proyecto está organizado como monorepo: **apps** (mobile, web) y **packages** (shared-schema, tenant-config). No hay servidor en la raíz.
 

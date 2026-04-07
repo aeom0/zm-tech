@@ -202,7 +202,7 @@ export function AppMockup() {
                   style={{ color: screen.accent }}
                 >
                   <Scissors size={11} strokeWidth={2} />
-                  <span>SalonPro</span>
+                  <span>GeemaStudio</span>
                 </div>
                 <div className="text-white text-sm font-bold">
                   {screen.label}

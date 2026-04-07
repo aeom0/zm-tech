@@ -1,4 +1,4 @@
-# SKILL: SalonPro — Contexto Permanente para Claude Code
+# SKILL: GeemaStudio — Contexto Permanente para Claude Code
 
 > Lee este archivo **antes de tocar cualquier archivo del repo**.
 > Fuente: código real del repositorio + docs internas · Versión: v1.4.9 · Actualizado: abril 2026
@@ -7,7 +7,7 @@
 
 ## 1. Qué es este proyecto
 
-**SalonPro** es un SaaS B2B multi-tenant para salones de belleza, barberías y centros estéticos en LATAM.
+**GeemaStudio** es un SaaS B2B multi-tenant para salones de belleza, barberías y centros estéticos en LATAM.
 
 - Desarrollado por **ZM Tech** (Alberto, fundador y lead dev)
 - Basado en **ZM Lash & Nails Beauty** (Lima, Perú) — cliente de referencia real en producción
@@ -481,7 +481,7 @@ BorderRadius: { sm: 6, md: 10, lg: 16, xl: 24, full: 9999 }
 | logo-diamondSparkle-negative.svg | Preview / redes |
 | favicon.png | Favicon |
 
-El símbolo no incluye texto “SalonPro”. Ver CHANGELOG v1.4.4.
+El símbolo no incluye texto “GeemaStudio”. Ver CHANGELOG v1.4.4.
 
 ### Componentes UI mobile
 
@@ -600,7 +600,7 @@ packs            -- id, name, description, price, service_ids[], is_active
 // appointments.date es "timestamp WITHOUT time zone" — guarda hora local del tenant
 // Al leer  → parseLimaLocalToDate(dateStr): Date UTC
 // Al escribir → toLimaLocalTimestamp(dateUtc): "YYYY-MM-DD HH:mm:ss"
-// En SalonPro: reemplazar "America/Lima" hardcodeado → config.locale.timezone
+// En GeemaStudio: reemplazar "America/Lima" hardcodeado → config.locale.timezone
 ```
 
 ### Moneda segun contexto
@@ -723,7 +723,7 @@ propietario@ejemplo.com  → rol owner (acceso admin)
 empleado1@ejemplo.com    → rol staff
 empleado2@ejemplo.com    → rol staff
 empleado3@ejemplo.com    → rol staff
-password: SalonPro2025!
+password: Geema2025!
 ```
 
 ---
@@ -745,7 +745,7 @@ yarn db:seed         # seeds template
 ## 13. Estado de fases (abr 2026)
 
 ### Completadas
-- Fases 1 al 6: Migracion ZM → SalonPro, monorepo, @geemastudio/tenant-config, onboarding, tenant_settings
+- Fases 1 al 6: Migracion ZM → GeemaStudio, monorepo, @geemastudio/tenant-config, onboarding, tenant_settings
 - Fase 7A+7B: RLS 9 tablas con get_my_role(), onboarding conectado a Supabase
 - Fase 8: SettingsScreen modular + ThemeContext (useColorScheme, light|dark|auto)
 - Fase 9: usePendingBadgeCount + badge en tab Mas
@@ -823,7 +823,7 @@ yarn db:seed         # seeds template
 ```json
 {
   "mcpServers": {
-    "supabase-salonpro": { "url": "...?project_ref=xidjomlxpuosupymcsaj" },
+    "supabase-geemastudio": { "url": "...?project_ref=xidjomlxpuosupymcsaj" },
     "supabase-zm":       { "url": "...?project_ref=udelxwwnyivknslueerr" },
     "vercel":            { "url": "https://mcp.vercel.com" },
     "github":            { "image": "ghcr.io/github/github-mcp-server" }
@@ -832,7 +832,7 @@ yarn db:seed         # seeds template
 ```
 
 Formato `mcpServers` objeto — el formato antiguo `tools` block esta obsoleto.
-Para BD de SalonPro: siempre usar supabase-salonpro, nunca supabase-zm.
+Para BD de GeemaStudio: siempre usar supabase-geemastudio, nunca supabase-zm.
 
 ---
 

@@ -210,7 +210,7 @@ export function TenantLandingWarm({ data }: TenantLandingProps) {
             href="/"
             className="text-[rgba(250,247,242,0.3)] no-underline hover:underline"
           >
-            SalonPro
+            GeemaStudio
           </a>
         </p>
       </footer>

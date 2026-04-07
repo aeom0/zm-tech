@@ -1,4 +1,4 @@
-# SalonPro — Setup inicial
+# GeemaStudio — Setup inicial
 
 App de gestión para salones de belleza, barberías y peluquerías (LATAM). Frontend React Native (Expo) + Next.js; backend **Supabase** (Auth + PostgREST). Sin servidor Express.
 
@@ -6,7 +6,7 @@ App de gestión para salones de belleza, barberías y peluquerías (LATAM). Fron
 
 - **Node.js** 22+ (recomendado: `nvm use`, hay `.nvmrc`)
 - **Yarn** 4 (Berry)
-- Cuenta **Supabase** (proyecto SalonPro: `xidjomlxpuosupymcsaj`)
+- Cuenta **Supabase** (proyecto GeemaStudio: `xidjomlxpuosupymcsaj`)
 
 ## Desarrollo local
 

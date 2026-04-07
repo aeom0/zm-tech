@@ -66,7 +66,7 @@ export const TESTIMONIALS = [
     country: "Perú",
     avatar: "VT",
     color: "#40E0D0",
-    text: "Lo probamos antes del lanzamiento oficial y nos convenció. Tengo 3 especialistas y antes calculaba las comisiones a mano cada fin de mes. Ahora SalonPro lo hace solo. El equipo está encantado.",
+    text: "Lo probamos antes del lanzamiento oficial y nos convenció. Tengo 3 especialistas y antes calculaba las comisiones a mano cada fin de mes. Ahora GeemaStudio lo hace solo. El equipo está encantado.",
     stars: 5,
   },
   {
@@ -178,12 +178,12 @@ export const FAQS = [
   {
     question: "¿Necesito conocimientos técnicos para configurarlo?",
     answer:
-      "No. SalonPro está diseñado para que cualquier propietario de negocio lo configure en menos de 10 minutos. El onboarding te guía paso a paso: tipo de negocio, servicios, equipo y listo.",
+      "No. GeemaStudio está diseñado para que cualquier propietario de negocio lo configure en menos de 10 minutos. El onboarding te guía paso a paso: tipo de negocio, servicios, equipo y listo.",
   },
   {
     question: "¿Funciona en iOS y Android?",
     answer:
-      "Sí. SalonPro tiene app nativa para iOS y Android, además de acceso web desde cualquier navegador. Tu equipo puede usar el dispositivo que ya tiene.",
+      "Sí. GeemaStudio tiene app nativa para iOS y Android, además de acceso web desde cualquier navegador. Tu equipo puede usar el dispositivo que ya tiene.",
   },
   {
     question: "¿Puedo cambiar de plan cuando quiera?",
@@ -198,7 +198,7 @@ export const FAQS = [
   {
     question: "¿Hay contrato de permanencia?",
     answer:
-      "No. SalonPro es mes a mes (o anual con descuento). Puedes cancelar cuando quieras sin penalizaciones. Tus datos son tuyos y puedes exportarlos en cualquier momento.",
+      "No. GeemaStudio es mes a mes (o anual con descuento). Puedes cancelar cuando quieras sin penalizaciones. Tus datos son tuyos y puedes exportarlos en cualquier momento.",
   },
   {
     question: "¿Cómo es el soporte?",
@@ -208,7 +208,7 @@ export const FAQS = [
   {
     question: "¿Necesito WhatsApp Business API para usar el bot?",
     answer:
-      "Sí. El bot funciona con WhatsApp Business API (WABA) de Meta — diferente a la app WhatsApp Business normal. Desde SalonPro te guiamos paso a paso para conectar tu número. El proceso toma menos de 15 minutos y Meta lo aprueba en 1-2 días hábiles.",
+      "Sí. El bot funciona con WhatsApp Business API (WABA) de Meta — diferente a la app WhatsApp Business normal. Desde GeemaStudio te guiamos paso a paso para conectar tu número. El proceso toma menos de 15 minutos y Meta lo aprueba en 1-2 días hábiles.",
   },
   {
     question: "¿Qué pasa cuando se agotan las conversaciones del mes?",

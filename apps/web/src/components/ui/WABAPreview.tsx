@@ -51,7 +51,7 @@ export function WABAPreview() {
         </div>
         <div>
           <p className="text-white text-sm font-semibold leading-none">
-            SalonPro Bot
+            GeemaStudio Bot
           </p>
           <p className="text-[#8696A0] text-xs mt-0.5">en línea</p>
         </div>

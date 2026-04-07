@@ -1,5 +1,5 @@
 ---
-description: Estado actual del desarrollo SalonPro — Supabase directo, onboarding, tenant_settings
+description: Estado actual del desarrollo GeemaStudio — Supabase directo, onboarding, tenant_settings
 globs:
   - "apps/**/*"
   - "packages/**/*"
@@ -7,7 +7,7 @@ globs:
 alwaysApply: true
 ---
 
-# Estado actual — SalonPro
+# Estado actual — GeemaStudio
 
 ## Origen y entorno
 
@@ -33,7 +33,7 @@ alwaysApply: true
 
 ## MCP
 
-- Dos servidores en `.cursor/mcp.json`: **supabase-salonpro** (este proyecto) y **supabase-zm** (referencia). Para BD de SalonPro usar siempre supabase-salonpro (list_tables, execute_sql, etc.). Cursor puede mostrar nombres con prefijo del workspace.
+- Dos servidores en `.cursor/mcp.json`: **supabase-geemastudio** (este proyecto) y **supabase-zm** (referencia). Para BD de GeemaStudio usar siempre supabase-geemastudio (list_tables, execute_sql, etc.). Cursor puede mostrar nombres con prefijo del workspace.
 
 ## Assets de marca (diamante + wordmark en UI)
 

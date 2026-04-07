@@ -1,5 +1,5 @@
 -- =============================================================================
--- SalonPro — Servicios de ejemplo por tipo de negocio
+-- GeemaStudio — Servicios de ejemplo por tipo de negocio
 -- =============================================================================
 -- Este archivo es un TEMPLATE genérico. Edítalo con los servicios reales
 -- de tu negocio antes de ejecutarlo.

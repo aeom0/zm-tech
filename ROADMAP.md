@@ -1,4 +1,4 @@
-# ROADMAP SalonPro (2026) — ruta a beta v1.5
+# ROADMAP GeemaStudio (2026) — ruta a beta v1.5
 
 ## Objetivo
 
@@ -125,10 +125,10 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 - PR-09
 
 #### 10. Bot WABA multi-tenant — Edge Function (P1)
-- Port de `whatsapp-webhook` de ZM a SalonPro con arquitectura multi-tenant
+- Port de `whatsapp-webhook` de ZM a GeemaStudio con arquitectura multi-tenant
 - Catálogo dinámico desde DB del tenant activo
 - Templates configurables desde `tenant_settings`
-- Plantilla por defecto: `promo_salonpro_v1`
+- Plantilla por defecto: `promo_geemastudio_v1`
 - CORS + respuesta 200 inmediata a Meta antes de procesar
 - PR-10
 

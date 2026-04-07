@@ -1,10 +1,10 @@
-# Plan de Fases — SalonPro v1.3.0
+# Plan de Fases — GeemaStudio v1.3.0
 
 > Objetivo: limpiar residuos de ZM Lash & Nails, consolidar multi-tenant y portar mejoras clave desde ZM v1.7.
 
 ## Fase 0 — Estado base (v1.2.0)
 
-- Migración principal ZM → SalonPro completada.
+- Migración principal ZM → GeemaStudio completada.
 - TenantConfig y TenantContext integrados.
 - Onboarding 5 pasos funcionando.
 - Flujos principales operativos: Dashboard, Agenda, Servicios, Personal, Finanzas, Inventario.
@@ -81,7 +81,7 @@ Progreso:
 
 ## Fase 3 — Módulo Clientes (port desde ZM v1.7)
 
-**Objetivo**: portar el módulo de Clientes de ZM a SalonPro respetando multi-tenant y terminología neutra.
+**Objetivo**: portar el módulo de Clientes de ZM a GeemaStudio respetando multi-tenant y terminología neutra.
 
 ### Alcance
 

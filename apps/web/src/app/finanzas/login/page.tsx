@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Lock, Mail, KeyRound, FlaskConical } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 
-const DEMO_PASSWORD = "SalonPro2025!";
+const DEMO_PASSWORD = "Geema2025!";
 
 const DEMO_EMAILS = new Set([
   "demo.salon@ejemplo.com",

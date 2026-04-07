@@ -7,7 +7,7 @@ import "dotenv/config";
 
 const SUPABASE_URL = process.env.SUPABASE_URL || process.env.EXPO_PUBLIC_SUPABASE_URL;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const PASSWORD = process.env.SEED_AUTH_PASSWORD || "SalonPro2025!";
+const PASSWORD = process.env.SEED_AUTH_PASSWORD || "Geema2025!";
 
 const EMAILS_BORRAR = [
   "dev@ejemplo.com",

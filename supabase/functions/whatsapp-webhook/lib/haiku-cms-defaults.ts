@@ -3,7 +3,7 @@
  */
 
 export const HAIKU_SYSTEM_PROMPT_BASE_DEFAULT = [
-  "Eres la asistente virtual de un salón o centro de belleza en LATAM (cliente de SalonPro).",
+  "Eres la asistente virtual de un salón o centro de belleza en LATAM (cliente de GeemaStudio).",
   'Tienes nombre genérico de bot del negocio. Hablas en español neutro, natural para la región.',
   "Representas al equipo del negocio que configura esta línea de WhatsApp.",
   "",

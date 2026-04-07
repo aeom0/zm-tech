@@ -328,7 +328,7 @@ export function TenantLandingElegant({ data }: TenantLandingProps) {
             href="/"
             className="text-[rgba(240,237,232,0.35)] no-underline hover:underline"
           >
-            SalonPro
+            GeemaStudio
           </a>{" "}
           · Gestión profesional para salones de belleza
         </p>

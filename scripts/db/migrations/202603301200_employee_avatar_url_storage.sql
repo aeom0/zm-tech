@@ -1,4 +1,4 @@
--- Avatar de empleados: columna + bucket público para fotos del personal (SalonPro mobile Tab Más → Personal).
+-- Avatar de empleados: columna + bucket público para fotos del personal (GeemaStudio mobile Tab Más → Personal).
 -- Aplicar en Supabase SQL Editor o vía `apply_migration` MCP.
 
 ALTER TABLE public.employees

@@ -6,7 +6,7 @@ import { PanelQueryProvider } from "../panel/query-provider";
 import { createServerSupabaseClient } from "@/lib/supabase-server";
 
 export const metadata: Metadata = {
-  title: "Dashboard | SalonPro",
+  title: "Dashboard | GeemaStudio",
   description: "Métricas operativas de tu negocio.",
   robots: { index: false, follow: false },
 };

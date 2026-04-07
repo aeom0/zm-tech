@@ -18,7 +18,7 @@ export function Footer() {
             <div className="flex items-center mb-4">
               <Image
                 src="/logo-diamondSparkle.svg"
-                alt="SalonPro"
+                alt="GeemaStudio"
                 width={34}
                 height={39}
                 className="h-9 w-auto"
@@ -90,7 +90,7 @@ export function Footer() {
 
         <div className="border-t border-zinc-800 pt-8 text-center">
           <p className="text-sm text-zinc-500">
-            © 2026 SalonPro. Todos los derechos reservados. Hecho con ❤️ para
+            © 2026 GeemaStudio. Todos los derechos reservados. Hecho con ❤️ para
             LATAM.
           </p>
         </div>

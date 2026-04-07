@@ -24,7 +24,7 @@ export default function TenantNotFound() {
         className="rounded-full px-7 py-3 text-sm font-semibold text-white no-underline"
         style={{ background: LUNARIS.gradient.css }}
       >
-        Conocer SalonPro
+        Conocer GeemaStudio
       </Link>
     </div>
   );

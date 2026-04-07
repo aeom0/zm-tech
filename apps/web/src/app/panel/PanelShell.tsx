@@ -83,7 +83,7 @@ export function PanelShell({
           <div className="w-10 h-10 rounded-2xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center overflow-hidden">
             <Image
               src="/logo-diamondSparkle.svg"
-              alt="SalonPro"
+              alt="GeemaStudio"
               width={24}
               height={24}
               className="opacity-90"
@@ -91,7 +91,7 @@ export function PanelShell({
           </div>
           <div className="leading-tight">
             <div className="text-sm font-semibold text-white">Panel</div>
-            <div className="text-xs text-zinc-400">SalonPro</div>
+            <div className="text-xs text-zinc-400">GeemaStudio</div>
           </div>
         </Link>
       </div>

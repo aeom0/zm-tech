@@ -1,4 +1,4 @@
-# Cursor Rules - SalonPro
+# Cursor Rules - GeemaStudio
 
 Directrices y reglas de desarrollo para Cursor en este proyecto. Monorepo apps/mobile, apps/web, packages/shared-schema, packages/tenant-config. Backend 100% Supabase (proyecto `xidjomlxpuosupymcsaj`).
 
@@ -7,9 +7,9 @@ Directrices y reglas de desarrollo para Cursor en este proyecto. Monorepo apps/m
 ```
 .cursor/
 ├── README.md           # Este archivo
-├── mcp.json            # Dos MCP Supabase: supabase-zm + supabase-salonpro
+├── mcp.json            # Dos MCP Supabase: supabase-zm + supabase-geemastudio
 └── rules/
-    ├── arquitectura.mdc       # Estructura repo, stack, patrones SalonPro
+    ├── arquitectura.mdc       # Estructura repo, stack, patrones GeemaStudio
     ├── business-logic.mdc    # Negocio: citas, servicios, inventario, finanzas
     ├── ui-patterns.mdc       # Tema, componentes, diseño
     ├── mobile-patterns.mdc   # Expo/React Native, navegación, listas
@@ -33,11 +33,11 @@ Cada archivo en `rules/` usa frontmatter con `description`, `globs` y opcionalme
 
 El archivo `.cursor/mcp.json` define **dos** servidores:
 
-| Clave en mcp.json   | Proyecto Supabase        | Uso en este repo (SalonPro)     |
+| Clave en mcp.json   | Proyecto Supabase        | Uso en este repo (GeemaStudio)     |
 |---------------------|---------------------------|----------------------------------|
-| `supabase-salonpro` | `xidjomlxpuosupymcsaj`    | **Sí** — BD, SQL, tipos, migraciones |
+| `supabase-geemastudio` | `xidjomlxpuosupymcsaj`    | **Sí** — BD, SQL, tipos, migraciones |
 | `supabase-zm`       | `udelxwwnyivknslueerr`    | Solo referencia/consulta ZM     |
 
-- Para trabajar en **SalonPro**: usar el servidor **supabase-salonpro** (list_tables, execute_sql, apply_migration, generate_typescript_types). El proyecto ya viene configurado en la URL del MCP; no hace falta pasar `project_id`.
-- Cursor puede mostrar nombres con prefijo del workspace (ej. `project-0-SalonPro (raíz)-supabase-salonpro`). Elegir el que corresponda a SalonPro para no mezclar BDs.
+- Para trabajar en **GeemaStudio**: usar el servidor **supabase-geemastudio** (list_tables, execute_sql, apply_migration, generate_typescript_types). El proyecto ya viene configurado en la URL del MCP; no hace falta pasar `project_id`.
+- Cursor puede mostrar nombres con prefijo del workspace (ej. `project-0-GeemaStudio (raíz)-supabase-geemastudio`). Elegir el que corresponda a GeemaStudio para no mezclar BDs.
 - Autenticación: Cursor solicita login en Supabase la primera vez (OAuth en navegador).

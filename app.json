@@ -1,22 +1,22 @@
 {
   "expo": {
-    "name": "SalonPro",
-    "slug": "salonpro",
+    "name": "GeemaStudio",
+    "slug": "geemastudio",
     "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "salonpro",
+    "scheme": "geemastudio",
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.salonpro.app"
+      "bundleIdentifier": "com.geemastudio.app"
     },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#111318",
         "foregroundImage": "./assets/images/android-icon-foreground.png"
       },
-      "package": "com.salonpro.app",
+      "package": "com.geemastudio.app",
       "predictiveBackGestureEnabled": false
     },
     "web": {
@@ -33,8 +33,8 @@
         "resizeMode": "contain",
         "backgroundColor": "#111318"
       },
-      "name": "SalonPro",
-      "shortName": "SalonPro",
+      "name": "GeemaStudio",
+      "shortName": "GeemaStudio",
       "description": "Gestión de salones de belleza y centros de estética",
       "themeColor": "#6366f1",
       "backgroundColor": "#FFFFFF",

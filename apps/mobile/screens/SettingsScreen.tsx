@@ -75,7 +75,7 @@ export default function SettingsScreen() {
 
         <View style={{ marginTop: Spacing.lg, alignItems: "center" }}>
           <ThemedText type="small" style={{ color: theme.textMuted }}>
-            {config.businessName} · SalonPro
+            {config.businessName} · GeemaStudio
           </ThemedText>
         </View>
       </ScrollView>

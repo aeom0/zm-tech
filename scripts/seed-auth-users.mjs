@@ -25,7 +25,7 @@ if (!SUPABASE_URL || !SERVICE_ROLE_KEY) {
 }
 
 // Cambia esta contraseña antes de ejecutar en producción
-const PASSWORD_INICIAL = process.env.SEED_AUTH_PASSWORD || "SalonPro2025!";
+const PASSWORD_INICIAL = process.env.SEED_AUTH_PASSWORD || "Geema2025!";
 
 // ─── Reemplaza estos datos con los de tu equipo ───────────────────────────────
 const USUARIOS = [

@@ -114,7 +114,7 @@ function DemoMockup({ tab }: { tab: (typeof DEMO_TABS)[0] }) {
       {/* Header de pantalla */}
       <div className="px-6 pb-4 border-b border-white/10">
         <p className="text-white/50 text-xs uppercase tracking-widest mb-1">
-          SalonPro
+          GeemaStudio
         </p>
         <h3 className="text-white font-bold text-lg">{tab.title}</h3>
       </div>
@@ -195,7 +195,7 @@ export function DemoSection() {
               Míralo antes de comprarlo
             </h2>
             <p className="text-zinc-400 mt-4 max-w-xl mx-auto">
-              Toca cada módulo y ve cómo funciona SalonPro en un celular real.
+              Toca cada módulo y ve cómo funciona GeemaStudio en un celular real.
             </p>
           </div>
         </RevealWrapper>

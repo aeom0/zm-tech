@@ -1,5 +1,5 @@
 ---
-description: Uso de MCP Supabase para SalonPro y referencia ZM (dos proyectos)
+description: Uso de MCP Supabase para GeemaStudio y referencia ZM (dos proyectos)
 globs:
   - "packages/shared-schema/**/*"
   - "apps/mobile/**/*"
@@ -7,13 +7,13 @@ globs:
 alwaysApply: false
 ---
 
-# Supabase MCP - SalonPro
+# Supabase MCP - GeemaStudio
 
 ## Configuración
 
-- **Dos MCP** en `.cursor/mcp.json`: `supabase-salonpro` (proyecto `xidjomlxpuosupymcsaj`) y `supabase-zm` (proyecto `udelxwwnyivknslueerr`).
-- **En este repo (SalonPro)** usar siempre el servidor **supabase-salonpro** para list_tables, execute_sql, apply_migration, generate_typescript_types. Así se opera sobre la BD correcta.
-- Cursor puede mostrar nombres con prefijo del workspace (ej. `project-0-SalonPro (raíz)-supabase-salonpro`). Elegir el servidor que corresponda a SalonPro.
+- **Dos MCP** en `.cursor/mcp.json`: `supabase-geemastudio` (proyecto `xidjomlxpuosupymcsaj`) y `supabase-zm` (proyecto `udelxwwnyivknslueerr`).
+- **En este repo (GeemaStudio)** usar siempre el servidor **supabase-geemastudio** para list_tables, execute_sql, apply_migration, generate_typescript_types. Así se opera sobre la BD correcta.
+- Cursor puede mostrar nombres con prefijo del workspace (ej. `project-0-GeemaStudio (raíz)-supabase-geemastudio`). Elegir el servidor que corresponda a GeemaStudio.
 - Autenticación: Cursor solicita login en Supabase la primera vez (OAuth en navegador).
 - Verificación: Settings > Cursor Settings > Tools & MCP; reiniciar IDE si no detecta herramientas.
 
@@ -27,6 +27,6 @@ alwaysApply: false
 
 ## Uso recomendado
 
-- Usar el MCP **supabase-salonpro** para explorar schema, ejecutar consultas de prueba o generar tipos en SalonPro.
+- Usar el MCP **supabase-geemastudio** para explorar schema, ejecutar consultas de prueba o generar tipos en GeemaStudio.
 - No ejecutar escrituras destructivas sin revisar; aprobar tool calls manualmente.
-- Si necesitas consultar la BD de ZM (udelxwwnyivknslueerr), usar el servidor **supabase-zm** en lugar de supabase-salonpro.
+- Si necesitas consultar la BD de ZM (udelxwwnyivknslueerr), usar el servidor **supabase-zm** en lugar de supabase-geemastudio.

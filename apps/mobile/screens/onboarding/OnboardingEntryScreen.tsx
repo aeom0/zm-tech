@@ -23,7 +23,7 @@ export default function OnboardingEntryScreen({
 }: OnboardingEntryScreenProps) {
   return (
     <OnboardingLayout centered>
-      {/* Diamante + glow + SalonPro + tagline */}
+      {/* Diamante + glow + GeemaStudio + tagline */}
       <Animated.View
         entering={FadeInUp.duration(500)}
         style={styles.logoSection}

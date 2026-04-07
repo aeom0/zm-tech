@@ -1,5 +1,5 @@
 ---
-description: Acceso a archivos de desarrollo y .env para depuración (SalonPro)
+description: Acceso a archivos de desarrollo y .env para depuración (GeemaStudio)
 globs:
   - "**/.env"
   - "**/.env.local"
@@ -9,7 +9,7 @@ globs:
 alwaysApply: true
 ---
 
-# Development Access - SalonPro
+# Development Access - GeemaStudio
 
 ## Permisos para desarrollo
 
@@ -19,7 +19,7 @@ alwaysApply: true
 
 ## Contexto
 
-- **Supabase**: Proyecto SalonPro `xidjomlxpuosupymcsaj`. Mobile y web conectan directo (PostgREST + Auth). No hay servidor Express.
+- **Supabase**: Proyecto GeemaStudio `xidjomlxpuosupymcsaj`. Mobile y web conectan directo (PostgREST + Auth). No hay servidor Express.
 - **Mobile**: Variables `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` en `.env` (raíz o apps/mobile).
 - **Web**: Variables `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` en `apps/web/.env.local` si aplica.
 

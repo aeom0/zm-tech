@@ -1,5 +1,5 @@
 ---
-description: Arquitectura del proyecto SalonPro (monorepo) — SaaS multi-tenant, Supabase
+description: Arquitectura del proyecto GeemaStudio (monorepo) — SaaS multi-tenant, Supabase
 globs:
   - "apps/**/*"
   - "packages/**/*"
@@ -9,7 +9,7 @@ globs:
 alwaysApply: false
 ---
 
-# Arquitectura SalonPro
+# Arquitectura GeemaStudio
 
 ## Estructura del Repo (monorepo)
 

@@ -1,4 +1,4 @@
--- SalonPro: correcciones Database Advisor (security + performance) — mar 2026
+-- GeemaStudio: correcciones Database Advisor (security + performance) — mar 2026
 -- Aplicar con: MCP apply_migration o psql con DATABASE_URL
 -- Excluye auth_leaked_password_protection (plan)
 -- Declarativo Drizzle (índices FK + tabla appointment_verifications): packages/shared-schema/src/schema.ts — yarn db:push

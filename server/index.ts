@@ -14,5 +14,5 @@ app.get("/health", (_req, res) => res.json({ ok: true }));
 app.use("/api", apiRouter);
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ SalonPro API corriendo en http://0.0.0.0:${PORT}`);
+  console.log(`✅ GeemaStudio API corriendo en http://0.0.0.0:${PORT}`);
 });

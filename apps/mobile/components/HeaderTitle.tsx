@@ -16,7 +16,7 @@ export function HeaderTitle({ title }: HeaderTitleProps) {
   const { config } = useTenant();
   const { theme } = useTheme();
 
-  const isBrandTitle = title === "SalonPro";
+  const isBrandTitle = title === "GeemaStudio";
 
   if (isBrandTitle) {
     return (

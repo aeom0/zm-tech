@@ -4,7 +4,7 @@ Este archivo proporciona orientación a Claude Code (claude.ai/code) para trabaj
 
 ## Descripción del Proyecto
 
-**SalonPro** es una plataforma SaaS multi-tenant para gestión de salones de belleza, barberías y peluquerías en LATAM. Originada desde **ZM Lash & Nails Beauty** (Lima, Perú) y convertida en producto genérico y comercializable.
+**GeemaStudio** es una plataforma SaaS multi-tenant para gestión de salones de belleza, barberías y peluquerías en LATAM. Originada desde **ZM Lash & Nails Beauty** (Lima, Perú) y convertida en producto genérico y comercializable.
 
 **Idioma**: Toda la interfaz, respuestas de API y documentación están en **español neutro LATAM (es-VE)**.
 
@@ -107,7 +107,7 @@ Web (Next.js) usa `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` e
 
 ### Usuarios de prueba (seed actual — abr 2026)
 
-Contraseña universal: `SalonPro2025!`  
+Contraseña universal: `Geema2025!`  
 Proyecto Supabase dev: `xidjomlxpuosupymcsaj`
 
 **dev@ejemplo.com** — rol `dev` — sin tenant_settings, siempre onboarding
@@ -282,11 +282,11 @@ Flujo de arranque (mobile):
 - **Mobile — `DiamondHero`**: usa `Gradients.onboarding.colors` / `locations` y `linearStart`/`linearEnd` desde `constants/theme.ts` (sin duplicar stops locales).
 - **Changelog**: ver `[1.4.8]` en `CHANGELOG.md`.
 
-## Cambios Recientes (feb 2026 — v1.2.0 — migración SalonPro)
+## Cambios Recientes (feb 2026 — v1.2.0 — migración GeemaStudio)
 
 - **Fase 2 — paquete `@geemastudio/tenant-config`**: `TenantConfig` interface + `defaultTenantConfig` + 4 presets (spa-nails, barbershop, hair-salon, full-aesthetic). Registrado como workspace en `apps/mobile`.
 - **Fase 3 — integración TenantContext**: `TenantProvider` en `App.tsx`; `useTenant()` en todos los screens; `createTheme(config, isDark)` en `constants/theme.ts`; `useTheme()` actualizado. Eliminadas todas las referencias hardcodeadas al salón original: nombre, colores, moneda local, canal de notificaciones Android.
-- **Fase 4 — limpieza de seeds**: `seed-{services,employees}.sql` renombrados a `*-example.sql`; creados `*-template.sql` genéricos para los 4 tipos de negocio; `seed-auth-users.mjs` con emails `@ejemplo.com`; contraseña inicial `SalonPro2025!`. Cuentas demo multi-tenant, `is_demo`, reset Edge: ver `scripts/db/seeds/README.md` y **### Usuarios de prueba** en Configuración del Entorno.
+- **Fase 4 — limpieza de seeds**: `seed-{services,employees}.sql` renombrados a `*-example.sql`; creados `*-template.sql` genéricos para los 4 tipos de negocio; `seed-auth-users.mjs` con emails `@ejemplo.com`; contraseña inicial `Geema2025!`. Cuentas demo multi-tenant, `is_demo`, reset Edge: ver `scripts/db/seeds/README.md` y **### Usuarios de prueba** en Configuración del Entorno.
 - **Fase 5 — onboarding flow**: 5 pantallas en `screens/onboarding/`; `AuthGate` orquesta el flujo; `TenantContext` agrega `isConfigured` + `markConfigured()` con clave `@geemastudio/tenant_configured` en AsyncStorage.
 - **Fase 6 — tenant_settings**: tabla `tenant_settings` en Supabase con RLS y sincronización desde el onboarding (`tenantSettingsService` y `TenantContext`).
 - **Fase 7 — Supabase full-mobile**: todos los flujos mobile (Onboarding, Dashboard, Agenda, Servicios, Personal, Finanzas, Inventario) usan Supabase directo; eliminado el cliente Express (`apiRequest`, `/api/*`) y actualizadas las `queryKey` de React Query (`employees`, `services`, `service_categories`, `appointments`, `payments`, `inventory_items`, `dashboard_stats`, `dashboard_revenue`).
@@ -303,7 +303,7 @@ Flujo de arranque (mobile):
 - **Splash nativa** (`assets/splash-logo.png`, 900×900): regenerada con `DiamondSparkle` + `NebulosaGlow` perfectamente co-centrados (bounding box completo incluyendo sparkle y=-4); fondo `#111318`; sin textos. Reemplaza el PNG anterior que mostraba el diamante sesgado y cortado.
 - **Ícono launcher** (`assets/icon.png`, 1024×1024): regenerado con misma composición diamante+nebulosa; fondo `#111318` (elimina fondo blanco previo); diamante ocupa ~70% del canvas con márgenes simétricos.
 - **`SplashScreenComponent` eliminada** de `AuthGate`: la splash nativa cubre el tiempo de carga de AsyncStorage; `hideAsync()` se llama cuando `tenantLoading` pasa a `false` vía `useEffect`. Archivo `SplashScreen.tsx` queda en repo pero ya no se usa en el flujo.
-- **`DiamondHero`**: eliminado `MaskedView`/gradiente del wordmark "SalonPro"; tipografía mixta — `Salon` en weight 300 + letterSpacing 6 uppercase, `Pro` en weight 800 letterSpacing -1; todo blanco. Prop `showText` (default `true`) para reutilizar solo el diamante+glow sin textos.
+- **`DiamondHero`**: eliminado `MaskedView`/gradiente del wordmark "GeemaStudio"; tipografía mixta — `Salon` en weight 300 + letterSpacing 6 uppercase, `Pro` en weight 800 letterSpacing -1; todo blanco. Prop `showText` (default `true`) para reutilizar solo el diamante+glow sin textos.
 - **`OnboardingEntryScreen`**: gradiente Lunaris (turquesa→índigo) en "con estilo y precisión" vía tokens de tema; altura `maskedHighlight: 58` y `lineHeight: 54` para evitar corte de descendentes; font-weight 300 + letterSpacing 0.5.
 
 ## Cambios Recientes (mar 2026 — v1.4.4 — Marca diamante + EAS)

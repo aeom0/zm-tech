@@ -47,7 +47,7 @@ export function LoginScreen({
   const [error, setError] = useState<string | null>(null);
 
   const hasLogo = Boolean(config.logo);
-  const businessName = config.businessName || "SalonPro";
+  const businessName = config.businessName || "GeemaStudio";
 
   const handleLogin = async () => {
     setError(null);

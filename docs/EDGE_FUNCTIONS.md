@@ -1,4 +1,4 @@
-# Edge Functions — SalonPro
+# Edge Functions — GeemaStudio
 
 ## `whatsapp-webhook`
 

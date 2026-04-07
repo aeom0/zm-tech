@@ -65,7 +65,7 @@ const DEMO_BUSINESSES = [
   },
 ] as const;
 
-const PASSWORD = "SalonPro2025!";
+const PASSWORD = "Geema2025!";
 
 export function DemoBusinessPicker() {
   const [selected, setSelected] = useState<string | null>(null);

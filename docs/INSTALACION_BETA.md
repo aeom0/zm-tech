@@ -1,4 +1,4 @@
-# Instalar SalonPro Beta en Android
+# Instalar GeemaStudio Beta en Android
 
 ## Requisitos
 - Android 10 o superior
@@ -9,7 +9,7 @@
 1. Abrir el enlace de descarga en el teléfono (o escanear el QR)
 2. Descargar el archivo `.apk`
 3. Abrir el archivo descargado → Instalar
-4. Abrir **SalonPro**
+4. Abrir **GeemaStudio**
 
 ## Conectar al servidor de desarrollo (opcional — solo para pruebas con Expo)
 Si Alberto tiene `yarn mobile:dev` corriendo:

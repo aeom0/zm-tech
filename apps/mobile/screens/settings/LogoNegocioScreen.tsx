@@ -51,7 +51,7 @@ export default function LogoNegocioScreen() {
   const [localUri, setLocalUri] = useState<string | null>(null);
 
   const currentLogo = localUri || config.logo || null;
-  const initials = getInitials(config.businessName || "SalonPro");
+  const initials = getInitials(config.businessName || "GeemaStudio");
 
   const handleUpload = async (uri: string) => {
     setLocalUri(uri);

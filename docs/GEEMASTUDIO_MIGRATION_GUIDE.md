@@ -1,4 +1,4 @@
-# SalonPro — Guía de Migración para Claude
+# GeemaStudio — Guía de Migración para Claude
 
 > **Fecha de inicio**: 2026-02-19
 > **Estado actual**: FASES 1–6 completadas ✅ | FASE 7: 7A (RLS) y 7B (tenant_settings en onboarding) completados; 7C (pruebas integrales) y 7D (landing) pendientes
@@ -223,7 +223,7 @@ Acciones en `scripts/db/`:
 5. Actualizar `scripts/seed-auth-users.mjs` → usar emails `@ejemplo.com` ficticios
 
 Actualizar `README.md` raíz:
-- Nombre: **SalonPro**
+- Nombre: **GeemaStudio**
 - Descripción genérica del producto
 - Sección "Tipos de negocio soportados"
 - Instrucciones de configuración del tenant
@@ -301,14 +301,14 @@ Implementado: al completar el flujo de 5 pasos se hace upsert en `tenant_setting
 
 Con `yarn mobile:dev` contra el proyecto Supabase `xidjomlxpuosupymcsaj`:
 
-- Login con `dev@ejemplo.com` / `SalonPro2025!` (creado por seed-auth-users.mjs)
-- Login con `propietario@ejemplo.com` / `SalonPro2025!`
+- Login con `dev@ejemplo.com` / `Geema2025!` (creado por seed-auth-users.mjs)
+- Login con `propietario@ejemplo.com` / `Geema2025!`
 - Verificar que el onboarding fluya los 5 pasos y guarde en tenant_settings
 - Verificar Dashboard con datos reales (employees, services, appointments)
 - Verificar Agenda, Servicios, Inventario, Finanzas
 - Verificar navegación Más → Personal, Inventario, Finanzas (solo dev/owner)
 
-#### FASE 7D — Landing web SalonPro (apps/web) ⏳
+#### FASE 7D — Landing web GeemaStudio (apps/web) ⏳
 
 La landing actual (`apps/web`) tiene diseño de conversión general.
 Actualizar/refinar con:
@@ -359,8 +359,8 @@ yarn lint:fix
 - El proyecto original (ZM Lash & Nails) está en `/home/alber/ZM-Lash-and-Nails-Beauty`
   pero NO debe modificarse — es solo referencia.
 - Este repo (`/home/alber/geemastudio`) es donde se hacen TODOS los cambios.
-- Supabase del proyecto original: `udelxwwnyivknslueerr` — NO reutilizar, crear uno nuevo para SalonPro.
-- Las variables de entorno de SalonPro están en `.env` (no commiteado). Ver `.env.example` para referencia.
+- Supabase del proyecto original: `udelxwwnyivknslueerr` — NO reutilizar, crear uno nuevo para GeemaStudio.
+- Las variables de entorno de GeemaStudio están en `.env` (no commiteado). Ver `.env.example` para referencia.
 - `apps/mobile/lib/supabase.ts` ✅ ya usa `process.env.EXPO_PUBLIC_SUPABASE_*` (corregido en sesión 2026-03-12).
 - Proyecto Supabase activo: `xidjomlxpuosupymcsaj` — URL: `https://xidjomlxpuosupymcsaj.supabase.co`
 - Restricción de entorno: puerto 5432 bloqueado en WSL (solo IPv6). Usar SQL Editor del Dashboard para DDL. Ver `docs/DESARROLLO_LOCAL.md`.

@@ -1,5 +1,5 @@
 -- =============================================================================
--- SalonPro — Empleados/as de ejemplo (datos ficticios genéricos)
+-- GeemaStudio — Empleados/as de ejemplo (datos ficticios genéricos)
 -- =============================================================================
 -- Este archivo es un TEMPLATE genérico. Reemplaza los nombres, colores y
 -- porcentajes con los datos reales de tu equipo.

@@ -246,7 +246,7 @@ export function TenantLandingModern({ data }: TenantLandingProps) {
             href="/"
             className="text-[rgba(29,29,31,0.35)] no-underline hover:underline"
           >
-            SalonPro
+            GeemaStudio
           </a>
         </p>
       </footer>

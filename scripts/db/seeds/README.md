@@ -1,8 +1,8 @@
-# Seeds — SalonPro Dev
+# Seeds — GeemaStudio Dev
 
 ## Usuarios de prueba
 
-Contraseña universal: `SalonPro2025!`
+Contraseña universal: `Geema2025!`
 
 | Email | Rol | Negocio | Tipo |
 |-------|-----|---------|------|

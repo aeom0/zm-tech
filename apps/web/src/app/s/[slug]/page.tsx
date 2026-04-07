@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = await getTenantLandingBySlug(slug);
 
   if (!data) {
-    return { title: "Salón no encontrado — SalonPro" };
+    return { title: "Salón no encontrado — GeemaStudio" };
   }
 
   const description =

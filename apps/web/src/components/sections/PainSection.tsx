@@ -59,7 +59,7 @@ export function PainSection() {
               ¿Cómo gestionas tu negocio hoy?
             </h2>
             <p className="text-zinc-500 dark:text-zinc-400 mt-4 max-w-xl mx-auto">
-              Si te identificas con alguna de estas situaciones, SalonPro es
+              Si te identificas con alguna de estas situaciones, GeemaStudio es
               para ti.
             </p>
           </div>
@@ -102,7 +102,7 @@ export function PainSection() {
                 <div className="mb-4 text-white/80">
                   <Scissors size={36} strokeWidth={1.5} />
                 </div>
-                <h3 className="text-2xl font-bold mb-2">Con SalonPro</h3>
+                <h3 className="text-2xl font-bold mb-2">Con GeemaStudio</h3>
                 <p className="text-white/80 mb-6 text-sm">
                   Todo organizado, en tu celular, en tiempo real.
                 </p>

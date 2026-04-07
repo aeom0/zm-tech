@@ -10,18 +10,18 @@ const STACK_SIZE = 320;
 const GLOW_SIZE = 420;
 
 interface DiamondHeroProps {
-  /** Mostrar wordmark "SalonPro" y tagline debajo del diamante. Default: true */
+  /** Mostrar wordmark "GeemaStudio" y tagline debajo del diamante. Default: true */
   showText?: boolean;
 }
 
 /**
  * Componente compartido entre OnboardingEntryScreen y SplashScreen.
- * NebulosaGlow + DiamondSparkle + wordmark SalonPro + tagline.
+ * NebulosaGlow + DiamondSparkle + wordmark GeemaStudio + tagline.
  *
- * Wordmark: "Salon" + "Pro" ambas Poppins ExtraBold, mismo fontSize y lineHeight.
- * MaskedView hereda el tamaño del LinearGradient — si proGradient.height > fontSize
- * el bloque de Pro es más alto que Salon y con flex-end queda más abajo.
- * Solución: lineHeight === fontSize === proGradient.height === WORDMARK_SIZE.
+ * Wordmark: "Geema" + "Studio" ambas Poppins ExtraBold, mismo fontSize y lineHeight.
+ * MaskedView hereda el tamaño del LinearGradient — si studioGradient.height > fontSize
+ * el bloque de Studio es más alto que Geema y con flex-end queda más abajo.
+ * Solución: lineHeight === fontSize === studioGradient.height === WORDMARK_SIZE.
  *
  * Gradiente: consume Gradients.onboarding desde theme.ts — fuente de verdad única.
  */
@@ -38,18 +38,18 @@ export function DiamondHero({ showText = true }: DiamondHeroProps) {
 
       {showText && (
         <>
-          {/* Wordmark SalonPro */}
+          {/* Wordmark GeemaStudio */}
           <View style={styles.wordmarkRow}>
-            {/* "Salon" — Poppins ExtraBold, blanco puro */}
-            <Text style={styles.wordmarkSalon}>Salon</Text>
+            {/* "Geema" — Poppins ExtraBold, blanco puro */}
+            <Text style={styles.wordmarkGeema}>Geema</Text>
 
-            {/* "Pro" — Poppins ExtraBold, gradiente Lunaris vía MaskedView.
+            {/* "Studio" — Poppins ExtraBold, gradiente Lunaris vía MaskedView.
                 proGradient.height === WORDMARK_SIZE para que MaskedView
-                ocupe exactamente la misma altura que wordmarkSalon. */}
+                ocupe exactamente la misma altura que wordmarkGeema. */}
             <MaskedView
               maskElement={
-                <Text style={[styles.wordmarkPro, styles.wordmarkProMask]}>
-                  Pro
+                <Text style={[styles.wordmarkStudio, styles.wordmarkStudioMask]}>
+                  Studio
                 </Text>
               }
             >
@@ -58,7 +58,7 @@ export function DiamondHero({ showText = true }: DiamondHeroProps) {
                 locations={[...Gradients.onboarding.locations]}
                 start={Gradients.onboarding.linearStart}
                 end={Gradients.onboarding.linearEnd}
-                style={styles.proGradient}
+                style={styles.studioGradient}
               />
             </MaskedView>
           </View>
@@ -99,25 +99,25 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     gap: 0,
   },
-  wordmarkSalon: {
+  wordmarkGeema: {
     fontFamily: "Poppins_800ExtraBold",
     fontSize: WORDMARK_SIZE,
     lineHeight: WORDMARK_SIZE,
     color: "#FFFFFF",
     includeFontPadding: false,
   },
-  wordmarkPro: {
+  wordmarkStudio: {
     fontFamily: "Poppins_800ExtraBold",
     fontSize: WORDMARK_SIZE,
     lineHeight: WORDMARK_SIZE,
     includeFontPadding: false,
   },
-  wordmarkProMask: {
+  wordmarkStudioMask: {
     color: "#FFFFFF",
     backgroundColor: "transparent",
   },
-  proGradient: {
-    width: 90,
+  studioGradient: {
+    width: 120,
     height: WORDMARK_SIZE,
   },
   tagline: {

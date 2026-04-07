@@ -1,4 +1,4 @@
-// services-catalog.ts — Catálogo unificado (PostgREST SalonPro, multi-tenant)
+// services-catalog.ts — Catálogo unificado (PostgREST GeemaStudio, multi-tenant)
 
 import type { SupabaseClient } from "./supabase.ts";
 

@@ -1,4 +1,4 @@
-# SalonPro
+# GeemaStudio
 
 Sistema de gestión integral para salones de belleza, barberías y peluquerías en LATAM.
 Construido como SaaS multi-tenant sobre React Native + Expo + Supabase.
@@ -179,7 +179,7 @@ META_WABA_VERIFY_TOKEN=token_de_verificacion_meta
 
 ## Webhook WABA (Meta)
 
-SalonPro incluye un endpoint para recibir mensajes entrantes de WhatsApp Cloud API y almacenarlos en Supabase.
+GeemaStudio incluye un endpoint para recibir mensajes entrantes de WhatsApp Cloud API y almacenarlos en Supabase.
 
 - Endpoint: `POST /api/waba/webhook` (recepción de eventos)
 - Verificación Meta: `GET /api/waba/webhook` (challenge de `hub.*`)
@@ -242,7 +242,7 @@ limit 20;
 - [Lineamientos de diseño](docs/design_guidelines.md)
 - [Desarrollo local / migraciones](docs/DESARROLLO_LOCAL.md)
 - [CLAUDE.md](CLAUDE.md) — instrucciones para Claude Code
-- [.cursor/README.md](.cursor/README.md) — reglas Cursor y MCP (dos proyectos Supabase: ZM y SalonPro)
+- [.cursor/README.md](.cursor/README.md) — reglas Cursor y MCP (dos proyectos Supabase: ZM y GeemaStudio)
 
 ---
 

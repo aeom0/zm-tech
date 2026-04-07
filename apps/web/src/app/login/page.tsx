@@ -66,7 +66,7 @@ export default function LoginPage() {
               <div className="mx-auto w-14 h-14 rounded-2xl bg-white/[0.06] border border-white/[0.08] flex items-center justify-center mb-4">
                 <Image
                   src="/logo-diamondSparkle.svg"
-                  alt="SalonPro"
+                  alt="GeemaStudio"
                   width={28}
                   height={28}
                 />
