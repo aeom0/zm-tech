@@ -3,8 +3,8 @@ import {
   BookOpen,
   TrendingDown,
   CheckCircle,
-  Scissors,
 } from "lucide-react";
+import Image from "next/image";
 import { RevealWrapper } from "@/components/ui/RevealWrapper";
 
 const PAINS = [
@@ -99,8 +99,14 @@ export function PainSection() {
               </div>
 
               <div className="w-full bg-gradient-to-br from-primary to-primary/80 rounded-2xl p-8 text-white shadow-xl shadow-primary/20">
-                <div className="mb-4 text-white/80">
-                  <Scissors size={36} strokeWidth={1.5} />
+                <div className="mb-4">
+                  <Image
+                    src="/logo-diamondSparkle.svg"
+                    alt="GeemaStudio"
+                    width={40}
+                    height={46}
+                    className="h-10 w-auto opacity-90"
+                  />
                 </div>
                 <h3 className="text-2xl font-bold mb-2">Con GeemaStudio</h3>
                 <p className="text-white/80 mb-6 text-sm">

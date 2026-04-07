@@ -6,13 +6,14 @@ import {
   DollarSign,
   Users,
   Home,
-  Scissors,
+  Sparkles,
   MoreHorizontal,
   User,
   Bell,
   TrendingUp,
   Star,
 } from "lucide-react";
+import Image from "next/image";
 import { LUNARIS } from "@/lib/theme";
 
 // Tres pantallas de la app que rotan en loop
@@ -133,7 +134,7 @@ const SCREENS = [
 const TABS = [
   { Icon: Home, id: "home" },
   { Icon: Calendar, id: "agenda" },
-  { Icon: Scissors, id: "services" },
+  { Icon: Sparkles, id: "services" },
   { Icon: MoreHorizontal, id: "more" },
   { Icon: User, id: "profile" },
 ];
@@ -160,7 +161,7 @@ export function AppMockup() {
       {/* Marco del teléfono */}
       <div className="bg-gradient-to-b from-zinc-700 to-zinc-900 rounded-[2.8rem] p-[3px] shadow-2xl shadow-black/60 ring-1 ring-white/10">
         <div
-          className="bg-[#0A0712] rounded-[2.5rem] overflow-hidden"
+          className="bg-[#0A0712] rounded-[2.5rem] overflow-hidden flex flex-col"
           style={{ aspectRatio: "9/19" }}
         >
           {/* Status bar */}
@@ -187,7 +188,7 @@ export function AppMockup() {
 
           {/* Contenido animado */}
           <div
-            className="px-4 pt-3 pb-2 flex-1"
+            className="px-4 pt-3 pb-2 flex-1 overflow-hidden"
             style={{
               opacity: animating ? 0 : 1,
               transform: animating ? "translateY(8px)" : "translateY(0)",
@@ -197,12 +198,27 @@ export function AppMockup() {
             {/* Header de pantalla */}
             <div className="flex items-center justify-between mb-4">
               <div>
-                <div
-                  className="flex items-center gap-1 text-xs font-bold mb-0.5"
-                  style={{ color: screen.accent }}
-                >
-                  <Scissors size={11} strokeWidth={2} />
-                  <span>GeemaStudio</span>
+                <div className="flex items-center gap-1 mb-0.5">
+                  <Image
+                    src="/logo-diamondSparkle.svg"
+                    alt=""
+                    width={12}
+                    height={14}
+                    className="h-3 w-auto"
+                  />
+                  <span className="text-xs font-bold">
+                    <span className="text-white">Geema</span>
+                    <span
+                      style={{
+                        background: LUNARIS.gradient.css90,
+                        WebkitBackgroundClip: "text",
+                        WebkitTextFillColor: "transparent",
+                        backgroundClip: "text",
+                      }}
+                    >
+                      Studio
+                    </span>
+                  </span>
                 </div>
                 <div className="text-white text-sm font-bold">
                   {screen.label}
@@ -277,7 +293,7 @@ export function AppMockup() {
 
           {/* Bottom nav */}
           <div
-            className="absolute bottom-0 left-0 right-0 border-t flex justify-around items-center py-3 px-2"
+            className="border-t flex justify-around items-center py-3 px-2 flex-shrink-0"
             style={{
               backgroundColor: "rgba(10,7,18,0.95)",
               borderColor: "rgba(255,255,255,0.08)",
