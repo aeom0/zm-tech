@@ -90,8 +90,8 @@ export function Footer() {
 
         <div className="border-t border-zinc-800 pt-8 text-center">
           <p className="text-sm text-zinc-500">
-            © 2026 GeemaStudio. Todos los derechos reservados. Hecho con ❤️ para
-            LATAM.
+            © 2026 GeemaStudio. Todos los derechos reservados. Hecho con ❤️{" "}
+            para LATAM.
           </p>
         </div>
       </div>

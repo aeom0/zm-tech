@@ -195,7 +195,8 @@ export function DemoSection() {
               Míralo antes de comprarlo
             </h2>
             <p className="text-zinc-400 mt-4 max-w-xl mx-auto">
-              Toca cada módulo y ve cómo funciona GeemaStudio en un celular real.
+              Toca cada módulo y ve cómo funciona GeemaStudio en un celular
+              real.
             </p>
           </div>
         </RevealWrapper>

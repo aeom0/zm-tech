@@ -52,19 +52,16 @@ export function Navbar() {
             }`}
           >
             Geema
-          </span>
-          <span
-            style={{
-              background: LUNARIS.gradient.css90,
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-              fontWeight: 700,
-              fontSize: "19px",
-              letterSpacing: "-0.025em",
-            }}
-          >
-            Studio
+            <span
+              style={{
+                background: LUNARIS.gradient.css90,
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
+              Studio
+            </span>
           </span>
           <span
             style={{
