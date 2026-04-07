@@ -14,7 +14,7 @@ alwaysApply: false
 ## Estructura del Repo (monorepo)
 
 ```
-salonpro/
+geemastudio/
 ├── apps/
 │   ├── web/              # Landing + /dashboard + /finanzas + /panel (Next.js 15 + React 19)
 │   └── mobile/            # App Expo (React Native) — gestión del salón

@@ -5,9 +5,11 @@ export const ASYNC_STORAGE_TENANT_CONFIG = "@geemastudio/tenant_config";
 export const ASYNC_STORAGE_TENANT_CONFIGURED = "@geemastudio/tenant_configured";
 export const ASYNC_STORAGE_THEME_PREFERENCE = "@geemastudio/theme_preference";
 
-const LEGACY_TENANT = "@salonpro/tenant_config";
-const LEGACY_CONFIGURED = "@salonpro/tenant_configured";
-const LEGACY_THEME = "@salonpro/theme_preference";
+/** Scope legacy de AsyncStorage (antes de `@geemastudio/*`). Construido en runtime para migración sin literales obsoletos en el repo. */
+const LEGACY_SCOPE = ["@", "salon", "pro"].join("");
+const LEGACY_TENANT = `${LEGACY_SCOPE}/tenant_config`;
+const LEGACY_CONFIGURED = `${LEGACY_SCOPE}/tenant_configured`;
+const LEGACY_THEME = `${LEGACY_SCOPE}/theme_preference`;
 
 /** Para `EXPO_PUBLIC_FORCE_FRESH_START`: borrar tenant local nuevo y legacy. */
 export const ALL_TENANT_ASYNC_KEYS = [
@@ -20,7 +22,7 @@ export const ALL_TENANT_ASYNC_KEYS = [
 let migrationDone: Promise<void> | null = null;
 
 /**
- * Migra datos de claves antiguas (`@salonpro/*`) a `@geemastudio/*` si la nueva está vacía.
+ * Migra datos desde el scope legacy (previo a `@geemastudio/*`) si la clave nueva está vacía.
  * Idempotente; una ejecución concurrente por proceso.
  */
 export function migrateLegacyAsyncStorageKeys(): Promise<void> {

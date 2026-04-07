@@ -129,7 +129,7 @@ Este monorepo usa la convención estándar `apps/` para aplicaciones y `packages
 │       └── seed-employees-example.sql   # Referencia: equipo de ZM Lash & Nails
 ├── migrations/                        # Salida de `yarn db:generate` (Drizzle Kit)
 └── docs/
-    ├── SALONPRO_MIGRATION_GUIDE.md  # Plan de migración ZM → SalonPro
+    ├── GEEMASTUDIO_MIGRATION_GUIDE.md  # Plan de migración ZM → GeemaStudio (monorepo)
     └── design_guidelines.md         # Sistema de diseño
 ```
 
@@ -238,7 +238,7 @@ limit 20;
 ## Documentación
 
 - [Índice de docs](docs/INDEX.md) — mapa de guías en `docs/`
-- [Guía de migración ZM → SalonPro](docs/SALONPRO_MIGRATION_GUIDE.md)
+- [Guía de migración ZM → GeemaStudio](docs/GEEMASTUDIO_MIGRATION_GUIDE.md)
 - [Lineamientos de diseño](docs/design_guidelines.md)
 - [Desarrollo local / migraciones](docs/DESARROLLO_LOCAL.md)
 - [CLAUDE.md](CLAUDE.md) — instrucciones para Claude Code

@@ -23,7 +23,7 @@ Estado: **completado (base del trabajo actual)**.
   - Código fuente web (`apps/web`).
   - Paquetes compartidos (`packages/shared-schema`, `packages/tenant-config`).
 - Mantener referencias históricas solo en:
-  - `docs/SALONPRO_MIGRATION_GUIDE.md`.
+  - `docs/GEEMASTUDIO_MIGRATION_GUIDE.md`.
   - Archivos `*-example.*` de seeds.
 
 ### Subtareas clave

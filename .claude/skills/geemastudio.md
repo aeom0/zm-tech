@@ -773,7 +773,7 @@ yarn db:seed         # seeds template
 ## 14. LO QUE CLAUDE CODE DEBE HACER
 
 1. Leer este archivo antes de modificar cualquier parte del repo
-2. Consultar ZM_KNOWLEDGE_FOR_SALONPRO.md antes de implementar cualquier modulo nuevo
+2. Consultar ZM_KNOWLEDGE_FOR_GEEMASTUDIO.md antes de implementar cualquier modulo nuevo
 3. Usar useTenant() y useTheme() en todo componente que necesite datos del negocio
 4. Proponer codigo modular: screen orquestador → hook → service → supabase
 5. Usar TanStack Query v5 con sintaxis de objeto { queryKey, queryFn }

@@ -13,8 +13,8 @@ Descripción del producto, tipos de negocio, inicio rápido, stack, variables de
 ### [DESARROLLO_LOCAL.md](DESARROLLO_LOCAL.md)
 Desarrollo local: WSL, migraciones sin TCP (SQL Editor), seeds, variables.
 
-### [SALONPRO_MIGRATION_GUIDE.md](SALONPRO_MIGRATION_GUIDE.md)
-Guía de migración ZM → SalonPro: fases, tenant_config, onboarding, tenant_settings.
+### [GEEMASTUDIO_MIGRATION_GUIDE.md](GEEMASTUDIO_MIGRATION_GUIDE.md)
+Guía de migración ZM → producto (monorepo GeemaStudio): fases, tenant_config, onboarding, tenant_settings.
 
 ### [design_guidelines.md](design_guidelines.md)
 Sistema de diseño y especificaciones UI/UX (paleta, tipografía, componentes). Los colores reales vienen del preset del tenant.
@@ -28,7 +28,7 @@ Instalación / notas de beta (si aplica al flujo actual).
 ### [MONOREPO_MIGRACION.md](MONOREPO_MIGRACION.md)
 Estructura del monorepo y comandos (sin servidor Express).
 
-### [SALONPRO_V1.3_PLAN.md](SALONPRO_V1.3_PLAN.md)
+### [GEEMASTUDIO_V1.3_PLAN.md](GEEMASTUDIO_V1.3_PLAN.md)
 Plan de funcionalidades v1.3 (referencia histórica / roadmap parcial).
 
 ### [tech-debt/](tech-debt/) (deuda técnica)
@@ -42,12 +42,12 @@ docs/
 ├── INDEX.md                    # Este archivo
 ├── README.md                   # Setup inicial
 ├── DESARROLLO_LOCAL.md         # Migraciones, seeds, WSL
-├── SALONPRO_MIGRATION_GUIDE.md # Fases de migración
+├── GEEMASTUDIO_MIGRATION_GUIDE.md # Fases de migración
 ├── design_guidelines.md        # Diseño UI/UX
 ├── DEPLOYMENT.md               # Deploy Supabase / Vercel / EAS
 ├── MONOREPO_MIGRACION.md       # Monorepo, comandos
 ├── INSTALACION_BETA.md         # Beta / instalación
-├── SALONPRO_V1.3_PLAN.md       # Plan v1.3 (referencia)
+├── GEEMASTUDIO_V1.3_PLAN.md    # Plan v1.3 (referencia)
 └── tech-debt/                  # Deuda técnica (TD-xxx)
 
 .cursor/

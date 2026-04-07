@@ -52,7 +52,7 @@ Este archivo proporciona orientación a Claude Code (claude.ai/code) para trabaj
 │       ├── seed-employees-template.sql # Empleados genéricos (editar antes de usar)
 │       └── seed-employees-example.sql  # Referencia: equipo ZM Lash & Nails
 ├── docs/
-│   ├── SALONPRO_MIGRATION_GUIDE.md # Plan de migración ZM → SalonPro
+│   ├── GEEMASTUDIO_MIGRATION_GUIDE.md # Plan de migración ZM → monorepo GeemaStudio
 │   └── design_guidelines.md        # Sistema de diseño
 └── .cursor/                # Reglas de desarrollo con Cursor AI
 ```
