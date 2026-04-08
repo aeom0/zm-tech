@@ -10,7 +10,9 @@ export async function handleLegacyPayload(
   const tenantId = body.tenant_id?.trim();
   if (!tenantId) {
     return new Response(
-      JSON.stringify({ error: "tenant_id es obligatorio (UUID de tenant_settings)" }),
+      JSON.stringify({
+        error: "tenant_id es obligatorio (UUID de tenant_settings)",
+      }),
       { status: 400, headers: { "Content-Type": "application/json" } },
     );
   }
@@ -32,10 +34,10 @@ export async function handleLegacyPayload(
     .maybeSingle();
 
   if (tenantErr || !tenantRow) {
-    return new Response(
-      JSON.stringify({ error: "tenant_id no encontrado" }),
-      { status: 400, headers: { "Content-Type": "application/json" } },
-    );
+    return new Response(JSON.stringify({ error: "tenant_id no encontrado" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 
   const timezone = String(
@@ -128,7 +130,10 @@ export async function handleLegacyPayload(
   if (insertErr) {
     console.error("[legacy] insert appointment:", insertErr);
     return new Response(
-      JSON.stringify({ error: "No se pudo crear la cita", detail: insertErr.message }),
+      JSON.stringify({
+        error: "No se pudo crear la cita",
+        detail: insertErr.message,
+      }),
       { status: 500, headers: { "Content-Type": "application/json" } },
     );
   }

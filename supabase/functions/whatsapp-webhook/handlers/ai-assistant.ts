@@ -344,8 +344,15 @@ export async function handleAIMessage(
   trigger: AITriggerResult,
   wabaConfig: WabaConfigMap,
 ): Promise<boolean> {
-  const { phoneNumber, catalog, supabase, tenantId, currencyCode, timezone, wa } =
-    ctx;
+  const {
+    phoneNumber,
+    catalog,
+    supabase,
+    tenantId,
+    currencyCode,
+    timezone,
+    wa,
+  } = ctx;
 
   try {
     const clientContext = await getClientContext(

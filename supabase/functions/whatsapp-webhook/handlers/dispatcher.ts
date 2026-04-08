@@ -149,10 +149,7 @@ async function proceedToBookingWithCurrentCart(
         });
       }
     }
-    summary = formatCartSummaryFromLines(
-      lines,
-      tenantRecord.currency_code,
-    );
+    summary = formatCartSummaryFromLines(lines, tenantRecord.currency_code);
     const ids = await expandCartItemsToServiceIds(
       supabase,
       tenantId,
@@ -188,10 +185,7 @@ async function proceedToBookingWithCurrentCart(
       ids,
       validServices,
     ) as SvcRowAgenda[];
-    summary = formatCartSummary(
-      orderedServices,
-      tenantRecord.currency_code,
-    );
+    summary = formatCartSummary(orderedServices, tenantRecord.currency_code);
   }
 
   const totalMin = orderedServices.reduce(
@@ -217,11 +211,7 @@ async function proceedToBookingWithCurrentCart(
     (allEmps ?? []).forEach((e: { id: string }) => possibleEmpIds.add(e.id));
   }
   const minEmployeesFree = 1;
-  await _sendMessage(
-    phoneNumber,
-    `${summary}\n\n📅 *¿Qué día prefieres?*`,
-    wa,
-  );
+  await _sendMessage(phoneNumber, `${summary}\n\n📅 *¿Qué día prefieres?*`, wa);
   await sendDateSelector(
     phoneNumber,
     supabase,
@@ -365,7 +355,11 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
     sections: Parameters<typeof _sendInteractiveList>[4],
   ) => _sendInteractiveList(to, header, body, btn, sections, wa);
 
-  const metaAdsImageUrl = getConfigText(wabaConfig, "meta_ads_hero_image_url", "");
+  const metaAdsImageUrl = getConfigText(
+    wabaConfig,
+    "meta_ads_hero_image_url",
+    "",
+  );
   const metaAdsCaption = getConfigText(
     wabaConfig,
     "meta_ads_hero_caption",
@@ -397,14 +391,8 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
     "meta_ads_services_text",
     `✨ ¡Hola{nombre}!\nEn *${brand}* tenemos servicios y promos para vos. Revisá el menú con *Ver opciones* y elegí lo que necesitás.`,
   );
-  const tardanzaImageUrl = getConfigText(
-    wabaConfig,
-    "tardanza_image_url",
-    "",
-  );
-  const adminPhoneHint =
-    tenantRecord.waba_admin_phones?.[0]?.trim() ??
-    "";
+  const tardanzaImageUrl = getConfigText(wabaConfig, "tardanza_image_url", "");
+  const adminPhoneHint = tenantRecord.waba_admin_phones?.[0]?.trim() ?? "";
   const tardanzaText = getConfigText(
     wabaConfig,
     "tardanza_message_text",
@@ -1181,8 +1169,10 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
       rows.push({
         id: `pitem_${promoId}_${typeChar}_${i.item_id}`,
         title: name.trim().slice(0, TITLE_MAX),
-        description: `${formatMoney(price, tenantRecord.currency_code)}`
-          .slice(0, DESC_MAX),
+        description: `${formatMoney(price, tenantRecord.currency_code)}`.slice(
+          0,
+          DESC_MAX,
+        ),
       });
     }
     rows.push({

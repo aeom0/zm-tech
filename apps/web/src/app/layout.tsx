@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "GeemaStudio — Gestión inteligente para tu negocio de belleza",
     description:
-      "Agenda, personal, inventario y finanzas en un solo lugar. Sin papeles, sin WhatsApp, sin caos. Prueba 14 días gratis.",
+      "Agenda inteligente, finanzas claras y control total de tu equipo. Prueba 14 días gratis.",
     type: "website",
     locale: "es_419",
     siteName: "GeemaStudio",

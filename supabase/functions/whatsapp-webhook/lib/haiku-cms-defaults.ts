@@ -4,7 +4,7 @@
 
 export const HAIKU_SYSTEM_PROMPT_BASE_DEFAULT = [
   "Eres la asistente virtual de un salón o centro de belleza en LATAM (cliente de GeemaStudio).",
-  'Tienes nombre genérico de bot del negocio. Hablas en español neutro, natural para la región.',
+  "Tienes nombre genérico de bot del negocio. Hablas en español neutro, natural para la región.",
   "Representas al equipo del negocio que configura esta línea de WhatsApp.",
   "",
   "## Tono y estilo de comunicación",
@@ -107,15 +107,11 @@ REGLAS ESTRICTAS:
 export const HAIKU_WELCOME_SLOT_CONTEXT_DEFAULT: Record<string, string> = {
   madrugada:
     "Es madrugada. Tono cercano y amable. No te disculpes por la hora ni inventes horarios del local.",
-  manana:
-    "Es temprano en la mañana. Tono energético y positivo.",
+  manana: "Es temprano en la mañana. Tono energético y positivo.",
   dia: "Es mediodía. Tono directo y cálido.",
-  tarde:
-    "Es tarde. Tono aspiracional y profesional.",
-  noche:
-    "Es noche. Tono cálido y motivador.",
-  noche_tarde:
-    "Es noche avanzada. Tono cercano y decisivo.",
+  tarde: "Es tarde. Tono aspiracional y profesional.",
+  noche: "Es noche. Tono cálido y motivador.",
+  noche_tarde: "Es noche avanzada. Tono cercano y decisivo.",
 };
 
 export const HAIKU_WELCOME_FALLBACK_AD_DEFAULT: Record<string, string> = {
@@ -124,26 +120,19 @@ export const HAIKU_WELCOME_FALLBACK_AD_DEFAULT: Record<string, string> = {
   manana:
     "Hola {nombre}! Gracias por escribirnos 💅 Aquí están los detalles 👇",
   dia: "Hola {nombre} 💜 Aquí tienes lo que buscabas 👇",
-  tarde:
-    "Hola {nombre}, mira lo que tenemos para ti ✨ 👇",
-  noche:
-    "Hola {nombre} 💜 Gracias por escribir. Mira acá 👇",
-  noche_tarde:
-    "Hola {nombre}, aquí está la info que pediste 👇",
+  tarde: "Hola {nombre}, mira lo que tenemos para ti ✨ 👇",
+  noche: "Hola {nombre} 💜 Gracias por escribir. Mira acá 👇",
+  noche_tarde: "Hola {nombre}, aquí está la info que pediste 👇",
 };
 
 export const HAIKU_WELCOME_FALLBACK_ORGANIC_DEFAULT: Record<string, string> = {
   madrugada:
     "Hola {nombre}, qué bueno que nos escribes 💜 Mira las opciones 👇",
-  manana:
-    "Hola {nombre}! Gracias por contactarnos 💅 👇",
+  manana: "Hola {nombre}! Gracias por contactarnos 💅 👇",
   dia: "Hola {nombre} 💜 Bienvenida. Esto tenemos disponible 👇",
-  tarde:
-    "Hola {nombre}, mira nuestros servicios y promos ✨ 👇",
-  noche:
-    "Hola {nombre} 💜 Gracias por escribir. Aquí tienes el menú 👇",
-  noche_tarde:
-    "Hola {nombre}, con gusto te ayudamos 👇",
+  tarde: "Hola {nombre}, mira nuestros servicios y promos ✨ 👇",
+  noche: "Hola {nombre} 💜 Gracias por escribir. Aquí tienes el menú 👇",
+  noche_tarde: "Hola {nombre}, con gusto te ayudamos 👇",
 };
 
 export const HAIKU_SYSTEM_EMERGENCY_ONE_LINE =

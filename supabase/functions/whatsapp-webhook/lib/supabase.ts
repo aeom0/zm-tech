@@ -185,7 +185,11 @@ function parseLegacyServiceIds(raw: unknown): string[] {
   return [];
 }
 
-export async function getSession(supabase: SupabaseClient, tenantId: string, phone: string) {
+export async function getSession(
+  supabase: SupabaseClient,
+  tenantId: string,
+  phone: string,
+) {
   const { data } = await supabase
     .from("whatsapp_sessions")
     .select("*")
@@ -212,9 +216,9 @@ export async function getSession(supabase: SupabaseClient, tenantId: string, pho
       ? new Date(data.parsed_datetime as string)
       : null,
     employeeAssignments: data.employee_assignments
-      ? (typeof data.employee_assignments === "string"
+      ? ((typeof data.employee_assignments === "string"
           ? JSON.parse(data.employee_assignments)
-          : data.employee_assignments) as Record<string, string>
+          : data.employee_assignments) as Record<string, string>)
       : ({} as Record<string, string>),
     awaiting_screenshot: Boolean(data.awaiting_screenshot),
     pending_photo_areas: data.pending_photo_areas as string | null,
@@ -243,7 +247,11 @@ export async function upsertSession(
     phone,
     ...patch,
   };
-  for (const k of ["cart_items", "cart_service_ids", "employee_assignments"] as const) {
+  for (const k of [
+    "cart_items",
+    "cart_service_ids",
+    "employee_assignments",
+  ] as const) {
     if (k in row) row[k] = jsonish(row[k]);
   }
   await supabase.from("whatsapp_sessions").upsert(row, {
@@ -322,8 +330,7 @@ export async function cartItemsToDisplayLabel(
         .eq("tenant_id", tenantId)
         .eq("id", it.item_id)
         .maybeSingle();
-      const nm =
-        (pack as { name?: string })?.name ?? it.item_id;
+      const nm = (pack as { name?: string })?.name ?? it.item_id;
       const label = `Pack · ${nm}`;
       parts.push(it.quantity > 1 ? `${it.quantity}× ${label}` : label);
     }
@@ -421,7 +428,11 @@ export async function addToCart(
     price: usePrice ?? 0,
   };
   const next = [...current, newItem];
-  const serviceIds = await expandCartItemsToServiceIds(supabase, tenantId, next);
+  const serviceIds = await expandCartItemsToServiceIds(
+    supabase,
+    tenantId,
+    next,
+  );
   await upsertSession(supabase, tenantId, phone, {
     cart_items: next,
     cart_service_ids: serviceIds,
@@ -442,7 +453,11 @@ export async function addCartItems(
   const session = await getSession(supabase, tenantId, phone);
   const current = session?.cartItems ?? [];
   const next = [...current, ...items];
-  const serviceIds = await expandCartItemsToServiceIds(supabase, tenantId, next);
+  const serviceIds = await expandCartItemsToServiceIds(
+    supabase,
+    tenantId,
+    next,
+  );
   await upsertSession(supabase, tenantId, phone, {
     cart_items: next,
     cart_service_ids: serviceIds,

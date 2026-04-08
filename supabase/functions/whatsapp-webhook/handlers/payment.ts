@@ -98,8 +98,7 @@ export async function sendConfirmedBookingSummary(
           .eq("tenant_id", tenantId)
           .eq("id", it.item_id)
           .maybeSingle();
-        const name =
-          (pack as { name?: string })?.name ?? it.item_id;
+        const name = (pack as { name?: string })?.name ?? it.item_id;
         lines.push({
           name: name as string,
           quantity: it.quantity,
@@ -215,8 +214,7 @@ export async function sendConfirmedBookingSummary(
         source: "whatsapp",
         whatsapp_phone: phone,
         deposit_amount: 0,
-        notes:
-          `Cita agendada vía WhatsApp.${lines.length > 1 ? ` (${allServiceNames})` : ""}`,
+        notes: `Cita agendada vía WhatsApp.${lines.length > 1 ? ` (${allServiceNames})` : ""}`,
       })
       .select()
       .single();
@@ -290,8 +288,7 @@ export async function sendConfirmedBookingSummary(
         source: "whatsapp",
         whatsapp_phone: phone,
         deposit_amount: 0,
-        notes:
-          `Cita agendada vía WhatsApp.${allServices.length > 1 ? ` (${allServiceNames})` : ""}`,
+        notes: `Cita agendada vía WhatsApp.${allServices.length > 1 ? ` (${allServiceNames})` : ""}`,
       })
       .select()
       .single();
@@ -332,20 +329,20 @@ export async function sendConfirmedBookingSummary(
 
   await sendMessage(
     phone,
-    (inHours
+    inHours
       ? `✅ *¡Tu cita está confirmada!*\n\n` +
-        `📋 *Resumen:*\n` +
-        `${servicesLine}\n` +
-        `📅 Fecha: ${dateStr}\n` +
-        `💰 Total: ${formatMoney(totalPrice, cc)}\n\n` +
-        `El pago se coordina según las políticas del negocio.\n\n` +
-        `¡Te esperamos!${consideracionesBlock}`
+          `📋 *Resumen:*\n` +
+          `${servicesLine}\n` +
+          `📅 Fecha: ${dateStr}\n` +
+          `💰 Total: ${formatMoney(totalPrice, cc)}\n\n` +
+          `El pago se coordina según las políticas del negocio.\n\n` +
+          `¡Te esperamos!${consideracionesBlock}`
       : `✅ *¡Tu cita está anotada!*\n\n` +
-        `📋 *Resumen:*\n` +
-        `${servicesLine}\n` +
-        `📅 Fecha: ${dateStr}\n` +
-        `💰 Total: ${formatMoney(totalPrice, cc)}\n\n` +
-        `El equipo te confirmará en breve.${consideracionesBlock}`),
+          `📋 *Resumen:*\n` +
+          `${servicesLine}\n` +
+          `📅 Fecha: ${dateStr}\n` +
+          `💰 Total: ${formatMoney(totalPrice, cc)}\n\n` +
+          `El equipo te confirmará en breve.${consideracionesBlock}`,
     wa,
   );
 }
@@ -392,8 +389,7 @@ export async function sendPaymentSummary(
           .eq("tenant_id", tenantId)
           .eq("id", it.item_id)
           .maybeSingle();
-        const name =
-          (pack as { name?: string })?.name ?? it.item_id;
+        const name = (pack as { name?: string })?.name ?? it.item_id;
         lines.push({
           name: name as string,
           quantity: it.quantity,
@@ -440,7 +436,10 @@ export async function sendPaymentSummary(
 
   const deposit = Math.ceil(totalPrice * 0.2);
   const dateStr = session.parsed_datetime
-    ? formatDateSpanish(new Date(session.parsed_datetime as string), tenant.timezone)
+    ? formatDateSpanish(
+        new Date(session.parsed_datetime as string),
+        tenant.timezone,
+      )
     : "fecha acordada";
   const medios = buildMediosDePago(tenant.waba_payment_info);
 
@@ -549,8 +548,7 @@ export async function processPaymentScreenshot(
         source: "whatsapp",
         whatsapp_phone: phoneNumber,
         deposit_amount: 0,
-        notes:
-          `Reserva WABA — comprobante: ${screenshotUrl ?? "sin url"}.${lines.length > 1 ? ` (${allServiceNames})` : ""}`,
+        notes: `Reserva WABA — comprobante: ${screenshotUrl ?? "sin url"}.${lines.length > 1 ? ` (${allServiceNames})` : ""}`,
       })
       .select()
       .single();
@@ -623,8 +621,7 @@ export async function processPaymentScreenshot(
         source: "whatsapp",
         whatsapp_phone: phoneNumber,
         deposit_amount: 0,
-        notes:
-          `Reserva WABA — comprobante: ${screenshotUrl ?? "sin url"}.${allServices.length > 1 ? ` (${allServiceNames})` : ""}`,
+        notes: `Reserva WABA — comprobante: ${screenshotUrl ?? "sin url"}.${allServices.length > 1 ? ` (${allServiceNames})` : ""}`,
       })
       .select()
       .single();
@@ -663,8 +660,7 @@ export async function processPaymentScreenshot(
             appointment_id: apptId,
             amount: proportional.toString(),
             method: "yape_plin",
-            notes:
-              `Abono 20% proporcional WABA. Pendiente validación. (${allServiceNames})`,
+            notes: `Abono 20% proporcional WABA. Pendiente validación. (${allServiceNames})`,
             is_abono: true,
             service_total: pl.price.toString(),
           };
@@ -675,8 +671,7 @@ export async function processPaymentScreenshot(
         appointment_id: apptId,
         amount: depositAmount.toString(),
         method: "yape_plin",
-        notes:
-          `Abono 20% vía WABA. Pendiente validación.${allServiceNames ? ` (${allServiceNames})` : ""}`,
+        notes: `Abono 20% vía WABA. Pendiente validación.${allServiceNames ? ` (${allServiceNames})` : ""}`,
         is_abono: true,
         service_total: totalPrice.toString(),
       });
@@ -715,8 +710,7 @@ export async function processPaymentScreenshot(
         `${servicesLine}\n` +
         `• Fecha: ${formatDateSpanish(new Date(appointmentDate), tz)}\n` +
         `• Adelanto: ${formatMoney(depositAmount, cc)}\n\n` +
-        `El equipo validará tu pago pronto.`) +
-      consideracionesBlock,
+        `El equipo validará tu pago pronto.`) + consideracionesBlock,
     wa,
   );
 

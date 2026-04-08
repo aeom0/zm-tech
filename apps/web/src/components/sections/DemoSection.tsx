@@ -40,7 +40,7 @@ const DEMO_TABS: {
     id: "agenda",
     label: "Agenda",
     icon: Calendar,
-    title: "Citas sin caos",
+    title: "Citas bajo control",
     description:
       "Vista diaria por profesional. Toca para ver detalles, arrastra para reprogramar. Sin conflictos, sin doble-reservas.",
     accent: LUNARIS.primary,

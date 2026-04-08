@@ -96,9 +96,7 @@ export async function loadCatalog(
       .order("order", { ascending: true }),
     supabase
       .from("services")
-      .select(
-        "id, name, category_id, price, duration, is_active",
-      )
+      .select("id, name, category_id, price, duration, is_active")
       .eq("tenant_id", tenantId)
       .eq("is_active", true)
       .order("name"),
@@ -186,11 +184,9 @@ export async function loadCatalog(
   const promotionIds = promosRaw.map((p) => p.id);
   const { data: itemsRows } = promotionIds.length
     ? await supabase
-      .from("promotion_items")
-      .select(
-        "id, promo_id, item_type, item_id, quantity, discounted_price",
-      )
-      .in("promo_id", promotionIds)
+        .from("promotion_items")
+        .select("id, promo_id, item_type, item_id, quantity, discounted_price")
+        .in("promo_id", promotionIds)
     : { data: [] };
 
   const items = (itemsRows ?? []) as {

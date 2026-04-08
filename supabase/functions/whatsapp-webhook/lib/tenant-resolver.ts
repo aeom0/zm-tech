@@ -55,7 +55,12 @@ export async function resolveTenantFromPhoneNumberId(
   const row = data as unknown as Record<string, unknown>;
   const token = row.waba_access_token;
   const verify = row.waba_verify_token;
-  if (typeof token !== "string" || !token || typeof verify !== "string" || !verify) {
+  if (
+    typeof token !== "string" ||
+    !token ||
+    typeof verify !== "string" ||
+    !verify
+  ) {
     console.warn("[WABA] Tenant sin credenciales WABA completas:", row.id);
     return null;
   }

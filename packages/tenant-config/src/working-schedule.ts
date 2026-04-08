@@ -114,11 +114,7 @@ export function esCeldaAgendaEnHorarioLaboral(
   }
   const openM = minutosDesdeMedianoche(franja.open);
   const closeM = minutosDesdeMedianoche(franja.close);
-  if (
-    !Number.isFinite(openM) ||
-    !Number.isFinite(closeM) ||
-    closeM <= openM
-  ) {
+  if (!Number.isFinite(openM) || !Number.isFinite(closeM) || closeM <= openM) {
     return false;
   }
   const slotStart = horaInicio * 60;
@@ -222,7 +218,9 @@ export function mergeTenantConfig(
 export function normalizarHorarioSemanal(
   hours: TenantConfig["businessHours"] | null | undefined,
 ): TenantConfig["businessHours"] {
-  const base: TenantConfig["businessHours"] = { ...defaultTenantConfig.businessHours };
+  const base: TenantConfig["businessHours"] = {
+    ...defaultTenantConfig.businessHours,
+  };
   if (!hours || typeof hours !== "object") {
     return base;
   }

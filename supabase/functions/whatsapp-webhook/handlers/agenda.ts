@@ -62,14 +62,19 @@ export async function checkAvailability(
   const { data } = await q;
   if (!data) return true;
   const hasOverlap = data.some((a: { date: string; duration: number }) => {
-    const aStart = parseLocalTimestampToDate(a.date, timezone) ?? new Date(a.date);
+    const aStart =
+      parseLocalTimestampToDate(a.date, timezone) ?? new Date(a.date);
     const aEnd = new Date(aStart.getTime() + (a.duration ?? 0) * 60000);
     return start < aEnd && end > aStart;
   });
   return !hasOverlap;
 }
 
-function todayYmdInTimezone(timezone: string): { y: number; m: number; d: number } {
+function todayYmdInTimezone(timezone: string): {
+  y: number;
+  m: number;
+  d: number;
+} {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: timezone,
     year: "numeric",

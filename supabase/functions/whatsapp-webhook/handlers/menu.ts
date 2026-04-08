@@ -505,11 +505,10 @@ export async function sendServicesList(
     return {
       id: `${WA_IDS.PACK_PREFIX}${p.id}`,
       title: listTitle(name),
-      description:
-        `${name} — ${formatMoney(priceNumber, currencyCode)}`.slice(
-          0,
-          DESCRIPTION_MAX_CHARS,
-        ),
+      description: `${name} — ${formatMoney(priceNumber, currencyCode)}`.slice(
+        0,
+        DESCRIPTION_MAX_CHARS,
+      ),
     };
   });
   const remaining = WA_MAX_ROWS - packRows.length;
@@ -664,9 +663,14 @@ export async function sendCartOptions(
         ? `${summary}\n\n¿Qué deseas hacer?`
         : "¿Qué deseas hacer?";
   const header = opts?.headerOverride ?? "Servicio agregado";
-  const ok = await sendInteractiveList(to, header, body, "Opciones", [
-    { title: "Acciones", rows },
-  ], wa);
+  const ok = await sendInteractiveList(
+    to,
+    header,
+    body,
+    "Opciones",
+    [{ title: "Acciones", rows }],
+    wa,
+  );
   if (!ok)
     await sendMessage(
       to,

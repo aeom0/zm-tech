@@ -69,11 +69,7 @@ export async function sendImage(
     console.error("[WABA] WhatsApp API sendImage:", res.status, errText);
   } else {
     log?.(to, caption ? `[imagen] ${caption}` : "[imagen]", "image");
-    logOutMessage(
-      to,
-      caption ? `[imagen] ${caption}` : "[imagen]",
-      "image",
-    );
+    logOutMessage(to, caption ? `[imagen] ${caption}` : "[imagen]", "image");
   }
 }
 

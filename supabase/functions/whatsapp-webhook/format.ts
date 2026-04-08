@@ -149,7 +149,10 @@ function hour12(hour24: number, minutes: number = 0): string {
   return `${h12}:${mm} ${isPm ? "PM" : "AM"}`;
 }
 
-export function formatDateSpanish(date: Date, timezone = "America/Lima"): string {
+export function formatDateSpanish(
+  date: Date,
+  timezone = "America/Lima",
+): string {
   const days = [
     "domingo",
     "lunes",
@@ -173,9 +176,7 @@ export function formatDateSpanish(date: Date, timezone = "America/Lima"): string
     "noviembre",
     "diciembre",
   ];
-  const zoned = new Date(
-    date.toLocaleString("en-US", { timeZone: timezone }),
-  );
+  const zoned = new Date(date.toLocaleString("en-US", { timeZone: timezone }));
   const timeStr = hour12(zoned.getHours(), zoned.getMinutes());
   return `${days[zoned.getDay()]} ${zoned.getDate()} de ${months[zoned.getMonth()]} a las ${timeStr}`;
 }
@@ -233,9 +234,7 @@ export function isBusinessHoursForSlots(
   timezone: string,
 ): boolean {
   const now = new Date();
-  const local = new Date(
-    now.toLocaleString("en-US", { timeZone: timezone }),
-  );
+  const local = new Date(now.toLocaleString("en-US", { timeZone: timezone }));
   const hour = local.getHours();
   const day = local.getDay();
   const slots = day === 0 ? sundaySlots : weekdaySlots;

@@ -21,12 +21,7 @@ export async function validateGetVerify(
   const mode = url.searchParams.get("hub.mode");
   const token = url.searchParams.get("hub.verify_token");
   const challenge = url.searchParams.get("hub.challenge");
-  if (
-    mode !== "subscribe" ||
-    !token ||
-    !challenge ||
-    !phoneNumberId
-  ) {
+  if (mode !== "subscribe" || !token || !challenge || !phoneNumberId) {
     return null;
   }
   const tenant = await resolveTenantFromPhoneNumberId(supabase, phoneNumberId);

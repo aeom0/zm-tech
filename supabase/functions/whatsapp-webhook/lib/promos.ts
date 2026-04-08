@@ -2,9 +2,7 @@
 
 const PERU_TZ = "America/Lima";
 
-export function isPacksEspecialesAllowed(
-  timezone: string = PERU_TZ,
-): boolean {
+export function isPacksEspecialesAllowed(timezone: string = PERU_TZ): boolean {
   const tzNow = new Date(
     new Date().toLocaleString("en-US", { timeZone: timezone }),
   );
