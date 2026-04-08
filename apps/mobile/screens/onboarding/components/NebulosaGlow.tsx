@@ -29,6 +29,10 @@ interface NebulosaGlowProps {
  *   left: (STACK_SIZE - GLOW_SIZE) / 2
  *   top:  (STACK_SIZE - GLOW_SIZE) / 2
  * Así el centrado es matemáticamente correcto sin magic numbers internos.
+ *
+ * NOTA DE FONDO: style={{ overflow: 'visible', backgroundColor: 'transparent' }}
+ * elimina el bounding box visible que aparece en web (el SVG hereda fondo blanco
+ * del browser por defecto). En React Native no tiene efecto visible.
  */
 export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
   const s = size;
@@ -49,6 +53,10 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
       height={s}
       viewBox={`0 0 ${s} ${s}`}
       pointerEvents="none"
+      style={{
+        overflow: "visible",
+        backgroundColor: "transparent",
+      }}
     >
       <Defs>
         <RadialGradient
