@@ -1,4 +1,10 @@
-import React, { useState, useMemo, useEffect, useCallback, useRef } from "react";
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
 import { View, Alert, ActivityIndicator, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useHeaderHeight } from "@react-navigation/elements";
@@ -84,11 +90,13 @@ export default function AgendaScreen() {
   const [ownerViewMode, setOwnerViewMode] = useState<OwnerViewMode>("day");
   const [modalVisible, setModalVisible] = useState(false);
   const [detailModalVisible, setDetailModalVisible] = useState(false);
-  const [appointmentDetail, setAppointmentDetail] = useState<AgendaAppointment | null>(null);
+  const [appointmentDetail, setAppointmentDetail] =
+    useState<AgendaAppointment | null>(null);
   const [rescheduleDate, setRescheduleDate] = useState<Date | null>(null);
   const [rescheduleHour, setRescheduleHour] = useState<number>(10);
   const [selectedHour, setSelectedHour] = useState(9);
-  const [statusFilter, setStatusFilter] = useState<AgendaStatusFilterType>("all");
+  const [statusFilter, setStatusFilter] =
+    useState<AgendaStatusFilterType>("all");
   /** Filtro por columna de empleado (owner día / grid tablet): solo citas de ese id; null = todos */
   const [employeeColumnFilterId, setEmployeeColumnFilterId] = useState<
     string | null
@@ -120,19 +128,27 @@ export default function AgendaScreen() {
   );
 
   const {
-    appointments, isLoading, refetch,
-    employees, employeesLoading, employeesError,
-    categories, services, servicesLoading, servicesError,
+    appointments,
+    isLoading,
+    refetch,
+    employees,
+    employeesLoading,
+    employeesError,
+    categories,
+    services,
+    servicesLoading,
+    servicesError,
   } = useAgendaQueries();
 
   const appointmentsDisplayed = useMemo(() => {
     if (!employeeColumnFilterId) return appointments;
-    return appointments.filter(
-      (a) => a.employee_id === employeeColumnFilterId,
-    );
+    return appointments.filter((a) => a.employee_id === employeeColumnFilterId);
   }, [appointments, employeeColumnFilterId]);
 
-  const servicesByCategory = useServicesByCategory(services, formData.categoryId);
+  const servicesByCategory = useServicesByCategory(
+    services,
+    formData.categoryId,
+  );
   const selectedCategory = useMemo(
     () => categories.find((c) => c.id === formData.categoryId),
     [categories, formData.categoryId],
@@ -146,12 +162,24 @@ export default function AgendaScreen() {
     [employees, formData.employeeId],
   );
 
-  const onCreateSuccess = useCallback(() => { setModalVisible(false); setFormData(emptyAgendaForm()); }, []);
-  const onDeleteSuccess = useCallback(() => { setDetailModalVisible(false); setAppointmentDetail(null); }, []);
-  const onUpdateSuccess = useCallback(() => { setDetailModalVisible(false); setAppointmentDetail(null); }, []);
+  const onCreateSuccess = useCallback(() => {
+    setModalVisible(false);
+    setFormData(emptyAgendaForm());
+  }, []);
+  const onDeleteSuccess = useCallback(() => {
+    setDetailModalVisible(false);
+    setAppointmentDetail(null);
+  }, []);
+  const onUpdateSuccess = useCallback(() => {
+    setDetailModalVisible(false);
+    setAppointmentDetail(null);
+  }, []);
 
-  const { createMutation, deleteAppointmentMutation, updateAppointmentMutation } =
-    useAgendaMutations({ onCreateSuccess, onDeleteSuccess, onUpdateSuccess });
+  const {
+    createMutation,
+    deleteAppointmentMutation,
+    updateAppointmentMutation,
+  } = useAgendaMutations({ onCreateSuccess, onDeleteSuccess, onUpdateSuccess });
 
   const route = useRoute<RouteProp<MainTabParamList, "Agenda">>();
   const navigation = useNavigation();
@@ -167,8 +195,11 @@ export default function AgendaScreen() {
         setRescheduleHour(horaCalendarioEnZona(aptInst, tenantTz));
         setDetailModalVisible(true);
       }
-      (navigation as unknown as { setParams: (p: { appointmentId?: string }) => void })
-        .setParams({ appointmentId: undefined });
+      (
+        navigation as unknown as {
+          setParams: (p: { appointmentId?: string }) => void;
+        }
+      ).setParams({ appointmentId: undefined });
     }
   }, [appointmentIdParam, appointments, navigation, tenantTz]);
 
@@ -214,7 +245,9 @@ export default function AgendaScreen() {
       ? services.find((s) => s.category_id === firstCategoryId)
       : services[0];
     setFormData({
-      clientName: "", clientPhone: "", clientDocument: "",
+      clientName: "",
+      clientPhone: "",
+      clientDocument: "",
       categoryId: firstCategoryId,
       serviceId: firstServiceInCategory?.id ?? "",
       employeeId: employees.length > 0 ? employees[0].id : "",
@@ -239,18 +272,36 @@ export default function AgendaScreen() {
       `¿Eliminar la cita de ${appointmentDetail.client_name}?`,
       [
         { text: "Cancelar", style: "cancel" },
-        { text: "Eliminar", style: "destructive", onPress: () => deleteAppointmentMutation.mutate(appointmentDetail.id) },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: () => deleteAppointmentMutation.mutate(appointmentDetail.id),
+        },
       ],
     );
   };
 
   const handleReschedule = () => {
     if (!appointmentDetail || !rescheduleDate) return;
-    if (!esCeldaAgendaEnHorarioLaboral(rescheduleDate, rescheduleHour, businessHoursNorm, tenantTz)) {
-      Alert.alert("Fuera de horario", "Ese día u hora está fuera de la franja del negocio.");
+    if (
+      !esCeldaAgendaEnHorarioLaboral(
+        rescheduleDate,
+        rescheduleHour,
+        businessHoursNorm,
+        tenantTz,
+      )
+    ) {
+      Alert.alert(
+        "Fuera de horario",
+        "Ese día u hora está fuera de la franja del negocio.",
+      );
       return;
     }
-    const newDate = instanteCitaEnZona(rescheduleDate, rescheduleHour, tenantTz);
+    const newDate = instanteCitaEnZona(
+      rescheduleDate,
+      rescheduleHour,
+      tenantTz,
+    );
     updateAppointmentMutation.mutate({
       id: appointmentDetail.id,
       date: newDate.toISOString(),
@@ -260,17 +311,40 @@ export default function AgendaScreen() {
   };
 
   const handleCreateAppointment = () => {
-    if (!formData.clientName.trim()) { Alert.alert("Error", "Ingresa el nombre de la clienta"); return; }
-    if (!formData.serviceId) { Alert.alert("Error", "Selecciona un servicio"); return; }
+    if (!formData.clientName.trim()) {
+      Alert.alert("Error", "Ingresa el nombre de la clienta");
+      return;
+    }
+    if (!formData.serviceId) {
+      Alert.alert("Error", "Selecciona un servicio");
+      return;
+    }
     if (!formData.employeeId) {
-      Alert.alert("Error", `Selecciona ${config.terminology.staffSingular.toLowerCase()}`);
+      Alert.alert(
+        "Error",
+        `Selecciona ${config.terminology.staffSingular.toLowerCase()}`,
+      );
       return;
     }
-    if (!esCeldaAgendaEnHorarioLaboral(selectedDate, selectedHour, businessHoursNorm, tenantTz)) {
-      Alert.alert("Fuera de horario", "Esa hora está fuera de la franja configurada.");
+    if (
+      !esCeldaAgendaEnHorarioLaboral(
+        selectedDate,
+        selectedHour,
+        businessHoursNorm,
+        tenantTz,
+      )
+    ) {
+      Alert.alert(
+        "Fuera de horario",
+        "Esa hora está fuera de la franja configurada.",
+      );
       return;
     }
-    const appointmentDate = instanteCitaEnZona(selectedDate, selectedHour, tenantTz);
+    const appointmentDate = instanteCitaEnZona(
+      selectedDate,
+      selectedHour,
+      tenantTz,
+    );
     createMutation.mutate({
       client_name: formData.clientName.trim(),
       client_phone: formData.clientPhone.trim() || undefined,
@@ -298,9 +372,16 @@ export default function AgendaScreen() {
   });
 
   const rescheduleStartDate = useMemo(() => {
-    if (!detailModalVisible || !appointmentDetail || !rescheduleDate) return null;
+    if (!detailModalVisible || !appointmentDetail || !rescheduleDate)
+      return null;
     return instanteCitaEnZona(rescheduleDate, rescheduleHour, tenantTz);
-  }, [appointmentDetail, detailModalVisible, rescheduleDate, rescheduleHour, tenantTz]);
+  }, [
+    appointmentDetail,
+    detailModalVisible,
+    rescheduleDate,
+    rescheduleHour,
+    tenantTz,
+  ]);
 
   const rescheduleAvailability = useAvailabilityCheck({
     employeeId: appointmentDetail?.employee_id ?? "",
@@ -312,13 +393,16 @@ export default function AgendaScreen() {
   });
 
   const formatDateLabel = useCallback(
-    (date: Date) => formatoFechaLargaEnZona(date, config.locale.language, tenantTz),
+    (date: Date) =>
+      formatoFechaLargaEnZona(date, config.locale.language, tenantTz),
     [config.locale.language, tenantTz],
   );
 
   const empColWidth = useMemo(() => {
     const borde =
-      Math.max(insets.left, Spacing.xs) + Math.max(insets.right, Spacing.xs) + Spacing.md * 2;
+      Math.max(insets.left, Spacing.xs) +
+      Math.max(insets.right, Spacing.xs) +
+      Spacing.md * 2;
     const disponible = width - TIME_COL_W - borde;
     const n = Math.max(employees.length, 1);
     return Math.max(104, Math.min(140, disponible / n));
@@ -332,34 +416,66 @@ export default function AgendaScreen() {
       if (emp?.name) return emp.name;
     }
     return config.terminology.staffSingular;
-  }, [profile?.full_name, profile?.employee_id, employees, config.terminology.staffSingular]);
+  }, [
+    profile?.full_name,
+    profile?.employee_id,
+    employees,
+    config.terminology.staffSingular,
+  ]);
 
   const openNewAppointmentForStaff = useCallback(() => {
     const primeraHora =
       agendaHours.find((h) =>
-        esCeldaAgendaEnHorarioLaboral(selectedDate, h, businessHoursNorm, tenantTz),
-      ) ?? agendaHours[0] ?? 9;
+        esCeldaAgendaEnHorarioLaboral(
+          selectedDate,
+          h,
+          businessHoursNorm,
+          tenantTz,
+        ),
+      ) ??
+      agendaHours[0] ??
+      9;
     setSelectedHour(primeraHora);
     const firstCategoryId = categories[0]?.id ?? "";
     const firstServiceInCategory = firstCategoryId
       ? services.find((s) => s.category_id === firstCategoryId)
       : services[0];
     setFormData({
-      clientName: "", clientPhone: "", clientDocument: "",
+      clientName: "",
+      clientPhone: "",
+      clientDocument: "",
       categoryId: firstCategoryId,
       serviceId: firstServiceInCategory?.id ?? "",
       employeeId: profile?.employee_id ?? "",
     });
     setModalVisible(true);
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-  }, [agendaHours, selectedDate, businessHoursNorm, tenantTz, categories, services, profile?.employee_id]);
+  }, [
+    agendaHours,
+    selectedDate,
+    businessHoursNorm,
+    tenantTz,
+    categories,
+    services,
+    profile?.employee_id,
+  ]);
 
-  const closeDetailModal = () => { setDetailModalVisible(false); setAppointmentDetail(null); };
+  const closeDetailModal = () => {
+    setDetailModalVisible(false);
+    setAppointmentDetail(null);
+  };
 
   const handleRescheduleDatePick = useCallback(
     (d: Date) => {
       setRescheduleDate(d);
-      if (!esCeldaAgendaEnHorarioLaboral(d, rescheduleHour, businessHoursNorm, tenantTz)) {
+      if (
+        !esCeldaAgendaEnHorarioLaboral(
+          d,
+          rescheduleHour,
+          businessHoursNorm,
+          tenantTz,
+        )
+      ) {
         const first = agendaHours.find((h) =>
           esCeldaAgendaEnHorarioLaboral(d, h, businessHoursNorm, tenantTz),
         );
@@ -373,14 +489,18 @@ export default function AgendaScreen() {
     if (isSyncingFromStrip.current) return;
     isSyncingFromGrid.current = true;
     avatarStripRef.current?.scrollTo({ x, animated: false });
-    requestAnimationFrame(() => { isSyncingFromGrid.current = false; });
+    requestAnimationFrame(() => {
+      isSyncingFromGrid.current = false;
+    });
   }, []);
 
   const handleStripScroll = useCallback((x: number) => {
     if (isSyncingFromGrid.current) return;
     isSyncingFromStrip.current = true;
     gridScrollRef.current?.scrollTo({ x, animated: false });
-    requestAnimationFrame(() => { isSyncingFromStrip.current = false; });
+    requestAnimationFrame(() => {
+      isSyncingFromStrip.current = false;
+    });
   }, []);
 
   const handleEmployeePress = useCallback(
@@ -431,7 +551,9 @@ export default function AgendaScreen() {
       />
 
       {authLoading ? (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
           <ActivityIndicator size="large" color={theme.primary} />
         </View>
       ) : ownerVista ? (
@@ -582,7 +704,8 @@ export default function AgendaScreen() {
               employees={employees}
               timeColWidth={TIME_COL_W}
               columnWidth={
-                (width - TIME_COL_W - Spacing.md * 2) / Math.max(employees.length, 1)
+                (width - TIME_COL_W - Spacing.md * 2) /
+                Math.max(employees.length, 1)
               }
               theme={theme}
               selectedEmployeeId={employeeColumnFilterId}

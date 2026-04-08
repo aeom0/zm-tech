@@ -26,10 +26,7 @@ import type {
   AgendaService,
   AgendaStatusFilter,
 } from "../types";
-import {
-  filterAppointmentsForOwnerDay,
-  getServiceName,
-} from "../agendaUtils";
+import { filterAppointmentsForOwnerDay, getServiceName } from "../agendaUtils";
 import { useAgendaClockTick } from "../hooks/useAgendaClockTick";
 import { agendaStyles as sharedStyles } from "../agendaStyles";
 
@@ -161,12 +158,22 @@ export function OwnerDayGrid({
               }}
             >
               <ThemedText
-                style={{ fontSize: 10, color: theme.textMuted, fontWeight: "600" }}
+                style={{
+                  fontSize: 10,
+                  color: theme.textMuted,
+                  fontWeight: "600",
+                }}
                 numberOfLines={2}
                 adjustsFontSizeToFit
                 minimumFontScale={0.85}
               >
-                {formatoHoraAgendaSlot(selectedDate, hour, timeZone, language, timeFormat)}
+                {formatoHoraAgendaSlot(
+                  selectedDate,
+                  hour,
+                  timeZone,
+                  language,
+                  timeFormat,
+                )}
               </ThemedText>
             </View>
           ))}
@@ -179,10 +186,21 @@ export function OwnerDayGrid({
           showsHorizontalScrollIndicator
           nestedScrollEnabled
           scrollEventThrottle={16}
-          onScroll={onGridScroll ? (e) => onGridScroll(e.nativeEvent.contentOffset.x) : undefined}
+          onScroll={
+            onGridScroll
+              ? (e) => onGridScroll(e.nativeEvent.contentOffset.x)
+              : undefined
+          }
           style={{ flex: 1 }}
         >
-          <View style={{ flexDirection: "row", height: totalHeight, width: totalGridWidth, position: "relative" }}>
+          <View
+            style={{
+              flexDirection: "row",
+              height: totalHeight,
+              width: totalGridWidth,
+              position: "relative",
+            }}
+          >
             {employees.map((emp) => {
               const empApts = dayAppointments.filter(
                 (a) => a.employee_id === emp.id,
@@ -235,12 +253,21 @@ export function OwnerDayGrid({
                     const start = new Date(apt.date);
                     const startMin = minutosDelDiaEnZona(start, timeZone);
                     const endMin = startMin + apt.duration;
-                    const top = Math.max(0, (startMin - gridStartMin) * pxPerMinute);
+                    const top = Math.max(
+                      0,
+                      (startMin - gridStartMin) * pxPerMinute,
+                    );
                     const bottom = (endMin - gridStartMin) * pxPerMinute;
-                    const height = Math.max(28, Math.min(bottom, totalHeight) - top);
+                    const height = Math.max(
+                      28,
+                      Math.min(bottom, totalHeight) - top,
+                    );
                     if (top >= totalHeight) return null;
 
-                    const serviceName = getServiceName(services, apt.service_id);
+                    const serviceName = getServiceName(
+                      services,
+                      apt.service_id,
+                    );
 
                     return (
                       <Pressable
@@ -299,7 +326,12 @@ export function OwnerDayGrid({
                               color: theme.textMuted,
                             }}
                           >
-                            {formatoHoraInstanteEnZona(start, timeZone, language, timeFormat)}
+                            {formatoHoraInstanteEnZona(
+                              start,
+                              timeZone,
+                              language,
+                              timeFormat,
+                            )}
                           </ThemedText>
                         </View>
                       </Pressable>

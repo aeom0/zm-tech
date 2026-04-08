@@ -62,13 +62,17 @@ function esPendienteDeValidacion(status: string): boolean {
   return status === "payment_submitted";
 }
 
-function descripcionEstado(
-  status: string,
-): { label: string; tone: "ok" | "wait" | "muted" } {
+function descripcionEstado(status: string): {
+  label: string;
+  tone: "ok" | "wait" | "muted";
+} {
   if (esPendienteDeValidacion(status))
     return { label: "Pendiente", tone: "wait" };
   if (status === "cancelled" || status === "no_show")
-    return { label: status === "cancelled" ? "Cancelada" : "Ausencia", tone: "muted" };
+    return {
+      label: status === "cancelled" ? "Cancelada" : "Ausencia",
+      tone: "muted",
+    };
   return { label: "Confirmado", tone: "ok" };
 }
 
@@ -143,14 +147,23 @@ function TimelineCard({
                 {apt.client_name}
               </ThemedText>
               <ThemedText
-                style={{ fontSize: 13, color: theme.textSecondary, marginTop: 4 }}
+                style={{
+                  fontSize: 13,
+                  color: theme.textSecondary,
+                  marginTop: 4,
+                }}
                 numberOfLines={1}
               >
                 {serviceName || "—"}
               </ThemedText>
               {apt.duration > 0 && (
                 <View
-                  style={{ flexDirection: "row", alignItems: "center", gap: 4, marginTop: 4 }}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 4,
+                    marginTop: 4,
+                  }}
                 >
                   <Feather name="clock" size={11} color={theme.textMuted} />
                   <ThemedText style={{ fontSize: 11, color: theme.textMuted }}>
@@ -159,15 +172,23 @@ function TimelineCard({
                 </View>
               )}
             </View>
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
+            >
               {tone === "ok" ? (
                 <Feather name="check-circle" size={16} color={theme.success} />
               ) : tone === "wait" ? (
                 <Feather name="clock" size={16} color={theme.warning} />
               ) : (
-                <Feather name="minus-circle" size={16} color={theme.textMuted} />
+                <Feather
+                  name="minus-circle"
+                  size={16}
+                  color={theme.textMuted}
+                />
               )}
-              <ThemedText style={{ fontSize: 11, fontWeight: "600", color: accentColor }}>
+              <ThemedText
+                style={{ fontSize: 11, fontWeight: "600", color: accentColor }}
+              >
                 {estadoLabel}
               </ThemedText>
             </View>
@@ -227,7 +248,11 @@ export function StaffAgendaTimelineView({
       <View
         style={[
           sharedStyles.calendarContainer,
-          { padding: Spacing.xl, justifyContent: "center", alignItems: "center" },
+          {
+            padding: Spacing.xl,
+            justifyContent: "center",
+            alignItems: "center",
+          },
         ]}
       >
         <ThemedText style={{ color: theme.textSecondary, textAlign: "center" }}>
@@ -328,25 +353,56 @@ export function StaffAgendaTimelineView({
                     · {siguiente.client_name}
                   </ThemedText>
                   <ThemedText
-                    style={{ fontSize: 14, color: theme.textSecondary, marginTop: 4 }}
+                    style={{
+                      fontSize: 14,
+                      color: theme.textSecondary,
+                      marginTop: 4,
+                    }}
                     numberOfLines={1}
                   >
                     {getServiceName(services, siguiente.service_id) || "—"}
                   </ThemedText>
-                  <View style={{ flexDirection: "row", gap: Spacing.md, marginTop: Spacing.sm }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: Spacing.md,
+                      marginTop: Spacing.sm,
+                    }}
+                  >
                     {siguiente.duration > 0 && (
-                      <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-                        <Feather name="clock" size={12} color={theme.textMuted} />
-                        <ThemedText style={{ fontSize: 12, color: theme.textMuted }}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: 4,
+                        }}
+                      >
+                        <Feather
+                          name="clock"
+                          size={12}
+                          color={theme.textMuted}
+                        />
+                        <ThemedText
+                          style={{ fontSize: 12, color: theme.textMuted }}
+                        >
                           {formatDuration(siguiente.duration)}
                         </ThemedText>
                       </View>
                     )}
                     {parseFloat(siguiente.price) > 0 && (
-                      <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: 4,
+                        }}
+                      >
                         <Feather name="tag" size={12} color={theme.textMuted} />
-                        <ThemedText style={{ fontSize: 12, color: theme.textMuted }}>
-                          {currencySymbol} {parseFloat(siguiente.price).toFixed(2)}
+                        <ThemedText
+                          style={{ fontSize: 12, color: theme.textMuted }}
+                        >
+                          {currencySymbol}{" "}
+                          {parseFloat(siguiente.price).toFixed(2)}
                         </ThemedText>
                       </View>
                     )}
@@ -403,7 +459,11 @@ export function StaffAgendaTimelineView({
             return (
               <View
                 key={apt.id}
-                style={{ flexDirection: "row", marginBottom: Spacing.md, alignItems: "stretch" }}
+                style={{
+                  flexDirection: "row",
+                  marginBottom: Spacing.md,
+                  alignItems: "stretch",
+                }}
               >
                 {/* Hora */}
                 <View
@@ -415,14 +475,20 @@ export function StaffAgendaTimelineView({
                   }}
                 >
                   <ThemedText
-                    style={{ fontSize: 12, fontWeight: "700", color: theme.textMuted }}
+                    style={{
+                      fontSize: 12,
+                      fontWeight: "700",
+                      color: theme.textMuted,
+                    }}
                   >
                     {timeLabel}
                   </ThemedText>
                 </View>
 
                 {/* Dot */}
-                <View style={{ width: 14, alignItems: "center", paddingTop: 6 }}>
+                <View
+                  style={{ width: 14, alignItems: "center", paddingTop: 6 }}
+                >
                   <View
                     style={{
                       width: 10,
@@ -482,7 +548,9 @@ export function StaffAgendaTimelineView({
           }}
         >
           <Feather name="plus" size={22} color="#FFFFFF" />
-          <ThemedText style={{ color: "#FFFFFF", fontWeight: "700", fontSize: 15 }}>
+          <ThemedText
+            style={{ color: "#FFFFFF", fontWeight: "700", fontSize: 15 }}
+          >
             Nueva cita
           </ThemedText>
         </LinearGradient>

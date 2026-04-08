@@ -41,7 +41,9 @@ export function OwnerStaffAvatarStrip({
       horizontal
       showsHorizontalScrollIndicator={false}
       scrollEventThrottle={16}
-      onScroll={onScroll ? (e) => onScroll(e.nativeEvent.contentOffset.x) : undefined}
+      onScroll={
+        onScroll ? (e) => onScroll(e.nativeEvent.contentOffset.x) : undefined
+      }
       style={{ flexGrow: 0, flexShrink: 0 }}
       contentContainerStyle={{
         paddingHorizontal: Spacing.md,
@@ -52,7 +54,7 @@ export function OwnerStaffAvatarStrip({
       }}
     >
       {employees.map((emp, index) => {
-        const firstName = (emp.name?.trim().split(/\s+/)[0] ?? "?");
+        const firstName = emp.name?.trim().split(/\s+/)[0] ?? "?";
         const initial = firstName.slice(0, 1).toUpperCase();
 
         return (

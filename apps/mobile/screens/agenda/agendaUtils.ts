@@ -13,11 +13,7 @@ import type {
 } from "./types";
 
 /** Comparación de día calendario en zona IANA del tenant. */
-export function isSameCalendarDay(
-  a: Date,
-  b: Date,
-  timeZone: string,
-): boolean {
+export function isSameCalendarDay(a: Date, b: Date, timeZone: string): boolean {
   return esMismoDiaCalendarioEnZona(a, b, timeZone);
 }
 
@@ -118,6 +114,7 @@ export function matchesStatusFilter(
   filter: AgendaStatusFilter,
 ): boolean {
   if (filter === "all") return true;
-  if (filter === "cancelled") return status === "cancelled" || status === "no_show";
+  if (filter === "cancelled")
+    return status === "cancelled" || status === "no_show";
   return status === filter;
 }

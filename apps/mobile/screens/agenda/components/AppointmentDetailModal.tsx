@@ -310,7 +310,8 @@ export function AppointmentDetailModal({
                       { color: theme.error, marginTop: Spacing.sm },
                     ]}
                   >
-                    Ese día u hora está fuera de la franja configurada del negocio.
+                    Ese día u hora está fuera de la franja configurada del
+                    negocio.
                   </ThemedText>
                 ) : null}
               </View>

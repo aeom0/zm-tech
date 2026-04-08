@@ -40,7 +40,11 @@ export interface AgendaServiceCategory {
  * completed → completadas
  * cancelled → canceladas + no_show
  */
-export type AgendaStatusFilter = "all" | "scheduled" | "completed" | "cancelled";
+export type AgendaStatusFilter =
+  | "all"
+  | "scheduled"
+  | "completed"
+  | "cancelled";
 
 /** Vista del owner: día individual o semana completa */
 export type OwnerViewMode = "day" | "week";

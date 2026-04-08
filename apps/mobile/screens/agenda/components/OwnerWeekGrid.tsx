@@ -59,11 +59,16 @@ interface OwnerWeekGridProps {
 }
 
 function fmtWeekday(date: Date, language: string, timeZone: string): string {
-  return new Intl.DateTimeFormat(language, { timeZone, weekday: "short" }).format(date);
+  return new Intl.DateTimeFormat(language, {
+    timeZone,
+    weekday: "short",
+  }).format(date);
 }
 
 function fmtDayNum(date: Date, language: string, timeZone: string): string {
-  return new Intl.DateTimeFormat(language, { timeZone, day: "numeric" }).format(date);
+  return new Intl.DateTimeFormat(language, { timeZone, day: "numeric" }).format(
+    date,
+  );
 }
 
 export function OwnerWeekGrid({
@@ -98,7 +103,9 @@ export function OwnerWeekGrid({
             matchesStatusFilter(apt.status, statusFilter)
           );
         })
-        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()),
+        .sort(
+          (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+        ),
     );
   }, [appointments, weekDays, timeZone, statusFilter]);
 
@@ -131,7 +138,11 @@ export function OwnerWeekGrid({
           return (
             <Pressable
               key={i}
-              style={{ flex: 1, alignItems: "center", paddingVertical: Spacing.sm }}
+              style={{
+                flex: 1,
+                alignItems: "center",
+                paddingVertical: Spacing.sm,
+              }}
               onPress={() => onSelectDay(day)}
             >
               {/* Nombre del día */}
@@ -240,7 +251,8 @@ export function OwnerWeekGrid({
                 </ThemedText>
               ) : (
                 dayApts.map((apt) => {
-                  const empColor = employeeColorMap[apt.employee_id] ?? theme.primary;
+                  const empColor =
+                    employeeColorMap[apt.employee_id] ?? theme.primary;
                   const svcName = getServiceName(services, apt.service_id);
                   const timeLabel = formatoHoraInstanteEnZona(
                     new Date(apt.date),
