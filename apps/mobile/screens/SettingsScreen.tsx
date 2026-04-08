@@ -26,7 +26,12 @@ export default function SettingsScreen() {
 
   const handleSeleccionarMoneda = async (moneda: Moneda) => {
     await updateTenant(
-      { locale: { ...config.locale, currency: { code: moneda.code, symbol: moneda.symbol } } },
+      {
+        locale: {
+          ...config.locale,
+          currency: { code: moneda.code, symbol: moneda.symbol },
+        },
+      },
       { syncRemote: true },
     );
   };

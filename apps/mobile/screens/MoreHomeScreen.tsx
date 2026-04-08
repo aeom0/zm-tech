@@ -117,7 +117,9 @@ function MenuRow({
         onPress();
       }}
     >
-      <View style={[styles.menuIconWrap, { backgroundColor: `${iconColor}18` }]}>
+      <View
+        style={[styles.menuIconWrap, { backgroundColor: `${iconColor}18` }]}
+      >
         <Feather name={icon} size={22} color={iconColor} />
       </View>
       <View style={styles.menuLabelContainer}>
@@ -182,7 +184,9 @@ export default function MoreHomeScreen() {
       {/* ── MI NEGOCIO (solo owner/dev) ── */}
       {isAdmin && (
         <>
-          <ThemedText style={[styles.sectionTitle, { color: theme.textSecondary }]}>
+          <ThemedText
+            style={[styles.sectionTitle, { color: theme.textSecondary }]}
+          >
             Mi negocio
           </ThemedText>
           <MenuRow
@@ -259,7 +263,9 @@ export default function MoreHomeScreen() {
       {/* ── MI TURNO (solo staff) ── */}
       {!isAdmin && (
         <>
-          <ThemedText style={[styles.sectionTitle, { color: theme.textSecondary }]}>
+          <ThemedText
+            style={[styles.sectionTitle, { color: theme.textSecondary }]}
+          >
             Mi turno
           </ThemedText>
           <MenuRow

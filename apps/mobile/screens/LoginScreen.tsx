@@ -69,7 +69,10 @@ export function LoginScreen({
   return (
     <OnboardingLayout scrollable>
       <View style={styles.inner}>
-        <Animated.View entering={FadeInUp.duration(500)} style={styles.heroWrap}>
+        <Animated.View
+          entering={FadeInUp.duration(500)}
+          style={styles.heroWrap}
+        >
           {hasLogo ? (
             <Image
               source={{ uri: config.logo }}
@@ -165,8 +168,14 @@ export function LoginScreen({
               entering={FadeInDown.duration(300)}
               style={styles.errorBox}
             >
-              <Feather name="alert-circle" size={16} color={Colors.dark.error} />
-              <ThemedText style={[styles.errorText, { color: Colors.dark.error }]}>
+              <Feather
+                name="alert-circle"
+                size={16}
+                color={Colors.dark.error}
+              />
+              <ThemedText
+                style={[styles.errorText, { color: Colors.dark.error }]}
+              >
                 {error}
               </ThemedText>
             </Animated.View>

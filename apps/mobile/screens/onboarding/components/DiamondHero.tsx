@@ -58,7 +58,9 @@ export function DiamondHero({ showText = true }: DiamondHeroProps) {
                 ocupe exactamente la misma altura que wordmarkGeema. */}
             <MaskedView
               maskElement={
-                <Text style={[styles.wordmarkStudio, styles.wordmarkStudioMask]}>
+                <Text
+                  style={[styles.wordmarkStudio, styles.wordmarkStudioMask]}
+                >
                   Studio
                 </Text>
               }

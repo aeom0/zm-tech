@@ -95,7 +95,9 @@ export function CurrencyPickerModal({
                     style={[
                       styles.symbol,
                       {
-                        color: seleccionada ? theme.primary : theme.textSecondary,
+                        color: seleccionada
+                          ? theme.primary
+                          : theme.textSecondary,
                       },
                     ]}
                     numberOfLines={1}

@@ -20,7 +20,10 @@ import { useTheme } from "@/hooks/useTheme";
 import { useTenant } from "@/contexts/TenantContext";
 import { Spacing, BorderRadius } from "@/constants/theme";
 import type { MoreStackParamList } from "@/navigation/MoreStackNavigator";
-import type { TenantConfig, TimeFormatPreference } from "@geemastudio/tenant-config";
+import type {
+  TenantConfig,
+  TimeFormatPreference,
+} from "@geemastudio/tenant-config";
 import {
   CLAVES_DIA_LABORAL,
   ETIQUETA_DIA_LABORAL,
@@ -53,7 +56,11 @@ export default function HorariosTrabajoScreen() {
       setDraftTimezone(config.locale.timezone);
       setDraftTimeFormat(config.locale.timeFormat === "12" ? "12" : "24");
       setDraftHours(normalizarHorarioSemanal(config.businessHours));
-    }, [config.locale.timezone, config.locale.timeFormat, config.businessHours]),
+    }, [
+      config.locale.timezone,
+      config.locale.timeFormat,
+      config.businessHours,
+    ]),
   );
 
   const guardar = useCallback(async () => {
@@ -66,12 +73,19 @@ export default function HorariosTrabajoScreen() {
     try {
       await updateTenant(
         {
-          locale: { ...config.locale, timezone: draftTimezone, timeFormat: draftTimeFormat },
+          locale: {
+            ...config.locale,
+            timezone: draftTimezone,
+            timeFormat: draftTimeFormat,
+          },
           businessHours: draftHours,
         },
         { syncRemote: true },
       );
-      Alert.alert("Listo", "Horario, zona horaria y formato de hora guardados.");
+      Alert.alert(
+        "Listo",
+        "Horario, zona horaria y formato de hora guardados.",
+      );
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Error al guardar.";
       Alert.alert("No se pudo guardar", msg);
@@ -99,7 +113,10 @@ export default function HorariosTrabajoScreen() {
     });
   }, [navigation, guardando, guardar, theme.primary]);
 
-  const setDiaAbierto = (dia: (typeof CLAVES_DIA_LABORAL)[number], abierto: boolean) => {
+  const setDiaAbierto = (
+    dia: (typeof CLAVES_DIA_LABORAL)[number],
+    abierto: boolean,
+  ) => {
     setDraftHours((prev) => {
       const next = { ...prev };
       if (!abierto) {
@@ -136,7 +153,10 @@ export default function HorariosTrabajoScreen() {
       }}
       keyboardShouldPersistTaps="handled"
     >
-      <ThemedText type="small" style={{ color: theme.textMuted, marginBottom: Spacing.lg }}>
+      <ThemedText
+        type="small"
+        style={{ color: theme.textMuted, marginBottom: Spacing.lg }}
+      >
         Esto define la franja usual del negocio y la zona horaria para fechas y
         reportes en la app. Ajustalo cuando cambien tus horarios.
       </ThemedText>
@@ -153,27 +173,29 @@ export default function HorariosTrabajoScreen() {
       <View
         style={[
           styles.card,
-          { backgroundColor: theme.backgroundDefault, borderColor: theme.border },
+          {
+            backgroundColor: theme.backgroundDefault,
+            borderColor: theme.border,
+          },
         ]}
       >
-        {ZONAS_HORARIAS_SUGERIDAS.slice(
-          0,
-          zonasExpandidas ? undefined : 4,
-        ).map((z) => {
-          const selected = z.value === draftTimezone;
-          return (
-            <ThemedText
-              key={z.value}
-              style={[
-                styles.zonaRow,
-                selected && { color: theme.primary, fontWeight: "600" },
-              ]}
-              onPress={() => setDraftTimezone(z.value)}
-            >
-              {z.label}
-            </ThemedText>
-          );
-        })}
+        {ZONAS_HORARIAS_SUGERIDAS.slice(0, zonasExpandidas ? undefined : 4).map(
+          (z) => {
+            const selected = z.value === draftTimezone;
+            return (
+              <ThemedText
+                key={z.value}
+                style={[
+                  styles.zonaRow,
+                  selected && { color: theme.primary, fontWeight: "600" },
+                ]}
+                onPress={() => setDraftTimezone(z.value)}
+              >
+                {z.label}
+              </ThemedText>
+            );
+          },
+        )}
       </View>
       <ThemedText
         type="small"
@@ -212,7 +234,10 @@ export default function HorariosTrabajoScreen() {
         />
       </View>
 
-      <ThemedText type="h4" style={{ marginBottom: Spacing.md, marginTop: Spacing.xl }}>
+      <ThemedText
+        type="h4"
+        style={{ marginBottom: Spacing.md, marginTop: Spacing.xl }}
+      >
         Por día
       </ThemedText>
 
@@ -225,7 +250,10 @@ export default function HorariosTrabajoScreen() {
             key={dia}
             style={[
               styles.diaCard,
-              { backgroundColor: theme.backgroundDefault, borderColor: theme.border },
+              {
+                backgroundColor: theme.backgroundDefault,
+                borderColor: theme.border,
+              },
             ]}
           >
             <View style={styles.diaHeader}>
@@ -233,13 +261,19 @@ export default function HorariosTrabajoScreen() {
                 {ETIQUETA_DIA_LABORAL[dia]}
               </ThemedText>
               <View style={styles.switchRow}>
-                <ThemedText type="small" style={{ color: theme.textMuted, marginRight: Spacing.sm }}>
+                <ThemedText
+                  type="small"
+                  style={{ color: theme.textMuted, marginRight: Spacing.sm }}
+                >
                   Abierto
                 </ThemedText>
                 <Switch
                   value={abierto}
                   onValueChange={(v) => setDiaAbierto(dia, v)}
-                  trackColor={{ false: theme.border, true: `${theme.primary}88` }}
+                  trackColor={{
+                    false: theme.border,
+                    true: `${theme.primary}88`,
+                  }}
                   thumbColor={abierto ? theme.primary : theme.textMuted}
                 />
               </View>
@@ -247,7 +281,10 @@ export default function HorariosTrabajoScreen() {
             {abierto && slot ? (
               <View style={styles.horasRow}>
                 <View style={styles.horaInputWrap}>
-                  <ThemedText type="small" style={{ color: theme.textMuted, marginBottom: 4 }}>
+                  <ThemedText
+                    type="small"
+                    style={{ color: theme.textMuted, marginBottom: 4 }}
+                  >
                     Apertura
                   </ThemedText>
                   <TextInput
@@ -268,7 +305,10 @@ export default function HorariosTrabajoScreen() {
                   />
                 </View>
                 <View style={styles.horaInputWrap}>
-                  <ThemedText type="small" style={{ color: theme.textMuted, marginBottom: 4 }}>
+                  <ThemedText
+                    type="small"
+                    style={{ color: theme.textMuted, marginBottom: 4 }}
+                  >
                     Cierre
                   </ThemedText>
                   <TextInput
@@ -320,7 +360,9 @@ function PressableChip({
         chipStyles.chip,
         {
           borderColor: selected ? theme.primary : theme.border,
-          backgroundColor: selected ? `${theme.primary}22` : theme.backgroundDefault,
+          backgroundColor: selected
+            ? `${theme.primary}22`
+            : theme.backgroundDefault,
           opacity: pressed ? 0.88 : 1,
         },
       ]}

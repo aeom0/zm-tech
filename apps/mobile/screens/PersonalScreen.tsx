@@ -302,8 +302,8 @@ export default function PersonalScreen() {
   const previewAvatarUri =
     removeAvatar || !editing
       ? null
-      : pendingAvatarUri ??
-        (editing.avatar_url?.trim() ? editing.avatar_url.trim() : null);
+      : (pendingAvatarUri ??
+        (editing.avatar_url?.trim() ? editing.avatar_url.trim() : null));
 
   const handleSave = async () => {
     if (!isCreating && !editing) return;
@@ -429,8 +429,8 @@ export default function PersonalScreen() {
         showsVerticalScrollIndicator={false}
       >
         <ThemedText style={[styles.hint, { color: theme.textSecondary }]}>
-          Toca a una {staffSingular.toLowerCase()} para editar datos, modo de pago
-          y foto para la agenda.
+          Toca a una {staffSingular.toLowerCase()} para editar datos, modo de
+          pago y foto para la agenda.
         </ThemedText>
 
         {isLoading ? (
@@ -458,7 +458,10 @@ export default function PersonalScreen() {
               <View
                 style={[
                   styles.cardAvatarWrap,
-                  { borderColor: emp.color, backgroundColor: theme.backgroundSecondary },
+                  {
+                    borderColor: emp.color,
+                    backgroundColor: theme.backgroundSecondary,
+                  },
                 ]}
               >
                 {emp.avatar_url?.trim() ? (
@@ -471,7 +474,9 @@ export default function PersonalScreen() {
                   <ThemedText
                     style={[styles.cardAvatarLetter, { color: emp.color }]}
                   >
-                    {(emp.name?.trim().split(/\s+/)[0] ?? "?").slice(0, 1).toUpperCase()}
+                    {(emp.name?.trim().split(/\s+/)[0] ?? "?")
+                      .slice(0, 1)
+                      .toUpperCase()}
                   </ThemedText>
                 )}
               </View>
@@ -519,7 +524,10 @@ export default function PersonalScreen() {
 
       {/* FAB agregar profesional */}
       <Pressable
-        style={[styles.fab, { backgroundColor: theme.primary, bottom: tabBarHeight + Spacing.lg }]}
+        style={[
+          styles.fab,
+          { backgroundColor: theme.primary, bottom: tabBarHeight + Spacing.lg },
+        ]}
         onPress={openCreate}
         hitSlop={8}
       >
@@ -543,7 +551,10 @@ export default function PersonalScreen() {
               </Pressable>
             </View>
 
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: Spacing["3xl"] }}>
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ paddingBottom: Spacing["3xl"] }}
+            >
               <ThemedText
                 style={[styles.fieldLabel, { color: theme.textSecondary }]}
               >
@@ -575,7 +586,9 @@ export default function PersonalScreen() {
                     onPress={elegirFotoGaleria}
                   >
                     <Feather name="image" size={18} color={theme.primary} />
-                    <ThemedText style={[styles.avatarBtnText, { color: theme.primary }]}>
+                    <ThemedText
+                      style={[styles.avatarBtnText, { color: theme.primary }]}
+                    >
                       Galería
                     </ThemedText>
                   </Pressable>
@@ -584,11 +597,14 @@ export default function PersonalScreen() {
                     onPress={tomarFotoCamara}
                   >
                     <Feather name="camera" size={18} color={theme.primary} />
-                    <ThemedText style={[styles.avatarBtnText, { color: theme.primary }]}>
+                    <ThemedText
+                      style={[styles.avatarBtnText, { color: theme.primary }]}
+                    >
                       Cámara
                     </ThemedText>
                   </Pressable>
-                  {(editing?.avatar_url?.trim() || pendingAvatarUri) && !removeAvatar ? (
+                  {(editing?.avatar_url?.trim() || pendingAvatarUri) &&
+                  !removeAvatar ? (
                     <Pressable
                       style={[styles.avatarBtn, { borderColor: theme.error }]}
                       onPress={() => {
@@ -598,7 +614,9 @@ export default function PersonalScreen() {
                       }}
                     >
                       <Feather name="trash-2" size={18} color={theme.error} />
-                      <ThemedText style={[styles.avatarBtnText, { color: theme.error }]}>
+                      <ThemedText
+                        style={[styles.avatarBtnText, { color: theme.error }]}
+                      >
                         Quitar foto
                       </ThemedText>
                     </Pressable>
@@ -887,7 +905,9 @@ export default function PersonalScreen() {
                   ) : (
                     <>
                       <Feather name="trash-2" size={16} color={theme.error} />
-                      <ThemedText style={[styles.deleteBtnText, { color: theme.error }]}>
+                      <ThemedText
+                        style={[styles.deleteBtnText, { color: theme.error }]}
+                      >
                         Eliminar {staffSingular}
                       </ThemedText>
                     </>

@@ -16,8 +16,15 @@ export function ClientAppointmentRow({ appointment }: Props) {
   const { theme } = useTheme();
   const { config } = useTenant();
 
-  const { date, status, services, employee_name, employee_color, total_paid, pending_amount } =
-    appointment;
+  const {
+    date,
+    status,
+    services,
+    employee_name,
+    employee_color,
+    total_paid,
+    pending_amount,
+  } = appointment;
 
   const dateLabel = new Date(date).toLocaleString(config.locale.language, {
     day: "numeric",
@@ -34,9 +41,7 @@ export function ClientAppointmentRow({ appointment }: Props) {
         : { label: "Pendiente", color: theme.warning };
 
   const serviceLabel =
-    services.length > 0
-      ? services.map((s) => s.name).join(" · ")
-      : "Servicio";
+    services.length > 0 ? services.map((s) => s.name).join(" · ") : "Servicio";
 
   return (
     <View
@@ -49,7 +54,10 @@ export function ClientAppointmentRow({ appointment }: Props) {
       ]}
     >
       <View style={styles.left}>
-        <ThemedText style={[styles.service, { color: theme.text }]} numberOfLines={2}>
+        <ThemedText
+          style={[styles.service, { color: theme.text }]}
+          numberOfLines={2}
+        >
           {serviceLabel}
         </ThemedText>
         <ThemedText style={[styles.date, { color: theme.textMuted }]}>
@@ -59,10 +67,7 @@ export function ClientAppointmentRow({ appointment }: Props) {
           <View style={styles.empRow}>
             {employee_color && (
               <View
-                style={[
-                  styles.empDot,
-                  { backgroundColor: employee_color },
-                ]}
+                style={[styles.empDot, { backgroundColor: employee_color }]}
               />
             )}
             <ThemedText

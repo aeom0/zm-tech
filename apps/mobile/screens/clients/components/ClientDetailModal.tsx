@@ -155,10 +155,7 @@ export function ClientDetailModal({ visible, client, onClose }: Props) {
               </ThemedText>
             ) : (
               appointments.map((apt) => (
-                <ClientAppointmentRow
-                  key={apt.id}
-                  appointment={apt}
-                />
+                <ClientAppointmentRow key={apt.id} appointment={apt} />
               ))
             )}
           </ScrollView>

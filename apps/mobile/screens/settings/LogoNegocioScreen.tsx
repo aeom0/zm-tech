@@ -139,9 +139,7 @@ export default function LogoNegocioScreen() {
               },
             ]}
           >
-            <ThemedText
-              style={[styles.logoInitials, { color: theme.primary }]}
-            >
+            <ThemedText style={[styles.logoInitials, { color: theme.primary }]}>
               {initials}
             </ThemedText>
           </View>
@@ -170,9 +168,7 @@ export default function LogoNegocioScreen() {
         ]}
       >
         <Feather name="upload" size={18} color={theme.primary} />
-        <ThemedText
-          style={[styles.pickButtonLabel, { color: theme.primary }]}
-        >
+        <ThemedText style={[styles.pickButtonLabel, { color: theme.primary }]}>
           {currentLogo ? "Cambiar logo" : "Subir logo"}
         </ThemedText>
       </Pressable>
@@ -261,4 +257,3 @@ const styles = StyleSheet.create({
   pickButtonLabel: { fontSize: 15, fontWeight: "600" },
   removeButton: { marginTop: Spacing.sm, padding: Spacing.sm },
 });
-
