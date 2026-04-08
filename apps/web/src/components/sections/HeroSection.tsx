@@ -49,7 +49,8 @@ export function HeroSection() {
             {/* Subtítulo */}
             <p className="text-lg text-white/70 max-w-xl mx-auto lg:mx-0 mb-10 leading-relaxed">
               Agenda, personal, inventario y finanzas en un solo lugar. Sin
-              papeles, WhatsApp con citas automáticas y Asistente IA. Todo en orden, siempre.
+              papeles, WhatsApp con citas automáticas y Asistente IA. Todo en
+              orden, siempre.
             </p>
 
             {/* CTAs */}
