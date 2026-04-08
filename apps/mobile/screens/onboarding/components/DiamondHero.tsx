@@ -8,6 +8,9 @@ import { Gradients, Spacing } from "@/constants/theme";
 
 const STACK_SIZE = 320;
 const GLOW_SIZE = 420;
+// Offset para centrar el glow (mayor que el stack) exactamente sobre el diamante.
+// Fórmula: (STACK_SIZE - GLOW_SIZE) / 2 = -50
+const GLOW_OFFSET = (STACK_SIZE - GLOW_SIZE) / 2;
 
 interface DiamondHeroProps {
   /** Mostrar wordmark "GeemaStudio" y tagline debajo del diamante. Default: true */
@@ -24,13 +27,20 @@ interface DiamondHeroProps {
  * Solución: lineHeight === fontSize === studioGradient.height === WORDMARK_SIZE.
  *
  * Gradiente: consume Gradients.onboarding desde theme.ts — fuente de verdad única.
+ *
+ * Posicionamiento del glow: NebulosaGlow no define su propio position:absolute.
+ * DiamondHero lo posiciona con GLOW_OFFSET = (STACK_SIZE - GLOW_SIZE) / 2
+ * para centrado matemáticamente correcto sin magic numbers en el hijo.
  */
 export function DiamondHero({ showText = true }: DiamondHeroProps) {
   return (
     <View style={styles.container}>
       {/* Glow + diamante */}
       <View style={styles.logoStack}>
-        <NebulosaGlow size={GLOW_SIZE} />
+        {/* Glow posicionado por el padre para centrado correcto */}
+        <View style={styles.glowWrapper}>
+          <NebulosaGlow size={GLOW_SIZE} />
+        </View>
         <View style={styles.diamondWrapper}>
           <DiamondSparkle size={320} />
         </View>
@@ -88,6 +98,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     position: "relative",
     overflow: "visible",
+  },
+  glowWrapper: {
+    position: "absolute",
+    left: GLOW_OFFSET,
+    top: GLOW_OFFSET,
   },
   diamondWrapper: {
     position: "absolute",

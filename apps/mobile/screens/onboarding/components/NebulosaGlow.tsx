@@ -1,5 +1,4 @@
 import React from "react";
-import { StyleSheet } from "react-native";
 import Svg, {
   Defs,
   Ellipse,
@@ -23,6 +22,13 @@ interface NebulosaGlowProps {
  *   - Turquesa (#40E0D0) cx = centro - 25
  *   - Índigo Lunaris (#3949AB) cx = centro + 25
  * Muy solapados → se perciben como un solo círculo con transición de color.
+ *
+ * NOTA DE POSICIONAMIENTO: este componente NO define su propio position:absolute.
+ * El padre (DiamondHero) es responsable de posicionarlo con:
+ *   position: "absolute"
+ *   left: (STACK_SIZE - GLOW_SIZE) / 2
+ *   top:  (STACK_SIZE - GLOW_SIZE) / 2
+ * Así el centrado es matemáticamente correcto sin magic numbers internos.
  */
 export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
   const s = size;
@@ -42,7 +48,6 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
       width={s}
       height={s}
       viewBox={`0 0 ${s} ${s}`}
-      style={styles.svg}
       pointerEvents="none"
     >
       <Defs>
@@ -91,11 +96,3 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
     </Svg>
   );
 }
-
-const styles = StyleSheet.create({
-  svg: {
-    position: "absolute",
-    left: -50,
-    top: -50,
-  },
-});
