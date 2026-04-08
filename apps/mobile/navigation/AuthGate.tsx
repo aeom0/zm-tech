@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as SplashScreenExpo from "expo-splash-screen";
+import * as Updates from "expo-updates";
 import MainTabNavigator from "@/navigation/MainTabNavigator";
 import { LoginScreen } from "@/screens/LoginScreen";
 import { useAuth } from "@/contexts/AuthContext";
@@ -38,6 +39,35 @@ export default function AuthGate() {
   // Flag de desarrollo para obligar a pasar por el onboarding completo
   const forceOnboardingDev =
     __DEV__ && process.env.EXPO_PUBLIC_FORCE_ONBOARDING === "true";
+
+  // Chequeo OTA al arranque: busca y aplica updates mientras la splash está visible.
+  // Timeout de 8s para no bloquear si no hay red.
+  const otaChecked = useRef(false);
+  useEffect(() => {
+    if (__DEV__ || otaChecked.current) return;
+    otaChecked.current = true;
+
+    const checkOTA = async () => {
+      try {
+        const timeout = new Promise<void>((resolve) =>
+          setTimeout(resolve, 8000),
+        );
+        const update = await Promise.race([
+          Updates.checkForUpdateAsync(),
+          timeout.then(() => null),
+        ]);
+
+        if (update && "isAvailable" in update && update.isAvailable) {
+          await Updates.fetchUpdateAsync();
+          await Updates.reloadAsync();
+        }
+      } catch {
+        // Sin red o error inesperado — continuar sin OTA
+      }
+    };
+
+    checkOTA();
+  }, []);
 
   // Ocultar splash nativa cuando el tenant termina de cargar
   useEffect(() => {
