@@ -13,8 +13,11 @@ export async function subirAvatarEmpleado(
 ): Promise<{ publicUrl: string; path: string }> {
   const res = await fetch(localUri);
   const buf = await res.arrayBuffer();
-  const ext =
-    contentType.includes("png") ? "png" : contentType.includes("webp") ? "webp" : "jpg";
+  const ext = contentType.includes("png")
+    ? "png"
+    : contentType.includes("webp")
+      ? "webp"
+      : "jpg";
   const path = `${employeeId}/${Date.now()}.${ext}`;
 
   const { error: upErr } = await client.storage
@@ -44,7 +47,9 @@ export async function borrarAvatarSiEsStorage(
   const marker = `/storage/v1/object/public/${EMPLOYEE_AVATARS_BUCKET}/`;
   const i = publicUrl.indexOf(marker);
   if (i === -1) return;
-  const path = decodeURIComponent(publicUrl.slice(i + marker.length).split("?")[0] ?? "");
+  const path = decodeURIComponent(
+    publicUrl.slice(i + marker.length).split("?")[0] ?? "",
+  );
   if (!path) return;
   await client.storage.from(EMPLOYEE_AVATARS_BUCKET).remove([path]);
 }

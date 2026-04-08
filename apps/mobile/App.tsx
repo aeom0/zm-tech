@@ -44,9 +44,7 @@ function useFontsReady(): boolean {
 
     const loadFonts = async () => {
       try {
-        const featherAsset = require(
-          "@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Feather.ttf",
-        );
+        const featherAsset = require("@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Feather.ttf");
         await Font.loadAsync({
           Feather: featherAsset,
           Poppins_800ExtraBold,

@@ -86,74 +86,74 @@ export default function MainTabNavigator() {
         screenOptions={screenOptions as any}
         style={styles.tabs}
       >
-      <Tab.Screen
-        name="Dashboard"
-        component={DashboardScreen}
-        options={{
-          title: "Inicio",
-          headerTitle: config.businessName,
-          tabBarIcon: ({ color }) => (
-            <Feather name="home" size={22} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Agenda"
-        component={AgendaScreen}
-        options={{
-          title: "Agenda",
-          headerTitle: "Agenda",
-          tabBarIcon: ({ color }) => (
-            <Feather name="calendar" size={22} color={color} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Services"
-        component={ServicesScreen}
-        options={{
-          title: "Servicios",
-          headerTitle: "Servicios",
-          tabBarIcon: ({ color }) => (
-            <Feather name="star" size={22} color={color} />
-          ),
-        }}
-      />
-      {isAdmin && (
         <Tab.Screen
-          name="Clients"
-          component={ClientsScreen}
+          name="Dashboard"
+          component={DashboardScreen}
           options={{
-            title: "Clientes",
-            headerTitle: "Clientes",
+            title: "Inicio",
+            headerTitle: config.businessName,
             tabBarIcon: ({ color }) => (
-              <Feather name="users" size={22} color={color} />
+              <Feather name="home" size={22} color={color} />
             ),
           }}
         />
-      )}
-      <Tab.Screen
-        name="More"
-        component={MoreStackNavigator}
-        options={{
-          title: "Más",
-          headerShown: false,
-          tabBarIcon: ({ color }) => (
-            <Feather name="menu" size={22} color={color} />
-          ),
-          tabBarBadge: tabBadgeCount > 0 ? tabBadgeCount : undefined,
-          tabBarBadgeStyle: {
-            backgroundColor: config.theme.primaryColor,
-            color: "#FFFFFF",
-            fontSize: 10,
-            fontWeight: "700",
-            minWidth: 18,
-            height: 18,
-            borderRadius: 9,
-          },
-        }}
-      />
-    </Tab.Navigator>
+        <Tab.Screen
+          name="Agenda"
+          component={AgendaScreen}
+          options={{
+            title: "Agenda",
+            headerTitle: "Agenda",
+            tabBarIcon: ({ color }) => (
+              <Feather name="calendar" size={22} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Services"
+          component={ServicesScreen}
+          options={{
+            title: "Servicios",
+            headerTitle: "Servicios",
+            tabBarIcon: ({ color }) => (
+              <Feather name="star" size={22} color={color} />
+            ),
+          }}
+        />
+        {isAdmin && (
+          <Tab.Screen
+            name="Clients"
+            component={ClientsScreen}
+            options={{
+              title: "Clientes",
+              headerTitle: "Clientes",
+              tabBarIcon: ({ color }) => (
+                <Feather name="users" size={22} color={color} />
+              ),
+            }}
+          />
+        )}
+        <Tab.Screen
+          name="More"
+          component={MoreStackNavigator}
+          options={{
+            title: "Más",
+            headerShown: false,
+            tabBarIcon: ({ color }) => (
+              <Feather name="menu" size={22} color={color} />
+            ),
+            tabBarBadge: tabBadgeCount > 0 ? tabBadgeCount : undefined,
+            tabBarBadgeStyle: {
+              backgroundColor: config.theme.primaryColor,
+              color: "#FFFFFF",
+              fontSize: 10,
+              fontWeight: "700",
+              minWidth: 18,
+              height: 18,
+              borderRadius: 9,
+            },
+          }}
+        />
+      </Tab.Navigator>
     </View>
   );
 }

@@ -52,7 +52,9 @@ async function fetchProfileRow(userId: string): Promise<AuthProfile | null> {
  * Si navegamos antes de que exista la fila (o no hay trigger), el INSERT falla.
  * Esperamos al trigger; si sigue sin fila, intentamos INSERT owner (política bootstrap en BD).
  */
-async function esperarPerfilOInsertar(userId: string): Promise<AuthProfile | null> {
+async function esperarPerfilOInsertar(
+  userId: string,
+): Promise<AuthProfile | null> {
   for (let i = 0; i < POLL_PERFIL_INTENTOS; i++) {
     const row = await fetchProfileRow(userId);
     if (row) return row;
@@ -133,8 +135,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
     if (error) return { ok: false, error: error.message };
 
-    const uid =
-      signData.user?.id ?? signData.session?.user?.id ?? null;
+    const uid = signData.user?.id ?? signData.session?.user?.id ?? null;
     if (!uid) {
       return { ok: false, error: "No se obtuvo la sesión. Reintenta." };
     }

@@ -49,7 +49,9 @@ interface TenantContextValue {
   isConfigured: boolean;
   isLoading: boolean;
   pendingOnboardingEmployees: PendingOnboardingEmployee[];
-  addPendingOnboardingEmployee: (row: Omit<PendingOnboardingEmployee, "id">) => void;
+  addPendingOnboardingEmployee: (
+    row: Omit<PendingOnboardingEmployee, "id">,
+  ) => void;
 }
 
 const TenantContext = createContext<TenantContextValue | null>(null);
@@ -171,7 +173,10 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
           };
         }
         const empResult = await insertEmpleadosTrasOnboarding(
-          pendingOnboardingEmployees.map(({ name, color }) => ({ name, color })),
+          pendingOnboardingEmployees.map(({ name, color }) => ({
+            name,
+            color,
+          })),
         );
         if (!empResult.ok) {
           return {
@@ -185,7 +190,9 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
         }
         setPendingOnboardingEmployees([]);
         void queryClient.invalidateQueries({ queryKey: ["employees"] });
-        void queryClient.invalidateQueries({ queryKey: ["employees", "active"] });
+        void queryClient.invalidateQueries({
+          queryKey: ["employees", "active"],
+        });
       }
 
       await AsyncStorage.setItem(CONFIGURED_KEY, "true");

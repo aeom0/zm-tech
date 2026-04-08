@@ -32,9 +32,7 @@
       "bundler": "metro",
       "build": {
         "babel": {
-          "include": [
-            "@expo/vector-icons"
-          ]
+          "include": ["@expo/vector-icons"]
         }
       },
       "name": "GeemaStudio",

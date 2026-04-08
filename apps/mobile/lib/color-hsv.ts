@@ -2,7 +2,9 @@
  * Conversión hex ↔ RGB ↔ HSV para selector de color (onboarding / ajustes).
  */
 
-export function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+export function hexToRgb(
+  hex: string,
+): { r: number; g: number; b: number } | null {
   const h = hex.replace("#", "");
   const full =
     h.length === 3

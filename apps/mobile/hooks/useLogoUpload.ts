@@ -59,4 +59,3 @@ export function useLogoUpload() {
 
   return { uploading, uploadLogo };
 }
-
