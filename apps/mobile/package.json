@@ -44,7 +44,7 @@
     "expo-glass-effect": "~0.1.9",
     "expo-haptics": "~15.0.8",
     "expo-image": "~3.0.11",
-    "expo-image-manipulator": "~13.0.0",
+    "expo-image-manipulator": "~14.0.8",
     "expo-image-picker": "~17.0.8",
     "expo-linear-gradient": "~15.0.8",
     "expo-linking": "~8.0.11",
@@ -78,5 +78,12 @@
     "eslint-import-resolver-node": "^0.3.9",
     "eslint-plugin-prettier": "^5.5.4",
     "typescript": "~5.9.2"
+  },
+  "expo": {
+    "install": {
+      "exclude": [
+        "@react-native-community/slider"
+      ]
+    }
   }
 }
