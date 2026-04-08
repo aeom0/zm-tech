@@ -8,7 +8,7 @@
       "policy": "sdkVersion"
     },
     "updates": {
-      "url": "https://u.expo.dev/ff07d991-dcd2-446c-9b5b-9d5809855619"
+      "url": "https://u.expo.dev/a22497a7-f747-492f-b6e3-574b4143cd95"
     },
     "orientation": "portrait",
     "scheme": "geemastudio",
@@ -25,7 +25,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#111318"
-      }
+      },
+      "permissions": ["android.permission.RECORD_AUDIO"]
     },
     "web": {
       "output": "single",
@@ -93,7 +94,7 @@
     "extra": {
       "expoFontTimeout": 20000,
       "eas": {
-        "projectId": "ff07d991-dcd2-446c-9b5b-9d5809855619"
+        "projectId": "a22497a7-f747-492f-b6e3-574b4143cd95"
       }
     },
     "owner": "aeom0"
