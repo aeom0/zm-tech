@@ -22,9 +22,9 @@ interface DiamondHeroProps {
  * NebulosaGlow + DiamondSparkle + wordmark GeemaStudio + tagline.
  *
  * Wordmark: "Geema" + "Studio" ambas Poppins ExtraBold, mismo fontSize y lineHeight.
- * MaskedView hereda el tamaño del LinearGradient — si studioGradient.height > fontSize
- * el bloque de Studio es más alto que Geema y con flex-end queda más abajo.
- * Solución: lineHeight === fontSize === studioGradient.height === WORDMARK_SIZE.
+ * MaskedView hereda el tamaño del LinearGradient — si studioGradient.width < texto
+ * la última letra queda fuera del mask y no se renderiza (bug Android).
+ * Solución: studioGradient.width generoso (160) para que "Studio" quepa siempre.
  *
  * Gradiente: consume Gradients.onboarding desde theme.ts — fuente de verdad única.
  *
@@ -54,8 +54,9 @@ export function DiamondHero({ showText = true }: DiamondHeroProps) {
             <Text style={styles.wordmarkGeema}>Geema</Text>
 
             {/* "Studio" — Poppins ExtraBold, gradiente Lunaris vía MaskedView.
-                proGradient.height === WORDMARK_SIZE para que MaskedView
-                ocupe exactamente la misma altura que wordmarkGeema. */}
+                studioGradient.width debe ser >= ancho real del texto en pantalla.
+                Con fontSize 38 + Poppins ExtraBold, "Studio" mide ~145px en Android.
+                Usamos 160 para tener margen holgado sin distorsionar el gradiente. */}
             <MaskedView
               maskElement={
                 <Text
@@ -134,7 +135,10 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   studioGradient: {
-    width: 120,
+    // 160px: ancho holgado para que "Studio" (Poppins ExtraBold 38px)
+    // no quede truncado en Android. El gradiente sigue siendo visualmente correcto
+    // porque el mask recorta el área visible al contorno exacto del texto.
+    width: 160,
     height: WORDMARK_SIZE,
   },
   tagline: {

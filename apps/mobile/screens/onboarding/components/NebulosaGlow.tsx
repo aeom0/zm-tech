@@ -23,24 +23,23 @@ interface NebulosaGlowProps {
  *   - Índigo Lunaris (#3949AB) cx = centro + 25
  * Muy solapados → se perciben como un solo círculo con transición de color.
  *
- * NOTA DE POSICIONAMIENTO: este componente NO define su propio position:absolute.
- * El padre (DiamondHero) es responsable de posicionarlo con:
- *   position: "absolute"
- *   left: (STACK_SIZE - GLOW_SIZE) / 2
- *   top:  (STACK_SIZE - GLOW_SIZE) / 2
- * Así el centrado es matemáticamente correcto sin magic numbers internos.
+ * OPACIDADES ASIMÉTRICAS INTENCIONALES:
+ * El turquesa #40E0D0 (luminosidad ~76%) y el índigo #3949AB (luminosidad ~35%)
+ * no tienen el mismo peso visual en fondo oscuro.
+ * Para que ambos se perciban con intensidad equivalente:
+ *   turquesa  → stopOpacity 0.60 (como antes, ya se ve bien)
+ *   índigo    → stopOpacity 0.85 (compensación por menor luminosidad)
  *
- * NOTA DE FONDO: style={{ overflow: 'visible', backgroundColor: 'transparent' }}
- * elimina el bounding box visible que aparece en web (el SVG hereda fondo blanco
- * del browser por defecto). En React Native no tiene efecto visible.
+ * NOTA DE POSICIONAMIENTO: el padre (DiamondHero) posiciona este componente.
+ * NOTA DE FONDO: backgroundColor transparent elimina bounding box en web.
  */
 export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
   const s = size;
   const ratio = s / 420;
   const center = s / 2;
 
-  const mCx = center - 25 * ratio; // 185 en base 420
-  const bCx = center + 25 * ratio; // 235 en base 420
+  const mCx = center - 25 * ratio; // turquesa, izquierda: 185 en base 420
+  const bCx = center + 25 * ratio; // índigo, derecha:     235 en base 420
   const cy = center;
   const r = 155 * ratio;
   const gScale = 175 * ratio;
@@ -59,6 +58,7 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
       }}
     >
       <Defs>
+        {/* Turquesa — opacidad estándar, alta luminosidad natural */}
         <RadialGradient
           id="glowTurquoise"
           cx={mCx}
@@ -67,11 +67,12 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
           ry={gScale}
           gradientUnits="userSpaceOnUse"
         >
-          <Stop offset="0" stopColor="#40E0D0" stopOpacity={0.6} />
+          <Stop offset="0"   stopColor="#40E0D0" stopOpacity={0.60} />
           <Stop offset="0.5" stopColor="#40E0D0" stopOpacity={0.25} />
-          <Stop offset="1" stopColor="#40E0D0" stopOpacity={0} />
+          <Stop offset="1"   stopColor="#40E0D0" stopOpacity={0} />
         </RadialGradient>
 
+        {/* Índigo — opacidad aumentada para compensar menor luminosidad */}
         <RadialGradient
           id="glowIndigo"
           cx={bCx}
@@ -80,9 +81,9 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
           ry={gScale}
           gradientUnits="userSpaceOnUse"
         >
-          <Stop offset="0" stopColor="#3949AB" stopOpacity={0.6} />
-          <Stop offset="0.5" stopColor="#3949AB" stopOpacity={0.25} />
-          <Stop offset="1" stopColor="#3949AB" stopOpacity={0} />
+          <Stop offset="0"   stopColor="#3949AB" stopOpacity={0.85} />
+          <Stop offset="0.5" stopColor="#3949AB" stopOpacity={0.40} />
+          <Stop offset="1"   stopColor="#3949AB" stopOpacity={0} />
         </RadialGradient>
 
         <Filter
