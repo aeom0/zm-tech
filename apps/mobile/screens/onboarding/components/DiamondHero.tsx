@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, LayoutChangeEvent } from "react-native";
 import MaskedView from "@react-native-masked-view/masked-view";
 import { LinearGradient } from "expo-linear-gradient";
 import { DiamondSparkle } from "./DiamondSparkle";
@@ -9,28 +9,36 @@ import { Gradients, Spacing } from "@/constants/theme";
 const STACK_SIZE = 320;
 const GLOW_SIZE = 420;
 const GLOW_OFFSET = (STACK_SIZE - GLOW_SIZE) / 2;
-
-// Desplazamiento del glow hacia abajo para que el diamante quede
-// visualmente en la mitad superior del blob de luz.
-// Se mueve el GLOW (no el diamante) para mantener el diamante
-// centrado exactamente en el logoStack via alignItems/justifyContent.
 const GLOW_VERTICAL_SHIFT = 20;
 
 interface DiamondHeroProps {
   showText?: boolean;
 }
 
+/**
+ * Wordmark centrado:
+ * MaskedView no reporta su ancho real al layout — siempre ocupa
+ * el ancho del LinearGradient hijo (studioGradient.width).
+ * Solución: medimos el ancho real de "Studio" con onLayout en un
+ * Text invisible, y usamos ese valor como ancho del gradiente.
+ * Así wordmarkRow mide exactamente anchoGeema + anchoStudio y
+ * el centrado del container padre lo ubica perfectamente bajo el diamante.
+ */
 export function DiamondHero({ showText = true }: DiamondHeroProps) {
+  // Ancho medido de "Studio" — empieza con valor seguro para evitar flash
+  const [studioWidth, setStudioWidth] = useState(135);
+
+  const onStudioLayout = (e: LayoutChangeEvent) => {
+    const w = e.nativeEvent.layout.width;
+    if (w > 0) setStudioWidth(Math.ceil(w));
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.logoStack}>
-        {/* Glow desplazado hacia abajo para que el diamante quede
-            en la mitad superior del blob — efecto visual equivalente
-            a subir el diamante pero sin romper su centrado flex. */}
         <View style={styles.glowWrapper}>
           <NebulosaGlow size={GLOW_SIZE} />
         </View>
-        {/* Diamante centrado exactamente por alignItems/justifyContent */}
         <View style={styles.diamondWrapper}>
           <DiamondSparkle size={320} />
         </View>
@@ -38,8 +46,23 @@ export function DiamondHero({ showText = true }: DiamondHeroProps) {
 
       {showText && (
         <>
+          {/* Wordmark GeemaStudio */}
           <View style={styles.wordmarkRow}>
             <Text style={styles.wordmarkGeema}>Geema</Text>
+
+            {/*
+             * Text invisible que mide el ancho real de "Studio".
+             * position:absolute lo saca del flujo, opacity:0 lo oculta.
+             * onLayout reporta el ancho tipográfico exacto de la fuente.
+             */}
+            <Text
+              style={[styles.wordmarkStudio, styles.measurePhantom]}
+              onLayout={onStudioLayout}
+            >
+              Studio
+            </Text>
+
+            {/* MaskedView con ancho igual al texto medido → centrado perfecto */}
             <MaskedView
               maskElement={
                 <Text
@@ -54,7 +77,7 @@ export function DiamondHero({ showText = true }: DiamondHeroProps) {
                 locations={[...Gradients.onboarding.locations]}
                 start={Gradients.onboarding.linearStart}
                 end={Gradients.onboarding.linearEnd}
-                style={styles.studioGradient}
+                style={[styles.studioGradient, { width: studioWidth }]}
               />
             </MaskedView>
           </View>
@@ -87,21 +110,16 @@ const styles = StyleSheet.create({
   glowWrapper: {
     position: "absolute",
     left: GLOW_OFFSET,
-    // Desplazar el glow hacia abajo coloca el centro del blob
-    // debajo del centro del diamante → efecto visual de diamante
-    // flotando en la mitad superior del halo.
     top: GLOW_OFFSET + GLOW_VERTICAL_SHIFT,
   },
   diamondWrapper: {
     position: "absolute",
     alignItems: "center",
     justifyContent: "center",
-    // Sin top/bottom: centrado exacto por el layout del padre.
   },
   wordmarkRow: {
     flexDirection: "row",
     alignItems: "flex-end",
-    justifyContent: "center",
     gap: 0,
   },
   wordmarkGeema: {
@@ -117,12 +135,21 @@ const styles = StyleSheet.create({
     lineHeight: WORDMARK_SIZE,
     includeFontPadding: false,
   },
+  // Texto fantasma para medir el ancho real de "Studio"
+  measurePhantom: {
+    position: "absolute",
+    opacity: 0,
+    // color requerido por RN para que el texto sea medible
+    color: "#FFFFFF",
+  },
   wordmarkStudioMask: {
     color: "#FFFFFF",
     backgroundColor: "transparent",
   },
   studioGradient: {
-    width: 160,
+    // width se inyecta dinámicamente desde studioWidth (onLayout)
+    // valor inicial 135 evita flash de layout en el primer render
+    width: 135,
     height: WORDMARK_SIZE,
   },
   tagline: {
