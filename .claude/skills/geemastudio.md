@@ -570,7 +570,9 @@ payments           -- id, appointment_id, employee_id, amount, method, date, is_
 inventory_items    -- id, name, category, quantity, min_stock, unit, price
 tenant_settings    -- id(uuid=auth.uid), business_name, timezone, business_hours(json),
                    --   currency_symbol, time_format(12|24), client_terminology,
-                   --   tagline, features_whatsapp  (RLS: solo dev/owner)
+                   --   tagline, features_whatsapp,
+                   --   web_mode('none'|'geema_hosted'|'own_domain'), slug, custom_domain
+                   --   (RLS: solo dev/owner)
 
 -- Bot WABA:
 whatsapp_sessions        -- phone_number, state(json), updated_at
@@ -664,7 +666,44 @@ const isAtRisk = !isNew && daysSinceLastVisit !== null && daysSinceLastVisit > 4
 // KPIs: total_clients, vip_count, new_this_month, at_risk_count, top_spender
 ```
 
-### 9.5 Bot WABA — despacho
+### 9.5 Rutas web — dos productos distintos
+
+`apps/web` contiene **dos productos** con lógicas de auth, routing y audiencia completamente distintas. Ver [`docs/WEB_ARCHITECTURE.md`](../docs/WEB_ARCHITECTURE.md) para detalle completo.
+
+#### Producto 1 — Panel de gestión (siempre activo)
+
+Audiencia: `owner` / `staff` / `dev`. Siempre autenticados con Supabase Auth.
+**Nunca depende de `web_mode`** — está disponible para todo tenant desde el día 1.
+
+| Ruta | Estado |
+|------|--------|
+| `/finanzas` + `/finanzas/login` | ✅ Implementado |
+| `/dashboard` | ✅ Implementado |
+| `/panel/servicios` (`?tab=categorias\|servicios\|packs\|promos`) | ✅ Implementado |
+| `/panel/horarios` | ✅ Implementado |
+| `/panel/clientes`, `/panel/personal`, `/panel/agenda`, `/panel/waba`, `/panel/configuracion` | ⏳ PR-11 |
+
+#### Producto 2 — Landing pública del tenant (opcional)
+
+Audiencia: clientes del negocio. Sin auth. Controlado por `tenant_settings.web_mode`.
+
+| Ruta | Estado |
+|------|--------|
+| `/` | ✅ Landing plataforma GeemaStudio (B2B) |
+| `/s/[slug]` | ✅ Landing pública del tenant (SSG + revalidación 5 min; 3 templates) |
+
+#### `web_mode` en `tenant_settings`
+
+| Valor | Significado |
+|-------|-------------|
+| `'none'` | Sin landing pública (default al crear tenant) |
+| `'geema_hosted'` | Landing en `geemastudio.app/s/[slug]` |
+| `'own_domain'` | Dominio propio del tenant — GeemaStudio no interviene en el routing |
+
+> ZM Lash & Nails (Vanessa) → `web_mode = 'own_domain'` (informativo, no bloquea el panel).
+> Columnas en BD: `web_mode`, `slug` (único, Modo B), `custom_domain` (informativo, Modo A).
+
+### 9.6 Bot WABA — despacho
 
 ```
 Meta POST → responder 200 inmediato → processMessage en background

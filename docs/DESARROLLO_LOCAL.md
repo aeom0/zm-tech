@@ -112,8 +112,10 @@ SUPABASE_SERVICE_ROLE_KEY=[service_role key]
 SEED_AUTH_PASSWORD=Geema2025!
 ```
 
-## Web — panel de catálogo (`/panel/servicios`)
+## Web — panel de gestión y landing pública
 
 - Desarrollo: `yarn web:dev` (puerto 3000). Variables en **`apps/web/.env.local`**: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
 - Rutas bajo **`/panel/*`** exigen sesión (guard SSR); sin login redirige a **`/login`**.
 - **`/panel/servicios`**: tabs categorías, servicios, packs y promos; deep link con **`?tab=categorias|servicios|packs|promos`**. Los datos van a tablas `service_categories`, `services`, `packs`, `promotions`, `promotion_items` vía PostgREST (RLS según rol).
+- **`/panel/horarios`**: edita `timezone`, `business_hours` y `time_format` en `tenant_settings`.
+- **Landing pública del tenant** (`/s/[slug]`): opcional, controlada por `tenant_settings.web_mode`. Ver [`docs/WEB_ARCHITECTURE.md`](./WEB_ARCHITECTURE.md) para la distinción entre panel (siempre activo) y landing pública.

@@ -1,5 +1,5 @@
 ---
-description: Patrones de testing cuando se añadan tests
+description: Patrones de testing cuando se añadan tests — GeemaStudio
 globs:
   - "**/*.test.ts"
   - "**/*.test.tsx"
@@ -8,17 +8,21 @@ globs:
 alwaysApply: false
 ---
 
-# Testing ZM Lash & Nails Beauty
+# Testing — GeemaStudio
 
 ## Convenciones
 
 - Tests junto al código o en `__tests__`; nombres `*.test.ts` / `*.test.tsx` o `*.spec.ts`.
-- Cobertura prioritaria: hooks de negocio, utils, funciones de servidor (storage/routes).
-- Cliente: Jest + React Native Testing Library cuando se configure; mocks de `@/lib/supabase` o query-client y navegación si hace falta.
+- Cobertura prioritaria: hooks de negocio, utils (`formatCurrency`, `payroll.ts`, helpers de timezone), Edge Functions WABA.
+- Cliente: Jest + React Native Testing Library; mocks de `@/lib/supabase` o query-client y navegación.
 
 ## Patrones útiles
 
-- **Hooks**: `renderHook` + `act` para hooks que llamen API; mock de `fetch` o del query client.
-- **Componentes**: `render`, `fireEvent`/`press`, `waitFor`; comprobar textos y estados visibles.
-- **Servidor**: Tests de integración de rutas con supertest o llamadas a funciones de storage con DB de prueba.
-- **Datos**: Fixtures reutilizables (schemas de `@zm/shared-schema`) para objetos de prueba válidos.
+- **Hooks**: `renderHook` + `act` para hooks que llamen API; mock del cliente Supabase o del query-client.
+- **Componentes**: `render`, `fireEvent`/`press`, `waitFor`; verificar textos y estados visibles.
+- **Edge Functions (Deno)**: test con `Deno.test` o con `fetch` contra una instancia local (`supabase start`).
+- **Datos**: Fixtures reutilizables usando tipos inferidos de `@geemastudio/shared-schema` (Drizzle + Zod).
+
+## Sin Express
+
+No existe `server/` ni rutas Express que testear. Toda la lógica de datos va en hooks o servicios que usan Supabase PostgREST.

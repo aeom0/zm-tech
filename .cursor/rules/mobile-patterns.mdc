@@ -6,14 +6,14 @@ globs:
 alwaysApply: false
 ---
 
-# Mobile Patterns ZM Lash & Nails Beauty
+# Mobile Patterns — GeemaStudio
 
 ## Estructura de la app
 
-- **Navegación**: React Navigation v7 — bottom tabs (Inicio, Agenda, Servicios, Más, Perfil). Tab Más = MoreStackNavigator (menú: Finanzas, Chicas, Inventario, Configuración, Perfil, Cerrar sesión).
-- **Root**: `RootStackNavigator` → siempre arranca en `Auth` (Splash → Login → Main). No hay `LandingScreen` en mobile.
-- **Pantallas**: `apps/mobile/screens/`; stacks en `apps/mobile/navigation/` (MoreStackNavigator, ProfileStackNavigator).
-- **API**: TanStack Query + Supabase (PostgREST) desde `@/lib/supabase`; `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`.
+- **Navegación**: React Navigation v7 — bottom tabs (Inicio, Agenda, Servicios, Más, Perfil). Tab Más = MoreStackNavigator (menú: Validación Pagos, Asignar Profesionales, Finanzas, **Personal** (terminología dinámica `config.terminology.staff`), Clientes, Inventario, Promo WA, Configuración, Perfil, Cerrar sesión).
+- **Root**: `RootStackNavigator` → AuthGate: sin sesión + sin tenant → Onboarding (6 pasos); con sesión + tenant → MainTabNavigator.
+- **Pantallas**: `apps/mobile/screens/`; stacks en `apps/mobile/navigation/`.
+- **API**: TanStack Query v5 (`{ queryKey, queryFn }`) + Supabase PostgREST desde `@/lib/supabase`; `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`.
 
 ## Responsive / Tablet
 

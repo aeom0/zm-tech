@@ -47,13 +47,17 @@ geemastudio/
 
 ### Web (apps/web)
 - Next.js 15, Tailwind, Supabase Auth
-- Landing pública + `/dashboard` (métricas) + `/finanzas`; login `/finanzas/login`; paneles admin solo owner/dev
-- Panel **`/panel`** (login **`/login`**): **`/panel/servicios`** (categorías, servicios, packs, promos; PostgREST + TanStack Query); **`/panel/horarios`** (`timezone`, `business_hours` en `tenant_settings`)
+- **Dos productos distintos** (ver `docs/WEB_ARCHITECTURE.md`):
+  - **Panel de gestión** (auth, siempre activo para todo tenant): `/finanzas`, `/dashboard`, `/panel/*`. Independiente de `web_mode`.
+  - **Landing pública del tenant** (sin auth, opcional): `/s/[slug]` — controlada por `tenant_settings.web_mode` (`'none'` | `'geema_hosted'` | `'own_domain'`).
+- Panel implementado: `/finanzas` + `/finanzas/login` + `/dashboard` + `/panel/servicios` (`?tab=`) + `/panel/horarios`
+- Panel pendiente (PR-11): `/panel/clientes`, `/panel/personal`, `/panel/waba`, `/panel/agenda`, `/panel/configuracion`
+- Login del panel: `/finanzas/login` (o `/login` para `/panel/*`); staff → redirect a `/`
 
 ### Base de datos (Supabase)
 - **Proyecto**: `xidjomlxpuosupymcsaj`
 - Tablas: profiles, tenant_settings, employees, service_categories, services, **packs**, **promotions**, **promotion_items**, clients, appointments, payments, inventory_items. RLS por rol (dev/owner/staff) y tenant cuando aplique
-- Helper `get_my_role()` para RLS; `tenant_settings` con `business_name`, `business_type`, colores, moneda, etc.
+- Helper `get_my_role()` para RLS; `tenant_settings` con `business_name`, `business_type`, colores, moneda, `web_mode` (`'none'`|`'geema_hosted'`|`'own_domain'`), `slug`, `custom_domain`, etc.
 - Migraciones: Drizzle; `yarn db:push`
 
 ## Scripts (raíz)

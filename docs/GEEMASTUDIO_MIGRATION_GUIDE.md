@@ -318,6 +318,8 @@ Actualizar/refinar con:
 - CTA enfocado en "prueba gratis 14 días"
 - Testimonios/social proof con casos de uso reales de Venezuela
 
+> **Nota sobre Vanessa (Tenant #1) y rutas web**: el panel de gestión (`/finanzas`, `/dashboard`, `/panel/*`) está disponible para Vanessa **sin depender de `middleware.ts` ni de que `zmlashnails.com` esté conectado**. El `web_mode` de Vanessa será `'own_domain'` (informativo), no bloqueante. Ver [`docs/WEB_ARCHITECTURE.md`](./WEB_ARCHITECTURE.md) para la distinción completa entre Panel de gestión (siempre activo) y Landing pública del tenant (`web_mode`). La configuración de `web_mode` vive en `tenant_settings` y se expone en `/panel/configuracion/web` (pendiente, P2).
+
 ---
 
 ## Convenciones del Proyecto

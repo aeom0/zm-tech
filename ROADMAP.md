@@ -200,6 +200,32 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 | PR-08 | Error handling dashboard/finanzas/agenda | 3A | P1 |
 | PR-09 | Push notifications FCM v1 E2E | 3B | P1 |
 | PR-10 | Bot WABA multi-tenant Edge Function | 3B | P1 |
+| PR-11 | Panel web completo (`/panel/clientes`, `/panel/personal`, `/panel/agenda`, `/panel/waba`, `/panel/configuracion`) | Post-beta | P1 |
+
+---
+
+## PR-11 — Panel web completo (post-beta)
+
+> Agrupa todas las rutas de panel de gestión pendientes. No bloquea beta móvil, pero sí la utilidad real del panel web para Tenant #1 (Vanessa).
+
+Ver [docs/WEB_ARCHITECTURE.md](docs/WEB_ARCHITECTURE.md) para la distinción entre Panel de gestión y Landing pública del tenant.
+
+### Rutas incluidas
+
+| Ruta | Descripción | Prioridad |
+|------|-------------|-----------|
+| `/panel/clientes` | Lista, detalle, métricas VIP/nuevo/en riesgo | P1 |
+| `/panel/personal` | CRUD equipo: foto, color, comisiones, estado | P1 |
+| `/panel/waba` | Historial chats, editor system prompt Haiku, analytics | P1 |
+| `/panel/agenda` | Vista grilla día + columnas por profesional | P1 |
+| `/panel/configuracion` | Logo, nombre, moneda, terminología | P1 |
+| `/panel/configuracion/web` | `web_mode` + slug + dominio propio | P2 |
+| `/panel/waba/campanas` | Campañas masivas WA: stepper, segmentación, envío | P2 |
+| `/panel/inventario` | Gestión de stock | P2 |
+
+**Orden de implementación recomendado**: `clientes` → `personal` → `waba` → `agenda` → `configuracion`
+
+> **Nota**: estas rutas son independientes del `web_mode` del tenant. El panel de gestión está **siempre activo** para todo tenant autenticado, independientemente de si tienen landing pública (`geema_hosted`), dominio propio (`own_domain`) o ninguna (`none`).
 
 ---
 
