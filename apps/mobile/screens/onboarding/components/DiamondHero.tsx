@@ -8,36 +8,29 @@ import { Gradients, Spacing } from "@/constants/theme";
 
 const STACK_SIZE = 320;
 const GLOW_SIZE = 420;
-// Offset para centrar el glow exactamente sobre el logoStack.
 const GLOW_OFFSET = (STACK_SIZE - GLOW_SIZE) / 2;
-// El diamante se desplaza hacia arriba dentro del blob de luz
-// para que el glow quede más centrado en la parte inferior del diamante.
-const DIAMOND_OFFSET_TOP = -20;
+
+// Desplazamiento del glow hacia abajo para que el diamante quede
+// visualmente en la mitad superior del blob de luz.
+// Se mueve el GLOW (no el diamante) para mantener el diamante
+// centrado exactamente en el logoStack via alignItems/justifyContent.
+const GLOW_VERTICAL_SHIFT = 20;
 
 interface DiamondHeroProps {
-  /** Mostrar wordmark "GeemaStudio" y tagline debajo del diamante. Default: true */
   showText?: boolean;
 }
 
-/**
- * Componente compartido entre OnboardingEntryScreen y SplashScreen.
- * NebulosaGlow + DiamondSparkle + wordmark GeemaStudio + tagline.
- *
- * Wordmark centrado: wordmarkRow tiene width fijo (WORDMARK_TOTAL_WIDTH)
- * para que el bloque completo "Geema" + "Studio" esté alineado al centro
- * del diamante independientemente del ancho del MaskedView.
- *
- * Diamante desplazado: DIAMOND_OFFSET_TOP = -20 sube el diamante
- * respecto al centro del glow para mejor composición visual.
- */
 export function DiamondHero({ showText = true }: DiamondHeroProps) {
   return (
     <View style={styles.container}>
-      {/* Glow + diamante */}
       <View style={styles.logoStack}>
+        {/* Glow desplazado hacia abajo para que el diamante quede
+            en la mitad superior del blob — efecto visual equivalente
+            a subir el diamante pero sin romper su centrado flex. */}
         <View style={styles.glowWrapper}>
           <NebulosaGlow size={GLOW_SIZE} />
         </View>
+        {/* Diamante centrado exactamente por alignItems/justifyContent */}
         <View style={styles.diamondWrapper}>
           <DiamondSparkle size={320} />
         </View>
@@ -45,14 +38,8 @@ export function DiamondHero({ showText = true }: DiamondHeroProps) {
 
       {showText && (
         <>
-          {/* Wordmark GeemaStudio — ancho fijo para centrado correcto */}
           <View style={styles.wordmarkRow}>
-            {/* "Geema" — Poppins ExtraBold, blanco puro */}
             <Text style={styles.wordmarkGeema}>Geema</Text>
-
-            {/* "Studio" — gradiente Lunaris vía MaskedView.
-                studioGradient.width (160) >= ancho real del texto en Android
-                para que la última letra no quede fuera del mask. */}
             <MaskedView
               maskElement={
                 <Text
@@ -72,7 +59,6 @@ export function DiamondHero({ showText = true }: DiamondHeroProps) {
             </MaskedView>
           </View>
 
-          {/* Tagline */}
           <Text style={styles.tagline}>
             Pule tu negocio · Brilla en cada servicio
           </Text>
@@ -101,22 +87,20 @@ const styles = StyleSheet.create({
   glowWrapper: {
     position: "absolute",
     left: GLOW_OFFSET,
-    top: GLOW_OFFSET,
+    // Desplazar el glow hacia abajo coloca el centro del blob
+    // debajo del centro del diamante → efecto visual de diamante
+    // flotando en la mitad superior del halo.
+    top: GLOW_OFFSET + GLOW_VERTICAL_SHIFT,
   },
   diamondWrapper: {
     position: "absolute",
     alignItems: "center",
     justifyContent: "center",
-    // Sube el diamante respecto al centro del glow para mejor composición.
-    // El glow queda más visible en la parte inferior/derecha del diamante.
-    top: DIAMOND_OFFSET_TOP,
+    // Sin top/bottom: centrado exacto por el layout del padre.
   },
   wordmarkRow: {
     flexDirection: "row",
-    // alignItems flex-end alinea la base tipográfica de Geema y Studio.
     alignItems: "flex-end",
-    // justifyContent center dentro del container (que ya es alignItems:center)
-    // garantiza que el bloque completo esté centrado bajo el diamante.
     justifyContent: "center",
     gap: 0,
   },
@@ -138,8 +122,6 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   studioGradient: {
-    // 160px: holgado para que "Studio" (Poppins ExtraBold 38px ~145px)
-    // no quede truncado en Android. El mask recorta al contorno del texto.
     width: 160,
     height: WORDMARK_SIZE,
   },
