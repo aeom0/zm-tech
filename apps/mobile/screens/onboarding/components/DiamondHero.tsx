@@ -8,9 +8,11 @@ import { Gradients, Spacing } from "@/constants/theme";
 
 const STACK_SIZE = 320;
 const GLOW_SIZE = 420;
-// Offset para centrar el glow (mayor que el stack) exactamente sobre el diamante.
-// Fórmula: (STACK_SIZE - GLOW_SIZE) / 2 = -50
+// Offset para centrar el glow exactamente sobre el logoStack.
 const GLOW_OFFSET = (STACK_SIZE - GLOW_SIZE) / 2;
+// El diamante se desplaza hacia arriba dentro del blob de luz
+// para que el glow quede más centrado en la parte inferior del diamante.
+const DIAMOND_OFFSET_TOP = -20;
 
 interface DiamondHeroProps {
   /** Mostrar wordmark "GeemaStudio" y tagline debajo del diamante. Default: true */
@@ -21,23 +23,18 @@ interface DiamondHeroProps {
  * Componente compartido entre OnboardingEntryScreen y SplashScreen.
  * NebulosaGlow + DiamondSparkle + wordmark GeemaStudio + tagline.
  *
- * Wordmark: "Geema" + "Studio" ambas Poppins ExtraBold, mismo fontSize y lineHeight.
- * MaskedView hereda el tamaño del LinearGradient — si studioGradient.width < texto
- * la última letra queda fuera del mask y no se renderiza (bug Android).
- * Solución: studioGradient.width generoso (160) para que "Studio" quepa siempre.
+ * Wordmark centrado: wordmarkRow tiene width fijo (WORDMARK_TOTAL_WIDTH)
+ * para que el bloque completo "Geema" + "Studio" esté alineado al centro
+ * del diamante independientemente del ancho del MaskedView.
  *
- * Gradiente: consume Gradients.onboarding desde theme.ts — fuente de verdad única.
- *
- * Posicionamiento del glow: NebulosaGlow no define su propio position:absolute.
- * DiamondHero lo posiciona con GLOW_OFFSET = (STACK_SIZE - GLOW_SIZE) / 2
- * para centrado matemáticamente correcto sin magic numbers en el hijo.
+ * Diamante desplazado: DIAMOND_OFFSET_TOP = -20 sube el diamante
+ * respecto al centro del glow para mejor composición visual.
  */
 export function DiamondHero({ showText = true }: DiamondHeroProps) {
   return (
     <View style={styles.container}>
       {/* Glow + diamante */}
       <View style={styles.logoStack}>
-        {/* Glow posicionado por el padre para centrado correcto */}
         <View style={styles.glowWrapper}>
           <NebulosaGlow size={GLOW_SIZE} />
         </View>
@@ -48,15 +45,14 @@ export function DiamondHero({ showText = true }: DiamondHeroProps) {
 
       {showText && (
         <>
-          {/* Wordmark GeemaStudio */}
+          {/* Wordmark GeemaStudio — ancho fijo para centrado correcto */}
           <View style={styles.wordmarkRow}>
             {/* "Geema" — Poppins ExtraBold, blanco puro */}
             <Text style={styles.wordmarkGeema}>Geema</Text>
 
-            {/* "Studio" — Poppins ExtraBold, gradiente Lunaris vía MaskedView.
-                studioGradient.width debe ser >= ancho real del texto en pantalla.
-                Con fontSize 38 + Poppins ExtraBold, "Studio" mide ~145px en Android.
-                Usamos 160 para tener margen holgado sin distorsionar el gradiente. */}
+            {/* "Studio" — gradiente Lunaris vía MaskedView.
+                studioGradient.width (160) >= ancho real del texto en Android
+                para que la última letra no quede fuera del mask. */}
             <MaskedView
               maskElement={
                 <Text
@@ -111,10 +107,17 @@ const styles = StyleSheet.create({
     position: "absolute",
     alignItems: "center",
     justifyContent: "center",
+    // Sube el diamante respecto al centro del glow para mejor composición.
+    // El glow queda más visible en la parte inferior/derecha del diamante.
+    top: DIAMOND_OFFSET_TOP,
   },
   wordmarkRow: {
     flexDirection: "row",
+    // alignItems flex-end alinea la base tipográfica de Geema y Studio.
     alignItems: "flex-end",
+    // justifyContent center dentro del container (que ya es alignItems:center)
+    // garantiza que el bloque completo esté centrado bajo el diamante.
+    justifyContent: "center",
     gap: 0,
   },
   wordmarkGeema: {
@@ -135,9 +138,8 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   studioGradient: {
-    // 160px: ancho holgado para que "Studio" (Poppins ExtraBold 38px)
-    // no quede truncado en Android. El gradiente sigue siendo visualmente correcto
-    // porque el mask recorta el área visible al contorno exacto del texto.
+    // 160px: holgado para que "Studio" (Poppins ExtraBold 38px ~145px)
+    // no quede truncado en Android. El mask recorta al contorno del texto.
     width: 160,
     height: WORDMARK_SIZE,
   },
