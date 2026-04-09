@@ -14,7 +14,10 @@ Descripción del producto, tipos de negocio, inicio rápido, stack, variables de
 Desarrollo local: WSL, migraciones sin TCP (SQL Editor), seeds, variables.
 
 ### [GEEMASTUDIO_MIGRATION_GUIDE.md](GEEMASTUDIO_MIGRATION_GUIDE.md)
-Guía de migración ZM → producto (monorepo GeemaStudio): fases, tenant_config, onboarding, tenant_settings.
+Guía de migración ZM → GeemaStudio: fases, tenant_config, onboarding, tenant_settings.
+
+### [WEB_ARCHITECTURE.md](WEB_ARCHITECTURE.md) ← nuevo
+Arquitectura web: dos productos (panel de gestión vs landing pública), modos `web_mode` (A/B/C), rutas implementadas y pendientes del panel, relación con RRSS y dominio de la plataforma.
 
 ### [design_guidelines.md](design_guidelines.md)
 Sistema de diseño y especificaciones UI/UX (paleta, tipografía, componentes). Los colores reales vienen del preset del tenant.
@@ -39,19 +42,20 @@ Seguimiento puntual (p. ej. [TD-001 — tokens onboarding](tech-debt/TD-001-onbo
 
 ```
 docs/
-├── INDEX.md                    # Este archivo
-├── README.md                   # Setup inicial
-├── DESARROLLO_LOCAL.md         # Migraciones, seeds, WSL
-├── GEEMASTUDIO_MIGRATION_GUIDE.md # Fases de migración
-├── design_guidelines.md        # Diseño UI/UX
-├── DEPLOYMENT.md               # Deploy Supabase / Vercel / EAS
-├── MONOREPO_MIGRACION.md       # Monorepo, comandos
-├── INSTALACION_BETA.md         # Beta / instalación
-├── GEEMASTUDIO_V1.3_PLAN.md    # Plan v1.3 (referencia)
-└── tech-debt/                  # Deuda técnica (TD-xxx)
+├── INDEX.md                        # Este archivo
+├── README.md                       # Setup inicial
+├── DESARROLLO_LOCAL.md             # Migraciones, seeds, WSL
+├── GEEMASTUDIO_MIGRATION_GUIDE.md  # Fases de migración ZM → GeemaStudio
+├── WEB_ARCHITECTURE.md             # Arquitectura web: dos productos, web_mode, rutas
+├── design_guidelines.md            # Diseño UI/UX
+├── DEPLOYMENT.md                   # Deploy Supabase / Vercel / EAS
+├── MONOREPO_MIGRACION.md           # Monorepo, comandos
+├── INSTALACION_BETA.md             # Beta / instalación
+├── GEEMASTUDIO_V1.3_PLAN.md        # Plan v1.3 (referencia)
+└── tech-debt/                      # Deuda técnica (TD-xxx)
 
 .cursor/
-├── README.md                   # Reglas Cursor, MCP (dos proyectos Supabase)
+├── README.md                       # Reglas Cursor, MCP (dos proyectos Supabase)
 └── rules/*.mdc
 ```
 
@@ -67,21 +71,27 @@ docs/
 ### API
 - No hay Express. Cliente usa **Supabase** (`supabase.from('tabla').select()`) desde `apps/mobile/lib/supabase.ts` y TanStack Query.
 
-### Frontend
-- **Mobile**: `apps/mobile/` — components, screens, navigation, contexts, hooks, constants
-- **Pantallas modulares (mobile)**: varias rutas bajo `apps/mobile/screens/<feature>/` agrupan `types`, `hooks`, `components` y estilos; el archivo `*Screen.tsx` en `screens/` actúa como orquestador (p. ej. `agenda/`, `dashboard/`, `finances/`, `inventory/`).
-- **Web**: `apps/web/` — Next.js App Router (landing pública + `/dashboard`, `/finanzas` y panel **`/panel`**: **`/panel/servicios`** (categorías, servicios, packs, promos; `?tab=`) y **`/panel/horarios`** (zona IANA + `business_hours`))
-- **Tema / marca**: mobile — `apps/mobile/constants/theme.ts` + **`Gradients.onboarding`** (Lunaris) + **`Onboarding`** (tokens del canvas oscuro `#111318` en onboarding); web — **`apps/web/src/lib/theme.ts`** (`LUNARIS`, gradientes y primarios turquesa). Tenant en runtime: `TenantContext` + `tenant_settings` + `@geemastudio/tenant-config`
-- **TenantConfig** (`@geemastudio/tenant-config`): presets, **`working-schedule`** (franja laboral), **`iana-timezone`** (Luxon: agenda y citas en `locale.timezone`); `features?.whatsapp` (promo WA cuando aplique)
+### Frontend web — dos productos
+- **Panel de gestión** (privado, autenticado): `/finanzas`, `/dashboard`, `/panel/*` — siempre disponible para todo tenant.
+- **Landing pública** (sin auth, opcional): `/s/[slug]` — controlada por `tenant_settings.web_mode` (`'own_domain'` / `'geema_hosted'` / `'none'`). Ver [WEB_ARCHITECTURE.md](WEB_ARCHITECTURE.md).
+
+### Frontend mobile
+- `apps/mobile/` — components, screens, navigation, contexts, hooks, constants
+- Pantallas modulares: `apps/mobile/screens/<feature>/` (agenda/, dashboard/, finances/, inventory/, ...)
+
+### Tema / marca
+- Mobile: `apps/mobile/constants/theme.ts` + `Gradients.onboarding` (Lunaris turquesa)
+- Web: `apps/web/src/lib/theme.ts` (`LUNARIS`)
+- Tenant en runtime: `TenantContext` + `tenant_settings` + `@geemastudio/tenant-config`
 
 ### MCP (Cursor)
 - Dos servidores en `.cursor/mcp.json`: **supabase-geemastudio** (este proyecto) y **supabase-zm** (referencia). Para BD de GeemaStudio usar supabase-geemastudio.
 
 ### Assets de marca
-- `apps/web/public/logo-diamondSparkle.svg` — símbolo principal (sin texto en el SVG)
-- `apps/web/public/logo-diamondSparkle-positive.svg` / `negative` — variantes para materiales o redes
+- `apps/web/public/logo-diamondSparkle.svg` — símbolo principal
+- `apps/web/public/logo-diamondSparkle-positive.svg` / `negative` — variantes
 
 ### EAS (build móvil)
-- Configuración única: `apps/mobile/eas.json` (ejecutar `eas build` desde `apps/mobile`)
+- Configuración: `apps/mobile/eas.json` (ejecutar `eas build` desde `apps/mobile`)
 
-**Última actualización**: 2026-04-03
+**Última actualización**: 2026-04-08
