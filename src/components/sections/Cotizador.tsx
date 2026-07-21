@@ -170,13 +170,14 @@ export default function Cotizador() {
     if (isExtraLocked(e)) return
     setActiveExtras((prev) => {
       const next = new Set(prev)
-      next.has(e.id) ? next.delete(e.id) : next.add(e.id)
+      if (next.has(e.id)) next.delete(e.id)
+      else next.add(e.id)
       return next
     })
   }
 
-  // ─── Panel resultado ──────────────────────────────────────────────────────
-  const ResultPanel = () => (
+  // ─── Panel resultado (función, no componente — evita recrearlo como tipo en cada render)
+  const renderResultPanel = () => (
     <div className="rounded-xl border border-white/10 bg-white/5 p-6">
       <div className="mb-5 flex items-center gap-2">
         <Calculator className="h-4 w-4 text-violet-400" />
@@ -307,7 +308,7 @@ export default function Cotizador() {
 
         {/* Panel resultado — mobile (encima de controles) */}
         <div className="mb-8 lg:hidden">
-          <ResultPanel />
+          {renderResultPanel()}
         </div>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
@@ -554,7 +555,7 @@ export default function Cotizador() {
             viewport={{ once: true }}
           >
             <div className="sticky top-24">
-              <ResultPanel />
+              {renderResultPanel()}
             </div>
           </motion.div>
 
