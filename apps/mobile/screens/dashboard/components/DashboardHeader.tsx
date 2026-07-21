@@ -1,10 +1,12 @@
 import React from "react";
 import { View } from "react-native";
-import type { StyleProp, ViewStyle } from "react-native";
 
 import { ThemedText } from "@/components/ThemedText";
 
-import { DashboardAnimatedView } from "../hooks/useStaggeredAnimation";
+import {
+  DashboardAnimatedView,
+  type DashboardAnimatedStyle,
+} from "../hooks/useStaggeredAnimation";
 import { dashboardStyles as styles } from "../dashboardStyles";
 
 interface DashboardHeaderProps {
@@ -17,7 +19,7 @@ interface DashboardHeaderProps {
     text: string;
     textSecondary: string;
   };
-  animatedStyle?: StyleProp<ViewStyle>;
+  animatedStyle?: DashboardAnimatedStyle;
 }
 
 export function DashboardHeader({

@@ -33,7 +33,7 @@
     "@geemastudio/shared-schema": "workspace:*",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.39.3",
-    "expo-updates": "~29.0.16"
+    "expo-updates": "~56.0.22"
   },
   "devDependencies": {
     "@types/node": "24.10.0",
@@ -41,13 +41,16 @@
     "concurrently": "^9.1.2",
     "drizzle-kit": "^0.31.4",
     "eslint": "9.39.1",
-    "eslint-config-expo": "^55.0.0",
+    "eslint-config-expo": "^56.0.4",
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-prettier": "^5.5.5",
-    "expo": "^54.0.33",
+    "expo": "^56.0.16",
     "pg": "^8.18.0",
     "prettier": "3.6.2",
-    "typescript": "~5.9.2"
+    "typescript": "~6.0.3"
+  },
+  "resolutions": {
+    "typescript": "~6.0.3"
   }
 }

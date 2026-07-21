@@ -76,8 +76,15 @@ docs/
 - **Landing pública** (sin auth, opcional): `/s/[slug]` — controlada por `tenant_settings.web_mode` (`'own_domain'` / `'geema_hosted'` / `'none'`). Ver [WEB_ARCHITECTURE.md](WEB_ARCHITECTURE.md).
 
 ### Frontend mobile
-- `apps/mobile/` — components, screens, navigation, contexts, hooks, constants
+- `apps/mobile/` — Expo SDK **56**, React Native **0.85**, React **19.2**, TypeScript **~6.0**
+- components, screens, navigation, contexts, hooks, constants
 - Pantallas modulares: `apps/mobile/screens/<feature>/` (agenda/, dashboard/, finances/, inventory/, ...)
+- New Architecture + edge-to-edge Android son obligatorios (ya no se configuran en `app.json`)
+- Dev: Expo Go SDK 56 o **dev client** reconstruido tras el upgrade (`eas build` / `expo run:android`)
+
+### TypeScript (monorepo)
+- **~6.0.3** en todos los workspaces; `resolutions.typescript` en `package.json` raíz
+- Web: sin `baseUrl` (deprecado en TS 6); paths relativos al `tsconfig.json`
 
 ### Tema / marca
 - Mobile: `apps/mobile/constants/theme.ts` + `Gradients.onboarding` (Lunaris turquesa)
@@ -93,5 +100,6 @@ docs/
 
 ### EAS (build móvil)
 - Configuración: `apps/mobile/eas.json` (ejecutar `eas build` desde `apps/mobile`)
+- Tras SDK 56: rebuild nativo requerido (runtimeVersion por `sdkVersion`)
 
-**Última actualización**: 2026-04-08
+**Última actualización**: 2026-07-21

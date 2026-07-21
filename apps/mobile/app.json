@@ -13,27 +13,29 @@
     "orientation": "portrait",
     "scheme": "geemastudio",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.geemastudio.app"
     },
     "android": {
       "package": "com.geemastudio.app",
-      "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#111318"
       },
-      "permissions": ["android.permission.RECORD_AUDIO"]
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "output": "single",
       "bundler": "metro",
       "build": {
         "babel": {
-          "include": ["@expo/vector-icons"]
+          "include": [
+            "@expo/vector-icons"
+          ]
         }
       },
       "name": "GeemaStudio",
@@ -86,7 +88,10 @@
             }
           }
         }
-      ]
+      ],
+      "expo-font",
+      "expo-image",
+      "expo-status-bar"
     ],
     "experiments": {
       "reactCompiler": true

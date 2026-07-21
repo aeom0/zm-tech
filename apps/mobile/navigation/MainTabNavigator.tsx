@@ -84,7 +84,6 @@ export default function MainTabNavigator() {
       <Tab.Navigator
         initialRouteName="Dashboard"
         screenOptions={screenOptions as any}
-        style={styles.tabs}
       >
         <Tab.Screen
           name="Dashboard"
@@ -160,5 +159,4 @@ export default function MainTabNavigator() {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  tabs: { flex: 1 },
 });

@@ -1,11 +1,13 @@
 import React from "react";
 import { Pressable, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import type { StyleProp, ViewStyle } from "react-native";
 
 import { ThemedText } from "@/components/ThemedText";
 
-import { DashboardAnimatedView } from "../hooks/useStaggeredAnimation";
+import {
+  DashboardAnimatedView,
+  type DashboardAnimatedStyle,
+} from "../hooks/useStaggeredAnimation";
 import { formatDashboardDateLong } from "../dashboardUtils";
 import type { DashboardAppointment } from "../types";
 import { dashboardStyles as styles } from "../dashboardStyles";
@@ -27,7 +29,7 @@ interface DashboardUpcomingCardProps {
     textMuted: string;
     gold: string;
   };
-  cardAnimatedStyle?: StyleProp<ViewStyle>;
+  cardAnimatedStyle?: DashboardAnimatedStyle;
   getEmployeeColor: (employeeId: string) => string;
   getEmployeeName: (employeeId: string) => string;
   getServiceName: (serviceId: string) => string;

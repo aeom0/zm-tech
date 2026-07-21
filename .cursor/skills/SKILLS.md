@@ -1,7 +1,7 @@
 # SKILLS.md — GeemaStudio / SalonPro
 
 > Lee este archivo **antes de tocar cualquier archivo del repo**.
-> Fuente: código real del repositorio + docs internas · Versión: v1.4.9 · Actualizado: abril 2026
+> Fuente: código real del repositorio + docs internas · Versión: v1.5.0 (SDK 56 + TS 6) · Actualizado: julio 2026
 >
 > **Sync**: fuente de verdad en `.cursor/skills/`. Claude Code usa el mismo árbol vía symlink `.claude/skills` → `../.cursor/skills`. Editar en cualquiera de las dos rutas es editar el mismo archivo. Alias: `geemastudio.md` → `SKILLS.md`.
 
@@ -25,16 +25,19 @@
 
 ### Mobile (`apps/mobile/`)
 ```
-Expo SDK             54
-React Native         0.81
-React                19
-TypeScript           5.x
+Expo SDK             56
+React Native         0.85
+React                19.2
+TypeScript           ~6.0.3
 React Navigation     v7
 TanStack Query       v5              ← sintaxis de OBJETO, NO arrays
 Supabase JS          v2 (PostgREST directo, sin Express)
-expo-linear-gradient ^14.x           ← CTAs con gradiente Lunaris
-expo-image-picker    SDK 54          ← result.assets[0].uri (NO result.uri)
+expo-linear-gradient ~56.x           ← CTAs con gradiente Lunaris
+expo-image-picker    SDK 56          ← result.assets[0].uri (NO result.uri)
 expo-blur            blur en tab bar iOS
+Reanimated           4.3 + worklets 0.8
+New Architecture     siempre on (sin newArchEnabled en app.json)
+Edge-to-edge Android siempre on (sin edgeToEdgeEnabled en app.json)
 Feather icons        (@expo/vector-icons) ← iconografía principal
 Lucide React         (web — iconografía principal; mobile: Feather icons)
 Node                 22 (.nvmrc)
@@ -45,13 +48,14 @@ Node                 22 (.nvmrc)
 Next.js              15 (App Router)
 React                19
 Tailwind CSS         3.x
-TypeScript           5.x
+TypeScript           ~6.0.3
 Supabase JS          v2
 ```
 
 ### Monorepo
 ```
 Yarn                 4 (PnP)
+TypeScript           ~6.0.3 (resolutions en package.json raíz)
 Turborepo            ^2.x
 Workspaces:
   apps/mobile
@@ -746,7 +750,7 @@ const normalizedPrice = inputValue.replace(',', '.');
 const price = parseFloat(normalizedPrice);
 ```
 
-### expo-image-picker SDK 54
+### expo-image-picker (SDK 56)
 
 ```typescript
 const result = await ImagePicker.launchImageLibraryAsync({ ... });

@@ -95,7 +95,7 @@ function AppContent() {
           <NavigationContainer>
             <RootStackNavigator />
           </NavigationContainer>
-          <StatusBar style="light" backgroundColor="transparent" translucent />
+          <StatusBar style="light" />
         </KeyboardProvider>
       </GestureHandlerRootView>
     </SafeAreaProvider>

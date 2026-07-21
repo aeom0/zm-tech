@@ -71,7 +71,7 @@ yarn db:seed
 
 ## Stack Tecnológico
 
-- **App móvil**: React Native 0.81 + Expo SDK 54 + React 19
+- **App móvil**: React Native 0.85 + Expo SDK 56 + React 19.2 + TypeScript 6
 - **Navegación**: React Navigation 7 (bottom tabs + native stacks)
 - **Estado servidor**: TanStack React Query v5
 - **Animaciones**: React Native Reanimated 4
@@ -92,7 +92,7 @@ Este monorepo usa la convención estándar `apps/` para aplicaciones y `packages
 
 | Carpeta en GitHub | Qué contiene | Tecnología |
 |-------------------|-------------|-----------|
-| `apps/mobile/` | **App Móvil (Expo)** — la aplicación principal para iOS, Android y Web | React Native 0.81 + Expo SDK 54 |
+| `apps/mobile/` | **App Móvil (Expo)** — la aplicación principal para iOS, Android y Web | React Native 0.85 + Expo SDK 56 |
 | `apps/web/` | **Web (Next.js)** — landing + `/dashboard` + `/finanzas` (auth Supabase) | Next.js 15 + Tailwind CSS |
 | `packages/shared-schema/` | **Schema Compartido** — tablas de base de datos y validaciones | Drizzle ORM + Zod |
 | `packages/tenant-config/` | **Config de Tenant** — presets y configuración multi-tenant | TypeScript |

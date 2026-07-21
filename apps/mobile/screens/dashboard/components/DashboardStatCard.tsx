@@ -1,11 +1,13 @@
 import React from "react";
 import { View } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import type { StyleProp, ViewStyle } from "react-native";
 
 import { ThemedText } from "@/components/ThemedText";
 
-import { DashboardAnimatedView } from "../hooks/useStaggeredAnimation";
+import {
+  DashboardAnimatedView,
+  type DashboardAnimatedStyle,
+} from "../hooks/useStaggeredAnimation";
 import { dashboardStyles as styles } from "../dashboardStyles";
 
 interface DashboardStatCardProps {
@@ -14,7 +16,7 @@ interface DashboardStatCardProps {
   value: string | number;
   color: string;
   subtitle?: string;
-  style?: StyleProp<ViewStyle>;
+  style?: DashboardAnimatedStyle;
   isTablet: boolean;
   theme: {
     backgroundDefault: string;

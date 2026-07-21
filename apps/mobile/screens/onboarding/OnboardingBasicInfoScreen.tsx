@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   swatchPrimaria: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     top: 2,
     left: 2,
     right: 2,
@@ -374,7 +374,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   swatchCustomPrimaria: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     top: 2,
     left: 2,
     right: 2,

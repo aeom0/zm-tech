@@ -67,6 +67,8 @@ export function Card({
 
   const handlePressIn = () => {
     if (onPress) {
+      // Shared value de Reanimated — mutación intencional fuera del render
+      // eslint-disable-next-line react-hooks/immutability
       scale.value = withSpring(0.98, springConfig);
       haptics.light();
     }
@@ -74,6 +76,7 @@ export function Card({
 
   const handlePressOut = () => {
     if (onPress) {
+      // eslint-disable-next-line react-hooks/immutability
       scale.value = withSpring(1, springConfig);
     }
   };

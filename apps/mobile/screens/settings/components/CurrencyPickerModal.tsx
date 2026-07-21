@@ -40,7 +40,7 @@ export function CurrencyPickerModal({
       >
         {/* Cabecera */}
         <View
-          style={[styles.header, { borderBottomColor: theme.borderSubtle }]}
+          style={[styles.header, { borderBottomColor: theme.border }]}
         >
           <ThemedText style={[styles.titulo, { color: theme.text }]}>
             Seleccionar moneda

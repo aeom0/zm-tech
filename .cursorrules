@@ -14,7 +14,7 @@
 SaaS multi-tenant para salones de belleza, barberías y estéticas en LATAM.
 
 - **Monorepo**: Yarn 4 + Turborepo — `apps/mobile/`, `apps/web/`, `packages/shared-schema/`, `packages/tenant-config/`
-- **Stack**: React Native (Expo SDK 54) + Next.js 15 + Supabase (PostgREST + Auth) + Drizzle ORM + TypeScript
+- **Stack**: React Native (Expo SDK 56) + Next.js 15 + Supabase (PostgREST + Auth) + Drizzle ORM + TypeScript ~6.0
 - **Entorno**: WSL Ubuntu, Node 22 (.nvmrc), Yarn 4
 - **Supabase**: Proyecto `xidjomlxpuosupymcsaj`
 - **Negocio**: Multi-tipo (spa-nails, barbershop, hair-salon, full-aesthetic); UI en español (venezolana cuando encaje)
@@ -113,7 +113,7 @@ import { tenantConfig } from "@geemastudio/tenant-config";
 
 ### Mobile (apps/mobile/)
 
-- Expo SDK 54, React 19, React Native 0.81
+- Expo SDK 56, React 19.2, React Native 0.85, TypeScript ~6.0
 - React Navigation v7
 - TanStack Query + Supabase PostgREST directo
 - Flujo auth: `Splash → Login → Onboarding (5 pasos) → Main tabs`

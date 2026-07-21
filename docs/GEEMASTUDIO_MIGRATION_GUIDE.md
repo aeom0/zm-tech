@@ -17,7 +17,7 @@ para gestión de salones de belleza, barberías y peluquerías en LATAM.
 
 ## Stack Tecnológico
 
-- React Native 0.81 + Expo SDK 54 + React 19
+- React Native 0.85 + Expo SDK 56 + React 19.2 + TypeScript ~6.0
 - Supabase (Auth + PostgREST) — sin servidor Express
 - Drizzle ORM + Zod (schema compartido)
 - TanStack React Query v5

@@ -14,7 +14,7 @@ alwaysApply: false
 - **Handlers**: `useCallback` para funciones pasadas a hijos o a `FlatList.renderItem`/`keyExtractor`.
 - **Cálculos costosos**: `useMemo` para datos derivados que dependan de props/estado.
 - **Re-renders**: `React.memo` en componentes con props estables y alto frecuencia de render.
-- **Imágenes**: `expo-image` con caché; `result.assets[0].uri` (SDK 54) en `expo-image-picker`.
+- **Imágenes**: `expo-image` con caché; `result.assets[0].uri` (Expo SDK 56 / `expo-image-picker`) — nunca `result.uri`.
 
 ## Web (Next.js)
 

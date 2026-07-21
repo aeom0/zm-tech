@@ -11,11 +11,12 @@ Este archivo proporciona orientación a Claude Code (claude.ai/code) para trabaj
 ## Stack Tecnológico
 
 ### Frontend
-- **React Native 0.81** con **Expo SDK 54**
-- **React 19** con React Compiler habilitado
+- **React Native 0.85** con **Expo SDK 56**
+- **React 19.2** con React Compiler habilitado
+- **TypeScript ~6.0.3** (resolución unificada en el monorepo)
 - **React Navigation 7** (bottom tabs + native stacks)
 - **TanStack React Query v5** para estado del servidor
-- **React Native Reanimated 4** para animaciones
+- **React Native Reanimated 4.3** + worklets 0.8 para animaciones
 
 ### Backend
 - **Supabase** (PostgREST) — la app móvil se conecta directo a todas las entidades de negocio (employees, service_categories, services, clients, appointments, inventory_items, payments, profiles, tenant_settings)

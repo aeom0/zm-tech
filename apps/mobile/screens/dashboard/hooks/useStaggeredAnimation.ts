@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { View } from "react-native";
+import type { ViewStyle } from "react-native";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -7,9 +8,12 @@ import Animated, {
   withDelay,
   withSpring,
   withTiming,
+  type AnimatedStyle,
 } from "react-native-reanimated";
 
 export const DashboardAnimatedView = Animated.createAnimatedComponent(View);
+
+export type DashboardAnimatedStyle = AnimatedStyle<ViewStyle>;
 
 function useStaggerSlot() {
   const opacity = useSharedValue(0);

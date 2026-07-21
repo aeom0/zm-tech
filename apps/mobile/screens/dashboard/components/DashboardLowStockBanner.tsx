@@ -1,11 +1,13 @@
 import React from "react";
 import { View } from "react-native";
 import { Feather } from "@expo/vector-icons";
-import type { StyleProp, ViewStyle } from "react-native";
 
 import { ThemedText } from "@/components/ThemedText";
 
-import { DashboardAnimatedView } from "../hooks/useStaggeredAnimation";
+import {
+  DashboardAnimatedView,
+  type DashboardAnimatedStyle,
+} from "../hooks/useStaggeredAnimation";
 import { dashboardStyles as styles } from "../dashboardStyles";
 
 interface DashboardLowStockBannerProps {
@@ -15,7 +17,7 @@ interface DashboardLowStockBannerProps {
     gold: string;
     textSecondary: string;
   };
-  animatedStyle?: StyleProp<ViewStyle>;
+  animatedStyle?: DashboardAnimatedStyle;
 }
 
 export function DashboardLowStockBanner({

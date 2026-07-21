@@ -5,21 +5,25 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ---
 
-## [Unreleased] — 2026-04-03
+## [Unreleased] — 2026-07-21
 
 ### Cambiado
-- **Web — eliminación de emojis**: toda la landing y el panel web ahora usan íconos SVG de **Lucide React** en lugar de emojis Unicode. Afecta `constants.ts` (`BUSINESS_TYPES` y `FEATURES` cambian prop `emoji` → `icon`), `FeatureCard`, `BusinessTypeTab`, `HeroSection`, `PainSection`, `FeaturesSection`, `DemoSection`, `CtaSection`, `FaqSection`, `PricingSection`, `PricingCard`, `AppMockup` y `WABAPreview`.
-- **Mobile — onboarding (TD-001)**: `OnboardingBusinessTypeScreen` usa tokens **`Onboarding`**, **`BorderRadius.card`**, **`BorderRadius.full`** y **`Colors.*.backgroundSubtle`**; `OnboardingLayout` toma el fondo de **`Onboarding.canvasBackground`** (`#111318`).
+- **Monorepo — TypeScript 6.0.3**: bump en raíz, mobile, web, shared-schema y tenant-config; `resolutions.typescript` en la raíz. Web: eliminado `baseUrl` deprecado; `target` ES2022; declaración `*.css` en `apps/web/src/types/css.d.ts`. Packages/server: `rootDir` explícito donde hay `outDir`.
+- **Mobile — Expo SDK 56**: `expo ~56.0.16`, React Native **0.85.3**, React **19.2.3**, Reanimated **4.3.1**, worklets **0.8.3**; resto de módulos `expo-*` alineados con `expo install --fix`. `app.json`: removidos `newArchEnabled` y `edgeToEdgeEnabled` (obligatorios / obsoletos desde SDK 55–56).
+- **Mobile — breaking SDK 56**: `StatusBar` sin `backgroundColor`/`translucent`; `StyleSheet.absoluteFillObject` → `absoluteFill`; tipos Reanimated (`DashboardAnimatedStyle`) en cards del dashboard.
+- **Web — eliminación de emojis** *(abr 2026)*: landing y panel con íconos Lucide React (`emoji` → `icon`).
+- **Mobile — onboarding (TD-001)** *(abr 2026)*: tokens `Onboarding`, `BorderRadius.card`, `Onboarding.canvasBackground`.
 
 ### Añadido
-- **Mobile — selector de moneda multi-LATAM** (`feat(settings+onboarding)`): lista de 19 monedas LATAM (USD por defecto); seleccionable desde Ajustes (`CurrencyPickerModal` pageSheet) y desde el onboarding paso 2 (chips). Persiste `code + symbol` en `TenantConfig` con `syncRemote`.
-- **Mobile — gestión de profesionales** (`feat(personal)`): FAB "+" crea nuevo empleado (formulario completo); botón "Eliminar" en modal de edición con confirmación y limpieza de avatar en Storage. `createMutation` (INSERT) y `deleteMutation` (DELETE).
-- **Mobile — color personalizado en onboarding (paso 2)**: swatch con gradiente + ícono que abre **`CustomColorPickerModal`** (matiz / saturación / brillo vía HSV); dependencia **`@react-native-community/slider`**; utilidades en **`apps/mobile/lib/color-hsv.ts`**.
-- **`constants/theme.ts`**: objeto **`Onboarding`** (canvas, textos, bordes, chips, `lunarisAccent` alineado a `Gradients.onboarding.start`); **`BorderRadius.card`**; **`backgroundSubtle`** en paletas claro/oscuro.
-- **Documentación**: `docs/tech-debt/TD-001-onboarding-tokens.md` marcado como resuelto; índice en `docs/INDEX.md` enlaza **`docs/tech-debt/`**.
+- **Mobile — selector de moneda multi-LATAM** (`feat(settings+onboarding)`): 19 monedas LATAM; Ajustes + onboarding paso 2; `syncRemote`.
+- **Mobile — gestión de profesionales** (`feat(personal)`): FAB crear; eliminar con confirmación y Storage.
+- **Mobile — color personalizado en onboarding (paso 2)**: `CustomColorPickerModal` (HSV) + `@react-native-community/slider`.
+- **`constants/theme.ts`**: objeto **`Onboarding`**; **`BorderRadius.card`**; **`backgroundSubtle`**.
+- **Documentación**: `docs/tech-debt/TD-001-onboarding-tokens.md` resuelto; índice en `docs/INDEX.md`.
 
 ### Corregido
-- **Mobile — Agenda** (`fix(agenda)`): KPI fila flex 1/3 sin `ScrollView`; avatar strip `flexGrow 0`; filtro estado con padding/gap más chico (11 px), sin `maxHeight` que recortaba los chips; scroll horizontal se mantiene en pantallas angostas.
+- **Mobile — typecheck**: prop `style` inválida en `Tab.Navigator`; `theme.borderSubtle` → `theme.border` en `CurrencyPickerModal`.
+- **Mobile — Agenda** (`fix(agenda)`): KPI fila flex 1/3; avatar strip; chips de filtro más compactos.
 
 ---
 

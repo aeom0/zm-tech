@@ -37,7 +37,7 @@ geemastudio/
 ## Stack
 
 ### Mobile (apps/mobile)
-- Expo SDK 54, React 19, React Native 0.81
+- Expo SDK 56, React 19.2, React Native 0.85, TypeScript ~6.0
 - Navegación: Auth → Splash → Login → Onboarding (5 pasos) o Main tabs
 - Estado servidor: TanStack Query + Supabase (PostgREST). QueryKeys: employees, services, service_categories, appointments, payments, inventory_items, dashboard_stats, tenant_settings
 - TenantContext: al terminar onboarding hace upsert en `tenant_settings` y guarda en AsyncStorage; al arranque con sesión carga tenant desde Supabase si no hay config local
