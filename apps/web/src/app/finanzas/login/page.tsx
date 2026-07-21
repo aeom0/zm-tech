@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, Lock, Mail, KeyRound, FlaskConical } from "lucide-react";
@@ -23,18 +23,11 @@ function LoginForm() {
   const demoEmail = searchParams.get("demo") ?? "";
   const isDemo = DEMO_EMAILS.has(demoEmail);
 
+  // Estado inicial desde query (sin effect — evita set-state-in-effect en build)
   const [email, setEmail] = useState(demoEmail);
   const [password, setPassword] = useState(isDemo ? DEMO_PASSWORD : "");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  // Si llega demo por query param, auto-submit
-  useEffect(() => {
-    if (isDemo && demoEmail) {
-      setEmail(demoEmail);
-      setPassword(DEMO_PASSWORD);
-    }
-  }, [isDemo, demoEmail]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

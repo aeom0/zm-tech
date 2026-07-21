@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { useCreatePromo, useUpdatePromo } from "@/hooks/servicios/usePromos";
 import type { PromoItemInput, Promotion } from "../../_services/promosService";
@@ -40,40 +40,58 @@ const EMPTY_ITEM: PromoItemInput = {
   discounted_price: 0,
 };
 
+function formFromPromo(promo: Promotion): FormState {
+  return {
+    title: promo.title,
+    description: promo.description ?? "",
+    badge: promo.badge ?? "",
+    accent_color: promo.accent_color ?? LUNARIS.primary,
+    promo_price: String(promo.promo_price).replace(".", ","),
+    is_active: promo.is_active,
+    expires_at: promo.expires_at ? promo.expires_at.split("T")[0] : "",
+  };
+}
+
+function itemsFromPromo(promo: Promotion): PromoItemInput[] {
+  return (
+    promo.promotion_items?.map((i) => ({
+      item_type: i.item_type,
+      item_id: i.item_id,
+      quantity: i.quantity,
+      discounted_price: i.discounted_price,
+    })) ?? []
+  );
+}
+
 export function PromoFormModal({ open, promo, onClose }: Props) {
-  const [form, setForm] = useState<FormState>(EMPTY);
-  const [items, setItems] = useState<PromoItemInput[]>([]);
+  if (!open) return null;
+
+  return (
+    <PromoFormModalInner
+      key={promo?.id ?? "new"}
+      promo={promo}
+      onClose={onClose}
+    />
+  );
+}
+
+function PromoFormModalInner({
+  promo,
+  onClose,
+}: {
+  promo?: Promotion | null;
+  onClose: () => void;
+}) {
+  const [form, setForm] = useState<FormState>(() =>
+    promo ? formFromPromo(promo) : EMPTY,
+  );
+  const [items, setItems] = useState<PromoItemInput[]>(() =>
+    promo ? itemsFromPromo(promo) : [],
+  );
 
   const create = useCreatePromo();
   const update = useUpdatePromo();
   const isPending = create.isPending || update.isPending;
-
-  useEffect(() => {
-    if (!promo) {
-      setForm(EMPTY);
-      setItems([]);
-      return;
-    }
-
-    setForm({
-      title: promo.title,
-      description: promo.description ?? "",
-      badge: promo.badge ?? "",
-      accent_color: promo.accent_color ?? LUNARIS.primary,
-      promo_price: String(promo.promo_price).replace(".", ","),
-      is_active: promo.is_active,
-      expires_at: promo.expires_at ? promo.expires_at.split("T")[0] : "",
-    });
-
-    setItems(
-      promo.promotion_items?.map((i) => ({
-        item_type: i.item_type,
-        item_id: i.item_id,
-        quantity: i.quantity,
-        discounted_price: i.discounted_price,
-      })) ?? [],
-    );
-  }, [open, promo]);
 
   function updateItem(index: number, item: PromoItemInput) {
     setItems((prev) => prev.map((it, i) => (i === index ? item : it)));
@@ -109,8 +127,6 @@ export function PromoFormModal({ open, promo, onClose }: Props) {
 
     onClose();
   }
-
-  if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">

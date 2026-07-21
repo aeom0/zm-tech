@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { ServiciosTabBar, type TabId } from "./components/ServiciosTabBar";
@@ -22,10 +22,19 @@ import {
   type ServicioRow,
 } from "@/hooks/servicios/useServicios";
 
+const TAB_IDS: TabId[] = ["categorias", "servicios", "packs", "promos"];
+
+function tabDesdeSearchParams(searchParams: URLSearchParams): TabId {
+  const raw = searchParams.get("tab")?.toLowerCase();
+  if (raw && TAB_IDS.includes(raw as TabId)) return raw as TabId;
+  return "categorias";
+}
+
 export default function PanelServiciosPage() {
-  const [activeTab, setActiveTab] = useState<TabId>("categorias");
   const router = useRouter();
   const searchParams = useSearchParams();
+  // Fuente de verdad = URL (sin sync vía effect)
+  const activeTab = tabDesdeSearchParams(searchParams);
 
   const categoriasQuery = useCategorias();
   const upsertCategoria = useUpsertCategoria();
@@ -66,15 +75,6 @@ export default function PanelServiciosPage() {
     return `Catálogo de Servicios › ${TAB_LABELS[activeTab]}`;
   }, [activeTab, TAB_LABELS]);
 
-  useEffect(() => {
-    const raw = searchParams.get("tab");
-    if (!raw) return;
-    const next = raw.toLowerCase();
-    const allowed: TabId[] = ["categorias", "servicios", "packs", "promos"];
-    if (!allowed.includes(next as TabId)) return;
-    setActiveTab((prev) => (prev === (next as TabId) ? prev : (next as TabId)));
-  }, [searchParams]);
-
   function handleTabChange(tab: TabId) {
     // Evita que queden modales abiertos al navegar a otra sección.
     if (tab !== "categorias") {
@@ -88,7 +88,6 @@ export default function PanelServiciosPage() {
       setServicioDefaultCategoryId(undefined);
     }
 
-    setActiveTab(tab);
     const params = new URLSearchParams(searchParams.toString());
     params.set("tab", tab);
     router.replace(`?${params.toString()}`, { scroll: false });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { X } from "lucide-react";
 
 import type { CategoriaRow } from "@/hooks/servicios/useCategorias";
@@ -30,13 +30,52 @@ export function ServicioModal({
     is_active: boolean;
   }) => void;
 }) {
+  if (!open) return null;
+
+  return (
+    <ServicioModalForm
+      key={initial?.id ?? `new-${defaultCategoryId ?? "none"}`}
+      categorias={categorias}
+      initial={initial}
+      defaultCategoryId={defaultCategoryId}
+      isSaving={isSaving}
+      onClose={onClose}
+      onSave={onSave}
+    />
+  );
+}
+
+function ServicioModalForm({
+  categorias,
+  initial,
+  defaultCategoryId,
+  isSaving,
+  onClose,
+  onSave,
+}: {
+  categorias: CategoriaRow[];
+  initial: ServicioRow | null;
+  defaultCategoryId?: string;
+  isSaving: boolean;
+  onClose: () => void;
+  onSave: (payload: {
+    id?: string;
+    name: string;
+    category_id: string;
+    price: string;
+    duration: number;
+    is_active: boolean;
+  }) => void;
+}) {
   const title = initial ? "Editar servicio" : "Nuevo servicio";
 
-  const [name, setName] = useState("");
-  const [categoryId, setCategoryId] = useState("");
-  const [price, setPrice] = useState("");
-  const [duration, setDuration] = useState(60);
-  const [isActive, setIsActive] = useState(true);
+  const [name, setName] = useState(initial?.name ?? "");
+  const [categoryId, setCategoryId] = useState(
+    initial?.category_id ?? defaultCategoryId ?? categorias[0]?.id ?? "",
+  );
+  const [price, setPrice] = useState(initial?.price ?? "");
+  const [duration, setDuration] = useState(initial?.duration ?? 60);
+  const [isActive, setIsActive] = useState(initial?.is_active ?? true);
 
   const canSubmit = useMemo(() => {
     if (!name.trim()) return false;
@@ -45,19 +84,6 @@ export function ServicioModal({
     if (!Number.isFinite(duration) || duration <= 0) return false;
     return true;
   }, [name, categoryId, price, duration]);
-
-  useEffect(() => {
-    if (!open) return;
-    setName(initial?.name ?? "");
-    setCategoryId(
-      initial?.category_id ?? defaultCategoryId ?? categorias[0]?.id ?? "",
-    );
-    setPrice(initial?.price ?? "");
-    setDuration(initial?.duration ?? 60);
-    setIsActive(initial?.is_active ?? true);
-  }, [open, initial, categorias, defaultCategoryId]);
-
-  if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

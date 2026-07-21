@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { useCreatePack, useUpdatePack } from "@/hooks/servicios/usePacks";
 import type { Pack } from "../../_services/packsService";
@@ -28,25 +28,37 @@ const EMPTY: FormState = {
   is_active: true,
 };
 
+function formFromPack(pack: Pack): FormState {
+  return {
+    name: pack.name,
+    description: pack.description ?? "",
+    price: String(pack.price).replace(".", ","),
+    service_ids: pack.service_ids,
+    is_active: pack.is_active,
+  };
+}
+
 export function PackFormModal({ open, pack, onClose }: Props) {
-  const [form, setForm] = useState<FormState>(EMPTY);
+  if (!open) return null;
+
+  return (
+    <PackFormModalInner key={pack?.id ?? "new"} pack={pack} onClose={onClose} />
+  );
+}
+
+function PackFormModalInner({
+  pack,
+  onClose,
+}: {
+  pack?: Pack | null;
+  onClose: () => void;
+}) {
+  const [form, setForm] = useState<FormState>(() =>
+    pack ? formFromPack(pack) : EMPTY,
+  );
   const create = useCreatePack();
   const update = useUpdatePack();
   const isPending = create.isPending || update.isPending;
-
-  useEffect(() => {
-    if (pack) {
-      setForm({
-        name: pack.name,
-        description: pack.description ?? "",
-        price: String(pack.price).replace(".", ","),
-        service_ids: pack.service_ids,
-        is_active: pack.is_active,
-      });
-    } else {
-      setForm(EMPTY);
-    }
-  }, [pack, open]);
 
   async function handleSubmit() {
     const price = Number.parseFloat(form.price.replace(",", "."));
@@ -67,8 +79,6 @@ export function PackFormModal({ open, pack, onClose }: Props) {
     }
     onClose();
   }
-
-  if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">

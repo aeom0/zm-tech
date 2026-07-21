@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Clock, Loader2 } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
@@ -32,59 +32,73 @@ export default function PanelHorariosPage() {
   const [draftTimeFormat, setDraftTimeFormat] =
     useState<TimeFormatPreference>("24");
 
-  const cargar = useCallback(async () => {
-    if (!supabase) {
-      setErrorCarga("Supabase no está configurado.");
-      setCargando(false);
-      return;
-    }
-    setErrorCarga(null);
-    setCargando(true);
-    try {
-      const { data: sessionData, error: sessionError } =
-        await supabase.auth.getUser();
-      if (sessionError || !sessionData.user) {
-        setErrorCarga("No hay sesión activa.");
+  useEffect(() => {
+    let cancelled = false;
+
+    async function cargar() {
+      // Primer await antes de setState: evita set-state-in-effect síncrono
+      if (!supabase) {
+        await Promise.resolve();
+        if (cancelled) return;
+        setErrorCarga("Supabase no está configurado.");
         setCargando(false);
         return;
       }
-      const uid = sessionData.user.id;
-      setUserId(uid);
 
-      const { data, error } = await supabase
-        .from("tenant_settings")
-        .select("timezone, business_hours, time_format")
-        .eq("id", uid)
-        .maybeSingle();
+      try {
+        const { data: sessionData, error: sessionError } =
+          await supabase.auth.getUser();
+        if (cancelled) return;
 
-      if (error) {
-        throw new Error(error.message);
+        if (sessionError || !sessionData.user) {
+          setErrorCarga("No hay sesión activa.");
+          setCargando(false);
+          return;
+        }
+
+        const uid = sessionData.user.id;
+        setUserId(uid);
+
+        const { data, error } = await supabase
+          .from("tenant_settings")
+          .select("timezone, business_hours, time_format")
+          .eq("id", uid)
+          .maybeSingle();
+
+        if (cancelled) return;
+
+        if (error) {
+          throw new Error(error.message);
+        }
+
+        if (data) {
+          const tz =
+            typeof data.timezone === "string" && data.timezone
+              ? data.timezone
+              : "America/Caracas";
+          setDraftTimezone(tz);
+          setDraftHours(
+            normalizarHorarioSemanal(
+              data.business_hours as TenantConfig["businessHours"] | null,
+            ),
+          );
+          const tf = (data as { time_format?: string | null }).time_format;
+          setDraftTimeFormat(tf === "12" ? "12" : "24");
+        }
+      } catch (e) {
+        if (!cancelled) {
+          setErrorCarga(e instanceof Error ? e.message : "Error al cargar.");
+        }
+      } finally {
+        if (!cancelled) setCargando(false);
       }
-
-      if (data) {
-        const tz =
-          typeof data.timezone === "string" && data.timezone
-            ? data.timezone
-            : "America/Caracas";
-        setDraftTimezone(tz);
-        setDraftHours(
-          normalizarHorarioSemanal(
-            data.business_hours as TenantConfig["businessHours"] | null,
-          ),
-        );
-        const tf = (data as { time_format?: string | null }).time_format;
-        setDraftTimeFormat(tf === "12" ? "12" : "24");
-      }
-    } catch (e) {
-      setErrorCarga(e instanceof Error ? e.message : "Error al cargar.");
-    } finally {
-      setCargando(false);
     }
-  }, []);
 
-  useEffect(() => {
     void cargar();
-  }, [cargar]);
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const setDiaAbierto = (
     dia: (typeof CLAVES_DIA_LABORAL)[number],

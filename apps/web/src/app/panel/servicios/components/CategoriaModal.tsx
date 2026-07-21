@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { X } from "lucide-react";
 
 import type { CategoriaRow } from "@/hooks/servicios/useCategorias";
@@ -24,25 +24,46 @@ export function CategoriaModal({
     icon?: string | null;
   }) => void;
 }) {
+  if (!open) return null;
+
+  // Remount al abrir/cambiar fila → estado inicial sin effect
+  return (
+    <CategoriaModalForm
+      key={initial?.id ?? "new"}
+      initial={initial}
+      isSaving={isSaving}
+      onClose={onClose}
+      onSave={onSave}
+    />
+  );
+}
+
+function CategoriaModalForm({
+  initial,
+  isSaving,
+  onClose,
+  onSave,
+}: {
+  initial: CategoriaRow | null;
+  isSaving: boolean;
+  onClose: () => void;
+  onSave: (payload: {
+    id?: string;
+    name: string;
+    color: string;
+    icon?: string | null;
+  }) => void;
+}) {
   const title = initial ? "Editar categoría" : "Nueva categoría";
 
-  const [name, setName] = useState("");
-  const [color, setColor] = useState<string>(LUNARIS.primary);
-  const [icon, setIcon] = useState("");
+  const [name, setName] = useState(initial?.name ?? "");
+  const [color, setColor] = useState(initial?.color ?? LUNARIS.primary);
+  const [icon, setIcon] = useState(initial?.icon ?? "");
 
   const canSubmit = useMemo(
     () => name.trim().length > 0 && !!color,
     [name, color],
   );
-
-  useEffect(() => {
-    if (!open) return;
-    setName(initial?.name ?? "");
-    setColor(initial?.color ?? LUNARIS.primary);
-    setIcon(initial?.icon ?? "");
-  }, [open, initial]);
-
-  if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
