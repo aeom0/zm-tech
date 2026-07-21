@@ -2,11 +2,13 @@
   "name": "zm-tech-landing",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@11.15.1",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit",
     "format": "prettier --write src/",
     "format:check": "prettier --check src/"
   },
@@ -41,8 +43,5 @@
     "prettier-plugin-tailwindcss": "^0.8.0",
     "tailwindcss": "^4",
     "typescript": "~6.0.3"
-  },
-  "overrides": {
-    "typescript-eslint": "^8.58.0"
   }
 }

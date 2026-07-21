@@ -201,11 +201,12 @@ chore:    config, deps, scripts
 ## 🚀 Comandos frecuentes
 
 ```bash
-# Landing ZMTech (npm)
-npm run dev
-npm run build
-node node_modules/.bin/eslint src/
-node_modules/.bin/tsc --noEmit
+# Landing ZMTech (pnpm)
+pnpm install
+pnpm dev
+pnpm build
+pnpm lint
+pnpm typecheck
 
 # ZM Lash & Nails Beauty (yarn)
 nvm use                          # siempre primero

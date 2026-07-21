@@ -51,13 +51,12 @@ src/
 ## Comandos
 
 ```bash
-npm install        # Instalar dependencias
-npm run dev        # Servidor local → localhost:3000
-npm run build      # Build de producción
-npm run lint       # ESLint (node_modules/.bin/eslint src/)
+pnpm install       # Instalar dependencias
+pnpm dev           # Servidor local → localhost:3000
+pnpm build         # Build de producción
+pnpm lint          # ESLint (eslint src/)
+pnpm typecheck     # TypeScript (tsc --noEmit)
 ```
-
-> **Nota:** `npm run lint` (que usa `next lint`) tiene un issue de entorno en el CLI tool. Usar directamente: `node node_modules/.bin/eslint src/`
 
 ## Notas Tailwind v4
 

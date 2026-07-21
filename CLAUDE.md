@@ -5,7 +5,8 @@ Contexto para Claude Code al trabajar en este proyecto.
 ## Stack
 
 - **Next.js 16** (App Router, `src/` directory)
-- **TypeScript 5** — tipado estricto, sin `any`
+- **TypeScript 6** — tipado estricto, sin `any`
+- **pnpm** — package manager (`packageManager` en `package.json`)
 - **Tailwind CSS v4** — ver convenciones abajo
 - **Framer Motion 12** — animaciones
 - **React Hook Form + Zod** — formularios
@@ -37,10 +38,11 @@ Mantener coherencia en TODO texto visible. Nunca usar términos genéricos:
 ## Comandos
 
 ```bash
-npm run dev            # localhost:3000
-npm run build          # build producción (debe ser 0 errores)
-node node_modules/.bin/eslint src/   # lint (no usar npm run lint — issue de entorno)
-node_modules/.bin/tsc --noEmit       # typecheck
+pnpm install           # dependencias
+pnpm dev               # localhost:3000
+pnpm build             # build producción (debe ser 0 errores)
+pnpm lint              # eslint src/
+pnpm typecheck         # tsc --noEmit
 ```
 
 ## Estructura de componentes

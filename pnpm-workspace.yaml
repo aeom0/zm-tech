@@ -1,0 +1,7 @@
+# Configuración pnpm (v11+). No es un monorepo: solo settings del proyecto.
+overrides:
+  typescript-eslint: ^8.58.0
+
+allowBuilds:
+  sharp: true
+  unrs-resolver: true
