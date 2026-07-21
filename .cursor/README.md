@@ -8,6 +8,14 @@ Directrices y reglas de desarrollo para Cursor en este proyecto. Monorepo apps/m
 .cursor/
 ├── README.md           # Este archivo
 ├── mcp.json            # Dos MCP Supabase: supabase-zm + supabase-geemastudio
+├── skills/             # Skills del proyecto (fuente de verdad; ver abajo)
+│   ├── SKILLS.md       # Guía de conocimiento GeemaStudio (Claude + Cursor)
+│   ├── whatsapp-business-api/
+│   ├── ui-ux-pro-max/
+│   ├── ui-styling/
+│   ├── design-system/
+│   ├── brand/
+│   └── meta-ads-manager/
 └── rules/
     ├── arquitectura.mdc       # Estructura repo, stack, patrones GeemaStudio
     ├── business-logic.mdc    # Negocio: citas, servicios, inventario, finanzas
@@ -20,6 +28,20 @@ Directrices y reglas de desarrollo para Cursor en este proyecto. Monorepo apps/m
     ├── development-access.mdc   # Acceso .env y archivos de desarrollo
     └── supabase-mcp.mdc        # Uso de MCP Supabase (dos proyectos)
 ```
+
+## Skills — sync Cursor ↔ Claude Code
+
+**Fuente de verdad**: `.cursor/skills/` (versionado en git).
+
+Claude Code lee el mismo contenido porque `.claude/skills` es un **symlink** a `../.cursor/skills`. No hay dos copias: editar `SKILLS.md` o cualquier skill en `.claude/skills/...` o en `.cursor/skills/...` es el mismo archivo.
+
+Tras un clone fresco, si el symlink no existe (p. ej. Windows sin soporte):
+
+```bash
+rm -rf .claude/skills && ln -s ../.cursor/skills .claude/skills
+```
+
+`.gitignore` ignora `.claude/*` salvo `!.claude/skills` para versionar el symlink y no subir `settings.local.json`.
 
 ## Raíz del proyecto
 

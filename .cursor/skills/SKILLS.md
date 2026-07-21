@@ -1,7 +1,9 @@
-# SKILL: GeemaStudio — Contexto Permanente para Claude Code
+# SKILLS.md — GeemaStudio / SalonPro
 
 > Lee este archivo **antes de tocar cualquier archivo del repo**.
 > Fuente: código real del repositorio + docs internas · Versión: v1.4.9 · Actualizado: abril 2026
+>
+> **Sync**: fuente de verdad en `.cursor/skills/`. Claude Code usa el mismo árbol vía symlink `.claude/skills` → `../.cursor/skills`. Editar en cualquiera de las dos rutas es editar el mismo archivo. Alias: `geemastudio.md` → `SKILLS.md`.
 
 ---
 

@@ -57,6 +57,10 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
+# Python bytecode (skills / scripts locales)
+__pycache__/
+*.pyc
+
 app-example
 
 # generated native folders
@@ -71,3 +75,7 @@ scripts/db/.apply_seed_demo_args.json
 supabase/.temp/
 .vercel
 /eas.json
+
+# Claude Code local config (settings locales); skills compartidos vía symlink → .cursor/skills
+.claude/*
+!.claude/skills
