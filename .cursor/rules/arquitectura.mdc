@@ -62,11 +62,11 @@ geemastudio/
 
 ## Scripts (raíz)
 
-- `yarn mobile:dev` — Expo
-- `yarn web:dev` — Next.js
-- `yarn db:push` — aplicar esquema Drizzle
-- `yarn db:seed` — cargar seeds (editar templates antes)
-- `yarn lint` / `yarn format` / `yarn check:types`
+- `pnpm mobile:dev` — Expo
+- `pnpm web:dev` — Next.js
+- `pnpm db:push` — aplicar esquema Drizzle
+- `pnpm db:seed` — cargar seeds (editar templates antes)
+- `pnpm lint` / `pnpm format` / `pnpm check:types`
 
 ## Patrones
 

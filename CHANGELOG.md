@@ -41,7 +41,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 - **Tailwind / globals (web)**: `primary` → `#00897B`, `primaryLight` → `#B2DFDB`; scrollbar y `::selection` con tintes turquesa.
 
 ### Cambiado
-- **Navbar (landing)**: wordmark **Salon** + **Pro** con gradiente Lunaris; badge Beta con `LUNARIS.badge`.
+- **Navbar (landing)**: wordmark **Geema** + **Studio** con gradiente Lunaris; badge Beta con `LUNARIS.badge`.
 - **Mobile — `DiamondHero` / onboarding**: gradientes desde **`Gradients.onboarding`** en `constants/theme.ts` (sin array hardcodeado local); dirección 135° unificada (`linearStart` / `linearEnd`).
 - **Vercel**: eliminado **`ignoreCommand`** en `vercel.json` — el diff contra `VERCEL_GIT_PREVIOUS_SHA` en checkout **shallow** provocaba `fatal: bad object` y builds en ERROR. Cada push a `main` ejecuta build de la web (sin omitir por paths).
 

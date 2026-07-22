@@ -6,7 +6,10 @@ node_modules/
 # Turborepo
 .turbo/
 
-# Yarn 4
+# pnpm
+.pnpm-store/
+
+# Yarn 4 (legacy — no volver a commitear)
 .yarn/cache
 .yarn/install-state.gz
 .yarn/unplugged
@@ -45,6 +48,7 @@ expo-env.d.ts
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+pnpm-debug.log*
 
 # macOS
 .DS_Store

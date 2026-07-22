@@ -21,21 +21,21 @@ Construido como SaaS multi-tenant sobre React Native + Expo + Supabase.
 ## Inicio Rápido
 
 ```bash
-# Requisitos: Node 22, Yarn 4
+# Requisitos: Node 22, pnpm 10
 nvm use
 
 # Instalar dependencias
-yarn install
+pnpm install
 
 # Configurar entorno
 cp .env.example .env
 # Editar .env con tus credenciales Supabase
 
 # Iniciar app mobile (Expo)
-yarn mobile:dev
+pnpm mobile:dev
 
 # Iniciar web (Next.js)
-yarn web:dev
+pnpm web:dev
 ```
 
 ---
@@ -61,10 +61,10 @@ scripts/db/seed-employees-template.sql
 scripts/seed-auth-users.mjs
 
 # Aplicar schema
-yarn db:push
+pnpm db:push
 
 # Cargar datos de ejemplo
-yarn db:seed
+pnpm db:seed
 ```
 
 ---
@@ -127,7 +127,7 @@ Este monorepo usa la convención estándar `apps/` para aplicaciones y `packages
 │       ├── seed-services-example.sql    # Referencia: servicios de ZM Lash & Nails
 │       ├── seed-employees-template.sql  # Empleados genéricos (editar antes de usar)
 │       └── seed-employees-example.sql   # Referencia: equipo de ZM Lash & Nails
-├── migrations/                        # Salida de `yarn db:generate` (Drizzle Kit)
+├── migrations/                        # Salida de `pnpm db:generate` (Drizzle Kit)
 └── docs/
     ├── GEEMASTUDIO_MIGRATION_GUIDE.md  # Plan de migración ZM → GeemaStudio (monorepo)
     └── design_guidelines.md         # Sistema de diseño
@@ -139,15 +139,15 @@ Este monorepo usa la convención estándar `apps/` para aplicaciones y `packages
 
 | Script | Descripción |
 |--------|-------------|
-| `yarn mobile:dev` | Inicia Expo (app móvil) |
-| `yarn web:dev` | Inicia Next.js (web) |
-| `yarn db:push` | Aplica schema a PostgreSQL vía Drizzle (`packages/shared-schema`) |
-| `yarn db:generate` | Genera migraciones SQL versionadas en `./migrations/` (Drizzle Kit) |
-| `yarn db:studio` | Abre Drizzle Studio contra `DATABASE_URL` |
-| `yarn db:seed` | Carga datos de ejemplo (templates) |
-| `yarn check:types` | Type checking TypeScript |
-| `yarn lint` | Verifica código con ESLint |
-| `yarn format` | Formatea con Prettier |
+| `pnpm mobile:dev` | Inicia Expo (app móvil) |
+| `pnpm web:dev` | Inicia Next.js (web) |
+| `pnpm db:push` | Aplica schema a PostgreSQL vía Drizzle (`packages/shared-schema`) |
+| `pnpm db:generate` | Genera migraciones SQL versionadas en `./migrations/` (Drizzle Kit) |
+| `pnpm db:studio` | Abre Drizzle Studio contra `DATABASE_URL` |
+| `pnpm db:seed` | Carga datos de ejemplo (templates) |
+| `pnpm check:types` | Type checking TypeScript |
+| `pnpm lint` | Verifica código con ESLint |
+| `pnpm format` | Formatea con Prettier |
 
 ---
 

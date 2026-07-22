@@ -8,7 +8,7 @@ Fuente de verdad de skills compartidos. Claude Code apunta aquí con:
 
 | Ruta | Rol |
 |------|-----|
-| `SKILLS.md` | Guía de conocimiento profundo GeemaStudio / SalonPro (ambos agentes) |
+| `SKILLS.md` | Guía de conocimiento profundo GeemaStudio (ambos agentes) |
 | `geemastudio.md` | Alias → `SKILLS.md` (compatibilidad) |
 | `whatsapp-business-api/` | Skill WABA Cloud API (webhook, templates, Deno/Supabase) |
 | `ui-ux-pro-max/` | Inteligencia UI/UX (web + mobile + stacks) |

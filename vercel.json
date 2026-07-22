@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "installCommand": "corepack enable && yarn install",
-  "buildCommand": "yarn web:build",
+  "installCommand": "corepack enable && pnpm install",
+  "buildCommand": "pnpm web:build",
   "framework": "nextjs"
 }

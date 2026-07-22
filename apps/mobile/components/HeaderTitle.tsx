@@ -1,5 +1,5 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, LayoutChangeEvent } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import MaskedView from "@react-native-masked-view/masked-view";
 
@@ -15,21 +15,33 @@ interface HeaderTitleProps {
 export function HeaderTitle({ title }: HeaderTitleProps) {
   const { config } = useTenant();
   const { theme } = useTheme();
+  const [studioWidth, setStudioWidth] = useState(72);
 
   const isBrandTitle = title === "GeemaStudio";
+
+  const onStudioLayout = (e: LayoutChangeEvent) => {
+    const w = e.nativeEvent.layout.width;
+    if (w > 0) setStudioWidth(Math.ceil(w));
+  };
 
   if (isBrandTitle) {
     return (
       <View style={[styles.container, styles.brandContainer]}>
         <View style={styles.wordmarkRow}>
-          <Text style={[styles.wordmarkSalon, { color: theme.text }]}>
-            Salon
+          <Text style={[styles.wordmarkGeema, { color: theme.text }]}>
+            Geema
+          </Text>
+          <Text
+            style={[styles.wordmarkStudio, styles.measurePhantom]}
+            onLayout={onStudioLayout}
+          >
+            Studio
           </Text>
           <MaskedView
-            style={styles.maskedPro}
+            style={[styles.maskedStudio, { width: studioWidth }]}
             maskElement={
               <View style={styles.maskCenter}>
-                <Text style={styles.wordmarkProMask}>Pro</Text>
+                <Text style={styles.wordmarkStudioMask}>Studio</Text>
               </View>
             }
           >
@@ -95,14 +107,23 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  wordmarkSalon: {
+  wordmarkGeema: {
     fontSize: 18,
     fontWeight: "700",
     letterSpacing: -0.3,
-    // color se pasa como prop inline desde { color: theme.text }
-    // para respetar light/dark mode sin romper MaskedView
   },
-  maskedPro: {
+  wordmarkStudio: {
+    fontSize: 18,
+    fontWeight: "700",
+    letterSpacing: -0.3,
+    lineHeight: 24,
+  },
+  measurePhantom: {
+    position: "absolute",
+    opacity: 0,
+    color: "#000000",
+  },
+  maskedStudio: {
     height: 26,
   },
   maskCenter: {
@@ -111,7 +132,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "transparent",
   },
-  wordmarkProMask: {
+  wordmarkStudioMask: {
     fontSize: 18,
     fontWeight: "700",
     color: "black",
@@ -120,6 +141,5 @@ const styles = StyleSheet.create({
   },
   gradientFill: {
     flex: 1,
-    width: 60,
   },
 });

@@ -18,7 +18,8 @@
     },
     "search.exclude": {
       "**/node_modules": true,
-      "**/yarn.lock": true,
+      "**/pnpm-lock.yaml": true,
+
       "**/.expo": true,
       "**/.next": true
     },
@@ -26,7 +27,7 @@
     "explorer.fileNesting.patterns": {
       "*.ts": "${capture}.js, ${capture}.d.ts",
       "*.tsx": "${capture}.js",
-      "package.json": "yarn.lock, .yarnrc.yml, .nvmrc, .env.example, .gitignore, .gitattributes"
+      "package.json": "pnpm-lock.yaml, pnpm-workspace.yaml, .npmrc, .nvmrc, .env.example, .gitignore, .gitattributes"
     }
   },
   "extensions": {

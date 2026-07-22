@@ -278,7 +278,7 @@ Flujo de arranque (mobile):
 
 ## Cambios Recientes (abr 2026 — v1.4.8 — Lunaris web + Vercel + DiamondHero)
 
-- **Web — `LUNARIS`**: nuevo `apps/web/src/lib/theme.ts`; landing (Navbar Salon/Pro, `GradientButton`, Hero, Demo, PricingCard, `WABAPreview`, `AppMockup`), panel (`/panel/*`), `/login`, `/dashboard`, `/finanzas` migrados de magenta (`#E91E8C`) a turquesa (`#40E0D0` / `#00897B`). Tailwind `primary` `#00897B`, `globals.css` scrollbar/selection turquesa.
+- **Web — `LUNARIS`**: nuevo `apps/web/src/lib/theme.ts`; landing (Navbar Geema/Studio, `GradientButton`, Hero, Demo, PricingCard, `WABAPreview`, `AppMockup`), panel (`/panel/*`), `/login`, `/dashboard`, `/finanzas` migrados de magenta (`#E91E8C`) a turquesa (`#40E0D0` / `#00897B`). Tailwind `primary` `#00897B`, `globals.css` scrollbar/selection turquesa.
 - **Vercel**: eliminado `ignoreCommand` en `vercel.json` (evita `fatal: bad object` en shallow clone); cada push a `main` construye la web.
 - **Mobile — `DiamondHero`**: usa `Gradients.onboarding.colors` / `locations` y `linearStart`/`linearEnd` desde `constants/theme.ts` (sin duplicar stops locales).
 - **Changelog**: ver `[1.4.8]` en `CHANGELOG.md`.

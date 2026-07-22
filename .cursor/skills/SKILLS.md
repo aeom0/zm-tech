@@ -1,4 +1,4 @@
-# SKILLS.md — GeemaStudio / SalonPro
+# SKILLS.md — GeemaStudio
 
 > Lee este archivo **antes de tocar cualquier archivo del repo**.
 > Fuente: código real del repositorio + docs internas · Versión: v1.5.0 (SDK 56 + TS 6) · Actualizado: julio 2026

@@ -1,4 +1,4 @@
-# Cursor AI Rules - SalonPro v1.3.0
+# Cursor AI Rules - GeemaStudio v1.3.0
 
 ## PRIORIDAD DE LECTURA
 
@@ -13,9 +13,9 @@
 
 SaaS multi-tenant para salones de belleza, barberías y estéticas en LATAM.
 
-- **Monorepo**: Yarn 4 + Turborepo — `apps/mobile/`, `apps/web/`, `packages/shared-schema/`, `packages/tenant-config/`
+- **Monorepo**: pnpm workspaces + Turborepo — `apps/mobile/`, `apps/web/`, `packages/shared-schema/`, `packages/tenant-config/`
 - **Stack**: React Native (Expo SDK 56) + Next.js 15 + Supabase (PostgREST + Auth) + Drizzle ORM + TypeScript ~6.0
-- **Entorno**: WSL Ubuntu, Node 22 (.nvmrc), Yarn 4
+- **Entorno**: WSL Ubuntu, Node 22 (.nvmrc), pnpm 10
 - **Supabase**: Proyecto `xidjomlxpuosupymcsaj`
 - **Negocio**: Multi-tipo (spa-nails, barbershop, hair-salon, full-aesthetic); UI en español (venezolana cuando encaje)
 
@@ -139,23 +139,23 @@ import { tenantConfig } from "@geemastudio/tenant-config";
 
 `.cursor/mcp.json` tiene dos servidores:
 
-- **supabase-salonpro** → `xidjomlxpuosupymcsaj` ← **USAR ESTE para SalonPro**
+- **supabase-geemastudio** → `xidjomlxpuosupymcsaj` ← **USAR ESTE para GeemaStudio**
 - **supabase-zm** → `udelxwwnyivknslueerr` ← solo para consultas ZM
 
-Cursor puede mostrarlos con prefijo: `project-0-SalonPro (raíz)-supabase-salonpro`
+Cursor puede mostrarlos con prefijo: `project-0-geemastudio-supabase-geemastudio`
 
 ---
 
 ## Comandos
 
 ```bash
-yarn mobile:dev       # Expo dev server
-yarn web:dev          # Next.js dev server
-yarn db:push          # Aplicar schema Drizzle → Supabase
-yarn db:seed          # Seeds (revisar templates antes)
-yarn lint
-yarn check:types
-yarn format
+pnpm mobile:dev       # Expo dev server
+pnpm web:dev          # Next.js dev server
+pnpm db:push          # Aplicar schema Drizzle → Supabase
+pnpm db:seed          # Seeds (revisar templates antes)
+pnpm lint
+pnpm check:types
+pnpm format
 ```
 
 ---

@@ -208,9 +208,9 @@
                     {
                       "type": "text",
                       "id": "Asrak",
-                      "name": "salon",
+                      "name": "geema",
                       "fill": "#FFFFFF",
-                      "content": "Salon",
+                      "content": "Geema",
                       "fontFamily": "Plus Jakarta Sans",
                       "fontSize": 36,
                       "fontWeight": "800",
@@ -219,10 +219,10 @@
                     {
                       "type": "text",
                       "id": "Ru8jv",
-                      "name": "pro",
+                      "name": "studio",
                       "opacity": 0.75,
                       "fill": "#FFFFFF",
-                      "content": "Pro",
+                      "content": "Studio",
                       "fontFamily": "Plus Jakarta Sans",
                       "fontSize": 36,
                       "fontWeight": "300",
@@ -4370,9 +4370,9 @@
                     {
                       "type": "text",
                       "id": "Kw1rw",
-                      "name": "salon",
+                      "name": "geema",
                       "fill": "#FFFFFF",
-                      "content": "Salon",
+                      "content": "Geema",
                       "fontFamily": "Inter",
                       "fontSize": 28,
                       "fontWeight": "600"
@@ -4380,10 +4380,10 @@
                     {
                       "type": "text",
                       "id": "Nomiz",
-                      "name": "pro",
+                      "name": "studio",
                       "opacity": 0.75,
                       "fill": "#FFFFFF",
-                      "content": "Pro",
+                      "content": "Studio",
                       "fontFamily": "Inter",
                       "fontSize": 28,
                       "fontWeight": "300"
@@ -4648,9 +4648,9 @@
                     {
                       "type": "text",
                       "id": "IUnaR",
-                      "name": "salon",
+                      "name": "geema",
                       "fill": "#0F0F0F",
-                      "content": "Salon",
+                      "content": "Geema",
                       "fontFamily": "Inter",
                       "fontSize": 28,
                       "fontWeight": "600"
@@ -4658,10 +4658,10 @@
                     {
                       "type": "text",
                       "id": "rNRqE",
-                      "name": "pro",
+                      "name": "studio",
                       "opacity": 0.75,
                       "fill": "#0F0F0F",
-                      "content": "Pro",
+                      "content": "Studio",
                       "fontFamily": "Inter",
                       "fontSize": 28,
                       "fontWeight": "300"

@@ -12,7 +12,7 @@ alwaysApply: true
 ## Origen y entorno
 
 - **Proyecto**: SaaS multi-tenant para salones/barberías/peluquerías en LATAM. Basado en ZM Lash & Nails Beauty.
-- **Entorno**: Node 22 (.nvmrc), Yarn 4; Expo en 8081.
+- **Entorno**: Node 22 (.nvmrc), pnpm 10; Expo en 8081.
 - **Variables**: `.env` desde `.env.example`; Supabase: `EXPO_PUBLIC_SUPABASE_URL` y `EXPO_PUBLIC_SUPABASE_ANON_KEY` (proyecto `xidjomlxpuosupymcsaj`).
 - **Base de datos**: Supabase PostgreSQL (proyecto `xidjomlxpuosupymcsaj`). Mobile y web conectan directo vía PostgREST. Schema en `packages/shared-schema`; tabla `tenant_settings` para config del tenant; `yarn db:push` para aplicar.
 - **Sin Express**: No hay servidor intermedio. Todo va contra Supabase.
@@ -22,7 +22,7 @@ alwaysApply: true
 - **Mobile (apps/mobile)**: Expo SDK 56 (RN 0.85 / React 19.2), TypeScript 6, Supabase directo, TanStack Query. New Architecture y edge-to-edge Android son obligatorios (ya no van en `app.json`). Tema en `constants/theme.ts`: onboarding usa canvas **`Onboarding.canvasBackground`** (`#111318`, mismo token que `OnboardingLayout`); **`Gradients.onboarding`** (Lunaris) para CTAs; objeto **`Onboarding`** agrupa textos/bordes/chips del flujo oscuro; **`BorderRadius.card`** / **`backgroundSubtle`** en paletas claro/oscuro. Onboarding paso 1: **`businessSubtype`** con chips (preset + `updateTenant`); paso 2: paletas fijas + **`CustomColorPickerModal`** (HSV, `@react-native-community/slider`) para color libre. **snake_case** en datos de BD.
 - **Auth + Tenant**: AuthProvider fuera de TenantProvider. Al terminar onboarding se hace upsert en `tenant_settings` y guardado en AsyncStorage; al arranque con sesión se carga tenant desde Supabase si no hay config local. **`updateTenant(partial, { syncRemote: true })`** fusiona con `mergeTenantConfig` y opcionalmente hace upsert (p. ej. pantalla **Horario de trabajo**). **Moneda**: `locale.currency` con `code` + `symbol` seleccionables desde `CurrencyPickerModal` (19 monedas LATAM); NO hardcodear `S/`.
 - **Web (apps/web)**: Next.js 15, Tailwind, Supabase Auth. **`apps/web` contiene DOS productos**: (1) **Panel de gestión** (siempre activo, auth requerida): `/finanzas`, `/dashboard`, `/panel/*` — independiente de `web_mode`; (2) **Landing pública del tenant** (opcional, sin auth): `/s/[slug]` — controlada por `tenant_settings.web_mode` (`'none'` | `'geema_hosted'` | `'own_domain'`). Ver `docs/WEB_ARCHITECTURE.md`. **Marca / marketing**: paleta **Lunaris turquesa** en **`apps/web/src/lib/theme.ts`** (`LUNARIS`). Tailwind `primary`/`primaryLight` teal/turquesa; sin magenta legacy (`#E91E8C`). **Panel implementado**: `/finanzas` + `/dashboard` (KPIs, `useDashboardData`) + `/panel/servicios` (CRUD cats/servicios/packs/promos, tab `?tab=`) + `/panel/horarios` (timezone + `business_hours` + `time_format`). **Panel pendiente (PR-11)**: `/panel/clientes`, `/panel/personal`, `/panel/waba`, `/panel/agenda`, `/panel/configuracion`. Auth wrapper `FinanzasAuthWrapper` en `/finanzas` y `/dashboard`; login en `/finanzas/login`. Staff → redirect a `/`. **Vercel**: sin `ignoreCommand` en `vercel.json` — cada push a `main` construye la web. **Sin emojis**: toda la landing y panel usan **Lucide React** SVG; `constants.ts` usa prop `icon` (nombre Lucide); `FeatureCard`/`BusinessTypeTab` via `LucideIcons as unknown as Record<string, LucideIcon>`. **Pendiente (KPIs)**: gráfico 7 días usa calendario local del navegador — pendiente alinear con `config.locale.timezone`.
-- **Scripts**: `yarn mobile:dev`, `yarn web:dev`, `yarn db:push`, `yarn db:seed`.
+- **Scripts**: `pnpm mobile:dev`, `pnpm web:dev`, `pnpm db:push`, `pnpm db:seed`.
 
 ## Pantallas y flujo
 
@@ -41,7 +41,7 @@ En `apps/web/public/`:
 - **`logo-diamondSparkle.svg`** — marca por defecto (solo diamante, sin texto en el asset; fondos oscuros / transparentes).
 - `logo-diamondSparkle-positive.svg` / `negative` — opcionales para export o redes (no sustituyen al principal en UI salvo necesidad).
 
-Navbar (landing): mismo `logo-diamondSparkle.svg`; wordmark **Salon** + **Pro** (gradiente `LUNARIS.gradient.css90`); badge Beta con `LUNARIS.badge`. Con header claro tras scroll (modo claro) aplicar `invert` al diamante; en `dark:` sin invert; texto **Salon** legible en barra clara (`text-zinc-900` / `dark:text-white`). Footer y splash: mismo SVG / PNG derivado. `favicon.png` desde el diamante principal.
+Navbar (landing): mismo `logo-diamondSparkle.svg`; wordmark **Geema** + **Studio** (gradiente `LUNARIS.gradient.css90` en Studio); badge Beta con `LUNARIS.badge`. Con header claro tras scroll (modo claro) aplicar `invert` al diamante; en `dark:` sin invert; texto **Geema** legible en barra clara (`text-zinc-900` / `dark:text-white`). Footer y splash: mismo SVG / PNG derivado. `favicon.png` desde el diamante principal.
 
 ## Reglas de trabajo
 

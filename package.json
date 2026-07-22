@@ -2,29 +2,24 @@
   "name": "geemastudio",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "yarn@4.12.0",
-  "workspaces": [
-    "apps/*",
-    "packages/*",
-    "server"
-  ],
+  "packageManager": "pnpm@10.12.4",
   "scripts": {
-    "dev": "concurrently \"yarn server:dev\" \"yarn mobile:dev\"",
-    "server:dev": "yarn workspace server dev",
-    "server:build": "yarn workspace server build",
-    "web:dev": "yarn workspace web dev",
-    "mobile:dev": "yarn workspace mobile dev",
-    "build": "yarn workspace web run build",
-    "web:build": "yarn workspace web run build",
-    "mobile:build": "yarn workspace mobile run build",
-    "mobile:build:dev": "yarn workspace mobile eas build --profile development --platform android --non-interactive",
-    "vercel-build": "yarn web:build",
+    "dev": "concurrently \"pnpm server:dev\" \"pnpm mobile:dev\"",
+    "server:dev": "pnpm --filter server dev",
+    "server:build": "pnpm --filter server build",
+    "web:dev": "pnpm --filter web dev",
+    "mobile:dev": "pnpm --filter mobile dev",
+    "build": "pnpm --filter web run build",
+    "web:build": "pnpm --filter web run build",
+    "mobile:build": "pnpm --filter mobile run build",
+    "mobile:build:dev": "pnpm --filter mobile exec eas build --profile development --platform android --non-interactive",
+    "vercel-build": "pnpm web:build",
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "db:studio": "drizzle-kit studio",
     "db:seed": "node scripts/db/run-seeds.js",
-    "lint": "yarn workspaces foreach -Ap --exclude geemastudio run lint",
-    "lint:fix": "yarn workspace mobile run lint:fix",
+    "lint": "pnpm -r --filter '!geemastudio' run lint",
+    "lint:fix": "pnpm --filter mobile run lint:fix",
     "check:types": "tsc --noEmit",
     "check:format": "prettier --check \"**/*.{js,ts,tsx,css,json}\"",
     "format": "prettier --write \"**/*.{js,ts,tsx,css,json}\""
@@ -50,7 +45,14 @@
     "prettier": "3.6.2",
     "typescript": "~6.0.3"
   },
-  "resolutions": {
-    "typescript": "~6.0.3"
+  "pnpm": {
+    "overrides": {
+      "typescript": "~6.0.3"
+    },
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "unrs-resolver"
+    ]
   }
 }
