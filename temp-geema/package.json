@@ -1,0 +1,58 @@
+{
+  "name": "geemastudio",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@10.12.4",
+  "scripts": {
+    "dev": "concurrently \"pnpm server:dev\" \"pnpm mobile:dev\"",
+    "server:dev": "pnpm --filter server dev",
+    "server:build": "pnpm --filter server build",
+    "web:dev": "pnpm --filter web dev",
+    "mobile:dev": "pnpm --filter mobile dev",
+    "build": "pnpm --filter web run build",
+    "web:build": "pnpm --filter web run build",
+    "mobile:build": "pnpm --filter mobile run build",
+    "mobile:build:dev": "pnpm --filter mobile exec eas build --profile development --platform android --non-interactive",
+    "vercel-build": "pnpm web:build",
+    "db:push": "drizzle-kit push",
+    "db:generate": "drizzle-kit generate",
+    "db:studio": "drizzle-kit studio",
+    "db:seed": "node scripts/db/run-seeds.js",
+    "lint": "pnpm -r --filter '!geemastudio' run lint",
+    "lint:fix": "pnpm --filter mobile run lint:fix",
+    "check:types": "tsc --noEmit",
+    "check:format": "prettier --check \"**/*.{js,ts,tsx,css,json}\"",
+    "format": "prettier --write \"**/*.{js,ts,tsx,css,json}\""
+  },
+  "dependencies": {
+    "@geemastudio/shared-schema": "workspace:*",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.39.3",
+    "expo-updates": "~56.0.22"
+  },
+  "devDependencies": {
+    "@types/node": "24.10.0",
+    "@types/pg": "^8.16.0",
+    "concurrently": "^9.1.2",
+    "drizzle-kit": "^0.31.4",
+    "eslint": "9.39.1",
+    "eslint-config-expo": "^56.0.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-import-resolver-typescript": "^4.4.4",
+    "eslint-plugin-prettier": "^5.5.5",
+    "expo": "^56.0.16",
+    "pg": "^8.18.0",
+    "prettier": "3.6.2",
+    "typescript": "~6.0.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "typescript": "~6.0.3"
+    },
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "unrs-resolver"
+    ]
+  }
+}

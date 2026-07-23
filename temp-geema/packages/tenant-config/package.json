@@ -1,0 +1,18 @@
+{
+  "name": "@geemastudio/tenant-config",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "check:types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "luxon": "^3.5.0"
+  },
+  "devDependencies": {
+    "@types/luxon": "^3.4.2",
+    "typescript": "~6.0.3"
+  }
+}

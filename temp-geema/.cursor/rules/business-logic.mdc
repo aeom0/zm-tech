@@ -1,0 +1,64 @@
+---
+description: Lógica de negocio multi-tenant (citas, servicios, inventario, finanzas) — GeemaStudio
+globs:
+  - "apps/mobile/**/hooks/**/*"
+  - "apps/mobile/**/screens/**/*"
+  - "packages/shared-schema/**/*"
+alwaysApply: false
+---
+
+# Business Logic — GeemaStudio (multi-tenant)
+
+## Contexto de negocio
+
+GeemaStudio es multi-tenant: moneda, horario, terminología y categorías de servicio vienen del tenant activo (`useTenant()` / `tenant_settings`). **No hardcodear** ningún valor específico de un salón.
+
+- **Moneda**: `config.locale.currency.symbol` (ej. S/, $, COP$) — nunca `"S/"` fijo
+- **Horario**: `config.schedule` / `tenant_settings.business_hours` (IANA timezone del tenant)
+- **Terminología personal**: `config.terminology.staff` (ej. "Profesionales", "Barberos") — nunca "chicas"
+
+## Entidades principales
+
+### Personal (employees)
+- Color de identificación (`color` hex), activo/inactivo, `commission_percentage`, `avatar_url`.
+- Terminología dinámica: `config.terminology.staff` / `staffSingular`.
+- Relación: un profesional tiene muchas citas.
+
+### Categorías y servicios
+- **Categorías**: ordenables (`order`), por tenant.
+- **Servicios**: nombre, categoría, precio (decimal), duración (minutos), activo.
+- **Packs**: conjunto de servicios con precio fijo.
+- **Promociones**: precio promocional sobre service/pack con `promotion_items`.
+
+### Clientes
+- Nombre, teléfono, email, notas. Sin auth; datos de contacto para citas.
+- Segmentación: VIP (≥3 citas), nuevo (creado ≤30 días), en riesgo (>45 días sin visita).
+
+### Citas (appointments)
+- Cliente, profesional (`employee_id`), servicio, fecha/hora, duración, precio, estado.
+- **Estados**: `scheduled`, `completed`, `cancelled`, `no_show`, `payment_submitted`.
+- Evitar solapamientos: validar disponibilidad antes de crear/reprogramar.
+- `date` es timestamp WITHOUT time zone — hora local del tenant; usar `config.locale.timezone`.
+
+### Inventario
+- Artículos con: nombre, categoría, cantidad, `min_stock`, unidad, precio opcional.
+- Alertas cuando cantidad < `min_stock`.
+
+### Pagos
+- Vinculados a cita (opcional), monto, método, fecha.
+- Modos de pago de empleado: `commission` / `salary` / `mixed` (ver `packages/shared-schema/src/utils/payroll.ts`).
+
+## Reglas de negocio a respetar
+
+1. **Citas**: duración y precio pueden venir del servicio; comprobar disponibilidad (anti-overbooking).
+2. **Inventario**: no permitir cantidad negativa; alertas de stock bajo en dashboard.
+3. **Pagos**: asociar a cita cuando aplique; método y monto obligatorios.
+4. **Servicios**: usar `config.locale.currency.symbol` para mostrar precios — nunca hardcodear.
+5. **Personal**: color para identificación visual; solo activos en listas operativas.
+6. **Timezone**: persistir citas con `instanteCitaEnZona` (Luxon); leer con `parseLimaLocalToDate` → reemplazar "America/Lima" por `config.locale.timezone`.
+
+## Acceso a datos
+
+No hay Express. Todo es **Supabase PostgREST** desde `apps/mobile/lib/supabase.ts` y `apps/web`.
+- Máximo 1 nivel de join en PostgREST; combinar en memoria para relaciones más profundas.
+- TanStack Query v5 (`{ queryKey, queryFn }`) en mobile y web.

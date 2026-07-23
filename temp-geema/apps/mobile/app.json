@@ -1,0 +1,107 @@
+{
+  "expo": {
+    "name": "GeemaStudio",
+    "slug": "geemastudio-mobile",
+    "version": "1.1.0",
+    "icon": "./assets/icon.png",
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/a22497a7-f747-492f-b6e3-574b4143cd95"
+    },
+    "orientation": "portrait",
+    "scheme": "geemastudio",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.geemastudio.app"
+    },
+    "android": {
+      "package": "com.geemastudio.app",
+      "predictiveBackGestureEnabled": false,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#111318"
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
+    },
+    "web": {
+      "output": "single",
+      "bundler": "metro",
+      "build": {
+        "babel": {
+          "include": [
+            "@expo/vector-icons"
+          ]
+        }
+      },
+      "name": "GeemaStudio",
+      "shortName": "GeemaStudio",
+      "description": "Gestión de salones de belleza y centros de estética",
+      "themeColor": "#6366f1",
+      "backgroundColor": "#FFFFFF",
+      "display": "standalone",
+      "orientation": "any",
+      "startUrl": ".",
+      "scope": "/"
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-logo.png",
+          "imageWidth": 280,
+          "resizeMode": "contain",
+          "backgroundColor": "#111318",
+          "dark": {
+            "backgroundColor": "#111318",
+            "image": "./assets/splash-logo.png"
+          }
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "GeemaStudio usa tu galería para poner foto al personal en la agenda.",
+          "cameraPermission": "GeemaStudio puede usar la cámara si quieres tomar la foto del personal."
+        }
+      ],
+      "expo-web-browser",
+      "expo-notifications",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "kotlinVersion": "2.1.20",
+            "compileSdkVersion": 36,
+            "targetSdkVersion": 36,
+            "buildToolsVersion": "36.0.0",
+            "gradleProperties": {
+              "org.gradle.jvmargs": "-Xmx6g -XX:MaxMetaspaceSize=2g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8",
+              "org.gradle.daemon": "true",
+              "org.gradle.parallel": "false",
+              "org.gradle.configureondemand": "false",
+              "kotlin.daemon.jvm.options": "-Xmx4g -XX:MaxMetaspaceSize=1g"
+            }
+          }
+        }
+      ],
+      "expo-font",
+      "expo-image",
+      "expo-status-bar"
+    ],
+    "experiments": {
+      "reactCompiler": true
+    },
+    "extra": {
+      "expoFontTimeout": 20000,
+      "eas": {
+        "projectId": "a22497a7-f747-492f-b6e3-574b4143cd95"
+      }
+    },
+    "owner": "aeom0"
+  }
+}

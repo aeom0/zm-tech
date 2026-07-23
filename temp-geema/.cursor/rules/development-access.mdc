@@ -1,0 +1,29 @@
+---
+description: Acceso a archivos de desarrollo y .env para depuración (GeemaStudio)
+globs:
+  - "**/.env"
+  - "**/.env.local"
+  - "**/.env.development"
+  - "**/.env.example"
+  - "**/config/**"
+alwaysApply: true
+---
+
+# Development Access - GeemaStudio
+
+## Permisos para desarrollo
+
+- Tienes acceso completo a archivos de desarrollo, incluido `.env` y `.env.local`, para depurar conexión a Supabase, variables de Expo y Next.js.
+- Los archivos `.env` son para desarrollo local; no incluir secretos de producción en el repo (`.env` está en `.gitignore`).
+- Ayudar a resolver errores de `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, y arranque de mobile/web cuando el usuario trabaje en local.
+
+## Contexto
+
+- **Supabase**: Proyecto GeemaStudio `xidjomlxpuosupymcsaj`. Mobile y web conectan directo (PostgREST + Auth). No hay servidor Express.
+- **Mobile**: Variables `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` en `.env` (raíz o apps/mobile).
+- **Web**: Variables `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` en `apps/web/.env.local` si aplica.
+
+## Seguridad
+
+- Secretos de producción no deben estar en el repo; en despliegue usar variables de entorno del host.
+- En desarrollo local, leer `.env` para diagnosticar problemas está permitido y es útil.
