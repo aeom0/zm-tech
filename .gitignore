@@ -1,25 +1,78 @@
-node_modules
+# dependencies
+node_modules/
 .pnp
 .pnp.*
+.pnpm-store/
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
 !.yarn/versions
-coverage
+
+# Turborepo
+.turbo/
+
+# testing
+coverage/
+
+# Next.js
 .next/
 out/
-build
-dist
+
+# Expo / React Native
+.expo/
+web-build/
+expo-env.d.ts
+.metro-health-check*
+.kotlin/
+
+# Prebuild local (EAS genera nativo en la nube)
+apps/geemastudio-mobile/android/
+apps/geemastudio-mobile/ios/
+apps/geemastudio-mobile/*.apk
+
+# Native secrets / signing
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Build outputs
+build/
+dist/
+
+# misc
 .DS_Store
 *.pem
+__pycache__/
+*.pyc
+
+# debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
-.env*
+pnpm-debug.log*
+
+# env (mantener .env.example versionados)
+.env
+.env.*
 !.env.example
+!**/.env.example
+
+# vercel
 .vercel
+
+# typescript
 *.tsbuildinfo
 next-env.d.ts
-.turbo
+
+# Supabase CLI cache
+**/supabase/.temp/
+
+# Claude / Cursor local (no compartir settings personales)
+.claude/*
+!.claude/skills
+.mcp.json
