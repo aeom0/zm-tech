@@ -23,7 +23,7 @@ Este archivo proporciona orientación a Claude Code (claude.ai/code) para trabaj
 - **Node.js 22** (especificado en `.nvmrc`) para scripts y migrations (Drizzle), sin servidor Express activo para mobile
 
 ### Base de Datos
-- **Supabase PostgreSQL** — crear proyecto nuevo por tenant; NO reutilizar `udelxwwnyivknslueerr` (es de ZM Lash & Nails)
+- **Supabase PostgreSQL** — proyecto de producción: `udelxwwnyivknslueerr` (ZM Lash & Nails = tenant #1 dentro de GeemaStudio). Otros salones serán tenants adicionales en el mismo proyecto tras el retrofit multi-tenant; no crear un proyecto Supabase “limpio” por cada negocio.
 - **Drizzle ORM** con validación Zod (para migrations)
 - Schema compartido en `packages/shared-schema/src/schema.ts`
 - **IMPORTANTE**: Supabase retorna columnas en `snake_case` (e.g. `category_id`, `min_stock`). Las interfaces en los screens deben usar `snake_case` para las propiedades que vienen de la BD
