@@ -1,7 +1,7 @@
 {
   "folders": [
     {
-      "name": "landing",
+      "name": "zm-tech",
       "path": "."
     }
   ],
@@ -14,10 +14,17 @@
     "tailwindCSS.experimental.classRegex": [
       ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
       ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
-    ],
+    },
     "files.exclude": {
-      "node_modules": true,
-      ".next": true
+      "**/node_modules": true,
+      "**/.next": true,
+      "**/dist": true
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/.next": true,
+      "**/dist": true,
+      "**/pnpm-lock.yaml": true
     }
   },
   "extensions": {

@@ -1,8 +1,7 @@
 {
-  "name": "zm-tech-landing",
+  "name": "landing",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@11.15.1",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

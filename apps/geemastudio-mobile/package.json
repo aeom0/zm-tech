@@ -1,5 +1,5 @@
 {
-  "name": "mobile",
+  "name": "geemastudio-mobile",
   "version": "1.0.0",
   "private": true,
   "main": "index.js",
@@ -24,7 +24,6 @@
     "@expo/vector-icons": "^15.0.2",
     "@geemastudio/shared-schema": "workspace:*",
     "@geemastudio/tenant-config": "workspace:*",
-
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-native-community/slider": "^5.0.1",
     "@react-native-masked-view/masked-view": "^0.3.2",
