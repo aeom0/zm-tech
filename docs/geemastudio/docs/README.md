@@ -6,7 +6,7 @@ App de gestión para salones de belleza, barberías y peluquerías (LATAM). Fron
 
 - **Node.js** 22+ (recomendado: `nvm use`, hay `.nvmrc`)
 - **Yarn** 4 (Berry)
-- Cuenta **Supabase** (proyecto GeemaStudio: `xidjomlxpuosupymcsaj`)
+- Cuenta **Supabase** (proyecto GeemaStudio: `udelxwwnyivknslueerr`)
 
 ## Desarrollo local
 
@@ -26,7 +26,7 @@ cp .env.example .env
 
 Editar `.env` y definir:
 
-- **`EXPO_PUBLIC_SUPABASE_URL`**: `https://xidjomlxpuosupymcsaj.supabase.co`
+- **`EXPO_PUBLIC_SUPABASE_URL`**: `https://udelxwwnyivknslueerr.supabase.co`
 - **`EXPO_PUBLIC_SUPABASE_ANON_KEY`**: clave anon del proyecto en Supabase Dashboard
 
 Para seeds o scripts con servicio: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SEED_AUTH_PASSWORD`.
@@ -36,7 +36,7 @@ Para seeds o scripts con servicio: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, 
 El schema se aplica con Drizzle. En WSL puede fallar la conexión TCP directa (IPv6). Opciones:
 
 - **SQL Editor** del Dashboard Supabase: pegar y ejecutar el SQL generado por **`yarn db:generate`** (sale en `./migrations/`)
-- **`yarn db:push`** si tienes conectividad a `db.xidjomlxpuosupymcsaj.supabase.co:5432`
+- **`yarn db:push`** si tienes conectividad a `db.udelxwwnyivknslueerr.supabase.co:5432`
 - Referencia RLS/advisors ya aplicados en remoto: `scripts/db/migrations/20260324_advisor_rls_performance.sql`
 
 Ver [DESARROLLO_LOCAL.md](DESARROLLO_LOCAL.md) para detalle.

@@ -5,7 +5,7 @@ GeemaStudio no tiene servidor propio. El backend es **Supabase** (Auth + PostgRE
 ## Requisitos previos
 
 - Node.js 22+, Yarn 4
-- Cuenta Supabase (proyecto `xidjomlxpuosupymcsaj`)
+- Cuenta Supabase (proyecto `udelxwwnyivknslueerr`)
 - Cuenta Vercel (web)
 - Cuenta Expo/EAS (móvil)
 
@@ -34,7 +34,7 @@ El output está en `apps/web/.next`.
 
 - Conectar el repo; **Root Directory**: `apps/web` o configurar build en raíz con `installCommand` que instale workspaces.
 - Variables de entorno en Vercel:
-  - `NEXT_PUBLIC_SUPABASE_URL=https://xidjomlxpuosupymcsaj.supabase.co`
+  - `NEXT_PUBLIC_SUPABASE_URL=https://udelxwwnyivknslueerr.supabase.co`
   - `NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...` (anon key del proyecto)
   - (Opcional) Si se usan cookies SSR de Supabase, no requiere variables extra: se maneja con `@supabase/ssr` y cookies de sesión.
 
@@ -61,7 +61,7 @@ La configuración de EAS vive **solo** en `apps/mobile/eas.json` (no hay `eas.js
 
 En **expo.dev** (variables por entorno: development / preview / production) y, si aplica, en `apps/mobile/eas.json` bajo `build.<profile>.env`, definir:
 
-- `EXPO_PUBLIC_SUPABASE_URL=https://xidjomlxpuosupymcsaj.supabase.co`
+- `EXPO_PUBLIC_SUPABASE_URL=https://udelxwwnyivknslueerr.supabase.co`
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJ...`
 
 ### 2. Build

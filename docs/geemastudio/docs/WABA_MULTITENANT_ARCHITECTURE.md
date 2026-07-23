@@ -48,7 +48,7 @@ en la URL misma**.
 3. En el dashboard de Meta, configurar el webhook con esta URL exacta:
 
    ```
-   https://xidjomlxpuosupymcsaj.supabase.co/functions/v1/whatsapp-webhook?phone_number_id=<ID_DEL_TENANT>
+   https://udelxwwnyivknslueerr.supabase.co/functions/v1/whatsapp-webhook?phone_number_id=<ID_DEL_TENANT>
    ```
 
    Usando como "Verify token" el mismo valor guardado en `waba_verify_token` para

@@ -50,7 +50,7 @@ Los 4 tenants demo tienen `is_demo = true` en `tenant_settings`.
 - `20260403_add_is_demo_to_tenant_settings.sql`
 - `20260403_create_seed_demo_tenant_function.sql`
 
-## IDs de referencia (Supabase dev — xidjomlxpuosupymcsaj)
+## IDs de referencia (Supabase dev — udelxwwnyivknslueerr)
 
 | Negocio | tenant_settings.id (= auth uid del owner) |
 |---------|------------------------------------------|

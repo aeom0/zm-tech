@@ -109,7 +109,7 @@ Web (Next.js) usa `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` e
 ### Usuarios de prueba (seed actual — abr 2026)
 
 Contraseña universal: `Geema2025!`  
-Proyecto Supabase dev: `xidjomlxpuosupymcsaj`
+Proyecto Supabase dev: `udelxwwnyivknslueerr`
 
 **dev@ejemplo.com** — rol `dev` — sin tenant_settings, siempre onboarding
 

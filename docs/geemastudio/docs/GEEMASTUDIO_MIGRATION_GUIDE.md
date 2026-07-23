@@ -260,7 +260,7 @@ UI `OnboardingBusinessTypeScreen`:
 Tabla `tenant_settings` agregada a `packages/shared-schema/src/schema.ts` con defaults
 neutros LATAM (USD/$, país vacío, idioma `es`, terminología `especialistas`).
 
-Aplicada manualmente en Supabase vía SQL Editor (proyecto `xidjomlxpuosupymcsaj`).
+Aplicada manualmente en Supabase vía SQL Editor (proyecto `udelxwwnyivknslueerr`).
 Restricción: puerto 5432 bloqueado en WSL → usar SQL Editor del Dashboard para DDL.
 Ver `docs/DESARROLLO_LOCAL.md` para el procedimiento completo.
 
@@ -299,7 +299,7 @@ Implementado: al completar el flujo de 5 pasos se hace upsert en `tenant_setting
 
 #### FASE 7C — Prueba integral de la app móvil ⏳
 
-Con `yarn mobile:dev` contra el proyecto Supabase `xidjomlxpuosupymcsaj`:
+Con `yarn mobile:dev` contra el proyecto Supabase `udelxwwnyivknslueerr`:
 
 - Login con `dev@ejemplo.com` / `Geema2025!` (creado por seed-auth-users.mjs)
 - Login con `propietario@ejemplo.com` / `Geema2025!`
@@ -367,8 +367,10 @@ yarn lint:fix
 - El proyecto original (ZM Lash & Nails) está en `/home/alber/ZM-Lash-and-Nails-Beauty`
   pero NO debe modificarse — es solo referencia.
 - Este repo (`/home/alber/geemastudio`) es donde se hacen TODOS los cambios.
-- Supabase del proyecto original: `udelxwwnyivknslueerr` — NO reutilizar, crear uno nuevo para GeemaStudio.
+- Proyecto Supabase activo (producción): `udelxwwnyivknslueerr` — URL: `https://udelxwwnyivknslueerr.supabase.co`
+  - Este es el proyecto real de ZM Lash & Nails (negocio de Vanessa, datos de producción).
+  - Decisión de arquitectura: ZM Lash & Nails es el tenant #1 dentro de GeemaStudio, **no** un ambiente de práctica ni un proyecto a descartar.
+  - El proyecto anterior (`xidjomlxpuosupymcsaj`) se eliminó por inactividad en free tier; no contenía datos reales, no se perdió nada.
 - Las variables de entorno de GeemaStudio están en `.env` (no commiteado). Ver `.env.example` para referencia.
 - `apps/mobile/lib/supabase.ts` ✅ ya usa `process.env.EXPO_PUBLIC_SUPABASE_*` (corregido en sesión 2026-03-12).
-- Proyecto Supabase activo: `xidjomlxpuosupymcsaj` — URL: `https://xidjomlxpuosupymcsaj.supabase.co`
 - Restricción de entorno: puerto 5432 bloqueado en WSL (solo IPv6). Usar SQL Editor del Dashboard para DDL. Ver `docs/DESARROLLO_LOCAL.md`.

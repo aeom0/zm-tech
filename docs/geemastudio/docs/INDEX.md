@@ -62,7 +62,7 @@ docs/
 ## Referencias rápidas
 
 ### Base de datos (Supabase)
-- **Proyecto**: `xidjomlxpuosupymcsaj`
+- **Proyecto**: `udelxwwnyivknslueerr`
 - **Schema**: `packages/shared-schema/src/schema.ts` (`yarn db:push`; opcional `yarn db:generate` / `yarn db:studio`)
 - **Seeds**: `scripts/db/` (editar templates antes de `yarn db:seed`)
 - **Migraciones**: `yarn db:push` o SQL Editor / MCP (ver DESARROLLO_LOCAL.md)

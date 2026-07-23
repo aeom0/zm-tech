@@ -75,7 +75,7 @@ pnpm db:seed
 - **Navegación**: React Navigation 7 (bottom tabs + native stacks)
 - **Estado servidor**: TanStack React Query v5
 - **Animaciones**: React Native Reanimated 4
-- **Backend**: Supabase (Auth + PostgREST) — sin servidor Express. Proyecto: `xidjomlxpuosupymcsaj`
+- **Backend**: Supabase (Auth + PostgREST) — sin servidor Express. Proyecto: `udelxwwnyivknslueerr`
 - **Schema compartido**: Drizzle ORM + Zod (`packages/shared-schema`) — índices FK y tabla `appointment_verifications` alineados con Supabase; RLS/funciones documentadas en `scripts/db/migrations/20260324_advisor_rls_performance.sql` (aplicación remota vía MCP o SQL Editor si aplica)
 - **Config de tenant**: `packages/tenant-config` (`@geemastudio/tenant-config`) — presets, `TenantConfig` (incluye `features?.whatsapp` para promo WA / ajustes)
 - **Web**: Next.js (`apps/web`) — landing pública + paneles `/dashboard` (KPIs) y `/finanzas` (solo rol `owner`/`dev`; login en `/finanzas/login`). **Paleta de marca (Lunaris)**: `apps/web/src/lib/theme.ts` (`LUNARIS`) — gradientes, `#40E0D0` / `#00897B`, glow; alineada con `Gradients.onboarding` en mobile.

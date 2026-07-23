@@ -1,5 +1,5 @@
 /*
- * MIGRACIÓN REQUERIDA en Supabase Dashboard SQL Editor (proyecto xidjomlxpuosupymcsaj):
+ * MIGRACIÓN REQUERIDA en Supabase Dashboard SQL Editor (proyecto udelxwwnyivknslueerr):
  *
  * ALTER TABLE tenant_settings
  *   ADD COLUMN IF NOT EXISTS timezone          text    NOT NULL DEFAULT 'America/Caracas',
