@@ -1,131 +1,104 @@
-import React, { useCallback, useMemo } from "react";
-import {
-  Pressable,
-  Text,
-  View,
-  StyleSheet,
-  type GestureResponderEvent,
-} from "react-native";
-import Svg, { Path, Rect, G } from "react-native-svg";
+import React, { useMemo } from "react";
+import { Pressable, StyleSheet, View } from "react-native";
+import Svg, { Circle, Path, Text as SvgText } from "react-native-svg";
 import type {
   FdiToothNumber,
   OdontogramToothState,
-  SurfaceStatus,
-  ToothStatus,
+  ToothConditionDef,
   ToothSurface,
 } from "@odentalpro/dental-schema";
+import {
+  TOOTH_CONDITIONS_BY_ID,
+  conditionFillColor,
+  conditionStrokeColor,
+} from "@odentalpro/dental-schema";
 
-const TOOTH_W = 36;
-const TOOTH_H = 48;
+const W = 40;
+const H = 94;
+const CROWN_R = 9;
+const RING_OUTER = 15;
+const RING_INNER = 7;
+const ROOT_H = 22;
 
-const STATUS_FILL: Record<ToothStatus, string> = {
-  healthy: "#e2e8f0",
-  treated: "#86efac",
-  "to-treat": "#fcd34d",
-  extracted: "#94a3b8",
-  implant: "#a5b4fc",
-  crown: "#f9a8d4",
-  "root-canal": "#fdba74",
-};
+const NEUTRAL_STROKE = "#475569";
+const NEUTRAL_FILL = "#0f172a";
+const BAD_STROKE_WIDTH = 2;
 
-const SURFACE_FILL: Record<SurfaceStatus, string> = {
-  healthy: "transparent",
-  treated: "#22c55e",
-  "to-treat": "#eab308",
-};
-
-export const STATUS_LABEL_ES: Record<ToothStatus, string> = {
-  healthy: "Sano",
-  treated: "Tratado",
-  "to-treat": "Por tratar",
-  extracted: "Ausente",
-  implant: "Implante",
-  crown: "Corona",
-  "root-canal": "Endodoncia",
-};
-
-export const SURFACE_LABEL_ES: Record<ToothSurface, string> = {
-  occlusal: "Oclusal",
-  mesial: "Mesial",
-  distal: "Distal",
-  buccal: "Vestibular",
-  palatal: "Palatino/Lingual",
-};
-
-// Patrón "diamante" clínico estándar: cuadrado exterior (6,10)-(30,34) con
-// centro C(18,22). Las diagonales de las 4 esquinas hacia C forman los
-// triángulos vestibular/palatino/mesial/distal; el cuadrado interior
-// (oclusal) se dibuja al final para que quede por encima, tapando la punta
-// de los triángulos en el centro.
-const DIAMOND = {
-  TL: { x: 6, y: 10 },
-  TR: { x: 30, y: 10 },
-  BR: { x: 30, y: 34 },
-  BL: { x: 6, y: 34 },
-  C: { x: 18, y: 22 },
+/**
+ * Centros verticales de las 3 capas según la arcada, imitando la disposición
+ * clínica de la referencia (Dentalink): en superiores la raíz apunta hacia
+ * arriba y el anillo de superficies queda pegado a la línea de números
+ * central; en inferiores es el espejo.
+ */
+const LAYOUT = {
+  upper: { root: 16, crown: 44, ring: 78 },
+  lower: { ring: 16, crown: 50, root: 78 },
 } as const;
 
-const OCCLUSAL_RECT = { x1: 12, y1: 16, x2: 24, y2: 28 } as const;
+function polar(cx: number, cy: number, r: number, angleDeg: number) {
+  const rad = ((angleDeg - 90) * Math.PI) / 180;
+  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+}
 
-const SURFACE_PATH: Record<ToothSurface, string> = {
-  buccal: `M${DIAMOND.TL.x} ${DIAMOND.TL.y} L${DIAMOND.TR.x} ${DIAMOND.TR.y} L${DIAMOND.C.x} ${DIAMOND.C.y} Z`,
-  distal: `M${DIAMOND.TR.x} ${DIAMOND.TR.y} L${DIAMOND.BR.x} ${DIAMOND.BR.y} L${DIAMOND.C.x} ${DIAMOND.C.y} Z`,
-  palatal: `M${DIAMOND.BR.x} ${DIAMOND.BR.y} L${DIAMOND.BL.x} ${DIAMOND.BL.y} L${DIAMOND.C.x} ${DIAMOND.C.y} Z`,
-  mesial: `M${DIAMOND.BL.x} ${DIAMOND.BL.y} L${DIAMOND.TL.x} ${DIAMOND.TL.y} L${DIAMOND.C.x} ${DIAMOND.C.y} Z`,
-  occlusal: `M${OCCLUSAL_RECT.x1} ${OCCLUSAL_RECT.y1} H${OCCLUSAL_RECT.x2} V${OCCLUSAL_RECT.y2} H${OCCLUSAL_RECT.x1} Z`,
-};
-
-const SURFACE_TRIANGLE: Record<
-  "buccal" | "distal" | "palatal" | "mesial",
-  [{ x: number; y: number }, { x: number; y: number }, { x: number; y: number }]
-> = {
-  buccal: [DIAMOND.TL, DIAMOND.TR, DIAMOND.C],
-  distal: [DIAMOND.TR, DIAMOND.BR, DIAMOND.C],
-  palatal: [DIAMOND.BR, DIAMOND.BL, DIAMOND.C],
-  mesial: [DIAMOND.BL, DIAMOND.TL, DIAMOND.C],
-};
-
-function sign(
-  p1: { x: number; y: number },
-  p2: { x: number; y: number },
-  p3: { x: number; y: number },
+/** Path de una cuña de dona entre dos radios y dos ángulos (0° = arriba, sentido horario). */
+function donutWedge(
+  cx: number,
+  cy: number,
+  rOuter: number,
+  rInner: number,
+  startAngle: number,
+  endAngle: number,
 ) {
-  return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
+  const startOuter = polar(cx, cy, rOuter, startAngle);
+  const endOuter = polar(cx, cy, rOuter, endAngle);
+  const startInner = polar(cx, cy, rInner, endAngle);
+  const endInner = polar(cx, cy, rInner, startAngle);
+  const largeArc = endAngle - startAngle <= 180 ? 0 : 1;
+  return [
+    `M ${startOuter.x} ${startOuter.y}`,
+    `A ${rOuter} ${rOuter} 0 ${largeArc} 1 ${endOuter.x} ${endOuter.y}`,
+    `L ${startInner.x} ${startInner.y}`,
+    `A ${rInner} ${rInner} 0 ${largeArc} 0 ${endInner.x} ${endInner.y}`,
+    "Z",
+  ].join(" ");
 }
 
-function pointInTriangle(
-  pt: { x: number; y: number },
-  v1: { x: number; y: number },
-  v2: { x: number; y: number },
-  v3: { x: number; y: number },
-) {
-  const d1 = sign(pt, v1, v2);
-  const d2 = sign(pt, v2, v3);
-  const d3 = sign(pt, v3, v1);
-  const hasNeg = d1 < 0 || d2 < 0 || d3 < 0;
-  const hasPos = d1 > 0 || d2 > 0 || d3 > 0;
-  return !(hasNeg && hasPos);
-}
-
-function pointInOcclusal(pt: { x: number; y: number }) {
-  return (
-    pt.x >= OCCLUSAL_RECT.x1 &&
-    pt.x <= OCCLUSAL_RECT.x2 &&
-    pt.y >= OCCLUSAL_RECT.y1 &&
-    pt.y <= OCCLUSAL_RECT.y2
-  );
-}
-
-/** Superficie tocada dentro del viewBox del diente, o null si cayó fuera del diamante (borde/raíz del diente). */
-function hitTestSurface(pt: { x: number; y: number }): ToothSurface | null {
-  if (pointInOcclusal(pt)) return "occlusal";
-  for (const surface of Object.keys(SURFACE_TRIANGLE) as Array<
-    keyof typeof SURFACE_TRIANGLE
-  >) {
-    const [v1, v2, v3] = SURFACE_TRIANGLE[surface];
-    if (pointInTriangle(pt, v1, v2, v3)) return surface;
+/** Silueta de raíz: ancha del lado de la corona, afinándose hacia el ápice. */
+function rootPath(cx: number, cy: number, pointing: "up" | "down") {
+  const half = ROOT_H / 2;
+  if (pointing === "down") {
+    return `M${cx - 7} ${cy - half} Q${cx} ${cy - half - 4} ${cx + 7} ${cy - half} L${cx + 3} ${cy + half} Q${cx} ${cy + half + 3} ${cx - 3} ${cy + half} Z`;
   }
-  return null;
+  return `M${cx - 7} ${cy + half} Q${cx} ${cy + half + 4} ${cx + 7} ${cy + half} L${cx + 3} ${cy - half} Q${cx} ${cy - half - 3} ${cx - 3} ${cy - half} Z`;
+}
+
+const RING_ANGLES: Record<"top" | "right" | "bottom" | "left", [number, number]> = {
+  top: [-45, 45],
+  right: [45, 135],
+  bottom: [135, 225],
+  left: [225, 315],
+};
+
+/**
+ * En el anillo, la cuña superior siempre es vestibular y la inferior
+ * lingual/palatina; mesial/distal dependen del lado de la línea media en que
+ * está la pieza (mesial siempre apunta hacia la línea media).
+ */
+function ringSurfaceForSide(
+  side: "top" | "right" | "bottom" | "left",
+  mesialIsRight: boolean,
+): ToothSurface {
+  if (side === "top") return "buccal";
+  if (side === "bottom") return "palatal";
+  if (side === "right") return mesialIsRight ? "mesial" : "distal";
+  return mesialIsRight ? "distal" : "mesial";
+}
+
+function strokeFor(condition: ToothConditionDef | undefined, selected: boolean) {
+  const bad = condition ? conditionStrokeColor(condition) : null;
+  if (bad) return { stroke: bad, strokeWidth: BAD_STROKE_WIDTH };
+  if (selected) return { stroke: "#0d9488", strokeWidth: 2 };
+  return { stroke: NEUTRAL_STROKE, strokeWidth: 1 };
 }
 
 export type ToothComponentProps = {
@@ -134,16 +107,16 @@ export type ToothComponentProps = {
   editable?: boolean;
   selected?: boolean;
   onPressTooth?: (number: FdiToothNumber) => void;
-  onPressSurface?: (number: FdiToothNumber, surface: ToothSurface) => void;
+  onLongPressTooth?: (number: FdiToothNumber) => void;
 };
 
 /**
- * Diente FDI con 5 superficies independientes (patrón diamante clínico:
- * oclusal al centro + vestibular/distal/palatino/mesial como triángulos).
- * El hit-testing se resuelve por coordenadas en un único Pressable en vez de
- * onPress por <Path>: en react-native-svg el onPress por shape es poco
- * fiable en web (y se rompe si además hay un Pressable padre — eventos
- * anidados). SVG puro vía react-native-svg (compatible web/mobile).
+ * Diente FDI en 3 capas: raíz (endodoncia, perno, implante, póntico), corona
+ * (corona protésica, fractura, extracción indicada, provisional) y anillo de
+ * superficies (caries y restauraciones por superficie + oclusal al centro).
+ * Un único Pressable cubre todo el diente — qué se aplica al tocarlo lo
+ * decide el padre según la condición y superficie activas, no la posición
+ * exacta del toque. La orientación vertical se espeja según la arcada.
  */
 export function ToothComponent({
   number,
@@ -151,93 +124,181 @@ export function ToothComponent({
   editable = false,
   selected = false,
   onPressTooth,
-  onPressSurface,
+  onLongPressTooth,
 }: ToothComponentProps) {
-  const isExtracted = state.status === "extracted";
-  const bodyFill = STATUS_FILL[state.status];
+  const quadrant = number[0] as "1" | "2" | "3" | "4";
+  const arch: "upper" | "lower" = quadrant === "1" || quadrant === "2" ? "upper" : "lower";
+  const mesialIsRight = quadrant === "1" || quadrant === "4";
+  const pos = LAYOUT[arch];
 
-  const surfacePath = useMemo(() => SURFACE_PATH, []);
+  const pieceCondition = state.condition
+    ? TOOTH_CONDITIONS_BY_ID[state.condition]
+    : undefined;
+  const crown = pieceCondition?.layer === "crown" ? pieceCondition : undefined;
+  const root = pieceCondition?.layer === "root" ? pieceCondition : undefined;
+  const isMissing = state.condition === "missing";
 
-  const handlePress = useCallback(
-    (event: GestureResponderEvent) => {
-      if (!editable) return;
-      // En nativo, GestureResponderEvent trae locationX/locationY relativas al
-      // elemento. En react-native-web esos campos vienen undefined — el
-      // evento ahí es prácticamente el MouseEvent del DOM, así que usamos
-      // offsetX/offsetY (relativas al <svg>, que coinciden con el viewBox).
-      const native = event.nativeEvent as GestureResponderEvent["nativeEvent"] &
-        Partial<{ offsetX: number; offsetY: number }>;
-      const x = native.locationX ?? native.offsetX ?? 0;
-      const y = native.locationY ?? native.offsetY ?? 0;
-      const surface = isExtracted ? null : hitTestSurface({ x, y });
-      if (surface) {
-        onPressSurface?.(number, surface);
-      } else {
-        onPressTooth?.(number);
-      }
-    },
-    [editable, isExtracted, number, onPressSurface, onPressTooth],
-  );
+  const surfaceWedges = useMemo(() => {
+    const sides: Array<"top" | "right" | "bottom" | "left"> = [
+      "top",
+      "right",
+      "bottom",
+      "left",
+    ];
+    return sides.map((side) => {
+      const surface = ringSurfaceForSide(side, mesialIsRight);
+      const condId = state.surfaces[surface];
+      const condition = condId ? TOOTH_CONDITIONS_BY_ID[condId] : undefined;
+      const [start, end] = RING_ANGLES[side];
+      return {
+        surface,
+        condition,
+        path: donutWedge(W / 2, pos.ring, RING_OUTER, RING_INNER, start, end),
+      };
+    });
+  }, [mesialIsRight, pos.ring, state.surfaces]);
+
+  const occlusalCondId = state.surfaces.occlusal;
+  const occlusalCondition = occlusalCondId
+    ? TOOTH_CONDITIONS_BY_ID[occlusalCondId]
+    : undefined;
+
+  const label = useMemo(() => {
+    const parts = [`Diente ${number}`];
+    if (crown) parts.push(crown.label);
+    if (root) parts.push(root.label);
+    const surfaceLabels = surfaceWedges
+      .filter((w) => w.condition)
+      .map((w) => `${w.surface}: ${w.condition?.label}`);
+    if (occlusalCondition) surfaceLabels.push(`oclusal: ${occlusalCondition.label}`);
+    if (surfaceLabels.length) parts.push(surfaceLabels.join(", "));
+    return parts.join(", ");
+  }, [crown, root, surfaceWedges, occlusalCondition, number]);
+
+  const crownStroke = strokeFor(crown, selected);
+  const rootStroke = strokeFor(root, false);
 
   return (
     <View style={styles.wrap}>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`Diente ${number}, estado ${STATUS_LABEL_ES[state.status]}`}
-        onPress={handlePress}
+        accessibilityLabel={label}
+        onPress={() => onPressTooth?.(number)}
+        onLongPress={() => onLongPressTooth?.(number)}
         disabled={!editable}
+        hitSlop={4}
       >
-        <Svg width={TOOTH_W} height={TOOTH_H} viewBox="0 0 36 48">
-          <Path
-            d="M8 6 Q18 2 28 6 L30 38 Q18 46 6 38 Z"
-            fill={bodyFill}
-            stroke={selected ? "#0d9488" : "#334155"}
-            strokeWidth={selected ? 2.2 : 1.2}
-          />
+        <Svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
+          {isMissing ? (
+            <>
+              <Circle
+                cx={W / 2}
+                cy={pos.crown}
+                r={CROWN_R}
+                fill="none"
+                stroke="#ef4444"
+                strokeWidth={1.2}
+                strokeDasharray="2,2"
+                opacity={0.6}
+              />
+              <Path
+                d={`M${W / 2 - 8} ${pos.crown - 12} L${W / 2 + 8} ${pos.crown + 12} M${W / 2 + 8} ${pos.crown - 12} L${W / 2 - 8} ${pos.crown + 12}`}
+                stroke="#ef4444"
+                strokeWidth={1.4}
+                opacity={0.7}
+              />
+            </>
+          ) : (
+            <>
+              {/* Raíz */}
+              <Path
+                d={rootPath(W / 2, pos.root, arch === "upper" ? "up" : "down")}
+                fill={root ? conditionFillColor(root) : NEUTRAL_FILL}
+                stroke={rootStroke.stroke}
+                strokeWidth={rootStroke.strokeWidth}
+              />
+              {root?.badge ? (
+                <SvgText
+                  x={W / 2}
+                  y={pos.root + 3}
+                  fontSize={7}
+                  fill="#f8fafc"
+                  textAnchor="middle"
+                  fontWeight="700"
+                >
+                  {root.badge}
+                </SvgText>
+              ) : null}
 
-          {!isExtracted &&
-            (Object.keys(surfacePath) as ToothSurface[]).map((surface) => {
-              const status = state.surfaces[surface] ?? "healthy";
-              return (
-                <G key={surface}>
+              {/* Corona */}
+              <Circle
+                cx={W / 2}
+                cy={pos.crown}
+                r={CROWN_R}
+                fill={crown ? conditionFillColor(crown) : NEUTRAL_FILL}
+                stroke={crownStroke.stroke}
+                strokeWidth={crownStroke.strokeWidth}
+              />
+              {crown?.badge ? (
+                <SvgText
+                  x={W / 2}
+                  y={pos.crown + 3}
+                  fontSize={8}
+                  fill="#f8fafc"
+                  textAnchor="middle"
+                  fontWeight="700"
+                >
+                  {crown.badge}
+                </SvgText>
+              ) : null}
+
+              {/* Anillo de superficies */}
+              {surfaceWedges.map((w) => {
+                const s = strokeFor(w.condition, false);
+                return (
                   <Path
-                    d={surfacePath[surface]}
-                    fill={SURFACE_FILL[status]}
-                    stroke="#64748b"
-                    strokeWidth={0.8}
-                    opacity={status === "healthy" ? 0.35 : 0.9}
+                    key={w.surface}
+                    d={w.path}
+                    fill={w.condition ? conditionFillColor(w.condition) : "transparent"}
+                    stroke={w.condition ? s.stroke : NEUTRAL_STROKE}
+                    strokeWidth={w.condition ? s.strokeWidth : 0.8}
                   />
-                </G>
-              );
-            })}
-
-          {state.status === "implant" && (
-            <Rect x={15} y={18} width={6} height={16} rx={1} fill="#4338ca" />
-          )}
-          {state.status === "crown" && (
-            <Path
-              d="M10 8 Q18 4 26 8 L26 14 Q18 12 10 14 Z"
-              fill="#db2777"
-              opacity={0.85}
-            />
+                );
+              })}
+              <Circle
+                cx={W / 2}
+                cy={pos.ring}
+                r={RING_INNER - 1}
+                fill={
+                  occlusalCondition ? conditionFillColor(occlusalCondition) : "transparent"
+                }
+                stroke={
+                  occlusalCondition
+                    ? strokeFor(occlusalCondition, false).stroke
+                    : NEUTRAL_STROKE
+                }
+                strokeWidth={occlusalCondition ? strokeFor(occlusalCondition, false).strokeWidth : 0.8}
+              />
+            </>
           )}
         </Svg>
       </Pressable>
-      <Text style={styles.label}>{number}</Text>
     </View>
   );
 }
 
+export const SURFACE_LABEL_ES: Record<ToothSurface, string> = {
+  occlusal: "Oclusal-Incisal",
+  mesial: "Mesial",
+  distal: "Distal",
+  buccal: "Vestibular",
+  palatal: "Lingual-Palatina",
+};
+
 const styles = StyleSheet.create({
   wrap: {
-    width: TOOTH_W,
-    height: TOOTH_H + 16,
+    width: W,
+    height: H,
     alignItems: "center",
-  },
-  label: {
-    fontSize: 10,
-    color: "#94a3b8",
-    marginTop: 2,
-    fontVariant: ["tabular-nums"],
   },
 });
