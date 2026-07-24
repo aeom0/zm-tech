@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "OdentalPro",
+    "slug": "odentalpro-mobile",
+    "version": "0.1.0",
+    "icon": "./assets/icon.png",
+    "orientation": "portrait",
+    "scheme": "odentalpro",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.odentalpro.app"
+    },
+    "android": {
+      "package": "com.odentalpro.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0a0f14"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "name": "OdentalPro",
+      "shortName": "OdentalPro",
+      "description": "Gestión clínica dental multi-tenant",
+      "themeColor": "#0d9488",
+      "backgroundColor": "#0a0f14"
+    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-logo.png",
+          "imageWidth": 280,
+          "resizeMode": "contain",
+          "backgroundColor": "#0a0f14",
+          "dark": {
+            "backgroundColor": "#0a0f14",
+            "image": "./assets/splash-logo.png"
+          }
+        }
+      ],
+      "expo-font",
+      "expo-status-bar"
+    ],
+    "experiments": {
+      "reactCompiler": true
+    }
+  }
+}
