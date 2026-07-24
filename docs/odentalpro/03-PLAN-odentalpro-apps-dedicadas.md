@@ -115,14 +115,13 @@ Tipos en `packages/dental-schema/src/odontogram.ts`.
 - [x] Turborepo pipeline / scripts root
 
 ### Fase 1 — Supabase + Auth
-- [ ] Verificar branching en `llacowjutjfefboqgfnj` (o `supabase start` local)
-- [ ] Correr `001_init_core.sql` y `002_clinical.sql` (prefijo `odental_`, no tocar `contacts`)
-- [ ] Auth: roles `dev | dentist-owner | assistant | specialist`, JWT con `tenant_id`
-- [ ] Preset fijo `dental-clinic` en `packages/tenant-config`
+- [x] Verificar schema `odental_*` en `llacowjutjfefboqgfnj` + migraciones 003/004 (auth_user_id, RLS helper)
+- [x] Auth: roles `dev | dentist-owner | assistant | specialist`, JWT/`app_metadata` + `odental_employees`
+- [x] `TenantContext` + `useTenant()` en `packages/tenant-config/odental` (preset fijo dental-clinic)
 
 ### Fase 2 — Odontograma
-- [ ] `OdontogramView.tsx` + `ToothComponent.tsx` — aprobar visualmente antes de integrar
-- [ ] Modo solo-lectura vs editable
+- [x] `OdontogramView.tsx` + `ToothComponent.tsx` — render-first, sin persistencia
+- [ ] Modo solo-lectura vs editable (API lista; falta UX de ficha paciente)
 - [ ] Persistencia en `clinical_records.odontogram`
 
 ### Fase 3 — Historia clínica

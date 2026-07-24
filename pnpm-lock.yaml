@@ -394,6 +394,9 @@ importers:
 
   apps/odentalpro-mobile:
     dependencies:
+      '@geemastudio/tenant-config':
+        specifier: workspace:*
+        version: link:../../packages/tenant-config
       '@odentalpro/dental-schema':
         specifier: workspace:*
         version: link:../../packages/dental-schema
@@ -485,6 +488,9 @@ importers:
 
   apps/odentalpro-web:
     dependencies:
+      '@geemastudio/tenant-config':
+        specifier: workspace:*
+        version: link:../../packages/tenant-config
       '@odentalpro/dental-schema':
         specifier: workspace:*
         version: link:../../packages/dental-schema
@@ -573,9 +579,18 @@ importers:
         specifier: ^3.5.0
         version: 3.7.2
     devDependencies:
+      '@supabase/supabase-js':
+        specifier: ^2.95.3
+        version: 2.110.8
       '@types/luxon':
         specifier: ^3.4.2
         version: 3.7.2
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.17
+      react:
+        specifier: 19.2.3
+        version: 19.2.3
       typescript:
         specifier: ~6.0.3
         version: 6.0.3

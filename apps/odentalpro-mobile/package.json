@@ -16,6 +16,7 @@
     "check:types": "tsc --noEmit"
   },
   "dependencies": {
+    "@geemastudio/tenant-config": "workspace:*",
     "@odentalpro/dental-schema": "workspace:*",
     "@react-native-async-storage/async-storage": "^2.2.0",
     "@react-navigation/native": "^7.1.8",
