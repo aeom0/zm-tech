@@ -78,3 +78,7 @@ next-env.d.ts
 .mcp.json
 .cursor/mcp.json
 **/.cursor/mcp.json
+
+# Firebase / Google mobile config (secrets — never commit)
+**/google-services.json
+**/GoogleService-Info.plist

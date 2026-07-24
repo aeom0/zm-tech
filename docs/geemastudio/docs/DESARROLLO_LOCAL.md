@@ -1,6 +1,6 @@
 # Desarrollo Local — GeemaStudio
 
-**Proyecto Supabase**: `xidjomlxpuosupymcsaj` · URL: `https://xidjomlxpuosupymcsaj.supabase.co`
+**Proyecto Supabase**: `udelxwwnyivknslueerr` · URL: `https://udelxwwnyivknslueerr.supabase.co`
 
 ## Problema de conectividad TCP en WSL
 
@@ -64,9 +64,9 @@ Funciona desde Linux nativo, macOS, o WSL con IPv6 habilitado.
 yarn db:push
 ```
 
-Requiere que `DATABASE_URL` en `.env` apunte al host directo (reemplazar `[REF]` por `xidjomlxpuosupymcsaj`):
+Requiere que `DATABASE_URL` en `.env` apunte al host directo (reemplazar `[REF]` por `udelxwwnyivknslueerr`):
 ```
-DATABASE_URL=postgresql://postgres:[PASSWORD]@db.xidjomlxpuosupymcsaj.supabase.co:5432/postgres
+DATABASE_URL=postgresql://postgres:[PASSWORD]@db.udelxwwnyivknslueerr.supabase.co:5432/postgres
 ```
 
 ### Opción C — Supabase CLI via API (sin TCP)
@@ -76,7 +76,7 @@ también requiere TCP para el rol temporal. No funciona en WSL con IPv6 bloquead
 
 Cuando haya conectividad, se puede ejecutar (proyecto GeemaStudio):
 ```bash
-npx supabase link --project-ref xidjomlxpuosupymcsaj --password [DB_PASSWORD]
+npx supabase link --project-ref udelxwwnyivknslueerr --password [DB_PASSWORD]
 npx supabase db push
 ```
 
