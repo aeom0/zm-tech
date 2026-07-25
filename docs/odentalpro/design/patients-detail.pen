@@ -1,376 +1,11 @@
 {
   "version": "2.14",
-  "themes": {
-    "mode": [
-      "light",
-      "dark"
-    ]
-  },
-  "variables": {
-    "odental-aqua-100": {
-      "type": "color",
-      "value": "#BFEAF2"
-    },
-    "odental-aqua-600": {
-      "type": "color",
-      "value": "#1E7F8C"
-    },
-    "odental-border": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#DDE3EA",
-          "theme": {
-            "mode": "light"
-          }
-        },
-        {
-          "value": "#27333A",
-          "theme": {
-            "mode": "dark"
-          }
-        }
-      ]
-    },
-    "odental-canvas": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#FFFFFF",
-          "theme": {
-            "mode": "light"
-          }
-        },
-        {
-          "value": "#0F1519",
-          "theme": {
-            "mode": "dark"
-          }
-        }
-      ]
-    },
-    "odental-clear": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#00000000",
-          "theme": {
-            "mode": "light"
-          }
-        },
-        {
-          "value": "#00000000",
-          "theme": {
-            "mode": "dark"
-          }
-        }
-      ]
-    },
-    "odental-danger-soft": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#FEE2E2",
-          "theme": {
-            "mode": "light"
-          }
-        },
-        {
-          "value": "#3B1414",
-          "theme": {
-            "mode": "dark"
-          }
-        }
-      ]
-    },
-    "odental-danger-strong": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#B91C1C",
-          "theme": {
-            "mode": "light"
-          }
-        },
-        {
-          "value": "#FCA5A5",
-          "theme": {
-            "mode": "dark"
-          }
-        }
-      ]
-    },
-    "odental-font-ui": {
-      "type": "string",
-      "value": "Geist"
-    },
-    "odental-fs-base": {
-      "type": "number",
-      "value": 15
-    },
-    "odental-fs-lg": {
-      "type": "number",
-      "value": 18
-    },
-    "odental-fs-sm": {
-      "type": "number",
-      "value": 13
-    },
-    "odental-fs-xl": {
-      "type": "number",
-      "value": 22
-    },
-    "odental-fs-xs": {
-      "type": "number",
-      "value": 11
-    },
-    "odental-glass": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#FFFFFFBF",
-          "theme": {
-            "mode": "light"
-          }
-        },
-        {
-          "value": "#161F24BF",
-          "theme": {
-            "mode": "dark"
-          }
-        }
-      ]
-    },
-    "odental-heading": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#0A1628",
-          "theme": {
-            "mode": "light"
-          }
-        },
-        {
-          "value": "#EDF3F8",
-          "theme": {
-            "mode": "dark"
-          }
-        }
-      ]
-    },
-    "odental-muted": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#5B6B7A",
-          "theme": {
-            "mode": "light"
-          }
-        },
-        {
-          "value": "#93A5B2",
-          "theme": {
-            "mode": "dark"
-          }
-        }
-      ]
-    },
-    "odental-navy-accent": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#0A1628",
-          "theme": {
-            "mode": "light"
-          }
-        },
-        {
-          "value": "#9BC1E4",
-          "theme": {
-            "mode": "dark"
-          }
-        }
-      ]
-    },
-    "odental-primary": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#0D9488",
-          "theme": {
-            "mode": "light"
-          }
-        },
-        {
-          "value": "#2DD4BF",
-          "theme": {
-            "mode": "dark"
-          }
-        }
-      ]
-    },
-    "odental-primary-dark": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#0F766E",
-          "theme": {
-            "mode": "light"
-          }
-        },
-        {
-          "value": "#14B8A6",
-          "theme": {
-            "mode": "dark"
-          }
-        }
-      ]
-    },
-    "odental-primary-soft": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#CCFBF1",
-          "theme": {
-            "mode": "light"
-          }
-        },
-        {
-          "value": "#10312F",
-          "theme": {
-            "mode": "dark"
-          }
-        }
-      ]
-    },
-    "odental-radius-lg": {
-      "type": "number",
-      "value": 16
-    },
-    "odental-radius-md": {
-      "type": "number",
-      "value": 12
-    },
-    "odental-radius-sm": {
-      "type": "number",
-      "value": 8
-    },
-    "odental-radius-xl": {
-      "type": "number",
-      "value": 20
-    },
-    "odental-shadow-ambient": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#0A162814",
-          "theme": {
-            "mode": "light"
-          }
-        },
-        {
-          "value": "#00000052",
-          "theme": {
-            "mode": "dark"
-          }
-        }
-      ]
-    },
-    "odental-shadow-direct": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#0A16281F",
-          "theme": {
-            "mode": "light"
-          }
-        },
-        {
-          "value": "#00000066",
-          "theme": {
-            "mode": "dark"
-          }
-        }
-      ]
-    },
-    "odental-space-2xl": {
-      "type": "number",
-      "value": 24
-    },
-    "odental-space-lg": {
-      "type": "number",
-      "value": 16
-    },
-    "odental-space-md": {
-      "type": "number",
-      "value": 12
-    },
-    "odental-space-sm": {
-      "type": "number",
-      "value": 8
-    },
-    "odental-space-xs": {
-      "type": "number",
-      "value": 4
-    },
-    "odental-surface": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#F7FAFC",
-          "theme": {
-            "mode": "light"
-          }
-        },
-        {
-          "value": "#161F24",
-          "theme": {
-            "mode": "dark"
-          }
-        }
-      ]
-    },
-    "odental-text": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#1F2A33",
-          "theme": {
-            "mode": "light"
-          }
-        },
-        {
-          "value": "#E7EEF3",
-          "theme": {
-            "mode": "dark"
-          }
-        }
-      ]
-    },
-    "odental-warning-strong": {
-      "type": "color",
-      "value": [
-        {
-          "value": "#B45309",
-          "theme": {
-            "mode": "light"
-          }
-        },
-        {
-          "value": "#FBBF24",
-          "theme": {
-            "mode": "dark"
-          }
-        }
-      ]
-    }
-  },
   "children": [
     {
       "type": "frame",
       "id": "TAHcH",
-      "x": 2050,
-      "y": 70,
+      "x": 0,
+      "y": 0,
       "name": "OdentalPro / Patients / 01 / Detail / Default / Mobile",
       "context": "Ficha del paciente. Se llega desde Agenda o desde la lista de Pacientes. Reune identidad, alertas clinicas, odontograma y historial. Escritura solo para roles owner y especialista.",
       "theme": {
@@ -397,9 +32,9 @@
           "gap": "$odental-space-2xl",
           "padding": [
             "$odental-space-sm",
-            "$odental-space-xl",
+            0,
             "$odental-space-2xl",
-            "$odental-space-xl"
+            0
           ],
           "children": [
             {
@@ -1698,8 +1333,8 @@
     {
       "type": "frame",
       "id": "Wg2cN",
-      "x": 665,
-      "y": -179,
+      "x": 860,
+      "y": 1020,
       "name": "HistoryRow",
       "context": "Visita cerrada del historial, de odental_clinical_records. Distinta de AppointmentRow: aca la columna izquierda es la fecha de la visita y no la hora, y el dato secundario es el especialista que atendio. Tap abre el registro con el snapshot del odontograma de ese dia.",
       "reusable": true,
@@ -1800,17 +1435,13 @@
       "type": "frame",
       "id": "T2dijw",
       "x": 0,
-      "y": -320,
+      "y": 1020,
       "name": "StatusBar",
       "context": "OS chrome mock para las pantallas mobile. Instancias sobreescriben width a fill_container. No colocar UI de la app detras.",
       "reusable": true,
       "width": 390,
       "height": 62,
       "fill": "$odental-canvas",
-      "padding": [
-        0,
-        "$odental-space-xl"
-      ],
       "justifyContent": "space_between",
       "alignItems": "center",
       "children": [
@@ -1869,7 +1500,7 @@
       "type": "frame",
       "id": "FWcYR",
       "x": 430,
-      "y": -320,
+      "y": 1020,
       "name": "TabBar",
       "context": "Dock de navegacion principal, 4 destinos. Ultimo item del stack vertical de cada pantalla, nunca posicionado en absoluto. El item activo se marca con capsula suave mas icono y label en primary.",
       "reusable": true,
@@ -2119,5 +1750,371 @@
         }
       ]
     }
-  ]
+  ],
+  "themes": {
+    "mode": [
+      "light",
+      "dark"
+    ]
+  },
+  "variables": {
+    "odental-aqua-100": {
+      "type": "color",
+      "value": "#BFEAF2"
+    },
+    "odental-aqua-600": {
+      "type": "color",
+      "value": "#1E7F8C"
+    },
+    "odental-border": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#DDE3EA",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#27333A",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-canvas": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#0F1519",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-clear": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#00000000",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#00000000",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-danger-soft": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FEE2E2",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#3B1414",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-danger-strong": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#B91C1C",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FCA5A5",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-font-ui": {
+      "type": "string",
+      "value": "Geist"
+    },
+    "odental-fs-base": {
+      "type": "number",
+      "value": 15
+    },
+    "odental-fs-lg": {
+      "type": "number",
+      "value": 18
+    },
+    "odental-fs-sm": {
+      "type": "number",
+      "value": 13
+    },
+    "odental-fs-xl": {
+      "type": "number",
+      "value": 22
+    },
+    "odental-fs-xs": {
+      "type": "number",
+      "value": 11
+    },
+    "odental-glass": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFFFFBF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#161F24BF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-heading": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A1628",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#EDF3F8",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-muted": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#5B6B7A",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#93A5B2",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-navy-accent": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A1628",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#9BC1E4",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0D9488",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#2DD4BF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-primary-dark": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0F766E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#14B8A6",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-primary-soft": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#CCFBF1",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#10312F",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-radius-lg": {
+      "type": "number",
+      "value": 16
+    },
+    "odental-radius-md": {
+      "type": "number",
+      "value": 12
+    },
+    "odental-radius-sm": {
+      "type": "number",
+      "value": 8
+    },
+    "odental-radius-xl": {
+      "type": "number",
+      "value": 20
+    },
+    "odental-shadow-ambient": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A162814",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#00000052",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-shadow-direct": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A16281F",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#00000066",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-space-2xl": {
+      "type": "number",
+      "value": 24
+    },
+    "odental-space-lg": {
+      "type": "number",
+      "value": 16
+    },
+    "odental-space-md": {
+      "type": "number",
+      "value": 12
+    },
+    "odental-space-sm": {
+      "type": "number",
+      "value": 8
+    },
+    "odental-space-xs": {
+      "type": "number",
+      "value": 4
+    },
+    "odental-surface": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F7FAFC",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#161F24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-text": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#1F2A33",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#E7EEF3",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-warning-strong": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#B45309",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    }
+  },
+  "fileToken": "ed2f6a7c-1791-4283-8faf-23b2774f5ee0"
 }
