@@ -1,0 +1,1218 @@
+{
+  "version": "2.14",
+  "themes": {
+    "mode": [
+      "light",
+      "dark"
+    ]
+  },
+  "variables": {
+    "odental-primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0D9488",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#2DD4BF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-primary-dark": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0F766E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#14B8A6",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-primary-soft": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#CCFBF1",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#10312F",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-aqua-50": {
+      "type": "color",
+      "value": "#EAF7FB"
+    },
+    "odental-aqua-100": {
+      "type": "color",
+      "value": "#BFEAF2"
+    },
+    "odental-aqua-300": {
+      "type": "color",
+      "value": "#63C9D6"
+    },
+    "odental-aqua-600": {
+      "type": "color",
+      "value": "#1E7F8C"
+    },
+    "odental-navy": {
+      "type": "color",
+      "value": "#0A1628"
+    },
+    "odental-slate": {
+      "type": "color",
+      "value": "#20343A"
+    },
+    "odental-surface": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F7FAFC",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#161F24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-canvas": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#0F1519",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-text": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#1F2A33",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#E7EEF3",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-muted": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#5B6B7A",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#93A5B2",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-border": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#DDE3EA",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#27333A",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-success": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#34D399",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-warning": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#D97706",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-danger": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#DC2626",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#F87171",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-cream": {
+      "type": "color",
+      "value": "#FDFAF5"
+    },
+    "odental-heading": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A1628",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#EDF3F8",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-on-primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F6FEFC",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#04211F",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-focus": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#1E7F8C",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#63C9D6",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-font-ui": {
+      "type": "string",
+      "value": "Geist"
+    },
+    "odental-space-xs": {
+      "type": "number",
+      "value": 4
+    },
+    "odental-space-sm": {
+      "type": "number",
+      "value": 8
+    },
+    "odental-space-md": {
+      "type": "number",
+      "value": 12
+    },
+    "odental-space-lg": {
+      "type": "number",
+      "value": 16
+    },
+    "odental-space-xl": {
+      "type": "number",
+      "value": 20
+    },
+    "odental-space-2xl": {
+      "type": "number",
+      "value": 24
+    },
+    "odental-space-3xl": {
+      "type": "number",
+      "value": 32
+    },
+    "odental-radius-sm": {
+      "type": "number",
+      "value": 8
+    },
+    "odental-radius-md": {
+      "type": "number",
+      "value": 12
+    },
+    "odental-radius-lg": {
+      "type": "number",
+      "value": 16
+    },
+    "odental-radius-xl": {
+      "type": "number",
+      "value": 20
+    },
+    "odental-radius-pill": {
+      "type": "number",
+      "value": 28
+    },
+    "odental-fs-xs": {
+      "type": "number",
+      "value": 11
+    },
+    "odental-fs-sm": {
+      "type": "number",
+      "value": 13
+    },
+    "odental-fs-base": {
+      "type": "number",
+      "value": 15
+    },
+    "odental-fs-lg": {
+      "type": "number",
+      "value": 18
+    },
+    "odental-fs-xl": {
+      "type": "number",
+      "value": 22
+    },
+    "odental-fs-2xl": {
+      "type": "number",
+      "value": 28
+    },
+    "odental-glass": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFFFFBF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#161F24BF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-shadow-ambient": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A162814",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#00000052",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-shadow-direct": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A16281F",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#00000066",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-warning-soft": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FEF3C7",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#3A2A0B",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-warning-strong": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#B45309",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-danger-soft": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FEE2E2",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#3B1414",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-danger-strong": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#B91C1C",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FCA5A5",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-clear": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#00000000",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#00000000",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-navy-accent": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A1628",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#9BC1E4",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    }
+  },
+  "children": [
+    {
+      "type": "frame",
+      "id": "T2dijw",
+      "x": 0,
+      "y": -320,
+      "name": "StatusBar",
+      "context": "OS chrome mock para las pantallas mobile. Instancias sobreescriben width a fill_container. No colocar UI de la app detras.",
+      "reusable": true,
+      "width": 390,
+      "height": 62,
+      "fill": "$odental-canvas",
+      "padding": [
+        0,
+        "$odental-space-xl"
+      ],
+      "justifyContent": "space_between",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "ihqSj",
+          "name": "StatusTime",
+          "fill": "$odental-text",
+          "content": "9:41",
+          "fontFamily": "$odental-font-ui",
+          "fontSize": "$odental-fs-sm",
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "L6zOWu",
+          "name": "StatusIndicators",
+          "gap": "$odental-space-xs",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "Lr14A",
+              "name": "SignalIndicator",
+              "width": 15,
+              "height": 15,
+              "icon": "signal-high",
+              "library": "lucide",
+              "fill": "$odental-text"
+            },
+            {
+              "type": "icon",
+              "id": "HCMhB",
+              "name": "WifiIndicator",
+              "width": 15,
+              "height": 15,
+              "icon": "wifi",
+              "library": "lucide",
+              "fill": "$odental-text"
+            },
+            {
+              "type": "icon",
+              "id": "Wo82p",
+              "name": "BatteryIndicator",
+              "width": 18,
+              "height": 18,
+              "icon": "battery-full",
+              "library": "lucide",
+              "fill": "$odental-text"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "FWcYR",
+      "x": 430,
+      "y": -320,
+      "name": "TabBar",
+      "context": "Dock de navegacion principal, 4 destinos. Ultimo item del stack vertical de cada pantalla, nunca posicionado en absoluto. El item activo se marca con capsula suave mas icono y label en primary.",
+      "reusable": true,
+      "width": 390,
+      "layout": "vertical",
+      "padding": [
+        0,
+        "$odental-space-lg",
+        "$odental-space-md",
+        "$odental-space-lg"
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "N6SDr4",
+          "name": "TabBarCapsule",
+          "width": "fill_container",
+          "height": 56,
+          "fill": "$odental-glass",
+          "cornerRadius": 28,
+          "stroke": "$odental-border",
+          "strokeWidth": 1,
+          "strokeAlignment": "inner",
+          "effect": [
+            {
+              "type": "shadow",
+              "shadowType": "outer",
+              "color": "$odental-shadow-ambient",
+              "offset": {
+                "x": 0,
+                "y": 1
+              },
+              "blur": 2
+            },
+            {
+              "type": "shadow",
+              "shadowType": "outer",
+              "color": "$odental-shadow-direct",
+              "offset": {
+                "x": 0,
+                "y": 4
+              },
+              "blur": 12
+            }
+          ],
+          "padding": 6,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "koZY6",
+              "name": "TabItemHome",
+              "context": "Destino Inicio. Estado inactivo por defecto.",
+              "metadata": {
+                "type": "interactive",
+                "testId": "tab-home",
+                "analytics": {
+                  "event": "nav.tab_select",
+                  "props": {
+                    "tab": "inicio"
+                  }
+                },
+                "aria": {
+                  "role": "tab",
+                  "label": "Inicio"
+                }
+              },
+              "width": "fill_container",
+              "height": "fill_container",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "yxOa7",
+                  "name": "TabIconHome",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "house",
+                  "library": "lucide",
+                  "fill": "$odental-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "Q6Fp4",
+                  "name": "TabLabelHome",
+                  "fill": "$odental-muted",
+                  "content": "Inicio",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "B6Jow",
+              "name": "TabItemAgenda",
+              "context": "Destino Agenda. Estado activo: capsula primary-soft mas icono y label en primary-dark.",
+              "metadata": {
+                "type": "interactive",
+                "testId": "tab-agenda",
+                "analytics": {
+                  "event": "nav.tab_select",
+                  "props": {
+                    "tab": "agenda"
+                  }
+                },
+                "aria": {
+                  "role": "tab",
+                  "label": "Agenda"
+                }
+              },
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "$odental-primary-soft",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "ZzVUR",
+                  "name": "TabIconAgenda",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "calendar-days",
+                  "library": "lucide",
+                  "fill": "$odental-primary-dark"
+                },
+                {
+                  "type": "text",
+                  "id": "Dz5jS",
+                  "name": "TabLabelAgenda",
+                  "fill": "$odental-primary-dark",
+                  "content": "Agenda",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": 10,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Dvxk5",
+              "name": "TabItemPatients",
+              "context": "Destino Pacientes. Estado inactivo por defecto.",
+              "metadata": {
+                "type": "interactive",
+                "testId": "tab-patients",
+                "analytics": {
+                  "event": "nav.tab_select",
+                  "props": {
+                    "tab": "pacientes"
+                  }
+                },
+                "aria": {
+                  "role": "tab",
+                  "label": "Pacientes"
+                }
+              },
+              "width": "fill_container",
+              "height": "fill_container",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "ezN1O",
+                  "name": "TabIconPatients",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "users",
+                  "library": "lucide",
+                  "fill": "$odental-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "Konxv",
+                  "name": "TabLabelPatients",
+                  "fill": "$odental-muted",
+                  "content": "Pacientes",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "s8fc7T",
+              "name": "TabItemMore",
+              "context": "Destino Mas: finanzas, inventario, configuracion. Estado inactivo por defecto.",
+              "metadata": {
+                "type": "interactive",
+                "testId": "tab-more",
+                "analytics": {
+                  "event": "nav.tab_select",
+                  "props": {
+                    "tab": "mas"
+                  }
+                },
+                "aria": {
+                  "role": "tab",
+                  "label": "Mas"
+                }
+              },
+              "width": "fill_container",
+              "height": "fill_container",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "KGPIm",
+                  "name": "TabIconMore",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "ellipsis",
+                  "library": "lucide",
+                  "fill": "$odental-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "P0pZuD",
+                  "name": "TabLabelMore",
+                  "fill": "$odental-muted",
+                  "content": "Más",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "e9q9nq",
+      "x": 860,
+      "y": -320,
+      "name": "ButtonPrimary",
+      "context": "Accion primaria. Hover oscurece a primary-dark, focus agrega anillo de 2px en $odental-focus, disabled baja opacidad a 0.45 y bloquea el tap. Instancias sin icono ponen ButtonIcon enabled:false.",
+      "reusable": true,
+      "metadata": {
+        "type": "interactive",
+        "testId": "button-primary",
+        "aria": {
+          "role": "button"
+        }
+      },
+      "width": 358,
+      "height": 52,
+      "fill": "$odental-primary",
+      "cornerRadius": "$odental-radius-lg",
+      "gap": "$odental-space-sm",
+      "padding": [
+        0,
+        "$odental-space-xl"
+      ],
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "FrnFR",
+          "name": "ButtonLabel",
+          "fill": "$odental-on-primary",
+          "content": "Entrar",
+          "fontFamily": "$odental-font-ui",
+          "fontSize": "$odental-fs-base",
+          "fontWeight": "600"
+        },
+        {
+          "type": "icon",
+          "id": "QVKUM",
+          "name": "ButtonIcon",
+          "opacity": 0.8,
+          "width": 18,
+          "height": 18,
+          "icon": "arrow-right",
+          "library": "lucide",
+          "fill": "$odental-on-primary"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "TYsak",
+      "x": 0,
+      "y": -179,
+      "name": "InputField",
+      "context": "Campo de texto. Validacion al perder el foco, nunca mientras se escribe. El error se muestra con borde danger mas icono y texto bajo el campo.",
+      "reusable": true,
+      "metadata": {
+        "type": "interactive",
+        "testId": "input-field",
+        "validation": {
+          "required": true,
+          "errorCopy": {
+            "required": "Completa este campo",
+            "format": "Revisa el formato",
+            "mismatch": "Los datos no coinciden"
+          }
+        }
+      },
+      "width": 358,
+      "layout": "vertical",
+      "gap": "$odental-space-sm",
+      "children": [
+        {
+          "type": "text",
+          "id": "i9UUHB",
+          "name": "FieldLabel",
+          "fill": "$odental-muted",
+          "content": "Correo",
+          "fontFamily": "$odental-font-ui",
+          "fontSize": "$odental-fs-sm",
+          "fontWeight": "500"
+        },
+        {
+          "type": "frame",
+          "id": "tj5BT",
+          "name": "FieldShell",
+          "width": "fill_container",
+          "height": 52,
+          "fill": "$odental-canvas",
+          "cornerRadius": "$odental-radius-md",
+          "stroke": "$odental-border",
+          "strokeWidth": 1,
+          "strokeAlignment": "inner",
+          "gap": "$odental-space-md",
+          "padding": [
+            0,
+            "$odental-space-lg"
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "qqX78",
+              "name": "FieldIcon",
+              "width": 18,
+              "height": 18,
+              "icon": "mail",
+              "library": "lucide",
+              "fill": "$odental-muted"
+            },
+            {
+              "type": "text",
+              "id": "OGdoY",
+              "name": "FieldValue",
+              "fill": "$odental-text",
+              "content": "marielba.rojas@correo.com",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": "$odental-fs-base",
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "zBia3",
+      "x": 442,
+      "y": -179,
+      "name": "StatusPill",
+      "context": "Estado de una cita o tratamiento. El color nunca va solo: siempre acompanado de icono y texto para lectura sin color.",
+      "reusable": true,
+      "metadata": {
+        "type": "display",
+        "testId": "status-pill"
+      },
+      "height": 26,
+      "fill": "$odental-primary-soft",
+      "cornerRadius": 13,
+      "gap": "$odental-space-xs",
+      "padding": [
+        0,
+        "$odental-space-md"
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "icon",
+          "id": "a8Jrz2",
+          "name": "PillIcon",
+          "width": 13,
+          "height": 13,
+          "icon": "check",
+          "library": "lucide",
+          "fill": "$odental-primary-dark"
+        },
+        {
+          "type": "text",
+          "id": "Y4LxUq",
+          "name": "PillLabel",
+          "fill": "$odental-primary-dark",
+          "content": "Confirmada",
+          "fontFamily": "$odental-font-ui",
+          "fontSize": "$odental-fs-xs",
+          "fontWeight": "600"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "IjNtc",
+      "x": 1089,
+      "y": -179,
+      "name": "AppointmentRow",
+      "context": "Cita del dia. Datos de odental_appointments unidos con odental_patients y odental_treatment_plans. Tap abre el detalle de la cita. La franja de color codifica el tipo de tratamiento, no el estado.",
+      "reusable": true,
+      "metadata": {
+        "type": "display",
+        "testId": "appointment-row",
+        "analytics": {
+          "event": "agenda.appointment_open"
+        }
+      },
+      "width": 358,
+      "fill": "$odental-canvas",
+      "cornerRadius": "$odental-radius-lg",
+      "stroke": "$odental-border",
+      "strokeWidth": 1,
+      "strokeAlignment": "inner",
+      "gap": "$odental-space-md",
+      "padding": "$odental-space-lg",
+      "children": [
+        {
+          "type": "frame",
+          "id": "CgbLz",
+          "name": "TimeColumn",
+          "width": 52,
+          "layout": "vertical",
+          "gap": 2,
+          "children": [
+            {
+              "type": "text",
+              "id": "zUpFH",
+              "name": "TimeStart",
+              "fill": "$odental-text",
+              "content": "09:30",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": "$odental-fs-base",
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "RCCDQ",
+              "name": "TimeDuration",
+              "fill": "$odental-muted",
+              "content": "45 min",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": "$odental-fs-xs",
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": 2,
+          "id": "W9MrZP",
+          "name": "TreatmentStripe",
+          "fill": "$odental-primary",
+          "width": 3,
+          "height": 68
+        },
+        {
+          "type": "frame",
+          "id": "eMkNk",
+          "name": "InfoColumn",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$odental-space-xs",
+          "children": [
+            {
+              "type": "text",
+              "id": "xPefS",
+              "name": "PatientName",
+              "fill": "$odental-text",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Marielba Rojas",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": "$odental-fs-base",
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "oRwg0",
+              "name": "TreatmentName",
+              "fill": "$odental-muted",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Resina compuesta · 26",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": "$odental-fs-sm",
+              "fontWeight": "normal"
+            },
+            {
+              "id": "Yf9wY",
+              "type": "ref",
+              "ref": "zBia3",
+              "name": "AppointmentStatus"
+            }
+          ]
+        },
+        {
+          "type": "icon",
+          "id": "oBwos",
+          "name": "RowChevron",
+          "opacity": 0.75,
+          "width": 18,
+          "height": 18,
+          "icon": "chevron-right",
+          "library": "lucide",
+          "fill": "$odental-muted"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Wg2cN",
+      "x": 665,
+      "y": -179,
+      "name": "HistoryRow",
+      "context": "Visita cerrada del historial, de odental_clinical_records. Distinta de AppointmentRow: aca la columna izquierda es la fecha de la visita y no la hora, y el dato secundario es el especialista que atendio. Tap abre el registro con el snapshot del odontograma de ese dia.",
+      "reusable": true,
+      "metadata": {
+        "type": "display",
+        "testId": "history-row",
+        "analytics": {
+          "event": "patient.visit_open"
+        }
+      },
+      "width": 358,
+      "fill": "$odental-canvas",
+      "cornerRadius": "$odental-radius-lg",
+      "stroke": "$odental-border",
+      "strokeWidth": 1,
+      "strokeAlignment": "inner",
+      "gap": "$odental-space-md",
+      "padding": "$odental-space-lg",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "C6usld",
+          "name": "VisitDateColumn",
+          "width": 52,
+          "layout": "vertical",
+          "gap": 2,
+          "children": [
+            {
+              "type": "text",
+              "id": "NAcJD",
+              "name": "VisitDay",
+              "fill": "$odental-text",
+              "content": "12 jun",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": "$odental-fs-sm",
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "mK39f",
+              "name": "VisitYear",
+              "fill": "$odental-muted",
+              "content": "2026",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": "$odental-fs-xs",
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "H2x0G",
+          "name": "VisitInfoColumn",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 3,
+          "children": [
+            {
+              "type": "text",
+              "id": "y9Qfk",
+              "name": "ProcedureName",
+              "fill": "$odental-text",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Profilaxis y fluorización",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": "$odental-fs-base",
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "ikqJd",
+              "name": "SpecialistName",
+              "fill": "$odental-muted",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Dra. Yubiris Andrade",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": "$odental-fs-sm",
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "icon",
+          "id": "fkgWG",
+          "name": "VisitClosedIcon",
+          "width": 18,
+          "height": 18,
+          "icon": "circle-check",
+          "library": "lucide",
+          "fill": "$odental-primary"
+        }
+      ]
+    }
+  ]
+}

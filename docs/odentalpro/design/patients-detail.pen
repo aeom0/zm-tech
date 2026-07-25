@@ -1,0 +1,2123 @@
+{
+  "version": "2.14",
+  "themes": {
+    "mode": [
+      "light",
+      "dark"
+    ]
+  },
+  "variables": {
+    "odental-aqua-100": {
+      "type": "color",
+      "value": "#BFEAF2"
+    },
+    "odental-aqua-600": {
+      "type": "color",
+      "value": "#1E7F8C"
+    },
+    "odental-border": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#DDE3EA",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#27333A",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-canvas": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#0F1519",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-clear": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#00000000",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#00000000",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-danger-soft": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FEE2E2",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#3B1414",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-danger-strong": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#B91C1C",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FCA5A5",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-font-ui": {
+      "type": "string",
+      "value": "Geist"
+    },
+    "odental-fs-base": {
+      "type": "number",
+      "value": 15
+    },
+    "odental-fs-lg": {
+      "type": "number",
+      "value": 18
+    },
+    "odental-fs-sm": {
+      "type": "number",
+      "value": 13
+    },
+    "odental-fs-xl": {
+      "type": "number",
+      "value": 22
+    },
+    "odental-fs-xs": {
+      "type": "number",
+      "value": 11
+    },
+    "odental-glass": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFFFFBF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#161F24BF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-heading": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A1628",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#EDF3F8",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-muted": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#5B6B7A",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#93A5B2",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-navy-accent": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A1628",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#9BC1E4",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0D9488",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#2DD4BF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-primary-dark": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0F766E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#14B8A6",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-primary-soft": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#CCFBF1",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#10312F",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-radius-lg": {
+      "type": "number",
+      "value": 16
+    },
+    "odental-radius-md": {
+      "type": "number",
+      "value": 12
+    },
+    "odental-radius-sm": {
+      "type": "number",
+      "value": 8
+    },
+    "odental-radius-xl": {
+      "type": "number",
+      "value": 20
+    },
+    "odental-shadow-ambient": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A162814",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#00000052",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-shadow-direct": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A16281F",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#00000066",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-space-2xl": {
+      "type": "number",
+      "value": 24
+    },
+    "odental-space-lg": {
+      "type": "number",
+      "value": 16
+    },
+    "odental-space-md": {
+      "type": "number",
+      "value": 12
+    },
+    "odental-space-sm": {
+      "type": "number",
+      "value": 8
+    },
+    "odental-space-xs": {
+      "type": "number",
+      "value": 4
+    },
+    "odental-surface": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F7FAFC",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#161F24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-text": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#1F2A33",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#E7EEF3",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-warning-strong": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#B45309",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    }
+  },
+  "children": [
+    {
+      "type": "frame",
+      "id": "TAHcH",
+      "x": 2050,
+      "y": 70,
+      "name": "OdentalPro / Patients / 01 / Detail / Default / Mobile",
+      "context": "Ficha del paciente. Se llega desde Agenda o desde la lista de Pacientes. Reune identidad, alertas clinicas, odontograma y historial. Escritura solo para roles owner y especialista.",
+      "theme": {
+        "mode": "light"
+      },
+      "clip": true,
+      "width": 390,
+      "fill": "$odental-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "Iw9We",
+          "type": "ref",
+          "ref": "T2dijw",
+          "name": "PatientStatusBar",
+          "width": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "NUTVV",
+          "name": "PatientWrapper",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$odental-space-2xl",
+          "padding": [
+            "$odental-space-sm",
+            "$odental-space-xl",
+            "$odental-space-2xl",
+            "$odental-space-xl"
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "lihAf",
+              "name": "PatientNavRow",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "yovlO",
+                  "name": "BackAction",
+                  "context": "Regresa al origen de la navegacion: Agenda o lista de Pacientes.",
+                  "metadata": {
+                    "type": "interactive",
+                    "testId": "patient-back",
+                    "aria": {
+                      "role": "button",
+                      "label": "Volver"
+                    }
+                  },
+                  "width": 44,
+                  "height": 44,
+                  "fill": "$odental-surface",
+                  "cornerRadius": "$odental-radius-md",
+                  "stroke": "$odental-border",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "ooHx3",
+                      "name": "BackIcon",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "chevron-left",
+                      "library": "lucide",
+                      "fill": "$odental-text"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "gVSRq",
+                  "name": "PatientNavActions",
+                  "gap": "$odental-space-sm",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "yMwBO",
+                      "name": "WhatsAppAction",
+                      "context": "Abre la conversacion del bot WABA con la plantilla de recordatorio precargada.",
+                      "metadata": {
+                        "type": "interactive",
+                        "testId": "patient-whatsapp",
+                        "analytics": {
+                          "event": "patient.whatsapp_open"
+                        },
+                        "aria": {
+                          "role": "button",
+                          "label": "Escribir por WhatsApp"
+                        }
+                      },
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$odental-primary-soft",
+                      "cornerRadius": "$odental-radius-md",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "y0mwj",
+                          "name": "WhatsAppIcon",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "message-circle",
+                          "library": "lucide",
+                          "fill": "$odental-primary-dark"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "C5rXVg",
+                      "name": "PatientMoreAction",
+                      "context": "Editar datos, exportar historia en PDF, dar de baja al paciente.",
+                      "metadata": {
+                        "type": "interactive",
+                        "testId": "patient-more",
+                        "aria": {
+                          "role": "button",
+                          "label": "Mas opciones"
+                        }
+                      },
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$odental-surface",
+                      "cornerRadius": "$odental-radius-md",
+                      "stroke": "$odental-border",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "IpuwZ",
+                          "name": "PatientMoreIcon",
+                          "width": 20,
+                          "height": 20,
+                          "icon": "ellipsis-vertical",
+                          "library": "lucide",
+                          "fill": "$odental-text"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "SyGBj",
+              "name": "PatientIdentity",
+              "width": "fill_container",
+              "gap": "$odental-space-lg",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "dn01z",
+                  "name": "PatientAvatar",
+                  "context": "Iniciales cuando el paciente no tiene foto cargada en Storage.",
+                  "width": 62,
+                  "height": 62,
+                  "fill": "$odental-aqua-100",
+                  "cornerRadius": "$odental-radius-xl",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "p203Y",
+                      "name": "PatientInitials",
+                      "fill": "$odental-aqua-600",
+                      "content": "MR",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-lg",
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "oBxHK",
+                  "name": "PatientIdentityText",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "XiXLA",
+                      "name": "PatientFullName",
+                      "fill": "$odental-heading",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Marielba Rojas",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-xl",
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "wC2HN",
+                      "name": "PatientMeta",
+                      "fill": "$odental-muted",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "32 años · C.I. 20.145.876",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-sm",
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "lyZIL",
+              "name": "ClinicalAlert",
+              "context": "Alertas de odental_patients.clinical_flags. Siempre visible sobre el resto de la ficha, nunca colapsada. Icono mas texto para que no dependa del color.",
+              "metadata": {
+                "type": "display",
+                "testId": "patient-clinical-alert"
+              },
+              "width": "fill_container",
+              "fill": "$odental-danger-soft",
+              "cornerRadius": "$odental-radius-md",
+              "gap": "$odental-space-md",
+              "padding": "$odental-space-md",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "WnqW9",
+                  "name": "ClinicalAlertIcon",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "triangle-alert",
+                  "library": "lucide",
+                  "fill": "$odental-danger-strong"
+                },
+                {
+                  "type": "text",
+                  "id": "EWlcJ",
+                  "name": "ClinicalAlertCopy",
+                  "fill": "$odental-danger-strong",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Alérgica a la penicilina · hipertensión controlada",
+                  "lineHeight": 1.35,
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": "$odental-fs-sm",
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p3Q8I",
+              "name": "OdontogramSection",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$odental-space-md",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "gEW7U",
+                  "name": "OdontogramHeader",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "nmOJq",
+                      "name": "OdontogramTitle",
+                      "fill": "$odental-heading",
+                      "content": "Odontograma",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-lg",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Owm7e",
+                      "name": "OdontogramExpandLink",
+                      "context": "Abre el odontograma a pantalla completa con las 5 superficies por diente.",
+                      "metadata": {
+                        "type": "interactive",
+                        "testId": "odontogram-expand",
+                        "analytics": {
+                          "event": "odontogram.open_full"
+                        },
+                        "aria": {
+                          "role": "link"
+                        }
+                      },
+                      "height": 32,
+                      "gap": 4,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "l7f9z",
+                          "name": "OdontogramExpandLabel",
+                          "fill": "$odental-primary-dark",
+                          "content": "Ver completo",
+                          "fontFamily": "$odental-font-ui",
+                          "fontSize": "$odental-fs-sm",
+                          "fontWeight": "600"
+                        },
+                        {
+                          "type": "icon",
+                          "id": "Ff4r2",
+                          "name": "OdontogramExpandIcon",
+                          "width": 15,
+                          "height": 15,
+                          "icon": "arrow-up-right",
+                          "library": "lucide",
+                          "fill": "$odental-primary-dark"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "F5e5t",
+                  "name": "OdontogramCard",
+                  "context": "Resumen del odontograma con numeracion FDI. Se guarda como snapshot JSONB en odental_clinical_records.odontogram por visita, no se sobreescribe. Tap en un diente abre sus 5 superficies.",
+                  "width": "fill_container",
+                  "fill": "$odental-surface",
+                  "cornerRadius": "$odental-radius-lg",
+                  "stroke": "$odental-border",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": "$odental-space-md",
+                  "padding": "$odental-space-lg",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "UEVim",
+                      "name": "UpperArch",
+                      "width": "fill_container",
+                      "gap": 3,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "t85Cuf",
+                          "name": "Tooth18",
+                          "context": "Diente FDI 18, estado absent.",
+                          "opacity": 0.4,
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-18"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-muted",
+                          "strokeWidth": 2,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "PIZaI",
+                          "name": "Tooth17",
+                          "context": "Diente FDI 17, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-17"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "g028MY",
+                          "name": "Tooth16",
+                          "context": "Diente FDI 16, estado treated.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-16"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-primary",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-primary",
+                          "strokeWidth": 2,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "gTel7",
+                          "name": "Tooth15",
+                          "context": "Diente FDI 15, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-15"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "M2EEe",
+                          "name": "Tooth14",
+                          "context": "Diente FDI 14, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-14"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "uaqKo",
+                          "name": "Tooth13",
+                          "context": "Diente FDI 13, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-13"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "rMSAS",
+                          "name": "Tooth12",
+                          "context": "Diente FDI 12, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-12"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "pWA2w",
+                          "name": "Tooth11",
+                          "context": "Diente FDI 11, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-11"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Caxej",
+                          "name": "Tooth21",
+                          "context": "Diente FDI 21, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-21"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "XK1rp",
+                          "name": "Tooth22",
+                          "context": "Diente FDI 22, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-22"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "zgCCK",
+                          "name": "Tooth23",
+                          "context": "Diente FDI 23, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-23"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "y8HZ1d",
+                          "name": "Tooth24",
+                          "context": "Diente FDI 24, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-24"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "lvmKe",
+                          "name": "Tooth25",
+                          "context": "Diente FDI 25, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-25"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "lTSjt",
+                          "name": "Tooth26",
+                          "context": "Diente FDI 26, estado totreat.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-26"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-warning-strong",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-warning-strong",
+                          "strokeWidth": 2,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "O79I9w",
+                          "name": "Tooth27",
+                          "context": "Diente FDI 27, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-27"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "BpqdW",
+                          "name": "Tooth28",
+                          "context": "Diente FDI 28, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-28"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "rectangle",
+                      "id": "JQH1d",
+                      "name": "ArchMidline",
+                      "fill": "$odental-border",
+                      "width": "fill_container",
+                      "height": 1
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ccfNw",
+                      "name": "LowerArch",
+                      "width": "fill_container",
+                      "gap": 3,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "abiqQ",
+                          "name": "Tooth48",
+                          "context": "Diente FDI 48, estado absent.",
+                          "opacity": 0.4,
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-48"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-muted",
+                          "strokeWidth": 2,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "J9ppMa",
+                          "name": "Tooth47",
+                          "context": "Diente FDI 47, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-47"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "qU0vY",
+                          "name": "Tooth46",
+                          "context": "Diente FDI 46, estado implant.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-46"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-navy-accent",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-navy-accent",
+                          "strokeWidth": 2,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "fsH27",
+                          "name": "Tooth45",
+                          "context": "Diente FDI 45, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-45"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "eHosk",
+                          "name": "Tooth44",
+                          "context": "Diente FDI 44, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-44"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "iosZI",
+                          "name": "Tooth43",
+                          "context": "Diente FDI 43, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-43"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "Rb4VG",
+                          "name": "Tooth42",
+                          "context": "Diente FDI 42, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-42"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "qx6PO",
+                          "name": "Tooth41",
+                          "context": "Diente FDI 41, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-41"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "pQyOb",
+                          "name": "Tooth31",
+                          "context": "Diente FDI 31, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-31"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "zQWq6",
+                          "name": "Tooth32",
+                          "context": "Diente FDI 32, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-32"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "R4hHFQ",
+                          "name": "Tooth33",
+                          "context": "Diente FDI 33, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-33"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "PjoOV",
+                          "name": "Tooth34",
+                          "context": "Diente FDI 34, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-34"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "JBJHJ",
+                          "name": "Tooth35",
+                          "context": "Diente FDI 35, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-35"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "QT9ot",
+                          "name": "Tooth36",
+                          "context": "Diente FDI 36, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-36"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "i4qSp",
+                          "name": "Tooth37",
+                          "context": "Diente FDI 37, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-37"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "XyT0C",
+                          "name": "Tooth38",
+                          "context": "Diente FDI 38, estado healthy.",
+                          "metadata": {
+                            "type": "interactive",
+                            "testId": "tooth-38"
+                          },
+                          "width": "fill_container",
+                          "height": 24,
+                          "fill": "$odental-canvas",
+                          "cornerRadius": 5,
+                          "stroke": "$odental-border",
+                          "strokeWidth": 1,
+                          "strokeAlignment": "inner"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "dcmdx",
+                      "name": "OdontogramLegend",
+                      "context": "Leyenda de los dientes marcados. El punto de color repite el color del diente en el arco para que el color no sea la unica pista.",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": "$odental-space-sm",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "e3EiOQ",
+                          "name": "LegendRow",
+                          "width": "fill_container",
+                          "gap": "$odental-space-sm",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "Pea1e",
+                              "name": "LegendChip26",
+                              "width": "fill_container",
+                              "height": 30,
+                              "fill": "$odental-canvas",
+                              "cornerRadius": "$odental-radius-sm",
+                              "stroke": "$odental-border",
+                              "strokeWidth": 1,
+                              "strokeAlignment": "inner",
+                              "gap": "$odental-space-sm",
+                              "padding": [
+                                0,
+                                "$odental-space-md"
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "O08vS",
+                                  "name": "LegendDot",
+                                  "fill": "$odental-warning-strong",
+                                  "width": 8,
+                                  "height": 8
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "hztTv",
+                                  "name": "LegendLabel",
+                                  "fill": "$odental-text",
+                                  "content": "26 · Por tratar",
+                                  "fontFamily": "$odental-font-ui",
+                                  "fontSize": "$odental-fs-xs",
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "x6JBBb",
+                              "name": "LegendChip16",
+                              "width": "fill_container",
+                              "height": 30,
+                              "fill": "$odental-canvas",
+                              "cornerRadius": "$odental-radius-sm",
+                              "stroke": "$odental-border",
+                              "strokeWidth": 1,
+                              "strokeAlignment": "inner",
+                              "gap": "$odental-space-sm",
+                              "padding": [
+                                0,
+                                "$odental-space-md"
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "E1AIR",
+                                  "name": "LegendDot",
+                                  "fill": "$odental-primary",
+                                  "width": 8,
+                                  "height": 8
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "qizg6",
+                                  "name": "LegendLabel",
+                                  "fill": "$odental-text",
+                                  "content": "16 · Resina",
+                                  "fontFamily": "$odental-font-ui",
+                                  "fontSize": "$odental-fs-xs",
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "KQROs",
+                          "name": "LegendRow",
+                          "width": "fill_container",
+                          "gap": "$odental-space-sm",
+                          "children": [
+                            {
+                              "type": "frame",
+                              "id": "DWPxZ",
+                              "name": "LegendChip46",
+                              "width": "fill_container",
+                              "height": 30,
+                              "fill": "$odental-canvas",
+                              "cornerRadius": "$odental-radius-sm",
+                              "stroke": "$odental-border",
+                              "strokeWidth": 1,
+                              "strokeAlignment": "inner",
+                              "gap": "$odental-space-sm",
+                              "padding": [
+                                0,
+                                "$odental-space-md"
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "r15mi",
+                                  "name": "LegendDot",
+                                  "fill": "$odental-navy-accent",
+                                  "width": 8,
+                                  "height": 8
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "RfJ6W",
+                                  "name": "LegendLabel",
+                                  "fill": "$odental-text",
+                                  "content": "46 · Implante",
+                                  "fontFamily": "$odental-font-ui",
+                                  "fontSize": "$odental-fs-xs",
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "frame",
+                              "id": "HWig6",
+                              "name": "LegendChip1848",
+                              "width": "fill_container",
+                              "height": 30,
+                              "fill": "$odental-canvas",
+                              "cornerRadius": "$odental-radius-sm",
+                              "stroke": "$odental-border",
+                              "strokeWidth": 1,
+                              "strokeAlignment": "inner",
+                              "gap": "$odental-space-sm",
+                              "padding": [
+                                0,
+                                "$odental-space-md"
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "ellipse",
+                                  "id": "RXzQT",
+                                  "name": "LegendDot",
+                                  "fill": "$odental-muted",
+                                  "width": 8,
+                                  "height": 8
+                                },
+                                {
+                                  "type": "text",
+                                  "id": "gsiRA",
+                                  "name": "LegendLabel",
+                                  "fill": "$odental-text",
+                                  "content": "18 y 48 · Ausentes",
+                                  "fontFamily": "$odental-font-ui",
+                                  "fontSize": "$odental-fs-xs",
+                                  "fontWeight": "600"
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "abnU8",
+              "name": "PatientTabs",
+              "context": "Secciones de la ficha. Historia activa por defecto. Cambiar de tab no recarga la cabecera ni la alerta clinica.",
+              "width": "fill_container",
+              "fill": "$odental-surface",
+              "cornerRadius": "$odental-radius-md",
+              "stroke": "$odental-border",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "gap": 4,
+              "padding": 4,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "m1bdk9",
+                  "name": "PatientTabHistoria",
+                  "context": "Tab activa.",
+                  "metadata": {
+                    "type": "interactive",
+                    "testId": "patient-tab-historia"
+                  },
+                  "width": "fill_container",
+                  "height": 36,
+                  "fill": "$odental-canvas",
+                  "cornerRadius": "$odental-radius-sm",
+                  "effect": {
+                    "type": "shadow",
+                    "shadowType": "outer",
+                    "color": "$odental-shadow-ambient",
+                    "offset": {
+                      "x": 0,
+                      "y": 1
+                    },
+                    "blur": 2
+                  },
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "w3XsXv",
+                      "name": "PatientTabLabelHistoria",
+                      "fill": "$odental-text",
+                      "content": "Historia",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-sm",
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "M6kCtx",
+                  "name": "PatientTabPlan",
+                  "context": "Tab inactiva.",
+                  "metadata": {
+                    "type": "interactive",
+                    "testId": "patient-tab-plan"
+                  },
+                  "width": "fill_container",
+                  "height": 36,
+                  "fill": "$odental-clear",
+                  "cornerRadius": "$odental-radius-sm",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "fGfNo",
+                      "name": "PatientTabLabelPlan",
+                      "fill": "$odental-muted",
+                      "content": "Plan",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-sm",
+                      "fontWeight": "500"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "qscDZ",
+                  "name": "PatientTabConsentimientos",
+                  "context": "Tab inactiva.",
+                  "metadata": {
+                    "type": "interactive",
+                    "testId": "patient-tab-consentimientos"
+                  },
+                  "width": "fill_container",
+                  "height": 36,
+                  "fill": "$odental-clear",
+                  "cornerRadius": "$odental-radius-sm",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "hW98b",
+                      "name": "PatientTabLabelConsentimientos",
+                      "fill": "$odental-muted",
+                      "content": "Consentimientos",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-sm",
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "yDtFK",
+              "name": "VisitHistoryList",
+              "context": "Ultimas visitas, mas reciente primero. Paginado de 10 en 10. Estado vacio: mensaje con accion para registrar la primera visita.",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$odental-space-md",
+              "children": [
+                {
+                  "id": "sCV2i",
+                  "type": "ref",
+                  "ref": "Wg2cN",
+                  "name": "VisitProfilaxis",
+                  "width": "fill_container",
+                  "descendants": {
+                    "NAcJD": {
+                      "content": "12 jun"
+                    },
+                    "mK39f": {
+                      "content": "2026"
+                    },
+                    "y9Qfk": {
+                      "content": "Profilaxis y fluorización"
+                    },
+                    "ikqJd": {
+                      "content": "Dra. Yubiris Andrade"
+                    }
+                  }
+                },
+                {
+                  "id": "GqHux",
+                  "type": "ref",
+                  "ref": "Wg2cN",
+                  "name": "VisitResina",
+                  "width": "fill_container",
+                  "descendants": {
+                    "NAcJD": {
+                      "content": "04 abr"
+                    },
+                    "mK39f": {
+                      "content": "2026"
+                    },
+                    "y9Qfk": {
+                      "content": "Resina compuesta · 16"
+                    },
+                    "ikqJd": {
+                      "content": "Dr. Alexis Guanipa"
+                    }
+                  }
+                },
+                {
+                  "id": "nBi3R",
+                  "type": "ref",
+                  "ref": "Wg2cN",
+                  "name": "VisitImplante",
+                  "width": "fill_container",
+                  "descendants": {
+                    "NAcJD": {
+                      "content": "19 ene"
+                    },
+                    "mK39f": {
+                      "content": "2026"
+                    },
+                    "y9Qfk": {
+                      "content": "Implante · 46"
+                    },
+                    "ikqJd": {
+                      "content": "Dra. Yubiris Andrade"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "yVOSw",
+          "type": "ref",
+          "ref": "FWcYR",
+          "name": "PatientTabBar",
+          "width": "fill_container",
+          "descendants": {
+            "B6Jow": {
+              "fill": "$odental-clear"
+            },
+            "ZzVUR": {
+              "fill": "$odental-muted"
+            },
+            "Dz5jS": {
+              "fill": "$odental-muted",
+              "fontWeight": "500"
+            },
+            "Dvxk5": {
+              "fill": "$odental-primary-soft"
+            },
+            "ezN1O": {
+              "fill": "$odental-primary-dark"
+            },
+            "Konxv": {
+              "fill": "$odental-primary-dark",
+              "fontWeight": "600"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Wg2cN",
+      "x": 665,
+      "y": -179,
+      "name": "HistoryRow",
+      "context": "Visita cerrada del historial, de odental_clinical_records. Distinta de AppointmentRow: aca la columna izquierda es la fecha de la visita y no la hora, y el dato secundario es el especialista que atendio. Tap abre el registro con el snapshot del odontograma de ese dia.",
+      "reusable": true,
+      "metadata": {
+        "type": "display",
+        "testId": "history-row",
+        "analytics": {
+          "event": "patient.visit_open"
+        }
+      },
+      "width": 358,
+      "fill": "$odental-canvas",
+      "cornerRadius": "$odental-radius-lg",
+      "stroke": "$odental-border",
+      "strokeWidth": 1,
+      "strokeAlignment": "inner",
+      "gap": "$odental-space-md",
+      "padding": "$odental-space-lg",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "C6usld",
+          "name": "VisitDateColumn",
+          "width": 52,
+          "layout": "vertical",
+          "gap": 2,
+          "children": [
+            {
+              "type": "text",
+              "id": "NAcJD",
+              "name": "VisitDay",
+              "fill": "$odental-text",
+              "content": "12 jun",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": "$odental-fs-sm",
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "mK39f",
+              "name": "VisitYear",
+              "fill": "$odental-muted",
+              "content": "2026",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": "$odental-fs-xs",
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "H2x0G",
+          "name": "VisitInfoColumn",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 3,
+          "children": [
+            {
+              "type": "text",
+              "id": "y9Qfk",
+              "name": "ProcedureName",
+              "fill": "$odental-text",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Profilaxis y fluorización",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": "$odental-fs-base",
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "ikqJd",
+              "name": "SpecialistName",
+              "fill": "$odental-muted",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Dra. Yubiris Andrade",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": "$odental-fs-sm",
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "icon",
+          "id": "fkgWG",
+          "name": "VisitClosedIcon",
+          "width": 18,
+          "height": 18,
+          "icon": "circle-check",
+          "library": "lucide",
+          "fill": "$odental-primary"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "T2dijw",
+      "x": 0,
+      "y": -320,
+      "name": "StatusBar",
+      "context": "OS chrome mock para las pantallas mobile. Instancias sobreescriben width a fill_container. No colocar UI de la app detras.",
+      "reusable": true,
+      "width": 390,
+      "height": 62,
+      "fill": "$odental-canvas",
+      "padding": [
+        0,
+        "$odental-space-xl"
+      ],
+      "justifyContent": "space_between",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "ihqSj",
+          "name": "StatusTime",
+          "fill": "$odental-text",
+          "content": "9:41",
+          "fontFamily": "$odental-font-ui",
+          "fontSize": "$odental-fs-sm",
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "L6zOWu",
+          "name": "StatusIndicators",
+          "gap": "$odental-space-xs",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "Lr14A",
+              "name": "SignalIndicator",
+              "width": 15,
+              "height": 15,
+              "icon": "signal-high",
+              "library": "lucide",
+              "fill": "$odental-text"
+            },
+            {
+              "type": "icon",
+              "id": "HCMhB",
+              "name": "WifiIndicator",
+              "width": 15,
+              "height": 15,
+              "icon": "wifi",
+              "library": "lucide",
+              "fill": "$odental-text"
+            },
+            {
+              "type": "icon",
+              "id": "Wo82p",
+              "name": "BatteryIndicator",
+              "width": 18,
+              "height": 18,
+              "icon": "battery-full",
+              "library": "lucide",
+              "fill": "$odental-text"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "FWcYR",
+      "x": 430,
+      "y": -320,
+      "name": "TabBar",
+      "context": "Dock de navegacion principal, 4 destinos. Ultimo item del stack vertical de cada pantalla, nunca posicionado en absoluto. El item activo se marca con capsula suave mas icono y label en primary.",
+      "reusable": true,
+      "width": 390,
+      "layout": "vertical",
+      "padding": [
+        0,
+        "$odental-space-lg",
+        "$odental-space-md",
+        "$odental-space-lg"
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "N6SDr4",
+          "name": "TabBarCapsule",
+          "width": "fill_container",
+          "height": 56,
+          "fill": "$odental-glass",
+          "cornerRadius": 28,
+          "stroke": "$odental-border",
+          "strokeWidth": 1,
+          "strokeAlignment": "inner",
+          "effect": [
+            {
+              "type": "shadow",
+              "shadowType": "outer",
+              "color": "$odental-shadow-ambient",
+              "offset": {
+                "x": 0,
+                "y": 1
+              },
+              "blur": 2
+            },
+            {
+              "type": "shadow",
+              "shadowType": "outer",
+              "color": "$odental-shadow-direct",
+              "offset": {
+                "x": 0,
+                "y": 4
+              },
+              "blur": 12
+            }
+          ],
+          "padding": 6,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "koZY6",
+              "name": "TabItemHome",
+              "context": "Destino Inicio. Estado inactivo por defecto.",
+              "metadata": {
+                "type": "interactive",
+                "testId": "tab-home",
+                "analytics": {
+                  "event": "nav.tab_select",
+                  "props": {
+                    "tab": "inicio"
+                  }
+                },
+                "aria": {
+                  "role": "tab",
+                  "label": "Inicio"
+                }
+              },
+              "width": "fill_container",
+              "height": "fill_container",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "yxOa7",
+                  "name": "TabIconHome",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "house",
+                  "library": "lucide",
+                  "fill": "$odental-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "Q6Fp4",
+                  "name": "TabLabelHome",
+                  "fill": "$odental-muted",
+                  "content": "Inicio",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "B6Jow",
+              "name": "TabItemAgenda",
+              "context": "Destino Agenda. Estado activo: capsula primary-soft mas icono y label en primary-dark.",
+              "metadata": {
+                "type": "interactive",
+                "testId": "tab-agenda",
+                "analytics": {
+                  "event": "nav.tab_select",
+                  "props": {
+                    "tab": "agenda"
+                  }
+                },
+                "aria": {
+                  "role": "tab",
+                  "label": "Agenda"
+                }
+              },
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "$odental-primary-soft",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "ZzVUR",
+                  "name": "TabIconAgenda",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "calendar-days",
+                  "library": "lucide",
+                  "fill": "$odental-primary-dark"
+                },
+                {
+                  "type": "text",
+                  "id": "Dz5jS",
+                  "name": "TabLabelAgenda",
+                  "fill": "$odental-primary-dark",
+                  "content": "Agenda",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": 10,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Dvxk5",
+              "name": "TabItemPatients",
+              "context": "Destino Pacientes. Estado inactivo por defecto.",
+              "metadata": {
+                "type": "interactive",
+                "testId": "tab-patients",
+                "analytics": {
+                  "event": "nav.tab_select",
+                  "props": {
+                    "tab": "pacientes"
+                  }
+                },
+                "aria": {
+                  "role": "tab",
+                  "label": "Pacientes"
+                }
+              },
+              "width": "fill_container",
+              "height": "fill_container",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "ezN1O",
+                  "name": "TabIconPatients",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "users",
+                  "library": "lucide",
+                  "fill": "$odental-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "Konxv",
+                  "name": "TabLabelPatients",
+                  "fill": "$odental-muted",
+                  "content": "Pacientes",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "s8fc7T",
+              "name": "TabItemMore",
+              "context": "Destino Mas: finanzas, inventario, configuracion. Estado inactivo por defecto.",
+              "metadata": {
+                "type": "interactive",
+                "testId": "tab-more",
+                "analytics": {
+                  "event": "nav.tab_select",
+                  "props": {
+                    "tab": "mas"
+                  }
+                },
+                "aria": {
+                  "role": "tab",
+                  "label": "Mas"
+                }
+              },
+              "width": "fill_container",
+              "height": "fill_container",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "KGPIm",
+                  "name": "TabIconMore",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "ellipsis",
+                  "library": "lucide",
+                  "fill": "$odental-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "P0pZuD",
+                  "name": "TabLabelMore",
+                  "fill": "$odental-muted",
+                  "content": "Más",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

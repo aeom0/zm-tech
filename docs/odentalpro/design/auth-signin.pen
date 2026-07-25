@@ -1,0 +1,689 @@
+{
+  "version": "2.14",
+  "themes": {
+    "mode": [
+      "light",
+      "dark"
+    ]
+  },
+  "variables": {
+    "odental-border": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#DDE3EA",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#27333A",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-canvas": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#0F1519",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-font-ui": {
+      "type": "string",
+      "value": "Geist"
+    },
+    "odental-fs-2xl": {
+      "type": "number",
+      "value": 28
+    },
+    "odental-fs-base": {
+      "type": "number",
+      "value": 15
+    },
+    "odental-fs-sm": {
+      "type": "number",
+      "value": 13
+    },
+    "odental-fs-xs": {
+      "type": "number",
+      "value": 11
+    },
+    "odental-heading": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A1628",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#EDF3F8",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-muted": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#5B6B7A",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#93A5B2",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-on-primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F6FEFC",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#04211F",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0D9488",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#2DD4BF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-primary-dark": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0F766E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#14B8A6",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-primary-soft": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#CCFBF1",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#10312F",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-radius-lg": {
+      "type": "number",
+      "value": 16
+    },
+    "odental-radius-md": {
+      "type": "number",
+      "value": 12
+    },
+    "odental-space-3xl": {
+      "type": "number",
+      "value": 32
+    },
+    "odental-space-md": {
+      "type": "number",
+      "value": 12
+    },
+    "odental-space-sm": {
+      "type": "number",
+      "value": 8
+    },
+    "odental-space-xl": {
+      "type": "number",
+      "value": 20
+    },
+    "odental-space-xs": {
+      "type": "number",
+      "value": 4
+    },
+    "odental-text": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#1F2A33",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#E7EEF3",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    }
+  },
+  "children": [
+    {
+      "type": "frame",
+      "id": "lshr3",
+      "x": 1057,
+      "y": 70,
+      "name": "OdentalPro / Auth / 01 / SignIn / Default / Mobile",
+      "context": "Entrada al producto. Viene de la landing publica y va al selector de consultorio y luego a Agenda. Sesion con Supabase Auth, correo mas clave. Si la sesion expira se vuelve aca con el correo precargado.",
+      "clip": true,
+      "width": 390,
+      "fill": "$odental-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "M8V39G",
+          "type": "ref",
+          "ref": "T2dijw",
+          "name": "SignInStatusBar",
+          "width": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "Shpbh",
+          "name": "SignInWrapper",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$odental-space-3xl",
+          "padding": [
+            "$odental-space-sm",
+            "$odental-space-xl",
+            "$odental-space-3xl",
+            "$odental-space-xl"
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "IG3i2",
+              "name": "BrandLock",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$odental-space-md",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "a36fBW",
+                  "name": "LogoMark",
+                  "width": 56,
+                  "height": 56,
+                  "fill": "$odental-primary-soft",
+                  "cornerRadius": "$odental-radius-lg",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "K8eQif",
+                      "name": "LogoGlyph",
+                      "width": 30,
+                      "height": 30,
+                      "icon": "dentistry",
+                      "library": "Material Symbols Rounded",
+                      "fill": "$odental-primary-dark"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "iWyEp",
+                  "name": "SignInTitle",
+                  "fill": "$odental-heading",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Entra a tu consultorio",
+                  "lineHeight": 1.15,
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": "$odental-fs-2xl",
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "cORot",
+                  "name": "SignInSubtitle",
+                  "fill": "$odental-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Agenda, historias clínicas y planes de tratamiento en un solo lugar.",
+                  "lineHeight": 1.45,
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": "$odental-fs-base",
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "LlRX2",
+              "name": "CredentialsForm",
+              "context": "Validacion al perder el foco. El submit se bloquea mientras corre la peticion y muestra el estado cargando en el boton.",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$odental-space-xl",
+              "children": [
+                {
+                  "id": "Tk0mZ",
+                  "type": "ref",
+                  "ref": "TYsak",
+                  "name": "EmailField",
+                  "width": "fill_container",
+                  "descendants": {
+                    "i9UUHB": {
+                      "content": "Correo"
+                    },
+                    "qqX78": {
+                      "icon": "mail"
+                    },
+                    "OGdoY": {
+                      "content": "marielba.rojas@correo.com"
+                    }
+                  }
+                },
+                {
+                  "id": "d6YobT",
+                  "type": "ref",
+                  "ref": "TYsak",
+                  "name": "PasswordField",
+                  "width": "fill_container",
+                  "descendants": {
+                    "i9UUHB": {
+                      "content": "Clave"
+                    },
+                    "qqX78": {
+                      "icon": "lock"
+                    },
+                    "OGdoY": {
+                      "content": "••••••••••",
+                      "letterSpacing": 3
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "JOnzz",
+                  "name": "FormMetaRow",
+                  "width": "fill_container",
+                  "justifyContent": "space_between",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "pCyX8",
+                      "name": "RememberSession",
+                      "context": "Marcado por defecto en dispositivos del consultorio. Extiende el refresh token a 30 dias.",
+                      "metadata": {
+                        "type": "interactive",
+                        "testId": "signin-remember",
+                        "aria": {
+                          "role": "checkbox",
+                          "label": "Mantener sesion abierta"
+                        }
+                      },
+                      "height": 44,
+                      "gap": "$odental-space-sm",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "WdL10",
+                          "name": "RememberCheckbox",
+                          "width": 20,
+                          "height": 20,
+                          "fill": "$odental-primary",
+                          "cornerRadius": 6,
+                          "justifyContent": "center",
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "SV4MI",
+                              "name": "RememberCheck",
+                              "width": 13,
+                              "height": 13,
+                              "icon": "check",
+                              "library": "lucide",
+                              "fill": "$odental-on-primary"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "text",
+                          "id": "qPxVi",
+                          "name": "RememberLabel",
+                          "fill": "$odental-muted",
+                          "content": "Mantener sesión",
+                          "fontFamily": "$odental-font-ui",
+                          "fontSize": "$odental-fs-sm",
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "P4IM9Y",
+                      "name": "ForgotPasswordLink",
+                      "context": "Abre el flujo de recuperacion por correo. No revela si la cuenta existe.",
+                      "metadata": {
+                        "type": "interactive",
+                        "testId": "signin-forgot",
+                        "analytics": {
+                          "event": "auth.password_reset_start"
+                        },
+                        "aria": {
+                          "role": "link"
+                        }
+                      },
+                      "height": 44,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "ulEAF",
+                          "name": "ForgotLabel",
+                          "fill": "$odental-primary-dark",
+                          "content": "Olvidé mi clave",
+                          "fontFamily": "$odental-font-ui",
+                          "fontSize": "$odental-fs-sm",
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "MTwCt",
+              "type": "ref",
+              "ref": "e9q9nq",
+              "name": "SignInSubmit",
+              "width": "fill_container",
+              "descendants": {
+                "FrnFR": {
+                  "content": "Entrar"
+                }
+              }
+            },
+            {
+              "type": "frame",
+              "id": "BKIpF",
+              "name": "SecurityNote",
+              "width": "fill_container",
+              "gap": "$odental-space-sm",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "f2rXB",
+                  "name": "SecurityIcon",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "shield-check",
+                  "library": "lucide",
+                  "fill": "$odental-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "G2wgq",
+                  "name": "SecurityCopy",
+                  "fill": "$odental-muted",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Las historias clínicas viajan cifradas y solo las ve el personal autorizado de tu consultorio.",
+                  "lineHeight": 1.5,
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": "$odental-fs-xs",
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "e9q9nq",
+      "x": 860,
+      "y": -320,
+      "name": "ButtonPrimary",
+      "context": "Accion primaria. Hover oscurece a primary-dark, focus agrega anillo de 2px en $odental-focus, disabled baja opacidad a 0.45 y bloquea el tap. Instancias sin icono ponen ButtonIcon enabled:false.",
+      "reusable": true,
+      "metadata": {
+        "type": "interactive",
+        "testId": "button-primary",
+        "aria": {
+          "role": "button"
+        }
+      },
+      "width": 358,
+      "height": 52,
+      "fill": "$odental-primary",
+      "cornerRadius": "$odental-radius-lg",
+      "gap": "$odental-space-sm",
+      "padding": [
+        0,
+        "$odental-space-xl"
+      ],
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "FrnFR",
+          "name": "ButtonLabel",
+          "fill": "$odental-on-primary",
+          "content": "Entrar",
+          "fontFamily": "$odental-font-ui",
+          "fontSize": "$odental-fs-base",
+          "fontWeight": "600"
+        },
+        {
+          "type": "icon",
+          "id": "QVKUM",
+          "name": "ButtonIcon",
+          "opacity": 0.8,
+          "width": 18,
+          "height": 18,
+          "icon": "arrow-right",
+          "library": "lucide",
+          "fill": "$odental-on-primary"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "TYsak",
+      "x": 0,
+      "y": -179,
+      "name": "InputField",
+      "context": "Campo de texto. Validacion al perder el foco, nunca mientras se escribe. El error se muestra con borde danger mas icono y texto bajo el campo.",
+      "reusable": true,
+      "metadata": {
+        "type": "interactive",
+        "testId": "input-field",
+        "validation": {
+          "required": true,
+          "errorCopy": {
+            "required": "Completa este campo",
+            "format": "Revisa el formato",
+            "mismatch": "Los datos no coinciden"
+          }
+        }
+      },
+      "width": 358,
+      "layout": "vertical",
+      "gap": "$odental-space-sm",
+      "children": [
+        {
+          "type": "text",
+          "id": "i9UUHB",
+          "name": "FieldLabel",
+          "fill": "$odental-muted",
+          "content": "Correo",
+          "fontFamily": "$odental-font-ui",
+          "fontSize": "$odental-fs-sm",
+          "fontWeight": "500"
+        },
+        {
+          "type": "frame",
+          "id": "tj5BT",
+          "name": "FieldShell",
+          "width": "fill_container",
+          "height": 52,
+          "fill": "$odental-canvas",
+          "cornerRadius": "$odental-radius-md",
+          "stroke": "$odental-border",
+          "strokeWidth": 1,
+          "strokeAlignment": "inner",
+          "gap": "$odental-space-md",
+          "padding": [
+            0,
+            "$odental-space-lg"
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "qqX78",
+              "name": "FieldIcon",
+              "width": 18,
+              "height": 18,
+              "icon": "mail",
+              "library": "lucide",
+              "fill": "$odental-muted"
+            },
+            {
+              "type": "text",
+              "id": "OGdoY",
+              "name": "FieldValue",
+              "fill": "$odental-text",
+              "content": "marielba.rojas@correo.com",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": "$odental-fs-base",
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "T2dijw",
+      "x": 0,
+      "y": -320,
+      "name": "StatusBar",
+      "context": "OS chrome mock para las pantallas mobile. Instancias sobreescriben width a fill_container. No colocar UI de la app detras.",
+      "reusable": true,
+      "width": 390,
+      "height": 62,
+      "fill": "$odental-canvas",
+      "padding": [
+        0,
+        "$odental-space-xl"
+      ],
+      "justifyContent": "space_between",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "ihqSj",
+          "name": "StatusTime",
+          "fill": "$odental-text",
+          "content": "9:41",
+          "fontFamily": "$odental-font-ui",
+          "fontSize": "$odental-fs-sm",
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "L6zOWu",
+          "name": "StatusIndicators",
+          "gap": "$odental-space-xs",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "Lr14A",
+              "name": "SignalIndicator",
+              "width": 15,
+              "height": 15,
+              "icon": "signal-high",
+              "library": "lucide",
+              "fill": "$odental-text"
+            },
+            {
+              "type": "icon",
+              "id": "HCMhB",
+              "name": "WifiIndicator",
+              "width": 15,
+              "height": 15,
+              "icon": "wifi",
+              "library": "lucide",
+              "fill": "$odental-text"
+            },
+            {
+              "type": "icon",
+              "id": "Wo82p",
+              "name": "BatteryIndicator",
+              "width": 18,
+              "height": 18,
+              "icon": "battery-full",
+              "library": "lucide",
+              "fill": "$odental-text"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

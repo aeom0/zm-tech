@@ -1,0 +1,1018 @@
+{
+  "version": "2.14",
+  "themes": {
+    "mode": [
+      "light",
+      "dark"
+    ]
+  },
+  "variables": {
+    "odental-border": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#DDE3EA",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#27333A",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-canvas": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#0F1519",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-danger-soft": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FEE2E2",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#3B1414",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-danger-strong": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#B91C1C",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FCA5A5",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-focus": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#1E7F8C",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#63C9D6",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-font-ui": {
+      "type": "string",
+      "value": "Geist"
+    },
+    "odental-fs-base": {
+      "type": "number",
+      "value": 15
+    },
+    "odental-fs-sm": {
+      "type": "number",
+      "value": 13
+    },
+    "odental-fs-xl": {
+      "type": "number",
+      "value": 22
+    },
+    "odental-fs-xs": {
+      "type": "number",
+      "value": 11
+    },
+    "odental-heading": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A1628",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#EDF3F8",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-muted": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#5B6B7A",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#93A5B2",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-on-primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F6FEFC",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#04211F",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0D9488",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#2DD4BF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-primary-dark": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0F766E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#14B8A6",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-primary-soft": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#CCFBF1",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#10312F",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-radius-lg": {
+      "type": "number",
+      "value": 16
+    },
+    "odental-radius-md": {
+      "type": "number",
+      "value": 12
+    },
+    "odental-radius-xl": {
+      "type": "number",
+      "value": 20
+    },
+    "odental-space-2xl": {
+      "type": "number",
+      "value": 24
+    },
+    "odental-space-3xl": {
+      "type": "number",
+      "value": 32
+    },
+    "odental-space-md": {
+      "type": "number",
+      "value": 12
+    },
+    "odental-space-sm": {
+      "type": "number",
+      "value": 8
+    },
+    "odental-space-xl": {
+      "type": "number",
+      "value": 20
+    },
+    "odental-space-xs": {
+      "type": "number",
+      "value": 4
+    },
+    "odental-surface": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F7FAFC",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#161F24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-text": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#1F2A33",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#E7EEF3",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-warning-soft": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FEF3C7",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#3A2A0B",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-warning-strong": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#B45309",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    }
+  },
+  "children": [
+    {
+      "type": "frame",
+      "id": "tXjfo",
+      "x": 0,
+      "y": 1060,
+      "name": "UXStates / Componentes",
+      "context": "Matriz de estados de los componentes interactivos. Region separada de las pantallas: aca no se disena flujo, solo se fija el contrato visual de cada estado.",
+      "fill": "$odental-surface",
+      "cornerRadius": "$odental-radius-xl",
+      "stroke": "$odental-border",
+      "strokeWidth": 1,
+      "strokeAlignment": "inner",
+      "layout": "vertical",
+      "gap": "$odental-space-2xl",
+      "padding": "$odental-space-3xl",
+      "children": [
+        {
+          "type": "text",
+          "id": "roBmi",
+          "name": "StatesTitle",
+          "fill": "$odental-heading",
+          "content": "Estados de componentes",
+          "fontFamily": "$odental-font-ui",
+          "fontSize": "$odental-fs-xl",
+          "fontWeight": "700"
+        },
+        {
+          "type": "frame",
+          "id": "Edmo4",
+          "name": "ButtonStates",
+          "gap": "$odental-space-xl",
+          "children": [
+            {
+              "type": "frame",
+              "id": "Qqhpw",
+              "name": "REPOSOCell",
+              "width": 190,
+              "layout": "vertical",
+              "gap": "$odental-space-sm",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "QCWsg",
+                  "name": "REPOSOCaption",
+                  "fill": "$odental-muted",
+                  "content": "REPOSO",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": "$odental-fs-xs",
+                  "fontWeight": "600",
+                  "letterSpacing": 0.5
+                },
+                {
+                  "id": "MHael",
+                  "type": "ref",
+                  "ref": "e9q9nq",
+                  "name": "ButtonDefault",
+                  "width": "fill_container"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "zWWD7",
+              "name": "HOVERCell",
+              "width": 190,
+              "layout": "vertical",
+              "gap": "$odental-space-sm",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "rvWLc",
+                  "name": "HOVERCaption",
+                  "fill": "$odental-muted",
+                  "content": "HOVER",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": "$odental-fs-xs",
+                  "fontWeight": "600",
+                  "letterSpacing": 0.5
+                },
+                {
+                  "id": "h7s2mw",
+                  "type": "ref",
+                  "ref": "e9q9nq",
+                  "name": "ButtonHover",
+                  "width": "fill_container",
+                  "fill": "$odental-primary-dark"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "OS9XL",
+              "name": "FOCOCell",
+              "width": 190,
+              "layout": "vertical",
+              "gap": "$odental-space-sm",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "yplWp",
+                  "name": "FOCOCaption",
+                  "fill": "$odental-muted",
+                  "content": "FOCO",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": "$odental-fs-xs",
+                  "fontWeight": "600",
+                  "letterSpacing": 0.5
+                },
+                {
+                  "id": "xvy3D",
+                  "type": "ref",
+                  "ref": "e9q9nq",
+                  "name": "ButtonFocus",
+                  "width": "fill_container",
+                  "stroke": "$odental-focus",
+                  "strokeWidth": 2,
+                  "strokeAlignment": "outer"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "tj5Vn",
+              "name": "CARGANDOCell",
+              "width": 190,
+              "layout": "vertical",
+              "gap": "$odental-space-sm",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "bYW4Y",
+                  "name": "CARGANDOCaption",
+                  "fill": "$odental-muted",
+                  "content": "CARGANDO",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": "$odental-fs-xs",
+                  "fontWeight": "600",
+                  "letterSpacing": 0.5
+                },
+                {
+                  "id": "T4UoEB",
+                  "type": "ref",
+                  "ref": "e9q9nq",
+                  "name": "ButtonLoading",
+                  "width": "fill_container",
+                  "fill": "$odental-primary-dark",
+                  "descendants": {
+                    "FrnFR": {
+                      "content": "Entrando…"
+                    },
+                    "QVKUM": {
+                      "icon": "loader-circle"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "SVFki",
+              "name": "BLOQUEADOCell",
+              "width": 190,
+              "layout": "vertical",
+              "gap": "$odental-space-sm",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "D5FkS",
+                  "name": "BLOQUEADOCaption",
+                  "fill": "$odental-muted",
+                  "content": "BLOQUEADO",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": "$odental-fs-xs",
+                  "fontWeight": "600",
+                  "letterSpacing": 0.5
+                },
+                {
+                  "id": "m2i3U",
+                  "type": "ref",
+                  "ref": "e9q9nq",
+                  "name": "ButtonDisabled",
+                  "width": "fill_container",
+                  "opacity": 0.4,
+                  "descendants": {
+                    "QVKUM": {
+                      "enabled": true
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "lSWk2",
+          "name": "FieldStates",
+          "gap": "$odental-space-xl",
+          "children": [
+            {
+              "type": "frame",
+              "id": "xLXZ0",
+              "name": "REPOSOCell",
+              "width": 250,
+              "layout": "vertical",
+              "gap": "$odental-space-sm",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "TPg1U",
+                  "name": "REPOSOCaption",
+                  "fill": "$odental-muted",
+                  "content": "REPOSO",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": "$odental-fs-xs",
+                  "fontWeight": "600",
+                  "letterSpacing": 0.5
+                },
+                {
+                  "id": "nh6lW",
+                  "type": "ref",
+                  "ref": "TYsak",
+                  "name": "FieldDefault",
+                  "width": "fill_container"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ZPas6",
+              "name": "FOCOCell",
+              "width": 250,
+              "layout": "vertical",
+              "gap": "$odental-space-sm",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "anlcs",
+                  "name": "FOCOCaption",
+                  "fill": "$odental-muted",
+                  "content": "FOCO",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": "$odental-fs-xs",
+                  "fontWeight": "600",
+                  "letterSpacing": 0.5
+                },
+                {
+                  "id": "XUGrn",
+                  "type": "ref",
+                  "ref": "TYsak",
+                  "name": "FieldFocus",
+                  "width": "fill_container",
+                  "descendants": {
+                    "tj5BT": {
+                      "stroke": "$odental-focus",
+                      "strokeWidth": 2
+                    },
+                    "qqX78": {
+                      "fill": "$odental-focus"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "KbWj0",
+              "name": "ERRORCell",
+              "width": 250,
+              "layout": "vertical",
+              "gap": "$odental-space-sm",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "y7ohB",
+                  "name": "ERRORCaption",
+                  "fill": "$odental-muted",
+                  "content": "ERROR",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": "$odental-fs-xs",
+                  "fontWeight": "600",
+                  "letterSpacing": 0.5
+                },
+                {
+                  "id": "t7hLEC",
+                  "type": "ref",
+                  "ref": "TYsak",
+                  "name": "FieldError",
+                  "width": "fill_container",
+                  "descendants": {
+                    "i9UUHB": {
+                      "fill": "$odental-danger-strong"
+                    },
+                    "tj5BT": {
+                      "stroke": "$odental-danger-strong",
+                      "strokeWidth": 2
+                    },
+                    "qqX78": {
+                      "fill": "$odental-danger-strong"
+                    },
+                    "OGdoY": {
+                      "content": "marielba.rojas@correo"
+                    }
+                  }
+                },
+                {
+                  "type": "frame",
+                  "id": "bbMnp",
+                  "name": "FieldErrorMessage",
+                  "width": "fill_container",
+                  "gap": "$odental-space-xs",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "HoY6l",
+                      "name": "FieldErrorIcon",
+                      "width": 14,
+                      "height": 14,
+                      "icon": "circle-alert",
+                      "library": "lucide",
+                      "fill": "$odental-danger-strong"
+                    },
+                    {
+                      "type": "text",
+                      "id": "rAjMT",
+                      "name": "FieldErrorCopy",
+                      "fill": "$odental-danger-strong",
+                      "content": "Revisa el correo: falta el dominio",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-xs",
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Xks2U",
+              "name": "BLOQUEADOCell",
+              "width": 250,
+              "layout": "vertical",
+              "gap": "$odental-space-sm",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "DhzSk",
+                  "name": "BLOQUEADOCaption",
+                  "fill": "$odental-muted",
+                  "content": "BLOQUEADO",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": "$odental-fs-xs",
+                  "fontWeight": "600",
+                  "letterSpacing": 0.5
+                },
+                {
+                  "id": "paNzu",
+                  "type": "ref",
+                  "ref": "TYsak",
+                  "name": "FieldDisabled",
+                  "width": "fill_container",
+                  "opacity": 0.45,
+                  "descendants": {
+                    "tj5BT": {
+                      "fill": "$odental-surface"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "AFKuf",
+          "name": "PillStates",
+          "gap": "$odental-space-xl",
+          "children": [
+            {
+              "type": "frame",
+              "id": "OZmZT",
+              "name": "CONFIRMADACell",
+              "width": 150,
+              "layout": "vertical",
+              "gap": "$odental-space-sm",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "tZU4X",
+                  "name": "CONFIRMADACaption",
+                  "fill": "$odental-muted",
+                  "content": "CONFIRMADA",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": "$odental-fs-xs",
+                  "fontWeight": "600",
+                  "letterSpacing": 0.5
+                },
+                {
+                  "id": "Xel5b",
+                  "type": "ref",
+                  "ref": "zBia3",
+                  "name": "PillConfirmed"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "cZdMX",
+              "name": "PORCONFIRMARCell",
+              "width": 150,
+              "layout": "vertical",
+              "gap": "$odental-space-sm",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "dxDIc",
+                  "name": "PORCONFIRMARCaption",
+                  "fill": "$odental-muted",
+                  "content": "POR CONFIRMAR",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": "$odental-fs-xs",
+                  "fontWeight": "600",
+                  "letterSpacing": 0.5
+                },
+                {
+                  "id": "TGwq2",
+                  "type": "ref",
+                  "ref": "zBia3",
+                  "name": "PillPending",
+                  "fill": "$odental-warning-soft",
+                  "descendants": {
+                    "a8Jrz2": {
+                      "icon": "clock",
+                      "fill": "$odental-warning-strong"
+                    },
+                    "Y4LxUq": {
+                      "content": "Por confirmar",
+                      "fill": "$odental-warning-strong"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "nFwdD",
+              "name": "SINESPECIALISTACell",
+              "width": 150,
+              "layout": "vertical",
+              "gap": "$odental-space-sm",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "bOlqH",
+                  "name": "SINESPECIALISTACaption",
+                  "fill": "$odental-muted",
+                  "content": "SIN ESPECIALISTA",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": "$odental-fs-xs",
+                  "fontWeight": "600",
+                  "letterSpacing": 0.5
+                },
+                {
+                  "id": "orQSA",
+                  "type": "ref",
+                  "ref": "zBia3",
+                  "name": "PillUnassigned",
+                  "fill": "$odental-danger-soft",
+                  "descendants": {
+                    "a8Jrz2": {
+                      "icon": "user-round-x",
+                      "fill": "$odental-danger-strong"
+                    },
+                    "Y4LxUq": {
+                      "content": "Sin especialista",
+                      "fill": "$odental-danger-strong"
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "frxu9",
+              "name": "CANCELADACell",
+              "width": 150,
+              "layout": "vertical",
+              "gap": "$odental-space-sm",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "bAkif",
+                  "name": "CANCELADACaption",
+                  "fill": "$odental-muted",
+                  "content": "CANCELADA",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": "$odental-fs-xs",
+                  "fontWeight": "600",
+                  "letterSpacing": 0.5
+                },
+                {
+                  "id": "l7779",
+                  "type": "ref",
+                  "ref": "zBia3",
+                  "name": "PillCancelled",
+                  "fill": "$odental-surface",
+                  "descendants": {
+                    "a8Jrz2": {
+                      "icon": "x",
+                      "fill": "$odental-muted"
+                    },
+                    "Y4LxUq": {
+                      "content": "Cancelada",
+                      "fill": "$odental-muted"
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "e9q9nq",
+      "x": 860,
+      "y": -320,
+      "name": "ButtonPrimary",
+      "context": "Accion primaria. Hover oscurece a primary-dark, focus agrega anillo de 2px en $odental-focus, disabled baja opacidad a 0.45 y bloquea el tap. Instancias sin icono ponen ButtonIcon enabled:false.",
+      "reusable": true,
+      "metadata": {
+        "type": "interactive",
+        "testId": "button-primary",
+        "aria": {
+          "role": "button"
+        }
+      },
+      "width": 358,
+      "height": 52,
+      "fill": "$odental-primary",
+      "cornerRadius": "$odental-radius-lg",
+      "gap": "$odental-space-sm",
+      "padding": [
+        0,
+        "$odental-space-xl"
+      ],
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "FrnFR",
+          "name": "ButtonLabel",
+          "fill": "$odental-on-primary",
+          "content": "Entrar",
+          "fontFamily": "$odental-font-ui",
+          "fontSize": "$odental-fs-base",
+          "fontWeight": "600"
+        },
+        {
+          "type": "icon",
+          "id": "QVKUM",
+          "name": "ButtonIcon",
+          "opacity": 0.8,
+          "width": 18,
+          "height": 18,
+          "icon": "arrow-right",
+          "library": "lucide",
+          "fill": "$odental-on-primary"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "TYsak",
+      "x": 0,
+      "y": -179,
+      "name": "InputField",
+      "context": "Campo de texto. Validacion al perder el foco, nunca mientras se escribe. El error se muestra con borde danger mas icono y texto bajo el campo.",
+      "reusable": true,
+      "metadata": {
+        "type": "interactive",
+        "testId": "input-field",
+        "validation": {
+          "required": true,
+          "errorCopy": {
+            "required": "Completa este campo",
+            "format": "Revisa el formato",
+            "mismatch": "Los datos no coinciden"
+          }
+        }
+      },
+      "width": 358,
+      "layout": "vertical",
+      "gap": "$odental-space-sm",
+      "children": [
+        {
+          "type": "text",
+          "id": "i9UUHB",
+          "name": "FieldLabel",
+          "fill": "$odental-muted",
+          "content": "Correo",
+          "fontFamily": "$odental-font-ui",
+          "fontSize": "$odental-fs-sm",
+          "fontWeight": "500"
+        },
+        {
+          "type": "frame",
+          "id": "tj5BT",
+          "name": "FieldShell",
+          "width": "fill_container",
+          "height": 52,
+          "fill": "$odental-canvas",
+          "cornerRadius": "$odental-radius-md",
+          "stroke": "$odental-border",
+          "strokeWidth": 1,
+          "strokeAlignment": "inner",
+          "gap": "$odental-space-md",
+          "padding": [
+            0,
+            "$odental-space-lg"
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "qqX78",
+              "name": "FieldIcon",
+              "width": 18,
+              "height": 18,
+              "icon": "mail",
+              "library": "lucide",
+              "fill": "$odental-muted"
+            },
+            {
+              "type": "text",
+              "id": "OGdoY",
+              "name": "FieldValue",
+              "fill": "$odental-text",
+              "content": "marielba.rojas@correo.com",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": "$odental-fs-base",
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "zBia3",
+      "x": 442,
+      "y": -179,
+      "name": "StatusPill",
+      "context": "Estado de una cita o tratamiento. El color nunca va solo: siempre acompanado de icono y texto para lectura sin color.",
+      "reusable": true,
+      "metadata": {
+        "type": "display",
+        "testId": "status-pill"
+      },
+      "height": 26,
+      "fill": "$odental-primary-soft",
+      "cornerRadius": 13,
+      "gap": "$odental-space-xs",
+      "padding": [
+        0,
+        "$odental-space-md"
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "icon",
+          "id": "a8Jrz2",
+          "name": "PillIcon",
+          "width": 13,
+          "height": 13,
+          "icon": "check",
+          "library": "lucide",
+          "fill": "$odental-primary-dark"
+        },
+        {
+          "type": "text",
+          "id": "Y4LxUq",
+          "name": "PillLabel",
+          "fill": "$odental-primary-dark",
+          "content": "Confirmada",
+          "fontFamily": "$odental-font-ui",
+          "fontSize": "$odental-fs-xs",
+          "fontWeight": "600"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1352 @@
+{
+  "version": "2.14",
+  "themes": {
+    "mode": [
+      "light",
+      "dark"
+    ]
+  },
+  "variables": {
+    "odental-primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0D9488",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#2DD4BF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-primary-dark": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0F766E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#14B8A6",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-primary-soft": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#CCFBF1",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#10312F",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-aqua-50": {
+      "type": "color",
+      "value": "#EAF7FB"
+    },
+    "odental-aqua-100": {
+      "type": "color",
+      "value": "#BFEAF2"
+    },
+    "odental-aqua-300": {
+      "type": "color",
+      "value": "#63C9D6"
+    },
+    "odental-aqua-600": {
+      "type": "color",
+      "value": "#1E7F8C"
+    },
+    "odental-navy": {
+      "type": "color",
+      "value": "#0A1628"
+    },
+    "odental-slate": {
+      "type": "color",
+      "value": "#20343A"
+    },
+    "odental-surface": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F7FAFC",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#161F24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-canvas": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#0F1519",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-text": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#1F2A33",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#E7EEF3",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-muted": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#5B6B7A",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#93A5B2",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-border": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#DDE3EA",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#27333A",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-success": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#10B981",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#34D399",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-warning": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#D97706",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#F59E0B",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-danger": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#DC2626",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#F87171",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-cream": {
+      "type": "color",
+      "value": "#FDFAF5"
+    },
+    "odental-heading": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A1628",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#EDF3F8",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-on-primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F6FEFC",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#04211F",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-focus": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#1E7F8C",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#63C9D6",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-font-ui": {
+      "type": "string",
+      "value": "Geist"
+    },
+    "odental-space-xs": {
+      "type": "number",
+      "value": 4
+    },
+    "odental-space-sm": {
+      "type": "number",
+      "value": 8
+    },
+    "odental-space-md": {
+      "type": "number",
+      "value": 12
+    },
+    "odental-space-lg": {
+      "type": "number",
+      "value": 16
+    },
+    "odental-space-xl": {
+      "type": "number",
+      "value": 20
+    },
+    "odental-space-2xl": {
+      "type": "number",
+      "value": 24
+    },
+    "odental-space-3xl": {
+      "type": "number",
+      "value": 32
+    },
+    "odental-radius-sm": {
+      "type": "number",
+      "value": 8
+    },
+    "odental-radius-md": {
+      "type": "number",
+      "value": 12
+    },
+    "odental-radius-lg": {
+      "type": "number",
+      "value": 16
+    },
+    "odental-radius-xl": {
+      "type": "number",
+      "value": 20
+    },
+    "odental-radius-pill": {
+      "type": "number",
+      "value": 28
+    },
+    "odental-fs-xs": {
+      "type": "number",
+      "value": 11
+    },
+    "odental-fs-sm": {
+      "type": "number",
+      "value": 13
+    },
+    "odental-fs-base": {
+      "type": "number",
+      "value": 15
+    },
+    "odental-fs-lg": {
+      "type": "number",
+      "value": 18
+    },
+    "odental-fs-xl": {
+      "type": "number",
+      "value": 22
+    },
+    "odental-fs-2xl": {
+      "type": "number",
+      "value": 28
+    },
+    "odental-glass": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFFFFBF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#161F24BF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-shadow-ambient": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A162814",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#00000052",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-shadow-direct": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A16281F",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#00000066",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-warning-soft": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FEF3C7",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#3A2A0B",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-warning-strong": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#B45309",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-danger-soft": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FEE2E2",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#3B1414",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-danger-strong": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#B91C1C",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FCA5A5",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-clear": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#00000000",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#00000000",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-navy-accent": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A1628",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#9BC1E4",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    }
+  },
+  "children": [
+    {
+      "type": "frame",
+      "id": "pwxaR",
+      "x": 0,
+      "y": 0,
+      "name": "BrandBoard",
+      "context": "OdentalPro brand board. Base: Halo (soft clinical). Palette: Sterile Aqua + teal/navy. Diferenciado de GeemaStudio Lunaris (#40E0D0).",
+      "width": 960,
+      "height": 920,
+      "fill": "$odental-surface",
+      "layout": "vertical",
+      "gap": 28,
+      "padding": 40,
+      "children": [
+        {
+          "type": "frame",
+          "id": "OIUB4",
+          "name": "BrandHeader",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 8,
+          "children": [
+            {
+              "type": "text",
+              "id": "1dKHv",
+              "name": "BrandTitle",
+              "fill": "$odental-heading",
+              "content": "OdentalPro",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": 40,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "4aZG2",
+              "name": "BrandSubtitle",
+              "fill": "$odental-muted",
+              "content": "Sterile Aqua · Halo soft · Teal clínico #0D9488 (no Lunaris)",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "0opH9",
+          "name": "TokenGrid",
+          "width": "fill_container",
+          "gap": 16,
+          "children": [
+            {
+              "type": "frame",
+              "id": "cxzPs",
+              "name": "SwatchPrimary",
+              "context": "Token Primary — Halo clinical; no hardcode outside variables.",
+              "width": 140,
+              "height": 120,
+              "fill": "$odental-canvas",
+              "cornerRadius": 16,
+              "stroke": "$odental-border",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 12,
+                  "id": "bQnXF",
+                  "name": "ChipPrimary",
+                  "fill": "$odental-primary",
+                  "width": "fill_container",
+                  "height": 48
+                },
+                {
+                  "type": "text",
+                  "id": "NfrrC",
+                  "name": "LabelPrimary",
+                  "fill": "$odental-text",
+                  "content": "Primary",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "v8rfs",
+                  "name": "HexPrimary",
+                  "fill": "$odental-muted",
+                  "content": "#0D9488",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "bzujM",
+              "name": "SwatchPrimaryDark",
+              "context": "Token Primary Dark — Halo clinical; no hardcode outside variables.",
+              "width": 140,
+              "height": 120,
+              "fill": "$odental-canvas",
+              "cornerRadius": 16,
+              "stroke": "$odental-border",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 12,
+                  "id": "8MKje",
+                  "name": "ChipPrimaryDark",
+                  "fill": "$odental-primary-dark",
+                  "width": "fill_container",
+                  "height": 48
+                },
+                {
+                  "type": "text",
+                  "id": "XVnEH",
+                  "name": "LabelPrimaryDark",
+                  "fill": "$odental-text",
+                  "content": "Primary Dark",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "UOyzZ",
+                  "name": "HexPrimaryDark",
+                  "fill": "$odental-muted",
+                  "content": "#0F766E",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "8Yofk",
+              "name": "SwatchPrimarySoft",
+              "context": "Token Primary Soft — Halo clinical; no hardcode outside variables.",
+              "width": 140,
+              "height": 120,
+              "fill": "$odental-canvas",
+              "cornerRadius": 16,
+              "stroke": "$odental-border",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 12,
+                  "id": "M6jHm",
+                  "name": "ChipPrimarySoft",
+                  "fill": "$odental-primary-soft",
+                  "width": "fill_container",
+                  "height": 48
+                },
+                {
+                  "type": "text",
+                  "id": "dWlq0",
+                  "name": "LabelPrimarySoft",
+                  "fill": "$odental-text",
+                  "content": "Primary Soft",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "h46BN",
+                  "name": "HexPrimarySoft",
+                  "fill": "$odental-muted",
+                  "content": "#CCFBF1",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "O5UIW",
+              "name": "SwatchAqua50",
+              "context": "Token Aqua 50 — Halo clinical; no hardcode outside variables.",
+              "width": 140,
+              "height": 120,
+              "fill": "$odental-canvas",
+              "cornerRadius": 16,
+              "stroke": "$odental-border",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 12,
+                  "id": "SwFs2",
+                  "name": "ChipAqua50",
+                  "fill": "$odental-aqua-50",
+                  "width": "fill_container",
+                  "height": 48
+                },
+                {
+                  "type": "text",
+                  "id": "o1RZ4",
+                  "name": "LabelAqua50",
+                  "fill": "$odental-text",
+                  "content": "Aqua 50",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "cXcWa",
+                  "name": "HexAqua50",
+                  "fill": "$odental-muted",
+                  "content": "#EAF7FB",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "O3XwQ",
+              "name": "SwatchAqua300",
+              "context": "Token Aqua 300 — Halo clinical; no hardcode outside variables.",
+              "width": 140,
+              "height": 120,
+              "fill": "$odental-canvas",
+              "cornerRadius": 16,
+              "stroke": "$odental-border",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 12,
+                  "id": "XSziV",
+                  "name": "ChipAqua300",
+                  "fill": "$odental-aqua-300",
+                  "width": "fill_container",
+                  "height": 48
+                },
+                {
+                  "type": "text",
+                  "id": "as6nE",
+                  "name": "LabelAqua300",
+                  "fill": "$odental-text",
+                  "content": "Aqua 300",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "LPhWI",
+                  "name": "HexAqua300",
+                  "fill": "$odental-muted",
+                  "content": "#63C9D6",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "cWao4",
+          "name": "TokenGridRow2",
+          "width": "fill_container",
+          "gap": 16,
+          "children": [
+            {
+              "type": "frame",
+              "id": "b6JYP",
+              "name": "SwatchAqua600",
+              "context": "Token Aqua 600 — Halo clinical; no hardcode outside variables.",
+              "width": 140,
+              "height": 120,
+              "fill": "$odental-canvas",
+              "cornerRadius": 16,
+              "stroke": "$odental-border",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 12,
+                  "id": "e1iqw",
+                  "name": "ChipAqua600",
+                  "fill": "$odental-aqua-600",
+                  "width": "fill_container",
+                  "height": 48
+                },
+                {
+                  "type": "text",
+                  "id": "dQiKx",
+                  "name": "LabelAqua600",
+                  "fill": "$odental-text",
+                  "content": "Aqua 600",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "Jhhiw",
+                  "name": "HexAqua600",
+                  "fill": "$odental-muted",
+                  "content": "#1E7F8C",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "jXORH",
+              "name": "SwatchNavy",
+              "context": "Token Navy — Halo clinical; no hardcode outside variables.",
+              "width": 140,
+              "height": 120,
+              "fill": "$odental-canvas",
+              "cornerRadius": 16,
+              "stroke": "$odental-border",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 12,
+                  "id": "ECGjI",
+                  "name": "ChipNavy",
+                  "fill": "$odental-navy",
+                  "width": "fill_container",
+                  "height": 48
+                },
+                {
+                  "type": "text",
+                  "id": "zjAwv",
+                  "name": "LabelNavy",
+                  "fill": "$odental-text",
+                  "content": "Navy",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "Txn1T",
+                  "name": "HexNavy",
+                  "fill": "$odental-muted",
+                  "content": "#0A1628",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "sZbTw",
+              "name": "SwatchSlate",
+              "context": "Token Slate — Halo clinical; no hardcode outside variables.",
+              "width": 140,
+              "height": 120,
+              "fill": "$odental-canvas",
+              "cornerRadius": 16,
+              "stroke": "$odental-border",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 12,
+                  "id": "1Pt1P",
+                  "name": "ChipSlate",
+                  "fill": "$odental-slate",
+                  "width": "fill_container",
+                  "height": 48
+                },
+                {
+                  "type": "text",
+                  "id": "Xlnbm",
+                  "name": "LabelSlate",
+                  "fill": "$odental-text",
+                  "content": "Slate",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "zqOzv",
+                  "name": "HexSlate",
+                  "fill": "$odental-muted",
+                  "content": "#20343A",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "z7Gzv",
+              "name": "SwatchSurface",
+              "context": "Token Surface — Halo clinical; no hardcode outside variables.",
+              "width": 140,
+              "height": 120,
+              "fill": "$odental-canvas",
+              "cornerRadius": 16,
+              "stroke": "$odental-border",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 12,
+                  "id": "UISnd",
+                  "name": "ChipSurface",
+                  "fill": "$odental-surface",
+                  "width": "fill_container",
+                  "height": 48
+                },
+                {
+                  "type": "text",
+                  "id": "s3i7k",
+                  "name": "LabelSurface",
+                  "fill": "$odental-text",
+                  "content": "Surface",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "o69RR",
+                  "name": "HexSurface",
+                  "fill": "$odental-muted",
+                  "content": "#F7FAFC",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ob1nH",
+              "name": "SwatchText",
+              "context": "Token Text — Halo clinical; no hardcode outside variables.",
+              "width": 140,
+              "height": 120,
+              "fill": "$odental-canvas",
+              "cornerRadius": 16,
+              "stroke": "$odental-border",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 12,
+                  "id": "7CWsd",
+                  "name": "ChipText",
+                  "fill": "$odental-text",
+                  "width": "fill_container",
+                  "height": 48
+                },
+                {
+                  "type": "text",
+                  "id": "WsWTD",
+                  "name": "LabelText",
+                  "fill": "$odental-text",
+                  "content": "Text",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "II8kj",
+                  "name": "HexText",
+                  "fill": "$odental-muted",
+                  "content": "#1F2A33",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "92JAV",
+          "name": "TokenGridRow3",
+          "width": "fill_container",
+          "gap": 16,
+          "children": [
+            {
+              "type": "frame",
+              "id": "qWU7F",
+              "name": "SwatchMuted",
+              "context": "Token Muted — Halo clinical; no hardcode outside variables.",
+              "width": 140,
+              "height": 120,
+              "fill": "$odental-canvas",
+              "cornerRadius": 16,
+              "stroke": "$odental-border",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 12,
+                  "id": "buZJb",
+                  "name": "ChipMuted",
+                  "fill": "$odental-muted",
+                  "width": "fill_container",
+                  "height": 48
+                },
+                {
+                  "type": "text",
+                  "id": "N010T",
+                  "name": "LabelMuted",
+                  "fill": "$odental-text",
+                  "content": "Muted",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "3wXou",
+                  "name": "HexMuted",
+                  "fill": "$odental-muted",
+                  "content": "#5B6B7A",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Nkg7j",
+              "name": "SwatchBorder",
+              "context": "Token Border — Halo clinical; no hardcode outside variables.",
+              "width": 140,
+              "height": 120,
+              "fill": "$odental-canvas",
+              "cornerRadius": 16,
+              "stroke": "$odental-border",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 12,
+                  "id": "sxBOM",
+                  "name": "ChipBorder",
+                  "fill": "$odental-border",
+                  "width": "fill_container",
+                  "height": 48
+                },
+                {
+                  "type": "text",
+                  "id": "raeHx",
+                  "name": "LabelBorder",
+                  "fill": "$odental-text",
+                  "content": "Border",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "w47oD",
+                  "name": "HexBorder",
+                  "fill": "$odental-muted",
+                  "content": "#DDE3EA",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "5K7qR",
+              "name": "SwatchSuccess",
+              "context": "Token Success — Halo clinical; no hardcode outside variables.",
+              "width": 140,
+              "height": 120,
+              "fill": "$odental-canvas",
+              "cornerRadius": 16,
+              "stroke": "$odental-border",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 12,
+                  "id": "Eec1C",
+                  "name": "ChipSuccess",
+                  "fill": "$odental-success",
+                  "width": "fill_container",
+                  "height": 48
+                },
+                {
+                  "type": "text",
+                  "id": "uEFIa",
+                  "name": "LabelSuccess",
+                  "fill": "$odental-text",
+                  "content": "Success",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "FfsLS",
+                  "name": "HexSuccess",
+                  "fill": "$odental-muted",
+                  "content": "#10B981",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "nnDbg",
+              "name": "SwatchWarning",
+              "context": "Token Warning — Halo clinical; no hardcode outside variables.",
+              "width": 140,
+              "height": 120,
+              "fill": "$odental-canvas",
+              "cornerRadius": 16,
+              "stroke": "$odental-border",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 12,
+                  "id": "hGj7G",
+                  "name": "ChipWarning",
+                  "fill": "$odental-warning",
+                  "width": "fill_container",
+                  "height": 48
+                },
+                {
+                  "type": "text",
+                  "id": "dwaGJ",
+                  "name": "LabelWarning",
+                  "fill": "$odental-text",
+                  "content": "Warning",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "Tqv87",
+                  "name": "HexWarning",
+                  "fill": "$odental-muted",
+                  "content": "#D97706",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "0Ub31",
+              "name": "SwatchDanger",
+              "context": "Token Danger — Halo clinical; no hardcode outside variables.",
+              "width": 140,
+              "height": 120,
+              "fill": "$odental-canvas",
+              "cornerRadius": 16,
+              "stroke": "$odental-border",
+              "strokeWidth": 1,
+              "strokeAlignment": "inner",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "rectangle",
+                  "cornerRadius": 12,
+                  "id": "S8m5T",
+                  "name": "ChipDanger",
+                  "fill": "$odental-danger",
+                  "width": "fill_container",
+                  "height": 48
+                },
+                {
+                  "type": "text",
+                  "id": "Xlf9l",
+                  "name": "LabelDanger",
+                  "fill": "$odental-text",
+                  "content": "Danger",
+                  "fontFamily": "Inter",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "d39Lf",
+                  "name": "HexDanger",
+                  "fill": "$odental-muted",
+                  "content": "#DC2626",
+                  "fontFamily": "Inter",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ZFNvL",
+          "name": "PrimaryButtonPreview",
+          "context": "CTA primario clínico; hover usa odental-primary-dark.",
+          "width": 220,
+          "height": 48,
+          "fill": "$odental-primary",
+          "cornerRadius": 14,
+          "padding": [
+            0,
+            20
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "mj10y",
+              "name": "PrimaryButtonLabel",
+              "fill": "#FFFFFF",
+              "content": "Agendar cita",
+              "fontFamily": "Inter",
+              "fontSize": 15,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "A21F0",
+          "name": "DirectionNote",
+          "fill": "$odental-muted",
+          "content": "Dirección: clínica limpia y confiable. Evitar púrpura, cream terracotta y turquesa spa. Lucide icons en código.",
+          "fontFamily": "Inter",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "note",
+      "id": "vcRO4",
+      "x": 2542,
+      "y": 70,
+      "name": "Nota / Contrato de estados",
+      "width": 340,
+      "height": 0,
+      "content": "CONTRATO DE ESTADOS\n\nButtonPrimary: reposo $odental-primary · hover $odental-primary-dark · foco anillo externo 2px $odental-focus · cargando primary-dark con loader-circle girando y tap bloqueado · bloqueado opacidad 0.4 sin icono.\n\nInputField: reposo borde 1px $odental-border · foco borde 2px $odental-focus · error borde 2px $odental-danger-strong mas mensaje bajo el campo · bloqueado opacidad 0.45 con relleno surface.\n\nStatusPill: confirmada, por confirmar, sin especialista y cancelada. Siempre icono mas texto.\n\nDayChip: seleccionado relleno primary; el resto surface con borde.\n\nTabBar: activo capsula primary-soft con icono y label primary-dark.\n\nPendiente: estado vacio de Agenda y de historial, y skeleton de carga de las listas."
+    },
+    {
+      "type": "note",
+      "id": "a6bAXb",
+      "x": 2973,
+      "y": 70,
+      "name": "Nota / Contrato de accesibilidad",
+      "width": 340,
+      "height": 678,
+      "content": "CONTRATO DE ACCESIBILIDAD\n\nAreas de toque: todas las acciones de icono miden 44x44. Los links Olvide mi clave y Ver completo van dentro de un frame de 44 y 32 de alto respectivamente.\n\nEl color nunca es la unica pista: cada pill lleva icono, la alerta clinica lleva triangle-alert, los dientes marcados se repiten como chips de leyenda con texto.\n\nContraste: texto sobre canvas usa $odental-text; el texto secundario usa $odental-muted, que en claro y en oscuro se mantiene sobre 4.5:1. El label sobre boton usa $odental-on-primary, que invierte en modo oscuro porque primary se aclara a #2DD4BF.\n\nOrden de foco en SignIn: correo, clave, mantener sesion, olvide mi clave, entrar.\n\nPendiente: verificar el contraste de $odental-warning-strong sobre warning-soft con medidor real."
+    },
+    {
+      "type": "note",
+      "id": "GvDrp",
+      "x": 3408,
+      "y": 70,
+      "name": "Nota / Flujo y datos",
+      "width": 340,
+      "height": 685,
+      "content": "FLUJO Y DATOS\n\nLanding publica, SignIn, selector de consultorio, Agenda. Desde Agenda se abre el detalle de la cita o la ficha del paciente. Volver desde la ficha regresa al origen real, no siempre a Agenda.\n\nTablas con prefijo odental_ mientras se comparta el proyecto Supabase con la landing: odental_appointments, odental_patients, odental_clinical_records, odental_treatment_plans.\n\nEl odontograma se guarda como snapshot JSONB en odental_clinical_records.odontogram por visita, numeracion FDI, 5 superficies por diente. No se sobreescribe el historico.\n\nLa moneda y la zona horaria vienen de la configuracion del consultorio, nunca fijas en codigo.\n\nWhatsApp de la ficha abre el bot WABA con la plantilla de recordatorio."
+    }
+  ]
+}

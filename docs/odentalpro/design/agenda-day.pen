@@ -1,0 +1,1646 @@
+{
+  "version": "2.14",
+  "themes": {
+    "mode": [
+      "light",
+      "dark"
+    ]
+  },
+  "variables": {
+    "odental-aqua-600": {
+      "type": "color",
+      "value": "#1E7F8C"
+    },
+    "odental-border": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#DDE3EA",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#27333A",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-canvas": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#0F1519",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-danger-soft": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FEE2E2",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#3B1414",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-danger-strong": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#B91C1C",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FCA5A5",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-font-ui": {
+      "type": "string",
+      "value": "Geist"
+    },
+    "odental-fs-base": {
+      "type": "number",
+      "value": 15
+    },
+    "odental-fs-sm": {
+      "type": "number",
+      "value": 13
+    },
+    "odental-fs-xl": {
+      "type": "number",
+      "value": 22
+    },
+    "odental-fs-xs": {
+      "type": "number",
+      "value": 11
+    },
+    "odental-glass": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FFFFFFBF",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#161F24BF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-heading": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A1628",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#EDF3F8",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-muted": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#5B6B7A",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#93A5B2",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-navy-accent": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A1628",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#9BC1E4",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-on-primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F6FEFC",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#04211F",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-primary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0D9488",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#2DD4BF",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-primary-dark": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0F766E",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#14B8A6",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-primary-soft": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#CCFBF1",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#10312F",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-radius-lg": {
+      "type": "number",
+      "value": 16
+    },
+    "odental-radius-md": {
+      "type": "number",
+      "value": 12
+    },
+    "odental-shadow-ambient": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A162814",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#00000052",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-shadow-direct": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0A16281F",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#00000066",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-space-2xl": {
+      "type": "number",
+      "value": 24
+    },
+    "odental-space-lg": {
+      "type": "number",
+      "value": 16
+    },
+    "odental-space-md": {
+      "type": "number",
+      "value": 12
+    },
+    "odental-space-sm": {
+      "type": "number",
+      "value": 8
+    },
+    "odental-space-xl": {
+      "type": "number",
+      "value": 20
+    },
+    "odental-space-xs": {
+      "type": "number",
+      "value": 4
+    },
+    "odental-surface": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F7FAFC",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#161F24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-text": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#1F2A33",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#E7EEF3",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-warning-soft": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FEF3C7",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#3A2A0B",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    },
+    "odental-warning-strong": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#B45309",
+          "theme": {
+            "mode": "light"
+          }
+        },
+        {
+          "value": "#FBBF24",
+          "theme": {
+            "mode": "dark"
+          }
+        }
+      ]
+    }
+  },
+  "children": [
+    {
+      "type": "frame",
+      "id": "JwEIV",
+      "x": 1545,
+      "y": 70,
+      "name": "OdentalPro / Agenda / 01 / Day / Default / Mobile",
+      "context": "Pantalla principal del dia. Viene del selector de consultorio y va al detalle de cita o a la ficha del paciente. Datos de odental_appointments filtrados por tenant_id y fecha en la zona horaria del consultorio.",
+      "clip": true,
+      "width": 390,
+      "fill": "$odental-canvas",
+      "layout": "vertical",
+      "children": [
+        {
+          "id": "QzZpr",
+          "type": "ref",
+          "ref": "T2dijw",
+          "name": "AgendaStatusBar",
+          "width": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "CEOA2",
+          "name": "AgendaWrapper",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$odental-space-2xl",
+          "padding": [
+            "$odental-space-sm",
+            "$odental-space-xl",
+            "$odental-space-2xl",
+            "$odental-space-xl"
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "Owyze",
+              "name": "AgendaHeader",
+              "width": "fill_container",
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "knLO8",
+                  "name": "AgendaHeading",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "G59qjI",
+                      "name": "AgendaTitle",
+                      "fill": "$odental-heading",
+                      "content": "Agenda",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-xl",
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "t9TkhY",
+                      "name": "AgendaDate",
+                      "fill": "$odental-muted",
+                      "content": "Jueves 24 de julio",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-sm",
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "skIMl",
+                  "name": "AgendaActions",
+                  "gap": "$odental-space-sm",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "K8S1e7",
+                      "name": "SearchAction",
+                      "context": "Abre buscador por paciente, tratamiento o cedula.",
+                      "metadata": {
+                        "type": "interactive",
+                        "testId": "agenda-search",
+                        "aria": {
+                          "role": "button",
+                          "label": "Buscar cita o paciente"
+                        }
+                      },
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$odental-surface",
+                      "cornerRadius": "$odental-radius-md",
+                      "stroke": "$odental-border",
+                      "strokeWidth": 1,
+                      "strokeAlignment": "inner",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "Vsu59",
+                          "name": "SearchIcon",
+                          "width": 19,
+                          "height": 19,
+                          "icon": "search",
+                          "library": "lucide",
+                          "fill": "$odental-text"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "c7bobx",
+                      "name": "NewAppointmentAction",
+                      "context": "Abre el formulario de nueva cita con la fecha seleccionada precargada. Valida solapes contra el horario del especialista.",
+                      "metadata": {
+                        "type": "interactive",
+                        "testId": "agenda-new-appointment",
+                        "analytics": {
+                          "event": "agenda.appointment_create_start"
+                        },
+                        "aria": {
+                          "role": "button",
+                          "label": "Agendar cita"
+                        }
+                      },
+                      "width": 44,
+                      "height": 44,
+                      "fill": "$odental-primary",
+                      "cornerRadius": "$odental-radius-md",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "icon",
+                          "id": "P4fq0",
+                          "name": "NewAppointmentIcon",
+                          "width": 21,
+                          "height": 21,
+                          "icon": "plus",
+                          "library": "lucide",
+                          "fill": "$odental-on-primary"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "bwQ6I",
+              "name": "DayStrip",
+              "context": "Semana visible. El dia activo dispara la recarga de citas. Desliza horizontalmente para cambiar de semana.",
+              "width": "fill_container",
+              "gap": "$odental-space-sm",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "RbkEa",
+                  "name": "DayChip21",
+                  "context": "Dia disponible de la semana.",
+                  "metadata": {
+                    "type": "interactive",
+                    "testId": "day-chip-21"
+                  },
+                  "width": "fill_container",
+                  "height": 62,
+                  "fill": "$odental-surface",
+                  "cornerRadius": "$odental-radius-md",
+                  "stroke": "$odental-border",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "uCb8P",
+                      "name": "DayName21",
+                      "fill": "$odental-muted",
+                      "content": "Lun",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-xs",
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "text",
+                      "id": "XBdtz",
+                      "name": "DayNumber21",
+                      "fill": "$odental-text",
+                      "content": "21",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-base",
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "D3IhKZ",
+                  "name": "DayChip22",
+                  "context": "Dia disponible de la semana.",
+                  "metadata": {
+                    "type": "interactive",
+                    "testId": "day-chip-22"
+                  },
+                  "width": "fill_container",
+                  "height": 62,
+                  "fill": "$odental-surface",
+                  "cornerRadius": "$odental-radius-md",
+                  "stroke": "$odental-border",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "U4omp",
+                      "name": "DayName22",
+                      "fill": "$odental-muted",
+                      "content": "Mar",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-xs",
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "text",
+                      "id": "G7aY3",
+                      "name": "DayNumber22",
+                      "fill": "$odental-text",
+                      "content": "22",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-base",
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "oY4D6",
+                  "name": "DayChip23",
+                  "context": "Dia disponible de la semana.",
+                  "metadata": {
+                    "type": "interactive",
+                    "testId": "day-chip-23"
+                  },
+                  "width": "fill_container",
+                  "height": 62,
+                  "fill": "$odental-surface",
+                  "cornerRadius": "$odental-radius-md",
+                  "stroke": "$odental-border",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "PTDPU",
+                      "name": "DayName23",
+                      "fill": "$odental-muted",
+                      "content": "Mié",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-xs",
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "text",
+                      "id": "b098E",
+                      "name": "DayNumber23",
+                      "fill": "$odental-text",
+                      "content": "23",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-base",
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "hJ35m",
+                  "name": "DayChip24",
+                  "context": "Dia seleccionado.",
+                  "metadata": {
+                    "type": "interactive",
+                    "testId": "day-chip-24"
+                  },
+                  "width": "fill_container",
+                  "height": 62,
+                  "fill": "$odental-primary",
+                  "cornerRadius": "$odental-radius-md",
+                  "stroke": "$odental-primary",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "r9dJb",
+                      "name": "DayName24",
+                      "fill": "$odental-on-primary",
+                      "content": "Jue",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-xs",
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "text",
+                      "id": "DfdkX",
+                      "name": "DayNumber24",
+                      "fill": "$odental-on-primary",
+                      "content": "24",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-base",
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Q29nny",
+                  "name": "DayChip25",
+                  "context": "Dia disponible de la semana.",
+                  "metadata": {
+                    "type": "interactive",
+                    "testId": "day-chip-25"
+                  },
+                  "width": "fill_container",
+                  "height": 62,
+                  "fill": "$odental-surface",
+                  "cornerRadius": "$odental-radius-md",
+                  "stroke": "$odental-border",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "NlBQP",
+                      "name": "DayName25",
+                      "fill": "$odental-muted",
+                      "content": "Vie",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-xs",
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "text",
+                      "id": "t1srA",
+                      "name": "DayNumber25",
+                      "fill": "$odental-text",
+                      "content": "25",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-base",
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "m1cLwp",
+                  "name": "DayChip26",
+                  "context": "Dia disponible de la semana.",
+                  "metadata": {
+                    "type": "interactive",
+                    "testId": "day-chip-26"
+                  },
+                  "width": "fill_container",
+                  "height": 62,
+                  "fill": "$odental-surface",
+                  "cornerRadius": "$odental-radius-md",
+                  "stroke": "$odental-border",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 3,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "B68U6q",
+                      "name": "DayName26",
+                      "fill": "$odental-muted",
+                      "content": "Sáb",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-xs",
+                      "fontWeight": "500"
+                    },
+                    {
+                      "type": "text",
+                      "id": "VhYMB",
+                      "name": "DayNumber26",
+                      "fill": "$odental-text",
+                      "content": "26",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-base",
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Cxui6",
+              "name": "DayKPIStrip",
+              "context": "Resumen del dia seleccionado. Los ingresos usan la moneda del consultorio, nunca un simbolo fijo.",
+              "width": "fill_container",
+              "gap": "$odental-space-md",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "hdr43",
+                  "name": "KPICitas",
+                  "metadata": {
+                    "type": "display",
+                    "testId": "kpi-citas"
+                  },
+                  "width": "fill_container",
+                  "fill": "$odental-surface",
+                  "cornerRadius": "$odental-radius-md",
+                  "stroke": "$odental-border",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "padding": "$odental-space-md",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "TmiDu",
+                      "name": "KPIValueCitas",
+                      "fill": "$odental-text",
+                      "content": "8",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-xl",
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "w9QUJ",
+                      "name": "KPILabelCitas",
+                      "fill": "$odental-muted",
+                      "content": "Citas",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-xs",
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "IPblX",
+                  "name": "KPIConfirmadas",
+                  "metadata": {
+                    "type": "display",
+                    "testId": "kpi-confirmadas"
+                  },
+                  "width": "fill_container",
+                  "fill": "$odental-surface",
+                  "cornerRadius": "$odental-radius-md",
+                  "stroke": "$odental-border",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "padding": "$odental-space-md",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "VRXMf",
+                      "name": "KPIValueConfirmadas",
+                      "fill": "$odental-primary-dark",
+                      "content": "6",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-xl",
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ZAQ0w",
+                      "name": "KPILabelConfirmadas",
+                      "fill": "$odental-muted",
+                      "content": "Confirmadas",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-xs",
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Y7cFK",
+                  "name": "KPISinasignar",
+                  "metadata": {
+                    "type": "display",
+                    "testId": "kpi-sin-asignar"
+                  },
+                  "width": "fill_container",
+                  "fill": "$odental-surface",
+                  "cornerRadius": "$odental-radius-md",
+                  "stroke": "$odental-border",
+                  "strokeWidth": 1,
+                  "strokeAlignment": "inner",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "padding": "$odental-space-md",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "UttUJ",
+                      "name": "KPIValueSinasignar",
+                      "fill": "$odental-warning-strong",
+                      "content": "2",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-xl",
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "zN6FO",
+                      "name": "KPILabelSinasignar",
+                      "fill": "$odental-muted",
+                      "content": "Sin asignar",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-xs",
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "uq5D4",
+              "name": "AppointmentsList",
+              "context": "Citas del dia agrupadas por turno. Orden por hora de inicio. Estado vacio: mensaje con accion para agendar la primera cita.",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": "$odental-space-xl",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Bzn8Q",
+                  "name": "MorningGroup",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$odental-space-md",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "xCD1Q",
+                      "name": "MorningGroupLabel",
+                      "fill": "$odental-muted",
+                      "content": "TURNO DE LA MAÑANA",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-xs",
+                      "fontWeight": "700",
+                      "letterSpacing": 0.6
+                    },
+                    {
+                      "id": "naFzH",
+                      "type": "ref",
+                      "ref": "IjNtc",
+                      "name": "AppointmentMarielba",
+                      "width": "fill_container",
+                      "descendants": {
+                        "zUpFH": {
+                          "content": "09:30"
+                        },
+                        "RCCDQ": {
+                          "content": "45 min"
+                        },
+                        "W9MrZP": {
+                          "fill": "$odental-primary"
+                        },
+                        "xPefS": {
+                          "content": "Marielba Rojas"
+                        },
+                        "oRwg0": {
+                          "content": "Resina compuesta · 26"
+                        },
+                        "Yf9wY": {
+                          "fill": "$odental-primary-soft"
+                        },
+                        "Yf9wY/a8Jrz2": {
+                          "icon": "check",
+                          "fill": "$odental-primary-dark"
+                        },
+                        "Yf9wY/Y4LxUq": {
+                          "content": "Confirmada",
+                          "fill": "$odental-primary-dark"
+                        }
+                      }
+                    },
+                    {
+                      "id": "kozfm",
+                      "type": "ref",
+                      "ref": "IjNtc",
+                      "name": "AppointmentJhonatan",
+                      "width": "fill_container",
+                      "descendants": {
+                        "zUpFH": {
+                          "content": "10:30"
+                        },
+                        "RCCDQ": {
+                          "content": "30 min"
+                        },
+                        "W9MrZP": {
+                          "fill": "$odental-aqua-600"
+                        },
+                        "xPefS": {
+                          "content": "Jhonatan Peña"
+                        },
+                        "oRwg0": {
+                          "content": "Control de ortodoncia"
+                        },
+                        "Yf9wY": {
+                          "fill": "$odental-primary-soft"
+                        },
+                        "Yf9wY/a8Jrz2": {
+                          "icon": "check",
+                          "fill": "$odental-primary-dark"
+                        },
+                        "Yf9wY/Y4LxUq": {
+                          "content": "Confirmada",
+                          "fill": "$odental-primary-dark"
+                        }
+                      }
+                    },
+                    {
+                      "id": "N8Jux",
+                      "type": "ref",
+                      "ref": "IjNtc",
+                      "name": "AppointmentYorbelis",
+                      "width": "fill_container",
+                      "descendants": {
+                        "zUpFH": {
+                          "content": "11:15"
+                        },
+                        "RCCDQ": {
+                          "content": "60 min"
+                        },
+                        "W9MrZP": {
+                          "fill": "$odental-warning-strong"
+                        },
+                        "xPefS": {
+                          "content": "Yorbelis Carrizo"
+                        },
+                        "oRwg0": {
+                          "content": "Endodoncia · 36"
+                        },
+                        "Yf9wY": {
+                          "fill": "$odental-warning-soft"
+                        },
+                        "Yf9wY/a8Jrz2": {
+                          "icon": "clock",
+                          "fill": "$odental-warning-strong"
+                        },
+                        "Yf9wY/Y4LxUq": {
+                          "content": "Por confirmar",
+                          "fill": "$odental-warning-strong"
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "AxOOV",
+                  "name": "AfternoonGroup",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": "$odental-space-md",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mmsyJ",
+                      "name": "AfternoonGroupLabel",
+                      "fill": "$odental-muted",
+                      "content": "TURNO DE LA TARDE",
+                      "fontFamily": "$odental-font-ui",
+                      "fontSize": "$odental-fs-xs",
+                      "fontWeight": "700",
+                      "letterSpacing": 0.6
+                    },
+                    {
+                      "id": "ueWPc",
+                      "type": "ref",
+                      "ref": "IjNtc",
+                      "name": "AppointmentArgenis",
+                      "width": "fill_container",
+                      "descendants": {
+                        "zUpFH": {
+                          "content": "14:00"
+                        },
+                        "RCCDQ": {
+                          "content": "40 min"
+                        },
+                        "W9MrZP": {
+                          "fill": "$odental-primary"
+                        },
+                        "xPefS": {
+                          "content": "Argenis Mendoza"
+                        },
+                        "oRwg0": {
+                          "content": "Limpieza y profilaxis"
+                        },
+                        "Yf9wY": {
+                          "fill": "$odental-primary-soft"
+                        },
+                        "Yf9wY/a8Jrz2": {
+                          "icon": "check",
+                          "fill": "$odental-primary-dark"
+                        },
+                        "Yf9wY/Y4LxUq": {
+                          "content": "Confirmada",
+                          "fill": "$odental-primary-dark"
+                        }
+                      }
+                    },
+                    {
+                      "id": "jsHix",
+                      "type": "ref",
+                      "ref": "IjNtc",
+                      "name": "AppointmentRossana",
+                      "width": "fill_container",
+                      "descendants": {
+                        "zUpFH": {
+                          "content": "15:30"
+                        },
+                        "RCCDQ": {
+                          "content": "90 min"
+                        },
+                        "W9MrZP": {
+                          "fill": "$odental-navy-accent"
+                        },
+                        "xPefS": {
+                          "content": "Rossana Villegas"
+                        },
+                        "oRwg0": {
+                          "content": "Corona de zirconio · 46"
+                        },
+                        "Yf9wY": {
+                          "fill": "$odental-danger-soft"
+                        },
+                        "Yf9wY/a8Jrz2": {
+                          "icon": "user-round-x",
+                          "fill": "$odental-danger-strong"
+                        },
+                        "Yf9wY/Y4LxUq": {
+                          "content": "Sin especialista",
+                          "fill": "$odental-danger-strong"
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "QAerJ",
+          "type": "ref",
+          "ref": "FWcYR",
+          "name": "AgendaTabBar",
+          "width": "fill_container"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "IjNtc",
+      "x": 1089,
+      "y": -179,
+      "name": "AppointmentRow",
+      "context": "Cita del dia. Datos de odental_appointments unidos con odental_patients y odental_treatment_plans. Tap abre el detalle de la cita. La franja de color codifica el tipo de tratamiento, no el estado.",
+      "reusable": true,
+      "metadata": {
+        "type": "display",
+        "testId": "appointment-row",
+        "analytics": {
+          "event": "agenda.appointment_open"
+        }
+      },
+      "width": 358,
+      "fill": "$odental-canvas",
+      "cornerRadius": "$odental-radius-lg",
+      "stroke": "$odental-border",
+      "strokeWidth": 1,
+      "strokeAlignment": "inner",
+      "gap": "$odental-space-md",
+      "padding": "$odental-space-lg",
+      "children": [
+        {
+          "type": "frame",
+          "id": "CgbLz",
+          "name": "TimeColumn",
+          "width": 52,
+          "layout": "vertical",
+          "gap": 2,
+          "children": [
+            {
+              "type": "text",
+              "id": "zUpFH",
+              "name": "TimeStart",
+              "fill": "$odental-text",
+              "content": "09:30",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": "$odental-fs-base",
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "RCCDQ",
+              "name": "TimeDuration",
+              "fill": "$odental-muted",
+              "content": "45 min",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": "$odental-fs-xs",
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "rectangle",
+          "cornerRadius": 2,
+          "id": "W9MrZP",
+          "name": "TreatmentStripe",
+          "fill": "$odental-primary",
+          "width": 3,
+          "height": 68
+        },
+        {
+          "type": "frame",
+          "id": "eMkNk",
+          "name": "InfoColumn",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$odental-space-xs",
+          "children": [
+            {
+              "type": "text",
+              "id": "xPefS",
+              "name": "PatientName",
+              "fill": "$odental-text",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Marielba Rojas",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": "$odental-fs-base",
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "oRwg0",
+              "name": "TreatmentName",
+              "fill": "$odental-muted",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Resina compuesta · 26",
+              "fontFamily": "$odental-font-ui",
+              "fontSize": "$odental-fs-sm",
+              "fontWeight": "normal"
+            },
+            {
+              "id": "Yf9wY",
+              "type": "ref",
+              "ref": "zBia3",
+              "name": "AppointmentStatus"
+            }
+          ]
+        },
+        {
+          "type": "icon",
+          "id": "oBwos",
+          "name": "RowChevron",
+          "opacity": 0.75,
+          "width": 18,
+          "height": 18,
+          "icon": "chevron-right",
+          "library": "lucide",
+          "fill": "$odental-muted"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "T2dijw",
+      "x": 0,
+      "y": -320,
+      "name": "StatusBar",
+      "context": "OS chrome mock para las pantallas mobile. Instancias sobreescriben width a fill_container. No colocar UI de la app detras.",
+      "reusable": true,
+      "width": 390,
+      "height": 62,
+      "fill": "$odental-canvas",
+      "padding": [
+        0,
+        "$odental-space-xl"
+      ],
+      "justifyContent": "space_between",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "ihqSj",
+          "name": "StatusTime",
+          "fill": "$odental-text",
+          "content": "9:41",
+          "fontFamily": "$odental-font-ui",
+          "fontSize": "$odental-fs-sm",
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "L6zOWu",
+          "name": "StatusIndicators",
+          "gap": "$odental-space-xs",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "Lr14A",
+              "name": "SignalIndicator",
+              "width": 15,
+              "height": 15,
+              "icon": "signal-high",
+              "library": "lucide",
+              "fill": "$odental-text"
+            },
+            {
+              "type": "icon",
+              "id": "HCMhB",
+              "name": "WifiIndicator",
+              "width": 15,
+              "height": 15,
+              "icon": "wifi",
+              "library": "lucide",
+              "fill": "$odental-text"
+            },
+            {
+              "type": "icon",
+              "id": "Wo82p",
+              "name": "BatteryIndicator",
+              "width": 18,
+              "height": 18,
+              "icon": "battery-full",
+              "library": "lucide",
+              "fill": "$odental-text"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "zBia3",
+      "x": 442,
+      "y": -179,
+      "name": "StatusPill",
+      "context": "Estado de una cita o tratamiento. El color nunca va solo: siempre acompanado de icono y texto para lectura sin color.",
+      "reusable": true,
+      "metadata": {
+        "type": "display",
+        "testId": "status-pill"
+      },
+      "height": 26,
+      "fill": "$odental-primary-soft",
+      "cornerRadius": 13,
+      "gap": "$odental-space-xs",
+      "padding": [
+        0,
+        "$odental-space-md"
+      ],
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "icon",
+          "id": "a8Jrz2",
+          "name": "PillIcon",
+          "width": 13,
+          "height": 13,
+          "icon": "check",
+          "library": "lucide",
+          "fill": "$odental-primary-dark"
+        },
+        {
+          "type": "text",
+          "id": "Y4LxUq",
+          "name": "PillLabel",
+          "fill": "$odental-primary-dark",
+          "content": "Confirmada",
+          "fontFamily": "$odental-font-ui",
+          "fontSize": "$odental-fs-xs",
+          "fontWeight": "600"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "FWcYR",
+      "x": 430,
+      "y": -320,
+      "name": "TabBar",
+      "context": "Dock de navegacion principal, 4 destinos. Ultimo item del stack vertical de cada pantalla, nunca posicionado en absoluto. El item activo se marca con capsula suave mas icono y label en primary.",
+      "reusable": true,
+      "width": 390,
+      "layout": "vertical",
+      "padding": [
+        0,
+        "$odental-space-lg",
+        "$odental-space-md",
+        "$odental-space-lg"
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "N6SDr4",
+          "name": "TabBarCapsule",
+          "width": "fill_container",
+          "height": 56,
+          "fill": "$odental-glass",
+          "cornerRadius": 28,
+          "stroke": "$odental-border",
+          "strokeWidth": 1,
+          "strokeAlignment": "inner",
+          "effect": [
+            {
+              "type": "shadow",
+              "shadowType": "outer",
+              "color": "$odental-shadow-ambient",
+              "offset": {
+                "x": 0,
+                "y": 1
+              },
+              "blur": 2
+            },
+            {
+              "type": "shadow",
+              "shadowType": "outer",
+              "color": "$odental-shadow-direct",
+              "offset": {
+                "x": 0,
+                "y": 4
+              },
+              "blur": 12
+            }
+          ],
+          "padding": 6,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "koZY6",
+              "name": "TabItemHome",
+              "context": "Destino Inicio. Estado inactivo por defecto.",
+              "metadata": {
+                "type": "interactive",
+                "testId": "tab-home",
+                "analytics": {
+                  "event": "nav.tab_select",
+                  "props": {
+                    "tab": "inicio"
+                  }
+                },
+                "aria": {
+                  "role": "tab",
+                  "label": "Inicio"
+                }
+              },
+              "width": "fill_container",
+              "height": "fill_container",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "yxOa7",
+                  "name": "TabIconHome",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "house",
+                  "library": "lucide",
+                  "fill": "$odental-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "Q6Fp4",
+                  "name": "TabLabelHome",
+                  "fill": "$odental-muted",
+                  "content": "Inicio",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "B6Jow",
+              "name": "TabItemAgenda",
+              "context": "Destino Agenda. Estado activo: capsula primary-soft mas icono y label en primary-dark.",
+              "metadata": {
+                "type": "interactive",
+                "testId": "tab-agenda",
+                "analytics": {
+                  "event": "nav.tab_select",
+                  "props": {
+                    "tab": "agenda"
+                  }
+                },
+                "aria": {
+                  "role": "tab",
+                  "label": "Agenda"
+                }
+              },
+              "width": "fill_container",
+              "height": "fill_container",
+              "fill": "$odental-primary-soft",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "ZzVUR",
+                  "name": "TabIconAgenda",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "calendar-days",
+                  "library": "lucide",
+                  "fill": "$odental-primary-dark"
+                },
+                {
+                  "type": "text",
+                  "id": "Dz5jS",
+                  "name": "TabLabelAgenda",
+                  "fill": "$odental-primary-dark",
+                  "content": "Agenda",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": 10,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Dvxk5",
+              "name": "TabItemPatients",
+              "context": "Destino Pacientes. Estado inactivo por defecto.",
+              "metadata": {
+                "type": "interactive",
+                "testId": "tab-patients",
+                "analytics": {
+                  "event": "nav.tab_select",
+                  "props": {
+                    "tab": "pacientes"
+                  }
+                },
+                "aria": {
+                  "role": "tab",
+                  "label": "Pacientes"
+                }
+              },
+              "width": "fill_container",
+              "height": "fill_container",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "ezN1O",
+                  "name": "TabIconPatients",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "users",
+                  "library": "lucide",
+                  "fill": "$odental-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "Konxv",
+                  "name": "TabLabelPatients",
+                  "fill": "$odental-muted",
+                  "content": "Pacientes",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "s8fc7T",
+              "name": "TabItemMore",
+              "context": "Destino Mas: finanzas, inventario, configuracion. Estado inactivo por defecto.",
+              "metadata": {
+                "type": "interactive",
+                "testId": "tab-more",
+                "analytics": {
+                  "event": "nav.tab_select",
+                  "props": {
+                    "tab": "mas"
+                  }
+                },
+                "aria": {
+                  "role": "tab",
+                  "label": "Mas"
+                }
+              },
+              "width": "fill_container",
+              "height": "fill_container",
+              "cornerRadius": 22,
+              "layout": "vertical",
+              "gap": 2,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "KGPIm",
+                  "name": "TabIconMore",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "ellipsis",
+                  "library": "lucide",
+                  "fill": "$odental-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "P0pZuD",
+                  "name": "TabLabelMore",
+                  "fill": "$odental-muted",
+                  "content": "Más",
+                  "fontFamily": "$odental-font-ui",
+                  "fontSize": 10,
+                  "fontWeight": "500"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
