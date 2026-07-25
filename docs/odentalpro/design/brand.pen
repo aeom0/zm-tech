@@ -40,7 +40,8 @@
               "fill": "$odental-muted",
               "content": "Sterile Aqua · Halo soft · Teal clínico #0D9488 (no Lunaris)",
               "fontFamily": "$odental-font-ui",
-              "fontSize": 16
+              "fontSize": 16,
+              "fontWeight": "normal"
             }
           ]
         },
@@ -93,7 +94,8 @@
                   "fill": "$odental-muted",
                   "content": "#0D9488",
                   "fontFamily": "Inter",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -139,7 +141,8 @@
                   "fill": "$odental-muted",
                   "content": "#0F766E",
                   "fontFamily": "Inter",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -185,7 +188,8 @@
                   "fill": "$odental-muted",
                   "content": "#CCFBF1",
                   "fontFamily": "Inter",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -231,7 +235,8 @@
                   "fill": "$odental-muted",
                   "content": "#EAF7FB",
                   "fontFamily": "Inter",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -277,7 +282,8 @@
                   "fill": "$odental-muted",
                   "content": "#63C9D6",
                   "fontFamily": "Inter",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -332,7 +338,8 @@
                   "fill": "$odental-muted",
                   "content": "#1E7F8C",
                   "fontFamily": "Inter",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -378,7 +385,8 @@
                   "fill": "$odental-muted",
                   "content": "#0A1628",
                   "fontFamily": "Inter",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -424,7 +432,8 @@
                   "fill": "$odental-muted",
                   "content": "#20343A",
                   "fontFamily": "Inter",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -470,7 +479,8 @@
                   "fill": "$odental-muted",
                   "content": "#F7FAFC",
                   "fontFamily": "Inter",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -516,7 +526,8 @@
                   "fill": "$odental-muted",
                   "content": "#1F2A33",
                   "fontFamily": "Inter",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -571,7 +582,8 @@
                   "fill": "$odental-muted",
                   "content": "#5B6B7A",
                   "fontFamily": "Inter",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -617,7 +629,8 @@
                   "fill": "$odental-muted",
                   "content": "#DDE3EA",
                   "fontFamily": "Inter",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -663,7 +676,8 @@
                   "fill": "$odental-muted",
                   "content": "#10B981",
                   "fontFamily": "Inter",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -709,7 +723,8 @@
                   "fill": "$odental-muted",
                   "content": "#D97706",
                   "fontFamily": "Inter",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             },
@@ -755,7 +770,8 @@
                   "fill": "$odental-muted",
                   "content": "#DC2626",
                   "fontFamily": "Inter",
-                  "fontSize": 11
+                  "fontSize": 11,
+                  "fontWeight": "normal"
                 }
               ]
             }
@@ -794,7 +810,8 @@
           "fill": "$odental-muted",
           "content": "Dirección: clínica limpia y confiable. Evitar púrpura, cream terracotta y turquesa spa. Lucide icons en código.",
           "fontFamily": "Inter",
-          "fontSize": 13
+          "fontSize": 13,
+          "fontWeight": "normal"
         }
       ]
     },
@@ -1174,8 +1191,8 @@
     {
       "type": "frame",
       "id": "TYsak",
-      "x": 860,
-      "y": -240,
+      "x": 0,
+      "y": -179,
       "name": "InputField",
       "context": "Campo de texto. Validacion al perder el foco, nunca mientras se escribe. El error se muestra con borde danger mas icono y texto bajo el campo.",
       "reusable": true,
@@ -1250,8 +1267,8 @@
     {
       "type": "frame",
       "id": "zBia3",
-      "x": 860,
-      "y": -140,
+      "x": 442,
+      "y": -179,
       "name": "StatusPill",
       "context": "Estado de una cita o tratamiento. El color nunca va solo: siempre acompanado de icono y texto para lectura sin color.",
       "reusable": true,
@@ -1294,10 +1311,10 @@
     {
       "type": "frame",
       "id": "IjNtc",
-      "x": 1300,
-      "y": -320,
+      "x": 1089,
+      "y": -179,
       "name": "AppointmentRow",
-      "context": "Cita del dia. Datos de odental_appointments unidos con odental_patients y odental_treatments. Tap abre el detalle de la cita. La franja de color codifica el tipo de tratamiento, no el estado.",
+      "context": "Cita del dia. Datos de odental_appointments unidos con odental_patients y odental_treatment_plans. Tap abre el detalle de la cita. La franja de color codifica el tipo de tratamiento, no el estado.",
       "reusable": true,
       "metadata": {
         "type": "display",
@@ -1410,8 +1427,8 @@
     {
       "type": "frame",
       "id": "lshr3",
-      "x": 0,
-      "y": 1060,
+      "x": 1057,
+      "y": 70,
       "name": "OdentalPro / Auth / 01 / SignIn / Default / Mobile",
       "context": "Entrada al producto. Viene de la landing publica y va al selector de consultorio y luego a Agenda. Sesion con Supabase Auth, correo mas clave. Si la sesion expira se vuelve aca con el correo precargado.",
       "clip": true,
@@ -1690,8 +1707,8 @@
     {
       "type": "frame",
       "id": "JwEIV",
-      "x": 470,
-      "y": 1060,
+      "x": 1545,
+      "y": 70,
       "name": "OdentalPro / Agenda / 01 / Day / Default / Mobile",
       "context": "Pantalla principal del dia. Viene del selector de consultorio y va al detalle de cita o a la ficha del paciente. Datos de odental_appointments filtrados por tenant_id y fecha en la zona horaria del consultorio.",
       "clip": true,
@@ -2478,8 +2495,8 @@
     {
       "type": "frame",
       "id": "TAHcH",
-      "x": 940,
-      "y": 1060,
+      "x": 2050,
+      "y": 70,
       "name": "OdentalPro / Patients / 01 / Detail / Default / Mobile",
       "context": "Ficha del paciente. Se llega desde Agenda o desde la lista de Pacientes. Reune identidad, alertas clinicas, odontograma y historial. Escritura solo para roles owner y especialista.",
       "theme": {
@@ -3807,8 +3824,8 @@
     {
       "type": "frame",
       "id": "Wg2cN",
-      "x": 1740,
-      "y": -320,
+      "x": 665,
+      "y": -179,
       "name": "HistoryRow",
       "context": "Visita cerrada del historial, de odental_clinical_records. Distinta de AppointmentRow: aca la columna izquierda es la fecha de la visita y no la hora, y el dato secundario es el especialista que atendio. Tap abre el registro con el snapshot del odontograma de ese dia.",
       "reusable": true,
@@ -3909,7 +3926,7 @@
       "type": "frame",
       "id": "tXjfo",
       "x": 0,
-      "y": 2200,
+      "y": 1060,
       "name": "UXStates / Componentes",
       "context": "Matriz de estados de los componentes interactivos. Region separada de las pantallas: aca no se disena flujo, solo se fija el contrato visual de cada estado.",
       "fill": "$odental-surface",
@@ -4432,8 +4449,8 @@
     {
       "type": "note",
       "id": "vcRO4",
-      "x": 1420,
-      "y": 1060,
+      "x": 2542,
+      "y": 70,
       "name": "Nota / Contrato de estados",
       "width": 340,
       "height": 0,
@@ -4442,22 +4459,22 @@
     {
       "type": "note",
       "id": "a6bAXb",
-      "x": 1420,
-      "y": 1420,
+      "x": 2973,
+      "y": 70,
       "name": "Nota / Contrato de accesibilidad",
       "width": 340,
-      "height": 0,
+      "height": 678,
       "content": "CONTRATO DE ACCESIBILIDAD\n\nAreas de toque: todas las acciones de icono miden 44x44. Los links Olvide mi clave y Ver completo van dentro de un frame de 44 y 32 de alto respectivamente.\n\nEl color nunca es la unica pista: cada pill lleva icono, la alerta clinica lleva triangle-alert, los dientes marcados se repiten como chips de leyenda con texto.\n\nContraste: texto sobre canvas usa $odental-text; el texto secundario usa $odental-muted, que en claro y en oscuro se mantiene sobre 4.5:1. El label sobre boton usa $odental-on-primary, que invierte en modo oscuro porque primary se aclara a #2DD4BF.\n\nOrden de foco en SignIn: correo, clave, mantener sesion, olvide mi clave, entrar.\n\nPendiente: verificar el contraste de $odental-warning-strong sobre warning-soft con medidor real."
     },
     {
       "type": "note",
       "id": "GvDrp",
-      "x": 1420,
-      "y": 1780,
+      "x": 3408,
+      "y": 70,
       "name": "Nota / Flujo y datos",
       "width": 340,
-      "height": 0,
-      "content": "FLUJO Y DATOS\n\nLanding publica, SignIn, selector de consultorio, Agenda. Desde Agenda se abre el detalle de la cita o la ficha del paciente. Volver desde la ficha regresa al origen real, no siempre a Agenda.\n\nTablas con prefijo odental_ mientras se comparta el proyecto Supabase con la landing: odental_appointments, odental_patients, odental_clinical_records, odental_treatments.\n\nEl odontograma se guarda como snapshot JSONB en odental_clinical_records.odontogram por visita, numeracion FDI, 5 superficies por diente. No se sobreescribe el historico.\n\nLa moneda y la zona horaria vienen de la configuracion del consultorio, nunca fijas en codigo.\n\nWhatsApp de la ficha abre el bot WABA con la plantilla de recordatorio."
+      "height": 685,
+      "content": "FLUJO Y DATOS\n\nLanding publica, SignIn, selector de consultorio, Agenda. Desde Agenda se abre el detalle de la cita o la ficha del paciente. Volver desde la ficha regresa al origen real, no siempre a Agenda.\n\nTablas con prefijo odental_ mientras se comparta el proyecto Supabase con la landing: odental_appointments, odental_patients, odental_clinical_records, odental_treatment_plans.\n\nEl odontograma se guarda como snapshot JSONB en odental_clinical_records.odontogram por visita, numeracion FDI, 5 superficies por diente. No se sobreescribe el historico.\n\nLa moneda y la zona horaria vienen de la configuracion del consultorio, nunca fijas en codigo.\n\nWhatsApp de la ficha abre el bot WABA con la plantilla de recordatorio."
     }
   ],
   "themes": {
