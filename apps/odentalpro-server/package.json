@@ -1,0 +1,13 @@
+{
+  "name": "odentalpro-server",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "echo 'Edge Functions — deploy via supabase functions deploy'",
+    "lint": "echo 'Deno lint via supabase CLI'",
+    "check:types": "echo 'Deno check via supabase CLI'"
+  },
+  "dependencies": {
+    "@odentalpro/dental-schema": "workspace:*"
+  }
+}
