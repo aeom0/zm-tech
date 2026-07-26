@@ -14,7 +14,7 @@
     "tailwindCSS.experimental.classRegex": [
       ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
       ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
-    },
+    ],
     "files.exclude": {
       "**/node_modules": true,
       "**/.next": true,
