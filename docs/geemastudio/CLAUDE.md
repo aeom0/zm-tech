@@ -1,5 +1,8 @@
 # CLAUDE.md
 
+> **Nota monorepo zm-tech**: skills y rules viven en la raíz del monorepo — `.cursor/skills/`, `.cursor/rules/`, `.cursorrules`. Claude: `.claude/skills` → symlink a `.cursor/skills`. Este archivo es documentación de producto; los paths `apps/mobile` / `apps/web` de abajo corresponden a `apps/geemastudio-mobile` / `apps/geemastudio-web` en zm-tech.
+
+
 Este archivo proporciona orientación a Claude Code (claude.ai/code) para trabajar en este repositorio.
 
 ## Descripción del Proyecto

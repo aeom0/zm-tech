@@ -1,5 +1,8 @@
 # CLAUDE.md — ZM Tech Landing
 
+> **Nota monorepo zm-tech**: skills en `.cursor/skills/` (p. ej. `zmtech-dev`). Claude: `.claude/skills` → symlink. App: `apps/landing`.
+
+
 Contexto para Claude Code al trabajar en este proyecto.
 
 ## Stack

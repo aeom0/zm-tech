@@ -1,0 +1,30 @@
+---
+description: Optimizaciones de rendimiento en cliente (mobile y web) — GeemaStudio
+globs:
+  - "apps/geemastudio-mobile/**/*"
+  - "apps/geemastudio-web/**/*"
+alwaysApply: false
+---
+
+# Performance — GeemaStudio
+
+## Mobile (React Native / Expo)
+
+- **Listas**: `FlatList` para listas largas; evitar mapear arrays grandes a componentes.
+- **Handlers**: `useCallback` para funciones pasadas a hijos o a `FlatList.renderItem`/`keyExtractor`.
+- **Cálculos costosos**: `useMemo` para datos derivados que dependan de props/estado.
+- **Re-renders**: `React.memo` en componentes con props estables y alto frecuencia de render.
+- **Imágenes**: `expo-image` con caché; `result.assets[0].uri` (Expo SDK 56 / `expo-image-picker`) — nunca `result.uri`.
+
+## Web (Next.js)
+
+- **Queries PostgREST**: máximo 1 nivel de join; combinar en memoria para relaciones profundas (joins encadenados devuelven `[]` sin error).
+- **SSG/ISR**: rutas públicas (`/s/[slug]`) con `revalidate: 300`; panel con SSR + guard de sesión.
+- **Seleccionar columnas**: nunca `select *` en listados grandes — especificar las columnas necesarias.
+
+## Supabase / TanStack Query
+
+- Aprovechar `staleTime` y `gcTime`; configuración en `apps/geemastudio-mobile/lib/query-client.ts`.
+- Invalidar tras mutaciones: `queryClient.invalidateQueries({ queryKey: [...] })`.
+- Badges: `refetchInterval: 60_000` + `enabled: isAdmin` obligatorios en queries de conteo.
+- No hay servidor Express — no existe `server/db.ts` ni pool propio; la conexión la gestiona Supabase.

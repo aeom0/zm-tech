@@ -1,0 +1,83 @@
+# Cursor AI Rules — zm-tech (monorepo)
+
+## PRIORIDAD DE LECTURA
+
+1. `.cursor/skills/SKILLS.md` (entrada monorepo) + skill del producto (`geemastudio.md`, `odentalpro-dev`, `zmtech-dev`)
+2. Rules en `.cursor/rules/*.mdc` según globs
+3. Usa @codebase antes de pedir archivos
+4. Código directo primero; no inventar patrones nuevos sin mirar el repo
+
+---
+
+## Contexto del monorepo
+
+**zm-tech** agrupa productos ZM Tech bajo pnpm + Turborepo.
+
+| Producto | Apps | Packages |
+|----------|------|----------|
+| Landing | `apps/landing` | — |
+| GeemaStudio | `geemastudio-mobile`, `geemastudio-web`, `geemastudio-server` | `@geemastudio/shared-schema`, `@geemastudio/tenant-config` |
+| ODentalPro | `odentalpro-mobile`, `odentalpro-web`, `odentalpro-server` | `@odentalpro/dental-schema` |
+
+- **Entorno**: WSL Ubuntu, Node 22+, pnpm 11
+- **UI / negocio**: español LATAM; TypeScript estricto
+- **Skills**: `.cursor/skills/` · Claude: `.claude/skills` → symlink
+- **Rules**: `.cursor/rules/*.mdc`
+
+---
+
+## Paths GeemaStudio
+
+| Área | Ruta |
+|------|------|
+| Raíz | `/home/alber/zm-tech` |
+| Mobile | `apps/geemastudio-mobile/` |
+| Web | `apps/geemastudio-web/` |
+| Server / Drizzle | `apps/geemastudio-server/` |
+| Schema | `packages/shared-schema/` |
+| Tenant | `packages/tenant-config/` |
+| Tema mobile | `apps/geemastudio-mobile/constants/theme.ts` |
+| Tema web | `apps/geemastudio-web/src/lib/theme.ts` (LUNARIS) |
+| Docs producto | `docs/geemastudio/` (sin skills/rules) |
+
+Supabase GeemaStudio: `xidjomlxpuosupymcsaj` · ZM Lash (solo lectura): `udelxwwnyivknslueerr`
+
+---
+
+## Arquitectura (capas)
+
+```
+UI → Hooks → Services/lib (Supabase) → Types (shared-schema / dental-schema)
+```
+
+No mezclar lógica de negocio en componentes de presentación.
+
+---
+
+## Comandos
+
+```bash
+pnpm dev:landing
+pnpm dev:web              # geemastudio-web
+pnpm dev:mobile           # geemastudio-mobile
+pnpm dev:odental:web
+pnpm db:push
+pnpm lint
+pnpm check:types
+```
+
+---
+
+## Comportamiento AI
+
+### HACER
+- Verificar patrones existentes antes de crear código
+- Reutilizar packages del monorepo
+- Nombres de negocio y UI en español
+- Respuestas cortas: código primero
+
+### NO HACER
+- NO crear `.md` sin pedirlo
+- NO hardcodear moneda/terminología de un salón (usar tenant config)
+- NO mezclar schema Geema (`@geemastudio/*`) con ODental (`@odentalpro/*`)
+- NO modificar Supabase ZM Lash desde este repo sin instrucción explícita

@@ -72,7 +72,7 @@ next-env.d.ts
 # Supabase CLI cache
 **/supabase/.temp/
 
-# Claude / Cursor local (no compartir settings personales)
+# Claude Code local config (settings locales); skills compartidos vía symlink → .cursor/skills
 .claude/*
 !.claude/skills
 .mcp.json
