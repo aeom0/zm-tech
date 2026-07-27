@@ -1,0 +1,35 @@
+{
+  "name": "@zmtech/quote-engine",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./types": "./types.ts",
+    "./catalog/services": "./catalog/services.ts",
+    "./catalog/bundles": "./catalog/bundles.ts",
+    "./logic/calculatePrice": "./logic/calculatePrice.ts",
+    "./logic/generateWhatsAppMsg": "./logic/generateWhatsAppMsg.ts",
+    "./components/*": "./components/*.tsx"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "lint": "tsc --noEmit",
+    "check:types": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "typescript": "~6.0.3",
+    "vitest": "^3.2.4"
+  }
+}
