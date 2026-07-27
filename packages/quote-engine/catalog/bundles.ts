@@ -14,9 +14,9 @@ export const bundles: Bundle[] = [
     tipoDescuento: 'monto',
   },
   {
-    id: 'combo-landing-completo',
-    nombre: 'Sitio Web Completo',
-    servicios: ['sitio-multiseccion', 'form-envio-auto', 'seo-onpage', 'whatsapp-boton'],
+    id: 'combo-extras-esenciales',
+    nombre: 'Extras esenciales (migración + WhatsApp + SEO)',
+    servicios: ['migracion-datos', 'whatsapp-boton', 'seo-onpage'],
     descuento: 10,
     tipoDescuento: 'monto',
   },

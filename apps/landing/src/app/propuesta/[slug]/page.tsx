@@ -186,13 +186,6 @@ export default async function PropuestaPage({ params }: PageProps) {
             ahorro={bundleSaving}
             subtotalBundle={bundleSubtotal}
           />
-        ) : quote.comboNota ? (
-          <div className="mb-4 rounded-lg border border-[#b5cfe4] bg-[#e8f0f7] px-4 py-3">
-            <span className="mb-1.5 inline-block rounded-md bg-[#1d9e75] px-2.5 py-0.5 text-[11px] font-semibold text-white">
-              {quote.comboNota.badge}
-            </span>
-            <p className="text-[13px] leading-normal text-[#0c447c]">{quote.comboNota.texto}</p>
-          </div>
         ) : null}
 
         {/* 03 · Soporte mensual */}

@@ -64,14 +64,6 @@ export const guataparoQuote: QuoteDefinition = {
     serviceIds: ['migracion-datos', 'whatsapp-boton', 'seo-onpage'],
     pricePrefix: '+',
   },
-  // Combo comercial validado con Morelba ($130 vs $140) — aún no modelado 1:1 en bundles.ts
-  comboNota: {
-    badge: 'Paquete completo',
-    texto:
-      'Los 3 servicios juntos: $130 USD en lugar de $140. Ahorro de $10 al cerrar todo desde el inicio.',
-    totalCombo: 130,
-    totalSinDescuento: 140,
-  },
   soporteMensual: {
     tituloSeccion: '03 · Acompañamiento mensual',
     precio: 30,

@@ -43,17 +43,6 @@ export type QuoteDefinition = {
     serviceIds: string[]
     pricePrefix?: string
   }
-  /**
-   * Nota de combo comercial cuando el descuento no está (aún) en catalog/bundles.
-   * Si calculatePrice aplica un bundle, se usa ComboBanner del engine en su lugar.
-   */
-  comboNota?: {
-    badge: string
-    /** Texto plano; el page resalta montos si hace falta vía markup simple. */
-    texto: string
-    totalCombo: number
-    totalSinDescuento: number
-  }
   soporteMensual?: {
     tituloSeccion: string
     precio: number

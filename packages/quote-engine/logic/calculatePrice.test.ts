@@ -16,22 +16,22 @@ describe('calculatePrice', () => {
   })
 
   it('con bundle: aplica descuento cuando serviceIds contienen el combo completo', () => {
-    // combo-landing-completo: sitio + form + seo + whatsapp, descuento $10 monto
+    // combo-extras-esenciales: migración + WA + SEO, descuento $10 monto (caso Guataparo)
     const result = calculatePrice({
       serviceIds: [
         'sitio-multiseccion',
-        'form-envio-auto',
-        'seo-onpage',
+        'migracion-datos',
         'whatsapp-boton',
+        'seo-onpage',
         'dominio-1er-ano', // superset — no rompe el match
       ],
     })
 
-    expect(result.bundleAplicado?.id).toBe('combo-landing-completo')
+    expect(result.bundleAplicado?.id).toBe('combo-extras-esenciales')
     expect(result.requiereContactoDirecto).toBe(false)
-    expect(result.subtotal).toBe(300 + 30 + 40 + 40 + 0)
+    expect(result.subtotal).toBe(300 + 60 + 40 + 40 + 0)
     expect(result.descuento).toBe(10)
-    expect(result.total).toBe(400)
+    expect(result.total).toBe(430)
   })
 
   it('con servicio precioVisible: false → requiereContactoDirecto y total en 0', () => {
