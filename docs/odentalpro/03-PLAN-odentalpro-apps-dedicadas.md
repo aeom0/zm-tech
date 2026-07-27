@@ -121,10 +121,14 @@ Tipos en `packages/dental-schema/src/odontogram.ts`.
 
 ### Fase 2 — Odontograma
 - [x] `OdontogramView.tsx` + `ToothComponent.tsx` — render-first, sin persistencia
-- [ ] Modo solo-lectura vs editable (API lista; falta UX de ficha paciente)
-- [ ] Persistencia en `clinical_records.odontogram`
+- [x] Modo solo-lectura vs editable — `PatientDetailScreen` (solo lectura por defecto, botón "Nueva consulta" habilita edición; editable automático si ya hay consulta abierta el mismo día)
+- [x] Persistencia en `clinical_records.odontogram` — `useClinicalRecords().saveOdontogram` (insert si no hay consulta del día, update si ya existe; `activeRecordId` local evita doble insert antes del refetch)
 
 ### Fase 3 — Historia clínica
+- [x] Navegación mínima: `RootNavigator` (AuthGate → `PatientsListScreen` → `PatientDetailScreen`), `QueryClientProvider` wireado en `App.tsx`
+- [x] `useClinicalRecords` — primer hook de `odental_clinical_records`, listo para extenderse con motivo de consulta/diagnóstico
+- [ ] `ClinicalRecordScreen` — nueva consulta (motivo, diagnóstico, tratamiento realizado)
+- [ ] `ClinicalHistoryList` — listado de visitas en la ficha del paciente
 ### Fase 4 — Planes de tratamiento
 ### Fase 5 — Consentimientos + PDF
 ### Fase 6 — Beta con tenant #1

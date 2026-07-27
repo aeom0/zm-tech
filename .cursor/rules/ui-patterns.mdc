@@ -4,6 +4,8 @@ globs:
   - "apps/geemastudio-mobile/components/**/*"
   - "apps/geemastudio-mobile/screens/**/*"
   - "apps/geemastudio-mobile/constants/**/*"
+  - "apps/odentalpro-mobile/screens/**/*"
+  - "apps/odentalpro-mobile/navigation/**/*"
 alwaysApply: false
 ---
 
@@ -34,7 +36,7 @@ const styles = StyleSheet.create({
 
 ## Convenciones
 
-- **Iconos**: **Lucide React** en toda la web (`lucide-react`) y recomendado en mobile. **Sin emojis Unicode** en la web — usar siempre componentes SVG de Lucide. Para renderizado dinámico por nombre: `(LucideIcons as unknown as Record<string, LucideIcon>)[iconName]`.
+- **Iconos**: **Lucide React** en toda la web (`lucide-react`) y recomendado en mobile. **Sin emojis Unicode en UI** — usar siempre componentes SVG (Lucide, `@expo/vector-icons`). Para renderizado dinámico por nombre: `(LucideIcons as unknown as Record<string, LucideIcon>)[iconName]`. **Excepción:** mensajes/plantillas **WABA** (WhatsApp Business API) pueden incluir emojis en el copy del chat cuando exista esa integración.
 - **Textos**: Español; jerga venezolana natural cuando encaje con las preferencias del usuario.
 - **Diseño**: Limpio, sin adornos innecesarios; dark/light según sistema o preferencia.
 - **Formularios**: Labels claros, estados de carga/error; feedback táctil (Expo Haptics) donde aporte.

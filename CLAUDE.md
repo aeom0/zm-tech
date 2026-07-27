@@ -19,5 +19,6 @@ Ver [README.md](README.md) para la tabla de productos/apps/packages y comandos d
 - No mezclar schema de un producto con otro (`@geemastudio/*` vs `@odentalpro/*`).
 - No modificar Supabase de producción sin instrucción explícita.
 - UI y nombres de negocio en español LATAM — TypeScript estricto.
+- **Sin emojis Unicode en UI** (web, mobile, panel, OdentalPro): usar íconos SVG (Lucide en web; `@expo/vector-icons` o Lucide en mobile). **Excepción única:** contenido o plantillas de mensajes **WABA** (WhatsApp Business API), cuando exista esa integración — ahí los emojis pueden formar parte del copy del chat.
 
 Detalle completo de estas reglas en [.cursorrules](.cursorrules).

@@ -41,7 +41,7 @@ pnpm build:odental
 ## Convenciones
 
 - TypeScript estricto; nombres de negocio en español.
-- UI en español LATAM; iconos Lucide en web.
+- UI en español LATAM; iconos Lucide en web; mobile sin emojis Unicode (ver regla global en `CLAUDE.md` / `.cursorrules`; excepción WABA).
 - Schema dental en `@odentalpro/dental-schema` — no mezclar con `@geemastudio/shared-schema`.
 - Diseños Pencil/pen: `docs/odentalpro/design/*.pen` + skill `pen-design` cuando aplique.
 

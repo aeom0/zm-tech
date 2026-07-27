@@ -81,3 +81,4 @@ pnpm check:types
 - NO hardcodear moneda/terminología de un salón (usar tenant config)
 - NO mezclar schema Geema (`@geemastudio/*`) con ODental (`@odentalpro/*`)
 - NO modificar Supabase ZM Lash desde este repo sin instrucción explícita
+- NO usar emojis Unicode en UI (web/mobile/OdentalPro) — Lucide o íconos vectoriales. Excepción: copy/plantillas **WABA** cuando se implemente WhatsApp Business API
