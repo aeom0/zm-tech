@@ -17,7 +17,8 @@ function formatPrecioLinea(precio: number | PriceRange): string {
 }
 
 export interface GenerateWhatsAppMsgInput {
-  clienteNombre: string
+  /** Si vacío/omitido → "Hola, quiero información" */
+  clienteNombre?: string
   result: CalculatePriceResult
   waNumber: string // formato: '584144940417'
 }
@@ -28,6 +29,7 @@ export interface GenerateWhatsAppMsgInput {
  */
 export function generateWhatsAppMsg(input: GenerateWhatsAppMsgInput): string {
   const { clienteNombre, result, waNumber } = input
+  const nombre = clienteNombre?.trim()
 
   const lineasServicios = result.lineItems
     .map((li) => {
@@ -45,8 +47,10 @@ export function generateWhatsAppMsg(input: GenerateWhatsAppMsgInput): string {
       ? `Subtotal: ${formatUsd(result.subtotal)}\nDescuento: −${formatUsd(result.descuento)}\nTotal: ${formatUsd(result.total)}`
       : `Total: ${formatUsd(result.total)}`
 
+  const saludo = nombre ? `Hola, soy ${nombre}.` : 'Hola, quiero información.'
+
   const mensaje = [
-    `Hola, soy ${clienteNombre}.`,
+    saludo,
     '',
     'Quiero confirmar esta propuesta de ZM Tech:',
     '',

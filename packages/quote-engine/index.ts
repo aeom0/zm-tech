@@ -29,7 +29,8 @@ export {
 
 export { QuoteHero } from './components/QuoteHero'
 export { ServiceLineItem } from './components/ServiceLineItem'
+export { SelectableServiceLineItem } from './components/SelectableServiceLineItem'
 export { ComboBanner } from './components/ComboBanner'
 export { ROIComparison, type ROIComparisonRow, type ROIComparisonProps } from './components/ROIComparison'
-export { WhatsAppCTA } from './components/WhatsAppCTA'
+export { WhatsAppCTA, type LeadPayload } from './components/WhatsAppCTA'
 export { WhatsAppIcon } from './components/WhatsAppIcon'

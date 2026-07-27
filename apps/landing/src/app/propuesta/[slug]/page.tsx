@@ -279,6 +279,18 @@ export default async function PropuestaPage({ params }: PageProps) {
           subtitulo={quote.cta.subtitulo}
           contacto={quote.cta.contacto}
           requiereContactoDirecto={result.requiereContactoDirecto}
+          leadPayload={{
+            source: 'manual',
+            slug: quote.slug,
+            clienteNombre: quote.clienteNombre,
+            serviceIds: quote.serviceIds,
+            result: {
+              subtotal: result.subtotal,
+              descuento: result.descuento,
+              total: result.total,
+              requiereContactoDirecto: result.requiereContactoDirecto,
+            },
+          }}
         />
 
         <p className="mt-6 text-center text-[11px] text-[#bbb]">{quote.footer}</p>
