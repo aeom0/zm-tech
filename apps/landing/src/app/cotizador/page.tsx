@@ -4,7 +4,7 @@ import { CotizadorInteractivo } from './CotizadorInteractivo'
 export const metadata: Metadata = {
   title: 'Cotizador — ZM Tech',
   description:
-    'Arma tu combo de servicios ZM Tech, ve el precio en vivo y confirma por WhatsApp.',
+    'Elige lo que necesita tu negocio, mira el precio al momento y confírmanos por WhatsApp.',
   robots: { index: true, follow: true },
 }
 
@@ -19,7 +19,7 @@ export default function CotizadorPage() {
           </div>
           <h1 className="mt-4 text-xl font-semibold text-[#111]">Arma tu propuesta</h1>
           <p className="mt-1.5 text-sm leading-relaxed text-[#666]">
-            Elige lo que necesitas, mira el total al momento y confírmanos por WhatsApp.
+            Marca lo que necesitas, mira cuánto sale y escríbenos por WhatsApp cuando estés listo.
           </p>
         </header>
 

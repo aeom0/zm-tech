@@ -16,11 +16,11 @@ import {
 
 const WA_NUMBER = '584144940417'
 
-const NIVEL_LABELS: Record<0 | 1 | 2 | 3, string> = {
-  0: 'Nivel 0 · Presencia digital',
-  1: 'Nivel 1 · Landing / Sitio web',
-  2: 'Nivel 2 · App / Gestión',
-  3: 'Nivel 3 · SaaS multi-tenant',
+const NIVEL_LABELS: Record<0 | 1 | 2 | 3, { titulo: string; tecnico?: string }> = {
+  0: { titulo: 'Para que te encuentren', tecnico: 'Presencia digital' },
+  1: { titulo: 'Tu página o sitio web', tecnico: 'Web' },
+  2: { titulo: 'App para manejar tu negocio', tecnico: 'Gestión' },
+  3: { titulo: 'Sistema para varios locales o marcas', tecnico: 'SaaS' },
 }
 
 function serviciosPublicos(): CatalogService[] {
@@ -41,9 +41,9 @@ function groupByNivel(list: CatalogService[]): Array<{ nivel: 0 | 1 | 2 | 3; ite
 
 function diagnosticoWaUrl(): string {
   const msg = [
-    'Hola, quiero agendar un diagnóstico.',
+    'Hola, quiero agendar una llamada.',
     '',
-    'Necesito algo a nivel enterprise / suite completa (Nivel 4).',
+    'Necesito un sistema completo a la medida para varias áreas de la empresa.',
   ].join('\n')
   return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`
 }
@@ -89,37 +89,50 @@ export function CotizadorInteractivo() {
 
   return (
     <div>
-      {grupos.map((grupo) => (
-        <section key={grupo.nivel} className="mb-4">
-          <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-[#666]">
-            {NIVEL_LABELS[grupo.nivel]}
-          </p>
-          <div className="rounded-xl border border-[#e5e5e5] bg-white px-4 py-1">
-            {grupo.items.map((service, i) => (
-              <SelectableServiceLineItem
-                key={service.id}
-                service={service}
-                selected={selectedIds.includes(service.id)}
-                onToggle={toggle}
-                isLast={i === grupo.items.length - 1}
-              />
-            ))}
-          </div>
-        </section>
-      ))}
+      {grupos.map((grupo) => {
+        const label = NIVEL_LABELS[grupo.nivel]
+        return (
+          <section key={grupo.nivel} className="mb-4">
+            <p className="mb-0.5 text-[11px] font-semibold uppercase tracking-wider text-[#666]">
+              {label.titulo}
+            </p>
+            {label.tecnico ? (
+              <p className="mb-2 text-[10px] font-medium uppercase tracking-wide text-[#999]">
+                {label.tecnico}
+              </p>
+            ) : (
+              <div className="mb-2" />
+            )}
+            <div className="rounded-xl border border-[#e5e5e5] bg-white px-4 py-1">
+              {grupo.items.map((service, i) => (
+                <SelectableServiceLineItem
+                  key={service.id}
+                  service={service}
+                  selected={selectedIds.includes(service.id)}
+                  onToggle={toggle}
+                  isLast={i === grupo.items.length - 1}
+                />
+              ))}
+            </div>
+          </section>
+        )
+      })}
 
-      {/* Nivel 4 — sin checkbox */}
+      {/* Empresa grande — sin checkbox */}
       <section className="mb-4">
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-[#666]">
-          Nivel 4 · Suite empresarial
+        <p className="mb-0.5 text-[11px] font-semibold uppercase tracking-wider text-[#666]">
+          Sistema completo a la medida
+        </p>
+        <p className="mb-2 text-[10px] font-medium uppercase tracking-wide text-[#999]">
+          Empresa / varias áreas
         </p>
         <div className="rounded-xl border border-[#b5cfe4] bg-[#e8f0f7] p-4">
           <p className="mb-1 text-[13px] font-semibold text-[#0c447c]">
-            ¿Necesitas algo a este nivel?
+            ¿Necesitas algo más grande?
           </p>
           <p className="mb-3 text-xs leading-normal text-[#1a3c5e]">
-            Suite completa, normativa SENIAT/BCV, app de ventas y retainer enterprise se
-            cotizan con diagnóstico — no aparecen en el selector.
+            Si necesitas un sistema completo a la medida (varias áreas de la empresa), agenda una
+            llamada y lo vemos juntos. Eso no se arma con checkboxes.
           </p>
           <a
             href={diagnosticoWaUrl()}
@@ -128,7 +141,7 @@ export function CotizadorInteractivo() {
             className="inline-flex items-center gap-2 rounded-[10px] bg-[#1a3c5e] px-4 py-2.5 text-sm font-semibold text-white no-underline"
           >
             <WhatsAppIcon size={16} />
-            Agendar diagnóstico
+            Agendar una llamada
           </a>
         </div>
       </section>
@@ -141,23 +154,24 @@ export function CotizadorInteractivo() {
         />
       ) : null}
 
-      {/* Resumen en vivo */}
       <div className="mb-4 rounded-xl border border-[#e5e5e5] bg-white px-4 py-3">
         <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-[#666]">
           Tu total
         </p>
         {!hasSelection ? (
-          <p className="text-sm text-[#888]">Selecciona al menos un servicio para ver el precio.</p>
+          <p className="text-sm text-[#888]">
+            Marca lo que necesitas arriba para ver el precio.
+          </p>
         ) : (
           <div className="space-y-1 text-sm text-[#333]">
             {result.descuento > 0 ? (
               <>
                 <div className="flex justify-between">
-                  <span>Subtotal</span>
+                  <span>Suma</span>
                   <span>${result.subtotal} USD</span>
                 </div>
                 <div className="flex justify-between text-[#0f6e56]">
-                  <span>Descuento</span>
+                  <span>Ahorro del combo</span>
                   <span>−${result.descuento} USD</span>
                 </div>
               </>
@@ -174,7 +188,10 @@ export function CotizadorInteractivo() {
       </div>
 
       <div className="mb-4">
-        <label htmlFor="cotizador-nombre" className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-[#666]">
+        <label
+          htmlFor="cotizador-nombre"
+          className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-[#666]"
+        >
           Tu nombre (opcional)
         </label>
         <input
@@ -192,7 +209,7 @@ export function CotizadorInteractivo() {
         <WhatsAppCTA
           url={waUrl}
           titulo="¿Listo para arrancar?"
-          subtitulo="Te llega el detalle por WhatsApp. Respondemos rápido en horario laboral VE."
+          subtitulo="Te mandamos el detalle por WhatsApp. Respondemos rápido en horario de Venezuela."
           contacto="albertoorta.1@gmail.com · +58 414 494 0417"
           leadPayload={{
             source: 'self-service',
@@ -208,7 +225,7 @@ export function CotizadorInteractivo() {
         />
       ) : (
         <div className="rounded-[14px] bg-[#1a3c5e] p-5 text-center opacity-60">
-          <p className="text-sm text-white/80">Elige servicios para activar WhatsApp</p>
+          <p className="text-sm text-white/80">Marca lo que necesitas para escribirnos por WhatsApp</p>
         </div>
       )}
 

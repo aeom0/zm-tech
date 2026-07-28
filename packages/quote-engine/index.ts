@@ -13,6 +13,11 @@ export type {
 
 export { services } from './catalog/services'
 export { bundles } from './catalog/bundles'
+export {
+  publicServiceCopy,
+  getPublicServiceCopy,
+  type PublicServiceCopy,
+} from './catalog/publicCopy'
 
 export {
   calculatePrice,
