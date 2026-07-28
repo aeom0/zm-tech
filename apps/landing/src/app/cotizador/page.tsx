@@ -12,7 +12,7 @@ export default function CotizadorPage() {
   return (
     <main className="min-h-screen bg-[#f5f5f5] p-4 font-sans text-[#111] antialiased">
       <div className="mx-auto max-w-105 pb-12">
-        <header className="px-0 pb-4 pt-6 text-center">
+        <header className="px-0 pt-6 pb-4 text-center">
           <div className="inline-block rounded-xl bg-[#050505] px-[18px] py-2">
             <span className="text-[15px] font-bold tracking-wider text-[#8b5cf6]">ZM</span>
             <span className="text-[15px] font-bold text-white"> Tech</span>

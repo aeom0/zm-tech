@@ -42,7 +42,8 @@ export const publicServiceCopy: Record<string, PublicServiceCopy> = {
   },
   'form-envio-auto': {
     titulo: 'Formulario que te llega al correo',
-    descripcion: 'Cuando alguien te escribe desde la web, te llega automático sin perder el mensaje.',
+    descripcion:
+      'Cuando alguien te escribe desde la web, te llega automático sin perder el mensaje.',
   },
   'seo-onpage': {
     titulo: 'Que te encuentren en Google',
@@ -60,7 +61,8 @@ export const publicServiceCopy: Record<string, PublicServiceCopy> = {
   },
   'migracion-datos': {
     titulo: 'Pasar tus datos al sitio nuevo',
-    descripcion: 'Trasladamos lo que ya tienes (Wasi, Excel u otro sistema) sin reescribir todo a mano.',
+    descripcion:
+      'Trasladamos lo que ya tienes (Wasi, Excel u otro sistema) sin reescribir todo a mano.',
     terminoTecnico: 'Migración',
   },
   'addon-whatsapp-automatizacion': {

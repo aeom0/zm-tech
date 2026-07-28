@@ -7,10 +7,10 @@
 export type ServiceTier = 0 | 1 | 2 | 3 | 4
 
 export type PricingUnit =
-  | 'unico'            // pago único de desarrollo/setup
-  | 'mensual'           // retainer / mantenimiento single-tenant
-  | 'mensual-tenant'    // suscripción SaaS por tenant (Nivel 3)
-  | 'proyecto'          // proyecto por fases, precio se cotiza aparte (Nivel 4)
+  | 'unico' // pago único de desarrollo/setup
+  | 'mensual' // retainer / mantenimiento single-tenant
+  | 'mensual-tenant' // suscripción SaaS por tenant (Nivel 3)
+  | 'proyecto' // proyecto por fases, precio se cotiza aparte (Nivel 4)
 
 export interface PriceRange {
   min: number

@@ -28,8 +28,7 @@ export const guataparoQuote: QuoteDefinition = {
   lineCopy: {
     'migracion-datos': {
       nombre: 'Traspaso automático desde Wasi',
-      descripcion:
-        'Todas tus propiedades pasan al nuevo sitio sin recargar nada a mano.',
+      descripcion: 'Todas tus propiedades pasan al nuevo sitio sin recargar nada a mano.',
     },
     'whatsapp-boton': {
       nombre: 'Botón WhatsApp por propiedad',
@@ -92,7 +91,11 @@ export const guataparoQuote: QuoteDefinition = {
   cronograma: {
     tituloSeccion: '05 · Cómo lo hacemos — 3 semanas',
     fases: [
-      { week: 'Semana 1', title: 'Diseño', tags: ['Tu marca y colores', 'Estructura', 'Aprobación'] },
+      {
+        week: 'Semana 1',
+        title: 'Diseño',
+        tags: ['Tu marca y colores', 'Estructura', 'Aprobación'],
+      },
       {
         week: 'Semana 2',
         title: 'Desarrollo',

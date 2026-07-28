@@ -9,10 +9,7 @@ export type LeadPayload = {
   clienteNombre?: string
   clienteContacto?: string
   serviceIds: string[]
-  result: Pick<
-    CalculatePriceResult,
-    'subtotal' | 'descuento' | 'total' | 'requiereContactoDirecto'
-  >
+  result: Pick<CalculatePriceResult, 'subtotal' | 'descuento' | 'total' | 'requiereContactoDirecto'>
 }
 
 type WhatsAppCTAProps = {

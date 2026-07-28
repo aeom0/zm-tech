@@ -36,4 +36,3 @@ export default function LogoZMTech({ className, priority, href = '/' }: LogoZMTe
     </Link>
   )
 }
-

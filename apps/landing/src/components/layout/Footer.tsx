@@ -13,7 +13,8 @@ export default function Footer() {
               <LogoZMTech className="items-center" />
             </div>
             <p className="max-w-sm text-sm leading-relaxed text-gray-500">
-              Hacemos realidad las ideas de negocios que necesitan software a medida. Rápido, robusto y con soporte real.
+              Hacemos realidad las ideas de negocios que necesitan software a medida. Rápido,
+              robusto y con soporte real.
             </p>
           </div>
 

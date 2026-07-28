@@ -46,7 +46,7 @@ export function SelectableServiceLineItem({
           <div className="min-w-0">
             <p className="mb-0.5 text-[13px] font-medium text-[#111]">{copy.titulo}</p>
             {copy.terminoTecnico ? (
-              <p className="mb-0.5 text-[10px] font-medium uppercase tracking-wide text-[#999]">
+              <p className="mb-0.5 text-[10px] font-medium tracking-wide text-[#999] uppercase">
                 {copy.terminoTecnico}
               </p>
             ) : null}
@@ -54,7 +54,7 @@ export function SelectableServiceLineItem({
               <p className="text-xs leading-snug text-[#666]">{copy.descripcion}</p>
             ) : null}
           </div>
-          <span className="shrink-0 whitespace-nowrap text-sm font-semibold text-[#1a3c5e]">
+          <span className="shrink-0 text-sm font-semibold whitespace-nowrap text-[#1a3c5e]">
             {formatPrecio(service.precio)}
             {service.unidad === 'mensual' || service.unidad === 'mensual-tenant' ? (
               <span className="font-normal text-[#888]">/mes</span>

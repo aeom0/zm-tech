@@ -18,6 +18,9 @@
     "build:odental": "turbo run build --filter=odentalpro-web --filter=@odentalpro/dental-schema",
     "lint": "turbo run lint",
     "check:types": "turbo run check:types typecheck",
+    "format": "pnpm --filter landing format && pnpm --filter @zmtech/quote-engine format",
+    "format:check": "pnpm --filter landing format:check && pnpm --filter @zmtech/quote-engine format:check",
+    "format:landing": "pnpm --filter landing format",
     "db:push": "pnpm --filter geemastudio-server exec drizzle-kit push",
     "db:generate": "pnpm --filter geemastudio-server exec drizzle-kit generate",
     "db:studio": "pnpm --filter geemastudio-server exec drizzle-kit studio"
@@ -26,6 +29,7 @@
     "concurrently": "^9.1.2",
     "drizzle-kit": "^0.31.4",
     "prettier": "^3.8.3",
+    "prettier-plugin-tailwindcss": "^0.8.0",
     "turbo": "^2.5.4",
     "typescript": "~6.0.3"
   }

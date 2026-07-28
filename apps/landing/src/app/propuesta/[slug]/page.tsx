@@ -70,7 +70,7 @@ function GiftIcon() {
 /** Aplica overrides de copy del quote sobre el LineItem del catálogo. */
 function applyLineCopy(
   item: LineItem,
-  lineCopy: Record<string, { nombre?: string; descripcion?: string }> | undefined,
+  lineCopy: Record<string, { nombre?: string; descripcion?: string }> | undefined
 ): LineItem {
   const override = lineCopy?.[item.service.id]
   if (!override) return item
@@ -97,7 +97,7 @@ export default async function PropuestaPage({ params }: PageProps) {
   })
 
   const lineById = new Map(
-    result.lineItems.map((li) => [li.service.id, applyLineCopy(li, quote.lineCopy)]),
+    result.lineItems.map((li) => [li.service.id, applyLineCopy(li, quote.lineCopy)])
   )
 
   const heroItem = lineById.get(quote.plataforma.servicioId)
@@ -125,20 +125,19 @@ export default async function PropuestaPage({ params }: PageProps) {
         />
 
         {/* 01 · Plataforma */}
-        <p className="mb-2 mt-[1.1rem] text-[11px] font-semibold uppercase tracking-wider text-[#666]">
+        <p className="mt-[1.1rem] mb-2 text-[11px] font-semibold tracking-wider text-[#666] uppercase">
           {quote.plataforma.tituloSeccion}
         </p>
         <div className="mb-2 rounded-xl bg-[#1a3c5e] p-5">
-          <p className="mb-1 text-[11px] uppercase tracking-widest text-white/60">
+          <p className="mb-1 text-[11px] tracking-widest text-white/60 uppercase">
             {quote.plataforma.label}
           </p>
           {result.requiereContactoDirecto && !heroItem?.service.precioVisible ? (
             <p className="mb-1 text-2xl font-semibold text-white">Agendar diagnóstico</p>
           ) : (
-            <p className="mb-1 text-[2.5rem] font-semibold leading-none text-white">
+            <p className="mb-1 text-[2.5rem] leading-none font-semibold text-white">
               <sup className="mt-2 inline-block align-top text-base">$</sup>
-              {heroPrecio}{' '}
-              <span className="text-base font-normal text-white/50">USD</span>
+              {heroPrecio} <span className="text-base font-normal text-white/50">USD</span>
             </p>
           )}
           <p className="mb-4 text-xs text-white/65">{quote.plataforma.nota}</p>
@@ -166,7 +165,7 @@ export default async function PropuestaPage({ params }: PageProps) {
         ) : null}
 
         {/* 02 · Extras */}
-        <p className="mb-2 mt-[1.1rem] text-[11px] font-semibold uppercase tracking-wider text-[#666]">
+        <p className="mt-[1.1rem] mb-2 text-[11px] font-semibold tracking-wider text-[#666] uppercase">
           {quote.extras.tituloSeccion}
         </p>
         <div className="mb-2 rounded-xl border border-[#e5e5e5] bg-white px-4 py-3">
@@ -191,7 +190,7 @@ export default async function PropuestaPage({ params }: PageProps) {
         {/* 03 · Soporte mensual */}
         {quote.soporteMensual ? (
           <>
-            <p className="mb-2 mt-[1.1rem] text-[11px] font-semibold uppercase tracking-wider text-[#666]">
+            <p className="mt-[1.1rem] mb-2 text-[11px] font-semibold tracking-wider text-[#666] uppercase">
               {quote.soporteMensual.tituloSeccion}
             </p>
             <div className="mb-4 rounded-xl border border-[#97c459] bg-[#e8f9ef] p-[1.1rem]">
@@ -221,7 +220,7 @@ export default async function PropuestaPage({ params }: PageProps) {
         />
 
         {/* 05 · Cronograma */}
-        <p className="mb-2 mt-[1.1rem] text-[11px] font-semibold uppercase tracking-wider text-[#666]">
+        <p className="mt-[1.1rem] mb-2 text-[11px] font-semibold tracking-wider text-[#666] uppercase">
           {quote.cronograma.tituloSeccion}
         </p>
         <div className="mb-4 rounded-xl border border-[#e5e5e5] bg-white px-4 py-3">
@@ -251,7 +250,7 @@ export default async function PropuestaPage({ params }: PageProps) {
         </div>
 
         {/* 06 · Pago */}
-        <p className="mb-2 mt-[1.1rem] text-[11px] font-semibold uppercase tracking-wider text-[#666]">
+        <p className="mt-[1.1rem] mb-2 text-[11px] font-semibold tracking-wider text-[#666] uppercase">
           {quote.pago.tituloSeccion}
         </p>
         <div className="mb-2 grid grid-cols-2 gap-2">

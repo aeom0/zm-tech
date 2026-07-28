@@ -65,7 +65,8 @@ export default function Features() {
             </p>
             <h2 className="mb-6 text-5xl leading-tight font-black text-white">Por qué ZM Tech</h2>
             <p className="mb-8 leading-relaxed text-gray-400">
-              No somos una agencia más. Somos el equipo técnico que tu negocio necesitaba — sin los costos de tener uno propio.
+              No somos una agencia más. Somos el equipo técnico que tu negocio necesitaba — sin los
+              costos de tener uno propio.
             </p>
 
             {/* Terminal box */}

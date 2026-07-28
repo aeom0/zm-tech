@@ -24,7 +24,7 @@ export function ROIComparison({
 }: ROIComparisonProps) {
   return (
     <section className="mb-4">
-      <p className="mb-2 mt-[1.1rem] text-[11px] font-semibold uppercase tracking-wider text-[#666]">
+      <p className="mt-[1.1rem] mb-2 text-[11px] font-semibold tracking-wider text-[#666] uppercase">
         {tituloSeccion}
       </p>
 

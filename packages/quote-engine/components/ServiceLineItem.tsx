@@ -40,7 +40,7 @@ export function ServiceLineItem({ item, isLast = false, pricePrefix = '' }: Serv
         ) : null}
       </div>
       <span
-        className={`shrink-0 whitespace-nowrap text-sm font-semibold ${
+        className={`shrink-0 text-sm font-semibold whitespace-nowrap ${
           service.precioVisible ? 'text-[#1a3c5e]' : 'text-[#0c447c]'
         }`}
       >

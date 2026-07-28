@@ -13,7 +13,8 @@ export const services: CatalogService[] = [
     nivel: 0,
     categoria: 'presencia-local',
     nombre: 'Marcación Google Maps básica',
-    descripcion: 'Creación/reclamación de ficha, verificación, categoría, horario y ubicación exacta.',
+    descripcion:
+      'Creación/reclamación de ficha, verificación, categoría, horario y ubicación exacta.',
     precio: 20,
     unidad: 'unico',
     precioVisible: true,
@@ -23,7 +24,8 @@ export const services: CatalogService[] = [
     nivel: 0,
     categoria: 'presencia-local',
     nombre: 'Google Maps optimizado',
-    descripcion: 'Básico + descripción SEO local, 8-10 fotos, primer post y respuesta a reseñas configurada.',
+    descripcion:
+      'Básico + descripción SEO local, 8-10 fotos, primer post y respuesta a reseñas configurada.',
     precio: 45,
     unidad: 'unico',
     precioVisible: true,
@@ -199,7 +201,8 @@ export const services: CatalogService[] = [
     nivel: 4,
     categoria: 'enterprise',
     nombre: 'Suite empresarial completa',
-    descripcion: '3-5 apps: admin, inventario, producción, compras, ventas móvil. Fases 30/30/30/10.',
+    descripcion:
+      '3-5 apps: admin, inventario, producción, compras, ventas móvil. Fases 30/30/30/10.',
     precio: { min: 3000, max: 8000 },
     unidad: 'proyecto',
     precioVisible: false,

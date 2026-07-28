@@ -15,14 +15,9 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const data = schema.parse(body)
 
-    const supabase = createClient(
-      process.env.SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
+    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
 
-    const { error: dbError } = await supabase
-      .from('contacts')
-      .insert([data])
+    const { error: dbError } = await supabase.from('contacts').insert([data])
 
     if (dbError) {
       console.error('[Supabase]', dbError)

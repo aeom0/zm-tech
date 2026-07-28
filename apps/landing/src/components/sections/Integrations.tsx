@@ -130,18 +130,13 @@ const integrations: Integration[] = [
 
 export default function Integrations() {
   return (
-    <section
-      id="integraciones"
-      className="border-y border-white/5 bg-black/30 py-24"
-    >
+    <section id="integraciones" className="border-y border-white/5 bg-black/30 py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <p className="mb-3 font-mono text-xs tracking-widest text-violet-400 uppercase">
             Ecosistema Conectado
           </p>
-          <h2 className="text-5xl font-black text-white">
-            Tu negocio conectado con todo
-          </h2>
+          <h2 className="text-5xl font-black text-white">Tu negocio conectado con todo</h2>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-gray-400">
             Integramos tu software con las herramientas que ya usas — y las que necesitas para
             crecer en el mercado venezolano y latinoamericano.

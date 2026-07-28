@@ -53,7 +53,9 @@ export default function ContactForm() {
             <Terminal className="h-6 w-6 text-violet-400" />
             <h2 className="text-3xl font-black text-white">¿Tienes un proyecto en mente?</h2>
           </div>
-          <p className="mb-4 font-mono text-sm text-gray-500">Cuéntanos qué necesitas. Te respondemos en menos de 24 horas con una propuesta concreta.</p>
+          <p className="mb-4 font-mono text-sm text-gray-500">
+            Cuéntanos qué necesitas. Te respondemos en menos de 24 horas con una propuesta concreta.
+          </p>
           <div className="mb-8 border-t border-white/10" />
 
           {submitted ? (
@@ -109,9 +111,7 @@ export default function ContactForm() {
                 </div>
               </div>
 
-              {error && (
-                <p className="mt-4 font-mono text-xs text-red-400">{error}</p>
-              )}
+              {error && <p className="mt-4 font-mono text-xs text-red-400">{error}</p>}
 
               <button
                 type="submit"

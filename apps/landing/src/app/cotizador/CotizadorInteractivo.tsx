@@ -24,12 +24,12 @@ const NIVEL_LABELS: Record<0 | 1 | 2 | 3, { titulo: string; tecnico?: string }> 
 }
 
 function serviciosPublicos(): CatalogService[] {
-  return services.filter(
-    (s) => s.nivel >= 0 && s.nivel <= 3 && s.precioVisible === true,
-  )
+  return services.filter((s) => s.nivel >= 0 && s.nivel <= 3 && s.precioVisible === true)
 }
 
-function groupByNivel(list: CatalogService[]): Array<{ nivel: 0 | 1 | 2 | 3; items: CatalogService[] }> {
+function groupByNivel(
+  list: CatalogService[]
+): Array<{ nivel: 0 | 1 | 2 | 3; items: CatalogService[] }> {
   const levels: Array<0 | 1 | 2 | 3> = [0, 1, 2, 3]
   return levels
     .map((nivel) => ({
@@ -55,10 +55,7 @@ export function CotizadorInteractivo() {
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [nombre, setNombre] = useState('')
 
-  const result = useMemo(
-    () => calculatePrice({ serviceIds: selectedIds }),
-    [selectedIds],
-  )
+  const result = useMemo(() => calculatePrice({ serviceIds: selectedIds }), [selectedIds])
 
   const waUrl = useMemo(
     () =>
@@ -69,7 +66,7 @@ export function CotizadorInteractivo() {
             result,
             waNumber: WA_NUMBER,
           }),
-    [nombre, result, selectedIds.length],
+    [nombre, result, selectedIds.length]
   )
 
   const bundleSubtotal =
@@ -80,9 +77,7 @@ export function CotizadorInteractivo() {
     }, 0) ?? 0
 
   function toggle(id: string) {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
-    )
+    setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
   }
 
   const hasSelection = selectedIds.length > 0
@@ -93,11 +88,11 @@ export function CotizadorInteractivo() {
         const label = NIVEL_LABELS[grupo.nivel]
         return (
           <section key={grupo.nivel} className="mb-4">
-            <p className="mb-0.5 text-[11px] font-semibold uppercase tracking-wider text-[#666]">
+            <p className="mb-0.5 text-[11px] font-semibold tracking-wider text-[#666] uppercase">
               {label.titulo}
             </p>
             {label.tecnico ? (
-              <p className="mb-2 text-[10px] font-medium uppercase tracking-wide text-[#999]">
+              <p className="mb-2 text-[10px] font-medium tracking-wide text-[#999] uppercase">
                 {label.tecnico}
               </p>
             ) : (
@@ -120,10 +115,10 @@ export function CotizadorInteractivo() {
 
       {/* Empresa grande — sin checkbox */}
       <section className="mb-4">
-        <p className="mb-0.5 text-[11px] font-semibold uppercase tracking-wider text-[#666]">
+        <p className="mb-0.5 text-[11px] font-semibold tracking-wider text-[#666] uppercase">
           Sistema completo a la medida
         </p>
-        <p className="mb-2 text-[10px] font-medium uppercase tracking-wide text-[#999]">
+        <p className="mb-2 text-[10px] font-medium tracking-wide text-[#999] uppercase">
           Empresa / varias áreas
         </p>
         <div className="rounded-xl border border-[#b5cfe4] bg-[#e8f0f7] p-4">
@@ -155,13 +150,11 @@ export function CotizadorInteractivo() {
       ) : null}
 
       <div className="mb-4 rounded-xl border border-[#e5e5e5] bg-white px-4 py-3">
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-[#666]">
+        <p className="mb-2 text-[11px] font-semibold tracking-wider text-[#666] uppercase">
           Tu total
         </p>
         {!hasSelection ? (
-          <p className="text-sm text-[#888]">
-            Marca lo que necesitas arriba para ver el precio.
-          </p>
+          <p className="text-sm text-[#888]">Marca lo que necesitas arriba para ver el precio.</p>
         ) : (
           <div className="space-y-1 text-sm text-[#333]">
             {result.descuento > 0 ? (
@@ -190,7 +183,7 @@ export function CotizadorInteractivo() {
       <div className="mb-4">
         <label
           htmlFor="cotizador-nombre"
-          className="mb-1.5 block text-[11px] font-semibold uppercase tracking-wider text-[#666]"
+          className="mb-1.5 block text-[11px] font-semibold tracking-wider text-[#666] uppercase"
         >
           Tu nombre (opcional)
         </label>
@@ -225,7 +218,9 @@ export function CotizadorInteractivo() {
         />
       ) : (
         <div className="rounded-[14px] bg-[#1a3c5e] p-5 text-center opacity-60">
-          <p className="text-sm text-white/80">Marca lo que necesitas para escribirnos por WhatsApp</p>
+          <p className="text-sm text-white/80">
+            Marca lo que necesitas para escribirnos por WhatsApp
+          </p>
         </div>
       )}
 

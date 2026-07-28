@@ -50,10 +50,7 @@ function findService(id: string): CatalogService {
  * Bundle completo cuyo set de servicios está contenido en serviceIds (exacto o superset).
  * Si hay varios, elige el de mayor descuento absoluto sobre la suma de sus servicios.
  */
-function findMatchingBundle(
-  serviceIds: string[],
-  lineById: Map<string, LineItem>,
-): Bundle | null {
+function findMatchingBundle(serviceIds: string[], lineById: Map<string, LineItem>): Bundle | null {
   const idSet = new Set(serviceIds)
   const matches = bundles.filter((b) => b.servicios.every((id) => idSet.has(id)))
 
@@ -70,9 +67,7 @@ function findMatchingBundle(
     }, 0)
 
     const saving =
-      bundle.tipoDescuento === 'monto'
-        ? bundle.descuento
-        : (sumaBundle * bundle.descuento) / 100
+      bundle.tipoDescuento === 'monto' ? bundle.descuento : (sumaBundle * bundle.descuento) / 100
 
     if (saving > bestSaving) {
       bestSaving = saving
@@ -109,10 +104,7 @@ export function calculatePrice(input: CalculatePriceInput): CalculatePriceResult
     }
   }
 
-  const subtotal = lineItems.reduce(
-    (acc, li) => acc + resolveCalculoPrecio(li.precioMostrado),
-    0,
-  )
+  const subtotal = lineItems.reduce((acc, li) => acc + resolveCalculoPrecio(li.precioMostrado), 0)
 
   const bundleAplicado = findMatchingBundle(uniqueIds, lineById)
 

@@ -72,7 +72,8 @@ export default function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.55 }}
             >
-              Convertimos tu idea en software real. Rápido, elegante y listo para crecer contigo desde el primer día.
+              Convertimos tu idea en software real. Rápido, elegante y listo para crecer contigo
+              desde el primer día.
             </motion.p>
 
             {/* CTAs */}

@@ -3,7 +3,7 @@
 @import 'tailwindcss';
 
 /* Clases Tailwind usadas en @zmtech/quote-engine/components */
-@source "../../../../../packages/quote-engine/components";
+@source '../../../../../packages/quote-engine/components';
 
 :root {
   --primary: #8b5cf6;

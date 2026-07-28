@@ -53,13 +53,14 @@ export async function POST() {
 
     <div style="background:#fff;border-radius:12px;padding:20px 24px;margin-bottom:16px;border:1px solid #e5e5e5">
       <p style="font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin:0 0 12px">Resumen rápido</p>
-      ${
-        [
-          ['🌐', 'Página web profesional de tu agencia', '$300 USD inversión inicial'],
-          ['🎁', 'Dominio incluido el primer año', 'Valor $35, sin costo extra'],
-          ['🔧', 'Soporte y mejoras mensuales', '$30 / mes'],
-          ['📈', 'Recuperas la inversión en', '~10 meses'],
-        ].map(([icon, title, sub]) => `
+      ${[
+        ['🌐', 'Página web profesional de tu agencia', '$300 USD inversión inicial'],
+        ['🎁', 'Dominio incluido el primer año', 'Valor $35, sin costo extra'],
+        ['🔧', 'Soporte y mejoras mensuales', '$30 / mes'],
+        ['📈', 'Recuperas la inversión en', '~10 meses'],
+      ]
+        .map(
+          ([icon, title, sub]) => `
           <div style="display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid #f5f5f5">
             <span style="font-size:18px;flex-shrink:0">${icon}</span>
             <div style="flex:1">
@@ -67,8 +68,9 @@ export async function POST() {
               <p style="font-size:12px;color:#888;margin:0">${sub}</p>
             </div>
           </div>
-        `).join('')
-      }
+        `
+        )
+        .join('')}
     </div>
 
     <div style="text-align:center;margin-bottom:24px">
