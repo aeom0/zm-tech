@@ -207,7 +207,7 @@ export function CotizadorInteractivo() {
           }}
         />
       ) : (
-        <div className="rounded-[14px] bg-[#1a3c5e]/p-5 text-center opacity-60">
+        <div className="rounded-[14px] bg-[#1a3c5e] p-5 text-center opacity-60">
           <p className="text-sm text-white/80">Elige servicios para activar WhatsApp</p>
         </div>
       )}
