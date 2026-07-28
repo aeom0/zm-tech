@@ -117,7 +117,7 @@ export default async function PropuestaPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-[#f5f5f5] p-4 font-sans text-[#111] antialiased">
-      <div className="mx-auto max-w-[420px] pb-12">
+      <div className="mx-auto max-w-105 pb-12">
         <QuoteHero
           clienteNombre={quote.clienteNombre}
           mensajeIntro={quote.mensajeIntro}

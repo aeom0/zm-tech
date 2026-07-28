@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function CotizadorPage() {
   return (
     <main className="min-h-screen bg-[#f5f5f5] p-4 font-sans text-[#111] antialiased">
-      <div className="mx-auto max-w-[420px] pb-12">
+      <div className="mx-auto max-w-105 pb-12">
         <header className="px-0 pb-4 pt-6 text-center">
           <div className="inline-block rounded-xl bg-[#050505] px-[18px] py-2">
             <span className="text-[15px] font-bold tracking-wider text-[#8b5cf6]">ZM</span>
