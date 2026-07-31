@@ -41,7 +41,7 @@ export default async function CotizadorPage({ params }: Props) {
     <main className="min-h-screen bg-[#f5f5f5] p-4 font-sans text-[#111] antialiased">
       <div className="mx-auto max-w-105 pb-12">
         <header className="px-0 pt-6 pb-4 text-center">
-          <Link href={`/${locale}`} className="inline-block rounded-xl bg-[#050505] px-[18px] py-2">
+          <Link href={`/${locale}`} className="inline-block rounded-xl bg-[#050505] px-4.5 py-2">
             <span className="text-[15px] font-bold tracking-wider text-[#8b5cf6]">ZM</span>
             <span className="text-[15px] font-bold text-white"> Tech</span>
           </Link>

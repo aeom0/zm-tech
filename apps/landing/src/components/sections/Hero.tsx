@@ -16,7 +16,7 @@ export default function Hero({ messages }: Props) {
     <section className="relative min-h-screen overflow-hidden">
       <div className="pointer-events-none absolute inset-0">
         <div
-          className="absolute top-0 right-0 h-[600px] w-[600px] rounded-full"
+          className="absolute top-0 right-0 h-150 w-150 rounded-full"
           style={{
             background:
               'radial-gradient(ellipse at top right, rgba(139,92,246,0.15) 0%, transparent 60%)',
@@ -99,7 +99,7 @@ export default function Hero({ messages }: Props) {
             className="relative"
           >
             <div className="relative overflow-hidden rounded-xl shadow-[0_0_40px_rgba(139,92,246,0.15)] ring-1 ring-violet-500/20">
-              <div className="relative h-[420px] w-full lg:h-[520px]">
+              <div className="relative h-105 w-full lg:h-130">
                 <Image
                   src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80"
                   alt={messages.imageAlt}
