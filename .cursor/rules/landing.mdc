@@ -1,0 +1,36 @@
+---
+description: Landing ZM Tech — rutas /es|/en, diccionarios, dominio zmtechdev.com, quote-engine
+globs:
+  - "apps/landing/**/*"
+  - "packages/quote-engine/**/*"
+  - "docs/landing/**/*"
+alwaysApply: false
+---
+
+# Landing ZM Tech (`apps/landing`)
+
+## Dominio y deploy
+
+- Producción: **https://zmtechdev.com** (también `www`)
+- Vercel project: **`zmtech`**
+- Env canónico: `NEXT_PUBLIC_SITE_URL=https://zmtechdev.com`
+- Supabase landing: `llacowjutjfefboqgfnj` (solo API routes con service role)
+
+## i18n
+
+- Rutas públicas: `/es`, `/en` (middleware: `/` → `/es`)
+- Copy en `apps/landing/src/content/{es,en}.ts` — tipado `Messages`
+- Secciones reciben `messages` / `locale` por props; no hardcodear UI
+- `/propuesta/[slug]` permanece en español, fuera de `[locale]`
+- Cotizador self-service: `/[locale]/cotizador` + locale en `@zmtech/quote-engine`
+
+## Al agregar copy
+
+1. Añadir clave en `messages.ts` (tipo)
+2. Completar `es.ts` y `en.ts`
+3. Pasar desde page/layout — no strings sueltos en JSX
+
+## Alcance
+
+- No tocar GeemaStudio / OdentalPro ni sus dominios/env
+- Package `@zmtech/quote-engine`: default locale `'es'` para no romper propuestas

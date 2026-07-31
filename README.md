@@ -6,7 +6,7 @@ Monorepo de productos **ZM Tech** — pnpm + Turborepo.
 
 | Producto | Apps | Packages | Docs |
 |---|---|---|---|
-| **Landing** | `apps/landing` | — | [docs/landing](docs/landing/README.md) |
+| **Landing** | `apps/landing` | `@zmtech/quote-engine` | [docs/landing](docs/landing/README.md) · [zmtechdev.com](https://zmtechdev.com) |
 | **GeemaStudio** | `apps/geemastudio-web`, `apps/geemastudio-mobile`, `apps/geemastudio-server` | `@geemastudio/shared-schema`, `@geemastudio/tenant-config` | [docs/geemastudio](docs/geemastudio/README.md) |
 | **OdentalPro** | `apps/odentalpro-web`, `apps/odentalpro-mobile`, `apps/odentalpro-server` | `@odentalpro/dental-schema` | [docs/odentalpro](docs/odentalpro/) |
 

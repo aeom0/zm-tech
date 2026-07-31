@@ -1,73 +1,80 @@
 # ZM Tech — Landing Page
 
-Sitio web de presentación corporativa para **ZM Tech**, empresa de ingeniería de software con identidad técnico-industrial, especializada en soluciones para LATAM.
+Sitio corporativo de **ZM Tech** (fábrica de software LATAM).  
+**Producción:** [zmtechdev.com](https://zmtechdev.com) · Vercel project `zmtech` · App: `apps/landing`
+
+## Idiomas
+
+| Locale | URL | Notas |
+|--------|-----|--------|
+| Español (default) | `/es` | `/` redirige 308 → `/es` |
+| English | `/en` | Mirror del funnel público |
+| Propuestas cliente | `/propuesta/[slug]` | Solo español (sin prefijo de locale) |
+
+Copy de marketing y cotizadores públicos vive en `src/content/{es,en}.ts`. No hardcodear strings de UI en secciones.
 
 ## Stack
 
 | Tecnología | Versión | Uso |
 |---|---|---|
-| Next.js | 16.x | Framework (App Router) |
-| TypeScript | 5.x | Tipado estricto |
-| Tailwind CSS | v4 | Estilos — sintaxis `bg-linear-to-*`, spacing dinámico |
-| Framer Motion | 12.x | Animaciones con `whileInView`, stagger |
-| React Hook Form + Zod | — | Formulario de contacto con validación |
-| Lucide React | — | Iconografía |
-| ESLint | 9.x | `eslint.config.mjs` (flat config) + `eslint-config-next` |
+| Next.js | 16.x | App Router + middleware de locale |
+| TypeScript | 6.x | Tipado estricto |
+| Tailwind CSS | v4 | Estilos |
+| Framer Motion | 12.x | Animaciones |
+| React Hook Form + Zod | — | Formulario de contacto |
+| `@zmtech/quote-engine` | workspace | Cotizador `/[locale]/cotizador` |
+| Lucide React | — | Iconos (sin emojis Unicode en UI) |
 
 ## Estructura
 
 ```
 src/
+├── middleware.ts              # / → /es; set x-locale
+├── content/                   # Diccionarios ES/EN (Messages)
+│   ├── locales.ts
+│   ├── messages.ts            # Tipos
+│   ├── es.ts / en.ts
+│   └── index.ts               # getMessages(locale)
 ├── app/
-│   ├── layout.tsx          # Metadata SEO + fuentes Inter/Space Grotesk
-│   ├── page.tsx            # Composición de secciones
-│   └── globals.css         # Grid técnico, custom animations, scrollbar
+│   ├── layout.tsx             # html lang dinámico + metadataBase
+│   ├── [locale]/
+│   │   ├── layout.tsx         # generateMetadata + alternates
+│   │   ├── page.tsx           # Home marketing
+│   │   └── cotizador/         # Quote builder público
+│   ├── propuesta/[slug]/      # Propuestas cliente (ES)
+│   └── api/                   # contact, cotizador/lead, propuesta/enviar
 ├── components/
-│   ├── layout/
-│   │   ├── Navbar.tsx      # Sticky, glassmorphism al scroll, "INICIAR SISTEMA"
-│   │   └── Footer.tsx      # 4 columnas, "Hecho con ⚡ en Venezuela"
-│   ├── sections/
-│   │   ├── Hero.tsx        # 2 col: H1 gradiente + imagen con card flotante
-│   │   ├── TrustBanner.tsx # Franja MLB Standards
-│   │   ├── Verticals.tsx   # 3 cards con grayscale → color hover
-│   │   ├── Features.tsx    # Layout asimétrico + terminal box
-│   │   ├── ContactForm.tsx # "Inicializar Conexión" / "TRANSMITIR DATOS"
-│   │   └── FAQ.tsx         # "Protocolos Frecuentes" accordion
-│   └── ui/
-└── types/
-    └── index.ts
+│   ├── layout/                # Navbar (switcher ES|EN), Footer
+│   └── sections/              # Hero, Verticals, Cotizador home, …
+└── data/quotes/               # QuoteDefinition por cliente
 ```
 
-## Lenguaje de UI (técnico-industrial)
+## Env (Vercel project `zmtech`)
 
-| Convencional | ZM Tech |
-|---|---|
-| Enviar | TRANSMITIR DATOS |
-| Contacto | Inicializar Conexión |
-| FAQ | Protocolos Frecuentes |
-| Cotizar | INICIAR SISTEMA |
-| Ver servicios | VER ECOSISTEMA |
+| Variable | Uso |
+|----------|-----|
+| `NEXT_PUBLIC_SITE_URL` | Canonical / OG — `https://zmtechdev.com` |
+| `SUPABASE_URL` | Proyecto `llacowjutjfefboqgfnj` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Contact + leads |
+| `RESEND_API_KEY` | Email |
+| `CONTACT_EMAIL` | Destino leads |
 
 ## Comandos
 
+Desde la raíz del monorepo:
+
 ```bash
-pnpm install       # Instalar dependencias
-pnpm dev           # Servidor local → localhost:3000
-pnpm build         # Build de producción
-pnpm lint          # ESLint (eslint src/)
-pnpm typecheck     # TypeScript (tsc --noEmit)
+pnpm dev:landing
+pnpm --filter landing build
+pnpm --filter landing lint
+pnpm --filter landing typecheck
 ```
-
-## Notas Tailwind v4
-
-- Gradientes: `bg-linear-to-r` (canónico v4), no `bg-gradient-to-r`
-- Spacing dinámico: `w-150 = 37.5rem`, `h-105 = 26.25rem` — sin corchetes
-- Opacidad: `bg-white/3`, `border-white/8` (no `[0.03]`)
 
 ## Despliegue
 
-Optimizado para Vercel. Push a `main` → deploy automático.
+Push a `main` → Vercel `zmtech`. Dominios: `zmtechdev.com` + `www`.  
+Inventario de repos/productos: [PROYECTOS.md](./PROYECTOS.md).
 
 ---
 
-© 2025 ZM Tech. Todos los derechos reservados.
+© 2026 ZM Tech.

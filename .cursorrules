@@ -15,14 +15,14 @@
 
 | Producto | Apps | Packages |
 |----------|------|----------|
-| Landing | `apps/landing` | — |
+| Landing | `apps/landing` → [zmtechdev.com](https://zmtechdev.com) (`/es`, `/en`) | `@zmtech/quote-engine` |
 | GeemaStudio | `geemastudio-mobile`, `geemastudio-web`, `geemastudio-server` | `@geemastudio/shared-schema`, `@geemastudio/tenant-config` |
 | ODentalPro | `odentalpro-mobile`, `odentalpro-web`, `odentalpro-server` | `@odentalpro/dental-schema` |
 
 - **Entorno**: WSL Ubuntu, Node 22+, pnpm 11
-- **UI / negocio**: español LATAM; TypeScript estricto
+- **UI / negocio**: español LATAM (productos SaaS); landing también EN en `/en`
 - **Skills**: `.cursor/skills/` · Claude: `.claude/skills` → symlink
-- **Rules**: `.cursor/rules/*.mdc`
+- **Rules**: `.cursor/rules/*.mdc` (landing: `landing.mdc`)
 
 ---
 

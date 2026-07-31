@@ -20,11 +20,12 @@ description: >
 soluciones SaaS para LATAM. Verticales activas: Beauty, Inmobiliaria, Wellness/Yoga,
 Automotriz, Sports Tech y Enterprise.
 
-- **Landing:** `zmtechdev.com`
-- **Repo landing:** `aeom0/ZMTech` (Next.js 16, App Router, Tailwind v4)
+- **Landing:** `zmtechdev.com` (`/es` · `/en`)
+- **Repo:** `aeom0/zm-tech` → `apps/landing` (Next.js 16, App Router, Tailwind v4)
+- **Vercel:** project `zmtech`
 - **WhatsApp comercial:** +58 414 494 0417
 - **Entorno de Alberto:** VS Code + WSL2 + Windows 11 · Android = target mobile primario
-
+- **Inventario repos:** `docs/landing/PROYECTOS.md`
 ---
 
 ## 👤 Perfil del fundador

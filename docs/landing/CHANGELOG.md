@@ -7,6 +7,13 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido
+- Landing bilingüe ES/EN: rutas `/es` y `/en`, diccionarios en `src/content/`, switcher en Navbar.
+- Cotizador público localizado (`/[locale]/cotizador`) + copy EN en `@zmtech/quote-engine`.
+- Dominio de marca **zmtechdev.com** (apex + www) en Vercel project `zmtech`.
+
 ### Cambiado
+- `/` redirige 308 → `/es`; metadata/canonical con `metadataBase` → zmtechdev.com.
+- Enlaces de propuestas/cotizador dejan de apuntar a `zmtech-landing.vercel.app`.
 - `zod` fijado a v3 por hoist del monorepo (`fe48969`).
 - `vercel.json` con `turbo-ignore` para previews de monorepo (`b12e684`, `04473a4`).
