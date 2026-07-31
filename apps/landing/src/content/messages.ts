@@ -27,11 +27,13 @@ export type TrustMessages = {
 export type VerticalItemMessages = {
   title: string
   description: string
+  cta: string
 }
 
 export type VerticalsMessages = {
   eyebrow: string
   title: string
+  previewBadge: string
   items: {
     industrial: VerticalItemMessages
     beauty: VerticalItemMessages

@@ -5,21 +5,20 @@ export const es: Messages = {
     links: [
       { label: 'VERTICALES', href: '#verticales' },
       { label: 'VENTAJAS', href: '#ventajas' },
-      { label: 'INTEGRACIONES', href: '#integraciones' },
       { label: 'COTIZADOR', href: '#cotizador' },
-      { label: 'PROTOCOLOS FRECUENTES', href: '#faq' },
+      { label: 'PROTOCOLOS', href: '#faq' },
     ],
     cta: 'Habla con nosotros',
     openMenu: 'Abrir menú',
   },
   hero: {
-    badge: 'Tu próxima app empieza aquí',
+    badge: '¿Tu negocio se gestiona por WhatsApp y Excel?',
     h1Lines: ['Ingeniería de', 'Software a', 'Velocidad de IA'],
     paragraph:
-      'Convertimos tu idea en software real. Rápido, elegante y listo para crecer contigo desde el primer día.',
+      'Construimos el sistema que te saca de ahí. Real, en producción, funcionando hoy — no una promesa.',
     ctaPrimary: 'COTIZAR PROYECTO →',
     ctaSecondary: 'VER ECOSISTEMA',
-    imageAlt: 'Código de ingeniería de software',
+    imageAlt: 'Sistemas ZM Tech en producción: panel gerencial, agenda y ventas',
     statusLabel: 'Proyectos activos',
     statusValue: '3 verticales en producción',
   },
@@ -34,21 +33,25 @@ export const es: Messages = {
   verticals: {
     eyebrow: 'ECOSISTEMA',
     title: 'Verticales ZM',
+    previewBadge: 'Vista previa',
     items: {
       industrial: {
         title: 'ZM Industrial Core',
         description:
           'Controla tu empresa desde una sola pantalla. Inventario, logística, producción y reportes en tiempo real — diseñado para negocios que no pueden darse el lujo de fallar.',
+        cta: 'Cotizar esta vertical',
       },
       beauty: {
         title: 'ZM Beauty Engine',
         description:
           'Tu spa o estética merece tecnología de primera. Agenda online, historial de clientes, punto de venta y recordatorios automáticos — todo en una app que tu equipo va a querer usar.',
+        cta: 'Cotizar esta vertical',
       },
       workshop: {
         title: 'ZM Workshop & Parts',
         description:
           'Vende repuestos, gestiona tu taller y atiende más clientes sin caos. Catálogo digital, órdenes de trabajo y seguimiento de inventario en un solo lugar.',
+        cta: 'Cotizar esta vertical',
       },
     },
   },

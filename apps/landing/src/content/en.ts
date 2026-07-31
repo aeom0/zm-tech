@@ -5,7 +5,6 @@ export const en: Messages = {
     links: [
       { label: 'VERTICALS', href: '#verticales' },
       { label: 'ADVANTAGES', href: '#ventajas' },
-      { label: 'INTEGRATIONS', href: '#integraciones' },
       { label: 'QUOTE', href: '#cotizador' },
       { label: 'FAQ', href: '#faq' },
     ],
@@ -13,13 +12,13 @@ export const en: Messages = {
     openMenu: 'Open menu',
   },
   hero: {
-    badge: 'Your next app starts here',
+    badge: 'Still running your business on WhatsApp and spreadsheets?',
     h1Lines: ['Software', 'Engineering at', 'AI Speed'],
     paragraph:
-      'We turn your idea into real software. Fast, polished, and ready to grow with you from day one.',
+      'We build the system that gets you out of there. Real, in production, running today — not a promise.',
     ctaPrimary: 'GET A QUOTE →',
     ctaSecondary: 'SEE THE STACK',
-    imageAlt: 'Software engineering code',
+    imageAlt: 'ZM Tech systems in production: management panel, schedule and sales',
     statusLabel: 'Active projects',
     statusValue: '3 verticals in production',
   },
@@ -34,21 +33,25 @@ export const en: Messages = {
   verticals: {
     eyebrow: 'ECOSYSTEM',
     title: 'ZM Verticals',
+    previewBadge: 'Preview',
     items: {
       industrial: {
         title: 'ZM Industrial Core',
         description:
           'Run your company from one screen. Inventory, logistics, production, and real-time reports — built for businesses that cannot afford to fail.',
+        cta: 'Quote this vertical',
       },
       beauty: {
         title: 'ZM Beauty Engine',
         description:
           'Your spa or salon deserves first-class tech. Online booking, client history, POS, and automatic reminders — in an app your team will actually want to use.',
+        cta: 'Quote this vertical',
       },
       workshop: {
         title: 'ZM Workshop & Parts',
         description:
           'Sell parts, run your shop, and serve more customers without the chaos. Digital catalog, work orders, and inventory tracking in one place.',
+        cta: 'Quote this vertical',
       },
     },
   },

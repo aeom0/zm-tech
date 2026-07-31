@@ -73,7 +73,8 @@ pnpm --filter landing typecheck
 ## Despliegue
 
 Push a `main` → Vercel `zmtech`. Dominios: `zmtechdev.com` + `www`.  
-Inventario de repos/productos: [PROYECTOS.md](./PROYECTOS.md).
+Inventario de repos/productos: [PROYECTOS.md](./PROYECTOS.md).  
+Backlog UI/UX pendiente: [UX-BACKLOG.md](./UX-BACKLOG.md).
 
 ---
 

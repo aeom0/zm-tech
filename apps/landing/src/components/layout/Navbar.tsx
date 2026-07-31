@@ -60,7 +60,7 @@ export default function Navbar({ locale, messages }: Props) {
         <div className="flex h-16 items-center justify-between">
           <LogoZMTech priority className="items-center" href={`/${locale}`} />
 
-          <nav className="hidden items-center gap-8 md:flex">
+          <nav className="hidden items-center gap-6 lg:gap-8 md:flex">
             {messages.links.map((link) => (
               <button
                 key={link.href}

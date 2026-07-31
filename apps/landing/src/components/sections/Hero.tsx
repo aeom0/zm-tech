@@ -1,9 +1,8 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import Image from 'next/image'
-import { Settings } from 'lucide-react'
 import type { HeroMessages } from '@/content/messages'
+import HeroDeviceMockup from './HeroDeviceMockup'
 
 type Props = { messages: HeroMessages }
 
@@ -13,7 +12,7 @@ export default function Hero({ messages }: Props) {
   }
 
   return (
-    <section className="relative min-h-screen overflow-hidden">
+    <section className="relative overflow-hidden lg:min-h-screen">
       <div className="pointer-events-none absolute inset-0">
         <div
           className="absolute top-0 right-0 h-150 w-150 rounded-full"
@@ -24,26 +23,28 @@ export default function Hero({ messages }: Props) {
         />
       </div>
 
-      <div className="relative z-10 mx-auto min-h-screen max-w-7xl px-4 pt-32 pb-24 sm:px-6 lg:px-8">
-        <div className="grid min-h-[calc(100vh-8rem)] grid-cols-1 items-center gap-12 lg:grid-cols-2">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 pt-24 pb-16 sm:px-6 sm:pt-28 sm:pb-20 lg:min-h-screen lg:px-8 lg:pt-32 lg:pb-24">
+        {/*
+          Mobile: badge → H1 → mockup → párrafo → CTAs (mockup en el fold)
+          Desktop: copy izq (badge+H1+párrafo+CTAs) | mockup der
+        */}
+        <div className="grid grid-cols-1 gap-8 lg:min-h-[calc(100vh-8rem)] lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:items-center lg:gap-x-12 lg:gap-y-6">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: 'easeOut' }}
-            className="flex flex-col gap-6"
+            className="order-1 flex flex-col gap-5 sm:gap-6"
           >
-            <motion.div
+            <motion.p
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
+              className="max-w-xl text-base font-medium leading-snug text-violet-200 sm:text-lg"
             >
-              <span className="inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 px-3 py-1 font-mono text-xs tracking-widest text-violet-300 uppercase">
-                <span className="h-2 w-2 animate-pulse rounded-full bg-green-400" />
-                {messages.badge}
-              </span>
-            </motion.div>
+              {messages.badge}
+            </motion.p>
 
-            <h1 className="text-5xl leading-none font-black lg:text-7xl">
+            <h1 className="text-4xl leading-none font-black sm:text-5xl lg:text-7xl">
               {messages.h1Lines.map((line, i) => (
                 <motion.span
                   key={line}
@@ -61,77 +62,42 @@ export default function Hero({ messages }: Props) {
                 </motion.span>
               ))}
             </h1>
+          </motion.div>
 
-            <motion.p
-              className="max-w-lg text-lg leading-relaxed text-gray-400"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.55 }}
-            >
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.25 }}
+            className="order-2 pb-8 lg:col-start-2 lg:row-span-2 lg:pb-14"
+          >
+            <HeroDeviceMockup />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.45 }}
+            className="order-3 flex flex-col gap-5 sm:gap-6 lg:col-start-1 lg:row-start-2"
+          >
+            <p className="max-w-lg text-base leading-relaxed text-gray-400 sm:text-lg">
               {messages.paragraph}
-            </motion.p>
+            </p>
 
-            <motion.div
-              className="flex flex-col gap-4 sm:flex-row"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.7 }}
-            >
+            <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
               <button
+                type="button"
                 onClick={() => scrollTo('cotizador')}
-                className="rounded-lg bg-violet-600 px-6 py-3 font-mono text-sm tracking-wider text-white uppercase transition-all duration-200 hover:bg-violet-500 hover:shadow-[0_0_25px_rgba(139,92,246,0.5)]"
+                className="rounded-lg bg-violet-600 px-6 py-3 font-mono text-sm tracking-wider text-white uppercase transition-all duration-200 hover:bg-violet-500 hover:shadow-[0_0_25px_rgba(139,92,246,0.5)] focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:outline-none"
               >
                 {messages.ctaPrimary}
               </button>
               <button
+                type="button"
                 onClick={() => scrollTo('verticales')}
-                className="rounded-lg border border-white/20 px-6 py-3 font-mono text-sm tracking-wider text-white uppercase transition-all duration-200 hover:border-violet-500/50 hover:bg-white/5"
+                className="rounded-lg border border-white/20 px-6 py-3 font-mono text-sm tracking-wider text-white uppercase transition-all duration-200 hover:border-violet-500/50 hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:outline-none"
               >
                 {messages.ctaSecondary}
               </button>
-            </motion.div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-            className="relative"
-          >
-            <div className="relative overflow-hidden rounded-xl shadow-[0_0_40px_rgba(139,92,246,0.15)] ring-1 ring-violet-500/20">
-              <div className="relative h-105 w-full lg:h-130">
-                <Image
-                  src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80"
-                  alt={messages.imageAlt}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  priority
-                />
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background: 'linear-gradient(to top, transparent, rgba(88,28,235,0.2))',
-                  }}
-                />
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background:
-                      'linear-gradient(to right, rgba(5,5,5,0.2), transparent, rgba(5,5,5,0.1))',
-                  }}
-                />
-              </div>
-
-              <div className="absolute bottom-4 left-4 flex items-center gap-3 rounded-lg border border-violet-500/30 bg-black/80 p-3 backdrop-blur">
-                <Settings className="animate-spin-slow h-5 w-5 text-violet-400" />
-                <div>
-                  <p className="font-mono text-xs tracking-wider text-gray-400 uppercase">
-                    {messages.statusLabel}
-                  </p>
-                  <p className="font-mono text-sm text-green-400">{messages.statusValue}</p>
-                </div>
-              </div>
             </div>
           </motion.div>
         </div>
