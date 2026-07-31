@@ -12,8 +12,9 @@ export default function Hero({ messages }: Props) {
   }
 
   return (
-    <section className="relative overflow-hidden lg:min-h-screen">
-      <div className="pointer-events-none absolute inset-0">
+    <section className="relative lg:min-h-screen">
+      {/* Glow clippeado aparte — la section no corta el phone */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
         <div
           className="absolute top-0 right-0 h-150 w-150 rounded-full"
           style={{
@@ -23,7 +24,7 @@ export default function Hero({ messages }: Props) {
         />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 pt-24 pb-16 sm:px-6 sm:pt-28 sm:pb-20 lg:min-h-screen lg:px-8 lg:pt-32 lg:pb-24">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 pt-24 pb-16 sm:px-6 sm:pt-28 sm:pb-20 lg:min-h-screen lg:px-8 lg:pt-32 lg:pb-24 lg:pr-12">
         {/*
           Mobile: badge → H1 → mockup → párrafo → CTAs (mockup en el fold)
           Desktop: copy izq (badge+H1+párrafo+CTAs) | mockup der
@@ -68,7 +69,7 @@ export default function Hero({ messages }: Props) {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.25 }}
-            className="order-2 pb-8 lg:col-start-2 lg:row-span-2 lg:pb-14"
+            className="order-2 overflow-visible pb-4 pr-6 sm:pr-10 lg:col-start-2 lg:row-span-2 lg:pb-8 lg:pr-4"
           >
             <HeroDeviceMockup laptopAlt={messages.laptopAlt} phoneAlts={messages.phoneAlts} />
           </motion.div>

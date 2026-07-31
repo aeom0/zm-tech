@@ -16,7 +16,7 @@ Mantener una landing bilingüe (`/es` · `/en`) que convierta: proof real en el 
 ## Estado (jul 2026)
 
 - Landing bilingüe, cotizador público localizado, propuestas por slug, dominio canónico zmtechdev.com.
-- Hero con mockups reales (laptop ZetaEme Hub + teléfono con agenda / ventas / cotizador).
+- Hero con mockups CSS 3D (laptop ZetaEme Hub + teléfono agenda / ventas / cotizador; Framer tilt, sin R3F).
 - Gancho tipográfico (“WhatsApp y Excel”), fold mobile (mockup en primer viewport), nav más corta (4 links), CTAs en Verticales.
 - Logos reales en Integraciones; páginas de Privacidad y Términos.
 

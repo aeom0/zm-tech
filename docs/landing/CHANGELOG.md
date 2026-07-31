@@ -17,6 +17,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ### Cambiado
 
+- Hero mockups CSS 3D (`HeroDeviceMockup`): laptop con chassis/bisagra/teclado, perspectiva solo `rotateY` (~16°) para bordes verticales, tilt Framer, phone con bisel; sin Three.js (LCP).
 - `/` redirige 308 → `/es`; metadata/canonical con `metadataBase` → zmtechdev.com.
 - Enlaces de propuestas/cotizador dejan de apuntar a `zmtech-landing.vercel.app`.
 - `zod` fijado a v3 por hoist del monorepo (`fe48969`).
