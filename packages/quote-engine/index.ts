@@ -11,7 +11,9 @@ export {
   publicServiceCopy,
   getPublicServiceCopy,
   type PublicServiceCopy,
+  type QuoteLocale,
 } from './catalog/publicCopy'
+export { publicServiceCopyEn } from './catalog/publicCopy.en'
 
 export {
   calculatePrice,

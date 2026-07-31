@@ -1,13 +1,15 @@
 'use client'
 
 import type { CatalogService, PriceRange } from '../types'
-import { getPublicServiceCopy } from '../catalog/publicCopy'
+import { getPublicServiceCopy, type QuoteLocale } from '../catalog/publicCopy'
 
 type SelectableServiceLineItemProps = {
   service: CatalogService
   selected: boolean
   onToggle: (id: string) => void
   isLast?: boolean
+  locale?: QuoteLocale
+  perMonthLabel?: string
 }
 
 function isPriceRange(precio: number | PriceRange): precio is PriceRange {
@@ -26,8 +28,10 @@ export function SelectableServiceLineItem({
   selected,
   onToggle,
   isLast = false,
+  locale = 'es',
+  perMonthLabel = '/mes',
 }: SelectableServiceLineItemProps) {
-  const copy = getPublicServiceCopy(service)
+  const copy = getPublicServiceCopy(service, locale)
 
   return (
     <label
@@ -57,7 +61,7 @@ export function SelectableServiceLineItem({
           <span className="shrink-0 text-sm font-semibold whitespace-nowrap text-[#1a3c5e]">
             {formatPrecio(service.precio)}
             {service.unidad === 'mensual' || service.unidad === 'mensual-tenant' ? (
-              <span className="font-normal text-[#888]">/mes</span>
+              <span className="font-normal text-[#888]">{perMonthLabel}</span>
             ) : null}
           </span>
         </div>

@@ -1,4 +1,5 @@
 import type { CatalogService } from '../types'
+import { publicServiceCopyEn } from './publicCopy.en'
 
 /**
  * Copy público del cotizador: lenguaje cotidiano + término técnico opcional.
@@ -10,6 +11,8 @@ export type PublicServiceCopy = {
   /** Etiqueta técnica discreta (SEO, SaaS, IA…). Omitir si no aporta. */
   terminoTecnico?: string
 }
+
+export type QuoteLocale = 'es' | 'en'
 
 export const publicServiceCopy: Record<string, PublicServiceCopy> = {
   // Nivel 0
@@ -129,11 +132,16 @@ export const publicServiceCopy: Record<string, PublicServiceCopy> = {
 /**
  * Resuelve copy público. Si no hay entry, usa nombre/descripcion del catálogo.
  */
-export function getPublicServiceCopy(service: CatalogService): PublicServiceCopy {
-  const override = publicServiceCopy[service.id]
+export function getPublicServiceCopy(
+  service: CatalogService,
+  locale: QuoteLocale = 'es'
+): PublicServiceCopy {
+  const map = locale === 'en' ? publicServiceCopyEn : publicServiceCopy
+  const override = map[service.id]
   if (override) return override
   return {
     titulo: service.nombre,
     descripcion: service.descripcion ?? '',
   }
 }
+
