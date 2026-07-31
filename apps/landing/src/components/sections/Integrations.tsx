@@ -1,110 +1,132 @@
 'use client'
 
+import Image from 'next/image'
 import { motion } from 'framer-motion'
+import { TrendingUp, FileText, Shield } from 'lucide-react'
 import {
-  ShoppingBag,
-  CreditCard,
-  MessageCircle,
-  Banknote,
-  TrendingUp,
-  FileText,
-  Calendar,
-  Send,
-  Megaphone,
-  Shield,
-} from 'lucide-react'
-import type { ElementType } from 'react'
+  siWhatsapp,
+  siStripe,
+  siGooglecalendar,
+  siTelegram,
+  siMeta,
+} from 'simple-icons'
+import type { ElementType, ReactNode } from 'react'
 import type { IntegrationsMessages } from '@/content/messages'
+import { BrandIcon } from '@/components/icons/BrandIcon'
 
 type Props = { messages: IntegrationsMessages }
 
-const meta: Array<{
+type MetaItem = {
   key: keyof IntegrationsMessages['items']
   name: string
   categoryColor: string
-  icon: ElementType
-  iconColor: string
   glowColor: string
-}> = [
+  renderIcon: () => ReactNode
+}
+
+const lucideIcon =
+  (Icon: ElementType, className: string) =>
+  () =>
+    <Icon className={className} />
+
+const meta: MetaItem[] = [
   {
     key: 'mercadolibre',
     name: 'MercadoLibre',
     categoryColor: 'text-yellow-400 border-yellow-400/30 bg-yellow-400/10',
-    icon: ShoppingBag,
-    iconColor: 'text-yellow-400',
     glowColor: 'hover:border-yellow-500/50 hover:shadow-[0_0_20px_rgba(234,179,8,0.2)]',
+    renderIcon: () => (
+      <Image
+        src="/brands/mercadolibre.svg"
+        alt=""
+        width={32}
+        height={32}
+        className="h-8 w-8"
+        unoptimized
+      />
+    ),
   },
   {
     key: 'cashea',
     name: 'Cashea',
-    categoryColor: 'text-green-400 border-green-400/30 bg-green-400/10',
-    icon: CreditCard,
-    iconColor: 'text-green-400',
-    glowColor: 'hover:border-green-500/50 hover:shadow-[0_0_20px_rgba(34,197,94,0.2)]',
+    categoryColor: 'text-yellow-300 border-yellow-300/30 bg-yellow-300/10',
+    glowColor: 'hover:border-yellow-400/50 hover:shadow-[0_0_20px_rgba(255,233,66,0.2)]',
+    renderIcon: () => (
+      <Image
+        src="/brands/cashea.png"
+        alt=""
+        width={32}
+        height={32}
+        className="h-8 w-8 rounded-md"
+        unoptimized
+      />
+    ),
   },
   {
     key: 'whatsapp',
     name: 'WhatsApp Business',
     categoryColor: 'text-emerald-400 border-emerald-400/30 bg-emerald-400/10',
-    icon: MessageCircle,
-    iconColor: 'text-emerald-400',
     glowColor: 'hover:border-emerald-500/50 hover:shadow-[0_0_20px_rgba(52,211,153,0.2)]',
+    renderIcon: () => (
+      <BrandIcon icon={siWhatsapp} className="h-8 w-8" title="WhatsApp" />
+    ),
   },
   {
     key: 'stripe',
     name: 'Stripe',
-    categoryColor: 'text-blue-400 border-blue-400/30 bg-blue-400/10',
-    icon: Banknote,
-    iconColor: 'text-blue-400',
-    glowColor: 'hover:border-blue-500/50 hover:shadow-[0_0_20px_rgba(96,165,250,0.2)]',
+    categoryColor: 'text-violet-400 border-violet-400/30 bg-violet-400/10',
+    glowColor: 'hover:border-violet-500/50 hover:shadow-[0_0_20px_rgba(99,91,255,0.25)]',
+    renderIcon: () => (
+      <BrandIcon icon={siStripe} className="h-8 w-8" title="Stripe" />
+    ),
   },
   {
     key: 'bcv',
     name: 'Tasa BCV',
     categoryColor: 'text-red-400 border-red-400/30 bg-red-400/10',
-    icon: TrendingUp,
-    iconColor: 'text-red-400',
     glowColor: 'hover:border-red-500/50 hover:shadow-[0_0_20px_rgba(248,113,113,0.2)]',
+    renderIcon: lucideIcon(TrendingUp, 'h-8 w-8 text-red-400'),
   },
   {
     key: 'seniat',
     name: 'Facturación SENIAT',
     categoryColor: 'text-orange-400 border-orange-400/30 bg-orange-400/10',
-    icon: FileText,
-    iconColor: 'text-orange-400',
     glowColor: 'hover:border-orange-500/50 hover:shadow-[0_0_20px_rgba(251,146,60,0.2)]',
+    renderIcon: lucideIcon(FileText, 'h-8 w-8 text-orange-400'),
   },
   {
     key: 'calendar',
     name: 'Google Calendar',
     categoryColor: 'text-sky-400 border-sky-400/30 bg-sky-400/10',
-    icon: Calendar,
-    iconColor: 'text-sky-400',
     glowColor: 'hover:border-sky-500/50 hover:shadow-[0_0_20px_rgba(56,189,248,0.2)]',
+    renderIcon: () => (
+      <BrandIcon icon={siGooglecalendar} className="h-8 w-8" title="Google Calendar" />
+    ),
   },
   {
     key: 'telegram',
     name: 'Telegram Bot',
     categoryColor: 'text-cyan-400 border-cyan-400/30 bg-cyan-400/10',
-    icon: Send,
-    iconColor: 'text-cyan-400',
     glowColor: 'hover:border-cyan-500/50 hover:shadow-[0_0_20px_rgba(34,211,238,0.2)]',
+    renderIcon: () => (
+      <BrandIcon icon={siTelegram} className="h-8 w-8" title="Telegram" />
+    ),
   },
   {
     key: 'meta',
     name: 'Meta / Instagram',
-    categoryColor: 'text-pink-400 border-pink-400/30 bg-pink-400/10',
-    icon: Megaphone,
-    iconColor: 'text-pink-400',
-    glowColor: 'hover:border-pink-500/50 hover:shadow-[0_0_20px_rgba(244,114,182,0.2)]',
+    categoryColor: 'text-blue-400 border-blue-400/30 bg-blue-400/10',
+    glowColor: 'hover:border-blue-500/50 hover:shadow-[0_0_20px_rgba(4,103,223,0.25)]',
+    renderIcon: () => (
+      <BrandIcon icon={siMeta} className="h-8 w-8" title="Meta" />
+    ),
   },
   {
     key: 'auth',
     name: 'Acceso Seguro',
     categoryColor: 'text-violet-400 border-violet-400/30 bg-violet-400/10',
-    icon: Shield,
-    iconColor: 'text-violet-400',
     glowColor: 'hover:border-violet-500/50 hover:shadow-[0_0_20px_rgba(167,139,250,0.2)]',
+    renderIcon: lucideIcon(Shield, 'h-8 w-8 text-violet-400'),
   },
 ]
 
@@ -140,7 +162,7 @@ export default function Integrations({ messages }: Props) {
                 >
                   {copy.category}
                 </span>
-                <item.icon className={`h-8 w-8 ${item.iconColor}`} />
+                {item.renderIcon()}
                 <p className="text-base font-bold text-white">{item.name}</p>
                 <p className="text-xs leading-relaxed text-gray-400">{copy.description}</p>
               </motion.div>
