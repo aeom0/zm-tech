@@ -39,7 +39,7 @@ export default function Hero({ messages }: Props) {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="max-w-xl text-base font-medium leading-snug text-violet-200 sm:text-lg"
+              className="max-w-xl text-base leading-snug font-medium text-violet-200 sm:text-lg"
             >
               {messages.badge}
             </motion.p>
@@ -70,7 +70,7 @@ export default function Hero({ messages }: Props) {
             transition={{ duration: 0.7, delay: 0.25 }}
             className="order-2 pb-8 lg:col-start-2 lg:row-span-2 lg:pb-14"
           >
-            <HeroDeviceMockup />
+            <HeroDeviceMockup laptopAlt={messages.laptopAlt} phoneAlts={messages.phoneAlts} />
           </motion.div>
 
           <motion.div

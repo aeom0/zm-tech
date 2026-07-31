@@ -5,25 +5,25 @@ Sitio corporativo de **ZM Tech** (fábrica de software LATAM).
 
 ## Idiomas
 
-| Locale | URL | Notas |
-|--------|-----|--------|
-| Español (default) | `/es` | `/` redirige 308 → `/es` |
-| English | `/en` | Mirror del funnel público |
+| Locale             | URL                 | Notas                                |
+| ------------------ | ------------------- | ------------------------------------ |
+| Español (default)  | `/es`               | `/` redirige 308 → `/es`             |
+| English            | `/en`               | Mirror del funnel público            |
 | Propuestas cliente | `/propuesta/[slug]` | Solo español (sin prefijo de locale) |
 
 Copy de marketing y cotizadores públicos vive en `src/content/{es,en}.ts`. No hardcodear strings de UI en secciones.
 
 ## Stack
 
-| Tecnología | Versión | Uso |
-|---|---|---|
-| Next.js | 16.x | App Router + middleware de locale |
-| TypeScript | 6.x | Tipado estricto |
-| Tailwind CSS | v4 | Estilos |
-| Framer Motion | 12.x | Animaciones |
-| React Hook Form + Zod | — | Formulario de contacto |
-| `@zmtech/quote-engine` | workspace | Cotizador `/[locale]/cotizador` |
-| Lucide React | — | Iconos (sin emojis Unicode en UI) |
+| Tecnología             | Versión   | Uso                               |
+| ---------------------- | --------- | --------------------------------- |
+| Next.js                | 16.x      | App Router + middleware de locale |
+| TypeScript             | 6.x       | Tipado estricto                   |
+| Tailwind CSS           | v4        | Estilos                           |
+| Framer Motion          | 12.x      | Animaciones                       |
+| React Hook Form + Zod  | —         | Formulario de contacto            |
+| `@zmtech/quote-engine` | workspace | Cotizador `/[locale]/cotizador`   |
+| Lucide React           | —         | Iconos (sin emojis Unicode en UI) |
 
 ## Estructura
 
@@ -51,13 +51,13 @@ src/
 
 ## Env (Vercel project `zmtech`)
 
-| Variable | Uso |
-|----------|-----|
-| `NEXT_PUBLIC_SITE_URL` | Canonical / OG — `https://zmtechdev.com` |
-| `SUPABASE_URL` | Proyecto `llacowjutjfefboqgfnj` |
-| `SUPABASE_SERVICE_ROLE_KEY` | Contact + leads |
-| `RESEND_API_KEY` | Email |
-| `CONTACT_EMAIL` | Destino leads |
+| Variable                    | Uso                                      |
+| --------------------------- | ---------------------------------------- |
+| `NEXT_PUBLIC_SITE_URL`      | Canonical / OG — `https://zmtechdev.com` |
+| `SUPABASE_URL`              | Proyecto `llacowjutjfefboqgfnj`          |
+| `SUPABASE_SERVICE_ROLE_KEY` | Contact + leads                          |
+| `RESEND_API_KEY`            | Email                                    |
+| `CONTACT_EMAIL`             | Destino leads                            |
 
 ## Comandos
 
@@ -74,6 +74,7 @@ pnpm --filter landing typecheck
 
 Push a `main` → Vercel `zmtech`. Dominios: `zmtechdev.com` + `www`.  
 Inventario de repos/productos: [PROYECTOS.md](./PROYECTOS.md).  
+Roadmap del producto: [ROADMAP.md](./ROADMAP.md).  
 Backlog UI/UX pendiente: [UX-BACKLOG.md](./UX-BACKLOG.md).
 
 ---

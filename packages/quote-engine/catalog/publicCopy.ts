@@ -144,4 +144,3 @@ export function getPublicServiceCopy(
     descripcion: service.descripcion ?? '',
   }
 }
-

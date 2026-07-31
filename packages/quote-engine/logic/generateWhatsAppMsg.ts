@@ -67,9 +67,7 @@ export function generateWhatsAppMsg(input: GenerateWhatsAppMsgInput): string {
   const mensaje = [
     saludo,
     '',
-    en
-      ? 'I want to confirm this ZM Tech proposal:'
-      : 'Quiero confirmar esta propuesta de ZM Tech:',
+    en ? 'I want to confirm this ZM Tech proposal:' : 'Quiero confirmar esta propuesta de ZM Tech:',
     '',
     lineasServicios,
     '',

@@ -47,7 +47,8 @@ export const publicServiceCopyEn: Record<string, PublicServiceCopy> = {
   },
   'migracion-datos': {
     titulo: 'Move your data to the new site',
-    descripcion: 'We migrate what you already have (Wasi, Excel, or another system) without rewriting everything by hand.',
+    descripcion:
+      'We migrate what you already have (Wasi, Excel, or another system) without rewriting everything by hand.',
     terminoTecnico: 'Migration',
   },
   'addon-whatsapp-automatizacion': {
@@ -67,7 +68,8 @@ export const publicServiceCopyEn: Record<string, PublicServiceCopy> = {
   },
   'app-base': {
     titulo: 'App for scheduling, clients, and services',
-    descripcion: 'The foundation to manage appointments and your book without endless spreadsheets.',
+    descripcion:
+      'The foundation to manage appointments and your book without endless spreadsheets.',
   },
   'app-inventario': {
     titulo: 'Inventory control',

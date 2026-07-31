@@ -11,17 +11,25 @@ export type HeroMessages = {
   ctaPrimary: string
   ctaSecondary: string
   imageAlt: string
+  laptopAlt: string
+  phoneAlts: [string, string, string]
   statusLabel: string
   statusValue: string
 }
 
 export type TrustMessages = {
-  before: string
-  cosmetic: string
-  and: string
-  sports: string
-  after: string
-  mlb: string
+  label: string
+  brands: string[]
+}
+
+export type ProofMessages = {
+  eyebrow: string
+  beforeLabel: string
+  beforeValue: string
+  afterLabel: string
+  afterValue: string
+  quote: string
+  attribution: string
 }
 
 export type VerticalItemMessages = {
@@ -50,6 +58,7 @@ export type FeaturesMessages = {
   eyebrow: string
   title: string
   intro: string
+  proof: Array<{ value: string; label: string }>
   items: {
     speed: FeatureItemMessages
     support: FeatureItemMessages
@@ -99,57 +108,14 @@ export type CotizadorExtraMessages = {
   desc: string
 }
 
+/** Teaser en home — el cotizador completo vive en `/[locale]/cotizador`. */
 export type CotizadorHomeMessages = {
   eyebrow: string
   title: string
   subtitle: string
-  step1: string
-  step2: string
-  step3: string
-  tabPacks: string
-  tabExtras: string
-  cancelAnytime: string
-  extrasNote: string
-  estimateLabel: string
-  initialInvestment: string
-  planPrefix: string
-  perMonth: string
-  extrasLabel: string
-  extrasUnique: string
-  typeLabel: string
-  designLabel: string
-  deliveryLabel: string
-  trust: [string, string, string, string]
+  trust: [string, string, string]
   cta: string
-  emptyTitle: string
-  emptyHints: [string, string, string]
-  tipos: {
-    landing: CotizadorTipoMessages
-    corporativa: CotizadorTipoMessages
-    ecommerce: CotizadorTipoMessages
-    saas: CotizadorTipoMessages
-  }
-  disenios: {
-    template: string
-    custom: string
-    premium: string
-  }
-  packs: {
-    arranque: CotizadorPackMessages
-    negocio: CotizadorPackMessages
-    enterprise: CotizadorPackMessages
-  }
-  extraGroups: Array<{
-    category: string
-    color: string
-    items: Array<{
-      id: string
-      label: string
-      desc: string
-      price: number
-      requiresPack?: string
-    }>
-  }>
+  secondaryNote: string
 }
 
 export type ContactMessages = {
@@ -247,6 +213,7 @@ export type Messages = {
   nav: NavMessages
   hero: HeroMessages
   trust: TrustMessages
+  proof: ProofMessages
   verticals: VerticalsMessages
   features: FeaturesMessages
   integrations: IntegrationsMessages

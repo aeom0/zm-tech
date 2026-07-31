@@ -18,7 +18,7 @@ type FormData = {
 
 const labelClass = 'block font-mono text-xs uppercase tracking-widest text-gray-500 mb-2'
 const inputClass =
-  'w-full px-4 py-3 bg-white/5 border border-white/15 rounded-lg text-white placeholder:text-gray-700 focus:border-violet-500/50 focus:outline-none font-mono text-sm transition-colors'
+  'w-full px-4 py-3 bg-white/5 border border-white/15 rounded-lg text-white placeholder:text-gray-500 focus:border-violet-500/50 focus-visible:ring-2 focus-visible:ring-violet-400/60 focus:outline-none font-mono text-sm transition-colors'
 
 export default function ContactForm({ messages }: Props) {
   const [submitted, setSubmitted] = useState(false)
@@ -133,7 +133,7 @@ export default function ContactForm({ messages }: Props) {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="mt-6 w-full rounded-lg bg-violet-600 py-4 font-mono text-sm tracking-widest text-white uppercase transition-all duration-200 hover:bg-violet-500 hover:shadow-[0_0_30px_rgba(139,92,246,0.5)] disabled:cursor-not-allowed disabled:opacity-50"
+                className="mt-6 w-full rounded-lg bg-violet-600 py-4 font-mono text-sm tracking-widest text-white uppercase transition-all duration-200 hover:bg-violet-500 hover:shadow-[0_0_30px_rgba(139,92,246,0.5)] focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isSubmitting ? messages.submitting : messages.submit}
               </button>

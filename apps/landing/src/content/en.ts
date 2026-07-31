@@ -19,16 +19,28 @@ export const en: Messages = {
     ctaPrimary: 'GET A QUOTE →',
     ctaSecondary: 'SEE THE STACK',
     imageAlt: 'ZM Tech systems in production: management panel, schedule and sales',
+    laptopAlt: 'Live management panel — ZetaEme Central',
+    phoneAlts: [
+      'Live schedule — ZM Lash & Nails Beauty',
+      'Daily sales — ZetaEme Mobile Sales',
+      'Self-serve quote builder — ZM Tech',
+    ],
     statusLabel: 'Active projects',
     statusValue: '3 verticals in production',
   },
   trust: {
-    before: 'Technology proven in the',
-    cosmetic: 'cosmetics',
-    and: 'and',
-    sports: 'sports',
-    after: 'industry (',
-    mlb: 'MLB Standards',
+    label: 'Systems in production',
+    brands: ['ZetaEme', 'ZM Lash & Nails', 'ZM Tech Quote'],
+  },
+  proof: {
+    eyebrow: 'REAL CASE',
+    beforeLabel: 'Before',
+    beforeValue: 'WhatsApp + spreadsheets',
+    afterLabel: 'After',
+    afterValue: 'System in production',
+    quote:
+      'From chats and scattered sheets to a management panel with sales, inventory, and FX rates — running today.',
+    attribution: 'ZetaEme Cosmetics · industrial vertical',
   },
   verticals: {
     eyebrow: 'ECOSYSTEM',
@@ -59,25 +71,30 @@ export const en: Messages = {
     eyebrow: 'ZM ENGINE',
     title: 'Why ZM Tech',
     intro:
-      'We are not just another agency. We are the technical team your business needed — without the cost of hiring one in-house.',
+      "We're not just another agency. We're the technical team your business needed — without the cost of hiring one in-house.",
+    proof: [
+      { value: '3', label: 'Verticals in production' },
+      { value: '<30d', label: 'Typical delivery' },
+      { value: '100%', label: 'Your code' },
+    ],
     items: {
       speed: {
-        title: 'Your team moves faster',
+        title: 'Your team works faster',
         description:
-          'We remove the processes that slow you down. Clean interfaces, direct flows, and zero busywork so your people focus on what matters.',
+          'We remove the processes that slow your business down. Clean interfaces, direct flows, and zero unnecessary steps so your people focus on what matters.',
       },
       support: {
-        title: 'Support that stays',
+        title: "Support that doesn't leave",
         description:
-          'We do not disappear after launch. We monitor your system 24/7, fix issues before you notice them, and keep improving the software over time.',
+          "We don't disappear after launch. We monitor your system 24/7, fix issues before you notice them, and improve the software over time.",
       },
       scale: {
-        title: 'Grow without breaking',
+        title: 'Grow without breaking things',
         description:
           'We build for the future. Your platform holds from your first customers to thousands of users — without rebuilding from scratch.',
       },
       ownership: {
-        title: 'The code is yours. Period.',
+        title: 'The code is yours, period',
         description:
           'Full transparency from day one. Source code, data, and infrastructure belong to you — no trap licenses or forever lock-in.',
       },
@@ -143,176 +160,12 @@ export const en: Messages = {
   },
   cotizadorHome: {
     eyebrow: 'Tool',
-    title: 'Instant Quote',
-    subtitle: 'Get a real estimate in under 60 seconds',
-    step1: '01 — What do you need?',
-    step2: '02 — Design level',
-    step3: '03 — Monthly support plan',
-    tabPacks: 'Monthly packs',
-    tabExtras: 'À la carte extras',
-    cancelAnytime: 'No minimum contract · Cancel anytime',
-    extrasNote: 'One-time payment · Added to the project price',
-    estimateLabel: 'Your estimate',
-    initialInvestment: 'Initial investment (one-time)',
-    planPrefix: 'Plan',
-    perMonth: '/mo',
-    extrasLabel: 'Extras',
-    extrasUnique: 'USD one-time',
-    typeLabel: 'Type',
-    designLabel: 'Design',
-    deliveryLabel: 'Est. delivery',
-    trust: [
-      '✓ 50% deposit · 50% on delivery',
-      '✓ Source code 100% yours',
-      '✓ Cancel the plan anytime',
-      '✓ Top-tier technology',
-    ],
-    cta: 'I want this proposal',
-    emptyTitle: 'Pick a project type\nto see your estimate',
-    emptyHints: ['→ No commitment', '→ Reply within 24h', '→ Adjustable to your budget'],
-    tipos: {
-      landing: {
-        label: 'Landing Page',
-        desc: 'One page, conversion-focused',
-        dias: '3–5 days',
-      },
-      corporativa: {
-        label: 'Corporate Site',
-        desc: 'Multi-section, portfolio or company',
-        dias: '7–14 days',
-      },
-      ecommerce: {
-        label: 'E-commerce',
-        desc: 'Online store with catalog and payments',
-        dias: '14–21 days',
-      },
-      saas: {
-        label: 'Web Application',
-        desc: 'Control panel, user access, and business logic',
-        dias: '21–45 days',
-      },
-    },
-    disenios: {
-      template: 'Adapted template',
-      custom: 'Custom',
-      premium: 'Premium design',
-    },
-    packs: {
-      arranque: {
-        label: 'Starter',
-        badge: null,
-        tagline: 'For businesses just going digital',
-        includes: [
-          'Hosting + domain included',
-          'Lead form',
-          'Basic on-page SEO',
-          'WhatsApp support (48h)',
-          '1 content update / month',
-        ],
-      },
-      negocio: {
-        label: 'Business',
-        badge: 'MOST POPULAR',
-        tagline: 'For companies already selling that want to sell more',
-        includes: [
-          'Everything in Starter',
-          'Daily BCV rate updates',
-          'Automated WhatsApp Business',
-          'Telegram alert bot',
-          'Priority support (24h)',
-          '2 content updates / month',
-        ],
-      },
-      enterprise: {
-        label: 'Enterprise',
-        badge: null,
-        tagline: 'For serious operations that cannot fail',
-        includes: [
-          'Everything in Business',
-          'Automatic SENIAT invoicing',
-          'Secure access by user and roles',
-          'Synced Google Calendar',
-          '24/7 monitoring + daily backups',
-          'Dedicated support (4h)',
-          'Unlimited updates',
-        ],
-      },
-    },
-    extraGroups: [
-      {
-        category: 'Payment integrations',
-        color: 'text-blue-400',
-        items: [
-          {
-            id: 'stripe',
-            label: 'Stripe',
-            desc: 'Charge in USD or EUR with card and payment links. Ideal for the diaspora.',
-            price: 45,
-          },
-          {
-            id: 'cashea',
-            label: 'Cashea installment viewer',
-            desc: 'Show installments instantly in your store — clearer for customers, more sales.',
-            price: 30,
-          },
-        ],
-      },
-      {
-        category: 'Venezuela ecosystem',
-        color: 'text-red-400',
-        items: [
-          {
-            id: 'mercadolibre',
-            label: 'MercadoLibre',
-            desc: 'Catalog, stock, and orders synced in real time from your system.',
-            price: 60,
-          },
-          {
-            id: 'seniat',
-            label: 'SENIAT invoicing',
-            desc: 'Art. 177 invoices generated automatically. Requires Enterprise plan.',
-            price: 65,
-            requiresPack: 'enterprise',
-          },
-        ],
-      },
-      {
-        category: 'Marketing & Sales',
-        color: 'text-pink-400',
-        items: [
-          {
-            id: 'meta',
-            label: 'Meta / Instagram catalog',
-            desc: 'Products synced with Instagram Shopping and Meta Ads.',
-            price: 40,
-          },
-          {
-            id: 'seo',
-            label: 'Advanced on-page SEO',
-            desc: 'Full audit, keywords, schema markup, and technical optimization.',
-            price: 30,
-          },
-        ],
-      },
-      {
-        category: 'Technical',
-        color: 'text-violet-400',
-        items: [
-          {
-            id: 'auth',
-            label: 'Secure access + Roles',
-            desc: 'Sign-in with email or Google and per-user access control.',
-            price: 50,
-          },
-          {
-            id: 'form',
-            label: 'Lead form',
-            desc: 'Contact capture with validation, email, and database storage.',
-            price: 20,
-          },
-        ],
-      },
-    ],
+    title: 'Build your proposal in minutes',
+    subtitle:
+      'Check what you need, see the estimate, and message us on WhatsApp when you are ready — no endless forms.',
+    trust: ['No commitment', 'Reply within 24h', 'Fits your budget'],
+    cta: 'OPEN QUOTE BUILDER →',
+    secondaryNote: 'The full quote tool opens on a dedicated page.',
   },
   contact: {
     title: 'Have a project in mind?',
@@ -363,8 +216,7 @@ export const en: Messages = {
     ],
   },
   footer: {
-    blurb:
-      'We turn business ideas into custom software. Fast, robust, and with real support.',
+    blurb: 'We turn business ideas into custom software. Fast, robust, and with real support.',
     solutionsTitle: 'Our solutions',
     followTitle: 'Follow us',
     rights: 'All rights reserved.',
@@ -377,8 +229,7 @@ export const en: Messages = {
     title: 'Privacy Policy',
     lastUpdated: 'Last updated: July 30, 2026',
     backHome: 'Back to home',
-    metaDescription:
-      'How ZM Tech collects, uses, and protects personal data on zmtechdev.com.',
+    metaDescription: 'How ZM Tech collects, uses, and protects personal data on zmtechdev.com.',
     sections: [
       {
         heading: '1. Who we are',
@@ -437,8 +288,7 @@ export const en: Messages = {
     title: 'Terms and Conditions',
     lastUpdated: 'Last updated: July 30, 2026',
     backHome: 'Back to home',
-    metaDescription:
-      'Terms of use for zmtechdev.com and ZM Tech’s indicative quotes.',
+    metaDescription: 'Terms of use for zmtechdev.com and ZM Tech’s indicative quotes.',
     sections: [
       {
         heading: '1. Acceptance',
@@ -512,7 +362,8 @@ export const en: Messages = {
     description:
       'Pick what your business needs, see the price instantly, and confirm with us on WhatsApp.',
     heading: 'Build your proposal',
-    subheading: 'Check what you need, see the price, and message us on WhatsApp when you are ready.',
+    subheading:
+      'Check what you need, see the price, and message us on WhatsApp when you are ready.',
     niveles: {
       0: { titulo: 'So people can find you', tecnico: 'Digital presence' },
       1: { titulo: 'Your page or website', tecnico: 'Web' },

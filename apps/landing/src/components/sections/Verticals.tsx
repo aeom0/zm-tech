@@ -56,7 +56,9 @@ export default function Verticals({ messages }: Props) {
           <p className="mb-3 font-mono text-xs tracking-widest text-violet-400 uppercase">
             {messages.eyebrow}
           </p>
-          <h2 className="text-5xl font-black text-white">{messages.title}</h2>
+          <h2 className="text-3xl font-black text-white sm:text-4xl lg:text-5xl">
+            {messages.title}
+          </h2>
           <div className="mx-auto mt-4 h-0.5 w-16 bg-violet-500" />
         </div>
 

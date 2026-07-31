@@ -17,7 +17,7 @@ export default function FAQ({ messages }: Props) {
           <p className="mb-3 font-mono text-xs tracking-widest text-violet-400 uppercase">
             {messages.eyebrow}
           </p>
-          <h2 className="text-4xl font-black text-white">{messages.title}</h2>
+          <h2 className="text-3xl font-black text-white sm:text-4xl">{messages.title}</h2>
           <p className="mt-4 text-gray-400">{messages.subtitle}</p>
         </div>
 
@@ -25,7 +25,7 @@ export default function FAQ({ messages }: Props) {
           {messages.items.map((faq, index) => (
             <div key={index} className="overflow-hidden rounded-xl border border-white/10">
               <button
-                className="flex w-full items-center justify-between p-5 text-left transition-colors hover:bg-white/3"
+                className="flex w-full items-center justify-between p-5 text-left transition-colors hover:bg-white/3 focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:outline-none"
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
               >
                 <div className="flex items-center gap-4 pr-4">

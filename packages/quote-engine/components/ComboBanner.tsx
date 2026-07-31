@@ -16,15 +16,9 @@ const bundleNamesEn: Record<string, string> = {
   'combo-app-full': 'Full Management App',
 }
 
-export function ComboBanner({
-  bundle,
-  ahorro,
-  subtotalBundle,
-  locale = 'es',
-}: ComboBannerProps) {
+export function ComboBanner({ bundle, ahorro, subtotalBundle, locale = 'es' }: ComboBannerProps) {
   const totalConDescuento = Math.max(0, subtotalBundle - ahorro)
-  const nombre =
-    locale === 'en' ? (bundleNamesEn[bundle.id] ?? bundle.nombre) : bundle.nombre
+  const nombre = locale === 'en' ? (bundleNamesEn[bundle.id] ?? bundle.nombre) : bundle.nombre
 
   return (
     <div className="mb-4 rounded-lg border border-[#b5cfe4] bg-[#e8f0f7] px-4 py-3">

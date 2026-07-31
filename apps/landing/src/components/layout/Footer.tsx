@@ -18,7 +18,11 @@ export default function Footer({ locale, messages }: Props) {
         <div className="mb-12 grid grid-cols-1 gap-12 md:grid-cols-4">
           <div className="md:col-span-2">
             <div className="mb-4 flex items-center gap-2">
-              <LogoZMTech className="items-center" href={`/${locale}`} ariaLabel={messages.homeAria} />
+              <LogoZMTech
+                className="items-center"
+                href={`/${locale}`}
+                ariaLabel={messages.homeAria}
+              />
             </div>
             <p className="max-w-sm text-sm leading-relaxed text-gray-500">{messages.blurb}</p>
           </div>
@@ -63,16 +67,12 @@ export default function Footer({ locale, messages }: Props) {
             </div>
           </div>
         </div>
-
         <div className="flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-8 text-xs text-gray-600 sm:flex-row sm:gap-2">
           <span>
             © {new Date().getFullYear()} ZM Tech. {messages.rights}
           </span>
           <div className="flex items-center gap-4">
-            <Link
-              href={`/${locale}/privacidad`}
-              className="transition-colors hover:text-white"
-            >
+            <Link href={`/${locale}/privacidad`} className="transition-colors hover:text-white">
               {messages.privacy}
             </Link>
             <Link href={`/${locale}/terminos`} className="transition-colors hover:text-white">
@@ -81,7 +81,8 @@ export default function Footer({ locale, messages }: Props) {
             <span className="hidden sm:inline">{messages.madeIn}</span>
           </div>
         </div>
-        <p className="mt-3 text-center text-xs text-gray-600 sm:hidden">{messages.madeIn}</p>      </div>
+        <p className="mt-3 text-center text-xs text-gray-600 sm:hidden">{messages.madeIn}</p>{' '}
+      </div>
     </footer>
   )
 }

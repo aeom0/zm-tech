@@ -60,12 +60,12 @@ export default function Navbar({ locale, messages }: Props) {
         <div className="flex h-16 items-center justify-between">
           <LogoZMTech priority className="items-center" href={`/${locale}`} />
 
-          <nav className="hidden items-center gap-6 lg:gap-8 md:flex">
+          <nav className="hidden items-center gap-6 md:flex lg:gap-8">
             {messages.links.map((link) => (
               <button
                 key={link.href}
                 onClick={() => handleLinkClick(link.href)}
-                className="font-mono text-xs tracking-widest text-white/60 uppercase transition-colors duration-200 hover:text-violet-400"
+                className="font-mono text-xs tracking-widest text-white/60 uppercase transition-colors duration-200 hover:text-violet-400 focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:outline-none"
               >
                 {link.label}
               </button>
@@ -79,9 +79,7 @@ export default function Navbar({ locale, messages }: Props) {
                   key={l}
                   href={l === locale ? pathname : switchLocalePath(pathname, l)}
                   className={`rounded px-1.5 py-0.5 uppercase transition-colors ${
-                    l === locale
-                      ? 'bg-violet-600/30 text-violet-300'
-                      : 'hover:text-white'
+                    l === locale ? 'bg-violet-600/30 text-violet-300' : 'hover:text-white'
                   }`}
                   hrefLang={l}
                 >
@@ -91,12 +89,12 @@ export default function Navbar({ locale, messages }: Props) {
             </div>
             <button
               onClick={() => handleLinkClick('#contacto')}
-              className="hidden rounded bg-violet-600 px-5 py-2 font-mono text-xs tracking-wider text-white uppercase transition-all duration-200 hover:bg-violet-500 hover:shadow-[0_0_20px_rgba(139,92,246,0.6)] md:inline-flex"
+              className="hidden rounded bg-violet-600 px-5 py-2 font-mono text-xs tracking-wider text-white uppercase transition-all duration-200 hover:bg-violet-500 hover:shadow-[0_0_20px_rgba(139,92,246,0.6)] focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:outline-none md:inline-flex"
             >
               {messages.cta}
             </button>
             <button
-              className="text-white/70 transition-colors hover:text-white md:hidden"
+              className="text-white/70 transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:outline-none md:hidden"
               onClick={() => setMobileOpen((v) => !v)}
               aria-label={messages.openMenu}
             >

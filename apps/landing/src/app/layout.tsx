@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { headers } from 'next/headers'
 import { defaultLocale, isLocale } from '@/content/locales'
+import MotionProvider from '@/components/providers/MotionProvider'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -17,7 +18,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <html lang={lang}>
-      <body className={`${inter.className} bg-[#050505] text-white`}>{children}</body>
+      <body className={`${inter.className} bg-[#050505] text-white`}>
+        <MotionProvider>{children}</MotionProvider>
+      </body>
     </html>
   )
 }

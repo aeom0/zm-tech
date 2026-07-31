@@ -3,6 +3,7 @@ import Navbar from '@/components/layout/Navbar'
 import Footer from '@/components/layout/Footer'
 import Hero from '@/components/sections/Hero'
 import TrustBanner from '@/components/sections/TrustBanner'
+import Proof from '@/components/sections/Proof'
 import Verticals from '@/components/sections/Verticals'
 import Features from '@/components/sections/Features'
 import Integrations from '@/components/sections/Integrations'
@@ -26,10 +27,11 @@ export default async function HomePage({ params }: Props) {
       <Navbar locale={locale} messages={messages.nav} />
       <Hero messages={messages.hero} />
       <TrustBanner messages={messages.trust} />
+      <Proof messages={messages.proof} />
       <Verticals messages={messages.verticals} />
       <Features messages={messages.features} />
       <Integrations messages={messages.integrations} />
-      <Cotizador messages={messages.cotizadorHome} />
+      <Cotizador messages={messages.cotizadorHome} locale={locale} />
       <ContactForm messages={messages.contact} />
       <FAQ messages={messages.faq} />
       <Footer locale={locale} messages={messages.footer} />

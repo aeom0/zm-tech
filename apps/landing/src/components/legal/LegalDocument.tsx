@@ -55,7 +55,10 @@ export function LegalDocument({ locale, path, privacyLabel, termsLabel, document
         </div>
 
         <div className="mt-14 flex flex-wrap gap-4 border-t border-white/10 pt-8 text-sm">
-          <Link href={`/${locale}`} className="text-violet-400 transition-colors hover:text-violet-300">
+          <Link
+            href={`/${locale}`}
+            className="text-violet-400 transition-colors hover:text-violet-300"
+          >
             ← {document.backHome}
           </Link>
           <Link

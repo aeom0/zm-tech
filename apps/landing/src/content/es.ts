@@ -19,16 +19,28 @@ export const es: Messages = {
     ctaPrimary: 'COTIZAR PROYECTO →',
     ctaSecondary: 'VER ECOSISTEMA',
     imageAlt: 'Sistemas ZM Tech en producción: panel gerencial, agenda y ventas',
+    laptopAlt: 'Panel gerencial en producción — ZetaEme Central',
+    phoneAlts: [
+      'Agenda real — ZM Lash & Nails Beauty',
+      'Ventas del día — ZetaEme Mobile Sales',
+      'Cotizador self-service — ZM Tech',
+    ],
     statusLabel: 'Proyectos activos',
     statusValue: '3 verticales en producción',
   },
   trust: {
-    before: 'Tecnología probada en la industria',
-    cosmetic: 'cosmética',
-    and: 'y',
-    sports: 'deportiva',
-    after: '(',
-    mlb: 'MLB Standards',
+    label: 'Sistemas en producción',
+    brands: ['ZetaEme', 'ZM Lash & Nails', 'ZM Tech Cotizador'],
+  },
+  proof: {
+    eyebrow: 'CASO REAL',
+    beforeLabel: 'Antes',
+    beforeValue: 'WhatsApp + Excel',
+    afterLabel: 'Ahora',
+    afterValue: 'Sistema en producción',
+    quote:
+      'De chats y hojas sueltas a un panel gerencial con ventas, inventario y tasas BCV — corriendo hoy.',
+    attribution: 'ZetaEme Cosméticos · vertical industrial',
   },
   verticals: {
     eyebrow: 'ECOSISTEMA',
@@ -60,6 +72,11 @@ export const es: Messages = {
     title: 'Por qué ZM Tech',
     intro:
       'No somos una agencia más. Somos el equipo técnico que tu negocio necesitaba — sin los costos de tener uno propio.',
+    proof: [
+      { value: '3', label: 'Verticales en producción' },
+      { value: '<30d', label: 'Entregas típicas' },
+      { value: '100%', label: 'Código tuyo' },
+    ],
     items: {
       speed: {
         title: 'Tu equipo trabaja más rápido',
@@ -143,176 +160,12 @@ export const es: Messages = {
   },
   cotizadorHome: {
     eyebrow: 'Herramienta',
-    title: 'Cotizador Instantáneo',
-    subtitle: 'Obtén un estimado real en menos de 60 segundos',
-    step1: '01 — ¿Qué necesitas?',
-    step2: '02 — Nivel de diseño',
-    step3: '03 — Plan de soporte mensual',
-    tabPacks: 'Packs mensuales',
-    tabExtras: 'Extras à la carte',
-    cancelAnytime: 'Sin contrato mínimo · Cancela cuando quieras',
-    extrasNote: 'Pago único · Se suman al precio del proyecto',
-    estimateLabel: 'Tu estimado',
-    initialInvestment: 'Inversión inicial (único)',
-    planPrefix: 'Plan',
-    perMonth: '/mes',
-    extrasLabel: 'Extras',
-    extrasUnique: 'USD único',
-    typeLabel: 'Tipo',
-    designLabel: 'Diseño',
-    deliveryLabel: 'Entrega est.',
-    trust: [
-      '✓ 50% anticipo · 50% entrega',
-      '✓ Código fuente 100% tuyo',
-      '✓ Cancela el plan cuando quieras',
-      '✓ Tecnología de primer nivel',
-    ],
-    cta: 'Quiero esta propuesta',
-    emptyTitle: 'Elige el tipo de proyecto\npara ver tu estimado',
-    emptyHints: ['→ Sin compromiso', '→ Respuesta en menos de 24h', '→ Ajustable a tu presupuesto'],
-    tipos: {
-      landing: {
-        label: 'Landing Page',
-        desc: 'Una página, orientada a conversión',
-        dias: '3–5 días',
-      },
-      corporativa: {
-        label: 'Sitio Corporativo',
-        desc: 'Multi-sección, portafolio o empresa',
-        dias: '7–14 días',
-      },
-      ecommerce: {
-        label: 'E-commerce',
-        desc: 'Tienda online con catálogo y pagos',
-        dias: '14–21 días',
-      },
-      saas: {
-        label: 'Aplicación Web',
-        desc: 'Panel de control, acceso por usuario y lógica de negocio',
-        dias: '21–45 días',
-      },
-    },
-    disenios: {
-      template: 'Plantilla adaptada',
-      custom: 'Personalizado',
-      premium: 'Diseño premium',
-    },
-    packs: {
-      arranque: {
-        label: 'Arranque',
-        badge: null,
-        tagline: 'Para el negocio que está arrancando en digital',
-        includes: [
-          'Hosting + dominio incluido',
-          'Formulario de leads',
-          'SEO on-page básico',
-          'Soporte WhatsApp (48h)',
-          '1 actualización de contenido/mes',
-        ],
-      },
-      negocio: {
-        label: 'Negocio',
-        badge: 'MÁS POPULAR',
-        tagline: 'Para la empresa que ya vende y quiere vender más',
-        includes: [
-          'Todo lo del Plan Arranque',
-          'Tasa BCV actualizada a diario',
-          'WhatsApp Business automatizado',
-          'Telegram Bot de alertas',
-          'Soporte prioritario (24h)',
-          '2 actualizaciones de contenido/mes',
-        ],
-      },
-      enterprise: {
-        label: 'Enterprise',
-        badge: null,
-        tagline: 'Para operaciones serias que no pueden fallar',
-        includes: [
-          'Todo lo del Plan Negocio',
-          'Facturación SENIAT automática',
-          'Acceso seguro por usuario y roles',
-          'Google Calendar sincronizado',
-          'Monitoreo 24/7 + backups diarios',
-          'Soporte dedicado (4h)',
-          'Actualizaciones ilimitadas',
-        ],
-      },
-    },
-    extraGroups: [
-      {
-        category: 'Integraciones de pago',
-        color: 'text-blue-400',
-        items: [
-          {
-            id: 'stripe',
-            label: 'Stripe',
-            desc: 'Cobros en dólares o euros con tarjeta y link de pago. Ideal para la diáspora.',
-            price: 45,
-          },
-          {
-            id: 'cashea',
-            label: 'Visor de cuotas Cashea',
-            desc: 'Muestra las cuotas al instante en tu tienda — más claridad para el cliente, más ventas.',
-            price: 30,
-          },
-        ],
-      },
-      {
-        category: 'Ecosistema Venezuela',
-        color: 'text-red-400',
-        items: [
-          {
-            id: 'mercadolibre',
-            label: 'MercadoLibre',
-            desc: 'Catálogo, stock y órdenes sincronizados en tiempo real desde tu sistema.',
-            price: 60,
-          },
-          {
-            id: 'seniat',
-            label: 'Facturación SENIAT',
-            desc: 'Facturas Art. 177 generadas automáticamente. Requiere Plan Enterprise.',
-            price: 65,
-            requiresPack: 'enterprise',
-          },
-        ],
-      },
-      {
-        category: 'Marketing & Ventas',
-        color: 'text-pink-400',
-        items: [
-          {
-            id: 'meta',
-            label: 'Catálogo Meta / Instagram',
-            desc: 'Productos sincronizados con Instagram Shopping y Meta Ads.',
-            price: 40,
-          },
-          {
-            id: 'seo',
-            label: 'SEO on-page avanzado',
-            desc: 'Auditoría completa, keywords, schema markup y optimización técnica.',
-            price: 30,
-          },
-        ],
-      },
-      {
-        category: 'Técnico',
-        color: 'text-violet-400',
-        items: [
-          {
-            id: 'auth',
-            label: 'Acceso seguro + Roles',
-            desc: 'Ingreso con correo o Google y control de acceso por usuario.',
-            price: 50,
-          },
-          {
-            id: 'form',
-            label: 'Formulario de leads',
-            desc: 'Captura de contactos con validación, email y guardado en BD.',
-            price: 20,
-          },
-        ],
-      },
-    ],
+    title: 'Arma tu propuesta en minutos',
+    subtitle:
+      'Marca lo que necesitas, mira el estimado y escríbenos por WhatsApp cuando estés listo — sin formularios eternos.',
+    trust: ['Sin compromiso', 'Respuesta en menos de 24h', 'Ajustable a tu presupuesto'],
+    cta: 'ABRIR COTIZADOR →',
+    secondaryNote: 'El cotizador completo abre en una página dedicada.',
   },
   contact: {
     title: '¿Tienes un proyecto en mente?',
@@ -378,8 +231,7 @@ export const es: Messages = {
     title: 'Política de Privacidad',
     lastUpdated: 'Última actualización: 30 de julio de 2026',
     backHome: 'Volver al inicio',
-    metaDescription:
-      'Cómo ZM Tech recolecta, usa y protege los datos personales en zmtechdev.com.',
+    metaDescription: 'Cómo ZM Tech recolecta, usa y protege los datos personales en zmtechdev.com.',
     sections: [
       {
         heading: '1. Quiénes somos',
@@ -540,8 +392,7 @@ export const es: Messages = {
     nameLabel: 'Tu nombre (opcional)',
     namePlaceholder: '¿Cómo te llamas?',
     waTitle: '¿Listo para arrancar?',
-    waSubtitle:
-      'Te mandamos el detalle por WhatsApp. Respondemos rápido en horario de Venezuela.',
+    waSubtitle: 'Te mandamos el detalle por WhatsApp. Respondemos rápido en horario de Venezuela.',
     waButton: 'Confirmar propuesta por WhatsApp',
     emptyCta: 'Marca lo que necesitas para escribirnos por WhatsApp',
     footer: 'Cotizador ZM Tech · zmtechdev.com',

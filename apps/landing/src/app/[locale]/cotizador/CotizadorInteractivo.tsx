@@ -119,7 +119,9 @@ export function CotizadorInteractivo({ locale, messages }: Props) {
           {messages.enterpriseTecnico}
         </p>
         <div className="rounded-xl border border-[#b5cfe4] bg-[#e8f0f7] p-4">
-          <p className="mb-1 text-[13px] font-semibold text-[#0c447c]">{messages.enterpriseHeading}</p>
+          <p className="mb-1 text-[13px] font-semibold text-[#0c447c]">
+            {messages.enterpriseHeading}
+          </p>
           <p className="mb-3 text-xs leading-normal text-[#1a3c5e]">{messages.enterpriseBody}</p>
           <a
             href={diagnosticoWaUrl()}

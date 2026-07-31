@@ -62,7 +62,9 @@ export default async function CotizadorPage({ params }: Props) {
               EN
             </Link>
           </div>
-          <h1 className="mt-4 text-xl font-semibold text-[#111]">{messages.cotizadorPage.heading}</h1>
+          <h1 className="mt-4 text-xl font-semibold text-[#111]">
+            {messages.cotizadorPage.heading}
+          </h1>
           <p className="mt-1.5 text-sm leading-relaxed text-[#666]">
             {messages.cotizadorPage.subheading}
           </p>
