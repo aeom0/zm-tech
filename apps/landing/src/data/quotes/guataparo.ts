@@ -123,5 +123,5 @@ export const guataparoQuote: QuoteDefinition = {
       'Esta propuesta tiene validez de 15 días. Escríbenos cuando estés lista y empezamos esta semana.',
     contacto: 'albertoorta.1@gmail.com · +58 414 494 0417',
   },
-  footer: 'Propuesta preparada por ZM Tech · zmtech-landing.vercel.app',
+  footer: 'Propuesta preparada por ZM Tech · zmtechdev.com',
 }

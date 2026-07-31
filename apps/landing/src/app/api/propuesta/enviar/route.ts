@@ -1,7 +1,7 @@
 import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
 
-const PROPUESTA_URL = 'https://zmtech-landing.vercel.app/propuesta/guataparo'
+const PROPUESTA_URL = 'https://zmtechdev.com/propuesta/guataparo'
 // Botones de contacto apuntan a ZM Tech (Alberto), no a la clienta
 const WA_ZM = 'https://wa.me/584144940417'
 
@@ -82,7 +82,7 @@ export async function POST() {
     </div>
 
     <p style="text-align:center;font-size:11px;color:#bbb;margin:0">
-      ZM Tech · zmtech-landing.vercel.app<br>
+      ZM Tech · zmtechdev.com<br>
       Esta propuesta tiene validez de 15 días · Abril 2026
     </p>
 

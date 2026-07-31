@@ -225,7 +225,7 @@ export function CotizadorInteractivo() {
       )}
 
       <p className="mt-6 text-center text-[11px] text-[#bbb]">
-        Cotizador ZM Tech · zmtech-landing.vercel.app
+        Cotizador ZM Tech · zmtechdev.com
       </p>
     </div>
   )
