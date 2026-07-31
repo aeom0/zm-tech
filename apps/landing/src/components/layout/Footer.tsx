@@ -64,13 +64,24 @@ export default function Footer({ locale, messages }: Props) {
           </div>
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-2 border-t border-white/10 pt-8 text-xs text-gray-600 sm:flex-row">
+        <div className="flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-8 text-xs text-gray-600 sm:flex-row sm:gap-2">
           <span>
             © {new Date().getFullYear()} ZM Tech. {messages.rights}
           </span>
-          <span>{messages.madeIn}</span>
+          <div className="flex items-center gap-4">
+            <Link
+              href={`/${locale}/privacidad`}
+              className="transition-colors hover:text-white"
+            >
+              {messages.privacy}
+            </Link>
+            <Link href={`/${locale}/terminos`} className="transition-colors hover:text-white">
+              {messages.terms}
+            </Link>
+            <span className="hidden sm:inline">{messages.madeIn}</span>
+          </div>
         </div>
-      </div>
+        <p className="mt-3 text-center text-xs text-gray-600 sm:hidden">{messages.madeIn}</p>      </div>
     </footer>
   )
 }

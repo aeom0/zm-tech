@@ -2,55 +2,36 @@ import type { MetadataRoute } from 'next'
 
 const site = 'https://zmtechdev.com'
 
-export default function sitemap(): MetadataRoute.Sitemap {
+function localizedEntry(
+  path: string,
+  priority: number,
+  changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency']
+): MetadataRoute.Sitemap {
+  const es = `${site}/es${path}`
+  const en = `${site}/en${path}`
   return [
     {
-      url: `${site}/es`,
+      url: es,
       lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 1,
-      alternates: {
-        languages: {
-          es: `${site}/es`,
-          en: `${site}/en`,
-        },
-      },
+      changeFrequency,
+      priority,
+      alternates: { languages: { es, en } },
     },
     {
-      url: `${site}/en`,
+      url: en,
       lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 1,
-      alternates: {
-        languages: {
-          es: `${site}/es`,
-          en: `${site}/en`,
-        },
-      },
+      changeFrequency,
+      priority,
+      alternates: { languages: { es, en } },
     },
-    {
-      url: `${site}/es/cotizador`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-      alternates: {
-        languages: {
-          es: `${site}/es/cotizador`,
-          en: `${site}/en/cotizador`,
-        },
-      },
-    },
-    {
-      url: `${site}/en/cotizador`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-      alternates: {
-        languages: {
-          es: `${site}/es/cotizador`,
-          en: `${site}/en/cotizador`,
-        },
-      },
-    },
+  ]
+}
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [
+    ...localizedEntry('', 1, 'weekly'),
+    ...localizedEntry('/cotizador', 0.8, 'weekly'),
+    ...localizedEntry('/privacidad', 0.3, 'yearly'),
+    ...localizedEntry('/terminos', 0.3, 'yearly'),
   ]
 }

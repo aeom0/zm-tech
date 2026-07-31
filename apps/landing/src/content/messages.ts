@@ -191,6 +191,21 @@ export type FooterMessages = {
   rights: string
   madeIn: string
   homeAria: string
+  privacy: string
+  terms: string
+}
+
+export type LegalSection = {
+  heading: string
+  paragraphs: string[]
+}
+
+export type LegalPageMessages = {
+  title: string
+  lastUpdated: string
+  backHome: string
+  metaDescription: string
+  sections: LegalSection[]
 }
 
 export type MetadataMessages = {
@@ -240,4 +255,6 @@ export type Messages = {
   metadata: MetadataMessages
   cotizadorPage: CotizadorPageMessages
   metadataCotizador: MetadataMessages
+  privacy: LegalPageMessages
+  terms: LegalPageMessages
 }

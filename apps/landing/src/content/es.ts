@@ -368,6 +368,129 @@ export const es: Messages = {
     rights: 'Todos los derechos reservados.',
     madeIn: 'Hecho con cuidado en Venezuela',
     homeAria: 'Ir al inicio',
+    privacy: 'Privacidad',
+    terms: 'Términos',
+  },
+  privacy: {
+    title: 'Política de Privacidad',
+    lastUpdated: 'Última actualización: 30 de julio de 2026',
+    backHome: 'Volver al inicio',
+    metaDescription:
+      'Cómo ZM Tech recolecta, usa y protege los datos personales en zmtechdev.com.',
+    sections: [
+      {
+        heading: '1. Quiénes somos',
+        paragraphs: [
+          'ZM Tech (“nosotros”) opera el sitio zmtechdev.com y los servicios asociados de cotización y contacto. Responsable del tratamiento: Alberto Orta · contacto: albertoorta.1@gmail.com · WhatsApp: +58 414 494 0417.',
+        ],
+      },
+      {
+        heading: '2. Datos que recolectamos',
+        paragraphs: [
+          'Cuando usas el formulario de contacto o el cotizador público, podemos recibir: nombre, empresa u organización, número de WhatsApp, presupuesto estimado, servicios seleccionados y el mensaje que envíes.',
+          'También pueden generarse datos técnicos habituales de navegación (dirección IP, tipo de navegador, páginas visitadas) a través del hosting (Vercel) con fines de seguridad, rendimiento y diagnóstico.',
+        ],
+      },
+      {
+        heading: '3. Para qué los usamos',
+        paragraphs: [
+          'Respondemos a tus solicitudes de información o cotización, damos seguimiento comercial por correo o WhatsApp, y mejoramos el sitio y nuestros procesos internos.',
+          'No vendemos tus datos personales ni los usamos para publicidad de terceros.',
+        ],
+      },
+      {
+        heading: '4. Con quién los compartimos',
+        paragraphs: [
+          'Proveedores que nos ayudan a operar el sitio, bajo instrucciones nuestras: hosting y CDN (Vercel), base de datos y backend (Supabase, proyecto de leads de la landing), envío de correo transaccional (Resend) y mensajería cuando tú inicias el contacto (WhatsApp).',
+          'Podemos divulgar información si la ley o una autoridad competente lo exige.',
+        ],
+      },
+      {
+        heading: '5. Conservación',
+        paragraphs: [
+          'Conservamos los leads el tiempo necesario para atender la solicitud y el seguimiento comercial razonable, o hasta que pidas su eliminación, salvo obligaciones legales de retención.',
+        ],
+      },
+      {
+        heading: '6. Tus derechos',
+        paragraphs: [
+          'Puedes solicitar acceso, corrección o eliminación de tus datos personales escribiendo a albertoorta.1@gmail.com. Responderemos en un plazo razonable.',
+        ],
+      },
+      {
+        heading: '7. Seguridad y menores',
+        paragraphs: [
+          'Aplicamos medidas técnicas y organizativas razonables; ningún sistema es 100 % seguro. El sitio no está dirigido a menores de 18 años; no recolectamos datos de menores de forma consciente.',
+        ],
+      },
+      {
+        heading: '8. Cambios',
+        paragraphs: [
+          'Podemos actualizar esta política. La fecha de “Última actualización” indica la versión vigente. El uso continuado del sitio tras un cambio implica que tomaste nota de la nueva versión.',
+        ],
+      },
+    ],
+  },
+  terms: {
+    title: 'Términos y Condiciones',
+    lastUpdated: 'Última actualización: 30 de julio de 2026',
+    backHome: 'Volver al inicio',
+    metaDescription:
+      'Condiciones de uso del sitio zmtechdev.com y de las cotizaciones orientativas de ZM Tech.',
+    sections: [
+      {
+        heading: '1. Aceptación',
+        paragraphs: [
+          'Al acceder a zmtechdev.com aceptas estos términos. Si no estás de acuerdo, no uses el sitio. El idioma de referencia comercial puede ser español o inglés según la versión que visites; en caso de duda prevalece el sentido comercial razonable de ambas.',
+        ],
+      },
+      {
+        heading: '2. El sitio y su contenido',
+        paragraphs: [
+          'El sitio presenta información sobre ZM Tech, verticales de producto, integraciones y herramientas de cotización orientativa. Textos, precios y plazos mostrados son referenciales y pueden cambiar sin aviso previo.',
+          'Marcas, tipografías, código de interfaz, textos e isotipo son propiedad de ZM Tech o de sus licenciantes. No puedes copiarlos ni usarlos sin autorización escrita.',
+        ],
+      },
+      {
+        heading: '3. Cotizaciones y propuestas',
+        paragraphs: [
+          'El cotizador público y los estimados del sitio no constituyen oferta vinculante ni contrato. Una propuesta comercial formal (por ejemplo en /propuesta/…) tampoco es contrato hasta que ambas partes acuerden por escrito alcance, precio y condiciones.',
+          'Los precios en USD y los tiempos de entrega son estimados; el alcance final se define en la negociación y en el acuerdo de servicios correspondiente.',
+        ],
+      },
+      {
+        heading: '4. Contacto y uso aceptable',
+        paragraphs: [
+          'Al enviar un formulario o mensaje (correo, WhatsApp u otro canal) declaras que la información es veraz y que puedes ser contactado para fines comerciales relacionados con tu solicitud.',
+          'No está permitido usar el sitio para spam, abuso, intento de acceso no autorizado, scraping agresivo u otras actividades ilegales o que perjudiquen a ZM Tech o a terceros.',
+        ],
+      },
+      {
+        heading: '5. Enlaces y servicios de terceros',
+        paragraphs: [
+          'El sitio puede enlazar o integrar servicios de terceros (por ejemplo WhatsApp, redes o proveedores de infraestructura). Esos servicios tienen sus propias políticas; no controlamos su contenido ni su disponibilidad.',
+        ],
+      },
+      {
+        heading: '6. Limitación de responsabilidad',
+        paragraphs: [
+          'El sitio se ofrece “tal cual”. En la medida permitida por la ley aplicable, ZM Tech no responde por daños indirectos, lucro cesante o interrupciones derivadas del uso o la imposibilidad de uso del sitio o de información meramente orientativa publicada en él.',
+          'La relación contractual por un proyecto de software se regirá por el acuerdo específico firmado o aceptado entre las partes, no solo por estos términos del sitio.',
+        ],
+      },
+      {
+        heading: '7. Ley aplicable',
+        paragraphs: [
+          'Salvo pacto distinto por escrito, estos términos se interpretan de conformidad con las leyes de la República Bolivariana de Venezuela. Para controversias relacionadas solo con el uso del sitio, las partes procurarán primero una solución amistosa.',
+        ],
+      },
+      {
+        heading: '8. Contacto',
+        paragraphs: [
+          'Consultas sobre estos términos: albertoorta.1@gmail.com · +58 414 494 0417 · https://zmtechdev.com',
+        ],
+      },
+    ],
   },
   metadata: {
     title: 'ZM Tech | Ingeniería de Software a Velocidad de IA',

@@ -367,6 +367,129 @@ export const en: Messages = {
     rights: 'All rights reserved.',
     madeIn: 'Crafted with care in Venezuela',
     homeAria: 'Go to home',
+    privacy: 'Privacy',
+    terms: 'Terms',
+  },
+  privacy: {
+    title: 'Privacy Policy',
+    lastUpdated: 'Last updated: July 30, 2026',
+    backHome: 'Back to home',
+    metaDescription:
+      'How ZM Tech collects, uses, and protects personal data on zmtechdev.com.',
+    sections: [
+      {
+        heading: '1. Who we are',
+        paragraphs: [
+          'ZM Tech (“we”) operates zmtechdev.com and related quote and contact services. Data controller: Alberto Orta · contact: albertoorta.1@gmail.com · WhatsApp: +58 414 494 0417.',
+        ],
+      },
+      {
+        heading: '2. Data we collect',
+        paragraphs: [
+          'When you use the contact form or the public quote builder, we may receive: name, company or organization, WhatsApp number, estimated budget, selected services, and any message you send.',
+          'Standard technical browsing data (IP address, browser type, pages visited) may also be processed by our hosting provider (Vercel) for security, performance, and diagnostics.',
+        ],
+      },
+      {
+        heading: '3. How we use it',
+        paragraphs: [
+          'We reply to your information or quote requests, follow up commercially by email or WhatsApp, and improve the site and our internal processes.',
+          'We do not sell your personal data or use it for third-party advertising.',
+        ],
+      },
+      {
+        heading: '4. Who we share it with',
+        paragraphs: [
+          'Vendors that help us run the site under our instructions: hosting and CDN (Vercel), database and backend (Supabase, landing leads project), transactional email (Resend), and messaging when you initiate contact (WhatsApp).',
+          'We may disclose information if required by law or a competent authority.',
+        ],
+      },
+      {
+        heading: '5. Retention',
+        paragraphs: [
+          'We keep leads as long as needed to handle your request and reasonable commercial follow-up, or until you ask for deletion, except where the law requires longer retention.',
+        ],
+      },
+      {
+        heading: '6. Your rights',
+        paragraphs: [
+          'You may request access, correction, or deletion of your personal data by emailing albertoorta.1@gmail.com. We will respond within a reasonable time.',
+        ],
+      },
+      {
+        heading: '7. Security and minors',
+        paragraphs: [
+          'We apply reasonable technical and organizational measures; no system is 100% secure. This site is not directed at people under 18; we do not knowingly collect children’s data.',
+        ],
+      },
+      {
+        heading: '8. Changes',
+        paragraphs: [
+          'We may update this policy. The “Last updated” date shows the current version. Continued use of the site after a change means you have noted the new version.',
+        ],
+      },
+    ],
+  },
+  terms: {
+    title: 'Terms and Conditions',
+    lastUpdated: 'Last updated: July 30, 2026',
+    backHome: 'Back to home',
+    metaDescription:
+      'Terms of use for zmtechdev.com and ZM Tech’s indicative quotes.',
+    sections: [
+      {
+        heading: '1. Acceptance',
+        paragraphs: [
+          'By accessing zmtechdev.com you accept these terms. If you disagree, do not use the site. Commercial language may be Spanish or English depending on the version you visit; in case of doubt, the reasonable commercial meaning of both versions applies.',
+        ],
+      },
+      {
+        heading: '2. The site and its content',
+        paragraphs: [
+          'The site presents information about ZM Tech, product verticals, integrations, and indicative quote tools. Texts, prices, and timelines shown are referential and may change without prior notice.',
+          'Marks, typography, UI code, copy, and isotype are owned by ZM Tech or its licensors. You may not copy or use them without written permission.',
+        ],
+      },
+      {
+        heading: '3. Quotes and proposals',
+        paragraphs: [
+          'The public quote builder and on-site estimates are not a binding offer or contract. A formal commercial proposal (for example under /propuesta/…) is also not a contract until both parties agree in writing on scope, price, and terms.',
+          'USD prices and delivery times are estimates; final scope is set in negotiation and the corresponding services agreement.',
+        ],
+      },
+      {
+        heading: '4. Contact and acceptable use',
+        paragraphs: [
+          'By submitting a form or message (email, WhatsApp, or other channel) you state that the information is accurate and that you may be contacted for commercial purposes related to your request.',
+          'You may not use the site for spam, abuse, unauthorized access attempts, aggressive scraping, or other illegal activity that harms ZM Tech or third parties.',
+        ],
+      },
+      {
+        heading: '5. Third-party links and services',
+        paragraphs: [
+          'The site may link to or integrate third-party services (for example WhatsApp, social networks, or infrastructure providers). Those services have their own policies; we do not control their content or availability.',
+        ],
+      },
+      {
+        heading: '6. Limitation of liability',
+        paragraphs: [
+          'The site is provided “as is.” To the extent permitted by applicable law, ZM Tech is not liable for indirect damages, lost profits, or interruptions arising from use of—or inability to use—the site or merely indicative information published on it.',
+          'A contractual relationship for a software project is governed by the specific agreement signed or accepted by the parties, not solely by these website terms.',
+        ],
+      },
+      {
+        heading: '7. Governing law',
+        paragraphs: [
+          'Unless otherwise agreed in writing, these terms are interpreted under the laws of the Bolivarian Republic of Venezuela. For disputes related only to use of the site, the parties will first seek an amicable resolution.',
+        ],
+      },
+      {
+        heading: '8. Contact',
+        paragraphs: [
+          'Questions about these terms: albertoorta.1@gmail.com · +58 414 494 0417 · https://zmtechdev.com',
+        ],
+      },
+    ],
   },
   metadata: {
     title: 'ZM Tech | Software Engineering at AI Speed',
