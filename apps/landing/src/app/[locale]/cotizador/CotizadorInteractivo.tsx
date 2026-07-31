@@ -11,16 +11,16 @@ import {
   WhatsAppCTA,
   WhatsAppIcon,
   type CatalogService,
+  type QuoteLocale,
   type ServiceTier,
 } from '@zmtech/quote-engine'
+import type { CotizadorPageMessages } from '@/content/messages'
 
 const WA_NUMBER = '584144940417'
 
-const NIVEL_LABELS: Record<0 | 1 | 2 | 3, { titulo: string; tecnico?: string }> = {
-  0: { titulo: 'Para que te encuentren', tecnico: 'Presencia digital' },
-  1: { titulo: 'Tu página o sitio web', tecnico: 'Web' },
-  2: { titulo: 'App para manejar tu negocio', tecnico: 'Gestión' },
-  3: { titulo: 'Sistema para varios locales o marcas', tecnico: 'SaaS' },
+type Props = {
+  locale: QuoteLocale
+  messages: CotizadorPageMessages
 }
 
 function serviciosPublicos(): CatalogService[] {
@@ -39,16 +39,7 @@ function groupByNivel(
     .filter((g) => g.items.length > 0)
 }
 
-function diagnosticoWaUrl(): string {
-  const msg = [
-    'Hola, quiero agendar una llamada.',
-    '',
-    'Necesito un sistema completo a la medida para varias áreas de la empresa.',
-  ].join('\n')
-  return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`
-}
-
-export function CotizadorInteractivo() {
+export function CotizadorInteractivo({ locale, messages }: Props) {
   const catalogo = useMemo(() => serviciosPublicos(), [])
   const grupos = useMemo(() => groupByNivel(catalogo), [catalogo])
 
@@ -65,8 +56,9 @@ export function CotizadorInteractivo() {
             clienteNombre: nombre,
             result,
             waNumber: WA_NUMBER,
+            locale,
           }),
-    [nombre, result, selectedIds.length]
+    [nombre, result, selectedIds.length, locale]
   )
 
   const bundleSubtotal =
@@ -80,12 +72,16 @@ export function CotizadorInteractivo() {
     setSelectedIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
   }
 
+  function diagnosticoWaUrl(): string {
+    return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(messages.enterpriseWaMsg.join('\n'))}`
+  }
+
   const hasSelection = selectedIds.length > 0
 
   return (
     <div>
       {grupos.map((grupo) => {
-        const label = NIVEL_LABELS[grupo.nivel]
+        const label = messages.niveles[grupo.nivel]
         return (
           <section key={grupo.nivel} className="mb-4">
             <p className="mb-0.5 text-[11px] font-semibold tracking-wider text-[#666] uppercase">
@@ -106,6 +102,8 @@ export function CotizadorInteractivo() {
                   selected={selectedIds.includes(service.id)}
                   onToggle={toggle}
                   isLast={i === grupo.items.length - 1}
+                  locale={locale}
+                  perMonthLabel={messages.perMonth}
                 />
               ))}
             </div>
@@ -113,22 +111,16 @@ export function CotizadorInteractivo() {
         )
       })}
 
-      {/* Empresa grande — sin checkbox */}
       <section className="mb-4">
         <p className="mb-0.5 text-[11px] font-semibold tracking-wider text-[#666] uppercase">
-          Sistema completo a la medida
+          {messages.enterpriseTitle}
         </p>
         <p className="mb-2 text-[10px] font-medium tracking-wide text-[#999] uppercase">
-          Empresa / varias áreas
+          {messages.enterpriseTecnico}
         </p>
         <div className="rounded-xl border border-[#b5cfe4] bg-[#e8f0f7] p-4">
-          <p className="mb-1 text-[13px] font-semibold text-[#0c447c]">
-            ¿Necesitas algo más grande?
-          </p>
-          <p className="mb-3 text-xs leading-normal text-[#1a3c5e]">
-            Si necesitas un sistema completo a la medida (varias áreas de la empresa), agenda una
-            llamada y lo vemos juntos. Eso no se arma con checkboxes.
-          </p>
+          <p className="mb-1 text-[13px] font-semibold text-[#0c447c]">{messages.enterpriseHeading}</p>
+          <p className="mb-3 text-xs leading-normal text-[#1a3c5e]">{messages.enterpriseBody}</p>
           <a
             href={diagnosticoWaUrl()}
             target="_blank"
@@ -136,7 +128,7 @@ export function CotizadorInteractivo() {
             className="inline-flex items-center gap-2 rounded-[10px] bg-[#1a3c5e] px-4 py-2.5 text-sm font-semibold text-white no-underline"
           >
             <WhatsAppIcon size={16} />
-            Agendar una llamada
+            {messages.enterpriseCta}
           </a>
         </div>
       </section>
@@ -146,31 +138,32 @@ export function CotizadorInteractivo() {
           bundle={result.bundleAplicado}
           ahorro={result.descuento}
           subtotalBundle={bundleSubtotal}
+          locale={locale}
         />
       ) : null}
 
       <div className="mb-4 rounded-xl border border-[#e5e5e5] bg-white px-4 py-3">
         <p className="mb-2 text-[11px] font-semibold tracking-wider text-[#666] uppercase">
-          Tu total
+          {messages.totalLabel}
         </p>
         {!hasSelection ? (
-          <p className="text-sm text-[#888]">Marca lo que necesitas arriba para ver el precio.</p>
+          <p className="text-sm text-[#888]">{messages.emptyTotal}</p>
         ) : (
           <div className="space-y-1 text-sm text-[#333]">
             {result.descuento > 0 ? (
               <>
                 <div className="flex justify-between">
-                  <span>Suma</span>
+                  <span>{messages.subtotal}</span>
                   <span>${result.subtotal} USD</span>
                 </div>
                 <div className="flex justify-between text-[#0f6e56]">
-                  <span>Ahorro del combo</span>
+                  <span>{messages.comboSavings}</span>
                   <span>−${result.descuento} USD</span>
                 </div>
               </>
             ) : null}
             <div className="flex items-baseline justify-between pt-1">
-              <span className="font-semibold text-[#111]">Total</span>
+              <span className="font-semibold text-[#111]">{messages.total}</span>
               <span className="text-[1.6rem] font-semibold text-[#1a3c5e]">
                 ${result.total}
                 <span className="ml-1 text-sm font-normal text-[#888]">USD</span>
@@ -185,14 +178,14 @@ export function CotizadorInteractivo() {
           htmlFor="cotizador-nombre"
           className="mb-1.5 block text-[11px] font-semibold tracking-wider text-[#666] uppercase"
         >
-          Tu nombre (opcional)
+          {messages.nameLabel}
         </label>
         <input
           id="cotizador-nombre"
           type="text"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
-          placeholder="¿Cómo te llamas?"
+          placeholder={messages.namePlaceholder}
           className="w-full rounded-[10px] border border-[#e5e5e5] bg-white px-3 py-2.5 text-sm text-[#111] outline-none placeholder:text-[#aaa] focus:border-[#1a3c5e]"
           autoComplete="name"
         />
@@ -201,8 +194,9 @@ export function CotizadorInteractivo() {
       {hasSelection ? (
         <WhatsAppCTA
           url={waUrl}
-          titulo="¿Listo para arrancar?"
-          subtitulo="Te mandamos el detalle por WhatsApp. Respondemos rápido en horario de Venezuela."
+          titulo={messages.waTitle}
+          subtitulo={messages.waSubtitle}
+          botonLabel={messages.waButton}
           contacto="albertoorta.1@gmail.com · +58 414 494 0417"
           leadPayload={{
             source: 'self-service',
@@ -218,15 +212,11 @@ export function CotizadorInteractivo() {
         />
       ) : (
         <div className="rounded-[14px] bg-[#1a3c5e] p-5 text-center opacity-60">
-          <p className="text-sm text-white/80">
-            Marca lo que necesitas para escribirnos por WhatsApp
-          </p>
+          <p className="text-sm text-white/80">{messages.emptyCta}</p>
         </div>
       )}
 
-      <p className="mt-6 text-center text-[11px] text-[#bbb]">
-        Cotizador ZM Tech · zmtechdev.com
-      </p>
+      <p className="mt-6 text-center text-[11px] text-[#bbb]">{messages.footer}</p>
     </div>
   )
 }

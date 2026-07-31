@@ -14,217 +14,98 @@ import {
   Zap,
   Crown,
   X,
+  type LucideIcon,
 } from 'lucide-react'
+import type { CotizadorHomeMessages } from '@/content/messages'
 
-// ─── Tipos de proyecto ───────────────────────────────────────────────────────
-const tipos = [
-  {
-    id: 'landing',
-    label: 'Landing Page',
-    desc: 'Una página, orientada a conversión',
-    icon: Globe,
-    min: 120,
-    max: 180,
-    dias: '3–5 días',
-  },
-  {
-    id: 'corporativa',
-    label: 'Sitio Corporativo',
-    desc: 'Multi-sección, portafolio o empresa',
-    icon: Factory,
-    min: 250,
-    max: 400,
-    dias: '7–14 días',
-  },
-  {
-    id: 'ecommerce',
-    label: 'E-commerce',
-    desc: 'Tienda online con catálogo y pagos',
-    icon: ShoppingCart,
-    min: 500,
-    max: 800,
-    dias: '14–21 días',
-  },
-  {
-    id: 'saas',
-    label: 'Aplicación Web',
-    desc: 'Panel de control, acceso por usuario y lógica de negocio',
-    icon: Sparkles,
-    min: 800,
-    max: 1500,
-    dias: '21–45 días',
-  },
-]
+// ─── Datos estructurales (ids, iconos, precios, clases) ─────────────────────
 
-// ─── Niveles de diseño ───────────────────────────────────────────────────────
-const disenios = [
-  { id: 'template', label: 'Plantilla adaptada', mul: 1.0 },
-  { id: 'custom', label: 'Personalizado', mul: 1.3 },
-  { id: 'premium', label: 'Diseño premium', mul: 1.6 },
-]
+const tipoIds = ['landing', 'corporativa', 'ecommerce', 'saas'] as const
+type TipoId = (typeof tipoIds)[number]
 
-// ─── Packs mensuales ─────────────────────────────────────────────────────────
-const packs = [
+const tipoMeta: Record<TipoId, { icon: LucideIcon; min: number; max: number }> = {
+  landing: { icon: Globe, min: 120, max: 180 },
+  corporativa: { icon: Factory, min: 250, max: 400 },
+  ecommerce: { icon: ShoppingCart, min: 500, max: 800 },
+  saas: { icon: Sparkles, min: 800, max: 1500 },
+}
+
+const disenioIds = ['template', 'custom', 'premium'] as const
+type DisenioId = (typeof disenioIds)[number]
+
+const disenioMeta: Record<DisenioId, { mul: number }> = {
+  template: { mul: 1.0 },
+  custom: { mul: 1.3 },
+  premium: { mul: 1.6 },
+}
+
+const packIds = ['arranque', 'negocio', 'enterprise'] as const
+type PackId = (typeof packIds)[number]
+
+const packMeta: Record<
+  PackId,
   {
-    id: 'arranque',
-    label: 'Arranque',
-    price: 29,
+    icon: LucideIcon
+    price: number
+    color: string
+    borderActive: string
+    borderInactive: string
+  }
+> = {
+  arranque: {
     icon: Rocket,
+    price: 29,
     color: 'text-sky-400',
     borderActive: 'border-sky-500/70 bg-sky-500/10 shadow-[0_0_20px_rgba(14,165,233,0.15)]',
     borderInactive: 'border-white/10 bg-white/5 hover:border-white/20',
-    badge: null,
-    tagline: 'Para el negocio que está arrancando en digital',
-    includes: [
-      'Hosting + dominio incluido',
-      'Formulario de leads',
-      'SEO on-page básico',
-      'Soporte WhatsApp (48h)',
-      '1 actualización de contenido/mes',
-    ],
   },
-  {
-    id: 'negocio',
-    label: 'Negocio',
-    price: 69,
+  negocio: {
     icon: Zap,
+    price: 69,
     color: 'text-violet-400',
     borderActive: 'border-violet-500/70 bg-violet-500/10 shadow-[0_0_25px_rgba(139,92,246,0.2)]',
     borderInactive: 'border-violet-500/30 bg-violet-500/5 hover:border-violet-500/50',
-    badge: 'MÁS POPULAR',
-    tagline: 'Para la empresa que ya vende y quiere vender más',
-    includes: [
-      'Todo lo del Plan Arranque',
-      'Tasa BCV actualizada a diario',
-      'WhatsApp Business automatizado',
-      'Telegram Bot de alertas',
-      'Soporte prioritario (24h)',
-      '2 actualizaciones de contenido/mes',
-    ],
   },
-  {
-    id: 'enterprise',
-    label: 'Enterprise',
-    price: 149,
+  enterprise: {
     icon: Crown,
+    price: 149,
     color: 'text-amber-400',
     borderActive: 'border-amber-500/70 bg-amber-500/10 shadow-[0_0_20px_rgba(245,158,11,0.15)]',
     borderInactive: 'border-white/10 bg-white/5 hover:border-white/20',
-    badge: null,
-    tagline: 'Para operaciones serias que no pueden fallar',
-    includes: [
-      'Todo lo del Plan Negocio',
-      'Facturación SENIAT automática',
-      'Acceso seguro por usuario y roles',
-      'Google Calendar sincronizado',
-      'Monitoreo 24/7 + backups diarios',
-      'Soporte dedicado (4h)',
-      'Actualizaciones ilimitadas',
-    ],
   },
-]
-
-// ─── Tipos explícitos ────────────────────────────────────────────────────────
-interface ExtraItem {
-  id: string
-  label: string
-  desc: string
-  price: number
-  requiresPack?: string
 }
 
-interface ExtraGroup {
-  category: string
-  color: string
-  items: ExtraItem[]
-}
+type ExtraItem = CotizadorHomeMessages['extraGroups'][number]['items'][number]
 
-// ─── Extras à la carte (pago único) ──────────────────────────────────────────
-const extraGroups: ExtraGroup[] = [
-  {
-    category: 'Integraciones de pago',
-    color: 'text-blue-400',
-    items: [
-      {
-        id: 'stripe',
-        label: 'Stripe',
-        desc: 'Cobros en dólares o euros con tarjeta y link de pago. Ideal para la diáspora.',
-        price: 45,
-      },
-      {
-        id: 'cashea',
-        label: 'Visor de cuotas Cashea',
-        desc: 'Muestra las cuotas al instante en tu tienda — más claridad para el cliente, más ventas.',
-        price: 30,
-      },
-    ],
-  },
-  {
-    category: 'Ecosistema Venezuela',
-    color: 'text-red-400',
-    items: [
-      {
-        id: 'mercadolibre',
-        label: 'MercadoLibre',
-        desc: 'Catálogo, stock y órdenes sincronizados en tiempo real desde tu sistema.',
-        price: 60,
-      },
-      {
-        id: 'seniat',
-        label: 'Facturación SENIAT',
-        desc: 'Facturas Art. 177 generadas automáticamente. Requiere Plan Enterprise.',
-        price: 65,
-        requiresPack: 'enterprise',
-      },
-    ],
-  },
-  {
-    category: 'Marketing & Ventas',
-    color: 'text-pink-400',
-    items: [
-      {
-        id: 'meta',
-        label: 'Catálogo Meta / Instagram',
-        desc: 'Productos sincronizados con Instagram Shopping y Meta Ads.',
-        price: 40,
-      },
-      {
-        id: 'seo',
-        label: 'SEO on-page avanzado',
-        desc: 'Auditoría completa, keywords, schema markup y optimización técnica.',
-        price: 30,
-      },
-    ],
-  },
-  {
-    category: 'Técnico',
-    color: 'text-violet-400',
-    items: [
-      {
-        id: 'auth',
-        label: 'Acceso seguro + Roles',
-        desc: 'Ingreso con correo o Google y control de acceso por usuario.',
-        price: 50,
-      },
-      {
-        id: 'form',
-        label: 'Formulario de leads',
-        desc: 'Captura de contactos con validación, email y guardado en BD.',
-        price: 20,
-      },
-    ],
-  },
-]
+type Props = { messages: CotizadorHomeMessages }
 
-const extrasFlat = extraGroups.flatMap((g) => g.items)
-
-// ─── Componente ───────────────────────────────────────────────────────────────
-export default function Cotizador() {
+export default function Cotizador({ messages }: Props) {
   const [tipoId, setTipoId] = useState<string | null>(null)
-  const [disenioId, setDisenioId] = useState('template')
+  const [disenioId, setDisenioId] = useState<DisenioId>('template')
   const [packId, setPackId] = useState<string | null>(null)
   const [activeExtras, setActiveExtras] = useState<Set<string>>(new Set())
   const [tab, setTab] = useState<'packs' | 'extras'>('packs')
+
+  const tipos = tipoIds.map((id) => ({
+    id,
+    ...tipoMeta[id],
+    ...messages.tipos[id],
+  }))
+
+  const disenios = disenioIds.map((id) => ({
+    id,
+    ...disenioMeta[id],
+    label: messages.disenios[id],
+  }))
+
+  const packs = packIds.map((id) => ({
+    id,
+    ...packMeta[id],
+    ...messages.packs[id],
+  }))
+
+  const extraGroups = messages.extraGroups
+  const extrasFlat = extraGroups.flatMap((g) => g.items)
 
   const tipo = tipos.find((t) => t.id === tipoId)
   const disenio = disenios.find((d) => d.id === disenioId)!
@@ -248,13 +129,12 @@ export default function Cotizador() {
     })
   }
 
-  // ─── Panel resultado (función, no componente — evita recrearlo como tipo en cada render)
   const renderResultPanel = () => (
     <div className="rounded-xl border border-white/10 bg-white/5 p-6">
       <div className="mb-5 flex items-center gap-2">
         <Calculator className="h-4 w-4 text-violet-400" />
         <span className="font-mono text-xs tracking-widest text-gray-400 uppercase">
-          Tu estimado
+          {messages.estimateLabel}
         </span>
       </div>
 
@@ -267,16 +147,14 @@ export default function Cotizador() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.3 }}
           >
-            {/* Precio único */}
             <div className="mb-4">
-              <p className="mb-1 font-mono text-xs text-gray-500">Inversión inicial (único)</p>
+              <p className="mb-1 font-mono text-xs text-gray-500">{messages.initialInvestment}</p>
               <p className="text-3xl leading-none font-black text-white">
                 ${minTotal}–${maxTotal}
                 <span className="ml-1.5 text-sm font-normal text-gray-400">USD</span>
               </p>
             </div>
 
-            {/* Pack seleccionado */}
             {pack && (
               <motion.div
                 initial={{ opacity: 0, y: 4 }}
@@ -285,7 +163,7 @@ export default function Cotizador() {
               >
                 <div className="mb-1 flex items-center justify-between">
                   <span className="font-mono text-xs tracking-wider text-violet-300 uppercase">
-                    Plan {pack.label}
+                    {messages.planPrefix} {pack.label}
                   </span>
                   <button
                     onClick={() => setPackId(null)}
@@ -296,51 +174,49 @@ export default function Cotizador() {
                 </div>
                 <p className="text-xl font-black text-white">
                   ${pack.price}
-                  <span className="ml-1 text-xs font-normal text-gray-400">/mes</span>
+                  <span className="ml-1 text-xs font-normal text-gray-400">{messages.perMonth}</span>
                 </p>
               </motion.div>
             )}
 
-            {/* Extras seleccionados */}
             {activeExtras.size > 0 && (
               <div className="mb-4 rounded-lg border border-white/10 bg-white/5 px-4 py-3">
-                <p className="mb-1 font-mono text-xs text-gray-500">Extras ({activeExtras.size})</p>
+                <p className="mb-1 font-mono text-xs text-gray-500">
+                  {messages.extrasLabel} ({activeExtras.size})
+                </p>
                 <p className="text-lg font-bold text-white">
-                  +${extrasSum} <span className="text-xs font-normal text-gray-400">USD único</span>
+                  +${extrasSum}{' '}
+                  <span className="text-xs font-normal text-gray-400">{messages.extrasUnique}</span>
                 </p>
               </div>
             )}
 
-            {/* Detalles */}
             <div className="mb-5 flex flex-col gap-2 border-t border-white/10 pt-4 text-sm">
               <div className="flex justify-between">
-                <span className="text-gray-500">Tipo</span>
+                <span className="text-gray-500">{messages.typeLabel}</span>
                 <span className="font-mono text-xs text-white">{tipo.label}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Diseño</span>
+                <span className="text-gray-500">{messages.designLabel}</span>
                 <span className="font-mono text-xs text-white">{disenio.label}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-500">Entrega est.</span>
+                <span className="text-gray-500">{messages.deliveryLabel}</span>
                 <span className="font-mono text-xs text-green-400">{tipo.dias}</span>
               </div>
             </div>
 
-            {/* Trust */}
             <div className="mb-5 flex flex-col gap-1 font-mono text-xs text-gray-500">
-              <p>✓ 50% anticipo · 50% entrega</p>
-              <p>✓ Código fuente 100% tuyo</p>
-              <p>✓ Cancela el plan cuando quieras</p>
-              <p>✓ Tecnología de primer nivel</p>
+              {messages.trust.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
             </div>
 
-            {/* CTA */}
             <a
               href="#contacto"
               className="group flex w-full items-center justify-center gap-2 rounded-lg bg-violet-600 py-3 font-mono text-xs tracking-wider text-white uppercase transition-all duration-200 hover:bg-violet-500 hover:shadow-[0_0_20px_rgba(139,92,246,0.5)]"
             >
-              Quiero esta propuesta
+              {messages.cta}
               <ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
             </a>
           </motion.div>
@@ -355,15 +231,13 @@ export default function Cotizador() {
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full border border-violet-500/20 bg-violet-500/10">
               <Calculator className="h-5 w-5 text-violet-400" />
             </div>
-            <p className="font-mono text-xs leading-relaxed tracking-wider text-gray-500 uppercase">
-              Elige el tipo de proyecto
-              <br />
-              para ver tu estimado
+            <p className="font-mono text-xs leading-relaxed tracking-wider text-gray-500 uppercase whitespace-pre-line">
+              {messages.emptyTitle}
             </p>
             <div className="flex flex-col gap-1 font-mono text-xs text-gray-600">
-              <p>→ Sin compromiso</p>
-              <p>→ Respuesta en menos de 24h</p>
-              <p>→ Ajustable a tu presupuesto</p>
+              {messages.emptyHints.map((hint) => (
+                <p key={hint}>{hint}</p>
+              ))}
             </div>
           </motion.div>
         )}
@@ -374,7 +248,6 @@ export default function Cotizador() {
   return (
     <section id="cotizador" className="py-24">
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
         <motion.div
           className="mb-14 text-center"
           initial={{ opacity: 0, y: 20 }}
@@ -383,22 +256,17 @@ export default function Cotizador() {
           viewport={{ once: true }}
         >
           <p className="mb-3 font-mono text-xs tracking-widest text-violet-400 uppercase">
-            Herramienta
+            {messages.eyebrow}
           </p>
-          <h2 className="mb-4 text-5xl font-black text-white">Cotizador Instantáneo</h2>
-          <p className="font-mono text-sm text-gray-400">
-            Obtén un estimado real en menos de 60 segundos
-          </p>
+          <h2 className="mb-4 text-5xl font-black text-white">{messages.title}</h2>
+          <p className="font-mono text-sm text-gray-400">{messages.subtitle}</p>
           <div className="mx-auto mt-4 h-0.5 w-16 bg-violet-500" />
         </motion.div>
 
-        {/* Panel resultado — mobile (encima de controles) */}
         <div className="mb-8 lg:hidden">{renderResultPanel()}</div>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
-          {/* LEFT — Controles */}
           <div className="flex flex-col gap-10 lg:col-span-3">
-            {/* 01 — Tipo */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -406,7 +274,7 @@ export default function Cotizador() {
               viewport={{ once: true }}
             >
               <p className="mb-4 font-mono text-xs tracking-widest text-gray-500 uppercase">
-                01 — ¿Qué necesitas?
+                {messages.step1}
               </p>
               <div className="grid grid-cols-2 gap-3">
                 {tipos.map((t) => {
@@ -435,7 +303,6 @@ export default function Cotizador() {
               </div>
             </motion.div>
 
-            {/* 02 — Diseño */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -443,7 +310,7 @@ export default function Cotizador() {
               viewport={{ once: true }}
             >
               <p className="mb-4 font-mono text-xs tracking-widest text-gray-500 uppercase">
-                02 — Nivel de diseño
+                {messages.step2}
               </p>
               <div className="flex flex-wrap gap-3">
                 {disenios.map((d) => (
@@ -462,7 +329,6 @@ export default function Cotizador() {
               </div>
             </motion.div>
 
-            {/* 03 — Packs + Extras (tabs) */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -470,10 +336,9 @@ export default function Cotizador() {
               viewport={{ once: true }}
             >
               <p className="mb-4 font-mono text-xs tracking-widest text-gray-500 uppercase">
-                03 — Plan de soporte mensual
+                {messages.step3}
               </p>
 
-              {/* Tabs */}
               <div className="mb-5 flex gap-2 rounded-lg border border-white/10 bg-white/5 p-1">
                 {(['packs', 'extras'] as const).map((t) => (
                   <button
@@ -485,7 +350,7 @@ export default function Cotizador() {
                         : 'text-gray-500 hover:text-gray-300'
                     }`}
                   >
-                    {t === 'packs' ? '📦 Packs mensuales' : '⚡ Extras à la carte'}
+                    {t === 'packs' ? `📦 ${messages.tabPacks}` : `⚡ ${messages.tabExtras}`}
                   </button>
                 ))}
               </div>
@@ -509,7 +374,6 @@ export default function Cotizador() {
                           onClick={() => {
                             const next = active ? null : p.id
                             setPackId(next)
-                            // limpiar extras que requieren el pack que se deseleccionó
                             if (active) {
                               const locked = extrasFlat
                                 .filter((e) => e.requiresPack === p.id)
@@ -527,7 +391,6 @@ export default function Cotizador() {
                             active ? p.borderActive : p.borderInactive
                           }`}
                         >
-                          {/* Badge */}
                           {p.badge && (
                             <span className="absolute -top-2.5 left-4 rounded-full bg-violet-600 px-2 py-0.5 font-mono text-[10px] tracking-widest text-white uppercase">
                               {p.badge}
@@ -540,7 +403,7 @@ export default function Cotizador() {
                               <span
                                 className={`text-sm font-bold ${active ? 'text-white' : 'text-gray-300'}`}
                               >
-                                Plan {p.label}
+                                {messages.planPrefix} {p.label}
                               </span>
                             </div>
                             <div className="text-right">
@@ -549,7 +412,9 @@ export default function Cotizador() {
                               >
                                 ${p.price}
                               </span>
-                              <span className="font-mono text-xs text-gray-500">/mes</span>
+                              <span className="font-mono text-xs text-gray-500">
+                                {messages.perMonth}
+                              </span>
                             </div>
                           </div>
 
@@ -573,7 +438,7 @@ export default function Cotizador() {
                     })}
 
                     <p className="text-center font-mono text-xs text-gray-600">
-                      Sin contrato mínimo · Cancela cuando quieras
+                      {messages.cancelAnytime}
                     </p>
                   </motion.div>
                 ) : (
@@ -618,7 +483,7 @@ export default function Cotizador() {
                                     </span>
                                     {locked && (
                                       <span className="rounded border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 font-mono text-[10px] text-amber-400">
-                                        Enterprise
+                                        {messages.packs.enterprise.label}
                                       </span>
                                     )}
                                   </div>
@@ -649,7 +514,7 @@ export default function Cotizador() {
                       </div>
                     ))}
                     <p className="text-center font-mono text-xs text-gray-600">
-                      Pago único · Se suman al precio del proyecto
+                      {messages.extrasNote}
                     </p>
                   </motion.div>
                 )}
@@ -657,7 +522,6 @@ export default function Cotizador() {
             </motion.div>
           </div>
 
-          {/* RIGHT — Panel sticky (solo desktop) */}
           <motion.div
             className="hidden lg:col-span-2 lg:block"
             initial={{ opacity: 0, x: 20 }}

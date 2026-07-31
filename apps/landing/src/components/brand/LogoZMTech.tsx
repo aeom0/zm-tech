@@ -6,9 +6,15 @@ interface LogoZMTechProps {
   className?: string
   priority?: boolean
   href?: string
+  ariaLabel?: string
 }
 
-export default function LogoZMTech({ className, priority, href = '/' }: LogoZMTechProps) {
+export default function LogoZMTech({
+  className,
+  priority,
+  href = '/',
+  ariaLabel = 'Ir al inicio',
+}: LogoZMTechProps) {
   const logo = (
     <span className={cn('relative inline-flex', className)} aria-label="ZM Tech">
       <Image
@@ -31,7 +37,7 @@ export default function LogoZMTech({ className, priority, href = '/' }: LogoZMTe
   )
 
   return (
-    <Link href={href} aria-label="Ir al inicio">
+    <Link href={href} aria-label={ariaLabel}>
       {logo}
     </Link>
   )

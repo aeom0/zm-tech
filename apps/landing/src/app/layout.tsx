@@ -1,25 +1,22 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { headers } from 'next/headers'
+import { defaultLocale, isLocale } from '@/content/locales'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'ZM Tech | Ingeniería de Software a Velocidad de IA',
-  description:
-    'Desarrollamos tu App/Web con precisión industrial y soporte inteligente 24/7. De la idea al mercado en tiempo récord.',
-  keywords:
-    'desarrollo de software Venezuela, IA aplicada a negocios, ingeniería industrial software, LATAM SaaS',
-  openGraph: {
-    title: 'ZM Tech | Ingeniería de Software a Velocidad de IA',
-    description: 'Desarrollamos tu App/Web con precisión industrial y soporte inteligente 24/7.',
-    type: 'website',
-  },
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://zmtechdev.com'),
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const headerList = await headers()
+  const raw = headerList.get('x-locale')
+  const lang = raw && isLocale(raw) ? raw : defaultLocale
+
   return (
-    <html lang="es">
+    <html lang={lang}>
       <body className={`${inter.className} bg-[#050505] text-white`}>{children}</body>
     </html>
   )

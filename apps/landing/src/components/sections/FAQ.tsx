@@ -3,31 +3,11 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
+import type { FaqMessages } from '@/content/messages'
 
-const faqs = [
-  {
-    question: '¿El código me pertenece a mí o a ZM Tech?',
-    answer:
-      'Tuyo 100%. Al cerrar el proyecto, te entregamos el código completo, las claves de acceso al servidor y la documentación. No hay letras chiquitas, no hay dependencia de nosotros para que tu sistema funcione.',
-  },
-  {
-    question: '¿Qué pasa después de que lancen mi app?',
-    answer:
-      'No desaparecemos. Ofrecemos planes de mantenimiento donde monitoreamos tu sistema, resolvemos errores y vamos mejorando el software con el tiempo — con soporte de IA que detecta problemas antes de que tú los notes.',
-  },
-  {
-    question: '¿Cuánto tarda en estar lista mi aplicación?',
-    answer:
-      'Depende del proyecto, pero gracias a nuestra metodología de trabajo, una primera versión funcional puede estar lista en 4 a 6 semanas. Mucho menos que el promedio del mercado, sin sacrificar calidad.',
-  },
-  {
-    question: '¿Solo trabajan con ciertas industrias?',
-    answer:
-      'Tenemos verticales especializadas en Industria, Belleza y Automotriz, pero nos adaptamos a cualquier negocio que necesite software serio. Si tienes un problema real, nosotros tenemos la solución.',
-  },
-]
+type Props = { messages: FaqMessages }
 
-export default function FAQ() {
+export default function FAQ({ messages }: Props) {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   return (
@@ -35,14 +15,14 @@ export default function FAQ() {
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <div className="mb-16 text-center">
           <p className="mb-3 font-mono text-xs tracking-widest text-violet-400 uppercase">
-            BASE DE CONOCIMIENTO
+            {messages.eyebrow}
           </p>
-          <h2 className="text-4xl font-black text-white">Protocolos Frecuentes</h2>
-          <p className="mt-4 text-gray-400">Todo lo que necesitas saber antes de empezar</p>
+          <h2 className="text-4xl font-black text-white">{messages.title}</h2>
+          <p className="mt-4 text-gray-400">{messages.subtitle}</p>
         </div>
 
         <div className="space-y-2">
-          {faqs.map((faq, index) => (
+          {messages.items.map((faq, index) => (
             <div key={index} className="overflow-hidden rounded-xl border border-white/10">
               <button
                 className="flex w-full items-center justify-between p-5 text-left transition-colors hover:bg-white/3"
