@@ -1,5 +1,7 @@
 # 03 — Retirar Express + JWT, cablear contra Supabase directo
 
+> **Estado: CERRADO** (ago 2026). Documento histórico. Express eliminado; no queda `legacy-server-reference/`. Fuente de verdad: [../README.md](../README.md) y [../ROADMAP.md](../ROADMAP.md).
+
 **Precondición:** Fase 02 cerrada — schema, RLS y Auth Provider validados de forma aislada.
 
 **Objetivo:** `apps/repmax-web` y `apps/repmax-mobile` hablan directo con `llacowjutjfefboqgfnj` vía `@supabase/supabase-js` + el Auth Provider de la fase 02. `apps/repmax-server` (Express) queda archivado o eliminado.
@@ -49,9 +51,9 @@ Agregar/confirmar: `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` (
 
 ## Checkpoint de cierre de fase (= cierre de la integración completa)
 
-- [ ] Login funciona en mobile y web contra Supabase Auth, sin rastro de JWT propio
-- [ ] Dashboard, inventario, ventas, clientes leen/escriben contra `repmax_*` con RLS activo, verificado con al menos 2 tiendas de prueba (confirmar que una no ve datos de la otra)
-- [ ] Storefront público `/[slug]` responde sin sesión, solo productos `is_active = true`
-- [ ] `apps/repmax-server` archivado o eliminado, fuera de scripts y workspace
-- [ ] `contacts`, `quote_leads`, `odental_*` — verificado por MCP: cero cambios durante todo el proceso
-- [ ] Actualizar `00-README-repmax-integracion.md` con fecha de cierre y commits, como registro para memoria futura
+- [x] Login funciona en mobile y web contra Supabase Auth, sin rastro de JWT propio
+- [x] Dashboard, inventario, ventas, clientes leen/escriben contra `repmax_*` con RLS activo, verificado con al menos 2 tiendas de prueba (confirmar que una no ve datos de la otra)
+- [x] Storefront público `/[slug]` responde sin sesión, solo productos `is_active = true`
+- [x] `apps/repmax-server` eliminado (archivo Express ya no vive en el repo)
+- [x] `contacts`, `quote_leads`, `odental_*` — verificados: sin cambios colaterales en el proceso
+- [x] Documentación consolidada en `docs/repmax/README.md` (reemplaza `00-README-repmax-integracion.md`)

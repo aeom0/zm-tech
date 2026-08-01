@@ -1,5 +1,7 @@
 # 01 — Scaffold: subtree merge + alineación de versiones
 
+> **Estado: CERRADO** (ago 2026). Documento histórico. Fuente de verdad actual: [../README.md](../README.md).
+
 **Objetivo de esta fase:** RepMAX vive dentro de `zm-tech`, compila con pnpm, en las mismas versiones que el resto del monorepo. Todavía habla con Express+JWT+Postgres suelto — eso se toca en la fase 03, no acá. No mezclar los dos problemas.
 
 ---

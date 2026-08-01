@@ -1,6 +1,6 @@
 # CLAUDE.md — zm-tech (monorepo)
 
-Contexto para Claude Code en la raíz del monorepo `zm-tech` (pnpm + Turborepo, 3 productos: Landing, GeemaStudio, OdentalPro).
+Contexto para Claude Code en la raíz del monorepo `zm-tech` (pnpm + Turborepo: Landing, GeemaStudio, OdentalPro, RepMAX).
 
 ## Prioridad de lectura
 
@@ -16,7 +16,7 @@ Ver [README.md](README.md) para la tabla de productos/apps/packages y comandos d
 ## Reglas rápidas
 
 - No crear `.md` sin que se pida explícitamente.
-- No mezclar schema de un producto con otro (`@geemastudio/*` vs `@odentalpro/*`).
+- No mezclar schema de un producto con otro (`@geemastudio/*` vs `@odentalpro/*` vs `@repmax/*`).
 - No modificar Supabase de producción sin instrucción explícita.
 - UI y nombres de negocio en español LATAM — TypeScript estricto.
 - **Sin emojis Unicode en UI** (web, mobile, panel, OdentalPro): usar íconos SVG (Lucide en web; `@expo/vector-icons` o Lucide en mobile). **Excepción única:** contenido o plantillas de mensajes **WABA** (WhatsApp Business API), cuando exista esa integración — ahí los emojis pueden formar parte del copy del chat.

@@ -97,11 +97,13 @@ Automotriz, Sports Tech y Enterprise.
 - **Estado:** activo en monorepo zm-tech
 
 #### 5. RepMAX Business Suite
-- **Repo:** `aeom0/RepMAX` (privado)
+- **Ubicación:** monorepo `zm-tech` → `apps/repmax-web`, `apps/repmax-mobile`, `packages/repmax-schema`
+- **Docs:** `docs/repmax/`
 - **Descripción:** SaaS B2B multi-tenant para tiendas de autopartes en Venezuela
-- **Stack:** React Native + Expo SDK 54 + Next.js 15 + Express + PostgreSQL + Drizzle + Yarn 4 + Turborepo
-- **Features:** Inventario, POS mobile, Vitrina pública `/[slug]`, Panel web `/dashboard`, JWT auth
-- **Estado:** Activo en desarrollo
+- **Stack:** Expo SDK 56 + Next.js 16 + Supabase Auth/RLS (`repmax_*`) + Drizzle schema package
+- **Features:** Inventario, POS mobile, vitrina `/[slug]`, panel `/dashboard`
+- **Estado:** Integrado en zm-tech (sin Express; repo standalone `aeom0/RepMAX` legacy)
+- **Supabase:** proyecto compartido ZMTech `llacowjutjfefboqgfnj`
 
 #### 6. CondoApp
 - **Repo:** `aeom0/condoapp` (privado)
@@ -217,7 +219,8 @@ yarn web:dev                     # Next.js web
 yarn db:push                     # schema Drizzle
 cd apps/mobile && npx eas update --branch production --message "..."
 
-# Monorepos Yarn 4 (geemastudio, repmax, condoapp, ia-scout360, zetaeme)
+# Monorepos Yarn 4 (geemastudio legacy, condoapp, ia-scout360, zetaeme)
+# RepMAX activo: pnpm en zm-tech
 yarn install
 yarn dev / yarn web:dev / yarn mobile:dev
 yarn check:types && yarn lint

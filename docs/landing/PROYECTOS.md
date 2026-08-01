@@ -1,6 +1,6 @@
 # Resumen de Proyectos — Alberto Orta (ZM Tech)
 
-> Actualizado: 2026-07-30  
+> Actualizado: 2026-08-01  
 > GitHub: [aeom0](https://github.com/aeom0) · 12 repos (2 públicos, 10 privados)  
 > Fuente operativa en monorepo: este archivo (`docs/landing/PROYECTOS.md`)
 
@@ -10,7 +10,7 @@
 
 | Repo                                                                          | Visibilidad | Tipo                                              | Web / home                                                                         | Último push |
 | ----------------------------------------------------------------------------- | ----------- | ------------------------------------------------- | ---------------------------------------------------------------------------------- | ----------- |
-| [zm-tech](https://github.com/aeom0/zm-tech)                                   | Público     | Hub monorepo (Landing + GeemaStudio + OdentalPro) | [zmtechdev.com](https://zmtechdev.com) (`/es`, `/en`)                              | 2026-07-30  |
+| [zm-tech](https://github.com/aeom0/zm-tech)                                   | Público     | Hub monorepo (Landing + GeemaStudio + OdentalPro + RepMAX) | [zmtechdev.com](https://zmtechdev.com) (`/es`, `/en`)                              | 2026-07-30  |
 | [ZM-Lash-and-Nails-Beauty](https://github.com/aeom0/ZM-Lash-and-Nails-Beauty) | Privado     | Cliente — salón Lima                              | [zmlashnails.com](https://www.zmlashnails.com/)                                    | 2026-07-29  |
 | [prolens](https://github.com/aeom0/prolens)                                   | Privado     | Tienda óptica VE                                  | [prolens-sigma.vercel.app](https://prolens-sigma.vercel.app)                       | 2026-07-29  |
 | [zetaeme-enterprise-suite](https://github.com/aeom0/zetaeme-enterprise-suite) | Privado     | Enterprise cosméticos                             | [zetaeme-enterprise-suite.vercel.app](https://zetaeme-enterprise-suite.vercel.app) | 2026-07-27  |
@@ -20,7 +20,7 @@
 | [Guataparo-demo](https://github.com/aeom0/Guataparo-demo)                     | Privado     | Demo MVP Guataparo                                | Replit                                                                             | 2026-04-28  |
 | [condoapp](https://github.com/aeom0/condoapp)                                 | Privado     | SaaS condominios                                  | —                                                                                  | 2026-04-08  |
 | [yla-mvp](https://github.com/aeom0/yla-mvp)                                   | Público     | Cliente — yoga / bienestar                        | [yla-mvp.vercel.app](https://yla-mvp.vercel.app)                                   | 2026-04-06  |
-| [RepMAX](https://github.com/aeom0/RepMAX)                                     | Privado     | SaaS / marketplace autopartes                     | [torquea-app-web.vercel.app](https://torquea-app-web.vercel.app)                   | 2026-03-24  |
+| [RepMAX](https://github.com/aeom0/RepMAX)                                     | Privado     | Legacy — desarrollo activo en `zm-tech`           | —                                                                                  | 2026-03-24  |
 | [ia-scout360](https://github.com/aeom0/ia-scout360)                           | Privado     | Scouting deportivo IA                             | [ia-scout360.vercel.app](https://ia-scout360.vercel.app)                           | 2026-02-01  |
 
 **Nota:** el repo antiguo de landing `aeom0/ZMTech` quedó absorbido en `zm-tech` → `apps/landing`. El repo standalone `geemastudio` sigue en GH; el desarrollo activo del producto vive en `zm-tech`.
@@ -40,6 +40,7 @@
 | **Landing**     | `apps/landing`                                                | `@zmtech/quote-engine`                                     |
 | **GeemaStudio** | `geemastudio-web`, `geemastudio-mobile`, `geemastudio-server` | `@geemastudio/shared-schema`, `@geemastudio/tenant-config` |
 | **OdentalPro**  | `odentalpro-web`, `odentalpro-mobile`, `odentalpro-server`    | `@odentalpro/dental-schema`                                |
+| **RepMAX**      | `repmax-web`, `repmax-mobile`                                 | `@repmax/repmax-schema`                                    |
 
 **Landing:** producción en [zmtechdev.com](https://zmtechdev.com) — ES `/es` (default), EN `/en`; Vercel project `zmtech`.
 
@@ -176,31 +177,31 @@ Suite empresarial (ventas, inventario, producción, compras) con cumplimiento no
 
 ## 5. RepMAX Business Suite
 
-**Tipo**: SaaS / marketplace B2B para autopartes — Venezuela  
-**Estado**: En desarrollo (último push mar 2026)  
-**Repo**: [aeom0/RepMAX](https://github.com/aeom0/RepMAX) (privado)
+**Tipo**: SaaS B2B multi-tenant para tiendas de autopartes — Venezuela  
+**Estado**: Activo — desarrollo en monorepo `zm-tech` (fases de integración cerradas)  
+**Repo activo**: [aeom0/zm-tech](https://github.com/aeom0/zm-tech) → `apps/repmax-*`  
+**Repo legacy**: [aeom0/RepMAX](https://github.com/aeom0/RepMAX) (privado; ya no es fuente de verdad)
 
 ### Descripción
 
-Multi-tenant para tiendas de repuestos: catálogo, inventario, ventas, clientes; pagos USD / Bs. Descripción GH también habla de marketplace con verificación IA y escrow.
+Multi-tenant por tienda: catálogo, inventario, ventas, clientes, POS mobile y vitrina pública. Auth y datos vía Supabase compartido ZMTech (`repmax_*`).
 
 ### Stack
 
-- React Native + Expo SDK 54
-- Next.js 15 + App Router + Tailwind
-- Express.js + TypeScript + JWT
-- PostgreSQL + Drizzle · Yarn 4 + Turborepo
+- React Native + Expo SDK 56
+- Next.js 16 + App Router (panel + storefront, puerto local 3003)
+- Supabase Auth + RLS + Storage (sin Express / JWT propio)
+- Drizzle schema en `@repmax/repmax-schema` · pnpm + Turborepo
 
 ### Características clave
 
-- Aislamiento por tienda
-- Diseño “Industrial Dark”
+- Aislamiento por tienda (RLS)
 - Vitrina pública `/[slug]` · panel `/dashboard`
-- Home: [torquea-app-web.vercel.app](https://torquea-app-web.vercel.app)
+- Docs: [docs/repmax](../repmax/README.md)
 
 ### Path local
 
-`/home/alber/RepMAX`
+`/home/alber/zm-tech/apps/repmax-web` · `/home/alber/zm-tech/apps/repmax-mobile`
 
 ---
 
@@ -349,7 +350,7 @@ Preview: [prolens-sigma.vercel.app](https://prolens-sigma.vercel.app)
 | **OdentalPro**      | SaaS Dental               | LATAM        | Next + Expo + Supabase      | Scaffold             | `zm-tech`                        |
 | **ZM Lash & Nails** | App salón                 | Lima, PE     | RN + Expo + Supabase + WABA | Producción           | `ZM-Lash-and-Nails-Beauty`       |
 | **ZetaEme**         | Enterprise cosméticos     | Venezuela    | Next + RN + Supabase        | Producción           | `zetaeme-enterprise-suite`       |
-| **RepMAX**          | Autopartes                | Venezuela    | RN + Next + Express         | En desarrollo        | `RepMAX`                         |
+| **RepMAX**          | Autopartes                | Venezuela    | Expo + Next + Supabase      | Activo (en monorepo) | `zm-tech` / legacy `RepMAX`      |
 | **IA Scout360**     | Scouting IA               | Venezuela    | Next + RN + Supabase        | Activo               | `ia-scout360`                    |
 | **YLA-MVP**         | Yoga / bienestar          | Venezuela    | Next.js 15 + Tailwind v4    | Landing lista        | `yla-mvp`                        |
 | **Guataparo BR**    | Inmobiliaria              | Valencia, VE | Next 16 + pnpm + Supabase   | Fase 1               | `guataparobr`                    |
@@ -377,7 +378,7 @@ Preview: [prolens-sigma.vercel.app](https://prolens-sigma.vercel.app)
 /home/alber/ZM-Lash-and-Nails-Beauty
 /home/alber/zetaeme-enterprise-suite
 /home/alber/geemastudio          # legacy
-/home/alber/RepMAX
+/home/alber/RepMAX               # legacy (activo en zm-tech)
 /home/alber/ia-scout360
 /home/alber/yla-mvp
 /home/alber/guataparobr

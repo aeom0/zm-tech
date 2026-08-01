@@ -9,6 +9,7 @@ Monorepo de productos **ZM Tech** — pnpm + Turborepo.
 | **Landing** | `apps/landing` | `@zmtech/quote-engine` | [docs/landing](docs/landing/README.md) · [zmtechdev.com](https://zmtechdev.com) |
 | **GeemaStudio** | `apps/geemastudio-web`, `apps/geemastudio-mobile`, `apps/geemastudio-server` | `@geemastudio/shared-schema`, `@geemastudio/tenant-config` | [docs/geemastudio](docs/geemastudio/README.md) |
 | **OdentalPro** | `apps/odentalpro-web`, `apps/odentalpro-mobile`, `apps/odentalpro-server` | `@odentalpro/dental-schema` | [docs/odentalpro](docs/odentalpro/) |
+| **RepMAX** | `apps/repmax-web`, `apps/repmax-mobile` | `@repmax/repmax-schema` (+ tenant en `@geemastudio/tenant-config/repmax`) | [docs/repmax](docs/repmax/README.md) |
 
 Cada producto tiene su propia documentación (`README.md`, `CLAUDE.md`, `ROADMAP.md`, `CHANGELOG.md`) dentro de `docs/<producto>/`. Este README es solo el punto de entrada al monorepo.
 
@@ -28,6 +29,8 @@ pnpm dev:mobile         # apps/geemastudio-mobile
 pnpm dev:server         # apps/geemastudio-server
 pnpm dev:odental:web    # apps/odentalpro-web
 pnpm dev:odental:mobile # apps/odentalpro-mobile
+pnpm dev:repmax:web     # apps/repmax-web (:3003)
+pnpm dev:repmax:mobile  # apps/repmax-mobile
 
 pnpm build              # build de todo (turbo)
 pnpm lint
@@ -39,7 +42,7 @@ Ver todos los scripts en [package.json](package.json).
 ## Estructura
 
 ```
-apps/        # 3 productos, cada uno con sus apps (web/mobile/server)
+apps/        # productos, cada uno con sus apps (web/mobile[/server])
 packages/    # código compartido entre apps de un mismo producto
 docs/        # documentación por producto (no skills/rules)
 .cursor/     # skills y rules del monorepo — fuente de verdad para Cursor y Claude Code

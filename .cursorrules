@@ -18,6 +18,7 @@
 | Landing | `apps/landing` → [zmtechdev.com](https://zmtechdev.com) (`/es`, `/en`) | `@zmtech/quote-engine` |
 | GeemaStudio | `geemastudio-mobile`, `geemastudio-web`, `geemastudio-server` | `@geemastudio/shared-schema`, `@geemastudio/tenant-config` |
 | ODentalPro | `odentalpro-mobile`, `odentalpro-web`, `odentalpro-server` | `@odentalpro/dental-schema` |
+| RepMAX | `repmax-web`, `repmax-mobile` | `@repmax/repmax-schema` (+ `@geemastudio/tenant-config/repmax`) |
 
 - **Entorno**: WSL Ubuntu, Node 22+, pnpm 11
 - **UI / negocio**: español LATAM (productos SaaS); landing también EN en `/en`
@@ -47,7 +48,7 @@ Supabase GeemaStudio: `xidjomlxpuosupymcsaj` · ZM Lash (solo lectura): `udelxww
 ## Arquitectura (capas)
 
 ```
-UI → Hooks → Services/lib (Supabase) → Types (shared-schema / dental-schema)
+UI → Hooks → Services/lib (Supabase) → Types (shared-schema / dental-schema / repmax-schema)
 ```
 
 No mezclar lógica de negocio en componentes de presentación.
@@ -61,10 +62,26 @@ pnpm dev:landing
 pnpm dev:web              # geemastudio-web
 pnpm dev:mobile           # geemastudio-mobile
 pnpm dev:odental:web
+pnpm dev:repmax:web
+pnpm dev:repmax:mobile
 pnpm db:push
 pnpm lint
 pnpm check:types
 ```
+
+---
+
+## Paths RepMAX
+
+| Área | Ruta |
+|------|------|
+| Docs | `docs/repmax/` |
+| Web | `apps/repmax-web/` (puerto 3003) |
+| Mobile | `apps/repmax-mobile/` |
+| Schema | `packages/repmax-schema/` |
+| Auth/tenant | `packages/tenant-config/src/repmax/` |
+
+Supabase compartido ZMTech: `llacowjutjfefboqgfnj` (tablas `repmax_*`). Sin servidor Express.
 
 ---
 
@@ -79,6 +96,6 @@ pnpm check:types
 ### NO HACER
 - NO crear `.md` sin pedirlo
 - NO hardcodear moneda/terminología de un salón (usar tenant config)
-- NO mezclar schema Geema (`@geemastudio/*`) con ODental (`@odentalpro/*`)
+- NO mezclar schemas de producto (`@geemastudio/*`, `@odentalpro/*`, `@repmax/*`)
 - NO modificar Supabase ZM Lash desde este repo sin instrucción explícita
-- NO usar emojis Unicode en UI (web/mobile/OdentalPro) — Lucide o íconos vectoriales. Excepción: copy/plantillas **WABA** cuando se implemente WhatsApp Business API
+- NO usar emojis Unicode en UI (web/mobile/OdentalPro/RepMAX) — Lucide o íconos vectoriales. Excepción: copy/plantillas **WABA** cuando se implemente WhatsApp Business API

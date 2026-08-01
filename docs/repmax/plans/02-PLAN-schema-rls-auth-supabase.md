@@ -1,5 +1,7 @@
 # 02 — Schema `repmax_*`, RLS y Auth Provider aislado en `llacowjutjfefboqgfnj`
 
+> **Estado: CERRADO** (ago 2026). Documento histórico. Migraciones vigentes: [../supabase/migrations/](../supabase/migrations/). Fuente de verdad: [../README.md](../README.md).
+
 **Precondición:** Fase 01 cerrada — RepMAX compila dentro del monorepo en las versiones correctas.
 
 **Objetivo:** las 8 tablas de RepMAX existen en la BD compartida con prefijo `repmax_` y RLS activo, y hay un Auth Provider aislado listo para usarse — pero `apps/repmax-web`/`apps/repmax-mobile` **todavía no lo consumen** (eso es la fase 03). Separar "la BD existe y es correcta" de "la app ya la usa" para poder validar cada pieza por separado.

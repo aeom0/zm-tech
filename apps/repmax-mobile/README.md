@@ -1,96 +1,39 @@
-# RepMAX Business Suite — App Mobile
+# RepMAX — App Mobile
 
-App React Native + Expo para gestión de tiendas de autopartes (inventario, POS, clientes, caja, onboarding).
+Expo (SDK 56) para tiendas de autopartes: inventario, POS, clientes, caja, onboarding.
 
-Documentación del monorepo: [../../docs/README.md](../../docs/README.md)
-
----
+Docs de producto: [docs/repmax/README.md](../../docs/repmax/README.md)
 
 ## Requisitos
 
-- Node.js 20+
-- Yarn 4 (desde la raíz del monorepo)
+- Node 22+, pnpm 11 (desde la raíz del monorepo)
 - Expo Go o emulador Android / iOS
 
----
+## Desarrollo
 
-## Instalación y desarrollo
-
-Desde la **raíz** del repo (recomendado):
+Desde la **raíz** de `zm-tech`:
 
 ```bash
-yarn install
-yarn mobile
+pnpm install
+pnpm dev:repmax:mobile
 ```
 
-O dentro de `apps/mobile`:
+O dentro de la app:
 
 ```bash
-cd apps/mobile
-yarn start    # Expo DevTools
-yarn android
-yarn ios
+cd apps/repmax-mobile
+pnpm start
 ```
 
-El API Express debe estar en marcha si vas a usar datos reales (puerto 5000 por defecto). Ver [docs/development.md](../../docs/development.md).
-
----
+Habla directo con Supabase (Auth + tablas `repmax_*`). No hay API Express.
 
 ## Variables de entorno
 
-Archivo `apps/mobile/.env`:
-
-```env
-# Emulador Android → host WSL
-EXPO_PUBLIC_API_URL=http://10.0.2.2:5000
-
-# Dispositivo físico (IP LAN del PC)
-# EXPO_PUBLIC_API_URL=http://192.168.x.x:5000
-```
-
----
-
-## Estructura (`apps/mobile`)
+Crear `apps/repmax-mobile/.env` (gitignored):
 
 ```
-App.tsx                         # AuthProvider > CartProvider > AppNavigator
-src/
-├── navigation/                 # AppNavigator, Auth, Main, Onboarding…
-├── context/                    # AuthContext, CartContext, OnboardingContext
-├── screens/
-│   ├── auth/
-│   ├── onboarding/             # Flujo completo onboarding
-│   ├── dashboard/
-│   ├── pos/
-│   ├── inventory/
-│   ├── customers/
-│   ├── reports/
-│   └── settings/
-├── hooks/
-├── services/                   # Llamadas a la API REST
-├── types/database.ts
-├── constants/
-└── utils/                      # theme (Industrial Dark), api, formatters
+EXPO_PUBLIC_SUPABASE_URL=https://llacowjutjfefboqgfnj.supabase.co
+EXPO_PUBLIC_SUPABASE_ANON_KEY=<anon key>
 ```
 
-Tipografía: **Inter** (`@expo-google-fonts/inter`) — ver `src/utils/theme.ts`.
-
----
-
-## Arquitectura
-
-- **Screens:** solo UI; sin lógica de negocio pesada.
-- **Hooks:** estado y orquestación.
-- **Services:** único acceso HTTP a la API.
-
-El backend vive en `apps/server` del mismo monorepo (hoy incluye al menos rutas públicas del storefront; las rutas JWT del POS deben estar alineadas con tu despliegue).
-
----
-
-## Build producción (EAS)
-
-```bash
-# Requiere EAS CLI
-eas build --platform android
-eas build --platform ios
-```
+Ver `.env.example` si existe en esta carpeta.

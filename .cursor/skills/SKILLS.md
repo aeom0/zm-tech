@@ -15,8 +15,9 @@
 | **Landing ZM Tech** | `apps/landing` | — |
 | **GeemaStudio** | `geemastudio-mobile`, `geemastudio-web`, `geemastudio-server` | `@geemastudio/shared-schema`, `@geemastudio/tenant-config` |
 | **ODentalPro** | `odentalpro-mobile`, `odentalpro-web`, `odentalpro-server` | `@odentalpro/dental-schema` |
+| **RepMAX** | `repmax-web`, `repmax-mobile` | `@repmax/repmax-schema` |
 
-Docs de referencia (no son fuente de skills): `docs/geemastudio/`, `docs/landing/`, `docs/odentalpro/`.
+Docs de referencia (no son fuente de skills): `docs/geemastudio/`, `docs/landing/`, `docs/odentalpro/`, `docs/repmax/`.
 
 ---
 
@@ -36,6 +37,7 @@ Node              22+
 | `geemastudio-mobile` | Expo / React Native, Supabase, TanStack Query v5 |
 | `geemastudio-server` | Drizzle + scripts/seeds (sin Express de negocio) |
 | `odentalpro-*` | Web/mobile/server + `@odentalpro/dental-schema` |
+| `repmax-*` | Web/mobile + `@repmax/repmax-schema` (Supabase directo, sin Express) |
 
 ---
 
@@ -48,6 +50,8 @@ pnpm dev:web              # geemastudio-web
 pnpm dev:mobile           # geemastudio-mobile
 pnpm dev:server           # geemastudio-server
 pnpm dev:odental:web      # odentalpro-web
+pnpm dev:repmax:web       # repmax-web (:3003)
+pnpm dev:repmax:mobile    # repmax-mobile
 pnpm build
 pnpm lint
 pnpm check:types

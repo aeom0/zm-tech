@@ -20,6 +20,12 @@ Apps dedicadas + schema dental multi-tenant. Fases 0–2 hechas; cerrar historia
 
 Ver [docs/odentalpro/ROADMAP.md](docs/odentalpro/ROADMAP.md). Arquitectura: [docs/odentalpro/03-PLAN-odentalpro-apps-dedicadas.md](docs/odentalpro/03-PLAN-odentalpro-apps-dedicadas.md).
 
+## RepMAX
+
+Integrado en el monorepo (fases 01–03 cerradas): web + mobile contra Supabase compartido (`repmax_*`), sin Express. Próximo: onboarding, deploy y hardening RLS.
+
+Ver [docs/repmax/ROADMAP.md](docs/repmax/ROADMAP.md).
+
 ## Monorepo (transversal)
 
 - Skills y rules centralizados en `.cursor/` con sync a `.claude/skills` — hecho (jul 2026).
