@@ -38,8 +38,8 @@ export default function MockTallerMobile() {
         </div>
         <div className="mt-1.5 grid grid-cols-2 gap-1">
           {[
-            { label: 'Órdenes hoy', value: '6', sub: '2 completadas', subClass: 'text-emerald-300' },
-            { label: 'Refacciones', value: '3', sub: 'por confirmar', subClass: 'text-white/50' },
+            { label: 'Órdenes hoy', value: '6', sub: '2 completadas', subClass: 'text-emerald-300', progress: 33 },
+            { label: 'Refacciones', value: '3', sub: 'por confirmar', subClass: 'text-white/50', progress: 65 },
           ].map((s) => (
             <div
               key={s.label}
@@ -49,6 +49,12 @@ export default function MockTallerMobile() {
               <div className="text-[5.5px] text-white/60">{s.label}</div>
               <div className="text-[9px] font-extrabold tracking-tight tabular-nums">{s.value}</div>
               <div className={`text-[5px] ${s.subClass}`}>{s.sub}</div>
+              <div className="mt-0.5 h-0.75 overflow-hidden rounded-full bg-white/15">
+                <div
+                  className="h-full rounded-full bg-white/90"
+                  style={{ width: `${s.progress}%`, boxShadow: '0 0 4px rgba(255,255,255,0.4)' }}
+                />
+              </div>
             </div>
           ))}
         </div>
@@ -79,7 +85,7 @@ export default function MockTallerMobile() {
             <span className="text-[6px] font-bold tracking-tight text-zinc-200">Órdenes semana</span>
             <span className="text-[5.5px] text-zinc-500">L–S</span>
           </div>
-          <div className="flex h-9 items-end gap-0.5">
+          <div className="flex h-8 items-end gap-0.5">
             {[45, 60, 52, 80, 65, 70].map((h, i) => (
               <div key={i} className="flex flex-1 flex-col items-center justify-end gap-0.5">
                 <div
@@ -92,14 +98,21 @@ export default function MockTallerMobile() {
               </div>
             ))}
           </div>
+          <div className="mt-0.5 flex gap-0.5">
+            {['L', 'M', 'X', 'J', 'V', 'S'].map((d) => (
+              <span key={d} className="flex-1 text-center text-[5px] text-zinc-500">
+                {d}
+              </span>
+            ))}
+          </div>
         </div>
 
         <div className="mock-rise min-h-0 flex-1 space-y-0.5 overflow-hidden" style={{ animationDelay: '160ms' }}>
           <div className="text-[6px] font-semibold tracking-wide text-zinc-500 uppercase">Recientes</div>
           {[
-            { n: '#0231 · Camioneta Ford', icon: 'check' as const, s: 'Listo', c: 'bg-emerald-500/10 text-emerald-400' },
-            { n: '#0230 · Torno CNC', icon: 'wrench' as const, s: 'En taller', c: 'bg-sky-500/10 text-sky-400' },
-            { n: '#0229 · Compresor', icon: 'clock' as const, s: 'Esp. refacción', c: 'bg-amber-500/10 text-amber-400' },
+            { n: '#0231 · Camioneta Ford', amt: '$180', icon: 'check' as const, s: 'Listo', c: 'bg-emerald-500/10 text-emerald-400' },
+            { n: '#0230 · Torno CNC', amt: '$95', icon: 'wrench' as const, s: 'En taller', c: 'bg-sky-500/10 text-sky-400' },
+            { n: '#0229 · Compresor', amt: '$60', icon: 'clock' as const, s: 'Esp. refacción', c: 'bg-amber-500/10 text-amber-400' },
           ].map((p) => (
             <div
               key={p.n}
@@ -114,7 +127,10 @@ export default function MockTallerMobile() {
                 </span>
                 <span className="min-w-0 truncate font-medium text-zinc-300">{p.n}</span>
               </div>
-              <span className={`shrink-0 rounded-full px-1 py-px text-[5.5px] font-medium ${p.c}`}>{p.s}</span>
+              <div className="flex shrink-0 items-center gap-1">
+                <span className="text-[5.5px] font-semibold text-zinc-300 tabular-nums">{p.amt}</span>
+                <span className={`rounded-full px-1 py-px text-[5.5px] font-medium ${p.c}`}>{p.s}</span>
+              </div>
             </div>
           ))}
         </div>

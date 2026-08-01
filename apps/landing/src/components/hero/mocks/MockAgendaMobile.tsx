@@ -19,14 +19,18 @@ const BLOCKS: Array<{
   row: number
   label: string
   sub: string
+  dur: string
   icon: MockIconName
   from: string
   to: string
 }> = [
-  { row: 0, label: 'Ana', sub: 'Pestañas', icon: 'eye', from: TEAL_DEEP, to: '#00695c' },
-  { row: 2, label: 'Luis', sub: 'Uñas', icon: 'sparkles', from: '#0f9c8c', to: '#0d7a6e' },
-  { row: 4, label: 'Mar', sub: 'Cejas', icon: 'brow', from: '#14b3a1', to: TEAL_DEEP },
+  { row: 0, label: 'Ana', sub: 'Pestañas', dur: '60m', icon: 'eye', from: TEAL_DEEP, to: '#00695c' },
+  { row: 2, label: 'Luis', sub: 'Uñas', dur: '45m', icon: 'sparkles', from: '#0f9c8c', to: '#0d7a6e' },
+  { row: 4, label: 'Mar', sub: 'Cejas', dur: '30m', icon: 'brow', from: '#14b3a1', to: TEAL_DEEP },
 ]
+
+/** Fila con hueco libre resaltado como slot reservable */
+const FREE_ROW = 3
 
 export default function MockAgendaMobile() {
   return (
@@ -44,7 +48,7 @@ export default function MockAgendaMobile() {
             Mar 12
           </span>
         </div>
-        <div className="mt-1 flex gap-0.5">
+        <div className="mt-1 flex items-center gap-0.5">
           {['Todas', 'Pend.', 'Hechas'].map((c, i) => (
             <span
               key={c}
@@ -63,6 +67,7 @@ export default function MockAgendaMobile() {
               {c}
             </span>
           ))}
+          <span className="ml-auto text-[5px] text-zinc-500 tabular-nums">6 citas · 82% ocup.</span>
         </div>
         <div className="mt-1.5 flex justify-between px-0.5 text-[5.5px] text-zinc-500">
           {['L', 'M', 'X', 'J', 'V', 'S', 'D'].map((d, i) => (
@@ -96,6 +101,12 @@ export default function MockAgendaMobile() {
               {t}
             </span>
             <div className="relative flex-1">
+              {i === FREE_ROW && (
+                <div className="absolute inset-x-0.5 top-[10%] flex h-[80%] items-center justify-center gap-0.5 rounded-md border border-dashed border-white/10 text-[5px] text-zinc-600">
+                  <MockIcon name="plus" className="h-1 w-1" />
+                  Disponible
+                </div>
+              )}
               {BLOCKS.filter((b) => b.row === i).map((b) => (
                 <div
                   key={b.label}
@@ -106,15 +117,44 @@ export default function MockAgendaMobile() {
                   }}
                 >
                   <MockIcon name={b.icon} className="h-1.5 w-1.5 shrink-0 text-white/80" />
-                  <div className="min-w-0 truncate">
+                  <div className="min-w-0 flex-1 truncate">
                     <span className="font-bold tracking-tight">{b.label}</span>
                     <span className="ml-0.5 font-normal opacity-80">· {b.sub}</span>
                   </div>
+                  <span className="shrink-0 rounded-full bg-white/15 px-0.5 text-[4.5px] font-medium text-white/80 tabular-nums">
+                    {b.dur}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
         ))}
+
+        {/* Indicador de hora actual */}
+        <div className="pointer-events-none absolute inset-x-1 top-[41%] z-2 flex items-center gap-0.5" aria-hidden>
+          <span
+            className="text-[4.5px] font-semibold tabular-nums"
+            style={{ color: TEAL_LIGHT }}
+          >
+            12:40
+          </span>
+          <span
+            className="h-1 w-1 rounded-full"
+            style={{ backgroundColor: TEAL_LIGHT, boxShadow: `0 0 4px ${TEAL_LIGHT}` }}
+          />
+          <div className="h-px flex-1 opacity-70" style={{ backgroundColor: TEAL_LIGHT }} />
+        </div>
+      </div>
+
+      {/* FAB nueva cita */}
+      <div
+        className="absolute right-1.5 bottom-6 z-2 flex h-4 w-4 items-center justify-center rounded-full text-[#00332d]"
+        style={{
+          backgroundImage: `linear-gradient(135deg, ${TEAL_LIGHT}, ${TEAL_DEEP})`,
+          boxShadow: `0 2px 6px rgba(0,0,0,0.5), 0 0 10px ${TEAL_LIGHT}4d, inset 0 1px 0 rgba(255,255,255,0.4)`,
+        }}
+      >
+        <MockIcon name="plus" className="h-2 w-2" />
       </div>
 
       <div className="relative z-1 flex border-t border-white/8 border-t-white/10 bg-white/3 py-1 text-[5.5px] text-zinc-500 backdrop-blur-md">

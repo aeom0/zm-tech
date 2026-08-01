@@ -11,11 +11,12 @@ const SERVICES: Array<{
   p: string
   dur: string
   rating: string
+  cupos: string
   popular?: boolean
 }> = [
-  { t: 'Pestañas', icon: 'eye', p: 'desde $25', dur: '60 min', rating: '4.9', popular: true },
-  { t: 'Uñas', icon: 'sparkles', p: 'desde $18', dur: '45 min', rating: '4.8' },
-  { t: 'Cejas', icon: 'brow', p: 'desde $12', dur: '30 min', rating: '4.9' },
+  { t: 'Pestañas', icon: 'eye', p: 'desde $25', dur: '60 min', rating: '4.9', cupos: 'Hoy · 3 cupos', popular: true },
+  { t: 'Uñas', icon: 'sparkles', p: 'desde $18', dur: '45 min', rating: '4.8', cupos: 'Hoy · 5 cupos' },
+  { t: 'Cejas', icon: 'brow', p: 'desde $12', dur: '30 min', rating: '4.9', cupos: 'Mañana · 9 am' },
 ]
 
 export default function MockSalonWeb() {
@@ -57,7 +58,7 @@ export default function MockSalonWeb() {
 
       {/* Hero */}
       <div
-        className="mock-rise relative z-1 flex flex-col items-center justify-center gap-1 overflow-hidden px-4 py-3.5 text-center text-white sm:py-4"
+        className="mock-rise relative z-1 flex flex-col items-center justify-center gap-1 overflow-hidden px-4 py-2.5 text-center text-white sm:py-3.5"
         style={{
           animationDelay: '60ms',
           backgroundImage: `linear-gradient(150deg, ${TEAL_DEEP} 0%, #00695c 45%, #0c1614 100%)`,
@@ -86,6 +87,20 @@ export default function MockSalonWeb() {
         >
           <MockIcon name="calendar" className="h-1.5 w-1.5" />
           Reservar ahora
+        </div>
+        <div className="mt-1 flex items-center gap-2 text-[6px] text-white/75">
+          <span className="flex items-center gap-0.5">
+            <MockIcon name="star" className="h-1.5 w-1.5 text-yellow-400" />
+            4.9
+          </span>
+          <span className="flex items-center gap-0.5">
+            <MockIcon name="users" className="h-1.5 w-1.5" />
+            +1.2k citas
+          </span>
+          <span className="flex items-center gap-0.5">
+            <MockIcon name="check" className="h-1.5 w-1.5" />
+            Confirmación al instante
+          </span>
         </div>
       </div>
 
@@ -143,9 +158,22 @@ export default function MockSalonWeb() {
                   {s.rating}
                 </span>
               </div>
+              <div className="mt-auto flex items-center gap-0.5 border-t border-white/5 pt-0.5 text-[5px]" style={{ color: TEAL_LIGHT }}>
+                <span className="h-1 w-1 rounded-full" style={{ backgroundColor: TEAL_LIGHT }} />
+                {s.cupos}
+              </div>
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Social proof */}
+      <div className="relative z-1 flex items-center justify-center gap-1 border-t border-white/8 border-t-white/10 bg-white/2 px-2 py-1 text-[6px] text-zinc-400 backdrop-blur-sm">
+        <MockIcon name="star" className="h-1.5 w-1.5 text-yellow-400" />
+        <span className="font-semibold text-zinc-300">4.9</span>
+        <span className="text-zinc-600">·</span>
+        <span className="truncate">“Puntualidad impecable, cero esperas”</span>
+        <span className="shrink-0 text-zinc-600">— Carla M.</span>
       </div>
     </div>
   )

@@ -52,6 +52,21 @@ export default function MockVentasMobile() {
             </div>
           ))}
         </div>
+        <div
+          className="mt-1 rounded-md bg-white/10 px-1.5 py-1 ring-1 ring-white/15 backdrop-blur-sm"
+          style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.2), 0 1px 2px rgba(0,0,0,0.3)' }}
+        >
+          <div className="flex items-center justify-between text-[5px] text-white/60">
+            <span>Meta del mes · $15k</span>
+            <span className="font-semibold text-white/85 tabular-nums">82%</span>
+          </div>
+          <div className="mt-0.5 h-0.75 overflow-hidden rounded-full bg-white/15">
+            <div
+              className="h-full w-[82%] rounded-full bg-white/90"
+              style={{ boxShadow: '0 0 4px rgba(255,255,255,0.4)' }}
+            />
+          </div>
+        </div>
       </div>
 
       <div className="relative z-1 flex min-h-0 flex-1 flex-col gap-1 overflow-hidden p-1.5">
@@ -79,7 +94,7 @@ export default function MockVentasMobile() {
             <span className="text-[6px] font-bold tracking-tight text-zinc-200">Ventas semana</span>
             <span className="text-[5.5px] text-zinc-500">L–S</span>
           </div>
-          <div className="flex h-9 items-end gap-0.5">
+          <div className="flex h-8 items-end gap-0.5">
             {[38, 62, 48, 85, 58, 74].map((h, i) => (
               <div key={i} className="flex flex-1 flex-col items-center justify-end gap-0.5">
                 <div
@@ -92,14 +107,21 @@ export default function MockVentasMobile() {
               </div>
             ))}
           </div>
+          <div className="mt-0.5 flex gap-0.5">
+            {['L', 'M', 'X', 'J', 'V', 'S'].map((d) => (
+              <span key={d} className="flex-1 text-center text-[5px] text-zinc-500">
+                {d}
+              </span>
+            ))}
+          </div>
         </div>
 
         <div className="mock-rise min-h-0 flex-1 space-y-0.5 overflow-hidden" style={{ animationDelay: '160ms' }}>
           <div className="text-[6px] font-semibold tracking-wide text-zinc-500 uppercase">Recientes</div>
           {[
-            { n: '#1842 · Distribuidora Norte', icon: 'box' as const, s: 'Pagado', c: 'bg-emerald-500/10 text-emerald-400' },
-            { n: '#1841 · Boutique Central', icon: 'cart' as const, s: 'En ruta', c: 'bg-sky-500/10 text-sky-400' },
-            { n: '#1840 · Farma Plaza', icon: 'clock' as const, s: 'Pendiente', c: 'bg-amber-500/10 text-amber-400' },
+            { n: '#1842 · Distribuidora Norte', amt: '$420', icon: 'box' as const, s: 'Pagado', c: 'bg-emerald-500/10 text-emerald-400' },
+            { n: '#1841 · Boutique Central', amt: '$188', icon: 'cart' as const, s: 'En ruta', c: 'bg-sky-500/10 text-sky-400' },
+            { n: '#1840 · Farma Plaza', amt: '$96', icon: 'clock' as const, s: 'Pendiente', c: 'bg-amber-500/10 text-amber-400' },
           ].map((p) => (
             <div
               key={p.n}
@@ -114,7 +136,10 @@ export default function MockVentasMobile() {
                 </span>
                 <span className="min-w-0 truncate font-medium text-zinc-300">{p.n}</span>
               </div>
-              <span className={`shrink-0 rounded-full px-1 py-px text-[5.5px] font-medium ${p.c}`}>{p.s}</span>
+              <div className="flex shrink-0 items-center gap-1">
+                <span className="text-[5.5px] font-semibold text-zinc-300 tabular-nums">{p.amt}</span>
+                <span className={`rounded-full px-1 py-px text-[5.5px] font-medium ${p.c}`}>{p.s}</span>
+              </div>
             </div>
           ))}
         </div>
