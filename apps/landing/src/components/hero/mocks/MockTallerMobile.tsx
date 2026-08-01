@@ -1,0 +1,105 @@
+/** Mock genérico — app móvil de técnico de taller (sin marca) */
+
+export default function MockTallerMobile() {
+  return (
+    <div
+      className="flex h-full w-full flex-col overflow-hidden bg-[#F4F5F7] text-[6.5px] leading-snug text-zinc-700 sm:text-[7px]"
+      aria-hidden
+    >
+      {/* Header — pt mínimo (island va en el bisel, no sobre la UI) */}
+      <div
+        className="px-1.5 pt-1.5 pb-2 text-white"
+        style={{
+          backgroundImage: 'linear-gradient(145deg, #064e3b 0%, #059669 55%, #047857 100%)',
+        }}
+      >
+        <div className="flex items-start justify-between">
+          <div>
+            <div className="text-[5.5px] text-white/70">Buenos días</div>
+            <div className="text-[8px] font-semibold tracking-tight sm:text-[9px]">
+              Órdenes del día
+            </div>
+          </div>
+          <span className="mt-0.5 h-3.5 w-3.5 rounded-full bg-white/20 ring-1 ring-white/30" />
+        </div>
+        <div className="mt-1.5 grid grid-cols-2 gap-1">
+          <div className="rounded-md bg-white/12 px-1.5 py-1 ring-1 ring-white/10">
+            <div className="text-[5.5px] text-white/65">Órdenes hoy</div>
+            <div className="text-[9px] font-bold tracking-tight">6</div>
+            <div className="text-[5px] text-emerald-200">2 completadas</div>
+          </div>
+          <div className="rounded-md bg-white/12 px-1.5 py-1 ring-1 ring-white/10">
+            <div className="text-[5.5px] text-white/65">Refacciones</div>
+            <div className="text-[9px] font-bold tracking-tight">3</div>
+            <div className="text-[5px] text-white/55">por confirmar</div>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex min-h-0 flex-1 flex-col gap-1 overflow-hidden p-1.5">
+        <div className="grid grid-cols-2 gap-1">
+          {['+ Orden', '+ Cliente'].map((a) => (
+            <div
+              key={a}
+              className="rounded-md border border-emerald-100 bg-white py-1 text-center text-[6px] font-semibold text-emerald-800 shadow-[0_1px_2px_rgba(5,150,105,0.06)]"
+            >
+              {a}
+            </div>
+          ))}
+        </div>
+
+        <div className="rounded-md border border-zinc-200/80 bg-white p-1.5 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+          <div className="mb-1 flex items-center justify-between">
+            <span className="text-[6px] font-semibold text-zinc-700">Órdenes semana</span>
+            <span className="text-[5.5px] text-zinc-400">L–S</span>
+          </div>
+          <div className="flex h-9 items-end gap-[2px]">
+            {[45, 60, 52, 80, 65, 70].map((h, i) => (
+              <div key={i} className="flex flex-1 flex-col items-center justify-end gap-0.5">
+                <div
+                  className="w-full rounded-t-[2px] bg-emerald-600/85"
+                  style={{ height: `${h}%` }}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="min-h-0 flex-1 space-y-0.5 overflow-hidden">
+          <div className="text-[6px] font-semibold text-zinc-500">Recientes</div>
+          {[
+            { n: '#0231 · Camioneta Ford', s: 'Listo', c: 'bg-emerald-50 text-emerald-700' },
+            { n: '#0230 · Torno CNC', s: 'En taller', c: 'bg-sky-50 text-sky-700' },
+            { n: '#0229 · Compresor', s: 'Esp. refacción', c: 'bg-amber-50 text-amber-700' },
+          ].map((p) => (
+            <div
+              key={p.n}
+              className="flex items-center justify-between gap-1 rounded-md border border-zinc-100 bg-white px-1 py-1"
+            >
+              <span className="min-w-0 truncate font-medium text-zinc-800">{p.n}</span>
+              <span className={`shrink-0 rounded-full px-1 py-px text-[5.5px] font-medium ${p.c}`}>
+                {p.s}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex border-t border-zinc-200/90 bg-white py-1 text-[5.5px] text-zinc-400">
+        {['Inicio', 'Órdenes', 'Refacc.', 'Clientes', 'Más'].map((t, i) => (
+          <div
+            key={t}
+            className={`flex flex-1 flex-col items-center gap-0.5 ${
+              i === 0 ? 'font-semibold text-emerald-700' : ''
+            }`}
+          >
+            <span
+              className={`h-1 w-1 rounded-full ${i === 0 ? 'bg-emerald-600' : 'bg-zinc-300'}`}
+            />
+            {t}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}

@@ -9,15 +9,10 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion'
-import Image from 'next/image'
-
-const phoneSrcs = [
-  '/hero/zmlash-agenda.webp',
-  '/hero/zetaeme-sales.webp',
-  '/hero/cotizador.webp',
-] as const
+import { HERO_SCENES } from '@/components/hero/mocks'
 
 const TILT_SPRING = { stiffness: 140, damping: 24, mass: 0.4 }
+const SCENE_MS = 4500
 
 /** Mostrar phone junto a la laptop en el hero */
 const SHOW_PHONE = true
@@ -32,20 +27,20 @@ const KEY_ROWS: number[][] = [
 ]
 
 type Props = {
-  laptopAlt: string
+  laptopAlts: [string, string, string]
   phoneAlts: [string, string, string]
 }
 
 function LaptopKeyboard() {
   return (
-    <div className="space-y-[3px] px-0.5 sm:space-y-1" aria-hidden>
+    <div className="space-y-0.75 px-0.5 sm:space-y-1" aria-hidden>
       {KEY_ROWS.map((row, ri) => (
-        <div key={ri} className="flex gap-[2px] sm:gap-[3px]">
+        <div key={ri} className="flex gap-0.5 sm:gap-0.75">
           {row.map((grow, ki) => (
             <span
               key={ki}
               style={{ flex: grow }}
-              className="h-[5px] rounded-[2px] bg-zinc-700/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] sm:h-1.5 sm:rounded-sm lg:h-2"
+              className="h-1.25 rounded-xs bg-zinc-700/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] sm:h-1.5 sm:rounded-sm lg:h-2"
             />
           ))}
         </div>
@@ -54,8 +49,8 @@ function LaptopKeyboard() {
   )
 }
 
-export default function HeroDeviceMockup({ laptopAlt, phoneAlts }: Props) {
-  const [frame, setFrame] = useState(0)
+export default function HeroDeviceMockup({ laptopAlts, phoneAlts }: Props) {
+  const [sceneIndex, setSceneIndex] = useState(0)
   const reduceMotion = useReducedMotion()
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -72,7 +67,7 @@ export default function HeroDeviceMockup({ laptopAlt, phoneAlts }: Props) {
 
   useEffect(() => {
     if (reduceMotion) return
-    const id = setInterval(() => setFrame((f) => (f + 1) % phoneSrcs.length), 3500)
+    const id = setInterval(() => setSceneIndex((i) => (i + 1) % HERO_SCENES.length), SCENE_MS)
     return () => clearInterval(id)
   }, [reduceMotion])
 
@@ -90,6 +85,10 @@ export default function HeroDeviceMockup({ laptopAlt, phoneAlts }: Props) {
     mouseY.set(0)
   }
 
+  const scene = HERO_SCENES[sceneIndex]
+  const LaptopMock = scene.Laptop
+  const PhoneMock = scene.Phone
+
   return (
     <div
       ref={containerRef}
@@ -105,12 +104,8 @@ export default function HeroDeviceMockup({ laptopAlt, phoneAlts }: Props) {
       </div>
 
       <motion.div
-        style={
-          reduceMotion
-            ? { rotateY: 16 }
-            : { rotateX: 0, rotateY: sceneRotateY }
-        }
-        className="relative origin-[50%_55%] pb-10 transform-3d will-change-transform sm:pb-12 lg:pb-14"
+        style={reduceMotion ? { rotateY: 16 } : { rotateX: 0, rotateY: sceneRotateY }}
+        className="relative origin-[50%_55%] pb-10 will-change-transform transform-3d sm:pb-12 lg:pb-14"
       >
         {/* ——— Laptop chassis (lid + bisagra + base unidos) ——— */}
         <div className="relative z-10 transform-3d">
@@ -134,40 +129,43 @@ export default function HeroDeviceMockup({ laptopAlt, phoneAlts }: Props) {
                 <span className="h-2 w-2 rounded-full bg-yellow-500/60 sm:h-2.5 sm:w-2.5" />
                 <span className="h-2 w-2 rounded-full bg-green-500/60 sm:h-2.5 sm:w-2.5" />
                 <span className="ml-1.5 truncate font-mono text-[9px] tracking-wider text-gray-500 uppercase sm:ml-2 sm:text-[10px]">
-                  central.zetaemecosmeticos.com
+                  {scene.chromeUrl}
                 </span>
               </div>
-              <div className="relative aspect-video w-full">
-                <Image
-                  src="/hero/zetaeme-hub.webp"
-                  alt={laptopAlt}
-                  fill
-                  className="object-cover object-top"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  priority
-                />
+              <div
+                className="relative aspect-video w-full overflow-hidden bg-[#F9FAFB]"
+                role="img"
+                aria-label={laptopAlts[sceneIndex]}
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={scene.id}
+                    initial={reduceMotion ? false : { opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={reduceMotion ? undefined : { opacity: 0 }}
+                    transition={{ duration: reduceMotion ? 0 : 0.5 }}
+                    className="pointer-events-none absolute inset-0"
+                  >
+                    <LaptopMock />
+                  </motion.div>
+                </AnimatePresence>
               </div>
             </div>
           </div>
 
-          {/* Bisagra — mismo plano Z que lid/base para que no “flote” */}
-          <div
-            className="relative z-10 -mb-px h-2 bg-[#2a2a2e] sm:h-2.5"
-            aria-hidden
-          >
+          {/* Bisagra */}
+          <div className="relative z-10 -mb-px h-2 bg-[#2a2a2e] sm:h-2.5" aria-hidden>
             <div className="absolute inset-x-0 top-0 h-px bg-white/12" />
-            <div className="absolute inset-x-[12%] top-1/2 h-[3px] -translate-y-1/2 rounded-full bg-linear-to-b from-zinc-500/80 to-zinc-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] sm:h-1" />
+            <div className="absolute inset-x-[12%] top-1/2 h-0.75 -translate-y-1/2 rounded-full bg-linear-to-b from-zinc-500/80 to-zinc-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.15)] sm:h-1" />
             <div className="absolute inset-x-0 bottom-0 h-px bg-black/50" />
           </div>
 
-          {/* Base + teclado — mismo ancho que lid; +translateX compensa el
-              desfase lateral que produce rotateX bajo la escena en rotateY */}
+          {/* Base + teclado */}
           <div className="relative z-0 h-8 -translate-y-px transform-3d sm:h-9 lg:h-10">
             <div
               className="absolute inset-x-0 top-0 origin-top rounded-b-xl border border-t-0 border-violet-500/15 px-2.5 pt-1.5 pb-2 sm:rounded-b-2xl sm:px-3.5 sm:pt-2 sm:pb-2.5"
               style={{
-                backgroundImage:
-                  'linear-gradient(180deg, #2a2a2e 0%, #1a1a1d 40%, #121214 100%)',
+                backgroundImage: 'linear-gradient(180deg, #2a2a2e 0%, #1a1a1d 40%, #121214 100%)',
                 boxShadow:
                   '0 20px 40px -18px rgba(0,0,0,0.7), 0 0 40px rgba(139,92,246,0.1), inset 0 1px 0 rgba(255,255,255,0.07)',
                 transform: 'rotateX(52deg) translateX(1.5px)',
@@ -190,65 +188,56 @@ export default function HeroDeviceMockup({ laptopAlt, phoneAlts }: Props) {
           </div>
         </div>
 
-        {/* Phone — a la derecha, bisel visible, poco overlap con la laptop */}
+        {/* Phone */}
         {SHOW_PHONE ? (
-        <motion.div
-          style={reduceMotion ? undefined : { x: phoneX, y: phoneY }}
-          className="absolute -right-6 bottom-[18%] z-20 w-24 transform-3d sm:-right-8 sm:bottom-[20%] sm:w-30 lg:-right-12 lg:bottom-[22%] lg:w-40"
-        >
-          <div
-            className="relative transform-3d"
-            style={{
-              // Solo Z: el rotateY lo aporta la escena (mismo eje vertical que la laptop)
-              transform: 'translateZ(72px)',
-            }}
+          <motion.div
+            style={reduceMotion ? undefined : { x: phoneX, y: phoneY }}
+            className="absolute -right-6 bottom-[18%] z-20 w-24 transform-3d sm:-right-8 sm:bottom-[20%] sm:w-30 lg:-right-12 lg:bottom-[22%] lg:w-40"
           >
-            {/* Chassis + bisel — el canto se sugiere con borde/sombra, no cara plana */}
             <div
-              className="relative rounded-[1.35rem] border border-violet-400/35 bg-linear-to-b from-zinc-700 via-zinc-900 to-zinc-950 p-[5px] sm:rounded-[1.5rem] sm:p-1.5"
+              className="relative transform-3d"
               style={{
-                boxShadow:
-                  '0 24px 48px -12px rgba(0,0,0,0.8), 0 0 0 1px rgba(167,139,250,0.18), 0 0 40px rgba(139,92,246,0.35), inset 0 1px 0 rgba(255,255,255,0.12), -3px 0 0 #1a1a1d, -5px 1px 0 #0c0c0e, -6px 2px 8px rgba(0,0,0,0.45)',
+                transform: 'translateZ(72px)',
               }}
             >
-              {/* Dynamic Island / notch */}
               <div
-                className="pointer-events-none absolute top-2.5 left-1/2 z-10 h-2.5 w-12 -translate-x-1/2 rounded-full bg-black sm:top-3 sm:h-3 sm:w-14"
-                aria-hidden
-                style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.06)' }}
-              />
+                className="relative flex flex-col rounded-[1.35rem] border border-violet-400/35 bg-linear-to-b from-zinc-700 via-zinc-900 to-zinc-950 p-1 sm:rounded-3xl sm:p-1.5"
+                style={{
+                  boxShadow:
+                    '0 24px 48px -12px rgba(0,0,0,0.8), 0 0 0 1px rgba(167,139,250,0.18), 0 0 40px rgba(139,92,246,0.35), inset 0 1px 0 rgba(255,255,255,0.12), -3px 0 0 #1a1a1d, -5px 1px 0 #0c0c0e, -6px 2px 8px rgba(0,0,0,0.45)',
+                }}
+              >
+                {/* Island en el bisel (fuera de la pantalla) */}
+                <div className="flex justify-center pb-0.5" aria-hidden>
+                  <div className="h-1 w-5 rounded-full bg-black/90 ring-1 ring-white/10 sm:h-1.5 sm:w-7" />
+                </div>
 
-              {/* Pantalla inset (el padding del chassis = bisel) */}
-              <div className="relative aspect-9/19.5 w-full overflow-hidden rounded-[1.05rem] border border-black/70 bg-black sm:rounded-[1.15rem]">
-                <AnimatePresence>
-                  <motion.div
-                    key={phoneSrcs[frame]}
-                    initial={reduceMotion ? false : { opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={reduceMotion ? undefined : { opacity: 0 }}
-                    transition={{ duration: reduceMotion ? 0 : 0.6 }}
-                    className="absolute inset-0"
-                  >
-                    <Image
-                      src={phoneSrcs[frame]}
-                      alt={phoneAlts[frame]}
-                      fill
-                      className="object-cover object-top"
-                      sizes="180px"
-                      priority={frame === 0}
-                    />
-                  </motion.div>
-                </AnimatePresence>
+                <div
+                  className="relative aspect-9/19.5 w-full overflow-hidden rounded-[0.95rem] border border-black/70 bg-[#F8F5FA] sm:rounded-[1.1rem]"
+                  role="img"
+                  aria-label={phoneAlts[sceneIndex]}
+                >
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={scene.id}
+                      initial={reduceMotion ? false : { opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={reduceMotion ? undefined : { opacity: 0 }}
+                      transition={{ duration: reduceMotion ? 0 : 0.5 }}
+                      className="pointer-events-none absolute inset-0"
+                    >
+                      <PhoneMock />
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+
+                <div
+                  className="pointer-events-none mx-auto mt-0.5 h-0.5 w-7 rounded-full bg-white/20 sm:mt-1 sm:h-1 sm:w-9"
+                  aria-hidden
+                />
               </div>
-
-              {/* Barra home */}
-              <div
-                className="pointer-events-none mx-auto mt-1 h-0.5 w-8 rounded-full bg-white/25 sm:mt-1.5 sm:h-1 sm:w-10"
-                aria-hidden
-              />
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
         ) : null}
       </motion.div>
     </div>

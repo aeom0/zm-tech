@@ -24,7 +24,7 @@ export default function Hero({ messages }: Props) {
         />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl px-4 pt-24 pb-16 sm:px-6 sm:pt-28 sm:pb-20 lg:min-h-screen lg:px-8 lg:pt-32 lg:pb-24 lg:pr-12">
+      <div className="relative z-10 mx-auto max-w-7xl px-4 pt-24 pb-16 sm:px-6 sm:pt-28 sm:pb-20 lg:min-h-screen lg:px-8 lg:pt-32 lg:pr-12 lg:pb-24">
         {/*
           Mobile: badge → H1 → mockup → párrafo → CTAs (mockup en el fold)
           Desktop: copy izq (badge+H1+párrafo+CTAs) | mockup der
@@ -69,9 +69,9 @@ export default function Hero({ messages }: Props) {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.25 }}
-            className="order-2 overflow-visible pb-4 pr-6 sm:pr-10 lg:col-start-2 lg:row-span-2 lg:pb-8 lg:pr-4"
+            className="order-2 overflow-visible pr-6 pb-4 sm:pr-10 lg:col-start-2 lg:row-span-2 lg:pr-4 lg:pb-8"
           >
-            <HeroDeviceMockup laptopAlt={messages.laptopAlt} phoneAlts={messages.phoneAlts} />
+            <HeroDeviceMockup laptopAlts={messages.laptopAlts} phoneAlts={messages.phoneAlts} />
           </motion.div>
 
           <motion.div

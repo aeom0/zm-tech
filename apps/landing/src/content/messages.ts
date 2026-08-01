@@ -11,7 +11,7 @@ export type HeroMessages = {
   ctaPrimary: string
   ctaSecondary: string
   imageAlt: string
-  laptopAlt: string
+  laptopAlts: [string, string, string]
   phoneAlts: [string, string, string]
   statusLabel: string
   statusValue: string

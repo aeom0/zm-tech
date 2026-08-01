@@ -27,4 +27,4 @@ Revisión hero/landing (jul–ago 2026).
 ## Contexto
 
 - App: `apps/landing`
-- Assets hero: `public/hero/*`, preview Beauty: `public/verticales/geemastudio-preview.webp`
+- Assets hero: mocks React en `src/components/hero/mocks/` (3 escenas: industrial / beauty / workshop; sin webp); preview Beauty: `public/verticales/geemastudio-preview.webp`

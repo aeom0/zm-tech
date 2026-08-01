@@ -37,7 +37,7 @@ bg-white/3             ✅  (NO bg-white/[0.03])
 - Sin emojis Unicode en UI (salvo copy WABA si aplica)
 - Secciones: `py-24`, `max-w-7xl mx-auto px-4 sm:px-6 lg:px-8`
 - Imágenes externas: `images.unsplash.com` (next.config)
-- Hero devices: `HeroDeviceMockup` — CSS 3D + Framer (`rotateY` en escena, teclado con `rotateX` local). No añadir Three/`@react-three/fiber` al hero.
+- Hero devices: `HeroDeviceMockup` — CSS 3D + Framer (`rotateY` en escena, teclado con `rotateX` local). Pantallas en `src/components/hero/mocks/` (`HERO_SCENES`: industrial, beauty, workshop). No añadir Three/`@react-three/fiber` al hero.
 
 ## Comandos
 

@@ -21,7 +21,7 @@ const meta: Array<{
     key: 'industrial',
     icon: Factory,
     iconColor: 'text-blue-400',
-    image: '/hero/zetaeme-hub.webp',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80',
     hoverBorder: 'hover:border-blue-500/40',
     glow: 'rgba(59,130,246,0.2)',
     objectPosition: 'object-top',
