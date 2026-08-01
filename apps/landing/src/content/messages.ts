@@ -14,8 +14,6 @@ export type HeroMessages = {
   ctaPrimary: string
   ctaSecondary: string
   imageAlt: string
-  laptopAlts: Record<HeroSceneId, string>
-  phoneAlts: Record<HeroSceneId, string>
   statusLabel: string
   statusValue: string
 }

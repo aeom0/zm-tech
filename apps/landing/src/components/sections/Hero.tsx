@@ -1,12 +1,13 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import type { Locale } from '@/content'
 import type { HeroMessages } from '@/content/messages'
 import HeroDeviceMockup from './HeroDeviceMockup'
 
-type Props = { messages: HeroMessages }
+type Props = { messages: HeroMessages; locale: Locale }
 
-export default function Hero({ messages }: Props) {
+export default function Hero({ messages, locale }: Props) {
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
   }
@@ -71,7 +72,7 @@ export default function Hero({ messages }: Props) {
             transition={{ duration: 0.7, delay: 0.25 }}
             className="order-2 overflow-visible pr-6 pb-4 sm:pr-10 lg:col-start-2 lg:row-span-2 lg:pr-4 lg:pb-8"
           >
-            <HeroDeviceMockup laptopAlts={messages.laptopAlts} phoneAlts={messages.phoneAlts} />
+            <HeroDeviceMockup locale={locale} />
           </motion.div>
 
           <motion.div

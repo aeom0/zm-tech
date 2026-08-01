@@ -9,8 +9,8 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion'
+import type { Locale } from '@/content'
 import { HERO_SCENES } from '@/components/hero/mocks'
-import type { HeroSceneId } from '@/content/messages'
 
 const TILT_SPRING = { stiffness: 140, damping: 24, mass: 0.4 }
 const SCENE_MS = 4500
@@ -28,8 +28,7 @@ const KEY_ROWS: number[][] = [
 ]
 
 type Props = {
-  laptopAlts: Record<HeroSceneId, string>
-  phoneAlts: Record<HeroSceneId, string>
+  locale: Locale
 }
 
 function LaptopKeyboard() {
@@ -50,7 +49,7 @@ function LaptopKeyboard() {
   )
 }
 
-export default function HeroDeviceMockup({ laptopAlts, phoneAlts }: Props) {
+export default function HeroDeviceMockup({ locale }: Props) {
   const [sceneIndex, setSceneIndex] = useState(0)
   const reduceMotion = useReducedMotion()
   const containerRef = useRef<HTMLDivElement>(null)
@@ -136,7 +135,7 @@ export default function HeroDeviceMockup({ laptopAlts, phoneAlts }: Props) {
               <div
                 className="relative aspect-video w-full overflow-hidden bg-[#F9FAFB]"
                 role="img"
-                aria-label={laptopAlts[scene.id]}
+                aria-label={scene.laptopAlt[locale]}
               >
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -216,7 +215,7 @@ export default function HeroDeviceMockup({ laptopAlts, phoneAlts }: Props) {
                 <div
                   className="relative aspect-9/19.5 w-full overflow-hidden rounded-[0.95rem] border border-black/70 bg-[#F8F5FA] sm:rounded-[1.1rem]"
                   role="img"
-                  aria-label={phoneAlts[scene.id]}
+                  aria-label={scene.phoneAlt[locale]}
                 >
                   <AnimatePresence mode="wait">
                     <motion.div

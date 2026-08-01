@@ -19,16 +19,6 @@ export const es: Messages = {
     ctaPrimary: 'COTIZAR PROYECTO →',
     ctaSecondary: 'VER ECOSISTEMA',
     imageAlt: 'Sistemas ZM Tech en producción: panel gerencial, agenda y ventas',
-    laptopAlts: {
-      industrial: 'Panel gerencial genérico — control de ventas e inventario',
-      beauty: 'Sitio web de salón genérico — servicios y reserva',
-      workshop: 'Panel de taller genérico — órdenes de servicio y técnicos',
-    },
-    phoneAlts: {
-      industrial: 'App de ventas genérica — pedidos y comisiones del día',
-      beauty: 'Agenda móvil genérica — citas del salón',
-      workshop: 'App de técnico genérica — órdenes de servicio del día',
-    },
     statusLabel: 'Proyectos activos',
     statusValue: '3 verticales en producción',
   },

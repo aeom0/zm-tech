@@ -25,7 +25,7 @@ export default async function HomePage({ params }: Props) {
   return (
     <main>
       <Navbar locale={locale} messages={messages.nav} />
-      <Hero messages={messages.hero} />
+      <Hero messages={messages.hero} locale={locale} />
       <TrustBanner messages={messages.trust} />
       <Proof messages={messages.proof} />
       <Verticals messages={messages.verticals} />
