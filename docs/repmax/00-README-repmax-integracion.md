@@ -30,4 +30,5 @@
 ## Estado de ejecución
 
 - **Fase 01 cerrada** — 2026-08-01. Commits: `31f8b07` (scaffold), `6f1c24e` (TS 6), `27c9c4f` (Expo 56), + fix mobile SDK 56. `pnpm --filter repmax-web` levanta en `:3003`; builds web/server OK; `expo-doctor` 21/21; typecheck mobile OK.
+- **Fase 02 cerrada** — 2026-08-01. Migraciones `repmax_initial_schema` + `repmax_rls_and_storage` aplicadas en `llacowjutjfefboqgfnj` (validadas antes con `supabase start` local). 7 tablas `repmax_*` con RLS; bucket `repmax-products`; Auth Provider en `@geemastudio/tenant-config/repmax`. Usuarios de prueba: `repmax-owner-a@test.local` / `repmax-owner-b@test.local` (pass `TestRepmax123!`) — A solo ve `repuestos-alfa`, B solo `repuestos-beta`. Storefront anónimo lee productos `is_active`. `contacts` / `quote_leads` / `odental_*` sin cambios de schema.
 

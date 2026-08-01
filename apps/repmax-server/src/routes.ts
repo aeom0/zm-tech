@@ -23,10 +23,10 @@ import {
   sales,
   stores,
   storeUsers,
-  users,
 } from "@repmax/repmax-schema";
 import { firmarToken, verificarJWT } from "./auth";
 import { db } from "./db";
+import { users } from "./legacy-users";
 
 /** Convierte decimal/string de PG a número seguro para JSON */
 function toNumber(value: unknown): number {
