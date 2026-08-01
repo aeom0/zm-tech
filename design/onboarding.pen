@@ -1,0 +1,176 @@
+{
+  "version": "2.9",
+  "children": [
+    {
+      "type": "frame",
+      "id": "onb01",
+      "x": 0,
+      "y": 0,
+      "name": "ONB-01-Splash",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "#0D0D0D",
+      "layout": "none",
+      "children": [
+        {
+          "type": "text",
+          "id": "onb01-title",
+          "x": 108,
+          "y": 350,
+          "name": "Logo",
+          "content": "RepMAX",
+          "fill": "#F5F5F5",
+          "fontFamily": "Inter",
+          "fontSize": 40,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "onb01-sub",
+          "x": 128,
+          "y": 405,
+          "name": "Tagline",
+          "content": "Business Suite",
+          "fill": "#FF6B00",
+          "fontFamily": "Inter",
+          "fontSize": 16,
+          "fontWeight": "500"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "onb02",
+      "x": 430,
+      "y": 0,
+      "name": "ONB-02-Pais",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "#0D0D0D",
+      "layout": "none",
+      "children": [
+        { "type": "text", "id": "onb02-step", "x": 20, "y": 24, "name": "Step", "content": "Paso 1 de 5", "fill": "#9E9E9E", "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" },
+        { "type": "rectangle", "id": "onb02-track", "x": 20, "y": 44, "name": "Progress Track", "width": 350, "height": 6, "fill": "#2E2E2E" },
+        { "type": "rectangle", "id": "onb02-fill", "x": 20, "y": 44, "name": "Progress Fill", "width": 70, "height": 6, "fill": "#FF6B00" },
+        { "type": "text", "id": "onb02-title", "x": 20, "y": 72, "name": "Title", "content": "¿Desde donde operas?", "fill": "#F5F5F5", "fontFamily": "Inter", "fontSize": 28, "fontWeight": "700" },
+        { "type": "text", "id": "onb02-sub", "x": 20, "y": 120, "name": "Subtitle", "content": "Configuramos tu tienda para tu mercado.", "fill": "#9E9E9E", "fontFamily": "Inter", "fontSize": 16 },
+        { "type": "rectangle", "id": "onb02-ve", "x": 20, "y": 170, "name": "Venezuela Card", "width": 350, "height": 110, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 2, "fill": "#FF6B00" } },
+        { "type": "text", "id": "onb02-ve-text", "x": 40, "y": 210, "name": "Venezuela Label", "content": "Venezuela (VE)", "fill": "#F5F5F5", "fontFamily": "Inter", "fontSize": 22, "fontWeight": "600" }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "onb03",
+      "x": 860,
+      "y": 0,
+      "name": "ONB-03-Vehiculos",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "#0D0D0D",
+      "layout": "none",
+      "children": [
+        { "type": "text", "id": "onb03-step", "x": 20, "y": 24, "name": "Step", "content": "Paso 2 de 5", "fill": "#9E9E9E", "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" },
+        { "type": "rectangle", "id": "onb03-track", "x": 20, "y": 44, "name": "Progress Track", "width": 350, "height": 6, "fill": "#2E2E2E" },
+        { "type": "rectangle", "id": "onb03-fill", "x": 20, "y": 44, "name": "Progress Fill", "width": 140, "height": 6, "fill": "#FF6B00" },
+        { "type": "text", "id": "onb03-title", "x": 20, "y": 72, "name": "Title", "content": "¿Con que trabajas?", "fill": "#F5F5F5", "fontFamily": "Inter", "fontSize": 28, "fontWeight": "700" },
+        { "type": "rectangle", "id": "onb03-cars", "x": 20, "y": 170, "name": "Carros", "width": 350, "height": 96, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 1, "fill": "#2E2E2E" } },
+        { "type": "rectangle", "id": "onb03-motos", "x": 20, "y": 282, "name": "Motos", "width": 350, "height": 96, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 2, "fill": "#FF6B00" } },
+        { "type": "rectangle", "id": "onb03-both", "x": 20, "y": 394, "name": "Ambos", "width": 350, "height": 96, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 1, "fill": "#2E2E2E" } },
+        { "type": "text", "id": "onb03-cars-text", "x": 40, "y": 206, "name": "Carros Label", "content": "Carros", "fill": "#F5F5F5", "fontFamily": "Inter", "fontSize": 20, "fontWeight": "600" },
+        { "type": "text", "id": "onb03-motos-text", "x": 40, "y": 318, "name": "Motos Label", "content": "Motos", "fill": "#F5F5F5", "fontFamily": "Inter", "fontSize": 20, "fontWeight": "600" },
+        { "type": "text", "id": "onb03-both-text", "x": 40, "y": 430, "name": "Ambos Label", "content": "Ambos", "fill": "#F5F5F5", "fontFamily": "Inter", "fontSize": 20, "fontWeight": "600" }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "onb04",
+      "x": 1290,
+      "y": 0,
+      "name": "ONB-04-Negocio",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "#0D0D0D",
+      "layout": "none",
+      "children": [
+        { "type": "text", "id": "onb04-step", "x": 20, "y": 24, "name": "Step", "content": "Paso 3 de 5", "fill": "#9E9E9E", "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" },
+        { "type": "rectangle", "id": "onb04-track", "x": 20, "y": 44, "name": "Progress Track", "width": 350, "height": 6, "fill": "#2E2E2E" },
+        { "type": "rectangle", "id": "onb04-fill", "x": 20, "y": 44, "name": "Progress Fill", "width": 210, "height": 6, "fill": "#FF6B00" },
+        { "type": "text", "id": "onb04-title", "x": 20, "y": 72, "name": "Title", "content": "¿Que tipo de negocio tienes?", "fill": "#F5F5F5", "fontFamily": "Inter", "fontSize": 28, "fontWeight": "700" },
+        { "type": "rectangle", "id": "onb04-1", "x": 20, "y": 170, "name": "Repuesteria", "width": 350, "height": 96, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 1, "fill": "#2E2E2E" } },
+        { "type": "rectangle", "id": "onb04-2", "x": 20, "y": 282, "name": "Taller", "width": 350, "height": 96, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 2, "fill": "#FF6B00" } },
+        { "type": "rectangle", "id": "onb04-3", "x": 20, "y": 394, "name": "Ambos", "width": 350, "height": 96, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 1, "fill": "#2E2E2E" } }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "onb05",
+      "x": 1720,
+      "y": 0,
+      "name": "ONB-05-Tema",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "#0D0D0D",
+      "layout": "none",
+      "children": [
+        { "type": "text", "id": "onb05-step", "x": 20, "y": 24, "name": "Step", "content": "Paso 4 de 5", "fill": "#9E9E9E", "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" },
+        { "type": "rectangle", "id": "onb05-track", "x": 20, "y": 44, "name": "Progress Track", "width": 350, "height": 6, "fill": "#2E2E2E" },
+        { "type": "rectangle", "id": "onb05-fill", "x": 20, "y": 44, "name": "Progress Fill", "width": 280, "height": 6, "fill": "#FF6B00" },
+        { "type": "text", "id": "onb05-title", "x": 20, "y": 72, "name": "Title", "content": "Escoge tu estilo", "fill": "#F5F5F5", "fontFamily": "Inter", "fontSize": 28, "fontWeight": "700" },
+        { "type": "rectangle", "id": "onb05-t1", "x": 20, "y": 170, "name": "Turbo", "width": 350, "height": 84, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 2, "fill": "#CC0000" } },
+        { "type": "rectangle", "id": "onb05-t2", "x": 20, "y": 270, "name": "Acero", "width": 350, "height": 84, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 1, "fill": "#2E2E2E" } },
+        { "type": "rectangle", "id": "onb05-t3", "x": 20, "y": 370, "name": "Terreno", "width": 350, "height": 84, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 1, "fill": "#2E2E2E" } },
+        { "type": "rectangle", "id": "onb05-btn", "x": 20, "y": 760, "name": "Continuar", "width": 350, "height": 52, "fill": "#FF6B00", "cornerRadius": 16 },
+        { "type": "text", "id": "onb05-btn-text", "x": 158, "y": 776, "name": "Continuar Label", "content": "Continuar", "fill": "#0D0D0D", "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "onb06",
+      "x": 2150,
+      "y": 0,
+      "name": "ONB-06-Preview",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "#0D0D0D",
+      "layout": "none",
+      "children": [
+        { "type": "text", "id": "onb06-step", "x": 20, "y": 24, "name": "Step", "content": "Paso 5 de 5", "fill": "#9E9E9E", "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" },
+        { "type": "rectangle", "id": "onb06-track", "x": 20, "y": 44, "name": "Progress Track", "width": 350, "height": 6, "fill": "#2E2E2E" },
+        { "type": "rectangle", "id": "onb06-fill", "x": 20, "y": 44, "name": "Progress Fill", "width": 350, "height": 6, "fill": "#FF6B00" },
+        { "type": "text", "id": "onb06-title", "x": 20, "y": 72, "name": "Title", "content": "Asi se vera tu tienda", "fill": "#F5F5F5", "fontFamily": "Inter", "fontSize": 28, "fontWeight": "700" },
+        { "type": "rectangle", "id": "onb06-mock", "x": 20, "y": 160, "name": "Dashboard Mock", "width": 350, "height": 500, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 1, "fill": "#2E2E2E" } },
+        { "type": "rectangle", "id": "onb06-header", "x": 20, "y": 160, "name": "Mock Header", "width": 350, "height": 72, "fill": "#FF6B00" },
+        { "type": "rectangle", "id": "onb06-btn", "x": 20, "y": 760, "name": "Continuar", "width": 350, "height": 52, "fill": "#FF6B00", "cornerRadius": 16 },
+        { "type": "text", "id": "onb06-btn-text", "x": 100, "y": 776, "name": "Continuar Label", "content": "Se ve brutal, continuar", "fill": "#0D0D0D", "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "onb07",
+      "x": 2580,
+      "y": 0,
+      "name": "ONB-07-Decision",
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "#0D0D0D",
+      "layout": "none",
+      "children": [
+        { "type": "text", "id": "onb07-title", "x": 45, "y": 260, "name": "Title", "content": "Tu tienda esta lista para arrancar", "fill": "#F5F5F5", "fontFamily": "Inter", "fontSize": 30, "fontWeight": "700" },
+        { "type": "text", "id": "onb07-sub", "x": 45, "y": 330, "name": "Subtitle", "content": "Todo quedo configurado. Elige como continuar.", "fill": "#9E9E9E", "fontFamily": "Inter", "fontSize": 16 },
+        { "type": "rectangle", "id": "onb07-btn1", "x": 20, "y": 560, "name": "Crear cuenta", "width": 350, "height": 52, "fill": "#FF6B00", "cornerRadius": 16 },
+        { "type": "text", "id": "onb07-btn1-text", "x": 115, "y": 576, "name": "Crear cuenta label", "content": "Crear mi cuenta gratis", "fill": "#0D0D0D", "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
+        { "type": "rectangle", "id": "onb07-btn2", "x": 20, "y": 628, "name": "Demo", "width": 350, "height": 52, "fill": "#0D0D0D", "cornerRadius": 16, "stroke": { "align": "inside", "thickness": 2, "fill": "#FF6B00" } },
+        { "type": "text", "id": "onb07-btn2-text", "x": 120, "y": 644, "name": "Demo label", "content": "Probar demo primero", "fill": "#FF6B00", "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
+        { "type": "text", "id": "onb07-note", "x": 95, "y": 708, "name": "Trust note", "content": "Sin enredos, empiezas en minutos.", "fill": "#9E9E9E", "fontFamily": "Inter", "fontSize": 12 }
+      ]
+    }
+  ]
+}
+

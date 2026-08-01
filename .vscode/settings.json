@@ -1,0 +1,8 @@
+{
+  "workbench.editorAssociations": {
+    "*.pen": "pencil.designEditor"
+  },
+  "files.associations": {
+    "*.pen": "pencil"
+  }
+}
