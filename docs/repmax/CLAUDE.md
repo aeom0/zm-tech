@@ -55,3 +55,4 @@ pnpm --filter @repmax/repmax-schema check:types   # si existe script
 - Roadmap: [ROADMAP.md](./ROADMAP.md)
 - Planes cerrados: [plans/](./plans/)
 - Diseño onboarding: [design/](./design/)
+- Design system: [design-system/](./design-system/)

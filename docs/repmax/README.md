@@ -46,8 +46,10 @@ Ver `supabase/migrations/` (schema, RLS/storage, RPC venta, fix políticas públ
 
 ## Diseño
 
+- **Design system:** [`design-system/`](./design-system/) (tokens, componentes, voice, motion)
 - Spec UX onboarding: `design/onboarding-ux-spec.md`
 - Canvas Pencil: `design/onboarding.pen`
+- Prototipo tap-through: `design/prototype/index.html`
 
 ## Planes de integración (cerrados)
 

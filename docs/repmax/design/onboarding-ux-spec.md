@@ -1,6 +1,6 @@
 # Onboarding Mobile - Mejoras de Diseno (Base para Pencil)
 
-> Documentación del repo: [docs/README.md](../docs/README.md) · diseño relacionado: `design/onboarding.pen` (Pencil).
+> Documentación del repo: [docs/README.md](../README.md) · diseño: `onboarding.pen` · sistema: [`../design-system/`](../design-system/) · prototipo: [`prototype/index.html`](./prototype/index.html).
 
 ## Objetivo
 Mejorar claridad, conversion y sensacion de calidad del flujo onboarding de `apps/mobile`, manteniendo el estilo Industrial Dark y copy cercano al mercado venezolano.
@@ -125,12 +125,12 @@ Mejorar claridad, conversion y sensacion de calidad del flujo onboarding de `app
 - "Dale, vamos a poner esto a producir."
 
 ## Checklist de QA de Diseno
-- [ ] Se entiende cada pantalla en menos de 3 segundos.
-- [ ] CTA principal siempre visible.
-- [ ] El progreso es evidente y consistente.
-- [ ] No hay saltos de layout entre pasos.
-- [ ] Estados de seleccion y disabled son obvios.
-- [ ] Dark y light mantienen legibilidad.
+- [x] Se entiende cada pantalla en menos de 3 segundos.
+- [x] CTA principal siempre visible.
+- [x] El progreso es evidente y consistente.
+- [x] No hay saltos de layout entre pasos.
+- [x] Estados de seleccion y disabled son obvios.
+- [x] Dark y light mantienen legibilidad.
 
 ## Convencion de Artboards en Pencil
 - `ONB-01-Splash`
@@ -142,8 +142,12 @@ Mejorar claridad, conversion y sensacion de calidad del flujo onboarding de `app
 - `ONB-07-Decision`
 
 ## Entregables
-1. Wireframe low-fi por pantalla.
-2. High-fi dark mode.
-3. Variante light mode.
-4. Prototipo navegable (tap-through) con transiciones basicas.
+1. ~~Wireframe low-fi por pantalla.~~ → subsumido en high-fi Pencil
+2. [x] High-fi dark mode — `onboarding.pen` (ONB-01…07)
+3. [x] Variante light mode — `ONB-*-Light`
+4. [x] Prototipo navegable — `design/prototype/index.html` (+ FlowMap en el `.pen`)
+
+### Prototipo tap-through
+Abrir en el navegador: [`prototype/index.html`](./prototype/index.html)  
+Mapa de flujo / motion contract: frame `UXStates / FlowMap` en `onboarding.pen`.
 

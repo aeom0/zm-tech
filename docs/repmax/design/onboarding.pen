@@ -1,5 +1,5 @@
 {
-  "version": "2.9",
+  "version": "2.15",
   "children": [
     {
       "type": "frame",
@@ -7,35 +7,83 @@
       "x": 0,
       "y": 0,
       "name": "ONB-01-Splash",
+      "context": "Splash. Auto-navigate → ONB-02 after ~1.0–1.2s. Fade logo 600ms.",
+      "theme": {
+        "mode": "dark"
+      },
       "clip": true,
       "width": 390,
       "height": 844,
-      "fill": "#0D0D0D",
-      "layout": "none",
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.4,
+          "height": 1.1
+        },
+        "colors": [
+          {
+            "color": "$accentSoft",
+            "position": 0
+          },
+          {
+            "color": "$accentMuted",
+            "position": 0.35
+          },
+          {
+            "color": "$bg",
+            "position": 0.75
+          },
+          {
+            "color": "$gradientEdge",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0.42
+        }
+      },
+      "layout": "vertical",
+      "gap": 14,
+      "padding": [
+        0,
+        20
+      ],
+      "justifyContent": "center",
+      "alignItems": "center",
       "children": [
         {
           "type": "text",
-          "id": "onb01-title",
-          "x": 108,
-          "y": 350,
+          "id": "Hvv2b",
           "name": "Logo",
+          "fill": "$textPrimary",
           "content": "RepMAX",
-          "fill": "#F5F5F5",
-          "fontFamily": "Inter",
-          "fontSize": 40,
-          "fontWeight": "700"
+          "fontFamily": "$fontBody",
+          "fontSize": 44,
+          "fontWeight": "700",
+          "letterSpacing": -1
         },
         {
           "type": "text",
-          "id": "onb01-sub",
-          "x": 128,
-          "y": 405,
+          "id": "xbly5",
           "name": "Tagline",
+          "fill": "$accent",
           "content": "Business Suite",
-          "fill": "#FF6B00",
-          "fontFamily": "Inter",
-          "fontSize": 16,
-          "fontWeight": "500"
+          "fontFamily": "$fontBody",
+          "fontSize": 17,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "gbMaC",
+          "name": "SplashHint",
+          "fill": "$textSecondary",
+          "content": "Autopartes · Inventario · POS",
+          "fontFamily": "$fontBody",
+          "fontSize": "$textNote",
+          "fontWeight": "normal"
         }
       ]
     },
@@ -45,19 +93,483 @@
       "x": 430,
       "y": 0,
       "name": "ONB-02-Pais",
+      "context": "País. Tap CountryFeatured/Country_* → ONB-03. Transition 180ms.",
+      "theme": {
+        "mode": "dark"
+      },
       "clip": true,
       "width": 390,
       "height": 844,
-      "fill": "#0D0D0D",
-      "layout": "none",
+      "fill": {
+        "type": "gradient",
+        "gradientType": "linear",
+        "enabled": true,
+        "rotation": 180,
+        "size": {
+          "height": 1
+        },
+        "colors": [
+          {
+            "color": "$accentMuted",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 0.22
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ]
+      },
+      "layout": "vertical",
+      "gap": 20,
+      "padding": [
+        16,
+        20,
+        24,
+        20
+      ],
       "children": [
-        { "type": "text", "id": "onb02-step", "x": 20, "y": 24, "name": "Step", "content": "Paso 1 de 5", "fill": "#9E9E9E", "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" },
-        { "type": "rectangle", "id": "onb02-track", "x": 20, "y": 44, "name": "Progress Track", "width": 350, "height": 6, "fill": "#2E2E2E" },
-        { "type": "rectangle", "id": "onb02-fill", "x": 20, "y": 44, "name": "Progress Fill", "width": 70, "height": 6, "fill": "#FF6B00" },
-        { "type": "text", "id": "onb02-title", "x": 20, "y": 72, "name": "Title", "content": "¿Desde donde operas?", "fill": "#F5F5F5", "fontFamily": "Inter", "fontSize": 28, "fontWeight": "700" },
-        { "type": "text", "id": "onb02-sub", "x": 20, "y": 120, "name": "Subtitle", "content": "Configuramos tu tienda para tu mercado.", "fill": "#9E9E9E", "fontFamily": "Inter", "fontSize": 16 },
-        { "type": "rectangle", "id": "onb02-ve", "x": 20, "y": 170, "name": "Venezuela Card", "width": 350, "height": 110, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 2, "fill": "#FF6B00" } },
-        { "type": "text", "id": "onb02-ve-text", "x": 40, "y": 210, "name": "Venezuela Label", "content": "Venezuela (VE)", "fill": "#F5F5F5", "fontFamily": "Inter", "fontSize": 22, "fontWeight": "600" }
+        {
+          "type": "frame",
+          "id": "cs02w",
+          "name": "StatusBar",
+          "width": "fill_container",
+          "height": 44,
+          "padding": [
+            0,
+            4
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "K4XG7z",
+              "name": "Time",
+              "fill": "$textPrimary",
+              "content": "9:41",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "j5ivSd",
+              "name": "StatusIcons",
+              "fill": "$textSecondary",
+              "content": "LTE  ",
+              "fontFamily": "$fontBody",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "id": "DSqqM",
+          "type": "ref",
+          "ref": "hB7ZH",
+          "name": "ProgressBar",
+          "width": "fill_container",
+          "descendants": {
+            "wJo5C": {
+              "fill": "$accent"
+            },
+            "PN2FM": {
+              "fill": "$surfaceElevated"
+            },
+            "e9g13q": {
+              "fill": "$surfaceElevated"
+            },
+            "h4wMv1": {
+              "fill": "$surfaceElevated"
+            },
+            "UHiQk": {
+              "fill": "$surfaceElevated"
+            }
+          }
+        },
+        {
+          "id": "Cj0Dd",
+          "type": "ref",
+          "ref": "LU56R",
+          "name": "ScreenHeader",
+          "width": "fill_container",
+          "descendants": {
+            "eDram": {
+              "content": "Paso 1 de 5"
+            },
+            "Sdxde": {
+              "content": "¿Desde dónde operas?"
+            },
+            "G2ljA": {
+              "content": "Configuramos tu tienda para tu mercado."
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "qSYpE",
+          "name": "CountryFeatured",
+          "context": "Card destacada Venezuela. Tap avanza a vehículos. Animación scale 0.97.",
+          "width": "fill_container",
+          "fill": {
+            "type": "gradient",
+            "gradientType": "linear",
+            "enabled": true,
+            "rotation": 105,
+            "size": {
+              "height": 1
+            },
+            "colors": [
+              {
+                "color": "$surfaceElevated",
+                "position": 0
+              },
+              {
+                "color": "$accentMuted",
+                "position": 1
+              }
+            ]
+          },
+          "cornerRadius": "$radiusXl",
+          "stroke": "$accent",
+          "strokeWidth": 2,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#FF6B0033",
+            "offset": {
+              "x": 0,
+              "y": 8
+            },
+            "blur": 20,
+            "spread": -4
+          },
+          "gap": 14,
+          "padding": 20,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "CAtuY",
+              "name": "CountryBadge",
+              "width": 48,
+              "height": 48,
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 135,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "$accent",
+                    "position": 0
+                  },
+                  {
+                    "color": "$accentHover",
+                    "position": 1
+                  }
+                ]
+              },
+              "cornerRadius": "$radiusMd",
+              "layout": "vertical",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "RFylO",
+                  "name": "BadgeCode",
+                  "fill": "$textInverse",
+                  "content": "VE",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "L4k3RP",
+              "name": "CountryTexts",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "kGxfY",
+                  "name": "CountryName",
+                  "fill": "$textPrimary",
+                  "content": "Venezuela",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 22,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "T97DH",
+                  "name": "CountryHint",
+                  "fill": "$textSecondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Optimizado para el mercado venezolano",
+                  "fontFamily": "$fontBody",
+                  "fontSize": "$textLabel",
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "U9o2zL",
+          "name": "OtrosLabel",
+          "fill": "$textSecondary",
+          "content": "Otros países",
+          "fontFamily": "$fontBody",
+          "fontSize": "$textLabel",
+          "fontWeight": "500"
+        },
+        {
+          "type": "frame",
+          "id": "X8TAPi",
+          "name": "CountryGrid",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "children": [
+            {
+              "type": "frame",
+              "id": "HGlVK",
+              "name": "CountryRow",
+              "width": "fill_container",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "SZRZe",
+                  "name": "Country_CO",
+                  "context": "Opción de país. Tap avanza.",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": "$radiusLg",
+                  "stroke": "$border",
+                  "strokeWidth": 1.5,
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "sdH7w",
+                      "name": "CodeBadge",
+                      "width": 36,
+                      "height": 36,
+                      "fill": "$surfaceElevated",
+                      "cornerRadius": "$radiusMd",
+                      "layout": "vertical",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "JB4HS",
+                          "name": "Code",
+                          "fill": "$steelLight",
+                          "content": "CO",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "t3hjGn",
+                      "name": "Name",
+                      "fill": "$textPrimary",
+                      "content": "Colombia",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "z7S7oo",
+                  "name": "Country_PE",
+                  "context": "Opción de país. Tap avanza.",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": "$radiusLg",
+                  "stroke": "$border",
+                  "strokeWidth": 1.5,
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "pjHrF",
+                      "name": "CodeBadge",
+                      "width": 36,
+                      "height": 36,
+                      "fill": "$surfaceElevated",
+                      "cornerRadius": "$radiusMd",
+                      "layout": "vertical",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "B5m9b",
+                          "name": "Code",
+                          "fill": "$steelLight",
+                          "content": "PE",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "kxq7b",
+                      "name": "Name",
+                      "fill": "$textPrimary",
+                      "content": "Perú",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "TDo0P",
+              "name": "CountryRow",
+              "width": "fill_container",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "t0fT5C",
+                  "name": "Country_EC",
+                  "context": "Opción de país. Tap avanza.",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": "$radiusLg",
+                  "stroke": "$border",
+                  "strokeWidth": 1.5,
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "le2ma",
+                      "name": "CodeBadge",
+                      "width": 36,
+                      "height": 36,
+                      "fill": "$surfaceElevated",
+                      "cornerRadius": "$radiusMd",
+                      "layout": "vertical",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Ndicp",
+                          "name": "Code",
+                          "fill": "$steelLight",
+                          "content": "EC",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "OmT43",
+                      "name": "Name",
+                      "fill": "$textPrimary",
+                      "content": "Ecuador",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "u9JR7",
+                  "name": "Country_DO",
+                  "context": "Opción de país. Tap avanza.",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": "$radiusLg",
+                  "stroke": "$border",
+                  "strokeWidth": 1.5,
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "qwMmw",
+                      "name": "CodeBadge",
+                      "width": 36,
+                      "height": 36,
+                      "fill": "$surfaceElevated",
+                      "cornerRadius": "$radiusMd",
+                      "layout": "vertical",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "r9GYya",
+                          "name": "Code",
+                          "fill": "$steelLight",
+                          "content": "DO",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "w8UjUT",
+                      "name": "Name",
+                      "fill": "$textPrimary",
+                      "content": "Rep. Dom.",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -66,22 +578,176 @@
       "x": 860,
       "y": 0,
       "name": "ONB-03-Vehiculos",
+      "context": "Vehículos. Tap SelectionCard → ONB-04 auto-advance.",
+      "theme": {
+        "mode": "dark"
+      },
       "clip": true,
       "width": 390,
       "height": 844,
-      "fill": "#0D0D0D",
-      "layout": "none",
+      "fill": {
+        "type": "gradient",
+        "gradientType": "linear",
+        "enabled": true,
+        "rotation": 180,
+        "size": {
+          "height": 1
+        },
+        "colors": [
+          {
+            "color": "$accentMuted",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 0.22
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ]
+      },
+      "layout": "vertical",
+      "gap": 20,
+      "padding": [
+        16,
+        20,
+        24,
+        20
+      ],
       "children": [
-        { "type": "text", "id": "onb03-step", "x": 20, "y": 24, "name": "Step", "content": "Paso 2 de 5", "fill": "#9E9E9E", "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" },
-        { "type": "rectangle", "id": "onb03-track", "x": 20, "y": 44, "name": "Progress Track", "width": 350, "height": 6, "fill": "#2E2E2E" },
-        { "type": "rectangle", "id": "onb03-fill", "x": 20, "y": 44, "name": "Progress Fill", "width": 140, "height": 6, "fill": "#FF6B00" },
-        { "type": "text", "id": "onb03-title", "x": 20, "y": 72, "name": "Title", "content": "¿Con que trabajas?", "fill": "#F5F5F5", "fontFamily": "Inter", "fontSize": 28, "fontWeight": "700" },
-        { "type": "rectangle", "id": "onb03-cars", "x": 20, "y": 170, "name": "Carros", "width": 350, "height": 96, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 1, "fill": "#2E2E2E" } },
-        { "type": "rectangle", "id": "onb03-motos", "x": 20, "y": 282, "name": "Motos", "width": 350, "height": 96, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 2, "fill": "#FF6B00" } },
-        { "type": "rectangle", "id": "onb03-both", "x": 20, "y": 394, "name": "Ambos", "width": 350, "height": 96, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 1, "fill": "#2E2E2E" } },
-        { "type": "text", "id": "onb03-cars-text", "x": 40, "y": 206, "name": "Carros Label", "content": "Carros", "fill": "#F5F5F5", "fontFamily": "Inter", "fontSize": 20, "fontWeight": "600" },
-        { "type": "text", "id": "onb03-motos-text", "x": 40, "y": 318, "name": "Motos Label", "content": "Motos", "fill": "#F5F5F5", "fontFamily": "Inter", "fontSize": 20, "fontWeight": "600" },
-        { "type": "text", "id": "onb03-both-text", "x": 40, "y": 430, "name": "Ambos Label", "content": "Ambos", "fill": "#F5F5F5", "fontFamily": "Inter", "fontSize": 20, "fontWeight": "600" }
+        {
+          "type": "frame",
+          "id": "qZUIq",
+          "name": "StatusBar",
+          "width": "fill_container",
+          "height": 44,
+          "padding": [
+            0,
+            4
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "b3o1p",
+              "name": "Time",
+              "fill": "$textPrimary",
+              "content": "9:41",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "id": "klocc",
+          "type": "ref",
+          "ref": "hB7ZH",
+          "name": "ProgressBar",
+          "width": "fill_container",
+          "descendants": {
+            "wJo5C": {
+              "fill": "$accent"
+            },
+            "PN2FM": {
+              "fill": "$accent"
+            },
+            "e9g13q": {
+              "fill": "$surfaceElevated"
+            },
+            "h4wMv1": {
+              "fill": "$surfaceElevated"
+            },
+            "UHiQk": {
+              "fill": "$surfaceElevated"
+            }
+          }
+        },
+        {
+          "id": "M0Rteh",
+          "type": "ref",
+          "ref": "LU56R",
+          "name": "ScreenHeader",
+          "width": "fill_container",
+          "descendants": {
+            "eDram": {
+              "content": "Paso 2 de 5"
+            },
+            "Sdxde": {
+              "content": "¿Con qué trabajas?"
+            },
+            "G2ljA": {
+              "content": "Cuadramos el sistema para tu inventario real."
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "qydGO",
+          "name": "VehicleCards",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "children": [
+            {
+              "id": "QaGjZ",
+              "type": "ref",
+              "ref": "vABLn",
+              "name": "CardCarrosSelected",
+              "width": "fill_container",
+              "descendants": {
+                "sax7l": {
+                  "icon": "car"
+                },
+                "M7CHlh": {
+                  "content": "Carros"
+                },
+                "OaCQk": {
+                  "content": "Toyota, Chevrolet, Ford y más"
+                }
+              }
+            },
+            {
+              "id": "CHobZ",
+              "type": "ref",
+              "ref": "M3L9Nl",
+              "name": "CardMotos",
+              "width": "fill_container",
+              "descendants": {
+                "t1Naqx": {
+                  "icon": "bike"
+                },
+                "SYhJD": {
+                  "content": "Motos"
+                },
+                "Im1Wx": {
+                  "content": "Yamaha, Honda, Bera, Empire..."
+                }
+              }
+            },
+            {
+              "id": "BfnZV",
+              "type": "ref",
+              "ref": "M3L9Nl",
+              "name": "CardAmbos",
+              "width": "fill_container",
+              "descendants": {
+                "t1Naqx": {
+                  "icon": "wrench"
+                },
+                "SYhJD": {
+                  "content": "Ambos"
+                },
+                "Im1Wx": {
+                  "content": "Inventario mixto completo"
+                }
+              }
+            }
+          ]
+        }
       ]
     },
     {
@@ -90,19 +756,176 @@
       "x": 1290,
       "y": 0,
       "name": "ONB-04-Negocio",
+      "context": "Negocio. Tap SelectionCard → ONB-05 auto-advance.",
+      "theme": {
+        "mode": "dark"
+      },
       "clip": true,
       "width": 390,
       "height": 844,
-      "fill": "#0D0D0D",
-      "layout": "none",
+      "fill": {
+        "type": "gradient",
+        "gradientType": "linear",
+        "enabled": true,
+        "rotation": 180,
+        "size": {
+          "height": 1
+        },
+        "colors": [
+          {
+            "color": "$accentMuted",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 0.22
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ]
+      },
+      "layout": "vertical",
+      "gap": 20,
+      "padding": [
+        16,
+        20,
+        24,
+        20
+      ],
       "children": [
-        { "type": "text", "id": "onb04-step", "x": 20, "y": 24, "name": "Step", "content": "Paso 3 de 5", "fill": "#9E9E9E", "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" },
-        { "type": "rectangle", "id": "onb04-track", "x": 20, "y": 44, "name": "Progress Track", "width": 350, "height": 6, "fill": "#2E2E2E" },
-        { "type": "rectangle", "id": "onb04-fill", "x": 20, "y": 44, "name": "Progress Fill", "width": 210, "height": 6, "fill": "#FF6B00" },
-        { "type": "text", "id": "onb04-title", "x": 20, "y": 72, "name": "Title", "content": "¿Que tipo de negocio tienes?", "fill": "#F5F5F5", "fontFamily": "Inter", "fontSize": 28, "fontWeight": "700" },
-        { "type": "rectangle", "id": "onb04-1", "x": 20, "y": 170, "name": "Repuesteria", "width": 350, "height": 96, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 1, "fill": "#2E2E2E" } },
-        { "type": "rectangle", "id": "onb04-2", "x": 20, "y": 282, "name": "Taller", "width": 350, "height": 96, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 2, "fill": "#FF6B00" } },
-        { "type": "rectangle", "id": "onb04-3", "x": 20, "y": 394, "name": "Ambos", "width": 350, "height": 96, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 1, "fill": "#2E2E2E" } }
+        {
+          "type": "frame",
+          "id": "CcRLf",
+          "name": "StatusBar",
+          "width": "fill_container",
+          "height": 44,
+          "padding": [
+            0,
+            4
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "qhWjK",
+              "name": "Time",
+              "fill": "$textPrimary",
+              "content": "9:41",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "id": "Mzrqi",
+          "type": "ref",
+          "ref": "hB7ZH",
+          "name": "ProgressBar",
+          "width": "fill_container",
+          "descendants": {
+            "wJo5C": {
+              "fill": "$accent"
+            },
+            "PN2FM": {
+              "fill": "$accent"
+            },
+            "e9g13q": {
+              "fill": "$accent"
+            },
+            "h4wMv1": {
+              "fill": "$surfaceElevated"
+            },
+            "UHiQk": {
+              "fill": "$surfaceElevated"
+            }
+          }
+        },
+        {
+          "id": "ptmgr",
+          "type": "ref",
+          "ref": "LU56R",
+          "name": "ScreenHeader",
+          "width": "fill_container",
+          "descendants": {
+            "eDram": {
+              "content": "Paso 3 de 5"
+            },
+            "Sdxde": {
+              "content": "¿Qué tipo de negocio tienes?"
+            },
+            "G2ljA": {
+              "content": "Escoge lo que vendes y te dejamos todo cuadrado."
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "kAGrX",
+          "name": "BusinessCards",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "children": [
+            {
+              "id": "qw2uc",
+              "type": "ref",
+              "ref": "M3L9Nl",
+              "name": "CardRepuesteria",
+              "width": "fill_container",
+              "descendants": {
+                "t1Naqx": {
+                  "icon": "store"
+                },
+                "SYhJD": {
+                  "content": "Repuestería"
+                },
+                "Im1Wx": {
+                  "content": "Venta de repuestos y accesorios"
+                }
+              }
+            },
+            {
+              "id": "dfrfJ",
+              "type": "ref",
+              "ref": "vABLn",
+              "name": "CardTallerSelected",
+              "width": "fill_container",
+              "descendants": {
+                "sax7l": {
+                  "icon": "wrench"
+                },
+                "M7CHlh": {
+                  "content": "Taller"
+                },
+                "OaCQk": {
+                  "content": "Taller con venta de partes"
+                }
+              }
+            },
+            {
+              "id": "LCxGo",
+              "type": "ref",
+              "ref": "M3L9Nl",
+              "name": "CardAmbos",
+              "width": "fill_container",
+              "descendants": {
+                "t1Naqx": {
+                  "icon": "warehouse"
+                },
+                "SYhJD": {
+                  "content": "Ambos"
+                },
+                "Im1Wx": {
+                  "content": "Taller y tienda combinados"
+                }
+              }
+            }
+          ]
+        }
       ]
     },
     {
@@ -111,21 +934,336 @@
       "x": 1720,
       "y": 0,
       "name": "ONB-05-Tema",
+      "context": "Tema. Tap theme card selects; ButtonPrimary → ONB-06. Disabled si no hay selected.",
+      "theme": {
+        "mode": "dark"
+      },
       "clip": true,
       "width": 390,
       "height": 844,
-      "fill": "#0D0D0D",
-      "layout": "none",
+      "fill": {
+        "type": "gradient",
+        "gradientType": "linear",
+        "enabled": true,
+        "rotation": 180,
+        "size": {
+          "height": 1
+        },
+        "colors": [
+          {
+            "color": "$accentMuted",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 0.22
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ]
+      },
+      "layout": "vertical",
+      "gap": 16,
+      "padding": [
+        16,
+        20,
+        20,
+        20
+      ],
+      "justifyContent": "space_between",
       "children": [
-        { "type": "text", "id": "onb05-step", "x": 20, "y": 24, "name": "Step", "content": "Paso 4 de 5", "fill": "#9E9E9E", "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" },
-        { "type": "rectangle", "id": "onb05-track", "x": 20, "y": 44, "name": "Progress Track", "width": 350, "height": 6, "fill": "#2E2E2E" },
-        { "type": "rectangle", "id": "onb05-fill", "x": 20, "y": 44, "name": "Progress Fill", "width": 280, "height": 6, "fill": "#FF6B00" },
-        { "type": "text", "id": "onb05-title", "x": 20, "y": 72, "name": "Title", "content": "Escoge tu estilo", "fill": "#F5F5F5", "fontFamily": "Inter", "fontSize": 28, "fontWeight": "700" },
-        { "type": "rectangle", "id": "onb05-t1", "x": 20, "y": 170, "name": "Turbo", "width": 350, "height": 84, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 2, "fill": "#CC0000" } },
-        { "type": "rectangle", "id": "onb05-t2", "x": 20, "y": 270, "name": "Acero", "width": 350, "height": 84, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 1, "fill": "#2E2E2E" } },
-        { "type": "rectangle", "id": "onb05-t3", "x": 20, "y": 370, "name": "Terreno", "width": 350, "height": 84, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 1, "fill": "#2E2E2E" } },
-        { "type": "rectangle", "id": "onb05-btn", "x": 20, "y": 760, "name": "Continuar", "width": 350, "height": 52, "fill": "#FF6B00", "cornerRadius": 16 },
-        { "type": "text", "id": "onb05-btn-text", "x": 158, "y": 776, "name": "Continuar Label", "content": "Continuar", "fill": "#0D0D0D", "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" }
+        {
+          "type": "frame",
+          "id": "O3oIP",
+          "name": "StatusBar",
+          "width": "fill_container",
+          "height": 44,
+          "padding": [
+            0,
+            4
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "t9htRm",
+              "name": "Time",
+              "fill": "$textPrimary",
+              "content": "9:41",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "id": "jYSiu",
+          "type": "ref",
+          "ref": "hB7ZH",
+          "name": "ProgressBar",
+          "width": "fill_container",
+          "descendants": {
+            "wJo5C": {
+              "fill": "$accent"
+            },
+            "PN2FM": {
+              "fill": "$accent"
+            },
+            "e9g13q": {
+              "fill": "$accent"
+            },
+            "h4wMv1": {
+              "fill": "$accent"
+            },
+            "UHiQk": {
+              "fill": "$surfaceElevated"
+            }
+          }
+        },
+        {
+          "id": "SsT7z",
+          "type": "ref",
+          "ref": "LU56R",
+          "name": "ScreenHeader",
+          "width": "fill_container",
+          "descendants": {
+            "eDram": {
+              "content": "Paso 4 de 5"
+            },
+            "Sdxde": {
+              "content": "Escoge tu identidad visual"
+            },
+            "G2ljA": {
+              "content": "El tema es solo tu color — RepMAX funciona igual para todos."
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "h6jIaH",
+          "name": "ThemeList",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "children": [
+            {
+              "type": "frame",
+              "id": "m9pYt",
+              "name": "Theme_Turbo",
+              "context": "Opción de tema. Color de marca del tenant.",
+              "width": "fill_container",
+              "fill": "$surfaceElevated",
+              "cornerRadius": "$radiusLg",
+              "stroke": "#CC0000",
+              "strokeWidth": 2,
+              "gap": 14,
+              "padding": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "pPhYW",
+                  "name": "Swatch",
+                  "width": 44,
+                  "height": 44,
+                  "fill": "#CC0000",
+                  "cornerRadius": "$radiusFull",
+                  "layout": "vertical",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "AT9BQ",
+                      "name": "Check",
+                      "width": 22,
+                      "height": 22,
+                      "icon": "check",
+                      "library": "lucide",
+                      "fill": "#FFFFFF"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "M4qgwC",
+                  "name": "ThemeInfo",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "cQCKT",
+                      "name": "ThemeName",
+                      "fill": "#CC0000",
+                      "content": "Turbo",
+                      "fontFamily": "$fontBody",
+                      "fontSize": "$textCardTitle",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "VEuGz",
+                      "name": "ThemeDesc",
+                      "fill": "$textSecondary",
+                      "content": "Rojo · Potencia y velocidad",
+                      "fontFamily": "$fontBody",
+                      "fontSize": "$textNote",
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "lqKSB",
+              "name": "Theme_Acero",
+              "context": "Opción de tema. Color de marca del tenant.",
+              "width": "fill_container",
+              "fill": "$surface",
+              "cornerRadius": "$radiusLg",
+              "stroke": "$border",
+              "strokeWidth": 2,
+              "gap": 14,
+              "padding": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "JdoXS",
+                  "name": "Swatch",
+                  "width": 44,
+                  "height": 44,
+                  "fill": "#1E5EFF",
+                  "cornerRadius": "$radiusFull",
+                  "layout": "vertical",
+                  "justifyContent": "center",
+                  "alignItems": "center"
+                },
+                {
+                  "type": "frame",
+                  "id": "tM7TE",
+                  "name": "ThemeInfo",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "R3oHm4",
+                      "name": "ThemeName",
+                      "fill": "$textPrimary",
+                      "content": "Acero",
+                      "fontFamily": "$fontBody",
+                      "fontSize": "$textCardTitle",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ueiEW",
+                      "name": "ThemeDesc",
+                      "fill": "$textSecondary",
+                      "content": "Azul · Precisión y confianza",
+                      "fontFamily": "$fontBody",
+                      "fontSize": "$textNote",
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "o3KEov",
+              "name": "Theme_Terreno",
+              "context": "Opción de tema. Color de marca del tenant.",
+              "width": "fill_container",
+              "fill": "$surface",
+              "cornerRadius": "$radiusLg",
+              "stroke": "$border",
+              "strokeWidth": 2,
+              "gap": 14,
+              "padding": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "PLzxR",
+                  "name": "Swatch",
+                  "width": 44,
+                  "height": 44,
+                  "fill": "#4A5C3A",
+                  "cornerRadius": "$radiusFull",
+                  "layout": "vertical",
+                  "justifyContent": "center",
+                  "alignItems": "center"
+                },
+                {
+                  "type": "frame",
+                  "id": "sXtFZ",
+                  "name": "ThemeInfo",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "rY7yp",
+                      "name": "ThemeName",
+                      "fill": "$textPrimary",
+                      "content": "Terreno",
+                      "fontFamily": "$fontBody",
+                      "fontSize": "$textCardTitle",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "m7PAwJ",
+                      "name": "ThemeDesc",
+                      "fill": "$textSecondary",
+                      "content": "Verde · Campo y aventura",
+                      "fontFamily": "$fontBody",
+                      "fontSize": "$textNote",
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "U3mr17",
+          "name": "Footer",
+          "width": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            12,
+            0,
+            0,
+            0
+          ],
+          "children": [
+            {
+              "id": "eiAVH",
+              "type": "ref",
+              "ref": "yyFYE",
+              "name": "ButtonPrimary",
+              "width": "fill_container",
+              "descendants": {
+                "OeWlc": {
+                  "content": "Continuar"
+                }
+              }
+            }
+          ]
+        }
       ]
     },
     {
@@ -134,20 +1272,598 @@
       "x": 2150,
       "y": 0,
       "name": "ONB-06-Preview",
+      "context": "Preview. Mock no interactivo. ButtonPrimary → ONB-07.",
+      "theme": {
+        "mode": "dark"
+      },
       "clip": true,
       "width": 390,
       "height": 844,
-      "fill": "#0D0D0D",
-      "layout": "none",
+      "fill": {
+        "type": "gradient",
+        "gradientType": "linear",
+        "enabled": true,
+        "rotation": 180,
+        "size": {
+          "height": 1
+        },
+        "colors": [
+          {
+            "color": "$accentMuted",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 0.22
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ]
+      },
+      "layout": "vertical",
+      "gap": 16,
+      "padding": [
+        16,
+        20,
+        20,
+        20
+      ],
+      "justifyContent": "space_between",
       "children": [
-        { "type": "text", "id": "onb06-step", "x": 20, "y": 24, "name": "Step", "content": "Paso 5 de 5", "fill": "#9E9E9E", "fontFamily": "Inter", "fontSize": 12, "fontWeight": "500" },
-        { "type": "rectangle", "id": "onb06-track", "x": 20, "y": 44, "name": "Progress Track", "width": 350, "height": 6, "fill": "#2E2E2E" },
-        { "type": "rectangle", "id": "onb06-fill", "x": 20, "y": 44, "name": "Progress Fill", "width": 350, "height": 6, "fill": "#FF6B00" },
-        { "type": "text", "id": "onb06-title", "x": 20, "y": 72, "name": "Title", "content": "Asi se vera tu tienda", "fill": "#F5F5F5", "fontFamily": "Inter", "fontSize": 28, "fontWeight": "700" },
-        { "type": "rectangle", "id": "onb06-mock", "x": 20, "y": 160, "name": "Dashboard Mock", "width": 350, "height": 500, "fill": "#1A1A1A", "stroke": { "align": "inside", "thickness": 1, "fill": "#2E2E2E" } },
-        { "type": "rectangle", "id": "onb06-header", "x": 20, "y": 160, "name": "Mock Header", "width": 350, "height": 72, "fill": "#FF6B00" },
-        { "type": "rectangle", "id": "onb06-btn", "x": 20, "y": 760, "name": "Continuar", "width": 350, "height": 52, "fill": "#FF6B00", "cornerRadius": 16 },
-        { "type": "text", "id": "onb06-btn-text", "x": 100, "y": 776, "name": "Continuar Label", "content": "Se ve brutal, continuar", "fill": "#0D0D0D", "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" }
+        {
+          "type": "frame",
+          "id": "xdMK9",
+          "name": "StatusBar",
+          "width": "fill_container",
+          "height": 44,
+          "padding": [
+            0,
+            4
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "CfgTw",
+              "name": "Time",
+              "fill": "$textPrimary",
+              "content": "9:41",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "id": "gIK6H",
+          "type": "ref",
+          "ref": "hB7ZH",
+          "name": "ProgressBar",
+          "width": "fill_container",
+          "descendants": {
+            "wJo5C": {
+              "fill": "$accent"
+            },
+            "PN2FM": {
+              "fill": "$accent"
+            },
+            "e9g13q": {
+              "fill": "$accent"
+            },
+            "h4wMv1": {
+              "fill": "$accent"
+            },
+            "UHiQk": {
+              "fill": "$accent"
+            }
+          }
+        },
+        {
+          "id": "FhCvR",
+          "type": "ref",
+          "ref": "LU56R",
+          "name": "ScreenHeader",
+          "width": "fill_container",
+          "descendants": {
+            "eDram": {
+              "content": "Paso 5 de 5"
+            },
+            "Sdxde": {
+              "content": "Así luce tu tienda"
+            },
+            "G2ljA": {
+              "content": "Tu panel personalizado con tema Turbo."
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "EE0gg",
+          "name": "DashboardMock",
+          "context": "Mock visual del dashboard; no interactivo en onboarding.",
+          "width": "fill_container",
+          "fill": "$surface",
+          "cornerRadius": "$radiusXl",
+          "stroke": "$border",
+          "strokeWidth": 1,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#00000033",
+            "offset": {
+              "x": 0,
+              "y": 10
+            },
+            "blur": 24,
+            "spread": -6
+          },
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 14,
+          "children": [
+            {
+              "type": "frame",
+              "id": "mqjQj",
+              "name": "MockHeader",
+              "width": "fill_container",
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 100,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#CC0000",
+                    "position": 0
+                  },
+                  {
+                    "color": "#FF3B30",
+                    "position": 1
+                  }
+                ]
+              },
+              "cornerRadius": "$radiusLg",
+              "padding": [
+                12,
+                14
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "nADHQ",
+                  "name": "StoreName",
+                  "fill": "#FFFFFF",
+                  "content": "Mi Repuestería",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "icon",
+                  "id": "crniq",
+                  "name": "CarIcon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "car",
+                  "library": "lucide",
+                  "fill": "#FFFFFF"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "STUAa",
+              "name": "KpiRow",
+              "width": "fill_container",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "dDzSe",
+                  "name": "Kpi",
+                  "width": "fill_container",
+                  "fill": "$surfaceElevated",
+                  "cornerRadius": "$radiusMd",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "padding": 10,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Q1F7c",
+                      "name": "KpiLabel",
+                      "fill": "$textSecondary",
+                      "content": "Hoy",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "rsDqc",
+                      "name": "KpiValue",
+                      "fill": "$textPrimary",
+                      "content": "$1.2k",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 18,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "D9y9B",
+                  "name": "Kpi",
+                  "width": "fill_container",
+                  "fill": "$surfaceElevated",
+                  "cornerRadius": "$radiusMd",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "padding": 10,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "aX9ST",
+                      "name": "KpiLabel",
+                      "fill": "$textSecondary",
+                      "content": "Stock",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Q3bcG",
+                      "name": "KpiValue",
+                      "fill": "$textPrimary",
+                      "content": "84",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 18,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "p7go28",
+                  "name": "Kpi",
+                  "width": "fill_container",
+                  "fill": "$surfaceElevated",
+                  "cornerRadius": "$radiusMd",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "padding": 10,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ctgth",
+                      "name": "KpiLabel",
+                      "fill": "$textSecondary",
+                      "content": "Clientes",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "UY4NW",
+                      "name": "KpiValue",
+                      "fill": "$textPrimary",
+                      "content": "12",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 18,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "H0W4f",
+              "name": "ActivityList",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "j7HexO",
+                  "name": "ActivityRow",
+                  "width": "fill_container",
+                  "gap": 10,
+                  "padding": [
+                    8,
+                    4
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "ZTl2m",
+                      "name": "ActIcon",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "shopping-cart",
+                      "library": "lucide",
+                      "fill": "$steelLight"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "WYnWW",
+                      "name": "ActTexts",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 1,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "tHPCU",
+                          "name": "ActDesc",
+                          "fill": "$textPrimary",
+                          "content": "Venta POS",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "f2i5i",
+                          "name": "ActHora",
+                          "fill": "$textSecondary",
+                          "content": "hace 5 min",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "RrzOm",
+                      "name": "ActMonto",
+                      "fill": "$textPrimary",
+                      "content": "$45.00",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "FZVHO",
+                  "name": "ActivityRow",
+                  "width": "fill_container",
+                  "gap": 10,
+                  "padding": [
+                    8,
+                    4
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "xYnrC",
+                      "name": "ActIcon",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "package",
+                      "library": "lucide",
+                      "fill": "$steelLight"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "gglr7",
+                      "name": "ActTexts",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 1,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "u0ukJ3",
+                          "name": "ActDesc",
+                          "fill": "$textPrimary",
+                          "content": "Stock actualizado",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "jErJg",
+                          "name": "ActHora",
+                          "fill": "$textSecondary",
+                          "content": "hace 1h",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "K3ptMt",
+                      "name": "ActMonto",
+                      "fill": "$textPrimary",
+                      "content": "8 items",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "K0xvvp",
+                  "name": "ActivityRow",
+                  "width": "fill_container",
+                  "gap": 10,
+                  "padding": [
+                    8,
+                    4
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "uN80t",
+                      "name": "ActIcon",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "user-plus",
+                      "library": "lucide",
+                      "fill": "$steelLight"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "xyiic",
+                      "name": "ActTexts",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 1,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "fYVJN",
+                          "name": "ActDesc",
+                          "fill": "$textPrimary",
+                          "content": "Nuevo cliente",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "E3LIX",
+                          "name": "ActHora",
+                          "fill": "$textSecondary",
+                          "content": "hace 2h",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "UBi41",
+                      "name": "ActMonto",
+                      "fill": "$textPrimary",
+                      "content": "—",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ad7ZT",
+              "name": "MockTabBar",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "$surfaceElevated",
+              "cornerRadius": "$radiusLg",
+              "padding": [
+                8,
+                16
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "j9CcsQ",
+                  "name": "TabIcon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "house",
+                  "library": "lucide",
+                  "fill": "#CC0000"
+                },
+                {
+                  "type": "icon",
+                  "id": "VUcJ9",
+                  "name": "TabIcon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "shopping-cart",
+                  "library": "lucide",
+                  "fill": "$textDisabled"
+                },
+                {
+                  "type": "icon",
+                  "id": "H4n8l",
+                  "name": "TabIcon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "package",
+                  "library": "lucide",
+                  "fill": "$textDisabled"
+                },
+                {
+                  "type": "icon",
+                  "id": "j3GgQx",
+                  "name": "TabIcon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "users",
+                  "library": "lucide",
+                  "fill": "$textDisabled"
+                },
+                {
+                  "type": "icon",
+                  "id": "q3xXon",
+                  "name": "TabIcon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "chart-column",
+                  "library": "lucide",
+                  "fill": "$textDisabled"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "TmDh8",
+          "name": "Footer",
+          "width": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            8,
+            0,
+            0,
+            0
+          ],
+          "children": [
+            {
+              "id": "cH8FU",
+              "type": "ref",
+              "ref": "yyFYE",
+              "name": "ButtonPrimary",
+              "width": "fill_container",
+              "descendants": {
+                "OeWlc": {
+                  "content": "Se ve brutal, continuar"
+                }
+              }
+            }
+          ]
+        }
       ]
     },
     {
@@ -156,21 +1872,3923 @@
       "x": 2580,
       "y": 0,
       "name": "ONB-07-Decision",
+      "context": "Decisión. Primary → Auth signup. Secondary → demo login + completeOnboarding.",
+      "theme": {
+        "mode": "dark"
+      },
       "clip": true,
       "width": 390,
       "height": 844,
-      "fill": "#0D0D0D",
-      "layout": "none",
+      "fill": {
+        "type": "gradient",
+        "gradientType": "linear",
+        "enabled": true,
+        "rotation": 180,
+        "size": {
+          "height": 1
+        },
+        "colors": [
+          {
+            "color": "$accentMuted",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 0.22
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ]
+      },
+      "layout": "vertical",
+      "gap": 24,
+      "padding": [
+        16,
+        20,
+        32,
+        20
+      ],
+      "justifyContent": "space_between",
       "children": [
-        { "type": "text", "id": "onb07-title", "x": 45, "y": 260, "name": "Title", "content": "Tu tienda esta lista para arrancar", "fill": "#F5F5F5", "fontFamily": "Inter", "fontSize": 30, "fontWeight": "700" },
-        { "type": "text", "id": "onb07-sub", "x": 45, "y": 330, "name": "Subtitle", "content": "Todo quedo configurado. Elige como continuar.", "fill": "#9E9E9E", "fontFamily": "Inter", "fontSize": 16 },
-        { "type": "rectangle", "id": "onb07-btn1", "x": 20, "y": 560, "name": "Crear cuenta", "width": 350, "height": 52, "fill": "#FF6B00", "cornerRadius": 16 },
-        { "type": "text", "id": "onb07-btn1-text", "x": 115, "y": 576, "name": "Crear cuenta label", "content": "Crear mi cuenta gratis", "fill": "#0D0D0D", "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
-        { "type": "rectangle", "id": "onb07-btn2", "x": 20, "y": 628, "name": "Demo", "width": 350, "height": 52, "fill": "#0D0D0D", "cornerRadius": 16, "stroke": { "align": "inside", "thickness": 2, "fill": "#FF6B00" } },
-        { "type": "text", "id": "onb07-btn2-text", "x": 120, "y": 644, "name": "Demo label", "content": "Probar demo primero", "fill": "#FF6B00", "fontFamily": "Inter", "fontSize": 16, "fontWeight": "600" },
-        { "type": "text", "id": "onb07-note", "x": 95, "y": 708, "name": "Trust note", "content": "Sin enredos, empiezas en minutos.", "fill": "#9E9E9E", "fontFamily": "Inter", "fontSize": 12 }
+        {
+          "type": "frame",
+          "id": "ilRz2",
+          "name": "StatusBar",
+          "width": "fill_container",
+          "height": 44,
+          "padding": [
+            0,
+            4
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "Fk7Wx",
+              "name": "Time",
+              "fill": "$textPrimary",
+              "content": "9:41",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Fb1uf",
+          "name": "HeroBlock",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            48,
+            0,
+            0,
+            0
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "j4WoXE",
+              "name": "RocketWrap",
+              "width": 96,
+              "height": 96,
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1,
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "$accentSoft",
+                    "position": 0
+                  },
+                  {
+                    "color": "$surfaceElevated",
+                    "position": 1
+                  }
+                ]
+              },
+              "cornerRadius": "$radiusFull",
+              "stroke": "$accent",
+              "strokeWidth": 1.5,
+              "layout": "vertical",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "uI5M8",
+                  "name": "RocketIcon",
+                  "width": 44,
+                  "height": 44,
+                  "icon": "rocket",
+                  "library": "lucide",
+                  "fill": "$accent"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "dz818",
+              "name": "DecisionTitle",
+              "fill": "$textPrimary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Tu tienda está lista\npara arrancar",
+              "textAlign": "center",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textTitle",
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "IFeGp",
+              "name": "DecisionSub",
+              "fill": "$textSecondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Todo configurado según tus preferencias. Ahora elige cómo continuar.",
+              "textAlign": "center",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textSubtitle",
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "KI3bF",
+          "name": "Actions",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "alignItems": "center",
+          "children": [
+            {
+              "id": "R6TNk",
+              "type": "ref",
+              "ref": "yyFYE",
+              "name": "ButtonPrimary",
+              "width": "fill_container",
+              "descendants": {
+                "OeWlc": {
+                  "content": "Crear mi cuenta gratis"
+                }
+              }
+            },
+            {
+              "id": "ZhBIa",
+              "type": "ref",
+              "ref": "xLKr9",
+              "name": "ButtonSecondary",
+              "width": "fill_container",
+              "descendants": {
+                "D45Ob": {
+                  "content": "Explorar con demo"
+                }
+              }
+            },
+            {
+              "type": "text",
+              "id": "BX0Lh",
+              "name": "TrustNote",
+              "fill": "$textSecondary",
+              "content": "Sin tarjeta. Sin enredos. Empiezas en minutos.",
+              "textAlign": "center",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textNote",
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "JF3LB",
+              "name": "LegalNote",
+              "fill": "$textDisabled",
+              "content": "Sin tarjeta de crédito · Cancela cuando quieras",
+              "textAlign": "center",
+              "fontFamily": "$fontBody",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "asrGv",
+      "x": 3050,
+      "y": 0,
+      "name": "Cover",
+      "context": "File operating manual: owner, status, version, scope, links.",
+      "width": 420,
+      "fill": "$surface",
+      "cornerRadius": "$radiusLg",
+      "stroke": "$border",
+      "strokeWidth": 1,
+      "layout": "vertical",
+      "gap": 8,
+      "padding": 24,
+      "children": [
+        {
+          "type": "text",
+          "id": "pEV81",
+          "name": "CoverTitle",
+          "fill": "$textPrimary",
+          "content": "RepMAX — Onboarding Mobile",
+          "fontFamily": "$fontBody",
+          "fontSize": 20,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "Hu0yY",
+          "name": "CoverOwner",
+          "fill": "$textSecondary",
+          "content": "Owner: Alberto / ZM Tech",
+          "fontFamily": "$fontBody",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "HcR66",
+          "name": "CoverStatus",
+          "fill": "$accent",
+          "content": "Status: Engineering review",
+          "fontFamily": "$fontBody",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "n50be",
+          "name": "CoverVersion",
+          "fill": "$textSecondary",
+          "content": "Version: 0.4 · 2026-08-01",
+          "fontFamily": "$fontBody",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "FfRFq",
+          "name": "CoverScope",
+          "fill": "$textSecondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Scope: tokens + components + dark/light + flow map + HTML prototype",
+          "fontFamily": "$fontBody",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "P1AE1",
+          "name": "CoverOut",
+          "fill": "$textSecondary",
+          "content": "Out: implementación RN (siguiente)",
+          "fontFamily": "$fontBody",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "EzMse",
+          "name": "CoverLinks",
+          "fill": "$steelLight",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Spec: docs/repmax/design/onboarding-ux-spec.md",
+          "fontFamily": "$fontBody",
+          "fontSize": 12,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ME5OQ",
+      "x": 3050,
+      "y": 280,
+      "name": "SourceOfTruth / Components",
+      "context": "Biblioteca de componentes reutilizables del onboarding. Instanciar con ref en las pantallas ONB-*.",
+      "theme": {
+        "mode": "dark"
+      },
+      "width": 420,
+      "fill": "$bg",
+      "cornerRadius": "$radiusXl",
+      "stroke": "$border",
+      "strokeWidth": 1,
+      "layout": "vertical",
+      "gap": 24,
+      "padding": 24,
+      "children": [
+        {
+          "type": "text",
+          "id": "T8cIw",
+          "name": "LibHeading",
+          "fill": "$textPrimary",
+          "content": "Components",
+          "fontFamily": "$fontBody",
+          "fontSize": 22,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "PDwKJ",
+          "name": "LibSub",
+          "fill": "$textSecondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Industrial Dark · mirrors apps/repmax-mobile/src/utils/theme.ts",
+          "fontFamily": "$fontBody",
+          "fontSize": 12,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "hB7ZH",
+          "name": "ProgressBar",
+          "context": "Barra de progreso onboarding (5 pasos). Segmentos filled = pasos completados/actual. Usar en ONB-02..ONB-06. Animación fill 300ms en código.",
+          "reusable": true,
+          "width": "fill_container",
+          "height": 4,
+          "gap": "$spaceXs",
+          "children": [
+            {
+              "type": "frame",
+              "id": "wJo5C",
+              "name": "Segment1",
+              "context": "Paso completado o actual",
+              "width": "fill_container",
+              "height": 4,
+              "fill": "$accent",
+              "cornerRadius": "$radiusFull"
+            },
+            {
+              "type": "frame",
+              "id": "PN2FM",
+              "name": "Segment2",
+              "context": "Paso completado o actual",
+              "width": "fill_container",
+              "height": 4,
+              "fill": "$accent",
+              "cornerRadius": "$radiusFull"
+            },
+            {
+              "type": "frame",
+              "id": "e9g13q",
+              "name": "Segment3",
+              "context": "Paso pendiente",
+              "width": "fill_container",
+              "height": 4,
+              "fill": "$surfaceElevated",
+              "cornerRadius": "$radiusFull"
+            },
+            {
+              "type": "frame",
+              "id": "h4wMv1",
+              "name": "Segment4",
+              "context": "Paso pendiente",
+              "width": "fill_container",
+              "height": 4,
+              "fill": "$surfaceElevated",
+              "cornerRadius": "$radiusFull"
+            },
+            {
+              "type": "frame",
+              "id": "UHiQk",
+              "name": "Segment5",
+              "context": "Paso pendiente",
+              "width": "fill_container",
+              "height": 4,
+              "fill": "$surfaceElevated",
+              "cornerRadius": "$radiusFull"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "M3L9Nl",
+          "name": "SelectionCard",
+          "context": "Card de selección genérica (Vehicle/Business/Theme). Estado default. Tap: scale 0.96 spring; avanza o marca selected. Hit target full card ≥44.",
+          "reusable": true,
+          "width": "fill_container",
+          "fill": "$surface",
+          "cornerRadius": "$radiusLg",
+          "stroke": "$border",
+          "strokeWidth": 2,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#0000001A",
+            "offset": {
+              "x": 0,
+              "y": 4
+            },
+            "blur": 12,
+            "spread": -2
+          },
+          "gap": "$spaceMd",
+          "padding": "$spaceBase",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "P3RcY",
+              "name": "IconBox",
+              "width": 52,
+              "height": 52,
+              "fill": "$surfaceElevated",
+              "cornerRadius": "$radiusMd",
+              "layout": "vertical",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "t1Naqx",
+                  "name": "CardIcon",
+                  "width": 28,
+                  "height": 28,
+                  "icon": "car",
+                  "library": "lucide",
+                  "fill": "$steel"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "F3FmX5",
+              "name": "CardTexts",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 2,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "SYhJD",
+                  "name": "CardTitle",
+                  "fill": "$textPrimary",
+                  "content": "Carros",
+                  "fontFamily": "$fontBody",
+                  "fontSize": "$textCardTitle",
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "Im1Wx",
+                  "name": "CardDesc",
+                  "fill": "$textSecondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Repuestos y accesorios para autos",
+                  "fontFamily": "$fontBody",
+                  "fontSize": "$textNote",
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "vABLn",
+          "name": "SelectionCardSelected",
+          "context": "Estado selected de SelectionCard. Borde accent + fondo elevated + check. Icono y título en accent.",
+          "reusable": true,
+          "width": "fill_container",
+          "fill": {
+            "type": "gradient",
+            "gradientType": "linear",
+            "enabled": true,
+            "rotation": 100,
+            "size": {
+              "height": 1
+            },
+            "colors": [
+              {
+                "color": "$surfaceElevated",
+                "position": 0
+              },
+              {
+                "color": "$accentMuted",
+                "position": 1
+              }
+            ]
+          },
+          "cornerRadius": "$radiusLg",
+          "stroke": "$accent",
+          "strokeWidth": 2,
+          "gap": "$spaceMd",
+          "padding": "$spaceBase",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "DIYoQ",
+              "name": "IconBox",
+              "width": 52,
+              "height": 52,
+              "fill": "$surfaceElevated",
+              "cornerRadius": "$radiusMd",
+              "layout": "vertical",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "sax7l",
+                  "name": "CardIcon",
+                  "width": 28,
+                  "height": 28,
+                  "icon": "car",
+                  "library": "lucide",
+                  "fill": "$accent"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "bNmVx",
+              "name": "CardTexts",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 2,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "M7CHlh",
+                  "name": "CardTitle",
+                  "fill": "$accent",
+                  "content": "Carros",
+                  "fontFamily": "$fontBody",
+                  "fontSize": "$textCardTitle",
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "OaCQk",
+                  "name": "CardDesc",
+                  "fill": "$textSecondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Repuestos y accesorios para autos",
+                  "fontFamily": "$fontBody",
+                  "fontSize": "$textNote",
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "icon",
+              "id": "A9eTa",
+              "name": "CheckIcon",
+              "context": "Indicador visual de selección; no usar color solo.",
+              "width": 20,
+              "height": 20,
+              "icon": "circle-check",
+              "library": "lucide",
+              "fill": "$accent"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "yyFYE",
+          "name": "ButtonPrimary",
+          "context": "CTA primario onboarding. Min height 52 (≥44 hit). Disabled: fill surfaceElevated + textDisabled. Loading: spinner + disable tap. Analytics: onboarding.cta_primary.",
+          "reusable": true,
+          "width": "fill_container",
+          "height": 52,
+          "fill": {
+            "type": "gradient",
+            "gradientType": "linear",
+            "enabled": true,
+            "rotation": 115,
+            "size": {
+              "height": 1
+            },
+            "colors": [
+              {
+                "color": "$accent",
+                "position": 0
+              },
+              {
+                "color": "$accentHover",
+                "position": 1
+              }
+            ]
+          },
+          "cornerRadius": "$radiusLg",
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#E85C0040",
+            "offset": {
+              "x": 0,
+              "y": 8
+            },
+            "blur": 20,
+            "spread": -4
+          },
+          "padding": [
+            14,
+            20
+          ],
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "OeWlc",
+              "name": "ButtonLabel",
+              "fill": "$textInverse",
+              "content": "Continuar",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textButton",
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "xLKr9",
+          "name": "ButtonSecondary",
+          "context": "CTA secundario (ej. Probar demo). Mismo hit target que primary. No competir visualmente con accent.",
+          "reusable": true,
+          "width": "fill_container",
+          "height": 52,
+          "fill": {
+            "type": "gradient",
+            "gradientType": "linear",
+            "enabled": true,
+            "rotation": 180,
+            "size": {
+              "height": 1
+            },
+            "colors": [
+              {
+                "color": "$surfaceElevated",
+                "position": 0
+              },
+              {
+                "color": "$surface",
+                "position": 1
+              }
+            ]
+          },
+          "cornerRadius": "$radiusLg",
+          "stroke": "$border",
+          "strokeWidth": 1.5,
+          "padding": [
+            14,
+            20
+          ],
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "D45Ob",
+              "name": "ButtonLabel",
+              "fill": "$textPrimary",
+              "content": "Probar demo primero",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textButton",
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "AyerU",
+          "name": "ToastError",
+          "context": "Toast/alerta de error (login/demo fallido). Icono + mensaje; no color solo. Auto-dismiss ~4s o dismiss manual.",
+          "reusable": true,
+          "width": "fill_container",
+          "fill": "$surfaceElevated",
+          "cornerRadius": "$radiusMd",
+          "stroke": "$error",
+          "strokeWidth": 1,
+          "gap": "$spaceMd",
+          "padding": [
+            12,
+            16
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "fmMi6",
+              "name": "ToastIcon",
+              "width": 20,
+              "height": 20,
+              "icon": "circle-alert",
+              "library": "lucide",
+              "fill": "$error"
+            },
+            {
+              "type": "text",
+              "id": "T8yzXu",
+              "name": "ToastMessage",
+              "fill": "$textPrimary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "No se pudo iniciar la demo. Revisa tu conexión e intenta de nuevo.",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textLabel",
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "LU56R",
+          "name": "ScreenHeader",
+          "context": "Header de paso: step label + título (máx 2 líneas) + subtítulo de apoyo. Padding horizontal lo aplica el shell.",
+          "reusable": true,
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": "$spaceSm",
+          "children": [
+            {
+              "type": "text",
+              "id": "eDram",
+              "name": "StepLabel",
+              "fill": "$accent",
+              "content": "Paso 2 de 5",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textLabel",
+              "fontWeight": "500"
+            },
+            {
+              "type": "text",
+              "id": "Sdxde",
+              "name": "ScreenTitle",
+              "fill": "$textPrimary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "¿Qué vehículos atiendes?",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textTitle",
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "G2ljA",
+              "name": "ScreenSubtitle",
+              "fill": "$textSecondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Cuadramos el sistema para tu inventario real.",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textSubtitle",
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "svwAZ",
+      "x": 3530,
+      "y": 280,
+      "name": "SourceOfTruth / Components Light",
+      "context": "Misma biblioteca en mode=light para validar contraste AA.",
+      "theme": {
+        "mode": "light"
+      },
+      "width": 420,
+      "fill": "$bg",
+      "cornerRadius": "$radiusXl",
+      "stroke": "$border",
+      "strokeWidth": 1,
+      "layout": "vertical",
+      "gap": 24,
+      "padding": 24,
+      "children": [
+        {
+          "type": "text",
+          "id": "XZZqx",
+          "name": "LibHeadingLight",
+          "fill": "$textPrimary",
+          "content": "Components · Light",
+          "fontFamily": "$fontBody",
+          "fontSize": 22,
+          "fontWeight": "700"
+        },
+        {
+          "id": "aoNTP",
+          "type": "ref",
+          "ref": "hB7ZH",
+          "name": "ProgressBar",
+          "width": "fill_container"
+        },
+        {
+          "id": "uuaEr",
+          "type": "ref",
+          "ref": "M3L9Nl",
+          "name": "SelectionCard",
+          "width": "fill_container"
+        },
+        {
+          "id": "xw3cN",
+          "type": "ref",
+          "ref": "vABLn",
+          "name": "SelectionCardSelected",
+          "width": "fill_container"
+        },
+        {
+          "id": "OLSuf",
+          "type": "ref",
+          "ref": "yyFYE",
+          "name": "ButtonPrimary",
+          "width": "fill_container"
+        },
+        {
+          "id": "bgN2n",
+          "type": "ref",
+          "ref": "xLKr9",
+          "name": "ButtonSecondary",
+          "width": "fill_container"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "jKl86",
+      "x": 0,
+      "y": 1059,
+      "name": "ONB-01-Splash-Light",
+      "context": "Variante light del onboarding. Mismos componentes; tokens mode=light.",
+      "theme": {
+        "mode": "light"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.4,
+          "height": 1.1
+        },
+        "colors": [
+          {
+            "color": "$accentSoft",
+            "position": 0
+          },
+          {
+            "color": "$accentMuted",
+            "position": 0.35
+          },
+          {
+            "color": "$bg",
+            "position": 0.75
+          },
+          {
+            "color": "$gradientEdge",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0.42
+        }
+      },
+      "layout": "vertical",
+      "gap": 14,
+      "padding": [
+        0,
+        20
+      ],
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "o7MJA",
+          "name": "Logo",
+          "fill": "$textPrimary",
+          "content": "RepMAX",
+          "fontFamily": "$fontBody",
+          "fontSize": 44,
+          "fontWeight": "700",
+          "letterSpacing": -1
+        },
+        {
+          "type": "text",
+          "id": "xhTNi",
+          "name": "Tagline",
+          "fill": "$accent",
+          "content": "Business Suite",
+          "fontFamily": "$fontBody",
+          "fontSize": 17,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "PurhT",
+          "name": "SplashHint",
+          "fill": "$textSecondary",
+          "content": "Autopartes · Inventario · POS",
+          "fontFamily": "$fontBody",
+          "fontSize": "$textNote",
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "vQqQl",
+      "x": 430,
+      "y": 1059,
+      "name": "ONB-02-Pais-Light",
+      "context": "Variante light del onboarding. Mismos componentes; tokens mode=light.",
+      "theme": {
+        "mode": "light"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "linear",
+        "enabled": true,
+        "rotation": 180,
+        "size": {
+          "height": 1
+        },
+        "colors": [
+          {
+            "color": "$accentMuted",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 0.22
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ]
+      },
+      "layout": "vertical",
+      "gap": 20,
+      "padding": [
+        16,
+        20,
+        24,
+        20
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "k1TFh",
+          "name": "StatusBar",
+          "width": "fill_container",
+          "height": 44,
+          "padding": [
+            0,
+            4
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "hKENU",
+              "name": "Time",
+              "fill": "$textPrimary",
+              "content": "9:41",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "rONdV",
+              "name": "StatusIcons",
+              "fill": "$textSecondary",
+              "content": "LTE  ",
+              "fontFamily": "$fontBody",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "id": "IoUc7",
+          "type": "ref",
+          "ref": "hB7ZH",
+          "name": "ProgressBar",
+          "width": "fill_container",
+          "descendants": {
+            "wJo5C": {
+              "fill": "$accent"
+            },
+            "PN2FM": {
+              "fill": "$surfaceElevated"
+            },
+            "e9g13q": {
+              "fill": "$surfaceElevated"
+            },
+            "h4wMv1": {
+              "fill": "$surfaceElevated"
+            },
+            "UHiQk": {
+              "fill": "$surfaceElevated"
+            }
+          }
+        },
+        {
+          "id": "z8NbMi",
+          "type": "ref",
+          "ref": "LU56R",
+          "name": "ScreenHeader",
+          "width": "fill_container",
+          "descendants": {
+            "eDram": {
+              "content": "Paso 1 de 5"
+            },
+            "Sdxde": {
+              "content": "¿Desde dónde operas?"
+            },
+            "G2ljA": {
+              "content": "Configuramos tu tienda para tu mercado."
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "cihWJ",
+          "name": "CountryFeatured",
+          "context": "Card destacada Venezuela. Tap avanza a vehículos. Animación scale 0.97.",
+          "width": "fill_container",
+          "fill": {
+            "type": "gradient",
+            "gradientType": "linear",
+            "enabled": true,
+            "rotation": 105,
+            "size": {
+              "height": 1
+            },
+            "colors": [
+              {
+                "color": "$surfaceElevated",
+                "position": 0
+              },
+              {
+                "color": "$accentMuted",
+                "position": 1
+              }
+            ]
+          },
+          "cornerRadius": "$radiusXl",
+          "stroke": "$accent",
+          "strokeWidth": 2,
+          "effect": {
+            "type": "shadow",
+            "shadowType": "outer",
+            "color": "#FF6B0033",
+            "offset": {
+              "x": 0,
+              "y": 8
+            },
+            "blur": 20,
+            "spread": -4
+          },
+          "gap": 14,
+          "padding": 20,
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "jXM7a",
+              "name": "CountryBadge",
+              "width": 48,
+              "height": 48,
+              "fill": "$accent",
+              "cornerRadius": "$radiusMd",
+              "layout": "vertical",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "SYuET",
+                  "name": "BadgeCode",
+                  "fill": "$textInverse",
+                  "content": "VE",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 16,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "golPw",
+              "name": "CountryTexts",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 4,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "KhPFr",
+                  "name": "CountryName",
+                  "fill": "$textPrimary",
+                  "content": "Venezuela",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 22,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "QA7g5",
+                  "name": "CountryHint",
+                  "fill": "$textSecondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Optimizado para el mercado venezolano",
+                  "fontFamily": "$fontBody",
+                  "fontSize": "$textLabel",
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "XhOuH",
+          "name": "OtrosLabel",
+          "fill": "$textSecondary",
+          "content": "Otros países",
+          "fontFamily": "$fontBody",
+          "fontSize": "$textLabel",
+          "fontWeight": "500"
+        },
+        {
+          "type": "frame",
+          "id": "tHzAU",
+          "name": "CountryGrid",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "children": [
+            {
+              "type": "frame",
+              "id": "FfmjG",
+              "name": "CountryRow",
+              "width": "fill_container",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "fohlU",
+                  "name": "Country_CO",
+                  "context": "Opción de país. Tap avanza.",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": "$radiusLg",
+                  "stroke": "$border",
+                  "strokeWidth": 1.5,
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "gZsYy",
+                      "name": "CodeBadge",
+                      "width": 36,
+                      "height": 36,
+                      "fill": "$surfaceElevated",
+                      "cornerRadius": "$radiusMd",
+                      "layout": "vertical",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "g5PAKP",
+                          "name": "Code",
+                          "fill": "$steelLight",
+                          "content": "CO",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "ZwB2Z",
+                      "name": "Name",
+                      "fill": "$textPrimary",
+                      "content": "Colombia",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "uVG7w",
+                  "name": "Country_PE",
+                  "context": "Opción de país. Tap avanza.",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": "$radiusLg",
+                  "stroke": "$border",
+                  "strokeWidth": 1.5,
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "wi0OJ",
+                      "name": "CodeBadge",
+                      "width": 36,
+                      "height": 36,
+                      "fill": "$surfaceElevated",
+                      "cornerRadius": "$radiusMd",
+                      "layout": "vertical",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "lcqPI",
+                          "name": "Code",
+                          "fill": "$steelLight",
+                          "content": "PE",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "WWcpw",
+                      "name": "Name",
+                      "fill": "$textPrimary",
+                      "content": "Perú",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "uSkz6",
+              "name": "CountryRow",
+              "width": "fill_container",
+              "gap": 12,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "adpHu",
+                  "name": "Country_EC",
+                  "context": "Opción de país. Tap avanza.",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": "$radiusLg",
+                  "stroke": "$border",
+                  "strokeWidth": 1.5,
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "KnZsl",
+                      "name": "CodeBadge",
+                      "width": 36,
+                      "height": 36,
+                      "fill": "$surfaceElevated",
+                      "cornerRadius": "$radiusMd",
+                      "layout": "vertical",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "qaIKG",
+                          "name": "Code",
+                          "fill": "$steelLight",
+                          "content": "EC",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "P5r0YY",
+                      "name": "Name",
+                      "fill": "$textPrimary",
+                      "content": "Ecuador",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "XlLn3",
+                  "name": "Country_DO",
+                  "context": "Opción de país. Tap avanza.",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": "$radiusLg",
+                  "stroke": "$border",
+                  "strokeWidth": 1.5,
+                  "layout": "vertical",
+                  "gap": 6,
+                  "padding": 14,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "d6lzI2",
+                      "name": "CodeBadge",
+                      "width": 36,
+                      "height": 36,
+                      "fill": "$surfaceElevated",
+                      "cornerRadius": "$radiusMd",
+                      "layout": "vertical",
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "HRxij",
+                          "name": "Code",
+                          "fill": "$steelLight",
+                          "content": "DO",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 12,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "M0fj9x",
+                      "name": "Name",
+                      "fill": "$textPrimary",
+                      "content": "Rep. Dom.",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "PzuMP",
+      "x": 860,
+      "y": 1059,
+      "name": "ONB-03-Vehiculos-Light",
+      "context": "Variante light del onboarding. Mismos componentes; tokens mode=light.",
+      "theme": {
+        "mode": "light"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "linear",
+        "enabled": true,
+        "rotation": 180,
+        "size": {
+          "height": 1
+        },
+        "colors": [
+          {
+            "color": "$accentMuted",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 0.22
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ]
+      },
+      "layout": "vertical",
+      "gap": 20,
+      "padding": [
+        16,
+        20,
+        24,
+        20
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "uuUoo",
+          "name": "StatusBar",
+          "width": "fill_container",
+          "height": 44,
+          "padding": [
+            0,
+            4
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "I7lLas",
+              "name": "Time",
+              "fill": "$textPrimary",
+              "content": "9:41",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "id": "ZLHBn",
+          "type": "ref",
+          "ref": "hB7ZH",
+          "name": "ProgressBar",
+          "width": "fill_container",
+          "descendants": {
+            "wJo5C": {
+              "fill": "$accent"
+            },
+            "PN2FM": {
+              "fill": "$accent"
+            },
+            "e9g13q": {
+              "fill": "$surfaceElevated"
+            },
+            "h4wMv1": {
+              "fill": "$surfaceElevated"
+            },
+            "UHiQk": {
+              "fill": "$surfaceElevated"
+            }
+          }
+        },
+        {
+          "id": "u3QfD",
+          "type": "ref",
+          "ref": "LU56R",
+          "name": "ScreenHeader",
+          "width": "fill_container",
+          "descendants": {
+            "eDram": {
+              "content": "Paso 2 de 5"
+            },
+            "Sdxde": {
+              "content": "¿Con qué trabajas?"
+            },
+            "G2ljA": {
+              "content": "Cuadramos el sistema para tu inventario real."
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "MgM9j",
+          "name": "VehicleCards",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "children": [
+            {
+              "id": "qx2ob",
+              "type": "ref",
+              "ref": "vABLn",
+              "name": "CardCarrosSelected",
+              "width": "fill_container",
+              "descendants": {
+                "sax7l": {
+                  "icon": "car"
+                },
+                "M7CHlh": {
+                  "content": "Carros"
+                },
+                "OaCQk": {
+                  "content": "Toyota, Chevrolet, Ford y más"
+                }
+              }
+            },
+            {
+              "id": "seC6w",
+              "type": "ref",
+              "ref": "M3L9Nl",
+              "name": "CardMotos",
+              "width": "fill_container",
+              "descendants": {
+                "t1Naqx": {
+                  "icon": "bike"
+                },
+                "SYhJD": {
+                  "content": "Motos"
+                },
+                "Im1Wx": {
+                  "content": "Yamaha, Honda, Bera, Empire..."
+                }
+              }
+            },
+            {
+              "id": "cxCzS",
+              "type": "ref",
+              "ref": "M3L9Nl",
+              "name": "CardAmbos",
+              "width": "fill_container",
+              "descendants": {
+                "t1Naqx": {
+                  "icon": "wrench"
+                },
+                "SYhJD": {
+                  "content": "Ambos"
+                },
+                "Im1Wx": {
+                  "content": "Inventario mixto completo"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "poBkg",
+      "x": 1290,
+      "y": 1059,
+      "name": "ONB-04-Negocio-Light",
+      "context": "Variante light del onboarding. Mismos componentes; tokens mode=light.",
+      "theme": {
+        "mode": "light"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "linear",
+        "enabled": true,
+        "rotation": 180,
+        "size": {
+          "height": 1
+        },
+        "colors": [
+          {
+            "color": "$accentMuted",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 0.22
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ]
+      },
+      "layout": "vertical",
+      "gap": 20,
+      "padding": [
+        16,
+        20,
+        24,
+        20
+      ],
+      "children": [
+        {
+          "type": "frame",
+          "id": "m6Cb7W",
+          "name": "StatusBar",
+          "width": "fill_container",
+          "height": 44,
+          "padding": [
+            0,
+            4
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "DqVX6",
+              "name": "Time",
+              "fill": "$textPrimary",
+              "content": "9:41",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "id": "U2G54u",
+          "type": "ref",
+          "ref": "hB7ZH",
+          "name": "ProgressBar",
+          "width": "fill_container",
+          "descendants": {
+            "wJo5C": {
+              "fill": "$accent"
+            },
+            "PN2FM": {
+              "fill": "$accent"
+            },
+            "e9g13q": {
+              "fill": "$accent"
+            },
+            "h4wMv1": {
+              "fill": "$surfaceElevated"
+            },
+            "UHiQk": {
+              "fill": "$surfaceElevated"
+            }
+          }
+        },
+        {
+          "id": "UmVeb",
+          "type": "ref",
+          "ref": "LU56R",
+          "name": "ScreenHeader",
+          "width": "fill_container",
+          "descendants": {
+            "eDram": {
+              "content": "Paso 3 de 5"
+            },
+            "Sdxde": {
+              "content": "¿Qué tipo de negocio tienes?"
+            },
+            "G2ljA": {
+              "content": "Escoge lo que vendes y te dejamos todo cuadrado."
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "Q4Exd",
+          "name": "BusinessCards",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "children": [
+            {
+              "id": "O5xfPp",
+              "type": "ref",
+              "ref": "M3L9Nl",
+              "name": "CardRepuesteria",
+              "width": "fill_container",
+              "descendants": {
+                "t1Naqx": {
+                  "icon": "store"
+                },
+                "SYhJD": {
+                  "content": "Repuestería"
+                },
+                "Im1Wx": {
+                  "content": "Venta de repuestos y accesorios"
+                }
+              }
+            },
+            {
+              "id": "p03U5",
+              "type": "ref",
+              "ref": "vABLn",
+              "name": "CardTallerSelected",
+              "width": "fill_container",
+              "descendants": {
+                "sax7l": {
+                  "icon": "wrench"
+                },
+                "M7CHlh": {
+                  "content": "Taller"
+                },
+                "OaCQk": {
+                  "content": "Taller con venta de partes"
+                }
+              }
+            },
+            {
+              "id": "DKT0W",
+              "type": "ref",
+              "ref": "M3L9Nl",
+              "name": "CardAmbos",
+              "width": "fill_container",
+              "descendants": {
+                "t1Naqx": {
+                  "icon": "warehouse"
+                },
+                "SYhJD": {
+                  "content": "Ambos"
+                },
+                "Im1Wx": {
+                  "content": "Taller y tienda combinados"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "kQGPj",
+      "x": 1720,
+      "y": 1059,
+      "name": "ONB-05-Tema-Light",
+      "context": "Variante light del onboarding. Mismos componentes; tokens mode=light.",
+      "theme": {
+        "mode": "light"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "linear",
+        "enabled": true,
+        "rotation": 180,
+        "size": {
+          "height": 1
+        },
+        "colors": [
+          {
+            "color": "$accentMuted",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 0.22
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ]
+      },
+      "layout": "vertical",
+      "gap": 16,
+      "padding": [
+        16,
+        20,
+        20,
+        20
+      ],
+      "justifyContent": "space_between",
+      "children": [
+        {
+          "type": "frame",
+          "id": "pcbNX",
+          "name": "StatusBar",
+          "width": "fill_container",
+          "height": 44,
+          "padding": [
+            0,
+            4
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "S3OuGX",
+              "name": "Time",
+              "fill": "$textPrimary",
+              "content": "9:41",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "id": "BRDvE",
+          "type": "ref",
+          "ref": "hB7ZH",
+          "name": "ProgressBar",
+          "width": "fill_container",
+          "descendants": {
+            "wJo5C": {
+              "fill": "$accent"
+            },
+            "PN2FM": {
+              "fill": "$accent"
+            },
+            "e9g13q": {
+              "fill": "$accent"
+            },
+            "h4wMv1": {
+              "fill": "$accent"
+            },
+            "UHiQk": {
+              "fill": "$surfaceElevated"
+            }
+          }
+        },
+        {
+          "id": "uKYUw",
+          "type": "ref",
+          "ref": "LU56R",
+          "name": "ScreenHeader",
+          "width": "fill_container",
+          "descendants": {
+            "eDram": {
+              "content": "Paso 4 de 5"
+            },
+            "Sdxde": {
+              "content": "Escoge tu identidad visual"
+            },
+            "G2ljA": {
+              "content": "El tema es solo tu color — RepMAX funciona igual para todos."
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "D2YSkW",
+          "name": "ThemeList",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "children": [
+            {
+              "type": "frame",
+              "id": "fNM9D",
+              "name": "Theme_Turbo",
+              "context": "Opción de tema. Color de marca del tenant.",
+              "width": "fill_container",
+              "fill": "$surfaceElevated",
+              "cornerRadius": "$radiusLg",
+              "stroke": "#CC0000",
+              "strokeWidth": 2,
+              "gap": 14,
+              "padding": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "xtrU1",
+                  "name": "Swatch",
+                  "width": 44,
+                  "height": 44,
+                  "fill": "#CC0000",
+                  "cornerRadius": "$radiusFull",
+                  "layout": "vertical",
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "PyYD1",
+                      "name": "Check",
+                      "width": 22,
+                      "height": 22,
+                      "icon": "check",
+                      "library": "lucide",
+                      "fill": "#FFFFFF"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "PPOfY",
+                  "name": "ThemeInfo",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "G8yZd4",
+                      "name": "ThemeName",
+                      "fill": "#CC0000",
+                      "content": "Turbo",
+                      "fontFamily": "$fontBody",
+                      "fontSize": "$textCardTitle",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "o4ac0M",
+                      "name": "ThemeDesc",
+                      "fill": "$textSecondary",
+                      "content": "Rojo · Potencia y velocidad",
+                      "fontFamily": "$fontBody",
+                      "fontSize": "$textNote",
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "YXF2T",
+              "name": "Theme_Acero",
+              "context": "Opción de tema. Color de marca del tenant.",
+              "width": "fill_container",
+              "fill": "$surface",
+              "cornerRadius": "$radiusLg",
+              "stroke": "$border",
+              "strokeWidth": 2,
+              "gap": 14,
+              "padding": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Fkt3Y",
+                  "name": "Swatch",
+                  "width": 44,
+                  "height": 44,
+                  "fill": "#1E5EFF",
+                  "cornerRadius": "$radiusFull",
+                  "layout": "vertical",
+                  "justifyContent": "center",
+                  "alignItems": "center"
+                },
+                {
+                  "type": "frame",
+                  "id": "wsiNb",
+                  "name": "ThemeInfo",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "LfMMI",
+                      "name": "ThemeName",
+                      "fill": "$textPrimary",
+                      "content": "Acero",
+                      "fontFamily": "$fontBody",
+                      "fontSize": "$textCardTitle",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "a3G6Ol",
+                      "name": "ThemeDesc",
+                      "fill": "$textSecondary",
+                      "content": "Azul · Precisión y confianza",
+                      "fontFamily": "$fontBody",
+                      "fontSize": "$textNote",
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "zciWI",
+              "name": "Theme_Terreno",
+              "context": "Opción de tema. Color de marca del tenant.",
+              "width": "fill_container",
+              "fill": "$surface",
+              "cornerRadius": "$radiusLg",
+              "stroke": "$border",
+              "strokeWidth": 2,
+              "gap": 14,
+              "padding": 16,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "t7I0Cl",
+                  "name": "Swatch",
+                  "width": 44,
+                  "height": 44,
+                  "fill": "#4A5C3A",
+                  "cornerRadius": "$radiusFull",
+                  "layout": "vertical",
+                  "justifyContent": "center",
+                  "alignItems": "center"
+                },
+                {
+                  "type": "frame",
+                  "id": "np4Sa",
+                  "name": "ThemeInfo",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "BDI6M",
+                      "name": "ThemeName",
+                      "fill": "$textPrimary",
+                      "content": "Terreno",
+                      "fontFamily": "$fontBody",
+                      "fontSize": "$textCardTitle",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "R9ZXlA",
+                      "name": "ThemeDesc",
+                      "fill": "$textSecondary",
+                      "content": "Verde · Campo y aventura",
+                      "fontFamily": "$fontBody",
+                      "fontSize": "$textNote",
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "zCQ85",
+          "name": "Footer",
+          "width": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            12,
+            0,
+            0,
+            0
+          ],
+          "children": [
+            {
+              "id": "be1vN",
+              "type": "ref",
+              "ref": "yyFYE",
+              "name": "ButtonPrimary",
+              "width": "fill_container",
+              "descendants": {
+                "OeWlc": {
+                  "content": "Continuar"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "A7JA32",
+      "x": 2150,
+      "y": 1059,
+      "name": "ONB-06-Preview-Light",
+      "context": "Variante light del onboarding. Mismos componentes; tokens mode=light.",
+      "theme": {
+        "mode": "light"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "linear",
+        "enabled": true,
+        "rotation": 180,
+        "size": {
+          "height": 1
+        },
+        "colors": [
+          {
+            "color": "$accentMuted",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 0.22
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ]
+      },
+      "layout": "vertical",
+      "gap": 16,
+      "padding": [
+        16,
+        20,
+        20,
+        20
+      ],
+      "justifyContent": "space_between",
+      "children": [
+        {
+          "type": "frame",
+          "id": "WMhGM",
+          "name": "StatusBar",
+          "width": "fill_container",
+          "height": 44,
+          "padding": [
+            0,
+            4
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "bp9vt",
+              "name": "Time",
+              "fill": "$textPrimary",
+              "content": "9:41",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "id": "zu9CP",
+          "type": "ref",
+          "ref": "hB7ZH",
+          "name": "ProgressBar",
+          "width": "fill_container",
+          "descendants": {
+            "wJo5C": {
+              "fill": "$accent"
+            },
+            "PN2FM": {
+              "fill": "$accent"
+            },
+            "e9g13q": {
+              "fill": "$accent"
+            },
+            "h4wMv1": {
+              "fill": "$accent"
+            },
+            "UHiQk": {
+              "fill": "$accent"
+            }
+          }
+        },
+        {
+          "id": "Ae9DE",
+          "type": "ref",
+          "ref": "LU56R",
+          "name": "ScreenHeader",
+          "width": "fill_container",
+          "descendants": {
+            "eDram": {
+              "content": "Paso 5 de 5"
+            },
+            "Sdxde": {
+              "content": "Así luce tu tienda"
+            },
+            "G2ljA": {
+              "content": "Tu panel personalizado con tema Turbo."
+            }
+          }
+        },
+        {
+          "type": "frame",
+          "id": "l602ii",
+          "name": "DashboardMock",
+          "context": "Mock visual del dashboard; no interactivo en onboarding.",
+          "width": "fill_container",
+          "fill": "$surface",
+          "cornerRadius": "$radiusXl",
+          "stroke": "$border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 14,
+          "children": [
+            {
+              "type": "frame",
+              "id": "aJBnY",
+              "name": "MockHeader",
+              "width": "fill_container",
+              "fill": {
+                "type": "gradient",
+                "gradientType": "linear",
+                "enabled": true,
+                "rotation": 100,
+                "size": {
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "#CC0000",
+                    "position": 0
+                  },
+                  {
+                    "color": "#FF3B30",
+                    "position": 1
+                  }
+                ]
+              },
+              "cornerRadius": "$radiusLg",
+              "padding": [
+                12,
+                14
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "sluyk",
+                  "name": "StoreName",
+                  "fill": "#FFFFFF",
+                  "content": "Mi Repuestería",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "icon",
+                  "id": "b2Obs",
+                  "name": "CarIcon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "car",
+                  "library": "lucide",
+                  "fill": "#FFFFFF"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "J6luk",
+              "name": "KpiRow",
+              "width": "fill_container",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "TP91c",
+                  "name": "Kpi",
+                  "width": "fill_container",
+                  "fill": "$surfaceElevated",
+                  "cornerRadius": "$radiusMd",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "padding": 10,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "YZtnh",
+                      "name": "KpiLabel",
+                      "fill": "$textSecondary",
+                      "content": "Hoy",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "y22Rbg",
+                      "name": "KpiValue",
+                      "fill": "$textPrimary",
+                      "content": "$1.2k",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 18,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "buw67",
+                  "name": "Kpi",
+                  "width": "fill_container",
+                  "fill": "$surfaceElevated",
+                  "cornerRadius": "$radiusMd",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "padding": 10,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "b150l",
+                      "name": "KpiLabel",
+                      "fill": "$textSecondary",
+                      "content": "Stock",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "BKuk6",
+                      "name": "KpiValue",
+                      "fill": "$textPrimary",
+                      "content": "84",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 18,
+                      "fontWeight": "700"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "gNskD",
+                  "name": "Kpi",
+                  "width": "fill_container",
+                  "fill": "$surfaceElevated",
+                  "cornerRadius": "$radiusMd",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "padding": 10,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "DQv88",
+                      "name": "KpiLabel",
+                      "fill": "$textSecondary",
+                      "content": "Clientes",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 11,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "mQXQS",
+                      "name": "KpiValue",
+                      "fill": "$textPrimary",
+                      "content": "12",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 18,
+                      "fontWeight": "700"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "gtpPP",
+              "name": "ActivityList",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "g9Oy8G",
+                  "name": "ActivityRow",
+                  "width": "fill_container",
+                  "gap": 10,
+                  "padding": [
+                    8,
+                    4
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "D4qE5",
+                      "name": "ActIcon",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "shopping-cart",
+                      "library": "lucide",
+                      "fill": "$steelLight"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Y1FQg",
+                      "name": "ActTexts",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 1,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Y4g5p",
+                          "name": "ActDesc",
+                          "fill": "$textPrimary",
+                          "content": "Venta POS",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "Sj4qw",
+                          "name": "ActHora",
+                          "fill": "$textSecondary",
+                          "content": "hace 5 min",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "XUsKK",
+                      "name": "ActMonto",
+                      "fill": "$textPrimary",
+                      "content": "$45.00",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Or9DE",
+                  "name": "ActivityRow",
+                  "width": "fill_container",
+                  "gap": 10,
+                  "padding": [
+                    8,
+                    4
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "ESw8C",
+                      "name": "ActIcon",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "package",
+                      "library": "lucide",
+                      "fill": "$steelLight"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "hdx9g",
+                      "name": "ActTexts",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 1,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "V7DxA",
+                          "name": "ActDesc",
+                          "fill": "$textPrimary",
+                          "content": "Stock actualizado",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "GRkfS",
+                          "name": "ActHora",
+                          "fill": "$textSecondary",
+                          "content": "hace 1h",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "b6EIZY",
+                      "name": "ActMonto",
+                      "fill": "$textPrimary",
+                      "content": "8 items",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Bh7r4",
+                  "name": "ActivityRow",
+                  "width": "fill_container",
+                  "gap": 10,
+                  "padding": [
+                    8,
+                    4
+                  ],
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "G3nuY",
+                      "name": "ActIcon",
+                      "width": 18,
+                      "height": 18,
+                      "icon": "user-plus",
+                      "library": "lucide",
+                      "fill": "$steelLight"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "jiNOI",
+                      "name": "ActTexts",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 1,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "pllB8",
+                          "name": "ActDesc",
+                          "fill": "$textPrimary",
+                          "content": "Nuevo cliente",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 13,
+                          "fontWeight": "500"
+                        },
+                        {
+                          "type": "text",
+                          "id": "vjK1V",
+                          "name": "ActHora",
+                          "fill": "$textSecondary",
+                          "content": "hace 2h",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 11,
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "text",
+                      "id": "TqIiJ",
+                      "name": "ActMonto",
+                      "fill": "$textPrimary",
+                      "content": "—",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 13,
+                      "fontWeight": "600"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "XaePL",
+              "name": "MockTabBar",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "$surfaceElevated",
+              "cornerRadius": "$radiusLg",
+              "padding": [
+                8,
+                16
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "IRSCz",
+                  "name": "TabIcon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "house",
+                  "library": "lucide",
+                  "fill": "#CC0000"
+                },
+                {
+                  "type": "icon",
+                  "id": "sWV41",
+                  "name": "TabIcon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "shopping-cart",
+                  "library": "lucide",
+                  "fill": "$textDisabled"
+                },
+                {
+                  "type": "icon",
+                  "id": "PUTvw",
+                  "name": "TabIcon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "package",
+                  "library": "lucide",
+                  "fill": "$textDisabled"
+                },
+                {
+                  "type": "icon",
+                  "id": "M4E0P",
+                  "name": "TabIcon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "users",
+                  "library": "lucide",
+                  "fill": "$textDisabled"
+                },
+                {
+                  "type": "icon",
+                  "id": "Bw25u",
+                  "name": "TabIcon",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "chart-column",
+                  "library": "lucide",
+                  "fill": "$textDisabled"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ZloEb",
+          "name": "Footer",
+          "width": "fill_container",
+          "layout": "vertical",
+          "padding": [
+            8,
+            0,
+            0,
+            0
+          ],
+          "children": [
+            {
+              "id": "HymZp",
+              "type": "ref",
+              "ref": "yyFYE",
+              "name": "ButtonPrimary",
+              "width": "fill_container",
+              "descendants": {
+                "OeWlc": {
+                  "content": "Se ve brutal, continuar"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "kx5pN",
+      "x": 2580,
+      "y": 1059,
+      "name": "ONB-07-Decision-Light",
+      "context": "Variante light del onboarding. Mismos componentes; tokens mode=light.",
+      "theme": {
+        "mode": "light"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "linear",
+        "enabled": true,
+        "rotation": 180,
+        "size": {
+          "height": 1
+        },
+        "colors": [
+          {
+            "color": "$accentMuted",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 0.22
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ]
+      },
+      "layout": "vertical",
+      "gap": 24,
+      "padding": [
+        16,
+        20,
+        32,
+        20
+      ],
+      "justifyContent": "space_between",
+      "children": [
+        {
+          "type": "frame",
+          "id": "OXXsO",
+          "name": "StatusBar",
+          "width": "fill_container",
+          "height": 44,
+          "padding": [
+            0,
+            4
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "Tbt0t",
+              "name": "Time",
+              "fill": "$textPrimary",
+              "content": "9:41",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "gqlYG",
+          "name": "HeroBlock",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            48,
+            0,
+            0,
+            0
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "LQvrO",
+              "name": "RocketWrap",
+              "width": 96,
+              "height": 96,
+              "fill": {
+                "type": "gradient",
+                "gradientType": "radial",
+                "enabled": true,
+                "rotation": 0,
+                "size": {
+                  "width": 1,
+                  "height": 1
+                },
+                "colors": [
+                  {
+                    "color": "$accentSoft",
+                    "position": 0
+                  },
+                  {
+                    "color": "$surfaceElevated",
+                    "position": 1
+                  }
+                ]
+              },
+              "cornerRadius": "$radiusFull",
+              "stroke": "$accent",
+              "strokeWidth": 1.5,
+              "layout": "vertical",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "M6bDaG",
+                  "name": "RocketIcon",
+                  "width": 44,
+                  "height": 44,
+                  "icon": "rocket",
+                  "library": "lucide",
+                  "fill": "$accent"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "G8no17",
+              "name": "DecisionTitle",
+              "fill": "$textPrimary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Tu tienda está lista\npara arrancar",
+              "textAlign": "center",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textTitle",
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "ewcQx",
+              "name": "DecisionSub",
+              "fill": "$textSecondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Todo configurado según tus preferencias. Ahora elige cómo continuar.",
+              "textAlign": "center",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textSubtitle",
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "OUKKZ",
+          "name": "Actions",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "alignItems": "center",
+          "children": [
+            {
+              "id": "z9zGeB",
+              "type": "ref",
+              "ref": "yyFYE",
+              "name": "ButtonPrimary",
+              "width": "fill_container",
+              "descendants": {
+                "OeWlc": {
+                  "content": "Crear mi cuenta gratis"
+                }
+              }
+            },
+            {
+              "id": "r7Lzdw",
+              "type": "ref",
+              "ref": "xLKr9",
+              "name": "ButtonSecondary",
+              "width": "fill_container",
+              "descendants": {
+                "D45Ob": {
+                  "content": "Explorar con demo"
+                }
+              }
+            },
+            {
+              "type": "text",
+              "id": "tKcIm",
+              "name": "TrustNote",
+              "fill": "$textSecondary",
+              "content": "Sin tarjeta. Sin enredos. Empiezas en minutos.",
+              "textAlign": "center",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textNote",
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "nMuWM",
+              "name": "LegalNote",
+              "fill": "$textDisabled",
+              "content": "Sin tarjeta de crédito · Cancela cuando quieras",
+              "textAlign": "center",
+              "fontFamily": "$fontBody",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "BJoqZ",
+      "x": 0,
+      "y": -48,
+      "name": "LabelDarkRow",
+      "fill": "$textPrimary",
+      "content": "Dark · Source of truth",
+      "fontFamily": "$fontBody",
+      "fontSize": 18,
+      "fontWeight": "700"
+    },
+    {
+      "type": "text",
+      "id": "m4dumJ",
+      "x": 0,
+      "y": 1010,
+      "name": "LabelLightRow",
+      "fill": "$textPrimary",
+      "content": "Light · Mode variants",
+      "fontFamily": "$fontBody",
+      "fontSize": 18,
+      "fontWeight": "700"
+    },
+    {
+      "type": "frame",
+      "id": "LzsoR",
+      "x": 0,
+      "y": 1983,
+      "name": "UXStates / FlowMap",
+      "context": "Mapa de flujo onboarding V2. Tap targets → destino + timing de transición. Fuente para prototipo HTML.",
+      "theme": {
+        "mode": "dark"
+      },
+      "width": 1180,
+      "fill": "$surface",
+      "cornerRadius": "$radiusXl",
+      "stroke": "$border",
+      "strokeWidth": 1,
+      "layout": "vertical",
+      "gap": 20,
+      "padding": 28,
+      "children": [
+        {
+          "type": "text",
+          "id": "ZYnia",
+          "name": "FlowTitle",
+          "fill": "$textPrimary",
+          "content": "Prototipo · Tap-through flow",
+          "fontFamily": "$fontBody",
+          "fontSize": 22,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "v4uWUz",
+          "name": "FlowSub",
+          "fill": "$textSecondary",
+          "textGrowth": "fixed-width",
+          "width": "fill_container",
+          "content": "Happy path dark. Transiciones 150–200ms ease-out. Auto-advance solo en Splash.",
+          "fontFamily": "$fontBody",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "frame",
+          "id": "J1QPk",
+          "name": "FlowRow",
+          "width": "fill_container",
+          "gap": 10,
+          "children": [
+            {
+              "type": "frame",
+              "id": "o9hQaR",
+              "name": "Flow_01",
+              "width": "fill_container",
+              "fill": "$bg",
+              "cornerRadius": "$radiusLg",
+              "stroke": "$accent",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "x8dGML",
+                  "name": "StepNum",
+                  "fill": "$accent",
+                  "content": "ONB-01",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 11,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "EwA17",
+                  "name": "StepName",
+                  "fill": "$textPrimary",
+                  "content": "Splash",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "fuJIq",
+                  "name": "TapTarget",
+                  "fill": "$textSecondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Tap: Auto 1.0–1.2s",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "sQQT3",
+                  "name": "GoesTo",
+                  "fill": "$accentHover",
+                  "content": "→ País",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "MpCmb",
+                  "name": "Motion",
+                  "fill": "$textDisabled",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "fade-in logo",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "NLU7p",
+              "name": "Flow_02",
+              "width": "fill_container",
+              "fill": "$bg",
+              "cornerRadius": "$radiusLg",
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "kMLjw",
+                  "name": "StepNum",
+                  "fill": "$accent",
+                  "content": "ONB-02",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 11,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "ydKUE",
+                  "name": "StepName",
+                  "fill": "$textPrimary",
+                  "content": "País",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "caeCL",
+                  "name": "TapTarget",
+                  "fill": "$textSecondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Tap: Card país",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "X4MS3O",
+                  "name": "GoesTo",
+                  "fill": "$accentHover",
+                  "content": "→ Vehículos",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "XpzQj",
+                  "name": "Motion",
+                  "fill": "$textDisabled",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "scale 0.97",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "YA5hj",
+              "name": "Flow_03",
+              "width": "fill_container",
+              "fill": "$bg",
+              "cornerRadius": "$radiusLg",
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "dnaxz",
+                  "name": "StepNum",
+                  "fill": "$accent",
+                  "content": "ONB-03",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 11,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "utCe5",
+                  "name": "StepName",
+                  "fill": "$textPrimary",
+                  "content": "Vehículos",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "M61TUT",
+                  "name": "TapTarget",
+                  "fill": "$textSecondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Tap: SelectionCard",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "IqIXZ",
+                  "name": "GoesTo",
+                  "fill": "$accentHover",
+                  "content": "→ Negocio",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "x40x3",
+                  "name": "Motion",
+                  "fill": "$textDisabled",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "auto-advance",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "GJ2WY",
+              "name": "Flow_04",
+              "width": "fill_container",
+              "fill": "$bg",
+              "cornerRadius": "$radiusLg",
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "L6JnCi",
+                  "name": "StepNum",
+                  "fill": "$accent",
+                  "content": "ONB-04",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 11,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "NumPh",
+                  "name": "StepName",
+                  "fill": "$textPrimary",
+                  "content": "Negocio",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "cjIsm",
+                  "name": "TapTarget",
+                  "fill": "$textSecondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Tap: SelectionCard",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "Np9ej",
+                  "name": "GoesTo",
+                  "fill": "$accentHover",
+                  "content": "→ Tema",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "L6HiMU",
+                  "name": "Motion",
+                  "fill": "$textDisabled",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "auto-advance",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ezD6u",
+              "name": "Flow_05",
+              "width": "fill_container",
+              "fill": "$bg",
+              "cornerRadius": "$radiusLg",
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "b3j0Ak",
+                  "name": "StepNum",
+                  "fill": "$accent",
+                  "content": "ONB-05",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 11,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "tNRHL",
+                  "name": "StepName",
+                  "fill": "$textPrimary",
+                  "content": "Tema",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "VezPa",
+                  "name": "TapTarget",
+                  "fill": "$textSecondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Tap: Continuar",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "RoIL3",
+                  "name": "GoesTo",
+                  "fill": "$accentHover",
+                  "content": "→ Preview",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "xu1tX",
+                  "name": "Motion",
+                  "fill": "$textDisabled",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "requiere selected",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "arjtt",
+              "name": "Flow_06",
+              "width": "fill_container",
+              "fill": "$bg",
+              "cornerRadius": "$radiusLg",
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "tjbnC",
+                  "name": "StepNum",
+                  "fill": "$accent",
+                  "content": "ONB-06",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 11,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "u30US5",
+                  "name": "StepName",
+                  "fill": "$textPrimary",
+                  "content": "Preview",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "v9fon",
+                  "name": "TapTarget",
+                  "fill": "$textSecondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Tap: Se ve brutal…",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "L8fTWI",
+                  "name": "GoesTo",
+                  "fill": "$accentHover",
+                  "content": "→ Decisión",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "ALlyo",
+                  "name": "Motion",
+                  "fill": "$textDisabled",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "mock no interactivo",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "u0kt1",
+              "name": "Flow_07",
+              "width": "fill_container",
+              "fill": "$bg",
+              "cornerRadius": "$radiusLg",
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 12,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "x27uPJ",
+                  "name": "StepNum",
+                  "fill": "$accent",
+                  "content": "ONB-07",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 11,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "lRwc8",
+                  "name": "StepName",
+                  "fill": "$textPrimary",
+                  "content": "Decisión",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "text",
+                  "id": "KcU82",
+                  "name": "TapTarget",
+                  "fill": "$textSecondary",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Tap: Cuenta | Demo",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "wI4gN",
+                  "name": "GoesTo",
+                  "fill": "$accentHover",
+                  "content": "→ Auth",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "text",
+                  "id": "u6U3j",
+                  "name": "Motion",
+                  "fill": "$textDisabled",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "exit onboarding",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 10,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "V5oSAd",
+          "name": "MotionContract",
+          "width": "fill_container",
+          "fill": "$bg",
+          "cornerRadius": "$radiusLg",
+          "stroke": "$border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": 8,
+          "padding": 16,
+          "children": [
+            {
+              "type": "text",
+              "id": "Hrc0m",
+              "name": "ContractTitle",
+              "fill": "$textPrimary",
+              "content": "Motion contract",
+              "fontFamily": "$fontBody",
+              "fontSize": 14,
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "FIHh4",
+              "name": "Rule",
+              "fill": "$textSecondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "· Screen change: 180ms opacity + 12px translateY ease-out",
+              "fontFamily": "$fontBody",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "Z3Q7tn",
+              "name": "Rule",
+              "fill": "$textSecondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "· Selection press: 120ms scale 0.96 spring",
+              "fontFamily": "$fontBody",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "RjWky",
+              "name": "Rule",
+              "fill": "$textSecondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "· Progress fill: 300ms width ease",
+              "fontFamily": "$fontBody",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "lsURM",
+              "name": "Rule",
+              "fill": "$textSecondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "· Splash: logo 600ms fade · tagline 400ms · hold ~1.0s · replace País",
+              "fontFamily": "$fontBody",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "xNjCb",
+              "name": "Rule",
+              "fill": "$textSecondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "· Reduced motion: cortes instantáneos (sin translate)",
+              "fontFamily": "$fontBody",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        }
       ]
     }
-  ]
+  ],
+  "themes": {
+    "mode": [
+      "dark",
+      "light"
+    ]
+  },
+  "variables": {
+    "bg": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0D0D0D",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#F7F7F8",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "surface": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#1A1A1A",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "surfaceElevated": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#242424",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#F0F1F3",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "border": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#2E2E2E",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#DADDE2",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "textPrimary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F5F5F5",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#111318",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "textSecondary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#9E9E9E",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#5A6270",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "textDisabled": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#555555",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#9AA1AC",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "textInverse": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0D0D0D",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "accent": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FF6B00",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#E85C00",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "accentHover": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FF8C3A",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#FF7A26",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "steel": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#607D8B",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#607D8B",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "steelLight": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#90A4AE",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#78909C",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "success": {
+      "type": "color",
+      "value": "#4CAF50"
+    },
+    "warning": {
+      "type": "color",
+      "value": "#FFC107"
+    },
+    "error": {
+      "type": "color",
+      "value": "#F44336"
+    },
+    "info": {
+      "type": "color",
+      "value": "#2196F3"
+    },
+    "fontBody": {
+      "type": "string",
+      "value": "Inter"
+    },
+    "spaceXs": {
+      "type": "number",
+      "value": 4
+    },
+    "spaceSm": {
+      "type": "number",
+      "value": 8
+    },
+    "spaceMd": {
+      "type": "number",
+      "value": 12
+    },
+    "spaceBase": {
+      "type": "number",
+      "value": 16
+    },
+    "spaceLg": {
+      "type": "number",
+      "value": 20
+    },
+    "spaceXl": {
+      "type": "number",
+      "value": 24
+    },
+    "space2xl": {
+      "type": "number",
+      "value": 32
+    },
+    "radiusSm": {
+      "type": "number",
+      "value": 4
+    },
+    "radiusMd": {
+      "type": "number",
+      "value": 8
+    },
+    "radiusLg": {
+      "type": "number",
+      "value": 12
+    },
+    "radiusXl": {
+      "type": "number",
+      "value": 16
+    },
+    "radiusFull": {
+      "type": "number",
+      "value": 9999
+    },
+    "textTitle": {
+      "type": "number",
+      "value": 28
+    },
+    "textSubtitle": {
+      "type": "number",
+      "value": 16
+    },
+    "textLabel": {
+      "type": "number",
+      "value": 13
+    },
+    "textButton": {
+      "type": "number",
+      "value": 16
+    },
+    "textNote": {
+      "type": "number",
+      "value": 12
+    },
+    "textCardTitle": {
+      "type": "number",
+      "value": 18
+    },
+    "screenWidth": {
+      "type": "number",
+      "value": 390
+    },
+    "contentGutter": {
+      "type": "number",
+      "value": 20
+    },
+    "accentMuted": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#1A120E",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#FFF3EB",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "accentSoft": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#24160F",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#FFE8D6",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "gradientEdge": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0D0D0D",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#F7F7F8",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    }
+  },
+  "fileToken": "2fe134fa-4aea-48c5-a31d-0a766eff04c0"
 }
-
