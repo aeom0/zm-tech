@@ -26,3 +26,8 @@
 - Confirmar por MCP que las 8 tablas `repmax_*` existen con RLS activo y 0 filas fuera de pruebas.
 - Actualizar este README con fecha de cierre y commits, como ya haces con OdentalPro/pen.dev.
 - Verificar que el proyecto Supabase huérfano (`ckaubaosvpmcxffyioio`) fue eliminado.
+
+## Estado de ejecución
+
+- **Fase 01 cerrada** — 2026-08-01. Commits: `31f8b07` (scaffold), `6f1c24e` (TS 6), `27c9c4f` (Expo 56), + fix mobile SDK 56. `pnpm --filter repmax-web` levanta en `:3003`; builds web/server OK; `expo-doctor` 21/21; typecheck mobile OK.
+
