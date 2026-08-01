@@ -136,22 +136,19 @@ export default function HeroDeviceMockup({ locale }: Props) {
                 </span>
               </div>
               <div
-                className="relative aspect-video w-full overflow-hidden bg-[#F9FAFB]"
+                className="relative aspect-video w-full overflow-hidden bg-[#0a0a0c]"
                 role="img"
                 aria-label={scene.laptopAlt[locale]}
               >
-                <AnimatePresence mode="wait">
+                {/* Crossfade (sin mode=wait): evita flash en blanco entre escenas */}
+                <AnimatePresence initial={false}>
                   <motion.div
                     key={scene.id}
-                    initial={reduceMotion ? false : { opacity: 0, y: 8, scale: 0.99 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={
-                      reduceMotion
-                        ? undefined
-                        : { opacity: 0, y: -4, transition: { duration: 0.25, ease: 'easeIn' } }
-                    }
+                    initial={reduceMotion ? false : { opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={reduceMotion ? undefined : { opacity: 0 }}
                     transition={
-                      reduceMotion ? { duration: 0 } : { duration: 0.55, ease: EASE_EXPO_OUT }
+                      reduceMotion ? { duration: 0 } : { duration: 0.45, ease: EASE_EXPO_OUT }
                     }
                     className="pointer-events-none absolute inset-0"
                   >
@@ -222,24 +219,18 @@ export default function HeroDeviceMockup({ locale }: Props) {
                 </div>
 
                 <div
-                  className="relative aspect-9/19.5 w-full overflow-hidden rounded-[0.95rem] border border-black/70 bg-[#F8F5FA] sm:rounded-[1.1rem]"
+                  className="relative aspect-9/19.5 w-full overflow-hidden rounded-[0.95rem] border border-black/70 bg-[#0a0a0c] sm:rounded-[1.1rem]"
                   role="img"
                   aria-label={scene.phoneAlt[locale]}
                 >
-                  <AnimatePresence mode="wait">
+                  <AnimatePresence initial={false}>
                     <motion.div
                       key={scene.id}
-                      initial={reduceMotion ? false : { opacity: 0, y: 8, scale: 0.99 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={
-                        reduceMotion
-                          ? undefined
-                          : { opacity: 0, y: -4, transition: { duration: 0.25, ease: 'easeIn' } }
-                      }
+                      initial={reduceMotion ? false : { opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={reduceMotion ? undefined : { opacity: 0 }}
                       transition={
-                        reduceMotion
-                          ? { duration: 0 }
-                          : { duration: 0.55, delay: 0.1, ease: EASE_EXPO_OUT }
+                        reduceMotion ? { duration: 0 } : { duration: 0.45, ease: EASE_EXPO_OUT }
                       }
                       className="pointer-events-none absolute inset-0"
                     >

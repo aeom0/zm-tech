@@ -70,10 +70,9 @@ body {
   animation: spin-slow 8s linear infinite;
 }
 
-/* Reveal escalonado de los grupos internos de los mocks del hero */
+/* Reveal escalonado de grupos internos — solo Y; la opacidad la lleva el crossfade del hero */
 @keyframes mock-rise {
   from {
-    opacity: 0;
     transform: translateY(5px);
   }
 }
