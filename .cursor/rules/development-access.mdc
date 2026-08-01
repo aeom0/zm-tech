@@ -1,5 +1,5 @@
 ---
-description: Acceso a archivos de desarrollo y .env para depuración (GeemaStudio)
+description: Acceso a archivos de desarrollo y .env para depuración (GeemaStudio y monorepo)
 globs:
   - "**/.env"
   - "**/.env.local"
@@ -9,19 +9,20 @@ globs:
 alwaysApply: true
 ---
 
-# Development Access - GeemaStudio
+# Development Access — zm-tech
 
 ## Permisos para desarrollo
 
 - Tienes acceso completo a archivos de desarrollo, incluido `.env` y `.env.local`, para depurar conexión a Supabase, variables de Expo y Next.js.
 - Los archivos `.env` son para desarrollo local; no incluir secretos de producción en el repo (`.env` está en `.gitignore`).
-- Ayudar a resolver errores de `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`, y arranque de mobile/web cuando el usuario trabaje en local.
+- Ayudar a resolver errores de `EXPO_PUBLIC_SUPABASE_*` / `NEXT_PUBLIC_SUPABASE_*` y arranque de mobile/web en local.
 
-## Contexto
+## Contexto multi-proyecto
 
-- **Supabase**: Proyecto GeemaStudio `xidjomlxpuosupymcsaj`. Mobile y web conectan directo (PostgREST + Auth). No hay servidor Express.
-- **Mobile**: Variables `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` en `.env` (raíz o `apps/geemastudio-mobile`).
-- **Web**: Variables `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY` en `apps/geemastudio-web/.env.local` si aplica.
+Mapa canónico: [docs/SUPABASE.md](../../docs/SUPABASE.md).
+
+- **GeemaStudio**: `udelxwwnyivknslueerr` — mobile/web → Supabase directo. `geemastudio-server` = ops/DB (Drizzle/seeds/Edge), no API JWT.
+- **Landing + OdentalPro + RepMAX**: hub `llacowjutjfefboqgfnj` — prefijos/tablas por producto; no mezclar.
 
 ## Seguridad
 

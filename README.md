@@ -11,7 +11,7 @@ Monorepo de productos **ZM Tech** — pnpm + Turborepo.
 | **OdentalPro** | `apps/odentalpro-web`, `apps/odentalpro-mobile`, `apps/odentalpro-server` | `@odentalpro/dental-schema` | [docs/odentalpro](docs/odentalpro/) |
 | **RepMAX** | `apps/repmax-web`, `apps/repmax-mobile` | `@repmax/repmax-schema` (+ tenant en `@geemastudio/tenant-config/repmax`) | [docs/repmax](docs/repmax/README.md) |
 
-Cada producto tiene su propia documentación (`README.md`, `CLAUDE.md`, `ROADMAP.md`, `CHANGELOG.md`) dentro de `docs/<producto>/`. Este README es solo el punto de entrada al monorepo.
+Cada producto tiene su propia documentación (`README.md`, `CLAUDE.md`, `ROADMAP.md`, `CHANGELOG.md`) dentro de `docs/<producto>/`. Mapa de proyectos Supabase (varias BDs en el monorepo): [docs/SUPABASE.md](docs/SUPABASE.md). Este README es solo el punto de entrada al monorepo.
 
 ## Requisitos
 

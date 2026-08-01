@@ -30,4 +30,5 @@ Ver [docs/repmax/ROADMAP.md](docs/repmax/ROADMAP.md).
 
 - Skills y rules centralizados en `.cursor/` con sync a `.claude/skills` — hecho (jul 2026).
 - Convención: cada producto tiene `docs/<producto>/ROADMAP.md` (+ README / CHANGELOG / CLAUDE según aplique).
+- Mapa multi-proyecto Supabase (hub ZMTech + GeemaStudio): [docs/SUPABASE.md](docs/SUPABASE.md) — hecho (ago 2026).
 - Ver [CHANGELOG.md](CHANGELOG.md) para el historial de cambios de infraestructura compartida.

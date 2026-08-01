@@ -26,6 +26,17 @@ Automotriz, Sports Tech y Enterprise.
 - **WhatsApp comercial:** +58 414 494 0417
 - **Entorno de Alberto:** VS Code + WSL2 + Windows 11 · Android = target mobile primario
 - **Inventario repos:** `docs/landing/PROYECTOS.md`
+- **Mapa Supabase (varias BDs en zm-tech):** `docs/SUPABASE.md` — obligatorio antes de SQL/migraciones
+---
+
+## 🗄 Supabase en el monorepo zm-tech
+
+| Proyecto | Ref | Productos |
+|----------|-----|-----------|
+| ZMTech hub | `llacowjutjfefboqgfnj` | Landing + Odental (`odental_*`) + RepMAX (`repmax_*`) |
+| GeemaStudio | `udelxwwnyivknslueerr` | Beauty SaaS (proyecto dedicado) |
+
+`*-server` = ops/DB/Edge, **no** API JWT. RepMAX no tiene `repmax-server`. Detalle: `docs/SUPABASE.md`.
 ---
 
 ## 👤 Perfil del fundador

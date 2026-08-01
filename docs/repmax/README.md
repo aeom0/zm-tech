@@ -58,3 +58,4 @@ Histórico de las fases 01–03 en `plans/`. El producto ya está cableado a Sup
 - Prefijo `repmax_` en tablas, enums, RPC, storage y políticas.
 - No tocar `contacts`, `quote_leads`, `odental_*` ni schema Geema sin instrucción explícita.
 - El repo standalone `aeom0/RepMAX` y el proyecto Supabase huérfano `ckaubaosvpmcxffyioio` quedaron fuera de uso.
+- Mapa multi-BD del monorepo: [../SUPABASE.md](../SUPABASE.md).

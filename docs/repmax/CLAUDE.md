@@ -5,9 +5,10 @@ Contexto para agentes que toquen RepMAX dentro del monorepo.
 ## Prioridad de lectura
 
 1. [README.md](./README.md) — paths, comandos, env, migraciones
-2. [.cursorrules](../../.cursorrules) — reglas globales del monorepo
-3. Skill monorepo: `.cursor/skills/zmtech-dev/SKILL.md` (sección RepMAX)
-4. Código en `apps/repmax-*` y `packages/repmax-schema` antes de inventar patrones
+2. [../SUPABASE.md](../SUPABASE.md) — mapa multi-proyecto del monorepo
+3. [.cursorrules](../../.cursorrules) — reglas globales del monorepo
+4. Skill monorepo: `.cursor/skills/zmtech-dev/SKILL.md` (sección RepMAX)
+5. Código en `apps/repmax-*` y `packages/repmax-schema` antes de inventar patrones
 
 ## Stack vigente
 

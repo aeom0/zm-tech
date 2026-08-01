@@ -1,32 +1,30 @@
 ---
-description: Uso de MCP Supabase para GeemaStudio y referencia ZM (dos proyectos)
+description: Uso de MCP Supabase en zm-tech (varios proyectos)
 globs:
   - "packages/shared-schema/**/*"
   - "packages/tenant-config/**/*"
+  - "packages/dental-schema/**/*"
+  - "packages/repmax-schema/**/*"
   - "apps/geemastudio-*/**/*"
+  - "apps/odentalpro-*/**/*"
+  - "apps/repmax-*/**/*"
+  - "apps/landing/**/*"
 alwaysApply: false
 ---
 
-# Supabase MCP - GeemaStudio
+# Supabase MCP — zm-tech
 
-## Configuración
+Antes de cualquier SQL/migración, leer [docs/SUPABASE.md](../../docs/SUPABASE.md).
 
-- **Dos MCP** en `.cursor/mcp.json`: `supabase-geemastudio` (proyecto `xidjomlxpuosupymcsaj`) y `supabase-zm` (proyecto `udelxwwnyivknslueerr`).
-- **En este repo (GeemaStudio)** usar siempre el servidor **supabase-geemastudio** para list_tables, execute_sql, apply_migration, generate_typescript_types. Así se opera sobre la BD correcta.
-- Cursor puede mostrar nombres con prefijo del workspace (ej. `project-0-GeemaStudio (raíz)-supabase-geemastudio`). Elegir el servidor que corresponda a GeemaStudio.
-- Autenticación: Cursor solicita login en Supabase la primera vez (OAuth en navegador).
-- Verificación: Settings > Cursor Settings > Tools & MCP; reiniciar IDE si no detecta herramientas.
+## Proyectos
 
-## Herramientas útiles
+| Producto | Ref | Notas |
+|----------|-----|--------|
+| Landing / Odental / RepMAX | `llacowjutjfefboqgfnj` | MCP `user-supabase-zmtech` apunta aquí. Prefijos `odental_*` / `repmax_*`; no tocar tablas de otros productos. |
+| GeemaStudio | `udelxwwnyivknslueerr` | Proyecto beauty dedicado. No asumir el mismo MCP que ZMTech. |
 
-- `list_tables` — Ver tablas en la BD (sin argumentos; el proyecto viene de la URL del MCP)
-- `execute_sql` — Ejecutar consultas SQL
-- `generate_typescript_types` — Generar tipos TS desde el schema
-- `list_migrations` / `apply_migration` — Migraciones
-- `get_logs` — Logs del proyecto
+## Uso
 
-## Uso recomendado
-
-- Usar el MCP **supabase-geemastudio** para explorar schema, ejecutar consultas de prueba o generar tipos en GeemaStudio.
-- No ejecutar escrituras destructivas sin revisar; aprobar tool calls manualmente.
-- Si necesitas consultar la BD de ZM (udelxwwnyivknslueerr), usar el servidor **supabase-zm** en lugar de supabase-geemastudio.
+- `list_tables` / `execute_sql` / `apply_migration` solo tras confirmar el proyecto correcto.
+- No escrituras destructivas sin revisión.
+- Autenticación: Cursor solicita login Supabase la primera vez (OAuth).

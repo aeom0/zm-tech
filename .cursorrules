@@ -3,9 +3,10 @@
 ## PRIORIDAD DE LECTURA
 
 1. `.cursor/skills/SKILLS.md` (entrada monorepo) + skill del producto (`geemastudio.md`, `odentalpro-dev`, `zmtech-dev`)
-2. Rules en `.cursor/rules/*.mdc` según globs
-3. Usa @codebase antes de pedir archivos
-4. Código directo primero; no inventar patrones nuevos sin mirar el repo
+2. [docs/SUPABASE.md](docs/SUPABASE.md) — mapa de proyectos Supabase y rol de `*-server`
+3. Rules en `.cursor/rules/*.mdc` según globs
+4. Usa @codebase antes de pedir archivos
+5. Código directo primero; no inventar patrones nuevos sin mirar el repo
 
 ---
 
@@ -41,7 +42,9 @@
 | Tema web | `apps/geemastudio-web/src/lib/theme.ts` (LUNARIS) |
 | Docs producto | `docs/geemastudio/` (sin skills/rules) |
 
-Supabase GeemaStudio: `xidjomlxpuosupymcsaj` · ZM Lash (solo lectura): `udelxwwnyivknslueerr`
+Supabase GeemaStudio: `udelxwwnyivknslueerr` · Hub ZMTech (landing + Odental + RepMAX): `llacowjutjfefboqgfnj`
+
+Mapa multi-proyecto y rol de `*-server`: [docs/SUPABASE.md](docs/SUPABASE.md)
 
 ---
 
@@ -52,6 +55,8 @@ UI → Hooks → Services/lib (Supabase) → Types (shared-schema / dental-schem
 ```
 
 No mezclar lógica de negocio en componentes de presentación.
+
+Las carpetas `*-server` son **ops/DB/Edge**, no API JWT. RepMAX no tiene `repmax-server` (SQL en `docs/repmax/supabase/`). Detalle: [docs/SUPABASE.md](docs/SUPABASE.md).
 
 ---
 
@@ -96,6 +101,6 @@ Supabase compartido ZMTech: `llacowjutjfefboqgfnj` (tablas `repmax_*`). Sin serv
 ### NO HACER
 - NO crear `.md` sin pedirlo
 - NO hardcodear moneda/terminología de un salón (usar tenant config)
-- NO mezclar schemas de producto (`@geemastudio/*`, `@odentalpro/*`, `@repmax/*`)
-- NO modificar Supabase ZM Lash desde este repo sin instrucción explícita
+- NO mezclar schemas ni proyectos Supabase de producto (ver [docs/SUPABASE.md](docs/SUPABASE.md))
+- NO modificar tablas de otro producto en el hub `llacowjutjfefboqgfnj` (`contacts` / `odental_*` / `repmax_*`)
 - NO usar emojis Unicode en UI (web/mobile/OdentalPro/RepMAX) — Lucide o íconos vectoriales. Excepción: copy/plantillas **WABA** cuando se implemente WhatsApp Business API

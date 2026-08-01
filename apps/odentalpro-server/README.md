@@ -1,19 +1,23 @@
-# OdentalPro Server
+# odentalpro-server — hub ops / DB
 
-Edge Functions para OdentalPro (proyecto Supabase temporal `llacowjutjfefboqgfnj`).
+**No es una API Express.** OdentalPro web/mobile usan Supabase Auth + PostgREST + RLS sobre tablas `odental_*`.
 
-## Functions
+## Qué vive aquí
 
-| Function | Descripción |
-|---|---|
-| `healthcheck` | Ping JSON `{ ok: true }` |
-| `auth-webhook` | Stub para eventos Auth (Fase 1) |
+| Área | Uso |
+|------|-----|
+| `supabase/migrations/` | SQL del producto (`odental_*`) en el proyecto compartido ZMTech |
+| Edge Functions (cuando existan) | Deploy vía Supabase CLI — no JWT propio |
 
-## Deploy
+## Proyecto Supabase
+
+`llacowjutjfefboqgfnj` (compartido con Landing y RepMAX).  
+**No tocar** `contacts`, `quote_leads` ni `repmax_*`.
+
+Mapa completo: [docs/SUPABASE.md](../../docs/SUPABASE.md).
+
+## Deploy (ejemplo)
 
 ```bash
-supabase functions deploy healthcheck --project-ref llacowjutjfefboqgfnj
-supabase functions deploy auth-webhook --project-ref llacowjutjfefboqgfnj
+supabase functions deploy <nombre> --project-ref llacowjutjfefboqgfnj
 ```
-
-No tocar la tabla `contacts` ni policies de la landing.

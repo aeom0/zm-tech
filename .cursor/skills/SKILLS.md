@@ -17,7 +17,8 @@
 | **ODentalPro** | `odentalpro-mobile`, `odentalpro-web`, `odentalpro-server` | `@odentalpro/dental-schema` |
 | **RepMAX** | `repmax-web`, `repmax-mobile` | `@repmax/repmax-schema` |
 
-Docs de referencia (no son fuente de skills): `docs/geemastudio/`, `docs/landing/`, `docs/odentalpro/`, `docs/repmax/`.
+Docs de referencia (no son fuente de skills): `docs/geemastudio/`, `docs/landing/`, `docs/odentalpro/`, `docs/repmax/`.  
+**Varias BDs en un monorepo** — mapa obligatorio: [`docs/SUPABASE.md`](../../docs/SUPABASE.md).
 
 ---
 
@@ -35,9 +36,9 @@ Node              22+
 | `landing` | Next.js 16, Tailwind v4, Framer Motion |
 | `geemastudio-web` | Next.js 15, Tailwind, Supabase |
 | `geemastudio-mobile` | Expo / React Native, Supabase, TanStack Query v5 |
-| `geemastudio-server` | Drizzle + scripts/seeds (sin Express de negocio) |
-| `odentalpro-*` | Web/mobile/server + `@odentalpro/dental-schema` |
-| `repmax-*` | Web/mobile + `@repmax/repmax-schema` (Supabase directo, sin Express) |
+| `geemastudio-server` | **Ops/DB** — Drizzle, seeds, Edge Functions (proyecto `udelxwwnyivknslueerr`). No API de negocio. |
+| `odentalpro-*` | Web/mobile + hub ops `odentalpro-server` (migraciones `odental_*` en hub ZMTech) |
+| `repmax-*` | Web/mobile + `@repmax/repmax-schema` (Supabase directo; SQL en `docs/repmax/supabase/`; sin `*-server`) |
 
 ---
 
