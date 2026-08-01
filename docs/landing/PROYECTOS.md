@@ -14,16 +14,16 @@
 | [ZM-Lash-and-Nails-Beauty](https://github.com/aeom0/ZM-Lash-and-Nails-Beauty) | Privado     | Cliente — salón Lima                              | [zmlashnails.com](https://www.zmlashnails.com/)                                    | 2026-07-29  |
 | [prolens](https://github.com/aeom0/prolens)                                   | Privado     | Tienda óptica VE                                  | [prolens-sigma.vercel.app](https://prolens-sigma.vercel.app)                       | 2026-07-29  |
 | [zetaeme-enterprise-suite](https://github.com/aeom0/zetaeme-enterprise-suite) | Privado     | Enterprise cosméticos                             | [zetaeme-enterprise-suite.vercel.app](https://zetaeme-enterprise-suite.vercel.app) | 2026-07-27  |
-| [geemastudio](https://github.com/aeom0/geemastudio)                           | Privado     | Legacy SaaS beauty (origen SalonPro)              | [salonpro-web-virid.vercel.app](https://salonpro-web-virid.vercel.app)             | 2026-07-23  |
+| [geemastudio](https://github.com/aeom0/geemastudio)                           | Privado     | Legacy / archivado — absorbido en `zm-tech`       | [salonpro-web-virid.vercel.app](https://salonpro-web-virid.vercel.app)             | 2026-07-23  |
 | [naturalforce-suite](https://github.com/aeom0/naturalforce-suite)             | Privado     | Cliente — suplementos PE                          | naturalforce100…                                                                   | 2026-07-18  |
 | [guataparobr](https://github.com/aeom0/guataparobr)                           | Privado     | Cliente — inmobiliaria VE                         | `guataparobr.com` (pendiente)                                                      | 2026-04-29  |
 | [Guataparo-demo](https://github.com/aeom0/Guataparo-demo)                     | Privado     | Demo MVP Guataparo                                | Replit                                                                             | 2026-04-28  |
 | [condoapp](https://github.com/aeom0/condoapp)                                 | Privado     | SaaS condominios                                  | —                                                                                  | 2026-04-08  |
 | [yla-mvp](https://github.com/aeom0/yla-mvp)                                   | Público     | Cliente — yoga / bienestar                        | [yla-mvp.vercel.app](https://yla-mvp.vercel.app)                                   | 2026-04-06  |
-| [RepMAX](https://github.com/aeom0/RepMAX)                                     | Privado     | Legacy — desarrollo activo en `zm-tech`           | —                                                                                  | 2026-03-24  |
+| [RepMAX](https://github.com/aeom0/RepMAX)                                     | Privado     | Legacy / archivado — absorbido en `zm-tech`       | —                                                                                  | 2026-03-24  |
 | [ia-scout360](https://github.com/aeom0/ia-scout360)                           | Privado     | Scouting deportivo IA                             | [ia-scout360.vercel.app](https://ia-scout360.vercel.app)                           | 2026-02-01  |
 
-**Nota:** el repo antiguo de landing `aeom0/ZMTech` quedó absorbido en `zm-tech` → `apps/landing`. El repo standalone `geemastudio` sigue en GH; el desarrollo activo del producto vive en `zm-tech`.
+**Nota:** el repo antiguo de landing `aeom0/ZMTech` quedó absorbido en `zm-tech` → `apps/landing`. Los repos standalone `geemastudio` y `RepMAX` están **archivados** en GitHub (solo lectura); el desarrollo activo vive en `zm-tech`.
 
 ---
 
@@ -87,7 +87,7 @@ Plataforma comercializable para salones, barberías y peluquerías. Soporte para
 ### Repositorios
 
 - Activo: [aeom0/zm-tech](https://github.com/aeom0/zm-tech) → apps `geemastudio-*`
-- Legacy: [aeom0/geemastudio](https://github.com/aeom0/geemastudio)
+- Legacy / archivado: [aeom0/geemastudio](https://github.com/aeom0/geemastudio) (absorbido en `zm-tech`)
 
 ---
 
@@ -180,7 +180,7 @@ Suite empresarial (ventas, inventario, producción, compras) con cumplimiento no
 **Tipo**: SaaS B2B multi-tenant para tiendas de autopartes — Venezuela  
 **Estado**: Activo — desarrollo en monorepo `zm-tech` (fases de integración cerradas)  
 **Repo activo**: [aeom0/zm-tech](https://github.com/aeom0/zm-tech) → `apps/repmax-*`  
-**Repo legacy**: [aeom0/RepMAX](https://github.com/aeom0/RepMAX) (privado; ya no es fuente de verdad)
+**Repo legacy / archivado**: [aeom0/RepMAX](https://github.com/aeom0/RepMAX) (privado; absorbido en `zm-tech`)
 
 ### Descripción
 
@@ -346,11 +346,11 @@ Preview: [prolens-sigma.vercel.app](https://prolens-sigma.vercel.app)
 | Proyecto            | Dominio                   | Mercado      | Stack principal             | Estado               | Repo GH                          |
 | ------------------- | ------------------------- | ------------ | --------------------------- | -------------------- | -------------------------------- |
 | **zm-tech**         | Hub / landing + productos | LATAM        | pnpm + Turbo + Next + Expo  | Activo               | `zm-tech`                        |
-| **GeemaStudio**     | SaaS Beauty               | LATAM        | RN + Expo + Supabase        | Activo (en monorepo) | `zm-tech` / legacy `geemastudio` |
+| **GeemaStudio**     | SaaS Beauty               | LATAM        | RN + Expo + Supabase        | Activo (en monorepo) | `zm-tech` / archivado `geemastudio` |
 | **OdentalPro**      | SaaS Dental               | LATAM        | Next + Expo + Supabase      | Scaffold             | `zm-tech`                        |
 | **ZM Lash & Nails** | App salón                 | Lima, PE     | RN + Expo + Supabase + WABA | Producción           | `ZM-Lash-and-Nails-Beauty`       |
 | **ZetaEme**         | Enterprise cosméticos     | Venezuela    | Next + RN + Supabase        | Producción           | `zetaeme-enterprise-suite`       |
-| **RepMAX**          | Autopartes                | Venezuela    | Expo + Next + Supabase      | Activo (en monorepo) | `zm-tech` / legacy `RepMAX`      |
+| **RepMAX**          | Autopartes                | Venezuela    | Expo + Next + Supabase      | Activo (en monorepo) | `zm-tech` / archivado `RepMAX`   |
 | **IA Scout360**     | Scouting IA               | Venezuela    | Next + RN + Supabase        | Activo               | `ia-scout360`                    |
 | **YLA-MVP**         | Yoga / bienestar          | Venezuela    | Next.js 15 + Tailwind v4    | Landing lista        | `yla-mvp`                        |
 | **Guataparo BR**    | Inmobiliaria              | Valencia, VE | Next 16 + pnpm + Supabase   | Fase 1               | `guataparobr`                    |
@@ -374,17 +374,16 @@ Preview: [prolens-sigma.vercel.app](https://prolens-sigma.vercel.app)
 ## Paths locales (WSL)
 
 ```
-/home/alber/zm-tech
+/home/alber/zm-tech              # hub: landing + geemastudio + odental + repmax
 /home/alber/ZM-Lash-and-Nails-Beauty
 /home/alber/zetaeme-enterprise-suite
-/home/alber/geemastudio          # legacy
-/home/alber/RepMAX               # legacy (activo en zm-tech)
 /home/alber/ia-scout360
 /home/alber/yla-mvp
 /home/alber/guataparobr
 /home/alber/naturalforce-suite
 /home/alber/prolens
 /home/alber/CondominiOS          # condoapp
+# (eliminados) ~/geemastudio y ~/RepMAX — redundantes; código en zm-tech
 ```
 
 Skill paraguas del ecosistema: `.cursor/skills/zmtech-dev/SKILL.md` (symlink Claude: `.claude/skills/zmtech-dev`).
