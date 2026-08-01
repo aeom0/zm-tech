@@ -15,6 +15,9 @@ import { HERO_SCENES } from '@/components/hero/mocks'
 const TILT_SPRING = { stiffness: 140, damping: 24, mass: 0.4 }
 const SCENE_MS = 4500
 
+/** expo.out — desaceleración marcada, misma curva que `mock-rise` en globals.css */
+const EASE_EXPO_OUT = [0.16, 1, 0.3, 1] as const
+
 /** Mostrar phone junto a la laptop en el hero */
 const SHOW_PHONE = true
 
@@ -140,10 +143,16 @@ export default function HeroDeviceMockup({ locale }: Props) {
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={scene.id}
-                    initial={reduceMotion ? false : { opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={reduceMotion ? undefined : { opacity: 0 }}
-                    transition={{ duration: reduceMotion ? 0 : 0.5 }}
+                    initial={reduceMotion ? false : { opacity: 0, y: 8, scale: 0.99 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={
+                      reduceMotion
+                        ? undefined
+                        : { opacity: 0, y: -4, transition: { duration: 0.25, ease: 'easeIn' } }
+                    }
+                    transition={
+                      reduceMotion ? { duration: 0 } : { duration: 0.55, ease: EASE_EXPO_OUT }
+                    }
                     className="pointer-events-none absolute inset-0"
                   >
                     <LaptopMock />
@@ -220,10 +229,18 @@ export default function HeroDeviceMockup({ locale }: Props) {
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={scene.id}
-                      initial={reduceMotion ? false : { opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={reduceMotion ? undefined : { opacity: 0 }}
-                      transition={{ duration: reduceMotion ? 0 : 0.5 }}
+                      initial={reduceMotion ? false : { opacity: 0, y: 8, scale: 0.99 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={
+                        reduceMotion
+                          ? undefined
+                          : { opacity: 0, y: -4, transition: { duration: 0.25, ease: 'easeIn' } }
+                      }
+                      transition={
+                        reduceMotion
+                          ? { duration: 0 }
+                          : { duration: 0.55, delay: 0.1, ease: EASE_EXPO_OUT }
+                      }
                       className="pointer-events-none absolute inset-0"
                     >
                       <PhoneMock />
