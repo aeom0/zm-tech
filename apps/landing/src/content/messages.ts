@@ -4,6 +4,9 @@ export type NavMessages = {
   openMenu: string
 }
 
+/** IDs de escena del hero — misma llave que las verticales de negocio (fuente única de verdad) */
+export type HeroSceneId = keyof VerticalsMessages['items']
+
 export type HeroMessages = {
   badge: string
   h1Lines: [string, string, string]
@@ -11,8 +14,8 @@ export type HeroMessages = {
   ctaPrimary: string
   ctaSecondary: string
   imageAlt: string
-  laptopAlts: [string, string, string]
-  phoneAlts: [string, string, string]
+  laptopAlts: Record<HeroSceneId, string>
+  phoneAlts: Record<HeroSceneId, string>
   statusLabel: string
   statusValue: string
 }
