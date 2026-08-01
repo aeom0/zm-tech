@@ -25,7 +25,7 @@ const BLOCKS: Array<{
 }> = [
   { row: 0, label: 'Ana', sub: 'Pestañas', icon: 'eye', from: TEAL_DEEP, to: '#00695c' },
   { row: 2, label: 'Luis', sub: 'Uñas', icon: 'sparkles', from: '#0f9c8c', to: '#0d7a6e' },
-  { row: 4, label: 'Mar', sub: 'Cejas', icon: 'scissors', from: '#14b3a1', to: TEAL_DEEP },
+  { row: 4, label: 'Mar', sub: 'Cejas', icon: 'brow', from: '#14b3a1', to: TEAL_DEEP },
 ]
 
 export default function MockAgendaMobile() {

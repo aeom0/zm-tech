@@ -15,7 +15,7 @@ const SERVICES: Array<{
 }> = [
   { t: 'Pestañas', icon: 'eye', p: 'desde $25', dur: '60 min', rating: '4.9', popular: true },
   { t: 'Uñas', icon: 'sparkles', p: 'desde $18', dur: '45 min', rating: '4.8' },
-  { t: 'Cejas', icon: 'scissors', p: 'desde $12', dur: '30 min', rating: '4.9' },
+  { t: 'Cejas', icon: 'brow', p: 'desde $12', dur: '30 min', rating: '4.9' },
 ]
 
 export default function MockSalonWeb() {

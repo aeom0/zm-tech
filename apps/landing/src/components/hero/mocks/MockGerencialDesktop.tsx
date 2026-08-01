@@ -70,7 +70,7 @@ export default function MockGerencialDesktop() {
       {/* Main */}
       <div className="relative z-1 flex min-w-0 flex-1 flex-col">
         {/* Top bar */}
-        <div className="mock-rise flex items-center justify-between border-b border-white/8 border-t-white/10 bg-white/3 px-2 py-1 backdrop-blur-md">
+        <div className="mock-rise flex items-center justify-between border-t border-b border-white/8 border-t-white/10 bg-white/3 px-2 py-1 backdrop-blur-md">
           <div>
             <div className="text-[6px] tracking-wide text-zinc-500 uppercase">Módulo</div>
             <div className="font-bold tracking-tight text-zinc-50">Panel gerencial</div>
