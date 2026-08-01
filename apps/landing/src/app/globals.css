@@ -70,6 +70,24 @@ body {
   animation: spin-slow 8s linear infinite;
 }
 
+/* Reveal escalonado de los grupos internos de los mocks del hero */
+@keyframes mock-rise {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+}
+
+.mock-rise {
+  animation: mock-rise 0.55s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mock-rise {
+    animation: none;
+  }
+}
+
 ::-webkit-scrollbar {
   width: 4px;
 }
