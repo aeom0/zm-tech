@@ -5,19 +5,24 @@ const TEAL_DEEP = '#00897B'
 
 const SLOTS = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00'] as const
 
-const BLOCKS: Array<{ row: number; label: string; sub: string; color: string }> = [
-  { row: 0, label: 'Ana', sub: 'Pestañas', color: TEAL_DEEP },
-  { row: 2, label: 'Luis', sub: 'Uñas', color: '#0f9c8c' },
-  { row: 4, label: 'Mar', sub: 'Cejas', color: '#14b3a1' },
+const BLOCKS: Array<{ row: number; label: string; sub: string; from: string; to: string }> = [
+  { row: 0, label: 'Ana', sub: 'Pestañas', from: TEAL_DEEP, to: '#00695c' },
+  { row: 2, label: 'Luis', sub: 'Uñas', from: '#0f9c8c', to: '#0d7a6e' },
+  { row: 4, label: 'Mar', sub: 'Cejas', from: '#14b3a1', to: TEAL_DEEP },
 ]
 
 export default function MockAgendaMobile() {
   return (
     <div
-      className="flex h-full w-full flex-col overflow-hidden bg-[#0c1614] text-[6.5px] leading-snug text-zinc-300 sm:text-[7px]"
+      className="relative flex h-full w-full flex-col overflow-hidden bg-[#0c1614] text-[6.5px] leading-snug text-zinc-300 sm:text-[7px]"
       aria-hidden
     >
-      <div className="border-b border-white/8 bg-white/[0.02] px-1.5 pt-1.5 pb-1.5">
+      <div
+        className="pointer-events-none absolute top-[-10%] left-1/2 h-20 w-32 -translate-x-1/2 rounded-full opacity-15 blur-2xl"
+        style={{ backgroundColor: TEAL_LIGHT }}
+      />
+
+      <div className="relative border-b border-white/8 bg-white/2 px-1.5 pt-1.5 pb-1.5">
         <div className="flex items-center justify-between">
           <div className="font-semibold text-zinc-100">Agenda</div>
           <span className="text-[5.5px] text-zinc-500">Mar 12</span>
@@ -27,7 +32,7 @@ export default function MockAgendaMobile() {
             <span
               key={c}
               className={`rounded-full px-1.5 py-0.5 text-[5.5px] font-medium ${
-                i === 0 ? 'text-[#00332d]' : 'bg-white/[0.05] text-zinc-400'
+                i === 0 ? 'text-[#00332d]' : 'bg-white/5 text-zinc-400'
               }`}
               style={i === 0 ? { backgroundImage: `linear-gradient(135deg, ${TEAL_LIGHT}, ${TEAL_DEEP})` } : undefined}
             >
@@ -61,7 +66,10 @@ export default function MockAgendaMobile() {
                 <div
                   key={b.label}
                   className="absolute inset-x-0.5 top-[10%] flex h-[80%] items-center gap-0.5 overflow-hidden rounded-md px-1 text-white"
-                  style={{ backgroundColor: b.color, boxShadow: 'inset 2px 0 0 rgba(255,255,255,0.25)' }}
+                  style={{
+                    backgroundImage: `linear-gradient(135deg, ${b.from}, ${b.to})`,
+                    boxShadow: `inset 2px 0 0 rgba(255,255,255,0.25), 0 2px 6px ${b.from}40`,
+                  }}
                 >
                   <div className="min-w-0 truncate">
                     <span className="font-semibold">{b.label}</span>
@@ -74,7 +82,7 @@ export default function MockAgendaMobile() {
         ))}
       </div>
 
-      <div className="flex border-t border-white/8 bg-white/[0.02] py-1 text-[5.5px] text-zinc-500">
+      <div className="flex border-t border-white/8 bg-white/2 py-1 text-[5.5px] text-zinc-500">
         {['Inicio', 'Agenda', 'Serv.', 'Cli.', 'Más'].map((t, i) => (
           <div
             key={t}

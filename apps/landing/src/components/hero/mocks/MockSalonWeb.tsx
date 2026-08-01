@@ -6,11 +6,16 @@ const TEAL_DEEP = '#00897B'
 export default function MockSalonWeb() {
   return (
     <div
-      className="flex h-full w-full flex-col overflow-hidden bg-[#0c1614] text-[8px] leading-snug text-zinc-300 sm:text-[9px]"
+      className="relative flex h-full w-full flex-col overflow-hidden bg-[#0c1614] text-[8px] leading-snug text-zinc-300 sm:text-[9px]"
       aria-hidden
     >
+      <div
+        className="pointer-events-none absolute top-[-15%] right-[10%] h-24 w-24 rounded-full opacity-20 blur-2xl"
+        style={{ backgroundColor: TEAL_LIGHT }}
+      />
+
       {/* Nav */}
-      <div className="flex items-center justify-between border-b border-white/8 bg-white/[0.02] px-2.5 py-1.5">
+      <div className="flex items-center justify-between border-b border-white/8 bg-white/2 px-2.5 py-1.5">
         <div className="flex items-center gap-1.5">
           <span
             className="flex h-3.5 w-3.5 items-center justify-center rounded-full text-[6px] font-bold text-[#00332d]"
@@ -67,12 +72,23 @@ export default function MockSalonWeb() {
         ].map((s) => (
           <div
             key={s.t}
-            className="flex flex-col overflow-hidden rounded-lg border border-white/8 bg-white/[0.03]"
+            className={`flex flex-col overflow-hidden rounded-lg border bg-white/3 ${
+              s.popular ? 'border-transparent' : 'border-white/8'
+            }`}
+            style={
+              s.popular
+                ? { boxShadow: `0 0 0 1px ${TEAL_LIGHT}4d, 0 4px 12px ${TEAL_DEEP}33` }
+                : undefined
+            }
           >
             <div
-              className="relative h-6 w-full sm:h-7"
-              style={{ backgroundImage: `linear-gradient(135deg, ${TEAL_LIGHT}33, ${TEAL_DEEP}22)` }}
+              className="relative h-6 w-full overflow-hidden sm:h-7"
+              style={{ backgroundImage: `linear-gradient(135deg, ${TEAL_DEEP}66, ${TEAL_LIGHT}26 60%, transparent)` }}
             >
+              <div
+                className="pointer-events-none absolute -top-2 -right-2 h-8 w-8 rounded-full opacity-40 blur-lg"
+                style={{ backgroundColor: TEAL_LIGHT }}
+              />
               <span
                 className="absolute top-1 left-1 flex h-2.5 w-2.5 items-center justify-center rounded-full"
                 style={{ backgroundColor: `${TEAL_LIGHT}26` }}

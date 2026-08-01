@@ -19,6 +19,7 @@ type MetaItem = {
   renderIcon: () => ReactNode
 }
 
+// eslint-disable-next-line react/display-name -- helper de renderIcon, no es un componente
 const lucideIcon = (Icon: ElementType, className: string) => () => <Icon className={className} />
 
 const meta: MetaItem[] = [

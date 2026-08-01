@@ -38,7 +38,7 @@ export default function MockVentasMobile() {
           {['+ Pedido', '+ Cliente'].map((a) => (
             <div
               key={a}
-              className="rounded-md border border-white/10 bg-white/[0.04] py-1 text-center text-[6px] font-semibold"
+              className="rounded-md border border-white/10 bg-white/4 py-1 text-center text-[6px] font-semibold"
               style={{ color: '#a5b4fc' }}
             >
               {a}
@@ -46,7 +46,7 @@ export default function MockVentasMobile() {
           ))}
         </div>
 
-        <div className="rounded-md border border-white/8 bg-white/[0.03] p-1.5">
+        <div className="rounded-md border border-white/8 bg-white/3 p-1.5">
           <div className="mb-1 flex items-center justify-between">
             <span className="text-[6px] font-semibold text-zinc-300">Ventas semana</span>
             <span className="text-[5.5px] text-zinc-500">L–S</span>
@@ -69,7 +69,7 @@ export default function MockVentasMobile() {
           ].map((p) => (
             <div
               key={p.n}
-              className="flex items-center justify-between gap-1 rounded-md border border-white/8 bg-white/[0.02] px-1 py-1"
+              className="flex items-center justify-between gap-1 rounded-md border border-white/8 bg-white/2 px-1 py-1"
             >
               <span className="min-w-0 truncate font-medium text-zinc-300">{p.n}</span>
               <span className={`shrink-0 rounded-full px-1 py-px text-[5.5px] font-medium ${p.c}`}>{p.s}</span>
@@ -78,7 +78,7 @@ export default function MockVentasMobile() {
         </div>
       </div>
 
-      <div className="flex border-t border-white/8 bg-white/[0.02] py-1 text-[5.5px] text-zinc-500">
+      <div className="flex border-t border-white/8 bg-white/2 py-1 text-[5.5px] text-zinc-500">
         {['Inicio', 'Prod.', 'Pagos', 'Pedidos', 'Cli.'].map((t, i) => (
           <div
             key={t}
