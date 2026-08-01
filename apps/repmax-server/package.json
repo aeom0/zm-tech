@@ -27,6 +27,6 @@
     "@types/node": "^20.19.30",
     "@types/pg": "^8.11.6",
     "tsx": "^4.19.2",
-    "typescript": "^5.9.3"
+    "typescript": "~6.0.3"
   }
 }
