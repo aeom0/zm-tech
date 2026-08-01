@@ -136,7 +136,7 @@ export default function MockTallerDesktop() {
                 </span>
                 <span className="text-[5.5px] text-zinc-400">6 semanas</span>
               </div>
-              <div className="relative flex flex-1 items-end gap-[3px] px-0.5">
+              <div className="relative flex flex-1 items-end gap-0.75 px-0.5">
                 {/* grid lines */}
                 <div
                   className="pointer-events-none absolute inset-x-0 top-1 bottom-1 flex flex-col justify-between"
@@ -184,7 +184,7 @@ export default function MockTallerDesktop() {
                         </span>
                       )}
                       <div
-                        className="w-[55%] rounded-t-[2px]"
+                        className="w-[55%] rounded-t-xs"
                         style={{
                           height: `${h}%`,
                           backgroundColor: `${ACCENT}33`,

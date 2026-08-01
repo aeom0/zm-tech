@@ -53,11 +53,11 @@ export default function MockTallerMobile() {
             <span className="text-[6px] font-semibold text-zinc-700">Órdenes semana</span>
             <span className="text-[5.5px] text-zinc-400">L–S</span>
           </div>
-          <div className="flex h-9 items-end gap-[2px]">
+          <div className="flex h-9 items-end gap-0.5">
             {[45, 60, 52, 80, 65, 70].map((h, i) => (
               <div key={i} className="flex flex-1 flex-col items-center justify-end gap-0.5">
                 <div
-                  className="w-full rounded-t-[2px] bg-emerald-600/85"
+                  className="w-full rounded-t-xs bg-emerald-600/85"
                   style={{ height: `${h}%` }}
                 />
               </div>
