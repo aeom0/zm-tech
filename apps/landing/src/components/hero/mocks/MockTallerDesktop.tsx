@@ -145,6 +145,16 @@ export default function MockTallerDesktop() {
                   preserveAspectRatio="none"
                   aria-hidden
                 >
+                  <defs>
+                    <linearGradient id="taller-area" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor={ACCENT} stopOpacity="0.3" />
+                      <stop offset="100%" stopColor={ACCENT} stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                  <polygon
+                    points="8,52 25,35 42,45 58,22 75,40 92,10 92,100 8,100"
+                    fill="url(#taller-area)"
+                  />
                   <polyline
                     points="8,52 25,35 42,45 58,22 75,40 92,10"
                     fill="none"
@@ -153,7 +163,7 @@ export default function MockTallerDesktop() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     vectorEffect="non-scaling-stroke"
-                    opacity="0.7"
+                    opacity="0.8"
                   />
                   {[
                     [8, 52],
@@ -163,7 +173,15 @@ export default function MockTallerDesktop() {
                     [75, 40],
                     [92, 10],
                   ].map(([x, y]) => (
-                    <circle key={`${x}-${y}`} cx={x} cy={y} r="2" fill={ACCENT} />
+                    <circle
+                      key={`${x}-${y}`}
+                      cx={x}
+                      cy={y}
+                      r="2"
+                      fill={ACCENT}
+                      stroke="#0D0D0D"
+                      strokeWidth="1"
+                    />
                   ))}
                 </svg>
                 {[48, 65, 55, 78, 60, 90].map((h, i, arr) => {
@@ -188,7 +206,14 @@ export default function MockTallerDesktop() {
                   )
                 })}
               </div>
-              <div className="mt-1 flex gap-2 text-[5.5px] text-zinc-500">
+              <div className="mt-0.5 flex gap-0.75 px-0.5">
+                {['S1', 'S2', 'S3', 'S4', 'S5', 'S6'].map((w) => (
+                  <span key={w} className="flex-1 text-center text-[5px] text-zinc-500">
+                    {w}
+                  </span>
+                ))}
+              </div>
+              <div className="mt-0.5 flex gap-2 text-[5.5px] text-zinc-500">
                 <span className="flex items-center gap-0.5">
                   <span className="h-1 w-1 rounded-full" style={{ backgroundColor: ACCENT }} /> Completadas
                 </span>
@@ -205,7 +230,7 @@ export default function MockTallerDesktop() {
             >
               <span className="mb-1 text-[6.5px] font-bold tracking-tight text-zinc-200">Estado órdenes</span>
               <div className="flex flex-1 items-center gap-2">
-                <div className="relative h-11 w-11 shrink-0 sm:h-12 sm:w-12">
+                <div className="relative h-10 w-10 shrink-0 sm:h-11 sm:w-11">
                   <div
                     className="absolute inset-0 rounded-full"
                     style={{
@@ -232,6 +257,27 @@ export default function MockTallerDesktop() {
                     </div>
                   ))}
                 </div>
+              </div>
+              <div className="mt-1 space-y-0.5 border-t border-white/8 pt-1">
+                <div className="text-[5.5px] font-semibold tracking-wide text-zinc-500 uppercase">
+                  Carga técnicos
+                </div>
+                {[
+                  { n: 'J. Pérez', v: 80 },
+                  { n: 'M. Ruiz', v: 55 },
+                ].map((t) => (
+                  <div key={t.n} className="flex items-center gap-1 text-[5.5px] text-zinc-400">
+                    <MockIcon name="user" className="h-1.5 w-1.5 shrink-0" />
+                    <span className="w-7 shrink-0 truncate">{t.n}</span>
+                    <div className="h-1 min-w-0 flex-1 overflow-hidden rounded-full bg-white/8">
+                      <div
+                        className="h-full rounded-full"
+                        style={{ width: `${t.v}%`, backgroundColor: ACCENT }}
+                      />
+                    </div>
+                    <span className="shrink-0 tabular-nums">{t.v}%</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

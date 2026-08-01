@@ -4,11 +4,11 @@ import { GLASS_CARD, glassShadow, MockBackdrop, MockIcon, type MockIconName } fr
 
 const ACCENT = '#6366F1'
 
-const NAV: Array<{ label: string; icon: MockIconName }> = [
+const NAV: Array<{ label: string; icon: MockIconName; badge?: string }> = [
   { label: 'Gerencial', icon: 'dashboard' },
   { label: 'Producción', icon: 'layers' },
   { label: 'Inventario', icon: 'box' },
-  { label: 'Compras', icon: 'cart' },
+  { label: 'Compras', icon: 'cart', badge: '3' },
   { label: 'Finanzas', icon: 'card' },
 ]
 
@@ -46,6 +46,9 @@ export default function MockGerencialDesktop() {
             <div className="truncate text-[5.5px] text-zinc-500">Ops</div>
           </div>
         </div>
+        <div className="mb-0.5 px-1 text-[5px] font-semibold tracking-widest text-zinc-600 uppercase">
+          Operación
+        </div>
         {NAV.map((item, i) => (
           <div
             key={item.label}
@@ -62,9 +65,26 @@ export default function MockGerencialDesktop() {
             }
           >
             <MockIcon name={item.icon} className="h-1.5 w-1.5 shrink-0" />
-            <span className="truncate">{item.label}</span>
+            <span className="min-w-0 flex-1 truncate">{item.label}</span>
+            {item.badge && (
+              <span
+                className="shrink-0 rounded-full px-0.5 text-[4.5px] font-bold text-white tabular-nums"
+                style={{ backgroundColor: `${ACCENT}cc` }}
+              >
+                {item.badge}
+              </span>
+            )}
           </div>
         ))}
+        <div className="mt-auto flex items-center gap-1 border-t border-white/8 pt-1">
+          <span className="flex h-2.5 w-2.5 shrink-0 items-center justify-center rounded-full bg-white/8 ring-1 ring-white/10">
+            <MockIcon name="user" className="h-1.5 w-1.5 text-zinc-400" />
+          </span>
+          <div className="min-w-0">
+            <div className="truncate text-[5.5px] font-semibold text-zinc-300">Admin</div>
+            <div className="truncate text-[4.5px] text-zinc-600">Gerencia</div>
+          </div>
+        </div>
       </aside>
 
       {/* Main */}
@@ -133,12 +153,76 @@ export default function MockGerencialDesktop() {
             style={{ animationDelay: '120ms' }}
           >
             <div
+              className={`${GLASS_CARD} col-span-2 flex flex-col p-1.5`}
+              style={{ boxShadow: glassShadow(ACCENT) }}
+            >
+              <span className="mb-1 text-[6.5px] font-bold tracking-tight text-zinc-200">Estado pedidos</span>
+              <div className="flex flex-1 items-center gap-2">
+                <div className="relative h-10 w-10 shrink-0 sm:h-11 sm:w-11">
+                  <div
+                    className="absolute inset-0 rounded-full"
+                    style={{
+                      background:
+                        'conic-gradient(#6366F1 0 42%, #34d399 42% 68%, #fbbf24 68% 86%, rgba(255,255,255,0.1) 86% 100%)',
+                      boxShadow: `0 1px 2px rgba(0,0,0,0.4), 0 6px 16px -4px ${ACCENT}33`,
+                    }}
+                  />
+                  <div className="absolute inset-[22%] flex flex-col items-center justify-center rounded-full bg-[#0a0a0c]">
+                    <span className="text-[7px] font-extrabold tracking-tight text-zinc-50 tabular-nums sm:text-[7.5px]">
+                      86
+                    </span>
+                  </div>
+                </div>
+                <div className="min-w-0 space-y-0.5 text-[6px]">
+                  {[
+                    { l: 'Pagado', c: ACCENT },
+                    { l: 'En curso', c: '#34d399' },
+                    { l: 'Pendiente', c: '#fbbf24' },
+                  ].map((r) => (
+                    <div key={r.l} className="flex items-center gap-1 text-zinc-400">
+                      <span className="h-1 w-1 rounded-full" style={{ backgroundColor: r.c }} />
+                      {r.l}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="mt-1 space-y-0.5 border-t border-white/8 pt-1">
+                <div className="text-[5.5px] font-semibold tracking-wide text-zinc-500 uppercase">
+                  Top productos
+                </div>
+                {[
+                  { n: 'Kit A-12', v: 72 },
+                  { n: 'Caja x24', v: 48 },
+                ].map((p) => (
+                  <div key={p.n} className="flex items-center gap-1 text-[5.5px] text-zinc-400">
+                    <MockIcon name="box" className="h-1.5 w-1.5 shrink-0" />
+                    <span className="w-7 shrink-0 truncate">{p.n}</span>
+                    <div className="h-1 min-w-0 flex-1 overflow-hidden rounded-full bg-white/8">
+                      <div
+                        className="h-full rounded-full"
+                        style={{ width: `${p.v}%`, backgroundColor: ACCENT }}
+                      />
+                    </div>
+                    <span className="shrink-0 tabular-nums">{p.v}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div
               className={`${GLASS_CARD} col-span-3 flex flex-col p-1.5`}
               style={{ boxShadow: glassShadow(ACCENT) }}
             >
               <div className="mb-1 flex items-center justify-between">
                 <span className="text-[6.5px] font-bold tracking-tight text-zinc-200">Ventas vs costos</span>
-                <span className="text-[5.5px] text-zinc-500">6 meses</span>
+                <span className="flex items-center gap-1.5 text-[5px] text-zinc-500">
+                  <span className="flex items-center gap-0.5">
+                    <span className="h-1 w-1 rounded-full" style={{ backgroundColor: ACCENT }} /> Ventas
+                  </span>
+                  <span className="flex items-center gap-0.5">
+                    <span className="h-1 w-1 rounded-full bg-white/25" /> Costos
+                  </span>
+                </span>
               </div>
               <div className="relative flex h-13 w-full shrink-0 items-end gap-1 px-0.5 sm:h-14.5">
                 <div
@@ -181,42 +265,6 @@ export default function MockGerencialDesktop() {
                     {d.month}
                   </span>
                 ))}
-              </div>
-            </div>
-
-            <div
-              className={`${GLASS_CARD} col-span-2 flex flex-col p-1.5`}
-              style={{ boxShadow: glassShadow(ACCENT) }}
-            >
-              <span className="mb-1 text-[6.5px] font-bold tracking-tight text-zinc-200">Estado pedidos</span>
-              <div className="flex flex-1 items-center gap-2">
-                <div className="relative h-11 w-11 shrink-0 sm:h-12 sm:w-12">
-                  <div
-                    className="absolute inset-0 rounded-full"
-                    style={{
-                      background:
-                        'conic-gradient(#6366F1 0 42%, #34d399 42% 68%, #fbbf24 68% 86%, rgba(255,255,255,0.1) 86% 100%)',
-                      boxShadow: `0 1px 2px rgba(0,0,0,0.4), 0 6px 16px -4px ${ACCENT}33`,
-                    }}
-                  />
-                  <div className="absolute inset-[22%] flex flex-col items-center justify-center rounded-full bg-[#0a0a0c]">
-                    <span className="text-[7px] font-extrabold tracking-tight text-zinc-50 tabular-nums sm:text-[7.5px]">
-                      86
-                    </span>
-                  </div>
-                </div>
-                <div className="min-w-0 space-y-0.5 text-[6px]">
-                  {[
-                    { l: 'Pagado', c: ACCENT },
-                    { l: 'En curso', c: '#34d399' },
-                    { l: 'Pendiente', c: '#fbbf24' },
-                  ].map((r) => (
-                    <div key={r.l} className="flex items-center gap-1 text-zinc-400">
-                      <span className="h-1 w-1 rounded-full" style={{ backgroundColor: r.c }} />
-                      {r.l}
-                    </div>
-                  ))}
-                </div>
               </div>
             </div>
           </div>
