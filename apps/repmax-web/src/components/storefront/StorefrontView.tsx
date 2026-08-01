@@ -18,6 +18,7 @@ export function StorefrontView({ store, initialProducts, total }: StorefrontView
     <div className="min-h-screen bg-[#0D0D0D]">
       <StorefrontHeader store={store} />
       <ProductCatalog
+        storeId={store.id}
         storeSlug={store.slug}
         initialProducts={initialProducts}
         total={total}

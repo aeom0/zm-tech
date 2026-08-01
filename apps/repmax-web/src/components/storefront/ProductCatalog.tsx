@@ -7,10 +7,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PackageOpen, Search } from "lucide-react";
 import { POPULAR_BRANDS } from "@repmax/repmax-schema";
+import { createClient } from "@/lib/supabase/client";
+import { fetchPublicProducts } from "@/lib/repmax-queries";
 import type { ProductPublic } from "@/types/storefront";
 import { ProductCard } from "./ProductCard";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 
 const TIPOS_VEHICULO: { value: string; label: string }[] = [
   { value: "", label: "Todos los tipos" },
@@ -27,18 +27,13 @@ const CONDICIONES: { value: string; label: string }[] = [
 ];
 
 interface ProductCatalogProps {
+  storeId: string;
   storeSlug: string;
   initialProducts: ProductPublic[];
   total: number;
   usdBsRate: number;
 }
 
-interface RespuestaProductos {
-  products: ProductPublic[];
-  total: number;
-  page: number;
-  limit: number;
-}
 
 function EsqueletoGrid() {
   return (
@@ -64,7 +59,8 @@ const selectClase =
   "min-w-[140px] shrink-0 rounded-md border border-[#2A2A2A] bg-[#1A1A1A] px-3 py-2 text-sm text-[#F5F5F5] focus:border-[#FF6B00] focus:outline-none focus:ring-1 focus:ring-[#FF6B00]";
 
 export function ProductCatalog({
-  storeSlug,
+  storeId,
+  storeSlug: _storeSlug,
   initialProducts,
   total: totalInicial,
   usdBsRate,
@@ -95,15 +91,8 @@ export function ProductCatalog({
       if (tipoVehiculo) params.set("vehicleType", tipoVehiculo);
       if (busqueda.trim()) params.set("q", busqueda.trim());
 
-      const res = await fetch(
-        `${API_BASE}/api/public/${encodeURIComponent(storeSlug)}/products?${params.toString()}`,
-        { cache: "no-store" },
-      );
-      if (!res.ok) {
-        const body = (await res.json().catch(() => null)) as { error?: string } | null;
-        throw new Error(body?.error ?? "No se pudieron cargar los productos");
-      }
-      const data = (await res.json()) as RespuestaProductos;
+      const client = createClient();
+      const data = await fetchPublicProducts(client, storeId, usdBsRate, params);
       setProductos(data.products);
       setTotal(data.total);
     } catch (e) {
@@ -113,7 +102,7 @@ export function ProductCatalog({
     } finally {
       setCargando(false);
     }
-  }, [storeSlug, marca, condicion, tipoVehiculo, busqueda, pagina]);
+  }, [storeId, usdBsRate, marca, condicion, tipoVehiculo, busqueda, pagina]);
 
   // Refetch solo tras la primera pintura (datos iniciales vienen del servidor)
   useEffect(() => {

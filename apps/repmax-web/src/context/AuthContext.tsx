@@ -1,7 +1,7 @@
-// ============================================================
-// Autenticación del panel web — JWT en localStorage + cookie (middleware)
-// ============================================================
-
+/**
+ * Auth panel web — Supabase Auth + membership repmax_store_users.
+ * Sin JWT propio ni cookie repmax_token.
+ */
 "use client";
 
 import {
@@ -13,131 +13,156 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { AuthMeResponse, StoreWeb } from "@/types/dashboard";
-
-const CLAVE_TOKEN = "repmax_token";
-const CLAVE_COOKIE = "repmax_token";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
-
-function escribirCookieToken(token: string): void {
-  document.cookie = `${CLAVE_COOKIE}=${encodeURIComponent(token)}; path=/; max-age=604800`;
-}
-
-function borrarCookieToken(): void {
-  document.cookie = `${CLAVE_COOKIE}=; path=/; max-age=0`;
-}
+import type { Session } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/client";
+import type { StoreWeb } from "@/types/dashboard";
 
 export interface AuthContextValue {
+  /** access_token de Supabase (compat con guards que miraban JWT propio) */
   token: string | null;
   user: { id: string; email: string } | null;
   store: StoreWeb | null;
   storeUser: { role: string; fullName: string | null } | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-async function fetchMe(bearer: string): Promise<AuthMeResponse> {
-  const res = await fetch(`${API_BASE}/api/auth/me`, {
-    headers: { Authorization: `Bearer ${bearer}` },
-    cache: "no-store",
-  });
-  if (!res.ok) {
-    const body = (await res.json().catch(() => null)) as { error?: string } | null;
-    throw new Error(body?.error ?? "Sesión inválida");
+type Membership = {
+  store: StoreWeb;
+  storeUser: { role: string; fullName: string | null };
+};
+
+async function loadMembership(
+  userId: string,
+): Promise<Membership | null> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("repmax_store_users")
+    .select(
+      `
+      role, full_name,
+      store:repmax_stores ( id, name, slug, city, plan, usd_bs_rate, is_active )
+    `,
+    )
+    .eq("user_id", userId)
+    .eq("is_active", true)
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    console.warn("[repmax auth]", error.message);
+    return null;
   }
-  return (await res.json()) as AuthMeResponse;
+  if (!data) return null;
+
+  const storeRaw = Array.isArray(data.store) ? data.store[0] : data.store;
+  if (!storeRaw || storeRaw.is_active === false) return null;
+
+  return {
+    store: {
+      id: storeRaw.id,
+      name: storeRaw.name,
+      slug: storeRaw.slug,
+      city: storeRaw.city ?? null,
+      plan: (storeRaw.plan as StoreWeb["plan"]) ?? "basic",
+      usdBsRate: Number(storeRaw.usd_bs_rate) || 36.5,
+    },
+    storeUser: {
+      role: String(data.role),
+      fullName: data.full_name ?? null,
+    },
+  };
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState<string | null>(null);
-  const [user, setUser] = useState<{ id: string; email: string } | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [store, setStore] = useState<StoreWeb | null>(null);
-  const [storeUser, setStoreUser] = useState<{ role: string; fullName: string | null } | null>(
-    null,
-  );
+  const [storeUser, setStoreUser] = useState<{
+    role: string;
+    fullName: string | null;
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const logout = useCallback(() => {
-    try {
-      localStorage.removeItem(CLAVE_TOKEN);
-    } catch {
-      /* ignore */
+  const syncMembership = useCallback(async (uid: string | null) => {
+    if (!uid) {
+      setStore(null);
+      setStoreUser(null);
+      return;
     }
-    borrarCookieToken();
-    setToken(null);
-    setUser(null);
+    const m = await loadMembership(uid);
+    setStore(m?.store ?? null);
+    setStoreUser(m?.storeUser ?? null);
+  }, []);
+
+  useEffect(() => {
+    const supabase = createClient();
+    let cancelled = false;
+
+    void (async () => {
+      const { data } = await supabase.auth.getSession();
+      if (cancelled) return;
+      setSession(data.session);
+      await syncMembership(data.session?.user.id ?? null);
+      if (!cancelled) setIsLoading(false);
+    })();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, next) => {
+      setSession(next);
+      void syncMembership(next?.user.id ?? null);
+    });
+
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+    };
+  }, [syncMembership]);
+
+  const login = useCallback(
+    async (email: string, password: string) => {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw new Error(error.message);
+
+      const uid = data.user?.id ?? data.session?.user?.id ?? null;
+      if (!uid) throw new Error("No se obtuvo la sesión");
+
+      const m = await loadMembership(uid);
+      if (!m) {
+        await supabase.auth.signOut();
+        throw new Error(
+          "Tu usuario no está vinculado a una tienda RepMAX. Pide al dueño que te asocie.",
+        );
+      }
+      setSession(data.session);
+      setStore(m.store);
+      setStoreUser(m.storeUser);
+    },
+    [],
+  );
+
+  const logout = useCallback(async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    setSession(null);
     setStore(null);
     setStoreUser(null);
   }, []);
 
-  const hidratar = useCallback(async (bearer: string) => {
-    const data = await fetchMe(bearer);
-    setUser(data.user);
-    setStore(data.store);
-    setStoreUser(data.storeUser);
-  }, []);
-
-  // Hidratar al montar si hay token guardado
-  useEffect(() => {
-    let cancelado = false;
-    (async () => {
-      try {
-        const guardado = localStorage.getItem(CLAVE_TOKEN);
-        if (!guardado) {
-          if (!cancelado) setIsLoading(false);
-          return;
-        }
-        setToken(guardado);
-        escribirCookieToken(guardado);
-        await hidratar(guardado);
-      } catch {
-        if (!cancelado) {
-          logout();
-        }
-      } finally {
-        if (!cancelado) setIsLoading(false);
-      }
-    })();
-    return () => {
-      cancelado = true;
-    };
-  }, [hidratar, logout]);
-
-  const login = useCallback(
-    async (email: string, password: string) => {
-      const res = await fetch(`${API_BASE}/api/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-        cache: "no-store",
-      });
-      const body = (await res.json().catch(() => null)) as
-        | { token?: string; user?: { id: string; email: string }; store?: StoreWeb; storeUser?: { role: string; fullName: string | null }; error?: string }
-        | null;
-      if (!res.ok || !body?.token) {
-        throw new Error(body?.error ?? "No se pudo iniciar sesión");
-      }
-      localStorage.setItem(CLAVE_TOKEN, body.token);
-      escribirCookieToken(body.token);
-      setToken(body.token);
-      if (body.user && body.store && body.storeUser) {
-        setUser(body.user);
-        setStore(body.store);
-        setStoreUser(body.storeUser);
-      } else {
-        await hidratar(body.token);
-      }
-    },
-    [hidratar],
-  );
+  const user = session?.user
+    ? { id: session.user.id, email: session.user.email ?? "" }
+    : null;
 
   const value = useMemo<AuthContextValue>(
     () => ({
-      token,
+      token: session?.access_token ?? null,
       user,
       store,
       storeUser,
@@ -145,7 +170,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       login,
       logout,
     }),
-    [token, user, store, storeUser, isLoading, login, logout],
+    [session, user, store, storeUser, isLoading, login, logout],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

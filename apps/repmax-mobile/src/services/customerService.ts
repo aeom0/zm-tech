@@ -19,7 +19,7 @@ function mapCustomer(row: any): Customer {
 export const customerService = {
   async getAll(q?: string): Promise<Customer[]> {
     let query = supabase
-      .from('customers')
+      .from('repmax_customers')
       .select('*')
       .order('full_name', { ascending: true });
 
@@ -43,7 +43,7 @@ export const customerService = {
     };
 
     const { data, error } = await supabase
-      .from('customers')
+      .from('repmax_customers')
       .insert(payload)
       .select()
       .single();

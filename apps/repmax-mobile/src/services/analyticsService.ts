@@ -16,16 +16,16 @@ export const analyticsService = {
     // Ejecutar las 4 queries en paralelo
     const [salesRes, productsRes, customersRes] = await Promise.all([
       supabase
-        .from('sales')
+        .from('repmax_sales')
         .select('total_usd')
         .eq('status', 'COMPLETED')
         .gte('created_at', todayISO),
       supabase
-        .from('products')
+        .from('repmax_products')
         .select('id', { count: 'exact', head: true })
         .eq('is_active', true),
       supabase
-        .from('customers')
+        .from('repmax_customers')
         .select('id', { count: 'exact', head: true }),
     ]);
 

@@ -64,7 +64,7 @@ CREATE POLICY "repmax_stores_select_members"
 -- Storefront público: catálogo activo sin sesión
 CREATE POLICY "repmax_stores_select_public_active"
   ON public.repmax_stores FOR SELECT
-  TO anon, authenticated
+  TO anon
   USING (is_active = true);
 
 CREATE POLICY "repmax_stores_insert_authenticated"
@@ -126,7 +126,7 @@ CREATE POLICY "repmax_products_select_members"
 
 CREATE POLICY "repmax_products_select_public_active"
   ON public.repmax_products FOR SELECT
-  TO anon, authenticated
+  TO anon
   USING (is_active = true);
 
 CREATE POLICY "repmax_products_insert_members"

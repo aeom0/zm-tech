@@ -51,7 +51,7 @@ function mapSale(row: any): Sale {
 export const saleService = {
   async getAll(sessionId?: string): Promise<Sale[]> {
     let query = supabase
-      .from('sales')
+      .from('repmax_sales')
       .select('*')
       .order('created_at', { ascending: false });
 
@@ -71,7 +71,7 @@ export const saleService = {
       product_snapshot: item.product,
     }));
 
-    const { data, error } = await supabase.rpc('create_sale_with_items', {
+    const { data, error } = await supabase.rpc('repmax_create_sale_with_items', {
       p_store_id: params.storeId,
       p_session_id: params.sessionId ?? null,
       p_customer_id: params.customerId ?? null,
@@ -89,7 +89,7 @@ export const saleService = {
 
   async getActiveSession(): Promise<CashSession | null> {
     const { data, error } = await supabase
-      .from('cash_sessions')
+      .from('repmax_cash_sessions')
       .select('*')
       .eq('status', 'OPEN')
       .order('opened_at', { ascending: false })
@@ -102,7 +102,7 @@ export const saleService = {
 
   async openSession(storeId: string, cashierId: string, openingAmountUsd: number, notes?: string): Promise<CashSession> {
     const { data, error } = await supabase
-      .from('cash_sessions')
+      .from('repmax_cash_sessions')
       .insert({
         store_id: storeId,
         cashier_id: cashierId,
@@ -120,7 +120,7 @@ export const saleService = {
   async closeSession(sessionId: string, closingAmountUsd: number, notes?: string): Promise<CashSession> {
     // Calcular totales de la sesión antes de cerrar
     const { data: salesData } = await supabase
-      .from('sales')
+      .from('repmax_sales')
       .select('total_usd, payment_method')
       .eq('session_id', sessionId)
       .eq('status', 'COMPLETED');
@@ -136,7 +136,7 @@ export const saleService = {
     }
 
     const { data, error } = await supabase
-      .from('cash_sessions')
+      .from('repmax_cash_sessions')
       .update({
         status: 'CLOSED',
         closing_amount_usd: closingAmountUsd,

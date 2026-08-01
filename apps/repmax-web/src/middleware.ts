@@ -1,19 +1,16 @@
-// ============================================================
-// Protege rutas /dashboard/* comprobando cookie repmax_token
-// (la validez del JWT la verifica el API Express)
-// ============================================================
+import { NextResponse, type NextRequest } from "next/server";
+import { updateSession } from "@/lib/supabase/middleware";
 
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+export async function middleware(request: NextRequest) {
+  const { supabaseResponse, user } = await updateSession(request);
 
-export function middleware(request: NextRequest) {
-  const token = request.cookies.get("repmax_token")?.value;
-  if (!token || token.trim() === "") {
+  if (!user) {
     const login = new URL("/login", request.url);
     login.searchParams.set("from", request.nextUrl.pathname);
     return NextResponse.redirect(login);
   }
-  return NextResponse.next();
+
+  return supabaseResponse;
 }
 
 export const config = {

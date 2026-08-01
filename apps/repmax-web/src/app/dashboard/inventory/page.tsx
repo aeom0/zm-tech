@@ -9,6 +9,8 @@ import { Pencil, Search } from "lucide-react";
 import { POPULAR_BRANDS } from "@repmax/repmax-schema";
 import { useAuth } from "@/context/AuthContext";
 import { useAuthFetch } from "@/hooks/useAuthFetch";
+import { createClient } from "@/lib/supabase/client";
+import { patchProduct } from "@/lib/repmax-queries";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,8 +30,6 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import type { ProductoWeb } from "@/types/dashboard";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
 
 const selectClase =
   "min-w-[120px] shrink-0 rounded-md border border-[#2A2A2A] bg-[#1A1A1A] px-3 py-2 text-sm text-[#F5F5F5] focus:border-[#FF6B00] focus:outline-none focus:ring-1 focus:ring-[#FF6B00]";
@@ -65,7 +65,7 @@ function EsqueletoInventario() {
 }
 
 export default function InventoryPage() {
-  const { token } = useAuth();
+  const { token, store } = useAuth();
   const [marca, setMarca] = useState("");
   const [condicion, setCondicion] = useState("");
   const [tipoVehiculo, setTipoVehiculo] = useState("");
@@ -116,23 +116,18 @@ export default function InventoryPage() {
       if (!Number.isFinite(priceUsd) || !Number.isFinite(stock) || !Number.isFinite(minStock)) {
         throw new Error("Revisa los números ingresados");
       }
-      const res = await fetch(`${API_BASE}/api/products/${editando.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
+      const client = createClient();
+      await patchProduct(
+        client,
+        editando.id,
+        {
           priceUsd,
           stock: Math.floor(stock),
           minStock: Math.floor(minStock),
           isActive: activo,
-        }),
-      });
-      const body = (await res.json().catch(() => null)) as { error?: string } | null;
-      if (!res.ok) {
-        throw new Error(body?.error ?? "No se pudo guardar");
-      }
+        },
+        store?.usdBsRate ?? 36.5,
+      );
       setEditando(null);
       await refetch();
     } catch (e) {
@@ -140,7 +135,7 @@ export default function InventoryPage() {
     } finally {
       setGuardando(false);
     }
-  }, [editando, token, precioUsd, stockVal, minStockVal, activo, refetch]);
+  }, [editando, token, precioUsd, stockVal, minStockVal, activo, refetch, store?.usdBsRate]);
 
   if (isLoading && !data) {
     return <EsqueletoInventario />;

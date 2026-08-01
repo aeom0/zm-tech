@@ -54,8 +54,8 @@ function mapStoreUser(row: any): StoreUser {
 // Carga store_user y store del usuario autenticado
 async function loadStoreData(userId: string): Promise<{ storeUser: StoreUser | null; store: Store | null }> {
   const { data } = await supabase
-    .from('store_users')
-    .select('*, store:stores(*)')
+    .from('repmax_store_users')
+    .select('*, store:repmax_stores(*)')
     .eq('user_id', userId)
     .eq('is_active', true)
     .single();
@@ -125,7 +125,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Crear tienda
     const { data: newStore, error: storeError } = await supabase
-      .from('stores')
+      .from('repmax_stores')
       .insert({ name: storeName, slug: storeSlug })
       .select()
       .single();
@@ -133,7 +133,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Crear store_user con rol owner
     const { error: storeUserError } = await supabase
-      .from('store_users')
+      .from('repmax_store_users')
       .insert({
         store_id: newStore.id,
         user_id: userId,
@@ -162,7 +162,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (data.logoUrl !== undefined) payload.logo_url = data.logoUrl;
 
     const { data: updated, error } = await supabase
-      .from('stores')
+      .from('repmax_stores')
       .update(payload)
       .eq('id', state.store.id)
       .select()

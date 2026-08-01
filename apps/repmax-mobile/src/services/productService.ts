@@ -29,7 +29,7 @@ function mapProduct(row: any): Product {
 export const productService = {
   async getAll(filters?: { q?: string; condition?: string; brand?: string; stock?: string }): Promise<Product[]> {
     let query = supabase
-      .from('products')
+      .from('repmax_products')
       .select('*')
       .eq('is_active', true)
       .order('created_at', { ascending: false });
@@ -46,7 +46,7 @@ export const productService = {
 
   async getById(id: string): Promise<Product> {
     const { data, error } = await supabase
-      .from('products')
+      .from('repmax_products')
       .select('*')
       .eq('id', id)
       .single();
@@ -74,7 +74,7 @@ export const productService = {
     };
 
     const { data, error } = await supabase
-      .from('products')
+      .from('repmax_products')
       .insert(payload)
       .select()
       .single();
@@ -100,7 +100,7 @@ export const productService = {
     if (product.photos !== undefined) payload.photos = product.photos;
 
     const { data, error } = await supabase
-      .from('products')
+      .from('repmax_products')
       .update(payload)
       .eq('id', id)
       .select()
@@ -111,7 +111,7 @@ export const productService = {
 
   async deactivate(id: string): Promise<void> {
     const { error } = await supabase
-      .from('products')
+      .from('repmax_products')
       .update({ is_active: false })
       .eq('id', id);
     if (error) throw new Error(error.message);

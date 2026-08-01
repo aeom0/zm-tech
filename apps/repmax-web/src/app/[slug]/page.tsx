@@ -5,60 +5,20 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { StorefrontView } from "@/components/storefront/StorefrontView";
-import type { ProductPublic, StorePublic } from "@/types/storefront";
+import { createClient } from "@/lib/supabase/server";
+import {
+  fetchPublicProducts,
+  fetchPublicStore,
+} from "@/lib/repmax-queries";
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
-
-async function obtenerTienda(slug: string): Promise<StorePublic | null> {
-  try {
-    const res = await fetch(`${API_BASE}/api/public/${encodeURIComponent(slug)}/store`, {
-      cache: "no-store",
-    });
-    if (res.status === 404) {
-      return null;
-    }
-    if (!res.ok) {
-      return null;
-    }
-    return (await res.json()) as StorePublic;
-  } catch {
-    return null;
-  }
-}
-
-interface RespuestaProductos {
-  products: ProductPublic[];
-  total: number;
-  page: number;
-  limit: number;
-}
-
-async function obtenerProductosIniciales(slug: string): Promise<{
-  products: ProductPublic[];
-  total: number;
-}> {
-  try {
-    const res = await fetch(
-      `${API_BASE}/api/public/${encodeURIComponent(slug)}/products?page=1&limit=20`,
-      { cache: "no-store" },
-    );
-    if (!res.ok) {
-      return { products: [], total: 0 };
-    }
-    const data = (await res.json()) as RespuestaProductos;
-    return { products: data.products, total: data.total };
-  } catch {
-    return { products: [], total: 0 };
-  }
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const tienda = await obtenerTienda(slug);
+  const supabase = await createClient();
+  const tienda = await fetchPublicStore(supabase, slug);
 
   if (!tienda) {
     return {
@@ -84,13 +44,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function StorefrontPage({ params }: Props) {
   const { slug } = await params;
+  const supabase = await createClient();
 
-  const tienda = await obtenerTienda(slug);
+  const tienda = await fetchPublicStore(supabase, slug);
   if (!tienda) {
     notFound();
   }
 
-  const { products, total } = await obtenerProductosIniciales(slug);
+  const paramsProductos = new URLSearchParams({ page: "1", limit: "20" });
+  const { products, total } = await fetchPublicProducts(
+    supabase,
+    tienda.id,
+    tienda.usdBsRate,
+    paramsProductos,
+  );
 
   return <StorefrontView store={tienda} initialProducts={products} total={total} />;
 }
