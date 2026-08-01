@@ -19,16 +19,16 @@ export const en: Messages = {
     ctaPrimary: 'GET A QUOTE →',
     ctaSecondary: 'SEE THE STACK',
     imageAlt: 'ZM Tech systems in production: management panel, schedule and sales',
-    laptopAlts: [
-      'Generic management panel — sales and inventory control',
-      'Generic salon website — services and booking',
-      'Generic workshop panel — service orders and technicians',
-    ],
-    phoneAlts: [
-      'Generic sales app — orders and daily commissions',
-      'Generic mobile schedule — salon appointments',
-      'Generic technician app — daily service orders',
-    ],
+    laptopAlts: {
+      industrial: 'Generic management panel — sales and inventory control',
+      beauty: 'Generic salon website — services and booking',
+      workshop: 'Generic workshop panel — service orders and technicians',
+    },
+    phoneAlts: {
+      industrial: 'Generic sales app — orders and daily commissions',
+      beauty: 'Generic mobile schedule — salon appointments',
+      workshop: 'Generic technician app — daily service orders',
+    },
     statusLabel: 'Active projects',
     statusValue: '3 verticals in production',
   },

@@ -10,6 +10,7 @@ import {
   useTransform,
 } from 'framer-motion'
 import { HERO_SCENES } from '@/components/hero/mocks'
+import type { HeroSceneId } from '@/content/messages'
 
 const TILT_SPRING = { stiffness: 140, damping: 24, mass: 0.4 }
 const SCENE_MS = 4500
@@ -27,8 +28,8 @@ const KEY_ROWS: number[][] = [
 ]
 
 type Props = {
-  laptopAlts: [string, string, string]
-  phoneAlts: [string, string, string]
+  laptopAlts: Record<HeroSceneId, string>
+  phoneAlts: Record<HeroSceneId, string>
 }
 
 function LaptopKeyboard() {
@@ -135,7 +136,7 @@ export default function HeroDeviceMockup({ laptopAlts, phoneAlts }: Props) {
               <div
                 className="relative aspect-video w-full overflow-hidden bg-[#F9FAFB]"
                 role="img"
-                aria-label={laptopAlts[sceneIndex]}
+                aria-label={laptopAlts[scene.id]}
               >
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -215,7 +216,7 @@ export default function HeroDeviceMockup({ laptopAlts, phoneAlts }: Props) {
                 <div
                   className="relative aspect-9/19.5 w-full overflow-hidden rounded-[0.95rem] border border-black/70 bg-[#F8F5FA] sm:rounded-[1.1rem]"
                   role="img"
-                  aria-label={phoneAlts[sceneIndex]}
+                  aria-label={phoneAlts[scene.id]}
                 >
                   <AnimatePresence mode="wait">
                     <motion.div

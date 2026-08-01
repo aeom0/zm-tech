@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react'
+import type { HeroSceneId } from '@/content/messages'
 import MockAgendaMobile from './MockAgendaMobile'
 import MockGerencialDesktop from './MockGerencialDesktop'
 import MockSalonWeb from './MockSalonWeb'
@@ -6,7 +7,7 @@ import MockTallerDesktop from './MockTallerDesktop'
 import MockTallerMobile from './MockTallerMobile'
 import MockVentasMobile from './MockVentasMobile'
 
-export type HeroSceneId = 'industrial' | 'beauty' | 'workshop'
+export type { HeroSceneId }
 
 export type HeroScene = {
   id: HeroSceneId
