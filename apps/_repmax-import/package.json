@@ -1,0 +1,29 @@
+{
+  "name": "repmax-app",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev --filter=@repmax/web --filter=@repmax/server",
+    "dev:web": "turbo run dev --filter=@repmax/web",
+    "dev:server": "turbo run dev --filter=@repmax/server",
+    "build": "turbo run build --filter=@repmax/web --filter=@repmax/shared",
+    "build:web": "turbo run build --filter=@repmax/web",
+    "mobile": "turbo run start --filter=@repmax/mobile",
+    "type-check": "turbo run type-check",
+    "lint": "turbo run lint"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.0",
+    "turbo": "^2.5.0",
+    "typescript": "^5.9.3"
+  },
+  "resolutions": {
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
+  "packageManager": "yarn@4.12.0"
+}

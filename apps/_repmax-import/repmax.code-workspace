@@ -1,0 +1,52 @@
+{
+  "folders": [
+    {
+      "name": "🔧 RepMAX",
+      "path": ".",
+    },
+  ],
+  "settings": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "files.exclude": {
+      "**/node_modules": true,
+      "**/.expo": true,
+      "**/dist": true,
+      "**/.next": true,
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/yarn.lock": true,
+    },
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "emmet.includeLanguages": {
+      "typescript": "typescriptreact",
+    },
+  },
+  "extensions": {
+    "recommendations": [
+      "esbenp.prettier-vscode",
+      "dbaeumer.vscode-eslint",
+      "bradlc.vscode-tailwindcss",
+      "prisma.prisma",
+      "supabase.vscode-supabase-extension",
+      "ms-vscode-remote.remote-wsl",
+      "formulahendry.auto-rename-tag",
+      "expo.vscode-expo-tools",
+    ],
+  },
+  "launch": {
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "⚙️ Server (Express)",
+        "type": "node",
+        "request": "launch",
+        "program": "${workspaceFolder}/apps/server/src/index.ts",
+        "outFiles": ["${workspaceFolder}/apps/server/dist/**/*.js"],
+      },
+    ],
+  },
+}

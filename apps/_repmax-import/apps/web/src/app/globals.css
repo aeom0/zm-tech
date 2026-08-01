@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 210 40% 17%;
+    --card: 0 0% 100%;
+    --card-foreground: 210 40% 17%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 210 40% 17%;
+    --primary: 210 40% 17%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 88%;
+    --secondary-foreground: 210 40% 17%;
+    --muted: 210 20% 96%;
+    --muted-foreground: 210 20% 45%;
+    --accent: 30 100% 50%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 210 20% 88%;
+    --input: 210 20% 88%;
+    --ring: 30 100% 50%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.gradient-petrol {
+  background: linear-gradient(135deg, #1A2B3C 0%, #2d4558 100%);
+}
+
+.gradient-orange {
+  background: linear-gradient(135deg, #FF8C00 0%, #FFa500 100%);
+}
+
+.industrial-pattern {
+  background-image: 
+    linear-gradient(30deg, #1A2B3C 12%, transparent 12.5%, transparent 87%, #1A2B3C 87.5%, #1A2B3C),
+    linear-gradient(150deg, #1A2B3C 12%, transparent 12.5%, transparent 87%, #1A2B3C 87.5%, #1A2B3C),
+    linear-gradient(30deg, #1A2B3C 12%, transparent 12.5%, transparent 87%, #1A2B3C 87.5%, #1A2B3C),
+    linear-gradient(150deg, #1A2B3C 12%, transparent 12.5%, transparent 87%, #1A2B3C 87.5%, #1A2B3C),
+    linear-gradient(60deg, #2d4558 25%, transparent 25.5%, transparent 75%, #2d4558 75%, #2d4558),
+    linear-gradient(60deg, #2d4558 25%, transparent 25.5%, transparent 75%, #2d4558 75%, #2d4558);
+  background-size: 40px 70px;
+  background-position: 0 0, 0 0, 20px 35px, 20px 35px, 0 0, 20px 35px;
+}
+
+.animate-scan {
+  animation: scan 2s ease-in-out infinite;
+}
+
+@keyframes scan {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(100%);
+    opacity: 0.5;
+  }
+}
+
+.card-hover {
+  @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+}

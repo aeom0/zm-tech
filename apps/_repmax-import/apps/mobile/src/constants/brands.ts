@@ -1,0 +1,6 @@
+export const BRANDS = [
+  'Toyota', 'Ford', 'Chevrolet', 'Hyundai', 'Kia',
+  'Volkswagen', 'Nissan', 'Honda', 'Mitsubishi',
+  'Empire', 'Bera', 'Loncin', 'Dayang',
+  'Chery', 'BYD', 'Great Wall', 'JAC',
+];
