@@ -1,5 +1,6 @@
 /** Mock genérico — panel de taller / mantenimiento, paleta Industrial Dark (sin marca) */
 
+import { useId } from 'react'
 import { GLASS_CARD, glassShadow, MockBackdrop, MockIcon, type MockIconName } from './mock-ui'
 
 const ACCENT = '#FF6B00'
@@ -13,6 +14,9 @@ const NAV: Array<{ label: string; icon: MockIconName }> = [
 ]
 
 export default function MockTallerDesktop() {
+  // useId evita colisión de fill=url(#…) si hay más de una instancia en el DOM
+  const areaGradId = `taller-area-${useId().replace(/:/g, '')}`
+
   return (
     <div
       className="relative flex h-full w-full overflow-hidden bg-[#0D0D0D] text-[7.5px] leading-snug text-zinc-400 sm:text-[8.5px]"
@@ -146,14 +150,14 @@ export default function MockTallerDesktop() {
                   aria-hidden
                 >
                   <defs>
-                    <linearGradient id="taller-area" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient id={areaGradId} x1="0" y1="0" x2="0" y2="1">
                       <stop offset="0%" stopColor={ACCENT} stopOpacity="0.3" />
                       <stop offset="100%" stopColor={ACCENT} stopOpacity="0" />
                     </linearGradient>
                   </defs>
                   <polygon
                     points="8,52 25,35 42,45 58,22 75,40 92,10 92,100 8,100"
-                    fill="url(#taller-area)"
+                    fill={`url(#${areaGradId})`}
                   />
                   <polyline
                     points="8,52 25,35 42,45 58,22 75,40 92,10"

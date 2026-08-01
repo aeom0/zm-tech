@@ -32,6 +32,9 @@ const BLOCKS: Array<{
 /** Fila con hueco libre resaltado como slot reservable */
 const FREE_ROW = 3
 
+/** Now-line anclada a la fila 12:00 (índice 2); offset = minutos / 60 */
+const NOW = { row: 2, label: '12:40', minuteFrac: 40 / 60 } as const
+
 export default function MockAgendaMobile() {
   return (
     <div
@@ -96,7 +99,7 @@ export default function MockAgendaMobile() {
         style={{ animationDelay: '70ms' }}
       >
         {SLOTS.map((t, i) => (
-          <div key={t} className="flex h-[15%] border-b border-white/5">
+          <div key={t} className="relative flex h-[15%] border-b border-white/5">
             <span className="w-5 shrink-0 pt-0.5 text-[5px] text-zinc-500 tabular-nums sm:w-6 sm:text-[5.5px]">
               {t}
             </span>
@@ -127,34 +130,39 @@ export default function MockAgendaMobile() {
                 </div>
               ))}
             </div>
+            {/* Now-line anclada a la fila del slot (no % mágico del contenedor) */}
+            {i === NOW.row && (
+              <div
+                className="pointer-events-none absolute inset-x-0 z-2 flex items-center gap-0.5 px-0.5"
+                style={{ top: `${NOW.minuteFrac * 100}%` }}
+                aria-hidden
+              >
+                <span
+                  className="w-5 shrink-0 text-[4.5px] font-semibold tabular-nums sm:w-6"
+                  style={{ color: TEAL_LIGHT }}
+                >
+                  {NOW.label}
+                </span>
+                <span
+                  className="h-1 w-1 shrink-0 rounded-full"
+                  style={{ backgroundColor: TEAL_LIGHT, boxShadow: `0 0 4px ${TEAL_LIGHT}` }}
+                />
+                <div className="h-px flex-1 opacity-70" style={{ backgroundColor: TEAL_LIGHT }} />
+              </div>
+            )}
           </div>
         ))}
 
-        {/* Indicador de hora actual */}
-        <div className="pointer-events-none absolute inset-x-1 top-[41%] z-2 flex items-center gap-0.5" aria-hidden>
-          <span
-            className="text-[4.5px] font-semibold tabular-nums"
-            style={{ color: TEAL_LIGHT }}
-          >
-            12:40
-          </span>
-          <span
-            className="h-1 w-1 rounded-full"
-            style={{ backgroundColor: TEAL_LIGHT, boxShadow: `0 0 4px ${TEAL_LIGHT}` }}
-          />
-          <div className="h-px flex-1 opacity-70" style={{ backgroundColor: TEAL_LIGHT }} />
+        {/* FAB dentro del área de agenda → queda siempre encima del tab bar */}
+        <div
+          className="absolute right-1.5 bottom-1.5 z-2 flex h-4 w-4 items-center justify-center rounded-full text-[#00332d]"
+          style={{
+            backgroundImage: `linear-gradient(135deg, ${TEAL_LIGHT}, ${TEAL_DEEP})`,
+            boxShadow: `0 2px 6px rgba(0,0,0,0.5), 0 0 10px ${TEAL_LIGHT}4d, inset 0 1px 0 rgba(255,255,255,0.4)`,
+          }}
+        >
+          <MockIcon name="plus" className="h-2 w-2" />
         </div>
-      </div>
-
-      {/* FAB nueva cita */}
-      <div
-        className="absolute right-1.5 bottom-6 z-2 flex h-4 w-4 items-center justify-center rounded-full text-[#00332d]"
-        style={{
-          backgroundImage: `linear-gradient(135deg, ${TEAL_LIGHT}, ${TEAL_DEEP})`,
-          boxShadow: `0 2px 6px rgba(0,0,0,0.5), 0 0 10px ${TEAL_LIGHT}4d, inset 0 1px 0 rgba(255,255,255,0.4)`,
-        }}
-      >
-        <MockIcon name="plus" className="h-2 w-2" />
       </div>
 
       <div className="relative z-1 flex border-t border-white/8 border-t-white/10 bg-white/3 py-1 text-[5.5px] text-zinc-500 backdrop-blur-md">

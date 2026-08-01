@@ -95,14 +95,10 @@ export default function MockGerencialDesktop() {
             <div className="text-[6px] tracking-wide text-zinc-500 uppercase">Módulo</div>
             <div className="font-bold tracking-tight text-zinc-50">Panel gerencial</div>
           </div>
-          <div className="flex items-center gap-1">
-            <span className="rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-[6px] font-medium text-emerald-400 ring-1 ring-emerald-500/25">
-              En vivo
-            </span>
-            <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-white/8 ring-1 ring-white/10">
-              <MockIcon name="user" className="h-2 w-2 text-zinc-400" />
-            </span>
-          </div>
+          {/* Avatar vive en el footer del sidebar — evita duplicar el chip de usuario */}
+          <span className="rounded-full bg-emerald-500/10 px-1.5 py-0.5 text-[6px] font-medium text-emerald-400 ring-1 ring-emerald-500/25">
+            En vivo
+          </span>
         </div>
 
         <div className="flex min-h-0 flex-1 flex-col gap-1.5 p-1.5 sm:p-2">

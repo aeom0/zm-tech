@@ -37,10 +37,12 @@ export default function MockTallerMobile() {
           </span>
         </div>
         <div className="mt-1.5 grid grid-cols-2 gap-1">
-          {[
-            { label: 'Órdenes hoy', value: '6', sub: '2 completadas', subClass: 'text-emerald-300', progress: 33 },
-            { label: 'Refacciones', value: '3', sub: 'por confirmar', subClass: 'text-white/50', progress: 65 },
-          ].map((s) => (
+          {(
+            [
+              { label: 'Órdenes hoy', value: '6', sub: '2 completadas', subClass: 'text-emerald-300', progress: 33 },
+              { label: 'Refacciones', value: '3', sub: 'por confirmar', subClass: 'text-white/50' },
+            ] as const
+          ).map((s) => (
             <div
               key={s.label}
               className="rounded-md bg-white/10 px-1.5 py-1 ring-1 ring-white/15 backdrop-blur-sm"
@@ -49,12 +51,14 @@ export default function MockTallerMobile() {
               <div className="text-[5.5px] text-white/60">{s.label}</div>
               <div className="text-[9px] font-extrabold tracking-tight tabular-nums">{s.value}</div>
               <div className={`text-[5px] ${s.subClass}`}>{s.sub}</div>
-              <div className="mt-0.5 h-0.75 overflow-hidden rounded-full bg-white/15">
-                <div
-                  className="h-full rounded-full bg-white/90"
-                  style={{ width: `${s.progress}%`, boxShadow: '0 0 4px rgba(255,255,255,0.4)' }}
-                />
-              </div>
+              {'progress' in s && (
+                <div className="mt-0.5 h-0.75 overflow-hidden rounded-full bg-white/15">
+                  <div
+                    className="h-full rounded-full bg-white/90"
+                    style={{ width: `${s.progress}%`, boxShadow: '0 0 4px rgba(255,255,255,0.4)' }}
+                  />
+                </div>
+              )}
             </div>
           ))}
         </div>
