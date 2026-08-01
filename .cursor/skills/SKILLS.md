@@ -49,7 +49,6 @@ pnpm install
 pnpm dev:landing          # landing
 pnpm dev:web              # geemastudio-web
 pnpm dev:mobile           # geemastudio-mobile
-pnpm dev:server           # geemastudio-server
 pnpm dev:odental:web      # odentalpro-web
 pnpm dev:repmax:web       # repmax-web (:3003)
 pnpm dev:repmax:mobile    # repmax-mobile

@@ -41,7 +41,7 @@ URL Geema: `https://udelxwwnyivknslueerr.supabase.co`
 
 | Carpeta | Proyecto Supabase | Qué contiene | Qué NO es |
 |---------|-------------------|--------------|----------|
-| `apps/geemastudio-server` | `udelxwwnyivknslueerr` | Drizzle (`db:push` / generate / studio), seeds, migraciones SQL de referencia, Edge Functions | API de negocio para mobile/web (Express residual — deuda; no usar desde apps) |
+| `apps/geemastudio-server` | `udelxwwnyivknslueerr` | Drizzle (`db:push` / generate / studio), seeds, migraciones SQL de referencia, Edge Functions | API HTTP / Express / JWT |
 | `apps/odentalpro-server` | `llacowjutjfefboqgfnj` | Migraciones `odental_*`, stubs Edge Functions | Express / JWT |
 | *(RepMAX)* | `llacowjutjfefboqgfnj` | **No hay** `apps/repmax-server` | Schema en package + SQL en `docs/repmax/supabase/migrations/` |
 

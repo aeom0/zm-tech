@@ -4,11 +4,10 @@
   "private": true,
   "packageManager": "pnpm@11.15.1",
   "scripts": {
-    "dev": "turbo run dev --filter=landing --filter=geemastudio-web --filter=geemastudio-server",
+    "dev": "turbo run dev --filter=landing --filter=geemastudio-web",
     "dev:landing": "pnpm --filter landing dev",
     "dev:web": "pnpm --filter geemastudio-web dev",
     "dev:mobile": "pnpm --filter geemastudio-mobile dev",
-    "dev:server": "pnpm --filter geemastudio-server dev",
     "dev:odental": "turbo run dev --filter=odentalpro-web",
     "dev:odental:web": "pnpm --filter odentalpro-web dev",
     "dev:odental:mobile": "pnpm --filter odentalpro-mobile dev",

@@ -6,8 +6,9 @@
     "strict": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
-    "rootDir": ".",
-    "outDir": "dist"
+    "noEmit": true,
+    "types": ["node"]
   },
-  "include": ["*.ts"]
+  "include": ["drizzle.config.ts"],
+  "exclude": ["node_modules", "dist", "migrations"]
 }

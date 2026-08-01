@@ -26,12 +26,12 @@ pnpm install
 pnpm dev:landing        # apps/landing
 pnpm dev:web            # apps/geemastudio-web
 pnpm dev:mobile         # apps/geemastudio-mobile
-pnpm dev:server         # apps/geemastudio-server
 pnpm dev:odental:web    # apps/odentalpro-web
 pnpm dev:odental:mobile # apps/odentalpro-mobile
 pnpm dev:repmax:web     # apps/repmax-web (:3003)
 pnpm dev:repmax:mobile  # apps/repmax-mobile
 
+pnpm db:push            # Drizzle push (geemastudio-server → schema Geema)
 pnpm build              # build de todo (turbo)
 pnpm lint
 pnpm check:types
