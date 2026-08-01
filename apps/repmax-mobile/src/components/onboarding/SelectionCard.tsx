@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   iconoFondoAcento: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     opacity: 0.15,
   },
   textos: {

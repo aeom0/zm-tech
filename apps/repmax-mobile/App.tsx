@@ -8,7 +8,6 @@ import { AuthProvider } from './src/context/AuthContext';
 import { OnboardingProvider } from './src/context/OnboardingContext';
 import { CartProvider } from './src/context/CartContext';
 import AppNavigator from './src/navigation/AppNavigator';
-import { colors } from './src/utils/theme';
 
 // Mantener el splash screen visible mientras cargan los recursos
 SplashScreen.preventAutoHideAsync();
@@ -32,7 +31,7 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar style="light" backgroundColor={colors.bg.primary} />
+      <StatusBar style="light" />
       <AuthProvider>
         <OnboardingProvider>
           <CartProvider>

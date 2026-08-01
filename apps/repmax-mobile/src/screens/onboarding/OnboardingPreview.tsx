@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   actividadIconoFondo: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFill,
     borderRadius: 16,
     opacity: 0.15,
   },
