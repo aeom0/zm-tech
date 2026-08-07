@@ -34,6 +34,9 @@ Estructura del monorepo y comandos (sin servidor Express).
 ### [GEEMASTUDIO_V1.3_PLAN.md](GEEMASTUDIO_V1.3_PLAN.md)
 Plan de funcionalidades v1.3 (referencia histórica / roadmap parcial).
 
+### [plan-02-retrofit-tenant-id.md](plan-02-retrofit-tenant-id.md)
+Plan 02 — retrofit `tenant_id` en `udelxwwnyivknslueerr` (ZM Lash = tenant #1 → GeemaStudio multi-tenant). Fases A/B/C, PK de `whatsapp_sessions`, reglas de migración contra prod. Leer antes de tocar migraciones o código de `tenant_id`.
+
 ### [tech-debt/](tech-debt/) (deuda técnica)
 Seguimiento puntual (p. ej. [TD-001 — tokens onboarding](tech-debt/TD-001-onboarding-tokens.md)).
 
@@ -52,6 +55,7 @@ docs/
 ├── MONOREPO_MIGRACION.md           # Monorepo, comandos
 ├── INSTALACION_BETA.md             # Beta / instalación
 ├── GEEMASTUDIO_V1.3_PLAN.md        # Plan v1.3 (referencia)
+├── plan-02-retrofit-tenant-id.md   # Retrofit tenant_id (multi-tenant BD)
 └── tech-debt/                      # Deuda técnica (TD-xxx)
 
 .cursor/
