@@ -26,6 +26,12 @@ Integrado en el monorepo (fases 01–03 cerradas): web + mobile contra Supabase 
 
 Ver [docs/repmax/ROADMAP.md](docs/repmax/ROADMAP.md).
 
+## Hub (interno)
+
+Torre de control de la fábrica: clientes, proyectos, contratos, tickets, recordatorios y comunicaciones. Documentación y planes cerrados (ago 2026); desarrollo no iniciado.
+
+Ver [docs/hub/ROADMAP.md](docs/hub/ROADMAP.md) y planes en [docs/hub/plans/](docs/hub/plans/).
+
 ## Monorepo (transversal)
 
 - Skills y rules centralizados en `.cursor/` con sync a `.claude/skills` — hecho (jul 2026).

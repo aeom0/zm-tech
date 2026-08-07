@@ -140,6 +140,13 @@ Automotriz, Sports Tech y Enterprise.
 - **Features:** Offline Sync v2, OTA Updates, FEFO, BOM, Art. 177 SENIAT, 161/161 tests ✅
 - **Versión:** 2.23.1 · **Estado:** En producción ✅
 
+#### 9. Hub ZM Tech (interno)
+- **Ubicación:** monorepo `zm-tech` → `apps/hub` + `packages/hub-schema` (planificados)
+- **Docs:** `docs/hub/` (README, ROADMAP, planes 01–05, migraciones borrador)
+- **Descripción:** Torre de control interna de la fábrica — clientes, proyectos, contratos, leads del cotizador, tickets, recordatorios, comunicaciones
+- **Stack:** Next.js 16 + Tailwind v4 + Supabase (hub `llacowjutjfefboqgfnj`, prefijo `hub_`) — sin server, patrón RepMAX
+- **Estado:** Documentación cerrada (ago 2026) — desarrollo no iniciado
+
 ---
 
 ## 🛠 Stack por defecto ZM Tech

@@ -10,6 +10,7 @@ Monorepo de productos **ZM Tech** — pnpm + Turborepo.
 | **GeemaStudio** | `apps/geemastudio-web`, `apps/geemastudio-mobile`, `apps/geemastudio-server` | `@geemastudio/shared-schema`, `@geemastudio/tenant-config` | [docs/geemastudio](docs/geemastudio/README.md) |
 | **OdentalPro** | `apps/odentalpro-web`, `apps/odentalpro-mobile`, `apps/odentalpro-server` | `@odentalpro/dental-schema` | [docs/odentalpro](docs/odentalpro/) |
 | **RepMAX** | `apps/repmax-web`, `apps/repmax-mobile` | `@repmax/repmax-schema` (+ tenant en `@geemastudio/tenant-config/repmax`) | [docs/repmax](docs/repmax/README.md) |
+| **Hub** (interno) | `apps/hub` *(planificado)* | `@zmtech/hub-schema` *(planificado)* | [docs/hub](docs/hub/README.md) |
 
 Cada producto tiene su propia documentación (`README.md`, `CLAUDE.md`, `ROADMAP.md`, `CHANGELOG.md`) dentro de `docs/<producto>/`. Mapa de proyectos Supabase (varias BDs en el monorepo): [docs/SUPABASE.md](docs/SUPABASE.md). Este README es solo el punto de entrada al monorepo.
 

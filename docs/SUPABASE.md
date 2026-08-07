@@ -21,6 +21,7 @@ URL Geema: `https://udelxwwnyivknslueerr.supabase.co`
 | `contacts`, `quote_leads`, … | Landing / cotizador | `apps/landing`, `@zmtech/quote-engine` |
 | `odental_*` | OdentalPro | `@odentalpro/dental-schema`, `apps/odentalpro-server/supabase/migrations/` |
 | `repmax_*` | RepMAX | `@repmax/repmax-schema`, `docs/repmax/supabase/migrations/` |
+| `hub_*` *(planificado)* | Hub interno ZM Tech | `@zmtech/hub-schema` *(planificado)*, `docs/hub/supabase/migrations/` (borradores, no aplicados) |
 
 **`udelxwwnyivknslueerr` (GeemaStudio)**
 
@@ -61,7 +62,7 @@ RepMAX encaja en esa simetría sin carpeta server: las migraciones viven en `doc
 ## Reglas operativas
 
 1. **Antes de SQL/MCP**: confirmar ref del proyecto y prefijo de tablas.
-2. En `llacowjutjfefboqgfnj`, **nunca** tocar tablas de otro producto (p. ej. no `DROP` sobre `contacts` al trabajar Odental/RepMAX).
+2. En `llacowjutjfefboqgfnj`, **nunca** tocar tablas de otro producto (p. ej. no `DROP` sobre `contacts` al trabajar Odental/RepMAX). Excepción única prevista: el Hub interno podrá **leer** (`SELECT`) `contacts` y `quote_leads` como inbox de leads — ver `docs/hub/plans/02-PLAN-schema-rls-supabase.md`.
 3. **No** reintroducir Express/JWT como capa de negocio; Edge Functions solo para webhooks, jobs o privilegios service-role.
 4. Variables de entorno deben apuntar al proyecto correcto del producto (ver `.env.example` de cada app).
 
