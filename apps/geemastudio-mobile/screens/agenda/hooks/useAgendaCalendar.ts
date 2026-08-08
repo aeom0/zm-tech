@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { calcularSemanaAgenda } from "@geemastudio/tenant-config";
+import { calcularSemanaAgenda } from "@zmtech/tenant-config";
 
 export function useAgendaCalendar(selectedDate: Date, timeZone: string) {
   const { weekStart, weekDays } = useMemo(

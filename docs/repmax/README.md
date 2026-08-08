@@ -9,7 +9,7 @@ SaaS B2B multi-tenant para **tiendas de autopartes** en Venezuela. Vive en el mo
 | `apps/repmax-web` | Next.js 16 — panel `/dashboard/*` + vitrina pública `/[slug]` (puerto **3003**) |
 | `apps/repmax-mobile` | Expo SDK 56 — inventario, POS, clientes, caja, onboarding |
 | `packages/repmax-schema` | Drizzle schema `repmax_*` + constantes (`@repmax/repmax-schema`) |
-| `packages/tenant-config/src/repmax/` | Auth/tenant (`@geemastudio/tenant-config/repmax`) |
+| `packages/tenant-config/src/repmax/` | Auth/tenant (`@zmtech/tenant-config/repmax`) |
 
 ## Arquitectura
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
-import { useOdentalAuth, useTenant } from "@geemastudio/tenant-config/odental";
+import { useOdentalAuth, useTenant } from "@zmtech/tenant-config/odental";
 
 /** Login OdentalPro — extraído tal cual del shell inicial de Fase 1, sin rediseño. */
 export function LoginScreen() {

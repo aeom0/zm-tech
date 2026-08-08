@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { OdontogramState } from "@odentalpro/dental-schema";
 
-import { useOdentalAuth, useTenant } from "@geemastudio/tenant-config/odental";
+import { useOdentalAuth, useTenant } from "@zmtech/tenant-config/odental";
 import { supabase } from "@/lib/supabase";
 
 import type { OdentalClinicalRecordRow } from "../../patients/types";

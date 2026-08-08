@@ -70,8 +70,8 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 ### Añadido
 - **Config horario de trabajo**: zona horaria IANA (`tenant_settings.timezone`, ya mapeada en mobile) + **`business_hours`** por día editables.
   - **Mobile**: pantalla **`HorariosTrabajo`** (stack Más → Configuración → “Horario de trabajo”); `TenantContext.updateTenant(..., { syncRemote: true })` persiste en Supabase.
-  - **Web (panel)**: **`/panel/horarios`** — mismo modelo (`timezone`, `business_hours`); nav lateral “Horario”; dependencia `@geemastudio/tenant-config` en `apps/web`.
-- **`@geemastudio/tenant-config`**: módulos **`working-schedule.ts`** (validación HH:MM, `mergeTenantConfig`, `horasVisiblesParaAgenda`, bloqueo por franja) e **`iana-timezone.ts`** (Luxon 3: semana/día en zona del tenant, `instanteCitaEnZona`, `zonaIANASegura`, formateos Intl con `timeZone`).
+  - **Web (panel)**: **`/panel/horarios`** — mismo modelo (`timezone`, `business_hours`); nav lateral “Horario”; dependencia `@zmtech/tenant-config` en `apps/web`.
+- **`@zmtech/tenant-config`**: módulos **`working-schedule.ts`** (validación HH:MM, `mergeTenantConfig`, `horasVisiblesParaAgenda`, bloqueo por franja) e **`iana-timezone.ts`** (Luxon 3: semana/día en zona del tenant, `instanteCitaEnZona`, `zonaIANASegura`, formateos Intl con `timeZone`).
 - **Agenda (mobile)**: grilla alineada al **calendario y reloj del negocio** (`config.locale.timezone`); celdas fuera de franja atenuadas y sin alta; citas filtradas por día/hora en esa zona; alta/reprogramación con instante correcto para BD.
 - **Drizzle (`tenant_settings`)**: columnas documentadas para alinear con remoto: **`timezone`**, **`client_terminology`**, **`tagline`**, **`features_whatsapp`**.
 
@@ -170,7 +170,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 ## [1.2.0] — 2026-02
 
 ### Añadido
-- Paquete `@geemastudio/tenant-config`: `TenantConfig` interface + `defaultTenantConfig` + 4 presets (spa-nails, barbershop, hair-salon, full-aesthetic).
+- Paquete `@zmtech/tenant-config`: `TenantConfig` interface + `defaultTenantConfig` + 4 presets (spa-nails, barbershop, hair-salon, full-aesthetic).
 - `TenantProvider` en `App.tsx`; `useTenant()` y `createTheme(config, isDark)` en todos los screens.
 - Onboarding de 5 pasos en `screens/onboarding/`; `AuthGate` orquesta el flujo; `isConfigured` + `markConfigured()` en `TenantContext`.
 - Tabla `tenant_settings` en Supabase con RLS y sincronización desde el onboarding.

@@ -29,7 +29,7 @@ zm-tech/
 │   └── geemastudio-server/    # Drizzle / seeds / scripts
 ├── packages/
 │   ├── shared-schema/         # @geemastudio/shared-schema
-│   └── tenant-config/         # @geemastudio/tenant-config
+│   └── tenant-config/         # @zmtech/tenant-config
 └── docs/geemastudio/          # Docs de producto (no skills/rules)
 ```
 
@@ -73,7 +73,7 @@ zm-tech/
 
 ### Imports
 - Mobile: `@/` → raíz de apps/geemastudio-mobile
-- Schema: `@geemastudio/shared-schema`; tenant: `@geemastudio/tenant-config`
+- Schema: `@geemastudio/shared-schema`; tenant: `@zmtech/tenant-config`
 - API: Supabase desde `@/lib/supabase`; TanStack Query con `supabase.from(...).select(...)` directamente
 
 ### Naming

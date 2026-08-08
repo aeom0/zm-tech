@@ -61,7 +61,7 @@ Workspaces:
   apps/geemastudio-mobile
   apps/geemastudio-web
   packages/shared-schema   → @geemastudio/shared-schema   (antes: @zm/shared-schema)
-  packages/tenant-config   → @geemastudio/tenant-config
+  packages/tenant-config   → @zmtech/tenant-config
 ```
 
 ### Backend / Infra
@@ -228,7 +228,7 @@ geemastudio/
 │   │       ├── types.ts          # tipos inferidos
 │   │       └── index.ts
 │   │
-│   └── tenant-config/            # @geemastudio/tenant-config
+│   └── tenant-config/            # @zmtech/tenant-config
 │       └── src/
 │           ├── types.ts          # TenantConfig interface completa
 │           ├── defaults.ts       # defaultTenantConfig
@@ -281,7 +281,7 @@ geemastudio/
 | Columnas BD Supabase | snake_case | `employee_id`, `created_at` |
 | Props interfaces TS | snake_case si viene de BD, camelCase si es UI | mixto |
 | Imports mobile | alias `@/` | `import { useTheme } from "@/hooks/useTheme"` |
-| Imports packages | `@geemastudio/*` | `from "@geemastudio/tenant-config"` |
+| Imports packages | `@geemastudio/*` + `@zmtech/tenant-config` | `from "@zmtech/tenant-config"` |
 | Rutas de navegacion | PascalCase o CamelCase generico | `"Personal"` NO `"Chicas"` |
 | AsyncStorage keys | `@geemastudio/*` | `@geemastudio/tenant_configured` |
 | Comentarios codigo | Espanol con prefijo modulo en logs | `console.log('[WABA]', ...)` |
@@ -790,7 +790,7 @@ yarn db:seed         # seeds template
 ## 13. Estado de fases (abr 2026)
 
 ### Completadas
-- Fases 1 al 6: Migracion ZM → GeemaStudio, monorepo, @geemastudio/tenant-config, onboarding, tenant_settings
+- Fases 1 al 6: Migracion ZM → GeemaStudio, monorepo, @zmtech/tenant-config, onboarding, tenant_settings
 - Fase 7A+7B: RLS 9 tablas con get_my_role(), onboarding conectado a Supabase
 - Fase 8: SettingsScreen modular + ThemeContext (useColorScheme, light|dark|auto)
 - Fase 9: usePendingBadgeCount + badge en tab Mas

@@ -61,7 +61,7 @@ Crear la siguiente estructura de archivos:
 
 ```
 packages/tenant-config/
-├── package.json          (name: "@geemastudio/tenant-config")
+├── package.json          (name: "@zmtech/tenant-config")
 ├── tsconfig.json
 └── src/
     ├── index.ts          ← exporta todo
@@ -149,7 +149,7 @@ Horarios típicos:
 
 ```json
 {
-  "name": "@geemastudio/tenant-config",
+  "name": "@zmtech/tenant-config",
   "version": "1.0.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
@@ -162,7 +162,7 @@ Horarios típicos:
 }
 ```
 
-Agregar `"@geemastudio/tenant-config": "workspace:*"` como dependencia en:
+Agregar `"@zmtech/tenant-config": "workspace:*"` como dependencia en:
 - `apps/mobile/package.json`
 - `packages/shared-schema/package.json` (si se necesita)
 

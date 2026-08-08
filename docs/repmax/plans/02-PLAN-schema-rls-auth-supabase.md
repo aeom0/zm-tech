@@ -78,7 +78,7 @@ Si `products.photos` pasa de URLs sueltas a Supabase Storage: bucket `repmax-pro
 
 ## Paso 5 — Auth Provider aislado
 
-Mismo patrón que `@geemastudio/tenant-config/odental` (`OdentalAuthProvider`/`useAuth`, `OdentalTenantProvider`/`useTenant`):
+Mismo patrón que `@zmtech/tenant-config/odental` (`OdentalAuthProvider`/`useAuth`, `OdentalTenantProvider`/`useTenant`):
 
 ```
 packages/tenant-config/src/repmax/

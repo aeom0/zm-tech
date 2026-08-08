@@ -23,14 +23,14 @@ import type { MoreStackParamList } from "@/navigation/MoreStackNavigator";
 import type {
   TenantConfig,
   TimeFormatPreference,
-} from "@geemastudio/tenant-config";
+} from "@zmtech/tenant-config";
 import {
   CLAVES_DIA_LABORAL,
   ETIQUETA_DIA_LABORAL,
   ZONAS_HORARIAS_SUGERIDAS,
   normalizarHorarioSemanal,
   validarHorarioCompleto,
-} from "@geemastudio/tenant-config";
+} from "@zmtech/tenant-config";
 
 type Nav = NativeStackNavigationProp<MoreStackParamList, "HorariosTrabajo">;
 

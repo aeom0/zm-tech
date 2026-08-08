@@ -13,7 +13,7 @@
 | Producto | Apps | Paquetes |
 |----------|------|----------|
 | **Landing ZM Tech** | `apps/landing` | — |
-| **GeemaStudio** | `geemastudio-mobile`, `geemastudio-web`, `geemastudio-server` | `@geemastudio/shared-schema`, `@geemastudio/tenant-config` |
+| **GeemaStudio** | `geemastudio-mobile`, `geemastudio-web`, `geemastudio-server` | `@geemastudio/shared-schema`, `@zmtech/tenant-config` |
 | **ODentalPro** | `odentalpro-mobile`, `odentalpro-web`, `odentalpro-server` | `@odentalpro/dental-schema` |
 | **RepMAX** | `repmax-web`, `repmax-mobile` | `@repmax/repmax-schema` |
 

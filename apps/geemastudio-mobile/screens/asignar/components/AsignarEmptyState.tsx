@@ -5,7 +5,7 @@ import { Feather } from "@expo/vector-icons";
 import { ThemedText } from "@/components/ThemedText";
 import { useTheme } from "@/hooks/useTheme";
 import { Spacing } from "@/constants/theme";
-import type { TenantConfig } from "@geemastudio/tenant-config";
+import type { TenantConfig } from "@zmtech/tenant-config";
 
 interface AsignarEmptyStateProps {
   terminology: TenantConfig["terminology"];

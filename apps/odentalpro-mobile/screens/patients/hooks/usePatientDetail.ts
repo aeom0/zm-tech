@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { useTenant } from "@geemastudio/tenant-config/odental";
+import { useTenant } from "@zmtech/tenant-config/odental";
 import { supabase } from "@/lib/supabase";
 
 import type {
