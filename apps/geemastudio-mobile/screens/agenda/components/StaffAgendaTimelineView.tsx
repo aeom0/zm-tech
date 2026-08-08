@@ -16,7 +16,7 @@ import {
   formatoHoraInstanteEnZona,
   type TenantConfig,
   type TimeFormatPreference,
-} from "@geemastudio/tenant-config";
+} from "@zmtech/tenant-config";
 
 import type { AgendaAppointment, AgendaService } from "../types";
 import {

@@ -10,11 +10,11 @@
     "check:types": "tsc --noEmit"
   },
   "dependencies": {
-    "@geemastudio/tenant-config": "workspace:*",
     "@odentalpro/dental-schema": "workspace:*",
     "@supabase/ssr": "^0.9.0",
     "@supabase/supabase-js": "^2.100.0",
     "@tanstack/react-query": "^5.95.2",
+    "@zmtech/tenant-config": "workspace:*",
     "lucide-react": "^0.562.0",
     "next": "^15.3.3",
     "react": "19.1.0",

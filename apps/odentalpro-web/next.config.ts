@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   transpilePackages: [
     "@odentalpro/dental-schema",
-    "@geemastudio/tenant-config",
+    "@zmtech/tenant-config",
   ],
 };
 

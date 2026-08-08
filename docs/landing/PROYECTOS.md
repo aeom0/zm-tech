@@ -38,7 +38,7 @@
 | Producto        | Apps                                                          | Packages                                                   |
 | --------------- | ------------------------------------------------------------- | ---------------------------------------------------------- |
 | **Landing**     | `apps/landing`                                                | `@zmtech/quote-engine`                                     |
-| **GeemaStudio** | `geemastudio-web`, `geemastudio-mobile`, `geemastudio-server` | `@geemastudio/shared-schema`, `@geemastudio/tenant-config` |
+| **GeemaStudio** | `geemastudio-web`, `geemastudio-mobile`, `geemastudio-server` | `@geemastudio/shared-schema`, `@zmtech/tenant-config` |
 | **OdentalPro**  | `odentalpro-web`, `odentalpro-mobile`, `odentalpro-server`    | `@odentalpro/dental-schema`                                |
 | **RepMAX**      | `repmax-web`, `repmax-mobile`                                 | `@repmax/repmax-schema`                                    |
 
@@ -78,7 +78,7 @@ Plataforma comercializable para salones, barberías y peluquerías. Soporte para
 
 ### Características clave
 
-- Tenant config (`@geemastudio/tenant-config`) con presets por tipo
+- Tenant config (`@zmtech/tenant-config`) con presets por tipo
 - Onboarding en 5 pasos
 - Roles: `dev` | `owner` | `staff` + RLS
 - Agenda, servicios, inventario, finanzas, comisiones

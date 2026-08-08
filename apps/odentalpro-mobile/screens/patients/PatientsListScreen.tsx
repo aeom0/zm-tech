@@ -2,7 +2,7 @@ import React from "react";
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-import { useOdentalAuth, useTenant } from "@geemastudio/tenant-config/odental";
+import { useOdentalAuth, useTenant } from "@zmtech/tenant-config/odental";
 
 import { usePatients } from "./hooks/usePatients";
 import type { OdentalPatientRow, PatientsStackParamList } from "./types";

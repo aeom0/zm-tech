@@ -31,7 +31,7 @@ import {
   sumarDiasEnZonaIANA,
   sumarSemanasEnZonaIANA,
   zonaIANASegura,
-} from "@geemastudio/tenant-config";
+} from "@zmtech/tenant-config";
 import type { MainTabParamList } from "@/navigation/MainTabNavigator";
 
 import { agendaStyles as styles } from "./agenda/agendaStyles";

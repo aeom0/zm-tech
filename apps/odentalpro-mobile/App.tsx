@@ -8,7 +8,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import {
   OdentalAuthProvider,
   OdentalTenantProvider,
-} from "@geemastudio/tenant-config/odental";
+} from "@zmtech/tenant-config/odental";
 
 import { supabase } from "@/lib/supabase";
 import { queryClient } from "@/lib/query-client";

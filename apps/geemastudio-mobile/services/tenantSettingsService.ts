@@ -9,7 +9,7 @@
  *   ADD COLUMN IF NOT EXISTS time_format       text    NOT NULL DEFAULT '24';
  */
 import { supabase } from "@/lib/supabase";
-import type { TenantConfig } from "@geemastudio/tenant-config";
+import type { TenantConfig } from "@zmtech/tenant-config";
 
 // Mapea TenantConfig (camelCase) a columnas snake_case de tenant_settings
 function mapConfigToRow(config: TenantConfig, userId: string) {
