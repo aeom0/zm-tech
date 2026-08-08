@@ -31,7 +31,7 @@ Estado: **completado (base del trabajo actual)**.
 - Actualizar defaults de `tenant_settings` y esquema compartido:
   - Colores por defecto genéricos (sin `#7B2D8E` / `#D4AF37`).
   - Terminología de staff y moneda no acopladas a ZM.
-- Ajustar presets de `@geemastudio/tenant-config`:
+- Ajustar presets de `@zmtech/tenant-config`:
   - `defaultTenantConfig` con:
     - `terminology.staff = "Profesionales"`.
     - `locale.language = "es-VE"`.
@@ -47,7 +47,7 @@ Estado: **completado (base del trabajo actual)**.
 
 Estado: **en progreso**  
 Progreso:
-- Defaults y presets de `@geemastudio/tenant-config`: **completados**.
+- Defaults y presets de `@zmtech/tenant-config`: **completados**.
 - Esquema compartido (colores y moneda por defecto): **completado**.
 - Limpieza en Dashboard/Agenda/Finanzas (locales y textos): **en progreso**.
 - AppMockup web actualizado para eliminar nombres/personas de ZM y colores de marca antiguos.

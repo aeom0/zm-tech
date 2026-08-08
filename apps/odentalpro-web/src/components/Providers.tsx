@@ -5,7 +5,7 @@ import {
   OdentalAuthProvider,
   OdentalTenantProvider,
   useTenant,
-} from "@geemastudio/tenant-config/odental";
+} from "@zmtech/tenant-config/odental";
 import { createClient } from "@/lib/supabase/client";
 
 function TenantBadge() {

@@ -11,7 +11,7 @@ import {
   type TenantConfig,
   defaultTenantConfig,
   mergeTenantConfig,
-} from "@geemastudio/tenant-config";
+} from "@zmtech/tenant-config";
 import { useAuth } from "@/contexts/AuthContext";
 import {
   fetchTenantSettings,

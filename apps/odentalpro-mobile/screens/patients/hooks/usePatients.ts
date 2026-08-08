@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { useOdentalAuth, useTenant } from "@geemastudio/tenant-config/odental";
+import { useOdentalAuth, useTenant } from "@zmtech/tenant-config/odental";
 import { supabase } from "@/lib/supabase";
 
 import type { OdentalPatientRow } from "../types";

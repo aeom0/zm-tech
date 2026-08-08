@@ -103,7 +103,7 @@ Automotriz, Sports Tech y Enterprise.
 - **Stack:** Expo SDK 56 + RN 0.85 + Next.js 15 + Supabase + Drizzle + pnpm/Turborepo
 - **Tipos de negocio:** spa-nails, barbershop, hair-salon, full-aesthetic
 - **Features:** Agenda, Inventario, Finanzas, WABA, panel web `/panel`
-- **Packages:** `@geemastudio/shared-schema`, `@geemastudio/tenant-config`
+- **Packages:** `@geemastudio/shared-schema`, `@zmtech/tenant-config`
 - **Paleta Lunaris:** `#40E0D0` / `#00897B`
 - **Estado:** activo en monorepo zm-tech
 

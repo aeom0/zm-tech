@@ -9,7 +9,7 @@ import { Feather } from "@expo/vector-icons";
 
 import { ThemedText } from "@/components/ThemedText";
 import { BorderRadius, Spacing } from "@/constants/theme";
-import { esMismoDiaCalendarioEnZona } from "@geemastudio/tenant-config";
+import { esMismoDiaCalendarioEnZona } from "@zmtech/tenant-config";
 
 import type { AgendaAppointment, AgendaStatusFilter } from "../types";
 import { matchesStatusFilter } from "../agendaUtils";

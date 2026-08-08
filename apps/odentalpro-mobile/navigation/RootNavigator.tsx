@@ -2,7 +2,7 @@ import React from "react";
 import { ActivityIndicator, View } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { useOdentalAuth } from "@geemastudio/tenant-config/odental";
+import { useOdentalAuth } from "@zmtech/tenant-config/odental";
 import { PatientsListScreen } from "@/screens/patients/PatientsListScreen";
 import { PatientDetailScreen } from "@/screens/patients/PatientDetailScreen";
 import type { PatientsStackParamList } from "@/screens/patients/types";

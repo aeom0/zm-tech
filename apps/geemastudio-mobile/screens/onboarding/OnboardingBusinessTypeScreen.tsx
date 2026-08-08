@@ -25,7 +25,7 @@ import {
   hairSalonPreset,
   fullAestheticPreset,
   type TenantConfig,
-} from "@geemastudio/tenant-config";
+} from "@zmtech/tenant-config";
 import { MONEDAS_LATAM, type Moneda } from "@/screens/settings/constants";
 
 type BusinessType = TenantConfig["businessType"];

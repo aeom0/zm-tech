@@ -6,7 +6,7 @@ import { BorderRadius } from "@/constants/theme";
 import {
   diaDelMesEnZona,
   indiceDiaSemanaJSEnZona,
-} from "@geemastudio/tenant-config";
+} from "@zmtech/tenant-config";
 
 import { DAYS_ES } from "../constants";
 import { agendaStyles as styles } from "../agendaStyles";

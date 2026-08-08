@@ -18,7 +18,7 @@ Contexto para agentes que toquen RepMAX dentro del monorepo.
 | Mobile | Expo ~56, React Native 0.85, React 19 |
 | Datos | Supabase Auth + PostgREST + RLS (`llacowjutjfefboqgfnj`) |
 | Schema | Drizzle en `@repmax/repmax-schema` (fuente de verdad TS) |
-| Tenant/Auth UI | `@geemastudio/tenant-config/repmax` |
+| Tenant/Auth UI | En apps: `AuthContext` → Supabase (`repmax_store_users` / `repmax_stores`). `@zmtech/tenant-config/repmax` existe como export pero **no está cableado** aún |
 
 **No hay servidor Express.** No hay JWT propio. No hay `apps/repmax-server`.
 

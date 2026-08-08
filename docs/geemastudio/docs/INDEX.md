@@ -93,7 +93,7 @@ docs/
 ### Tema / marca
 - Mobile: `apps/mobile/constants/theme.ts` + `Gradients.onboarding` (Lunaris turquesa)
 - Web: `apps/web/src/lib/theme.ts` (`LUNARIS`)
-- Tenant en runtime: `TenantContext` + `tenant_settings` + `@geemastudio/tenant-config`
+- Tenant en runtime: `TenantContext` + `tenant_settings` + `@zmtech/tenant-config`
 
 ### MCP (Cursor)
 - Dos servidores en `.cursor/mcp.json`: **supabase-geemastudio** (este proyecto) y **supabase-zm** (referencia). Para BD de GeemaStudio usar supabase-geemastudio.
