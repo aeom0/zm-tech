@@ -34,8 +34,17 @@ Estructura del monorepo y comandos (sin servidor Express).
 ### [GEEMASTUDIO_V1.3_PLAN.md](GEEMASTUDIO_V1.3_PLAN.md)
 Plan de funcionalidades v1.3 (referencia histórica / roadmap parcial).
 
-### [plan-02-retrofit-tenant-id.md](plan-02-retrofit-tenant-id.md)
+### [02-PLAN-retrofit-tenant-id.md](02-PLAN-retrofit-tenant-id.md)
 Plan 02 — retrofit `tenant_id` en `udelxwwnyivknslueerr` (ZM Lash = tenant #1 → GeemaStudio multi-tenant). **Fase A/B ✅ prod**; **Fase C RLS pendiente**. Leer antes de tocar migraciones o código de `tenant_id`.
+
+### [03-PLAN-audit-paridad-zmlash-geema.md](03-PLAN-audit-paridad-zmlash-geema.md)
+Plan 03 — brief del audit de paridad (solo lectura): ZM Lash = referencia funcional → GeemaStudio.
+
+### [Audit 03 — paridad](../../audit/03-AUDIT-paridad-zmlash-geema.md)
+Resultado del audit: matriz feature × superficie, gaps críticos P0–P2, sección “No portar”.
+
+### [Inventario features ZM → Geema](../../audit/04-INVENTARIO-features-zm-lash-para-geema.md)
+Backlog accionable: ~50 capacidades de ZM Lash (mobile, web, WABA, Edge Functions) con estado en Geema, rutas de referencia y oleadas de implementación.
 
 ### [tech-debt/](tech-debt/) (deuda técnica)
 Seguimiento puntual (p. ej. [TD-001 — tokens onboarding](tech-debt/TD-001-onboarding-tokens.md)).
@@ -55,8 +64,14 @@ docs/
 ├── MONOREPO_MIGRACION.md           # Monorepo, comandos
 ├── INSTALACION_BETA.md             # Beta / instalación
 ├── GEEMASTUDIO_V1.3_PLAN.md        # Plan v1.3 (referencia)
-├── plan-02-retrofit-tenant-id.md   # Retrofit tenant_id (multi-tenant BD)
-└── tech-debt/                      # Deuda técnica (TD-xxx)
+├── 02-PLAN-retrofit-tenant-id.md           # Retrofit tenant_id (multi-tenant BD)
+├── 03-PLAN-audit-paridad-zmlash-geema.md   # Brief audit paridad ZM ↔ Geema
+└── tech-debt/                              # Deuda técnica (TD-xxx)
+
+# (fuera de docs/geemastudio/docs/)
+docs/audit/
+├── 03-AUDIT-paridad-zmlash-geema.md              # Resultado audit
+└── 04-INVENTARIO-features-zm-lash-para-geema.md  # Backlog features a portar
 
 .cursor/
 ├── README.md                       # Reglas Cursor, MCP (dos proyectos Supabase)
