@@ -39,7 +39,7 @@ export function PaymentsSection() {
 
         <p className="l-payments-note">
           El pago mixto permite combinar cualquier método en una misma transacción.
-          Ideal pa&apos; cuando el cliente tiene parte en USD y parte en Bs.
+          Ideal pa' cuando el cliente tiene parte en USD y parte en Bs.
         </p>
       </div>
     </section>

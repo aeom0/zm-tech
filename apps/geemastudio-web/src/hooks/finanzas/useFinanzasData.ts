@@ -79,69 +79,36 @@ export function useFinanzasData(): FinanzasData {
           .gte("date", startOfMonth.toISOString())
           .order("date", { ascending: false });
 
-        type PaymentJoinRow = {
-          id: string;
-          amount: string;
-          method: string;
-          date: string;
-          notes: string | null;
-          is_abono: boolean;
-          service_total: string | null;
-          appointment_id: string | null;
-          appointments:
-            | {
-                client_name: string | null;
-                price: string | null;
-                services: { name: string } | { name: string }[] | null;
-                employees:
-                  | { name: string; color: string | null }
-                  | { name: string; color: string | null }[]
-                  | null;
-              }
-            | {
-                client_name: string | null;
-                price: string | null;
-                services: { name: string } | { name: string }[] | null;
-                employees:
-                  | { name: string; color: string | null }
-                  | { name: string; color: string | null }[]
-                  | null;
-              }[]
-            | null;
-        };
-
-        const mapped: PaymentRow[] = ((pData ?? []) as PaymentJoinRow[]).map(
-          (p) => {
-            const apt = Array.isArray(p.appointments)
-              ? p.appointments[0]
-              : p.appointments;
-            return {
-              id: p.id,
-              amount: p.amount,
-              method: p.method,
-              date: p.date,
-              notes: p.notes,
-              is_abono: p.is_abono,
-              service_total: p.service_total,
-              appointment_id: p.appointment_id,
-              client_name: apt?.client_name ?? null,
-              apt_price: apt?.price ?? null,
-              service_name:
-                (Array.isArray(apt?.services) ? apt.services[0] : apt?.services)
-                  ?.name ?? null,
-              employee_name:
-                (Array.isArray(apt?.employees)
-                  ? apt.employees[0]
-                  : apt?.employees
-                )?.name ?? null,
-              employee_color:
-                (Array.isArray(apt?.employees)
-                  ? apt.employees[0]
-                  : apt?.employees
-                )?.color ?? null,
-            };
-          },
-        );
+        const mapped: PaymentRow[] = (pData ?? []).map((p: any) => {
+          const apt = Array.isArray(p.appointments)
+            ? p.appointments[0]
+            : p.appointments;
+          return {
+            id: p.id,
+            amount: p.amount,
+            method: p.method,
+            date: p.date,
+            notes: p.notes,
+            is_abono: p.is_abono,
+            service_total: p.service_total,
+            appointment_id: p.appointment_id,
+            client_name: apt?.client_name ?? null,
+            apt_price: apt?.price ?? null,
+            service_name:
+              (Array.isArray(apt?.services) ? apt.services[0] : apt?.services)
+                ?.name ?? null,
+            employee_name:
+              (Array.isArray(apt?.employees)
+                ? apt.employees[0]
+                : apt?.employees
+              )?.name ?? null,
+            employee_color:
+              (Array.isArray(apt?.employees)
+                ? apt.employees[0]
+                : apt?.employees
+              )?.color ?? null,
+          };
+        });
         setPayments(mapped);
 
         // Citas del mes para desglose por chica
@@ -150,18 +117,8 @@ export function useFinanzasData(): FinanzasData {
           .select("id, employee_id, price, employees(name, color)")
           .gte("date", startOfMonth.toISOString());
 
-        type AppointmentJoinRow = {
-          id: string;
-          employee_id: string | null;
-          price: string;
-          employees:
-            | { name: string; color: string | null }
-            | { name: string; color: string | null }[]
-            | null;
-        };
-
         setRawAppointments(
-          ((aData ?? []) as AppointmentJoinRow[]).map((a) => {
+          (aData ?? []).map((a: any) => {
             const emp = Array.isArray(a.employees)
               ? a.employees[0]
               : a.employees;
