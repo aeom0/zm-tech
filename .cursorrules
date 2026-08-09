@@ -83,10 +83,13 @@ pnpm check:types
 | Docs | `docs/repmax/` |
 | Web | `apps/repmax-web/` (puerto 3003) |
 | Mobile | `apps/repmax-mobile/` |
-| Schema | `packages/repmax-schema/` |
+| Schema TS | `packages/repmax-schema/` |
+| Migraciones SQL | `docs/repmax/supabase/migrations/` |
+| Seeds | `docs/repmax/supabase/seed/` |
 | Auth/tenant | `packages/tenant-config/src/repmax/` |
+| Rule | `.cursor/rules/repmax.mdc` |
 
-Supabase compartido ZMTech: `llacowjutjfefboqgfnj` (tablas `repmax_*`). Sin servidor Express.
+Supabase compartido ZMTech: `llacowjutjfefboqgfnj` (tablas `repmax_*`). Sin servidor Express. DDL = SQL versionado; Drizzle solo contrato TS (no `db:push`).
 
 ---
 

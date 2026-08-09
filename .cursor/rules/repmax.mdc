@@ -1,0 +1,47 @@
+---
+description: RepMAX — SQL migraciones, sync con @repmax/repmax-schema, hub compartido, sin drizzle-kit
+globs:
+  - "apps/repmax-web/**/*"
+  - "apps/repmax-mobile/**/*"
+  - "packages/repmax-schema/**/*"
+  - "packages/tenant-config/src/repmax/**/*"
+  - "docs/repmax/**/*"
+alwaysApply: false
+---
+
+# RepMAX
+
+## Supabase
+
+- Proyecto hub: `llacowjutjfefboqgfnj` (MCP `user-supabase-zmtech`).
+- Prefijo obligatorio: `repmax_*`. No tocar `contacts`, `quote_leads`, `odental_*`, `hub_*`.
+- Apps → Supabase Auth + PostgREST + RLS. Sin Express / JWT propio. Sin `apps/repmax-server`.
+
+## SQL vs Drizzle
+
+| Rol | Dónde |
+|-----|--------|
+| Verdad DDL (tablas, RLS, RPC, grants, índices) | `docs/repmax/supabase/migrations/*.sql` |
+| Contrato TS (columnas, enums, constantes) | `packages/repmax-schema` (`@repmax/repmax-schema`) |
+| Seeds demo | `docs/repmax/supabase/seed/` |
+
+**No** usar `pnpm db:push` / drizzle-kit para RepMAX (es GeemaStudio).
+
+## Checklist migración
+
+1. Archivo nuevo en `docs/repmax/supabase/migrations/YYYYMMDDHHMMSS_<nombre>.sql`
+2. Aplicar en el hub (MCP `apply_migration` o SQL Editor)
+3. Si cambia forma de tablas/enums → actualizar `packages/repmax-schema/src/schema.ts` en el mismo cambio
+4. RLS/grants/índices/RPC sin contrato TS → no tocar el package
+5. Catálogo demo materialmente distinto → reexportar `docs/repmax/supabase/seed/demo_catalog.sql`
+
+## Sync bidireccional
+
+- SQL cambia columnas/enums/tablas → actualizar schema TS.
+- Schema TS cambia columnas/enums → escribir migración SQL (nunca dejar solo el package).
+- Credenciales demo: `docs/repmax/supabase/seed/demo_users.md`.
+
+## Docs
+
+- Producto: `docs/repmax/README.md`
+- Mapa multi-BD: `docs/SUPABASE.md`
