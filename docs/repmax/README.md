@@ -40,9 +40,35 @@ pnpm build:repmax
 
 Proyecto: `https://llacowjutjfefboqgfnj.supabase.co`
 
-## Migraciones SQL aplicadas
+## Datos: SQL + schema TS (sin drizzle-kit)
 
-Ver `supabase/migrations/` (schema, RLS/storage, RPC venta, fix políticas públicas `anon`).
+- **DDL / RLS / RPC / índices**: SQL versionado en [`supabase/migrations/`](./supabase/migrations/).
+- **Tipos / enums / columnas (TS)**: `@repmax/repmax-schema` → `packages/repmax-schema/src/schema.ts`.
+- **No** usar `pnpm db:push` ni drizzle-kit para RepMAX (ese comando es de GeemaStudio).
+
+### Checklist — nueva migración
+
+1. Crear `docs/repmax/supabase/migrations/YYYYMMDDHHMMSS_<nombre>.sql` (solo objetos `repmax_*`).
+2. Aplicar en el hub `llacowjutjfefboqgfnj` (MCP `apply_migration` o SQL Editor).
+3. Si cambia tablas/enums/columnas → actualizar `packages/repmax-schema/src/schema.ts` **en el mismo cambio**.
+4. Si solo toca RLS, grants, índices o RPC sin contrato TS → no hace falta tocar el package.
+5. Si el catálogo demo cambia de forma relevante → reexportar [`supabase/seed/demo_catalog.sql`](./supabase/seed/demo_catalog.sql).
+
+### Sync schema ↔ SQL
+
+| Cambia… | Actualizar también… |
+|---------|---------------------|
+| Columnas / enums / tablas en SQL | `packages/repmax-schema/src/schema.ts` |
+| Columnas / enums en el package Drizzle | Migración SQL en `supabase/migrations/` (nunca solo el TS) |
+
+Migraciones actuales: schema inicial, RLS/storage, RPC venta, fix políticas `anon`, hardening advisors.
+
+## Seed demo
+
+| Archivo | Contenido |
+|---------|-----------|
+| [`supabase/seed/demo_users.md`](./supabase/seed/demo_users.md) | Credenciales + `user_id` / `store_user_id` (owners, cashier, inventory) |
+| [`supabase/seed/demo_catalog.sql`](./supabase/seed/demo_catalog.sql) | Catálogo de productos Alfa/Beta (idempotente) |
 
 ## Diseño
 
