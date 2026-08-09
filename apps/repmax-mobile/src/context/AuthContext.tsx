@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { supabase } from '../utils/supabase';
 import type { AuthUser, Store, StoreUser, StoreType, VehicleFocus, ThemeKey, CountryCode } from '../types/database';
 
@@ -11,7 +11,7 @@ interface AuthState {
 
 // Datos que trae el onboarding mobile al momento de crear la cuenta real.
 // Ver context/OnboardingContext.tsx y screens/onboarding/*.
-interface RegisterInput {
+export interface RegisterInput {
   email: string;
   password: string;
   storeName: string;
@@ -31,6 +31,13 @@ interface AuthContextValue extends AuthState {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+function mapDbError(error: { code?: string; message?: string }): string {
+  if (error.code === '23505') {
+    return 'Ese nombre de URL ya está en uso. Prueba con otro nombre de tienda.';
+  }
+  return error.message || 'Error de base de datos';
+}
+
 // Mapea snake_case de Supabase a camelCase de nuestros tipos
 function mapStore(row: any): Store {
   return {
@@ -47,10 +54,11 @@ function mapStore(row: any): Store {
     currencyUsd: row.currency_usd,
     currencyBs: row.currency_bs,
     usdBsRate: parseFloat(row.usd_bs_rate),
-    storeType: row.store_type,
-    vehicleFocus: row.vehicle_focus,
-    themeKey: row.theme_key,
-    countryCode: row.country_code,
+    // Fallbacks si la migración de onboarding aún no está aplicada / columnas null
+    storeType: row.store_type ?? 'repuesteria',
+    vehicleFocus: row.vehicle_focus ?? 'BOTH',
+    themeKey: row.theme_key ?? 'turbo',
+    countryCode: row.country_code ?? 'VE',
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -90,6 +98,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AuthState>({
     user: null, storeUser: null, store: null, isLoading: true,
   });
+  // Evita que SIGNED_IN de signUp cargue membership antes de crear tienda/owner
+  const registeringRef = useRef(false);
 
   useEffect(() => {
     // Verificar sesión activa al iniciar
@@ -114,6 +124,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return;
       }
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        // Durante register() el auth llega antes que store_users — no pisar estado a medias
+        if (registeringRef.current) return;
         const { storeUser, store } = await loadStoreData(session.user.id);
         setState({
           user: { id: session.user.id, email: session.user.email! },
@@ -134,42 +146,57 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const register = async (input: RegisterInput) => {
-    const { data, error } = await supabase.auth.signUp({
-      email: input.email,
-      password: input.password,
-    });
-    if (error) throw new Error(error.message);
-    if (!data.user) throw new Error('No se pudo crear el usuario');
+    const slug = input.storeSlug.trim();
+    if (!slug) {
+      throw new Error('El nombre de la tienda debe incluir letras o números para generar la URL.');
+    }
 
-    const userId = data.user.id;
-
-    // Crear tienda con las preferencias elegidas en el onboarding
-    const { data: newStore, error: storeError } = await supabase
-      .from('repmax_stores')
-      .insert({
-        name: input.storeName,
-        slug: input.storeSlug,
-        store_type: input.storeType,
-        vehicle_focus: input.vehicleFocus,
-        theme_key: input.theme,
-        country_code: input.country,
-      })
-      .select()
-      .single();
-    if (storeError) throw new Error(storeError.message);
-
-    // Crear store_user con rol owner
-    const { error: storeUserError } = await supabase
-      .from('repmax_store_users')
-      .insert({
-        store_id: newStore.id,
-        user_id: userId,
-        role: 'owner',
-        full_name: input.email.split('@')[0],
+    registeringRef.current = true;
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: input.email,
+        password: input.password,
       });
-    if (storeUserError) throw new Error(storeUserError.message);
+      if (error) throw new Error(error.message);
+      if (!data.user) throw new Error('No se pudo crear el usuario');
 
-    // onAuthStateChange cargará los datos de tienda automáticamente
+      const userId = data.user.id;
+
+      const { data: newStore, error: storeError } = await supabase
+        .from('repmax_stores')
+        .insert({
+          name: input.storeName,
+          slug,
+          store_type: input.storeType,
+          vehicle_focus: input.vehicleFocus,
+          theme_key: input.theme,
+          country_code: input.country,
+        })
+        .select()
+        .single();
+      if (storeError) throw new Error(mapDbError(storeError));
+
+      const { error: storeUserError } = await supabase
+        .from('repmax_store_users')
+        .insert({
+          store_id: newStore.id,
+          user_id: userId,
+          role: 'owner',
+          full_name: input.email.split('@')[0],
+        });
+      if (storeUserError) throw new Error(mapDbError(storeUserError));
+
+      // Cargar membership con tienda ya creada (no depender del race de SIGNED_IN)
+      const { storeUser, store } = await loadStoreData(userId);
+      setState({
+        user: { id: userId, email: input.email },
+        storeUser,
+        store,
+        isLoading: false,
+      });
+    } finally {
+      registeringRef.current = false;
+    }
   };
 
   const logout = async () => {

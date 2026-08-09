@@ -1,26 +1,26 @@
 // ============================================================
-// RepMAX Business Suite — Registro final, hereda las elecciones
-// del onboarding (país, vehículo, tipo de negocio, tema)
+// RepMAX Business Suite — Registro final
+// Hereda elecciones del onboarding; si faltan, usa defaults de BD.
 // ============================================================
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { AuthStackParamList } from '../../navigation/types';
 import { useAuth } from '../../context/AuthContext';
 import { useOnboarding } from '../../context/OnboardingContext';
 import { THEMES } from '../../constants/onboarding';
+import { slugify } from '../../utils/slugify';
 import { colors, typography, spacing, borderRadius } from '../../utils/theme';
+import type { StoreType } from '../../types/database';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Register'>;
 
-// Genera un slug simple a partir del nombre de la tienda
-function slugify(nombre: string): string {
-  return nombre
-    .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // sin tildes
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
+function mapBusinessType(businessType: string | null): StoreType {
+  if (businessType === 'PARTS_STORE') return 'repuesteria';
+  if (businessType === 'WORKSHOP') return 'taller';
+  if (businessType === 'BOTH') return 'ambos';
+  return 'repuesteria';
 }
 
 export default function RegisterScreen({ navigation }: Props) {
@@ -35,15 +35,15 @@ export default function RegisterScreen({ navigation }: Props) {
 
   const temaElegido = THEMES.find(t => t.key === onboardingState.theme);
   const colorAcento = temaElegido?.color ?? colors.brand.orange;
+  const storeSlug = useMemo(() => slugify(storeName), [storeName]);
 
   const handleRegister = async () => {
     if (!storeName.trim() || !email.trim() || !password) {
       setError('Completa todos los campos, mijo');
       return;
     }
-    if (!onboardingState.country || !onboardingState.vehicleType ||
-        !onboardingState.businessType || !onboardingState.theme) {
-      setError('Faltan datos del onboarding — vuelve a intentar desde el inicio');
+    if (!storeSlug) {
+      setError('El nombre de la tienda debe incluir letras o números para generar la URL.');
       return;
     }
 
@@ -54,17 +54,13 @@ export default function RegisterScreen({ navigation }: Props) {
         email: email.trim(),
         password,
         storeName: storeName.trim(),
-        storeSlug: slugify(storeName),
-        storeType: onboardingState.businessType === 'PARTS_STORE'
-          ? 'repuesteria'
-          : onboardingState.businessType === 'WORKSHOP'
-            ? 'taller'
-            : 'ambos',
-        vehicleFocus: onboardingState.vehicleType,
-        theme: onboardingState.theme,
-        country: onboardingState.country,
+        storeSlug,
+        storeType: mapBusinessType(onboardingState.businessType),
+        vehicleFocus: onboardingState.vehicleType ?? 'BOTH',
+        theme: onboardingState.theme ?? 'turbo',
+        country: onboardingState.country ?? 'VE',
       });
-      // onAuthStateChange en AuthContext dispara el login → AppNavigator navega a Main
+      // AuthContext.setState con membership → AppNavigator navega a Main
     } catch (err) {
       setError(err instanceof Error ? err.message : 'No se pudo crear la cuenta');
     } finally {
@@ -76,7 +72,9 @@ export default function RegisterScreen({ navigation }: Props) {
     <View style={styles.contenedor}>
       <Text style={styles.titulo}>Crea tu cuenta</Text>
       <Text style={styles.subtitulo}>
-        Tema <Text style={{ color: colorAcento }}>{temaElegido?.name}</Text> · listo para configurar
+        {temaElegido
+          ? <>Tema <Text style={{ color: colorAcento }}>{temaElegido.name}</Text> · listo para configurar</>
+          : 'Configura tu tienda en segundos'}
       </Text>
 
       <TextInput
@@ -87,6 +85,13 @@ export default function RegisterScreen({ navigation }: Props) {
         onChangeText={setStoreName}
         autoCapitalize="words"
       />
+      {storeName.trim().length > 0 && (
+        <Text style={styles.slugHint}>
+          {storeSlug
+            ? `URL: /${storeSlug}`
+            : 'Agrega letras o números para generar la URL'}
+        </Text>
+      )}
       <TextInput
         style={styles.input}
         placeholder="Correo"
@@ -132,6 +137,13 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: colors.bg.secondary, borderRadius: borderRadius.md, borderWidth: 1, borderColor: colors.bg.border,
     padding: spacing.md, color: colors.text.primary, fontFamily: typography.fontFamily.regular, fontSize: typography.size.md,
+    marginBottom: spacing.md,
+  },
+  slugHint: {
+    fontFamily: typography.fontFamily.regular,
+    fontSize: typography.size.sm,
+    color: colors.text.disabled,
+    marginTop: -spacing.sm,
     marginBottom: spacing.md,
   },
   error: { color: colors.semantic.error, fontFamily: typography.fontFamily.regular, fontSize: typography.size.sm, marginBottom: spacing.md },
