@@ -54,8 +54,26 @@ export const subscriptionPlanEnum = pgEnum("repmax_subscription_plan", [
   "enterprise",
 ]);
 
+// Elegidos durante el onboarding mobile. NOTA: estas 4 columnas de
+// repmax_stores usan CHECK constraints en SQL (no pgEnum de Postgres)
+// porque la migracion 20260808120000_repmax_store_onboarding_fields.sql
+// las declara como `text` + CHECK, no como tipos ENUM nativos. Se
+// documentan aqui como unions TS para mantener el contrato, pero no
+// se usan con pgEnum() al declarar la tabla.
+export const STORE_TYPES = ["repuesteria", "taller", "ambos"] as const;
+export type StoreType = (typeof STORE_TYPES)[number];
+
+export const VEHICLE_FOCUS_OPTIONS = ["CARS", "MOTOS", "BOTH"] as const;
+export type VehicleFocus = (typeof VEHICLE_FOCUS_OPTIONS)[number];
+
+export const THEME_KEYS = ["turbo", "acero", "terreno"] as const;
+export type ThemeKey = (typeof THEME_KEYS)[number];
+
+export const COUNTRY_CODES = ["VE", "CO", "PE", "EC", "DO"] as const;
+export type CountryCode = (typeof COUNTRY_CODES)[number];
+
 // ============================================================
-// STORES (raíz del tenant)
+// STORES (raiz del tenant)
 // ============================================================
 export const stores = pgTable("repmax_stores", {
   id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -71,6 +89,12 @@ export const stores = pgTable("repmax_stores", {
   currencyUsd: varchar("currency_usd", { length: 10 }).default("USD"),
   currencyBs: varchar("currency_bs", { length: 10 }).default("BS"),
   usdBsRate: decimal("usd_bs_rate", { precision: 10, scale: 2 }).default("36.50"),
+  // Preferencias capturadas en el onboarding mobile (ver migracion
+  // 20260808120000_repmax_store_onboarding_fields.sql)
+  storeType: text("store_type").$type<StoreType>().notNull().default("repuesteria"),
+  vehicleFocus: text("vehicle_focus").$type<VehicleFocus>().notNull().default("BOTH"),
+  themeKey: text("theme_key").$type<ThemeKey>().notNull().default("turbo"),
+  countryCode: text("country_code").$type<CountryCode>().notNull().default("VE"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });
@@ -85,7 +109,7 @@ export const storeUsers = pgTable(
     storeId: uuid("store_id")
       .notNull()
       .references(() => stores.id, { onDelete: "cascade" }),
-    /** UUID de auth.users (FK se declara en la migración SQL) */
+    /** UUID de auth.users (FK se declara en la migracion SQL) */
     userId: uuid("user_id").notNull(),
     role: storeUserRoleEnum("role").notNull().default("cashier"),
     fullName: varchar("full_name", { length: 255 }),

@@ -14,6 +14,7 @@ export type OnboardingStackParamList = {
 
 export type AuthStackParamList = {
   Login: undefined;
+  Register: undefined;
 };
 
 export type POSStackParamList = {

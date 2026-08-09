@@ -12,6 +12,12 @@ export type CashSessionStatus = 'OPEN' | 'CLOSED';
 export type StoreUserRole = 'owner' | 'cashier' | 'inventory';
 export type SubscriptionPlan = 'basic' | 'pro' | 'enterprise';
 
+// Elegidos durante el onboarding mobile (ver types/onboarding.ts)
+export type StoreType = 'repuesteria' | 'taller' | 'ambos';
+export type VehicleFocus = 'CARS' | 'MOTOS' | 'BOTH';
+export type ThemeKey = 'turbo' | 'acero' | 'terreno';
+export type CountryCode = 'VE' | 'CO' | 'PE' | 'EC' | 'DO';
+
 export interface Store {
   id: string;
   name: string;
@@ -26,6 +32,12 @@ export interface Store {
   currencyUsd: string;
   currencyBs: string;
   usdBsRate: number;
+  // Preferencias capturadas en el onboarding — ver migracion
+  // 20260808120000_repmax_store_onboarding_fields.sql
+  storeType: StoreType;
+  vehicleFocus: VehicleFocus;
+  themeKey: ThemeKey;
+  countryCode: CountryCode;
   createdAt: string;
   updatedAt: string;
 }

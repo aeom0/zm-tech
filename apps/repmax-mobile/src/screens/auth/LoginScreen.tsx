@@ -1,5 +1,6 @@
 // ============================================================
 // RepMAX Business Suite — Pantalla de Login
+// El registro vive en RegisterScreen (hereda onboarding o defaults).
 // ============================================================
 import React, { useState } from 'react';
 import {
@@ -7,47 +8,31 @@ import {
   StyleSheet, KeyboardAvoidingView, Platform,
   ActivityIndicator, Alert, ScrollView,
 } from 'react-native';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useAuth } from '../../context/AuthContext';
 import { colors, typography, spacing, borderRadius } from '../../utils/theme';
+import type { AuthStackParamList } from '../../navigation/types';
 
-type Mode = 'login' | 'register';
+type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
-export default function LoginScreen() {
-  const { login, register } = useAuth();
+export default function LoginScreen({ navigation }: Props) {
+  const { login } = useAuth();
 
-  const [mode, setMode] = useState<Mode>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [storeName, setStoreName] = useState('');
-  const [storeSlug, setStoreSlug] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  const handleSlugFromName = (name: string) => {
-    setStoreName(name);
-    setStoreSlug(
-      name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
-    );
-  };
 
   const handleSubmit = async () => {
     if (!email.trim() || !password.trim()) {
       Alert.alert('Campos requeridos', 'Email y contraseña son obligatorios.');
       return;
     }
-    if (mode === 'register' && (!storeName.trim() || !storeSlug.trim())) {
-      Alert.alert('Campos requeridos', 'Nombre y slug de la tienda son obligatorios.');
-      return;
-    }
 
     setIsLoading(true);
     try {
-      if (mode === 'login') {
-        await login(email.trim(), password);
-      } else {
-        await register(email.trim(), password, storeName.trim(), storeSlug.trim());
-      }
-    } catch (err: any) {
-      const msg = err?.response?.data?.message || 'Ocurrió un error. Intenta de nuevo.';
+      await login(email.trim(), password);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Ocurrió un error. Intenta de nuevo.';
       Alert.alert('Error', msg);
     } finally {
       setIsLoading(false);
@@ -61,36 +46,13 @@ export default function LoginScreen() {
     >
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
 
-        {/* Encabezado */}
         <View style={styles.header}>
           <Text style={styles.logo}>Rep<Text style={styles.logoAccent}>MAX</Text></Text>
           <Text style={styles.tagline}>Business Suite</Text>
           <Text style={styles.subtitle}>Gestión inteligente para autopartes</Text>
         </View>
 
-        {/* Card del formulario */}
         <View style={styles.card}>
-          {/* Selector de modo */}
-          <View style={styles.modeSelector}>
-            <TouchableOpacity
-              style={[styles.modeBtn, mode === 'login' && styles.modeBtnActive]}
-              onPress={() => setMode('login')}
-            >
-              <Text style={[styles.modeBtnText, mode === 'login' && styles.modeBtnTextActive]}>
-                Iniciar Sesión
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.modeBtn, mode === 'register' && styles.modeBtnActive]}
-              onPress={() => setMode('register')}
-            >
-              <Text style={[styles.modeBtnText, mode === 'register' && styles.modeBtnTextActive]}>
-                Registrarse
-              </Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Campos comunes */}
           <Text style={styles.label}>Correo electrónico</Text>
           <TextInput
             style={styles.input}
@@ -113,32 +75,6 @@ export default function LoginScreen() {
             secureTextEntry
           />
 
-          {/* Campos solo para registro */}
-          {mode === 'register' && (
-            <>
-              <Text style={styles.label}>Nombre de tu tienda</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="Autopartes El Turbo"
-                placeholderTextColor={colors.text.disabled}
-                value={storeName}
-                onChangeText={handleSlugFromName}
-              />
-
-              <Text style={styles.label}>Slug (URL única)</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="autopartes-el-turbo"
-                placeholderTextColor={colors.text.disabled}
-                value={storeSlug}
-                onChangeText={setStoreSlug}
-                autoCapitalize="none"
-              />
-              <Text style={styles.hint}>Solo letras minúsculas, números y guiones.</Text>
-            </>
-          )}
-
-          {/* Botón principal */}
           <TouchableOpacity
             style={[styles.submitBtn, isLoading && styles.submitBtnDisabled]}
             onPress={handleSubmit}
@@ -147,14 +83,21 @@ export default function LoginScreen() {
             {isLoading ? (
               <ActivityIndicator color={colors.text.inverse} />
             ) : (
-              <Text style={styles.submitBtnText}>
-                {mode === 'login' ? 'Entrar' : 'Crear cuenta'}
-              </Text>
+              <Text style={styles.submitBtnText}>Entrar</Text>
             )}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.registerLink}
+            onPress={() => navigation.navigate('Register')}
+          >
+            <Text style={styles.registerLinkText}>
+              ¿No tienes cuenta? Crear una gratis
+            </Text>
           </TouchableOpacity>
         </View>
 
-        <Text style={styles.footer}>RepMAX · Venezuela 🇻🇪</Text>
+        <Text style={styles.footer}>RepMAX · Venezuela</Text>
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -200,31 +143,6 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.xl,
     padding: spacing.xl,
   },
-  modeSelector: {
-    flexDirection: 'row',
-    backgroundColor: colors.bg.elevated,
-    borderRadius: borderRadius.md,
-    marginBottom: spacing.xl,
-    padding: 4,
-  },
-  modeBtn: {
-    flex: 1,
-    paddingVertical: spacing.sm,
-    alignItems: 'center',
-    borderRadius: borderRadius.md - 2,
-  },
-  modeBtnActive: {
-    backgroundColor: colors.brand.orange,
-  },
-  modeBtnText: {
-    color: colors.text.secondary,
-    fontFamily: typography.fontFamily.medium,
-    fontSize: typography.size.sm,
-  },
-  modeBtnTextActive: {
-    color: colors.text.inverse,
-    fontFamily: typography.fontFamily.semibold,
-  },
   label: {
     color: colors.text.secondary,
     fontFamily: typography.fontFamily.medium,
@@ -242,11 +160,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.bg.border,
   },
-  hint: {
-    color: colors.text.disabled,
-    fontSize: typography.size.xs,
-    marginTop: spacing.xs,
-  },
   submitBtn: {
     backgroundColor: colors.brand.orange,
     borderRadius: borderRadius.md,
@@ -261,6 +174,15 @@ const styles = StyleSheet.create({
     color: colors.text.inverse,
     fontFamily: typography.fontFamily.bold,
     fontSize: typography.size.md,
+  },
+  registerLink: {
+    marginTop: spacing.lg,
+    alignItems: 'center',
+  },
+  registerLinkText: {
+    color: colors.brand.orange,
+    fontFamily: typography.fontFamily.regular,
+    fontSize: typography.size.sm,
   },
   footer: {
     textAlign: 'center',
