@@ -159,27 +159,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       if (error) throw new Error(error.message);
       if (!data.user) throw new Error('No se pudo crear el usuario');
+      // Con "Confirm email" activo, signUp no deja session y el INSERT falla por RLS.
+      if (!data.session) {
+        throw new Error(
+          'Revisa tu correo para confirmar la cuenta antes de continuar. Si no llega nada, desactiva Confirm email en Supabase Auth (proyecto hub).',
+        );
+      }
 
       const userId = data.user.id;
+      // UUID en cliente: INSERT sin RETURNING.
+      // `.select()` tras insert falla RLS — aún no hay fila en repmax_store_users
+      // y la policy SELECT solo deja ver tiendas donde eres miembro.
+      const storeId = crypto.randomUUID();
 
-      const { data: newStore, error: storeError } = await supabase
-        .from('repmax_stores')
-        .insert({
-          name: input.storeName,
-          slug,
-          store_type: input.storeType,
-          vehicle_focus: input.vehicleFocus,
-          theme_key: input.theme,
-          country_code: input.country,
-        })
-        .select()
-        .single();
+      const { error: storeError } = await supabase.from('repmax_stores').insert({
+        id: storeId,
+        name: input.storeName,
+        slug,
+        store_type: input.storeType,
+        vehicle_focus: input.vehicleFocus,
+        theme_key: input.theme,
+        country_code: input.country,
+      });
       if (storeError) throw new Error(mapDbError(storeError));
 
       const { error: storeUserError } = await supabase
         .from('repmax_store_users')
         .insert({
-          store_id: newStore.id,
+          store_id: storeId,
           user_id: userId,
           role: 'owner',
           full_name: input.email.split('@')[0],
