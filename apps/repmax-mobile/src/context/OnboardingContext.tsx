@@ -28,6 +28,14 @@ interface OnboardingContextValue {
   completeOnboarding: () => Promise<void>;
   /** true cuando ya se cargó el estado desde AsyncStorage */
   isReady: boolean;
+  /**
+   * true solo durante la sesión actual, desde que se llama
+   * completeOnboarding() hasta que se recarga la app. No se persiste.
+   * AuthNavigator lo usa para decidir si abrir en Register (viene del
+   * onboarding, ya eligió tema/país/vehículo/negocio) o en Login
+   * (usuario recurrente sin sesión activa).
+   */
+  justCompleted: boolean;
 }
 
 const OnboardingContext = createContext<OnboardingContextValue | null>(null);
@@ -35,6 +43,7 @@ const OnboardingContext = createContext<OnboardingContextValue | null>(null);
 export function OnboardingProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<OnboardingState>(INITIAL_STATE);
   const [isReady, setIsReady] = useState(false);
+  const [justCompleted, setJustCompleted] = useState(false);
 
   // DEV: no cargar estado persistido — siempre mostrar onboarding al iniciar
   useEffect(() => {
@@ -63,6 +72,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
     try {
       await markOnboardingComplete();
       setState(prev => ({ ...prev, completed: true }));
+      setJustCompleted(true);
     } catch (error) {
       console.error('[OnboardingContext] Error al completar onboarding:', error);
     }
@@ -70,7 +80,7 @@ export function OnboardingProvider({ children }: { children: React.ReactNode }) 
 
   return (
     <OnboardingContext.Provider
-      value={{ state, setCountry, setVehicleType, setBusinessType, setTheme, completeOnboarding, isReady }}
+      value={{ state, setCountry, setVehicleType, setBusinessType, setTheme, completeOnboarding, isReady, justCompleted }}
     >
       {children}
     </OnboardingContext.Provider>

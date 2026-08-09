@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '../utils/supabase';
-import type { AuthUser, Store, StoreUser } from '../types/database';
+import type { AuthUser, Store, StoreUser, StoreType, VehicleFocus, ThemeKey, CountryCode } from '../types/database';
 
 interface AuthState {
   user: AuthUser | null;
@@ -9,9 +9,22 @@ interface AuthState {
   isLoading: boolean;
 }
 
+// Datos que trae el onboarding mobile al momento de crear la cuenta real.
+// Ver context/OnboardingContext.tsx y screens/onboarding/*.
+interface RegisterInput {
+  email: string;
+  password: string;
+  storeName: string;
+  storeSlug: string;
+  storeType: StoreType;
+  vehicleFocus: VehicleFocus;
+  theme: ThemeKey;
+  country: CountryCode;
+}
+
 interface AuthContextValue extends AuthState {
   login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, storeName: string, storeSlug: string) => Promise<void>;
+  register: (input: RegisterInput) => Promise<void>;
   logout: () => Promise<void>;
   updateStore: (data: Partial<Store>) => Promise<void>;
 }
@@ -34,6 +47,10 @@ function mapStore(row: any): Store {
     currencyUsd: row.currency_usd,
     currencyBs: row.currency_bs,
     usdBsRate: parseFloat(row.usd_bs_rate),
+    storeType: row.store_type,
+    vehicleFocus: row.vehicle_focus,
+    themeKey: row.theme_key,
+    countryCode: row.country_code,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -116,17 +133,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // onAuthStateChange actualiza el estado
   };
 
-  const register = async (email: string, password: string, storeName: string, storeSlug: string) => {
-    const { data, error } = await supabase.auth.signUp({ email, password });
+  const register = async (input: RegisterInput) => {
+    const { data, error } = await supabase.auth.signUp({
+      email: input.email,
+      password: input.password,
+    });
     if (error) throw new Error(error.message);
     if (!data.user) throw new Error('No se pudo crear el usuario');
 
     const userId = data.user.id;
 
-    // Crear tienda
+    // Crear tienda con las preferencias elegidas en el onboarding
     const { data: newStore, error: storeError } = await supabase
       .from('repmax_stores')
-      .insert({ name: storeName, slug: storeSlug })
+      .insert({
+        name: input.storeName,
+        slug: input.storeSlug,
+        store_type: input.storeType,
+        vehicle_focus: input.vehicleFocus,
+        theme_key: input.theme,
+        country_code: input.country,
+      })
       .select()
       .single();
     if (storeError) throw new Error(storeError.message);
@@ -138,7 +165,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         store_id: newStore.id,
         user_id: userId,
         role: 'owner',
-        full_name: email.split('@')[0],
+        full_name: input.email.split('@')[0],
       });
     if (storeUserError) throw new Error(storeUserError.message);
 
