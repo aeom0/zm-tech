@@ -11,6 +11,7 @@ import {
   StyleSheet,
   Animated,
   Easing,
+  Alert,
 } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { OnboardingStackParamList } from '../../navigation/types';
@@ -21,9 +22,9 @@ import { colors, typography, spacing, borderRadius } from '../../utils/theme';
 
 type Props = NativeStackScreenProps<OnboardingStackParamList, 'OnboardingDecision'>;
 
-// Credenciales del usuario demo (solo para desarrollo)
-const DEMO_EMAIL    = 'demo@repmax.com';
-const DEMO_PASSWORD = 'repmax123';
+// Owner de Repuestos Alfa — ver docs/repmax/supabase/seed/demo_users.md
+const DEMO_EMAIL = 'repmax-owner-a@test.local';
+const DEMO_PASSWORD = 'TestRepmax123!';
 
 export default function OnboardingDecision(_props: Props) {
   const { completeOnboarding } = useOnboarding();
@@ -65,13 +66,17 @@ export default function OnboardingDecision(_props: Props) {
     }
   };
 
-  /** DEV: inicia sesión con el usuario demo y completa el onboarding */
+  /** Inicia sesión con el owner demo de Alfa y entra al panel */
   const handleExplorarDemo = async () => {
     try {
       await login(DEMO_EMAIL, DEMO_PASSWORD);
       await completeOnboarding();
     } catch (error) {
       console.error('[OnboardingDecision] Error al cargar usuario demo:', error);
+      Alert.alert(
+        'No se pudo entrar al demo',
+        error instanceof Error ? error.message : 'Revisa la conexión o las credenciales demo.',
+      );
     }
   };
 
