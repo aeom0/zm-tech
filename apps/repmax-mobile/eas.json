@@ -22,7 +22,8 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_SUPABASE_URL": "https://llacowjutjfefboqgfnj.supabase.co"
+        "EXPO_PUBLIC_SUPABASE_URL": "https://llacowjutjfefboqgfnj.supabase.co",
+        "NODE_OPTIONS": "--max-old-space-size=4096"
       }
     },
     "production": {
@@ -32,7 +33,8 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_SUPABASE_URL": "https://llacowjutjfefboqgfnj.supabase.co"
+        "EXPO_PUBLIC_SUPABASE_URL": "https://llacowjutjfefboqgfnj.supabase.co",
+        "NODE_OPTIONS": "--max-old-space-size=4096"
       }
     }
   },
