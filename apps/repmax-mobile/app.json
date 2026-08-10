@@ -5,7 +5,15 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
+    "scheme": "repmax",
+    "owner": "aeom0",
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/109768f2-6e5c-4747-8cb5-2025c8319079"
+    },
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -13,8 +21,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.repmax.app",
       "infoPlist": {
-        "NSCameraUsageDescription": "Necesitamos acceso a la cámara para escanear y verificar tus repuestos con IA",
-        "NSPhotoLibraryUsageDescription": "Necesitamos acceso a tus fotos para subir imágenes de productos"
+        "NSCameraUsageDescription": "Necesitamos acceso a la cámara para escanear códigos y fotos de repuestos",
+        "NSPhotoLibraryUsageDescription": "Necesitamos acceso a tus fotos para subir imágenes de productos",
+        "NSMicrophoneUsageDescription": "La cámara puede usar el micrófono al grabar video de productos"
       }
     },
     "android": {
@@ -23,22 +32,46 @@
         "backgroundColor": "#080808"
       },
       "package": "com.repmax.app",
+      "versionCode": 1,
       "permissions": [
         "CAMERA",
+        "RECORD_AUDIO",
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
         "RECEIVE_BOOT_COMPLETED",
-        "VIBRATE"
+        "VIBRATE",
+        "ACCESS_NETWORK_STATE"
       ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
+      "expo-dev-client",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "kotlinVersion": "2.1.20",
+            "compileSdkVersion": 36,
+            "targetSdkVersion": 36,
+            "buildToolsVersion": "36.0.0"
+          }
+        }
+      ],
       [
         "expo-camera",
         {
-          "cameraPermission": "Permitir acceso a la cámara para escanear productos"
+          "cameraPermission": "Permitir acceso a la cámara para escanear códigos y fotos de repuestos",
+          "microphonePermission": "Permitir micrófono si grabas video del producto",
+          "recordAudioAndroid": false
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "RepMAX usa tu galería para fotos de repuestos",
+          "cameraPermission": "RepMAX usa la cámara para fotos de repuestos"
         }
       ],
       [
@@ -50,6 +83,8 @@
       ],
       "expo-font",
       "expo-secure-store",
+      "expo-image",
+      "expo-sharing",
       [
         "expo-splash-screen",
         {
@@ -58,7 +93,13 @@
           "backgroundColor": "#080808"
         }
       ],
-      "expo-status-bar"
-    ]
+      "expo-status-bar",
+      "expo-updates"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "109768f2-6e5c-4747-8cb5-2025c8319079"
+      }
+    }
   }
 }
