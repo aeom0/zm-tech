@@ -19,6 +19,7 @@ Sistema visual **Industrial Dark** para web y mobile. Fuente de verdad de diseñ
 | [`motion.md`](./motion.md) | Transiciones onboarding / UI |
 | [`onboarding.md`](./onboarding.md) | Flujo de 7 pantallas + tap-through |
 | [`voice.md`](./voice.md) | Copy VE, CTAs, errores |
+| [`../brand/README.md`](../brand/README.md) | Logos, favicons, íconos mobile |
 
 ## Principios
 

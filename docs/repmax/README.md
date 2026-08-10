@@ -72,6 +72,7 @@ Migraciones actuales: schema inicial, RLS/storage, RPC venta, fix políticas `an
 
 ## Diseño
 
+- **Brand / logos:** [`brand/`](./brand/) (wordmark, RM, favicons, mobile icons)
 - **Design system:** [`design-system/`](./design-system/) (tokens, componentes, voice, motion)
 - Spec UX onboarding: `design/onboarding-ux-spec.md`
 - Canvas Pencil: `design/onboarding.pen`
