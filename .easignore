@@ -1,0 +1,13 @@
+# Reducir ruido en el archive de EAS (el monorepo completo pesa y confunde Metro).
+.cursor/
+.claude/
+docs/
+**/*.md
+!README.md
+!apps/repmax-mobile/README.md
+
+# Artefactos locales
+**/.expo/
+**/android/
+**/ios/
+**/node_modules/
