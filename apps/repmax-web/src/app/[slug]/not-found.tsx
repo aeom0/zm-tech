@@ -3,13 +3,12 @@
 // ============================================================
 
 import Link from "next/link";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 export default function StorefrontNotFound() {
   return (
     <div className="min-h-screen bg-[#0D0D0D] flex flex-col items-center justify-center px-6 text-center">
-      <p className="text-2xl font-bold text-[#F5F5F5] mb-2 tracking-wide">
-        Rep<span className="text-[#FF6B00]">MAX</span>
-      </p>
+      <BrandLogo variant="wordmark" height={36} className="mb-4 mx-auto" />
       <h1 className="text-2xl md:text-3xl font-bold text-[#F5F5F5] mb-3">
         Tienda no encontrada
       </h1>

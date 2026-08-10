@@ -6,6 +6,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { useAuth } from "@/context/AuthContext";
 
 const inputClass =
@@ -47,11 +48,9 @@ function LoginForm() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#0D0D0D] px-4 py-12">
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-[#F5F5F5]">
-          Rep<span className="text-[#FF6B00]">MAX</span>
-        </h1>
-        <p className="mt-2 text-sm text-[#9E9E9E]">Panel de administración</p>
+      <div className="mb-8 flex flex-col items-center text-center">
+        <BrandLogo variant="wordmark" height={40} priority className="mx-auto" />
+        <p className="mt-3 text-sm text-[#9E9E9E]">Panel de administración</p>
       </div>
 
       <div className="w-full max-w-md rounded-xl border border-[#2A2A2A] bg-[#1A1A1A] p-8 shadow-xl">

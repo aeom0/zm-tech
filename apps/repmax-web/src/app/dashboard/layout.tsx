@@ -16,6 +16,7 @@ import {
   Users,
   X,
 } from "lucide-react";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 import type { SubscriptionPlanWeb } from "@/types/dashboard";
@@ -99,10 +100,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         )}
       >
         <div className="border-b border-[#2A2A2A] p-5">
-          <div className="text-xl font-bold">
-            Rep<span className="text-[#FF6B00]">MAX</span>
-          </div>
-          <p className="mt-1 truncate text-xs text-[#9E9E9E]">{store?.name ?? "—"}</p>
+          <BrandLogo variant="wordmark" height={26} />
+          <p className="mt-2 truncate text-xs text-[#9E9E9E]">{store?.name ?? "—"}</p>
         </div>
 
         <nav className="flex flex-1 flex-col gap-1 p-3">
@@ -164,9 +163,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             >
               {menuAbierto ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
-            <span className="font-semibold text-[#F5F5F5] lg:hidden">
-              Rep<span className="text-[#FF6B00]">MAX</span>
-            </span>
+            <BrandLogo variant="wordmark" height={22} className="lg:hidden" />
             <span className="hidden text-sm text-[#9E9E9E] lg:inline">
               <span className="text-[#616161]">Panel</span>
               <span className="mx-2">/</span>
