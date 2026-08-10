@@ -1,13 +1,14 @@
+import { BrandLogo } from "@/components/brand/BrandLogo";
+
 export function LandingFooter() {
   return (
     <footer className="l-footer">
       <div className="l-footer-logo">
-        REP<span>MAX</span>
+        <BrandLogo variant="wordmark" height={22} />
       </div>
       <div className="l-footer-text">
-        © 2026 RepMAX Business Suite · Hecho con 🔥 en Venezuela
+        © 2026 RepMAX Business Suite · Hecho en Venezuela
       </div>
-      <div className="l-footer-flag">🇻🇪</div>
     </footer>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 export function NavBar() {
   const [scrolled, setScrolled] = useState(false);
@@ -13,9 +14,9 @@ export function NavBar() {
 
   return (
     <nav className={`l-nav${scrolled ? " scrolled" : ""}`}>
-      <div className="l-nav-logo">
-        REP<span>MAX</span>
-      </div>
+      <a href="#" className="l-nav-logo" aria-label="RepMAX">
+        <BrandLogo variant="wordmark" height={28} priority />
+      </a>
       <a href="#registro" className="l-nav-cta">
         Registrar mi tienda →
       </a>

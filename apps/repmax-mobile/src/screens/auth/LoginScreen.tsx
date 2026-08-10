@@ -9,6 +9,7 @@ import {
   ActivityIndicator, Alert, ScrollView,
 } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { BrandLogo } from '../../components/brand/BrandLogo';
 import { useAuth } from '../../context/AuthContext';
 import { colors, typography, spacing, borderRadius } from '../../utils/theme';
 import type { AuthStackParamList } from '../../navigation/types';
@@ -47,8 +48,8 @@ export default function LoginScreen({ navigation }: Props) {
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
 
         <View style={styles.header}>
-          <Text style={styles.logo}>Rep<Text style={styles.logoAccent}>MAX</Text></Text>
-          <Text style={styles.tagline}>Business Suite</Text>
+          <BrandLogo variant="wordmark" width={220} />
+          <Text style={styles.tagline}>repuestos al máximo</Text>
           <Text style={styles.subtitle}>Gestión inteligente para autopartes</Text>
         </View>
 
@@ -117,21 +118,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: spacing['2xl'],
   },
-  logo: {
-    fontSize: typography.size['4xl'],
-    fontFamily: typography.fontFamily.bold,
-    color: colors.text.primary,
-    letterSpacing: 4,
-  },
-  logoAccent: {
-    color: colors.brand.orange,
-  },
   tagline: {
     fontSize: typography.size.md,
     fontFamily: typography.fontFamily.medium,
-    color: colors.text.secondary,
-    letterSpacing: 2,
-    marginTop: spacing.xs,
+    fontStyle: 'italic',
+    color: colors.brand.orange,
+    letterSpacing: 1.5,
+    marginTop: spacing.md,
   },
   subtitle: {
     fontSize: typography.size.sm,

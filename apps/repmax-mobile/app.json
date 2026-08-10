@@ -20,7 +20,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#1A2B3C"
+        "backgroundColor": "#080808"
       },
       "package": "com.repmax.app",
       "permissions": [
@@ -45,7 +45,7 @@
         "expo-notifications",
         {
           "icon": "./assets/notification-icon.png",
-          "color": "#FF8C00"
+          "color": "#FF6B00"
         }
       ],
       "expo-font",
@@ -55,7 +55,7 @@
         {
           "image": "./assets/splash.png",
           "resizeMode": "contain",
-          "backgroundColor": "#1A2B3C"
+          "backgroundColor": "#080808"
         }
       ],
       "expo-status-bar"

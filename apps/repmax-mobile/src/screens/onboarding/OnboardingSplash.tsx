@@ -7,6 +7,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { OnboardingStackParamList } from '../../navigation/types';
+import { BrandLogo } from '../../components/brand/BrandLogo';
 import { colors, typography } from '../../utils/theme';
 
 type Props = NativeStackScreenProps<OnboardingStackParamList, 'OnboardingSplash'>;
@@ -19,6 +20,7 @@ const DURACION_TAGLINE_MS = 400;
 export default function OnboardingSplash({ navigation }: Props) {
   const opacidadLogo = useRef(new Animated.Value(0)).current;
   const translateTagline = useRef(new Animated.Value(12)).current;
+  const opacidadTagline = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const tiempoInicio = Date.now();
@@ -33,12 +35,20 @@ export default function OnboardingSplash({ navigation }: Props) {
       }),
       Animated.sequence([
         Animated.delay(RETRASO_TAGLINE_MS),
-        Animated.timing(translateTagline, {
-          toValue: 0,
-          duration: DURACION_TAGLINE_MS,
-          easing: Easing.out(Easing.ease),
-          useNativeDriver: true,
-        }),
+        Animated.parallel([
+          Animated.timing(translateTagline, {
+            toValue: 0,
+            duration: DURACION_TAGLINE_MS,
+            easing: Easing.out(Easing.ease),
+            useNativeDriver: true,
+          }),
+          Animated.timing(opacidadTagline, {
+            toValue: 1,
+            duration: DURACION_TAGLINE_MS,
+            easing: Easing.out(Easing.ease),
+            useNativeDriver: true,
+          }),
+        ]),
       ]),
     ]);
 
@@ -59,22 +69,21 @@ export default function OnboardingSplash({ navigation }: Props) {
         clearTimeout(idNavegacion);
       }
     };
-  }, [navigation, opacidadLogo, translateTagline]);
+  }, [navigation, opacidadLogo, translateTagline, opacidadTagline]);
 
   return (
     <View style={styles.contenedor}>
       <View style={styles.logoContenedor}>
         <Animated.View style={{ opacity: opacidadLogo }}>
-          <Text style={styles.logo}>
-            Rep<Text style={styles.logoAccent}>MAX</Text>
-          </Text>
+          <BrandLogo variant="wordmark" width={260} />
         </Animated.View>
         <Animated.View
           style={{
+            opacity: opacidadTagline,
             transform: [{ translateY: translateTagline }],
           }}
         >
-          <Text style={styles.tagline}>Business Suite</Text>
+          <Text style={styles.tagline}>repuestos al máximo</Text>
         </Animated.View>
       </View>
     </View>
@@ -90,22 +99,14 @@ const styles = StyleSheet.create({
   },
   logoContenedor: {
     alignItems: 'center',
-  },
-  logo: {
-    fontFamily: typography.fontFamily.bold,
-    fontSize: typography.size['4xl'],
-    color: colors.text.primary,
-    letterSpacing: 6,
-  },
-  logoAccent: {
-    color: colors.brand.orange,
+    paddingHorizontal: 24,
   },
   tagline: {
     fontFamily: typography.fontFamily.medium,
     fontSize: typography.size.md,
+    fontStyle: 'italic',
     color: colors.brand.orange,
-    letterSpacing: 3,
-    marginTop: 8,
-    textTransform: 'uppercase',
+    letterSpacing: 1.5,
+    marginTop: 16,
   },
 });

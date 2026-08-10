@@ -62,13 +62,17 @@
 }
 
 .l-nav-logo {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 28px;
-  letter-spacing: 3px;
-  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  line-height: 0;
 }
 
-.l-nav-logo span { color: var(--orange); }
+.l-nav-logo img {
+  height: 28px;
+  width: auto;
+  display: block;
+}
 
 .l-nav-cta {
   background: var(--orange);
@@ -945,15 +949,17 @@
 }
 
 .l-footer-logo {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 22px;
-  letter-spacing: 3px;
-  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  line-height: 0;
 }
 
-.l-footer-logo span { color: var(--orange); }
+.l-footer-logo img {
+  height: 22px;
+  width: auto;
+  display: block;
+}
 .l-footer-text { font-size: 13px; color: var(--text-3); }
-.l-footer-flag { font-size: 20px; }
 
 /* ===== PHONE SECTION ===== */
 .l-phone-section {
@@ -1432,13 +1438,15 @@
 }
 
 .l-dm-app-logo {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 13px;
-  letter-spacing: 2px;
-  color: #F5F5F5;
-  line-height: 1;
+  line-height: 0;
+  display: flex;
+  align-items: center;
 }
-.l-dm-app-logo span { color: #FF6B00; }
+.l-dm-app-logo img {
+  height: 12px;
+  width: auto;
+  display: block;
+}
 
 .l-dm-app-avatar {
   width: 18px; height: 18px;
@@ -1596,15 +1604,18 @@
 }
 
 .l-dm-laptop-sidebar-logo {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 14px;
-  letter-spacing: 2px;
-  color: #F5F5F5;
   padding: 0 10px 8px;
   border-bottom: 1px solid #1e1e1e;
   margin-bottom: 4px;
+  line-height: 0;
+  display: flex;
+  align-items: center;
 }
-.l-dm-laptop-sidebar-logo span { color: #FF6B00; }
+.l-dm-laptop-sidebar-logo img {
+  height: 13px;
+  width: auto;
+  display: block;
+}
 
 .l-dm-laptop-nav-item {
   font-size: 7.5px;

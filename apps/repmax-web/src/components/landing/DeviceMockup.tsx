@@ -1,12 +1,16 @@
 // Composición de 3 dispositivos: Laptop (fondo) + Tablet (medio) + Teléfono (frente)
-// Server Component — 100% CSS, sin imágenes externas
+// Server Component — CSS + wordmark oficial
+
+import { BrandLogo } from "@/components/brand/BrandLogo";
 
 /* ── Contenido compartido de la pantalla (Dashboard RepMAX) ─────────────── */
 
 function AppHeader() {
   return (
     <div className="l-dm-app-header">
-      <div className="l-dm-app-logo">REP<span>MAX</span></div>
+      <div className="l-dm-app-logo">
+        <BrandLogo variant="wordmark" height={12} />
+      </div>
       <div className="l-dm-app-avatar">CM</div>
     </div>
   );
@@ -81,7 +85,9 @@ function LaptopMockup() {
         <div className="l-dm-laptop-screen">
           {/* Sidebar */}
           <div className="l-dm-laptop-sidebar">
-            <div className="l-dm-laptop-sidebar-logo">REP<span>MAX</span></div>
+            <div className="l-dm-laptop-sidebar-logo">
+              <BrandLogo variant="wordmark" height={13} />
+            </div>
             <div className="l-dm-laptop-nav-item active">📊 Dashboard</div>
             <div className="l-dm-laptop-nav-item">🛒 POS</div>
             <div className="l-dm-laptop-nav-item">📦 Inventario</div>
