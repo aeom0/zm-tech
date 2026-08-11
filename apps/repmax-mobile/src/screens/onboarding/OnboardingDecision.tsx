@@ -18,6 +18,7 @@ import type { OnboardingStackParamList } from '../../navigation/types';
 import { useOnboarding } from '../../context/OnboardingContext';
 import { useAuth } from '../../context/AuthContext';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Screen } from '../../components/layout/Screen';
 import { colors, typography, spacing, borderRadius } from '../../utils/theme';
 
 type Props = NativeStackScreenProps<OnboardingStackParamList, 'OnboardingDecision'>;
@@ -81,7 +82,8 @@ export default function OnboardingDecision(_props: Props) {
   };
 
   return (
-    <View style={styles.contenedor}>
+    <Screen edges={['top', 'bottom']} padded={false}>
+      <View style={styles.contenedor}>
       {/* Ícono decorativo */}
       <Animated.View
         style={[styles.iconoContenedor, { transform: [{ scale: escalaCohete }] }]}
@@ -128,14 +130,14 @@ export default function OnboardingDecision(_props: Props) {
       <Text style={styles.notaLegal}>
         Sin tarjeta de crédito · Cancela cuando quieras
       </Text>
-    </View>
+      </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   contenedor: {
     flex: 1,
-    backgroundColor: colors.bg.primary,
     padding: spacing.base,
     justifyContent: 'center',
     alignItems: 'center',

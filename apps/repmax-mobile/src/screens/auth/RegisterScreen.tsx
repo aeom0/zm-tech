@@ -7,6 +7,7 @@ import React, { useMemo, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { AuthStackParamList } from '../../navigation/types';
+import { Screen } from '../../components/layout/Screen';
 import { useAuth } from '../../context/AuthContext';
 import { useOnboarding } from '../../context/OnboardingContext';
 import { THEMES } from '../../constants/onboarding';
@@ -69,7 +70,8 @@ export default function RegisterScreen({ navigation }: Props) {
   };
 
   return (
-    <View style={styles.contenedor}>
+    <Screen edges={['top', 'bottom']} padded={false}>
+      <View style={styles.contenedor}>
       <Text style={styles.titulo}>Crea tu cuenta</Text>
       <Text style={styles.subtitulo}>
         {temaElegido
@@ -126,7 +128,8 @@ export default function RegisterScreen({ navigation }: Props) {
       <TouchableOpacity onPress={() => navigation.navigate('Login')}>
         <Text style={styles.link}>¿Ya tienes cuenta? Inicia sesión</Text>
       </TouchableOpacity>
-    </View>
+      </View>
+    </Screen>
   );
 }
 

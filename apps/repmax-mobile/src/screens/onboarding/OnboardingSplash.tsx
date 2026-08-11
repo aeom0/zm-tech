@@ -8,6 +8,7 @@ import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { OnboardingStackParamList } from '../../navigation/types';
 import { BrandLogo } from '../../components/brand/BrandLogo';
+import { Screen } from '../../components/layout/Screen';
 import { colors, typography } from '../../utils/theme';
 
 type Props = NativeStackScreenProps<OnboardingStackParamList, 'OnboardingSplash'>;
@@ -72,28 +73,29 @@ export default function OnboardingSplash({ navigation }: Props) {
   }, [navigation, opacidadLogo, translateTagline, opacidadTagline]);
 
   return (
-    <View style={styles.contenedor}>
-      <View style={styles.logoContenedor}>
-        <Animated.View style={{ opacity: opacidadLogo }}>
-          <BrandLogo variant="wordmark" width={260} />
-        </Animated.View>
-        <Animated.View
-          style={{
-            opacity: opacidadTagline,
-            transform: [{ translateY: translateTagline }],
-          }}
-        >
-          <Text style={styles.tagline}>repuestos al máximo</Text>
-        </Animated.View>
+    <Screen edges={['top', 'bottom']} padded={false}>
+      <View style={styles.contenedor}>
+        <View style={styles.logoContenedor}>
+          <Animated.View style={{ opacity: opacidadLogo }}>
+            <BrandLogo variant="wordmark" width={260} />
+          </Animated.View>
+          <Animated.View
+            style={{
+              opacity: opacidadTagline,
+              transform: [{ translateY: translateTagline }],
+            }}
+          >
+            <Text style={styles.tagline}>repuestos al máximo</Text>
+          </Animated.View>
+        </View>
       </View>
-    </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   contenedor: {
     flex: 1,
-    backgroundColor: colors.bg.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },

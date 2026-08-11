@@ -16,6 +16,7 @@ import type { OnboardingStackParamList } from '../../navigation/types';
 import { useOnboarding } from '../../context/OnboardingContext';
 import { THEMES } from '../../constants/onboarding';
 import OnboardingProgressBar from '../../components/onboarding/OnboardingProgressBar';
+import { Screen } from '../../components/layout/Screen';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
 import type { ThemeKey } from '../../types/onboarding';
@@ -39,7 +40,7 @@ export default function OnboardingTheme({ navigation }: Props) {
   };
 
   return (
-    <View style={styles.contenedor}>
+    <Screen edges={['top', 'bottom']} padded={false}>
       {/* Barra de progreso: paso 4 de 5 */}
       <OnboardingProgressBar currentStep={4} totalSteps={5} />
 
@@ -97,15 +98,11 @@ export default function OnboardingTheme({ navigation }: Props) {
           <Text style={styles.botonTexto}>Continuar</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  contenedor: {
-    flex: 1,
-    backgroundColor: colors.bg.primary,
-  },
   scroll: {
     padding: spacing.base,
     paddingBottom: spacing.lg,

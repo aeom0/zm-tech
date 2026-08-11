@@ -1,30 +1,32 @@
 // ============================================================
 // RepMAX Business Suite — Pantalla de Sesión de Caja
-// Abrir/cerrar caja, ver ventas de la sesión actual.
+// Phone: scroll único · Tablet: resumen | ventas
 // ============================================================
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   View, Text, ScrollView, TouchableOpacity,
   StyleSheet, ActivityIndicator, Alert, TextInput, Modal,
-  RefreshControl,
+  RefreshControl, FlatList,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
+import { EmptyState } from '../../components/ui/EmptyState';
 import { saleService } from '../../services/saleService';
-import { formatUSD, formatBS, formatDateTime } from '../../utils/formatters';
+import { formatUSD, formatDateTime } from '../../utils/formatters';
 import { PAYMENT_METHODS } from '../../constants/paymentMethods';
+import { useResponsive } from '../../hooks/useResponsive';
 import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
 import { useAuth } from '../../context/AuthContext';
 import type { CashSession, Sale } from '../../types/database';
 
 export default function CashSessionScreen() {
   const { store, storeUser } = useAuth();
+  const { isTabletUp } = useResponsive();
   const [session, setSession] = useState<CashSession | null>(null);
   const [sales, setSales] = useState<Sale[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Modales
   const [showOpenModal, setShowOpenModal] = useState(false);
   const [showCloseModal, setShowCloseModal] = useState(false);
   const [openingAmount, setOpeningAmount] = useState('');
@@ -71,8 +73,9 @@ export default function CashSessionScreen() {
       setShowOpenModal(false);
       setOpeningAmount('');
       setSessionNotes('');
-    } catch (err: any) {
-      Alert.alert('Error', err?.response?.data?.message || 'No se pudo abrir la caja.');
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'No se pudo abrir la caja.';
+      Alert.alert('Error', msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -100,8 +103,9 @@ export default function CashSessionScreen() {
               setClosingAmount('');
               setSessionNotes('');
               await loadData();
-            } catch (err: any) {
-              Alert.alert('Error', err?.response?.data?.message || 'No se pudo cerrar la caja.');
+            } catch (err: unknown) {
+              const msg = err instanceof Error ? err.message : 'No se pudo cerrar la caja.';
+              Alert.alert('Error', msg);
             } finally {
               setIsSubmitting(false);
             }
@@ -111,7 +115,6 @@ export default function CashSessionScreen() {
     );
   };
 
-  // Calcular totales por método de pago
   const totalBySales = sales.reduce((sum, s) => sum + Number(s.totalUsd), 0);
 
   if (isLoading) {
@@ -122,69 +125,80 @@ export default function CashSessionScreen() {
     );
   }
 
-  return (
-    <View style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor={colors.brand.orange} />}
-      >
-        {/* Estado de la caja */}
-        <View style={[styles.statusCard, session ? styles.statusOpen : styles.statusClosed]}>
-          <View style={styles.statusHeader}>
-            <View style={[styles.statusDot, { backgroundColor: session ? colors.semantic.success : colors.text.disabled }]} />
-            <Text style={styles.statusLabel}>{session ? 'Caja abierta' : 'Caja cerrada'}</Text>
-          </View>
-          {session ? (
-            <>
-              <Text style={styles.sessionTime}>Abierta el {formatDateTime(session.openedAt)}</Text>
-              <Text style={styles.sessionTotal}>{formatUSD(totalBySales)}</Text>
-              <Text style={styles.sessionTotalLabel}>Total en ventas</Text>
-              <Text style={styles.sessionCount}>{sales.length} venta{sales.length !== 1 ? 's' : ''}</Text>
-            </>
-          ) : (
-            <Text style={styles.noSessionText}>No hay sesión activa. Abre la caja para comenzar a vender.</Text>
-          )}
+  const statusPanel = (
+    <View style={styles.statusPanel}>
+      <View style={[styles.statusCard, session ? styles.statusOpen : styles.statusClosed]}>
+        <View style={styles.statusHeader}>
+          <View style={[styles.statusDot, { backgroundColor: session ? colors.semantic.success : colors.text.disabled }]} />
+          <Text style={styles.statusLabel}>{session ? 'Caja abierta' : 'Caja cerrada'}</Text>
         </View>
-
-        {/* Botones de acción */}
         {session ? (
-          <TouchableOpacity
-            style={styles.closeBtn}
-            onPress={() => setShowCloseModal(true)}
-          >
-            <Ionicons name="lock-closed-outline" size={20} color={colors.text.inverse} />
-            <Text style={styles.closeBtnText}>Cerrar caja</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            style={styles.openBtn}
-            onPress={() => setShowOpenModal(true)}
-          >
-            <Ionicons name="lock-open-outline" size={20} color={colors.text.inverse} />
-            <Text style={styles.openBtnText}>Abrir caja</Text>
-          </TouchableOpacity>
-        )}
-
-        {/* Lista de ventas de la sesión */}
-        {session && sales.length > 0 && (
           <>
-            <Text style={styles.sectionTitle}>Ventas de esta sesión</Text>
-            {sales.map(sale => (
-              <View key={sale.id} style={styles.saleRow}>
-                <View style={styles.saleLeft}>
-                  <Text style={styles.saleTime}>{formatDateTime(sale.createdAt)}</Text>
-                  <Text style={styles.saleMethod}>
-                    {PAYMENT_METHODS.find(m => m.value === sale.paymentMethod)?.label ?? sale.paymentMethod}
-                  </Text>
-                </View>
-                <Text style={styles.saleAmount}>{formatUSD(sale.totalUsd)}</Text>
-              </View>
-            ))}
+            <Text style={styles.sessionTime}>Abierta el {formatDateTime(session.openedAt)}</Text>
+            <Text style={styles.sessionTotal}>{formatUSD(totalBySales)}</Text>
+            <Text style={styles.sessionTotalLabel}>Total en ventas</Text>
+            <Text style={styles.sessionCount}>{sales.length} venta{sales.length !== 1 ? 's' : ''}</Text>
           </>
+        ) : (
+          <Text style={styles.noSessionText}>No hay sesión activa. Abre la caja para comenzar a vender.</Text>
         )}
-      </ScrollView>
+      </View>
 
-      {/* Modal: Abrir caja */}
+      {session ? (
+        <TouchableOpacity style={styles.closeBtn} onPress={() => setShowCloseModal(true)}>
+          <Ionicons name="lock-closed-outline" size={20} color={colors.text.inverse} />
+          <Text style={styles.closeBtnText}>Cerrar caja</Text>
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity style={styles.openBtn} onPress={() => setShowOpenModal(true)}>
+          <Ionicons name="lock-open-outline" size={20} color={colors.text.inverse} />
+          <Text style={styles.openBtnText}>Abrir caja</Text>
+        </TouchableOpacity>
+      )}
+    </View>
+  );
+
+  const salesList = (
+    <View style={styles.salesPanel}>
+      <Text style={styles.sectionTitle}>Ventas de esta sesión</Text>
+      {!session ? (
+        <EmptyState
+          icon="receipt-outline"
+          title="Sin sesión activa"
+          subtitle="Abre la caja para registrar ventas"
+        />
+      ) : sales.length === 0 ? (
+        <EmptyState
+          icon="receipt-outline"
+          title="Sin ventas aún"
+          subtitle="Las ventas de esta sesión aparecen aquí"
+        />
+      ) : (
+        <FlatList
+          data={sales}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item: sale }) => (
+            <View style={styles.saleRow}>
+              <View style={styles.saleLeft}>
+                <Text style={styles.saleTime}>{formatDateTime(sale.createdAt)}</Text>
+                <Text style={styles.saleMethod}>
+                  {PAYMENT_METHODS.find((m) => m.value === sale.paymentMethod)?.label ?? sale.paymentMethod}
+                </Text>
+              </View>
+              <Text style={styles.saleAmount}>{formatUSD(sale.totalUsd)}</Text>
+            </View>
+          )}
+          contentContainerStyle={styles.salesList}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor={colors.brand.orange} />
+          }
+        />
+      )}
+    </View>
+  );
+
+  const modals = (
+    <>
       <Modal visible={showOpenModal} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
           <View style={styles.modalCard}>
@@ -226,7 +240,6 @@ export default function CashSessionScreen() {
         </View>
       </Modal>
 
-      {/* Modal: Cerrar caja */}
       <Modal visible={showCloseModal} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
           <View style={styles.modalCard}>
@@ -271,6 +284,55 @@ export default function CashSessionScreen() {
           </View>
         </View>
       </Modal>
+    </>
+  );
+
+  if (isTabletUp) {
+    return (
+      <View style={styles.splitRoot}>
+        <ScrollView
+          style={styles.splitLeft}
+          contentContainerStyle={styles.splitLeftContent}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor={colors.brand.orange} />
+          }
+        >
+          {statusPanel}
+        </ScrollView>
+        <View style={styles.splitDivider} />
+        {salesList}
+        {modals}
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor={colors.brand.orange} />
+        }
+      >
+        {statusPanel}
+        {session && sales.length > 0 ? (
+          <>
+            <Text style={styles.sectionTitle}>Ventas de esta sesión</Text>
+            {sales.map((sale) => (
+              <View key={sale.id} style={styles.saleRow}>
+                <View style={styles.saleLeft}>
+                  <Text style={styles.saleTime}>{formatDateTime(sale.createdAt)}</Text>
+                  <Text style={styles.saleMethod}>
+                    {PAYMENT_METHODS.find((m) => m.value === sale.paymentMethod)?.label ?? sale.paymentMethod}
+                  </Text>
+                </View>
+                <Text style={styles.saleAmount}>{formatUSD(sale.totalUsd)}</Text>
+              </View>
+            ))}
+          </>
+        ) : null}
+      </ScrollView>
+      {modals}
     </View>
   );
 }
@@ -279,6 +341,34 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg.primary },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.bg.primary },
   scroll: { padding: spacing.base, paddingBottom: spacing.xl },
+  splitRoot: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: colors.bg.primary,
+  },
+  splitLeft: {
+    flex: 1,
+    minWidth: 280,
+    maxWidth: 400,
+  },
+  splitLeftContent: {
+    padding: spacing.base,
+  },
+  splitDivider: {
+    width: StyleSheet.hairlineWidth,
+    backgroundColor: colors.bg.border,
+  },
+  statusPanel: {
+    marginBottom: spacing.sm,
+  },
+  salesPanel: {
+    flex: 1.4,
+    paddingTop: spacing.base,
+    paddingHorizontal: spacing.base,
+  },
+  salesList: {
+    paddingBottom: spacing.xl,
+  },
   statusCard: {
     borderRadius: borderRadius.xl,
     padding: spacing.xl,
@@ -388,6 +478,8 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius.md,
     padding: spacing.md,
     marginBottom: spacing.sm,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.bg.border,
     ...shadows.sm,
   },
   saleLeft: { flex: 1 },

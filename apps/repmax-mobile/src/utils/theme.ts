@@ -96,3 +96,24 @@ export const shadows = {
     elevation: 6,
   },
 };
+
+/** Breakpoints y medidas de layout (phone → tablet) */
+export const layout = {
+  breakpoints: {
+    tablet: 768,
+    desktop: 1024,
+    wide: 1440,
+  },
+  /** Altura del tab bar sin safe area inferior */
+  tabBarContentHeight: 56,
+  /** Ancho máximo del contenido en tablet+ */
+  contentMaxWidth: 720,
+  /** Ancho máximo de formularios centrados en tablet+ */
+  formMaxWidth: 560,
+  /** Tamaño del FAB circular */
+  fabSize: 56,
+  /** Holgura extra bajo listas con FAB */
+  fabClearance: 72,
+  /** Ancho del rail lateral (landscape tablet) */
+  sidebarWidth: 88,
+} as const;

@@ -1,16 +1,22 @@
 // ============================================================
 // RepMAX Business Suite — Pantalla de Inventario
-// Lista de productos con filtros, búsqueda y acceso a edición.
+// Phone: lista 1 col · Tablet: grid 2–3 cols
 // ============================================================
 import React, { useState } from 'react';
 import {
   View, Text, FlatList, TouchableOpacity,
-  StyleSheet, TextInput, ActivityIndicator, Alert,
+  StyleSheet, ActivityIndicator, Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { SearchBar } from '../../components/ui/SearchBar';
+import { FilterChip } from '../../components/ui/FilterChips';
+import { EmptyState } from '../../components/ui/EmptyState';
+import { FAB } from '../../components/ui/FAB';
 import { useProducts } from '../../hooks/useProducts';
+import { useBreakpointValue } from '../../hooks/useResponsive';
+import { useTabBarOffset } from '../../hooks/useTabBarOffset';
 import { productService } from '../../services/productService';
 import { formatUSD } from '../../utils/formatters';
 import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
@@ -18,6 +24,12 @@ import type { Product } from '../../types/database';
 import type { InventoryStackParamList } from '../../navigation/types';
 
 type Props = NativeStackScreenProps<InventoryStackParamList, 'Inventory'>;
+
+const CONDITION_OPTIONS = [
+  { value: 'all' as const, label: 'Todos' },
+  { value: 'NEW' as const, label: 'Nuevos' },
+  { value: 'USED' as const, label: 'Usados' },
+];
 
 function StockIndicator({ stock, minStock }: { stock: number; minStock: number }) {
   const color = stock === 0
@@ -31,34 +43,49 @@ function StockIndicator({ stock, minStock }: { stock: number; minStock: number }
   );
 }
 
-function ProductRow({ product, onEdit, onDeactivate }: {
+function ProductRow({
+  product,
+  onEdit,
+  onDeactivate,
+  grid,
+}: {
   product: Product;
   onEdit: () => void;
   onDeactivate: () => void;
+  grid?: boolean;
 }) {
   return (
-    <TouchableOpacity style={styles.productRow} onPress={onEdit}>
-      <View style={styles.productLeft}>
+    <TouchableOpacity
+      style={[styles.productRow, grid && styles.productCardGrid]}
+      onPress={onEdit}
+      activeOpacity={0.8}
+    >
+      <View style={[styles.productLeft, grid && styles.productLeftGrid]}>
         <StockIndicator stock={product.stock} minStock={product.minStock} />
         <View style={styles.productInfo}>
-          <Text style={styles.productTitle} numberOfLines={1}>{product.title}</Text>
-          <Text style={styles.productMeta}>{product.brand} · {product.model}</Text>
+          <Text style={styles.productTitle} numberOfLines={grid ? 2 : 1}>{product.title}</Text>
+          <Text style={styles.productMeta} numberOfLines={1}>{product.brand} · {product.model}</Text>
           <Text style={styles.productStock}>
-            Stock: <Text style={{ color: product.stock <= product.minStock ? colors.semantic.warning : colors.text.primary }}>
+            Stock:{' '}
+            <Text style={{ color: product.stock <= product.minStock ? colors.semantic.warning : colors.text.primary }}>
               {product.stock}
             </Text>
             {product.partNumber ? ` · #${product.partNumber}` : ''}
           </Text>
         </View>
       </View>
-      <View style={styles.productRight}>
+      <View style={[styles.productRight, grid && styles.productRightGrid]}>
         <Text style={styles.productPrice}>{formatUSD(product.priceUsd)}</Text>
         <View style={[styles.conditionBadge, { backgroundColor: product.condition === 'NEW' ? colors.status.new + '22' : colors.status.used + '22' }]}>
           <Text style={[styles.conditionText, { color: product.condition === 'NEW' ? colors.status.new : colors.status.used }]}>
             {product.condition === 'NEW' ? 'Nuevo' : 'Usado'}
           </Text>
         </View>
-        <TouchableOpacity onPress={onDeactivate} style={styles.deactivateBtn}>
+        <TouchableOpacity
+          onPress={onDeactivate}
+          style={styles.deactivateBtn}
+          accessibilityLabel="Desactivar producto"
+        >
           <Ionicons name="trash-outline" size={16} color={colors.semantic.error} />
         </TouchableOpacity>
       </View>
@@ -70,6 +97,13 @@ export default function InventoryScreen({ navigation }: Props) {
   const [query, setQuery] = useState('');
   const [condition, setCondition] = useState<'all' | 'NEW' | 'USED'>('all');
   const [stockFilter, setStockFilter] = useState<'all' | 'low'>('all');
+  const { listPaddingWithFab } = useTabBarOffset();
+  const numColumns = useBreakpointValue({
+    mobile: 1,
+    tablet: 2,
+    desktop: 3,
+    wide: 3,
+  });
 
   const { products, isLoading, error, refetch } = useProducts({
     q: query || undefined,
@@ -99,87 +133,67 @@ export default function InventoryScreen({ navigation }: Props) {
     );
   };
 
+  const isGrid = numColumns > 1;
+
   return (
     <View style={styles.container}>
-      {/* Búsqueda */}
-      <View style={styles.searchBar}>
-        <Ionicons name="search-outline" size={18} color={colors.text.secondary} style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Buscar producto..."
-          placeholderTextColor={colors.text.disabled}
-          value={query}
-          onChangeText={setQuery}
-          autoCorrect={false}
-        />
-        {query.length > 0 && (
-          <TouchableOpacity onPress={() => setQuery('')}>
-            <Ionicons name="close-circle" size={18} color={colors.text.secondary} />
-          </TouchableOpacity>
-        )}
-      </View>
+      <SearchBar
+        value={query}
+        onChangeText={setQuery}
+        placeholder="Buscar producto..."
+      />
 
-      {/* Filtros */}
       <View style={styles.filters}>
-        {(['all', 'NEW', 'USED'] as const).map(c => (
-          <TouchableOpacity
-            key={c}
-            style={[styles.chip, condition === c && styles.chipActive]}
-            onPress={() => setCondition(c)}
-          >
-            <Text style={[styles.chipText, condition === c && styles.chipTextActive]}>
-              {c === 'all' ? 'Todos' : c === 'NEW' ? 'Nuevos' : 'Usados'}
-            </Text>
-          </TouchableOpacity>
-        ))}
-        <TouchableOpacity
-          style={[styles.chip, stockFilter === 'low' && styles.chipWarning]}
-          onPress={() => setStockFilter(stockFilter === 'low' ? 'all' : 'low')}
-        >
-          <Ionicons
-            name="alert-circle-outline"
-            size={14}
-            color={stockFilter === 'low' ? colors.semantic.warning : colors.text.secondary}
+        {CONDITION_OPTIONS.map((opt) => (
+          <FilterChip
+            key={opt.value}
+            label={opt.label}
+            selected={condition === opt.value}
+            onPress={() => setCondition(opt.value)}
           />
-          <Text style={[styles.chipText, stockFilter === 'low' && { color: colors.semantic.warning }]}>
-            Stock bajo
-          </Text>
-        </TouchableOpacity>
+        ))}
+        <FilterChip
+          label="Stock bajo"
+          icon="alert-circle-outline"
+          tone="warning"
+          selected={stockFilter === 'low'}
+          onPress={() => setStockFilter(stockFilter === 'low' ? 'all' : 'low')}
+        />
       </View>
 
-      {/* Lista */}
       {isLoading ? (
         <ActivityIndicator size="large" color={colors.brand.orange} style={{ marginTop: spacing.xl }} />
       ) : error ? (
         <Text style={styles.errorText}>{error}</Text>
       ) : (
         <FlatList
+          key={`inv-cols-${numColumns}`}
           data={products}
-          keyExtractor={item => item.id}
+          keyExtractor={(item) => item.id}
+          numColumns={numColumns}
+          columnWrapperStyle={isGrid ? styles.gridRow : undefined}
           renderItem={({ item }) => (
-            <ProductRow
-              product={item}
-              onEdit={() => navigation.navigate('ProductForm', { productId: item.id })}
-              onDeactivate={() => handleDeactivate(item)}
-            />
-          )}
-          contentContainerStyle={styles.list}
-          ListEmptyComponent={
-            <View style={styles.emptyState}>
-              <Ionicons name="cube-outline" size={48} color={colors.text.disabled} />
-              <Text style={styles.emptyText}>No hay productos</Text>
+            <View style={isGrid ? styles.gridCell : undefined}>
+              <ProductRow
+                product={item}
+                grid={isGrid}
+                onEdit={() => navigation.navigate('ProductForm', { productId: item.id })}
+                onDeactivate={() => handleDeactivate(item)}
+              />
             </View>
+          )}
+          contentContainerStyle={[styles.list, { paddingBottom: listPaddingWithFab }]}
+          ListEmptyComponent={
+            <EmptyState icon="cube-outline" title="No hay productos" />
           }
         />
       )}
 
-      {/* FAB para agregar */}
-      <TouchableOpacity
-        style={styles.fab}
+      <FAB
+        icon="add"
+        accessibilityLabel="Agregar producto"
         onPress={() => navigation.navigate('ProductForm', {})}
-      >
-        <Ionicons name="add" size={28} color={colors.text.inverse} />
-      </TouchableOpacity>
+      />
     </View>
   );
 }
@@ -189,60 +203,21 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.bg.primary,
   },
-  searchBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.bg.secondary,
-    margin: spacing.md,
-    borderRadius: borderRadius.md,
-    paddingHorizontal: spacing.md,
-    borderWidth: 1,
-    borderColor: colors.bg.border,
-  },
-  searchIcon: { marginRight: spacing.sm },
-  searchInput: {
-    flex: 1,
-    paddingVertical: spacing.md,
-    color: colors.text.primary,
-    fontFamily: typography.fontFamily.regular,
-    fontSize: typography.size.base,
-  },
   filters: {
     flexDirection: 'row',
-    paddingHorizontal: spacing.md,
-    gap: spacing.xs,
-    marginBottom: spacing.sm,
     flexWrap: 'wrap',
-  },
-  chip: {
-    flexDirection: 'row',
-    alignItems: 'center',
     paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-    borderRadius: borderRadius.full,
-    backgroundColor: colors.bg.secondary,
-    borderWidth: 1,
-    borderColor: colors.bg.border,
-    gap: 4,
-  },
-  chipActive: {
-    backgroundColor: colors.brand.orange,
-    borderColor: colors.brand.orange,
-  },
-  chipWarning: {
-    borderColor: colors.semantic.warning,
-  },
-  chipText: {
-    color: colors.text.secondary,
-    fontFamily: typography.fontFamily.medium,
-    fontSize: typography.size.sm,
-  },
-  chipTextActive: {
-    color: colors.text.inverse,
+    gap: spacing.sm,
+    marginBottom: spacing.sm,
   },
   list: {
     padding: spacing.md,
-    paddingBottom: 100,
+  },
+  gridRow: {
+    gap: spacing.sm,
+  },
+  gridCell: {
+    flex: 1,
   },
   productRow: {
     flexDirection: 'row',
@@ -251,7 +226,14 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     marginBottom: spacing.sm,
     alignItems: 'center',
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.bg.border,
     ...shadows.sm,
+  },
+  productCardGrid: {
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    minHeight: 140,
   },
   productLeft: {
     flex: 1,
@@ -259,13 +241,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.sm,
   },
+  productLeftGrid: {
+    alignItems: 'flex-start',
+    marginBottom: spacing.sm,
+  },
   stockDot: {
     width: 10,
     height: 10,
     borderRadius: 5,
+    marginTop: 4,
   },
   productInfo: {
     flex: 1,
+    minWidth: 0,
   },
   productTitle: {
     fontSize: typography.size.base,
@@ -288,6 +276,11 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     gap: spacing.xs,
   },
+  productRightGrid: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   productPrice: {
     fontSize: typography.size.md,
     color: colors.brand.orange,
@@ -305,32 +298,10 @@ const styles = StyleSheet.create({
   deactivateBtn: {
     padding: spacing.xs,
   },
-  emptyState: {
-    alignItems: 'center',
-    paddingTop: spacing['3xl'],
-    gap: spacing.md,
-  },
-  emptyText: {
-    color: colors.text.disabled,
-    fontFamily: typography.fontFamily.regular,
-    fontSize: typography.size.base,
-  },
   errorText: {
     color: colors.semantic.error,
     textAlign: 'center',
     marginTop: spacing.xl,
     fontFamily: typography.fontFamily.regular,
-  },
-  fab: {
-    position: 'absolute',
-    bottom: spacing.xl,
-    right: spacing.base,
-    backgroundColor: colors.brand.orange,
-    borderRadius: borderRadius.full,
-    width: 56,
-    height: 56,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...shadows.md,
   },
 });

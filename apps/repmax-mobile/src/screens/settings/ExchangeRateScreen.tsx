@@ -18,11 +18,11 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { SettingsStackParamList } from '../../navigation/types';
+import type { MoreStackParamList } from '../../navigation/types';
 import { useAuth } from '../../context/AuthContext';
 import { colors, spacing, borderRadius, typography } from '../../utils/theme';
 
-type Props = NativeStackScreenProps<SettingsStackParamList, 'ExchangeRate'>;
+type Props = NativeStackScreenProps<MoreStackParamList, 'ExchangeRate'>;
 
 // Montos de ejemplo para la calculadora en vivo
 const EJEMPLOS_USD = [10, 50, 100];
