@@ -22,7 +22,7 @@ Estado: **integrado en zm-tech** (fases 01–03 cerradas). Auth y datos vía Sup
 - [ ] Cablear onboarding mobile end-to-end al high-fi (`apps/repmax-mobile` ↔ design system)
 - [ ] Extraer / alinear tokens RN (`utils/theme.ts`) con `design-system/tokens.md`
 - [ ] Seed / fixtures de catálogo realistas por tenant de prueba
-- [ ] Deploy Vercel (`repmax-web`) + EAS / preview mobile
+- [x] Deploy Vercel (`repmax-web`) + EAS / preview mobile (proyecto `@aeom0/repmax`, OTA channels)
 - [ ] Hardening RLS (auditoría advisors) y tests de aislamiento multi-tenant
 - [ ] Dominio / branding storefront público
 
