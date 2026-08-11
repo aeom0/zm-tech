@@ -4,9 +4,13 @@
 // ============================================================
 
 import React, { useMemo, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import {
+  Text, TextInput, TouchableOpacity, StyleSheet,
+  ActivityIndicator, ScrollView, KeyboardAvoidingView, Platform,
+} from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { AuthStackParamList } from '../../navigation/types';
+import { Screen } from '../../components/layout/Screen';
 import { useAuth } from '../../context/AuthContext';
 import { useOnboarding } from '../../context/OnboardingContext';
 import { THEMES } from '../../constants/onboarding';
@@ -69,69 +73,85 @@ export default function RegisterScreen({ navigation }: Props) {
   };
 
   return (
-    <View style={styles.contenedor}>
-      <Text style={styles.titulo}>Crea tu cuenta</Text>
-      <Text style={styles.subtitulo}>
-        {temaElegido
-          ? <>Tema <Text style={{ color: colorAcento }}>{temaElegido.name}</Text> · listo para configurar</>
-          : 'Configura tu tienda en segundos'}
-      </Text>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Nombre de tu tienda"
-        placeholderTextColor={colors.text.disabled}
-        value={storeName}
-        onChangeText={setStoreName}
-        autoCapitalize="words"
-      />
-      {storeName.trim().length > 0 && (
-        <Text style={styles.slugHint}>
-          {storeSlug
-            ? `URL: /${storeSlug}`
-            : 'Agrega letras o números para generar la URL'}
-        </Text>
-      )}
-      <TextInput
-        style={styles.input}
-        placeholder="Correo"
-        placeholderTextColor={colors.text.disabled}
-        value={email}
-        onChangeText={setEmail}
-        autoCapitalize="none"
-        keyboardType="email-address"
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Contraseña"
-        placeholderTextColor={colors.text.disabled}
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
-
-      {error && <Text style={styles.error}>{error}</Text>}
-
-      <TouchableOpacity
-        style={[styles.boton, { backgroundColor: colorAcento }, isLoading && styles.botonDeshabilitado]}
-        onPress={handleRegister}
-        disabled={isLoading}
-        activeOpacity={0.85}
+    <Screen edges={['top', 'bottom']} padded={false}>
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        {isLoading
-          ? <ActivityIndicator color={colors.text.inverse} />
-          : <Text style={styles.botonTexto}>Crear cuenta</Text>}
-      </TouchableOpacity>
+        <ScrollView
+          contentContainerStyle={styles.scroll}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <Text style={styles.titulo}>Crea tu cuenta</Text>
+          <Text style={styles.subtitulo}>
+            {temaElegido
+              ? <>Tema <Text style={{ color: colorAcento }}>{temaElegido.name}</Text> · listo para configurar</>
+              : 'Configura tu tienda en segundos'}
+          </Text>
 
-      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-        <Text style={styles.link}>¿Ya tienes cuenta? Inicia sesión</Text>
-      </TouchableOpacity>
-    </View>
+          <TextInput
+            style={styles.input}
+            placeholder="Nombre de tu tienda"
+            placeholderTextColor={colors.text.disabled}
+            value={storeName}
+            onChangeText={setStoreName}
+            autoCapitalize="words"
+          />
+          {storeName.trim().length > 0 && (
+            <Text style={styles.slugHint}>
+              {storeSlug
+                ? `URL: /${storeSlug}`
+                : 'Agrega letras o números para generar la URL'}
+            </Text>
+          )}
+          <TextInput
+            style={styles.input}
+            placeholder="Correo"
+            placeholderTextColor={colors.text.disabled}
+            value={email}
+            onChangeText={setEmail}
+            autoCapitalize="none"
+            keyboardType="email-address"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Contraseña"
+            placeholderTextColor={colors.text.disabled}
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+
+          {error && <Text style={styles.error}>{error}</Text>}
+
+          <TouchableOpacity
+            style={[styles.boton, { backgroundColor: colorAcento }, isLoading && styles.botonDeshabilitado]}
+            onPress={handleRegister}
+            disabled={isLoading}
+            activeOpacity={0.85}
+          >
+            {isLoading
+              ? <ActivityIndicator color={colors.text.inverse} />
+              : <Text style={styles.botonTexto}>Crear cuenta</Text>}
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <Text style={styles.link}>¿Ya tienes cuenta? Inicia sesión</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  contenedor: { flex: 1, backgroundColor: colors.bg.primary, padding: spacing.base, justifyContent: 'center' },
+  flex: { flex: 1 },
+  scroll: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    padding: spacing.base,
+  },
   titulo: { fontFamily: typography.fontFamily.bold, fontSize: typography.size['2xl'], color: colors.text.primary, marginBottom: spacing.xs },
   subtitulo: { fontFamily: typography.fontFamily.regular, fontSize: typography.size.base, color: colors.text.secondary, marginBottom: spacing.xl },
   input: {

@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { BrandLogo } from '../../components/brand/BrandLogo';
+import { Screen } from '../../components/layout/Screen';
 import { useAuth } from '../../context/AuthContext';
 import { colors, typography, spacing, borderRadius } from '../../utils/theme';
 import type { AuthStackParamList } from '../../navigation/types';
@@ -41,11 +42,12 @@ export default function LoginScreen({ navigation }: Props) {
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+    <Screen edges={['top', 'bottom']} padded={false}>
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
 
         <View style={styles.header}>
           <BrandLogo variant="wordmark" width={220} />
@@ -100,7 +102,8 @@ export default function LoginScreen({ navigation }: Props) {
 
         <Text style={styles.footer}>RepMAX · Venezuela</Text>
       </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </Screen>
   );
 }
 

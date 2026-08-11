@@ -19,12 +19,13 @@ import type { OnboardingStackParamList } from '../../navigation/types';
 import { useOnboarding } from '../../context/OnboardingContext';
 import { THEMES, VEHICLE_DASHBOARD_ICON } from '../../constants/onboarding';
 import OnboardingProgressBar from '../../components/onboarding/OnboardingProgressBar';
+import { Screen } from '../../components/layout/Screen';
 import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
 
 type Props = NativeStackScreenProps<OnboardingStackParamList, 'OnboardingPreview'>;
 
-// Iconos de la tab bar simulada: [nombre MCI, activo por defecto en índice 0]
-const TAB_ICONS = ['home-outline', 'cart-outline', 'package-variant-closed', 'account-group-outline', 'chart-bar'];
+// Iconos de la tab bar simulada (5 tabs: Inicio, Ventas, Stock, Clientes, Más)
+const TAB_ICONS = ['home-outline', 'cart-outline', 'package-variant-closed', 'account-group-outline', 'menu'];
 
 /** Filas ficticias de actividad reciente (solo mock visual) */
 const FILAS_ACTIVIDAD_MOCK = [
@@ -81,7 +82,7 @@ export default function OnboardingPreview({ navigation }: Props) {
   const iconVehiculo = VEHICLE_DASHBOARD_ICON[state.vehicleType ?? 'BOTH'];
 
   return (
-    <View style={styles.contenedor}>
+    <Screen edges={['top', 'bottom']} padded={false}>
       {/* Barra de progreso: paso 5 de 5 */}
       <OnboardingProgressBar currentStep={5} totalSteps={5} />
 
@@ -188,15 +189,11 @@ export default function OnboardingPreview({ navigation }: Props) {
           <Text style={styles.botonTexto}>Se ve brutal — ¡empecemos!</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  contenedor: {
-    flex: 1,
-    backgroundColor: colors.bg.primary,
-  },
   scroll: {
     padding: spacing.base,
     paddingBottom: spacing.lg,

@@ -18,11 +18,11 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { SettingsStackParamList } from '../../navigation/types';
+import type { MoreStackParamList } from '../../navigation/types';
 import { useAuth } from '../../context/AuthContext';
 import { colors, spacing, borderRadius, typography } from '../../utils/theme';
 
-type Props = NativeStackScreenProps<SettingsStackParamList, 'StoreSettings'>;
+type Props = NativeStackScreenProps<MoreStackParamList, 'StoreSettings'>;
 
 // ── Subcomponente: campo de formulario ───────────────────────
 interface FieldProps {

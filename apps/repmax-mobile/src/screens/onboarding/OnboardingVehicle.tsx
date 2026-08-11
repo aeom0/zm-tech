@@ -11,6 +11,7 @@ import { useOnboarding } from '../../context/OnboardingContext';
 import { VEHICLE_OPTIONS } from '../../constants/onboarding';
 import OnboardingProgressBar from '../../components/onboarding/OnboardingProgressBar';
 import SelectionCard from '../../components/onboarding/SelectionCard';
+import { Screen } from '../../components/layout/Screen';
 import { colors, typography, spacing } from '../../utils/theme';
 import type { VehicleType } from '../../types/onboarding';
 
@@ -25,7 +26,7 @@ export default function OnboardingVehicle({ navigation }: Props) {
   };
 
   return (
-    <View style={styles.contenedor}>
+    <Screen edges={['top', 'bottom']} padded={false}>
       {/* Barra de progreso: paso 2 de 5 */}
       <OnboardingProgressBar currentStep={2} totalSteps={5} />
 
@@ -52,15 +53,11 @@ export default function OnboardingVehicle({ navigation }: Props) {
           ))}
         </View>
       </ScrollView>
-    </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  contenedor: {
-    flex: 1,
-    backgroundColor: colors.bg.primary,
-  },
   scroll: {
     padding: spacing.base,
     paddingBottom: spacing['3xl'],

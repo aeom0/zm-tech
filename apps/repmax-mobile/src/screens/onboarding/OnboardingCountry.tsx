@@ -17,6 +17,7 @@ import type { OnboardingStackParamList } from '../../navigation/types';
 import { useOnboarding } from '../../context/OnboardingContext';
 import { COUNTRIES } from '../../constants/onboarding';
 import OnboardingProgressBar from '../../components/onboarding/OnboardingProgressBar';
+import { Screen } from '../../components/layout/Screen';
 import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
 import type { CountryCode } from '../../types/onboarding';
 
@@ -49,7 +50,7 @@ export default function OnboardingCountry({ navigation }: Props) {
   };
 
   return (
-    <View style={styles.contenedor}>
+    <Screen edges={['top', 'bottom']} padded={false}>
       {/* Barra de progreso: paso 1 de 5 */}
       <OnboardingProgressBar currentStep={1} totalSteps={5} />
 
@@ -87,15 +88,11 @@ export default function OnboardingCountry({ navigation }: Props) {
           ))}
         </View>
       </ScrollView>
-    </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  contenedor: {
-    flex: 1,
-    backgroundColor: colors.bg.primary,
-  },
   scroll: {
     padding: spacing.base,
     paddingBottom: spacing['3xl'],
