@@ -1,18 +1,32 @@
 import { supabase } from '../utils/supabase';
 import type { Customer } from '../types/database';
 
-function mapCustomer(row: any): Customer {
+/** Fila snake_case de PostgREST (`repmax_customers`). */
+interface CustomerRow {
+  id: string;
+  store_id: string;
+  full_name: string;
+  phone: string | null;
+  cedula_rif: string | null;
+  email: string | null;
+  notes: string | null;
+  total_purchases: number | null;
+  total_spent_usd: string | number | null;
+  created_at: string | null;
+}
+
+function mapCustomer(row: CustomerRow): Customer {
   return {
     id: row.id,
     storeId: row.store_id,
     fullName: row.full_name,
-    phone: row.phone,
-    cedulaRif: row.cedula_rif,
-    email: row.email,
-    notes: row.notes,
-    totalPurchases: row.total_purchases,
-    totalSpentUsd: parseFloat(row.total_spent_usd ?? '0'),
-    createdAt: row.created_at,
+    phone: row.phone ?? undefined,
+    cedulaRif: row.cedula_rif ?? undefined,
+    email: row.email ?? undefined,
+    notes: row.notes ?? undefined,
+    totalPurchases: row.total_purchases ?? 0,
+    totalSpentUsd: parseFloat(String(row.total_spent_usd ?? '0')),
+    createdAt: row.created_at ?? '',
   };
 }
 
