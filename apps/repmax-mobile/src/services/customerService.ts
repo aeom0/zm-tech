@@ -32,6 +32,18 @@ export const customerService = {
     return (data ?? []).map(mapCustomer);
   },
 
+  /** Detalle individual — PostgREST por id (evita getAll + find). */
+  async getById(id: string): Promise<Customer | null> {
+    const { data, error } = await supabase
+      .from('repmax_customers')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+
+    if (error) throw new Error(error.message);
+    return data ? mapCustomer(data) : null;
+  },
+
   async create(customer: Partial<Customer>): Promise<Customer> {
     const payload: Record<string, unknown> = {
       store_id: customer.storeId,

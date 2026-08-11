@@ -37,8 +37,7 @@ export function CustomerDetailPanel({ customerId, customer: customerProp }: Cust
     const load = async () => {
       setIsLoading(true);
       try {
-        const all = await customerService.getAll();
-        const found = all.find((c) => c.id === customerId) ?? null;
+        const found = await customerService.getById(customerId);
         if (!cancelled) setCustomer(found);
       } catch {
         if (!cancelled) setCustomer(null);

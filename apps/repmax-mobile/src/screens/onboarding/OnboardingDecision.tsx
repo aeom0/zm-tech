@@ -12,6 +12,7 @@ import {
   Animated,
   Easing,
   Alert,
+  ScrollView,
 } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { OnboardingStackParamList } from '../../navigation/types';
@@ -83,61 +84,59 @@ export default function OnboardingDecision(_props: Props) {
 
   return (
     <Screen edges={['top', 'bottom']} padded={false}>
-      <View style={styles.contenedor}>
-      {/* Ícono decorativo */}
-      <Animated.View
-        style={[styles.iconoContenedor, { transform: [{ scale: escalaCohete }] }]}
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
-        <MaterialCommunityIcons
-          name="rocket-launch-outline"
-          size={72}
-          color={colors.brand.orange}
-        />
-      </Animated.View>
-
-      {/* Título y descripción */}
-      <Text style={styles.titulo}>Tu tienda está lista{'\n'}para arrancar</Text>
-      <Text style={styles.descripcion}>
-        Todo configurado según tus preferencias. Ahora elige cómo continuar.
-      </Text>
-
-      {/* Botones de acción */}
-      <View style={styles.botones}>
-        {/* Primario — crear cuenta (naranja lleno) */}
-        <TouchableOpacity
-          style={styles.botonPrimario}
-          onPress={handleCrearCuenta}
-          activeOpacity={0.85}
+        <Animated.View
+          style={[styles.iconoContenedor, { transform: [{ scale: escalaCohete }] }]}
         >
-          <Text style={styles.botonPrimarioTexto}>Crear mi cuenta gratis</Text>
-        </TouchableOpacity>
+          <MaterialCommunityIcons
+            name="rocket-launch-outline"
+            size={72}
+            color={colors.brand.orange}
+          />
+        </Animated.View>
 
-        {/* Secundario — explorar demo (borde naranja, transparente) */}
-        <TouchableOpacity
-          style={styles.botonSecundario}
-          onPress={handleExplorarDemo}
-          activeOpacity={0.85}
-        >
-          <Text style={styles.botonSecundarioTexto}>Explorar con demo</Text>
-        </TouchableOpacity>
-
-        <Text style={styles.notaConfianza}>
-          Sin tarjeta. Sin enredos. Empiezas en minutos.
+        <Text style={styles.titulo}>Tu tienda está lista{'\n'}para arrancar</Text>
+        <Text style={styles.descripcion}>
+          Todo configurado según tus preferencias. Ahora elige cómo continuar.
         </Text>
-      </View>
 
-      {/* Nota tranquilizadora */}
-      <Text style={styles.notaLegal}>
-        Sin tarjeta de crédito · Cancela cuando quieras
-      </Text>
-      </View>
+        <View style={styles.botones}>
+          <TouchableOpacity
+            style={styles.botonPrimario}
+            onPress={handleCrearCuenta}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.botonPrimarioTexto}>Crear mi cuenta gratis</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.botonSecundario}
+            onPress={handleExplorarDemo}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.botonSecundarioTexto}>Explorar con demo</Text>
+          </TouchableOpacity>
+
+          <Text style={styles.notaConfianza}>
+            Sin tarjeta. Sin enredos. Empiezas en minutos.
+          </Text>
+        </View>
+
+        <Text style={styles.notaLegal}>
+          Sin tarjeta de crédito · Cancela cuando quieras
+        </Text>
+      </ScrollView>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  contenedor: {
-    flex: 1,
+  scroll: {
+    flexGrow: 1,
     padding: spacing.base,
     justifyContent: 'center',
     alignItems: 'center',
@@ -167,7 +166,6 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     marginBottom: spacing.lg,
   },
-  // Botón primario: naranja lleno
   botonPrimario: {
     backgroundColor: colors.brand.orange,
     borderRadius: borderRadius.lg,
@@ -179,7 +177,6 @@ const styles = StyleSheet.create({
     fontSize: typography.size.md,
     color: colors.text.inverse,
   },
-  // Botón secundario: borde naranja, fondo transparente
   botonSecundario: {
     borderWidth: 2,
     borderColor: colors.brand.orange,

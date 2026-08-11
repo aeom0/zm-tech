@@ -1,8 +1,8 @@
 // ============================================================
 // Tab bar adaptativo: bottom (phone) | sidebar (tablet landscape)
 // ============================================================
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { BottomTabBar, type BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -20,6 +20,33 @@ const TAB_ICONS: Record<keyof MainTabParamList, keyof typeof Ionicons.glyphMap> 
   MoreTab: 'menu-outline',
 };
 
+const ICON_RM = require('../../../assets/brand/icon-rm.png');
+
+function SideNavBrand() {
+  const [logoFailed, setLogoFailed] = useState(false);
+
+  return (
+    <View style={styles.brand}>
+      {logoFailed ? (
+        <Ionicons
+          name="speedometer-outline"
+          size={28}
+          color={colors.brand.orange}
+          accessibilityLabel="RepMAX"
+        />
+      ) : (
+        <Image
+          source={ICON_RM}
+          accessibilityLabel="RepMAX"
+          resizeMode="contain"
+          style={styles.brandImage}
+          onError={() => setLogoFailed(true)}
+        />
+      )}
+    </View>
+  );
+}
+
 function SideNavBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const insets = useSafeAreaInsets();
   const { height } = useResponsive();
@@ -36,7 +63,7 @@ function SideNavBar({ state, descriptors, navigation }: BottomTabBarProps) {
           },
         ]}
       >
-        <Text style={styles.brand}>RM</Text>
+        <SideNavBrand />
         <View style={styles.navItems}>
           {state.routes.map((route, index) => {
             const focused = state.index === index;
@@ -112,11 +139,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   brand: {
-    fontFamily: typography.fontFamily.bold,
-    fontSize: typography.size.md,
-    color: colors.brand.orange,
     marginBottom: spacing.lg,
-    letterSpacing: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  brandImage: {
+    width: 32,
+    height: 32,
   },
   navItems: {
     flex: 1,

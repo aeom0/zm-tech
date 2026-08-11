@@ -4,7 +4,7 @@
 // ============================================================
 
 import React, { useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, Animated, Easing } from 'react-native';
+import { View, Text, StyleSheet, Animated, Easing, ScrollView } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { OnboardingStackParamList } from '../../navigation/types';
 import { BrandLogo } from '../../components/brand/BrandLogo';
@@ -74,7 +74,10 @@ export default function OnboardingSplash({ navigation }: Props) {
 
   return (
     <Screen edges={['top', 'bottom']} padded={false}>
-      <View style={styles.contenedor}>
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.logoContenedor}>
           <Animated.View style={{ opacity: opacidadLogo }}>
             <BrandLogo variant="wordmark" width={260} />
@@ -88,14 +91,14 @@ export default function OnboardingSplash({ navigation }: Props) {
             <Text style={styles.tagline}>repuestos al máximo</Text>
           </Animated.View>
         </View>
-      </View>
+      </ScrollView>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  contenedor: {
-    flex: 1,
+  scroll: {
+    flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
