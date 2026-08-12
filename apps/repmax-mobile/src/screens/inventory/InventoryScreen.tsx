@@ -14,11 +14,13 @@ import { SearchBar } from '../../components/ui/SearchBar';
 import { FilterChip } from '../../components/ui/FilterChips';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { FAB } from '../../components/ui/FAB';
+import { ProductThumb } from '../../components/inventory/ProductThumb';
 import { useProducts } from '../../hooks/useProducts';
 import { useBreakpointValue } from '../../hooks/useResponsive';
 import { useTabBarOffset } from '../../hooks/useTabBarOffset';
 import { productService } from '../../services/productService';
 import { formatUSD } from '../../utils/formatters';
+import { uriPortada } from '../../utils/productPhotos';
 import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
 import type { Product } from '../../types/database';
 import type { InventoryStackParamList } from '../../navigation/types';
@@ -54,40 +56,64 @@ function ProductRow({
   onDeactivate: () => void;
   grid?: boolean;
 }) {
+  const portada = uriPortada(product.photos);
+
   return (
     <TouchableOpacity
       style={[styles.productRow, grid && styles.productCardGrid]}
       onPress={onEdit}
       activeOpacity={0.8}
     >
-      <View style={[styles.productLeft, grid && styles.productLeftGrid]}>
-        <StockIndicator stock={product.stock} minStock={product.minStock} />
-        <View style={styles.productInfo}>
-          <Text style={styles.productTitle} numberOfLines={grid ? 2 : 1}>{product.title}</Text>
-          <Text style={styles.productMeta} numberOfLines={1}>{product.brand} · {product.model}</Text>
-          <Text style={styles.productStock}>
-            Stock:{' '}
-            <Text style={{ color: product.stock <= product.minStock ? colors.semantic.warning : colors.text.primary }}>
-              {product.stock}
+      {grid ? (
+        <ProductThumb
+          uri={portada}
+          size="cover"
+          accessibilityLabel={portada ? `Foto de ${product.title}` : `Sin foto: ${product.title}`}
+        />
+      ) : null}
+      <View style={[styles.productBody, grid && styles.productBodyGrid]}>
+        <View style={[styles.productLeft, grid && styles.productLeftGrid]}>
+          {grid ? (
+            <StockIndicator stock={product.stock} minStock={product.minStock} />
+          ) : (
+            <View style={styles.thumbWrap}>
+              <ProductThumb
+                uri={portada}
+                size="md"
+                accessibilityLabel={portada ? `Foto de ${product.title}` : `Sin foto: ${product.title}`}
+              />
+              <View style={styles.stockOnThumb}>
+                <StockIndicator stock={product.stock} minStock={product.minStock} />
+              </View>
+            </View>
+          )}
+          <View style={styles.productInfo}>
+            <Text style={styles.productTitle} numberOfLines={grid ? 2 : 1}>{product.title}</Text>
+            <Text style={styles.productMeta} numberOfLines={1}>{product.brand} · {product.model}</Text>
+            <Text style={styles.productStock}>
+              Stock:{' '}
+              <Text style={{ color: product.stock <= product.minStock ? colors.semantic.warning : colors.text.primary }}>
+                {product.stock}
+              </Text>
+              {product.partNumber ? ` · #${product.partNumber}` : ''}
             </Text>
-            {product.partNumber ? ` · #${product.partNumber}` : ''}
-          </Text>
+          </View>
         </View>
-      </View>
-      <View style={[styles.productRight, grid && styles.productRightGrid]}>
-        <Text style={styles.productPrice}>{formatUSD(product.priceUsd)}</Text>
-        <View style={[styles.conditionBadge, { backgroundColor: product.condition === 'NEW' ? colors.status.new + '22' : colors.status.used + '22' }]}>
-          <Text style={[styles.conditionText, { color: product.condition === 'NEW' ? colors.status.new : colors.status.used }]}>
-            {product.condition === 'NEW' ? 'Nuevo' : 'Usado'}
-          </Text>
+        <View style={[styles.productRight, grid && styles.productRightGrid]}>
+          <Text style={styles.productPrice}>{formatUSD(product.priceUsd)}</Text>
+          <View style={[styles.conditionBadge, { backgroundColor: product.condition === 'NEW' ? colors.status.new + '22' : colors.status.used + '22' }]}>
+            <Text style={[styles.conditionText, { color: product.condition === 'NEW' ? colors.status.new : colors.status.used }]}>
+              {product.condition === 'NEW' ? 'Nuevo' : 'Usado'}
+            </Text>
+          </View>
+          <TouchableOpacity
+            onPress={onDeactivate}
+            style={styles.deactivateBtn}
+            accessibilityLabel="Desactivar producto"
+          >
+            <Ionicons name="trash-outline" size={16} color={colors.semantic.error} />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          onPress={onDeactivate}
-          style={styles.deactivateBtn}
-          accessibilityLabel="Desactivar producto"
-        >
-          <Ionicons name="trash-outline" size={16} color={colors.semantic.error} />
-        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );
@@ -233,7 +259,19 @@ const styles = StyleSheet.create({
   productCardGrid: {
     flexDirection: 'column',
     alignItems: 'stretch',
+    padding: 0,
+    overflow: 'hidden',
     minHeight: 140,
+  },
+  productBody: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  productBodyGrid: {
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    padding: spacing.md,
   },
   productLeft: {
     flex: 1,
@@ -244,6 +282,14 @@ const styles = StyleSheet.create({
   productLeftGrid: {
     alignItems: 'flex-start',
     marginBottom: spacing.sm,
+  },
+  thumbWrap: {
+    position: 'relative',
+  },
+  stockOnThumb: {
+    position: 'absolute',
+    right: 4,
+    bottom: 4,
   },
   stockDot: {
     width: 10,

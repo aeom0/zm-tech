@@ -10,8 +10,12 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { PhotoSlotGrid } from '../../components/inventory/PhotoSlotGrid';
+import { useAuth } from '../../context/AuthContext';
 import { productService } from '../../services/productService';
+import { productPhotoService } from '../../services/productPhotoService';
 import { BRANDS } from '../../constants/brands';
+import { ML_PHOTO } from '../../utils/mlPhotoRules';
 import { colors, typography, spacing, borderRadius } from '../../utils/theme';
 import type { PartCondition, VehicleType } from '../../types/database';
 import type { InventoryStackParamList } from '../../navigation/types';
@@ -47,11 +51,18 @@ const VEHICLE_TYPES: { value: VehicleType; label: string }[] = [
   { value: 'SUV', label: 'SUV' },
 ];
 
+function slotsVacios(): Array<string | null> {
+  return Array.from({ length: ML_PHOTO.maxSlots }, () => null);
+}
+
 export default function ProductFormScreen({ route, navigation }: Props) {
-  const { productId } = route.params ?? {};
+  const { productId, pendingPhoto } = route.params ?? {};
   const isEditing = !!productId;
+  const { store } = useAuth();
 
   const [form, setForm] = useState<FormState>(INITIAL_FORM);
+  const [photos, setPhotos] = useState<Array<string | null>>(slotsVacios);
+  const [publicarMl, setPublicarMl] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingProduct, setIsFetchingProduct] = useState(isEditing);
   const [showBrandPicker, setShowBrandPicker] = useState(false);
@@ -75,6 +86,12 @@ export default function ProductFormScreen({ route, navigation }: Props) {
           stock: product.stock.toString(),
           minStock: product.minStock.toString(),
         });
+        const existentes = product.photos ?? [];
+        const slots = slotsVacios();
+        existentes.slice(0, ML_PHOTO.maxSlots).forEach((uri, i) => {
+          slots[i] = uri;
+        });
+        setPhotos(slots);
       } catch {
         Alert.alert('Error', 'No se pudo cargar el producto.');
         navigation.goBack();
@@ -83,15 +100,57 @@ export default function ProductFormScreen({ route, navigation }: Props) {
       }
     };
     load();
-  }, [productId]);
+  }, [productId, isEditing, navigation]);
+
+  useEffect(() => {
+    if (!pendingPhoto) return;
+    setPhotos((prev) => {
+      const next = [...prev];
+      next[pendingPhoto.slotIndex] = pendingPhoto.uri;
+      return next;
+    });
+    navigation.setParams({ pendingPhoto: undefined });
+  }, [pendingPhoto, navigation]);
 
   const setField = (key: keyof FormState, value: string) => {
     setForm(prev => ({ ...prev, [key]: value }));
   };
 
+  const huecosMl = (): string[] => {
+    const huecos: string[] = [];
+    if (!photos[0]) huecos.push('Foto de portada');
+    if (!form.partNumber.trim()) huecos.push('Número de parte');
+    if (!form.title.trim()) huecos.push('Título al estilo ML');
+    return huecos;
+  };
+
+  const handlePublicarMl = (value: boolean) => {
+    if (!value) {
+      setPublicarMl(false);
+      return;
+    }
+    const huecos = huecosMl();
+    if (huecos.length > 0) {
+      Alert.alert(
+        'Falta un poco para publicar',
+        `MercadoLibre rechaza la publicación si esto no está:\n\n• ${huecos.join('\n• ')}\n\nCuadramos la ficha y listo. La conexión OAuth llega en el siguiente paso.`,
+      );
+      return;
+    }
+    Alert.alert(
+      'Conexión MercadoLibre',
+      'La ficha está lista. Conectar la cuenta ML y publicar sale en el siguiente paso — por ahora se guarda en RepMAX.',
+    );
+    setPublicarMl(true);
+  };
+
   const handleSave = async () => {
     if (!form.title.trim() || !form.brand.trim() || !form.model.trim() || !form.priceUsd.trim()) {
       Alert.alert('Campos requeridos', 'Título, marca, modelo y precio son obligatorios.');
+      return;
+    }
+    if (!store?.id) {
+      Alert.alert('Sin tienda', 'No encontramos tu tienda. Cierra sesión e intenta de nuevo.');
       return;
     }
     const price = parseFloat(form.priceUsd);
@@ -102,19 +161,31 @@ export default function ProductFormScreen({ route, navigation }: Props) {
 
     setIsLoading(true);
     try {
+      const urls: string[] = [];
+      for (const uri of photos) {
+        if (!uri) continue;
+        if (productPhotoService.esUriLocal(uri)) {
+          urls.push(await productPhotoService.subir(store.id, uri));
+        } else {
+          urls.push(uri);
+        }
+      }
+
       const payload = {
+        storeId: store.id,
         title: form.title.trim(),
         description: form.description.trim() || undefined,
         brand: form.brand.trim(),
         model: form.model.trim(),
-        yearFrom: form.yearFrom ? parseInt(form.yearFrom) : undefined,
-        yearTo: form.yearTo ? parseInt(form.yearTo) : undefined,
+        yearFrom: form.yearFrom ? parseInt(form.yearFrom, 10) : undefined,
+        yearTo: form.yearTo ? parseInt(form.yearTo, 10) : undefined,
         vehicleType: form.vehicleType || undefined,
         condition: form.condition,
         partNumber: form.partNumber.trim() || undefined,
         priceUsd: price,
-        stock: parseInt(form.stock) || 0,
-        minStock: parseInt(form.minStock) || 1,
+        stock: parseInt(form.stock, 10) || 0,
+        minStock: parseInt(form.minStock, 10) || 1,
+        photos: urls,
       };
 
       if (isEditing) {
@@ -123,8 +194,8 @@ export default function ProductFormScreen({ route, navigation }: Props) {
         await productService.create(payload);
       }
       navigation.goBack();
-    } catch (err: any) {
-      const msg = err?.response?.data?.message || 'Error al guardar el producto.';
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Error al guardar el producto.';
       Alert.alert('Error', msg);
     } finally {
       setIsLoading(false);
@@ -143,11 +214,45 @@ export default function ProductFormScreen({ route, navigation }: Props) {
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
 
+        <FormSection title="Fotos">
+          <PhotoSlotGrid
+            uris={photos}
+            onPressSlot={(index) => navigation.navigate('PhotoCapture', { slotIndex: index, productId })}
+            onClearSlot={(index) => {
+              setPhotos((prev) => {
+                const next = [...prev];
+                next[index] = null;
+                return next;
+              });
+            }}
+          />
+        </FormSection>
+
         {/* Datos básicos */}
         <FormSection title="Datos del producto">
-          <FormField label="Título *" value={form.title} onChangeText={v => setField('title', v)} placeholder="Ej: Filtro de aceite Toyota" />
-          <FormField label="Descripción" value={form.description} onChangeText={v => setField('description', v)} placeholder="Descripción opcional" multiline />
-          <FormField label="Número de parte" value={form.partNumber} onChangeText={v => setField('partNumber', v)} placeholder="Ej: 90915-YZZD2" autoCapitalize="characters" />
+          <FormField
+            label="Título *"
+            value={form.title}
+            onChangeText={v => setField('title', v)}
+            placeholder="Filtro aceite Toyota Corolla 2015-20"
+            hint="ML: Producto + Marca + compatible con… Sin stock ni precio."
+          />
+          <FormField
+            label="Descripción"
+            value={form.description}
+            onChangeText={v => setField('description', v)}
+            placeholder="Compatible, garantía, material. Sin teléfono ni WhatsApp."
+            hint="Sin teléfono, WhatsApp ni URL."
+            multiline
+          />
+          <FormField
+            label="Número de parte"
+            value={form.partNumber}
+            onChangeText={v => setField('partNumber', v)}
+            placeholder="Ej: 90915-YZZD2"
+            hint="Atributo PART_NUMBER. Obligatorio para publicar en ML."
+            autoCapitalize="characters"
+          />
         </FormSection>
 
         {/* Marca y modelo */}
@@ -237,6 +342,19 @@ export default function ProductFormScreen({ route, navigation }: Props) {
             </View>
           </View>
         </FormSection>
+
+        <View style={styles.mlRow}>
+          <View style={styles.mlCopy}>
+            <Ionicons name="cloud-upload-outline" size={20} color={colors.brand.orange} />
+            <Text style={styles.mlLabel}>Publicar en MercadoLibre</Text>
+          </View>
+          <Switch
+            value={publicarMl}
+            onValueChange={handlePublicarMl}
+            trackColor={{ false: colors.bg.border, true: colors.brand.orange }}
+            thumbColor={colors.text.primary}
+          />
+        </View>
       </ScrollView>
 
       {/* Botón guardar */}
@@ -271,11 +389,12 @@ function FormSection({ title, children }: { title: string; children: React.React
   );
 }
 
-function FormField({ label, value, onChangeText, placeholder, multiline, keyboardType, autoCapitalize }: {
+function FormField({ label, value, onChangeText, placeholder, hint, multiline, keyboardType, autoCapitalize }: {
   label: string;
   value: string;
   onChangeText: (v: string) => void;
   placeholder?: string;
+  hint?: string;
   multiline?: boolean;
   keyboardType?: 'default' | 'numeric' | 'decimal-pad' | 'email-address';
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
@@ -295,6 +414,7 @@ function FormField({ label, value, onChangeText, placeholder, multiline, keyboar
         autoCapitalize={autoCapitalize ?? 'sentences'}
         autoCorrect={false}
       />
+      {hint ? <Text style={styles.hint}>{hint}</Text> : null}
     </>
   );
 }
@@ -428,6 +548,34 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: spacing.md,
     gap: spacing.sm,
+  },
+  hint: {
+    marginTop: spacing.xs,
+    fontSize: 11,
+    fontFamily: typography.fontFamily.regular,
+    color: colors.text.disabled,
+  },
+  mlRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: colors.bg.secondary,
+    borderRadius: borderRadius.lg,
+    padding: spacing.base,
+    marginBottom: spacing.md,
+  },
+  mlCopy: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    flex: 1,
+    marginRight: spacing.md,
+  },
+  mlLabel: {
+    flex: 1,
+    fontSize: typography.size.base,
+    fontFamily: typography.fontFamily.semibold,
+    color: colors.text.primary,
   },
   saveBtnDisabled: { opacity: 0.6 },
   saveBtnText: {

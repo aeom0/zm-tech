@@ -36,7 +36,7 @@ export const BUSINESS_OPTIONS: {
   iconName: string;
   description: string;
 }[] = [
-  { value: 'PARTS_STORE', label: 'Repuestería', iconName: 'store-outline',  description: 'Venta de repuestos y accesorios' },
+  { value: 'PARTS_STORE', label: 'Repuestos', iconName: 'store-outline',  description: 'Venta de repuestos y accesorios' },
   { value: 'WORKSHOP',    label: 'Taller',       iconName: 'wrench-outline', description: 'Taller con venta de partes' },
   { value: 'BOTH',        label: 'Ambos',         iconName: 'garage-variant', description: 'Taller y tienda combinados' },
 ];

@@ -55,7 +55,7 @@ export function ProofSection() {
             className="l-section-title"
             style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: "clamp(36px,5vw,56px)", lineHeight: 1 }}
           >
-            Repuesteros que ya<br />dieron el paso
+            Tiendas de repuestos que ya<br />dieron el paso
           </h2>
         </div>
 

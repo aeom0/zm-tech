@@ -77,10 +77,16 @@ Migraciones actuales: schema inicial, RLS/storage, RPC venta, fix políticas `an
 - Spec UX onboarding: `design/onboarding-ux-spec.md`
 - Canvas Pencil: `design/onboarding.pen`
 - Prototipo tap-through: `design/prototype/index.html`
+- Catálogo + ML: `design/catalog.pen`, spec `design/catalog-ux-spec.md`, fotos `design/ml-fotos.md`
 
-## Planes de integración (cerrados)
+## Changelog
 
-Histórico de las fases 01–03 en `plans/`. El producto ya está cableado a Supabase compartido.
+Historial de producto: [`CHANGELOG.md`](./CHANGELOG.md) (Keep a Changelog). Infra del monorepo: [../../CHANGELOG.md](../../CHANGELOG.md).
+
+## Planes
+
+- Cerrados: fases 01–03 en `plans/` (scaffold, schema/RLS, retiro Express).
+- En curso: [`plans/04-PLAN-catalogo-mercadolibre.md`](./plans/04-PLAN-catalogo-mercadolibre.md) (fotos hechas; OAuth pendiente).
 
 ## Reglas críticas
 

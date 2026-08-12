@@ -19,7 +19,9 @@ function mapProduct(row: any): Product {
     priceBs: row.price_bs ? parseFloat(row.price_bs) : undefined,
     stock: row.stock,
     minStock: row.min_stock,
-    photos: row.photos,
+    photos: Array.isArray(row.photos)
+      ? (row.photos as unknown[]).filter((uri): uri is string => typeof uri === 'string' && uri.length > 0)
+      : [],
     isActive: row.is_active,
     createdAt: row.created_at,
     updatedAt: row.updated_at,

@@ -1,0 +1,3338 @@
+{
+  "version": "2.17",
+  "children": [
+    {
+      "type": "frame",
+      "id": "bbQuV",
+      "x": 0,
+      "y": 0,
+      "name": "Cover",
+      "context": "File operating manual: owner, status, version, scope, links.",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 720,
+      "height": 420,
+      "fill": "$bg",
+      "layout": "vertical",
+      "gap": 8,
+      "padding": 40,
+      "children": [
+        {
+          "type": "text",
+          "id": "qKj88",
+          "name": "CoverProduct",
+          "fill": "$textPrimary",
+          "content": "RepMAX — Catálogo + MercadoLibre",
+          "fontFamily": "$fontBody",
+          "fontSize": 28,
+          "fontWeight": "700"
+        },
+        {
+          "type": "text",
+          "id": "ZGFVF",
+          "name": "CoverStatus",
+          "fill": "$accent",
+          "content": "Status: In design  ·  v0.1  ·  2026-08-11",
+          "fontFamily": "$fontBody",
+          "fontSize": 14,
+          "fontWeight": "500"
+        },
+        {
+          "type": "text",
+          "id": "P2FBYB",
+          "name": "CoverOwner",
+          "fill": "$textSecondary",
+          "content": "Owner: Alberto / ZM Tech",
+          "fontFamily": "$fontBody",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "JDqc9",
+          "name": "CoverScope",
+          "fill": "$textSecondary",
+          "textGrowth": "fixed-width",
+          "width": 640,
+          "content": "In: conexión ML, listado catálogo, publicar por pieza. Out: OAuth real, API ML.",
+          "fontFamily": "$fontBody",
+          "fontSize": 13,
+          "fontWeight": "normal"
+        },
+        {
+          "type": "text",
+          "id": "WzUt7",
+          "name": "CoverLinks",
+          "fill": "$textDisabled",
+          "textGrowth": "fixed-width",
+          "width": 640,
+          "content": "DS: docs/repmax/design-system  ·  Logo ML: ./assets/mercadolibre.svg (landing oficial)",
+          "fontFamily": "$fontBody",
+          "fontSize": 12,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "aNIc9",
+      "x": 0,
+      "y": 500,
+      "name": "MercadoLibreLogo",
+      "context": "Logo oficial MercadoLibre. Mismo SVG que apps/landing/public/brands/mercadolibre.svg. No redibujar. Instanciar en card de conexión, badges de fila y sheet OAuth.",
+      "reusable": true,
+      "width": 36,
+      "height": 36,
+      "fill": {
+        "type": "image",
+        "enabled": true,
+        "url": "assets/mercadolibre.png",
+        "mode": "fit"
+      }
+    },
+    {
+      "type": "frame",
+      "id": "WYBWT",
+      "x": 0,
+      "y": 560,
+      "name": "SourceOfTruth / Components",
+      "context": "Componentes reutilizables del catálogo. MercadoLibreLogo es el mark oficial.",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 1200,
+      "height": 280,
+      "fill": "$bg",
+      "gap": 24,
+      "padding": 24,
+      "children": [
+        {
+          "type": "frame",
+          "id": "L8NPr",
+          "name": "MlConnectCardDisconnected",
+          "context": "Visible cuando la tienda no tiene OAuth ML. CTA Conectar MercadoLibre. Plan Pro required: si plan=basic, usar variante Gate. Analytics: catalog.ml.connect_tap.",
+          "reusable": true,
+          "width": 350,
+          "fill": "$surface",
+          "cornerRadius": "$radiusLg",
+          "stroke": "$border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "frame",
+              "id": "hSI3D",
+              "name": "MlCardHeader",
+              "width": "fill_container",
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "tknoH",
+                  "type": "ref",
+                  "ref": "aNIc9",
+                  "name": "MlLogoMark",
+                  "width": 36,
+                  "height": 36
+                },
+                {
+                  "type": "frame",
+                  "id": "V9u199",
+                  "name": "MlCardCopy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "U3j7d",
+                      "name": "MlCardTitle",
+                      "fill": "$textPrimary",
+                      "content": "MercadoLibre",
+                      "fontFamily": "$fontBody",
+                      "fontSize": "$textCardTitle",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Idxc3",
+                      "name": "MlCardStatus",
+                      "fill": "$textSecondary",
+                      "content": "Sin conectar",
+                      "fontFamily": "$fontBody",
+                      "fontSize": "$textNote",
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "QdLKd",
+              "name": "MlCardHint",
+              "fill": "$textSecondary",
+              "textGrowth": "fixed-width",
+              "width": 318,
+              "content": "Publica tu inventario y el stock se cuadra solo cuando vendes en mostrador.",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textLabel",
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "n2yjff",
+              "name": "ConnectMercadoLibreButton",
+              "context": "CTA primario. Abre sheet OAuth ML. Disabled si plan basic. Hit 44.",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$accent",
+              "cornerRadius": "$radiusLg",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "CuMEA",
+                  "name": "ConnectLabel",
+                  "fill": "$textInverse",
+                  "content": "Conectar MercadoLibre",
+                  "fontFamily": "$fontBody",
+                  "fontSize": "$textButton",
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "hLurN",
+          "name": "MlConnectCardConnected",
+          "context": "Cuenta ML vinculada. Muestra nickname y última sync. Tap abre gestión / desconectar.",
+          "reusable": true,
+          "width": 350,
+          "fill": "$surface",
+          "cornerRadius": "$radiusLg",
+          "stroke": "$success",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "frame",
+              "id": "yfWmq",
+              "name": "MlCardHeaderOn",
+              "width": "fill_container",
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "e3hJV",
+                  "type": "ref",
+                  "ref": "aNIc9",
+                  "name": "MlLogoMarkOn",
+                  "width": 36,
+                  "height": 36
+                },
+                {
+                  "type": "frame",
+                  "id": "DJKvV",
+                  "name": "MlCardCopyOn",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "u5fMR",
+                      "name": "MlCardTitleOn",
+                      "fill": "$textPrimary",
+                      "content": "MercadoLibre",
+                      "fontFamily": "$fontBody",
+                      "fontSize": "$textCardTitle",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "bpIAK",
+                      "name": "MlStatusRow",
+                      "gap": 6,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "ellipse",
+                          "id": "Vk5CI",
+                          "name": "MlStatusDot",
+                          "fill": "$success",
+                          "width": 8,
+                          "height": 8
+                        },
+                        {
+                          "type": "text",
+                          "id": "Q5R3ex",
+                          "name": "MlCardStatusOn",
+                          "fill": "$success",
+                          "content": "Activo · @repuestosmendez",
+                          "fontFamily": "$fontBody",
+                          "fontSize": "$textNote",
+                          "fontWeight": "normal"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "EGVbA",
+              "name": "MlCardHintOn",
+              "fill": "$textSecondary",
+              "textGrowth": "fixed-width",
+              "width": 318,
+              "content": "Última sync: hace 2 min. 18 piezas en ML.",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textLabel",
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ZjZQ0",
+          "name": "MlConnectCardGate",
+          "context": "Plan basic. No inicia OAuth. CTA Pásate a Pro. Analytics: catalog.ml.upgrade_tap.",
+          "reusable": true,
+          "width": 350,
+          "fill": "$surface",
+          "cornerRadius": "$radiusLg",
+          "stroke": "$border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": 12,
+          "padding": 16,
+          "children": [
+            {
+              "type": "frame",
+              "id": "d4QqxD",
+              "name": "MlCardHeaderGate",
+              "width": "fill_container",
+              "gap": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "T9ZtS",
+                  "type": "ref",
+                  "ref": "aNIc9",
+                  "name": "MlLogoMarkGate",
+                  "width": 36,
+                  "height": 36
+                },
+                {
+                  "type": "frame",
+                  "id": "e1lRns",
+                  "name": "MlCardCopyGate",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "LWQDl",
+                      "name": "MlCardTitleGate",
+                      "fill": "$textPrimary",
+                      "content": "MercadoLibre",
+                      "fontFamily": "$fontBody",
+                      "fontSize": "$textCardTitle",
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "rhGHK",
+                      "name": "MlCardStatusGate",
+                      "fill": "$accent",
+                      "content": "Plan Pro",
+                      "fontFamily": "$fontBody",
+                      "fontSize": "$textNote",
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "HLREk",
+              "name": "MlCardHintGate",
+              "fill": "$textSecondary",
+              "textGrowth": "fixed-width",
+              "width": 318,
+              "content": "Publicar en ML es del plan Pro. Sigue vendiendo en mostrador sin enredos.",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textLabel",
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "frZPD",
+              "name": "UpgradeProButton",
+              "context": "Navega a upgrade Pro. Hit 44.",
+              "width": "fill_container",
+              "height": 44,
+              "fill": "$accentMuted",
+              "cornerRadius": "$radiusLg",
+              "stroke": "$accent",
+              "strokeWidth": 1,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "GmXvO",
+                  "name": "UpgradeLabel",
+                  "fill": "$accent",
+                  "content": "Pásate a Pro",
+                  "fontFamily": "$fontBody",
+                  "fontSize": "$textButton",
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "AJoPJ",
+          "name": "ProductThumb",
+          "reusable": true,
+          "width": 56,
+          "height": 56,
+          "fill": "$surfaceElevated",
+          "cornerRadius": 8,
+          "layout": "vertical",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "WThrK",
+              "name": "ThumbPlaceholder",
+              "width": 22,
+              "height": 22,
+              "icon": "box",
+              "library": "lucide",
+              "fill": "$steel"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "LHj7e",
+      "x": 1280,
+      "y": 0,
+      "name": "Catalog / List / Disconnected / iPhone",
+      "context": "Catálogo con stock y ML desconectado. Card de conexión es el héroe arriba del listado. Plan Pro.",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "Vkhkf",
+          "name": "StatusSpacer",
+          "width": "fill_container",
+          "height": 47
+        },
+        {
+          "type": "frame",
+          "id": "rMF5t",
+          "name": "CatalogHeader",
+          "width": "fill_container",
+          "height": 52,
+          "padding": [
+            0,
+            20
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "sr63J",
+              "name": "CatalogTitle",
+              "fill": "$textPrimary",
+              "content": "Stock",
+              "fontFamily": "$fontBody",
+              "fontSize": 22,
+              "fontWeight": "700"
+            },
+            {
+              "type": "icon",
+              "id": "MKjcv",
+              "name": "AddProductButton",
+              "context": "Abre formulario de producto. Hit 44 en implementación.",
+              "width": 22,
+              "height": 22,
+              "icon": "plus",
+              "library": "lucide",
+              "fill": "$accent"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "JIWub",
+          "name": "CatalogBody",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": [
+            12,
+            20,
+            20,
+            20
+          ],
+          "children": [
+            {
+              "id": "otnu2",
+              "type": "ref",
+              "ref": "L8NPr",
+              "name": "MlHeroDisconnected",
+              "width": "fill_container"
+            },
+            {
+              "type": "frame",
+              "id": "siprb",
+              "name": "ProductRow",
+              "context": "Fila de catálogo. Tap abre ficha. Badge ML: Sin publicar | En ML | Desfasado | Error.",
+              "width": "fill_container",
+              "fill": "$surface",
+              "cornerRadius": "$radiusMd",
+              "gap": 10,
+              "padding": [
+                12,
+                16
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "XpTdb",
+                  "type": "ref",
+                  "ref": "AJoPJ",
+                  "name": "ProductThumb"
+                },
+                {
+                  "type": "frame",
+                  "id": "JqP5z",
+                  "name": "ProductInfo",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ltYry",
+                      "name": "ProductTitle",
+                      "fill": "$textPrimary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Filtro aceite Corolla 2015-20",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 15,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "OW5zI",
+                      "name": "ProductMeta",
+                      "fill": "$textSecondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Toyota · Stock 8",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "LWpUI",
+                  "name": "ProductRight",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "KywWC",
+                      "name": "ProductPrice",
+                      "fill": "$textPrimary",
+                      "content": "$12.00",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 15,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "oFU3S",
+                      "name": "MlSyncBadge",
+                      "context": "Estado de publicación ML. Color + texto, nunca solo color.",
+                      "fill": "$surfaceElevated",
+                      "cornerRadius": "$radiusFull",
+                      "gap": 4,
+                      "padding": [
+                        4,
+                        8
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "INgyd",
+                          "type": "ref",
+                          "ref": "aNIc9",
+                          "name": "MlBadgeLogo",
+                          "width": 14,
+                          "height": 14
+                        },
+                        {
+                          "type": "text",
+                          "id": "u3J4xz",
+                          "name": "MlBadgeLabel",
+                          "fill": "$textSecondary",
+                          "content": "Sin publicar",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 10,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "HzXeO",
+              "name": "ProductRow",
+              "context": "Fila de catálogo. Tap abre ficha. Badge ML: Sin publicar | En ML | Desfasado | Error.",
+              "width": "fill_container",
+              "fill": "$surface",
+              "cornerRadius": "$radiusMd",
+              "gap": 10,
+              "padding": [
+                12,
+                16
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "yTJwh",
+                  "type": "ref",
+                  "ref": "AJoPJ",
+                  "name": "ProductThumb"
+                },
+                {
+                  "type": "frame",
+                  "id": "EiZrA",
+                  "name": "ProductInfo",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "T86qy",
+                      "name": "ProductTitle",
+                      "fill": "$textPrimary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Pastilla freno delantera Aveo",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 15,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "v1BDC",
+                      "name": "ProductMeta",
+                      "fill": "$textSecondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Chevrolet · Stock 4",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Y2mxt5",
+                  "name": "ProductRight",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "KPBdG",
+                      "name": "ProductPrice",
+                      "fill": "$textPrimary",
+                      "content": "$28.50",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 15,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "u9R6sE",
+                      "name": "MlSyncBadge",
+                      "context": "Estado de publicación ML. Color + texto, nunca solo color.",
+                      "fill": "$surfaceElevated",
+                      "cornerRadius": "$radiusFull",
+                      "gap": 4,
+                      "padding": [
+                        4,
+                        8
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "f3Hevc",
+                          "type": "ref",
+                          "ref": "aNIc9",
+                          "name": "MlBadgeLogo",
+                          "width": 14,
+                          "height": 14
+                        },
+                        {
+                          "type": "text",
+                          "id": "Fk5V9",
+                          "name": "MlBadgeLabel",
+                          "fill": "$textSecondary",
+                          "content": "Sin publicar",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 10,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "QP5wI",
+              "name": "ProductRow",
+              "context": "Fila de catálogo. Tap abre ficha. Badge ML: Sin publicar | En ML | Desfasado | Error.",
+              "width": "fill_container",
+              "fill": "$surface",
+              "cornerRadius": "$radiusMd",
+              "gap": 10,
+              "padding": [
+                12,
+                16
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "p1e3O",
+                  "type": "ref",
+                  "ref": "AJoPJ",
+                  "name": "ProductThumb"
+                },
+                {
+                  "type": "frame",
+                  "id": "y1w81",
+                  "name": "ProductInfo",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "gJO3P",
+                      "name": "ProductTitle",
+                      "fill": "$textPrimary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Bujía NGK Platino BKR6E",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 15,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "O9z77M",
+                      "name": "ProductMeta",
+                      "fill": "$textSecondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "NGK · Stock 24",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "GwPQx",
+                  "name": "ProductRight",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ugYN8",
+                      "name": "ProductPrice",
+                      "fill": "$textPrimary",
+                      "content": "$8.00",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 15,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "zlEqS",
+                      "name": "MlSyncBadge",
+                      "context": "Estado de publicación ML. Color + texto, nunca solo color.",
+                      "fill": "$surfaceElevated",
+                      "cornerRadius": "$radiusFull",
+                      "gap": 4,
+                      "padding": [
+                        4,
+                        8
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "regfo",
+                          "type": "ref",
+                          "ref": "aNIc9",
+                          "name": "MlBadgeLogo",
+                          "width": 14,
+                          "height": 14
+                        },
+                        {
+                          "type": "text",
+                          "id": "xywdk",
+                          "name": "MlBadgeLabel",
+                          "fill": "$textSecondary",
+                          "content": "Sin publicar",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 10,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "r966MR",
+      "x": 1710,
+      "y": 0,
+      "name": "Catalog / List / Connected / iPhone",
+      "context": "ML activo. Badges por pieza. Chip de filtro En ML vive en implementación junto a SearchBar.",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "b7feG",
+          "name": "StatusSpacer",
+          "width": "fill_container",
+          "height": 47
+        },
+        {
+          "type": "frame",
+          "id": "q2IWb",
+          "name": "CatalogHeader",
+          "width": "fill_container",
+          "height": 52,
+          "padding": [
+            0,
+            20
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "KFUUh",
+              "name": "CatalogTitle",
+              "fill": "$textPrimary",
+              "content": "Stock",
+              "fontFamily": "$fontBody",
+              "fontSize": 22,
+              "fontWeight": "700"
+            },
+            {
+              "type": "icon",
+              "id": "yR6QO",
+              "name": "AddProductButton",
+              "context": "Abre formulario de producto. Hit 44 en implementación.",
+              "width": 22,
+              "height": 22,
+              "icon": "plus",
+              "library": "lucide",
+              "fill": "$accent"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "WfXWx",
+          "name": "CatalogBodyOn",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "padding": [
+            12,
+            20,
+            20,
+            20
+          ],
+          "children": [
+            {
+              "id": "eY84K",
+              "type": "ref",
+              "ref": "hLurN",
+              "name": "MlHeroConnected",
+              "width": "fill_container"
+            },
+            {
+              "type": "frame",
+              "id": "Ml47q",
+              "name": "ProductRow",
+              "context": "Fila de catálogo. Tap abre ficha. Badge ML: Sin publicar | En ML | Desfasado | Error.",
+              "width": "fill_container",
+              "fill": "$surface",
+              "cornerRadius": "$radiusMd",
+              "gap": 10,
+              "padding": [
+                12,
+                16
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "c41c4O",
+                  "type": "ref",
+                  "ref": "AJoPJ",
+                  "name": "ProductThumb"
+                },
+                {
+                  "type": "frame",
+                  "id": "mILQ4",
+                  "name": "ProductInfo",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "B3zZHI",
+                      "name": "ProductTitle",
+                      "fill": "$textPrimary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Filtro aceite Corolla 2015-20",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 15,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "P1xju",
+                      "name": "ProductMeta",
+                      "fill": "$textSecondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Toyota · Stock 8",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "j7AsS",
+                  "name": "ProductRight",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "kwDDR",
+                      "name": "ProductPrice",
+                      "fill": "$textPrimary",
+                      "content": "$12.00",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 15,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "O4GiX5",
+                      "name": "MlSyncBadge",
+                      "context": "Estado de publicación ML. Color + texto, nunca solo color.",
+                      "fill": "$accentMuted",
+                      "cornerRadius": "$radiusFull",
+                      "gap": 4,
+                      "padding": [
+                        4,
+                        8
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "FhGXR",
+                          "type": "ref",
+                          "ref": "aNIc9",
+                          "name": "MlBadgeLogo",
+                          "width": 14,
+                          "height": 14
+                        },
+                        {
+                          "type": "text",
+                          "id": "N5yds",
+                          "name": "MlBadgeLabel",
+                          "fill": "$success",
+                          "content": "En ML",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 10,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "PKIfX",
+              "name": "ProductRow",
+              "context": "Fila de catálogo. Tap abre ficha. Badge ML: Sin publicar | En ML | Desfasado | Error.",
+              "width": "fill_container",
+              "fill": "$surface",
+              "cornerRadius": "$radiusMd",
+              "gap": 10,
+              "padding": [
+                12,
+                16
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "CT4JZ",
+                  "type": "ref",
+                  "ref": "AJoPJ",
+                  "name": "ProductThumb"
+                },
+                {
+                  "type": "frame",
+                  "id": "vKukT",
+                  "name": "ProductInfo",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "YNsZ5",
+                      "name": "ProductTitle",
+                      "fill": "$textPrimary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Pastilla freno delantera Aveo",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 15,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "EWKlF",
+                      "name": "ProductMeta",
+                      "fill": "$textSecondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Chevrolet · Stock 4",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "Symq8",
+                  "name": "ProductRight",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "gRLJj",
+                      "name": "ProductPrice",
+                      "fill": "$textPrimary",
+                      "content": "$28.50",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 15,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "R3YAA",
+                      "name": "MlSyncBadge",
+                      "context": "Estado de publicación ML. Color + texto, nunca solo color.",
+                      "fill": "$accentMuted",
+                      "cornerRadius": "$radiusFull",
+                      "gap": 4,
+                      "padding": [
+                        4,
+                        8
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "ZXd6I",
+                          "type": "ref",
+                          "ref": "aNIc9",
+                          "name": "MlBadgeLogo",
+                          "width": 14,
+                          "height": 14
+                        },
+                        {
+                          "type": "text",
+                          "id": "BbSPv",
+                          "name": "MlBadgeLabel",
+                          "fill": "$success",
+                          "content": "En ML",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 10,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "st9IX",
+              "name": "ProductRow",
+              "context": "Fila de catálogo. Tap abre ficha. Badge ML: Sin publicar | En ML | Desfasado | Error.",
+              "width": "fill_container",
+              "fill": "$surface",
+              "cornerRadius": "$radiusMd",
+              "gap": 10,
+              "padding": [
+                12,
+                16
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "YS1KJ",
+                  "type": "ref",
+                  "ref": "AJoPJ",
+                  "name": "ProductThumb"
+                },
+                {
+                  "type": "frame",
+                  "id": "zHWze",
+                  "name": "ProductInfo",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 4,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "surCw",
+                      "name": "ProductTitle",
+                      "fill": "$textPrimary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Bujía NGK Platino BKR6E",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 15,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ohYjZ",
+                      "name": "ProductMeta",
+                      "fill": "$textSecondary",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "NGK · Stock 24",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "AHL5m",
+                  "name": "ProductRight",
+                  "layout": "vertical",
+                  "gap": 6,
+                  "alignItems": "end",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "k9AJbR",
+                      "name": "ProductPrice",
+                      "fill": "$textPrimary",
+                      "content": "$8.00",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 15,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "L9Oed",
+                      "name": "MlSyncBadge",
+                      "context": "Estado de publicación ML. Color + texto, nunca solo color.",
+                      "fill": "$surfaceElevated",
+                      "cornerRadius": "$radiusFull",
+                      "gap": 4,
+                      "padding": [
+                        4,
+                        8
+                      ],
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "id": "u1dx5",
+                          "type": "ref",
+                          "ref": "aNIc9",
+                          "name": "MlBadgeLogo",
+                          "width": 14,
+                          "height": 14
+                        },
+                        {
+                          "type": "text",
+                          "id": "F35n0i",
+                          "name": "MlBadgeLabel",
+                          "fill": "$warning",
+                          "content": "Pendiente",
+                          "fontFamily": "$fontBody",
+                          "fontSize": 10,
+                          "fontWeight": "600"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "Pn4o6",
+      "x": 40,
+      "y": 900,
+      "name": "PhotoSlotGrid",
+      "context": "Hasta 6 fotos (ML VE JSON pictures). Slot 1 = portada. JPG/PNG, min 500px, ideal 1200x1200, max 10MB. Producto ~95% del recuadro. Sin logo, watermark, texto ni datos de contacto.",
+      "reusable": true,
+      "width": 350,
+      "layout": "vertical",
+      "gap": 8,
+      "children": [
+        {
+          "type": "text",
+          "id": "G74Mna",
+          "name": "PhotosSectionLabel",
+          "fill": "$textSecondary",
+          "content": "Fotos para MercadoLibre",
+          "fontFamily": "$fontBody",
+          "fontSize": "$textLabel",
+          "fontWeight": "600"
+        },
+        {
+          "type": "frame",
+          "id": "piVRe",
+          "name": "SlotsRow",
+          "width": "fill_container",
+          "gap": 8,
+          "children": [
+            {
+              "type": "frame",
+              "id": "q7LjEw",
+              "name": "PhotoSlotCover",
+              "context": "Foto 1 portada. Abre cámara con guías ML. Obligatoria para publicar.",
+              "width": 52,
+              "height": 64,
+              "fill": "$surfaceElevated",
+              "cornerRadius": "$radiusMd",
+              "stroke": "$accent",
+              "strokeWidth": 2,
+              "layout": "vertical",
+              "gap": 4,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "ylpWz",
+                  "name": "SlotCameraIcon",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "camera",
+                  "library": "lucide",
+                  "fill": "$accent"
+                },
+                {
+                  "type": "text",
+                  "id": "cD1sm",
+                  "name": "SlotLabel",
+                  "fill": "$textSecondary",
+                  "content": "Portada",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 9,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "jIpEX",
+              "name": "PhotoSlot",
+              "context": "Foto adicional. Tap cámara o galería.",
+              "width": 52,
+              "height": 64,
+              "fill": "$surfaceElevated",
+              "cornerRadius": "$radiusMd",
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 4,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "vVzG3",
+                  "name": "SlotCameraIcon",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "camera",
+                  "library": "lucide",
+                  "fill": "$steel"
+                },
+                {
+                  "type": "text",
+                  "id": "rwtUo",
+                  "name": "SlotLabel",
+                  "fill": "$textSecondary",
+                  "content": "N. parte",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 9,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "h2GrHk",
+              "name": "PhotoSlot",
+              "context": "Foto adicional. Tap cámara o galería.",
+              "width": 52,
+              "height": 64,
+              "fill": "$surfaceElevated",
+              "cornerRadius": "$radiusMd",
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 4,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "Z6B8XR",
+                  "name": "SlotCameraIcon",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "camera",
+                  "library": "lucide",
+                  "fill": "$steel"
+                },
+                {
+                  "type": "text",
+                  "id": "c0AM7",
+                  "name": "SlotLabel",
+                  "fill": "$textSecondary",
+                  "content": "Ángulo 2",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 9,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "juf97",
+              "name": "PhotoSlot",
+              "context": "Foto adicional. Tap cámara o galería.",
+              "width": 52,
+              "height": 64,
+              "fill": "$surfaceElevated",
+              "cornerRadius": "$radiusMd",
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 4,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "sG7KA",
+                  "name": "SlotCameraIcon",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "camera",
+                  "library": "lucide",
+                  "fill": "$steel"
+                },
+                {
+                  "type": "text",
+                  "id": "PjqCK",
+                  "name": "SlotLabel",
+                  "fill": "$textSecondary",
+                  "content": "Caja",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 9,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "o6tJq",
+              "name": "PhotoSlot",
+              "context": "Foto adicional. Tap cámara o galería.",
+              "width": 52,
+              "height": 64,
+              "fill": "$surfaceElevated",
+              "cornerRadius": "$radiusMd",
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 4,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "T0HdB5",
+                  "name": "SlotCameraIcon",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "camera",
+                  "library": "lucide",
+                  "fill": "$steel"
+                },
+                {
+                  "type": "text",
+                  "id": "tMhQu",
+                  "name": "SlotLabel",
+                  "fill": "$textSecondary",
+                  "content": "Detalle",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 9,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "I719Ex",
+              "name": "PhotoSlot",
+              "context": "Foto adicional. Tap cámara o galería.",
+              "width": 52,
+              "height": 64,
+              "fill": "$surfaceElevated",
+              "cornerRadius": "$radiusMd",
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "layout": "vertical",
+              "gap": 4,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "EIKU2",
+                  "name": "SlotCameraIcon",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "plus",
+                  "library": "lucide",
+                  "fill": "$steel"
+                },
+                {
+                  "type": "text",
+                  "id": "ZDpob",
+                  "name": "SlotLabel",
+                  "fill": "$textSecondary",
+                  "content": "+",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 9,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "Z9FKO9",
+          "name": "PhotosHint",
+          "fill": "$textDisabled",
+          "textGrowth": "fixed-width",
+          "width": 350,
+          "content": "Fondo claro. Pieza centrada. Sin logo ni texto en la foto.",
+          "fontFamily": "$fontBody",
+          "fontSize": 11,
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "yCiFe",
+      "x": 2180,
+      "y": 0,
+      "name": "Catalog / Product / Form / iPhone",
+      "context": "Alta/edición de pieza. Campos mapean a atributos ML: title, BRAND, MODEL, PART_NUMBER, COLOR, description, condition, compatibilidad. Fotos primero porque ML las exige para exponer.",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 1100,
+      "fill": "$bg",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "nBdSq",
+          "name": "StatusSpacer",
+          "width": "fill_container",
+          "height": 47
+        },
+        {
+          "type": "frame",
+          "id": "iecCI",
+          "name": "FormNav",
+          "width": "fill_container",
+          "height": 48,
+          "padding": [
+            0,
+            20
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "XwHrX",
+              "name": "BackButton",
+              "context": "Pop. Descarta si no hay cambios.",
+              "width": 22,
+              "height": 22,
+              "icon": "chevron-left",
+              "library": "lucide",
+              "fill": "$textPrimary"
+            },
+            {
+              "type": "text",
+              "id": "wm6z3",
+              "name": "FormNavTitle",
+              "fill": "$textPrimary",
+              "content": "Nueva pieza",
+              "fontFamily": "$fontBody",
+              "fontSize": 17,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "Ygaqz",
+              "name": "FormSave",
+              "context": "Valida campos ML-ready. No publica en ML; eso es toggle aparte.",
+              "fill": "$accent",
+              "content": "Guardar",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "VmCjY",
+          "name": "FormBody",
+          "width": "fill_container",
+          "height": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            8,
+            20,
+            24,
+            20
+          ],
+          "children": [
+            {
+              "id": "V8iPH8",
+              "type": "ref",
+              "ref": "Pn4o6",
+              "name": "FormPhotoGrid",
+              "width": "fill_container"
+            },
+            {
+              "type": "frame",
+              "id": "C3zB2U",
+              "name": "FormField",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "W3lOx",
+                  "name": "FieldLabel",
+                  "fill": "$textSecondary",
+                  "content": "Título",
+                  "fontFamily": "$fontBody",
+                  "fontSize": "$textLabel",
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "SUMGx",
+                  "name": "FieldInput",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": "$radiusMd",
+                  "stroke": "$border",
+                  "strokeWidth": 1,
+                  "padding": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "mfdFp",
+                      "name": "FieldValue",
+                      "fill": "$textPrimary",
+                      "content": "Filtro aceite Toyota Corolla 2015-20",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "L9AIT",
+                  "name": "FieldHint",
+                  "fill": "$textDisabled",
+                  "textGrowth": "fixed-width",
+                  "width": 350,
+                  "content": "ML: Producto + Marca + compatible con… Sin stock ni precio.",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "cLghd",
+              "name": "FormField",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "YTAjl",
+                  "name": "FieldLabel",
+                  "fill": "$textSecondary",
+                  "content": "Número de parte / OEM",
+                  "fontFamily": "$fontBody",
+                  "fontSize": "$textLabel",
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "eLPRu",
+                  "name": "FieldInput",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": "$radiusMd",
+                  "stroke": "$border",
+                  "strokeWidth": 1,
+                  "padding": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "fWFmB",
+                      "name": "FieldValue",
+                      "fill": "$textPrimary",
+                      "content": "90915-YZZD2",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "vMGvJ",
+                  "name": "FieldHint",
+                  "fill": "$textDisabled",
+                  "textGrowth": "fixed-width",
+                  "width": 350,
+                  "content": "Atributo PART_NUMBER. Obligatorio para publicar.",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "SIOel",
+              "name": "FormField",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "b7aDiw",
+                  "name": "FieldLabel",
+                  "fill": "$textSecondary",
+                  "content": "Marca de la pieza",
+                  "fontFamily": "$fontBody",
+                  "fontSize": "$textLabel",
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "Q5g1P",
+                  "name": "FieldInput",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": "$radiusMd",
+                  "stroke": "$border",
+                  "strokeWidth": 1,
+                  "padding": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "vEU5U",
+                      "name": "FieldValue",
+                      "fill": "$textPrimary",
+                      "content": "Toyota",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "nMy4M",
+                  "name": "FieldHint",
+                  "fill": "$textDisabled",
+                  "textGrowth": "fixed-width",
+                  "width": 350,
+                  "content": "Atributo BRAND. Distinto de marca del vehículo si es aftermarket.",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "KP300",
+              "name": "FormField",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "W8PBb",
+                  "name": "FieldLabel",
+                  "fill": "$textSecondary",
+                  "content": "Color",
+                  "fontFamily": "$fontBody",
+                  "fontSize": "$textLabel",
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "JDl7F",
+                  "name": "FieldInput",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": "$radiusMd",
+                  "stroke": "$border",
+                  "strokeWidth": 1,
+                  "padding": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "ip79o",
+                      "name": "FieldValue",
+                      "fill": "$textPrimary",
+                      "content": "Negro",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "fhVL9",
+                  "name": "FieldHint",
+                  "fill": "$textDisabled",
+                  "textGrowth": "fixed-width",
+                  "width": 350,
+                  "content": "Atributo COLOR cuando la categoría lo pide.",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "jBUus",
+              "name": "FormField",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 6,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "p7GkG",
+                  "name": "FieldLabel",
+                  "fill": "$textSecondary",
+                  "content": "Descripción",
+                  "fontFamily": "$fontBody",
+                  "fontSize": "$textLabel",
+                  "fontWeight": "500"
+                },
+                {
+                  "type": "frame",
+                  "id": "HKVaD",
+                  "name": "FieldInput",
+                  "width": "fill_container",
+                  "fill": "$surface",
+                  "cornerRadius": "$radiusMd",
+                  "stroke": "$border",
+                  "strokeWidth": 1,
+                  "padding": 12,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "rTwKH",
+                      "name": "FieldValue",
+                      "fill": "$textPrimary",
+                      "content": "Filtro original. Compatible Corolla 2015-2020. Garantía 30 días.",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "b5Z8n",
+                  "name": "FieldHint",
+                  "fill": "$textDisabled",
+                  "textGrowth": "fixed-width",
+                  "width": 350,
+                  "content": "Sin teléfono, WhatsApp ni URL.",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 11,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "SCw3V",
+              "name": "PublishOnMlRow",
+              "context": "Publicar en ML. Disabled si faltan fotos/campos o plan basic. Requiere OAuth activo.",
+              "width": "fill_container",
+              "fill": "$surface",
+              "cornerRadius": "$radiusLg",
+              "padding": 14,
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "mtMhB",
+                  "name": "PublishCopy",
+                  "gap": 8,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "id": "XZ80h",
+                      "type": "ref",
+                      "ref": "aNIc9",
+                      "name": "PublishMlLogo",
+                      "width": 24,
+                      "height": 24
+                    },
+                    {
+                      "type": "text",
+                      "id": "LZHQV",
+                      "name": "PublishLabel",
+                      "fill": "$textPrimary",
+                      "content": "Publicar en MercadoLibre",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "s6nsIC",
+                  "name": "PublishSwitch",
+                  "context": "Switch. Off por defecto. On dispara validación ML-ready.",
+                  "width": 44,
+                  "height": 26,
+                  "fill": "$surfaceElevated",
+                  "cornerRadius": "$radiusFull",
+                  "stroke": "$border",
+                  "strokeWidth": 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "VpdA4",
+      "x": 2650,
+      "y": 0,
+      "name": "Catalog / Photos / Capture / iPhone",
+      "context": "Cámara in-app para fotos ML. Recorte 1:1. Overlay: pieza ~95%, no tocar bordes. Sin watermark. Tras disparo: resize a 1200x1200 si es mayor; rechazar <500px. expo-camera + expo-image-picker.",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "Lk1h5",
+          "name": "StatusSpacer",
+          "width": "fill_container",
+          "height": 47
+        },
+        {
+          "type": "frame",
+          "id": "zHKVX",
+          "name": "CaptureNav",
+          "width": "fill_container",
+          "height": 44,
+          "padding": [
+            0,
+            20
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "aJwFo",
+              "name": "CaptureClose",
+              "context": "Cierra sin guardar foto.",
+              "fill": "$textSecondary",
+              "content": "Cancelar",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "KeGDb",
+              "name": "CaptureTitle",
+              "fill": "$textPrimary",
+              "content": "Foto de portada",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "xTSee",
+              "name": "CaptureNavSpacer",
+              "width": 64,
+              "height": 1
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ioL94",
+          "name": "Viewfinder",
+          "context": "Preview cámara cuadrado 1:1. Ideal 1200px. Guías no se graban en el archivo.",
+          "width": "fill_container",
+          "height": 390,
+          "fill": "$surfaceElevated",
+          "layout": "none",
+          "children": [
+            {
+              "type": "rectangle",
+              "cornerRadius": 8,
+              "id": "saJWY",
+              "x": 28,
+              "y": 28,
+              "name": "GuideFrame",
+              "fill": "$accentMuted",
+              "width": 334,
+              "height": 334,
+              "stroke": "$accent",
+              "strokeWidth": 2
+            },
+            {
+              "type": "text",
+              "id": "wWq1K",
+              "x": 48,
+              "y": 350,
+              "name": "GuideHint",
+              "fill": "$accent",
+              "content": "Centra la pieza · ~95% del recuadro",
+              "fontFamily": "$fontBody",
+              "fontSize": 12,
+              "fontWeight": "500"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "lc5cq",
+          "name": "MlPhotoRules",
+          "context": "Reglas ML visibles al disparar. No son legales; son checklist de moderación.",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 8,
+          "padding": [
+            16,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "X6VZal",
+              "name": "RuleRow",
+              "width": "fill_container",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "ESLD6",
+                  "name": "RuleIcon",
+                  "width": 14,
+                  "height": 14,
+                  "icon": "check",
+                  "library": "lucide",
+                  "fill": "$success"
+                },
+                {
+                  "type": "text",
+                  "id": "akB0z",
+                  "name": "RuleText",
+                  "fill": "$textSecondary",
+                  "textGrowth": "fixed-width",
+                  "width": 320,
+                  "content": "Fondo claro y liso. Sin taller de fondo.",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "zxj3N",
+              "name": "RuleRow",
+              "width": "fill_container",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "frSfc",
+                  "name": "RuleIcon",
+                  "width": 14,
+                  "height": 14,
+                  "icon": "check",
+                  "library": "lucide",
+                  "fill": "$success"
+                },
+                {
+                  "type": "text",
+                  "id": "cppiG",
+                  "name": "RuleText",
+                  "fill": "$textSecondary",
+                  "textGrowth": "fixed-width",
+                  "width": 320,
+                  "content": "Una sola pieza. Sin logo, texto ni WhatsApp.",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "k6SQE",
+              "name": "RuleRow",
+              "width": "fill_container",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "o5Rzs3",
+                  "name": "RuleIcon",
+                  "width": 14,
+                  "height": 14,
+                  "icon": "check",
+                  "library": "lucide",
+                  "fill": "$success"
+                },
+                {
+                  "type": "text",
+                  "id": "Q1glG9",
+                  "name": "RuleText",
+                  "fill": "$textSecondary",
+                  "textGrowth": "fixed-width",
+                  "width": 320,
+                  "content": "JPG o PNG · mínimo 500 px · ideal 1200×1200",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "a4BY3",
+          "name": "CaptureActions",
+          "width": "fill_container",
+          "padding": [
+            12,
+            40,
+            28,
+            40
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "H1lfWE",
+              "name": "PickFromGallery",
+              "context": "expo-image-picker. Misma validación de tamaño/formato.",
+              "width": 28,
+              "height": 28,
+              "icon": "image",
+              "library": "lucide",
+              "fill": "$textPrimary"
+            },
+            {
+              "type": "ellipse",
+              "id": "U4BO18",
+              "name": "ShutterButton",
+              "context": "Dispara foto. Haptic success. Valida min 500px; si falla, toast con qué hacer.",
+              "fill": "$textPrimary",
+              "width": 68,
+              "height": 68,
+              "stroke": "$accent",
+              "strokeWidth": 4
+            },
+            {
+              "type": "icon",
+              "id": "l7S4Nn",
+              "name": "FlipCamera",
+              "context": "Cambia cámara. Default trasera.",
+              "width": 28,
+              "height": 28,
+              "icon": "refresh-cw",
+              "library": "lucide",
+              "fill": "$textPrimary"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "QU9xa",
+      "x": 3120,
+      "y": 0,
+      "name": "Catalog / Photos / ReviewPass / iPhone",
+      "context": "Post-captura OK. Checks: formato, >=500px, producto ~95%, sin watermark detectado. CTA Usar foto vuelve al form y llena el slot.",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg",
+      "layout": "vertical",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "KSnWp",
+          "name": "StatusSpacer",
+          "width": "fill_container",
+          "height": 47
+        },
+        {
+          "type": "frame",
+          "id": "pF6bX",
+          "name": "ReviewNav",
+          "width": "fill_container",
+          "height": 48,
+          "padding": [
+            0,
+            20
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "L4PT48",
+              "name": "ReviewRetake",
+              "context": "Vuelve a Capture. No guarda esta toma.",
+              "fill": "$textSecondary",
+              "content": "Otra foto",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "IZhjX",
+              "name": "ReviewTitle",
+              "fill": "$textPrimary",
+              "content": "Revisar portada",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "P4d15w",
+              "name": "ReviewNavPad",
+              "width": 72,
+              "height": 1
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "YNxwb",
+          "name": "ReviewPreview",
+          "context": "Preview recortada 1:1. No es el archivo final; el pipeline exporta 1200x1200 JPEG.",
+          "width": "fill_container",
+          "height": 320,
+          "fill": "$surfaceElevated",
+          "layout": "vertical",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "XJrWw",
+              "name": "PreviewPartIcon",
+              "width": 64,
+              "height": 64,
+              "icon": "circle-dot",
+              "library": "lucide",
+              "fill": "$steel"
+            },
+            {
+              "type": "text",
+              "id": "K6N36",
+              "name": "PreviewCaption",
+              "fill": "$textSecondary",
+              "content": "1200 × 1200 · JPG",
+              "fontFamily": "$fontBody",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Np0WV",
+          "name": "ValidationList",
+          "context": "Validación local antes de subir a Storage/ML. Image Diagnostics API entra en build, no en este mock.",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 10,
+          "padding": [
+            16,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "sf2TE",
+              "name": "CheckRow",
+              "width": "fill_container",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "gG8s8",
+                  "name": "CheckOk",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "circle-check",
+                  "library": "lucide",
+                  "fill": "$success"
+                },
+                {
+                  "type": "text",
+                  "id": "iQAfv",
+                  "name": "CheckLabel",
+                  "fill": "$textPrimary",
+                  "textGrowth": "fixed-width",
+                  "width": 310,
+                  "content": "Tamaño 1200 px — listo para zoom",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "oDrtS",
+              "name": "CheckRow",
+              "width": "fill_container",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "kYy11",
+                  "name": "CheckOk",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "circle-check",
+                  "library": "lucide",
+                  "fill": "$success"
+                },
+                {
+                  "type": "text",
+                  "id": "PGs35",
+                  "name": "CheckLabel",
+                  "fill": "$textPrimary",
+                  "textGrowth": "fixed-width",
+                  "width": 310,
+                  "content": "Formato JPG RGB",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ndchk",
+              "name": "CheckRow",
+              "width": "fill_container",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "TG8qc",
+                  "name": "CheckOk",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "circle-check",
+                  "library": "lucide",
+                  "fill": "$success"
+                },
+                {
+                  "type": "text",
+                  "id": "m4kux",
+                  "name": "CheckLabel",
+                  "fill": "$textPrimary",
+                  "textGrowth": "fixed-width",
+                  "width": 310,
+                  "content": "Sin texto ni logo detectado",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Fou9G",
+          "name": "UsePhotoButton",
+          "context": "Confirma slot. Haptic success. Vuelve a Product Form.",
+          "width": 350,
+          "height": 48,
+          "fill": "$accent",
+          "cornerRadius": "$radiusLg",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "FqGWT",
+              "name": "UsePhotoLabel",
+              "fill": "$textInverse",
+              "content": "Usar esta foto",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textButton",
+              "fontWeight": "600"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "YZy9b",
+      "x": 3550,
+      "y": 0,
+      "name": "Catalog / Photos / ReviewFail / iPhone",
+      "context": "Post-captura rechazada. No se sube a Storage. Usuario debe repetir. Mensajes: qué falló + qué hacer.",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg",
+      "layout": "vertical",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "frame",
+          "id": "fHIQL",
+          "name": "StatusSpacer",
+          "width": "fill_container",
+          "height": 47
+        },
+        {
+          "type": "frame",
+          "id": "LBHwc",
+          "name": "ReviewNav",
+          "width": "fill_container",
+          "height": 48,
+          "padding": [
+            0,
+            20
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "EHUF0",
+              "name": "ReviewRetake",
+              "context": "Vuelve a Capture. No guarda esta toma.",
+              "fill": "$textSecondary",
+              "content": "Otra foto",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "text",
+              "id": "ieBpk",
+              "name": "ReviewTitle",
+              "fill": "$textPrimary",
+              "content": "Revisar portada",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "frame",
+              "id": "n5Tpyb",
+              "name": "ReviewNavPad",
+              "width": 72,
+              "height": 1
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Nug6U",
+          "name": "ReviewPreviewFail",
+          "context": "Preview de la toma inválida. No se persiste.",
+          "opacity": 0.7,
+          "width": "fill_container",
+          "height": 280,
+          "fill": "$surfaceElevated",
+          "layout": "vertical",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "icon",
+              "id": "NPuFp",
+              "name": "PreviewFailIcon",
+              "width": 56,
+              "height": 56,
+              "icon": "image-off",
+              "library": "lucide",
+              "fill": "$error"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "vJMKB",
+          "name": "FailBanner",
+          "context": "Error: qué pasó + qué hacer. role=alert.",
+          "width": 350,
+          "fill": "$surface",
+          "cornerRadius": "$radiusLg",
+          "stroke": "$error",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": 6,
+          "padding": 14,
+          "children": [
+            {
+              "type": "text",
+              "id": "qrWf3",
+              "name": "FailTitle",
+              "fill": "$error",
+              "content": "ML no va a aceptar esta foto",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "SadXk",
+              "name": "FailBody",
+              "fill": "$textSecondary",
+              "textGrowth": "fixed-width",
+              "width": 322,
+              "content": "Mide 380 px. El mínimo es 500. Además parece haber texto encima de la pieza.",
+              "fontFamily": "$fontBody",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Na8HY",
+          "name": "FailList",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 10,
+          "padding": [
+            12,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "CdCW6",
+              "name": "FailRow",
+              "width": "fill_container",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "hEVD4",
+                  "name": "FailIcon",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "circle-alert",
+                  "library": "lucide",
+                  "fill": "$error"
+                },
+                {
+                  "type": "text",
+                  "id": "cgN8n",
+                  "name": "FailLabel",
+                  "fill": "$textPrimary",
+                  "textGrowth": "fixed-width",
+                  "width": 310,
+                  "content": "Tamaño 380 px — muy chica",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "incT9",
+              "name": "FailRow",
+              "width": "fill_container",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "uC5al",
+                  "name": "FailIcon",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "circle-alert",
+                  "library": "lucide",
+                  "fill": "$warning"
+                },
+                {
+                  "type": "text",
+                  "id": "m2S57U",
+                  "name": "FailLabel",
+                  "fill": "$textPrimary",
+                  "textGrowth": "fixed-width",
+                  "width": 310,
+                  "content": "Posible texto o logo",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "X62GE",
+              "name": "FailRow",
+              "width": "fill_container",
+              "gap": 8,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "pcRuE",
+                  "name": "FailIcon",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "circle-check",
+                  "library": "lucide",
+                  "fill": "$success"
+                },
+                {
+                  "type": "text",
+                  "id": "V2SXr",
+                  "name": "FailLabel",
+                  "fill": "$textPrimary",
+                  "textGrowth": "fixed-width",
+                  "width": 310,
+                  "content": "Formato JPG — ok",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "vu639",
+          "name": "RetakeButton",
+          "context": "Vuelve a Capture del mismo slot.",
+          "width": 350,
+          "height": 48,
+          "fill": "$accent",
+          "cornerRadius": "$radiusLg",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "Ah9rR",
+              "name": "RetakeLabel",
+              "fill": "$textInverse",
+              "content": "Tomar otra vez",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textButton",
+              "fontWeight": "600"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "pxnLn",
+      "x": 4020,
+      "y": 0,
+      "name": "Catalog / Publish / Blocked / iPhone",
+      "context": "Usuario prendió Publicar en ML sin ficha completa. Sheet modal. No llama API. Lista huecos: portada, PART_NUMBER, título.",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": "$bg",
+      "layout": "none",
+      "children": [
+        {
+          "type": "rectangle",
+          "id": "ZPi9N",
+          "x": 0,
+          "y": 0,
+          "name": "DimOverlay",
+          "context": "Tap cierra sheet y apaga el switch.",
+          "fill": "#0D0D0DCC",
+          "width": 390,
+          "height": 844
+        },
+        {
+          "type": "frame",
+          "id": "Um1O6",
+          "x": 0,
+          "y": 360,
+          "name": "PublishBlockedSheet",
+          "context": "Bottom sheet. Handle + checklist. CTA Completar ficha hace scroll al primer campo faltante.",
+          "width": 390,
+          "fill": "$surface",
+          "cornerRadius": [
+            16,
+            16,
+            0,
+            0
+          ],
+          "layout": "vertical",
+          "gap": 12,
+          "padding": [
+            16,
+            20,
+            28,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "rectangle",
+              "cornerRadius": "$radiusFull",
+              "id": "XTbUt",
+              "name": "SheetHandle",
+              "fill": "$border",
+              "width": 36,
+              "height": 4
+            },
+            {
+              "type": "frame",
+              "id": "KB5ou",
+              "name": "SheetHeader",
+              "width": "fill_container",
+              "gap": 10,
+              "alignItems": "center",
+              "children": [
+                {
+                  "id": "z5M4S",
+                  "type": "ref",
+                  "ref": "aNIc9",
+                  "name": "SheetMlLogo",
+                  "width": 28,
+                  "height": 28
+                },
+                {
+                  "type": "text",
+                  "id": "uXloH",
+                  "name": "SheetTitle",
+                  "fill": "$textPrimary",
+                  "content": "Falta un poco para publicar",
+                  "fontFamily": "$fontBody",
+                  "fontSize": 17,
+                  "fontWeight": "700"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "bXGMk",
+              "name": "SheetSub",
+              "fill": "$textSecondary",
+              "textGrowth": "fixed-width",
+              "width": 350,
+              "content": "MercadoLibre rechaza la publicación si esto no está. Cuadramos la ficha y listo.",
+              "fontFamily": "$fontBody",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "kCAzc",
+              "name": "GapRow",
+              "width": "fill_container",
+              "gap": 10,
+              "padding": [
+                10,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "K9QaRm",
+                  "name": "GapIcon",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "circle-dashed",
+                  "library": "lucide",
+                  "fill": "$warning"
+                },
+                {
+                  "type": "frame",
+                  "id": "cjR3g",
+                  "name": "GapCopy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "xaZrT",
+                      "name": "GapTitle",
+                      "fill": "$textPrimary",
+                      "content": "Foto de portada",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "FLELt",
+                      "name": "GapHint",
+                      "fill": "$textSecondary",
+                      "content": "Tómalo con la guía de 1200 px",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "i7iYR",
+              "name": "GapRow",
+              "width": "fill_container",
+              "gap": 10,
+              "padding": [
+                10,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "T41hl",
+                  "name": "GapIcon",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "circle-dashed",
+                  "library": "lucide",
+                  "fill": "$warning"
+                },
+                {
+                  "type": "frame",
+                  "id": "RqgiR",
+                  "name": "GapCopy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "hmEPw",
+                      "name": "GapTitle",
+                      "fill": "$textPrimary",
+                      "content": "Número de parte",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "B4ZVpA",
+                      "name": "GapHint",
+                      "fill": "$textSecondary",
+                      "content": "Atributo PART_NUMBER",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "wabsW",
+              "name": "GapRow",
+              "width": "fill_container",
+              "gap": 10,
+              "padding": [
+                10,
+                0
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "WBM4b",
+                  "name": "GapIcon",
+                  "width": 18,
+                  "height": 18,
+                  "icon": "circle-dashed",
+                  "library": "lucide",
+                  "fill": "$warning"
+                },
+                {
+                  "type": "frame",
+                  "id": "oMjCF",
+                  "name": "GapCopy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "p4Ceh4",
+                      "name": "GapTitle",
+                      "fill": "$textPrimary",
+                      "content": "Título al estilo ML",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 14,
+                      "fontWeight": "600"
+                    },
+                    {
+                      "type": "text",
+                      "id": "grqlC",
+                      "name": "GapHint",
+                      "fill": "$textSecondary",
+                      "content": "Producto + marca + compatible con…",
+                      "fontFamily": "$fontBody",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "CbtDf",
+              "name": "CompleteListingButton",
+              "context": "Cierra sheet, focus primer gap. No publica.",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "$accent",
+              "cornerRadius": "$radiusLg",
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "KQlFH",
+                  "name": "CompleteLabel",
+                  "fill": "$textInverse",
+                  "content": "Completar ficha",
+                  "fontFamily": "$fontBody",
+                  "fontSize": "$textButton",
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "themes": {
+    "mode": [
+      "dark",
+      "light"
+    ]
+  },
+  "variables": {
+    "bg": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0D0D0D",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#F7F7F8",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "surface": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#1A1A1A",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "surfaceElevated": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#242424",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#F0F1F3",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "border": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#2E2E2E",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#DADDE2",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "textPrimary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#F5F5F5",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#111318",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "textSecondary": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#9E9E9E",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#5A6270",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "textDisabled": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#555555",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#9AA1AC",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "textInverse": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#0D0D0D",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#FFFFFF",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "accent": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FF6B00",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#E85C00",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "accentHover": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#FF8C3A",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#FF7A26",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "accentMuted": {
+      "type": "color",
+      "value": [
+        {
+          "value": "#1A120E",
+          "theme": {
+            "mode": "dark"
+          }
+        },
+        {
+          "value": "#FFF3EB",
+          "theme": {
+            "mode": "light"
+          }
+        }
+      ]
+    },
+    "steel": {
+      "type": "color",
+      "value": "#607D8B"
+    },
+    "success": {
+      "type": "color",
+      "value": "#4CAF50"
+    },
+    "warning": {
+      "type": "color",
+      "value": "#FFC107"
+    },
+    "error": {
+      "type": "color",
+      "value": "#F44336"
+    },
+    "info": {
+      "type": "color",
+      "value": "#2196F3"
+    },
+    "spaceXs": {
+      "type": "number",
+      "value": 4
+    },
+    "spaceSm": {
+      "type": "number",
+      "value": 8
+    },
+    "spaceMd": {
+      "type": "number",
+      "value": 12
+    },
+    "spaceBase": {
+      "type": "number",
+      "value": 16
+    },
+    "spaceLg": {
+      "type": "number",
+      "value": 20
+    },
+    "spaceXl": {
+      "type": "number",
+      "value": 24
+    },
+    "space2xl": {
+      "type": "number",
+      "value": 32
+    },
+    "contentGutter": {
+      "type": "number",
+      "value": 20
+    },
+    "radiusSm": {
+      "type": "number",
+      "value": 4
+    },
+    "radiusMd": {
+      "type": "number",
+      "value": 8
+    },
+    "radiusLg": {
+      "type": "number",
+      "value": 12
+    },
+    "radiusXl": {
+      "type": "number",
+      "value": 16
+    },
+    "radiusFull": {
+      "type": "number",
+      "value": 9999
+    },
+    "fontBody": {
+      "type": "string",
+      "value": "Inter"
+    },
+    "textTitle": {
+      "type": "number",
+      "value": 28
+    },
+    "textCardTitle": {
+      "type": "number",
+      "value": 18
+    },
+    "textSubtitle": {
+      "type": "number",
+      "value": 16
+    },
+    "textButton": {
+      "type": "number",
+      "value": 16
+    },
+    "textLabel": {
+      "type": "number",
+      "value": 13
+    },
+    "textNote": {
+      "type": "number",
+      "value": 12
+    }
+  },
+  "fileToken": "40fe02bc-668e-4db8-8d6a-208344589f49"
+}

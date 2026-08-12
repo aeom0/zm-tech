@@ -1,36 +1,4 @@
-/* Logo oficial de MercadoLibre en SVG */
-function MLLogo({ size = 32 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 64 64"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-label="MercadoLibre"
-    >
-      {/* Fondo amarillo redondeado */}
-      <rect width="64" height="64" rx="12" fill="#FFE600" />
-      {/* Letra M estilizada en azul MercadoLibre */}
-      <path
-        d="M10 42V24l10 10 10-10v18"
-        stroke="#3483FA"
-        strokeWidth="5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-      />
-      <path
-        d="M34 42V24l10 10 10-10v18"
-        stroke="#3483FA"
-        strokeWidth="5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-      />
-    </svg>
-  );
-}
+import { MercadoLibreLogo } from "@/components/brand/MercadoLibreLogo";
 
 export function MLSection() {
   return (
@@ -40,7 +8,7 @@ export function MLSection() {
         {/* Columna texto */}
         <div>
           <div className="l-ml-logo-badge">
-            <MLLogo size={36} />
+            <MercadoLibreLogo size={36} />
             <div className="l-ml-badge-text">
               <span className="l-ml-logo">MercadoLibre</span>
               <span className="l-ml-badge-tag">INTEGRACIÓN OFICIAL</span>
@@ -111,7 +79,7 @@ export function MLSection() {
           <div className="l-ml-card-main">
             <div className="l-ml-card-header">
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <MLLogo size={24} />
+                <MercadoLibreLogo size={24} />
                 <span className="l-ml-card-title">Inventario sincronizado</span>
               </div>
               <span className="l-ml-status">● Activo</span>
@@ -144,7 +112,7 @@ export function MLSection() {
 
             {/* Footer del card con logo ML */}
             <div className="l-ml-card-footer">
-              <MLLogo size={16} />
+              <MercadoLibreLogo size={16} />
               <span>Sincronizado con MercadoLibre Venezuela</span>
             </div>
           </div>

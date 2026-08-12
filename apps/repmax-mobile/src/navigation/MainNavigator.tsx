@@ -19,6 +19,8 @@ import PaymentScreen from '../screens/pos/PaymentScreen';
 import ReceiptScreen from '../screens/pos/ReceiptScreen';
 import InventoryScreen from '../screens/inventory/InventoryScreen';
 import ProductFormScreen from '../screens/inventory/ProductFormScreen';
+import PhotoCaptureScreen from '../screens/inventory/PhotoCaptureScreen';
+import PhotoReviewScreen from '../screens/inventory/PhotoReviewScreen';
 import CustomersScreen from '../screens/customers/CustomersScreen';
 import CustomerDetailScreen from '../screens/customers/CustomerDetailScreen';
 import MoreHomeScreen from '../screens/more/MoreHomeScreen';
@@ -69,6 +71,16 @@ function InventoryNavigator() {
         options={({ route }) => ({
           title: route.params?.productId ? 'Editar Producto' : 'Nuevo Producto',
         })}
+      />
+      <InventoryStack.Screen
+        name="PhotoCapture"
+        component={PhotoCaptureScreen}
+        options={{ headerShown: false }}
+      />
+      <InventoryStack.Screen
+        name="PhotoReview"
+        component={PhotoReviewScreen}
+        options={{ headerShown: false }}
       />
     </InventoryStack.Navigator>
   );

@@ -66,6 +66,8 @@ Pensado para no re-buildear por libs faltantes. UI de fotos/barcode puede llegar
 
 Helpers listos: `src/utils/network.ts`, `src/utils/haptics.ts`.
 
+Fotos de catálogo (reglas ML): `src/utils/mlPhotoRules.ts` + `productPhotoService`. Guía: [docs/repmax/design/ml-fotos.md](../../docs/repmax/design/ml-fotos.md).
+
 ### Generar APK (preview, distribución interna)
 
 ```bash

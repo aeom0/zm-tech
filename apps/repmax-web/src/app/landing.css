@@ -1215,6 +1215,11 @@
   flex-shrink: 0;
 }
 
+.l-phone-sale-icon-ml {
+  background: transparent;
+  border-color: transparent;
+}
+
 .l-phone-sale-info { flex: 1; min-width: 0; }
 
 .l-phone-sale-name {
@@ -1519,10 +1524,8 @@
   flex-shrink: 0;
 }
 .l-dm-sale-icon.ml {
-  font-size: 6px;
-  background: rgba(52,131,250,0.15);
-  color: #3483FA;
-  font-weight: 700;
+  background: transparent;
+  padding: 0;
 }
 .l-dm-sale-info { flex: 1; min-width: 0; }
 .l-dm-sale-name { font-size: 7px; color: #F0F0F0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

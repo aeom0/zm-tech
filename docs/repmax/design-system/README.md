@@ -32,7 +32,8 @@ Sistema visual **Industrial Dark** para web y mobile. Fuente de verdad de diseñ
 
 | Pieza | Estado |
 |-------|--------|
-| Tokens Pencil (`onboarding.pen`) | Listo (dark/light) |
+| Tokens Pencil (`onboarding.pen` + `catalog.pen`) | Listo (dark/light) |
 | Componentes onboarding | Listo en canvas |
+| Catálogo / fotos ML | Canvas + mobile fase A |
 | Design system docs | v0.1 — 2026-08-01 |
 | Paridad total web/dashboard | Pendiente |

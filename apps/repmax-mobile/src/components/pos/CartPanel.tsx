@@ -13,8 +13,10 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 
 import { EmptyState } from '../ui/EmptyState';
+import { ProductThumb } from '../inventory/ProductThumb';
 import { useCart } from '../../context/CartContext';
 import { formatUSD } from '../../utils/formatters';
+import { uriPortada } from '../../utils/productPhotos';
 import { hapticLight } from '../../utils/haptics';
 import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
 import type { CartItem } from '../../types/database';
@@ -39,6 +41,11 @@ function CartItemRow({
 }) {
   return (
     <View style={styles.itemRow}>
+      <ProductThumb
+        uri={uriPortada(item.product.photos)}
+        size="sm"
+        accessibilityLabel={item.product.title}
+      />
       <View style={styles.itemInfo}>
         <Text style={styles.itemTitle} numberOfLines={2}>{item.product.title}</Text>
         <Text style={styles.itemMeta}>
@@ -200,6 +207,7 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     marginBottom: spacing.sm,
     alignItems: 'center',
+    gap: spacing.sm,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.bg.border,
     ...shadows.sm,
