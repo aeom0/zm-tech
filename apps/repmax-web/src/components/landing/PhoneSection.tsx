@@ -1,3 +1,5 @@
+import { MercadoLibreLogo } from "@/components/brand/MercadoLibreLogo";
+
 export function PhoneSection() {
   return (
     <section className="l-phone-section l-reveal">
@@ -88,7 +90,9 @@ export function PhoneSection() {
                 <div className="l-phone-sale-amount">$28.50</div>
               </div>
               <div className="l-phone-sale-row">
-                <div className="l-phone-sale-icon" style={{ fontSize: 12, background: "rgba(52,131,250,0.15)", color: "#3483FA", fontWeight: 700 }}>ML</div>
+                <div className="l-phone-sale-icon l-phone-sale-icon-ml">
+                  <MercadoLibreLogo size={18} />
+                </div>
                 <div className="l-phone-sale-info">
                   <div className="l-phone-sale-name">Bujía NGK BKR6E (x4)</div>
                   <div className="l-phone-sale-meta">Hace 1h · MercadoLibre</div>

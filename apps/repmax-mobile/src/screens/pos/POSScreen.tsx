@@ -15,11 +15,13 @@ import { FilterChips } from '../../components/ui/FilterChips';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { ActionBar } from '../../components/ui/FAB';
 import { CartPanel } from '../../components/pos/CartPanel';
+import { ProductThumb } from '../../components/inventory/ProductThumb';
 import { useProducts } from '../../hooks/useProducts';
 import { useCart } from '../../context/CartContext';
 import { useResponsive, useBreakpointValue } from '../../hooks/useResponsive';
 import { useTabBarOffset } from '../../hooks/useTabBarOffset';
 import { formatUSD } from '../../utils/formatters';
+import { uriPortada } from '../../utils/productPhotos';
 import { hapticLight } from '../../utils/haptics';
 import { colors, typography, spacing, borderRadius, shadows, layout } from '../../utils/theme';
 import type { Product } from '../../types/database';
@@ -59,13 +61,27 @@ function ProductCard({
   compact?: boolean;
 }) {
   const outOfStock = product.stock === 0;
+  const portada = uriPortada(product.photos);
   return (
     <View style={[
       styles.productCard,
       compact && styles.productCardCompact,
       outOfStock && styles.productCardDisabled,
     ]}>
-      <View style={styles.productInfo}>
+      {compact ? (
+        <ProductThumb
+          uri={portada}
+          size="cover"
+          accessibilityLabel={portada ? `Foto de ${product.title}` : `Sin foto: ${product.title}`}
+        />
+      ) : (
+        <ProductThumb
+          uri={portada}
+          size="md"
+          accessibilityLabel={portada ? `Foto de ${product.title}` : `Sin foto: ${product.title}`}
+        />
+      )}
+      <View style={[styles.productInfo, compact && styles.productInfoCompact]}>
         <Text style={styles.productTitle} numberOfLines={compact ? 2 : 1}>{product.title}</Text>
         <Text style={styles.productMeta} numberOfLines={1}>{product.brand} · {product.model}</Text>
         {!compact && product.partNumber ? (
@@ -77,7 +93,7 @@ function ProductCard({
         </View>
       </View>
       <TouchableOpacity
-        style={[styles.addBtn, outOfStock && styles.addBtnDisabled]}
+        style={[styles.addBtn, compact && styles.addBtnCompact, outOfStock && styles.addBtnDisabled]}
         onPress={onAdd}
         disabled={outOfStock}
         accessibilityLabel={`Agregar ${product.title}`}
@@ -266,11 +282,16 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     marginBottom: spacing.sm,
     alignItems: 'center',
+    gap: spacing.sm,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.bg.border,
     ...shadows.sm,
   },
   productCardCompact: {
+    flexDirection: 'column',
+    alignItems: 'stretch',
+    padding: 0,
+    overflow: 'hidden',
     minHeight: 96,
   },
   productCardDisabled: {
@@ -279,6 +300,10 @@ const styles = StyleSheet.create({
   productInfo: {
     flex: 1,
     minWidth: 0,
+  },
+  productInfoCompact: {
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.sm,
   },
   productTitle: {
     fontSize: typography.size.base,
@@ -324,7 +349,12 @@ const styles = StyleSheet.create({
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: spacing.md,
+    marginLeft: spacing.sm,
+  },
+  addBtnCompact: {
+    alignSelf: 'flex-end',
+    margin: spacing.md,
+    marginTop: spacing.sm,
   },
   addBtnDisabled: {
     backgroundColor: colors.bg.elevated,

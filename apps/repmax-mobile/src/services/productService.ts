@@ -1,28 +1,52 @@
 import { supabase } from '../utils/supabase';
-import type { Product } from '../types/database';
+import type { PartCondition, Product, VehicleType } from '../types/database';
 
-// Mapea snake_case de Supabase a camelCase
-function mapProduct(row: any): Product {
+/** Fila snake_case de PostgREST (`repmax_products`). */
+interface ProductRow {
+  id: string;
+  store_id: string;
+  title: string;
+  description: string | null;
+  brand: string;
+  model: string;
+  year_from: number | null;
+  year_to: number | null;
+  vehicle_type: VehicleType | null;
+  condition: PartCondition | null;
+  part_number: string | null;
+  price_usd: string | number;
+  price_bs: string | number | null;
+  stock: number | null;
+  min_stock: number | null;
+  photos: string[] | null;
+  is_active: boolean | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+function mapProduct(row: ProductRow): Product {
   return {
     id: row.id,
     storeId: row.store_id,
     title: row.title,
-    description: row.description,
+    description: row.description ?? undefined,
     brand: row.brand,
     model: row.model,
-    yearFrom: row.year_from,
-    yearTo: row.year_to,
-    vehicleType: row.vehicle_type,
-    condition: row.condition,
-    partNumber: row.part_number,
-    priceUsd: parseFloat(row.price_usd),
-    priceBs: row.price_bs ? parseFloat(row.price_bs) : undefined,
-    stock: row.stock,
-    minStock: row.min_stock,
-    photos: row.photos,
-    isActive: row.is_active,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
+    yearFrom: row.year_from ?? undefined,
+    yearTo: row.year_to ?? undefined,
+    vehicleType: row.vehicle_type ?? undefined,
+    condition: row.condition ?? 'NEW',
+    partNumber: row.part_number ?? undefined,
+    priceUsd: parseFloat(String(row.price_usd)),
+    priceBs: row.price_bs != null ? parseFloat(String(row.price_bs)) : undefined,
+    stock: row.stock ?? 0,
+    minStock: row.min_stock ?? 1,
+    photos: Array.isArray(row.photos)
+      ? row.photos.filter((uri): uri is string => typeof uri === 'string' && uri.length > 0)
+      : [],
+    isActive: row.is_active ?? true,
+    createdAt: row.created_at ?? '',
+    updatedAt: row.updated_at ?? '',
   };
 }
 

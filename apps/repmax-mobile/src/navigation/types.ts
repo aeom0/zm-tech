@@ -27,7 +27,20 @@ export type POSStackParamList = {
 
 export type InventoryStackParamList = {
   Inventory: undefined;
-  ProductForm: { productId?: string };
+  ProductForm: {
+    productId?: string;
+    pendingPhoto?: { slotIndex: number; uri: string };
+  };
+  PhotoCapture: { slotIndex: number; productId?: string };
+  PhotoReview: {
+    slotIndex: number;
+    productId?: string;
+    uri: string;
+    width: number;
+    height: number;
+    fileSize?: number | null;
+    mimeType?: string | null;
+  };
 };
 
 export type CustomersStackParamList = {

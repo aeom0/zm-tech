@@ -2,6 +2,7 @@
 // Server Component — CSS + wordmark oficial
 
 import { BrandLogo } from "@/components/brand/BrandLogo";
+import { MercadoLibreLogo } from "@/components/brand/MercadoLibreLogo";
 
 /* ── Contenido compartido de la pantalla (Dashboard RepMAX) ─────────────── */
 
@@ -54,7 +55,7 @@ function SaleRow({
   return (
     <div className="l-dm-sale-row">
       <div className={`l-dm-sale-icon${mlIcon ? " ml" : ""}`}>
-        {mlIcon ? "ML" : icon}
+        {mlIcon ? <MercadoLibreLogo size={14} /> : icon}
       </div>
       <div className="l-dm-sale-info">
         <div className="l-dm-sale-name">{name}</div>

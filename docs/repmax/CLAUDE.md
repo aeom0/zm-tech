@@ -62,7 +62,8 @@ pnpm --filter @repmax/repmax-schema check:types   # si existe script
 
 ## Docs relacionadas
 
+- Changelog: [CHANGELOG.md](./CHANGELOG.md)
 - Roadmap: [ROADMAP.md](./ROADMAP.md)
-- Planes cerrados: [plans/](./plans/)
-- Diseño onboarding: [design/](./design/)
+- Planes: [plans/](./plans/) (01–03 cerrados; 04 catálogo ML en curso)
+- Diseño onboarding: [design/](./design/) · catálogo ML: [design/catalog-ux-spec.md](./design/catalog-ux-spec.md), fotos [design/ml-fotos.md](./design/ml-fotos.md)
 - Design system: [design-system/](./design-system/)

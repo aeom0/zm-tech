@@ -74,6 +74,8 @@ export interface Product {
   stock: number;
   minStock: number;
   photos?: string[];
+  /** Intención de publicar en ML. Columna `ml_publish_intent` aún no existe en SQL. */
+  mlPublishIntent?: boolean;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
