@@ -9,6 +9,12 @@ import { ML_PHOTO } from '../utils/mlPhotoRules';
 
 const BUCKET = 'repmax-products';
 
+async function pesoBytes(uri: string): Promise<number> {
+  const response = await fetch(uri);
+  const buffer = await response.arrayBuffer();
+  return buffer.byteLength;
+}
+
 export interface AssetFoto {
   uri: string;
   width: number;
@@ -67,16 +73,26 @@ export const productPhotoService = {
     return aAsset(result);
   },
 
-  /** Recorte ya es 1:1; baja a 1200 si viene más grande. */
+  /** Recorte ya es 1:1; baja a 1200 si viene más grande y confirma ≤ 5 MB. */
   async prepararParaMl(uri: string, width: number, height: number): Promise<string> {
     const lado = Math.min(width, height);
     const target = Math.min(ML_PHOTO.idealPx, lado);
-    const manipulated = await ImageManipulator.manipulateAsync(
-      uri,
-      [{ resize: { width: target, height: target } }],
-      { compress: 0.85, format: ImageManipulator.SaveFormat.JPEG },
-    );
-    return manipulated.uri;
+    // Sin expo-file-system (no está en el APK preview). fetch sobre file:// basta.
+    const CALIDADES = [0.85, 0.7, 0.5] as const;
+    let ultimaUri = uri;
+
+    for (const compress of CALIDADES) {
+      const manipulated = await ImageManipulator.manipulateAsync(
+        uri,
+        [{ resize: { width: target, height: target } }],
+        { compress, format: ImageManipulator.SaveFormat.JPEG },
+      );
+      ultimaUri = manipulated.uri;
+      const peso = await pesoBytes(ultimaUri);
+      if (peso <= ML_PHOTO.maxBytes) return ultimaUri;
+    }
+
+    throw new Error('La foto sigue pesando mucho después de comprimir. Prueba con otra.');
   },
 
   async subir(storeId: string, localUri: string): Promise<string> {

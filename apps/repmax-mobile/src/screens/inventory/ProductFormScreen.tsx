@@ -11,38 +11,13 @@ import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { PhotoSlotGrid } from '../../components/inventory/PhotoSlotGrid';
-import { useAuth } from '../../context/AuthContext';
-import { productService } from '../../services/productService';
-import { productPhotoService } from '../../services/productPhotoService';
+import { useProductForm } from '../../hooks/useProductForm';
 import { BRANDS } from '../../constants/brands';
-import { ML_PHOTO } from '../../utils/mlPhotoRules';
 import { colors, typography, spacing, borderRadius } from '../../utils/theme';
 import type { PartCondition, VehicleType } from '../../types/database';
 import type { InventoryStackParamList } from '../../navigation/types';
 
 type Props = NativeStackScreenProps<InventoryStackParamList, 'ProductForm'>;
-
-interface FormState {
-  title: string;
-  description: string;
-  brand: string;
-  model: string;
-  yearFrom: string;
-  yearTo: string;
-  vehicleType: VehicleType | '';
-  condition: PartCondition;
-  partNumber: string;
-  priceUsd: string;
-  stock: string;
-  minStock: string;
-}
-
-const INITIAL_FORM: FormState = {
-  title: '', description: '', brand: '', model: '',
-  yearFrom: '', yearTo: '', vehicleType: '',
-  condition: 'NEW', partNumber: '',
-  priceUsd: '', stock: '0', minStock: '1',
-};
 
 const VEHICLE_TYPES: { value: VehicleType; label: string }[] = [
   { value: 'CAR', label: 'Carro' },
@@ -51,155 +26,41 @@ const VEHICLE_TYPES: { value: VehicleType; label: string }[] = [
   { value: 'SUV', label: 'SUV' },
 ];
 
-function slotsVacios(): Array<string | null> {
-  return Array.from({ length: ML_PHOTO.maxSlots }, () => null);
-}
-
 export default function ProductFormScreen({ route, navigation }: Props) {
   const { productId, pendingPhoto } = route.params ?? {};
-  const isEditing = !!productId;
-  const { store } = useAuth();
-
-  const [form, setForm] = useState<FormState>(INITIAL_FORM);
-  const [photos, setPhotos] = useState<Array<string | null>>(slotsVacios);
-  const [publicarMl, setPublicarMl] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isFetchingProduct, setIsFetchingProduct] = useState(isEditing);
+  const {
+    form,
+    setField,
+    photos,
+    clearPhotoSlot,
+    publicarMl,
+    handlePublicarMl,
+    isLoading,
+    isFetchingProduct,
+    loadError,
+    isEditing,
+    handleSave,
+  } = useProductForm({ productId, pendingPhoto });
   const [showBrandPicker, setShowBrandPicker] = useState(false);
 
   useEffect(() => {
-    if (!isEditing) return;
-    const load = async () => {
-      try {
-        const product = await productService.getById(productId);
-        setForm({
-          title: product.title,
-          description: product.description ?? '',
-          brand: product.brand,
-          model: product.model,
-          yearFrom: product.yearFrom?.toString() ?? '',
-          yearTo: product.yearTo?.toString() ?? '',
-          vehicleType: product.vehicleType ?? '',
-          condition: product.condition,
-          partNumber: product.partNumber ?? '',
-          priceUsd: product.priceUsd.toString(),
-          stock: product.stock.toString(),
-          minStock: product.minStock.toString(),
-        });
-        const existentes = product.photos ?? [];
-        const slots = slotsVacios();
-        existentes.slice(0, ML_PHOTO.maxSlots).forEach((uri, i) => {
-          slots[i] = uri;
-        });
-        setPhotos(slots);
-      } catch {
-        Alert.alert('Error', 'No se pudo cargar el producto.');
-        navigation.goBack();
-      } finally {
-        setIsFetchingProduct(false);
-      }
-    };
-    load();
-  }, [productId, isEditing, navigation]);
+    if (!loadError) return;
+    Alert.alert('Error', loadError);
+    navigation.goBack();
+  }, [loadError, navigation]);
 
   useEffect(() => {
     if (!pendingPhoto) return;
-    setPhotos((prev) => {
-      const next = [...prev];
-      next[pendingPhoto.slotIndex] = pendingPhoto.uri;
-      return next;
-    });
     navigation.setParams({ pendingPhoto: undefined });
   }, [pendingPhoto, navigation]);
 
-  const setField = (key: keyof FormState, value: string) => {
-    setForm(prev => ({ ...prev, [key]: value }));
-  };
-
-  const huecosMl = (): string[] => {
-    const huecos: string[] = [];
-    if (!photos[0]) huecos.push('Foto de portada');
-    if (!form.partNumber.trim()) huecos.push('Número de parte');
-    if (!form.title.trim()) huecos.push('Título al estilo ML');
-    return huecos;
-  };
-
-  const handlePublicarMl = (value: boolean) => {
-    if (!value) {
-      setPublicarMl(false);
-      return;
-    }
-    const huecos = huecosMl();
-    if (huecos.length > 0) {
-      Alert.alert(
-        'Falta un poco para publicar',
-        `MercadoLibre rechaza la publicación si esto no está:\n\n• ${huecos.join('\n• ')}\n\nCuadramos la ficha y listo. La conexión OAuth llega en el siguiente paso.`,
-      );
-      return;
-    }
-    Alert.alert(
-      'Conexión MercadoLibre',
-      'La ficha está lista. Conectar la cuenta ML y publicar sale en el siguiente paso — por ahora se guarda en RepMAX.',
-    );
-    setPublicarMl(true);
-  };
-
-  const handleSave = async () => {
-    if (!form.title.trim() || !form.brand.trim() || !form.model.trim() || !form.priceUsd.trim()) {
-      Alert.alert('Campos requeridos', 'Título, marca, modelo y precio son obligatorios.');
-      return;
-    }
-    if (!store?.id) {
-      Alert.alert('Sin tienda', 'No encontramos tu tienda. Cierra sesión e intenta de nuevo.');
-      return;
-    }
-    const price = parseFloat(form.priceUsd);
-    if (isNaN(price) || price <= 0) {
-      Alert.alert('Precio inválido', 'Ingresa un precio válido mayor a 0.');
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const urls: string[] = [];
-      for (const uri of photos) {
-        if (!uri) continue;
-        if (productPhotoService.esUriLocal(uri)) {
-          urls.push(await productPhotoService.subir(store.id, uri));
-        } else {
-          urls.push(uri);
-        }
-      }
-
-      const payload = {
-        storeId: store.id,
-        title: form.title.trim(),
-        description: form.description.trim() || undefined,
-        brand: form.brand.trim(),
-        model: form.model.trim(),
-        yearFrom: form.yearFrom ? parseInt(form.yearFrom, 10) : undefined,
-        yearTo: form.yearTo ? parseInt(form.yearTo, 10) : undefined,
-        vehicleType: form.vehicleType || undefined,
-        condition: form.condition,
-        partNumber: form.partNumber.trim() || undefined,
-        priceUsd: price,
-        stock: parseInt(form.stock, 10) || 0,
-        minStock: parseInt(form.minStock, 10) || 1,
-        photos: urls,
-      };
-
-      if (isEditing) {
-        await productService.update(productId, payload);
-      } else {
-        await productService.create(payload);
-      }
+  const onSave = async () => {
+    const result = await handleSave();
+    if (result.success) {
       navigation.goBack();
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Error al guardar el producto.';
-      Alert.alert('Error', msg);
-    } finally {
-      setIsLoading(false);
+      return;
     }
+    Alert.alert(result.title, result.message);
   };
 
   if (isFetchingProduct) {
@@ -218,13 +79,7 @@ export default function ProductFormScreen({ route, navigation }: Props) {
           <PhotoSlotGrid
             uris={photos}
             onPressSlot={(index) => navigation.navigate('PhotoCapture', { slotIndex: index, productId })}
-            onClearSlot={(index) => {
-              setPhotos((prev) => {
-                const next = [...prev];
-                next[index] = null;
-                return next;
-              });
-            }}
+            onClearSlot={clearPhotoSlot}
           />
         </FormSection>
 
@@ -361,7 +216,7 @@ export default function ProductFormScreen({ route, navigation }: Props) {
       <View style={styles.footer}>
         <TouchableOpacity
           style={[styles.saveBtn, isLoading && styles.saveBtnDisabled]}
-          onPress={handleSave}
+          onPress={() => void onSave()}
           disabled={isLoading}
         >
           {isLoading ? (
