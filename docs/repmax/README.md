@@ -61,7 +61,9 @@ Proyecto: `https://llacowjutjfefboqgfnj.supabase.co`
 | Columnas / enums / tablas en SQL | `packages/repmax-schema/src/schema.ts` |
 | Columnas / enums en el package Drizzle | Migración SQL en `supabase/migrations/` (nunca solo el TS) |
 
-Migraciones actuales: schema inicial, RLS/storage, RPC venta, fix políticas `anon`, hardening advisors.
+Migraciones actuales: schema inicial, RLS/storage, RPC venta, fix políticas `anon`, hardening advisors, onboarding stores, `repmax_ml_listings` (aplicada). Pendiente de aplicar: `repmax_ml_connections` (OAuth).
+
+Edge Functions ML (código en [`supabase/functions/`](./supabase/functions/), **no desplegadas**): `ml-oauth-start`, `ml-oauth-callback`, `ml-token-refresh`, `ml-predict-category`. Secrets y redirect: ver [plans/04](./plans/04-PLAN-catalogo-mercadolibre.md).
 
 ## Seed demo
 
@@ -86,7 +88,7 @@ Historial de producto: [`CHANGELOG.md`](./CHANGELOG.md) (Keep a Changelog). Infr
 ## Planes
 
 - Cerrados: fases 01–03 en `plans/` (scaffold, schema/RLS, retiro Express).
-- En curso: [`plans/04-PLAN-catalogo-mercadolibre.md`](./plans/04-PLAN-catalogo-mercadolibre.md) (fotos hechas; OAuth pendiente).
+- En curso: [`plans/04-PLAN-catalogo-mercadolibre.md`](./plans/04-PLAN-catalogo-mercadolibre.md) (fotos A + mapping/OAuth en código; falta app ML, deploy y `POST /items`).
 
 ## Reglas críticas
 

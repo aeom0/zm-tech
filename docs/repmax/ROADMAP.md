@@ -23,6 +23,8 @@ El detalle de cambios ya hechos vive en [CHANGELOG.md](./CHANGELOG.md). Este arc
   - Spec: `design/catalog-ux-spec.md`
   - Guía: `design/ml-fotos.md`
   - Plan: `plans/04-PLAN-catalogo-mercadolibre.md`
+- [x] **ML impl. 1 (código + SQL)** — `repmax_ml_listings` + predictor/mapper en mobile
+- [x] **ML impl. 2 (código)** — OAuth Edge + connect en settings; ops (app ML, secrets, deploy, DDL connections) pendiente
 
 ## Próximo
 
@@ -32,7 +34,8 @@ El detalle de cambios ya hechos vive en [CHANGELOG.md](./CHANGELOG.md). Este arc
 - [x] Deploy Vercel (`repmax-web`) + EAS / preview mobile (proyecto `@aeom0/repmax`, OTA channels)
 - [ ] Hardening RLS (auditoría advisors) y tests de aislamiento multi-tenant
 - [ ] Dominio / branding storefront público
-- [ ] MercadoLibre fase B–D: ficha/color, OAuth + publicar, sync stock/órdenes
+- [ ] MercadoLibre ops impl. 2: app MLV + secrets + aplicar `repmax_ml_connections` + deploy Edge
+- [ ] MercadoLibre resto B–D: COLOR/título, `POST /items` + badges, sync stock/órdenes
 
 ## Fuera de alcance inmediato
 

@@ -35,6 +35,8 @@ export default function ProductFormScreen({ route, navigation }: Props) {
     clearPhotoSlot,
     publicarMl,
     handlePublicarMl,
+    mlStatus,
+    isConnected,
     isLoading,
     isFetchingProduct,
     loadError,
@@ -201,7 +203,18 @@ export default function ProductFormScreen({ route, navigation }: Props) {
         <View style={styles.mlRow}>
           <View style={styles.mlCopy}>
             <Ionicons name="cloud-upload-outline" size={20} color={colors.brand.orange} />
-            <Text style={styles.mlLabel}>Publicar en MercadoLibre</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.mlLabel}>Publicar en MercadoLibre</Text>
+              <Text style={styles.hint}>
+                {mlStatus === 'connecting'
+                  ? 'Abriendo MercadoLibre…'
+                  : isConnected
+                    ? 'Cuenta conectada — el switch queda listo'
+                    : mlStatus === 'expired'
+                      ? 'Sesión vencida — reconecta en Mi tienda'
+                      : 'Conecta la cuenta en Mi tienda'}
+              </Text>
+            </View>
           </View>
           <Switch
             value={publicarMl}

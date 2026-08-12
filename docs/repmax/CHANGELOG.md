@@ -10,7 +10,9 @@ Roadmap: [ROADMAP.md](./ROADMAP.md). Plan en curso: [plans/04-PLAN-catalogo-merc
 ## [Unreleased]
 
 ### Añadido
-- **Catálogo fotos ML-ready (fase A)** — captura 1:1, revisión pass/fail, resize 1200² JPEG, máx. 6 slots, upload a `repmax-products/{store_id}/drafts/`. Switch publicar lista huecos (portada, n. parte, título); **sin OAuth**.
+- **MercadoLibre impl. 1 — category mapping** — tabla `repmax_ml_listings` (1:1 opcional, aplicada en hub `20260811222700`), contrato `@repmax/repmax-schema/mlListing`, `mlCategoryService` + `useMlCategoryPrediction`. Mapper PART_NUMBER/MPN → `missing` required.
+- **MercadoLibre impl. 2 — OAuth (código)** — tabla `repmax_ml_connections` (SQL **no aplicada**), Edge `ml-oauth-start` / `ml-oauth-callback` / `ml-token-refresh` / `ml-predict-category`, `mlAuthService` + `useMercadoLibreConnection`. Card conectar en Mi tienda; switch de ficha gated a cuenta conectada y plan ≠ basic. Tokens solo `service_role`.
+- **Catálogo fotos ML-ready (fase A)** — captura 1:1, revisión pass/fail, resize 1200² JPEG, máx. 6 slots, upload a `repmax-products/{store_id}/drafts/`. Switch publicar lista huecos (portada, n. parte, título).
   - Código: `mlPhotoRules.ts`, `productPhotoService`, `PhotoSlotGrid`, `PhotoCaptureScreen`, `PhotoReviewScreen`.
   - Canvas: [`design/catalog.pen`](./design/catalog.pen) · spec [`design/catalog-ux-spec.md`](./design/catalog-ux-spec.md) · guía [`design/ml-fotos.md`](./design/ml-fotos.md).
 - Logo oficial MercadoLibre (mismo SVG que landing ZM Tech) en `repmax-web` (`MercadoLibreLogo`) y raster PNG para Pencil.

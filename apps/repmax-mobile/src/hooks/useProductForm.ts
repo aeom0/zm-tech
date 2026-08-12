@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 
 import { useAuth } from '../context/AuthContext';
+import { useMercadoLibreConnection } from './useMercadoLibreConnection';
 import { productPhotoService } from '../services/productPhotoService';
 import { productService } from '../services/productService';
 import { ML_PHOTO } from '../utils/mlPhotoRules';
@@ -49,6 +50,12 @@ interface UseProductFormParams {
 export function useProductForm({ productId, pendingPhoto }: UseProductFormParams) {
   const isEditing = !!productId;
   const { store } = useAuth();
+  const {
+    status: mlStatus,
+    isConnected,
+    planPermiteMl,
+    connect: connectMl,
+  } = useMercadoLibreConnection();
 
   const [form, setForm] = useState<ProductFormState>(INITIAL_FORM);
   const [photos, setPhotos] = useState<Array<string | null>>(slotsVacios);
@@ -128,31 +135,46 @@ export function useProductForm({ productId, pendingPhoto }: UseProductFormParams
     return huecos;
   }, [photos, form.partNumber, form.title]);
 
-  // TODO(ml-oauth): el switch solo vive en estado local. Cuando conectemos ML:
-  // 1) Persistir `publicarMl` en `repmax_products.ml_publish_intent` (migración SQL + schema TS)
-  //    para que sobreviva a cerrar/reabrir la ficha.
-  // 2) OAuth de la tienda es un solo "conectar cuenta ML" en Configuración/Más — no por producto.
-  // 3) Si activa el switch, guarda, y la tienda nunca conectó OAuth: dejar en cola
-  //    (`Pendiente`) y avisar en el dashboard; no publicar a ciegas.
   const handlePublicarMl = useCallback((value: boolean) => {
     if (!value) {
       setPublicarMl(false);
+      return;
+    }
+    if (!planPermiteMl) {
+      Alert.alert(
+        'Plan Pro',
+        'Publicar en MercadoLibre entra en el plan Pro. Actualiza y conecta la cuenta en Mi tienda.',
+      );
+      return;
+    }
+    if (mlStatus === 'expired') {
+      Alert.alert(
+        'Sesión vencida',
+        'La conexión con MercadoLibre caducó. En Mi tienda el dueño la vuelve a conectar.',
+      );
+      return;
+    }
+    if (!isConnected) {
+      Alert.alert(
+        'Conecta MercadoLibre',
+        'La cuenta se conecta una sola vez en Mi tienda. Después este switch queda listo.',
+        [
+          { text: 'Ahora no', style: 'cancel' },
+          { text: 'Conectar', onPress: () => { void connectMl(); } },
+        ],
+      );
       return;
     }
     const huecos = huecosMl();
     if (huecos.length > 0) {
       Alert.alert(
         'Falta un poco para publicar',
-        `MercadoLibre rechaza la publicación si esto no está:\n\n• ${huecos.join('\n• ')}\n\nCuadramos la ficha y listo. La conexión OAuth llega en el siguiente paso.`,
+        `MercadoLibre rechaza la publicación si esto no está:\n\n• ${huecos.join('\n• ')}`,
       );
       return;
     }
-    Alert.alert(
-      'Conexión MercadoLibre',
-      'La ficha está lista. Conectar la cuenta ML y publicar sale en el siguiente paso — por ahora se guarda en RepMAX.',
-    );
     setPublicarMl(true);
-  }, [huecosMl]);
+  }, [huecosMl, planPermiteMl, mlStatus, isConnected, connectMl]);
 
   const handleSave = useCallback(async (): Promise<ProductFormSaveResult> => {
     if (!form.title.trim() || !form.brand.trim() || !form.model.trim() || !form.priceUsd.trim()) {
@@ -229,6 +251,8 @@ export function useProductForm({ productId, pendingPhoto }: UseProductFormParams
     clearPhotoSlot,
     publicarMl,
     handlePublicarMl,
+    mlStatus,
+    isConnected,
     isLoading,
     isFetchingProduct,
     loadError,

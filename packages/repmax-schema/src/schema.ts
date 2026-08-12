@@ -5,6 +5,8 @@ import {
   varchar,
   text,
   integer,
+  smallint,
+  bigint,
   boolean,
   timestamp,
   decimal,
@@ -15,6 +17,29 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import type { MlListingStatus } from "./mlListing";
+import type { MlConnectionStatusDb } from "./mlConnection";
+
+export {
+  ML_LISTING_STATUSES,
+  ML_REQUIRED_ATTRIBUTE_TAGS,
+  type MlListingStatus,
+  type MlAttributeTag,
+  type MlAttribute,
+  type MlCategoryPrediction,
+  type RepmaxMlListing,
+  type RepmaxProduct as RepmaxProductMlSource,
+} from "./mlListing";
+
+export {
+  ML_CONNECTION_STATUSES,
+  ML_SITE_BY_COUNTRY,
+  type MlConnectionStatusDb,
+  type MlCountryCode,
+  type MlSiteId,
+  type RepmaxMlConnection,
+  type MlConnectionUiStatus,
+} from "./mlConnection";
 
 // ============================================================
 // ENUMS (prefijo repmax_ — Postgres no namespacea enums por tabla)
@@ -159,6 +184,66 @@ export const products = pgTable(
       t.storeId,
       t.condition,
     ),
+  }),
+);
+
+// ============================================================
+// ML_LISTINGS — 1:1 opcional con products (fase 1: predicción; fase 2: ítem)
+// Status es text + CHECK en SQL (no pgEnum), igual que store_type.
+// ============================================================
+export const mlListings = pgTable(
+  "repmax_ml_listings",
+  {
+    id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    storeId: uuid("store_id")
+      .notNull()
+      .references(() => stores.id, { onDelete: "cascade" }),
+    mlDomainId: text("ml_domain_id"),
+    mlCategoryId: text("ml_category_id"),
+    mlCategoryName: text("ml_category_name"),
+    mlAttributesSnapshot: jsonb("ml_attributes_snapshot")
+      .$type<Record<string, unknown>>()
+      .notNull()
+      .default({}),
+    predictionConfidence: smallint("prediction_confidence"),
+    status: text("status").$type<MlListingStatus>().notNull().default("draft"),
+    mlItemId: text("ml_item_id"),
+    lastError: text("last_error"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+  },
+  (t) => ({
+    uniqProduct: unique("uniq_repmax_ml_listings_product").on(t.productId),
+    storeIdx: index("idx_repmax_ml_listings_store").on(t.storeId),
+  }),
+);
+
+// ============================================================
+// ML_CONNECTIONS — OAuth 1:1 por tienda (tokens solo service_role)
+// Status es text + CHECK en SQL (no pgEnum).
+// ============================================================
+export const mlConnections = pgTable(
+  "repmax_ml_connections",
+  {
+    id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+    storeId: uuid("store_id")
+      .notNull()
+      .references(() => stores.id, { onDelete: "cascade" }),
+    mlUserId: bigint("ml_user_id", { mode: "number" }).notNull(),
+    siteId: text("site_id").notNull().default("MLV"),
+    accessToken: text("access_token").notNull(),
+    refreshToken: text("refresh_token").notNull(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    status: text("status").$type<MlConnectionStatusDb>().notNull().default("active"),
+    connectedBy: uuid("connected_by").references(() => storeUsers.id),
+    connectedAt: timestamp("connected_at", { withTimezone: true }).defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+  },
+  (t) => ({
+    uniqStore: unique("uniq_repmax_ml_connections_store").on(t.storeId),
   }),
 );
 
@@ -308,6 +393,16 @@ export const insertProductSchema = createInsertSchema(products).omit({
   createdAt: true,
   updatedAt: true,
 });
+export const insertMlListingSchema = createInsertSchema(mlListings).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+export const insertMlConnectionSchema = createInsertSchema(mlConnections).omit({
+  id: true,
+  connectedAt: true,
+  updatedAt: true,
+});
 export const insertCustomerSchema = createInsertSchema(customers).omit({
   id: true,
   createdAt: true,
@@ -335,6 +430,12 @@ export type InsertStoreUser = z.infer<typeof insertStoreUserSchema>;
 
 export type Product = typeof products.$inferSelect;
 export type InsertProduct = z.infer<typeof insertProductSchema>;
+
+export type MlListing = typeof mlListings.$inferSelect;
+export type InsertMlListing = z.infer<typeof insertMlListingSchema>;
+
+export type MlConnection = typeof mlConnections.$inferSelect;
+export type InsertMlConnection = z.infer<typeof insertMlConnectionSchema>;
 
 export type Customer = typeof customers.$inferSelect;
 export type InsertCustomer = z.infer<typeof insertCustomerSchema>;
