@@ -20,7 +20,7 @@ UI (web / mobile) → Auth Provider → cliente Supabase → tablas/RPC repmax_*
 - **Auth**: Supabase Auth (sin Express, sin JWT propio).
 - **Datos**: tablas con prefijo `repmax_` en `llacowjutjfefboqgfnj`.
 - **Storage**: bucket `repmax-products`.
-- **RPC**: `repmax_create_sale_with_items` (venta atómica + stock).
+- **RPC**: `repmax_create_sale_with_items` (venta atómica + stock); `repmax_seed_starter_catalog` (6 productos al registrar, best-effort).
 
 ## Comandos (raíz del monorepo)
 
@@ -53,6 +53,7 @@ Proyecto: `https://llacowjutjfefboqgfnj.supabase.co`
 3. Si cambia tablas/enums/columnas → actualizar `packages/repmax-schema/src/schema.ts` **en el mismo cambio**.
 4. Si solo toca RLS, grants, índices o RPC sin contrato TS → no hace falta tocar el package.
 5. Si el catálogo demo cambia de forma relevante → reexportar [`supabase/seed/demo_catalog.sql`](./supabase/seed/demo_catalog.sql).
+6. Tras aplicar en el hub, si `apply_migration` asignó otro timestamp, **renombrar el archivo local** para que coincida con `schema_migrations` (filename = versión remota).
 
 ### Sync schema ↔ SQL
 
@@ -61,7 +62,7 @@ Proyecto: `https://llacowjutjfefboqgfnj.supabase.co`
 | Columnas / enums / tablas en SQL | `packages/repmax-schema/src/schema.ts` |
 | Columnas / enums en el package Drizzle | Migración SQL en `supabase/migrations/` (nunca solo el TS) |
 
-Migraciones actuales: … `repmax_ml_listings` (aplicada). `20260816120000_repmax_ml_publish_intent` (**aplicada**). Pendiente: `repmax_ml_connections` (OAuth).
+Migraciones actuales: … `repmax_ml_listings` (aplicada). `repmax_ml_publish_intent` (**aplicada**, hub `20260817004929`). `repmax_products_color` (**aplicada**). `repmax_products_barcode` (**aplicada**). `repmax_seed_starter_catalog` (**aplicada**, hub `20260817222347` = filename local). Pendiente ops: `repmax_ml_connections` (OAuth, descartado MLV).
 
 Edge Functions ML (código en [`supabase/functions/`](./supabase/functions/), **no desplegadas**): `ml-oauth-start`, `ml-oauth-callback`, `ml-token-refresh`, `ml-predict-category`. Secrets y redirect: ver [plans/04](./plans/04-PLAN-catalogo-mercadolibre.md).
 
@@ -71,6 +72,8 @@ Edge Functions ML (código en [`supabase/functions/`](./supabase/functions/), **
 |---------|-----------|
 | [`supabase/seed/demo_users.md`](./supabase/seed/demo_users.md) | Credenciales + `user_id` / `store_user_id` (owners, cashier, inventory) |
 | [`supabase/seed/demo_catalog.sql`](./supabase/seed/demo_catalog.sql) | Catálogo de productos Alfa/Beta (idempotente) |
+
+Tiendas nuevas (onboarding real): RPC `repmax_seed_starter_catalog` — 6 piezas según `vehicle_focus`, sin fotos, idempotente. Lo llama `catalogSeedService` desde `AuthContext.register()`. No toca Alfa/Beta.
 
 ## Diseño
 

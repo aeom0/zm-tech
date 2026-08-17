@@ -36,12 +36,13 @@ El detalle de cambios ya hechos vive en [CHANGELOG.md](./CHANGELOG.md). Este arc
 - [x] EAS / preview mobile (proyecto `@aeom0/repmax`, OTA channels)
 - [x] **Plan 06 (código)** — rewrite `{slug}.zmtechdev.com` / `{slug}.localhost` → `/{slug}`; QR gated por `NEXT_PUBLIC_VITRINA_SUBDOMAINS`
 - [x] Proyecto Vercel `repmax-web` — prod `https://repmax-web-taupe.vercel.app` (Git `aeom0/zm-tech`, root `apps/repmax-web`)
+- [x] **Catálogo starter al registrar** — RPC `repmax_seed_starter_catalog` (hub `20260817222347`) + `catalogSeedService` en `register()`
 
 ## Próximo
 
 - [ ] Cablear onboarding mobile end-to-end al high-fi (`apps/repmax-mobile` ↔ design system)
 - [ ] Extraer / alinear tokens RN (`utils/theme.ts`) con `design-system/tokens.md`
-- [ ] Seed / fixtures de catálogo realistas por tenant de prueba
+- [ ] Seed / fixtures de catálogo demo más realistas (Alfa/Beta; el starter de tiendas nuevas ya está)
 - [ ] Hardening RLS (auditoría advisors) y tests de aislamiento multi-tenant
 - ~~MercadoLibre ops impl. 2~~ — **descartado:** ML confirmó DevCenter/API MLV inoperativo (#475453897). Código OAuth congelado en `ML_API_ENABLED = false`.
 - ~~MercadoLibre resto B–D (API)~~ — fuera de alcance hasta anuncio oficial de ML Venezuela

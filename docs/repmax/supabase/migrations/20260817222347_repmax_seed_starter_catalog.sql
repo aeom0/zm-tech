@@ -4,6 +4,7 @@
 -- no hace nada — seguro de reintentar.
 -- Hub: llacowjutjfefboqgfnj. Prefijo repmax_*. Sin fotos a propósito
 -- (el dueño sube reales desde el flujo de captura).
+-- schema_migrations: 20260817222347 (filename local = versión remota).
 
 CREATE OR REPLACE FUNCTION public.repmax_seed_starter_catalog(p_store_id uuid)
 RETURNS integer

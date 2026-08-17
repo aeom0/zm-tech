@@ -10,6 +10,7 @@ Roadmap: [ROADMAP.md](./ROADMAP.md). Plan API ML (descartado ops MLV): [plans/04
 ## [Unreleased]
 
 ### Añadido
+- **Catálogo starter al registrar** — RPC `repmax_seed_starter_catalog` (hub `20260817222347`, filename local alineado). 6 productos según `vehicle_focus`, sin fotos, idempotente. Mobile: `catalogSeedService` (1 reintento, no bloquea el registro) desde `AuthContext.register()`.
 - **Plan 06 (ops)** — proyecto Vercel `repmax-web` en producción (`https://repmax-web-taupe.vercel.app`). CNAME `*` + cert wildcard `*.zmtechdev.com` (Let's Encrypt). Apex `zmtech` no se tocó.
 - **Plan 06 (código)** — vitrina por hostname: `{slug}.zmtechdev.com` / `{slug}.localhost` reescribe a `/{slug}` (el path `/{slug}` sigue). QR y WhatsApp a subdominio solo con `NEXT_PUBLIC_VITRINA_SUBDOMAINS=1`. Slugs reservados al registrar.
 - **Escaner de barras / QR** — POS (agregar al carrito), inventario (crear o +1 stock) y ficha (asignar código). Columna `repmax_products.barcode` única por tienda. Migración `20260816220000`.
