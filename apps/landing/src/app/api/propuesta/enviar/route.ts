@@ -1,5 +1,5 @@
-import { Resend } from 'resend'
 import { NextResponse } from 'next/server'
+import { enviarAvisoInterno } from '@/lib/email'
 
 const PROPUESTA_URL = 'https://zmtechdev.com/propuesta/guataparo'
 // Botones de contacto apuntan a ZM Tech (Alberto), no a la clienta
@@ -7,11 +7,8 @@ const WA_ZM = 'https://wa.me/584144940417'
 
 export async function POST() {
   try {
-    const resend = new Resend(process.env.RESEND_API_KEY!)
-    const { data, error } = await resend.emails.send({
-      from: 'ZM Tech <onboarding@resend.dev>',
-      to: [process.env.CONTACT_EMAIL ?? 'alberto@zmtechdev.com'],
-      subject: '🏠 Tu propuesta personalizada — Guataparo Bienes Raíces',
+    const aviso = await enviarAvisoInterno({
+      subject: 'Tu propuesta personalizada — Guataparo Bienes Raíces',
       html: `
 <!DOCTYPE html>
 <html lang="es">
@@ -92,12 +89,12 @@ export async function POST() {
       `,
     })
 
-    if (error) {
-      console.error('Resend error:', error)
-      return NextResponse.json({ error }, { status: 500 })
+    if (!aviso.ok) {
+      console.error('Error enviando propuesta:', aviso.error)
+      return NextResponse.json({ error: aviso.error }, { status: 500 })
     }
 
-    return NextResponse.json({ success: true, id: data?.id })
+    return NextResponse.json({ success: true, id: aviso.id })
   } catch (err) {
     console.error('Error enviando propuesta:', err)
     return NextResponse.json({ error: 'Error interno' }, { status: 500 })

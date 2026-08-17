@@ -4,7 +4,7 @@ import { defaultLocale, isLocale } from '@/content/locales'
 
 const PUBLIC_FILE = /\.(.*)$/
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   if (

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
-import { Resend } from 'resend'
 import { z } from 'zod'
+import { enviarAvisoInterno } from '@/lib/email'
 
 const schema = z.object({
   nombre: z.string().min(2),
@@ -24,11 +24,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'DB error' }, { status: 500 })
     }
 
-    const resend = new Resend(process.env.RESEND_API_KEY!)
-
-    await resend.emails.send({
-      from: 'ZM Tech <onboarding@resend.dev>',
-      to: [process.env.CONTACT_EMAIL ?? 'alberto@zmtechdev.com'],
+    const aviso = await enviarAvisoInterno({
       subject: `Nuevo lead: ${data.nombre} — ${data.empresa}`,
       html: `
         <div style="font-family: monospace; background: #050505; color: #fff; padding: 32px; border-radius: 8px;">
@@ -43,6 +39,9 @@ export async function POST(req: NextRequest) {
         </div>
       `,
     })
+    if (!aviso.ok) {
+      console.warn('[contact route] Aviso por correo no enviado:', aviso.error)
+    }
 
     return NextResponse.json({ ok: true }, { status: 200 })
   } catch (err) {

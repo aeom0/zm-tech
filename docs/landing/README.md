@@ -17,7 +17,7 @@ Copy de marketing y cotizadores públicos vive en `src/content/{es,en}.ts`. No h
 
 | Tecnología             | Versión   | Uso                               |
 | ---------------------- | --------- | --------------------------------- |
-| Next.js                | 16.x      | App Router + middleware de locale |
+| Next.js                | 16.x      | App Router + proxy de locale      |
 | TypeScript             | 6.x       | Tipado estricto                   |
 | Tailwind CSS           | v4        | Estilos                           |
 | Framer Motion          | 12.x      | Animaciones                       |
@@ -29,7 +29,7 @@ Copy de marketing y cotizadores públicos vive en `src/content/{es,en}.ts`. No h
 
 ```
 src/
-├── middleware.ts              # / → /es; set x-locale
+├── proxy.ts                   # / → /es; set x-locale
 ├── content/                   # Diccionarios ES/EN (Messages)
 │   ├── locales.ts
 │   ├── messages.ts            # Tipos
@@ -56,8 +56,9 @@ src/
 | `NEXT_PUBLIC_SITE_URL`      | Canonical / OG — `https://zmtechdev.com` |
 | `SUPABASE_URL`              | Proyecto `llacowjutjfefboqgfnj`          |
 | `SUPABASE_SERVICE_ROLE_KEY` | Contact + leads                          |
-| `RESEND_API_KEY`            | Email                                    |
-| `CONTACT_EMAIL`             | Destino leads — canónico `alberto@zmtechdev.com` |
+| `RESEND_API_KEY`            | Envío de avisos (formulario/propuesta)   |
+
+Inbox `alberto@zmtechdev.com` llega por **ImprovMX** (MX del dominio). No hace falta `CONTACT_EMAIL`. Resend solo **envía**; el sandbox sigue como `from` hasta verificar el dominio en Resend.
 
 ## Comandos
 

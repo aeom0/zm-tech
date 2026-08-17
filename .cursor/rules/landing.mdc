@@ -14,12 +14,12 @@ alwaysApply: false
 - Producción: **https://zmtechdev.com** (también `www`)
 - Vercel project: **`zmtech`**
 - Env canónico: `NEXT_PUBLIC_SITE_URL=https://zmtechdev.com`
-- Contacto canónico: `alberto@zmtechdev.com` (`CONTACT_EMAIL` en Vercel)
+- Contacto canónico: `alberto@zmtechdev.com` (ImprovMX en el dominio; no hace falta `CONTACT_EMAIL`)
 - Supabase landing: `llacowjutjfefboqgfnj` (solo API routes con service role)
 
 ## i18n
 
-- Rutas públicas: `/es`, `/en` (middleware: `/` → `/es`)
+- Rutas públicas: `/es`, `/en` (proxy: `/` → `/es`)
 - Copy en `apps/landing/src/content/{es,en}.ts` — tipado `Messages`
 - Secciones reciben `messages` / `locale` por props; no hardcodear UI
 - `/propuesta/[slug]` permanece en español, fuera de `[locale]`

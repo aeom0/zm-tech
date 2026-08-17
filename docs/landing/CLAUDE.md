@@ -15,7 +15,7 @@
 1. Locales: `es` | `en` en `src/content/locales.ts`
 2. Copy: `src/content/es.ts` + `en.ts` tipados con `Messages`
 3. Helper: `getMessages(locale)` — las secciones reciben `messages` por props
-4. Middleware: `/` → `/es`; header `x-locale` para `<html lang>`
+4. Proxy (`src/proxy.ts`): `/` → `/es`; header `x-locale` para `<html lang>`
 5. Cotizador público: locale en `@zmtech/quote-engine` (`getPublicServiceCopy`, `generateWhatsAppMsg`, `ComboBanner`)
 6. **No** mezclar strings nuevos inline en componentes — agregar claves a ambos diccionarios
 
