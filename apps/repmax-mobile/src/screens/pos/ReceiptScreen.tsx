@@ -11,6 +11,7 @@ import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { saleService } from '../../services/saleService';
+import { MlStockAlertCard } from '../../components/pos/MlStockAlertCard';
 import { formatUSD, formatBS, formatDateTime } from '../../utils/formatters';
 import { PAYMENT_METHODS } from '../../constants/paymentMethods';
 import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
@@ -20,7 +21,7 @@ import type { POSStackParamList } from '../../navigation/types';
 type Props = NativeStackScreenProps<POSStackParamList, 'Receipt'>;
 
 export default function ReceiptScreen({ route, navigation }: Props) {
-  const { saleId } = route.params;
+  const { saleId, mlStockAlert = [] } = route.params;
   const [sale, setSale] = useState<Sale | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -62,6 +63,8 @@ export default function ReceiptScreen({ route, navigation }: Props) {
         </View>
         <Text style={styles.successTitle}>¡Venta registrada!</Text>
         <Text style={styles.successSubtitle}>Comprobante de venta</Text>
+
+        <MlStockAlertCard items={mlStockAlert} />
 
         {/* Card del recibo */}
         <View style={styles.receiptCard}>

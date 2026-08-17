@@ -2,7 +2,7 @@
 // RepMAX Business Suite — Pantalla de Inventario
 // Phone: lista 1 col · Tablet: grid 2–3 cols
 // ============================================================
-import React, { useState } from 'react';
+import React, { useCallback, useLayoutEffect, useState } from 'react';
 import {
   View, Text, FlatList, TouchableOpacity,
   StyleSheet, ActivityIndicator, Alert,
@@ -15,12 +15,20 @@ import { FilterChip } from '../../components/ui/FilterChips';
 import { EmptyState } from '../../components/ui/EmptyState';
 import { FAB } from '../../components/ui/FAB';
 import { ProductThumb } from '../../components/inventory/ProductThumb';
+import { MlStatusBadge } from '../../components/inventory/MlStatusBadge';
 import { useProducts } from '../../hooks/useProducts';
+import { useMlExport } from '../../hooks/useMlExport';
 import { useBreakpointValue } from '../../hooks/useResponsive';
 import { useTabBarOffset } from '../../hooks/useTabBarOffset';
 import { productService } from '../../services/productService';
 import { formatUSD } from '../../utils/formatters';
 import { uriPortada } from '../../utils/productPhotos';
+import {
+  evaluarListoMl,
+  resolverBadgeMl,
+  productoPasaFiltroMl,
+  type FiltroMlInventario,
+} from '../../utils/mlReadiness';
 import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
 import type { Product } from '../../types/database';
 import type { InventoryStackParamList } from '../../navigation/types';
@@ -45,16 +53,43 @@ function StockIndicator({ stock, minStock }: { stock: number; minStock: number }
   );
 }
 
+const ML_FILTER_OPTIONS: { value: FiltroMlInventario; label: string }[] = [
+  { value: 'para_ml', label: 'Para ML' },
+  { value: 'listo', label: 'Listo ML' },
+  { value: 'incompleto', label: 'Incompleto' },
+  { value: 'exportado', label: 'Exportado' },
+  { value: 'en_ml', label: 'En ML' },
+];
+
+function badgeProducto(product: Product) {
+  const portada = uriPortada(product.photos);
+  const listo = evaluarListoMl({
+    title: product.title,
+    partNumber: product.partNumber ?? '',
+    description: product.description,
+    priceUsd: product.priceUsd,
+    stock: product.stock,
+    portadaUri: portada,
+  }).listo;
+  return resolverBadgeMl(
+    product.mlPublishIntent ?? false,
+    product.mlListingStatus,
+    listo,
+  );
+}
+
 function ProductRow({
   product,
   onEdit,
   onDeactivate,
   grid,
+  mlBadge,
 }: {
   product: Product;
   onEdit: () => void;
   onDeactivate: () => void;
   grid?: boolean;
+  mlBadge: ReturnType<typeof badgeProducto>;
 }) {
   const portada = uriPortada(product.photos);
 
@@ -90,6 +125,9 @@ function ProductRow({
           <View style={styles.productInfo}>
             <Text style={styles.productTitle} numberOfLines={grid ? 2 : 1}>{product.title}</Text>
             <Text style={styles.productMeta} numberOfLines={1}>{product.brand} · {product.model}</Text>
+            <View style={styles.badgeRow}>
+              <MlStatusBadge kind={mlBadge} compact />
+            </View>
             <Text style={styles.productStock}>
               Stock:{' '}
               <Text style={{ color: product.stock <= product.minStock ? colors.semantic.warning : colors.text.primary }}>
@@ -123,6 +161,7 @@ export default function InventoryScreen({ navigation }: Props) {
   const [query, setQuery] = useState('');
   const [condition, setCondition] = useState<'all' | 'NEW' | 'USED'>('all');
   const [stockFilter, setStockFilter] = useState<'all' | 'low'>('all');
+  const [mlFilter, setMlFilter] = useState<FiltroMlInventario>('all');
   const { listPaddingWithFab } = useTabBarOffset();
   const numColumns = useBreakpointValue({
     mobile: 1,
@@ -136,6 +175,70 @@ export default function InventoryScreen({ navigation }: Props) {
     condition: condition === 'all' ? undefined : condition,
     stock: stockFilter === 'low' ? 'low' : undefined,
   });
+
+  const { isExporting, listosCount, exportar } = useMlExport(products, refetch);
+
+  const ejecutarExport = useCallback(() => {
+    if (listosCount === 0) {
+      Alert.alert(
+        'Nada para exportar',
+        'Marca productos con “Incluir en catálogo ML” y completa el checklist (portada, título, n. parte, etc.).',
+      );
+      return;
+    }
+    Alert.alert(
+      'Exportar a MercadoLibre',
+      `Vamos a generar un CSV con ${listosCount} producto(s) listos. Después pégalo en el publicador masivo de ML.`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Exportar',
+          onPress: () => {
+            void exportar().then((result) => {
+              if (result.ok) {
+                Alert.alert(
+                  'Export listo',
+                  `Compartimos ${result.count} producto(s). Los marcamos como Exportado en inventario.`,
+                );
+              } else {
+                Alert.alert('No se exportó', result.message);
+              }
+            });
+          },
+        },
+      ],
+    );
+  }, [listosCount, exportar]);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <TouchableOpacity
+          onPress={ejecutarExport}
+          disabled={isExporting}
+          style={styles.headerExportBtn}
+          accessibilityLabel="Exportar catálogo ML"
+        >
+          {isExporting ? (
+            <ActivityIndicator size="small" color={colors.brand.orange} />
+          ) : (
+            <>
+              <Ionicons name="download-outline" size={22} color={colors.brand.orange} />
+              {listosCount > 0 ? (
+                <View style={styles.headerExportBadge}>
+                  <Text style={styles.headerExportBadgeText}>{listosCount}</Text>
+                </View>
+              ) : null}
+            </>
+          )}
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation, ejecutarExport, isExporting, listosCount]);
+
+  const productosVisibles = products.filter((p) =>
+    productoPasaFiltroMl(mlFilter, p.mlPublishIntent ?? false, badgeProducto(p)),
+  );
 
   const handleDeactivate = (product: Product) => {
     Alert.alert(
@@ -185,6 +288,14 @@ export default function InventoryScreen({ navigation }: Props) {
           selected={stockFilter === 'low'}
           onPress={() => setStockFilter(stockFilter === 'low' ? 'all' : 'low')}
         />
+        {ML_FILTER_OPTIONS.map((opt) => (
+          <FilterChip
+            key={opt.value}
+            label={opt.label}
+            selected={mlFilter === opt.value}
+            onPress={() => setMlFilter(mlFilter === opt.value ? 'all' : opt.value)}
+          />
+        ))}
       </View>
 
       {isLoading ? (
@@ -194,7 +305,7 @@ export default function InventoryScreen({ navigation }: Props) {
       ) : (
         <FlatList
           key={`inv-cols-${numColumns}`}
-          data={products}
+          data={productosVisibles}
           keyExtractor={(item) => item.id}
           numColumns={numColumns}
           columnWrapperStyle={isGrid ? styles.gridRow : undefined}
@@ -203,6 +314,7 @@ export default function InventoryScreen({ navigation }: Props) {
               <ProductRow
                 product={item}
                 grid={isGrid}
+                mlBadge={badgeProducto(item)}
                 onEdit={() => navigation.navigate('ProductForm', { productId: item.id })}
                 onDeactivate={() => handleDeactivate(item)}
               />
@@ -312,6 +424,9 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily.regular,
     marginTop: 2,
   },
+  badgeRow: {
+    marginTop: 4,
+  },
   productStock: {
     fontSize: typography.size.xs,
     color: colors.text.disabled,
@@ -349,5 +464,26 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: spacing.xl,
     fontFamily: typography.fontFamily.regular,
+  },
+  headerExportBtn: {
+    marginRight: spacing.sm,
+    padding: spacing.xs,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerExportBadge: {
+    marginLeft: 4,
+    backgroundColor: colors.brand.orange,
+    borderRadius: borderRadius.full,
+    minWidth: 18,
+    height: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 4,
+  },
+  headerExportBadgeText: {
+    color: colors.text.inverse,
+    fontSize: 10,
+    fontFamily: typography.fontFamily.bold,
   },
 });

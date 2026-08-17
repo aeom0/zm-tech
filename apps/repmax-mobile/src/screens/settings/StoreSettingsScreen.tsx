@@ -21,6 +21,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { MoreStackParamList } from '../../navigation/types';
 import { useAuth } from '../../context/AuthContext';
 import { useMercadoLibreConnection } from '../../hooks/useMercadoLibreConnection';
+import { ML_API_ENABLED, ML_MANUAL_MODE_HINT, ML_SUPPORT_TICKET } from '../../constants/mlConfig';
 import { colors, spacing, borderRadius, typography } from '../../utils/theme';
 
 type Props = NativeStackScreenProps<MoreStackParamList, 'StoreSettings'>;
@@ -357,69 +358,84 @@ export default function StoreSettingsScreen({ navigation }: Props) {
           </View>
         </View>
 
-        {/* Sección: MercadoLibre — OAuth 1 vez por tienda */}
+        {/* Sección: MercadoLibre */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>MercadoLibre</Text>
           <View style={styles.card}>
-            <Text style={styles.mlStatusLabel}>
-              {ml.isLoading
-                ? 'Cargando…'
-                : ml.status === 'connected'
-                  ? 'Cuenta conectada'
-                  : ml.status === 'connecting'
-                    ? 'Conectando…'
-                    : ml.status === 'expired'
-                      ? 'Sesión vencida'
-                      : 'Sin conectar'}
-            </Text>
-            <Text style={styles.planHint}>
-              {!ml.planPermiteMl
-                ? 'Actualiza a Pro para conectar MercadoLibre'
-                : !isOwner
-                  ? 'Solo el dueño puede conectar o desconectar la cuenta'
-                  : ml.status === 'connected'
-                    ? 'Las publicaciones salen con esta cuenta'
-                    : 'Se conecta una sola vez para toda la tienda'}
-            </Text>
-            {ml.error ? <Text style={styles.mlError}>{ml.error}</Text> : null}
-            {isOwner && ml.planPermiteMl ? (
-              <TouchableOpacity
-                style={[
-                  styles.mlBtn,
-                  ml.status === 'connected' && styles.mlBtnDanger,
-                  ml.status === 'connecting' && styles.saveBtnDisabled,
-                ]}
-                onPress={() => {
-                  if (ml.status === 'connecting') return;
-                  if (ml.status === 'connected') {
-                    Alert.alert(
-                      'Desconectar MercadoLibre',
-                      'Se corta la sesión. Las fichas en RepMAX se quedan; no se publican más hasta reconectar.',
-                      [
-                        { text: 'Cancelar', style: 'cancel' },
-                        { text: 'Desconectar', style: 'destructive', onPress: () => { void ml.disconnect(); } },
-                      ],
-                    );
-                    return;
-                  }
-                  void ml.connect();
-                }}
-                disabled={ml.status === 'connecting'}
-                activeOpacity={0.8}
-              >
-                {ml.status === 'connecting' ? (
-                  <ActivityIndicator color={colors.text.inverse} />
-                ) : (
-                  <Text style={styles.saveBtnText}>
-                    {ml.status === 'connected'
-                      ? 'Desconectar'
-                      : ml.status === 'expired'
-                        ? 'Reconectar'
-                        : 'Conectar MercadoLibre'}
-                  </Text>
-                )}
-              </TouchableOpacity>
-            ) : null}
+            {ML_API_ENABLED ? (
+              <>
+                <Text style={styles.mlStatusLabel}>
+                  {ml.isLoading
+                    ? 'Cargando…'
+                    : ml.status === 'connected'
+                      ? 'Cuenta conectada'
+                      : ml.status === 'connecting'
+                        ? 'Conectando…'
+                        : ml.status === 'expired'
+                          ? 'Sesión vencida'
+                          : 'Sin conectar'}
+                </Text>
+                <Text style={styles.planHint}>
+                  {!ml.planPermiteMl
+                    ? 'Actualiza a Pro para conectar MercadoLibre'
+                    : !isOwner
+                      ? 'Solo el dueño puede conectar o desconectar la cuenta'
+                      : ml.status === 'connected'
+                        ? 'Las publicaciones salen con esta cuenta'
+                        : 'Se conecta una sola vez para toda la tienda'}
+                </Text>
+                {ml.error ? <Text style={styles.mlError}>{ml.error}</Text> : null}
+                {isOwner && ml.planPermiteMl ? (
+                  <TouchableOpacity
+                    style={[
+                      styles.mlBtn,
+                      ml.status === 'connected' && styles.mlBtnDanger,
+                      ml.status === 'connecting' && styles.saveBtnDisabled,
+                    ]}
+                    onPress={() => {
+                      if (ml.status === 'connecting') return;
+                      if (ml.status === 'connected') {
+                        Alert.alert(
+                          'Desconectar MercadoLibre',
+                          'Se corta la sesión. Las fichas en RepMAX se quedan; no se publican más hasta reconectar.',
+                          [
+                            { text: 'Cancelar', style: 'cancel' },
+                            { text: 'Desconectar', style: 'destructive', onPress: () => { void ml.disconnect(); } },
+                          ],
+                        );
+                        return;
+                      }
+                      void ml.connect();
+                    }}
+                    disabled={ml.status === 'connecting'}
+                    activeOpacity={0.8}
+                  >
+                    {ml.status === 'connecting' ? (
+                      <ActivityIndicator color={colors.text.inverse} />
+                    ) : (
+                      <Text style={styles.saveBtnText}>
+                        {ml.status === 'connected'
+                          ? 'Desconectar'
+                          : ml.status === 'expired'
+                            ? 'Reconectar'
+                            : 'Conectar MercadoLibre'}
+                      </Text>
+                    )}
+                  </TouchableOpacity>
+                ) : null}
+              </>
+            ) : (
+              <>
+                <Text style={styles.mlStatusLabel}>Modo catálogo ML-ready</Text>
+                <Text style={styles.planHint}>{ML_MANUAL_MODE_HINT}</Text>
+                <Text style={styles.planHint}>
+                  Soporte ML consulta #{ML_SUPPORT_TICKET} — esperando respuesta para activar OAuth en Venezuela.
+                </Text>
+                <Text style={styles.planHint}>
+                  Marca productos en inventario, completa el checklist y exporta desde el ícono de descarga (CSV para el publicador masivo de ML).
+                </Text>
+              </>
+            )}
           </View>
         </View>
 

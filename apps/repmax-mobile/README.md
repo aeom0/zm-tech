@@ -61,7 +61,8 @@ Pensado para no re-buildear por libs faltantes. UI de fotos/barcode puede llegar
 | `expo-haptics` | Feedback POS |
 | `expo-linking` | Deep links / WhatsApp |
 | `@react-native-community/netinfo` | Offline awareness |
-| `expo-sharing` | Compartir comprobantes |
+| `expo-file-system` | Export CSV catálogo ML |
+| `expo-sharing` | Compartir comprobantes / export ML |
 | `react-native-svg` | Base para charts / íconos vector |
 
 Helpers listos: `src/utils/network.ts`, `src/utils/haptics.ts`.

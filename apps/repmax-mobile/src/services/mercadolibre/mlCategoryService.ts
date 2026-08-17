@@ -11,6 +11,15 @@ import {
   type RepmaxProduct,
 } from '@repmax/repmax-schema/mlListing';
 
+/** Atributos base para mapper local sin predictor API (modo manual E2). */
+export const ML_MANUAL_BASE_ATTRIBUTES: MlAttribute[] = [
+  { id: 'PART_NUMBER', name: 'Número de parte', tag: 'required' },
+  { id: 'BRAND', name: 'Marca', tag: 'required' },
+  { id: 'MODEL', name: 'Modelo', tag: 'optional' },
+  { id: 'ITEM_CONDITION', name: 'Condición', tag: 'required' },
+  { id: 'COLOR', name: 'Color', tag: 'conditional_required' },
+];
+
 const TAGS_OBLIGATORIOS = new Set<MlAttributeTag>(ML_REQUIRED_ATTRIBUTE_TAGS);
 
 /** IDs de ML que corresponden al número de parte del producto. */
@@ -48,6 +57,7 @@ function valorParaAtributo(product: RepmaxProduct, attr: MlAttribute): string | 
   if (id === 'BRAND') return textoONulo(product.brand);
   if (id === 'MODEL') return textoONulo(product.model);
   if (id === 'ITEM_CONDITION') return condicionMl(product.condition);
+  if (id === 'COLOR') return textoONulo(product.color);
   return null;
 }
 
@@ -118,5 +128,16 @@ export const mlCategoryService = {
     }
 
     return { mapped, missing };
+  },
+
+  /** Mapper local para categoría elegida manualmente (sin predictor API). */
+  mapManualAttributes(
+    product: RepmaxProduct,
+    requiresColor: boolean,
+  ): MlAttributeMapping {
+    const attrs = requiresColor
+      ? ML_MANUAL_BASE_ATTRIBUTES
+      : ML_MANUAL_BASE_ATTRIBUTES.filter((a) => a.id !== 'COLOR');
+    return this.mapProductToMlAttributes(product, attrs);
   },
 };
