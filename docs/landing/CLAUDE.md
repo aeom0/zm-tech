@@ -6,6 +6,7 @@
 
 - **URL:** https://zmtechdev.com (`/es` default, `/en` inglés)
 - **Vercel:** project `zmtech` (root del monorepo apunta a `apps/landing` vía link)
+- **Contacto:** `alberto@zmtechdev.com` · WhatsApp +58 414 494 0417
 - **Supabase:** `llacowjutjfefboqgfnj` (contactos / quote_leads; service role en API routes)
 - **Fuera de locale:** `/propuesta/[slug]`, `/api/*`
 

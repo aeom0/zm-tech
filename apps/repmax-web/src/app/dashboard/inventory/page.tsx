@@ -5,13 +5,19 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { Pencil, Search } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { ExternalLink, Pencil, Search } from "lucide-react";
 import { POPULAR_BRANDS } from "@repmax/repmax-schema";
 import { useAuth } from "@/context/AuthContext";
 import { useAuthFetch } from "@/hooks/useAuthFetch";
 import { createClient } from "@/lib/supabase/client";
 import { patchProduct } from "@/lib/repmax-queries";
+import type { FiltroMlWeb } from "@/lib/ml-readiness";
+import { MlBadgeChip } from "@/components/dashboard/MlBadgeChip";
+import { VitrinaPanel } from "@/components/dashboard/VitrinaPanel";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -40,6 +46,15 @@ const TIPOS_VEHICULO: { value: string; label: string }[] = [
   { value: "MOTO", label: "Moto" },
   { value: "TRUCK", label: "Camión" },
   { value: "SUV", label: "SUV" },
+];
+
+const ML_FILTROS: { value: FiltroMlWeb; label: string }[] = [
+  { value: "para_ml", label: "Para ML" },
+  { value: "listo", label: "Listo ML" },
+  { value: "incompleto", label: "ML incompleto" },
+  { value: "exportado", label: "Exportado" },
+  { value: "en_ml", label: "En ML" },
+  { value: "listo_vitrina", label: "Listo vitrina" },
 ];
 
 const CONDICIONES: { value: string; label: string }[] = [
@@ -71,6 +86,7 @@ export default function InventoryPage() {
   const [tipoVehiculo, setTipoVehiculo] = useState("");
   const [busqueda, setBusqueda] = useState("");
   const [soloStockBajo, setSoloStockBajo] = useState(false);
+  const [mlFilter, setMlFilter] = useState<FiltroMlWeb>("");
   const [pagina, setPagina] = useState(1);
   const limite = 20;
 
@@ -83,8 +99,9 @@ export default function InventoryPage() {
     if (tipoVehiculo) p.set("vehicleType", tipoVehiculo);
     if (busqueda.trim()) p.set("q", busqueda.trim());
     if (soloStockBajo) p.set("lowStock", "true");
+    if (mlFilter) p.set("mlFilter", mlFilter);
     return `/api/products?${p.toString()}`;
-  }, [marca, condicion, tipoVehiculo, busqueda, soloStockBajo, pagina, limite]);
+  }, [marca, condicion, tipoVehiculo, busqueda, soloStockBajo, mlFilter, pagina, limite]);
 
   const { data, isLoading, error, refetch } = useAuthFetch<RespuestaProductos>(url);
 
@@ -155,6 +172,8 @@ export default function InventoryPage() {
 
   return (
     <div className="space-y-4">
+      <VitrinaPanel />
+
       <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center">
         <div className="relative min-w-[200px] flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#616161]" />
@@ -211,6 +230,22 @@ export default function InventoryPage() {
             </option>
           ))}
         </select>
+        <select
+          className={selectClase}
+          value={mlFilter}
+          onChange={(e) => {
+            setPagina(1);
+            setMlFilter(e.target.value as FiltroMlWeb);
+          }}
+          aria-label="Filtro ML / vitrina"
+        >
+          <option value="">ML / vitrina</option>
+          {ML_FILTROS.map((f) => (
+            <option key={f.value} value={f.value}>
+              {f.label}
+            </option>
+          ))}
+        </select>
         <label className="flex cursor-pointer items-center gap-2 text-sm text-[#9E9E9E]">
           <input
             type="checkbox"
@@ -229,11 +264,13 @@ export default function InventoryPage() {
         <Table>
           <TableHeader className="bg-[#242424]">
             <TableRow className="border-[#2A2A2A] hover:bg-transparent">
+              <TableHead className="w-12">Foto</TableHead>
               <TableHead>Nombre</TableHead>
               <TableHead>Marca / Modelo</TableHead>
               <TableHead>Precio</TableHead>
               <TableHead>Stock</TableHead>
               <TableHead>Condición</TableHead>
+              <TableHead>Canal</TableHead>
               <TableHead>Estado</TableHead>
               <TableHead className="text-right">Acciones</TableHead>
             </TableRow>
@@ -248,8 +285,25 @@ export default function InventoryPage() {
                   !p.isActive && "opacity-50",
                 )}
               >
+                <TableCell>
+                  {p.photos?.[0] ? (
+                    <Image
+                      src={p.photos[0]}
+                      alt=""
+                      width={40}
+                      height={40}
+                      className="h-10 w-10 rounded object-cover bg-[#242424]"
+                      unoptimized
+                    />
+                  ) : (
+                    <div className="h-10 w-10 rounded bg-[#242424]" />
+                  )}
+                </TableCell>
                 <TableCell className="max-w-[200px] font-medium text-[#F5F5F5]">
                   <span className="line-clamp-2">{p.title}</span>
+                  {p.partNumber ? (
+                    <span className="text-xs text-[#616161]">#{p.partNumber}</span>
+                  ) : null}
                 </TableCell>
                 <TableCell className="text-[#9E9E9E]">
                   {p.brand} / {p.model}
@@ -282,10 +336,38 @@ export default function InventoryPage() {
                     {p.condition === "NEW" ? "Nuevo" : "Usado"}
                   </span>
                 </TableCell>
+                <TableCell>
+                  <div className="flex flex-col gap-1">
+                    {p.mlBadge ? <MlBadgeChip kind={p.mlBadge} /> : null}
+                    {p.vitrinaLista ? (
+                      <Badge className="bg-[#2196F3]/20 text-[#2196F3] border-transparent text-[10px]">
+                        Listo vitrina
+                      </Badge>
+                    ) : null}
+                  </div>
+                </TableCell>
                 <TableCell className="text-sm text-[#9E9E9E]">
                   {p.isActive ? "Activo" : "Inactivo"}
                 </TableCell>
                 <TableCell className="text-right">
+                  {store?.slug && p.isActive && p.stock > 0 ? (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="text-[#9E9E9E] hover:bg-[#242424] hover:text-[#2196F3]"
+                      asChild
+                    >
+                      <Link
+                        href={`/${store.slug}/p/${p.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Ver en vitrina"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                  ) : null}
                   <Button
                     type="button"
                     variant="ghost"

@@ -3,12 +3,14 @@
 // ============================================================
 
 import Image from "next/image";
+import Link from "next/link";
 import { Wrench } from "lucide-react";
 import type { ProductPublic } from "@/types/storefront";
 
 interface ProductCardProps {
   product: ProductPublic;
   usdBsRate: number;
+  storeSlug: string;
 }
 
 function formatearUsd(valor: number): string {
@@ -19,12 +21,15 @@ function formatearBs(valor: number): string {
   return `Bs ${valor.toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-export function ProductCard({ product, usdBsRate }: ProductCardProps) {
+export function ProductCard({ product, usdBsRate, storeSlug }: ProductCardProps) {
   const foto = product.photos?.[0] ?? null;
   const precioBsCalculado = product.priceUsd * usdBsRate;
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] transition-colors duration-200 hover:border-[#FF6B00]">
+    <Link
+      href={`/${storeSlug}/p/${product.id}`}
+      className="group flex flex-col overflow-hidden rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] transition-colors duration-200 hover:border-[#FF6B00]"
+    >
       <div className="relative h-[160px] w-full bg-[#242424]">
         {foto ? (
           <Image
@@ -70,6 +75,6 @@ export function ProductCard({ product, usdBsRate }: ProductCardProps) {
           <p className="mt-auto pt-2 text-xs text-[#616161]">Ref: {product.partNumber}</p>
         ) : null}
       </div>
-    </article>
+    </Link>
   );
 }

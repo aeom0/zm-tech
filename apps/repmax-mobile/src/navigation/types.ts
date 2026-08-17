@@ -18,11 +18,13 @@ export type AuthStackParamList = {
   Register: undefined;
 };
 
+import type { ItemAlertaMlStock } from '../utils/mlStockAlert';
+
 export type POSStackParamList = {
   POS: undefined;
   Cart: undefined;
   Payment: undefined;
-  Receipt: { saleId: string };
+  Receipt: { saleId: string; mlStockAlert?: ItemAlertaMlStock[] };
 };
 
 export type InventoryStackParamList = {

@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
 
     await resend.emails.send({
       from: 'ZM Tech <onboarding@resend.dev>',
-      to: [process.env.CONTACT_EMAIL ?? 'albertoorta.1@gmail.com'],
+      to: [process.env.CONTACT_EMAIL ?? 'alberto@zmtechdev.com'],
       subject: `Nuevo lead: ${data.nombre} — ${data.empresa}`,
       html: `
         <div style="font-family: monospace; background: #050505; color: #fff; padding: 32px; border-radius: 8px;">

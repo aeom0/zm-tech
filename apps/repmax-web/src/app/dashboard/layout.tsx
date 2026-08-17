@@ -17,6 +17,7 @@ import {
   X,
 } from "lucide-react";
 import { BrandLogo } from "@/components/brand/BrandLogo";
+import { Toaster } from "@/components/ui/toaster";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 import type { SubscriptionPlanWeb } from "@/types/dashboard";
@@ -175,6 +176,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         <main className="p-4 md:p-6">{children}</main>
       </div>
+      <Toaster />
     </div>
   );
 }

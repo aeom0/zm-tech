@@ -10,6 +10,14 @@ import type {
   VentaWeb,
 } from "@/types/dashboard";
 import type { ProductPublic, StorePublic } from "@/types/storefront";
+import type { MlListingStatus } from "@repmax/repmax-schema/mlListing";
+import {
+  evaluarListoMl,
+  evaluarListoVitrina,
+  resolverBadgeMl,
+  productoPasaFiltroMl,
+  type FiltroMlWeb,
+} from "@/lib/ml-readiness";
 
 function toNumber(value: unknown): number {
   if (value === null || value === undefined) return 0;
@@ -44,9 +52,38 @@ function mapProducto(
 ): ProductoWeb {
   const priceUsd = toNumber(row.price_usd);
   const priceBsRaw = row.price_bs;
+  const photos = Array.isArray(row.photos)
+    ? (row.photos as string[]).filter((u) => typeof u === "string" && u.length > 0)
+    : [];
+  const portada = photos[0] ?? null;
+  const description = row.description ? String(row.description) : undefined;
+  const mlPublishIntent = Boolean(row.ml_publish_intent);
+  const listingRaw = row.repmax_ml_listings;
+  const listing = Array.isArray(listingRaw)
+    ? (listingRaw[0] as { status?: string } | undefined)
+    : (listingRaw as { status?: string } | null);
+  const mlListingStatus = listing?.status as MlListingStatus | undefined;
+  const listoMl = evaluarListoMl({
+    title: String(row.title ?? ""),
+    partNumber: String(row.part_number ?? ""),
+    description,
+    priceUsd,
+    stock: toNumber(row.stock),
+    portadaUri: portada,
+  });
+  const vitrinaLista = evaluarListoVitrina({
+    title: String(row.title ?? ""),
+    priceUsd,
+    stock: toNumber(row.stock),
+    portadaUri: portada,
+    isActive: Boolean(row.is_active),
+  });
+  const mlBadge = resolverBadgeMl(mlPublishIntent, mlListingStatus, listoMl);
+
   return {
     id: String(row.id),
     title: String(row.title ?? ""),
+    description,
     brand: String(row.brand ?? ""),
     model: String(row.model ?? ""),
     priceUsd,
@@ -60,8 +97,15 @@ function mapProducto(
     vehicleType: (row.vehicle_type as ProductoWeb["vehicleType"]) ?? null,
     isActive: Boolean(row.is_active),
     partNumber: String(row.part_number ?? ""),
+    photos,
+    mlPublishIntent,
+    mlListingStatus,
+    mlBadge,
+    vitrinaLista,
   };
 }
+
+const PRODUCT_DASHBOARD_SELECT = "*, repmax_ml_listings(status, ml_item_id)";
 
 export async function fetchDashboard(
   client: SupabaseClient,
@@ -184,17 +228,63 @@ export async function fetchProducts(
   const from = (page - 1) * limit;
   const to = from + limit - 1;
 
-  let query = client
-    .from("repmax_products")
-    .select("*", { count: "exact" })
-    .order("updated_at", { ascending: false })
-    .range(from, to);
-
   const brand = params.get("brand");
   const condition = params.get("condition");
   const vehicleType = params.get("vehicleType");
   const q = params.get("q");
   const lowStock = params.get("lowStock");
+  const mlFilter = (params.get("mlFilter") ?? "") as FiltroMlWeb;
+
+  if (lowStock === "true" || lowStock === "1" || mlFilter) {
+    let query = client
+      .from("repmax_products")
+      .select(PRODUCT_DASHBOARD_SELECT)
+      .order("updated_at", { ascending: false });
+    if (brand) query = query.ilike("brand", `%${brand}%`);
+    if (condition) query = query.eq("condition", condition);
+    if (vehicleType) query = query.eq("vehicle_type", vehicleType);
+    if (q) {
+      query = query.or(
+        `title.ilike.%${q}%,brand.ilike.%${q}%,model.ilike.%${q}%,part_number.ilike.%${q}%`,
+      );
+    }
+    if (mlFilter === "para_ml") query = query.eq("ml_publish_intent", true);
+
+    const { data, error } = await query;
+    if (error) throw new Error(error.message);
+
+    let mapped = (data ?? []).map((r) =>
+      mapProducto(r as Record<string, unknown>, usdBsRate),
+    );
+
+    if (mlFilter) {
+      mapped = mapped.filter((p) =>
+        productoPasaFiltroMl(
+          mlFilter,
+          p.mlPublishIntent ?? false,
+          p.mlBadge ?? "none",
+          p.vitrinaLista ?? false,
+        ),
+      );
+    }
+    if (lowStock === "true" || lowStock === "1") {
+      mapped = mapped.filter((p) => p.stock <= p.minStock);
+    }
+
+    const slice = mapped.slice(from, to + 1);
+    return {
+      products: slice,
+      total: mapped.length,
+      page,
+      limit,
+    };
+  }
+
+  let query = client
+    .from("repmax_products")
+    .select(PRODUCT_DASHBOARD_SELECT, { count: "exact" })
+    .order("updated_at", { ascending: false })
+    .range(from, to);
 
   if (brand) query = query.ilike("brand", `%${brand}%`);
   if (condition) query = query.eq("condition", condition);
@@ -203,25 +293,6 @@ export async function fetchProducts(
     query = query.or(
       `title.ilike.%${q}%,brand.ilike.%${q}%,model.ilike.%${q}%,part_number.ilike.%${q}%`,
     );
-  }
-  if (lowStock === "true" || lowStock === "1") {
-    // PostgREST no compara columnas entre sí fácilmente; filtramos en memoria
-    const { data, error, count } = await client
-      .from("repmax_products")
-      .select("*", { count: "exact" })
-      .eq("is_active", true)
-      .order("updated_at", { ascending: false });
-    if (error) throw new Error(error.message);
-    const filtered = (data ?? []).filter(
-      (p) => toNumber(p.stock) <= toNumber(p.min_stock),
-    );
-    const slice = filtered.slice(from, to + 1);
-    return {
-      products: slice.map((r) => mapProducto(r as Record<string, unknown>, usdBsRate)),
-      total: filtered.length,
-      page,
-      limit,
-    };
   }
 
   const { data, error, count } = await query;
@@ -415,27 +486,56 @@ export async function fetchPublicProducts(
   const { data, error, count } = await query;
   if (error) throw new Error(error.message);
 
-  const products: ProductPublic[] = (data ?? []).map((row) => {
-    const priceUsd = toNumber(row.price_usd);
-    const priceBs =
-      row.price_bs != null ? toNumber(row.price_bs) : priceUsd * usdBsRate;
-    return {
-      id: String(row.id),
-      title: String(row.title ?? ""),
-      brand: String(row.brand ?? ""),
-      model: String(row.model ?? ""),
-      yearFrom: row.year_from != null ? Number(row.year_from) : null,
-      yearTo: row.year_to != null ? Number(row.year_to) : null,
-      vehicleType: (row.vehicle_type as ProductPublic["vehicleType"]) ?? null,
-      condition: (row.condition as ProductPublic["condition"]) ?? "NEW",
-      partNumber: row.part_number ? String(row.part_number) : null,
-      priceUsd,
-      priceBs,
-      usdBsRate,
-      stock: toNumber(row.stock),
-      photos: (row.photos as string[] | null) ?? null,
-    };
-  });
+  const products: ProductPublic[] = (data ?? []).map((row) =>
+    mapProductPublic(row as Record<string, unknown>, usdBsRate),
+  );
 
   return { products, total: count ?? 0, page, limit };
+}
+
+function mapProductPublic(
+  row: Record<string, unknown>,
+  usdBsRate: number,
+): ProductPublic {
+  const priceUsd = toNumber(row.price_usd);
+  const priceBs =
+    row.price_bs != null ? toNumber(row.price_bs) : priceUsd * usdBsRate;
+  return {
+    id: String(row.id),
+    title: String(row.title ?? ""),
+    description: row.description ? String(row.description) : null,
+    brand: String(row.brand ?? ""),
+    model: String(row.model ?? ""),
+    yearFrom: row.year_from != null ? Number(row.year_from) : null,
+    yearTo: row.year_to != null ? Number(row.year_to) : null,
+    vehicleType: (row.vehicle_type as ProductPublic["vehicleType"]) ?? null,
+    condition: (row.condition as ProductPublic["condition"]) ?? "NEW",
+    partNumber: row.part_number ? String(row.part_number) : null,
+    priceUsd,
+    priceBs,
+    usdBsRate,
+    stock: toNumber(row.stock),
+    photos: (row.photos as string[] | null) ?? null,
+  };
+}
+
+export async function fetchPublicProduct(
+  client: SupabaseClient,
+  storeId: string,
+  productId: string,
+  usdBsRate: number,
+): Promise<ProductPublic | null> {
+  const { data, error } = await client
+    .from("repmax_products")
+    .select("*")
+    .eq("id", productId)
+    .eq("store_id", storeId)
+    .eq("is_active", true)
+    .gt("stock", 0)
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  if (!data) return null;
+
+  return mapProductPublic(data as Record<string, unknown>, usdBsRate);
 }

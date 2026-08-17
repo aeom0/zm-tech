@@ -28,7 +28,7 @@ Form slot tap → PhotoCapture → (cámara | galería, crop 1:1)
 Form Guardar → upload URIs locales → repmax_products.photos[]
 ```
 
-Switch **Publicar en MercadoLibre:** si faltan portada, n. parte o título → alert de huecos. No hay OAuth todavía.
+Switch **Publicar en MercadoLibre:** si la tienda no conectó ML → alert a Mi tienda (o CTA Conectar). Si faltan portada, n. parte o título → alert de huecos. Plan Básico bloqueado. OAuth es **una vez por tienda**, no por producto.
 
 ## Copy canónico
 
@@ -57,4 +57,4 @@ Código: `uriPortada()` + `ProductThumb` (`expo-image`).
 | ProductThumb | `apps/repmax-mobile/src/components/inventory/ProductThumb.tsx` |
 | PhotoSlotGrid | `apps/repmax-mobile/src/components/inventory/PhotoSlotGrid.tsx` |
 | Capture / Review | `screens/inventory/PhotoCaptureScreen.tsx`, `PhotoReviewScreen.tsx` |
-| Card conectar | Pendiente (settings solo tiene hint de plan Pro) |
+| Card conectar | `StoreSettingsScreen` + `useMercadoLibreConnection` (gate Pro / owner) |

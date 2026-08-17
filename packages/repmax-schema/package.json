@@ -5,7 +5,9 @@
   "main": "./src/schema.ts",
   "types": "./src/schema.ts",
   "exports": {
-    ".": "./src/schema.ts"
+    ".": "./src/schema.ts",
+    "./mlListing": "./src/mlListing.ts",
+    "./mlConnection": "./src/mlConnection.ts"
   },
   "scripts": {
     "type-check": "tsc --noEmit",

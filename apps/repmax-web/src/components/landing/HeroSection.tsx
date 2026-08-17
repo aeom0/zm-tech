@@ -1,3 +1,4 @@
+import { ML_API_ENABLED } from "@/constants/mlConfig";
 import { DeviceMockup } from "./DeviceMockup";
 
 export function HeroSection() {
@@ -22,8 +23,18 @@ export function HeroSection() {
           </h1>
 
           <p className="l-hero-subtitle">
-            Inventario, POS, clientes y caja desde el celular.<br />
-            <strong>Conectado con MercadoLibre.</strong> Acepta Zelle, Pago Móvil,
+            Inventario, POS, clientes y caja desde el celular.
+            {ML_API_ENABLED ? (
+              <>
+                <br />
+                <strong>Conectado con MercadoLibre.</strong> Acepta Zelle, Pago Móvil,
+              </>
+            ) : (
+              <>
+                <br />
+                <strong>Catálogo listo pa&apos; MercadoLibre</strong> (export manual hoy). Zelle, Pago Móvil,
+              </>
+            )}
             USD y Bs — todo en una sola app hecha pa&apos; Venezuela.
           </p>
 
@@ -57,8 +68,10 @@ export function HeroSection() {
               <span className="l-stat-label">Para empezar</span>
             </div>
             <div className="l-stat-item">
-              <span className="l-stat-number">ML</span>
-              <span className="l-stat-label">Integrado</span>
+              <span className="l-stat-number">{ML_API_ENABLED ? "ML" : "CSV"}</span>
+              <span className="l-stat-label">
+                {ML_API_ENABLED ? "Integrado" : "Export ML"}
+              </span>
             </div>
           </div>
         </div>

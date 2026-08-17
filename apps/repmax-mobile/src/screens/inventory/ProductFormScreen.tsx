@@ -11,7 +11,10 @@ import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { PhotoSlotGrid } from '../../components/inventory/PhotoSlotGrid';
+import { MlReadinessChecklist } from '../../components/inventory/MlReadinessChecklist';
+import { MlCategoryManualSection } from '../../components/inventory/MlCategoryManualSection';
 import { useProductForm } from '../../hooks/useProductForm';
+import { ML_API_ENABLED, ML_MANUAL_MODE_HINT } from '../../constants/mlConfig';
 import { BRANDS } from '../../constants/brands';
 import { colors, typography, spacing, borderRadius } from '../../utils/theme';
 import type { PartCondition, VehicleType } from '../../types/database';
@@ -33,8 +36,21 @@ export default function ProductFormScreen({ route, navigation }: Props) {
     setField,
     photos,
     clearPhotoSlot,
-    publicarMl,
-    handlePublicarMl,
+    incluirMl,
+    handleIncluirMl,
+    listoMl,
+    tituloSugerido,
+    aplicarTituloSugerido,
+    mlCategoryId,
+    mlCategoryName,
+    selectManualCategory,
+    mlListingStatus,
+    mlItemId,
+    setMlItemId,
+    marcarPublicadoMl,
+    isMarkingPublished,
+    mlStatus,
+    isConnected,
     isLoading,
     isFetchingProduct,
     loadError,
@@ -92,6 +108,20 @@ export default function ProductFormScreen({ route, navigation }: Props) {
             placeholder="Filtro aceite Toyota Corolla 2015-20"
             hint="ML: Producto + Marca + compatible con… Sin stock ni precio."
           />
+          {tituloSugerido && tituloSugerido !== form.title.trim() ? (
+            <TouchableOpacity
+              style={styles.suggestBtn}
+              onPress={aplicarTituloSugerido}
+              activeOpacity={0.85}
+            >
+              <Ionicons name="sparkles-outline" size={16} color={colors.brand.orange} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.suggestLabel}>Título sugerido para ML</Text>
+                <Text style={styles.suggestText} numberOfLines={2}>{tituloSugerido}</Text>
+              </View>
+              <Text style={styles.suggestAction}>Usar</Text>
+            </TouchableOpacity>
+          ) : null}
           <FormField
             label="Descripción"
             value={form.description}
@@ -201,15 +231,82 @@ export default function ProductFormScreen({ route, navigation }: Props) {
         <View style={styles.mlRow}>
           <View style={styles.mlCopy}>
             <Ionicons name="cloud-upload-outline" size={20} color={colors.brand.orange} />
-            <Text style={styles.mlLabel}>Publicar en MercadoLibre</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.mlLabel}>
+                {ML_API_ENABLED ? 'Publicar en MercadoLibre' : 'Incluir en catálogo ML'}
+              </Text>
+              <Text style={styles.hint}>
+                {ML_API_ENABLED
+                  ? mlStatus === 'connecting'
+                    ? 'Abriendo MercadoLibre…'
+                    : isConnected
+                      ? 'Cuenta conectada — el switch queda listo'
+                      : mlStatus === 'expired'
+                        ? 'Sesión vencida — reconecta en Mi tienda'
+                        : 'Conecta la cuenta en Mi tienda'
+                  : ML_MANUAL_MODE_HINT}
+              </Text>
+            </View>
           </View>
           <Switch
-            value={publicarMl}
-            onValueChange={handlePublicarMl}
+            value={incluirMl}
+            onValueChange={handleIncluirMl}
             trackColor={{ false: colors.bg.border, true: colors.brand.orange }}
             thumbColor={colors.text.primary}
           />
         </View>
+        {incluirMl ? (
+          <MlReadinessChecklist items={listoMl.items} listo={listoMl.listo} />
+        ) : null}
+
+        {incluirMl && !ML_API_ENABLED ? (
+          <MlCategoryManualSection
+            categoryId={mlCategoryId}
+            categoryName={mlCategoryName}
+            color={form.color}
+            onSelectCategory={selectManualCategory}
+            onColorChange={(v) => setField('color', v)}
+          />
+        ) : null}
+
+        {incluirMl && isEditing && (mlListingStatus === 'exported' || mlListingStatus === 'published_manual') ? (
+          <FormSection title="Publicación manual en ML">
+            <Text style={styles.hint}>
+              {mlListingStatus === 'exported'
+                ? 'Ya exportaste este producto. Cuando lo subas en MercadoLibre, confirma aquí.'
+                : 'Producto marcado como publicado en MercadoLibre.'}
+            </Text>
+            <FormField
+              label="ID o URL en ML (opcional)"
+              value={mlItemId}
+              onChangeText={setMlItemId}
+              placeholder="Ej: MLA123456789 o link de la publicación"
+              autoCapitalize="none"
+            />
+            {mlListingStatus === 'exported' ? (
+              <TouchableOpacity
+                style={[styles.mlPublishedBtn, isMarkingPublished && styles.saveBtnDisabled]}
+                onPress={() => {
+                  void marcarPublicadoMl().then((result) => {
+                    if (result.success) {
+                      Alert.alert('Listo', 'Marcamos el producto como publicado en ML.');
+                    } else {
+                      Alert.alert(result.title, result.message);
+                    }
+                  });
+                }}
+                disabled={isMarkingPublished}
+                activeOpacity={0.85}
+              >
+                {isMarkingPublished ? (
+                  <ActivityIndicator color={colors.text.inverse} />
+                ) : (
+                  <Text style={styles.mlPublishedBtnText}>Ya publiqué en MercadoLibre</Text>
+                )}
+              </TouchableOpacity>
+            ) : null}
+          </FormSection>
+        ) : null}
       </ScrollView>
 
       {/* Botón guardar */}
@@ -431,6 +528,46 @@ const styles = StyleSheet.create({
     fontSize: typography.size.base,
     fontFamily: typography.fontFamily.semibold,
     color: colors.text.primary,
+  },
+  mlPublishedBtn: {
+    marginTop: spacing.sm,
+    backgroundColor: colors.brand.orange,
+    borderRadius: borderRadius.md,
+    paddingVertical: spacing.md,
+    alignItems: 'center',
+  },
+  mlPublishedBtnText: {
+    color: colors.text.inverse,
+    fontFamily: typography.fontFamily.bold,
+    fontSize: typography.size.base,
+  },
+  suggestBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    backgroundColor: colors.brand.orange + '14',
+    borderRadius: borderRadius.md,
+    borderWidth: 1,
+    borderColor: colors.brand.orange + '44',
+    padding: spacing.sm,
+    marginTop: spacing.xs,
+    marginBottom: spacing.sm,
+  },
+  suggestLabel: {
+    fontSize: typography.size.xs,
+    fontFamily: typography.fontFamily.semibold,
+    color: colors.brand.orange,
+  },
+  suggestText: {
+    fontSize: typography.size.sm,
+    fontFamily: typography.fontFamily.regular,
+    color: colors.text.secondary,
+    marginTop: 2,
+  },
+  suggestAction: {
+    fontSize: typography.size.sm,
+    fontFamily: typography.fontFamily.bold,
+    color: colors.brand.orange,
   },
   saveBtnDisabled: { opacity: 0.6 },
   saveBtnText: {

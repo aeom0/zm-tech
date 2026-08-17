@@ -60,7 +60,7 @@ const selectClase =
 
 export function ProductCatalog({
   storeId,
-  storeSlug: _storeSlug,
+  storeSlug,
   initialProducts,
   total: totalInicial,
   usdBsRate,
@@ -204,7 +204,7 @@ export function ProductCatalog({
         <>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
             {productos.map((p) => (
-              <ProductCard key={p.id} product={p} usdBsRate={usdBsRate} />
+              <ProductCard key={p.id} product={p} usdBsRate={usdBsRate} storeSlug={storeSlug} />
             ))}
           </div>
           {totalPaginas > 1 ? (

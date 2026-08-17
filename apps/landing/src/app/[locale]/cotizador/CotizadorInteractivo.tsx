@@ -199,7 +199,7 @@ export function CotizadorInteractivo({ locale, messages }: Props) {
           titulo={messages.waTitle}
           subtitulo={messages.waSubtitle}
           botonLabel={messages.waButton}
-          contacto="albertoorta.1@gmail.com · +58 414 494 0417"
+          contacto="alberto@zmtechdev.com · +58 414 494 0417"
           leadPayload={{
             source: 'self-service',
             clienteNombre: nombre.trim() || undefined,

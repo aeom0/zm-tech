@@ -23,6 +23,15 @@ El detalle de cambios ya hechos vive en [CHANGELOG.md](./CHANGELOG.md). Este arc
   - Spec: `design/catalog-ux-spec.md`
   - Guía: `design/ml-fotos.md`
   - Plan: `plans/04-PLAN-catalogo-mercadolibre.md`
+- [x] **ML impl. 1 (código + SQL)** — `repmax_ml_listings` + predictor/mapper en mobile
+- [x] **ML impl. 2 (código)** — OAuth Edge + connect en settings; ops (app ML, secrets, deploy, DDL connections) pendiente
+- [x] **Plan 05 E1 (código)** — checklist ML, badges inventario, `ml_publish_intent`, switch manual en ficha
+- [x] **Plan 05 E3 (código)** — export CSV ML + marcar exported / published_manual
+- [x] **Plan 05 E5 (código)** — dashboard vitrina link + QR + filtros inventario web
+- [x] **Plan 05 E6 (código)** — alertas POS post-venta ML + `needs_update`
+- [x] **Plan 05 E2 (código)** — categoría manual, título sugerido, color + migración
+- [x] Migración `20260816120000_repmax_ml_publish_intent` aplicada en hub
+- [x] Migración `20260816200000_repmax_products_color` aplicada en hub
 
 ## Próximo
 
@@ -31,8 +40,9 @@ El detalle de cambios ya hechos vive en [CHANGELOG.md](./CHANGELOG.md). Este arc
 - [ ] Seed / fixtures de catálogo realistas por tenant de prueba
 - [x] Deploy Vercel (`repmax-web`) + EAS / preview mobile (proyecto `@aeom0/repmax`, OTA channels)
 - [ ] Hardening RLS (auditoría advisors) y tests de aislamiento multi-tenant
-- [ ] Dominio / branding storefront público
-- [ ] MercadoLibre fase B–D: ficha/color, OAuth + publicar, sync stock/órdenes
+- [ ] Dominio / branding storefront público (vitrina como canal principal)
+- [ ] MercadoLibre ops impl. 2 — **pausado:** ticket **475453897** → app MLV + secrets + `repmax_ml_connections` + deploy Edge
+- [ ] MercadoLibre resto B–D (API): COLOR/título con predictor, `POST /items`, sync stock/órdenes
 
 ## Fuera de alcance inmediato
 
@@ -43,5 +53,6 @@ El detalle de cambios ya hechos vive en [CHANGELOG.md](./CHANGELOG.md). Este arc
 ## Referencia
 
 Planes cerrados: `plans/01` → `plans/03`.  
+En curso: `plans/04` (API ML, pausado ops) · `plans/05` (multicanal sin OAuth).  
 Diseño: [`design/`](./design/) · sistema: [`design-system/`](./design-system/).  
 Cambios hechos: [`CHANGELOG.md`](./CHANGELOG.md).

@@ -2,6 +2,8 @@
 // Tipos espejo del schema de Supabase / PostgreSQL local
 // ============================================================
 
+import type { MlListingStatus } from '@repmax/repmax-schema/mlListing';
+
 export type VehicleType = 'CAR' | 'MOTO' | 'TRUCK' | 'SUV';
 export type PartCondition = 'NEW' | 'USED';
 export type PaymentMethod =
@@ -69,13 +71,18 @@ export interface Product {
   vehicleType?: VehicleType;
   condition: PartCondition;
   partNumber?: string;
+  color?: string;
   priceUsd: number;
   priceBs?: number;
   stock: number;
   minStock: number;
   photos?: string[];
-  /** Intención de publicar en ML. Columna `ml_publish_intent` aún no existe en SQL. */
   mlPublishIntent?: boolean;
+  /** Estado del listing ML (embed PostgREST). */
+  mlListingStatus?: MlListingStatus;
+  mlItemId?: string;
+  mlCategoryId?: string;
+  mlCategoryName?: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
