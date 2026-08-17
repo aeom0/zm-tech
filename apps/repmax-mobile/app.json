@@ -91,6 +91,7 @@
       "expo-secure-store",
       "expo-image",
       "expo-sharing",
+      "expo-file-system",
       [
         "expo-splash-screen",
         {

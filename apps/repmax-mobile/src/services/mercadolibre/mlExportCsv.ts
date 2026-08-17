@@ -1,10 +1,4 @@
-// ============================================================
-// Export CSV para publicador masivo MercadoLibre (modo puente E3)
-// ============================================================
-
-import * as FileSystem from 'expo-file-system/legacy';
-import * as Sharing from 'expo-sharing';
-
+// Export CSV ML — lógica pura (sin módulos nativos; seguro en OTA sin rebuild).
 import type { Product } from '../../types/database';
 import { urisFotos } from '../../utils/productPhotos';
 
@@ -44,7 +38,7 @@ export interface FilaExportMl {
   listo: boolean;
 }
 
-/** Filas listas para export (checklist OK + listing ready). */
+/** Filas listas para export (checklist OK + intent ML). */
 export function filtrarListosParaExport(filas: FilaExportMl[]): FilaExportMl[] {
   return filas.filter((f) => f.listo && f.product.mlPublishIntent);
 }
@@ -75,24 +69,4 @@ export function construirCsvExport(filas: FilaExportMl[]): string {
   }
 
   return `\uFEFF${lineas.join('\n')}`;
-}
-
-export async function compartirCsvExport(contenido: string, nombreBase = 'repmax-ml'): Promise<void> {
-  const nombre = `${nombreBase}-${new Date().toISOString().slice(0, 10)}.csv`;
-  const path = `${FileSystem.cacheDirectory ?? ''}${nombre}`;
-
-  await FileSystem.writeAsStringAsync(path, contenido, {
-    encoding: FileSystem.EncodingType.UTF8,
-  });
-
-  const puedeCompartir = await Sharing.isAvailableAsync();
-  if (!puedeCompartir) {
-    throw new Error('Este dispositivo no permite compartir archivos. Copia el CSV desde otro canal.');
-  }
-
-  await Sharing.shareAsync(path, {
-    mimeType: 'text/csv',
-    dialogTitle: 'Exportar catálogo ML',
-    UTI: 'public.csv',
-  });
 }
