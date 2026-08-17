@@ -32,15 +32,17 @@ El detalle de cambios ya hechos vive en [CHANGELOG.md](./CHANGELOG.md). Este arc
 - [x] **Plan 05 E2 (código)** — categoría manual, título sugerido, color + migración
 - [x] Migración `20260816120000_repmax_ml_publish_intent` aplicada en hub
 - [x] Migración `20260816200000_repmax_products_color` aplicada en hub
+- [x] **Escáner barras/QR (código)** — `repmax_products.barcode`, POS + inventario + ficha mobile; campo en panel web
+- [x] EAS / preview mobile (proyecto `@aeom0/repmax`, OTA channels)
+- [x] **Plan 06 (código)** — rewrite `{slug}.zmtechdev.com` / `{slug}.localhost` → `/{slug}`; QR gated por `NEXT_PUBLIC_VITRINA_SUBDOMAINS`
+- [x] Proyecto Vercel `repmax-web` — prod `https://repmax-web-taupe.vercel.app` (Git `aeom0/zm-tech`, root `apps/repmax-web`)
 
 ## Próximo
 
 - [ ] Cablear onboarding mobile end-to-end al high-fi (`apps/repmax-mobile` ↔ design system)
 - [ ] Extraer / alinear tokens RN (`utils/theme.ts`) con `design-system/tokens.md`
 - [ ] Seed / fixtures de catálogo realistas por tenant de prueba
-- [x] Deploy Vercel (`repmax-web`) + EAS / preview mobile (proyecto `@aeom0/repmax`, OTA channels)
 - [ ] Hardening RLS (auditoría advisors) y tests de aislamiento multi-tenant
-- [ ] Dominio / branding storefront público (vitrina como canal principal)
 - [ ] MercadoLibre ops impl. 2 — **pausado:** ticket **475453897** → app MLV + secrets + `repmax_ml_connections` + deploy Edge
 - [ ] MercadoLibre resto B–D (API): COLOR/título con predictor, `POST /items`, sync stock/órdenes
 
@@ -53,6 +55,7 @@ El detalle de cambios ya hechos vive en [CHANGELOG.md](./CHANGELOG.md). Este arc
 ## Referencia
 
 Planes cerrados: `plans/01` → `plans/03`.  
-En curso: `plans/04` (API ML, pausado ops) · `plans/05` (multicanal sin OAuth).  
+En curso: `plans/04` (API ML, pausado ops) · `plans/05` (multicanal sin OAuth) · `plans/06` (dominio/vitrina, HTTPS wildcard live).  
+Propuesta: `plans/07` (hardware POS).  
 Diseño: [`design/`](./design/) · sistema: [`design-system/`](./design-system/).  
 Cambios hechos: [`CHANGELOG.md`](./CHANGELOG.md).

@@ -11,11 +11,13 @@ import {
   mensajeWhatsAppProducto,
   urlProductoVitrina,
 } from "@/lib/storefront-url";
+import { pathCatalogoVitrina } from "@/lib/vitrina-host";
 
 interface ProductDetailViewProps {
   store: StorePublic;
   product: ProductPublic;
   siteUrl: string;
+  hostSlug: string | null;
 }
 
 function formatearUsd(valor: number): string {
@@ -26,7 +28,12 @@ function formatearBs(valor: number): string {
   return `Bs ${valor.toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-export function ProductDetailView({ store, product, siteUrl }: ProductDetailViewProps) {
+export function ProductDetailView({
+  store,
+  product,
+  siteUrl,
+  hostSlug,
+}: ProductDetailViewProps) {
   const fotos = product.photos?.filter(Boolean) ?? [];
   const precioBs = product.priceBs ?? product.priceUsd * store.usdBsRate;
   const productUrl = urlProductoVitrina(siteUrl, store.slug, product.id);
@@ -47,7 +54,7 @@ export function ProductDetailView({ store, product, siteUrl }: ProductDetailView
     <div className="min-h-screen bg-[#0D0D0D]">
       <div className="mx-auto max-w-3xl px-4 py-4">
         <Link
-          href={`/${store.slug}`}
+          href={pathCatalogoVitrina(store.slug, hostSlug)}
           className="inline-flex items-center gap-2 text-sm text-[#9E9E9E] transition-colors hover:text-[#F5F5F5]"
         >
           <ArrowLeft className="h-4 w-4" aria-hidden />

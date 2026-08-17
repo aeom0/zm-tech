@@ -6,6 +6,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { StorefrontView } from "@/components/storefront/StorefrontView";
 import { createClient } from "@/lib/supabase/server";
+import { urlVitrinaTienda } from "@/lib/site-url";
+import { leerSlugHostVitrina } from "@/lib/vitrina-headers";
 import {
   fetchPublicProducts,
   fetchPublicStore,
@@ -30,14 +32,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const descripcion = tienda.city
     ? `Repuestos en ${tienda.city}. ${tienda.name} en RepMAX.`
     : `Catálogo de ${tienda.name} en RepMAX.`;
+  const canonical = urlVitrinaTienda(slug);
 
   return {
     title: `${tienda.name} — RepMAX`,
     description: descripcion,
+    alternates: { canonical },
     openGraph: {
       title: `${tienda.name} — RepMAX`,
       description: tienda.city ? `${tienda.name} · ${tienda.city}` : descripcion,
       type: "website",
+      url: canonical,
     },
   };
 }
@@ -45,6 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function StorefrontPage({ params }: Props) {
   const { slug } = await params;
   const supabase = await createClient();
+  const hostSlug = await leerSlugHostVitrina();
 
   const tienda = await fetchPublicStore(supabase, slug);
   if (!tienda) {
@@ -59,5 +65,12 @@ export default async function StorefrontPage({ params }: Props) {
     paramsProductos,
   );
 
-  return <StorefrontView store={tienda} initialProducts={products} total={total} />;
+  return (
+    <StorefrontView
+      store={tienda}
+      initialProducts={products}
+      total={total}
+      hostSlug={hostSlug}
+    />
+  );
 }

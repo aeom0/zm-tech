@@ -15,7 +15,7 @@ Contexto para agentes que toquen RepMAX dentro del monorepo.
 
 | Capa | Tecnología |
 |------|------------|
-| Web | Next.js 16 App Router, React 19, Tailwind, puerto 3003 |
+| Web | Next.js 15 App Router, React 19, Tailwind, puerto 3003 |
 | Mobile | Expo ~56, React Native 0.85, React 19 |
 | Datos | Supabase Auth + PostgREST + RLS (`llacowjutjfefboqgfnj`) |
 | Schema TS | Drizzle en `@repmax/repmax-schema` (contrato TS; **no** drizzle-kit) |
@@ -64,6 +64,6 @@ pnpm --filter @repmax/repmax-schema check:types   # si existe script
 
 - Changelog: [CHANGELOG.md](./CHANGELOG.md)
 - Roadmap: [ROADMAP.md](./ROADMAP.md)
-- Planes: [plans/](./plans/) (01–03 cerrados; 04 catálogo ML en curso)
+- Planes: [plans/](./plans/) (01–03 cerrados; 04 catálogo ML en curso; 05 multicanal; 06 dominio/vitrina — wildcard HTTPS live; 07 hardware = propuesta)
 - Diseño onboarding: [design/](./design/) · catálogo ML: [design/catalog-ux-spec.md](./design/catalog-ux-spec.md), fotos [design/ml-fotos.md](./design/ml-fotos.md)
 - Design system: [design-system/](./design-system/)

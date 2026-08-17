@@ -1,12 +1,13 @@
 // URLs y mensajes WhatsApp para la vitrina pública
 
+import { urlVitrinaTienda } from "@/lib/site-url";
+
 export function urlProductoVitrina(
   baseUrl: string,
   storeSlug: string,
   productId: string,
 ): string {
-  const base = baseUrl.replace(/\/$/, "");
-  return `${base}/${storeSlug}/p/${productId}`;
+  return `${urlVitrinaTienda(storeSlug, baseUrl)}/p/${productId}`;
 }
 
 export function mensajeWhatsAppProducto(params: {

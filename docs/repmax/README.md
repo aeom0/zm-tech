@@ -6,7 +6,7 @@ SaaS B2B multi-tenant para **tiendas de autopartes** en Venezuela. Vive en el mo
 
 | Path | Rol |
 |------|-----|
-| `apps/repmax-web` | Next.js 16 — panel `/dashboard/*` + vitrina pública `/[slug]` (puerto **3003**) |
+| `apps/repmax-web` | Next.js 15 — panel `/dashboard/*` + vitrina `/{slug}` y `{slug}.localhost` / `{slug}.zmtechdev.com` (puerto **3003**) |
 | `apps/repmax-mobile` | Expo SDK 56 — inventario, POS, clientes, caja, onboarding |
 | `packages/repmax-schema` | Drizzle schema `repmax_*` + constantes (`@repmax/repmax-schema`) |
 | `packages/tenant-config/src/repmax/` | Export `@zmtech/tenant-config/repmax` **preparado, no cableado** — ni `repmax-web` ni `repmax-mobile` lo importan ni lo declaran. Auth/tenant real hoy: `AuthContext` en cada app → `repmax_store_users` / `repmax_stores` vía Supabase |
@@ -35,7 +35,7 @@ pnpm build:repmax
 
 | App | Archivo | Variables |
 |-----|---------|-----------|
-| Web | `apps/repmax-web/.env.local` | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` |
+| Web | `apps/repmax-web/.env.local` | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`. Opcional: `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_VITRINA_SUBDOMAINS=1` (solo con wildcard DNS) |
 | Mobile | `apps/repmax-mobile/.env` | `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` |
 
 Proyecto: `https://llacowjutjfefboqgfnj.supabase.co`
@@ -90,6 +90,8 @@ Historial de producto: [`CHANGELOG.md`](./CHANGELOG.md) (Keep a Changelog). Infr
 - Cerrados: fases 01–03 en `plans/` (scaffold, schema/RLS, retiro Express).
 - En curso (API pausado — ticket ML **475453897**): [`plans/04-PLAN-catalogo-mercadolibre.md`](./plans/04-PLAN-catalogo-mercadolibre.md).
 - En curso (desarrollo activo): [`plans/05-PLAN-catalogo-multicanal-sin-oauth.md`](./plans/05-PLAN-catalogo-multicanal-sin-oauth.md) — inventario, vitrina, POS, export ML manual.
+- En curso (código + ops): [`plans/06-PLAN-dominio-vitrina.md`](./plans/06-PLAN-dominio-vitrina.md) — `{slug}.zmtechdev.com` (apex landing intacto).
+- Propuesta: [`plans/07-PLAN-integracion-hardware.md`](./plans/07-PLAN-integracion-hardware.md) — Bridge POS (fiscal / térmica); scanner HID sin Bridge.
 
 ## Reglas críticas
 

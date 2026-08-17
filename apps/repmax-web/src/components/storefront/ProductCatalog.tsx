@@ -29,6 +29,7 @@ const CONDICIONES: { value: string; label: string }[] = [
 interface ProductCatalogProps {
   storeId: string;
   storeSlug: string;
+  hostSlug: string | null;
   initialProducts: ProductPublic[];
   total: number;
   usdBsRate: number;
@@ -61,6 +62,7 @@ const selectClase =
 export function ProductCatalog({
   storeId,
   storeSlug,
+  hostSlug,
   initialProducts,
   total: totalInicial,
   usdBsRate,
@@ -204,7 +206,13 @@ export function ProductCatalog({
         <>
           <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
             {productos.map((p) => (
-              <ProductCard key={p.id} product={p} usdBsRate={usdBsRate} storeSlug={storeSlug} />
+              <ProductCard
+                key={p.id}
+                product={p}
+                usdBsRate={usdBsRate}
+                storeSlug={storeSlug}
+                hostSlug={hostSlug}
+              />
             ))}
           </div>
           {totalPaginas > 1 ? (

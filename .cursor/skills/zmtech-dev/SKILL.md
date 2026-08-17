@@ -113,7 +113,7 @@ Automotriz, Sports Tech y Enterprise.
 - **Docs:** `docs/repmax/`
 - **Descripción:** SaaS B2B multi-tenant para tiendas de autopartes en Venezuela
 - **Stack:** Expo SDK 56 + Next.js 16 + Supabase Auth/RLS (`repmax_*`) + Drizzle schema package
-- **Features:** Inventario, POS mobile, vitrina `/[slug]`, panel `/dashboard`
+- **Features:** Inventario, POS mobile, vitrina `/{slug}` y `{slug}.zmtechdev.com`, panel `/dashboard`
 - **Estado:** Integrado en zm-tech (sin Express; repo standalone `aeom0/RepMAX` legacy)
 - **Supabase:** proyecto compartido ZMTech `llacowjutjfefboqgfnj`
 

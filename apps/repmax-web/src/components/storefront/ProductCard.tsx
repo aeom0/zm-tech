@@ -6,11 +6,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { Wrench } from "lucide-react";
 import type { ProductPublic } from "@/types/storefront";
+import { pathProductoVitrina } from "@/lib/vitrina-host";
 
 interface ProductCardProps {
   product: ProductPublic;
   usdBsRate: number;
   storeSlug: string;
+  hostSlug: string | null;
 }
 
 function formatearUsd(valor: number): string {
@@ -21,13 +23,13 @@ function formatearBs(valor: number): string {
   return `Bs ${valor.toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 }
 
-export function ProductCard({ product, usdBsRate, storeSlug }: ProductCardProps) {
+export function ProductCard({ product, usdBsRate, storeSlug, hostSlug }: ProductCardProps) {
   const foto = product.photos?.[0] ?? null;
   const precioBsCalculado = product.priceUsd * usdBsRate;
 
   return (
     <Link
-      href={`/${storeSlug}/p/${product.id}`}
+      href={pathProductoVitrina(storeSlug, product.id, hostSlug)}
       className="group flex flex-col overflow-hidden rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] transition-colors duration-200 hover:border-[#FF6B00]"
     >
       <div className="relative h-[160px] w-full bg-[#242424]">

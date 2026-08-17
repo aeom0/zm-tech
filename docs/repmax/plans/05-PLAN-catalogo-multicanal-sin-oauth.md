@@ -143,6 +143,6 @@ Referencia ML: [Publicar muchos productos a la vez](https://www.mercadolibre.com
 pnpm --filter @repmax/repmax-schema check:types
 pnpm --filter repmax-mobile check:types
 pnpm --filter repmax-web check:types
-pnpm dev:repmax:web   # vitrina http://localhost:3003/[slug]
+pnpm dev:repmax:web   # vitrina http://localhost:3003/[slug]  ·  http://{slug}.localhost:3003
 pnpm dev:repmax:mobile
 ```

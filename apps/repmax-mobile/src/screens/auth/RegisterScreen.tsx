@@ -15,6 +15,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useOnboarding } from '../../context/OnboardingContext';
 import { THEMES } from '../../constants/onboarding';
 import { slugify } from '../../utils/slugify';
+import { esSlugReservadoVitrina, esSlugVitrinaValido } from '@repmax/repmax-schema/vitrinaSlug';
 import { colors, typography, spacing, borderRadius } from '../../utils/theme';
 import type { StoreType } from '../../types/database';
 
@@ -48,6 +49,14 @@ export default function RegisterScreen({ navigation }: Props) {
     }
     if (!storeSlug) {
       setError('El nombre de la tienda debe incluir letras o números para generar la URL.');
+      return;
+    }
+    if (!esSlugVitrinaValido(storeSlug)) {
+      setError(
+        esSlugReservadoVitrina(storeSlug)
+          ? 'Ese nombre está reservado. Probá otro para la URL de tu vitrina.'
+          : 'Ese nombre no sirve para la URL. Usá letras, números o guiones.',
+      );
       return;
     }
 
@@ -100,9 +109,11 @@ export default function RegisterScreen({ navigation }: Props) {
           />
           {storeName.trim().length > 0 && (
             <Text style={styles.slugHint}>
-              {storeSlug
+              {storeSlug && esSlugVitrinaValido(storeSlug)
                 ? `URL: /${storeSlug}`
-                : 'Agrega letras o números para generar la URL'}
+                : storeSlug && esSlugReservadoVitrina(storeSlug)
+                  ? 'Ese nombre está reservado. Probá otro.'
+                  : 'Agrega letras o números para generar la URL'}
             </Text>
           )}
           <TextInput

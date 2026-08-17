@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { supabase } from '../utils/supabase';
+import { esSlugReservadoVitrina, esSlugVitrinaValido } from '@repmax/repmax-schema/vitrinaSlug';
 import type { AuthUser, Store, StoreUser, StoreType, VehicleFocus, ThemeKey, CountryCode } from '../types/database';
 
 interface AuthState {
@@ -149,6 +150,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const slug = input.storeSlug.trim();
     if (!slug) {
       throw new Error('El nombre de la tienda debe incluir letras o números para generar la URL.');
+    }
+    if (!esSlugVitrinaValido(slug)) {
+      throw new Error(
+        esSlugReservadoVitrina(slug)
+          ? 'Ese nombre está reservado. Probá otro para la URL de tu vitrina.'
+          : 'Ese nombre no sirve para la URL. Usá letras, números o guiones.',
+      );
     }
 
     registeringRef.current = true;

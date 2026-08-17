@@ -11,15 +11,22 @@ interface StorefrontViewProps {
   store: StorePublic;
   initialProducts: ProductPublic[];
   total: number;
+  hostSlug: string | null;
 }
 
-export function StorefrontView({ store, initialProducts, total }: StorefrontViewProps) {
+export function StorefrontView({
+  store,
+  initialProducts,
+  total,
+  hostSlug,
+}: StorefrontViewProps) {
   return (
     <div className="min-h-screen bg-[#0D0D0D]">
       <StorefrontHeader store={store} />
       <ProductCatalog
         storeId={store.id}
         storeSlug={store.slug}
+        hostSlug={hostSlug}
         initialProducts={initialProducts}
         total={total}
         usdBsRate={store.usdBsRate}

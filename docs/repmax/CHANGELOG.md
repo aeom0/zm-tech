@@ -10,6 +10,9 @@ Roadmap: [ROADMAP.md](./ROADMAP.md). Plan API ML (pausado): [plans/04-PLAN-catal
 ## [Unreleased]
 
 ### Añadido
+- **Plan 06 (ops)** — proyecto Vercel `repmax-web` en producción (`https://repmax-web-taupe.vercel.app`). CNAME `*` + cert wildcard `*.zmtechdev.com` (Let's Encrypt). Apex `zmtech` no se tocó.
+- **Plan 06 (código)** — vitrina por hostname: `{slug}.zmtechdev.com` / `{slug}.localhost` reescribe a `/{slug}` (el path `/{slug}` sigue). QR y WhatsApp a subdominio solo con `NEXT_PUBLIC_VITRINA_SUBDOMAINS=1`. Slugs reservados al registrar.
+- **Escaner de barras / QR** — POS (agregar al carrito), inventario (crear o +1 stock) y ficha (asignar código). Columna `repmax_products.barcode` única por tienda. Migración `20260816220000`.
 - **E2 plan 05** — ficha mobile: título sugerido ML, selector categoría manual, campo color; migración `repmax_products.color`; export CSV con color.
 - **Landing ML honesta** — copy repmax-web + zm-tech landing sin prometer sync en vivo (`ML_API_ENABLED = false`).
 - **E6 plan 05** — POS mobile: tras venta, banner en recibo si producto está en ML (`published_manual` / `published`); listing → `needs_update`; badge “Actualizar ML” en inventario.
