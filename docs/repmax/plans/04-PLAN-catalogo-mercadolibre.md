@@ -1,10 +1,12 @@
 # 04 — Catálogo + MercadoLibre
 
-> **Estado: EN CURSO** (ago 2026). Fotos (fase A) y contrato OAuth/categoría (fases 1–2 de implementación) en código. Falta app ML + secrets + deploy Edge + `POST /items`.
+> **Estado: EN CURSO — track API pausado** (ago 2026). Fotos (fase A) y contrato OAuth/categoría (impl. 1–2) en código. **Ops ML bloqueada:** ticket **475453897** (accountLink `PSC01`). Desarrollo activo en paralelo: [plan 05 — multicanal sin OAuth](./05-PLAN-catalogo-multicanal-sin-oauth.md).
 
 **Precondición:** Preview Android en `@aeom0/repmax` (runtime SDK 56, channel `preview`). Storage `repmax-products` y RLS de miembros activos.
 
-**Objetivo:** El inventario de RepMAX es la fuente de la publicación en MercadoLibre Venezuela: conectar la cuenta una vez, fotos que ML no pause, ficha con atributos de autopartes, stock en sync.
+**Objetivo (API):** Inventario RepMAX → publicación y sync en MercadoLibre Venezuela (OAuth, fotos, atributos autopartes, stock).
+
+**Objetivo (sin API):** Ver plan 05 — catálogo ML-ready, export manual, vitrina y POS como canales principales.
 
 **Hub:** `llacowjutjfefboqgfnj`. Prefijo `repmax_*`. Sin `repmax-server`.
 
@@ -13,6 +15,10 @@
 ## Promesa de producto (landing)
 
 Fuente: `apps/repmax-web` `MLSection` + Pricing.
+
+**Hoy (sin API ML):** inventario + POS + vitrina `/[slug]`; catálogo ML-ready y export manual ([plan 05](./05-PLAN-catalogo-multicanal-sin-oauth.md)). Ajustar copy landing cuando E1 esté en código — no prometer sync en vivo.
+
+**Con API (plan 04 C–D, tras app ML):**
 
 1. Conectar ML **una vez** (OAuth).
 2. Publicar desde el inventario (fotos, precio, descripción).
@@ -119,9 +125,28 @@ Redirect **exacto** (ML rechaza variación):
 
 Sites: `VE→MLV` (mínimo). Preparado: `MCO` `MPE` `MEC` `MDO` vía `repmax_stores.country_code`.
 
-### Bloqueador para E2E
+### Cuenta desarrollador ML
 
-1. App en [developers.mercadolibre.com](https://developers.mercadolibre.com) con site **MLV**.
+- Correo: **`alberto@zmtechdev.com`** (cuenta ZM Tech; no usar Gmail personal).
+- Site al crear la app: **Venezuela / MLV**.
+- Una sola aplicación **RepMAX** (no una por tienda). Alberto es dueño de la app; cada tienda autoriza por OAuth.
+- Scopes: lectura + escritura + `offline_access`.
+
+**Soporte ML (bloqueador accountLink)** — 2026-08-13
+
+| Campo | Valor |
+|-------|--------|
+| Consulta | **475453897** |
+| Error | `PSC01-EZGLT8IYDQ3Z` en `/devcenter/accountLink` |
+| URL | `https://developers.mercadolibre.com.ve/devcenter/accountLink` |
+| Mensaje | “Tuvimos un problema. Por favor, vuelve a intentarlo” |
+| Estado | Abierto — **esperando respuesta de ML** (no deploy OAuth hasta confirmación) |
+
+Sin vinculación de cuenta no hay app ni `ML_CLIENT_ID` / `ML_CLIENT_SECRET`. **Plan activo sin API:** [05-PLAN-catalogo-multicanal-sin-oauth.md](./05-PLAN-catalogo-multicanal-sin-oauth.md). **Plan B API** si ML no resuelve: app con cuenta que sí entre al DevCenter (site MLV).
+
+### Bloqueador para E2E (track API — pausado)
+
+1. App en [developers.mercadolibre.com](https://developers.mercadolibre.com) con site **MLV**, logueado como `alberto@zmtechdev.com`.
 2. `redirect_uri` idéntico a la URL de `ml-oauth-callback`.
 3. Secrets en el hub (nunca `SUPABASE_JWT_SECRET` para el state):
 
@@ -178,7 +203,7 @@ Helper RLS verificado: `repmax_user_role_in_store(p_store_id uuid) → repmax_st
 ### Impl. 2
 
 - [x] Código OAuth + proxy + UI connect/switch.
-- [ ] App ML + secrets.
+- [ ] App ML (cuenta `alberto@zmtechdev.com`, site MLV) + secrets. **Ticket ML 475453897** (accountLink PSC01).
 - [ ] Migración `repmax_ml_connections` en el hub.
 - [ ] Deploy Edge Functions.
 - [ ] Probar deep link `repmax://ml-connected` en APK preview.

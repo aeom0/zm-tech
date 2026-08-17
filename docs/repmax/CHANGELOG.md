@@ -3,13 +3,21 @@
 Todos los cambios notables se documentan en este archivo.
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
-Roadmap: [ROADMAP.md](./ROADMAP.md). Plan en curso: [plans/04-PLAN-catalogo-mercadolibre.md](./plans/04-PLAN-catalogo-mercadolibre.md).
+Roadmap: [ROADMAP.md](./ROADMAP.md). Plan API ML (pausado): [plans/04-PLAN-catalogo-mercadolibre.md](./plans/04-PLAN-catalogo-mercadolibre.md). Plan multicanal: [plans/05-PLAN-catalogo-multicanal-sin-oauth.md](./plans/05-PLAN-catalogo-multicanal-sin-oauth.md).
 
 ---
 
 ## [Unreleased]
 
 ### Añadido
+- **E2 plan 05** — ficha mobile: título sugerido ML, selector categoría manual, campo color; migración `repmax_products.color`; export CSV con color.
+- **Landing ML honesta** — copy repmax-web + zm-tech landing sin prometer sync en vivo (`ML_API_ENABLED = false`).
+- **E6 plan 05** — POS mobile: tras venta, banner en recibo si producto está en ML (`published_manual` / `published`); listing → `needs_update`; badge “Actualizar ML” en inventario.
+- **E5 plan 05** — panel web: link vitrina copiable + QR, filtros ML/vitrina en inventario, fotos y badges.
+- **E4 plan 05** — vitrina web: página `/[slug]/p/[id]`, cards enlazadas, galería fotos, CTA WhatsApp con n. parte + link.
+- **Migración E1 aplicada** — `ml_publish_intent` + estados manual en `repmax_ml_listings` (hub).
+- **E1 plan 05** — `ml_publish_intent`, checklist ML, badges y filtros inventario, card ML honesta en Mi tienda.
+- **Plan 05 — catálogo multicanal sin OAuth** — vitrina + POS + export ML manual mientras ticket **475453897**; track API del plan 04 pausado en ops.
 - **MercadoLibre impl. 1 — category mapping** — tabla `repmax_ml_listings` (1:1 opcional, aplicada en hub `20260811222700`), contrato `@repmax/repmax-schema/mlListing`, `mlCategoryService` + `useMlCategoryPrediction`. Mapper PART_NUMBER/MPN → `missing` required.
 - **MercadoLibre impl. 2 — OAuth (código)** — tabla `repmax_ml_connections` (SQL **no aplicada**), Edge `ml-oauth-start` / `ml-oauth-callback` / `ml-token-refresh` / `ml-predict-category`, `mlAuthService` + `useMercadoLibreConnection`. Card conectar en Mi tienda; switch de ficha gated a cuenta conectada y plan ≠ basic. Tokens solo `service_role`.
 - **Catálogo fotos ML-ready (fase A)** — captura 1:1, revisión pass/fail, resize 1200² JPEG, máx. 6 slots, upload a `repmax-products/{store_id}/drafts/`. Switch publicar lista huecos (portada, n. parte, título).
@@ -21,6 +29,9 @@ Roadmap: [ROADMAP.md](./ROADMAP.md). Plan en curso: [plans/04-PLAN-catalogo-merc
 - Kit de marca REPMAX (wordmark, RM, favicons, íconos) cableado en web y mobile.
 
 ### Cambiado
+- Bifurcación ML: desarrollo activo en plan 05 (multicanal sin OAuth); plan 04 track API en pausa hasta respuesta ticket **475453897**.
+- Cuenta desarrollador MercadoLibre: `alberto@zmtechdev.com` (ZM Tech), documentada en el plan 04.
+- Ticket soporte ML **475453897** — error `PSC01-EZGLT8IYDQ3Z` al vincular cuenta en DevCenter (`accountLink`); bloquea creación de app hasta respuesta.
 - Copy de negocio: “Repuestería” → “Repuestos” en onboarding y landing. Enum DB `store_type='repuesteria'` **sin tocar**.
 - `productService.create` envía `storeId` (el insert salía sin tienda).
 - **Miniaturas en catálogo mobile** — inventario, POS y carrito muestran `photos[0]` (seed o Storage) con `expo-image`; placeholder si no hay portada. Independiente de publicar en ML.
