@@ -6,6 +6,9 @@
 export const ML_LISTING_STATUSES = [
   "draft",
   "ready",
+  "exported",
+  "published_manual",
+  "needs_update",
   "published",
   "paused",
   "error",
@@ -69,5 +72,6 @@ export interface RepmaxProduct {
   brand?: string | null;
   model?: string | null;
   condition?: string | null;
+  color?: string | null;
   title?: string | null;
 }
