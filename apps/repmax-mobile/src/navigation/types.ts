@@ -4,7 +4,6 @@
 import type { NavigatorScreenParams } from '@react-navigation/native';
 
 export type OnboardingStackParamList = {
-  OnboardingSplash: undefined;
   OnboardingCountry: undefined;
   OnboardingVehicle: undefined;
   OnboardingBusiness: undefined;

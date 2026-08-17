@@ -9,7 +9,6 @@ import type { OnboardingStackParamList } from '../navigation/types';
 
 // Orden lineal de las pantallas del onboarding
 const SCREENS: (keyof OnboardingStackParamList)[] = [
-  'OnboardingSplash',
   'OnboardingCountry',
   'OnboardingVehicle',
   'OnboardingBusiness',
@@ -35,13 +34,9 @@ export function useOnboardingNavigation(
   currentScreen: keyof OnboardingStackParamList,
   navigation: OnboardingNavProp,
 ): UseOnboardingNavigationResult {
-  // Índice base-0; el splash no cuenta como "paso" visible
   const currentIndex = SCREENS.indexOf(currentScreen);
-
-  // El splash se excluye del conteo visible (pasos 1-5 son Country → Decision)
-  const visibleScreens = SCREENS.slice(1); // sin Splash
-  const totalSteps = visibleScreens.length;
-  const currentStep = Math.max(0, currentIndex); // 0 para Splash
+  const totalSteps = SCREENS.length;
+  const currentStep = Math.max(0, currentIndex);
 
   const goNext = useCallback(() => {
     const siguienteIndex = currentIndex + 1;
