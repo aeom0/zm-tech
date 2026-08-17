@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { supabase } from '../utils/supabase';
 import { esSlugReservadoVitrina, esSlugVitrinaValido } from '@repmax/repmax-schema/vitrinaSlug';
+import { seedStarterCatalog } from '../services/catalogSeedService';
 import type { AuthUser, Store, StoreUser, StoreType, VehicleFocus, ThemeKey, CountryCode } from '../types/database';
 
 interface AuthState {
@@ -200,6 +201,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           full_name: input.email.split('@')[0],
         });
       if (storeUserError) throw new Error(mapDbError(storeUserError));
+
+      // Best-effort: 1 reintento interno, nunca bloquea el registro (ver catalogSeedService.ts)
+      await seedStarterCatalog(storeId);
 
       // Cargar membership con tienda ya creada (no depender del race de SIGNED_IN)
       const { storeUser, store } = await loadStoreData(userId);
