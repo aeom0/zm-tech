@@ -103,7 +103,7 @@ export const en: Messages = {
       mercadolibre: {
         category: 'E-commerce',
         description:
-          'Sync your catalog, manage orders, and update stock in real time from your system — without opening MercadoLibre manually.',
+          'Get your catalog ML-ready, export to MercadoLibre bulk upload, and sell via your web storefront. Automatic sync ships when the API is available in Venezuela.',
       },
       cashea: {
         category: 'Installment payments',
@@ -228,7 +228,7 @@ export const en: Messages = {
       {
         heading: '1. Who we are',
         paragraphs: [
-          'ZM Tech (“we”) operates zmtechdev.com and related quote and contact services. Data controller: Alberto Orta · contact: albertoorta.1@gmail.com · WhatsApp: +58 414 494 0417.',
+          'ZM Tech (“we”) operates zmtechdev.com and related quote and contact services. Data controller: Alberto Orta · contact: alberto@zmtechdev.com · WhatsApp: +58 414 494 0417.',
         ],
       },
       {
@@ -261,7 +261,7 @@ export const en: Messages = {
       {
         heading: '6. Your rights',
         paragraphs: [
-          'You may request access, correction, or deletion of your personal data by emailing albertoorta.1@gmail.com. We will respond within a reasonable time.',
+          'You may request access, correction, or deletion of your personal data by emailing alberto@zmtechdev.com. We will respond within a reasonable time.',
         ],
       },
       {
@@ -333,7 +333,7 @@ export const en: Messages = {
       {
         heading: '8. Contact',
         paragraphs: [
-          'Questions about these terms: albertoorta.1@gmail.com · +58 414 494 0417 · https://zmtechdev.com',
+          'Questions about these terms: alberto@zmtechdev.com · +58 414 494 0417 · https://zmtechdev.com',
         ],
       },
     ],

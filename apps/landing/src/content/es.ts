@@ -103,7 +103,7 @@ export const es: Messages = {
       mercadolibre: {
         category: 'E-commerce',
         description:
-          'Sincroniza tu catálogo, gestiona órdenes y actualiza stock en tiempo real desde tu sistema — sin abrir MercadoLibre manualmente.',
+          'Prepara tu catálogo ML-ready, exporta al publicador masivo y vende también por vitrina web. La sincronización automática con MercadoLibre llega cuando la API esté disponible en Venezuela.',
       },
       cashea: {
         category: 'Pagos en cuotas',
@@ -230,7 +230,7 @@ export const es: Messages = {
       {
         heading: '1. Quiénes somos',
         paragraphs: [
-          'ZM Tech (“nosotros”) opera el sitio zmtechdev.com y los servicios asociados de cotización y contacto. Responsable del tratamiento: Alberto Orta · contacto: albertoorta.1@gmail.com · WhatsApp: +58 414 494 0417.',
+          'ZM Tech (“nosotros”) opera el sitio zmtechdev.com y los servicios asociados de cotización y contacto. Responsable del tratamiento: Alberto Orta · contacto: alberto@zmtechdev.com · WhatsApp: +58 414 494 0417.',
         ],
       },
       {
@@ -263,7 +263,7 @@ export const es: Messages = {
       {
         heading: '6. Tus derechos',
         paragraphs: [
-          'Puedes solicitar acceso, corrección o eliminación de tus datos personales escribiendo a albertoorta.1@gmail.com. Responderemos en un plazo razonable.',
+          'Puedes solicitar acceso, corrección o eliminación de tus datos personales escribiendo a alberto@zmtechdev.com. Responderemos en un plazo razonable.',
         ],
       },
       {
@@ -336,7 +336,7 @@ export const es: Messages = {
       {
         heading: '8. Contacto',
         paragraphs: [
-          'Consultas sobre estos términos: albertoorta.1@gmail.com · +58 414 494 0417 · https://zmtechdev.com',
+          'Consultas sobre estos términos: alberto@zmtechdev.com · +58 414 494 0417 · https://zmtechdev.com',
         ],
       },
     ],
