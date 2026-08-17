@@ -34,6 +34,7 @@ alwaysApply: false
 3. Si cambia forma de tablas/enums → actualizar `packages/repmax-schema/src/schema.ts` en el mismo cambio
 4. RLS/grants/índices/RPC sin contrato TS → no tocar el package
 5. Catálogo demo materialmente distinto → reexportar `docs/repmax/supabase/seed/demo_catalog.sql`
+6. Tras aplicar, si el hub usó otro timestamp → renombrar el archivo local (= versión en `schema_migrations`)
 
 ## Sync bidireccional
 

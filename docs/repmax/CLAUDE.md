@@ -41,6 +41,7 @@ UI → Hooks / Server Components → lib/* (Supabase) → tipos (@repmax/repmax-
 
 - `repmax_stores`, `repmax_store_users`, `repmax_products`, `repmax_customers`, `repmax_sales`, `repmax_sale_items`, `repmax_cash_sessions`, `repmax_ml_listings` (aplicada), `repmax_ml_connections` (SQL lista, no aplicada)
 - Helpers SQL: `repmax_user_store_ids()`, `repmax_user_role_in_store(store_id)`
+- RPC: `repmax_create_sale_with_items`, `repmax_seed_starter_catalog` (aplicada, hub `20260817222347`)
 - Políticas de catálogo público: solo rol `anon` (productos activos); autenticados no ven otras tiendas por esa vía
 
 ## Convenciones
