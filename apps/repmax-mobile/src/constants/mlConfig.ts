@@ -3,11 +3,8 @@
 
 export const ML_API_ENABLED = false;
 
-/** Consulta cerrada — ML confirmó que DevCenter/API MLV no está habilitado en Venezuela. */
-export const ML_SUPPORT_TICKET = '475453897';
-
 export const ML_MANUAL_MODE_HINT =
   'MercadoLibre Venezuela no tiene API de desarrolladores activa. Prepara el catálogo y exporta al publicador masivo desde tu cuenta ML.';
 
 export const ML_API_STATUS_NOTE =
-  'Confirmado por Mercado Libre (consulta #475453897): el DevCenter y la API no están operativos en Venezuela.';
+  'Confirmado por Mercado Libre: el DevCenter y la API no están operativos en Venezuela.';
