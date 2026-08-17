@@ -167,6 +167,8 @@ export const products = pgTable(
     vehicleType: vehicleTypeEnum("vehicle_type"),
     condition: partConditionEnum("condition").default("NEW"),
     partNumber: varchar("part_number", { length: 100 }),
+    /** Payload de EAN/UPC/Code128/QR. Único por tienda (índice parcial en SQL). */
+    barcode: varchar("barcode", { length: 255 }),
     color: varchar("color", { length: 80 }),
     priceUsd: decimal("price_usd", { precision: 12, scale: 2 }).notNull(),
     priceBs: decimal("price_bs", { precision: 14, scale: 2 }),

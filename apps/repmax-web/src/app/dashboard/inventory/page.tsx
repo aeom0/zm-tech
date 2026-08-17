@@ -13,6 +13,8 @@ import { useAuth } from "@/context/AuthContext";
 import { useAuthFetch } from "@/hooks/useAuthFetch";
 import { createClient } from "@/lib/supabase/client";
 import { patchProduct } from "@/lib/repmax-queries";
+import { getSiteUrl } from "@/lib/site-url";
+import { urlProductoVitrina } from "@/lib/storefront-url";
 import type { FiltroMlWeb } from "@/lib/ml-readiness";
 import { MlBadgeChip } from "@/components/dashboard/MlBadgeChip";
 import { VitrinaPanel } from "@/components/dashboard/VitrinaPanel";
@@ -110,6 +112,7 @@ export default function InventoryPage() {
   const [stockVal, setStockVal] = useState("");
   const [minStockVal, setMinStockVal] = useState("");
   const [activo, setActivo] = useState(true);
+  const [barcodeVal, setBarcodeVal] = useState("");
   const [guardando, setGuardando] = useState(false);
   const [errorForm, setErrorForm] = useState<string | null>(null);
 
@@ -119,6 +122,7 @@ export default function InventoryPage() {
     setStockVal(String(p.stock));
     setMinStockVal(String(p.minStock));
     setActivo(p.isActive);
+    setBarcodeVal(p.barcode ?? "");
     setErrorForm(null);
   }, []);
 
@@ -142,6 +146,7 @@ export default function InventoryPage() {
           stock: Math.floor(stock),
           minStock: Math.floor(minStock),
           isActive: activo,
+          barcode: barcodeVal.trim(),
         },
         store?.usdBsRate ?? 36.5,
       );
@@ -152,7 +157,7 @@ export default function InventoryPage() {
     } finally {
       setGuardando(false);
     }
-  }, [editando, token, precioUsd, stockVal, minStockVal, activo, refetch, store?.usdBsRate]);
+  }, [editando, token, precioUsd, stockVal, minStockVal, activo, barcodeVal, refetch, store?.usdBsRate]);
 
   if (isLoading && !data) {
     return <EsqueletoInventario />;
@@ -178,7 +183,7 @@ export default function InventoryPage() {
         <div className="relative min-w-[200px] flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#616161]" />
           <Input
-            placeholder="Buscar repuesto…"
+            placeholder="Buscar repuesto o código…"
             value={busqueda}
             onChange={(e) => {
               setPagina(1);
@@ -304,6 +309,9 @@ export default function InventoryPage() {
                   {p.partNumber ? (
                     <span className="text-xs text-[#616161]">#{p.partNumber}</span>
                   ) : null}
+                  {p.barcode ? (
+                    <span className="block text-xs text-[#616161]">{p.barcode}</span>
+                  ) : null}
                 </TableCell>
                 <TableCell className="text-[#9E9E9E]">
                   {p.brand} / {p.model}
@@ -359,7 +367,7 @@ export default function InventoryPage() {
                       asChild
                     >
                       <Link
-                        href={`/${store.slug}/p/${p.id}`}
+                        href={urlProductoVitrina(getSiteUrl(), store.slug, p.id)}
                         target="_blank"
                         rel="noopener noreferrer"
                         aria-label="Ver en vitrina"
@@ -453,6 +461,18 @@ export default function InventoryPage() {
                 type="number"
                 value={minStockVal}
                 onChange={(e) => setMinStockVal(e.target.value)}
+                className="border-[#2A2A2A] bg-[#242424] text-[#F5F5F5] focus-visible:ring-[#FF6B00]"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="barcode" className="text-[#F5F5F5]">
+                Código de barras / QR
+              </Label>
+              <Input
+                id="barcode"
+                value={barcodeVal}
+                onChange={(e) => setBarcodeVal(e.target.value)}
+                placeholder="EAN, Code128 o payload QR"
                 className="border-[#2A2A2A] bg-[#242424] text-[#F5F5F5] focus-visible:ring-[#FF6B00]"
               />
             </div>

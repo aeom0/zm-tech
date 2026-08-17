@@ -30,7 +30,7 @@ const VEHICLE_TYPES: { value: VehicleType; label: string }[] = [
 ];
 
 export default function ProductFormScreen({ route, navigation }: Props) {
-  const { productId, pendingPhoto } = route.params ?? {};
+  const { productId, pendingPhoto, scannedBarcode } = route.params ?? {};
   const {
     form,
     setField,
@@ -56,7 +56,7 @@ export default function ProductFormScreen({ route, navigation }: Props) {
     loadError,
     isEditing,
     handleSave,
-  } = useProductForm({ productId, pendingPhoto });
+  } = useProductForm({ productId, pendingPhoto, scannedBarcode });
   const [showBrandPicker, setShowBrandPicker] = useState(false);
 
   useEffect(() => {
@@ -69,6 +69,11 @@ export default function ProductFormScreen({ route, navigation }: Props) {
     if (!pendingPhoto) return;
     navigation.setParams({ pendingPhoto: undefined });
   }, [pendingPhoto, navigation]);
+
+  useEffect(() => {
+    if (!scannedBarcode) return;
+    navigation.setParams({ scannedBarcode: undefined });
+  }, [scannedBarcode, navigation]);
 
   const onSave = async () => {
     const result = await handleSave();
@@ -138,6 +143,26 @@ export default function ProductFormScreen({ route, navigation }: Props) {
             hint="Atributo PART_NUMBER. Obligatorio para publicar en ML."
             autoCapitalize="characters"
           />
+          <Text style={styles.label}>Código de barras / QR</Text>
+          <View style={styles.barcodeRow}>
+            <TextInput
+              style={[styles.textInput, styles.barcodeInput]}
+              value={form.barcode}
+              onChangeText={(v) => setField('barcode', v)}
+              placeholder="EAN, Code128 o payload QR"
+              placeholderTextColor={colors.text.disabled}
+              autoCapitalize="characters"
+              autoCorrect={false}
+            />
+            <TouchableOpacity
+              style={styles.barcodeScanBtn}
+              onPress={() => navigation.navigate('ScanCode', { modo: 'asignar' })}
+              accessibilityLabel="Escanear código para este producto"
+            >
+              <Ionicons name="barcode-outline" size={22} color={colors.text.inverse} />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.hint}>Único por tienda. Sirve para vender y para cargar stock.</Text>
         </FormSection>
 
         {/* Marca y modelo */}
@@ -570,6 +595,22 @@ const styles = StyleSheet.create({
     color: colors.brand.orange,
   },
   saveBtnDisabled: { opacity: 0.6 },
+  barcodeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  barcodeInput: {
+    flex: 1,
+  },
+  barcodeScanBtn: {
+    backgroundColor: colors.brand.orange,
+    borderRadius: borderRadius.md,
+    width: 48,
+    height: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   saveBtnText: {
     color: colors.text.inverse,
     fontFamily: typography.fontFamily.bold,

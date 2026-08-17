@@ -19,8 +19,11 @@ export type AuthStackParamList = {
 
 import type { ItemAlertaMlStock } from '../utils/mlStockAlert';
 
+export type ScanModo = 'venta' | 'inventario' | 'asignar';
+
 export type POSStackParamList = {
   POS: undefined;
+  ScanCode: { modo: ScanModo };
   Cart: undefined;
   Payment: undefined;
   Receipt: { saleId: string; mlStockAlert?: ItemAlertaMlStock[] };
@@ -28,9 +31,11 @@ export type POSStackParamList = {
 
 export type InventoryStackParamList = {
   Inventory: undefined;
+  ScanCode: { modo: ScanModo };
   ProductForm: {
     productId?: string;
     pendingPhoto?: { slotIndex: number; uri: string };
+    scannedBarcode?: string;
   };
   PhotoCapture: { slotIndex: number; productId?: string };
   PhotoReview: {

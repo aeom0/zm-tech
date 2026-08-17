@@ -21,6 +21,7 @@ import InventoryScreen from '../screens/inventory/InventoryScreen';
 import ProductFormScreen from '../screens/inventory/ProductFormScreen';
 import PhotoCaptureScreen from '../screens/inventory/PhotoCaptureScreen';
 import PhotoReviewScreen from '../screens/inventory/PhotoReviewScreen';
+import ScanCodeScreen from '../screens/scan/ScanCodeScreen';
 import CustomersScreen from '../screens/customers/CustomersScreen';
 import CustomerDetailScreen from '../screens/customers/CustomerDetailScreen';
 import MoreHomeScreen from '../screens/more/MoreHomeScreen';
@@ -53,6 +54,11 @@ function POSNavigator() {
   return (
     <POSStack.Navigator screenOptions={stackScreenOptions}>
       <POSStack.Screen name="POS" component={POSScreen} options={{ title: 'Punto de Venta' }} />
+      <POSStack.Screen
+        name="ScanCode"
+        component={ScanCodeScreen}
+        options={{ headerShown: false, title: 'Escanear' }}
+      />
       <POSStack.Screen name="Cart" component={CartScreen} options={{ title: 'Carrito' }} />
       <POSStack.Screen name="Payment" component={PaymentScreen} options={{ title: 'Cobrar' }} />
       <POSStack.Screen name="Receipt" component={ReceiptScreen} options={{ title: 'Comprobante', headerBackVisible: false }} />
@@ -65,6 +71,11 @@ function InventoryNavigator() {
   return (
     <InventoryStack.Navigator screenOptions={stackScreenOptions}>
       <InventoryStack.Screen name="Inventory" component={InventoryScreen} options={{ title: 'Inventario' }} />
+      <InventoryStack.Screen
+        name="ScanCode"
+        component={ScanCodeScreen}
+        options={{ headerShown: false, title: 'Escanear' }}
+      />
       <InventoryStack.Screen
         name="ProductForm"
         component={ProductFormScreen}

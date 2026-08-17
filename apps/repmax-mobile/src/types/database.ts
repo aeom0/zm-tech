@@ -71,6 +71,8 @@ export interface Product {
   vehicleType?: VehicleType;
   condition: PartCondition;
   partNumber?: string;
+  /** EAN / UPC / Code128 / payload QR. Único por tienda. */
+  barcode?: string;
   color?: string;
   priceUsd: number;
   priceBs?: number;

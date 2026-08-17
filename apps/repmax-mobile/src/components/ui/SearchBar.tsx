@@ -19,6 +19,7 @@ interface SearchBarProps {
   onChangeText: (text: string) => void;
   placeholder?: string;
   style?: StyleProp<ViewStyle>;
+  onScanPress?: () => void;
 }
 
 export function SearchBar({
@@ -26,6 +27,7 @@ export function SearchBar({
   onChangeText,
   placeholder = 'Buscar...',
   style,
+  onScanPress,
 }: SearchBarProps) {
   return (
     <View style={[styles.bar, style]}>
@@ -54,6 +56,16 @@ export function SearchBar({
           <Ionicons name="close-circle" size={18} color={colors.text.secondary} />
         </TouchableOpacity>
       )}
+      {onScanPress ? (
+        <TouchableOpacity
+          onPress={onScanPress}
+          accessibilityLabel="Escanear código"
+          hitSlop={8}
+          style={styles.scanBtn}
+        >
+          <Ionicons name="barcode-outline" size={22} color={colors.brand.orange} />
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 }
@@ -80,5 +92,9 @@ const styles = StyleSheet.create({
     color: colors.text.primary,
     fontFamily: typography.fontFamily.regular,
     fontSize: typography.size.base,
+  },
+  scanBtn: {
+    marginLeft: spacing.sm,
+    padding: spacing.xs,
   },
 });

@@ -1,6 +1,11 @@
 import { supabase } from '../utils/supabase';
 import type { MlListingStatus } from '@repmax/repmax-schema/mlListing';
 import type { PartCondition, Product, VehicleType } from '../types/database';
+import {
+  barcodeParaGuardar,
+  extraerIdProductoDeCodigo,
+  normalizarCodigo,
+} from '../utils/codigoEscaneado';
 
 /** Fila snake_case de PostgREST (`repmax_products`). */
 interface ProductRow {
@@ -15,6 +20,7 @@ interface ProductRow {
   vehicle_type: VehicleType | null;
   condition: PartCondition | null;
   part_number: string | null;
+  barcode: string | null;
   color: string | null;
   price_usd: string | number;
   price_bs: string | number | null;
@@ -56,6 +62,7 @@ function mapProduct(row: ProductRow): Product {
     vehicleType: row.vehicle_type ?? undefined,
     condition: row.condition ?? 'NEW',
     partNumber: row.part_number ?? undefined,
+    barcode: row.barcode ?? undefined,
     color: row.color ?? undefined,
     priceUsd: parseFloat(String(row.price_usd)),
     priceBs: row.price_bs != null ? parseFloat(String(row.price_bs)) : undefined,
@@ -87,12 +94,63 @@ export const productService = {
 
     if (filters?.condition) query = query.eq('condition', filters.condition);
     if (filters?.brand) query = query.ilike('brand', `%${filters.brand}%`);
-    if (filters?.q) query = query.or(`title.ilike.%${filters.q}%,brand.ilike.%${filters.q}%,model.ilike.%${filters.q}%`);
+    if (filters?.q) {
+      const q = filters.q.replace(/,/g, ' ');
+      query = query.or(
+        `title.ilike.%${q}%,brand.ilike.%${q}%,model.ilike.%${q}%,part_number.ilike.%${q}%,barcode.ilike.%${q}%`,
+      );
+    }
     if (filters?.stock === 'low') query = query.lt('stock', 3);
 
     const { data, error } = await query;
     if (error) throw new Error(error.message);
     return (data ?? []).map(mapProduct);
+  },
+
+  /**
+   * Busca un producto por payload de scanner: barcode, n. de parte o QR interno.
+   * RLS limita a la tienda del usuario.
+   */
+  async getByCodigo(codigo: string): Promise<Product | null> {
+    const valor = normalizarCodigo(codigo);
+    if (!valor) return null;
+
+    const idDeQr = extraerIdProductoDeCodigo(valor);
+    if (idDeQr) {
+      try {
+        const byId = await this.getById(idDeQr);
+        if (byId.isActive) return byId;
+      } catch {
+        // UUID de otra tienda o inexistente: caer a barcode / n. parte
+      }
+    }
+
+    const byBarcode = await supabase
+      .from('repmax_products')
+      .select(PRODUCT_SELECT)
+      .eq('barcode', valor)
+      .eq('is_active', true)
+      .maybeSingle();
+    if (byBarcode.error) throw new Error(byBarcode.error.message);
+    if (byBarcode.data) return mapProduct(byBarcode.data);
+
+    const byPart = await supabase
+      .from('repmax_products')
+      .select(PRODUCT_SELECT)
+      .eq('is_active', true)
+      .ilike('part_number', valor)
+      .limit(5);
+    if (byPart.error) throw new Error(byPart.error.message);
+    const filas = byPart.data ?? [];
+    if (filas.length === 0) return null;
+    const conStock = filas.find((row) => (row.stock ?? 0) > 0);
+    return mapProduct(conStock ?? filas[0]);
+  },
+
+  async incrementStock(id: string, delta: number): Promise<Product> {
+    const actual = await this.getById(id);
+    const next = Math.max(0, actual.stock + delta);
+    return this.update(id, { stock: next });
   },
 
   async getById(id: string): Promise<Product> {
@@ -117,6 +175,7 @@ export const productService = {
       vehicle_type: product.vehicleType,
       condition: product.condition ?? 'NEW',
       part_number: product.partNumber,
+      barcode: barcodeParaGuardar(product.barcode ?? ''),
       color: product.color,
       price_usd: product.priceUsd,
       price_bs: product.priceBs,
@@ -146,6 +205,9 @@ export const productService = {
     if (product.vehicleType !== undefined) payload.vehicle_type = product.vehicleType;
     if (product.condition !== undefined) payload.condition = product.condition;
     if (product.partNumber !== undefined) payload.part_number = product.partNumber;
+    if (product.barcode !== undefined) {
+      payload.barcode = barcodeParaGuardar(product.barcode);
+    }
     if (product.color !== undefined) payload.color = product.color;
     if (product.priceUsd !== undefined) payload.price_usd = product.priceUsd;
     if (product.priceBs !== undefined) payload.price_bs = product.priceBs;

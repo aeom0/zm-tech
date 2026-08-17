@@ -15,6 +15,7 @@ import { productService } from '../services/productService';
 import { ML_PHOTO } from '../utils/mlPhotoRules';
 import { evaluarListoMl } from '../utils/mlReadiness';
 import { extraerNombreBaseMl, sugerirTituloMl } from '../utils/mlTitleSuggestion';
+import { esErrorBarcodeDuplicado } from '../utils/codigoEscaneado';
 import type { MlManualCategory } from '../constants/mlManualCategories';
 import { categoriaManualPorId } from '../constants/mlManualCategories';
 import { mlCategoryService } from '../services/mercadolibre/mlCategoryService';
@@ -30,6 +31,7 @@ export interface ProductFormState {
   vehicleType: VehicleType | '';
   condition: PartCondition;
   partNumber: string;
+  barcode: string;
   color: string;
   priceUsd: string;
   stock: string;
@@ -43,7 +45,7 @@ export type ProductFormSaveResult =
 const INITIAL_FORM: ProductFormState = {
   title: '', description: '', brand: '', model: '',
   yearFrom: '', yearTo: '', vehicleType: '',
-  condition: 'NEW', partNumber: '', color: '',
+  condition: 'NEW', partNumber: '', barcode: '', color: '',
   priceUsd: '', stock: '0', minStock: '1',
 };
 
@@ -54,9 +56,10 @@ function slotsVacios(): Array<string | null> {
 interface UseProductFormParams {
   productId?: string;
   pendingPhoto?: { slotIndex: number; uri: string };
+  scannedBarcode?: string;
 }
 
-export function useProductForm({ productId, pendingPhoto }: UseProductFormParams) {
+export function useProductForm({ productId, pendingPhoto, scannedBarcode }: UseProductFormParams) {
   const isEditing = !!productId;
   const { store } = useAuth();
   const {
@@ -93,6 +96,7 @@ export function useProductForm({ productId, pendingPhoto }: UseProductFormParams
           vehicleType: product.vehicleType ?? '',
           condition: product.condition,
           partNumber: product.partNumber ?? '',
+          barcode: product.barcode ?? '',
           color: product.color ?? '',
           priceUsd: product.priceUsd.toString(),
           stock: product.stock.toString(),
@@ -129,6 +133,11 @@ export function useProductForm({ productId, pendingPhoto }: UseProductFormParams
   const setField = useCallback(<K extends keyof ProductFormState>(key: K, value: ProductFormState[K]) => {
     setForm((prev) => ({ ...prev, [key]: value }));
   }, []);
+
+  useEffect(() => {
+    if (!scannedBarcode) return;
+    setField('barcode', scannedBarcode);
+  }, [scannedBarcode, setField]);
 
   const clearPhotoSlot = useCallback((index: number) => {
     setPhotos((prev) => {
@@ -294,6 +303,7 @@ export function useProductForm({ productId, pendingPhoto }: UseProductFormParams
         vehicleType: form.vehicleType || undefined,
         condition: form.condition,
         partNumber: form.partNumber.trim() || undefined,
+        barcode: form.barcode,
         color: form.color.trim() || undefined,
         priceUsd: price,
         stock: parseInt(form.stock, 10) || 0,
@@ -344,6 +354,13 @@ export function useProductForm({ productId, pendingPhoto }: UseProductFormParams
 
       return { success: true };
     } catch (err) {
+      if (esErrorBarcodeDuplicado(err)) {
+        return {
+          success: false,
+          title: 'Código repetido',
+          message: 'Ese código de barras ya lo tiene otro producto de esta tienda.',
+        };
+      }
       const message = err instanceof Error ? err.message : 'Error al guardar el producto.';
       return { success: false, title: 'Error', message };
     } finally {

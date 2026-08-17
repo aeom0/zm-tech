@@ -133,7 +133,8 @@ function CatalogPane({
       <SearchBar
         value={query}
         onChangeText={setQuery}
-        placeholder="Buscar por nombre, marca, modelo..."
+        placeholder="Nombre, marca, código…"
+        onScanPress={() => navigation.navigate('ScanCode', { modo: 'venta' })}
       />
 
       <FilterChips

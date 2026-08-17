@@ -43,6 +43,7 @@ export interface ProductoWeb {
   vehicleType: VehicleTypeWeb | null;
   isActive: boolean;
   partNumber: string;
+  barcode: string;
   description?: string;
   photos?: string[];
   mlPublishIntent?: boolean;

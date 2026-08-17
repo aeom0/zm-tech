@@ -134,6 +134,7 @@ function ProductRow({
                 {product.stock}
               </Text>
               {product.partNumber ? ` · #${product.partNumber}` : ''}
+              {product.barcode ? ` · ${product.barcode}` : ''}
             </Text>
           </View>
         </View>
@@ -269,7 +270,8 @@ export default function InventoryScreen({ navigation }: Props) {
       <SearchBar
         value={query}
         onChangeText={setQuery}
-        placeholder="Buscar producto..."
+        placeholder="Nombre, marca, código…"
+        onScanPress={() => navigation.navigate('ScanCode', { modo: 'inventario' })}
       />
 
       <View style={styles.filters}>

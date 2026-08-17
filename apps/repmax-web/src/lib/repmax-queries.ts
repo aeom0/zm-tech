@@ -97,6 +97,7 @@ function mapProducto(
     vehicleType: (row.vehicle_type as ProductoWeb["vehicleType"]) ?? null,
     isActive: Boolean(row.is_active),
     partNumber: String(row.part_number ?? ""),
+    barcode: String(row.barcode ?? ""),
     photos,
     mlPublishIntent,
     mlListingStatus,
@@ -245,7 +246,7 @@ export async function fetchProducts(
     if (vehicleType) query = query.eq("vehicle_type", vehicleType);
     if (q) {
       query = query.or(
-        `title.ilike.%${q}%,brand.ilike.%${q}%,model.ilike.%${q}%,part_number.ilike.%${q}%`,
+        `title.ilike.%${q}%,brand.ilike.%${q}%,model.ilike.%${q}%,part_number.ilike.%${q}%,barcode.ilike.%${q}%`,
       );
     }
     if (mlFilter === "para_ml") query = query.eq("ml_publish_intent", true);
@@ -291,7 +292,7 @@ export async function fetchProducts(
   if (vehicleType) query = query.eq("vehicle_type", vehicleType);
   if (q) {
     query = query.or(
-      `title.ilike.%${q}%,brand.ilike.%${q}%,model.ilike.%${q}%,part_number.ilike.%${q}%`,
+      `title.ilike.%${q}%,brand.ilike.%${q}%,model.ilike.%${q}%,part_number.ilike.%${q}%,barcode.ilike.%${q}%`,
     );
   }
 
@@ -324,6 +325,10 @@ export async function patchProduct(
   if (body.stock !== undefined) payload.stock = Math.floor(toNumber(body.stock));
   if (body.minStock !== undefined) payload.min_stock = Math.floor(toNumber(body.minStock));
   if (body.isActive !== undefined) payload.is_active = body.isActive;
+  if (body.barcode !== undefined) {
+    const code = String(body.barcode).trim();
+    payload.barcode = code.length > 0 ? code : null;
+  }
 
   if (Object.keys(payload).length === 0) {
     throw new Error("No hay cambios");
@@ -335,7 +340,12 @@ export async function patchProduct(
     .eq("id", id)
     .select()
     .single();
-  if (error) throw new Error(error.message);
+  if (error) {
+    if (error.message.includes("uniq_repmax_products_store_barcode")) {
+      throw new Error("Ese código ya lo tiene otro producto de esta tienda.");
+    }
+    throw new Error(error.message);
+  }
   return mapProducto(data as Record<string, unknown>, usdBsRate);
 }
 
@@ -479,7 +489,7 @@ export async function fetchPublicProducts(
   if (vehicleType) query = query.eq("vehicle_type", vehicleType);
   if (q) {
     query = query.or(
-      `title.ilike.%${q}%,brand.ilike.%${q}%,model.ilike.%${q}%,part_number.ilike.%${q}%`,
+      `title.ilike.%${q}%,brand.ilike.%${q}%,model.ilike.%${q}%,part_number.ilike.%${q}%,barcode.ilike.%${q}%`,
     );
   }
 
