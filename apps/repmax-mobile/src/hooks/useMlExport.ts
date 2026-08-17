@@ -7,10 +7,9 @@ import type { Product } from '../types/database';
 import { mlListingService } from '../services/mercadolibre/mlListingService';
 import {
   construirCsvExport,
-  compartirCsvExport,
   filtrarListosParaExport,
   type FilaExportMl,
-} from '../services/mercadolibre/mlExportService';
+} from '../services/mercadolibre/mlExportCsv';
 import { evaluarListoMl } from '../utils/mlReadiness';
 import { uriPortada } from '../utils/productPhotos';
 
@@ -52,6 +51,8 @@ export function useMlExport(products: Product[], onExported?: () => void) {
     setIsExporting(true);
     try {
       const csv = construirCsvExport(listosParaExport);
+      // Import dinámico: expo-file-system no está en el APK preview viejo hasta nuevo build.
+      const { compartirCsvExport } = await import('../services/mercadolibre/mlExportShare');
       await compartirCsvExport(csv);
       const ids = listosParaExport.map((f) => f.product.id);
       await mlListingService.markExportedBatch(ids);
