@@ -19,9 +19,23 @@ export interface SugerenciaTituloMlInput {
   yearTo?: number | string;
 }
 
+const MARCADOR_COMPATIBLE = ' compatible con ';
+
+/**
+ * Si el título ya es una sugerencia ML aplicada, devuelve solo el nombre base
+ * (todo antes de " compatible con ") para no duplicar al recalcular.
+ */
+export function extraerNombreBaseMl(titulo: string): string {
+  const trimmed = titulo.trim();
+  if (!trimmed) return '';
+  const idx = trimmed.toLowerCase().indexOf(MARCADOR_COMPATIBLE);
+  if (idx > 0) return trimmed.slice(0, idx).trim();
+  return trimmed;
+}
+
 /** Devuelve null si faltan datos mínimos para armar el título. */
 export function sugerirTituloMl(input: SugerenciaTituloMlInput): string | null {
-  const producto = input.nombreProducto.trim();
+  const producto = extraerNombreBaseMl(input.nombreProducto);
   const marca = input.brand.trim();
   const modelo = input.model.trim();
   if (!producto || !marca || !modelo) return null;

@@ -14,7 +14,7 @@ import { productPhotoService } from '../services/productPhotoService';
 import { productService } from '../services/productService';
 import { ML_PHOTO } from '../utils/mlPhotoRules';
 import { evaluarListoMl } from '../utils/mlReadiness';
-import { sugerirTituloMl } from '../utils/mlTitleSuggestion';
+import { extraerNombreBaseMl, sugerirTituloMl } from '../utils/mlTitleSuggestion';
 import type { MlManualCategory } from '../constants/mlManualCategories';
 import { categoriaManualPorId } from '../constants/mlManualCategories';
 import { mlCategoryService } from '../services/mercadolibre/mlCategoryService';
@@ -150,16 +150,21 @@ export function useProductForm({ productId, pendingPhoto }: UseProductFormParams
     });
   }, [form, photos]);
 
+  const nombreBaseMl = useMemo(
+    () => extraerNombreBaseMl(form.title),
+    [form.title],
+  );
+
   const tituloSugerido = useMemo(
     () =>
       sugerirTituloMl({
-        nombreProducto: form.title,
+        nombreProducto: nombreBaseMl,
         brand: form.brand,
         model: form.model,
         yearFrom: form.yearFrom,
         yearTo: form.yearTo,
       }),
-    [form.title, form.brand, form.model, form.yearFrom, form.yearTo],
+    [nombreBaseMl, form.brand, form.model, form.yearFrom, form.yearTo],
   );
 
   const aplicarTituloSugerido = useCallback(() => {
