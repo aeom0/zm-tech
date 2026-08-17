@@ -4,7 +4,9 @@
     "strict": true,
     "module": "esnext",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@repmax/repmax-schema": ["../../packages/repmax-schema/src/schema.ts"],
+      "@repmax/repmax-schema/*": ["../../packages/repmax-schema/src/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],

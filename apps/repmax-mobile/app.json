@@ -100,7 +100,8 @@
         }
       ],
       "expo-status-bar",
-      "expo-updates"
+      "expo-updates",
+      "expo-web-browser"
     ],
     "extra": {
       "eas": {

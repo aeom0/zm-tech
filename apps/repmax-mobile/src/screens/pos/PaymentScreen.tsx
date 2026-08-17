@@ -13,6 +13,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { saleService } from '../../services/saleService';
+import { mlListingService } from '../../services/mercadolibre/mlListingService';
 import { formatUSD, formatBS } from '../../utils/formatters';
 import { PAYMENT_METHODS } from '../../constants/paymentMethods';
 import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
@@ -57,6 +58,7 @@ export default function PaymentScreen({ navigation }: Props) {
           onPress: async () => {
             setIsLoading(true);
             try {
+              const productIds = [...new Set(items.map((i) => i.product.id))];
               const saleId = await saleService.create({
                 storeId: store!.id,
                 cashierId: storeUser.id,
@@ -66,8 +68,14 @@ export default function PaymentScreen({ navigation }: Props) {
                 notes: notes.trim() || undefined,
                 items,
               });
+              const mlAlertItems = await mlListingService.findPublishedOnMlForSale(productIds);
+              if (mlAlertItems.length > 0) {
+                await mlListingService.markNeedsUpdateAfterSale(
+                  mlAlertItems.map((i) => i.productId),
+                );
+              }
               clearCart();
-              navigation.replace('Receipt', { saleId });
+              navigation.replace('Receipt', { saleId, mlStockAlert: mlAlertItems });
             } catch (err: any) {
               const msg = err?.response?.data?.message || 'Error al registrar la venta.';
               Alert.alert('Error', msg);

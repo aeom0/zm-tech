@@ -57,7 +57,7 @@ src/
 | `SUPABASE_URL`              | Proyecto `llacowjutjfefboqgfnj`          |
 | `SUPABASE_SERVICE_ROLE_KEY` | Contact + leads                          |
 | `RESEND_API_KEY`            | Email                                    |
-| `CONTACT_EMAIL`             | Destino leads                            |
+| `CONTACT_EMAIL`             | Destino leads — canónico `alberto@zmtechdev.com` |
 
 ## Comandos
 

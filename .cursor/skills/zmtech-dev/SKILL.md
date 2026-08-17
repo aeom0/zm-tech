@@ -23,6 +23,7 @@ Automotriz, Sports Tech y Enterprise.
 - **Landing:** `zmtechdev.com` (`/es` · `/en`)
 - **Repo:** `aeom0/zm-tech` → `apps/landing` (Next.js 16, App Router, Tailwind v4)
 - **Vercel:** project `zmtech`
+- **Email canónico:** `alberto@zmtechdev.com` (contacto, legal, integraciones de desarrollador — Mercado Libre, etc.)
 - **WhatsApp comercial:** +58 414 494 0417
 - **Entorno de Alberto:** VS Code + WSL2 + Windows 11 · Android = target mobile primario
 - **Inventario repos:** `docs/landing/PROYECTOS.md`
@@ -265,4 +266,4 @@ pnpm build && pnpm type-check
 ---
 
 *Skill mantenido por Alberto. Actualizar al incorporar nuevos proyectos.*
-*Última actualización: Abril 2026 — 10 repos, 8 proyectos documentados*
+*Última actualización: Agosto 2026 — correo canónico `alberto@zmtechdev.com`*

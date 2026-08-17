@@ -17,6 +17,7 @@ export interface StorePublic {
 export interface ProductPublic {
   id: string;
   title: string;
+  description: string | null;
   brand: string;
   model: string;
   yearFrom: number | null;

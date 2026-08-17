@@ -14,6 +14,7 @@ alwaysApply: false
 - Producción: **https://zmtechdev.com** (también `www`)
 - Vercel project: **`zmtech`**
 - Env canónico: `NEXT_PUBLIC_SITE_URL=https://zmtechdev.com`
+- Contacto canónico: `alberto@zmtechdev.com` (`CONTACT_EMAIL` en Vercel)
 - Supabase landing: `llacowjutjfefboqgfnj` (solo API routes con service role)
 
 ## i18n

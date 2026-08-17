@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useAuthFetch } from "@/hooks/useAuthFetch";
 import { etiquetaMetodoPago } from "@/lib/etiquetas-pago";
+import { VitrinaPanel } from "@/components/dashboard/VitrinaPanel";
 import type { DashboardData } from "@/types/dashboard";
 
 // Recharts + ResponsiveContainer miden el DOM; evitar SSR para no hidratar mal ni height 0
@@ -138,6 +139,8 @@ export default function OverviewPage() {
           </div>
         </article>
       </div>
+
+      <VitrinaPanel />
 
       <section className="rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] p-5">
         <h2 className="mb-4 text-lg font-semibold text-[#F5F5F5]">Ventas últimos 7 días</h2>

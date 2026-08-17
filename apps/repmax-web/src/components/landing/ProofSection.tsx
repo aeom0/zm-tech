@@ -38,7 +38,7 @@ const testimonios: TestimonioProps[] = [
   },
   {
     quote:
-      "Con MercadoLibre conectado, mis ventas online subieron un 40% porque el inventario siempre está actualizado. Sin eso estaba perdiendo clientes todos los días.",
+      "El export a ML me ahorró horas de copiar fotos y datos. Cuando llegue la sync automática voy a estar listo porque el catálogo ya está bien armado.",
     name: "Rafael Torrealba",
     location: "Moto Repuestos RT · Caracas",
     avatar: "🚗",

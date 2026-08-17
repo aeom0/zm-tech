@@ -27,6 +27,9 @@ export interface DashboardData {
 export type PartConditionWeb = "NEW" | "USED";
 export type VehicleTypeWeb = "CAR" | "MOTO" | "TRUCK" | "SUV";
 
+import type { MlListingStatus } from "@repmax/repmax-schema/mlListing";
+import type { MlBadgeKind } from "@/lib/ml-readiness";
+
 export interface ProductoWeb {
   id: string;
   title: string;
@@ -40,6 +43,12 @@ export interface ProductoWeb {
   vehicleType: VehicleTypeWeb | null;
   isActive: boolean;
   partNumber: string;
+  description?: string;
+  photos?: string[];
+  mlPublishIntent?: boolean;
+  mlListingStatus?: MlListingStatus;
+  mlBadge?: MlBadgeKind;
+  vitrinaLista?: boolean;
 }
 
 export type SaleStatusWeb = "COMPLETED" | "CANCELLED" | "REFUNDED";
