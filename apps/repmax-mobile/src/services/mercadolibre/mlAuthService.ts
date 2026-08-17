@@ -74,6 +74,38 @@ function statusDesdeDeepLink(url: string): void {
   );
 }
 
+/** Listener temporal: getInitialURL() solo sirve en cold start; OAuth vuelve con la app en memoria. */
+function crearEsperaDeepLinkOauth(timeoutMs = 8000): {
+  promise: Promise<string>;
+  cleanup: () => void;
+} {
+  let subscription: { remove: () => void } | undefined;
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  let settled = false;
+
+  const cleanup = () => {
+    subscription?.remove();
+    if (timeoutId) clearTimeout(timeoutId);
+  };
+
+  const promise = new Promise<string>((resolve, reject) => {
+    subscription = Linking.addEventListener('url', ({ url }) => {
+      if (!url.startsWith(DEEP_LINK_RETURN)) return;
+      if (settled) return;
+      settled = true;
+      resolve(url);
+    });
+
+    timeoutId = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      reject(new Error('No se completó la conexión con MercadoLibre.'));
+    }, timeoutMs);
+  });
+
+  return { promise, cleanup };
+}
+
 export interface MlConnectionSnapshot {
   uiStatus: MlConnectionUiStatus;
   connection: RepmaxMlConnection | null;
@@ -104,23 +136,25 @@ export const mlAuthService = {
     const authUrl = (data as { authUrl?: string } | null)?.authUrl;
     if (!authUrl) throw new Error('No recibimos la URL de MercadoLibre.');
 
-    const result = await WebBrowser.openAuthSessionAsync(authUrl, DEEP_LINK_RETURN);
+    const esperaDeepLink = crearEsperaDeepLinkOauth(8000);
 
-    if (result.type === 'cancel' || result.type === 'dismiss') {
-      throw new Error('Conexión cancelada.');
-    }
-    if (result.type !== 'success' || !('url' in result) || !result.url) {
-      // Fallback: el 302 al scheme a veces llega por Linking, no por el session.
-      const initial = await Linking.getInitialURL();
-      if (initial?.startsWith(DEEP_LINK_RETURN)) {
-        statusDesdeDeepLink(initial);
-        return this.getConnectionStatus(storeId);
+    try {
+      const result = await WebBrowser.openAuthSessionAsync(authUrl, DEEP_LINK_RETURN);
+
+      if (result.type === 'cancel' || result.type === 'dismiss') {
+        throw new Error('Conexión cancelada.');
       }
-      throw new Error('No se completó la conexión con MercadoLibre.');
-    }
 
-    statusDesdeDeepLink(result.url);
-    return this.getConnectionStatus(storeId);
+      const returnUrl =
+        result.type === 'success' && 'url' in result && result.url
+          ? result.url
+          : await esperaDeepLink.promise;
+
+      statusDesdeDeepLink(returnUrl);
+      return this.getConnectionStatus(storeId);
+    } finally {
+      esperaDeepLink.cleanup();
+    }
   },
 
   async disconnect(storeId: string): Promise<void> {

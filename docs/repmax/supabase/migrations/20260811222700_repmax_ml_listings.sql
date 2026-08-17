@@ -68,5 +68,6 @@ CREATE POLICY "repmax_ml_listings_update"
   );
 
 -- Remoto ZMTech no auto-expone tablas nuevas.
-GRANT SELECT, INSERT, UPDATE, DELETE ON public.repmax_ml_listings TO authenticated;
+-- Sin DELETE policy todavía — no otorgar DELETE a authenticated (evita hueco si se agrega policy después).
+GRANT SELECT, INSERT, UPDATE ON public.repmax_ml_listings TO authenticated;
 REVOKE ALL ON public.repmax_ml_listings FROM anon;
