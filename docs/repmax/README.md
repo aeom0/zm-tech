@@ -88,8 +88,8 @@ Historial de producto: [`CHANGELOG.md`](./CHANGELOG.md) (Keep a Changelog). Infr
 ## Planes
 
 - Cerrados: fases 01–03 en `plans/` (scaffold, schema/RLS, retiro Express).
-- En curso (API pausado — ticket ML **475453897**): [`plans/04-PLAN-catalogo-mercadolibre.md`](./plans/04-PLAN-catalogo-mercadolibre.md).
-- En curso (desarrollo activo): [`plans/05-PLAN-catalogo-multicanal-sin-oauth.md`](./plans/05-PLAN-catalogo-multicanal-sin-oauth.md) — inventario, vitrina, POS, export ML manual.
+- Descartado (ops MLV): [`plans/04-PLAN-catalogo-mercadolibre.md`](./plans/04-PLAN-catalogo-mercadolibre.md) — ML confirmó DevCenter/API inoperativo (#475453897). Código OAuth congelado.
+- En curso (camino principal): [`plans/05-PLAN-catalogo-multicanal-sin-oauth.md`](./plans/05-PLAN-catalogo-multicanal-sin-oauth.md) — inventario, vitrina, POS, export ML manual.
 - En curso (código + ops): [`plans/06-PLAN-dominio-vitrina.md`](./plans/06-PLAN-dominio-vitrina.md) — `{slug}.zmtechdev.com` (apex landing intacto).
 - Propuesta: [`plans/07-PLAN-integracion-hardware.md`](./plans/07-PLAN-integracion-hardware.md) — Bridge POS (fiscal / térmica); scanner HID sin Bridge.
 

@@ -24,7 +24,7 @@ El detalle de cambios ya hechos vive en [CHANGELOG.md](./CHANGELOG.md). Este arc
   - Guía: `design/ml-fotos.md`
   - Plan: `plans/04-PLAN-catalogo-mercadolibre.md`
 - [x] **ML impl. 1 (código + SQL)** — `repmax_ml_listings` + predictor/mapper en mobile
-- [x] **ML impl. 2 (código)** — OAuth Edge + connect en settings; ops (app ML, secrets, deploy, DDL connections) pendiente
+- [x] **ML impl. 2 (código)** — OAuth Edge + connect en settings; ops descartada (MLV sin DevCenter/API, consulta #475453897)
 - [x] **Plan 05 E1 (código)** — checklist ML, badges inventario, `ml_publish_intent`, switch manual en ficha
 - [x] **Plan 05 E3 (código)** — export CSV ML + marcar exported / published_manual
 - [x] **Plan 05 E5 (código)** — dashboard vitrina link + QR + filtros inventario web
@@ -43,8 +43,8 @@ El detalle de cambios ya hechos vive en [CHANGELOG.md](./CHANGELOG.md). Este arc
 - [ ] Extraer / alinear tokens RN (`utils/theme.ts`) con `design-system/tokens.md`
 - [ ] Seed / fixtures de catálogo realistas por tenant de prueba
 - [ ] Hardening RLS (auditoría advisors) y tests de aislamiento multi-tenant
-- [ ] MercadoLibre ops impl. 2 — **pausado:** ticket **475453897** → app MLV + secrets + `repmax_ml_connections` + deploy Edge
-- [ ] MercadoLibre resto B–D (API): COLOR/título con predictor, `POST /items`, sync stock/órdenes
+- ~~MercadoLibre ops impl. 2~~ — **descartado:** ML confirmó DevCenter/API MLV inoperativo (#475453897). Código OAuth congelado en `ML_API_ENABLED = false`.
+- ~~MercadoLibre resto B–D (API)~~ — fuera de alcance hasta anuncio oficial de ML Venezuela
 
 ## Fuera de alcance inmediato
 
@@ -55,7 +55,8 @@ El detalle de cambios ya hechos vive en [CHANGELOG.md](./CHANGELOG.md). Este arc
 ## Referencia
 
 Planes cerrados: `plans/01` → `plans/03`.  
-En curso: `plans/04` (API ML, pausado ops) · `plans/05` (multicanal sin OAuth) · `plans/06` (dominio/vitrina, HTTPS wildcard live).  
+En curso: `plans/05` (multicanal sin OAuth — camino principal) · `plans/06` (dominio/vitrina, HTTPS wildcard live).  
+Descartado (ops): `plans/04` track API MLV (#475453897). Código preservado tras `ML_API_ENABLED`.  
 Propuesta: `plans/07` (hardware POS).  
 Diseño: [`design/`](./design/) · sistema: [`design-system/`](./design-system/).  
 Cambios hechos: [`CHANGELOG.md`](./CHANGELOG.md).

@@ -103,7 +103,7 @@ export const en: Messages = {
       mercadolibre: {
         category: 'E-commerce',
         description:
-          'Get your catalog ML-ready, export to MercadoLibre bulk upload, and sell via your web storefront. Automatic sync ships when the API is available in Venezuela.',
+          'Get your catalog ML-ready, export to MercadoLibre bulk upload, and sell via your web storefront. MercadoLibre Venezuela has no active developer API — publishing is manual from your ML seller account.',
       },
       cashea: {
         category: 'Installment payments',

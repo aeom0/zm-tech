@@ -32,7 +32,7 @@ export function HeroSection() {
             ) : (
               <>
                 <br />
-                <strong>Catálogo listo pa&apos; MercadoLibre</strong> (export manual hoy). Zelle, Pago Móvil,
+                <strong>Catálogo listo pa&apos; MercadoLibre</strong> (export manual). Zelle, Pago Móvil,
               </>
             )}
             USD y Bs — todo en una sola app hecha pa&apos; Venezuela.

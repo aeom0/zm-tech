@@ -21,7 +21,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { MoreStackParamList } from '../../navigation/types';
 import { useAuth } from '../../context/AuthContext';
 import { useMercadoLibreConnection } from '../../hooks/useMercadoLibreConnection';
-import { ML_API_ENABLED, ML_MANUAL_MODE_HINT, ML_SUPPORT_TICKET } from '../../constants/mlConfig';
+import { ML_API_ENABLED, ML_API_STATUS_NOTE, ML_MANUAL_MODE_HINT } from '../../constants/mlConfig';
 import { colors, spacing, borderRadius, typography } from '../../utils/theme';
 
 type Props = NativeStackScreenProps<MoreStackParamList, 'StoreSettings'>;
@@ -428,9 +428,7 @@ export default function StoreSettingsScreen({ navigation }: Props) {
               <>
                 <Text style={styles.mlStatusLabel}>Modo catálogo ML-ready</Text>
                 <Text style={styles.planHint}>{ML_MANUAL_MODE_HINT}</Text>
-                <Text style={styles.planHint}>
-                  Soporte ML consulta #{ML_SUPPORT_TICKET} — esperando respuesta para activar OAuth en Venezuela.
-                </Text>
+                <Text style={styles.planHint}>{ML_API_STATUS_NOTE}</Text>
                 <Text style={styles.planHint}>
                   Marca productos en inventario, completa el checklist y exporta desde el ícono de descarga (CSV para el publicador masivo de ML).
                 </Text>
@@ -451,7 +449,7 @@ export default function StoreSettingsScreen({ navigation }: Props) {
                 <View>
                   <Text style={[styles.planLabel, { color: planCfg.color }]}>{planCfg.label}</Text>
                   {plan === 'basic' && (
-                    <Text style={styles.planHint}>Actualiza a Pro para conectar MercadoLibre</Text>
+                    <Text style={styles.planHint}>Catálogo ML-ready y export incluidos en tu plan</Text>
                   )}
                 </View>
               </View>

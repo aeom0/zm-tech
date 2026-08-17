@@ -1,9 +1,13 @@
-// MercadoLibre — feature flags y mensajes de producto (plan 05 E1).
-// OAuth/API desactivado hasta respuesta ticket ML 475453897.
+// MercadoLibre — feature flags y mensajes (plan 05).
+// MLV no tiene DevCenter/API operativa (confirmado ML caso 475453897, 13-08-2026).
 
 export const ML_API_ENABLED = false;
 
+/** Consulta cerrada — ML confirmó que DevCenter/API MLV no está habilitado en Venezuela. */
 export const ML_SUPPORT_TICKET = '475453897';
 
 export const ML_MANUAL_MODE_HINT =
-  'Integración API pendiente en Venezuela. Prepara el catálogo y exporta al publicador masivo de ML.';
+  'MercadoLibre Venezuela no tiene API de desarrolladores activa. Prepara el catálogo y exporta al publicador masivo desde tu cuenta ML.';
+
+export const ML_API_STATUS_NOTE =
+  'Confirmado por Mercado Libre (consulta #475453897): el DevCenter y la API no están operativos en Venezuela.';

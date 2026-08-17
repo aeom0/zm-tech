@@ -1,5 +1,5 @@
 import { MercadoLibreLogo } from "@/components/brand/MercadoLibreLogo";
-import { ML_API_ENABLED, ML_MANUAL_MODE_HINT } from "@/constants/mlConfig";
+import { ML_API_ENABLED } from "@/constants/mlConfig";
 
 export function MLSection() {
   return (
@@ -25,13 +25,8 @@ export function MLSection() {
           <p className="l-ml-desc">
             {ML_API_ENABLED
               ? "Conecta tu cuenta de MercadoLibre una sola vez. Tus productos se publican y el stock baja al instante cuando vendes en mostrador."
-              : "Prepara fotos, ficha y categoría en RepMAX. Exporta un CSV con URLs de fotos y súbelo al publicador masivo de ML. La sync automática en Venezuela está en camino — hoy el control queda en tus manos."}
+              : "Prepara fotos, ficha y categoría en RepMAX. Exporta un CSV con URLs de fotos y súbelo al publicador masivo de ML. MercadoLibre Venezuela no tiene API de desarrolladores activa — el control del catálogo queda en tus manos."}
           </p>
-          {!ML_API_ENABLED ? (
-            <p className="l-ml-desc" style={{ marginTop: 12, opacity: 0.85 }}>
-              {ML_MANUAL_MODE_HINT}
-            </p>
-          ) : null}
           <div className="l-ml-features">
             <div className="l-ml-feature">
               <div className="l-ml-check">01</div>

@@ -103,7 +103,7 @@ export const es: Messages = {
       mercadolibre: {
         category: 'E-commerce',
         description:
-          'Prepara tu catálogo ML-ready, exporta al publicador masivo y vende también por vitrina web. La sincronización automática con MercadoLibre llega cuando la API esté disponible en Venezuela.',
+          'Prepara tu catálogo ML-ready, exporta al publicador masivo y vende también por vitrina web. MercadoLibre Venezuela no tiene API de desarrolladores activa — la publicación es manual desde tu cuenta ML.',
       },
       cashea: {
         category: 'Pagos en cuotas',

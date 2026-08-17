@@ -1,6 +1,6 @@
 # 04 — Catálogo + MercadoLibre
 
-> **Estado: EN CURSO — track API pausado** (ago 2026). Fotos (fase A) y contrato OAuth/categoría (impl. 1–2) en código. **Ops ML bloqueada:** ticket **475453897** (accountLink `PSC01`). Desarrollo activo en paralelo: [plan 05 — multicanal sin OAuth](./05-PLAN-catalogo-multicanal-sin-oauth.md).
+> **Estado: DESCARTADO (ops MLV)** — ago 2026. Fotos (fase A) y contrato OAuth/categoría (impl. 1–2) quedan en código detrás de `ML_API_ENABLED`. **Mercado Libre confirmó (consulta 475453897, 13-08-2026):** DevCenter/API de MLV no está habilitado en Venezuela. **Camino de producto:** [plan 05 — multicanal sin OAuth](./05-PLAN-catalogo-multicanal-sin-oauth.md).
 
 **Precondición:** Preview Android en `@aeom0/repmax` (runtime SDK 56, channel `preview`). Storage `repmax-products` y RLS de miembros activos.
 
@@ -16,9 +16,9 @@
 
 Fuente: `apps/repmax-web` `MLSection` + Pricing.
 
-**Hoy (sin API ML):** inventario + POS + vitrina `/[slug]`; catálogo ML-ready y export manual ([plan 05](./05-PLAN-catalogo-multicanal-sin-oauth.md)). Ajustar copy landing cuando E1 esté en código — no prometer sync en vivo.
+**Hoy (sin API ML):** inventario + POS + vitrina `/[slug]`; catálogo ML-ready y export manual ([plan 05](./05-PLAN-catalogo-multicanal-sin-oauth.md)). Copy landing y app alineados — no prometer sync en vivo ni OAuth en Venezuela.
 
-**Con API (plan 04 C–D, tras app ML):**
+**Con API (plan 04 C–D, solo si ML habilita DevCenter MLV en el futuro):**
 
 1. Conectar ML **una vez** (OAuth).
 2. Publicar desde el inventario (fotos, precio, descripción).
@@ -36,7 +36,7 @@ Fuente de reglas: [Imágenes ML](https://developers.mercadolibre.com.ve/es_ar/tr
 |------|-----|--------|
 | A | UI catálogo + captura/validación de fotos ML + persistir en Storage | **Hecho** (mobile) |
 | B / impl. 1 | Contrato categoría + mapper PART_NUMBER + hook predicción | **Código listo.** Tabla `repmax_ml_listings` **aplicada** en el hub (`20260811222700`) |
-| C / impl. 2 | OAuth por tienda + proxy predictor (Edge) + switch gated | **Código listo.** Tabla `repmax_ml_connections` **no aplicada.** Edge **no desplegadas.** Bloqueador: app ML |
+| C / impl. 2 | OAuth por tienda + proxy predictor (Edge) + switch gated | **Código listo, ops descartada.** Tabla `repmax_ml_connections` **no aplicar.** Edge **no desplegar.** MLV sin DevCenter/API |
 | B resto | COLOR, título sugerido, paridad web de la grilla | Pendiente |
 | C resto | `POST /items`, upload pictures, badges En ML / Desfasado | Pendiente |
 | D | Sync stock bidireccional + órdenes ML → `repmax_sales` | Pendiente |
@@ -132,19 +132,21 @@ Sites: `VE→MLV` (mínimo). Preparado: `MCO` `MPE` `MEC` `MDO` vía `repmax_sto
 - Una sola aplicación **RepMAX** (no una por tienda). Alberto es dueño de la app; cada tienda autoriza por OAuth.
 - Scopes: lectura + escritura + `offline_access`.
 
-**Soporte ML (bloqueador accountLink)** — 2026-08-13
+**Soporte ML — consulta cerrada (MLV sin API)** — 2026-08-13 / respuesta oficial 2026-08-17
 
 | Campo | Valor |
 |-------|--------|
 | Consulta | **475453897** |
-| Error | `PSC01-EZGLT8IYDQ3Z` en `/devcenter/accountLink` |
+| Error original | `PSC01-EZGLT8IYDQ3Z` en `/devcenter/accountLink` |
 | URL | `https://developers.mercadolibre.com.ve/devcenter/accountLink` |
-| Mensaje | “Tuvimos un problema. Por favor, vuelve a intentarlo” |
-| Estado | Abierto — **esperando respuesta de ML** (no deploy OAuth hasta confirmación) |
+| Respuesta ML (Briajhan Gonzalez) | DevCenter/API de **Mercado Libre Venezuela (MLV) no está habilitado ni operativo** en el país. No es bloqueo de cuenta ni validación pendiente. |
+| Estado | **Cerrado — track API descartado** hasta anuncio oficial de ML |
 
-Sin vinculación de cuenta no hay app ni `ML_CLIENT_ID` / `ML_CLIENT_SECRET`. **Plan activo sin API:** [05-PLAN-catalogo-multicanal-sin-oauth.md](./05-PLAN-catalogo-multicanal-sin-oauth.md). **Plan B API** si ML no resuelve: app con cuenta que sí entre al DevCenter (site MLV).
+Sin DevCenter MLV no hay app ni `ML_CLIENT_ID` / `ML_CLIENT_SECRET`. **Plan de producto vigente:** [05-PLAN-catalogo-multicanal-sin-oauth.md](./05-PLAN-catalogo-multicanal-sin-oauth.md). El código OAuth del impl. 2 permanece en repo con `ML_API_ENABLED = false`.
 
-### Bloqueador para E2E (track API — pausado)
+### Bloqueador para E2E (track API — descartado)
+
+No ejecutar ops hasta que Mercado Libre anuncie DevCenter/API operativa en MLV. Referencia histórica de lo que haría falta **si** ML habilita la plataforma:
 
 1. App en [developers.mercadolibre.com](https://developers.mercadolibre.com) con site **MLV**, logueado como `alberto@zmtechdev.com`.
 2. `redirect_uri` idéntico a la URL de `ml-oauth-callback`.
@@ -202,11 +204,11 @@ Helper RLS verificado: `repmax_user_role_in_store(p_store_id uuid) → repmax_st
 
 ### Impl. 2
 
-- [x] Código OAuth + proxy + UI connect/switch.
-- [ ] App ML (cuenta `alberto@zmtechdev.com`, site MLV) + secrets. **Ticket ML 475453897** (accountLink PSC01).
-- [ ] Migración `repmax_ml_connections` en el hub.
-- [ ] Deploy Edge Functions.
-- [ ] Probar deep link `repmax://ml-connected` en APK preview.
+- [x] Código OAuth + proxy + UI connect/switch (congelado; no ops).
+- [ ] ~~App ML + secrets~~ — **descartado:** MLV sin DevCenter/API (consulta **475453897**).
+- [ ] ~~Migración `repmax_ml_connections`~~ — no aplicar.
+- [ ] ~~Deploy Edge Functions~~ — no desplegar.
+- [ ] ~~Probar deep link `repmax://ml-connected`~~ — solo si ML habilita API.
 
 ---
 

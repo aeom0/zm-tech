@@ -8,8 +8,8 @@ Tokens: mismos que onboarding (`design-system/tokens.md`). Dark first. Sin emoji
 
 | Name en Pencil | Rol |
 |----------------|-----|
-| `Catalog / List / Disconnected / iPhone` | Stock + card **Conectar MercadoLibre** |
-| `Catalog / List / Connected / iPhone` | Card activo + badges En ML / Pendiente |
+| `Catalog / List / Disconnected / iPhone` | Stock + card **Catálogo ML-ready** (export manual; sin OAuth MLV) |
+| `Catalog / List / Connected / iPhone` | Card activo + badges En ML / Pendiente *(solo si `ML_API_ENABLED`)* |
 | `Catalog / Product / Form / iPhone` | Nueva pieza: slots foto → ficha → switch publicar |
 | `Catalog / Photos / Capture / iPhone` | Visor 1:1 + reglas + obturador / galería |
 | `Catalog / Photos / ReviewPass / iPhone` | Checks OK → Usar esta foto |

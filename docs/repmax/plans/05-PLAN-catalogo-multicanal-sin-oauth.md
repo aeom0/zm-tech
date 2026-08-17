@@ -1,6 +1,6 @@
 # 05 — Catálogo multicanal (sin OAuth ML)
 
-> **Estado: PLANIFICADO** (ago 2026). Ejecutar **mientras** esperamos respuesta de Mercado Libre al ticket **475453897**. Si ML habilita DevCenter → activar track API del [plan 04](./04-PLAN-catalogo-mercadolibre.md) sin rehacer catálogo.
+> **Estado: EN CURSO — camino principal** (ago 2026). Mercado Libre confirmó (consulta **475453897**, 13-08-2026) que DevCenter/API MLV **no está operativo** en Venezuela. Este plan es la implementación vigente. Si ML habilita API en el futuro → activar track del [plan 04](./04-PLAN-catalogo-mercadolibre.md) sin rehacer catálogo (`ML_API_ENABLED`).
 
 **Precondición:** Inventario + fotos ML-ready (fase A del plan 04) operativos en mobile. Vitrina pública `repmax-web` `/[slug]` con productos activos (RLS `anon`).
 
@@ -10,17 +10,18 @@
 
 ---
 
-## Bloqueador externo (Mercado Libre)
+## Bloqueador externo (Mercado Libre) — resuelto
 
 | Campo | Valor |
 |-------|--------|
 | Consulta | **475453897** |
-| Error | `PSC01-EZGLT8IYDQ3Z` en `developers.mercadolibre.com.ve/devcenter/accountLink` |
-| Estado | **Esperando respuesta** — no implementar OAuth/Edge ML hasta confirmación |
+| Error original | `PSC01-EZGLT8IYDQ3Z` en `developers.mercadolibre.com.ve/devcenter/accountLink` |
+| Respuesta ML | DevCenter/API de MLV **no habilitado ni operativo** en Venezuela (no es bloqueo de cuenta) |
+| Estado | **Cerrado — OAuth/API descartado** |
 
-**Si ML confirma “no hay conexión / no puedes crear apps en VE”:** seguir este plan como **camino principal**. El código OAuth del plan 04 queda en **feature flag** (`ml_api_enabled` por tienda o env) sin borrar.
+**Decisión:** seguir este plan como **camino principal**. El código OAuth del plan 04 queda en **feature flag** (`ML_API_ENABLED = false`) sin borrar.
 
-**Si ML resuelve la vinculación:** aplicar ops del plan 04 (app, secrets, migración `repmax_ml_connections`, deploy Edge) y encender sync API (fases C–D del 04) **sobre el mismo inventario y `repmax_ml_listings`**.
+**Si ML anuncia DevCenter MLV en el futuro:** aplicar ops del plan 04 (app, secrets, migración `repmax_ml_connections`, deploy Edge) y encender sync API (fases C–D del 04) **sobre el mismo inventario y `repmax_ml_listings`**.
 
 ---
 
@@ -57,7 +58,7 @@ Principio: **un inventario, varias salidas**. Fotos y ficha se preparan una vez;
 4. **Switch en ficha:** de “Publicar en ML” (OAuth) a **“Incluir en catálogo ML / export”** (`ml_publish_intent` persistido en `repmax_products`).
 5. **Export “Paquete ML”:** CSV/Excel RepMAX + URLs públicas de fotos (Storage o vitrina) para copiar al **publicador masivo** de ML (planilla descargada por el vendedor en su cuenta ML).
 6. **Badges en inventario:** Listo / Incompleto / Exportado / En ML (manual) / Actualizar en ML.
-7. **UI MercadoLibre:** card honesta — “Integración API pendiente en Venezuela. Usa catálogo ML-ready y exportación.” Ocultar o deshabilitar “Conectar cuenta” hasta `ml_api_enabled`.
+7. **UI MercadoLibre:** card honesta — MLV sin API activa; catálogo ML-ready + exportación. Sin botón “Conectar cuenta” mientras `ML_API_ENABLED = false`.
 
 ### Flujo del dueño (ML manual)
 
@@ -110,7 +111,7 @@ Referencia ML: [Publicar muchos productos a la vez](https://www.mercadolibre.com
 | **E4** | Vitrina: fotos en cards, búsqueda, link producto, CTA WhatsApp | No | **Hecho (código)** |
 | **E5** | Dashboard: copiar link vitrina, QR, filtros inventario web | No | **Hecho (código)** |
 | **E6** | Alertas post-POS “actualiza stock en ML” (`published_manual` / `published`) | No | **Hecho (código)** |
-| **API** | OAuth + `POST /items` + sync (plan 04 C–D) | Sí — tras ticket ML |
+| **API** | OAuth + `POST /items` + sync (plan 04 C–D) | Sí — solo si ML habilita DevCenter MLV |
 
 ---
 
@@ -132,7 +133,7 @@ Referencia ML: [Publicar muchos productos a la vez](https://www.mercadolibre.com
 | Plan 04 | Plan 05 |
 |---------|---------|
 | OAuth, Edge, predictor API, `POST /items`, sync órdenes/stock | Catálogo ML-ready, export manual, multicanal, vitrina |
-| **Pausado en ops** (ticket 475453897) | **Activo** en desarrollo |
+| **Descartado (ops)** — MLV sin DevCenter/API (#475453897) | **Camino principal** |
 | Misma tabla `repmax_ml_listings`, mismo inventario | Estados y UI ampliados para manual |
 
 ---
