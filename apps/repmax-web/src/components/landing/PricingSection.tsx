@@ -1,3 +1,5 @@
+import { ML_API_ENABLED } from "@/constants/mlConfig";
+
 interface PlanFeature {
   text: string;
   disabled?: boolean;
@@ -55,7 +57,10 @@ const planes: PlanProps[] = [
       { text: "POS y ventas" },
       { text: "Gestión de caja" },
       { text: "1 usuario cajero" },
-      { text: "Integración MercadoLibre", disabled: true },
+      {
+        text: ML_API_ENABLED ? "Integración MercadoLibre" : "Catálogo ML-ready + export",
+        disabled: true,
+      },
       { text: "Reportes avanzados", disabled: true },
       { text: "Múltiples usuarios", disabled: true },
     ],
@@ -72,7 +77,10 @@ const planes: PlanProps[] = [
       { text: "POS y ventas" },
       { text: "Gestión de caja" },
       { text: "Hasta 5 usuarios" },
-      { text: "Integración MercadoLibre", highlight: true },
+      {
+        text: ML_API_ENABLED ? "Integración MercadoLibre" : "Catálogo ML-ready + export",
+        highlight: true,
+      },
       { text: "Reportes completos" },
       { text: "Soporte prioritario" },
     ],
@@ -88,7 +96,7 @@ const planes: PlanProps[] = [
       { text: "Múltiples sucursales" },
       { text: "Usuarios ilimitados" },
       { text: "API personalizada" },
-      { text: "Integración MercadoLibre" },
+      { text: ML_API_ENABLED ? "Integración MercadoLibre" : "Catálogo ML-ready + export" },
       { text: "Onboarding dedicado" },
       { text: "SLA de soporte" },
     ],
