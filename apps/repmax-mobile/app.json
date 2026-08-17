@@ -95,9 +95,14 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/splash.png",
+          "image": "./assets/splash-logo.png",
+          "imageWidth": 280,
           "resizeMode": "contain",
-          "backgroundColor": "#080808"
+          "backgroundColor": "#080808",
+          "dark": {
+            "backgroundColor": "#080808",
+            "image": "./assets/splash-logo.png"
+          }
         }
       ],
       "expo-status-bar",
