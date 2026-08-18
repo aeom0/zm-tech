@@ -11,6 +11,7 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Switch,
   Alert,
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -20,7 +21,15 @@ import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { MoreStackParamList } from '../../navigation/types';
 import { useAuth } from '../../context/AuthContext';
+import { useTasaCambio } from '../../hooks/useTasaCambio';
 import { colors, spacing, borderRadius, typography } from '../../utils/theme';
+
+const NIVEL_SPREAD_LABEL: Record<string, string> = {
+  bajo: 'Spread bajo',
+  medio: 'Spread medio',
+  alto: 'Spread alto',
+  critico: 'Spread crítico',
+};
 
 type Props = NativeStackScreenProps<MoreStackParamList, 'ExchangeRate'>;
 
@@ -37,8 +46,25 @@ export default function ExchangeRateScreen({ navigation }: Props) {
 
   const [inputRate, setInputRate] = useState(String(store?.usdBsRate ?? ''));
   const [isSaving, setIsSaving]   = useState(false);
+  const [isTogglingManual, setIsTogglingManual] = useState(false);
 
   const isOwner = storeUser?.role === 'owner';
+  const usarTasaManual = store?.usarTasaManual ?? true;
+  const { tasas, isLoading: isLoadingTasas } = useTasaCambio(
+    store?.usdBsRate ?? 0,
+    usarTasaManual,
+  );
+
+  const handleToggleManual = async (value: boolean) => {
+    setIsTogglingManual(true);
+    try {
+      await updateStore({ usarTasaManual: value });
+    } catch {
+      Alert.alert('Error', 'No se pudo cambiar el modo de tasa.');
+    } finally {
+      setIsTogglingManual(false);
+    }
+  };
 
   // Parseo y validaciones
   const parsedRate = parseFloat(inputRate.replace(',', '.'));
@@ -121,6 +147,34 @@ export default function ExchangeRateScreen({ navigation }: Props) {
           </View>
         </View>
 
+        {/* Bloque: modo de tasa (manual vs BCV en vivo) */}
+        {isOwner && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Modo de Tasa</Text>
+            <View style={styles.card}>
+              <View style={styles.toggleRow}>
+                <View style={styles.toggleTextWrap}>
+                  <Text style={styles.toggleTitle}>Usar tasa manual</Text>
+                  <Text style={styles.toggleSubtitle}>
+                    {usarTasaManual
+                      ? 'El checkout usa la tasa fijada abajo, no la tasa BCV en vivo.'
+                      : 'El checkout usa la tasa BCV en vivo (fallback a la manual si falla).'}
+                  </Text>
+                </View>
+                {isTogglingManual ? (
+                  <ActivityIndicator color={colors.brand.orange} />
+                ) : (
+                  <Switch
+                    value={usarTasaManual}
+                    onValueChange={handleToggleManual}
+                    trackColor={{ false: colors.bg.border, true: colors.brand.orange }}
+                  />
+                )}
+              </View>
+            </View>
+          </View>
+        )}
+
         {/* Bloque: input nueva tasa */}
         {isOwner && (
           <View style={styles.section}>
@@ -178,16 +232,38 @@ export default function ExchangeRateScreen({ navigation }: Props) {
           </View>
         </View>
 
-        {/* Bloque: fuentes de referencia */}
+        {/* Bloque: BCV vs USDT en vivo */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Referencias</Text>
+          <Text style={styles.sectionTitle}>BCV vs USDT (en vivo)</Text>
           <View style={styles.card}>
-            <Text style={styles.refText}>
-              Consulta la tasa actualizada en:
-            </Text>
-            <Text style={styles.refSources}>
-              BCV oficial · Monitor Dólar · DolarToday
-            </Text>
+            {isLoadingTasas && !tasas ? (
+              <ActivityIndicator color={colors.brand.orange} />
+            ) : tasas ? (
+              <>
+                <View style={[styles.calcRow, styles.calcRowBorder]}>
+                  <Text style={styles.calcUsd}>BCV</Text>
+                  <Text style={styles.calcBs}>
+                    {tasas.bcv.disponible ? `${formatBs(tasas.bcv.valor)} Bs` : '---'}
+                  </Text>
+                </View>
+                <View style={[styles.calcRow, styles.calcRowBorder]}>
+                  <Text style={styles.calcUsd}>USDT</Text>
+                  <Text style={styles.calcBs}>
+                    {tasas.usdt.disponible ? `${formatBs(tasas.usdt.valor)} Bs` : '---'}
+                  </Text>
+                </View>
+                <View style={styles.calcRow}>
+                  <Text style={styles.calcUsd}>
+                    {NIVEL_SPREAD_LABEL[tasas.spread.nivel] ?? 'Spread'}
+                  </Text>
+                  <Text style={styles.calcBs}>{tasas.spread.porcentaje.toFixed(1)}%</Text>
+                </View>
+              </>
+            ) : (
+              <Text style={styles.refText}>
+                No hay tasa BCV registrada todavía. Usa la tasa manual mientras tanto.
+              </Text>
+            )}
           </View>
         </View>
 
@@ -306,6 +382,27 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
 
+  // Toggle modo de tasa
+  toggleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  toggleTextWrap: {
+    flex: 1,
+  },
+  toggleTitle: {
+    fontSize: typography.size.base,
+    fontFamily: typography.fontFamily.semibold,
+    color: colors.text.primary,
+    marginBottom: 2,
+  },
+  toggleSubtitle: {
+    fontSize: typography.size.sm,
+    fontFamily: typography.fontFamily.regular,
+    color: colors.text.secondary,
+  },
+
   // Input nueva tasa
   inputRow: {
     flexDirection: 'row',
@@ -374,11 +471,6 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily.regular,
     color: colors.text.secondary,
     marginBottom: spacing.xs,
-  },
-  refSources: {
-    fontSize: typography.size.sm,
-    fontFamily: typography.fontFamily.medium,
-    color: colors.text.secondary,
   },
 
   // Botón actualizar

@@ -56,6 +56,7 @@ function mapStore(row: any): Store {
     currencyUsd: row.currency_usd,
     currencyBs: row.currency_bs,
     usdBsRate: parseFloat(row.usd_bs_rate),
+    usarTasaManual: row.usar_tasa_manual ?? false,
     // Fallbacks si la migración de onboarding aún no está aplicada / columnas null
     storeType: row.store_type ?? 'repuesteria',
     vehicleFocus: row.vehicle_focus ?? 'BOTH',
@@ -232,6 +233,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (data.address !== undefined) payload.address = data.address;
     if (data.city !== undefined) payload.city = data.city;
     if (data.usdBsRate !== undefined) payload.usd_bs_rate = data.usdBsRate;
+    if (data.usarTasaManual !== undefined) payload.usar_tasa_manual = data.usarTasaManual;
     if (data.logoUrl !== undefined) payload.logo_url = data.logoUrl;
 
     const { data: updated, error } = await supabase

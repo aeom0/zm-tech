@@ -34,6 +34,9 @@ export interface Store {
   currencyUsd: string;
   currencyBs: string;
   usdBsRate: number;
+  // Si true, el checkout usa usdBsRate fijado a mano en vez de la tasa BCV en
+  // vivo (ver migracion 20260818130000_repmax_stores_tasa_manual.sql)
+  usarTasaManual: boolean;
   // Preferencias capturadas en el onboarding — ver migracion
   // 20260808120000_repmax_store_onboarding_fields.sql
   storeType: StoreType;

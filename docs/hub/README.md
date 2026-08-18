@@ -56,6 +56,8 @@ Proyecto: `https://llacowjutjfefboqgfnj.supabase.co`
 
 Migraciones Fase 1 aplicadas en `llacowjutjfefboqgfnj` (ago 2026): `hub_initial_schema`, `hub_rls`, `hub_rls_harden_helpers`. Borrador Fase 2: `03_hub_operacion.sql` — no aplicar sin instrucción.
 
+**Excepción fuera de fases:** `20260818120000_hub_tasas_cambio.sql` — **aplicada** 2026-08-18. Crea `hub_tasas_bcv`/`hub_tasas_usdt` (RLS `SELECT` público, escritura solo `service_role`). No pertenece al CRM del Hub — son tablas de soporte para el paquete compartido `@zmtech/tasas`, consumidas hoy solo por RepMAX POS (`docs/repmax/plans/08-PLAN-tasas-bcv-usdt.md`). Prefijo `hub_` porque están pensadas para reutilizarse desde otros productos, no porque sean parte del CRM interno.
+
 ## Planes
 
 | Plan | Fase | Contenido |

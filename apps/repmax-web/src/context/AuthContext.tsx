@@ -35,6 +35,33 @@ type Membership = {
   storeUser: { id: string; role: string; fullName: string | null };
 };
 
+/**
+ * Resuelve la tasa efectiva de la tienda: si `usar_tasa_manual` está activo,
+ * respeta el valor fijado a mano. Si no, intenta la tasa BCV en vivo
+ * (/api/bcv/tasa) y cae de vuelta a la manual si el fetch falla o no hay
+ * tasa disponible — nunca debe bloquear el checkout por falta de conectividad.
+ */
+async function resolverTasaEfectiva(
+  tasaManual: number,
+  usarTasaManual: boolean,
+): Promise<number> {
+  if (usarTasaManual) return tasaManual;
+  try {
+    const res = await fetch("/api/bcv/tasa", { cache: "no-store" });
+    if (!res.ok) return tasaManual;
+    const data = (await res.json()) as {
+      bcv?: { valor?: number; disponible?: boolean };
+    };
+    const valor = data.bcv?.valor;
+    if (data.bcv?.disponible && Number.isFinite(valor) && (valor as number) > 0) {
+      return valor as number;
+    }
+    return tasaManual;
+  } catch {
+    return tasaManual;
+  }
+}
+
 async function loadMembership(
   userId: string,
 ): Promise<Membership | null> {
@@ -44,7 +71,7 @@ async function loadMembership(
     .select(
       `
       id, role, full_name,
-      store:repmax_stores ( id, name, slug, city, plan, usd_bs_rate, is_active )
+      store:repmax_stores ( id, name, slug, city, plan, usd_bs_rate, usar_tasa_manual, is_active )
     `,
     )
     .eq("user_id", userId)
@@ -61,6 +88,10 @@ async function loadMembership(
   const storeRaw = Array.isArray(data.store) ? data.store[0] : data.store;
   if (!storeRaw || storeRaw.is_active === false) return null;
 
+  const tasaManual = Number(storeRaw.usd_bs_rate) || 36.5;
+  const usarTasaManual = Boolean(storeRaw.usar_tasa_manual);
+  const usdBsRate = await resolverTasaEfectiva(tasaManual, usarTasaManual);
+
   return {
     store: {
       id: storeRaw.id,
@@ -68,7 +99,7 @@ async function loadMembership(
       slug: storeRaw.slug,
       city: storeRaw.city ?? null,
       plan: (storeRaw.plan as StoreWeb["plan"]) ?? "basic",
-      usdBsRate: Number(storeRaw.usd_bs_rate) || 36.5,
+      usdBsRate,
     },
     storeUser: {
       id: String(data.id),

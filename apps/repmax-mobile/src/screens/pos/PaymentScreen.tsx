@@ -12,6 +12,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
+import { useTasaCambio } from '../../hooks/useTasaCambio';
 import { saleService } from '../../services/saleService';
 import { mlListingService } from '../../services/mercadolibre/mlListingService';
 import { formatUSD, formatBS } from '../../utils/formatters';
@@ -39,7 +40,9 @@ export default function PaymentScreen({ navigation }: Props) {
     }).catch(() => {});
   }, []);
 
-  const usdBsRate = store?.usdBsRate ?? 36.5;
+  const tasaManual = store?.usdBsRate ?? 36.5;
+  const { usdBsRateEfectivo } = useTasaCambio(tasaManual, store?.usarTasaManual ?? true);
+  const usdBsRate = usdBsRateEfectivo;
   const totalBs = totalUsd * usdBsRate;
 
   const handleConfirm = async () => {

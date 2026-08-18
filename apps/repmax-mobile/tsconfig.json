@@ -6,7 +6,8 @@
     "paths": {
       "@/*": ["./src/*"],
       "@repmax/repmax-schema": ["../../packages/repmax-schema/src/schema.ts"],
-      "@repmax/repmax-schema/*": ["../../packages/repmax-schema/src/*"]
+      "@repmax/repmax-schema/*": ["../../packages/repmax-schema/src/*"],
+      "@zmtech/tasas": ["../../packages/tasas/src/index.ts"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],
