@@ -13,9 +13,11 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { PhotoSlotGrid } from '../../components/inventory/PhotoSlotGrid';
 import { MlReadinessChecklist } from '../../components/inventory/MlReadinessChecklist';
 import { MlCategoryManualSection } from '../../components/inventory/MlCategoryManualSection';
+import { AddVehicleCatalogModal } from '../../components/inventory/AddVehicleCatalogModal';
 import { useProductForm } from '../../hooks/useProductForm';
+import { useVehicleCatalog } from '../../hooks/useVehicleCatalog';
 import { ML_API_ENABLED, ML_MANUAL_MODE_HINT } from '../../constants/mlConfig';
-import { BRANDS } from '../../constants/brands';
+import { BRANDS, MODELS_BY_BRAND, VEHICLE_YEAR_MIN, VEHICLE_YEAR_MAX } from '../../constants/brands';
 import { colors, typography, spacing, borderRadius } from '../../utils/theme';
 import type { PartCondition, VehicleType } from '../../types/database';
 import type { InventoryStackParamList } from '../../navigation/types';
@@ -58,6 +60,33 @@ export default function ProductFormScreen({ route, navigation }: Props) {
     handleSave,
   } = useProductForm({ productId, pendingPhoto, scannedBarcode });
   const [showBrandPicker, setShowBrandPicker] = useState(false);
+  const [showAddCatalogModal, setShowAddCatalogModal] = useState(false);
+  const { entries: catalogEntries, addEntry: addCatalogEntry } = useVehicleCatalog();
+
+  const setFieldUpper = (key: 'title' | 'brand' | 'model' | 'partNumber' | 'barcode', v: string) =>
+    setField(key, v.toUpperCase());
+
+  // Marcas del seed estático + las que la tienda agregó a mano.
+  const catalogBrands = [...new Set(catalogEntries.map(e => e.brand))];
+  const allBrands = [...new Set([...BRANDS, ...catalogBrands])];
+
+  const modelosDeMarca = form.brand
+    ? [...new Set([
+        ...(MODELS_BY_BRAND[
+          Object.keys(MODELS_BY_BRAND).find(b => b.toUpperCase() === form.brand.toUpperCase()) ?? ''
+        ] ?? []),
+        ...catalogEntries
+          .filter(e => e.brand.toUpperCase() === form.brand.toUpperCase())
+          .map(e => e.model),
+      ])]
+    : [];
+
+  const handleAddToCatalog = async (entry: Parameters<typeof addCatalogEntry>[0]) => {
+    const created = await addCatalogEntry(entry);
+    setFieldUpper('brand', created.brand);
+    setFieldUpper('model', created.model);
+    setShowBrandPicker(false);
+  };
 
   useEffect(() => {
     if (!loadError) return;
@@ -109,9 +138,10 @@ export default function ProductFormScreen({ route, navigation }: Props) {
           <FormField
             label="Título *"
             value={form.title}
-            onChangeText={v => setField('title', v)}
+            onChangeText={v => setFieldUpper('title', v)}
             placeholder="Filtro aceite Toyota Corolla 2015-20"
             hint="ML: Producto + Marca + compatible con… Sin stock ni precio."
+            autoCapitalize="characters"
           />
           {tituloSugerido && tituloSugerido !== form.title.trim() ? (
             <TouchableOpacity
@@ -138,7 +168,7 @@ export default function ProductFormScreen({ route, navigation }: Props) {
           <FormField
             label="Número de parte"
             value={form.partNumber}
-            onChangeText={v => setField('partNumber', v)}
+            onChangeText={v => setFieldUpper('partNumber', v)}
             placeholder="Ej: 90915-YZZD2"
             hint="Atributo PART_NUMBER. Obligatorio para publicar en ML."
             autoCapitalize="characters"
@@ -148,7 +178,7 @@ export default function ProductFormScreen({ route, navigation }: Props) {
             <TextInput
               style={[styles.textInput, styles.barcodeInput]}
               value={form.barcode}
-              onChangeText={(v) => setField('barcode', v)}
+              onChangeText={(v) => setFieldUpper('barcode', v)}
               placeholder="EAN, Code128 o payload QR"
               placeholderTextColor={colors.text.disabled}
               autoCapitalize="characters"
@@ -180,27 +210,85 @@ export default function ProductFormScreen({ route, navigation }: Props) {
                 style={styles.brandSearch}
                 placeholder="Buscar marca..."
                 placeholderTextColor={colors.text.disabled}
-                onChangeText={v => setField('brand', v)}
+                onChangeText={v => setFieldUpper('brand', v)}
                 value={form.brand}
+                autoCapitalize="characters"
                 autoFocus
               />
-              {BRANDS.filter(b => b.toLowerCase().includes(form.brand.toLowerCase())).map(brand => (
+              <ScrollView style={styles.brandList} nestedScrollEnabled keyboardShouldPersistTaps="handled">
+                {allBrands.filter(b => b.toLowerCase().includes(form.brand.toLowerCase())).map(brand => (
+                  <TouchableOpacity
+                    key={brand}
+                    style={styles.brandOption}
+                    onPress={() => { setFieldUpper('brand', brand); setShowBrandPicker(false); }}
+                  >
+                    <Text style={styles.brandOptionText}>{brand}</Text>
+                  </TouchableOpacity>
+                ))}
                 <TouchableOpacity
-                  key={brand}
                   style={styles.brandOption}
-                  onPress={() => { setField('brand', brand); setShowBrandPicker(false); }}
+                  onPress={() => setShowAddCatalogModal(true)}
                 >
-                  <Text style={styles.brandOptionText}>{brand}</Text>
+                  <Text style={[styles.brandOptionText, { color: colors.brand.orange }]}>
+                    + Agregar marca/modelo nuevo
+                  </Text>
                 </TouchableOpacity>
-              ))}
+              </ScrollView>
             </View>
           )}
 
-          <FormField label="Modelo *" value={form.model} onChangeText={v => setField('model', v)} placeholder="Ej: Corolla" />
+          <AddVehicleCatalogModal
+            visible={showAddCatalogModal}
+            onClose={() => setShowAddCatalogModal(false)}
+            onCreate={handleAddToCatalog}
+            initialBrand={form.brand}
+          />
+
+          <FormField label="Modelo *" value={form.model} onChangeText={v => setFieldUpper('model', v)} placeholder="Ej: Corolla" autoCapitalize="characters" />
+          {modelosDeMarca.length > 0 ? (
+            <View style={styles.optionsRow}>
+              {modelosDeMarca.map(modelo => (
+                <TouchableOpacity
+                  key={modelo}
+                  style={[styles.optionChip, form.model === modelo.toUpperCase() && styles.optionChipActive]}
+                  onPress={() => setFieldUpper('model', modelo)}
+                >
+                  <Text style={[styles.optionChipText, form.model === modelo.toUpperCase() && styles.optionChipTextActive]}>
+                    {modelo}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          ) : null}
+          <View style={styles.optionsRow}>
+            <TouchableOpacity
+              style={[styles.optionChip, form.model === 'TODOS LOS MODELOS' && styles.optionChipActive]}
+              onPress={() => setField('model', form.model === 'TODOS LOS MODELOS' ? '' : 'TODOS LOS MODELOS')}
+            >
+              <Text style={[styles.optionChipText, form.model === 'TODOS LOS MODELOS' && styles.optionChipTextActive]}>
+                Todos los modelos
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.optionChip, form.model === 'NO APLICA' && styles.optionChipActive]}
+              onPress={() => setField('model', form.model === 'NO APLICA' ? '' : 'NO APLICA')}
+            >
+              <Text style={[styles.optionChipText, form.model === 'NO APLICA' && styles.optionChipTextActive]}>
+                No aplica
+              </Text>
+            </TouchableOpacity>
+          </View>
 
           <View style={styles.row}>
             <View style={{ flex: 1 }}>
-              <FormField label="Año desde" value={form.yearFrom} onChangeText={v => setField('yearFrom', v)} placeholder="2010" keyboardType="numeric" />
+              <FormField
+                label="Año desde"
+                value={form.yearFrom}
+                onChangeText={v => setField('yearFrom', v)}
+                placeholder="2010"
+                hint={`Entre ${VEHICLE_YEAR_MIN} y ${VEHICLE_YEAR_MAX}`}
+                keyboardType="numeric"
+              />
             </View>
             <View style={{ flex: 1 }}>
               <FormField label="Año hasta" value={form.yearTo} onChangeText={v => setField('yearTo', v)} placeholder="2024" keyboardType="numeric" />
@@ -461,7 +549,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.bg.border,
     marginTop: spacing.xs,
-    maxHeight: 200,
+    maxHeight: 240,
+    overflow: 'hidden',
   },
   brandSearch: {
     padding: spacing.sm,
@@ -470,6 +559,9 @@ const styles = StyleSheet.create({
     fontSize: typography.size.base,
     borderBottomWidth: 1,
     borderBottomColor: colors.bg.border,
+  },
+  brandList: {
+    maxHeight: 190,
   },
   brandOption: {
     padding: spacing.md,
