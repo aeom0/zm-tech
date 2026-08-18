@@ -12,6 +12,7 @@ import {
   LogOut,
   Menu,
   Package,
+  ScanLine,
   ShoppingCart,
   Users,
   X,
@@ -24,6 +25,7 @@ import type { SubscriptionPlanWeb } from "@/types/dashboard";
 
 const ENLACES: { href: string; label: string; icon: typeof LayoutDashboard }[] = [
   { href: "/dashboard/overview", label: "Resumen", icon: LayoutDashboard },
+  { href: "/dashboard/pos", label: "Venta", icon: ScanLine },
   { href: "/dashboard/inventory", label: "Inventario", icon: Package },
   { href: "/dashboard/sales", label: "Ventas", icon: ShoppingCart },
   { href: "/dashboard/customers", label: "Clientes", icon: Users },
@@ -31,6 +33,7 @@ const ENLACES: { href: string; label: string; icon: typeof LayoutDashboard }[] =
 
 const TITULOS_RUTA: Record<string, string> = {
   "/dashboard/overview": "Resumen",
+  "/dashboard/pos": "Venta",
   "/dashboard/inventory": "Inventario",
   "/dashboard/sales": "Ventas",
   "/dashboard/customers": "Clientes",
