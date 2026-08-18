@@ -5,6 +5,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import { useAuthFetch } from "@/hooks/useAuthFetch";
 import { etiquetaMetodoPago } from "@/lib/etiquetas-pago";
 import { Button } from "@/components/ui/button";
@@ -120,6 +121,7 @@ export default function SalesPage() {
           <TableHeader className="bg-[#242424]">
             <TableRow className="border-[#2A2A2A] hover:bg-transparent">
               <TableHead># Factura</TableHead>
+              <TableHead>Artículos</TableHead>
               <TableHead>Cliente</TableHead>
               <TableHead>Total USD</TableHead>
               <TableHead>Total Bs</TableHead>
@@ -140,6 +142,41 @@ export default function SalesPage() {
               >
                 <TableCell className="font-mono text-sm text-[#F5F5F5]">
                   {v.invoiceNumber || "—"}
+                </TableCell>
+                <TableCell className="max-w-[260px] text-sm text-[#9E9E9E]">
+                  {v.items.length > 0 ? (
+                    <div className="flex flex-col gap-2">
+                      {v.items.map((it, i) => (
+                        <div key={i} className="flex items-start gap-2">
+                          {it.photo ? (
+                            <Image
+                              src={it.photo}
+                              alt=""
+                              width={32}
+                              height={32}
+                              className="h-8 w-8 shrink-0 rounded object-cover bg-[#242424]"
+                              unoptimized
+                            />
+                          ) : (
+                            <div className="h-8 w-8 shrink-0 rounded bg-[#242424]" />
+                          )}
+                          <div>
+                            <span className="text-[#F5F5F5]">
+                              {it.quantity > 1 ? `${it.quantity}x ${it.title}` : it.title}
+                            </span>
+                            {it.vehicle ? (
+                              <span className="block text-xs text-[#616161]">{it.vehicle}</span>
+                            ) : null}
+                            {it.partNumber ? (
+                              <span className="block text-xs text-[#616161]">#{it.partNumber}</span>
+                            ) : null}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <span className="text-[#616161]">—</span>
+                  )}
                 </TableCell>
                 <TableCell className="text-[#F5F5F5]">
                   {v.customer ? (
