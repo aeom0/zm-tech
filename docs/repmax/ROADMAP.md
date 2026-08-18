@@ -34,6 +34,7 @@ El detalle de cambios ya hechos vive en [CHANGELOG.md](./CHANGELOG.md). Este arc
 - [x] Migración `20260816200000_repmax_products_color` aplicada en hub
 - [x] **Escáner barras/QR (código)** — `repmax_products.barcode`, POS + inventario + ficha mobile; campo en panel web
 - [x] EAS / preview mobile (proyecto `@aeom0/repmax`, OTA channels)
+- [x] **OTA en GitHub Actions** — `.github/workflows/repmax-ota.yml` (canal `preview` en push a `main`; `production` manual)
 - [x] **Plan 06 (código)** — rewrite `{slug}.zmtechdev.com` / `{slug}.localhost` → `/{slug}`; QR gated por `NEXT_PUBLIC_VITRINA_SUBDOMAINS`
 - [x] Proyecto Vercel `repmax-web` — prod `https://repmax-web-taupe.vercel.app` (Git `aeom0/zm-tech`, root `apps/repmax-web`)
 - [x] **Catálogo starter al registrar** — RPC `repmax_seed_starter_catalog` (hub `20260817222347`) + `catalogSeedService` en `register()`

@@ -88,6 +88,19 @@ eas update --channel preview --message "describe el cambio"
 
 Solo JS/assets compatibles con el mismo `runtimeVersion` (SDK 56). Cambios nativos (plugins, permisos, iconos nativos) requieren **nuevo APK**.
 
+### CI (GitHub Actions)
+
+Workflow [`.github/workflows/repmax-ota.yml`](../../.github/workflows/repmax-ota.yml): push a `main` que toque `apps/repmax-mobile` (o schema) → `eas update --channel preview`. Production: Actions → **RepMAX OTA** → Run workflow.
+
+Secretos del repo (`aeom0/zm-tech` → Settings → Secrets):
+
+| Secreto | Dónde |
+|---------|--------|
+| `EXPO_TOKEN` | [expo.dev/settings/access-tokens](https://expo.dev/settings/access-tokens) (cuenta `aeom0`) |
+| `EXPO_PUBLIC_SUPABASE_ANON_KEY` | anon key del hub `llacowjutjfefboqgfnj` (la misma del `.env` local) |
+
+Sin esos dos, el job falla a propósito para no publicar un bundle cojo.
+
 ### Producción
 
 ```bash

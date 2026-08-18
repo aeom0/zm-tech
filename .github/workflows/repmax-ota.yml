@@ -1,0 +1,81 @@
+# RepMAX — EAS Update (OTA) en cada push a main que toque el mobile.
+#
+# Secretos del repo (Settings → Secrets and variables → Actions):
+#   EXPO_TOKEN                      — https://expo.dev/settings/access-tokens (cuenta aeom0)
+#   EXPO_PUBLIC_SUPABASE_ANON_KEY   — anon key del hub llacowjutjfefboqgfnj
+#
+# Canal por defecto: preview (el APK interno). Production: Actions → Run workflow.
+name: RepMAX OTA
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "apps/repmax-mobile/**"
+      - "packages/repmax-schema/**"
+      - "packages/tenant-config/src/repmax/**"
+      - ".github/workflows/repmax-ota.yml"
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: Canal EAS
+        required: true
+        default: preview
+        type: choice
+        options:
+          - preview
+          - production
+
+concurrency:
+  group: repmax-ota-${{ github.event.inputs.channel || 'preview' }}
+  cancel-in-progress: true
+
+jobs:
+  update:
+    name: eas update
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Check secrets
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          ANON: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "Falta el secreto EXPO_TOKEN. Créalo en expo.dev/settings/access-tokens y pégalo en Settings → Secrets."
+            exit 1
+          fi
+          if [ -z "$ANON" ]; then
+            echo "Falta EXPO_PUBLIC_SUPABASE_ANON_KEY (anon del hub). Sin eso el bundle OTA sale sin Auth."
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          packager: pnpm
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Publish update
+        working-directory: apps/repmax-mobile
+        env:
+          EXPO_PUBLIC_SUPABASE_URL: https://llacowjutjfefboqgfnj.supabase.co
+          EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.EXPO_PUBLIC_SUPABASE_ANON_KEY }}
+          CHANNEL: ${{ github.event.inputs.channel || 'preview' }}
+          UPDATE_MESSAGE: ${{ github.event.head_commit.message || github.sha }}
+        run: |
+          eas update --channel "$CHANNEL" --non-interactive --message "$UPDATE_MESSAGE"
