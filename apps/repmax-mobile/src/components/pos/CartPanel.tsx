@@ -15,7 +15,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { EmptyState } from '../ui/EmptyState';
 import { ProductThumb } from '../inventory/ProductThumb';
 import { useCart } from '../../context/CartContext';
-import { formatUSD } from '../../utils/formatters';
+import { useAuth } from '../../context/AuthContext';
+import { useTasaCambio } from '../../hooks/useTasaCambio';
+import { formatBS, formatUSD } from '../../utils/formatters';
 import { uriPortada } from '../../utils/productPhotos';
 import { hapticLight } from '../../utils/haptics';
 import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
@@ -73,6 +75,13 @@ function CartItemRow({
 
 export function CartPanel({ onCheckout, embedded = false, onBrowseProducts }: CartPanelProps) {
   const { items, addItem, updateQuantity, removeItem, clearCart, totalUsd, totalItems } = useCart();
+  const { store } = useAuth();
+  const usarTasaManual = store?.usarTasaManual ?? false;
+  const { usdBsRateEfectivo, isLoading: isLoadingTasa, tasas } = useTasaCambio(
+    store?.usdBsRate ?? 36.5,
+    usarTasaManual,
+  );
+  const totalBs = totalUsd * usdBsRateEfectivo;
 
   const handleClear = () => {
     Alert.alert('Vaciar carrito', '¿Eliminar todos los productos?', [
@@ -135,9 +144,17 @@ export function CartPanel({ onCheckout, embedded = false, onBrowseProducts }: Ca
 
       <View style={styles.footer}>
         <View style={styles.totalRow}>
-          <Text style={styles.totalLabel}>Total</Text>
+          <View>
+            <Text style={styles.totalLabel}>Total USD</Text>
+            <Text style={styles.totalSubvalue}>
+              {formatBS(totalBs)}{isLoadingTasa && !tasas ? ' · consultando BCV' : ''}
+            </Text>
+          </View>
           <Text style={styles.totalValue}>{formatUSD(totalUsd)}</Text>
         </View>
+        <Text style={styles.rateHint}>
+          Tasa aplicada: Bs. {usdBsRateEfectivo.toFixed(2)} por USD
+        </Text>
         <TouchableOpacity
           style={styles.checkoutBtn}
           onPress={() => {
@@ -277,6 +294,18 @@ const styles = StyleSheet.create({
     fontSize: typography.size.xl,
     color: colors.text.primary,
     fontFamily: typography.fontFamily.bold,
+  },
+  totalSubvalue: {
+    color: colors.brand.orange,
+    fontFamily: typography.fontFamily.semibold,
+    fontSize: typography.size.sm,
+    marginTop: 2,
+  },
+  rateHint: {
+    color: colors.text.disabled,
+    fontFamily: typography.fontFamily.regular,
+    fontSize: typography.size.xs,
+    marginBottom: spacing.sm,
   },
   checkoutBtn: {
     backgroundColor: colors.brand.orange,

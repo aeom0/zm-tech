@@ -13,6 +13,12 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 import { useTasaCambio } from '../../hooks/useTasaCambio';
+import {
+  convertirUsdABs,
+  validarDetallesPagoMixto,
+  type DetallesPago,
+  type MonedaPago,
+} from '@zmtech/tasas';
 import { saleService } from '../../services/saleService';
 import { mlListingService } from '../../services/mercadolibre/mlListingService';
 import { formatUSD, formatBS } from '../../utils/formatters';
@@ -30,6 +36,8 @@ export default function PaymentScreen({ navigation }: Props) {
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('CASH_USD');
   const [notes, setNotes] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [montoMixtoUsd, setMontoMixtoUsd] = useState('');
+  const [montoMixtoBs, setMontoMixtoBs] = useState('');
 
   // Sesión activa de caja
   const [sessionId, setSessionId] = useState<string | undefined>(undefined);
@@ -49,7 +57,27 @@ export default function PaymentScreen({ navigation }: Props) {
     usarTasaManual,
   );
   const usdBsRate = usdBsRateEfectivo;
-  const totalBs = totalUsd * usdBsRate;
+  const totalBs = convertirUsdABs(totalUsd, usdBsRate);
+  const esMetodoBs = ['CASH_BS', 'PAGO_MOVIL', 'TRANSFERENCIA'].includes(selectedMethod);
+  const detallesMixtos: DetallesPago = {
+    CASH_USD: { monto: Number(montoMixtoUsd) || 0, moneda: 'USD' },
+    CASH_BS: { monto: Number(montoMixtoBs) || 0, moneda: 'BS' },
+  };
+  const validacionMixta =
+    selectedMethod === 'MIXED'
+      ? validarDetallesPagoMixto(detallesMixtos, totalUsd, usdBsRate)
+      : null;
+
+  const crearDetallesPago = (): DetallesPago => {
+    if (selectedMethod === 'MIXED') return detallesMixtos;
+    const moneda: MonedaPago = esMetodoBs ? 'BS' : 'USD';
+    return {
+      [selectedMethod]: {
+        monto: moneda === 'BS' ? totalBs : totalUsd,
+        moneda,
+      },
+    };
+  };
 
   const handleConfirm = async () => {
     if (!storeUser) {
@@ -58,6 +86,10 @@ export default function PaymentScreen({ navigation }: Props) {
     }
     if (!usarTasaManual && isLoadingTasa) {
       Alert.alert('Tasa en actualización', 'Espera un momento mientras se consulta la tasa BCV.');
+      return;
+    }
+    if (validacionMixta && !validacionMixta.valido) {
+      Alert.alert('Montos mixtos incompletos', validacionMixta.mensaje);
       return;
     }
 
@@ -77,6 +109,7 @@ export default function PaymentScreen({ navigation }: Props) {
                 cashierId: storeUser.id,
                 sessionId,
                 paymentMethod: selectedMethod,
+                paymentDetails: crearDetallesPago(),
                 usdBsRate,
                 notes: notes.trim() || undefined,
                 items,
@@ -88,6 +121,8 @@ export default function PaymentScreen({ navigation }: Props) {
                 );
               }
               clearCart();
+              setMontoMixtoUsd('');
+              setMontoMixtoBs('');
               navigation.replace('Receipt', { saleId, mlStockAlert: mlAlertItems });
             } catch (err: any) {
               const msg = err?.response?.data?.message || 'Error al registrar la venta.';
@@ -139,6 +174,43 @@ export default function PaymentScreen({ navigation }: Props) {
             </TouchableOpacity>
           ))}
         </View>
+
+        {selectedMethod === 'MIXED' ? (
+          <View style={styles.mixedCard}>
+            <Text style={styles.mixedTitle}>Desglose del pago mixto</Text>
+            <TextInput
+              style={styles.mixedInput}
+              value={montoMixtoUsd}
+              onChangeText={setMontoMixtoUsd}
+              placeholder="Monto en USD"
+              placeholderTextColor={colors.text.disabled}
+              keyboardType="decimal-pad"
+            />
+            <TextInput
+              style={styles.mixedInput}
+              value={montoMixtoBs}
+              onChangeText={setMontoMixtoBs}
+              placeholder="Monto en Bs"
+              placeholderTextColor={colors.text.disabled}
+              keyboardType="decimal-pad"
+            />
+            <Text style={[
+              styles.mixedValidation,
+              validacionMixta?.valido ? styles.mixedValid : styles.mixedInvalid,
+            ]}>
+              {validacionMixta?.valido
+                ? 'El desglose coincide con el total.'
+                : validacionMixta?.mensaje}
+            </Text>
+          </View>
+        ) : (
+          <View style={styles.paymentAmountCard}>
+            <Text style={styles.paymentAmountLabel}>Monto a cobrar</Text>
+            <Text style={styles.paymentAmountValue}>
+              {esMetodoBs ? formatBS(totalBs) : formatUSD(totalUsd)}
+            </Text>
+          </View>
+        )}
 
         {/* Nota opcional */}
         <Text style={styles.sectionTitle}>Nota (opcional)</Text>
@@ -292,6 +364,60 @@ const styles = StyleSheet.create({
     borderColor: colors.bg.border,
     textAlignVertical: 'top',
     minHeight: 80,
+  },
+  paymentAmountCard: {
+    backgroundColor: colors.bg.secondary,
+    borderRadius: borderRadius.md,
+    padding: spacing.md,
+    marginTop: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.bg.border,
+  },
+  paymentAmountLabel: {
+    color: colors.text.secondary,
+    fontFamily: typography.fontFamily.regular,
+    fontSize: typography.size.sm,
+  },
+  paymentAmountValue: {
+    color: colors.brand.orange,
+    fontFamily: typography.fontFamily.bold,
+    fontSize: typography.size.xl,
+    marginTop: spacing.xs,
+  },
+  mixedCard: {
+    backgroundColor: colors.bg.secondary,
+    borderRadius: borderRadius.md,
+    padding: spacing.md,
+    marginTop: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.brand.orange + '66',
+    gap: spacing.sm,
+  },
+  mixedTitle: {
+    color: colors.text.primary,
+    fontFamily: typography.fontFamily.semibold,
+    fontSize: typography.size.base,
+  },
+  mixedInput: {
+    backgroundColor: colors.bg.elevated,
+    borderRadius: borderRadius.md,
+    borderWidth: 1,
+    borderColor: colors.bg.border,
+    color: colors.text.primary,
+    fontFamily: typography.fontFamily.regular,
+    fontSize: typography.size.base,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  mixedValidation: {
+    fontFamily: typography.fontFamily.regular,
+    fontSize: typography.size.sm,
+  },
+  mixedValid: {
+    color: colors.semantic.success,
+  },
+  mixedInvalid: {
+    color: colors.semantic.warning,
   },
   warnBanner: {
     flexDirection: 'row',

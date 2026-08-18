@@ -3,6 +3,7 @@
 // ============================================================
 
 import type { MlListingStatus } from '@repmax/repmax-schema/mlListing';
+import type { DetallesPago } from '@zmtech/tasas';
 
 export type VehicleType = 'CAR' | 'MOTO' | 'TRUCK' | 'SUV';
 export type PartCondition = 'NEW' | 'USED';
@@ -117,7 +118,7 @@ export interface Sale {
   totalBs?: number;
   usdBsRate?: number;
   paymentMethod: PaymentMethod;
-  paymentDetails?: Partial<Record<PaymentMethod, number>>;
+  paymentDetails?: DetallesPago;
   status: SaleStatus;
   notes?: string;
   createdAt: string;

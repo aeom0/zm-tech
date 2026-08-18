@@ -6,6 +6,12 @@
 
 import { useState } from "react";
 import { AlertTriangle } from "lucide-react";
+import {
+  convertirUsdABs,
+  validarDetallesPagoMixto,
+  type DetallesPago,
+  type MonedaPago,
+} from "@zmtech/tasas";
 import { createClient } from "@/lib/supabase/client";
 import { createSale } from "@/lib/repmax-queries";
 import { useToast } from "@/hooks/use-toast";
@@ -49,11 +55,42 @@ export function CheckoutSheet({
   const [metodoPago, setMetodoPago] = useState<PaymentMethodWeb>("CASH_USD");
   const [notas, setNotas] = useState("");
   const [confirmando, setConfirmando] = useState(false);
+  const [montoMixtoUsd, setMontoMixtoUsd] = useState("");
+  const [montoMixtoBs, setMontoMixtoBs] = useState("");
 
   const totalUsd = items.reduce((acc, it) => acc + it.subtotalUsd, 0);
+  const totalBs = convertirUsdABs(totalUsd, usdBsRate);
+  const esMetodoBs = ["CASH_BS", "PAGO_MOVIL", "TRANSFERENCIA"].includes(metodoPago);
+  const detallesMixtos: DetallesPago = {
+    CASH_USD: { monto: Number(montoMixtoUsd) || 0, moneda: "USD" },
+    CASH_BS: { monto: Number(montoMixtoBs) || 0, moneda: "BS" },
+  };
+  const validacionMixta =
+    metodoPago === "MIXED"
+      ? validarDetallesPagoMixto(detallesMixtos, totalUsd, usdBsRate)
+      : null;
+
+  function crearDetallesPago(): DetallesPago {
+    if (metodoPago === "MIXED") return detallesMixtos;
+    const moneda: MonedaPago = esMetodoBs ? "BS" : "USD";
+    return {
+      [metodoPago]: {
+        monto: moneda === "BS" ? totalBs : totalUsd,
+        moneda,
+      },
+    };
+  }
 
   async function confirmarVenta() {
     if (items.length === 0) return;
+    if (validacionMixta && !validacionMixta.valido) {
+      toast({
+        title: "Montos mixtos incompletos",
+        description: validacionMixta.mensaje,
+        variant: "destructive",
+      });
+      return;
+    }
     setConfirmando(true);
     try {
       const client = createClient();
@@ -63,7 +100,7 @@ export function CheckoutSheet({
         customerId: null,
         cashierId,
         paymentMethod: metodoPago,
-        paymentDetails: {},
+        paymentDetails: crearDetallesPago(),
         usdBsRate,
         notes: notas.trim() || null,
         items: items.map((item) => ({
@@ -86,6 +123,8 @@ export function CheckoutSheet({
       });
       setNotas("");
       setMetodoPago("CASH_USD");
+      setMontoMixtoUsd("");
+      setMontoMixtoBs("");
       onSuccess();
       onOpenChange(false);
     } catch (e) {
@@ -107,6 +146,9 @@ export function CheckoutSheet({
           <p className="text-sm text-[#9E9E9E]">
             {items.length} producto{items.length === 1 ? "" : "s"} — total $
             {totalUsd.toFixed(2)}
+          </p>
+          <p className="text-sm font-medium text-[#FF8533]">
+            Equivalente: Bs {totalBs.toFixed(2)} · tasa BCV Bs {usdBsRate.toFixed(2)}
           </p>
         </SheetHeader>
 
@@ -144,6 +186,61 @@ export function CheckoutSheet({
               ))}
             </div>
           </div>
+
+          <div className="rounded-lg border border-[#2A2A2A] bg-[#242424] p-3 text-sm">
+            <div className="flex items-center justify-between text-[#9E9E9E]">
+              <span>Total USD</span>
+              <span className="font-semibold text-[#F5F5F5]">${totalUsd.toFixed(2)}</span>
+            </div>
+            <div className="mt-1 flex items-center justify-between text-[#9E9E9E]">
+              <span>Total a cobrar en Bs</span>
+              <span className="font-semibold text-[#FF8533]">Bs {totalBs.toFixed(2)}</span>
+            </div>
+          </div>
+
+          {metodoPago === "MIXED" ? (
+            <div className="space-y-3 rounded-lg border border-[#FF6B00]/40 bg-[#FF6B00]/5 p-3">
+              <p className="text-sm font-medium text-[#F5F5F5]">Desglose del pago mixto</p>
+              <label className="block text-xs text-[#9E9E9E]" htmlFor="mixto-usd">
+                Monto en USD
+                <input
+                  id="mixto-usd"
+                  inputMode="decimal"
+                  min="0"
+                  step="0.01"
+                  type="number"
+                  value={montoMixtoUsd}
+                  onChange={(e) => setMontoMixtoUsd(e.target.value)}
+                  className="mt-1 w-full rounded-md border border-[#2A2A2A] bg-[#242424] px-3 py-2 text-sm text-[#F5F5F5] focus:border-[#FF6B00] focus:outline-none"
+                />
+              </label>
+              <label className="block text-xs text-[#9E9E9E]" htmlFor="mixto-bs">
+                Monto en Bs
+                <input
+                  id="mixto-bs"
+                  inputMode="decimal"
+                  min="0"
+                  step="0.01"
+                  type="number"
+                  value={montoMixtoBs}
+                  onChange={(e) => setMontoMixtoBs(e.target.value)}
+                  className="mt-1 w-full rounded-md border border-[#2A2A2A] bg-[#242424] px-3 py-2 text-sm text-[#F5F5F5] focus:border-[#FF6B00] focus:outline-none"
+                />
+              </label>
+              <p className={validacionMixta?.valido ? "text-xs text-[#4CAF50]" : "text-xs text-[#FFC107]"}>
+                {validacionMixta?.valido
+                  ? "El desglose coincide con el total."
+                  : validacionMixta?.mensaje}
+              </p>
+            </div>
+          ) : (
+            <div className="rounded-lg border border-[#2A2A2A] bg-[#242424] p-3 text-sm text-[#9E9E9E]">
+              Monto a cobrar:{" "}
+              <span className="font-semibold text-[#F5F5F5]">
+                {esMetodoBs ? `Bs ${totalBs.toFixed(2)}` : `$${totalUsd.toFixed(2)}`}
+              </span>
+            </div>
+          )}
 
           <div className="space-y-2">
             <label htmlFor="notas" className="text-sm font-medium text-[#F5F5F5]">
