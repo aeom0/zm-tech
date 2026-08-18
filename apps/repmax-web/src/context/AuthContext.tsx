@@ -22,7 +22,7 @@ export interface AuthContextValue {
   token: string | null;
   user: { id: string; email: string } | null;
   store: StoreWeb | null;
-  storeUser: { role: string; fullName: string | null } | null;
+  storeUser: { id: string; role: string; fullName: string | null } | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -32,7 +32,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 type Membership = {
   store: StoreWeb;
-  storeUser: { role: string; fullName: string | null };
+  storeUser: { id: string; role: string; fullName: string | null };
 };
 
 async function loadMembership(
@@ -43,7 +43,7 @@ async function loadMembership(
     .from("repmax_store_users")
     .select(
       `
-      role, full_name,
+      id, role, full_name,
       store:repmax_stores ( id, name, slug, city, plan, usd_bs_rate, is_active )
     `,
     )
@@ -71,6 +71,7 @@ async function loadMembership(
       usdBsRate: Number(storeRaw.usd_bs_rate) || 36.5,
     },
     storeUser: {
+      id: String(data.id),
       role: String(data.role),
       fullName: data.full_name ?? null,
     },
@@ -81,6 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [store, setStore] = useState<StoreWeb | null>(null);
   const [storeUser, setStoreUser] = useState<{
+    id: string;
     role: string;
     fullName: string | null;
   } | null>(null);
@@ -156,12 +158,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setStoreUser(null);
   }, []);
 
-  const user = session?.user
-    ? { id: session.user.id, email: session.user.email ?? "" }
-    : null;
-
-  const value = useMemo<AuthContextValue>(
-    () => ({
+  const value = useMemo<AuthContextValue>(() => {
+    const user = session?.user
+      ? { id: session.user.id, email: session.user.email ?? "" }
+      : null;
+    return {
       token: session?.access_token ?? null,
       user,
       store,
@@ -169,9 +170,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isLoading,
       login,
       logout,
-    }),
-    [session, user, store, storeUser, isLoading, login, logout],
-  );
+    };
+  }, [session, store, storeUser, isLoading, login, logout]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

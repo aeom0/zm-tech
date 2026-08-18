@@ -12,13 +12,25 @@ Mejorar claridad, conversion y sensacion de calidad del flujo onboarding de `app
 - Preparar variantes dark/light sin rehacer layout.
 
 ## Flujo Propuesto (V2)
-1. Splash de marca (breve).
+0. Auth choice: crear cuenta o iniciar sesion (antes de personalizar nada).
 2. Seleccion de pais.
 3. Seleccion de rubro vehicular (carros, motos, ambos).
 4. Seleccion de tipo de negocio.
 5. Seleccion de estilo visual (tema).
-6. Preview de tablero personalizado.
-7. Decision final (crear cuenta o demo).
+6. Preview de tablero personalizado -> CTA completa el onboarding directo.
+
+El splash de marca nativo (`app.json` / `splash.png`) cubre el cold start de la app (wordmark RepMAX).
+
+El paso Splash del prototipo (`design/prototype/index.html`) **se reserva** para un splash de **sesión del tenant**: cuando la tienda suba su logo, esa marca se muestra al iniciar sesión (post-login), no en el onboarding de primera vez. No hay artboard `ONB-01-Splash` en el `.pen` de onboarding; el flujo cableado arranca en `ONB-00-Auth`.
+
+> Cambio respecto a la V1 de este documento: la decision "crear cuenta vs.
+> demo/login" ya no ocurre al final del wizard (pantalla 7). Ocurre al
+> principio, en `ONB-00-Auth`. Quien elige "Iniciar sesion" salta directo a
+> `LoginScreen` sin pasar por personalizacion. Quien elige "Crear cuenta"
+> recorre el wizard (pais→preview) y el CTA final de Preview llama
+> `completeOnboarding()` (sin pantalla intermedia). El link "Explorar con
+> demo" (login demo) vive ahora en `ONB-00-Auth`, no en una pantalla de
+> decision aparte.
 
 ## Mejoras Globales de Diseno
 
@@ -73,10 +85,13 @@ Mejorar claridad, conversion y sensacion de calidad del flujo onboarding de `app
 
 ## Estructura de Pantallas para Pencil
 
-## Pantalla 1 - Splash
-- Logo centrado.
-- Tagline corto.
-- Duracion 1.0s-1.2s (mas corta para reducir espera).
+## Pantalla 0 - Auth choice
+- Logo + titulo de marca ("Gestiona tu tienda de repuestos").
+- Primario: "Crear cuenta" -> entra al wizard (pantallas 2-6).
+- Secundario: "Iniciar sesion" -> `LoginScreen` directo, sin wizard.
+- Link de texto: "Explorar con demo" (login demo, mismo comportamiento que
+  tenia la vieja pantalla de Decision).
+- Nota legal breve al pie.
 
 ## Pantalla 2 - Pais
 - Card destacada para Venezuela.
@@ -103,13 +118,15 @@ Mejorar claridad, conversion y sensacion de calidad del flujo onboarding de `app
 ## Pantalla 6 - Preview
 - Mock de dashboard con color del tema.
 - KPI placeholders y tab bar simulada.
-- CTA fijo: "Se ve brutal, continuar".
+- CTA fijo: "Se ve brutal, continuar" -> completa el onboarding directo
+  (ya no navega a una pantalla de decision).
 
-## Pantalla 7 - Decision
-- Titulo orientado a accion.
-- Primario: "Crear mi cuenta gratis".
-- Secundario: "Probar demo primero".
-- Nota de confianza: "Sin enredos, empiezas en minutos."
+> Nota: la pantalla "ONB-07-Decision" del `.pen` ya no forma parte del
+> flujo cableado en `apps/repmax-mobile` (el screen React Native y su ruta
+> fueron eliminados). El frame se mantiene en el `.pen` como referencia
+> historica/component-library; sus dos responsabilidades (crear cuenta,
+> demo) quedaron redistribuidas entre `ONB-00-Auth` (demo, iniciar sesion)
+> y el CTA de Preview (crear cuenta).
 
 ## Componentes Base a Diseñar en Pencil
 - Barra de progreso (5 pasos).
@@ -133,17 +150,21 @@ Mejorar claridad, conversion y sensacion de calidad del flujo onboarding de `app
 - [x] Dark y light mantienen legibilidad.
 
 ## Convencion de Artboards en Pencil
-- `ONB-01-Splash`
+- `ONB-00-Auth` (login/crear cuenta — pantalla inicial, previa al wizard)
 - `ONB-02-Pais`
 - `ONB-03-Vehiculos`
 - `ONB-04-Negocio`
 - `ONB-05-Tema`
 - `ONB-06-Preview`
-- `ONB-07-Decision`
+- `ONB-07-Decision` (fuera del flujo cableado — ver nota en Pantalla 6)
+
+El splash vive en dos capas:
+- **Cold start nativo** — `app.json` / `splash.png` (wordmark RepMAX).
+- **Splash de sesión (futuro)** — cuando el tenant suba el logo de su tienda, se muestra al iniciar sesión. El paso Splash del prototipo HTML se conserva como placeholder de esa pantalla; no se recablea al onboarding de primera vez.
 
 ## Entregables
 1. ~~Wireframe low-fi por pantalla.~~ → subsumido en high-fi Pencil
-2. [x] High-fi dark mode — `onboarding.pen` (ONB-01…07)
+2. [x] High-fi dark mode — `onboarding.pen` (ONB-00, 02…07)
 3. [x] Variante light mode — `ONB-*-Light`
 4. [x] Prototipo navegable — `design/prototype/index.html` (+ FlowMap en el `.pen`)
 

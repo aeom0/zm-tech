@@ -61,6 +61,14 @@ export type PaymentMethodWeb =
   | "TRANSFERENCIA"
   | "MIXED";
 
+export interface VentaItemWeb {
+  title: string;
+  quantity: number;
+  vehicle: string | null;
+  partNumber: string | null;
+  photo: string | null;
+}
+
 export interface VentaWeb {
   id: string;
   invoiceNumber: string;
@@ -70,6 +78,36 @@ export interface VentaWeb {
   status: SaleStatusWeb;
   createdAt: string;
   customer: { fullName: string } | null;
+  items: VentaItemWeb[];
+}
+
+export interface CartItemWeb {
+  product: ProductoWeb;
+  quantity: number;
+  subtotalUsd: number;
+}
+
+export interface CashSessionWeb {
+  id: string;
+  status: string;
+  openedAt: string;
+}
+
+export interface SaleCreatePayload {
+  storeId: string;
+  sessionId: string | null;
+  customerId: string | null;
+  cashierId: string;
+  paymentMethod: PaymentMethodWeb;
+  paymentDetails: Record<string, unknown>;
+  usdBsRate: number;
+  notes: string | null;
+  items: {
+    productId: string;
+    quantity: number;
+    unitPriceUsd: number;
+    productSnapshot: Record<string, unknown>;
+  }[];
 }
 
 export interface ClienteWeb {

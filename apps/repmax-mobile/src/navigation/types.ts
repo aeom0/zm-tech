@@ -9,7 +9,6 @@ export type OnboardingStackParamList = {
   OnboardingBusiness: undefined;
   OnboardingTheme: undefined;
   OnboardingPreview: undefined;
-  OnboardingDecision: undefined;
 };
 
 export type AuthStackParamList = {

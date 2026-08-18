@@ -172,15 +172,15 @@
     <button type="button" id="restart">Reiniciar</button>
   </div>
 
-  <p class="hint" id="hint">Splash avanza solo. En el resto, toca la zona activa o usa los controles.</p>
+  <p class="hint" id="hint">El Splash del prototipo es placeholder del futuro splash de sesión (logo del tenant al iniciar sesión). En el resto, toca la zona activa o usa los controles.</p>
 
   <script>
     const SCREENS = [
       {
         id: "onb01",
         file: "onb01.png",
-        label: "Splash",
-        hint: "Auto-avanza en ~1.1s (fade de marca).",
+        label: "Splash (sesión / logo tenant)",
+        hint: "Reservado: cuando el tenant suba su logo, se muestra al iniciar sesión. No forma parte del onboarding de primera vez.",
         autoMs: 1100,
         hits: [{ className: "hit--full", go: 1, label: "Saltar splash" }],
       },

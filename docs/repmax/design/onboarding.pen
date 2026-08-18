@@ -1,92 +1,6 @@
 {
-  "version": "2.15",
+  "version": "2.17",
   "children": [
-    {
-      "type": "frame",
-      "id": "onb01",
-      "x": 0,
-      "y": 0,
-      "name": "ONB-01-Splash",
-      "context": "Splash. Auto-navigate → ONB-02 after ~1.0–1.2s. Fade logo 600ms.",
-      "theme": {
-        "mode": "dark"
-      },
-      "clip": true,
-      "width": 390,
-      "height": 844,
-      "fill": {
-        "type": "gradient",
-        "gradientType": "radial",
-        "enabled": true,
-        "rotation": 0,
-        "size": {
-          "width": 1.4,
-          "height": 1.1
-        },
-        "colors": [
-          {
-            "color": "$accentSoft",
-            "position": 0
-          },
-          {
-            "color": "$accentMuted",
-            "position": 0.35
-          },
-          {
-            "color": "$bg",
-            "position": 0.75
-          },
-          {
-            "color": "$gradientEdge",
-            "position": 1
-          }
-        ],
-        "center": {
-          "y": 0.42
-        }
-      },
-      "layout": "vertical",
-      "gap": 14,
-      "padding": [
-        0,
-        20
-      ],
-      "justifyContent": "center",
-      "alignItems": "center",
-      "children": [
-        {
-          "type": "text",
-          "id": "Hvv2b",
-          "name": "Logo",
-          "fill": "$textPrimary",
-          "content": "RepMAX",
-          "fontFamily": "$fontBody",
-          "fontSize": 44,
-          "fontWeight": "700",
-          "letterSpacing": -1
-        },
-        {
-          "type": "text",
-          "id": "xbly5",
-          "name": "Tagline",
-          "fill": "$accent",
-          "content": "Business Suite",
-          "fontFamily": "$fontBody",
-          "fontSize": 17,
-          "fontWeight": "600"
-        },
-        {
-          "type": "text",
-          "id": "gbMaC",
-          "name": "SplashHint",
-          "fill": "$textSecondary",
-          "content": "Autopartes · Inventario · POS",
-          "fontFamily": "$fontBody",
-          "fontSize": "$textNote",
-          "fontWeight": "normal"
-        }
-      ]
-    },
     {
       "type": "frame",
       "id": "onb02",
@@ -1872,7 +1786,7 @@
       "x": 2580,
       "y": 0,
       "name": "ONB-07-Decision",
-      "context": "Decisión. Primary → Auth signup. Secondary → demo login + completeOnboarding.",
+      "context": "Fuera del flujo cableado. Se conserva como referencia historica; las CTAs quedaron en ONB-00-Auth y en el CTA de Preview.",
       "theme": {
         "mode": "dark"
       },
@@ -2135,7 +2049,7 @@
           "id": "n50be",
           "name": "CoverVersion",
           "fill": "$textSecondary",
-          "content": "Version: 0.4 · 2026-08-01",
+          "content": "Version: 0.5 · 2026-08-18",
           "fontFamily": "$fontBody",
           "fontSize": 13,
           "fontWeight": "normal"
@@ -2157,7 +2071,7 @@
           "id": "P1AE1",
           "name": "CoverOut",
           "fill": "$textSecondary",
-          "content": "Out: implementación RN (siguiente)",
+          "content": "Out: splash JS (nativo en app.json); ONB-07 solo referencia histórica",
           "fontFamily": "$fontBody",
           "fontSize": 13,
           "fontWeight": "normal"
@@ -2725,92 +2639,6 @@
           "ref": "xLKr9",
           "name": "ButtonSecondary",
           "width": "fill_container"
-        }
-      ]
-    },
-    {
-      "type": "frame",
-      "id": "jKl86",
-      "x": 0,
-      "y": 1059,
-      "name": "ONB-01-Splash-Light",
-      "context": "Variante light del onboarding. Mismos componentes; tokens mode=light.",
-      "theme": {
-        "mode": "light"
-      },
-      "clip": true,
-      "width": 390,
-      "height": 844,
-      "fill": {
-        "type": "gradient",
-        "gradientType": "radial",
-        "enabled": true,
-        "rotation": 0,
-        "size": {
-          "width": 1.4,
-          "height": 1.1
-        },
-        "colors": [
-          {
-            "color": "$accentSoft",
-            "position": 0
-          },
-          {
-            "color": "$accentMuted",
-            "position": 0.35
-          },
-          {
-            "color": "$bg",
-            "position": 0.75
-          },
-          {
-            "color": "$gradientEdge",
-            "position": 1
-          }
-        ],
-        "center": {
-          "y": 0.42
-        }
-      },
-      "layout": "vertical",
-      "gap": 14,
-      "padding": [
-        0,
-        20
-      ],
-      "justifyContent": "center",
-      "alignItems": "center",
-      "children": [
-        {
-          "type": "text",
-          "id": "o7MJA",
-          "name": "Logo",
-          "fill": "$textPrimary",
-          "content": "RepMAX",
-          "fontFamily": "$fontBody",
-          "fontSize": 44,
-          "fontWeight": "700",
-          "letterSpacing": -1
-        },
-        {
-          "type": "text",
-          "id": "xhTNi",
-          "name": "Tagline",
-          "fill": "$accent",
-          "content": "Business Suite",
-          "fontFamily": "$fontBody",
-          "fontSize": 17,
-          "fontWeight": "600"
-        },
-        {
-          "type": "text",
-          "id": "PurhT",
-          "name": "SplashHint",
-          "fill": "$textSecondary",
-          "content": "Autopartes · Inventario · POS",
-          "fontFamily": "$fontBody",
-          "fontSize": "$textNote",
-          "fontWeight": "normal"
         }
       ]
     },
@@ -4570,7 +4398,7 @@
       "x": 2580,
       "y": 1059,
       "name": "ONB-07-Decision-Light",
-      "context": "Variante light del onboarding. Mismos componentes; tokens mode=light.",
+      "context": "Light de ONB-07-Decision. Fuera del flujo cableado.",
       "theme": {
         "mode": "light"
       },
@@ -4842,7 +4670,7 @@
           "fill": "$textSecondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "Happy path dark. Transiciones 150–200ms ease-out. Auto-advance solo en Splash.",
+          "content": "Happy path dark. Transiciones 150–200ms ease-out. Empieza en Auth. Splash nativo (app.json), no hay pantalla JS.",
           "fontFamily": "$fontBody",
           "fontSize": 13,
           "fontWeight": "normal"
@@ -4857,7 +4685,7 @@
             {
               "type": "frame",
               "id": "o9hQaR",
-              "name": "Flow_01",
+              "name": "Flow_00",
               "width": "fill_container",
               "fill": "$bg",
               "cornerRadius": "$radiusLg",
@@ -4872,7 +4700,7 @@
                   "id": "x8dGML",
                   "name": "StepNum",
                   "fill": "$accent",
-                  "content": "ONB-01",
+                  "content": "ONB-00",
                   "fontFamily": "$fontBody",
                   "fontSize": 11,
                   "fontWeight": "600"
@@ -4882,7 +4710,7 @@
                   "id": "EwA17",
                   "name": "StepName",
                   "fill": "$textPrimary",
-                  "content": "Splash",
+                  "content": "Auth",
                   "fontFamily": "$fontBody",
                   "fontSize": 15,
                   "fontWeight": "700"
@@ -4894,7 +4722,7 @@
                   "fill": "$textSecondary",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Tap: Auto 1.0–1.2s",
+                  "content": "Tap: Cuenta | Login | Demo",
                   "fontFamily": "$fontBody",
                   "fontSize": 11,
                   "fontWeight": "normal"
@@ -4904,7 +4732,7 @@
                   "id": "sQQT3",
                   "name": "GoesTo",
                   "fill": "$accentHover",
-                  "content": "→ País",
+                  "content": "→ País | Login",
                   "fontFamily": "$fontBody",
                   "fontSize": 12,
                   "fontWeight": "600"
@@ -4916,7 +4744,7 @@
                   "fill": "$textDisabled",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "fade-in logo",
+                  "content": "sin auto-advance",
                   "fontFamily": "$fontBody",
                   "fontSize": 10,
                   "fontWeight": "normal"
@@ -5249,7 +5077,7 @@
                   "id": "L8fTWI",
                   "name": "GoesTo",
                   "fill": "$accentHover",
-                  "content": "→ Decisión",
+                  "content": "→ Auth / Register",
                   "fontFamily": "$fontBody",
                   "fontSize": 12,
                   "fontWeight": "600"
@@ -5405,7 +5233,7 @@
               "fill": "$textSecondary",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "· Splash: logo 600ms fade · tagline 400ms · hold ~1.0s · replace País",
+              "content": "· Splash nativo: wordmark en app.json. No hay pantalla JS de splash.",
               "fontFamily": "$fontBody",
               "fontSize": 12,
               "fontWeight": "normal"
@@ -5420,6 +5248,376 @@
               "content": "· Reduced motion: cortes instantáneos (sin translate)",
               "fontFamily": "$fontBody",
               "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "rt4zY",
+      "x": 0,
+      "y": 0,
+      "name": "ONB-00-Auth",
+      "context": "Pantalla inicial del flujo V2. Crear cuenta entra al wizard. Iniciar sesion va a Login. Demo hace login demo. Cableada como OnboardingAuthChoice.tsx.",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "linear",
+        "enabled": true,
+        "rotation": 180,
+        "size": {
+          "height": 1
+        },
+        "colors": [
+          {
+            "color": "$accentMuted",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 0.22
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ]
+      },
+      "layout": "vertical",
+      "gap": 24,
+      "padding": [
+        16,
+        20,
+        32,
+        20
+      ],
+      "justifyContent": "space_between",
+      "children": [
+        {
+          "type": "frame",
+          "id": "d6bKoa",
+          "name": "StatusBar",
+          "width": "fill_container",
+          "height": 44,
+          "padding": [
+            0,
+            4
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "MdTDf",
+              "name": "Time",
+              "fill": "$textPrimary",
+              "content": "9:41",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "ZVUsZ",
+          "name": "HeroBlock",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            48,
+            0,
+            0,
+            0
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "gnuE9",
+              "name": "AuthLogo",
+              "fill": "$textPrimary",
+              "content": "RepMAX",
+              "textAlign": "center",
+              "fontFamily": "$fontBody",
+              "fontSize": 44,
+              "fontWeight": "700",
+              "letterSpacing": -1
+            },
+            {
+              "type": "text",
+              "id": "k0i1w",
+              "name": "AuthTitle",
+              "fill": "$textPrimary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Gestiona tu tienda\nde repuestos",
+              "textAlign": "center",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textTitle",
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "edqac",
+              "name": "AuthSub",
+              "fill": "$textSecondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Inventario, ventas y catálogo en un solo lugar.",
+              "textAlign": "center",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textSubtitle",
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "W5n2ej",
+          "name": "Actions",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "alignItems": "center",
+          "children": [
+            {
+              "id": "OlnAX",
+              "type": "ref",
+              "ref": "yyFYE",
+              "name": "ButtonPrimary",
+              "width": "fill_container",
+              "descendants": {
+                "OeWlc": {
+                  "content": "Crear cuenta"
+                }
+              }
+            },
+            {
+              "id": "dNYgy",
+              "type": "ref",
+              "ref": "xLKr9",
+              "name": "ButtonSecondary",
+              "width": "fill_container",
+              "descendants": {
+                "D45Ob": {
+                  "content": "Iniciar sesión"
+                }
+              }
+            },
+            {
+              "type": "text",
+              "id": "Cx9zl",
+              "name": "DemoLink",
+              "fill": "#000000",
+              "content": "Explorar con demo",
+              "textAlign": "center",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textNote",
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "OGBhZ",
+              "name": "LegalNote",
+              "fill": "$textDisabled",
+              "content": "Al continuar aceptas nuestros Términos y Política de Privacidad.",
+              "textAlign": "center",
+              "fontFamily": "$fontBody",
+              "fontSize": 11,
+              "fontWeight": "normal"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "I06Baz",
+      "x": 0,
+      "y": 1059,
+      "name": "ONB-00-Auth-Light",
+      "context": "Variante light de ONB-00-Auth.",
+      "theme": {
+        "mode": "light"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "linear",
+        "enabled": true,
+        "rotation": 180,
+        "size": {
+          "height": 1
+        },
+        "colors": [
+          {
+            "color": "$accentMuted",
+            "position": 0
+          },
+          {
+            "color": "$bg",
+            "position": 0.22
+          },
+          {
+            "color": "$bg",
+            "position": 1
+          }
+        ]
+      },
+      "layout": "vertical",
+      "gap": 24,
+      "padding": [
+        16,
+        20,
+        32,
+        20
+      ],
+      "justifyContent": "space_between",
+      "children": [
+        {
+          "type": "frame",
+          "id": "gty14",
+          "name": "StatusBar",
+          "width": "fill_container",
+          "height": 44,
+          "padding": [
+            0,
+            4
+          ],
+          "justifyContent": "space_between",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "N23fXP",
+              "name": "Time",
+              "fill": "$textPrimary",
+              "content": "9:41",
+              "fontFamily": "$fontBody",
+              "fontSize": 15,
+              "fontWeight": "600"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "mAcM6",
+          "name": "HeroBlock",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            48,
+            0,
+            0,
+            0
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "text",
+              "id": "Jp5Dx",
+              "name": "AuthLogo",
+              "fill": "$textPrimary",
+              "content": "RepMAX",
+              "textAlign": "center",
+              "fontFamily": "$fontBody",
+              "fontSize": 44,
+              "fontWeight": "700",
+              "letterSpacing": -1
+            },
+            {
+              "type": "text",
+              "id": "nWtFx",
+              "name": "AuthTitle",
+              "fill": "$textPrimary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Gestiona tu tienda\nde repuestos",
+              "textAlign": "center",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textTitle",
+              "fontWeight": "700"
+            },
+            {
+              "type": "text",
+              "id": "D9OdM",
+              "name": "AuthSub",
+              "fill": "$textSecondary",
+              "textGrowth": "fixed-width",
+              "width": "fill_container",
+              "content": "Inventario, ventas y catálogo en un solo lugar.",
+              "textAlign": "center",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textSubtitle",
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "G8yCDK",
+          "name": "Actions",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 12,
+          "alignItems": "center",
+          "children": [
+            {
+              "id": "vQtrd",
+              "type": "ref",
+              "ref": "yyFYE",
+              "name": "ButtonPrimary",
+              "width": "fill_container",
+              "descendants": {
+                "OeWlc": {
+                  "content": "Crear cuenta"
+                }
+              }
+            },
+            {
+              "id": "o6b6U",
+              "type": "ref",
+              "ref": "xLKr9",
+              "name": "ButtonSecondary",
+              "width": "fill_container",
+              "descendants": {
+                "D45Ob": {
+                  "content": "Iniciar sesión"
+                }
+              }
+            },
+            {
+              "type": "text",
+              "id": "R8qmij",
+              "name": "DemoLink",
+              "fill": "#000000",
+              "content": "Explorar con demo",
+              "textAlign": "center",
+              "fontFamily": "$fontBody",
+              "fontSize": "$textNote",
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "ZTU48",
+              "name": "LegalNote",
+              "fill": "$textDisabled",
+              "content": "Al continuar aceptas nuestros Términos y Política de Privacidad.",
+              "textAlign": "center",
+              "fontFamily": "$fontBody",
+              "fontSize": 11,
               "fontWeight": "normal"
             }
           ]

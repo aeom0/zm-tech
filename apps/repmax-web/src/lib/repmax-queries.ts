@@ -4,9 +4,11 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type {
+  CashSessionWeb,
   ClienteWeb,
   DashboardData,
   ProductoWeb,
+  SaleCreatePayload,
   VentaWeb,
 } from "@/types/dashboard";
 import type { ProductPublic, StorePublic } from "@/types/storefront";
@@ -349,6 +351,36 @@ export async function patchProduct(
   return mapProducto(data as Record<string, unknown>, usdBsRate);
 }
 
+/** Match exacto de barcode o número de parte (scanner HID). No usa el ILIKE del grid. */
+export async function fetchProductByCode(
+  client: SupabaseClient,
+  codigo: string,
+  usdBsRate: number,
+): Promise<ProductoWeb | null> {
+  const code = codigo.trim();
+  if (!code) return null;
+
+  const { data: byBarcode, error: errBarcode } = await client
+    .from("repmax_products")
+    .select(PRODUCT_DASHBOARD_SELECT)
+    .eq("barcode", code)
+    .maybeSingle();
+  if (errBarcode) throw new Error(errBarcode.message);
+  if (byBarcode) {
+    return mapProducto(byBarcode as Record<string, unknown>, usdBsRate);
+  }
+
+  const { data: byPart, error: errPart } = await client
+    .from("repmax_products")
+    .select(PRODUCT_DASHBOARD_SELECT)
+    .eq("part_number", code)
+    .limit(1)
+    .maybeSingle();
+  if (errPart) throw new Error(errPart.message);
+  if (!byPart) return null;
+  return mapProducto(byPart as Record<string, unknown>, usdBsRate);
+}
+
 export async function fetchSales(
   client: SupabaseClient,
   params: URLSearchParams,
@@ -361,7 +393,7 @@ export async function fetchSales(
   let query = client
     .from("repmax_sales")
     .select(
-      "id, invoice_number, total_usd, total_bs, payment_method, status, created_at, customer:repmax_customers(full_name)",
+      "id, invoice_number, total_usd, total_bs, payment_method, status, created_at, customer:repmax_customers(full_name), repmax_sale_items(quantity, product_snapshot)",
       { count: "exact" },
     )
     .order("created_at", { ascending: false })
@@ -377,6 +409,24 @@ export async function fetchSales(
 
   const sales: VentaWeb[] = (data ?? []).map((row) => {
     const cust = row.customer as { full_name?: string } | null;
+    const itemsRaw = (row.repmax_sale_items ?? []) as {
+      quantity: number;
+      product_snapshot: Record<string, unknown> | null;
+    }[];
+    const items = itemsRaw.map((it) => {
+      const brand = it.product_snapshot?.brand;
+      const model = it.product_snapshot?.model;
+      const vehicle = [brand, model].filter(Boolean).join(" ").trim();
+      const partNumber = it.product_snapshot?.part_number;
+      const photo = it.product_snapshot?.photo;
+      return {
+        title: String(it.product_snapshot?.title ?? "Producto"),
+        quantity: Number(it.quantity) || 1,
+        vehicle: vehicle || null,
+        partNumber: partNumber ? String(partNumber) : null,
+        photo: photo ? String(photo) : null,
+      };
+    });
     return {
       id: String(row.id),
       invoiceNumber: String(row.invoice_number ?? ""),
@@ -386,6 +436,7 @@ export async function fetchSales(
       status: row.status as VentaWeb["status"],
       createdAt: String(row.created_at),
       customer: cust?.full_name ? { fullName: cust.full_name } : null,
+      items,
     };
   });
 
@@ -429,6 +480,54 @@ export async function fetchCustomers(
   }));
 
   return { customers, total: count ?? 0, page, limit };
+}
+
+export async function fetchActiveCashSession(
+  client: SupabaseClient,
+  storeId: string,
+): Promise<CashSessionWeb | null> {
+  const { data, error } = await client
+    .from("repmax_cash_sessions")
+    .select("id, status, opened_at")
+    .eq("store_id", storeId)
+    .eq("status", "OPEN")
+    .order("opened_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) throw new Error(error.message);
+  if (!data) return null;
+
+  return {
+    id: String(data.id),
+    status: String(data.status),
+    openedAt: String(data.opened_at),
+  };
+}
+
+export async function createSale(
+  client: SupabaseClient,
+  payload: SaleCreatePayload,
+): Promise<string> {
+  const { data, error } = await client.rpc("repmax_create_sale_with_items", {
+    p_store_id: payload.storeId,
+    p_session_id: payload.sessionId,
+    p_customer_id: payload.customerId,
+    p_cashier_id: payload.cashierId,
+    p_payment_method: payload.paymentMethod,
+    p_payment_details: payload.paymentDetails,
+    p_usd_bs_rate: payload.usdBsRate,
+    p_notes: payload.notes,
+    p_items: payload.items.map((item) => ({
+      product_id: item.productId,
+      quantity: item.quantity,
+      unit_price_usd: item.unitPriceUsd,
+      product_snapshot: item.productSnapshot,
+    })),
+  });
+
+  if (error) throw new Error(error.message);
+  return String(data);
 }
 
 export async function fetchPublicStore(

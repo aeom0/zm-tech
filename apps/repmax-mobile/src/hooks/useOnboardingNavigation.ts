@@ -6,6 +6,7 @@
 import { useCallback } from 'react';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { OnboardingStackParamList } from '../navigation/types';
+import { useOnboardingCancel } from '../navigation/onboardingCancelContext';
 
 // Orden lineal de las pantallas del onboarding
 const SCREENS: (keyof OnboardingStackParamList)[] = [
@@ -14,7 +15,6 @@ const SCREENS: (keyof OnboardingStackParamList)[] = [
   'OnboardingBusiness',
   'OnboardingTheme',
   'OnboardingPreview',
-  'OnboardingDecision',
 ];
 
 type OnboardingNavProp = NativeStackNavigationProp<OnboardingStackParamList>;
@@ -34,6 +34,7 @@ export function useOnboardingNavigation(
   currentScreen: keyof OnboardingStackParamList,
   navigation: OnboardingNavProp,
 ): UseOnboardingNavigationResult {
+  const onCancel = useOnboardingCancel();
   const currentIndex = SCREENS.indexOf(currentScreen);
   const totalSteps = SCREENS.length;
   const currentStep = Math.max(0, currentIndex);
@@ -49,8 +50,10 @@ export function useOnboardingNavigation(
   const goBack = useCallback(() => {
     if (navigation.canGoBack()) {
       navigation.goBack();
+    } else {
+      onCancel();
     }
-  }, [navigation]);
+  }, [navigation, onCancel]);
 
   return { goNext, goBack, currentStep, totalSteps };
 }
