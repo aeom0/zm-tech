@@ -41,7 +41,9 @@ export default function PaymentScreen({ navigation }: Props) {
   }, []);
 
   const tasaManual = store?.usdBsRate ?? 36.5;
-  const usarTasaManual = store?.usarTasaManual ?? true;
+  // La migración deja el modo vivo como default; no degradar a manual si el
+  // campo aún no llegó durante la carga de la tienda.
+  const usarTasaManual = store?.usarTasaManual ?? false;
   const { usdBsRateEfectivo, isLoading: isLoadingTasa } = useTasaCambio(
     tasaManual,
     usarTasaManual,

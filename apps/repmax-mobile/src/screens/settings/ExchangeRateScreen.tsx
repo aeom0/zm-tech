@@ -49,7 +49,7 @@ export default function ExchangeRateScreen({ navigation }: Props) {
   const [isTogglingManual, setIsTogglingManual] = useState(false);
 
   const isOwner = storeUser?.role === 'owner';
-  const usarTasaManual = store?.usarTasaManual ?? true;
+  const usarTasaManual = store?.usarTasaManual ?? false;
   const { tasas, isLoading: isLoadingTasas } = useTasaCambio(
     store?.usdBsRate ?? 0,
     usarTasaManual,
