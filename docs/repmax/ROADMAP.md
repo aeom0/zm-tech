@@ -43,6 +43,8 @@ El detalle de cambios ya hechos vive en [CHANGELOG.md](./CHANGELOG.md). Este arc
 - [x] **Historial de ventas enriquecido (web)** — `/dashboard/sales` con título, vehículo, número de parte y foto por línea
 - [x] **Onboarding mobile — pantalla auth inicial** — `ONB-00-Auth` (dark+light) cableada como `OnboardingAuthChoice`; `OnboardingDecision` retirada del código; splash JS de primera vez retirado del `.pen` (cold start nativo; splash de sesión con logo tenant queda como próximo)
   - Canvas: `design/onboarding.pen` · Spec: `design/onboarding-ux-spec.md`
+- [x] **Tasas BCV/USDT en vivo (plan 08)** — paquete compartido `@zmtech/tasas` (`packages/tasas`), tablas `hub_tasas_bcv`/`hub_tasas_usdt` aplicadas en el hub, endpoints `/api/bcv/tasa` + cron Vercel (`guardar-tasa-{bcv,usdt}-diario`) en `repmax-web`, checkout web (`AuthContext`) y mobile (`useTasaCambio`, `ExchangeRateScreen` con switch manual/vivo) resolviendo la tasa efectiva con fallback a `usd_bs_rate` manual. Mobile type-checked, **pendiente de prueba visual en Expo** (sin simulador en el entorno de desarrollo).
+  - Plan: `plans/08-PLAN-tasas-bcv-usdt.md`
 
 ## Próximo
 
@@ -51,6 +53,13 @@ El detalle de cambios ya hechos vive en [CHANGELOG.md](./CHANGELOG.md). Este arc
 - [ ] Extraer / alinear tokens RN (`utils/theme.ts`) con `design-system/tokens.md`
 - [ ] Seed / fixtures de catálogo demo más realistas (Alfa/Beta; el starter de tiendas nuevas ya está)
 - [ ] Hardening RLS (auditoría advisors) y tests de aislamiento multi-tenant
+- [ ] **Probar visualmente en Expo** el switch manual/vivo de `ExchangeRateScreen` y el checkout con tasa BCV en vivo (plan 08 — solo type-checked hasta ahora)
+- [ ] Margen real por producto (`calcularMargenReal`/`calcularPrecioSugerido` de `@zmtech/tasas` ya existen sin caller) — bloqueado en que `repmax_products` no tiene campo de costo
+- [ ] Alertas de spread crítico (>35%) — sin canal definido (¿Telegram? ¿banner en panel?)
+- [ ] `bcv-divisas` (scraping HTML) como fuente BCV adicional/fallback a `bcv.today`
+- [ ] Cotizave como fuente USDT de pago (hoy solo `usdt.com.ve`, gratis)
+- [ ] pg_cron en vez de (o además de) Vercel Cron, si se confirma la extensión habilitada en el hub
+- [ ] Adoptar `@zmtech/tasas` en OdentalPro/GeemaStudio si necesitan tasa BCV/USDT (el paquete ya es genérico, no requiere cambios para eso)
 - ~~MercadoLibre ops impl. 2~~ — **descartado:** ML confirmó DevCenter/API MLV inoperativo (#475453897). Código OAuth congelado en `ML_API_ENABLED = false`.
 - ~~MercadoLibre resto B–D (API)~~ — fuera de alcance hasta anuncio oficial de ML Venezuela
 
@@ -64,6 +73,7 @@ El detalle de cambios ya hechos vive en [CHANGELOG.md](./CHANGELOG.md). Este arc
 
 Planes cerrados: `plans/01` → `plans/03`.  
 En curso: `plans/05` (multicanal sin OAuth — camino principal) · `plans/06` (dominio/vitrina, HTTPS wildcard live) · `plans/07` (hardware POS — fase 1 scanner HID + POS de escritorio implementada; fases 2-4, impresión fiscal/térmica, pendientes de hardware real).  
+Implementado: `plans/08` (tasas BCV/USDT en vivo — web+cron probados end-to-end, mobile pendiente de prueba visual en Expo).  
 Descartado (ops): `plans/04` track API MLV (#475453897). Código preservado tras `ML_API_ENABLED`.  
 Diseño: [`design/`](./design/) · sistema: [`design-system/`](./design-system/).  
 Cambios hechos: [`CHANGELOG.md`](./CHANGELOG.md).

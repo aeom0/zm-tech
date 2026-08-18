@@ -8,7 +8,7 @@ interface CreateSaleParams {
   customerId?: string;
   paymentMethod: PaymentMethod;
   paymentDetails?: Partial<Record<PaymentMethod, number>>;
-  usdBsRate?: number;
+  usdBsRate: number;
   notes?: string;
   items: CartItem[];
 }
@@ -78,7 +78,7 @@ export const saleService = {
       p_cashier_id: params.cashierId,
       p_payment_method: params.paymentMethod,
       p_payment_details: params.paymentDetails ?? {},
-      p_usd_bs_rate: params.usdBsRate ?? 36.50,
+      p_usd_bs_rate: params.usdBsRate,
       p_notes: params.notes ?? null,
       p_items: items,
     });

@@ -39,10 +39,12 @@ UI → Hooks / Server Components → lib/* (Supabase) → tipos (@repmax/repmax-
 
 ## Tablas y helpers clave
 
-- `repmax_stores`, `repmax_store_users`, `repmax_products`, `repmax_customers`, `repmax_sales`, `repmax_sale_items`, `repmax_cash_sessions`, `repmax_ml_listings` (aplicada), `repmax_ml_connections` (SQL lista, no aplicada)
+- `repmax_stores` (incluye `usar_tasa_manual`, aplicada 2026-08-18), `repmax_store_users`, `repmax_products`, `repmax_customers`, `repmax_sales`, `repmax_sale_items`, `repmax_cash_sessions`, `repmax_ml_listings` (aplicada), `repmax_ml_connections` (SQL lista, no aplicada)
+- `hub_tasas_bcv`, `hub_tasas_usdt` (prefijo `hub_`, no `repmax_` — reutilizables por otros productos; aplicadas 2026-08-18, RLS `SELECT` público / escritura solo `service_role`)
 - Helpers SQL: `repmax_user_store_ids()`, `repmax_user_role_in_store(store_id)`
 - RPC: `repmax_create_sale_with_items`, `repmax_seed_starter_catalog` (aplicada, hub `20260817222347`)
 - Políticas de catálogo público: solo rol `anon` (productos activos); autenticados no ven otras tiendas por esa vía
+- Tasas BCV/USDT en vivo: paquete `@zmtech/tasas` (`packages/tasas`) + endpoints `apps/repmax-web/src/app/api/{bcv/tasa,cron/*}` + hook mobile `useTasaCambio`. No mezclar con lógica de negocio de otros productos — el paquete es genérico. Detalle: [plans/08-PLAN-tasas-bcv-usdt.md](./plans/08-PLAN-tasas-bcv-usdt.md)
 
 ## Convenciones
 
@@ -65,6 +67,6 @@ pnpm --filter @repmax/repmax-schema check:types   # si existe script
 
 - Changelog: [CHANGELOG.md](./CHANGELOG.md)
 - Roadmap: [ROADMAP.md](./ROADMAP.md)
-- Planes: [plans/](./plans/) (01–03 cerrados; 04 catálogo ML en curso; 05 multicanal; 06 dominio/vitrina — wildcard HTTPS live; 07 hardware — fase 1 POS de escritorio + scanner HID implementada, fases 2-4 pendientes de hardware real)
+- Planes: [plans/](./plans/) (01–03 cerrados; 04 catálogo ML en curso; 05 multicanal; 06 dominio/vitrina — wildcard HTTPS live; 07 hardware — fase 1 POS de escritorio + scanner HID implementada, fases 2-4 pendientes de hardware real; 08 tasas BCV/USDT — implementado, mobile pendiente de prueba visual en Expo)
 - Diseño onboarding: [design/](./design/) · catálogo ML: [design/catalog-ux-spec.md](./design/catalog-ux-spec.md), fotos [design/ml-fotos.md](./design/ml-fotos.md)
 - Design system: [design-system/](./design-system/)

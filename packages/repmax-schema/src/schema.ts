@@ -114,6 +114,10 @@ export const stores = pgTable("repmax_stores", {
   currencyUsd: varchar("currency_usd", { length: 10 }).default("USD"),
   currencyBs: varchar("currency_bs", { length: 10 }).default("BS"),
   usdBsRate: decimal("usd_bs_rate", { precision: 10, scale: 2 }).default("36.50"),
+  // Si true, el checkout usa usdBsRate fijado a mano en vez de la tasa BCV en
+  // vivo de hub_tasas_bcv/hub_tasas_usdt (ver migracion
+  // 20260818130000_repmax_stores_tasa_manual.sql)
+  usarTasaManual: boolean("usar_tasa_manual").notNull().default(false),
   // Preferencias capturadas en el onboarding mobile (ver migracion
   // 20260808120000_repmax_store_onboarding_fields.sql)
   storeType: text("store_type").$type<StoreType>().notNull().default("repuesteria"),

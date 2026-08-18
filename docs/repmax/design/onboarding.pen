@@ -3,8 +3,94 @@
   "children": [
     {
       "type": "frame",
+      "id": "onb01",
+      "x": 0,
+      "y": 0,
+      "name": "ONB-01-Splash",
+      "context": "Splash. Auto-navigate → ONB-02 after ~1.0–1.2s. Fade logo 600ms.",
+      "theme": {
+        "mode": "dark"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.4,
+          "height": 1.1
+        },
+        "colors": [
+          {
+            "color": "$accentSoft",
+            "position": 0
+          },
+          {
+            "color": "$accentMuted",
+            "position": 0.35
+          },
+          {
+            "color": "$bg",
+            "position": 0.75
+          },
+          {
+            "color": "$gradientEdge",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0.42
+        }
+      },
+      "layout": "vertical",
+      "gap": 14,
+      "padding": [
+        0,
+        20
+      ],
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "Hvv2b",
+          "name": "Logo",
+          "fill": "$textPrimary",
+          "content": "RepMAX",
+          "fontFamily": "$fontBody",
+          "fontSize": 44,
+          "fontWeight": "700",
+          "letterSpacing": -1
+        },
+        {
+          "type": "text",
+          "id": "xbly5",
+          "name": "Tagline",
+          "fill": "$accent",
+          "content": "Business Suite",
+          "fontFamily": "$fontBody",
+          "fontSize": 17,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "gbMaC",
+          "name": "SplashHint",
+          "fill": "$textSecondary",
+          "content": "Autopartes · Inventario · POS",
+          "fontFamily": "$fontBody",
+          "fontSize": "$textNote",
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
       "id": "onb02",
-      "x": 430,
+      "x": 860,
       "y": 0,
       "name": "ONB-02-Pais",
       "context": "País. Tap CountryFeatured/Country_* → ONB-03. Transition 180ms.",
@@ -489,7 +575,7 @@
     {
       "type": "frame",
       "id": "onb03",
-      "x": 860,
+      "x": 1290,
       "y": 0,
       "name": "ONB-03-Vehiculos",
       "context": "Vehículos. Tap SelectionCard → ONB-04 auto-advance.",
@@ -667,7 +753,7 @@
     {
       "type": "frame",
       "id": "onb04",
-      "x": 1290,
+      "x": 1720,
       "y": 0,
       "name": "ONB-04-Negocio",
       "context": "Negocio. Tap SelectionCard → ONB-05 auto-advance.",
@@ -845,7 +931,7 @@
     {
       "type": "frame",
       "id": "onb05",
-      "x": 1720,
+      "x": 2150,
       "y": 0,
       "name": "ONB-05-Tema",
       "context": "Tema. Tap theme card selects; ButtonPrimary → ONB-06. Disabled si no hay selected.",
@@ -1183,7 +1269,7 @@
     {
       "type": "frame",
       "id": "onb06",
-      "x": 2150,
+      "x": 2580,
       "y": 0,
       "name": "ONB-06-Preview",
       "context": "Preview. Mock no interactivo. ButtonPrimary → ONB-07.",
@@ -1783,10 +1869,10 @@
     {
       "type": "frame",
       "id": "onb07",
-      "x": 2580,
+      "x": 3010,
       "y": 0,
       "name": "ONB-07-Decision",
-      "context": "Fuera del flujo cableado. Se conserva como referencia historica; las CTAs quedaron en ONB-00-Auth y en el CTA de Preview.",
+      "context": "Decisión. Primary → Auth signup. Secondary → demo login + completeOnboarding.",
       "theme": {
         "mode": "dark"
       },
@@ -2001,7 +2087,7 @@
     {
       "type": "frame",
       "id": "asrGv",
-      "x": 3050,
+      "x": 3480,
       "y": 0,
       "name": "Cover",
       "context": "File operating manual: owner, status, version, scope, links.",
@@ -2049,7 +2135,7 @@
           "id": "n50be",
           "name": "CoverVersion",
           "fill": "$textSecondary",
-          "content": "Version: 0.5 · 2026-08-18",
+          "content": "Version: 0.4 · 2026-08-01",
           "fontFamily": "$fontBody",
           "fontSize": 13,
           "fontWeight": "normal"
@@ -2071,7 +2157,7 @@
           "id": "P1AE1",
           "name": "CoverOut",
           "fill": "$textSecondary",
-          "content": "Out: splash JS (nativo en app.json); ONB-07 solo referencia histórica",
+          "content": "Out: implementación RN (siguiente)",
           "fontFamily": "$fontBody",
           "fontSize": 13,
           "fontWeight": "normal"
@@ -2093,7 +2179,7 @@
     {
       "type": "frame",
       "id": "ME5OQ",
-      "x": 3050,
+      "x": 3480,
       "y": 280,
       "name": "SourceOfTruth / Components",
       "context": "Biblioteca de componentes reutilizables del onboarding. Instanciar con ref en las pantallas ONB-*.",
@@ -2579,7 +2665,7 @@
     {
       "type": "frame",
       "id": "svwAZ",
-      "x": 3530,
+      "x": 3960,
       "y": 280,
       "name": "SourceOfTruth / Components Light",
       "context": "Misma biblioteca en mode=light para validar contraste AA.",
@@ -2644,8 +2730,94 @@
     },
     {
       "type": "frame",
+      "id": "jKl86",
+      "x": 0,
+      "y": 1059,
+      "name": "ONB-01-Splash-Light",
+      "context": "Variante light del onboarding. Mismos componentes; tokens mode=light.",
+      "theme": {
+        "mode": "light"
+      },
+      "clip": true,
+      "width": 390,
+      "height": 844,
+      "fill": {
+        "type": "gradient",
+        "gradientType": "radial",
+        "enabled": true,
+        "rotation": 0,
+        "size": {
+          "width": 1.4,
+          "height": 1.1
+        },
+        "colors": [
+          {
+            "color": "$accentSoft",
+            "position": 0
+          },
+          {
+            "color": "$accentMuted",
+            "position": 0.35
+          },
+          {
+            "color": "$bg",
+            "position": 0.75
+          },
+          {
+            "color": "$gradientEdge",
+            "position": 1
+          }
+        ],
+        "center": {
+          "y": 0.42
+        }
+      },
+      "layout": "vertical",
+      "gap": 14,
+      "padding": [
+        0,
+        20
+      ],
+      "justifyContent": "center",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "o7MJA",
+          "name": "Logo",
+          "fill": "$textPrimary",
+          "content": "RepMAX",
+          "fontFamily": "$fontBody",
+          "fontSize": 44,
+          "fontWeight": "700",
+          "letterSpacing": -1
+        },
+        {
+          "type": "text",
+          "id": "xhTNi",
+          "name": "Tagline",
+          "fill": "$accent",
+          "content": "Business Suite",
+          "fontFamily": "$fontBody",
+          "fontSize": 17,
+          "fontWeight": "600"
+        },
+        {
+          "type": "text",
+          "id": "PurhT",
+          "name": "SplashHint",
+          "fill": "$textSecondary",
+          "content": "Autopartes · Inventario · POS",
+          "fontFamily": "$fontBody",
+          "fontSize": "$textNote",
+          "fontWeight": "normal"
+        }
+      ]
+    },
+    {
+      "type": "frame",
       "id": "vQqQl",
-      "x": 430,
+      "x": 860,
       "y": 1059,
       "name": "ONB-02-Pais-Light",
       "context": "Variante light del onboarding. Mismos componentes; tokens mode=light.",
@@ -3112,7 +3284,7 @@
     {
       "type": "frame",
       "id": "PzuMP",
-      "x": 860,
+      "x": 1290,
       "y": 1059,
       "name": "ONB-03-Vehiculos-Light",
       "context": "Variante light del onboarding. Mismos componentes; tokens mode=light.",
@@ -3290,7 +3462,7 @@
     {
       "type": "frame",
       "id": "poBkg",
-      "x": 1290,
+      "x": 1720,
       "y": 1059,
       "name": "ONB-04-Negocio-Light",
       "context": "Variante light del onboarding. Mismos componentes; tokens mode=light.",
@@ -3468,7 +3640,7 @@
     {
       "type": "frame",
       "id": "kQGPj",
-      "x": 1720,
+      "x": 2150,
       "y": 1059,
       "name": "ONB-05-Tema-Light",
       "context": "Variante light del onboarding. Mismos componentes; tokens mode=light.",
@@ -3806,7 +3978,7 @@
     {
       "type": "frame",
       "id": "A7JA32",
-      "x": 2150,
+      "x": 2580,
       "y": 1059,
       "name": "ONB-06-Preview-Light",
       "context": "Variante light del onboarding. Mismos componentes; tokens mode=light.",
@@ -4395,10 +4567,10 @@
     {
       "type": "frame",
       "id": "kx5pN",
-      "x": 2580,
+      "x": 3010,
       "y": 1059,
       "name": "ONB-07-Decision-Light",
-      "context": "Light de ONB-07-Decision. Fuera del flujo cableado.",
+      "context": "Variante light del onboarding. Mismos componentes; tokens mode=light.",
       "theme": {
         "mode": "light"
       },
@@ -4670,7 +4842,7 @@
           "fill": "$textSecondary",
           "textGrowth": "fixed-width",
           "width": "fill_container",
-          "content": "Happy path dark. Transiciones 150–200ms ease-out. Empieza en Auth. Splash nativo (app.json), no hay pantalla JS.",
+          "content": "Happy path dark. Transiciones 150–200ms ease-out. Auto-advance solo en Splash.",
           "fontFamily": "$fontBody",
           "fontSize": 13,
           "fontWeight": "normal"
@@ -4685,7 +4857,7 @@
             {
               "type": "frame",
               "id": "o9hQaR",
-              "name": "Flow_00",
+              "name": "Flow_01",
               "width": "fill_container",
               "fill": "$bg",
               "cornerRadius": "$radiusLg",
@@ -4700,7 +4872,7 @@
                   "id": "x8dGML",
                   "name": "StepNum",
                   "fill": "$accent",
-                  "content": "ONB-00",
+                  "content": "ONB-01",
                   "fontFamily": "$fontBody",
                   "fontSize": 11,
                   "fontWeight": "600"
@@ -4710,7 +4882,7 @@
                   "id": "EwA17",
                   "name": "StepName",
                   "fill": "$textPrimary",
-                  "content": "Auth",
+                  "content": "Splash",
                   "fontFamily": "$fontBody",
                   "fontSize": 15,
                   "fontWeight": "700"
@@ -4722,7 +4894,7 @@
                   "fill": "$textSecondary",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "Tap: Cuenta | Login | Demo",
+                  "content": "Tap: Auto 1.0–1.2s",
                   "fontFamily": "$fontBody",
                   "fontSize": 11,
                   "fontWeight": "normal"
@@ -4732,7 +4904,7 @@
                   "id": "sQQT3",
                   "name": "GoesTo",
                   "fill": "$accentHover",
-                  "content": "→ País | Login",
+                  "content": "→ País",
                   "fontFamily": "$fontBody",
                   "fontSize": 12,
                   "fontWeight": "600"
@@ -4744,7 +4916,7 @@
                   "fill": "$textDisabled",
                   "textGrowth": "fixed-width",
                   "width": "fill_container",
-                  "content": "sin auto-advance",
+                  "content": "fade-in logo",
                   "fontFamily": "$fontBody",
                   "fontSize": 10,
                   "fontWeight": "normal"
@@ -5077,7 +5249,7 @@
                   "id": "L8fTWI",
                   "name": "GoesTo",
                   "fill": "$accentHover",
-                  "content": "→ Auth / Register",
+                  "content": "→ Decisión",
                   "fontFamily": "$fontBody",
                   "fontSize": 12,
                   "fontWeight": "600"
@@ -5233,7 +5405,7 @@
               "fill": "$textSecondary",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "· Splash nativo: wordmark en app.json. No hay pantalla JS de splash.",
+              "content": "· Splash: logo 600ms fade · tagline 400ms · hold ~1.0s · replace País",
               "fontFamily": "$fontBody",
               "fontSize": 12,
               "fontWeight": "normal"
@@ -5256,11 +5428,11 @@
     },
     {
       "type": "frame",
-      "id": "rt4zY",
-      "x": 0,
+      "id": "ruUsM",
+      "x": 430,
       "y": 0,
       "name": "ONB-00-Auth",
-      "context": "Pantalla inicial del flujo V2. Crear cuenta entra al wizard. Iniciar sesion va a Login. Demo hace login demo. Cableada como OnboardingAuthChoice.tsx.",
+      "context": "Pantalla inicial nueva, antes de ONB-02-Pais. 'Crear cuenta' -> continua el wizard ONB-02..06 -> Register (justCompleted=true). 'Iniciar sesion' -> LoginScreen directo, sin onboarding. 'Explorar con demo' -> mismo demo-login que tenia ONB-07-Decision.",
       "theme": {
         "mode": "dark"
       },
@@ -5269,26 +5441,34 @@
       "height": 844,
       "fill": {
         "type": "gradient",
-        "gradientType": "linear",
+        "gradientType": "radial",
         "enabled": true,
-        "rotation": 180,
+        "rotation": 0,
         "size": {
-          "height": 1
+          "width": 1.4,
+          "height": 1.1
         },
         "colors": [
           {
-            "color": "$accentMuted",
+            "color": "$accentSoft",
             "position": 0
           },
           {
-            "color": "$bg",
-            "position": 0.22
+            "color": "$accentMuted",
+            "position": 0.35
           },
           {
             "color": "$bg",
+            "position": 0.75
+          },
+          {
+            "color": "$gradientEdge",
             "position": 1
           }
-        ]
+        ],
+        "center": {
+          "y": 0.42
+        }
       },
       "layout": "vertical",
       "gap": 24,
@@ -5302,7 +5482,7 @@
       "children": [
         {
           "type": "frame",
-          "id": "d6bKoa",
+          "id": "ZbqQj",
           "name": "StatusBar",
           "width": "fill_container",
           "height": 44,
@@ -5315,7 +5495,7 @@
           "children": [
             {
               "type": "text",
-              "id": "MdTDf",
+              "id": "b6IVH",
               "name": "Time",
               "fill": "$textPrimary",
               "content": "9:41",
@@ -5327,13 +5507,13 @@
         },
         {
           "type": "frame",
-          "id": "ZVUsZ",
+          "id": "AVegK",
           "name": "HeroBlock",
           "width": "fill_container",
           "layout": "vertical",
           "gap": 16,
           "padding": [
-            48,
+            64,
             0,
             0,
             0
@@ -5342,20 +5522,19 @@
           "children": [
             {
               "type": "text",
-              "id": "gnuE9",
-              "name": "AuthLogo",
+              "id": "MfByD",
+              "name": "Logo",
               "fill": "$textPrimary",
               "content": "RepMAX",
-              "textAlign": "center",
               "fontFamily": "$fontBody",
-              "fontSize": 44,
+              "fontSize": 40,
               "fontWeight": "700",
               "letterSpacing": -1
             },
             {
               "type": "text",
-              "id": "k0i1w",
-              "name": "AuthTitle",
+              "id": "WOKuT",
+              "name": "WelcomeTitle",
               "fill": "$textPrimary",
               "textGrowth": "fixed-width",
               "width": "fill_container",
@@ -5367,12 +5546,12 @@
             },
             {
               "type": "text",
-              "id": "edqac",
-              "name": "AuthSub",
+              "id": "rgv9q",
+              "name": "WelcomeSub",
               "fill": "$textSecondary",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "Inventario, ventas y catálogo en un solo lugar.",
+              "content": "Inventario, ventas y catalogo en un solo lugar.",
               "textAlign": "center",
               "fontFamily": "$fontBody",
               "fontSize": "$textSubtitle",
@@ -5382,7 +5561,7 @@
         },
         {
           "type": "frame",
-          "id": "W5n2ej",
+          "id": "VhgZU",
           "name": "Actions",
           "width": "fill_container",
           "layout": "vertical",
@@ -5390,7 +5569,7 @@
           "alignItems": "center",
           "children": [
             {
-              "id": "OlnAX",
+              "id": "q5Egj",
               "type": "ref",
               "ref": "yyFYE",
               "name": "ButtonPrimary",
@@ -5402,22 +5581,22 @@
               }
             },
             {
-              "id": "dNYgy",
+              "id": "u0FFYt",
               "type": "ref",
               "ref": "xLKr9",
               "name": "ButtonSecondary",
               "width": "fill_container",
               "descendants": {
                 "D45Ob": {
-                  "content": "Iniciar sesión"
+                  "content": "Iniciar sesion"
                 }
               }
             },
             {
               "type": "text",
-              "id": "Cx9zl",
+              "id": "PIV7F",
               "name": "DemoLink",
-              "fill": "#000000",
+              "fill": "$accent",
               "content": "Explorar con demo",
               "textAlign": "center",
               "fontFamily": "$fontBody",
@@ -5426,10 +5605,10 @@
             },
             {
               "type": "text",
-              "id": "OGBhZ",
+              "id": "P9RKbB",
               "name": "LegalNote",
               "fill": "$textDisabled",
-              "content": "Al continuar aceptas nuestros Términos y Política de Privacidad.",
+              "content": "Al continuar aceptas nuestros Terminos y Politica de Privacidad.",
               "textAlign": "center",
               "fontFamily": "$fontBody",
               "fontSize": 11,
@@ -5441,11 +5620,11 @@
     },
     {
       "type": "frame",
-      "id": "I06Baz",
-      "x": 0,
+      "id": "G1fRoM",
+      "x": 430,
       "y": 1059,
       "name": "ONB-00-Auth-Light",
-      "context": "Variante light de ONB-00-Auth.",
+      "context": "Variante light de ONB-00-Auth. Mismos componentes; tokens mode=light.",
       "theme": {
         "mode": "light"
       },
@@ -5454,26 +5633,34 @@
       "height": 844,
       "fill": {
         "type": "gradient",
-        "gradientType": "linear",
+        "gradientType": "radial",
         "enabled": true,
-        "rotation": 180,
+        "rotation": 0,
         "size": {
-          "height": 1
+          "width": 1.4,
+          "height": 1.1
         },
         "colors": [
           {
-            "color": "$accentMuted",
+            "color": "$accentSoft",
             "position": 0
           },
           {
-            "color": "$bg",
-            "position": 0.22
+            "color": "$accentMuted",
+            "position": 0.35
           },
           {
             "color": "$bg",
+            "position": 0.75
+          },
+          {
+            "color": "$gradientEdge",
             "position": 1
           }
-        ]
+        ],
+        "center": {
+          "y": 0.42
+        }
       },
       "layout": "vertical",
       "gap": 24,
@@ -5487,7 +5674,7 @@
       "children": [
         {
           "type": "frame",
-          "id": "gty14",
+          "id": "iBD0H",
           "name": "StatusBar",
           "width": "fill_container",
           "height": 44,
@@ -5500,7 +5687,7 @@
           "children": [
             {
               "type": "text",
-              "id": "N23fXP",
+              "id": "n1MVT",
               "name": "Time",
               "fill": "$textPrimary",
               "content": "9:41",
@@ -5512,13 +5699,13 @@
         },
         {
           "type": "frame",
-          "id": "mAcM6",
+          "id": "lR9Cl",
           "name": "HeroBlock",
           "width": "fill_container",
           "layout": "vertical",
           "gap": 16,
           "padding": [
-            48,
+            64,
             0,
             0,
             0
@@ -5527,20 +5714,19 @@
           "children": [
             {
               "type": "text",
-              "id": "Jp5Dx",
-              "name": "AuthLogo",
+              "id": "ME5Fx",
+              "name": "Logo",
               "fill": "$textPrimary",
               "content": "RepMAX",
-              "textAlign": "center",
               "fontFamily": "$fontBody",
-              "fontSize": 44,
+              "fontSize": 40,
               "fontWeight": "700",
               "letterSpacing": -1
             },
             {
               "type": "text",
-              "id": "nWtFx",
-              "name": "AuthTitle",
+              "id": "abcHN",
+              "name": "WelcomeTitle",
               "fill": "$textPrimary",
               "textGrowth": "fixed-width",
               "width": "fill_container",
@@ -5552,12 +5738,12 @@
             },
             {
               "type": "text",
-              "id": "D9OdM",
-              "name": "AuthSub",
+              "id": "M8sezw",
+              "name": "WelcomeSub",
               "fill": "$textSecondary",
               "textGrowth": "fixed-width",
               "width": "fill_container",
-              "content": "Inventario, ventas y catálogo en un solo lugar.",
+              "content": "Inventario, ventas y catalogo en un solo lugar.",
               "textAlign": "center",
               "fontFamily": "$fontBody",
               "fontSize": "$textSubtitle",
@@ -5567,7 +5753,7 @@
         },
         {
           "type": "frame",
-          "id": "G8yCDK",
+          "id": "wd5pK",
           "name": "Actions",
           "width": "fill_container",
           "layout": "vertical",
@@ -5575,7 +5761,7 @@
           "alignItems": "center",
           "children": [
             {
-              "id": "vQtrd",
+              "id": "R0alZB",
               "type": "ref",
               "ref": "yyFYE",
               "name": "ButtonPrimary",
@@ -5587,22 +5773,22 @@
               }
             },
             {
-              "id": "o6b6U",
+              "id": "q9SuE",
               "type": "ref",
               "ref": "xLKr9",
               "name": "ButtonSecondary",
               "width": "fill_container",
               "descendants": {
                 "D45Ob": {
-                  "content": "Iniciar sesión"
+                  "content": "Iniciar sesion"
                 }
               }
             },
             {
               "type": "text",
-              "id": "R8qmij",
+              "id": "KRCvq",
               "name": "DemoLink",
-              "fill": "#000000",
+              "fill": "$accent",
               "content": "Explorar con demo",
               "textAlign": "center",
               "fontFamily": "$fontBody",
@@ -5611,10 +5797,10 @@
             },
             {
               "type": "text",
-              "id": "ZTU48",
+              "id": "sR0Zi",
               "name": "LegalNote",
               "fill": "$textDisabled",
-              "content": "Al continuar aceptas nuestros Términos y Política de Privacidad.",
+              "content": "Al continuar aceptas nuestros Terminos y Politica de Privacidad.",
               "textAlign": "center",
               "fontFamily": "$fontBody",
               "fontSize": 11,

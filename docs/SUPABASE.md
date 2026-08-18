@@ -21,7 +21,8 @@ URL Geema: `https://udelxwwnyivknslueerr.supabase.co`
 | `contacts`, `quote_leads`, … | Landing / cotizador | `apps/landing`, `@zmtech/quote-engine` |
 | `odental_*` | OdentalPro | `@odentalpro/dental-schema`, `apps/odentalpro-server/supabase/migrations/` |
 | `repmax_*` | RepMAX | `@repmax/repmax-schema` (TS) + `docs/repmax/supabase/migrations/` (DDL; sin drizzle-kit) |
-| `hub_*` *(planificado)* | Hub interno ZM Tech | `@zmtech/hub-schema` *(planificado)*, `docs/hub/supabase/migrations/` (borradores, no aplicados) |
+| `hub_*` *(planificado, salvo excepción)* | Hub interno ZM Tech | `@zmtech/hub-schema` *(planificado)*, `docs/hub/supabase/migrations/` (borradores, no aplicados) |
+| `hub_tasas_bcv`, `hub_tasas_usdt` — **aplicadas** | Tasas BCV/USDT compartidas (paquete `@zmtech/tasas`, hoy solo RepMAX POS) | `packages/tasas`, `docs/hub/supabase/migrations/20260818120000_hub_tasas_cambio.sql` |
 
 **`udelxwwnyivknslueerr` (GeemaStudio)**
 

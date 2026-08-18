@@ -12,6 +12,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
+import { useTasaCambio } from '../../hooks/useTasaCambio';
 import { saleService } from '../../services/saleService';
 import { mlListingService } from '../../services/mercadolibre/mlListingService';
 import { formatUSD, formatBS } from '../../utils/formatters';
@@ -39,12 +40,22 @@ export default function PaymentScreen({ navigation }: Props) {
     }).catch(() => {});
   }, []);
 
-  const usdBsRate = store?.usdBsRate ?? 36.5;
+  const tasaManual = store?.usdBsRate ?? 36.5;
+  const usarTasaManual = store?.usarTasaManual ?? true;
+  const { usdBsRateEfectivo, isLoading: isLoadingTasa } = useTasaCambio(
+    tasaManual,
+    usarTasaManual,
+  );
+  const usdBsRate = usdBsRateEfectivo;
   const totalBs = totalUsd * usdBsRate;
 
   const handleConfirm = async () => {
     if (!storeUser) {
       Alert.alert('Error', 'No se encontró el usuario de la tienda.');
+      return;
+    }
+    if (!usarTasaManual && isLoadingTasa) {
+      Alert.alert('Tasa en actualización', 'Espera un momento mientras se consulta la tasa BCV.');
       return;
     }
 
@@ -153,11 +164,14 @@ export default function PaymentScreen({ navigation }: Props) {
       {/* Botón de confirmación */}
       <View style={styles.footer}>
         <TouchableOpacity
-          style={[styles.confirmBtn, isLoading && styles.confirmBtnDisabled]}
+          style={[
+            styles.confirmBtn,
+            (isLoading || (!usarTasaManual && isLoadingTasa)) && styles.confirmBtnDisabled,
+          ]}
           onPress={handleConfirm}
-          disabled={isLoading}
+          disabled={isLoading || (!usarTasaManual && isLoadingTasa)}
         >
-          {isLoading ? (
+          {isLoading || (!usarTasaManual && isLoadingTasa) ? (
             <ActivityIndicator color={colors.text.inverse} />
           ) : (
             <>
