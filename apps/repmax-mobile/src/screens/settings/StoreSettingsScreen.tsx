@@ -23,6 +23,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useTasaCambio } from '../../hooks/useTasaCambio';
 import { useMercadoLibreConnection } from '../../hooks/useMercadoLibreConnection';
 import { ML_API_ENABLED, ML_API_STATUS_NOTE, ML_MANUAL_MODE_HINT } from '../../constants/mlConfig';
+import { BRANDS } from '../../constants/brands';
 import { colors, spacing, borderRadius, typography } from '../../utils/theme';
 
 type Props = NativeStackScreenProps<MoreStackParamList, 'StoreSettings'>;
@@ -216,6 +217,9 @@ export default function StoreSettingsScreen({ navigation }: Props) {
   const [address, setAddress] = useState(store?.address ?? '');
   const [isSaving, setIsSaving] = useState(false);
 
+  const [preferredBrands, setPreferredBrands] = useState<string[]>(store?.preferredBrands ?? []);
+  const [isSavingBrands, setIsSavingBrands] = useState(false);
+
   const isOwner = storeUser?.role === 'owner';
   const plan    = store?.plan ?? 'basic';
   const planCfg = PLAN_CONFIG[plan] ?? PLAN_CONFIG.basic;
@@ -239,6 +243,24 @@ export default function StoreSettingsScreen({ navigation }: Props) {
       Alert.alert('Error', 'No se pudo guardar. Intenta de nuevo.');
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const toggleBrand = (brand: string) => {
+    setPreferredBrands(prev =>
+      prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand],
+    );
+  };
+
+  const handleSaveBrands = async () => {
+    setIsSavingBrands(true);
+    try {
+      await updateStore({ preferredBrands });
+      Alert.alert('✓ Guardado', 'Marcas de trabajo actualizadas.');
+    } catch {
+      Alert.alert('Error', 'No se pudo guardar. Intenta de nuevo.');
+    } finally {
+      setIsSavingBrands(false);
     }
   };
 
@@ -342,6 +364,52 @@ export default function StoreSettingsScreen({ navigation }: Props) {
                   <>
                     <Ionicons name="checkmark-circle-outline" size={20} color={colors.text.inverse} />
                     <Text style={styles.saveBtnText}>Guardar Cambios</Text>
+                  </>
+                )}
+              </TouchableOpacity>
+            )}
+          </View>
+        </View>
+
+        {/* Sección: marcas con las que trabaja la tienda */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Marcas de Trabajo</Text>
+          <View style={styles.card}>
+            <Text style={styles.brandsHint}>
+              Elige las marcas con las que trabaja tu tienda. Si no eliges ninguna, se muestran todas.
+            </Text>
+            <View style={styles.brandChips}>
+              {BRANDS.map(brand => {
+                const active = preferredBrands.includes(brand);
+                return (
+                  <TouchableOpacity
+                    key={brand}
+                    style={[styles.brandChip, active && styles.brandChipActive]}
+                    onPress={() => toggleBrand(brand)}
+                    disabled={!isOwner}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={[styles.brandChipText, active && styles.brandChipTextActive]}>
+                      {brand}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            {isOwner && (
+              <TouchableOpacity
+                style={[styles.saveBtn, isSavingBrands && styles.saveBtnDisabled]}
+                onPress={handleSaveBrands}
+                disabled={isSavingBrands}
+                activeOpacity={0.8}
+              >
+                {isSavingBrands ? (
+                  <ActivityIndicator color={colors.text.inverse} />
+                ) : (
+                  <>
+                    <Ionicons name="checkmark-circle-outline" size={20} color={colors.text.inverse} />
+                    <Text style={styles.saveBtnText}>Guardar Marcas</Text>
                   </>
                 )}
               </TouchableOpacity>
@@ -630,6 +698,39 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily.regular,
     color: colors.text.secondary,
     marginTop: 2,
+  },
+
+  // Marcas de trabajo
+  brandsHint: {
+    fontSize: typography.size.sm,
+    fontFamily: typography.fontFamily.regular,
+    color: colors.text.secondary,
+    marginBottom: spacing.sm,
+  },
+  brandChips: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.xs,
+  },
+  brandChip: {
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderRadius: borderRadius.full,
+    borderWidth: 1,
+    borderColor: colors.bg.border,
+    backgroundColor: colors.bg.elevated,
+  },
+  brandChipActive: {
+    backgroundColor: colors.brand.orange,
+    borderColor: colors.brand.orange,
+  },
+  brandChipText: {
+    fontSize: typography.size.sm,
+    fontFamily: typography.fontFamily.medium,
+    color: colors.text.secondary,
+  },
+  brandChipTextActive: {
+    color: colors.text.inverse,
   },
 
   // Botón guardar
