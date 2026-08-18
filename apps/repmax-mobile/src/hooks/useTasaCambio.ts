@@ -88,7 +88,7 @@ export function useTasaCambio(
   usarTasaManual: boolean,
 ): UseTasaCambioResult {
   const [tasas, setTasas] = useState<TasasDuales | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const cargar = useCallback(
     async (forzar = false) => {

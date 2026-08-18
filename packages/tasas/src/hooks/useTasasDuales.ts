@@ -6,6 +6,7 @@
 // solo los tipos/funciones puras de '@zmtech/tasas'.
 
 import { useState, useEffect, useCallback } from 'react'
+import { normalizarRespuestaTasaApi, type RespuestaTasaApi } from '../normalizarRespuesta'
 import type { TasasDuales } from '../types'
 
 const CACHE_KEY = 'zmtech_tasas_duales'
@@ -17,17 +18,6 @@ interface UseTasasDualesReturn {
   error: string | null
   recargar: () => void
   sinUSDT: boolean
-}
-
-interface RespuestaTasaApi {
-  usd?: number
-  fecha?: string
-  fuente?: string
-  tasas?: {
-    bcv: { valor: number | null; fuente: string; disponible: boolean; esReferencial?: boolean }
-    usdt: { valor: number | null; fuente: string; disponible: boolean }
-    spread?: TasasDuales['spread']
-  }
 }
 
 /**
@@ -58,36 +48,9 @@ export function useTasasDuales(endpoint = '/api/bcv/tasa'): UseTasasDualesReturn
 
     try {
       const res = await fetch(endpoint, { cache: 'no-store' })
+      if (!res.ok) throw new Error(`Tasas API respondió ${res.status}`)
       const data: RespuestaTasaApi = await res.json()
-      const ahora = new Date().toISOString()
-      const fecha = data.fecha ?? new Date().toISOString().split('T')[0]
-
-      const bcvValor = data.tasas?.bcv.valor ?? data.usd ?? 0
-      const bcvFuente = data.tasas?.bcv.fuente ?? data.fuente ?? 'sin-datos'
-      const bcvDisponible = data.tasas?.bcv.disponible ?? bcvValor > 0
-      const usdtValor = data.tasas?.usdt.valor ?? null
-      const usdtDisponible = data.tasas?.usdt.disponible ?? false
-
-      const resultado: TasasDuales = {
-        bcv: {
-          valor: bcvValor,
-          fecha,
-          fuente: bcvFuente,
-          disponible: bcvDisponible,
-          esReferencial: data.tasas?.bcv.esReferencial ?? false,
-          ultimaActualizacion: ahora,
-        },
-        usdt: {
-          valor: usdtDisponible && usdtValor ? usdtValor : bcvValor,
-          fecha,
-          fuente: usdtDisponible ? (data.tasas?.usdt.fuente ?? 'usdt.com.ve') : 'fallback-bcv',
-          disponible: usdtDisponible,
-          esReferencial: !usdtDisponible,
-          ultimaActualizacion: ahora,
-        },
-        spread: data.tasas?.spread ?? { absoluto: 0, porcentaje: 0, nivel: 'bajo' },
-        timestamp: Date.now(),
-      }
+      const resultado: TasasDuales = normalizarRespuestaTasaApi(data)
 
       try {
         localStorage.setItem(CACHE_KEY, JSON.stringify({ ...resultado, _cachedAt: Date.now() }))

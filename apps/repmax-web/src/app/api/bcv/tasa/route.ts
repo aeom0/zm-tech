@@ -18,7 +18,7 @@ export async function GET() {
 
   const resultado = await resolverTasaBcvOperacion(repoBcv);
   if (!resultado.ok) {
-    return NextResponse.json(resultado.body, { status: 200 });
+    return NextResponse.json(resultado.body, { status: 503 });
   }
 
   const bcv = resultado.tasa;

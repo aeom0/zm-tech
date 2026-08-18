@@ -10,7 +10,8 @@
   },
   "scripts": {
     "type-check": "tsc --noEmit",
-    "check:types": "tsc --noEmit"
+    "check:types": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "dayjs": "^1.11.13"
@@ -21,6 +22,7 @@
   "devDependencies": {
     "@types/node": "^20.19.30",
     "@types/react": "^19.1.0",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "vitest": "^3.2.4"
   }
 }

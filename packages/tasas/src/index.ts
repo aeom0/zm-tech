@@ -12,6 +12,9 @@ export type {
   PrecioSugeridoResult,
 } from './types'
 
+export { normalizarRespuestaTasaApi } from './normalizarRespuesta'
+export type { RespuestaTasaApi } from './normalizarRespuesta'
+
 export { calcularMargenReal, calcularPrecioSugerido } from './calcularMargen'
 
 export { calcularSpreadInfo } from './spread'

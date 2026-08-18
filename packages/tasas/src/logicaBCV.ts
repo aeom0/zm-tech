@@ -2,6 +2,9 @@
 // Incluye fines de semana, feriados bancarios VE y horario de publicacion 5pm.
 
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+
+dayjs.extend(utc)
 
 /**
  * Feriados bancarios Venezuela -- el BCV no publica tasa estos dias.
@@ -133,9 +136,9 @@ const OFFSET_VENEZUELA_HORAS = -4
 
 /** Obtiene el momento actual en zona Venezuela (UTC-4). */
 export function ahoraVenezuela(): dayjs.Dayjs {
-  const utcMs = Date.now()
-  const venezuelaMs = utcMs + OFFSET_VENEZUELA_HORAS * 60 * 60 * 1000
-  return dayjs(venezuelaMs)
+  // utcOffset conserva la hora civil venezolana sin depender de la zona
+  // horaria configurada en el dispositivo o en el runtime del servidor.
+  return dayjs.utc().utcOffset(OFFSET_VENEZUELA_HORAS * 60)
 }
 
 /**
