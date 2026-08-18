@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useAuth } from '../../context/AuthContext';
+import { useTasaCambio } from '../../hooks/useTasaCambio';
 import { colors, typography, spacing, borderRadius } from '../../utils/theme';
 import type { MoreStackParamList } from '../../navigation/types';
 
@@ -37,6 +38,10 @@ function MenuItem({ icon, iconColor, title, subtitle, onPress }: MenuItemProps) 
 
 export default function MoreHomeScreen({ navigation }: Props) {
   const { store, storeUser } = useAuth();
+  const { usdBsRateEfectivo } = useTasaCambio(
+    store?.usdBsRate ?? 36.5,
+    store?.usarTasaManual ?? false,
+  );
 
   return (
     <ScrollView
@@ -76,7 +81,7 @@ export default function MoreHomeScreen({ navigation }: Props) {
           icon="trending-up-outline"
           iconColor={colors.semantic.info}
           title="Tasa de cambio"
-          subtitle={store ? `1 USD = Bs. ${store.usdBsRate}` : 'USD / Bs.'}
+          subtitle={store ? `1 USD = Bs. ${usdBsRateEfectivo.toFixed(2)}` : 'USD / Bs.'}
           onPress={() => navigation.navigate('ExchangeRate')}
         />
       </View>

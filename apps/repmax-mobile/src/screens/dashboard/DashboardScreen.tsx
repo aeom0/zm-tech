@@ -13,6 +13,7 @@ import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { Screen } from '../../components/layout/Screen';
 import { useDashboard } from '../../hooks/useDashboard';
 import { useAuth } from '../../context/AuthContext';
+import { useTasaCambio } from '../../hooks/useTasaCambio';
 import { useResponsive } from '../../hooks/useResponsive';
 import { formatUSD } from '../../utils/formatters';
 import { hapticLight } from '../../utils/haptics';
@@ -51,6 +52,10 @@ export default function DashboardScreen() {
   const navigation = useNavigation<BottomTabNavigationProp<MainTabParamList>>();
   const { store, storeUser, logout } = useAuth();
   const { kpis, isLoading, error } = useDashboard();
+  const { usdBsRateEfectivo } = useTasaCambio(
+    store?.usdBsRate ?? 36.5,
+    store?.usarTasaManual ?? false,
+  );
   const { isTabletUp } = useResponsive();
   const tileWidth = isTabletUp ? '23.5%' : '47.5%';
 
@@ -101,7 +106,7 @@ export default function DashboardScreen() {
           >
             <Ionicons name="trending-up-outline" size={16} color={colors.brand.orange} />
             <Text style={styles.rateText}>
-              Tasa: <Text style={styles.rateValue}>1 USD = Bs. {store.usdBsRate}</Text>
+              Tasa: <Text style={styles.rateValue}>1 USD = Bs. {usdBsRateEfectivo.toFixed(2)}</Text>
             </Text>
             <Ionicons name="chevron-forward" size={16} color={colors.text.disabled} />
           </TouchableOpacity>

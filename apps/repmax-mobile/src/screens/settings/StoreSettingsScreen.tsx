@@ -20,6 +20,7 @@ import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { MoreStackParamList } from '../../navigation/types';
 import { useAuth } from '../../context/AuthContext';
+import { useTasaCambio } from '../../hooks/useTasaCambio';
 import { useMercadoLibreConnection } from '../../hooks/useMercadoLibreConnection';
 import { ML_API_ENABLED, ML_API_STATUS_NOTE, ML_MANUAL_MODE_HINT } from '../../constants/mlConfig';
 import { colors, spacing, borderRadius, typography } from '../../utils/theme';
@@ -204,6 +205,10 @@ const PLAN_CONFIG: Record<string, { label: string; color: string }> = {
 // ── Pantalla principal ────────────────────────────────────────
 export default function StoreSettingsScreen({ navigation }: Props) {
   const { user, storeUser, store, updateStore, logout } = useAuth();
+  const { usdBsRateEfectivo } = useTasaCambio(
+    store?.usdBsRate ?? 36.5,
+    store?.usarTasaManual ?? false,
+  );
 
   const [name, setName]       = useState(store?.name ?? '');
   const [phone, setPhone]     = useState(store?.phone ?? '');
@@ -352,7 +357,7 @@ export default function StoreSettingsScreen({ navigation }: Props) {
               icon="swap-horizontal-outline"
               label="Tasa de cambio"
               subtitle={`Actualizada: ${rateUpdated}`}
-              value={`1 USD = ${store?.usdBsRate?.toFixed(2) ?? '—'} Bs`}
+              value={store ? `1 USD = ${usdBsRateEfectivo.toFixed(2)} Bs` : '—'}
               onPress={() => navigation.navigate('ExchangeRate')}
             />
           </View>
