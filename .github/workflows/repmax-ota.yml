@@ -61,10 +61,11 @@ jobs:
           cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
+      # packager npm: pnpm 10 aborta `pnpm add eas-cli` por build scripts ignorados.
       - uses: expo/expo-github-action@v8
         with:
           eas-version: latest
-          packager: pnpm
+          packager: npm
           token: ${{ secrets.EXPO_TOKEN }}
 
       - name: Install
