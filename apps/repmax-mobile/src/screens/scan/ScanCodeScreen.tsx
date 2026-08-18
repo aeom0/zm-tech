@@ -71,11 +71,7 @@ export default function ScanCodeScreen({ route, navigation }: Props) {
     try {
       if (modo === 'asignar') {
         await hapticSuccess();
-        navigation.navigate({
-          name: 'ProductForm',
-          params: { scannedBarcode: valor },
-          merge: true,
-        });
+        navigation.popTo('ProductForm', { scannedBarcode: valor }, { merge: true });
         return;
       }
 

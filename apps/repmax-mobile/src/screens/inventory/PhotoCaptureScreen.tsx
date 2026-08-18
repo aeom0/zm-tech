@@ -56,7 +56,7 @@ export default function PhotoCaptureScreen({ route, navigation }: Props) {
     <Screen edges={['top', 'bottom']}>
       <View style={styles.nav}>
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={12}>
-          <Text style={styles.navGhost}>Cancelar</Text>
+          <Text style={styles.navGhost} numberOfLines={1}>Cancelar</Text>
         </TouchableOpacity>
         <Text style={styles.navTitle}>{titulo}</Text>
         <View style={styles.navPad} />
@@ -116,14 +116,14 @@ const styles = StyleSheet.create({
     fontSize: typography.size.base,
     fontFamily: typography.fontFamily.regular,
     color: colors.text.secondary,
-    width: 72,
+    width: 90,
   },
   navTitle: {
     fontSize: typography.size.base,
     fontFamily: typography.fontFamily.semibold,
     color: colors.text.primary,
   },
-  navPad: { width: 72 },
+  navPad: { width: 90 },
   viewfinder: {
     width: '100%',
     aspectRatio: 1,

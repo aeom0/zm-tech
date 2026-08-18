@@ -136,7 +136,7 @@ export function useProductForm({ productId, pendingPhoto, scannedBarcode }: UseP
 
   useEffect(() => {
     if (!scannedBarcode) return;
-    setField('barcode', scannedBarcode);
+    setField('barcode', scannedBarcode.toUpperCase());
   }, [scannedBarcode, setField]);
 
   const clearPhotoSlot = useCallback((index: number) => {
@@ -178,7 +178,7 @@ export function useProductForm({ productId, pendingPhoto, scannedBarcode }: UseP
 
   const aplicarTituloSugerido = useCallback(() => {
     if (!tituloSugerido) return;
-    setField('title', tituloSugerido);
+    setField('title', tituloSugerido.toUpperCase());
   }, [tituloSugerido, setField]);
 
   const selectManualCategory = useCallback((category: MlManualCategory) => {
