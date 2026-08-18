@@ -37,10 +37,15 @@ El detalle de cambios ya hechos vive en [CHANGELOG.md](./CHANGELOG.md). Este arc
 - [x] **Plan 06 (código)** — rewrite `{slug}.zmtechdev.com` / `{slug}.localhost` → `/{slug}`; QR gated por `NEXT_PUBLIC_VITRINA_SUBDOMAINS`
 - [x] Proyecto Vercel `repmax-web` — prod `https://repmax-web-taupe.vercel.app` (Git `aeom0/zm-tech`, root `apps/repmax-web`)
 - [x] **Catálogo starter al registrar** — RPC `repmax_seed_starter_catalog` (hub `20260817222347`) + `catalogSeedService` en `register()`
+- [x] **POS de escritorio (plan 07, fase 1)** — `/dashboard/pos` en repmax-web: catálogo/carrito/cobro vía `repmax_create_sale_with_items`, banner de caja no bloqueante, gating por rol, scanner HID (`useBarcodeScan`)
+  - Plan: `plans/07-PLAN-integracion-hardware.md`
+- [x] **Historial de ventas enriquecido (web)** — `/dashboard/sales` con título, vehículo, número de parte y foto por línea
+- [x] **Onboarding mobile — pantalla auth inicial** — `ONB-00-Auth` (dark+light) cableada como `OnboardingAuthChoice`; `OnboardingDecision` retirada del código, responsabilidades redistribuidas (demo/login al inicio, crear-cuenta en el CTA de Preview)
+  - Canvas: `design/onboarding.pen` · Spec: `design/onboarding-ux-spec.md`
 
 ## Próximo
 
-- [ ] Cablear onboarding mobile end-to-end al high-fi (`apps/repmax-mobile` ↔ design system)
+- [ ] Cablear el resto del onboarding mobile end-to-end al high-fi (`apps/repmax-mobile` ↔ design system) — la pantalla auth y el flujo de decisión ya están alineados
 - [ ] Extraer / alinear tokens RN (`utils/theme.ts`) con `design-system/tokens.md`
 - [ ] Seed / fixtures de catálogo demo más realistas (Alfa/Beta; el starter de tiendas nuevas ya está)
 - [ ] Hardening RLS (auditoría advisors) y tests de aislamiento multi-tenant
@@ -56,8 +61,7 @@ El detalle de cambios ya hechos vive en [CHANGELOG.md](./CHANGELOG.md). Este arc
 ## Referencia
 
 Planes cerrados: `plans/01` → `plans/03`.  
-En curso: `plans/05` (multicanal sin OAuth — camino principal) · `plans/06` (dominio/vitrina, HTTPS wildcard live).  
+En curso: `plans/05` (multicanal sin OAuth — camino principal) · `plans/06` (dominio/vitrina, HTTPS wildcard live) · `plans/07` (hardware POS — fase 1 scanner HID + POS de escritorio implementada; fases 2-4, impresión fiscal/térmica, pendientes de hardware real).  
 Descartado (ops): `plans/04` track API MLV (#475453897). Código preservado tras `ML_API_ENABLED`.  
-Propuesta: `plans/07` (hardware POS).  
 Diseño: [`design/`](./design/) · sistema: [`design-system/`](./design-system/).  
 Cambios hechos: [`CHANGELOG.md`](./CHANGELOG.md).

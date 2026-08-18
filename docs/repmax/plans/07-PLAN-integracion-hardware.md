@@ -1,6 +1,6 @@
 # 07 — Integración de hardware (POS de escritorio)
 
-> **Estado: PROPUESTA** — no implementado (ago 2026). Alcance: `apps/repmax-web`, plan Pro/Turbo (dispositivos fiscales).
+> **Estado: fase 1 implementada** (ago 2026) — POS de escritorio en `/dashboard/pos` + scanner HID. Fases 2-4 (impresión térmica/fiscal vía Bridge) siguen en **PROPUESTA**, bloqueadas por confirmación de hardware/cliente piloto. Alcance: `apps/repmax-web`, plan Pro/Turbo (dispositivos fiscales).
 
 **Objetivo:** conectar impresora fiscal SENIAT, ticket térmico, scanner y A4 al panel web vía un agente local (RepMAX Bridge). El scanner HID y `window.print()` no requieren Bridge.
 
@@ -57,15 +57,20 @@ Bridge.
 ## 4. Capas de código (respeta arquitectura por capas del proyecto)
 
 ```
-apps/repmax-web/
+apps/repmax-web/src/
   lib/hardware/
-    bridgeClient.ts            // fetch/WebSocket a localhost:9000 — único punto de acoplamiento
+    bridgeClient.ts            // fetch/WebSocket a localhost:9000 — único punto de acoplamiento (fase 3, no implementado)
     services/
-      fiscalPrinterService.ts  // interface IFiscalPrinter (abrir venta, imprimir, anular)
-      receiptPrinterService.ts // interface IReceiptPrinter (ESC/POS)
-      barcodeService.ts        // hook useBarcodeScan(), funciona con o sin Bridge
+      fiscalPrinterService.ts  // interface IFiscalPrinter (abrir venta, imprimir, anular) — fase 4, no implementado
+      receiptPrinterService.ts // interface IReceiptPrinter (ESC/POS) — fase 3, no implementado
+      barcodeService.ts        // hook useBarcodeScan() — IMPLEMENTADO, funciona sin Bridge
   hooks/
-    useHardwareStatus.ts       // detecta si el Bridge está corriendo, banner si no
+    useHardwareStatus.ts       // detecta si el Bridge está corriendo, banner si no — no implementado (no aplica hasta fase 3)
+  components/pos/
+    ProductSearchGrid.tsx      // búsqueda/grid de catálogo — IMPLEMENTADO
+    CartSidebar.tsx            // carrito con stepper de cantidad — IMPLEMENTADO
+    CheckoutSheet.tsx          // cobro, método de pago, banner de caja — IMPLEMENTADO
+  app/dashboard/pos/page.tsx   // pantalla `/dashboard/pos`, gating por rol — IMPLEMENTADO
 ```
 
 `IFiscalPrinter` como interfaz permite que, al cambiar de marca de
@@ -74,7 +79,10 @@ Bridge — cero cambios en la UI.
 
 ## 5. Roadmap por fases
 
-1. **Scanner por HID** — implementable ya, sin infraestructura nueva.
+1. **Scanner por HID** — ✅ implementado. `useBarcodeScan()` + POS de
+   escritorio completo (`/dashboard/pos`: catálogo, carrito, cobro vía
+   `repmax_create_sale_with_items`, banner de caja no bloqueante, gating
+   por rol `owner`/`cashier`).
 2. **`window.print()` para facturas/reportes** — cubre A4, sin Bridge.
 3. **RepMAX Bridge MVP** — agente Node.js (empaquetado con `pkg` o
    Electron), corre en bandeja de Windows, expone
