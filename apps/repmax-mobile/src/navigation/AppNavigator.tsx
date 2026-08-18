@@ -6,46 +6,53 @@
 // pantallas no registradas en el árbol activo.
 // ============================================================
 
-import React, { useState } from 'react';
-import { View, ActivityIndicator } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import React, { useState } from 'react'
+import { View, ActivityIndicator } from 'react-native'
+import { NavigationContainer } from '@react-navigation/native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
-import { useAuth } from '../context/AuthContext';
-import { useOnboarding } from '../context/OnboardingContext';
-import { colors } from '../utils/theme';
+import { useAuth } from '../context/AuthContext'
+import { useOnboarding } from '../context/OnboardingContext'
+import { colors } from '../utils/theme'
 
-import AuthNavigator from './AuthNavigator';
-import MainNavigator from './MainNavigator';
-import OnboardingNavigator from './OnboardingNavigator';
-import OnboardingAuthChoice from '../screens/onboarding/OnboardingAuthChoice';
+import AuthNavigator from './AuthNavigator'
+import MainNavigator from './MainNavigator'
+import OnboardingNavigator from './OnboardingNavigator'
+import OnboardingAuthChoice from '../screens/onboarding/OnboardingAuthChoice'
 
-import type { RootStackParamList } from './types';
+import type { RootStackParamList } from './types'
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>()
 
 export default function AppNavigator() {
-  const { isLoading, user } = useAuth();
+  const { isLoading, user } = useAuth()
   // isReady = AsyncStorage ya se leyó; state.completed = onboarding terminado
-  const { state: onboardingState, isReady } = useOnboarding();
+  const { state: onboardingState, isReady } = useOnboarding()
   // Elección del usuario en la pantalla inicial (login vs crear cuenta).
   // Vive aquí, no en OnboardingContext, porque no se persiste: cada vez
   // que la app arranca sin sesión y sin onboarding completado, se vuelve
   // a preguntar.
-  const [authChoice, setAuthChoice] = useState<'signup' | 'login' | null>(null);
+  const [authChoice, setAuthChoice] = useState<'signup' | 'login' | null>(null)
 
   // Mostrar spinner mientras cargan Auth y el estado del onboarding
   if (isLoading || !isReady) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.bg.primary }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: colors.bg.primary,
+        }}
+      >
         <ActivityIndicator size="large" color={colors.brand.orange} />
       </View>
-    );
+    )
   }
 
   // Solo pedimos la elección inicial si no hay sesión y nunca se completó
   // el onboarding de personalización (usuarios recurrentes van directo a Auth).
-  const necesitaEleccionInicial = !user && !onboardingState.completed && authChoice === null;
+  const necesitaEleccionInicial = !user && !onboardingState.completed && authChoice === null
 
   return (
     <NavigationContainer>
@@ -74,5 +81,5 @@ export default function AppNavigator() {
         )}
       </Stack.Navigator>
     </NavigationContainer>
-  );
+  )
 }

@@ -12,12 +12,12 @@
 
 ## Bloqueador externo (Mercado Libre) — resuelto
 
-| Campo | Valor |
-|-------|--------|
-| Consulta | **475453897** |
-| Error original | `PSC01-EZGLT8IYDQ3Z` en `developers.mercadolibre.com.ve/devcenter/accountLink` |
-| Respuesta ML | DevCenter/API de MLV **no habilitado ni operativo** en Venezuela (no es bloqueo de cuenta) |
-| Estado | **Cerrado — OAuth/API descartado** |
+| Campo          | Valor                                                                                      |
+| -------------- | ------------------------------------------------------------------------------------------ |
+| Consulta       | **475453897**                                                                              |
+| Error original | `PSC01-EZGLT8IYDQ3Z` en `developers.mercadolibre.com.ve/devcenter/accountLink`             |
+| Respuesta ML   | DevCenter/API de MLV **no habilitado ni operativo** en Venezuela (no es bloqueo de cuenta) |
+| Estado         | **Cerrado — OAuth/API descartado**                                                         |
 
 **Decisión:** seguir este plan como **camino principal**. El código OAuth del plan 04 queda en **feature flag** (`ML_API_ENABLED = false`) sin borrar.
 
@@ -29,12 +29,12 @@
 
 La tienda no es “solo ML”. RepMAX cubre:
 
-| Canal | Qué es hoy | Rol en RepMAX |
-|-------|------------|----------------|
-| **Mostrador (POS)** | Venta física, caja, stock en tiempo real | Core — `repmax-mobile` POS + `repmax_create_sale_with_items` |
-| **Vitrina web** | Catálogo público por tienda | `repmax-web` → `/[slug]` (productos activos, fotos, precio) |
-| **WhatsApp / redes** | Cliente pide por chat | Compartir **link de vitrina** o **link de producto** (fase 2); sin WABA en este plan |
-| **MercadoLibre** | Marketplace opcional | **Puente manual** (export + publicador masivo ML) o **API** (futuro) |
+| Canal                | Qué es hoy                               | Rol en RepMAX                                                                        |
+| -------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------ |
+| **Mostrador (POS)**  | Venta física, caja, stock en tiempo real | Core — `repmax-mobile` POS + `repmax_create_sale_with_items`                         |
+| **Vitrina web**      | Catálogo público por tienda              | `repmax-web` → `/[slug]` (productos activos, fotos, precio)                          |
+| **WhatsApp / redes** | Cliente pide por chat                    | Compartir **link de vitrina** o **link de producto** (fase 2); sin WABA en este plan |
+| **MercadoLibre**     | Marketplace opcional                     | **Puente manual** (export + publicador masivo ML) o **API** (futuro)                 |
 
 Principio: **un inventario, varias salidas**. Fotos y ficha se preparan una vez; ML no es prerequisito para operar.
 
@@ -103,15 +103,15 @@ Referencia ML: [Publicar muchos productos a la vez](https://www.mercadolibre.com
 
 ## Fases de implementación
 
-| Fase | Entregable | Depende de ML API |
-|------|------------|-------------------|
-| **E1** | Checklist + badges + `ml_publish_intent` (SQL + mobile) | No |
-| **E2** | Categoría manual en ficha + título sugerido + color (SQL) | No | **Hecho (código)** |
-| **E3** | Export CSV/Excel + URLs fotos; estados `exported` / `published_manual` | No | **Hecho (código)** |
-| **E4** | Vitrina: fotos en cards, búsqueda, link producto, CTA WhatsApp | No | **Hecho (código)** |
-| **E5** | Dashboard: copiar link vitrina, QR, filtros inventario web | No | **Hecho (código)** |
-| **E6** | Alertas post-POS “actualiza stock en ML” (`published_manual` / `published`) | No | **Hecho (código)** |
-| **API** | OAuth + `POST /items` + sync (plan 04 C–D) | Sí — solo si ML habilita DevCenter MLV |
+| Fase    | Entregable                                                                  | Depende de ML API                      |
+| ------- | --------------------------------------------------------------------------- | -------------------------------------- |
+| **E1**  | Checklist + badges + `ml_publish_intent` (SQL + mobile)                     | No                                     |
+| **E2**  | Categoría manual en ficha + título sugerido + color (SQL)                   | No                                     | **Hecho (código)** |
+| **E3**  | Export CSV/Excel + URLs fotos; estados `exported` / `published_manual`      | No                                     | **Hecho (código)** |
+| **E4**  | Vitrina: fotos en cards, búsqueda, link producto, CTA WhatsApp              | No                                     | **Hecho (código)** |
+| **E5**  | Dashboard: copiar link vitrina, QR, filtros inventario web                  | No                                     | **Hecho (código)** |
+| **E6**  | Alertas post-POS “actualiza stock en ML” (`published_manual` / `published`) | No                                     | **Hecho (código)** |
+| **API** | OAuth + `POST /items` + sync (plan 04 C–D)                                  | Sí — solo si ML habilita DevCenter MLV |
 
 ---
 
@@ -130,11 +130,11 @@ Referencia ML: [Publicar muchos productos a la vez](https://www.mercadolibre.com
 
 ## Relación con plan 04
 
-| Plan 04 | Plan 05 |
-|---------|---------|
+| Plan 04                                                       | Plan 05                                               |
+| ------------------------------------------------------------- | ----------------------------------------------------- |
 | OAuth, Edge, predictor API, `POST /items`, sync órdenes/stock | Catálogo ML-ready, export manual, multicanal, vitrina |
-| **Descartado (ops)** — MLV sin DevCenter/API (#475453897) | **Camino principal** |
-| Misma tabla `repmax_ml_listings`, mismo inventario | Estados y UI ampliados para manual |
+| **Descartado (ops)** — MLV sin DevCenter/API (#475453897)     | **Camino principal**                                  |
+| Misma tabla `repmax_ml_listings`, mismo inventario            | Estados y UI ampliados para manual                    |
 
 ---
 

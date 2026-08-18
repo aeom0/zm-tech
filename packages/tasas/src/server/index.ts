@@ -14,4 +14,8 @@ export { crearRepositorioTasasBcv } from './bcvRepositorioFactory'
 export type { ClienteTasasBcv } from './bcvRepositorioFactory'
 
 export { crearRepositorioTasasUsdt } from './usdtRepositorioFactory'
-export type { ClienteTasasUsdt, FilaTasasUsdt, RepositorioTasasUsdt } from './usdtRepositorioFactory'
+export type {
+  ClienteTasasUsdt,
+  FilaTasasUsdt,
+  RepositorioTasasUsdt,
+} from './usdtRepositorioFactory'

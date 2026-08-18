@@ -1,32 +1,32 @@
-import React from "react";
-import { Pressable, View } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import React from 'react'
+import { Pressable, View } from 'react-native'
+import { Feather } from '@expo/vector-icons'
 
-import { ThemedText } from "@/components/ThemedText";
+import { ThemedText } from '@/components/ThemedText'
 
-import { formatDashboardTime } from "../dashboardUtils";
-import type { DashboardAppointment } from "../types";
-import { dashboardStyles as styles } from "../dashboardStyles";
+import { formatDashboardTime } from '../dashboardUtils'
+import type { DashboardAppointment } from '../types'
+import { dashboardStyles as styles } from '../dashboardStyles'
 
 interface DashboardAppointmentRowProps {
-  appointment: DashboardAppointment;
-  index: number;
-  visibleCount: number;
+  appointment: DashboardAppointment
+  index: number
+  visibleCount: number
   theme: {
-    border: string;
-    primary: string;
-    text: string;
-    textSecondary: string;
-    textMuted: string;
-    gold: string;
-  };
-  currencySymbol: string;
-  locale: string;
-  isTablet: boolean;
-  getEmployeeColor: (employeeId: string) => string;
-  getEmployeeName: (employeeId: string) => string;
-  getServiceName: (serviceId: string) => string;
-  onPress: (appointment: DashboardAppointment) => void;
+    border: string
+    primary: string
+    text: string
+    textSecondary: string
+    textMuted: string
+    gold: string
+  }
+  currencySymbol: string
+  locale: string
+  isTablet: boolean
+  getEmployeeColor: (employeeId: string) => string
+  getEmployeeName: (employeeId: string) => string
+  getServiceName: (serviceId: string) => string
+  onPress: (appointment: DashboardAppointment) => void
 }
 
 export function DashboardAppointmentRow({
@@ -42,8 +42,8 @@ export function DashboardAppointmentRow({
   getServiceName,
   onPress,
 }: DashboardAppointmentRowProps) {
-  const empColor = getEmployeeColor(appointment.employee_id);
-  const isLast = index === visibleCount - 1;
+  const empColor = getEmployeeColor(appointment.employee_id)
+  const isLast = index === visibleCount - 1
 
   return (
     <Pressable
@@ -66,16 +66,10 @@ export function DashboardAppointmentRow({
       <View style={[styles.rowDot, { backgroundColor: empColor }]} />
 
       <View style={styles.rowInfo}>
-        <ThemedText
-          style={[styles.rowClient, { color: theme.text }]}
-          numberOfLines={1}
-        >
+        <ThemedText style={[styles.rowClient, { color: theme.text }]} numberOfLines={1}>
           {appointment.client_name}
         </ThemedText>
-        <ThemedText
-          style={[styles.rowService, { color: theme.textSecondary }]}
-          numberOfLines={1}
-        >
+        <ThemedText style={[styles.rowService, { color: theme.textSecondary }]} numberOfLines={1}>
           {getServiceName(appointment.service_id)}
           {isTablet && ` · ${getEmployeeName(appointment.employee_id)}`}
         </ThemedText>
@@ -91,12 +85,7 @@ export function DashboardAppointmentRow({
         </ThemedText>
       </View>
 
-      <Feather
-        name="chevron-right"
-        size={14}
-        color={theme.textMuted}
-        style={{ marginLeft: 4 }}
-      />
+      <Feather name="chevron-right" size={14} color={theme.textMuted} style={{ marginLeft: 4 }} />
     </Pressable>
-  );
+  )
 }

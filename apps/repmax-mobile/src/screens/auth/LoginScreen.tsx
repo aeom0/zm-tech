@@ -2,44 +2,51 @@
 // RepMAX Business Suite — Pantalla de Login
 // El registro vive en RegisterScreen (hereda onboarding o defaults).
 // ============================================================
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
-  View, Text, TextInput, TouchableOpacity,
-  StyleSheet, KeyboardAvoidingView, Platform,
-  ActivityIndicator, Alert, ScrollView,
-} from 'react-native';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { BrandLogo } from '../../components/brand/BrandLogo';
-import { Screen } from '../../components/layout/Screen';
-import { useAuth } from '../../context/AuthContext';
-import { colors, typography, spacing, borderRadius } from '../../utils/theme';
-import type { AuthStackParamList } from '../../navigation/types';
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+} from 'react-native'
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
+import { BrandLogo } from '../../components/brand/BrandLogo'
+import { Screen } from '../../components/layout/Screen'
+import { useAuth } from '../../context/AuthContext'
+import { colors, typography, spacing, borderRadius } from '../../utils/theme'
+import type { AuthStackParamList } from '../../navigation/types'
 
-type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
+type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>
 
 export default function LoginScreen({ navigation }: Props) {
-  const { login } = useAuth();
+  const { login } = useAuth()
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async () => {
     if (!email.trim() || !password.trim()) {
-      Alert.alert('Campos requeridos', 'Email y contraseña son obligatorios.');
-      return;
+      Alert.alert('Campos requeridos', 'Email y contraseña son obligatorios.')
+      return
     }
 
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      await login(email.trim(), password);
+      await login(email.trim(), password)
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Ocurrió un error. Intenta de nuevo.';
-      Alert.alert('Error', msg);
+      const msg = err instanceof Error ? err.message : 'Ocurrió un error. Intenta de nuevo.'
+      Alert.alert('Error', msg)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <Screen edges={['top', 'bottom']} padded={false}>
@@ -48,63 +55,60 @@ export default function LoginScreen({ navigation }: Props) {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+          <View style={styles.header}>
+            <BrandLogo variant="wordmark" width={220} />
+            <Text style={styles.tagline}>repuestos al máximo</Text>
+            <Text style={styles.subtitle}>Gestión inteligente para autopartes</Text>
+          </View>
 
-        <View style={styles.header}>
-          <BrandLogo variant="wordmark" width={220} />
-          <Text style={styles.tagline}>repuestos al máximo</Text>
-          <Text style={styles.subtitle}>Gestión inteligente para autopartes</Text>
-        </View>
+          <View style={styles.card}>
+            <Text style={styles.label}>Correo electrónico</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="admin@tutienda.com"
+              placeholderTextColor={colors.text.disabled}
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
 
-        <View style={styles.card}>
-          <Text style={styles.label}>Correo electrónico</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="admin@tutienda.com"
-            placeholderTextColor={colors.text.disabled}
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
+            <Text style={styles.label}>Contraseña</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="••••••••"
+              placeholderTextColor={colors.text.disabled}
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
 
-          <Text style={styles.label}>Contraseña</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="••••••••"
-            placeholderTextColor={colors.text.disabled}
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
+            <TouchableOpacity
+              style={[styles.submitBtn, isLoading && styles.submitBtnDisabled]}
+              onPress={handleSubmit}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <ActivityIndicator color={colors.text.inverse} />
+              ) : (
+                <Text style={styles.submitBtnText}>Entrar</Text>
+              )}
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.submitBtn, isLoading && styles.submitBtnDisabled]}
-            onPress={handleSubmit}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <ActivityIndicator color={colors.text.inverse} />
-            ) : (
-              <Text style={styles.submitBtnText}>Entrar</Text>
-            )}
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.registerLink}
+              onPress={() => navigation.navigate('Register')}
+            >
+              <Text style={styles.registerLinkText}>¿No tienes cuenta? Crear una gratis</Text>
+            </TouchableOpacity>
+          </View>
 
-          <TouchableOpacity
-            style={styles.registerLink}
-            onPress={() => navigation.navigate('Register')}
-          >
-            <Text style={styles.registerLinkText}>
-              ¿No tienes cuenta? Crear una gratis
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        <Text style={styles.footer}>RepMAX · Venezuela</Text>
-      </ScrollView>
+          <Text style={styles.footer}>RepMAX · Venezuela</Text>
+        </ScrollView>
       </KeyboardAvoidingView>
     </Screen>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -186,4 +190,4 @@ const styles = StyleSheet.create({
     fontSize: typography.size.xs,
     marginTop: spacing.xl,
   },
-});
+})

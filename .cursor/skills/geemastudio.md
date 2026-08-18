@@ -24,6 +24,7 @@
 ## 2. Stack exacto
 
 ### Mobile (`apps/geemastudio-mobile/`)
+
 ```
 Expo SDK             56
 React Native         0.85
@@ -44,6 +45,7 @@ Node                 22 (.nvmrc)
 ```
 
 ### Web (`apps/geemastudio-web/`)
+
 ```
 Next.js              15 (App Router)
 React                19
@@ -53,6 +55,7 @@ Supabase JS          v2
 ```
 
 ### Monorepo
+
 ```
 Yarn                 4 (PnP)
 TypeScript           ~6.0.3 (resolutions en package.json raíz)
@@ -65,6 +68,7 @@ Workspaces:
 ```
 
 ### Backend / Infra
+
 ```
 Supabase  PostgreSQL + Auth + Storage + Edge Functions (Deno)
 Drizzle ORM  ^0.30.x — schema como fuente de verdad
@@ -74,6 +78,7 @@ NO Express   — mobile y web conectan directo a Supabase
 ```
 
 ### Bot WABA (`supabase/functions/whatsapp-webhook/`)
+
 ```
 Runtime:   Deno (Supabase Edge Functions)
 API:       Meta WhatsApp Business API
@@ -271,20 +276,20 @@ geemastudio/
 
 ## 4. Naming conventions
 
-| Tipo | Convención | Ejemplo |
-|---|---|---|
-| Componentes React/RN | PascalCase | `ClientCard.tsx` |
-| Hooks | camelCase con `use` | `useClientsData.ts` |
-| Servicios/utils | camelCase | `format.ts`, `tenantSettingsService.ts` |
-| Types / interfaces | PascalCase | `TenantConfig`, `ClientEnriched` |
-| Constantes | SCREAMING_SNAKE | `LIMA_UTC_OFFSET_HOURS` |
-| Columnas BD Supabase | snake_case | `employee_id`, `created_at` |
-| Props interfaces TS | snake_case si viene de BD, camelCase si es UI | mixto |
-| Imports mobile | alias `@/` | `import { useTheme } from "@/hooks/useTheme"` |
-| Imports packages | `@geemastudio/*` + `@zmtech/tenant-config` | `from "@zmtech/tenant-config"` |
-| Rutas de navegacion | PascalCase o CamelCase generico | `"Personal"` NO `"Chicas"` |
-| AsyncStorage keys | `@geemastudio/*` | `@geemastudio/tenant_configured` |
-| Comentarios codigo | Espanol con prefijo modulo en logs | `console.log('[WABA]', ...)` |
+| Tipo                 | Convención                                    | Ejemplo                                       |
+| -------------------- | --------------------------------------------- | --------------------------------------------- |
+| Componentes React/RN | PascalCase                                    | `ClientCard.tsx`                              |
+| Hooks                | camelCase con `use`                           | `useClientsData.ts`                           |
+| Servicios/utils      | camelCase                                     | `format.ts`, `tenantSettingsService.ts`       |
+| Types / interfaces   | PascalCase                                    | `TenantConfig`, `ClientEnriched`              |
+| Constantes           | SCREAMING_SNAKE                               | `LIMA_UTC_OFFSET_HOURS`                       |
+| Columnas BD Supabase | snake_case                                    | `employee_id`, `created_at`                   |
+| Props interfaces TS  | snake_case si viene de BD, camelCase si es UI | mixto                                         |
+| Imports mobile       | alias `@/`                                    | `import { useTheme } from "@/hooks/useTheme"` |
+| Imports packages     | `@geemastudio/*` + `@zmtech/tenant-config`    | `from "@zmtech/tenant-config"`                |
+| Rutas de navegacion  | PascalCase o CamelCase generico               | `"Personal"` NO `"Chicas"`                    |
+| AsyncStorage keys    | `@geemastudio/*`                              | `@geemastudio/tenant_configured`              |
+| Comentarios codigo   | Espanol con prefijo modulo en logs            | `console.log('[WABA]', ...)`                  |
 
 ---
 
@@ -296,21 +301,22 @@ geemastudio/
 
 ```typescript
 // CORRECTO:
-const { config } = useTenant();
-const symbol   = config.locale.currency.symbol;     // "$" | "S/" | "COP"
-const staff    = config.terminology.staff;           // "Profesionales" | "Barberos"
-const tz       = config.locale.timezone;             // "America/Lima" | "America/Bogota"
-const primary  = config.theme.primaryColor;          // hex dinamico del preset
+const { config } = useTenant()
+const symbol = config.locale.currency.symbol // "$" | "S/" | "COP"
+const staff = config.terminology.staff // "Profesionales" | "Barberos"
+const tz = config.locale.timezone // "America/Lima" | "America/Bogota"
+const primary = config.theme.primaryColor // hex dinamico del preset
 
 // INCORRECTO — viola multi-tenancy:
-const symbol = "S/";
-const staff  = "Chicas";
-const color  = "#7B2D8E";
-const name   = "ZM Lash";
-const tz     = "America/Lima";  // hardcodeado en lugar de config.locale.timezone
+const symbol = 'S/'
+const staff = 'Chicas'
+const color = '#7B2D8E'
+const name = 'ZM Lash'
+const tz = 'America/Lima' // hardcodeado en lugar de config.locale.timezone
 ```
 
 **Checklist al portear cualquier pantalla de ZM:**
+
 - [ ] `fmtSoles()` → `formatCurrency(amount, config)`
 - [ ] `"S/"` → `config.locale.currency.symbol`
 - [ ] `"chicas"` / `"Chicas"` → `config.terminology.staff`
@@ -365,12 +371,12 @@ useQuery({
     const { count } = await supabase
       .from('appointment_verifications')
       .select('*', { count: 'exact', head: true })
-      .eq('status', 'payment_submitted');
-    return count ?? 0;
+      .eq('status', 'payment_submitted')
+    return count ?? 0
   },
-  refetchInterval: 60_000,   // OBLIGATORIO en badges
-  enabled: isAdmin,          // OBLIGATORIO en badges
-});
+  refetchInterval: 60_000, // OBLIGATORIO en badges
+  enabled: isAdmin, // OBLIGATORIO en badges
+})
 ```
 
 ### 5.5 Joins Supabase — PATRON CRITICO
@@ -382,13 +388,21 @@ PostgREST devuelve `[]` silencioso con joins encadenados. Siempre queries separa
 supabase.from('clients').select(`*, appointments(*, payments(*), services(*))`)
 
 // SIEMPRE — queries separadas + combinar en memoria:
-const { data: clients }   = await supabase.from('clients').select('*');
-const { data: apts }      = await supabase.from('appointments')
+const { data: clients } = await supabase.from('clients').select('*')
+const { data: apts } = await supabase
+  .from('appointments')
   .select('id, client_id, status, price, date')
-  .in('client_id', clients.map(c => c.id));
-const { data: payments }  = await supabase.from('payments')
+  .in(
+    'client_id',
+    clients.map((c) => c.id)
+  )
+const { data: payments } = await supabase
+  .from('payments')
   .select('appointment_id, amount')
-  .in('appointment_id', apts.map(a => a.id));
+  .in(
+    'appointment_id',
+    apts.map((a) => a.id)
+  )
 // combinar en JavaScript
 ```
 
@@ -412,17 +426,17 @@ Drizzle solo para:
 ```typescript
 // Patron: responder 200 a Meta INMEDIATO, procesar en background
 Deno.serve(async (req) => {
-  const promise = processMessage(body);
-  globalThis.EdgeRuntime?.waitUntil?.(promise);   // background
-  return new Response("ok", { status: 200 });     // inmediato — CRITICO
-});
+  const promise = processMessage(body)
+  globalThis.EdgeRuntime?.waitUntil?.(promise) // background
+  return new Response('ok', { status: 200 }) // inmediato — CRITICO
+})
 
 // CORS en toda Edge Function llamada desde web:
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
-if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+}
+if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
 
 // Edge Function llamada por DB trigger → deploy con:
 // supabase functions deploy send-notification --no-verify-jwt
@@ -433,6 +447,7 @@ if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders }
 ## 6. Design System — Lunaris
 
 ### Filosofia
+
 - Fondo solido oscuro (`#0F0F0F` / `#111318`), no gradiente
 - **Gradiente solo en elementos interactivos** (CTAs, progress dots, badges activos)
 - Mobile-first, dark aesthetics, limpio
@@ -471,34 +486,34 @@ BorderRadius: { sm: 6, md: 10, lg: 16, xl: 24, full: 9999 }
 
 ### Presets de tenant
 
-| Preset | businessType | Color primario |
-|---|---|---|
-| spaNavilsPreset | spa-nails | #40E0D0 |
-| barbershopPreset | barbershop | #1A237E |
-| hairSalonPreset | hair-salon | #6A1B9A |
-| fullAestheticPreset | full-aesthetic | #00695C |
+| Preset              | businessType   | Color primario |
+| ------------------- | -------------- | -------------- |
+| spaNavilsPreset     | spa-nails      | #40E0D0        |
+| barbershopPreset    | barbershop     | #1A237E        |
+| hairSalonPreset     | hair-salon     | #6A1B9A        |
+| fullAestheticPreset | full-aesthetic | #00695C        |
 
 ### Marca (`apps/geemastudio-web/public/`)
 
-| Archivo | Uso |
-|---|---|
-| logo-diamondSparkle.svg | **Principal** — diamante claro, fondos oscuros / transparentes |
-| logo-diamondSparkle-positive.svg | Export / materiales |
-| logo-diamondSparkle-negative.svg | Preview / redes |
-| favicon.png | Favicon |
+| Archivo                          | Uso                                                            |
+| -------------------------------- | -------------------------------------------------------------- |
+| logo-diamondSparkle.svg          | **Principal** — diamante claro, fondos oscuros / transparentes |
+| logo-diamondSparkle-positive.svg | Export / materiales                                            |
+| logo-diamondSparkle-negative.svg | Preview / redes                                                |
+| favicon.png                      | Favicon                                                        |
 
 El símbolo no incluye texto “GeemaStudio”. Ver CHANGELOG v1.4.4.
 
 ### Componentes UI mobile
 
-| Componente | Reglas clave |
-|---|---|
-| Boton primario | expo-linear-gradient con tokens Lunaris, borderRadius 12 |
-| Boton outline | Border rgba(255,255,255,0.15), bg transparente |
-| Cards | bg backgroundSecondary, border theme.border, radius 16 |
-| Iconos | Feather icons (@expo/vector-icons/Feather) |
-| Color swatches | Cuadrados, NO circulos |
-| Progress dots onboarding | Pill-shape, activo = gradiente, inactivo = muted |
+| Componente               | Reglas clave                                             |
+| ------------------------ | -------------------------------------------------------- |
+| Boton primario           | expo-linear-gradient con tokens Lunaris, borderRadius 12 |
+| Boton outline            | Border rgba(255,255,255,0.15), bg transparente           |
+| Cards                    | bg backgroundSecondary, border theme.border, radius 16   |
+| Iconos                   | Feather icons (@expo/vector-icons/Feather)               |
+| Color swatches           | Cuadrados, NO circulos                                   |
+| Progress dots onboarding | Pill-shape, activo = gradiente, inactivo = muted         |
 
 ---
 
@@ -507,53 +522,53 @@ El símbolo no incluye texto “GeemaStudio”. Ver CHANGELOG v1.4.4.
 ```typescript
 // packages/tenant-config/src/types.ts
 export interface TenantConfig {
-  businessName: string;
-  businessType: 'spa-nails' | 'barbershop' | 'hair-salon' | 'full-aesthetic';
-  logo?: string;
-  tagline?: string;
+  businessName: string
+  businessType: 'spa-nails' | 'barbershop' | 'hair-salon' | 'full-aesthetic'
+  logo?: string
+  tagline?: string
 
   theme: {
-    primaryColor: string;   // hex — del preset seleccionado
-    accentColor: string;    // hex — complementario
-    darkMode: boolean;
-  };
+    primaryColor: string // hex — del preset seleccionado
+    accentColor: string // hex — complementario
+    darkMode: boolean
+  }
 
   locale: {
-    currency: { code: string; symbol: string };  // 'USD'/'$' | 'PEN'/'S/' | 'COP'/'COP$'
-    country: string;
-    timezone: string;        // 'America/Lima' | 'America/Caracas' | 'America/Bogota'
-    language: 'es' | 'es-PE' | 'es-VE' | 'es-CO' | 'pt-BR';
-  };
+    currency: { code: string; symbol: string } // 'USD'/'$' | 'PEN'/'S/' | 'COP'/'COP$'
+    country: string
+    timezone: string // 'America/Lima' | 'America/Caracas' | 'America/Bogota'
+    language: 'es' | 'es-PE' | 'es-VE' | 'es-CO' | 'pt-BR'
+  }
 
   terminology: {
-    staff: string;           // 'Profesionales' | 'Barberos' | 'Estilistas' | 'Especialistas'
-    staffSingular: string;
-    appointment: string;     // 'cita' | 'turno' | 'reserva'
-    client: string;          // 'cliente' | 'clienta'
-  };
+    staff: string // 'Profesionales' | 'Barberos' | 'Estilistas' | 'Especialistas'
+    staffSingular: string
+    appointment: string // 'cita' | 'turno' | 'reserva'
+    client: string // 'cliente' | 'clienta'
+  }
 
   contact?: {
-    phone?: string;
-    whatsapp?: string;
-    email?: string;
-    address?: string;
-    instagram?: string;
-  };
+    phone?: string
+    whatsapp?: string
+    email?: string
+    address?: string
+    instagram?: string
+  }
 
   features?: {
-    whatsapp?: boolean;      // activa PromoMasiva + TokenWarningBanner + Bot WABA
-    inventory?: boolean;
-    commissions?: boolean;
-  };
+    whatsapp?: boolean // activa PromoMasiva + TokenWarningBanner + Bot WABA
+    inventory?: boolean
+    commissions?: boolean
+  }
 
   integrations?: {
-    waba?: { tokenExpiry?: string; };  // ISO date → TokenWarningBanner
-  };
+    waba?: { tokenExpiry?: string } // ISO date → TokenWarningBanner
+  }
 
   schedule?: {
-    weekdays: { open: string; close: string };  // '10:00' | '19:00'
-    sunday: { open: string; close: string } | null;
-  };
+    weekdays: { open: string; close: string } // '10:00' | '19:00'
+    sunday: { open: string; close: string } | null
+  }
 }
 ```
 
@@ -650,25 +665,25 @@ Forzar en dev: `EXPO_PUBLIC_FORCE_ONBOARDING=true`
 
 ```typescript
 export type MoreStackParamList = {
-  MoreHome: undefined;
-  ValidacionPagos: undefined;
-  AsignarProfesionales: undefined;
-  Finanzas: undefined;
-  Personal: undefined;
-  Clients: undefined;
-  Inventario: undefined;
-  Configuracion: undefined;
-  Perfil: undefined;
-};
+  MoreHome: undefined
+  ValidacionPagos: undefined
+  AsignarProfesionales: undefined
+  Finanzas: undefined
+  Personal: undefined
+  Clients: undefined
+  Inventario: undefined
+  Configuracion: undefined
+  Perfil: undefined
+}
 // Tab Mas → badge = usePendingBadgeCount().tabBadgeCount
 ```
 
 ### 9.4 Segmentacion de clientes
 
 ```typescript
-const isVip    = totalAppointments >= 3;
-const isNew    = createdAt >= thirtyDaysAgo;
-const isAtRisk = !isNew && daysSinceLastVisit !== null && daysSinceLastVisit > 45;
+const isVip = totalAppointments >= 3
+const isNew = createdAt >= thirtyDaysAgo
+const isAtRisk = !isNew && daysSinceLastVisit !== null && daysSinceLastVisit > 45
 // KPIs: total_clients, vip_count, new_this_month, at_risk_count, top_spender
 ```
 
@@ -681,30 +696,30 @@ const isAtRisk = !isNew && daysSinceLastVisit !== null && daysSinceLastVisit > 4
 Audiencia: `owner` / `staff` / `dev`. Siempre autenticados con Supabase Auth.
 **Nunca depende de `web_mode`** — está disponible para todo tenant desde el día 1.
 
-| Ruta | Estado |
-|------|--------|
-| `/finanzas` + `/finanzas/login` | ✅ Implementado |
-| `/dashboard` | ✅ Implementado |
-| `/panel/servicios` (`?tab=categorias\|servicios\|packs\|promos`) | ✅ Implementado |
-| `/panel/horarios` | ✅ Implementado |
-| `/panel/clientes`, `/panel/personal`, `/panel/agenda`, `/panel/waba`, `/panel/configuracion` | ⏳ PR-11 |
+| Ruta                                                                                         | Estado          |
+| -------------------------------------------------------------------------------------------- | --------------- |
+| `/finanzas` + `/finanzas/login`                                                              | ✅ Implementado |
+| `/dashboard`                                                                                 | ✅ Implementado |
+| `/panel/servicios` (`?tab=categorias\|servicios\|packs\|promos`)                             | ✅ Implementado |
+| `/panel/horarios`                                                                            | ✅ Implementado |
+| `/panel/clientes`, `/panel/personal`, `/panel/agenda`, `/panel/waba`, `/panel/configuracion` | ⏳ PR-11        |
 
 #### Producto 2 — Landing pública del tenant (opcional)
 
 Audiencia: clientes del negocio. Sin auth. Controlado por `tenant_settings.web_mode`.
 
-| Ruta | Estado |
-|------|--------|
-| `/` | ✅ Landing plataforma GeemaStudio (B2B) |
+| Ruta        | Estado                                                                |
+| ----------- | --------------------------------------------------------------------- |
+| `/`         | ✅ Landing plataforma GeemaStudio (B2B)                               |
 | `/s/[slug]` | ✅ Landing pública del tenant (SSG + revalidación 5 min; 3 templates) |
 
 #### `web_mode` en `tenant_settings`
 
-| Valor | Significado |
-|-------|-------------|
-| `'none'` | Sin landing pública (default al crear tenant) |
-| `'geema_hosted'` | Landing en `geemastudio.app/s/[slug]` |
-| `'own_domain'` | Dominio propio del tenant — GeemaStudio no interviene en el routing |
+| Valor            | Significado                                                         |
+| ---------------- | ------------------------------------------------------------------- |
+| `'none'`         | Sin landing pública (default al crear tenant)                       |
+| `'geema_hosted'` | Landing en `geemastudio.app/s/[slug]`                               |
+| `'own_domain'`   | Dominio propio del tenant — GeemaStudio no interviene en el routing |
 
 > ZM Lash & Nails (Vanessa) → `web_mode = 'own_domain'` (informativo, no bloquea el panel).
 > Columnas en BD: `web_mode`, `slug` (único, Modo B), `custom_domain` (informativo, Modo A).
@@ -733,8 +748,8 @@ Meta POST → responder 200 inmediato → processMessage en background
 export function formatCurrency(amount: number, config: TenantConfig): string {
   // Usar Intl.NumberFormat con config.locale.language + config.locale.currency.code
   // Fallback simple si Intl da problemas en RN:
-  const formatted = amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  return `${config.locale.currency.symbol} ${formatted}`;
+  const formatted = amount.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+  return `${config.locale.currency.symbol} ${formatted}`
 }
 
 // Uso correcto en todos los screens:
@@ -746,8 +761,8 @@ formatCurrency(payment.amount, config)
 
 ```typescript
 // Input de precio acepta "," como separador decimal en web
-const normalizedPrice = inputValue.replace(',', '.');
-const price = parseFloat(normalizedPrice);
+const normalizedPrice = inputValue.replace(',', '.')
+const price = parseFloat(normalizedPrice)
 ```
 
 ### expo-image-picker (SDK 56)
@@ -790,6 +805,7 @@ yarn db:seed         # seeds template
 ## 13. Estado de fases (abr 2026)
 
 ### Completadas
+
 - Fases 1 al 6: Migracion ZM → GeemaStudio, monorepo, @zmtech/tenant-config, onboarding, tenant_settings
 - Fase 7A+7B: RLS 9 tablas con get_my_role(), onboarding conectado a Supabase
 - Fase 8: SettingsScreen modular + ThemeContext (useColorScheme, light|dark|auto)
@@ -804,10 +820,11 @@ yarn db:seed         # seeds template
 - Web panel /horarios: picker formato 12/24h + tenant_settings.time_format
 - v1.4.8: Lunaris web (#40E0D0), Vercel, DiamondHero sin MaskedView
 - v1.4.9: Selector moneda multi-LATAM (19 monedas), Personal CRUD completo,
-          Agenda KPI strip (AgendaDayKPIStrip), locale.timeFormat (12|24),
-          emojis → iconos Lucide en web (FeatureCard, BusinessTypeTab, HeroSection, etc.)
+  Agenda KPI strip (AgendaDayKPIStrip), locale.timeFormat (12|24),
+  emojis → iconos Lucide en web (FeatureCard, BusinessTypeTab, HeroSection, etc.)
 
 ### Proximas
+
 - Fase 14: EAS Build beta
 - Fase 15: Bot WABA multi-tenant (Edge Function)
 - PromoMasivaScreen (requiere WABA activo)
@@ -849,7 +866,7 @@ yarn db:seed         # seeds template
 7. Logica de negocio en screens: va en hooks o services, nunca en el JSX
 8. Supabase directo en screens: siempre mediado por hook o service
 9. any en TypeScript: usar unknown + type guards
-10. Keys AsyncStorage con prefijo @zm_*: usar @geemastudio/*
+10. Keys AsyncStorage con prefijo @zm__: usar @geemastudio/_
 11. Nombre de ruta "Chicas": usar "Personal" (ya corregido en el repo)
 12. Gradiente en fondos de pantalla completa: solo en CTAs e interactivos
 13. Crear archivos .md sin que se pida: no generar docs automaticamente
@@ -869,9 +886,9 @@ yarn db:seed         # seeds template
 {
   "mcpServers": {
     "supabase-geemastudio": { "url": "...?project_ref=xidjomlxpuosupymcsaj" },
-    "supabase-zm":       { "url": "...?project_ref=udelxwwnyivknslueerr" },
-    "vercel":            { "url": "https://mcp.vercel.com" },
-    "github":            { "image": "ghcr.io/github/github-mcp-server" }
+    "supabase-zm": { "url": "...?project_ref=udelxwwnyivknslueerr" },
+    "vercel": { "url": "https://mcp.vercel.com" },
+    "github": { "image": "ghcr.io/github/github-mcp-server" }
   }
 }
 ```
@@ -881,4 +898,4 @@ Para BD de GeemaStudio: siempre usar supabase-geemastudio, nunca supabase-zm.
 
 ---
 
-*Generado: marzo 2026. Actualizado: abril 2026 (v1.4.9). Para actualizar: re-ejecutar analisis del repo con Claude Code o claude.ai*
+_Generado: marzo 2026. Actualizado: abril 2026 (v1.4.9). Para actualizar: re-ejecutar analisis del repo con Claude Code o claude.ai_

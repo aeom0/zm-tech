@@ -6,23 +6,23 @@ El splash nativo (`app.json`) es el cold start de marca RepMAX. El paso Splash d
 
 ## Pasos
 
-| # | Pantalla | Avance |
-|---|----------|--------|
-| 00 | Auth choice | Crear cuenta → wizard \| Iniciar sesión → Login directo \| Explorar demo |
-| 02 | País | Tap card (VE destacada; grid otros) |
-| 03 | Vehículos | Tap card → auto |
-| 04 | Negocio | Tap card → auto |
-| 05 | Tema | Select + CTA Continuar |
-| 06 | Preview | Mock dashboard + CTA completa onboarding directo |
+| #   | Pantalla    | Avance                                                                   |
+| --- | ----------- | ------------------------------------------------------------------------ |
+| 00  | Auth choice | Crear cuenta → wizard \| Iniciar sesión → Login directo \| Explorar demo |
+| 02  | País        | Tap card (VE destacada; grid otros)                                      |
+| 03  | Vehículos   | Tap card → auto                                                          |
+| 04  | Negocio     | Tap card → auto                                                          |
+| 05  | Tema        | Select + CTA Continuar                                                   |
+| 06  | Preview     | Mock dashboard + CTA completa onboarding directo                         |
 
 Ruta cableada en `apps/repmax-mobile`: `AppNavigator` decide Auth choice → wizard/Login (ver `OnboardingAuthChoice.tsx`, `OnboardingNavigator.tsx`). La antigua pantalla "07 - Decisión" fue removida del código (sigue en el `.pen` como referencia); sus dos funciones (crear cuenta, demo) quedaron en Preview y en Auth choice respectivamente.
 
 ## Shell por pantalla (02–06)
 
-1. Status bar  
-2. `ProgressBar` (step N/5)  
-3. `ScreenHeader`  
-4. Contenido  
+1. Status bar
+2. `ProgressBar` (step N/5)
+3. `ScreenHeader`
+4. Contenido
 5. Footer CTA solo si el paso lo requiere (05, 06)
 
 ## Copy canónico (VE)

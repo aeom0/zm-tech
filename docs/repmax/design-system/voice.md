@@ -11,11 +11,11 @@ Español LATAM con jerga venezolana natural, profesional de piso de tienda. Cort
 
 Acción específica, nunca genérico:
 
-| Bien | Mal |
-|------|-----|
-| Continuar | OK |
-| Crear mi cuenta gratis | Submit |
-| Explorar con demo | Proceed |
+| Bien                    | Mal      |
+| ----------------------- | -------- |
+| Continuar               | OK       |
+| Crear mi cuenta gratis  | Submit   |
+| Explorar con demo       | Proceed  |
 | Se ve brutal, continuar | Continue |
 
 ## Errores

@@ -47,12 +47,12 @@ Bridge.
 
 ## 3. Por dispositivo
 
-| Dispositivo | Complejidad | Vía | Notas |
-|---|---|---|---|
-| Scanner de código | Baja | HID keyboard wedge | 95% de los lectores actúan como teclado. No requiere Bridge. Hook `useBarcodeScan()` detecta ráfagas de teclado + Enter para distinguir de tecleo manual. |
-| Impresora normal (A4) | Baja | `window.print()` / PDF | Ya resuelto con las herramientas actuales del navegador. |
-| Impresora térmica | Media | Bridge → ESC/POS crudo | Sin Bridge solo queda `window.print()`, que no sirve para ticket de 58/80mm con corte automático. |
-| Impresora fiscal | Alta | Bridge → SDK del fabricante | Cada marca (The Factory HKA, Zonda, Fiscal Ndemasi, etc.) tiene protocolo propio, no intercambiable. Bloqueante hasta confirmar marca del cliente piloto. |
+| Dispositivo           | Complejidad | Vía                         | Notas                                                                                                                                                     |
+| --------------------- | ----------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scanner de código     | Baja        | HID keyboard wedge          | 95% de los lectores actúan como teclado. No requiere Bridge. Hook `useBarcodeScan()` detecta ráfagas de teclado + Enter para distinguir de tecleo manual. |
+| Impresora normal (A4) | Baja        | `window.print()` / PDF      | Ya resuelto con las herramientas actuales del navegador.                                                                                                  |
+| Impresora térmica     | Media       | Bridge → ESC/POS crudo      | Sin Bridge solo queda `window.print()`, que no sirve para ticket de 58/80mm con corte automático.                                                         |
+| Impresora fiscal      | Alta        | Bridge → SDK del fabricante | Cada marca (The Factory HKA, Zonda, Fiscal Ndemasi, etc.) tiene protocolo propio, no intercambiable. Bloqueante hasta confirmar marca del cliente piloto. |
 
 ## 4. Capas de código (respeta arquitectura por capas del proyecto)
 

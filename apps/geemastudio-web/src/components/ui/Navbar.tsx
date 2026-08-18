@@ -1,43 +1,39 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import { GradientButton } from "@/components/ui/GradientButton";
-import { NavbarDashboardLink } from "@/components/ui/NavbarDashboardLink";
-import { LUNARIS } from "@/lib/theme";
+import { useState, useEffect } from 'react'
+import Image from 'next/image'
+import { GradientButton } from '@/components/ui/GradientButton'
+import { NavbarDashboardLink } from '@/components/ui/NavbarDashboardLink'
+import { LUNARIS } from '@/lib/theme'
 
 export function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    const onScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
 
   const links = [
-    { label: "Funciones", href: "#funciones" },
-    { label: "Demo", href: "#demo" },
-    { label: "Precios", href: "#precios" },
-    { label: "FAQ", href: "#faq" },
-  ];
+    { label: 'Funciones', href: '#funciones' },
+    { label: 'Demo', href: '#demo' },
+    { label: 'Precios', href: '#precios' },
+    { label: 'FAQ', href: '#faq' },
+  ]
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed left-0 right-0 top-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 shadow-sm"
-          : "bg-transparent"
+          ? 'border-b border-zinc-200 bg-white/90 shadow-sm backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/90'
+          : 'bg-transparent'
       }`}
     >
-      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
         {/* Logo — ícono + wordmark + badge */}
-        <a
-          href="#"
-          className="flex items-center gap-2.5 group"
-          aria-label="GeemaStudio — inicio"
-        >
+        <a href="#" className="group flex items-center gap-2.5" aria-label="GeemaStudio — inicio">
           <Image
             src="/logo-diamondSparkle.svg"
             alt="GeemaStudio"
@@ -47,17 +43,17 @@ export function Navbar() {
             className="h-11 w-auto shrink-0"
           />
           <span
-            className={`font-bold tracking-tight text-[19px] ${
-              scrolled ? "text-zinc-900 dark:text-white" : "text-white"
+            className={`text-[19px] font-bold tracking-tight ${
+              scrolled ? 'text-zinc-900 dark:text-white' : 'text-white'
             }`}
           >
             Geema
             <span
               style={{
                 background: LUNARIS.gradient.css90,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
               }}
             >
               Studio
@@ -69,22 +65,22 @@ export function Navbar() {
               background: LUNARIS.badge.bg,
               color: LUNARIS.badge.text,
             }}
-            className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full tracking-wide"
+            className="rounded-full px-1.5 py-0.5 text-[10px] font-semibold tracking-wide"
           >
             Beta
           </span>
         </a>
 
         {/* Links — desktop */}
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden items-center gap-8 md:flex">
           {links.map((l) => (
             <a
               key={l.href}
               href={l.href}
               className={`text-sm font-medium transition-colors hover:text-white ${
                 scrolled
-                  ? "text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white"
-                  : "text-white/70 hover:text-white"
+                  ? 'text-zinc-700 hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-white'
+                  : 'text-white/70 hover:text-white'
               }`}
             >
               {l.label}
@@ -94,19 +90,19 @@ export function Navbar() {
         </nav>
 
         {/* CTA — desktop */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden items-center gap-3 md:flex">
           <a
             href="#"
             className={`text-sm font-medium transition-colors ${
               scrolled
-                ? "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white"
-                : "text-white/60 hover:text-white"
+                ? 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white'
+                : 'text-white/60 hover:text-white'
             }`}
           >
             Iniciar sesión
           </a>
           {/* Divider */}
-          <span className="w-px h-5 bg-white/15 dark:bg-white/10" />
+          <span className="h-5 w-px bg-white/15 dark:bg-white/10" />
           <GradientButton href="#precios" size="sm">
             Empezar gratis
           </GradientButton>
@@ -115,23 +111,23 @@ export function Navbar() {
         {/* Hamburger — mobile */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden p-2 rounded-lg"
+          className="rounded-lg p-2 md:hidden"
           aria-label="Menú"
         >
           <div className="space-y-1.5">
             {[0, 1, 2].map((i) => (
               <span
                 key={i}
-                className={`block w-6 h-0.5 transition-all duration-300 ${
-                  scrolled ? "bg-zinc-800 dark:bg-zinc-200" : "bg-white"
+                className={`block h-0.5 w-6 transition-all duration-300 ${
+                  scrolled ? 'bg-zinc-800 dark:bg-zinc-200' : 'bg-white'
                 } ${
                   menuOpen && i === 0
-                    ? "rotate-45 translate-y-2"
+                    ? 'translate-y-2 rotate-45'
                     : menuOpen && i === 1
-                      ? "opacity-0"
+                      ? 'opacity-0'
                       : menuOpen && i === 2
-                        ? "-rotate-45 -translate-y-2"
-                        : ""
+                        ? '-translate-y-2 -rotate-45'
+                        : ''
                 }`}
               />
             ))}
@@ -141,13 +137,13 @@ export function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden bg-zinc-950/95 backdrop-blur-md border-t border-zinc-800 px-4 py-6 space-y-4">
+        <div className="space-y-4 border-t border-zinc-800 bg-zinc-950/95 px-4 py-6 backdrop-blur-md md:hidden">
           {links.map((l) => (
             <a
               key={l.href}
               href={l.href}
               onClick={() => setMenuOpen(false)}
-              className="block text-white/90 font-medium py-2 hover:text-white transition-colors"
+              className="block py-2 font-medium text-white/90 transition-colors hover:text-white"
             >
               {l.label}
             </a>
@@ -156,16 +152,12 @@ export function Navbar() {
             <NavbarDashboardLink scrolled={false} />
           </div>
           <div className="pt-2">
-            <GradientButton
-              href="#precios"
-              size="md"
-              className="w-full justify-center"
-            >
+            <GradientButton href="#precios" size="md" className="w-full justify-center">
               Empezar gratis — 14 días
             </GradientButton>
           </div>
         </div>
       )}
     </header>
-  );
+  )
 }

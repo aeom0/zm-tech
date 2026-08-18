@@ -6,9 +6,9 @@ Vive en el monorepo **zm-tech** (pnpm + Turborepo), compartiendo el proyecto Sup
 
 ## Apps y packages (previstos)
 
-| Path | Rol |
-|------|-----|
-| `apps/hub` | Next.js 16 App Router — panel interno (puerto **3004**) |
+| Path                  | Rol                                                        |
+| --------------------- | ---------------------------------------------------------- |
+| `apps/hub`            | Next.js 16 App Router — panel interno (puerto **3004**)    |
 | `packages/hub-schema` | Drizzle schema `hub_*` + constantes (`@zmtech/hub-schema`) |
 
 No hay app mobile en el MVP. Si más adelante hace falta, se agrega `apps/hub-mobile` siguiendo la simetría del monorepo.
@@ -26,15 +26,15 @@ UI (apps/hub) → Server Components / hooks → cliente Supabase → tablas hub_
 
 ## Módulos
 
-| Módulo | Fase | Descripción |
-|--------|------|-------------|
-| Clientes | 1 | CRM ligero: datos, vertical, estado, origen |
-| Proyectos | 1 | Webs/apps entregadas: repo, stack, dominio, deploy, versión |
-| Contratos | 1 | Monto, modelo 50/50, soporte mensual |
-| Leads (inbox) | 1 | Vista de `contacts`/`quote_leads` → convertir a cliente |
-| Tickets | 2 | Soporte por cliente, ligado al plan mensual |
-| Recordatorios | 2 | Vencimientos: dominios, tokens (p. ej. WABA), renovaciones |
-| Comunicaciones | 3 | Correo, chatbots/WABA centralizados, notificaciones |
+| Módulo         | Fase | Descripción                                                 |
+| -------------- | ---- | ----------------------------------------------------------- |
+| Clientes       | 1    | CRM ligero: datos, vertical, estado, origen                 |
+| Proyectos      | 1    | Webs/apps entregadas: repo, stack, dominio, deploy, versión |
+| Contratos      | 1    | Monto, modelo 50/50, soporte mensual                        |
+| Leads (inbox)  | 1    | Vista de `contacts`/`quote_leads` → convertir a cliente     |
+| Tickets        | 2    | Soporte por cliente, ligado al plan mensual                 |
+| Recordatorios  | 2    | Vencimientos: dominios, tokens (p. ej. WABA), renovaciones  |
+| Comunicaciones | 3    | Correo, chatbots/WABA centralizados, notificaciones         |
 
 ## Comandos (raíz del monorepo, cuando exista la app)
 
@@ -46,8 +46,8 @@ pnpm build:hub
 
 ## Variables de entorno
 
-| App | Archivo | Variables |
-|-----|---------|-----------|
+| App | Archivo               | Variables                                                   |
+| --- | --------------------- | ----------------------------------------------------------- |
 | Hub | `apps/hub/.env.local` | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` |
 
 Proyecto: `https://llacowjutjfefboqgfnj.supabase.co`
@@ -60,23 +60,23 @@ Migraciones Fase 1 aplicadas en `llacowjutjfefboqgfnj` (ago 2026): `hub_initial_
 
 ## Planes
 
-| Plan | Fase | Contenido |
-|------|------|-----------|
-| [01-PLAN-scaffold-hub-web.md](./plans/01-PLAN-scaffold-hub-web.md) | 0 | `apps/hub` + `packages/hub-schema` + auth + layout |
-| [02-PLAN-schema-rls-supabase.md](./plans/02-PLAN-schema-rls-supabase.md) | 1 | Schema `hub_*`, enums, RLS, helpers |
-| [03-PLAN-clientes-proyectos-leads.md](./plans/03-PLAN-clientes-proyectos-leads.md) | 1 | CRUD clientes/proyectos/contratos + inbox leads + seed |
-| [04-PLAN-operacion-tickets-recordatorios.md](./plans/04-PLAN-operacion-tickets-recordatorios.md) | 2 | Tickets y recordatorios/vencimientos |
-| [05-PLAN-comunicaciones.md](./plans/05-PLAN-comunicaciones.md) | 3 | Correo, chatbots/WABA, notificaciones |
+| Plan                                                                                             | Fase | Contenido                                              |
+| ------------------------------------------------------------------------------------------------ | ---- | ------------------------------------------------------ |
+| [01-PLAN-scaffold-hub-web.md](./plans/01-PLAN-scaffold-hub-web.md)                               | 0    | `apps/hub` + `packages/hub-schema` + auth + layout     |
+| [02-PLAN-schema-rls-supabase.md](./plans/02-PLAN-schema-rls-supabase.md)                         | 1    | Schema `hub_*`, enums, RLS, helpers                    |
+| [03-PLAN-clientes-proyectos-leads.md](./plans/03-PLAN-clientes-proyectos-leads.md)               | 1    | CRUD clientes/proyectos/contratos + inbox leads + seed |
+| [04-PLAN-operacion-tickets-recordatorios.md](./plans/04-PLAN-operacion-tickets-recordatorios.md) | 2    | Tickets y recordatorios/vencimientos                   |
+| [05-PLAN-comunicaciones.md](./plans/05-PLAN-comunicaciones.md)                                   | 3    | Correo, chatbots/WABA, notificaciones                  |
 
 ## Design system
 
 **ZM Control** — misma familia visual que la landing (violeta + carbón). Dark-first, tokens light documentados.
 
-| Recurso | Path |
-|---------|------|
-| Docs agentes | [design-system/](./design-system/) |
-| Canvas / tokens TS | [design/](./design/) |
-| Runtime app | `apps/hub/src/lib/theme.ts` · `apps/hub/src/app/globals.css` |
+| Recurso            | Path                                                         |
+| ------------------ | ------------------------------------------------------------ |
+| Docs agentes       | [design-system/](./design-system/)                           |
+| Canvas / tokens TS | [design/](./design/)                                         |
+| Runtime app        | `apps/hub/src/lib/theme.ts` · `apps/hub/src/app/globals.css` |
 
 ## Reglas críticas
 

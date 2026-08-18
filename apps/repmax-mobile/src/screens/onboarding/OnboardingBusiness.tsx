@@ -2,41 +2,38 @@
 // RepMAX Business Suite — Selección de tipo de negocio (paso 3)
 // ============================================================
 
-import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { OnboardingStackParamList } from '../../navigation/types';
-import { useOnboarding } from '../../context/OnboardingContext';
-import { BUSINESS_OPTIONS } from '../../constants/onboarding';
-import OnboardingProgressBar from '../../components/onboarding/OnboardingProgressBar';
-import SelectionCard from '../../components/onboarding/SelectionCard';
-import { Screen } from '../../components/layout/Screen';
-import { colors, typography, spacing } from '../../utils/theme';
-import type { BusinessType } from '../../types/onboarding';
+import React from 'react'
+import { View, Text, ScrollView, StyleSheet } from 'react-native'
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
+import type { OnboardingStackParamList } from '../../navigation/types'
+import { useOnboarding } from '../../context/OnboardingContext'
+import { BUSINESS_OPTIONS } from '../../constants/onboarding'
+import OnboardingProgressBar from '../../components/onboarding/OnboardingProgressBar'
+import SelectionCard from '../../components/onboarding/SelectionCard'
+import { Screen } from '../../components/layout/Screen'
+import { colors, typography, spacing } from '../../utils/theme'
+import type { BusinessType } from '../../types/onboarding'
 
-type Props = NativeStackScreenProps<OnboardingStackParamList, 'OnboardingBusiness'>;
+type Props = NativeStackScreenProps<OnboardingStackParamList, 'OnboardingBusiness'>
 
 export default function OnboardingBusiness({ navigation }: Props) {
-  const { state, setBusinessType } = useOnboarding();
+  const { state, setBusinessType } = useOnboarding()
 
   const seleccionarNegocio = (tipo: BusinessType) => {
-    setBusinessType(tipo);
-    navigation.navigate('OnboardingTheme');
-  };
+    setBusinessType(tipo)
+    navigation.navigate('OnboardingTheme')
+  }
 
   return (
     <Screen edges={['top', 'bottom']} padded={false}>
       {/* Barra de progreso: paso 3 de 5 */}
       <OnboardingProgressBar currentStep={3} totalSteps={5} />
 
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <Text style={styles.titulo}>¿Qué tipo de negocio tienes?</Text>
 
         <View style={styles.cards}>
-          {BUSINESS_OPTIONS.map(opcion => (
+          {BUSINESS_OPTIONS.map((opcion) => (
             <SelectionCard
               key={opcion.value}
               iconName={opcion.iconName}
@@ -49,7 +46,7 @@ export default function OnboardingBusiness({ navigation }: Props) {
         </View>
       </ScrollView>
     </Screen>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -69,4 +66,4 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     flex: 1,
   },
-});
+})

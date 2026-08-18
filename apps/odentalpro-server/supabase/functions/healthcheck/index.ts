@@ -6,9 +6,9 @@ Deno.serve((_req) => {
   return Response.json(
     {
       ok: true,
-      service: "odentalpro-server",
+      service: 'odentalpro-server',
       ts: new Date().toISOString(),
     },
-    { status: 200 },
-  );
-});
+    { status: 200 }
+  )
+})

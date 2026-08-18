@@ -11,11 +11,11 @@
 Todas las tiendas comparten un solo host de `repmax-web` y se distinguen
 por slug en la ruta:
 
-| Qué | URL |
-|-----|-----|
-| Catálogo de la tienda (vitrina pública) | `/{slug}` |
-| Producto | `/{slug}/p/{id}` |
-| Panel privado | `/login`, `/dashboard`, `/dashboard/inventory` (sin slug — la tienda sale de la sesión vía `repmax_store_users` → `repmax_stores`) |
+| Qué                                     | URL                                                                                                                                |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Catálogo de la tienda (vitrina pública) | `/{slug}`                                                                                                                          |
+| Producto                                | `/{slug}/p/{id}`                                                                                                                   |
+| Panel privado                           | `/login`, `/dashboard`, `/dashboard/inventory` (sin slug — la tienda sale de la sesión vía `repmax_store_users` → `repmax_stores`) |
 
 El slug es único (`repmax_stores.slug`), generado del nombre al
 registrar (`Repuestos Alfa` → `repuestos-alfa`).
@@ -121,16 +121,16 @@ a Supabase en cada hit.
 ## 6. Roadmap
 
 1. [x] Middleware de resolución de hostname en `repmax-web` (aditivo,
-   compatible con `/{slug}` actual). QR/links a subdominio gated por
-   `NEXT_PUBLIC_VITRINA_SUBDOMAINS=1` (producción: encendido).
+       compatible con `/{slug}` actual). QR/links a subdominio gated por
+       `NEXT_PUBLIC_VITRINA_SUBDOMAINS=1` (producción: encendido).
 2. [x] Proyecto Vercel `repmax-web` (GitHub `aeom0/zm-tech`, root `apps/repmax-web`, framework Next.js).
 3. [x] `*.zmtechdev.com` en el proyecto + CNAME `*` + cert wildcard (Let's Encrypt).
-   Nameservers siguen en el registrador (MX ImprovMX). La CLI de Vercel puede
-   marcar “invalid configuration” por eso; HTTPS de tenants ya funciona.
-   Renovación ~90 días: si falla, repetir TXT ACME o mover NS a Vercel (con MX).
+       Nameservers siguen en el registrador (MX ImprovMX). La CLI de Vercel puede
+       marcar “invalid configuration” por eso; HTTPS de tenants ya funciona.
+       Renovación ~90 días: si falla, repetir TXT ACME o mover NS a Vercel (con MX).
 4. [x] URLs públicas por tenant (`urlVitrinaTienda` / QR / WhatsApp) cuando el flag está on.
 5. [ ] (Fase 2) Soporte de `custom_domain` propio por tenant, con cache de
-   lookup en el edge.
+       lookup en el edge.
 
 **Local:** `http://{slug}.localhost:3003` reescribe a `/{slug}` (p. ej.
 `http://repuestos-alfa.localhost:3003`). `http://localhost:3003/{slug}` sigue.

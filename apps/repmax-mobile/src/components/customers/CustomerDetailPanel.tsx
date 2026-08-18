@@ -1,62 +1,59 @@
 // ============================================================
 // Detalle de cliente (pantalla stack + panel master-detail)
 // ============================================================
-import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  ActivityIndicator,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useEffect, useState } from 'react'
+import { View, Text, ScrollView, StyleSheet, ActivityIndicator } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 
-import { customerService } from '../../services/customerService';
-import { formatUSD, formatDate } from '../../utils/formatters';
-import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
-import type { Customer } from '../../types/database';
+import { customerService } from '../../services/customerService'
+import { formatUSD, formatDate } from '../../utils/formatters'
+import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme'
+import type { Customer } from '../../types/database'
 
 interface CustomerDetailPanelProps {
-  customerId: string;
+  customerId: string
   /** Cliente ya cargado (evita fetch extra en master-detail) */
-  customer?: Customer | null;
+  customer?: Customer | null
 }
 
-export function CustomerDetailPanel({ customerId, customer: customerProp }: CustomerDetailPanelProps) {
-  const [customer, setCustomer] = useState<Customer | null>(customerProp ?? null);
-  const [isLoading, setIsLoading] = useState(!customerProp);
+export function CustomerDetailPanel({
+  customerId,
+  customer: customerProp,
+}: CustomerDetailPanelProps) {
+  const [customer, setCustomer] = useState<Customer | null>(customerProp ?? null)
+  const [isLoading, setIsLoading] = useState(!customerProp)
 
   useEffect(() => {
     if (customerProp) {
-      setCustomer(customerProp);
-      setIsLoading(false);
-      return;
+      setCustomer(customerProp)
+      setIsLoading(false)
+      return
     }
 
-    let cancelled = false;
+    let cancelled = false
     const load = async () => {
-      setIsLoading(true);
+      setIsLoading(true)
       try {
-        const found = await customerService.getById(customerId);
-        if (!cancelled) setCustomer(found);
+        const found = await customerService.getById(customerId)
+        if (!cancelled) setCustomer(found)
       } catch {
-        if (!cancelled) setCustomer(null);
+        if (!cancelled) setCustomer(null)
       } finally {
-        if (!cancelled) setIsLoading(false);
+        if (!cancelled) setIsLoading(false)
       }
-    };
-    void load();
+    }
+    void load()
     return () => {
-      cancelled = true;
-    };
-  }, [customerId, customerProp]);
+      cancelled = true
+    }
+  }, [customerId, customerProp])
 
   if (isLoading) {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size="large" color={colors.brand.orange} />
       </View>
-    );
+    )
   }
 
   if (!customer) {
@@ -65,7 +62,7 @@ export function CustomerDetailPanel({ customerId, customer: customerProp }: Cust
         <Ionicons name="person-outline" size={48} color={colors.text.disabled} />
         <Text style={styles.emptyText}>Cliente no encontrado</Text>
       </View>
-    );
+    )
   }
 
   const initials = customer.fullName
@@ -73,7 +70,7 @@ export function CustomerDetailPanel({ customerId, customer: customerProp }: Cust
     .map((n) => n[0])
     .slice(0, 2)
     .join('')
-    .toUpperCase();
+    .toUpperCase()
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -112,7 +109,7 @@ export function CustomerDetailPanel({ customerId, customer: customerProp }: Cust
         </View>
       ) : null}
     </ScrollView>
-  );
+  )
 }
 
 function InfoRow({
@@ -120,9 +117,9 @@ function InfoRow({
   label,
   value,
 }: {
-  icon: keyof typeof Ionicons.glyphMap;
-  label: string;
-  value: string;
+  icon: keyof typeof Ionicons.glyphMap
+  label: string
+  value: string
 }) {
   return (
     <View style={styles.infoRow}>
@@ -132,7 +129,7 @@ function InfoRow({
         <Text style={styles.infoValue}>{value}</Text>
       </View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -248,4 +245,4 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily.regular,
     lineHeight: 22,
   },
-});
+})

@@ -24,8 +24,24 @@ const BLOCKS: Array<{
   from: string
   to: string
 }> = [
-  { row: 0, label: 'Ana', sub: 'Pestañas', dur: '60m', icon: 'eye', from: TEAL_DEEP, to: '#00695c' },
-  { row: 2, label: 'Luis', sub: 'Uñas', dur: '45m', icon: 'sparkles', from: '#0f9c8c', to: '#0d7a6e' },
+  {
+    row: 0,
+    label: 'Ana',
+    sub: 'Pestañas',
+    dur: '60m',
+    icon: 'eye',
+    from: TEAL_DEEP,
+    to: '#00695c',
+  },
+  {
+    row: 2,
+    label: 'Luis',
+    sub: 'Uñas',
+    dur: '45m',
+    icon: 'sparkles',
+    from: '#0f9c8c',
+    to: '#0d7a6e',
+  },
   { row: 4, label: 'Mar', sub: 'Cejas', dur: '30m', icon: 'brow', from: '#14b3a1', to: TEAL_DEEP },
 ]
 

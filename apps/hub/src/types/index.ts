@@ -1,7 +1,7 @@
-import type { HubMemberRole } from "@zmtech/hub-schema";
+import type { HubMemberRole } from '@zmtech/hub-schema'
 
 export type HubMemberWeb = {
-  userId: string;
-  role: HubMemberRole;
-  displayName: string | null;
-};
+  userId: string
+  role: HubMemberRole
+  displayName: string | null
+}

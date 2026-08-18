@@ -1,16 +1,16 @@
-import React from "react";
-import { createNativeBottomTabNavigator } from "@react-navigation/bottom-tabs/unstable";
-import { Feather } from "@expo/vector-icons";
+import React from 'react'
+import { createNativeBottomTabNavigator } from '@react-navigation/bottom-tabs/unstable'
+import { Feather } from '@expo/vector-icons'
 
-import HomeStackNavigator from "@/navigation/HomeStackNavigator";
-import ProfileStackNavigator from "@/navigation/ProfileStackNavigator";
+import HomeStackNavigator from '@/navigation/HomeStackNavigator'
+import ProfileStackNavigator from '@/navigation/ProfileStackNavigator'
 
 export type MainTabParamList = {
-  HomeTab: undefined;
-  ProfileTab: undefined;
-};
+  HomeTab: undefined
+  ProfileTab: undefined
+}
 
-const Tab = createNativeBottomTabNavigator<MainTabParamList>();
+const Tab = createNativeBottomTabNavigator<MainTabParamList>()
 
 export default function MainTabNavigator26() {
   return (
@@ -25,13 +25,9 @@ export default function MainTabNavigator26() {
         component={HomeStackNavigator}
         options={
           {
-            title: "Home",
+            title: 'Home',
             tabBarIcon: ({ focused }: { focused: boolean }) => (
-              <Feather
-                name="home"
-                size={22}
-                color={focused ? "#0B7B72" : "#8A8A8A"}
-              />
+              <Feather name="home" size={22} color={focused ? '#0B7B72' : '#8A8A8A'} />
             ),
           } as any
         }
@@ -41,17 +37,13 @@ export default function MainTabNavigator26() {
         component={ProfileStackNavigator}
         options={
           {
-            title: "Profile",
+            title: 'Profile',
             tabBarIcon: ({ focused }: { focused: boolean }) => (
-              <Feather
-                name="user"
-                size={22}
-                color={focused ? "#0B7B72" : "#8A8A8A"}
-              />
+              <Feather name="user" size={22} color={focused ? '#0B7B72' : '#8A8A8A'} />
             ),
           } as any
         }
       />
     </Tab.Navigator>
-  );
+  )
 }

@@ -1,5 +1,5 @@
-import { ML_API_ENABLED } from "@/constants/mlConfig";
-import { DeviceMockup } from "./DeviceMockup";
+import { ML_API_ENABLED } from '@/constants/mlConfig'
+import { DeviceMockup } from './DeviceMockup'
 
 export function HeroSection() {
   return (
@@ -32,7 +32,8 @@ export function HeroSection() {
             ) : (
               <>
                 <br />
-                <strong>Catálogo listo pa&apos; MercadoLibre</strong> (export manual). Zelle, Pago Móvil,
+                <strong>Catálogo listo pa&apos; MercadoLibre</strong> (export manual). Zelle, Pago
+                Móvil,
               </>
             )}
             USD y Bs — todo en una sola app hecha pa&apos; Venezuela.
@@ -41,12 +42,26 @@ export function HeroSection() {
           <div className="l-hero-actions">
             <a href="#registro" className="l-btn-primary">
               Empieza gratis ahora
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+              >
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </a>
             <a href="#features" className="l-btn-secondary">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <circle cx="12" cy="12" r="10" />
                 <path d="M10 8l6 4-6 4V8z" />
               </svg>
@@ -68,10 +83,8 @@ export function HeroSection() {
               <span className="l-stat-label">Para empezar</span>
             </div>
             <div className="l-stat-item">
-              <span className="l-stat-number">{ML_API_ENABLED ? "ML" : "CSV"}</span>
-              <span className="l-stat-label">
-                {ML_API_ENABLED ? "Integrado" : "Export ML"}
-              </span>
+              <span className="l-stat-number">{ML_API_ENABLED ? 'ML' : 'CSV'}</span>
+              <span className="l-stat-label">{ML_API_ENABLED ? 'Integrado' : 'Export ML'}</span>
             </div>
           </div>
         </div>
@@ -82,5 +95,5 @@ export function HeroSection() {
         </div>
       </div>
     </section>
-  );
+  )
 }

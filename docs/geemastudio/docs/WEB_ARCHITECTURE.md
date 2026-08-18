@@ -23,26 +23,26 @@
 
 ### Rutas implementadas
 
-| Ruta | Descripción | Estado |
-|------|-------------|--------|
-| `/finanzas` | Dashboard financiero: ingresos, pagos, validación | ✅ Implementado |
-| `/finanzas/login` | Auth de acceso al panel (ruta real, no `/login`) | ✅ Implementado |
-| `/dashboard` | KPIs del día/mes, gráfico 7 días, top servicios, próximas citas | ✅ Implementado |
-| `/panel/servicios` | CRUD categorías, servicios, packs, promos (`?tab=`) | ✅ Implementado |
-| `/panel/horarios` | Zona horaria IANA + `business_hours` por día | ✅ Implementado |
+| Ruta               | Descripción                                                     | Estado          |
+| ------------------ | --------------------------------------------------------------- | --------------- |
+| `/finanzas`        | Dashboard financiero: ingresos, pagos, validación               | ✅ Implementado |
+| `/finanzas/login`  | Auth de acceso al panel (ruta real, no `/login`)                | ✅ Implementado |
+| `/dashboard`       | KPIs del día/mes, gráfico 7 días, top servicios, próximas citas | ✅ Implementado |
+| `/panel/servicios` | CRUD categorías, servicios, packs, promos (`?tab=`)             | ✅ Implementado |
+| `/panel/horarios`  | Zona horaria IANA + `business_hours` por día                    | ✅ Implementado |
 
 ### Rutas pendientes (panel de gestión)
 
-| Ruta | Descripción | Prioridad | PR |
-|------|-------------|-----------|----|
-| `/panel/clientes` | Lista de clientes, detalle, métricas (VIP / nuevo / en riesgo) | P1 — bloquea Vanessa en web | — |
-| `/panel/personal` | CRUD del equipo: foto, color, comisiones, horario | P1 — bloquea Vanessa en web | — |
-| `/panel/agenda` | Vista agenda en web (grilla día + columnas por profesional) | P1 | — |
-| `/panel/waba` | CMS WABA: historial de chats, editor system prompt, analytics | P1 — solo viable en web | — |
-| `/panel/waba/campanas` | Campañas masivas WA: stepper, segmentación, envío | P2 | — |
-| `/panel/inventario` | Gestión de inventario y stock | P2 | — |
-| `/panel/configuracion` | Configuración general del tenant: logo, moneda, terminología | P1 | — |
-| `/panel/configuracion/web` | Modo de presencia web + `web_mode` + slug + dominio propio | P2 | — |
+| Ruta                       | Descripción                                                    | Prioridad                   | PR  |
+| -------------------------- | -------------------------------------------------------------- | --------------------------- | --- |
+| `/panel/clientes`          | Lista de clientes, detalle, métricas (VIP / nuevo / en riesgo) | P1 — bloquea Vanessa en web | —   |
+| `/panel/personal`          | CRUD del equipo: foto, color, comisiones, horario              | P1 — bloquea Vanessa en web | —   |
+| `/panel/agenda`            | Vista agenda en web (grilla día + columnas por profesional)    | P1                          | —   |
+| `/panel/waba`              | CMS WABA: historial de chats, editor system prompt, analytics  | P1 — solo viable en web     | —   |
+| `/panel/waba/campanas`     | Campañas masivas WA: stepper, segmentación, envío              | P2                          | —   |
+| `/panel/inventario`        | Gestión de inventario y stock                                  | P2                          | —   |
+| `/panel/configuracion`     | Configuración general del tenant: logo, moneda, terminología   | P1                          | —   |
+| `/panel/configuracion/web` | Modo de presencia web + `web_mode` + slug + dominio propio     | P2                          | —   |
 
 ### Acciones exclusivas de web
 
@@ -71,10 +71,10 @@ Estas acciones **no existen en la app móvil** por limitaciones de form factor. 
 
 ### Rutas implementadas
 
-| Ruta | Descripción | Estado |
-|------|-------------|--------|
+| Ruta        | Descripción                                             | Estado                                                                      |
+| ----------- | ------------------------------------------------------- | --------------------------------------------------------------------------- |
 | `/s/[slug]` | Landing pública del tenant con SSG + revalidación 5 min | ✅ Implementado (3 templates: Elegant Dark, Warm & Organic, Modern Minimal) |
-| `/` | Landing de la plataforma GeemaStudio (conversión B2B) | ✅ Implementado |
+| `/`         | Landing de la plataforma GeemaStudio (conversión B2B)   | ✅ Implementado                                                             |
 
 ### Tres modos de presencia web (`web_mode`)
 
@@ -164,12 +164,12 @@ Cada tenant tiene **sus propias RRSS establecidas** (ej: Vanessa tiene `@zmlasha
 
 ## Estado de Vanessa (Tenant #1) en contexto web
 
-| Aspecto | Estado | Detalle |
-|---------|--------|----------|
-| Panel de gestión | Listo en cuanto migre la DB | Accede a `geemastudio.app/finanzas` etc. |
-| `web_mode` inicial | `'none'` | No necesita landing pública al day-1 |
-| `zmlashnails.com` | Independiente | Su dominio propio, no lo toca GeemaStudio |
-| Add-on landing | Futuro | Si quieren, GeemaStudio ofrece servicio Modo A |
+| Aspecto                | Estado                                                               | Detalle                                        |
+| ---------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
+| Panel de gestión       | Listo en cuanto migre la DB                                          | Accede a `geemastudio.app/finanzas` etc.       |
+| `web_mode` inicial     | `'none'`                                                             | No necesita landing pública al day-1           |
+| `zmlashnails.com`      | Independiente                                                        | Su dominio propio, no lo toca GeemaStudio      |
+| Add-on landing         | Futuro                                                               | Si quieren, GeemaStudio ofrece servicio Modo A |
 | Rutas panel pendientes | `/panel/clientes`, `/panel/personal`, `/panel/agenda`, `/panel/waba` | P1 — necesarias para que el panel web sea útil |
 
 ---
@@ -188,4 +188,4 @@ Prioridad de implementación recomendada: `clientes` → `personal` → `waba` �
 
 ---
 
-*Documento creado: abril 2026 · Actualizar ante cambios en routing, `web_mode`, o nuevas rutas de panel.*
+_Documento creado: abril 2026 · Actualizar ante cambios en routing, `web_mode`, o nuevas rutas de panel._

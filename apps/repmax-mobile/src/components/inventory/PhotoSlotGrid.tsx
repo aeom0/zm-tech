@@ -1,29 +1,29 @@
 // ============================================================
 // Slots de foto estilo MercadoLibre (portada + 5 extras)
 // ============================================================
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import { Image } from 'expo-image';
-import { Ionicons } from '@expo/vector-icons';
+import React from 'react'
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { Image } from 'expo-image'
+import { Ionicons } from '@expo/vector-icons'
 
-import { ML_PHOTO, PHOTO_SLOT_LABELS } from '../../utils/mlPhotoRules';
-import { colors, typography, spacing, borderRadius } from '../../utils/theme';
+import { ML_PHOTO, PHOTO_SLOT_LABELS } from '../../utils/mlPhotoRules'
+import { colors, typography, spacing, borderRadius } from '../../utils/theme'
 
 interface PhotoSlotGridProps {
-  uris: Array<string | null>;
-  onPressSlot: (index: number) => void;
-  onClearSlot?: (index: number) => void;
+  uris: Array<string | null>
+  onPressSlot: (index: number) => void
+  onClearSlot?: (index: number) => void
 }
 
 export function PhotoSlotGrid({ uris, onPressSlot, onClearSlot }: PhotoSlotGridProps) {
-  const slots = Array.from({ length: ML_PHOTO.maxSlots }, (_, i) => uris[i] ?? null);
+  const slots = Array.from({ length: ML_PHOTO.maxSlots }, (_, i) => uris[i] ?? null)
 
   return (
     <View>
       <Text style={styles.sectionLabel}>Fotos de la pieza</Text>
       <View style={styles.row}>
         {slots.map((uri, index) => {
-          const esPortada = index === 0;
+          const esPortada = index === 0
           return (
             <View key={PHOTO_SLOT_LABELS[index]} style={styles.slotWrap}>
               <TouchableOpacity
@@ -64,14 +64,15 @@ export function PhotoSlotGrid({ uris, onPressSlot, onClearSlot }: PhotoSlotGridP
                 {PHOTO_SLOT_LABELS[index]}
               </Text>
             </View>
-          );
+          )
         })}
       </View>
       <Text style={styles.hint}>
-        Se ven en el catálogo aunque no publiques en MercadoLibre. Fondo claro, pieza centrada, sin logo.
+        Se ven en el catálogo aunque no publiques en MercadoLibre. Fondo claro, pieza centrada, sin
+        logo.
       </Text>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -127,4 +128,4 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily.regular,
     color: colors.text.disabled,
   },
-});
+})

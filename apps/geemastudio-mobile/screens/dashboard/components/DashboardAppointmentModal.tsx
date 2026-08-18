@@ -1,34 +1,34 @@
-import React from "react";
-import { ActivityIndicator, Modal, Pressable, View } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import React from 'react'
+import { ActivityIndicator, Modal, Pressable, View } from 'react-native'
+import { Feather } from '@expo/vector-icons'
 
-import { ThemedText } from "@/components/ThemedText";
+import { ThemedText } from '@/components/ThemedText'
 
-import { formatDashboardTime } from "../dashboardUtils";
-import type { DashboardAppointment } from "../types";
-import { dashboardStyles as styles } from "../dashboardStyles";
+import { formatDashboardTime } from '../dashboardUtils'
+import type { DashboardAppointment } from '../types'
+import { dashboardStyles as styles } from '../dashboardStyles'
 
 interface DashboardAppointmentModalProps {
-  visible: boolean;
-  appointment: DashboardAppointment | null;
-  isTablet: boolean;
-  currencySymbol: string;
-  locale: string;
+  visible: boolean
+  appointment: DashboardAppointment | null
+  isTablet: boolean
+  currencySymbol: string
+  locale: string
   theme: {
-    backgroundDefault: string;
-    backgroundSecondary: string;
-    border: string;
-    text: string;
-    textSecondary: string;
-    primary: string;
-    gold: string;
-    success: string;
-  };
-  getServiceName: (serviceId: string) => string;
-  isCompleting: boolean;
-  onClose: () => void;
-  onMarkCompleted: (appointment: DashboardAppointment) => void;
-  onEditInAgenda: (appointment: DashboardAppointment) => void;
+    backgroundDefault: string
+    backgroundSecondary: string
+    border: string
+    text: string
+    textSecondary: string
+    primary: string
+    gold: string
+    success: string
+  }
+  getServiceName: (serviceId: string) => string
+  isCompleting: boolean
+  onClose: () => void
+  onMarkCompleted: (appointment: DashboardAppointment) => void
+  onEditInAgenda: (appointment: DashboardAppointment) => void
 }
 
 export function DashboardAppointmentModal({
@@ -45,15 +45,8 @@ export function DashboardAppointmentModal({
   onEditInAgenda,
 }: DashboardAppointmentModalProps) {
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      transparent
-      statusBarTranslucent
-    >
-      <View
-        style={[styles.modalOverlay, isTablet && styles.modalOverlayTablet]}
-      >
+    <Modal visible={visible} animationType="slide" transparent statusBarTranslucent>
+      <View style={[styles.modalOverlay, isTablet && styles.modalOverlayTablet]}>
         <View
           style={[
             styles.modalContent,
@@ -65,15 +58,10 @@ export function DashboardAppointmentModal({
             <>
               <View style={styles.modalHandle} />
               <View style={styles.modalHeader}>
-                <ThemedText style={styles.modalTitle}>
-                  Detalle de cita
-                </ThemedText>
+                <ThemedText style={styles.modalTitle}>Detalle de cita</ThemedText>
                 <Pressable
                   onPress={onClose}
-                  style={[
-                    styles.modalCloseBtn,
-                    { backgroundColor: theme.backgroundSecondary },
-                  ]}
+                  style={[styles.modalCloseBtn, { backgroundColor: theme.backgroundSecondary }]}
                   hitSlop={8}
                 >
                   <Feather name="x" size={18} color={theme.textSecondary} />
@@ -84,49 +72,25 @@ export function DashboardAppointmentModal({
                 <ThemedText style={[styles.modalClient, { color: theme.text }]}>
                   {appointment.client_name}
                 </ThemedText>
-                <ThemedText
-                  style={[styles.modalService, { color: theme.textSecondary }]}
-                >
+                <ThemedText style={[styles.modalService, { color: theme.textSecondary }]}>
                   {getServiceName(appointment.service_id)}
                 </ThemedText>
                 <View style={styles.modalMeta}>
-                  <View
-                    style={[
-                      styles.modalMetaChip,
-                      { backgroundColor: `${theme.primary}12` },
-                    ]}
-                  >
+                  <View style={[styles.modalMetaChip, { backgroundColor: `${theme.primary}12` }]}>
                     <Feather name="clock" size={12} color={theme.primary} />
-                    <ThemedText
-                      style={[styles.modalMetaText, { color: theme.primary }]}
-                    >
+                    <ThemedText style={[styles.modalMetaText, { color: theme.primary }]}>
                       {formatDashboardTime(appointment.date, locale)}
                     </ThemedText>
                   </View>
-                  <View
-                    style={[
-                      styles.modalMetaChip,
-                      { backgroundColor: `${theme.primary}12` },
-                    ]}
-                  >
+                  <View style={[styles.modalMetaChip, { backgroundColor: `${theme.primary}12` }]}>
                     <Feather name="activity" size={12} color={theme.primary} />
-                    <ThemedText
-                      style={[styles.modalMetaText, { color: theme.primary }]}
-                    >
+                    <ThemedText style={[styles.modalMetaText, { color: theme.primary }]}>
                       {appointment.duration} min
                     </ThemedText>
                   </View>
-                  <View
-                    style={[
-                      styles.modalMetaChip,
-                      { backgroundColor: `${theme.gold}18` },
-                    ]}
-                  >
+                  <View style={[styles.modalMetaChip, { backgroundColor: `${theme.gold}18` }]}>
                     <ThemedText
-                      style={[
-                        styles.modalMetaText,
-                        { color: theme.gold, fontWeight: "700" },
-                      ]}
+                      style={[styles.modalMetaText, { color: theme.gold, fontWeight: '700' }]}
                     >
                       {currencySymbol}
                       {parseFloat(String(appointment.price)).toFixed(0)}
@@ -145,9 +109,7 @@ export function DashboardAppointmentModal({
                 ) : (
                   <>
                     <Feather name="check-circle" size={16} color="#FFF" />
-                    <ThemedText style={styles.modalBtnText}>
-                      Marcar completada
-                    </ThemedText>
+                    <ThemedText style={styles.modalBtnText}>Marcar completada</ThemedText>
                   </>
                 )}
               </Pressable>
@@ -156,9 +118,7 @@ export function DashboardAppointmentModal({
                 onPress={() => onEditInAgenda(appointment)}
               >
                 <Feather name="edit-2" size={16} color={theme.primary} />
-                <ThemedText
-                  style={[styles.modalBtnOutlineText, { color: theme.primary }]}
-                >
+                <ThemedText style={[styles.modalBtnOutlineText, { color: theme.primary }]}>
                   Editar en Agenda
                 </ThemedText>
               </Pressable>
@@ -167,5 +127,5 @@ export function DashboardAppointmentModal({
         </View>
       </View>
     </Modal>
-  );
+  )
 }

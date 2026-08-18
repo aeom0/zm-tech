@@ -7,23 +7,23 @@
 
 ## Stack UI
 
-| Superficie | Stack |
-|------------|-------|
-| Web panel | Next.js 16 · React 19 · Tailwind v4 · Lucide · puerto 3004 |
-| Diseño | pen.dev / Pencil (`.pen`) |
-| Datos | Supabase Auth + RLS (`hub_*`) |
+| Superficie | Stack                                                      |
+| ---------- | ---------------------------------------------------------- |
+| Web panel  | Next.js 16 · React 19 · Tailwind v4 · Lucide · puerto 3004 |
+| Diseño     | pen.dev / Pencil (`.pen`)                                  |
+| Datos      | Supabase Auth + RLS (`hub_*`)                              |
 
 No hay app mobile en el MVP.
 
 ## Fuentes de verdad
 
-| Capa | Path |
-|------|------|
-| Tokens + shell | `docs/hub/design/hub-shell.pen` |
-| Tokens código | `docs/hub/design/tokens.ts` → espejo `apps/hub/src/lib/theme.ts` |
-| CSS runtime | `apps/hub/src/app/globals.css` |
-| Este sistema | `docs/hub/design-system/` |
-| Paleta canónica marca | `apps/landing/src/app/globals.css` |
+| Capa                  | Path                                                             |
+| --------------------- | ---------------------------------------------------------------- |
+| Tokens + shell        | `docs/hub/design/hub-shell.pen`                                  |
+| Tokens código         | `docs/hub/design/tokens.ts` → espejo `apps/hub/src/lib/theme.ts` |
+| CSS runtime           | `apps/hub/src/app/globals.css`                                   |
+| Este sistema          | `docs/hub/design-system/`                                        |
+| Paleta canónica marca | `apps/landing/src/app/globals.css`                               |
 
 ## Brand rápido
 
@@ -43,11 +43,11 @@ No hay app mobile en el MVP.
 
 ## Breakpoints / artboards
 
-| Target | Frame |
-|--------|-------|
-| Mobile | 390 × 844 |
-| Desktop shell | 1280 × 800 |
-| Sidebar | 256 px |
+| Target         | Frame                      |
+| -------------- | -------------------------- |
+| Mobile         | 390 × 844                  |
+| Desktop shell  | 1280 × 800                 |
+| Sidebar        | 256 px                     |
 | Content gutter | 16 (mobile) / 24 (desktop) |
 
 ## Anti-patterns

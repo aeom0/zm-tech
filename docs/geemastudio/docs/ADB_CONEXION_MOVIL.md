@@ -2,11 +2,11 @@
 
 ## Dispositivo
 
-| Campo | Valor |
-|---|---|
-| Modelo | Motorola Moto G54 |
-| Device ID ADB | `ZY22K2LZW3` |
-| OS | Android (MediaTek) |
+| Campo              | Valor                    |
+| ------------------ | ------------------------ |
+| Modelo             | Motorola Moto G54        |
+| Device ID ADB      | `ZY22K2LZW3`             |
+| OS                 | Android (MediaTek)       |
 | Entorno de trabajo | WSL2 (Ubuntu) en Windows |
 
 ---
@@ -79,16 +79,16 @@ adb -s ZY22K2LZW3 push /home/alber/archivo.jpg /sdcard/Pictures/
 
 ## Rutas de datos importantes en el teléfono
 
-| Contenido | Ruta en el teléfono |
-|---|---|
-| Almacenamiento interno general | `/sdcard/` |
-| Fotos y capturas | `/sdcard/DCIM/` |
-| Descargas | `/sdcard/Download/` |
-| WhatsApp principal (media) | `/sdcard/Android/media/com.whatsapp/WhatsApp/Media/` |
-| WhatsApp clonado (media) | `/data/media/11/Android/media/com.whatsapp/WhatsApp/Media/` |
-| WhatsApp Business (media) | `/sdcard/Android/media/com.whatsapp.w4b/WhatsApp Business/Media/` |
-| Música | `/sdcard/Music/` |
-| Videos | `/sdcard/Movies/` |
+| Contenido                      | Ruta en el teléfono                                               |
+| ------------------------------ | ----------------------------------------------------------------- |
+| Almacenamiento interno general | `/sdcard/`                                                        |
+| Fotos y capturas               | `/sdcard/DCIM/`                                                   |
+| Descargas                      | `/sdcard/Download/`                                               |
+| WhatsApp principal (media)     | `/sdcard/Android/media/com.whatsapp/WhatsApp/Media/`              |
+| WhatsApp clonado (media)       | `/data/media/11/Android/media/com.whatsapp/WhatsApp/Media/`       |
+| WhatsApp Business (media)      | `/sdcard/Android/media/com.whatsapp.w4b/WhatsApp Business/Media/` |
+| Música                         | `/sdcard/Music/`                                                  |
+| Videos                         | `/sdcard/Movies/`                                                 |
 
 > **Nota:** `/data/media/11/` es el perfil del usuario clonado (Motorola App Clone).
 > Necesita `adb shell` con privilegios o `run-as` para acceder.
@@ -117,22 +117,27 @@ adb -s ZY22K2LZW3 pull /sdcard/Pictures/ /home/alber/backup/Pictures/
 ## Solución a problemas comunes
 
 ### `adb: error: cannot create file/directory`
+
 Estás intentando escribir en una ruta de Windows con slash Linux (`/mnt/c/...`).
 **Solución:** usar ruta Linux como destino: `/home/alber/backup/`
 
 ### `error: no devices/emulators found`
+
 El teléfono no está detectado.
 **Checklist:**
+
 - ¿Está el cable USB conectado?
 - ¿Está en modo "Transferencia de archivos" (MTP)?
 - ¿El servidor ADB de Windows está corriendo? Abrir una terminal Windows y ejecutar:
   `C:\Users\alber\AppData\Local\Android\Sdk\platform-tools\adb.exe start-server`
 
 ### `unauthorized`
+
 Apareció el cuadro en el teléfono pero no se aceptó.
 **Solución:** desbloquear el teléfono, aceptar el cuadro, marcar "Permitir siempre".
 
 ### `adb: error: failed to copy ... Permission denied`
+
 Estás intentando acceder a datos de app privados (`/data/data/...`).
 Esos directorios solo son accesibles con root o con `run-as <package>` en apps debuggeables.
 

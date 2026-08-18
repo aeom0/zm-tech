@@ -1,24 +1,24 @@
 // ============================================================
 // RepMAX — Hub "Más": Caja + Configuración
 // ============================================================
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
-import { useAuth } from '../../context/AuthContext';
-import { useTasaCambio } from '../../hooks/useTasaCambio';
-import { colors, typography, spacing, borderRadius } from '../../utils/theme';
-import type { MoreStackParamList } from '../../navigation/types';
+import { useAuth } from '../../context/AuthContext'
+import { useTasaCambio } from '../../hooks/useTasaCambio'
+import { colors, typography, spacing, borderRadius } from '../../utils/theme'
+import type { MoreStackParamList } from '../../navigation/types'
 
-type Props = NativeStackScreenProps<MoreStackParamList, 'MoreHome'>;
+type Props = NativeStackScreenProps<MoreStackParamList, 'MoreHome'>
 
 interface MenuItemProps {
-  icon: keyof typeof Ionicons.glyphMap;
-  iconColor: string;
-  title: string;
-  subtitle: string;
-  onPress: () => void;
+  icon: keyof typeof Ionicons.glyphMap
+  iconColor: string
+  title: string
+  subtitle: string
+  onPress: () => void
 }
 
 function MenuItem({ icon, iconColor, title, subtitle, onPress }: MenuItemProps) {
@@ -33,15 +33,15 @@ function MenuItem({ icon, iconColor, title, subtitle, onPress }: MenuItemProps) 
       </View>
       <Ionicons name="chevron-forward" size={18} color={colors.text.disabled} />
     </TouchableOpacity>
-  );
+  )
 }
 
 export default function MoreHomeScreen({ navigation }: Props) {
-  const { store, storeUser } = useAuth();
+  const { store, storeUser } = useAuth()
   const { usdBsRateEfectivo } = useTasaCambio(
     store?.usdBsRate ?? 36.5,
-    store?.usarTasaManual ?? false,
-  );
+    store?.usarTasaManual ?? false
+  )
 
   return (
     <ScrollView
@@ -52,7 +52,7 @@ export default function MoreHomeScreen({ navigation }: Props) {
       <View style={styles.storeCard}>
         <Text style={styles.storeName}>{store?.name ?? 'Mi tienda'}</Text>
         <Text style={styles.storeMeta}>
-          {storeUser?.role === 'owner' ? 'Propietario' : storeUser?.role ?? 'Usuario'}
+          {storeUser?.role === 'owner' ? 'Propietario' : (storeUser?.role ?? 'Usuario')}
         </Text>
       </View>
 
@@ -86,7 +86,7 @@ export default function MoreHomeScreen({ navigation }: Props) {
         />
       </View>
     </ScrollView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -167,4 +167,4 @@ const styles = StyleSheet.create({
     backgroundColor: colors.bg.border,
     marginLeft: 68,
   },
-});
+})

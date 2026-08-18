@@ -81,12 +81,39 @@ export default function MockTallerDesktop() {
 
         <div className="flex min-h-0 flex-1 flex-col gap-1.5 p-1.5 sm:p-2">
           {/* KPIs */}
-          <div className="mock-rise grid grid-cols-4 gap-1 sm:gap-1.5" style={{ animationDelay: '60ms' }}>
+          <div
+            className="mock-rise grid grid-cols-4 gap-1 sm:gap-1.5"
+            style={{ animationDelay: '60ms' }}
+          >
             {[
-              { label: 'Órdenes abiertas', value: '23', delta: '+4 hoy', up: true, spark: [45, 50, 48, 58, 55, 65] },
-              { label: 'Tiempo prom.', value: '2.4h', delta: '-18min', up: true, spark: [70, 65, 60, 58, 52, 48] },
-              { label: 'Refacc. bajas', value: '7', delta: 'revisar', up: false, spark: [20, 28, 30, 34, 38, 42] },
-              { label: 'Ingresos mes', value: '$9.1k', delta: '+11%', up: true, spark: [38, 42, 40, 50, 46, 60] },
+              {
+                label: 'Órdenes abiertas',
+                value: '23',
+                delta: '+4 hoy',
+                up: true,
+                spark: [45, 50, 48, 58, 55, 65],
+              },
+              {
+                label: 'Tiempo prom.',
+                value: '2.4h',
+                delta: '-18min',
+                up: true,
+                spark: [70, 65, 60, 58, 52, 48],
+              },
+              {
+                label: 'Refacc. bajas',
+                value: '7',
+                delta: 'revisar',
+                up: false,
+                spark: [20, 28, 30, 34, 38, 42],
+              },
+              {
+                label: 'Ingresos mes',
+                value: '$9.1k',
+                delta: '+11%',
+                up: true,
+                spark: [38, 42, 40, 50, 46, 60],
+              },
             ].map((k) => (
               <div
                 key={k.label}
@@ -94,7 +121,7 @@ export default function MockTallerDesktop() {
                 style={{ boxShadow: glassShadow(ACCENT) }}
               >
                 <div className="truncate text-[6px] text-zinc-500">{k.label}</div>
-                <div className="text-[10px] font-extrabold tracking-tight text-zinc-50 sm:text-[11px] tabular-nums">
+                <div className="text-[10px] font-extrabold tracking-tight text-zinc-50 tabular-nums sm:text-[11px]">
                   {k.value}
                 </div>
                 <div className="mt-0.5 flex items-end gap-1">
@@ -103,18 +130,25 @@ export default function MockTallerDesktop() {
                       <span
                         key={i}
                         className="flex-1 rounded-[1px]"
-                        style={{ height: `${h}%`, backgroundColor: k.up ? `${ACCENT}80` : '#f59e0b80' }}
+                        style={{
+                          height: `${h}%`,
+                          backgroundColor: k.up ? `${ACCENT}80` : '#f59e0b80',
+                        }}
                       />
                     ))}
                   </div>
                   <span
                     aria-hidden
                     className={`h-0 w-0 shrink-0 border-x-[2.5px] border-x-transparent ${
-                      k.up ? 'border-b-[3.5px] border-b-emerald-400' : 'border-t-[3.5px] border-t-amber-400'
+                      k.up
+                        ? 'border-b-[3.5px] border-b-emerald-400'
+                        : 'border-t-[3.5px] border-t-amber-400'
                     }`}
                   />
                 </div>
-                <div className={`text-[6px] font-medium ${k.up ? 'text-emerald-400' : 'text-amber-400'}`}>
+                <div
+                  className={`text-[6px] font-medium ${k.up ? 'text-emerald-400' : 'text-amber-400'}`}
+                >
                   {k.delta}
                 </div>
               </div>
@@ -131,7 +165,9 @@ export default function MockTallerDesktop() {
               style={{ boxShadow: glassShadow(ACCENT) }}
             >
               <div className="mb-1 flex items-center justify-between">
-                <span className="text-[6.5px] font-bold tracking-tight text-zinc-200">Órdenes completadas</span>
+                <span className="text-[6.5px] font-bold tracking-tight text-zinc-200">
+                  Órdenes completadas
+                </span>
                 <span className="text-[5.5px] text-zinc-500">6 semanas</span>
               </div>
               <div className="relative flex flex-1 items-end gap-0.75 px-0.5">
@@ -219,10 +255,14 @@ export default function MockTallerDesktop() {
               </div>
               <div className="mt-0.5 flex gap-2 text-[5.5px] text-zinc-500">
                 <span className="flex items-center gap-0.5">
-                  <span className="h-1 w-1 rounded-full" style={{ backgroundColor: ACCENT }} /> Completadas
+                  <span className="h-1 w-1 rounded-full" style={{ backgroundColor: ACCENT }} />{' '}
+                  Completadas
                 </span>
                 <span className="flex items-center gap-0.5">
-                  <span className="h-[1.5px] w-2 rounded-full" style={{ backgroundColor: ACCENT, opacity: 0.7 }} />{' '}
+                  <span
+                    className="h-[1.5px] w-2 rounded-full"
+                    style={{ backgroundColor: ACCENT, opacity: 0.7 }}
+                  />{' '}
                   Tendencia
                 </span>
               </div>
@@ -232,7 +272,9 @@ export default function MockTallerDesktop() {
               className={`${GLASS_CARD} col-span-2 flex flex-col p-1.5`}
               style={{ boxShadow: glassShadow(ACCENT) }}
             >
-              <span className="mb-1 text-[6.5px] font-bold tracking-tight text-zinc-200">Estado órdenes</span>
+              <span className="mb-1 text-[6.5px] font-bold tracking-tight text-zinc-200">
+                Estado órdenes
+              </span>
               <div className="flex flex-1 items-center gap-2">
                 <div className="relative h-10 w-10 shrink-0 sm:h-11 sm:w-11">
                   <div
@@ -244,7 +286,7 @@ export default function MockTallerDesktop() {
                     }}
                   />
                   <div className="absolute inset-[22%] flex flex-col items-center justify-center rounded-full bg-[#0D0D0D]">
-                    <span className="text-[7px] font-extrabold tracking-tight text-zinc-50 sm:text-[7.5px] tabular-nums">
+                    <span className="text-[7px] font-extrabold tracking-tight text-zinc-50 tabular-nums sm:text-[7.5px]">
                       23
                     </span>
                   </div>

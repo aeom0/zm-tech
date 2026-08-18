@@ -35,13 +35,13 @@ En EAS (preview / production / development) ya están `EXPO_PUBLIC_SUPABASE_URL`
 
 ## EAS + OTA
 
-| Pieza | Valor |
-|-------|--------|
-| Proyecto | [@aeom0/repmax](https://expo.dev/accounts/aeom0/projects/repmax) |
-| Project ID | `109768f2-6e5c-4747-8cb5-2025c8319079` |
-| Runtime | `sdkVersion` (SDK 56) |
-| Updates URL | `https://u.expo.dev/109768f2-6e5c-4747-8cb5-2025c8319079` |
-| Channels | `development` · `preview` · `production` |
+| Pieza       | Valor                                                            |
+| ----------- | ---------------------------------------------------------------- |
+| Proyecto    | [@aeom0/repmax](https://expo.dev/accounts/aeom0/projects/repmax) |
+| Project ID  | `109768f2-6e5c-4747-8cb5-2025c8319079`                           |
+| Runtime     | `sdkVersion` (SDK 56)                                            |
+| Updates URL | `https://u.expo.dev/109768f2-6e5c-4747-8cb5-2025c8319079`        |
+| Channels    | `development` · `preview` · `production`                         |
 
 OTA al arranque: `App.tsx` chequéa `expo-updates` (timeout 8s) antes de ocultar splash. En `__DEV__` se omite.
 
@@ -49,21 +49,21 @@ OTA al arranque: `App.tsx` chequéa `expo-updates` (timeout 8s) antes de ocultar
 
 Pensado para no re-buildear por libs faltantes. UI de fotos/barcode puede llegar por OTA si el nativo ya está.
 
-| Lib | Uso previsto |
-|-----|----------------|
-| `expo-camera` + `expo-image-picker` | Escaneo / fotos de repuestos |
+| Lib                                     | Uso previsto                        |
+| --------------------------------------- | ----------------------------------- |
+| `expo-camera` + `expo-image-picker`     | Escaneo / fotos de repuestos        |
 | `expo-image` + `expo-image-manipulator` | Mostrar y comprimir fotos → Storage |
-| `expo-notifications` | Push |
-| `expo-updates` | OTA |
-| `expo-dev-client` | Development builds |
-| `expo-build-properties` | Android SDK 36 / Kotlin |
-| `react-native-gesture-handler` | Navegación / gestos |
-| `expo-haptics` | Feedback POS |
-| `expo-linking` | Deep links / WhatsApp |
-| `@react-native-community/netinfo` | Offline awareness |
-| `expo-file-system` | Export CSV catálogo ML |
-| `expo-sharing` | Compartir comprobantes / export ML |
-| `react-native-svg` | Base para charts / íconos vector |
+| `expo-notifications`                    | Push                                |
+| `expo-updates`                          | OTA                                 |
+| `expo-dev-client`                       | Development builds                  |
+| `expo-build-properties`                 | Android SDK 36 / Kotlin             |
+| `react-native-gesture-handler`          | Navegación / gestos                 |
+| `expo-haptics`                          | Feedback POS                        |
+| `expo-linking`                          | Deep links / WhatsApp               |
+| `@react-native-community/netinfo`       | Offline awareness                   |
+| `expo-file-system`                      | Export CSV catálogo ML              |
+| `expo-sharing`                          | Compartir comprobantes / export ML  |
+| `react-native-svg`                      | Base para charts / íconos vector    |
 
 Helpers listos: `src/utils/network.ts`, `src/utils/haptics.ts`.
 
@@ -94,10 +94,10 @@ Workflow [`.github/workflows/repmax-ota.yml`](../../.github/workflows/repmax-ota
 
 Secretos del repo (`aeom0/zm-tech` → Settings → Secrets):
 
-| Secreto | Dónde |
-|---------|--------|
-| `EXPO_TOKEN` | [expo.dev/settings/access-tokens](https://expo.dev/settings/access-tokens) (cuenta `aeom0`) |
-| `EXPO_PUBLIC_SUPABASE_ANON_KEY` | anon key del hub `llacowjutjfefboqgfnj` (la misma del `.env` local) |
+| Secreto                         | Dónde                                                                                       |
+| ------------------------------- | ------------------------------------------------------------------------------------------- |
+| `EXPO_TOKEN`                    | [expo.dev/settings/access-tokens](https://expo.dev/settings/access-tokens) (cuenta `aeom0`) |
+| `EXPO_PUBLIC_SUPABASE_ANON_KEY` | anon key del hub `llacowjutjfefboqgfnj` (la misma del `.env` local)                         |
 
 Sin esos dos, el job falla a propósito para no publicar un bundle cojo.
 

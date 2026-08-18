@@ -13,13 +13,13 @@ Contexto para agentes que toquen RepMAX dentro del monorepo.
 
 ## Stack vigente
 
-| Capa | Tecnología |
-|------|------------|
-| Web | Next.js 15 App Router, React 19, Tailwind, puerto 3003 |
-| Mobile | Expo ~56, React Native 0.85, React 19 |
-| Datos | Supabase Auth + PostgREST + RLS (`llacowjutjfefboqgfnj`) |
-| Schema TS | Drizzle en `@repmax/repmax-schema` (contrato TS; **no** drizzle-kit) |
-| DDL | SQL en `docs/repmax/supabase/migrations/` (verdad de BD) |
+| Capa           | Tecnología                                                                                                                                                  |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Web            | Next.js 15 App Router, React 19, Tailwind, puerto 3003                                                                                                      |
+| Mobile         | Expo ~56, React Native 0.85, React 19                                                                                                                       |
+| Datos          | Supabase Auth + PostgREST + RLS (`llacowjutjfefboqgfnj`)                                                                                                    |
+| Schema TS      | Drizzle en `@repmax/repmax-schema` (contrato TS; **no** drizzle-kit)                                                                                        |
+| DDL            | SQL en `docs/repmax/supabase/migrations/` (verdad de BD)                                                                                                    |
 | Tenant/Auth UI | En apps: `AuthContext` → Supabase (`repmax_store_users` / `repmax_stores`). `@zmtech/tenant-config/repmax` existe como export pero **no está cableado** aún |
 
 **No hay servidor Express.** No hay JWT propio. No hay `apps/repmax-server`.

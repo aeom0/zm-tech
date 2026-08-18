@@ -2,62 +2,61 @@
 // Catálogo con búsqueda y filtros — datos desde API público
 // ============================================================
 
-"use client";
+'use client'
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { PackageOpen, Search } from "lucide-react";
-import { POPULAR_BRANDS } from "@repmax/repmax-schema";
-import { createClient } from "@/lib/supabase/client";
-import { fetchPublicProducts } from "@/lib/repmax-queries";
-import type { ProductPublic } from "@/types/storefront";
-import { ProductCard } from "./ProductCard";
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { PackageOpen, Search } from 'lucide-react'
+import { POPULAR_BRANDS } from '@repmax/repmax-schema'
+import { createClient } from '@/lib/supabase/client'
+import { fetchPublicProducts } from '@/lib/repmax-queries'
+import type { ProductPublic } from '@/types/storefront'
+import { ProductCard } from './ProductCard'
 
 const TIPOS_VEHICULO: { value: string; label: string }[] = [
-  { value: "", label: "Todos los tipos" },
-  { value: "CAR", label: "Carro" },
-  { value: "MOTO", label: "Moto" },
-  { value: "TRUCK", label: "Camión" },
-  { value: "SUV", label: "SUV" },
-];
+  { value: '', label: 'Todos los tipos' },
+  { value: 'CAR', label: 'Carro' },
+  { value: 'MOTO', label: 'Moto' },
+  { value: 'TRUCK', label: 'Camión' },
+  { value: 'SUV', label: 'SUV' },
+]
 
 const CONDICIONES: { value: string; label: string }[] = [
-  { value: "", label: "Todas" },
-  { value: "NEW", label: "Nuevo" },
-  { value: "USED", label: "Usado" },
-];
+  { value: '', label: 'Todas' },
+  { value: 'NEW', label: 'Nuevo' },
+  { value: 'USED', label: 'Usado' },
+]
 
 interface ProductCatalogProps {
-  storeId: string;
-  storeSlug: string;
-  hostSlug: string | null;
-  initialProducts: ProductPublic[];
-  total: number;
-  usdBsRate: number;
+  storeId: string
+  storeSlug: string
+  hostSlug: string | null
+  initialProducts: ProductPublic[]
+  total: number
+  usdBsRate: number
 }
-
 
 function EsqueletoGrid() {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
       {Array.from({ length: 8 }).map((_, i) => (
         <div
           key={i}
-          className="rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] overflow-hidden animate-pulse"
+          className="animate-pulse overflow-hidden rounded-lg border border-[#2A2A2A] bg-[#1A1A1A]"
         >
           <div className="h-[160px] bg-[#242424]" />
-          <div className="p-3 space-y-2">
-            <div className="h-4 bg-[#242424] rounded w-3/4" />
-            <div className="h-3 bg-[#242424] rounded w-1/2" />
-            <div className="h-5 bg-[#242424] rounded w-1/3" />
+          <div className="space-y-2 p-3">
+            <div className="h-4 w-3/4 rounded bg-[#242424]" />
+            <div className="h-3 w-1/2 rounded bg-[#242424]" />
+            <div className="h-5 w-1/3 rounded bg-[#242424]" />
           </div>
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 const selectClase =
-  "min-w-[140px] shrink-0 rounded-md border border-[#2A2A2A] bg-[#1A1A1A] px-3 py-2 text-sm text-[#F5F5F5] focus:border-[#FF6B00] focus:outline-none focus:ring-1 focus:ring-[#FF6B00]";
+  'min-w-[140px] shrink-0 rounded-md border border-[#2A2A2A] bg-[#1A1A1A] px-3 py-2 text-sm text-[#F5F5F5] focus:border-[#FF6B00] focus:outline-none focus:ring-1 focus:ring-[#FF6B00]'
 
 export function ProductCatalog({
   storeId,
@@ -67,55 +66,55 @@ export function ProductCatalog({
   total: totalInicial,
   usdBsRate,
 }: ProductCatalogProps) {
-  const [marca, setMarca] = useState("");
-  const [condicion, setCondicion] = useState("");
-  const [tipoVehiculo, setTipoVehiculo] = useState("");
-  const [busqueda, setBusqueda] = useState("");
-  const [pagina, setPagina] = useState(1);
-  const limite = 20;
+  const [marca, setMarca] = useState('')
+  const [condicion, setCondicion] = useState('')
+  const [tipoVehiculo, setTipoVehiculo] = useState('')
+  const [busqueda, setBusqueda] = useState('')
+  const [pagina, setPagina] = useState(1)
+  const limite = 20
 
-  const [productos, setProductos] = useState<ProductPublic[]>(initialProducts);
-  const [total, setTotal] = useState(totalInicial);
-  const [cargando, setCargando] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [productos, setProductos] = useState<ProductPublic[]>(initialProducts)
+  const [total, setTotal] = useState(totalInicial)
+  const [cargando, setCargando] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   /** Evita re-fetch al montar: ya tenemos datos del Server Component */
-  const omitirPrimeraCarga = useRef(true);
+  const omitirPrimeraCarga = useRef(true)
 
   const cargar = useCallback(async () => {
-    setCargando(true);
-    setError(null);
+    setCargando(true)
+    setError(null)
     try {
-      const params = new URLSearchParams();
-      params.set("page", String(pagina));
-      params.set("limit", String(limite));
-      if (marca) params.set("brand", marca);
-      if (condicion) params.set("condition", condicion);
-      if (tipoVehiculo) params.set("vehicleType", tipoVehiculo);
-      if (busqueda.trim()) params.set("q", busqueda.trim());
+      const params = new URLSearchParams()
+      params.set('page', String(pagina))
+      params.set('limit', String(limite))
+      if (marca) params.set('brand', marca)
+      if (condicion) params.set('condition', condicion)
+      if (tipoVehiculo) params.set('vehicleType', tipoVehiculo)
+      if (busqueda.trim()) params.set('q', busqueda.trim())
 
-      const client = createClient();
-      const data = await fetchPublicProducts(client, storeId, usdBsRate, params);
-      setProductos(data.products);
-      setTotal(data.total);
+      const client = createClient()
+      const data = await fetchPublicProducts(client, storeId, usdBsRate, params)
+      setProductos(data.products)
+      setTotal(data.total)
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Error de red");
-      setProductos([]);
-      setTotal(0);
+      setError(e instanceof Error ? e.message : 'Error de red')
+      setProductos([])
+      setTotal(0)
     } finally {
-      setCargando(false);
+      setCargando(false)
     }
-  }, [storeId, usdBsRate, marca, condicion, tipoVehiculo, busqueda, pagina]);
+  }, [storeId, usdBsRate, marca, condicion, tipoVehiculo, busqueda, pagina])
 
   // Refetch solo tras la primera pintura (datos iniciales vienen del servidor)
   useEffect(() => {
     if (omitirPrimeraCarga.current) {
-      omitirPrimeraCarga.current = false;
-      return;
+      omitirPrimeraCarga.current = false
+      return
     }
-    void cargar();
-  }, [cargar]);
+    void cargar()
+  }, [cargar])
 
-  const totalPaginas = Math.max(1, Math.ceil(total / limite));
+  const totalPaginas = Math.max(1, Math.ceil(total / limite))
 
   return (
     <section className="mx-auto max-w-7xl px-4 pb-28 pt-4">
@@ -129,8 +128,8 @@ export function ProductCatalog({
           type="search"
           value={busqueda}
           onChange={(e) => {
-            setBusqueda(e.target.value);
-            setPagina(1);
+            setBusqueda(e.target.value)
+            setPagina(1)
           }}
           placeholder="Buscar por nombre, marca, modelo..."
           className="w-full rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] py-3 pl-10 pr-4 text-sm text-[#F5F5F5] placeholder:text-[#616161] focus:border-[#FF6B00] focus:outline-none focus:ring-1 focus:ring-[#FF6B00]"
@@ -144,8 +143,8 @@ export function ProductCatalog({
           className={selectClase}
           value={marca}
           onChange={(e) => {
-            setMarca(e.target.value);
-            setPagina(1);
+            setMarca(e.target.value)
+            setPagina(1)
           }}
           aria-label="Marca"
         >
@@ -160,13 +159,13 @@ export function ProductCatalog({
           className={selectClase}
           value={condicion}
           onChange={(e) => {
-            setCondicion(e.target.value);
-            setPagina(1);
+            setCondicion(e.target.value)
+            setPagina(1)
           }}
           aria-label="Condición"
         >
           {CONDICIONES.map((c) => (
-            <option key={c.value || "all"} value={c.value}>
+            <option key={c.value || 'all'} value={c.value}>
               {c.label}
             </option>
           ))}
@@ -175,13 +174,13 @@ export function ProductCatalog({
           className={selectClase}
           value={tipoVehiculo}
           onChange={(e) => {
-            setTipoVehiculo(e.target.value);
-            setPagina(1);
+            setTipoVehiculo(e.target.value)
+            setPagina(1)
           }}
           aria-label="Tipo de vehículo"
         >
           {TIPOS_VEHICULO.map((t) => (
-            <option key={t.value || "all-v"} value={t.value}>
+            <option key={t.value || 'all-v'} value={t.value}>
               {t.label}
             </option>
           ))}
@@ -241,5 +240,5 @@ export function ProductCatalog({
         </>
       )}
     </section>
-  );
+  )
 }

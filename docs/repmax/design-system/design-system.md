@@ -7,21 +7,21 @@
 
 ## Stack UI
 
-| Superficie | Stack |
-|------------|-------|
-| Mobile | Expo 56 · React Native · Inter · Lucide / MCI |
-| Web panel / vitrina | Next.js 16 · Tailwind · shadcn-like patterns |
-| Diseño | Pencil (`.pen`) · prototipo HTML |
+| Superficie          | Stack                                         |
+| ------------------- | --------------------------------------------- |
+| Mobile              | Expo 56 · React Native · Inter · Lucide / MCI |
+| Web panel / vitrina | Next.js 16 · Tailwind · shadcn-like patterns  |
+| Diseño              | Pencil (`.pen`) · prototipo HTML              |
 
 ## Fuentes de verdad
 
-| Capa | Path |
-|------|------|
-| Tokens + pantallas onboarding | `docs/repmax/design/onboarding.pen` |
-| Tokens código mobile | `apps/repmax-mobile/src/utils/theme.ts` |
-| Spec UX onboarding | `docs/repmax/design/onboarding-ux-spec.md` |
-| Prototipo tap-through | `docs/repmax/design/prototype/index.html` |
-| Este sistema | `docs/repmax/design-system/` |
+| Capa                          | Path                                       |
+| ----------------------------- | ------------------------------------------ |
+| Tokens + pantallas onboarding | `docs/repmax/design/onboarding.pen`        |
+| Tokens código mobile          | `apps/repmax-mobile/src/utils/theme.ts`    |
+| Spec UX onboarding            | `docs/repmax/design/onboarding-ux-spec.md` |
+| Prototipo tap-through         | `docs/repmax/design/prototype/index.html`  |
+| Este sistema                  | `docs/repmax/design-system/`               |
 
 No hay `.lib.pen` separado todavía: los componentes reutilizables viven **dentro** de `onboarding.pen` (`ProgressBar`, `SelectionCard`, `ButtonPrimary`, etc.). Cuando crezcan pantallas web/dashboard, extraer a `repmax.lib.pen`.
 
@@ -41,10 +41,10 @@ No hay `.lib.pen` separado todavía: los componentes reutilizables viven **dentr
 
 ## Breakpoints / artboards
 
-| Target | Frame |
-|--------|-------|
-| Mobile | 390 × 844 |
-| Gutter contenido | 20 |
+| Target              | Frame       |
+| ------------------- | ----------- |
+| Mobile              | 390 × 844   |
+| Gutter contenido    | 20          |
 | Progress onboarding | 5 segmentos |
 
 ## Anti-patterns

@@ -1,12 +1,12 @@
-import React from "react";
-import { View, ActivityIndicator } from "react-native";
+import React from 'react'
+import { View, ActivityIndicator } from 'react-native'
 
-import { Colors } from "@/constants/theme";
+import { Colors } from '@/constants/theme'
 
-import { dashboardStyles as styles } from "../dashboardStyles";
+import { dashboardStyles as styles } from '../dashboardStyles'
 
 interface DashboardLoadingProps {
-  backgroundColor: string;
+  backgroundColor: string
 }
 
 export function DashboardLoading({ backgroundColor }: DashboardLoadingProps) {
@@ -14,5 +14,5 @@ export function DashboardLoading({ backgroundColor }: DashboardLoadingProps) {
     <View style={[styles.loadingContainer, { backgroundColor }]}>
       <ActivityIndicator size="large" color={Colors.light.violet} />
     </View>
-  );
+  )
 }

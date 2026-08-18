@@ -1,18 +1,16 @@
-import { MessageCircle } from "lucide-react";
+import { MessageCircle } from 'lucide-react'
 
 interface WhatsAppFABProps {
-  phone: string | null;
-  businessName: string;
+  phone: string | null
+  businessName: string
 }
 
 export function WhatsAppFAB({ phone, businessName }: WhatsAppFABProps) {
-  if (!phone) return null;
+  if (!phone) return null
 
-  const cleanPhone = phone.replace(/\D/g, "");
-  const message = encodeURIComponent(
-    `Hola ${businessName}, quiero reservar una cita`,
-  );
-  const href = `https://wa.me/${cleanPhone}?text=${message}`;
+  const cleanPhone = phone.replace(/\D/g, '')
+  const message = encodeURIComponent(`Hola ${businessName}, quiero reservar una cita`)
+  const href = `https://wa.me/${cleanPhone}?text=${message}`
 
   return (
     <a
@@ -24,5 +22,5 @@ export function WhatsAppFAB({ phone, businessName }: WhatsAppFABProps) {
     >
       <MessageCircle size={28} strokeWidth={2} aria-hidden />
     </a>
-  );
+  )
 }

@@ -2,24 +2,19 @@
 // Vista completa del storefront — compone header, catálogo y CTA
 // ============================================================
 
-import type { StorePublic, ProductPublic } from "@/types/storefront";
-import { StorefrontHeader } from "./StorefrontHeader";
-import { ProductCatalog } from "./ProductCatalog";
-import { ContactCTA } from "./ContactCTA";
+import type { StorePublic, ProductPublic } from '@/types/storefront'
+import { StorefrontHeader } from './StorefrontHeader'
+import { ProductCatalog } from './ProductCatalog'
+import { ContactCTA } from './ContactCTA'
 
 interface StorefrontViewProps {
-  store: StorePublic;
-  initialProducts: ProductPublic[];
-  total: number;
-  hostSlug: string | null;
+  store: StorePublic
+  initialProducts: ProductPublic[]
+  total: number
+  hostSlug: string | null
 }
 
-export function StorefrontView({
-  store,
-  initialProducts,
-  total,
-  hostSlug,
-}: StorefrontViewProps) {
+export function StorefrontView({ store, initialProducts, total, hostSlug }: StorefrontViewProps) {
   return (
     <div className="min-h-screen bg-[#0D0D0D]">
       <StorefrontHeader store={store} />
@@ -33,5 +28,5 @@ export function StorefrontView({
       />
       {store.phone ? <ContactCTA storeName={store.name} phone={store.phone} /> : null}
     </div>
-  );
+  )
 }

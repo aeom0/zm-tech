@@ -1,84 +1,68 @@
-"use client";
+'use client'
 
-import { Pencil, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { Pencil, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 
-import {
-  useDeletePromo,
-  useTogglePromoActive,
-} from "@/hooks/servicios/usePromos";
-import type { Promotion } from "../../_services/promosService";
-import { SavingIndicator } from "../shared/SavingIndicator";
+import { useDeletePromo, useTogglePromoActive } from '@/hooks/servicios/usePromos'
+import type { Promotion } from '../../_services/promosService'
+import { SavingIndicator } from '../shared/SavingIndicator'
 
 interface Props {
-  promo: Promotion;
-  onEdit: (promo: Promotion) => void;
+  promo: Promotion
+  onEdit: (promo: Promotion) => void
 }
 
 export function PromoCard({ promo, onEdit }: Props) {
-  const deletePromo = useDeletePromo();
-  const toggleActive = useTogglePromoActive();
-  const [savingState, setSavingState] = useState<
-    "idle" | "saving" | "saved" | "error"
-  >("idle");
+  const deletePromo = useDeletePromo()
+  const toggleActive = useTogglePromoActive()
+  const [savingState, setSavingState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
 
   async function handleToggle() {
-    setSavingState("saving");
+    setSavingState('saving')
     try {
       await toggleActive.mutateAsync({
         id: promo.id,
         is_active: !promo.is_active,
-      });
-      setSavingState("saved");
-      setTimeout(() => setSavingState("idle"), 2000);
+      })
+      setSavingState('saved')
+      setTimeout(() => setSavingState('idle'), 2000)
     } catch {
-      setSavingState("error");
-      setTimeout(() => setSavingState("idle"), 3000);
+      setSavingState('error')
+      setTimeout(() => setSavingState('idle'), 3000)
     }
   }
 
   async function handleDelete() {
-    if (
-      !window.confirm(
-        `Eliminar la promo "${promo.title}"? Se eliminaran sus items.`,
-      )
-    )
-      return;
-    setSavingState("saving");
+    if (!window.confirm(`Eliminar la promo "${promo.title}"? Se eliminaran sus items.`)) return
+    setSavingState('saving')
     try {
-      await deletePromo.mutateAsync(promo.id);
+      await deletePromo.mutateAsync(promo.id)
     } catch {
-      setSavingState("error");
-      setTimeout(() => setSavingState("idle"), 3000);
+      setSavingState('error')
+      setTimeout(() => setSavingState('idle'), 3000)
     }
   }
 
-  const itemCount = promo.promotion_items?.length ?? 0;
-  const isExpired = promo.expires_at
-    ? new Date(promo.expires_at) < new Date()
-    : false;
+  const itemCount = promo.promotion_items?.length ?? 0
+  const isExpired = promo.expires_at ? new Date(promo.expires_at) < new Date() : false
 
   return (
     <div
       className={`rounded-xl border border-white/10 bg-white/5 p-4 transition-opacity ${
-        !promo.is_active || isExpired ? "opacity-50" : ""
+        !promo.is_active || isExpired ? 'opacity-50' : ''
       }`}
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="truncate text-sm font-medium text-white">
-              {promo.title}
-            </h3>
+            <h3 className="truncate text-sm font-medium text-white">{promo.title}</h3>
 
             {promo.badge ? (
               <span
                 className="rounded px-1.5 py-0.5 text-xs font-semibold"
                 style={{
-                  backgroundColor: promo.accent_color
-                    ? `${promo.accent_color}33`
-                    : "#40E0D033",
-                  color: promo.accent_color ?? "#fda4af",
+                  backgroundColor: promo.accent_color ? `${promo.accent_color}33` : '#40E0D033',
+                  color: promo.accent_color ?? '#fda4af',
                 }}
               >
                 {promo.badge}
@@ -93,22 +77,20 @@ export function PromoCard({ promo, onEdit }: Props) {
           </div>
 
           {promo.description ? (
-            <p className="mt-0.5 line-clamp-1 text-xs text-white/50">
-              {promo.description}
-            </p>
+            <p className="mt-0.5 line-clamp-1 text-xs text-white/50">{promo.description}</p>
           ) : null}
 
           <p className="mt-1 text-sm font-semibold text-[#40E0D0]">
-            {Number(promo.promo_price).toLocaleString("es-VE", {
+            {Number(promo.promo_price).toLocaleString('es-VE', {
               minimumFractionDigits: 2,
             })}
           </p>
 
           <p className="mt-0.5 text-xs text-white/30">
-            {itemCount} item{itemCount !== 1 ? "s" : ""}
+            {itemCount} item{itemCount !== 1 ? 's' : ''}
             {promo.expires_at ? (
               <span className="ml-2">
-                . vence {new Date(promo.expires_at).toLocaleDateString("es-VE")}
+                . vence {new Date(promo.expires_at).toLocaleDateString('es-VE')}
               </span>
             ) : null}
           </p>
@@ -121,13 +103,13 @@ export function PromoCard({ promo, onEdit }: Props) {
             type="button"
             onClick={() => void handleToggle()}
             className={`relative inline-flex h-4 w-8 shrink-0 rounded-full transition-colors ${
-              promo.is_active ? "bg-[#40E0D0]" : "bg-white/20"
+              promo.is_active ? 'bg-[#40E0D0]' : 'bg-white/20'
             }`}
-            aria-label={promo.is_active ? "Desactivar promo" : "Activar promo"}
+            aria-label={promo.is_active ? 'Desactivar promo' : 'Activar promo'}
           >
             <span
               className={`absolute top-0.5 block h-3 w-3 rounded-full bg-white transition-[left] ${
-                promo.is_active ? "left-[18px]" : "left-0.5"
+                promo.is_active ? 'left-[18px]' : 'left-0.5'
               }`}
             />
           </button>
@@ -153,5 +135,5 @@ export function PromoCard({ promo, onEdit }: Props) {
         </div>
       </div>
     </div>
-  );
+  )
 }

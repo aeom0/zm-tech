@@ -15,6 +15,7 @@
 **Tipo de Layout**: Navegación por pestañas inferiores (5 pestañas para móvil)
 
 **Pantallas Principales**:
+
 1. **Inicio (Dashboard)** - Resumen del día, estadísticas rápidas, próximas citas
 2. **Agenda** - Vista completa de calendario con filtrado por chica
 3. **Servicios** - Gestionar catálogo de servicios con variantes
@@ -26,20 +27,24 @@
 ## 3. Paleta de Colores
 
 **Referencia marca / marketing (alineada mobile + web)**:
+
 - Turquesa Lunaris: `#40E0D0` — primario destacado (preset spa-nails, landing)
 - Teal: `#00897B` — primario oscuro / hover (Tailwind `primary` en web)
 - Índigo (gradiente): `#3949AB` — cierre del gradiente Lunaris
 
 **Colores Primarios (UI tenant — ejemplo spa-nails tras onboarding)**:
+
 - Primario: según `TenantConfig.theme.primaryColor` (preset spa-nails: `#40E0D0`)
 - Primario Claro: tintes derivados o `#B2DFDB` (web `primaryLight`)
 - Primario Oscuro: `#00897B` o estados presionados del tema
 
 **Colores de Acento**:
+
 - Dorado: `#D4AF37` - Acentos premium, indicadores de éxito, precios
 - Dorado Claro: `#F5E6D3` - Resaltados dorados sutiles
 
 **Neutros**:
+
 - Fondo: `#FFFFFF` - Lienzo principal
 - Superficie: `#F8F5FA` - Tarjetas, elementos elevados (tinte neutro / sutil)
 - Borde: `#E0D6E5` - Divisores, contornos de tarjetas
@@ -49,6 +54,7 @@
 - Negro: `#1A1A1A` - Texto fuerte, íconos
 
 **Semánticos**:
+
 - Éxito: `#4CAF50` - Citas completadas
 - Advertencia: `#D4AF37` - Alertas de stock bajo (usa dorado)
 - Error: `#D32F2F` - Cancelaciones, alertas críticas
@@ -56,10 +62,12 @@
 
 ## 4. Tipografía
 
-**Familia de Fuentes**: 
+**Familia de Fuentes**:
+
 - Títulos y Cuerpo: Fuente del sistema (San Francisco en iOS, Roboto en Android)
 
 **Escala Tipográfica**:
+
 - H1 (Títulos de página): 32px, Bold
 - H2 (Encabezados de sección): 24px, SemiBold
 - H3 (Títulos de tarjeta): 20px, SemiBold
@@ -72,6 +80,7 @@
 ## 5. Estilizado de Componentes
 
 **Tarjetas**:
+
 - Fondo: Blanco (#FFFFFF)
 - Borde: 1px solid #E0D6E5
 - Radio de Borde: 16px
@@ -79,6 +88,7 @@
 - Padding: 16-20px
 
 **Botones**:
+
 - Primario: Fondo primario del tenant (p. ej. turquesa #40E0D0), texto blanco
 - Secundario: Fondo blanco, borde y texto primario del tenant
 - Acento: Fondo dorado (#D4AF37), texto blanco
@@ -86,6 +96,7 @@
 - Altura: 52px
 
 **Campos de Entrada**:
+
 - Fondo: #F8F5FA
 - Borde: 1px solid #E0D6E5
 - Borde en Focus: primario del tenant o #40E0D0
@@ -93,6 +104,7 @@
 - Altura: 48px
 
 **Íconos**:
+
 - Usar íconos Feather de @expo/vector-icons
 - Activo/Seleccionado: Primario del tenant (Lunaris / turquesa si aplica)
 - Inactivo: Gris atenuado (#8A8A8A)
@@ -101,28 +113,33 @@
 ## 6. Especificaciones por Pantalla
 
 ### Inicio (Dashboard)
+
 - Encabezado: "Hoy - [Fecha Actual]" con botón "Nueva Cita"
 - Tarjetas de estadísticas en scroll horizontal: Ingresos Hoy, Citas Completadas, Próximas
 - Lista de citas del día debajo
 - Alertas de stock bajo al final
 
 ### Agenda
+
 - Vista semanal con columnas por día
 - Franjas horarias de 9 AM a 8 PM
 - Tarjetas de citas codificadas por color según chica
 - Chips de filtro de chicas arriba
 
 ### Servicios
+
 - Pestañas/acordeón de categorías
 - Tarjetas de servicio mostrando: Nombre, Precio (en dorado), Duración
 - Modal para agregar/editar servicio
 
 ### Inventario
+
 - Control segmentado: Productos Contables / Insumos
 - Tarjetas de productos con insignias de cantidad
 - Artículos con stock bajo resaltados con advertencia dorada
 
 ### Finanzas
+
 - Selector de período: Hoy, Semana, Mes
 - Visualización grande de ingresos con acento dorado
 - Lista de historial de pagos

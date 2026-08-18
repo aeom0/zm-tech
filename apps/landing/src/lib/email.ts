@@ -13,7 +13,9 @@ export async function enviarAvisoInterno(params: {
 }): Promise<{ ok: true; id?: string } | { ok: false; error: string }> {
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) {
-    console.warn('[email] Sin RESEND_API_KEY — el aviso no se envió. El lead sí puede haberse guardado.')
+    console.warn(
+      '[email] Sin RESEND_API_KEY — el aviso no se envió. El lead sí puede haberse guardado.'
+    )
     return { ok: false, error: 'RESEND_API_KEY ausente' }
   }
 

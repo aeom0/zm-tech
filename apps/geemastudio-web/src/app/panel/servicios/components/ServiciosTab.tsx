@@ -1,21 +1,17 @@
-"use client";
+'use client'
 
-import { Pencil, Plus, Trash2 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { Pencil, Plus, Trash2 } from 'lucide-react'
+import { useMemo, useState } from 'react'
 
-import type { CategoriaRow } from "@/hooks/servicios/useCategorias";
-import type { ServicioRow } from "@/hooks/servicios/useServicios";
-import {
-  useDeleteServicio,
-  useServicios,
-  useToggleServicio,
-} from "@/hooks/servicios/useServicios";
-import { ServiceToggle } from "./ServiceToggle";
+import type { CategoriaRow } from '@/hooks/servicios/useCategorias'
+import type { ServicioRow } from '@/hooks/servicios/useServicios'
+import { useDeleteServicio, useServicios, useToggleServicio } from '@/hooks/servicios/useServicios'
+import { ServiceToggle } from './ServiceToggle'
 
 function fmtUsd(price: string) {
-  const n = Number.parseFloat(String(price));
-  if (!Number.isFinite(n)) return `$ ${price}`;
-  return `$ ${n.toFixed(2)}`;
+  const n = Number.parseFloat(String(price))
+  if (!Number.isFinite(n)) return `$ ${price}`
+  return `$ ${n.toFixed(2)}`
 }
 
 export function ServiciosTab({
@@ -23,38 +19,35 @@ export function ServiciosTab({
   onNew,
   onEdit,
 }: {
-  categorias: CategoriaRow[];
-  onNew: (defaults?: Partial<ServicioRow>) => void;
-  onEdit: (svc: ServicioRow) => void;
+  categorias: CategoriaRow[]
+  onNew: (defaults?: Partial<ServicioRow>) => void
+  onEdit: (svc: ServicioRow) => void
 }) {
-  const [selectedCategoryId, setSelectedCategoryId] = useState<
-    string | undefined
-  >(undefined);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | undefined>(undefined)
 
-  const serviciosQuery = useServicios(selectedCategoryId);
-  const toggleMutation = useToggleServicio();
-  const deleteMutation = useDeleteServicio();
+  const serviciosQuery = useServicios(selectedCategoryId)
+  const toggleMutation = useToggleServicio()
+  const deleteMutation = useDeleteServicio()
 
   const categoriasById = useMemo(() => {
-    const m = new Map<string, CategoriaRow>();
-    categorias.forEach((c) => m.set(c.id, c));
-    return m;
-  }, [categorias]);
+    const m = new Map<string, CategoriaRow>()
+    categorias.forEach((c) => m.set(c.id, c))
+    return m
+  }, [categorias])
 
-  const servicios = serviciosQuery.data ?? [];
-  const errorMessage =
-    (serviciosQuery.error as { message?: string } | null)?.message ?? null;
+  const servicios = serviciosQuery.data ?? []
+  const errorMessage = (serviciosQuery.error as { message?: string } | null)?.message ?? null
 
   const chips = useMemo(() => {
     return [
       {
-        id: "all",
-        label: "Todos",
-        color: "#52525b",
+        id: 'all',
+        label: 'Todos',
+        color: '#52525b',
       },
       ...categorias.map((c) => ({ id: c.id, label: c.name, color: c.color })),
-    ];
-  }, [categorias]);
+    ]
+  }, [categorias])
 
   return (
     <section className="space-y-4">
@@ -68,19 +61,13 @@ export function ServiciosTab({
         <button
           type="button"
           onClick={() =>
-            onNew(
-              selectedCategoryId
-                ? { category_id: selectedCategoryId }
-                : undefined,
-            )
+            onNew(selectedCategoryId ? { category_id: selectedCategoryId } : undefined)
           }
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#40E0D0] hover:bg-[#00897B] text-white text-sm font-semibold transition-colors disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-xl bg-[#40E0D0] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#00897B] disabled:opacity-60"
           disabled={categorias.length === 0}
-          title={
-            categorias.length === 0 ? "Crea una categoría primero" : undefined
-          }
+          title={categorias.length === 0 ? 'Crea una categoría primero' : undefined}
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="h-4 w-4" />
           Nuevo
         </button>
       </div>
@@ -88,121 +75,90 @@ export function ServiciosTab({
       {categorias.length > 0 && (
         <div className="flex gap-2 overflow-x-auto pb-1">
           {chips.map((ch) => {
-            const isActive =
-              ch.id === "all"
-                ? !selectedCategoryId
-                : selectedCategoryId === ch.id;
+            const isActive = ch.id === 'all' ? !selectedCategoryId : selectedCategoryId === ch.id
             return (
               <button
                 key={ch.id}
                 type="button"
-                onClick={() =>
-                  setSelectedCategoryId(ch.id === "all" ? undefined : ch.id)
-                }
+                onClick={() => setSelectedCategoryId(ch.id === 'all' ? undefined : ch.id)}
                 className={[
-                  "px-3 py-2 rounded-xl border text-sm font-semibold whitespace-nowrap transition-colors inline-flex items-center gap-2",
+                  'inline-flex items-center gap-2 whitespace-nowrap rounded-xl border px-3 py-2 text-sm font-semibold transition-colors',
                   isActive
-                    ? "bg-white/[0.06] border-white/[0.10] text-white"
-                    : "bg-transparent border-white/[0.06] text-zinc-300 hover:bg-white/[0.04] hover:border-white/[0.08]",
-                ].join(" ")}
+                    ? 'border-white/[0.10] bg-white/[0.06] text-white'
+                    : 'border-white/[0.06] bg-transparent text-zinc-300 hover:border-white/[0.08] hover:bg-white/[0.04]',
+                ].join(' ')}
               >
                 <span
-                  className="w-2.5 h-2.5 rounded-full border border-white/[0.12]"
+                  className="h-2.5 w-2.5 rounded-full border border-white/[0.12]"
                   style={{ backgroundColor: ch.color }}
                   aria-hidden
                 />
                 {ch.label}
               </button>
-            );
+            )
           })}
         </div>
       )}
 
       {errorMessage && (
-        <div className="rounded-2xl border border-red-900/40 bg-red-950/30 text-red-300 px-4 py-3 text-sm">
+        <div className="rounded-2xl border border-red-900/40 bg-red-950/30 px-4 py-3 text-sm text-red-300">
           {errorMessage}
         </div>
       )}
 
       {serviciosQuery.isLoading ? (
-        <div className="rounded-2xl border border-white/[0.08] bg-zinc-900 overflow-hidden">
-          <div className="p-4 space-y-3">
+        <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-zinc-900">
+          <div className="space-y-3 p-4">
             {[1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="h-12 rounded-xl bg-white/[0.04] animate-pulse"
-              />
+              <div key={i} className="h-12 animate-pulse rounded-xl bg-white/[0.04]" />
             ))}
           </div>
         </div>
       ) : categorias.length === 0 ? (
         <div className="rounded-2xl border border-white/[0.08] bg-zinc-900 p-8 text-center">
-          <div className="text-sm text-zinc-300 font-semibold">
-            Primero crea una categoría
-          </div>
-          <div className="text-sm text-zinc-500 mt-1">
+          <div className="text-sm font-semibold text-zinc-300">Primero crea una categoría</div>
+          <div className="mt-1 text-sm text-zinc-500">
             Los servicios necesitan una categoría para quedar ordenados.
           </div>
         </div>
       ) : servicios.length === 0 ? (
         <div className="rounded-2xl border border-white/[0.08] bg-zinc-900 p-8 text-center">
-          <div className="text-sm text-zinc-300 font-semibold">
-            Sin servicios por aquí
-          </div>
-          <div className="text-sm text-zinc-500 mt-1">
-            Crea el primero y lo vemos en la lista.
-          </div>
+          <div className="text-sm font-semibold text-zinc-300">Sin servicios por aquí</div>
+          <div className="mt-1 text-sm text-zinc-500">Crea el primero y lo vemos en la lista.</div>
           <button
             type="button"
             onClick={() =>
-              onNew(
-                selectedCategoryId
-                  ? { category_id: selectedCategoryId }
-                  : undefined,
-              )
+              onNew(selectedCategoryId ? { category_id: selectedCategoryId } : undefined)
             }
-            className="mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#40E0D0] hover:bg-[#00897B] text-white text-sm font-semibold transition-colors"
+            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#40E0D0] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#00897B]"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="h-4 w-4" />
             Nuevo servicio
           </button>
         </div>
       ) : (
         <div className="space-y-3">
           {/* Desktop table */}
-          <div className="hidden md:block rounded-2xl border border-white/[0.08] bg-zinc-900 overflow-hidden">
+          <div className="hidden overflow-hidden rounded-2xl border border-white/[0.08] bg-zinc-900 md:block">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-white/[0.08]">
-                  <th className="text-left px-4 py-3 font-semibold text-zinc-400">
-                    Servicio
-                  </th>
-                  <th className="text-left px-4 py-3 font-semibold text-zinc-400">
-                    Categoría
-                  </th>
-                  <th className="text-right px-4 py-3 font-semibold text-zinc-400">
-                    Precio
-                  </th>
-                  <th className="text-right px-4 py-3 font-semibold text-zinc-400">
-                    Duración
-                  </th>
-                  <th className="text-center px-4 py-3 font-semibold text-zinc-400">
-                    Activo
-                  </th>
-                  <th className="text-right px-4 py-3 font-semibold text-zinc-400">
-                    Acciones
-                  </th>
+                  <th className="px-4 py-3 text-left font-semibold text-zinc-400">Servicio</th>
+                  <th className="px-4 py-3 text-left font-semibold text-zinc-400">Categoría</th>
+                  <th className="px-4 py-3 text-right font-semibold text-zinc-400">Precio</th>
+                  <th className="px-4 py-3 text-right font-semibold text-zinc-400">Duración</th>
+                  <th className="px-4 py-3 text-center font-semibold text-zinc-400">Activo</th>
+                  <th className="px-4 py-3 text-right font-semibold text-zinc-400">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {servicios.map((s) => {
-                  const cat = categoriasById.get(s.category_id);
-                  const isBusy =
-                    toggleMutation.isPending || deleteMutation.isPending;
+                  const cat = categoriasById.get(s.category_id)
+                  const isBusy = toggleMutation.isPending || deleteMutation.isPending
                   return (
                     <tr
                       key={s.id}
-                      className="border-b border-white/[0.06] last:border-0 hover:bg-white/[0.03] transition-colors"
+                      className="border-b border-white/[0.06] transition-colors last:border-0 hover:bg-white/[0.03]"
                     >
                       <td className="px-4 py-3">
                         <div className="font-semibold text-white">{s.name}</div>
@@ -211,7 +167,7 @@ export function ServiciosTab({
                         {cat ? (
                           <span className="inline-flex items-center gap-2 text-zinc-300">
                             <span
-                              className="w-2.5 h-2.5 rounded-full border border-white/[0.12]"
+                              className="h-2.5 w-2.5 rounded-full border border-white/[0.12]"
                               style={{ backgroundColor: cat.color }}
                               aria-hidden
                             />
@@ -221,19 +177,15 @@ export function ServiciosTab({
                           <span className="text-zinc-500">—</span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-right text-zinc-200 font-semibold">
+                      <td className="px-4 py-3 text-right font-semibold text-zinc-200">
                         {fmtUsd(s.price)}
                       </td>
-                      <td className="px-4 py-3 text-right text-zinc-400">
-                        {s.duration} min
-                      </td>
+                      <td className="px-4 py-3 text-right text-zinc-400">{s.duration} min</td>
                       <td className="px-4 py-3 text-center">
                         <ServiceToggle
                           checked={s.is_active}
                           disabled={isBusy}
-                          onChange={(next) =>
-                            toggleMutation.mutate({ id: s.id, is_active: next })
-                          }
+                          onChange={(next) => toggleMutation.mutate({ id: s.id, is_active: next })}
                           label={`Servicio ${s.name}`}
                         />
                       </td>
@@ -242,55 +194,47 @@ export function ServiciosTab({
                           <button
                             type="button"
                             onClick={() => onEdit(s)}
-                            className="w-9 h-9 rounded-xl bg-white/[0.04] border border-white/[0.08] inline-flex items-center justify-center text-zinc-200 hover:bg-white/[0.06] transition-colors"
+                            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04] text-zinc-200 transition-colors hover:bg-white/[0.06]"
                             aria-label={`Editar ${s.name}`}
                           >
-                            <Pencil className="w-4 h-4" />
+                            <Pencil className="h-4 w-4" />
                           </button>
                           <button
                             type="button"
                             disabled={deleteMutation.isPending}
                             onClick={() => {
-                              const ok = window.confirm(
-                                `¿Eliminar el servicio "${s.name}"?`,
-                              );
-                              if (ok) deleteMutation.mutate(s.id);
+                              const ok = window.confirm(`¿Eliminar el servicio "${s.name}"?`)
+                              if (ok) deleteMutation.mutate(s.id)
                             }}
-                            className="w-9 h-9 rounded-xl bg-red-500/10 border border-red-500/20 inline-flex items-center justify-center text-red-300 hover:bg-red-500/15 transition-colors disabled:opacity-60"
+                            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-red-500/20 bg-red-500/10 text-red-300 transition-colors hover:bg-red-500/15 disabled:opacity-60"
                             aria-label={`Eliminar ${s.name}`}
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
                       </td>
                     </tr>
-                  );
+                  )
                 })}
               </tbody>
             </table>
           </div>
 
           {/* Mobile cards */}
-          <div className="md:hidden space-y-3">
+          <div className="space-y-3 md:hidden">
             {servicios.map((s) => {
-              const cat = categoriasById.get(s.category_id);
-              const isBusy =
-                toggleMutation.isPending || deleteMutation.isPending;
+              const cat = categoriasById.get(s.category_id)
+              const isBusy = toggleMutation.isPending || deleteMutation.isPending
               return (
-                <div
-                  key={s.id}
-                  className="rounded-2xl border border-white/[0.08] bg-zinc-900 p-4"
-                >
+                <div key={s.id} className="rounded-2xl border border-white/[0.08] bg-zinc-900 p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <div className="text-sm font-semibold text-white">
-                        {s.name}
-                      </div>
+                      <div className="text-sm font-semibold text-white">{s.name}</div>
                       <div className="mt-1 flex items-center gap-2 text-xs text-zinc-400">
                         {cat ? (
                           <span className="inline-flex items-center gap-1.5">
                             <span
-                              className="w-2 h-2 rounded-full border border-white/[0.12]"
+                              className="h-2 w-2 rounded-full border border-white/[0.12]"
                               style={{ backgroundColor: cat.color }}
                               aria-hidden
                             />
@@ -302,18 +246,14 @@ export function ServiciosTab({
                         <span className="text-zinc-600">•</span>
                         <span>{s.duration} min</span>
                         <span className="text-zinc-600">•</span>
-                        <span className="font-semibold text-zinc-200">
-                          {fmtUsd(s.price)}
-                        </span>
+                        <span className="font-semibold text-zinc-200">{fmtUsd(s.price)}</span>
                       </div>
                     </div>
 
                     <ServiceToggle
                       checked={s.is_active}
                       disabled={isBusy}
-                      onChange={(next) =>
-                        toggleMutation.mutate({ id: s.id, is_active: next })
-                      }
+                      onChange={(next) => toggleMutation.mutate({ id: s.id, is_active: next })}
                     />
                   </div>
 
@@ -321,32 +261,30 @@ export function ServiciosTab({
                     <button
                       type="button"
                       onClick={() => onEdit(s)}
-                      className="px-3 py-2 rounded-xl bg-white/[0.04] border border-white/[0.08] text-zinc-200 hover:bg-white/[0.06] transition-colors text-sm font-semibold inline-flex items-center gap-2"
+                      className="inline-flex items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-sm font-semibold text-zinc-200 transition-colors hover:bg-white/[0.06]"
                     >
-                      <Pencil className="w-4 h-4" />
+                      <Pencil className="h-4 w-4" />
                       Editar
                     </button>
                     <button
                       type="button"
                       disabled={deleteMutation.isPending}
                       onClick={() => {
-                        const ok = window.confirm(
-                          `¿Eliminar el servicio "${s.name}"?`,
-                        );
-                        if (ok) deleteMutation.mutate(s.id);
+                        const ok = window.confirm(`¿Eliminar el servicio "${s.name}"?`)
+                        if (ok) deleteMutation.mutate(s.id)
                       }}
-                      className="px-3 py-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-300 hover:bg-red-500/15 transition-colors text-sm font-semibold inline-flex items-center gap-2 disabled:opacity-60"
+                      className="inline-flex items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-2 text-sm font-semibold text-red-300 transition-colors hover:bg-red-500/15 disabled:opacity-60"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="h-4 w-4" />
                       Eliminar
                     </button>
                   </div>
                 </div>
-              );
+              )
             })}
           </div>
         </div>
       )}
     </section>
-  );
+  )
 }

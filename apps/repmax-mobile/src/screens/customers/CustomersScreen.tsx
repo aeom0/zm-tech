@@ -2,29 +2,38 @@
 // RepMAX Business Suite — Pantalla de Clientes
 // Phone: lista → detalle · Tablet: master-detail
 // ============================================================
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import {
-  View, Text, FlatList, TouchableOpacity,
-  StyleSheet, ActivityIndicator, Modal,
-  Alert, KeyboardAvoidingView, Platform, ScrollView, TextInput,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  Modal,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  TextInput,
+} from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
-import { SearchBar } from '../../components/ui/SearchBar';
-import { EmptyState } from '../../components/ui/EmptyState';
-import { FAB } from '../../components/ui/FAB';
-import { CustomerDetailPanel } from '../../components/customers/CustomerDetailPanel';
-import { useCustomers } from '../../hooks/useCustomers';
-import { useResponsive } from '../../hooks/useResponsive';
-import { useTabBarOffset } from '../../hooks/useTabBarOffset';
-import { customerService } from '../../services/customerService';
-import { formatUSD } from '../../utils/formatters';
-import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
-import type { Customer } from '../../types/database';
-import type { CustomersStackParamList } from '../../navigation/types';
+import { SearchBar } from '../../components/ui/SearchBar'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { FAB } from '../../components/ui/FAB'
+import { CustomerDetailPanel } from '../../components/customers/CustomerDetailPanel'
+import { useCustomers } from '../../hooks/useCustomers'
+import { useResponsive } from '../../hooks/useResponsive'
+import { useTabBarOffset } from '../../hooks/useTabBarOffset'
+import { customerService } from '../../services/customerService'
+import { formatUSD } from '../../utils/formatters'
+import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme'
+import type { Customer } from '../../types/database'
+import type { CustomersStackParamList } from '../../navigation/types'
 
-type Props = NativeStackScreenProps<CustomersStackParamList, 'Customers'>;
+type Props = NativeStackScreenProps<CustomersStackParamList, 'Customers'>
 
 function CustomerCard({
   customer,
@@ -32,12 +41,17 @@ function CustomerCard({
   selected,
   showChevron,
 }: {
-  customer: Customer;
-  onPress: () => void;
-  selected?: boolean;
-  showChevron?: boolean;
+  customer: Customer
+  onPress: () => void
+  selected?: boolean
+  showChevron?: boolean
 }) {
-  const initials = customer.fullName.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+  const initials = customer.fullName
+    .split(' ')
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase()
 
   return (
     <TouchableOpacity
@@ -61,65 +75,69 @@ function CustomerCard({
         ) : null}
       </View>
     </TouchableOpacity>
-  );
+  )
 }
 
 interface NewCustomerForm {
-  fullName: string;
-  phone: string;
-  cedulaRif: string;
-  email: string;
-  notes: string;
+  fullName: string
+  phone: string
+  cedulaRif: string
+  email: string
+  notes: string
 }
 
 export default function CustomersScreen({ navigation, route }: Props) {
-  const { isTabletUp } = useResponsive();
-  const [query, setQuery] = useState('');
-  const { customers, isLoading, error, refetch } = useCustomers(query || undefined);
-  const { listPaddingWithFab } = useTabBarOffset();
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const { isTabletUp } = useResponsive()
+  const [query, setQuery] = useState('')
+  const { customers, isLoading, error, refetch } = useCustomers(query || undefined)
+  const { listPaddingWithFab } = useTabBarOffset()
+  const [selectedId, setSelectedId] = useState<string | null>(null)
 
-  const [showModal, setShowModal] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
+  const [showModal, setShowModal] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   const [form, setForm] = useState<NewCustomerForm>({
-    fullName: '', phone: '', cedulaRif: '', email: '', notes: '',
-  });
+    fullName: '',
+    phone: '',
+    cedulaRif: '',
+    email: '',
+    notes: '',
+  })
 
   useEffect(() => {
     if (route.params?.openCreate) {
-      setShowModal(true);
-      navigation.setParams({ openCreate: undefined });
+      setShowModal(true)
+      navigation.setParams({ openCreate: undefined })
     }
-  }, [route.params?.openCreate, navigation]);
+  }, [route.params?.openCreate, navigation])
 
   // Auto-seleccionar el primero en tablet cuando cambia la lista
   useEffect(() => {
-    if (!isTabletUp || customers.length === 0) return;
+    if (!isTabletUp || customers.length === 0) return
     if (!selectedId || !customers.some((c) => c.id === selectedId)) {
-      setSelectedId(customers[0].id);
+      setSelectedId(customers[0].id)
     }
-  }, [isTabletUp, customers, selectedId]);
+  }, [isTabletUp, customers, selectedId])
 
-  const selectedCustomer = customers.find((c) => c.id === selectedId) ?? null;
+  const selectedCustomer = customers.find((c) => c.id === selectedId) ?? null
 
   const setField = (key: keyof NewCustomerForm, value: string) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
-  };
+    setForm((prev) => ({ ...prev, [key]: value }))
+  }
 
   const handleSelect = (customer: Customer) => {
     if (isTabletUp) {
-      setSelectedId(customer.id);
-      return;
+      setSelectedId(customer.id)
+      return
     }
-    navigation.navigate('CustomerDetail', { customerId: customer.id });
-  };
+    navigation.navigate('CustomerDetail', { customerId: customer.id })
+  }
 
   const handleCreate = async () => {
     if (!form.fullName.trim()) {
-      Alert.alert('Campo requerido', 'El nombre del cliente es obligatorio.');
-      return;
+      Alert.alert('Campo requerido', 'El nombre del cliente es obligatorio.')
+      return
     }
-    setIsSaving(true);
+    setIsSaving(true)
     try {
       const created = await customerService.create({
         fullName: form.fullName.trim(),
@@ -127,20 +145,20 @@ export default function CustomersScreen({ navigation, route }: Props) {
         cedulaRif: form.cedulaRif.trim() || undefined,
         email: form.email.trim() || undefined,
         notes: form.notes.trim() || undefined,
-      });
-      setShowModal(false);
-      setForm({ fullName: '', phone: '', cedulaRif: '', email: '', notes: '' });
-      await refetch();
+      })
+      setShowModal(false)
+      setForm({ fullName: '', phone: '', cedulaRif: '', email: '', notes: '' })
+      await refetch()
       if (isTabletUp && created?.id) {
-        setSelectedId(created.id);
+        setSelectedId(created.id)
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'No se pudo crear el cliente.';
-      Alert.alert('Error', msg);
+      const msg = err instanceof Error ? err.message : 'No se pudo crear el cliente.'
+      Alert.alert('Error', msg)
     } finally {
-      setIsSaving(false);
+      setIsSaving(false)
     }
-  };
+  }
 
   const listPane = (
     <View style={isTabletUp ? styles.masterPane : styles.container}>
@@ -151,7 +169,11 @@ export default function CustomersScreen({ navigation, route }: Props) {
       />
 
       {isLoading ? (
-        <ActivityIndicator size="large" color={colors.brand.orange} style={{ marginTop: spacing.xl }} />
+        <ActivityIndicator
+          size="large"
+          color={colors.brand.orange}
+          style={{ marginTop: spacing.xl }}
+        />
       ) : error ? (
         <Text style={styles.errorText}>{error}</Text>
       ) : (
@@ -183,7 +205,7 @@ export default function CustomersScreen({ navigation, route }: Props) {
         onPress={() => setShowModal(true)}
       />
     </View>
-  );
+  )
 
   const createModal = (
     <Modal visible={showModal} animationType="slide" transparent>
@@ -199,13 +221,15 @@ export default function CustomersScreen({ navigation, route }: Props) {
             </TouchableOpacity>
           </View>
           <ScrollView>
-            {([
-              { key: 'fullName', label: 'Nombre completo *', placeholder: 'Juan Pérez' },
-              { key: 'phone', label: 'Teléfono', placeholder: '0424-1234567' },
-              { key: 'cedulaRif', label: 'Cédula / RIF', placeholder: 'V-12345678' },
-              { key: 'email', label: 'Email', placeholder: 'cliente@email.com' },
-              { key: 'notes', label: 'Notas', placeholder: 'Mecánico de confianza...' },
-            ] as const).map(({ key, label, placeholder }) => (
+            {(
+              [
+                { key: 'fullName', label: 'Nombre completo *', placeholder: 'Juan Pérez' },
+                { key: 'phone', label: 'Teléfono', placeholder: '0424-1234567' },
+                { key: 'cedulaRif', label: 'Cédula / RIF', placeholder: 'V-12345678' },
+                { key: 'email', label: 'Email', placeholder: 'cliente@email.com' },
+                { key: 'notes', label: 'Notas', placeholder: 'Mecánico de confianza...' },
+              ] as const
+            ).map(({ key, label, placeholder }) => (
               <View key={key}>
                 <Text style={styles.fieldLabel}>{label}</Text>
                 <TextInput
@@ -235,7 +259,7 @@ export default function CustomersScreen({ navigation, route }: Props) {
         </View>
       </KeyboardAvoidingView>
     </Modal>
-  );
+  )
 
   if (isTabletUp) {
     return (
@@ -255,7 +279,7 @@ export default function CustomersScreen({ navigation, route }: Props) {
         </View>
         {createModal}
       </View>
-    );
+    )
   }
 
   return (
@@ -263,7 +287,7 @@ export default function CustomersScreen({ navigation, route }: Props) {
       {listPane}
       {createModal}
     </>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -394,4 +418,4 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily.bold,
     fontSize: typography.size.md,
   },
-});
+})

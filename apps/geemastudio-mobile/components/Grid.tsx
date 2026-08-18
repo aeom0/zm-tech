@@ -1,17 +1,17 @@
-import React from "react";
-import { View, StyleSheet, ViewStyle } from "react-native";
-import { useBreakpointValue } from "../hooks/useResponsive";
+import React from 'react'
+import { View, StyleSheet, ViewStyle } from 'react-native'
+import { useBreakpointValue } from '../hooks/useResponsive'
 
 interface GridProps {
-  children: React.ReactNode;
+  children: React.ReactNode
   columns?: {
-    mobile?: number;
-    tablet?: number;
-    desktop?: number;
-    wide?: number;
-  };
-  gap?: number;
-  style?: ViewStyle;
+    mobile?: number
+    tablet?: number
+    desktop?: number
+    wide?: number
+  }
+  gap?: number
+  style?: ViewStyle
 }
 
 export function Grid({ children, columns, gap = 16, style }: GridProps) {
@@ -20,7 +20,7 @@ export function Grid({ children, columns, gap = 16, style }: GridProps) {
     tablet: columns?.tablet || 2,
     desktop: columns?.desktop || 3,
     wide: columns?.wide || 4,
-  });
+  })
 
   return (
     <View style={[styles.grid, { gap }, style]}>
@@ -40,30 +40,25 @@ export function Grid({ children, columns, gap = 16, style }: GridProps) {
         </View>
       ))}
     </View>
-  );
+  )
 }
 
 interface StackProps {
-  children: React.ReactNode;
-  direction?: "horizontal" | "vertical";
-  spacing?: number;
-  align?: "flex-start" | "center" | "flex-end" | "stretch";
-  justify?:
-    | "flex-start"
-    | "center"
-    | "flex-end"
-    | "space-between"
-    | "space-around";
-  wrap?: boolean;
-  style?: ViewStyle;
+  children: React.ReactNode
+  direction?: 'horizontal' | 'vertical'
+  spacing?: number
+  align?: 'flex-start' | 'center' | 'flex-end' | 'stretch'
+  justify?: 'flex-start' | 'center' | 'flex-end' | 'space-between' | 'space-around'
+  wrap?: boolean
+  style?: ViewStyle
 }
 
 export function Stack({
   children,
-  direction = "vertical",
+  direction = 'vertical',
   spacing = 16,
-  align = "stretch",
-  justify = "flex-start",
+  align = 'stretch',
+  justify = 'flex-start',
   wrap = false,
   style,
 }: StackProps) {
@@ -71,10 +66,10 @@ export function Stack({
     <View
       style={[
         {
-          flexDirection: direction === "horizontal" ? "row" : "column",
+          flexDirection: direction === 'horizontal' ? 'row' : 'column',
           alignItems: align,
           justifyContent: justify,
-          flexWrap: wrap ? "wrap" : "nowrap",
+          flexWrap: wrap ? 'wrap' : 'nowrap',
           gap: spacing,
         },
         style,
@@ -82,16 +77,16 @@ export function Stack({
     >
       {children}
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   grid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    width: "100%",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width: '100%',
   },
   gridItem: {
     minWidth: 0, // Fix para flex en React Native Web
   },
-});
+})

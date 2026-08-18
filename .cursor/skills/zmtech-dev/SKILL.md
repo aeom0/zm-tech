@@ -28,14 +28,15 @@ Automotriz, Sports Tech y Enterprise.
 - **Entorno de Alberto:** VS Code + WSL2 + Windows 11 · Android = target mobile primario
 - **Inventario repos:** `docs/landing/PROYECTOS.md`
 - **Mapa Supabase (varias BDs en zm-tech):** `docs/SUPABASE.md` — obligatorio antes de SQL/migraciones
+
 ---
 
 ## 🗄 Supabase en el monorepo zm-tech
 
-| Proyecto | Ref | Productos |
-|----------|-----|-----------|
-| ZMTech hub | `llacowjutjfefboqgfnj` | Landing + Odental (`odental_*`) + RepMAX (`repmax_*`) |
-| GeemaStudio | `udelxwwnyivknslueerr` | Beauty SaaS (proyecto dedicado) |
+| Proyecto    | Ref                    | Productos                                             |
+| ----------- | ---------------------- | ----------------------------------------------------- |
+| ZMTech hub  | `llacowjutjfefboqgfnj` | Landing + Odental (`odental_*`) + RepMAX (`repmax_*`) |
+| GeemaStudio | `udelxwwnyivknslueerr` | Beauty SaaS (proyecto dedicado)                       |
 
 `*-server` = ops/DB/Edge, **no** API JWT. RepMAX no tiene `repmax-server`. Detalle: `docs/SUPABASE.md`.
 ---
@@ -43,6 +44,7 @@ Automotriz, Sports Tech y Enterprise.
 ## 👤 Perfil del fundador
 
 **Alberto** — desarrollador full-stack, diseñador de productos digitales.
+
 - Trabaja solo o con Claude como co-desarrollador
 - Mobile-first siempre (375px como viewport de referencia)
 - Prefiere monorepos, TypeScript estricto, y arquitecturas escalables desde el día 1
@@ -55,6 +57,7 @@ Automotriz, Sports Tech y Enterprise.
 ### Clientes activos
 
 #### 1. ZM Lash and Nails Beauty ⭐ PRIMER CLIENTE
+
 - **Cliente:** Vanessa (hermana de Alberto)
 - **Ubicación:** Lima, Perú
 - **Repo:** `aeom0/ZM-Lash-and-Nails-Beauty` (privado)
@@ -74,6 +77,7 @@ Automotriz, Sports Tech y Enterprise.
 - **Estado:** En producción ✅
 
 #### 2. Guataparo Bienes Raíces
+
 - **Cliente:** Morelba Hernández — Valencia, Venezuela
 - **Repo:** `aeom0/guataparobr` (privado)
 - **Skill:** `.cursor/skills/guataparo-dev/SKILL.md` (monorepo zm-tech; repo del cliente: `aeom0/guataparobr`)
@@ -86,6 +90,7 @@ Automotriz, Sports Tech y Enterprise.
 - **Repo demo:** `aeom0/Guataparo-demo` (privado)
 
 #### 3. YLA — Yoga con Lógica y Alma
+
 - **Cliente:** Yube Karina
 - **Repo:** `aeom0/yla-mvp` (público)
 - **Skill:** `/mnt/skills/user/yla-dev/SKILL.md`
@@ -97,6 +102,7 @@ Automotriz, Sports Tech y Enterprise.
 ### Productos propios ZM Tech
 
 #### 4. GeemaStudio
+
 - **Repo monorepo:** `zm-tech` → apps `geemastudio-mobile` / `geemastudio-web` / `geemastudio-server`
 - **Skill detallado:** `.cursor/skills/geemastudio.md` (symlink Claude: `.claude/skills/geemastudio.md`)
 - **Descripción:** SaaS multi-tenant para salones de belleza, barberías y spas en LATAM
@@ -109,6 +115,7 @@ Automotriz, Sports Tech y Enterprise.
 - **Estado:** activo en monorepo zm-tech
 
 #### 5. RepMAX Business Suite
+
 - **Ubicación:** monorepo `zm-tech` → `apps/repmax-web`, `apps/repmax-mobile`, `packages/repmax-schema`
 - **Docs:** `docs/repmax/`
 - **Descripción:** SaaS B2B multi-tenant para tiendas de autopartes en Venezuela
@@ -118,6 +125,7 @@ Automotriz, Sports Tech y Enterprise.
 - **Supabase:** proyecto compartido ZMTech `llacowjutjfefboqgfnj`
 
 #### 6. CondoApp
+
 - **Repo:** `aeom0/condoapp` (privado)
 - **Descripción:** SaaS B2B para gestión de condominios y urbanizaciones en LATAM
 - **Stack:** Next.js 15 + Expo + Express + Drizzle ORM + Supabase + Zod + Turborepo + Yarn 4
@@ -126,6 +134,7 @@ Automotriz, Sports Tech y Enterprise.
 - **Estado:** En desarrollo
 
 #### 7. IA Scout360
+
 - **Repo:** `aeom0/ia-scout360` (privado)
 - **Descripción:** Plataforma de scouting deportivo con análisis IA
 - **Stack:** Next.js 15 + React 19 + Expo SDK 54 + React Native 0.81.5 + Supabase + Yarn 4 + Turborepo
@@ -133,6 +142,7 @@ Automotriz, Sports Tech y Enterprise.
 - **Estado:** Migración Firebase → Supabase completada ✅
 
 #### 8. ZetaEme Enterprise Suite
+
 - **Repo:** `aeom0/zetaeme-enterprise-suite` (privado)
 - **Descripción:** Sistema empresarial para cosméticos en Venezuela (ventas, inventario, producción, compras)
 - **Stack:** Next.js 15.5.7 + React 19.2.1 + RN 0.81.5 + Expo SDK 54 + Supabase + Turborepo + Yarn 4.9.4
@@ -142,6 +152,7 @@ Automotriz, Sports Tech y Enterprise.
 - **Versión:** 2.23.1 · **Estado:** En producción ✅
 
 #### 9. Hub ZM Tech (interno)
+
 - **Ubicación:** monorepo `zm-tech` → `apps/hub` + `packages/hub-schema` (planificados)
 - **Docs:** `docs/hub/` (README, ROADMAP, planes 01–05, migraciones borrador)
 - **Descripción:** Torre de control interna de la fábrica — clientes, proyectos, contratos, leads del cotizador, tickets, recordatorios, comunicaciones
@@ -154,18 +165,18 @@ Automotriz, Sports Tech y Enterprise.
 
 Salvo que el proyecto diga lo contrario:
 
-| Capa | Default |
-|------|---------|
-| Framework | Next.js App Router |
-| UI | React 19 + Tailwind CSS v4 |
-| Lenguaje | TypeScript estricto — sin `any` implícito |
-| Base de datos | Supabase (PostgreSQL + Auth + RLS) |
-| ORM | Drizzle ORM (proyectos con Express) |
-| Mobile | Expo SDK 54 + React Native |
-| Monorepo | Turborepo + Yarn 4 (mayoría) / pnpm (guataparobr) |
-| Imágenes | Cloudinary |
-| Iconos | Lucide React |
-| Deploy | Vercel (web) + EAS (mobile) |
+| Capa          | Default                                           |
+| ------------- | ------------------------------------------------- |
+| Framework     | Next.js App Router                                |
+| UI            | React 19 + Tailwind CSS v4                        |
+| Lenguaje      | TypeScript estricto — sin `any` implícito         |
+| Base de datos | Supabase (PostgreSQL + Auth + RLS)                |
+| ORM           | Drizzle ORM (proyectos con Express)               |
+| Mobile        | Expo SDK 54 + React Native                        |
+| Monorepo      | Turborepo + Yarn 4 (mayoría) / pnpm (guataparobr) |
+| Imágenes      | Cloudinary                                        |
+| Iconos        | Lucide React                                      |
+| Deploy        | Vercel (web) + EAS (mobile)                       |
 
 ---
 
@@ -173,16 +184,17 @@ Salvo que el proyecto diga lo contrario:
 
 Lenguaje técnico-industrial único (`aeom0/ZMTech`):
 
-| ❌ Genérico | ✅ ZM Tech |
-|---|---|
-| Enviar / Submit | TRANSMITIR DATOS |
-| Contacto | Inicializar Conexión |
-| FAQ | Protocolos Frecuentes |
-| Cotizar | INICIAR SISTEMA |
-| Ver servicios | VER ECOSISTEMA |
-| En línea | SISTEMAS OPERATIVOS EN LÍNEA |
+| ❌ Genérico     | ✅ ZM Tech                   |
+| --------------- | ---------------------------- |
+| Enviar / Submit | TRANSMITIR DATOS             |
+| Contacto        | Inicializar Conexión         |
+| FAQ             | Protocolos Frecuentes        |
+| Cotizar         | INICIAR SISTEMA              |
+| Ver servicios   | VER ECOSISTEMA               |
+| En línea        | SISTEMAS OPERATIVOS EN LÍNEA |
 
 **Tailwind v4 en la landing:**
+
 ```
 bg-linear-to-r/t/l/b   ✅  (NO bg-gradient-to-*)
 bg-white/3              ✅  (NO bg-white/[0.03])
@@ -194,6 +206,7 @@ border-white/8          ✅
 ## 📐 Convenciones globales ZM Tech
 
 ### Arquitectura
+
 - Separación estricta de capas: UI / lógica / servicios / contexto / navegación
 - Un componente = una responsabilidad (+150 líneas → dividir)
 - Contenido separado de presentación — strings en `content.ts` o `tokens/`, nunca en JSX
@@ -202,6 +215,7 @@ border-white/8          ✅
 - Sin dependencias nuevas sin confirmar con Alberto
 
 ### Commits
+
 ```
 feat:     nueva funcionalidad
 fix:      corrección de bug
@@ -212,6 +226,7 @@ chore:    config, deps, scripts
 ```
 
 ### Checklist antes de cualquier PR
+
 - [ ] TypeScript compila sin errores
 - [ ] Se ve bien en 375px
 - [ ] Sin strings hardcodeados en JSX
@@ -255,15 +270,15 @@ pnpm build && pnpm type-check
 
 ## 📋 Modelo comercial ZM Tech
 
-| Concepto | Referencia |
-|----------|------------|
-| Proyecto base (sitio + panel) | $300–$500 USD |
-| Módulos adicionales | $40–$100 c/u |
-| Soporte mensual | $30/mes |
-| Pago | 50% arranque / 50% entrega |
-| Soporte post-entrega | 30 días incluidos |
+| Concepto                      | Referencia                 |
+| ----------------------------- | -------------------------- |
+| Proyecto base (sitio + panel) | $300–$500 USD              |
+| Módulos adicionales           | $40–$100 c/u               |
+| Soporte mensual               | $30/mes                    |
+| Pago                          | 50% arranque / 50% entrega |
+| Soporte post-entrega          | 30 días incluidos          |
 
 ---
 
-*Skill mantenido por Alberto. Actualizar al incorporar nuevos proyectos.*
-*Última actualización: Agosto 2026 — correo canónico `alberto@zmtechdev.com`*
+_Skill mantenido por Alberto. Actualizar al incorporar nuevos proyectos._
+_Última actualización: Agosto 2026 — correo canónico `alberto@zmtechdev.com`_

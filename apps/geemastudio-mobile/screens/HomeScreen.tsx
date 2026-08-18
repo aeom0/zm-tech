@@ -1,16 +1,16 @@
-import { FlatList } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useHeaderHeight } from "@react-navigation/elements";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { FlatList } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useHeaderHeight } from '@react-navigation/elements'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 
-import { useTheme } from "@/hooks/useTheme";
-import { Spacing } from "@/constants/theme";
+import { useTheme } from '@/hooks/useTheme'
+import { Spacing } from '@/constants/theme'
 
 export default function HomeScreen() {
-  const insets = useSafeAreaInsets();
-  const headerHeight = useHeaderHeight();
-  const tabBarHeight = useBottomTabBarHeight();
-  const { theme } = useTheme();
+  const insets = useSafeAreaInsets()
+  const headerHeight = useHeaderHeight()
+  const tabBarHeight = useBottomTabBarHeight()
+  const { theme } = useTheme()
 
   return (
     <FlatList
@@ -24,5 +24,5 @@ export default function HomeScreen() {
       data={[]}
       renderItem={() => null}
     />
-  );
+  )
 }

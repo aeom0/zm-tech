@@ -6,10 +6,10 @@ Schema: tablas `hub_tickets` y `hub_reminders` ya definidas en [02-PLAN-schema-r
 
 ## Tickets
 
-| Ruta | Contenido |
-|------|-----------|
-| `/tickets` | Lista filtrable (estado, prioridad, cliente); abiertos primero |
-| `/tickets/[id]` | Detalle + cambio de estado + notas |
+| Ruta            | Contenido                                                      |
+| --------------- | -------------------------------------------------------------- |
+| `/tickets`      | Lista filtrable (estado, prioridad, cliente); abiertos primero |
+| `/tickets/[id]` | Detalle + cambio de estado + notas                             |
 
 - Alta manual en el MVP (los tickets llegan por WhatsApp/correo y Alberto los registra). La entrada automática por canal es Fase 3.
 - Ligados a cliente (obligatorio) y proyecto (opcional).
@@ -18,8 +18,8 @@ Schema: tablas `hub_tickets` y `hub_reminders` ya definidas en [02-PLAN-schema-r
 
 ## Recordatorios / vencimientos
 
-| Ruta | Contenido |
-|------|-----------|
+| Ruta             | Contenido                                                               |
+| ---------------- | ----------------------------------------------------------------------- |
 | `/recordatorios` | Lista por `due_date` ascendente; vencidos y próximos 30 días resaltados |
 
 - Tipos: dominio, token, soporte, certificado, pago, otro.

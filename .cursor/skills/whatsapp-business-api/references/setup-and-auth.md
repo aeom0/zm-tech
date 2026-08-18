@@ -14,6 +14,7 @@
 ## Permanent tokens — don't skip this
 
 The default token shown in the API Setup dashboard is temporary and expires in 24 hours. For any real integration:
+
 1. Create a System User in Business Settings (Business Manager)
 2. Assign the WhatsApp Business Account asset to that System User
 3. Generate a token for the System User with the `whatsapp_business_messaging` permission
@@ -40,6 +41,7 @@ WEBHOOK_VERIFICATION_TOKEN=# arbitrary string, must match Meta dashboard config
 ## Webhook verification handshake (GET)
 
 Meta calls your webhook URL with a GET request containing `hub.mode`, `hub.verify_token`, and `hub.challenge` query params when the webhook is configured/saved in the dashboard. Your endpoint must:
+
 1. Check `hub.verify_token` matches your configured `WEBHOOK_VERIFICATION_TOKEN`
 2. If it matches, respond with the raw `hub.challenge` value (as plain text, status 200)
 3. If it doesn't match, respond with 403

@@ -4,14 +4,14 @@ Objetivo: con schema aplicado (plan 02), construir el corazón del Hub: CRUD de 
 
 ## Rutas
 
-| Ruta | Contenido |
-|------|-----------|
-| `/dashboard` | Resumen: clientes activos, proyectos por estado, leads sin atender, soporte activo |
-| `/clientes` | Lista filtrable (estado, vertical) + alta |
-| `/clientes/[id]` | Ficha: datos, proyectos, contratos, notas |
-| `/proyectos` | Lista filtrable (estado, tipo, cliente) + alta |
-| `/proyectos/[id]` | Ficha: repo, stack, deploys, versión, Supabase ref |
-| `/leads` | Inbox: `contacts` + `quote_leads` de la landing, más recientes primero |
+| Ruta              | Contenido                                                                          |
+| ----------------- | ---------------------------------------------------------------------------------- |
+| `/dashboard`      | Resumen: clientes activos, proyectos por estado, leads sin atender, soporte activo |
+| `/clientes`       | Lista filtrable (estado, vertical) + alta                                          |
+| `/clientes/[id]`  | Ficha: datos, proyectos, contratos, notas                                          |
+| `/proyectos`      | Lista filtrable (estado, tipo, cliente) + alta                                     |
+| `/proyectos/[id]` | Ficha: repo, stack, deploys, versión, Supabase ref                                 |
+| `/leads`          | Inbox: `contacts` + `quote_leads` de la landing, más recientes primero             |
 
 ## Inbox de leads
 

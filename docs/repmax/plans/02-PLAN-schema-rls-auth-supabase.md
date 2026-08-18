@@ -12,16 +12,16 @@
 
 Del `packages/repmax-schema/src/schema.ts` original:
 
-| Original | Nueva (prefijo) | Nota |
-|---|---|---|
-| `users` | ~~`repmax_users`~~ → **no migrar tal cual** | Se reemplaza por `auth.users` de Supabase (ver Paso 3) |
-| `stores` | `repmax_stores` | Raíz del tenant |
-| `store_users` | `repmax_store_users` | `user_id` pasa a referenciar `auth.users.id` en vez de la tabla `users` local |
-| `products` | `repmax_products` | |
-| `customers` | `repmax_customers` | |
-| `cash_sessions` | `repmax_cash_sessions` | |
-| `sales` | `repmax_sales` | |
-| `sale_items` | `repmax_sale_items` | |
+| Original        | Nueva (prefijo)                             | Nota                                                                          |
+| --------------- | ------------------------------------------- | ----------------------------------------------------------------------------- |
+| `users`         | ~~`repmax_users`~~ → **no migrar tal cual** | Se reemplaza por `auth.users` de Supabase (ver Paso 3)                        |
+| `stores`        | `repmax_stores`                             | Raíz del tenant                                                               |
+| `store_users`   | `repmax_store_users`                        | `user_id` pasa a referenciar `auth.users.id` en vez de la tabla `users` local |
+| `products`      | `repmax_products`                           |                                                                               |
+| `customers`     | `repmax_customers`                          |                                                                               |
+| `cash_sessions` | `repmax_cash_sessions`                      |                                                                               |
+| `sales`         | `repmax_sales`                              |                                                                               |
+| `sale_items`    | `repmax_sale_items`                         |                                                                               |
 
 Enums (`vehicle_type`, `part_condition`, `payment_method`, `sale_status`, `cash_session_status`, `store_user_role`, `subscription_plan`) → prefijarlos también: `repmax_vehicle_type`, etc. Postgres no namespacea enums por tabla, así que sin prefijo colisionarían nombre-a-nombre con enums futuros de otro vertical.
 
@@ -33,16 +33,19 @@ supabase start          # instancia local, NUNCA directo contra llacowjutjfefboq
 ```
 
 Traducir `schema.ts` a Drizzle con los nombres prefijados, generar migración:
+
 ```bash
 pnpm drizzle-kit generate --name repmax_initial_schema
 ```
 
 Revisar el SQL generado a mano antes de aplicar — verificar:
+
 - Todas las tablas llevan `repmax_`
 - Todos los índices/constraints llevan `idx_repmax_*` / `uniq_repmax_*`
 - Ningún `DROP`, ningún `NOT NULL` sin default (mismo criterio que ZM Lash & Nails, aunque acá no haya data real — es más fácil mantener el hábito que aprenderlo dos veces)
 
 Aplicar contra `llacowjutjfefboqgfnj` solo después de validar en local:
+
 ```bash
 pnpm drizzle-kit push --config=<repmax-drizzle-config>
 ```

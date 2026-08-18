@@ -2,16 +2,19 @@
 // RepMAX Business Suite — Barra de progreso segmentada del onboarding
 // ============================================================
 
-import React, { useEffect, useRef } from 'react';
-import { View, Animated, StyleSheet } from 'react-native';
-import { colors, borderRadius, spacing } from '../../utils/theme';
+import React, { useEffect, useRef } from 'react'
+import { View, Animated, StyleSheet } from 'react-native'
+import { colors, borderRadius, spacing } from '../../utils/theme'
 
 interface OnboardingProgressBarProps {
-  currentStep: number; // índice base-1 (1 = primer paso visible)
-  totalSteps: number;
+  currentStep: number // índice base-1 (1 = primer paso visible)
+  totalSteps: number
 }
 
-export default function OnboardingProgressBar({ currentStep, totalSteps }: OnboardingProgressBarProps) {
+export default function OnboardingProgressBar({
+  currentStep,
+  totalSteps,
+}: OnboardingProgressBarProps) {
   return (
     <View style={styles.contenedor}>
       {Array.from({ length: totalSteps }, (_, i) => (
@@ -24,7 +27,7 @@ export default function OnboardingProgressBar({ currentStep, totalSteps }: Onboa
         />
       ))}
     </View>
-  );
+  )
 }
 
 // Segmento individual con animación de fill
@@ -34,20 +37,20 @@ function Segmento({
   esPrimero,
   esUltimo,
 }: {
-  activo: boolean;
-  esSegmentoActual: boolean;
-  esPrimero: boolean;
-  esUltimo: boolean;
+  activo: boolean
+  esSegmentoActual: boolean
+  esPrimero: boolean
+  esUltimo: boolean
 }) {
-  const animWidth = useRef(new Animated.Value(activo ? 1 : 0)).current;
+  const animWidth = useRef(new Animated.Value(activo ? 1 : 0)).current
 
   useEffect(() => {
     Animated.timing(animWidth, {
       toValue: activo ? 1 : 0,
       duration: 300,
       useNativeDriver: false,
-    }).start();
-  }, [activo, animWidth]);
+    }).start()
+  }, [activo, animWidth])
 
   return (
     <View
@@ -68,7 +71,7 @@ function Segmento({
         ]}
       />
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -104,4 +107,4 @@ const styles = StyleSheet.create({
     borderTopRightRadius: borderRadius.full,
     borderBottomRightRadius: borderRadius.full,
   },
-});
+})

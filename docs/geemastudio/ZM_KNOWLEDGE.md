@@ -8,35 +8,35 @@
 
 ## 1. Estado de ZM vs GeemaStudio
 
-| Módulo / Feature | ZM (v2.3) | GeemaStudio (v1.3) | Prioridad de port |
-|---|---|---|---|
-| Auth Supabase real | ✅ | ⚠️ modo dev | Alta |
-| Dashboard | ✅ v2.1 (logo real, tappable cards, accesos rápidos) | ✅ | — |
-| Agenda modularizada | ✅ | ✅ | — |
-| Agenda tablet (CalendarGrid + packs) | ✅ v2.3 | Parcial | Media |
-| Servicios + Packs + Promos por ítems | ✅ | Parcial | Media |
-| Finanzas modularizada | ✅ | ✅ | — |
-| Finanzas: etiqueta pack/servicio en pagos | ✅ v2.3 | ❌ | Media |
-| Inventario | ✅ | ✅ | — |
-| Módulo Clientes (mobile) | ✅ v2.0 | ✅ v1.3 | — |
-| MoreHomeScreen con badges | ✅ v1.6 | ✅ v1.3 | — |
-| SettingsScreen modular | ✅ v2.1 | ✅ v1.3 | — |
-| ThemeContext (Light/Auto/Dark) | ✅ | ✅ v1.3 | — |
-| ValidacionPagosScreen | ✅ | ❌ | Media |
-| AsignarProfesionalesScreen | ✅ | ❌ | Media |
-| PromoMasivaScreen (WABA) | ✅ v1.8 | ❌ | Baja (requiere WABA) |
-| HistorialPromosScreen | ✅ | ❌ | Baja |
-| Notificaciones push (FCM) | ✅ | ✅ parcial | Media |
-| Bot WABA + Claude Haiku | ✅ v1.9–v2.2 | ❌ | Roadmap |
-| Saludo bienvenida Haiku (6 franjas horarias) | ✅ v2.2 | ❌ | Roadmap |
-| UI tablet responsive | ✅ | Parcial | Media |
-| Web /finanzas | ✅ | ✅ | — |
-| Web /servicios (CRUD) | ✅ | ❌ | Media |
-| Web /panel/waba/mensajes | ✅ v2.3 | ❌ | Roadmap |
-| Normalización phone_country/phone_normalized | ✅ v2.1 | ❌ | Media |
-| buildAppointmentWorkLabel (pack_id en citas) | ✅ v2.3 | ❌ | Media |
-| Landing web | ✅ | ✅ | — |
-| Sanity CMS | ✅ | ❌ | Baja |
+| Módulo / Feature                             | ZM (v2.3)                                            | GeemaStudio (v1.3) | Prioridad de port    |
+| -------------------------------------------- | ---------------------------------------------------- | ------------------ | -------------------- |
+| Auth Supabase real                           | ✅                                                   | ⚠️ modo dev        | Alta                 |
+| Dashboard                                    | ✅ v2.1 (logo real, tappable cards, accesos rápidos) | ✅                 | —                    |
+| Agenda modularizada                          | ✅                                                   | ✅                 | —                    |
+| Agenda tablet (CalendarGrid + packs)         | ✅ v2.3                                              | Parcial            | Media                |
+| Servicios + Packs + Promos por ítems         | ✅                                                   | Parcial            | Media                |
+| Finanzas modularizada                        | ✅                                                   | ✅                 | —                    |
+| Finanzas: etiqueta pack/servicio en pagos    | ✅ v2.3                                              | ❌                 | Media                |
+| Inventario                                   | ✅                                                   | ✅                 | —                    |
+| Módulo Clientes (mobile)                     | ✅ v2.0                                              | ✅ v1.3            | —                    |
+| MoreHomeScreen con badges                    | ✅ v1.6                                              | ✅ v1.3            | —                    |
+| SettingsScreen modular                       | ✅ v2.1                                              | ✅ v1.3            | —                    |
+| ThemeContext (Light/Auto/Dark)               | ✅                                                   | ✅ v1.3            | —                    |
+| ValidacionPagosScreen                        | ✅                                                   | ❌                 | Media                |
+| AsignarProfesionalesScreen                   | ✅                                                   | ❌                 | Media                |
+| PromoMasivaScreen (WABA)                     | ✅ v1.8                                              | ❌                 | Baja (requiere WABA) |
+| HistorialPromosScreen                        | ✅                                                   | ❌                 | Baja                 |
+| Notificaciones push (FCM)                    | ✅                                                   | ✅ parcial         | Media                |
+| Bot WABA + Claude Haiku                      | ✅ v1.9–v2.2                                         | ❌                 | Roadmap              |
+| Saludo bienvenida Haiku (6 franjas horarias) | ✅ v2.2                                              | ❌                 | Roadmap              |
+| UI tablet responsive                         | ✅                                                   | Parcial            | Media                |
+| Web /finanzas                                | ✅                                                   | ✅                 | —                    |
+| Web /servicios (CRUD)                        | ✅                                                   | ❌                 | Media                |
+| Web /panel/waba/mensajes                     | ✅ v2.3                                              | ❌                 | Roadmap              |
+| Normalización phone_country/phone_normalized | ✅ v2.1                                              | ❌                 | Media                |
+| buildAppointmentWorkLabel (pack_id en citas) | ✅ v2.3                                              | ❌                 | Media                |
+| Landing web                                  | ✅                                                   | ✅                 | —                    |
+| Sanity CMS                                   | ✅                                                   | ❌                 | Baja                 |
 
 ---
 
@@ -90,16 +90,24 @@ cart_items            → id, session_phone, item_type (service|pack), item_id,
 // ❌ INCORRECTO — devuelve [] silenciosamente
 const { data } = await supabase
   .from('clients')
-  .select(`*, appointments(*, payments(*), appointment_services(*, services(*)))`);
+  .select(`*, appointments(*, payments(*), appointment_services(*, services(*)))`)
 
 // ✅ CORRECTO — 3 queries separadas + combinar en memoria
-const { data: clients } = await supabase.from('clients').select('*');
-const { data: appointments } = await supabase.from('appointments')
+const { data: clients } = await supabase.from('clients').select('*')
+const { data: appointments } = await supabase
+  .from('appointments')
   .select('id, client_id, date, status, price')
-  .in('client_id', clients.map(c => c.id));
-const { data: payments } = await supabase.from('payments')
+  .in(
+    'client_id',
+    clients.map((c) => c.id)
+  )
+const { data: payments } = await supabase
+  .from('payments')
   .select('appointment_id, amount')
-  .in('appointment_id', appointments.map(a => a.id));
+  .in(
+    'appointment_id',
+    appointments.map((a) => a.id)
+  )
 // → combinar en JS
 ```
 
@@ -129,37 +137,37 @@ apps/mobile/screens/ClientsScreen.tsx   # orquestador (también como ClientesScr
 
 ```typescript
 export interface ClientEnriched extends ClientRow {
-  total_appointments: number;
-  total_spent: number;
-  last_visit: string | null;
-  favorite_category: string | null;
-  favorite_category_color: string | null;
-  days_since_last_visit: number | null;
-  days_until_next_visit: number | null;
-  is_at_risk: boolean;    // sin visita >45 días (y no es nuevo)
-  is_new: boolean;        // created_at en los últimos 30 días
-  is_vip: boolean;        // ≥3 citas completadas
+  total_appointments: number
+  total_spent: number
+  last_visit: string | null
+  favorite_category: string | null
+  favorite_category_color: string | null
+  days_since_last_visit: number | null
+  days_until_next_visit: number | null
+  is_at_risk: boolean // sin visita >45 días (y no es nuevo)
+  is_new: boolean // created_at en los últimos 30 días
+  is_vip: boolean // ≥3 citas completadas
 }
 
 export interface ClientsKPIs {
-  total_clients: number;
-  vip_count: number;
-  new_this_month: number;
-  at_risk_count: number;
-  top_spender: { name: string; total: number } | null;
+  total_clients: number
+  vip_count: number
+  new_this_month: number
+  at_risk_count: number
+  top_spender: { name: string; total: number } | null
 }
 
-export type ClientSortKey = 'ultima_visita' | 'nombre' | 'total_gastado' | 'mas_citas';
-export type ClientSegmentFilter = 'todos' | 'vip' | 'nuevos' | 'en_riesgo';
+export type ClientSortKey = 'ultima_visita' | 'nombre' | 'total_gastado' | 'mas_citas'
+export type ClientSegmentFilter = 'todos' | 'vip' | 'nuevos' | 'en_riesgo'
 ```
 
 ### Lógica de segmentación (en `useClientsData`)
 
 ```typescript
 // Pasos: clients → appointments → payments → enriquecer en memoria
-const isVip = cApts.length >= 3;
-const isNew = createdAt >= thirtyDaysAgo;
-const isAtRisk = !isNew && daysUntilNext == null && (daysSince == null || daysSince > 45);
+const isVip = cApts.length >= 3
+const isNew = createdAt >= thirtyDaysAgo
+const isAtRisk = !isNew && daysUntilNext == null && (daysSince == null || daysSince > 45)
 ```
 
 ### `useClientDetail` — historial individual
@@ -175,12 +183,12 @@ const isAtRisk = !isNew && daysUntilNext == null && (daysSince == null || daysSi
 
 ```typescript
 // ✅ Usar siempre:
-const { config } = useTenant();
-const currencySymbol = config.locale.currency.symbol;
-const staffLabel = config.terminology.staff;
+const { config } = useTenant()
+const currencySymbol = config.locale.currency.symbol
+const staffLabel = config.terminology.staff
 
 // Para formatear moneda en cards:
-formatCurrency(client.total_spent, config)   // en vez de fmtSoles()
+formatCurrency(client.total_spent, config) // en vez de fmtSoles()
 
 // Label "X clientes" — usar término neutro, NO "clientas"
 ```
@@ -194,30 +202,30 @@ formatCurrency(client.total_spent, config)   // en vez de fmtSoles()
 ```typescript
 // Badge 1: Validaciones pendientes
 const { data: pendingCount = 0 } = useQuery({
-  queryKey: ["pending_verifications_count"],
+  queryKey: ['pending_verifications_count'],
   queryFn: async () => {
     const { count } = await supabase
-      .from("appointment_verifications")
-      .select("*", { count: "exact", head: true })
-      .eq("status", "payment_submitted");
-    return count ?? 0;
+      .from('appointment_verifications')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'payment_submitted')
+    return count ?? 0
   },
-});
+})
 
 // Badge 2: Citas sin asignar (próximos 7 días, zona horaria del tenant)
 const { data: unassignedCount = 0 } = useQuery({
-  queryKey: ["unassigned_appointments_count", start, end],
+  queryKey: ['unassigned_appointments_count', start, end],
   queryFn: async () => {
     const { count } = await supabase
-      .from("appointments")
-      .select("*", { count: "exact", head: true })
-      .gte("date", start)
-      .lt("date", end)
-      .neq("status", "cancelled")
-      .is("employee_id", null);
-    return count ?? 0;
+      .from('appointments')
+      .select('*', { count: 'exact', head: true })
+      .gte('date', start)
+      .lt('date', end)
+      .neq('status', 'cancelled')
+      .is('employee_id', null)
+    return count ?? 0
   },
-});
+})
 ```
 
 ---
@@ -228,24 +236,25 @@ const { data: unassignedCount = 0 } = useQuery({
 
 ```typescript
 // apps/mobile/contexts/ThemeContext.tsx
-export type ThemePreference = "auto" | "light" | "dark";
+export type ThemePreference = 'auto' | 'light' | 'dark'
 // AsyncStorage key usa @geemastudio/theme_preference
 
 export function ThemeProvider({ children }: { children: React.ReactNode })
-export function useThemePreference(): { preference, resolved, setPreference }
+export function useThemePreference(): { preference; resolved; setPreference }
 ```
 
 ### `TokenWarningBanner` — adaptación para GeemaStudio
 
 ```typescript
 // GeemaStudio (dinámico desde TenantConfig):
-const { config } = useTenant();
-const expiryStr = config.integrations?.waba?.tokenExpiry;
-if (!expiryStr || !config.features?.whatsapp) return null;
-const WABA_TOKEN_EXPIRY = new Date(expiryStr);
+const { config } = useTenant()
+const expiryStr = config.integrations?.waba?.tokenExpiry
+if (!expiryStr || !config.features?.whatsapp) return null
+const WABA_TOKEN_EXPIRY = new Date(expiryStr)
 ```
 
 Lógica de colores:
+
 ```
 daysLeft > 30  → no mostrar
 daysLeft 8–30  → naranja (#FB923C)
@@ -260,18 +269,18 @@ daysLeft ≤ 0   → rojo crítico (#EF4444)
 ### Patrón de aprobación (evitar spinner global)
 
 ```typescript
-const [approvingId, setApprovingId] = useState<string | null>(null);
+const [approvingId, setApprovingId] = useState<string | null>(null)
 
 const handleApprove = async (verificationId: string, appointmentId: string) => {
-  setApprovingId(verificationId);
+  setApprovingId(verificationId)
   try {
-    await supabase.from('appointments').update({ status: 'confirmed' }).eq('id', appointmentId);
-    sendWAMessages(appointmentId, clientPhone).catch(console.error);
-    queryClient.invalidateQueries({ queryKey: ['pending_verifications_count'] });
+    await supabase.from('appointments').update({ status: 'confirmed' }).eq('id', appointmentId)
+    sendWAMessages(appointmentId, clientPhone).catch(console.error)
+    queryClient.invalidateQueries({ queryKey: ['pending_verifications_count'] })
   } finally {
-    setApprovingId(null);
+    setApprovingId(null)
   }
-};
+}
 ```
 
 ---
@@ -280,9 +289,9 @@ const handleApprove = async (verificationId: string, appointmentId: string) => {
 
 ```typescript
 // Cálculo del rango (7 días desde hoy en zona horaria del tenant)
-const { config } = useTenant();
-const tzOffset = getTimezoneOffset(config.locale.timezone);
-const offsetMs = tzOffset * 60 * 60 * 1000;
+const { config } = useTenant()
+const tzOffset = getTimezoneOffset(config.locale.timezone)
+const offsetMs = tzOffset * 60 * 60 * 1000
 ```
 
 ---
@@ -311,8 +320,8 @@ const offsetMs = tzOffset * 60 * 60 * 1000;
 ## 9. Finanzas — Desglose por profesional
 
 ```typescript
-const empleadoGana = pago.amount * (employee.commission_percentage / 100);
-const salonGana    = pago.amount * (1 - employee.commission_percentage / 100);
+const empleadoGana = pago.amount * (employee.commission_percentage / 100)
+const salonGana = pago.amount * (1 - employee.commission_percentage / 100)
 ```
 
 ---
@@ -342,8 +351,8 @@ queryClient.invalidateQueries({ queryKey: ['key'] })
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
-if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+}
+if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders })
 ```
 
 ### Drizzle ORM vs SQL directo
@@ -359,21 +368,21 @@ if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders }
 
 ```typescript
 interface TenantConfig {
-  businessName: string;
-  businessType: 'spa-nails' | 'barbershop' | 'hair-salon' | 'full-aesthetic';
-  theme: { primaryColor: string; accentColor: string; };
+  businessName: string
+  businessType: 'spa-nails' | 'barbershop' | 'hair-salon' | 'full-aesthetic'
+  theme: { primaryColor: string; accentColor: string }
   locale: {
-    language: string;        // 'es-VE' | 'es-MX' | 'pt-BR' | etc.
-    timezone: string;        // 'America/Lima' | 'America/Bogota' | etc.
-    currency: { symbol: string; code: string; };
-  };
-  terminology: { staff: string; };
-  features?: { whatsapp?: boolean; inventory?: boolean; commissions?: boolean; };
-  integrations?: { waba?: { tokenExpiry?: string; }; };
+    language: string // 'es-VE' | 'es-MX' | 'pt-BR' | etc.
+    timezone: string // 'America/Lima' | 'America/Bogota' | etc.
+    currency: { symbol: string; code: string }
+  }
+  terminology: { staff: string }
+  features?: { whatsapp?: boolean; inventory?: boolean; commissions?: boolean }
+  integrations?: { waba?: { tokenExpiry?: string } }
   schedule?: {
-    weekdays: { open: string; close: string };
-    sunday: { open: string; close: string } | null;
-  };
+    weekdays: { open: string; close: string }
+    sunday: { open: string; close: string } | null
+  }
 }
 ```
 
@@ -395,5 +404,5 @@ Al portear cualquier pantalla de ZM a GeemaStudio, verificar:
 
 ---
 
-*Generado: marzo 2026 — actualizado: abril 2026 — basado en ZM Lash & Nails v2.3*
-*Para actualizar: extraer desde el proyecto ZM en claude.ai y reemplazar este archivo*
+_Generado: marzo 2026 — actualizado: abril 2026 — basado en ZM Lash & Nails v2.3_
+_Para actualizar: extraer desde el proyecto ZM en claude.ai y reemplazar este archivo_

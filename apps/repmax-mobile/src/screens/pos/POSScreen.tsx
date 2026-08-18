@@ -2,53 +2,51 @@
 // RepMAX Business Suite — Pantalla POS (búsqueda de productos)
 // Phone: lista + ActionBar · Tablet+: catálogo | carrito (split)
 // ============================================================
-import React, { useState } from 'react';
-import {
-  View, Text, FlatList, TouchableOpacity,
-  StyleSheet, ActivityIndicator,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useState } from 'react'
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
-import { SearchBar } from '../../components/ui/SearchBar';
-import { FilterChips } from '../../components/ui/FilterChips';
-import { EmptyState } from '../../components/ui/EmptyState';
-import { ActionBar } from '../../components/ui/FAB';
-import { CartPanel } from '../../components/pos/CartPanel';
-import { ProductThumb } from '../../components/inventory/ProductThumb';
-import { useProducts } from '../../hooks/useProducts';
-import { useCart } from '../../context/CartContext';
-import { useResponsive, useBreakpointValue } from '../../hooks/useResponsive';
-import { useTabBarOffset } from '../../hooks/useTabBarOffset';
-import { formatUSD } from '../../utils/formatters';
-import { uriPortada } from '../../utils/productPhotos';
-import { hapticLight } from '../../utils/haptics';
-import { colors, typography, spacing, borderRadius, shadows, layout } from '../../utils/theme';
-import type { Product } from '../../types/database';
-import type { POSStackParamList } from '../../navigation/types';
+import { SearchBar } from '../../components/ui/SearchBar'
+import { FilterChips } from '../../components/ui/FilterChips'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { ActionBar } from '../../components/ui/FAB'
+import { CartPanel } from '../../components/pos/CartPanel'
+import { ProductThumb } from '../../components/inventory/ProductThumb'
+import { useProducts } from '../../hooks/useProducts'
+import { useCart } from '../../context/CartContext'
+import { useResponsive, useBreakpointValue } from '../../hooks/useResponsive'
+import { useTabBarOffset } from '../../hooks/useTabBarOffset'
+import { formatUSD } from '../../utils/formatters'
+import { uriPortada } from '../../utils/productPhotos'
+import { hapticLight } from '../../utils/haptics'
+import { colors, typography, spacing, borderRadius, shadows, layout } from '../../utils/theme'
+import type { Product } from '../../types/database'
+import type { POSStackParamList } from '../../navigation/types'
 
-type Props = NativeStackScreenProps<POSStackParamList, 'POS'>;
+type Props = NativeStackScreenProps<POSStackParamList, 'POS'>
 
 const CONDITION_OPTIONS = [
   { value: 'all' as const, label: 'Todos' },
   { value: 'NEW' as const, label: 'Nuevo' },
   { value: 'USED' as const, label: 'Usado' },
-];
+]
 
 function StockBadge({ stock, minStock }: { stock: number; minStock: number }) {
-  const color = stock === 0
-    ? colors.status.outOfStock
-    : stock <= minStock
-    ? colors.status.lowStock
-    : colors.status.inStock;
+  const color =
+    stock === 0
+      ? colors.status.outOfStock
+      : stock <= minStock
+        ? colors.status.lowStock
+        : colors.status.inStock
 
-  const label = stock === 0 ? 'Sin stock' : `${stock} uds`;
+  const label = stock === 0 ? 'Sin stock' : `${stock} uds`
 
   return (
     <View style={[styles.badge, { backgroundColor: color + '22' }]}>
       <Text style={[styles.badgeText, { color }]}>{label}</Text>
     </View>
-  );
+  )
 }
 
 function ProductCard({
@@ -56,18 +54,20 @@ function ProductCard({
   onAdd,
   compact,
 }: {
-  product: Product;
-  onAdd: () => void;
-  compact?: boolean;
+  product: Product
+  onAdd: () => void
+  compact?: boolean
 }) {
-  const outOfStock = product.stock === 0;
-  const portada = uriPortada(product.photos);
+  const outOfStock = product.stock === 0
+  const portada = uriPortada(product.photos)
   return (
-    <View style={[
-      styles.productCard,
-      compact && styles.productCardCompact,
-      outOfStock && styles.productCardDisabled,
-    ]}>
+    <View
+      style={[
+        styles.productCard,
+        compact && styles.productCardCompact,
+        outOfStock && styles.productCardDisabled,
+      ]}
+    >
       {compact ? (
         <ProductThumb
           uri={portada}
@@ -82,8 +82,12 @@ function ProductCard({
         />
       )}
       <View style={[styles.productInfo, compact && styles.productInfoCompact]}>
-        <Text style={styles.productTitle} numberOfLines={compact ? 2 : 1}>{product.title}</Text>
-        <Text style={styles.productMeta} numberOfLines={1}>{product.brand} · {product.model}</Text>
+        <Text style={styles.productTitle} numberOfLines={compact ? 2 : 1}>
+          {product.title}
+        </Text>
+        <Text style={styles.productMeta} numberOfLines={1}>
+          {product.brand} · {product.model}
+        </Text>
         {!compact && product.partNumber ? (
           <Text style={styles.productPart}>#{product.partNumber}</Text>
         ) : null}
@@ -93,7 +97,11 @@ function ProductCard({
         </View>
       </View>
       <TouchableOpacity
-        style={[styles.addBtn, compact && styles.addBtnCompact, outOfStock && styles.addBtnDisabled]}
+        style={[
+          styles.addBtn,
+          compact && styles.addBtnCompact,
+          outOfStock && styles.addBtnDisabled,
+        ]}
         onPress={onAdd}
         disabled={outOfStock}
         accessibilityLabel={`Agregar ${product.title}`}
@@ -105,7 +113,7 @@ function ProductCard({
         />
       </TouchableOpacity>
     </View>
-  );
+  )
 }
 
 function CatalogPane({
@@ -113,20 +121,20 @@ function CatalogPane({
   showActionBar,
   numColumns,
 }: {
-  navigation: Props['navigation'];
-  showActionBar: boolean;
-  numColumns: number;
+  navigation: Props['navigation']
+  showActionBar: boolean
+  numColumns: number
 }) {
-  const [query, setQuery] = useState('');
-  const [condition, setCondition] = useState<'all' | 'NEW' | 'USED'>('all');
-  const { listPaddingWithActionBar } = useTabBarOffset();
+  const [query, setQuery] = useState('')
+  const [condition, setCondition] = useState<'all' | 'NEW' | 'USED'>('all')
+  const { listPaddingWithActionBar } = useTabBarOffset()
   const { products, isLoading } = useProducts({
     q: query,
     condition: condition === 'all' ? undefined : condition,
-  });
-  const { addItem, totalItems } = useCart();
+  })
+  const { addItem, totalItems } = useCart()
 
-  const listPadding = showActionBar ? listPaddingWithActionBar : spacing.xl;
+  const listPadding = showActionBar ? listPaddingWithActionBar : spacing.xl
 
   return (
     <View style={styles.catalog}>
@@ -137,14 +145,14 @@ function CatalogPane({
         onScanPress={() => navigation.navigate('ScanCode', { modo: 'venta' })}
       />
 
-      <FilterChips
-        options={CONDITION_OPTIONS}
-        value={condition}
-        onChange={setCondition}
-      />
+      <FilterChips options={CONDITION_OPTIONS} value={condition} onChange={setCondition} />
 
       {isLoading ? (
-        <ActivityIndicator size="large" color={colors.brand.orange} style={{ marginTop: spacing.xl }} />
+        <ActivityIndicator
+          size="large"
+          color={colors.brand.orange}
+          style={{ marginTop: spacing.xl }}
+        />
       ) : (
         <FlatList
           key={`pos-cols-${numColumns}`}
@@ -158,8 +166,8 @@ function CatalogPane({
                 product={item}
                 compact={numColumns > 1}
                 onAdd={() => {
-                  void hapticLight();
-                  addItem(item);
+                  void hapticLight()
+                  addItem(item)
                 }}
               />
             </View>
@@ -180,27 +188,23 @@ function CatalogPane({
         />
       )}
     </View>
-  );
+  )
 }
 
 export default function POSScreen({ navigation }: Props) {
-  const { isTabletUp } = useResponsive();
+  const { isTabletUp } = useResponsive()
   const catalogColumns = useBreakpointValue({
     mobile: 1,
     tablet: 1,
     desktop: 2,
     wide: 2,
-  });
+  })
 
   if (isTabletUp) {
     return (
       <View style={styles.splitRoot}>
         <View style={styles.splitCatalog}>
-          <CatalogPane
-            navigation={navigation}
-            showActionBar={false}
-            numColumns={catalogColumns}
-          />
+          <CatalogPane navigation={navigation} showActionBar={false} numColumns={catalogColumns} />
         </View>
         <View style={styles.splitDivider} />
         <View style={styles.splitCart}>
@@ -208,22 +212,13 @@ export default function POSScreen({ navigation }: Props) {
             <Ionicons name="cart-outline" size={18} color={colors.brand.orange} />
             <Text style={styles.splitCartTitle}>Carrito</Text>
           </View>
-          <CartPanel
-            embedded
-            onCheckout={() => navigation.navigate('Payment')}
-          />
+          <CartPanel embedded onCheckout={() => navigation.navigate('Payment')} />
         </View>
       </View>
-    );
+    )
   }
 
-  return (
-    <CatalogPane
-      navigation={navigation}
-      showActionBar
-      numColumns={1}
-    />
-  );
+  return <CatalogPane navigation={navigation} showActionBar numColumns={1} />
 }
 
 const styles = StyleSheet.create({
@@ -360,4 +355,4 @@ const styles = StyleSheet.create({
   addBtnDisabled: {
     backgroundColor: colors.bg.elevated,
   },
-});
+})

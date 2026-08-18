@@ -6,15 +6,15 @@ Tokens: mismos que onboarding (`design-system/tokens.md`). Dark first. Sin emoji
 
 ## Pantallas (mobile 390)
 
-| Name en Pencil | Rol |
-|----------------|-----|
-| `Catalog / List / Disconnected / iPhone` | Stock + card **Catálogo ML-ready** (export manual; sin OAuth MLV) |
-| `Catalog / List / Connected / iPhone` | Card activo + badges En ML / Pendiente *(solo si `ML_API_ENABLED`)* |
-| `Catalog / Product / Form / iPhone` | Nueva pieza: slots foto → ficha → switch publicar |
-| `Catalog / Photos / Capture / iPhone` | Visor 1:1 + reglas + obturador / galería |
-| `Catalog / Photos / ReviewPass / iPhone` | Checks OK → Usar esta foto |
-| `Catalog / Photos / ReviewFail / iPhone` | Banner error → Tomar otra vez (no sube) |
-| `Catalog / Publish / Blocked / iPhone` | Sheet si el switch ML se prende incompleto |
+| Name en Pencil                           | Rol                                                                 |
+| ---------------------------------------- | ------------------------------------------------------------------- |
+| `Catalog / List / Disconnected / iPhone` | Stock + card **Catálogo ML-ready** (export manual; sin OAuth MLV)   |
+| `Catalog / List / Connected / iPhone`    | Card activo + badges En ML / Pendiente _(solo si `ML_API_ENABLED`)_ |
+| `Catalog / Product / Form / iPhone`      | Nueva pieza: slots foto → ficha → switch publicar                   |
+| `Catalog / Photos / Capture / iPhone`    | Visor 1:1 + reglas + obturador / galería                            |
+| `Catalog / Photos / ReviewPass / iPhone` | Checks OK → Usar esta foto                                          |
+| `Catalog / Photos / ReviewFail / iPhone` | Banner error → Tomar otra vez (no sube)                             |
+| `Catalog / Publish / Blocked / iPhone`   | Sheet si el switch ML se prende incompleto                          |
 
 Componentes reutilizables: `MercadoLibreLogo`, `MlConnectCard*` (off / on / gate Pro), `PhotoSlotGrid`.
 
@@ -41,20 +41,20 @@ Switch **Publicar en MercadoLibre:** si la tienda no conectó ML → alert a Mi 
 
 `repmax_products.photos[]` es la fuente: seed (`picsum.photos/seed/...`) o Storage. Se muestran aunque el ítem no esté en MercadoLibre.
 
-| Superficie | Qué se ve |
-|------------|-----------|
-| Stock (lista) | Miniatura 56² a la izquierda; placeholder cubo si no hay portada |
-| Stock (tablet grid) | Portada 1:1 arriba de la card |
-| POS / carrito | Misma miniatura (`ProductThumb`) |
-| Ficha | Slots (hasta 6); label “Fotos de la pieza” |
+| Superficie          | Qué se ve                                                        |
+| ------------------- | ---------------------------------------------------------------- |
+| Stock (lista)       | Miniatura 56² a la izquierda; placeholder cubo si no hay portada |
+| Stock (tablet grid) | Portada 1:1 arriba de la card                                    |
+| POS / carrito       | Misma miniatura (`ProductThumb`)                                 |
+| Ficha               | Slots (hasta 6); label “Fotos de la pieza”                       |
 
 Código: `uriPortada()` + `ProductThumb` (`expo-image`).
 
 ## Paridad código
 
-| Diseño | Código |
-|--------|--------|
-| ProductThumb | `apps/repmax-mobile/src/components/inventory/ProductThumb.tsx` |
-| PhotoSlotGrid | `apps/repmax-mobile/src/components/inventory/PhotoSlotGrid.tsx` |
-| Capture / Review | `screens/inventory/PhotoCaptureScreen.tsx`, `PhotoReviewScreen.tsx` |
-| Card conectar | `StoreSettingsScreen` + `useMercadoLibreConnection` (gate Pro / owner) |
+| Diseño           | Código                                                                 |
+| ---------------- | ---------------------------------------------------------------------- |
+| ProductThumb     | `apps/repmax-mobile/src/components/inventory/ProductThumb.tsx`         |
+| PhotoSlotGrid    | `apps/repmax-mobile/src/components/inventory/PhotoSlotGrid.tsx`        |
+| Capture / Review | `screens/inventory/PhotoCaptureScreen.tsx`, `PhotoReviewScreen.tsx`    |
+| Card conectar    | `StoreSettingsScreen` + `useMercadoLibreConnection` (gate Pro / owner) |

@@ -1,35 +1,35 @@
-"use client";
+'use client'
 
-import { Copy, ExternalLink, Store } from "lucide-react";
-import QRCode from "react-qr-code";
-import { useAuth } from "@/context/AuthContext";
-import { urlVitrinaTienda } from "@/lib/site-url";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+import { Copy, ExternalLink, Store } from 'lucide-react'
+import QRCode from 'react-qr-code'
+import { useAuth } from '@/context/AuthContext'
+import { urlVitrinaTienda } from '@/lib/site-url'
+import { Button } from '@/components/ui/button'
+import { useToast } from '@/hooks/use-toast'
 
 export function VitrinaPanel() {
-  const { store } = useAuth();
-  const { toast } = useToast();
+  const { store } = useAuth()
+  const { toast } = useToast()
 
-  if (!store?.slug) return null;
+  if (!store?.slug) return null
 
-  const vitrinaUrl = urlVitrinaTienda(store.slug);
+  const vitrinaUrl = urlVitrinaTienda(store.slug)
 
   const copiarLink = async () => {
     try {
-      await navigator.clipboard.writeText(vitrinaUrl);
+      await navigator.clipboard.writeText(vitrinaUrl)
       toast({
-        title: "Link copiado",
-        description: "Pégalo en WhatsApp, Instagram o donde vendas.",
-      });
+        title: 'Link copiado',
+        description: 'Pégalo en WhatsApp, Instagram o donde vendas.',
+      })
     } catch {
       toast({
-        title: "No se copió",
-        description: "Copia manual: " + vitrinaUrl,
-        variant: "destructive",
-      });
+        title: 'No se copió',
+        description: 'Copia manual: ' + vitrinaUrl,
+        variant: 'destructive',
+      })
     }
-  };
+  }
 
   return (
     <section className="rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] p-5">
@@ -44,9 +44,7 @@ export function VitrinaPanel() {
             mostrador y redes.
           </p>
           <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
-            <code
-              className="block truncate rounded-md border border-[#2A2A2A] bg-[#242424] px-3 py-2 text-sm text-[#F5F5F5]"
-            >
+            <code className="block truncate rounded-md border border-[#2A2A2A] bg-[#242424] px-3 py-2 text-sm text-[#F5F5F5]">
               {vitrinaUrl}
             </code>
             <div className="flex shrink-0 gap-2">
@@ -56,7 +54,7 @@ export function VitrinaPanel() {
                 className="border-[#2A2A2A] bg-[#242424] text-[#F5F5F5] hover:bg-[#2A2A2A]"
                 onClick={() => void copiarLink()}
               >
-                <Copy className="h-4 w-4 mr-2" />
+                <Copy className="mr-2 h-4 w-4" />
                 Copiar
               </Button>
               <Button
@@ -66,7 +64,7 @@ export function VitrinaPanel() {
                 asChild
               >
                 <a href={vitrinaUrl} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="h-4 w-4 mr-2" />
+                  <ExternalLink className="mr-2 h-4 w-4" />
                   Abrir
                 </a>
               </Button>
@@ -80,5 +78,5 @@ export function VitrinaPanel() {
         </div>
       </div>
     </section>
-  );
+  )
 }

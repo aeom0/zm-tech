@@ -1,21 +1,21 @@
-import type { CSSProperties } from "react";
-import { Calendar, MapPin } from "lucide-react";
-import { LUNARIS } from "@/lib/theme";
-import type { TenantLandingProps } from "@/types/tenant-landing";
-import { BookingButton } from "./shared/BookingButton";
-import { WhatsAppFAB } from "./shared/WhatsAppFAB";
-import { formatBusinessHours } from "./shared/format-hours";
-import { ReviewStars } from "./shared/ReviewStars";
-import { ServiceGlyph } from "./shared/ServiceGlyph";
+import type { CSSProperties } from 'react'
+import { Calendar, MapPin } from 'lucide-react'
+import { LUNARIS } from '@/lib/theme'
+import type { TenantLandingProps } from '@/types/tenant-landing'
+import { BookingButton } from './shared/BookingButton'
+import { WhatsAppFAB } from './shared/WhatsAppFAB'
+import { formatBusinessHours } from './shared/format-hours'
+import { ReviewStars } from './shared/ReviewStars'
+import { ServiceGlyph } from './shared/ServiceGlyph'
 
-const grad = LUNARIS.gradient.css;
+const grad = LUNARIS.gradient.css
 
 const gradTextStyle: CSSProperties = {
   backgroundImage: grad,
-  WebkitBackgroundClip: "text",
-  WebkitTextFillColor: "transparent",
-  backgroundClip: "text",
-};
+  WebkitBackgroundClip: 'text',
+  WebkitTextFillColor: 'transparent',
+  backgroundClip: 'text',
+}
 
 export function TenantLandingElegant({ data }: TenantLandingProps) {
   const {
@@ -33,28 +33,26 @@ export function TenantLandingElegant({ data }: TenantLandingProps) {
     statRating,
     statYears,
     businessHours,
-  } = data;
+  } = data
 
   const subtitle =
     heroTagline ??
     tagline ??
-    `Reserva tu cita en segundos. Atención profesional en ${city ?? "tu ciudad"}.`;
+    `Reserva tu cita en segundos. Atención profesional en ${city ?? 'tu ciudad'}.`
 
-  const dias = formatBusinessHours(businessHours);
-  const showHours = dias.some((d) => d.enabled);
+  const dias = formatBusinessHours(businessHours)
+  const showHours = dias.some((d) => d.enabled)
 
   return (
     <div
       className="min-h-screen text-[#f0ede8]"
-      style={{ background: "#0d0f14", fontFamily: "system-ui, sans-serif" }}
+      style={{ background: '#0d0f14', fontFamily: 'system-ui, sans-serif' }}
     >
       <nav
         className="sticky top-0 z-50 flex items-center justify-between border-b border-white/[0.06] px-6 py-4 backdrop-blur-md"
-        style={{ background: "rgba(13,15,20,0.92)" }}
+        style={{ background: 'rgba(13,15,20,0.92)' }}
       >
-        <div className="text-xl font-extrabold tracking-tight text-[#f0ede8]">
-          {businessName}
-        </div>
+        <div className="text-xl font-extrabold tracking-tight text-[#f0ede8]">{businessName}</div>
         <BookingButton
           phone={whatsapp}
           businessName={businessName}
@@ -97,7 +95,7 @@ export function TenantLandingElegant({ data }: TenantLandingProps) {
         />
         {instagram && (
           <a
-            href={`https://instagram.com/${instagram.replace("@", "")}`}
+            href={`https://instagram.com/${instagram.replace('@', '')}`}
             target="_blank"
             rel="noopener noreferrer"
             className="block rounded-full border border-[rgba(240,237,232,0.2)] py-3.5 text-center text-[14px] font-semibold text-[#f0ede8] no-underline"
@@ -108,17 +106,15 @@ export function TenantLandingElegant({ data }: TenantLandingProps) {
 
         <div className="mt-10 flex flex-wrap justify-center gap-6">
           {[
-            { value: statClients, label: "Clientes felices" },
-            { value: statRating, label: "Calificación" },
-            { value: statYears, label: "Años contigo" },
+            { value: statClients, label: 'Clientes felices' },
+            { value: statRating, label: 'Calificación' },
+            { value: statYears, label: 'Años contigo' },
           ].map((stat, i) => (
             <div key={i} className="text-center">
               <div className="text-[28px] font-extrabold" style={gradTextStyle}>
                 {stat.value}
               </div>
-              <div className="mt-1 text-xs text-[rgba(240,237,232,0.5)]">
-                {stat.label}
-              </div>
+              <div className="mt-1 text-xs text-[rgba(240,237,232,0.5)]">{stat.label}</div>
             </div>
           ))}
         </div>
@@ -132,9 +128,7 @@ export function TenantLandingElegant({ data }: TenantLandingProps) {
             <p className="mb-1 text-[11px] uppercase tracking-[0.2em] text-[rgba(240,237,232,0.4)]">
               Nosotros
             </p>
-            <h2 className="mb-4 text-[26px] font-bold tracking-tight">
-              Conócenos
-            </h2>
+            <h2 className="mb-4 text-[26px] font-bold tracking-tight">Conócenos</h2>
             <p className="whitespace-pre-line text-sm leading-relaxed text-[rgba(240,237,232,0.72)]">
               {about}
             </p>
@@ -149,23 +143,17 @@ export function TenantLandingElegant({ data }: TenantLandingProps) {
             <p className="mb-1 text-[11px] uppercase tracking-[0.2em] text-[rgba(240,237,232,0.4)]">
               Horario
             </p>
-            <h2 className="mb-5 text-[26px] font-bold tracking-tight">
-              Cuándo atendemos
-            </h2>
+            <h2 className="mb-5 text-[26px] font-bold tracking-tight">Cuándo atendemos</h2>
             <div className="space-y-2">
               {dias.map((d) => (
                 <div
                   key={d.label}
                   className="flex items-center justify-between rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm"
                 >
-                  <span className="text-[rgba(240,237,232,0.85)]">
-                    {d.label}
-                  </span>
+                  <span className="text-[rgba(240,237,232,0.85)]">{d.label}</span>
                   <span
                     className={
-                      d.enabled
-                        ? "text-[rgba(240,237,232,0.55)]"
-                        : "text-[rgba(240,237,232,0.35)]"
+                      d.enabled ? 'text-[rgba(240,237,232,0.55)]' : 'text-[rgba(240,237,232,0.35)]'
                     }
                   >
                     {d.hours}
@@ -184,9 +172,7 @@ export function TenantLandingElegant({ data }: TenantLandingProps) {
             <p className="mb-1 text-[11px] uppercase tracking-[0.2em] text-[rgba(240,237,232,0.4)]">
               Servicios
             </p>
-            <h2 className="mb-5 text-[26px] font-bold tracking-tight">
-              Lo que hacemos por ti
-            </h2>
+            <h2 className="mb-5 text-[26px] font-bold tracking-tight">Lo que hacemos por ti</h2>
             <div className="flex flex-col gap-2.5">
               {services.map((service, i) => (
                 <div
@@ -250,12 +236,8 @@ export function TenantLandingElegant({ data }: TenantLandingProps) {
                     {review.initial}
                   </div>
                   <div>
-                    <div className="text-[13px] font-semibold">
-                      {review.author}
-                    </div>
-                    <div className="text-[11px] text-[rgba(240,237,232,0.4)]">
-                      {review.role}
-                    </div>
+                    <div className="text-[13px] font-semibold">{review.author}</div>
+                    <div className="text-[11px] text-[rgba(240,237,232,0.4)]">{review.role}</div>
                   </div>
                 </div>
               </div>
@@ -279,9 +261,7 @@ export function TenantLandingElegant({ data }: TenantLandingProps) {
             strokeWidth={1.5}
             aria-hidden
           />
-          <h2 className="mb-2.5 text-2xl font-extrabold tracking-tight">
-            ¿Lista para tu cita?
-          </h2>
+          <h2 className="mb-2.5 text-2xl font-extrabold tracking-tight">¿Lista para tu cita?</h2>
           <p className="mb-6 text-sm leading-relaxed text-[rgba(240,237,232,0.6)]">
             Reserva en segundos. Sin llamadas, sin cola.
           </p>
@@ -296,13 +276,11 @@ export function TenantLandingElegant({ data }: TenantLandingProps) {
       </section>
 
       <footer className="border-t border-white/[0.06] bg-[#080a0e] px-6 py-10">
-        <div className="mb-3.5 text-xl font-extrabold text-[#f0ede8]">
-          {businessName}
-        </div>
+        <div className="mb-3.5 text-xl font-extrabold text-[#f0ede8]">{businessName}</div>
         {(city || address) && (
           <p className="mb-3.5 flex items-start gap-2 text-[13px] text-[rgba(240,237,232,0.4)]">
             <MapPin className="mt-0.5 flex-shrink-0 opacity-60" size={14} />
-            <span>{[address, city].filter(Boolean).join(" · ")}</span>
+            <span>{[address, city].filter(Boolean).join(' · ')}</span>
           </p>
         )}
         <div className="mb-6 flex flex-wrap gap-1">
@@ -323,18 +301,15 @@ export function TenantLandingElegant({ data }: TenantLandingProps) {
           )}
         </div>
         <p className="border-t border-white/[0.06] pt-4 text-[11px] text-[rgba(240,237,232,0.2)]">
-          Creado con{" "}
-          <a
-            href="/"
-            className="text-[rgba(240,237,232,0.35)] no-underline hover:underline"
-          >
+          Creado con{' '}
+          <a href="/" className="text-[rgba(240,237,232,0.35)] no-underline hover:underline">
             GeemaStudio
-          </a>{" "}
+          </a>{' '}
           · Gestión profesional para salones de belleza
         </p>
       </footer>
 
       <WhatsAppFAB phone={whatsapp} businessName={businessName} />
     </div>
-  );
+  )
 }

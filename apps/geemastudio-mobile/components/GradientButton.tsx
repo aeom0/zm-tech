@@ -1,29 +1,17 @@
-import React from "react";
-import {
-  Pressable,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  ViewStyle,
-  TextStyle,
-} from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { Feather } from "@expo/vector-icons";
-import {
-  Gradients,
-  Spacing,
-  BorderRadius,
-  Typography,
-} from "@/constants/theme";
+import React from 'react'
+import { Pressable, Text, StyleSheet, ActivityIndicator, ViewStyle, TextStyle } from 'react-native'
+import { LinearGradient } from 'expo-linear-gradient'
+import { Feather } from '@expo/vector-icons'
+import { Gradients, Spacing, BorderRadius, Typography } from '@/constants/theme'
 
 interface GradientButtonProps {
-  label: string;
-  onPress: () => void;
-  loading?: boolean;
-  disabled?: boolean;
-  showArrow?: boolean;
-  style?: ViewStyle;
-  textStyle?: TextStyle;
+  label: string
+  onPress: () => void
+  loading?: boolean
+  disabled?: boolean
+  showArrow?: boolean
+  style?: ViewStyle
+  textStyle?: TextStyle
 }
 
 export function GradientButton({
@@ -35,7 +23,7 @@ export function GradientButton({
   style,
   textStyle,
 }: GradientButtonProps) {
-  const g = Gradients.onboarding;
+  const g = Gradients.onboarding
 
   return (
     <Pressable
@@ -60,19 +48,17 @@ export function GradientButton({
         ) : (
           <>
             <Text style={[styles.label, textStyle]}>{label}</Text>
-            {showArrow && (
-              <Feather name="arrow-right" size={20} color="#FFFFFF" />
-            )}
+            {showArrow && <Feather name="arrow-right" size={20} color="#FFFFFF" />}
           </>
         )}
       </LinearGradient>
     </Pressable>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   pressable: {
-    width: "100%",
+    width: '100%',
     borderRadius: BorderRadius.sm,
     shadowColor: Gradients.onboarding.shadow,
     shadowOffset: { width: 0, height: 8 },
@@ -90,15 +76,15 @@ const styles = StyleSheet.create({
   gradient: {
     height: 56,
     borderRadius: BorderRadius.sm,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     gap: Spacing.sm,
     paddingHorizontal: Spacing.xl,
   },
   label: {
     ...Typography.body,
-    fontWeight: "700",
-    color: "#FFFFFF",
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
-});
+})

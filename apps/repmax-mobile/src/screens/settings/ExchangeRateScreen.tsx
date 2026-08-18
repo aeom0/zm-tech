@@ -3,7 +3,7 @@
 // Actualizar la tasa con calculadora en vivo.
 // Solo el owner puede guardar cambios.
 // ============================================================
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   View,
   Text,
@@ -16,68 +16,68 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { MoreStackParamList } from '../../navigation/types';
-import { useAuth } from '../../context/AuthContext';
-import { useTasaCambio } from '../../hooks/useTasaCambio';
-import { colors, spacing, borderRadius, typography } from '../../utils/theme';
+} from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
+import type { MoreStackParamList } from '../../navigation/types'
+import { useAuth } from '../../context/AuthContext'
+import { useTasaCambio } from '../../hooks/useTasaCambio'
+import { colors, spacing, borderRadius, typography } from '../../utils/theme'
 
 const NIVEL_SPREAD_LABEL: Record<string, string> = {
   bajo: 'Spread bajo',
   medio: 'Spread medio',
   alto: 'Spread alto',
   critico: 'Spread crítico',
-};
+}
 
-type Props = NativeStackScreenProps<MoreStackParamList, 'ExchangeRate'>;
+type Props = NativeStackScreenProps<MoreStackParamList, 'ExchangeRate'>
 
 // Montos de ejemplo para la calculadora en vivo
-const EJEMPLOS_USD = [10, 50, 100];
+const EJEMPLOS_USD = [10, 50, 100]
 
 // Formatea un número como moneda sin símbolo, con separador de miles
 function formatBs(amount: number): string {
-  return amount.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return amount.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
 export default function ExchangeRateScreen({ navigation }: Props) {
-  const { storeUser, store, updateStore } = useAuth();
+  const { storeUser, store, updateStore } = useAuth()
 
-  const [inputRate, setInputRate] = useState(String(store?.usdBsRate ?? ''));
-  const [isSaving, setIsSaving]   = useState(false);
-  const [isTogglingManual, setIsTogglingManual] = useState(false);
+  const [inputRate, setInputRate] = useState(String(store?.usdBsRate ?? ''))
+  const [isSaving, setIsSaving] = useState(false)
+  const [isTogglingManual, setIsTogglingManual] = useState(false)
 
-  const isOwner = storeUser?.role === 'owner';
-  const usarTasaManual = store?.usarTasaManual ?? false;
-  const { tasas, isLoading: isLoadingTasas } = useTasaCambio(
-    store?.usdBsRate ?? 0,
-    usarTasaManual,
-  );
+  const isOwner = storeUser?.role === 'owner'
+  const usarTasaManual = store?.usarTasaManual ?? false
+  const { tasas, isLoading: isLoadingTasas } = useTasaCambio(store?.usdBsRate ?? 0, usarTasaManual)
 
   const handleToggleManual = async (value: boolean) => {
-    setIsTogglingManual(true);
+    setIsTogglingManual(true)
     try {
-      await updateStore({ usarTasaManual: value });
+      await updateStore({ usarTasaManual: value })
     } catch {
-      Alert.alert('Error', 'No se pudo cambiar el modo de tasa.');
+      Alert.alert('Error', 'No se pudo cambiar el modo de tasa.')
     } finally {
-      setIsTogglingManual(false);
+      setIsTogglingManual(false)
     }
-  };
+  }
 
   // Parseo y validaciones
-  const parsedRate = parseFloat(inputRate.replace(',', '.'));
-  const isValid    = !isNaN(parsedRate) && parsedRate > 0;
-  const isChanged  = isValid && parsedRate !== store?.usdBsRate;
-  const canSave    = isValid && isChanged && isOwner;
+  const parsedRate = parseFloat(inputRate.replace(',', '.'))
+  const isValid = !isNaN(parsedRate) && parsedRate > 0
+  const isChanged = isValid && parsedRate !== store?.usdBsRate
+  const canSave = isValid && isChanged && isOwner
 
   // Determina el color del borde del input según el estado
-  const inputBorderColor = inputRate.length === 0
-    ? colors.bg.border
-    : isValid
-      ? isChanged ? colors.brand.orange : colors.bg.border
-      : colors.semantic.error;
+  const inputBorderColor =
+    inputRate.length === 0
+      ? colors.bg.border
+      : isValid
+        ? isChanged
+          ? colors.brand.orange
+          : colors.bg.border
+        : colors.semantic.error
 
   // Formatea la fecha de la última actualización
   const lastUpdated = store?.updatedAt
@@ -88,7 +88,7 @@ export default function ExchangeRateScreen({ navigation }: Props) {
         hour: '2-digit',
         minute: '2-digit',
       })
-    : '—';
+    : '—'
 
   const handleUpdate = () => {
     Alert.alert(
@@ -99,21 +99,21 @@ export default function ExchangeRateScreen({ navigation }: Props) {
         {
           text: 'Actualizar',
           onPress: async () => {
-            setIsSaving(true);
+            setIsSaving(true)
             try {
-              await updateStore({ usdBsRate: parsedRate });
-              Alert.alert('✓ Actualizado', `Nueva tasa: ${parsedRate.toFixed(2)} Bs/USD`);
-              navigation.goBack();
+              await updateStore({ usdBsRate: parsedRate })
+              Alert.alert('✓ Actualizado', `Nueva tasa: ${parsedRate.toFixed(2)} Bs/USD`)
+              navigation.goBack()
             } catch {
-              Alert.alert('Error', 'No se pudo actualizar la tasa.');
+              Alert.alert('Error', 'No se pudo actualizar la tasa.')
             } finally {
-              setIsSaving(false);
+              setIsSaving(false)
             }
           },
         },
-      ],
-    );
-  };
+      ]
+    )
+  }
 
   return (
     <KeyboardAvoidingView
@@ -139,9 +139,7 @@ export default function ExchangeRateScreen({ navigation }: Props) {
           <Text style={styles.sectionTitle}>Tasa Actual</Text>
           <View style={styles.rateCard}>
             <Text style={styles.rateLabel}>1 USD =</Text>
-            <Text style={styles.rateValue}>
-              {store?.usdBsRate?.toFixed(2) ?? '—'}
-            </Text>
+            <Text style={styles.rateValue}>{store?.usdBsRate?.toFixed(2) ?? '—'}</Text>
             <Text style={styles.rateCurrency}>Bs</Text>
             <Text style={styles.rateDate}>Actualizada: {lastUpdated}</Text>
           </View>
@@ -196,9 +194,7 @@ export default function ExchangeRateScreen({ navigation }: Props) {
 
               {/* Mensaje de error si el input es inválido */}
               {inputRate.length > 0 && !isValid && (
-                <Text style={styles.errorText}>
-                  Ingresa un número positivo válido (ej: 38.50)
-                </Text>
+                <Text style={styles.errorText}>Ingresa un número positivo válido (ej: 38.50)</Text>
               )}
             </View>
           </View>
@@ -211,8 +207,8 @@ export default function ExchangeRateScreen({ navigation }: Props) {
           </Text>
           <View style={styles.card}>
             {EJEMPLOS_USD.map((usd, index) => {
-              const rateToUse  = isOwner && isValid ? parsedRate : (store?.usdBsRate ?? 0);
-              const resultBs   = rateToUse > 0 ? usd * rateToUse : null;
+              const rateToUse = isOwner && isValid ? parsedRate : (store?.usdBsRate ?? 0)
+              const resultBs = rateToUse > 0 ? usd * rateToUse : null
 
               return (
                 <View
@@ -227,7 +223,7 @@ export default function ExchangeRateScreen({ navigation }: Props) {
                     {resultBs ? `${formatBs(resultBs)} Bs` : '---'}
                   </Text>
                 </View>
-              );
+              )
             })}
           </View>
         </View>
@@ -287,7 +283,7 @@ export default function ExchangeRateScreen({ navigation }: Props) {
         )}
       </ScrollView>
     </KeyboardAvoidingView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -492,4 +488,4 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily.semibold,
     color: colors.text.inverse,
   },
-});
+})

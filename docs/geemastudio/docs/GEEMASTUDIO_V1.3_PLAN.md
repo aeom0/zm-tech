@@ -47,6 +47,7 @@ Estado: **completado (base del trabajo actual)**.
 
 Estado: **en progreso**  
 Progreso:
+
 - Defaults y presets de `@zmtech/tenant-config`: **completados**.
 - Esquema compartido (colores y moneda por defecto): **completado**.
 - Limpieza en Dashboard/Agenda/Finanzas (locales y textos): **en progreso**.
@@ -73,8 +74,9 @@ Progreso:
 
 Estado: **completado (primera ola)**  
 Progreso:
-- Helper `formatCurrency` creado y usado en `FinancesScreen`.  
-- Dashboard y Agenda actualizados para usar `config.locale.language` en fechas/horas.  
+
+- Helper `formatCurrency` creado y usado en `FinancesScreen`.
+- Dashboard y Agenda actualizados para usar `config.locale.language` en fechas/horas.
 - Pendiente revisar otros screens de negocio para reemplazar posibles `S/` o locales fijos.
 
 ---
@@ -141,6 +143,7 @@ Estado: **completado**.
 
 Estado: **completado (mobile)**  
 Progreso:
+
 - Carpeta `apps/mobile/screens/clients/` creada con:
   - `types.ts` (`Client`, `ClientWithMetrics`, `ClientSegment`, `ClientKPIs`).
   - Hooks `useClientsData` y `useClientDetail` con Supabase directo (clients, appointments, payments) y combinación en memoria.
@@ -192,6 +195,7 @@ Progreso:
 
 Estado: **completado (primera versión)**  
 Progreso:
+
 - Menú Administración actualizado en `MoreHomeScreen` para rol dev/owner con:
   - Validación de Pagos (badge con citas `status = "payment_submitted"`).
   - Asignar Profesionales (badge con citas sin `employee_id` en últimos 7 días).
@@ -221,8 +225,8 @@ Progreso:
       - Módulo Clientes.
       - Más v1.7.
       - Settings v1.7.
-Estado: **completado**  
-Progreso:
+        Estado: **completado**  
+        Progreso:
 - `CLAUDE.md` actualizado a idioma `español neutro LATAM (es-VE)` con navegación y menú Más v1.7.
 - Notas de desarrollo ajustadas para terminología dinámica de personal y moneda/locale basados en `TenantConfig`.
 - Sección de cambios recientes extendida con bloque `mar 2026 — v1.3.0` (limpieza ZM, moneda dinámica, módulo Clientes, Más v1.7, Settings v1.7).
@@ -255,8 +259,8 @@ Progreso:
 
 Estado: **en progreso**  
 Progreso:
+
 - `yarn check:types` en raíz: **ok, sin errores**.
 - `yarn workspace mobile lint`: **ok**, usando `eslint-config-expo` + `eslint-plugin-prettier` + `eslint-config-prettier`.
 - `yarn workspace web lint`: **ok**, solo warnings menores (directivas `eslint-disable` sin uso en `/finanzas`).
 - Pendiente ajustar script root `yarn lint` (migrar de `workspaces run` a `workspaces foreach`) si se quiere un comando único.
-

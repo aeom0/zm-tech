@@ -10,6 +10,7 @@ Both require OAuth 2.0 — each creator account must individually authorize the 
 ## The audit gate (read this before promising automation timelines)
 
 **Unaudited API clients are heavily restricted**, regardless of how well the integration works technically:
+
 - Maximum 5 users can post in a 24-hour window
 - All posted content is forced to `SELF_ONLY` (private) viewership
 - To make content public later, the account owner must first switch their account visibility to public, then manually change each individual post's privacy to "Everyone"
@@ -19,6 +20,7 @@ Both require OAuth 2.0 — each creator account must individually authorize the 
 ## Domain/URL verification (required for `PULL_FROM_URL`)
 
 If the video/photo source is a URL rather than a local file upload, the exact domain or URL prefix serving that media **must be verified** in the TikTok Developer Portal (via DNS record or meta tag). Consequences of skipping this:
+
 - Pre-signed URLs from an unverified S3/R2/CDN bucket fail immediately with `url_ownership_unverified` — before the upload even starts
 - Verification is prefix-scoped: verifying `https://example.com/videos/user/` covers `https://example.com/videos/user/123/x.mp4` but does **NOT** cover `https://example.com/videos/2023/user/123/x.mp4` — a sibling path outside the verified prefix stays unverified
 

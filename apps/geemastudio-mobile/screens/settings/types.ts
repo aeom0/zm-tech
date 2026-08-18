@@ -1,7 +1,7 @@
 export interface SettingsSectionProps {
-  title: string;
-  footer?: string;
-  children: React.ReactNode;
+  title: string
+  footer?: string
+  children: React.ReactNode
 }
 
-export type SettingsRowVariant = "value" | "navigate" | "action" | "toggle";
+export type SettingsRowVariant = 'value' | 'navigate' | 'action' | 'toggle'

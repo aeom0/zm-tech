@@ -1,18 +1,18 @@
-import { supabase } from '../utils/supabase';
-import type { Customer } from '../types/database';
+import { supabase } from '../utils/supabase'
+import type { Customer } from '../types/database'
 
 /** Fila snake_case de PostgREST (`repmax_customers`). */
 interface CustomerRow {
-  id: string;
-  store_id: string;
-  full_name: string;
-  phone: string | null;
-  cedula_rif: string | null;
-  email: string | null;
-  notes: string | null;
-  total_purchases: number | null;
-  total_spent_usd: string | number | null;
-  created_at: string | null;
+  id: string
+  store_id: string
+  full_name: string
+  phone: string | null
+  cedula_rif: string | null
+  email: string | null
+  notes: string | null
+  total_purchases: number | null
+  total_spent_usd: string | number | null
+  created_at: string | null
 }
 
 function mapCustomer(row: CustomerRow): Customer {
@@ -27,7 +27,7 @@ function mapCustomer(row: CustomerRow): Customer {
     totalPurchases: row.total_purchases ?? 0,
     totalSpentUsd: parseFloat(String(row.total_spent_usd ?? '0')),
     createdAt: row.created_at ?? '',
-  };
+  }
 }
 
 export const customerService = {
@@ -35,15 +35,15 @@ export const customerService = {
     let query = supabase
       .from('repmax_customers')
       .select('*')
-      .order('full_name', { ascending: true });
+      .order('full_name', { ascending: true })
 
     if (q) {
-      query = query.or(`full_name.ilike.%${q}%,phone.ilike.%${q}%,cedula_rif.ilike.%${q}%`);
+      query = query.or(`full_name.ilike.%${q}%,phone.ilike.%${q}%,cedula_rif.ilike.%${q}%`)
     }
 
-    const { data, error } = await query;
-    if (error) throw new Error(error.message);
-    return (data ?? []).map(mapCustomer);
+    const { data, error } = await query
+    if (error) throw new Error(error.message)
+    return (data ?? []).map(mapCustomer)
   },
 
   /** Detalle individual — PostgREST por id (evita getAll + find). */
@@ -52,10 +52,10 @@ export const customerService = {
       .from('repmax_customers')
       .select('*')
       .eq('id', id)
-      .maybeSingle();
+      .maybeSingle()
 
-    if (error) throw new Error(error.message);
-    return data ? mapCustomer(data) : null;
+    if (error) throw new Error(error.message)
+    return data ? mapCustomer(data) : null
   },
 
   async create(customer: Partial<Customer>): Promise<Customer> {
@@ -66,14 +66,14 @@ export const customerService = {
       cedula_rif: customer.cedulaRif,
       email: customer.email,
       notes: customer.notes,
-    };
+    }
 
     const { data, error } = await supabase
       .from('repmax_customers')
       .insert(payload)
       .select()
-      .single();
-    if (error) throw new Error(error.message);
-    return mapCustomer(data);
+      .single()
+    if (error) throw new Error(error.message)
+    return mapCustomer(data)
   },
-};
+}

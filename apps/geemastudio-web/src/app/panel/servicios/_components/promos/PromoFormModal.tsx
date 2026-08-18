@@ -1,55 +1,55 @@
-"use client";
+'use client'
 
-import { useState } from "react";
+import { useState } from 'react'
 
-import { useCreatePromo, useUpdatePromo } from "@/hooks/servicios/usePromos";
-import type { PromoItemInput, Promotion } from "../../_services/promosService";
-import { LUNARIS } from "@/lib/theme";
-import { PromoItemRow } from "./PromoItemRow";
+import { useCreatePromo, useUpdatePromo } from '@/hooks/servicios/usePromos'
+import type { PromoItemInput, Promotion } from '../../_services/promosService'
+import { LUNARIS } from '@/lib/theme'
+import { PromoItemRow } from './PromoItemRow'
 
 interface Props {
-  open: boolean;
-  promo?: Promotion | null;
-  onClose: () => void;
+  open: boolean
+  promo?: Promotion | null
+  onClose: () => void
 }
 
 type FormState = {
-  title: string;
-  description: string;
-  badge: string;
-  accent_color: string;
-  promo_price: string;
-  is_active: boolean;
-  expires_at: string;
-};
+  title: string
+  description: string
+  badge: string
+  accent_color: string
+  promo_price: string
+  is_active: boolean
+  expires_at: string
+}
 
 const EMPTY: FormState = {
-  title: "",
-  description: "",
-  badge: "",
+  title: '',
+  description: '',
+  badge: '',
   accent_color: LUNARIS.primary,
-  promo_price: "",
+  promo_price: '',
   is_active: true,
-  expires_at: "",
-};
+  expires_at: '',
+}
 
 const EMPTY_ITEM: PromoItemInput = {
-  item_type: "service",
-  item_id: "",
+  item_type: 'service',
+  item_id: '',
   quantity: 1,
   discounted_price: 0,
-};
+}
 
 function formFromPromo(promo: Promotion): FormState {
   return {
     title: promo.title,
-    description: promo.description ?? "",
-    badge: promo.badge ?? "",
+    description: promo.description ?? '',
+    badge: promo.badge ?? '',
     accent_color: promo.accent_color ?? LUNARIS.primary,
-    promo_price: String(promo.promo_price).replace(".", ","),
+    promo_price: String(promo.promo_price).replace('.', ','),
     is_active: promo.is_active,
-    expires_at: promo.expires_at ? promo.expires_at.split("T")[0] : "",
-  };
+    expires_at: promo.expires_at ? promo.expires_at.split('T')[0] : '',
+  }
 }
 
 function itemsFromPromo(promo: Promotion): PromoItemInput[] {
@@ -60,52 +60,42 @@ function itemsFromPromo(promo: Promotion): PromoItemInput[] {
       quantity: i.quantity,
       discounted_price: i.discounted_price,
     })) ?? []
-  );
+  )
 }
 
 export function PromoFormModal({ open, promo, onClose }: Props) {
-  if (!open) return null;
+  if (!open) return null
 
-  return (
-    <PromoFormModalInner
-      key={promo?.id ?? "new"}
-      promo={promo}
-      onClose={onClose}
-    />
-  );
+  return <PromoFormModalInner key={promo?.id ?? 'new'} promo={promo} onClose={onClose} />
 }
 
 function PromoFormModalInner({
   promo,
   onClose,
 }: {
-  promo?: Promotion | null;
-  onClose: () => void;
+  promo?: Promotion | null
+  onClose: () => void
 }) {
-  const [form, setForm] = useState<FormState>(() =>
-    promo ? formFromPromo(promo) : EMPTY,
-  );
-  const [items, setItems] = useState<PromoItemInput[]>(() =>
-    promo ? itemsFromPromo(promo) : [],
-  );
+  const [form, setForm] = useState<FormState>(() => (promo ? formFromPromo(promo) : EMPTY))
+  const [items, setItems] = useState<PromoItemInput[]>(() => (promo ? itemsFromPromo(promo) : []))
 
-  const create = useCreatePromo();
-  const update = useUpdatePromo();
-  const isPending = create.isPending || update.isPending;
+  const create = useCreatePromo()
+  const update = useUpdatePromo()
+  const isPending = create.isPending || update.isPending
 
   function updateItem(index: number, item: PromoItemInput) {
-    setItems((prev) => prev.map((it, i) => (i === index ? item : it)));
+    setItems((prev) => prev.map((it, i) => (i === index ? item : it)))
   }
 
   function removeItem(index: number) {
-    setItems((prev) => prev.filter((_, i) => i !== index));
+    setItems((prev) => prev.filter((_, i) => i !== index))
   }
 
   async function handleSubmit() {
-    const promo_price = Number.parseFloat(form.promo_price.replace(",", "."));
-    if (!form.title.trim() || Number.isNaN(promo_price)) return;
+    const promo_price = Number.parseFloat(form.promo_price.replace(',', '.'))
+    if (!form.title.trim() || Number.isNaN(promo_price)) return
 
-    const validItems = items.filter((i) => i.item_id);
+    const validItems = items.filter((i) => i.item_id)
 
     const input = {
       title: form.title.trim(),
@@ -114,25 +104,23 @@ function PromoFormModalInner({
       accent_color: form.accent_color || null,
       promo_price,
       is_active: form.is_active,
-      expires_at: form.expires_at
-        ? new Date(`${form.expires_at}T12:00:00`).toISOString()
-        : null,
-    };
-
-    if (promo) {
-      await update.mutateAsync({ id: promo.id, input, items: validItems });
-    } else {
-      await create.mutateAsync({ input, items: validItems });
+      expires_at: form.expires_at ? new Date(`${form.expires_at}T12:00:00`).toISOString() : null,
     }
 
-    onClose();
+    if (promo) {
+      await update.mutateAsync({ id: promo.id, input, items: validItems })
+    } else {
+      await create.mutateAsync({ input, items: validItems })
+    }
+
+    onClose()
   }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-xl border border-white/10 bg-[#1a1d26] p-6 space-y-4">
+      <div className="max-h-[90vh] w-full max-w-lg space-y-4 overflow-y-auto rounded-xl border border-white/10 bg-[#1a1d26] p-6">
         <h2 className="text-lg font-semibold text-white">
-          {promo ? "Editar promo" : "Nueva promo"}
+          {promo ? 'Editar promo' : 'Nueva promo'}
         </h2>
 
         <div className="grid grid-cols-2 gap-3">
@@ -141,9 +129,7 @@ function PromoFormModalInner({
             <input
               className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#40E0D0] focus:outline-none"
               value={form.title}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, title: e.target.value }))
-              }
+              onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
               placeholder="Ej: Promo San Valentin"
             />
           </div>
@@ -153,24 +139,18 @@ function PromoFormModalInner({
             <input
               className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#40E0D0] focus:outline-none"
               value={form.badge}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, badge: e.target.value }))
-              }
+              onChange={(e) => setForm((f) => ({ ...f, badge: e.target.value }))}
               placeholder="HOT, NUEVO..."
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-white/50">
-              Color badge
-            </label>
+            <label className="mb-1 block text-xs text-white/50">Color badge</label>
             <div className="flex items-center gap-2">
               <input
                 type="color"
                 value={form.accent_color}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, accent_color: e.target.value }))
-                }
+                onChange={(e) => setForm((f) => ({ ...f, accent_color: e.target.value }))}
                 className="h-8 w-8 cursor-pointer rounded border-0 bg-transparent"
               />
               <span className="text-xs text-white/40">{form.accent_color}</span>
@@ -178,15 +158,11 @@ function PromoFormModalInner({
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-white/50">
-              Precio total promo *
-            </label>
+            <label className="mb-1 block text-xs text-white/50">Precio total promo *</label>
             <input
               className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#40E0D0] focus:outline-none"
               value={form.promo_price}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, promo_price: e.target.value }))
-              }
+              onChange={(e) => setForm((f) => ({ ...f, promo_price: e.target.value }))}
               placeholder="0,00"
               inputMode="decimal"
             />
@@ -198,22 +174,16 @@ function PromoFormModalInner({
               type="date"
               className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#40E0D0] focus:outline-none"
               value={form.expires_at}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, expires_at: e.target.value }))
-              }
+              onChange={(e) => setForm((f) => ({ ...f, expires_at: e.target.value }))}
             />
           </div>
 
           <div className="col-span-2">
-            <label className="mb-1 block text-xs text-white/50">
-              Descripcion
-            </label>
+            <label className="mb-1 block text-xs text-white/50">Descripcion</label>
             <textarea
               className="w-full resize-none rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#40E0D0] focus:outline-none"
               value={form.description}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, description: e.target.value }))
-              }
+              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               rows={2}
               placeholder="Texto visible al cliente"
             />
@@ -254,9 +224,7 @@ function PromoFormModalInner({
           <input
             type="checkbox"
             checked={form.is_active}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, is_active: e.target.checked }))
-            }
+            onChange={(e) => setForm((f) => ({ ...f, is_active: e.target.checked }))}
             className="accent-[#40E0D0]"
           />
           <span className="text-sm text-white/70">Activa</span>
@@ -274,12 +242,12 @@ function PromoFormModalInner({
             type="button"
             onClick={() => void handleSubmit()}
             disabled={isPending}
-            className="px-4 py-2 text-sm rounded-lg bg-[#40E0D0] text-white transition-colors hover:bg-[#00897B] disabled:opacity-50"
+            className="rounded-lg bg-[#40E0D0] px-4 py-2 text-sm text-white transition-colors hover:bg-[#00897B] disabled:opacity-50"
           >
-            {isPending ? "Guardando..." : promo ? "Actualizar" : "Crear promo"}
+            {isPending ? 'Guardando...' : promo ? 'Actualizar' : 'Crear promo'}
           </button>
         </div>
       </div>
     </div>
-  );
+  )
 }

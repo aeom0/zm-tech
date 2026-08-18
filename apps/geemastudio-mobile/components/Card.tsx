@@ -1,24 +1,24 @@
-import React from "react";
-import { StyleSheet, Pressable, ViewStyle } from "react-native";
+import React from 'react'
+import { StyleSheet, Pressable, ViewStyle } from 'react-native'
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
   WithSpringConfig,
-} from "react-native-reanimated";
+} from 'react-native-reanimated'
 
-import { ThemedText } from "@/components/ThemedText";
-import { useTheme } from "@/hooks/useTheme";
-import { useHaptics } from "@/hooks/useHaptics";
-import { Spacing, BorderRadius } from "@/constants/theme";
+import { ThemedText } from '@/components/ThemedText'
+import { useTheme } from '@/hooks/useTheme'
+import { useHaptics } from '@/hooks/useHaptics'
+import { Spacing, BorderRadius } from '@/constants/theme'
 
 interface CardProps {
-  elevation?: number;
-  title?: string;
-  description?: string;
-  children?: React.ReactNode;
-  onPress?: () => void;
-  style?: ViewStyle;
+  elevation?: number
+  title?: string
+  description?: string
+  children?: React.ReactNode
+  onPress?: () => void
+  style?: ViewStyle
 }
 
 const springConfig: WithSpringConfig = {
@@ -27,59 +27,49 @@ const springConfig: WithSpringConfig = {
   stiffness: 150,
   overshootClamping: true,
   energyThreshold: 0.001,
-};
+}
 
-const getBackgroundColorForElevation = (
-  elevation: number,
-  theme: any,
-): string => {
+const getBackgroundColorForElevation = (elevation: number, theme: any): string => {
   switch (elevation) {
     case 1:
-      return theme.backgroundDefault;
+      return theme.backgroundDefault
     case 2:
-      return theme.backgroundSecondary;
+      return theme.backgroundSecondary
     case 3:
-      return theme.backgroundTertiary;
+      return theme.backgroundTertiary
     default:
-      return theme.backgroundRoot;
+      return theme.backgroundRoot
   }
-};
+}
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 
-export function Card({
-  elevation = 1,
-  title,
-  description,
-  children,
-  onPress,
-  style,
-}: CardProps) {
-  const { theme } = useTheme();
-  const haptics = useHaptics();
-  const scale = useSharedValue(1);
+export function Card({ elevation = 1, title, description, children, onPress, style }: CardProps) {
+  const { theme } = useTheme()
+  const haptics = useHaptics()
+  const scale = useSharedValue(1)
 
-  const cardBackgroundColor = getBackgroundColorForElevation(elevation, theme);
+  const cardBackgroundColor = getBackgroundColorForElevation(elevation, theme)
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
-  }));
+  }))
 
   const handlePressIn = () => {
     if (onPress) {
       // Shared value de Reanimated — mutación intencional fuera del render
       // eslint-disable-next-line react-hooks/immutability
-      scale.value = withSpring(0.98, springConfig);
-      haptics.light();
+      scale.value = withSpring(0.98, springConfig)
+      haptics.light()
     }
-  };
+  }
 
   const handlePressOut = () => {
     if (onPress) {
       // eslint-disable-next-line react-hooks/immutability
-      scale.value = withSpring(1, springConfig);
+      scale.value = withSpring(1, springConfig)
     }
-  };
+  }
 
   return (
     <AnimatedPressable
@@ -107,13 +97,13 @@ export function Card({
       ) : null}
       {children}
     </AnimatedPressable>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   card: {
     padding: Spacing.xl,
-    borderRadius: BorderRadius["2xl"],
+    borderRadius: BorderRadius['2xl'],
   },
   cardTitle: {
     marginBottom: Spacing.sm,
@@ -121,4 +111,4 @@ const styles = StyleSheet.create({
   cardDescription: {
     opacity: 0.7,
   },
-});
+})

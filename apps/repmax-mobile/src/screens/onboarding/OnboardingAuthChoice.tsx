@@ -5,7 +5,7 @@
 // login, sin pasar por onboarding.
 // ============================================================
 
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   View,
   Text,
@@ -14,42 +14,42 @@ import {
   Alert,
   ActivityIndicator,
   ScrollView,
-} from 'react-native';
-import { BrandLogo } from '../../components/brand/BrandLogo';
-import { Screen } from '../../components/layout/Screen';
-import { useAuth } from '../../context/AuthContext';
-import { useOnboarding } from '../../context/OnboardingContext';
-import { colors, typography, spacing, borderRadius } from '../../utils/theme';
+} from 'react-native'
+import { BrandLogo } from '../../components/brand/BrandLogo'
+import { Screen } from '../../components/layout/Screen'
+import { useAuth } from '../../context/AuthContext'
+import { useOnboarding } from '../../context/OnboardingContext'
+import { colors, typography, spacing, borderRadius } from '../../utils/theme'
 
 // Owner de Repuestos Alfa — ver docs/repmax/supabase/seed/demo_users.md
-const DEMO_EMAIL = 'repmax-owner-a@test.local';
-const DEMO_PASSWORD = 'TestRepmax123!';
+const DEMO_EMAIL = 'repmax-owner-a@test.local'
+const DEMO_PASSWORD = 'TestRepmax123!'
 
 interface Props {
-  onChooseSignUp: () => void;
-  onChooseLogin: () => void;
+  onChooseSignUp: () => void
+  onChooseLogin: () => void
 }
 
 export default function OnboardingAuthChoice({ onChooseSignUp, onChooseLogin }: Props) {
-  const { login } = useAuth();
-  const { completeOnboarding } = useOnboarding();
-  const [cargandoDemo, setCargandoDemo] = useState(false);
+  const { login } = useAuth()
+  const { completeOnboarding } = useOnboarding()
+  const [cargandoDemo, setCargandoDemo] = useState(false)
 
   const handleExplorarDemo = async () => {
-    setCargandoDemo(true);
+    setCargandoDemo(true)
     try {
-      await login(DEMO_EMAIL, DEMO_PASSWORD);
-      await completeOnboarding();
+      await login(DEMO_EMAIL, DEMO_PASSWORD)
+      await completeOnboarding()
     } catch (error) {
-      console.error('[OnboardingAuthChoice] Error al cargar usuario demo:', error);
+      console.error('[OnboardingAuthChoice] Error al cargar usuario demo:', error)
       Alert.alert(
         'No se pudo entrar al demo',
-        error instanceof Error ? error.message : 'Revisa la conexión o las credenciales demo.',
-      );
+        error instanceof Error ? error.message : 'Revisa la conexión o las credenciales demo.'
+      )
     } finally {
-      setCargandoDemo(false);
+      setCargandoDemo(false)
     }
-  };
+  }
 
   return (
     <Screen edges={['top', 'bottom']} padded={false}>
@@ -61,9 +61,7 @@ export default function OnboardingAuthChoice({ onChooseSignUp, onChooseLogin }: 
         <View style={styles.header}>
           <BrandLogo variant="wordmark" width={220} />
           <Text style={styles.titulo}>Gestiona tu tienda{'\n'}de repuestos</Text>
-          <Text style={styles.subtitulo}>
-            Inventario, ventas y catálogo en un solo lugar.
-          </Text>
+          <Text style={styles.subtitulo}>Inventario, ventas y catálogo en un solo lugar.</Text>
         </View>
 
         <View style={styles.botones}>
@@ -102,7 +100,7 @@ export default function OnboardingAuthChoice({ onChooseSignUp, onChooseLogin }: 
         </View>
       </ScrollView>
     </Screen>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -178,4 +176,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: spacing.md,
   },
-});
+})

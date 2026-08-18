@@ -3,7 +3,7 @@
 // Mock visual que refleja las elecciones del usuario
 // ============================================================
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react'
 import {
   View,
   Text,
@@ -12,20 +12,26 @@ import {
   StyleSheet,
   Animated,
   Easing,
-} from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { OnboardingStackParamList } from '../../navigation/types';
-import { useOnboarding } from '../../context/OnboardingContext';
-import { THEMES, VEHICLE_DASHBOARD_ICON } from '../../constants/onboarding';
-import OnboardingProgressBar from '../../components/onboarding/OnboardingProgressBar';
-import { Screen } from '../../components/layout/Screen';
-import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
+} from 'react-native'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
+import type { OnboardingStackParamList } from '../../navigation/types'
+import { useOnboarding } from '../../context/OnboardingContext'
+import { THEMES, VEHICLE_DASHBOARD_ICON } from '../../constants/onboarding'
+import OnboardingProgressBar from '../../components/onboarding/OnboardingProgressBar'
+import { Screen } from '../../components/layout/Screen'
+import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme'
 
-type Props = NativeStackScreenProps<OnboardingStackParamList, 'OnboardingPreview'>;
+type Props = NativeStackScreenProps<OnboardingStackParamList, 'OnboardingPreview'>
 
 // Iconos de la tab bar simulada (5 tabs: Inicio, Ventas, Stock, Clientes, Más)
-const TAB_ICONS = ['home-outline', 'cart-outline', 'package-variant-closed', 'account-group-outline', 'menu'];
+const TAB_ICONS = [
+  'home-outline',
+  'cart-outline',
+  'package-variant-closed',
+  'account-group-outline',
+  'menu',
+]
 
 /** Filas ficticias de actividad reciente (solo mock visual) */
 const FILAS_ACTIVIDAD_MOCK = [
@@ -47,23 +53,23 @@ const FILAS_ACTIVIDAD_MOCK = [
     hora: 'hace 2h',
     monto: '—',
   },
-];
+]
 
 export default function OnboardingPreview(_props: Props) {
-  const { state, completeOnboarding } = useOnboarding();
-  const opacidadMock = useRef(new Animated.Value(0)).current;
-  const translateYMock = useRef(new Animated.Value(24)).current;
+  const { state, completeOnboarding } = useOnboarding()
+  const opacidadMock = useRef(new Animated.Value(0)).current
+  const translateYMock = useRef(new Animated.Value(24)).current
 
   // Al llamar completeOnboarding(), state.completed pasa a true.
   // AppNavigator observa ese cambio y renderiza Auth (Register) automáticamente
   // sin necesidad de navegar manualmente — evita errores de pantalla no registrada.
   const handleFinalizar = async () => {
     try {
-      await completeOnboarding();
+      await completeOnboarding()
     } catch (error) {
-      console.error('[OnboardingPreview] Error al completar onboarding:', error);
+      console.error('[OnboardingPreview] Error al completar onboarding:', error)
     }
-  };
+  }
 
   // Entrada del mock del dashboard
   useEffect(() => {
@@ -80,27 +86,24 @@ export default function OnboardingPreview(_props: Props) {
         easing: Easing.out(Easing.cubic),
         useNativeDriver: true,
       }),
-    ]);
-    animacion.start();
+    ])
+    animacion.start()
     return () => {
-      animacion.stop();
-    };
-  }, [opacidadMock, translateYMock]);
+      animacion.stop()
+    }
+  }, [opacidadMock, translateYMock])
 
   // Color de acento según tema seleccionado (default naranja)
-  const temaActual = THEMES.find(t => t.key === state.theme);
-  const colorAcento = temaActual?.color ?? colors.brand.orange;
-  const iconVehiculo = VEHICLE_DASHBOARD_ICON[state.vehicleType ?? 'BOTH'];
+  const temaActual = THEMES.find((t) => t.key === state.theme)
+  const colorAcento = temaActual?.color ?? colors.brand.orange
+  const iconVehiculo = VEHICLE_DASHBOARD_ICON[state.vehicleType ?? 'BOTH']
 
   return (
     <Screen edges={['top', 'bottom']} padded={false}>
       {/* Barra de progreso: paso 5 de 5 */}
       <OnboardingProgressBar currentStep={5} totalSteps={5} />
 
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <Text style={styles.titulo}>Así luce tu tienda</Text>
         <Text style={styles.subtitulo}>
           Tu panel personalizado con tema{' '}
@@ -152,17 +155,8 @@ export default function OnboardingPreview(_props: Props) {
               ]}
             >
               <View style={styles.actividadIconoCirculo}>
-                <View
-                  style={[
-                    styles.actividadIconoFondo,
-                    { backgroundColor: colorAcento },
-                  ]}
-                />
-                <MaterialCommunityIcons
-                  name={fila.icono as never}
-                  size={16}
-                  color={colorAcento}
-                />
+                <View style={[styles.actividadIconoFondo, { backgroundColor: colorAcento }]} />
+                <MaterialCommunityIcons name={fila.icono as never} size={16} color={colorAcento} />
               </View>
               <View style={styles.actividadTextos}>
                 <Text style={styles.actividadDescripcion}>{fila.descripcion}</Text>
@@ -201,7 +195,7 @@ export default function OnboardingPreview(_props: Props) {
         </TouchableOpacity>
       </View>
     </Screen>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -364,4 +358,4 @@ const styles = StyleSheet.create({
     fontSize: typography.size.md,
     color: '#FFFFFF',
   },
-});
+})

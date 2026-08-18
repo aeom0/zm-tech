@@ -1,2 +1,2 @@
-export * from "./odontogram";
-export * from "./schema";
+export * from './odontogram'
+export * from './schema'

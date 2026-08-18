@@ -9,12 +9,12 @@ Construido como SaaS multi-tenant sobre React Native + Expo + Supabase.
 
 ## Tipos de negocio soportados
 
-| Tipo | Terminología | Ejemplo |
-|------|-------------|---------|
-| 💅 Spa / Uñas (`spa-nails`) | chicas / especialista / cita | Spa Bella |
-| ✂️ Barbería (`barbershop`) | barberos / barbero / turno | Barbería Clásica |
-| 💇 Peluquería (`hair-salon`) | estilistas / estilista / cita | Salón de Estilo |
-| 🌿 Estética Integral (`full-aesthetic`) | especialistas / especialista / cita | Centro Estético |
+| Tipo                                    | Terminología                        | Ejemplo          |
+| --------------------------------------- | ----------------------------------- | ---------------- |
+| 💅 Spa / Uñas (`spa-nails`)             | chicas / especialista / cita        | Spa Bella        |
+| ✂️ Barbería (`barbershop`)              | barberos / barbero / turno          | Barbería Clásica |
+| 💇 Peluquería (`hair-salon`)            | estilistas / estilista / cita       | Salón de Estilo  |
+| 🌿 Estética Integral (`full-aesthetic`) | especialistas / especialista / cita | Centro Estético  |
 
 ---
 
@@ -90,15 +90,15 @@ Este monorepo usa la convención estándar `apps/` para aplicaciones y `packages
 
 > **Nota para Claude Chat (integración GitHub):** Las carpetas se muestran con su nombre técnico en el árbol de archivos. La siguiente tabla explica qué es cada una:
 
-| Carpeta en GitHub | Qué contiene | Tecnología |
-|-------------------|-------------|-----------|
-| `apps/mobile/` | **App Móvil (Expo)** — la aplicación principal para iOS, Android y Web | React Native 0.85 + Expo SDK 56 |
-| `apps/web/` | **Web (Next.js)** — landing + `/dashboard` + `/finanzas` (auth Supabase) | Next.js 15 + Tailwind CSS |
-| `packages/shared-schema/` | **Schema Compartido** — tablas de base de datos y validaciones | Drizzle ORM + Zod |
-| `packages/tenant-config/` | **Config de Tenant** — presets y configuración multi-tenant | TypeScript |
-| `server/` | *(No usado)* — La app conecta directo a Supabase; no hay Express | — |
-| `scripts/` | **Scripts de base de datos** — seeds y migraciones | SQL + Node.js |
-| `docs/` | **Documentación** — guías de migración y diseño | Markdown |
+| Carpeta en GitHub         | Qué contiene                                                             | Tecnología                      |
+| ------------------------- | ------------------------------------------------------------------------ | ------------------------------- |
+| `apps/mobile/`            | **App Móvil (Expo)** — la aplicación principal para iOS, Android y Web   | React Native 0.85 + Expo SDK 56 |
+| `apps/web/`               | **Web (Next.js)** — landing + `/dashboard` + `/finanzas` (auth Supabase) | Next.js 15 + Tailwind CSS       |
+| `packages/shared-schema/` | **Schema Compartido** — tablas de base de datos y validaciones           | Drizzle ORM + Zod               |
+| `packages/tenant-config/` | **Config de Tenant** — presets y configuración multi-tenant              | TypeScript                      |
+| `server/`                 | _(No usado)_ — La app conecta directo a Supabase; no hay Express         | —                               |
+| `scripts/`                | **Scripts de base de datos** — seeds y migraciones                       | SQL + Node.js                   |
+| `docs/`                   | **Documentación** — guías de migración y diseño                          | Markdown                        |
 
 ```
 ├── apps/
@@ -137,17 +137,17 @@ Este monorepo usa la convención estándar `apps/` para aplicaciones y `packages
 
 ## Scripts Disponibles
 
-| Script | Descripción |
-|--------|-------------|
-| `pnpm mobile:dev` | Inicia Expo (app móvil) |
-| `pnpm web:dev` | Inicia Next.js (web) |
-| `pnpm db:push` | Aplica schema a PostgreSQL vía Drizzle (`packages/shared-schema`) |
+| Script             | Descripción                                                         |
+| ------------------ | ------------------------------------------------------------------- |
+| `pnpm mobile:dev`  | Inicia Expo (app móvil)                                             |
+| `pnpm web:dev`     | Inicia Next.js (web)                                                |
+| `pnpm db:push`     | Aplica schema a PostgreSQL vía Drizzle (`packages/shared-schema`)   |
 | `pnpm db:generate` | Genera migraciones SQL versionadas en `./migrations/` (Drizzle Kit) |
-| `pnpm db:studio` | Abre Drizzle Studio contra `DATABASE_URL` |
-| `pnpm db:seed` | Carga datos de ejemplo (templates) |
-| `pnpm check:types` | Type checking TypeScript |
-| `pnpm lint` | Verifica código con ESLint |
-| `pnpm format` | Formatea con Prettier |
+| `pnpm db:studio`   | Abre Drizzle Studio contra `DATABASE_URL`                           |
+| `pnpm db:seed`     | Carga datos de ejemplo (templates)                                  |
+| `pnpm check:types` | Type checking TypeScript                                            |
+| `pnpm lint`        | Verifica código con ESLint                                          |
+| `pnpm format`      | Formatea con Prettier                                               |
 
 ---
 
@@ -221,10 +221,10 @@ limit 20;
 
 ## Roles de Usuario
 
-| Rol | Acceso |
-|-----|--------|
-| `dev` | Total — administrador técnico; web: `/dashboard`, `/finanzas` |
-| `owner` | Total — dueño/a del negocio; web: `/dashboard`, `/finanzas` |
+| Rol     | Acceso                                                                                            |
+| ------- | ------------------------------------------------------------------------------------------------- |
+| `dev`   | Total — administrador técnico; web: `/dashboard`, `/finanzas`                                     |
+| `owner` | Total — dueño/a del negocio; web: `/dashboard`, `/finanzas`                                       |
 | `staff` | Limitado — Agenda + Mis ganancias; sin paneles web admin (redirige a `/` si intenta `/dashboard`) |
 
 ### Panel web `/panel`
@@ -250,12 +250,12 @@ limit 20;
 
 Marca principal: solo el símbolo en `logo-diamondSparkle.svg` (sin texto en el asset). Navbar / footer / splash usan ese archivo; en barra clara (scroll, modo claro) el SVG se invierte con CSS para contraste.
 
-| Archivo | Uso |
-|---------|-----|
-| `logo-diamondSparkle.svg` | **Principal** — diamante claro, fondos oscuros o transparentes |
-| `logo-diamondSparkle-positive.svg` | Opcional — export con fondo claro (p. ej. materiales) |
-| `logo-diamondSparkle-negative.svg` | Opcional — preview con fondo negro (redes) |
-| `favicon.png` | Favicon (desde `logo-diamondSparkle.svg`) |
+| Archivo                            | Uso                                                            |
+| ---------------------------------- | -------------------------------------------------------------- |
+| `logo-diamondSparkle.svg`          | **Principal** — diamante claro, fondos oscuros o transparentes |
+| `logo-diamondSparkle-positive.svg` | Opcional — export con fondo claro (p. ej. materiales)          |
+| `logo-diamondSparkle-negative.svg` | Opcional — preview con fondo negro (redes)                     |
+| `favicon.png`                      | Favicon (desde `logo-diamondSparkle.svg`)                      |
 
 En `apps/mobile/assets/`: misma pieza + `splash-icon.png` raster del diamante.
 

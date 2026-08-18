@@ -1,23 +1,17 @@
-import React, {
-  useState,
-  useMemo,
-  useEffect,
-  useCallback,
-  useRef,
-} from "react";
-import { View, Alert, ActivityIndicator, ScrollView } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useHeaderHeight } from "@react-navigation/elements";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { useRoute, useNavigation } from "@react-navigation/native";
-import type { RouteProp } from "@react-navigation/native";
-import * as Haptics from "expo-haptics";
+import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react'
+import { View, Alert, ActivityIndicator, ScrollView } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useHeaderHeight } from '@react-navigation/elements'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
+import { useRoute, useNavigation } from '@react-navigation/native'
+import type { RouteProp } from '@react-navigation/native'
+import * as Haptics from 'expo-haptics'
 
-import { useTheme } from "@/hooks/useTheme";
-import { useResponsive } from "@/hooks/useResponsive";
-import { useTenant } from "@/contexts/TenantContext";
-import { useAuth } from "@/contexts/AuthContext";
-import { Spacing } from "@/constants/theme";
+import { useTheme } from '@/hooks/useTheme'
+import { useResponsive } from '@/hooks/useResponsive'
+import { useTenant } from '@/contexts/TenantContext'
+import { useAuth } from '@/contexts/AuthContext'
+import { Spacing } from '@/constants/theme'
 import {
   defaultTenantConfig,
   esCeldaAgendaEnHorarioLaboral,
@@ -31,101 +25,91 @@ import {
   sumarDiasEnZonaIANA,
   sumarSemanasEnZonaIANA,
   zonaIANASegura,
-} from "@zmtech/tenant-config";
-import type { MainTabParamList } from "@/navigation/MainTabNavigator";
+} from '@zmtech/tenant-config'
+import type { MainTabParamList } from '@/navigation/MainTabNavigator'
 
-import { agendaStyles as styles } from "./agenda/agendaStyles";
+import { agendaStyles as styles } from './agenda/agendaStyles'
 import {
   emptyAgendaForm,
   type AgendaAppointment,
   type AgendaFormState,
   type AgendaStatusFilter as AgendaStatusFilterType,
   type OwnerViewMode,
-} from "./agenda/types";
-import { useAgendaCalendar } from "./agenda/hooks/useAgendaCalendar";
-import {
-  useAgendaQueries,
-  useServicesByCategory,
-} from "./agenda/hooks/useAgendaQueries";
-import { useAgendaMutations } from "./agenda/hooks/useAgendaMutations";
-import { useAvailabilityCheck } from "./agenda/hooks/useAvailabilityCheck";
-import { AgendaHeader } from "./agenda/components/AgendaHeader";
-import { AgendaWeekDayHeaders } from "./agenda/components/AgendaWeekDayHeaders";
-import { AgendaEmployeeHeaders } from "./agenda/components/AgendaEmployeeHeaders";
-import { AgendaStatusFilter as AgendaStatusFilterBar } from "./agenda/components/AgendaStatusFilter";
-import { AgendaCalendarGrid } from "./agenda/components/AgendaCalendarGrid";
-import { AgendaDayKPIStrip } from "./agenda/components/AgendaDayKPIStrip";
-import { OwnerDayGrid } from "./agenda/components/OwnerDayGrid";
-import { OwnerWeekGrid } from "./agenda/components/OwnerWeekGrid";
-import { OwnerStaffAvatarStrip } from "./agenda/components/OwnerStaffAvatarStrip";
-import { StaffAgendaTimelineView } from "./agenda/components/StaffAgendaTimelineView";
-import { NewAppointmentModal } from "./agenda/components/NewAppointmentModal";
-import { AppointmentDetailModal } from "./agenda/components/AppointmentDetailModal";
+} from './agenda/types'
+import { useAgendaCalendar } from './agenda/hooks/useAgendaCalendar'
+import { useAgendaQueries, useServicesByCategory } from './agenda/hooks/useAgendaQueries'
+import { useAgendaMutations } from './agenda/hooks/useAgendaMutations'
+import { useAvailabilityCheck } from './agenda/hooks/useAvailabilityCheck'
+import { AgendaHeader } from './agenda/components/AgendaHeader'
+import { AgendaWeekDayHeaders } from './agenda/components/AgendaWeekDayHeaders'
+import { AgendaEmployeeHeaders } from './agenda/components/AgendaEmployeeHeaders'
+import { AgendaStatusFilter as AgendaStatusFilterBar } from './agenda/components/AgendaStatusFilter'
+import { AgendaCalendarGrid } from './agenda/components/AgendaCalendarGrid'
+import { AgendaDayKPIStrip } from './agenda/components/AgendaDayKPIStrip'
+import { OwnerDayGrid } from './agenda/components/OwnerDayGrid'
+import { OwnerWeekGrid } from './agenda/components/OwnerWeekGrid'
+import { OwnerStaffAvatarStrip } from './agenda/components/OwnerStaffAvatarStrip'
+import { StaffAgendaTimelineView } from './agenda/components/StaffAgendaTimelineView'
+import { NewAppointmentModal } from './agenda/components/NewAppointmentModal'
+import { AppointmentDetailModal } from './agenda/components/AppointmentDetailModal'
 
 export default function AgendaScreen() {
-  const headerHeight = useHeaderHeight();
-  const tabBarHeight = useBottomTabBarHeight();
-  const insets = useSafeAreaInsets();
-  const { theme } = useTheme();
-  const { config } = useTenant();
-  const { role, profile, isAdmin, isLoading: authLoading } = useAuth();
-  const currencySymbol = config.locale.currency.symbol;
-  const { isTablet, width } = useResponsive();
+  const headerHeight = useHeaderHeight()
+  const tabBarHeight = useBottomTabBarHeight()
+  const insets = useSafeAreaInsets()
+  const { theme } = useTheme()
+  const { config } = useTenant()
+  const { role, profile, isAdmin, isLoading: authLoading } = useAuth()
+  const currencySymbol = config.locale.currency.symbol
+  const { isTablet, width } = useResponsive()
 
-  const ownerVista = !authLoading && isAdmin;
-  const staffVista = !authLoading && role === "staff";
-  const mobileDayMode = !isTablet && (ownerVista || staffVista);
+  const ownerVista = !authLoading && isAdmin
+  const staffVista = !authLoading && role === 'staff'
+  const mobileDayMode = !isTablet && (ownerVista || staffVista)
 
-  const timeFormatReloj = config.locale.timeFormat === "12" ? "12" : "24";
-  const TIME_COL_W = isTablet ? 72 : 58;
+  const timeFormatReloj = config.locale.timeFormat === '12' ? '12' : '24'
+  const TIME_COL_W = isTablet ? 72 : 58
 
-  const tenantTz = useMemo(
-    () => zonaIANASegura(config.locale.timezone),
-    [config.locale.timezone],
-  );
+  const tenantTz = useMemo(() => zonaIANASegura(config.locale.timezone), [config.locale.timezone])
 
   const [selectedDate, setSelectedDate] = useState<Date>(() =>
-    inicioDiaHoyEnZonaIANA(zonaIANASegura(defaultTenantConfig.locale.timezone)),
-  );
-  const [ownerViewMode, setOwnerViewMode] = useState<OwnerViewMode>("day");
-  const [modalVisible, setModalVisible] = useState(false);
-  const [detailModalVisible, setDetailModalVisible] = useState(false);
-  const [appointmentDetail, setAppointmentDetail] =
-    useState<AgendaAppointment | null>(null);
-  const [rescheduleDate, setRescheduleDate] = useState<Date | null>(null);
-  const [rescheduleHour, setRescheduleHour] = useState<number>(10);
-  const [selectedHour, setSelectedHour] = useState(9);
-  const [statusFilter, setStatusFilter] =
-    useState<AgendaStatusFilterType>("all");
+    inicioDiaHoyEnZonaIANA(zonaIANASegura(defaultTenantConfig.locale.timezone))
+  )
+  const [ownerViewMode, setOwnerViewMode] = useState<OwnerViewMode>('day')
+  const [modalVisible, setModalVisible] = useState(false)
+  const [detailModalVisible, setDetailModalVisible] = useState(false)
+  const [appointmentDetail, setAppointmentDetail] = useState<AgendaAppointment | null>(null)
+  const [rescheduleDate, setRescheduleDate] = useState<Date | null>(null)
+  const [rescheduleHour, setRescheduleHour] = useState<number>(10)
+  const [selectedHour, setSelectedHour] = useState(9)
+  const [statusFilter, setStatusFilter] = useState<AgendaStatusFilterType>('all')
   /** Filtro por columna de empleado (owner día / grid tablet): solo citas de ese id; null = todos */
-  const [employeeColumnFilterId, setEmployeeColumnFilterId] = useState<
-    string | null
-  >(null);
-  const [formData, setFormData] = useState<AgendaFormState>(emptyAgendaForm());
+  const [employeeColumnFilterId, setEmployeeColumnFilterId] = useState<string | null>(null)
+  const [formData, setFormData] = useState<AgendaFormState>(emptyAgendaForm())
 
-  const avatarStripRef = useRef<ScrollView>(null);
-  const gridScrollRef = useRef<ScrollView>(null);
-  const isSyncingFromGrid = useRef(false);
-  const isSyncingFromStrip = useRef(false);
+  const avatarStripRef = useRef<ScrollView>(null)
+  const gridScrollRef = useRef<ScrollView>(null)
+  const isSyncingFromGrid = useRef(false)
+  const isSyncingFromStrip = useRef(false)
 
-  const tzAnteriorRef = useRef(tenantTz);
+  const tzAnteriorRef = useRef(tenantTz)
   useEffect(() => {
     if (tzAnteriorRef.current !== tenantTz) {
-      tzAnteriorRef.current = tenantTz;
-      setSelectedDate(inicioDiaHoyEnZonaIANA(tenantTz));
+      tzAnteriorRef.current = tenantTz
+      setSelectedDate(inicioDiaHoyEnZonaIANA(tenantTz))
     }
-  }, [tenantTz]);
+  }, [tenantTz])
 
-  const { weekDays } = useAgendaCalendar(selectedDate, tenantTz);
+  const { weekDays } = useAgendaCalendar(selectedDate, tenantTz)
 
   const businessHoursNorm = useMemo(
     () => normalizarHorarioSemanal(config.businessHours),
-    [config.businessHours],
-  );
+    [config.businessHours]
+  )
   const agendaHours = useMemo(
     () => horasVisiblesParaAgenda(config.businessHours),
-    [config.businessHours],
-  );
+    [config.businessHours]
+  )
 
   const {
     appointments,
@@ -138,213 +122,174 @@ export default function AgendaScreen() {
     services,
     servicesLoading,
     servicesError,
-  } = useAgendaQueries();
+  } = useAgendaQueries()
 
   const appointmentsDisplayed = useMemo(() => {
-    if (!employeeColumnFilterId) return appointments;
-    return appointments.filter((a) => a.employee_id === employeeColumnFilterId);
-  }, [appointments, employeeColumnFilterId]);
+    if (!employeeColumnFilterId) return appointments
+    return appointments.filter((a) => a.employee_id === employeeColumnFilterId)
+  }, [appointments, employeeColumnFilterId])
 
-  const servicesByCategory = useServicesByCategory(
-    services,
-    formData.categoryId,
-  );
+  const servicesByCategory = useServicesByCategory(services, formData.categoryId)
   const selectedCategory = useMemo(
     () => categories.find((c) => c.id === formData.categoryId),
-    [categories, formData.categoryId],
-  );
+    [categories, formData.categoryId]
+  )
   const selectedService = useMemo(
     () => services.find((s) => s.id === formData.serviceId),
-    [services, formData.serviceId],
-  );
+    [services, formData.serviceId]
+  )
   const selectedEmployee = useMemo(
     () => employees.find((e) => e.id === formData.employeeId),
-    [employees, formData.employeeId],
-  );
+    [employees, formData.employeeId]
+  )
 
   const onCreateSuccess = useCallback(() => {
-    setModalVisible(false);
-    setFormData(emptyAgendaForm());
-  }, []);
+    setModalVisible(false)
+    setFormData(emptyAgendaForm())
+  }, [])
   const onDeleteSuccess = useCallback(() => {
-    setDetailModalVisible(false);
-    setAppointmentDetail(null);
-  }, []);
+    setDetailModalVisible(false)
+    setAppointmentDetail(null)
+  }, [])
   const onUpdateSuccess = useCallback(() => {
-    setDetailModalVisible(false);
-    setAppointmentDetail(null);
-  }, []);
+    setDetailModalVisible(false)
+    setAppointmentDetail(null)
+  }, [])
 
-  const {
-    createMutation,
-    deleteAppointmentMutation,
-    updateAppointmentMutation,
-  } = useAgendaMutations({ onCreateSuccess, onDeleteSuccess, onUpdateSuccess });
+  const { createMutation, deleteAppointmentMutation, updateAppointmentMutation } =
+    useAgendaMutations({ onCreateSuccess, onDeleteSuccess, onUpdateSuccess })
 
-  const route = useRoute<RouteProp<MainTabParamList, "Agenda">>();
-  const navigation = useNavigation();
-  const appointmentIdParam = route.params?.appointmentId;
+  const route = useRoute<RouteProp<MainTabParamList, 'Agenda'>>()
+  const navigation = useNavigation()
+  const appointmentIdParam = route.params?.appointmentId
 
   useEffect(() => {
     if (appointmentIdParam && appointments.length > 0) {
-      const apt = appointments.find((a) => a.id === appointmentIdParam);
+      const apt = appointments.find((a) => a.id === appointmentIdParam)
       if (apt) {
-        setAppointmentDetail(apt);
-        const aptInst = new Date(apt.date);
-        setRescheduleDate(inicioDiaDelInstanteEnZona(aptInst, tenantTz));
-        setRescheduleHour(horaCalendarioEnZona(aptInst, tenantTz));
-        setDetailModalVisible(true);
+        setAppointmentDetail(apt)
+        const aptInst = new Date(apt.date)
+        setRescheduleDate(inicioDiaDelInstanteEnZona(aptInst, tenantTz))
+        setRescheduleHour(horaCalendarioEnZona(aptInst, tenantTz))
+        setDetailModalVisible(true)
       }
-      (
+      ;(
         navigation as unknown as {
-          setParams: (p: { appointmentId?: string }) => void;
+          setParams: (p: { appointmentId?: string }) => void
         }
-      ).setParams({ appointmentId: undefined });
+      ).setParams({ appointmentId: undefined })
     }
-  }, [appointmentIdParam, appointments, navigation, tenantTz]);
+  }, [appointmentIdParam, appointments, navigation, tenantTz])
 
   const changeWeek = (delta: number) => {
-    setSelectedDate((prev) => sumarSemanasEnZonaIANA(prev, delta, tenantTz));
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-  };
+    setSelectedDate((prev) => sumarSemanasEnZonaIANA(prev, delta, tenantTz))
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+  }
   const goToToday = () => {
-    setSelectedDate(inicioDiaHoyEnZonaIANA(tenantTz));
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-  };
+    setSelectedDate(inicioDiaHoyEnZonaIANA(tenantTz))
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+  }
   const changeDay = (delta: number) => {
-    setSelectedDate((prev) => sumarDiasEnZonaIANA(prev, delta, tenantTz));
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-  };
+    setSelectedDate((prev) => sumarDiasEnZonaIANA(prev, delta, tenantTz))
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+  }
 
   const toggleOwnerViewMode = useCallback(() => {
-    setOwnerViewMode((prev) => (prev === "day" ? "week" : "day"));
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-  }, []);
+    setOwnerViewMode((prev) => (prev === 'day' ? 'week' : 'day'))
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+  }, [])
 
   const handleWeekDaySelect = useCallback((date: Date) => {
-    setSelectedDate(date);
-    setOwnerViewMode("day");
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-  }, []);
+    setSelectedDate(date)
+    setOwnerViewMode('day')
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+  }, [])
 
   useEffect(() => {
-    if (ownerVista && ownerViewMode === "week") {
-      setEmployeeColumnFilterId(null);
+    if (ownerVista && ownerViewMode === 'week') {
+      setEmployeeColumnFilterId(null)
     }
-  }, [ownerVista, ownerViewMode]);
+  }, [ownerVista, ownerViewMode])
 
   useEffect(() => {
-    if (staffVista) setEmployeeColumnFilterId(null);
-  }, [staffVista]);
+    if (staffVista) setEmployeeColumnFilterId(null)
+  }, [staffVista])
 
   const openNewAppointment = (date: Date, hour: number) => {
-    setSelectedDate(date);
-    setSelectedHour(hour);
-    const firstCategoryId = categories[0]?.id ?? "";
+    setSelectedDate(date)
+    setSelectedHour(hour)
+    const firstCategoryId = categories[0]?.id ?? ''
     const firstServiceInCategory = firstCategoryId
       ? services.find((s) => s.category_id === firstCategoryId)
-      : services[0];
+      : services[0]
     setFormData({
-      clientName: "",
-      clientPhone: "",
-      clientDocument: "",
+      clientName: '',
+      clientPhone: '',
+      clientDocument: '',
       categoryId: firstCategoryId,
-      serviceId: firstServiceInCategory?.id ?? "",
-      employeeId: employees.length > 0 ? employees[0].id : "",
-    });
-    setModalVisible(true);
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-  };
+      serviceId: firstServiceInCategory?.id ?? '',
+      employeeId: employees.length > 0 ? employees[0].id : '',
+    })
+    setModalVisible(true)
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+  }
 
   const openAppointmentDetail = (apt: AgendaAppointment) => {
-    setAppointmentDetail(apt);
-    const aptInst = new Date(apt.date);
-    setRescheduleDate(inicioDiaDelInstanteEnZona(aptInst, tenantTz));
-    setRescheduleHour(horaCalendarioEnZona(aptInst, tenantTz));
-    setDetailModalVisible(true);
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-  };
+    setAppointmentDetail(apt)
+    const aptInst = new Date(apt.date)
+    setRescheduleDate(inicioDiaDelInstanteEnZona(aptInst, tenantTz))
+    setRescheduleHour(horaCalendarioEnZona(aptInst, tenantTz))
+    setDetailModalVisible(true)
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+  }
 
   const handleDeleteAppointment = () => {
-    if (!appointmentDetail) return;
-    Alert.alert(
-      "Eliminar cita",
-      `¿Eliminar la cita de ${appointmentDetail.client_name}?`,
-      [
-        { text: "Cancelar", style: "cancel" },
-        {
-          text: "Eliminar",
-          style: "destructive",
-          onPress: () => deleteAppointmentMutation.mutate(appointmentDetail.id),
-        },
-      ],
-    );
-  };
+    if (!appointmentDetail) return
+    Alert.alert('Eliminar cita', `¿Eliminar la cita de ${appointmentDetail.client_name}?`, [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Eliminar',
+        style: 'destructive',
+        onPress: () => deleteAppointmentMutation.mutate(appointmentDetail.id),
+      },
+    ])
+  }
 
   const handleReschedule = () => {
-    if (!appointmentDetail || !rescheduleDate) return;
+    if (!appointmentDetail || !rescheduleDate) return
     if (
-      !esCeldaAgendaEnHorarioLaboral(
-        rescheduleDate,
-        rescheduleHour,
-        businessHoursNorm,
-        tenantTz,
-      )
+      !esCeldaAgendaEnHorarioLaboral(rescheduleDate, rescheduleHour, businessHoursNorm, tenantTz)
     ) {
-      Alert.alert(
-        "Fuera de horario",
-        "Ese día u hora está fuera de la franja del negocio.",
-      );
-      return;
+      Alert.alert('Fuera de horario', 'Ese día u hora está fuera de la franja del negocio.')
+      return
     }
-    const newDate = instanteCitaEnZona(
-      rescheduleDate,
-      rescheduleHour,
-      tenantTz,
-    );
+    const newDate = instanteCitaEnZona(rescheduleDate, rescheduleHour, tenantTz)
     updateAppointmentMutation.mutate({
       id: appointmentDetail.id,
       date: newDate.toISOString(),
       employee_id: appointmentDetail.employee_id,
       duration: appointmentDetail.duration,
-    });
-  };
+    })
+  }
 
   const handleCreateAppointment = () => {
     if (!formData.clientName.trim()) {
-      Alert.alert("Error", "Ingresa el nombre de la clienta");
-      return;
+      Alert.alert('Error', 'Ingresa el nombre de la clienta')
+      return
     }
     if (!formData.serviceId) {
-      Alert.alert("Error", "Selecciona un servicio");
-      return;
+      Alert.alert('Error', 'Selecciona un servicio')
+      return
     }
     if (!formData.employeeId) {
-      Alert.alert(
-        "Error",
-        `Selecciona ${config.terminology.staffSingular.toLowerCase()}`,
-      );
-      return;
+      Alert.alert('Error', `Selecciona ${config.terminology.staffSingular.toLowerCase()}`)
+      return
     }
-    if (
-      !esCeldaAgendaEnHorarioLaboral(
-        selectedDate,
-        selectedHour,
-        businessHoursNorm,
-        tenantTz,
-      )
-    ) {
-      Alert.alert(
-        "Fuera de horario",
-        "Esa hora está fuera de la franja configurada.",
-      );
-      return;
+    if (!esCeldaAgendaEnHorarioLaboral(selectedDate, selectedHour, businessHoursNorm, tenantTz)) {
+      Alert.alert('Fuera de horario', 'Esa hora está fuera de la franja configurada.')
+      return
     }
-    const appointmentDate = instanteCitaEnZona(
-      selectedDate,
-      selectedHour,
-      tenantTz,
-    );
+    const appointmentDate = instanteCitaEnZona(selectedDate, selectedHour, tenantTz)
     createMutation.mutate({
       client_name: formData.clientName.trim(),
       client_phone: formData.clientPhone.trim() || undefined,
@@ -353,15 +298,15 @@ export default function AgendaScreen() {
       employee_id: formData.employeeId,
       date: appointmentDate.toISOString(),
       duration: selectedService?.duration || 60,
-      price: selectedService?.price || "0",
-      status: "scheduled",
-    });
-  };
+      price: selectedService?.price || '0',
+      status: 'scheduled',
+    })
+  }
 
   const candidateStartDate = useMemo(() => {
-    if (!modalVisible) return null;
-    return instanteCitaEnZona(selectedDate, selectedHour, tenantTz);
-  }, [modalVisible, selectedDate, selectedHour, tenantTz]);
+    if (!modalVisible) return null
+    return instanteCitaEnZona(selectedDate, selectedHour, tenantTz)
+  }, [modalVisible, selectedDate, selectedHour, tenantTz])
 
   const availability = useAvailabilityCheck({
     employeeId: formData.employeeId,
@@ -369,87 +314,67 @@ export default function AgendaScreen() {
     durationMinutes: selectedService?.duration || 60,
     enabled: modalVisible && !!formData.employeeId && !!formData.serviceId,
     staleTimeMs: 30_000,
-  });
+  })
 
   const rescheduleStartDate = useMemo(() => {
-    if (!detailModalVisible || !appointmentDetail || !rescheduleDate)
-      return null;
-    return instanteCitaEnZona(rescheduleDate, rescheduleHour, tenantTz);
-  }, [
-    appointmentDetail,
-    detailModalVisible,
-    rescheduleDate,
-    rescheduleHour,
-    tenantTz,
-  ]);
+    if (!detailModalVisible || !appointmentDetail || !rescheduleDate) return null
+    return instanteCitaEnZona(rescheduleDate, rescheduleHour, tenantTz)
+  }, [appointmentDetail, detailModalVisible, rescheduleDate, rescheduleHour, tenantTz])
 
   const rescheduleAvailability = useAvailabilityCheck({
-    employeeId: appointmentDetail?.employee_id ?? "",
+    employeeId: appointmentDetail?.employee_id ?? '',
     startDate: rescheduleStartDate,
     durationMinutes: appointmentDetail?.duration ?? 60,
     excludeAppointmentId: appointmentDetail?.id ?? null,
     enabled: detailModalVisible && !!appointmentDetail && !!rescheduleDate,
     staleTimeMs: 30_000,
-  });
+  })
 
   const formatDateLabel = useCallback(
-    (date: Date) =>
-      formatoFechaLargaEnZona(date, config.locale.language, tenantTz),
-    [config.locale.language, tenantTz],
-  );
+    (date: Date) => formatoFechaLargaEnZona(date, config.locale.language, tenantTz),
+    [config.locale.language, tenantTz]
+  )
 
   const empColWidth = useMemo(() => {
     const borde =
-      Math.max(insets.left, Spacing.xs) +
-      Math.max(insets.right, Spacing.xs) +
-      Spacing.md * 2;
-    const disponible = width - TIME_COL_W - borde;
-    const n = Math.max(employees.length, 1);
-    return Math.max(104, Math.min(140, disponible / n));
-  }, [width, employees.length, TIME_COL_W, insets.left, insets.right]);
+      Math.max(insets.left, Spacing.xs) + Math.max(insets.right, Spacing.xs) + Spacing.md * 2
+    const disponible = width - TIME_COL_W - borde
+    const n = Math.max(employees.length, 1)
+    return Math.max(104, Math.min(140, disponible / n))
+  }, [width, employees.length, TIME_COL_W, insets.left, insets.right])
 
   const staffNombreMostrado = useMemo(() => {
-    const nombre = profile?.full_name?.trim();
-    if (nombre) return nombre;
+    const nombre = profile?.full_name?.trim()
+    if (nombre) return nombre
     if (profile?.employee_id) {
-      const emp = employees.find((e) => e.id === profile.employee_id);
-      if (emp?.name) return emp.name;
+      const emp = employees.find((e) => e.id === profile.employee_id)
+      if (emp?.name) return emp.name
     }
-    return config.terminology.staffSingular;
-  }, [
-    profile?.full_name,
-    profile?.employee_id,
-    employees,
-    config.terminology.staffSingular,
-  ]);
+    return config.terminology.staffSingular
+  }, [profile?.full_name, profile?.employee_id, employees, config.terminology.staffSingular])
 
   const openNewAppointmentForStaff = useCallback(() => {
     const primeraHora =
       agendaHours.find((h) =>
-        esCeldaAgendaEnHorarioLaboral(
-          selectedDate,
-          h,
-          businessHoursNorm,
-          tenantTz,
-        ),
+        esCeldaAgendaEnHorarioLaboral(selectedDate, h, businessHoursNorm, tenantTz)
       ) ??
       agendaHours[0] ??
-      9;
-    setSelectedHour(primeraHora);
-    const firstCategoryId = categories[0]?.id ?? "";
+      9
+    setSelectedHour(primeraHora)
+    const firstCategoryId = categories[0]?.id ?? ''
     const firstServiceInCategory = firstCategoryId
       ? services.find((s) => s.category_id === firstCategoryId)
-      : services[0];
+      : services[0]
     setFormData({
-      clientName: "",
-      clientPhone: "",
-      clientDocument: "",
+      clientName: '',
+      clientPhone: '',
+      clientDocument: '',
       categoryId: firstCategoryId,
-      serviceId: firstServiceInCategory?.id ?? "",
-      employeeId: profile?.employee_id ?? "",
-    });
-    setModalVisible(true);
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      serviceId: firstServiceInCategory?.id ?? '',
+      employeeId: profile?.employee_id ?? '',
+    })
+    setModalVisible(true)
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
   }, [
     agendaHours,
     selectedDate,
@@ -458,70 +383,59 @@ export default function AgendaScreen() {
     categories,
     services,
     profile?.employee_id,
-  ]);
+  ])
 
   const closeDetailModal = () => {
-    setDetailModalVisible(false);
-    setAppointmentDetail(null);
-  };
+    setDetailModalVisible(false)
+    setAppointmentDetail(null)
+  }
 
   const handleRescheduleDatePick = useCallback(
     (d: Date) => {
-      setRescheduleDate(d);
-      if (
-        !esCeldaAgendaEnHorarioLaboral(
-          d,
-          rescheduleHour,
-          businessHoursNorm,
-          tenantTz,
-        )
-      ) {
+      setRescheduleDate(d)
+      if (!esCeldaAgendaEnHorarioLaboral(d, rescheduleHour, businessHoursNorm, tenantTz)) {
         const first = agendaHours.find((h) =>
-          esCeldaAgendaEnHorarioLaboral(d, h, businessHoursNorm, tenantTz),
-        );
-        if (first !== undefined) setRescheduleHour(first);
+          esCeldaAgendaEnHorarioLaboral(d, h, businessHoursNorm, tenantTz)
+        )
+        if (first !== undefined) setRescheduleHour(first)
       }
     },
-    [agendaHours, businessHoursNorm, rescheduleHour, tenantTz],
-  );
+    [agendaHours, businessHoursNorm, rescheduleHour, tenantTz]
+  )
 
   const handleGridScroll = useCallback((x: number) => {
-    if (isSyncingFromStrip.current) return;
-    isSyncingFromGrid.current = true;
-    avatarStripRef.current?.scrollTo({ x, animated: false });
+    if (isSyncingFromStrip.current) return
+    isSyncingFromGrid.current = true
+    avatarStripRef.current?.scrollTo({ x, animated: false })
     requestAnimationFrame(() => {
-      isSyncingFromGrid.current = false;
-    });
-  }, []);
+      isSyncingFromGrid.current = false
+    })
+  }, [])
 
   const handleStripScroll = useCallback((x: number) => {
-    if (isSyncingFromGrid.current) return;
-    isSyncingFromStrip.current = true;
-    gridScrollRef.current?.scrollTo({ x, animated: false });
+    if (isSyncingFromGrid.current) return
+    isSyncingFromStrip.current = true
+    gridScrollRef.current?.scrollTo({ x, animated: false })
     requestAnimationFrame(() => {
-      isSyncingFromStrip.current = false;
-    });
-  }, []);
+      isSyncingFromStrip.current = false
+    })
+  }, [])
 
   const handleEmployeePress = useCallback(
     (employeeId: string, index: number) => {
-      setEmployeeColumnFilterId((prev) =>
-        prev === employeeId ? null : employeeId,
-      );
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-      const x = index * empColWidth;
-      avatarStripRef.current?.scrollTo({ x, animated: true });
-      gridScrollRef.current?.scrollTo({ x, animated: true });
+      setEmployeeColumnFilterId((prev) => (prev === employeeId ? null : employeeId))
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+      const x = index * empColWidth
+      avatarStripRef.current?.scrollTo({ x, animated: true })
+      gridScrollRef.current?.scrollTo({ x, animated: true })
     },
-    [empColWidth],
-  );
+    [empColWidth]
+  )
 
   const handleEmployeeHeaderPress = useCallback((employeeId: string) => {
-    setEmployeeColumnFilterId((prev) =>
-      prev === employeeId ? null : employeeId,
-    );
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-  }, []);
+    setEmployeeColumnFilterId((prev) => (prev === employeeId ? null : employeeId))
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+  }, [])
 
   return (
     <View
@@ -551,14 +465,12 @@ export default function AgendaScreen() {
       />
 
       {authLoading ? (
-        <View
-          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-        >
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <ActivityIndicator size="large" color={theme.primary} />
         </View>
       ) : ownerVista ? (
         <>
-          {ownerViewMode === "day" && (
+          {ownerViewMode === 'day' && (
             <View style={{ flexGrow: 0 }}>
               <OwnerStaffAvatarStrip
                 employees={employees}
@@ -573,7 +485,7 @@ export default function AgendaScreen() {
           )}
 
           {/* KPI strip — solo en vista diaria */}
-          {ownerViewMode === "day" && (
+          {ownerViewMode === 'day' && (
             <AgendaDayKPIStrip
               selectedDate={selectedDate}
               timeZone={tenantTz}
@@ -598,7 +510,7 @@ export default function AgendaScreen() {
             theme={theme}
           />
 
-          {ownerViewMode === "week" ? (
+          {ownerViewMode === 'week' ? (
             <OwnerWeekGrid
               tabBarHeight={tabBarHeight}
               weekDays={weekDays}
@@ -703,10 +615,7 @@ export default function AgendaScreen() {
             <AgendaEmployeeHeaders
               employees={employees}
               timeColWidth={TIME_COL_W}
-              columnWidth={
-                (width - TIME_COL_W - Spacing.md * 2) /
-                Math.max(employees.length, 1)
-              }
+              columnWidth={(width - TIME_COL_W - Spacing.md * 2) / Math.max(employees.length, 1)}
               theme={theme}
               selectedEmployeeId={employeeColumnFilterId}
               onEmployeePress={handleEmployeeHeaderPress}
@@ -807,5 +716,5 @@ export default function AgendaScreen() {
         busyUntilLabel={rescheduleAvailability.busyUntilLabel}
       />
     </View>
-  );
+  )
 }

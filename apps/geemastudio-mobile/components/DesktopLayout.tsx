@@ -1,34 +1,24 @@
-import React from "react";
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Platform,
-  type DimensionValue,
-} from "react-native";
-import { useResponsive } from "../hooks/useResponsive";
-import { useTheme } from "../hooks/useTheme";
+import React from 'react'
+import { View, StyleSheet, ScrollView, Platform, type DimensionValue } from 'react-native'
+import { useResponsive } from '../hooks/useResponsive'
+import { useTheme } from '../hooks/useTheme'
 
 interface DesktopLayoutProps {
-  sidebar?: React.ReactNode;
-  children: React.ReactNode;
-  header?: React.ReactNode;
+  sidebar?: React.ReactNode
+  children: React.ReactNode
+  header?: React.ReactNode
 }
 
-export function DesktopLayout({
-  sidebar,
-  children,
-  header,
-}: DesktopLayoutProps) {
-  const { isDesktop, isWide } = useResponsive();
-  const { theme } = useTheme();
+export function DesktopLayout({ sidebar, children, header }: DesktopLayoutProps) {
+  const { isDesktop, isWide } = useResponsive()
+  const { theme } = useTheme()
 
   // En móvil/tablet, renderizar solo el contenido principal
   if (!isDesktop) {
-    return <>{children}</>;
+    return <>{children}</>
   }
 
-  const sidebarWidth = isWide ? 280 : 240;
+  const sidebarWidth = isWide ? 280 : 240
 
   return (
     <View style={styles.container}>
@@ -72,7 +62,7 @@ export function DesktopLayout({
         {/* Main Content */}
         <View style={styles.main}>
           <ScrollView
-            showsVerticalScrollIndicator={Platform.OS === "web"}
+            showsVerticalScrollIndicator={Platform.OS === 'web'}
             contentContainerStyle={styles.mainContent}
           >
             {children}
@@ -80,22 +70,22 @@ export function DesktopLayout({
         </View>
       </View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    ...(Platform.OS === "web" ? { height: "100vh" as DimensionValue } : {}),
+    ...(Platform.OS === 'web' ? { height: '100vh' as DimensionValue } : {}),
   },
   header: {
     height: 64,
     borderBottomWidth: 1,
-    justifyContent: "center",
+    justifyContent: 'center',
     paddingHorizontal: 24,
     ...Platform.select({
       web: {
-        position: "sticky" as any,
+        position: 'sticky' as any,
         top: 0,
         zIndex: 10,
       },
@@ -103,16 +93,16 @@ const styles = StyleSheet.create({
   },
   body: {
     flex: 1,
-    flexDirection: "row",
+    flexDirection: 'row',
   },
   sidebar: {
     borderRightWidth: 1,
     ...Platform.select({
       web: {
-        position: "sticky" as any,
+        position: 'sticky' as any,
         top: 64,
-        height: "calc(100vh - 64px)" as DimensionValue,
-        overflowY: "auto" as any,
+        height: 'calc(100vh - 64px)' as DimensionValue,
+        overflowY: 'auto' as any,
       },
     }),
   },
@@ -121,10 +111,10 @@ const styles = StyleSheet.create({
   },
   main: {
     flex: 1,
-    backgroundColor: "#FAFAFA",
+    backgroundColor: '#FAFAFA',
   },
   mainContent: {
     padding: 24,
-    minHeight: "100%",
+    minHeight: '100%',
   },
-});
+})

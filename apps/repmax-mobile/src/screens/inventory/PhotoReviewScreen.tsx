@@ -1,51 +1,59 @@
 // ============================================================
 // Revisión post-captura: pasa o falla las reglas ML locales
 // ============================================================
-import React, { useMemo, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useMemo, useState } from 'react'
+import {
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  Alert,
+} from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
-import { Screen } from '../../components/layout/Screen';
-import { productPhotoService } from '../../services/productPhotoService';
-import { evaluarFotoMl } from '../../utils/mlPhotoRules';
-import { hapticError, hapticSuccess } from '../../utils/haptics';
-import { colors, typography, spacing, borderRadius } from '../../utils/theme';
-import type { InventoryStackParamList } from '../../navigation/types';
+import { Screen } from '../../components/layout/Screen'
+import { productPhotoService } from '../../services/productPhotoService'
+import { evaluarFotoMl } from '../../utils/mlPhotoRules'
+import { hapticError, hapticSuccess } from '../../utils/haptics'
+import { colors, typography, spacing, borderRadius } from '../../utils/theme'
+import type { InventoryStackParamList } from '../../navigation/types'
 
-type Props = NativeStackScreenProps<InventoryStackParamList, 'PhotoReview'>;
+type Props = NativeStackScreenProps<InventoryStackParamList, 'PhotoReview'>
 
 export default function PhotoReviewScreen({ route, navigation }: Props) {
-  const { slotIndex, productId, uri, width, height, fileSize, mimeType } = route.params;
-  const [busy, setBusy] = useState(false);
+  const { slotIndex, productId, uri, width, height, fileSize, mimeType } = route.params
+  const [busy, setBusy] = useState(false)
 
   const resultado = useMemo(
     () => evaluarFotoMl({ width, height, fileSize, mimeType }),
-    [width, height, fileSize, mimeType],
-  );
+    [width, height, fileSize, mimeType]
+  )
 
   const volverACaptura = () => {
-    navigation.replace('PhotoCapture', { slotIndex, productId });
-  };
+    navigation.replace('PhotoCapture', { slotIndex, productId })
+  }
 
   const usarFoto = async () => {
-    if (!resultado.ok) return;
-    setBusy(true);
+    if (!resultado.ok) return
+    setBusy(true)
     try {
-      const lista = await productPhotoService.prepararParaMl(uri, width, height);
-      await hapticSuccess();
+      const lista = await productPhotoService.prepararParaMl(uri, width, height)
+      await hapticSuccess()
       navigation.navigate('ProductForm', {
         productId,
         pendingPhoto: { slotIndex, uri: lista },
-      });
+      })
     } catch (err) {
-      await hapticError();
-      const msg = err instanceof Error ? err.message : 'No se pudo preparar la foto.';
-      Alert.alert('Error', msg);
+      await hapticError()
+      const msg = err instanceof Error ? err.message : 'No se pudo preparar la foto.'
+      Alert.alert('Error', msg)
     } finally {
-      setBusy(false);
+      setBusy(false)
     }
-  };
+  }
 
   return (
     <Screen edges={['top', 'bottom']}>
@@ -101,13 +109,11 @@ export default function PhotoReviewScreen({ route, navigation }: Props) {
         {busy ? (
           <ActivityIndicator color={colors.text.inverse} />
         ) : (
-          <Text style={styles.ctaLabel}>
-            {resultado.ok ? 'Usar esta foto' : 'Tomar otra vez'}
-          </Text>
+          <Text style={styles.ctaLabel}>{resultado.ok ? 'Usar esta foto' : 'Tomar otra vez'}</Text>
         )}
       </TouchableOpacity>
     </Screen>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -210,4 +216,4 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily.semibold,
     color: colors.text.inverse,
   },
-});
+})

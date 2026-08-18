@@ -47,7 +47,10 @@ export function crearRepositorioTasasBcv(cliente: ClienteTasasBcv): RepositorioT
         query = query.neq('fuente', 'emergencia')
       }
 
-      const { data, error } = await query.order('fecha', { ascending: false }).limit(1).maybeSingle()
+      const { data, error } = await query
+        .order('fecha', { ascending: false })
+        .limit(1)
+        .maybeSingle()
       if (error) return null
       return data
     },

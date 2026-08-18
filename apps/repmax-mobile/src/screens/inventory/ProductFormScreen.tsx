@@ -2,35 +2,42 @@
 // RepMAX Business Suite — Formulario de Producto
 // Crear o editar un producto del inventario.
 // ============================================================
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import {
-  View, Text, TextInput, ScrollView, TouchableOpacity,
-  StyleSheet, ActivityIndicator, Alert, Switch,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  Alert,
+  Switch,
+} from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
-import { PhotoSlotGrid } from '../../components/inventory/PhotoSlotGrid';
-import { MlReadinessChecklist } from '../../components/inventory/MlReadinessChecklist';
-import { MlCategoryManualSection } from '../../components/inventory/MlCategoryManualSection';
-import { useProductForm } from '../../hooks/useProductForm';
-import { ML_API_ENABLED, ML_MANUAL_MODE_HINT } from '../../constants/mlConfig';
-import { BRANDS } from '../../constants/brands';
-import { colors, typography, spacing, borderRadius } from '../../utils/theme';
-import type { PartCondition, VehicleType } from '../../types/database';
-import type { InventoryStackParamList } from '../../navigation/types';
+import { PhotoSlotGrid } from '../../components/inventory/PhotoSlotGrid'
+import { MlReadinessChecklist } from '../../components/inventory/MlReadinessChecklist'
+import { MlCategoryManualSection } from '../../components/inventory/MlCategoryManualSection'
+import { useProductForm } from '../../hooks/useProductForm'
+import { ML_API_ENABLED, ML_MANUAL_MODE_HINT } from '../../constants/mlConfig'
+import { BRANDS } from '../../constants/brands'
+import { colors, typography, spacing, borderRadius } from '../../utils/theme'
+import type { PartCondition, VehicleType } from '../../types/database'
+import type { InventoryStackParamList } from '../../navigation/types'
 
-type Props = NativeStackScreenProps<InventoryStackParamList, 'ProductForm'>;
+type Props = NativeStackScreenProps<InventoryStackParamList, 'ProductForm'>
 
 const VEHICLE_TYPES: { value: VehicleType; label: string }[] = [
   { value: 'CAR', label: 'Carro' },
   { value: 'MOTO', label: 'Moto' },
   { value: 'TRUCK', label: 'Camión' },
   { value: 'SUV', label: 'SUV' },
-];
+]
 
 export default function ProductFormScreen({ route, navigation }: Props) {
-  const { productId, pendingPhoto, scannedBarcode } = route.params ?? {};
+  const { productId, pendingPhoto, scannedBarcode } = route.params ?? {}
   const {
     form,
     setField,
@@ -56,50 +63,51 @@ export default function ProductFormScreen({ route, navigation }: Props) {
     loadError,
     isEditing,
     handleSave,
-  } = useProductForm({ productId, pendingPhoto, scannedBarcode });
-  const [showBrandPicker, setShowBrandPicker] = useState(false);
+  } = useProductForm({ productId, pendingPhoto, scannedBarcode })
+  const [showBrandPicker, setShowBrandPicker] = useState(false)
 
   useEffect(() => {
-    if (!loadError) return;
-    Alert.alert('Error', loadError);
-    navigation.goBack();
-  }, [loadError, navigation]);
+    if (!loadError) return
+    Alert.alert('Error', loadError)
+    navigation.goBack()
+  }, [loadError, navigation])
 
   useEffect(() => {
-    if (!pendingPhoto) return;
-    navigation.setParams({ pendingPhoto: undefined });
-  }, [pendingPhoto, navigation]);
+    if (!pendingPhoto) return
+    navigation.setParams({ pendingPhoto: undefined })
+  }, [pendingPhoto, navigation])
 
   useEffect(() => {
-    if (!scannedBarcode) return;
-    navigation.setParams({ scannedBarcode: undefined });
-  }, [scannedBarcode, navigation]);
+    if (!scannedBarcode) return
+    navigation.setParams({ scannedBarcode: undefined })
+  }, [scannedBarcode, navigation])
 
   const onSave = async () => {
-    const result = await handleSave();
+    const result = await handleSave()
     if (result.success) {
-      navigation.goBack();
-      return;
+      navigation.goBack()
+      return
     }
-    Alert.alert(result.title, result.message);
-  };
+    Alert.alert(result.title, result.message)
+  }
 
   if (isFetchingProduct) {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size="large" color={colors.brand.orange} />
       </View>
-    );
+    )
   }
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-
         <FormSection title="Fotos">
           <PhotoSlotGrid
             uris={photos}
-            onPressSlot={(index) => navigation.navigate('PhotoCapture', { slotIndex: index, productId })}
+            onPressSlot={(index) =>
+              navigation.navigate('PhotoCapture', { slotIndex: index, productId })
+            }
             onClearSlot={clearPhotoSlot}
           />
         </FormSection>
@@ -109,7 +117,7 @@ export default function ProductFormScreen({ route, navigation }: Props) {
           <FormField
             label="Título *"
             value={form.title}
-            onChangeText={v => setField('title', v)}
+            onChangeText={(v) => setField('title', v)}
             placeholder="Filtro aceite Toyota Corolla 2015-20"
             hint="ML: Producto + Marca + compatible con… Sin stock ni precio."
           />
@@ -122,7 +130,9 @@ export default function ProductFormScreen({ route, navigation }: Props) {
               <Ionicons name="sparkles-outline" size={16} color={colors.brand.orange} />
               <View style={{ flex: 1 }}>
                 <Text style={styles.suggestLabel}>Título sugerido para ML</Text>
-                <Text style={styles.suggestText} numberOfLines={2}>{tituloSugerido}</Text>
+                <Text style={styles.suggestText} numberOfLines={2}>
+                  {tituloSugerido}
+                </Text>
               </View>
               <Text style={styles.suggestAction}>Usar</Text>
             </TouchableOpacity>
@@ -130,7 +140,7 @@ export default function ProductFormScreen({ route, navigation }: Props) {
           <FormField
             label="Descripción"
             value={form.description}
-            onChangeText={v => setField('description', v)}
+            onChangeText={(v) => setField('description', v)}
             placeholder="Compatible, garantía, material. Sin teléfono ni WhatsApp."
             hint="Sin teléfono, WhatsApp ni URL."
             multiline
@@ -138,7 +148,7 @@ export default function ProductFormScreen({ route, navigation }: Props) {
           <FormField
             label="Número de parte"
             value={form.partNumber}
-            onChangeText={v => setField('partNumber', v)}
+            onChangeText={(v) => setField('partNumber', v)}
             placeholder="Ej: 90915-YZZD2"
             hint="Atributo PART_NUMBER. Obligatorio para publicar en ML."
             autoCapitalize="characters"
@@ -168,11 +178,18 @@ export default function ProductFormScreen({ route, navigation }: Props) {
         {/* Marca y modelo */}
         <FormSection title="Vehículo compatible">
           <Text style={styles.label}>Marca *</Text>
-          <TouchableOpacity style={styles.input} onPress={() => setShowBrandPicker(!showBrandPicker)}>
+          <TouchableOpacity
+            style={styles.input}
+            onPress={() => setShowBrandPicker(!showBrandPicker)}
+          >
             <Text style={form.brand ? styles.inputText : styles.inputPlaceholder}>
               {form.brand || 'Seleccionar marca...'}
             </Text>
-            <Ionicons name={showBrandPicker ? 'chevron-up' : 'chevron-down'} size={18} color={colors.text.secondary} />
+            <Ionicons
+              name={showBrandPicker ? 'chevron-up' : 'chevron-down'}
+              size={18}
+              color={colors.text.secondary}
+            />
           </TouchableOpacity>
           {showBrandPicker && (
             <View style={styles.brandPicker}>
@@ -180,42 +197,74 @@ export default function ProductFormScreen({ route, navigation }: Props) {
                 style={styles.brandSearch}
                 placeholder="Buscar marca..."
                 placeholderTextColor={colors.text.disabled}
-                onChangeText={v => setField('brand', v)}
+                onChangeText={(v) => setField('brand', v)}
                 value={form.brand}
                 autoFocus
               />
-              {BRANDS.filter(b => b.toLowerCase().includes(form.brand.toLowerCase())).map(brand => (
-                <TouchableOpacity
-                  key={brand}
-                  style={styles.brandOption}
-                  onPress={() => { setField('brand', brand); setShowBrandPicker(false); }}
-                >
-                  <Text style={styles.brandOptionText}>{brand}</Text>
-                </TouchableOpacity>
-              ))}
+              {BRANDS.filter((b) => b.toLowerCase().includes(form.brand.toLowerCase())).map(
+                (brand) => (
+                  <TouchableOpacity
+                    key={brand}
+                    style={styles.brandOption}
+                    onPress={() => {
+                      setField('brand', brand)
+                      setShowBrandPicker(false)
+                    }}
+                  >
+                    <Text style={styles.brandOptionText}>{brand}</Text>
+                  </TouchableOpacity>
+                )
+              )}
             </View>
           )}
 
-          <FormField label="Modelo *" value={form.model} onChangeText={v => setField('model', v)} placeholder="Ej: Corolla" />
+          <FormField
+            label="Modelo *"
+            value={form.model}
+            onChangeText={(v) => setField('model', v)}
+            placeholder="Ej: Corolla"
+          />
 
           <View style={styles.row}>
             <View style={{ flex: 1 }}>
-              <FormField label="Año desde" value={form.yearFrom} onChangeText={v => setField('yearFrom', v)} placeholder="2010" keyboardType="numeric" />
+              <FormField
+                label="Año desde"
+                value={form.yearFrom}
+                onChangeText={(v) => setField('yearFrom', v)}
+                placeholder="2010"
+                keyboardType="numeric"
+              />
             </View>
             <View style={{ flex: 1 }}>
-              <FormField label="Año hasta" value={form.yearTo} onChangeText={v => setField('yearTo', v)} placeholder="2024" keyboardType="numeric" />
+              <FormField
+                label="Año hasta"
+                value={form.yearTo}
+                onChangeText={(v) => setField('yearTo', v)}
+                placeholder="2024"
+                keyboardType="numeric"
+              />
             </View>
           </View>
 
           <Text style={styles.label}>Tipo de vehículo</Text>
           <View style={styles.optionsRow}>
-            {VEHICLE_TYPES.map(vt => (
+            {VEHICLE_TYPES.map((vt) => (
               <TouchableOpacity
                 key={vt.value}
-                style={[styles.optionChip, form.vehicleType === vt.value && styles.optionChipActive]}
-                onPress={() => setField('vehicleType', form.vehicleType === vt.value ? '' : vt.value)}
+                style={[
+                  styles.optionChip,
+                  form.vehicleType === vt.value && styles.optionChipActive,
+                ]}
+                onPress={() =>
+                  setField('vehicleType', form.vehicleType === vt.value ? '' : vt.value)
+                }
               >
-                <Text style={[styles.optionChipText, form.vehicleType === vt.value && styles.optionChipTextActive]}>
+                <Text
+                  style={[
+                    styles.optionChipText,
+                    form.vehicleType === vt.value && styles.optionChipTextActive,
+                  ]}
+                >
                   {vt.label}
                 </Text>
               </TouchableOpacity>
@@ -226,13 +275,18 @@ export default function ProductFormScreen({ route, navigation }: Props) {
         {/* Condición */}
         <FormSection title="Condición">
           <View style={styles.optionsRow}>
-            {(['NEW', 'USED'] as PartCondition[]).map(c => (
+            {(['NEW', 'USED'] as PartCondition[]).map((c) => (
               <TouchableOpacity
                 key={c}
                 style={[styles.optionChip, form.condition === c && styles.optionChipActive]}
                 onPress={() => setField('condition', c)}
               >
-                <Text style={[styles.optionChipText, form.condition === c && styles.optionChipTextActive]}>
+                <Text
+                  style={[
+                    styles.optionChipText,
+                    form.condition === c && styles.optionChipTextActive,
+                  ]}
+                >
                   {c === 'NEW' ? '✓ Nuevo' : '~ Usado'}
                 </Text>
               </TouchableOpacity>
@@ -242,13 +296,31 @@ export default function ProductFormScreen({ route, navigation }: Props) {
 
         {/* Precio y stock */}
         <FormSection title="Precio y stock">
-          <FormField label="Precio USD *" value={form.priceUsd} onChangeText={v => setField('priceUsd', v)} placeholder="0.00" keyboardType="decimal-pad" />
+          <FormField
+            label="Precio USD *"
+            value={form.priceUsd}
+            onChangeText={(v) => setField('priceUsd', v)}
+            placeholder="0.00"
+            keyboardType="decimal-pad"
+          />
           <View style={styles.row}>
             <View style={{ flex: 1 }}>
-              <FormField label="Stock actual" value={form.stock} onChangeText={v => setField('stock', v)} placeholder="0" keyboardType="numeric" />
+              <FormField
+                label="Stock actual"
+                value={form.stock}
+                onChangeText={(v) => setField('stock', v)}
+                placeholder="0"
+                keyboardType="numeric"
+              />
             </View>
             <View style={{ flex: 1 }}>
-              <FormField label="Stock mínimo" value={form.minStock} onChangeText={v => setField('minStock', v)} placeholder="1" keyboardType="numeric" />
+              <FormField
+                label="Stock mínimo"
+                value={form.minStock}
+                onChangeText={(v) => setField('minStock', v)}
+                placeholder="1"
+                keyboardType="numeric"
+              />
             </View>
           </View>
         </FormSection>
@@ -280,9 +352,7 @@ export default function ProductFormScreen({ route, navigation }: Props) {
             thumbColor={colors.text.primary}
           />
         </View>
-        {incluirMl ? (
-          <MlReadinessChecklist items={listoMl.items} listo={listoMl.listo} />
-        ) : null}
+        {incluirMl ? <MlReadinessChecklist items={listoMl.items} listo={listoMl.listo} /> : null}
 
         {incluirMl && !ML_API_ENABLED ? (
           <MlCategoryManualSection
@@ -294,7 +364,9 @@ export default function ProductFormScreen({ route, navigation }: Props) {
           />
         ) : null}
 
-        {incluirMl && isEditing && (mlListingStatus === 'exported' || mlListingStatus === 'published_manual') ? (
+        {incluirMl &&
+        isEditing &&
+        (mlListingStatus === 'exported' || mlListingStatus === 'published_manual') ? (
           <FormSection title="Publicación manual en ML">
             <Text style={styles.hint}>
               {mlListingStatus === 'exported'
@@ -314,11 +386,11 @@ export default function ProductFormScreen({ route, navigation }: Props) {
                 onPress={() => {
                   void marcarPublicadoMl().then((result) => {
                     if (result.success) {
-                      Alert.alert('Listo', 'Marcamos el producto como publicado en ML.');
+                      Alert.alert('Listo', 'Marcamos el producto como publicado en ML.')
                     } else {
-                      Alert.alert(result.title, result.message);
+                      Alert.alert(result.title, result.message)
                     }
-                  });
+                  })
                 }}
                 disabled={isMarkingPublished}
                 activeOpacity={0.85}
@@ -345,14 +417,20 @@ export default function ProductFormScreen({ route, navigation }: Props) {
             <ActivityIndicator color={colors.text.inverse} />
           ) : (
             <>
-              <Ionicons name={isEditing ? 'save-outline' : 'add-circle-outline'} size={20} color={colors.text.inverse} />
-              <Text style={styles.saveBtnText}>{isEditing ? 'Guardar cambios' : 'Crear producto'}</Text>
+              <Ionicons
+                name={isEditing ? 'save-outline' : 'add-circle-outline'}
+                size={20}
+                color={colors.text.inverse}
+              />
+              <Text style={styles.saveBtnText}>
+                {isEditing ? 'Guardar cambios' : 'Crear producto'}
+              </Text>
             </>
           )}
         </TouchableOpacity>
       </View>
     </View>
-  );
+  )
 }
 
 // ── Sub-componentes ─────────────────────────────────────────
@@ -363,18 +441,27 @@ function FormSection({ title, children }: { title: string; children: React.React
       <Text style={styles.sectionTitle}>{title}</Text>
       {children}
     </View>
-  );
+  )
 }
 
-function FormField({ label, value, onChangeText, placeholder, hint, multiline, keyboardType, autoCapitalize }: {
-  label: string;
-  value: string;
-  onChangeText: (v: string) => void;
-  placeholder?: string;
-  hint?: string;
-  multiline?: boolean;
-  keyboardType?: 'default' | 'numeric' | 'decimal-pad' | 'email-address';
-  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
+function FormField({
+  label,
+  value,
+  onChangeText,
+  placeholder,
+  hint,
+  multiline,
+  keyboardType,
+  autoCapitalize,
+}: {
+  label: string
+  value: string
+  onChangeText: (v: string) => void
+  placeholder?: string
+  hint?: string
+  multiline?: boolean
+  keyboardType?: 'default' | 'numeric' | 'decimal-pad' | 'email-address'
+  autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters'
 }) {
   return (
     <>
@@ -393,12 +480,17 @@ function FormField({ label, value, onChangeText, placeholder, hint, multiline, k
       />
       {hint ? <Text style={styles.hint}>{hint}</Text> : null}
     </>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg.primary },
-  centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.bg.primary },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.bg.primary,
+  },
   scroll: { padding: spacing.base, paddingBottom: spacing.xl },
   section: {
     backgroundColor: colors.bg.secondary,
@@ -616,4 +708,4 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily.bold,
     fontSize: typography.size.md,
   },
-});
+})

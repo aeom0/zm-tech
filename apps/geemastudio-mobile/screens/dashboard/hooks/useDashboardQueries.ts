@@ -1,67 +1,59 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from '@tanstack/react-query'
 
-import { supabase } from "@/lib/supabase";
+import { supabase } from '@/lib/supabase'
 
 import type {
   DashboardAppointment,
   DashboardEmployeeRow,
   DashboardServiceRow,
   DashboardStats,
-} from "../types";
+} from '../types'
 
-async function fetchDashboardStats(
-  startOfDay: string,
-  endOfDay: string,
-): Promise<DashboardStats> {
-  const [paymentsRes, completedRes, scheduledRes, inventoryRes] =
-    await Promise.all([
-      supabase
-        .from("payments")
-        .select("amount")
-        .gte("date", startOfDay)
-        .lte("date", endOfDay),
-      supabase
-        .from("appointments")
-        .select("id", { count: "exact", head: true })
-        .eq("status", "completed")
-        .gte("date", startOfDay)
-        .lte("date", endOfDay),
-      supabase
-        .from("appointments")
-        .select("id", { count: "exact", head: true })
-        .eq("status", "scheduled")
-        .gte("date", startOfDay)
-        .lte("date", endOfDay),
-      supabase.from("inventory_items").select("quantity, min_stock"),
-    ]);
+async function fetchDashboardStats(startOfDay: string, endOfDay: string): Promise<DashboardStats> {
+  const [paymentsRes, completedRes, scheduledRes, inventoryRes] = await Promise.all([
+    supabase.from('payments').select('amount').gte('date', startOfDay).lte('date', endOfDay),
+    supabase
+      .from('appointments')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'completed')
+      .gte('date', startOfDay)
+      .lte('date', endOfDay),
+    supabase
+      .from('appointments')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'scheduled')
+      .gte('date', startOfDay)
+      .lte('date', endOfDay),
+    supabase.from('inventory_items').select('quantity, min_stock'),
+  ])
 
   if (paymentsRes.error) {
-    throw new Error(paymentsRes.error.message);
+    throw new Error(paymentsRes.error.message)
   }
   if (completedRes.error) {
-    throw new Error(completedRes.error.message);
+    throw new Error(completedRes.error.message)
   }
   if (scheduledRes.error) {
-    throw new Error(scheduledRes.error.message);
+    throw new Error(scheduledRes.error.message)
   }
   if (inventoryRes.error) {
-    throw new Error(inventoryRes.error.message);
+    throw new Error(inventoryRes.error.message)
   }
 
   const todayRevenue = (paymentsRes.data ?? []).reduce(
     (sum, p) => sum + parseFloat(String(p.amount)),
-    0,
-  );
+    0
+  )
 
-  const rows = inventoryRes.data ?? [];
-  const lowStockItems = rows.filter((r) => r.quantity <= r.min_stock).length;
+  const rows = inventoryRes.data ?? []
+  const lowStockItems = rows.filter((r) => r.quantity <= r.min_stock).length
 
   return {
     todayRevenue,
     completedAppointments: completedRes.count ?? 0,
     upcomingAppointments: scheduledRes.count ?? 0,
     lowStockItems,
-  };
+  }
 }
 
 export function useDashboardQueries(startOfDay: string, endOfDay: string) {
@@ -70,60 +62,58 @@ export function useDashboardQueries(startOfDay: string, endOfDay: string) {
     isLoading: statsLoading,
     refetch: refetchStats,
   } = useQuery<DashboardStats>({
-    queryKey: ["dashboard_stats", startOfDay, endOfDay],
+    queryKey: ['dashboard_stats', startOfDay, endOfDay],
     queryFn: () => fetchDashboardStats(startOfDay, endOfDay),
-  });
+  })
 
   const {
     data: appointments = [],
     isLoading: appointmentsLoading,
     refetch: refetchAppointments,
   } = useQuery<DashboardAppointment[]>({
-    queryKey: ["appointments_today", startOfDay, endOfDay],
+    queryKey: ['appointments_today', startOfDay, endOfDay],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("appointments")
-        .select(
-          "id, client_name, date, duration, price, status, employee_id, service_id",
-        )
-        .gte("date", startOfDay)
-        .lte("date", endOfDay)
-        .order("date", { ascending: true });
+        .from('appointments')
+        .select('id, client_name, date, duration, price, status, employee_id, service_id')
+        .gte('date', startOfDay)
+        .lte('date', endOfDay)
+        .order('date', { ascending: true })
 
       if (error) {
-        throw new Error(error.message);
+        throw new Error(error.message)
       }
-      return (data ?? []) as DashboardAppointment[];
+      return (data ?? []) as DashboardAppointment[]
     },
-  });
+  })
 
   const { data: employees = [] } = useQuery<DashboardEmployeeRow[]>({
-    queryKey: ["employees"],
+    queryKey: ['employees'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("employees")
-        .select("id, name, color, role")
-        .order("created_at", { ascending: true });
+        .from('employees')
+        .select('id, name, color, role')
+        .order('created_at', { ascending: true })
       if (error) {
-        throw new Error(error.message);
+        throw new Error(error.message)
       }
-      return (data ?? []) as DashboardEmployeeRow[];
+      return (data ?? []) as DashboardEmployeeRow[]
     },
-  });
+  })
 
   const { data: services = [] } = useQuery<DashboardServiceRow[]>({
-    queryKey: ["services"],
+    queryKey: ['services'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("services")
-        .select("id, name, price, duration, category_id")
-        .order("created_at", { ascending: true });
+        .from('services')
+        .select('id, name, price, duration, category_id')
+        .order('created_at', { ascending: true })
       if (error) {
-        throw new Error(error.message);
+        throw new Error(error.message)
       }
-      return (data ?? []) as DashboardServiceRow[];
+      return (data ?? []) as DashboardServiceRow[]
     },
-  });
+  })
 
   return {
     stats,
@@ -134,5 +124,5 @@ export function useDashboardQueries(startOfDay: string, endOfDay: string) {
     refetchAppointments,
     employees,
     services,
-  };
+  }
 }

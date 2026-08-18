@@ -2,8 +2,8 @@
   "folders": [
     {
       "name": "landing",
-      "path": "."
-    }
+      "path": ".",
+    },
   ],
   "settings": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -13,19 +13,19 @@
     "typescript.enablePromptUseWorkspaceTsdk": true,
     "tailwindCSS.experimental.classRegex": [
       ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
-      ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+      ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
     ],
     "files.exclude": {
       "node_modules": true,
-      ".next": true
-    }
+      ".next": true,
+    },
   },
   "extensions": {
     "recommendations": [
       "esbenp.prettier-vscode",
       "bradlc.vscode-tailwindcss",
       "dbaeumer.vscode-eslint",
-      "ms-vscode.vscode-typescript-next"
-    ]
-  }
+      "ms-vscode.vscode-typescript-next",
+    ],
+  },
 }

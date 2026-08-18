@@ -42,7 +42,9 @@ export default function MockGerencialDesktop() {
             F
           </span>
           <div className="min-w-0">
-            <div className="truncate text-[7px] font-bold tracking-tight text-zinc-100">Fábrica</div>
+            <div className="truncate text-[7px] font-bold tracking-tight text-zinc-100">
+              Fábrica
+            </div>
             <div className="truncate text-[5.5px] text-zinc-500">Ops</div>
           </div>
         </div>
@@ -103,12 +105,39 @@ export default function MockGerencialDesktop() {
 
         <div className="flex min-h-0 flex-1 flex-col gap-1.5 p-1.5 sm:p-2">
           {/* KPIs */}
-          <div className="mock-rise grid grid-cols-4 gap-1 sm:gap-1.5" style={{ animationDelay: '60ms' }}>
+          <div
+            className="mock-rise grid grid-cols-4 gap-1 sm:gap-1.5"
+            style={{ animationDelay: '60ms' }}
+          >
             {[
-              { label: 'Ventas cobradas', value: '$12.4k', delta: '+8%', up: true, spark: [40, 55, 48, 62, 58, 74] },
-              { label: 'Margen bruto', value: '38%', delta: '+2pp', up: true, spark: [30, 34, 33, 36, 35, 38] },
-              { label: 'Pedidos', value: '86', delta: '12 hoy', up: true, spark: [52, 48, 60, 55, 70, 65] },
-              { label: 'Días invent.', value: '14', delta: '-1d', up: false, spark: [22, 20, 18, 19, 16, 14] },
+              {
+                label: 'Ventas cobradas',
+                value: '$12.4k',
+                delta: '+8%',
+                up: true,
+                spark: [40, 55, 48, 62, 58, 74],
+              },
+              {
+                label: 'Margen bruto',
+                value: '38%',
+                delta: '+2pp',
+                up: true,
+                spark: [30, 34, 33, 36, 35, 38],
+              },
+              {
+                label: 'Pedidos',
+                value: '86',
+                delta: '12 hoy',
+                up: true,
+                spark: [52, 48, 60, 55, 70, 65],
+              },
+              {
+                label: 'Días invent.',
+                value: '14',
+                delta: '-1d',
+                up: false,
+                spark: [22, 20, 18, 19, 16, 14],
+              },
             ].map((k) => (
               <div
                 key={k.label}
@@ -125,18 +154,25 @@ export default function MockGerencialDesktop() {
                       <span
                         key={i}
                         className="flex-1 rounded-[1px]"
-                        style={{ height: `${h}%`, backgroundColor: k.up ? `${ACCENT}80` : '#f59e0b80' }}
+                        style={{
+                          height: `${h}%`,
+                          backgroundColor: k.up ? `${ACCENT}80` : '#f59e0b80',
+                        }}
                       />
                     ))}
                   </div>
                   <span
                     aria-hidden
                     className={`h-0 w-0 shrink-0 border-x-[2.5px] border-x-transparent ${
-                      k.up ? 'border-b-[3.5px] border-b-emerald-400' : 'border-t-[3.5px] border-t-amber-400'
+                      k.up
+                        ? 'border-b-[3.5px] border-b-emerald-400'
+                        : 'border-t-[3.5px] border-t-amber-400'
                     }`}
                   />
                 </div>
-                <div className={`text-[6px] font-medium ${k.up ? 'text-emerald-400' : 'text-amber-400'}`}>
+                <div
+                  className={`text-[6px] font-medium ${k.up ? 'text-emerald-400' : 'text-amber-400'}`}
+                >
                   {k.delta}
                 </div>
               </div>
@@ -152,7 +188,9 @@ export default function MockGerencialDesktop() {
               className={`${GLASS_CARD} col-span-2 flex flex-col p-1.5`}
               style={{ boxShadow: glassShadow(ACCENT) }}
             >
-              <span className="mb-1 text-[6.5px] font-bold tracking-tight text-zinc-200">Estado pedidos</span>
+              <span className="mb-1 text-[6.5px] font-bold tracking-tight text-zinc-200">
+                Estado pedidos
+              </span>
               <div className="flex flex-1 items-center gap-2">
                 <div className="relative h-10 w-10 shrink-0 sm:h-11 sm:w-11">
                   <div
@@ -210,10 +248,13 @@ export default function MockGerencialDesktop() {
               style={{ boxShadow: glassShadow(ACCENT) }}
             >
               <div className="mb-1 flex items-center justify-between">
-                <span className="text-[6.5px] font-bold tracking-tight text-zinc-200">Ventas vs costos</span>
+                <span className="text-[6.5px] font-bold tracking-tight text-zinc-200">
+                  Ventas vs costos
+                </span>
                 <span className="flex items-center gap-1.5 text-[5px] text-zinc-500">
                   <span className="flex items-center gap-0.5">
-                    <span className="h-1 w-1 rounded-full" style={{ backgroundColor: ACCENT }} /> Ventas
+                    <span className="h-1 w-1 rounded-full" style={{ backgroundColor: ACCENT }} />{' '}
+                    Ventas
                   </span>
                   <span className="flex items-center gap-0.5">
                     <span className="h-1 w-1 rounded-full bg-white/25" /> Costos
@@ -233,7 +274,10 @@ export default function MockGerencialDesktop() {
                 {SALES_CHART.map((d, i, arr) => {
                   const isLast = i === arr.length - 1
                   return (
-                    <div key={d.month} className="relative z-1 flex h-full flex-1 items-end justify-center gap-0.5">
+                    <div
+                      key={d.month}
+                      className="relative z-1 flex h-full flex-1 items-end justify-center gap-0.5"
+                    >
                       {isLast && (
                         <span
                           className="absolute -top-0.5 left-1/2 z-2 -translate-x-1/2 -translate-y-full text-[5px] font-semibold whitespace-nowrap"
@@ -250,7 +294,10 @@ export default function MockGerencialDesktop() {
                           boxShadow: isLast ? `0 0 10px ${ACCENT}99` : undefined,
                         }}
                       />
-                      <div className="w-[42%] rounded-t-xs bg-white/12" style={{ height: `${d.costos}%` }} />
+                      <div
+                        className="w-[42%] rounded-t-xs bg-white/12"
+                        style={{ height: `${d.costos}%` }}
+                      />
                     </div>
                   )
                 })}

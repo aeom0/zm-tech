@@ -2,36 +2,31 @@
 // Resumen del negocio — KPIs y gráficas
 // ============================================================
 
-"use client";
+'use client'
 
-import dynamic from "next/dynamic";
-import {
-  AlertTriangle,
-  DollarSign,
-  Package,
-  ShoppingCart,
-} from "lucide-react";
-import { useAuthFetch } from "@/hooks/useAuthFetch";
-import { etiquetaMetodoPago } from "@/lib/etiquetas-pago";
-import { VitrinaPanel } from "@/components/dashboard/VitrinaPanel";
-import type { DashboardData } from "@/types/dashboard";
+import dynamic from 'next/dynamic'
+import { AlertTriangle, DollarSign, Package, ShoppingCart } from 'lucide-react'
+import { useAuthFetch } from '@/hooks/useAuthFetch'
+import { etiquetaMetodoPago } from '@/lib/etiquetas-pago'
+import { VitrinaPanel } from '@/components/dashboard/VitrinaPanel'
+import type { DashboardData } from '@/types/dashboard'
 
 // Recharts + ResponsiveContainer miden el DOM; evitar SSR para no hidratar mal ni height 0
-const GraficaVentas = dynamic(() => import("@/components/dashboard/GraficaVentas"), {
+const GraficaVentas = dynamic(() => import('@/components/dashboard/GraficaVentas'), {
   ssr: false,
   loading: () => (
     <div className="h-72 w-full animate-pulse rounded-lg border border-[#2A2A2A] bg-[#1A1A1A]" />
   ),
-});
+})
 
 function formatoDiaCorto(isoFecha: string): string {
-  const d = new Date(`${isoFecha}T12:00:00.000Z`);
-  return d.toLocaleDateString("es-VE", { weekday: "short" });
+  const d = new Date(`${isoFecha}T12:00:00.000Z`)
+  return d.toLocaleDateString('es-VE', { weekday: 'short' })
 }
 
 function EsqueletoOverview() {
   return (
-    <div className="space-y-8 animate-pulse">
+    <div className="animate-pulse space-y-8">
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className="h-28 rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] p-5" />
@@ -43,37 +38,37 @@ function EsqueletoOverview() {
         <div className="h-56 rounded-lg border border-[#2A2A2A] bg-[#1A1A1A]" />
       </div>
     </div>
-  );
+  )
 }
 
 export default function OverviewPage() {
-  const { data, isLoading, error } = useAuthFetch<DashboardData>("/api/dashboard");
+  const { data, isLoading, error } = useAuthFetch<DashboardData>('/api/dashboard')
 
   if (isLoading) {
-    return <EsqueletoOverview />;
+    return <EsqueletoOverview />
   }
 
   if (error || !data) {
     return (
       <div className="rounded-lg border border-[#F44336]/40 bg-[#1A1A1A] p-6 text-[#F44336]">
-        {error ?? "No se pudieron cargar los datos"}
+        {error ?? 'No se pudieron cargar los datos'}
       </div>
-    );
+    )
   }
 
-  const ingresoFmt = new Intl.NumberFormat("es-VE", {
-    style: "currency",
-    currency: "USD",
+  const ingresoFmt = new Intl.NumberFormat('es-VE', {
+    style: 'currency',
+    currency: 'USD',
     minimumFractionDigits: 2,
-  }).format(data.ingresoHoy);
+  }).format(data.ingresoHoy)
 
   const datosGrafica = data.ventasUltimos7Dias.map((v) => ({
     etiqueta: formatoDiaCorto(v.fecha),
     total: v.total,
-  }));
+  }))
 
-  const sinVentas7d = datosGrafica.every((d) => d.total === 0);
-  const sinVentasHoy = data.topProductos.length === 0 && data.metodoPago.length === 0;
+  const sinVentas7d = datosGrafica.every((d) => d.total === 0)
+  const sinVentasHoy = data.topProductos.length === 0 && data.metodoPago.length === 0
 
   return (
     <div className="space-y-8">
@@ -128,7 +123,7 @@ export default function OverviewPage() {
             </div>
             <div>
               <p
-                className={`text-2xl font-bold ${data.stockBajo > 0 ? "text-[#FFC107]" : "text-[#F5F5F5]"}`}
+                className={`text-2xl font-bold ${data.stockBajo > 0 ? 'text-[#FFC107]' : 'text-[#F5F5F5]'}`}
               >
                 {data.stockBajo}
               </p>
@@ -189,9 +184,9 @@ export default function OverviewPage() {
                     {etiquetaMetodoPago(m.metodo)}
                   </span>
                   <span className="text-sm font-medium text-[#F5F5F5]">
-                    {new Intl.NumberFormat("es-VE", {
-                      style: "currency",
-                      currency: "USD",
+                    {new Intl.NumberFormat('es-VE', {
+                      style: 'currency',
+                      currency: 'USD',
                     }).format(m.total)}
                   </span>
                 </li>
@@ -201,5 +196,5 @@ export default function OverviewPage() {
         </section>
       </div>
     </div>
-  );
+  )
 }

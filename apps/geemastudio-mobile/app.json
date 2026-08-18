@@ -24,18 +24,14 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#111318"
       },
-      "permissions": [
-        "android.permission.RECORD_AUDIO"
-      ]
+      "permissions": ["android.permission.RECORD_AUDIO"]
     },
     "web": {
       "output": "single",
       "bundler": "metro",
       "build": {
         "babel": {
-          "include": [
-            "@expo/vector-icons"
-          ]
+          "include": ["@expo/vector-icons"]
         }
       },
       "name": "GeemaStudio",

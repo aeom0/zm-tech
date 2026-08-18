@@ -1,24 +1,18 @@
-import React, { useEffect, useMemo, useState } from "react";
-import {
-  Modal,
-  View,
-  StyleSheet,
-  Pressable,
-  useWindowDimensions,
-} from "react-native";
-import Slider from "@react-native-community/slider";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import React, { useEffect, useMemo, useState } from 'react'
+import { Modal, View, StyleSheet, Pressable, useWindowDimensions } from 'react-native'
+import Slider from '@react-native-community/slider'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { ThemedText } from "@/components/ThemedText";
-import { BorderRadius, Onboarding, Spacing } from "@/constants/theme";
-import { hexToRgb, hsvToHex, rgbToHsv } from "@/lib/color-hsv";
+import { ThemedText } from '@/components/ThemedText'
+import { BorderRadius, Onboarding, Spacing } from '@/constants/theme'
+import { hexToRgb, hsvToHex, rgbToHsv } from '@/lib/color-hsv'
 
 export interface CustomColorPickerModalProps {
-  visible: boolean;
-  initialHex: string;
-  titulo: string;
-  onClose: () => void;
-  onConfirm: (hex: string) => void;
+  visible: boolean
+  initialHex: string
+  titulo: string
+  onClose: () => void
+  onConfirm: (hex: string) => void
 }
 
 /**
@@ -31,37 +25,32 @@ export function CustomColorPickerModal({
   onClose,
   onConfirm,
 }: CustomColorPickerModalProps) {
-  const insets = useSafeAreaInsets();
-  const { height: windowH } = useWindowDimensions();
-  const [h, setH] = useState(200);
-  const [s, setS] = useState(0.75);
-  const [v, setV] = useState(0.85);
+  const insets = useSafeAreaInsets()
+  const { height: windowH } = useWindowDimensions()
+  const [h, setH] = useState(200)
+  const [s, setS] = useState(0.75)
+  const [v, setV] = useState(0.85)
 
   useEffect(() => {
-    if (!visible) return;
-    const rgb = hexToRgb(initialHex) ?? hexToRgb(Onboarding.lunarisAccent);
+    if (!visible) return
+    const rgb = hexToRgb(initialHex) ?? hexToRgb(Onboarding.lunarisAccent)
     if (rgb) {
-      const next = rgbToHsv(rgb.r, rgb.g, rgb.b);
-      setH(next.h);
-      setS(next.s);
-      setV(next.v);
+      const next = rgbToHsv(rgb.r, rgb.g, rgb.b)
+      setH(next.h)
+      setS(next.s)
+      setV(next.v)
     }
-  }, [visible, initialHex]);
+  }, [visible, initialHex])
 
-  const previewHex = useMemo(() => hsvToHex(h, s, v), [h, s, v]);
+  const previewHex = useMemo(() => hsvToHex(h, s, v), [h, s, v])
 
   const aplicar = () => {
-    onConfirm(previewHex);
-    onClose();
-  };
+    onConfirm(previewHex)
+    onClose()
+  }
 
   return (
-    <Modal
-      visible={visible}
-      animationType="fade"
-      transparent
-      onRequestClose={onClose}
-    >
+    <Modal visible={visible} animationType="fade" transparent onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose}>
         <Pressable
           style={[
@@ -130,19 +119,13 @@ export function CustomColorPickerModal({
           <View style={styles.acciones}>
             <Pressable
               onPress={onClose}
-              style={({ pressed }) => [
-                styles.btnSec,
-                pressed && styles.pressed,
-              ]}
+              style={({ pressed }) => [styles.btnSec, pressed && styles.pressed]}
             >
               <ThemedText style={styles.btnSecTexto}>Cancelar</ThemedText>
             </Pressable>
             <Pressable
               onPress={aplicar}
-              style={({ pressed }) => [
-                styles.btnPri,
-                pressed && styles.pressed,
-              ]}
+              style={({ pressed }) => [styles.btnPri, pressed && styles.pressed]}
             >
               <ThemedText
                 style={styles.btnPriTexto}
@@ -156,14 +139,14 @@ export function CustomColorPickerModal({
         </Pressable>
       </Pressable>
     </Modal>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.55)",
-    justifyContent: "flex-end",
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    justifyContent: 'flex-end',
   },
   sheet: {
     backgroundColor: Onboarding.canvasBackground,
@@ -174,13 +157,13 @@ const styles = StyleSheet.create({
   },
   titulo: {
     fontSize: 17,
-    fontWeight: "700",
+    fontWeight: '700',
     color: Onboarding.text,
     marginBottom: Spacing.md,
-    textAlign: "center",
+    textAlign: 'center',
   },
   preview: {
-    alignSelf: "center",
+    alignSelf: 'center',
     width: 88,
     height: 88,
     borderRadius: BorderRadius.full,
@@ -190,9 +173,9 @@ const styles = StyleSheet.create({
   },
   hexLabel: {
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: '600',
     color: Onboarding.textMuted,
-    textAlign: "center",
+    textAlign: 'center',
     marginBottom: Spacing.lg,
     letterSpacing: 1,
   },
@@ -201,18 +184,18 @@ const styles = StyleSheet.create({
   },
   sliderLabel: {
     fontSize: 12,
-    fontWeight: "600",
+    fontWeight: '600',
     color: Onboarding.textMuted,
     marginBottom: Spacing.xs,
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
   slider: {
-    width: "100%",
+    width: '100%',
     height: 40,
   },
   acciones: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: Spacing.md,
     marginTop: Spacing.lg,
   },
@@ -222,12 +205,12 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.sm,
     borderWidth: 1,
     borderColor: Onboarding.chipBorder,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   btnSecTexto: {
     fontSize: 15,
-    fontWeight: "600",
+    fontWeight: '600',
     color: Onboarding.textMuted,
   },
   btnPri: {
@@ -235,14 +218,14 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     borderRadius: BorderRadius.sm,
     backgroundColor: Onboarding.lunarisAccent,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   btnPriTexto: {
     fontSize: 15,
-    fontWeight: "700",
+    fontWeight: '700',
   },
   pressed: {
     opacity: 0.88,
   },
-});
+})

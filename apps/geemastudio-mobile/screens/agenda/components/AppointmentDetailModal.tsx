@@ -1,18 +1,12 @@
-import React from "react";
-import {
-  View,
-  Modal,
-  ScrollView,
-  Pressable,
-  ActivityIndicator,
-} from "react-native";
-import { Feather } from "@expo/vector-icons";
+import React from 'react'
+import { View, Modal, ScrollView, Pressable, ActivityIndicator } from 'react-native'
+import { Feather } from '@expo/vector-icons'
 
-import { ThemedText } from "@/components/ThemedText";
-import { Spacing } from "@/constants/theme";
+import { ThemedText } from '@/components/ThemedText'
+import { Spacing } from '@/constants/theme'
 
-import type { TenantConfig } from "@zmtech/tenant-config";
-import type { TimeFormatPreference } from "@zmtech/tenant-config";
+import type { TenantConfig } from '@zmtech/tenant-config'
+import type { TimeFormatPreference } from '@zmtech/tenant-config'
 import {
   diaDelMesEnZona,
   diaTieneFranjaAgenda,
@@ -20,47 +14,47 @@ import {
   formatoHoraAgendaSlot,
   indiceDiaSemanaJSEnZona,
   zonaIANASegura,
-} from "@zmtech/tenant-config";
+} from '@zmtech/tenant-config'
 
-import { DAYS_ES } from "../constants";
-import type { AgendaAppointment, AgendaService } from "../types";
-import { agendaStyles as styles } from "../agendaStyles";
+import { DAYS_ES } from '../constants'
+import type { AgendaAppointment, AgendaService } from '../types'
+import { agendaStyles as styles } from '../agendaStyles'
 
 type Theme = {
-  backgroundDefault: string;
-  backgroundSecondary: string;
-  border: string;
-  text: string;
-  textSecondary: string;
-  textMuted: string;
-  primary: string;
-  error: string;
-};
+  backgroundDefault: string
+  backgroundSecondary: string
+  border: string
+  text: string
+  textSecondary: string
+  textMuted: string
+  primary: string
+  error: string
+}
 
 interface AppointmentDetailModalProps {
-  visible: boolean;
-  onClose: () => void;
-  isTablet: boolean;
-  theme: Theme;
-  appointment: AgendaAppointment | null;
-  services: AgendaService[];
-  agendaHours: number[];
-  businessHours: TenantConfig["businessHours"];
-  timeZone: string;
-  language: TenantConfig["locale"]["language"];
-  timeFormat: TimeFormatPreference;
-  weekDays: Date[];
-  rescheduleDate: Date | null;
-  rescheduleHour: number;
-  onRescheduleDate: (d: Date) => void;
-  onRescheduleHour: (h: number) => void;
-  onReschedule: () => void;
-  onDelete: () => void;
-  updatePending: boolean;
-  deletePending: boolean;
-  availabilityStatus?: "idle" | "checking" | "free" | "busy" | "error";
-  busyUntilLabel?: string | null;
-  isBusy?: boolean;
+  visible: boolean
+  onClose: () => void
+  isTablet: boolean
+  theme: Theme
+  appointment: AgendaAppointment | null
+  services: AgendaService[]
+  agendaHours: number[]
+  businessHours: TenantConfig['businessHours']
+  timeZone: string
+  language: TenantConfig['locale']['language']
+  timeFormat: TimeFormatPreference
+  weekDays: Date[]
+  rescheduleDate: Date | null
+  rescheduleHour: number
+  onRescheduleDate: (d: Date) => void
+  onRescheduleHour: (h: number) => void
+  onReschedule: () => void
+  onDelete: () => void
+  updatePending: boolean
+  deletePending: boolean
+  availabilityStatus?: 'idle' | 'checking' | 'free' | 'busy' | 'error'
+  busyUntilLabel?: string | null
+  isBusy?: boolean
 }
 
 export function AppointmentDetailModal({
@@ -84,30 +78,20 @@ export function AppointmentDetailModal({
   onDelete,
   updatePending,
   deletePending,
-  availabilityStatus = "idle",
+  availabilityStatus = 'idle',
   busyUntilLabel = null,
   isBusy = false,
 }: AppointmentDetailModalProps) {
   const enFranjaConfigurada =
     !!rescheduleDate &&
-    esCeldaAgendaEnHorarioLaboral(
-      rescheduleDate,
-      rescheduleHour,
-      businessHours,
-      timeZone,
-    );
+    esCeldaAgendaEnHorarioLaboral(rescheduleDate, rescheduleHour, businessHours, timeZone)
 
   const disableReschedule =
-    updatePending ||
-    isBusy ||
-    availabilityStatus === "checking" ||
-    !enFranjaConfigurada;
+    updatePending || isBusy || availabilityStatus === 'checking' || !enFranjaConfigurada
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
-      <View
-        style={[styles.modalOverlay, isTablet && styles.modalOverlayTablet]}
-      >
+      <View style={[styles.modalOverlay, isTablet && styles.modalOverlayTablet]}>
         <View
           style={[
             styles.modalContent,
@@ -121,10 +105,7 @@ export function AppointmentDetailModal({
                 <ThemedText style={styles.modalTitle}>Cita</ThemedText>
                 <Pressable
                   onPress={onClose}
-                  style={[
-                    styles.closeButton,
-                    { backgroundColor: theme.backgroundSecondary },
-                  ]}
+                  style={[styles.closeButton, { backgroundColor: theme.backgroundSecondary }]}
                 >
                   <Feather name="x" size={20} color={theme.textSecondary} />
                 </Pressable>
@@ -138,72 +119,47 @@ export function AppointmentDetailModal({
                   },
                 ]}
               >
-                <ThemedText
-                  style={[styles.summaryLabel, { color: theme.textMuted }]}
-                >
+                <ThemedText style={[styles.summaryLabel, { color: theme.textMuted }]}>
                   Clienta
                 </ThemedText>
-                <ThemedText
-                  style={[styles.summaryValue, { color: theme.text }]}
-                >
+                <ThemedText style={[styles.summaryValue, { color: theme.text }]}>
                   {appointment.client_name}
                 </ThemedText>
                 {appointment.client_phone ? (
-                  <ThemedText
-                    style={[
-                      styles.summaryValue,
-                      { color: theme.text, fontSize: 14 },
-                    ]}
-                  >
+                  <ThemedText style={[styles.summaryValue, { color: theme.text, fontSize: 14 }]}>
                     Tel: {appointment.client_phone}
                   </ThemedText>
                 ) : null}
                 {appointment.client_document ? (
-                  <ThemedText
-                    style={[
-                      styles.summaryValue,
-                      { color: theme.text, fontSize: 14 },
-                    ]}
-                  >
+                  <ThemedText style={[styles.summaryValue, { color: theme.text, fontSize: 14 }]}>
                     DNI: {appointment.client_document}
                   </ThemedText>
                 ) : null}
                 <ThemedText
-                  style={[
-                    styles.summaryLabel,
-                    { color: theme.textMuted, marginTop: Spacing.md },
-                  ]}
+                  style={[styles.summaryLabel, { color: theme.textMuted, marginTop: Spacing.md }]}
                 >
                   Servicio
                 </ThemedText>
-                <ThemedText
-                  style={[styles.summaryValue, { color: theme.text }]}
-                >
-                  {services.find((s) => s.id === appointment.service_id)
-                    ?.name ?? "—"}
+                <ThemedText style={[styles.summaryValue, { color: theme.text }]}>
+                  {services.find((s) => s.id === appointment.service_id)?.name ?? '—'}
                 </ThemedText>
                 <ThemedText
-                  style={[
-                    styles.summaryLabel,
-                    { color: theme.textMuted, marginTop: Spacing.sm },
-                  ]}
+                  style={[styles.summaryLabel, { color: theme.textMuted, marginTop: Spacing.sm }]}
                 >
                   {new Intl.DateTimeFormat(language, {
                     timeZone: zonaIANASegura(timeZone),
-                    weekday: "short",
-                    day: "numeric",
-                    month: "short",
-                    hour: "numeric",
-                    minute: "2-digit",
-                    hour12: timeFormat === "12",
+                    weekday: 'short',
+                    day: 'numeric',
+                    month: 'short',
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: timeFormat === '12',
                   }).format(new Date(appointment.date))}
                 </ThemedText>
               </View>
 
               <View style={styles.formSection}>
-                <ThemedText
-                  style={[styles.sectionLabel, { color: theme.textSecondary }]}
-                >
+                <ThemedText style={[styles.sectionLabel, { color: theme.textSecondary }]}>
                   Reprogramar a
                 </ThemedText>
                 <ScrollView
@@ -212,14 +168,13 @@ export function AppointmentDetailModal({
                   contentContainerStyle={styles.chipsContainer}
                 >
                   {weekDays.map((d) => {
-                    const isSelected =
-                      rescheduleDate?.toDateString() === d.toDateString();
+                    const isSelected = rescheduleDate?.toDateString() === d.toDateString()
                     const diaConFranja = diaTieneFranjaAgenda(
                       d,
                       agendaHours,
                       businessHours,
-                      timeZone,
-                    );
+                      timeZone
+                    )
                     return (
                       <Pressable
                         key={d.toISOString()}
@@ -233,40 +188,29 @@ export function AppointmentDetailModal({
                           !diaConFranja && { opacity: 0.4 },
                         ]}
                         onPress={() => {
-                          if (diaConFranja) onRescheduleDate(d);
+                          if (diaConFranja) onRescheduleDate(d)
                         }}
                       >
                         <ThemedText
-                          style={[
-                            styles.serviceChipName,
-                            isSelected && { color: "#FFFFFF" },
-                          ]}
+                          style={[styles.serviceChipName, isSelected && { color: '#FFFFFF' }]}
                         >
-                          {DAYS_ES[indiceDiaSemanaJSEnZona(d, timeZone)]}{" "}
+                          {DAYS_ES[indiceDiaSemanaJSEnZona(d, timeZone)]}{' '}
                           {diaDelMesEnZona(d, timeZone)}
                         </ThemedText>
                       </Pressable>
-                    );
+                    )
                   })}
                 </ScrollView>
                 <ScrollView
                   horizontal
                   showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={[
-                    styles.chipsContainer,
-                    { marginTop: Spacing.sm },
-                  ]}
+                  contentContainerStyle={[styles.chipsContainer, { marginTop: Spacing.sm }]}
                 >
                   {agendaHours.map((h) => {
-                    const isSelected = rescheduleHour === h;
+                    const isSelected = rescheduleHour === h
                     const horaPermitida =
                       !!rescheduleDate &&
-                      esCeldaAgendaEnHorarioLaboral(
-                        rescheduleDate,
-                        h,
-                        businessHours,
-                        timeZone,
-                      );
+                      esCeldaAgendaEnHorarioLaboral(rescheduleDate, h, businessHours, timeZone)
                     return (
                       <Pressable
                         key={h}
@@ -280,14 +224,11 @@ export function AppointmentDetailModal({
                           !horaPermitida && { opacity: 0.35 },
                         ]}
                         onPress={() => {
-                          if (horaPermitida) onRescheduleHour(h);
+                          if (horaPermitida) onRescheduleHour(h)
                         }}
                       >
                         <ThemedText
-                          style={[
-                            styles.employeeChipName,
-                            isSelected && { color: "#FFFFFF" },
-                          ]}
+                          style={[styles.employeeChipName, isSelected && { color: '#FFFFFF' }]}
                         >
                           {rescheduleDate
                             ? formatoHoraAgendaSlot(
@@ -295,28 +236,24 @@ export function AppointmentDetailModal({
                                 h,
                                 zonaIANASegura(timeZone),
                                 language,
-                                timeFormat,
+                                timeFormat
                               )
                             : `${h}:00`}
                         </ThemedText>
                       </Pressable>
-                    );
+                    )
                   })}
                 </ScrollView>
                 {rescheduleDate && !enFranjaConfigurada ? (
                   <ThemedText
-                    style={[
-                      styles.summaryLabel,
-                      { color: theme.error, marginTop: Spacing.sm },
-                    ]}
+                    style={[styles.summaryLabel, { color: theme.error, marginTop: Spacing.sm }]}
                   >
-                    Ese día u hora está fuera de la franja configurada del
-                    negocio.
+                    Ese día u hora está fuera de la franja configurada del negocio.
                   </ThemedText>
                 ) : null}
               </View>
 
-              {availabilityStatus === "busy" ? (
+              {availabilityStatus === 'busy' ? (
                 <View
                   style={[
                     styles.availabilityBanner,
@@ -327,14 +264,9 @@ export function AppointmentDetailModal({
                   ]}
                 >
                   <Feather name="alert-triangle" size={18} color={theme.text} />
-                  <ThemedText
-                    style={[
-                      styles.availabilityBannerText,
-                      { color: theme.text },
-                    ]}
-                  >
+                  <ThemedText style={[styles.availabilityBannerText, { color: theme.text }]}>
                     Horario ocupado
-                    {busyUntilLabel ? `. Termina a las ${busyUntilLabel}` : ""}.
+                    {busyUntilLabel ? `. Termina a las ${busyUntilLabel}` : ''}.
                   </ThemedText>
                 </View>
               ) : null}
@@ -351,13 +283,13 @@ export function AppointmentDetailModal({
                 onPress={onReschedule}
                 disabled={disableReschedule}
               >
-                {updatePending || availabilityStatus === "checking" ? (
+                {updatePending || availabilityStatus === 'checking' ? (
                   <ActivityIndicator color="#FFFFFF" />
                 ) : (
                   <>
                     <Feather name="calendar" size={18} color="#FFFFFF" />
                     <ThemedText style={styles.submitButtonText}>
-                      {isBusy ? "Horario ocupado" : "Reprogramar"}
+                      {isBusy ? 'Horario ocupado' : 'Reprogramar'}
                     </ThemedText>
                   </>
                 )}
@@ -372,9 +304,7 @@ export function AppointmentDetailModal({
                 ) : (
                   <>
                     <Feather name="trash-2" size={18} color="#FFFFFF" />
-                    <ThemedText style={styles.submitButtonText}>
-                      Eliminar cita
-                    </ThemedText>
+                    <ThemedText style={styles.submitButtonText}>Eliminar cita</ThemedText>
                   </>
                 )}
               </Pressable>
@@ -383,5 +313,5 @@ export function AppointmentDetailModal({
         </View>
       </View>
     </Modal>
-  );
+  )
 }

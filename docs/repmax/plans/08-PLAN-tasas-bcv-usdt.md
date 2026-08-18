@@ -36,6 +36,7 @@ packages/tasas/
 Reglas de import: `repmax-web` importa `@zmtech/tasas` (client) y `@zmtech/tasas/server` (solo en Route Handlers). `repmax-mobile` **solo** importa `@zmtech/tasas` (tipos + `spread.ts` + `logicaBCV.ts`) — nunca `/server` (usa `fetch`/Node timers no disponibles igual en RN, y no debe tener el service-role key) ni el hook web (usa `localStorage`). Mobile trae su propio hook con `AsyncStorage` (§4).
 
 Diferencias deliberadas frente a `zetaeme-enterprise-suite`:
+
 - Sin Cotizave (fuente USDT paga) — solo `usdt.com.ve` (gratis, sin key).
 - BCV solo desde `bcv.today` en esta fase — `bcv-divisas` (scraping HTML) queda documentado como fuente futura, no implementado.
 - Tablas con prefijo `hub_` (no sin prefijo) — consistente con `docs/hub/supabase/migrations/`.

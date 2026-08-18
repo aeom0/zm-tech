@@ -1,33 +1,26 @@
 // ============================================================
 // Panel de carrito reutilizable (pantalla Cart + sidebar tablet)
 // ============================================================
-import React from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React from 'react'
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 
-import { EmptyState } from '../ui/EmptyState';
-import { ProductThumb } from '../inventory/ProductThumb';
-import { useCart } from '../../context/CartContext';
-import { useAuth } from '../../context/AuthContext';
-import { useTasaCambio } from '../../hooks/useTasaCambio';
-import { formatBS, formatUSD } from '../../utils/formatters';
-import { uriPortada } from '../../utils/productPhotos';
-import { hapticLight } from '../../utils/haptics';
-import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
-import type { CartItem } from '../../types/database';
+import { EmptyState } from '../ui/EmptyState'
+import { ProductThumb } from '../inventory/ProductThumb'
+import { useCart } from '../../context/CartContext'
+import { useAuth } from '../../context/AuthContext'
+import { useTasaCambio } from '../../hooks/useTasaCambio'
+import { formatBS, formatUSD } from '../../utils/formatters'
+import { uriPortada } from '../../utils/productPhotos'
+import { hapticLight } from '../../utils/haptics'
+import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme'
+import type { CartItem } from '../../types/database'
 
 interface CartPanelProps {
-  onCheckout: () => void;
+  onCheckout: () => void
   /** Embebido en sidebar (sin CTA de volver al catálogo) */
-  embedded?: boolean;
-  onBrowseProducts?: () => void;
+  embedded?: boolean
+  onBrowseProducts?: () => void
 }
 
 function CartItemRow({
@@ -36,10 +29,10 @@ function CartItemRow({
   onDecrease,
   onRemove,
 }: {
-  item: CartItem;
-  onIncrease: () => void;
-  onDecrease: () => void;
-  onRemove: () => void;
+  item: CartItem
+  onIncrease: () => void
+  onDecrease: () => void
+  onRemove: () => void
 }) {
   return (
     <View style={styles.itemRow}>
@@ -49,7 +42,9 @@ function CartItemRow({
         accessibilityLabel={item.product.title}
       />
       <View style={styles.itemInfo}>
-        <Text style={styles.itemTitle} numberOfLines={2}>{item.product.title}</Text>
+        <Text style={styles.itemTitle} numberOfLines={2}>
+          {item.product.title}
+        </Text>
         <Text style={styles.itemMeta}>
           {item.product.brand} · {formatUSD(item.product.priceUsd)} c/u
         </Text>
@@ -70,18 +65,19 @@ function CartItemRow({
         </TouchableOpacity>
       </View>
     </View>
-  );
+  )
 }
 
 export function CartPanel({ onCheckout, embedded = false, onBrowseProducts }: CartPanelProps) {
-  const { items, addItem, updateQuantity, removeItem, clearCart, totalUsd, totalItems } = useCart();
-  const { store } = useAuth();
-  const usarTasaManual = store?.usarTasaManual ?? false;
-  const { usdBsRateEfectivo, isLoading: isLoadingTasa, tasas } = useTasaCambio(
-    store?.usdBsRate ?? 36.5,
-    usarTasaManual,
-  );
-  const totalBs = totalUsd * usdBsRateEfectivo;
+  const { items, addItem, updateQuantity, removeItem, clearCart, totalUsd, totalItems } = useCart()
+  const { store } = useAuth()
+  const usarTasaManual = store?.usarTasaManual ?? false
+  const {
+    usdBsRateEfectivo,
+    isLoading: isLoadingTasa,
+    tasas,
+  } = useTasaCambio(store?.usdBsRate ?? 36.5, usarTasaManual)
+  const totalBs = totalUsd * usdBsRateEfectivo
 
   const handleClear = () => {
     Alert.alert('Vaciar carrito', '¿Eliminar todos los productos?', [
@@ -90,12 +86,12 @@ export function CartPanel({ onCheckout, embedded = false, onBrowseProducts }: Ca
         text: 'Vaciar',
         style: 'destructive',
         onPress: () => {
-          void hapticLight();
-          clearCart();
+          void hapticLight()
+          clearCart()
         },
       },
-    ]);
-  };
+    ])
+  }
 
   if (items.length === 0) {
     return (
@@ -103,7 +99,9 @@ export function CartPanel({ onCheckout, embedded = false, onBrowseProducts }: Ca
         <EmptyState
           icon="cart-outline"
           title="Carrito vacío"
-          subtitle={embedded ? 'Toca + en un producto para agregarlo' : 'Agrega productos desde el POS'}
+          subtitle={
+            embedded ? 'Toca + en un producto para agregarlo' : 'Agrega productos desde el POS'
+          }
         />
         {!embedded && onBrowseProducts ? (
           <TouchableOpacity style={styles.backBtn} onPress={onBrowseProducts}>
@@ -111,7 +109,7 @@ export function CartPanel({ onCheckout, embedded = false, onBrowseProducts }: Ca
           </TouchableOpacity>
         ) : null}
       </View>
-    );
+    )
   }
 
   return (
@@ -132,8 +130,8 @@ export function CartPanel({ onCheckout, embedded = false, onBrowseProducts }: Ca
           <CartItemRow
             item={item}
             onIncrease={() => {
-              void hapticLight();
-              addItem(item.product);
+              void hapticLight()
+              addItem(item.product)
             }}
             onDecrease={() => updateQuantity(item.product.id, item.quantity - 1)}
             onRemove={() => removeItem(item.product.id)}
@@ -147,7 +145,8 @@ export function CartPanel({ onCheckout, embedded = false, onBrowseProducts }: Ca
           <View>
             <Text style={styles.totalLabel}>Total USD</Text>
             <Text style={styles.totalSubvalue}>
-              {formatBS(totalBs)}{isLoadingTasa && !tasas ? ' · consultando BCV' : ''}
+              {formatBS(totalBs)}
+              {isLoadingTasa && !tasas ? ' · consultando BCV' : ''}
             </Text>
           </View>
           <Text style={styles.totalValue}>{formatUSD(totalUsd)}</Text>
@@ -158,8 +157,8 @@ export function CartPanel({ onCheckout, embedded = false, onBrowseProducts }: Ca
         <TouchableOpacity
           style={styles.checkoutBtn}
           onPress={() => {
-            void hapticLight();
-            onCheckout();
+            void hapticLight()
+            onCheckout()
           }}
           activeOpacity={0.9}
         >
@@ -168,7 +167,7 @@ export function CartPanel({ onCheckout, embedded = false, onBrowseProducts }: Ca
         </TouchableOpacity>
       </View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -321,4 +320,4 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily.bold,
     fontSize: typography.size.md,
   },
-});
+})

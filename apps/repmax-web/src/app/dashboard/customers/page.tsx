@@ -2,13 +2,13 @@
 // Clientes de la tienda
 // ============================================================
 
-"use client";
+'use client'
 
-import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
-import { useAuthFetch } from "@/hooks/useAuthFetch";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useMemo, useState } from 'react'
+import { Search } from 'lucide-react'
+import { useAuthFetch } from '@/hooks/useAuthFetch'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Table,
   TableBody,
@@ -16,42 +16,42 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import type { ClienteWeb } from "@/types/dashboard";
+} from '@/components/ui/table'
+import type { ClienteWeb } from '@/types/dashboard'
 
 interface RespuestaClientes {
-  customers: ClienteWeb[];
-  total: number;
-  page: number;
-  limit: number;
+  customers: ClienteWeb[]
+  total: number
+  page: number
+  limit: number
 }
 
 function EsqueletoClientes() {
   return (
-    <div className="space-y-4 animate-pulse">
+    <div className="animate-pulse space-y-4">
       <div className="h-10 rounded-lg bg-[#1A1A1A]" />
       <div className="h-96 rounded-lg border border-[#2A2A2A] bg-[#1A1A1A]" />
     </div>
-  );
+  )
 }
 
 export default function CustomersPage() {
-  const [q, setQ] = useState("");
-  const [pagina, setPagina] = useState(1);
-  const limite = 20;
+  const [q, setQ] = useState('')
+  const [pagina, setPagina] = useState(1)
+  const limite = 20
 
   const url = useMemo(() => {
-    const p = new URLSearchParams();
-    p.set("page", String(pagina));
-    p.set("limit", String(limite));
-    if (q.trim()) p.set("q", q.trim());
-    return `/api/customers?${p.toString()}`;
-  }, [q, pagina, limite]);
+    const p = new URLSearchParams()
+    p.set('page', String(pagina))
+    p.set('limit', String(limite))
+    if (q.trim()) p.set('q', q.trim())
+    return `/api/customers?${p.toString()}`
+  }, [q, pagina, limite])
 
-  const { data, isLoading, error } = useAuthFetch<RespuestaClientes>(url);
+  const { data, isLoading, error } = useAuthFetch<RespuestaClientes>(url)
 
   if (isLoading && !data) {
-    return <EsqueletoClientes />;
+    return <EsqueletoClientes />
   }
 
   if (error && !data) {
@@ -59,12 +59,12 @@ export default function CustomersPage() {
       <div className="rounded-lg border border-[#F44336]/40 bg-[#1A1A1A] p-6 text-[#F44336]">
         {error}
       </div>
-    );
+    )
   }
 
-  const clientes = data?.customers ?? [];
-  const total = data?.total ?? 0;
-  const totalPaginas = Math.max(1, Math.ceil(total / limite));
+  const clientes = data?.customers ?? []
+  const total = data?.total ?? 0
+  const totalPaginas = Math.max(1, Math.ceil(total / limite))
 
   return (
     <div className="space-y-4">
@@ -74,8 +74,8 @@ export default function CustomersPage() {
           placeholder="Nombre, teléfono o cédula…"
           value={q}
           onChange={(e) => {
-            setPagina(1);
-            setQ(e.target.value);
+            setPagina(1)
+            setQ(e.target.value)
           }}
           className="border-[#2A2A2A] bg-[#242424] pl-9 text-[#F5F5F5] placeholder:text-[#616161] focus-visible:ring-[#FF6B00]"
         />
@@ -99,8 +99,8 @@ export default function CustomersPage() {
                 key={c.id}
                 className={
                   idx % 2 === 1
-                    ? "border-[#2A2A2A] bg-[#1E1E1E]/80 hover:bg-[#242424]/30"
-                    : "border-[#2A2A2A] bg-[#1A1A1A] hover:bg-[#242424]/30"
+                    ? 'border-[#2A2A2A] bg-[#1E1E1E]/80 hover:bg-[#242424]/30'
+                    : 'border-[#2A2A2A] bg-[#1A1A1A] hover:bg-[#242424]/30'
                 }
               >
                 <TableCell className="font-medium text-[#F5F5F5]">{c.fullName}</TableCell>
@@ -115,14 +115,16 @@ export default function CustomersPage() {
                   ${c.totalSpentUsd.toFixed(2)}
                 </TableCell>
                 <TableCell className="whitespace-nowrap text-sm text-[#9E9E9E]">
-                  {new Date(c.createdAt).toLocaleDateString("es-VE")}
+                  {new Date(c.createdAt).toLocaleDateString('es-VE')}
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
         {clientes.length === 0 ? (
-          <p className="p-8 text-center text-sm text-[#9E9E9E]">No hay clientes con ese criterio.</p>
+          <p className="p-8 text-center text-sm text-[#9E9E9E]">
+            No hay clientes con ese criterio.
+          </p>
         ) : null}
       </div>
 
@@ -152,5 +154,5 @@ export default function CustomersPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }

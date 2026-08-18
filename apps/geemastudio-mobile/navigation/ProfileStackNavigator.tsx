@@ -1,17 +1,17 @@
-import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from 'react'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
-import ProfileScreen from "@/screens/ProfileScreen";
-import { useScreenOptions } from "@/hooks/useScreenOptions";
+import ProfileScreen from '@/screens/ProfileScreen'
+import { useScreenOptions } from '@/hooks/useScreenOptions'
 
 export type ProfileStackParamList = {
-  Profile: undefined;
-};
+  Profile: undefined
+}
 
-const Stack = createNativeStackNavigator<ProfileStackParamList>();
+const Stack = createNativeStackNavigator<ProfileStackParamList>()
 
 export default function ProfileStackNavigator() {
-  const screenOptions = useScreenOptions();
+  const screenOptions = useScreenOptions()
 
   return (
     <Stack.Navigator screenOptions={screenOptions}>
@@ -19,9 +19,9 @@ export default function ProfileStackNavigator() {
         name="Profile"
         component={ProfileScreen}
         options={{
-          title: "Perfil",
+          title: 'Perfil',
         }}
       />
     </Stack.Navigator>
-  );
+  )
 }

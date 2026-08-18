@@ -1,26 +1,26 @@
 // ============================================================
 // Contenedor de pantalla: safe area + padding + ancho tablet
 // ============================================================
-import React from 'react';
-import { View, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React from 'react'
+import { View, StyleSheet, type StyleProp, type ViewStyle } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { colors, spacing, layout } from '../../utils/theme';
-import { useResponsive } from '../../hooks/useResponsive';
+import { colors, spacing, layout } from '../../utils/theme'
+import { useResponsive } from '../../hooks/useResponsive'
 
-export type ScreenEdge = 'top' | 'bottom' | 'left' | 'right';
+export type ScreenEdge = 'top' | 'bottom' | 'left' | 'right'
 
 export interface ScreenProps {
-  children: React.ReactNode;
-  style?: StyleProp<ViewStyle>;
-  contentStyle?: StyleProp<ViewStyle>;
+  children: React.ReactNode
+  style?: StyleProp<ViewStyle>
+  contentStyle?: StyleProp<ViewStyle>
   /** Bordes con inset de safe area. Default: top + bottom */
-  edges?: ScreenEdge[];
+  edges?: ScreenEdge[]
   /** Padding horizontal del tema. Default: true */
-  padded?: boolean;
+  padded?: boolean
   /** Limitar ancho en tablet+. Default: true */
-  constrainWidth?: boolean;
-  backgroundColor?: string;
+  constrainWidth?: boolean
+  backgroundColor?: string
 }
 
 /**
@@ -36,10 +36,10 @@ export function Screen({
   constrainWidth = true,
   backgroundColor = colors.bg.primary,
 }: ScreenProps) {
-  const insets = useSafeAreaInsets();
-  const { isTabletUp } = useResponsive();
+  const insets = useSafeAreaInsets()
+  const { isTabletUp } = useResponsive()
 
-  const padH = padded ? spacing.base : 0;
+  const padH = padded ? spacing.base : 0
 
   return (
     <View
@@ -56,16 +56,12 @@ export function Screen({
       ]}
     >
       <View
-        style={[
-          styles.inner,
-          constrainWidth && isTabletUp && styles.constrained,
-          contentStyle,
-        ]}
+        style={[styles.inner, constrainWidth && isTabletUp && styles.constrained, contentStyle]}
       >
         {children}
       </View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -80,4 +76,4 @@ const styles = StyleSheet.create({
     maxWidth: layout.contentMaxWidth,
     alignSelf: 'center',
   },
-});
+})

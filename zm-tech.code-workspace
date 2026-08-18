@@ -2,8 +2,8 @@
   "folders": [
     {
       "name": "zm-tech",
-      "path": "."
-    }
+      "path": ".",
+    },
   ],
   "settings": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -13,26 +13,26 @@
     "typescript.enablePromptUseWorkspaceTsdk": true,
     "tailwindCSS.experimental.classRegex": [
       ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
-      ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
+      ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
     ],
     "files.exclude": {
       "**/node_modules": true,
       "**/.next": true,
-      "**/dist": true
+      "**/dist": true,
     },
     "search.exclude": {
       "**/node_modules": true,
       "**/.next": true,
       "**/dist": true,
-      "**/pnpm-lock.yaml": true
-    }
+      "**/pnpm-lock.yaml": true,
+    },
   },
   "extensions": {
     "recommendations": [
       "esbenp.prettier-vscode",
       "bradlc.vscode-tailwindcss",
       "dbaeumer.vscode-eslint",
-      "ms-vscode.vscode-typescript-next"
-    ]
-  }
+      "ms-vscode.vscode-typescript-next",
+    ],
+  },
 }

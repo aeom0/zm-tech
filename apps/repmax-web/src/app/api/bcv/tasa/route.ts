@@ -1,28 +1,28 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server'
 import {
   crearRepositorioTasasBcv,
   crearRepositorioTasasUsdt,
   resolverTasaBcvOperacion,
-} from "@zmtech/tasas/server";
-import { calcularSpreadInfo } from "@zmtech/tasas";
-import { createAdminClient } from "@/lib/supabase/admin";
+} from '@zmtech/tasas/server'
+import { calcularSpreadInfo } from '@zmtech/tasas'
+import { createAdminClient } from '@/lib/supabase/admin'
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic'
 
 export async function GET() {
-  const admin = createAdminClient();
+  const admin = createAdminClient()
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const repoBcv = crearRepositorioTasasBcv(admin as any);
+  const repoBcv = crearRepositorioTasasBcv(admin as any)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const repoUsdt = crearRepositorioTasasUsdt(admin as any);
+  const repoUsdt = crearRepositorioTasasUsdt(admin as any)
 
-  const resultado = await resolverTasaBcvOperacion(repoBcv);
+  const resultado = await resolverTasaBcvOperacion(repoBcv)
   if (!resultado.ok) {
-    return NextResponse.json(resultado.body, { status: 503 });
+    return NextResponse.json(resultado.body, { status: 503 })
   }
 
-  const bcv = resultado.tasa;
-  const usdt = await repoUsdt.obtenerUltimaHasta(bcv.fecha);
+  const bcv = resultado.tasa
+  const usdt = await repoUsdt.obtenerUltimaHasta(bcv.fecha)
 
   const bcvInfo = {
     valor: bcv.usd,
@@ -31,13 +31,13 @@ export async function GET() {
     disponible: true,
     esReferencial: bcv.esReferencial ?? false,
     ultimaActualizacion: new Date().toISOString(),
-  };
+  }
 
   const usdtInfo = usdt
     ? {
         valor: usdt.usd,
         fecha: usdt.fecha,
-        fuente: usdt.fuente ?? "usdt.com.ve",
+        fuente: usdt.fuente ?? 'usdt.com.ve',
         disponible: true,
         esReferencial: usdt.fecha !== bcv.fecha,
         ultimaActualizacion: new Date().toISOString(),
@@ -45,13 +45,13 @@ export async function GET() {
     : {
         valor: bcv.usd,
         fecha: bcv.fecha,
-        fuente: "sin-tasa",
+        fuente: 'sin-tasa',
         disponible: false,
         esReferencial: true,
         ultimaActualizacion: new Date().toISOString(),
-      };
+      }
 
-  const spread = calcularSpreadInfo(bcvInfo.valor, usdtInfo.valor);
+  const spread = calcularSpreadInfo(bcvInfo.valor, usdtInfo.valor)
 
   return NextResponse.json({
     bcv: bcvInfo,
@@ -59,5 +59,5 @@ export async function GET() {
     spread,
     timestamp: Date.now(),
     aviso: bcv.aviso,
-  });
+  })
 }

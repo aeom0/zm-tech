@@ -1,28 +1,21 @@
 // Selector de categoría ML manual (sin predictor API) + campo color condicional.
-import React, { useMemo, useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useMemo, useState } from 'react'
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 
 import {
   buscarCategoriasManual,
   categoriaManualPorId,
   type MlManualCategory,
-} from '../../constants/mlManualCategories';
-import { colors, typography, spacing, borderRadius } from '../../utils/theme';
+} from '../../constants/mlManualCategories'
+import { colors, typography, spacing, borderRadius } from '../../utils/theme'
 
 interface Props {
-  categoryId: string;
-  categoryName: string;
-  color: string;
-  onSelectCategory: (category: MlManualCategory) => void;
-  onColorChange: (value: string) => void;
+  categoryId: string
+  categoryName: string
+  color: string
+  onSelectCategory: (category: MlManualCategory) => void
+  onColorChange: (value: string) => void
 }
 
 export function MlCategoryManualSection({
@@ -32,19 +25,19 @@ export function MlCategoryManualSection({
   onSelectCategory,
   onColorChange,
 }: Props) {
-  const [search, setSearch] = useState('');
-  const [expanded, setExpanded] = useState(false);
+  const [search, setSearch] = useState('')
+  const [expanded, setExpanded] = useState(false)
 
-  const selected = categoriaManualPorId(categoryId);
-  const requiresColor = selected?.requiresColor ?? false;
-  const resultados = useMemo(() => buscarCategoriasManual(search), [search]);
+  const selected = categoriaManualPorId(categoryId)
+  const requiresColor = selected?.requiresColor ?? false
+  const resultados = useMemo(() => buscarCategoriasManual(search), [search])
 
   return (
     <View style={styles.wrap}>
       <Text style={styles.sectionLabel}>MercadoLibre — categoría manual</Text>
       <Text style={styles.hint}>
-        Sin API en Venezuela eliges la categoría del publicador masivo. Si no está en la lista,
-        pega el ID que ves en ML.
+        Sin API en Venezuela eliges la categoría del publicador masivo. Si no está en la lista, pega
+        el ID que ves en ML.
       </Text>
 
       <TouchableOpacity
@@ -82,9 +75,9 @@ export function MlCategoryManualSection({
                 key={cat.id}
                 style={[styles.option, cat.id === categoryId && styles.optionActive]}
                 onPress={() => {
-                  onSelectCategory(cat);
-                  setExpanded(false);
-                  setSearch('');
+                  onSelectCategory(cat)
+                  setExpanded(false)
+                  setSearch('')
                 }}
               >
                 <Text style={styles.optionName}>{cat.name}</Text>
@@ -100,11 +93,9 @@ export function MlCategoryManualSection({
         style={styles.input}
         value={categoryId}
         onChangeText={(id) => {
-          const trimmed = id.trim().toUpperCase();
-          const known = categoriaManualPorId(trimmed);
-          onSelectCategory(
-            known ?? { id: trimmed, name: trimmed ? 'Categoría personalizada' : '' },
-          );
+          const trimmed = id.trim().toUpperCase()
+          const known = categoriaManualPorId(trimmed)
+          onSelectCategory(known ?? { id: trimmed, name: trimmed ? 'Categoría personalizada' : '' })
         }}
         placeholder="Ej: MLV438380"
         placeholderTextColor={colors.text.disabled}
@@ -127,7 +118,7 @@ export function MlCategoryManualSection({
         </>
       ) : null}
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -233,4 +224,4 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.bg.border,
   },
-});
+})

@@ -1,12 +1,12 @@
-import { useMemo } from "react";
+import { useMemo } from 'react'
 
-import { calcularSemanaAgenda } from "@zmtech/tenant-config";
+import { calcularSemanaAgenda } from '@zmtech/tenant-config'
 
 export function useAgendaCalendar(selectedDate: Date, timeZone: string) {
   const { weekStart, weekDays } = useMemo(
     () => calcularSemanaAgenda(selectedDate, timeZone),
-    [selectedDate, timeZone],
-  );
+    [selectedDate, timeZone]
+  )
 
-  return { weekStart, weekDays };
+  return { weekStart, weekDays }
 }

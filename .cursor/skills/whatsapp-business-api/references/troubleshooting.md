@@ -11,11 +11,12 @@ If a free-form (non-template) message send fails, first check whether the user h
 
 ## Media ID errors ("media not found" / expired)
 
-Media IDs are not permanent references — don't store a `media_id` in a database expecting to reuse it weeks later for a *new* outbound message. Re-upload the media file to get a fresh ID if the original upload happened more than a short while ago. (Inbound media, i.e. something a user sent you, should be downloaded and stored in your own storage — e.g. Supabase Storage — promptly rather than relying on Meta's media URL staying valid.)
+Media IDs are not permanent references — don't store a `media_id` in a database expecting to reuse it weeks later for a _new_ outbound message. Re-upload the media file to get a fresh ID if the original upload happened more than a short while ago. (Inbound media, i.e. something a user sent you, should be downloaded and stored in your own storage — e.g. Supabase Storage — promptly rather than relying on Meta's media URL staying valid.)
 
 ## Webhook not receiving anything
 
 Checklist, in order of likelihood:
+
 1. Webhook URL configured but **not subscribed to the `messages` field** in WhatsApp > Configuration — this is the most common miss
 2. Verify token mismatch during the GET handshake — the subscription never actually saved even though the dashboard might not show an obvious error
 3. Signature verification failing silently and the handler returning a non-200, causing Meta to eventually back off retries
@@ -28,6 +29,7 @@ WhatsApp Business accounts have **messaging tier limits** (e.g. 1K/10K/100K uniq
 ## Phone number quality rating dropping
 
 High block/report rates from recipients degrade the number's quality rating, which can cap messaging tier growth or trigger restrictions. Mitigations:
+
 - Never message someone who hasn't opted in or messaged first (outside legitimate template use cases)
 - Keep template content genuinely relevant to what the user expects — generic/spammy templates get reported more
 - Watch the quality rating in WhatsApp Manager as a leading indicator, not just delivery/read rates

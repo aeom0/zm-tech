@@ -2,8 +2,8 @@
 // La detección va por DB (mlListingService.findPublishedOnMlForSale), no por cache del carrito.
 
 export interface ItemAlertaMlStock {
-  productId: string;
-  title: string;
-  partNumber?: string;
-  mlItemId?: string;
+  productId: string
+  title: string
+  partNumber?: string
+  mlItemId?: string
 }

@@ -21,6 +21,7 @@ Error: connect ENETUNREACH [IPv6]:5432
 3. Ejecuta con **Run**
 
 Para generar el SQL a partir del schema Drizzle sin aplicarlo:
+
 ```bash
 yarn db:generate
 # El SQL queda en ./migrations/ (configurado en drizzle.config.ts)
@@ -65,6 +66,7 @@ yarn db:push
 ```
 
 Requiere que `DATABASE_URL` en `.env` apunte al host directo (reemplazar `[REF]` por `udelxwwnyivknslueerr`):
+
 ```
 DATABASE_URL=postgresql://postgres:[PASSWORD]@db.udelxwwnyivknslueerr.supabase.co:5432/postgres
 ```
@@ -75,6 +77,7 @@ El CLI usa la API REST de Supabase para algunas operaciones pero `db push`
 también requiere TCP para el rol temporal. No funciona en WSL con IPv6 bloqueado.
 
 Cuando haya conectividad, se puede ejecutar (proyecto GeemaStudio):
+
 ```bash
 npx supabase link --project-ref udelxwwnyivknslueerr --password [DB_PASSWORD]
 npx supabase db push
@@ -106,6 +109,7 @@ DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[REF].supabase.co:5432/postgres
 ```
 
 Para seeds y scripts de Auth:
+
 ```
 SUPABASE_URL=https://[REF].supabase.co
 SUPABASE_SERVICE_ROLE_KEY=[service_role key]

@@ -3,7 +3,7 @@
 // Venezuela destacada arriba, el resto en grid 2 columnas
 // ============================================================
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react'
 import {
   View,
   Text,
@@ -12,40 +12,40 @@ import {
   StyleSheet,
   Animated,
   BackHandler,
-} from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { OnboardingStackParamList } from '../../navigation/types';
-import { useOnboarding } from '../../context/OnboardingContext';
-import { useOnboardingCancel } from '../../navigation/onboardingCancelContext';
-import { COUNTRIES } from '../../constants/onboarding';
-import OnboardingProgressBar from '../../components/onboarding/OnboardingProgressBar';
-import { Screen } from '../../components/layout/Screen';
-import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
-import type { CountryCode } from '../../types/onboarding';
+} from 'react-native'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
+import type { OnboardingStackParamList } from '../../navigation/types'
+import { useOnboarding } from '../../context/OnboardingContext'
+import { useOnboardingCancel } from '../../navigation/onboardingCancelContext'
+import { COUNTRIES } from '../../constants/onboarding'
+import OnboardingProgressBar from '../../components/onboarding/OnboardingProgressBar'
+import { Screen } from '../../components/layout/Screen'
+import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme'
+import type { CountryCode } from '../../types/onboarding'
 
-type Props = NativeStackScreenProps<OnboardingStackParamList, 'OnboardingCountry'>;
+type Props = NativeStackScreenProps<OnboardingStackParamList, 'OnboardingCountry'>
 
 export default function OnboardingCountry({ navigation }: Props) {
-  const { setCountry } = useOnboarding();
-  const onCancel = useOnboardingCancel();
-  const escalaVenezuela = useRef(new Animated.Value(1)).current;
+  const { setCountry } = useOnboarding()
+  const onCancel = useOnboardingCancel()
+  const escalaVenezuela = useRef(new Animated.Value(1)).current
 
-  const venezuela = COUNTRIES.find(c => c.featured)!;
-  const otros = COUNTRIES.filter(c => !c.featured);
+  const venezuela = COUNTRIES.find((c) => c.featured)!
+  const otros = COUNTRIES.filter((c) => !c.featured)
 
   useEffect(() => {
     const sub = BackHandler.addEventListener('hardwareBackPress', () => {
-      onCancel();
-      return true;
-    });
-    return () => sub.remove();
-  }, [onCancel]);
+      onCancel()
+      return true
+    })
+    return () => sub.remove()
+  }, [onCancel])
 
   const seleccionarPais = (code: CountryCode) => {
-    setCountry(code);
-    navigation.navigate('OnboardingVehicle');
-  };
+    setCountry(code)
+    navigation.navigate('OnboardingVehicle')
+  }
 
   /** Animación de escala antes de navegar (solo UX; misma lógica de negocio) */
   const presionarVenezuela = () => {
@@ -56,10 +56,10 @@ export default function OnboardingCountry({ navigation }: Props) {
       tension: 300,
     }).start(({ finished }) => {
       if (finished) {
-        seleccionarPais(venezuela.code);
+        seleccionarPais(venezuela.code)
       }
-    });
-  };
+    })
+  }
 
   return (
     <Screen edges={['top', 'bottom']} padded={false}>
@@ -76,18 +76,14 @@ export default function OnboardingCountry({ navigation }: Props) {
       {/* Barra de progreso: paso 1 de 5 */}
       <OnboardingProgressBar currentStep={1} totalSteps={5} />
 
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <Text style={styles.titulo}>¿Desde dónde operas?</Text>
 
         {/* Venezuela — card grande destacada */}
-        <TouchableOpacity
-          onPress={presionarVenezuela}
-          activeOpacity={0.85}
-        >
-          <Animated.View style={[styles.cardDestacada, { transform: [{ scale: escalaVenezuela }] }]}>
+        <TouchableOpacity onPress={presionarVenezuela} activeOpacity={0.85}>
+          <Animated.View
+            style={[styles.cardDestacada, { transform: [{ scale: escalaVenezuela }] }]}
+          >
             <Text style={styles.flagGrande}>{venezuela.flag}</Text>
             <Text style={styles.labelDestacado}>{venezuela.label}</Text>
             <Text style={styles.subDestacado}>Optimizado para el mercado venezolano</Text>
@@ -97,7 +93,7 @@ export default function OnboardingCountry({ navigation }: Props) {
         {/* Otros países en grid 2 columnas */}
         <Text style={styles.subtituloOtros}>Otros países</Text>
         <View style={styles.grid}>
-          {otros.map(pais => (
+          {otros.map((pais) => (
             <TouchableOpacity
               key={pais.code}
               style={[styles.cardPais, shadows.sm]}
@@ -111,7 +107,7 @@ export default function OnboardingCountry({ navigation }: Props) {
         </View>
       </ScrollView>
     </Screen>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -204,4 +200,4 @@ const styles = StyleSheet.create({
     fontSize: typography.size.base,
     color: colors.text.secondary,
   },
-});
+})

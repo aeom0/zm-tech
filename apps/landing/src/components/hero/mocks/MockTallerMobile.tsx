@@ -30,7 +30,9 @@ export default function MockTallerMobile() {
         <div className="flex items-start justify-between">
           <div>
             <div className="text-[5.5px] text-white/60">Buenos días</div>
-            <div className="text-[8px] font-extrabold tracking-tight sm:text-[9px]">Órdenes del día</div>
+            <div className="text-[8px] font-extrabold tracking-tight sm:text-[9px]">
+              Órdenes del día
+            </div>
           </div>
           <span className="mt-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/25">
             <MockIcon name="user" className="h-2 w-2 text-white/80" />
@@ -39,14 +41,22 @@ export default function MockTallerMobile() {
         <div className="mt-1.5 grid grid-cols-2 gap-1">
           {(
             [
-              { label: 'Órdenes hoy', value: '6', sub: '2 completadas', subClass: 'text-emerald-300', progress: 33 },
+              {
+                label: 'Órdenes hoy',
+                value: '6',
+                sub: '2 completadas',
+                subClass: 'text-emerald-300',
+                progress: 33,
+              },
               { label: 'Refacciones', value: '3', sub: 'por confirmar', subClass: 'text-white/50' },
             ] as const
           ).map((s) => (
             <div
               key={s.label}
               className="rounded-md bg-white/10 px-1.5 py-1 ring-1 ring-white/15 backdrop-blur-sm"
-              style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.2), 0 1px 2px rgba(0,0,0,0.3)' }}
+              style={{
+                boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.2), 0 1px 2px rgba(0,0,0,0.3)',
+              }}
             >
               <div className="text-[5.5px] text-white/60">{s.label}</div>
               <div className="text-[9px] font-extrabold tracking-tight tabular-nums">{s.value}</div>
@@ -86,7 +96,9 @@ export default function MockTallerMobile() {
           style={{ animationDelay: '110ms', boxShadow: glassShadow(ACCENT) }}
         >
           <div className="mb-1 flex items-center justify-between">
-            <span className="text-[6px] font-bold tracking-tight text-zinc-200">Órdenes semana</span>
+            <span className="text-[6px] font-bold tracking-tight text-zinc-200">
+              Órdenes semana
+            </span>
             <span className="text-[5.5px] text-zinc-500">L–S</span>
           </div>
           <div className="flex h-8 items-end gap-0.5">
@@ -111,12 +123,35 @@ export default function MockTallerMobile() {
           </div>
         </div>
 
-        <div className="mock-rise min-h-0 flex-1 space-y-0.5 overflow-hidden" style={{ animationDelay: '160ms' }}>
-          <div className="text-[6px] font-semibold tracking-wide text-zinc-500 uppercase">Recientes</div>
+        <div
+          className="mock-rise min-h-0 flex-1 space-y-0.5 overflow-hidden"
+          style={{ animationDelay: '160ms' }}
+        >
+          <div className="text-[6px] font-semibold tracking-wide text-zinc-500 uppercase">
+            Recientes
+          </div>
           {[
-            { n: '#0231 · Camioneta Ford', amt: '$180', icon: 'check' as const, s: 'Listo', c: 'bg-emerald-500/10 text-emerald-400' },
-            { n: '#0230 · Torno CNC', amt: '$95', icon: 'wrench' as const, s: 'En taller', c: 'bg-sky-500/10 text-sky-400' },
-            { n: '#0229 · Compresor', amt: '$60', icon: 'clock' as const, s: 'Esp. refacción', c: 'bg-amber-500/10 text-amber-400' },
+            {
+              n: '#0231 · Camioneta Ford',
+              amt: '$180',
+              icon: 'check' as const,
+              s: 'Listo',
+              c: 'bg-emerald-500/10 text-emerald-400',
+            },
+            {
+              n: '#0230 · Torno CNC',
+              amt: '$95',
+              icon: 'wrench' as const,
+              s: 'En taller',
+              c: 'bg-sky-500/10 text-sky-400',
+            },
+            {
+              n: '#0229 · Compresor',
+              amt: '$60',
+              icon: 'clock' as const,
+              s: 'Esp. refacción',
+              c: 'bg-amber-500/10 text-amber-400',
+            },
           ].map((p) => (
             <div
               key={p.n}
@@ -132,8 +167,12 @@ export default function MockTallerMobile() {
                 <span className="min-w-0 truncate font-medium text-zinc-300">{p.n}</span>
               </div>
               <div className="flex shrink-0 items-center gap-1">
-                <span className="text-[5.5px] font-semibold text-zinc-300 tabular-nums">{p.amt}</span>
-                <span className={`rounded-full px-1 py-px text-[5.5px] font-medium ${p.c}`}>{p.s}</span>
+                <span className="text-[5.5px] font-semibold text-zinc-300 tabular-nums">
+                  {p.amt}
+                </span>
+                <span className={`rounded-full px-1 py-px text-[5.5px] font-medium ${p.c}`}>
+                  {p.s}
+                </span>
               </div>
             </div>
           ))}

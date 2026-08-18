@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, LayoutChangeEvent } from "react-native";
-import MaskedView from "@react-native-masked-view/masked-view";
-import { LinearGradient } from "expo-linear-gradient";
-import { DiamondSparkle } from "./DiamondSparkle";
-import { NebulosaGlow } from "./NebulosaGlow";
-import { Gradients, Spacing } from "@/constants/theme";
+import React, { useState } from 'react'
+import { View, Text, StyleSheet, LayoutChangeEvent } from 'react-native'
+import MaskedView from '@react-native-masked-view/masked-view'
+import { LinearGradient } from 'expo-linear-gradient'
+import { DiamondSparkle } from './DiamondSparkle'
+import { NebulosaGlow } from './NebulosaGlow'
+import { Gradients, Spacing } from '@/constants/theme'
 
-const STACK_SIZE = 320;
-const GLOW_SIZE = 420;
-const GLOW_OFFSET = (STACK_SIZE - GLOW_SIZE) / 2;
-const GLOW_VERTICAL_SHIFT = 20;
+const STACK_SIZE = 320
+const GLOW_SIZE = 420
+const GLOW_OFFSET = (STACK_SIZE - GLOW_SIZE) / 2
+const GLOW_VERTICAL_SHIFT = 20
 
 interface DiamondHeroProps {
-  showText?: boolean;
+  showText?: boolean
 }
 
 /**
@@ -26,12 +26,12 @@ interface DiamondHeroProps {
  */
 export function DiamondHero({ showText = true }: DiamondHeroProps) {
   // Ancho medido de "Studio" — empieza con valor seguro para evitar flash
-  const [studioWidth, setStudioWidth] = useState(135);
+  const [studioWidth, setStudioWidth] = useState(135)
 
   const onStudioLayout = (e: LayoutChangeEvent) => {
-    const w = e.nativeEvent.layout.width;
-    if (w > 0) setStudioWidth(Math.ceil(w));
-  };
+    const w = e.nativeEvent.layout.width
+    if (w > 0) setStudioWidth(Math.ceil(w))
+  }
 
   return (
     <View style={styles.container}>
@@ -55,21 +55,14 @@ export function DiamondHero({ showText = true }: DiamondHeroProps) {
              * position:absolute lo saca del flujo, opacity:0 lo oculta.
              * onLayout reporta el ancho tipográfico exacto de la fuente.
              */}
-            <Text
-              style={[styles.wordmarkStudio, styles.measurePhantom]}
-              onLayout={onStudioLayout}
-            >
+            <Text style={[styles.wordmarkStudio, styles.measurePhantom]} onLayout={onStudioLayout}>
               Studio
             </Text>
 
             {/* MaskedView con ancho igual al texto medido → centrado perfecto */}
             <MaskedView
               maskElement={
-                <Text
-                  style={[styles.wordmarkStudio, styles.wordmarkStudioMask]}
-                >
-                  Studio
-                </Text>
+                <Text style={[styles.wordmarkStudio, styles.wordmarkStudioMask]}>Studio</Text>
               }
             >
               <LinearGradient
@@ -82,69 +75,67 @@ export function DiamondHero({ showText = true }: DiamondHeroProps) {
             </MaskedView>
           </View>
 
-          <Text style={styles.tagline}>
-            Pule tu negocio · Brilla en cada servicio
-          </Text>
+          <Text style={styles.tagline}>Pule tu negocio · Brilla en cada servicio</Text>
         </>
       )}
     </View>
-  );
+  )
 }
 
-const WORDMARK_SIZE = 38;
+const WORDMARK_SIZE = 38
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: "center",
+    alignItems: 'center',
     gap: Spacing.md,
-    overflow: "visible",
+    overflow: 'visible',
   },
   logoStack: {
     width: STACK_SIZE,
     height: STACK_SIZE,
-    alignItems: "center",
-    justifyContent: "center",
-    position: "relative",
-    overflow: "visible",
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+    overflow: 'visible',
   },
   glowWrapper: {
-    position: "absolute",
+    position: 'absolute',
     left: GLOW_OFFSET,
     top: GLOW_OFFSET + GLOW_VERTICAL_SHIFT,
   },
   diamondWrapper: {
-    position: "absolute",
-    alignItems: "center",
-    justifyContent: "center",
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   wordmarkRow: {
-    flexDirection: "row",
-    alignItems: "flex-end",
+    flexDirection: 'row',
+    alignItems: 'flex-end',
     gap: 0,
   },
   wordmarkGeema: {
-    fontFamily: "Poppins_800ExtraBold",
+    fontFamily: 'Poppins_800ExtraBold',
     fontSize: WORDMARK_SIZE,
     lineHeight: WORDMARK_SIZE,
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     includeFontPadding: false,
   },
   wordmarkStudio: {
-    fontFamily: "Poppins_800ExtraBold",
+    fontFamily: 'Poppins_800ExtraBold',
     fontSize: WORDMARK_SIZE,
     lineHeight: WORDMARK_SIZE,
     includeFontPadding: false,
   },
   // Texto fantasma para medir el ancho real de "Studio"
   measurePhantom: {
-    position: "absolute",
+    position: 'absolute',
     opacity: 0,
     // color requerido por RN para que el texto sea medible
-    color: "#FFFFFF",
+    color: '#FFFFFF',
   },
   wordmarkStudioMask: {
-    color: "#FFFFFF",
-    backgroundColor: "transparent",
+    color: '#FFFFFF',
+    backgroundColor: 'transparent',
   },
   studioGradient: {
     // width se inyecta dinámicamente desde studioWidth (onLayout)
@@ -154,9 +145,9 @@ const styles = StyleSheet.create({
   },
   tagline: {
     fontSize: 13,
-    fontWeight: "400",
-    color: "rgba(255,255,255,0.45)",
-    textAlign: "center",
+    fontWeight: '400',
+    color: 'rgba(255,255,255,0.45)',
+    textAlign: 'center',
     letterSpacing: 0.5,
   },
-});
+})

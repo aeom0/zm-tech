@@ -1,5 +1,5 @@
-import { MercadoLibreLogo } from "@/components/brand/MercadoLibreLogo";
-import { ML_API_ENABLED } from "@/constants/mlConfig";
+import { MercadoLibreLogo } from '@/components/brand/MercadoLibreLogo'
+import { ML_API_ENABLED } from '@/constants/mlConfig'
 
 export function MLSection() {
   return (
@@ -12,27 +12,29 @@ export function MLSection() {
             <div className="l-ml-badge-text">
               <span className="l-ml-logo">MercadoLibre</span>
               <span className="l-ml-badge-tag">
-                {ML_API_ENABLED ? "INTEGRACIÓN OFICIAL" : "CATÁLOGO ML-READY"}
+                {ML_API_ENABLED ? 'INTEGRACIÓN OFICIAL' : 'CATÁLOGO ML-READY'}
               </span>
             </div>
           </div>
           <h2 className="l-ml-title">
-            Tu inventario listo pa&apos; MercadoLibre,<br />
+            Tu inventario listo pa&apos; MercadoLibre,
+            <br />
             <span className="highlight">
-              {ML_API_ENABLED ? "visible y sincronizado" : "sin depender de la API hoy"}
+              {ML_API_ENABLED ? 'visible y sincronizado' : 'sin depender de la API hoy'}
             </span>
           </h2>
           <p className="l-ml-desc">
             {ML_API_ENABLED
-              ? "Conecta tu cuenta de MercadoLibre una sola vez. Tus productos se publican y el stock baja al instante cuando vendes en mostrador."
-              : "Prepara fotos, ficha y categoría en RepMAX. Exporta un CSV con URLs de fotos y súbelo al publicador masivo de ML. MercadoLibre Venezuela no tiene API de desarrolladores activa — el control del catálogo queda en tus manos."}
+              ? 'Conecta tu cuenta de MercadoLibre una sola vez. Tus productos se publican y el stock baja al instante cuando vendes en mostrador.'
+              : 'Prepara fotos, ficha y categoría en RepMAX. Exporta un CSV con URLs de fotos y súbelo al publicador masivo de ML. MercadoLibre Venezuela no tiene API de desarrolladores activa — el control del catálogo queda en tus manos.'}
           </p>
           <div className="l-ml-features">
             <div className="l-ml-feature">
               <div className="l-ml-check">01</div>
               <div className="l-ml-feature-text">
                 <strong>Checklist ML en cada pieza</strong>
-                Portada, n. parte, título y descripción sin teléfono — lo que ML exige antes de publicar.
+                Portada, n. parte, título y descripción sin teléfono — lo que ML exige antes de
+                publicar.
               </div>
             </div>
             <div className="l-ml-feature">
@@ -47,12 +49,12 @@ export function MLSection() {
               <div className="l-ml-feature-text">
                 <strong>
                   {ML_API_ENABLED
-                    ? "Stock sincronizado al vender"
-                    : "Alerta tras vender en mostrador"}
+                    ? 'Stock sincronizado al vender'
+                    : 'Alerta tras vender en mostrador'}
                 </strong>
                 {ML_API_ENABLED
-                  ? "Vendiste en la tienda → la publicación de ML se actualiza sola."
-                  : "Si la pieza está en ML manual, el recibo te avisa que revises el stock allá."}
+                  ? 'Vendiste en la tienda → la publicación de ML se actualiza sola.'
+                  : 'Si la pieza está en ML manual, el recibo te avisa que revises el stock allá.'}
               </div>
             </div>
           </div>
@@ -69,9 +71,9 @@ export function MLSection() {
             </div>
             <div className="l-ml-stat-divider" />
             <div className="l-ml-stat">
-              <div className="l-ml-stat-value">{ML_API_ENABLED ? "Sync" : "Manual"}</div>
+              <div className="l-ml-stat-value">{ML_API_ENABLED ? 'Sync' : 'Manual'}</div>
               <div className="l-ml-stat-label">
-                {ML_API_ENABLED ? "Stock en tiempo real" : "Control total hoy"}
+                {ML_API_ENABLED ? 'Stock en tiempo real' : 'Control total hoy'}
               </div>
             </div>
           </div>
@@ -86,15 +88,13 @@ export function MLSection() {
 
           <div className="l-ml-card-main">
             <div className="l-ml-card-header">
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <MercadoLibreLogo size={24} />
                 <span className="l-ml-card-title">
-                  {ML_API_ENABLED ? "Inventario sincronizado" : "Catálogo ML-ready"}
+                  {ML_API_ENABLED ? 'Inventario sincronizado' : 'Catálogo ML-ready'}
                 </span>
               </div>
-              <span className="l-ml-status">
-                {ML_API_ENABLED ? "● Activo" : "● Export manual"}
-              </span>
+              <span className="l-ml-status">{ML_API_ENABLED ? '● Activo' : '● Export manual'}</span>
             </div>
 
             <div className="l-ml-product-row">
@@ -126,13 +126,13 @@ export function MLSection() {
               <MercadoLibreLogo size={16} />
               <span>
                 {ML_API_ENABLED
-                  ? "Sincronizado con MercadoLibre Venezuela"
-                  : "Preparado para MercadoLibre Venezuela"}
+                  ? 'Sincronizado con MercadoLibre Venezuela'
+                  : 'Preparado para MercadoLibre Venezuela'}
               </span>
             </div>
           </div>
         </div>
       </div>
     </section>
-  );
+  )
 }

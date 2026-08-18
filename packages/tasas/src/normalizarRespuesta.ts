@@ -24,7 +24,7 @@ export interface RespuestaTasaApi {
 
 export function normalizarRespuestaTasaApi(
   data: RespuestaTasaApi,
-  ahora = new Date().toISOString(),
+  ahora = new Date().toISOString()
 ): TasasDuales {
   const bcvValor = data.bcv?.valor ?? 0
   const bcvDisponible = data.bcv?.disponible ?? bcvValor > 0

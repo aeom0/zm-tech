@@ -1,6 +1,6 @@
-export { TenantLandingElegant } from "./TenantLandingElegant";
-export { TenantLandingWarm } from "./TenantLandingWarm";
-export { TenantLandingModern } from "./TenantLandingModern";
-export { formatBusinessHours } from "./shared/format-hours";
-export { BookingButton } from "./shared/BookingButton";
-export { WhatsAppFAB } from "./shared/WhatsAppFAB";
+export { TenantLandingElegant } from './TenantLandingElegant'
+export { TenantLandingWarm } from './TenantLandingWarm'
+export { TenantLandingModern } from './TenantLandingModern'
+export { formatBusinessHours } from './shared/format-hours'
+export { BookingButton } from './shared/BookingButton'
+export { WhatsAppFAB } from './shared/WhatsAppFAB'

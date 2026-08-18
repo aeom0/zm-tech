@@ -1,33 +1,33 @@
 // ============================================================
 // RepMAX Business Suite — Navegador principal (tabs + stacks)
 // ============================================================
-import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Ionicons } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React from 'react'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { Ionicons } from '@expo/vector-icons'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { colors, typography, layout } from '../utils/theme';
-import { useResponsive } from '../hooks/useResponsive';
-import { AdaptiveTabBar } from '../components/navigation/AdaptiveTabBar';
+import { colors, typography, layout } from '../utils/theme'
+import { useResponsive } from '../hooks/useResponsive'
+import { AdaptiveTabBar } from '../components/navigation/AdaptiveTabBar'
 
 // Pantallas
-import DashboardScreen from '../screens/dashboard/DashboardScreen';
-import POSScreen from '../screens/pos/POSScreen';
-import CartScreen from '../screens/pos/CartScreen';
-import PaymentScreen from '../screens/pos/PaymentScreen';
-import ReceiptScreen from '../screens/pos/ReceiptScreen';
-import InventoryScreen from '../screens/inventory/InventoryScreen';
-import ProductFormScreen from '../screens/inventory/ProductFormScreen';
-import PhotoCaptureScreen from '../screens/inventory/PhotoCaptureScreen';
-import PhotoReviewScreen from '../screens/inventory/PhotoReviewScreen';
-import ScanCodeScreen from '../screens/scan/ScanCodeScreen';
-import CustomersScreen from '../screens/customers/CustomersScreen';
-import CustomerDetailScreen from '../screens/customers/CustomerDetailScreen';
-import MoreHomeScreen from '../screens/more/MoreHomeScreen';
-import CashSessionScreen from '../screens/reports/CashSessionScreen';
-import StoreSettingsScreen from '../screens/settings/StoreSettingsScreen';
-import ExchangeRateScreen from '../screens/settings/ExchangeRateScreen';
+import DashboardScreen from '../screens/dashboard/DashboardScreen'
+import POSScreen from '../screens/pos/POSScreen'
+import CartScreen from '../screens/pos/CartScreen'
+import PaymentScreen from '../screens/pos/PaymentScreen'
+import ReceiptScreen from '../screens/pos/ReceiptScreen'
+import InventoryScreen from '../screens/inventory/InventoryScreen'
+import ProductFormScreen from '../screens/inventory/ProductFormScreen'
+import PhotoCaptureScreen from '../screens/inventory/PhotoCaptureScreen'
+import PhotoReviewScreen from '../screens/inventory/PhotoReviewScreen'
+import ScanCodeScreen from '../screens/scan/ScanCodeScreen'
+import CustomersScreen from '../screens/customers/CustomersScreen'
+import CustomerDetailScreen from '../screens/customers/CustomerDetailScreen'
+import MoreHomeScreen from '../screens/more/MoreHomeScreen'
+import CashSessionScreen from '../screens/reports/CashSessionScreen'
+import StoreSettingsScreen from '../screens/settings/StoreSettingsScreen'
+import ExchangeRateScreen from '../screens/settings/ExchangeRateScreen'
 
 import type {
   MainTabParamList,
@@ -35,7 +35,7 @@ import type {
   InventoryStackParamList,
   CustomersStackParamList,
   MoreStackParamList,
-} from './types';
+} from './types'
 
 const stackScreenOptions = {
   headerStyle: { backgroundColor: colors.bg.secondary },
@@ -45,11 +45,11 @@ const stackScreenOptions = {
     fontSize: typography.size.md,
   },
   headerShadowVisible: false,
-};
+}
 
 // ── Stacks internos ─────────────────────────────────────────
 
-const POSStack = createNativeStackNavigator<POSStackParamList>();
+const POSStack = createNativeStackNavigator<POSStackParamList>()
 function POSNavigator() {
   return (
     <POSStack.Navigator screenOptions={stackScreenOptions}>
@@ -61,16 +61,24 @@ function POSNavigator() {
       />
       <POSStack.Screen name="Cart" component={CartScreen} options={{ title: 'Carrito' }} />
       <POSStack.Screen name="Payment" component={PaymentScreen} options={{ title: 'Cobrar' }} />
-      <POSStack.Screen name="Receipt" component={ReceiptScreen} options={{ title: 'Comprobante', headerBackVisible: false }} />
+      <POSStack.Screen
+        name="Receipt"
+        component={ReceiptScreen}
+        options={{ title: 'Comprobante', headerBackVisible: false }}
+      />
     </POSStack.Navigator>
-  );
+  )
 }
 
-const InventoryStack = createNativeStackNavigator<InventoryStackParamList>();
+const InventoryStack = createNativeStackNavigator<InventoryStackParamList>()
 function InventoryNavigator() {
   return (
     <InventoryStack.Navigator screenOptions={stackScreenOptions}>
-      <InventoryStack.Screen name="Inventory" component={InventoryScreen} options={{ title: 'Inventario' }} />
+      <InventoryStack.Screen
+        name="Inventory"
+        component={InventoryScreen}
+        options={{ title: 'Inventario' }}
+      />
       <InventoryStack.Screen
         name="ScanCode"
         component={ScanCodeScreen}
@@ -94,40 +102,60 @@ function InventoryNavigator() {
         options={{ headerShown: false }}
       />
     </InventoryStack.Navigator>
-  );
+  )
 }
 
-const CustomersStack = createNativeStackNavigator<CustomersStackParamList>();
+const CustomersStack = createNativeStackNavigator<CustomersStackParamList>()
 function CustomersNavigator() {
   return (
     <CustomersStack.Navigator screenOptions={stackScreenOptions}>
-      <CustomersStack.Screen name="Customers" component={CustomersScreen} options={{ title: 'Clientes' }} />
-      <CustomersStack.Screen name="CustomerDetail" component={CustomerDetailScreen} options={{ title: 'Detalle de Cliente' }} />
+      <CustomersStack.Screen
+        name="Customers"
+        component={CustomersScreen}
+        options={{ title: 'Clientes' }}
+      />
+      <CustomersStack.Screen
+        name="CustomerDetail"
+        component={CustomerDetailScreen}
+        options={{ title: 'Detalle de Cliente' }}
+      />
     </CustomersStack.Navigator>
-  );
+  )
 }
 
-const MoreStack = createNativeStackNavigator<MoreStackParamList>();
+const MoreStack = createNativeStackNavigator<MoreStackParamList>()
 function MoreNavigator() {
   return (
     <MoreStack.Navigator screenOptions={stackScreenOptions}>
       <MoreStack.Screen name="MoreHome" component={MoreHomeScreen} options={{ title: 'Más' }} />
-      <MoreStack.Screen name="CashSession" component={CashSessionScreen} options={{ title: 'Caja' }} />
-      <MoreStack.Screen name="StoreSettings" component={StoreSettingsScreen} options={{ title: 'Mi Tienda' }} />
-      <MoreStack.Screen name="ExchangeRate" component={ExchangeRateScreen} options={{ title: 'Tasa de Cambio' }} />
+      <MoreStack.Screen
+        name="CashSession"
+        component={CashSessionScreen}
+        options={{ title: 'Caja' }}
+      />
+      <MoreStack.Screen
+        name="StoreSettings"
+        component={StoreSettingsScreen}
+        options={{ title: 'Mi Tienda' }}
+      />
+      <MoreStack.Screen
+        name="ExchangeRate"
+        component={ExchangeRateScreen}
+        options={{ title: 'Tasa de Cambio' }}
+      />
     </MoreStack.Navigator>
-  );
+  )
 }
 
 // ── Tab principal (5 destinos) ───────────────────────────────
 
-const Tab = createBottomTabNavigator<MainTabParamList>();
+const Tab = createBottomTabNavigator<MainTabParamList>()
 
 export default function MainNavigator() {
-  const insets = useSafeAreaInsets();
-  const { isTabletUp, isLandscape } = useResponsive();
-  const useSidebar = isTabletUp && isLandscape;
-  const bottomInset = Math.max(insets.bottom, 8);
+  const insets = useSafeAreaInsets()
+  const { isTabletUp, isLandscape } = useResponsive()
+  const useSidebar = isTabletUp && isLandscape
+  const bottomInset = Math.max(insets.bottom, 8)
 
   return (
     <Tab.Navigator
@@ -166,16 +194,20 @@ export default function MainNavigator() {
             InventoryTab: 'cube-outline',
             CustomersTab: 'people-outline',
             MoreTab: 'menu-outline',
-          };
-          return <Ionicons name={icons[route.name]} size={size} color={color} />;
+          }
+          return <Ionicons name={icons[route.name]} size={size} color={color} />
         },
       })}
     >
       <Tab.Screen name="DashboardTab" component={DashboardScreen} options={{ title: 'Inicio' }} />
       <Tab.Screen name="POSTab" component={POSNavigator} options={{ title: 'Ventas' }} />
       <Tab.Screen name="InventoryTab" component={InventoryNavigator} options={{ title: 'Stock' }} />
-      <Tab.Screen name="CustomersTab" component={CustomersNavigator} options={{ title: 'Clientes' }} />
+      <Tab.Screen
+        name="CustomersTab"
+        component={CustomersNavigator}
+        options={{ title: 'Clientes' }}
+      />
       <Tab.Screen name="MoreTab" component={MoreNavigator} options={{ title: 'Más' }} />
     </Tab.Navigator>
-  );
+  )
 }

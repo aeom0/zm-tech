@@ -1,12 +1,6 @@
 export type MonedaPago = 'USD' | 'BS'
 
-export type MetodoPago =
-  | 'CASH_USD'
-  | 'CASH_BS'
-  | 'ZELLE'
-  | 'PAGO_MOVIL'
-  | 'TRANSFERENCIA'
-  | 'MIXED'
+export type MetodoPago = 'CASH_USD' | 'CASH_BS' | 'ZELLE' | 'PAGO_MOVIL' | 'TRANSFERENCIA' | 'MIXED'
 
 export interface DetallePago {
   monto: number
@@ -38,7 +32,7 @@ export function validarDetallesPagoMixto(
   detalles: DetallesPago,
   totalUsd: number,
   tasaBcv: number,
-  toleranciaUsd = 0.01,
+  toleranciaUsd = 0.01
 ): ValidacionPagoMixto {
   validarMonto(totalUsd, 'totalUsd')
   validarTasa(tasaBcv)
@@ -50,10 +44,8 @@ export function validarDetallesPagoMixto(
     Object.values(detalles).reduce((total, detalle) => {
       if (!detalle) return total
       validarMonto(detalle.monto, 'monto del pago')
-      return total + (detalle.moneda === 'BS'
-        ? detalle.monto / tasaBcv
-        : detalle.monto)
-    }, 0),
+      return total + (detalle.moneda === 'BS' ? detalle.monto / tasaBcv : detalle.monto)
+    }, 0)
   )
   const diferenciaUsd = redondear(totalUsdConvertido - totalUsd)
   const valido = Math.abs(diferenciaUsd) <= toleranciaUsd

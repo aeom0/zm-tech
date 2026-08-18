@@ -1,89 +1,82 @@
-import React, { useMemo } from "react";
-import {
-  View,
-  ScrollView,
-  Pressable,
-  RefreshControl,
-  StyleSheet,
-} from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { Feather } from "@expo/vector-icons";
+import React, { useMemo } from 'react'
+import { View, ScrollView, Pressable, RefreshControl, StyleSheet } from 'react-native'
+import { LinearGradient } from 'expo-linear-gradient'
+import { Feather } from '@expo/vector-icons'
 
-import { ThemedText } from "@/components/ThemedText";
-import { Gradients, Spacing, BorderRadius } from "@/constants/theme";
+import { ThemedText } from '@/components/ThemedText'
+import { Gradients, Spacing, BorderRadius } from '@/constants/theme'
 import {
   esHoyEnZonaIANA,
   formatoHoraInstanteEnZona,
   type TenantConfig,
   type TimeFormatPreference,
-} from "@zmtech/tenant-config";
+} from '@zmtech/tenant-config'
 
-import type { AgendaAppointment, AgendaService } from "../types";
+import type { AgendaAppointment, AgendaService } from '../types'
 import {
   filterAppointmentsForOwnerDay,
   getServiceName,
   sortAppointmentsByStart,
-} from "../agendaUtils";
-import { useAgendaClockTick } from "../hooks/useAgendaClockTick";
-import { agendaStyles as sharedStyles } from "../agendaStyles";
+} from '../agendaUtils'
+import { useAgendaClockTick } from '../hooks/useAgendaClockTick'
+import { agendaStyles as sharedStyles } from '../agendaStyles'
 
 interface StaffAgendaTimelineViewProps {
-  staffEmployeeId: string | null;
-  staffDisplayName: string;
-  staffSingularLabel: string;
-  tabBarHeight: number;
-  selectedDate: Date;
-  timeZone: string;
-  language: TenantConfig["locale"]["language"];
-  timeFormat: TimeFormatPreference;
-  appointments: AgendaAppointment[];
-  services: AgendaService[];
-  isLoading: boolean;
-  onRefresh: () => void;
-  currencySymbol: string;
+  staffEmployeeId: string | null
+  staffDisplayName: string
+  staffSingularLabel: string
+  tabBarHeight: number
+  selectedDate: Date
+  timeZone: string
+  language: TenantConfig['locale']['language']
+  timeFormat: TimeFormatPreference
+  appointments: AgendaAppointment[]
+  services: AgendaService[]
+  isLoading: boolean
+  onRefresh: () => void
+  currencySymbol: string
   theme: {
-    primary: string;
-    accent: string;
-    text: string;
-    textSecondary: string;
-    textMuted: string;
-    border: string;
-    backgroundRoot: string;
-    backgroundSecondary: string;
-    card: string;
-    success: string;
-    warning: string;
-  };
-  onOpenDetail: (apt: AgendaAppointment) => void;
-  onPressNew: () => void;
+    primary: string
+    accent: string
+    text: string
+    textSecondary: string
+    textMuted: string
+    border: string
+    backgroundRoot: string
+    backgroundSecondary: string
+    card: string
+    success: string
+    warning: string
+  }
+  onOpenDetail: (apt: AgendaAppointment) => void
+  onPressNew: () => void
 }
 
 function esPendienteDeValidacion(status: string): boolean {
-  return status === "payment_submitted";
+  return status === 'payment_submitted'
 }
 
 function descripcionEstado(status: string): {
-  label: string;
-  tone: "ok" | "wait" | "muted";
+  label: string
+  tone: 'ok' | 'wait' | 'muted'
 } {
-  if (esPendienteDeValidacion(status))
-    return { label: "Pendiente", tone: "wait" };
-  if (status === "cancelled" || status === "no_show")
+  if (esPendienteDeValidacion(status)) return { label: 'Pendiente', tone: 'wait' }
+  if (status === 'cancelled' || status === 'no_show')
     return {
-      label: status === "cancelled" ? "Cancelada" : "Ausencia",
-      tone: "muted",
-    };
-  return { label: "Confirmado", tone: "ok" };
+      label: status === 'cancelled' ? 'Cancelada' : 'Ausencia',
+      tone: 'muted',
+    }
+  return { label: 'Confirmado', tone: 'ok' }
 }
 
 /** 45 → '45 min' | 60 → '1 h' | 90 → '1 h 30 min' */
 function formatDuration(minutes: number): string {
-  if (minutes <= 0) return "";
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  if (h === 0) return `${m} min`;
-  if (m === 0) return `${h} h`;
-  return `${h} h ${m} min`;
+  if (minutes <= 0) return ''
+  const h = Math.floor(minutes / 60)
+  const m = minutes % 60
+  if (h === 0) return `${m} min`
+  if (m === 0) return `${h} h`
+  return `${h} h ${m} min`
 }
 
 /**
@@ -105,13 +98,13 @@ function TimelineCard({
   theme,
   onPress,
 }: {
-  apt: AgendaAppointment;
-  accentColor: string;
-  tone: "ok" | "wait" | "muted";
-  estadoLabel: string;
-  serviceName: string;
-  theme: StaffAgendaTimelineViewProps["theme"];
-  onPress: () => void;
+  apt: AgendaAppointment
+  accentColor: string
+  tone: 'ok' | 'wait' | 'muted'
+  estadoLabel: string
+  serviceName: string
+  theme: StaffAgendaTimelineViewProps['theme']
+  onPress: () => void
 }) {
   return (
     <Pressable onPress={onPress} style={{ flex: 1, marginLeft: Spacing.sm }}>
@@ -123,7 +116,7 @@ function TimelineCard({
       <View
         style={{
           borderRadius: BorderRadius.md,
-          overflow: "hidden",
+          overflow: 'hidden',
           borderWidth: StyleSheet.hairlineWidth,
           borderColor: theme.border,
           borderLeftWidth: 4,
@@ -134,14 +127,14 @@ function TimelineCard({
         <View style={{ padding: Spacing.md }}>
           <View
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
             }}
           >
             <View style={{ flex: 1, paddingRight: Spacing.sm }}>
               <ThemedText
-                style={{ fontSize: 16, fontWeight: "700", color: theme.text }}
+                style={{ fontSize: 16, fontWeight: '700', color: theme.text }}
                 numberOfLines={1}
               >
                 {apt.client_name}
@@ -154,13 +147,13 @@ function TimelineCard({
                 }}
                 numberOfLines={1}
               >
-                {serviceName || "—"}
+                {serviceName || '—'}
               </ThemedText>
               {apt.duration > 0 && (
                 <View
                   style={{
-                    flexDirection: "row",
-                    alignItems: "center",
+                    flexDirection: 'row',
+                    alignItems: 'center',
                     gap: 4,
                     marginTop: 4,
                   }}
@@ -172,23 +165,15 @@ function TimelineCard({
                 </View>
               )}
             </View>
-            <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 4 }}
-            >
-              {tone === "ok" ? (
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              {tone === 'ok' ? (
                 <Feather name="check-circle" size={16} color={theme.success} />
-              ) : tone === "wait" ? (
+              ) : tone === 'wait' ? (
                 <Feather name="clock" size={16} color={theme.warning} />
               ) : (
-                <Feather
-                  name="minus-circle"
-                  size={16}
-                  color={theme.textMuted}
-                />
+                <Feather name="minus-circle" size={16} color={theme.textMuted} />
               )}
-              <ThemedText
-                style={{ fontSize: 11, fontWeight: "600", color: accentColor }}
-              >
+              <ThemedText style={{ fontSize: 11, fontWeight: '600', color: accentColor }}>
                 {estadoLabel}
               </ThemedText>
             </View>
@@ -196,7 +181,7 @@ function TimelineCard({
         </View>
       </View>
     </Pressable>
-  );
+  )
 }
 
 export function StaffAgendaTimelineView({
@@ -217,31 +202,31 @@ export function StaffAgendaTimelineView({
   onOpenDetail,
   onPressNew,
 }: StaffAgendaTimelineViewProps) {
-  const isTodayInTz = esHoyEnZonaIANA(selectedDate, timeZone);
-  const now = useAgendaClockTick(isTodayInTz);
+  const isTodayInTz = esHoyEnZonaIANA(selectedDate, timeZone)
+  const now = useAgendaClockTick(isTodayInTz)
 
   const myDayApts = useMemo(() => {
-    if (!staffEmployeeId) return [];
+    if (!staffEmployeeId) return []
     const raw = filterAppointmentsForOwnerDay(
       appointments,
       selectedDate,
       [staffEmployeeId],
-      "all",
-      timeZone,
-    );
-    return sortAppointmentsByStart(raw);
-  }, [appointments, selectedDate, staffEmployeeId, timeZone]);
+      'all',
+      timeZone
+    )
+    return sortAppointmentsByStart(raw)
+  }, [appointments, selectedDate, staffEmployeeId, timeZone])
 
   const siguiente = useMemo(() => {
-    if (myDayApts.length === 0) return null;
-    const nowMs = now.getTime();
+    if (myDayApts.length === 0) return null
+    const nowMs = now.getTime()
     for (const apt of myDayApts) {
-      const startMs = new Date(apt.date).getTime();
-      const endMs = startMs + apt.duration * 60_000;
-      if (endMs >= nowMs) return apt;
+      const startMs = new Date(apt.date).getTime()
+      const endMs = startMs + apt.duration * 60_000
+      if (endMs >= nowMs) return apt
     }
-    return null;
-  }, [myDayApts, now]);
+    return null
+  }, [myDayApts, now])
 
   if (!staffEmployeeId) {
     return (
@@ -250,17 +235,17 @@ export function StaffAgendaTimelineView({
           sharedStyles.calendarContainer,
           {
             padding: Spacing.xl,
-            justifyContent: "center",
-            alignItems: "center",
+            justifyContent: 'center',
+            alignItems: 'center',
           },
         ]}
       >
-        <ThemedText style={{ color: theme.textSecondary, textAlign: "center" }}>
-          Tu cuenta no está vinculada a un {staffSingularLabel} en el equipo.
-          Pide al dueño que te asigne en Personal.
+        <ThemedText style={{ color: theme.textSecondary, textAlign: 'center' }}>
+          Tu cuenta no está vinculada a un {staffSingularLabel} en el equipo. Pide al dueño que te
+          asigne en Personal.
         </ThemedText>
       </View>
-    );
+    )
   }
 
   return (
@@ -272,23 +257,19 @@ export function StaffAgendaTimelineView({
           paddingHorizontal: Spacing.md,
         }}
         refreshControl={
-          <RefreshControl
-            refreshing={isLoading}
-            onRefresh={onRefresh}
-            tintColor={theme.primary}
-          />
+          <RefreshControl refreshing={isLoading} onRefresh={onRefresh} tintColor={theme.primary} />
         }
       >
         <ThemedText
           style={{
             fontSize: 18,
-            fontWeight: "700",
+            fontWeight: '700',
             color: theme.text,
             marginBottom: Spacing.sm,
             marginTop: Spacing.xs,
           }}
         >
-          Mi agenda — {staffDisplayName.split(" ")[0] ?? staffDisplayName}
+          Mi agenda — {staffDisplayName.split(' ')[0] ?? staffDisplayName}
         </ThemedText>
 
         {/* Hero card: próxima cita — LinearGradient como borde exterior, sin overflow:hidden */}
@@ -311,15 +292,15 @@ export function StaffAgendaTimelineView({
             <View
               style={{
                 borderRadius: BorderRadius.lg - 2,
-                overflow: "hidden",
+                overflow: 'hidden',
                 backgroundColor: theme.card,
               }}
             >
               <View
                 style={{
                   padding: Spacing.lg,
-                  flexDirection: "row",
-                  alignItems: "center",
+                  flexDirection: 'row',
+                  alignItems: 'center',
                   gap: Spacing.md,
                 }}
               >
@@ -328,9 +309,9 @@ export function StaffAgendaTimelineView({
                   <ThemedText
                     style={{
                       fontSize: 12,
-                      fontWeight: "600",
+                      fontWeight: '600',
                       color: theme.textMuted,
-                      textTransform: "uppercase",
+                      textTransform: 'uppercase',
                       letterSpacing: 0.5,
                     }}
                   >
@@ -339,7 +320,7 @@ export function StaffAgendaTimelineView({
                   <ThemedText
                     style={{
                       fontSize: 20,
-                      fontWeight: "700",
+                      fontWeight: '700',
                       color: theme.text,
                       marginTop: 4,
                     }}
@@ -348,8 +329,8 @@ export function StaffAgendaTimelineView({
                       new Date(siguiente.date),
                       timeZone,
                       language,
-                      timeFormat,
-                    )}{" "}
+                      timeFormat
+                    )}{' '}
                     · {siguiente.client_name}
                   </ThemedText>
                   <ThemedText
@@ -360,11 +341,11 @@ export function StaffAgendaTimelineView({
                     }}
                     numberOfLines={1}
                   >
-                    {getServiceName(services, siguiente.service_id) || "—"}
+                    {getServiceName(services, siguiente.service_id) || '—'}
                   </ThemedText>
                   <View
                     style={{
-                      flexDirection: "row",
+                      flexDirection: 'row',
                       gap: Spacing.md,
                       marginTop: Spacing.sm,
                     }}
@@ -372,19 +353,13 @@ export function StaffAgendaTimelineView({
                     {siguiente.duration > 0 && (
                       <View
                         style={{
-                          flexDirection: "row",
-                          alignItems: "center",
+                          flexDirection: 'row',
+                          alignItems: 'center',
                           gap: 4,
                         }}
                       >
-                        <Feather
-                          name="clock"
-                          size={12}
-                          color={theme.textMuted}
-                        />
-                        <ThemedText
-                          style={{ fontSize: 12, color: theme.textMuted }}
-                        >
+                        <Feather name="clock" size={12} color={theme.textMuted} />
+                        <ThemedText style={{ fontSize: 12, color: theme.textMuted }}>
                           {formatDuration(siguiente.duration)}
                         </ThemedText>
                       </View>
@@ -392,17 +367,14 @@ export function StaffAgendaTimelineView({
                     {parseFloat(siguiente.price) > 0 && (
                       <View
                         style={{
-                          flexDirection: "row",
-                          alignItems: "center",
+                          flexDirection: 'row',
+                          alignItems: 'center',
                           gap: 4,
                         }}
                       >
                         <Feather name="tag" size={12} color={theme.textMuted} />
-                        <ThemedText
-                          style={{ fontSize: 12, color: theme.textMuted }}
-                        >
-                          {currencySymbol}{" "}
-                          {parseFloat(siguiente.price).toFixed(2)}
+                        <ThemedText style={{ fontSize: 12, color: theme.textMuted }}>
+                          {currencySymbol} {parseFloat(siguiente.price).toFixed(2)}
                         </ThemedText>
                       </View>
                     )}
@@ -426,10 +398,10 @@ export function StaffAgendaTimelineView({
         )}
 
         {/* Timeline */}
-        <View style={{ position: "relative", paddingLeft: Spacing.lg }}>
+        <View style={{ position: 'relative', paddingLeft: Spacing.lg }}>
           <View
             style={{
-              position: "absolute",
+              position: 'absolute',
               left: 6,
               top: 12,
               bottom: 12,
@@ -440,36 +412,27 @@ export function StaffAgendaTimelineView({
           />
 
           {myDayApts.map((apt) => {
-            const start = new Date(apt.date);
-            const timeLabel = formatoHoraInstanteEnZona(
-              start,
-              timeZone,
-              language,
-              timeFormat,
-            );
-            const { label: estadoLabel, tone } = descripcionEstado(apt.status);
+            const start = new Date(apt.date)
+            const timeLabel = formatoHoraInstanteEnZona(start, timeZone, language, timeFormat)
+            const { label: estadoLabel, tone } = descripcionEstado(apt.status)
             const accentColor =
-              tone === "ok"
-                ? theme.success
-                : tone === "wait"
-                  ? theme.warning
-                  : theme.textMuted;
-            const serviceName = getServiceName(services, apt.service_id);
+              tone === 'ok' ? theme.success : tone === 'wait' ? theme.warning : theme.textMuted
+            const serviceName = getServiceName(services, apt.service_id)
 
             return (
               <View
                 key={apt.id}
                 style={{
-                  flexDirection: "row",
+                  flexDirection: 'row',
                   marginBottom: Spacing.md,
-                  alignItems: "stretch",
+                  alignItems: 'stretch',
                 }}
               >
                 {/* Hora */}
                 <View
                   style={{
                     width: 52,
-                    alignItems: "flex-end",
+                    alignItems: 'flex-end',
                     paddingRight: Spacing.sm,
                     paddingTop: 6,
                   }}
@@ -477,7 +440,7 @@ export function StaffAgendaTimelineView({
                   <ThemedText
                     style={{
                       fontSize: 12,
-                      fontWeight: "700",
+                      fontWeight: '700',
                       color: theme.textMuted,
                     }}
                   >
@@ -486,9 +449,7 @@ export function StaffAgendaTimelineView({
                 </View>
 
                 {/* Dot */}
-                <View
-                  style={{ width: 14, alignItems: "center", paddingTop: 6 }}
-                >
+                <View style={{ width: 14, alignItems: 'center', paddingTop: 6 }}>
                   <View
                     style={{
                       width: 10,
@@ -511,7 +472,7 @@ export function StaffAgendaTimelineView({
                   onPress={() => onOpenDetail(apt)}
                 />
               </View>
-            );
+            )
           })}
         </View>
       </ScrollView>
@@ -520,13 +481,13 @@ export function StaffAgendaTimelineView({
       <Pressable
         onPress={onPressNew}
         style={{
-          position: "absolute",
+          position: 'absolute',
           right: Spacing.lg,
           bottom: tabBarHeight + Spacing.md,
           borderRadius: BorderRadius.full,
-          overflow: "hidden",
+          overflow: 'hidden',
           ...StyleSheet.flatten({
-            shadowColor: "#000",
+            shadowColor: '#000',
             shadowOffset: { width: 0, height: 4 },
             shadowOpacity: 0.25,
             shadowRadius: 8,
@@ -540,21 +501,19 @@ export function StaffAgendaTimelineView({
           end={Gradients.onboarding.linearEnd}
           locations={[...Gradients.onboarding.locations]}
           style={{
-            flexDirection: "row",
-            alignItems: "center",
+            flexDirection: 'row',
+            alignItems: 'center',
             paddingVertical: Spacing.md,
             paddingHorizontal: Spacing.lg,
             gap: Spacing.sm,
           }}
         >
           <Feather name="plus" size={22} color="#FFFFFF" />
-          <ThemedText
-            style={{ color: "#FFFFFF", fontWeight: "700", fontSize: 15 }}
-          >
+          <ThemedText style={{ color: '#FFFFFF', fontWeight: '700', fontSize: 15 }}>
             Nueva cita
           </ThemedText>
         </LinearGradient>
       </Pressable>
     </View>
-  );
+  )
 }

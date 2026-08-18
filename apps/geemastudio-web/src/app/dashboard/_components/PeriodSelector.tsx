@@ -1,23 +1,20 @@
-"use client";
+'use client'
 
-import type {
-  DateRange,
-  PeriodKey,
-} from "@/hooks/dashboard/useDashboardPeriod";
-import { LUNARIS } from "@/lib/theme";
+import type { DateRange, PeriodKey } from '@/hooks/dashboard/useDashboardPeriod'
+import { LUNARIS } from '@/lib/theme'
 
 const TABS: { key: PeriodKey; label: string }[] = [
-  { key: "week", label: "Semana" },
-  { key: "month", label: "Mes" },
-  { key: "custom", label: "Personalizado" },
-];
+  { key: 'week', label: 'Semana' },
+  { key: 'month', label: 'Mes' },
+  { key: 'custom', label: 'Personalizado' },
+]
 
 interface PeriodSelectorProps {
-  period: PeriodKey;
-  onPeriodChange: (p: PeriodKey) => void;
-  dateRange: DateRange;
-  customRange: DateRange | null;
-  onCustomRangeChange: (range: DateRange) => void;
+  period: PeriodKey
+  onPeriodChange: (p: PeriodKey) => void
+  dateRange: DateRange
+  customRange: DateRange | null
+  onCustomRangeChange: (range: DateRange) => void
 }
 
 export function PeriodSelector({
@@ -31,7 +28,7 @@ export function PeriodSelector({
     <div className="space-y-3">
       <div className="flex flex-wrap gap-2">
         {TABS.map((t) => {
-          const active = period === t.key;
+          const active = period === t.key
           return (
             <button
               key={t.key}
@@ -39,8 +36,8 @@ export function PeriodSelector({
               onClick={() => onPeriodChange(t.key)}
               className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
                 active
-                  ? "text-white shadow-lg"
-                  : "border border-white/15 bg-white/5 text-white/70 hover:text-white hover:bg-white/10"
+                  ? 'text-white shadow-lg'
+                  : 'border border-white/15 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'
               }`}
               style={
                 active
@@ -52,11 +49,11 @@ export function PeriodSelector({
             >
               {t.label}
             </button>
-          );
+          )
         })}
       </div>
 
-      {period === "custom" && (
+      {period === 'custom' && (
         <div className="flex flex-wrap items-center gap-3 text-sm text-white/60">
           <label className="flex items-center gap-2">
             <span className="shrink-0">Desde</span>
@@ -89,5 +86,5 @@ export function PeriodSelector({
         </div>
       )}
     </div>
-  );
+  )
 }

@@ -1,29 +1,22 @@
-import React from "react";
-import {
-  Pressable,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  View,
-  type ViewStyle,
-} from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { Feather } from "@expo/vector-icons";
+import React from 'react'
+import { Pressable, Text, StyleSheet, ActivityIndicator, View, type ViewStyle } from 'react-native'
+import { LinearGradient } from 'expo-linear-gradient'
+import { Feather } from '@expo/vector-icons'
 
-import { BorderRadius, Gradients, Spacing } from "@/constants/theme";
+import { BorderRadius, Gradients, Spacing } from '@/constants/theme'
 
-type FeatherName = React.ComponentProps<typeof Feather>["name"];
+type FeatherName = React.ComponentProps<typeof Feather>['name']
 
 interface GradientCTAButtonProps {
-  label: string;
-  onPress: () => void;
-  loading?: boolean;
-  disabled?: boolean;
-  icon?: FeatherName;
-  variant?: "primary" | "outline";
-  style?: ViewStyle;
+  label: string
+  onPress: () => void
+  loading?: boolean
+  disabled?: boolean
+  icon?: FeatherName
+  variant?: 'primary' | 'outline'
+  style?: ViewStyle
   /** Padding vertical un poco menor (p. ej. onboarding en pantallas bajas). */
-  compact?: boolean;
+  compact?: boolean
 }
 
 export function GradientCTAButton({
@@ -32,23 +25,20 @@ export function GradientCTAButton({
   loading = false,
   disabled = false,
   icon,
-  variant = "primary",
+  variant = 'primary',
   style,
   compact = false,
 }: GradientCTAButtonProps) {
-  const isDisabled = disabled || loading;
-  const padVPrimary = compact ? 13 : 16;
-  const padVOutline = compact ? 11 : 14;
+  const isDisabled = disabled || loading
+  const padVPrimary = compact ? 13 : 16
+  const padVOutline = compact ? 11 : 14
 
-  if (variant === "outline") {
+  if (variant === 'outline') {
     return (
       <Pressable
         onPress={onPress}
         disabled={isDisabled}
-        style={({ pressed }) => [
-          { opacity: pressed || isDisabled ? 0.7 : 1 },
-          style,
-        ]}
+        style={({ pressed }) => [{ opacity: pressed || isDisabled ? 0.7 : 1 }, style]}
       >
         <LinearGradient
           colors={[...Gradients.onboarding.colors]}
@@ -62,7 +52,7 @@ export function GradientCTAButton({
           </View>
         </LinearGradient>
       </Pressable>
-    );
+    )
   }
 
   return (
@@ -87,38 +77,36 @@ export function GradientCTAButton({
         ) : (
           <View style={styles.row}>
             <Text style={styles.label}>{label}</Text>
-            {icon ? (
-              <Feather name={icon} size={18} color="#fff" style={styles.icon} />
-            ) : null}
+            {icon ? <Feather name={icon} size={18} color="#fff" style={styles.icon} /> : null}
           </View>
         )}
       </LinearGradient>
     </Pressable>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   wrapper: {
     borderRadius: BorderRadius.lg,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   gradient: {
     paddingHorizontal: Spacing.xl,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: BorderRadius.lg,
   },
   row: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   icon: {
     marginLeft: 8,
   },
   label: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
     letterSpacing: 0.3,
   },
   outlineGradientBorder: {
@@ -127,13 +115,13 @@ const styles = StyleSheet.create({
   },
   outlineInner: {
     paddingHorizontal: Spacing.xl,
-    alignItems: "center",
+    alignItems: 'center',
     borderRadius: BorderRadius.lg - 1.5,
-    backgroundColor: "#0D0D12",
+    backgroundColor: '#0D0D12',
   },
   outlineLabel: {
-    color: "rgba(255,255,255,0.85)",
+    color: 'rgba(255,255,255,0.85)',
     fontSize: 15,
-    fontWeight: "500",
+    fontWeight: '500',
   },
-});
+})

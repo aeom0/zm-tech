@@ -1,19 +1,20 @@
-import { useState } from "react";
+import { useState } from 'react'
 
 export function CTASection() {
-  const [submitted, setSubmitted] = useState(false);
-  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false)
+  const [email, setEmail] = useState('')
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(true);
-  };
+    e.preventDefault()
+    setSubmitted(true)
+  }
 
   return (
     <section className="l-cta-section" id="registro">
       <div className="l-cta-glow" />
       <h2 className="l-cta-title">
-        Tu tienda merece<br />
+        Tu tienda merece
+        <br />
         <span className="line-orange">un sistema de verdad</span>
       </h2>
       <p className="l-cta-sub">
@@ -33,9 +34,9 @@ export function CTASection() {
         <button
           type="submit"
           className="l-btn-primary"
-          style={submitted ? { background: "#4CAF50", clipPath: "none" } : {}}
+          style={submitted ? { background: '#4CAF50', clipPath: 'none' } : {}}
         >
-          {submitted ? "¡Listo! Te contactamos pronto 🎉" : "Crear mi cuenta gratis"}
+          {submitted ? '¡Listo! Te contactamos pronto 🎉' : 'Crear mi cuenta gratis'}
         </button>
       </form>
 
@@ -45,5 +46,5 @@ export function CTASection() {
         <span className="check">✓</span> Soporte en español
       </p>
     </section>
-  );
+  )
 }
