@@ -57,16 +57,25 @@ export default function PaymentScreen({ navigation }: Props) {
     usarTasaManual,
   );
   const usdBsRate = usdBsRateEfectivo;
-  const totalBs = convertirUsdABs(totalUsd, usdBsRate);
+  const totalBs = usdBsRate > 0 ? convertirUsdABs(totalUsd, usdBsRate) : 0;
   const esMetodoBs = ['CASH_BS', 'PAGO_MOVIL', 'TRANSFERENCIA'].includes(selectedMethod);
   const detallesMixtos: DetallesPago = {
-    CASH_USD: { monto: Number(montoMixtoUsd) || 0, moneda: 'USD' },
-    CASH_BS: { monto: Number(montoMixtoBs) || 0, moneda: 'BS' },
+    CASH_USD: { monto: Math.max(0, Number(montoMixtoUsd) || 0), moneda: 'USD' },
+    CASH_BS: { monto: Math.max(0, Number(montoMixtoBs) || 0), moneda: 'BS' },
   };
-  const validacionMixta =
-    selectedMethod === 'MIXED'
-      ? validarDetallesPagoMixto(detallesMixtos, totalUsd, usdBsRate)
-      : null;
+  let validacionMixta: ReturnType<typeof validarDetallesPagoMixto> | null = null;
+  if (selectedMethod === 'MIXED') {
+    try {
+      validacionMixta = validarDetallesPagoMixto(detallesMixtos, totalUsd, usdBsRate);
+    } catch (err) {
+      validacionMixta = {
+        valido: false,
+        totalUsdConvertido: 0,
+        diferenciaUsd: 0,
+        mensaje: err instanceof Error ? err.message : 'Montos mixtos inválidos',
+      };
+    }
+  }
 
   const crearDetallesPago = (): DetallesPago => {
     if (selectedMethod === 'MIXED') return detallesMixtos;

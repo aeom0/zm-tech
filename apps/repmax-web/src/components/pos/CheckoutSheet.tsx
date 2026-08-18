@@ -59,16 +59,25 @@ export function CheckoutSheet({
   const [montoMixtoBs, setMontoMixtoBs] = useState("");
 
   const totalUsd = items.reduce((acc, it) => acc + it.subtotalUsd, 0);
-  const totalBs = convertirUsdABs(totalUsd, usdBsRate);
+  const totalBs = usdBsRate > 0 ? convertirUsdABs(totalUsd, usdBsRate) : 0;
   const esMetodoBs = ["CASH_BS", "PAGO_MOVIL", "TRANSFERENCIA"].includes(metodoPago);
   const detallesMixtos: DetallesPago = {
-    CASH_USD: { monto: Number(montoMixtoUsd) || 0, moneda: "USD" },
-    CASH_BS: { monto: Number(montoMixtoBs) || 0, moneda: "BS" },
+    CASH_USD: { monto: Math.max(0, Number(montoMixtoUsd) || 0), moneda: "USD" },
+    CASH_BS: { monto: Math.max(0, Number(montoMixtoBs) || 0), moneda: "BS" },
   };
-  const validacionMixta =
-    metodoPago === "MIXED"
-      ? validarDetallesPagoMixto(detallesMixtos, totalUsd, usdBsRate)
-      : null;
+  let validacionMixta: ReturnType<typeof validarDetallesPagoMixto> | null = null;
+  if (metodoPago === "MIXED") {
+    try {
+      validacionMixta = validarDetallesPagoMixto(detallesMixtos, totalUsd, usdBsRate);
+    } catch (e) {
+      validacionMixta = {
+        valido: false,
+        totalUsdConvertido: 0,
+        diferenciaUsd: 0,
+        mensaje: e instanceof Error ? e.message : "Montos mixtos inválidos",
+      };
+    }
+  }
 
   function crearDetallesPago(): DetallesPago {
     if (metodoPago === "MIXED") return detallesMixtos;
