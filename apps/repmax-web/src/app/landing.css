@@ -74,6 +74,25 @@
   display: block;
 }
 
+.l-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.l-nav-login {
+  color: var(--text-2);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.l-nav-login:hover { color: var(--text-1); }
+
 .l-nav-cta {
   background: var(--orange);
   color: #000;
