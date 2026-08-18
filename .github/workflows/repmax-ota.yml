@@ -51,25 +51,22 @@ jobs:
             exit 1
           fi
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v4
+      - uses: pnpm/setup@v2
         with:
-          node-version: 22
-          cache: pnpm
-          cache-dependency-path: pnpm-lock.yaml
+          runtime: node@22
+          cache: true
 
-      # packager npm: pnpm 10 aborta `pnpm add eas-cli` por build scripts ignorados.
-      - uses: expo/expo-github-action@v8
+      # packager npm: pnpm 10+ aborta `pnpm add eas-cli` por build scripts ignorados.
+      # eas-cache off: v8 usaba el API de cache viejo (400 / Azure down) y npm instala eas-cli en ~30s.
+      - uses: expo/expo-github-action@v9
         with:
           eas-version: latest
           packager: npm
           token: ${{ secrets.EXPO_TOKEN }}
-
-      - name: Install
-        run: pnpm install --frozen-lockfile
+          eas-cache: false
+          expo-cache: false
 
       - name: Publish update
         working-directory: apps/repmax-mobile
