@@ -1,33 +1,31 @@
-import { View, StyleSheet, Pressable } from "react-native";
-import { useHeaderHeight } from "@react-navigation/elements";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { Feather } from "@expo/vector-icons";
+import { View, StyleSheet, Pressable } from 'react-native'
+import { useHeaderHeight } from '@react-navigation/elements'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
+import { Feather } from '@expo/vector-icons'
 
-import { ThemedText } from "@/components/ThemedText";
-import { ThemedView } from "@/components/ThemedView";
-import { useTheme } from "@/hooks/useTheme";
-import { useAuth } from "@/contexts/AuthContext";
-import { useTenant } from "@/contexts/TenantContext";
-import { useDemoReset } from "@/hooks/useDemoReset";
-import { Spacing } from "@/constants/theme";
+import { ThemedText } from '@/components/ThemedText'
+import { ThemedView } from '@/components/ThemedView'
+import { useTheme } from '@/hooks/useTheme'
+import { useAuth } from '@/contexts/AuthContext'
+import { useTenant } from '@/contexts/TenantContext'
+import { useDemoReset } from '@/hooks/useDemoReset'
+import { Spacing } from '@/constants/theme'
 
 export default function ProfileScreen() {
-  const headerHeight = useHeaderHeight();
-  const tabBarHeight = useBottomTabBarHeight();
-  const { theme } = useTheme();
-  const { logout } = useAuth();
-  const { resetIfDemo } = useDemoReset();
-  const { config } = useTenant();
+  const headerHeight = useHeaderHeight()
+  const tabBarHeight = useBottomTabBarHeight()
+  const { theme } = useTheme()
+  const { logout } = useAuth()
+  const { resetIfDemo } = useDemoReset()
+  const { config } = useTenant()
 
   const handleLogout = async () => {
-    await resetIfDemo();
-    await logout();
-  };
+    await resetIfDemo()
+    await logout()
+  }
 
   return (
-    <ThemedView
-      style={[styles.container, { backgroundColor: theme.backgroundRoot }]}
-    >
+    <ThemedView style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
       <View
         style={[
           styles.content,
@@ -63,7 +61,7 @@ export default function ProfileScreen() {
         </View>
       </View>
     </ThemedView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -79,22 +77,22 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     fontSize: 14,
-    marginBottom: Spacing["3xl"],
+    marginBottom: Spacing['3xl'],
   },
   logoutSection: {
     marginTop: Spacing.xl,
   },
   logoutButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     gap: Spacing.sm,
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     borderWidth: 1,
     height: 52,
     borderRadius: 9999,
   },
   logoutText: {
-    fontWeight: "600",
+    fontWeight: '600',
   },
-});
+})

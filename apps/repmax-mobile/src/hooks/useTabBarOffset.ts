@@ -1,7 +1,7 @@
 // ============================================================
 // Offset del tab bar para FABs y padding de listas
 // ============================================================
-import { layout, spacing } from '../utils/theme';
+import { layout, spacing } from '../utils/theme'
 
 /**
  * Holgura inferior para listas / FABs dentro de tabs.
@@ -14,5 +14,5 @@ export function useTabBarOffset() {
     listPaddingWithFab: layout.fabClearance + spacing.md,
     /** paddingBottom de listas con barra full-width (carrito) */
     listPaddingWithActionBar: layout.fabClearance + spacing.xl,
-  };
+  }
 }

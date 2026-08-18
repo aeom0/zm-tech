@@ -1,44 +1,44 @@
-"use client";
+'use client'
 
-import { Plus, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { Plus, Sparkles } from 'lucide-react'
+import { useState } from 'react'
 
-import { usePromos } from "@/hooks/servicios/usePromos";
-import type { Promotion } from "../../_services/promosService";
-import { PromoCard } from "../promos/PromoCard";
-import { PromoFormModal } from "../promos/PromoFormModal";
+import { usePromos } from '@/hooks/servicios/usePromos'
+import type { Promotion } from '../../_services/promosService'
+import { PromoCard } from '../promos/PromoCard'
+import { PromoFormModal } from '../promos/PromoFormModal'
 
 export function PromosTab() {
-  const { data: promos = [], isLoading } = usePromos();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<Promotion | null>(null);
+  const { data: promos = [], isLoading } = usePromos()
+  const [modalOpen, setModalOpen] = useState(false)
+  const [editing, setEditing] = useState<Promotion | null>(null)
 
   function handleEdit(promo: Promotion) {
-    setEditing(promo);
-    setModalOpen(true);
+    setEditing(promo)
+    setModalOpen(true)
   }
 
   function handleClose() {
-    setModalOpen(false);
-    setEditing(null);
+    setModalOpen(false)
+    setEditing(null)
   }
 
-  const active = promos.filter((p) => p.is_active);
-  const inactive = promos.filter((p) => !p.is_active);
+  const active = promos.filter((p) => p.is_active)
+  const inactive = promos.filter((p) => !p.is_active)
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <p className="text-sm text-white/50">
-          {active.length} activa{active.length !== 1 ? "s" : ""} ·{" "}
-          {inactive.length} inactiva{inactive.length !== 1 ? "s" : ""}
+          {active.length} activa{active.length !== 1 ? 's' : ''} · {inactive.length} inactiva
+          {inactive.length !== 1 ? 's' : ''}
         </p>
 
         <button
           type="button"
           onClick={() => {
-            setEditing(null);
-            setModalOpen(true);
+            setEditing(null)
+            setModalOpen(true)
           }}
           className="inline-flex items-center gap-2 rounded-lg bg-[#40E0D0] px-3 py-1.5 text-sm text-white transition-colors hover:bg-[#00897B]"
         >
@@ -48,9 +48,7 @@ export function PromosTab() {
       </div>
 
       {isLoading ? (
-        <div className="py-8 text-center text-sm text-white/30">
-          Cargando...
-        </div>
+        <div className="py-8 text-center text-sm text-white/30">Cargando...</div>
       ) : promos.length === 0 ? (
         <div className="py-12 text-center text-white/30">
           <Sparkles className="mx-auto mb-2 h-10 w-10 opacity-40" />
@@ -67,5 +65,5 @@ export function PromosTab() {
 
       <PromoFormModal open={modalOpen} promo={editing} onClose={handleClose} />
     </div>
-  );
+  )
 }

@@ -1,42 +1,42 @@
-"use client";
+'use client'
 
-import { useMemo } from "react";
+import { useMemo } from 'react'
 import {
   OdentalAuthProvider,
   OdentalTenantProvider,
   useTenant,
-} from "@zmtech/tenant-config/odental";
-import { createClient } from "@/lib/supabase/client";
+} from '@zmtech/tenant-config/odental'
+import { createClient } from '@/lib/supabase/client'
 
 function TenantBadge() {
-  const { config, tenantId, isLoading } = useTenant();
-  if (isLoading) return <p className="text-sm text-slate-500">Cargando tenant…</p>;
+  const { config, tenantId, isLoading } = useTenant()
+  if (isLoading) return <p className="text-sm text-slate-500">Cargando tenant…</p>
   return (
     <p className="mt-6 text-sm text-slate-400">
       Preset <span className="text-teal-400">{config.preset}</span>
       {tenantId ? (
         <>
-          {" "}
+          {' '}
           · clínica <span className="text-white">{config.clinicName}</span>
         </>
       ) : (
-        " · sin sesión (preset local)"
+        ' · sin sesión (preset local)'
       )}
     </p>
-  );
+  )
 }
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const client = useMemo(() => {
     try {
-      return createClient();
+      return createClient()
     } catch {
-      return null;
+      return null
     }
-  }, []);
+  }, [])
 
   if (!client) {
-    return <>{children}</>;
+    return <>{children}</>
   }
 
   return (
@@ -46,5 +46,5 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <TenantBadge />
       </OdentalTenantProvider>
     </OdentalAuthProvider>
-  );
+  )
 }

@@ -1,16 +1,16 @@
-import React from "react";
-import { View, StyleSheet, TextInput, Pressable } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import React from 'react'
+import { View, StyleSheet, TextInput, Pressable } from 'react-native'
+import { Feather } from '@expo/vector-icons'
 
-import { ThemedText } from "@/components/ThemedText";
-import { useTheme } from "@/hooks/useTheme";
-import { Spacing, BorderRadius } from "@/constants/theme";
+import { ThemedText } from '@/components/ThemedText'
+import { useTheme } from '@/hooks/useTheme'
+import { Spacing, BorderRadius } from '@/constants/theme'
 
 interface Props {
-  searchQuery: string;
-  onSearchChange: (value: string) => void;
-  totalCount: number;
-  onAddClientPress?: () => void;
+  searchQuery: string
+  onSearchChange: (value: string) => void
+  totalCount: number
+  onAddClientPress?: () => void
 }
 
 export function ClientsHeader({
@@ -19,7 +19,7 @@ export function ClientsHeader({
   totalCount,
   onAddClientPress,
 }: Props) {
-  const { theme } = useTheme();
+  const { theme } = useTheme()
 
   return (
     <View style={styles.container}>
@@ -51,7 +51,7 @@ export function ClientsHeader({
 
       <View style={styles.metaRow}>
         <ThemedText style={[styles.countText, { color: theme.textMuted }]}>
-          {totalCount} {totalCount === 1 ? "cliente" : "clientes"}
+          {totalCount} {totalCount === 1 ? 'cliente' : 'clientes'}
         </ThemedText>
         {onAddClientPress && (
           <Pressable
@@ -69,7 +69,7 @@ export function ClientsHeader({
         )}
       </View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -77,8 +77,8 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.lg,
   },
   searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     borderRadius: BorderRadius.full,
     borderWidth: 1,
     paddingHorizontal: Spacing.md,
@@ -89,25 +89,25 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   metaRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginTop: Spacing.xs,
   },
   countText: {
     fontSize: 12,
   },
   addButton: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.xs,
     borderRadius: BorderRadius.full,
     gap: Spacing.xs,
   },
   addButtonText: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     fontSize: 13,
-    fontWeight: "600",
+    fontWeight: '600',
   },
-});
+})

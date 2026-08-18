@@ -1,10 +1,10 @@
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils'
 
 type MercadoLibreLogoProps = {
-  className?: string;
+  className?: string
   /** Alto en px; el SVG es 1:1. */
-  size?: number;
-};
+  size?: number
+}
 
 /**
  * Logo oficial MercadoLibre (mismo asset que landing ZM Tech).
@@ -18,9 +18,9 @@ export function MercadoLibreLogo({ className, size = 32 }: MercadoLibreLogoProps
       alt="MercadoLibre"
       width={size}
       height={size}
-      className={cn("block shrink-0", className)}
+      className={cn('block shrink-0', className)}
       decoding="async"
       draggable={false}
     />
-  );
+  )
 }

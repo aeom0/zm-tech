@@ -1,30 +1,27 @@
-import React, { useState } from "react";
-import { View, StyleSheet, Pressable } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useHeaderHeight } from "@react-navigation/elements";
+import React, { useState } from 'react'
+import { View, StyleSheet, Pressable } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useHeaderHeight } from '@react-navigation/elements'
 
-import { ThemedText } from "@/components/ThemedText";
-import { useTheme } from "@/hooks/useTheme";
-import { Spacing, BorderRadius } from "@/constants/theme";
+import { ThemedText } from '@/components/ThemedText'
+import { useTheme } from '@/hooks/useTheme'
+import { Spacing, BorderRadius } from '@/constants/theme'
 
-import { ServicesTab } from "./services/components/ServicesTab";
-import { PacksTab } from "./services/components/PacksTab";
-import { PromosTab } from "./services/components/PromosTab";
+import { ServicesTab } from './services/components/ServicesTab'
+import { PacksTab } from './services/components/PacksTab'
+import { PromosTab } from './services/components/PromosTab'
 
-const TABS = ["Servicios", "Packs", "Promos"] as const;
+const TABS = ['Servicios', 'Packs', 'Promos'] as const
 
 export default function ServicesScreen() {
-  const insets = useSafeAreaInsets();
-  const headerHeight = useHeaderHeight();
-  const { theme } = useTheme();
-  const [tab, setTab] = useState(0);
+  const insets = useSafeAreaInsets()
+  const headerHeight = useHeaderHeight()
+  const { theme } = useTheme()
+  const [tab, setTab] = useState(0)
 
   return (
     <View
-      style={[
-        styles.root,
-        { backgroundColor: theme.backgroundRoot, paddingBottom: insets.bottom },
-      ]}
+      style={[styles.root, { backgroundColor: theme.backgroundRoot, paddingBottom: insets.bottom }]}
     >
       <View
         style={[
@@ -36,7 +33,7 @@ export default function ServicesScreen() {
         ]}
       >
         {TABS.map((label, i) => {
-          const active = tab === i;
+          const active = tab === i
           return (
             <Pressable
               key={label}
@@ -50,16 +47,11 @@ export default function ServicesScreen() {
               ]}
               onPress={() => setTab(i)}
             >
-              <ThemedText
-                style={[
-                  styles.tabLabel,
-                  { color: active ? "#FFFFFF" : theme.text },
-                ]}
-              >
+              <ThemedText style={[styles.tabLabel, { color: active ? '#FFFFFF' : theme.text }]}>
                 {label}
               </ThemedText>
             </Pressable>
-          );
+          )
         })}
       </View>
 
@@ -67,7 +59,7 @@ export default function ServicesScreen() {
       {tab === 1 && <PacksTab />}
       {tab === 2 && <PromosTab />}
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -75,8 +67,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   tabBar: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: Spacing.sm,
     paddingHorizontal: Spacing.lg,
     paddingBottom: Spacing.md,
@@ -90,6 +82,6 @@ const styles = StyleSheet.create({
   },
   tabLabel: {
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: '600',
   },
-});
+})

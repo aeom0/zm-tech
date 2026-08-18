@@ -7,13 +7,13 @@ Supabase Edge Functions run on Deno, which changes the setup slightly from a sta
 Deno 1.25+ can import npm packages directly:
 
 ```js
-import { WhatsAppAPI } from "npm:whatsapp-api-js";
+import { WhatsAppAPI } from 'npm:whatsapp-api-js'
 ```
 
 For older Deno versions or if the direct npm specifier misbehaves, use the ESM CDN mirror instead:
 
 ```js
-import { WhatsAppAPI } from "https://esm.sh/whatsapp-api-js";
+import { WhatsAppAPI } from 'https://esm.sh/whatsapp-api-js'
 ```
 
 ## Deno-specific setup helper
@@ -21,32 +21,32 @@ import { WhatsAppAPI } from "https://esm.sh/whatsapp-api-js";
 `whatsapp-api-js` ships a Deno middleware + setup helper that maps directly onto `Deno.serve`:
 
 ```js
-import { WhatsAppAPI } from "npm:whatsapp-api-js/middleware/deno";
-import { Deno as DenoSetup } from "whatsapp-api-js/setup/deno";
+import { WhatsAppAPI } from 'npm:whatsapp-api-js/middleware/deno'
+import { Deno as DenoSetup } from 'whatsapp-api-js/setup/deno'
 
 const Whatsapp = new WhatsAppAPI(
   DenoSetup({
-    token: Deno.env.get("CLOUD_API_ACCESS_TOKEN"),
-    appSecret: Deno.env.get("M4D_APP_SECRET"),
-    webhookVerifyToken: Deno.env.get("WEBHOOK_VERIFICATION_TOKEN"),
+    token: Deno.env.get('CLOUD_API_ACCESS_TOKEN'),
+    appSecret: Deno.env.get('M4D_APP_SECRET'),
+    webhookVerifyToken: Deno.env.get('WEBHOOK_VERIFICATION_TOKEN'),
   })
-);
+)
 
 Deno.serve(async (req) => {
-  const url = new URL(req.url);
+  const url = new URL(req.url)
 
-  if (req.method === "GET") {
+  if (req.method === 'GET') {
     // Webhook verification handshake
-    return new Response(Whatsapp.get(Object.fromEntries(url.searchParams)));
+    return new Response(Whatsapp.get(Object.fromEntries(url.searchParams)))
   }
 
-  if (req.method === "POST") {
+  if (req.method === 'POST') {
     // Incoming message/event
-    return new Response(null, { status: await Whatsapp.handle_post(req) });
+    return new Response(null, { status: await Whatsapp.handle_post(req) })
   }
 
-  return new Response("Not found", { status: 404 });
-});
+  return new Response('Not found', { status: 404 })
+})
 ```
 
 Adapt the exact request/response shape to Supabase Edge Functions' handler signature (`Deno.serve` works the same way inside a Supabase function — the function entrypoint just wraps this pattern).

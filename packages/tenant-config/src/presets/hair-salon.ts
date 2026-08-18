@@ -1,40 +1,40 @@
-import type { TenantConfig } from "../types";
+import type { TenantConfig } from '../types'
 
 export const hairSalonPreset: TenantConfig = {
-  businessName: "Salón de Estilo",
-  businessType: "hair-salon",
-  tagline: "Tu mejor versión empieza aquí",
+  businessName: 'Salón de Estilo',
+  businessType: 'hair-salon',
+  tagline: 'Tu mejor versión empieza aquí',
 
   theme: {
-    primaryColor: "#6A1B9A",
-    accentColor: "#9E9E9E",
+    primaryColor: '#6A1B9A',
+    accentColor: '#9E9E9E',
     darkMode: false,
   },
 
   locale: {
-    currency: { code: "PEN", symbol: "S/" },
-    country: "PE",
-    timezone: "America/Lima",
-    language: "es-VE",
-    timeFormat: "24",
+    currency: { code: 'PEN', symbol: 'S/' },
+    country: 'PE',
+    timezone: 'America/Lima',
+    language: 'es-VE',
+    timeFormat: '24',
   },
 
   terminology: {
-    staff: "estilistas",
-    staffSingular: "estilista",
-    appointment: "cita",
-    client: "cliente",
+    staff: 'estilistas',
+    staffSingular: 'estilista',
+    appointment: 'cita',
+    client: 'cliente',
   },
 
   contact: {},
 
   businessHours: {
-    lunes: { open: "09:00", close: "19:00" },
-    martes: { open: "09:00", close: "19:00" },
-    miercoles: { open: "09:00", close: "19:00" },
-    jueves: { open: "09:00", close: "19:00" },
-    viernes: { open: "09:00", close: "19:00" },
-    sabado: { open: "09:00", close: "19:00" },
+    lunes: { open: '09:00', close: '19:00' },
+    martes: { open: '09:00', close: '19:00' },
+    miercoles: { open: '09:00', close: '19:00' },
+    jueves: { open: '09:00', close: '19:00' },
+    viernes: { open: '09:00', close: '19:00' },
+    sabado: { open: '09:00', close: '19:00' },
     domingo: null,
   },
 
@@ -44,5 +44,5 @@ export const hairSalonPreset: TenantConfig = {
   },
 
   businessSubtype: undefined,
-  serviceCategories: ["cortes", "coloracion"],
-};
+  serviceCategories: ['cortes', 'coloracion'],
+}

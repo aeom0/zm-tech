@@ -1,8 +1,8 @@
 // Composición de 3 dispositivos: Laptop (fondo) + Tablet (medio) + Teléfono (frente)
 // Server Component — CSS + wordmark oficial
 
-import { BrandLogo } from "@/components/brand/BrandLogo";
-import { MercadoLibreLogo } from "@/components/brand/MercadoLibreLogo";
+import { BrandLogo } from '@/components/brand/BrandLogo'
+import { MercadoLibreLogo } from '@/components/brand/MercadoLibreLogo'
 
 /* ── Contenido compartido de la pantalla (Dashboard RepMAX) ─────────────── */
 
@@ -14,12 +14,12 @@ function AppHeader() {
       </div>
       <div className="l-dm-app-avatar">CM</div>
     </div>
-  );
+  )
 }
 
 function KpiRow({ compact = false }: { compact?: boolean }) {
   return (
-    <div className={`l-dm-kpi-row${compact ? " compact" : ""}`}>
+    <div className={`l-dm-kpi-row${compact ? 'compact' : ''}`}>
       <div className="l-dm-kpi-card hot">
         <div className="l-dm-kpi-label">Ventas hoy</div>
         <div className="l-dm-kpi-value">$847</div>
@@ -36,7 +36,7 @@ function KpiRow({ compact = false }: { compact?: boolean }) {
         <div className="l-dm-kpi-delta muted">abierta</div>
       </div>
     </div>
-  );
+  )
 }
 
 function SaleRow({
@@ -46,15 +46,15 @@ function SaleRow({
   amount,
   mlIcon = false,
 }: {
-  icon?: string;
-  name: string;
-  meta: string;
-  amount: string;
-  mlIcon?: boolean;
+  icon?: string
+  name: string
+  meta: string
+  amount: string
+  mlIcon?: boolean
 }) {
   return (
     <div className="l-dm-sale-row">
-      <div className={`l-dm-sale-icon${mlIcon ? " ml" : ""}`}>
+      <div className={`l-dm-sale-icon${mlIcon ? 'ml' : ''}`}>
         {mlIcon ? <MercadoLibreLogo size={14} /> : icon}
       </div>
       <div className="l-dm-sale-info">
@@ -63,7 +63,7 @@ function SaleRow({
       </div>
       <div className="l-dm-sale-amount">{amount}</div>
     </div>
-  );
+  )
 }
 
 /* ── LAPTOP ──────────────────────────────────────────────────────────────── */
@@ -101,9 +101,24 @@ function LaptopMockup() {
             <div className="l-dm-laptop-greeting">Buenos días, Carlos 👋</div>
             <KpiRow />
             <div className="l-dm-section-title">Ventas recientes</div>
-            <SaleRow icon="🔩" name="Filtro aceite Corolla" meta="Hace 12 min · Efectivo USD" amount="$12.00" />
-            <SaleRow icon="⚙️" name="Pastilla freno Aveo" meta="Hace 34 min · Zelle" amount="$28.50" />
-            <SaleRow mlIcon name="Bujía NGK BKR6E ×4" meta="Hace 1h · MercadoLibre" amount="$32.00" />
+            <SaleRow
+              icon="🔩"
+              name="Filtro aceite Corolla"
+              meta="Hace 12 min · Efectivo USD"
+              amount="$12.00"
+            />
+            <SaleRow
+              icon="⚙️"
+              name="Pastilla freno Aveo"
+              meta="Hace 34 min · Zelle"
+              amount="$28.50"
+            />
+            <SaleRow
+              mlIcon
+              name="Bujía NGK BKR6E ×4"
+              meta="Hace 1h · MercadoLibre"
+              amount="$32.00"
+            />
           </div>
         </div>
       </div>
@@ -114,7 +129,7 @@ function LaptopMockup() {
       </div>
       <div className="l-dm-laptop-foot" />
     </div>
-  );
+  )
 }
 
 /* ── TABLET ──────────────────────────────────────────────────────────────── */
@@ -140,7 +155,7 @@ function TabletMockup() {
         <div className="l-dm-tablet-home" />
       </div>
     </div>
-  );
+  )
 }
 
 /* ── TELÉFONO ────────────────────────────────────────────────────────────── */
@@ -157,7 +172,9 @@ function PhoneMockup() {
           <div className="l-dm-statusbar">
             <span>9:41</span>
             <div className="l-dm-statusbar-r">
-              <span>▲▲▲</span><span>WiFi</span><span>🔋</span>
+              <span>▲▲▲</span>
+              <span>WiFi</span>
+              <span>🔋</span>
             </div>
           </div>
 
@@ -195,7 +212,7 @@ function PhoneMockup() {
         <div className="l-dm-phone-homebar" />
       </div>
     </div>
-  );
+  )
 }
 
 /* ── COMPOSICIÓN FINAL ───────────────────────────────────────────────────── */
@@ -211,5 +228,5 @@ export function DeviceMockup() {
       {/* Resplandor ambiental */}
       <div className="l-dm-glow" />
     </div>
-  );
+  )
 }

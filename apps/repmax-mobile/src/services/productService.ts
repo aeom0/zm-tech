@@ -1,55 +1,55 @@
-import { supabase } from '../utils/supabase';
-import type { MlListingStatus } from '@repmax/repmax-schema/mlListing';
-import type { PartCondition, Product, VehicleType } from '../types/database';
+import { supabase } from '../utils/supabase'
+import type { MlListingStatus } from '@repmax/repmax-schema/mlListing'
+import type { PartCondition, Product, VehicleType } from '../types/database'
 import {
   barcodeParaGuardar,
   extraerIdProductoDeCodigo,
   normalizarCodigo,
-} from '../utils/codigoEscaneado';
+} from '../utils/codigoEscaneado'
 
 /** Fila snake_case de PostgREST (`repmax_products`). */
 interface ProductRow {
-  id: string;
-  store_id: string;
-  title: string;
-  description: string | null;
-  brand: string;
-  model: string;
-  year_from: number | null;
-  year_to: number | null;
-  vehicle_type: VehicleType | null;
-  condition: PartCondition | null;
-  part_number: string | null;
-  barcode: string | null;
-  color: string | null;
-  price_usd: string | number;
-  price_bs: string | number | null;
-  stock: number | null;
-  min_stock: number | null;
-  photos: string[] | null;
-  ml_publish_intent: boolean | null;
-  is_active: boolean | null;
-  created_at: string | null;
-  updated_at: string | null;
-  repmax_ml_listings?: MlListingEmbed[] | MlListingEmbed | null;
+  id: string
+  store_id: string
+  title: string
+  description: string | null
+  brand: string
+  model: string
+  year_from: number | null
+  year_to: number | null
+  vehicle_type: VehicleType | null
+  condition: PartCondition | null
+  part_number: string | null
+  barcode: string | null
+  color: string | null
+  price_usd: string | number
+  price_bs: string | number | null
+  stock: number | null
+  min_stock: number | null
+  photos: string[] | null
+  ml_publish_intent: boolean | null
+  is_active: boolean | null
+  created_at: string | null
+  updated_at: string | null
+  repmax_ml_listings?: MlListingEmbed[] | MlListingEmbed | null
 }
 
 interface MlListingEmbed {
-  status: MlListingStatus;
-  ml_item_id: string | null;
-  ml_category_id: string | null;
-  ml_category_name: string | null;
+  status: MlListingStatus
+  ml_item_id: string | null
+  ml_category_id: string | null
+  ml_category_name: string | null
 }
 
 function embedListing(row: ProductRow): MlListingEmbed | null {
-  const raw = row.repmax_ml_listings;
-  if (!raw) return null;
-  if (Array.isArray(raw)) return raw[0] ?? null;
-  return raw;
+  const raw = row.repmax_ml_listings
+  if (!raw) return null
+  if (Array.isArray(raw)) return raw[0] ?? null
+  return raw
 }
 
 function mapProduct(row: ProductRow): Product {
-  const listing = embedListing(row);
+  const listing = embedListing(row)
   return {
     id: row.id,
     storeId: row.store_id,
@@ -79,32 +79,37 @@ function mapProduct(row: ProductRow): Product {
     isActive: row.is_active ?? true,
     createdAt: row.created_at ?? '',
     updatedAt: row.updated_at ?? '',
-  };
+  }
 }
 
-const PRODUCT_SELECT = '*, repmax_ml_listings(status, ml_item_id, ml_category_id, ml_category_name)';
+const PRODUCT_SELECT = '*, repmax_ml_listings(status, ml_item_id, ml_category_id, ml_category_name)'
 
 export const productService = {
-  async getAll(filters?: { q?: string; condition?: string; brand?: string; stock?: string }): Promise<Product[]> {
+  async getAll(filters?: {
+    q?: string
+    condition?: string
+    brand?: string
+    stock?: string
+  }): Promise<Product[]> {
     let query = supabase
       .from('repmax_products')
       .select(PRODUCT_SELECT)
       .eq('is_active', true)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
 
-    if (filters?.condition) query = query.eq('condition', filters.condition);
-    if (filters?.brand) query = query.ilike('brand', `%${filters.brand}%`);
+    if (filters?.condition) query = query.eq('condition', filters.condition)
+    if (filters?.brand) query = query.ilike('brand', `%${filters.brand}%`)
     if (filters?.q) {
-      const q = filters.q.replace(/,/g, ' ');
+      const q = filters.q.replace(/,/g, ' ')
       query = query.or(
-        `title.ilike.%${q}%,brand.ilike.%${q}%,model.ilike.%${q}%,part_number.ilike.%${q}%,barcode.ilike.%${q}%`,
-      );
+        `title.ilike.%${q}%,brand.ilike.%${q}%,model.ilike.%${q}%,part_number.ilike.%${q}%,barcode.ilike.%${q}%`
+      )
     }
-    if (filters?.stock === 'low') query = query.lt('stock', 3);
+    if (filters?.stock === 'low') query = query.lt('stock', 3)
 
-    const { data, error } = await query;
-    if (error) throw new Error(error.message);
-    return (data ?? []).map(mapProduct);
+    const { data, error } = await query
+    if (error) throw new Error(error.message)
+    return (data ?? []).map(mapProduct)
   },
 
   /**
@@ -112,14 +117,14 @@ export const productService = {
    * RLS limita a la tienda del usuario.
    */
   async getByCodigo(codigo: string): Promise<Product | null> {
-    const valor = normalizarCodigo(codigo);
-    if (!valor) return null;
+    const valor = normalizarCodigo(codigo)
+    if (!valor) return null
 
-    const idDeQr = extraerIdProductoDeCodigo(valor);
+    const idDeQr = extraerIdProductoDeCodigo(valor)
     if (idDeQr) {
       try {
-        const byId = await this.getById(idDeQr);
-        if (byId.isActive) return byId;
+        const byId = await this.getById(idDeQr)
+        if (byId.isActive) return byId
       } catch {
         // UUID de otra tienda o inexistente: caer a barcode / n. parte
       }
@@ -130,27 +135,27 @@ export const productService = {
       .select(PRODUCT_SELECT)
       .eq('barcode', valor)
       .eq('is_active', true)
-      .maybeSingle();
-    if (byBarcode.error) throw new Error(byBarcode.error.message);
-    if (byBarcode.data) return mapProduct(byBarcode.data);
+      .maybeSingle()
+    if (byBarcode.error) throw new Error(byBarcode.error.message)
+    if (byBarcode.data) return mapProduct(byBarcode.data)
 
     const byPart = await supabase
       .from('repmax_products')
       .select(PRODUCT_SELECT)
       .eq('is_active', true)
       .ilike('part_number', valor)
-      .limit(5);
-    if (byPart.error) throw new Error(byPart.error.message);
-    const filas = byPart.data ?? [];
-    if (filas.length === 0) return null;
-    const conStock = filas.find((row) => (row.stock ?? 0) > 0);
-    return mapProduct(conStock ?? filas[0]);
+      .limit(5)
+    if (byPart.error) throw new Error(byPart.error.message)
+    const filas = byPart.data ?? []
+    if (filas.length === 0) return null
+    const conStock = filas.find((row) => (row.stock ?? 0) > 0)
+    return mapProduct(conStock ?? filas[0])
   },
 
   async incrementStock(id: string, delta: number): Promise<Product> {
-    const actual = await this.getById(id);
-    const next = Math.max(0, actual.stock + delta);
-    return this.update(id, { stock: next });
+    const actual = await this.getById(id)
+    const next = Math.max(0, actual.stock + delta)
+    return this.update(id, { stock: next })
   },
 
   async getById(id: string): Promise<Product> {
@@ -158,9 +163,9 @@ export const productService = {
       .from('repmax_products')
       .select(PRODUCT_SELECT)
       .eq('id', id)
-      .single();
-    if (error) throw new Error(error.message);
-    return mapProduct(data);
+      .single()
+    if (error) throw new Error(error.message)
+    return mapProduct(data)
   },
 
   async create(product: Partial<Product>): Promise<Product> {
@@ -183,54 +188,54 @@ export const productService = {
       min_stock: product.minStock ?? 1,
       photos: product.photos,
       ml_publish_intent: product.mlPublishIntent ?? false,
-    };
+    }
 
     const { data, error } = await supabase
       .from('repmax_products')
       .insert(payload)
       .select(PRODUCT_SELECT)
-      .single();
-    if (error) throw new Error(error.message);
-    return mapProduct(data);
+      .single()
+    if (error) throw new Error(error.message)
+    return mapProduct(data)
   },
 
   async update(id: string, product: Partial<Product>): Promise<Product> {
-    const payload: Record<string, unknown> = {};
-    if (product.title !== undefined) payload.title = product.title;
-    if (product.description !== undefined) payload.description = product.description;
-    if (product.brand !== undefined) payload.brand = product.brand;
-    if (product.model !== undefined) payload.model = product.model;
-    if (product.yearFrom !== undefined) payload.year_from = product.yearFrom;
-    if (product.yearTo !== undefined) payload.year_to = product.yearTo;
-    if (product.vehicleType !== undefined) payload.vehicle_type = product.vehicleType;
-    if (product.condition !== undefined) payload.condition = product.condition;
-    if (product.partNumber !== undefined) payload.part_number = product.partNumber;
+    const payload: Record<string, unknown> = {}
+    if (product.title !== undefined) payload.title = product.title
+    if (product.description !== undefined) payload.description = product.description
+    if (product.brand !== undefined) payload.brand = product.brand
+    if (product.model !== undefined) payload.model = product.model
+    if (product.yearFrom !== undefined) payload.year_from = product.yearFrom
+    if (product.yearTo !== undefined) payload.year_to = product.yearTo
+    if (product.vehicleType !== undefined) payload.vehicle_type = product.vehicleType
+    if (product.condition !== undefined) payload.condition = product.condition
+    if (product.partNumber !== undefined) payload.part_number = product.partNumber
     if (product.barcode !== undefined) {
-      payload.barcode = barcodeParaGuardar(product.barcode);
+      payload.barcode = barcodeParaGuardar(product.barcode)
     }
-    if (product.color !== undefined) payload.color = product.color;
-    if (product.priceUsd !== undefined) payload.price_usd = product.priceUsd;
-    if (product.priceBs !== undefined) payload.price_bs = product.priceBs;
-    if (product.stock !== undefined) payload.stock = product.stock;
-    if (product.minStock !== undefined) payload.min_stock = product.minStock;
-    if (product.photos !== undefined) payload.photos = product.photos;
-    if (product.mlPublishIntent !== undefined) payload.ml_publish_intent = product.mlPublishIntent;
+    if (product.color !== undefined) payload.color = product.color
+    if (product.priceUsd !== undefined) payload.price_usd = product.priceUsd
+    if (product.priceBs !== undefined) payload.price_bs = product.priceBs
+    if (product.stock !== undefined) payload.stock = product.stock
+    if (product.minStock !== undefined) payload.min_stock = product.minStock
+    if (product.photos !== undefined) payload.photos = product.photos
+    if (product.mlPublishIntent !== undefined) payload.ml_publish_intent = product.mlPublishIntent
 
     const { data, error } = await supabase
       .from('repmax_products')
       .update(payload)
       .eq('id', id)
       .select(PRODUCT_SELECT)
-      .single();
-    if (error) throw new Error(error.message);
-    return mapProduct(data);
+      .single()
+    if (error) throw new Error(error.message)
+    return mapProduct(data)
   },
 
   async deactivate(id: string): Promise<void> {
     const { error } = await supabase
       .from('repmax_products')
       .update({ is_active: false })
-      .eq('id', id);
-    if (error) throw new Error(error.message);
+      .eq('id', id)
+    if (error) throw new Error(error.message)
   },
-};
+}

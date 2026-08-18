@@ -5,7 +5,6 @@ description: Best practices for publishing and managing organic (non-paid) conte
 
 # Social Media Organic Publishing
 
-
 Playbook for publishing organic content programmatically to Instagram, Facebook Pages, and TikTok. Distilled from official platform documentation (2026). This is distinct from paid advertising — see `meta-ads-manager` for Meta Ads campaigns.
 
 ## 1. Instagram (Graph API — Content Publishing)
@@ -13,6 +12,7 @@ Playbook for publishing organic content programmatically to Instagram, Facebook 
 See `references/instagram.md` for the full container flow, Reels specs, and error handling.
 
 **Quick facts:**
+
 - Only **Business or Creator** accounts can publish via API — personal accounts cannot, and must convert + link to a Facebook Page first
 - Required scopes (current, as of 2026): `instagram_business_basic` + `instagram_business_content_publish`. The older `instagram_basic`/`instagram_content_publish` scope names were deprecated Jan 27, 2025 — if you see code referencing those, it needs updating
 - Two-step publish: create a media container (`POST /{ig-user-id}/media`), poll its `status_code` until `FINISHED`, then publish (`POST /{ig-user-id}/media_publish`)
@@ -28,6 +28,7 @@ See `references/facebook-pages.md`. Page posting shares infrastructure with the 
 See `references/tiktok.md` for Direct Post vs. Creator Post (inbox upload), domain verification, and chunked upload mechanics.
 
 **Quick facts:**
+
 - Two flows: **Direct Post** (publishes immediately, no manual step) vs. **Creator Post/Inbox Upload** (lands in the creator's TikTok inbox for manual confirmation) — for full automation, Direct Post is what the user wants
 - **Unaudited apps are heavily restricted**: max 5 users per 24h, all posts forced to `SELF_ONLY` (private) viewership. To publish publicly, the API client needs a **compliance audit** — this isn't optional for any real-world use case
 - **Domain/URL verification is required** before using `PULL_FROM_URL` as a video/photo source — the exact host serving the media must be verified in the TikTok Developer Portal (DNS record or meta tag). Pre-signed URLs from an unverified bucket fail with `url_ownership_unverified`
@@ -37,6 +38,7 @@ See `references/tiktok.md` for Direct Post vs. Creator Post (inbox upload), doma
 ## 4. Cross-platform decision: build direct vs. use a posting layer
 
 Building directly against these APIs means owning OAuth flows, app review, token refresh, rate-limit handling, and container/status polling per platform — each platform is a separate multi-week project. This is the right call when:
+
 - There's a compliance requirement ruling out third-party middleware
 - The integration only needs one platform with deep platform-specific functionality
 

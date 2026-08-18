@@ -1,20 +1,20 @@
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { BrandLogo } from "@/components/brand/BrandLogo";
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { BrandLogo } from '@/components/brand/BrandLogo'
 
 export function NavBar() {
-  const [scrolled, setScrolled] = useState(false);
+  const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    const handleScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
-    <nav className={`l-nav${scrolled ? " scrolled" : ""}`}>
+    <nav className={`l-nav${scrolled ? 'scrolled' : ''}`}>
       <a href="#" className="l-nav-logo" aria-label="RepMAX">
         <BrandLogo variant="wordmark" height={28} priority />
       </a>
@@ -27,5 +27,5 @@ export function NavBar() {
         </a>
       </div>
     </nav>
-  );
+  )
 }

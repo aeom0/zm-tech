@@ -1,23 +1,21 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from '@tanstack/react-query'
 
-import { supabase } from "@/lib/supabase";
+import { supabase } from '@/lib/supabase'
 
-import type { InventoryItem } from "../types";
+import type { InventoryItem } from '../types'
 
 export function useInventoryItemsQuery() {
   return useQuery<InventoryItem[]>({
-    queryKey: ["inventory_items"],
+    queryKey: ['inventory_items'],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("inventory_items")
-        .select(
-          "id, name, type, category, quantity, min_stock, unit, price, cost",
-        )
-        .order("created_at", { ascending: true });
+        .from('inventory_items')
+        .select('id, name, type, category, quantity, min_stock, unit, price, cost')
+        .order('created_at', { ascending: true })
       if (error) {
-        throw new Error(error.message);
+        throw new Error(error.message)
       }
-      return (data ?? []) as InventoryItem[];
+      return (data ?? []) as InventoryItem[]
     },
-  });
+  })
 }

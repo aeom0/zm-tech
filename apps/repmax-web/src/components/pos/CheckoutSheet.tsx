@@ -2,43 +2,38 @@
 // POS — cobro (Sheet)
 // ============================================================
 
-"use client";
+'use client'
 
-import { useState } from "react";
-import { AlertTriangle } from "lucide-react";
+import { useState } from 'react'
+import { AlertTriangle } from 'lucide-react'
 import {
   convertirUsdABs,
   validarDetallesPagoMixto,
   type DetallesPago,
   type MonedaPago,
-} from "@zmtech/tasas";
-import { createClient } from "@/lib/supabase/client";
-import { createSale } from "@/lib/repmax-queries";
-import { useToast } from "@/hooks/use-toast";
-import { PAYMENT_METHODS_WEB } from "@/constants/payment-methods";
-import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+} from '@zmtech/tasas'
+import { createClient } from '@/lib/supabase/client'
+import { createSale } from '@/lib/repmax-queries'
+import { useToast } from '@/hooks/use-toast'
+import { PAYMENT_METHODS_WEB } from '@/constants/payment-methods'
+import { Button } from '@/components/ui/button'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import type {
   CartItemWeb,
   CashSessionWeb,
   PaymentMethodWeb,
   SaleCreatePayload,
-} from "@/types/dashboard";
+} from '@/types/dashboard'
 
 interface CheckoutSheetProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  items: CartItemWeb[];
-  storeId: string;
-  cashierId: string;
-  usdBsRate: number;
-  activeSession: CashSessionWeb | null;
-  onSuccess: () => void;
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  items: CartItemWeb[]
+  storeId: string
+  cashierId: string
+  usdBsRate: number
+  activeSession: CashSessionWeb | null
+  onSuccess: () => void
 }
 
 export function CheckoutSheet({
@@ -51,58 +46,58 @@ export function CheckoutSheet({
   activeSession,
   onSuccess,
 }: CheckoutSheetProps) {
-  const { toast } = useToast();
-  const [metodoPago, setMetodoPago] = useState<PaymentMethodWeb>("CASH_USD");
-  const [notas, setNotas] = useState("");
-  const [confirmando, setConfirmando] = useState(false);
-  const [montoMixtoUsd, setMontoMixtoUsd] = useState("");
-  const [montoMixtoBs, setMontoMixtoBs] = useState("");
+  const { toast } = useToast()
+  const [metodoPago, setMetodoPago] = useState<PaymentMethodWeb>('CASH_USD')
+  const [notas, setNotas] = useState('')
+  const [confirmando, setConfirmando] = useState(false)
+  const [montoMixtoUsd, setMontoMixtoUsd] = useState('')
+  const [montoMixtoBs, setMontoMixtoBs] = useState('')
 
-  const totalUsd = items.reduce((acc, it) => acc + it.subtotalUsd, 0);
-  const totalBs = usdBsRate > 0 ? convertirUsdABs(totalUsd, usdBsRate) : 0;
-  const esMetodoBs = ["CASH_BS", "PAGO_MOVIL", "TRANSFERENCIA"].includes(metodoPago);
+  const totalUsd = items.reduce((acc, it) => acc + it.subtotalUsd, 0)
+  const totalBs = usdBsRate > 0 ? convertirUsdABs(totalUsd, usdBsRate) : 0
+  const esMetodoBs = ['CASH_BS', 'PAGO_MOVIL', 'TRANSFERENCIA'].includes(metodoPago)
   const detallesMixtos: DetallesPago = {
-    CASH_USD: { monto: Math.max(0, Number(montoMixtoUsd) || 0), moneda: "USD" },
-    CASH_BS: { monto: Math.max(0, Number(montoMixtoBs) || 0), moneda: "BS" },
-  };
-  let validacionMixta: ReturnType<typeof validarDetallesPagoMixto> | null = null;
-  if (metodoPago === "MIXED") {
+    CASH_USD: { monto: Math.max(0, Number(montoMixtoUsd) || 0), moneda: 'USD' },
+    CASH_BS: { monto: Math.max(0, Number(montoMixtoBs) || 0), moneda: 'BS' },
+  }
+  let validacionMixta: ReturnType<typeof validarDetallesPagoMixto> | null = null
+  if (metodoPago === 'MIXED') {
     try {
-      validacionMixta = validarDetallesPagoMixto(detallesMixtos, totalUsd, usdBsRate);
+      validacionMixta = validarDetallesPagoMixto(detallesMixtos, totalUsd, usdBsRate)
     } catch (e) {
       validacionMixta = {
         valido: false,
         totalUsdConvertido: 0,
         diferenciaUsd: 0,
-        mensaje: e instanceof Error ? e.message : "Montos mixtos inválidos",
-      };
+        mensaje: e instanceof Error ? e.message : 'Montos mixtos inválidos',
+      }
     }
   }
 
   function crearDetallesPago(): DetallesPago {
-    if (metodoPago === "MIXED") return detallesMixtos;
-    const moneda: MonedaPago = esMetodoBs ? "BS" : "USD";
+    if (metodoPago === 'MIXED') return detallesMixtos
+    const moneda: MonedaPago = esMetodoBs ? 'BS' : 'USD'
     return {
       [metodoPago]: {
-        monto: moneda === "BS" ? totalBs : totalUsd,
+        monto: moneda === 'BS' ? totalBs : totalUsd,
         moneda,
       },
-    };
+    }
   }
 
   async function confirmarVenta() {
-    if (items.length === 0) return;
+    if (items.length === 0) return
     if (validacionMixta && !validacionMixta.valido) {
       toast({
-        title: "Montos mixtos incompletos",
+        title: 'Montos mixtos incompletos',
         description: validacionMixta.mensaje,
-        variant: "destructive",
-      });
-      return;
+        variant: 'destructive',
+      })
+      return
     }
-    setConfirmando(true);
+    setConfirmando(true)
     try {
-      const client = createClient();
+      const client = createClient()
       const payload: SaleCreatePayload = {
         storeId,
         sessionId: activeSession?.id ?? null,
@@ -124,26 +119,26 @@ export function CheckoutSheet({
             photo: item.product.photos?.[0] ?? null,
           },
         })),
-      };
-      await createSale(client, payload);
+      }
+      await createSale(client, payload)
       toast({
-        title: "Venta registrada",
+        title: 'Venta registrada',
         description: `Total $${totalUsd.toFixed(2)}`,
-      });
-      setNotas("");
-      setMetodoPago("CASH_USD");
-      setMontoMixtoUsd("");
-      setMontoMixtoBs("");
-      onSuccess();
-      onOpenChange(false);
+      })
+      setNotas('')
+      setMetodoPago('CASH_USD')
+      setMontoMixtoUsd('')
+      setMontoMixtoBs('')
+      onSuccess()
+      onOpenChange(false)
     } catch (e) {
       toast({
-        title: "No se pudo registrar la venta",
-        description: e instanceof Error ? e.message : "Error desconocido",
-        variant: "destructive",
-      });
+        title: 'No se pudo registrar la venta',
+        description: e instanceof Error ? e.message : 'Error desconocido',
+        variant: 'destructive',
+      })
     } finally {
-      setConfirmando(false);
+      setConfirmando(false)
     }
   }
 
@@ -153,8 +148,7 @@ export function CheckoutSheet({
         <SheetHeader>
           <SheetTitle className="pr-8">Cobrar</SheetTitle>
           <p className="text-sm text-[#9E9E9E]">
-            {items.length} producto{items.length === 1 ? "" : "s"} — total $
-            {totalUsd.toFixed(2)}
+            {items.length} producto{items.length === 1 ? '' : 's'} — total ${totalUsd.toFixed(2)}
           </p>
           <p className="text-sm font-medium text-[#FF8533]">
             Equivalente: Bs {totalBs.toFixed(2)} · tasa BCV Bs {usdBsRate.toFixed(2)}
@@ -176,10 +170,10 @@ export function CheckoutSheet({
                 <label
                   key={m.value}
                   className={
-                    "flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm " +
+                    'flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm ' +
                     (metodoPago === m.value
-                      ? "border-[#FF6B00] bg-[#FF6B00]/10 text-[#F5F5F5]"
-                      : "border-[#2A2A2A] bg-[#242424] text-[#9E9E9E]")
+                      ? 'border-[#FF6B00] bg-[#FF6B00]/10 text-[#F5F5F5]'
+                      : 'border-[#2A2A2A] bg-[#242424] text-[#9E9E9E]')
                   }
                 >
                   <input
@@ -207,7 +201,7 @@ export function CheckoutSheet({
             </div>
           </div>
 
-          {metodoPago === "MIXED" ? (
+          {metodoPago === 'MIXED' ? (
             <div className="space-y-3 rounded-lg border border-[#FF6B00]/40 bg-[#FF6B00]/5 p-3">
               <p className="text-sm font-medium text-[#F5F5F5]">Desglose del pago mixto</p>
               <label className="block text-xs text-[#9E9E9E]" htmlFor="mixto-usd">
@@ -236,15 +230,19 @@ export function CheckoutSheet({
                   className="mt-1 w-full rounded-md border border-[#2A2A2A] bg-[#242424] px-3 py-2 text-sm text-[#F5F5F5] focus:border-[#FF6B00] focus:outline-none"
                 />
               </label>
-              <p className={validacionMixta?.valido ? "text-xs text-[#4CAF50]" : "text-xs text-[#FFC107]"}>
+              <p
+                className={
+                  validacionMixta?.valido ? 'text-xs text-[#4CAF50]' : 'text-xs text-[#FFC107]'
+                }
+              >
                 {validacionMixta?.valido
-                  ? "El desglose coincide con el total."
+                  ? 'El desglose coincide con el total.'
                   : validacionMixta?.mensaje}
               </p>
             </div>
           ) : (
             <div className="rounded-lg border border-[#2A2A2A] bg-[#242424] p-3 text-sm text-[#9E9E9E]">
-              Monto a cobrar:{" "}
+              Monto a cobrar:{' '}
               <span className="font-semibold text-[#F5F5F5]">
                 {esMetodoBs ? `Bs ${totalBs.toFixed(2)}` : `$${totalUsd.toFixed(2)}`}
               </span>
@@ -270,10 +268,10 @@ export function CheckoutSheet({
             onClick={() => void confirmarVenta()}
             className="w-full bg-[#FF6B00] py-6 text-base font-semibold text-[#0D0D0D] hover:bg-[#FF8533]"
           >
-            {confirmando ? "Confirmando…" : "Confirmar venta"}
+            {confirmando ? 'Confirmando…' : 'Confirmar venta'}
           </Button>
         </div>
       </SheetContent>
     </Sheet>
-  );
+  )
 }

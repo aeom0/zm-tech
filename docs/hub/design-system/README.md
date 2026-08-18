@@ -10,22 +10,22 @@ Sistema visual del panel interno de la fábrica. Familia de marca **landing ZM T
 
 ## Archivos
 
-| Archivo | Cuándo |
-|---------|--------|
-| [`design-system.md`](./design-system.md) | Siempre — overview, stack |
-| [`tokens.md`](./tokens.md) | Color, espacio, tipo, radio |
-| [`components.md`](./components.md) | Botones, input, sidebar, badges, empty |
-| [`visual-style.md`](./visual-style.md) | Estética ZM Control, grid, anti-patterns |
-| [`motion.md`](./motion.md) | Transiciones UI |
-| [`voice.md`](./voice.md) | Copy VE / LATAM, CTAs, errores |
+| Archivo                                  | Cuándo                                   |
+| ---------------------------------------- | ---------------------------------------- |
+| [`design-system.md`](./design-system.md) | Siempre — overview, stack                |
+| [`tokens.md`](./tokens.md)               | Color, espacio, tipo, radio              |
+| [`components.md`](./components.md)       | Botones, input, sidebar, badges, empty   |
+| [`visual-style.md`](./visual-style.md)   | Estética ZM Control, grid, anti-patterns |
+| [`motion.md`](./motion.md)               | Transiciones UI                          |
+| [`voice.md`](./voice.md)                 | Copy VE / LATAM, CTAs, errores           |
 
 ## Fuentes de verdad
 
-| Capa | Path |
-|------|------|
-| Paleta origen (gana en hex) | `apps/landing/src/app/globals.css` |
-| Tokens TS / CSS | [`../design/tokens.ts`](../design/tokens.ts) · `apps/hub/src/lib/theme.ts` · `globals.css` |
-| Canvas (layout / comps) | [`../design/hub-shell.pen`](../design/hub-shell.pen) · [`hub-shell.png`](../design/hub-shell.png) |
+| Capa                        | Path                                                                                              |
+| --------------------------- | ------------------------------------------------------------------------------------------------- |
+| Paleta origen (gana en hex) | `apps/landing/src/app/globals.css`                                                                |
+| Tokens TS / CSS             | [`../design/tokens.ts`](../design/tokens.ts) · `apps/hub/src/lib/theme.ts` · `globals.css`        |
+| Canvas (layout / comps)     | [`../design/hub-shell.pen`](../design/hub-shell.pen) · [`hub-shell.png`](../design/hub-shell.png) |
 
 Si el `.pen` diverge en hex, **código y `tokens.md` mandan** (landing `#8B5CF6` / `#050505`).
 
@@ -38,9 +38,9 @@ Si el `.pen` diverge en hex, **código y `tokens.md` mandan** (landing `#8B5CF6`
 
 ## Estado
 
-| Pieza | Estado |
-|-------|--------|
-| Design system docs | v0.1 — 2026-08-01 |
-| Tokens TS dark/light | Listo |
-| Canvas shell | Ver `../design/` |
-| Toggle light en app | Pendiente (tokens documentados; app arranca dark) |
+| Pieza                | Estado                                            |
+| -------------------- | ------------------------------------------------- |
+| Design system docs   | v0.1 — 2026-08-01                                 |
+| Tokens TS dark/light | Listo                                             |
+| Canvas shell         | Ver `../design/`                                  |
+| Toggle light en app  | Pendiente (tokens documentados; app arranca dark) |

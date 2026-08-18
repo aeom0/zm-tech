@@ -18,12 +18,12 @@ description: >
 
 **ODentalPro** es el producto dental del portfolio ZM Tech (clínicas / gestión odontológica).
 
-| Pieza | Path |
-|-------|------|
-| Web | `apps/odentalpro-web` |
-| Mobile | `apps/odentalpro-mobile` |
-| Server | `apps/odentalpro-server` |
-| Schema | `packages/dental-schema` → `@odentalpro/dental-schema` |
+| Pieza         | Path                                                           |
+| ------------- | -------------------------------------------------------------- |
+| Web           | `apps/odentalpro-web`                                          |
+| Mobile        | `apps/odentalpro-mobile`                                       |
+| Server        | `apps/odentalpro-server`                                       |
+| Schema        | `packages/dental-schema` → `@odentalpro/dental-schema`         |
 | Docs / diseño | `docs/odentalpro/` (incl. `.pen` en `docs/odentalpro/design/`) |
 
 ---

@@ -3,10 +3,10 @@
 // Centraliza la lógica de "ir al siguiente paso"
 // ============================================================
 
-import { useCallback } from 'react';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { OnboardingStackParamList } from '../navigation/types';
-import { useOnboardingCancel } from '../navigation/onboardingCancelContext';
+import { useCallback } from 'react'
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import type { OnboardingStackParamList } from '../navigation/types'
+import { useOnboardingCancel } from '../navigation/onboardingCancelContext'
 
 // Orden lineal de las pantallas del onboarding
 const SCREENS: (keyof OnboardingStackParamList)[] = [
@@ -15,15 +15,15 @@ const SCREENS: (keyof OnboardingStackParamList)[] = [
   'OnboardingBusiness',
   'OnboardingTheme',
   'OnboardingPreview',
-];
+]
 
-type OnboardingNavProp = NativeStackNavigationProp<OnboardingStackParamList>;
+type OnboardingNavProp = NativeStackNavigationProp<OnboardingStackParamList>
 
 interface UseOnboardingNavigationResult {
-  goNext: () => void;
-  goBack: () => void;
-  currentStep: number;
-  totalSteps: number;
+  goNext: () => void
+  goBack: () => void
+  currentStep: number
+  totalSteps: number
 }
 
 /**
@@ -32,28 +32,28 @@ interface UseOnboardingNavigationResult {
  */
 export function useOnboardingNavigation(
   currentScreen: keyof OnboardingStackParamList,
-  navigation: OnboardingNavProp,
+  navigation: OnboardingNavProp
 ): UseOnboardingNavigationResult {
-  const onCancel = useOnboardingCancel();
-  const currentIndex = SCREENS.indexOf(currentScreen);
-  const totalSteps = SCREENS.length;
-  const currentStep = Math.max(0, currentIndex);
+  const onCancel = useOnboardingCancel()
+  const currentIndex = SCREENS.indexOf(currentScreen)
+  const totalSteps = SCREENS.length
+  const currentStep = Math.max(0, currentIndex)
 
   const goNext = useCallback(() => {
-    const siguienteIndex = currentIndex + 1;
+    const siguienteIndex = currentIndex + 1
     if (siguienteIndex < SCREENS.length) {
-      const siguientePantalla = SCREENS[siguienteIndex];
-      navigation.navigate(siguientePantalla as never);
+      const siguientePantalla = SCREENS[siguienteIndex]
+      navigation.navigate(siguientePantalla as never)
     }
-  }, [currentIndex, navigation]);
+  }, [currentIndex, navigation])
 
   const goBack = useCallback(() => {
     if (navigation.canGoBack()) {
-      navigation.goBack();
+      navigation.goBack()
     } else {
-      onCancel();
+      onCancel()
     }
-  }, [navigation, onCancel]);
+  }, [navigation, onCancel])
 
-  return { goNext, goBack, currentStep, totalSteps };
+  return { goNext, goBack, currentStep, totalSteps }
 }

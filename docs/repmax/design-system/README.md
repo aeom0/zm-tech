@@ -10,16 +10,16 @@ Sistema visual **Industrial Dark** para web y mobile. Fuente de verdad de diseñ
 
 ## Archivos
 
-| Archivo | Cuándo |
-|---------|--------|
-| [`design-system.md`](./design-system.md) | Siempre — overview, stack, punteros |
-| [`tokens.md`](./tokens.md) | Color, espacio, tipo, radio |
-| [`components.md`](./components.md) | Botones, cards, progress, toast, header |
-| [`visual-style.md`](./visual-style.md) | Estética Industrial Dark, gradientes, anti-patterns |
-| [`motion.md`](./motion.md) | Transiciones onboarding / UI |
-| [`onboarding.md`](./onboarding.md) | Flujo de 7 pantallas + tap-through |
-| [`voice.md`](./voice.md) | Copy VE, CTAs, errores |
-| [`../brand/README.md`](../brand/README.md) | Logos, favicons, íconos mobile |
+| Archivo                                    | Cuándo                                              |
+| ------------------------------------------ | --------------------------------------------------- |
+| [`design-system.md`](./design-system.md)   | Siempre — overview, stack, punteros                 |
+| [`tokens.md`](./tokens.md)                 | Color, espacio, tipo, radio                         |
+| [`components.md`](./components.md)         | Botones, cards, progress, toast, header             |
+| [`visual-style.md`](./visual-style.md)     | Estética Industrial Dark, gradientes, anti-patterns |
+| [`motion.md`](./motion.md)                 | Transiciones onboarding / UI                        |
+| [`onboarding.md`](./onboarding.md)         | Flujo de 7 pantallas + tap-through                  |
+| [`voice.md`](./voice.md)                   | Copy VE, CTAs, errores                              |
+| [`../brand/README.md`](../brand/README.md) | Logos, favicons, íconos mobile                      |
 
 ## Principios
 
@@ -30,10 +30,10 @@ Sistema visual **Industrial Dark** para web y mobile. Fuente de verdad de diseñ
 
 ## Estado
 
-| Pieza | Estado |
-|-------|--------|
-| Tokens Pencil (`onboarding.pen` + `catalog.pen`) | Listo (dark/light) |
-| Componentes onboarding | Listo en canvas |
-| Catálogo / fotos ML | Canvas + mobile fase A |
-| Design system docs | v0.1 — 2026-08-01 |
-| Paridad total web/dashboard | Pendiente |
+| Pieza                                            | Estado                 |
+| ------------------------------------------------ | ---------------------- |
+| Tokens Pencil (`onboarding.pen` + `catalog.pen`) | Listo (dark/light)     |
+| Componentes onboarding                           | Listo en canvas        |
+| Catálogo / fotos ML                              | Canvas + mobile fase A |
+| Design system docs                               | v0.1 — 2026-08-01      |
+| Paridad total web/dashboard                      | Pendiente              |

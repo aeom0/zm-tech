@@ -1,18 +1,18 @@
 // Alerta post-venta: productos en ML que requieren actualizar stock manualmente.
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React from 'react'
+import { View, Text, StyleSheet } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 
-import { colors, typography, spacing, borderRadius } from '../../utils/theme';
+import { colors, typography, spacing, borderRadius } from '../../utils/theme'
 
-import type { ItemAlertaMlStock } from '../../utils/mlStockAlert';
+import type { ItemAlertaMlStock } from '../../utils/mlStockAlert'
 
 interface Props {
-  items: ItemAlertaMlStock[];
+  items: ItemAlertaMlStock[]
 }
 
 export function MlStockAlertCard({ items }: Props) {
-  if (items.length === 0) return null;
+  if (items.length === 0) return null
 
   return (
     <View style={styles.card}>
@@ -26,17 +26,15 @@ export function MlStockAlertCard({ items }: Props) {
       </Text>
       {items.map((item) => (
         <View key={item.productId} style={styles.row}>
-          <Text style={styles.productTitle} numberOfLines={2}>{item.title}</Text>
-          {item.partNumber ? (
-            <Text style={styles.meta}>Ref: {item.partNumber}</Text>
-          ) : null}
-          {item.mlItemId ? (
-            <Text style={styles.meta}>ML: {item.mlItemId}</Text>
-          ) : null}
+          <Text style={styles.productTitle} numberOfLines={2}>
+            {item.title}
+          </Text>
+          {item.partNumber ? <Text style={styles.meta}>Ref: {item.partNumber}</Text> : null}
+          {item.mlItemId ? <Text style={styles.meta}>ML: {item.mlItemId}</Text> : null}
         </View>
       ))}
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -85,4 +83,4 @@ const styles = StyleSheet.create({
     color: colors.text.disabled,
     marginTop: 2,
   },
-});
+})

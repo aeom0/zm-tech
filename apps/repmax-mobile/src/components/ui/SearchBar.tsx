@@ -1,7 +1,7 @@
 // ============================================================
 // Barra de búsqueda reutilizable
 // ============================================================
-import React from 'react';
+import React from 'react'
 import {
   View,
   TextInput,
@@ -9,17 +9,17 @@ import {
   StyleSheet,
   type StyleProp,
   type ViewStyle,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+} from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 
-import { colors, typography, spacing, borderRadius } from '../../utils/theme';
+import { colors, typography, spacing, borderRadius } from '../../utils/theme'
 
 interface SearchBarProps {
-  value: string;
-  onChangeText: (text: string) => void;
-  placeholder?: string;
-  style?: StyleProp<ViewStyle>;
-  onScanPress?: () => void;
+  value: string
+  onChangeText: (text: string) => void
+  placeholder?: string
+  style?: StyleProp<ViewStyle>
+  onScanPress?: () => void
 }
 
 export function SearchBar({
@@ -31,12 +31,7 @@ export function SearchBar({
 }: SearchBarProps) {
   return (
     <View style={[styles.bar, style]}>
-      <Ionicons
-        name="search-outline"
-        size={18}
-        color={colors.text.secondary}
-        style={styles.icon}
-      />
+      <Ionicons name="search-outline" size={18} color={colors.text.secondary} style={styles.icon} />
       <TextInput
         style={styles.input}
         placeholder={placeholder}
@@ -67,7 +62,7 @@ export function SearchBar({
         </TouchableOpacity>
       ) : null}
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -97,4 +92,4 @@ const styles = StyleSheet.create({
     marginLeft: spacing.sm,
     padding: spacing.xs,
   },
-});
+})

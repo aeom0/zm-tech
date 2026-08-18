@@ -1,7 +1,7 @@
 // ============================================================
 // FAB circular y barra de acción inferior (carrito POS)
 // ============================================================
-import React from 'react';
+import React from 'react'
 import {
   View,
   Text,
@@ -9,17 +9,17 @@ import {
   StyleSheet,
   type StyleProp,
   type ViewStyle,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+} from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 
-import { colors, typography, spacing, borderRadius, shadows, layout } from '../../utils/theme';
-import { hapticLight } from '../../utils/haptics';
+import { colors, typography, spacing, borderRadius, shadows, layout } from '../../utils/theme'
+import { hapticLight } from '../../utils/haptics'
 
 interface FABProps {
-  icon: keyof typeof Ionicons.glyphMap;
-  onPress: () => void;
-  accessibilityLabel: string;
-  style?: StyleProp<ViewStyle>;
+  icon: keyof typeof Ionicons.glyphMap
+  onPress: () => void
+  accessibilityLabel: string
+  style?: StyleProp<ViewStyle>
 }
 
 /** Botón flotante circular (Inventario, Clientes) */
@@ -28,39 +28,33 @@ export function FAB({ icon, onPress, accessibilityLabel, style }: FABProps) {
     <TouchableOpacity
       style={[styles.fab, style]}
       onPress={() => {
-        void hapticLight();
-        onPress();
+        void hapticLight()
+        onPress()
       }}
       accessibilityLabel={accessibilityLabel}
       activeOpacity={0.85}
     >
       <Ionicons name={icon} size={26} color={colors.text.inverse} />
     </TouchableOpacity>
-  );
+  )
 }
 
 interface ActionBarProps {
-  label: string;
-  icon?: keyof typeof Ionicons.glyphMap;
-  badge?: number;
-  onPress: () => void;
-  style?: StyleProp<ViewStyle>;
+  label: string
+  icon?: keyof typeof Ionicons.glyphMap
+  badge?: number
+  onPress: () => void
+  style?: StyleProp<ViewStyle>
 }
 
 /** Barra full-width inferior (ej. Ver carrito en POS) */
-export function ActionBar({
-  label,
-  icon = 'cart',
-  badge,
-  onPress,
-  style,
-}: ActionBarProps) {
+export function ActionBar({ label, icon = 'cart', badge, onPress, style }: ActionBarProps) {
   return (
     <TouchableOpacity
       style={[styles.actionBar, style]}
       onPress={() => {
-        void hapticLight();
-        onPress();
+        void hapticLight()
+        onPress()
       }}
       activeOpacity={0.9}
     >
@@ -72,7 +66,7 @@ export function ActionBar({
         </View>
       ) : null}
     </TouchableOpacity>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -121,4 +115,4 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily.bold,
     fontSize: typography.size.xs,
   },
-});
+})

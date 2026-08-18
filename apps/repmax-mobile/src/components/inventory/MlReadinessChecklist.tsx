@@ -1,14 +1,14 @@
 // Checklist visual “Listo para ML” en la ficha de producto.
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React from 'react'
+import { View, Text, StyleSheet } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 
-import type { ItemChecklistMl } from '../../utils/mlReadiness';
-import { colors, typography, spacing, borderRadius } from '../../utils/theme';
+import type { ItemChecklistMl } from '../../utils/mlReadiness'
+import { colors, typography, spacing, borderRadius } from '../../utils/theme'
 
 interface Props {
-  items: ItemChecklistMl[];
-  listo: boolean;
+  items: ItemChecklistMl[]
+  listo: boolean
 }
 
 export function MlReadinessChecklist({ items, listo }: Props) {
@@ -28,7 +28,7 @@ export function MlReadinessChecklist({ items, listo }: Props) {
         </View>
       ))}
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -61,4 +61,4 @@ const styles = StyleSheet.create({
   labelPending: {
     color: colors.text.disabled,
   },
-});
+})

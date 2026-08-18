@@ -1,72 +1,66 @@
-"use client";
+'use client'
 
-import { Pencil, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { Pencil, Trash2 } from 'lucide-react'
+import { useState } from 'react'
 
-import { useDeletePack, useTogglePackActive } from "@/hooks/servicios/usePacks";
-import type { Pack } from "../../_services/packsService";
-import { SavingIndicator } from "../shared/SavingIndicator";
+import { useDeletePack, useTogglePackActive } from '@/hooks/servicios/usePacks'
+import type { Pack } from '../../_services/packsService'
+import { SavingIndicator } from '../shared/SavingIndicator'
 
 interface Props {
-  pack: Pack;
-  onEdit: (pack: Pack) => void;
+  pack: Pack
+  onEdit: (pack: Pack) => void
 }
 
 export function PackCard({ pack, onEdit }: Props) {
-  const deletePack = useDeletePack();
-  const toggleActive = useTogglePackActive();
-  const [savingState, setSavingState] = useState<
-    "idle" | "saving" | "saved" | "error"
-  >("idle");
+  const deletePack = useDeletePack()
+  const toggleActive = useTogglePackActive()
+  const [savingState, setSavingState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
 
   async function handleToggle() {
-    setSavingState("saving");
+    setSavingState('saving')
     try {
       await toggleActive.mutateAsync({
         id: pack.id,
         is_active: !pack.is_active,
-      });
-      setSavingState("saved");
-      setTimeout(() => setSavingState("idle"), 2000);
+      })
+      setSavingState('saved')
+      setTimeout(() => setSavingState('idle'), 2000)
     } catch {
-      setSavingState("error");
-      setTimeout(() => setSavingState("idle"), 3000);
+      setSavingState('error')
+      setTimeout(() => setSavingState('idle'), 3000)
     }
   }
 
   async function handleDelete() {
-    if (!window.confirm(`Eliminar el pack \"${pack.name}\"?`)) return;
-    setSavingState("saving");
+    if (!window.confirm(`Eliminar el pack \"${pack.name}\"?`)) return
+    setSavingState('saving')
     try {
-      await deletePack.mutateAsync(pack.id);
+      await deletePack.mutateAsync(pack.id)
     } catch {
-      setSavingState("error");
-      setTimeout(() => setSavingState("idle"), 3000);
+      setSavingState('error')
+      setTimeout(() => setSavingState('idle'), 3000)
     }
   }
 
   return (
     <div
-      className={`rounded-xl border border-white/10 bg-white/5 p-4 transition-opacity ${!pack.is_active ? "opacity-50" : ""}`}
+      className={`rounded-xl border border-white/10 bg-white/5 p-4 transition-opacity ${!pack.is_active ? 'opacity-50' : ''}`}
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <h3 className="truncate text-sm font-medium text-white">
-            {pack.name}
-          </h3>
+          <h3 className="truncate text-sm font-medium text-white">{pack.name}</h3>
           {pack.description ? (
-            <p className="mt-0.5 line-clamp-1 text-xs text-white/50">
-              {pack.description}
-            </p>
+            <p className="mt-0.5 line-clamp-1 text-xs text-white/50">{pack.description}</p>
           ) : null}
           <p className="mt-1 text-sm font-semibold text-[#40E0D0]">
-            {Number(pack.price).toLocaleString("es-VE", {
+            {Number(pack.price).toLocaleString('es-VE', {
               minimumFractionDigits: 2,
             })}
           </p>
           <p className="mt-0.5 text-xs text-white/30">
             {pack.service_ids.length} servicio
-            {pack.service_ids.length !== 1 ? "s" : ""}
+            {pack.service_ids.length !== 1 ? 's' : ''}
           </p>
         </div>
 
@@ -75,11 +69,11 @@ export function PackCard({ pack, onEdit }: Props) {
           <button
             type="button"
             onClick={() => void handleToggle()}
-            className={`relative h-4 w-8 rounded-full transition-colors ${pack.is_active ? "bg-[#40E0D0]" : "bg-white/20"}`}
-            aria-label={pack.is_active ? "Desactivar pack" : "Activar pack"}
+            className={`relative h-4 w-8 rounded-full transition-colors ${pack.is_active ? 'bg-[#40E0D0]' : 'bg-white/20'}`}
+            aria-label={pack.is_active ? 'Desactivar pack' : 'Activar pack'}
           >
             <span
-              className={`absolute top-0.5 block h-3 w-3 rounded-full bg-white transition-transform ${pack.is_active ? "left-[18px]" : "left-0.5"}`}
+              className={`absolute top-0.5 block h-3 w-3 rounded-full bg-white transition-transform ${pack.is_active ? 'left-[18px]' : 'left-0.5'}`}
             />
           </button>
           <button
@@ -102,5 +96,5 @@ export function PackCard({ pack, onEdit }: Props) {
         </div>
       </div>
     </div>
-  );
+  )
 }

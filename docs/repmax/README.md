@@ -4,12 +4,12 @@ SaaS B2B multi-tenant para **tiendas de autopartes** en Venezuela. Vive en el mo
 
 ## Apps y packages
 
-| Path | Rol |
-|------|-----|
-| `apps/repmax-web` | Next.js 15 — panel `/dashboard/*` + vitrina `/{slug}` y `{slug}.localhost` / `{slug}.zmtechdev.com` (puerto **3003**) |
-| `apps/repmax-mobile` | Expo SDK 56 — inventario, POS, clientes, caja, onboarding |
-| `packages/repmax-schema` | Drizzle schema `repmax_*` + constantes (`@repmax/repmax-schema`) |
-| `packages/tasas` | Tasas BCV/USDT en vivo, compartido entre productos (`@zmtech/tasas`) — usado hoy solo por RepMAX POS. Ver [plans/08](./plans/08-PLAN-tasas-bcv-usdt.md) |
+| Path                                 | Rol                                                                                                                                                                                                                                     |
+| ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/repmax-web`                    | Next.js 15 — panel `/dashboard/*` + vitrina `/{slug}` y `{slug}.localhost` / `{slug}.zmtechdev.com` (puerto **3003**)                                                                                                                   |
+| `apps/repmax-mobile`                 | Expo SDK 56 — inventario, POS, clientes, caja, onboarding                                                                                                                                                                               |
+| `packages/repmax-schema`             | Drizzle schema `repmax_*` + constantes (`@repmax/repmax-schema`)                                                                                                                                                                        |
+| `packages/tasas`                     | Tasas BCV/USDT en vivo, compartido entre productos (`@zmtech/tasas`) — usado hoy solo por RepMAX POS. Ver [plans/08](./plans/08-PLAN-tasas-bcv-usdt.md)                                                                                 |
 | `packages/tenant-config/src/repmax/` | Export `@zmtech/tenant-config/repmax` **preparado, no cableado** — ni `repmax-web` ni `repmax-mobile` lo importan ni lo declaran. Auth/tenant real hoy: `AuthContext` en cada app → `repmax_store_users` / `repmax_stores` vía Supabase |
 
 ## Arquitectura
@@ -35,10 +35,10 @@ pnpm build:repmax
 
 ## Variables de entorno
 
-| App | Archivo | Variables |
-|-----|---------|-----------|
-| Web | `apps/repmax-web/.env.local` | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`. Opcional: `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_VITRINA_SUBDOMAINS=1` (solo con wildcard DNS). Tasas BCV/USDT (server-only, secretos): `SUPABASE_SERVICE_ROLE_KEY`, `CRON_SECRET` |
-| Mobile | `apps/repmax-mobile/.env` | `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY` |
+| App    | Archivo                      | Variables                                                                                                                                                                                                                                     |
+| ------ | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Web    | `apps/repmax-web/.env.local` | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`. Opcional: `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_VITRINA_SUBDOMAINS=1` (solo con wildcard DNS). Tasas BCV/USDT (server-only, secretos): `SUPABASE_SERVICE_ROLE_KEY`, `CRON_SECRET` |
+| Mobile | `apps/repmax-mobile/.env`    | `EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`                                                                                                                                                                                   |
 
 Proyecto: `https://llacowjutjfefboqgfnj.supabase.co`
 
@@ -59,22 +59,22 @@ Proyecto: `https://llacowjutjfefboqgfnj.supabase.co`
 
 ### Sync schema ↔ SQL
 
-| Cambia… | Actualizar también… |
-|---------|---------------------|
-| Columnas / enums / tablas en SQL | `packages/repmax-schema/src/schema.ts` |
+| Cambia…                                | Actualizar también…                                        |
+| -------------------------------------- | ---------------------------------------------------------- |
+| Columnas / enums / tablas en SQL       | `packages/repmax-schema/src/schema.ts`                     |
 | Columnas / enums en el package Drizzle | Migración SQL en `supabase/migrations/` (nunca solo el TS) |
 
-Migraciones actuales: … `repmax_ml_listings` (aplicada). `repmax_ml_publish_intent` (**aplicada**, hub `20260817004929`). `repmax_products_color` (**aplicada**). `repmax_products_barcode` (**aplicada**). `repmax_seed_starter_catalog` (**aplicada**, hub `20260817222347` = filename local). `repmax_stores_tasa_manual` (**aplicada** 2026-08-18, agrega `usar_tasa_manual`). `repmax_vehicle_catalog` (**aplicada** 2026-08-18, tabla nueva: marca/modelo/años agregados a mano por tienda, RLS por `repmax_user_store_ids()`/owner). `repmax_stores_preferred_brands` (**aplicada** 2026-08-18, agrega `preferred_brands text[]` a `repmax_stores` — marcas con las que trabaja la tienda, selector en Configuración). Pendiente ops: `repmax_ml_connections` (OAuth, descartado MLV).
+Migraciones actuales: … `repmax_ml_listings` (aplicada). `repmax_ml_publish_intent` (**aplicada**, hub `20260817004929`). `repmax_products_color` (**aplicada**). `repmax_products_barcode` (**aplicada**). `repmax_seed_starter_catalog` (**aplicada**, hub `20260817222347` = filename local). `repmax_stores_tasa_manual` (**aplicada** 2026-08-18, agrega `usar_tasa_manual`). `repmax_vehicle_catalog` (**aplicada** 2026-08-18, tabla nueva: marca/modelo/años agregados a mano por tienda, RLS por `repmax_user_store_ids()`/owner). `repmax_vehicle_catalog_unique_null_years` (**pendiente de aplicar**, índice único que normaliza años nulos). `repmax_stores_preferred_brands` (**aplicada** 2026-08-18, agrega `preferred_brands text[]` a `repmax_stores` — marcas con las que trabaja la tienda, selector en Configuración). Pendiente ops: `repmax_ml_connections` (OAuth, descartado MLV).
 
 Tasas BCV/USDT: además de la migración anterior, `docs/hub/supabase/migrations/20260818120000_hub_tasas_cambio.sql` (**aplicada** 2026-08-18) crea `hub_tasas_bcv`/`hub_tasas_usdt` en el hub — prefijo `hub_`, no `repmax_`, porque están pensadas para reutilizarse desde otros productos. Ver [docs/hub/README.md](../hub/README.md#migraciones-sql) y [plans/08](./plans/08-PLAN-tasas-bcv-usdt.md).
 
 ### Rutas API de tasas (`apps/repmax-web/src/app/api/`)
 
-| Ruta | Método | Auth | Rol |
-|------|--------|------|-----|
-| `/api/bcv/tasa` | `GET` | pública | Resuelve BCV + USDT + spread desde las tablas del hub |
-| `/api/cron/guardar-tasa-bcv-diario` | `GET` | `Authorization: Bearer $CRON_SECRET` | Cron Vercel — guarda tasa BCV del día |
-| `/api/cron/guardar-tasa-usdt-diario` | `GET` | `Authorization: Bearer $CRON_SECRET` | Cron Vercel — guarda tasa USDT del día |
+| Ruta                                 | Método | Auth                                 | Rol                                                   |
+| ------------------------------------ | ------ | ------------------------------------ | ----------------------------------------------------- |
+| `/api/bcv/tasa`                      | `GET`  | pública                              | Resuelve BCV + USDT + spread desde las tablas del hub |
+| `/api/cron/guardar-tasa-bcv-diario`  | `GET`  | `Authorization: Bearer $CRON_SECRET` | Cron Vercel — guarda tasa BCV del día                 |
+| `/api/cron/guardar-tasa-usdt-diario` | `GET`  | `Authorization: Bearer $CRON_SECRET` | Cron Vercel — guarda tasa USDT del día                |
 
 Horarios en `apps/repmax-web/vercel.json` (`30 4 * * *` BCV, `35 4 * * *` USDT, hora UTC).
 
@@ -82,10 +82,10 @@ Edge Functions ML (código en [`supabase/functions/`](./supabase/functions/), **
 
 ## Seed demo
 
-| Archivo | Contenido |
-|---------|-----------|
-| [`supabase/seed/demo_users.md`](./supabase/seed/demo_users.md) | Credenciales + `user_id` / `store_user_id` (owners, cashier, inventory) |
-| [`supabase/seed/demo_catalog.sql`](./supabase/seed/demo_catalog.sql) | Catálogo de productos Alfa/Beta (idempotente) |
+| Archivo                                                              | Contenido                                                               |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| [`supabase/seed/demo_users.md`](./supabase/seed/demo_users.md)       | Credenciales + `user_id` / `store_user_id` (owners, cashier, inventory) |
+| [`supabase/seed/demo_catalog.sql`](./supabase/seed/demo_catalog.sql) | Catálogo de productos Alfa/Beta (idempotente)                           |
 
 Tiendas nuevas (onboarding real): RPC `repmax_seed_starter_catalog` — 6 piezas según `vehicle_focus`, sin fotos, idempotente. Lo llama `catalogSeedService` desde `AuthContext.register()`. No toca Alfa/Beta.
 

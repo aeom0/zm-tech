@@ -10,6 +10,7 @@ Playbook for building on Meta's WhatsApp Business Platform. Draws on `whatsapp-a
 ## 1. Prerequisites and setup
 
 See `references/setup-and-auth.md` for the full checklist. Quick version:
+
 - A Meta Developer App with WhatsApp product added
 - A **system user permanent access token** — do not build production flows on a temporary token, it expires in 24h and will silently break the integration
 - `WA_PHONE_NUMBER_ID` (sender) and `WA_BUSINESS_ACCOUNT_ID`
@@ -30,7 +31,7 @@ Two viable paths:
 See `references/messaging-templates.md`. Key distinction to get right immediately:
 
 - **Free-form messages** (text, image, document, etc.) can only be sent within a **24-hour customer service window** that opens when the user messages you first, or replies to a message.
-- **Template messages** (pre-approved by Meta) are the only way to *initiate* a conversation outside that window — e.g. order confirmations, reminders, marketing outreach to a user who hasn't messaged recently.
+- **Template messages** (pre-approved by Meta) are the only way to _initiate_ a conversation outside that window — e.g. order confirmations, reminders, marketing outreach to a user who hasn't messaged recently.
 - Templates require submission and approval through Meta Business Manager before use — budget review time similar to other Meta app-review flows, though typically faster (often within a day, but can take longer).
 
 ## 4. Webhooks
@@ -42,6 +43,7 @@ See `references/messaging-templates.md`. Key distinction to get right immediatel
 ## 5. Common failure modes
 
 See `references/troubleshooting.md` for the full list, including:
+
 - Sending outside the 24h window without a template (rejected)
 - Unapproved/misformatted templates
 - Media ID reuse across requests (media IDs expire)

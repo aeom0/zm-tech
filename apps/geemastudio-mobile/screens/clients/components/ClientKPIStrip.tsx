@@ -1,61 +1,61 @@
-import React from "react";
-import { View, StyleSheet, ScrollView } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import React from 'react'
+import { View, StyleSheet, ScrollView } from 'react-native'
+import { Feather } from '@expo/vector-icons'
 
-import { ThemedText } from "@/components/ThemedText";
-import { useTheme } from "@/hooks/useTheme";
-import { Spacing, BorderRadius, Shadows } from "@/constants/theme";
-import type { ClientKPIs } from "../types";
-import { useTenant } from "@/contexts/TenantContext";
-import { formatCurrency } from "@/utils/format";
+import { ThemedText } from '@/components/ThemedText'
+import { useTheme } from '@/hooks/useTheme'
+import { Spacing, BorderRadius, Shadows } from '@/constants/theme'
+import type { ClientKPIs } from '../types'
+import { useTenant } from '@/contexts/TenantContext'
+import { formatCurrency } from '@/utils/format'
 
 interface Props {
-  kpis: ClientKPIs | null;
+  kpis: ClientKPIs | null
 }
 
 export function ClientKPIStrip({ kpis }: Props) {
-  const { theme } = useTheme();
-  const { config } = useTenant();
+  const { theme } = useTheme()
+  const { config } = useTenant()
 
-  if (!kpis) return null;
+  if (!kpis) return null
 
   const cards = [
     {
-      id: "total",
-      label: "Total clientes",
+      id: 'total',
+      label: 'Total clientes',
       value: kpis.total_clients.toString(),
-      icon: "users" as const,
+      icon: 'users' as const,
       color: theme.primary,
     },
     {
-      id: "active",
-      label: "Activos este mes",
+      id: 'active',
+      label: 'Activos este mes',
       value: kpis.active_this_month.toString(),
-      icon: "activity" as const,
+      icon: 'activity' as const,
       color: theme.success,
     },
     {
-      id: "vip",
-      label: "Clientes VIP",
+      id: 'vip',
+      label: 'Clientes VIP',
       value: kpis.vip_count.toString(),
-      icon: "star" as const,
+      icon: 'star' as const,
       color: theme.accent,
     },
     {
-      id: "risk",
-      label: "En riesgo",
+      id: 'risk',
+      label: 'En riesgo',
       value: kpis.at_risk_count.toString(),
-      icon: "alert-triangle" as const,
+      icon: 'alert-triangle' as const,
       color: theme.warning,
     },
     {
-      id: "avg",
-      label: "Ticket promedio",
+      id: 'avg',
+      label: 'Ticket promedio',
       value: formatCurrency(kpis.avg_ticket, config),
-      icon: "shopping-bag" as const,
+      icon: 'shopping-bag' as const,
       color: theme.info,
     },
-  ];
+  ]
 
   return (
     <ScrollView
@@ -74,30 +74,22 @@ export function ClientKPIStrip({ kpis }: Props) {
             },
           ]}
         >
-          <View
-            style={[styles.iconWrap, { backgroundColor: `${card.color}18` }]}
-          >
+          <View style={[styles.iconWrap, { backgroundColor: `${card.color}18` }]}>
             <Feather name={card.icon} size={16} color={card.color} />
           </View>
           <ThemedText
-            style={[
-              styles.value,
-              { color: card.id === "risk" ? theme.error : card.color },
-            ]}
+            style={[styles.value, { color: card.id === 'risk' ? theme.error : card.color }]}
             numberOfLines={1}
           >
             {card.value}
           </ThemedText>
-          <ThemedText
-            style={[styles.label, { color: theme.textSecondary }]}
-            numberOfLines={2}
-          >
+          <ThemedText style={[styles.label, { color: theme.textSecondary }]} numberOfLines={2}>
             {card.label}
           </ThemedText>
         </View>
       ))}
     </ScrollView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -118,16 +110,16 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: BorderRadius.sm,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: Spacing.sm,
   },
   value: {
     fontSize: 18,
-    fontWeight: "700",
+    fontWeight: '700',
     marginBottom: 2,
   },
   label: {
     fontSize: 12,
   },
-});
+})

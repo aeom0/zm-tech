@@ -1,10 +1,10 @@
-"use client";
+'use client'
 
-import { useMemo, useState } from "react";
-import { X } from "lucide-react";
+import { useMemo, useState } from 'react'
+import { X } from 'lucide-react'
 
-import type { CategoriaRow } from "@/hooks/servicios/useCategorias";
-import type { ServicioRow } from "@/hooks/servicios/useServicios";
+import type { CategoriaRow } from '@/hooks/servicios/useCategorias'
+import type { ServicioRow } from '@/hooks/servicios/useServicios'
 
 export function ServicioModal({
   open,
@@ -15,26 +15,26 @@ export function ServicioModal({
   onClose,
   onSave,
 }: {
-  open: boolean;
-  categorias: CategoriaRow[];
-  initial: ServicioRow | null;
-  defaultCategoryId?: string;
-  isSaving: boolean;
-  onClose: () => void;
+  open: boolean
+  categorias: CategoriaRow[]
+  initial: ServicioRow | null
+  defaultCategoryId?: string
+  isSaving: boolean
+  onClose: () => void
   onSave: (payload: {
-    id?: string;
-    name: string;
-    category_id: string;
-    price: string;
-    duration: number;
-    is_active: boolean;
-  }) => void;
+    id?: string
+    name: string
+    category_id: string
+    price: string
+    duration: number
+    is_active: boolean
+  }) => void
 }) {
-  if (!open) return null;
+  if (!open) return null
 
   return (
     <ServicioModalForm
-      key={initial?.id ?? `new-${defaultCategoryId ?? "none"}`}
+      key={initial?.id ?? `new-${defaultCategoryId ?? 'none'}`}
       categorias={categorias}
       initial={initial}
       defaultCategoryId={defaultCategoryId}
@@ -42,7 +42,7 @@ export function ServicioModal({
       onClose={onClose}
       onSave={onSave}
     />
-  );
+  )
 }
 
 function ServicioModalForm({
@@ -53,37 +53,37 @@ function ServicioModalForm({
   onClose,
   onSave,
 }: {
-  categorias: CategoriaRow[];
-  initial: ServicioRow | null;
-  defaultCategoryId?: string;
-  isSaving: boolean;
-  onClose: () => void;
+  categorias: CategoriaRow[]
+  initial: ServicioRow | null
+  defaultCategoryId?: string
+  isSaving: boolean
+  onClose: () => void
   onSave: (payload: {
-    id?: string;
-    name: string;
-    category_id: string;
-    price: string;
-    duration: number;
-    is_active: boolean;
-  }) => void;
+    id?: string
+    name: string
+    category_id: string
+    price: string
+    duration: number
+    is_active: boolean
+  }) => void
 }) {
-  const title = initial ? "Editar servicio" : "Nuevo servicio";
+  const title = initial ? 'Editar servicio' : 'Nuevo servicio'
 
-  const [name, setName] = useState(initial?.name ?? "");
+  const [name, setName] = useState(initial?.name ?? '')
   const [categoryId, setCategoryId] = useState(
-    initial?.category_id ?? defaultCategoryId ?? categorias[0]?.id ?? "",
-  );
-  const [price, setPrice] = useState(initial?.price ?? "");
-  const [duration, setDuration] = useState(initial?.duration ?? 60);
-  const [isActive, setIsActive] = useState(initial?.is_active ?? true);
+    initial?.category_id ?? defaultCategoryId ?? categorias[0]?.id ?? ''
+  )
+  const [price, setPrice] = useState(initial?.price ?? '')
+  const [duration, setDuration] = useState(initial?.duration ?? 60)
+  const [isActive, setIsActive] = useState(initial?.is_active ?? true)
 
   const canSubmit = useMemo(() => {
-    if (!name.trim()) return false;
-    if (!categoryId) return false;
-    if (!String(price).trim()) return false;
-    if (!Number.isFinite(duration) || duration <= 0) return false;
-    return true;
-  }, [name, categoryId, price, duration]);
+    if (!name.trim()) return false
+    if (!categoryId) return false
+    if (!String(price).trim()) return false
+    if (!Number.isFinite(duration) || duration <= 0) return false
+    return true
+  }, [name, categoryId, price, duration])
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -95,46 +95,40 @@ function ServicioModalForm({
       />
 
       <div className="relative w-full max-w-lg rounded-2xl border border-white/[0.08] bg-zinc-900 shadow-xl">
-        <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.08]">
+        <div className="flex items-center justify-between border-b border-white/[0.08] px-5 py-4">
           <div>
             <div className="text-sm font-semibold text-white">{title}</div>
-            <div className="text-xs text-zinc-500 mt-0.5">
-              Precio en $ (USD) para el panel web.
-            </div>
+            <div className="mt-0.5 text-xs text-zinc-500">Precio en $ (USD) para el panel web.</div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="w-9 h-9 rounded-xl bg-white/[0.04] border border-white/[0.08] inline-flex items-center justify-center text-zinc-300 hover:bg-white/[0.06] transition-colors"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04] text-zinc-300 transition-colors hover:bg-white/[0.06]"
             aria-label="Cerrar modal"
           >
-            <X className="w-4 h-4" />
+            <X className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="p-5 space-y-4">
+        <div className="space-y-4 p-5">
           <div>
-            <label className="block text-sm font-medium text-zinc-300 mb-1.5">
-              Nombre
-            </label>
+            <label className="mb-1.5 block text-sm font-medium text-zinc-300">Nombre</label>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#40E0D0] focus:border-transparent"
+              className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#40E0D0]"
               placeholder="Ej. Manicure clásica"
               autoFocus
             />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-1.5">
-                Categoría
-              </label>
+              <label className="mb-1.5 block text-sm font-medium text-zinc-300">Categoría</label>
               <select
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
-                className="w-full px-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white focus:outline-none focus:ring-2 focus:ring-[#40E0D0] focus:border-transparent"
+                className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#40E0D0]"
               >
                 {categorias.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -145,26 +139,24 @@ function ServicioModalForm({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-1.5">
-                Precio ($)
-              </label>
+              <label className="mb-1.5 block text-sm font-medium text-zinc-300">Precio ($)</label>
               <input
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 inputMode="decimal"
-                className="w-full px-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#40E0D0] focus:border-transparent"
+                className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#40E0D0]"
                 placeholder="15,50"
               />
-              <div className="text-[11px] text-zinc-500 mt-1">
-                Acepta coma: <span className="text-zinc-400">15,50</span> →{" "}
+              <div className="mt-1 text-[11px] text-zinc-500">
+                Acepta coma: <span className="text-zinc-400">15,50</span> →{' '}
                 <span className="text-zinc-400">15.50</span>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-1.5">
+              <label className="mb-1.5 block text-sm font-medium text-zinc-300">
                 Duración (min)
               </label>
               <input
@@ -172,40 +164,36 @@ function ServicioModalForm({
                 step={15}
                 min={15}
                 value={duration}
-                onChange={(e) =>
-                  setDuration(parseInt(e.target.value || "0", 10))
-                }
-                className="w-full px-4 py-2.5 rounded-xl border border-white/[0.10] bg-zinc-800 text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#40E0D0] focus:border-transparent"
+                onChange={(e) => setDuration(parseInt(e.target.value || '0', 10))}
+                className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#40E0D0]"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-zinc-300 mb-1.5">
-                Activo
-              </label>
+              <label className="mb-1.5 block text-sm font-medium text-zinc-300">Activo</label>
               <button
                 type="button"
                 role="switch"
                 aria-checked={isActive}
                 onClick={() => setIsActive((v) => !v)}
                 className={[
-                  "w-full px-4 py-2.5 rounded-xl border transition-colors text-sm font-semibold",
+                  'w-full rounded-xl border px-4 py-2.5 text-sm font-semibold transition-colors',
                   isActive
-                    ? "bg-[#40E0D0]/15 border-[#40E0D0]/30 text-[#40E0D0]"
-                    : "bg-white/[0.03] border-white/[0.10] text-zinc-300",
-                ].join(" ")}
+                    ? 'border-[#40E0D0]/30 bg-[#40E0D0]/15 text-[#40E0D0]'
+                    : 'border-white/[0.10] bg-white/[0.03] text-zinc-300',
+                ].join(' ')}
               >
-                {isActive ? "Activo" : "Inactivo"}
+                {isActive ? 'Activo' : 'Inactivo'}
               </button>
             </div>
           </div>
         </div>
 
-        <div className="px-5 py-4 border-t border-white/[0.08] flex items-center justify-end gap-3">
+        <div className="flex items-center justify-end gap-3 border-t border-white/[0.08] px-5 py-4">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 rounded-xl border border-white/[0.10] bg-transparent text-zinc-200 hover:bg-white/[0.04] transition-colors text-sm font-semibold"
+            className="rounded-xl border border-white/[0.10] bg-transparent px-4 py-2 text-sm font-semibold text-zinc-200 transition-colors hover:bg-white/[0.04]"
           >
             Cancelar
           </button>
@@ -222,12 +210,12 @@ function ServicioModalForm({
                 is_active: isActive,
               })
             }
-            className="px-4 py-2 rounded-xl bg-[#40E0D0] hover:bg-[#00897B] text-white transition-colors text-sm font-semibold disabled:opacity-60"
+            className="rounded-xl bg-[#40E0D0] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#00897B] disabled:opacity-60"
           >
-            {isSaving ? "Guardando…" : "Guardar"}
+            {isSaving ? 'Guardando…' : 'Guardar'}
           </button>
         </div>
       </div>
     </div>
-  );
+  )
 }

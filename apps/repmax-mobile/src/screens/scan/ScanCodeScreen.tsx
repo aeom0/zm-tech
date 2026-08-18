@@ -1,149 +1,176 @@
 // ============================================================
 // Escáner de barras / QR — vender, recibir stock o asignar código
 // ============================================================
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react'
 import {
-  View, Text, TextInput, TouchableOpacity, StyleSheet,
-  ActivityIndicator, Platform,
-} from 'react-native';
-import { CameraView, useCameraPermissions, type BarcodeScanningResult, type BarcodeType } from 'expo-camera';
-import { Ionicons } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  Platform,
+} from 'react-native'
+import {
+  CameraView,
+  useCameraPermissions,
+  type BarcodeScanningResult,
+  type BarcodeType,
+} from 'expo-camera'
+import { Ionicons } from '@expo/vector-icons'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
-import { productService } from '../../services/productService';
-import { useCart } from '../../context/CartContext';
-import { formatUSD } from '../../utils/formatters';
-import { hapticError, hapticSuccess } from '../../utils/haptics';
-import { normalizarCodigo } from '../../utils/codigoEscaneado';
-import { colors, typography, spacing, borderRadius } from '../../utils/theme';
-import type { Product } from '../../types/database';
-import type { InventoryStackParamList, POSStackParamList, ScanModo } from '../../navigation/types';
+import { productService } from '../../services/productService'
+import { useCart } from '../../context/CartContext'
+import { formatUSD } from '../../utils/formatters'
+import { hapticError, hapticSuccess } from '../../utils/haptics'
+import { normalizarCodigo } from '../../utils/codigoEscaneado'
+import { colors, typography, spacing, borderRadius } from '../../utils/theme'
+import type { Product } from '../../types/database'
+import type { InventoryStackParamList, POSStackParamList, ScanModo } from '../../navigation/types'
 
-type Props = NativeStackScreenProps<
-  POSStackParamList & InventoryStackParamList,
-  'ScanCode'
->;
+type Props = NativeStackScreenProps<POSStackParamList & InventoryStackParamList, 'ScanCode'>
 
 const TIPOS_CODIGO: BarcodeType[] = [
-  'qr', 'ean13', 'ean8', 'upc_a', 'upc_e',
-  'code128', 'code39', 'code93', 'itf14', 'codabar',
-];
+  'qr',
+  'ean13',
+  'ean8',
+  'upc_a',
+  'upc_e',
+  'code128',
+  'code39',
+  'code93',
+  'itf14',
+  'codabar',
+]
 
-const LOCK_MS = 1400;
+const LOCK_MS = 1400
 
-type Banner = { tipo: 'ok' | 'error' | 'info'; texto: string };
+type Banner = { tipo: 'ok' | 'error' | 'info'; texto: string }
 
 function tituloModo(modo: ScanModo): string {
-  if (modo === 'venta') return 'Escanear para vender';
-  if (modo === 'asignar') return 'Asignar código';
-  return 'Escanear inventario';
+  if (modo === 'venta') return 'Escanear para vender'
+  if (modo === 'asignar') return 'Asignar código'
+  return 'Escanear inventario'
 }
 
 export default function ScanCodeScreen({ route, navigation }: Props) {
-  const modo = route.params?.modo ?? 'inventario';
-  const insets = useSafeAreaInsets();
-  const [permission, requestPermission] = useCameraPermissions();
-  const { addItem, items, totalItems } = useCart();
+  const modo = route.params?.modo ?? 'inventario'
+  const insets = useSafeAreaInsets()
+  const [permission, requestPermission] = useCameraPermissions()
+  const { addItem, items, totalItems } = useCart()
 
-  const lockRef = useRef(false);
-  const [buscando, setBuscando] = useState(false);
-  const [banner, setBanner] = useState<Banner | null>(null);
-  const [manual, setManual] = useState('');
-  const [torch, setTorch] = useState(false);
-  const [encontrado, setEncontrado] = useState<Product | null>(null);
-  const [codigoNuevo, setCodigoNuevo] = useState<string | null>(null);
-  const [sumando, setSumando] = useState(false);
+  const lockRef = useRef(false)
+  const [buscando, setBuscando] = useState(false)
+  const [banner, setBanner] = useState<Banner | null>(null)
+  const [manual, setManual] = useState('')
+  const [torch, setTorch] = useState(false)
+  const [encontrado, setEncontrado] = useState<Product | null>(null)
+  const [codigoNuevo, setCodigoNuevo] = useState<string | null>(null)
+  const [sumando, setSumando] = useState(false)
 
   const mostrarBanner = useCallback((tipo: Banner['tipo'], texto: string) => {
-    setBanner({ tipo, texto });
-  }, []);
+    setBanner({ tipo, texto })
+  }, [])
 
-  const procesarCodigo = useCallback(async (raw: string) => {
-    const valor = normalizarCodigo(raw);
-    if (!valor || lockRef.current) return;
+  const procesarCodigo = useCallback(
+    async (raw: string) => {
+      const valor = normalizarCodigo(raw)
+      if (!valor || lockRef.current) return
 
-    lockRef.current = true;
-    setBuscando(true);
-    setEncontrado(null);
-    setCodigoNuevo(null);
+      lockRef.current = true
+      setBuscando(true)
+      setEncontrado(null)
+      setCodigoNuevo(null)
 
-    try {
-      if (modo === 'asignar') {
-        await hapticSuccess();
-        navigation.popTo('ProductForm', { scannedBarcode: valor }, { merge: true });
-        return;
-      }
+      try {
+        if (modo === 'asignar') {
+          await hapticSuccess()
+          navigation.popTo('ProductForm', { scannedBarcode: valor }, { merge: true })
+          return
+        }
 
-      const producto = await productService.getByCodigo(valor);
+        const producto = await productService.getByCodigo(valor)
 
-      if (modo === 'venta') {
+        if (modo === 'venta') {
+          if (!producto) {
+            await hapticError()
+            mostrarBanner('error', 'Este código no está en el inventario')
+            return
+          }
+          const enCarrito = items.find((i) => i.product.id === producto.id)?.quantity ?? 0
+          if (enCarrito + 1 > producto.stock) {
+            await hapticError()
+            mostrarBanner(
+              'error',
+              producto.stock === 0
+                ? `${producto.title} — sin stock`
+                : `${producto.title} — solo ${producto.stock} uds`
+            )
+            return
+          }
+          addItem(producto)
+          await hapticSuccess()
+          mostrarBanner('ok', `${producto.title}  +1  ·  ${formatUSD(producto.priceUsd)}`)
+          return
+        }
+
+        // inventario
         if (!producto) {
-          await hapticError();
-          mostrarBanner('error', 'Este código no está en el inventario');
-          return;
+          await hapticSuccess()
+          setCodigoNuevo(valor)
+          mostrarBanner('info', 'Código nuevo — puedes crear el producto')
+          return
         }
-        const enCarrito = items.find((i) => i.product.id === producto.id)?.quantity ?? 0;
-        if (enCarrito + 1 > producto.stock) {
-          await hapticError();
-          mostrarBanner('error', producto.stock === 0
-            ? `${producto.title} — sin stock`
-            : `${producto.title} — solo ${producto.stock} uds`);
-          return;
-        }
-        addItem(producto);
-        await hapticSuccess();
-        mostrarBanner('ok', `${producto.title}  +1  ·  ${formatUSD(producto.priceUsd)}`);
-        return;
+        await hapticSuccess()
+        setEncontrado(producto)
+        mostrarBanner('ok', producto.title)
+      } catch {
+        await hapticError()
+        mostrarBanner('error', 'No se pudo buscar el código. Revisa la conexión.')
+      } finally {
+        setBuscando(false)
+        setTimeout(() => {
+          lockRef.current = false
+        }, LOCK_MS)
       }
+    },
+    [modo, navigation, addItem, items, mostrarBanner]
+  )
 
-      // inventario
-      if (!producto) {
-        await hapticSuccess();
-        setCodigoNuevo(valor);
-        mostrarBanner('info', 'Código nuevo — puedes crear el producto');
-        return;
+  const onBarcodeScanned = useCallback(
+    (result: BarcodeScanningResult) => {
+      void procesarCodigo(result.data)
+    },
+    [procesarCodigo]
+  )
+
+  const sumarStock = useCallback(
+    async (delta: number) => {
+      if (!encontrado) return
+      setSumando(true)
+      try {
+        const actualizado = await productService.incrementStock(encontrado.id, delta)
+        setEncontrado(actualizado)
+        await hapticSuccess()
+        mostrarBanner('ok', `${actualizado.title} · stock ${actualizado.stock}`)
+      } catch {
+        await hapticError()
+        mostrarBanner('error', 'No se pudo actualizar el stock.')
+      } finally {
+        setSumando(false)
       }
-      await hapticSuccess();
-      setEncontrado(producto);
-      mostrarBanner('ok', producto.title);
-    } catch {
-      await hapticError();
-      mostrarBanner('error', 'No se pudo buscar el código. Revisa la conexión.');
-    } finally {
-      setBuscando(false);
-      setTimeout(() => {
-        lockRef.current = false;
-      }, LOCK_MS);
-    }
-  }, [modo, navigation, addItem, items, mostrarBanner]);
-
-  const onBarcodeScanned = useCallback((result: BarcodeScanningResult) => {
-    void procesarCodigo(result.data);
-  }, [procesarCodigo]);
-
-  const sumarStock = useCallback(async (delta: number) => {
-    if (!encontrado) return;
-    setSumando(true);
-    try {
-      const actualizado = await productService.incrementStock(encontrado.id, delta);
-      setEncontrado(actualizado);
-      await hapticSuccess();
-      mostrarBanner('ok', `${actualizado.title} · stock ${actualizado.stock}`);
-    } catch {
-      await hapticError();
-      mostrarBanner('error', 'No se pudo actualizar el stock.');
-    } finally {
-      setSumando(false);
-    }
-  }, [encontrado, mostrarBanner]);
+    },
+    [encontrado, mostrarBanner]
+  )
 
   if (!permission) {
     return (
       <View style={[styles.centered, { paddingTop: insets.top }]}>
         <ActivityIndicator color={colors.brand.orange} />
       </View>
-    );
+    )
   }
 
   if (!permission.granted) {
@@ -161,7 +188,7 @@ export default function ScanCodeScreen({ route, navigation }: Props) {
           <Text style={styles.linkGhost}>Cancelar</Text>
         </TouchableOpacity>
       </View>
-    );
+    )
   }
 
   return (
@@ -181,7 +208,11 @@ export default function ScanCodeScreen({ route, navigation }: Props) {
       )}
 
       <View style={[styles.topBar, { paddingTop: insets.top + spacing.sm }]}>
-        <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={12} accessibilityLabel="Cerrar escáner">
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          hitSlop={12}
+          accessibilityLabel="Cerrar escáner"
+        >
           <Ionicons name="close" size={28} color={colors.text.primary} />
         </TouchableOpacity>
         <Text style={styles.topTitle}>{tituloModo(modo)}</Text>
@@ -190,7 +221,11 @@ export default function ScanCodeScreen({ route, navigation }: Props) {
           hitSlop={12}
           accessibilityLabel={torch ? 'Apagar linterna' : 'Encender linterna'}
         >
-          <Ionicons name={torch ? 'flash' : 'flash-outline'} size={24} color={torch ? colors.brand.orange : colors.text.primary} />
+          <Ionicons
+            name={torch ? 'flash' : 'flash-outline'}
+            size={24}
+            color={torch ? colors.brand.orange : colors.text.primary}
+          />
         </TouchableOpacity>
       </View>
 
@@ -202,19 +237,23 @@ export default function ScanCodeScreen({ route, navigation }: Props) {
       </View>
 
       {banner ? (
-        <View style={[
-          styles.banner,
-          banner.tipo === 'ok' && styles.bannerOk,
-          banner.tipo === 'error' && styles.bannerError,
-          banner.tipo === 'info' && styles.bannerInfo,
-        ]}>
+        <View
+          style={[
+            styles.banner,
+            banner.tipo === 'ok' && styles.bannerOk,
+            banner.tipo === 'error' && styles.bannerError,
+            banner.tipo === 'info' && styles.bannerInfo,
+          ]}
+        >
           <Text style={styles.bannerText}>{banner.texto}</Text>
         </View>
       ) : null}
 
       {modo === 'inventario' && encontrado ? (
         <View style={styles.sheet}>
-          <Text style={styles.sheetTitle} numberOfLines={2}>{encontrado.title}</Text>
+          <Text style={styles.sheetTitle} numberOfLines={2}>
+            {encontrado.title}
+          </Text>
           <Text style={styles.sheetMeta}>
             {encontrado.brand} · stock {encontrado.stock}
             {encontrado.barcode ? ` · ${encontrado.barcode}` : ''}
@@ -240,7 +279,9 @@ export default function ScanCodeScreen({ route, navigation }: Props) {
       {modo === 'inventario' && codigoNuevo ? (
         <View style={styles.sheet}>
           <Text style={styles.sheetTitle}>Código nuevo</Text>
-          <Text style={styles.sheetMeta} selectable>{codigoNuevo}</Text>
+          <Text style={styles.sheetMeta} selectable>
+            {codigoNuevo}
+          </Text>
           <TouchableOpacity
             style={styles.sheetBtn}
             onPress={() => navigation.navigate('ProductForm', { scannedBarcode: codigoNuevo })}
@@ -262,30 +303,32 @@ export default function ScanCodeScreen({ route, navigation }: Props) {
           </TouchableOpacity>
         ) : null}
         <View style={styles.manualRow}>
-        <TextInput
-          style={styles.manualInput}
-          value={manual}
-          onChangeText={setManual}
-          placeholder="O escribe el código…"
-          placeholderTextColor={colors.text.disabled}
-          autoCapitalize="characters"
-          autoCorrect={false}
-          returnKeyType="search"
-          onSubmitEditing={() => {
-            if (manual.trim()) void procesarCodigo(manual);
-          }}
-        />
-        <TouchableOpacity
-          style={styles.manualBtn}
-          onPress={() => { if (manual.trim()) void procesarCodigo(manual); }}
-          accessibilityLabel="Buscar código escrito"
-        >
-          <Ionicons name="search" size={20} color={colors.text.inverse} />
-        </TouchableOpacity>
+          <TextInput
+            style={styles.manualInput}
+            value={manual}
+            onChangeText={setManual}
+            placeholder="O escribe el código…"
+            placeholderTextColor={colors.text.disabled}
+            autoCapitalize="characters"
+            autoCorrect={false}
+            returnKeyType="search"
+            onSubmitEditing={() => {
+              if (manual.trim()) void procesarCodigo(manual)
+            }}
+          />
+          <TouchableOpacity
+            style={styles.manualBtn}
+            onPress={() => {
+              if (manual.trim()) void procesarCodigo(manual)
+            }}
+            accessibilityLabel="Buscar código escrito"
+          >
+            <Ionicons name="search" size={20} color={colors.text.inverse} />
+          </TouchableOpacity>
         </View>
       </View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -473,4 +516,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
+})

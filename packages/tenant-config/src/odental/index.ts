@@ -5,27 +5,12 @@ export type {
   OdentalEmployeeRow,
   OdentalTenantConfig,
   OdentalJwtClaims,
-} from "./types";
+} from './types'
 
-export {
-  dentalClinicPreset,
-  mergeOdentalTenantConfig,
-} from "./preset";
+export { dentalClinicPreset, mergeOdentalTenantConfig } from './preset'
 
-export {
-  extractOdentalClaims,
-  extractOdentalClaimsFromUser,
-  isOdentalAdmin,
-} from "./jwt";
+export { extractOdentalClaims, extractOdentalClaimsFromUser, isOdentalAdmin } from './jwt'
 
-export {
-  OdentalAuthProvider,
-  useOdentalAuth,
-  useAuth,
-} from "./AuthContext";
+export { OdentalAuthProvider, useOdentalAuth, useAuth } from './AuthContext'
 
-export {
-  OdentalTenantProvider,
-  useTenant,
-  useOdentalTenant,
-} from "./TenantContext";
+export { OdentalTenantProvider, useTenant, useOdentalTenant } from './TenantContext'

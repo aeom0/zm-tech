@@ -1,6 +1,6 @@
-import Image from "next/image";
-import Link from "next/link";
-import { LUNARIS } from "@/lib/theme";
+import Image from 'next/image'
+import Link from 'next/link'
+import { LUNARIS } from '@/lib/theme'
 
 export default function TenantNotFound() {
   return (
@@ -13,9 +13,7 @@ export default function TenantNotFound() {
         className="mb-4 opacity-90"
         priority
       />
-      <h1 className="mb-2 text-2xl font-extrabold tracking-tight">
-        Salón no encontrado
-      </h1>
+      <h1 className="mb-2 text-2xl font-extrabold tracking-tight">Salón no encontrado</h1>
       <p className="mb-7 max-w-sm text-sm text-[rgba(240,237,232,0.55)]">
         Este enlace no está activo o el salón aún no ha publicado su página web.
       </p>
@@ -27,5 +25,5 @@ export default function TenantNotFound() {
         Conocer GeemaStudio
       </Link>
     </div>
-  );
+  )
 }

@@ -1,32 +1,32 @@
-import type { RepmaxTenantConfig } from "./types";
+import type { RepmaxTenantConfig } from './types'
 
 export const repmaxDefaultConfig: RepmaxTenantConfig = {
   storeId: null,
-  slug: "",
-  storeName: "RepMAX",
+  slug: '',
+  storeName: 'RepMAX',
   city: null,
-  plan: "basic",
+  plan: 'basic',
   theme: {
-    primaryColor: "#FF8C00",
-    accentColor: "#1A2B3C",
+    primaryColor: '#FF8C00',
+    accentColor: '#1A2B3C',
     darkMode: false,
   },
   locale: {
-    currencyUsd: "USD",
-    currencyBs: "BS",
+    currencyUsd: 'USD',
+    currencyBs: 'BS',
     usdBsRate: 36.5,
-    language: "es-VE",
+    language: 'es-VE',
   },
-};
+}
 
 export function mergeRepmaxTenantConfig(
   base: RepmaxTenantConfig,
-  partial: Partial<RepmaxTenantConfig>,
+  partial: Partial<RepmaxTenantConfig>
 ): RepmaxTenantConfig {
   return {
     ...base,
     ...partial,
     theme: { ...base.theme, ...(partial.theme ?? {}) },
     locale: { ...base.locale, ...(partial.locale ?? {}) },
-  };
+  }
 }

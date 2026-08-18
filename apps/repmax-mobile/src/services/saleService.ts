@@ -1,17 +1,17 @@
-import { supabase } from '../utils/supabase';
-import type { DetallesPago } from '@zmtech/tasas';
-import type { Sale, CashSession, CartItem, PaymentMethod } from '../types/database';
+import { supabase } from '../utils/supabase'
+import type { DetallesPago } from '@zmtech/tasas'
+import type { Sale, CashSession, CartItem, PaymentMethod } from '../types/database'
 
 interface CreateSaleParams {
-  storeId: string;
-  cashierId: string;
-  sessionId?: string;
-  customerId?: string;
-  paymentMethod: PaymentMethod;
-  paymentDetails?: DetallesPago;
-  usdBsRate: number;
-  notes?: string;
-  items: CartItem[];
+  storeId: string
+  cashierId: string
+  sessionId?: string
+  customerId?: string
+  paymentMethod: PaymentMethod
+  paymentDetails?: DetallesPago
+  usdBsRate: number
+  notes?: string
+  items: CartItem[]
 }
 
 function mapCashSession(row: any): CashSession {
@@ -27,7 +27,7 @@ function mapCashSession(row: any): CashSession {
     openedAt: row.opened_at,
     closedAt: row.closed_at,
     notes: row.notes,
-  };
+  }
 }
 
 function mapSale(row: any): Sale {
@@ -46,31 +46,28 @@ function mapSale(row: any): Sale {
     status: row.status,
     notes: row.notes,
     createdAt: row.created_at,
-  };
+  }
 }
 
 export const saleService = {
   async getAll(sessionId?: string): Promise<Sale[]> {
-    let query = supabase
-      .from('repmax_sales')
-      .select('*')
-      .order('created_at', { ascending: false });
+    let query = supabase.from('repmax_sales').select('*').order('created_at', { ascending: false })
 
-    if (sessionId) query = query.eq('session_id', sessionId);
+    if (sessionId) query = query.eq('session_id', sessionId)
 
-    const { data, error } = await query;
-    if (error) throw new Error(error.message);
-    return (data ?? []).map(mapSale);
+    const { data, error } = await query
+    if (error) throw new Error(error.message)
+    return (data ?? []).map(mapSale)
   },
 
   // Crea una venta con sus items atómicamente usando el RPC de la DB
   async create(params: CreateSaleParams): Promise<string> {
-    const items = params.items.map(item => ({
+    const items = params.items.map((item) => ({
       product_id: item.product.id,
       quantity: item.quantity,
       unit_price_usd: item.product.priceUsd,
       product_snapshot: item.product,
-    }));
+    }))
 
     const { data, error } = await supabase.rpc('repmax_create_sale_with_items', {
       p_store_id: params.storeId,
@@ -82,10 +79,10 @@ export const saleService = {
       p_usd_bs_rate: params.usdBsRate,
       p_notes: params.notes ?? null,
       p_items: items,
-    });
+    })
 
-    if (error) throw new Error(error.message);
-    return data as string; // retorna el UUID de la venta creada
+    if (error) throw new Error(error.message)
+    return data as string // retorna el UUID de la venta creada
   },
 
   async getActiveSession(): Promise<CashSession | null> {
@@ -95,13 +92,18 @@ export const saleService = {
       .eq('status', 'OPEN')
       .order('opened_at', { ascending: false })
       .limit(1)
-      .maybeSingle();
+      .maybeSingle()
 
-    if (error) throw new Error(error.message);
-    return data ? mapCashSession(data) : null;
+    if (error) throw new Error(error.message)
+    return data ? mapCashSession(data) : null
   },
 
-  async openSession(storeId: string, cashierId: string, openingAmountUsd: number, notes?: string): Promise<CashSession> {
+  async openSession(
+    storeId: string,
+    cashierId: string,
+    openingAmountUsd: number,
+    notes?: string
+  ): Promise<CashSession> {
     const { data, error } = await supabase
       .from('repmax_cash_sessions')
       .insert({
@@ -112,28 +114,34 @@ export const saleService = {
         status: 'OPEN',
       })
       .select()
-      .single();
+      .single()
 
-    if (error) throw new Error(error.message);
-    return mapCashSession(data);
+    if (error) throw new Error(error.message)
+    return mapCashSession(data)
   },
 
-  async closeSession(sessionId: string, closingAmountUsd: number, notes?: string): Promise<CashSession> {
+  async closeSession(
+    sessionId: string,
+    closingAmountUsd: number,
+    notes?: string
+  ): Promise<CashSession> {
     // Calcular totales de la sesión antes de cerrar
     const { data: salesData } = await supabase
       .from('repmax_sales')
       .select('total_usd, payment_method')
       .eq('session_id', sessionId)
-      .eq('status', 'COMPLETED');
+      .eq('status', 'COMPLETED')
 
     const totalSalesUsd = (salesData ?? []).reduce(
-      (sum, s) => sum + parseFloat(s.total_usd ?? '0'), 0
-    );
+      (sum, s) => sum + parseFloat(s.total_usd ?? '0'),
+      0
+    )
 
-    const totalByPaymentMethod: Record<string, number> = {};
+    const totalByPaymentMethod: Record<string, number> = {}
     for (const sale of salesData ?? []) {
-      const method = sale.payment_method;
-      totalByPaymentMethod[method] = (totalByPaymentMethod[method] ?? 0) + parseFloat(sale.total_usd ?? '0');
+      const method = sale.payment_method
+      totalByPaymentMethod[method] =
+        (totalByPaymentMethod[method] ?? 0) + parseFloat(sale.total_usd ?? '0')
     }
 
     const { data, error } = await supabase
@@ -148,9 +156,9 @@ export const saleService = {
       })
       .eq('id', sessionId)
       .select()
-      .single();
+      .single()
 
-    if (error) throw new Error(error.message);
-    return mapCashSession(data);
+    if (error) throw new Error(error.message)
+    return mapCashSession(data)
   },
-};
+}

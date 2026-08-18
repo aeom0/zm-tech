@@ -32,14 +32,14 @@ Fuente de reglas: [Imágenes ML](https://developers.mercadolibre.com.ve/es_ar/tr
 
 ## Fases
 
-| Fase | Qué | Estado |
-|------|-----|--------|
-| A | UI catálogo + captura/validación de fotos ML + persistir en Storage | **Hecho** (mobile) |
-| B / impl. 1 | Contrato categoría + mapper PART_NUMBER + hook predicción | **Código listo.** Tabla `repmax_ml_listings` **aplicada** en el hub (`20260811222700`) |
-| C / impl. 2 | OAuth por tienda + proxy predictor (Edge) + switch gated | **Código listo, ops descartada.** Tabla `repmax_ml_connections` **no aplicar.** Edge **no desplegar.** MLV sin DevCenter/API |
-| B resto | COLOR, título sugerido, paridad web de la grilla | Pendiente |
-| C resto | `POST /items`, upload pictures, badges En ML / Desfasado | Pendiente |
-| D | Sync stock bidireccional + órdenes ML → `repmax_sales` | Pendiente |
+| Fase        | Qué                                                                 | Estado                                                                                                                       |
+| ----------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| A           | UI catálogo + captura/validación de fotos ML + persistir en Storage | **Hecho** (mobile)                                                                                                           |
+| B / impl. 1 | Contrato categoría + mapper PART_NUMBER + hook predicción           | **Código listo.** Tabla `repmax_ml_listings` **aplicada** en el hub (`20260811222700`)                                       |
+| C / impl. 2 | OAuth por tienda + proxy predictor (Edge) + switch gated            | **Código listo, ops descartada.** Tabla `repmax_ml_connections` **no aplicar.** Edge **no desplegar.** MLV sin DevCenter/API |
+| B resto     | COLOR, título sugerido, paridad web de la grilla                    | Pendiente                                                                                                                    |
+| C resto     | `POST /items`, upload pictures, badges En ML / Desfasado            | Pendiente                                                                                                                    |
+| D           | Sync stock bidireccional + órdenes ML → `repmax_sales`              | Pendiente                                                                                                                    |
 
 Las “impl. 1 / 2” son los cortes de código (briefs Composer). No sustituyen A–D de producto: C no está cerrado hasta publicar el ítem de verdad.
 
@@ -56,15 +56,15 @@ Las “impl. 1 / 2” son los cortes de código (briefs Composer). No sustituyen
 
 ### Mobile (`apps/repmax-mobile`)
 
-| Pieza | Path |
-|-------|------|
-| Slots | `src/components/inventory/PhotoSlotGrid.tsx` |
-| Captura | `src/screens/inventory/PhotoCaptureScreen.tsx` |
-| Revisión | `src/screens/inventory/PhotoReviewScreen.tsx` |
-| Reglas | `src/utils/mlPhotoRules.ts` |
-| Upload | `src/services/productPhotoService.ts` → bucket `repmax-products/{store_id}/drafts/` |
-| Form | `ProductFormScreen` — fotos primero, hints ML, switch publicar |
-| Thumbs catálogo | `ProductThumb` en inventario / POS / carrito — `photos[0]` aunque no esté en ML |
+| Pieza           | Path                                                                                |
+| --------------- | ----------------------------------------------------------------------------------- |
+| Slots           | `src/components/inventory/PhotoSlotGrid.tsx`                                        |
+| Captura         | `src/screens/inventory/PhotoCaptureScreen.tsx`                                      |
+| Revisión        | `src/screens/inventory/PhotoReviewScreen.tsx`                                       |
+| Reglas          | `src/utils/mlPhotoRules.ts`                                                         |
+| Upload          | `src/services/productPhotoService.ts` → bucket `repmax-products/{store_id}/drafts/` |
+| Form            | `ProductFormScreen` — fotos primero, hints ML, switch publicar                      |
+| Thumbs catálogo | `ProductThumb` en inventario / POS / carrito — `photos[0]` aunque no esté en ML     |
 
 `productService.create` envía `storeId`.
 
@@ -83,13 +83,13 @@ Las “impl. 1 / 2” son los cortes de código (briefs Composer). No sustituyen
 
 Contrato de datos para predecir categoría/atributos **antes** de publicar. OAuth no hace falta para el mapper local; el predictor sí (proxy fase 2).
 
-| Pieza | Path |
-|-------|------|
-| DDL | `docs/repmax/supabase/migrations/20260811222700_repmax_ml_listings.sql` |
-| Tipos | `packages/repmax-schema/src/mlListing.ts` + Drizzle `mlListings` en `schema.ts` |
-| Servicio | `apps/repmax-mobile/src/services/mercadolibre/mlCategoryService.ts` |
-| Hook | `apps/repmax-mobile/src/hooks/useMlCategoryPrediction.ts` |
-| Persist draft→ready | `mlListingService.upsertFromPrediction` |
+| Pieza               | Path                                                                            |
+| ------------------- | ------------------------------------------------------------------------------- |
+| DDL                 | `docs/repmax/supabase/migrations/20260811222700_repmax_ml_listings.sql`         |
+| Tipos               | `packages/repmax-schema/src/mlListing.ts` + Drizzle `mlListings` en `schema.ts` |
+| Servicio            | `apps/repmax-mobile/src/services/mercadolibre/mlCategoryService.ts`             |
+| Hook                | `apps/repmax-mobile/src/hooks/useMlCategoryPrediction.ts`                       |
+| Persist draft→ready | `mlListingService.upsertFromPrediction`                                         |
 
 - Relación 1:1 opcional `product_id` UNIQUE. Status: `draft \| ready \| published \| paused \| error`.
 - RLS: `store_id = ANY (repmax_user_store_ids())`, columnas calificadas.
@@ -102,22 +102,22 @@ Contrato de datos para predecir categoría/atributos **antes** de publicar. OAut
 
 Conexión **una vez por tienda**. Tokens solo los escribe `service_role` (Edge). El cliente SELECT omite `access_token` / `refresh_token`. INSERT/UPDATE sin policy para `authenticated`. DELETE solo owner.
 
-| Pieza | Path |
-|-------|------|
-| DDL | `docs/repmax/supabase/migrations/20260812010000_repmax_ml_connections.sql` (**no aplicar** hasta confirmar) |
-| Tipos | `packages/repmax-schema/src/mlConnection.ts` + Drizzle `mlConnections` |
-| Edge | `docs/repmax/supabase/functions/` — ver tabla abajo |
-| Auth mobile | `mlAuthService.ts` + `useMercadoLibreConnection.ts` |
-| UI | Card en `StoreSettingsScreen`. Switch en `ProductFormScreen` gated a `connected` + plan ≠ basic |
+| Pieza       | Path                                                                                                        |
+| ----------- | ----------------------------------------------------------------------------------------------------------- |
+| DDL         | `docs/repmax/supabase/migrations/20260812010000_repmax_ml_connections.sql` (**no aplicar** hasta confirmar) |
+| Tipos       | `packages/repmax-schema/src/mlConnection.ts` + Drizzle `mlConnections`                                      |
+| Edge        | `docs/repmax/supabase/functions/` — ver tabla abajo                                                         |
+| Auth mobile | `mlAuthService.ts` + `useMercadoLibreConnection.ts`                                                         |
+| UI          | Card en `StoreSettingsScreen`. Switch en `ProductFormScreen` gated a `connected` + plan ≠ basic             |
 
 ### Edge Functions
 
-| Función | JWT | Rol |
-|---------|-----|-----|
-| `ml-oauth-start` | sí | `state` HMAC (secret propio, 300s) + `authUrl` MLV (u otro site por `country_code`) |
-| `ml-oauth-callback` | **no** | GET `code`+`state` → token → upsert → `repmax://ml-connected?status=` |
-| `ml-token-refresh` | sí | Rota `refresh_token` (ML lo invalida en cada uso) |
-| `ml-predict-category` | sí | Proxy `domain_discovery` + `/categories/:id/attributes` |
+| Función               | JWT    | Rol                                                                                 |
+| --------------------- | ------ | ----------------------------------------------------------------------------------- |
+| `ml-oauth-start`      | sí     | `state` HMAC (secret propio, 300s) + `authUrl` MLV (u otro site por `country_code`) |
+| `ml-oauth-callback`   | **no** | GET `code`+`state` → token → upsert → `repmax://ml-connected?status=`               |
+| `ml-token-refresh`    | sí     | Rota `refresh_token` (ML lo invalida en cada uso)                                   |
+| `ml-predict-category` | sí     | Proxy `domain_discovery` + `/categories/:id/attributes`                             |
 
 Redirect **exacto** (ML rechaza variación):
 
@@ -134,13 +134,13 @@ Sites: `VE→MLV` (mínimo). Preparado: `MCO` `MPE` `MEC` `MDO` vía `repmax_sto
 
 **Soporte ML — consulta cerrada (MLV sin API)** — 2026-08-13 / respuesta oficial 2026-08-17
 
-| Campo | Valor |
-|-------|--------|
-| Consulta | **475453897** |
-| Error original | `PSC01-EZGLT8IYDQ3Z` en `/devcenter/accountLink` |
-| URL | `https://developers.mercadolibre.com.ve/devcenter/accountLink` |
+| Campo                            | Valor                                                                                                                                           |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Consulta                         | **475453897**                                                                                                                                   |
+| Error original                   | `PSC01-EZGLT8IYDQ3Z` en `/devcenter/accountLink`                                                                                                |
+| URL                              | `https://developers.mercadolibre.com.ve/devcenter/accountLink`                                                                                  |
 | Respuesta ML (Briajhan Gonzalez) | DevCenter/API de **Mercado Libre Venezuela (MLV) no está habilitado ni operativo** en el país. No es bloqueo de cuenta ni validación pendiente. |
-| Estado | **Cerrado — track API descartado** hasta anuncio oficial de ML |
+| Estado                           | **Cerrado — track API descartado** hasta anuncio oficial de ML                                                                                  |
 
 Sin DevCenter MLV no hay app ni `ML_CLIENT_ID` / `ML_CLIENT_SECRET`. **Plan de producto vigente:** [05-PLAN-catalogo-multicanal-sin-oauth.md](./05-PLAN-catalogo-multicanal-sin-oauth.md). El código OAuth del impl. 2 permanece en repo con `ML_API_ENABLED = false`.
 

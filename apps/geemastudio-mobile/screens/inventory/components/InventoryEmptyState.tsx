@@ -1,25 +1,22 @@
-import React from "react";
-import { View } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import React from 'react'
+import { View } from 'react-native'
+import { Feather } from '@expo/vector-icons'
 
-import { ThemedText } from "@/components/ThemedText";
+import { ThemedText } from '@/components/ThemedText'
 
-import { CATEGORY_LABELS } from "../constants";
-import type { InventoryCategory } from "../types";
-import { inventoryStyles as styles } from "../inventoryStyles";
+import { CATEGORY_LABELS } from '../constants'
+import type { InventoryCategory } from '../types'
+import { inventoryStyles as styles } from '../inventoryStyles'
 
 interface InventoryEmptyStateProps {
-  selectedTab: InventoryCategory;
+  selectedTab: InventoryCategory
   theme: {
-    textSecondary: string;
-    textMuted: string;
-  };
+    textSecondary: string
+    textMuted: string
+  }
 }
 
-export function InventoryEmptyState({
-  selectedTab,
-  theme,
-}: InventoryEmptyStateProps) {
+export function InventoryEmptyState({ selectedTab, theme }: InventoryEmptyStateProps) {
   return (
     <View style={styles.emptyState}>
       <View style={styles.emptyIconCircle}>
@@ -32,5 +29,5 @@ export function InventoryEmptyState({
         Agrega ítems de {CATEGORY_LABELS[selectedTab].toLowerCase()}
       </ThemedText>
     </View>
-  );
+  )
 }

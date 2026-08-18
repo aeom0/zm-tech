@@ -1,53 +1,53 @@
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { useHeaderHeight } from "@react-navigation/elements";
-import { useNavigation } from "@react-navigation/native";
-import type { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
-import React, { useMemo, useState } from "react";
-import { RefreshControl, ScrollView, View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
+import { useHeaderHeight } from '@react-navigation/elements'
+import { useNavigation } from '@react-navigation/native'
+import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
+import React, { useMemo, useState } from 'react'
+import { RefreshControl, ScrollView, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { Colors, Spacing } from "@/constants/theme";
-import { useAuth } from "@/contexts/AuthContext";
-import { useTenant } from "@/contexts/TenantContext";
-import { useHaptics } from "@/hooks/useHaptics";
-import { useResponsive } from "@/hooks/useResponsive";
-import { useTheme } from "@/hooks/useTheme";
-import type { MainTabParamList } from "@/navigation/MainTabNavigator";
+import { Colors, Spacing } from '@/constants/theme'
+import { useAuth } from '@/contexts/AuthContext'
+import { useTenant } from '@/contexts/TenantContext'
+import { useHaptics } from '@/hooks/useHaptics'
+import { useResponsive } from '@/hooks/useResponsive'
+import { useTheme } from '@/hooks/useTheme'
+import type { MainTabParamList } from '@/navigation/MainTabNavigator'
 
-import { DashboardAppointmentModal } from "./dashboard/components/DashboardAppointmentModal";
-import { DashboardHeader } from "./dashboard/components/DashboardHeader";
-import { DashboardLoading } from "./dashboard/components/DashboardLoading";
-import { DashboardLowStockBanner } from "./dashboard/components/DashboardLowStockBanner";
-import { DashboardStatCard } from "./dashboard/components/DashboardStatCard";
-import { DashboardUpcomingCard } from "./dashboard/components/DashboardUpcomingCard";
-import { dashboardStyles as styles } from "./dashboard/dashboardStyles";
+import { DashboardAppointmentModal } from './dashboard/components/DashboardAppointmentModal'
+import { DashboardHeader } from './dashboard/components/DashboardHeader'
+import { DashboardLoading } from './dashboard/components/DashboardLoading'
+import { DashboardLowStockBanner } from './dashboard/components/DashboardLowStockBanner'
+import { DashboardStatCard } from './dashboard/components/DashboardStatCard'
+import { DashboardUpcomingCard } from './dashboard/components/DashboardUpcomingCard'
+import { dashboardStyles as styles } from './dashboard/dashboardStyles'
 import {
   formatDashboardDateLong,
   getGreeting,
   parseAppointmentDate,
-} from "./dashboard/dashboardUtils";
-import { useDashboardMutations } from "./dashboard/hooks/useDashboardMutations";
-import { useDashboardQueries } from "./dashboard/hooks/useDashboardQueries";
-import { useStaggeredAnimation } from "./dashboard/hooks/useStaggeredAnimation";
-import type { DashboardAppointment } from "./dashboard/types";
+} from './dashboard/dashboardUtils'
+import { useDashboardMutations } from './dashboard/hooks/useDashboardMutations'
+import { useDashboardQueries } from './dashboard/hooks/useDashboardQueries'
+import { useStaggeredAnimation } from './dashboard/hooks/useStaggeredAnimation'
+import type { DashboardAppointment } from './dashboard/types'
 
 export default function DashboardScreen() {
-  const insets = useSafeAreaInsets();
-  const headerHeight = useHeaderHeight();
-  const tabBarHeight = useBottomTabBarHeight();
-  const { theme, isDark } = useTheme();
-  const { isTablet } = useResponsive();
-  const haptics = useHaptics();
-  const { profile } = useAuth();
-  const { config } = useTenant();
-  const currencySymbol = config.locale.currency.symbol;
+  const insets = useSafeAreaInsets()
+  const headerHeight = useHeaderHeight()
+  const tabBarHeight = useBottomTabBarHeight()
+  const { theme, isDark } = useTheme()
+  const { isTablet } = useResponsive()
+  const haptics = useHaptics()
+  const { profile } = useAuth()
+  const { config } = useTenant()
+  const currencySymbol = config.locale.currency.symbol
 
-  const dayStart = new Date();
-  dayStart.setHours(0, 0, 0, 0);
-  const dayEnd = new Date(dayStart);
-  dayEnd.setHours(23, 59, 59, 999);
-  const startOfDay = dayStart.toISOString();
-  const endOfDay = dayEnd.toISOString();
+  const dayStart = new Date()
+  dayStart.setHours(0, 0, 0, 0)
+  const dayEnd = new Date(dayStart)
+  dayEnd.setHours(23, 59, 59, 999)
+  const startOfDay = dayStart.toISOString()
+  const endOfDay = dayEnd.toISOString()
 
   const {
     stats,
@@ -58,98 +58,91 @@ export default function DashboardScreen() {
     refetchAppointments,
     employees,
     services,
-  } = useDashboardQueries(startOfDay, endOfDay);
+  } = useDashboardQueries(startOfDay, endOfDay)
 
-  const { updateAppointmentMutation, createPaymentMutation } =
-    useDashboardMutations();
+  const { updateAppointmentMutation, createPaymentMutation } = useDashboardMutations()
 
-  const navigation =
-    useNavigation<BottomTabNavigationProp<MainTabParamList, "Dashboard">>();
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedAppointment, setSelectedAppointment] =
-    useState<DashboardAppointment | null>(null);
+  const navigation = useNavigation<BottomTabNavigationProp<MainTabParamList, 'Dashboard'>>()
+  const [modalVisible, setModalVisible] = useState(false)
+  const [selectedAppointment, setSelectedAppointment] = useState<DashboardAppointment | null>(null)
 
   const getServiceName = (serviceId: string) => {
-    const service = services.find((s) => s.id === serviceId);
-    return service?.name ?? "Servicio";
-  };
+    const service = services.find((s) => s.id === serviceId)
+    return service?.name ?? 'Servicio'
+  }
 
   const handleMarkCompleted = (appointment: DashboardAppointment) => {
     const amount =
-      typeof appointment.price === "number"
+      typeof appointment.price === 'number'
         ? appointment.price
-        : parseFloat(String(appointment.price));
+        : parseFloat(String(appointment.price))
     updateAppointmentMutation.mutate(
-      { id: appointment.id, data: { status: "completed" } },
+      { id: appointment.id, data: { status: 'completed' } },
       {
         onSuccess: () => {
           createPaymentMutation.mutate({
             appointment_id: appointment.id,
             amount: String(amount),
-            method: "cash",
+            method: 'cash',
             date: new Date().toISOString(),
             notes: `Cita completada: ${getServiceName(appointment.service_id)}`,
-          });
-          setModalVisible(false);
-          setSelectedAppointment(null);
-          void refetchStats();
-          void refetchAppointments();
-          haptics.success();
+          })
+          setModalVisible(false)
+          setSelectedAppointment(null)
+          void refetchStats()
+          void refetchAppointments()
+          haptics.success()
         },
-      },
-    );
-  };
+      }
+    )
+  }
 
   const handleEditInAgenda = (appointment: DashboardAppointment) => {
-    setModalVisible(false);
-    setSelectedAppointment(null);
-    navigation.navigate("Agenda", { appointmentId: appointment.id });
-  };
+    setModalVisible(false)
+    setSelectedAppointment(null)
+    navigation.navigate('Agenda', { appointmentId: appointment.id })
+  }
 
-  const isLoading = statsLoading || appointmentsLoading;
+  const isLoading = statsLoading || appointmentsLoading
 
   const onRefresh = async () => {
-    haptics.light();
-    await Promise.all([refetchStats(), refetchAppointments()]);
-  };
+    haptics.light()
+    await Promise.all([refetchStats(), refetchAppointments()])
+  }
 
   const getEmployeeName = (employeeId: string) => {
-    const employee = employees.find((e) => e.id === employeeId);
-    return employee?.name ?? "Sin asignar";
-  };
+    const employee = employees.find((e) => e.id === employeeId)
+    return employee?.name ?? 'Sin asignar'
+  }
 
   const getEmployeeColor = (employeeId: string) => {
-    const employee = employees.find((e) => e.id === employeeId);
-    return employee?.color ?? Colors.light.violet;
-  };
+    const employee = employees.find((e) => e.id === employeeId)
+    return employee?.color ?? Colors.light.violet
+  }
 
   const upcomingAppointments = useMemo(() => {
     return appointments
-      .filter((a) => a.status === "scheduled")
+      .filter((a) => a.status === 'scheduled')
       .sort(
-        (a, b) =>
-          parseAppointmentDate(a.date).getTime() -
-          parseAppointmentDate(b.date).getTime(),
-      );
-  }, [appointments]);
+        (a, b) => parseAppointmentDate(a.date).getTime() - parseAppointmentDate(b.date).getTime()
+      )
+  }, [appointments])
 
   const completedToday = useMemo(
-    () => appointments.filter((a) => a.status === "completed"),
-    [appointments],
-  );
+    () => appointments.filter((a) => a.status === 'completed'),
+    [appointments]
+  )
 
-  const animatedItems = useStaggeredAnimation(isLoading);
+  const animatedItems = useStaggeredAnimation(isLoading)
 
-  const visibleLimit = isTablet ? 8 : 5;
+  const visibleLimit = isTablet ? 8 : 5
 
-  const greeting = getGreeting();
-  const displayNameSuffix = profile?.full_name
-    ? `, ${profile.full_name.split(" ")[0]}`
-    : "";
-  const dateLabel = formatDashboardDateLong(config.locale.language);
+  const greeting = getGreeting()
+  const displayNameSuffix = profile?.full_name ? `, ${profile.full_name.split(' ')[0]}` : ''
+  const dateLabel = formatDashboardDateLong(config.locale.language)
 
   if (isLoading) {
-    return <DashboardLoading backgroundColor={theme.backgroundRoot} />;
+    return <DashboardLoading backgroundColor={theme.backgroundRoot} />
   }
 
   const statsRow = (
@@ -157,13 +150,9 @@ export default function DashboardScreen() {
       <DashboardStatCard
         icon="dollar-sign"
         label="Ingresos hoy"
-        value={`${currencySymbol}${stats?.todayRevenue?.toFixed(0) ?? "0"}`}
+        value={`${currencySymbol}${stats?.todayRevenue?.toFixed(0) ?? '0'}`}
         color={theme.gold}
-        subtitle={
-          completedToday.length > 0
-            ? `${completedToday.length} pagos`
-            : undefined
-        }
+        subtitle={completedToday.length > 0 ? `${completedToday.length} pagos` : undefined}
         style={animatedItems[1]}
         isTablet={isTablet}
         theme={{
@@ -202,7 +191,7 @@ export default function DashboardScreen() {
         }}
       />
     </View>
-  );
+  )
 
   const lowStockBanner =
     stats && stats.lowStockItems > 0 ? (
@@ -212,7 +201,7 @@ export default function DashboardScreen() {
         theme={{ gold: theme.gold, textSecondary: theme.textSecondary }}
         animatedStyle={animatedItems[4]}
       />
-    ) : null;
+    ) : null
 
   return (
     <ScrollView
@@ -220,15 +209,11 @@ export default function DashboardScreen() {
       contentContainerStyle={{
         paddingTop: headerHeight + Spacing.lg,
         paddingBottom: tabBarHeight + Spacing.xl,
-        paddingHorizontal: isTablet ? Spacing["2xl"] : Spacing.lg,
+        paddingHorizontal: isTablet ? Spacing['2xl'] : Spacing.lg,
       }}
       scrollIndicatorInsets={{ bottom: insets.bottom }}
       refreshControl={
-        <RefreshControl
-          refreshing={false}
-          onRefresh={onRefresh}
-          tintColor={Colors.light.violet}
-        />
+        <RefreshControl refreshing={false} onRefresh={onRefresh} tintColor={Colors.light.violet} />
       }
       showsVerticalScrollIndicator={false}
     >
@@ -265,11 +250,11 @@ export default function DashboardScreen() {
               getEmployeeName={getEmployeeName}
               getServiceName={getServiceName}
               onOpenAppointment={(appt) => {
-                setSelectedAppointment(appt);
-                setModalVisible(true);
-                haptics.light();
+                setSelectedAppointment(appt)
+                setModalVisible(true)
+                haptics.light()
               }}
-              onViewAllAgenda={() => navigation.navigate("Agenda", {})}
+              onViewAllAgenda={() => navigation.navigate('Agenda', {})}
             />
           </View>
           <View style={styles.tabletRight}>
@@ -301,11 +286,11 @@ export default function DashboardScreen() {
             getEmployeeName={getEmployeeName}
             getServiceName={getServiceName}
             onOpenAppointment={(appt) => {
-              setSelectedAppointment(appt);
-              setModalVisible(true);
-              haptics.light();
+              setSelectedAppointment(appt)
+              setModalVisible(true)
+              haptics.light()
             }}
-            onViewAllAgenda={() => navigation.navigate("Agenda", {})}
+            onViewAllAgenda={() => navigation.navigate('Agenda', {})}
           />
           {lowStockBanner ? <View style={{ height: Spacing.lg }} /> : null}
           {lowStockBanner}
@@ -331,12 +316,12 @@ export default function DashboardScreen() {
         getServiceName={getServiceName}
         isCompleting={updateAppointmentMutation.isPending}
         onClose={() => {
-          setModalVisible(false);
-          setSelectedAppointment(null);
+          setModalVisible(false)
+          setSelectedAppointment(null)
         }}
         onMarkCompleted={handleMarkCompleted}
         onEditInAgenda={handleEditInAgenda}
       />
     </ScrollView>
-  );
+  )
 }

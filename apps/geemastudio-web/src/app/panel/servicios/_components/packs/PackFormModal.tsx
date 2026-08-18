@@ -1,68 +1,58 @@
-"use client";
+'use client'
 
-import { useState } from "react";
+import { useState } from 'react'
 
-import { useCreatePack, useUpdatePack } from "@/hooks/servicios/usePacks";
-import type { Pack } from "../../_services/packsService";
-import { ServicePickerCheckbox } from "./ServicePickerCheckbox";
+import { useCreatePack, useUpdatePack } from '@/hooks/servicios/usePacks'
+import type { Pack } from '../../_services/packsService'
+import { ServicePickerCheckbox } from './ServicePickerCheckbox'
 
 interface Props {
-  open: boolean;
-  pack?: Pack | null;
-  onClose: () => void;
+  open: boolean
+  pack?: Pack | null
+  onClose: () => void
 }
 
 type FormState = {
-  name: string;
-  description: string;
-  price: string;
-  service_ids: string[];
-  is_active: boolean;
-};
+  name: string
+  description: string
+  price: string
+  service_ids: string[]
+  is_active: boolean
+}
 
 const EMPTY: FormState = {
-  name: "",
-  description: "",
-  price: "",
+  name: '',
+  description: '',
+  price: '',
   service_ids: [],
   is_active: true,
-};
+}
 
 function formFromPack(pack: Pack): FormState {
   return {
     name: pack.name,
-    description: pack.description ?? "",
-    price: String(pack.price).replace(".", ","),
+    description: pack.description ?? '',
+    price: String(pack.price).replace('.', ','),
     service_ids: pack.service_ids,
     is_active: pack.is_active,
-  };
+  }
 }
 
 export function PackFormModal({ open, pack, onClose }: Props) {
-  if (!open) return null;
+  if (!open) return null
 
-  return (
-    <PackFormModalInner key={pack?.id ?? "new"} pack={pack} onClose={onClose} />
-  );
+  return <PackFormModalInner key={pack?.id ?? 'new'} pack={pack} onClose={onClose} />
 }
 
-function PackFormModalInner({
-  pack,
-  onClose,
-}: {
-  pack?: Pack | null;
-  onClose: () => void;
-}) {
-  const [form, setForm] = useState<FormState>(() =>
-    pack ? formFromPack(pack) : EMPTY,
-  );
-  const create = useCreatePack();
-  const update = useUpdatePack();
-  const isPending = create.isPending || update.isPending;
+function PackFormModalInner({ pack, onClose }: { pack?: Pack | null; onClose: () => void }) {
+  const [form, setForm] = useState<FormState>(() => (pack ? formFromPack(pack) : EMPTY))
+  const create = useCreatePack()
+  const update = useUpdatePack()
+  const isPending = create.isPending || update.isPending
 
   async function handleSubmit() {
-    const price = Number.parseFloat(form.price.replace(",", "."));
-    if (!form.name.trim() || Number.isNaN(price)) return;
+    const price = Number.parseFloat(form.price.replace(',', '.'))
+    if (!form.name.trim() || Number.isNaN(price)) return
 
     const input = {
       name: form.name.trim(),
@@ -70,22 +60,20 @@ function PackFormModalInner({
       price,
       service_ids: form.service_ids,
       is_active: form.is_active,
-    };
+    }
 
     if (pack) {
-      await update.mutateAsync({ id: pack.id, input });
+      await update.mutateAsync({ id: pack.id, input })
     } else {
-      await create.mutateAsync(input);
+      await create.mutateAsync(input)
     }
-    onClose();
+    onClose()
   }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
       <div className="w-full max-w-md space-y-4 rounded-xl border border-white/10 bg-[#1a1d26] p-6">
-        <h2 className="text-lg font-semibold text-white">
-          {pack ? "Editar pack" : "Nuevo pack"}
-        </h2>
+        <h2 className="text-lg font-semibold text-white">{pack ? 'Editar pack' : 'Nuevo pack'}</h2>
 
         <div className="space-y-3">
           <div>
@@ -99,15 +87,11 @@ function PackFormModalInner({
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-white/50">
-              Descripción
-            </label>
+            <label className="mb-1 block text-xs text-white/50">Descripción</label>
             <textarea
               className="w-full resize-none rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#40E0D0] focus:outline-none"
               value={form.description}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, description: e.target.value }))
-              }
+              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               rows={2}
               placeholder="Opcional"
             />
@@ -118,9 +102,7 @@ function PackFormModalInner({
             <input
               className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#40E0D0] focus:outline-none"
               value={form.price}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, price: e.target.value }))
-              }
+              onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
               placeholder="0,00"
               inputMode="decimal"
             />
@@ -142,9 +124,7 @@ function PackFormModalInner({
             <input
               type="checkbox"
               checked={form.is_active}
-              onChange={(e) =>
-                setForm((f) => ({ ...f, is_active: e.target.checked }))
-              }
+              onChange={(e) => setForm((f) => ({ ...f, is_active: e.target.checked }))}
               className="accent-[#40E0D0]"
             />
             <span className="text-sm text-white/70">Activo</span>
@@ -165,10 +145,10 @@ function PackFormModalInner({
             disabled={isPending}
             className="rounded-lg bg-[#40E0D0] px-4 py-2 text-sm text-white transition-colors hover:bg-[#00897B] disabled:opacity-50"
           >
-            {isPending ? "Guardando..." : pack ? "Actualizar" : "Crear pack"}
+            {isPending ? 'Guardando...' : pack ? 'Actualizar' : 'Crear pack'}
           </button>
         </div>
       </div>
     </div>
-  );
+  )
 }

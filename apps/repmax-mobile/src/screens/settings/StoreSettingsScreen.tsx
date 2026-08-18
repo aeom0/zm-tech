@@ -3,7 +3,7 @@
 // Editar nombre, teléfono, ciudad y dirección.
 // Solo el owner puede editar. La tasa USD/BS tiene su propia pantalla.
 // ============================================================
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   View,
   Text,
@@ -15,39 +15,63 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { MoreStackParamList } from '../../navigation/types';
-import { useAuth } from '../../context/AuthContext';
-import { useTasaCambio } from '../../hooks/useTasaCambio';
-import { useMercadoLibreConnection } from '../../hooks/useMercadoLibreConnection';
-import { ML_API_ENABLED, ML_API_STATUS_NOTE, ML_MANUAL_MODE_HINT } from '../../constants/mlConfig';
-import { BRANDS } from '../../constants/brands';
-import { colors, spacing, borderRadius, typography } from '../../utils/theme';
+} from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
+import type { MoreStackParamList } from '../../navigation/types'
+import { useAuth } from '../../context/AuthContext'
+import { useTasaCambio } from '../../hooks/useTasaCambio'
+import { useMercadoLibreConnection } from '../../hooks/useMercadoLibreConnection'
+import { ML_API_ENABLED, ML_API_STATUS_NOTE, ML_MANUAL_MODE_HINT } from '../../constants/mlConfig'
+import { BRANDS } from '../../constants/brands'
+import { colors, spacing, borderRadius, typography } from '../../utils/theme'
 
-type Props = NativeStackScreenProps<MoreStackParamList, 'StoreSettings'>;
+type Props = NativeStackScreenProps<MoreStackParamList, 'StoreSettings'>
 
 // ── Subcomponente: campo de formulario ───────────────────────
 interface FieldProps {
-  label: string;
-  value: string;
-  onChangeText: (text: string) => void;
-  placeholder?: string;
-  keyboardType?: 'default' | 'phone-pad';
-  editable: boolean;
-  icon: keyof typeof Ionicons.glyphMap;
-  multiline?: boolean;
+  label: string
+  value: string
+  onChangeText: (text: string) => void
+  placeholder?: string
+  keyboardType?: 'default' | 'phone-pad'
+  editable: boolean
+  icon: keyof typeof Ionicons.glyphMap
+  multiline?: boolean
 }
 
-function Field({ label, value, onChangeText, placeholder, keyboardType = 'default', editable, icon, multiline }: FieldProps) {
+function Field({
+  label,
+  value,
+  onChangeText,
+  placeholder,
+  keyboardType = 'default',
+  editable,
+  icon,
+  multiline,
+}: FieldProps) {
   return (
     <View style={fieldStyles.wrapper}>
       <Text style={fieldStyles.label}>{label}</Text>
-      <View style={[fieldStyles.inputRow, !editable && fieldStyles.inputRowDisabled, multiline && fieldStyles.inputRowMultiline]}>
-        <Ionicons name={icon} size={18} color={editable ? colors.brand.steel : colors.text.disabled} style={multiline && fieldStyles.iconTop} />
+      <View
+        style={[
+          fieldStyles.inputRow,
+          !editable && fieldStyles.inputRowDisabled,
+          multiline && fieldStyles.inputRowMultiline,
+        ]}
+      >
+        <Ionicons
+          name={icon}
+          size={18}
+          color={editable ? colors.brand.steel : colors.text.disabled}
+          style={multiline && fieldStyles.iconTop}
+        />
         <TextInput
-          style={[fieldStyles.input, !editable && fieldStyles.inputDisabled, multiline && fieldStyles.inputMultiline]}
+          style={[
+            fieldStyles.input,
+            !editable && fieldStyles.inputDisabled,
+            multiline && fieldStyles.inputMultiline,
+          ]}
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
@@ -60,7 +84,7 @@ function Field({ label, value, onChangeText, placeholder, keyboardType = 'defaul
         />
       </View>
     </View>
-  );
+  )
 }
 
 const fieldStyles = StyleSheet.create({
@@ -108,16 +132,16 @@ const fieldStyles = StyleSheet.create({
   inputMultiline: {
     minHeight: 64,
   },
-});
+})
 
 // ── Subcomponente: ítem de menú (fila navegable) ─────────────
 interface MenuItemProps {
-  icon: keyof typeof Ionicons.glyphMap;
-  label: string;
-  subtitle?: string;
-  value?: string;
-  onPress: () => void;
-  danger?: boolean;
+  icon: keyof typeof Ionicons.glyphMap
+  label: string
+  subtitle?: string
+  value?: string
+  onPress: () => void
+  danger?: boolean
 }
 
 function MenuItem({ icon, label, subtitle, value, onPress, danger }: MenuItemProps) {
@@ -141,7 +165,7 @@ function MenuItem({ icon, label, subtitle, value, onPress, danger }: MenuItemPro
         <Ionicons name="chevron-forward" size={16} color={colors.text.disabled} />
       </View>
     </TouchableOpacity>
-  );
+  )
 }
 
 const menuStyles = StyleSheet.create({
@@ -194,86 +218,86 @@ const menuStyles = StyleSheet.create({
     fontSize: typography.size.sm,
     color: colors.text.secondary,
   },
-});
+})
 
 // ── Config de badges por plan ─────────────────────────────────
 const PLAN_CONFIG: Record<string, { label: string; color: string }> = {
-  basic:      { label: 'Básico',     color: colors.text.secondary },
-  pro:        { label: 'Pro ✦',      color: colors.brand.orange },
+  basic: { label: 'Básico', color: colors.text.secondary },
+  pro: { label: 'Pro ✦', color: colors.brand.orange },
   enterprise: { label: 'Enterprise', color: colors.semantic.info },
-};
+}
 
 // ── Pantalla principal ────────────────────────────────────────
 export default function StoreSettingsScreen({ navigation }: Props) {
-  const { user, storeUser, store, updateStore, logout } = useAuth();
+  const { user, storeUser, store, updateStore, logout } = useAuth()
   const { usdBsRateEfectivo } = useTasaCambio(
     store?.usdBsRate ?? 36.5,
-    store?.usarTasaManual ?? false,
-  );
+    store?.usarTasaManual ?? false
+  )
 
-  const [name, setName]       = useState(store?.name ?? '');
-  const [phone, setPhone]     = useState(store?.phone ?? '');
-  const [city, setCity]       = useState(store?.city ?? '');
-  const [address, setAddress] = useState(store?.address ?? '');
-  const [isSaving, setIsSaving] = useState(false);
+  const [name, setName] = useState(store?.name ?? '')
+  const [phone, setPhone] = useState(store?.phone ?? '')
+  const [city, setCity] = useState(store?.city ?? '')
+  const [address, setAddress] = useState(store?.address ?? '')
+  const [isSaving, setIsSaving] = useState(false)
 
-  const [preferredBrands, setPreferredBrands] = useState<string[]>(store?.preferredBrands ?? []);
-  const [isSavingBrands, setIsSavingBrands] = useState(false);
+  const [preferredBrands, setPreferredBrands] = useState<string[]>(store?.preferredBrands ?? [])
+  const [isSavingBrands, setIsSavingBrands] = useState(false)
 
-  const isOwner = storeUser?.role === 'owner';
-  const plan    = store?.plan ?? 'basic';
-  const planCfg = PLAN_CONFIG[plan] ?? PLAN_CONFIG.basic;
-  const ml = useMercadoLibreConnection();
+  const isOwner = storeUser?.role === 'owner'
+  const plan = store?.plan ?? 'basic'
+  const planCfg = PLAN_CONFIG[plan] ?? PLAN_CONFIG.basic
+  const ml = useMercadoLibreConnection()
 
   // Formatea la fecha de actualización de la tasa
   const rateUpdated = store?.updatedAt
-    ? new Date(store.updatedAt).toLocaleDateString('es-VE', { day: 'numeric', month: 'short', year: 'numeric' })
-    : 'hoy';
+    ? new Date(store.updatedAt).toLocaleDateString('es-VE', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      })
+    : 'hoy'
 
   const handleSave = async () => {
     if (!name.trim()) {
-      Alert.alert('Error', 'El nombre de la tienda es requerido.');
-      return;
+      Alert.alert('Error', 'El nombre de la tienda es requerido.')
+      return
     }
-    setIsSaving(true);
+    setIsSaving(true)
     try {
-      await updateStore({ name: name.trim(), phone, city, address });
-      Alert.alert('✓ Guardado', 'Datos de la tienda actualizados.');
+      await updateStore({ name: name.trim(), phone, city, address })
+      Alert.alert('✓ Guardado', 'Datos de la tienda actualizados.')
     } catch {
-      Alert.alert('Error', 'No se pudo guardar. Intenta de nuevo.');
+      Alert.alert('Error', 'No se pudo guardar. Intenta de nuevo.')
     } finally {
-      setIsSaving(false);
+      setIsSaving(false)
     }
-  };
+  }
 
   const toggleBrand = (brand: string) => {
-    setPreferredBrands(prev =>
-      prev.includes(brand) ? prev.filter(b => b !== brand) : [...prev, brand],
-    );
-  };
+    setPreferredBrands((prev) =>
+      prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
+    )
+  }
 
   const handleSaveBrands = async () => {
-    setIsSavingBrands(true);
+    setIsSavingBrands(true)
     try {
-      await updateStore({ preferredBrands });
-      Alert.alert('✓ Guardado', 'Marcas de trabajo actualizadas.');
+      await updateStore({ preferredBrands })
+      Alert.alert('✓ Guardado', 'Marcas de trabajo actualizadas.')
     } catch {
-      Alert.alert('Error', 'No se pudo guardar. Intenta de nuevo.');
+      Alert.alert('Error', 'No se pudo guardar. Intenta de nuevo.')
     } finally {
-      setIsSavingBrands(false);
+      setIsSavingBrands(false)
     }
-  };
+  }
 
   const handleLogout = () => {
-    Alert.alert(
-      'Cerrar Sesión',
-      '¿Seguro que quieres cerrar sesión?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        { text: 'Cerrar Sesión', style: 'destructive', onPress: logout },
-      ],
-    );
-  };
+    Alert.alert('Cerrar Sesión', '¿Seguro que quieres cerrar sesión?', [
+      { text: 'Cancelar', style: 'cancel' },
+      { text: 'Cerrar Sesión', style: 'destructive', onPress: logout },
+    ])
+  }
 
   return (
     <KeyboardAvoidingView
@@ -289,9 +313,7 @@ export default function StoreSettingsScreen({ navigation }: Props) {
         {/* Cabecera de cuenta */}
         <View style={styles.profileCard}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>
-              {store?.name?.[0]?.toUpperCase() ?? 'T'}
-            </Text>
+            <Text style={styles.avatarText}>{store?.name?.[0]?.toUpperCase() ?? 'T'}</Text>
           </View>
           <View style={styles.profileInfo}>
             <Text style={styles.storeName}>{store?.name ?? '—'}</Text>
@@ -362,7 +384,11 @@ export default function StoreSettingsScreen({ navigation }: Props) {
                   <ActivityIndicator color={colors.text.inverse} />
                 ) : (
                   <>
-                    <Ionicons name="checkmark-circle-outline" size={20} color={colors.text.inverse} />
+                    <Ionicons
+                      name="checkmark-circle-outline"
+                      size={20}
+                      color={colors.text.inverse}
+                    />
                     <Text style={styles.saveBtnText}>Guardar Cambios</Text>
                   </>
                 )}
@@ -376,11 +402,12 @@ export default function StoreSettingsScreen({ navigation }: Props) {
           <Text style={styles.sectionTitle}>Marcas de Trabajo</Text>
           <View style={styles.card}>
             <Text style={styles.brandsHint}>
-              Elige las marcas con las que trabaja tu tienda. Si no eliges ninguna, se muestran todas.
+              Elige las marcas con las que trabaja tu tienda. Si no eliges ninguna, se muestran
+              todas.
             </Text>
             <View style={styles.brandChips}>
-              {BRANDS.map(brand => {
-                const active = preferredBrands.includes(brand);
+              {BRANDS.map((brand) => {
+                const active = preferredBrands.includes(brand)
                 return (
                   <TouchableOpacity
                     key={brand}
@@ -393,7 +420,7 @@ export default function StoreSettingsScreen({ navigation }: Props) {
                       {brand}
                     </Text>
                   </TouchableOpacity>
-                );
+                )
               })}
             </View>
 
@@ -408,7 +435,11 @@ export default function StoreSettingsScreen({ navigation }: Props) {
                   <ActivityIndicator color={colors.text.inverse} />
                 ) : (
                   <>
-                    <Ionicons name="checkmark-circle-outline" size={20} color={colors.text.inverse} />
+                    <Ionicons
+                      name="checkmark-circle-outline"
+                      size={20}
+                      color={colors.text.inverse}
+                    />
                     <Text style={styles.saveBtnText}>Guardar Marcas</Text>
                   </>
                 )}
@@ -466,19 +497,25 @@ export default function StoreSettingsScreen({ navigation }: Props) {
                       ml.status === 'connecting' && styles.saveBtnDisabled,
                     ]}
                     onPress={() => {
-                      if (ml.status === 'connecting') return;
+                      if (ml.status === 'connecting') return
                       if (ml.status === 'connected') {
                         Alert.alert(
                           'Desconectar MercadoLibre',
                           'Se corta la sesión. Las fichas en RepMAX se quedan; no se publican más hasta reconectar.',
                           [
                             { text: 'Cancelar', style: 'cancel' },
-                            { text: 'Desconectar', style: 'destructive', onPress: () => { void ml.disconnect(); } },
-                          ],
-                        );
-                        return;
+                            {
+                              text: 'Desconectar',
+                              style: 'destructive',
+                              onPress: () => {
+                                void ml.disconnect()
+                              },
+                            },
+                          ]
+                        )
+                        return
                       }
-                      void ml.connect();
+                      void ml.connect()
                     }}
                     disabled={ml.status === 'connecting'}
                     activeOpacity={0.8}
@@ -503,7 +540,8 @@ export default function StoreSettingsScreen({ navigation }: Props) {
                 <Text style={styles.planHint}>{ML_MANUAL_MODE_HINT}</Text>
                 <Text style={styles.planHint}>{ML_API_STATUS_NOTE}</Text>
                 <Text style={styles.planHint}>
-                  Marca productos en inventario, completa el checklist y exporta desde el ícono de descarga (CSV para el publicador masivo de ML).
+                  Marca productos en inventario, completa el checklist y exporta desde el ícono de
+                  descarga (CSV para el publicador masivo de ML).
                 </Text>
               </>
             )}
@@ -522,7 +560,9 @@ export default function StoreSettingsScreen({ navigation }: Props) {
                 <View>
                   <Text style={[styles.planLabel, { color: planCfg.color }]}>{planCfg.label}</Text>
                   {plan === 'basic' && (
-                    <Text style={styles.planHint}>Catálogo ML-ready y export incluidos en tu plan</Text>
+                    <Text style={styles.planHint}>
+                      Catálogo ML-ready y export incluidos en tu plan
+                    </Text>
                   )}
                 </View>
               </View>
@@ -543,19 +583,14 @@ export default function StoreSettingsScreen({ navigation }: Props) {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Sesión</Text>
           <View style={[styles.card, styles.cardNoInnerPad]}>
-            <MenuItem
-              icon="log-out-outline"
-              label="Cerrar Sesión"
-              onPress={handleLogout}
-              danger
-            />
+            <MenuItem icon="log-out-outline" label="Cerrar Sesión" onPress={handleLogout} danger />
           </View>
         </View>
 
         <Text style={styles.version}>RepMAX Business Suite v1.0.0</Text>
       </ScrollView>
     </KeyboardAvoidingView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -784,4 +819,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: spacing.lg,
   },
-});
+})

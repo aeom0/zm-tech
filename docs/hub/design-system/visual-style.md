@@ -13,12 +13,12 @@ Panel ops de la fábrica ZM Tech: misma familia visual que la landing (carbón p
 
 ## Atmósfera (permitida)
 
-| Uso | Receta |
-|-----|--------|
-| Fondo app | Radial wash `$accentSoft` esquina superior derecha → `$bg` (como `hero-gradient` landing, más sutil) |
-| Opcional grid | Grid 40px al 3% opacidad (landing); en panel preferir sin grid o muy suave |
-| Nav activo | Borde izquierdo `$accent` + fondo `$accentSoft` |
-| CTA primary | Relleno `$accent` → hover `$accentHover` |
+| Uso           | Receta                                                                                               |
+| ------------- | ---------------------------------------------------------------------------------------------------- |
+| Fondo app     | Radial wash `$accentSoft` esquina superior derecha → `$bg` (como `hero-gradient` landing, más sutil) |
+| Opcional grid | Grid 40px al 3% opacidad (landing); en panel preferir sin grid o muy suave                           |
+| Nav activo    | Borde izquierdo `$accent` + fondo `$accentSoft`                                                      |
+| CTA primary   | Relleno `$accent` → hover `$accentHover`                                                             |
 
 **Prohibido:** naranja RepMAX, teal scaffold, mesh purple genérico, glow neón, glassmorphism por defecto.
 

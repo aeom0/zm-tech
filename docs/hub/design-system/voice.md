@@ -13,23 +13,23 @@ Español LATAM con naturalidad venezolana suave. Operativo, corto, sin marketing
 
 ## CTAs
 
-| Contexto | Copy |
-|----------|------|
-| Login | Entrar |
-| Logout | Salir |
-| Alta | Nuevo cliente / Nuevo proyecto |
-| Lead | Convertir a cliente |
-| Ticket | Marcar resuelto |
-| Recordatorio | Hecho |
+| Contexto     | Copy                           |
+| ------------ | ------------------------------ |
+| Login        | Entrar                         |
+| Logout       | Salir                          |
+| Alta         | Nuevo cliente / Nuevo proyecto |
+| Lead         | Convertir a cliente            |
+| Ticket       | Marcar resuelto                |
+| Recordatorio | Hecho                          |
 
 ## Errores / empty
 
-| Situación | Copy |
-|-----------|------|
-| Credenciales | No se pudo iniciar sesión. Revisá correo y clave. |
-| Sin acceso | Tu cuenta no figura en hub_members. |
+| Situación            | Copy                                                             |
+| -------------------- | ---------------------------------------------------------------- |
+| Credenciales         | No se pudo iniciar sesión. Revisá correo y clave.                |
+| Sin acceso           | Tu cuenta no figura en hub_members.                              |
 | Lista vacía clientes | Todavía no hay clientes. Cargá el inventario o convertí un lead. |
-| Red / Supabase | No pudimos hablar con el servidor. Probá de nuevo. |
+| Red / Supabase       | No pudimos hablar con el servidor. Probá de nuevo.               |
 
 ## Evitar
 

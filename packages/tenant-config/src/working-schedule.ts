@@ -1,100 +1,98 @@
-import { defaultTenantConfig } from "./defaults";
-import type { TenantConfig } from "./types";
-import { diaLaboralKeyDesdeFechaEnZona } from "./iana-timezone";
+import { defaultTenantConfig } from './defaults'
+import type { TenantConfig } from './types'
+import { diaLaboralKeyDesdeFechaEnZona } from './iana-timezone'
 
 /** Claves de día alineadas con JSON guardado en `business_hours` (sin tildes). */
 export const CLAVES_DIA_LABORAL = [
-  "lunes",
-  "martes",
-  "miercoles",
-  "jueves",
-  "viernes",
-  "sabado",
-  "domingo",
-] as const;
+  'lunes',
+  'martes',
+  'miercoles',
+  'jueves',
+  'viernes',
+  'sabado',
+  'domingo',
+] as const
 
-export type DiaLaboralKey = (typeof CLAVES_DIA_LABORAL)[number];
+export type DiaLaboralKey = (typeof CLAVES_DIA_LABORAL)[number]
 
 export const ETIQUETA_DIA_LABORAL: Record<DiaLaboralKey, string> = {
-  lunes: "Lunes",
-  martes: "Martes",
-  miercoles: "Miércoles",
-  jueves: "Jueves",
-  viernes: "Viernes",
-  sabado: "Sábado",
-  domingo: "Domingo",
-};
+  lunes: 'Lunes',
+  martes: 'Martes',
+  miercoles: 'Miércoles',
+  jueves: 'Jueves',
+  viernes: 'Viernes',
+  sabado: 'Sábado',
+  domingo: 'Domingo',
+}
 
 /** Zonas horarias IANA frecuentes en LATAM (configuración guiada; se puede ampliar). */
 export const ZONAS_HORARIAS_SUGERIDAS: ReadonlyArray<{
-  value: string;
-  label: string;
+  value: string
+  label: string
 }> = [
-  { value: "America/Caracas", label: "Caracas (Venezuela)" },
-  { value: "America/Bogota", label: "Bogotá, Lima, Quito (COL/PE/EC)" },
-  { value: "America/La_Paz", label: "La Paz" },
-  { value: "America/Santiago", label: "Santiago" },
-  { value: "America/Argentina/Buenos_Aires", label: "Buenos Aires" },
-  { value: "America/Mexico_City", label: "Ciudad de México" },
-  { value: "America/Guatemala", label: "Guatemala, San José, Tegucigalpa" },
-  { value: "America/Panama", label: "Panamá" },
-  { value: "America/Santo_Domingo", label: "Santo Domingo" },
-  { value: "America/San_Juan", label: "San Juan" },
-  { value: "America/New_York", label: "Este EE. UU. (Miami, Nueva York)" },
-];
+  { value: 'America/Caracas', label: 'Caracas (Venezuela)' },
+  { value: 'America/Bogota', label: 'Bogotá, Lima, Quito (COL/PE/EC)' },
+  { value: 'America/La_Paz', label: 'La Paz' },
+  { value: 'America/Santiago', label: 'Santiago' },
+  { value: 'America/Argentina/Buenos_Aires', label: 'Buenos Aires' },
+  { value: 'America/Mexico_City', label: 'Ciudad de México' },
+  { value: 'America/Guatemala', label: 'Guatemala, San José, Tegucigalpa' },
+  { value: 'America/Panama', label: 'Panamá' },
+  { value: 'America/Santo_Domingo', label: 'Santo Domingo' },
+  { value: 'America/San_Juan', label: 'San Juan' },
+  { value: 'America/New_York', label: 'Este EE. UU. (Miami, Nueva York)' },
+]
 
-const HH_MM = /^([01]?\d|2[0-3]):([0-5]\d)$/;
+const HH_MM = /^([01]?\d|2[0-3]):([0-5]\d)$/
 
 export function esHoraValidaHHMM(valor: string): boolean {
-  return HH_MM.test(valor.trim());
+  return HH_MM.test(valor.trim())
 }
 
 /** Mensaje de error en español, o `null` si el horario semanal es válido. */
-export function validarHorarioCompleto(
-  bh: TenantConfig["businessHours"],
-): string | null {
+export function validarHorarioCompleto(bh: TenantConfig['businessHours']): string | null {
   for (const key of CLAVES_DIA_LABORAL) {
-    const slot = bh[key];
-    if (slot === null || slot === undefined) continue;
-    const open = slot.open.trim();
-    const close = slot.close.trim();
+    const slot = bh[key]
+    if (slot === null || slot === undefined) continue
+    const open = slot.open.trim()
+    const close = slot.close.trim()
     if (!esHoraValidaHHMM(open) || !esHoraValidaHHMM(close)) {
-      return `Formato HH:MM en ${ETIQUETA_DIA_LABORAL[key]} (ej. 09:30).`;
+      return `Formato HH:MM en ${ETIQUETA_DIA_LABORAL[key]} (ej. 09:30).`
     }
-    const [oh, om] = open.split(":").map(Number);
-    const [ch, cm] = close.split(":").map(Number);
+    const [oh, om] = open.split(':').map(Number)
+    const [ch, cm] = close.split(':').map(Number)
     if (oh * 60 + om >= ch * 60 + cm) {
-      return `En ${ETIQUETA_DIA_LABORAL[key]} la hora de apertura debe ser menor que el cierre.`;
+      return `En ${ETIQUETA_DIA_LABORAL[key]} la hora de apertura debe ser menor que el cierre.`
     }
   }
-  return null;
+  return null
 }
 
 /**
  * `Date.getDay()`: 0 = domingo … 6 = sábado — alineado con claves de `business_hours`.
  */
 const DIA_JS_A_CLAVE_LABORAL: readonly DiaLaboralKey[] = [
-  "domingo",
-  "lunes",
-  "martes",
-  "miercoles",
-  "jueves",
-  "viernes",
-  "sabado",
-] as const;
+  'domingo',
+  'lunes',
+  'martes',
+  'miercoles',
+  'jueves',
+  'viernes',
+  'sabado',
+] as const
 
 export function diaLaboralKeyDesdeFechaLocal(date: Date): DiaLaboralKey {
-  return DIA_JS_A_CLAVE_LABORAL[date.getDay()]!;
+  return DIA_JS_A_CLAVE_LABORAL[date.getDay()]!
 }
 
 function minutosDesdeMedianoche(hhmm: string): number {
-  const parts = hhmm.trim().split(":");
-  const h = parseInt(parts[0] ?? "", 10);
-  const m = parseInt(parts[1] ?? "0", 10);
+  const parts = hhmm.trim().split(':')
+  const h = parseInt(parts[0] ?? '', 10)
+  const m = parseInt(parts[1] ?? '0', 10)
   if (!Number.isFinite(h) || !Number.isFinite(m)) {
-    return NaN;
+    return NaN
   }
-  return h * 60 + m;
+  return h * 60 + m
 }
 
 /**
@@ -104,66 +102,60 @@ function minutosDesdeMedianoche(hhmm: string): number {
 export function esCeldaAgendaEnHorarioLaboral(
   fechaColumna: Date,
   horaInicio: number,
-  businessHours: TenantConfig["businessHours"],
-  timeZone: string,
+  businessHours: TenantConfig['businessHours'],
+  timeZone: string
 ): boolean {
-  const key = diaLaboralKeyDesdeFechaEnZona(fechaColumna, timeZone);
-  const franja = businessHours[key];
+  const key = diaLaboralKeyDesdeFechaEnZona(fechaColumna, timeZone)
+  const franja = businessHours[key]
   if (franja === null || franja === undefined) {
-    return false;
+    return false
   }
-  const openM = minutosDesdeMedianoche(franja.open);
-  const closeM = minutosDesdeMedianoche(franja.close);
+  const openM = minutosDesdeMedianoche(franja.open)
+  const closeM = minutosDesdeMedianoche(franja.close)
   if (!Number.isFinite(openM) || !Number.isFinite(closeM) || closeM <= openM) {
-    return false;
+    return false
   }
-  const slotStart = horaInicio * 60;
-  const slotEnd = slotStart + 60;
-  return slotStart < closeM && slotEnd > openM;
+  const slotStart = horaInicio * 60
+  const slotEnd = slotStart + 60
+  return slotStart < closeM && slotEnd > openM
 }
 
 /** Margen de una hora antes/después del horario configurado. */
 export function horasVisiblesParaAgenda(
-  businessHours: TenantConfig["businessHours"] | null | undefined,
+  businessHours: TenantConfig['businessHours'] | null | undefined
 ): number[] {
-  const n = normalizarHorarioSemanal(businessHours);
-  let lo = Infinity;
-  let hi = -Infinity;
-  let hayAlguno = false;
+  const n = normalizarHorarioSemanal(businessHours)
+  let lo = Infinity
+  let hi = -Infinity
+  let hayAlguno = false
   for (const key of CLAVES_DIA_LABORAL) {
-    const franja = n[key];
-    if (!franja) continue;
-    const openM = minutosDesdeMedianoche(franja.open);
-    const closeM = minutosDesdeMedianoche(franja.close);
-    if (
-      !Number.isFinite(openM) ||
-      !Number.isFinite(closeM) ||
-      closeM <= openM
-    ) {
-      continue;
+    const franja = n[key]
+    if (!franja) continue
+    const openM = minutosDesdeMedianoche(franja.open)
+    const closeM = minutosDesdeMedianoche(franja.close)
+    if (!Number.isFinite(openM) || !Number.isFinite(closeM) || closeM <= openM) {
+      continue
     }
-    hayAlguno = true;
-    lo = Math.min(lo, Math.floor(openM / 60));
-    hi = Math.max(hi, Math.floor((closeM - 1) / 60));
+    hayAlguno = true
+    lo = Math.min(lo, Math.floor(openM / 60))
+    hi = Math.max(hi, Math.floor((closeM - 1) / 60))
   }
   if (!hayAlguno) {
-    return Array.from({ length: 10 }, (_, i) => i + 10);
+    return Array.from({ length: 10 }, (_, i) => i + 10)
   }
-  const pad = 1;
-  const first = Math.max(0, lo - pad);
-  const last = Math.min(23, hi + pad);
-  return Array.from({ length: last - first + 1 }, (_, i) => first + i);
+  const pad = 1
+  const first = Math.max(0, lo - pad)
+  const last = Math.min(23, hi + pad)
+  return Array.from({ length: last - first + 1 }, (_, i) => first + i)
 }
 
 export function diaTieneFranjaAgenda(
   fecha: Date,
   agendaHours: readonly number[],
-  businessHours: TenantConfig["businessHours"],
-  timeZone: string,
+  businessHours: TenantConfig['businessHours'],
+  timeZone: string
 ): boolean {
-  return agendaHours.some((h) =>
-    esCeldaAgendaEnHorarioLaboral(fecha, h, businessHours, timeZone),
-  );
+  return agendaHours.some((h) => esCeldaAgendaEnHorarioLaboral(fecha, h, businessHours, timeZone))
 }
 
 /**
@@ -172,7 +164,7 @@ export function diaTieneFranjaAgenda(
  */
 export function mergeTenantConfig(
   prev: TenantConfig,
-  partial: Partial<TenantConfig>,
+  partial: Partial<TenantConfig>
 ): TenantConfig {
   return {
     ...prev,
@@ -193,42 +185,35 @@ export function mergeTenantConfig(
     terminology: partial.terminology
       ? { ...prev.terminology, ...partial.terminology }
       : prev.terminology,
-    contact: partial.contact
-      ? { ...prev.contact, ...partial.contact }
-      : prev.contact,
-    businessHours:
-      partial.businessHours !== undefined
-        ? partial.businessHours
-        : prev.businessHours,
+    contact: partial.contact ? { ...prev.contact, ...partial.contact } : prev.contact,
+    businessHours: partial.businessHours !== undefined ? partial.businessHours : prev.businessHours,
     commissions: partial.commissions
       ? { ...prev.commissions, ...partial.commissions }
       : prev.commissions,
-    features: partial.features
-      ? { ...prev.features, ...partial.features }
-      : prev.features,
+    features: partial.features ? { ...prev.features, ...partial.features } : prev.features,
     isDemo: partial.isDemo !== undefined ? partial.isDemo : prev.isDemo,
     integrations: partial.integrations
       ? { ...prev.integrations, ...partial.integrations }
       : prev.integrations,
     supabase: partial.supabase ?? prev.supabase,
-  };
+  }
 }
 
 /** Rellena los 7 días con defaults cuando falten claves en BD. */
 export function normalizarHorarioSemanal(
-  hours: TenantConfig["businessHours"] | null | undefined,
-): TenantConfig["businessHours"] {
-  const base: TenantConfig["businessHours"] = {
+  hours: TenantConfig['businessHours'] | null | undefined
+): TenantConfig['businessHours'] {
+  const base: TenantConfig['businessHours'] = {
     ...defaultTenantConfig.businessHours,
-  };
-  if (!hours || typeof hours !== "object") {
-    return base;
+  }
+  if (!hours || typeof hours !== 'object') {
+    return base
   }
   for (const key of CLAVES_DIA_LABORAL) {
     if (Object.prototype.hasOwnProperty.call(hours, key)) {
-      const v = hours[key];
-      base[key] = v === undefined ? base[key] : v;
+      const v = hours[key]
+      base[key] = v === undefined ? base[key] : v
     }
   }
-  return base;
+  return base
 }

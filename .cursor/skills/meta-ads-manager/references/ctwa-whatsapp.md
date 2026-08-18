@@ -33,7 +33,7 @@ The native connector's `create_ad_creative` only supports standard link/video cr
 ## Ad set requirements
 
 - `destination_type` must be set correctly at ad set creation (`ON_PAGE` for page-related destinations, or the WhatsApp-specific value depending on the connector's schema)
-- **`destination_type` is immutable after ad set creation.** If you set it wrong, you must create a new ad set — there's no update path. Confirm the destination with the user *before* creating the ad set, not after.
+- **`destination_type` is immutable after ad set creation.** If you set it wrong, you must create a new ad set — there's no update path. Confirm the destination with the user _before_ creating the ad set, not after.
 - Optimization goal for WhatsApp conversation campaigns is typically `CONVERSATIONS`
 
 ## Swapping the creative on a live CTWA ad (without touching ad set/campaign)

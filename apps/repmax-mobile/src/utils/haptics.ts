@@ -1,9 +1,9 @@
-import * as Haptics from 'expo-haptics';
+import * as Haptics from 'expo-haptics'
 
 /** Feedback táctil para POS / acciones clave (no-op si falla en web). */
 export async function hapticLight(): Promise<void> {
   try {
-    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
   } catch {
     // Plataforma sin háptica
   }
@@ -11,7 +11,7 @@ export async function hapticLight(): Promise<void> {
 
 export async function hapticSuccess(): Promise<void> {
   try {
-    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
   } catch {
     // Plataforma sin háptica
   }
@@ -19,7 +19,7 @@ export async function hapticSuccess(): Promise<void> {
 
 export async function hapticError(): Promise<void> {
   try {
-    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
   } catch {
     // Plataforma sin háptica
   }

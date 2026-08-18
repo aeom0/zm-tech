@@ -1,29 +1,26 @@
-import React from "react";
-import { View } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import React from 'react'
+import { View } from 'react-native'
+import { Feather } from '@expo/vector-icons'
 
-import { ThemedText } from "@/components/ThemedText";
+import { ThemedText } from '@/components/ThemedText'
 
-import {
-  DashboardAnimatedView,
-  type DashboardAnimatedStyle,
-} from "../hooks/useStaggeredAnimation";
-import { dashboardStyles as styles } from "../dashboardStyles";
+import { DashboardAnimatedView, type DashboardAnimatedStyle } from '../hooks/useStaggeredAnimation'
+import { dashboardStyles as styles } from '../dashboardStyles'
 
 interface DashboardStatCardProps {
-  icon: React.ComponentProps<typeof Feather>["name"];
-  label: string;
-  value: string | number;
-  color: string;
-  subtitle?: string;
-  style?: DashboardAnimatedStyle;
-  isTablet: boolean;
+  icon: React.ComponentProps<typeof Feather>['name']
+  label: string
+  value: string | number
+  color: string
+  subtitle?: string
+  style?: DashboardAnimatedStyle
+  isTablet: boolean
   theme: {
-    backgroundDefault: string;
-    border: string;
-    textSecondary: string;
-    textMuted: string;
-  };
+    backgroundDefault: string
+    border: string
+    textSecondary: string
+    textMuted: string
+  }
 }
 
 export function DashboardStatCard({
@@ -48,22 +45,18 @@ export function DashboardStatCard({
         style,
       ]}
     >
-      <View style={[styles.statIconBg, { backgroundColor: color + "18" }]}>
+      <View style={[styles.statIconBg, { backgroundColor: color + '18' }]}>
         <Feather name={icon} size={isTablet ? 22 : 18} color={color} />
       </View>
-      <ThemedText
-        style={[styles.statValue, { color, fontSize: isTablet ? 26 : 22 }]}
-      >
+      <ThemedText style={[styles.statValue, { color, fontSize: isTablet ? 26 : 22 }]}>
         {value}
       </ThemedText>
-      <ThemedText style={[styles.statLabel, { color: theme.textSecondary }]}>
-        {label}
-      </ThemedText>
+      <ThemedText style={[styles.statLabel, { color: theme.textSecondary }]}>{label}</ThemedText>
       {subtitle ? (
         <ThemedText style={[styles.statSubtitle, { color: theme.textMuted }]}>
           {subtitle}
         </ThemedText>
       ) : null}
     </DashboardAnimatedView>
-  );
+  )
 }

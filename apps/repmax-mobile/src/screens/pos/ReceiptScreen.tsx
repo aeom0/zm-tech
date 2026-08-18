@@ -2,61 +2,64 @@
 // RepMAX Business Suite — Pantalla de Comprobante / Recibo
 // Muestra el resumen de la venta completada.
 // ============================================================
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import {
-  View, Text, ScrollView, TouchableOpacity,
-  StyleSheet, ActivityIndicator,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
-import { saleService } from '../../services/saleService';
-import { MlStockAlertCard } from '../../components/pos/MlStockAlertCard';
-import { formatUSD, formatBS, formatDateTime } from '../../utils/formatters';
-import { PAYMENT_METHODS } from '../../constants/paymentMethods';
-import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
-import type { Sale } from '../../types/database';
-import type { POSStackParamList } from '../../navigation/types';
+import { saleService } from '../../services/saleService'
+import { MlStockAlertCard } from '../../components/pos/MlStockAlertCard'
+import { formatUSD, formatBS, formatDateTime } from '../../utils/formatters'
+import { PAYMENT_METHODS } from '../../constants/paymentMethods'
+import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme'
+import type { Sale } from '../../types/database'
+import type { POSStackParamList } from '../../navigation/types'
 
-type Props = NativeStackScreenProps<POSStackParamList, 'Receipt'>;
+type Props = NativeStackScreenProps<POSStackParamList, 'Receipt'>
 
 export default function ReceiptScreen({ route, navigation }: Props) {
-  const { saleId, mlStockAlert = [] } = route.params;
-  const [sale, setSale] = useState<Sale | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const { saleId, mlStockAlert = [] } = route.params
+  const [sale, setSale] = useState<Sale | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     // Carga el detalle de la venta desde la API
     const load = async () => {
       try {
-        const allSales = await saleService.getAll();
-        const found = allSales.find(s => s.id === saleId);
-        if (found) setSale(found);
+        const allSales = await saleService.getAll()
+        const found = allSales.find((s) => s.id === saleId)
+        if (found) setSale(found)
       } catch {
         // Si falla, mostrar solo el ID
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
-    };
-    load();
-  }, [saleId]);
+    }
+    load()
+  }, [saleId])
 
   const paymentLabel = sale
-    ? PAYMENT_METHODS.find(m => m.value === sale.paymentMethod)?.label ?? sale.paymentMethod
-    : '';
+    ? (PAYMENT_METHODS.find((m) => m.value === sale.paymentMethod)?.label ?? sale.paymentMethod)
+    : ''
 
   if (isLoading) {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size="large" color={colors.brand.orange} />
       </View>
-    );
+    )
   }
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scroll}>
-
         {/* Icono de éxito */}
         <View style={styles.successIcon}>
           <Ionicons name="checkmark-circle" size={72} color={colors.semantic.success} />
@@ -69,23 +72,18 @@ export default function ReceiptScreen({ route, navigation }: Props) {
         {/* Card del recibo */}
         <View style={styles.receiptCard}>
           <ReceiptRow label="Fecha" value={sale ? formatDateTime(sale.createdAt) : '—'} />
-          <ReceiptRow label="N° venta" value={sale?.id?.slice(0, 8).toUpperCase() ?? saleId.slice(0, 8).toUpperCase()} />
+          <ReceiptRow
+            label="N° venta"
+            value={sale?.id?.slice(0, 8).toUpperCase() ?? saleId.slice(0, 8).toUpperCase()}
+          />
           <Divider />
           <ReceiptRow label="Total USD" value={formatUSD(sale?.totalUsd ?? 0)} highlight />
-          {sale?.totalBs && (
-            <ReceiptRow label="Total Bs." value={formatBS(sale.totalBs)} />
-          )}
-          {sale?.usdBsRate && (
-            <ReceiptRow label="Tasa" value={`Bs. ${sale.usdBsRate} x USD`} />
-          )}
+          {sale?.totalBs && <ReceiptRow label="Total Bs." value={formatBS(sale.totalBs)} />}
+          {sale?.usdBsRate && <ReceiptRow label="Tasa" value={`Bs. ${sale.usdBsRate} x USD`} />}
           <Divider />
           <ReceiptRow label="Método de pago" value={paymentLabel} />
-          {sale?.customer && (
-            <ReceiptRow label="Cliente" value={sale.customer.fullName} />
-          )}
-          {sale?.notes && (
-            <ReceiptRow label="Nota" value={sale.notes} />
-          )}
+          {sale?.customer && <ReceiptRow label="Cliente" value={sale.customer.fullName} />}
+          {sale?.notes && <ReceiptRow label="Nota" value={sale.notes} />}
         </View>
 
         {/* Estado */}
@@ -97,31 +95,34 @@ export default function ReceiptScreen({ route, navigation }: Props) {
 
       {/* Botones de acción */}
       <View style={styles.footer}>
-        <TouchableOpacity
-          style={styles.newSaleBtn}
-          onPress={() => navigation.navigate('POS')}
-        >
+        <TouchableOpacity style={styles.newSaleBtn} onPress={() => navigation.navigate('POS')}>
           <Ionicons name="add-circle-outline" size={20} color={colors.text.inverse} />
           <Text style={styles.newSaleBtnText}>Nueva venta</Text>
         </TouchableOpacity>
       </View>
     </View>
-  );
+  )
 }
 
-function ReceiptRow({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
+function ReceiptRow({
+  label,
+  value,
+  highlight,
+}: {
+  label: string
+  value: string
+  highlight?: boolean
+}) {
   return (
     <View style={styles.receiptRow}>
       <Text style={styles.receiptLabel}>{label}</Text>
-      <Text style={[styles.receiptValue, highlight && styles.receiptValueHighlight]}>
-        {value}
-      </Text>
+      <Text style={[styles.receiptValue, highlight && styles.receiptValueHighlight]}>{value}</Text>
     </View>
-  );
+  )
 }
 
 function Divider() {
-  return <View style={styles.divider} />;
+  return <View style={styles.divider} />
 }
 
 const styles = StyleSheet.create({
@@ -229,4 +230,4 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily.bold,
     fontSize: typography.size.md,
   },
-});
+})

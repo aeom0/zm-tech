@@ -2,7 +2,6 @@
 
 > **Nota monorepo zm-tech**: skills y rules viven en la raíz del monorepo — `.cursor/skills/`, `.cursor/rules/`, `.cursorrules`. Claude: `.claude/skills` → symlink a `.cursor/skills`. Este archivo es documentación de producto; los paths `apps/mobile` / `apps/web` de abajo corresponden a `apps/geemastudio-mobile` / `apps/geemastudio-web` en zm-tech.
 
-
 Este archivo proporciona orientación a Claude Code (claude.ai/code) para trabajar en este repositorio.
 
 ## Descripción del Proyecto
@@ -14,6 +13,7 @@ Este archivo proporciona orientación a Claude Code (claude.ai/code) para trabaj
 ## Stack Tecnológico
 
 ### Frontend
+
 - **React Native 0.85** con **Expo SDK 56**
 - **React 19.2** con React Compiler habilitado
 - **TypeScript ~6.0.3** (resolución unificada en el monorepo)
@@ -22,10 +22,12 @@ Este archivo proporciona orientación a Claude Code (claude.ai/code) para trabaj
 - **React Native Reanimated 4.3** + worklets 0.8 para animaciones
 
 ### Backend
+
 - **Supabase** (PostgREST) — la app móvil se conecta directo a todas las entidades de negocio (employees, service_categories, services, clients, appointments, inventory_items, payments, profiles, tenant_settings)
 - **Node.js 22** (especificado en `.nvmrc`) para scripts y migrations (Drizzle), sin servidor Express activo para mobile
 
 ### Base de Datos
+
 - **Supabase PostgreSQL** — proyecto de producción: `udelxwwnyivknslueerr` (ZM Lash & Nails = tenant #1 dentro de GeemaStudio). Otros salones serán tenants adicionales en el mismo proyecto tras el retrofit multi-tenant; no crear un proyecto Supabase “limpio” por cada negocio.
 - **Drizzle ORM** con validación Zod (para migrations)
 - Schema compartido en `packages/shared-schema/src/schema.ts`
@@ -144,6 +146,7 @@ Detalle extendido: `scripts/db/seeds/README.md`.
 ## Arquitectura de la Base de Datos
 
 Tablas principales en `packages/shared-schema/src/schema.ts`:
+
 - **profiles** - Perfiles de usuario (id = auth.users.id), rol (dev | owner | staff), employee_id opcional; RLS por rol
 - **employees** - Personal del negocio: nombre, email, color, commission_percentage (%), notas, is_active
 - **service_categories** - Agrupaciones de servicios
@@ -160,18 +163,20 @@ RLS en Supabase (mobile ya migrado 100% a estas tablas): profiles (lectura propi
 
 El paquete `packages/tenant-config` define la interface `TenantConfig` y cuatro presets:
 
-| Preset | Tipo | Color primario |
-|--------|------|----------------|
-| `spaNavilsPreset` | `spa-nails` | #40E0D0 |
-| `barbershopPreset` | `barbershop` | #1A237E |
-| `hairSalonPreset` | `hair-salon` | #6A1B9A |
-| `fullAestheticPreset` | `full-aesthetic` | #00695C |
+| Preset                | Tipo             | Color primario |
+| --------------------- | ---------------- | -------------- |
+| `spaNavilsPreset`     | `spa-nails`      | #40E0D0        |
+| `barbershopPreset`    | `barbershop`     | #1A237E        |
+| `hairSalonPreset`     | `hair-salon`     | #6A1B9A        |
+| `fullAestheticPreset` | `full-aesthetic` | #00695C        |
 
 ### Paquete (helpers agenda / horario)
+
 - **`working-schedule.ts`**: `business_hours`, validación HH:MM, `mergeTenantConfig`, `horasVisiblesParaAgenda`, celdas en franja laboral.
 - **`iana-timezone.ts`**: Luxon 3 — semana/día en `locale.timezone`, `instanteCitaEnZona` para persistir citas correctamente.
 
 ### Hooks y contextos clave
+
 - `useTenant()` — accede a `config`, `updateTenant`, `markConfigured`, `isConfigured`, `isLoading`
 - `useTheme()` — retorna `createTheme(config, isDark)`: colores primary/accent dinámicos
 - `config.locale.currency.symbol` — símbolo de moneda (reemplaza cualquier moneda hardcodeada)
@@ -179,10 +184,11 @@ El paquete `packages/tenant-config` define la interface `TenantConfig` y cuatro 
 
 ### Flujo de onboarding (mobile)
 
-Al primer inicio (sin `@geemastudio/tenant_configured` en AsyncStorage) o cuando se fuerza en desarrollo:
-0. **OnboardingEntryScreen** — pantalla de entrada:
-   - "Crear nuevo negocio" (wizard completo)
-   - "Ya tengo cuenta" (abre `LoginScreen` clásico; si el tenant ya está configurado → va directo al panel)
+Al primer inicio (sin `@geemastudio/tenant_configured` en AsyncStorage) o cuando se fuerza en desarrollo: 0. **OnboardingEntryScreen** — pantalla de entrada:
+
+- "Crear nuevo negocio" (wizard completo)
+- "Ya tengo cuenta" (abre `LoginScreen` clásico; si el tenant ya está configurado → va directo al panel)
+
 1. **OnboardingBusinessTypeScreen** — elige tipo → aplica preset
 2. **OnboardingBasicInfoScreen** — nombre + colores con preview
 3. **OnboardingTeamScreen** — primer empleado (guarda en Supabase, omitible)
@@ -196,6 +202,7 @@ En desarrollo se puede forzar siempre el onboarding con `EXPO_PUBLIC_FORCE_ONBOA
 
 **Paleta de colores**: dinámica según `TenantConfig.theme` (primary + accent).
 Valores del preset `spa-nails` (archivo `presets/spa-nails.ts`):
+
 - **Primario**: #40E0D0 (Lunaris turquesa)
 - **Acento**: según preset (p. ej. dorado en UI)
 
@@ -208,6 +215,7 @@ Valores del preset `spa-nails` (archivo `presets/spa-nails.ts`):
 ## Patrones Importantes
 
 ### Frontend
+
 - Componentes temáticos con soporte dark mode automático via `useTheme()`
 - React Query para caching y sincronización con Supabase
 - Error Boundaries con UI de fallback
@@ -217,6 +225,7 @@ Valores del preset `spa-nails` (archivo `presets/spa-nails.ts`):
 - `useResponsive()` hook para UI tablet (≥768px)
 
 ### Compartido
+
 - Schema único como fuente de verdad (Drizzle + Zod + TS)
 - Type safety end-to-end; sin `any`
 
@@ -238,6 +247,7 @@ Valores del preset `spa-nails` (archivo `presets/spa-nails.ts`):
 - Para rol staff se muestran solo las opciones relevantes de cuenta (Configuración, Mi Perfil, Cerrar sesión).
 
 Flujo de arranque (mobile):
+
 - `AuthGate` → Splash.
 - Si **tenant no configurado** (o `EXPO_PUBLIC_FORCE_ONBOARDING=true` y aún no se completó el wizard en esta sesión):
   - `OnboardingEntryScreen` → (nuevo) wizard pasos 1–6 descritos arriba.
@@ -318,7 +328,7 @@ Flujo de arranque (mobile):
 
 ## Cambios Recientes (mar 2026 — v1.4.5 — Supabase Advisors + Drizzle alineado)
 
-- **Supabase (remoto)**: correcciones **Security / Performance Advisor** — `search_path` fijo en `update_updated_at_column`, `get_my_role`, `block_role_change_for_non_dev`; índices en FKs (`appointments`, `payments`, `profiles`, `services`); RLS consolidada (una política por comando por tabla) y políticas con `(SELECT auth.uid())` donde el linter lo pedía. *Leaked password protection* queda como limitación de plan Free si aplica.
+- **Supabase (remoto)**: correcciones **Security / Performance Advisor** — `search_path` fijo en `update_updated_at_column`, `get_my_role`, `block_role_change_for_non_dev`; índices en FKs (`appointments`, `payments`, `profiles`, `services`); RLS consolidada (una política por comando por tabla) y políticas con `(SELECT auth.uid())` donde el linter lo pedía. _Leaked password protection_ queda como limitación de plan Free si aplica.
 - **Drizzle** (`packages/shared-schema/src/schema.ts`): mismos índices declarados; tabla **`appointment_verifications`** + Zod/relaciones; scripts **`yarn db:generate`** y **`yarn db:studio`**; carpeta **`migrations/`** para salida de generate.
 - **Documentación SQL**: `scripts/db/migrations/20260324_advisor_rls_performance.sql` como referencia; `README.md`, `CHANGELOG.md`, `docs/DESARROLLO_LOCAL.md`, `docs/INDEX.md` actualizados.
 
@@ -353,7 +363,7 @@ Flujo de arranque (mobile):
 
 ## Cambios Recientes (mar 2026 — v1.4.0 — Fase 12: Landing Web Rediseño LATAM)
 
-- **`GradientButton` component** (`apps/web/src/components/ui/GradientButton.tsx`): botón reutilizable con gradiente Lunaris (`LUNARIS.gradient.css`, 135°); variante `outline` para CTAs secundarios; props `size` (sm/md/lg) y `className`. *(Histórico v1.4.0: gradiente magenta multi-stop; sustituido en v1.4.8.)*
+- **`GradientButton` component** (`apps/web/src/components/ui/GradientButton.tsx`): botón reutilizable con gradiente Lunaris (`LUNARIS.gradient.css`, 135°); variante `outline` para CTAs secundarios; props `size` (sm/md/lg) y `className`. _(Histórico v1.4.0: gradiente magenta multi-stop; sustituido en v1.4.8.)_
 - **`DemoSection`** (`apps/web/src/components/sections/DemoSection.tsx`): sección interactiva con 4 tabs (Agenda, Finanzas, Personal, Inventario); mockup de celular animado por tab con franja de color, badges de estado y glow; stats de impacto por módulo; CTA inline contextual.
 - **Navbar**: ícono diamante `/logo-diamondSparkle.svg` (ver v1.4.4 para barra clara/`invert`); link "Demo"; CTA "Empezar gratis" con `GradientButton`; hamburger mobile con menú oscuro backdrop-blur.
 - **HeroSection**: headline rediseñado para LATAM ("El software que tu salón merece / y que tus clientes van a notar.") con gradiente en texto; CTAs reemplazados por `GradientButton` + variante outline ("Ver demo en vivo →").

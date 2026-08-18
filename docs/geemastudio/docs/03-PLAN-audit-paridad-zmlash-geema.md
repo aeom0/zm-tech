@@ -20,10 +20,10 @@ No es al revés: no estamos buscando qué le sobra a Geema. ZM Lash es la refere
 
 ## 2. Repos y paths exactos a comparar
 
-| Lado | Repo | Path local (WSL) | Apps dentro |
-|---|---|---|---|
-| **Referencia (ZM Lash)** | `aeom0/ZM-Lash-and-Nails-Beauty` | `/home/alber/ZM-Lash-and-Nails-Beauty` | web + mobile (monolito de un solo tenant) |
-| **Producto (Geema)** | `aeom0/zm-tech` | `/home/alber/zm-tech` | `apps/geemastudio-web`, `apps/geemastudio-mobile`, `apps/geemastudio-server` |
+| Lado                     | Repo                             | Path local (WSL)                       | Apps dentro                                                                  |
+| ------------------------ | -------------------------------- | -------------------------------------- | ---------------------------------------------------------------------------- |
+| **Referencia (ZM Lash)** | `aeom0/ZM-Lash-and-Nails-Beauty` | `/home/alber/ZM-Lash-and-Nails-Beauty` | web + mobile (monolito de un solo tenant)                                    |
+| **Producto (Geema)**     | `aeom0/zm-tech`                  | `/home/alber/zm-tech`                  | `apps/geemastudio-web`, `apps/geemastudio-mobile`, `apps/geemastudio-server` |
 
 No compares contra el repo legacy `aeom0/geemastudio` (SalonPro) — ese quedó absorbido, el desarrollo activo vive en `zm-tech`.
 
@@ -79,10 +79,10 @@ Un solo documento markdown: `docs/audit/03-AUDIT-paridad-zmlash-geema.md` (dentr
 
 ### 6.1 Tabla principal
 
-| Feature | ZM Lash (referencia) | Geema Web | Geema Mobile | Geema Server | Notas |
-|---|---|---|---|---|---|
-| Agenda / citas | ✅ | 🟡 | ❌ | ✅ | ... |
-| ... | | | | | |
+| Feature        | ZM Lash (referencia) | Geema Web | Geema Mobile | Geema Server | Notas |
+| -------------- | -------------------- | --------- | ------------ | ------------ | ----- |
+| Agenda / citas | ✅                   | 🟡        | ❌           | ✅           | ...   |
+| ...            |                      |           |              |              |       |
 
 ### 6.2 Sección "Gaps críticos" (la parte que más me importa)
 

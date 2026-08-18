@@ -11,10 +11,10 @@ on:
   push:
     branches: [main]
     paths:
-      - "apps/repmax-mobile/**"
-      - "packages/repmax-schema/**"
-      - "packages/tenant-config/src/repmax/**"
-      - ".github/workflows/repmax-ota.yml"
+      - 'apps/repmax-mobile/**'
+      - 'packages/repmax-schema/**'
+      - 'packages/tenant-config/src/repmax/**'
+      - '.github/workflows/repmax-ota.yml'
   workflow_dispatch:
     inputs:
       channel:

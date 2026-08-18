@@ -3,18 +3,10 @@ export type {
   RepmaxStoreRow,
   RepmaxStoreUserRow,
   RepmaxTenantConfig,
-} from "./types";
+} from './types'
 
-export { repmaxDefaultConfig, mergeRepmaxTenantConfig } from "./preset";
+export { repmaxDefaultConfig, mergeRepmaxTenantConfig } from './preset'
 
-export {
-  RepmaxAuthProvider,
-  useRepmaxAuth,
-  useAuth,
-} from "./auth-provider";
+export { RepmaxAuthProvider, useRepmaxAuth, useAuth } from './auth-provider'
 
-export {
-  RepmaxTenantProvider,
-  useTenant,
-  useRepmaxTenant,
-} from "./tenant-provider";
+export { RepmaxTenantProvider, useTenant, useRepmaxTenant } from './tenant-provider'

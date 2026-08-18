@@ -8,13 +8,13 @@
 
 ## Patrones
 
-| Interacción | Motion |
-|-------------|--------|
-| Sidebar móvil open/close | translateX 200–250ms |
-| Hover nav / botones | color 150ms |
-| Login → panel | navegación Next (sin splash largo) |
-| Loading skeleton | pulse opacity 1.2s loop |
-| Toast / error inline | fade + 4px rise, 200ms |
+| Interacción              | Motion                             |
+| ------------------------ | ---------------------------------- |
+| Sidebar móvil open/close | translateX 200–250ms               |
+| Hover nav / botones      | color 150ms                        |
+| Login → panel            | navegación Next (sin splash largo) |
+| Loading skeleton         | pulse opacity 1.2s loop            |
+| Toast / error inline     | fade + 4px rise, 200ms             |
 
 ## Prohibido
 

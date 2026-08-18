@@ -1,29 +1,29 @@
-"use server";
+'use server'
 
-import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
-import { proyectoFormSchema, type ProyectoFormValues } from "@/lib/validation/proyectos";
-import type { ActionResult } from "./clientes";
+import { revalidatePath } from 'next/cache'
+import { createClient } from '@/lib/supabase/server'
+import { proyectoFormSchema, type ProyectoFormValues } from '@/lib/validation/proyectos'
+import type { ActionResult } from './clientes'
 
 function stackDesdeString(raw: string | null | undefined): string[] {
-  if (!raw) return [];
+  if (!raw) return []
   return raw
-    .split(",")
+    .split(',')
     .map((s) => s.trim())
-    .filter(Boolean);
+    .filter(Boolean)
 }
 
 export async function crearProyecto(
-  values: ProyectoFormValues,
+  values: ProyectoFormValues
 ): Promise<ActionResult<{ id: string }>> {
-  const parsed = proyectoFormSchema.safeParse(values);
+  const parsed = proyectoFormSchema.safeParse(values)
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.errors[0]?.message ?? "Datos inválidos" };
+    return { ok: false, error: parsed.error.errors[0]?.message ?? 'Datos inválidos' }
   }
 
-  const supabase = await createClient();
+  const supabase = await createClient()
   const { data, error } = await supabase
-    .from("hub_projects")
+    .from('hub_projects')
     .insert({
       client_id: parsed.data.clientId ?? null,
       name: parsed.data.name,
@@ -39,29 +39,29 @@ export async function crearProyecto(
       version: parsed.data.version ?? null,
       notes: parsed.data.notes ?? null,
     })
-    .select("id")
-    .single();
+    .select('id')
+    .single()
 
   if (error) {
-    return { ok: false, error: error.message };
+    return { ok: false, error: error.message }
   }
 
-  revalidatePath("/proyectos");
-  return { ok: true, data: { id: data.id as string } };
+  revalidatePath('/proyectos')
+  return { ok: true, data: { id: data.id as string } }
 }
 
 export async function actualizarProyecto(
   id: string,
-  values: ProyectoFormValues,
+  values: ProyectoFormValues
 ): Promise<ActionResult> {
-  const parsed = proyectoFormSchema.safeParse(values);
+  const parsed = proyectoFormSchema.safeParse(values)
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.errors[0]?.message ?? "Datos inválidos" };
+    return { ok: false, error: parsed.error.errors[0]?.message ?? 'Datos inválidos' }
   }
 
-  const supabase = await createClient();
+  const supabase = await createClient()
   const { error } = await supabase
-    .from("hub_projects")
+    .from('hub_projects')
     .update({
       client_id: parsed.data.clientId ?? null,
       name: parsed.data.name,
@@ -78,13 +78,13 @@ export async function actualizarProyecto(
       notes: parsed.data.notes ?? null,
       updated_at: new Date().toISOString(),
     })
-    .eq("id", id);
+    .eq('id', id)
 
   if (error) {
-    return { ok: false, error: error.message };
+    return { ok: false, error: error.message }
   }
 
-  revalidatePath("/proyectos");
-  revalidatePath(`/proyectos/${id}`);
-  return { ok: true, data: null };
+  revalidatePath('/proyectos')
+  revalidatePath(`/proyectos/${id}`)
+  return { ok: true, data: null }
 }

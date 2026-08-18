@@ -4,10 +4,10 @@
 
 ## Qué vive aquí
 
-| Área | Uso |
-|------|-----|
-| `supabase/migrations/` | SQL del producto (`odental_*`) en el proyecto compartido ZMTech |
-| Edge Functions (cuando existan) | Deploy vía Supabase CLI — no JWT propio |
+| Área                            | Uso                                                             |
+| ------------------------------- | --------------------------------------------------------------- |
+| `supabase/migrations/`          | SQL del producto (`odental_*`) en el proyecto compartido ZMTech |
+| Edge Functions (cuando existan) | Deploy vía Supabase CLI — no JWT propio                         |
 
 ## Proyecto Supabase
 

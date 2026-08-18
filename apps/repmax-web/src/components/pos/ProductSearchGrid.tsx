@@ -2,23 +2,23 @@
 // POS — grid de búsqueda de productos
 // ============================================================
 
-"use client";
+'use client'
 
-import { useEffect, useMemo, useState } from "react";
-import Image from "next/image";
-import { Search } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
-import { fetchProducts } from "@/lib/repmax-queries";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import type { ProductoWeb } from "@/types/dashboard";
+import { useEffect, useMemo, useState } from 'react'
+import Image from 'next/image'
+import { Search } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
+import { fetchProducts } from '@/lib/repmax-queries'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import type { ProductoWeb } from '@/types/dashboard'
 
 interface ProductSearchGridProps {
-  storeId: string;
-  usdBsRate: number;
-  refreshKey?: number;
-  onAdd: (product: ProductoWeb) => void;
+  storeId: string
+  usdBsRate: number
+  refreshKey?: number
+  onAdd: (product: ProductoWeb) => void
 }
 
 export function ProductSearchGrid({
@@ -27,53 +27,53 @@ export function ProductSearchGrid({
   refreshKey = 0,
   onAdd,
 }: ProductSearchGridProps) {
-  const [busqueda, setBusqueda] = useState("");
-  const [busquedaDebounced, setBusquedaDebounced] = useState("");
-  const [productos, setProductos] = useState<ProductoWeb[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [busqueda, setBusqueda] = useState('')
+  const [busquedaDebounced, setBusquedaDebounced] = useState('')
+  const [productos, setProductos] = useState<ProductoWeb[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const t = setTimeout(() => setBusquedaDebounced(busqueda.trim()), 300);
-    return () => clearTimeout(t);
-  }, [busqueda]);
+    const t = setTimeout(() => setBusquedaDebounced(busqueda.trim()), 300)
+    return () => clearTimeout(t)
+  }, [busqueda])
 
   useEffect(() => {
     function limpiarBusqueda() {
-      setBusqueda("");
-      setBusquedaDebounced("");
+      setBusqueda('')
+      setBusquedaDebounced('')
     }
-    window.addEventListener("repmax-barcode-clear", limpiarBusqueda);
-    return () => window.removeEventListener("repmax-barcode-clear", limpiarBusqueda);
-  }, []);
+    window.addEventListener('repmax-barcode-clear', limpiarBusqueda)
+    return () => window.removeEventListener('repmax-barcode-clear', limpiarBusqueda)
+  }, [])
 
   const url = useMemo(() => {
-    const p = new URLSearchParams();
-    p.set("page", "1");
-    p.set("limit", "40");
-    if (busquedaDebounced) p.set("q", busquedaDebounced);
-    return p;
-  }, [busquedaDebounced]);
+    const p = new URLSearchParams()
+    p.set('page', '1')
+    p.set('limit', '40')
+    if (busquedaDebounced) p.set('q', busquedaDebounced)
+    return p
+  }, [busquedaDebounced])
 
   useEffect(() => {
-    let cancelled = false;
-    setIsLoading(true);
-    setError(null);
-    const client = createClient();
+    let cancelled = false
+    setIsLoading(true)
+    setError(null)
+    const client = createClient()
     fetchProducts(client, url, usdBsRate)
       .then((res) => {
-        if (!cancelled) setProductos(res.products.filter((p) => p.isActive));
+        if (!cancelled) setProductos(res.products.filter((p) => p.isActive))
       })
       .catch((e) => {
-        if (!cancelled) setError(e instanceof Error ? e.message : "Error al cargar productos");
+        if (!cancelled) setError(e instanceof Error ? e.message : 'Error al cargar productos')
       })
       .finally(() => {
-        if (!cancelled) setIsLoading(false);
-      });
+        if (!cancelled) setIsLoading(false)
+      })
     return () => {
-      cancelled = true;
-    };
-  }, [url, usdBsRate, storeId, refreshKey]);
+      cancelled = true
+    }
+  }, [url, usdBsRate, storeId, refreshKey])
 
   return (
     <div className="space-y-4">
@@ -97,7 +97,10 @@ export function ProductSearchGrid({
       {isLoading ? (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="h-44 animate-pulse rounded-lg border border-[#2A2A2A] bg-[#1A1A1A]" />
+            <div
+              key={i}
+              className="h-44 animate-pulse rounded-lg border border-[#2A2A2A] bg-[#1A1A1A]"
+            />
           ))}
         </div>
       ) : (
@@ -110,7 +113,7 @@ export function ProductSearchGrid({
                   alt=""
                   width={120}
                   height={120}
-                  className="h-24 w-full rounded object-cover bg-[#242424]"
+                  className="h-24 w-full rounded bg-[#242424] object-cover"
                   unoptimized
                 />
               ) : (
@@ -125,10 +128,10 @@ export function ProductSearchGrid({
                 <p
                   className={
                     p.stock <= 0
-                      ? "text-xs font-semibold text-[#F44336]"
+                      ? 'text-xs font-semibold text-[#F44336]'
                       : p.stock <= p.minStock
-                        ? "text-xs font-semibold text-[#FFC107]"
-                        : "text-xs text-[#616161]"
+                        ? 'text-xs font-semibold text-[#FFC107]'
+                        : 'text-xs text-[#616161]'
                   }
                 >
                   Stock: {p.stock}
@@ -141,7 +144,7 @@ export function ProductSearchGrid({
                 onClick={() => onAdd(p)}
                 className="mt-2 w-full bg-[#FF6B00] font-semibold text-[#0D0D0D] hover:bg-[#FF8533] disabled:bg-[#242424] disabled:text-[#616161]"
               >
-                {p.stock <= 0 ? "Sin stock" : "Agregar"}
+                {p.stock <= 0 ? 'Sin stock' : 'Agregar'}
               </Button>
             </Card>
           ))}
@@ -153,5 +156,5 @@ export function ProductSearchGrid({
         </div>
       )}
     </div>
-  );
+  )
 }

@@ -90,12 +90,12 @@ Agents don’t always get the skills directory from context. When the path isn�
 
 **Typical skill locations** (confirm with your tool’s current docs — layouts change):
 
-| Environment | Where to put `SKILL.md` |
-|-------------|-------------------------|
-| **Cursor** | Project: `.cursor/skills/pen-design/SKILL.md`; user-level: under `~/.cursor/skills/` |
-| **Claude Code** | Often `.claude/skills/pen-design/SKILL.md` or user-level under `~/.claude/` |
-| **OpenClaw** | Often `~/.openclaw/skills/`, workspace `.agents/skills/`, or paths in [OpenClaw skills docs](https://docs.openclaw.ai/skills/) — verify for the user’s setup |
-| **Other agents (Codex, etc.)** | Use the directory your product uses for skills or prompts |
+| Environment                    | Where to put `SKILL.md`                                                                                                                                      |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Cursor**                     | Project: `.cursor/skills/pen-design/SKILL.md`; user-level: under `~/.cursor/skills/`                                                                         |
+| **Claude Code**                | Often `.claude/skills/pen-design/SKILL.md` or user-level under `~/.claude/`                                                                                  |
+| **OpenClaw**                   | Often `~/.openclaw/skills/`, workspace `.agents/skills/`, or paths in [OpenClaw skills docs](https://docs.openclaw.ai/skills/) — verify for the user’s setup |
+| **Other agents (Codex, etc.)** | Use the directory your product uses for skills or prompts                                                                                                    |
 
 Example (adjust the destination path to match your agent):
 
@@ -118,6 +118,7 @@ pen --out <output.pen> --prompt "<design description>" --export <output.png> --e
 ```
 
 Key flags:
+
 - `--out, -o` — where to save the `.pen` file (required)
 - `--prompt, -p` — what to design (required)
 - `--prompt-file, -f` — attach an image or text file to send with the prompt (repeatable). Same idea as attaching reference images in the pen.dev editor chat; not for loading the prompt text from a file.
@@ -167,6 +168,7 @@ pen --in design.pen --out design-v2.pen --prompt "Make the header larger and cha
 The agent will read the existing design and apply modifications rather than starting from scratch.
 
 For quick successive iterations, keep a consistent naming pattern:
+
 - `design.pen` → `design-v2.pen` → `design-v3.pen`
 - Or use a single file: `--in design.pen --out design.pen` (overwrites)
 

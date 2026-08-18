@@ -1,9 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import {
-  convertirBsAUsd,
-  convertirUsdABs,
-  validarDetallesPagoMixto,
-} from './pagos'
+import { convertirBsAUsd, convertirUsdABs, validarDetallesPagoMixto } from './pagos'
 
 describe('pagos BCV', () => {
   it('convierte USD a Bs y redondea a dos decimales', () => {
@@ -18,7 +14,7 @@ describe('pagos BCV', () => {
         CASH_BS: { monto: 7733.13, moneda: 'BS' },
       },
       20,
-      773.3125,
+      773.3125
     )
 
     expect(resultado.valido).toBe(true)
@@ -30,7 +26,7 @@ describe('pagos BCV', () => {
     const resultado = validarDetallesPagoMixto(
       { CASH_BS: { monto: 7000, moneda: 'BS' } },
       10,
-      773.3125,
+      773.3125
     )
 
     expect(resultado.valido).toBe(false)

@@ -11,13 +11,13 @@ Operational playbook for running Meta Ads (Facebook/Instagram) campaigns through
 
 These two MCP connectors are **not interchangeable**. Check which the user has connected before picking one.
 
-| Task | Use |
-|---|---|
-| Standard campaigns/ad sets/ads with LINK_CLICKS, CONVERSIONS, standard optimization goals | Either — native is fine |
-| **CTWA (Click-to-WhatsApp) or Messenger-destination ads** | **Pipeboard only.** Native `create_ad_creative` cannot produce CTWA ads — it lacks the `page_welcome_message` rich format. See `references/ctwa-whatsapp.md`. |
-| PAGE_LIKES / engagement-objective campaigns | Either, but see `references/campaign-objectives.md` for the ODAX mapping — legacy objective names like `PAGE_LIKES` are rejected by the API now |
-| Bulk operations (many creatives/ads/audiences at once) | Pipeboard — it has `bulk_create_ad_creatives`, `bulk_create_ads`, `bulk_update_*` |
-| Video ad creatives | Either, but **`thumbnail_url` must be a real public CDN URL** — retrieve via `get_ad_video`/`ads_get_ad_videos` with `fields=['id','title','picture']`. Passing `image_hash` instead of a thumbnail is rejected. |
+| Task                                                                                      | Use                                                                                                                                                                                                              |
+| ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Standard campaigns/ad sets/ads with LINK_CLICKS, CONVERSIONS, standard optimization goals | Either — native is fine                                                                                                                                                                                          |
+| **CTWA (Click-to-WhatsApp) or Messenger-destination ads**                                 | **Pipeboard only.** Native `create_ad_creative` cannot produce CTWA ads — it lacks the `page_welcome_message` rich format. See `references/ctwa-whatsapp.md`.                                                    |
+| PAGE_LIKES / engagement-objective campaigns                                               | Either, but see `references/campaign-objectives.md` for the ODAX mapping — legacy objective names like `PAGE_LIKES` are rejected by the API now                                                                  |
+| Bulk operations (many creatives/ads/audiences at once)                                    | Pipeboard — it has `bulk_create_ad_creatives`, `bulk_create_ads`, `bulk_update_*`                                                                                                                                |
+| Video ad creatives                                                                        | Either, but **`thumbnail_url` must be a real public CDN URL** — retrieve via `get_ad_video`/`ads_get_ad_videos` with `fields=['id','title','picture']`. Passing `image_hash` instead of a thumbnail is rejected. |
 
 If the user hasn't specified which connector to use and both are available, ask — don't guess, since picking wrong mid-workflow means starting over (`destination_type` is immutable after ad set creation, see below).
 
@@ -43,6 +43,7 @@ Meta now rejects legacy objective values on new campaigns. See `references/campa
 ## 4. CTWA / WhatsApp ads
 
 See `references/ctwa-whatsapp.md` for:
+
 - Full `page_welcome_message` JSON spec (minimal forms get rejected)
 - `destination_type=ON_PAGE`/`WHATSAPP` + `call_to_action_type` requirements
 - Why `destination_type` can't be changed after ad set creation
@@ -55,6 +56,7 @@ The generic `conversions` field in bulk insights calls is **not** what you want 
 ## 6. Common errors & gotchas
 
 See `references/troubleshooting.md` for the full list — highlights:
+
 - Error 1487202 = missing page-level permission, not an invalid token
 - `frequency_control_specs` only visible in API responses when `optimization_goal=REACH` (works either way, just not visible)
 - Peru/LatAm geo-targeting: region-level `key` required for cities, `countries` list for country-wide

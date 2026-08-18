@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import Svg, {
   Defs,
   Ellipse,
@@ -7,11 +7,11 @@ import Svg, {
   G,
   RadialGradient,
   Stop,
-} from "react-native-svg";
+} from 'react-native-svg'
 
 interface NebulosaGlowProps {
   /** Lado del cuadrado del halo. Desde EntryScreen se pasa 420. */
-  size?: number;
+  size?: number
 }
 
 /**
@@ -34,17 +34,17 @@ interface NebulosaGlowProps {
  * NOTA DE FONDO: backgroundColor transparent elimina bounding box en web.
  */
 export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
-  const s = size;
-  const ratio = s / 420;
-  const center = s / 2;
+  const s = size
+  const ratio = s / 420
+  const center = s / 2
 
-  const mCx = center - 25 * ratio; // turquesa, izquierda: 185 en base 420
-  const bCx = center + 25 * ratio; // índigo, derecha:     235 en base 420
-  const cy = center;
-  const r = 155 * ratio;
-  const gScale = 175 * ratio;
-  const blur = 42 * ratio;
-  const fPad = s * 0.8;
+  const mCx = center - 25 * ratio // turquesa, izquierda: 185 en base 420
+  const bCx = center + 25 * ratio // índigo, derecha:     235 en base 420
+  const cy = center
+  const r = 155 * ratio
+  const gScale = 175 * ratio
+  const blur = 42 * ratio
+  const fPad = s * 0.8
 
   return (
     <Svg
@@ -53,8 +53,8 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
       viewBox={`0 0 ${s} ${s}`}
       pointerEvents="none"
       style={{
-        overflow: "visible",
-        backgroundColor: "transparent",
+        overflow: 'visible',
+        backgroundColor: 'transparent',
       }}
     >
       <Defs>
@@ -67,9 +67,9 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
           ry={gScale}
           gradientUnits="userSpaceOnUse"
         >
-          <Stop offset="0"   stopColor="#40E0D0" stopOpacity={0.60} />
+          <Stop offset="0" stopColor="#40E0D0" stopOpacity={0.6} />
           <Stop offset="0.5" stopColor="#40E0D0" stopOpacity={0.25} />
-          <Stop offset="1"   stopColor="#40E0D0" stopOpacity={0} />
+          <Stop offset="1" stopColor="#40E0D0" stopOpacity={0} />
         </RadialGradient>
 
         {/* Índigo — opacidad aumentada para compensar menor luminosidad */}
@@ -81,9 +81,9 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
           ry={gScale}
           gradientUnits="userSpaceOnUse"
         >
-          <Stop offset="0"   stopColor="#3949AB" stopOpacity={0.85} />
-          <Stop offset="0.5" stopColor="#3949AB" stopOpacity={0.40} />
-          <Stop offset="1"   stopColor="#3949AB" stopOpacity={0} />
+          <Stop offset="0" stopColor="#3949AB" stopOpacity={0.85} />
+          <Stop offset="0.5" stopColor="#3949AB" stopOpacity={0.4} />
+          <Stop offset="1" stopColor="#3949AB" stopOpacity={0} />
         </RadialGradient>
 
         <Filter
@@ -103,5 +103,5 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
         <Ellipse cx={bCx} cy={cy} rx={r} ry={r} fill="url(#glowIndigo)" />
       </G>
     </Svg>
-  );
+  )
 }

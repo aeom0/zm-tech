@@ -3,45 +3,40 @@
 // Pantalla clave: tres cards grandes con protagonismo visual
 // ============================================================
 
-import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { OnboardingStackParamList } from '../../navigation/types';
-import { useOnboarding } from '../../context/OnboardingContext';
-import { VEHICLE_OPTIONS } from '../../constants/onboarding';
-import OnboardingProgressBar from '../../components/onboarding/OnboardingProgressBar';
-import SelectionCard from '../../components/onboarding/SelectionCard';
-import { Screen } from '../../components/layout/Screen';
-import { colors, typography, spacing } from '../../utils/theme';
-import type { VehicleType } from '../../types/onboarding';
+import React from 'react'
+import { View, Text, ScrollView, StyleSheet } from 'react-native'
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
+import type { OnboardingStackParamList } from '../../navigation/types'
+import { useOnboarding } from '../../context/OnboardingContext'
+import { VEHICLE_OPTIONS } from '../../constants/onboarding'
+import OnboardingProgressBar from '../../components/onboarding/OnboardingProgressBar'
+import SelectionCard from '../../components/onboarding/SelectionCard'
+import { Screen } from '../../components/layout/Screen'
+import { colors, typography, spacing } from '../../utils/theme'
+import type { VehicleType } from '../../types/onboarding'
 
-type Props = NativeStackScreenProps<OnboardingStackParamList, 'OnboardingVehicle'>;
+type Props = NativeStackScreenProps<OnboardingStackParamList, 'OnboardingVehicle'>
 
 export default function OnboardingVehicle({ navigation }: Props) {
-  const { state, setVehicleType } = useOnboarding();
+  const { state, setVehicleType } = useOnboarding()
 
   const seleccionarVehiculo = (tipo: VehicleType) => {
-    setVehicleType(tipo);
-    navigation.navigate('OnboardingBusiness');
-  };
+    setVehicleType(tipo)
+    navigation.navigate('OnboardingBusiness')
+  }
 
   return (
     <Screen edges={['top', 'bottom']} padded={false}>
       {/* Barra de progreso: paso 2 de 5 */}
       <OnboardingProgressBar currentStep={2} totalSteps={5} />
 
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <Text style={styles.titulo}>¿Con qué trabajas?</Text>
-        <Text style={styles.subtitulo}>
-          Tu selección personaliza todo el sistema
-        </Text>
+        <Text style={styles.subtitulo}>Tu selección personaliza todo el sistema</Text>
 
         {/* Tres cards grandes — protagonismo visual */}
         <View style={styles.cards}>
-          {VEHICLE_OPTIONS.map(opcion => (
+          {VEHICLE_OPTIONS.map((opcion) => (
             <SelectionCard
               key={opcion.value}
               iconName={opcion.iconName}
@@ -54,7 +49,7 @@ export default function OnboardingVehicle({ navigation }: Props) {
         </View>
       </ScrollView>
     </Screen>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -80,4 +75,4 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     flex: 1,
   },
-});
+})

@@ -1,13 +1,13 @@
-"use client";
+'use client'
 
-import { UserPlus, Users } from "lucide-react";
+import { UserPlus, Users } from 'lucide-react'
 
-import { MetricSkeleton } from "./MetricSkeleton";
+import { MetricSkeleton } from './MetricSkeleton'
 
 interface ClientsOverviewCardProps {
-  newCount: number;
-  returningCount: number;
-  isLoading: boolean;
+  newCount: number
+  returningCount: number
+  isLoading: boolean
 }
 
 export function ClientsOverviewCard({
@@ -16,38 +16,34 @@ export function ClientsOverviewCard({
   isLoading,
 }: ClientsOverviewCardProps) {
   if (isLoading) {
-    return <MetricSkeleton variant="card" />;
+    return <MetricSkeleton variant="card" />
   }
 
-  const total = newCount + returningCount;
-  const newPct = total > 0 ? Math.round((newCount / total) * 100) : 0;
-  const retPct = total > 0 ? 100 - newPct : 0;
+  const total = newCount + returningCount
+  const newPct = total > 0 ? Math.round((newCount / total) * 100) : 0
+  const retPct = total > 0 ? 100 - newPct : 0
 
   return (
-    <div className="rounded-xl border border-white/10 bg-[#1A1A1A] p-5 space-y-4">
+    <div className="space-y-4 rounded-xl border border-white/10 bg-[#1A1A1A] p-5">
       <div className="flex items-center gap-2 text-sm font-medium text-white/60">
-        <Users className="w-4 h-4 text-pink-400" />
+        <Users className="h-4 w-4 text-pink-400" />
         Clientes en el período
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <div className="flex items-center gap-1.5 text-white/50 text-xs mb-1">
-            <UserPlus className="w-3.5 h-3.5" />
+          <div className="mb-1 flex items-center gap-1.5 text-xs text-white/50">
+            <UserPlus className="h-3.5 w-3.5" />
             Nuevos clientes
           </div>
-          <p className="text-2xl font-semibold text-white tabular-nums">
-            {newCount}
-          </p>
+          <p className="text-2xl font-semibold tabular-nums text-white">{newCount}</p>
         </div>
         <div>
-          <div className="flex items-center gap-1.5 text-white/50 text-xs mb-1">
-            <Users className="w-3.5 h-3.5" />
+          <div className="mb-1 flex items-center gap-1.5 text-xs text-white/50">
+            <Users className="h-3.5 w-3.5" />
             Recurrentes
           </div>
-          <p className="text-2xl font-semibold text-white tabular-nums">
-            {returningCount}
-          </p>
+          <p className="text-2xl font-semibold tabular-nums text-white">{returningCount}</p>
         </div>
       </div>
 
@@ -69,5 +65,5 @@ export function ClientsOverviewCard({
         </p>
       </div>
     </div>
-  );
+  )
 }

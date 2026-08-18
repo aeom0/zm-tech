@@ -1,95 +1,87 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { Alert, RefreshControl, ScrollView, View } from "react-native";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { useHeaderHeight } from "@react-navigation/elements";
-import * as Haptics from "expo-haptics";
+import React, { useCallback, useMemo, useState } from 'react'
+import { Alert, RefreshControl, ScrollView, View } from 'react-native'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
+import { useHeaderHeight } from '@react-navigation/elements'
+import * as Haptics from 'expo-haptics'
 
-import { Colors, Spacing } from "@/constants/theme";
-import { useAuth } from "@/contexts/AuthContext";
-import { useTenant } from "@/contexts/TenantContext";
-import { useTheme } from "@/hooks/useTheme";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Colors, Spacing } from '@/constants/theme'
+import { useAuth } from '@/contexts/AuthContext'
+import { useTenant } from '@/contexts/TenantContext'
+import { useTheme } from '@/hooks/useTheme'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { InventoryAccessDenied } from "./inventory/components/InventoryAccessDenied";
-import { InventoryCategoryTabs } from "./inventory/components/InventoryCategoryTabs";
-import { InventoryEmptyState } from "./inventory/components/InventoryEmptyState";
-import { InventoryFab } from "./inventory/components/InventoryFab";
-import { InventoryItemCard } from "./inventory/components/InventoryItemCard";
-import { InventoryItemModal } from "./inventory/components/InventoryItemModal";
-import { useInventoryMutations } from "./inventory/hooks/useInventoryMutations";
-import { useInventoryItemsQuery } from "./inventory/hooks/useInventoryQueries";
-import { inventoryStyles as styles } from "./inventory/inventoryStyles";
-import type {
-  InventoryCategory,
-  InventoryFormState,
-  InventoryItem,
-} from "./inventory/types";
+import { InventoryAccessDenied } from './inventory/components/InventoryAccessDenied'
+import { InventoryCategoryTabs } from './inventory/components/InventoryCategoryTabs'
+import { InventoryEmptyState } from './inventory/components/InventoryEmptyState'
+import { InventoryFab } from './inventory/components/InventoryFab'
+import { InventoryItemCard } from './inventory/components/InventoryItemCard'
+import { InventoryItemModal } from './inventory/components/InventoryItemModal'
+import { useInventoryMutations } from './inventory/hooks/useInventoryMutations'
+import { useInventoryItemsQuery } from './inventory/hooks/useInventoryQueries'
+import { inventoryStyles as styles } from './inventory/inventoryStyles'
+import type { InventoryCategory, InventoryFormState, InventoryItem } from './inventory/types'
 
 const defaultForm = (): InventoryFormState => ({
-  name: "",
-  category: "unas",
-  quantity: "0",
-  minStock: "5",
-  unit: "unidad",
-  cost: "",
-});
+  name: '',
+  category: 'unas',
+  quantity: '0',
+  minStock: '5',
+  unit: 'unidad',
+  cost: '',
+})
 
 export default function InventoryScreen() {
-  const insets = useSafeAreaInsets();
-  const headerHeight = useHeaderHeight();
-  const tabBarHeight = useBottomTabBarHeight();
-  const { theme } = useTheme();
-  const { config } = useTenant();
-  const currencySymbol = config.locale.currency.symbol;
-  const { isAdmin } = useAuth();
+  const insets = useSafeAreaInsets()
+  const headerHeight = useHeaderHeight()
+  const tabBarHeight = useBottomTabBarHeight()
+  const { theme } = useTheme()
+  const { config } = useTenant()
+  const currencySymbol = config.locale.currency.symbol
+  const { isAdmin } = useAuth()
 
-  const [selectedTab, setSelectedTab] = useState<InventoryCategory>("unas");
-  const [modalVisible, setModalVisible] = useState(false);
-  const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
-  const [formData, setFormData] = useState<InventoryFormState>(defaultForm);
+  const [selectedTab, setSelectedTab] = useState<InventoryCategory>('unas')
+  const [modalVisible, setModalVisible] = useState(false)
+  const [editingItem, setEditingItem] = useState<InventoryItem | null>(null)
+  const [formData, setFormData] = useState<InventoryFormState>(defaultForm)
 
   const closeModal = useCallback(() => {
-    setModalVisible(false);
-    setEditingItem(null);
-  }, []);
+    setModalVisible(false)
+    setEditingItem(null)
+  }, [])
 
-  const {
-    createMutation,
-    updateMutation,
-    adjustQuantityMutation,
-    deleteMutation,
-  } = useInventoryMutations({ onCreateOrUpdateSuccess: closeModal });
+  const { createMutation, updateMutation, adjustQuantityMutation, deleteMutation } =
+    useInventoryMutations({ onCreateOrUpdateSuccess: closeModal })
 
-  const { data: items = [], isLoading, refetch } = useInventoryItemsQuery();
+  const { data: items = [], isLoading, refetch } = useInventoryItemsQuery()
 
   const openNewItem = () => {
-    setEditingItem(null);
+    setEditingItem(null)
     setFormData({
       ...defaultForm(),
       category: selectedTab,
-    });
-    setModalVisible(true);
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-  };
+    })
+    setModalVisible(true)
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+  }
 
   const openEditItem = (item: InventoryItem) => {
-    setEditingItem(item);
+    setEditingItem(item)
     setFormData({
       name: item.name,
       category: item.category,
       quantity: item.quantity.toString(),
       minStock: item.min_stock.toString(),
       unit: item.unit,
-      cost: item.cost ?? "",
-    });
-    setModalVisible(true);
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-  };
+      cost: item.cost ?? '',
+    })
+    setModalVisible(true)
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+  }
 
   const handleSubmit = () => {
     if (!formData.name.trim()) {
-      Alert.alert("Error", "Ingresa el nombre del producto");
-      return;
+      Alert.alert('Error', 'Ingresa el nombre del producto')
+      return
     }
 
     const data = {
@@ -99,33 +91,33 @@ export default function InventoryScreen() {
       min_stock: parseInt(formData.minStock, 10),
       unit: formData.unit,
       cost: formData.cost ? parseFloat(formData.cost) : null,
-    };
+    }
 
     if (editingItem) {
-      updateMutation.mutate({ id: editingItem.id, data });
+      updateMutation.mutate({ id: editingItem.id, data })
     } else {
-      createMutation.mutate(data);
+      createMutation.mutate(data)
     }
-  };
+  }
 
   const handleDelete = (item: InventoryItem) => {
-    Alert.alert("Eliminar Producto", `¿Eliminar "${item.name}"?`, [
-      { text: "Cancelar", style: "cancel" },
+    Alert.alert('Eliminar Producto', `¿Eliminar "${item.name}"?`, [
+      { text: 'Cancelar', style: 'cancel' },
       {
-        text: "Eliminar",
-        style: "destructive",
+        text: 'Eliminar',
+        style: 'destructive',
         onPress: () => deleteMutation.mutate(item.id),
       },
-    ]);
-  };
+    ])
+  }
 
   const filteredItems = useMemo(
     () => items.filter((item) => item.category === selectedTab),
-    [items, selectedTab],
-  );
+    [items, selectedTab]
+  )
 
   if (!isAdmin) {
-    return <InventoryAccessDenied theme={theme} />;
+    return <InventoryAccessDenied theme={theme} />
   }
 
   return (
@@ -167,12 +159,8 @@ export default function InventoryScreen() {
               theme={theme}
               onPress={() => openEditItem(item)}
               onLongPress={() => handleDelete(item)}
-              onDecrement={() =>
-                adjustQuantityMutation.mutate({ id: item.id, delta: -1 })
-              }
-              onIncrement={() =>
-                adjustQuantityMutation.mutate({ id: item.id, delta: 1 })
-              }
+              onDecrement={() => adjustQuantityMutation.mutate({ id: item.id, delta: -1 })}
+              onIncrement={() => adjustQuantityMutation.mutate({ id: item.id, delta: 1 })}
             />
           ))
         )}
@@ -192,5 +180,5 @@ export default function InventoryScreen() {
         onSubmit={handleSubmit}
       />
     </View>
-  );
+  )
 }

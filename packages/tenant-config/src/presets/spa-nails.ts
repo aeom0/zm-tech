@@ -1,41 +1,41 @@
-import type { TenantConfig } from "../types";
+import type { TenantConfig } from '../types'
 
 export const spaNavilsPreset: TenantConfig = {
-  businessName: "Spa Bella",
-  businessType: "spa-nails",
-  tagline: "Uñas y pestañas con estilo",
+  businessName: 'Spa Bella',
+  businessType: 'spa-nails',
+  tagline: 'Uñas y pestañas con estilo',
 
   theme: {
-    primaryColor: "#40E0D0",
-    accentColor: "#D4AF37",
+    primaryColor: '#40E0D0',
+    accentColor: '#D4AF37',
     darkMode: false,
   },
 
   locale: {
-    currency: { code: "PEN", symbol: "S/" },
-    country: "PE",
-    timezone: "America/Lima",
-    language: "es-VE",
-    timeFormat: "24",
+    currency: { code: 'PEN', symbol: 'S/' },
+    country: 'PE',
+    timezone: 'America/Lima',
+    language: 'es-VE',
+    timeFormat: '24',
   },
 
   terminology: {
-    staff: "Especialistas",
-    staffSingular: "especialista",
-    appointment: "cita",
-    client: "clienta",
+    staff: 'Especialistas',
+    staffSingular: 'especialista',
+    appointment: 'cita',
+    client: 'clienta',
   },
 
   contact: {},
 
   businessHours: {
-    lunes: { open: "10:00", close: "19:00" },
-    martes: { open: "10:00", close: "19:00" },
-    miercoles: { open: "10:00", close: "19:00" },
-    jueves: { open: "10:00", close: "19:00" },
-    viernes: { open: "10:00", close: "19:00" },
-    sabado: { open: "10:00", close: "19:00" },
-    domingo: { open: "10:30", close: "13:00" },
+    lunes: { open: '10:00', close: '19:00' },
+    martes: { open: '10:00', close: '19:00' },
+    miercoles: { open: '10:00', close: '19:00' },
+    jueves: { open: '10:00', close: '19:00' },
+    viernes: { open: '10:00', close: '19:00' },
+    sabado: { open: '10:00', close: '19:00' },
+    domingo: { open: '10:30', close: '13:00' },
   },
 
   commissions: {
@@ -44,5 +44,5 @@ export const spaNavilsPreset: TenantConfig = {
   },
 
   businessSubtype: undefined,
-  serviceCategories: ["unas", "cejas-pestanas", "spa", "depilacion"],
-};
+  serviceCategories: ['unas', 'cejas-pestanas', 'spa', 'depilacion'],
+}

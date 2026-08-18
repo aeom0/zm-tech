@@ -1,25 +1,22 @@
-import React from "react";
-import { View } from "react-native";
+import React from 'react'
+import { View } from 'react-native'
 
-import { ThemedText } from "@/components/ThemedText";
+import { ThemedText } from '@/components/ThemedText'
 
-import {
-  DashboardAnimatedView,
-  type DashboardAnimatedStyle,
-} from "../hooks/useStaggeredAnimation";
-import { dashboardStyles as styles } from "../dashboardStyles";
+import { DashboardAnimatedView, type DashboardAnimatedStyle } from '../hooks/useStaggeredAnimation'
+import { dashboardStyles as styles } from '../dashboardStyles'
 
 interface DashboardHeaderProps {
-  greeting: string;
-  displayNameSuffix: string;
-  dateLabel: string;
-  businessInitials: string;
-  primaryColor: string;
+  greeting: string
+  displayNameSuffix: string
+  dateLabel: string
+  businessInitials: string
+  primaryColor: string
   theme: {
-    text: string;
-    textSecondary: string;
-  };
-  animatedStyle?: DashboardAnimatedStyle;
+    text: string
+    textSecondary: string
+  }
+  animatedStyle?: DashboardAnimatedStyle
 }
 
 export function DashboardHeader({
@@ -38,10 +35,7 @@ export function DashboardHeader({
           {greeting}
           {displayNameSuffix}
         </ThemedText>
-        <ThemedText
-          style={[styles.dateText, { color: theme.text }]}
-          numberOfLines={1}
-        >
+        <ThemedText style={[styles.dateText, { color: theme.text }]} numberOfLines={1}>
           {dateLabel}
         </ThemedText>
       </View>
@@ -51,5 +45,5 @@ export function DashboardHeader({
         </ThemedText>
       </View>
     </DashboardAnimatedView>
-  );
+  )
 }

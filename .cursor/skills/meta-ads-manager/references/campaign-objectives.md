@@ -13,21 +13,22 @@ Meta's Marketing API only accepts outcome-based objectives for **new** campaigns
 
 ## Legacy → ODAX mapping
 
-| Legacy objective (rejected) | Correct ODAX value |
-|---|---|
-| `BRAND_AWARENESS` | `OUTCOME_AWARENESS` |
-| `REACH` | `OUTCOME_AWARENESS` |
-| `LINK_CLICKS`, `TRAFFIC` | `OUTCOME_TRAFFIC` |
-| `POST_ENGAGEMENT`, `PAGE_LIKES`, `EVENT_RESPONSES`, `VIDEO_VIEWS` | `OUTCOME_ENGAGEMENT` |
-| `LEAD_GENERATION` | `OUTCOME_LEADS` |
-| `CONVERSIONS`, `CATALOG_SALES`, `MESSAGES` (sales-focused flows) | `OUTCOME_SALES` |
-| `APP_INSTALLS` | `OUTCOME_APP_PROMOTION` |
+| Legacy objective (rejected)                                       | Correct ODAX value      |
+| ----------------------------------------------------------------- | ----------------------- |
+| `BRAND_AWARENESS`                                                 | `OUTCOME_AWARENESS`     |
+| `REACH`                                                           | `OUTCOME_AWARENESS`     |
+| `LINK_CLICKS`, `TRAFFIC`                                          | `OUTCOME_TRAFFIC`       |
+| `POST_ENGAGEMENT`, `PAGE_LIKES`, `EVENT_RESPONSES`, `VIDEO_VIEWS` | `OUTCOME_ENGAGEMENT`    |
+| `LEAD_GENERATION`                                                 | `OUTCOME_LEADS`         |
+| `CONVERSIONS`, `CATALOG_SALES`, `MESSAGES` (sales-focused flows)  | `OUTCOME_SALES`         |
+| `APP_INSTALLS`                                                    | `OUTCOME_APP_PROMOTION` |
 
-When the user asks for a "PAGE_LIKES campaign" or similar legacy phrasing, use this table to pick the right `objective` value, but keep `optimization_goal` at the ad set level matching their actual intent (e.g. `optimization_goal=PAGE_LIKES` still exists for ad sets under `OUTCOME_ENGAGEMENT` — it's the *campaign-level objective enum* that changed, not every field downstream).
+When the user asks for a "PAGE_LIKES campaign" or similar legacy phrasing, use this table to pick the right `objective` value, but keep `optimization_goal` at the ad set level matching their actual intent (e.g. `optimization_goal=PAGE_LIKES` still exists for ad sets under `OUTCOME_ENGAGEMENT` — it's the _campaign-level objective enum_ that changed, not every field downstream).
 
 ## PAGE_LIKES ad sets specifically
 
 A PAGE_LIKES-optimized ad set requires all three together:
+
 - `optimization_goal=PAGE_LIKES`
 - `destination_type=ON_PAGE`
 - `promoted_object={'page_id': 'XXX'}`

@@ -10,5 +10,5 @@ export default function HomePage() {
       </p>
       <p className="mt-8 text-sm text-slate-500">Web · puerto 3002 · Fase 0</p>
     </main>
-  );
+  )
 }

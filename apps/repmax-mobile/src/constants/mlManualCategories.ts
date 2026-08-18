@@ -2,10 +2,10 @@
 // IDs alineados al árbol Accesorios para Vehículos → Repuestos Autos (site MLV).
 
 export interface MlManualCategory {
-  id: string;
-  name: string;
+  id: string
+  name: string
   /** Algunas subcategorías exigen atributo COLOR en el publicador masivo. */
-  requiresColor?: boolean;
+  requiresColor?: boolean
 }
 
 export const ML_MANUAL_CATEGORIES: MlManualCategory[] = [
@@ -32,18 +32,16 @@ export const ML_MANUAL_CATEGORIES: MlManualCategory[] = [
   { id: 'MLV1789', name: 'Otros Repuestos Autos' },
   { id: 'MLV438400', name: 'Accesorios Interior — Fundas y Alfombras', requiresColor: true },
   { id: 'MLV438401', name: 'Accesorios Exterior — Deflectores', requiresColor: true },
-];
+]
 
 export function buscarCategoriasManual(q: string): MlManualCategory[] {
-  const term = q.trim().toLowerCase();
-  if (!term) return ML_MANUAL_CATEGORIES;
+  const term = q.trim().toLowerCase()
+  if (!term) return ML_MANUAL_CATEGORIES
   return ML_MANUAL_CATEGORIES.filter(
-    (c) =>
-      c.name.toLowerCase().includes(term) ||
-      c.id.toLowerCase().includes(term),
-  );
+    (c) => c.name.toLowerCase().includes(term) || c.id.toLowerCase().includes(term)
+  )
 }
 
 export function categoriaManualPorId(id: string): MlManualCategory | undefined {
-  return ML_MANUAL_CATEGORIES.find((c) => c.id === id);
+  return ML_MANUAL_CATEGORIES.find((c) => c.id === id)
 }

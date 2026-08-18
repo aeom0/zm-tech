@@ -1,23 +1,16 @@
-import React from "react";
-import {
-  Modal,
-  View,
-  StyleSheet,
-  FlatList,
-  Pressable,
-  SafeAreaView,
-} from "react-native";
-import { Feather } from "@expo/vector-icons";
-import { ThemedText } from "@/components/ThemedText";
-import { useTheme } from "@/hooks/useTheme";
-import { Spacing, BorderRadius } from "@/constants/theme";
-import { MONEDAS_LATAM, type Moneda } from "../constants";
+import React from 'react'
+import { Modal, View, StyleSheet, FlatList, Pressable, SafeAreaView } from 'react-native'
+import { Feather } from '@expo/vector-icons'
+import { ThemedText } from '@/components/ThemedText'
+import { useTheme } from '@/hooks/useTheme'
+import { Spacing, BorderRadius } from '@/constants/theme'
+import { MONEDAS_LATAM, type Moneda } from '../constants'
 
 interface CurrencyPickerModalProps {
-  visible: boolean;
-  currentCode: string;
-  onSelect: (moneda: Moneda) => void;
-  onClose: () => void;
+  visible: boolean
+  currentCode: string
+  onSelect: (moneda: Moneda) => void
+  onClose: () => void
 }
 
 export function CurrencyPickerModal({
@@ -26,7 +19,7 @@ export function CurrencyPickerModal({
   onSelect,
   onClose,
 }: CurrencyPickerModalProps) {
-  const { theme } = useTheme();
+  const { theme } = useTheme()
 
   return (
     <Modal
@@ -35,16 +28,10 @@ export function CurrencyPickerModal({
       presentationStyle="pageSheet"
       onRequestClose={onClose}
     >
-      <SafeAreaView
-        style={[styles.container, { backgroundColor: theme.backgroundRoot }]}
-      >
+      <SafeAreaView style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
         {/* Cabecera */}
-        <View
-          style={[styles.header, { borderBottomColor: theme.border }]}
-        >
-          <ThemedText style={[styles.titulo, { color: theme.text }]}>
-            Seleccionar moneda
-          </ThemedText>
+        <View style={[styles.header, { borderBottomColor: theme.border }]}>
+          <ThemedText style={[styles.titulo, { color: theme.text }]}>Seleccionar moneda</ThemedText>
           <Pressable
             onPress={onClose}
             hitSlop={12}
@@ -60,22 +47,18 @@ export function CurrencyPickerModal({
           contentContainerStyle={styles.lista}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => {
-            const seleccionada = item.code === currentCode;
+            const seleccionada = item.code === currentCode
             return (
               <Pressable
                 onPress={() => {
-                  onSelect(item);
-                  onClose();
+                  onSelect(item)
+                  onClose()
                 }}
                 style={({ pressed }) => [
                   styles.fila,
                   {
-                    backgroundColor: seleccionada
-                      ? `${theme.primary}14`
-                      : theme.backgroundDefault,
-                    borderColor: seleccionada
-                      ? `${theme.primary}40`
-                      : "transparent",
+                    backgroundColor: seleccionada ? `${theme.primary}14` : theme.backgroundDefault,
+                    borderColor: seleccionada ? `${theme.primary}40` : 'transparent',
                     opacity: pressed ? 0.85 : 1,
                   },
                 ]}
@@ -85,9 +68,7 @@ export function CurrencyPickerModal({
                   style={[
                     styles.symbolBox,
                     {
-                      backgroundColor: seleccionada
-                        ? `${theme.primary}20`
-                        : `${theme.textMuted}14`,
+                      backgroundColor: seleccionada ? `${theme.primary}20` : `${theme.textMuted}14`,
                     },
                   ]}
                 >
@@ -95,9 +76,7 @@ export function CurrencyPickerModal({
                     style={[
                       styles.symbol,
                       {
-                        color: seleccionada
-                          ? theme.primary
-                          : theme.textSecondary,
+                        color: seleccionada ? theme.primary : theme.textSecondary,
                       },
                     ]}
                     numberOfLines={1}
@@ -116,23 +95,19 @@ export function CurrencyPickerModal({
                   >
                     {item.nombre}
                   </ThemedText>
-                  <ThemedText
-                    style={[styles.paisMoneda, { color: theme.textMuted }]}
-                  >
+                  <ThemedText style={[styles.paisMoneda, { color: theme.textMuted }]}>
                     {item.pais} · {item.code}
                   </ThemedText>
                 </View>
 
-                {seleccionada && (
-                  <Feather name="check" size={18} color={theme.primary} />
-                )}
+                {seleccionada && <Feather name="check" size={18} color={theme.primary} />}
               </Pressable>
-            );
+            )
           }}
         />
       </SafeAreaView>
     </Modal>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -140,26 +115,26 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   titulo: {
     fontSize: 17,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   lista: {
     paddingHorizontal: Spacing.lg,
     paddingTop: Spacing.md,
-    paddingBottom: Spacing["3xl"],
+    paddingBottom: Spacing['3xl'],
     gap: Spacing.xs,
   },
   fila: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: Spacing.md,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.md,
@@ -170,22 +145,22 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: BorderRadius.sm,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   symbol: {
     fontSize: 15,
-    fontWeight: "700",
+    fontWeight: '700',
   },
   textos: {
     flex: 1,
   },
   nombreMoneda: {
     fontSize: 15,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   paisMoneda: {
     fontSize: 12,
     marginTop: 2,
   },
-});
+})

@@ -1,18 +1,15 @@
-import React from "react";
-import { StyleSheet } from "react-native";
-import { StatusBar } from "expo-status-bar";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { NavigationContainer } from "@react-navigation/native";
-import { QueryClientProvider } from "@tanstack/react-query";
-import {
-  OdentalAuthProvider,
-  OdentalTenantProvider,
-} from "@zmtech/tenant-config/odental";
+import React from 'react'
+import { StyleSheet } from 'react-native'
+import { StatusBar } from 'expo-status-bar'
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { NavigationContainer } from '@react-navigation/native'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { OdentalAuthProvider, OdentalTenantProvider } from '@zmtech/tenant-config/odental'
 
-import { supabase } from "@/lib/supabase";
-import { queryClient } from "@/lib/query-client";
-import { RootNavigator } from "@/navigation/RootNavigator";
+import { supabase } from '@/lib/supabase'
+import { queryClient } from '@/lib/query-client'
+import { RootNavigator } from '@/navigation/RootNavigator'
 
 /**
  * Shell Fase 2: Auth/Tenant + navegación de pacientes con odontograma
@@ -36,10 +33,10 @@ export default function App() {
         </QueryClientProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  safe: { flex: 1, backgroundColor: "#0a0f14" },
-});
+  safe: { flex: 1, backgroundColor: '#0a0f14' },
+})

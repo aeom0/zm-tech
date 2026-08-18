@@ -4,12 +4,12 @@
 
 ## Qué vive aquí
 
-| Área | Uso |
-|------|-----|
+| Área                | Uso                                                                                |
+| ------------------- | ---------------------------------------------------------------------------------- |
 | `drizzle.config.ts` | `pnpm db:push` / `db:generate` / `db:studio` (schema `@geemastudio/shared-schema`) |
-| `migrations/` | Salida de Drizzle generate |
-| `scripts/` | Seeds Auth y SQL de ejemplo |
-| `supabase/` | Migraciones de referencia + Edge Functions (WABA, reset demo, …) |
+| `migrations/`       | Salida de Drizzle generate                                                         |
+| `scripts/`          | Seeds Auth y SQL de ejemplo                                                        |
+| `supabase/`         | Migraciones de referencia + Edge Functions (WABA, reset demo, …)                   |
 
 ## Proyecto Supabase
 

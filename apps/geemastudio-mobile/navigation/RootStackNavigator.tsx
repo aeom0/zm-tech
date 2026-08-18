@@ -1,16 +1,16 @@
-import React from "react";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import AuthGate from "@/navigation/AuthGate";
-import { useScreenOptions } from "@/hooks/useScreenOptions";
+import React from 'react'
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import AuthGate from '@/navigation/AuthGate'
+import { useScreenOptions } from '@/hooks/useScreenOptions'
 
 export type RootStackParamList = {
-  Auth: undefined;
-};
+  Auth: undefined
+}
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>()
 
 export default function RootStackNavigator() {
-  const screenOptions = useScreenOptions();
+  const screenOptions = useScreenOptions()
 
   return (
     <Stack.Navigator
@@ -19,5 +19,5 @@ export default function RootStackNavigator() {
     >
       <Stack.Screen name="Auth" component={AuthGate} />
     </Stack.Navigator>
-  );
+  )
 }

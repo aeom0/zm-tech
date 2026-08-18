@@ -10,6 +10,7 @@ Roadmap: [ROADMAP.md](./ROADMAP.md). Plan API ML (descartado ops MLV): [plans/04
 ## [Unreleased]
 
 ### Añadido
+
 - **Tasas BCV/USDT en vivo (plan 08)** — paquete compartido `@zmtech/tasas` (`packages/tasas`, `main`/`exports` a `.ts` directo, sin build): tipos, `calcularSpreadInfo`, calculadoras de margen (sin caller aún), `logicaBCV.ts`, providers `bcv.today`/`usdt.com.ve`, resolver con fallback, hook web `useTasasDuales` (`localStorage`). Tablas `hub_tasas_bcv`/`hub_tasas_usdt` aplicadas en el hub (`docs/hub/supabase/migrations/20260818120000_hub_tasas_cambio.sql`, RLS `SELECT` público / escritura solo `service_role`). `repmax-web`: primer `app/api/` del proyecto — `GET /api/bcv/tasa` (público) y crons `guardar-tasa-{bcv,usdt}-diario` (`CRON_SECRET`, `vercel.json`, 4:30/4:35 UTC). `AuthContext.tsx` web resuelve tasa BCV en vivo o manual (`repmax_stores.usar_tasa_manual`, migración `20260818130000_repmax_stores_tasa_manual`), con fallback si falla el fetch. Mobile: hook `useTasaCambio` (lee las tablas del hub directo por Supabase, cache `AsyncStorage`), `saleService.ts` sin el `?? 36.50` hardcodeado, `PaymentScreen.tsx` usa la tasa efectiva, `ExchangeRateScreen.tsx` con switch manual/vivo + card de spread en vivo. Plan: [plans/08-PLAN-tasas-bcv-usdt.md](./plans/08-PLAN-tasas-bcv-usdt.md).
 - **OTA CI (GitHub Actions)** — `.github/workflows/repmax-ota.yml`: push a `main` con cambios en `repmax-mobile` / `repmax-schema` publica `eas update` al canal `preview`. Production vía `workflow_dispatch`. Requiere secretos `EXPO_TOKEN` y `EXPO_PUBLIC_SUPABASE_ANON_KEY`.
 - **POS de escritorio (repmax-web, plan 07 fase 1)** — `/dashboard/pos`: búsqueda/grid de productos, carrito, cobro vía RPC `repmax_create_sale_with_items` (`p_cashier_id` = `repmax_store_users.id`), banner no bloqueante si no hay caja abierta, gating por rol (`owner`/`cashier`; `inventory` sin acceso). Escaneo por lector HID: `useBarcodeScan()` en `lib/hardware/services/barcodeService.ts`, agrega al carrito por match de `barcode`/`part_number`. Entrada "Venta" en sidebar del dashboard.
@@ -38,6 +39,7 @@ Roadmap: [ROADMAP.md](./ROADMAP.md). Plan API ML (descartado ops MLV): [plans/04
 - Kit de marca REPMAX (wordmark, RM, favicons, íconos) cableado en web y mobile.
 
 ### Cambiado
+
 - **MLV sin API confirmado** — Mercado Libre (consulta #475453897): DevCenter/API no operativo en Venezuela. Track OAuth descartado; plan 05 es camino principal. Copy actualizado en mobile, repmax-web, landing ZM Tech y docs.
 - Bifurcación ML: plan 05 (multicanal sin OAuth) como producto vigente; plan 04 track API congelado en código (`ML_API_ENABLED = false`).
 - Copy de negocio: “Repuestería” → “Repuestos” en onboarding y landing. Enum DB `store_type='repuesteria'` **sin tocar**.
@@ -45,9 +47,11 @@ Roadmap: [ROADMAP.md](./ROADMAP.md). Plan API ML (descartado ops MLV): [plans/04
 - **Miniaturas en catálogo mobile** — inventario, POS y carrito muestran `photos[0]` (seed o Storage) con `expo-image`; placeholder si no hay portada. Independiente de publicar en ML.
 
 ### OTA
+
 - Canal **preview** — 2026-08-12 — grupo [`5fb53a58`](https://expo.dev/accounts/aeom0/projects/repmax/updates/5fb53a58-1dc7-419d-81d3-c62279042752) · runtime `exposdk:56.0.0` · “Catálogo: fotos ML-ready”. Requiere el APK preview ya instalado; reabrir la app.
 
 ### Builds nativos
+
 - Android preview APK: [build `707938b9`](https://expo.dev/accounts/aeom0/projects/repmax/builds/707938b9-6da2-46c4-aae8-69a95342b5a3).
 
 ---
@@ -57,6 +61,7 @@ Roadmap: [ROADMAP.md](./ROADMAP.md). Plan API ML (descartado ops MLV): [plans/04
 Fases 01–03 cerradas. Sin semver de producto todavía; esto es el baseline absorbido.
 
 ### Añadido
+
 - Scaffold `repmax-web`, `repmax-mobile`, `@repmax/repmax-schema` (Expo 56 / RN 0.85 / React 19 / TS 6).
 - Schema `repmax_*` + RLS + storage + RPC `repmax_create_sale_with_items` en hub `llacowjutjfefboqgfnj`.
 - Auth Supabase (web SSR + mobile AuthProvider); onboarding mobile end-to-end (#12).
@@ -64,10 +69,12 @@ Fases 01–03 cerradas. Sin semver de producto todavía; esto es el baseline abs
 - Seeds demo versionados + checklist SQL ↔ schema TS (#10).
 
 ### Cambiado
+
 - Apps hablan directo con Supabase; Express/JWT y `repmax-server` fuera del workspace (fase 03).
 - Repo standalone `aeom0/RepMAX` archivado; docs legacy y proyecto Supabase huérfano eliminados.
 
 ### Arreglado
+
 - Registro: `RETURNING` RLS y recursión bootstrap (#13).
 - Hardening advisors seguridad/performance (#11).
 - AsyncStorage en web + credenciales demo reales (#14).

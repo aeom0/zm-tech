@@ -1,28 +1,28 @@
-import React, { useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
-import { useHeaderHeight } from "@react-navigation/elements";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import React, { useState } from 'react'
+import { ScrollView, StyleSheet, View } from 'react-native'
+import { useHeaderHeight } from '@react-navigation/elements'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 
-import { ThemedText } from "@/components/ThemedText";
-import { useTheme } from "@/hooks/useTheme";
-import { useTenant } from "@/contexts/TenantContext";
-import { useAuth } from "@/contexts/AuthContext";
-import { Spacing } from "@/constants/theme";
-import { SettingsSection } from "./settings/components/SettingsSection";
-import { SettingsRow } from "./settings/components/SettingsRow";
-import { CurrencyPickerModal } from "./settings/components/CurrencyPickerModal";
-import type { Moneda } from "./settings/constants";
+import { ThemedText } from '@/components/ThemedText'
+import { useTheme } from '@/hooks/useTheme'
+import { useTenant } from '@/contexts/TenantContext'
+import { useAuth } from '@/contexts/AuthContext'
+import { Spacing } from '@/constants/theme'
+import { SettingsSection } from './settings/components/SettingsSection'
+import { SettingsRow } from './settings/components/SettingsRow'
+import { CurrencyPickerModal } from './settings/components/CurrencyPickerModal'
+import type { Moneda } from './settings/constants'
 
 export default function SettingsScreen() {
-  const headerHeight = useHeaderHeight();
-  const tabBarHeight = useBottomTabBarHeight();
-  const { theme } = useTheme();
-  const { config, updateTenant } = useTenant();
-  const { profile, role } = useAuth();
+  const headerHeight = useHeaderHeight()
+  const tabBarHeight = useBottomTabBarHeight()
+  const { theme } = useTheme()
+  const { config, updateTenant } = useTenant()
+  const { profile, role } = useAuth()
 
-  const [modalMonedaVisible, setModalMonedaVisible] = useState(false);
+  const [modalMonedaVisible, setModalMonedaVisible] = useState(false)
 
-  const isAdmin = role === "dev" || role === "owner";
+  const isAdmin = role === 'dev' || role === 'owner'
 
   const handleSeleccionarMoneda = async (moneda: Moneda) => {
     await updateTenant(
@@ -32,9 +32,9 @@ export default function SettingsScreen() {
           currency: { code: moneda.code, symbol: moneda.symbol },
         },
       },
-      { syncRemote: true },
-    );
-  };
+      { syncRemote: true }
+    )
+  }
 
   return (
     <>
@@ -42,23 +42,15 @@ export default function SettingsScreen() {
         style={[styles.container, { backgroundColor: theme.backgroundRoot }]}
         contentContainerStyle={{
           paddingTop: headerHeight + Spacing.xl,
-          paddingBottom: tabBarHeight + Spacing["3xl"],
+          paddingBottom: tabBarHeight + Spacing['3xl'],
           paddingHorizontal: Spacing.lg,
         }}
         showsVerticalScrollIndicator={false}
       >
         {isAdmin && (
           <SettingsSection title="Negocio">
-            <SettingsRow
-              label="Nombre comercial"
-              value={config.businessName}
-              variant="value"
-            />
-            <SettingsRow
-              label="Tipo de negocio"
-              value={config.businessType}
-              variant="value"
-            />
+            <SettingsRow label="Nombre comercial" value={config.businessName} variant="value" />
+            <SettingsRow label="Tipo de negocio" value={config.businessType} variant="value" />
             <SettingsRow
               label="Moneda"
               value={`${config.locale.currency.symbol} · ${config.locale.currency.code}`}
@@ -70,15 +62,11 @@ export default function SettingsScreen() {
         )}
 
         <SettingsSection title="Cuenta">
-          <SettingsRow
-            label="Nombre"
-            value={profile?.full_name ?? "—"}
-            variant="value"
-          />
-          <SettingsRow label="Rol" value={role ?? "—"} variant="value" />
+          <SettingsRow label="Nombre" value={profile?.full_name ?? '—'} variant="value" />
+          <SettingsRow label="Rol" value={role ?? '—'} variant="value" />
         </SettingsSection>
 
-        <View style={{ marginTop: Spacing.lg, alignItems: "center" }}>
+        <View style={{ marginTop: Spacing.lg, alignItems: 'center' }}>
           <ThemedText type="small" style={{ color: theme.textMuted }}>
             {config.businessName} · GeemaStudio
           </ThemedText>
@@ -92,11 +80,11 @@ export default function SettingsScreen() {
         onClose={() => setModalMonedaVisible(false)}
       />
     </>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-});
+})

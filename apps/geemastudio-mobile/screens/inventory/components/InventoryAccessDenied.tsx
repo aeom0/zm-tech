@@ -1,19 +1,19 @@
-import React from "react";
-import { View } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import React from 'react'
+import { View } from 'react-native'
+import { Feather } from '@expo/vector-icons'
 
-import { ThemedText } from "@/components/ThemedText";
-import { Spacing } from "@/constants/theme";
+import { ThemedText } from '@/components/ThemedText'
+import { Spacing } from '@/constants/theme'
 
-import { inventoryStyles as styles } from "../inventoryStyles";
+import { inventoryStyles as styles } from '../inventoryStyles'
 
 interface InventoryAccessDeniedProps {
   theme: {
-    backgroundRoot: string;
-    text: string;
-    textSecondary: string;
-    textMuted: string;
-  };
+    backgroundRoot: string
+    text: string
+    textSecondary: string
+    textMuted: string
+  }
 }
 
 export function InventoryAccessDenied({ theme }: InventoryAccessDeniedProps) {
@@ -26,15 +26,13 @@ export function InventoryAccessDenied({ theme }: InventoryAccessDeniedProps) {
           color={theme.textMuted}
           style={{ marginBottom: Spacing.md }}
         />
-        <ThemedText
-          style={{ fontSize: 16, textAlign: "center", color: theme.text }}
-        >
+        <ThemedText style={{ fontSize: 16, textAlign: 'center', color: theme.text }}>
           El inventario solo se maneja desde administración.
         </ThemedText>
         <ThemedText
           style={{
             fontSize: 13,
-            textAlign: "center",
+            textAlign: 'center',
             marginTop: Spacing.sm,
             color: theme.textSecondary,
           }}
@@ -43,5 +41,5 @@ export function InventoryAccessDenied({ theme }: InventoryAccessDeniedProps) {
         </ThemedText>
       </View>
     </View>
-  );
+  )
 }

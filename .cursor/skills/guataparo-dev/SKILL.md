@@ -30,16 +30,16 @@ Valencia, Venezuela. Reemplaza su dependencia de Wasi (CRM SaaS) con solución 1
 
 ## 🛠 Stack tecnológico (no negociable)
 
-| Capa | Tecnología | Versión |
-|------|------------|---------|
-| Monorepo | Turborepo + pnpm | workspaces |
-| Framework | Next.js App Router | 16.2 |
-| UI | React | 19 |
-| Estilos | Tailwind CSS | v4 |
-| Base de datos | Supabase (PostgreSQL + Auth) | latest |
-| Imágenes | Cloudinary Upload Widget | latest |
-| Lenguaje | TypeScript strict | 5.9 |
-| Deploy | Vercel | — |
+| Capa          | Tecnología                   | Versión    |
+| ------------- | ---------------------------- | ---------- |
+| Monorepo      | Turborepo + pnpm             | workspaces |
+| Framework     | Next.js App Router           | 16.2       |
+| UI            | React                        | 19         |
+| Estilos       | Tailwind CSS                 | v4         |
+| Base de datos | Supabase (PostgreSQL + Auth) | latest     |
+| Imágenes      | Cloudinary Upload Widget     | latest     |
+| Lenguaje      | TypeScript strict            | 5.9        |
+| Deploy        | Vercel                       | —          |
 
 **⚠️ No instalar dependencias nuevas sin confirmar con Alberto.**
 
@@ -67,31 +67,33 @@ guataparobr/
 Extraída de `PaletaColores_GuataparoBR.png` (imagen oficial del cliente):
 
 ```css
---gbr-negro:   #1B1A1B;   /* estructura, nav, headers */
---gbr-dorado:  #AF8D59;   /* acción, CTAs, precios, highlights */
---gbr-bronce:  #89715F;   /* hover del dorado, iconos secondary */
---gbr-crema:   #D5D0CA;   /* bordes suaves, divisores */
---gbr-carbon:  #4D4E49;   /* texto secundario, labels */
---gbr-perla:   #CECFCA;   /* superficies, inputs */
---gbr-marfil:  #F1F2ED;   /* fondo de página */
+--gbr-negro: #1b1a1b; /* estructura, nav, headers */
+--gbr-dorado: #af8d59; /* acción, CTAs, precios, highlights */
+--gbr-bronce: #89715f; /* hover del dorado, iconos secondary */
+--gbr-crema: #d5d0ca; /* bordes suaves, divisores */
+--gbr-carbon: #4d4e49; /* texto secundario, labels */
+--gbr-perla: #cecfca; /* superficies, inputs */
+--gbr-marfil: #f1f2ed; /* fondo de página */
 ```
 
 **Regla:** Negro para estructura. Dorado para acción. Nunca invertir.
 
 ### Fuentes
+
 - **Titulares:** Playfair Display (`--font-display`)
 - **Cuerpo / UI:** Montserrat (`--font-sans`)
 
 ### Clases Tailwind disponibles
+
 ```tsx
-className="bg-brand-negro text-brand-dorado"
-className="bg-brand-marfil border-brand-crema"
-className="btn-primary"    // dorado sobre negro
-className="btn-dark"       // negro con texto dorado
-className="btn-outline"    // borde dorado, transparente
-className="card"           // card base
-className="badge-gold"     // pill dorado
-className="info-chip"      // chip m²/hab/baños
+className = 'bg-brand-negro text-brand-dorado'
+className = 'bg-brand-marfil border-brand-crema'
+className = 'btn-primary' // dorado sobre negro
+className = 'btn-dark' // negro con texto dorado
+className = 'btn-outline' // borde dorado, transparente
+className = 'card' // card base
+className = 'badge-gold' // pill dorado
+className = 'info-chip' // chip m²/hab/baños
 ```
 
 ---
@@ -123,6 +125,7 @@ leads ( id, name, email, phone, message,
 ```
 
 ### RLS
+
 - `properties`: lectura pública / escritura solo autenticado
 - `agents`: lectura pública / escritura solo `admin`
 - `leads`: solo `service_role` — nunca expuesto al público
@@ -183,4 +186,4 @@ Fase 6 ⏳  Soporte mensual $30/mes
 
 ---
 
-*Skill mantenido por ZM Tech (Alberto). Última actualización: Abril 2026*
+_Skill mantenido por ZM Tech (Alberto). Última actualización: Abril 2026_

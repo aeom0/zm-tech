@@ -1,33 +1,30 @@
 // ============================================================
 // RepMAX Business Suite — Dashboard con KPIs del día
 // ============================================================
-import React, { useMemo } from 'react';
-import {
-  View, Text, StyleSheet, ScrollView,
-  TouchableOpacity, RefreshControl,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import React, { useMemo } from 'react'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native'
+import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
 
-import { Screen } from '../../components/layout/Screen';
-import { useDashboard } from '../../hooks/useDashboard';
-import { useAuth } from '../../context/AuthContext';
-import { useTasaCambio } from '../../hooks/useTasaCambio';
-import { useResponsive } from '../../hooks/useResponsive';
-import { formatUSD } from '../../utils/formatters';
-import { hapticLight } from '../../utils/haptics';
-import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
-import type { MainTabParamList } from '../../navigation/types';
+import { Screen } from '../../components/layout/Screen'
+import { useDashboard } from '../../hooks/useDashboard'
+import { useAuth } from '../../context/AuthContext'
+import { useTasaCambio } from '../../hooks/useTasaCambio'
+import { useResponsive } from '../../hooks/useResponsive'
+import { formatUSD } from '../../utils/formatters'
+import { hapticLight } from '../../utils/haptics'
+import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme'
+import type { MainTabParamList } from '../../navigation/types'
 
 interface KPICardProps {
-  icon: keyof typeof Ionicons.glyphMap;
-  iconColor: string;
-  label: string;
-  value: string;
-  sub?: string;
-  onPress?: () => void;
-  width: `${number}%` | number;
+  icon: keyof typeof Ionicons.glyphMap
+  iconColor: string
+  label: string
+  value: string
+  sub?: string
+  onPress?: () => void
+  width: `${number}%` | number
 }
 
 function KPICard({ icon, iconColor, label, value, sub, onPress, width }: KPICardProps) {
@@ -45,54 +42,56 @@ function KPICard({ icon, iconColor, label, value, sub, onPress, width }: KPICard
       <Text style={styles.kpiLabel}>{label}</Text>
       {sub ? <Text style={styles.kpiSub}>{sub}</Text> : null}
     </TouchableOpacity>
-  );
+  )
 }
 
 export default function DashboardScreen() {
-  const navigation = useNavigation<BottomTabNavigationProp<MainTabParamList>>();
-  const { store, storeUser, logout } = useAuth();
-  const { kpis, isLoading, error } = useDashboard();
+  const navigation = useNavigation<BottomTabNavigationProp<MainTabParamList>>()
+  const { store, storeUser, logout } = useAuth()
+  const { kpis, isLoading, error } = useDashboard()
   const { usdBsRateEfectivo } = useTasaCambio(
     store?.usdBsRate ?? 36.5,
-    store?.usarTasaManual ?? false,
-  );
-  const { isTabletUp } = useResponsive();
-  const tileWidth = isTabletUp ? '23.5%' : '47.5%';
+    store?.usarTasaManual ?? false
+  )
+  const { isTabletUp } = useResponsive()
+  const tileWidth = isTabletUp ? '23.5%' : '47.5%'
 
-  const now = new Date();
-  const greeting = now.getHours() < 12 ? 'Buenos días' : now.getHours() < 18 ? 'Buenas tardes' : 'Buenas noches';
+  const now = new Date()
+  const greeting =
+    now.getHours() < 12 ? 'Buenos días' : now.getHours() < 18 ? 'Buenas tardes' : 'Buenas noches'
 
   const ticketPromedio = useMemo(() => {
-    const ventas = kpis?.salesToday ?? 0;
-    const revenue = kpis?.revenueToday ?? 0;
-    return ventas > 0 ? revenue / ventas : 0;
-  }, [kpis?.salesToday, kpis?.revenueToday]);
+    const ventas = kpis?.salesToday ?? 0
+    const revenue = kpis?.revenueToday ?? 0
+    return ventas > 0 ? revenue / ventas : 0
+  }, [kpis?.salesToday, kpis?.revenueToday])
 
   const go = (fn: () => void) => {
-    void hapticLight();
-    fn();
-  };
+    void hapticLight()
+    fn()
+  }
 
   return (
     <Screen edges={['top']} padded={false} constrainWidth={!isTabletUp}>
       <ScrollView
         style={styles.container}
-        contentContainerStyle={[
-          styles.content,
-          isTabletUp && styles.contentTablet,
-        ]}
-        refreshControl={
-          <RefreshControl refreshing={isLoading} tintColor={colors.brand.orange} />
-        }
+        contentContainerStyle={[styles.content, isTabletUp && styles.contentTablet]}
+        refreshControl={<RefreshControl refreshing={isLoading} tintColor={colors.brand.orange} />}
       >
         {/* Encabezado */}
         <View style={styles.header}>
           <View>
             <Text style={styles.greeting}>{greeting}</Text>
             <Text style={styles.storeName}>{store?.name ?? '—'}</Text>
-            <Text style={styles.role}>{storeUser?.role === 'owner' ? 'Propietario' : storeUser?.role ?? ''}</Text>
+            <Text style={styles.role}>
+              {storeUser?.role === 'owner' ? 'Propietario' : (storeUser?.role ?? '')}
+            </Text>
           </View>
-          <TouchableOpacity onPress={logout} style={styles.logoutBtn} accessibilityLabel="Cerrar sesión">
+          <TouchableOpacity
+            onPress={logout}
+            style={styles.logoutBtn}
+            accessibilityLabel="Cerrar sesión"
+          >
             <Ionicons name="log-out-outline" size={22} color={colors.text.secondary} />
           </TouchableOpacity>
         </View>
@@ -168,35 +167,35 @@ export default function DashboardScreen() {
             icon="add-circle"
             label="Agregar producto"
             color={colors.semantic.success}
-            onPress={() => go(() =>
-              navigation.navigate('InventoryTab', { screen: 'ProductForm', params: {} })
-            )}
+            onPress={() =>
+              go(() => navigation.navigate('InventoryTab', { screen: 'ProductForm', params: {} }))
+            }
           />
           <QuickAction
             width={tileWidth}
             icon="person-add"
             label="Nuevo cliente"
             color={colors.semantic.info}
-            onPress={() => go(() =>
-              navigation.navigate('CustomersTab', {
-                screen: 'Customers',
-                params: { openCreate: true },
-              })
-            )}
+            onPress={() =>
+              go(() =>
+                navigation.navigate('CustomersTab', {
+                  screen: 'Customers',
+                  params: { openCreate: true },
+                })
+              )
+            }
           />
           <QuickAction
             width={tileWidth}
             icon="wallet"
             label="Abrir caja"
             color={colors.semantic.warning}
-            onPress={() => go(() =>
-              navigation.navigate('MoreTab', { screen: 'CashSession' })
-            )}
+            onPress={() => go(() => navigation.navigate('MoreTab', { screen: 'CashSession' }))}
           />
         </View>
       </ScrollView>
     </Screen>
-  );
+  )
 }
 
 function QuickAction({
@@ -206,11 +205,11 @@ function QuickAction({
   onPress,
   width,
 }: {
-  icon: keyof typeof Ionicons.glyphMap;
-  label: string;
-  color: string;
-  onPress: () => void;
-  width: `${number}%` | number;
+  icon: keyof typeof Ionicons.glyphMap
+  label: string
+  color: string
+  onPress: () => void
+  width: `${number}%` | number
 }) {
   return (
     <TouchableOpacity style={[styles.quickBtn, { width }]} onPress={onPress} activeOpacity={0.8}>
@@ -219,7 +218,7 @@ function QuickAction({
       </View>
       <Text style={styles.quickLabel}>{label}</Text>
     </TouchableOpacity>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -371,4 +370,4 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily.medium,
     textAlign: 'center',
   },
-});
+})

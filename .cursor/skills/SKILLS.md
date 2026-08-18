@@ -10,12 +10,12 @@
 
 **zm-tech** es el monorepo de **ZM Tech** (Alberto). Agrupa productos y la landing corporativa bajo pnpm + Turborepo.
 
-| Producto | Apps | Paquetes |
-|----------|------|----------|
-| **Landing ZM Tech** | `apps/landing` | — |
-| **GeemaStudio** | `geemastudio-mobile`, `geemastudio-web`, `geemastudio-server` | `@geemastudio/shared-schema`, `@zmtech/tenant-config` |
-| **ODentalPro** | `odentalpro-mobile`, `odentalpro-web`, `odentalpro-server` | `@odentalpro/dental-schema` |
-| **RepMAX** | `repmax-web`, `repmax-mobile` | `@repmax/repmax-schema` |
+| Producto            | Apps                                                          | Paquetes                                              |
+| ------------------- | ------------------------------------------------------------- | ----------------------------------------------------- |
+| **Landing ZM Tech** | `apps/landing`                                                | —                                                     |
+| **GeemaStudio**     | `geemastudio-mobile`, `geemastudio-web`, `geemastudio-server` | `@geemastudio/shared-schema`, `@zmtech/tenant-config` |
+| **ODentalPro**      | `odentalpro-mobile`, `odentalpro-web`, `odentalpro-server`    | `@odentalpro/dental-schema`                           |
+| **RepMAX**          | `repmax-web`, `repmax-mobile`                                 | `@repmax/repmax-schema`                               |
 
 Docs de referencia (no son fuente de skills): `docs/geemastudio/`, `docs/landing/`, `docs/odentalpro/`, `docs/repmax/`.  
 **Varias BDs en un monorepo** — mapa obligatorio: [`docs/SUPABASE.md`](../../docs/SUPABASE.md).
@@ -31,14 +31,14 @@ TypeScript        ~6.0.3 (override en raíz)
 Node              22+
 ```
 
-| App | Stack típico |
-|-----|----------------|
-| `landing` | Next.js 16, Tailwind v4, Framer Motion |
-| `geemastudio-web` | Next.js 15, Tailwind, Supabase |
-| `geemastudio-mobile` | Expo / React Native, Supabase, TanStack Query v5 |
-| `geemastudio-server` | **Ops/DB** — Drizzle, seeds, Edge Functions (proyecto `udelxwwnyivknslueerr`). No API de negocio. |
-| `odentalpro-*` | Web/mobile + hub ops `odentalpro-server` (migraciones `odental_*` en hub ZMTech) |
-| `repmax-*` | Web/mobile + `@repmax/repmax-schema` (Supabase directo; SQL en `docs/repmax/supabase/`; sin `*-server`) |
+| App                  | Stack típico                                                                                            |
+| -------------------- | ------------------------------------------------------------------------------------------------------- |
+| `landing`            | Next.js 16, Tailwind v4, Framer Motion                                                                  |
+| `geemastudio-web`    | Next.js 15, Tailwind, Supabase                                                                          |
+| `geemastudio-mobile` | Expo / React Native, Supabase, TanStack Query v5                                                        |
+| `geemastudio-server` | **Ops/DB** — Drizzle, seeds, Edge Functions (proyecto `udelxwwnyivknslueerr`). No API de negocio.       |
+| `odentalpro-*`       | Web/mobile + hub ops `odentalpro-server` (migraciones `odental_*` en hub ZMTech)                        |
+| `repmax-*`           | Web/mobile + `@repmax/repmax-schema` (Supabase directo; SQL en `docs/repmax/supabase/`; sin `*-server`) |
 
 ---
 
@@ -63,32 +63,35 @@ pnpm db:push              # Drizzle push (geemastudio-server)
 ## 4. Mapa de skills (este directorio)
 
 ### Conocimiento / producto
-| Ruta | Cuándo usarla |
-|------|----------------|
-| `SKILLS.md` (este archivo) | Entrada al monorepo |
-| `geemastudio.md` | Todo trabajo en GeemaStudio (stack, BD, gotchas) |
-| `zmtech-dev/` | Perfil ZM Tech, ecosistema de repos, convenciones globales |
-| `guataparo-dev/` | Cliente Guataparo BR (otro repo; contexto comercial) |
-| `odentalpro-dev/` | Trabajo en apps/packages ODentalPro |
+
+| Ruta                       | Cuándo usarla                                              |
+| -------------------------- | ---------------------------------------------------------- |
+| `SKILLS.md` (este archivo) | Entrada al monorepo                                        |
+| `geemastudio.md`           | Todo trabajo en GeemaStudio (stack, BD, gotchas)           |
+| `zmtech-dev/`              | Perfil ZM Tech, ecosistema de repos, convenciones globales |
+| `guataparo-dev/`           | Cliente Guataparo BR (otro repo; contexto comercial)       |
+| `odentalpro-dev/`          | Trabajo en apps/packages ODentalPro                        |
 
 ### Diseño / UI
-| Ruta | Cuándo usarla |
-|------|----------------|
-| `pen-design/` | Diseños con pen.dev CLI |
-| `brand/` | Identidad, voz, assets |
-| `design-system/` | Tokens y specs |
-| `ui-styling/` | Tailwind / shadcn / theming |
-| `ui-ux-pro-max/` | Inteligencia UI/UX multi-stack |
-| `design/` | Router de diseño (logo, CIP, slides, banners, fotos) |
-| `slides/` | Presentaciones HTML |
-| `banner-design/` | Banners y formatos ads |
-| `social-media-organic/` | Contenido orgánico IG/FB/TikTok |
+
+| Ruta                    | Cuándo usarla                                        |
+| ----------------------- | ---------------------------------------------------- |
+| `pen-design/`           | Diseños con pen.dev CLI                              |
+| `brand/`                | Identidad, voz, assets                               |
+| `design-system/`        | Tokens y specs                                       |
+| `ui-styling/`           | Tailwind / shadcn / theming                          |
+| `ui-ux-pro-max/`        | Inteligencia UI/UX multi-stack                       |
+| `design/`               | Router de diseño (logo, CIP, slides, banners, fotos) |
+| `slides/`               | Presentaciones HTML                                  |
+| `banner-design/`        | Banners y formatos ads                               |
+| `social-media-organic/` | Contenido orgánico IG/FB/TikTok                      |
 
 ### Integraciones
-| Ruta | Cuándo usarla |
-|------|----------------|
+
+| Ruta                     | Cuándo usarla                        |
+| ------------------------ | ------------------------------------ |
 | `whatsapp-business-api/` | WABA Cloud API / bot / webhooks Deno |
-| `meta-ads-manager/` | Meta Ads / CTWA vía MCP |
+| `meta-ads-manager/`      | Meta Ads / CTWA vía MCP              |
 
 ---
 
@@ -119,4 +122,4 @@ rm -rf .claude/skills && ln -s ../.cursor/skills .claude/skills
 
 ---
 
-*Punto de entrada para cualquier IA trabajando en zm-tech.*
+_Punto de entrada para cualquier IA trabajando en zm-tech._

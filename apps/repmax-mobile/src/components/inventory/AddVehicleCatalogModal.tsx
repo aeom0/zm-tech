@@ -3,20 +3,36 @@
 // tienda (repmax_vehicle_catalog) — queda disponible para toda la
 // tienda, no solo para el producto en edición.
 // ============================================================
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react'
 import {
-  View, Text, TextInput, ScrollView, TouchableOpacity,
-  StyleSheet, ActivityIndicator, Alert, Modal, KeyboardAvoidingView, Platform,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { colors, typography, spacing, borderRadius } from '../../utils/theme';
-import type { VehicleType } from '../../types/database';
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  Alert,
+  Modal,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import { colors, typography, spacing, borderRadius } from '../../utils/theme'
+import type { VehicleType } from '../../types/database'
+import { VEHICLE_YEAR_MAX, VEHICLE_YEAR_MIN } from '../../constants/brands'
 
 interface Props {
-  visible: boolean;
-  onClose: () => void;
-  onCreate: (entry: { brand: string; model: string; yearFrom?: number; yearTo?: number; vehicleType?: VehicleType }) => Promise<unknown>;
-  initialBrand?: string;
+  visible: boolean
+  onClose: () => void
+  onCreate: (entry: {
+    brand: string
+    model: string
+    yearFrom?: number
+    yearTo?: number
+    vehicleType?: VehicleType
+  }) => Promise<unknown>
+  initialBrand?: string
 }
 
 const VEHICLE_TYPES: { value: VehicleType; label: string }[] = [
@@ -24,52 +40,75 @@ const VEHICLE_TYPES: { value: VehicleType; label: string }[] = [
   { value: 'MOTO', label: 'Moto' },
   { value: 'TRUCK', label: 'Camión' },
   { value: 'SUV', label: 'SUV' },
-];
+]
 
 export function AddVehicleCatalogModal({ visible, onClose, onCreate, initialBrand }: Props) {
-  const [brand, setBrand] = useState(initialBrand ?? '');
-  const [model, setModel] = useState('');
-  const [yearFrom, setYearFrom] = useState('');
-  const [yearTo, setYearTo] = useState('');
-  const [vehicleType, setVehicleType] = useState<VehicleType | ''>('');
-  const [isSaving, setIsSaving] = useState(false);
+  const [brand, setBrand] = useState(initialBrand ?? '')
+  const [model, setModel] = useState('')
+  const [yearFrom, setYearFrom] = useState('')
+  const [yearTo, setYearTo] = useState('')
+  const [vehicleType, setVehicleType] = useState<VehicleType | ''>('')
+  const [isSaving, setIsSaving] = useState(false)
+
+  useEffect(() => {
+    if (visible) setBrand(initialBrand ?? '')
+  }, [visible, initialBrand])
 
   const reset = () => {
-    setBrand(initialBrand ?? '');
-    setModel('');
-    setYearFrom('');
-    setYearTo('');
-    setVehicleType('');
-  };
+    setBrand(initialBrand ?? '')
+    setModel('')
+    setYearFrom('')
+    setYearTo('')
+    setVehicleType('')
+  }
 
   const handleClose = () => {
-    reset();
-    onClose();
-  };
+    reset()
+    onClose()
+  }
 
   const handleCreate = async () => {
     if (!brand.trim() || !model.trim()) {
-      Alert.alert('Campos requeridos', 'Marca y modelo son obligatorios.');
-      return;
+      Alert.alert('Campos requeridos', 'Marca y modelo son obligatorios.')
+      return
     }
-    setIsSaving(true);
+    const parsedYearFrom = yearFrom ? parseInt(yearFrom, 10) : undefined
+    const parsedYearTo = yearTo ? parseInt(yearTo, 10) : undefined
+    if (
+      (parsedYearFrom !== undefined &&
+        (!Number.isInteger(parsedYearFrom) ||
+          parsedYearFrom < VEHICLE_YEAR_MIN ||
+          parsedYearFrom > VEHICLE_YEAR_MAX)) ||
+      (parsedYearTo !== undefined &&
+        (!Number.isInteger(parsedYearTo) ||
+          parsedYearTo < VEHICLE_YEAR_MIN ||
+          parsedYearTo > VEHICLE_YEAR_MAX)) ||
+      (parsedYearFrom !== undefined && parsedYearTo !== undefined && parsedYearFrom > parsedYearTo)
+    ) {
+      Alert.alert(
+        'Años inválidos',
+        `Usa años entre ${VEHICLE_YEAR_MIN} y ${VEHICLE_YEAR_MAX}, con el año desde menor o igual al año hasta.`
+      )
+      return
+    }
+    setIsSaving(true)
     try {
       await onCreate({
         brand: brand.trim(),
         model: model.trim(),
-        yearFrom: yearFrom ? parseInt(yearFrom, 10) : undefined,
-        yearTo: yearTo ? parseInt(yearTo, 10) : undefined,
+        yearFrom: parsedYearFrom,
+        yearTo: parsedYearTo,
         vehicleType: vehicleType || undefined,
-      });
-      reset();
-      onClose();
+      })
+      reset()
+      onClose()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'No se pudo agregar al catálogo.';
-      Alert.alert('Error', msg);
+      const msg = err instanceof Error ? err.message : 'No se pudo agregar al catálogo.'
+      Alert.alert('Error', msg)
     } finally {
-      setIsSaving(false);
+      setIsSaving(false)
     }
-  };
+  }
 
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={handleClose}>
@@ -135,13 +174,15 @@ export function AddVehicleCatalogModal({ visible, onClose, onCreate, initialBran
 
             <Text style={styles.fieldLabel}>Tipo de vehículo</Text>
             <View style={styles.chipsRow}>
-              {VEHICLE_TYPES.map(vt => (
+              {VEHICLE_TYPES.map((vt) => (
                 <TouchableOpacity
                   key={vt.value}
                   style={[styles.chip, vehicleType === vt.value && styles.chipActive]}
                   onPress={() => setVehicleType(vehicleType === vt.value ? '' : vt.value)}
                 >
-                  <Text style={[styles.chipText, vehicleType === vt.value && styles.chipTextActive]}>
+                  <Text
+                    style={[styles.chipText, vehicleType === vt.value && styles.chipTextActive]}
+                  >
                     {vt.label}
                   </Text>
                 </TouchableOpacity>
@@ -163,7 +204,7 @@ export function AddVehicleCatalogModal({ visible, onClose, onCreate, initialBran
         </View>
       </KeyboardAvoidingView>
     </Modal>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -255,4 +296,4 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily.bold,
     fontSize: typography.size.md,
   },
-});
+})

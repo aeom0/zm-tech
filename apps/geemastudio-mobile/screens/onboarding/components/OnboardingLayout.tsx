@@ -1,20 +1,14 @@
-import React from "react";
-import {
-  View,
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-} from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import React from 'react'
+import { View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { Onboarding, Spacing } from "@/constants/theme";
+import { Onboarding, Spacing } from '@/constants/theme'
 
 interface OnboardingLayoutProps {
-  children: React.ReactNode;
-  scrollable?: boolean;
+  children: React.ReactNode
+  scrollable?: boolean
   /** Entry y Complete: reparte espacio vertical (space-between). */
-  centered?: boolean;
+  centered?: boolean
 }
 
 /**
@@ -25,17 +19,17 @@ export function OnboardingLayout({
   scrollable = false,
   centered = false,
 }: OnboardingLayoutProps) {
-  const insets = useSafeAreaInsets();
+  const insets = useSafeAreaInsets()
 
   const paddingCanvas = {
     backgroundColor: Onboarding.canvasBackground,
     paddingTop: insets.top + Spacing.lg,
     paddingBottom: insets.bottom + Spacing.lg,
-    paddingHorizontal: Spacing["2xl"],
-  };
+    paddingHorizontal: Spacing['2xl'],
+  }
 
   /** Vista fija: ocupa toda la pantalla. */
-  const containerStyle = [paddingCanvas, styles.fill];
+  const containerStyle = [paddingCanvas, styles.fill]
 
   if (scrollable) {
     // El inset superior va en un contenedor FIJO: si insets.top vive solo en contentContainerStyle,
@@ -44,13 +38,13 @@ export function OnboardingLayout({
       backgroundColor: Onboarding.canvasBackground,
       paddingTop: Spacing.lg,
       paddingBottom: insets.bottom + Spacing.lg,
-      paddingHorizontal: Spacing["2xl"],
-    };
+      paddingHorizontal: Spacing['2xl'],
+    }
 
     return (
       <KeyboardAvoidingView
         style={styles.flexRoot}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <View
           style={[
@@ -63,10 +57,7 @@ export function OnboardingLayout({
         >
           <ScrollView
             style={styles.flexRoot}
-            contentContainerStyle={[
-              scrollInnerPadding,
-              styles.scrollContentGrow,
-            ]}
+            contentContainerStyle={[scrollInnerPadding, styles.scrollContentGrow]}
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
             nestedScrollEnabled
@@ -75,14 +66,10 @@ export function OnboardingLayout({
           </ScrollView>
         </View>
       </KeyboardAvoidingView>
-    );
+    )
   }
 
-  return (
-    <View style={[containerStyle, centered && styles.centered]}>
-      {children}
-    </View>
-  );
+  return <View style={[containerStyle, centered && styles.centered]}>{children}</View>
 }
 
 const styles = StyleSheet.create({
@@ -98,6 +85,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
   centered: {
-    justifyContent: "space-between",
+    justifyContent: 'space-between',
   },
-});
+})

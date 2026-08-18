@@ -8,10 +8,10 @@ When calling bulk/standard insights endpoints, the generic `conversions` field i
 
 Request `fields=["actions"]` and read specific `action_type` entries:
 
-| `action_type` | Meaning |
-|---|---|
-| `onsite_conversion.messaging_conversation_started_7d` | Real WhatsApp conversations initiated — the actual engagement signal for CTWA campaigns |
-| `onsite_conversion.messaging_order_created_v2` | An order was created in the WhatsApp catalog — a strong purchase-intent signal, but **not yet wired as a trackable optimization event** unless Commerce Manager conversion tracking is set up |
+| `action_type`                                         | Meaning                                                                                                                                                                                       |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `onsite_conversion.messaging_conversation_started_7d` | Real WhatsApp conversations initiated — the actual engagement signal for CTWA campaigns                                                                                                       |
+| `onsite_conversion.messaging_order_created_v2`        | An order was created in the WhatsApp catalog — a strong purchase-intent signal, but **not yet wired as a trackable optimization event** unless Commerce Manager conversion tracking is set up |
 
 ## Attribution windows
 

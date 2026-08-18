@@ -1,8 +1,8 @@
 // Export CSV ML — lógica pura (sin módulos nativos; seguro en OTA sin rebuild).
-import type { Product } from '../../types/database';
-import { urisFotos } from '../../utils/productPhotos';
+import type { Product } from '../../types/database'
+import { urisFotos } from '../../utils/productPhotos'
 
-const MAX_FOTOS = 6;
+const MAX_FOTOS = 6
 
 export const ML_EXPORT_COLUMNS = [
   'repmax_id',
@@ -20,34 +20,34 @@ export const ML_EXPORT_COLUMNS = [
   'ml_categoria_id',
   'ml_categoria_nombre',
   ...Array.from({ length: MAX_FOTOS }, (_, i) => `url_foto_${i + 1}`),
-] as const;
+] as const
 
 function escaparCsv(valor: string): string {
   if (/[",\n\r]/.test(valor)) {
-    return `"${valor.replace(/"/g, '""')}"`;
+    return `"${valor.replace(/"/g, '""')}"`
   }
-  return valor;
+  return valor
 }
 
 function condicionLabel(condition: Product['condition']): string {
-  return condition === 'NEW' ? 'Nuevo' : 'Usado';
+  return condition === 'NEW' ? 'Nuevo' : 'Usado'
 }
 
 export interface FilaExportMl {
-  product: Product;
-  listo: boolean;
+  product: Product
+  listo: boolean
 }
 
 /** Filas listas para export (checklist OK + intent ML). */
 export function filtrarListosParaExport(filas: FilaExportMl[]): FilaExportMl[] {
-  return filas.filter((f) => f.listo && f.product.mlPublishIntent);
+  return filas.filter((f) => f.listo && f.product.mlPublishIntent)
 }
 
 export function construirCsvExport(filas: FilaExportMl[]): string {
-  const lineas: string[] = [ML_EXPORT_COLUMNS.join(',')];
+  const lineas: string[] = [ML_EXPORT_COLUMNS.join(',')]
 
   for (const { product } of filas) {
-    const fotos = urisFotos(product.photos).slice(0, MAX_FOTOS);
+    const fotos = urisFotos(product.photos).slice(0, MAX_FOTOS)
     const celdas: string[] = [
       product.id,
       product.title,
@@ -64,9 +64,9 @@ export function construirCsvExport(filas: FilaExportMl[]): string {
       product.mlCategoryId ?? '',
       product.mlCategoryName ?? '',
       ...Array.from({ length: MAX_FOTOS }, (_, i) => fotos[i] ?? ''),
-    ];
-    lineas.push(celdas.map((c) => escaparCsv(c)).join(','));
+    ]
+    lineas.push(celdas.map((c) => escaparCsv(c)).join(','))
   }
 
-  return `\uFEFF${lineas.join('\n')}`;
+  return `\uFEFF${lineas.join('\n')}`
 }

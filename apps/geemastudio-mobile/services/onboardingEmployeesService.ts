@@ -1,8 +1,8 @@
-import { supabase } from "@/lib/supabase";
+import { supabase } from '@/lib/supabase'
 
 export interface FilaEmpleadoOnboarding {
-  name: string;
-  color: string;
+  name: string
+  color: string
 }
 
 /**
@@ -10,23 +10,23 @@ export interface FilaEmpleadoOnboarding {
  * Usado al cerrar el onboarding, no en el paso 3 (aún sin sesión).
  */
 export async function insertEmpleadosTrasOnboarding(
-  filas: readonly FilaEmpleadoOnboarding[],
+  filas: readonly FilaEmpleadoOnboarding[]
 ): Promise<{ ok: true } | { ok: false; message: string }> {
   if (filas.length === 0) {
-    return { ok: true };
+    return { ok: true }
   }
 
   const payload = filas.map((r) => ({
     name: r.name.trim(),
     color: r.color,
     is_active: true,
-  }));
+  }))
 
-  const { error } = await supabase.from("employees").insert(payload);
+  const { error } = await supabase.from('employees').insert(payload)
 
   if (error) {
-    return { ok: false, message: error.message };
+    return { ok: false, message: error.message }
   }
 
-  return { ok: true };
+  return { ok: true }
 }

@@ -55,17 +55,17 @@ Abrir la URL que muestre Expo (web en 8081) o escanear QR con Expo Go.
 
 ## Scripts útiles
 
-| Script | Descripción |
-|--------|-------------|
-| `yarn mobile:dev` | Expo (app móvil) |
-| `yarn web:dev` | Next.js (landing + panel) |
-| `yarn db:push` | Aplicar schema Drizzle a Supabase |
+| Script             | Descripción                                |
+| ------------------ | ------------------------------------------ |
+| `yarn mobile:dev`  | Expo (app móvil)                           |
+| `yarn web:dev`     | Next.js (landing + panel)                  |
+| `yarn db:push`     | Aplicar schema Drizzle a Supabase          |
 | `yarn db:generate` | Generar migraciones SQL en `./migrations/` |
-| `yarn db:studio` | Drizzle Studio |
-| `yarn db:seed` | Cargar seeds (editar templates antes) |
-| `yarn lint` | ESLint |
-| `yarn check:types` | TypeScript |
-| `yarn format` | Prettier |
+| `yarn db:studio`   | Drizzle Studio                             |
+| `yarn db:seed`     | Cargar seeds (editar templates antes)      |
+| `yarn lint`        | ESLint                                     |
+| `yarn check:types` | TypeScript                                 |
+| `yarn format`      | Prettier                                   |
 
 ## Estructura resumida
 

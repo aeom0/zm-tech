@@ -3,51 +3,42 @@
 // Reordena Turbo primero si el usuario eligió MOTOS
 // ============================================================
 
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-} from 'react-native';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { OnboardingStackParamList } from '../../navigation/types';
-import { useOnboarding } from '../../context/OnboardingContext';
-import { THEMES } from '../../constants/onboarding';
-import OnboardingProgressBar from '../../components/onboarding/OnboardingProgressBar';
-import { Screen } from '../../components/layout/Screen';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
-import type { ThemeKey } from '../../types/onboarding';
+import React, { useState } from 'react'
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native'
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
+import type { OnboardingStackParamList } from '../../navigation/types'
+import { useOnboarding } from '../../context/OnboardingContext'
+import { THEMES } from '../../constants/onboarding'
+import OnboardingProgressBar from '../../components/onboarding/OnboardingProgressBar'
+import { Screen } from '../../components/layout/Screen'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme'
+import type { ThemeKey } from '../../types/onboarding'
 
-type Props = NativeStackScreenProps<OnboardingStackParamList, 'OnboardingTheme'>;
+type Props = NativeStackScreenProps<OnboardingStackParamList, 'OnboardingTheme'>
 
 export default function OnboardingTheme({ navigation }: Props) {
-  const { state, setTheme } = useOnboarding();
-  const [seleccionado, setSeleccionado] = useState<ThemeKey | null>(state.theme);
+  const { state, setTheme } = useOnboarding()
+  const [seleccionado, setSeleccionado] = useState<ThemeKey | null>(state.theme)
 
   // Si eligió motos, Turbo va primero (más relevante para moteros)
   const temasOrdenados =
     state.vehicleType === 'MOTOS'
       ? [...THEMES].sort((a, b) => (a.key === 'turbo' ? -1 : b.key === 'turbo' ? 1 : 0))
-      : THEMES;
+      : THEMES
 
   const confirmar = () => {
-    if (!seleccionado) return;
-    setTheme(seleccionado);
-    navigation.navigate('OnboardingPreview');
-  };
+    if (!seleccionado) return
+    setTheme(seleccionado)
+    navigation.navigate('OnboardingPreview')
+  }
 
   return (
     <Screen edges={['top', 'bottom']} padded={false}>
       {/* Barra de progreso: paso 4 de 5 */}
       <OnboardingProgressBar currentStep={4} totalSteps={5} />
 
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
         <Text style={styles.titulo}>Escoge tu identidad visual</Text>
         <Text style={styles.subtitulo}>
           El tema es solo tu color — RepMAX funciona igual para motos, carros o ambos.
@@ -55,8 +46,8 @@ export default function OnboardingTheme({ navigation }: Props) {
 
         {/* Cards horizontales de tema */}
         <View style={styles.cards}>
-          {temasOrdenados.map(tema => {
-            const activo = seleccionado === tema.key;
+          {temasOrdenados.map((tema) => {
+            const activo = seleccionado === tema.key
             return (
               <TouchableOpacity
                 key={tema.key}
@@ -70,9 +61,7 @@ export default function OnboardingTheme({ navigation }: Props) {
               >
                 {/* Círculo de color */}
                 <View style={[styles.circuloColor, { backgroundColor: tema.color }]}>
-                  {activo && (
-                    <MaterialCommunityIcons name="check" size={22} color="#FFFFFF" />
-                  )}
+                  {activo && <MaterialCommunityIcons name="check" size={22} color="#FFFFFF" />}
                 </View>
 
                 <View style={styles.infoTema}>
@@ -82,7 +71,7 @@ export default function OnboardingTheme({ navigation }: Props) {
                   <Text style={styles.descTema}>{tema.description}</Text>
                 </View>
               </TouchableOpacity>
-            );
+            )
           })}
         </View>
       </ScrollView>
@@ -99,7 +88,7 @@ export default function OnboardingTheme({ navigation }: Props) {
         </TouchableOpacity>
       </View>
     </Screen>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -175,4 +164,4 @@ const styles = StyleSheet.create({
     fontSize: typography.size.md,
     color: colors.text.inverse,
   },
-});
+})

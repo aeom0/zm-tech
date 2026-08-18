@@ -12,15 +12,15 @@
 
 De `CLAUDE.md` de RepMAX, las rutas ya implementadas en `apps/server`:
 
-| Ruta Express | Reemplazo Supabase |
-|---|---|
-| `POST /api/auth/login` | `supabase.auth.signInWithPassword` (Auth Provider fase 02) |
-| `GET /api/auth/me` | `supabase.auth.getUser()` + query a `repmax_store_users` |
-| `GET /api/dashboard` | Query directa a `repmax_sales`/`repmax_cash_sessions` con agregaciones — evaluar si conviene una vista SQL (`repmax_dashboard_kpis`) o un Edge Function, según qué tan pesado sea el cálculo de KPIs (revisar la lógica actual en `apps/repmax-server/src/routes.ts` antes de decidir) |
-| `GET/PATCH /api/products` | Query/mutation directa a `repmax_products` (RLS ya filtra por tienda) |
-| `GET /api/sales` | Query directa a `repmax_sales` |
-| `GET /api/customers` | Query directa a `repmax_customers` |
-| `GET /api/public/:slug/store`, `/products` | Query directa usando la policy pública de storefront (fase 02, paso 3) — **sin auth**, igual que hoy |
+| Ruta Express                               | Reemplazo Supabase                                                                                                                                                                                                                                                                     |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `POST /api/auth/login`                     | `supabase.auth.signInWithPassword` (Auth Provider fase 02)                                                                                                                                                                                                                             |
+| `GET /api/auth/me`                         | `supabase.auth.getUser()` + query a `repmax_store_users`                                                                                                                                                                                                                               |
+| `GET /api/dashboard`                       | Query directa a `repmax_sales`/`repmax_cash_sessions` con agregaciones — evaluar si conviene una vista SQL (`repmax_dashboard_kpis`) o un Edge Function, según qué tan pesado sea el cálculo de KPIs (revisar la lógica actual en `apps/repmax-server/src/routes.ts` antes de decidir) |
+| `GET/PATCH /api/products`                  | Query/mutation directa a `repmax_products` (RLS ya filtra por tienda)                                                                                                                                                                                                                  |
+| `GET /api/sales`                           | Query directa a `repmax_sales`                                                                                                                                                                                                                                                         |
+| `GET /api/customers`                       | Query directa a `repmax_customers`                                                                                                                                                                                                                                                     |
+| `GET /api/public/:slug/store`, `/products` | Query directa usando la policy pública de storefront (fase 02, paso 3) — **sin auth**, igual que hoy                                                                                                                                                                                   |
 
 La lógica de negocio real que vale la pena revisar con cuidado antes de tirar el Express: el cálculo de KPIs del dashboard (serie 7 días, top productos, métodos de pago) y cualquier validación de negocio en `routes.ts` que no sea solo CRUD — eso hay que trasladarlo a RLS/constraints o a un Edge Function, no perderlo.
 

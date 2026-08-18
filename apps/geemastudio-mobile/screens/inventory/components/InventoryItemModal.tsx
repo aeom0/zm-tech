@@ -1,38 +1,32 @@
-import React from "react";
-import {
-  ActivityIndicator,
-  Modal,
-  Pressable,
-  TextInput,
-  View,
-} from "react-native";
-import { Feather } from "@expo/vector-icons";
+import React from 'react'
+import { ActivityIndicator, Modal, Pressable, TextInput, View } from 'react-native'
+import { Feather } from '@expo/vector-icons'
 
-import { ThemedText } from "@/components/ThemedText";
-import { Colors } from "@/constants/theme";
+import { ThemedText } from '@/components/ThemedText'
+import { Colors } from '@/constants/theme'
 
-import { CATEGORY_LABELS, INVENTORY_CATEGORIES } from "../constants";
-import type { InventoryFormState, InventoryItem } from "../types";
-import { inventoryStyles as styles } from "../inventoryStyles";
+import { CATEGORY_LABELS, INVENTORY_CATEGORIES } from '../constants'
+import type { InventoryFormState, InventoryItem } from '../types'
+import { inventoryStyles as styles } from '../inventoryStyles'
 
 interface InventoryItemModalProps {
-  visible: boolean;
-  editingItem: InventoryItem | null;
-  formData: InventoryFormState;
-  setFormData: React.Dispatch<React.SetStateAction<InventoryFormState>>;
-  currencySymbol: string;
-  isSubmitting: boolean;
+  visible: boolean
+  editingItem: InventoryItem | null
+  formData: InventoryFormState
+  setFormData: React.Dispatch<React.SetStateAction<InventoryFormState>>
+  currencySymbol: string
+  isSubmitting: boolean
   theme: {
-    backgroundDefault: string;
-    backgroundSecondary: string;
-    border: string;
-    text: string;
-    textSecondary: string;
-    textMuted: string;
-    primary: string;
-  };
-  onClose: () => void;
-  onSubmit: () => void;
+    backgroundDefault: string
+    backgroundSecondary: string
+    border: string
+    text: string
+    textSecondary: string
+    textMuted: string
+    primary: string
+  }
+  onClose: () => void
+  onSubmit: () => void
 }
 
 export function InventoryItemModal({
@@ -53,29 +47,22 @@ export function InventoryItemModal({
       color: theme.text,
       borderColor: theme.border,
     },
-  ];
+  ]
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
       <View style={styles.modalOverlay}>
-        <View
-          style={[
-            styles.modalContent,
-            { backgroundColor: theme.backgroundDefault },
-          ]}
-        >
+        <View style={[styles.modalContent, { backgroundColor: theme.backgroundDefault }]}>
           <View style={styles.modalHeader}>
             <ThemedText style={styles.modalTitle}>
-              {editingItem ? "Editar Producto" : "Nuevo Producto"}
+              {editingItem ? 'Editar Producto' : 'Nuevo Producto'}
             </ThemedText>
             <Pressable onPress={onClose}>
               <Feather name="x" size={24} color={theme.text} />
             </Pressable>
           </View>
 
-          <ThemedText
-            style={[styles.inputLabel, { color: theme.textSecondary }]}
-          >
+          <ThemedText style={[styles.inputLabel, { color: theme.textSecondary }]}>
             Nombre
           </ThemedText>
           <TextInput
@@ -83,16 +70,12 @@ export function InventoryItemModal({
             placeholder="Nombre del producto"
             placeholderTextColor={theme.textMuted}
             value={formData.name}
-            onChangeText={(text) =>
-              setFormData((prev) => ({ ...prev, name: text }))
-            }
+            onChangeText={(text) => setFormData((prev) => ({ ...prev, name: text }))}
           />
 
           <View style={styles.row}>
             <View style={styles.halfInput}>
-              <ThemedText
-                style={[styles.inputLabel, { color: theme.textSecondary }]}
-              >
+              <ThemedText style={[styles.inputLabel, { color: theme.textSecondary }]}>
                 Cantidad
               </ThemedText>
               <TextInput
@@ -101,15 +84,11 @@ export function InventoryItemModal({
                 placeholderTextColor={theme.textMuted}
                 keyboardType="number-pad"
                 value={formData.quantity}
-                onChangeText={(text) =>
-                  setFormData((prev) => ({ ...prev, quantity: text }))
-                }
+                onChangeText={(text) => setFormData((prev) => ({ ...prev, quantity: text }))}
               />
             </View>
             <View style={styles.halfInput}>
-              <ThemedText
-                style={[styles.inputLabel, { color: theme.textSecondary }]}
-              >
+              <ThemedText style={[styles.inputLabel, { color: theme.textSecondary }]}>
                 Stock Mínimo
               </ThemedText>
               <TextInput
@@ -118,18 +97,14 @@ export function InventoryItemModal({
                 placeholderTextColor={theme.textMuted}
                 keyboardType="number-pad"
                 value={formData.minStock}
-                onChangeText={(text) =>
-                  setFormData((prev) => ({ ...prev, minStock: text }))
-                }
+                onChangeText={(text) => setFormData((prev) => ({ ...prev, minStock: text }))}
               />
             </View>
           </View>
 
           <View style={styles.row}>
             <View style={styles.halfInput}>
-              <ThemedText
-                style={[styles.inputLabel, { color: theme.textSecondary }]}
-              >
+              <ThemedText style={[styles.inputLabel, { color: theme.textSecondary }]}>
                 Unidad
               </ThemedText>
               <TextInput
@@ -137,15 +112,11 @@ export function InventoryItemModal({
                 placeholder="unidad, caja..."
                 placeholderTextColor={theme.textMuted}
                 value={formData.unit}
-                onChangeText={(text) =>
-                  setFormData((prev) => ({ ...prev, unit: text }))
-                }
+                onChangeText={(text) => setFormData((prev) => ({ ...prev, unit: text }))}
               />
             </View>
             <View style={styles.halfInput}>
-              <ThemedText
-                style={[styles.inputLabel, { color: theme.textSecondary }]}
-              >
+              <ThemedText style={[styles.inputLabel, { color: theme.textSecondary }]}>
                 {`Costo (${currencySymbol})`}
               </ThemedText>
               <TextInput
@@ -154,16 +125,12 @@ export function InventoryItemModal({
                 placeholderTextColor={theme.textMuted}
                 keyboardType="decimal-pad"
                 value={formData.cost}
-                onChangeText={(text) =>
-                  setFormData((prev) => ({ ...prev, cost: text }))
-                }
+                onChangeText={(text) => setFormData((prev) => ({ ...prev, cost: text }))}
               />
             </View>
           </View>
 
-          <ThemedText
-            style={[styles.inputLabel, { color: theme.textSecondary }]}
-          >
+          <ThemedText style={[styles.inputLabel, { color: theme.textSecondary }]}>
             Categoría
           </ThemedText>
           <View style={[styles.row, { marginBottom: 0 }]}>
@@ -174,22 +141,17 @@ export function InventoryItemModal({
                   styles.categoryChip,
                   {
                     backgroundColor:
-                      formData.category === cat
-                        ? theme.primary
-                        : theme.backgroundSecondary,
-                    borderColor:
-                      formData.category === cat ? theme.primary : theme.border,
+                      formData.category === cat ? theme.primary : theme.backgroundSecondary,
+                    borderColor: formData.category === cat ? theme.primary : theme.border,
                   },
                 ]}
-                onPress={() =>
-                  setFormData((prev) => ({ ...prev, category: cat }))
-                }
+                onPress={() => setFormData((prev) => ({ ...prev, category: cat }))}
               >
                 <ThemedText
                   style={[
                     styles.categoryChipText,
                     {
-                      color: formData.category === cat ? "#FFFFFF" : theme.text,
+                      color: formData.category === cat ? '#FFFFFF' : theme.text,
                     },
                   ]}
                 >
@@ -200,10 +162,7 @@ export function InventoryItemModal({
           </View>
 
           <Pressable
-            style={[
-              styles.submitButton,
-              { backgroundColor: Colors.light.violet },
-            ]}
+            style={[styles.submitButton, { backgroundColor: Colors.light.violet }]}
             onPress={onSubmit}
             disabled={isSubmitting}
           >
@@ -211,12 +170,12 @@ export function InventoryItemModal({
               <ActivityIndicator color={Colors.light.white} />
             ) : (
               <ThemedText style={styles.submitButtonText}>
-                {editingItem ? "Guardar" : "Agregar"}
+                {editingItem ? 'Guardar' : 'Agregar'}
               </ThemedText>
             )}
           </Pressable>
         </View>
       </View>
     </Modal>
-  );
+  )
 }

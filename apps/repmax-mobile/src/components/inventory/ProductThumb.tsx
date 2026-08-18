@@ -1,21 +1,21 @@
 // ============================================================
 // Miniatura de catálogo — portada o placeholder (no depende de ML)
 // ============================================================
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Image } from 'expo-image';
-import { Ionicons } from '@expo/vector-icons';
+import React from 'react'
+import { View, StyleSheet } from 'react-native'
+import { Image } from 'expo-image'
+import { Ionicons } from '@expo/vector-icons'
 
-import { colors, borderRadius } from '../../utils/theme';
+import { colors, borderRadius } from '../../utils/theme'
 
-const TAMANOS = { sm: 40, md: 56, lg: 72 } as const;
+const TAMANOS = { sm: 40, md: 56, lg: 72 } as const
 
-type Tamano = keyof typeof TAMANOS | 'cover';
+type Tamano = keyof typeof TAMANOS | 'cover'
 
 interface ProductThumbProps {
-  uri?: string | null;
-  size?: Tamano;
-  accessibilityLabel?: string;
+  uri?: string | null
+  size?: Tamano
+  accessibilityLabel?: string
 }
 
 export function ProductThumb({ uri, size = 'md', accessibilityLabel }: ProductThumbProps) {
@@ -34,10 +34,10 @@ export function ProductThumb({ uri, size = 'md', accessibilityLabel }: ProductTh
           <Placeholder iconSize={28} />
         )}
       </View>
-    );
+    )
   }
 
-  const dim = TAMANOS[size];
+  const dim = TAMANOS[size]
   return (
     <View
       style={[styles.square, { width: dim, height: dim }]}
@@ -55,7 +55,7 @@ export function ProductThumb({ uri, size = 'md', accessibilityLabel }: ProductTh
         <Placeholder iconSize={size === 'sm' ? 16 : 22} />
       )}
     </View>
-  );
+  )
 }
 
 function Placeholder({ iconSize }: { iconSize: number }) {
@@ -63,7 +63,7 @@ function Placeholder({ iconSize }: { iconSize: number }) {
     <View style={styles.placeholder}>
       <Ionicons name="cube-outline" size={iconSize} color={colors.brand.steel} />
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -88,4 +88,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colors.bg.elevated,
   },
-});
+})

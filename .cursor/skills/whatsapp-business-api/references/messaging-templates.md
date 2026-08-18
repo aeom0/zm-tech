@@ -24,20 +24,20 @@ Practical implication: if a workflow needs to reach out to a user who hasn't mes
 Using `whatsapp-api-js` message classes (or equivalent raw Graph API payload):
 
 ```js
-import { WhatsAppAPI } from "whatsapp-api-js";
-import { Text, Image, Document } from "whatsapp-api-js/messages";
+import { WhatsAppAPI } from 'whatsapp-api-js'
+import { Text, Image, Document } from 'whatsapp-api-js/messages'
 
-const Whatsapp = new WhatsAppAPI({ token: TOKEN, appSecret: APP_SECRET });
+const Whatsapp = new WhatsAppAPI({ token: TOKEN, appSecret: APP_SECRET })
 
 // Free-form (only valid inside the 24h window)
-await Whatsapp.sendMessage(phoneID, to, new Text("Hello!"));
+await Whatsapp.sendMessage(phoneID, to, new Text('Hello!'))
 
 // Reply flow (inside a webhook handler, using the built-in reply helper)
 Whatsapp.on.message = async ({ phoneID, from, message, name, reply }) => {
-  if (message.type === "text") {
-    await reply(new Text(`Hi ${name}, you said: ${message.text.body}`), true);
+  if (message.type === 'text') {
+    await reply(new Text(`Hi ${name}, you said: ${message.text.body}`), true)
   }
-};
+}
 ```
 
 ## Media handling

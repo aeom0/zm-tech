@@ -2,9 +2,9 @@
 // Gráfica de ventas (Recharts) — solo cliente; no importar en SSR
 // ============================================================
 
-"use client";
+'use client'
 
-import { useId } from "react";
+import { useId } from 'react'
 import {
   Area,
   CartesianGrid,
@@ -14,20 +14,20 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-} from "recharts";
+} from 'recharts'
 
 export interface PuntoGraficaVentas {
-  etiqueta: string;
-  total: number;
+  etiqueta: string
+  total: number
 }
 
 interface GraficaVentasProps {
-  datos: PuntoGraficaVentas[];
+  datos: PuntoGraficaVentas[]
 }
 
 export default function GraficaVentas({ datos }: GraficaVentasProps) {
-  const reactId = useId().replace(/:/g, "");
-  const gradientId = `fillVentas-${reactId}`;
+  const reactId = useId().replace(/:/g, '')
+  const gradientId = `fillVentas-${reactId}`
 
   return (
     <div className="h-72 w-full">
@@ -42,31 +42,31 @@ export default function GraficaVentas({ datos }: GraficaVentasProps) {
           <CartesianGrid stroke="#2A2A2A" strokeDasharray="3 3" vertical={false} />
           <XAxis
             dataKey="etiqueta"
-            tick={{ fill: "#9E9E9E", fontSize: 12 }}
-            axisLine={{ stroke: "#2A2A2A" }}
+            tick={{ fill: '#9E9E9E', fontSize: 12 }}
+            axisLine={{ stroke: '#2A2A2A' }}
             tickLine={false}
           />
           <YAxis
-            tick={{ fill: "#9E9E9E", fontSize: 12 }}
-            axisLine={{ stroke: "#2A2A2A" }}
+            tick={{ fill: '#9E9E9E', fontSize: 12 }}
+            axisLine={{ stroke: '#2A2A2A' }}
             tickLine={false}
             tickFormatter={(v) => `$${v}`}
           />
           <Tooltip
             contentStyle={{
-              backgroundColor: "#242424",
-              border: "1px solid #2A2A2A",
-              borderRadius: "8px",
-              color: "#F5F5F5",
+              backgroundColor: '#242424',
+              border: '1px solid #2A2A2A',
+              borderRadius: '8px',
+              color: '#F5F5F5',
             }}
             formatter={(value: number | string) => [
-              typeof value === "number"
-                ? new Intl.NumberFormat("es-VE", {
-                    style: "currency",
-                    currency: "USD",
+              typeof value === 'number'
+                ? new Intl.NumberFormat('es-VE', {
+                    style: 'currency',
+                    currency: 'USD',
                   }).format(value)
                 : value,
-              "Total",
+              'Total',
             ]}
           />
           <Area
@@ -76,15 +76,9 @@ export default function GraficaVentas({ datos }: GraficaVentasProps) {
             fill={`url(#${gradientId})`}
             fillOpacity={1}
           />
-          <Line
-            type="monotone"
-            dataKey="total"
-            stroke="#FF6B00"
-            strokeWidth={2}
-            dot={false}
-          />
+          <Line type="monotone" dataKey="total" stroke="#FF6B00" strokeWidth={2} dot={false} />
         </ComposedChart>
       </ResponsiveContainer>
     </div>
-  );
+  )
 }

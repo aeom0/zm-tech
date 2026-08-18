@@ -53,6 +53,7 @@ en la URL misma**.
 
    Usando como "Verify token" el mismo valor guardado en `waba_verify_token` para
    ese tenant.
+
 4. Confirmar el handshake (Meta debe aceptar la verificación).
 5. Enviar un mensaje de prueba y confirmar que llega al `wa_messages` del tenant
    correcto.

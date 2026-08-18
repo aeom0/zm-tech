@@ -2,17 +2,15 @@
 // 404 — slug de tienda inexistente o inactivo
 // ============================================================
 
-import Link from "next/link";
-import { BrandLogo } from "@/components/brand/BrandLogo";
+import Link from 'next/link'
+import { BrandLogo } from '@/components/brand/BrandLogo'
 
 export default function StorefrontNotFound() {
   return (
-    <div className="min-h-screen bg-[#0D0D0D] flex flex-col items-center justify-center px-6 text-center">
-      <BrandLogo variant="wordmark" height={36} className="mb-4 mx-auto" />
-      <h1 className="text-2xl md:text-3xl font-bold text-[#F5F5F5] mb-3">
-        Tienda no encontrada
-      </h1>
-      <p className="text-[#9E9E9E] text-base max-w-md mb-8">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#0D0D0D] px-6 text-center">
+      <BrandLogo variant="wordmark" height={36} className="mx-auto mb-4" />
+      <h1 className="mb-3 text-2xl font-bold text-[#F5F5F5] md:text-3xl">Tienda no encontrada</h1>
+      <p className="mb-8 max-w-md text-base text-[#9E9E9E]">
         El enlace puede estar desactivado o no existe.
       </p>
       <Link
@@ -22,5 +20,5 @@ export default function StorefrontNotFound() {
         Volver al inicio
       </Link>
     </div>
-  );
+  )
 }

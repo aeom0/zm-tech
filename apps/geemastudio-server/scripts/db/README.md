@@ -5,15 +5,18 @@ Scripts SQL para inicializar y poblar la base de datos de ZM Lash & Nails Beauty
 ## 📋 Scripts Disponibles
 
 ### `seed-services.sql`
+
 Pobla el catálogo completo de servicios del salón según **LISTA DE PRECIOS ZM**.
 
 **Incluye:**
+
 - 6 categorías de servicios
 - ~58 servicios con precios y duraciones
 - Promos especiales (Yape/Plin, Promo Aurora, días específicos)
 - Packs combinados
 
 **Categorías:**
+
 1. **Extensiones de Pestañas** (12 servicios): Clásicas, Rimel, Mojado, retoques, promos
 2. **Lifting** (7 servicios): Lifting, Tinturado, Diseño cejas, promos
 3. **Cejas y Rostro** (8 servicios): Depilación, diseño, laminado, rostro, bozo
@@ -22,6 +25,7 @@ Pobla el catálogo completo de servicios del salón según **LISTA DE PRECIOS ZM
 6. **Depilación** (9 servicios): Axilas, bikini, piernas, packs
 
 **Ejecutar:**
+
 ```bash
 psql -U zmlash -d zm_lash_nails -f scripts/db/seed-services.sql
 # O desde la raíz:
@@ -29,14 +33,17 @@ npm run db:seed
 ```
 
 ### `seed-employees.sql`
+
 Configura las chicas del salón con sus roles y comisiones.
 
 **Incluye:**
+
 - 4 chicas con colores distintivos
 - Esquema de comisiones configurado
 - Roles (owner/employee)
 
 **Chicas:**
+
 - **Vanessa** (Dueña) - 🟡 Oro (#D4AF37)
   - 100% cuando trabaja
   - 40% de trabajos de las chicas
@@ -52,6 +59,7 @@ Configura las chicas del salón con sus roles y comisiones.
   - 60% chica / 40% casa
 
 **Ejecutar:**
+
 ```bash
 psql -U zmlash -d zm_lash_nails -f scripts/db/seed-employees.sql
 # O desde la raíz:
@@ -71,6 +79,7 @@ npm run db:seed
 ```
 
 O manualmente con psql:
+
 ```bash
 psql -U zmlash -d zm_lash_nails -f scripts/db/seed-services.sql
 psql -U zmlash -d zm_lash_nails -f scripts/db/seed-employees.sql
@@ -79,6 +88,7 @@ psql -U zmlash -d zm_lash_nails -f scripts/db/seed-employees.sql
 ## 🔄 Re-ejecutar Scripts
 
 Ambos scripts incluyen `DELETE` al inicio, por lo que son seguros para re-ejecutar:
+
 - **seed-services.sql**: Limpia y recrea servicios
 - **seed-employees.sql**: Limpia y recrea chicas
 
@@ -87,6 +97,7 @@ Ambos scripts incluyen `DELETE` al inicio, por lo que son seguros para re-ejecut
 ## 📊 Verificación
 
 Cada script incluye consultas de verificación al final que muestran:
+
 - Total de registros insertados
 - Resumen por categoría
 - Esquemas de comisión
@@ -94,18 +105,21 @@ Cada script incluye consultas de verificación al final que muestran:
 ## 🔧 Troubleshooting
 
 ### Error: "database does not exist"
+
 ```bash
 # Crear la base de datos primero
 createdb -U zmlash zm_lash_nails
 ```
 
 ### Error: "permission denied"
+
 ```bash
 # Asegurarse de tener los permisos correctos
 psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE zm_lash_nails TO zmlash;"
 ```
 
 ### Error: "relation does not exist"
+
 ```bash
 # Ejecutar primero las migraciones de Drizzle
 npm run db:push

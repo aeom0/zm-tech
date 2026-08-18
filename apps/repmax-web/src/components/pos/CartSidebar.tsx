@@ -2,20 +2,20 @@
 // POS — carrito de venta
 // ============================================================
 
-"use client";
+'use client'
 
-import { useState } from "react";
-import { Minus, Plus, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import type { CartItemWeb } from "@/types/dashboard";
+import { useState } from 'react'
+import { Minus, Plus, Trash2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import type { CartItemWeb } from '@/types/dashboard'
 
 interface CartSidebarProps {
-  items: CartItemWeb[];
-  usdBsRate: number;
-  onUpdateQuantity: (productId: string, quantity: number) => void;
-  onRemove: (productId: string) => void;
-  onClear: () => void;
-  onCheckout: () => void;
+  items: CartItemWeb[]
+  usdBsRate: number
+  onUpdateQuantity: (productId: string, quantity: number) => void
+  onRemove: (productId: string) => void
+  onClear: () => void
+  onCheckout: () => void
 }
 
 export function CartSidebar({
@@ -26,10 +26,10 @@ export function CartSidebar({
   onClear,
   onCheckout,
 }: CartSidebarProps) {
-  const [confirmandoVaciar, setConfirmandoVaciar] = useState(false);
+  const [confirmandoVaciar, setConfirmandoVaciar] = useState(false)
 
-  const totalUsd = items.reduce((acc, it) => acc + it.subtotalUsd, 0);
-  const totalBs = totalUsd * usdBsRate;
+  const totalUsd = items.reduce((acc, it) => acc + it.subtotalUsd, 0)
+  const totalBs = totalUsd * usdBsRate
 
   return (
     <div className="flex h-full flex-col">
@@ -45,8 +45,8 @@ export function CartSidebar({
                 variant="ghost"
                 className="h-7 px-2 text-[#F44336] hover:bg-[#242424]"
                 onClick={() => {
-                  onClear();
-                  setConfirmandoVaciar(false);
+                  onClear()
+                  setConfirmandoVaciar(false)
                 }}
               >
                 Sí
@@ -157,5 +157,5 @@ export function CartSidebar({
         Cobrar
       </Button>
     </div>
-  );
+  )
 }

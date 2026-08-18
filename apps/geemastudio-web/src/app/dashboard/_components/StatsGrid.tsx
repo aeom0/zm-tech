@@ -1,13 +1,11 @@
-import type { ReactNode } from "react";
+import type { ReactNode } from 'react'
 
 interface StatsGridProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
 export function StatsGrid({ children }: StatsGridProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-5">
-      {children}
-    </div>
-  );
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-5 xl:grid-cols-4">{children}</div>
+  )
 }

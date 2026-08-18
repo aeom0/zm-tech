@@ -1,11 +1,8 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  transpilePackages: [
-    "@odentalpro/dental-schema",
-    "@zmtech/tenant-config",
-  ],
-};
+  transpilePackages: ['@odentalpro/dental-schema', '@zmtech/tenant-config'],
+}
 
-export default nextConfig;
+export default nextConfig

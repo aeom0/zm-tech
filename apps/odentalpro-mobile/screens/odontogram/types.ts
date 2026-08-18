@@ -10,7 +10,7 @@ export type {
   ActiveSurfaceSelection,
   OdontogramToothState,
   OdontogramState,
-} from "@odentalpro/dental-schema";
+} from '@odentalpro/dental-schema'
 
 export {
   FDI_TEETH,
@@ -20,4 +20,4 @@ export {
   conditionFillColor,
   conditionStrokeColor,
   SURFACE_SELECTOR_OPTIONS,
-} from "@odentalpro/dental-schema";
+} from '@odentalpro/dental-schema'

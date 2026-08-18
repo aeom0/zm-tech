@@ -4,9 +4,9 @@ Fuente de verdad para agentes y humanos. En este monorepo convivén **varios pro
 
 ## Proyectos activos
 
-| Proyecto | Ref | Productos | Aislamiento |
-|----------|-----|-----------|-------------|
-| **ZMTech** (hub) | `llacowjutjfefboqgfnj` | Landing, OdentalPro, RepMAX | Prefijos / tablas por producto |
+| Proyecto                 | Ref                    | Productos                      | Aislamiento                                          |
+| ------------------------ | ---------------------- | ------------------------------ | ---------------------------------------------------- |
+| **ZMTech** (hub)         | `llacowjutjfefboqgfnj` | Landing, OdentalPro, RepMAX    | Prefijos / tablas por producto                       |
 | **GeemaStudio** (beauty) | `udelxwwnyivknslueerr` | GeemaStudio (+ tenant ZM Lash) | Proyecto dedicado (sin prefijo `odental_`/`repmax_`) |
 
 URL hub: `https://llacowjutjfefboqgfnj.supabase.co`  
@@ -16,18 +16,18 @@ URL Geema: `https://udelxwwnyivknslueerr.supabase.co`
 
 **`llacowjutjfefboqgfnj` (ZMTech)**
 
-| Prefijo / tablas | Producto | Schema TS / SQL |
-|------------------|----------|-----------------|
-| `contacts`, `quote_leads`, … | Landing / cotizador | `apps/landing`, `@zmtech/quote-engine` |
-| `odental_*` | OdentalPro | `@odentalpro/dental-schema`, `apps/odentalpro-server/supabase/migrations/` |
-| `repmax_*` | RepMAX | `@repmax/repmax-schema` (TS) + `docs/repmax/supabase/migrations/` (DDL; sin drizzle-kit) |
-| `hub_*` *(planificado, salvo excepción)* | Hub interno ZM Tech | `@zmtech/hub-schema` *(planificado)*, `docs/hub/supabase/migrations/` (borradores, no aplicados) |
-| `hub_tasas_bcv`, `hub_tasas_usdt` — **aplicadas** | Tasas BCV/USDT compartidas (paquete `@zmtech/tasas`, hoy solo RepMAX POS) | `packages/tasas`, `docs/hub/supabase/migrations/20260818120000_hub_tasas_cambio.sql` |
+| Prefijo / tablas                                  | Producto                                                                  | Schema TS / SQL                                                                                  |
+| ------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `contacts`, `quote_leads`, …                      | Landing / cotizador                                                       | `apps/landing`, `@zmtech/quote-engine`                                                           |
+| `odental_*`                                       | OdentalPro                                                                | `@odentalpro/dental-schema`, `apps/odentalpro-server/supabase/migrations/`                       |
+| `repmax_*`                                        | RepMAX                                                                    | `@repmax/repmax-schema` (TS) + `docs/repmax/supabase/migrations/` (DDL; sin drizzle-kit)         |
+| `hub_*` _(planificado, salvo excepción)_          | Hub interno ZM Tech                                                       | `@zmtech/hub-schema` _(planificado)_, `docs/hub/supabase/migrations/` (borradores, no aplicados) |
+| `hub_tasas_bcv`, `hub_tasas_usdt` — **aplicadas** | Tasas BCV/USDT compartidas (paquete `@zmtech/tasas`, hoy solo RepMAX POS) | `packages/tasas`, `docs/hub/supabase/migrations/20260818120000_hub_tasas_cambio.sql`             |
 
 **`udelxwwnyivknslueerr` (GeemaStudio)**
 
-| Tablas | Producto | Schema TS / ops |
-|--------|----------|-----------------|
+| Tablas                                                        | Producto    | Schema TS / ops                                                                           |
+| ------------------------------------------------------------- | ----------- | ----------------------------------------------------------------------------------------- |
 | `profiles`, `employees`, `appointments`, `tenant_settings`, … | GeemaStudio | `@geemastudio/shared-schema`, `apps/geemastudio-server/` (Drizzle, seeds, Edge Functions) |
 
 ### Fuera de uso
@@ -41,11 +41,11 @@ URL Geema: `https://udelxwwnyivknslueerr.supabase.co`
 
 **No son APIs JWT de negocio.** Las apps web/mobile hablan con Supabase (Auth + PostgREST + RLS). Las carpetas `*-server` son el **hub de ops/DB** del producto:
 
-| Carpeta | Proyecto Supabase | Qué contiene | Qué NO es |
-|---------|-------------------|--------------|----------|
-| `apps/geemastudio-server` | `udelxwwnyivknslueerr` | Drizzle (`db:push` / generate / studio), seeds, migraciones SQL de referencia, Edge Functions | API HTTP / Express / JWT |
-| `apps/odentalpro-server` | `llacowjutjfefboqgfnj` | Migraciones `odental_*`, stubs Edge Functions | Express / JWT |
-| *(RepMAX)* | `llacowjutjfefboqgfnj` | **No hay** `apps/repmax-server` | Schema en package + SQL en `docs/repmax/supabase/migrations/` |
+| Carpeta                   | Proyecto Supabase      | Qué contiene                                                                                  | Qué NO es                                                     |
+| ------------------------- | ---------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `apps/geemastudio-server` | `udelxwwnyivknslueerr` | Drizzle (`db:push` / generate / studio), seeds, migraciones SQL de referencia, Edge Functions | API HTTP / Express / JWT                                      |
+| `apps/odentalpro-server`  | `llacowjutjfefboqgfnj` | Migraciones `odental_*`, stubs Edge Functions                                                 | Express / JWT                                                 |
+| _(RepMAX)_                | `llacowjutjfefboqgfnj` | **No hay** `apps/repmax-server`                                                               | Schema en package + SQL en `docs/repmax/supabase/migrations/` |
 
 ### Simetría esperada
 

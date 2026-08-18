@@ -1,16 +1,16 @@
 // ============================================================
 // Tab bar adaptativo: bottom (phone) | sidebar (tablet landscape)
 // ============================================================
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { BottomTabBar, type BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useState } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native'
+import { BottomTabBar, type BottomTabBarProps } from '@react-navigation/bottom-tabs'
+import { Ionicons } from '@expo/vector-icons'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-import { useResponsive } from '../../hooks/useResponsive';
-import { colors, typography, spacing, layout } from '../../utils/theme';
-import { hapticLight } from '../../utils/haptics';
-import type { MainTabParamList } from '../../navigation/types';
+import { useResponsive } from '../../hooks/useResponsive'
+import { colors, typography, spacing, layout } from '../../utils/theme'
+import { hapticLight } from '../../utils/haptics'
+import type { MainTabParamList } from '../../navigation/types'
 
 const TAB_ICONS: Record<keyof MainTabParamList, keyof typeof Ionicons.glyphMap> = {
   DashboardTab: 'grid-outline',
@@ -18,12 +18,12 @@ const TAB_ICONS: Record<keyof MainTabParamList, keyof typeof Ionicons.glyphMap> 
   InventoryTab: 'cube-outline',
   CustomersTab: 'people-outline',
   MoreTab: 'menu-outline',
-};
+}
 
-const ICON_RM = require('../../../assets/brand/icon-rm.png');
+const ICON_RM = require('../../../assets/brand/icon-rm.png')
 
 function SideNavBrand() {
-  const [logoFailed, setLogoFailed] = useState(false);
+  const [logoFailed, setLogoFailed] = useState(false)
 
   return (
     <View style={styles.brand}>
@@ -44,12 +44,12 @@ function SideNavBrand() {
         />
       )}
     </View>
-  );
+  )
 }
 
 function SideNavBar({ state, descriptors, navigation }: BottomTabBarProps) {
-  const insets = useSafeAreaInsets();
-  const { height } = useResponsive();
+  const insets = useSafeAreaInsets()
+  const { height } = useResponsive()
 
   return (
     <View style={styles.tabBarSlot}>
@@ -66,27 +66,27 @@ function SideNavBar({ state, descriptors, navigation }: BottomTabBarProps) {
         <SideNavBrand />
         <View style={styles.navItems}>
           {state.routes.map((route, index) => {
-            const focused = state.index === index;
-            const { options } = descriptors[route.key];
+            const focused = state.index === index
+            const { options } = descriptors[route.key]
             const label =
               typeof options.tabBarLabel === 'string'
                 ? options.tabBarLabel
-                : options.title ?? route.name;
+                : (options.title ?? route.name)
 
             const onPress = () => {
-              void hapticLight();
+              void hapticLight()
               const event = navigation.emit({
                 type: 'tabPress',
                 target: route.key,
                 canPreventDefault: true,
-              });
+              })
               if (!focused && !event.defaultPrevented) {
-                navigation.navigate(route.name, route.params);
+                navigation.navigate(route.name, route.params)
               }
-            };
+            }
 
-            const color = focused ? colors.brand.orange : colors.text.secondary;
-            const iconName = TAB_ICONS[route.name as keyof MainTabParamList] ?? 'ellipse-outline';
+            const color = focused ? colors.brand.orange : colors.text.secondary
+            const iconName = TAB_ICONS[route.name as keyof MainTabParamList] ?? 'ellipse-outline'
 
             return (
               <TouchableOpacity
@@ -102,23 +102,23 @@ function SideNavBar({ state, descriptors, navigation }: BottomTabBarProps) {
                   {label}
                 </Text>
               </TouchableOpacity>
-            );
+            )
           })}
         </View>
       </View>
     </View>
-  );
+  )
 }
 
 /** Bottom tabs en phone/portrait · rail lateral en tablet landscape */
 export function AdaptiveTabBar(props: BottomTabBarProps) {
-  const { isTabletUp, isLandscape } = useResponsive();
+  const { isTabletUp, isLandscape } = useResponsive()
 
   if (isTabletUp && isLandscape) {
-    return <SideNavBar {...props} />;
+    return <SideNavBar {...props} />
   }
 
-  return <BottomTabBar {...props} />;
+  return <BottomTabBar {...props} />
 }
 
 const styles = StyleSheet.create({
@@ -168,4 +168,4 @@ const styles = StyleSheet.create({
     fontSize: 10,
     textAlign: 'center',
   },
-});
+})

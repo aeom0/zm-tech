@@ -1,26 +1,23 @@
-import React from "react";
-import { View } from "react-native";
+import React from 'react'
+import { View } from 'react-native'
 
-import { ThemedText } from "@/components/ThemedText";
-import { BorderRadius } from "@/constants/theme";
-import {
-  diaDelMesEnZona,
-  indiceDiaSemanaJSEnZona,
-} from "@zmtech/tenant-config";
+import { ThemedText } from '@/components/ThemedText'
+import { BorderRadius } from '@/constants/theme'
+import { diaDelMesEnZona, indiceDiaSemanaJSEnZona } from '@zmtech/tenant-config'
 
-import { DAYS_ES } from "../constants";
-import { agendaStyles as styles } from "../agendaStyles";
-import { isToday } from "../agendaUtils";
+import { DAYS_ES } from '../constants'
+import { agendaStyles as styles } from '../agendaStyles'
+import { isToday } from '../agendaUtils'
 
 interface AgendaWeekDayHeadersProps {
-  weekDays: Date[];
-  timeZone: string;
-  timeColWidth: number;
+  weekDays: Date[]
+  timeZone: string
+  timeColWidth: number
   theme: {
-    primary: string;
-    textMuted: string;
-    border: string;
-  };
+    primary: string
+    textMuted: string
+    border: string
+  }
 }
 
 export function AgendaWeekDayHeaders({
@@ -38,7 +35,7 @@ export function AgendaWeekDayHeaders({
           style={[
             styles.dayHeader,
             isToday(date, timeZone) && {
-              backgroundColor: theme.primary + "12",
+              backgroundColor: theme.primary + '12',
               borderRadius: BorderRadius.xs,
             },
           ]}
@@ -51,7 +48,7 @@ export function AgendaWeekDayHeaders({
               styles.dayNumber,
               isToday(date, timeZone) && {
                 color: theme.primary,
-                fontWeight: "700",
+                fontWeight: '700',
               },
             ]}
           >
@@ -60,5 +57,5 @@ export function AgendaWeekDayHeaders({
         </View>
       ))}
     </View>
-  );
+  )
 }

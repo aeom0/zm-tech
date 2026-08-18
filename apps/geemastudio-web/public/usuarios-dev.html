@@ -1,312 +1,383 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Usuarios Supabase — GeemaStudio Dev</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background: #0f1117;
-      color: #e2e8f0;
-      padding: 2rem;
-      min-height: 100vh;
-    }
-    h1 {
-      font-size: 1.5rem;
-      font-weight: 700;
-      margin-bottom: 0.25rem;
-      color: #40E0D0;
-    }
-    .meta {
-      font-size: 0.8rem;
-      color: #64748b;
-      margin-bottom: 2rem;
-    }
-    .badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 9999px;
-      font-size: 0.72rem;
-      font-weight: 600;
-      letter-spacing: 0.03em;
-    }
-    .badge-dev     { background: #7c3aed22; color: #a78bfa; border: 1px solid #7c3aed55; }
-    .badge-owner   { background: #059a6022; color: #34d399; border: 1px solid #059a6055; }
-    .badge-staff   { background: #0ea5e922; color: #38bdf8; border: 1px solid #0ea5e955; }
-    .badge-demo    { background: #f59e0b22; color: #fbbf24; border: 1px solid #f59e0b55; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
-    }
-    thead th {
-      text-align: left;
-      padding: 0.6rem 1rem;
-      background: #1e2230;
-      color: #94a3b8;
-      font-weight: 600;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      border-bottom: 1px solid #2d3748;
-    }
-    tbody tr {
-      border-bottom: 1px solid #1e2230;
-      transition: background 0.15s;
-    }
-    tbody tr:hover { background: #1a1f2e; }
-    tbody td {
-      padding: 0.65rem 1rem;
-      vertical-align: middle;
-    }
-    .email { font-weight: 500; color: #f1f5f9; }
-    .name  { color: #cbd5e1; }
-    .id    { font-family: monospace; font-size: 0.72rem; color: #475569; }
-    .emp   { font-family: monospace; font-size: 0.72rem; color: #475569; }
-    .pwd   { font-family: monospace; font-size: 0.82rem; color: #fbbf24; background: #0f1117; border: 1px solid #2d3748; border-radius: 4px; padding: 1px 6px; }
-    .date  { color: #64748b; font-size: 0.78rem; }
-    .confirmed { color: #22c55e; font-size: 0.75rem; }
-    .section-header {
-      margin: 2rem 0 0.75rem;
-      padding: 0.5rem 1rem;
-      background: #1a1f2e;
-      border-left: 3px solid #40E0D0;
-      border-radius: 0 4px 4px 0;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #94a3b8;
-    }
-    .password-note {
-      margin-top: 2rem;
-      padding: 1rem 1.25rem;
-      background: #1e2230;
-      border: 1px solid #2d3748;
-      border-radius: 8px;
-      font-size: 0.82rem;
-      color: #94a3b8;
-    }
-    .password-note strong { color: #40E0D0; }
-    code {
-      background: #0f1117;
-      border: 1px solid #2d3748;
-      border-radius: 4px;
-      padding: 1px 6px;
-      font-family: monospace;
-      font-size: 0.85em;
-      color: #fbbf24;
-    }
-    .warning {
-      margin-bottom: 1.5rem;
-      padding: 0.75rem 1rem;
-      background: #7c3aed11;
-      border: 1px solid #7c3aed44;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      color: #a78bfa;
-    }
-  </style>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Usuarios Supabase — GeemaStudio Dev</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: #0f1117;
+        color: #e2e8f0;
+        padding: 2rem;
+        min-height: 100vh;
+      }
+      h1 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+        color: #40e0d0;
+      }
+      .meta {
+        font-size: 0.8rem;
+        color: #64748b;
+        margin-bottom: 2rem;
+      }
+      .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 9999px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+      }
+      .badge-dev {
+        background: #7c3aed22;
+        color: #a78bfa;
+        border: 1px solid #7c3aed55;
+      }
+      .badge-owner {
+        background: #059a6022;
+        color: #34d399;
+        border: 1px solid #059a6055;
+      }
+      .badge-staff {
+        background: #0ea5e922;
+        color: #38bdf8;
+        border: 1px solid #0ea5e955;
+      }
+      .badge-demo {
+        background: #f59e0b22;
+        color: #fbbf24;
+        border: 1px solid #f59e0b55;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+      }
+      thead th {
+        text-align: left;
+        padding: 0.6rem 1rem;
+        background: #1e2230;
+        color: #94a3b8;
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid #2d3748;
+      }
+      tbody tr {
+        border-bottom: 1px solid #1e2230;
+        transition: background 0.15s;
+      }
+      tbody tr:hover {
+        background: #1a1f2e;
+      }
+      tbody td {
+        padding: 0.65rem 1rem;
+        vertical-align: middle;
+      }
+      .email {
+        font-weight: 500;
+        color: #f1f5f9;
+      }
+      .name {
+        color: #cbd5e1;
+      }
+      .id {
+        font-family: monospace;
+        font-size: 0.72rem;
+        color: #475569;
+      }
+      .emp {
+        font-family: monospace;
+        font-size: 0.72rem;
+        color: #475569;
+      }
+      .pwd {
+        font-family: monospace;
+        font-size: 0.82rem;
+        color: #fbbf24;
+        background: #0f1117;
+        border: 1px solid #2d3748;
+        border-radius: 4px;
+        padding: 1px 6px;
+      }
+      .date {
+        color: #64748b;
+        font-size: 0.78rem;
+      }
+      .confirmed {
+        color: #22c55e;
+        font-size: 0.75rem;
+      }
+      .section-header {
+        margin: 2rem 0 0.75rem;
+        padding: 0.5rem 1rem;
+        background: #1a1f2e;
+        border-left: 3px solid #40e0d0;
+        border-radius: 0 4px 4px 0;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #94a3b8;
+      }
+      .password-note {
+        margin-top: 2rem;
+        padding: 1rem 1.25rem;
+        background: #1e2230;
+        border: 1px solid #2d3748;
+        border-radius: 8px;
+        font-size: 0.82rem;
+        color: #94a3b8;
+      }
+      .password-note strong {
+        color: #40e0d0;
+      }
+      code {
+        background: #0f1117;
+        border: 1px solid #2d3748;
+        border-radius: 4px;
+        padding: 1px 6px;
+        font-family: monospace;
+        font-size: 0.85em;
+        color: #fbbf24;
+      }
+      .warning {
+        margin-bottom: 1.5rem;
+        padding: 0.75rem 1rem;
+        background: #7c3aed11;
+        border: 1px solid #7c3aed44;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        color: #a78bfa;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Usuarios Supabase — GeemaStudio</h1>
+    <p class="meta">
+      Proyecto: <code>udelxwwnyivknslueerr</code> &nbsp;·&nbsp; Generado: 2026-04-09 &nbsp;·&nbsp;
+      Solo para uso en desarrollo
+    </p>
 
-  <h1>Usuarios Supabase — GeemaStudio</h1>
-  <p class="meta">Proyecto: <code>udelxwwnyivknslueerr</code> &nbsp;·&nbsp; Generado: 2026-04-09 &nbsp;·&nbsp; Solo para uso en desarrollo</p>
+    <div class="warning">
+      ⚠️ Archivo de uso exclusivo para desarrollo. No publicar en producción.
+    </div>
 
-  <div class="warning">
-    ⚠️ Archivo de uso exclusivo para desarrollo. No publicar en producción.
-  </div>
+    <!-- DEV -->
+    <div class="section-header">Rol: DEV</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Contraseña</th>
+          <th>Rol</th>
+          <th>Employee ID</th>
+          <th>UUID</th>
+          <th>Creado</th>
+          <th>Último login</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="name">Administrador</td>
+          <td class="email">dev@ejemplo.com</td>
+          <td><span class="pwd">Geema2025!</span></td>
+          <td><span class="badge badge-dev">dev</span></td>
+          <td class="emp">—</td>
+          <td class="id">22f3d1ec-f189-4eb5-bed7-8e0fe279d564</td>
+          <td class="date">2026-04-04</td>
+          <td class="date">—</td>
+        </tr>
+      </tbody>
+    </table>
 
-  <!-- DEV -->
-  <div class="section-header">Rol: DEV</div>
-  <table>
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Email</th>
-        <th>Contraseña</th>
-        <th>Rol</th>
-        <th>Employee ID</th>
-        <th>UUID</th>
-        <th>Creado</th>
-        <th>Último login</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="name">Administrador</td>
-        <td class="email">dev@ejemplo.com</td>
-        <td><span class="pwd">Geema2025!</span></td>
-        <td><span class="badge badge-dev">dev</span></td>
-        <td class="emp">—</td>
-        <td class="id">22f3d1ec-f189-4eb5-bed7-8e0fe279d564</td>
-        <td class="date">2026-04-04</td>
-        <td class="date">—</td>
-      </tr>
-    </tbody>
-  </table>
+    <!-- OWNERS -->
+    <div class="section-header">Rol: OWNER (demo)</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Contraseña</th>
+          <th>Rol</th>
+          <th>Negocio</th>
+          <th>Employee ID</th>
+          <th>UUID</th>
+          <th>Creado</th>
+          <th>Último login</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="name">Gabriela Torres</td>
+          <td class="email">demo.salon@ejemplo.com</td>
+          <td><span class="pwd">Geema2025!</span></td>
+          <td>
+            <span class="badge badge-owner">owner</span> <span class="badge badge-demo">demo</span>
+          </td>
+          <td>
+            Salón Glamour <em style="font-size: 0.75rem; color: #64748b">(hair-salon, COP)</em>
+          </td>
+          <td class="emp">emp-salon-owner</td>
+          <td class="id">725e6fcc-7372-4974-beea-7c78852ad609</td>
+          <td class="date">2026-04-04</td>
+          <td class="date">2026-04-04</td>
+        </tr>
+        <tr>
+          <td class="name">Valentina Ríos</td>
+          <td class="email">demo.nails@ejemplo.com</td>
+          <td><span class="pwd">Geema2025!</span></td>
+          <td>
+            <span class="badge badge-owner">owner</span> <span class="badge badge-demo">demo</span>
+          </td>
+          <td>
+            Nail &amp; Glow Spa <em style="font-size: 0.75rem; color: #64748b">(spa-nails, PEN)</em>
+          </td>
+          <td class="emp">emp-nails-owner</td>
+          <td class="id">700d07ae-da7c-4b36-8ad3-12c2a7b66f10</td>
+          <td class="date">2026-04-04</td>
+          <td class="date">—</td>
+        </tr>
+        <tr>
+          <td class="name">Carlos Mendoza</td>
+          <td class="email">demo.barberia@ejemplo.com</td>
+          <td><span class="pwd">Geema2025!</span></td>
+          <td>
+            <span class="badge badge-owner">owner</span> <span class="badge badge-demo">demo</span>
+          </td>
+          <td>
+            The Sharp Cut <em style="font-size: 0.75rem; color: #64748b">(barbershop, MXN)</em>
+          </td>
+          <td class="emp">emp-barber-owner</td>
+          <td class="id">bf5d84dd-a1b1-4fa4-9349-2c811fa269f0</td>
+          <td class="date">2026-04-04</td>
+          <td class="date">—</td>
+        </tr>
+        <tr>
+          <td class="name">Sofía Navarro</td>
+          <td class="email">demo.estetica@ejemplo.com</td>
+          <td><span class="pwd">Geema2025!</span></td>
+          <td>
+            <span class="badge badge-owner">owner</span> <span class="badge badge-demo">demo</span>
+          </td>
+          <td>
+            Aura Estética
+            <em style="font-size: 0.75rem; color: #64748b">(full-aesthetic, USD/VE)</em>
+          </td>
+          <td class="emp">emp-est-owner</td>
+          <td class="id">e6704e01-2f1a-4da1-8d6d-600a1c243d5a</td>
+          <td class="date">2026-04-04</td>
+          <td class="date">—</td>
+        </tr>
+      </tbody>
+    </table>
 
-  <!-- OWNERS -->
-  <div class="section-header">Rol: OWNER (demo)</div>
-  <table>
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Email</th>
-        <th>Contraseña</th>
-        <th>Rol</th>
-        <th>Negocio</th>
-        <th>Employee ID</th>
-        <th>UUID</th>
-        <th>Creado</th>
-        <th>Último login</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="name">Gabriela Torres</td>
-        <td class="email">demo.salon@ejemplo.com</td>
-        <td><span class="pwd">Geema2025!</span></td>
-        <td><span class="badge badge-owner">owner</span> <span class="badge badge-demo">demo</span></td>
-        <td>Salón Glamour <em style="font-size:0.75rem;color:#64748b">(hair-salon, COP)</em></td>
-        <td class="emp">emp-salon-owner</td>
-        <td class="id">725e6fcc-7372-4974-beea-7c78852ad609</td>
-        <td class="date">2026-04-04</td>
-        <td class="date">2026-04-04</td>
-      </tr>
-      <tr>
-        <td class="name">Valentina Ríos</td>
-        <td class="email">demo.nails@ejemplo.com</td>
-        <td><span class="pwd">Geema2025!</span></td>
-        <td><span class="badge badge-owner">owner</span> <span class="badge badge-demo">demo</span></td>
-        <td>Nail &amp; Glow Spa <em style="font-size:0.75rem;color:#64748b">(spa-nails, PEN)</em></td>
-        <td class="emp">emp-nails-owner</td>
-        <td class="id">700d07ae-da7c-4b36-8ad3-12c2a7b66f10</td>
-        <td class="date">2026-04-04</td>
-        <td class="date">—</td>
-      </tr>
-      <tr>
-        <td class="name">Carlos Mendoza</td>
-        <td class="email">demo.barberia@ejemplo.com</td>
-        <td><span class="pwd">Geema2025!</span></td>
-        <td><span class="badge badge-owner">owner</span> <span class="badge badge-demo">demo</span></td>
-        <td>The Sharp Cut <em style="font-size:0.75rem;color:#64748b">(barbershop, MXN)</em></td>
-        <td class="emp">emp-barber-owner</td>
-        <td class="id">bf5d84dd-a1b1-4fa4-9349-2c811fa269f0</td>
-        <td class="date">2026-04-04</td>
-        <td class="date">—</td>
-      </tr>
-      <tr>
-        <td class="name">Sofía Navarro</td>
-        <td class="email">demo.estetica@ejemplo.com</td>
-        <td><span class="pwd">Geema2025!</span></td>
-        <td><span class="badge badge-owner">owner</span> <span class="badge badge-demo">demo</span></td>
-        <td>Aura Estética <em style="font-size:0.75rem;color:#64748b">(full-aesthetic, USD/VE)</em></td>
-        <td class="emp">emp-est-owner</td>
-        <td class="id">e6704e01-2f1a-4da1-8d6d-600a1c243d5a</td>
-        <td class="date">2026-04-04</td>
-        <td class="date">—</td>
-      </tr>
-    </tbody>
-  </table>
+    <!-- STAFF -->
+    <div class="section-header">Rol: STAFF</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Contraseña</th>
+          <th>Tenant</th>
+          <th>Employee ID</th>
+          <th>UUID</th>
+          <th>Creado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="name">Camila Vega</td>
+          <td class="email">staff.salon1@ejemplo.com</td>
+          <td><span class="pwd">Geema2025!</span></td>
+          <td>Salón Glamour</td>
+          <td class="emp">emp-salon-1</td>
+          <td class="id">b189c3af-3890-4dff-96c0-c9347b5f52e9</td>
+          <td class="date">2026-04-04</td>
+        </tr>
+        <tr>
+          <td class="name">Daniela Cruz</td>
+          <td class="email">staff.salon2@ejemplo.com</td>
+          <td><span class="pwd">Geema2025!</span></td>
+          <td>Salón Glamour</td>
+          <td class="emp">emp-salon-2</td>
+          <td class="id">a34b1c61-0d33-48c8-915f-0275cd9581b1</td>
+          <td class="date">2026-04-04</td>
+        </tr>
+        <tr>
+          <td class="name">Isabella Mora</td>
+          <td class="email">staff.nails1@ejemplo.com</td>
+          <td><span class="pwd">Geema2025!</span></td>
+          <td>Nail &amp; Glow Spa</td>
+          <td class="emp">emp-nails-1</td>
+          <td class="id">9c2308ac-3f79-4876-9361-d396ef824e1d</td>
+          <td class="date">2026-04-04</td>
+        </tr>
+        <tr>
+          <td class="name">Luciana Pérez</td>
+          <td class="email">staff.nails2@ejemplo.com</td>
+          <td><span class="pwd">Geema2025!</span></td>
+          <td>Nail &amp; Glow Spa</td>
+          <td class="emp">emp-nails-2</td>
+          <td class="id">9e91bec3-f09b-4583-b4cf-bc61d1c8cf7d</td>
+          <td class="date">2026-04-04</td>
+        </tr>
+        <tr>
+          <td class="name">Miguel Ángel Ruiz</td>
+          <td class="email">staff.barber1@ejemplo.com</td>
+          <td><span class="pwd">Geema2025!</span></td>
+          <td>The Sharp Cut</td>
+          <td class="emp">emp-barber-1</td>
+          <td class="id">77828652-626d-46ee-ba50-e6c1472cf5f8</td>
+          <td class="date">2026-04-04</td>
+        </tr>
+        <tr>
+          <td class="name">Andrés Gómez</td>
+          <td class="email">staff.barber2@ejemplo.com</td>
+          <td><span class="pwd">Geema2025!</span></td>
+          <td>The Sharp Cut</td>
+          <td class="emp">emp-barber-2</td>
+          <td class="id">0daaa81e-0195-4b05-ab45-c1272098fb7b</td>
+          <td class="date">2026-04-04</td>
+        </tr>
+        <tr>
+          <td class="name">Natalia Vargas</td>
+          <td class="email">staff.estetica1@ejemplo.com</td>
+          <td><span class="pwd">Geema2025!</span></td>
+          <td>Aura Estética</td>
+          <td class="emp">emp-est-1</td>
+          <td class="id">9a69c996-2986-44e9-8b96-53ddf2783e41</td>
+          <td class="date">2026-04-04</td>
+        </tr>
+        <tr>
+          <td class="name">Paola Ramos</td>
+          <td class="email">staff.estetica2@ejemplo.com</td>
+          <td><span class="pwd">Geema2025!</span></td>
+          <td>Aura Estética</td>
+          <td class="emp">emp-est-2</td>
+          <td class="id">c3884055-905f-49f5-9077-924ef4195ffe</td>
+          <td class="date">2026-04-04</td>
+        </tr>
+      </tbody>
+    </table>
 
-  <!-- STAFF -->
-  <div class="section-header">Rol: STAFF</div>
-  <table>
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Email</th>
-        <th>Contraseña</th>
-        <th>Tenant</th>
-        <th>Employee ID</th>
-        <th>UUID</th>
-        <th>Creado</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td class="name">Camila Vega</td>
-        <td class="email">staff.salon1@ejemplo.com</td>
-        <td><span class="pwd">Geema2025!</span></td>
-        <td>Salón Glamour</td>
-        <td class="emp">emp-salon-1</td>
-        <td class="id">b189c3af-3890-4dff-96c0-c9347b5f52e9</td>
-        <td class="date">2026-04-04</td>
-      </tr>
-      <tr>
-        <td class="name">Daniela Cruz</td>
-        <td class="email">staff.salon2@ejemplo.com</td>
-        <td><span class="pwd">Geema2025!</span></td>
-        <td>Salón Glamour</td>
-        <td class="emp">emp-salon-2</td>
-        <td class="id">a34b1c61-0d33-48c8-915f-0275cd9581b1</td>
-        <td class="date">2026-04-04</td>
-      </tr>
-      <tr>
-        <td class="name">Isabella Mora</td>
-        <td class="email">staff.nails1@ejemplo.com</td>
-        <td><span class="pwd">Geema2025!</span></td>
-        <td>Nail &amp; Glow Spa</td>
-        <td class="emp">emp-nails-1</td>
-        <td class="id">9c2308ac-3f79-4876-9361-d396ef824e1d</td>
-        <td class="date">2026-04-04</td>
-      </tr>
-      <tr>
-        <td class="name">Luciana Pérez</td>
-        <td class="email">staff.nails2@ejemplo.com</td>
-        <td><span class="pwd">Geema2025!</span></td>
-        <td>Nail &amp; Glow Spa</td>
-        <td class="emp">emp-nails-2</td>
-        <td class="id">9e91bec3-f09b-4583-b4cf-bc61d1c8cf7d</td>
-        <td class="date">2026-04-04</td>
-      </tr>
-      <tr>
-        <td class="name">Miguel Ángel Ruiz</td>
-        <td class="email">staff.barber1@ejemplo.com</td>
-        <td><span class="pwd">Geema2025!</span></td>
-        <td>The Sharp Cut</td>
-        <td class="emp">emp-barber-1</td>
-        <td class="id">77828652-626d-46ee-ba50-e6c1472cf5f8</td>
-        <td class="date">2026-04-04</td>
-      </tr>
-      <tr>
-        <td class="name">Andrés Gómez</td>
-        <td class="email">staff.barber2@ejemplo.com</td>
-        <td><span class="pwd">Geema2025!</span></td>
-        <td>The Sharp Cut</td>
-        <td class="emp">emp-barber-2</td>
-        <td class="id">0daaa81e-0195-4b05-ab45-c1272098fb7b</td>
-        <td class="date">2026-04-04</td>
-      </tr>
-      <tr>
-        <td class="name">Natalia Vargas</td>
-        <td class="email">staff.estetica1@ejemplo.com</td>
-        <td><span class="pwd">Geema2025!</span></td>
-        <td>Aura Estética</td>
-        <td class="emp">emp-est-1</td>
-        <td class="id">9a69c996-2986-44e9-8b96-53ddf2783e41</td>
-        <td class="date">2026-04-04</td>
-      </tr>
-      <tr>
-        <td class="name">Paola Ramos</td>
-        <td class="email">staff.estetica2@ejemplo.com</td>
-        <td><span class="pwd">Geema2025!</span></td>
-        <td>Aura Estética</td>
-        <td class="emp">emp-est-2</td>
-        <td class="id">c3884055-905f-49f5-9077-924ef4195ffe</td>
-        <td class="date">2026-04-04</td>
-      </tr>
-    </tbody>
-  </table>
-
-  <div class="password-note">
-    <strong>Contraseña universal:</strong> <code>Geema2025!</code>
-    &nbsp;·&nbsp;
-    <strong>Proyecto Supabase:</strong> <code>udelxwwnyivknslueerr</code>
-    &nbsp;·&nbsp;
-    Todos los emails son <code>@ejemplo.com</code>
-  </div>
-
-</body>
+    <div class="password-note">
+      <strong>Contraseña universal:</strong> <code>Geema2025!</code>
+      &nbsp;·&nbsp;
+      <strong>Proyecto Supabase:</strong> <code>udelxwwnyivknslueerr</code> &nbsp;·&nbsp; Todos los
+      emails son <code>@ejemplo.com</code>
+    </div>
+  </body>
 </html>

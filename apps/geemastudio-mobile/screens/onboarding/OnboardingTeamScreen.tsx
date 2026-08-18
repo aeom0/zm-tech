@@ -1,77 +1,59 @@
-import React, { useState } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  TextInput,
-  Pressable,
-  Alert,
-} from "react-native";
-import Animated, { FadeInDown } from "react-native-reanimated";
-import { LinearGradient } from "expo-linear-gradient";
-import { Feather } from "@expo/vector-icons";
+import React, { useState } from 'react'
+import { View, StyleSheet, Text, TextInput, Pressable, Alert } from 'react-native'
+import Animated, { FadeInDown } from 'react-native-reanimated'
+import { LinearGradient } from 'expo-linear-gradient'
+import { Feather } from '@expo/vector-icons'
 
-import { ThemedText } from "@/components/ThemedText";
+import { ThemedText } from '@/components/ThemedText'
 import {
   OnboardingLayout,
   OnboardingProgressDots,
   GradientCTAButton,
-} from "@/screens/onboarding/components";
-import { CustomColorPickerModal } from "@/screens/onboarding/components/CustomColorPickerModal";
-import { COLORES_PRIMARIOS } from "@/screens/onboarding/constants/colores-onboarding";
-import { Gradients, Spacing } from "@/constants/theme";
-import { useTenant } from "@/contexts/TenantContext";
-import { useTheme } from "@/hooks/useTheme";
+} from '@/screens/onboarding/components'
+import { CustomColorPickerModal } from '@/screens/onboarding/components/CustomColorPickerModal'
+import { COLORES_PRIMARIOS } from '@/screens/onboarding/constants/colores-onboarding'
+import { Gradients, Spacing } from '@/constants/theme'
+import { useTenant } from '@/contexts/TenantContext'
+import { useTheme } from '@/hooks/useTheme'
 
 interface OnboardingTeamScreenProps {
-  onNext: () => void;
-  onBack: () => void;
+  onNext: () => void
+  onBack: () => void
 }
 
-export default function OnboardingTeamScreen({
-  onNext,
-  onBack,
-}: OnboardingTeamScreenProps) {
-  const { config, pendingOnboardingEmployees, addPendingOnboardingEmployee } =
-    useTenant();
-  const { theme } = useTheme();
-  const staffLabel = config.terminology.staffSingular;
+export default function OnboardingTeamScreen({ onNext, onBack }: OnboardingTeamScreenProps) {
+  const { config, pendingOnboardingEmployees, addPendingOnboardingEmployee } = useTenant()
+  const { theme } = useTheme()
+  const staffLabel = config.terminology.staffSingular
 
-  const [nombre, setNombre] = useState("");
-  const [color, setColor] = useState(config.theme.primaryColor);
-  const [modalColorVisible, setModalColorVisible] = useState(false);
+  const [nombre, setNombre] = useState('')
+  const [color, setColor] = useState(config.theme.primaryColor)
+  const [modalColorVisible, setModalColorVisible] = useState(false)
 
-  const esColorDePaleta = COLORES_PRIMARIOS.some((c) => c.valor === color);
+  const esColorDePaleta = COLORES_PRIMARIOS.some((c) => c.valor === color)
 
   /** Sin Supabase aquí: el paso 3 va antes del login; RLS solo permite owner/dev. */
   const guardar = () => {
-    const nombreFinal = nombre.trim();
+    const nombreFinal = nombre.trim()
     if (!nombreFinal) {
-      Alert.alert("Campo requerido", "El nombre es obligatorio.");
-      return;
+      Alert.alert('Campo requerido', 'El nombre es obligatorio.')
+      return
     }
 
-    addPendingOnboardingEmployee({ name: nombreFinal, color });
-    setNombre("");
-  };
+    addPendingOnboardingEmployee({ name: nombreFinal, color })
+    setNombre('')
+  }
 
   return (
     <OnboardingLayout scrollable>
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
         <ThemedText style={styles.badge}>PASO 3 DE 4</ThemedText>
         <OnboardingProgressDots currentStep={3} />
-        <ThemedText style={styles.titulo}>
-          Agrega tu primer {staffLabel}
-        </ThemedText>
-        <ThemedText style={styles.subtitulo}>
-          Puedes agregar más después de configurar.
-        </ThemedText>
+        <ThemedText style={styles.titulo}>Agrega tu primer {staffLabel}</ThemedText>
+        <ThemedText style={styles.subtitulo}>Puedes agregar más después de configurar.</ThemedText>
       </Animated.View>
 
-      <Animated.View
-        entering={FadeInDown.delay(100).duration(400)}
-        style={styles.campo}
-      >
+      <Animated.View entering={FadeInDown.delay(100).duration(400)} style={styles.campo}>
         <ThemedText style={styles.label}>Nombre *</ThemedText>
         <TextInput
           style={styles.input}
@@ -83,10 +65,7 @@ export default function OnboardingTeamScreen({
         />
       </Animated.View>
 
-      <Animated.View
-        entering={FadeInDown.delay(280).duration(400)}
-        style={styles.campo}
-      >
+      <Animated.View entering={FadeInDown.delay(280).duration(400)} style={styles.campo}>
         <ThemedText style={styles.label}>Color en el calendario</ThemedText>
         <View style={styles.paletaFila}>
           {COLORES_PRIMARIOS.map((c) => (
@@ -95,9 +74,7 @@ export default function OnboardingTeamScreen({
               onPress={() => setColor(c.valor)}
               style={[
                 styles.swatchOuterFila,
-                color === c.valor &&
-                  esColorDePaleta &&
-                  styles.swatchOuterSelected,
+                color === c.valor && esColorDePaleta && styles.swatchOuterSelected,
               ]}
             >
               <View style={[styles.swatchFila, { backgroundColor: c.valor }]} />
@@ -105,10 +82,7 @@ export default function OnboardingTeamScreen({
           ))}
           <Pressable
             onPress={() => setModalColorVisible(true)}
-            style={[
-              styles.swatchOuterFila,
-              !esColorDePaleta && styles.swatchOuterSelected,
-            ]}
+            style={[styles.swatchOuterFila, !esColorDePaleta && styles.swatchOuterSelected]}
             accessibilityLabel="Elegir color personalizado en calendario"
           >
             <LinearGradient
@@ -117,11 +91,7 @@ export default function OnboardingTeamScreen({
               end={Gradients.onboarding.linearEnd}
               style={styles.swatchCustomFila}
             >
-              <Feather
-                name="sliders"
-                size={16}
-                color="rgba(255,255,255,0.95)"
-              />
+              <Feather name="sliders" size={16} color="rgba(255,255,255,0.95)" />
             </LinearGradient>
           </Pressable>
         </View>
@@ -133,16 +103,13 @@ export default function OnboardingTeamScreen({
         titulo="Color en calendario personalizado"
         onClose={() => setModalColorVisible(false)}
         onConfirm={(hex) => {
-          setColor(hex);
-          setModalColorVisible(false);
+          setColor(hex)
+          setModalColorVisible(false)
         }}
       />
 
       {/* Botón agregar + atrás en la misma fila */}
-      <Animated.View
-        entering={FadeInDown.delay(340).duration(400)}
-        style={styles.botones}
-      >
+      <Animated.View entering={FadeInDown.delay(340).duration(400)} style={styles.botones}>
         <GradientCTAButton
           variant="outline"
           label="Atrás"
@@ -163,9 +130,7 @@ export default function OnboardingTeamScreen({
           <View style={styles.empleadosList}>
             {pendingOnboardingEmployees.map((e) => (
               <View key={e.id} style={styles.empleadoRow}>
-                <View
-                  style={[styles.empleadoSwatch, { backgroundColor: e.color }]}
-                />
+                <View style={[styles.empleadoSwatch, { backgroundColor: e.color }]} />
                 <ThemedText style={styles.empleadoName} numberOfLines={1}>
                   {e.name}
                 </ThemedText>
@@ -174,17 +139,14 @@ export default function OnboardingTeamScreen({
           </View>
 
           <Text style={[styles.hint, { color: theme.textMuted }]}>
-            Se guardarán en la nube al crear tu cuenta. El modo de pago lo
-            ajustas después en Más → {config.terminology.staff}.
+            Se guardarán en la nube al crear tu cuenta. El modo de pago lo ajustas después en Más →{' '}
+            {config.terminology.staff}.
           </Text>
         </Animated.View>
       )}
 
       {/* Continuar y Omitir en la misma fila al fondo — mismo patrón del onboarding */}
-      <Animated.View
-        entering={FadeInDown.delay(90).duration(300)}
-        style={styles.footer}
-      >
+      <Animated.View entering={FadeInDown.delay(90).duration(300)} style={styles.footer}>
         <GradientCTAButton
           variant="outline"
           label="Omitir"
@@ -200,55 +162,55 @@ export default function OnboardingTeamScreen({
         />
       </Animated.View>
     </OnboardingLayout>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   header: {
-    paddingBottom: Spacing["2xl"],
+    paddingBottom: Spacing['2xl'],
   },
   badge: {
     fontSize: 11,
-    fontWeight: "600",
-    color: "#40E0D0",
+    fontWeight: '600',
+    color: '#40E0D0',
     letterSpacing: 1,
     marginBottom: Spacing.sm,
-    textTransform: "uppercase",
+    textTransform: 'uppercase',
   },
   titulo: {
     fontSize: 28,
-    fontWeight: "700",
-    color: "#FFFFFF",
+    fontWeight: '700',
+    color: '#FFFFFF',
     marginBottom: Spacing.sm,
     lineHeight: 34,
   },
   subtitulo: {
     fontSize: 15,
-    color: "rgba(255,255,255,0.55)",
+    color: 'rgba(255,255,255,0.55)',
     lineHeight: 22,
   },
   campo: { marginBottom: Spacing.xl },
   label: {
     fontSize: 12,
-    fontWeight: "500",
-    textTransform: "uppercase",
+    fontWeight: '500',
+    textTransform: 'uppercase',
     letterSpacing: 0.5,
-    color: "rgba(255,255,255,0.5)",
+    color: 'rgba(255,255,255,0.5)',
     marginBottom: 8,
   },
   input: {
-    backgroundColor: "rgba(255,255,255,0.06)",
+    backgroundColor: 'rgba(255,255,255,0.06)',
     borderWidth: 0.5,
-    borderColor: "rgba(255,255,255,0.15)",
+    borderColor: 'rgba(255,255,255,0.15)',
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 15,
-    color: "#FFFFFF",
+    color: '#FFFFFF',
   },
   hint: {
     fontSize: 12,
-    textAlign: "center",
+    textAlign: 'center',
     marginTop: 8,
     paddingHorizontal: 16,
   },
@@ -258,8 +220,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
   },
   empleadoRow: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: Spacing.sm,
   },
   empleadoSwatch: {
@@ -270,27 +232,27 @@ const styles = StyleSheet.create({
   empleadoName: {
     flex: 1,
     fontSize: 14,
-    fontWeight: "600",
-    color: "#FFFFFF",
+    fontWeight: '600',
+    color: '#FFFFFF',
   },
   /** 6 sugeridos + custom en una fila (mismo patrón que paso 2). */
   paletaFila: {
-    flexDirection: "row",
-    flexWrap: "nowrap",
+    flexDirection: 'row',
+    flexWrap: 'nowrap',
     gap: 4,
-    alignItems: "center",
+    alignItems: 'center',
   },
   swatchOuterFila: {
     flex: 1,
     minWidth: 0,
     aspectRatio: 1,
     borderRadius: 8,
-    overflow: "hidden",
+    overflow: 'hidden',
     borderWidth: 2,
-    borderColor: "transparent",
+    borderColor: 'transparent',
   },
   swatchOuterSelected: {
-    borderColor: "#FFFFFF",
+    borderColor: '#FFFFFF',
   },
   swatchFila: {
     ...StyleSheet.absoluteFill,
@@ -307,19 +269,19 @@ const styles = StyleSheet.create({
     right: 2,
     bottom: 2,
     borderRadius: 5,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   botones: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: Spacing.md,
     marginBottom: Spacing.md,
   },
   footer: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: Spacing.md,
     marginTop: Spacing.xl,
-    marginBottom: Spacing["2xl"],
+    marginBottom: Spacing['2xl'],
   },
   btnFlex: {
     flex: 1,
@@ -327,4 +289,4 @@ const styles = StyleSheet.create({
   btnFlexWide: {
     flex: 2,
   },
-});
+})

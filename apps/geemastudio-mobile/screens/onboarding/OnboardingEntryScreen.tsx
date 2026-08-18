@@ -1,20 +1,16 @@
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
-import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
-import { LinearGradient } from "expo-linear-gradient";
-import MaskedView from "@react-native-masked-view/masked-view";
+import React from 'react'
+import { View, Text, StyleSheet } from 'react-native'
+import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated'
+import { LinearGradient } from 'expo-linear-gradient'
+import MaskedView from '@react-native-masked-view/masked-view'
 
-import { ThemedText } from "@/components/ThemedText";
-import {
-  OnboardingLayout,
-  GradientCTAButton,
-  DiamondHero,
-} from "@/screens/onboarding/components";
-import { Gradients, Spacing } from "@/constants/theme";
+import { ThemedText } from '@/components/ThemedText'
+import { OnboardingLayout, GradientCTAButton, DiamondHero } from '@/screens/onboarding/components'
+import { Gradients, Spacing } from '@/constants/theme'
 
 interface OnboardingEntryScreenProps {
-  onCreateNew: () => void;
-  onLoginExisting: () => void;
+  onCreateNew: () => void
+  onLoginExisting: () => void
 }
 
 export default function OnboardingEntryScreen({
@@ -24,18 +20,12 @@ export default function OnboardingEntryScreen({
   return (
     <OnboardingLayout centered>
       {/* Diamante + glow + GeemaStudio + tagline */}
-      <Animated.View
-        entering={FadeInUp.duration(500)}
-        style={styles.logoSection}
-      >
+      <Animated.View entering={FadeInUp.duration(500)} style={styles.logoSection}>
         <DiamondHero />
       </Animated.View>
 
       {/* Hero text */}
-      <Animated.View
-        entering={FadeInDown.duration(500).delay(80)}
-        style={styles.heroSection}
-      >
+      <Animated.View entering={FadeInDown.duration(500).delay(80)} style={styles.heroSection}>
         <ThemedText style={styles.heroTitle}>Gestiona tu estudio</ThemedText>
 
         {/* "con estilo y precisión" — gradiente dentro de las letras */}
@@ -43,9 +33,7 @@ export default function OnboardingEntryScreen({
           style={styles.maskedHighlight}
           maskElement={
             <View style={styles.maskLeft}>
-              <Text style={styles.heroHighlightMask}>
-                con estilo y precisión
-              </Text>
+              <Text style={styles.heroHighlightMask}>con estilo y precisión</Text>
             </View>
           }
         >
@@ -59,15 +47,12 @@ export default function OnboardingEntryScreen({
         </MaskedView>
 
         <ThemedText style={styles.heroSub}>
-          Citas, personal, finanzas e inventario{"\n"}todo en tu bolsillo.
+          Citas, personal, finanzas e inventario{'\n'}todo en tu bolsillo.
         </ThemedText>
       </Animated.View>
 
       {/* Botones */}
-      <Animated.View
-        entering={FadeInDown.duration(500).delay(160)}
-        style={styles.bottomSection}
-      >
+      <Animated.View entering={FadeInDown.duration(500).delay(160)} style={styles.bottomSection}>
         <GradientCTAButton
           label="Crear nuevo negocio"
           onPress={onCreateNew}
@@ -81,24 +66,24 @@ export default function OnboardingEntryScreen({
         />
       </Animated.View>
     </OnboardingLayout>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   logoSection: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    overflow: "visible",
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'visible',
   },
   heroSection: {
-    alignItems: "flex-start",
+    alignItems: 'flex-start',
     paddingBottom: Spacing.lg,
   },
   heroTitle: {
     fontSize: 38,
-    fontWeight: "700",
-    color: "#FFFFFF",
+    fontWeight: '700',
+    color: '#FFFFFF',
     lineHeight: 46,
   },
   // Altura generosa para que "precisión" con su descendente no se corte
@@ -108,16 +93,16 @@ const styles = StyleSheet.create({
   },
   maskLeft: {
     flex: 1,
-    alignItems: "flex-start",
-    justifyContent: "center",
-    backgroundColor: "transparent",
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    backgroundColor: 'transparent',
   },
   heroHighlightMask: {
     fontSize: 38,
-    fontWeight: "300",
+    fontWeight: '300',
     letterSpacing: 0.5,
     lineHeight: 54,
-    color: "black",
+    color: 'black',
   },
   gradientFill: {
     flex: 1,
@@ -125,15 +110,15 @@ const styles = StyleSheet.create({
   },
   heroSub: {
     fontSize: 14,
-    color: "rgba(255,255,255,0.45)",
+    color: 'rgba(255,255,255,0.45)',
     lineHeight: 20,
     marginTop: Spacing.lg,
   },
   bottomSection: {
     gap: 12,
-    width: "100%",
+    width: '100%',
   },
   btnFull: {
-    width: "100%",
+    width: '100%',
   },
-});
+})

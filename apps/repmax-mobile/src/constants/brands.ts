@@ -7,18 +7,43 @@
 
 export const BRANDS = [
   // Carro / SUV — parque circulante histórico + ensamblaje reciente
-  'Toyota', 'Chevrolet', 'Ford', 'Hyundai', 'Kia', 'Nissan',
-  'Mitsubishi', 'Volkswagen', 'Renault', 'Fiat', 'Jeep', 'Dodge',
-  'Chery', 'JAC', 'BYD', 'Great Wall', 'Geely', 'JMC', 'Suzuki',
+  'Toyota',
+  'Chevrolet',
+  'Ford',
+  'Hyundai',
+  'Kia',
+  'Nissan',
+  'Mitsubishi',
+  'Volkswagen',
+  'Renault',
+  'Fiat',
+  'Jeep',
+  'Dodge',
+  'Chery',
+  'JAC',
+  'BYD',
+  'Great Wall',
+  'Geely',
+  'JMC',
+  'Suzuki',
   // Camión / carga liviana
-  'Hino', 'Isuzu', 'Foton',
+  'Hino',
+  'Isuzu',
+  'Foton',
   // Moto — ensambladoras con mayor presencia en el país
-  'Empire Keeway', 'Bera', 'Skygo', 'MD', 'Haojue', 'Yamaha', 'AVA', 'Vefase',
-];
+  'Empire Keeway',
+  'Bera',
+  'Skygo',
+  'MD',
+  'Haojue',
+  'Yamaha',
+  'AVA',
+  'Vefase',
+]
 
 /** Año más antiguo razonable para el parque circulante venezolano. */
-export const VEHICLE_YEAR_MIN = 1980;
-export const VEHICLE_YEAR_MAX = new Date().getFullYear() + 1;
+export const VEHICLE_YEAR_MIN = 1980
+export const VEHICLE_YEAR_MAX = new Date().getFullYear() + 1
 
 /**
  * Modelos más buscados por marca — ayuda a normalizar el campo Modelo
@@ -56,4 +81,4 @@ export const MODELS_BY_BRAND: Record<string, string[]> = {
   Yamaha: ['XTZ 125', 'YBR', 'FZ'],
   AVA: ['Sparta', 'Cross'],
   Vefase: ['Voyage', 'Explorer'],
-};
+}

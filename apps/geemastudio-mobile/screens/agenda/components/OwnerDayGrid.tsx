@@ -1,15 +1,9 @@
-import React, { useMemo, useRef } from "react";
-import {
-  View,
-  ScrollView,
-  Pressable,
-  StyleSheet,
-  RefreshControl,
-} from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import React, { useMemo, useRef } from 'react'
+import { View, ScrollView, Pressable, StyleSheet, RefreshControl } from 'react-native'
+import { LinearGradient } from 'expo-linear-gradient'
 
-import { ThemedText } from "@/components/ThemedText";
-import { BorderRadius, Spacing } from "@/constants/theme";
+import { ThemedText } from '@/components/ThemedText'
+import { BorderRadius, Spacing } from '@/constants/theme'
 import {
   esCeldaAgendaEnHorarioLaboral,
   esHoyEnZonaIANA,
@@ -18,51 +12,46 @@ import {
   minutosDelDiaEnZona,
   type TenantConfig,
   type TimeFormatPreference,
-} from "@zmtech/tenant-config";
+} from '@zmtech/tenant-config'
 
-import type {
-  AgendaAppointment,
-  AgendaEmployee,
-  AgendaService,
-  AgendaStatusFilter,
-} from "../types";
-import { filterAppointmentsForOwnerDay, getServiceName } from "../agendaUtils";
-import { useAgendaClockTick } from "../hooks/useAgendaClockTick";
-import { agendaStyles as sharedStyles } from "../agendaStyles";
+import type { AgendaAppointment, AgendaEmployee, AgendaService, AgendaStatusFilter } from '../types'
+import { filterAppointmentsForOwnerDay, getServiceName } from '../agendaUtils'
+import { useAgendaClockTick } from '../hooks/useAgendaClockTick'
+import { agendaStyles as sharedStyles } from '../agendaStyles'
 
-const HOUR_ROW_HEIGHT = 64;
+const HOUR_ROW_HEIGHT = 64
 
 interface OwnerDayGridProps {
-  timeColWidth: number;
-  columnWidth: number;
-  tabBarHeight: number;
-  selectedDate: Date;
-  agendaHours: number[];
-  businessHours: TenantConfig["businessHours"];
-  timeZone: string;
-  language: TenantConfig["locale"]["language"];
-  timeFormat: TimeFormatPreference;
-  appointments: AgendaAppointment[];
-  employees: AgendaEmployee[];
-  services: AgendaService[];
-  statusFilter: AgendaStatusFilter;
-  isLoading: boolean;
-  onRefresh: () => void;
+  timeColWidth: number
+  columnWidth: number
+  tabBarHeight: number
+  selectedDate: Date
+  agendaHours: number[]
+  businessHours: TenantConfig['businessHours']
+  timeZone: string
+  language: TenantConfig['locale']['language']
+  timeFormat: TimeFormatPreference
+  appointments: AgendaAppointment[]
+  employees: AgendaEmployee[]
+  services: AgendaService[]
+  statusFilter: AgendaStatusFilter
+  isLoading: boolean
+  onRefresh: () => void
   theme: {
-    primary: string;
-    text: string;
-    textSecondary: string;
-    textMuted: string;
-    border: string;
-    backgroundRoot: string;
-    backgroundSecondary: string;
-    card: string;
-  };
-  onOpenNew: (date: Date, hour: number) => void;
-  onOpenDetail: (apt: AgendaAppointment) => void;
+    primary: string
+    text: string
+    textSecondary: string
+    textMuted: string
+    border: string
+    backgroundRoot: string
+    backgroundSecondary: string
+    card: string
+  }
+  onOpenNew: (date: Date, hour: number) => void
+  onOpenDetail: (apt: AgendaAppointment) => void
   /** Ref externo del ScrollView horizontal — para sincronizar con el avatar strip */
-  gridScrollRef?: React.RefObject<ScrollView>;
-  onGridScroll?: (x: number) => void;
+  gridScrollRef?: React.RefObject<ScrollView>
+  onGridScroll?: (x: number) => void
 }
 
 export function OwnerDayGrid({
@@ -87,23 +76,17 @@ export function OwnerDayGrid({
   gridScrollRef,
   onGridScroll,
 }: OwnerDayGridProps) {
-  const gridStartMin = useMemo(
-    () => Math.min(...agendaHours) * 60,
-    [agendaHours],
-  );
-  const gridEndMin = useMemo(
-    () => Math.max(...agendaHours) * 60 + 60,
-    [agendaHours],
-  );
-  const totalHeight = agendaHours.length * HOUR_ROW_HEIGHT;
-  const pxPerMinute = HOUR_ROW_HEIGHT / 60;
+  const gridStartMin = useMemo(() => Math.min(...agendaHours) * 60, [agendaHours])
+  const gridEndMin = useMemo(() => Math.max(...agendaHours) * 60 + 60, [agendaHours])
+  const totalHeight = agendaHours.length * HOUR_ROW_HEIGHT
+  const pxPerMinute = HOUR_ROW_HEIGHT / 60
 
   const isTodayInTz = useMemo(
     () => esHoyEnZonaIANA(selectedDate, timeZone),
-    [selectedDate, timeZone],
-  );
+    [selectedDate, timeZone]
+  )
 
-  const now = useAgendaClockTick(isTodayInTz);
+  const now = useAgendaClockTick(isTodayInTz)
 
   const dayAppointments = useMemo(
     () =>
@@ -112,20 +95,20 @@ export function OwnerDayGrid({
         selectedDate,
         employees.map((e) => e.id),
         statusFilter,
-        timeZone,
+        timeZone
       ),
-    [appointments, selectedDate, employees, statusFilter, timeZone],
-  );
+    [appointments, selectedDate, employees, statusFilter, timeZone]
+  )
 
   const nowLineTop = useMemo(() => {
-    if (!isTodayInTz) return null;
-    const m = minutosDelDiaEnZona(now, timeZone);
-    if (m < gridStartMin || m > gridEndMin) return null;
-    return (m - gridStartMin) * pxPerMinute;
-  }, [isTodayInTz, now, timeZone, gridStartMin, gridEndMin, pxPerMinute]);
+    if (!isTodayInTz) return null
+    const m = minutosDelDiaEnZona(now, timeZone)
+    if (m < gridStartMin || m > gridEndMin) return null
+    return (m - gridStartMin) * pxPerMinute
+  }, [isTodayInTz, now, timeZone, gridStartMin, gridEndMin, pxPerMinute])
 
-  const colW = Math.max(columnWidth, 104);
-  const totalGridWidth = colW * employees.length;
+  const colW = Math.max(columnWidth, 104)
+  const totalGridWidth = colW * employees.length
 
   return (
     <ScrollView
@@ -135,14 +118,10 @@ export function OwnerDayGrid({
         paddingHorizontal: Spacing.md,
       }}
       refreshControl={
-        <RefreshControl
-          refreshing={isLoading}
-          onRefresh={onRefresh}
-          tintColor={theme.primary}
-        />
+        <RefreshControl refreshing={isLoading} onRefresh={onRefresh} tintColor={theme.primary} />
       }
     >
-      <View style={{ flexDirection: "row", alignItems: "stretch" }}>
+      <View style={{ flexDirection: 'row', alignItems: 'stretch' }}>
         {/* Columna de horas — fija */}
         <View style={{ width: timeColWidth }}>
           {agendaHours.map((hour) => (
@@ -152,28 +131,22 @@ export function OwnerDayGrid({
                 height: HOUR_ROW_HEIGHT,
                 borderBottomWidth: StyleSheet.hairlineWidth,
                 borderBottomColor: theme.border,
-                justifyContent: "flex-start",
+                justifyContent: 'flex-start',
                 paddingTop: 4,
-                alignItems: "center",
+                alignItems: 'center',
               }}
             >
               <ThemedText
                 style={{
                   fontSize: 10,
                   color: theme.textMuted,
-                  fontWeight: "600",
+                  fontWeight: '600',
                 }}
                 numberOfLines={2}
                 adjustsFontSizeToFit
                 minimumFontScale={0.85}
               >
-                {formatoHoraAgendaSlot(
-                  selectedDate,
-                  hour,
-                  timeZone,
-                  language,
-                  timeFormat,
-                )}
+                {formatoHoraAgendaSlot(selectedDate, hour, timeZone, language, timeFormat)}
               </ThemedText>
             </View>
           ))}
@@ -186,25 +159,19 @@ export function OwnerDayGrid({
           showsHorizontalScrollIndicator
           nestedScrollEnabled
           scrollEventThrottle={16}
-          onScroll={
-            onGridScroll
-              ? (e) => onGridScroll(e.nativeEvent.contentOffset.x)
-              : undefined
-          }
+          onScroll={onGridScroll ? (e) => onGridScroll(e.nativeEvent.contentOffset.x) : undefined}
           style={{ flex: 1 }}
         >
           <View
             style={{
-              flexDirection: "row",
+              flexDirection: 'row',
               height: totalHeight,
               width: totalGridWidth,
-              position: "relative",
+              position: 'relative',
             }}
           >
             {employees.map((emp) => {
-              const empApts = dayAppointments.filter(
-                (a) => a.employee_id === emp.id,
-              );
+              const empApts = dayAppointments.filter((a) => a.employee_id === emp.id)
 
               return (
                 <View
@@ -214,7 +181,7 @@ export function OwnerDayGrid({
                     height: totalHeight,
                     borderLeftWidth: StyleSheet.hairlineWidth,
                     borderLeftColor: theme.border,
-                    position: "relative",
+                    position: 'relative',
                   }}
                 >
                   {agendaHours.map((hour) => {
@@ -222,8 +189,8 @@ export function OwnerDayGrid({
                       selectedDate,
                       hour,
                       businessHours,
-                      timeZone,
-                    );
+                      timeZone
+                    )
                     return (
                       <View
                         key={hour}
@@ -231,9 +198,7 @@ export function OwnerDayGrid({
                           height: HOUR_ROW_HEIGHT,
                           borderBottomWidth: StyleSheet.hairlineWidth,
                           borderBottomColor: theme.border,
-                          backgroundColor: dentroFila
-                            ? "transparent"
-                            : theme.backgroundRoot + "99",
+                          backgroundColor: dentroFila ? 'transparent' : theme.backgroundRoot + '99',
                           opacity: dentroFila ? 1 : 0.45,
                         }}
                       >
@@ -246,42 +211,33 @@ export function OwnerDayGrid({
                           />
                         ) : null}
                       </View>
-                    );
+                    )
                   })}
 
                   {empApts.map((apt) => {
-                    const start = new Date(apt.date);
-                    const startMin = minutosDelDiaEnZona(start, timeZone);
-                    const endMin = startMin + apt.duration;
-                    const top = Math.max(
-                      0,
-                      (startMin - gridStartMin) * pxPerMinute,
-                    );
-                    const bottom = (endMin - gridStartMin) * pxPerMinute;
-                    const height = Math.max(
-                      28,
-                      Math.min(bottom, totalHeight) - top,
-                    );
-                    if (top >= totalHeight) return null;
+                    const start = new Date(apt.date)
+                    const startMin = minutosDelDiaEnZona(start, timeZone)
+                    const endMin = startMin + apt.duration
+                    const top = Math.max(0, (startMin - gridStartMin) * pxPerMinute)
+                    const bottom = (endMin - gridStartMin) * pxPerMinute
+                    const height = Math.max(28, Math.min(bottom, totalHeight) - top)
+                    if (top >= totalHeight) return null
 
-                    const serviceName = getServiceName(
-                      services,
-                      apt.service_id,
-                    );
+                    const serviceName = getServiceName(services, apt.service_id)
 
                     return (
                       <Pressable
                         key={apt.id}
                         onPress={() => onOpenDetail(apt)}
                         style={{
-                          position: "absolute",
+                          position: 'absolute',
                           left: 3,
                           right: 3,
                           top,
                           height,
                           zIndex: 4,
                           borderRadius: BorderRadius.md,
-                          overflow: "hidden",
+                          overflow: 'hidden',
                         }}
                       >
                         <View
@@ -291,16 +247,16 @@ export function OwnerDayGrid({
                             borderRadius: BorderRadius.md,
                             borderWidth: 1,
                             borderLeftWidth: 4,
-                            borderColor: emp.color + "44",
+                            borderColor: emp.color + '44',
                             borderLeftColor: emp.color,
-                            backgroundColor: emp.color + "18",
+                            backgroundColor: emp.color + '18',
                           }}
                         >
                           <ThemedText
                             numberOfLines={2}
                             style={{
                               fontSize: 12,
-                              fontWeight: "700",
+                              fontWeight: '700',
                               color: theme.text,
                             }}
                           >
@@ -326,19 +282,14 @@ export function OwnerDayGrid({
                               color: theme.textMuted,
                             }}
                           >
-                            {formatoHoraInstanteEnZona(
-                              start,
-                              timeZone,
-                              language,
-                              timeFormat,
-                            )}
+                            {formatoHoraInstanteEnZona(start, timeZone, language, timeFormat)}
                           </ThemedText>
                         </View>
                       </Pressable>
-                    );
+                    )
                   })}
                 </View>
-              );
+              )
             })}
 
             {/* Línea "ahora" — una sola vez, sobre todo el grid */}
@@ -346,12 +297,12 @@ export function OwnerDayGrid({
               <View
                 pointerEvents="none"
                 style={{
-                  position: "absolute",
+                  position: 'absolute',
                   left: 0,
                   right: 0,
                   top: nowLineTop - 1,
                   height: 2,
-                  backgroundColor: "#FF3B30",
+                  backgroundColor: '#FF3B30',
                   zIndex: 12,
                 }}
               />
@@ -360,5 +311,5 @@ export function OwnerDayGrid({
         </ScrollView>
       </View>
     </ScrollView>
-  );
+  )
 }

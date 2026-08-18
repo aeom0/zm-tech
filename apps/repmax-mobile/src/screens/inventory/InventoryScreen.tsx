@@ -2,56 +2,60 @@
 // RepMAX Business Suite — Pantalla de Inventario
 // Phone: lista 1 col · Tablet: grid 2–3 cols
 // ============================================================
-import React, { useCallback, useLayoutEffect, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useState } from 'react'
 import {
-  View, Text, FlatList, TouchableOpacity,
-  StyleSheet, ActivityIndicator, Alert,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useFocusEffect } from '@react-navigation/native';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  Alert,
+} from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import { useFocusEffect } from '@react-navigation/native'
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
-import { SearchBar } from '../../components/ui/SearchBar';
-import { FilterChip } from '../../components/ui/FilterChips';
-import { EmptyState } from '../../components/ui/EmptyState';
-import { FAB } from '../../components/ui/FAB';
-import { ProductThumb } from '../../components/inventory/ProductThumb';
-import { MlStatusBadge } from '../../components/inventory/MlStatusBadge';
-import { useProducts } from '../../hooks/useProducts';
-import { useMlExport } from '../../hooks/useMlExport';
-import { useBreakpointValue } from '../../hooks/useResponsive';
-import { useTabBarOffset } from '../../hooks/useTabBarOffset';
-import { productService } from '../../services/productService';
-import { formatUSD } from '../../utils/formatters';
-import { uriPortada } from '../../utils/productPhotos';
+import { SearchBar } from '../../components/ui/SearchBar'
+import { FilterChip } from '../../components/ui/FilterChips'
+import { EmptyState } from '../../components/ui/EmptyState'
+import { FAB } from '../../components/ui/FAB'
+import { ProductThumb } from '../../components/inventory/ProductThumb'
+import { MlStatusBadge } from '../../components/inventory/MlStatusBadge'
+import { useProducts } from '../../hooks/useProducts'
+import { useMlExport } from '../../hooks/useMlExport'
+import { useBreakpointValue } from '../../hooks/useResponsive'
+import { useTabBarOffset } from '../../hooks/useTabBarOffset'
+import { productService } from '../../services/productService'
+import { formatUSD } from '../../utils/formatters'
+import { uriPortada } from '../../utils/productPhotos'
 import {
   evaluarListoMl,
   resolverBadgeMl,
   productoPasaFiltroMl,
   type FiltroMlInventario,
-} from '../../utils/mlReadiness';
-import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
-import type { Product } from '../../types/database';
-import type { InventoryStackParamList } from '../../navigation/types';
+} from '../../utils/mlReadiness'
+import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme'
+import type { Product } from '../../types/database'
+import type { InventoryStackParamList } from '../../navigation/types'
 
-type Props = NativeStackScreenProps<InventoryStackParamList, 'Inventory'>;
+type Props = NativeStackScreenProps<InventoryStackParamList, 'Inventory'>
 
 const CONDITION_OPTIONS = [
   { value: 'all' as const, label: 'Todos' },
   { value: 'NEW' as const, label: 'Nuevos' },
   { value: 'USED' as const, label: 'Usados' },
-];
+]
 
 function StockIndicator({ stock, minStock }: { stock: number; minStock: number }) {
-  const color = stock === 0
-    ? colors.status.outOfStock
-    : stock <= minStock
-    ? colors.status.lowStock
-    : colors.status.inStock;
+  const color =
+    stock === 0
+      ? colors.status.outOfStock
+      : stock <= minStock
+        ? colors.status.lowStock
+        : colors.status.inStock
 
-  return (
-    <View style={[styles.stockDot, { backgroundColor: color }]} />
-  );
+  return <View style={[styles.stockDot, { backgroundColor: color }]} />
 }
 
 const ML_FILTER_OPTIONS: { value: FiltroMlInventario; label: string }[] = [
@@ -60,10 +64,10 @@ const ML_FILTER_OPTIONS: { value: FiltroMlInventario; label: string }[] = [
   { value: 'incompleto', label: 'Incompleto' },
   { value: 'exportado', label: 'Exportado' },
   { value: 'en_ml', label: 'En ML' },
-];
+]
 
 function badgeProducto(product: Product) {
-  const portada = uriPortada(product.photos);
+  const portada = uriPortada(product.photos)
   const listo = evaluarListoMl({
     title: product.title,
     partNumber: product.partNumber ?? '',
@@ -71,12 +75,8 @@ function badgeProducto(product: Product) {
     priceUsd: product.priceUsd,
     stock: product.stock,
     portadaUri: portada,
-  }).listo;
-  return resolverBadgeMl(
-    product.mlPublishIntent ?? false,
-    product.mlListingStatus,
-    listo,
-  );
+  }).listo
+  return resolverBadgeMl(product.mlPublishIntent ?? false, product.mlListingStatus, listo)
 }
 
 function ProductRow({
@@ -86,13 +86,13 @@ function ProductRow({
   grid,
   mlBadge,
 }: {
-  product: Product;
-  onEdit: () => void;
-  onDeactivate: () => void;
-  grid?: boolean;
-  mlBadge: ReturnType<typeof badgeProducto>;
+  product: Product
+  onEdit: () => void
+  onDeactivate: () => void
+  grid?: boolean
+  mlBadge: ReturnType<typeof badgeProducto>
 }) {
-  const portada = uriPortada(product.photos);
+  const portada = uriPortada(product.photos)
 
   return (
     <TouchableOpacity
@@ -116,7 +116,9 @@ function ProductRow({
               <ProductThumb
                 uri={portada}
                 size="md"
-                accessibilityLabel={portada ? `Foto de ${product.title}` : `Sin foto: ${product.title}`}
+                accessibilityLabel={
+                  portada ? `Foto de ${product.title}` : `Sin foto: ${product.title}`
+                }
               />
               <View style={styles.stockOnThumb}>
                 <StockIndicator stock={product.stock} minStock={product.minStock} />
@@ -124,14 +126,25 @@ function ProductRow({
             </View>
           )}
           <View style={styles.productInfo}>
-            <Text style={styles.productTitle} numberOfLines={grid ? 2 : 1}>{product.title}</Text>
-            <Text style={styles.productMeta} numberOfLines={1}>{product.brand} · {product.model}</Text>
+            <Text style={styles.productTitle} numberOfLines={grid ? 2 : 1}>
+              {product.title}
+            </Text>
+            <Text style={styles.productMeta} numberOfLines={1}>
+              {product.brand} · {product.model}
+            </Text>
             <View style={styles.badgeRow}>
               <MlStatusBadge kind={mlBadge} compact />
             </View>
             <Text style={styles.productStock}>
               Stock:{' '}
-              <Text style={{ color: product.stock <= product.minStock ? colors.semantic.warning : colors.text.primary }}>
+              <Text
+                style={{
+                  color:
+                    product.stock <= product.minStock
+                      ? colors.semantic.warning
+                      : colors.text.primary,
+                }}
+              >
                 {product.stock}
               </Text>
               {product.partNumber ? ` · #${product.partNumber}` : ''}
@@ -141,8 +154,23 @@ function ProductRow({
         </View>
         <View style={[styles.productRight, grid && styles.productRightGrid]}>
           <Text style={styles.productPrice}>{formatUSD(product.priceUsd)}</Text>
-          <View style={[styles.conditionBadge, { backgroundColor: product.condition === 'NEW' ? colors.status.new + '22' : colors.status.used + '22' }]}>
-            <Text style={[styles.conditionText, { color: product.condition === 'NEW' ? colors.status.new : colors.status.used }]}>
+          <View
+            style={[
+              styles.conditionBadge,
+              {
+                backgroundColor:
+                  product.condition === 'NEW'
+                    ? colors.status.new + '22'
+                    : colors.status.used + '22',
+              },
+            ]}
+          >
+            <Text
+              style={[
+                styles.conditionText,
+                { color: product.condition === 'NEW' ? colors.status.new : colors.status.used },
+              ]}
+            >
               {product.condition === 'NEW' ? 'Nuevo' : 'Usado'}
             </Text>
           </View>
@@ -156,43 +184,43 @@ function ProductRow({
         </View>
       </View>
     </TouchableOpacity>
-  );
+  )
 }
 
 export default function InventoryScreen({ navigation }: Props) {
-  const [query, setQuery] = useState('');
-  const [condition, setCondition] = useState<'all' | 'NEW' | 'USED'>('all');
-  const [stockFilter, setStockFilter] = useState<'all' | 'low'>('all');
-  const [mlFilter, setMlFilter] = useState<FiltroMlInventario>('all');
-  const { listPaddingWithFab } = useTabBarOffset();
+  const [query, setQuery] = useState('')
+  const [condition, setCondition] = useState<'all' | 'NEW' | 'USED'>('all')
+  const [stockFilter, setStockFilter] = useState<'all' | 'low'>('all')
+  const [mlFilter, setMlFilter] = useState<FiltroMlInventario>('all')
+  const { listPaddingWithFab } = useTabBarOffset()
   const numColumns = useBreakpointValue({
     mobile: 1,
     tablet: 2,
     desktop: 3,
     wide: 3,
-  });
+  })
 
   const { products, isLoading, error, refetch } = useProducts({
     q: query || undefined,
     condition: condition === 'all' ? undefined : condition,
     stock: stockFilter === 'low' ? 'low' : undefined,
-  });
+  })
 
-  const { isExporting, listosCount, exportar } = useMlExport(products, refetch);
+  const { isExporting, listosCount, exportar } = useMlExport(products, refetch)
 
   useFocusEffect(
     useCallback(() => {
-      refetch();
-    }, [refetch]),
-  );
+      refetch()
+    }, [refetch])
+  )
 
   const ejecutarExport = useCallback(() => {
     if (listosCount === 0) {
       Alert.alert(
         'Nada para exportar',
-        'Marca productos con “Incluir en catálogo ML” y completa el checklist (portada, título, n. parte, etc.).',
-      );
-      return;
+        'Marca productos con “Incluir en catálogo ML” y completa el checklist (portada, título, n. parte, etc.).'
+      )
+      return
     }
     Alert.alert(
       'Exportar a MercadoLibre',
@@ -206,17 +234,17 @@ export default function InventoryScreen({ navigation }: Props) {
               if (result.ok) {
                 Alert.alert(
                   'Export listo',
-                  `Compartimos ${result.count} producto(s). Los marcamos como Exportado en inventario.`,
-                );
+                  `Compartimos ${result.count} producto(s). Los marcamos como Exportado en inventario.`
+                )
               } else {
-                Alert.alert('No se exportó', result.message);
+                Alert.alert('No se exportó', result.message)
               }
-            });
+            })
           },
         },
-      ],
-    );
-  }, [listosCount, exportar]);
+      ]
+    )
+  }, [listosCount, exportar])
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -241,12 +269,12 @@ export default function InventoryScreen({ navigation }: Props) {
           )}
         </TouchableOpacity>
       ),
-    });
-  }, [navigation, ejecutarExport, isExporting, listosCount]);
+    })
+  }, [navigation, ejecutarExport, isExporting, listosCount])
 
   const productosVisibles = products.filter((p) =>
-    productoPasaFiltroMl(mlFilter, p.mlPublishIntent ?? false, badgeProducto(p)),
-  );
+    productoPasaFiltroMl(mlFilter, p.mlPublishIntent ?? false, badgeProducto(p))
+  )
 
   const handleDeactivate = (product: Product) => {
     Alert.alert(
@@ -259,18 +287,18 @@ export default function InventoryScreen({ navigation }: Props) {
           style: 'destructive',
           onPress: async () => {
             try {
-              await productService.deactivate(product.id);
-              refetch();
+              await productService.deactivate(product.id)
+              refetch()
             } catch {
-              Alert.alert('Error', 'No se pudo desactivar el producto.');
+              Alert.alert('Error', 'No se pudo desactivar el producto.')
             }
           },
         },
       ]
-    );
-  };
+    )
+  }
 
-  const isGrid = numColumns > 1;
+  const isGrid = numColumns > 1
 
   return (
     <View style={styles.container}>
@@ -308,7 +336,11 @@ export default function InventoryScreen({ navigation }: Props) {
       </View>
 
       {isLoading ? (
-        <ActivityIndicator size="large" color={colors.brand.orange} style={{ marginTop: spacing.xl }} />
+        <ActivityIndicator
+          size="large"
+          color={colors.brand.orange}
+          style={{ marginTop: spacing.xl }}
+        />
       ) : error ? (
         <Text style={styles.errorText}>{error}</Text>
       ) : (
@@ -330,9 +362,7 @@ export default function InventoryScreen({ navigation }: Props) {
             </View>
           )}
           contentContainerStyle={[styles.list, { paddingBottom: listPaddingWithFab }]}
-          ListEmptyComponent={
-            <EmptyState icon="cube-outline" title="No hay productos" />
-          }
+          ListEmptyComponent={<EmptyState icon="cube-outline" title="No hay productos" />}
         />
       )}
 
@@ -342,7 +372,7 @@ export default function InventoryScreen({ navigation }: Props) {
         onPress={() => navigation.navigate('ProductForm', {})}
       />
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -495,4 +525,4 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontFamily: typography.fontFamily.bold,
   },
-});
+})

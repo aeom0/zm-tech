@@ -2,32 +2,27 @@
 // Inventario — tabla, filtros y edición en Sheet
 // ============================================================
 
-"use client";
+'use client'
 
-import { useCallback, useMemo, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { ExternalLink, Pencil, Search } from "lucide-react";
-import { POPULAR_BRANDS } from "@repmax/repmax-schema";
-import { useAuth } from "@/context/AuthContext";
-import { useAuthFetch } from "@/hooks/useAuthFetch";
-import { createClient } from "@/lib/supabase/client";
-import { patchProduct } from "@/lib/repmax-queries";
-import { getSiteUrl } from "@/lib/site-url";
-import { urlProductoVitrina } from "@/lib/storefront-url";
-import type { FiltroMlWeb } from "@/lib/ml-readiness";
-import { MlBadgeChip } from "@/components/dashboard/MlBadgeChip";
-import { VitrinaPanel } from "@/components/dashboard/VitrinaPanel";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { useCallback, useMemo, useState } from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { ExternalLink, Pencil, Search } from 'lucide-react'
+import { POPULAR_BRANDS } from '@repmax/repmax-schema'
+import { useAuth } from '@/context/AuthContext'
+import { useAuthFetch } from '@/hooks/useAuthFetch'
+import { createClient } from '@/lib/supabase/client'
+import { patchProduct } from '@/lib/repmax-queries'
+import { getSiteUrl } from '@/lib/site-url'
+import { urlProductoVitrina } from '@/lib/storefront-url'
+import type { FiltroMlWeb } from '@/lib/ml-readiness'
+import { MlBadgeChip } from '@/components/dashboard/MlBadgeChip'
+import { VitrinaPanel } from '@/components/dashboard/VitrinaPanel'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import {
   Table,
   TableBody,
@@ -35,109 +30,109 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { cn } from "@/lib/utils";
-import type { ProductoWeb } from "@/types/dashboard";
+} from '@/components/ui/table'
+import { cn } from '@/lib/utils'
+import type { ProductoWeb } from '@/types/dashboard'
 
 const selectClase =
-  "min-w-[120px] shrink-0 rounded-md border border-[#2A2A2A] bg-[#1A1A1A] px-3 py-2 text-sm text-[#F5F5F5] focus:border-[#FF6B00] focus:outline-none focus:ring-1 focus:ring-[#FF6B00]";
+  'min-w-[120px] shrink-0 rounded-md border border-[#2A2A2A] bg-[#1A1A1A] px-3 py-2 text-sm text-[#F5F5F5] focus:border-[#FF6B00] focus:outline-none focus:ring-1 focus:ring-[#FF6B00]'
 
 const TIPOS_VEHICULO: { value: string; label: string }[] = [
-  { value: "", label: "Todos los tipos" },
-  { value: "CAR", label: "Carro" },
-  { value: "MOTO", label: "Moto" },
-  { value: "TRUCK", label: "Camión" },
-  { value: "SUV", label: "SUV" },
-];
+  { value: '', label: 'Todos los tipos' },
+  { value: 'CAR', label: 'Carro' },
+  { value: 'MOTO', label: 'Moto' },
+  { value: 'TRUCK', label: 'Camión' },
+  { value: 'SUV', label: 'SUV' },
+]
 
 const ML_FILTROS: { value: FiltroMlWeb; label: string }[] = [
-  { value: "para_ml", label: "Para ML" },
-  { value: "listo", label: "Listo ML" },
-  { value: "incompleto", label: "ML incompleto" },
-  { value: "exportado", label: "Exportado" },
-  { value: "en_ml", label: "En ML" },
-  { value: "listo_vitrina", label: "Listo vitrina" },
-];
+  { value: 'para_ml', label: 'Para ML' },
+  { value: 'listo', label: 'Listo ML' },
+  { value: 'incompleto', label: 'ML incompleto' },
+  { value: 'exportado', label: 'Exportado' },
+  { value: 'en_ml', label: 'En ML' },
+  { value: 'listo_vitrina', label: 'Listo vitrina' },
+]
 
 const CONDICIONES: { value: string; label: string }[] = [
-  { value: "", label: "Todas" },
-  { value: "NEW", label: "Nuevo" },
-  { value: "USED", label: "Usado" },
-];
+  { value: '', label: 'Todas' },
+  { value: 'NEW', label: 'Nuevo' },
+  { value: 'USED', label: 'Usado' },
+]
 
 interface RespuestaProductos {
-  products: ProductoWeb[];
-  total: number;
-  page: number;
-  limit: number;
+  products: ProductoWeb[]
+  total: number
+  page: number
+  limit: number
 }
 
 function EsqueletoInventario() {
   return (
-    <div className="space-y-4 animate-pulse">
+    <div className="animate-pulse space-y-4">
       <div className="h-12 rounded-lg bg-[#1A1A1A]" />
       <div className="h-96 rounded-lg border border-[#2A2A2A] bg-[#1A1A1A]" />
     </div>
-  );
+  )
 }
 
 export default function InventoryPage() {
-  const { token, store } = useAuth();
-  const [marca, setMarca] = useState("");
-  const [condicion, setCondicion] = useState("");
-  const [tipoVehiculo, setTipoVehiculo] = useState("");
-  const [busqueda, setBusqueda] = useState("");
-  const [soloStockBajo, setSoloStockBajo] = useState(false);
-  const [mlFilter, setMlFilter] = useState<FiltroMlWeb>("");
-  const [pagina, setPagina] = useState(1);
-  const limite = 20;
+  const { token, store } = useAuth()
+  const [marca, setMarca] = useState('')
+  const [condicion, setCondicion] = useState('')
+  const [tipoVehiculo, setTipoVehiculo] = useState('')
+  const [busqueda, setBusqueda] = useState('')
+  const [soloStockBajo, setSoloStockBajo] = useState(false)
+  const [mlFilter, setMlFilter] = useState<FiltroMlWeb>('')
+  const [pagina, setPagina] = useState(1)
+  const limite = 20
 
   const url = useMemo(() => {
-    const p = new URLSearchParams();
-    p.set("page", String(pagina));
-    p.set("limit", String(limite));
-    if (marca) p.set("brand", marca);
-    if (condicion) p.set("condition", condicion);
-    if (tipoVehiculo) p.set("vehicleType", tipoVehiculo);
-    if (busqueda.trim()) p.set("q", busqueda.trim());
-    if (soloStockBajo) p.set("lowStock", "true");
-    if (mlFilter) p.set("mlFilter", mlFilter);
-    return `/api/products?${p.toString()}`;
-  }, [marca, condicion, tipoVehiculo, busqueda, soloStockBajo, mlFilter, pagina, limite]);
+    const p = new URLSearchParams()
+    p.set('page', String(pagina))
+    p.set('limit', String(limite))
+    if (marca) p.set('brand', marca)
+    if (condicion) p.set('condition', condicion)
+    if (tipoVehiculo) p.set('vehicleType', tipoVehiculo)
+    if (busqueda.trim()) p.set('q', busqueda.trim())
+    if (soloStockBajo) p.set('lowStock', 'true')
+    if (mlFilter) p.set('mlFilter', mlFilter)
+    return `/api/products?${p.toString()}`
+  }, [marca, condicion, tipoVehiculo, busqueda, soloStockBajo, mlFilter, pagina, limite])
 
-  const { data, isLoading, error, refetch } = useAuthFetch<RespuestaProductos>(url);
+  const { data, isLoading, error, refetch } = useAuthFetch<RespuestaProductos>(url)
 
-  const [editando, setEditando] = useState<ProductoWeb | null>(null);
-  const [precioUsd, setPrecioUsd] = useState("");
-  const [stockVal, setStockVal] = useState("");
-  const [minStockVal, setMinStockVal] = useState("");
-  const [activo, setActivo] = useState(true);
-  const [barcodeVal, setBarcodeVal] = useState("");
-  const [guardando, setGuardando] = useState(false);
-  const [errorForm, setErrorForm] = useState<string | null>(null);
+  const [editando, setEditando] = useState<ProductoWeb | null>(null)
+  const [precioUsd, setPrecioUsd] = useState('')
+  const [stockVal, setStockVal] = useState('')
+  const [minStockVal, setMinStockVal] = useState('')
+  const [activo, setActivo] = useState(true)
+  const [barcodeVal, setBarcodeVal] = useState('')
+  const [guardando, setGuardando] = useState(false)
+  const [errorForm, setErrorForm] = useState<string | null>(null)
 
   const abrirEdicion = useCallback((p: ProductoWeb) => {
-    setEditando(p);
-    setPrecioUsd(String(p.priceUsd));
-    setStockVal(String(p.stock));
-    setMinStockVal(String(p.minStock));
-    setActivo(p.isActive);
-    setBarcodeVal(p.barcode ?? "");
-    setErrorForm(null);
-  }, []);
+    setEditando(p)
+    setPrecioUsd(String(p.priceUsd))
+    setStockVal(String(p.stock))
+    setMinStockVal(String(p.minStock))
+    setActivo(p.isActive)
+    setBarcodeVal(p.barcode ?? '')
+    setErrorForm(null)
+  }, [])
 
   const guardar = useCallback(async () => {
-    if (!editando || !token) return;
-    setGuardando(true);
-    setErrorForm(null);
+    if (!editando || !token) return
+    setGuardando(true)
+    setErrorForm(null)
     try {
-      const priceUsd = Number(precioUsd.replace(",", "."));
-      const stock = Number(stockVal);
-      const minStock = Number(minStockVal);
+      const priceUsd = Number(precioUsd.replace(',', '.'))
+      const stock = Number(stockVal)
+      const minStock = Number(minStockVal)
       if (!Number.isFinite(priceUsd) || !Number.isFinite(stock) || !Number.isFinite(minStock)) {
-        throw new Error("Revisa los números ingresados");
+        throw new Error('Revisa los números ingresados')
       }
-      const client = createClient();
+      const client = createClient()
       await patchProduct(
         client,
         editando.id,
@@ -148,19 +143,29 @@ export default function InventoryPage() {
           isActive: activo,
           barcode: barcodeVal.trim(),
         },
-        store?.usdBsRate ?? 36.5,
-      );
-      setEditando(null);
-      await refetch();
+        store?.usdBsRate ?? 36.5
+      )
+      setEditando(null)
+      await refetch()
     } catch (e) {
-      setErrorForm(e instanceof Error ? e.message : "Error al guardar");
+      setErrorForm(e instanceof Error ? e.message : 'Error al guardar')
     } finally {
-      setGuardando(false);
+      setGuardando(false)
     }
-  }, [editando, token, precioUsd, stockVal, minStockVal, activo, barcodeVal, refetch, store?.usdBsRate]);
+  }, [
+    editando,
+    token,
+    precioUsd,
+    stockVal,
+    minStockVal,
+    activo,
+    barcodeVal,
+    refetch,
+    store?.usdBsRate,
+  ])
 
   if (isLoading && !data) {
-    return <EsqueletoInventario />;
+    return <EsqueletoInventario />
   }
 
   if (error && !data) {
@@ -168,12 +173,12 @@ export default function InventoryPage() {
       <div className="rounded-lg border border-[#F44336]/40 bg-[#1A1A1A] p-6 text-[#F44336]">
         {error}
       </div>
-    );
+    )
   }
 
-  const productos = data?.products ?? [];
-  const total = data?.total ?? 0;
-  const totalPaginas = Math.max(1, Math.ceil(total / limite));
+  const productos = data?.products ?? []
+  const total = data?.total ?? 0
+  const totalPaginas = Math.max(1, Math.ceil(total / limite))
 
   return (
     <div className="space-y-4">
@@ -186,8 +191,8 @@ export default function InventoryPage() {
             placeholder="Buscar repuesto o código…"
             value={busqueda}
             onChange={(e) => {
-              setPagina(1);
-              setBusqueda(e.target.value);
+              setPagina(1)
+              setBusqueda(e.target.value)
             }}
             className="border-[#2A2A2A] bg-[#242424] pl-9 text-[#F5F5F5] placeholder:text-[#616161] focus-visible:ring-[#FF6B00]"
           />
@@ -196,8 +201,8 @@ export default function InventoryPage() {
           className={selectClase}
           value={marca}
           onChange={(e) => {
-            setPagina(1);
-            setMarca(e.target.value);
+            setPagina(1)
+            setMarca(e.target.value)
           }}
         >
           <option value="">Todas las marcas</option>
@@ -211,12 +216,12 @@ export default function InventoryPage() {
           className={selectClase}
           value={condicion}
           onChange={(e) => {
-            setPagina(1);
-            setCondicion(e.target.value);
+            setPagina(1)
+            setCondicion(e.target.value)
           }}
         >
           {CONDICIONES.map((c) => (
-            <option key={c.value || "all"} value={c.value}>
+            <option key={c.value || 'all'} value={c.value}>
               {c.label}
             </option>
           ))}
@@ -225,12 +230,12 @@ export default function InventoryPage() {
           className={selectClase}
           value={tipoVehiculo}
           onChange={(e) => {
-            setPagina(1);
-            setTipoVehiculo(e.target.value);
+            setPagina(1)
+            setTipoVehiculo(e.target.value)
           }}
         >
           {TIPOS_VEHICULO.map((t) => (
-            <option key={t.value || "all"} value={t.value}>
+            <option key={t.value || 'all'} value={t.value}>
               {t.label}
             </option>
           ))}
@@ -239,8 +244,8 @@ export default function InventoryPage() {
           className={selectClase}
           value={mlFilter}
           onChange={(e) => {
-            setPagina(1);
-            setMlFilter(e.target.value as FiltroMlWeb);
+            setPagina(1)
+            setMlFilter(e.target.value as FiltroMlWeb)
           }}
           aria-label="Filtro ML / vitrina"
         >
@@ -256,8 +261,8 @@ export default function InventoryPage() {
             type="checkbox"
             checked={soloStockBajo}
             onChange={(e) => {
-              setPagina(1);
-              setSoloStockBajo(e.target.checked);
+              setPagina(1)
+              setSoloStockBajo(e.target.checked)
             }}
             className="h-4 w-4 rounded border-[#2A2A2A] bg-[#242424] text-[#FF6B00] focus:ring-[#FF6B00]"
           />
@@ -285,9 +290,9 @@ export default function InventoryPage() {
               <TableRow
                 key={p.id}
                 className={cn(
-                  "border-[#2A2A2A] hover:bg-[#242424]/30",
-                  idx % 2 === 1 ? "bg-[#1E1E1E]/80" : "bg-[#1A1A1A]",
-                  !p.isActive && "opacity-50",
+                  'border-[#2A2A2A] hover:bg-[#242424]/30',
+                  idx % 2 === 1 ? 'bg-[#1E1E1E]/80' : 'bg-[#1A1A1A]',
+                  !p.isActive && 'opacity-50'
                 )}
               >
                 <TableCell>
@@ -297,7 +302,7 @@ export default function InventoryPage() {
                       alt=""
                       width={40}
                       height={40}
-                      className="h-10 w-10 rounded object-cover bg-[#242424]"
+                      className="h-10 w-10 rounded bg-[#242424] object-cover"
                       unoptimized
                     />
                   ) : (
@@ -323,10 +328,10 @@ export default function InventoryPage() {
                   <span
                     className={
                       p.stock <= 0
-                        ? "font-semibold text-[#F44336]"
+                        ? 'font-semibold text-[#F44336]'
                         : p.stock <= p.minStock
-                          ? "font-semibold text-[#FFC107]"
-                          : "text-[#F5F5F5]"
+                          ? 'font-semibold text-[#FFC107]'
+                          : 'text-[#F5F5F5]'
                     }
                   >
                     {p.stock}
@@ -336,26 +341,26 @@ export default function InventoryPage() {
                 <TableCell>
                   <span
                     className={
-                      p.condition === "NEW"
-                        ? "rounded-md bg-[#4CAF50]/20 px-2 py-0.5 text-xs text-[#4CAF50]"
-                        : "rounded-md bg-[#9E9E9E]/20 px-2 py-0.5 text-xs text-[#9E9E9E]"
+                      p.condition === 'NEW'
+                        ? 'rounded-md bg-[#4CAF50]/20 px-2 py-0.5 text-xs text-[#4CAF50]'
+                        : 'rounded-md bg-[#9E9E9E]/20 px-2 py-0.5 text-xs text-[#9E9E9E]'
                     }
                   >
-                    {p.condition === "NEW" ? "Nuevo" : "Usado"}
+                    {p.condition === 'NEW' ? 'Nuevo' : 'Usado'}
                   </span>
                 </TableCell>
                 <TableCell>
                   <div className="flex flex-col gap-1">
                     {p.mlBadge ? <MlBadgeChip kind={p.mlBadge} /> : null}
                     {p.vitrinaLista ? (
-                      <Badge className="bg-[#2196F3]/20 text-[#2196F3] border-transparent text-[10px]">
+                      <Badge className="border-transparent bg-[#2196F3]/20 text-[10px] text-[#2196F3]">
                         Listo vitrina
                       </Badge>
                     ) : null}
                   </div>
                 </TableCell>
                 <TableCell className="text-sm text-[#9E9E9E]">
-                  {p.isActive ? "Activo" : "Inactivo"}
+                  {p.isActive ? 'Activo' : 'Inactivo'}
                 </TableCell>
                 <TableCell className="text-right">
                   {store?.slug && p.isActive && p.stock > 0 ? (
@@ -392,7 +397,9 @@ export default function InventoryPage() {
           </TableBody>
         </Table>
         {productos.length === 0 ? (
-          <p className="p-8 text-center text-sm text-[#9E9E9E]">No hay productos con esos filtros.</p>
+          <p className="p-8 text-center text-sm text-[#9E9E9E]">
+            No hay productos con esos filtros.
+          </p>
         ) : null}
       </div>
 
@@ -426,7 +433,7 @@ export default function InventoryPage() {
         <SheetContent side="right" className="border-[#2A2A2A] bg-[#1A1A1A]">
           <SheetHeader>
             <SheetTitle className="pr-8">Editar producto</SheetTitle>
-            <p className="text-sm text-[#9E9E9E] line-clamp-2">{editando?.title}</p>
+            <p className="line-clamp-2 text-sm text-[#9E9E9E]">{editando?.title}</p>
           </SheetHeader>
           <div className="mt-6 flex flex-col gap-4">
             <div className="space-y-2">
@@ -492,11 +499,11 @@ export default function InventoryPage() {
               disabled={guardando}
               onClick={() => void guardar()}
             >
-              {guardando ? "Guardando…" : "Guardar cambios"}
+              {guardando ? 'Guardando…' : 'Guardar cambios'}
             </Button>
           </div>
         </SheetContent>
       </Sheet>
     </div>
-  );
+  )
 }

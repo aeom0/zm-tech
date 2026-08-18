@@ -17,21 +17,21 @@ cambios globales.
 
 ## Valores a migrar
 
-| Línea (aprox.) | Valor actual | Token correcto |
-|---|---|---|
-| `styles.card` | `borderRadius: 20` | `BorderRadius.lg` (16) o nuevo token `BorderRadius.card` (20) |
-| `styles.iconBg` | `borderRadius: 24` | `BorderRadius.full` o `width/2` calculado |
-| `CHIP_PILL_RADIUS = 999` | `999` | `BorderRadius.full` (9999) |
-| `styles.check` | `borderRadius: 11` | `BorderRadius.full` o `width/2` calculado |
-| `styles.badge` | `color: '#40E0D0'` | `theme.primary` o token `Colors.lunarisCyan` |
-| `styles.titulo` | `color: '#FFFFFF'` | `theme.text` |
-| `styles.cardNombre` | `color: '#FFFFFF'` | `theme.text` |
-| `styles.subtitulo` | `color: 'rgba(255,255,255,0.55)'` | `theme.textMuted` |
-| `styles.cardDesc` | `color: 'rgba(255,255,255,0.5)'` | `theme.textMuted` |
-| `chipInactivo` | `backgroundColor: 'rgba(255,255,255,0.06)'` | `theme.backgroundSecondary` o token |
-| `chipInactivo` | `borderColor: 'rgba(255,255,255,0.12)'` | `theme.border` |
-| `card` | `borderColor: 'rgba(255,255,255,0.10)'` | `theme.border` |
-| `card` | `backgroundColor: 'rgba(255,255,255,0.04)'` | `theme.backgroundSubtle` |
+| Línea (aprox.)           | Valor actual                                | Token correcto                                                |
+| ------------------------ | ------------------------------------------- | ------------------------------------------------------------- |
+| `styles.card`            | `borderRadius: 20`                          | `BorderRadius.lg` (16) o nuevo token `BorderRadius.card` (20) |
+| `styles.iconBg`          | `borderRadius: 24`                          | `BorderRadius.full` o `width/2` calculado                     |
+| `CHIP_PILL_RADIUS = 999` | `999`                                       | `BorderRadius.full` (9999)                                    |
+| `styles.check`           | `borderRadius: 11`                          | `BorderRadius.full` o `width/2` calculado                     |
+| `styles.badge`           | `color: '#40E0D0'`                          | `theme.primary` o token `Colors.lunarisCyan`                  |
+| `styles.titulo`          | `color: '#FFFFFF'`                          | `theme.text`                                                  |
+| `styles.cardNombre`      | `color: '#FFFFFF'`                          | `theme.text`                                                  |
+| `styles.subtitulo`       | `color: 'rgba(255,255,255,0.55)'`           | `theme.textMuted`                                             |
+| `styles.cardDesc`        | `color: 'rgba(255,255,255,0.5)'`            | `theme.textMuted`                                             |
+| `chipInactivo`           | `backgroundColor: 'rgba(255,255,255,0.06)'` | `theme.backgroundSecondary` o token                           |
+| `chipInactivo`           | `borderColor: 'rgba(255,255,255,0.12)'`     | `theme.border`                                                |
+| `card`                   | `borderColor: 'rgba(255,255,255,0.10)'`     | `theme.border`                                                |
+| `card`                   | `backgroundColor: 'rgba(255,255,255,0.04)'` | `theme.backgroundSubtle`                                      |
 
 ## Notas
 

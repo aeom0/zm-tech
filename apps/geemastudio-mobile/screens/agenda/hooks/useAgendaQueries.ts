@@ -1,14 +1,14 @@
-import { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMemo } from 'react'
+import { useQuery } from '@tanstack/react-query'
 
-import { supabase } from "@/lib/supabase";
+import { supabase } from '@/lib/supabase'
 
 import type {
   AgendaAppointment,
   AgendaEmployee,
   AgendaService,
   AgendaServiceCategory,
-} from "../types";
+} from '../types'
 
 export function useAgendaQueries() {
   const {
@@ -16,73 +16,73 @@ export function useAgendaQueries() {
     isLoading,
     refetch,
   } = useQuery<AgendaAppointment[]>({
-    queryKey: ["appointments"],
+    queryKey: ['appointments'],
     staleTime: 60_000,
     refetchOnWindowFocus: false,
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("appointments")
+        .from('appointments')
         .select(
-          "id, client_name, client_phone, client_document, date, duration, price, status, employee_id, service_id",
+          'id, client_name, client_phone, client_document, date, duration, price, status, employee_id, service_id'
         )
-        .order("date", { ascending: true });
+        .order('date', { ascending: true })
 
-      if (error) throw new Error(error.message);
-      return (data ?? []) as AgendaAppointment[];
+      if (error) throw new Error(error.message)
+      return (data ?? []) as AgendaAppointment[]
     },
-  });
+  })
 
   const {
     data: employees = [],
     isLoading: employeesLoading,
     error: employeesError,
   } = useQuery<AgendaEmployee[]>({
-    queryKey: ["employees"],
+    queryKey: ['employees'],
     staleTime: 60_000,
     refetchOnWindowFocus: false,
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("employees")
-        .select("id, name, color, avatar_url")
-        .eq("is_active", true)
-        .order("created_at", { ascending: true });
+        .from('employees')
+        .select('id, name, color, avatar_url')
+        .eq('is_active', true)
+        .order('created_at', { ascending: true })
 
-      if (error) throw new Error(error.message);
-      return (data ?? []) as AgendaEmployee[];
+      if (error) throw new Error(error.message)
+      return (data ?? []) as AgendaEmployee[]
     },
-  });
+  })
 
   const { data: categories = [] } = useQuery<AgendaServiceCategory[]>({
-    queryKey: ["service_categories"],
+    queryKey: ['service_categories'],
     staleTime: 60_000,
     refetchOnWindowFocus: false,
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("service_categories")
-        .select("id, name, order")
-        .order("order", { ascending: true });
-      if (error) throw new Error(error.message);
-      return (data ?? []) as AgendaServiceCategory[];
+        .from('service_categories')
+        .select('id, name, order')
+        .order('order', { ascending: true })
+      if (error) throw new Error(error.message)
+      return (data ?? []) as AgendaServiceCategory[]
     },
-  });
+  })
 
   const {
     data: services = [],
     isLoading: servicesLoading,
     error: servicesError,
   } = useQuery<AgendaService[]>({
-    queryKey: ["services"],
+    queryKey: ['services'],
     staleTime: 60_000,
     refetchOnWindowFocus: false,
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("services")
-        .select("id, name, price, duration, category_id")
-        .order("created_at", { ascending: true });
-      if (error) throw new Error(error.message);
-      return (data ?? []) as AgendaService[];
+        .from('services')
+        .select('id, name, price, duration, category_id')
+        .order('created_at', { ascending: true })
+      if (error) throw new Error(error.message)
+      return (data ?? []) as AgendaService[]
     },
-  });
+  })
 
   return {
     appointments,
@@ -95,15 +95,12 @@ export function useAgendaQueries() {
     services,
     servicesLoading,
     servicesError,
-  };
+  }
 }
 
-export function useServicesByCategory(
-  services: AgendaService[],
-  categoryId: string,
-) {
+export function useServicesByCategory(services: AgendaService[], categoryId: string) {
   return useMemo(() => {
-    if (!categoryId) return [];
-    return services.filter((s) => s.category_id === categoryId);
-  }, [services, categoryId]);
+    if (!categoryId) return []
+    return services.filter((s) => s.category_id === categoryId)
+  }, [services, categoryId])
 }

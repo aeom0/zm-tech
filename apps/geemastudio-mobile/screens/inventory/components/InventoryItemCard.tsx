@@ -1,25 +1,25 @@
-import React from "react";
-import { Pressable, View } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import React from 'react'
+import { Pressable, View } from 'react-native'
+import { Feather } from '@expo/vector-icons'
 
-import { ThemedText } from "@/components/ThemedText";
-import { Colors } from "@/constants/theme";
+import { ThemedText } from '@/components/ThemedText'
+import { Colors } from '@/constants/theme'
 
-import type { InventoryItem } from "../types";
-import { inventoryStyles as styles } from "../inventoryStyles";
+import type { InventoryItem } from '../types'
+import { inventoryStyles as styles } from '../inventoryStyles'
 
 interface InventoryItemCardProps {
-  item: InventoryItem;
+  item: InventoryItem
   theme: {
-    backgroundDefault: string;
-    border: string;
-    text: string;
-    textMuted: string;
-  };
-  onPress: () => void;
-  onLongPress: () => void;
-  onDecrement: () => void;
-  onIncrement: () => void;
+    backgroundDefault: string
+    border: string
+    text: string
+    textMuted: string
+  }
+  onPress: () => void
+  onLongPress: () => void
+  onDecrement: () => void
+  onIncrement: () => void
 }
 
 export function InventoryItemCard({
@@ -30,7 +30,7 @@ export function InventoryItemCard({
   onDecrement,
   onIncrement,
 }: InventoryItemCardProps) {
-  const isLowStock = item.quantity <= item.min_stock;
+  const isLowStock = item.quantity <= item.min_stock
 
   return (
     <Pressable
@@ -49,23 +49,12 @@ export function InventoryItemCard({
         <View style={styles.itemHeader}>
           <ThemedText style={styles.itemName}>{item.name}</ThemedText>
           {isLowStock && (
-            <View
-              style={[
-                styles.warningBadge,
-                { backgroundColor: Colors.light.warning + "20" },
-              ]}
-            >
-              <Feather
-                name="alert-triangle"
-                size={12}
-                color={Colors.light.warning}
-              />
+            <View style={[styles.warningBadge, { backgroundColor: Colors.light.warning + '20' }]}>
+              <Feather name="alert-triangle" size={12} color={Colors.light.warning} />
             </View>
           )}
         </View>
-        <ThemedText style={[styles.itemUnit, { color: theme.textMuted }]}>
-          {item.unit}
-        </ThemedText>
+        <ThemedText style={[styles.itemUnit, { color: theme.textMuted }]}>{item.unit}</ThemedText>
       </View>
 
       <View style={styles.quantityControls}>
@@ -75,12 +64,7 @@ export function InventoryItemCard({
         >
           <Feather name="minus" size={18} color={theme.text} />
         </Pressable>
-        <ThemedText
-          style={[
-            styles.quantityText,
-            isLowStock && { color: Colors.light.warning },
-          ]}
-        >
+        <ThemedText style={[styles.quantityText, isLowStock && { color: Colors.light.warning }]}>
           {item.quantity}
         </ThemedText>
         <Pressable
@@ -91,5 +75,5 @@ export function InventoryItemCard({
         </Pressable>
       </View>
     </Pressable>
-  );
+  )
 }

@@ -9,7 +9,7 @@
  * - Guarda URL en TenantContext (updateTenant + syncRemote)
  * - Feedback visual: spinner durante upload, toast de éxito/error con Alert
  */
-import React, { useState } from "react";
+import React, { useState } from 'react'
 import {
   View,
   StyleSheet,
@@ -18,103 +18,103 @@ import {
   Alert,
   Image,
   ActivityIndicator,
-} from "react-native";
-import { useHeaderHeight } from "@react-navigation/elements";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import * as ImagePicker from "expo-image-picker";
-import { Feather } from "@expo/vector-icons";
-import Animated, { FadeIn } from "react-native-reanimated";
+} from 'react-native'
+import { useHeaderHeight } from '@react-navigation/elements'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
+import * as ImagePicker from 'expo-image-picker'
+import { Feather } from '@expo/vector-icons'
+import Animated, { FadeIn } from 'react-native-reanimated'
 
-import { ThemedText } from "@/components/ThemedText";
-import { useTheme } from "@/hooks/useTheme";
-import { useTenant } from "@/contexts/TenantContext";
-import { useLogoUpload } from "@/hooks/useLogoUpload";
-import { Spacing, BorderRadius } from "@/constants/theme";
+import { ThemedText } from '@/components/ThemedText'
+import { useTheme } from '@/hooks/useTheme'
+import { useTenant } from '@/contexts/TenantContext'
+import { useLogoUpload } from '@/hooks/useLogoUpload'
+import { Spacing, BorderRadius } from '@/constants/theme'
 
-const LOGO_SIZE = 120;
+const LOGO_SIZE = 120
 
 function getInitials(name: string): string {
   return name
-    .split(" ")
+    .split(' ')
     .map((w) => w[0])
-    .join("")
+    .join('')
     .slice(0, 2)
-    .toUpperCase();
+    .toUpperCase()
 }
 
 export default function LogoNegocioScreen() {
-  const headerHeight = useHeaderHeight();
-  const tabBarHeight = useBottomTabBarHeight();
-  const { theme } = useTheme();
-  const { config, updateTenant } = useTenant();
-  const { uploading, uploadLogo } = useLogoUpload();
-  const [localUri, setLocalUri] = useState<string | null>(null);
+  const headerHeight = useHeaderHeight()
+  const tabBarHeight = useBottomTabBarHeight()
+  const { theme } = useTheme()
+  const { config, updateTenant } = useTenant()
+  const { uploading, uploadLogo } = useLogoUpload()
+  const [localUri, setLocalUri] = useState<string | null>(null)
 
-  const currentLogo = localUri || config.logo || null;
-  const initials = getInitials(config.businessName || "GeemaStudio");
+  const currentLogo = localUri || config.logo || null
+  const initials = getInitials(config.businessName || 'GeemaStudio')
 
   const handleUpload = async (uri: string) => {
-    setLocalUri(uri);
-    const result = await uploadLogo(uri);
+    setLocalUri(uri)
+    const result = await uploadLogo(uri)
     if (result.ok && result.url) {
-      await updateTenant({ logo: result.url }, { syncRemote: true });
-      Alert.alert("✓ Logo guardado", "El logo se actualizó correctamente.");
+      await updateTenant({ logo: result.url }, { syncRemote: true })
+      Alert.alert('✓ Logo guardado', 'El logo se actualizó correctamente.')
     } else {
-      setLocalUri(null);
-      Alert.alert("Error", result.error ?? "No se pudo subir el logo.");
+      setLocalUri(null)
+      Alert.alert('Error', result.error ?? 'No se pudo subir el logo.')
     }
-  };
+  }
 
   const handlePickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert("Permiso denegado", "Necesitamos acceso a tu galería.");
-      return;
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    if (status !== 'granted') {
+      Alert.alert('Permiso denegado', 'Necesitamos acceso a tu galería.')
+      return
     }
 
-    Alert.alert("Logo del negocio", "¿De dónde quieres tomar el logo?", [
+    Alert.alert('Logo del negocio', '¿De dónde quieres tomar el logo?', [
       {
-        text: "Cámara",
+        text: 'Cámara',
         onPress: async () => {
-          const cam = await ImagePicker.requestCameraPermissionsAsync();
-          if (cam.status !== "granted") return;
+          const cam = await ImagePicker.requestCameraPermissionsAsync()
+          if (cam.status !== 'granted') return
           const result = await ImagePicker.launchCameraAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [1, 1],
             quality: 0.9,
-          });
+          })
           if (!result.canceled && result.assets[0]) {
-            await handleUpload(result.assets[0].uri);
+            await handleUpload(result.assets[0].uri)
           }
         },
       },
       {
-        text: "Galería",
+        text: 'Galería',
         onPress: async () => {
           const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [1, 1],
             quality: 0.9,
-          });
+          })
           if (!result.canceled && result.assets[0]) {
-            await handleUpload(result.assets[0].uri);
+            await handleUpload(result.assets[0].uri)
           }
         },
       },
-      { text: "Cancelar", style: "cancel" },
-    ]);
-  };
+      { text: 'Cancelar', style: 'cancel' },
+    ])
+  }
 
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: theme.backgroundRoot }]}
       contentContainerStyle={{
         paddingTop: headerHeight + Spacing.xl,
-        paddingBottom: tabBarHeight + Spacing["3xl"],
+        paddingBottom: tabBarHeight + Spacing['3xl'],
         paddingHorizontal: Spacing.lg,
-        alignItems: "center",
+        alignItems: 'center',
       }}
       showsVerticalScrollIndicator={false}
     >
@@ -124,11 +124,7 @@ export default function LogoNegocioScreen() {
 
       <Animated.View entering={FadeIn.duration(400)} style={styles.logoWrap}>
         {currentLogo ? (
-          <Image
-            source={{ uri: currentLogo }}
-            style={styles.logoImage}
-            resizeMode="cover"
-          />
+          <Image source={{ uri: currentLogo }} style={styles.logoImage} resizeMode="cover" />
         ) : (
           <View
             style={[
@@ -152,7 +148,7 @@ export default function LogoNegocioScreen() {
       </Animated.View>
 
       <ThemedText style={[styles.hintText, { color: theme.textSecondary }]}>
-        Recomendado: imagen cuadrada de al menos 512×512px.{"\n"}
+        Recomendado: imagen cuadrada de al menos 512×512px.{'\n'}
         Se mostrará en la pantalla de login de tu negocio.
       </ThemedText>
 
@@ -169,7 +165,7 @@ export default function LogoNegocioScreen() {
       >
         <Feather name="upload" size={18} color={theme.primary} />
         <ThemedText style={[styles.pickButtonLabel, { color: theme.primary }]}>
-          {currentLogo ? "Cambiar logo" : "Subir logo"}
+          {currentLogo ? 'Cambiar logo' : 'Subir logo'}
         </ThemedText>
       </Pressable>
 
@@ -177,76 +173,76 @@ export default function LogoNegocioScreen() {
         <Pressable
           onPress={async () => {
             Alert.alert(
-              "Quitar logo",
-              "¿Seguro que quieres quitar el logo? Se usarán las iniciales como fallback.",
+              'Quitar logo',
+              '¿Seguro que quieres quitar el logo? Se usarán las iniciales como fallback.',
               [
-                { text: "Cancelar", style: "cancel" },
+                { text: 'Cancelar', style: 'cancel' },
                 {
-                  text: "Quitar",
-                  style: "destructive",
+                  text: 'Quitar',
+                  style: 'destructive',
                   onPress: async () => {
-                    setLocalUri(null);
-                    await updateTenant({ logo: "" }, { syncRemote: true });
+                    setLocalUri(null)
+                    await updateTenant({ logo: '' }, { syncRemote: true })
                   },
                 },
-              ],
-            );
+              ]
+            )
           }}
           style={styles.removeButton}
         >
-          <ThemedText style={{ fontSize: 13, color: theme.error ?? "#E57373" }}>
+          <ThemedText style={{ fontSize: 13, color: theme.error ?? '#E57373' }}>
             Quitar logo
           </ThemedText>
         </Pressable>
       )}
     </ScrollView>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
   sectionTitle: {
     fontSize: 12,
-    fontWeight: "600",
-    textTransform: "uppercase",
+    fontWeight: '600',
+    textTransform: 'uppercase',
     letterSpacing: 0.5,
     marginBottom: Spacing.lg,
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
   },
   logoWrap: {
     width: LOGO_SIZE,
     height: LOGO_SIZE,
     borderRadius: LOGO_SIZE / 2,
-    overflow: "hidden",
+    overflow: 'hidden',
     marginBottom: Spacing.xl,
-    position: "relative",
+    position: 'relative',
   },
   logoImage: { width: LOGO_SIZE, height: LOGO_SIZE },
   logoPlaceholder: {
     width: LOGO_SIZE,
     height: LOGO_SIZE,
     borderRadius: LOGO_SIZE / 2,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.12)",
+    borderColor: 'rgba(255,255,255,0.12)',
   },
-  logoInitials: { fontSize: 38, fontWeight: "700" },
+  logoInitials: { fontSize: 38, fontWeight: '700' },
   uploadOverlay: {
     ...StyleSheet.absoluteFill,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   hintText: {
     fontSize: 13,
-    textAlign: "center",
+    textAlign: 'center',
     lineHeight: 20,
-    marginBottom: Spacing["2xl"],
+    marginBottom: Spacing['2xl'],
   },
   pickButton: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: Spacing.sm,
     paddingVertical: 14,
     paddingHorizontal: Spacing.xl,
@@ -254,6 +250,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: Spacing.md,
   },
-  pickButtonLabel: { fontSize: 15, fontWeight: "600" },
+  pickButtonLabel: { fontSize: 15, fontWeight: '600' },
   removeButton: { marginTop: Spacing.sm, padding: Spacing.sm },
-});
+})

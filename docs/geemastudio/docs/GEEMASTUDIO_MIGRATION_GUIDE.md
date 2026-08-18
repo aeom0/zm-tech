@@ -36,20 +36,20 @@ Se identificaron ~180+ referencias hardcodeadas al salón original distribuidas 
 
 #### Resumen de hallazgos por categoría:
 
-| Categoría | Archivos principales | Cant. aprox. |
-|-----------|---------------------|-------------|
-| Nombre del negocio (ZM Lash & Nails) | LoginScreen, SettingsScreen, ProfileScreen, DashboardScreen, MainTabNavigator, PersonalScreen, apps/web/* | 22+ |
-| Teléfono (+51 932 535 512) | apps/web/src/app/page.tsx, Navbar.tsx | 4 |
-| Direcciones físicas (Surco, Lima) | apps/web/src/app/page.tsx, layout.tsx | 9+ |
-| Redes sociales (@zmlashandnails) | apps/web/src/app/page.tsx | 4 |
-| Nombres de empleadas (Vanessa, Stephani, Yosaida, Romina) | page.tsx, finanzas/page.tsx, PersonalScreen, seed-employees.sql, seed-auth-users.mjs | 15+ |
-| Supabase IDs hardcodeados (udelxwwnyivknslueerr) | apps/mobile/lib/supabase.ts, .env.example, apps/web/.env.local.example | 5+ |
-| Colores hardcodeados (#7B2D8E, #D4AF37) | app.json, useNotifications.ts, PersonalScreen, MainTabNavigator, tailwind.config.ts, finanzas/* | 40+ |
-| Moneda S/ hardcodeada | FinancesScreen, DashboardScreen, AgendaScreen, ServicesScreen, InventoryScreen, finanzas/page.tsx | 50+ |
-| Horarios del salón (10AM-7PM) | apps/web/src/app/layout.tsx, page.tsx | 4 |
-| Package/bundle names (com.zmlash*) | apps/mobile/app.json, google-services.json, package.json raíz | 10+ |
-| Emails @zmlashnails.com | scripts/seed-auth-users.mjs, LoginScreen, PersonalScreen | 8+ |
-| DB names (zm_lash_nails) | .env.example, seed-services.sql, seed-employees.sql | 3 |
+| Categoría                                                 | Archivos principales                                                                                      | Cant. aprox. |
+| --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------ |
+| Nombre del negocio (ZM Lash & Nails)                      | LoginScreen, SettingsScreen, ProfileScreen, DashboardScreen, MainTabNavigator, PersonalScreen, apps/web/* | 22+          |
+| Teléfono (+51 932 535 512)                                | apps/web/src/app/page.tsx, Navbar.tsx                                                                     | 4            |
+| Direcciones físicas (Surco, Lima)                         | apps/web/src/app/page.tsx, layout.tsx                                                                     | 9+           |
+| Redes sociales (@zmlashandnails)                          | apps/web/src/app/page.tsx                                                                                 | 4            |
+| Nombres de empleadas (Vanessa, Stephani, Yosaida, Romina) | page.tsx, finanzas/page.tsx, PersonalScreen, seed-employees.sql, seed-auth-users.mjs                      | 15+          |
+| Supabase IDs hardcodeados (udelxwwnyivknslueerr)          | apps/mobile/lib/supabase.ts, .env.example, apps/web/.env.local.example                                    | 5+           |
+| Colores hardcodeados (#7B2D8E, #D4AF37)                   | app.json, useNotifications.ts, PersonalScreen, MainTabNavigator, tailwind.config.ts, finanzas/*           | 40+          |
+| Moneda S/ hardcodeada                                     | FinancesScreen, DashboardScreen, AgendaScreen, ServicesScreen, InventoryScreen, finanzas/page.tsx         | 50+          |
+| Horarios del salón (10AM-7PM)                             | apps/web/src/app/layout.tsx, page.tsx                                                                     | 4            |
+| Package/bundle names (com.zmlash*)                        | apps/mobile/app.json, google-services.json, package.json raíz                                             | 10+          |
+| Emails @zmlashnails.com                                   | scripts/seed-auth-users.mjs, LoginScreen, PersonalScreen                                                  | 8+           |
+| DB names (zm_lash_nails)                                  | .env.example, seed-services.sql, seed-employees.sql                                                       | 3            |
 
 ---
 
@@ -79,67 +79,68 @@ packages/tenant-config/
 
 ```typescript
 export interface TenantConfig {
-  businessName: string;
-  businessType: 'spa-nails' | 'barbershop' | 'hair-salon' | 'full-aesthetic';
-  logo?: string;
-  tagline?: string;
+  businessName: string
+  businessType: 'spa-nails' | 'barbershop' | 'hair-salon' | 'full-aesthetic'
+  logo?: string
+  tagline?: string
 
   theme: {
-    primaryColor: string;
-    accentColor: string;
-    darkMode: boolean;
-  };
+    primaryColor: string
+    accentColor: string
+    darkMode: boolean
+  }
 
   locale: {
-    currency: { code: string; symbol: string };
-    country: string;
-    timezone: string;
-    language: 'es' | 'es-PE' | 'es-VE' | 'es-CO' | 'pt-BR';
-  };
+    currency: { code: string; symbol: string }
+    country: string
+    timezone: string
+    language: 'es' | 'es-PE' | 'es-VE' | 'es-CO' | 'pt-BR'
+  }
 
   terminology: {
-    staff: string;         // "chicas" | "barberos" | "estilistas" | "especialistas"
-    staffSingular: string;
-    appointment: string;   // "cita" | "turno" | "reserva"
-    client: string;        // "cliente" | "clienta"
-  };
+    staff: string // "chicas" | "barberos" | "estilistas" | "especialistas"
+    staffSingular: string
+    appointment: string // "cita" | "turno" | "reserva"
+    client: string // "cliente" | "clienta"
+  }
 
   contact: {
-    phone?: string;
-    whatsapp?: string;
-    email?: string;
-    address?: string;
-    instagram?: string;
-    facebook?: string;
-    tiktok?: string;
-  };
+    phone?: string
+    whatsapp?: string
+    email?: string
+    address?: string
+    instagram?: string
+    facebook?: string
+    tiktok?: string
+  }
 
   businessHours: {
-    [day: string]: { open: string; close: string } | null;
-  };
+    [day: string]: { open: string; close: string } | null
+  }
 
   commissions: {
-    defaultStaffPercent: number;
-    defaultHousePercent: number;
-  };
+    defaultStaffPercent: number
+    defaultHousePercent: number
+  }
 
   supabase?: {
-    url: string;
-    anonKey: string;
-  };
+    url: string
+    anonKey: string
+  }
 }
 ```
 
 #### Presets a crear:
 
-| Preset | Negocio ejemplo | Color primario | Color acento | Staff | Cita |
-|--------|----------------|----------------|--------------|-------|------|
-| `spa-nails.ts` | "Spa Bella" | #40E0D0 | #D4AF37 | "chicas" / "especialista" | "cita" |
-| `barbershop.ts` | "Barbería Clásica" | #1A237E | #F9A825 | "barberos" / "barbero" | "turno" |
-| `hair-salon.ts` | "Salón de Estilo" | #6A1B9A | #9E9E9E | "estilistas" / "estilista" | "cita" |
-| `full-aesthetic.ts` | "Centro Estético Integral" | #00695C | #FFD700 | "especialistas" / "especialista" | "cita" |
+| Preset              | Negocio ejemplo            | Color primario | Color acento | Staff                            | Cita    |
+| ------------------- | -------------------------- | -------------- | ------------ | -------------------------------- | ------- |
+| `spa-nails.ts`      | "Spa Bella"                | #40E0D0        | #D4AF37      | "chicas" / "especialista"        | "cita"  |
+| `barbershop.ts`     | "Barbería Clásica"         | #1A237E        | #F9A825      | "barberos" / "barbero"           | "turno" |
+| `hair-salon.ts`     | "Salón de Estilo"          | #6A1B9A        | #9E9E9E      | "estilistas" / "estilista"       | "cita"  |
+| `full-aesthetic.ts` | "Centro Estético Integral" | #00695C        | #FFD700      | "especialistas" / "especialista" | "cita"  |
 
 Horarios típicos:
+
 - spa-nails: L-S 10:00–19:00, D 10:30–13:00
 - barbershop: L-S 09:00–20:00, D null (cerrado)
 - hair-salon: L-S 09:00–19:00, D null
@@ -163,6 +164,7 @@ Horarios típicos:
 ```
 
 Agregar `"@zmtech/tenant-config": "workspace:*"` como dependencia en:
+
 - `apps/mobile/package.json`
 - `packages/shared-schema/package.json` (si se necesita)
 
@@ -182,26 +184,27 @@ Agregar `"@zmtech/tenant-config": "workspace:*"` como dependencia en:
 
 Archivos a modificar y qué cambiar:
 
-| Archivo | Qué reemplazar |
-|---------|---------------|
-| `apps/mobile/screens/LoginScreen.tsx:127` | placeholder email `@zmlashnails.com` → `@{dominio}` o genérico |
-| `apps/mobile/screens/SettingsScreen.tsx:59` | `"ZM Lash & Nails Beauty"` → `config.businessName` |
-| `apps/mobile/screens/ProfileScreen.tsx:35` | `"Panel de gestión ZM Lash & Nails"` → `config.businessName` |
-| `apps/mobile/screens/DashboardScreen.tsx:491` | `"ZM"` → iniciales de `config.businessName` |
-| `apps/mobile/navigation/MainTabNavigator.tsx:83` | `headerTitle: "ZM Lash & Nails"` → `config.businessName` |
-| `apps/mobile/screens/PersonalScreen.tsx:261,270,281` | placeholders con nombres/emails reales → genéricos |
-| `apps/mobile/hooks/useNotifications.ts:36,39` | nombre canal + color → `config.businessName`, `config.theme.primaryColor` |
-| `apps/mobile/screens/FinancesScreen.tsx` (16+ lugares) | `S/` → `config.locale.currency.symbol` |
-| `apps/mobile/screens/DashboardScreen.tsx` (3 lugares) | `S/` → `config.locale.currency.symbol` |
-| `apps/mobile/screens/AgendaScreen.tsx` (2 lugares) | `S/` → `config.locale.currency.symbol` |
-| `apps/mobile/screens/ServicesScreen.tsx` (2 lugares) | `S/` → `config.locale.currency.symbol` |
-| `apps/mobile/screens/InventoryScreen.tsx:499` | `Costo (S/)` → `Costo (${symbol})` |
-| `apps/mobile/screens/PersonalScreen.tsx:37,38` | colores preset #7B2D8E, #D4AF37 → usar theme |
-| `apps/mobile/navigation/MainTabNavigator.tsx:33,49` | `#7B2D8E` → `config.theme.primaryColor` |
+| Archivo                                                | Qué reemplazar                                                            |
+| ------------------------------------------------------ | ------------------------------------------------------------------------- |
+| `apps/mobile/screens/LoginScreen.tsx:127`              | placeholder email `@zmlashnails.com` → `@{dominio}` o genérico            |
+| `apps/mobile/screens/SettingsScreen.tsx:59`            | `"ZM Lash & Nails Beauty"` → `config.businessName`                        |
+| `apps/mobile/screens/ProfileScreen.tsx:35`             | `"Panel de gestión ZM Lash & Nails"` → `config.businessName`              |
+| `apps/mobile/screens/DashboardScreen.tsx:491`          | `"ZM"` → iniciales de `config.businessName`                               |
+| `apps/mobile/navigation/MainTabNavigator.tsx:83`       | `headerTitle: "ZM Lash & Nails"` → `config.businessName`                  |
+| `apps/mobile/screens/PersonalScreen.tsx:261,270,281`   | placeholders con nombres/emails reales → genéricos                        |
+| `apps/mobile/hooks/useNotifications.ts:36,39`          | nombre canal + color → `config.businessName`, `config.theme.primaryColor` |
+| `apps/mobile/screens/FinancesScreen.tsx` (16+ lugares) | `S/` → `config.locale.currency.symbol`                                    |
+| `apps/mobile/screens/DashboardScreen.tsx` (3 lugares)  | `S/` → `config.locale.currency.symbol`                                    |
+| `apps/mobile/screens/AgendaScreen.tsx` (2 lugares)     | `S/` → `config.locale.currency.symbol`                                    |
+| `apps/mobile/screens/ServicesScreen.tsx` (2 lugares)   | `S/` → `config.locale.currency.symbol`                                    |
+| `apps/mobile/screens/InventoryScreen.tsx:499`          | `Costo (S/)` → `Costo (${symbol})`                                        |
+| `apps/mobile/screens/PersonalScreen.tsx:37,38`         | colores preset #7B2D8E, #D4AF37 → usar theme                              |
+| `apps/mobile/navigation/MainTabNavigator.tsx:33,49`    | `#7B2D8E` → `config.theme.primaryColor`                                   |
 
 #### 3.3 Actualizar sistema de tema
 
 En `apps/mobile/constants/theme.ts`:
+
 - Crear función `createTheme(config: TenantConfig): Theme`
 - El objeto estático actual pasa a ser el tema del preset `spa-nails` por defecto
 - El hook `useTheme()` en `apps/mobile/hooks/useTheme.ts` debe llamar a `useTenant()` e invocar `createTheme(config)`
@@ -223,6 +226,7 @@ Acciones en `scripts/db/`:
 5. Actualizar `scripts/seed-auth-users.mjs` → usar emails `@ejemplo.com` ficticios
 
 Actualizar `README.md` raíz:
+
 - Nombre: **GeemaStudio**
 - Descripción genérica del producto
 - Sección "Tipos de negocio soportados"
@@ -244,18 +248,20 @@ OnboardingCompleteScreen.tsx       ← paso 5: listo, ir al dashboard
 ```
 
 Lógica:
+
 - Solo se muestra si `AsyncStorage` no tiene `@geemastudio/tenant_configured: true`
 - Al completar: guarda config en AsyncStorage + Supabase tabla `tenant_settings`
 - `RootStackNavigator` verifica si hay config → Onboarding o App principal
 
 UI `OnboardingBusinessTypeScreen`:
+
 - 4 cards grandes con icono emoji, nombre y descripción
 - Iconos: 💅 Spa/Uñas, ✂️ Barbería, 💇 Peluquería, 🌿 Estética Integral
 - Al seleccionar → aplica preset como punto de partida y navega al paso 2
 
 ---
 
-### ✅ FASE 6 — Schema de BD actualizado *(completada 2026-03-12)*
+### ✅ FASE 6 — Schema de BD actualizado _(completada 2026-03-12)_
 
 Tabla `tenant_settings` agregada a `packages/shared-schema/src/schema.ts` con defaults
 neutros LATAM (USD/$, país vacío, idioma `es`, terminología `especialistas`).
@@ -274,6 +280,7 @@ Agregar políticas Row Level Security en Supabase para que cada owner
 solo pueda leer y escribir su propio registro.
 
 SQL a ejecutar en SQL Editor del Dashboard:
+
 ```sql
 -- Habilitar RLS
 ALTER TABLE tenant_settings ENABLE ROW LEVEL SECURITY;

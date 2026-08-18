@@ -1,7 +1,7 @@
 // ============================================================
 // Chips de filtro (exclusivos + chip suelto)
 // ============================================================
-import React from 'react';
+import React from 'react'
 import {
   View,
   Text,
@@ -9,36 +9,30 @@ import {
   StyleSheet,
   type StyleProp,
   type ViewStyle,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+} from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 
-import { colors, typography, spacing, borderRadius } from '../../utils/theme';
-import { hapticLight } from '../../utils/haptics';
+import { colors, typography, spacing, borderRadius } from '../../utils/theme'
+import { hapticLight } from '../../utils/haptics'
 
 export interface FilterChipOption<T extends string = string> {
-  value: T;
-  label: string;
-  icon?: keyof typeof Ionicons.glyphMap;
-  tone?: 'default' | 'warning';
+  value: T
+  label: string
+  icon?: keyof typeof Ionicons.glyphMap
+  tone?: 'default' | 'warning'
 }
 
 interface FilterChipProps {
-  label: string;
-  selected: boolean;
-  onPress: () => void;
-  icon?: keyof typeof Ionicons.glyphMap;
-  tone?: 'default' | 'warning';
+  label: string
+  selected: boolean
+  onPress: () => void
+  icon?: keyof typeof Ionicons.glyphMap
+  tone?: 'default' | 'warning'
 }
 
-export function FilterChip({
-  label,
-  selected,
-  onPress,
-  icon,
-  tone = 'default',
-}: FilterChipProps) {
-  const isWarning = tone === 'warning';
-  const active = selected;
+export function FilterChip({ label, selected, onPress, icon, tone = 'default' }: FilterChipProps) {
+  const isWarning = tone === 'warning'
+  const active = selected
 
   return (
     <TouchableOpacity
@@ -49,8 +43,8 @@ export function FilterChip({
         !active && isWarning && styles.chipWarningIdle,
       ]}
       onPress={() => {
-        void hapticLight();
-        onPress();
+        void hapticLight()
+        onPress()
       }}
       activeOpacity={0.8}
     >
@@ -79,14 +73,14 @@ export function FilterChip({
         {label}
       </Text>
     </TouchableOpacity>
-  );
+  )
 }
 
 interface FilterChipsProps<T extends string> {
-  options: FilterChipOption<T>[];
-  value: T;
-  onChange: (value: T) => void;
-  style?: StyleProp<ViewStyle>;
+  options: FilterChipOption<T>[]
+  value: T
+  onChange: (value: T) => void
+  style?: StyleProp<ViewStyle>
 }
 
 export function FilterChips<T extends string>({
@@ -108,7 +102,7 @@ export function FilterChips<T extends string>({
         />
       ))}
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -149,4 +143,4 @@ const styles = StyleSheet.create({
   chipTextActive: {
     color: colors.text.inverse,
   },
-});
+})

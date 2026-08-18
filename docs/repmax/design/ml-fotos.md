@@ -8,13 +8,13 @@ Código: `apps/repmax-mobile/src/utils/mlPhotoRules.ts`.
 
 ## Técnica (bloquea Guardar / Usar foto)
 
-| Regla ML | En RepMAX |
-|----------|-----------|
-| JPG / JPEG / PNG | `mimeType` jpeg o png |
-| Mín. 500×500 px | `min(width,height) >= 500` → si no, ReviewFail |
+| Regla ML                   | En RepMAX                                             |
+| -------------------------- | ----------------------------------------------------- |
+| JPG / JPEG / PNG           | `mimeType` jpeg o png                                 |
+| Mín. 500×500 px            | `min(width,height) >= 500` → si no, ReviewFail        |
 | Ideal 1200×1200; máx. 1920 | Resize a 1200² JPEG q=0.85 (`expo-image-manipulator`) |
-| Máx. 10 MB | **5 MB** — techo del bucket `repmax-products` |
-| RGB (no CMYK) | Asumido en captura móvil |
+| Máx. 10 MB                 | **5 MB** — techo del bucket `repmax-products`         |
+| RGB (no CMYK)              | Asumido en captura móvil                              |
 
 Storage path: `{store_id}/drafts/{ts}-{rand}.jpg`. Policy: primer folder = `store_id` del miembro.
 
@@ -45,14 +45,14 @@ Orden = orden de `pictures[]` al publicar:
 
 ## Ficha (hints en el form)
 
-| Campo RepMAX | Atributo / regla ML |
-|--------------|---------------------|
-| Título | Producto + Marca + “compatible con” + vehículo. Sin stock ni precio |
-| Número de parte | `PART_NUMBER` / OEM |
-| Marca | `BRAND` (de la pieza, no siempre la del auto) |
-| Modelo / años | Compatibilidad autopartes |
-| Descripción | Sin teléfono, WhatsApp ni URL |
-| Color | `COLOR` — **aún no hay columna** en `repmax_products` |
+| Campo RepMAX    | Atributo / regla ML                                                 |
+| --------------- | ------------------------------------------------------------------- |
+| Título          | Producto + Marca + “compatible con” + vehículo. Sin stock ni precio |
+| Número de parte | `PART_NUMBER` / OEM                                                 |
+| Marca           | `BRAND` (de la pieza, no siempre la del auto)                       |
+| Modelo / años   | Compatibilidad autopartes                                           |
+| Descripción     | Sin teléfono, WhatsApp ni URL                                       |
+| Color           | `COLOR` — **aún no hay columna** en `repmax_products`               |
 
 ## No hacer
 

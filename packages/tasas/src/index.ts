@@ -15,11 +15,7 @@ export type {
 export { normalizarRespuestaTasaApi } from './normalizarRespuesta'
 export type { RespuestaTasaApi } from './normalizarRespuesta'
 
-export {
-  convertirUsdABs,
-  convertirBsAUsd,
-  validarDetallesPagoMixto,
-} from './pagos'
+export { convertirUsdABs, convertirBsAUsd, validarDetallesPagoMixto } from './pagos'
 export type {
   MonedaPago,
   MetodoPago,

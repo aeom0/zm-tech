@@ -2,87 +2,97 @@
 // RepMAX Business Suite — Pantalla de Sesión de Caja
 // Phone: scroll único · Tablet: resumen | ventas
 // ============================================================
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'
 import {
-  View, Text, ScrollView, TouchableOpacity,
-  StyleSheet, ActivityIndicator, Alert, TextInput, Modal,
-  RefreshControl, FlatList,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  Alert,
+  TextInput,
+  Modal,
+  RefreshControl,
+  FlatList,
+} from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
 
-import { EmptyState } from '../../components/ui/EmptyState';
-import { saleService } from '../../services/saleService';
-import { formatUSD, formatDateTime } from '../../utils/formatters';
-import { PAYMENT_METHODS } from '../../constants/paymentMethods';
-import { useResponsive } from '../../hooks/useResponsive';
-import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
-import { useAuth } from '../../context/AuthContext';
-import type { CashSession, Sale } from '../../types/database';
+import { EmptyState } from '../../components/ui/EmptyState'
+import { saleService } from '../../services/saleService'
+import { formatUSD, formatDateTime } from '../../utils/formatters'
+import { PAYMENT_METHODS } from '../../constants/paymentMethods'
+import { useResponsive } from '../../hooks/useResponsive'
+import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme'
+import { useAuth } from '../../context/AuthContext'
+import type { CashSession, Sale } from '../../types/database'
 
 export default function CashSessionScreen() {
-  const { store, storeUser } = useAuth();
-  const { isTabletUp } = useResponsive();
-  const [session, setSession] = useState<CashSession | null>(null);
-  const [sales, setSales] = useState<Sale[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const { store, storeUser } = useAuth()
+  const { isTabletUp } = useResponsive()
+  const [session, setSession] = useState<CashSession | null>(null)
+  const [sales, setSales] = useState<Sale[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
 
-  const [showOpenModal, setShowOpenModal] = useState(false);
-  const [showCloseModal, setShowCloseModal] = useState(false);
-  const [openingAmount, setOpeningAmount] = useState('');
-  const [closingAmount, setClosingAmount] = useState('');
-  const [sessionNotes, setSessionNotes] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showOpenModal, setShowOpenModal] = useState(false)
+  const [showCloseModal, setShowCloseModal] = useState(false)
+  const [openingAmount, setOpeningAmount] = useState('')
+  const [closingAmount, setClosingAmount] = useState('')
+  const [sessionNotes, setSessionNotes] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const loadData = useCallback(async () => {
     try {
-      const activeSession = await saleService.getActiveSession();
-      setSession(activeSession);
+      const activeSession = await saleService.getActiveSession()
+      setSession(activeSession)
 
       if (activeSession) {
-        const sessionSales = await saleService.getAll(activeSession.id);
-        setSales(sessionSales);
+        const sessionSales = await saleService.getAll(activeSession.id)
+        setSales(sessionSales)
       } else {
-        setSales([]);
+        setSales([])
       }
     } catch {
       // Error silencioso
     } finally {
-      setIsLoading(false);
-      setRefreshing(false);
+      setIsLoading(false)
+      setRefreshing(false)
     }
-  }, []);
+  }, [])
 
-  useEffect(() => { loadData(); }, [loadData]);
+  useEffect(() => {
+    loadData()
+  }, [loadData])
 
   const handleRefresh = () => {
-    setRefreshing(true);
-    loadData();
-  };
+    setRefreshing(true)
+    loadData()
+  }
 
   const handleOpenSession = async () => {
-    setIsSubmitting(true);
+    setIsSubmitting(true)
     try {
       const newSession = await saleService.openSession(
         store!.id,
         storeUser!.id,
         parseFloat(openingAmount) || 0,
         sessionNotes || undefined
-      );
-      setSession(newSession);
-      setShowOpenModal(false);
-      setOpeningAmount('');
-      setSessionNotes('');
+      )
+      setSession(newSession)
+      setShowOpenModal(false)
+      setOpeningAmount('')
+      setSessionNotes('')
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'No se pudo abrir la caja.';
-      Alert.alert('Error', msg);
+      const msg = err instanceof Error ? err.message : 'No se pudo abrir la caja.'
+      Alert.alert('Error', msg)
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   const handleCloseSession = async () => {
-    if (!session) return;
+    if (!session) return
     Alert.alert(
       'Cerrar caja',
       '¿Confirmas el cierre de la sesión actual? No podrás agregar más ventas a esta sesión.',
@@ -92,44 +102,49 @@ export default function CashSessionScreen() {
           text: 'Cerrar caja',
           style: 'destructive',
           onPress: async () => {
-            setIsSubmitting(true);
+            setIsSubmitting(true)
             try {
               await saleService.closeSession(
                 session.id,
                 parseFloat(closingAmount) || 0,
                 sessionNotes || undefined
-              );
-              setShowCloseModal(false);
-              setClosingAmount('');
-              setSessionNotes('');
-              await loadData();
+              )
+              setShowCloseModal(false)
+              setClosingAmount('')
+              setSessionNotes('')
+              await loadData()
             } catch (err: unknown) {
-              const msg = err instanceof Error ? err.message : 'No se pudo cerrar la caja.';
-              Alert.alert('Error', msg);
+              const msg = err instanceof Error ? err.message : 'No se pudo cerrar la caja.'
+              Alert.alert('Error', msg)
             } finally {
-              setIsSubmitting(false);
+              setIsSubmitting(false)
             }
           },
         },
       ]
-    );
-  };
+    )
+  }
 
-  const totalBySales = sales.reduce((sum, s) => sum + Number(s.totalUsd), 0);
+  const totalBySales = sales.reduce((sum, s) => sum + Number(s.totalUsd), 0)
 
   if (isLoading) {
     return (
       <View style={styles.centered}>
         <ActivityIndicator size="large" color={colors.brand.orange} />
       </View>
-    );
+    )
   }
 
   const statusPanel = (
     <View style={styles.statusPanel}>
       <View style={[styles.statusCard, session ? styles.statusOpen : styles.statusClosed]}>
         <View style={styles.statusHeader}>
-          <View style={[styles.statusDot, { backgroundColor: session ? colors.semantic.success : colors.text.disabled }]} />
+          <View
+            style={[
+              styles.statusDot,
+              { backgroundColor: session ? colors.semantic.success : colors.text.disabled },
+            ]}
+          />
           <Text style={styles.statusLabel}>{session ? 'Caja abierta' : 'Caja cerrada'}</Text>
         </View>
         {session ? (
@@ -137,10 +152,14 @@ export default function CashSessionScreen() {
             <Text style={styles.sessionTime}>Abierta el {formatDateTime(session.openedAt)}</Text>
             <Text style={styles.sessionTotal}>{formatUSD(totalBySales)}</Text>
             <Text style={styles.sessionTotalLabel}>Total en ventas</Text>
-            <Text style={styles.sessionCount}>{sales.length} venta{sales.length !== 1 ? 's' : ''}</Text>
+            <Text style={styles.sessionCount}>
+              {sales.length} venta{sales.length !== 1 ? 's' : ''}
+            </Text>
           </>
         ) : (
-          <Text style={styles.noSessionText}>No hay sesión activa. Abre la caja para comenzar a vender.</Text>
+          <Text style={styles.noSessionText}>
+            No hay sesión activa. Abre la caja para comenzar a vender.
+          </Text>
         )}
       </View>
 
@@ -156,7 +175,7 @@ export default function CashSessionScreen() {
         </TouchableOpacity>
       )}
     </View>
-  );
+  )
 
   const salesList = (
     <View style={styles.salesPanel}>
@@ -182,7 +201,8 @@ export default function CashSessionScreen() {
               <View style={styles.saleLeft}>
                 <Text style={styles.saleTime}>{formatDateTime(sale.createdAt)}</Text>
                 <Text style={styles.saleMethod}>
-                  {PAYMENT_METHODS.find((m) => m.value === sale.paymentMethod)?.label ?? sale.paymentMethod}
+                  {PAYMENT_METHODS.find((m) => m.value === sale.paymentMethod)?.label ??
+                    sale.paymentMethod}
                 </Text>
               </View>
               <Text style={styles.saleAmount}>{formatUSD(sale.totalUsd)}</Text>
@@ -190,12 +210,16 @@ export default function CashSessionScreen() {
           )}
           contentContainerStyle={styles.salesList}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor={colors.brand.orange} />
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              tintColor={colors.brand.orange}
+            />
           }
         />
       )}
     </View>
-  );
+  )
 
   const modals = (
     <>
@@ -285,7 +309,7 @@ export default function CashSessionScreen() {
         </View>
       </Modal>
     </>
-  );
+  )
 
   if (isTabletUp) {
     return (
@@ -294,7 +318,11 @@ export default function CashSessionScreen() {
           style={styles.splitLeft}
           contentContainerStyle={styles.splitLeftContent}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor={colors.brand.orange} />
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              tintColor={colors.brand.orange}
+            />
           }
         >
           {statusPanel}
@@ -303,7 +331,7 @@ export default function CashSessionScreen() {
         {salesList}
         {modals}
       </View>
-    );
+    )
   }
 
   return (
@@ -311,7 +339,11 @@ export default function CashSessionScreen() {
       <ScrollView
         contentContainerStyle={styles.scroll}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} tintColor={colors.brand.orange} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            tintColor={colors.brand.orange}
+          />
         }
       >
         {statusPanel}
@@ -323,7 +355,8 @@ export default function CashSessionScreen() {
                 <View style={styles.saleLeft}>
                   <Text style={styles.saleTime}>{formatDateTime(sale.createdAt)}</Text>
                   <Text style={styles.saleMethod}>
-                    {PAYMENT_METHODS.find((m) => m.value === sale.paymentMethod)?.label ?? sale.paymentMethod}
+                    {PAYMENT_METHODS.find((m) => m.value === sale.paymentMethod)?.label ??
+                      sale.paymentMethod}
                   </Text>
                 </View>
                 <Text style={styles.saleAmount}>{formatUSD(sale.totalUsd)}</Text>
@@ -334,12 +367,17 @@ export default function CashSessionScreen() {
       </ScrollView>
       {modals}
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.bg.primary },
-  centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.bg.primary },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.bg.primary,
+  },
   scroll: { padding: spacing.base, paddingBottom: spacing.xl },
   splitRoot: {
     flex: 1,
@@ -556,4 +594,4 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.bg.border,
   },
-});
+})

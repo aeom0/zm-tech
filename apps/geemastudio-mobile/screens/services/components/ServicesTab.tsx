@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from 'react'
 import {
   View,
   StyleSheet,
@@ -7,29 +7,29 @@ import {
   RefreshControl,
   Alert,
   ActivityIndicator,
-} from "react-native";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { Feather } from "@expo/vector-icons";
-import * as Haptics from "expo-haptics";
+} from 'react-native'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
+import { Feather } from '@expo/vector-icons'
+import * as Haptics from 'expo-haptics'
 
-import { ThemedText } from "@/components/ThemedText";
-import { useTheme } from "@/hooks/useTheme";
-import { useTenant } from "@/contexts/TenantContext";
-import { useAuth } from "@/contexts/AuthContext";
-import { Spacing, BorderRadius, Shadows } from "@/constants/theme";
+import { ThemedText } from '@/components/ThemedText'
+import { useTheme } from '@/hooks/useTheme'
+import { useTenant } from '@/contexts/TenantContext'
+import { useAuth } from '@/contexts/AuthContext'
+import { Spacing, BorderRadius, Shadows } from '@/constants/theme'
 
-import { useServicesData } from "../hooks/useServicesData";
-import type { ServicePayload } from "../hooks/useServicesData";
-import type { Service as ServiceRow } from "../types";
-import { ServiceCard } from "./ServiceCard";
-import { ServiceModal } from "./ServiceModal";
-import { CategoriesManageModal } from "./CategoriesManageModal";
+import { useServicesData } from '../hooks/useServicesData'
+import type { ServicePayload } from '../hooks/useServicesData'
+import type { Service as ServiceRow } from '../types'
+import { ServiceCard } from './ServiceCard'
+import { ServiceModal } from './ServiceModal'
+import { CategoriesManageModal } from './CategoriesManageModal'
 
 export function ServicesTab() {
-  const tabBarHeight = useBottomTabBarHeight();
-  const { theme } = useTheme();
-  const { config } = useTenant();
-  const { isAdmin } = useAuth();
+  const tabBarHeight = useBottomTabBarHeight()
+  const { theme } = useTheme()
+  const { config } = useTenant()
+  const { isAdmin } = useAuth()
 
   const {
     services,
@@ -45,43 +45,41 @@ export function ServicesTab() {
     updateCategoryMutation,
     deleteCategoryMutation,
     reorderCategoriesMutation,
-  } = useServicesData();
+  } = useServicesData()
 
-  const [filterCategoryId, setFilterCategoryId] = useState<string | null>(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [editing, setEditing] = useState<ServiceRow | null>(null);
-  const [categoriesModalVisible, setCategoriesModalVisible] = useState(false);
-  const [toggleLoading, setToggleLoading] = useState<Record<string, boolean>>(
-    {},
-  );
+  const [filterCategoryId, setFilterCategoryId] = useState<string | null>(null)
+  const [modalVisible, setModalVisible] = useState(false)
+  const [editing, setEditing] = useState<ServiceRow | null>(null)
+  const [categoriesModalVisible, setCategoriesModalVisible] = useState(false)
+  const [toggleLoading, setToggleLoading] = useState<Record<string, boolean>>({})
 
   const groupedServices = useMemo(() => {
     const groups = categories.map((category) => ({
       ...category,
       services: services.filter((s) => s.category_id === category.id),
-    }));
+    }))
     if (filterCategoryId) {
-      return groups.filter((g) => g.id === filterCategoryId);
+      return groups.filter((g) => g.id === filterCategoryId)
     }
-    return groups;
-  }, [categories, services, filterCategoryId]);
+    return groups
+  }, [categories, services, filterCategoryId])
 
   const openNew = useCallback(() => {
-    setEditing(null);
-    setModalVisible(true);
-    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-  }, []);
+    setEditing(null)
+    setModalVisible(true)
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+  }, [])
 
   const openEdit = useCallback((s: ServiceRow) => {
-    setEditing(s);
-    setModalVisible(true);
-    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-  }, []);
+    setEditing(s)
+    setModalVisible(true)
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+  }, [])
 
   const closeModal = useCallback(() => {
-    setModalVisible(false);
-    setEditing(null);
-  }, []);
+    setModalVisible(false)
+    setEditing(null)
+  }, [])
 
   const handleSave = useCallback(
     (payload: ServicePayload) => {
@@ -90,96 +88,80 @@ export function ServicesTab() {
           { id: editing.id, payload },
           {
             onSuccess: () => {
-              closeModal();
-              void Haptics.notificationAsync(
-                Haptics.NotificationFeedbackType.Success,
-              );
+              closeModal()
+              void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
             },
-            onError: (e: Error) =>
-              Alert.alert("Error", e.message ?? "No se pudo guardar"),
-          },
-        );
+            onError: (e: Error) => Alert.alert('Error', e.message ?? 'No se pudo guardar'),
+          }
+        )
       } else {
         createMutation.mutate(payload, {
           onSuccess: () => {
-            closeModal();
-            void Haptics.notificationAsync(
-              Haptics.NotificationFeedbackType.Success,
-            );
+            closeModal()
+            void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
           },
-          onError: (e: Error) =>
-            Alert.alert("Error", e.message ?? "No se pudo crear"),
-        });
+          onError: (e: Error) => Alert.alert('Error', e.message ?? 'No se pudo crear'),
+        })
       }
     },
-    [editing, updateMutation, createMutation, closeModal],
-  );
+    [editing, updateMutation, createMutation, closeModal]
+  )
 
   const handleDelete = useCallback(
     (s: ServiceRow) => {
-      Alert.alert(
-        "Eliminar servicio",
-        `¿Seguro que querés eliminar "${s.name}"?`,
-        [
-          { text: "Cancelar", style: "cancel" },
-          {
-            text: "Eliminar",
-            style: "destructive",
-            onPress: () => deleteMutation.mutate(s.id),
-          },
-        ],
-      );
+      Alert.alert('Eliminar servicio', `¿Seguro que querés eliminar "${s.name}"?`, [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Eliminar',
+          style: 'destructive',
+          onPress: () => deleteMutation.mutate(s.id),
+        },
+      ])
     },
-    [deleteMutation],
-  );
+    [deleteMutation]
+  )
 
   const handleToggle = useCallback(
     async (s: ServiceRow) => {
       if (toggleLoading[s.id]) {
-        return;
+        return
       }
-      setToggleLoading((prev) => ({ ...prev, [s.id]: true }));
+      setToggleLoading((prev) => ({ ...prev, [s.id]: true }))
       try {
         await toggleActiveMutation.mutateAsync({
           id: s.id,
           is_active: !s.is_active,
-        });
+        })
       } catch (e) {
-        Alert.alert(
-          "Error",
-          e instanceof Error ? e.message : "No se pudo actualizar",
-        );
+        Alert.alert('Error', e instanceof Error ? e.message : 'No se pudo actualizar')
       } finally {
         setToggleLoading((prev) => {
-          const n = { ...prev };
-          delete n[s.id];
-          return n;
-        });
+          const n = { ...prev }
+          delete n[s.id]
+          return n
+        })
       }
     },
-    [toggleActiveMutation, toggleLoading],
-  );
+    [toggleActiveMutation, toggleLoading]
+  )
 
-  const orderedCategoryIds = useMemo(
-    () => categories.map((c) => c.id),
-    [categories],
-  );
+  const orderedCategoryIds = useMemo(() => categories.map((c) => c.id), [categories])
 
   const moveCategory = useCallback(
     (id: string, dir: -1 | 1) => {
-      const idx = orderedCategoryIds.indexOf(id);
-      const j = idx + dir;
+      const idx = orderedCategoryIds.indexOf(id)
+      const j = idx + dir
       if (idx < 0 || j < 0 || j >= orderedCategoryIds.length) {
-        return;
+        return
       }
-      const next = [...orderedCategoryIds];
-      [next[idx], next[j]] = [next[j], next[idx]];
-      reorderCategoriesMutation.mutate(next);
+      const next = [...orderedCategoryIds]
+      ;[next[idx], next[j]] = [next[j], next[idx]]
+      reorderCategoriesMutation.mutate(next)
     },
-    [orderedCategoryIds, reorderCategoriesMutation],
-  );
+    [orderedCategoryIds, reorderCategoriesMutation]
+  )
 
-  const savePending = createMutation.isPending || updateMutation.isPending;
+  const savePending = createMutation.isPending || updateMutation.isPending
 
   return (
     <View style={styles.flex}>
@@ -201,16 +183,13 @@ export function ServicesTab() {
             onPress={() => setFilterCategoryId(null)}
           >
             <ThemedText
-              style={[
-                styles.filterChipText,
-                { color: !filterCategoryId ? "#FFFFFF" : theme.text },
-              ]}
+              style={[styles.filterChipText, { color: !filterCategoryId ? '#FFFFFF' : theme.text }]}
             >
               Todas
             </ThemedText>
           </Pressable>
           {categories.map((cat) => {
-            const isSelected = filterCategoryId === cat.id;
+            const isSelected = filterCategoryId === cat.id
             return (
               <Pressable
                 key={cat.id}
@@ -225,27 +204,24 @@ export function ServicesTab() {
                 onPress={() => setFilterCategoryId(cat.id)}
               >
                 <ThemedText
-                  style={[
-                    styles.filterChipText,
-                    { color: isSelected ? "#FFFFFF" : theme.text },
-                  ]}
+                  style={[styles.filterChipText, { color: isSelected ? '#FFFFFF' : theme.text }]}
                 >
                   {cat.name}
                 </ThemedText>
               </Pressable>
-            );
+            )
           })}
         </ScrollView>
         {isAdmin && (
           <Pressable
             style={[styles.manageBtn, { borderColor: theme.border }]}
             onPress={() => {
-              setCategoriesModalVisible(true);
-              void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+              setCategoriesModalVisible(true)
+              void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
             }}
           >
             <Feather name="folder" size={16} color={theme.primary} />
-            <ThemedText style={{ color: theme.primary, fontWeight: "600" }}>
+            <ThemedText style={{ color: theme.primary, fontWeight: '600' }}>
               Gestionar categorías
             </ThemedText>
           </Pressable>
@@ -260,22 +236,13 @@ export function ServicesTab() {
           paddingHorizontal: Spacing.lg,
         }}
         refreshControl={
-          <RefreshControl
-            refreshing={isLoading}
-            onRefresh={refetch}
-            tintColor={theme.primary}
-          />
+          <RefreshControl refreshing={isLoading} onRefresh={refetch} tintColor={theme.primary} />
         }
       >
         {isLoading ? (
           <View style={styles.empty}>
             <ActivityIndicator size="large" color={theme.primary} />
-            <ThemedText
-              style={[
-                styles.emptySub,
-                { color: theme.textMuted, marginTop: 16 },
-              ]}
-            >
+            <ThemedText style={[styles.emptySub, { color: theme.textMuted, marginTop: 16 }]}>
               Cargando servicios…
             </ThemedText>
           </View>
@@ -285,12 +252,7 @@ export function ServicesTab() {
             <ThemedText style={[styles.emptyTitle, { color: theme.error }]}>
               Error de conexión
             </ThemedText>
-            <ThemedText
-              style={[
-                styles.emptySub,
-                { color: theme.textMuted, textAlign: "center" },
-              ]}
-            >
+            <ThemedText style={[styles.emptySub, { color: theme.textMuted, textAlign: 'center' }]}>
               Deslizá hacia abajo para reintentar.
             </ThemedText>
           </View>
@@ -299,9 +261,7 @@ export function ServicesTab() {
             <View style={styles.emptyIcon}>
               <Feather name="scissors" size={28} color={theme.textMuted} />
             </View>
-            <ThemedText
-              style={[styles.emptyTitle, { color: theme.textSecondary }]}
-            >
+            <ThemedText style={[styles.emptyTitle, { color: theme.textSecondary }]}>
               No hay servicios
             </ThemedText>
             <ThemedText style={[styles.emptySub, { color: theme.textMuted }]}>
@@ -313,12 +273,7 @@ export function ServicesTab() {
             (category) =>
               category.services.length > 0 && (
                 <View key={category.id} style={styles.section}>
-                  <ThemedText
-                    style={[
-                      styles.catTitle,
-                      { color: category.color ?? theme.primary },
-                    ]}
-                  >
+                  <ThemedText style={[styles.catTitle, { color: category.color ?? theme.primary }]}>
                     {category.name}
                   </ThemedText>
                   {category.services.map((svc) => (
@@ -334,17 +289,13 @@ export function ServicesTab() {
                     />
                   ))}
                 </View>
-              ),
+              )
           )
         )}
       </ScrollView>
 
       <Pressable
-        style={[
-          styles.fab,
-          { backgroundColor: config.theme.primaryColor },
-          Shadows.lg,
-        ]}
+        style={[styles.fab, { backgroundColor: config.theme.primaryColor }, Shadows.lg]}
         onPress={openNew}
       >
         <Feather name="plus" size={24} color="#FFFFFF" />
@@ -376,7 +327,7 @@ export function ServicesTab() {
         reorderPending={reorderCategoriesMutation.isPending}
       />
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -398,13 +349,13 @@ const styles = StyleSheet.create({
   },
   filterChipText: {
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   manageBtn: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
-    alignSelf: "flex-start",
+    alignSelf: 'flex-start',
     marginTop: Spacing.md,
     paddingVertical: Spacing.sm,
     paddingHorizontal: Spacing.md,
@@ -413,38 +364,38 @@ const styles = StyleSheet.create({
   },
   scroll: { flex: 1 },
   empty: {
-    alignItems: "center",
-    paddingVertical: Spacing["3xl"],
+    alignItems: 'center',
+    paddingVertical: Spacing['3xl'],
   },
   emptyIcon: {
     width: 80,
     height: 80,
     borderRadius: 40,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: Spacing.lg,
-    backgroundColor: "#E5E7EB40",
+    backgroundColor: '#E5E7EB40',
   },
   emptyTitle: {
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: '600',
     marginBottom: 4,
   },
   emptySub: { fontSize: 14 },
   section: { marginBottom: Spacing.xl },
   catTitle: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
     marginBottom: Spacing.md,
   },
   fab: {
-    position: "absolute",
+    position: 'absolute',
     right: Spacing.lg,
     bottom: 100,
     width: 56,
     height: 56,
     borderRadius: 28,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-});
+})

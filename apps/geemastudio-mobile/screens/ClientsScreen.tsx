@@ -1,46 +1,45 @@
-import React, { useState } from "react";
-import { View, StyleSheet, ScrollView, RefreshControl } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useHeaderHeight } from "@react-navigation/elements";
-import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import React, { useState } from 'react'
+import { View, StyleSheet, ScrollView, RefreshControl } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useHeaderHeight } from '@react-navigation/elements'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 
-import { ThemedText } from "@/components/ThemedText";
-import { useTheme } from "@/hooks/useTheme";
-import { Spacing } from "@/constants/theme";
-import { useClientsData } from "./clients/hooks/useClientsData";
-import type { ClientSegment, ClientWithMetrics } from "./clients/types";
-import { ClientsHeader } from "./clients/components/ClientsHeader";
-import { ClientFilterBar } from "./clients/components/ClientFilterBar";
-import { ClientKPIStrip } from "./clients/components/ClientKPIStrip";
-import { ClientCard } from "./clients/components/ClientCard";
-import { ClientDetailModal } from "./clients/components/ClientDetailModal";
+import { ThemedText } from '@/components/ThemedText'
+import { useTheme } from '@/hooks/useTheme'
+import { Spacing } from '@/constants/theme'
+import { useClientsData } from './clients/hooks/useClientsData'
+import type { ClientSegment, ClientWithMetrics } from './clients/types'
+import { ClientsHeader } from './clients/components/ClientsHeader'
+import { ClientFilterBar } from './clients/components/ClientFilterBar'
+import { ClientKPIStrip } from './clients/components/ClientKPIStrip'
+import { ClientCard } from './clients/components/ClientCard'
+import { ClientDetailModal } from './clients/components/ClientDetailModal'
 
 export default function ClientsScreen() {
-  const insets = useSafeAreaInsets();
-  const headerHeight = useHeaderHeight();
-  const tabBarHeight = useBottomTabBarHeight();
-  const { theme } = useTheme();
+  const insets = useSafeAreaInsets()
+  const headerHeight = useHeaderHeight()
+  const tabBarHeight = useBottomTabBarHeight()
+  const { theme } = useTheme()
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [segment, setSegment] = useState<ClientSegment>("all");
-  const [selectedClient, setSelectedClient] =
-    useState<ClientWithMetrics | null>(null);
-  const [detailVisible, setDetailVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('')
+  const [segment, setSegment] = useState<ClientSegment>('all')
+  const [selectedClient, setSelectedClient] = useState<ClientWithMetrics | null>(null)
+  const [detailVisible, setDetailVisible] = useState(false)
 
   const { clients, filteredClients, kpis, isLoading, isError } = useClientsData(
     searchQuery,
-    segment,
-  );
+    segment
+  )
 
   const handleOpenDetail = (client: ClientWithMetrics) => {
-    setSelectedClient(client);
-    setDetailVisible(true);
-  };
+    setSelectedClient(client)
+    setDetailVisible(true)
+  }
 
   const handleCloseDetail = () => {
-    setDetailVisible(false);
-    setSelectedClient(null);
-  };
+    setDetailVisible(false)
+    setSelectedClient(null)
+  }
 
   return (
     <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
@@ -48,21 +47,15 @@ export default function ClientsScreen() {
         style={styles.scroll}
         contentContainerStyle={{
           paddingTop: headerHeight + Spacing.lg,
-          paddingBottom: tabBarHeight + Spacing["2xl"],
+          paddingBottom: tabBarHeight + Spacing['2xl'],
           paddingHorizontal: Spacing.lg,
         }}
         scrollIndicatorInsets={{ bottom: insets.bottom }}
         refreshControl={
-          <RefreshControl
-            refreshing={isLoading}
-            onRefresh={() => {}}
-            tintColor={theme.primary}
-          />
+          <RefreshControl refreshing={isLoading} onRefresh={() => {}} tintColor={theme.primary} />
         }
       >
-        <ThemedText style={[styles.title, { color: theme.text }]}>
-          Clientes
-        </ThemedText>
+        <ThemedText style={[styles.title, { color: theme.text }]}>Clientes</ThemedText>
         <ThemedText style={[styles.subtitle, { color: theme.textSecondary }]}>
           Revisa el comportamiento de tus clientes y segmenta por frecuencia.
         </ThemedText>
@@ -83,16 +76,12 @@ export default function ClientsScreen() {
           </ThemedText>
         ) : filteredClients.length === 0 && !isLoading ? (
           <View style={styles.emptyState}>
-            <ThemedText
-              style={[styles.emptyTitle, { color: theme.textSecondary }]}
-            >
+            <ThemedText style={[styles.emptyTitle, { color: theme.textSecondary }]}>
               Aún no hay clientes registrados
             </ThemedText>
-            <ThemedText
-              style={[styles.emptySubtitle, { color: theme.textMuted }]}
-            >
-              Cuando registres citas con datos de contacto, podrás ver aquí a
-              todas las personas que han pasado por tu negocio.
+            <ThemedText style={[styles.emptySubtitle, { color: theme.textMuted }]}>
+              Cuando registres citas con datos de contacto, podrás ver aquí a todas las personas que
+              han pasado por tu negocio.
             </ThemedText>
           </View>
         ) : (
@@ -113,7 +102,7 @@ export default function ClientsScreen() {
         onClose={handleCloseDetail}
       />
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -125,7 +114,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: "700",
+    fontWeight: '700',
   },
   subtitle: {
     fontSize: 13,
@@ -137,14 +126,14 @@ const styles = StyleSheet.create({
     marginTop: Spacing.lg,
   },
   emptyState: {
-    paddingVertical: Spacing["2xl"],
+    paddingVertical: Spacing['2xl'],
   },
   emptyTitle: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: '600',
     marginBottom: 4,
   },
   emptySubtitle: {
     fontSize: 13,
   },
-});
+})

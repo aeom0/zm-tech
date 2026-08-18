@@ -1,38 +1,33 @@
-import React from "react";
-import { View, StyleSheet, Pressable, ActivityIndicator } from "react-native";
-import { Feather } from "@expo/vector-icons";
-import { ThemedText } from "@/components/ThemedText";
-import { useTheme } from "@/hooks/useTheme";
-import { useTenant } from "@/contexts/TenantContext";
-import { formatCurrency } from "@/utils/format";
-import { Spacing, BorderRadius } from "@/constants/theme";
-import type { PendingAppointment, VerificationAction } from "../types";
+import React from 'react'
+import { View, StyleSheet, Pressable, ActivityIndicator } from 'react-native'
+import { Feather } from '@expo/vector-icons'
+import { ThemedText } from '@/components/ThemedText'
+import { useTheme } from '@/hooks/useTheme'
+import { useTenant } from '@/contexts/TenantContext'
+import { formatCurrency } from '@/utils/format'
+import { Spacing, BorderRadius } from '@/constants/theme'
+import type { PendingAppointment, VerificationAction } from '../types'
 
 interface ValidacionRowProps {
-  item: PendingAppointment;
-  loadingAction: VerificationAction | null; // null = sin spinner
-  onApprove: () => void;
-  onReject: () => void;
+  item: PendingAppointment
+  loadingAction: VerificationAction | null // null = sin spinner
+  onApprove: () => void
+  onReject: () => void
 }
 
-export function ValidacionRow({
-  item,
-  loadingAction,
-  onApprove,
-  onReject,
-}: ValidacionRowProps) {
-  const { theme } = useTheme();
-  const { config } = useTenant();
+export function ValidacionRow({ item, loadingAction, onApprove, onReject }: ValidacionRowProps) {
+  const { theme } = useTheme()
+  const { config } = useTenant()
 
-  const isLoading = loadingAction !== null;
+  const isLoading = loadingAction !== null
 
   const fecha = new Date(item.date).toLocaleString(config.locale.language, {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
 
   return (
     <View
@@ -46,9 +41,7 @@ export function ValidacionRow({
     >
       {/* Franja de color del empleado */}
       {item.employeeColor && (
-        <View
-          style={[styles.colorBar, { backgroundColor: item.employeeColor }]}
-        />
+        <View style={[styles.colorBar, { backgroundColor: item.employeeColor }]} />
       )}
 
       <View style={styles.body}>
@@ -65,9 +58,7 @@ export function ValidacionRow({
         <ThemedText style={[styles.meta, { color: theme.textSecondary }]}>
           {item.serviceName} · {item.employeeName}
         </ThemedText>
-        <ThemedText style={[styles.meta, { color: theme.textMuted }]}>
-          {fecha}
-        </ThemedText>
+        <ThemedText style={[styles.meta, { color: theme.textMuted }]}>{fecha}</ThemedText>
 
         {/* Acciones per-row */}
         <View style={styles.actions}>
@@ -83,14 +74,12 @@ export function ValidacionRow({
             onPress={onReject}
             disabled={isLoading}
           >
-            {loadingAction === "rejected" ? (
+            {loadingAction === 'rejected' ? (
               <ActivityIndicator size="small" color={theme.error} />
             ) : (
               <>
                 <Feather name="x" size={16} color={theme.error} />
-                <ThemedText style={[styles.btnText, { color: theme.error }]}>
-                  Rechazar
-                </ThemedText>
+                <ThemedText style={[styles.btnText, { color: theme.error }]}>Rechazar</ThemedText>
               </>
             )}
           </Pressable>
@@ -107,30 +96,28 @@ export function ValidacionRow({
             onPress={onApprove}
             disabled={isLoading}
           >
-            {loadingAction === "approved" ? (
+            {loadingAction === 'approved' ? (
               <ActivityIndicator size="small" color="#FFFFFF" />
             ) : (
               <>
                 <Feather name="check" size={16} color="#FFFFFF" />
-                <ThemedText style={[styles.btnText, { color: "#FFFFFF" }]}>
-                  Aprobar
-                </ThemedText>
+                <ThemedText style={[styles.btnText, { color: '#FFFFFF' }]}>Aprobar</ThemedText>
               </>
             )}
           </Pressable>
         </View>
       </View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   card: {
-    flexDirection: "row",
+    flexDirection: 'row',
     borderRadius: BorderRadius.lg,
     borderWidth: 1,
     marginBottom: Spacing.sm,
-    overflow: "hidden",
+    overflow: 'hidden',
   },
   colorBar: {
     width: 4,
@@ -141,32 +128,32 @@ const styles = StyleSheet.create({
     gap: Spacing.xs,
   },
   infoRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   clientName: {
     fontSize: 15,
-    fontWeight: "600",
+    fontWeight: '600',
     flex: 1,
   },
   price: {
     fontSize: 15,
-    fontWeight: "700",
+    fontWeight: '700',
   },
   meta: {
     fontSize: 13,
   },
   actions: {
-    flexDirection: "row",
+    flexDirection: 'row',
     gap: Spacing.sm,
     marginTop: Spacing.sm,
   },
   btnReject: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     gap: 6,
     height: 40,
     borderRadius: BorderRadius.md,
@@ -174,15 +161,15 @@ const styles = StyleSheet.create({
   },
   btnApprove: {
     flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     gap: 6,
     height: 40,
     borderRadius: BorderRadius.md,
   },
   btnText: {
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: '600',
   },
-});
+})

@@ -14,13 +14,13 @@ Producto B2B de piso de tienda: carbón, acero, naranja de acción. Dense pero r
 
 Usar con moderación — atmósfera, no decoración:
 
-| Uso | Receta |
-|-----|--------|
-| Splash | Radial `$accentSoft` → `$accentMuted` → `$bg` |
-| Pantallas de paso | Linear top wash `$accentMuted` → `$bg` (~22%) |
-| CTA primary | Linear `$accent` → `$accentHover` + sombra naranja suave |
-| Card selected / VE featured | Linear `$surfaceElevated` → `$accentMuted` |
-| Rocket / icon hero | Radial `$accentSoft` → `$surfaceElevated` |
+| Uso                         | Receta                                                   |
+| --------------------------- | -------------------------------------------------------- |
+| Splash                      | Radial `$accentSoft` → `$accentMuted` → `$bg`            |
+| Pantallas de paso           | Linear top wash `$accentMuted` → `$bg` (~22%)            |
+| CTA primary                 | Linear `$accent` → `$accentHover` + sombra naranja suave |
+| Card selected / VE featured | Linear `$surfaceElevated` → `$accentMuted`               |
+| Rocket / icon hero          | Radial `$accentSoft` → `$surfaceElevated`                |
 
 **Prohibido:** purple/indigo glow, mesh genérico, glassmorphism por defecto.
 

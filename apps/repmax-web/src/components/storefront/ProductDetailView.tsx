@@ -2,41 +2,32 @@
 // Detalle de producto — vitrina pública
 // ============================================================
 
-import Image from "next/image";
-import Link from "next/link";
-import { ArrowLeft, MessageCircle, Wrench } from "lucide-react";
-import type { ProductPublic, StorePublic } from "@/types/storefront";
-import {
-  enlaceWhatsApp,
-  mensajeWhatsAppProducto,
-  urlProductoVitrina,
-} from "@/lib/storefront-url";
-import { pathCatalogoVitrina } from "@/lib/vitrina-host";
+import Image from 'next/image'
+import Link from 'next/link'
+import { ArrowLeft, MessageCircle, Wrench } from 'lucide-react'
+import type { ProductPublic, StorePublic } from '@/types/storefront'
+import { enlaceWhatsApp, mensajeWhatsAppProducto, urlProductoVitrina } from '@/lib/storefront-url'
+import { pathCatalogoVitrina } from '@/lib/vitrina-host'
 
 interface ProductDetailViewProps {
-  store: StorePublic;
-  product: ProductPublic;
-  siteUrl: string;
-  hostSlug: string | null;
+  store: StorePublic
+  product: ProductPublic
+  siteUrl: string
+  hostSlug: string | null
 }
 
 function formatearUsd(valor: number): string {
-  return `$${valor.toFixed(2)}`;
+  return `$${valor.toFixed(2)}`
 }
 
 function formatearBs(valor: number): string {
-  return `Bs ${valor.toLocaleString("es-VE", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  return `Bs ${valor.toLocaleString('es-VE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 }
 
-export function ProductDetailView({
-  store,
-  product,
-  siteUrl,
-  hostSlug,
-}: ProductDetailViewProps) {
-  const fotos = product.photos?.filter(Boolean) ?? [];
-  const precioBs = product.priceBs ?? product.priceUsd * store.usdBsRate;
-  const productUrl = urlProductoVitrina(siteUrl, store.slug, product.id);
+export function ProductDetailView({ store, product, siteUrl, hostSlug }: ProductDetailViewProps) {
+  const fotos = product.photos?.filter(Boolean) ?? []
+  const precioBs = product.priceBs ?? product.priceUsd * store.usdBsRate
+  const productUrl = urlProductoVitrina(siteUrl, store.slug, product.id)
 
   const waHref = store.phone
     ? enlaceWhatsApp(
@@ -46,9 +37,9 @@ export function ProductDetailView({
           productTitle: product.title,
           partNumber: product.partNumber,
           productUrl,
-        }),
+        })
       )
-    : null;
+    : null
 
   return (
     <div className="min-h-screen bg-[#0D0D0D]">
@@ -69,7 +60,7 @@ export function ProductDetailView({
               {fotos.map((src, i) => (
                 <div
                   key={`${src}-${i}`}
-                  className={`relative bg-[#242424] ${i === 0 ? "sm:col-span-2 aspect-[4/3]" : "aspect-square"}`}
+                  className={`relative bg-[#242424] ${i === 0 ? 'aspect-[4/3] sm:col-span-2' : 'aspect-square'}`}
                 >
                   <Image
                     src={src}
@@ -93,12 +84,12 @@ export function ProductDetailView({
             <div className="flex flex-wrap items-start gap-2">
               <span
                 className={`rounded px-2 py-0.5 text-xs font-semibold ${
-                  product.condition === "NEW"
-                    ? "bg-[#4CAF50]/20 text-[#4CAF50]"
-                    : "bg-[#9E9E9E]/20 text-[#9E9E9E]"
+                  product.condition === 'NEW'
+                    ? 'bg-[#4CAF50]/20 text-[#4CAF50]'
+                    : 'bg-[#9E9E9E]/20 text-[#9E9E9E]'
                 }`}
               >
-                {product.condition === "NEW" ? "NUEVO" : "USADO"}
+                {product.condition === 'NEW' ? 'NUEVO' : 'USADO'}
               </span>
               {product.stock <= 3 ? (
                 <span className="rounded bg-[#FFC107]/15 px-2 py-0.5 text-xs font-medium text-[#FFC107]">
@@ -111,8 +102,8 @@ export function ProductDetailView({
             <p className="mt-1 text-sm text-[#9E9E9E]">
               {product.brand} · {product.model}
               {product.yearFrom != null
-                ? ` · ${product.yearFrom}${product.yearTo != null ? `–${product.yearTo}` : ""}`
-                : ""}
+                ? ` · ${product.yearFrom}${product.yearTo != null ? `–${product.yearTo}` : ''}`
+                : ''}
             </p>
             {product.partNumber ? (
               <p className="mt-2 text-sm font-medium text-[#607D8B]">
@@ -130,7 +121,7 @@ export function ProductDetailView({
                 <h2 className="text-sm font-semibold uppercase tracking-wide text-[#9E9E9E]">
                   Descripción
                 </h2>
-                <p className="mt-2 text-sm leading-relaxed text-[#F5F5F5] whitespace-pre-wrap">
+                <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-[#F5F5F5]">
                   {product.description}
                 </p>
               </div>
@@ -151,5 +142,5 @@ export function ProductDetailView({
         ) : null}
       </article>
     </div>
-  );
+  )
 }

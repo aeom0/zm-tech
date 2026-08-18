@@ -14,9 +14,31 @@ const SERVICES: Array<{
   cupos: string
   popular?: boolean
 }> = [
-  { t: 'Pestañas', icon: 'eye', p: 'desde $25', dur: '60 min', rating: '4.9', cupos: 'Hoy · 3 cupos', popular: true },
-  { t: 'Uñas', icon: 'sparkles', p: 'desde $18', dur: '45 min', rating: '4.8', cupos: 'Hoy · 5 cupos' },
-  { t: 'Cejas', icon: 'brow', p: 'desde $12', dur: '30 min', rating: '4.9', cupos: 'Mañana · 9 am' },
+  {
+    t: 'Pestañas',
+    icon: 'eye',
+    p: 'desde $25',
+    dur: '60 min',
+    rating: '4.9',
+    cupos: 'Hoy · 3 cupos',
+    popular: true,
+  },
+  {
+    t: 'Uñas',
+    icon: 'sparkles',
+    p: 'desde $18',
+    dur: '45 min',
+    rating: '4.8',
+    cupos: 'Hoy · 5 cupos',
+  },
+  {
+    t: 'Cejas',
+    icon: 'brow',
+    p: 'desde $12',
+    dur: '30 min',
+    rating: '4.9',
+    cupos: 'Mañana · 9 am',
+  },
 ]
 
 export default function MockSalonWeb() {
@@ -69,7 +91,10 @@ export default function MockSalonWeb() {
           className="pointer-events-none absolute -top-4 -left-4 h-16 w-16 rounded-full opacity-30 blur-2xl"
           style={{ backgroundColor: TEAL_LIGHT }}
         />
-        <div className="text-[6.5px] font-medium tracking-[0.14em] uppercase" style={{ color: TEAL_LIGHT }}>
+        <div
+          className="text-[6.5px] font-medium tracking-[0.14em] uppercase"
+          style={{ color: TEAL_LIGHT }}
+        >
           Belleza · Cuidado
         </div>
         <div className="max-w-[90%] text-[11px] font-extrabold tracking-tight sm:text-xs">
@@ -105,7 +130,10 @@ export default function MockSalonWeb() {
       </div>
 
       {/* Services */}
-      <div className="mock-rise relative z-1 grid flex-1 grid-cols-3 gap-1.5 p-2" style={{ animationDelay: '120ms' }}>
+      <div
+        className="mock-rise relative z-1 grid flex-1 grid-cols-3 gap-1.5 p-2"
+        style={{ animationDelay: '120ms' }}
+      >
         {SERVICES.map((s) => (
           <div
             key={s.t}
@@ -120,7 +148,9 @@ export default function MockSalonWeb() {
           >
             <div
               className="relative h-6 w-full overflow-hidden sm:h-7"
-              style={{ backgroundImage: `linear-gradient(135deg, ${TEAL_DEEP}66, ${TEAL_LIGHT}26 60%, transparent)` }}
+              style={{
+                backgroundImage: `linear-gradient(135deg, ${TEAL_DEEP}66, ${TEAL_LIGHT}26 60%, transparent)`,
+              }}
             >
               <div
                 className="pointer-events-none absolute -top-2 -left-2 h-8 w-8 rounded-full opacity-40 blur-lg"
@@ -135,7 +165,10 @@ export default function MockSalonWeb() {
               {s.popular && (
                 <span
                   className="absolute top-1 right-1 rounded-full px-1 py-px text-[5px] font-semibold text-[#00332d]"
-                  style={{ backgroundColor: TEAL_LIGHT, boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4)' }}
+                  style={{
+                    backgroundColor: TEAL_LIGHT,
+                    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.4)',
+                  }}
                 >
                   Popular
                 </span>
@@ -158,7 +191,10 @@ export default function MockSalonWeb() {
                   {s.rating}
                 </span>
               </div>
-              <div className="mt-auto flex items-center gap-0.5 border-t border-white/5 pt-0.5 text-[5px]" style={{ color: TEAL_LIGHT }}>
+              <div
+                className="mt-auto flex items-center gap-0.5 border-t border-white/5 pt-0.5 text-[5px]"
+                style={{ color: TEAL_LIGHT }}
+              >
                 <span className="h-1 w-1 rounded-full" style={{ backgroundColor: TEAL_LIGHT }} />
                 {s.cupos}
               </div>

@@ -2,98 +2,95 @@
 // Coordinador OAuth MercadoLibre.
 // El screen solo renderiza: status + connect()/disconnect().
 // ============================================================
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react'
 
-import { useAuth } from '../context/AuthContext';
-import { mlAuthService } from '../services/mercadolibre/mlAuthService';
-import type {
-  MlConnectionUiStatus,
-  RepmaxMlConnection,
-} from '@repmax/repmax-schema/mlConnection';
+import { useAuth } from '../context/AuthContext'
+import { mlAuthService } from '../services/mercadolibre/mlAuthService'
+import type { MlConnectionUiStatus, RepmaxMlConnection } from '@repmax/repmax-schema/mlConnection'
 
 export function useMercadoLibreConnection() {
-  const { store, storeUser } = useAuth();
-  const storeId = store?.id;
-  const plan = store?.plan ?? 'basic';
-  const isOwner = storeUser?.role === 'owner';
-  const planPermiteMl = plan !== 'basic';
+  const { store, storeUser } = useAuth()
+  const storeId = store?.id
+  const plan = store?.plan ?? 'basic'
+  const isOwner = storeUser?.role === 'owner'
+  const planPermiteMl = plan !== 'basic'
 
-  const [status, setStatus] = useState<MlConnectionUiStatus>('disconnected');
-  const [connection, setConnection] = useState<RepmaxMlConnection | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(Boolean(storeId));
+  const [status, setStatus] = useState<MlConnectionUiStatus>('disconnected')
+  const [connection, setConnection] = useState<RepmaxMlConnection | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(Boolean(storeId))
 
   const refresh = useCallback(async () => {
     if (!storeId) {
-      setStatus('disconnected');
-      setConnection(null);
-      setIsLoading(false);
-      return;
+      setStatus('disconnected')
+      setConnection(null)
+      setIsLoading(false)
+      return
     }
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      const snap = await mlAuthService.getConnectionStatus(storeId);
-      setConnection(snap.connection);
-      setStatus(snap.uiStatus);
-      setError(null);
+      const snap = await mlAuthService.getConnectionStatus(storeId)
+      setConnection(snap.connection)
+      setStatus(snap.uiStatus)
+      setError(null)
     } catch (err) {
-      setStatus('error');
-      setError(err instanceof Error ? err.message : 'No se pudo leer la conexión ML.');
+      setStatus('error')
+      setError(err instanceof Error ? err.message : 'No se pudo leer la conexión ML.')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  }, [storeId]);
+  }, [storeId])
 
   useEffect(() => {
-    void refresh();
-  }, [refresh]);
+    void refresh()
+  }, [refresh])
 
   const connect = useCallback(async () => {
     if (!storeId) {
-      setStatus('error');
-      setError('No encontramos tu tienda.');
-      return;
+      setStatus('error')
+      setError('No encontramos tu tienda.')
+      return
     }
     if (!isOwner) {
-      setStatus('error');
-      setError('Solo el dueño puede conectar MercadoLibre.');
-      return;
+      setStatus('error')
+      setError('Solo el dueño puede conectar MercadoLibre.')
+      return
     }
     if (!planPermiteMl) {
-      setStatus('error');
-      setError('MercadoLibre entra en el plan Pro.');
-      return;
+      setStatus('error')
+      setError('MercadoLibre entra en el plan Pro.')
+      return
     }
 
-    setStatus('connecting');
-    setError(null);
+    setStatus('connecting')
+    setError(null)
     try {
-      const snap = await mlAuthService.startConnection(storeId);
-      setConnection(snap.connection);
-      setStatus(snap.uiStatus);
+      const snap = await mlAuthService.startConnection(storeId)
+      setConnection(snap.connection)
+      setStatus(snap.uiStatus)
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'No se pudo conectar MercadoLibre.';
+      const message = err instanceof Error ? err.message : 'No se pudo conectar MercadoLibre.'
       if (message === 'Conexión cancelada.') {
-        await refresh();
-        return;
+        await refresh()
+        return
       }
-      setStatus('error');
-      setError(message);
+      setStatus('error')
+      setError(message)
     }
-  }, [storeId, isOwner, planPermiteMl, refresh]);
+  }, [storeId, isOwner, planPermiteMl, refresh])
 
   const disconnect = useCallback(async () => {
-    if (!storeId) return;
+    if (!storeId) return
     try {
-      await mlAuthService.disconnect(storeId);
-      setConnection(null);
-      setStatus('disconnected');
-      setError(null);
+      await mlAuthService.disconnect(storeId)
+      setConnection(null)
+      setStatus('disconnected')
+      setError(null)
     } catch (err) {
-      setStatus('error');
-      setError(err instanceof Error ? err.message : 'No se pudo desconectar MercadoLibre.');
+      setStatus('error')
+      setError(err instanceof Error ? err.message : 'No se pudo desconectar MercadoLibre.')
     }
-  }, [storeId]);
+  }, [storeId])
 
   return {
     status,
@@ -106,5 +103,5 @@ export function useMercadoLibreConnection() {
     connect,
     disconnect,
     refresh,
-  };
+  }
 }

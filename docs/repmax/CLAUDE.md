@@ -13,13 +13,13 @@ Contexto para agentes que toquen RepMAX dentro del monorepo.
 
 ## Stack vigente
 
-| Capa | Tecnología |
-|------|------------|
-| Web | Next.js 15 App Router, React 19, Tailwind, puerto 3003 |
-| Mobile | Expo ~56, React Native 0.85, React 19 |
-| Datos | Supabase Auth + PostgREST + RLS (`llacowjutjfefboqgfnj`) |
-| Schema TS | Drizzle en `@repmax/repmax-schema` (contrato TS; **no** drizzle-kit) |
-| DDL | SQL en `docs/repmax/supabase/migrations/` (verdad de BD) |
+| Capa           | Tecnología                                                                                                                                                  |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Web            | Next.js 15 App Router, React 19, Tailwind, puerto 3003                                                                                                      |
+| Mobile         | Expo ~56, React Native 0.85, React 19                                                                                                                       |
+| Datos          | Supabase Auth + PostgREST + RLS (`llacowjutjfefboqgfnj`)                                                                                                    |
+| Schema TS      | Drizzle en `@repmax/repmax-schema` (contrato TS; **no** drizzle-kit)                                                                                        |
+| DDL            | SQL en `docs/repmax/supabase/migrations/` (verdad de BD)                                                                                                    |
 | Tenant/Auth UI | En apps: `AuthContext` → Supabase (`repmax_store_users` / `repmax_stores`). `@zmtech/tenant-config/repmax` existe como export pero **no está cableado** aún |
 
 **No hay servidor Express.** No hay JWT propio. No hay `apps/repmax-server`.
@@ -39,7 +39,7 @@ UI → Hooks / Server Components → lib/* (Supabase) → tipos (@repmax/repmax-
 
 ## Tablas y helpers clave
 
-- `repmax_stores` (incluye `usar_tasa_manual` y `preferred_brands`, aplicadas 2026-08-18), `repmax_store_users`, `repmax_products`, `repmax_customers`, `repmax_sales`, `repmax_sale_items`, `repmax_cash_sessions`, `repmax_ml_listings` (aplicada), `repmax_ml_connections` (SQL lista, no aplicada), `repmax_vehicle_catalog` (marca/modelo/años agregados a mano por tienda, aplicada 2026-08-18)
+- `repmax_stores` (incluye `usar_tasa_manual` y `preferred_brands`, aplicadas 2026-08-18), `repmax_store_users`, `repmax_products`, `repmax_customers`, `repmax_sales`, `repmax_sale_items`, `repmax_cash_sessions`, `repmax_ml_listings` (aplicada), `repmax_ml_connections` (SQL lista, no aplicada), `repmax_vehicle_catalog` (marca/modelo/años agregados a mano por tienda, aplicada 2026-08-18; índice de unicidad con años nulos pendiente)
 - `hub_tasas_bcv`, `hub_tasas_usdt` (prefijo `hub_`, no `repmax_` — reutilizables por otros productos; aplicadas 2026-08-18, RLS `SELECT` público / escritura solo `service_role`)
 - Helpers SQL: `repmax_user_store_ids()`, `repmax_user_role_in_store(store_id)`
 - RPC: `repmax_create_sale_with_items`, `repmax_seed_starter_catalog` (aplicada, hub `20260817222347`)

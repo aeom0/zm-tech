@@ -14,9 +14,7 @@
     "updates": {
       "url": "https://u.expo.dev/109768f2-6e5c-4747-8cb5-2025c8319079"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.repmax.app",

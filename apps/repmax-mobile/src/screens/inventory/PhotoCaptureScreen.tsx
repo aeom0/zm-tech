@@ -1,39 +1,40 @@
 // ============================================================
 // Captura de foto con reglas ML visibles (cámara o galería)
 // ============================================================
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, { useState } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native'
+import { Ionicons } from '@expo/vector-icons'
+import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
-import { Screen } from '../../components/layout/Screen';
-import { productPhotoService } from '../../services/productPhotoService';
-import { PHOTO_SLOT_LABELS } from '../../utils/mlPhotoRules';
-import { hapticError, hapticLight } from '../../utils/haptics';
-import { colors, typography, spacing, borderRadius } from '../../utils/theme';
-import type { InventoryStackParamList } from '../../navigation/types';
+import { Screen } from '../../components/layout/Screen'
+import { productPhotoService } from '../../services/productPhotoService'
+import { PHOTO_SLOT_LABELS } from '../../utils/mlPhotoRules'
+import { hapticError, hapticLight } from '../../utils/haptics'
+import { colors, typography, spacing, borderRadius } from '../../utils/theme'
+import type { InventoryStackParamList } from '../../navigation/types'
 
-type Props = NativeStackScreenProps<InventoryStackParamList, 'PhotoCapture'>;
+type Props = NativeStackScreenProps<InventoryStackParamList, 'PhotoCapture'>
 
 const REGLAS = [
   'Fondo claro y liso. Sin taller de fondo.',
   'Una sola pieza. Sin logo, texto ni WhatsApp.',
   'JPG o PNG · mínimo 500 px · ideal 1200×1200',
-];
+]
 
 export default function PhotoCaptureScreen({ route, navigation }: Props) {
-  const { slotIndex, productId } = route.params;
-  const [busy, setBusy] = useState(false);
-  const titulo = `Foto ${PHOTO_SLOT_LABELS[slotIndex] ?? 'de pieza'}`;
+  const { slotIndex, productId } = route.params
+  const [busy, setBusy] = useState(false)
+  const titulo = `Foto ${PHOTO_SLOT_LABELS[slotIndex] ?? 'de pieza'}`
 
   const procesar = async (origen: 'camara' | 'galeria') => {
-    setBusy(true);
+    setBusy(true)
     try {
-      await hapticLight();
-      const asset = origen === 'camara'
-        ? await productPhotoService.abrirCamara()
-        : await productPhotoService.abrirGaleria();
-      if (!asset) return;
+      await hapticLight()
+      const asset =
+        origen === 'camara'
+          ? await productPhotoService.abrirCamara()
+          : await productPhotoService.abrirGaleria()
+      if (!asset) return
       navigation.replace('PhotoReview', {
         slotIndex,
         productId,
@@ -42,21 +43,23 @@ export default function PhotoCaptureScreen({ route, navigation }: Props) {
         height: asset.height,
         fileSize: asset.fileSize,
         mimeType: asset.mimeType,
-      });
+      })
     } catch (err) {
-      await hapticError();
-      const msg = err instanceof Error ? err.message : 'No se pudo abrir la cámara.';
-      Alert.alert('Permiso o error', msg);
+      await hapticError()
+      const msg = err instanceof Error ? err.message : 'No se pudo abrir la cámara.'
+      Alert.alert('Permiso o error', msg)
     } finally {
-      setBusy(false);
+      setBusy(false)
     }
-  };
+  }
 
   return (
     <Screen edges={['top', 'bottom']}>
       <View style={styles.nav}>
         <TouchableOpacity onPress={() => navigation.goBack()} hitSlop={12}>
-          <Text style={styles.navGhost} numberOfLines={1}>Cancelar</Text>
+          <Text style={styles.navGhost} numberOfLines={1}>
+            Cancelar
+          </Text>
         </TouchableOpacity>
         <Text style={styles.navTitle}>{titulo}</Text>
         <View style={styles.navPad} />
@@ -102,7 +105,7 @@ export default function PhotoCaptureScreen({ route, navigation }: Props) {
         <View style={styles.sideBtn} />
       </View>
     </Screen>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -194,4 +197,4 @@ const styles = StyleSheet.create({
     borderRadius: 26,
     backgroundColor: colors.text.primary,
   },
-});
+})

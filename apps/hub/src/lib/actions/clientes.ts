@@ -1,24 +1,22 @@
-"use server";
+'use server'
 
-import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
-import { clienteFormSchema, type ClienteFormValues } from "@/lib/validation/clientes";
+import { revalidatePath } from 'next/cache'
+import { createClient } from '@/lib/supabase/server'
+import { clienteFormSchema, type ClienteFormValues } from '@/lib/validation/clientes'
 
-export type ActionResult<T = null> =
-  | { ok: true; data: T }
-  | { ok: false; error: string };
+export type ActionResult<T = null> = { ok: true; data: T } | { ok: false; error: string }
 
 export async function crearCliente(
-  values: ClienteFormValues,
+  values: ClienteFormValues
 ): Promise<ActionResult<{ id: string }>> {
-  const parsed = clienteFormSchema.safeParse(values);
+  const parsed = clienteFormSchema.safeParse(values)
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.errors[0]?.message ?? "Datos inválidos" };
+    return { ok: false, error: parsed.error.errors[0]?.message ?? 'Datos inválidos' }
   }
 
-  const supabase = await createClient();
+  const supabase = await createClient()
   const { data, error } = await supabase
-    .from("hub_clients")
+    .from('hub_clients')
     .insert({
       name: parsed.data.name,
       contact_name: parsed.data.contactName ?? null,
@@ -34,29 +32,29 @@ export async function crearCliente(
       source_quote_lead_id: parsed.data.sourceQuoteLeadId ?? null,
       notes: parsed.data.notes ?? null,
     })
-    .select("id")
-    .single();
+    .select('id')
+    .single()
 
   if (error) {
-    return { ok: false, error: error.message };
+    return { ok: false, error: error.message }
   }
 
-  revalidatePath("/clientes");
-  return { ok: true, data: { id: data.id as string } };
+  revalidatePath('/clientes')
+  return { ok: true, data: { id: data.id as string } }
 }
 
 export async function actualizarCliente(
   id: string,
-  values: ClienteFormValues,
+  values: ClienteFormValues
 ): Promise<ActionResult> {
-  const parsed = clienteFormSchema.safeParse(values);
+  const parsed = clienteFormSchema.safeParse(values)
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.errors[0]?.message ?? "Datos inválidos" };
+    return { ok: false, error: parsed.error.errors[0]?.message ?? 'Datos inválidos' }
   }
 
-  const supabase = await createClient();
+  const supabase = await createClient()
   const { error } = await supabase
-    .from("hub_clients")
+    .from('hub_clients')
     .update({
       name: parsed.data.name,
       contact_name: parsed.data.contactName ?? null,
@@ -71,13 +69,13 @@ export async function actualizarCliente(
       notes: parsed.data.notes ?? null,
       updated_at: new Date().toISOString(),
     })
-    .eq("id", id);
+    .eq('id', id)
 
   if (error) {
-    return { ok: false, error: error.message };
+    return { ok: false, error: error.message }
   }
 
-  revalidatePath("/clientes");
-  revalidatePath(`/clientes/${id}`);
-  return { ok: true, data: null };
+  revalidatePath('/clientes')
+  revalidatePath(`/clientes/${id}`)
+  return { ok: true, data: null }
 }

@@ -14,14 +14,14 @@ Contexto para agentes que toquen el Hub dentro del monorepo.
 
 ## Stack vigente
 
-| Capa | Tecnología |
-|------|------------|
-| Web | Next.js 16 App Router, React 19, Tailwind v4, puerto 3004 |
-| Datos | Supabase Auth + PostgREST + RLS (`llacowjutjfefboqgfnj`) |
-| Schema | Drizzle en `@zmtech/hub-schema` (fuente de verdad TS) |
-| Iconos | Lucide React |
+| Capa   | Tecnología                                                                                              |
+| ------ | ------------------------------------------------------------------------------------------------------- |
+| Web    | Next.js 16 App Router, React 19, Tailwind v4, puerto 3004                                               |
+| Datos  | Supabase Auth + PostgREST + RLS (`llacowjutjfefboqgfnj`)                                                |
+| Schema | Drizzle en `@zmtech/hub-schema` (fuente de verdad TS)                                                   |
+| Iconos | Lucide React                                                                                            |
 | Design | ZM Control — [design-system/](./design-system/) · canvas [design/hub-shell.pen](./design/hub-shell.pen) |
-| Tokens | `docs/hub/design/tokens.ts` → `apps/hub/src/lib/theme.ts` + `globals.css` |
+| Tokens | `docs/hub/design/tokens.ts` → `apps/hub/src/lib/theme.ts` + `globals.css`                               |
 
 **No hay servidor Express.** No hay JWT propio. No hay `apps/hub-server` ni app mobile en el MVP.
 

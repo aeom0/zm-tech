@@ -22,10 +22,10 @@ Este plan transforma esa base **de single-tenant a multi-tenant**, para que ZM L
 
 Es importante no confundir esto con el otro patrón de aislamiento que ya existe en ZM Tech:
 
-| Patrón | Para qué sirve | Ejemplo |
-|---|---|---|
-| **Prefijo de tabla** (`odental_*`, `repmax_*`) | Aislar **verticales de negocio distintas** que comparten un mismo Supabase project (`llacowjutjfefboqgfnj`) | Dental vs autopartes vs landing, todo en el mismo proyecto |
-| **Columna `tenant_id`** (este plan) | Aislar **clientes distintos dentro de la misma vertical** (belleza) que usan el mismo producto GeemaStudio | Salón A vs Salón B vs Salón C, todos en las mismas 27 tablas |
+| Patrón                                         | Para qué sirve                                                                                              | Ejemplo                                                      |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| **Prefijo de tabla** (`odental_*`, `repmax_*`) | Aislar **verticales de negocio distintas** que comparten un mismo Supabase project (`llacowjutjfefboqgfnj`) | Dental vs autopartes vs landing, todo en el mismo proyecto   |
+| **Columna `tenant_id`** (este plan)            | Aislar **clientes distintos dentro de la misma vertical** (belleza) que usan el mismo producto GeemaStudio  | Salón A vs Salón B vs Salón C, todos en las mismas 27 tablas |
 
 No se crean tablas nuevas por cliente. Cada una de las 27 tablas tenant-scoped gana una columna `tenant_id text`, y cada fila queda "etiquetada" con el dueño del dato. Las RLS policies (Fase C) son las que hacen cumplir el aislamiento — sin ellas, la columna existe pero no aísla nada.
 
@@ -72,11 +72,11 @@ Queries del bot/panel siguen filtrando por `.eq("phone", …)` — válidas con 
 
 ## 6. Las fases
 
-| Fase | Qué hace | Estado |
-|---|---|---|
-| **A** | Aplicar `20260807001949_tenant_id_retrofit.sql` a prod — columna + índices en las 27 tablas. | ✅ Prod 2026-08-07 |
-| **B** | Auditar upserts/`onConflict` WABA + panel; aplicar PK compuesta; desplegar Edge Functions alineadas. | ✅ Prod 2026-08-07 (código + PK + deploy) |
-| **C** | Escribir y probar (local primero) las RLS policies (68 existentes) para que filtren por `tenant_id`. Hoy la columna no aísla nada. | No iniciada |
+| Fase  | Qué hace                                                                                                                           | Estado                                    |
+| ----- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| **A** | Aplicar `20260807001949_tenant_id_retrofit.sql` a prod — columna + índices en las 27 tablas.                                       | ✅ Prod 2026-08-07                        |
+| **B** | Auditar upserts/`onConflict` WABA + panel; aplicar PK compuesta; desplegar Edge Functions alineadas.                               | ✅ Prod 2026-08-07 (código + PK + deploy) |
+| **C** | Escribir y probar (local primero) las RLS policies (68 existentes) para que filtren por `tenant_id`. Hoy la columna no aísla nada. | No iniciada                               |
 
 ---
 
@@ -124,6 +124,6 @@ Antes de eso, `tenant_id` existe como columna pero no protege nada — cualquier
 - **Fase B — código:** ✅ `upsertSession` + upserts en `_shared/retoque-offer.ts` y `chat-quality-review` usan `tenant_id: "zm-lash-nails"` + `onConflict: "tenant_id,phone"` (PR #9).
 - **Fase B — grep:** sin otros `onConflict` sobre `whatsapp_sessions`. Panel web solo SELECT/DELETE por `phone` (MessageThread, useWabaMessages, ClientDetailSidebar).
 - **Fase B — PK:** ✅ `PRIMARY KEY (tenant_id, phone)` en prod.
-- **Fase B — deploy Edge:** ✅ `whatsapp-webhook` v370 + `chat-quality-review` / `send-retouch-reengage` / `retouch-reminders` redesplegados a mano; smoke inbound QA `51999000999` → sesión con `tenant_id = zm-lash-nails` + outbound OK. CI *OTA Production* (merge PR #9) también redesplegó el resto del job; `ads-bounce-nudge` reportó `No change found` (bundle idéntico, exit 0 — no es fallo silencioso del workflow).
+- **Fase B — deploy Edge:** ✅ `whatsapp-webhook` v370 + `chat-quality-review` / `send-retouch-reengage` / `retouch-reminders` redesplegados a mano; smoke inbound QA `51999000999` → sesión con `tenant_id = zm-lash-nails` + outbound OK. CI _OTA Production_ (merge PR #9) también redesplegó el resto del job; `ads-bounce-nudge` reportó `No change found` (bundle idéntico, exit 0 — no es fallo silencioso del workflow).
 - **Fase C:** no iniciada.
 - **Housekeeping pendiente (no bloquea bot):** consolidar baseline + `migrations_backup/` en un PR de schema aparte; alinear project knowledge zm-tech/Geema con esta copia.

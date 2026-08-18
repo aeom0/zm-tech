@@ -3,26 +3,20 @@
 // Usada en Vehicle, Business y Theme
 // ============================================================
 
-import React, { useRef } from 'react';
-import {
-  TouchableOpacity,
-  View,
-  Text,
-  Animated,
-  StyleSheet,
-} from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme';
+import React, { useRef } from 'react'
+import { TouchableOpacity, View, Text, Animated, StyleSheet } from 'react-native'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme'
 
 interface SelectionCardProps {
   /** Nombre de icono de MaterialCommunityIcons */
-  iconName: string;
-  title: string;
-  description: string;
-  selected: boolean;
-  onPress: () => void;
+  iconName: string
+  title: string
+  description: string
+  selected: boolean
+  onPress: () => void
   /** Color de acento del borde y el icono cuando está seleccionado. Por defecto: brand.orange */
-  accentColor?: string;
+  accentColor?: string
 }
 
 export default function SelectionCard({
@@ -33,7 +27,7 @@ export default function SelectionCard({
   onPress,
   accentColor = colors.brand.orange,
 }: SelectionCardProps) {
-  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const scaleAnim = useRef(new Animated.Value(1)).current
 
   // Animación de presión sutil
   const handlePressIn = () => {
@@ -42,8 +36,8 @@ export default function SelectionCard({
       useNativeDriver: true,
       speed: 50,
       bounciness: 6,
-    }).start();
-  };
+    }).start()
+  }
 
   const handlePressOut = () => {
     Animated.spring(scaleAnim, {
@@ -51,11 +45,11 @@ export default function SelectionCard({
       useNativeDriver: true,
       speed: 50,
       bounciness: 6,
-    }).start();
-  };
+    }).start()
+  }
 
   // El icono usa el color de acento si está seleccionado, gris acero si no
-  const iconColor = selected ? accentColor : colors.brand.steel;
+  const iconColor = selected ? accentColor : colors.brand.steel
 
   return (
     <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
@@ -79,11 +73,7 @@ export default function SelectionCard({
               importantForAccessibility="no-hide-descendants"
             />
           ) : null}
-          <MaterialCommunityIcons
-            name={iconName as never}
-            size={32}
-            color={iconColor}
-          />
+          <MaterialCommunityIcons name={iconName as never} size={32} color={iconColor} />
         </View>
 
         <View style={styles.textos}>
@@ -102,7 +92,7 @@ export default function SelectionCard({
         ) : null}
       </TouchableOpacity>
     </Animated.View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -146,4 +136,4 @@ const styles = StyleSheet.create({
   checkDerecha: {
     marginLeft: spacing.xs,
   },
-});
+})

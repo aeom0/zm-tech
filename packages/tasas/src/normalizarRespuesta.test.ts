@@ -22,7 +22,7 @@ describe('normalizarRespuestaTasaApi', () => {
         spread: { absoluto: 35.25, porcentaje: 24.27, nivel: 'alto' },
         timestamp: 123,
       },
-      '2026-08-18T12:00:00.000Z',
+      '2026-08-18T12:00:00.000Z'
     )
 
     expect(resultado.bcv.valor).toBe(145.25)
@@ -39,7 +39,7 @@ describe('normalizarRespuestaTasaApi', () => {
         bcv: { valor: 145.25, disponible: true },
         usdt: { disponible: false },
       },
-      '2026-08-18T12:00:00.000Z',
+      '2026-08-18T12:00:00.000Z'
     )
 
     expect(resultado.usdt.valor).toBe(145.25)

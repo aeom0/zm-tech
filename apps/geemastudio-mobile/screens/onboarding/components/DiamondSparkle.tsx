@@ -1,5 +1,5 @@
-import React from "react";
-import { SvgXml } from "react-native-svg";
+import React from 'react'
+import { SvgXml } from 'react-native-svg'
 
 const SVG_SOURCE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -8 260 290">
   <defs>
@@ -69,15 +69,15 @@ const SVG_SOURCE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -8 260 29
   <polygon points="128.14,92.32  131.86,95.68  55,177"  fill="url(#sp-diag-dl)"/>
   <polygon points="128.14,95.68  131.86,92.32  205,177" fill="url(#sp-diag-dr)"/>
   <circle cx="130" cy="94" r="73" fill="url(#rg-center)"/>
-</svg>`;
+</svg>`
 
 interface DiamondSparkleProps {
-  size?: number;
+  size?: number
 }
 
 // viewBox es 260×290 → ratio alto/ancho = 290/260 ≈ 1.115
-const ASPECT = 290 / 260;
+const ASPECT = 290 / 260
 
 export function DiamondSparkle({ size = 64 }: DiamondSparkleProps) {
-  return <SvgXml xml={SVG_SOURCE} width={size} height={size * ASPECT} />;
+  return <SvgXml xml={SVG_SOURCE} width={size} height={size * ASPECT} />
 }
