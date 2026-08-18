@@ -13,6 +13,7 @@ import {
   Alert,
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import { useFocusEffect } from '@react-navigation/native'
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
 import { SearchBar } from '../../components/ui/SearchBar'
@@ -206,6 +207,12 @@ export default function InventoryScreen({ navigation }: Props) {
   })
 
   const { isExporting, listosCount, exportar } = useMlExport(products, refetch)
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch()
+    }, [refetch])
+  )
 
   const ejecutarExport = useCallback(() => {
     if (listosCount === 0) {

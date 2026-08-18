@@ -37,6 +37,9 @@ export interface Store {
   // Si true, el checkout usa usdBsRate fijado a mano en vez de la tasa BCV en
   // vivo (ver migracion 20260818130000_repmax_stores_tasa_manual.sql)
   usarTasaManual: boolean
+  // Subconjunto de BRANDS (constants/brands.ts) con el que trabaja la tienda.
+  // Vacío = todas (ver migracion 20260818231537_repmax_stores_preferred_brands.sql)
+  preferredBrands: string[]
   // Preferencias capturadas en el onboarding — ver migracion
   // 20260808120000_repmax_store_onboarding_fields.sql
   storeType: StoreType
@@ -45,6 +48,17 @@ export interface Store {
   countryCode: CountryCode
   createdAt: string
   updatedAt: string
+}
+
+export interface VehicleCatalogEntry {
+  id: string
+  storeId: string
+  brand: string
+  model: string
+  yearFrom?: number
+  yearTo?: number
+  vehicleType?: VehicleType
+  createdAt: string
 }
 
 export interface StoreUser {

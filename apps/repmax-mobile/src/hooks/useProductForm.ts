@@ -20,6 +20,7 @@ import type { MlManualCategory } from '../constants/mlManualCategories'
 import { categoriaManualPorId } from '../constants/mlManualCategories'
 import { mlCategoryService } from '../services/mercadolibre/mlCategoryService'
 import type { PartCondition, VehicleType } from '../types/database'
+import { VEHICLE_YEAR_MAX, VEHICLE_YEAR_MIN } from '../constants/brands'
 
 export interface ProductFormState {
   title: string
@@ -148,7 +149,7 @@ export function useProductForm({ productId, pendingPhoto, scannedBarcode }: UseP
 
   useEffect(() => {
     if (!scannedBarcode) return
-    setField('barcode', scannedBarcode)
+    setField('barcode', scannedBarcode.toUpperCase())
   }, [scannedBarcode, setField])
 
   const clearPhotoSlot = useCallback((index: number) => {
@@ -187,7 +188,7 @@ export function useProductForm({ productId, pendingPhoto, scannedBarcode }: UseP
 
   const aplicarTituloSugerido = useCallback(() => {
     if (!tituloSugerido) return
-    setField('title', tituloSugerido)
+    setField('title', tituloSugerido.toUpperCase())
   }, [tituloSugerido, setField])
 
   const selectManualCategory = useCallback((category: MlManualCategory) => {
@@ -300,6 +301,23 @@ export function useProductForm({ productId, pendingPhoto, scannedBarcode }: UseP
         message: 'Ingresa un precio válido mayor a 0.',
       }
     }
+    const yearFrom = form.yearFrom ? parseInt(form.yearFrom, 10) : undefined
+    const yearTo = form.yearTo ? parseInt(form.yearTo, 10) : undefined
+    if (
+      (yearFrom !== undefined &&
+        (!Number.isInteger(yearFrom) ||
+          yearFrom < VEHICLE_YEAR_MIN ||
+          yearFrom > VEHICLE_YEAR_MAX)) ||
+      (yearTo !== undefined &&
+        (!Number.isInteger(yearTo) || yearTo < VEHICLE_YEAR_MIN || yearTo > VEHICLE_YEAR_MAX)) ||
+      (yearFrom !== undefined && yearTo !== undefined && yearFrom > yearTo)
+    ) {
+      return {
+        success: false,
+        title: 'Años inválidos',
+        message: `Usa años entre ${VEHICLE_YEAR_MIN} y ${VEHICLE_YEAR_MAX}, con el año desde menor o igual al año hasta.`,
+      }
+    }
 
     setIsLoading(true)
     try {
@@ -319,8 +337,8 @@ export function useProductForm({ productId, pendingPhoto, scannedBarcode }: UseP
         description: form.description.trim() || undefined,
         brand: form.brand.trim(),
         model: form.model.trim(),
-        yearFrom: form.yearFrom ? parseInt(form.yearFrom, 10) : undefined,
-        yearTo: form.yearTo ? parseInt(form.yearTo, 10) : undefined,
+        yearFrom,
+        yearTo,
         vehicleType: form.vehicleType || undefined,
         condition: form.condition,
         partNumber: form.partNumber.trim() || undefined,

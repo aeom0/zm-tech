@@ -104,6 +104,9 @@ export const stores = pgTable('repmax_stores', {
   // vivo de hub_tasas_bcv/hub_tasas_usdt (ver migracion
   // 20260818130000_repmax_stores_tasa_manual.sql)
   usarTasaManual: boolean('usar_tasa_manual').notNull().default(false),
+  // Subconjunto de BRANDS (constants/brands.ts) con el que trabaja la tienda.
+  // Vacío = todas (ver migracion 20260818231537_repmax_stores_preferred_brands.sql)
+  preferredBrands: text('preferred_brands').array().notNull().default([]),
   // Preferencias capturadas en el onboarding mobile (ver migracion
   // 20260808120000_repmax_store_onboarding_fields.sql)
   storeType: text('store_type').$type<StoreType>().notNull().default('repuesteria'),
@@ -243,6 +246,41 @@ export const mlConnections = pgTable(
   },
   (t) => ({
     uniqStore: unique('uniq_repmax_ml_connections_store').on(t.storeId),
+  })
+)
+
+// ============================================================
+// VEHICLE_CATALOG — marca/modelo/años agregados a mano por tienda,
+// complementa el seed estático de apps/repmax-mobile/src/constants/brands.ts
+// ============================================================
+export const vehicleCatalog = pgTable(
+  'repmax_vehicle_catalog',
+  {
+    id: uuid('id')
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    storeId: uuid('store_id')
+      .notNull()
+      .references(() => stores.id, { onDelete: 'cascade' }),
+    brand: varchar('brand', { length: 100 }).notNull(),
+    model: varchar('model', { length: 100 }).notNull(),
+    yearFrom: integer('year_from'),
+    yearTo: integer('year_to'),
+    vehicleType: vehicleTypeEnum('vehicle_type'),
+    createdBy: uuid('created_by').references(() => storeUsers.id, {
+      onDelete: 'set null',
+    }),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+  },
+  (t) => ({
+    uniqEntry: unique('uniq_repmax_vehicle_catalog').on(
+      t.storeId,
+      t.brand,
+      t.model,
+      t.yearFrom,
+      t.yearTo
+    ),
+    storeIdx: index('idx_repmax_vehicle_catalog_store').on(t.storeId, t.brand),
   })
 )
 
@@ -405,6 +443,10 @@ export const insertMlConnectionSchema = createInsertSchema(mlConnections).omit({
   connectedAt: true,
   updatedAt: true,
 })
+export const insertVehicleCatalogSchema = createInsertSchema(vehicleCatalog).omit({
+  id: true,
+  createdAt: true,
+})
 export const insertCustomerSchema = createInsertSchema(customers).omit({
   id: true,
   createdAt: true,
@@ -438,6 +480,9 @@ export type InsertMlListing = z.infer<typeof insertMlListingSchema>
 
 export type MlConnection = typeof mlConnections.$inferSelect
 export type InsertMlConnection = z.infer<typeof insertMlConnectionSchema>
+
+export type VehicleCatalogEntry = typeof vehicleCatalog.$inferSelect
+export type InsertVehicleCatalogEntry = z.infer<typeof insertVehicleCatalogSchema>
 
 export type Customer = typeof customers.$inferSelect
 export type InsertCustomer = z.infer<typeof insertCustomerSchema>
