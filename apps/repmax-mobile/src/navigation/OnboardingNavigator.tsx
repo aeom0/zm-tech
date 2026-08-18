@@ -1,6 +1,9 @@
 // ============================================================
 // RepMAX Business Suite — Navegador del flujo de onboarding
-// Stack sin header — Country → Vehicle → Business → Theme → Preview → Decision
+// Stack sin header — Country → Vehicle → Business → Theme → Preview
+// La elección login/crear cuenta ocurre antes, en AppNavigator
+// (OnboardingAuthChoice). Al terminar Preview se llama
+// completeOnboarding() directamente — ya no hay pantalla de decisión.
 // (splash nativo en app.json; sin pantalla JS duplicada)
 // ============================================================
 
@@ -13,7 +16,6 @@ import OnboardingVehicle from '../screens/onboarding/OnboardingVehicle';
 import OnboardingBusiness from '../screens/onboarding/OnboardingBusiness';
 import OnboardingTheme from '../screens/onboarding/OnboardingTheme';
 import OnboardingPreview from '../screens/onboarding/OnboardingPreview';
-import OnboardingDecision from '../screens/onboarding/OnboardingDecision';
 
 const Stack = createNativeStackNavigator<OnboardingStackParamList>();
 
@@ -31,7 +33,6 @@ export default function OnboardingNavigator() {
       <Stack.Screen name="OnboardingBusiness" component={OnboardingBusiness} />
       <Stack.Screen name="OnboardingTheme"   component={OnboardingTheme} />
       <Stack.Screen name="OnboardingPreview" component={OnboardingPreview} />
-      <Stack.Screen name="OnboardingDecision" component={OnboardingDecision} />
     </Stack.Navigator>
   );
 }

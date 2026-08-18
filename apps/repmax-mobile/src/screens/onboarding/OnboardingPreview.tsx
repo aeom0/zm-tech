@@ -12,6 +12,7 @@ import {
   StyleSheet,
   Animated,
   Easing,
+  Alert,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -49,10 +50,21 @@ const FILAS_ACTIVIDAD_MOCK = [
   },
 ];
 
-export default function OnboardingPreview({ navigation }: Props) {
-  const { state } = useOnboarding();
+export default function OnboardingPreview(_props: Props) {
+  const { state, completeOnboarding } = useOnboarding();
   const opacidadMock = useRef(new Animated.Value(0)).current;
   const translateYMock = useRef(new Animated.Value(24)).current;
+
+  // Al llamar completeOnboarding(), state.completed pasa a true.
+  // AppNavigator observa ese cambio y renderiza Auth (Register) automáticamente
+  // sin necesidad de navegar manualmente — evita errores de pantalla no registrada.
+  const handleFinalizar = async () => {
+    try {
+      await completeOnboarding();
+    } catch (error) {
+      console.error('[OnboardingPreview] Error al completar onboarding:', error);
+    }
+  };
 
   // Entrada del mock del dashboard
   useEffect(() => {
@@ -183,7 +195,7 @@ export default function OnboardingPreview({ navigation }: Props) {
       <View style={styles.footer}>
         <TouchableOpacity
           style={[styles.boton, { backgroundColor: colorAcento }]}
-          onPress={() => navigation.navigate('OnboardingDecision')}
+          onPress={handleFinalizar}
           activeOpacity={0.85}
         >
           <Text style={styles.botonTexto}>Se ve brutal — ¡empecemos!</Text>

@@ -14,7 +14,6 @@ const SCREENS: (keyof OnboardingStackParamList)[] = [
   'OnboardingBusiness',
   'OnboardingTheme',
   'OnboardingPreview',
-  'OnboardingDecision',
 ];
 
 type OnboardingNavProp = NativeStackNavigationProp<OnboardingStackParamList>;
