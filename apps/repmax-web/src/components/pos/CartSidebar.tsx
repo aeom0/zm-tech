@@ -139,6 +139,9 @@ export function CartSidebar({
           <span>Total Bs</span>
           <span>Bs {totalBs.toFixed(2)}</span>
         </div>
+        <div className="text-right text-xs text-[#616161]">
+          Tasa aplicada: Bs {usdBsRate.toFixed(2)} por USD
+        </div>
         <div className="flex items-center justify-between text-lg font-semibold text-[#F5F5F5]">
           <span>Total USD</span>
           <span>${totalUsd.toFixed(2)}</span>

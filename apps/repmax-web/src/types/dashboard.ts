@@ -29,6 +29,7 @@ export type VehicleTypeWeb = "CAR" | "MOTO" | "TRUCK" | "SUV";
 
 import type { MlListingStatus } from "@repmax/repmax-schema/mlListing";
 import type { MlBadgeKind } from "@/lib/ml-readiness";
+import type { DetallesPago } from "@zmtech/tasas";
 
 export interface ProductoWeb {
   id: string;
@@ -99,7 +100,7 @@ export interface SaleCreatePayload {
   customerId: string | null;
   cashierId: string;
   paymentMethod: PaymentMethodWeb;
-  paymentDetails: Record<string, unknown>;
+  paymentDetails: DetallesPago;
   usdBsRate: number;
   notes: string | null;
   items: {

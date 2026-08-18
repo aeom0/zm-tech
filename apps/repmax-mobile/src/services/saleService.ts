@@ -1,4 +1,5 @@
 import { supabase } from '../utils/supabase';
+import type { DetallesPago } from '@zmtech/tasas';
 import type { Sale, CashSession, CartItem, PaymentMethod } from '../types/database';
 
 interface CreateSaleParams {
@@ -7,7 +8,7 @@ interface CreateSaleParams {
   sessionId?: string;
   customerId?: string;
   paymentMethod: PaymentMethod;
-  paymentDetails?: Partial<Record<PaymentMethod, number>>;
+  paymentDetails?: DetallesPago;
   usdBsRate: number;
   notes?: string;
   items: CartItem[];
