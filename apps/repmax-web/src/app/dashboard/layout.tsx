@@ -109,7 +109,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
 
         <nav className="flex flex-1 flex-col gap-1 p-3">
-          {ENLACES.map(({ href, label, icon: Icon }) => {
+          {ENLACES.filter(
+            ({ href }) => !(href === "/dashboard/pos" && storeUser?.role === "inventory"),
+          ).map(({ href, label, icon: Icon }) => {
             const activo = pathname === href;
             return (
               <Link

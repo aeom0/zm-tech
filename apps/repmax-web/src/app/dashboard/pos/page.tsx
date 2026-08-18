@@ -8,7 +8,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ShoppingCart } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { createClient } from "@/lib/supabase/client";
-import { fetchActiveCashSession, fetchProducts } from "@/lib/repmax-queries";
+import { fetchActiveCashSession, fetchProductByCode } from "@/lib/repmax-queries";
 import { useBarcodeScan } from "@/lib/hardware/services/barcodeService";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ export default function PosPage() {
   const [activeSession, setActiveSession] = useState<CashSessionWeb | null>(null);
   const [carritoMovilAbierto, setCarritoMovilAbierto] = useState(false);
   const [checkoutAbierto, setCheckoutAbierto] = useState(false);
+  const [catalogEpoch, setCatalogEpoch] = useState(0);
 
   useEffect(() => {
     if (!store?.id) return;
@@ -77,29 +78,47 @@ export default function PosPage() {
         (it) => it.product.barcode === codigo || it.product.partNumber === codigo,
       );
       if (existente) {
+        if (existente.quantity >= existente.product.stock) {
+          toast({
+            title: "Sin stock suficiente",
+            description: existente.product.title,
+            variant: "destructive",
+          });
+          return;
+        }
         addItem(existente.product);
+        toast({ title: "Producto agregado", description: existente.product.title });
         return;
       }
       try {
         const client = createClient();
-        const params = new URLSearchParams();
-        params.set("page", "1");
-        params.set("limit", "1");
-        params.set("q", codigo);
-        const res = await fetchProducts(client, params, store.usdBsRate);
-        const match = res.products.find(
-          (p) => p.barcode === codigo || p.partNumber === codigo,
-        );
-        if (match && match.isActive && match.stock > 0) {
-          addItem(match);
-          toast({ title: "Producto agregado", description: match.title });
-        } else {
+        const match = await fetchProductByCode(client, codigo, store.usdBsRate);
+        if (!match) {
           toast({
             title: "Código no encontrado",
             description: codigo,
             variant: "destructive",
           });
+          return;
         }
+        if (!match.isActive) {
+          toast({
+            title: "Producto inactivo",
+            description: match.title,
+            variant: "destructive",
+          });
+          return;
+        }
+        if (match.stock <= 0) {
+          toast({
+            title: "Sin stock",
+            description: match.title,
+            variant: "destructive",
+          });
+          return;
+        }
+        addItem(match);
+        toast({ title: "Producto agregado", description: match.title });
       } catch {
         toast({
           title: "Error al buscar código",
@@ -134,7 +153,12 @@ export default function PosPage() {
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-      <ProductSearchGrid storeId={store.id} usdBsRate={store.usdBsRate} onAdd={addItem} />
+      <ProductSearchGrid
+        storeId={store.id}
+        usdBsRate={store.usdBsRate}
+        refreshKey={catalogEpoch}
+        onAdd={addItem}
+      />
 
       {/* Carrito fijo en escritorio */}
       <div className="hidden rounded-lg border border-[#2A2A2A] bg-[#1A1A1A] p-4 lg:block">
@@ -185,7 +209,10 @@ export default function PosPage() {
         cashierId={storeUser.id}
         usdBsRate={store.usdBsRate}
         activeSession={activeSession}
-        onSuccess={clearCart}
+        onSuccess={() => {
+          clearCart();
+          setCatalogEpoch((n) => n + 1);
+        }}
       />
     </div>
   );

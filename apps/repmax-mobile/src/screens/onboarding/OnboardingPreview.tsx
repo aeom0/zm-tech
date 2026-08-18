@@ -12,7 +12,6 @@ import {
   StyleSheet,
   Animated,
   Easing,
-  Alert,
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';

@@ -17,10 +17,16 @@ import type { ProductoWeb } from "@/types/dashboard";
 interface ProductSearchGridProps {
   storeId: string;
   usdBsRate: number;
+  refreshKey?: number;
   onAdd: (product: ProductoWeb) => void;
 }
 
-export function ProductSearchGrid({ storeId, usdBsRate, onAdd }: ProductSearchGridProps) {
+export function ProductSearchGrid({
+  storeId,
+  usdBsRate,
+  refreshKey = 0,
+  onAdd,
+}: ProductSearchGridProps) {
   const [busqueda, setBusqueda] = useState("");
   const [busquedaDebounced, setBusquedaDebounced] = useState("");
   const [productos, setProductos] = useState<ProductoWeb[]>([]);
@@ -31,6 +37,15 @@ export function ProductSearchGrid({ storeId, usdBsRate, onAdd }: ProductSearchGr
     const t = setTimeout(() => setBusquedaDebounced(busqueda.trim()), 300);
     return () => clearTimeout(t);
   }, [busqueda]);
+
+  useEffect(() => {
+    function limpiarBusqueda() {
+      setBusqueda("");
+      setBusquedaDebounced("");
+    }
+    window.addEventListener("repmax-barcode-clear", limpiarBusqueda);
+    return () => window.removeEventListener("repmax-barcode-clear", limpiarBusqueda);
+  }, []);
 
   const url = useMemo(() => {
     const p = new URLSearchParams();
@@ -58,7 +73,7 @@ export function ProductSearchGrid({ storeId, usdBsRate, onAdd }: ProductSearchGr
     return () => {
       cancelled = true;
     };
-  }, [url, usdBsRate, storeId]);
+  }, [url, usdBsRate, storeId, refreshKey]);
 
   return (
     <div className="space-y-4">

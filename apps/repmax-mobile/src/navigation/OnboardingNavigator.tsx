@@ -10,6 +10,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import type { OnboardingStackParamList } from './types';
+import { OnboardingCancelContext } from './onboardingCancelContext';
 
 import OnboardingCountry from '../screens/onboarding/OnboardingCountry';
 import OnboardingVehicle from '../screens/onboarding/OnboardingVehicle';
@@ -19,20 +20,25 @@ import OnboardingPreview from '../screens/onboarding/OnboardingPreview';
 
 const Stack = createNativeStackNavigator<OnboardingStackParamList>();
 
-export default function OnboardingNavigator() {
+interface Props {
+  onCancel: () => void;
+}
+
+export default function OnboardingNavigator({ onCancel }: Props) {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-        // Animación de slide horizontal estándar
-        animation: 'slide_from_right',
-      }}
-    >
-      <Stack.Screen name="OnboardingCountry" component={OnboardingCountry} />
-      <Stack.Screen name="OnboardingVehicle" component={OnboardingVehicle} />
-      <Stack.Screen name="OnboardingBusiness" component={OnboardingBusiness} />
-      <Stack.Screen name="OnboardingTheme"   component={OnboardingTheme} />
-      <Stack.Screen name="OnboardingPreview" component={OnboardingPreview} />
-    </Stack.Navigator>
+    <OnboardingCancelContext.Provider value={onCancel}>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+          animation: 'slide_from_right',
+        }}
+      >
+        <Stack.Screen name="OnboardingCountry" component={OnboardingCountry} />
+        <Stack.Screen name="OnboardingVehicle" component={OnboardingVehicle} />
+        <Stack.Screen name="OnboardingBusiness" component={OnboardingBusiness} />
+        <Stack.Screen name="OnboardingTheme"   component={OnboardingTheme} />
+        <Stack.Screen name="OnboardingPreview" component={OnboardingPreview} />
+      </Stack.Navigator>
+    </OnboardingCancelContext.Provider>
   );
 }

@@ -48,9 +48,11 @@ export function useBarcodeScan(
 
       if (e.key === "Enter") {
         const codigo = bufferRef.current;
+        const eraScan = codigo.length >= LARGO_MINIMO && !enCampoLibre;
         limpiarBuffer();
-        if (codigo.length >= LARGO_MINIMO && !enCampoLibre) {
+        if (eraScan) {
           e.preventDefault();
+          window.dispatchEvent(new Event("repmax-barcode-clear"));
           onScanRef.current(codigo);
         }
         return;
@@ -61,6 +63,9 @@ export function useBarcodeScan(
       if (intervalo > INTERVALO_MAX_MS) {
         // tecleo demasiado lento para ser un scanner: reinicia el buffer
         bufferRef.current = "";
+      } else if (bufferRef.current.length >= 1 && !enCampoLibre) {
+        // ráfaga HID: no dejes que las teclas se pinten en el input de búsqueda
+        e.preventDefault();
       }
 
       bufferRef.current += e.key;

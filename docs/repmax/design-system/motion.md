@@ -9,9 +9,9 @@ Valores del flow map (`UXStates / FlowMap` en `onboarding.pen`) y del prototipo 
 | Cambio de pantalla | 180ms | opacity + translateY 12px, ease-out |
 | Press selección | 120ms | scale → 0.96, spring |
 | Progress fill | 300ms | width ease |
-| Splash logo | 600ms | fade-in |
-| Splash tagline | 400ms | (delay ~200ms) |
-| Splash hold → País | ~1.0–1.2s total | `replace` (código hoy ~1.8s — alinear) |
+| Splash logo (sesión / logo tenant, futuro) | 600ms | fade-in |
+| Splash tagline (sesión / logo tenant, futuro) | 400ms | (delay ~200ms) |
+| Splash hold de sesión | ~1.0–1.2s | placeholder en prototipo HTML; no es el onboarding de primera vez |
 
 ## Reduced motion
 

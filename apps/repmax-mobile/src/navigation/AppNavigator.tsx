@@ -65,7 +65,9 @@ export default function AppNavigator() {
           </Stack.Screen>
         ) : !onboardingState.completed && authChoice === 'signup' ? (
           // Eligió crear cuenta — wizard de personalización
-          <Stack.Screen name="Onboarding" component={OnboardingNavigator} />
+          <Stack.Screen name="Onboarding">
+            {() => <OnboardingNavigator onCancel={() => setAuthChoice(null)} />}
+          </Stack.Screen>
         ) : (
           // Eligió iniciar sesión, o ya completó el onboarding antes — login directo
           <Stack.Screen name="Auth" component={AuthNavigator} />

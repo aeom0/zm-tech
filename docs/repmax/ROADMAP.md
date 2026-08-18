@@ -13,7 +13,7 @@ El detalle de cambios ya hechos vive en [CHANGELOG.md](./CHANGELOG.md). Este arc
 - [x] Retiro de Express/JWT; sin `repmax-server` en workspace
 - [x] Limpieza documental (legacy Express / proyecto Supabase huérfano eliminados)
 - [x] Repo standalone `aeom0/RepMAX` archivado en GitHub (absorbido en `zm-tech`)
-- [x] **Diseño onboarding V2 (Pencil)** — tokens Industrial Dark/Light, componentes reutilizables, 7 pantallas dark + light, flow map + prototipo HTML tap-through
+- [x] **Diseño onboarding V2 (Pencil)** — tokens Industrial Dark/Light, componentes reutilizables, artboards dark + light (Auth + wizard; Decision como referencia), flow map + prototipo HTML tap-through (Splash del prototipo reservado para sesión con logo tenant)
   - Canvas: `design/onboarding.pen`
   - Spec: `design/onboarding-ux-spec.md`
   - Prototype: `design/prototype/index.html`
@@ -40,11 +40,12 @@ El detalle de cambios ya hechos vive en [CHANGELOG.md](./CHANGELOG.md). Este arc
 - [x] **POS de escritorio (plan 07, fase 1)** — `/dashboard/pos` en repmax-web: catálogo/carrito/cobro vía `repmax_create_sale_with_items`, banner de caja no bloqueante, gating por rol, scanner HID (`useBarcodeScan`)
   - Plan: `plans/07-PLAN-integracion-hardware.md`
 - [x] **Historial de ventas enriquecido (web)** — `/dashboard/sales` con título, vehículo, número de parte y foto por línea
-- [x] **Onboarding mobile — pantalla auth inicial** — `ONB-00-Auth` (dark+light) cableada como `OnboardingAuthChoice`; `OnboardingDecision` retirada del código, responsabilidades redistribuidas (demo/login al inicio, crear-cuenta en el CTA de Preview)
+- [x] **Onboarding mobile — pantalla auth inicial** — `ONB-00-Auth` (dark+light) cableada como `OnboardingAuthChoice`; `OnboardingDecision` retirada del código; splash JS de primera vez retirado del `.pen` (cold start nativo; splash de sesión con logo tenant queda como próximo)
   - Canvas: `design/onboarding.pen` · Spec: `design/onboarding-ux-spec.md`
 
 ## Próximo
 
+- [ ] **Splash de sesión con logo del tenant** — al iniciar sesión (no en el onboarding de primera vez), mostrar el logo que la tienda suba. Placeholder hoy: paso Splash en `design/prototype/index.html`. Cold start de marca sigue nativo (`app.json`).
 - [ ] Cablear el resto del onboarding mobile end-to-end al high-fi (`apps/repmax-mobile` ↔ design system) — la pantalla auth y el flujo de decisión ya están alineados
 - [ ] Extraer / alinear tokens RN (`utils/theme.ts`) con `design-system/tokens.md`
 - [ ] Seed / fixtures de catálogo demo más realistas (Alfa/Beta; el starter de tiendas nuevas ya está)

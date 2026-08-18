@@ -351,6 +351,36 @@ export async function patchProduct(
   return mapProducto(data as Record<string, unknown>, usdBsRate);
 }
 
+/** Match exacto de barcode o número de parte (scanner HID). No usa el ILIKE del grid. */
+export async function fetchProductByCode(
+  client: SupabaseClient,
+  codigo: string,
+  usdBsRate: number,
+): Promise<ProductoWeb | null> {
+  const code = codigo.trim();
+  if (!code) return null;
+
+  const { data: byBarcode, error: errBarcode } = await client
+    .from("repmax_products")
+    .select(PRODUCT_DASHBOARD_SELECT)
+    .eq("barcode", code)
+    .maybeSingle();
+  if (errBarcode) throw new Error(errBarcode.message);
+  if (byBarcode) {
+    return mapProducto(byBarcode as Record<string, unknown>, usdBsRate);
+  }
+
+  const { data: byPart, error: errPart } = await client
+    .from("repmax_products")
+    .select(PRODUCT_DASHBOARD_SELECT)
+    .eq("part_number", code)
+    .limit(1)
+    .maybeSingle();
+  if (errPart) throw new Error(errPart.message);
+  if (!byPart) return null;
+  return mapProducto(byPart as Record<string, unknown>, usdBsRate);
+}
+
 export async function fetchSales(
   client: SupabaseClient,
   params: URLSearchParams,

@@ -1,13 +1,14 @@
 # Onboarding — patrones
 
-Flujo V2 (auth choice + 6 pantallas de wizard). Diseño: `design/onboarding.pen`. Spec: `design/onboarding-ux-spec.md`. Prototype: `design/prototype/index.html`.
+Flujo V2 (auth choice + 5 pantallas de wizard). Diseño: `design/onboarding.pen`. Spec: `design/onboarding-ux-spec.md`. Prototype: `design/prototype/index.html`.
+
+El splash nativo (`app.json`) es el cold start de marca RepMAX. El paso Splash del prototipo HTML **se deja** como placeholder del futuro **splash de sesión**: logo que el tenant suba, mostrado al iniciar sesión — no forma parte del onboarding de primera vez.
 
 ## Pasos
 
 | # | Pantalla | Avance |
 |---|----------|--------|
 | 00 | Auth choice | Crear cuenta → wizard \| Iniciar sesión → Login directo \| Explorar demo |
-| 01 | Splash | Auto ~1.1s |
 | 02 | País | Tap card (VE destacada; grid otros) |
 | 03 | Vehículos | Tap card → auto |
 | 04 | Negocio | Tap card → auto |

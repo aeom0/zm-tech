@@ -3,7 +3,7 @@
 // Venezuela destacada arriba, el resto en grid 2 columnas
 // ============================================================
 
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -11,10 +11,13 @@ import {
   ScrollView,
   StyleSheet,
   Animated,
+  BackHandler,
 } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { OnboardingStackParamList } from '../../navigation/types';
 import { useOnboarding } from '../../context/OnboardingContext';
+import { useOnboardingCancel } from '../../navigation/onboardingCancelContext';
 import { COUNTRIES } from '../../constants/onboarding';
 import OnboardingProgressBar from '../../components/onboarding/OnboardingProgressBar';
 import { Screen } from '../../components/layout/Screen';
@@ -25,10 +28,19 @@ type Props = NativeStackScreenProps<OnboardingStackParamList, 'OnboardingCountry
 
 export default function OnboardingCountry({ navigation }: Props) {
   const { setCountry } = useOnboarding();
+  const onCancel = useOnboardingCancel();
   const escalaVenezuela = useRef(new Animated.Value(1)).current;
 
   const venezuela = COUNTRIES.find(c => c.featured)!;
   const otros = COUNTRIES.filter(c => !c.featured);
+
+  useEffect(() => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+      onCancel();
+      return true;
+    });
+    return () => sub.remove();
+  }, [onCancel]);
 
   const seleccionarPais = (code: CountryCode) => {
     setCountry(code);
@@ -51,6 +63,16 @@ export default function OnboardingCountry({ navigation }: Props) {
 
   return (
     <Screen edges={['top', 'bottom']} padded={false}>
+      <TouchableOpacity
+        onPress={onCancel}
+        style={styles.volver}
+        activeOpacity={0.7}
+        accessibilityRole="button"
+        accessibilityLabel="Volver a crear cuenta o iniciar sesión"
+      >
+        <MaterialCommunityIcons name="chevron-left" size={24} color={colors.text.secondary} />
+        <Text style={styles.volverTexto}>Volver</Text>
+      </TouchableOpacity>
       {/* Barra de progreso: paso 1 de 5 */}
       <OnboardingProgressBar currentStep={1} totalSteps={5} />
 
@@ -96,6 +118,19 @@ const styles = StyleSheet.create({
   scroll: {
     padding: spacing.base,
     paddingBottom: spacing['3xl'],
+  },
+  volver: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.base,
+    paddingTop: spacing.sm,
+    minHeight: 44,
+    alignSelf: 'flex-start',
+  },
+  volverTexto: {
+    fontFamily: typography.fontFamily.medium,
+    fontSize: typography.size.sm,
+    color: colors.text.secondary,
   },
   titulo: {
     fontFamily: typography.fontFamily.bold,
