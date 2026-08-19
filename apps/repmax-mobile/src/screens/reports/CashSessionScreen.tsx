@@ -20,12 +20,13 @@ import { Ionicons } from '@expo/vector-icons'
 
 import { EmptyState } from '../../components/ui/EmptyState'
 import { saleService } from '../../services/saleService'
-import { formatUSD, formatDateTime } from '../../utils/formatters'
+import { formatUSD, formatBS, formatDateTime } from '../../utils/formatters'
 import { PAYMENT_METHODS } from '../../constants/paymentMethods'
 import { useResponsive } from '../../hooks/useResponsive'
 import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme'
 import { useAuth } from '../../context/AuthContext'
 import type { CashSession, Sale } from '../../types/database'
+import { resumirPagos, totalDesgloseUsd, type CashPaymentMethod } from '../../utils/cashSession'
 
 export default function CashSessionScreen() {
   const { store, storeUser } = useAuth()
@@ -38,7 +39,9 @@ export default function CashSessionScreen() {
   const [showOpenModal, setShowOpenModal] = useState(false)
   const [showCloseModal, setShowCloseModal] = useState(false)
   const [openingAmount, setOpeningAmount] = useState('')
+  const [openingAmountBs, setOpeningAmountBs] = useState('')
   const [closingAmount, setClosingAmount] = useState('')
+  const [closingAmountBs, setClosingAmountBs] = useState('')
   const [sessionNotes, setSessionNotes] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -77,11 +80,13 @@ export default function CashSessionScreen() {
         store!.id,
         storeUser!.id,
         parseFloat(openingAmount) || 0,
+        parseFloat(openingAmountBs) || 0,
         sessionNotes || undefined
       )
       setSession(newSession)
       setShowOpenModal(false)
       setOpeningAmount('')
+      setOpeningAmountBs('')
       setSessionNotes('')
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'No se pudo abrir la caja.'
@@ -107,10 +112,12 @@ export default function CashSessionScreen() {
               await saleService.closeSession(
                 session.id,
                 parseFloat(closingAmount) || 0,
+                parseFloat(closingAmountBs) || 0,
                 sessionNotes || undefined
               )
               setShowCloseModal(false)
               setClosingAmount('')
+              setClosingAmountBs('')
               setSessionNotes('')
               await loadData()
             } catch (err: unknown) {
@@ -126,6 +133,40 @@ export default function CashSessionScreen() {
   }
 
   const totalBySales = sales.reduce((sum, s) => sum + Number(s.totalUsd), 0)
+  const paymentBreakdown = resumirPagos(sales)
+  const totalDesglosadoUsd = totalDesgloseUsd(paymentBreakdown)
+  const expectedCashUsd =
+    (session?.openingAmountUsd ?? 0) + (paymentBreakdown.CASH_USD?.totalUsd ?? 0)
+  const expectedCashBs = (session?.openingAmountBs ?? 0) + (paymentBreakdown.CASH_BS?.totalBs ?? 0)
+  const closingUsd = parseFloat(closingAmount) || 0
+  const closingBs = parseFloat(closingAmountBs) || 0
+  const differenceUsd = closingUsd - expectedCashUsd
+  const differenceBs = closingBs - expectedCashBs
+
+  const renderPaymentBreakdown = () => (
+    <View style={styles.breakdownCard}>
+      <Text style={styles.breakdownTitle}>Ingresos por medio de cobro</Text>
+      {PAYMENT_METHODS.filter(({ value }) => value !== 'MIXED').map(({ value, label }) => {
+        const summary = paymentBreakdown[value as CashPaymentMethod]
+        if (!summary) return null
+        return (
+          <View key={value} style={styles.breakdownRow}>
+            <Text style={styles.breakdownLabel}>{label}</Text>
+            <View style={styles.breakdownValues}>
+              <Text style={styles.breakdownUsd}>{formatUSD(summary.totalUsd)}</Text>
+              {summary.totalBs > 0 ? (
+                <Text style={styles.breakdownBs}>{formatBS(summary.totalBs)}</Text>
+              ) : null}
+            </View>
+          </View>
+        )
+      })}
+      <View style={[styles.breakdownRow, styles.breakdownTotalRow]}>
+        <Text style={styles.breakdownTotalLabel}>Total vendido</Text>
+        <Text style={styles.breakdownTotalValue}>{formatUSD(totalDesglosadoUsd)}</Text>
+      </View>
+    </View>
+  )
 
   if (isLoading) {
     return (
@@ -155,6 +196,7 @@ export default function CashSessionScreen() {
             <Text style={styles.sessionCount}>
               {sales.length} venta{sales.length !== 1 ? 's' : ''}
             </Text>
+            {renderPaymentBreakdown()}
           </>
         ) : (
           <Text style={styles.noSessionText}>
@@ -241,6 +283,15 @@ export default function CashSessionScreen() {
               placeholderTextColor={colors.text.disabled}
               keyboardType="decimal-pad"
             />
+            <Text style={styles.fieldLabel}>Monto de apertura (Bs)</Text>
+            <TextInput
+              style={styles.fieldInput}
+              value={openingAmountBs}
+              onChangeText={setOpeningAmountBs}
+              placeholder="0.00"
+              placeholderTextColor={colors.text.disabled}
+              keyboardType="decimal-pad"
+            />
             <Text style={styles.fieldLabel}>Nota (opcional)</Text>
             <TextInput
               style={styles.fieldInput}
@@ -277,6 +328,14 @@ export default function CashSessionScreen() {
               <Text style={styles.closingLabel}>Total en ventas</Text>
               <Text style={styles.closingTotal}>{formatUSD(totalBySales)}</Text>
             </View>
+            {renderPaymentBreakdown()}
+            <View style={styles.closingSummary}>
+              <Text style={styles.closingLabel}>Efectivo esperado</Text>
+              <Text style={styles.closingExpected}>{formatUSD(expectedCashUsd)}</Text>
+              {expectedCashBs > 0 ? (
+                <Text style={styles.closingExpectedBs}>{formatBS(expectedCashBs)}</Text>
+              ) : null}
+            </View>
             <Text style={styles.fieldLabel}>Monto de cierre en caja (USD)</Text>
             <TextInput
               style={styles.fieldInput}
@@ -286,6 +345,31 @@ export default function CashSessionScreen() {
               placeholderTextColor={colors.text.disabled}
               keyboardType="decimal-pad"
             />
+            <Text style={styles.fieldLabel}>Monto de cierre en caja (Bs)</Text>
+            <TextInput
+              style={styles.fieldInput}
+              value={closingAmountBs}
+              onChangeText={setClosingAmountBs}
+              placeholder="0.00"
+              placeholderTextColor={colors.text.disabled}
+              keyboardType="decimal-pad"
+            />
+            <Text
+              style={[
+                styles.differenceText,
+                differenceUsd === 0 ? styles.differenceOk : styles.differenceWarn,
+              ]}
+            >
+              Diferencia USD: {formatUSD(differenceUsd)}
+            </Text>
+            <Text
+              style={[
+                styles.differenceText,
+                differenceBs === 0 ? styles.differenceOk : styles.differenceWarn,
+              ]}
+            >
+              Diferencia Bs: {formatBS(differenceBs)}
+            </Text>
             <Text style={styles.fieldLabel}>Nota de cierre (opcional)</Text>
             <TextInput
               style={styles.fieldInput}
@@ -463,6 +547,60 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily.regular,
     marginTop: spacing.xs,
   },
+  breakdownCard: {
+    backgroundColor: colors.bg.elevated,
+    borderRadius: borderRadius.md,
+    padding: spacing.md,
+    marginTop: spacing.md,
+  },
+  breakdownTitle: {
+    fontSize: typography.size.sm,
+    color: colors.text.secondary,
+    fontFamily: typography.fontFamily.semibold,
+    marginBottom: spacing.sm,
+  },
+  breakdownRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: spacing.xs,
+  },
+  breakdownLabel: {
+    flex: 1,
+    fontSize: typography.size.sm,
+    color: colors.text.secondary,
+    fontFamily: typography.fontFamily.regular,
+  },
+  breakdownValues: {
+    alignItems: 'flex-end',
+  },
+  breakdownUsd: {
+    fontSize: typography.size.sm,
+    color: colors.text.primary,
+    fontFamily: typography.fontFamily.semibold,
+  },
+  breakdownBs: {
+    fontSize: typography.size.xs,
+    color: colors.text.disabled,
+    fontFamily: typography.fontFamily.regular,
+    marginTop: 2,
+  },
+  breakdownTotalRow: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.bg.border,
+    marginTop: spacing.xs,
+    paddingTop: spacing.sm,
+  },
+  breakdownTotalLabel: {
+    fontSize: typography.size.sm,
+    color: colors.text.primary,
+    fontFamily: typography.fontFamily.semibold,
+  },
+  breakdownTotalValue: {
+    fontSize: typography.size.md,
+    color: colors.brand.orange,
+    fontFamily: typography.fontFamily.bold,
+  },
   noSessionText: {
     fontSize: typography.size.base,
     color: colors.text.secondary,
@@ -576,6 +714,29 @@ const styles = StyleSheet.create({
     color: colors.brand.orange,
     fontFamily: typography.fontFamily.bold,
     marginTop: spacing.xs,
+  },
+  closingExpected: {
+    fontSize: typography.size.xl,
+    color: colors.text.primary,
+    fontFamily: typography.fontFamily.bold,
+    marginTop: spacing.xs,
+  },
+  closingExpectedBs: {
+    fontSize: typography.size.sm,
+    color: colors.text.secondary,
+    fontFamily: typography.fontFamily.regular,
+    marginTop: spacing.xs,
+  },
+  differenceText: {
+    fontSize: typography.size.sm,
+    fontFamily: typography.fontFamily.semibold,
+    marginTop: spacing.xs,
+  },
+  differenceOk: {
+    color: colors.semantic.success,
+  },
+  differenceWarn: {
+    color: colors.semantic.warning,
   },
   fieldLabel: {
     fontSize: typography.size.sm,

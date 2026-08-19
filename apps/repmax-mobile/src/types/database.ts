@@ -156,7 +156,9 @@ export interface CashSession {
   cashierId?: string
   status: CashSessionStatus
   openingAmountUsd: number
+  openingAmountBs: number
   closingAmountUsd?: number
+  closingAmountBs?: number
   totalSalesUsd?: number
   totalByPaymentMethod: Partial<Record<PaymentMethod, number>>
   openedAt: string

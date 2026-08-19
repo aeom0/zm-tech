@@ -2,7 +2,7 @@
 // RepMAX Business Suite — Pantalla de Cobro / Pago
 // Selecciona método de pago, cliente opcional, registra la venta.
 // ============================================================
-import React, { useState, useEffect } from 'react'
+import React, { useState, useCallback } from 'react'
 import {
   View,
   Text,
@@ -15,6 +15,8 @@ import {
 } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
+import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
+import { useFocusEffect } from '@react-navigation/native'
 
 import { useCart } from '../../context/CartContext'
 import { useAuth } from '../../context/AuthContext'
@@ -31,7 +33,7 @@ import { formatUSD, formatBS } from '../../utils/formatters'
 import { PAYMENT_METHODS } from '../../constants/paymentMethods'
 import { colors, typography, spacing, borderRadius, shadows } from '../../utils/theme'
 import type { PaymentMethod } from '../../types/database'
-import type { POSStackParamList } from '../../navigation/types'
+import type { MainTabParamList, POSStackParamList } from '../../navigation/types'
 
 type Props = NativeStackScreenProps<POSStackParamList, 'Payment'>
 
@@ -48,14 +50,27 @@ export default function PaymentScreen({ navigation }: Props) {
   // Sesión activa de caja
   const [sessionId, setSessionId] = useState<string | undefined>(undefined)
 
-  useEffect(() => {
-    saleService
-      .getActiveSession()
-      .then((session) => {
-        if (session) setSessionId(session.id)
-      })
-      .catch(() => {})
-  }, [])
+  useFocusEffect(
+    useCallback(() => {
+      let activo = true
+      saleService
+        .getActiveSession()
+        .then((session) => {
+          if (activo) setSessionId(session?.id)
+        })
+        .catch(() => {
+          if (activo) setSessionId(undefined)
+        })
+      return () => {
+        activo = false
+      }
+    }, [])
+  )
+
+  const openCashSession = () => {
+    const mainNavigation = navigation.getParent<BottomTabNavigationProp<MainTabParamList>>()
+    mainNavigation?.navigate('MoreTab', { screen: 'CashSession' })
+  }
 
   const tasaManual = store?.usdBsRate ?? 36.5
   // La migración deja el modo vivo como default; no degradar a manual si el
@@ -97,6 +112,17 @@ export default function PaymentScreen({ navigation }: Props) {
   const handleConfirm = async () => {
     if (!storeUser) {
       Alert.alert('Error', 'No se encontró el usuario de la tienda.')
+      return
+    }
+    if (!sessionId) {
+      Alert.alert(
+        'Caja cerrada',
+        'Abre una sesión de caja para registrar la venta y que aparezca en el cierre diario.',
+        [
+          { text: 'Cancelar', style: 'cancel' },
+          { text: 'Abrir caja', onPress: openCashSession },
+        ]
+      )
       return
     }
     if (!usarTasaManual && isLoadingTasa) {
@@ -245,9 +271,15 @@ export default function PaymentScreen({ navigation }: Props) {
         {!sessionId && (
           <View style={styles.warnBanner}>
             <Ionicons name="warning-outline" size={16} color={colors.semantic.warning} />
-            <Text style={styles.warnText}>
-              No hay sesión de caja abierta. La venta se registrará sin sesión.
-            </Text>
+            <View style={styles.warnCopy}>
+              <Text style={styles.warnText}>No hay sesión de caja abierta.</Text>
+              <Text style={styles.warnHint}>
+                Abre caja para incluir esta venta en el cierre diario.
+              </Text>
+            </View>
+            <TouchableOpacity onPress={openCashSession} accessibilityLabel="Abrir caja">
+              <Text style={styles.warnAction}>Abrir caja</Text>
+            </TouchableOpacity>
           </View>
         )}
       </ScrollView>
@@ -446,10 +478,23 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
   },
   warnText: {
-    flex: 1,
     color: colors.semantic.warning,
     fontSize: typography.size.sm,
+    fontFamily: typography.fontFamily.semibold,
+  },
+  warnCopy: {
+    flex: 1,
+  },
+  warnHint: {
+    color: colors.semantic.warning,
+    fontSize: typography.size.xs,
     fontFamily: typography.fontFamily.regular,
+    marginTop: 2,
+  },
+  warnAction: {
+    color: colors.brand.orange,
+    fontSize: typography.size.xs,
+    fontFamily: typography.fontFamily.bold,
   },
   footer: {
     padding: spacing.base,
