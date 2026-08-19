@@ -333,8 +333,18 @@ export const cashSessions = pgTable(
       precision: 12,
       scale: 2,
     }).default('0'),
+    openingAmountBs: decimal('opening_amount_bs', {
+      precision: 14,
+      scale: 2,
+    })
+      .notNull()
+      .default('0'),
     closingAmountUsd: decimal('closing_amount_usd', {
       precision: 12,
+      scale: 2,
+    }),
+    closingAmountBs: decimal('closing_amount_bs', {
+      precision: 14,
       scale: 2,
     }),
     totalSalesUsd: decimal('total_sales_usd', { precision: 12, scale: 2 }),
