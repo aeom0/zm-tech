@@ -1,6 +1,7 @@
 import { supabase } from '../utils/supabase'
 import type { DetallesPago } from '@zmtech/tasas'
 import type { Sale, CashSession, CartItem, PaymentMethod } from '../types/database'
+import { resumirPagos } from '../utils/cashSession'
 
 interface CreateSaleParams {
   storeId: string
@@ -21,7 +22,9 @@ function mapCashSession(row: any): CashSession {
     cashierId: row.cashier_id,
     status: row.status,
     openingAmountUsd: parseFloat(row.opening_amount_usd ?? '0'),
+    openingAmountBs: parseFloat(row.opening_amount_bs ?? '0'),
     closingAmountUsd: row.closing_amount_usd ? parseFloat(row.closing_amount_usd) : undefined,
+    closingAmountBs: row.closing_amount_bs ? parseFloat(row.closing_amount_bs) : undefined,
     totalSalesUsd: row.total_sales_usd ? parseFloat(row.total_sales_usd) : undefined,
     totalByPaymentMethod: row.total_by_payment_method ?? {},
     openedAt: row.opened_at,
@@ -102,6 +105,7 @@ export const saleService = {
     storeId: string,
     cashierId: string,
     openingAmountUsd: number,
+    openingAmountBs: number,
     notes?: string
   ): Promise<CashSession> {
     const { data, error } = await supabase
@@ -110,6 +114,7 @@ export const saleService = {
         store_id: storeId,
         cashier_id: cashierId,
         opening_amount_usd: openingAmountUsd,
+        opening_amount_bs: openingAmountBs,
         notes: notes ?? null,
         status: 'OPEN',
       })
@@ -123,12 +128,13 @@ export const saleService = {
   async closeSession(
     sessionId: string,
     closingAmountUsd: number,
+    closingAmountBs: number,
     notes?: string
   ): Promise<CashSession> {
     // Calcular totales de la sesión antes de cerrar
     const { data: salesData } = await supabase
       .from('repmax_sales')
-      .select('total_usd, payment_method')
+      .select('total_usd, total_bs, usd_bs_rate, payment_method, payment_details')
       .eq('session_id', sessionId)
       .eq('status', 'COMPLETED')
 
@@ -137,18 +143,28 @@ export const saleService = {
       0
     )
 
-    const totalByPaymentMethod: Record<string, number> = {}
-    for (const sale of salesData ?? []) {
-      const method = sale.payment_method
-      totalByPaymentMethod[method] =
-        (totalByPaymentMethod[method] ?? 0) + parseFloat(sale.total_usd ?? '0')
-    }
+    const paymentSales: Sale[] = (salesData ?? []).map((sale) => ({
+      id: '',
+      storeId: '',
+      totalUsd: parseFloat(sale.total_usd ?? '0'),
+      totalBs: sale.total_bs ? parseFloat(sale.total_bs) : undefined,
+      usdBsRate: sale.usd_bs_rate ? parseFloat(sale.usd_bs_rate) : undefined,
+      paymentMethod: sale.payment_method,
+      paymentDetails: sale.payment_details,
+      status: 'COMPLETED',
+      createdAt: '',
+    }))
+    const breakdown = resumirPagos(paymentSales)
+    const totalByPaymentMethod: Record<string, number> = Object.fromEntries(
+      Object.entries(breakdown).map(([method, summary]) => [method, summary?.totalUsd ?? 0])
+    )
 
     const { data, error } = await supabase
       .from('repmax_cash_sessions')
       .update({
         status: 'CLOSED',
         closing_amount_usd: closingAmountUsd,
+        closing_amount_bs: closingAmountBs,
         total_sales_usd: totalSalesUsd,
         total_by_payment_method: totalByPaymentMethod,
         closed_at: new Date().toISOString(),

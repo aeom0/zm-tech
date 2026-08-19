@@ -2,10 +2,12 @@
 // RepMAX Business Suite — Pantalla POS (búsqueda de productos)
 // Phone: lista + ActionBar · Tablet+: catálogo | carrito (split)
 // ============================================================
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
+import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
+import { useFocusEffect } from '@react-navigation/native'
 
 import { SearchBar } from '../../components/ui/SearchBar'
 import { FilterChips } from '../../components/ui/FilterChips'
@@ -17,12 +19,13 @@ import { useProducts } from '../../hooks/useProducts'
 import { useCart } from '../../context/CartContext'
 import { useResponsive, useBreakpointValue } from '../../hooks/useResponsive'
 import { useTabBarOffset } from '../../hooks/useTabBarOffset'
-import { formatUSD } from '../../utils/formatters'
+import { formatDateTime, formatUSD } from '../../utils/formatters'
 import { uriPortada } from '../../utils/productPhotos'
 import { hapticLight } from '../../utils/haptics'
+import { saleService } from '../../services/saleService'
 import { colors, typography, spacing, borderRadius, shadows, layout } from '../../utils/theme'
-import type { Product } from '../../types/database'
-import type { POSStackParamList } from '../../navigation/types'
+import type { CashSession, Product } from '../../types/database'
+import type { MainTabParamList, POSStackParamList } from '../../navigation/types'
 
 type Props = NativeStackScreenProps<POSStackParamList, 'POS'>
 
@@ -120,10 +123,12 @@ function CatalogPane({
   navigation,
   showActionBar,
   numColumns,
+  onCashPress,
 }: {
   navigation: Props['navigation']
   showActionBar: boolean
   numColumns: number
+  onCashPress: () => void
 }) {
   const [query, setQuery] = useState('')
   const [condition, setCondition] = useState<'all' | 'NEW' | 'USED'>('all')
@@ -133,11 +138,61 @@ function CatalogPane({
     condition: condition === 'all' ? undefined : condition,
   })
   const { addItem, totalItems } = useCart()
+  const [session, setSession] = useState<CashSession | null>(null)
+
+  useFocusEffect(
+    useCallback(() => {
+      let activo = true
+      saleService
+        .getActiveSession()
+        .then((data) => {
+          if (activo) setSession(data)
+        })
+        .catch(() => {})
+      return () => {
+        activo = false
+      }
+    }, [])
+  )
+
+  const sessionFromPreviousDay =
+    session !== null && new Date(session.openedAt).toDateString() !== new Date().toDateString()
 
   const listPadding = showActionBar ? listPaddingWithActionBar : spacing.xl
 
   return (
     <View style={styles.catalog}>
+      <TouchableOpacity
+        style={[
+          styles.cashBanner,
+          sessionFromPreviousDay ? styles.cashBannerWarning : styles.cashBannerClosed,
+        ]}
+        onPress={onCashPress}
+        activeOpacity={0.8}
+      >
+        <Ionicons
+          name={session ? 'lock-open-outline' : 'lock-closed-outline'}
+          size={20}
+          color={session ? colors.semantic.warning : colors.semantic.error}
+        />
+        <View style={styles.cashBannerCopy}>
+          <Text style={styles.cashBannerTitle}>
+            {sessionFromPreviousDay
+              ? 'Caja pendiente de cierre'
+              : session
+                ? 'Caja abierta'
+                : 'Caja cerrada'}
+          </Text>
+          <Text style={styles.cashBannerText}>
+            {sessionFromPreviousDay
+              ? `Abierta ${formatDateTime(session.openedAt)}. Revisa el cierre antes de continuar.`
+              : session
+                ? `Abierta ${formatDateTime(session.openedAt)}`
+                : 'Abre la caja para registrar las ventas del día.'}
+          </Text>
+        </View>
+        <Text style={styles.cashBannerAction}>{session ? 'Ver caja' : 'Abrir caja'}</Text>
+      </TouchableOpacity>
       <SearchBar
         value={query}
         onChangeText={setQuery}
@@ -199,12 +254,21 @@ export default function POSScreen({ navigation }: Props) {
     desktop: 2,
     wide: 2,
   })
+  const openCashSession = () => {
+    const mainNavigation = navigation.getParent<BottomTabNavigationProp<MainTabParamList>>()
+    mainNavigation?.navigate('MoreTab', { screen: 'CashSession' })
+  }
 
   if (isTabletUp) {
     return (
       <View style={styles.splitRoot}>
         <View style={styles.splitCatalog}>
-          <CatalogPane navigation={navigation} showActionBar={false} numColumns={catalogColumns} />
+          <CatalogPane
+            navigation={navigation}
+            showActionBar={false}
+            numColumns={catalogColumns}
+            onCashPress={openCashSession}
+          />
         </View>
         <View style={styles.splitDivider} />
         <View style={styles.splitCart}>
@@ -218,13 +282,57 @@ export default function POSScreen({ navigation }: Props) {
     )
   }
 
-  return <CatalogPane navigation={navigation} showActionBar numColumns={1} />
+  return (
+    <CatalogPane
+      navigation={navigation}
+      showActionBar
+      numColumns={1}
+      onCashPress={openCashSession}
+    />
+  )
 }
 
 const styles = StyleSheet.create({
   catalog: {
     flex: 1,
     backgroundColor: colors.bg.primary,
+  },
+  cashBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginHorizontal: spacing.md,
+    marginTop: spacing.sm,
+    padding: spacing.sm,
+    borderRadius: borderRadius.md,
+    borderWidth: 1,
+  },
+  cashBannerWarning: {
+    backgroundColor: colors.semantic.warning + '18',
+    borderColor: colors.semantic.warning + '55',
+  },
+  cashBannerClosed: {
+    backgroundColor: colors.semantic.error + '12',
+    borderColor: colors.semantic.error + '44',
+  },
+  cashBannerCopy: {
+    flex: 1,
+  },
+  cashBannerTitle: {
+    fontSize: typography.size.sm,
+    color: colors.text.primary,
+    fontFamily: typography.fontFamily.semibold,
+  },
+  cashBannerText: {
+    fontSize: typography.size.xs,
+    color: colors.text.secondary,
+    fontFamily: typography.fontFamily.regular,
+    marginTop: 2,
+  },
+  cashBannerAction: {
+    fontSize: typography.size.xs,
+    color: colors.brand.orange,
+    fontFamily: typography.fontFamily.bold,
   },
   splitRoot: {
     flex: 1,
