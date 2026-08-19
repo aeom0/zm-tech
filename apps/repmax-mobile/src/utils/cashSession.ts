@@ -8,13 +8,14 @@ export interface CashPaymentSummary {
   totalBs: number
 }
 
-export type CashPaymentBreakdown = Partial<Record<CashPaymentMethod, CashPaymentSummary>>
+// Incluye 'MIXED' como cajón de compatibilidad para ventas antiguas sin payment_details.
+export type CashPaymentBreakdown = Partial<Record<PaymentMethod, CashPaymentSummary>>
 
 const redondear = (valor: number) => Math.round((valor + Number.EPSILON) * 100) / 100
 
 function sumar(
   breakdown: CashPaymentBreakdown,
-  method: CashPaymentMethod,
+  method: PaymentMethod,
   monto: number,
   moneda: 'USD' | 'BS',
   tasa: number
@@ -34,23 +35,32 @@ export function resumirPagos(sales: Sale[]): CashPaymentBreakdown {
   const breakdown: CashPaymentBreakdown = {}
 
   for (const sale of sales) {
-    const tasa = sale.usdBsRate && sale.usdBsRate > 0 ? sale.usdBsRate : 1
     const detalles = sale.paymentDetails as DetallesPago | undefined
     const entradas = Object.entries(detalles ?? {}).filter(
       ([method, detail]) => method !== 'MIXED' && detail
     ) as [CashPaymentMethod, { monto: number; moneda: 'USD' | 'BS' }][]
 
+    // Si falta usd_bs_rate en la venta, se reconstruye a partir de total_bs/total_usd
+    // (guardados con la tasa real usada al vender) en vez de asumir 1:1, lo que
+    // inflaría el equivalente en USD de cualquier pago en bolívares.
+    const tasa =
+      sale.usdBsRate && sale.usdBsRate > 0
+        ? sale.usdBsRate
+        : sale.totalBs && sale.totalUsd > 0
+          ? sale.totalBs / sale.totalUsd
+          : undefined
+
     if (entradas.length > 0) {
       for (const [method, detail] of entradas) {
-        sumar(breakdown, method, detail.monto, detail.moneda, tasa)
+        if (detail.moneda === 'BS' && !tasa) continue
+        sumar(breakdown, method, detail.monto, detail.moneda, tasa ?? 1)
       }
       continue
     }
 
-    // Compatibilidad con ventas antiguas que no tengan payment_details.
-    if (sale.paymentMethod !== 'MIXED') {
-      sumar(breakdown, sale.paymentMethod, sale.totalUsd, 'USD', tasa)
-    }
+    // Compatibilidad con ventas antiguas (MIXED sin payment_details): no se puede
+    // reconstruir el desglose por medio, pero el monto debe seguir sumando al total.
+    sumar(breakdown, sale.paymentMethod, sale.totalUsd, 'USD', 1)
   }
 
   return breakdown

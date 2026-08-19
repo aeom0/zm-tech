@@ -23,9 +23,10 @@ function mapCashSession(row: any): CashSession {
     status: row.status,
     openingAmountUsd: parseFloat(row.opening_amount_usd ?? '0'),
     openingAmountBs: parseFloat(row.opening_amount_bs ?? '0'),
-    closingAmountUsd: row.closing_amount_usd ? parseFloat(row.closing_amount_usd) : undefined,
-    closingAmountBs: row.closing_amount_bs ? parseFloat(row.closing_amount_bs) : undefined,
-    totalSalesUsd: row.total_sales_usd ? parseFloat(row.total_sales_usd) : undefined,
+    closingAmountUsd:
+      row.closing_amount_usd != null ? parseFloat(row.closing_amount_usd) : undefined,
+    closingAmountBs: row.closing_amount_bs != null ? parseFloat(row.closing_amount_bs) : undefined,
+    totalSalesUsd: row.total_sales_usd != null ? parseFloat(row.total_sales_usd) : undefined,
     totalByPaymentMethod: row.total_by_payment_method ?? {},
     openedAt: row.opened_at,
     closedAt: row.closed_at,
