@@ -67,6 +67,10 @@ async function replyForConsultarProducto(
   const words = text
     .toLowerCase()
     .split(/\s+/)
+    // PostgREST usa , . ( ) * " como sintaxis de filtro — solo dejamos
+    // letras/números para que el texto libre del cliente no pueda inyectar
+    // condiciones fuera de las columnas pensadas.
+    .map((w) => w.replace(/[^\p{L}\p{N}]/gu, ''))
     .filter((w) => w.length >= 4)
     .slice(0, 4)
 
