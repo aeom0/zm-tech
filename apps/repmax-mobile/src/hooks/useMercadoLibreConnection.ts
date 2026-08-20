@@ -6,14 +6,14 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { useAuth } from '../context/AuthContext'
 import { mlAuthService } from '../services/mercadolibre/mlAuthService'
+import { supabase } from '../utils/supabase'
 import type { MlConnectionUiStatus, RepmaxMlConnection } from '@repmax/repmax-schema/mlConnection'
 
 export function useMercadoLibreConnection() {
   const { store, storeUser } = useAuth()
   const storeId = store?.id
-  const plan = store?.plan ?? 'basic'
   const isOwner = storeUser?.role === 'owner'
-  const planPermiteMl = plan !== 'basic'
+  const [planPermiteMl, setPlanPermiteMl] = useState(false)
 
   const [status, setStatus] = useState<MlConnectionUiStatus>('disconnected')
   const [connection, setConnection] = useState<RepmaxMlConnection | null>(null)
@@ -24,14 +24,22 @@ export function useMercadoLibreConnection() {
     if (!storeId) {
       setStatus('disconnected')
       setConnection(null)
+      setPlanPermiteMl(false)
       setIsLoading(false)
       return
     }
     setIsLoading(true)
     try {
-      const snap = await mlAuthService.getConnectionStatus(storeId)
+      const [snap, planCheck] = await Promise.all([
+        mlAuthService.getConnectionStatus(storeId),
+        supabase.rpc('repmax_plan_allows', {
+          p_store_id: storeId,
+          p_feature: 'ml_catalog_export',
+        }),
+      ])
       setConnection(snap.connection)
       setStatus(snap.uiStatus)
+      setPlanPermiteMl(Boolean(planCheck.data))
       setError(null)
     } catch (err) {
       setStatus('error')
