@@ -24,3 +24,18 @@ export function supabaseEnv() {
     serviceRoleKey: required('SUPABASE_SERVICE_ROLE_KEY'),
   }
 }
+
+export function whatsappSecrets() {
+  return {
+    token: required('WHATSAPP_TOKEN'),
+    phoneNumberId: required('WHATSAPP_PHONE_NUMBER_ID'),
+    verifyToken: required('WHATSAPP_VERIFY_TOKEN'),
+    demoStoreId: required('WHATSAPP_DEMO_STORE_ID'),
+  }
+}
+
+export function anthropicSecrets() {
+  return {
+    apiKey: required('ANTHROPIC_API_KEY'),
+  }
+}
