@@ -22,7 +22,12 @@ Deno.serve(async (req: Request) => {
       ownerOnly: true,
     })
 
-    if (member.plan === 'basic') {
+    const { data: mlAllowed, error: planError } = await admin.rpc('repmax_plan_allows', {
+      p_store_id: storeId,
+      p_feature: 'ml_catalog_export',
+    })
+    if (planError) throw new Error(planError.message)
+    if (!mlAllowed) {
       return jsonResponse(
         { error: 'MercadoLibre entra en el plan Pro. Actualiza para conectar la cuenta.' },
         403
