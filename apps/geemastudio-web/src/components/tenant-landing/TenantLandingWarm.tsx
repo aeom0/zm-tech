@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { Calendar, MapPin, Scissors } from 'lucide-react'
 import type { TenantLandingProps } from '@/types/tenant-landing'
 import { BookingButton } from './shared/BookingButton'
@@ -189,9 +190,9 @@ export function TenantLandingWarm({ data }: TenantLandingProps) {
         </div>
         <p className="mt-5 border-t border-[rgba(250,247,242,0.07)] pt-4 text-[11px] text-[rgba(250,247,242,0.2)]">
           Creado con{' '}
-          <a href="/" className="text-[rgba(250,247,242,0.3)] no-underline hover:underline">
+          <Link href="/" className="text-[rgba(250,247,242,0.3)] no-underline hover:underline">
             GeemaStudio
-          </a>
+          </Link>
         </p>
       </footer>
 
