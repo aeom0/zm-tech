@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import Link from 'next/link'
 import { Calendar, MapPin } from 'lucide-react'
 import { LUNARIS } from '@/lib/theme'
 import type { TenantLandingProps } from '@/types/tenant-landing'
@@ -302,9 +303,9 @@ export function TenantLandingElegant({ data }: TenantLandingProps) {
         </div>
         <p className="border-t border-white/[0.06] pt-4 text-[11px] text-[rgba(240,237,232,0.2)]">
           Creado con{' '}
-          <a href="/" className="text-[rgba(240,237,232,0.35)] no-underline hover:underline">
+          <Link href="/" className="text-[rgba(240,237,232,0.35)] no-underline hover:underline">
             GeemaStudio
-          </a>{' '}
+          </Link>{' '}
           · Gestión profesional para salones de belleza
         </p>
       </footer>
