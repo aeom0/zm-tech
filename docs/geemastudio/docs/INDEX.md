@@ -44,6 +44,10 @@ Estructura del monorepo y comandos (sin servidor Express).
 
 Plan de funcionalidades v1.3 (referencia histórica / roadmap parcial).
 
+### [01-PLAN-monorepo-estructura.md](01-PLAN-monorepo-estructura.md)
+
+Plan 01 — draft jul-2026 (recuperado/espejado 27-ago-2026, fuente canónica en `ZM-Lash-and-Nails-Beauty`) de la fusión `ZMTech` (landing) + `geemastudio` en este monorepo. Ya ejecutada; registro histórico.
+
 ### [02-PLAN-retrofit-tenant-id.md](02-PLAN-retrofit-tenant-id.md)
 
 Plan 02 — retrofit `tenant_id` en `udelxwwnyivknslueerr` (ZM Lash = tenant #1 → GeemaStudio multi-tenant). **Fase A/B ✅ prod**; **Fase C RLS pendiente**. Leer antes de tocar migraciones o código de `tenant_id`.
@@ -78,6 +82,7 @@ docs/
 ├── MONOREPO_MIGRACION.md           # Monorepo, comandos
 ├── INSTALACION_BETA.md             # Beta / instalación
 ├── GEEMASTUDIO_V1.3_PLAN.md        # Plan v1.3 (referencia)
+├── 01-PLAN-monorepo-estructura.md          # Fusión ZMTech+geemastudio → monorepo (espejo)
 ├── 02-PLAN-retrofit-tenant-id.md           # Retrofit tenant_id (multi-tenant BD)
 ├── 03-PLAN-audit-paridad-zmlash-geema.md   # Brief audit paridad ZM ↔ Geema
 └── tech-debt/                              # Deuda técnica (TD-xxx)
@@ -144,4 +149,4 @@ docs/audit/
 - Configuración: `apps/mobile/eas.json` (ejecutar `eas build` desde `apps/mobile`)
 - Tras SDK 56: rebuild nativo requerido (runtimeVersion por `sdkVersion`)
 
-**Última actualización**: 2026-07-21
+**Última actualización**: 2026-07-21 (Plan 01 agregado 2026-08-27, resto del contenido sin tocar — ver nota de estado stale de Fase C pendiente de corrección aparte)
