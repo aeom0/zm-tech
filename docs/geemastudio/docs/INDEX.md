@@ -56,6 +56,10 @@ Plan 02 — retrofit `tenant_id` en `udelxwwnyivknslueerr` (ZM Lash = tenant #1 
 
 Plan 03 — brief del audit de paridad (solo lectura): ZM Lash = referencia funcional → GeemaStudio.
 
+### [plans/geema-migration/](plans/geema-migration/) ← **Plan 05 (nuevo)**
+
+Migración Geema + suite WABA multi-vertical: estado actual, bloqueadores, estandarización barbería/peluquería/spa, roadmap por sprints. **Fuente canónica:** `ZM-Lash-and-Nails-Beauty/docs/plans/geema-migration/` — sincronizar con `yarn sync:geema-migration-docs` (desde ZM) o [SYNC.md](plans/geema-migration/SYNC.md).
+
 ### [Audit 03 — paridad](../../audit/03-AUDIT-paridad-zmlash-geema.md)
 
 Resultado del audit: matriz feature × superficie, gaps críticos P0–P2, sección “No portar”.
@@ -85,6 +89,8 @@ docs/
 ├── 01-PLAN-monorepo-estructura.md          # Fusión ZMTech+geemastudio → monorepo (espejo)
 ├── 02-PLAN-retrofit-tenant-id.md           # Retrofit tenant_id (multi-tenant BD)
 ├── 03-PLAN-audit-paridad-zmlash-geema.md   # Brief audit paridad ZM ↔ Geema
+├── plans/
+│   └── geema-migration/                    # Plan 05 — migración + WABA suite (espejo ZM)
 └── tech-debt/                              # Deuda técnica (TD-xxx)
 
 # (fuera de docs/geemastudio/docs/)

@@ -9,6 +9,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 ## Principios de ejecución
 
 - **Beta primero**: cada decisión se toma preguntando si acerca o aleja la beta.
+- **Plan 05 (ago 2026)**: migración ZM ↔ Geema + suite WABA multi-vertical — ver [`docs/plans/geema-migration/`](docs/plans/geema-migration/README.md) (espejo de ZM; sync vía `yarn sync:geema-migration-docs` en repo ZM).
 - Estabilizar lo mínimo indispensable, no lo perfecto.
 - Features y deuda técnica en paralelo cuando no hay dependencia entre sí.
 - Entregar en incrementos pequeños con criterios de aceptación claros.
