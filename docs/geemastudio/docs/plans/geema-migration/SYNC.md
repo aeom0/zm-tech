@@ -77,3 +77,4 @@ Implementación sugerida (S2-7):
 |-------|--------|-------|
 | 2026-08-28 | Creación inicial | Análisis Cursor → Plan 05, carpetas ZM + espejo Geema |
 | 2026-08-28 | Hardening roadmap | S1 ventana/no-go, S3 feature flag, S4 Vault, S2-7 CI sync |
+| 2026-08-28 | S3-8 ↔ S1-2 | Flag `waba_tenant_routing_enabled` scoped por tenant; gate prerrequisitos S3 |

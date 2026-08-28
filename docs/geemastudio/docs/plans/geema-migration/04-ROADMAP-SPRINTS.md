@@ -29,7 +29,7 @@ Cerrar bloqueadores de schema que impiden dos negocios en la misma BD.
 | ID | Tarea | Repo | Esfuerzo |
 |----|-------|------|----------|
 | S1-1 | UNIQUE `clients` compuesto con `tenant_id` | ZM migrations | S |
-| S1-2 | UNIQUE `waba_config` → `(tenant_id, config_key)` | ZM migrations | S |
+| S1-2 | UNIQUE `waba_config` → `(tenant_id, config_key)` + actualizar `ON CONFLICT` en seeds | ZM migrations | S |
 | S1-3 | PK `wa_action_debounce` → `(tenant_id, phone, kind)` + RPC | ZM migrations + SQL | M |
 | S1-4 | Tabla `tenant_waba_numbers` + seed ZM actual | ZM migrations | S |
 | S1-5 | Auth Hook: quitar default `zm-lash-nails`; `profiles.tenant_id NOT NULL` | ZM migrations | S |
@@ -53,6 +53,7 @@ Cerrar bloqueadores de schema que impiden dos negocios en la misma BD.
 - [ ] Migraciones aplicadas en prod con version/name alineados (regla `.cursor/rules/supabase-migrations.mdc`)
 - [ ] QA: dos filas `clients` mismo teléfono, distinto `tenant_id` — INSERT OK
 - [ ] QA: dos filas `waba_config` misma key, distinto `tenant_id` — OK
+- [ ] Seed fila `waba_config` para `zm-lash-nails`: `waba_tenant_routing_enabled = false` (pre-requisito S3-8; una fila **por** `tenant_id`, nunca global)
 - [ ] Mensaje enviado a Vanessa con ventana acordada; Stephani y Karelis avisadas por Vanessa o Alberto
 - [ ] Re-login verificado en mobile para Vanessa + al menos 1 staff antes de cerrar sprint
 
@@ -89,6 +90,14 @@ Un solo modelo de aislamiento para apps Geema y ZM.
 
 ## Sprint 3 — WABA multi-tenant runtime
 
+### Prerrequisitos (gate — no empezar S3 sin esto)
+
+| ID | Entregable | Por qué |
+|----|------------|---------|
+| **S1-2** | `UNIQUE (tenant_id, config_key)` en `waba_config` en prod | Sin esto, `waba_tenant_routing_enabled` es fila **global** — rollback o toggle del 2.º tenant puede pisar la fila de ZM (bloqueador #4) |
+| **S1-4** | Tabla `tenant_waba_numbers` | Resolver `phone_number_id → tenant_id` |
+| **S2-*** | Bridge tenant + `loadWabaConfig` diseño | S3-2 asume lectura scoped por `tenant_id` |
+
 ### Objetivo
 Webhook ZM opera con `tenantId` resuelto; Geema routing integrado.
 
@@ -99,7 +108,7 @@ Webhook ZM opera con `tenantId` resuelto; Geema routing integrado.
 | ID | Tarea | Repo | Esfuerzo |
 |----|-------|------|----------|
 | S3-1 | Portar `resolveTenantFromPhoneNumberId` de Geema → ZM webhook | ZM Edge | M |
-| S3-2 | `loadWabaConfig(supabase, tenantId)` | ZM Edge | S |
+| S3-2 | `loadWabaConfig(supabase, tenantId)` — **siempre** `.eq("tenant_id", tenantId)` | ZM Edge | S |
 | S3-3 | `loadCatalog` + `getOrCreateClient` + sesiones con `tenant_id` | ZM Edge | M |
 | S3-4 | Thread `tenantId` en `dispatcher.ts` (~2665 líneas) y handlers (~30 archivos) | ZM Edge | **L** |
 | S3-5 | Quitar hardcode `tenant_id: "zm-lash-nails"` en upserts | ZM Edge | M |
@@ -109,20 +118,26 @@ Webhook ZM opera con `tenantId` resuelto; Geema routing integrado.
 
 ### Feature flag y rollback (S3-8)
 
+> **Dependencia S1-2:** no usar `waba_config` para el flag hasta que exista `UNIQUE (tenant_id, config_key)` en prod. Con el esquema viejo (`UNIQUE(config_key)` global), un `UPDATE`/`UPSERT` de emergencia sin `tenant_id` afecta la única fila compartida — en un mundo multi-tenant, el rollback del tenant B podría apagar o encender routing de ZM por accidente.
+
 | Ítem | Detalle |
 |------|---------|
-| **Flag** | `WABA_TENANT_ROUTING_ENABLED` — lectura desde `waba_config` key `waba_tenant_routing_enabled` (boolean, default `false` en prod hasta smoke) o secret Edge si se prefiere no tocar BD en emergencia |
+| **Flag (prod, post-S1-2)** | Key `waba_tenant_routing_enabled` en `waba_config`, **scoped por `tenant_id`** — una fila por tenant (`zm-lash-nails`, luego cada salón nuevo). Leída vía `loadWabaConfig(supabase, tenantId)` (S3-2). Default `false` hasta smoke. |
+| **Flag (pre-S1-2, solo dev)** | Si hiciera falta probar antes de S1-2 (no debería — S3 depende de S1): usar **secret Edge** `WABA_TENANT_ROUTING_ENABLED`, nunca `waba_config` global. |
 | **Comportamiento OFF** | Idéntico al prod actual: `tenant_id = "zm-lash-nails"` hardcodeado, sin resolver `phone_number_id` |
 | **Comportamiento ON** | Resolver `tenantId` desde `tenant_waba_numbers`; filtrar catálogo/config/sesiones |
-| **Activación** | Primero QA phones `978–999`; luego flag ON solo en staging/smoke; prod ON tras suite `:all` + 24 h sin `wa_error_log` nuevos |
-| **Rollback (&lt;5 min)** | Poner flag `false` en `waba_config` (o secret) — **sin** redeploy ni migración; bot vuelve a single-tenant ZM |
+| **Activación** | Primero QA phones `978–999`; luego flag ON **solo** en fila `tenant_id = 'test-barberia'` (o tenant QA); prod ZM ON tras suite `:all` + 24 h sin `wa_error_log` nuevos |
+| **Rollback (&lt;5 min, post-S1-2)** | `UPDATE waba_config SET … WHERE tenant_id = '<tenant afectado>' AND config_key = 'waba_tenant_routing_enabled'` — **nunca** sin filtro `tenant_id`. Alternativa: secret Edge a `false` si se configuró fallback dual. Sin redeploy. |
 | **Rollback (&gt;5 min)** | Redeploy Edge versión anterior vía `ota-production.yml` / `yarn deploy:whatsapp-webhook` si el bug es de código, no de config |
+
+**Anti-patrón explícito:** `ON CONFLICT (config_key)` o `getConfigBoolean('waba_tenant_routing_enabled')` sin `tenantId` — prohibido después de S1-2.
 
 ### DoD
 - [ ] `yarn check:webhook` pasa
 - [ ] Smoke: teléfono QA en tenant `test-barberia` no lee catálogo ZM **con flag ON**
 - [ ] Smoke: flag OFF → comportamiento idéntico a pre-S3 (regresión cero en prod)
-- [ ] Rollback documentado en PR S3 y probado una vez en QA (toggle OFF mid-suite)
+- [ ] Rollback documentado en PR S3 y probado una vez en QA (toggle OFF mid-suite **en fila del tenant QA**, no global)
+- [ ] Verificado: `loadWabaConfig` y escritura del flag filtran `tenant_id` (grep sin lecturas globales de `waba_config` para routing)
 - [ ] Prod ZM sin regresión (suite `:all` + cleanup)
 
 ---

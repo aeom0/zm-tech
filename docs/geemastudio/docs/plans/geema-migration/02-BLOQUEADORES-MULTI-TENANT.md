@@ -21,7 +21,7 @@
 
 | # | Bloqueador | Riesgo | Archivos / tablas |
 |---|-----------|--------|-------------------|
-| **4** | `waba_config` UNIQUE global en `config_key` | 2.º tenant no puede tener mismas keys CMS | `waba_config`; migración → `(tenant_id, config_key)` |
+| **4** | `waba_config` UNIQUE global en `config_key` | 2.º tenant no puede tener mismas keys CMS; **rollback S3-8 sin S1-2 pisa fila ZM** | `waba_config`; migración S1-2 → `(tenant_id, config_key)`; seed `waba_tenant_routing_enabled` por tenant |
 | **5** | `wa_action_debounce` PK `(phone, kind)` sin `tenant_id` | Locks/debounce colisionan | RPC `waba_claim_action_debounce`; `inbound-gate.ts` |
 | **6** | RPCs WABA phone-only | Crons cruzan tenants | `waba_find_silent_phones`, `waba_find_quality_review_candidates`, … |
 | **7** | ~20 Edge Functions sin filtro `tenant_id` | Nudges/recordatorios al tenant equivocado | `cart-nudge`, `silence-watchdog`, `ads-bounce-nudge`, `browse-reengage`, `appointment-reminders`, … |
