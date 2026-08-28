@@ -54,9 +54,20 @@ Todos los archivos `*.md` en esta carpeta, incluido este `SYNC.md`. No sincroniz
 
 ---
 
-## CI / futuro
+## CI de sync (ticket S2-7)
 
-Opcional (no implementado): job en `zm-tech` que falle si `diff` entre canónica y espejo no está vacío. Por ahora es disciplina manual + script.
+**No es opcional “algún día”.** Está en el roadmap Sprint 2 como tarea **S2-7** ([04-ROADMAP-SPRINTS.md](./04-ROADMAP-SPRINTS.md)):
+
+- Job en CI (ZM o `zm-tech`) que ejecute `scripts/sync-geema-migration-docs.sh diff` y **falle** si hay divergencia.
+- Hasta que S2-7 esté mergeado: disciplina manual + `yarn sync:geema-migration-docs` antes de cada PR que toque esta carpeta.
+
+Implementación sugerida (S2-7):
+
+```yaml
+# Pseudocódigo — adaptar al workflow existente
+- run: ./scripts/sync-geema-migration-docs.sh diff
+  # exit 1 si diff -qr encuentra diferencias (ajustar script si hace falta)
+```
 
 ---
 
@@ -65,3 +76,4 @@ Opcional (no implementado): job en `zm-tech` que falle si `diff` entre canónica
 | Fecha | Acción | Notas |
 |-------|--------|-------|
 | 2026-08-28 | Creación inicial | Análisis Cursor → Plan 05, carpetas ZM + espejo Geema |
+| 2026-08-28 | Hardening roadmap | S1 ventana/no-go, S3 feature flag, S4 Vault, S2-7 CI sync |
