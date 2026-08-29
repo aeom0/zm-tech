@@ -11,10 +11,24 @@
 import { supabase } from '@/lib/supabase'
 import type { TenantConfig } from '@zmtech/tenant-config'
 
+const TENANT_SETTINGS_SELECT =
+  'business_name, business_type, business_subtype, service_categories, primary_color, accent_color, currency_code, currency_symbol, country, language, timezone, time_format, client_terminology, staff_terminology, staff_singular_terminology, appointment_terminology, business_hours, contact_info, commission_staff, commission_house, tagline, features_whatsapp, logo_url, is_demo, is_configured'
+
+/** Slug operativo del negocio (`profiles.tenant_id` → bridge S2). */
+async function resolveTenantSlug(userId: string): Promise<string | null> {
+  const { data } = await supabase
+    .from('profiles')
+    .select('tenant_id')
+    .eq('id', userId)
+    .maybeSingle()
+  return data?.tenant_id ?? null
+}
+
 // Mapea TenantConfig (camelCase) a columnas snake_case de tenant_settings
-function mapConfigToRow(config: TenantConfig, userId: string) {
+function mapConfigToRow(config: TenantConfig, userId: string, tenantSlug?: string | null) {
   return {
     id: userId,
+    ...(tenantSlug ? { tenant_slug: tenantSlug } : {}),
     business_name: config.businessName,
     business_type: config.businessType,
     business_subtype: config.businessSubtype ?? null,
@@ -115,10 +129,11 @@ function mapRowToConfig(row: TenantSettingsRow): TenantConfig {
 
 // Guarda o actualiza la configuración del tenant en Supabase
 export async function upsertTenantSettings(config: TenantConfig, userId: string): Promise<void> {
-  const payload = mapConfigToRow(config, userId)
+  const tenantSlug = await resolveTenantSlug(userId)
+  const payload = mapConfigToRow(config, userId, tenantSlug)
 
   const { error } = await supabase.from('tenant_settings').upsert(payload, {
-    onConflict: 'id',
+    onConflict: tenantSlug ? 'tenant_slug' : 'id',
   })
 
   if (error) {
@@ -128,20 +143,26 @@ export async function upsertTenantSettings(config: TenantConfig, userId: string)
 
 // Obtiene la configuración del tenant desde Supabase
 export async function fetchTenantSettings(userId: string): Promise<TenantConfig | null> {
-  // String literal en .select() para que PostgREST infiera el resultado (no GenericStringError)
-  const { data, error } = await supabase
-    .from('tenant_settings')
-    .select(
-      'business_name, business_type, business_subtype, service_categories, primary_color, accent_color, currency_code, currency_symbol, country, language, timezone, time_format, client_terminology, staff_terminology, staff_singular_terminology, appointment_terminology, business_hours, contact_info, commission_staff, commission_house, tagline, features_whatsapp, logo_url, is_demo'
-    )
-    .eq('id', userId)
-    .maybeSingle<TenantSettingsRow>()
+  const tenantSlug = await resolveTenantSlug(userId)
+
+  // Bridge S2: fila por tenant_slug (ZM legacy). Fallback: id = auth user (onboarding Geema nuevo).
+  let query = supabase.from('tenant_settings').select(TENANT_SETTINGS_SELECT)
+
+  if (tenantSlug) {
+    query = query.eq('tenant_slug', tenantSlug)
+  } else {
+    query = query.eq('id', userId)
+  }
+
+  const { data, error } = await query.maybeSingle<
+    TenantSettingsRow & { is_configured?: boolean | null }
+  >()
 
   if (error) {
     throw new Error(error.message)
   }
 
-  if (!data) {
+  if (!data || data.is_configured === false) {
     return null
   }
 
