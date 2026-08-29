@@ -36,6 +36,9 @@ yarn sync:geema-migration-docs
 
 # Ver diferencias sin copiar
 ./scripts/sync-geema-migration-docs.sh diff
+
+# CI S2-7 — falla si canónica ≠ espejo
+./scripts/sync-geema-migration-docs.sh diff-check
 ```
 
 Desde la raíz de **zm-tech**:
@@ -77,4 +80,4 @@ Implementación sugerida (S2-7):
 |-------|--------|-------|
 | 2026-08-28 | Creación inicial | Análisis Cursor → Plan 05, carpetas ZM + espejo Geema |
 | 2026-08-28 | Hardening roadmap | S1 ventana/no-go, S3 feature flag, S4 Vault, S2-7 CI sync |
-| 2026-08-28 | S3-8 ↔ S1-2 | Flag `waba_tenant_routing_enabled` scoped por tenant; gate prerrequisitos S3 |
+| 2026-08-29 | S1-5 + S2 bridge | Auth Hook endurecido; tenant_settings + ADR 05; CI diff-check |

@@ -18,6 +18,7 @@ Documentación del análisis de convergencia entre **ZM Lash & Nails** (referenc
 | 02 | [02-BLOQUEADORES-MULTI-TENANT.md](./02-BLOQUEADORES-MULTI-TENANT.md) | Plan 02 §11 + bloqueadores adicionales (P0) |
 | 03 | [03-WABA-SUITE-ESTANDARIZACION.md](./03-WABA-SUITE-ESTANDARIZACION.md) | Capas L1–L4, matriz CMS vs código, presets por vertical |
 | 04 | [04-ROADMAP-SPRINTS.md](./04-ROADMAP-SPRINTS.md) | Sprints 1–7+, DoD, dependencias, estimaciones |
+| 05 | [05-ADR-modelo-tenant.md](./05-ADR-modelo-tenant.md) | Decisión bridge `tenants` ↔ `tenant_settings` |
 | — | [SYNC.md](./SYNC.md) | Cómo mantener esta carpeta sincronizada entre repos |
 
 ---

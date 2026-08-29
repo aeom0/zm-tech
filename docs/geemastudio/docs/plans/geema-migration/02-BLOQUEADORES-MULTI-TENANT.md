@@ -9,7 +9,7 @@
 
 | # | Bloqueador | Riesgo | Acción |
 |---|-----------|--------|--------|
-| **1** | Uniques `clients` sin `tenant_id` (`wa_user_id`, `phone_country+phone_normalized`) | Dos tenants no pueden compartir teléfono/BSUID | Migración: UNIQUE compuesto `(tenant_id, …)` |
+| **1** | Uniques `clients` sin `tenant_id` (`wa_user_id`, `phone_country+phone_normalized`, **`dni`**) | Dos tenants no pueden compartir teléfono/BSUID/DNI | Migración S1-1: UNIQUE compuesto `(tenant_id, …)` en los 3 índices |
 | **2** | Auth Hook default `'zm-lash-nails'` si `profiles.tenant_id` NULL | Profile huérfano cae en tenant Vanessa | Quitar default; `profiles.tenant_id NOT NULL` |
 | **3** | Webhook ZM sin `phone_number_id → tenant_id` | Bot `service_role` mezcla datos | Tabla `tenant_waba_numbers` + resolver al inicio del dispatch |
 
@@ -48,8 +48,8 @@
 
 ## 4. Checklist pre–2.º tenant (DoD técnico)
 
-- [ ] Migración uniques `clients` + `waba_config` + `wa_action_debounce`
-- [ ] Tabla `tenant_waba_numbers` + seed número ZM actual
+- [x] Migración uniques `clients` + `waba_config` + `wa_action_debounce` (S1-1/S1-2/S1-3 prod)
+- [x] Tabla `tenant_waba_numbers` + seed número ZM actual (S1-4 prod)
 - [ ] Auth Hook endurecido + `profiles.tenant_id NOT NULL`
 - [ ] Bridge `tenants` ↔ `tenant_settings` (decisión de modelo)
 - [ ] `loadWabaConfig(supabase, tenantId)` + `loadCatalog` filtrado

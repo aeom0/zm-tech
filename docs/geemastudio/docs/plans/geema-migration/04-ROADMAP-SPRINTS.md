@@ -1,7 +1,7 @@
 # 04 — Roadmap por sprints
 
 **Fecha:** 2026-08-28  
-**Convención:** 1 sprint ≈ 2 semanas (ajustable). Un PR por tanda de cambios relacionados (regla Vercel Hobby).
+**Convención:** 1 sprint ≈ 2 semanas (ajustable). Un PR por tanda de cambios relacionados (regla Vercel Hobby). Mismo incidente → misma rama hasta QA pass (anti-ejemplo 29-ago: PRs #85/#86/#87). Ver CLAUDE.md § Agrupar cambios.
 
 ---
 
@@ -30,8 +30,8 @@ Cerrar bloqueadores de schema que impiden dos negocios en la misma BD.
 |----|-------|------|----------|
 | S1-1 | UNIQUE `clients` compuesto con `tenant_id` | ZM migrations | S |
 | S1-2 | UNIQUE `waba_config` → `(tenant_id, config_key)` + actualizar `ON CONFLICT` en seeds | ZM migrations | S |
-| S1-3 | PK `wa_action_debounce` → `(tenant_id, phone, kind)` + RPC | ZM migrations + SQL | M |
-| S1-4 | Tabla `tenant_waba_numbers` + seed ZM actual | ZM migrations | S |
+| S1-3 | PK `wa_action_debounce` → `(tenant_id, phone, kind)` + RPC | ZM migrations + SQL | M ✅ prod |
+| S1-4 | Tabla `tenant_waba_numbers` + seed ZM actual | ZM migrations | S ✅ prod |
 | S1-5 | Auth Hook: quitar default `zm-lash-nails`; `profiles.tenant_id NOT NULL` | ZM migrations | S |
 | S1-6 | Documentar SQL en `scripts/db/` idempotente | ZM | S |
 | S1-7 | Comunicar ventana de cambio + re-login staff (ver § abajo) | Ops | S |
@@ -50,10 +50,12 @@ Cerrar bloqueadores de schema que impiden dos negocios en la misma BD.
 | **Post-cambio** | Alberto confirma a Vanessa que las tres pudieron entrar; si falla alguien → rollback plan documentado en PR de migración |
 
 ### DoD
-- [ ] Migraciones aplicadas en prod con version/name alineados (regla `.cursor/rules/supabase-migrations.mdc`)
-- [ ] QA: dos filas `clients` mismo teléfono, distinto `tenant_id` — INSERT OK
-- [ ] QA: dos filas `waba_config` misma key, distinto `tenant_id` — OK
-- [ ] Seed fila `waba_config` para `zm-lash-nails`: `waba_tenant_routing_enabled = false` (pre-requisito S3-8; una fila **por** `tenant_id`, nunca global)
+- [x] Migraciones aplicadas en prod con version/name alineados (regla `.cursor/rules/supabase-migrations.mdc`) — S1-1…S1-4
+- [x] QA: dos filas `clients` mismo teléfono, distinto `tenant_id` — INSERT OK
+- [x] QA: dos filas `waba_config` misma key, distinto `tenant_id` — OK
+- [x] Seed fila `waba_config` para `zm-lash-nails`: `waba_tenant_routing_enabled = false` (pre-requisito S3-8; una fila **por** `tenant_id`, nunca global)
+- [x] PK `wa_action_debounce` `(tenant_id, phone, kind)` + claim cross-tenant OK
+- [x] `tenant_waba_numbers` seed bot ZM (`1013353341861346` → `zm-lash-nails`)
 - [ ] Mensaje enviado a Vanessa con ventana acordada; Stephani y Karelis avisadas por Vanessa o Alberto
 - [ ] Re-login verificado en mobile para Vanessa + al menos 1 staff antes de cerrar sprint
 
