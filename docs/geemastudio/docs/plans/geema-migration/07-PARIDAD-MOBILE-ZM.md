@@ -94,10 +94,12 @@ Geema usa grid día/semana + columnas staff; ZM usa grid 10–18 h Lima con medi
 | Columna | Geema | ZM prod |
 |---------|-------|---------|
 | `name`, `color`, `is_active`, `commission_percentage` | ✅ | ✅ |
-| `avatar_url` | sí | **no** |
+| `avatar_url` | ✅ | ✅ (columna agregada 30-ago-2026, ver nota abajo) |
 | `payment_mode`, `salary_amount` | sí | **no** |
 
-**Cerrado (S5C-11):** `screens/personal/lib/employeesAdapter.ts` + `useEmployeesQuery` / `useActiveEmployees`. Writes ZM omiten extras; UI oculta foto y modo salario. Agenda/Asignar/Finanzas/Dashboard/Validación/Personal comparten la misma query.
+**Cerrado (S5C-11):** `screens/personal/lib/employeesAdapter.ts` + `useEmployeesQuery` / `useActiveEmployees`. Writes ZM omiten `payment_mode`/`salary_amount`; UI oculta modo salario para ZM. Agenda/Asignar/Finanzas/Dashboard/Validación/Personal comparten la misma query.
+
+**Actualización (30-ago-2026):** se agregó `avatar_url text` a `employees` en producción ZM (`udelxwwnyivknslueerr`, vía Management API — conexión directa a Postgres bloqueada en el sandbox), se creó el bucket público `employee-avatars` en Storage, y se subieron/asignaron las fotos reales de Vanessa y Stephani (fuente: sitio web ZM Lash / Sanity CMS). `employeesAdapter.ts` ya no anula `avatar_url` para el dialecto ZM — la columna es común a ambos esquemas ahora, solo `payment_mode`/`salary_amount` siguen siendo geema-only. La app standalone de ZM Lash (`apps/mobile` en este repo) no tiene feature de avatar por empleado, así que no requiere cambios de código — solo se sincroniza este doc. Detalle: `zm-tech/.cursor/skills/geemastudio.md` §8 y `zm-tech/docs/geemastudio/CHANGELOG.md`.
 
 Prod tenant: Vanessa, Stephani, Chica Externa (3 columnas). Staff sin `profiles.employee_id` no ve “su” columna (dato, no bug de cableado).
 
@@ -168,7 +170,7 @@ Geema y ZM consumen `@zmtech/shared-schema` con columnas canónicas + migración
 | S5C-1 | Adaptador `usePacksData`: `title`/`pack_price`/`category_id` ZM | zm-tech | M | P0 | ✅ PR #30 |
 | S5C-2 | Adaptador `usePromosData` + `usePromotionItems` (total desde ítems) | zm-tech | M | P0 | ✅ PR #30 |
 | S5C-3 | Validar `tenant_settings` ZM: timezone `America/Lima`, horarios | zm-tech + BD | S | P0 | ✅ PR #30 |
-| S5C-11 | Adaptador `employees` (sin `avatar_url`/`payment_mode` ZM) + cache única con agenda | zm-tech | S | P0 | ✅ PR #30 |
+| S5C-11 | Adaptador `employees` (sin `payment_mode`/`salary_amount` ZM; `avatar_url` sumado 30-ago) + cache única con agenda | zm-tech | S | P0 | ✅ PR #30 |
 | S5C-4 | Agenda: cargar `appointment_services` + multi-servicio en detalle | zm-tech | L | P1 | Pendiente |
 | S5C-5 | Portar referencias diseño + badge agenda (WABA) | zm-tech | L | P1 | Pendiente |
 | S5C-6 | Portar `HolidayScreen` + reglas feriado/dom | zm-tech | M | P1 | Pendiente |
@@ -222,6 +224,7 @@ Registrar hallazgos en este doc § **Notas de validación** (fecha + commit Geem
 | 2026-08-29 | `34ec3bc3…` SDK 56 | Shadow OK core; packs/promos vacíos; finanzas no explorado en tabs; agenda distinta |
 | 2026-08-30 | OTA `3814b188…` (S5C-1…3) | Alberto: packs/promos/agenda visibles. Hora de pared Lima. |
 | 2026-08-30 | OTA `01bdcd1f…` (S5C-11) | Adaptador employees; smoke chicas ↔ agenda pendiente en APK |
+| 2026-08-30 | (pendiente OTA) `avatar_url` prod | `avatar_url` agregado a `employees` ZM prod + fotos reales Vanessa/Stephani subidas a Storage; `employeesAdapter.ts` ya no lo anula para dialecto ZM. Pendiente publicar OTA para que se vea en build corriendo. |
 
 **PR:** [aeom0/zm-tech#30](https://github.com/aeom0/zm-tech/pull/30) — OTA preview [01bdcd1f](https://expo.dev/accounts/aeom0/projects/geemastudio-mobile/updates/01bdcd1f-9dd9-472d-a637-383d6bdbeb89)
 
