@@ -224,7 +224,7 @@ Registrar hallazgos en este doc § **Notas de validación** (fecha + commit Geem
 | 2026-08-29 | `34ec3bc3…` SDK 56 | Shadow OK core; packs/promos vacíos; finanzas no explorado en tabs; agenda distinta |
 | 2026-08-30 | OTA `3814b188…` (S5C-1…3) | Alberto: packs/promos/agenda visibles. Hora de pared Lima. |
 | 2026-08-30 | OTA `01bdcd1f…` (S5C-11) | Adaptador employees; smoke chicas ↔ agenda pendiente en APK |
-| 2026-08-30 | (pendiente OTA) `avatar_url` prod | `avatar_url` agregado a `employees` ZM prod + fotos reales Vanessa/Stephani subidas a Storage; `employeesAdapter.ts` ya no lo anula para dialecto ZM. Pendiente publicar OTA para que se vea en build corriendo. |
+| 2026-08-30 | OTA `d5d0dea9…` | `avatar_url` agregado a `employees` ZM prod + fotos reales Vanessa/Stephani subidas a Storage; `employeesAdapter.ts` ya no lo anula para dialecto ZM. Publicado en canal `preview`. |
 
 **PR:** [aeom0/zm-tech#30](https://github.com/aeom0/zm-tech/pull/30) — OTA preview [01bdcd1f](https://expo.dev/accounts/aeom0/projects/geemastudio-mobile/updates/01bdcd1f-9dd9-472d-a637-383d6bdbeb89)
 
