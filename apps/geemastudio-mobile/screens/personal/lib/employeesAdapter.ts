@@ -7,10 +7,10 @@ import { detectCatalogDialect, type CatalogDialect } from '@/screens/services/li
 export type EmployeesDialect = CatalogDialect
 
 export const EMPLOYEE_SELECT_ZM =
-  'id, name, email, phone, color, role, commission_percentage, notes, is_active, created_at, avatar_url'
+  'id, name, email, phone, color, role, commission_percentage, notes, is_active, created_at, avatar_url, sort_order'
 
 export const EMPLOYEE_SELECT_GEEMA =
-  'id, name, email, phone, color, role, commission_percentage, notes, is_active, created_at, payment_mode, salary_amount, avatar_url'
+  'id, name, email, phone, color, role, commission_percentage, notes, is_active, created_at, payment_mode, salary_amount, avatar_url, sort_order'
 
 export interface EmployeeRow {
   id: string
@@ -25,6 +25,7 @@ export interface EmployeeRow {
   notes: string | null
   is_active: boolean
   avatar_url: string | null
+  sort_order: number | null
 }
 
 export interface EmployeeRawRow {
@@ -40,6 +41,7 @@ export interface EmployeeRawRow {
   notes?: string | null
   is_active: boolean
   avatar_url?: string | null
+  sort_order?: number | null
 }
 
 export interface EmployeeWriteInput {
@@ -77,6 +79,7 @@ export function rowToEmployee(row: EmployeeRawRow, dialect: EmployeesDialect): E
     notes: row.notes ?? null,
     is_active: row.is_active,
     avatar_url: row.avatar_url ?? null,
+    sort_order: row.sort_order ?? null,
   }
 }
 
@@ -109,15 +112,32 @@ export async function fetchAllEmployees(): Promise<EmployeeRow[]> {
       ? await supabase
           .from('employees')
           .select(EMPLOYEE_SELECT_ZM)
+          .order('sort_order', { ascending: true, nullsFirst: false })
           .order('created_at', { ascending: true })
       : await supabase
           .from('employees')
           .select(EMPLOYEE_SELECT_GEEMA)
+          .order('sort_order', { ascending: true, nullsFirst: false })
           .order('created_at', { ascending: true })
   if (error) {
     throw new Error(error.message)
   }
   return ((data ?? []) as unknown as EmployeeRawRow[]).map((row) => rowToEmployee(row, dialect))
+}
+
+/** Persiste el nuevo orden manual (arrastre en Personal). `orderedIds[0]` queda primero. */
+export async function reorderEmployees(orderedIds: string[]): Promise<void> {
+  const updates = orderedIds.map((id, index) =>
+    supabase
+      .from('employees')
+      .update({ sort_order: index + 1 })
+      .eq('id', id)
+  )
+  const results = await Promise.all(updates)
+  const failed = results.find((r) => r.error)
+  if (failed?.error) {
+    throw new Error(failed.error.message)
+  }
 }
 
 export async function fetchEmployeeById(id: string): Promise<EmployeeRow | null> {

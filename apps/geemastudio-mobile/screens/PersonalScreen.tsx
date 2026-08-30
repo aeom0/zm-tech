@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import {
   View,
   StyleSheet,
@@ -16,6 +16,7 @@ import { Feather } from '@expo/vector-icons'
 import * as Haptics from 'expo-haptics'
 import * as ImagePicker from 'expo-image-picker'
 import { Image } from 'expo-image'
+import DraggableFlatList, { type RenderItemParams } from 'react-native-draggable-flatlist'
 
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
@@ -34,6 +35,7 @@ import {
 import {
   insertEmployee,
   updateEmployee,
+  reorderEmployees,
   type EmployeeRow,
   type EmployeeWriteInput,
 } from '@/screens/personal/lib/employeesAdapter'
@@ -77,6 +79,32 @@ export default function PersonalScreen() {
   })
 
   const { data: employees = [], isLoading } = useEmployeesQuery()
+  const [orderedEmployees, setOrderedEmployees] = useState<EmployeeRow[]>(employees)
+  const isDraggingRef = useRef(false)
+
+  useEffect(() => {
+    if (!isDraggingRef.current) {
+      setOrderedEmployees(employees)
+    }
+  }, [employees])
+
+  const reorderMutation = useMutation({
+    mutationFn: reorderEmployees,
+    onError: (e: Error) => {
+      Alert.alert('Error', e.message || 'No se pudo guardar el orden')
+      queryClient.invalidateQueries({ queryKey: ['employees'] })
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['employees'] })
+    },
+  })
+
+  const handleDragEnd = ({ data }: { data: EmployeeRow[] }) => {
+    isDraggingRef.current = false
+    setOrderedEmployees(data)
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+    reorderMutation.mutate(data.map((e) => e.id))
+  }
 
   const createMutation = useMutation({
     mutationFn: async (data: EmployeeWriteInput) => {
@@ -352,89 +380,111 @@ export default function PersonalScreen() {
     )
   }
 
+  const renderEmployeeItem = ({ item: emp, drag, isActive }: RenderItemParams<EmployeeRow>) => (
+    <Pressable
+      style={({ pressed }) => [
+        styles.card,
+        {
+          backgroundColor: theme.backgroundDefault,
+          borderColor: theme.border,
+          opacity: pressed || isActive ? 0.9 : 1,
+          borderLeftWidth: 4,
+          borderLeftColor: emp.color || theme.primary,
+        },
+      ]}
+      onPress={() => openEdit(emp)}
+    >
+      <View
+        style={[
+          styles.cardAvatarWrap,
+          {
+            borderColor: emp.color,
+            backgroundColor: theme.backgroundSecondary,
+          },
+        ]}
+      >
+        {emp.avatar_url?.trim() ? (
+          <Image
+            source={{ uri: emp.avatar_url.trim() }}
+            style={styles.cardAvatarImg}
+            contentFit="cover"
+          />
+        ) : (
+          <ThemedText style={[styles.cardAvatarLetter, { color: emp.color }]}>
+            {(emp.name?.trim().split(/\s+/)[0] ?? '?').slice(0, 1).toUpperCase()}
+          </ThemedText>
+        )}
+      </View>
+      <View style={styles.cardMain}>
+        <View style={styles.nameRow}>
+          <ThemedText style={styles.cardName}>{emp.name}</ThemedText>
+          <EmployeePaymentBadge
+            mode={emp.payment_mode ?? 'commission'}
+            percentage={emp.payment_mode === 'salary' ? null : emp.commission_percentage}
+          />
+        </View>
+        {emp.email ? (
+          <ThemedText style={[styles.cardEmail, { color: theme.textMuted }]}>
+            {emp.email}
+          </ThemedText>
+        ) : null}
+        <View style={styles.badges}>
+          {!emp.is_active && (
+            <View style={[styles.badge, { backgroundColor: theme.error + '20' }]}>
+              <ThemedText style={[styles.badgeText, { color: theme.error }]}>Inactiva</ThemedText>
+            </View>
+          )}
+        </View>
+      </View>
+      <Pressable
+        onLongPress={() => {
+          isDraggingRef.current = true
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+          drag()
+        }}
+        disabled={isActive}
+        hitSlop={8}
+        style={styles.dragHandle}
+      >
+        <Feather name="menu" size={18} color={theme.textMuted} />
+      </Pressable>
+      <Feather name="chevron-right" size={20} color={theme.textMuted} />
+    </Pressable>
+  )
+
   return (
     <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
-      <ScrollView
-        contentContainerStyle={{
-          paddingTop: headerHeight + Spacing.lg,
-          paddingBottom: tabBarHeight + Spacing.xl,
-          paddingHorizontal: Spacing.lg,
-        }}
-        showsVerticalScrollIndicator={false}
-      >
-        <ThemedText style={[styles.hint, { color: theme.textSecondary }]}>
-          {showGeemaExtras
-            ? `Toca a una ${staffSingular.toLowerCase()} para editar datos, modo de pago y foto para la agenda.`
-            : `Toca a una ${staffSingular.toLowerCase()} para editar. Color y Activa se ven como columna en la agenda.`}
-        </ThemedText>
-
-        {isLoading ? (
-          <ActivityIndicator size="large" color={Colors.light.violet} style={styles.loader} />
-        ) : (
-          employees.map((emp) => (
-            <Pressable
-              key={emp.id}
-              style={({ pressed }) => [
-                styles.card,
-                {
-                  backgroundColor: theme.backgroundDefault,
-                  borderColor: theme.border,
-                  opacity: pressed ? 0.9 : 1,
-                  borderLeftWidth: 4,
-                  borderLeftColor: emp.color || theme.primary,
-                },
-              ]}
-              onPress={() => openEdit(emp)}
-            >
-              <View
-                style={[
-                  styles.cardAvatarWrap,
-                  {
-                    borderColor: emp.color,
-                    backgroundColor: theme.backgroundSecondary,
-                  },
-                ]}
-              >
-                {emp.avatar_url?.trim() ? (
-                  <Image
-                    source={{ uri: emp.avatar_url.trim() }}
-                    style={styles.cardAvatarImg}
-                    contentFit="cover"
-                  />
-                ) : (
-                  <ThemedText style={[styles.cardAvatarLetter, { color: emp.color }]}>
-                    {(emp.name?.trim().split(/\s+/)[0] ?? '?').slice(0, 1).toUpperCase()}
-                  </ThemedText>
-                )}
-              </View>
-              <View style={styles.cardMain}>
-                <View style={styles.nameRow}>
-                  <ThemedText style={styles.cardName}>{emp.name}</ThemedText>
-                  <EmployeePaymentBadge
-                    mode={emp.payment_mode ?? 'commission'}
-                    percentage={emp.payment_mode === 'salary' ? null : emp.commission_percentage}
-                  />
-                </View>
-                {emp.email ? (
-                  <ThemedText style={[styles.cardEmail, { color: theme.textMuted }]}>
-                    {emp.email}
-                  </ThemedText>
-                ) : null}
-                <View style={styles.badges}>
-                  {!emp.is_active && (
-                    <View style={[styles.badge, { backgroundColor: theme.error + '20' }]}>
-                      <ThemedText style={[styles.badgeText, { color: theme.error }]}>
-                        Inactiva
-                      </ThemedText>
-                    </View>
-                  )}
-                </View>
-              </View>
-              <Feather name="chevron-right" size={20} color={theme.textMuted} />
-            </Pressable>
-          ))
-        )}
-      </ScrollView>
+      {isLoading ? (
+        <ActivityIndicator
+          size="large"
+          color={Colors.light.violet}
+          style={[styles.loader, { marginTop: headerHeight + Spacing.lg }]}
+        />
+      ) : (
+        <DraggableFlatList
+          data={orderedEmployees}
+          keyExtractor={(emp) => emp.id}
+          renderItem={renderEmployeeItem}
+          onDragBegin={() => {
+            isDraggingRef.current = true
+          }}
+          onDragEnd={handleDragEnd}
+          containerStyle={{ flex: 1 }}
+          contentContainerStyle={{
+            paddingTop: headerHeight + Spacing.lg,
+            paddingBottom: tabBarHeight + Spacing.xl,
+            paddingHorizontal: Spacing.lg,
+          }}
+          showsVerticalScrollIndicator={false}
+          ListHeaderComponent={
+            <ThemedText style={[styles.hint, { color: theme.textSecondary }]}>
+              {showGeemaExtras
+                ? `Toca a una ${staffSingular.toLowerCase()} para editar datos, modo de pago y foto para la agenda. Mantén presionado el ícono de la derecha para reordenar.`
+                : `Toca a una ${staffSingular.toLowerCase()} para editar. Mantén presionado el ícono de la derecha para reordenar; Color y Activa se ven como columna en la agenda.`}
+            </ThemedText>
+          }
+        />
+      )}
 
       {/* FAB agregar profesional */}
       <Pressable
@@ -827,6 +877,10 @@ const styles = StyleSheet.create({
   cardAvatarImg: { width: '100%', height: '100%' },
   cardAvatarLetter: { fontSize: 20, fontWeight: '700' },
   cardMain: { flex: 1 },
+  dragHandle: {
+    padding: Spacing.xs,
+    marginRight: Spacing.xs,
+  },
   cardName: { fontSize: 16, fontWeight: '600', marginBottom: 0 },
   nameRow: {
     flexDirection: 'row',
