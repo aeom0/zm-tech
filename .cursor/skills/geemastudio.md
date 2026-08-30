@@ -697,7 +697,8 @@ Forzar en dev: `EXPO_PUBLIC_FORCE_ONBOARDING=true`
 ```typescript
 export type MoreStackParamList = {
   MoreHome: undefined
-  MiNegocio: undefined // grid admin: Horario, Datos del negocio (+ Logo), {staff}, Inventario
+  MiNegocio: undefined // grid admin: Horario, Datos del negocio (+ Logo), Inventario
+  Equipo: undefined // grid admin: {staff} (Personal, CRUD perfiles) + "Asignar {staff}" (badge unassignedCount)
   FinanzasMenu: undefined // grid admin: Finanzas + Validacion de Pagos (badge)
   MarketingRedes: undefined // grid admin: WhatsApp (si features.whatsapp) + Redes Sociales
   Ayuda: undefined // FAQ, soporte, version de la app — todos los roles
@@ -712,9 +713,12 @@ export type MoreStackParamList = {
   LogoNegocio: undefined
   Perfil: undefined
 }
-// Grid admin (MoreHomeScreen): Mi negocio, Finanzas (badge paymentValidationCount),
-// "Asignar {staff}" (badge unassignedCount, navega directo, sin subpantalla intermedia),
-// Marketing y Redes, Ayuda, Cuenta. No-admin: "Mi turno" en vez de las categorias admin.
+// Grid admin (MoreHomeScreen): Mi negocio, Equipo (badge unassignedCount), Finanzas
+// (badge paymentValidationCount), Marketing y Redes, Ayuda, Cuenta.
+// Equipo agrupa Personal (CRUD de {staff}: nombre, color, comision, avatar) +
+// "Asignar {staff}" (asignacion a citas/servicios) — 30-ago-2026, antes "Asignar {staff}"
+// era una tile suelta y Personal vivia dentro de Mi negocio.
+// No-admin: "Mi turno" en vez de las categorias admin.
 // Tab Mas → badge = usePendingBadgeCount().tabBadgeCount
 ```
 

@@ -14,7 +14,6 @@ import { useAuth, Role } from '@/contexts/AuthContext'
 import { useHaptics } from '@/hooks/useHaptics'
 import { Spacing } from '@/constants/theme'
 import type { MoreStackParamList } from '@/navigation/MoreStackNavigator'
-import { useTenant } from '@/contexts/TenantContext'
 import { usePendingBadgeCount } from '@/hooks/usePendingBadgeCount'
 
 type Nav = NativeStackNavigationProp<MoreStackParamList, 'MoreHome'>
@@ -77,7 +76,6 @@ export default function MoreHomeScreen() {
   const { theme } = useTheme()
   const { isAdmin } = useAuth()
   const navigation = useNavigation<Nav>()
-  const { config } = useTenant()
   const { paymentValidationCount, unassignedCount } = usePendingBadgeCount()
 
   return (
@@ -108,8 +106,8 @@ export default function MoreHomeScreen() {
             />
             <CategoryCard
               icon="users"
-              label={`Asignar ${config.terminology.staff || 'Profesionales'}`}
-              onPress={() => navigation.navigate('AsignarProfesionales')}
+              label="Equipo"
+              onPress={() => navigation.navigate('Equipo')}
               badgeCount={unassignedCount}
             />
             <CategoryCard

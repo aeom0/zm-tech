@@ -14,6 +14,7 @@ import ValidacionPagosScreen from '@/screens/ValidacionPagosScreen'
 import AsignarProfesionalesScreen from '@/screens/AsignarProfesionalesScreen'
 import LogoNegocioScreen from '@/screens/settings/LogoNegocioScreen'
 import MiNegocioScreen from '@/screens/more/MiNegocioScreen'
+import EquipoScreen from '@/screens/more/EquipoScreen'
 import FinanzasMenuScreen from '@/screens/more/FinanzasMenuScreen'
 import MarketingRedesScreen from '@/screens/more/MarketingRedesScreen'
 import AyudaScreen from '@/screens/more/AyudaScreen'
@@ -22,6 +23,7 @@ import CuentaScreen from '@/screens/more/CuentaScreen'
 export type MoreStackParamList = {
   MoreHome: undefined
   MiNegocio: undefined
+  Equipo: undefined
   FinanzasMenu: undefined
   MarketingRedes: undefined
   Ayuda: undefined
@@ -57,6 +59,7 @@ export default function MoreStackNavigator() {
         component={MiNegocioScreen}
         options={{ title: 'Mi negocio' }}
       />
+      <Stack.Screen name="Equipo" component={EquipoScreen} options={{ title: 'Equipo' }} />
       <Stack.Screen
         name="FinanzasMenu"
         component={FinanzasMenuScreen}
