@@ -23,6 +23,10 @@ export interface Pack {
   price: string
   service_ids: string[]
   is_active: boolean
+  /** Solo dialecto ZM: requerido por la BD legacy al crear/editar. */
+  category_id?: string | null
+  /** Solo dialecto ZM: precio con recargo por tarjeta. */
+  pack_price_card?: string | null
 }
 
 export interface Promo {

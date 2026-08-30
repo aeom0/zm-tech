@@ -2,6 +2,11 @@ import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
 import { supabase } from '@/lib/supabase'
+import {
+  formatAppointmentWallclock,
+  formatoHoraHHMMEnZona,
+  parseAppointmentWallclock,
+} from '@zmtech/tenant-config'
 
 type AvailabilityStatus = 'idle' | 'checking' | 'free' | 'busy' | 'error'
 
@@ -17,15 +22,10 @@ function addMinutes(date: Date, minutes: number) {
   return new Date(date.getTime() + minutes * 60_000)
 }
 
-function fmtTimeHHMM(d: Date) {
-  const hh = String(d.getHours()).padStart(2, '0')
-  const mm = String(d.getMinutes()).padStart(2, '0')
-  return `${hh}:${mm}`
-}
-
 function computeOverlapBusyUntil(args: {
   candidateStart: Date
   candidateDurationMinutes: number
+  timeZone: string
   excludeAppointmentId?: string | null
   existing: Array<{ id: string; date: string; duration: number }>
 }): { busyUntil: Date; conflictingAppointmentId: string } | null {
@@ -37,7 +37,7 @@ function computeOverlapBusyUntil(args: {
     if (args.excludeAppointmentId && apt.id === args.excludeAppointmentId) {
       continue
     }
-    const start = new Date(apt.date)
+    const start = parseAppointmentWallclock(apt.date, args.timeZone) ?? new Date(apt.date)
     const end = addMinutes(start, apt.duration)
 
     const overlaps = start < candidateEnd && end > args.candidateStart
@@ -55,9 +55,9 @@ export function useAvailabilityCheck(args: {
   employeeId: string
   startDate: Date | null
   durationMinutes: number
+  timeZone: string
   excludeAppointmentId?: string | null
   enabled?: boolean
-  /** stale 30s como pediste */
   staleTimeMs?: number
 }) {
   const enabled =
@@ -69,14 +69,16 @@ export function useAvailabilityCheck(args: {
 
   const start = args.startDate
   const durationMinutes = args.durationMinutes
+  const timeZone = args.timeZone
 
   const query = useQuery({
     queryKey: [
       'availability_check',
       args.employeeId,
-      start ? start.toISOString() : null,
+      start ? formatAppointmentWallclock(start, timeZone) : null,
       durationMinutes,
       args.excludeAppointmentId ?? null,
+      timeZone,
     ],
     enabled,
     staleTime: args.staleTimeMs ?? 30_000,
@@ -100,8 +102,8 @@ export function useAvailabilityCheck(args: {
         .from('appointments')
         .select('id, date, duration')
         .eq('employee_id', args.employeeId)
-        .gte('date', windowStart.toISOString())
-        .lte('date', windowEnd.toISOString())
+        .gte('date', formatAppointmentWallclock(windowStart, timeZone))
+        .lte('date', formatAppointmentWallclock(windowEnd, timeZone))
         .order('date', { ascending: true })
 
       if (error) {
@@ -117,6 +119,7 @@ export function useAvailabilityCheck(args: {
       const overlap = computeOverlapBusyUntil({
         candidateStart,
         candidateDurationMinutes: durationMinutes,
+        timeZone,
         excludeAppointmentId: args.excludeAppointmentId ?? null,
         existing,
       })
@@ -124,7 +127,7 @@ export function useAvailabilityCheck(args: {
       return {
         existing,
         overlap,
-        label: overlap ? fmtTimeHHMM(overlap.busyUntil) : null,
+        label: overlap ? formatoHoraHHMMEnZona(overlap.busyUntil, timeZone) : null,
       } as const
     },
   })

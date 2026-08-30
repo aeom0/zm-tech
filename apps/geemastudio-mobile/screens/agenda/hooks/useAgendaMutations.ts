@@ -4,6 +4,11 @@ import * as Haptics from 'expo-haptics'
 
 import { queryClient } from '@/lib/query-client'
 import { supabase } from '@/lib/supabase'
+import {
+  formatAppointmentWallclock,
+  formatoHoraHHMMEnZona,
+  parseAppointmentWallclock,
+} from '@zmtech/tenant-config'
 
 export interface AgendaMutationCallbacks {
   onCreateSuccess: () => void
@@ -15,19 +20,19 @@ function addMinutes(date: Date, minutes: number) {
   return new Date(date.getTime() + minutes * 60_000)
 }
 
-function fmtTimeHHMM(d: Date) {
-  const hh = String(d.getHours()).padStart(2, '0')
-  const mm = String(d.getMinutes()).padStart(2, '0')
-  return `${hh}:${mm}`
+function fmtTimeHHMM(d: Date, timeZone: string) {
+  return formatoHoraHHMMEnZona(d, timeZone)
 }
 
 async function guardOverlapBeforeInsert(args: {
   employeeId: string
   dateIso: string
   durationMinutes: number
+  timeZone: string
   excludeAppointmentId?: string | null
 }) {
-  const candidateStart = new Date(args.dateIso)
+  const candidateStart =
+    parseAppointmentWallclock(args.dateIso, args.timeZone) ?? new Date(args.dateIso)
   const candidateEnd = addMinutes(candidateStart, args.durationMinutes)
 
   const windowStart = addMinutes(candidateStart, -12 * 60)
@@ -37,8 +42,8 @@ async function guardOverlapBeforeInsert(args: {
     .from('appointments')
     .select('id, date, duration')
     .eq('employee_id', args.employeeId)
-    .gte('date', windowStart.toISOString())
-    .lte('date', windowEnd.toISOString())
+    .gte('date', formatAppointmentWallclock(windowStart, args.timeZone))
+    .lte('date', formatAppointmentWallclock(windowEnd, args.timeZone))
     .order('date', { ascending: true })
 
   if (error) {
@@ -56,16 +61,17 @@ async function guardOverlapBeforeInsert(args: {
       continue
     }
 
-    const start = new Date(apt.date)
+    const start =
+      parseAppointmentWallclock(apt.date, args.timeZone) ?? new Date(apt.date)
     const end = addMinutes(start, apt.duration)
     const overlaps = start < candidateEnd && end > candidateStart
     if (!overlaps) continue
 
-    throw new Error(`Horario ocupado. Termina a las ${fmtTimeHHMM(end)}.`)
+    throw new Error(`Horario ocupado. Termina a las ${fmtTimeHHMM(end, args.timeZone)}.`)
   }
 }
 
-export function useAgendaMutations(callbacks: AgendaMutationCallbacks) {
+export function useAgendaMutations(callbacks: AgendaMutationCallbacks, timeZone: string) {
   const createMutation = useMutation({
     mutationFn: async (data: {
       client_name: string
@@ -82,6 +88,7 @@ export function useAgendaMutations(callbacks: AgendaMutationCallbacks) {
         employeeId: data.employee_id,
         dateIso: data.date,
         durationMinutes: data.duration,
+        timeZone,
       })
 
       const payload = {
@@ -142,6 +149,7 @@ export function useAgendaMutations(callbacks: AgendaMutationCallbacks) {
         employeeId: args.employee_id,
         dateIso: args.date,
         durationMinutes: args.duration,
+        timeZone,
         excludeAppointmentId: args.id,
       })
 

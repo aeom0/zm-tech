@@ -8,6 +8,7 @@ import { Gradients, Spacing, BorderRadius } from '@/constants/theme'
 import {
   esHoyEnZonaIANA,
   formatoHoraInstanteEnZona,
+  instanteCitaDesdeTexto,
   type TenantConfig,
   type TimeFormatPreference,
 } from '@zmtech/tenant-config'
@@ -214,14 +215,14 @@ export function StaffAgendaTimelineView({
       'all',
       timeZone
     )
-    return sortAppointmentsByStart(raw)
+    return sortAppointmentsByStart(raw, timeZone)
   }, [appointments, selectedDate, staffEmployeeId, timeZone])
 
   const siguiente = useMemo(() => {
     if (myDayApts.length === 0) return null
     const nowMs = now.getTime()
     for (const apt of myDayApts) {
-      const startMs = new Date(apt.date).getTime()
+      const startMs = instanteCitaDesdeTexto(apt.date, timeZone).getTime()
       const endMs = startMs + apt.duration * 60_000
       if (endMs >= nowMs) return apt
     }
@@ -326,7 +327,7 @@ export function StaffAgendaTimelineView({
                     }}
                   >
                     {formatoHoraInstanteEnZona(
-                      new Date(siguiente.date),
+                      instanteCitaDesdeTexto(siguiente.date, timeZone),
                       timeZone,
                       language,
                       timeFormat
@@ -412,7 +413,7 @@ export function StaffAgendaTimelineView({
           />
 
           {myDayApts.map((apt) => {
-            const start = new Date(apt.date)
+            const start = instanteCitaDesdeTexto(apt.date, timeZone)
             const timeLabel = formatoHoraInstanteEnZona(start, timeZone, language, timeFormat)
             const { label: estadoLabel, tone } = descripcionEstado(apt.status)
             const accentColor =

@@ -1,13 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { supabase } from '@/lib/supabase'
+import { useEmployeesQuery } from '@/screens/personal/hooks/useEmployeesData'
 
-import type {
-  DashboardAppointment,
-  DashboardEmployeeRow,
-  DashboardServiceRow,
-  DashboardStats,
-} from '../types'
+import type { DashboardAppointment, DashboardServiceRow, DashboardStats } from '../types'
 
 async function fetchDashboardStats(startOfDay: string, endOfDay: string): Promise<DashboardStats> {
   const [paymentsRes, completedRes, scheduledRes, inventoryRes] = await Promise.all([
@@ -87,19 +83,7 @@ export function useDashboardQueries(startOfDay: string, endOfDay: string) {
     },
   })
 
-  const { data: employees = [] } = useQuery<DashboardEmployeeRow[]>({
-    queryKey: ['employees'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('employees')
-        .select('id, name, color, role')
-        .order('created_at', { ascending: true })
-      if (error) {
-        throw new Error(error.message)
-      }
-      return (data ?? []) as DashboardEmployeeRow[]
-    },
-  })
+  const { data: employees = [] } = useEmployeesQuery()
 
   const { data: services = [] } = useQuery<DashboardServiceRow[]>({
     queryKey: ['services'],

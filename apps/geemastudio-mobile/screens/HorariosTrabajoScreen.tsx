@@ -141,8 +141,8 @@ export default function HorariosTrabajoScreen() {
       keyboardShouldPersistTaps="handled"
     >
       <ThemedText type="small" style={{ color: theme.textMuted, marginBottom: Spacing.lg }}>
-        Esto define la franja usual del negocio y la zona horaria para fechas y reportes en la app.
-        Ajustalo cuando cambien tus horarios.
+        La agenda usa este horario: las filas y las celdas bloqueadas salen de apertura/cierre por
+        día. La zona horaria es la misma con la que se leen y se guardan las citas.
       </ThemedText>
 
       <ThemedText type="h4" style={{ marginBottom: Spacing.sm }}>

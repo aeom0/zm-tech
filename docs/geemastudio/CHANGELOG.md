@@ -5,7 +5,16 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ---
 
-## [Unreleased] — 2026-07-21
+## [Unreleased]
+
+### Añadido (30-ago 2026 — S5-C paridad ZM)
+
+- **Mobile — adaptador catálogo ZM** (`catalogAdapter.ts`): dialecto `packs.title` vs Geema; packs `title`/`pack_price`; promos `valid_until` + total desde `promotion_items` (S5C-1/2).
+- **Mobile — adaptador `employees`** (`employeesAdapter.ts` + `useEmployeesQuery`): query única con agenda; writes ZM sin `avatar_url`/`payment_mode`/`salary_amount` (S5C-11).
+
+### Corregido (30-ago 2026 — S5-C)
+
+- **Mobile — citas en hora de pared** del tenant (`appointments.date` sin TZ): deja de aplicar el `Z` falso de PostgREST; hidrata `timezone`/`businessHours` al login (S5C-3).
 
 ### Cambiado
 

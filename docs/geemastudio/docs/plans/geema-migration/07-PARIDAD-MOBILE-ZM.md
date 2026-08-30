@@ -1,9 +1,10 @@
 # 07 — Paridad mobile Geema ↔ ZM (shadow test)
 
-**Fecha:** 2026-08-29  
-**Estado:** Planificado (track **S5-C**, post shadow APK preview SDK 56)  
+**Fecha:** 2026-08-30  
+**Estado:** En curso — **S5C-1 / S5C-2 / S5C-3 / S5C-11 ✅** (PR [zm-tech #30](https://github.com/aeom0/zm-tech/pull/30)); resto P1/P2 pendiente  
 **Repos:** `zm-tech` (`geemastudio-mobile`), referencia `ZM-Lash-and-Nails-Beauty/apps/mobile`  
-**BD:** `udelxwwnyivknslueerr` — tenant #1 `zm-lash-nails`
+**BD:** `udelxwwnyivknslueerr` — tenant #1 `zm-lash-nails`  
+**Código:** rama `cursor/s5c-catalog-adapter-zm` — ZM app legacy **sin cambio**
 
 ---
 
@@ -13,16 +14,17 @@ Alberto probó **Geema mobile** (APK preview `exposdk:56.0.0`, build `34ec3bc3-5
 
 **Resultado general:** login, datos core y navegación **funcionan**; la sensación de “pocos detalles” viene de **esquema incompatible** en catálogo avanzado y **features operativas ZM no portadas**, no de una app vacía.
 
-| Área probada | Resultado |
+| Área probada | Resultado (30-ago) |
 |--------------|-----------|
 | Login + tenant ZM | ✅ |
 | Inicio (KPIs, próximas citas) | ✅ parcial |
-| Agenda | ✅ básica — UI distinta a ZM |
+| Agenda | ✅ hora Lima (S5C-3); UI distinta a ZM; multi-servicio → S5C-4 |
 | Servicios (catálogo base) | ✅ |
-| Packs / Promos | ❌ pantallas existen, queries fallan vs esquema ZM |
+| Packs / Promos | ✅ adaptador (S5C-1/2) — Alberto confirmó visibles |
 | Clientes | ✅ |
-| Pagos / Finanzas | ⚠️ no en tabs; **Más → Finanzas** (versión simple) |
-| Inventario, personal | ✅ (admin) |
+| Pagos / Finanzas | ⚠️ no en tabs; **Más → Finanzas** (versión simple; `payment_mode` ZM-safe) |
+| Inventario | ✅ (admin) |
+| Personal / chicas | ✅ adaptador (S5C-11) — misma tabla que columnas de agenda |
 | WABA (promo WA, referencias agenda) | ❌ stub o ausente |
 
 ---
@@ -66,6 +68,8 @@ Geema usa grid día/semana + columnas staff; ZM usa grid 10–18 h Lima con medi
 
 **Estrategia:** capa **adaptador ZM** en hooks (mapear columnas prod) hasta unificar schema en Drizzle compartido (S7+) o vistas SQL `packs_geema` / RPC.
 
+**Cerrado (30-ago, S5C-1/2):** `screens/services/lib/catalogAdapter.ts` — dialecto vía sonda `packs.title`. Hooks `usePacksData` / `usePromosData` mapean `title`/`pack_price`/`valid_until` + total promo desde `promotion_items`. Categorías ZM sin `color`/`icon`. Alberto confirmó packs/promos visibles en OTA preview.
+
 ### Pagos “no los veo”
 
 **Parcialmente esperado.**
@@ -81,6 +85,26 @@ Geema usa grid día/semana + columnas staff; ZM usa grid 10–18 h Lima con medi
 | Uso IA | ❌ | ✅ |
 | Pago en detalle cita (agenda) | ❌ | ✅ |
 
+### Personal / chicas vs agenda
+
+**Misma tabla `employees` + `appointments.employee_id`.** Más usa `tenant_settings.staff_terminology` (`chicas`). Color y `is_active` alimentan columnas / picker de agenda.
+
+**Bug (30-ago):** Geema pedía columnas que ZM prod no tiene. El listado `select('*')` funcionaba; guardar o recargar agenda con `avatar_url` / `payment_mode` / `salary_amount` fallaba (o se tapaba con cache TanStack compartida `['employees']` y queryFns distintos).
+
+| Columna | Geema | ZM prod |
+|---------|-------|---------|
+| `name`, `color`, `is_active`, `commission_percentage` | ✅ | ✅ |
+| `avatar_url` | sí | **no** |
+| `payment_mode`, `salary_amount` | sí | **no** |
+
+**Cerrado (S5C-11):** `screens/personal/lib/employeesAdapter.ts` + `useEmployeesQuery` / `useActiveEmployees`. Writes ZM omiten extras; UI oculta foto y modo salario. Agenda/Asignar/Finanzas/Dashboard/Validación/Personal comparten la misma query.
+
+Prod tenant: Vanessa, Stephani, Chica Externa (3 columnas). Staff sin `profiles.employee_id` no ve “su” columna (dato, no bug de cableado).
+
+### Timezone / hora de pared (S5C-3)
+
+`appointments.date` = timestamp **sin** TZ (hora Lima literal). Geema interpretaba el `Z` falso de PostgREST → citas −5 h. Cerrado: `packages/tenant-config` wallclock + hidratar `tenant_settings` al login. Más → Horario de trabajo sí alimenta filas de agenda.
+
 ---
 
 ## Mapa de paridad (mobile)
@@ -88,8 +112,10 @@ Geema usa grid día/semana + columnas staff; ZM usa grid 10–18 h Lima con medi
 | Módulo | Geema hoy | Objetivo S5-C |
 |--------|-----------|---------------|
 | Servicios individuales | ✅ | Mantener |
-| Packs | ❌ esquema | Adaptador + UI ítems ZM |
-| Promos + `promotion_items` | ❌ esquema | Adaptador + total desde ítems |
+| Packs | ✅ adaptador | Mantener |
+| Promos + `promotion_items` | ✅ adaptador | Mantener |
+| Personal / chicas ↔ agenda | ✅ adaptador | Mantener |
+| Agenda timezone Lima | ✅ wallclock | Mantener |
 | Agenda multi-servicio | ❌ | Portar `appointment_services` |
 | Referencias diseño WABA | ❌ | Portar inbox + badge agenda |
 | Feriados / slots domingo | ❌ | Portar `HolidayScreen` + lógica |
@@ -137,26 +163,28 @@ Geema y ZM consumen `@zmtech/shared-schema` con columnas canónicas + migración
 
 ## Tareas (S5-C)
 
-| ID | Tarea | Repo | Esfuerzo | Prioridad |
-|----|-------|------|----------|-----------|
-| S5C-1 | Adaptador `usePacksData`: `title`/`pack_price`/`category_id` ZM | zm-tech | M | P0 |
-| S5C-2 | Adaptador `usePromosData` + `usePromotionItems` (total desde ítems) | zm-tech | M | P0 |
-| S5C-3 | Validar `tenant_settings` ZM: timezone `America/Lima`, horarios | zm-tech + BD | S | P0 |
-| S5C-4 | Agenda: cargar `appointment_services` + multi-servicio en detalle | zm-tech | L | P1 |
-| S5C-5 | Portar referencias diseño + badge agenda (WABA) | zm-tech | L | P1 |
-| S5C-6 | Portar `HolidayScreen` + reglas feriado/dom | zm-tech | M | P1 |
-| S5C-7 | Finanzas: panel ejecutivo + `PricingBreakdownCard` (WABA) | zm-tech | L | P1 |
-| S5C-8 | Dashboard: ranking top servicios + alertas feriado | zm-tech | S | P2 |
-| S5C-9 | Documentar en UI dónde está Finanzas (onboarding admin) | zm-tech | S | P2 |
-| S5C-10 | Tests smoke: packs/promos/agenda mismo día vs app ZM | zm-tech | S | P0 |
+| ID | Tarea | Repo | Esfuerzo | Prioridad | Estado |
+|----|-------|------|----------|-----------|--------|
+| S5C-1 | Adaptador `usePacksData`: `title`/`pack_price`/`category_id` ZM | zm-tech | M | P0 | ✅ PR #30 |
+| S5C-2 | Adaptador `usePromosData` + `usePromotionItems` (total desde ítems) | zm-tech | M | P0 | ✅ PR #30 |
+| S5C-3 | Validar `tenant_settings` ZM: timezone `America/Lima`, horarios | zm-tech + BD | S | P0 | ✅ PR #30 |
+| S5C-11 | Adaptador `employees` (sin `avatar_url`/`payment_mode` ZM) + cache única con agenda | zm-tech | S | P0 | ✅ PR #30 |
+| S5C-4 | Agenda: cargar `appointment_services` + multi-servicio en detalle | zm-tech | L | P1 | Pendiente |
+| S5C-5 | Portar referencias diseño + badge agenda (WABA) | zm-tech | L | P1 | Pendiente |
+| S5C-6 | Portar `HolidayScreen` + reglas feriado/dom | zm-tech | M | P1 | Pendiente |
+| S5C-7 | Finanzas: panel ejecutivo + `PricingBreakdownCard` (WABA) | zm-tech | L | P1 | Pendiente |
+| S5C-8 | Dashboard: ranking top servicios + alertas feriado | zm-tech | S | P2 | Pendiente |
+| S5C-9 | Documentar en UI dónde está Finanzas (onboarding admin) | zm-tech | S | P2 | Pendiente |
+| S5C-10 | Tests smoke: packs/promos/agenda mismo día vs app ZM | zm-tech | S | P0 | Parcial (visual 30-ago) |
 
 ### DoD S5-C (shadow ZM en Geema)
 
-- [ ] Servicios → tabs **Packs** y **Promos** muestran datos ZM prod (mismos conteos que app ZM)
-- [ ] Agenda mismo día: mismas citas visibles que ZM (± filtro UI)
-- [ ] **Más → Finanzas** lista pagos del tenant ZM
-- [ ] `tenant_settings.timezone` = Lima; citas no “desaparecen” por offset
-- [ ] ZM app legacy **sin cambio** (Geema es consumidor adaptador)
+- [x] Servicios → tabs **Packs** y **Promos** muestran datos ZM prod (Alberto, 30-ago)
+- [x] Agenda mismo día: citas en hora Lima, no corridas −5 h (S5C-3)
+- [x] Más → chicas cableado a columnas de agenda; writes ZM-safe (S5C-11)
+- [ ] **Más → Finanzas** lista pagos del tenant ZM (smoke explícito)
+- [x] `tenant_settings.timezone` = Lima; citas no “desaparecen” por offset
+- [x] ZM app legacy **sin cambio** (Geema es consumidor adaptador)
 
 ---
 
@@ -181,8 +209,9 @@ Geema y ZM consumen `@zmtech/shared-schema` con columnas canónicas + migración
 1. Login OK → primary/accent violeta-oro (post S5-B) o Lunaris residual (pre-S5-B).
 2. Servicios → contar packs/promos vs ZM.
 3. Agenda → hoy + **Completadas** vs count Inicio.
-4. Más → Finanzas → al menos un pago visible si existen en ZM.
-5. Clientes → muestra de teléfonos ZM.
+4. Más → **chicas** → mismas 3 filas que columnas de agenda; editar color/`Activa` se refleja.
+5. Más → Finanzas → al menos un pago visible si existen en ZM.
+6. Clientes → muestra de teléfonos ZM.
 
 Registrar hallazgos en este doc § **Notas de validación** (fecha + commit Geema).
 
@@ -191,14 +220,19 @@ Registrar hallazgos en este doc § **Notas de validación** (fecha + commit Geem
 | Fecha | Build / commit | Notas |
 |-------|----------------|-------|
 | 2026-08-29 | `34ec3bc3…` SDK 56 | Shadow OK core; packs/promos vacíos; finanzas no explorado en tabs; agenda distinta |
+| 2026-08-30 | OTA `3814b188…` (S5C-1…3) | Alberto: packs/promos/agenda visibles. Hora de pared Lima. |
+| 2026-08-30 | OTA `01bdcd1f…` (S5C-11) | Adaptador employees; smoke chicas ↔ agenda pendiente en APK |
+
+**PR:** [aeom0/zm-tech#30](https://github.com/aeom0/zm-tech/pull/30) — OTA preview [01bdcd1f](https://expo.dev/accounts/aeom0/projects/geemastudio-mobile/updates/01bdcd1f-9dd9-472d-a637-383d6bdbeb89)
 
 ---
 
 ## Referencias
 
 - Shadow APK: [Expo build 34ec3bc3](https://expo.dev/accounts/aeom0/projects/geemastudio-mobile/builds/34ec3bc3-5f08-41a9-9991-642489e044a7)
-- Schema ZM: `packages/shared-schema/src/schema.ts` (`packs`, `promotions`, `promotion_items`)
-- Geema servicios: `zm-tech/apps/geemastudio-mobile/screens/services/`
+- Schema ZM: `packages/shared-schema/src/schema.ts` (`packs`, `promotions`, `promotion_items`, `employees`)
+- Geema servicios: `zm-tech/apps/geemastudio-mobile/screens/services/` (`catalogAdapter.ts`)
+- Geema personal: `zm-tech/apps/geemastudio-mobile/screens/personal/lib/employeesAdapter.ts`
 - Geema finanzas: `zm-tech/apps/geemastudio-mobile/screens/FinancesScreen.tsx`
 - Audit previo: `zm-tech/docs/audit/03-AUDIT-*.md`
 - [04-ROADMAP-SPRINTS.md](./04-ROADMAP-SPRINTS.md) § Sprint 5-C

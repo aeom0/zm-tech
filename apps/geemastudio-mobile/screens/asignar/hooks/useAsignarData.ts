@@ -1,26 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { useTenant } from '@/contexts/TenantContext'
+import { useActiveEmployees } from '@/screens/personal/hooks/useEmployeesData'
 import type { UnassignedAppointment } from '../types'
 
 export function useAsignarData() {
   const { config } = useTenant()
   const queryClient = useQueryClient()
 
-  // Empleados activos para el picker
-  const { data: employees = [] } = useQuery<{ id: string; name: string; color: string }[]>({
-    queryKey: ['employees', 'active'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('employees')
-        .select('id, name, color')
-        .eq('is_active', true)
-        .order('name', { ascending: true })
-      if (error) throw new Error(error.message)
-      return data ?? []
-    },
-    staleTime: 5 * 60_000,
-  })
+  const { employees } = useActiveEmployees({ staleTime: 5 * 60_000 })
 
   // Servicios para enriquecer nombres
   const { data: services = [] } = useQuery<{ id: string; name: string }[]>({

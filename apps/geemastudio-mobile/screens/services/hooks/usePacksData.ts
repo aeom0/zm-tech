@@ -4,6 +4,12 @@ import { Alert } from 'react-native'
 import { supabase } from '@/lib/supabase'
 import type { Pack } from '../types'
 import { parsePriceInput, priceToDecimalString } from '../types'
+import {
+  detectCatalogDialect,
+  rowToPack,
+  serializeServiceIds,
+  type PackRawRow,
+} from '../lib/catalogAdapter'
 
 export interface PackPayload {
   name: string
@@ -11,28 +17,13 @@ export interface PackPayload {
   price: string
   service_ids: string[]
   is_active: boolean
+  /** Requerido solo en dialecto ZM (packs.category_id NOT NULL). */
+  category_id?: string | null
 }
 
-/** Fila cruda de packs: service_ids puede venir como array desde Postgres */
-interface PackRow {
-  id: string
-  name: string
-  description: string | null
-  price: string
-  service_ids: string[] | null
-  is_active: boolean
-}
-
-function rowToPack(row: PackRow): Pack {
-  return {
-    id: row.id,
-    name: row.name,
-    description: row.description,
-    price: row.price,
-    service_ids: Array.isArray(row.service_ids) ? row.service_ids : [],
-    is_active: row.is_active,
-  }
-}
+const GEEMA_SELECT = 'id, name, description, price, service_ids, is_active'
+const ZM_SELECT =
+  'id, title, description, pack_price, pack_price_card, category_id, service_ids, is_active, display_order'
 
 export function usePacksData() {
   const queryClient = useQueryClient()
@@ -45,24 +36,47 @@ export function usePacksData() {
   } = useQuery<Pack[]>({
     queryKey: ['packs'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('packs')
-        .select('id, name, description, price, service_ids, is_active')
-        .order('name', { ascending: true })
+      const dialect = await detectCatalogDialect()
+      const { data, error } =
+        dialect === 'zm'
+          ? await supabase.from('packs').select(ZM_SELECT).order('display_order', { ascending: true })
+          : await supabase.from('packs').select(GEEMA_SELECT).order('name', { ascending: true })
       if (error) {
         throw new Error(error.message)
       }
-      return ((data ?? []) as PackRow[]).map(rowToPack)
+      return ((data ?? []) as PackRawRow[]).map((row) => rowToPack(row, dialect))
     },
   })
 
   const createMutation = useMutation({
     mutationFn: async (payload: PackPayload) => {
+      const dialect = await detectCatalogDialect()
+      if (dialect === 'zm') {
+        if (!payload.category_id) {
+          throw new Error(
+            'No se pudo determinar la categoría del pack. Selecciona al menos un servicio.'
+          )
+        }
+        const { error } = await supabase.from('packs').insert({
+          title: payload.name.trim(),
+          description: payload.description?.trim() || '',
+          pack_price: priceToDecimalString(parsePriceInput(payload.price)),
+          service_ids: serializeServiceIds(payload.service_ids, dialect),
+          category_id: payload.category_id,
+          is_active: payload.is_active,
+          emoji: '✨',
+          badge: 'PACK',
+        })
+        if (error) {
+          throw new Error(error.message)
+        }
+        return
+      }
       const { error } = await supabase.from('packs').insert({
         name: payload.name.trim(),
         description: payload.description?.trim() || null,
         price: priceToDecimalString(parsePriceInput(payload.price)),
-        service_ids: payload.service_ids,
+        service_ids: serializeServiceIds(payload.service_ids, dialect),
         is_active: payload.is_active,
       })
       if (error) {
@@ -77,13 +91,36 @@ export function usePacksData() {
 
   const updateMutation = useMutation({
     mutationFn: async ({ id, payload }: { id: string; payload: PackPayload }) => {
+      const dialect = await detectCatalogDialect()
+      if (dialect === 'zm') {
+        if (!payload.category_id) {
+          throw new Error(
+            'No se pudo determinar la categoría del pack. Selecciona al menos un servicio.'
+          )
+        }
+        const { error } = await supabase
+          .from('packs')
+          .update({
+            title: payload.name.trim(),
+            description: payload.description?.trim() || '',
+            pack_price: priceToDecimalString(parsePriceInput(payload.price)),
+            service_ids: serializeServiceIds(payload.service_ids, dialect),
+            category_id: payload.category_id,
+            is_active: payload.is_active,
+          })
+          .eq('id', id)
+        if (error) {
+          throw new Error(error.message)
+        }
+        return
+      }
       const { error } = await supabase
         .from('packs')
         .update({
           name: payload.name.trim(),
           description: payload.description?.trim() || null,
           price: priceToDecimalString(parsePriceInput(payload.price)),
-          service_ids: payload.service_ids,
+          service_ids: serializeServiceIds(payload.service_ids, dialect),
           is_active: payload.is_active,
         })
         .eq('id', id)

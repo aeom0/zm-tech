@@ -9,6 +9,7 @@ import {
   esHoyEnZonaIANA,
   formatoHoraAgendaSlot,
   formatoHoraInstanteEnZona,
+  instanteCitaDesdeTexto,
   minutosDelDiaEnZona,
   type TenantConfig,
   type TimeFormatPreference,
@@ -215,7 +216,7 @@ export function OwnerDayGrid({
                   })}
 
                   {empApts.map((apt) => {
-                    const start = new Date(apt.date)
+                    const start = instanteCitaDesdeTexto(apt.date, timeZone)
                     const startMin = minutosDelDiaEnZona(start, timeZone)
                     const endMin = startMin + apt.duration
                     const top = Math.max(0, (startMin - gridStartMin) * pxPerMinute)

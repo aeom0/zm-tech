@@ -2,13 +2,9 @@ import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
 import { supabase } from '@/lib/supabase'
+import { useActiveEmployees } from '@/screens/personal/hooks/useEmployeesData'
 
-import type {
-  AgendaAppointment,
-  AgendaEmployee,
-  AgendaService,
-  AgendaServiceCategory,
-} from '../types'
+import type { AgendaAppointment, AgendaService, AgendaServiceCategory } from '../types'
 
 export function useAgendaQueries() {
   const {
@@ -33,24 +29,10 @@ export function useAgendaQueries() {
   })
 
   const {
-    data: employees = [],
+    employees,
     isLoading: employeesLoading,
     error: employeesError,
-  } = useQuery<AgendaEmployee[]>({
-    queryKey: ['employees'],
-    staleTime: 60_000,
-    refetchOnWindowFocus: false,
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('employees')
-        .select('id, name, color, avatar_url')
-        .eq('is_active', true)
-        .order('created_at', { ascending: true })
-
-      if (error) throw new Error(error.message)
-      return (data ?? []) as AgendaEmployee[]
-    },
-  })
+  } = useActiveEmployees()
 
   const { data: categories = [] } = useQuery<AgendaServiceCategory[]>({
     queryKey: ['service_categories'],

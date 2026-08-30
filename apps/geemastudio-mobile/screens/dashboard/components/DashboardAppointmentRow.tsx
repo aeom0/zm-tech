@@ -22,6 +22,7 @@ interface DashboardAppointmentRowProps {
   }
   currencySymbol: string
   locale: string
+  timeZone: string
   isTablet: boolean
   getEmployeeColor: (employeeId: string) => string
   getEmployeeName: (employeeId: string) => string
@@ -36,6 +37,7 @@ export function DashboardAppointmentRow({
   theme,
   currencySymbol,
   locale,
+  timeZone,
   isTablet,
   getEmployeeColor,
   getEmployeeName,
@@ -59,7 +61,7 @@ export function DashboardAppointmentRow({
     >
       <View style={styles.rowTime}>
         <ThemedText style={[styles.rowTimeText, { color: theme.primary }]}>
-          {formatDashboardTime(appointment.date, locale)}
+          {formatDashboardTime(appointment.date, locale, timeZone)}
         </ThemedText>
       </View>
 

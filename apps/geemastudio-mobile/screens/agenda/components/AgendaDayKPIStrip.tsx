@@ -9,7 +9,7 @@ import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
 import { BorderRadius, Spacing } from '@/constants/theme'
-import { esMismoDiaCalendarioEnZona } from '@zmtech/tenant-config'
+import { esMismoDiaCalendarioEnZona, instanteCitaDesdeTexto } from '@zmtech/tenant-config'
 
 import type { AgendaAppointment, AgendaStatusFilter } from '../types'
 import { matchesStatusFilter } from '../agendaUtils'
@@ -105,7 +105,11 @@ export function AgendaDayKPIStrip({
   const dayApts = useMemo(
     () =>
       appointments.filter((apt) =>
-        esMismoDiaCalendarioEnZona(new Date(apt.date), selectedDate, timeZone)
+        esMismoDiaCalendarioEnZona(
+          instanteCitaDesdeTexto(apt.date, timeZone),
+          selectedDate,
+          timeZone
+        )
       ),
     [appointments, selectedDate, timeZone]
   )

@@ -14,6 +14,7 @@ interface DashboardAppointmentModalProps {
   isTablet: boolean
   currencySymbol: string
   locale: string
+  timeZone: string
   theme: {
     backgroundDefault: string
     backgroundSecondary: string
@@ -37,6 +38,7 @@ export function DashboardAppointmentModal({
   isTablet,
   currencySymbol,
   locale,
+  timeZone,
   theme,
   getServiceName,
   isCompleting,
@@ -79,7 +81,7 @@ export function DashboardAppointmentModal({
                   <View style={[styles.modalMetaChip, { backgroundColor: `${theme.primary}12` }]}>
                     <Feather name="clock" size={12} color={theme.primary} />
                     <ThemedText style={[styles.modalMetaText, { color: theme.primary }]}>
-                      {formatDashboardTime(appointment.date, locale)}
+                      {formatDashboardTime(appointment.date, locale, timeZone)}
                     </ThemedText>
                   </View>
                   <View style={[styles.modalMetaChip, { backgroundColor: `${theme.primary}12` }]}>

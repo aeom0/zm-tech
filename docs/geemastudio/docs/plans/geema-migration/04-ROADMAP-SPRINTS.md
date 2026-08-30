@@ -15,7 +15,7 @@
 | **S4** | Crons + RPCs tenant-aware | 11 Edge Functions parametrizadas | S3 |
 | **S5** | Suite L3 — reglas externalizadas | `TenantWabaRules` + seed ZM | S3 |
 | **S5-B** | Branding tenant mobile | Logo Storage + `TenantLogo` + `createTheme` completo | S2 |
-| **S5-C** | Paridad mobile ZM (shadow) | Adaptador packs/promos + agenda/finanzas | S2 |
+| **S5-C** | Paridad mobile ZM (shadow) | Packs/promos + Lima + chicas ✅; resto P1 | S2 |
 | **S6** | Suite L4 + panel Geema | Presets vertical + `/panel/waba/*` port | S5 |
 | **S7+** | Go-live 2.º tenant | Onboarding → WABA propio + QA | S4, S6 |
 
@@ -255,26 +255,30 @@ Detalle: [07-PARIDAD-MOBILE-ZM.md](./07-PARIDAD-MOBILE-ZM.md)
 ### Contexto
 Shadow test 29-ago (APK SDK 56, `alberto@zmlashnails.com`): core OK; packs/promos rotos por esquema BD; finanzas en **Más** no en tabs; agenda UI distinta.
 
+**30-ago (PR [zm-tech #30](https://github.com/aeom0/zm-tech/pull/30)):** adaptador packs/promos (S5C-1/2), hora de pared Lima (S5C-3), adaptador `employees` ↔ agenda (S5C-11). Alberto confirmó packs/promos/agenda visibles.
+
 ### Tareas
 
 | ID | Tarea | Repo | Esfuerzo |
 |----|-------|------|----------|
-| S5C-1 | Adaptador `usePacksData` esquema ZM | zm-tech | M |
-| S5C-2 | Adaptador promos + `promotion_items` | zm-tech | M |
-| S5C-3 | Validar `tenant_settings` timezone Lima | zm-tech + BD | S |
+| S5C-1 | Adaptador `usePacksData` esquema ZM | zm-tech | M ✅ |
+| S5C-2 | Adaptador promos + `promotion_items` | zm-tech | M ✅ |
+| S5C-3 | Validar `tenant_settings` timezone Lima | zm-tech + BD | S ✅ |
+| S5C-11 | Adaptador `employees` ZM + cache única con agenda | zm-tech | S ✅ |
 | S5C-4 | Agenda multi-servicio (`appointment_services`) | zm-tech | L |
 | S5C-5 | Referencias diseño WABA + badge agenda | zm-tech | L |
 | S5C-6 | Feriados + reglas domingo/feriado | zm-tech | M |
 | S5C-7 | Finanzas ejecutiva + costos WABA | zm-tech | L |
 | S5C-8 | Dashboard ranking + alertas feriado | zm-tech | S |
 | S5C-9 | UX hint Finanzas en Más | zm-tech | S |
-| S5C-10 | Smoke packs/promos/agenda vs app ZM | zm-tech | S |
+| S5C-10 | Smoke packs/promos/agenda vs app ZM | zm-tech | S (parcial) |
 
 ### DoD
-- [ ] Packs y promos ZM visibles en Geema (mismos conteos que app ZM)
-- [ ] Agenda mismo día alineada con ZM
-- [ ] Finanzas en Más lista pagos tenant
-- [ ] ZM app legacy sin cambio
+- [x] Packs y promos ZM visibles en Geema (30-ago)
+- [x] Agenda mismo día en hora Lima (S5C-3)
+- [x] Más → chicas cableado a agenda (S5C-11)
+- [ ] Finanzas en Más lista pagos tenant (smoke explícito)
+- [x] ZM app legacy sin cambio
 
 ---
 

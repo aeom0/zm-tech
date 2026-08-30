@@ -28,6 +28,8 @@ import { Colors, Spacing } from '@/constants/theme'
 import { queryClient } from '@/lib/query-client'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/lib/supabase'
+import { fetchEmployeeById } from '@/screens/personal/lib/employeesAdapter'
+import { useEmployeesQuery } from '@/screens/personal/hooks/useEmployeesData'
 import { calculateEmployeeEarnings } from '@geemastudio/shared-schema'
 import type { CompositeNavigationProp } from '@react-navigation/native'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
@@ -191,21 +193,7 @@ export default function FinancesScreen() {
     },
   })
 
-  // Empleadas para desglose por chica (solo admin).
-  const { data: employeesList = [] } = useQuery<FinancesEmployeeOption[]>({
-    queryKey: ['employees'],
-    enabled: isAdmin,
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('employees')
-        .select('id, name, payment_mode, commission_percentage, salary_amount')
-        .order('created_at', { ascending: true })
-      if (error) {
-        throw new Error(error.message)
-      }
-      return (data ?? []) as FinancesEmployeeOption[]
-    },
-  })
+  const { data: employeesList = [] } = useEmployeesQuery({ enabled: isAdmin })
 
   const { data: myEmployee = null } = useQuery<FinancesEmployeeOption | null>({
     queryKey: ['my_employee', userId],
@@ -222,18 +210,7 @@ export default function FinancesScreen() {
       }
 
       if (!prof?.employee_id) return null
-
-      const { data: emp, error: empError } = await supabase
-        .from('employees')
-        .select('id, name, payment_mode, commission_percentage, salary_amount')
-        .eq('id', prof.employee_id)
-        .maybeSingle()
-
-      if (empError) {
-        throw new Error(empError.message)
-      }
-
-      return (emp ?? null) as FinancesEmployeeOption | null
+      return fetchEmployeeById(prof.employee_id)
     },
   })
 
