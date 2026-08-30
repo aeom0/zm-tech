@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { ActivityIndicator, Pressable, View, StyleSheet } from 'react-native'
 import * as SplashScreenExpo from 'expo-splash-screen'
 import * as Updates from 'expo-updates'
 import MainTabNavigator from '@/navigation/MainTabNavigator'
 import { LoginScreen } from '@/screens/LoginScreen'
+import { ThemedText } from '@/components/ThemedText'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
+import { Onboarding } from '@/constants/theme'
 
 SplashScreenExpo.preventAutoHideAsync?.()
 
@@ -28,10 +31,11 @@ type PasoOnboarding = 1 | 2 | 3 | 4 | 5 | 6
  * La splash nativa (expo-splash-screen) cubre el tiempo de carga inicial.
  */
 export default function AuthGate() {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, logout } = useAuth()
   const { isConfigured, isLoading: tenantLoading } = useTenant()
   const [paso, setPaso] = useState<PasoOnboarding>(1)
   const [onboardingSessionDone, setOnboardingSessionDone] = useState(false)
+  const [tenantHydrationStuck, setTenantHydrationStuck] = useState(false)
 
   type EntryChoice = 'none' | 'new' | 'existing'
   const [entryChoice, setEntryChoice] = useState<EntryChoice>('none')
@@ -70,6 +74,18 @@ export default function AuthGate() {
     }
   }, [tenantLoading])
 
+  // Tras un login "ya tengo cuenta" exitoso, si tras 10s el tenant remoto
+  // sigue sin hidratar (sin red, o cuenta sin tenant_settings), salimos del
+  // spinner infinito y ofrecemos reintentar/cerrar sesión.
+  useEffect(() => {
+    if (entryChoice !== 'existing' || !isAuthenticated || isConfigured) {
+      setTenantHydrationStuck(false)
+      return
+    }
+    const timer = setTimeout(() => setTenantHydrationStuck(true), 10000)
+    return () => clearTimeout(timer)
+  }, [entryChoice, isAuthenticated, isConfigured])
+
   // Mientras AsyncStorage carga, la splash nativa cubre la pantalla
   if (tenantLoading) return null
 
@@ -88,14 +104,41 @@ export default function AuthGate() {
 
     // Usuario indica que ya tiene cuenta → mismo look onboarding (no LoginScreen aislado)
     if (entryChoice === 'existing') {
+      // Login ya fue exitoso; solo falta que TenantContext hidrate el tenant remoto
+      // (isConfigured pasa a true y este bloque completo se abandona solo).
+      // No enrutar al wizard de "nuevo negocio": eso causaba un parpadeo del
+      // paso 1/2 del wizard mientras se esperaba la carga remota.
+      if (isAuthenticated) {
+        if (tenantHydrationStuck) {
+          return (
+            <View style={styles.loadingContainer}>
+              <ThemedText style={styles.stuckText}>
+                No pudimos cargar tu negocio. Verifica tu conexión e intenta de nuevo.
+              </ThemedText>
+              <Pressable
+                style={styles.stuckButton}
+                onPress={() => {
+                  setTenantHydrationStuck(false)
+                  setEntryChoice('none')
+                  void logout()
+                }}
+              >
+                <ThemedText style={styles.stuckButtonText}>Cerrar sesión</ThemedText>
+              </Pressable>
+            </View>
+          )
+        }
+        return (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator color={Onboarding.lunarisAccent} size="large" />
+          </View>
+        )
+      }
       return (
         <OnboardingAuthScreen
           flow="returning"
           onBack={() => setEntryChoice('none')}
-          onSuccess={() => {
-            setEntryChoice('new')
-            setPaso(1)
-          }}
+          onSuccess={() => {}}
         />
       )
     }
@@ -146,3 +189,32 @@ export default function AuthGate() {
 
   return <MainTabNavigator />
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Onboarding.canvasBackground,
+    paddingHorizontal: 32,
+    gap: 20,
+  },
+  stuckText: {
+    textAlign: 'center',
+    color: '#ffffffB0',
+    fontSize: 15,
+    lineHeight: 22,
+  },
+  stuckButton: {
+    borderWidth: 1,
+    borderColor: '#ffffff26',
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+  },
+  stuckButtonText: {
+    color: '#ffffff',
+    fontWeight: '600',
+    fontSize: 15,
+  },
+})
