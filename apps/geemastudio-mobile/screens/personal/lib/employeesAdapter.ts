@@ -7,7 +7,7 @@ import { detectCatalogDialect, type CatalogDialect } from '@/screens/services/li
 export type EmployeesDialect = CatalogDialect
 
 export const EMPLOYEE_SELECT_ZM =
-  'id, name, email, phone, color, role, commission_percentage, notes, is_active, created_at'
+  'id, name, email, phone, color, role, commission_percentage, notes, is_active, created_at, avatar_url'
 
 export const EMPLOYEE_SELECT_GEEMA =
   'id, name, email, phone, color, role, commission_percentage, notes, is_active, created_at, payment_mode, salary_amount, avatar_url'
@@ -76,11 +76,11 @@ export function rowToEmployee(row: EmployeeRawRow, dialect: EmployeesDialect): E
     salary_amount: row.salary_amount != null ? String(row.salary_amount) : null,
     notes: row.notes ?? null,
     is_active: row.is_active,
-    avatar_url: dialect === 'geema' ? (row.avatar_url ?? null) : null,
+    avatar_url: row.avatar_url ?? null,
   }
 }
 
-/** Columnas que ZM prod acepta. Geema añade modo de pago y avatar. */
+/** Columnas que ZM prod acepta. Geema añade modo de pago; avatar_url existe en ambos esquemas. */
 export function toEmployeeWritePayload(
   input: EmployeeWriteInput,
   dialect: EmployeesDialect
@@ -93,11 +93,11 @@ export function toEmployeeWritePayload(
     commission_percentage: input.commission_percentage ?? 0,
     notes: input.notes,
     is_active: input.is_active,
+    avatar_url: input.avatar_url,
   }
   if (dialect === 'geema') {
     payload.payment_mode = input.payment_mode
     payload.salary_amount = input.salary_amount
-    payload.avatar_url = input.avatar_url
   }
   return payload
 }

@@ -28,7 +28,7 @@ export function useAsignarData() {
     isError,
     refetch,
   } = useQuery<UnassignedAppointment[]>({
-    queryKey: ['badges', 'unassigned_next_7_days'],
+    queryKey: ['appointments', 'unassigned_next_7_days'],
     queryFn: async () => {
       const now = new Date()
       const end = new Date()
@@ -74,9 +74,9 @@ export function useAsignarData() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['badges', 'unassigned_next_7_days'],
+        queryKey: ['appointments', 'unassigned_next_7_days'],
       })
-      queryClient.invalidateQueries({ queryKey: ['appointments'] })
+      queryClient.invalidateQueries({ queryKey: ['badges', 'unassigned_next_7_days'] })
     },
   })
 

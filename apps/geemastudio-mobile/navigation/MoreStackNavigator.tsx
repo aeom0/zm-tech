@@ -13,9 +13,19 @@ import HorariosTrabajoScreen from '@/screens/HorariosTrabajoScreen'
 import ValidacionPagosScreen from '@/screens/ValidacionPagosScreen'
 import AsignarProfesionalesScreen from '@/screens/AsignarProfesionalesScreen'
 import LogoNegocioScreen from '@/screens/settings/LogoNegocioScreen'
+import MiNegocioScreen from '@/screens/more/MiNegocioScreen'
+import FinanzasMenuScreen from '@/screens/more/FinanzasMenuScreen'
+import MarketingRedesScreen from '@/screens/more/MarketingRedesScreen'
+import AyudaScreen from '@/screens/more/AyudaScreen'
+import CuentaScreen from '@/screens/more/CuentaScreen'
 
 export type MoreStackParamList = {
   MoreHome: undefined
+  MiNegocio: undefined
+  FinanzasMenu: undefined
+  MarketingRedes: undefined
+  Ayuda: undefined
+  Cuenta: undefined
   ValidacionPagos: undefined
   AsignarProfesionales: undefined
   Finanzas: undefined
@@ -42,6 +52,23 @@ export default function MoreStackNavigator() {
           headerTitle: 'Menú',
         }}
       />
+      <Stack.Screen
+        name="MiNegocio"
+        component={MiNegocioScreen}
+        options={{ title: 'Mi negocio' }}
+      />
+      <Stack.Screen
+        name="FinanzasMenu"
+        component={FinanzasMenuScreen}
+        options={{ title: 'Finanzas' }}
+      />
+      <Stack.Screen
+        name="MarketingRedes"
+        component={MarketingRedesScreen}
+        options={{ title: 'Marketing y Redes' }}
+      />
+      <Stack.Screen name="Ayuda" component={AyudaScreen} options={{ title: 'Ayuda' }} />
+      <Stack.Screen name="Cuenta" component={CuentaScreen} options={{ title: 'Cuenta' }} />
       <Stack.Screen
         name="ValidacionPagos"
         component={ValidacionPagosScreen}

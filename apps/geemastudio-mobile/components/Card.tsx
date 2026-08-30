@@ -19,6 +19,7 @@ interface CardProps {
   children?: React.ReactNode
   onPress?: () => void
   style?: ViewStyle
+  accessibilityLabel?: string
 }
 
 const springConfig: WithSpringConfig = {
@@ -44,7 +45,15 @@ const getBackgroundColorForElevation = (elevation: number, theme: any): string =
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 
-export function Card({ elevation = 1, title, description, children, onPress, style }: CardProps) {
+export function Card({
+  elevation = 1,
+  title,
+  description,
+  children,
+  onPress,
+  style,
+  accessibilityLabel,
+}: CardProps) {
   const { theme } = useTheme()
   const haptics = useHaptics()
   const scale = useSharedValue(1)
@@ -76,6 +85,8 @@ export function Card({ elevation = 1, title, description, children, onPress, sty
       onPress={onPress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
+      accessibilityRole={onPress ? 'button' : undefined}
+      accessibilityLabel={accessibilityLabel ?? title}
       style={[
         styles.card,
         {
