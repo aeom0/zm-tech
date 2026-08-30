@@ -1,9 +1,56 @@
-# SKILLS.md — GeemaStudio
+---
+name: geemastudio-dev
+description: >
+  Skill para GeemaStudio en el monorepo zm-tech (apps/geemastudio-mobile,
+  apps/geemastudio-web, packages/shared-schema, packages/tenant-config).
+  Actívalo cuando el usuario mencione GeemaStudio, Geema, salones/barberías/spas
+  multi-tenant, migración ZM Lash → Geema, tenant-config, o Lunaris (paleta
+  #40E0D0/#00897B). Contiene stack, estructura de carpetas, convenciones,
+  patrones arquitectónicos, schema Supabase y el proceso de sync espejo con
+  el repo canónico ZM Lash & Nails Beauty.
+---
 
-> Lee este archivo **antes de tocar cualquier archivo del repo**.
-> Fuente: código real del repositorio + docs internas · Versión: v1.5.0 (SDK 56 + TS 6) · Actualizado: julio 2026
->
-> **Sync**: vive en `.cursor/skills/geemastudio.md` (monorepo **zm-tech**). Claude Code usa el mismo árbol vía symlink `.claude/skills` → `../.cursor/skills`. La entrada del monorepo es `SKILLS.md`; este archivo es el detalle de GeemaStudio.
+# GeemaStudio — Dev Skill
+
+> Lee este archivo **antes de tocar cualquier archivo del repo** GeemaStudio.
+> Complementa `zmtech-dev`. Fuente: código real del repositorio + docs internas.
+> Versión: v1.5.0 (SDK 56 + TS 6) · Actualizado: 30-ago-2026
+
+---
+
+## 0. Sync espejo — ZM Lash (canónica) ↔ GeemaStudio (espejo)
+
+GeemaStudio mobile es la generalización multi-tenant de la app mobile de
+**ZM Lash & Nails Beauty** (repo `aeom0/ZM-Lash-and-Nails-Beauty`, cliente real
+en producción). Mientras dura la migración, la documentación de planeación vive
+en dos sitios y se sincroniza manualmente — el código de cada app NO se
+sincroniza automático, solo `docs/plans/geema-migration/`:
+
+| Rol            | Repo                                 | Path                                              |
+| -------------- | ------------------------------------- | -------------------------------------------------- |
+| **Canónica**   | `ZM-Lash-and-Nails-Beauty`            | `docs/plans/geema-migration/`                       |
+| **Espejo**     | `zm-tech` (este repo)                 | `docs/geemastudio/docs/plans/geema-migration/`      |
+| **Script**     | `ZM-Lash-and-Nails-Beauty/scripts/sync-geema-migration-docs.sh` | rsync entre ambos              |
+
+```bash
+# Desde el repo ZM (ZM-Lash-and-Nails-Beauty):
+./scripts/sync-geema-migration-docs.sh push        # canónica → espejo Geema (uso normal)
+./scripts/sync-geema-migration-docs.sh pull         # espejo Geema → canónica (raro, solo si se editó el espejo)
+./scripts/sync-geema-migration-docs.sh diff         # muestra diferencias
+./scripts/sync-geema-migration-docs.sh diff-check   # exit 1 si hay divergencia (usable en CI/hook)
+```
+
+- El script hace `rsync -av --delete`, así que `pull`/`push` **sobreescriben** el
+  lado destino — no editar directamente el lado espejo si se va a hacer `push`
+  después, se pierde el cambio.
+- Convención de commits del espejo en zm-tech: `docs(geemastudio): sincroniza espejo ...`
+  o `docs(geema): ... (sync ZM)` / `(sync desde ZM)`.
+- Cambios de **código** (no docs) que aplican a ambas apps (ej. fix en
+  `avatar_url`, paridad de features) se portean a mano siguiendo el checklist
+  de multi-tenancy de la sección 5.1 — no hay script para eso.
+- Antes de escribir en `docs/plans/geema-migration/` desde este repo (zm-tech),
+  confirmar si el cambio debe originarse en la canónica (ZM) y luego `push`earse,
+  para no perderlo en el próximo sync.
 
 ---
 
@@ -87,209 +134,10 @@ IA:        Claude claude-haiku-4-5-20251001 — MAX_TOKENS=350, timeout=5000ms
 
 ---
 
-## 3. Estructura de carpetas
-
-```
-geemastudio/
-├── apps/
-│   ├── mobile/
-│   │   ├── App.tsx                   # Entry: QueryClient > AuthProvider > TenantProvider > Navigation
-│   │   ├── contexts/
-│   │   │   ├── AuthContext.tsx        # Auth Supabase (modo dev aceptable por ahora)
-│   │   │   └── TenantContext.tsx      # Config tenant, markConfigured(), updateTenant()
-│   │   ├── screens/
-│   │   │   ├── DashboardScreen.tsx    # orquestador — módulo dashboard/
-│   │   │   ├── AgendaScreen.tsx       # orquestador — módulo agenda/
-│   │   │   ├── ServicesScreen.tsx
-│   │   │   ├── FinancesScreen.tsx     # orquestador — módulo finances/
-│   │   │   ├── InventoryScreen.tsx    # orquestador — módulo inventory/
-│   │   │   ├── PersonalScreen.tsx
-│   │   │   ├── MoreHomeScreen.tsx
-│   │   │   ├── SettingsScreen.tsx
-│   │   │   ├── ProfileScreen.tsx
-│   │   │   ├── ClientsScreen.tsx      # orquestador módulo clientes
-│   │   │   ├── ValidacionPagosScreen.tsx
-│   │   │   ├── AsignarProfesionalesScreen.tsx
-│   │   │   ├── onboarding/            # wizard 6 pasos
-│   │   │   │   ├── OnboardingEntryScreen.tsx
-│   │   │   │   ├── OnboardingBusinessTypeScreen.tsx
-│   │   │   │   ├── OnboardingBasicInfoScreen.tsx
-│   │   │   │   ├── OnboardingTeamScreen.tsx
-│   │   │   │   ├── OnboardingServicesScreen.tsx
-│   │   │   │   ├── OnboardingAuthScreen.tsx
-│   │   │   │   └── OnboardingCompleteScreen.tsx
-│   │   │   ├── clients/               # módulo clientes modularizado
-│   │   │   │   ├── types.ts
-│   │   │   │   ├── hooks/
-│   │   │   │   │   ├── useClientsData.ts
-│   │   │   │   │   └── useClientDetail.ts
-│   │   │   │   └── components/
-│   │   │   │       ├── ClientsHeader.tsx
-│   │   │   │       ├── ClientKPIStrip.tsx
-│   │   │   │       ├── ClientFilterBar.tsx
-│   │   │   │       ├── ClientCard.tsx
-│   │   │   │       ├── ClientDetailModal.tsx
-│   │   │   │       └── ClientAppointmentRow.tsx
-│   │   │   ├── validacion/            # módulo validación de pagos
-│   │   │   │   ├── types.ts
-│   │   │   │   ├── hooks/useValidacionData.ts
-│   │   │   │   └── components/ValidacionRow.tsx
-│   │   │   ├── asignar/               # módulo asignar profesionales
-│   │   │   │   ├── types.ts
-│   │   │   │   ├── hooks/useAsignarData.ts
-│   │   │   │   └── components/AsignarRow.tsx
-│   │   │   ├── agenda/                # módulo agenda modularizado
-│   │   │   │   ├── types.ts
-│   │   │   │   ├── hooks/
-│   │   │   │   └── components/
-│   │   │   │       └── AgendaDayKPIStrip.tsx  # 3 KPIs del día (citas, ingresos, sin asignar)
-│   │   │   ├── dashboard/             # módulo dashboard modularizado
-│   │   │   ├── finances/              # módulo finanzas modularizado
-│   │   │   ├── inventory/             # módulo inventario modularizado
-│   │   │   └── more/                  # subpantallas del grid "Más" (rediseño ago-2026)
-│   │   │       ├── MiNegocioScreen.tsx
-│   │   │       ├── FinanzasMenuScreen.tsx
-│   │   │       ├── MarketingRedesScreen.tsx
-│   │   │       ├── AyudaScreen.tsx
-│   │   │       └── CuentaScreen.tsx
-│   │   ├── screens/settings/
-│   │   │   ├── constants.ts           # 19 monedas LATAM para CurrencyPickerModal
-│   │   │   └── components/
-│   │   │       ├── CurrencyPickerModal.tsx
-│   │   │       └── TerminologyEditModal.tsx  # edita terminology.staff/staffSingular
-│   │   ├── navigation/
-│   │   │   ├── RootStackNavigator.tsx  # AuthGate → Onboarding o Main
-│   │   │   ├── MainTabNavigator.tsx    # 4 tabs + badge en "Más"
-│   │   │   └── MoreStackNavigator.tsx  # stack dentro del tab Más
-│   │   ├── hooks/
-│   │   │   ├── useTheme.ts             # createTheme(config, isDark)
-│   │   │   ├── useTenant.ts            # wrapper de TenantContext
-│   │   │   ├── useResponsive.ts        # isTablet >=768px
-│   │   │   ├── useColorScheme.ts
-│   │   │   ├── usePendingBadgeCount.ts # badge tab Más
-│   │   │   ├── useScreenOptions.ts
-│   │   │   └── useNotifications.ts
-│   │   ├── components/
-│   │   │   ├── ThemedText.tsx
-│   │   │   ├── ThemedView.tsx
-│   │   │   ├── Button.tsx
-│   │   │   ├── Card.tsx
-│   │   │   ├── Spacer.tsx
-│   │   │   ├── HeaderTitle.tsx
-│   │   │   ├── MenuRow.tsx            # fila reutilizable (icon, label, badge) — subpantallas Más
-│   │   │   └── CategoryCard.tsx       # card de grid (icon, label, badge) — MoreHomeScreen
-│   │   ├── lib/
-│   │   │   ├── supabase.ts
-│   │   │   ├── query-client.ts
-│   │   │   └── employeeAvatar.ts      # subirAvatarEmpleadoDefault, borrarAvatarSiEsStorage
-│   │   ├── constants/
-│   │   │   └── theme.ts               # Colors, Spacing, Typography, BorderRadius,
-│   │   │                              # Shadows, createTheme(config, isDark)
-│   │   └── utils/
-│   │       └── format.ts              # formatCurrency(amount, config), relativeDays
-│   │
-│   └── web/
-│       ├── src/
-│       │   ├── app/                    # Next.js App Router
-│       │   │   ├── page.tsx            # Landing pública
-│       │   │   ├── layout.tsx
-│       │   │   ├── dashboard/          # Fase 13 — KPIs (owner/dev); useDashboardData
-│       │   │   │   ├── page.tsx
-│       │   │   │   ├── layout.tsx      # FinanzasAuthWrapper
-│       │   │   │   ├── useDashboardData.ts
-│       │   │   │   └── components/
-│       │   │   ├── finanzas/           # panel + login /finanzas/login
-│       │   │   │   ├── page.tsx
-│       │   │   │   ├── layout.tsx
-│       │   │   │   └── login/page.tsx
-│       │   │   └── panel/              # área autenticada
-│       │   │       ├── servicios/      # CRUD categorías, servicios, packs, promos (?tab=)
-│       │   │       │   ├── hooks/
-│       │   │       │   ├── components/
-│       │   │       │   ├── _services/  # packs + promotions
-│       │   │       │   ├── _hooks/
-│       │   │       │   └── _components/
-│       │   │       └── horarios/       # picker formato 12/24h + business_hours
-│       │   ├── components/
-│       │   │   ├── sections/
-│       │   │   │   ├── HeroSection.tsx
-│       │   │   │   ├── FeaturesSection.tsx
-│       │   │   │   ├── PricingSection.tsx
-│       │   │   │   ├── DemoSection.tsx       # 5 tabs incl. WhatsApp
-│       │   │   │   ├── SocialProofSection.tsx
-│       │   │   │   ├── CtaSection.tsx
-│       │   │   │   └── FAQSection.tsx
-│       │   │   ├── layout/
-│       │   │   │   ├── Navbar.tsx
-│       │   │   │   └── Footer.tsx
-│       │   │   └── ui/
-│       │   │       ├── GradientButton.tsx     # botón con gradiente Lunaris
-│       │   │       ├── PricingCard.tsx        # con badge WABA + sección WABA
-│       │   │       ├── WABAPreview.tsx        # conversación animada tipo WA
-│       │   │       ├── FeatureCard.tsx
-│       │   │       ├── BusinessTypeTab.tsx
-│       │   │       └── RevealWrapper.tsx
-│       │   └── lib/
-│       │       ├── constants.ts              # PLANS, WABA_ADDON_TIERS, FEATURES
-│       │       └── format.ts                 # formatCurrency (panel dashboard/finanzas)
-│       └── public/
-│           ├── logo-diamondSparkle.svg   # marca principal (solo símbolo)
-│           ├── logo-diamondSparkle-positive.svg
-│           ├── logo-diamondSparkle-negative.svg
-│           └── favicon.png
-│
-├── packages/
-│   ├── shared-schema/            # @geemastudio/shared-schema
-│   │   └── src/
-│   │       ├── schema.ts         # Drizzle schema — fuente de verdad
-│   │       ├── types.ts          # tipos inferidos
-│   │       └── index.ts
-│   │
-│   └── tenant-config/            # @zmtech/tenant-config
-│       └── src/
-│           ├── types.ts          # TenantConfig interface completa
-│           ├── defaults.ts       # defaultTenantConfig
-│           ├── index.ts
-│           └── presets/
-│               ├── spa-nails.ts      # #40E0D0 (Lunaris)
-│               ├── barbershop.ts     # #1A237E
-│               ├── hair-salon.ts     # #6A1B9A
-│               └── full-aesthetic.ts # #00695C
-│
-├── supabase/
-│   └── functions/
-│       └── whatsapp-webhook/     # Bot WABA (Deno)
-│           ├── index.ts          # entry: responder 200 inmediato a Meta
-│           └── handlers/
-│               ├── dispatcher.ts
-│               ├── agenda.ts
-│               ├── menu.ts
-│               ├── payment.ts
-│               ├── steps.ts
-│               ├── ai-assistant.ts
-│               └── format.ts
-│
-├── scripts/
-│   ├── seed-auth-users.mjs
-│   └── db/
-│       ├── seed-services-template.sql
-│       ├── seed-services-example.sql   ← referencia ZM, no modificar
-│       ├── seed-employees-template.sql
-│       └── seed-employees-example.sql  ← referencia ZM, no modificar
-│
-├── docs/
-├── .cursor/rules/
-├── CLAUDE.md                     ← instrucciones para Claude Code
-├── CHANGELOG.md
-└── README.md
-```
-
----
-
-## 4. Naming conventions
+## 3. Naming conventions
 
 | Tipo                 | Convención                                    | Ejemplo                                       |
-| -------------------- | --------------------------------------------- | --------------------------------------------- |
+| -------------------- | ---------------------------------------------- | --------------------------------------------- |
 | Componentes React/RN | PascalCase                                    | `ClientCard.tsx`                              |
 | Hooks                | camelCase con `use`                           | `useClientsData.ts`                           |
 | Servicios/utils      | camelCase                                     | `format.ts`, `tenantSettingsService.ts`       |
@@ -305,9 +153,9 @@ geemastudio/
 
 ---
 
-## 5. Patrones arquitectónicos establecidos
+## 4. Patrones arquitectónicos establecidos
 
-### 5.1 REGLA DE ORO: Multi-tenancy absoluta
+### 4.1 REGLA DE ORO: Multi-tenancy absoluta
 
 **NUNCA** hardcodear valores de negocio. Todo pasa por `useTenant()` / `config.*`.
 
@@ -339,7 +187,7 @@ const tz = 'America/Lima' // hardcodeado en lugar de config.locale.timezone
 - [ ] `@zm_*` AsyncStorage → `@geemastudio/*`
 - [ ] Ruta `"Chicas"` → `"Personal"`
 
-### 5.2 Capas de la arquitectura mobile
+### 4.2 Capas de la arquitectura mobile
 
 ```
 Screen (orquestador — solo renderiza y delega)
@@ -353,7 +201,7 @@ lib/supabase.ts (cliente Supabase singleton)
 
 Nunca llamar Supabase directamente en una screen. Va en hook o service.
 
-### 5.3 TanStack Query v5 — sintaxis OBLIGATORIA
+### 4.3 TanStack Query v5 — sintaxis OBLIGATORIA
 
 ```typescript
 // v5 — SIEMPRE asi:
@@ -372,7 +220,7 @@ useQuery(['employees'], async () => { ... })
 // clients | client_detail,{id}
 ```
 
-### 5.4 Badges (MoreHomeScreen / MainTabNavigator)
+### 4.4 Badges (MoreHomeScreen / MainTabNavigator)
 
 Toda query de badge **requiere** estas dos opciones:
 
@@ -391,7 +239,7 @@ useQuery({
 })
 ```
 
-### 5.5 Joins Supabase — PATRON CRITICO
+### 4.5 Joins Supabase — PATRON CRITICO
 
 PostgREST devuelve `[]` silencioso con joins encadenados. Siempre queries separadas:
 
@@ -418,7 +266,7 @@ const { data: payments } = await supabase
 // combinar en JavaScript
 ```
 
-### 5.6 Migraciones de BD — restriccion WSL
+### 4.6 Migraciones de BD — restriccion WSL
 
 ```
 Puerto Postgres (5432 / pooler) BLOQUEADO en WSL/sandbox → yarn db:push y
@@ -436,7 +284,7 @@ Drizzle solo para:
   - NO para tablas existentes (puede intentar dropear columnas)
 ```
 
-### 5.7 Edge Functions WABA
+### 4.7 Edge Functions WABA
 
 ```typescript
 // Patron: responder 200 a Meta INMEDIATO, procesar en background
@@ -459,7 +307,7 @@ if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders }
 
 ---
 
-## 6. Design System — Lunaris
+## 5. Design System — Lunaris
 
 ### Filosofia
 
@@ -511,18 +359,18 @@ BorderRadius: { sm: 6, md: 10, lg: 16, xl: 24, full: 9999 }
 ### Marca (`apps/geemastudio-web/public/`)
 
 | Archivo                          | Uso                                                            |
-| -------------------------------- | -------------------------------------------------------------- |
+| --------------------------------- | ---------------------------------------------------------------- |
 | logo-diamondSparkle.svg          | **Principal** — diamante claro, fondos oscuros / transparentes |
 | logo-diamondSparkle-positive.svg | Export / materiales                                            |
 | logo-diamondSparkle-negative.svg | Preview / redes                                                |
-| favicon.png                      | Favicon                                                        |
+| favicon.png                      | Favicon                                                          |
 
-El símbolo no incluye texto “GeemaStudio”. Ver CHANGELOG v1.4.4.
+El símbolo no incluye texto "GeemaStudio". Ver CHANGELOG v1.4.4.
 
 ### Componentes UI mobile
 
 | Componente               | Reglas clave                                             |
-| ------------------------ | -------------------------------------------------------- |
+| ------------------------- | ---------------------------------------------------------- |
 | Boton primario           | expo-linear-gradient con tokens Lunaris, borderRadius 12 |
 | Boton outline            | Border rgba(255,255,255,0.15), bg transparente           |
 | Cards                    | bg backgroundSecondary, border theme.border, radius 16   |
@@ -532,7 +380,7 @@ El símbolo no incluye texto “GeemaStudio”. Ver CHANGELOG v1.4.4.
 
 ---
 
-## 7. TenantConfig interface (completa)
+## 6. TenantConfig interface (completa)
 
 ```typescript
 // packages/tenant-config/src/types.ts
@@ -589,7 +437,7 @@ export interface TenantConfig {
 
 ---
 
-## 8. Base de datos (Supabase `udelxwwnyivknslueerr` — ver `docs/SUPABASE.md`)
+## 7. Base de datos (Supabase `udelxwwnyivknslueerr` — ver `docs/SUPABASE.md`)
 
 > Ref legacy `xidjomlxpuosupymcsaj` **no usar** — proyecto real es `udelxwwnyivknslueerr` (ZM Lash = tenant #1 dentro de GeemaStudio).
 
@@ -664,9 +512,9 @@ Mobile (apps/geemastudio-mobile): usa config.locale.currency.symbol — dinamico
 
 ---
 
-## 9. Flujos clave
+## 8. Flujos clave
 
-### 9.1 Arranque de la app (mobile)
+### 8.1 Arranque de la app (mobile)
 
 ```
 AuthGate
@@ -676,7 +524,7 @@ AuthGate
   └─ con sesion + tenant configurado → MainTabNavigator
 ```
 
-### 9.2 Onboarding (6 pasos)
+### 8.2 Onboarding (6 pasos)
 
 ```
 Paso 0: Entry        → "Crear negocio" o "Ya tengo cuenta"
@@ -690,7 +538,7 @@ Paso 6: Complete     → markConfigured() → upsert tenant_settings + AsyncStor
 
 Forzar en dev: `EXPO_PUBLIC_FORCE_ONBOARDING=true`
 
-### 9.3 Navegacion (MoreStackParamList — rutas exactas del repo)
+### 8.3 Navegacion (MoreStackParamList — rutas exactas del repo)
 
 `MoreHomeScreen` ya no es una lista plana: es un `ProfileCard` + grid de `CategoryCard`s por categoria, cada una empujando una subpantalla al mismo stack (rediseño IA, 30-ago-2026).
 
@@ -722,7 +570,7 @@ export type MoreStackParamList = {
 // Tab Mas → badge = usePendingBadgeCount().tabBadgeCount
 ```
 
-### 9.4 Segmentacion de clientes
+### 8.4 Segmentacion de clientes
 
 ```typescript
 const isVip = totalAppointments >= 3
@@ -731,9 +579,9 @@ const isAtRisk = !isNew && daysSinceLastVisit !== null && daysSinceLastVisit > 4
 // KPIs: total_clients, vip_count, new_this_month, at_risk_count, top_spender
 ```
 
-### 9.5 Rutas web — dos productos distintos
+### 8.5 Rutas web — dos productos distintos
 
-`apps/geemastudio-web` contiene **dos productos** con lógicas de auth, routing y audiencia completamente distintas. Ver [`docs/WEB_ARCHITECTURE.md`](../docs/WEB_ARCHITECTURE.md) para detalle completo.
+`apps/geemastudio-web` contiene **dos productos** con lógicas de auth, routing y audiencia completamente distintas. Ver `docs/geemastudio/docs/WEB_ARCHITECTURE.md` para detalle completo.
 
 #### Producto 1 — Panel de gestión (siempre activo)
 
@@ -741,7 +589,7 @@ Audiencia: `owner` / `staff` / `dev`. Siempre autenticados con Supabase Auth.
 **Nunca depende de `web_mode`** — está disponible para todo tenant desde el día 1.
 
 | Ruta                                                                                         | Estado          |
-| -------------------------------------------------------------------------------------------- | --------------- |
+| ---------------------------------------------------------------------------------------------- | --------------- |
 | `/finanzas` + `/finanzas/login`                                                              | ✅ Implementado |
 | `/dashboard`                                                                                 | ✅ Implementado |
 | `/panel/servicios` (`?tab=categorias\|servicios\|packs\|promos`)                             | ✅ Implementado |
@@ -752,15 +600,15 @@ Audiencia: `owner` / `staff` / `dev`. Siempre autenticados con Supabase Auth.
 
 Audiencia: clientes del negocio. Sin auth. Controlado por `tenant_settings.web_mode`.
 
-| Ruta        | Estado                                                                |
-| ----------- | --------------------------------------------------------------------- |
+| Ruta        | Estado                                                                 |
+| ----------- | ----------------------------------------------------------------------- |
 | `/`         | ✅ Landing plataforma GeemaStudio (B2B)                               |
 | `/s/[slug]` | ✅ Landing pública del tenant (SSG + revalidación 5 min; 3 templates) |
 
 #### `web_mode` en `tenant_settings`
 
 | Valor            | Significado                                                         |
-| ---------------- | ------------------------------------------------------------------- |
+| ----------------- | --------------------------------------------------------------------- |
 | `'none'`         | Sin landing pública (default al crear tenant)                       |
 | `'geema_hosted'` | Landing en `geemastudio.app/s/[slug]`                               |
 | `'own_domain'`   | Dominio propio del tenant — GeemaStudio no interviene en el routing |
@@ -768,7 +616,7 @@ Audiencia: clientes del negocio. Sin auth. Controlado por `tenant_settings.web_m
 > ZM Lash & Nails (Vanessa) → `web_mode = 'own_domain'` (informativo, no bloquea el panel).
 > Columnas en BD: `web_mode`, `slug` (único, Modo B), `custom_domain` (informativo, Modo A).
 
-### 9.6 Bot WABA — despacho
+### 8.6 Bot WABA — despacho
 
 ```
 Meta POST → responder 200 inmediato → processMessage en background
@@ -783,7 +631,7 @@ Meta POST → responder 200 inmediato → processMessage en background
 
 ---
 
-## 10. Helpers criticos
+## 9. Helpers criticos
 
 ### formatCurrency (NO usar fmtSoles, NO "S/" hardcodeado)
 
@@ -819,7 +667,7 @@ const uri = result.assets[0].uri;     // NO result.uri
 
 ---
 
-## 11. Credenciales de desarrollo (seed)
+## 10. Credenciales de desarrollo (seed)
 
 ```
 dev@ejemplo.com          → rol dev   (acceso total)
@@ -832,7 +680,7 @@ password: Geema2025!
 
 ---
 
-## 12. Comandos del proyecto
+## 11. Comandos del proyecto
 
 ```bash
 yarn mobile:dev      # Expo en 8081
@@ -846,40 +694,10 @@ yarn db:seed         # seeds template
 
 ---
 
-## 13. Estado de fases (abr 2026)
-
-### Completadas
-
-- Fases 1 al 6: Migracion ZM → GeemaStudio, monorepo, @zmtech/tenant-config, onboarding, tenant_settings
-- Fase 7A+7B: RLS 9 tablas con get_my_role(), onboarding conectado a Supabase
-- Fase 8: SettingsScreen modular + ThemeContext (useColorScheme, light|dark|auto)
-- Fase 9: usePendingBadgeCount + badge en tab Mas
-- Fase 10: ValidacionPagosScreen con spinner per-row
-- Fase 11: AsignarProfesionalesScreen con timezone dinamica
-- Fase 12: Landing web rediseno LATAM + GradientButton
-- Fase 12B: Bot WABA en landing (WABAPreview, PricingCard con WABA, add-on tiers)
-- Rediseno onboarding: dark theme Lunaris, Feather icons, pill dots, stat tiles 2x2
-- Fase 13: Dashboard metricas web (KPIs hoy/mes, grafico 7 dias, top servicios)
-- Web panel /servicios: CRUD categorias, servicios, packs, promos (?tab= deep link)
-- Web panel /horarios: picker formato 12/24h + tenant_settings.time_format
-- v1.4.8: Lunaris web (#40E0D0), Vercel, DiamondHero sin MaskedView
-- v1.4.9: Selector moneda multi-LATAM (19 monedas), Personal CRUD completo,
-  Agenda KPI strip (AgendaDayKPIStrip), locale.timeFormat (12|24),
-  emojis → iconos Lucide en web (FeatureCard, BusinessTypeTab, HeroSection, etc.)
-
-### Proximas
-
-- Fase 14: EAS Build beta
-- Fase 15: Bot WABA multi-tenant (Edge Function)
-- PromoMasivaScreen (requiere WABA activo)
-- Auth Supabase real en mobile (AuthContext modo dev actual)
-
----
-
-## 14. LO QUE CLAUDE CODE DEBE HACER
+## 12. LO QUE CLAUDE CODE DEBE HACER
 
 1. Leer este archivo antes de modificar cualquier parte del repo
-2. Consultar ZM_KNOWLEDGE_FOR_GEEMASTUDIO.md antes de implementar cualquier modulo nuevo
+2. Consultar `docs/geemastudio/ZM_KNOWLEDGE.md` antes de implementar cualquier modulo nuevo
 3. Usar useTenant() y useTheme() en todo componente que necesite datos del negocio
 4. Proponer codigo modular: screen orquestador → hook → service → supabase
 5. Usar TanStack Query v5 con sintaxis de objeto { queryKey, queryFn }
@@ -895,11 +713,12 @@ yarn db:seed         # seeds template
 15. Gradiente solo en elementos interactivos, nunca en fondos de pantalla
 16. Rutas de navegacion con nombres neutros: "Personal", "Clients", no "Chicas"
 17. Usar config.locale.timeFormat (12|24) para formato de hora — NO hardcodear AM/PM
-18. Iconos Lucide en web via LucideIcons as Record<string, LucideIcon> — NO emojis en UI web"
+18. Iconos Lucide en web via LucideIcons as Record<string, LucideIcon> — NO emojis en UI web
+19. Si el cambio toca `docs/plans/geema-migration/`, verificar primero si debe originarse en la canónica ZM (ver sección 0) para no perderlo en el siguiente sync
 
 ---
 
-## 15. LO QUE CLAUDE CODE NO DEBE HACER
+## 13. LO QUE CLAUDE CODE NO DEBE HACER
 
 1. Hardcodear valores de negocio: "S/", "Chicas", "#7B2D8E", "ZM Lash", "America/Lima" fija
 2. TanStack Query v4: useQuery(['key'], fn) — obsoleto en este proyecto
@@ -910,7 +729,7 @@ yarn db:seed         # seeds template
 7. Logica de negocio en screens: va en hooks o services, nunca en el JSX
 8. Supabase directo en screens: siempre mediado por hook o service
 9. any en TypeScript: usar unknown + type guards
-10. Keys AsyncStorage con prefijo @zm__: usar @geemastudio/_
+10. Keys AsyncStorage con prefijo @zm_*: usar @geemastudio/*
 11. Nombre de ruta "Chicas": usar "Personal" (ya corregido en el repo)
 12. Gradiente en fondos de pantalla completa: solo en CTAs e interactivos
 13. Crear archivos .md sin que se pida: no generar docs automaticamente
@@ -921,10 +740,11 @@ yarn db:seed         # seeds template
 18. Duplicar tipos manualmente: inferir desde Drizzle/Zod como fuente de verdad
 19. Emojis en web UI: toda iconografia web usa Lucide React (ver v1.4.9)
 20. Hardcodear formato de hora (12h/AM-PM): viene de config.locale.timeFormat
+21. Editar `docs/geemastudio/docs/plans/geema-migration/` (espejo) y dejarlo así — si el cambio es relevante también en ZM, coordinar el `push`/`pull` con el script (sección 0), o se pierde en el próximo sync
 
 ---
 
-## 16. MCP Servers (Cursor IDE)
+## 14. MCP Servers (Cursor IDE)
 
 ```json
 {
@@ -937,8 +757,9 @@ yarn db:seed         # seeds template
 
 Formato `mcpServers` objeto — el formato antiguo `tools` block esta obsoleto.
 
-**GeemaStudio no tiene un MCP Supabase dedicado**: el conector `mcp__claude_ai_SupabaseZMTech` (Claude Code) solo lista los proyectos `naturalforce-suite` y `ZMTech`/`llacowjutjfefboqgfnj` — **no** incluye `udelxwwnyivknslueerr`. Para operar sobre el proyecto real de GeemaStudio usar el **Supabase CLI local ya autenticado** (`supabase projects list` / `api-keys` / `db query`) y el Management API por HTTPS — ver `docs/SUPABASE.md` §5 y §5.6 arriba. Los refs `xidjomlxpuosupymcsaj` (Geema legacy, eliminado) y cualquier mención a `udelxwwnyivknslueerr` como "solo lectura" son historicos — el proyecto real y unico de GeemaStudio hoy es `udelxwwnyivknslueerr`.
+**GeemaStudio no tiene un MCP Supabase dedicado**: el conector `mcp__claude_ai_SupabaseZMTech` (Claude Code) solo lista los proyectos `naturalforce-suite` y `ZMTech`/`llacowjutjfefboqgfnj` — **no** incluye `udelxwwnyivknslueerr`. Para operar sobre el proyecto real de GeemaStudio usar el **Supabase CLI local ya autenticado** (`supabase projects list` / `api-keys` / `db query`) y el Management API por HTTPS — ver `docs/SUPABASE.md` §5 y §4.6 arriba. Los refs `xidjomlxpuosupymcsaj` (Geema legacy, eliminado) y cualquier mención a `udelxwwnyivknslueerr` como "solo lectura" son historicos — el proyecto real y unico de GeemaStudio hoy es `udelxwwnyivknslueerr`.
 
 ---
 
-_Generado: marzo 2026. Actualizado: 30-ago-2026 (rediseño Más + avatar_url en ZM prod). Para actualizar: re-ejecutar analisis del repo con Claude Code o claude.ai_
+_Migrado desde `.cursor/skills/geemastudio.md` a skill registrado el 30-ago-2026._
+_Generado: marzo 2026. Actualizado: 30-ago-2026 (rediseño Más + avatar_url en ZM prod + skill registrado + sync espejo documentado)._

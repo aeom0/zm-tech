@@ -104,7 +104,7 @@ Automotriz, Sports Tech y Enterprise.
 #### 4. GeemaStudio
 
 - **Repo monorepo:** `zm-tech` → apps `geemastudio-mobile` / `geemastudio-web` / `geemastudio-server`
-- **Skill detallado:** `.cursor/skills/geemastudio.md` (symlink Claude: `.claude/skills/geemastudio.md`)
+- **Skill detallado:** `.cursor/skills/geemastudio-dev/SKILL.md` (registrado — invocable como skill `geemastudio-dev`; symlink Claude: `.claude/skills/geemastudio-dev/`)
 - **Descripción:** SaaS multi-tenant para salones de belleza, barberías y spas en LATAM
 - **Basado en:** ZM Lash & Nails Beauty (primer cliente = seed del producto)
 - **Stack:** Expo SDK 56 + RN 0.85 + Next.js 15 + Supabase + Drizzle + pnpm/Turborepo
