@@ -7,10 +7,17 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido (30-ago 2026 — Más: rediseño grid + terminología editable + avatar_url en ZM prod)
+
+- **Mobile — Más (rediseño IA)**: `MoreHomeScreen` grid de categorías (Mi negocio, Finanzas, Asignar {staff}, Marketing y Redes, Ayuda, Cuenta) reemplaza la lista plana; subpantallas nuevas en `screens/more/`; `MenuRow`/`CategoryCard` extraídos a `components/`.
+- **Mobile — terminología del personal editable**: `TerminologyEditModal` en Datos del negocio; `staff`/`staffSingular` ahora editables (antes solo lectura), con `syncRemote`.
+- **Mobile — Logo del negocio**: movido de "Mi negocio" a la primera fila de "Datos del negocio".
+- **BD producción ZM — `avatar_url`**: columna agregada a `employees` en el proyecto real (`udelxwwnyivknslueerr`); bucket `employee-avatars` (público) creado; `employeesAdapter.ts` ya no fuerza `avatar_url` a `null` para el dialecto `'zm'` — se lee/escribe igual que en Geema-nativo. Fotos reales de Vanessa/Stephani cargadas (fuente: Sanity del sitio web de ZM).
+
 ### Añadido (30-ago 2026 — S5-C paridad ZM)
 
 - **Mobile — adaptador catálogo ZM** (`catalogAdapter.ts`): dialecto `packs.title` vs Geema; packs `title`/`pack_price`; promos `valid_until` + total desde `promotion_items` (S5C-1/2).
-- **Mobile — adaptador `employees`** (`employeesAdapter.ts` + `useEmployeesQuery`): query única con agenda; writes ZM sin `avatar_url`/`payment_mode`/`salary_amount` (S5C-11).
+- **Mobile — adaptador `employees`** (`employeesAdapter.ts` + `useEmployeesQuery`): query única con agenda; writes ZM ahora incluyen `avatar_url` (agregado 30-ago), siguen sin `payment_mode`/`salary_amount` (S5C-11).
 
 ### Corregido (30-ago 2026 — S5-C)
 

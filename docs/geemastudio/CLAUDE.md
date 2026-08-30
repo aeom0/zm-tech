@@ -233,18 +233,11 @@ Valores del preset `spa-nails` (archivo `presets/spa-nails.ts`):
 
 5 tabs: **Inicio** (Dashboard), **Agenda**, **Servicios**, **Más** (menú), **Perfil**.
 
-- **Más** abre un stack con menú (para rol dev/owner):
-  1. Validación de Pagos
-  2. Asignar Profesionales (terminología dinámica via `config.terminology.staff`)
-  3. Finanzas
-  4. Profesionales
-  5. Clientes
-  6. Inventario
-  7. Enviar Promo WA (solo si `config.features.whatsapp` está activo)
-  8. Configuración
-  9. Mi Perfil
-  10. Cerrar sesión
-- Para rol staff se muestran solo las opciones relevantes de cuenta (Configuración, Mi Perfil, Cerrar sesión).
+- **Más** (`MoreHomeScreen`) es un `ProfileCard` + grid de categorías (rediseño IA, 30-ago-2026), cada una empuja una subpantalla al mismo `MoreStackNavigator`:
+  - Para rol dev/owner: **Mi negocio** (Horario de trabajo, Datos del negocio —incluye Logo del negocio y terminología del personal—, Personal, Inventario), **Finanzas** (badge pagos pendientes; Finanzas + Validación de Pagos), **Asignar {staff}** (badge citas sin asignar, navega directo sin subpantalla intermedia), **Marketing y Redes** (WhatsApp si `config.features.whatsapp`, Redes Sociales).
+  - Para todos los roles: **Ayuda** (FAQ, soporte, versión de la app), **Cuenta** (Apariencia claro/oscuro, Cerrar sesión).
+  - Para rol staff (no-admin): categoría "Mi turno" en vez de las categorías admin.
+- Terminología del personal (`config.terminology.staff` / `staffSingular`) es editable desde **Datos del negocio** (modal `TerminologyEditModal`), no solo lectura.
 
 Flujo de arranque (mobile):
 
@@ -271,6 +264,13 @@ Flujo de arranque (mobile):
 - **Multiplataforma**: Un solo código para iOS, Android y Web
 - **TypeScript**: `apps/mobile/tsconfig.json` usa `module: "esnext"` (sin extender expo/tsconfig.base.json)
 - Usar `nvm use` para asegurar la versión correcta de Node
+
+## Cambios Recientes (ago 2026 — Más: rediseño grid + terminología editable + avatar_url en ZM prod)
+
+- **Mobile — Más (rediseño IA)**: `MoreHomeScreen` pasa de lista plana a `ProfileCard` + grid de `CategoryCard`s con subpantallas dedicadas (`screens/more/`: `MiNegocioScreen`, `FinanzasMenuScreen`, `MarketingRedesScreen`, `AyudaScreen`, `CuentaScreen`); nuevas rutas en `MoreStackParamList`. Componentes reutilizables `MenuRow`/`CategoryCard` extraídos a `components/`.
+- **Mobile — terminología del personal editable**: `TerminologyEditModal` en Datos del negocio (`SettingsScreen`) permite editar `config.terminology.staff`/`staffSingular` con `updateTenant({ syncRemote: true })` (antes solo se leía).
+- **Mobile — Logo del negocio**: reubicado de "Mi negocio" (fila standalone) a la primera fila de "Datos del negocio" (mismo destino `LogoNegocio`).
+- **BD producción ZM (`udelxwwnyivknslueerr`) — `avatar_url` en `employees`**: columna agregada a la tabla real de ZM (antes solo existía en tenants Geema-nativos; `employeesAdapter.ts` forzaba `null` para el dialecto `'zm'`). Bucket Storage público `employee-avatars` creado en ese proyecto (no existía). `EMPLOYEE_SELECT_ZM`, `rowToEmployee` y `toEmployeeWritePayload` ya no gatean `avatar_url` por dialecto — se lee/escribe igual en ambos. Fotos reales de Vanessa y Stephani (desde Sanity, fuente del sitio web de ZM) cargadas como primer caso de uso. Ver `.cursor/skills/geemastudio.md` §8 para el patrón de dialecto.
 
 ## Cambios Recientes (abr 2026 — Onboarding: subtype, tenant_settings, tokens TD-001, color HSV)
 

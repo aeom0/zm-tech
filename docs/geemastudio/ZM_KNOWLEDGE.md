@@ -46,7 +46,10 @@ Tablas activas en ZM con sus relaciones clave. En GeemaStudio usar el mismo sche
 
 ```
 profiles           → id = auth.users.id, role (dev|owner|staff), employee_id
-employees          → id, name, email, color (hex), commission_percentage, is_active, notes
+employees          → id, name, email, color (hex), commission_percentage, is_active, notes,
+                     avatar_url (Storage bucket `employee-avatars`, publico; agregado a la tabla
+                     real de ZM el 30-ago-2026 — antes solo existia en tenants Geema-nativos),
+                     payment_mode/salary_amount (solo dialecto 'geema', ver employeesAdapter.ts)
 service_categories → id, name, color (hex), icon, order
 services           → id, name, category_id→service_categories, price, duration, is_active
 clients            → id, name, phone, email, notes, created_at,
@@ -376,7 +379,7 @@ interface TenantConfig {
     timezone: string // 'America/Lima' | 'America/Bogota' | etc.
     currency: { symbol: string; code: string }
   }
-  terminology: { staff: string }
+  terminology: { staff: string; staffSingular: string }
   features?: { whatsapp?: boolean; inventory?: boolean; commissions?: boolean }
   integrations?: { waba?: { tokenExpiry?: string } }
   schedule?: {
@@ -394,7 +397,7 @@ Al portear cualquier pantalla de ZM a GeemaStudio, verificar:
 
 - [ ] `fmtSoles()` → `formatCurrency(amount, config)`
 - [ ] `"S/"` hardcodeado → `config.locale.currency.symbol`
-- [ ] `"chicas"` → `config.terminology.staff`
+- [ ] `"chicas"` → `config.terminology.staff` (singular: `config.terminology.staffSingular`)
 - [ ] `"ZM Lash"` → `config.businessName`
 - [ ] `"#7B2D8E"` → `theme.primary`
 - [ ] `"es-PE"` → `config.locale.language`

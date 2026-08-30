@@ -66,6 +66,7 @@ RepMAX encaja en esa simetría sin carpeta server: las migraciones viven en `doc
 2. En `llacowjutjfefboqgfnj`, **nunca** tocar tablas de otro producto (p. ej. no `DROP` sobre `contacts` al trabajar Odental/RepMAX). Excepción única prevista: el Hub interno podrá **leer** (`SELECT`) `contacts` y `quote_leads` como inbox de leads — ver `docs/hub/plans/02-PLAN-schema-rls-supabase.md`.
 3. **No** reintroducir Express/JWT como capa de negocio; Edge Functions solo para webhooks, jobs o privilegios service-role.
 4. Variables de entorno deben apuntar al proyecto correcto del producto (ver `.env.example` de cada app).
+5. **DDL/SQL contra un proyecto real desde este entorno**: `supabase db query --linked` intenta conectar directo a Postgres (pooler) y falla por timeout — el puerto Postgres suele estar bloqueado en este sandbox. Usar en su lugar el **Management API** por HTTPS con el token de `~/.supabase/access-token`: `POST https://api.supabase.com/v1/projects/{ref}/database/query` con `{"query": "..."}` (curl). Las API keys (anon/service_role) del proyecto se obtienen con `supabase projects api-keys --project-ref <ref>`. Cambios de schema en un proyecto de producción real (como `udelxwwnyivknslueerr`) requieren confirmación explícita del usuario antes de ejecutarse — ver regla del CLAUDE.md raíz.
 
 ## MCP / Cursor
 

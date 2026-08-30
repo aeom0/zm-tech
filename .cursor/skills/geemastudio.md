@@ -16,8 +16,8 @@
 - Prioridad comercial **#1** del portfolio ZM Tech
 - Target: Venezuela como piloto, expansión LATAM
 - Todo el texto de UI y comentarios de código va en **español LATAM neutro** (`es-VE`)
-- Supabase proyecto activo: `xidjomlxpuosupymcsaj`
-- Supabase referencia ZM: `udelxwwnyivknslueerr` ← **solo lectura, nunca modificar**
+- Supabase proyecto activo: `udelxwwnyivknslueerr` (ZM Lash & Nails = tenant #1 dentro de GeemaStudio; ver `docs/SUPABASE.md`). Ref legacy `xidjomlxpuosupymcsaj` ya no existe — no usar.
+- Es un proyecto de **producción real** (datos reales del salón ZM) — cambios de schema requieren confirmación explícita del usuario, pero SÍ se modifica (no es solo-lectura).
 
 ---
 
@@ -145,9 +145,18 @@ geemastudio/
 │   │   │   │       └── AgendaDayKPIStrip.tsx  # 3 KPIs del día (citas, ingresos, sin asignar)
 │   │   │   ├── dashboard/             # módulo dashboard modularizado
 │   │   │   ├── finances/              # módulo finanzas modularizado
-│   │   │   └── inventory/             # módulo inventario modularizado
+│   │   │   ├── inventory/             # módulo inventario modularizado
+│   │   │   └── more/                  # subpantallas del grid "Más" (rediseño ago-2026)
+│   │   │       ├── MiNegocioScreen.tsx
+│   │   │       ├── FinanzasMenuScreen.tsx
+│   │   │       ├── MarketingRedesScreen.tsx
+│   │   │       ├── AyudaScreen.tsx
+│   │   │       └── CuentaScreen.tsx
 │   │   ├── screens/settings/
-│   │   │   └── constants.ts           # 19 monedas LATAM para CurrencyPickerModal
+│   │   │   ├── constants.ts           # 19 monedas LATAM para CurrencyPickerModal
+│   │   │   └── components/
+│   │   │       ├── CurrencyPickerModal.tsx
+│   │   │       └── TerminologyEditModal.tsx  # edita terminology.staff/staffSingular
 │   │   ├── navigation/
 │   │   │   ├── RootStackNavigator.tsx  # AuthGate → Onboarding o Main
 │   │   │   ├── MainTabNavigator.tsx    # 4 tabs + badge en "Más"
@@ -166,10 +175,13 @@ geemastudio/
 │   │   │   ├── Button.tsx
 │   │   │   ├── Card.tsx
 │   │   │   ├── Spacer.tsx
-│   │   │   └── HeaderTitle.tsx
+│   │   │   ├── HeaderTitle.tsx
+│   │   │   ├── MenuRow.tsx            # fila reutilizable (icon, label, badge) — subpantallas Más
+│   │   │   └── CategoryCard.tsx       # card de grid (icon, label, badge) — MoreHomeScreen
 │   │   ├── lib/
 │   │   │   ├── supabase.ts
-│   │   │   └── query-client.ts
+│   │   │   ├── query-client.ts
+│   │   │   └── employeeAvatar.ts      # subirAvatarEmpleadoDefault, borrarAvatarSiEsStorage
 │   │   ├── constants/
 │   │   │   └── theme.ts               # Colors, Spacing, Typography, BorderRadius,
 │   │   │                              # Shadows, createTheme(config, isDark)
@@ -319,7 +331,7 @@ const tz = 'America/Lima' // hardcodeado en lugar de config.locale.timezone
 
 - [ ] `fmtSoles()` → `formatCurrency(amount, config)`
 - [ ] `"S/"` → `config.locale.currency.symbol`
-- [ ] `"chicas"` / `"Chicas"` → `config.terminology.staff`
+- [ ] `"chicas"` / `"Chicas"` → `config.terminology.staff` (singular: `config.terminology.staffSingular`; editable en Ajustes → Datos del negocio)
 - [ ] `"ZM Lash"` → `config.businessName`
 - [ ] `"#7B2D8E"` → `config.theme.primaryColor`
 - [ ] `"es-PE"` / locale fijo → `config.locale.language`
@@ -409,11 +421,14 @@ const { data: payments } = await supabase
 ### 5.6 Migraciones de BD — restriccion WSL
 
 ```
-Puerto 5432 BLOQUEADO en WSL → yarn db:push NO funciona
+Puerto Postgres (5432 / pooler) BLOQUEADO en WSL/sandbox → yarn db:push y
+`supabase db query --linked` (conexion directa) NO funcionan; fallan por timeout.
 
 Usar SIEMPRE:
-  1. Supabase Dashboard → SQL Editor (proyecto xidjomlxpuosupymcsaj)
-  2. O scripts en scripts/db/ ejecutados desde el Dashboard
+  1. Supabase Dashboard → SQL Editor (proyecto udelxwwnyivknslueerr), o
+  2. Management API por HTTPS: POST https://api.supabase.com/v1/projects/{ref}/database/query
+     con {"query": "..."} y el token de ~/.supabase/access-token (ver docs/SUPABASE.md §5), o
+  3. Scripts en scripts/db/ ejecutados desde el Dashboard
 
 Drizzle solo para:
   - Definir schema como fuente de verdad (types)
@@ -574,13 +589,16 @@ export interface TenantConfig {
 
 ---
 
-## 8. Base de datos (Supabase xidjomlxpuosupymcsaj)
+## 8. Base de datos (Supabase `udelxwwnyivknslueerr` — ver `docs/SUPABASE.md`)
+
+> Ref legacy `xidjomlxpuosupymcsaj` **no usar** — proyecto real es `udelxwwnyivknslueerr` (ZM Lash = tenant #1 dentro de GeemaStudio).
 
 ### Tablas
 
 ```sql
 profiles           -- id = auth.users.id, role (dev|owner|staff), employee_id
-employees          -- id, name, email, color(hex), commission_percentage, is_active, notes
+employees          -- id, name, email, color(hex), commission_percentage, is_active, notes,
+                   --   avatar_url (ambos dialectos); payment_mode/salary_amount (solo dialecto 'geema')
 service_categories -- id, name, color(hex), icon, order
 services           -- id, name, category_id, price, duration, is_active
 clients            -- id, name, phone, email, notes, created_at
@@ -605,6 +623,17 @@ promotions       -- id, title, description, badge, accent_color, promo_price, is
 promotion_items  -- id, promo_id, item_type(service|pack), item_id, discounted_price
 packs            -- id, name, description, price, service_ids[], is_active
 ```
+
+### Storage buckets
+
+```
+employee-avatars   -- publico; path {employeeId}/{timestamp}.{ext}; ver lib/employeeAvatar.ts
+payment-screenshots, pre-service-photos, promo-images, waba-images, web-assets, service-references, waba-audio
+```
+
+### Dialecto ZM vs Geema (`catalogAdapter.ts` / `employeesAdapter.ts`)
+
+Mientras dura la migracion S7, ciertas tablas (`packs`, `promotions`, `employees`) se sondean una vez por sesion (`detectCatalogDialect()`) para saber si el schema es el legacy de ZM (`'zm'`) o el nativo de Geema (`'geema'`). Columnas que **solo** existen en tenants Geema-nativos (no en ZM real) deben leerse/escribirse condicionadas por `dialect === 'geema'` en el adapter — ver `toEmployeeWritePayload` / `rowToEmployee`. `avatar_url` dejo de ser Geema-only: se agrego a la tabla `employees` real de ZM (30-ago-2026) y ahora se lee/escribe igual en ambos dialectos; `payment_mode`/`salary_amount` siguen siendo solo-Geema.
 
 ### RLS
 
@@ -663,18 +692,29 @@ Forzar en dev: `EXPO_PUBLIC_FORCE_ONBOARDING=true`
 
 ### 9.3 Navegacion (MoreStackParamList — rutas exactas del repo)
 
+`MoreHomeScreen` ya no es una lista plana: es un `ProfileCard` + grid de `CategoryCard`s por categoria, cada una empujando una subpantalla al mismo stack (rediseño IA, 30-ago-2026).
+
 ```typescript
 export type MoreStackParamList = {
   MoreHome: undefined
+  MiNegocio: undefined // grid admin: Horario, Datos del negocio (+ Logo), {staff}, Inventario
+  FinanzasMenu: undefined // grid admin: Finanzas + Validacion de Pagos (badge)
+  MarketingRedes: undefined // grid admin: WhatsApp (si features.whatsapp) + Redes Sociales
+  Ayuda: undefined // FAQ, soporte, version de la app — todos los roles
+  Cuenta: undefined // Apariencia (dark/light) + Cerrar sesion — todos los roles
   ValidacionPagos: undefined
   AsignarProfesionales: undefined
   Finanzas: undefined
   Personal: undefined
-  Clients: undefined
   Inventario: undefined
-  Configuracion: undefined
+  Configuracion: undefined // Datos del negocio: incluye Logo del negocio + terminologia del staff
+  HorariosTrabajo: undefined
+  LogoNegocio: undefined
   Perfil: undefined
 }
+// Grid admin (MoreHomeScreen): Mi negocio, Finanzas (badge paymentValidationCount),
+// "Asignar {staff}" (badge unassignedCount, navega directo, sin subpantalla intermedia),
+// Marketing y Redes, Ayuda, Cuenta. No-admin: "Mi turno" en vez de las categorias admin.
 // Tab Mas → badge = usePendingBadgeCount().tabBadgeCount
 ```
 
@@ -870,7 +910,7 @@ yarn db:seed         # seeds template
 11. Nombre de ruta "Chicas": usar "Personal" (ya corregido en el repo)
 12. Gradiente en fondos de pantalla completa: solo en CTAs e interactivos
 13. Crear archivos .md sin que se pida: no generar docs automaticamente
-14. Modificar udelxwwnyivknslueerr (Supabase ZM): solo lectura como referencia
+14. Modificar udelxwwnyivknslueerr (Supabase ZM, produccion real) sin confirmacion explicita del usuario — SI se modifica cuando el usuario lo confirma (es el proyecto real de GeemaStudio, no solo referencia)
 15. Llamar loadCatalog() mas de una vez por request en bot WABA
 16. Olvidar CORS headers en Edge Functions con acceso desde web
 17. result.cancelled (typo SDK menor a 48): usar result.canceled
@@ -885,8 +925,6 @@ yarn db:seed         # seeds template
 ```json
 {
   "mcpServers": {
-    "supabase-geemastudio": { "url": "...?project_ref=xidjomlxpuosupymcsaj" },
-    "supabase-zm": { "url": "...?project_ref=udelxwwnyivknslueerr" },
     "vercel": { "url": "https://mcp.vercel.com" },
     "github": { "image": "ghcr.io/github/github-mcp-server" }
   }
@@ -894,8 +932,9 @@ yarn db:seed         # seeds template
 ```
 
 Formato `mcpServers` objeto — el formato antiguo `tools` block esta obsoleto.
-Para BD de GeemaStudio: siempre usar supabase-geemastudio, nunca supabase-zm.
+
+**GeemaStudio no tiene un MCP Supabase dedicado**: el conector `mcp__claude_ai_SupabaseZMTech` (Claude Code) solo lista los proyectos `naturalforce-suite` y `ZMTech`/`llacowjutjfefboqgfnj` — **no** incluye `udelxwwnyivknslueerr`. Para operar sobre el proyecto real de GeemaStudio usar el **Supabase CLI local ya autenticado** (`supabase projects list` / `api-keys` / `db query`) y el Management API por HTTPS — ver `docs/SUPABASE.md` §5 y §5.6 arriba. Los refs `xidjomlxpuosupymcsaj` (Geema legacy, eliminado) y cualquier mención a `udelxwwnyivknslueerr` como "solo lectura" son historicos — el proyecto real y unico de GeemaStudio hoy es `udelxwwnyivknslueerr`.
 
 ---
 
-_Generado: marzo 2026. Actualizado: abril 2026 (v1.4.9). Para actualizar: re-ejecutar analisis del repo con Claude Code o claude.ai_
+_Generado: marzo 2026. Actualizado: 30-ago-2026 (rediseño Más + avatar_url en ZM prod). Para actualizar: re-ejecutar analisis del repo con Claude Code o claude.ai_
