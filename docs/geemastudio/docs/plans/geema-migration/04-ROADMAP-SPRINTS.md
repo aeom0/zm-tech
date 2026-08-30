@@ -14,6 +14,7 @@
 | **S3** | WABA runtime multi-tenant | Routing + thread `tenantId` en webhook ZM | S1, S2 |
 | **S4** | Crons + RPCs tenant-aware | 11 Edge Functions parametrizadas | S3 |
 | **S5** | Suite L3 — reglas externalizadas | `TenantWabaRules` + seed ZM | S3 |
+| **S5-B** | Branding tenant mobile | Logo Storage + `TenantLogo` + `createTheme` completo | S2 |
 | **S6** | Suite L4 + panel Geema | Presets vertical + `/panel/waba/*` port | S5 |
 | **S7+** | Go-live 2.º tenant | Onboarding → WABA propio + QA | S4, S6 |
 
@@ -56,6 +57,7 @@ Cerrar bloqueadores de schema que impiden dos negocios en la misma BD.
 - [x] Seed fila `waba_config` para `zm-lash-nails`: `waba_tenant_routing_enabled = false` (pre-requisito S3-8; una fila **por** `tenant_id`, nunca global)
 - [x] PK `wa_action_debounce` `(tenant_id, phone, kind)` + claim cross-tenant OK
 - [x] `tenant_waba_numbers` seed bot ZM (`1013353341861346` → `zm-lash-nails`)
+- [x] Auth Hook S1-5 aplicado prod 29-ago (ventana feriado)
 - [ ] Mensaje enviado a Vanessa con ventana acordada; Stephani y Karelis avisadas por Vanessa o Alberto
 - [ ] Re-login verificado en mobile para Vanessa + al menos 1 staff antes de cerrar sprint
 
@@ -83,10 +85,10 @@ Un solo modelo de aislamiento para apps Geema y ZM.
 | S2-7 | **CI:** job que falle si `sync-geema-migration-docs.sh diff` no está vacío | ZM o zm-tech | S |
 
 ### DoD
-- [ ] `yarn db:push` / Drizzle no diverge de prod
-- [ ] Profile ZM staff con `tenant_id` explícito
-- [ ] Documento ADR `05-ADR-modelo-tenant.md` (opcional) en esta carpeta
-- [ ] Workflow CI S2-7 en verde (obligatorio antes de cerrar S2 — no dejar solo disciplina manual)
+- [x] `yarn db:push` / Drizzle alineado (`tenant_settings`, `profiles.tenantId`)
+- [x] Profile ZM staff con `tenant_id` explícito
+- [x] ADR [05-ADR-modelo-tenant.md](./05-ADR-modelo-tenant.md)
+- [x] PR #88 mergeado; CI S2-7 diff-check docs Geema
 
 ---
 
@@ -135,12 +137,12 @@ Webhook ZM opera con `tenantId` resuelto; Geema routing integrado.
 **Anti-patrón explícito:** `ON CONFLICT (config_key)` o `getConfigBoolean('waba_tenant_routing_enabled')` sin `tenantId` — prohibido después de S1-2.
 
 ### DoD
-- [ ] `yarn check:webhook` pasa
-- [ ] Smoke: teléfono QA en tenant `test-barberia` no lee catálogo ZM **con flag ON**
-- [ ] Smoke: flag OFF → comportamiento idéntico a pre-S3 (regresión cero en prod)
-- [ ] Rollback documentado en PR S3 y probado una vez en QA (toggle OFF mid-suite **en fila del tenant QA**, no global)
-- [ ] Verificado: `loadWabaConfig` y escritura del flag filtran `tenant_id` (grep sin lecturas globales de `waba_config` para routing)
-- [ ] Prod ZM sin regresión (suite `:all` + cleanup)
+- [x] `yarn check:webhook` pasa
+- [x] `yarn waba:validate:tenant-isolation` + cleanup QA
+- [x] PR #89 mergeado; flag `waba_tenant_routing_enabled=false` en prod ZM
+- [x] AsyncLocalStorage `runWithRequestTenantId()` (concurrencia)
+- [ ] Smoke flag ON en tenant QA dedicado (pre–2.º tenant real)
+- [ ] Prod ZM sin regresión 48h post-merge (`wa_error_log`)
 
 ---
 
@@ -203,6 +205,45 @@ Ningún cron cruza tenants.
 
 ---
 
+## Sprint 5-B — Branding tenant mobile (paralelo S5–S6)
+
+### Objetivo
+Logo por tenant + design tokens al nivel ZM, sin turquesa Lunaris en UI operativa del salón.
+
+Detalle: [06-BRANDING-LOGO-Y-DESIGN-TOKENS.md](./06-BRANDING-LOGO-Y-DESIGN-TOKENS.md)
+
+### Tareas
+
+| ID | Tarea | Repo | Esfuerzo |
+|----|-------|------|----------|
+| S5B-1 | Bucket `tenant-logos` + RLS Storage | ZM migrations | S |
+| S5B-2 | `useLogoUpload` path por `tenant_slug` | zm-tech | S |
+| S5B-3 | Componente `TenantLogo` | zm-tech | S |
+| S5B-4 | Logo en HeaderTitle, splash React, OTA overlay | zm-tech | M |
+| S5B-5 | `createTheme()` completo (derivados primary/accent) | zm-tech | M |
+| S5B-6 | `Gradients.brand` + audit hardcodes Lunaris | zm-tech | M |
+| S5B-7 | Paquete `@zmtech/design-tokens` (fase 2) | zm-tech | L |
+| S5B-8 | `notification_icon_url` + Storage monocromático | ZM migrations | S |
+| S5B-9 | Generador PNG blanco post-upload + preview panel | zm-tech (+ Edge) | M |
+| S5B-10 | `send-notification` tenant-aware (`color` + `image`) | ZM Edge | M |
+| S5B-11 | Canales Android Geema dinámicos por tenant | zm-tech | S |
+| S5B-12 | iOS Notification Service Extension (rich image) | zm-tech | L |
+
+Detalle push FCM: [06-BRANDING-LOGO-Y-DESIGN-TOKENS.md](./06-BRANDING-LOGO-Y-DESIGN-TOKENS.md) § Push FCM
+
+### DoD
+- [ ] Upload logo ZM en Geema OK (prod)
+- [ ] Agenda/servicios sin `#40E0D0` residual con tenant ZM
+- [ ] Push muestra logo tenant expandido + tinte `primary_color`
+- [ ] ZM app legacy sin cambio hasta convergencia apps
+
+### Hecho en zm-tech (29-ago, pre-S5B)
+- `fetchTenantSettings` por `tenant_slug` (bridge S2) — commit `63914c6`
+- EAS env Supabase ZM prod + APK preview SDK 56 en build
+- `LogoNegocioScreen` + login con `config.logo` (upload bloqueado hasta S5B-1)
+
+---
+
 ## Sprint 6 — Presets vertical + panel Geema (L4)
 
 ### Objetivo
@@ -254,7 +295,8 @@ Primer cliente pagando (o barbería piloto) distinto de ZM.
 | Tarea | Sprint sugerido |
 |-------|-----------------|
 | Audit 03 gaps menores (portafolio, feriados UI) | S5–S6 |
-| Expo 54 → 56 align mobile ZM/Geema | S7+ |
+| Branding logo + tokens (S5-B) | **S5–S6** |
+| Expo 54 → 56 align mobile ZM/Geema | **En curso** — preview build SDK 56 ago 2026 |
 | Fase 5 drill-down `template_analytics` | Backlog |
 | Rotar `CRON_SECRET` en Vault | S4 |
 | CI diff sync Plan 05 (`S2-7`) | **S2** (ticket obligatorio, no backlog difuso) |

@@ -80,4 +80,5 @@ Implementación sugerida (S2-7):
 |-------|--------|-------|
 | 2026-08-28 | Creación inicial | Análisis Cursor → Plan 05, carpetas ZM + espejo Geema |
 | 2026-08-28 | Hardening roadmap | S1 ventana/no-go, S3 feature flag, S4 Vault, S2-7 CI sync |
-| 2026-08-29 | S1-5 + S2 bridge | Auth Hook endurecido; tenant_settings + ADR 05; CI diff-check |
+| 2026-08-29 | S1-5 + S2 bridge + S3 WABA | Auth Hook; tenant_settings + ADR 05; PR #89 flag OFF; S5-B branding doc |
+| 2026-08-29 | S5-B push FCM bosquejo | § Push FCM en 06; tareas S5B-8…12; espejo zm-tech (commit pendiente post-APK SDK 56) |
