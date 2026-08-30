@@ -4,6 +4,7 @@ import { Alert } from 'react-native'
 import { supabase } from '@/lib/supabase'
 import type { Service, ServiceCategory } from '../types'
 import { parsePriceInput, priceToDecimalString } from '../types'
+import { detectCatalogDialect, isMissingColumnError } from '../lib/catalogAdapter'
 
 export interface ServicePayload {
   name: string
@@ -43,14 +44,41 @@ export function useServicesData() {
   } = useQuery<ServiceCategory[]>({
     queryKey: ['service_categories'],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const dialect = await detectCatalogDialect()
+      if (dialect === 'zm') {
+        const { data, error } = await supabase
+          .from('service_categories')
+          .select('id, name, order')
+          .order('order', { ascending: true })
+        if (error) {
+          throw new Error(error.message)
+        }
+        return ((data ?? []) as Array<{ id: string; name: string; order: number }>).map((row) => ({
+          ...row,
+          color: null,
+          icon: null,
+        }))
+      }
+      const primary = await supabase
         .from('service_categories')
         .select('id, name, color, icon, order')
         .order('order', { ascending: true })
-      if (error) {
-        throw new Error(error.message)
+      if (!primary.error) {
+        return (primary.data ?? []) as ServiceCategory[]
       }
-      return (data ?? []) as ServiceCategory[]
+      if (!isMissingColumnError(primary.error)) {
+        throw new Error(primary.error.message)
+      }
+      const fallback = await supabase
+        .from('service_categories')
+        .select('id, name, order')
+        .order('order', { ascending: true })
+      if (fallback.error) {
+        throw new Error(fallback.error.message)
+      }
+      return ((fallback.data ?? []) as Array<{ id: string; name: string; order: number }>).map(
+        (row) => ({ ...row, color: null, icon: null })
+      )
     },
   })
 

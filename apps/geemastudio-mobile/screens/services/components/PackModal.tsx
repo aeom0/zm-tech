@@ -91,6 +91,19 @@ export function PackModal({
     })
   }
 
+  const inferCategoryId = (): string | null => {
+    for (const serviceId of selected) {
+      const svc = services.find((s) => s.id === serviceId)
+      if (svc?.category_id) {
+        return svc.category_id
+      }
+    }
+    if (editing?.category_id && categories.some((c) => c.id === editing.category_id)) {
+      return editing.category_id
+    }
+    return null
+  }
+
   const handleSubmit = () => {
     if (!name.trim() || !price.trim()) {
       Alert.alert('Faltan datos', 'Nombre y precio son obligatorios.')
@@ -106,6 +119,7 @@ export function PackModal({
       price,
       service_ids: Array.from(selected),
       is_active: isActive,
+      category_id: inferCategoryId(),
     }
     onSave(payload)
   }
