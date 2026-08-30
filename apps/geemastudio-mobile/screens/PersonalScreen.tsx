@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { Feather } from '@expo/vector-icons'
 import * as Haptics from 'expo-haptics'
 import * as ImagePicker from 'expo-image-picker'
@@ -27,21 +27,16 @@ import { borrarAvatarSiEsStorage, subirAvatarEmpleadoDefault } from '@/lib/emplo
 import { Colors, Spacing, BorderRadius } from '@/constants/theme'
 import type { PaymentMode } from '@geemastudio/shared-schema'
 import { EmployeePaymentBadge } from '@/screens/personal/components/EmployeePaymentBadge'
-
-interface Employee {
-  id: string
-  name: string
-  email: string | null
-  phone: string | null
-  color: string
-  role: string
-  commission_percentage: number | null
-  payment_mode: PaymentMode
-  salary_amount: string | null
-  notes: string | null
-  is_active: boolean
-  avatar_url?: string | null
-}
+import {
+  useEmployeesDialect,
+  useEmployeesQuery,
+} from '@/screens/personal/hooks/useEmployeesData'
+import {
+  insertEmployee,
+  updateEmployee,
+  type EmployeeRow,
+  type EmployeeWriteInput,
+} from '@/screens/personal/lib/employeesAdapter'
 
 export default function PersonalScreen() {
   const headerHeight = useHeaderHeight()
@@ -50,6 +45,8 @@ export default function PersonalScreen() {
   const { isAdmin } = useAuth()
   const { config } = useTenant()
   const currencySymbol = config.locale.currency.symbol
+  const { data: dialect } = useEmployeesDialect()
+  const showGeemaExtras = dialect === 'geema'
 
   const presetColors = [
     config.theme.primaryColor,
@@ -62,7 +59,7 @@ export default function PersonalScreen() {
   const staffSingular = config.terminology.staffSingular || 'Profesional'
 
   const [modalVisible, setModalVisible] = useState(false)
-  const [editing, setEditing] = useState<Employee | null>(null)
+  const [editing, setEditing] = useState<EmployeeRow | null>(null)
   const [isCreating, setIsCreating] = useState(false)
   const [pendingAvatarUri, setPendingAvatarUri] = useState<string | null>(null)
   const [removeAvatar, setRemoveAvatar] = useState(false)
@@ -79,37 +76,11 @@ export default function PersonalScreen() {
     is_active: true,
   })
 
-  const { data: employees = [], isLoading } = useQuery<Employee[]>({
-    queryKey: ['employees'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('employees')
-        .select('*')
-        .order('created_at', { ascending: true })
-
-      if (error) {
-        throw new Error(error.message)
-      }
-
-      return (data ?? []) as Employee[]
-    },
-  })
+  const { data: employees = [], isLoading } = useEmployeesQuery()
 
   const createMutation = useMutation({
-    mutationFn: async (data: {
-      name: string
-      email: string | null
-      phone: string | null
-      color: string
-      commission_percentage: number | null
-      payment_mode: PaymentMode
-      salary_amount: number | null
-      notes: string | null
-      is_active: boolean
-      avatar_url: string | null
-    }) => {
-      const { error } = await supabase.from('employees').insert(data)
-      if (error) throw new Error(error.message)
+    mutationFn: async (data: EmployeeWriteInput) => {
+      await insertEmployee(data)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['employees'] })
@@ -121,7 +92,7 @@ export default function PersonalScreen() {
   })
 
   const deleteMutation = useMutation({
-    mutationFn: async (emp: Employee) => {
+    mutationFn: async (emp: EmployeeRow) => {
       if (emp.avatar_url?.trim()) {
         try {
           await borrarAvatarSiEsStorage(supabase, emp.avatar_url)
@@ -147,24 +118,9 @@ export default function PersonalScreen() {
       data,
     }: {
       id: string
-      data: {
-        name: string
-        email: string | null
-        phone: string | null
-        color: string
-        commission_percentage: number | null
-        payment_mode: PaymentMode
-        salary_amount: number | null
-        notes: string | null
-        is_active: boolean
-        avatar_url: string | null
-      }
+      data: EmployeeWriteInput
     }) => {
-      const { error } = await supabase.from('employees').update(data).eq('id', id)
-
-      if (error) {
-        throw new Error(error.message)
-      }
+      await updateEmployee(id, data)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['employees'] })
@@ -175,7 +131,7 @@ export default function PersonalScreen() {
     onError: (e: Error) => Alert.alert('Error', e.message || 'No se pudo guardar'),
   })
 
-  const openEdit = (emp: Employee) => {
+  const openEdit = (emp: EmployeeRow) => {
     setEditing(emp)
     setIsCreating(false)
     setPendingAvatarUri(null)
@@ -295,7 +251,8 @@ export default function PersonalScreen() {
     }
 
     let commissionPercentage: number | null = null
-    if (form.paymentMode !== 'salary') {
+    const paymentMode = showGeemaExtras ? form.paymentMode : 'commission'
+    if (paymentMode !== 'salary') {
       const commission = parseInt(form.commission_percentage, 10)
       if (Number.isNaN(commission) || commission < 0 || commission > 100) {
         Alert.alert('Error', 'La comisión debe ser un número entre 0 y 100')
@@ -305,7 +262,7 @@ export default function PersonalScreen() {
     }
 
     let salaryAmount: number | null = null
-    if (form.paymentMode !== 'commission') {
+    if (showGeemaExtras && paymentMode !== 'commission') {
       const raw = form.salary_amount.trim().replace(',', '.')
       const parsed = raw ? parseFloat(raw) : NaN
       if (Number.isNaN(parsed) || parsed < 0) {
@@ -315,21 +272,22 @@ export default function PersonalScreen() {
       salaryAmount = parsed
     }
 
-    const sharedData = {
+    const sharedData: EmployeeWriteInput = {
       name,
       email: form.email.trim() || null,
       phone: form.phone.trim() || null,
       color: form.color.trim() || config.theme.primaryColor,
       commission_percentage: commissionPercentage,
-      payment_mode: form.paymentMode,
-      salary_amount: form.paymentMode !== 'commission' ? salaryAmount : null,
+      payment_mode: paymentMode,
+      salary_amount: paymentMode !== 'commission' ? salaryAmount : null,
       notes: form.notes.trim() || null,
       is_active: form.is_active,
+      avatar_url: null,
     }
 
     if (isCreating) {
       let avatar_url: string | null = null
-      if (pendingAvatarUri) {
+      if (showGeemaExtras && pendingAvatarUri) {
         try {
           const tempId = `temp_${Date.now()}`
           const { publicUrl } = await subirAvatarEmpleadoDefault(
@@ -353,14 +311,14 @@ export default function PersonalScreen() {
     if (!editing) return
 
     let avatar_url: string | null = editing.avatar_url?.trim() || null
-    if (removeAvatar) {
+    if (showGeemaExtras && removeAvatar) {
       try {
         await borrarAvatarSiEsStorage(supabase, editing.avatar_url)
       } catch {
         /* ignorar fallo de borrado en Storage */
       }
       avatar_url = null
-    } else if (pendingAvatarUri) {
+    } else if (showGeemaExtras && pendingAvatarUri) {
       try {
         await borrarAvatarSiEsStorage(supabase, editing.avatar_url)
         const { publicUrl } = await subirAvatarEmpleadoDefault(
@@ -405,8 +363,9 @@ export default function PersonalScreen() {
         showsVerticalScrollIndicator={false}
       >
         <ThemedText style={[styles.hint, { color: theme.textSecondary }]}>
-          Toca a una {staffSingular.toLowerCase()} para editar datos, modo de pago y foto para la
-          agenda.
+          {showGeemaExtras
+            ? `Toca a una ${staffSingular.toLowerCase()} para editar datos, modo de pago y foto para la agenda.`
+            : `Toca a una ${staffSingular.toLowerCase()} para editar. Color y Activa se ven como columna en la agenda.`}
         </ThemedText>
 
         {isLoading ? (
@@ -502,77 +461,81 @@ export default function PersonalScreen() {
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{ paddingBottom: Spacing['3xl'] }}
             >
-              <ThemedText style={[styles.fieldLabel, { color: theme.textSecondary }]}>
-                Foto (agenda y lista)
-              </ThemedText>
-              <View style={styles.avatarEditorRow}>
-                <View
-                  style={[
-                    styles.avatarPreviewRing,
-                    {
-                      borderColor: editing?.color ?? theme.primary,
-                      backgroundColor: theme.backgroundSecondary,
-                    },
-                  ]}
-                >
-                  {previewAvatarUri ? (
-                    <Image
-                      source={{ uri: previewAvatarUri }}
-                      style={styles.avatarPreviewImg}
-                      contentFit="cover"
-                    />
-                  ) : (
-                    <Feather name="user" size={36} color={theme.textMuted} />
-                  )}
-                </View>
-                <View style={styles.avatarActions}>
-                  <Pressable
-                    style={[styles.avatarBtn, { borderColor: theme.border }]}
-                    onPress={elegirFotoGaleria}
-                  >
-                    <Feather name="image" size={18} color={theme.primary} />
-                    <ThemedText style={[styles.avatarBtnText, { color: theme.primary }]}>
-                      Galería
-                    </ThemedText>
-                  </Pressable>
-                  <Pressable
-                    style={[styles.avatarBtn, { borderColor: theme.border }]}
-                    onPress={tomarFotoCamara}
-                  >
-                    <Feather name="camera" size={18} color={theme.primary} />
-                    <ThemedText style={[styles.avatarBtnText, { color: theme.primary }]}>
-                      Cámara
-                    </ThemedText>
-                  </Pressable>
-                  {(editing?.avatar_url?.trim() || pendingAvatarUri) && !removeAvatar ? (
-                    <Pressable
-                      style={[styles.avatarBtn, { borderColor: theme.error }]}
-                      onPress={() => {
-                        setRemoveAvatar(true)
-                        setPendingAvatarUri(null)
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-                      }}
+              {showGeemaExtras ? (
+                <>
+                  <ThemedText style={[styles.fieldLabel, { color: theme.textSecondary }]}>
+                    Foto (agenda y lista)
+                  </ThemedText>
+                  <View style={styles.avatarEditorRow}>
+                    <View
+                      style={[
+                        styles.avatarPreviewRing,
+                        {
+                          borderColor: editing?.color ?? theme.primary,
+                          backgroundColor: theme.backgroundSecondary,
+                        },
+                      ]}
                     >
-                      <Feather name="trash-2" size={18} color={theme.error} />
-                      <ThemedText style={[styles.avatarBtnText, { color: theme.error }]}>
-                        Quitar foto
-                      </ThemedText>
-                    </Pressable>
-                  ) : null}
-                  {removeAvatar ? (
-                    <Pressable
-                      onPress={() => {
-                        setRemoveAvatar(false)
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-                      }}
-                    >
-                      <ThemedText style={{ color: theme.link, fontSize: 13 }}>
-                        Deshacer quitar foto
-                      </ThemedText>
-                    </Pressable>
-                  ) : null}
-                </View>
-              </View>
+                      {previewAvatarUri ? (
+                        <Image
+                          source={{ uri: previewAvatarUri }}
+                          style={styles.avatarPreviewImg}
+                          contentFit="cover"
+                        />
+                      ) : (
+                        <Feather name="user" size={36} color={theme.textMuted} />
+                      )}
+                    </View>
+                    <View style={styles.avatarActions}>
+                      <Pressable
+                        style={[styles.avatarBtn, { borderColor: theme.border }]}
+                        onPress={elegirFotoGaleria}
+                      >
+                        <Feather name="image" size={18} color={theme.primary} />
+                        <ThemedText style={[styles.avatarBtnText, { color: theme.primary }]}>
+                          Galería
+                        </ThemedText>
+                      </Pressable>
+                      <Pressable
+                        style={[styles.avatarBtn, { borderColor: theme.border }]}
+                        onPress={tomarFotoCamara}
+                      >
+                        <Feather name="camera" size={18} color={theme.primary} />
+                        <ThemedText style={[styles.avatarBtnText, { color: theme.primary }]}>
+                          Cámara
+                        </ThemedText>
+                      </Pressable>
+                      {(editing?.avatar_url?.trim() || pendingAvatarUri) && !removeAvatar ? (
+                        <Pressable
+                          style={[styles.avatarBtn, { borderColor: theme.error }]}
+                          onPress={() => {
+                            setRemoveAvatar(true)
+                            setPendingAvatarUri(null)
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+                          }}
+                        >
+                          <Feather name="trash-2" size={18} color={theme.error} />
+                          <ThemedText style={[styles.avatarBtnText, { color: theme.error }]}>
+                            Quitar foto
+                          </ThemedText>
+                        </Pressable>
+                      ) : null}
+                      {removeAvatar ? (
+                        <Pressable
+                          onPress={() => {
+                            setRemoveAvatar(false)
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+                          }}
+                        >
+                          <ThemedText style={{ color: theme.link, fontSize: 13 }}>
+                            Deshacer quitar foto
+                          </ThemedText>
+                        </Pressable>
+                      ) : null}
+                    </View>
+                  </View>
+                </>
+              ) : null}
 
               <ThemedText style={[styles.fieldLabel, { color: theme.textSecondary }]}>
                 Nombre
@@ -631,48 +594,52 @@ export default function PersonalScreen() {
                 keyboardType="phone-pad"
               />
 
-              <ThemedText style={[styles.fieldLabel, { color: theme.textSecondary }]}>
-                Modo de pago
-              </ThemedText>
-              <View style={styles.paymentModeRow}>
-                {(
-                  [
-                    { id: 'commission' as PaymentMode, label: 'Comisión' },
-                    { id: 'salary' as PaymentMode, label: 'Salario fijo' },
-                    { id: 'mixed' as PaymentMode, label: 'Mixto' },
-                  ] as const
-                ).map((opt) => {
-                  const selected = form.paymentMode === opt.id
-                  return (
-                    <Pressable
-                      key={opt.id}
-                      style={[
-                        styles.paymentModeChip,
-                        {
-                          borderColor: selected ? theme.primary : theme.border,
-                          backgroundColor: selected
-                            ? theme.primary + '15'
-                            : theme.backgroundSecondary,
-                        },
-                      ]}
-                      onPress={() => setForm((f) => ({ ...f, paymentMode: opt.id }))}
-                    >
-                      <ThemedText
-                        style={[
-                          styles.paymentModeChipText,
-                          {
-                            color: selected ? theme.primary : theme.text,
-                          },
-                        ]}
-                      >
-                        {opt.label}
-                      </ThemedText>
-                    </Pressable>
-                  )
-                })}
-              </View>
+              {showGeemaExtras ? (
+                <>
+                  <ThemedText style={[styles.fieldLabel, { color: theme.textSecondary }]}>
+                    Modo de pago
+                  </ThemedText>
+                  <View style={styles.paymentModeRow}>
+                    {(
+                      [
+                        { id: 'commission' as PaymentMode, label: 'Comisión' },
+                        { id: 'salary' as PaymentMode, label: 'Salario fijo' },
+                        { id: 'mixed' as PaymentMode, label: 'Mixto' },
+                      ] as const
+                    ).map((opt) => {
+                      const selected = form.paymentMode === opt.id
+                      return (
+                        <Pressable
+                          key={opt.id}
+                          style={[
+                            styles.paymentModeChip,
+                            {
+                              borderColor: selected ? theme.primary : theme.border,
+                              backgroundColor: selected
+                                ? theme.primary + '15'
+                                : theme.backgroundSecondary,
+                            },
+                          ]}
+                          onPress={() => setForm((f) => ({ ...f, paymentMode: opt.id }))}
+                        >
+                          <ThemedText
+                            style={[
+                              styles.paymentModeChipText,
+                              {
+                                color: selected ? theme.primary : theme.text,
+                              },
+                            ]}
+                          >
+                            {opt.label}
+                          </ThemedText>
+                        </Pressable>
+                      )
+                    })}
+                  </View>
+                </>
+              ) : null}
 
-              {form.paymentMode !== 'salary' && (
+              {(showGeemaExtras ? form.paymentMode !== 'salary' : true) && (
                 <>
                   <ThemedText style={[styles.fieldLabel, { color: theme.textSecondary }]}>
                     Comisión (%)
@@ -695,7 +662,7 @@ export default function PersonalScreen() {
                 </>
               )}
 
-              {form.paymentMode !== 'commission' && (
+              {showGeemaExtras && form.paymentMode !== 'commission' && (
                 <>
                   <ThemedText style={[styles.fieldLabel, { color: theme.textSecondary }]}>
                     {`Salario fijo (${currencySymbol})`}
