@@ -31,7 +31,8 @@ export const ZONAS_HORARIAS_SUGERIDAS: ReadonlyArray<{
   label: string
 }> = [
   { value: 'America/Caracas', label: 'Caracas (Venezuela)' },
-  { value: 'America/Bogota', label: 'Bogotá, Lima, Quito (COL/PE/EC)' },
+  { value: 'America/Lima', label: 'Lima (Perú)' },
+  { value: 'America/Bogota', label: 'Bogotá, Quito (COL/EC)' },
   { value: 'America/La_Paz', label: 'La Paz' },
   { value: 'America/Santiago', label: 'Santiago' },
   { value: 'America/Argentina/Buenos_Aires', label: 'Buenos Aires' },

@@ -15,6 +15,7 @@ interface DashboardUpcomingCardProps {
   upcomingAppointments: DashboardAppointment[]
   visibleLimit: number
   locale: string
+  timeZone: string
   currencySymbol: string
   isTablet: boolean
   theme: {
@@ -38,6 +39,7 @@ export function DashboardUpcomingCard({
   upcomingAppointments,
   visibleLimit,
   locale,
+  timeZone,
   currencySymbol,
   isTablet,
   theme,
@@ -65,7 +67,7 @@ export function DashboardUpcomingCard({
         <View>
           <ThemedText style={styles.cardTitle}>Próximas citas</ThemedText>
           <ThemedText style={[styles.cardSubtitle, { color: theme.textSecondary }]}>
-            {formatDashboardDateLong(locale)}
+            {formatDashboardDateLong(locale, timeZone)}
           </ThemedText>
         </View>
         {upcomingAppointments.length > 0 && (
@@ -99,6 +101,7 @@ export function DashboardUpcomingCard({
             theme={theme}
             currencySymbol={currencySymbol}
             locale={locale}
+            timeZone={timeZone}
             isTablet={isTablet}
             getEmployeeColor={getEmployeeColor}
             getEmployeeName={getEmployeeName}

@@ -14,6 +14,7 @@ import {
   esMismoDiaCalendarioEnZona,
   esHoyEnZonaIANA,
   formatoHoraInstanteEnZona,
+  instanteCitaDesdeTexto,
   type TenantConfig,
   type TimeFormatPreference,
 } from '@zmtech/tenant-config'
@@ -84,13 +85,17 @@ export function OwnerWeekGrid({
     return weekDays.map((day) =>
       appointments
         .filter((apt) => {
-          const aptDate = new Date(apt.date)
+          const aptDate = instanteCitaDesdeTexto(apt.date, timeZone)
           return (
             esMismoDiaCalendarioEnZona(aptDate, day, timeZone) &&
             matchesStatusFilter(apt.status, statusFilter)
           )
         })
-        .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+        .sort(
+          (a, b) =>
+            instanteCitaDesdeTexto(a.date, timeZone).getTime() -
+            instanteCitaDesdeTexto(b.date, timeZone).getTime()
+        )
     )
   }, [appointments, weekDays, timeZone, statusFilter])
 
@@ -233,7 +238,7 @@ export function OwnerWeekGrid({
                   const empColor = employeeColorMap[apt.employee_id] ?? theme.primary
                   const svcName = getServiceName(services, apt.service_id)
                   const timeLabel = formatoHoraInstanteEnZona(
-                    new Date(apt.date),
+                    instanteCitaDesdeTexto(apt.date, timeZone),
                     timeZone,
                     language,
                     timeFormat

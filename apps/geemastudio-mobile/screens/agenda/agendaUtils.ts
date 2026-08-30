@@ -3,6 +3,7 @@ import {
   esMismoDiaCalendarioEnZona,
   esHoyEnZonaIANA,
   horaCalendarioEnZona,
+  instanteCitaDesdeTexto,
 } from '@zmtech/tenant-config'
 
 import type { AgendaAppointment, AgendaEmployee, AgendaService, AgendaStatusFilter } from './types'
@@ -24,7 +25,7 @@ export function getAppointmentsForSlot(
   timeZone: string
 ): AgendaAppointment[] {
   return appointments.filter((apt) => {
-    const aptDate = new Date(apt.date)
+    const aptDate = instanteCitaDesdeTexto(apt.date, timeZone)
     const sameDay = esMismoDiaCalendarioEnZona(aptDate, date, timeZone)
     const sameHour = horaCalendarioEnZona(aptDate, timeZone) === hour
     const statusMatches = matchesStatusFilter(apt.status, statusFilter)
@@ -41,7 +42,7 @@ export function getAptsForEmpSlot(
   timeZone: string
 ): AgendaAppointment[] {
   return appointments.filter((apt) => {
-    const aptDate = new Date(apt.date)
+    const aptDate = instanteCitaDesdeTexto(apt.date, timeZone)
     const sameDay = esMismoDiaCalendarioEnZona(aptDate, date, timeZone)
     const sameHour = horaCalendarioEnZona(aptDate, timeZone) === hour
     const statusMatches = matchesStatusFilter(apt.status, statusFilter)
@@ -73,7 +74,7 @@ export function filterAppointmentsForOwnerDay(
   timeZone: string
 ): AgendaAppointment[] {
   return appointments.filter((apt) => {
-    const aptDate = new Date(apt.date)
+    const aptDate = instanteCitaDesdeTexto(apt.date, timeZone)
     if (!esMismoDiaCalendarioEnZona(aptDate, date, timeZone)) return false
     if (employeeIds.length > 0 && !employeeIds.includes(apt.employee_id)) {
       return false
@@ -83,8 +84,15 @@ export function filterAppointmentsForOwnerDay(
   })
 }
 
-export function sortAppointmentsByStart(appointments: AgendaAppointment[]): AgendaAppointment[] {
-  return [...appointments].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+export function sortAppointmentsByStart(
+  appointments: AgendaAppointment[],
+  timeZone: string
+): AgendaAppointment[] {
+  return [...appointments].sort(
+    (a, b) =>
+      instanteCitaDesdeTexto(a.date, timeZone).getTime() -
+      instanteCitaDesdeTexto(b.date, timeZone).getTime()
+  )
 }
 
 /**

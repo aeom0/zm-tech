@@ -1,9 +1,11 @@
-/** Parseo robusto de fechas ISO / Postgres para citas */
-export function parseAppointmentDate(dateString: string): Date {
-  if (!dateString) return new Date()
-  const s = String(dateString).trim()
-  const hasTimezone = s.endsWith('Z') || /[+-]\d{2}:?\d{2}$/.test(s)
-  return new Date(hasTimezone ? s : `${s.replace(' ', 'T')}Z`)
+import {
+  instanteCitaDesdeTexto,
+  zonaIANASegura,
+} from '@zmtech/tenant-config'
+
+/** Parseo de `appointments.date` como hora de pared del tenant (ignora Z falso de PostgREST). */
+export function parseAppointmentDate(dateString: string, timeZone: string): Date {
+  return instanteCitaDesdeTexto(dateString, timeZone)
 }
 
 export function getGreeting(): string {
@@ -13,17 +15,24 @@ export function getGreeting(): string {
   return 'Buenas noches'
 }
 
-export function formatDashboardTime(dateString: string, locale: string): string {
-  return parseAppointmentDate(dateString).toLocaleTimeString(locale, {
+export function formatDashboardTime(
+  dateString: string,
+  locale: string,
+  timeZone: string
+): string {
+  const tz = zonaIANASegura(timeZone)
+  return instanteCitaDesdeTexto(dateString, tz).toLocaleTimeString(locale, {
     hour: '2-digit',
     minute: '2-digit',
+    timeZone: tz,
   })
 }
 
-export function formatDashboardDateLong(locale: string): string {
+export function formatDashboardDateLong(locale: string, timeZone?: string): string {
   return new Date().toLocaleDateString(locale, {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
+    ...(timeZone ? { timeZone: zonaIANASegura(timeZone) } : {}),
   })
 }

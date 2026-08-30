@@ -13,13 +13,14 @@ import { useTenant } from '@/contexts/TenantContext'
 import { useAuth } from '@/contexts/AuthContext'
 import { Spacing } from '@/constants/theme'
 import {
-  defaultTenantConfig,
   esCeldaAgendaEnHorarioLaboral,
   formatoFechaLargaEnZona,
+  formatAppointmentWallclock,
   horaCalendarioEnZona,
   horasVisiblesParaAgenda,
   inicioDiaDelInstanteEnZona,
   inicioDiaHoyEnZonaIANA,
+  instanteCitaDesdeTexto,
   instanteCitaEnZona,
   normalizarHorarioSemanal,
   sumarDiasEnZonaIANA,
@@ -72,9 +73,7 @@ export default function AgendaScreen() {
 
   const tenantTz = useMemo(() => zonaIANASegura(config.locale.timezone), [config.locale.timezone])
 
-  const [selectedDate, setSelectedDate] = useState<Date>(() =>
-    inicioDiaHoyEnZonaIANA(zonaIANASegura(defaultTenantConfig.locale.timezone))
-  )
+  const [selectedDate, setSelectedDate] = useState<Date>(() => inicioDiaHoyEnZonaIANA(tenantTz))
   const [ownerViewMode, setOwnerViewMode] = useState<OwnerViewMode>('day')
   const [modalVisible, setModalVisible] = useState(false)
   const [detailModalVisible, setDetailModalVisible] = useState(false)
@@ -157,7 +156,7 @@ export default function AgendaScreen() {
   }, [])
 
   const { createMutation, deleteAppointmentMutation, updateAppointmentMutation } =
-    useAgendaMutations({ onCreateSuccess, onDeleteSuccess, onUpdateSuccess })
+    useAgendaMutations({ onCreateSuccess, onDeleteSuccess, onUpdateSuccess }, tenantTz)
 
   const route = useRoute<RouteProp<MainTabParamList, 'Agenda'>>()
   const navigation = useNavigation()
@@ -168,7 +167,7 @@ export default function AgendaScreen() {
       const apt = appointments.find((a) => a.id === appointmentIdParam)
       if (apt) {
         setAppointmentDetail(apt)
-        const aptInst = new Date(apt.date)
+        const aptInst = instanteCitaDesdeTexto(apt.date, tenantTz)
         setRescheduleDate(inicioDiaDelInstanteEnZona(aptInst, tenantTz))
         setRescheduleHour(horaCalendarioEnZona(aptInst, tenantTz))
         setDetailModalVisible(true)
@@ -236,7 +235,7 @@ export default function AgendaScreen() {
 
   const openAppointmentDetail = (apt: AgendaAppointment) => {
     setAppointmentDetail(apt)
-    const aptInst = new Date(apt.date)
+    const aptInst = instanteCitaDesdeTexto(apt.date, tenantTz)
     setRescheduleDate(inicioDiaDelInstanteEnZona(aptInst, tenantTz))
     setRescheduleHour(horaCalendarioEnZona(aptInst, tenantTz))
     setDetailModalVisible(true)
@@ -266,7 +265,7 @@ export default function AgendaScreen() {
     const newDate = instanteCitaEnZona(rescheduleDate, rescheduleHour, tenantTz)
     updateAppointmentMutation.mutate({
       id: appointmentDetail.id,
-      date: newDate.toISOString(),
+      date: formatAppointmentWallclock(newDate, tenantTz),
       employee_id: appointmentDetail.employee_id,
       duration: appointmentDetail.duration,
     })
@@ -296,7 +295,7 @@ export default function AgendaScreen() {
       client_document: formData.clientDocument.trim() || undefined,
       service_id: formData.serviceId,
       employee_id: formData.employeeId,
-      date: appointmentDate.toISOString(),
+      date: formatAppointmentWallclock(appointmentDate, tenantTz),
       duration: selectedService?.duration || 60,
       price: selectedService?.price || '0',
       status: 'scheduled',
@@ -312,6 +311,7 @@ export default function AgendaScreen() {
     employeeId: formData.employeeId,
     startDate: candidateStartDate,
     durationMinutes: selectedService?.duration || 60,
+    timeZone: tenantTz,
     enabled: modalVisible && !!formData.employeeId && !!formData.serviceId,
     staleTimeMs: 30_000,
   })
@@ -326,6 +326,7 @@ export default function AgendaScreen() {
     startDate: rescheduleStartDate,
     durationMinutes: appointmentDetail?.duration ?? 60,
     excludeAppointmentId: appointmentDetail?.id ?? null,
+    timeZone: tenantTz,
     enabled: detailModalVisible && !!appointmentDetail && !!rescheduleDate,
     staleTimeMs: 30_000,
   })

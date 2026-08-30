@@ -13,6 +13,12 @@ import { useHaptics } from '@/hooks/useHaptics'
 import { useResponsive } from '@/hooks/useResponsive'
 import { useTheme } from '@/hooks/useTheme'
 import type { MainTabParamList } from '@/navigation/MainTabNavigator'
+import {
+  formatAppointmentWallclock,
+  inicioDiaHoyEnZonaIANA,
+  sumarDiasEnZonaIANA,
+  zonaIANASegura,
+} from '@zmtech/tenant-config'
 
 import { DashboardAppointmentModal } from './dashboard/components/DashboardAppointmentModal'
 import { DashboardHeader } from './dashboard/components/DashboardHeader'
@@ -41,13 +47,16 @@ export default function DashboardScreen() {
   const { profile } = useAuth()
   const { config } = useTenant()
   const currencySymbol = config.locale.currency.symbol
+  const tenantTz = zonaIANASegura(config.locale.timezone)
 
-  const dayStart = new Date()
-  dayStart.setHours(0, 0, 0, 0)
-  const dayEnd = new Date(dayStart)
-  dayEnd.setHours(23, 59, 59, 999)
-  const startOfDay = dayStart.toISOString()
-  const endOfDay = dayEnd.toISOString()
+  const { startOfDay, endOfDay } = useMemo(() => {
+    const start = inicioDiaHoyEnZonaIANA(tenantTz)
+    const next = sumarDiasEnZonaIANA(start, 1, tenantTz)
+    return {
+      startOfDay: formatAppointmentWallclock(start, tenantTz),
+      endOfDay: formatAppointmentWallclock(new Date(next.getTime() - 1000), tenantTz),
+    }
+  }, [tenantTz])
 
   const {
     stats,
@@ -124,9 +133,11 @@ export default function DashboardScreen() {
     return appointments
       .filter((a) => a.status === 'scheduled')
       .sort(
-        (a, b) => parseAppointmentDate(a.date).getTime() - parseAppointmentDate(b.date).getTime()
+        (a, b) =>
+          parseAppointmentDate(a.date, tenantTz).getTime() -
+          parseAppointmentDate(b.date, tenantTz).getTime()
       )
-  }, [appointments])
+  }, [appointments, tenantTz])
 
   const completedToday = useMemo(
     () => appointments.filter((a) => a.status === 'completed'),
@@ -139,7 +150,7 @@ export default function DashboardScreen() {
 
   const greeting = getGreeting()
   const displayNameSuffix = profile?.full_name ? `, ${profile.full_name.split(' ')[0]}` : ''
-  const dateLabel = formatDashboardDateLong(config.locale.language)
+  const dateLabel = formatDashboardDateLong(config.locale.language, tenantTz)
 
   if (isLoading) {
     return <DashboardLoading backgroundColor={theme.backgroundRoot} />
@@ -234,6 +245,7 @@ export default function DashboardScreen() {
               upcomingAppointments={upcomingAppointments}
               visibleLimit={visibleLimit}
               locale={config.locale.language}
+              timeZone={tenantTz}
               currencySymbol={currencySymbol}
               isTablet={isTablet}
               theme={{
@@ -270,6 +282,7 @@ export default function DashboardScreen() {
             upcomingAppointments={upcomingAppointments}
             visibleLimit={visibleLimit}
             locale={config.locale.language}
+            timeZone={tenantTz}
             currencySymbol={currencySymbol}
             isTablet={isTablet}
             theme={{
@@ -303,6 +316,7 @@ export default function DashboardScreen() {
         isTablet={isTablet}
         currencySymbol={currencySymbol}
         locale={config.locale.language}
+        timeZone={tenantTz}
         theme={{
           backgroundDefault: theme.backgroundDefault,
           backgroundSecondary: theme.backgroundSecondary,

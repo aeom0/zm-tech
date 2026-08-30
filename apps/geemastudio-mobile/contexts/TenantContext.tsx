@@ -95,23 +95,26 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
 
         if (raw) {
           const parsed = JSON.parse(raw) as Partial<TenantConfig>
-          setConfig((prev) => ({ ...prev, ...parsed }))
+          setConfig((prev) => mergeTenantConfig(prev, parsed))
         }
 
         const localConfigured = configured === 'true'
         setIsConfigured(localConfigured)
 
-        // Si no hay marca local pero sí usuario, intentamos sincronizar desde Supabase
-        if (!localConfigured && userId) {
+        // Siempre hidratar desde BD si hay sesión: timezone/horarios del tenant
+        // (p. ej. America/Lima) no deben quedar pisados por un AsyncStorage viejo.
+        if (userId) {
           try {
             const remoteConfig = await fetchTenantSettings(userId)
             if (remoteConfig && isMounted) {
               await updateTenant(remoteConfig)
-              await AsyncStorage.setItem(CONFIGURED_KEY, 'true')
-              setIsConfigured(true)
+              if (!localConfigured) {
+                await AsyncStorage.setItem(CONFIGURED_KEY, 'true')
+                setIsConfigured(true)
+              }
             }
           } catch {
-            // En caso de error remoto, seguimos con flujo local (onboarding)
+            // Sin remoto: se mantiene lo local (onboarding o cache)
           }
         }
       } finally {

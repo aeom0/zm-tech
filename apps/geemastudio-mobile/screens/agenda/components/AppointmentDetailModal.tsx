@@ -13,6 +13,7 @@ import {
   esCeldaAgendaEnHorarioLaboral,
   formatoHoraAgendaSlot,
   indiceDiaSemanaJSEnZona,
+  instanteCitaDesdeTexto,
   zonaIANASegura,
 } from '@zmtech/tenant-config'
 
@@ -154,7 +155,7 @@ export function AppointmentDetailModal({
                     hour: 'numeric',
                     minute: '2-digit',
                     hour12: timeFormat === '12',
-                  }).format(new Date(appointment.date))}
+                  }).format(instanteCitaDesdeTexto(appointment.date, timeZone))}
                 </ThemedText>
               </View>
 
