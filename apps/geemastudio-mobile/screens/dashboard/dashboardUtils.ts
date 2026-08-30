@@ -1,4 +1,5 @@
 import {
+  esMismoDiaCalendarioEnZona,
   instanteCitaDesdeTexto,
   zonaIANASegura,
 } from '@zmtech/tenant-config'
@@ -35,4 +36,24 @@ export function formatDashboardDateLong(locale: string, timeZone?: string): stri
     month: 'long',
     ...(timeZone ? { timeZone: zonaIANASegura(timeZone) } : {}),
   })
+}
+
+/** Etiqueta de día para la lista de próximas citas: "Hoy" / "Mañana" / día de semana. */
+export function formatUpcomingDayLabel(
+  apptDate: Date,
+  today: Date,
+  tomorrow: Date,
+  locale: string,
+  timeZone: string
+): string {
+  const tz = zonaIANASegura(timeZone)
+  if (esMismoDiaCalendarioEnZona(apptDate, today, tz)) return 'Hoy'
+  if (esMismoDiaCalendarioEnZona(apptDate, tomorrow, tz)) return 'Mañana'
+  const label = apptDate.toLocaleDateString(locale, {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'short',
+    timeZone: tz,
+  })
+  return label.charAt(0).toUpperCase() + label.slice(1)
 }

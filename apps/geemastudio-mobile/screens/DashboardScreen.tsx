@@ -3,9 +3,10 @@ import { useHeaderHeight } from '@react-navigation/elements'
 import { useNavigation } from '@react-navigation/native'
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
 import React, { useMemo, useState } from 'react'
-import { RefreshControl, ScrollView, View } from 'react-native'
+import { Alert, RefreshControl, ScrollView, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+import { ThemedText } from '@/components/ThemedText'
 import { Colors, Spacing } from '@/constants/theme'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
@@ -29,6 +30,7 @@ import { DashboardUpcomingCard } from './dashboard/components/DashboardUpcomingC
 import { dashboardStyles as styles } from './dashboard/dashboardStyles'
 import {
   formatDashboardDateLong,
+  formatUpcomingDayLabel,
   getGreeting,
   parseAppointmentDate,
 } from './dashboard/dashboardUtils'
@@ -37,6 +39,9 @@ import { useDashboardQueries } from './dashboard/hooks/useDashboardQueries'
 import { useStaggeredAnimation } from './dashboard/hooks/useStaggeredAnimation'
 import type { DashboardAppointment } from './dashboard/types'
 
+/** Ventana de la card "Próximas citas" (hoy + N-1 días siguientes). */
+const UPCOMING_DAYS = 3
+
 export default function DashboardScreen() {
   const insets = useSafeAreaInsets()
   const headerHeight = useHeaderHeight()
@@ -44,17 +49,24 @@ export default function DashboardScreen() {
   const { theme, isDark } = useTheme()
   const { isTablet } = useResponsive()
   const haptics = useHaptics()
-  const { profile } = useAuth()
+  const { profile, isAdmin } = useAuth()
   const { config } = useTenant()
   const currencySymbol = config.locale.currency.symbol
   const tenantTz = zonaIANASegura(config.locale.timezone)
 
-  const { startOfDay, endOfDay } = useMemo(() => {
+  const { startOfDay, statsEndOfDay, appointmentsEndOfDay, today, tomorrow } = useMemo(() => {
     const start = inicioDiaHoyEnZonaIANA(tenantTz)
-    const next = sumarDiasEnZonaIANA(start, 1, tenantTz)
+    const nextDay = sumarDiasEnZonaIANA(start, 1, tenantTz)
+    const rangeEnd = sumarDiasEnZonaIANA(start, UPCOMING_DAYS, tenantTz)
     return {
       startOfDay: formatAppointmentWallclock(start, tenantTz),
-      endOfDay: formatAppointmentWallclock(new Date(next.getTime() - 1000), tenantTz),
+      statsEndOfDay: formatAppointmentWallclock(new Date(nextDay.getTime() - 1000), tenantTz),
+      appointmentsEndOfDay: formatAppointmentWallclock(
+        new Date(rangeEnd.getTime() - 1000),
+        tenantTz
+      ),
+      today: start,
+      tomorrow: nextDay,
     }
   }, [tenantTz])
 
@@ -67,35 +79,44 @@ export default function DashboardScreen() {
     refetchAppointments,
     employees,
     services,
-  } = useDashboardQueries(startOfDay, endOfDay)
+    paymentsByAppointment,
+  } = useDashboardQueries(startOfDay, statsEndOfDay, appointmentsEndOfDay)
 
   const { updateAppointmentMutation, createPaymentMutation } = useDashboardMutations()
 
   const navigation = useNavigation<BottomTabNavigationProp<MainTabParamList, 'Dashboard'>>()
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedAppointment, setSelectedAppointment] = useState<DashboardAppointment | null>(null)
+  const [payMethodVisible, setPayMethodVisible] = useState(false)
+  const [pendingPayMethod, setPendingPayMethod] = useState('cash')
 
   const getServiceName = (serviceId: string) => {
     const service = services.find((s) => s.id === serviceId)
     return service?.name ?? 'Servicio'
   }
 
-  const handleMarkCompleted = (appointment: DashboardAppointment) => {
-    const amount =
-      typeof appointment.price === 'number'
-        ? appointment.price
-        : parseFloat(String(appointment.price))
+  const getDayLabel = (apptDate: Date) =>
+    formatUpcomingDayLabel(apptDate, today, tomorrow, config.locale.language, tenantTz)
+
+  const completeAppointment = (appointment: DashboardAppointment, method?: string) => {
     updateAppointmentMutation.mutate(
       { id: appointment.id, data: { status: 'completed' } },
       {
         onSuccess: () => {
-          createPaymentMutation.mutate({
-            appointment_id: appointment.id,
-            amount: String(amount),
-            method: 'cash',
-            date: new Date().toISOString(),
-            notes: `Cita completada: ${getServiceName(appointment.service_id)}`,
-          })
+          if (method) {
+            const amount =
+              typeof appointment.price === 'number'
+                ? appointment.price
+                : parseFloat(String(appointment.price))
+            createPaymentMutation.mutate({
+              appointment_id: appointment.id,
+              amount: String(amount),
+              method,
+              date: new Date().toISOString(),
+              notes: `Cita completada: ${getServiceName(appointment.service_id)}`,
+            })
+          }
+          setPayMethodVisible(false)
           setModalVisible(false)
           setSelectedAppointment(null)
           void refetchStats()
@@ -106,7 +127,39 @@ export default function DashboardScreen() {
     )
   }
 
+  const handleMarkCompleted = (appointment: DashboardAppointment) => {
+    const price =
+      typeof appointment.price === 'number'
+        ? appointment.price
+        : parseFloat(String(appointment.price))
+    const paymentsForApt = paymentsByAppointment.filter(
+      (p) => p.appointment_id === appointment.id
+    )
+    const hasAbono = paymentsForApt.some((p) => p.is_abono)
+    const totalPaid = paymentsForApt.reduce((sum, p) => sum + parseFloat(String(p.amount)), 0)
+
+    if (hasAbono && totalPaid < price) {
+      Alert.alert(
+        'Pago pendiente',
+        'Esta cita solo tiene un pago parcial. Para marcarla como completada primero registra el pago del resto en Finanzas.'
+      )
+      return
+    }
+    if (totalPaid >= price) {
+      completeAppointment(appointment)
+      return
+    }
+    setPendingPayMethod('cash')
+    setPayMethodVisible(true)
+  }
+
+  const confirmCompleteWithMethod = () => {
+    if (!selectedAppointment) return
+    completeAppointment(selectedAppointment, pendingPayMethod)
+  }
+
   const handleEditInAgenda = (appointment: DashboardAppointment) => {
+    setPayMethodVisible(false)
     setModalVisible(false)
     setSelectedAppointment(null)
     navigation.navigate('Agenda', { appointmentId: appointment.id })
@@ -157,50 +210,71 @@ export default function DashboardScreen() {
   }
 
   const statsRow = (
-    <View style={[styles.statsRow, isTablet && styles.statsRowTablet]}>
-      <DashboardStatCard
-        icon="dollar-sign"
-        label="Ingresos hoy"
-        value={`${currencySymbol}${stats?.todayRevenue?.toFixed(0) ?? '0'}`}
-        color={theme.gold}
-        subtitle={completedToday.length > 0 ? `${completedToday.length} pagos` : undefined}
-        style={animatedItems[1]}
-        isTablet={isTablet}
-        theme={{
-          backgroundDefault: theme.backgroundDefault,
-          border: theme.border,
-          textSecondary: theme.textSecondary,
-          textMuted: theme.textMuted,
-        }}
-      />
-      <DashboardStatCard
-        icon="check-circle"
-        label="Completadas"
-        value={stats?.completedAppointments ?? 0}
-        color={theme.success}
-        style={animatedItems[2]}
-        isTablet={isTablet}
-        theme={{
-          backgroundDefault: theme.backgroundDefault,
-          border: theme.border,
-          textSecondary: theme.textSecondary,
-          textMuted: theme.textMuted,
-        }}
-      />
-      <DashboardStatCard
-        icon="clock"
-        label="Pendientes"
-        value={upcomingAppointments.length}
-        color={theme.primary}
-        style={animatedItems[3]}
-        isTablet={isTablet}
-        theme={{
-          backgroundDefault: theme.backgroundDefault,
-          border: theme.border,
-          textSecondary: theme.textSecondary,
-          textMuted: theme.textMuted,
-        }}
-      />
+    <View>
+      <ThemedText style={[styles.sectionLabel, { color: theme.textMuted }]}>
+        Resumen de hoy
+      </ThemedText>
+      <View style={[styles.statsRow, isTablet && styles.statsRowTablet]}>
+        <DashboardStatCard
+          icon="dollar-sign"
+          label="Ingresos hoy"
+          value={`${currencySymbol}${stats?.todayRevenue?.toFixed(0) ?? '0'}`}
+          color={theme.gold}
+          subtitle={completedToday.length > 0 ? `${completedToday.length} pagos` : undefined}
+          style={animatedItems[1]}
+          isTablet={isTablet}
+          theme={{
+            backgroundDefault: theme.backgroundDefault,
+            border: theme.border,
+            textSecondary: theme.textSecondary,
+            textMuted: theme.textMuted,
+          }}
+          onPress={
+            isAdmin
+              ? () => {
+                  haptics.light()
+                  navigation.navigate('More', { screen: 'Finanzas' } as never)
+                }
+              : undefined
+          }
+        />
+        <DashboardStatCard
+          icon="check-circle"
+          label="Completadas"
+          value={stats?.completedAppointments ?? 0}
+          color={theme.success}
+          style={animatedItems[2]}
+          isTablet={isTablet}
+          theme={{
+            backgroundDefault: theme.backgroundDefault,
+            border: theme.border,
+            textSecondary: theme.textSecondary,
+            textMuted: theme.textMuted,
+          }}
+          onPress={() => {
+            haptics.light()
+            navigation.navigate('Agenda', {})
+          }}
+        />
+        <DashboardStatCard
+          icon="clock"
+          label="Pendientes"
+          value={stats?.upcomingAppointments ?? 0}
+          color={theme.primary}
+          style={animatedItems[3]}
+          isTablet={isTablet}
+          theme={{
+            backgroundDefault: theme.backgroundDefault,
+            border: theme.border,
+            textSecondary: theme.textSecondary,
+            textMuted: theme.textMuted,
+          }}
+          onPress={() => {
+            haptics.light()
+            navigation.navigate('Agenda', {})
+          }}
+        />
+      </View>
     </View>
   )
 
@@ -244,12 +318,14 @@ export default function DashboardScreen() {
             <DashboardUpcomingCard
               upcomingAppointments={upcomingAppointments}
               visibleLimit={visibleLimit}
+              upcomingDays={UPCOMING_DAYS}
               locale={config.locale.language}
               timeZone={tenantTz}
               currencySymbol={currencySymbol}
               isTablet={isTablet}
               theme={{
                 backgroundDefault: theme.backgroundDefault,
+                backgroundSecondary: theme.backgroundSecondary,
                 border: theme.border,
                 primary: theme.primary,
                 text: theme.text,
@@ -261,6 +337,7 @@ export default function DashboardScreen() {
               getEmployeeColor={getEmployeeColor}
               getEmployeeName={getEmployeeName}
               getServiceName={getServiceName}
+              getDayLabel={getDayLabel}
               onOpenAppointment={(appt) => {
                 setSelectedAppointment(appt)
                 setModalVisible(true)
@@ -281,12 +358,14 @@ export default function DashboardScreen() {
           <DashboardUpcomingCard
             upcomingAppointments={upcomingAppointments}
             visibleLimit={visibleLimit}
+            upcomingDays={UPCOMING_DAYS}
             locale={config.locale.language}
             timeZone={tenantTz}
             currencySymbol={currencySymbol}
             isTablet={isTablet}
             theme={{
               backgroundDefault: theme.backgroundDefault,
+              backgroundSecondary: theme.backgroundSecondary,
               border: theme.border,
               primary: theme.primary,
               text: theme.text,
@@ -298,6 +377,7 @@ export default function DashboardScreen() {
             getEmployeeColor={getEmployeeColor}
             getEmployeeName={getEmployeeName}
             getServiceName={getServiceName}
+            getDayLabel={getDayLabel}
             onOpenAppointment={(appt) => {
               setSelectedAppointment(appt)
               setModalVisible(true)
@@ -329,7 +409,13 @@ export default function DashboardScreen() {
         }}
         getServiceName={getServiceName}
         isCompleting={updateAppointmentMutation.isPending}
+        payMethodVisible={payMethodVisible}
+        pendingPayMethod={pendingPayMethod}
+        onSelectPayMethod={setPendingPayMethod}
+        onCancelPayMethod={() => setPayMethodVisible(false)}
+        onConfirmPayMethod={confirmCompleteWithMethod}
         onClose={() => {
+          setPayMethodVisible(false)
           setModalVisible(false)
           setSelectedAppointment(null)
         }}

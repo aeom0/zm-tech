@@ -4,6 +4,8 @@ import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
 
+import { PAYMENT_METHODS } from '@/screens/finances/constants'
+
 import { formatDashboardTime } from '../dashboardUtils'
 import type { DashboardAppointment } from '../types'
 import { dashboardStyles as styles } from '../dashboardStyles'
@@ -27,6 +29,11 @@ interface DashboardAppointmentModalProps {
   }
   getServiceName: (serviceId: string) => string
   isCompleting: boolean
+  payMethodVisible: boolean
+  pendingPayMethod: string
+  onSelectPayMethod: (method: string) => void
+  onCancelPayMethod: () => void
+  onConfirmPayMethod: () => void
   onClose: () => void
   onMarkCompleted: (appointment: DashboardAppointment) => void
   onEditInAgenda: (appointment: DashboardAppointment) => void
@@ -42,6 +49,11 @@ export function DashboardAppointmentModal({
   theme,
   getServiceName,
   isCompleting,
+  payMethodVisible,
+  pendingPayMethod,
+  onSelectPayMethod,
+  onCancelPayMethod,
+  onConfirmPayMethod,
   onClose,
   onMarkCompleted,
   onEditInAgenda,
@@ -115,6 +127,75 @@ export function DashboardAppointmentModal({
                   </>
                 )}
               </Pressable>
+
+              {payMethodVisible && (
+                <View
+                  style={[
+                    styles.payMethodBox,
+                    { backgroundColor: theme.backgroundSecondary, borderColor: theme.border },
+                  ]}
+                >
+                  <ThemedText style={[styles.payMethodTitle, { color: theme.text }]}>
+                    ¿Cómo pagó?
+                  </ThemedText>
+                  {PAYMENT_METHODS.map((m) => (
+                    <Pressable
+                      key={m.id}
+                      style={[
+                        styles.payMethodOption,
+                        {
+                          borderColor: pendingPayMethod === m.id ? theme.primary : theme.border,
+                        },
+                        pendingPayMethod === m.id && { backgroundColor: `${theme.primary}12` },
+                      ]}
+                      onPress={() => onSelectPayMethod(m.id)}
+                    >
+                      <Feather
+                        name={m.icon}
+                        size={14}
+                        color={pendingPayMethod === m.id ? theme.primary : theme.textSecondary}
+                      />
+                      <ThemedText
+                        style={[
+                          styles.payMethodLabel,
+                          { color: pendingPayMethod === m.id ? theme.primary : theme.text },
+                        ]}
+                      >
+                        {m.label}
+                      </ThemedText>
+                    </Pressable>
+                  ))}
+                  <View style={styles.payMethodActions}>
+                    <Pressable
+                      style={[styles.payMethodCancel, { borderColor: theme.border }]}
+                      onPress={onCancelPayMethod}
+                    >
+                      <ThemedText
+                        style={[styles.payMethodCancelText, { color: theme.textSecondary }]}
+                      >
+                        Cancelar
+                      </ThemedText>
+                    </Pressable>
+                    <Pressable
+                      style={[
+                        styles.payMethodCancel,
+                        { borderColor: theme.primary, backgroundColor: theme.primary },
+                      ]}
+                      onPress={onConfirmPayMethod}
+                      disabled={isCompleting}
+                    >
+                      {isCompleting ? (
+                        <ActivityIndicator color="#FFF" size="small" />
+                      ) : (
+                        <ThemedText style={[styles.payMethodCancelText, { color: '#FFF' }]}>
+                          Confirmar
+                        </ThemedText>
+                      )}
+                    </Pressable>
+                  </View>
+                </View>
+              )}
+
               <Pressable
                 style={[styles.modalBtnOutline, { borderColor: theme.primary }]}
                 onPress={() => onEditInAgenda(appointment)}

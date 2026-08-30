@@ -1,11 +1,11 @@
 import React from 'react'
-import { Pressable, View } from 'react-native'
+import { Pressable, StyleSheet, View } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
 
 import { DashboardAnimatedView, type DashboardAnimatedStyle } from '../hooks/useStaggeredAnimation'
-import { formatDashboardDateLong } from '../dashboardUtils'
+import { parseAppointmentDate } from '../dashboardUtils'
 import type { DashboardAppointment } from '../types'
 import { dashboardStyles as styles } from '../dashboardStyles'
 
@@ -14,12 +14,14 @@ import { DashboardAppointmentRow } from './DashboardAppointmentRow'
 interface DashboardUpcomingCardProps {
   upcomingAppointments: DashboardAppointment[]
   visibleLimit: number
+  upcomingDays: number
   locale: string
   timeZone: string
   currencySymbol: string
   isTablet: boolean
   theme: {
     backgroundDefault: string
+    backgroundSecondary: string
     border: string
     primary: string
     text: string
@@ -31,6 +33,7 @@ interface DashboardUpcomingCardProps {
   getEmployeeColor: (employeeId: string) => string
   getEmployeeName: (employeeId: string) => string
   getServiceName: (serviceId: string) => string
+  getDayLabel: (apptDate: Date) => string
   onOpenAppointment: (appointment: DashboardAppointment) => void
   onViewAllAgenda: () => void
 }
@@ -38,6 +41,7 @@ interface DashboardUpcomingCardProps {
 export function DashboardUpcomingCard({
   upcomingAppointments,
   visibleLimit,
+  upcomingDays,
   locale,
   timeZone,
   currencySymbol,
@@ -47,6 +51,7 @@ export function DashboardUpcomingCard({
   getEmployeeColor,
   getEmployeeName,
   getServiceName,
+  getDayLabel,
   onOpenAppointment,
   onViewAllAgenda,
 }: DashboardUpcomingCardProps) {
@@ -67,7 +72,7 @@ export function DashboardUpcomingCard({
         <View>
           <ThemedText style={styles.cardTitle}>Próximas citas</ThemedText>
           <ThemedText style={[styles.cardSubtitle, { color: theme.textSecondary }]}>
-            {formatDashboardDateLong(locale, timeZone)}
+            Próximos {upcomingDays} días
           </ThemedText>
         </View>
         {upcomingAppointments.length > 0 && (
@@ -81,34 +86,66 @@ export function DashboardUpcomingCard({
 
       {upcomingAppointments.length === 0 ? (
         <View style={styles.emptyState}>
-          <View style={styles.emptyIconCircle}>
+          <View
+            style={[styles.emptyIconCircle, { backgroundColor: theme.backgroundSecondary }]}
+          >
             <Feather name="calendar" size={24} color={theme.textMuted} />
           </View>
           <ThemedText style={[styles.emptyTitle, { color: theme.textSecondary }]}>
-            Todo despejado por hoy
+            Agenda despejada
           </ThemedText>
           <ThemedText style={[styles.emptySubtitle, { color: theme.textMuted }]}>
-            No hay citas programadas
+            No hay citas en los próximos {upcomingDays} días
           </ThemedText>
+          <Pressable
+            style={[styles.emptyActionBtn, { backgroundColor: theme.primary }]}
+            onPress={onViewAllAgenda}
+          >
+            <Feather name="plus" size={14} color="#FFF" />
+            <ThemedText style={styles.emptyActionText}>Agendar cita</ThemedText>
+          </Pressable>
         </View>
       ) : (
-        slice.map((appt, i) => (
-          <DashboardAppointmentRow
-            key={appt.id}
-            appointment={appt}
-            index={i}
-            visibleCount={slice.length}
-            theme={theme}
-            currencySymbol={currencySymbol}
-            locale={locale}
-            timeZone={timeZone}
-            isTablet={isTablet}
-            getEmployeeColor={getEmployeeColor}
-            getEmployeeName={getEmployeeName}
-            getServiceName={getServiceName}
-            onPress={onOpenAppointment}
-          />
-        ))
+        slice.map((appt, i) => {
+          const apptDate = parseAppointmentDate(appt.date, timeZone)
+          const prevApptDate =
+            i > 0 ? parseAppointmentDate(slice[i - 1]!.date, timeZone) : null
+          const dayLabel = getDayLabel(apptDate)
+          const showDayHeader = i === 0 || getDayLabel(prevApptDate!) !== dayLabel
+
+          return (
+            <React.Fragment key={appt.id}>
+              {showDayHeader && (
+                <View
+                  style={[
+                    styles.dayHeader,
+                    i > 0 && localStyles.dayHeaderDivider,
+                    i > 0 && { borderTopColor: theme.border },
+                  ]}
+                >
+                  <ThemedText style={[styles.dayHeaderText, { color: theme.textMuted }]}>
+                    {dayLabel}
+                  </ThemedText>
+                </View>
+              )}
+              <DashboardAppointmentRow
+                appointment={appt}
+                index={i}
+                visibleCount={slice.length}
+                isNext={i === 0}
+                theme={theme}
+                currencySymbol={currencySymbol}
+                locale={locale}
+                timeZone={timeZone}
+                isTablet={isTablet}
+                getEmployeeColor={getEmployeeColor}
+                getEmployeeName={getEmployeeName}
+                getServiceName={getServiceName}
+                onPress={onOpenAppointment}
+              />
+            </React.Fragment>
+          )
+        })
       )}
 
       {upcomingAppointments.length > visibleLimit && (
@@ -125,3 +162,9 @@ export function DashboardUpcomingCard({
     </DashboardAnimatedView>
   )
 }
+
+const localStyles = StyleSheet.create({
+  dayHeaderDivider: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+})

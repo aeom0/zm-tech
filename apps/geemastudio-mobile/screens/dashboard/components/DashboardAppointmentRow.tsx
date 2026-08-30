@@ -12,6 +12,7 @@ interface DashboardAppointmentRowProps {
   appointment: DashboardAppointment
   index: number
   visibleCount: number
+  isNext?: boolean
   theme: {
     border: string
     primary: string
@@ -34,6 +35,7 @@ export function DashboardAppointmentRow({
   appointment,
   index,
   visibleCount,
+  isNext = false,
   theme,
   currencySymbol,
   locale,
@@ -54,6 +56,8 @@ export function DashboardAppointmentRow({
         {
           borderBottomColor: theme.border,
           borderBottomWidth: isLast ? 0 : 1,
+          borderLeftColor: isNext ? empColor : 'transparent',
+          backgroundColor: isNext ? `${empColor}0C` : 'transparent',
         },
         pressed && { opacity: 0.75 },
       ]}

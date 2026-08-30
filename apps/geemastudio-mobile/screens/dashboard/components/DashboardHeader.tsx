@@ -39,10 +39,12 @@ export function DashboardHeader({
           {dateLabel}
         </ThemedText>
       </View>
-      <View style={[styles.logoMark, { backgroundColor: `${primaryColor}12` }]}>
-        <ThemedText style={[styles.logoLetter, { color: primaryColor }]}>
-          {businessInitials}
-        </ThemedText>
+      <View style={[styles.logoMarkRing, { borderColor: `${primaryColor}40` }]}>
+        <View style={[styles.logoMark, { backgroundColor: `${primaryColor}12` }]}>
+          <ThemedText style={[styles.logoLetter, { color: primaryColor }]}>
+            {businessInitials}
+          </ThemedText>
+        </View>
       </View>
     </DashboardAnimatedView>
   )

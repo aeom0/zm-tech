@@ -3,7 +3,12 @@ import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { useEmployeesQuery } from '@/screens/personal/hooks/useEmployeesData'
 
-import type { DashboardAppointment, DashboardServiceRow, DashboardStats } from '../types'
+import type {
+  DashboardAppointment,
+  DashboardPayment,
+  DashboardServiceRow,
+  DashboardStats,
+} from '../types'
 
 async function fetchDashboardStats(startOfDay: string, endOfDay: string): Promise<DashboardStats> {
   const [paymentsRes, completedRes, scheduledRes, inventoryRes] = await Promise.all([
@@ -52,14 +57,18 @@ async function fetchDashboardStats(startOfDay: string, endOfDay: string): Promis
   }
 }
 
-export function useDashboardQueries(startOfDay: string, endOfDay: string) {
+export function useDashboardQueries(
+  startOfDay: string,
+  statsEndOfDay: string,
+  appointmentsEndOfDay: string
+) {
   const {
     data: stats,
     isLoading: statsLoading,
     refetch: refetchStats,
   } = useQuery<DashboardStats>({
-    queryKey: ['dashboard_stats', startOfDay, endOfDay],
-    queryFn: () => fetchDashboardStats(startOfDay, endOfDay),
+    queryKey: ['dashboard_stats', startOfDay, statsEndOfDay],
+    queryFn: () => fetchDashboardStats(startOfDay, statsEndOfDay),
   })
 
   const {
@@ -67,13 +76,13 @@ export function useDashboardQueries(startOfDay: string, endOfDay: string) {
     isLoading: appointmentsLoading,
     refetch: refetchAppointments,
   } = useQuery<DashboardAppointment[]>({
-    queryKey: ['appointments_today', startOfDay, endOfDay],
+    queryKey: ['appointments_upcoming', startOfDay, appointmentsEndOfDay],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('appointments')
         .select('id, client_name, date, duration, price, status, employee_id, service_id')
         .gte('date', startOfDay)
-        .lte('date', endOfDay)
+        .lte('date', appointmentsEndOfDay)
         .order('date', { ascending: true })
 
       if (error) {
@@ -99,6 +108,24 @@ export function useDashboardQueries(startOfDay: string, endOfDay: string) {
     },
   })
 
+  const appointmentIds = appointments.map((a) => a.id)
+
+  const { data: paymentsByAppointment = [] } = useQuery<DashboardPayment[]>({
+    queryKey: ['dashboard_payments_by_appointments', appointmentIds],
+    queryFn: async () => {
+      if (appointmentIds.length === 0) return []
+      const { data, error } = await supabase
+        .from('payments')
+        .select('id, appointment_id, amount, is_abono')
+        .in('appointment_id', appointmentIds)
+      if (error) {
+        throw new Error(error.message)
+      }
+      return (data ?? []) as DashboardPayment[]
+    },
+    enabled: appointmentIds.length > 0,
+  })
+
   return {
     stats,
     statsLoading,
@@ -108,5 +135,6 @@ export function useDashboardQueries(startOfDay: string, endOfDay: string) {
     refetchAppointments,
     employees,
     services,
+    paymentsByAppointment,
   }
 }

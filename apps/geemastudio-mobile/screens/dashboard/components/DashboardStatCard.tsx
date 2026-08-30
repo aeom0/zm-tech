@@ -1,5 +1,5 @@
 import React from 'react'
-import { View } from 'react-native'
+import { Pressable, View } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
@@ -21,6 +21,7 @@ interface DashboardStatCardProps {
     textSecondary: string
     textMuted: string
   }
+  onPress?: () => void
 }
 
 export function DashboardStatCard({
@@ -32,6 +33,7 @@ export function DashboardStatCard({
   style,
   isTablet,
   theme,
+  onPress,
 }: DashboardStatCardProps) {
   return (
     <DashboardAnimatedView
@@ -45,18 +47,27 @@ export function DashboardStatCard({
         style,
       ]}
     >
-      <View style={[styles.statIconBg, { backgroundColor: color + '18' }]}>
-        <Feather name={icon} size={isTablet ? 22 : 18} color={color} />
-      </View>
-      <ThemedText style={[styles.statValue, { color, fontSize: isTablet ? 26 : 22 }]}>
-        {value}
-      </ThemedText>
-      <ThemedText style={[styles.statLabel, { color: theme.textSecondary }]}>{label}</ThemedText>
-      {subtitle ? (
-        <ThemedText style={[styles.statSubtitle, { color: theme.textMuted }]}>
-          {subtitle}
+      <Pressable
+        style={styles.statCardPressable}
+        onPress={onPress}
+        disabled={!onPress}
+        hitSlop={4}
+      >
+        <View style={[styles.statIconBg, { backgroundColor: color + '18' }]}>
+          <Feather name={icon} size={isTablet ? 22 : 18} color={color} />
+        </View>
+        <ThemedText style={[styles.statValue, { color, fontSize: isTablet ? 26 : 22 }]}>
+          {value}
         </ThemedText>
-      ) : null}
+        <ThemedText style={[styles.statLabel, { color: theme.textSecondary }]}>
+          {label}
+        </ThemedText>
+        {subtitle ? (
+          <ThemedText style={[styles.statSubtitle, { color: theme.textMuted }]}>
+            {subtitle}
+          </ThemedText>
+        ) : null}
+      </Pressable>
     </DashboardAnimatedView>
   )
 }

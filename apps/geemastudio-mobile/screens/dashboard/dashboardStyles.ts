@@ -27,6 +27,14 @@ export const dashboardStyles = StyleSheet.create({
     fontWeight: '700',
     textTransform: 'capitalize',
   },
+  logoMarkRing: {
+    width: 46,
+    height: 46,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1.5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   logoMark: {
     width: 40,
     height: 40,
@@ -41,6 +49,13 @@ export const dashboardStyles = StyleSheet.create({
   },
 
   // Stats row
+  sectionLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.6,
+    marginBottom: Spacing.sm,
+  },
   statsRow: {
     flexDirection: 'row',
     gap: Spacing.sm,
@@ -59,6 +74,10 @@ export const dashboardStyles = StyleSheet.create({
   statCardTablet: {
     padding: Spacing.lg,
     borderRadius: BorderRadius.xl,
+  },
+  statCardPressable: {
+    width: '100%',
+    alignItems: 'center',
   },
   statIconBg: {
     width: 36,
@@ -124,6 +143,8 @@ export const dashboardStyles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.lg,
+    borderLeftWidth: 3,
+    borderLeftColor: 'transparent',
   },
   rowTime: {
     width: 56,
@@ -163,6 +184,19 @@ export const dashboardStyles = StyleSheet.create({
     marginTop: 1,
   },
 
+  // Day header (agrupación de próximas citas por día)
+  dayHeader: {
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.md,
+    paddingBottom: Spacing.xs,
+  },
+  dayHeaderText: {
+    fontSize: 11,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+
   // View more
   viewMoreBtn: {
     flexDirection: 'row',
@@ -190,7 +224,6 @@ export const dashboardStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: Spacing.lg,
-    backgroundColor: '#E5E7EB40',
   },
   emptyTitle: {
     fontSize: 16,
@@ -199,6 +232,20 @@ export const dashboardStyles = StyleSheet.create({
   },
   emptySubtitle: {
     fontSize: 13,
+    marginBottom: Spacing.lg,
+  },
+  emptyActionBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.full,
+  },
+  emptyActionText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#FFF',
   },
 
   // Alert banner
@@ -343,6 +390,49 @@ export const dashboardStyles = StyleSheet.create({
   },
   modalBtnOutlineText: {
     fontSize: 15,
+    fontWeight: '600',
+  },
+
+  // Selector de método de pago (al marcar cita completada)
+  payMethodBox: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: Spacing.md,
+    marginBottom: Spacing.sm,
+    gap: Spacing.sm,
+  },
+  payMethodTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 2,
+  },
+  payMethodOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1.5,
+  },
+  payMethodLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  payMethodActions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: Spacing.sm,
+    marginTop: Spacing.xs,
+  },
+  payMethodCancel: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+  },
+  payMethodCancelText: {
+    fontSize: 13,
     fontWeight: '600',
   },
 })

@@ -30,3 +30,10 @@ export interface DashboardServiceRow {
   duration: number
   category_id: string
 }
+
+export interface DashboardPayment {
+  id: string
+  appointment_id: string | null
+  amount: string
+  is_abono: boolean
+}
