@@ -15,6 +15,7 @@
 | **S4** | Crons + RPCs tenant-aware | 11 Edge Functions parametrizadas | S3 |
 | **S5** | Suite L3 — reglas externalizadas | `TenantWabaRules` + seed ZM | S3 |
 | **S5-B** | Branding tenant mobile | Logo Storage + `TenantLogo` + `createTheme` completo | S2 |
+| **S5-C** | Paridad mobile ZM (shadow) | Adaptador packs/promos + agenda/finanzas | S2 |
 | **S6** | Suite L4 + panel Geema | Presets vertical + `/panel/waba/*` port | S5 |
 | **S7+** | Go-live 2.º tenant | Onboarding → WABA propio + QA | S4, S6 |
 
@@ -241,6 +242,39 @@ Detalle push FCM: [06-BRANDING-LOGO-Y-DESIGN-TOKENS.md](./06-BRANDING-LOGO-Y-DES
 - `fetchTenantSettings` por `tenant_slug` (bridge S2) — commit `63914c6`
 - EAS env Supabase ZM prod + APK preview SDK 56 en build
 - `LogoNegocioScreen` + login con `config.logo` (upload bloqueado hasta S5B-1)
+
+---
+
+## Sprint 5-C — Paridad mobile Geema ↔ ZM (shadow test)
+
+### Objetivo
+Geema mobile operable con datos reales del tenant ZM: catálogo completo (packs/promos), agenda confiable, finanzas accesibles.
+
+Detalle: [07-PARIDAD-MOBILE-ZM.md](./07-PARIDAD-MOBILE-ZM.md)
+
+### Contexto
+Shadow test 29-ago (APK SDK 56, `alberto@zmlashnails.com`): core OK; packs/promos rotos por esquema BD; finanzas en **Más** no en tabs; agenda UI distinta.
+
+### Tareas
+
+| ID | Tarea | Repo | Esfuerzo |
+|----|-------|------|----------|
+| S5C-1 | Adaptador `usePacksData` esquema ZM | zm-tech | M |
+| S5C-2 | Adaptador promos + `promotion_items` | zm-tech | M |
+| S5C-3 | Validar `tenant_settings` timezone Lima | zm-tech + BD | S |
+| S5C-4 | Agenda multi-servicio (`appointment_services`) | zm-tech | L |
+| S5C-5 | Referencias diseño WABA + badge agenda | zm-tech | L |
+| S5C-6 | Feriados + reglas domingo/feriado | zm-tech | M |
+| S5C-7 | Finanzas ejecutiva + costos WABA | zm-tech | L |
+| S5C-8 | Dashboard ranking + alertas feriado | zm-tech | S |
+| S5C-9 | UX hint Finanzas en Más | zm-tech | S |
+| S5C-10 | Smoke packs/promos/agenda vs app ZM | zm-tech | S |
+
+### DoD
+- [ ] Packs y promos ZM visibles en Geema (mismos conteos que app ZM)
+- [ ] Agenda mismo día alineada con ZM
+- [ ] Finanzas en Más lista pagos tenant
+- [ ] ZM app legacy sin cambio
 
 ---
 

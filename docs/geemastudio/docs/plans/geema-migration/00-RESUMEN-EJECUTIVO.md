@@ -18,7 +18,7 @@
 | BD multi-tenant (Plan 02 A/B/C) | 🟢 | `tenant_id` + RLS panel |
 | Plan 02 §11 (pre–2.º tenant) | 🔴 | Uniques `clients`, Auth Hook, routing WABA en repo ZM |
 | Modelo tenant unificado | 🔴 | `tenants` (text) vs `tenant_settings` (UUID) |
-| Geema apps (gestión salón) | 🟡 | Mobile ~85% paridad; web incompleta |
+| Geema apps (gestión salón) | 🟡 | Mobile core OK shadow ZM; packs/promos/finanzas avanzada → **S5-C** |
 | WABA motor (L1) | 🟢 | Booking, carrito, Haiku shell — reutilizable |
 | WABA multi-tenant runtime | 🔴 | ZM hardcodea `zm-lash-nails`; `waba_config` UNIQUE global |
 | WABA suite multi-vertical (L4) | 🔴 | Presets en `tenant-config`; webhook no los consume |
