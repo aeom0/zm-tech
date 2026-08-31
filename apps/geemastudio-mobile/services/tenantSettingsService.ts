@@ -7,12 +7,18 @@
  *   ADD COLUMN IF NOT EXISTS tagline            text    NOT NULL DEFAULT '',
  *   ADD COLUMN IF NOT EXISTS features_whatsapp  boolean NOT NULL DEFAULT false;
  *   ADD COLUMN IF NOT EXISTS time_format       text    NOT NULL DEFAULT '24';
+ *   ADD COLUMN IF NOT EXISTS logo_bg_light     text    NOT NULL DEFAULT 'transparent',
+ *   ADD COLUMN IF NOT EXISTS logo_bg_dark      text    NOT NULL DEFAULT 'transparent';
  */
 import { supabase } from '@/lib/supabase'
-import type { TenantConfig } from '@zmtech/tenant-config'
+import type { TenantConfig, LogoBackgroundStyle } from '@zmtech/tenant-config'
+
+function toLogoBgStyle(value: string | null | undefined): LogoBackgroundStyle {
+  return value === 'light' || value === 'dark' ? value : 'transparent'
+}
 
 const TENANT_SETTINGS_SELECT =
-  'business_name, business_type, business_subtype, service_categories, primary_color, accent_color, currency_code, currency_symbol, country, language, timezone, time_format, client_terminology, staff_terminology, staff_singular_terminology, appointment_terminology, business_hours, contact_info, commission_staff, commission_house, tagline, features_whatsapp, logo_url, is_demo, is_configured'
+  'business_name, business_type, business_subtype, service_categories, primary_color, accent_color, currency_code, currency_symbol, country, language, timezone, time_format, client_terminology, staff_terminology, staff_singular_terminology, appointment_terminology, business_hours, contact_info, commission_staff, commission_house, tagline, features_whatsapp, logo_url, logo_bg_light, logo_bg_dark, is_demo, is_configured'
 
 /** Slug operativo del negocio (`profiles.tenant_id` → bridge S2). */
 async function resolveTenantSlug(userId: string): Promise<string | null> {
@@ -52,6 +58,8 @@ function mapConfigToRow(config: TenantConfig, userId: string, tenantSlug?: strin
     tagline: config.tagline ?? '',
     features_whatsapp: config.features?.whatsapp ?? false,
     logo_url: config.logo ?? '',
+    logo_bg_light: config.logoBgLight ?? 'transparent',
+    logo_bg_dark: config.logoBgDark ?? 'transparent',
     is_configured: true,
   }
 }
@@ -81,6 +89,8 @@ export type TenantSettingsRow = {
   tagline: string
   features_whatsapp: boolean
   logo_url: string
+  logo_bg_light?: string | null
+  logo_bg_dark?: string | null
   is_demo?: boolean | null
 }
 
@@ -93,6 +103,8 @@ function mapRowToConfig(row: TenantSettingsRow): TenantConfig {
     serviceCategories: (row.service_categories as TenantConfig['serviceCategories']) ?? [],
     tagline: row.tagline ?? '',
     logo: row.logo_url ?? '',
+    logoBgLight: toLogoBgStyle(row.logo_bg_light),
+    logoBgDark: toLogoBgStyle(row.logo_bg_dark),
     theme: {
       primaryColor: row.primary_color,
       accentColor: row.accent_color,

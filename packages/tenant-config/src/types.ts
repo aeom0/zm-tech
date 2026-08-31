@@ -1,5 +1,8 @@
 export type TimeFormatPreference = '12' | '24'
 
+/** Fondo detrás del logo del tenant cuando la app está en ese modo de color. */
+export type LogoBackgroundStyle = 'transparent' | 'light' | 'dark'
+
 export interface TenantConfig {
   businessName: string
   businessType: 'spa-nails' | 'barbershop' | 'hair-salon' | 'full-aesthetic'
@@ -25,6 +28,10 @@ export interface TenantConfig {
     | 'otros'
   >
   logo?: string
+  /** Fondo del logo cuando la app está en modo claro (default: 'transparent'). */
+  logoBgLight?: LogoBackgroundStyle
+  /** Fondo del logo cuando la app está en modo oscuro (default: 'transparent'). */
+  logoBgDark?: LogoBackgroundStyle
   tagline?: string
 
   theme: {

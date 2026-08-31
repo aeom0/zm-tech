@@ -10,28 +10,30 @@
  * - Feedback visual: spinner durante upload, toast de éxito/error con Alert
  */
 import React, { useState } from 'react'
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Pressable,
-  Alert,
-  Image,
-  ActivityIndicator,
-} from 'react-native'
+import { View, StyleSheet, ScrollView, Pressable, Alert, ActivityIndicator } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import * as ImagePicker from 'expo-image-picker'
+import * as Haptics from 'expo-haptics'
 import { Feather } from '@expo/vector-icons'
 import Animated, { FadeIn } from 'react-native-reanimated'
 
 import { ThemedText } from '@/components/ThemedText'
+import { TenantLogoImage } from '@/components/TenantLogoImage'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { useLogoUpload } from '@/hooks/useLogoUpload'
 import { Spacing, BorderRadius } from '@/constants/theme'
+import type { LogoBackgroundStyle } from '@zmtech/tenant-config'
 
 const LOGO_SIZE = 120
+const SWATCH_SIZE = 64
+
+const BG_OPTIONS: { id: LogoBackgroundStyle; label: string }[] = [
+  { id: 'transparent', label: 'Transparente' },
+  { id: 'light', label: 'Fondo claro' },
+  { id: 'dark', label: 'Fondo oscuro' },
+]
 
 function getInitials(name: string): string {
   return name
@@ -45,13 +47,29 @@ function getInitials(name: string): string {
 export default function LogoNegocioScreen() {
   const headerHeight = useHeaderHeight()
   const tabBarHeight = useBottomTabBarHeight()
-  const { theme } = useTheme()
+  const { theme, isDark } = useTheme()
   const { config, updateTenant } = useTenant()
   const { uploading, uploadLogo } = useLogoUpload()
   const [localUri, setLocalUri] = useState<string | null>(null)
+  const [savingBg, setSavingBg] = useState<LogoBackgroundStyle | null>(null)
 
   const currentLogo = localUri || config.logo || null
   const initials = getInitials(config.businessName || 'GeemaStudio')
+  const activeBgStyle = isDark
+    ? (config.logoBgDark ?? 'transparent')
+    : (config.logoBgLight ?? 'transparent')
+
+  const handleSelectBg = async (mode: 'logoBgLight' | 'logoBgDark', value: LogoBackgroundStyle) => {
+    setSavingBg(value)
+    try {
+      await updateTenant({ [mode]: value }, { syncRemote: true })
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+    } catch {
+      Alert.alert('Error', 'No se pudo guardar la preferencia de fondo.')
+    } finally {
+      setSavingBg(null)
+    }
+  }
 
   const handleUpload = async (uri: string) => {
     setLocalUri(uri)
@@ -124,7 +142,7 @@ export default function LogoNegocioScreen() {
 
       <Animated.View entering={FadeIn.duration(400)} style={styles.logoWrap}>
         {currentLogo ? (
-          <Image source={{ uri: currentLogo }} style={styles.logoImage} resizeMode="cover" />
+          <TenantLogoImage uri={currentLogo} size={LOGO_SIZE} bgStyle={activeBgStyle} />
         ) : (
           <View
             style={[
@@ -195,7 +213,84 @@ export default function LogoNegocioScreen() {
           </ThemedText>
         </Pressable>
       )}
+
+      {currentLogo && (
+        <View style={styles.bgSection}>
+          <BgPicker
+            title="Fondo en modo claro"
+            uri={currentLogo}
+            selected={config.logoBgLight ?? 'transparent'}
+            saving={savingBg}
+            theme={theme}
+            onSelect={(id) => handleSelectBg('logoBgLight', id)}
+          />
+          <BgPicker
+            title="Fondo en modo oscuro"
+            uri={currentLogo}
+            selected={config.logoBgDark ?? 'transparent'}
+            saving={savingBg}
+            theme={theme}
+            onSelect={(id) => handleSelectBg('logoBgDark', id)}
+          />
+        </View>
+      )}
     </ScrollView>
+  )
+}
+
+interface BgPickerProps {
+  title: string
+  uri: string
+  selected: LogoBackgroundStyle
+  saving: LogoBackgroundStyle | null
+  theme: { text: string; textSecondary: string; primary: string; border: string }
+  onSelect: (id: LogoBackgroundStyle) => void
+}
+
+function BgPicker({ title, uri, selected, saving, theme, onSelect }: BgPickerProps) {
+  return (
+    <View style={styles.bgGroup}>
+      <ThemedText style={[styles.bgGroupTitle, { color: theme.text }]}>{title}</ThemedText>
+      <View style={styles.swatchRow}>
+        {BG_OPTIONS.map((opt) => {
+          const isSelected = selected === opt.id
+          return (
+            <Pressable
+              key={opt.id}
+              onPress={() => onSelect(opt.id)}
+              disabled={saving !== null}
+              style={styles.swatchItem}
+            >
+              <View
+                style={[
+                  styles.swatchRing,
+                  {
+                    borderColor: isSelected ? theme.primary : theme.border,
+                    borderWidth: isSelected ? 2 : 1,
+                    opacity: saving === opt.id ? 0.5 : 1,
+                  },
+                ]}
+              >
+                <TenantLogoImage uri={uri} size={SWATCH_SIZE} bgStyle={opt.id} />
+                {saving === opt.id && (
+                  <View style={styles.swatchOverlay}>
+                    <ActivityIndicator size="small" color={theme.primary} />
+                  </View>
+                )}
+              </View>
+              <ThemedText
+                style={[
+                  styles.swatchLabel,
+                  { color: isSelected ? theme.primary : theme.textSecondary },
+                ]}
+              >
+                {opt.label}
+              </ThemedText>
+            </Pressable>
+          )
+        })}
+      </View>
+    </View>
   )
 }
 
@@ -252,4 +347,32 @@ const styles = StyleSheet.create({
   },
   pickButtonLabel: { fontSize: 15, fontWeight: '600' },
   removeButton: { marginTop: Spacing.sm, padding: Spacing.sm },
+  bgSection: { width: '100%', marginTop: Spacing.xl, gap: Spacing.xl },
+  bgGroup: { width: '100%' },
+  bgGroupTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    marginBottom: Spacing.md,
+  },
+  swatchRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  swatchItem: { alignItems: 'center', gap: Spacing.xs },
+  swatchRing: {
+    width: SWATCH_SIZE + 8,
+    height: SWATCH_SIZE + 8,
+    borderRadius: (SWATCH_SIZE + 8) / 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  swatchOverlay: {
+    ...StyleSheet.absoluteFill,
+    borderRadius: (SWATCH_SIZE + 8) / 2,
+    backgroundColor: 'rgba(0,0,0,0.35)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  swatchLabel: { fontSize: 11, fontWeight: '500', textAlign: 'center' },
 })

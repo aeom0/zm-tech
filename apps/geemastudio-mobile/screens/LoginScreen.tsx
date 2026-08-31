@@ -13,11 +13,12 @@
  * - Animaciones: FadeInUp para hero, FadeInDown para card y link
  */
 import React, { useState } from 'react'
-import { View, StyleSheet, TextInput, Pressable, Image } from 'react-native'
+import { View, StyleSheet, TextInput, Pressable } from 'react-native'
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
+import { TenantLogoImage } from '@/components/TenantLogoImage'
 import {
   OnboardingLayout,
   GradientCTAButton,
@@ -68,7 +69,13 @@ export function LoginScreen({ onSuccess, onCreateBusiness }: LoginScreenProps = 
       <View style={styles.inner}>
         <Animated.View entering={FadeInUp.duration(500)} style={styles.heroWrap}>
           {hasLogo ? (
-            <Image source={{ uri: config.logo }} style={styles.logoImage} resizeMode="cover" />
+            <TenantLogoImage
+              uri={config.logo as string}
+              size={LOGO_SIZE}
+              bgStyle={config.logoBgDark}
+              style={styles.logoImage}
+              borderColor="rgba(255,255,255,0.15)"
+            />
           ) : (
             <DiamondSparkle size={72} />
           )}
@@ -191,13 +198,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.xl,
     marginTop: Spacing.lg,
   },
-  logoImage: {
-    width: LOGO_SIZE,
-    height: LOGO_SIZE,
-    borderRadius: LOGO_SIZE / 2,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
-  },
+  logoImage: {},
   brandText: {
     alignItems: 'center',
     marginBottom: Spacing['2xl'],

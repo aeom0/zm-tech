@@ -1,4 +1,4 @@
-export type { TenantConfig } from './types'
+export type { TenantConfig, LogoBackgroundStyle } from './types'
 export { defaultTenantConfig } from './defaults'
 export * from './presets'
 export * from './iana-timezone'
