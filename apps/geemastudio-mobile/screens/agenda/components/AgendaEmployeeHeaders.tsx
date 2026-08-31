@@ -52,9 +52,9 @@ export function AgendaEmployeeHeaders({
           <>
             <View
               style={{
-                width: 36,
-                height: 36,
-                borderRadius: 18,
+                width: 46,
+                height: 46,
+                borderRadius: 23,
                 borderWidth: selected ? 3 : 2,
                 borderColor: selected ? theme.primary : emp.color,
                 backgroundColor: theme.backgroundSecondary,
@@ -74,7 +74,7 @@ export function AgendaEmployeeHeaders({
                 <ThemedText
                   style={{
                     color: emp.color,
-                    fontSize: 14,
+                    fontSize: 17,
                     fontWeight: '700',
                   }}
                 >

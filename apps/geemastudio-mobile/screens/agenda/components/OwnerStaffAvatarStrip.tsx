@@ -67,9 +67,9 @@ export function OwnerStaffAvatarStrip({
           >
             <View
               style={{
-                width: 44,
-                height: 44,
-                borderRadius: 22,
+                width: 56,
+                height: 56,
+                borderRadius: 28,
                 borderWidth: selectedEmployeeId === emp.id ? 3 : 2,
                 borderColor: selectedEmployeeId === emp.id ? theme.primary : emp.color,
                 backgroundColor: theme.backgroundSecondary,
@@ -89,7 +89,7 @@ export function OwnerStaffAvatarStrip({
                 <ThemedText
                   style={{
                     color: emp.color,
-                    fontSize: 16,
+                    fontSize: 20,
                     fontWeight: '700',
                   }}
                 >
