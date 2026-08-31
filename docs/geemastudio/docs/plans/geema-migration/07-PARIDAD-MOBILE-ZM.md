@@ -99,7 +99,7 @@ Geema usa grid día/semana + columnas staff; ZM usa grid 10–18 h Lima con medi
 
 **Cerrado (S5C-11):** `screens/personal/lib/employeesAdapter.ts` + `useEmployeesQuery` / `useActiveEmployees`. Writes ZM omiten `payment_mode`/`salary_amount`; UI oculta modo salario para ZM. Agenda/Asignar/Finanzas/Dashboard/Validación/Personal comparten la misma query.
 
-**Actualización (30-ago-2026):** se agregó `avatar_url text` a `employees` en producción ZM (`udelxwwnyivknslueerr`, vía Management API — conexión directa a Postgres bloqueada en el sandbox), se creó el bucket público `employee-avatars` en Storage, y se subieron/asignaron las fotos reales de Vanessa y Stephani (fuente: sitio web ZM Lash / Sanity CMS). `employeesAdapter.ts` ya no anula `avatar_url` para el dialecto ZM — la columna es común a ambos esquemas ahora, solo `payment_mode`/`salary_amount` siguen siendo geema-only. La app standalone de ZM Lash (`apps/mobile` en este repo) no tiene feature de avatar por empleado, así que no requiere cambios de código — solo se sincroniza este doc. Detalle: `zm-tech/.cursor/skills/geemastudio-dev/SKILL.md` §7 y `zm-tech/docs/geemastudio/CHANGELOG.md`.
+**Actualización (30-ago-2026):** se agregó `avatar_url text` a `employees` en producción ZM (`udelxwwnyivknslueerr`, vía Management API — conexión directa a Postgres bloqueada en el sandbox), se creó el bucket público `employee-avatars` en Storage, y se subieron/asignaron las fotos reales de Vanessa y Stephani (fuente: sitio web ZM Lash / Sanity CMS). `employeesAdapter.ts` ya no anula `avatar_url` para el dialecto ZM — la columna es común a ambos esquemas ahora, solo `payment_mode`/`salary_amount` siguen siendo geema-only. La app standalone de ZM Lash (`apps/mobile` en este repo) no tiene feature de avatar por empleado, así que no requiere cambios de código — solo se sincroniza este doc. Detalle: `zm-tech/.cursor/skills/geemastudio.md` §8 y `zm-tech/docs/geemastudio/CHANGELOG.md`.
 
 Prod tenant: Vanessa, Stephani, Chica Externa (3 columnas). Staff sin `profiles.employee_id` no ve “su” columna (dato, no bug de cableado).
 
@@ -161,6 +161,21 @@ Geema y ZM consumen `@zmtech/shared-schema` con columnas canónicas + migración
 
 **No bloqueante para S5-C** — documentar como fase final convergencia apps.
 
+### Schema canónico (prod ZM) — regla operativa 30-ago 2026
+
+**`udelxwwnyivknslueerr` es la fuente de verdad DDL.** Geema (shadow) consume; no reescribe.
+
+| Objeto | Estado prod | Acción Geema |
+|--------|-------------|--------------|
+| `appointment_services` | Existe (`id` uuid, `pack_id`, `tenant_id`) | **No** `CREATE TABLE` |
+| RLS `apt_svc_*` | `is_admin()` + `current_tenant_id()` | **No** policies con `get_my_role()` (no existe) |
+| `appointments.service_ids` / `reference_image_*` | Existen | **No** `ADD COLUMN` |
+| Índices lookup `appointment_id|service_id|employee_id` | ✅ `20260831011759_idx_appointment_services_lookup` | Delta seguro ya aplicado en ZM |
+
+Scripts Geema tipo `20260830_appointment_services_multiservicio.sql` (PR [zm-tech #31](https://github.com/aeom0/zm-tech/pull/31)): solo **greenfield** / CI en BD vacía. En shadow ZM: merge código OK; **no** correr el SQL completo.
+
+Convergencia corta: Drizzle Geema → **superset tipado de prod**; adaptadores mobile se apagan; extras solo-Geema (`payment_mode`, etc.) llegan a prod solo con migration canónica en repo ZM.
+
 ---
 
 ## Tareas (S5-C)
@@ -171,7 +186,7 @@ Geema y ZM consumen `@zmtech/shared-schema` con columnas canónicas + migración
 | S5C-2 | Adaptador `usePromosData` + `usePromotionItems` (total desde ítems) | zm-tech | M | P0 | ✅ PR #30 |
 | S5C-3 | Validar `tenant_settings` ZM: timezone `America/Lima`, horarios | zm-tech + BD | S | P0 | ✅ PR #30 |
 | S5C-11 | Adaptador `employees` (sin `payment_mode`/`salary_amount` ZM; `avatar_url` sumado 30-ago) + cache única con agenda | zm-tech | S | P0 | ✅ PR #30 |
-| S5C-4 | Agenda: cargar `appointment_services` + multi-servicio en detalle | zm-tech | L | P1 | Pendiente |
+| S5C-4 | Agenda: cargar `appointment_services` + multi-servicio en detalle | zm-tech | L | P1 | En curso (PR #31; schema prod ya listo) |
 | S5C-5 | Portar referencias diseño + badge agenda (WABA) | zm-tech | L | P1 | Pendiente |
 | S5C-6 | Portar `HolidayScreen` + reglas feriado/dom | zm-tech | M | P1 | Pendiente |
 | S5C-7 | Finanzas: panel ejecutivo + `PricingBreakdownCard` (WABA) | zm-tech | L | P1 | Pendiente |
