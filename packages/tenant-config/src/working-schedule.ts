@@ -97,6 +97,29 @@ function minutosDesdeMedianoche(hhmm: string): number {
 }
 
 /**
+ * Igual que `esCeldaAgendaEnHorarioLaboral` pero con precisión de minuto — para
+ * validar un horario elegido con chips de 15 min (no solo la celda de hora entera).
+ */
+export function esInstanteEnHorarioLaboral(
+  fechaColumna: Date,
+  minutoDelDia: number,
+  businessHours: TenantConfig['businessHours'],
+  timeZone: string
+): boolean {
+  const key = diaLaboralKeyDesdeFechaEnZona(fechaColumna, timeZone)
+  const franja = businessHours[key]
+  if (franja === null || franja === undefined) {
+    return false
+  }
+  const openM = minutosDesdeMedianoche(franja.open)
+  const closeM = minutosDesdeMedianoche(franja.close)
+  if (!Number.isFinite(openM) || !Number.isFinite(closeM) || closeM <= openM) {
+    return false
+  }
+  return minutoDelDia >= openM && minutoDelDia < closeM
+}
+
+/**
  * Celda de agenda = intervalo [hour:00, hour+1:00) en la fecha de la columna,
  * interpretado en la zona IANA del negocio (coincide con citas en BD como instantes).
  */
@@ -121,7 +144,12 @@ export function esCeldaAgendaEnHorarioLaboral(
   return slotStart < closeM && slotEnd > openM
 }
 
-/** Margen de una hora antes/después del horario configurado. */
+/**
+ * Horas enteras que cubren el horario laboral configurado (unión de todos los
+ * días con franja activa), sin margen — cada hora devuelta se muestra con su
+ * etiqueta en la grilla de agenda. Ver `AGENDA_BORDE_VISUAL_MIN` para el
+ * espacio visual extra (sin etiqueta) que la UI agrega antes/después.
+ */
 export function horasVisiblesParaAgenda(
   businessHours: TenantConfig['businessHours'] | null | undefined
 ): number[] {
@@ -144,11 +172,16 @@ export function horasVisiblesParaAgenda(
   if (!hayAlguno) {
     return Array.from({ length: 10 }, (_, i) => i + 10)
   }
-  const pad = 1
-  const first = Math.max(0, lo - pad)
-  const last = Math.min(23, hi + pad)
-  return Array.from({ length: last - first + 1 }, (_, i) => first + i)
+  return Array.from({ length: hi - lo + 1 }, (_, i) => lo + i)
 }
+
+/**
+ * Minutos de espacio visual (sin hora etiquetada) que la grilla de agenda
+ * agrega antes de la primera hora y después de la última — cubre casos como
+ * una cita agendada 30 min antes/después del horario configurado por
+ * excepción, sin que la grilla muestre una hora fuera de servicio.
+ */
+export const AGENDA_BORDE_VISUAL_MIN = 30
 
 export function diaTieneFranjaAgenda(
   fecha: Date,

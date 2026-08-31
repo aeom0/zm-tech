@@ -5,6 +5,13 @@ import { Feather } from '@expo/vector-icons'
 import { ThemedText } from '@/components/ThemedText'
 import { Spacing } from '@/constants/theme'
 
+import type { TenantConfig, TimeFormatPreference } from '@zmtech/tenant-config'
+import {
+  formatoHoraInstanteEnZona,
+  instanteCitaEnZona,
+  zonaIANASegura,
+} from '@zmtech/tenant-config'
+
 import type {
   AgendaEmployee,
   AgendaFormState,
@@ -14,6 +21,7 @@ import type {
 import { agendaStyles as styles } from '../agendaStyles'
 import { CategoriaSection } from './newAppointment/CategoriaSection'
 import { ClienteSection } from './newAppointment/ClienteSection'
+import { FechaHoraSection } from './newAppointment/FechaHoraSection'
 import type { NewAppointmentModalTheme } from './newAppointment/modalTheme'
 import { ServicioSection } from './newAppointment/ServicioSection'
 import { StaffSection } from './newAppointment/StaffSection'
@@ -29,6 +37,15 @@ interface NewAppointmentModalProps {
   currencySymbol: string
   selectedDate: Date
   selectedHour: number
+  selectedMinute: number
+  agendaHours: number[]
+  businessHours: TenantConfig['businessHours']
+  timeZone: string
+  language: TenantConfig['locale']['language']
+  timeFormat: TimeFormatPreference
+  onChangeDate: (d: Date) => void
+  onChangeHour: (h: number) => void
+  onChangeMinute: (m: number) => void
   formData: AgendaFormState
   setFormData: React.Dispatch<React.SetStateAction<AgendaFormState>>
   categories: AgendaServiceCategory[]
@@ -62,6 +79,15 @@ export function NewAppointmentModal({
   currencySymbol,
   selectedDate,
   selectedHour,
+  selectedMinute,
+  agendaHours,
+  businessHours,
+  timeZone,
+  language,
+  timeFormat,
+  onChangeDate,
+  onChangeHour,
+  onChangeMinute,
   formData,
   setFormData,
   categories,
@@ -103,7 +129,18 @@ export function NewAppointmentModal({
             <View>
               <ThemedText style={styles.modalTitle}>Nueva Cita</ThemedText>
               <ThemedText style={[styles.modalSubtitle, { color: theme.textMuted }]}>
-                {formatDateLabel(selectedDate)} a las {selectedHour}:00
+                {formatDateLabel(selectedDate)} a las{' '}
+                {formatoHoraInstanteEnZona(
+                  instanteCitaEnZona(
+                    selectedDate,
+                    selectedHour,
+                    zonaIANASegura(timeZone),
+                    selectedMinute
+                  ),
+                  zonaIANASegura(timeZone),
+                  language,
+                  timeFormat
+                )}
               </ThemedText>
             </View>
             <Pressable
@@ -123,6 +160,21 @@ export function NewAppointmentModal({
               formData={formData}
               setFormData={setFormData}
               clientLabel={clientSectionTitle}
+            />
+
+            <FechaHoraSection
+              theme={theme}
+              selectedDate={selectedDate}
+              selectedHour={selectedHour}
+              selectedMinute={selectedMinute}
+              agendaHours={agendaHours}
+              businessHours={businessHours}
+              timeZone={timeZone}
+              language={language}
+              timeFormat={timeFormat}
+              onChangeDate={onChangeDate}
+              onChangeHour={onChangeHour}
+              onChangeMinute={onChangeMinute}
             />
 
             <CategoriaSection

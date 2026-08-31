@@ -7,6 +7,9 @@ import { Spacing } from '@/constants/theme'
 
 import type { AgendaEmployee } from '../types'
 
+/** Máximo de columnas visibles sin scroll horizontal. */
+const MAX_SIN_SCROLL = 4
+
 interface OwnerStaffAvatarStripProps {
   employees: AgendaEmployee[]
   theme: {
@@ -22,6 +25,8 @@ interface OwnerStaffAvatarStripProps {
   onEmployeePress?: (employeeId: string, index: number) => void
   /** Fila activa como filtro de citas; null = todos */
   selectedEmployeeId?: string | null
+  /** Citas del día por profesional (ya filtradas por el status filter activo) */
+  appointmentCounts?: Record<string, number>
 }
 
 export function OwnerStaffAvatarStrip({
@@ -32,6 +37,7 @@ export function OwnerStaffAvatarStrip({
   onScroll,
   onEmployeePress,
   selectedEmployeeId = null,
+  appointmentCounts,
 }: OwnerStaffAvatarStripProps) {
   if (employees.length === 0) return null
 
@@ -44,16 +50,19 @@ export function OwnerStaffAvatarStrip({
       onScroll={onScroll ? (e) => onScroll(e.nativeEvent.contentOffset.x) : undefined}
       style={{ flexGrow: 0, flexShrink: 0 }}
       contentContainerStyle={{
+        flexGrow: 1,
         paddingHorizontal: Spacing.md,
         paddingTop: 2,
         paddingBottom: 2,
         gap: Spacing.sm,
         alignItems: 'flex-start',
+        justifyContent: employees.length <= MAX_SIN_SCROLL ? 'center' : 'flex-start',
       }}
     >
       {employees.map((emp, index) => {
         const firstName = emp.name?.trim().split(/\s+/)[0] ?? '?'
         const initial = firstName.slice(0, 1).toUpperCase()
+        const count = appointmentCounts?.[emp.id] ?? 0
 
         return (
           <Pressable
@@ -65,36 +74,69 @@ export function OwnerStaffAvatarStrip({
               opacity: pressed ? 0.7 : 1,
             })}
           >
-            <View
-              style={{
-                width: 56,
-                height: 56,
-                borderRadius: 28,
-                borderWidth: selectedEmployeeId === emp.id ? 3 : 2,
-                borderColor: selectedEmployeeId === emp.id ? theme.primary : emp.color,
-                backgroundColor: theme.backgroundSecondary,
-                alignItems: 'center',
-                justifyContent: 'center',
-                overflow: 'hidden',
-              }}
-            >
-              {emp.avatar_url?.trim() ? (
-                <Image
-                  source={{ uri: emp.avatar_url.trim() }}
-                  style={{ width: '100%', height: '100%' }}
-                  contentFit="cover"
-                  transition={120}
-                />
-              ) : (
-                <ThemedText
+            <View style={{ width: 56, height: 56 }}>
+              <View
+                style={{
+                  width: 56,
+                  height: 56,
+                  borderRadius: 28,
+                  borderWidth: selectedEmployeeId === emp.id ? 3 : 2,
+                  borderColor: selectedEmployeeId === emp.id ? theme.primary : emp.color,
+                  backgroundColor: theme.backgroundSecondary,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  overflow: 'hidden',
+                }}
+              >
+                {emp.avatar_url?.trim() ? (
+                  <Image
+                    source={{ uri: emp.avatar_url.trim() }}
+                    style={{ width: '100%', height: '100%' }}
+                    contentFit="cover"
+                    transition={120}
+                  />
+                ) : (
+                  <ThemedText
+                    style={{
+                      color: emp.color,
+                      fontSize: 20,
+                      fontWeight: '700',
+                    }}
+                  >
+                    {initial}
+                  </ThemedText>
+                )}
+              </View>
+              {count > 0 && (
+                <View
                   style={{
-                    color: emp.color,
-                    fontSize: 20,
-                    fontWeight: '700',
+                    position: 'absolute',
+                    top: -2,
+                    right: -2,
+                    minWidth: 18,
+                    height: 18,
+                    borderRadius: 9,
+                    paddingHorizontal: 4,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: theme.primary,
+                    borderWidth: 1.5,
+                    borderColor: theme.backgroundSecondary,
                   }}
                 >
-                  {initial}
-                </ThemedText>
+                  <ThemedText
+                    style={{
+                      fontSize: 10,
+                      lineHeight: 12,
+                      fontWeight: '700',
+                      color: '#FFFFFF',
+                      textAlign: 'center',
+                      includeFontPadding: false,
+                    }}
+                  >
+                    {count}
+                  </ThemedText>
+                </View>
               )}
             </View>
             <ThemedText

@@ -1,25 +1,31 @@
 import React from 'react'
-import { View, Modal, ScrollView, Pressable, ActivityIndicator } from 'react-native'
+import { View, Modal, Pressable, ActivityIndicator } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
-import { Spacing } from '@/constants/theme'
+import { ScrollFadeRow } from '@/components/ScrollFadeRow'
+import { BorderRadius, Spacing } from '@/constants/theme'
 
 import type { TenantConfig } from '@zmtech/tenant-config'
 import type { TimeFormatPreference } from '@zmtech/tenant-config'
 import {
   diaDelMesEnZona,
   diaTieneFranjaAgenda,
-  esCeldaAgendaEnHorarioLaboral,
+  esInstanteEnHorarioLaboral,
   formatoHoraAgendaSlot,
+  formatoHoraInstanteEnZona,
   indiceDiaSemanaJSEnZona,
   instanteCitaDesdeTexto,
+  instanteCitaEnZona,
   zonaIANASegura,
 } from '@zmtech/tenant-config'
 
 import { DAYS_ES } from '../constants'
 import type { AgendaAppointment, AgendaService } from '../types'
 import { agendaStyles as styles } from '../agendaStyles'
+
+/** Incremento de minutos del picker de hora exacta. */
+const MINUTOS_CHIPS = [0, 15, 30, 45] as const
 
 type Theme = {
   backgroundDefault: string
@@ -47,8 +53,10 @@ interface AppointmentDetailModalProps {
   weekDays: Date[]
   rescheduleDate: Date | null
   rescheduleHour: number
+  rescheduleMinute: number
   onRescheduleDate: (d: Date) => void
   onRescheduleHour: (h: number) => void
+  onRescheduleMinute: (m: number) => void
   onReschedule: () => void
   onDelete: () => void
   updatePending: boolean
@@ -73,8 +81,10 @@ export function AppointmentDetailModal({
   weekDays,
   rescheduleDate,
   rescheduleHour,
+  rescheduleMinute,
   onRescheduleDate,
   onRescheduleHour,
+  onRescheduleMinute,
   onReschedule,
   onDelete,
   updatePending,
@@ -85,7 +95,12 @@ export function AppointmentDetailModal({
 }: AppointmentDetailModalProps) {
   const enFranjaConfigurada =
     !!rescheduleDate &&
-    esCeldaAgendaEnHorarioLaboral(rescheduleDate, rescheduleHour, businessHours, timeZone)
+    esInstanteEnHorarioLaboral(
+      rescheduleDate,
+      rescheduleHour * 60 + rescheduleMinute,
+      businessHours,
+      timeZone
+    )
 
   const disableReschedule =
     updatePending || isBusy || availabilityStatus === 'checking' || !enFranjaConfigurada
@@ -163,10 +178,11 @@ export function AppointmentDetailModal({
                 <ThemedText style={[styles.sectionLabel, { color: theme.textSecondary }]}>
                   Reprogramar a
                 </ThemedText>
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
+                <ScrollFadeRow
+                  backgroundColor={theme.backgroundDefault}
                   contentContainerStyle={styles.chipsContainer}
+                  showArrows
+                  arrowColor={theme.textSecondary}
                 >
                   {weekDays.map((d) => {
                     const isSelected = rescheduleDate?.toDateString() === d.toDateString()
@@ -201,17 +217,19 @@ export function AppointmentDetailModal({
                       </Pressable>
                     )
                   })}
-                </ScrollView>
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={[styles.chipsContainer, { marginTop: Spacing.sm }]}
+                </ScrollFadeRow>
+                <ScrollFadeRow
+                  backgroundColor={theme.backgroundDefault}
+                  contentContainerStyle={styles.chipsContainer}
+                  showArrows
+                  arrowColor={theme.textSecondary}
+                  style={{ marginTop: Spacing.sm }}
                 >
                   {agendaHours.map((h) => {
                     const isSelected = rescheduleHour === h
                     const horaPermitida =
                       !!rescheduleDate &&
-                      esCeldaAgendaEnHorarioLaboral(rescheduleDate, h, businessHours, timeZone)
+                      esInstanteEnHorarioLaboral(rescheduleDate, h * 60, businessHours, timeZone)
                     return (
                       <Pressable
                         key={h}
@@ -244,13 +262,84 @@ export function AppointmentDetailModal({
                       </Pressable>
                     )
                   })}
-                </ScrollView>
+                </ScrollFadeRow>
+                <ScrollFadeRow
+                  backgroundColor={theme.backgroundDefault}
+                  contentContainerStyle={styles.chipsContainer}
+                  showArrows
+                  arrowColor={theme.textSecondary}
+                  style={{ marginTop: Spacing.sm }}
+                >
+                  {MINUTOS_CHIPS.map((m) => {
+                    const isSelected = rescheduleMinute === m
+                    const permitido =
+                      !!rescheduleDate &&
+                      esInstanteEnHorarioLaboral(
+                        rescheduleDate,
+                        rescheduleHour * 60 + m,
+                        businessHours,
+                        timeZone
+                      )
+                    return (
+                      <Pressable
+                        key={m}
+                        style={[
+                          styles.employeeChip,
+                          { borderColor: theme.border },
+                          isSelected && {
+                            backgroundColor: theme.primary,
+                            borderColor: theme.primary,
+                          },
+                          !permitido && { opacity: 0.35 },
+                        ]}
+                        onPress={() => {
+                          if (permitido) onRescheduleMinute(m)
+                        }}
+                      >
+                        <ThemedText
+                          style={[styles.employeeChipName, isSelected && { color: '#FFFFFF' }]}
+                        >
+                          :{String(m).padStart(2, '0')}
+                        </ThemedText>
+                      </Pressable>
+                    )
+                  })}
+                </ScrollFadeRow>
                 {rescheduleDate && !enFranjaConfigurada ? (
                   <ThemedText
                     style={[styles.summaryLabel, { color: theme.error, marginTop: Spacing.sm }]}
                   >
                     Ese día u hora está fuera de la franja configurada del negocio.
                   </ThemedText>
+                ) : rescheduleDate ? (
+                  <View
+                    style={{
+                      marginTop: Spacing.sm,
+                      paddingVertical: Spacing.sm,
+                      paddingHorizontal: Spacing.md,
+                      borderRadius: BorderRadius.md,
+                      backgroundColor: theme.backgroundSecondary,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      gap: Spacing.xs,
+                    }}
+                  >
+                    <Feather name="clock" size={15} color={theme.primary} />
+                    <ThemedText style={{ fontSize: 14, fontWeight: '700', color: theme.text }}>
+                      Hora seleccionada:{' '}
+                      {formatoHoraInstanteEnZona(
+                        instanteCitaEnZona(
+                          rescheduleDate,
+                          rescheduleHour,
+                          zonaIANASegura(timeZone),
+                          rescheduleMinute
+                        ),
+                        zonaIANASegura(timeZone),
+                        language,
+                        timeFormat
+                      )}
+                    </ThemedText>
+                  </View>
                 ) : null}
               </View>
 

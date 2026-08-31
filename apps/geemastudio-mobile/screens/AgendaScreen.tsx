@@ -1,22 +1,25 @@
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react'
-import { View, Alert, ActivityIndicator, ScrollView } from 'react-native'
+import { View, Alert, ActivityIndicator, ScrollView, Pressable } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { useRoute, useNavigation } from '@react-navigation/native'
 import type { RouteProp } from '@react-navigation/native'
 import * as Haptics from 'expo-haptics'
+import { Feather } from '@expo/vector-icons'
 
 import { useTheme } from '@/hooks/useTheme'
 import { useResponsive } from '@/hooks/useResponsive'
 import { useTenant } from '@/contexts/TenantContext'
 import { useAuth } from '@/contexts/AuthContext'
-import { Spacing } from '@/constants/theme'
+import { Spacing, Shadows } from '@/constants/theme'
 import {
   esCeldaAgendaEnHorarioLaboral,
+  esInstanteEnHorarioLaboral,
   formatoFechaLargaEnZona,
   formatAppointmentWallclock,
   horaCalendarioEnZona,
+  minutosDelDiaEnZona,
   horasVisiblesParaAgenda,
   inicioDiaDelInstanteEnZona,
   inicioDiaHoyEnZonaIANA,
@@ -37,6 +40,7 @@ import {
   type AgendaStatusFilter as AgendaStatusFilterType,
   type OwnerViewMode,
 } from './agenda/types'
+import { filterAppointmentsForOwnerDay } from './agenda/agendaUtils'
 import { useAgendaCalendar } from './agenda/hooks/useAgendaCalendar'
 import { useAgendaQueries, useServicesByCategory } from './agenda/hooks/useAgendaQueries'
 import { useAgendaMutations } from './agenda/hooks/useAgendaMutations'
@@ -46,13 +50,13 @@ import { AgendaWeekDayHeaders } from './agenda/components/AgendaWeekDayHeaders'
 import { AgendaEmployeeHeaders } from './agenda/components/AgendaEmployeeHeaders'
 import { AgendaStatusFilter as AgendaStatusFilterBar } from './agenda/components/AgendaStatusFilter'
 import { AgendaCalendarGrid } from './agenda/components/AgendaCalendarGrid'
-import { AgendaDayKPIStrip } from './agenda/components/AgendaDayKPIStrip'
 import { OwnerDayGrid } from './agenda/components/OwnerDayGrid'
 import { OwnerWeekGrid } from './agenda/components/OwnerWeekGrid'
 import { OwnerStaffAvatarStrip } from './agenda/components/OwnerStaffAvatarStrip'
 import { StaffAgendaTimelineView } from './agenda/components/StaffAgendaTimelineView'
 import { NewAppointmentModal } from './agenda/components/NewAppointmentModal'
 import { AppointmentDetailModal } from './agenda/components/AppointmentDetailModal'
+import { AppointmentPreviewModal } from './agenda/components/AppointmentPreviewModal'
 
 export default function AgendaScreen() {
   const headerHeight = useHeaderHeight()
@@ -78,9 +82,13 @@ export default function AgendaScreen() {
   const [modalVisible, setModalVisible] = useState(false)
   const [detailModalVisible, setDetailModalVisible] = useState(false)
   const [appointmentDetail, setAppointmentDetail] = useState<AgendaAppointment | null>(null)
+  const [previewModalVisible, setPreviewModalVisible] = useState(false)
+  const [previewAppointment, setPreviewAppointment] = useState<AgendaAppointment | null>(null)
   const [rescheduleDate, setRescheduleDate] = useState<Date | null>(null)
   const [rescheduleHour, setRescheduleHour] = useState<number>(10)
+  const [rescheduleMinute, setRescheduleMinute] = useState<number>(0)
   const [selectedHour, setSelectedHour] = useState(9)
+  const [selectedMinute, setSelectedMinute] = useState(0)
   const [statusFilter, setStatusFilter] = useState<AgendaStatusFilterType>('all')
   /** Filtro por columna de empleado (owner día / grid tablet): solo citas de ese id; null = todos */
   const [employeeColumnFilterId, setEmployeeColumnFilterId] = useState<string | null>(null)
@@ -128,6 +136,21 @@ export default function AgendaScreen() {
     return appointments.filter((a) => a.employee_id === employeeColumnFilterId)
   }, [appointments, employeeColumnFilterId])
 
+  /** Citas del día por profesional, respetando el filtro de estado activo — para el badge del avatar strip. */
+  const dailyAppointmentCountsByEmployee = useMemo(() => {
+    const counts: Record<string, number> = {}
+    for (const emp of employees) {
+      counts[emp.id] = filterAppointmentsForOwnerDay(
+        appointments,
+        selectedDate,
+        [emp.id],
+        statusFilter,
+        tenantTz
+      ).length
+    }
+    return counts
+  }, [appointments, employees, selectedDate, statusFilter, tenantTz])
+
   const servicesByCategory = useServicesByCategory(services, formData.categoryId)
   const selectedCategory = useMemo(
     () => categories.find((c) => c.id === formData.categoryId),
@@ -170,6 +193,7 @@ export default function AgendaScreen() {
         const aptInst = instanteCitaDesdeTexto(apt.date, tenantTz)
         setRescheduleDate(inicioDiaDelInstanteEnZona(aptInst, tenantTz))
         setRescheduleHour(horaCalendarioEnZona(aptInst, tenantTz))
+        setRescheduleMinute(minutosDelDiaEnZona(aptInst, tenantTz) % 60)
         setDetailModalVisible(true)
       }
       ;(
@@ -214,9 +238,10 @@ export default function AgendaScreen() {
     if (staffVista) setEmployeeColumnFilterId(null)
   }, [staffVista])
 
-  const openNewAppointment = (date: Date, hour: number) => {
+  const openNewAppointment = (date: Date, hour: number, minute = 0) => {
     setSelectedDate(date)
     setSelectedHour(hour)
+    setSelectedMinute(minute)
     const firstCategoryId = categories[0]?.id ?? ''
     const firstServiceInCategory = firstCategoryId
       ? services.find((s) => s.category_id === firstCategoryId)
@@ -233,13 +258,45 @@ export default function AgendaScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
   }
 
+  const handleNewAppointmentDateChange = useCallback(
+    (d: Date) => {
+      setSelectedDate(d)
+      if (!esCeldaAgendaEnHorarioLaboral(d, selectedHour, businessHoursNorm, tenantTz)) {
+        const first = agendaHours.find((h) =>
+          esCeldaAgendaEnHorarioLaboral(d, h, businessHoursNorm, tenantTz)
+        )
+        if (first !== undefined) setSelectedHour(first)
+      }
+    },
+    [agendaHours, businessHoursNorm, selectedHour, tenantTz]
+  )
+
   const openAppointmentDetail = (apt: AgendaAppointment) => {
     setAppointmentDetail(apt)
     const aptInst = instanteCitaDesdeTexto(apt.date, tenantTz)
     setRescheduleDate(inicioDiaDelInstanteEnZona(aptInst, tenantTz))
     setRescheduleHour(horaCalendarioEnZona(aptInst, tenantTz))
+    setRescheduleMinute(minutosDelDiaEnZona(aptInst, tenantTz) % 60)
     setDetailModalVisible(true)
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+  }
+
+  const openAppointmentPreview = (apt: AgendaAppointment) => {
+    setPreviewAppointment(apt)
+    setPreviewModalVisible(true)
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+  }
+
+  const closePreviewModal = () => {
+    setPreviewModalVisible(false)
+    setPreviewAppointment(null)
+  }
+
+  const openEditFromPreview = () => {
+    if (!previewAppointment) return
+    const apt = previewAppointment
+    closePreviewModal()
+    openAppointmentDetail(apt)
   }
 
   const handleDeleteAppointment = () => {
@@ -257,12 +314,17 @@ export default function AgendaScreen() {
   const handleReschedule = () => {
     if (!appointmentDetail || !rescheduleDate) return
     if (
-      !esCeldaAgendaEnHorarioLaboral(rescheduleDate, rescheduleHour, businessHoursNorm, tenantTz)
+      !esInstanteEnHorarioLaboral(
+        rescheduleDate,
+        rescheduleHour * 60 + rescheduleMinute,
+        businessHoursNorm,
+        tenantTz
+      )
     ) {
       Alert.alert('Fuera de horario', 'Ese día u hora está fuera de la franja del negocio.')
       return
     }
-    const newDate = instanteCitaEnZona(rescheduleDate, rescheduleHour, tenantTz)
+    const newDate = instanteCitaEnZona(rescheduleDate, rescheduleHour, tenantTz, rescheduleMinute)
     updateAppointmentMutation.mutate({
       id: appointmentDetail.id,
       date: formatAppointmentWallclock(newDate, tenantTz),
@@ -284,11 +346,18 @@ export default function AgendaScreen() {
       Alert.alert('Error', `Selecciona ${config.terminology.staffSingular.toLowerCase()}`)
       return
     }
-    if (!esCeldaAgendaEnHorarioLaboral(selectedDate, selectedHour, businessHoursNorm, tenantTz)) {
+    if (
+      !esInstanteEnHorarioLaboral(
+        selectedDate,
+        selectedHour * 60 + selectedMinute,
+        businessHoursNorm,
+        tenantTz
+      )
+    ) {
       Alert.alert('Fuera de horario', 'Esa hora está fuera de la franja configurada.')
       return
     }
-    const appointmentDate = instanteCitaEnZona(selectedDate, selectedHour, tenantTz)
+    const appointmentDate = instanteCitaEnZona(selectedDate, selectedHour, tenantTz, selectedMinute)
     createMutation.mutate({
       client_name: formData.clientName.trim(),
       client_phone: formData.clientPhone.trim() || undefined,
@@ -304,8 +373,8 @@ export default function AgendaScreen() {
 
   const candidateStartDate = useMemo(() => {
     if (!modalVisible) return null
-    return instanteCitaEnZona(selectedDate, selectedHour, tenantTz)
-  }, [modalVisible, selectedDate, selectedHour, tenantTz])
+    return instanteCitaEnZona(selectedDate, selectedHour, tenantTz, selectedMinute)
+  }, [modalVisible, selectedDate, selectedHour, selectedMinute, tenantTz])
 
   const availability = useAvailabilityCheck({
     employeeId: formData.employeeId,
@@ -318,8 +387,15 @@ export default function AgendaScreen() {
 
   const rescheduleStartDate = useMemo(() => {
     if (!detailModalVisible || !appointmentDetail || !rescheduleDate) return null
-    return instanteCitaEnZona(rescheduleDate, rescheduleHour, tenantTz)
-  }, [appointmentDetail, detailModalVisible, rescheduleDate, rescheduleHour, tenantTz])
+    return instanteCitaEnZona(rescheduleDate, rescheduleHour, tenantTz, rescheduleMinute)
+  }, [
+    appointmentDetail,
+    detailModalVisible,
+    rescheduleDate,
+    rescheduleHour,
+    rescheduleMinute,
+    tenantTz,
+  ])
 
   const rescheduleAvailability = useAvailabilityCheck({
     employeeId: appointmentDetail?.employee_id ?? '',
@@ -362,6 +438,7 @@ export default function AgendaScreen() {
       agendaHours[0] ??
       9
     setSelectedHour(primeraHora)
+    setSelectedMinute(0)
     const firstCategoryId = categories[0]?.id ?? ''
     const firstServiceInCategory = firstCategoryId
       ? services.find((s) => s.category_id === firstCategoryId)
@@ -385,6 +462,17 @@ export default function AgendaScreen() {
     services,
     profile?.employee_id,
   ])
+
+  /** FAB "+" de la vista owner — abre Nueva Cita sin depender de tocar una celda del grid. */
+  const openNewAppointmentQuick = useCallback(() => {
+    const primeraHora =
+      agendaHours.find((h) =>
+        esCeldaAgendaEnHorarioLaboral(selectedDate, h, businessHoursNorm, tenantTz)
+      ) ??
+      agendaHours[0] ??
+      9
+    openNewAppointment(selectedDate, primeraHora, 0)
+  }, [agendaHours, selectedDate, businessHoursNorm, tenantTz])
 
   const closeDetailModal = () => {
     setDetailModalVisible(false)
@@ -481,28 +569,9 @@ export default function AgendaScreen() {
                 onScroll={handleStripScroll}
                 onEmployeePress={handleEmployeePress}
                 selectedEmployeeId={employeeColumnFilterId}
+                appointmentCounts={dailyAppointmentCountsByEmployee}
               />
             </View>
-          )}
-
-          {/* KPI strip — solo en vista diaria */}
-          {ownerViewMode === 'day' && (
-            <AgendaDayKPIStrip
-              selectedDate={selectedDate}
-              timeZone={tenantTz}
-              appointments={appointmentsDisplayed}
-              statusFilter={statusFilter}
-              currencySymbol={currencySymbol}
-              theme={{
-                primary: theme.primary,
-                text: theme.text,
-                textSecondary: theme.textSecondary,
-                textMuted: theme.textMuted,
-                border: theme.border,
-                backgroundSecondary: theme.backgroundSecondary,
-                warning: theme.warning,
-              }}
-            />
           )}
 
           <AgendaStatusFilterBar
@@ -535,7 +604,7 @@ export default function AgendaScreen() {
                 card: theme.card,
               }}
               onSelectDay={handleWeekDaySelect}
-              onOpenDetail={openAppointmentDetail}
+              onOpenDetail={openAppointmentPreview}
             />
           ) : (
             <OwnerDayGrid
@@ -565,11 +634,32 @@ export default function AgendaScreen() {
                 card: theme.card,
               }}
               onOpenNew={openNewAppointment}
-              onOpenDetail={openAppointmentDetail}
+              onOpenDetail={openAppointmentPreview}
               gridScrollRef={gridScrollRef as React.RefObject<ScrollView>}
               onGridScroll={handleGridScroll}
             />
           )}
+
+          <Pressable
+            onPress={openNewAppointmentQuick}
+            style={[
+              {
+                position: 'absolute',
+                right: Spacing.lg,
+                bottom: tabBarHeight + Spacing.md,
+                width: 56,
+                height: 56,
+                borderRadius: 28,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: config.theme.primaryColor,
+              },
+              Shadows.lg,
+            ]}
+            accessibilityLabel="Nueva cita"
+          >
+            <Feather name="plus" size={24} color="#FFFFFF" />
+          </Pressable>
         </>
       ) : staffVista ? (
         <StaffAgendaTimelineView
@@ -599,7 +689,7 @@ export default function AgendaScreen() {
             success: theme.success,
             warning: theme.warning,
           }}
-          onOpenDetail={openAppointmentDetail}
+          onOpenDetail={openAppointmentPreview}
           onPressNew={openNewAppointmentForStaff}
         />
       ) : (
@@ -654,7 +744,7 @@ export default function AgendaScreen() {
               backgroundRoot: theme.backgroundRoot,
             }}
             onOpenNew={openNewAppointment}
-            onOpenDetail={openAppointmentDetail}
+            onOpenDetail={openAppointmentPreview}
           />
         </>
       )}
@@ -667,6 +757,15 @@ export default function AgendaScreen() {
         currencySymbol={currencySymbol}
         selectedDate={selectedDate}
         selectedHour={selectedHour}
+        selectedMinute={selectedMinute}
+        agendaHours={agendaHours}
+        businessHours={businessHoursNorm}
+        timeZone={tenantTz}
+        language={config.locale.language}
+        timeFormat={timeFormatReloj}
+        onChangeDate={handleNewAppointmentDateChange}
+        onChangeHour={setSelectedHour}
+        onChangeMinute={setSelectedMinute}
         formData={formData}
         setFormData={setFormData}
         categories={categories}
@@ -706,8 +805,10 @@ export default function AgendaScreen() {
         weekDays={weekDays}
         rescheduleDate={rescheduleDate}
         rescheduleHour={rescheduleHour}
+        rescheduleMinute={rescheduleMinute}
         onRescheduleDate={handleRescheduleDatePick}
         onRescheduleHour={setRescheduleHour}
+        onRescheduleMinute={setRescheduleMinute}
         onReschedule={handleReschedule}
         onDelete={handleDeleteAppointment}
         updatePending={updateAppointmentMutation.isPending}
@@ -715,6 +816,21 @@ export default function AgendaScreen() {
         availabilityStatus={rescheduleAvailability.status}
         isBusy={rescheduleAvailability.isBusy}
         busyUntilLabel={rescheduleAvailability.busyUntilLabel}
+      />
+
+      <AppointmentPreviewModal
+        visible={previewModalVisible}
+        onClose={closePreviewModal}
+        onOpenEdit={openEditFromPreview}
+        isTablet={isTablet}
+        theme={theme}
+        appointment={previewAppointment}
+        employees={employees}
+        services={services}
+        timeZone={tenantTz}
+        language={config.locale.language}
+        timeFormat={timeFormatReloj}
+        currencySymbol={currencySymbol}
       />
     </View>
   )

@@ -95,15 +95,16 @@ export function minutosDelDiaEnZona(date: Date, timeZone: string): number {
   return dt.hour * 60 + dt.minute
 }
 
-/** Instante para guardar en BD: inicio de `horaEntera` en la fecha de columna (tenant). */
+/** Instante para guardar en BD: inicio de `horaEntera:minuto` en la fecha de columna (tenant). */
 export function instanteCitaEnZona(
   fechaColumnaInicioDia: Date,
   horaEntera: number,
-  timeZone: string
+  timeZone: string,
+  minuto = 0
 ): Date {
   const z = zonaIANASegura(timeZone)
   const col = DateTime.fromJSDate(fechaColumnaInicioDia, { zone: z })
-  return col.set({ hour: horaEntera, minute: 0, second: 0, millisecond: 0 }).toJSDate()
+  return col.set({ hour: horaEntera, minute: minuto, second: 0, millisecond: 0 }).toJSDate()
 }
 
 export function formatoFechaLargaEnZona(date: Date, locale: string, timeZone: string): string {
