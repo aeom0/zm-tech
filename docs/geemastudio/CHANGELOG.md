@@ -7,6 +7,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Corregido (31-ago 2026 — Agenda: feedback de nueva cita y reprogramación)
+
+- **Mobile — Agenda**: badge de citas centrado sobre el avatar (antes desalineado); FAB de nueva cita restyled a color del tenant + solo ícono; `ScrollFadeRow` (`components/ScrollFadeRow.tsx`) con flechas táctiles (`showArrows`/`arrowColor`) aplicado a las filas de chips de fecha/hora/minuto en `NewAppointmentModal` y `AppointmentDetailModal`; texto prominente "Hora seleccionada" al reprogramar; selector de minutos (0/15/30/45) agregado al modal de detalle/reprogramación, antes solo disponible al crear cita.
+- **Mobile — círculos de avatar más grandes en Agenda** (commit `17d9978`) y **foto de perfil de Personal habilitada para todos los tenants** (`eb58264`, dialecto ZM incluido — ver `avatar_url` en §7 del skill `geemastudio-dev`).
+
 ### Añadido (30-ago 2026 — Más: rediseño grid + terminología editable + avatar_url en ZM prod)
 
 - **Mobile — Más (rediseño IA)**: `MoreHomeScreen` grid de categorías (Mi negocio, Finanzas, Asignar {staff}, Marketing y Redes, Ayuda, Cuenta) reemplaza la lista plana; subpantallas nuevas en `screens/more/`; `MenuRow`/`CategoryCard` extraídos a `components/`.

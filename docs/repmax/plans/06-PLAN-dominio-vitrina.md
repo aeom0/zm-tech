@@ -1,6 +1,6 @@
 # 06 — Dominio y vitrina por subdominio
 
-> **Estado: EN CURSO** — `repmax-web` en prod. HTTPS wildcard `*.zmtechdev.com` live. Rewrite de hostname y `NEXT_PUBLIC_VITRINA_SUBDOMAINS=1` van con este deploy. Apex `zmtechdev.com` sigue en `zmtech`. Nameservers del registrador **sin cambiar** (MX ImprovMX).
+> **Estado: EN CURSO** — `repmax-web` en prod. HTTPS wildcard `*.zmtechdev.com` live. Rewrite de hostname y `NEXT_PUBLIC_VITRINA_SUBDOMAINS=1` van con este deploy. Apex `zmtechdev.com` sigue en `zmtech`. Nameservers **migrados a Vercel** el 2026-08-31 (`ns1.vercel-dns.com` / `ns2.vercel-dns.com`); MX/SPF de ImprovMX recreados en el DNS de Vercel antes del corte (ver §8).
 
 **Objetivo:** vitrina pública por tenant en `{slug}.zmtechdev.com`, aditivo al `/{slug}` actual. El apex `zmtechdev.com` sigue en el proyecto landing (`zmtech`).
 
@@ -125,11 +125,12 @@ a Supabase en cada hit.
        `NEXT_PUBLIC_VITRINA_SUBDOMAINS=1` (producción: encendido).
 2. [x] Proyecto Vercel `repmax-web` (GitHub `aeom0/zm-tech`, root `apps/repmax-web`, framework Next.js).
 3. [x] `*.zmtechdev.com` en el proyecto + CNAME `*` + cert wildcard (Let's Encrypt).
-       Nameservers siguen en el registrador (MX ImprovMX). La CLI de Vercel puede
-       marcar “invalid configuration” por eso; HTTPS de tenants ya funciona.
-       Renovación ~90 días: si falla, repetir TXT ACME o mover NS a Vercel (con MX).
+       Nameservers migrados a Vercel el 2026-08-31 — la renovación del cert
+       wildcard ya es automática, sin TXT ACME manual (ver §8).
 4. [x] URLs públicas por tenant (`urlVitrinaTienda` / QR / WhatsApp) cuando el flag está on.
-5. [ ] (Fase 2) Soporte de `custom_domain` propio por tenant, con cache de
+5. [x] Nameservers de `zmtechdev.com` migrados a Vercel (`ns1`/`ns2.vercel-dns.com`),
+       MX/SPF de ImprovMX recreados en el DNS de Vercel — ver §8.
+6. [ ] (Fase 2) Soporte de `custom_domain` propio por tenant, con cache de
        lookup en el edge.
 
 **Local:** `http://{slug}.localhost:3003` reescribe a `/{slug}` (p. ej.
@@ -142,3 +143,53 @@ a Supabase en cada hit.
 - ¿Se necesita página de fallback para `zmtechdev.com` apex si alguien
   entra sin subdominio al proyecto `repmax-web` directamente vía su URL
   `.vercel.app`? (Redirigir a landing, o mostrar un selector de tienda.)
+
+## 8. Migración de nameservers a Vercel (2026-08-31)
+
+Vercel notificó por correo que `zmtechdev.com` no tenía sus nameservers
+apuntando a Vercel, lo que limitaba la gestión automática de DNS/certs
+(ver nota stale en el roadmap item 3, ya corregida). Se decidió migrar
+los nameservers del registrador (Namecheap) a Vercel en vez de seguir
+gestionando registros TXT/CNAME sueltos manualmente.
+
+**Riesgo principal:** el correo `@zmtechdev.com` corre por ImprovMX
+(forwarding), con registros MX/TXT propios en el DNS del dominio. Un
+cambio de nameservers sin recrear esos registros en el nuevo proveedor
+(Vercel) rompe el correo. Se recrearon **antes** del corte.
+
+### 8.1 Registros recreados en el panel DNS de Vercel
+
+| Tipo | Name | Value                                   | Priority |
+| ---- | ---- | ---------------------------------------- | -------- |
+| MX   | @    | `mx1.improvmx.com`                       | 10       |
+| MX   | @    | `mx2.improvmx.com`                       | 20       |
+| TXT  | @    | `v=spf1 include:spf.improvmx.com ~all`   | —        |
+
+Verificados por captura de pantalla del dashboard de Vercel (Domains →
+`zmtechdev.com` → DNS Records) tras corregir dos errores de UI:
+un bug donde el campo Priority de un registro MX no se enviaba si no
+perdía el foco antes de "Add" (mensaje: `missing required property
+mxPriority`), y un valor SPF pegado duplicado (`...~allv=spf1...`) en
+el primer intento, corregido a un solo valor.
+
+### 8.2 Cambio de nameservers
+
+- Registrador: **Namecheap** → pestaña **Domain** → sección
+  **NAMESERVERS** → dropdown a **Custom DNS** (no confundir con
+  "Advanced DNS" → "Add Personal DNS Server", que es para otro fin).
+- Nuevos nameservers: `ns1.vercel-dns.com` / `ns2.vercel-dns.com`.
+- Namecheap confirmó el cambio con propagación estimada de ~48h.
+- Apex `zmtechdev.com` (proyecto `zmtech`) y wildcard `*.zmtechdev.com`
+  (proyecto `repmax-web`) no cambian de proyecto Vercel — solo cambia
+  quién resuelve el DNS.
+
+### 8.3 Efecto sobre el resto del documento
+
+- El registro manual `_acme-challenge` (TXT, ACME DNS-01) mencionado en
+  versiones previas de este plan ya no es necesario: con los
+  nameservers en Vercel, la emisión/renovación del certificado wildcard
+  es automática.
+- Pendiente de confirmar tras propagación (no verificado aún por el
+  usuario): dashboard de Vercel debe mostrar el dominio como válido sin
+  advertencias, y el correo a `@zmtechdev.com` debe seguir llegando vía
+  ImprovMX.

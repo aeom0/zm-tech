@@ -69,6 +69,6 @@ pnpm --filter @repmax/repmax-schema check:types   # si existe script
 
 - Changelog: [CHANGELOG.md](./CHANGELOG.md)
 - Roadmap: [ROADMAP.md](./ROADMAP.md)
-- Planes: [plans/](./plans/) (01–03 cerrados; 04 catálogo ML en curso; 05 multicanal; 06 dominio/vitrina — wildcard HTTPS live; 07 hardware — fase 1 POS de escritorio + scanner HID implementada, fases 2-4 pendientes de hardware real; 08 tasas BCV/USDT — implementado, mobile pendiente de prueba visual en Expo)
+- Planes: [plans/](./plans/) (01–03 cerrados; 04 catálogo ML en curso; 05 multicanal; 06 dominio/vitrina — wildcard HTTPS live, nameservers migrados a Vercel (2026-08-31); 07 hardware — fase 1 POS de escritorio + scanner HID implementada, fases 2-4 pendientes de hardware real; 08 tasas BCV/USDT — implementado, mobile pendiente de prueba visual en Expo)
 - Diseño onboarding: [design/](./design/) · catálogo ML: [design/catalog-ux-spec.md](./design/catalog-ux-spec.md), fotos [design/ml-fotos.md](./design/ml-fotos.md)
 - Design system: [design-system/](./design-system/)
