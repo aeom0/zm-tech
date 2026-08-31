@@ -12,7 +12,7 @@ import {
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { useMutation } from '@tanstack/react-query'
-import { Feather } from '@expo/vector-icons'
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons'
 import * as Haptics from 'expo-haptics'
 import * as ImagePicker from 'expo-image-picker'
 import { Image } from 'expo-image'
@@ -446,7 +446,7 @@ export default function PersonalScreen() {
         hitSlop={8}
         style={styles.dragHandle}
       >
-        <Feather name="menu" size={18} color={theme.textMuted} />
+        <MaterialCommunityIcons name="drag-vertical" size={22} color={theme.textMuted} />
       </Pressable>
       <Feather name="chevron-right" size={20} color={theme.textMuted} />
     </Pressable>
