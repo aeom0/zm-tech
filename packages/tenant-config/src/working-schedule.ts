@@ -1,6 +1,9 @@
 import { defaultTenantConfig } from './defaults'
 import type { TenantConfig } from './types'
-import { diaLaboralKeyDesdeFechaEnZona } from './iana-timezone'
+import {
+  resolveFranjaEfectiva,
+  type SalonHolidayIndex,
+} from './salon-holidays'
 
 /** Claves de día alineadas con JSON guardado en `business_hours` (sin tildes). */
 export const CLAVES_DIA_LABORAL = [
@@ -99,18 +102,17 @@ function minutosDesdeMedianoche(hhmm: string): number {
 /**
  * Igual que `esCeldaAgendaEnHorarioLaboral` pero con precisión de minuto — para
  * validar un horario elegido con chips de 15 min (no solo la celda de hora entera).
+ * Si se pasa `holidays`, feriado cerrado → false; feriado abierto → ventana 10–openUntil.
  */
 export function esInstanteEnHorarioLaboral(
   fechaColumna: Date,
   minutoDelDia: number,
   businessHours: TenantConfig['businessHours'],
-  timeZone: string
+  timeZone: string,
+  holidays?: SalonHolidayIndex
 ): boolean {
-  const key = diaLaboralKeyDesdeFechaEnZona(fechaColumna, timeZone)
-  const franja = businessHours[key]
-  if (franja === null || franja === undefined) {
-    return false
-  }
+  const franja = resolveFranjaEfectiva(fechaColumna, businessHours, holidays, timeZone)
+  if (!franja) return false
   const openM = minutosDesdeMedianoche(franja.open)
   const closeM = minutosDesdeMedianoche(franja.close)
   if (!Number.isFinite(openM) || !Number.isFinite(closeM) || closeM <= openM) {
@@ -127,13 +129,11 @@ export function esCeldaAgendaEnHorarioLaboral(
   fechaColumna: Date,
   horaInicio: number,
   businessHours: TenantConfig['businessHours'],
-  timeZone: string
+  timeZone: string,
+  holidays?: SalonHolidayIndex
 ): boolean {
-  const key = diaLaboralKeyDesdeFechaEnZona(fechaColumna, timeZone)
-  const franja = businessHours[key]
-  if (franja === null || franja === undefined) {
-    return false
-  }
+  const franja = resolveFranjaEfectiva(fechaColumna, businessHours, holidays, timeZone)
+  if (!franja) return false
   const openM = minutosDesdeMedianoche(franja.open)
   const closeM = minutosDesdeMedianoche(franja.close)
   if (!Number.isFinite(openM) || !Number.isFinite(closeM) || closeM <= openM) {
@@ -187,9 +187,12 @@ export function diaTieneFranjaAgenda(
   fecha: Date,
   agendaHours: readonly number[],
   businessHours: TenantConfig['businessHours'],
-  timeZone: string
+  timeZone: string,
+  holidays?: SalonHolidayIndex
 ): boolean {
-  return agendaHours.some((h) => esCeldaAgendaEnHorarioLaboral(fecha, h, businessHours, timeZone))
+  return agendaHours.some((h) =>
+    esCeldaAgendaEnHorarioLaboral(fecha, h, businessHours, timeZone, holidays)
+  )
 }
 
 /**

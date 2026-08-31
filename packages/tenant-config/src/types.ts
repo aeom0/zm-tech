@@ -44,7 +44,7 @@ export interface TenantConfig {
     currency: { code: string; symbol: string }
     country: string
     timezone: string
-    language: 'es' | 'es-PE' | 'es-VE' | 'es-CO' | 'pt-BR'
+    language: 'es' | 'es-PE' | 'es-VE' | 'es-CO' | 'es-AR' | 'es-CL' | 'es-MX' | 'pt-BR'
     /** Reloj en agenda y pantallas de horario: 24 h (default) o 12 h con am/pm */
     timeFormat?: TimeFormatPreference
   }
