@@ -25,6 +25,7 @@ import { DashboardAppointmentModal } from './dashboard/components/DashboardAppoi
 import { DashboardHeader } from './dashboard/components/DashboardHeader'
 import { DashboardLoading } from './dashboard/components/DashboardLoading'
 import { DashboardLowStockBanner } from './dashboard/components/DashboardLowStockBanner'
+import { DashboardQuickLinksCard } from './dashboard/components/DashboardQuickLinksCard'
 import { DashboardStatCard } from './dashboard/components/DashboardStatCard'
 import { DashboardUpcomingCard } from './dashboard/components/DashboardUpcomingCard'
 import { dashboardStyles as styles } from './dashboard/dashboardStyles'
@@ -288,6 +289,29 @@ export default function DashboardScreen() {
       />
     ) : null
 
+  const quickLinksCard = isAdmin ? (
+    <DashboardQuickLinksCard
+      theme={{
+        backgroundDefault: theme.backgroundDefault,
+        border: theme.border,
+        primary: theme.primary,
+        gold: theme.gold,
+        text: theme.text,
+        textSecondary: theme.textSecondary,
+        textMuted: theme.textMuted,
+      }}
+      animatedStyle={animatedItems[6]}
+      onOpenClients={() => {
+        haptics.light()
+        navigation.navigate('Clients')
+      }}
+      onOpenFinances={() => {
+        haptics.light()
+        navigation.navigate('More', { screen: 'Finanzas' } as never)
+      }}
+    />
+  ) : null
+
   return (
     <ScrollView
       style={[styles.container, { backgroundColor: theme.backgroundRoot }]}
@@ -345,6 +369,8 @@ export default function DashboardScreen() {
               }}
               onViewAllAgenda={() => navigation.navigate('Agenda', {})}
             />
+            {quickLinksCard ? <View style={{ height: Spacing.lg }} /> : null}
+            {quickLinksCard}
           </View>
           <View style={styles.tabletRight}>
             {statsRow}
@@ -387,6 +413,8 @@ export default function DashboardScreen() {
           />
           {lowStockBanner ? <View style={{ height: Spacing.lg }} /> : null}
           {lowStockBanner}
+          {quickLinksCard ? <View style={{ height: Spacing.lg }} /> : null}
+          {quickLinksCard}
         </>
       )}
 

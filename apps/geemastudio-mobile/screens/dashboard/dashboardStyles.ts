@@ -197,6 +197,30 @@ export const dashboardStyles = StyleSheet.create({
     letterSpacing: 0.5,
   },
 
+  // Quick links (accesos rápidos admin: Clientes / Finanzas)
+  quickLinkRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
+    gap: Spacing.md,
+  },
+  quickLinkIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: BorderRadius.sm,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  quickLinkTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  quickLinkSub: {
+    fontSize: 12,
+  },
+
   // View more
   viewMoreBtn: {
     flexDirection: 'row',

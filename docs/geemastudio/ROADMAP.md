@@ -307,6 +307,8 @@ Ver [docs/WEB_ARCHITECTURE.md](docs/WEB_ARCHITECTURE.md) para la distinción ent
 | Fix categoría favorita desde historial (sin depender de `service_categories.color`) | sesión 28-jun | Bajo                      |
 | Costos WABA en Finanzas (`waba_pricing_daily`, `PricingBreakdownCard`)              | jul-2026      | Medio — depende de PR-10B |
 | Referencia visual en Agenda (galería + "Abrir link")                                | 20-jul-2026   | Medio — depende de PR-10B |
+| Ranking de top servicios en Dashboard (`ServiceRankList`) — requiere RPC nueva `get_top_completed_services` | 30-ago-2026 | Medio — nueva RPC Supabase |
+| Feriados/días no laborables por tenant (`salon_holidays` genérico) — banner en Dashboard (`HolidayAlertBanner`) + chip/resaltado en header de Agenda | 30-ago-2026 | Medio — nueva tabla Supabase, agrupa ambas UIs |
 
 ---
 
