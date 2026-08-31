@@ -28,10 +28,7 @@ import { borrarAvatarSiEsStorage, subirAvatarEmpleadoDefault } from '@/lib/emplo
 import { Colors, Spacing, BorderRadius } from '@/constants/theme'
 import type { PaymentMode } from '@geemastudio/shared-schema'
 import { EmployeePaymentBadge } from '@/screens/personal/components/EmployeePaymentBadge'
-import {
-  useEmployeesDialect,
-  useEmployeesQuery,
-} from '@/screens/personal/hooks/useEmployeesData'
+import { useEmployeesDialect, useEmployeesQuery } from '@/screens/personal/hooks/useEmployeesData'
 import {
   insertEmployee,
   updateEmployee,
@@ -141,13 +138,7 @@ export default function PersonalScreen() {
   })
 
   const updateMutation = useMutation({
-    mutationFn: async ({
-      id,
-      data,
-    }: {
-      id: string
-      data: EmployeeWriteInput
-    }) => {
+    mutationFn: async ({ id, data }: { id: string; data: EmployeeWriteInput }) => {
       await updateEmployee(id, data)
     },
     onSuccess: () => {
@@ -265,10 +256,9 @@ export default function PersonalScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
   }
 
-  const previewAvatarUri =
-    removeAvatar || !editing
-      ? null
-      : (pendingAvatarUri ?? (editing.avatar_url?.trim() ? editing.avatar_url.trim() : null))
+  const previewAvatarUri = removeAvatar
+    ? null
+    : (pendingAvatarUri ?? (editing?.avatar_url?.trim() ? editing.avatar_url.trim() : null))
 
   const handleSave = async () => {
     if (!isCreating && !editing) return
@@ -315,7 +305,7 @@ export default function PersonalScreen() {
 
     if (isCreating) {
       let avatar_url: string | null = null
-      if (showGeemaExtras && pendingAvatarUri) {
+      if (pendingAvatarUri) {
         try {
           const tempId = `temp_${Date.now()}`
           const { publicUrl } = await subirAvatarEmpleadoDefault(
@@ -339,14 +329,14 @@ export default function PersonalScreen() {
     if (!editing) return
 
     let avatar_url: string | null = editing.avatar_url?.trim() || null
-    if (showGeemaExtras && removeAvatar) {
+    if (removeAvatar) {
       try {
         await borrarAvatarSiEsStorage(supabase, editing.avatar_url)
       } catch {
         /* ignorar fallo de borrado en Storage */
       }
       avatar_url = null
-    } else if (showGeemaExtras && pendingAvatarUri) {
+    } else if (pendingAvatarUri) {
       try {
         await borrarAvatarSiEsStorage(supabase, editing.avatar_url)
         const { publicUrl } = await subirAvatarEmpleadoDefault(
@@ -480,7 +470,7 @@ export default function PersonalScreen() {
             <ThemedText style={[styles.hint, { color: theme.textSecondary }]}>
               {showGeemaExtras
                 ? `Toca a una ${staffSingular.toLowerCase()} para editar datos, modo de pago y foto para la agenda. Mantén presionado el ícono de la derecha para reordenar.`
-                : `Toca a una ${staffSingular.toLowerCase()} para editar. Mantén presionado el ícono de la derecha para reordenar; Color y Activa se ven como columna en la agenda.`}
+                : `Toca a una ${staffSingular.toLowerCase()} para editar datos y foto. Mantén presionado el ícono de la derecha para reordenar; Color y Activa se ven como columna en la agenda.`}
             </ThemedText>
           }
         />
@@ -511,81 +501,77 @@ export default function PersonalScreen() {
               showsVerticalScrollIndicator={false}
               contentContainerStyle={{ paddingBottom: Spacing['3xl'] }}
             >
-              {showGeemaExtras ? (
-                <>
-                  <ThemedText style={[styles.fieldLabel, { color: theme.textSecondary }]}>
-                    Foto (agenda y lista)
-                  </ThemedText>
-                  <View style={styles.avatarEditorRow}>
-                    <View
-                      style={[
-                        styles.avatarPreviewRing,
-                        {
-                          borderColor: editing?.color ?? theme.primary,
-                          backgroundColor: theme.backgroundSecondary,
-                        },
-                      ]}
+              <ThemedText style={[styles.fieldLabel, { color: theme.textSecondary }]}>
+                Foto (agenda y lista)
+              </ThemedText>
+              <View style={styles.avatarEditorRow}>
+                <View
+                  style={[
+                    styles.avatarPreviewRing,
+                    {
+                      borderColor: editing?.color ?? theme.primary,
+                      backgroundColor: theme.backgroundSecondary,
+                    },
+                  ]}
+                >
+                  {previewAvatarUri ? (
+                    <Image
+                      source={{ uri: previewAvatarUri }}
+                      style={styles.avatarPreviewImg}
+                      contentFit="cover"
+                    />
+                  ) : (
+                    <Feather name="user" size={36} color={theme.textMuted} />
+                  )}
+                </View>
+                <View style={styles.avatarActions}>
+                  <Pressable
+                    style={[styles.avatarBtn, { borderColor: theme.border }]}
+                    onPress={elegirFotoGaleria}
+                  >
+                    <Feather name="image" size={18} color={theme.primary} />
+                    <ThemedText style={[styles.avatarBtnText, { color: theme.primary }]}>
+                      Galería
+                    </ThemedText>
+                  </Pressable>
+                  <Pressable
+                    style={[styles.avatarBtn, { borderColor: theme.border }]}
+                    onPress={tomarFotoCamara}
+                  >
+                    <Feather name="camera" size={18} color={theme.primary} />
+                    <ThemedText style={[styles.avatarBtnText, { color: theme.primary }]}>
+                      Cámara
+                    </ThemedText>
+                  </Pressable>
+                  {(editing?.avatar_url?.trim() || pendingAvatarUri) && !removeAvatar ? (
+                    <Pressable
+                      style={[styles.avatarBtn, { borderColor: theme.error }]}
+                      onPress={() => {
+                        setRemoveAvatar(true)
+                        setPendingAvatarUri(null)
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+                      }}
                     >
-                      {previewAvatarUri ? (
-                        <Image
-                          source={{ uri: previewAvatarUri }}
-                          style={styles.avatarPreviewImg}
-                          contentFit="cover"
-                        />
-                      ) : (
-                        <Feather name="user" size={36} color={theme.textMuted} />
-                      )}
-                    </View>
-                    <View style={styles.avatarActions}>
-                      <Pressable
-                        style={[styles.avatarBtn, { borderColor: theme.border }]}
-                        onPress={elegirFotoGaleria}
-                      >
-                        <Feather name="image" size={18} color={theme.primary} />
-                        <ThemedText style={[styles.avatarBtnText, { color: theme.primary }]}>
-                          Galería
-                        </ThemedText>
-                      </Pressable>
-                      <Pressable
-                        style={[styles.avatarBtn, { borderColor: theme.border }]}
-                        onPress={tomarFotoCamara}
-                      >
-                        <Feather name="camera" size={18} color={theme.primary} />
-                        <ThemedText style={[styles.avatarBtnText, { color: theme.primary }]}>
-                          Cámara
-                        </ThemedText>
-                      </Pressable>
-                      {(editing?.avatar_url?.trim() || pendingAvatarUri) && !removeAvatar ? (
-                        <Pressable
-                          style={[styles.avatarBtn, { borderColor: theme.error }]}
-                          onPress={() => {
-                            setRemoveAvatar(true)
-                            setPendingAvatarUri(null)
-                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-                          }}
-                        >
-                          <Feather name="trash-2" size={18} color={theme.error} />
-                          <ThemedText style={[styles.avatarBtnText, { color: theme.error }]}>
-                            Quitar foto
-                          </ThemedText>
-                        </Pressable>
-                      ) : null}
-                      {removeAvatar ? (
-                        <Pressable
-                          onPress={() => {
-                            setRemoveAvatar(false)
-                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-                          }}
-                        >
-                          <ThemedText style={{ color: theme.link, fontSize: 13 }}>
-                            Deshacer quitar foto
-                          </ThemedText>
-                        </Pressable>
-                      ) : null}
-                    </View>
-                  </View>
-                </>
-              ) : null}
+                      <Feather name="trash-2" size={18} color={theme.error} />
+                      <ThemedText style={[styles.avatarBtnText, { color: theme.error }]}>
+                        Quitar foto
+                      </ThemedText>
+                    </Pressable>
+                  ) : null}
+                  {removeAvatar ? (
+                    <Pressable
+                      onPress={() => {
+                        setRemoveAvatar(false)
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+                      }}
+                    >
+                      <ThemedText style={{ color: theme.link, fontSize: 13 }}>
+                        Deshacer quitar foto
+                      </ThemedText>
+                    </Pressable>
+                  ) : null}
+                </View>
+              </View>
 
               <ThemedText style={[styles.fieldLabel, { color: theme.textSecondary }]}>
                 Nombre
