@@ -155,9 +155,7 @@ export async function fetchEmployeeById(id: string): Promise<EmployeeRow | null>
 
 export async function insertEmployee(input: EmployeeWriteInput): Promise<void> {
   const dialect = await detectCatalogDialect()
-  const { error } = await supabase
-    .from('employees')
-    .insert(toEmployeeWritePayload(input, dialect))
+  const { error } = await supabase.from('employees').insert(toEmployeeWritePayload(input, dialect))
   if (error) {
     throw new Error(error.message)
   }

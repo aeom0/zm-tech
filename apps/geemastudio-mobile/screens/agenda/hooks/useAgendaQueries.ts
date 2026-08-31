@@ -28,11 +28,7 @@ export function useAgendaQueries() {
     },
   })
 
-  const {
-    employees,
-    isLoading: employeesLoading,
-    error: employeesError,
-  } = useActiveEmployees()
+  const { employees, isLoading: employeesLoading, error: employeesError } = useActiveEmployees()
 
   const { data: categories = [] } = useQuery<AgendaServiceCategory[]>({
     queryKey: ['service_categories'],

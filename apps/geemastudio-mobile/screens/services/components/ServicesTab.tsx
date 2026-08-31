@@ -1,16 +1,13 @@
 import React, { useCallback, useMemo, useState } from 'react'
-import {
-  View,
-  StyleSheet,
-  ScrollView,
-  Pressable,
-  RefreshControl,
-  Alert,
-  ActivityIndicator,
-} from 'react-native'
+import { View, StyleSheet, Pressable, RefreshControl, Alert, ActivityIndicator } from 'react-native'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { Feather } from '@expo/vector-icons'
 import * as Haptics from 'expo-haptics'
+import {
+  NestableScrollContainer,
+  NestableDraggableFlatList,
+  type RenderItemParams,
+} from 'react-native-draggable-flatlist'
 
 import { ThemedText } from '@/components/ThemedText'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
@@ -46,6 +43,7 @@ export function ServicesTab() {
     updateCategoryMutation,
     deleteCategoryMutation,
     reorderCategoriesMutation,
+    reorderServicesMutation,
   } = useServicesData()
 
   const [filterCategoryId, setFilterCategoryId] = useState<string | null>(null)
@@ -54,16 +52,38 @@ export function ServicesTab() {
   const [categoriesModalVisible, setCategoriesModalVisible] = useState(false)
   const [toggleLoading, setToggleLoading] = useState<Record<string, boolean>>({})
 
+  const [localServices, setLocalServices] = useState<ServiceRow[]>(services)
+  const isDraggingRef = React.useRef(false)
+
+  React.useEffect(() => {
+    if (!isDraggingRef.current) {
+      setLocalServices(services)
+    }
+  }, [services])
+
   const groupedServices = useMemo(() => {
     const groups = categories.map((category) => ({
       ...category,
-      services: services.filter((s) => s.category_id === category.id),
+      services: localServices.filter((s) => s.category_id === category.id),
     }))
     if (filterCategoryId) {
       return groups.filter((g) => g.id === filterCategoryId)
     }
     return groups
-  }, [categories, services, filterCategoryId])
+  }, [categories, localServices, filterCategoryId])
+
+  const handleCategoryDragEnd = useCallback(
+    (categoryId: string, data: ServiceRow[]) => {
+      isDraggingRef.current = false
+      setLocalServices((prev) => {
+        const others = prev.filter((s) => s.category_id !== categoryId)
+        return [...others, ...data]
+      })
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+      reorderServicesMutation.mutate(data.map((s) => s.id))
+    },
+    [reorderServicesMutation]
+  )
 
   const openNew = useCallback(() => {
     setEditing(null)
@@ -167,7 +187,10 @@ export function ServicesTab() {
   return (
     <View style={styles.flex}>
       <View style={styles.filterBar}>
-        <ScrollFadeRow backgroundColor={theme.backgroundRoot} contentContainerStyle={styles.filterChips}>
+        <ScrollFadeRow
+          backgroundColor={theme.backgroundRoot}
+          contentContainerStyle={styles.filterChips}
+        >
           <Pressable
             style={[
               styles.filterChip,
@@ -225,7 +248,7 @@ export function ServicesTab() {
         )}
       </View>
 
-      <ScrollView
+      <NestableScrollContainer
         style={styles.scroll}
         contentContainerStyle={{
           paddingTop: Spacing.md,
@@ -273,23 +296,34 @@ export function ServicesTab() {
                   <ThemedText style={[styles.catTitle, { color: category.color ?? theme.primary }]}>
                     {category.name}
                   </ThemedText>
-                  {category.services.map((svc) => (
-                    <ServiceCard
-                      key={svc.id}
-                      service={svc}
-                      onPress={() => openEdit(svc)}
-                      onLongPress={() => handleDelete(svc)}
-                      onToggleActive={() => handleToggle(svc)}
-                      isToggling={!!toggleLoading[svc.id]}
-                      theme={theme}
-                      config={config}
-                    />
-                  ))}
+                  <NestableDraggableFlatList
+                    data={category.services}
+                    keyExtractor={(svc) => svc.id}
+                    activationDistance={12}
+                    onDragBegin={() => {
+                      isDraggingRef.current = true
+                    }}
+                    onDragEnd={({ data }) => handleCategoryDragEnd(category.id, data)}
+                    renderItem={({ item: svc, drag, isActive }: RenderItemParams<ServiceRow>) => (
+                      <ServiceCard
+                        service={svc}
+                        categoryColor={category.color}
+                        onPress={() => openEdit(svc)}
+                        onLongPress={() => handleDelete(svc)}
+                        onToggleActive={() => handleToggle(svc)}
+                        isToggling={!!toggleLoading[svc.id]}
+                        drag={drag}
+                        isDragging={isActive}
+                        theme={theme}
+                        config={config}
+                      />
+                    )}
+                  />
                 </View>
               )
           )
         )}
-      </ScrollView>
+      </NestableScrollContainer>
 
       <Pressable
         style={[styles.fab, { backgroundColor: config.theme.primaryColor }, Shadows.lg]}

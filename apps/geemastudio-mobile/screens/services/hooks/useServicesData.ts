@@ -27,7 +27,8 @@ export function useServicesData() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('services')
-        .select('id, name, category_id, price, duration, is_active')
+        .select('id, name, category_id, price, duration, is_active, sort_order')
+        .order('sort_order', { ascending: true, nullsFirst: false })
         .order('created_at', { ascending: true })
       if (error) {
         throw new Error(error.message)
@@ -222,6 +223,25 @@ export function useServicesData() {
     },
   })
 
+  const reorderServicesMutation = useMutation({
+    mutationFn: async (orderedIds: string[]) => {
+      const updates = orderedIds.map((id, index) =>
+        supabase
+          .from('services')
+          .update({ sort_order: index + 1 })
+          .eq('id', id)
+      )
+      const results = await Promise.all(updates)
+      const failed = results.find((r) => r.error)
+      if (failed?.error) {
+        throw new Error(failed.error.message)
+      }
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['services'] })
+    },
+  })
+
   const isLoading = servicesLoading || categoriesLoading
   const isError = servicesError || categoriesError
 
@@ -244,5 +264,6 @@ export function useServicesData() {
     updateCategoryMutation,
     deleteCategoryMutation,
     reorderCategoriesMutation,
+    reorderServicesMutation,
   }
 }

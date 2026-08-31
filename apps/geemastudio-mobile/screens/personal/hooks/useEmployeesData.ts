@@ -29,9 +29,6 @@ export function useEmployeesQuery(options?: { enabled?: boolean; staleTime?: num
 /** Chicas activas → columnas de agenda, picker de cita y Asignar. */
 export function useActiveEmployees(options?: { enabled?: boolean; staleTime?: number }) {
   const query = useEmployeesQuery(options)
-  const employees = useMemo(
-    () => (query.data ?? []).filter((e) => e.is_active),
-    [query.data]
-  )
+  const employees = useMemo(() => (query.data ?? []).filter((e) => e.is_active), [query.data])
   return { ...query, data: employees, employees }
 }

@@ -39,7 +39,10 @@ export function usePacksData() {
       const dialect = await detectCatalogDialect()
       const { data, error } =
         dialect === 'zm'
-          ? await supabase.from('packs').select(ZM_SELECT).order('display_order', { ascending: true })
+          ? await supabase
+              .from('packs')
+              .select(ZM_SELECT)
+              .order('display_order', { ascending: true })
           : await supabase.from('packs').select(GEEMA_SELECT).order('name', { ascending: true })
       if (error) {
         throw new Error(error.message)

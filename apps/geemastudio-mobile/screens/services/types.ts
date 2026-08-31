@@ -14,6 +14,7 @@ export interface Service {
   price: string
   duration: number
   is_active: boolean
+  sort_order: number | null
 }
 
 export interface Pack {

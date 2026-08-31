@@ -61,8 +61,7 @@ async function guardOverlapBeforeInsert(args: {
       continue
     }
 
-    const start =
-      parseAppointmentWallclock(apt.date, args.timeZone) ?? new Date(apt.date)
+    const start = parseAppointmentWallclock(apt.date, args.timeZone) ?? new Date(apt.date)
     const end = addMinutes(start, apt.duration)
     const overlaps = start < candidateEnd && end > candidateStart
     if (!overlaps) continue

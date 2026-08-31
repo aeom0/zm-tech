@@ -86,9 +86,7 @@ export function DashboardUpcomingCard({
 
       {upcomingAppointments.length === 0 ? (
         <View style={styles.emptyState}>
-          <View
-            style={[styles.emptyIconCircle, { backgroundColor: theme.backgroundSecondary }]}
-          >
+          <View style={[styles.emptyIconCircle, { backgroundColor: theme.backgroundSecondary }]}>
             <Feather name="calendar" size={24} color={theme.textMuted} />
           </View>
           <ThemedText style={[styles.emptyTitle, { color: theme.textSecondary }]}>
@@ -108,8 +106,7 @@ export function DashboardUpcomingCard({
       ) : (
         slice.map((appt, i) => {
           const apptDate = parseAppointmentDate(appt.date, timeZone)
-          const prevApptDate =
-            i > 0 ? parseAppointmentDate(slice[i - 1]!.date, timeZone) : null
+          const prevApptDate = i > 0 ? parseAppointmentDate(slice[i - 1]!.date, timeZone) : null
           const dayLabel = getDayLabel(apptDate)
           const showDayHeader = i === 0 || getDayLabel(prevApptDate!) !== dayLabel
 

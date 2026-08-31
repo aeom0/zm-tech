@@ -57,10 +57,7 @@ export function AgendaStatusFilter({ statusFilter, onChange, theme }: AgendaStat
             ]}
           >
             <ThemedText
-              style={[
-                styles.statusChipText,
-                { color: isActive ? '#FFFFFF' : theme.text },
-              ]}
+              style={[styles.statusChipText, { color: isActive ? '#FFFFFF' : theme.text }]}
               numberOfLines={1}
             >
               {opt.label}

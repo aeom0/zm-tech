@@ -24,7 +24,11 @@ export function ClientFilterBar({ segment, onSegmentChange }: Props) {
   const { theme } = useTheme()
 
   return (
-    <ScrollFadeRow backgroundColor={theme.backgroundRoot} style={styles.container} contentContainerStyle={styles.scrollRow}>
+    <ScrollFadeRow
+      backgroundColor={theme.backgroundRoot}
+      style={styles.container}
+      contentContainerStyle={styles.scrollRow}
+    >
       {SEGMENTS.map((seg) => {
         const isActive = segment === seg.id
         return (

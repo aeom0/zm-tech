@@ -16,11 +16,7 @@ export function getGreeting(): string {
   return 'Buenas noches'
 }
 
-export function formatDashboardTime(
-  dateString: string,
-  locale: string,
-  timeZone: string
-): string {
+export function formatDashboardTime(dateString: string, locale: string, timeZone: string): string {
   const tz = zonaIANASegura(timeZone)
   return instanteCitaDesdeTexto(dateString, tz).toLocaleTimeString(locale, {
     hour: '2-digit',

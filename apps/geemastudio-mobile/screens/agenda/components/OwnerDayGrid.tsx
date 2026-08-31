@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { ThemedText } from '@/components/ThemedText'
 import { BorderRadius, Spacing } from '@/constants/theme'
 import {
+  AGENDA_BORDE_VISUAL_MIN,
   esCeldaAgendaEnHorarioLaboral,
   esHoyEnZonaIANA,
   formatoHoraAgendaSlot,
@@ -21,6 +22,8 @@ import { useAgendaClockTick } from '../hooks/useAgendaClockTick'
 import { agendaStyles as sharedStyles } from '../agendaStyles'
 
 const HOUR_ROW_HEIGHT = 64
+const PX_PER_MINUTE = HOUR_ROW_HEIGHT / 60
+const EDGE_BUFFER_HEIGHT = AGENDA_BORDE_VISUAL_MIN * PX_PER_MINUTE
 
 interface OwnerDayGridProps {
   timeColWidth: number
@@ -77,10 +80,16 @@ export function OwnerDayGrid({
   gridScrollRef,
   onGridScroll,
 }: OwnerDayGridProps) {
-  const gridStartMin = useMemo(() => Math.min(...agendaHours) * 60, [agendaHours])
-  const gridEndMin = useMemo(() => Math.max(...agendaHours) * 60 + 60, [agendaHours])
-  const totalHeight = agendaHours.length * HOUR_ROW_HEIGHT
-  const pxPerMinute = HOUR_ROW_HEIGHT / 60
+  const gridStartMin = useMemo(
+    () => Math.min(...agendaHours) * 60 - AGENDA_BORDE_VISUAL_MIN,
+    [agendaHours]
+  )
+  const gridEndMin = useMemo(
+    () => Math.max(...agendaHours) * 60 + 60 + AGENDA_BORDE_VISUAL_MIN,
+    [agendaHours]
+  )
+  const totalHeight = agendaHours.length * HOUR_ROW_HEIGHT + EDGE_BUFFER_HEIGHT * 2
+  const pxPerMinute = PX_PER_MINUTE
 
   const isTodayInTz = useMemo(
     () => esHoyEnZonaIANA(selectedDate, timeZone),
@@ -125,6 +134,7 @@ export function OwnerDayGrid({
       <View style={{ flexDirection: 'row', alignItems: 'stretch' }}>
         {/* Columna de horas — fija */}
         <View style={{ width: timeColWidth }}>
+          <View style={{ height: EDGE_BUFFER_HEIGHT }} />
           {agendaHours.map((hour) => (
             <View
               key={hour}
@@ -151,6 +161,7 @@ export function OwnerDayGrid({
               </ThemedText>
             </View>
           ))}
+          <View style={{ height: EDGE_BUFFER_HEIGHT }} />
         </View>
 
         {/* Columnas de empleados — scroll horizontal */}
@@ -185,6 +196,13 @@ export function OwnerDayGrid({
                     position: 'relative',
                   }}
                 >
+                  <View
+                    style={{
+                      height: EDGE_BUFFER_HEIGHT,
+                      backgroundColor: theme.backgroundRoot + '99',
+                      opacity: 0.45,
+                    }}
+                  />
                   {agendaHours.map((hour) => {
                     const dentroFila = esCeldaAgendaEnHorarioLaboral(
                       selectedDate,
@@ -214,6 +232,13 @@ export function OwnerDayGrid({
                       </View>
                     )
                   })}
+                  <View
+                    style={{
+                      height: EDGE_BUFFER_HEIGHT,
+                      backgroundColor: theme.backgroundRoot + '99',
+                      opacity: 0.45,
+                    }}
+                  />
 
                   {empApts.map((apt) => {
                     const start = instanteCitaDesdeTexto(apt.date, timeZone)

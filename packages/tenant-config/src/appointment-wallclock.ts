@@ -8,8 +8,7 @@ import { zonaIANASegura } from './iana-timezone'
  * en la IANA del tenant (ZM: America/Lima). Si se interpreta como UTC, las citas
  * se desplazan (Lima −5 h) y “desaparecen” del día/hora de la agenda.
  */
-const WALLCLOCK =
-  /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?/
+const WALLCLOCK = /^(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})(?::(\d{2}))?/
 
 export function stripTzSuffixCita(raw: string): string {
   return String(raw)

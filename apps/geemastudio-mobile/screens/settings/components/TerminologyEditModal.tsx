@@ -71,16 +71,18 @@ export function TerminologyEditModal({
             onChangeText={setStaffValue}
             style={[
               styles.input,
-              { color: theme.text, borderColor: theme.border, backgroundColor: theme.backgroundDefault },
+              {
+                color: theme.text,
+                borderColor: theme.border,
+                backgroundColor: theme.backgroundDefault,
+              },
             ]}
             placeholder="Profesionales"
             placeholderTextColor={theme.textMuted}
             autoCapitalize="none"
           />
 
-          <ThemedText
-            style={[styles.label, { color: theme.textSecondary, marginTop: Spacing.lg }]}
-          >
+          <ThemedText style={[styles.label, { color: theme.textSecondary, marginTop: Spacing.lg }]}>
             Singular (ej. &lsquo;chica&rsquo;, &lsquo;barbero&rsquo;, &lsquo;especialista&rsquo;)
           </ThemedText>
           <TextInput
@@ -88,7 +90,11 @@ export function TerminologyEditModal({
             onChangeText={setStaffSingularValue}
             style={[
               styles.input,
-              { color: theme.text, borderColor: theme.border, backgroundColor: theme.backgroundDefault },
+              {
+                color: theme.text,
+                borderColor: theme.border,
+                backgroundColor: theme.backgroundDefault,
+              },
             ]}
             placeholder="profesional"
             placeholderTextColor={theme.textMuted}

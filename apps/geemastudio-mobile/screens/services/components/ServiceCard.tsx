@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Pressable, StyleSheet, ActivityIndicator } from 'react-native'
-import { Feather } from '@expo/vector-icons'
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
 import type { TenantConfig } from '@zmtech/tenant-config'
@@ -11,10 +11,13 @@ import type { Service } from '../types'
 
 interface ServiceCardProps {
   service: Service
+  categoryColor?: string | null
   onPress: () => void
   onLongPress?: () => void
   onToggleActive?: () => void
   isToggling?: boolean
+  drag?: () => void
+  isDragging?: boolean
   theme: {
     backgroundDefault: string
     border: string
@@ -28,15 +31,19 @@ interface ServiceCardProps {
 
 export function ServiceCard({
   service,
+  categoryColor,
   onPress,
   onLongPress,
   onToggleActive,
   isToggling,
+  drag,
+  isDragging,
   theme,
   config,
 }: ServiceCardProps) {
   const priceNum = parseFloat(service.price)
   const amount = Number.isFinite(priceNum) ? priceNum : 0
+  const accentColor = categoryColor ?? theme.primary
 
   return (
     <View
@@ -45,8 +52,10 @@ export function ServiceCard({
         {
           backgroundColor: theme.backgroundDefault,
           borderColor: theme.border,
+          borderLeftColor: accentColor,
           opacity: service.is_active ? 1 : 0.65,
         },
+        isDragging && styles.cardDragging,
       ]}
     >
       <Pressable
@@ -72,6 +81,16 @@ export function ServiceCard({
           <ThemedText style={[styles.price, { color: theme.accent }]}>
             {formatCurrency(amount, config)}
           </ThemedText>
+          {drag && (
+            <Pressable
+              onLongPress={drag}
+              disabled={isDragging}
+              hitSlop={8}
+              style={styles.dragHandle}
+            >
+              <MaterialCommunityIcons name="drag-vertical" size={22} color={theme.textMuted} />
+            </Pressable>
+          )}
         </View>
       </Pressable>
       {onToggleActive && (
@@ -95,10 +114,14 @@ export function ServiceCard({
 const styles = StyleSheet.create({
   card: {
     borderWidth: 1,
+    borderLeftWidth: 4,
     borderRadius: 16,
     marginBottom: 8,
     overflow: 'hidden',
     ...Shadows.sm,
+  },
+  cardDragging: {
+    ...Shadows.lg,
   },
   mainPress: {
     padding: 16,
@@ -135,6 +158,10 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 18,
     fontWeight: '700',
+  },
+  dragHandle: {
+    marginLeft: 8,
+    paddingVertical: 4,
   },
   toggleRow: {
     flexDirection: 'row',

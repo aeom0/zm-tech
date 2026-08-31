@@ -161,7 +161,7 @@ export function rowToPromo(row: PromoRawRow, dialect: CatalogDialect): Promo {
     accent_color: row.accent_color ?? null,
     promo_price: row.promo_price != null ? String(row.promo_price) : null,
     is_active: row.is_active,
-    expires_at: dialect === 'zm' ? toIsoOrNull(row.valid_until) : row.expires_at ?? null,
+    expires_at: dialect === 'zm' ? toIsoOrNull(row.valid_until) : (row.expires_at ?? null),
   }
 }
 
