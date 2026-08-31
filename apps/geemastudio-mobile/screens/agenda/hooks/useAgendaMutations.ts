@@ -4,6 +4,7 @@ import * as Haptics from 'expo-haptics'
 
 import { queryClient } from '@/lib/query-client'
 import { supabase } from '@/lib/supabase'
+import { subirImagenReferencia } from '@/lib/referenceImages'
 import {
   formatAppointmentWallclock,
   formatoHoraHHMMEnZona,
@@ -349,6 +350,77 @@ export function useAgendaMutations(
     onError: (e: Error) => Alert.alert('Error', e.message || 'No se pudo registrar el pago'),
   })
 
+  /**
+   * Sube N fotos de referencia (galería, `expo-image-picker`) al bucket `service-references`
+   * y agrega las URLs públicas a `appointments.reference_image_paths` en una sola
+   * actualización (evita condiciones de carrera entre subidas). Marca
+   * `reference_received_at = now()` solo si la cita no tenía referencias aún.
+   */
+  const addReferenceImagesMutation = useMutation({
+    mutationFn: async (args: {
+      appointmentId: string
+      images: Array<{ uri: string; contentType?: string }>
+      currentPaths: string[]
+      alreadyReceived: boolean
+    }) => {
+      const uploadedUrls: string[] = []
+      for (const image of args.images) {
+        const { publicUrl } = await subirImagenReferencia(
+          supabase,
+          args.appointmentId,
+          image.uri,
+          image.contentType
+        )
+        uploadedUrls.push(publicUrl)
+      }
+
+      const newPaths = [...args.currentPaths, ...uploadedUrls]
+      const updatePayload: { reference_image_paths: string[]; reference_received_at?: string } = {
+        reference_image_paths: newPaths,
+      }
+      if (!args.alreadyReceived) {
+        updatePayload.reference_received_at = new Date().toISOString()
+      }
+
+      const { error } = await supabase
+        .from('appointments')
+        .update(updatePayload)
+        .eq('id', args.appointmentId)
+      if (error) {
+        throw new Error(error.message)
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['appointments'] })
+      queryClient.invalidateQueries({ queryKey: ['unreviewed_references_count'] })
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+    },
+    onError: (error: Error) => {
+      Alert.alert('Error', error.message || 'No se pudo subir la foto de referencia')
+    },
+  })
+
+  /** Marca las referencias de la cita como revisadas (`reference_reviewed_at = now()`). */
+  const markReferencesReviewedMutation = useMutation({
+    mutationFn: async (appointmentId: string) => {
+      const { error } = await supabase
+        .from('appointments')
+        .update({ reference_reviewed_at: new Date().toISOString() })
+        .eq('id', appointmentId)
+      if (error) {
+        throw new Error(error.message)
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['appointments'] })
+      queryClient.invalidateQueries({ queryKey: ['unreviewed_references_count'] })
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+    },
+    onError: (error: Error) => {
+      Alert.alert('Error', error.message || 'No se pudo marcar como revisado')
+    },
+  })
+
   return {
     createMutation,
     deleteAppointmentMutation,
@@ -356,5 +428,7 @@ export function useAgendaMutations(
     updateAppointmentServicesMutation,
     completeAppointmentMutation,
     createPaymentMutation,
+    addReferenceImagesMutation,
+    markReferencesReviewedMutation,
   }
 }

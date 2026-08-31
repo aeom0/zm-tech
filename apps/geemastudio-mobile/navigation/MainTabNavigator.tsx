@@ -31,7 +31,7 @@ export default function MainTabNavigator() {
   const insets = useSafeAreaInsets()
   const { config } = useTenant()
   const { isAdmin } = useAuth()
-  const { tabBadgeCount } = usePendingBadgeCount()
+  const { tabBadgeCount, unreviewedReferencesCount } = usePendingBadgeCount()
 
   const screenOptions = {
     tabBarActiveTintColor: config.theme.primaryColor,
@@ -97,6 +97,17 @@ export default function MainTabNavigator() {
             title: 'Agenda',
             headerTitle: 'Agenda',
             tabBarIcon: ({ color }) => <Feather name="calendar" size={22} color={color} />,
+            tabBarBadge:
+              unreviewedReferencesCount > 0 ? unreviewedReferencesCount : undefined,
+            tabBarBadgeStyle: {
+              backgroundColor: config.theme.primaryColor,
+              color: '#FFFFFF',
+              fontSize: 10,
+              fontWeight: '700',
+              minWidth: 18,
+              height: 18,
+              borderRadius: 9,
+            },
           }}
         />
         <Tab.Screen
