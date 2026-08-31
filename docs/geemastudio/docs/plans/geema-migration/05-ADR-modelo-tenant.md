@@ -78,17 +78,17 @@ tenant_settings.tenant_slug text NOT NULL UNIQUE REFERENCES tenants(id)
 
 ### País: sin tabla `countries` (por ahora)
 
-**Decisión:** clasificar tenants con `tenant_settings.country` (ISO 3166-1 alpha-2, ej. `PE`). No crear catálogo `countries` hasta onboarding multi-país o defaults compartidos entre muchos tenants.
+**Decisión (actualizada 31-ago 2026):** clasificar tenants con `tenant_settings.country` (ISO 3166-1 alpha-2). Catálogo en código: `COUNTRY_PRESETS` en `@zmtech/tenant-config` (onboarding + Settings). Sin tabla SQL `countries` hasta admin multi-tenant lo pida.
 
 | Necesidad                                    | Dónde                                                       |
 | -------------------------------------------- | ----------------------------------------------------------- |
 | Etiqueta / filtro admin                      | `tenant_settings.country`                                   |
-| TZ + moneda del local                        | `timezone`, `currency_code`, `currency_symbol` (misma fila) |
-| Defaults al crear tenant                     | presets `@zmtech/tenant-config` + defaults de columna       |
-| Reglas gordas (feriados, impuestos, RUC/RUT) | Futuro: pack por país en código/JSON — no bloquear hoy      |
+| TZ + moneda + language defaults              | `localeFromCountry` / `COUNTRY_PRESETS` → columnas locale   |
+| Defaults al crear tenant                     | Onboarding paso País + presets `@zmtech/tenant-config`      |
+| Feriados nacionales                          | Catálogos PE/VE en `salon-holidays.ts` → filas `salon_holidays` por `tenant_id` (auto-seed) |
 
 **No** añadir `country_id` a `appointments` / `clients` (se deriva del tenant).  
-**Diferido:** tabla `countries` + FK; particionamiento por país; `CHECK` ISO (opcional cuando haya 2.º país).
+**Diferido:** tabla `countries` + FK; copy dialecto/voseo (AR/CL); particionamiento por país.
 
 ### Citas: wallclock del tenant ≠ “todo UTC”
 

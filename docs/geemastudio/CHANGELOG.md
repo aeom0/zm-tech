@@ -7,6 +7,16 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido (31-ago 2026 — País, feriados, Agenda multi-servicio)
+
+- **`@zmtech/tenant-config` — país + feriados**: `country-presets.ts` (`COUNTRY_PRESETS`, `localeFromCountry`); `salon-holidays.ts` (catálogos PE/VE 2026, `resolveFranjaEfectiva`, alerts); `esCeldaAgendaEnHorarioLaboral` / `esInstanteEnHorarioLaboral` / `diaTieneFranjaAgenda` aceptan `SalonHolidayIndex` opcional. `locale.language` ampliado (`es-AR` | `es-CL` | `es-MX`).
+- **BD — `salon_holidays`**: UNIQUE `(tenant_id, date)` (migración `20260831155349`); Drizzle `salonHolidays` en `shared-schema`.
+- **Mobile — onboarding país**: `OnboardingCountryScreen` (paso 1); moneda/TZ/`language` derivados del país; quita selector de moneda del tipo de negocio; Settings con `CountryPickerModal` (+ moneda como override).
+- **Mobile — feriados**: `useSalonHolidays` (auto-seed por `locale.country` si vacío); `FeriadosScreen` (CRUD + recargar nacionales); `HolidayAlertBanner` en Dashboard y Agenda; Agenda respeta franja de feriado/cerrado.
+- **Mobile — Agenda**: editar servicios/packs en cita existente (`SvcPickerContent`, `useAppointmentServiceEditor`, `updateAppointmentServicesMutation`); marcar completada; línea “ahora” con `theme.primary`.
+- **Mobile — UX**: `ScrollFadeRow` con flechas en scrolls horizontales; `OtaUpdateOverlay` + `useExpoOTAOnLaunch` (paridad ZM).
+- **Diseño**: `docs/geemastudio/design/onboarding.pen` alineado a tokens Lunaris + frame `1-Pais`.
+
 ### Corregido (31-ago 2026 — Agenda: feedback de nueva cita y reprogramación)
 
 - **Mobile — Agenda**: badge de citas centrado sobre el avatar (antes desalineado); FAB de nueva cita restyled a color del tenant + solo ícono; `ScrollFadeRow` (`components/ScrollFadeRow.tsx`) con flechas táctiles (`showArrows`/`arrowColor`) aplicado a las filas de chips de fecha/hora/minuto en `NewAppointmentModal` y `AppointmentDetailModal`; texto prominente "Hora seleccionada" al reprogramar; selector de minutos (0/15/30/45) agregado al modal de detalle/reprogramación, antes solo disponible al crear cita.

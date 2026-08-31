@@ -27,8 +27,9 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 - **Expo SDK 56**: RN **0.85.3**, React **19.2.3**, Reanimated **4.3.1**, worklets **0.8.3**; breaking SDK 56 resueltos (`StatusBar` sin `backgroundColor`/`translucent`, `absoluteFill`, tipos Reanimated en dashboard)
 - Core mobile: onboarding, agenda (vista dueño grilla día + columna por profesional, vista staff timeline; línea de hora actual), servicios, clientes, inventario, finanzas, validación pagos, asignar profesionales
 - **Personal / agenda**: foto opcional por empleado (`avatar_url` + Storage `employee-avatars`); **FAB crear** + eliminar profesional con confirmación; visible en cabeceras de agenda y franja de equipo
-- **Moneda multi-LATAM**: selector de 19 monedas (`CurrencyPickerModal`) en Ajustes + onboarding paso 2; `syncRemote`
-- **Onboarding**: color personalizado HSV (`CustomColorPickerModal`); TD-001 resuelto (`Onboarding`, `BorderRadius.card`, `Onboarding.canvasBackground`)
+- **Moneda / país**: onboarding elige **país** (`COUNTRY_PRESETS` → moneda, TZ, `language`); Settings: País + moneda override; feriados auto-seed por país
+- **Onboarding**: color personalizado HSV (`CustomColorPickerModal`); TD-001 resuelto (`Onboarding`, `BorderRadius.card`, `Onboarding.canvasBackground`); paso País + `.pen` Lunaris
+- **Feriados**: `salon_holidays` por tenant; `FeriadosScreen`; `HolidayAlertBanner`; slots Agenda vía `resolveFranjaEfectiva`
 - Core web: `/finanzas`, `/` (landing), dashboard métricas (KPIs, gráfico 7 días, top servicios, próximas citas), panel **`/panel/servicios`** y **`/panel/horarios`**
 - **Marca Lunaris**: mobile `Gradients.onboarding`; web **`apps/web/src/lib/theme.ts`** (`LUNARIS`); **`DiamondHero`** consume tokens de `theme.ts`
 - **Deploy Vercel**: sin `ignoreCommand` — build web en cada push a `main`
@@ -308,7 +309,7 @@ Ver [docs/WEB_ARCHITECTURE.md](docs/WEB_ARCHITECTURE.md) para la distinción ent
 | Costos WABA en Finanzas (`waba_pricing_daily`, `PricingBreakdownCard`)                                                                               | jul-2026      | Medio — depende de PR-10B                      |
 | Referencia visual en Agenda (galería + "Abrir link")                                                                                                 | 20-jul-2026   | Medio — depende de PR-10B                      |
 | Ranking de top servicios en Dashboard (`ServiceRankList`) — requiere RPC nueva `get_top_completed_services`                                          | 30-ago-2026   | Medio — nueva RPC Supabase                     |
-| Feriados/días no laborables por tenant (`salon_holidays` genérico) — banner en Dashboard (`HolidayAlertBanner`) + chip/resaltado en header de Agenda | 30-ago-2026   | Medio — nueva tabla Supabase, agrupa ambas UIs |
+| ~~Feriados/días no laborables por tenant (`salon_holidays`) — banner + admin Feriados~~                                                              | 31-ago-2026   | **Hecho** — `tenant-config` + mobile + UNIQUE tenant_date |
 
 ---
 
@@ -334,4 +335,4 @@ Ver [docs/WEB_ARCHITECTURE.md](docs/WEB_ARCHITECTURE.md) para la distinción ent
 
 ---
 
-_Actualizado: 21 jul 2026. Sincronizado con CHANGELOG [Unreleased], auditoría cruzada ZM v3.0 WABA, y estado real del repo aeom0/geemastudio._
+_Actualizado: 31 ago 2026. CHANGELOG [Unreleased]: país/feriados/Agenda multi-servicio; paridad S5-C._
