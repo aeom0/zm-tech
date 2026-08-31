@@ -1,8 +1,9 @@
 import React from 'react'
-import { View, StyleSheet, ScrollView } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
+import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTheme } from '@/hooks/useTheme'
 import { Spacing, BorderRadius, Shadows } from '@/constants/theme'
 import type { ClientKPIs } from '../types'
@@ -58,9 +59,9 @@ export function ClientKPIStrip({ kpis }: Props) {
   ]
 
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
+    <ScrollFadeRow
+      backgroundColor={theme.backgroundRoot}
+      arrowColor={theme.textSecondary}
       contentContainerStyle={styles.content}
     >
       {cards.map((card) => (
@@ -88,7 +89,7 @@ export function ClientKPIStrip({ kpis }: Props) {
           </ThemedText>
         </View>
       ))}
-    </ScrollView>
+    </ScrollFadeRow>
   )
 }
 

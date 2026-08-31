@@ -34,6 +34,11 @@ export default function MiNegocioScreen() {
         onPress={() => navigation.navigate('HorariosTrabajo')}
       />
       <MenuRow
+        icon="calendar"
+        label="Feriados y no laborables"
+        onPress={() => navigation.navigate('Feriados')}
+      />
+      <MenuRow
         icon="briefcase"
         label="Datos del negocio"
         onPress={() => navigation.navigate('Configuracion')}

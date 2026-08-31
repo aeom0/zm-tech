@@ -72,7 +72,7 @@ export default function OnboardingCompleteScreen({ onFinish }: OnboardingComplet
   return (
     <OnboardingLayout centered>
       <Animated.View entering={FadeInDown.duration(400)} style={styles.topBlock}>
-        <OnboardingProgressDots currentStep={6} />
+        <OnboardingProgressDots currentStep={7} />
 
         {/*
           DiamondHero en modo sólo-ícono (showText=false).

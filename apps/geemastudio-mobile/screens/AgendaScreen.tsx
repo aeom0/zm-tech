@@ -11,6 +11,8 @@ import { Feather } from '@expo/vector-icons'
 import { useTheme } from '@/hooks/useTheme'
 import { useResponsive } from '@/hooks/useResponsive'
 import { useAppointmentCompletion } from '@/hooks/useAppointmentCompletion'
+import { useSalonHolidays } from '@/hooks/useSalonHolidays'
+import { HolidayAlertBanner } from '@/components/HolidayAlertBanner'
 import { useTenant } from '@/contexts/TenantContext'
 import { useAuth } from '@/contexts/AuthContext'
 import { Spacing, Shadows } from '@/constants/theme'
@@ -47,9 +49,14 @@ import { useAgendaCalendar } from './agenda/hooks/useAgendaCalendar'
 import {
   useAgendaQueries,
   useAppointmentPaymentsQuery,
+  useAppointmentServiceLinesQuery,
   useServicesByCategory,
 } from './agenda/hooks/useAgendaQueries'
 import { useAgendaMutations } from './agenda/hooks/useAgendaMutations'
+import {
+  useAppointmentServiceEditor,
+  useSyncEditLinesFromQuery,
+} from './agenda/hooks/useAppointmentServiceEditor'
 import { useAvailabilityCheck } from './agenda/hooks/useAvailabilityCheck'
 import { AgendaHeader } from './agenda/components/AgendaHeader'
 import { AgendaWeekDayHeaders } from './agenda/components/AgendaWeekDayHeaders'
@@ -73,6 +80,7 @@ export default function AgendaScreen() {
   const { role, profile, isAdmin, isLoading: authLoading } = useAuth()
   const currencySymbol = config.locale.currency.symbol
   const { isTablet, width } = useResponsive()
+  const { holidayIndex } = useSalonHolidays(true)
 
   const ownerVista = !authLoading && isAdmin
   const staffVista = !authLoading && role === 'staff'
@@ -167,6 +175,18 @@ export default function AgendaScreen() {
   const formTotals = useMemo(
     () => computeServiceLinesTotals(formData.serviceLines, services),
     [formData.serviceLines, services]
+  )
+
+  const serviceEditor = useAppointmentServiceEditor(services)
+
+  const detailServiceLinesQuery = useAppointmentServiceLinesQuery(
+    detailModalVisible && appointmentDetail ? appointmentDetail.id : null
+  )
+
+  useSyncEditLinesFromQuery(
+    detailServiceLinesQuery.data ?? [],
+    appointmentDetail?.employee_id ?? '',
+    serviceEditor.setEditServiceLines
   )
 
   const onCreateSuccess = useCallback(() => {
@@ -299,9 +319,9 @@ export default function AgendaScreen() {
   const handleNewAppointmentDateChange = useCallback(
     (d: Date) => {
       setSelectedDate(d)
-      if (!esCeldaAgendaEnHorarioLaboral(d, selectedHour, businessHoursNorm, tenantTz)) {
+      if (!esCeldaAgendaEnHorarioLaboral(d, selectedHour, businessHoursNorm, tenantTz, holidayIndex)) {
         const first = agendaHours.find((h) =>
-          esCeldaAgendaEnHorarioLaboral(d, h, businessHoursNorm, tenantTz)
+          esCeldaAgendaEnHorarioLaboral(d, h, businessHoursNorm, tenantTz, holidayIndex)
         )
         if (first !== undefined) setSelectedHour(first)
       }
@@ -315,6 +335,21 @@ export default function AgendaScreen() {
     setRescheduleDate(inicioDiaDelInstanteEnZona(aptInst, tenantTz))
     setRescheduleHour(horaCalendarioEnZona(aptInst, tenantTz))
     setRescheduleMinute(minutosDelDiaEnZona(aptInst, tenantTz) % 60)
+
+    const fallbackIds =
+      apt.service_ids && apt.service_ids.length > 0
+        ? apt.service_ids
+        : apt.service_id
+          ? [apt.service_id]
+          : []
+    serviceEditor.setEditServiceLines(
+      fallbackIds.map((svcId) => ({
+        serviceId: svcId,
+        employeeId: apt.employee_id ?? '',
+      }))
+    )
+    serviceEditor.closeSvcPicker()
+
     setDetailModalVisible(true)
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
   }
@@ -337,6 +372,19 @@ export default function AgendaScreen() {
     openAppointmentDetail(apt)
   }
 
+  const handleSaveServices = () => {
+    if (!appointmentDetail) return
+    if (serviceEditor.editServiceLines.length === 0) {
+      Alert.alert('Error', 'Selecciona al menos un servicio')
+      return
+    }
+    updateAppointmentServicesMutation.mutate({
+      id: appointmentDetail.id,
+      date: appointmentDetail.date,
+      lines: serviceEditor.editServiceLines,
+    })
+  }
+
   const handleDeleteAppointment = () => {
     if (!appointmentDetail) return
     Alert.alert('Eliminar cita', `¿Eliminar la cita de ${appointmentDetail.client_name}?`, [
@@ -356,7 +404,8 @@ export default function AgendaScreen() {
         rescheduleDate,
         rescheduleHour * 60 + rescheduleMinute,
         businessHoursNorm,
-        tenantTz
+        tenantTz,
+        holidayIndex
       )
     ) {
       Alert.alert('Fuera de horario', 'Ese día u hora está fuera de la franja del negocio.')
@@ -389,7 +438,8 @@ export default function AgendaScreen() {
         selectedDate,
         selectedHour * 60 + selectedMinute,
         businessHoursNorm,
-        tenantTz
+        tenantTz,
+        holidayIndex
       )
     ) {
       Alert.alert('Fuera de horario', 'Esa hora está fuera de la franja configurada.')
@@ -468,7 +518,7 @@ export default function AgendaScreen() {
   const openNewAppointmentForStaff = useCallback(() => {
     const primeraHora =
       agendaHours.find((h) =>
-        esCeldaAgendaEnHorarioLaboral(selectedDate, h, businessHoursNorm, tenantTz)
+        esCeldaAgendaEnHorarioLaboral(selectedDate, h, businessHoursNorm, tenantTz, holidayIndex)
       ) ??
       agendaHours[0] ??
       9
@@ -499,7 +549,7 @@ export default function AgendaScreen() {
   const openNewAppointmentQuick = useCallback(() => {
     const primeraHora =
       agendaHours.find((h) =>
-        esCeldaAgendaEnHorarioLaboral(selectedDate, h, businessHoursNorm, tenantTz)
+        esCeldaAgendaEnHorarioLaboral(selectedDate, h, businessHoursNorm, tenantTz, holidayIndex)
       ) ??
       agendaHours[0] ??
       9
@@ -508,6 +558,7 @@ export default function AgendaScreen() {
 
   const closeDetailModal = () => {
     cancelPayMethod()
+    serviceEditor.resetEditor()
     setDetailModalVisible(false)
     setAppointmentDetail(null)
   }
@@ -515,9 +566,9 @@ export default function AgendaScreen() {
   const handleRescheduleDatePick = useCallback(
     (d: Date) => {
       setRescheduleDate(d)
-      if (!esCeldaAgendaEnHorarioLaboral(d, rescheduleHour, businessHoursNorm, tenantTz)) {
+      if (!esCeldaAgendaEnHorarioLaboral(d, rescheduleHour, businessHoursNorm, tenantTz, holidayIndex)) {
         const first = agendaHours.find((h) =>
-          esCeldaAgendaEnHorarioLaboral(d, h, businessHoursNorm, tenantTz)
+          esCeldaAgendaEnHorarioLaboral(d, h, businessHoursNorm, tenantTz, holidayIndex)
         )
         if (first !== undefined) setRescheduleHour(first)
       }
@@ -585,6 +636,8 @@ export default function AgendaScreen() {
         onChangeDay={changeDay}
         onGoToToday={goToToday}
       />
+
+      <HolidayAlertBanner embedded={false} />
 
       {authLoading ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -841,7 +894,30 @@ export default function AgendaScreen() {
         appointment={appointmentDetail}
         services={services}
         employees={employees}
+        categories={categories}
+        packs={packs}
         currencySymbol={currencySymbol}
+        staffSingular={config.terminology.staffSingular}
+        editServiceLines={serviceEditor.editServiceLines}
+        setEditServiceLines={serviceEditor.setEditServiceLines}
+        svcPickerVisible={serviceEditor.svcPickerVisible}
+        svcPickerCatId={serviceEditor.svcPickerCatId}
+        setSvcPickerCatId={serviceEditor.setSvcPickerCatId}
+        svcPickerEmployeeId={serviceEditor.svcPickerEmployeeId}
+        setSvcPickerEmployeeId={serviceEditor.setSvcPickerEmployeeId}
+        pickerSelectedIds={serviceEditor.pickerSelectedIds}
+        onOpenPicker={() =>
+          serviceEditor.openSvcPicker(
+            appointmentDetail?.employee_id ?? employees[0]?.id ?? '',
+            categories
+          )
+        }
+        onClosePicker={serviceEditor.closeSvcPicker}
+        onToggleService={serviceEditor.toggleSvcInPicker}
+        onAddPack={serviceEditor.addPackToLines}
+        onSaveServices={handleSaveServices}
+        isSavingServices={updateAppointmentServicesMutation.isPending}
+        servicesLoading={detailServiceLinesQuery.isLoading}
         agendaHours={agendaHours}
         businessHours={businessHoursNorm}
         timeZone={tenantTz}

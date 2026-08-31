@@ -24,6 +24,7 @@ interface AgendaStatusFilterProps {
     backgroundSecondary: string
     border: string
     text: string
+    textSecondary: string
   }
 }
 
@@ -31,6 +32,7 @@ export function AgendaStatusFilter({ statusFilter, onChange, theme }: AgendaStat
   return (
     <ScrollFadeRow
       backgroundColor={theme.backgroundRoot}
+      arrowColor={theme.textSecondary}
       style={{ flexGrow: 0, flexShrink: 0 }}
       contentContainerStyle={styles.statusFilterContainer}
       keyboardShouldPersistTaps="handled"

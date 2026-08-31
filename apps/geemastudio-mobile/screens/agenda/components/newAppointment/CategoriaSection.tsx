@@ -1,8 +1,9 @@
 import React from 'react'
-import { View, ScrollView, Pressable } from 'react-native'
+import { View, Pressable } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
+import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 
 import type { AgendaFormState, AgendaServiceCategory } from '../../types'
 import { agendaStyles as styles } from '../../agendaStyles'
@@ -34,9 +35,9 @@ export function CategoriaSection({
           No hay categorías. Crea categorías en Servicios.
         </ThemedText>
       ) : (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
+        <ScrollFadeRow
+          backgroundColor={theme.backgroundDefault}
+          arrowColor={theme.textSecondary}
           contentContainerStyle={styles.chipsContainer}
         >
           {categories.map((cat) => {
@@ -63,7 +64,7 @@ export function CategoriaSection({
               </Pressable>
             )
           })}
-        </ScrollView>
+        </ScrollFadeRow>
       )}
     </View>
   )

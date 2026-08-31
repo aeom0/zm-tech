@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import { View, ScrollView, Pressable, ActivityIndicator } from 'react-native'
+import { View, Pressable, ActivityIndicator } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
+import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { Spacing } from '@/constants/theme'
 
 import { addPackServiceLines } from '../../agendaUtils'
@@ -124,9 +125,9 @@ export function ServicioSection({
             No hay servicios en {selectedCategory?.name}.
           </ThemedText>
         ) : (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
+          <ScrollFadeRow
+            backgroundColor={theme.backgroundDefault}
+            arrowColor={theme.textSecondary}
             contentContainerStyle={styles.chipsContainer}
           >
             {servicesByCategory.map((service) => {
@@ -163,7 +164,7 @@ export function ServicioSection({
                 </Pressable>
               )
             })}
-          </ScrollView>
+          </ScrollFadeRow>
         )
       ) : packsLoading ? (
         <ActivityIndicator color={theme.primary} style={{ padding: Spacing.lg }} />
@@ -172,9 +173,9 @@ export function ServicioSection({
           No hay packs disponibles.
         </ThemedText>
       ) : (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
+        <ScrollFadeRow
+          backgroundColor={theme.backgroundDefault}
+          arrowColor={theme.textSecondary}
           contentContainerStyle={styles.chipsContainer}
         >
           {packs.map((pack) => {
@@ -211,7 +212,7 @@ export function ServicioSection({
               </Pressable>
             )
           })}
-        </ScrollView>
+        </ScrollFadeRow>
       )}
     </View>
   )

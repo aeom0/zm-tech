@@ -1,8 +1,9 @@
 import React from 'react'
-import { View, ScrollView, Pressable, ActivityIndicator } from 'react-native'
+import { View, Pressable, ActivityIndicator } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
+import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { Spacing } from '@/constants/theme'
 
 import type { AgendaEmployee, AgendaFormState } from '../../types'
@@ -61,9 +62,9 @@ export function StaffSection({
           </ThemedText>
         </View>
       ) : (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
+        <ScrollFadeRow
+          backgroundColor={theme.backgroundDefault}
+          arrowColor={theme.textSecondary}
           contentContainerStyle={styles.chipsContainer}
         >
           {employees.map((employee) => {
@@ -110,7 +111,7 @@ export function StaffSection({
               </Pressable>
             )
           })}
-        </ScrollView>
+        </ScrollFadeRow>
       )}
     </View>
   )

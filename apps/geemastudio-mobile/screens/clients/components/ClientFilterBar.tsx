@@ -26,6 +26,7 @@ export function ClientFilterBar({ segment, onSegmentChange }: Props) {
   return (
     <ScrollFadeRow
       backgroundColor={theme.backgroundRoot}
+      arrowColor={theme.textSecondary}
       style={styles.container}
       contentContainerStyle={styles.scrollRow}
     >

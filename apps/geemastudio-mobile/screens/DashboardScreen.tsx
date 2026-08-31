@@ -29,6 +29,7 @@ import { DashboardLowStockBanner } from './dashboard/components/DashboardLowStoc
 import { DashboardQuickLinksCard } from './dashboard/components/DashboardQuickLinksCard'
 import { DashboardStatCard } from './dashboard/components/DashboardStatCard'
 import { DashboardUpcomingCard } from './dashboard/components/DashboardUpcomingCard'
+import { HolidayAlertBanner } from '@/components/HolidayAlertBanner'
 import { dashboardStyles as styles } from './dashboard/dashboardStyles'
 import {
   formatDashboardDateLong,
@@ -296,6 +297,8 @@ export default function DashboardScreen() {
         theme={{ text: theme.text, textSecondary: theme.textSecondary }}
         animatedStyle={animatedItems[5]}
       />
+
+      <HolidayAlertBanner embedded />
 
       {isTablet ? (
         <View style={styles.tabletLayout}>

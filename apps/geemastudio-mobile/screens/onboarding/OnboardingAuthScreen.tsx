@@ -58,7 +58,7 @@ export default function OnboardingAuthScreen({
         <Animated.View entering={FadeInDown.duration(400)} style={styles.logoRow}>
           {esRegreso ? (
             <View style={styles.dotsRow}>
-              <OnboardingProgressDots currentStep={5} />
+              <OnboardingProgressDots currentStep={6} />
             </View>
           ) : (
             <View style={styles.logoWrap}>

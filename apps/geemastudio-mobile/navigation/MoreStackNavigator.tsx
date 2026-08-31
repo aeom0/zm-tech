@@ -10,6 +10,7 @@ import { useScreenOptions } from '@/hooks/useScreenOptions'
 import PersonalScreen from '@/screens/PersonalScreen'
 import SettingsScreen from '@/screens/SettingsScreen'
 import HorariosTrabajoScreen from '@/screens/HorariosTrabajoScreen'
+import FeriadosScreen from '@/screens/holidays/FeriadosScreen'
 import ValidacionPagosScreen from '@/screens/ValidacionPagosScreen'
 import AsignarProfesionalesScreen from '@/screens/AsignarProfesionalesScreen'
 import LogoNegocioScreen from '@/screens/settings/LogoNegocioScreen'
@@ -35,6 +36,7 @@ export type MoreStackParamList = {
   Inventario: undefined
   Configuracion: undefined
   HorariosTrabajo: undefined
+  Feriados: undefined
   LogoNegocio: undefined
   Perfil: undefined
 }
@@ -98,6 +100,11 @@ export default function MoreStackNavigator() {
         name="HorariosTrabajo"
         component={HorariosTrabajoScreen}
         options={{ title: 'Horario de trabajo' }}
+      />
+      <Stack.Screen
+        name="Feriados"
+        component={FeriadosScreen}
+        options={{ title: 'Feriados' }}
       />
       <Stack.Screen
         name="LogoNegocio"

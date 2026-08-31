@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, Pressable, ActivityIndicator, ScrollView } from 'react-native'
+import { View, StyleSheet, Pressable, ActivityIndicator } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import { ThemedText } from '@/components/ThemedText'
+import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTheme } from '@/hooks/useTheme'
 import { Spacing, BorderRadius } from '@/constants/theme'
 import type { UnassignedAppointment } from '../types'
@@ -69,9 +70,9 @@ export function AsignarRow({ item, employees, isSaving, onAssign, locale }: Asig
       </View>
 
       {/* Selector de profesional — chips horizontales */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
+      <ScrollFadeRow
+        backgroundColor={theme.backgroundDefault}
+        arrowColor={theme.textSecondary}
         contentContainerStyle={styles.chipsContainer}
       >
         {employees.map((emp) => {
@@ -105,7 +106,7 @@ export function AsignarRow({ item, employees, isSaving, onAssign, locale }: Asig
             </Pressable>
           )
         })}
-      </ScrollView>
+      </ScrollFadeRow>
 
       {/* Botón confirmar — solo visible si hay selección */}
       {selectedEmployeeId && (

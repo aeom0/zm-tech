@@ -21,28 +21,46 @@ interface ScrollFadeRowProps {
   style?: StyleProp<ViewStyle>
   fadeWidth?: number
   keyboardShouldPersistTaps?: 'always' | 'never' | 'handled'
-  /** Muestra flechitas tocables sobre el degradado para avanzar/retroceder el scroll. */
-  showArrows?: boolean
+  /** Color de las flechitas; por defecto gris legible sobre el degradado. */
   arrowColor?: string
+  /** Callback adicional de scroll (p. ej. sincronizar avatar strip con grid). */
+  onScroll?: (event: NativeSyntheticEvent<NativeScrollEvent>) => void
+  scrollEventThrottle?: number
 }
 
 const SCROLL_EPSILON = 4
 
-/** Fila con scroll horizontal que muestra un fundido (y flechitas opcionales) en los bordes cuando hay más contenido fuera de vista. */
-export function ScrollFadeRow({
-  children,
-  backgroundColor,
-  contentContainerStyle,
-  style,
-  fadeWidth = 28,
-  keyboardShouldPersistTaps,
-  showArrows = false,
-  arrowColor = '#FFFFFF',
-}: ScrollFadeRowProps) {
+/** Fila con scroll horizontal: degradado en bordes + flechitas para avanzar/retroceder. */
+export const ScrollFadeRow = React.forwardRef<ScrollView, ScrollFadeRowProps>(function ScrollFadeRow(
+  {
+    children,
+    backgroundColor,
+    contentContainerStyle,
+    style,
+    fadeWidth = 32,
+    keyboardShouldPersistTaps,
+    arrowColor = 'rgba(80,80,80,0.85)',
+    onScroll: onScrollProp,
+    scrollEventThrottle = 16,
+  },
+  forwardedRef
+) {
   const scrollRef = useRef<ScrollView>(null)
   const [layoutWidth, setLayoutWidth] = useState(0)
   const [contentWidth, setContentWidth] = useState(0)
   const [scrollX, setScrollX] = useState(0)
+
+  const assignScrollRef = useCallback(
+    (node: ScrollView | null) => {
+      scrollRef.current = node
+      if (typeof forwardedRef === 'function') {
+        forwardedRef(node)
+      } else if (forwardedRef) {
+        forwardedRef.current = node
+      }
+    },
+    [forwardedRef]
+  )
 
   const onLayout = useCallback((e: LayoutChangeEvent) => {
     setLayoutWidth(e.nativeEvent.layout.width)
@@ -52,9 +70,13 @@ export function ScrollFadeRow({
     setContentWidth(w)
   }, [])
 
-  const onScroll = useCallback((e: NativeSyntheticEvent<NativeScrollEvent>) => {
-    setScrollX(e.nativeEvent.contentOffset.x)
-  }, [])
+  const onScroll = useCallback(
+    (e: NativeSyntheticEvent<NativeScrollEvent>) => {
+      setScrollX(e.nativeEvent.contentOffset.x)
+      onScrollProp?.(e)
+    },
+    [onScrollProp]
+  )
 
   const isScrollable = contentWidth > layoutWidth + SCROLL_EPSILON
   const showLeftFade = isScrollable && scrollX > SCROLL_EPSILON
@@ -76,13 +98,13 @@ export function ScrollFadeRow({
   return (
     <View style={[styles.container, style]} onLayout={onLayout}>
       <ScrollView
-        ref={scrollRef}
+        ref={assignScrollRef}
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={contentContainerStyle}
         onScroll={onScroll}
         onContentSizeChange={onContentSizeChange}
-        scrollEventThrottle={16}
+        scrollEventThrottle={scrollEventThrottle}
         keyboardShouldPersistTaps={keyboardShouldPersistTaps}
       >
         {children}
@@ -93,13 +115,11 @@ export function ScrollFadeRow({
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={[styles.fade, styles.fadeLeft, { width: fadeWidth }]}
-          pointerEvents={showArrows ? 'box-none' : 'none'}
+          pointerEvents="box-none"
         >
-          {showArrows && (
-            <Pressable onPress={scrollBack} hitSlop={8} style={styles.arrowTap}>
-              <Feather name="chevron-left" size={16} color={arrowColor} />
-            </Pressable>
-          )}
+          <Pressable onPress={scrollBack} hitSlop={8} style={styles.arrowTap}>
+            <Feather name="chevron-left" size={16} color={arrowColor} />
+          </Pressable>
         </LinearGradient>
       )}
       {showRightFade && (
@@ -108,18 +128,16 @@ export function ScrollFadeRow({
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={[styles.fade, styles.fadeRight, { width: fadeWidth }]}
-          pointerEvents={showArrows ? 'box-none' : 'none'}
+          pointerEvents="box-none"
         >
-          {showArrows && (
-            <Pressable onPress={scrollForward} hitSlop={8} style={styles.arrowTap}>
-              <Feather name="chevron-right" size={16} color={arrowColor} />
-            </Pressable>
-          )}
+          <Pressable onPress={scrollForward} hitSlop={8} style={styles.arrowTap}>
+            <Feather name="chevron-right" size={16} color={arrowColor} />
+          </Pressable>
         </LinearGradient>
       )}
     </View>
   )
-}
+})
 
 const styles = StyleSheet.create({
   container: {
@@ -139,8 +157,8 @@ const styles = StyleSheet.create({
     right: 0,
   },
   arrowTap: {
-    width: 24,
-    height: 24,
+    width: 28,
+    height: 28,
     alignItems: 'center',
     justifyContent: 'center',
   },
