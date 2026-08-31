@@ -33,6 +33,7 @@ import {
 import type { MainTabParamList } from '@/navigation/MainTabNavigator'
 
 import { agendaStyles as styles } from './agenda/agendaStyles'
+import { computeServiceLinesTotals } from './agenda/agendaUtils'
 import {
   emptyAgendaForm,
   type AgendaAppointment,
@@ -129,6 +130,8 @@ export default function AgendaScreen() {
     services,
     servicesLoading,
     servicesError,
+    packs,
+    packsLoading,
   } = useAgendaQueries()
 
   const appointmentsDisplayed = useMemo(() => {
@@ -156,13 +159,9 @@ export default function AgendaScreen() {
     () => categories.find((c) => c.id === formData.categoryId),
     [categories, formData.categoryId]
   )
-  const selectedService = useMemo(
-    () => services.find((s) => s.id === formData.serviceId),
-    [services, formData.serviceId]
-  )
-  const selectedEmployee = useMemo(
-    () => employees.find((e) => e.id === formData.employeeId),
-    [employees, formData.employeeId]
+  const formTotals = useMemo(
+    () => computeServiceLinesTotals(formData.serviceLines, services),
+    [formData.serviceLines, services]
   )
 
   const onCreateSuccess = useCallback(() => {
@@ -178,8 +177,12 @@ export default function AgendaScreen() {
     setAppointmentDetail(null)
   }, [])
 
-  const { createMutation, deleteAppointmentMutation, updateAppointmentMutation } =
-    useAgendaMutations({ onCreateSuccess, onDeleteSuccess, onUpdateSuccess }, tenantTz)
+  const {
+    createMutation,
+    deleteAppointmentMutation,
+    updateAppointmentMutation,
+    updateAppointmentServicesMutation,
+  } = useAgendaMutations({ onCreateSuccess, onDeleteSuccess, onUpdateSuccess }, tenantTz, services)
 
   const route = useRoute<RouteProp<MainTabParamList, 'Agenda'>>()
   const navigation = useNavigation()
@@ -243,16 +246,13 @@ export default function AgendaScreen() {
     setSelectedHour(hour)
     setSelectedMinute(minute)
     const firstCategoryId = categories[0]?.id ?? ''
-    const firstServiceInCategory = firstCategoryId
-      ? services.find((s) => s.category_id === firstCategoryId)
-      : services[0]
     setFormData({
       clientName: '',
       clientPhone: '',
       clientDocument: '',
       categoryId: firstCategoryId,
-      serviceId: firstServiceInCategory?.id ?? '',
       employeeId: employees.length > 0 ? employees[0].id : '',
+      serviceLines: [],
     })
     setModalVisible(true)
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
@@ -338,11 +338,11 @@ export default function AgendaScreen() {
       Alert.alert('Error', 'Ingresa el nombre de la clienta')
       return
     }
-    if (!formData.serviceId) {
-      Alert.alert('Error', 'Selecciona un servicio')
+    if (formData.serviceLines.length === 0) {
+      Alert.alert('Error', 'Selecciona al menos un servicio')
       return
     }
-    if (!formData.employeeId) {
+    if (formData.serviceLines.some((line) => !line.employeeId)) {
       Alert.alert('Error', `Selecciona ${config.terminology.staffSingular.toLowerCase()}`)
       return
     }
@@ -362,12 +362,9 @@ export default function AgendaScreen() {
       client_name: formData.clientName.trim(),
       client_phone: formData.clientPhone.trim() || undefined,
       client_document: formData.clientDocument.trim() || undefined,
-      service_id: formData.serviceId,
-      employee_id: formData.employeeId,
       date: formatAppointmentWallclock(appointmentDate, tenantTz),
-      duration: selectedService?.duration || 60,
-      price: selectedService?.price || '0',
       status: 'scheduled',
+      lines: formData.serviceLines,
     })
   }
 
@@ -379,9 +376,9 @@ export default function AgendaScreen() {
   const availability = useAvailabilityCheck({
     employeeId: formData.employeeId,
     startDate: candidateStartDate,
-    durationMinutes: selectedService?.duration || 60,
+    durationMinutes: formTotals.totalDuration || 60,
     timeZone: tenantTz,
-    enabled: modalVisible && !!formData.employeeId && !!formData.serviceId,
+    enabled: modalVisible && !!formData.employeeId && formData.serviceLines.length > 0,
     staleTimeMs: 30_000,
   })
 
@@ -440,16 +437,13 @@ export default function AgendaScreen() {
     setSelectedHour(primeraHora)
     setSelectedMinute(0)
     const firstCategoryId = categories[0]?.id ?? ''
-    const firstServiceInCategory = firstCategoryId
-      ? services.find((s) => s.category_id === firstCategoryId)
-      : services[0]
     setFormData({
       clientName: '',
       clientPhone: '',
       clientDocument: '',
       categoryId: firstCategoryId,
-      serviceId: firstServiceInCategory?.id ?? '',
       employeeId: profile?.employee_id ?? '',
+      serviceLines: [],
     })
     setModalVisible(true)
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
@@ -777,8 +771,8 @@ export default function AgendaScreen() {
         employeesLoading={employeesLoading}
         employeesError={employeesError}
         employees={employees}
-        selectedService={selectedService}
-        selectedEmployee={selectedEmployee}
+        packs={packs}
+        packsLoading={packsLoading}
         formatDateLabel={formatDateLabel}
         onSubmit={handleCreateAppointment}
         createPending={createMutation.isPending}
@@ -797,6 +791,8 @@ export default function AgendaScreen() {
         theme={theme}
         appointment={appointmentDetail}
         services={services}
+        employees={employees}
+        currencySymbol={currencySymbol}
         agendaHours={agendaHours}
         businessHours={businessHoursNorm}
         timeZone={tenantTz}

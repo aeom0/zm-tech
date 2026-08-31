@@ -21,7 +21,8 @@ import {
 } from '@zmtech/tenant-config'
 
 import { DAYS_ES } from '../constants'
-import type { AgendaAppointment, AgendaService } from '../types'
+import { useAppointmentServiceLinesQuery } from '../hooks/useAgendaQueries'
+import type { AgendaAppointment, AgendaEmployee, AgendaService } from '../types'
 import { agendaStyles as styles } from '../agendaStyles'
 
 /** Incremento de minutos del picker de hora exacta. */
@@ -45,6 +46,8 @@ interface AppointmentDetailModalProps {
   theme: Theme
   appointment: AgendaAppointment | null
   services: AgendaService[]
+  employees: AgendaEmployee[]
+  currencySymbol: string
   agendaHours: number[]
   businessHours: TenantConfig['businessHours']
   timeZone: string
@@ -73,6 +76,8 @@ export function AppointmentDetailModal({
   theme,
   appointment,
   services,
+  employees,
+  currencySymbol,
   agendaHours,
   businessHours,
   timeZone,
@@ -93,6 +98,11 @@ export function AppointmentDetailModal({
   busyUntilLabel = null,
   isBusy = false,
 }: AppointmentDetailModalProps) {
+  const serviceLinesQuery = useAppointmentServiceLinesQuery(
+    visible && appointment ? appointment.id : null
+  )
+  const serviceLines = serviceLinesQuery.data ?? []
+
   const enFranjaConfigurada =
     !!rescheduleDate &&
     esInstanteEnHorarioLaboral(
@@ -172,6 +182,46 @@ export function AppointmentDetailModal({
                     hour12: timeFormat === '12',
                   }).format(instanteCitaDesdeTexto(appointment.date, timeZone))}
                 </ThemedText>
+              </View>
+
+              <View style={styles.formSection}>
+                <ThemedText style={[styles.sectionLabel, { color: theme.textSecondary }]}>
+                  Servicios
+                </ThemedText>
+                {serviceLinesQuery.isLoading ? (
+                  <ActivityIndicator color={theme.primary} style={{ padding: Spacing.md }} />
+                ) : serviceLines.length === 0 ? (
+                  <ThemedText style={[styles.summaryLabel, { color: theme.textMuted }]}>
+                    Sin detalle de servicios registrado para esta cita.
+                  </ThemedText>
+                ) : (
+                  serviceLines.map((line) => {
+                    const service = services.find((s) => s.id === line.service_id)
+                    const employee = employees.find((e) => e.id === line.employee_id)
+                    return (
+                      <View key={line.id} style={styles.summaryLineRow}>
+                        <View style={styles.summaryLineInfo}>
+                          <ThemedText
+                            style={[styles.summaryValue, { color: theme.text }]}
+                            numberOfLines={1}
+                          >
+                            {service?.name ?? '—'}
+                            {line.pack_id ? ' (pack)' : ''}
+                          </ThemedText>
+                          <View style={styles.summaryEmployeeRow}>
+                            <View style={[styles.summaryDot, { backgroundColor: employee?.color }]} />
+                            <ThemedText style={[styles.summaryLabel, { color: theme.textMuted }]}>
+                              {employee?.name.split(' ')[0] ?? '—'}
+                            </ThemedText>
+                          </View>
+                        </View>
+                        <ThemedText style={[styles.summaryValue, { color: theme.text }]}>
+                          {currencySymbol} {Number(line.price).toFixed(2)}
+                        </ThemedText>
+                      </View>
+                    )
+                  })
+                )}
               </View>
 
               <View style={styles.formSection}>

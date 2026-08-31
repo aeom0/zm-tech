@@ -9,6 +9,11 @@ import type { AgendaEmployee, AgendaFormState } from '../../types'
 import { agendaStyles as styles } from '../../agendaStyles'
 import type { NewAppointmentModalTheme } from './modalTheme'
 
+/**
+ * Selecciona el profesional "por defecto": el que se asigna a cada nueva línea
+ * de servicio que se agregue desde ServicioSection (no el único de la cita —
+ * una cita puede tener varias líneas con profesionales distintos).
+ */
 interface StaffSectionProps {
   theme: NewAppointmentModalTheme
   formData: AgendaFormState

@@ -252,6 +252,35 @@ export const agendaStyles = StyleSheet.create({
     borderWidth: 1,
     minWidth: 120,
   },
+
+  pickerTabsRow: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+    marginBottom: Spacing.md,
+  },
+  pickerTab: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 6,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+  },
+  pickerTabText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+
+  summaryLineRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: Spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.05)',
+  },
+  summaryLineInfo: {
+    flex: 1,
+    marginRight: Spacing.sm,
+  },
   serviceChipName: {
     fontSize: 14,
     fontWeight: '600',

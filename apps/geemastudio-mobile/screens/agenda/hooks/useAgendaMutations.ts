@@ -10,6 +10,9 @@ import {
   parseAppointmentWallclock,
 } from '@zmtech/tenant-config'
 
+import { computeServiceLinesTotals, lineDuration, lineUnitPrice } from '../agendaUtils'
+import type { AgendaService, AgendaServiceLine } from '../types'
+
 export interface AgendaMutationCallbacks {
   onCreateSuccess: () => void
   onDeleteSuccess: () => void
@@ -70,42 +73,97 @@ async function guardOverlapBeforeInsert(args: {
   }
 }
 
-export function useAgendaMutations(callbacks: AgendaMutationCallbacks, timeZone: string) {
+/**
+ * Verifica solape para cada profesional único entre las líneas de la cita: al ser
+ * multi-servicio, dos líneas pueden tener empleados distintos y ambos quedan
+ * ocupados durante toda la ventana de la cita (fecha + duración total).
+ */
+async function guardOverlapForLines(args: {
+  employeeIds: string[]
+  dateIso: string
+  durationMinutes: number
+  timeZone: string
+  excludeAppointmentId?: string | null
+}) {
+  const uniqueEmployeeIds = [...new Set(args.employeeIds.filter(Boolean))]
+  for (const employeeId of uniqueEmployeeIds) {
+    await guardOverlapBeforeInsert({
+      employeeId,
+      dateIso: args.dateIso,
+      durationMinutes: args.durationMinutes,
+      timeZone: args.timeZone,
+      excludeAppointmentId: args.excludeAppointmentId,
+    })
+  }
+}
+
+function buildServiceRows(appointmentId: string, lines: AgendaServiceLine[], services: AgendaService[]) {
+  return lines.map((line) => ({
+    appointment_id: appointmentId,
+    service_id: line.serviceId,
+    employee_id: line.employeeId || null,
+    pack_id: line.packId ?? null,
+    price: lineUnitPrice(line, services).toFixed(2),
+    duration: lineDuration(line, services),
+  }))
+}
+
+export function useAgendaMutations(
+  callbacks: AgendaMutationCallbacks,
+  timeZone: string,
+  services: AgendaService[]
+) {
   const createMutation = useMutation({
     mutationFn: async (data: {
       client_name: string
       client_phone?: string
       client_document?: string
-      service_id: string
-      employee_id: string
       date: string
-      duration: number
-      price: string
       status: string
+      lines: AgendaServiceLine[]
     }) => {
-      await guardOverlapBeforeInsert({
-        employeeId: data.employee_id,
+      if (data.lines.length === 0) {
+        throw new Error('Selecciona al menos un servicio')
+      }
+
+      const { totalPrice, totalDuration } = computeServiceLinesTotals(data.lines, services)
+      const duration = totalDuration || 60
+
+      await guardOverlapForLines({
+        employeeIds: data.lines.map((l) => l.employeeId),
         dateIso: data.date,
-        durationMinutes: data.duration,
+        durationMinutes: duration,
         timeZone,
       })
 
+      const firstLine = data.lines[0]
       const payload = {
         client_name: data.client_name,
         client_phone: data.client_phone ?? null,
         client_document: data.client_document ?? null,
-        service_id: data.service_id,
-        employee_id: data.employee_id,
+        service_id: firstLine.serviceId,
+        employee_id: firstLine.employeeId,
+        service_ids: data.lines.map((l) => l.serviceId),
         date: data.date,
-        duration: data.duration,
-        price: data.price,
+        duration,
+        price: totalPrice.toFixed(2),
         status: data.status,
       }
 
-      const { error } = await supabase.from('appointments').insert(payload)
-
+      const { data: newApt, error } = await supabase
+        .from('appointments')
+        .insert(payload)
+        .select('id')
+        .single()
       if (error) {
         throw new Error(error.message)
+      }
+
+      const aptId = (newApt as { id: string }).id
+      const svcRows = buildServiceRows(aptId, data.lines, services)
+      const { error: linesError } = await supabase.from('appointment_services').insert(svcRows)
+      if (linesError) {
+        throw new Error(linesError.message)
       }
     },
     onSuccess: () => {
@@ -171,9 +229,73 @@ export function useAgendaMutations(callbacks: AgendaMutationCallbacks, timeZone:
     },
   })
 
+  /**
+   * Edita las líneas de servicio de una cita existente: delete-then-insert sobre
+   * `appointment_services` (no diff/upsert) + resincroniza los campos denormalizados
+   * de `appointments` (service_id/service_ids/employee_id/duration/price).
+   */
+  const updateAppointmentServicesMutation = useMutation({
+    mutationFn: async (args: { id: string; date: string; lines: AgendaServiceLine[] }) => {
+      if (args.lines.length === 0) {
+        throw new Error('Selecciona al menos un servicio')
+      }
+
+      const { totalPrice, totalDuration } = computeServiceLinesTotals(args.lines, services)
+      const duration = totalDuration || 60
+
+      await guardOverlapForLines({
+        employeeIds: args.lines.map((l) => l.employeeId),
+        dateIso: args.date,
+        durationMinutes: duration,
+        timeZone,
+        excludeAppointmentId: args.id,
+      })
+
+      const firstLine = args.lines[0]
+      const { error: aptError } = await supabase
+        .from('appointments')
+        .update({
+          service_id: firstLine.serviceId,
+          employee_id: firstLine.employeeId,
+          service_ids: args.lines.map((l) => l.serviceId),
+          duration,
+          price: totalPrice.toFixed(2),
+        })
+        .eq('id', args.id)
+      if (aptError) {
+        throw new Error(aptError.message)
+      }
+
+      const { error: delError } = await supabase
+        .from('appointment_services')
+        .delete()
+        .eq('appointment_id', args.id)
+      if (delError) {
+        throw new Error(delError.message)
+      }
+
+      const svcRows = buildServiceRows(args.id, args.lines, services)
+      const { error: insError } = await supabase.from('appointment_services').insert(svcRows)
+      if (insError) {
+        throw new Error(insError.message)
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['appointments'] })
+      queryClient.invalidateQueries({ queryKey: ['dashboard_stats'] })
+      queryClient.invalidateQueries({ queryKey: ['appointment_services'] })
+      callbacks.onUpdateSuccess()
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+    },
+    onError: (error: Error) => {
+      Alert.alert('Error', error.message || 'No se pudo actualizar los servicios de la cita')
+    },
+  })
+
   return {
     createMutation,
     deleteAppointmentMutation,
     updateAppointmentMutation,
+    updateAppointmentServicesMutation,
   }
 }

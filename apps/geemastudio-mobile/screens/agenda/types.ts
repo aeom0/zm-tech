@@ -34,6 +34,40 @@ export interface AgendaServiceCategory {
   order: number
 }
 
+/** Línea de servicio del formulario (nueva cita o edición) — una por servicio+profesional */
+export interface AgendaServiceLine {
+  serviceId: string
+  employeeId: string
+  /** Si la línea proviene de un pack, el id del pack */
+  packId?: string
+  /**
+   * Monto de esta línea al guardar (para packs: reparto equitativo del total del pack;
+   * no se deriva de la suma de precios de catálogo de los servicios incluidos).
+   */
+  priceOverride?: number
+}
+
+/** Pack de servicios (tabla `packs`): se expande a N `AgendaServiceLine` al agregarlo */
+export interface AgendaPack {
+  id: string
+  name: string
+  description?: string | null
+  price: string
+  service_ids: string[]
+  is_active: boolean
+}
+
+/** Fila de `appointment_services` tal como llega de Supabase */
+export interface AgendaAppointmentServiceLine {
+  id: string
+  appointment_id: string
+  service_id: string | null
+  employee_id: string | null
+  pack_id: string | null
+  price: string
+  duration: number
+}
+
 /**
  * all       → todas las citas
  * scheduled → pendientes (status = 'scheduled')
@@ -50,8 +84,9 @@ export interface AgendaFormState {
   clientPhone: string
   clientDocument: string
   categoryId: string
-  serviceId: string
+  /** Empleado por defecto asignado a cada nueva línea que se agregue (no el único de la cita) */
   employeeId: string
+  serviceLines: AgendaServiceLine[]
 }
 
 export const emptyAgendaForm = (): AgendaFormState => ({
@@ -59,6 +94,6 @@ export const emptyAgendaForm = (): AgendaFormState => ({
   clientPhone: '',
   clientDocument: '',
   categoryId: '',
-  serviceId: '',
   employeeId: '',
+  serviceLines: [],
 })

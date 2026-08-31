@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
 
-import type { AgendaFormState, AgendaService, AgendaServiceCategory } from '../../types'
+import type { AgendaFormState, AgendaServiceCategory } from '../../types'
 import { agendaStyles as styles } from '../../agendaStyles'
 import type { NewAppointmentModalTheme } from './modalTheme'
 
@@ -13,7 +13,6 @@ interface CategoriaSectionProps {
   formData: AgendaFormState
   setFormData: React.Dispatch<React.SetStateAction<AgendaFormState>>
   categories: AgendaServiceCategory[]
-  services: AgendaService[]
 }
 
 export function CategoriaSection({
@@ -21,7 +20,6 @@ export function CategoriaSection({
   formData,
   setFormData,
   categories,
-  services,
 }: CategoriaSectionProps) {
   return (
     <View style={styles.formSection}>
@@ -54,16 +52,7 @@ export function CategoriaSection({
                     borderColor: theme.primary,
                   },
                 ]}
-                onPress={() =>
-                  setFormData((prev) => {
-                    const firstInCat = services.find((s) => s.category_id === cat.id)
-                    return {
-                      ...prev,
-                      categoryId: cat.id,
-                      serviceId: firstInCat?.id ?? '',
-                    }
-                  })
-                }
+                onPress={() => setFormData((prev) => ({ ...prev, categoryId: cat.id }))}
               >
                 <ThemedText
                   style={[styles.serviceChipName, isSelected && { color: '#FFFFFF' }]}
