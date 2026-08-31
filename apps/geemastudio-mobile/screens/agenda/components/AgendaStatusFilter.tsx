@@ -1,10 +1,9 @@
 import React from 'react'
-import { Pressable, StyleSheet, ScrollView } from 'react-native'
-import { LinearGradient } from 'expo-linear-gradient'
+import { Pressable } from 'react-native'
 import * as Haptics from 'expo-haptics'
 
 import { ThemedText } from '@/components/ThemedText'
-import { Gradients } from '@/constants/theme'
+import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 
 import type { AgendaStatusFilter as StatusFilter } from '../types'
 import { agendaStyles as styles } from '../agendaStyles'
@@ -21,6 +20,7 @@ interface AgendaStatusFilterProps {
   onChange: (v: StatusFilter) => void
   theme: {
     primary: string
+    backgroundRoot: string
     backgroundSecondary: string
     border: string
     text: string
@@ -29,9 +29,8 @@ interface AgendaStatusFilterProps {
 
 export function AgendaStatusFilter({ statusFilter, onChange, theme }: AgendaStatusFilterProps) {
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
+    <ScrollFadeRow
+      backgroundColor={theme.backgroundRoot}
       style={{ flexGrow: 0, flexShrink: 0 }}
       contentContainerStyle={styles.statusFilterContainer}
       keyboardShouldPersistTaps="handled"
@@ -51,22 +50,16 @@ export function AgendaStatusFilter({ statusFilter, onChange, theme }: AgendaStat
                 backgroundColor: theme.backgroundSecondary,
                 borderColor: theme.border,
               },
-              isActive && { borderColor: 'transparent', overflow: 'hidden' },
+              isActive && {
+                backgroundColor: theme.primary,
+                borderColor: 'transparent',
+              },
             ]}
           >
-            {isActive ? (
-              <LinearGradient
-                colors={Gradients.onboarding.colors}
-                start={Gradients.onboarding.linearStart}
-                end={Gradients.onboarding.linearEnd}
-                locations={[...Gradients.onboarding.locations]}
-                style={StyleSheet.absoluteFill}
-              />
-            ) : null}
             <ThemedText
               style={[
                 styles.statusChipText,
-                { color: isActive ? '#FFFFFF' : theme.text, zIndex: 1 },
+                { color: isActive ? '#FFFFFF' : theme.text },
               ]}
               numberOfLines={1}
             >
@@ -75,6 +68,6 @@ export function AgendaStatusFilter({ statusFilter, onChange, theme }: AgendaStat
           </Pressable>
         )
       })}
-    </ScrollView>
+    </ScrollFadeRow>
   )
 }

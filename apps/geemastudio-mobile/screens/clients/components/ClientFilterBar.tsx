@@ -1,7 +1,8 @@
 import React from 'react'
-import { View, StyleSheet, Pressable } from 'react-native'
+import { StyleSheet, Pressable } from 'react-native'
 
 import { ThemedText } from '@/components/ThemedText'
+import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTheme } from '@/hooks/useTheme'
 import { Spacing, BorderRadius } from '@/constants/theme'
 import type { ClientSegment } from '../types'
@@ -23,30 +24,28 @@ export function ClientFilterBar({ segment, onSegmentChange }: Props) {
   const { theme } = useTheme()
 
   return (
-    <View style={styles.container}>
-      <View style={styles.scrollRow}>
-        {SEGMENTS.map((seg) => {
-          const isActive = segment === seg.id
-          return (
-            <Pressable
-              key={seg.id}
-              style={[
-                styles.chip,
-                {
-                  borderColor: isActive ? theme.primary : theme.border,
-                  backgroundColor: isActive ? theme.primary : theme.backgroundSecondary,
-                },
-              ]}
-              onPress={() => onSegmentChange(seg.id)}
-            >
-              <ThemedText style={[styles.chipText, { color: isActive ? '#FFFFFF' : theme.text }]}>
-                {seg.label}
-              </ThemedText>
-            </Pressable>
-          )
-        })}
-      </View>
-    </View>
+    <ScrollFadeRow backgroundColor={theme.backgroundRoot} style={styles.container} contentContainerStyle={styles.scrollRow}>
+      {SEGMENTS.map((seg) => {
+        const isActive = segment === seg.id
+        return (
+          <Pressable
+            key={seg.id}
+            style={[
+              styles.chip,
+              {
+                borderColor: isActive ? theme.primary : theme.border,
+                backgroundColor: isActive ? theme.primary : theme.backgroundSecondary,
+              },
+            ]}
+            onPress={() => onSegmentChange(seg.id)}
+          >
+            <ThemedText style={[styles.chipText, { color: isActive ? '#FFFFFF' : theme.text }]}>
+              {seg.label}
+            </ThemedText>
+          </Pressable>
+        )
+      })}
+    </ScrollFadeRow>
   )
 }
 
@@ -56,7 +55,6 @@ const styles = StyleSheet.create({
   },
   scrollRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
     gap: Spacing.sm,
   },
   chip: {

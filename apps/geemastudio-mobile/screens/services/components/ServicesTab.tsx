@@ -13,6 +13,7 @@ import { Feather } from '@expo/vector-icons'
 import * as Haptics from 'expo-haptics'
 
 import { ThemedText } from '@/components/ThemedText'
+import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { useAuth } from '@/contexts/AuthContext'
@@ -166,11 +167,7 @@ export function ServicesTab() {
   return (
     <View style={styles.flex}>
       <View style={styles.filterBar}>
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.filterChips}
-        >
+        <ScrollFadeRow backgroundColor={theme.backgroundRoot} contentContainerStyle={styles.filterChips}>
           <Pressable
             style={[
               styles.filterChip,
@@ -211,7 +208,7 @@ export function ServicesTab() {
               </Pressable>
             )
           })}
-        </ScrollView>
+        </ScrollFadeRow>
         {isAdmin && (
           <Pressable
             style={[styles.manageBtn, { borderColor: theme.border }]}
