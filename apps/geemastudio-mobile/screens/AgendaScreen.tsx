@@ -10,6 +10,7 @@ import { Feather } from '@expo/vector-icons'
 
 import { useTheme } from '@/hooks/useTheme'
 import { useResponsive } from '@/hooks/useResponsive'
+import { useAppointmentCompletion } from '@/hooks/useAppointmentCompletion'
 import { useTenant } from '@/contexts/TenantContext'
 import { useAuth } from '@/contexts/AuthContext'
 import { Spacing, Shadows } from '@/constants/theme'
@@ -43,7 +44,11 @@ import {
 } from './agenda/types'
 import { filterAppointmentsForOwnerDay } from './agenda/agendaUtils'
 import { useAgendaCalendar } from './agenda/hooks/useAgendaCalendar'
-import { useAgendaQueries, useServicesByCategory } from './agenda/hooks/useAgendaQueries'
+import {
+  useAgendaQueries,
+  useAppointmentPaymentsQuery,
+  useServicesByCategory,
+} from './agenda/hooks/useAgendaQueries'
 import { useAgendaMutations } from './agenda/hooks/useAgendaMutations'
 import { useAvailabilityCheck } from './agenda/hooks/useAvailabilityCheck'
 import { AgendaHeader } from './agenda/components/AgendaHeader'
@@ -182,7 +187,40 @@ export default function AgendaScreen() {
     deleteAppointmentMutation,
     updateAppointmentMutation,
     updateAppointmentServicesMutation,
+    completeAppointmentMutation,
+    createPaymentMutation,
   } = useAgendaMutations({ onCreateSuccess, onDeleteSuccess, onUpdateSuccess }, tenantTz, services)
+
+  const getServiceName = useCallback(
+    (serviceId: string) => services.find((s) => s.id === serviceId)?.name ?? 'Servicio',
+    [services]
+  )
+
+  const paymentsQuery = useAppointmentPaymentsQuery(
+    detailModalVisible && appointmentDetail ? appointmentDetail.id : null
+  )
+  const appointmentPayments = paymentsQuery.data ?? []
+
+  const {
+    payMethodVisible,
+    pendingPayMethod,
+    setPendingPayMethod,
+    handleMarkCompleted,
+    confirmCompleteWithMethod,
+    cancelPayMethod,
+    isCompleting,
+  } = useAppointmentCompletion<AgendaAppointment>({
+    updateAppointmentMutation: completeAppointmentMutation,
+    createPaymentMutation,
+    paymentsByAppointment: appointmentPayments,
+    getServiceName,
+    onCompleted: () => {
+      setDetailModalVisible(false)
+      setAppointmentDetail(null)
+      void refetch()
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+    },
+  })
 
   const route = useRoute<RouteProp<MainTabParamList, 'Agenda'>>()
   const navigation = useNavigation()
@@ -469,6 +507,7 @@ export default function AgendaScreen() {
   }, [agendaHours, selectedDate, businessHoursNorm, tenantTz])
 
   const closeDetailModal = () => {
+    cancelPayMethod()
     setDetailModalVisible(false)
     setAppointmentDetail(null)
   }
@@ -788,7 +827,17 @@ export default function AgendaScreen() {
         visible={detailModalVisible}
         onClose={closeDetailModal}
         isTablet={isTablet}
-        theme={theme}
+        theme={{
+          backgroundDefault: theme.backgroundDefault,
+          backgroundSecondary: theme.backgroundSecondary,
+          border: theme.border,
+          text: theme.text,
+          textSecondary: theme.textSecondary,
+          textMuted: theme.textMuted,
+          primary: theme.primary,
+          error: theme.error,
+          success: theme.success,
+        }}
         appointment={appointmentDetail}
         services={services}
         employees={employees}
@@ -812,6 +861,13 @@ export default function AgendaScreen() {
         availabilityStatus={rescheduleAvailability.status}
         isBusy={rescheduleAvailability.isBusy}
         busyUntilLabel={rescheduleAvailability.busyUntilLabel}
+        isCompleting={isCompleting}
+        payMethodVisible={payMethodVisible}
+        pendingPayMethod={pendingPayMethod}
+        onSelectPayMethod={setPendingPayMethod}
+        onCancelPayMethod={cancelPayMethod}
+        onConfirmPayMethod={confirmCompleteWithMethod}
+        onMarkCompleted={handleMarkCompleted}
       />
 
       <AppointmentPreviewModal

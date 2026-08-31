@@ -390,4 +390,47 @@ export const agendaStyles = StyleSheet.create({
     flex: 1,
     fontWeight: '600',
   },
+
+  // Selector de método de pago (al marcar cita completada) — mismo patrón que Dashboard
+  payMethodBox: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: Spacing.md,
+    marginBottom: Spacing.sm,
+    gap: Spacing.sm,
+  },
+  payMethodTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 2,
+  },
+  payMethodOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1.5,
+  },
+  payMethodLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  payMethodActions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: Spacing.sm,
+    marginTop: Spacing.xs,
+  },
+  payMethodCancel: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+  },
+  payMethodCancelText: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
 })

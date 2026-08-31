@@ -292,10 +292,69 @@ export function useAgendaMutations(
     },
   })
 
+  /**
+   * Marca la cita como completada (solo `status`) — mutación distinta de
+   * `updateAppointmentMutation` porque esa es específica de reprogramar
+   * (recibe date/employee_id/duration y valida solape de horario).
+   */
+  const completeAppointmentMutation = useMutation({
+    mutationFn: async ({ id, data }: { id: string; data: { status: string } }) => {
+      const { error } = await supabase
+        .from('appointments')
+        .update({ status: data.status })
+        .eq('id', id)
+      if (error) {
+        throw new Error(error.message)
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['appointments'] })
+      queryClient.invalidateQueries({ queryKey: ['dashboard_stats'] })
+    },
+    onError: (error: Error) => {
+      Alert.alert('Error', error.message || 'No se pudo actualizar la cita')
+    },
+  })
+
+  const createPaymentMutation = useMutation({
+    mutationFn: async (data: {
+      appointment_id: string
+      amount: string
+      method: string
+      date: string
+      notes: string
+    }) => {
+      const payload = {
+        appointment_id: data.appointment_id,
+        amount: data.amount,
+        method: data.method,
+        date: data.date,
+        notes: data.notes,
+        is_abono: false,
+        service_total: null,
+      }
+
+      const { error } = await supabase.from('payments').insert(payload)
+
+      if (error) {
+        throw new Error(error.message)
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['payments'] })
+      queryClient.invalidateQueries({ queryKey: ['agenda_payments'] })
+      queryClient.invalidateQueries({ queryKey: ['dashboard_stats'] })
+      queryClient.invalidateQueries({ queryKey: ['dashboard_revenue'] })
+    },
+    onError: (e: Error) => Alert.alert('Error', e.message || 'No se pudo registrar el pago'),
+  })
+
   return {
     createMutation,
     deleteAppointmentMutation,
     updateAppointmentMutation,
     updateAppointmentServicesMutation,
+    completeAppointmentMutation,
+    createPaymentMutation,
   }
 }

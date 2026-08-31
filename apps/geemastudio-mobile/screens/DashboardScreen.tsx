@@ -3,13 +3,14 @@ import { useHeaderHeight } from '@react-navigation/elements'
 import { useNavigation } from '@react-navigation/native'
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
 import React, { useMemo, useState } from 'react'
-import { Alert, RefreshControl, ScrollView, View } from 'react-native'
+import { RefreshControl, ScrollView, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { ThemedText } from '@/components/ThemedText'
 import { Colors, Spacing } from '@/constants/theme'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
+import { useAppointmentCompletion } from '@/hooks/useAppointmentCompletion'
 import { useHaptics } from '@/hooks/useHaptics'
 import { useResponsive } from '@/hooks/useResponsive'
 import { useTheme } from '@/hooks/useTheme'
@@ -88,8 +89,6 @@ export default function DashboardScreen() {
   const navigation = useNavigation<BottomTabNavigationProp<MainTabParamList, 'Dashboard'>>()
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedAppointment, setSelectedAppointment] = useState<DashboardAppointment | null>(null)
-  const [payMethodVisible, setPayMethodVisible] = useState(false)
-  const [pendingPayMethod, setPendingPayMethod] = useState('cash')
 
   const getServiceName = (serviceId: string) => {
     const service = services.find((s) => s.id === serviceId)
@@ -99,66 +98,30 @@ export default function DashboardScreen() {
   const getDayLabel = (apptDate: Date) =>
     formatUpcomingDayLabel(apptDate, today, tomorrow, config.locale.language, tenantTz)
 
-  const completeAppointment = (appointment: DashboardAppointment, method?: string) => {
-    updateAppointmentMutation.mutate(
-      { id: appointment.id, data: { status: 'completed' } },
-      {
-        onSuccess: () => {
-          if (method) {
-            const amount =
-              typeof appointment.price === 'number'
-                ? appointment.price
-                : parseFloat(String(appointment.price))
-            createPaymentMutation.mutate({
-              appointment_id: appointment.id,
-              amount: String(amount),
-              method,
-              date: new Date().toISOString(),
-              notes: `Cita completada: ${getServiceName(appointment.service_id)}`,
-            })
-          }
-          setPayMethodVisible(false)
-          setModalVisible(false)
-          setSelectedAppointment(null)
-          void refetchStats()
-          void refetchAppointments()
-          haptics.success()
-        },
-      }
-    )
-  }
-
-  const handleMarkCompleted = (appointment: DashboardAppointment) => {
-    const price =
-      typeof appointment.price === 'number'
-        ? appointment.price
-        : parseFloat(String(appointment.price))
-    const paymentsForApt = paymentsByAppointment.filter((p) => p.appointment_id === appointment.id)
-    const hasAbono = paymentsForApt.some((p) => p.is_abono)
-    const totalPaid = paymentsForApt.reduce((sum, p) => sum + parseFloat(String(p.amount)), 0)
-
-    if (hasAbono && totalPaid < price) {
-      Alert.alert(
-        'Pago pendiente',
-        'Esta cita solo tiene un pago parcial. Para marcarla como completada primero registra el pago del resto en Finanzas.'
-      )
-      return
-    }
-    if (totalPaid >= price) {
-      completeAppointment(appointment)
-      return
-    }
-    setPendingPayMethod('cash')
-    setPayMethodVisible(true)
-  }
-
-  const confirmCompleteWithMethod = () => {
-    if (!selectedAppointment) return
-    completeAppointment(selectedAppointment, pendingPayMethod)
-  }
+  const {
+    payMethodVisible,
+    pendingPayMethod,
+    setPendingPayMethod,
+    handleMarkCompleted,
+    confirmCompleteWithMethod,
+    cancelPayMethod,
+    isCompleting,
+  } = useAppointmentCompletion<DashboardAppointment>({
+    updateAppointmentMutation,
+    createPaymentMutation,
+    paymentsByAppointment,
+    getServiceName,
+    onCompleted: () => {
+      setModalVisible(false)
+      setSelectedAppointment(null)
+      void refetchStats()
+      void refetchAppointments()
+      haptics.success()
+    },
+  })
 
   const handleEditInAgenda = (appointment: DashboardAppointment) => {
-    setPayMethodVisible(false)
+    cancelPayMethod()
     setModalVisible(false)
     setSelectedAppointment(null)
     navigation.navigate('Agenda', { appointmentId: appointment.id })
@@ -434,14 +397,14 @@ export default function DashboardScreen() {
           success: theme.success,
         }}
         getServiceName={getServiceName}
-        isCompleting={updateAppointmentMutation.isPending}
+        isCompleting={isCompleting}
         payMethodVisible={payMethodVisible}
         pendingPayMethod={pendingPayMethod}
         onSelectPayMethod={setPendingPayMethod}
-        onCancelPayMethod={() => setPayMethodVisible(false)}
+        onCancelPayMethod={cancelPayMethod}
         onConfirmPayMethod={confirmCompleteWithMethod}
         onClose={() => {
-          setPayMethodVisible(false)
+          cancelPayMethod()
           setModalVisible(false)
           setSelectedAppointment(null)
         }}

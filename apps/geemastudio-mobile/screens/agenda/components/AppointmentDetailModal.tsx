@@ -6,6 +6,8 @@ import { ThemedText } from '@/components/ThemedText'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { BorderRadius, Spacing } from '@/constants/theme'
 
+import { PAYMENT_METHODS } from '@/screens/finances/constants'
+
 import type { TenantConfig } from '@zmtech/tenant-config'
 import type { TimeFormatPreference } from '@zmtech/tenant-config'
 import {
@@ -37,6 +39,7 @@ type Theme = {
   textMuted: string
   primary: string
   error: string
+  success: string
 }
 
 interface AppointmentDetailModalProps {
@@ -67,6 +70,13 @@ interface AppointmentDetailModalProps {
   availabilityStatus?: 'idle' | 'checking' | 'free' | 'busy' | 'error'
   busyUntilLabel?: string | null
   isBusy?: boolean
+  isCompleting: boolean
+  payMethodVisible: boolean
+  pendingPayMethod: string
+  onSelectPayMethod: (method: string) => void
+  onCancelPayMethod: () => void
+  onConfirmPayMethod: () => void
+  onMarkCompleted: (appointment: AgendaAppointment) => void
 }
 
 export function AppointmentDetailModal({
@@ -97,11 +107,21 @@ export function AppointmentDetailModal({
   availabilityStatus = 'idle',
   busyUntilLabel = null,
   isBusy = false,
+  isCompleting,
+  payMethodVisible,
+  pendingPayMethod,
+  onSelectPayMethod,
+  onCancelPayMethod,
+  onConfirmPayMethod,
+  onMarkCompleted,
 }: AppointmentDetailModalProps) {
   const serviceLinesQuery = useAppointmentServiceLinesQuery(
     visible && appointment ? appointment.id : null
   )
   const serviceLines = serviceLinesQuery.data ?? []
+
+  const canMarkCompleted =
+    !!appointment && appointment.status !== 'completed' && appointment.status !== 'cancelled'
 
   const enFranjaConfigurada =
     !!rescheduleDate &&
@@ -183,6 +203,97 @@ export function AppointmentDetailModal({
                   }).format(instanteCitaDesdeTexto(appointment.date, timeZone))}
                 </ThemedText>
               </View>
+
+              {canMarkCompleted ? (
+                <>
+                  <Pressable
+                    style={[
+                      styles.submitButton,
+                      { backgroundColor: theme.success, marginBottom: Spacing.sm },
+                    ]}
+                    onPress={() => onMarkCompleted(appointment)}
+                    disabled={isCompleting}
+                  >
+                    {isCompleting ? (
+                      <ActivityIndicator color="#FFFFFF" />
+                    ) : (
+                      <>
+                        <Feather name="check-circle" size={18} color="#FFFFFF" />
+                        <ThemedText style={styles.submitButtonText}>Marcar completada</ThemedText>
+                      </>
+                    )}
+                  </Pressable>
+
+                  {payMethodVisible && (
+                    <View
+                      style={[
+                        styles.payMethodBox,
+                        { backgroundColor: theme.backgroundSecondary, borderColor: theme.border },
+                      ]}
+                    >
+                      <ThemedText style={[styles.payMethodTitle, { color: theme.text }]}>
+                        ¿Cómo pagó?
+                      </ThemedText>
+                      {PAYMENT_METHODS.map((m) => (
+                        <Pressable
+                          key={m.id}
+                          style={[
+                            styles.payMethodOption,
+                            {
+                              borderColor:
+                                pendingPayMethod === m.id ? theme.primary : theme.border,
+                            },
+                            pendingPayMethod === m.id && { backgroundColor: `${theme.primary}12` },
+                          ]}
+                          onPress={() => onSelectPayMethod(m.id)}
+                        >
+                          <Feather
+                            name={m.icon}
+                            size={14}
+                            color={pendingPayMethod === m.id ? theme.primary : theme.textSecondary}
+                          />
+                          <ThemedText
+                            style={[
+                              styles.payMethodLabel,
+                              { color: pendingPayMethod === m.id ? theme.primary : theme.text },
+                            ]}
+                          >
+                            {m.label}
+                          </ThemedText>
+                        </Pressable>
+                      ))}
+                      <View style={styles.payMethodActions}>
+                        <Pressable
+                          style={[styles.payMethodCancel, { borderColor: theme.border }]}
+                          onPress={onCancelPayMethod}
+                        >
+                          <ThemedText
+                            style={[styles.payMethodCancelText, { color: theme.textSecondary }]}
+                          >
+                            Cancelar
+                          </ThemedText>
+                        </Pressable>
+                        <Pressable
+                          style={[
+                            styles.payMethodCancel,
+                            { borderColor: theme.primary, backgroundColor: theme.primary },
+                          ]}
+                          onPress={onConfirmPayMethod}
+                          disabled={isCompleting}
+                        >
+                          {isCompleting ? (
+                            <ActivityIndicator color="#FFF" size="small" />
+                          ) : (
+                            <ThemedText style={[styles.payMethodCancelText, { color: '#FFF' }]}>
+                              Confirmar
+                            </ThemedText>
+                          )}
+                        </Pressable>
+                      </View>
+                    </View>
+                  )}
+                </>
+              ) : null}
 
               <View style={styles.formSection}>
                 <ThemedText style={[styles.sectionLabel, { color: theme.textSecondary }]}>

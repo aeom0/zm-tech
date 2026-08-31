@@ -57,6 +57,13 @@ export interface AgendaPack {
   is_active: boolean
 }
 
+/** Fila mínima de `payments` de una cita, para el flujo "marcar completada" */
+export interface AgendaPayment {
+  appointment_id: string | null
+  amount: string
+  is_abono: boolean
+}
+
 /** Fila de `appointment_services` tal como llega de Supabase */
 export interface AgendaAppointmentServiceLine {
   id: string
