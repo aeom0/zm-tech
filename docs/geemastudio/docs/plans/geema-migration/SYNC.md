@@ -85,3 +85,4 @@ Implementación sugerida (S2-7):
 | 2026-08-29 | S5-C paridad mobile shadow | 07-PARIDAD-MOBILE-ZM.md; shadow APK OK core; gaps packs/promos/finanzas |
 | 2026-08-30 | S5-C avance P0 | S5C-1/2/3/11 ✅ PR zm-tech #30; packs/promos/timezone/chicas; espejo sync |
 | 2026-08-30 | Schema canónico + índices apt_svc | 07 § Schema canónico; migration `idx_appointment_services_lookup`; PR #31 no CREATE en prod |
+| 2026-08-30 | País / wallclock ADR | 05 addendum: sin `countries`; citas = hora de pared del tenant |

@@ -107,6 +107,8 @@ Prod tenant: Vanessa, Stephani, Chica Externa (3 columnas). Staff sin `profiles.
 
 `appointments.date` = timestamp **sin** TZ (hora Lima literal). Geema interpretaba el `Z` falso de PostgREST → citas −5 h. Cerrado: `packages/tenant-config` wallclock + hidratar `tenant_settings` al login. Más → Horario de trabajo sí alimenta filas de agenda.
 
+**No confundir con “BD en UTC”:** la agenda del salón es wallclock por tenant; otros campos (`timestamptz`) sí son instantes absolutos. País: `tenant_settings.country` (ISO), **sin** tabla `countries` aún — ver [05-ADR addendum](./05-ADR-modelo-tenant.md#addendum-30-ago-2026--país-y-zona-horaria).
+
 ---
 
 ## Mapa de paridad (mobile)

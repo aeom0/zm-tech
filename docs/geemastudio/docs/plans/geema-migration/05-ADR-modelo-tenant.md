@@ -71,3 +71,32 @@ tenant_settings.tenant_slug text NOT NULL UNIQUE REFERENCES tenants(id)
 - [01-ESTADO-ACTUAL-Y-ARQUITECTURA.md](./01-ESTADO-ACTUAL-Y-ARQUITECTURA.md) §4
 - [02-PLAN-retrofit-tenant-id.md](../02-PLAN-retrofit-tenant-id.md)
 - Geema schema: `zm-tech/packages/shared-schema/src/schema.ts` → `tenantSettings`
+
+---
+
+## Addendum 30-ago 2026 — País y zona horaria
+
+### País: sin tabla `countries` (por ahora)
+
+**Decisión:** clasificar tenants con `tenant_settings.country` (ISO 3166-1 alpha-2, ej. `PE`). No crear catálogo `countries` hasta onboarding multi-país o defaults compartidos entre muchos tenants.
+
+| Necesidad | Dónde |
+|-----------|--------|
+| Etiqueta / filtro admin | `tenant_settings.country` |
+| TZ + moneda del local | `timezone`, `currency_code`, `currency_symbol` (misma fila) |
+| Defaults al crear tenant | presets `@zmtech/tenant-config` + defaults de columna |
+| Reglas gordas (feriados, impuestos, RUC/RUT) | Futuro: pack por país en código/JSON — no bloquear hoy |
+
+**No** añadir `country_id` a `appointments` / `clients` (se deriva del tenant).  
+**Diferido:** tabla `countries` + FK; particionamiento por país; `CHECK` ISO (opcional cuando haya 2.º país).
+
+### Citas: wallclock del tenant ≠ “todo UTC”
+
+| Columna / uso | Semántica |
+|---------------|-----------|
+| `appointments.date` | `timestamp without time zone` = **hora de pared** en IANA del tenant (`America/Lima` para ZM). No interpretar como UTC. |
+| `reference_received_at`, verifications, etc. | `timestamptz` → instante absoluto (UTC en almacenamiento). |
+
+Al expandir a otro país: cada tenant escribe wallclock en **su** timezone configurado; el cliente convierte con `tenant_settings.timezone`, no con el TZ del teléfono del dueño.
+
+Detalle operativo Geema: [07-PARIDAD-MOBILE-ZM.md](./07-PARIDAD-MOBILE-ZM.md) § Timezone / Schema canónico.
