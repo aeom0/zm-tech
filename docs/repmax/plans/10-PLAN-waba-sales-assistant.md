@@ -42,18 +42,18 @@ el primer commit, cero árbol de regex que crezca sin control.**
 
 ## 3. Mapeo de handlers: ZM Lash → RepMAX
 
-| ZM Lash (agenda) | RepMAX (ventas) | Prioridad |
-|---|---|---|
-| `ai-assistant.ts` (consulta libre) | Consulta de catálogo en lenguaje natural — "¿tenés pastillas de freno para Corolla 2015?" contra `repmax_products` + `repmax_vehicle_catalog` | Fase 1 |
-| `menu.ts` (menú interactivo) | Menú: Ver catálogo / Consultar pedido / Hablar con vendedor | Fase 1 |
-| `client-identity.ts` | Vincular número de WhatsApp a `repmax_customers` | Fase 1 |
-| `staff-echo.ts` + `staff-resume.ts` | Handoff humano — el cajero toma la conversación desde su WhatsApp, el bot se pausa | Fase 1 (crítico para negociar precio/pieza rara) |
-| `booking-flow.ts` (agendar) | **Flujo de cotización/pedido**: arma carrito por chat → confirma → genera pre-venta vinculada a `repmax_sale_items` | Fase 2 |
-| `payment.ts` + `payment-screenshot-detected.ts` + `payment-verification-button.ts` | Cliente manda captura de Pago Móvil/Zelle → botón para que el cajero la verifique → cierra la venta con `repmax_create_sale_with_items` | Fase 3 |
-| `cart-nudge`, `abandoned-cart-reminders`, `browse-reengage` | Reactivación: preguntó por una pieza y no cerró → seguimiento a las N horas | Fase 4 |
-| `silence-watchdog` | Conversación estancada → alerta al vendedor | Fase 4 |
-| `chat-quality-review` | QA automatizado de respuestas del bot | Fase 4 |
-| `waba-pricing-sync` | Trackear costo por conversación que cobra Meta | Fase 3 (antes de escalar volumen) |
+| ZM Lash (agenda)                                                                   | RepMAX (ventas)                                                                                                                               | Prioridad                                        |
+| ---------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `ai-assistant.ts` (consulta libre)                                                 | Consulta de catálogo en lenguaje natural — "¿tenés pastillas de freno para Corolla 2015?" contra `repmax_products` + `repmax_vehicle_catalog` | Fase 1                                           |
+| `menu.ts` (menú interactivo)                                                       | Menú: Ver catálogo / Consultar pedido / Hablar con vendedor                                                                                   | Fase 1                                           |
+| `client-identity.ts`                                                               | Vincular número de WhatsApp a `repmax_customers`                                                                                              | Fase 1                                           |
+| `staff-echo.ts` + `staff-resume.ts`                                                | Handoff humano — el cajero toma la conversación desde su WhatsApp, el bot se pausa                                                            | Fase 1 (crítico para negociar precio/pieza rara) |
+| `booking-flow.ts` (agendar)                                                        | **Flujo de cotización/pedido**: arma carrito por chat → confirma → genera pre-venta vinculada a `repmax_sale_items`                           | Fase 2                                           |
+| `payment.ts` + `payment-screenshot-detected.ts` + `payment-verification-button.ts` | Cliente manda captura de Pago Móvil/Zelle → botón para que el cajero la verifique → cierra la venta con `repmax_create_sale_with_items`       | Fase 3                                           |
+| `cart-nudge`, `abandoned-cart-reminders`, `browse-reengage`                        | Reactivación: preguntó por una pieza y no cerró → seguimiento a las N horas                                                                   | Fase 4                                           |
+| `silence-watchdog`                                                                 | Conversación estancada → alerta al vendedor                                                                                                   | Fase 4                                           |
+| `chat-quality-review`                                                              | QA automatizado de respuestas del bot                                                                                                         | Fase 4                                           |
+| `waba-pricing-sync`                                                                | Trackear costo por conversación que cobra Meta                                                                                                | Fase 3 (antes de escalar volumen)                |
 
 ---
 
@@ -82,7 +82,7 @@ Esto es lo que sí se puede adelantar en días, no semanas:
   contestando consultas de catálogo en un par de días de trabajo con Cursor.
 - Con eso alcanza para: `whatsapp-webhook` básico + intent classification
   (enum chico: `consultar_producto`, `saludo`, `hablar_con_vendedor`, `otro`)
-  + consulta a `repmax_products` + respuesta con foto/precio.
+  - consulta a `repmax_products` + respuesta con foto/precio.
 - **Esto es interno/demo, no producción con el tenant real.** Sirve para
   validar el patrón y tener algo tangible que mostrar como "ya está
   caminando", pero no reemplaza la verificación de negocio real.
@@ -108,13 +108,13 @@ apruebe.
 
 ## 7. Fases de implementación
 
-| Fase | Contenido | Bloqueada por Meta? |
-|---|---|---|
-| **0 — Prototipo interno** | Webhook + consulta de catálogo + menú básico, en sandbox | No |
-| **1 — MVP con handoff** | + vincular cliente + handoff a vendedor humano | No para desarrollar; sí para producción real |
-| **2 — Cotización/pedido** | Flujo tipo `booking-flow.ts` adaptado a carrito de venta | No |
-| **3 — Pagos** | Captura de pago + verificación + cierre de venta vía RPC existente | No |
-| **4 — Reactivación/QA** | Nudges, silence-watchdog, chat-quality-review | No |
+| Fase                      | Contenido                                                          | Bloqueada por Meta?                          |
+| ------------------------- | ------------------------------------------------------------------ | -------------------------------------------- |
+| **0 — Prototipo interno** | Webhook + consulta de catálogo + menú básico, en sandbox           | No                                           |
+| **1 — MVP con handoff**   | + vincular cliente + handoff a vendedor humano                     | No para desarrollar; sí para producción real |
+| **2 — Cotización/pedido** | Flujo tipo `booking-flow.ts` adaptado a carrito de venta           | No                                           |
+| **3 — Pagos**             | Captura de pago + verificación + cierre de venta vía RPC existente | No                                           |
+| **4 — Reactivación/QA**   | Nudges, silence-watchdog, chat-quality-review                      | No                                           |
 
 **Nada de esto está bloqueado por código o por Cursor** — el único gate
 externo real es la verificación de negocio de Meta para pasar de sandbox a

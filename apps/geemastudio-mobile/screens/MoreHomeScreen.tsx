@@ -126,8 +126,16 @@ export default function MoreHomeScreen() {
           />
         )}
 
-        <CategoryCard icon="help-circle" label="Ayuda" onPress={() => navigation.navigate('Ayuda')} />
-        <CategoryCard icon="settings" label="Cuenta" onPress={() => navigation.navigate('Cuenta')} />
+        <CategoryCard
+          icon="help-circle"
+          label="Ayuda"
+          onPress={() => navigation.navigate('Ayuda')}
+        />
+        <CategoryCard
+          icon="settings"
+          label="Cuenta"
+          onPress={() => navigation.navigate('Cuenta')}
+        />
       </View>
     </ScrollView>
   )

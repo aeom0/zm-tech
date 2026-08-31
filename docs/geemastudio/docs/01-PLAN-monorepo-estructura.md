@@ -7,11 +7,13 @@
 ## Estado actual verificado (22 julio 2026)
 
 **`aeom0/ZMTech`** (Landing):
+
 - Next.js App Router, plano en la raíz (`src/`, `public/`, `next.config.ts`, etc.)
 - Ya migrado a `pnpm` + TypeScript 6, `pnpm-workspace.yaml` explícitamente marcado "no es un monorepo, solo settings"
 - Supabase propio (`llacowjutjfefboqgfnj`), una sola tabla `contacts`, sin relación con GeemaStudio
 
 **`aeom0/geemastudio`** (Beauty vertical, multi-tenant por diseño):
+
 - Turborepo real: `apps/mobile` (Expo SDK 56, RN 0.85.3, React 19.2.3), `apps/web`, `packages/tenant-config`, `packages/shared-schema` (Drizzle + Zod), `server/`
 - Ya migrado de Yarn 4 a pnpm 10.12.4, TS 6.0.3
 - `.npmrc` con `node-linker=hoisted` + `shamefully-hoist=true` (decisión consciente para compatibilidad Metro)
@@ -115,13 +117,15 @@ Revisar también cualquier import relativo dentro de `server/` que apuntara a `.
 ## Fase 4 — Archivos raíz nuevos
 
 **`pnpm-workspace.yaml`**:
+
 ```yaml
 packages:
-  - "apps/*"
-  - "packages/*"
+  - 'apps/*'
+  - 'packages/*'
 ```
 
 **`.npmrc`** (raíz, hereda config de geemastudio — no afecta a landing, no le hace daño):
+
 ```
 node-linker=hoisted
 shamefully-hoist=true
@@ -130,6 +134,7 @@ strict-peer-dependencies=false
 ```
 
 **`turbo.json`** (base, ajustar pipelines según scripts reales de cada app):
+
 ```json
 {
   "$schema": "https://turbo.build/schema.json",

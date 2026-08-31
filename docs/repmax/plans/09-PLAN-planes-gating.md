@@ -24,18 +24,18 @@ no digitalizado) se necesita:
 
 ## 2. Matriz de planes
 
-| | **Básico** | **Pro** | **Enterprise** |
-|---|---|---|---|
-| **Precio** | $19/mes | $55/mes | $90+/mes |
-| Sucursales | 1 | Hasta 3 | Ilimitadas |
-| Usuarios (roles) | Hasta 2 | Hasta 5 | Ilimitados |
-| Productos | Hasta 300 | Ilimitado | Ilimitado |
-| POS + Inventario (web + mobile) | ✅ | ✅ | ✅ |
-| Multi-moneda USD/Bs + tasa BCV/USDT en vivo | ✅ | ✅ | ✅ |
-| Catálogo ML-ready (export CSV + fotos optimizadas) | ❌ | ✅ | ✅ |
-| Catálogo de vehículos por marca preferida | ✅ (seed genérico) | ✅ (curado) | ✅ (curado + soporte) |
-| Dominio propio (`custom_domain`) | ❌ | ✅ | ✅ + soporte DNS |
-| Reportes | Básicos | Avanzados + export | Avanzados + Taller module + hardware Bridge (cuando salgan) |
+|                                                    | **Básico**         | **Pro**            | **Enterprise**                                              |
+| -------------------------------------------------- | ------------------ | ------------------ | ----------------------------------------------------------- |
+| **Precio**                                         | $19/mes            | $55/mes            | $90+/mes                                                    |
+| Sucursales                                         | 1                  | Hasta 3            | Ilimitadas                                                  |
+| Usuarios (roles)                                   | Hasta 2            | Hasta 5            | Ilimitados                                                  |
+| Productos                                          | Hasta 300          | Ilimitado          | Ilimitado                                                   |
+| POS + Inventario (web + mobile)                    | ✅                 | ✅                 | ✅                                                          |
+| Multi-moneda USD/Bs + tasa BCV/USDT en vivo        | ✅                 | ✅                 | ✅                                                          |
+| Catálogo ML-ready (export CSV + fotos optimizadas) | ❌                 | ✅                 | ✅                                                          |
+| Catálogo de vehículos por marca preferida          | ✅ (seed genérico) | ✅ (curado)        | ✅ (curado + soporte)                                       |
+| Dominio propio (`custom_domain`)                   | ❌                 | ✅                 | ✅ + soporte DNS                                            |
+| Reportes                                           | Básicos            | Avanzados + export | Avanzados + Taller module + hardware Bridge (cuando salgan) |
 
 **Nota importante para la reunión:** Pro y Enterprise no distinguen nada más
 allá del label hoy en código — la tabla de arriba es el objetivo, no el
@@ -47,11 +47,11 @@ estado actual. Ver sección 5 (deuda técnica).
 
 ### Estructura oficial (aplica a todo cliente desde ahora)
 
-| Servicio | Costo sugerido | Incluye |
-|---|---|---|
+| Servicio                                        | Costo sugerido                                                               | Incluye                                                        |
+| ----------------------------------------------- | ---------------------------------------------------------------------------- | -------------------------------------------------------------- |
 | Migración de catálogo (Excel/cuaderno → RepMAX) | $30–$80 según volumen (flat hasta ~150 productos, +$0.30/producto adicional) | Limpieza de datos, carga asistida, sesión en vivo con el dueño |
-| Configuración de dominio propio | $25 flat | DNS, verificación, wildcard routing |
-| Onboarding y capacitación (1 sesión) | Incluido en cualquiera de los dos anteriores | — |
+| Configuración de dominio propio                 | $25 flat                                                                     | DNS, verificación, wildcard routing                            |
+| Onboarding y capacitación (1 sesión)            | Incluido en cualquiera de los dos anteriores                                 | —                                                              |
 
 ### Recomendación para este cliente (piloto/fundador)
 

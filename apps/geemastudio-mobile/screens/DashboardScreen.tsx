@@ -133,9 +133,7 @@ export default function DashboardScreen() {
       typeof appointment.price === 'number'
         ? appointment.price
         : parseFloat(String(appointment.price))
-    const paymentsForApt = paymentsByAppointment.filter(
-      (p) => p.appointment_id === appointment.id
-    )
+    const paymentsForApt = paymentsByAppointment.filter((p) => p.appointment_id === appointment.id)
     const hasAbono = paymentsForApt.some((p) => p.is_abono)
     const totalPaid = paymentsForApt.reduce((sum, p) => sum + parseFloat(String(p.amount)), 0)
 

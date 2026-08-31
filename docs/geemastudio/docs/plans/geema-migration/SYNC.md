@@ -6,10 +6,10 @@ Esta carpeta existe en **dos repos** con el mismo contenido. Solo una copia es c
 
 ## Paths
 
-| Rol | Repo | Path absoluto (WSL) |
-|-----|------|---------------------|
-| **Canónica** | ZM Lash & Nails | `/home/alber/ZM-Lash-and-Nails-Beauty/docs/plans/geema-migration/` |
-| **Espejo** | zm-tech (GeemaStudio) | `/home/alber/zm-tech/docs/geemastudio/docs/plans/geema-migration/` |
+| Rol          | Repo                  | Path absoluto (WSL)                                                |
+| ------------ | --------------------- | ------------------------------------------------------------------ |
+| **Canónica** | ZM Lash & Nails       | `/home/alber/ZM-Lash-and-Nails-Beauty/docs/plans/geema-migration/` |
+| **Espejo**   | zm-tech (GeemaStudio) | `/home/alber/zm-tech/docs/geemastudio/docs/plans/geema-migration/` |
 
 ---
 
@@ -76,13 +76,13 @@ Implementación sugerida (S2-7):
 
 ## Historial de sync
 
-| Fecha | Acción | Notas |
-|-------|--------|-------|
-| 2026-08-28 | Creación inicial | Análisis Cursor → Plan 05, carpetas ZM + espejo Geema |
-| 2026-08-28 | Hardening roadmap | S1 ventana/no-go, S3 feature flag, S4 Vault, S2-7 CI sync |
-| 2026-08-29 | S1-5 + S2 bridge + S3 WABA | Auth Hook; tenant_settings + ADR 05; PR #89 flag OFF; S5-B branding doc |
-| 2026-08-29 | S5-B push FCM bosquejo | § Push FCM en 06; tareas S5B-8…12; espejo zm-tech (commit pendiente post-APK SDK 56) |
-| 2026-08-29 | S5-C paridad mobile shadow | 07-PARIDAD-MOBILE-ZM.md; shadow APK OK core; gaps packs/promos/finanzas |
-| 2026-08-30 | S5-C avance P0 | S5C-1/2/3/11 ✅ PR zm-tech #30; packs/promos/timezone/chicas; espejo sync |
+| Fecha      | Acción                            | Notas                                                                                       |
+| ---------- | --------------------------------- | ------------------------------------------------------------------------------------------- |
+| 2026-08-28 | Creación inicial                  | Análisis Cursor → Plan 05, carpetas ZM + espejo Geema                                       |
+| 2026-08-28 | Hardening roadmap                 | S1 ventana/no-go, S3 feature flag, S4 Vault, S2-7 CI sync                                   |
+| 2026-08-29 | S1-5 + S2 bridge + S3 WABA        | Auth Hook; tenant_settings + ADR 05; PR #89 flag OFF; S5-B branding doc                     |
+| 2026-08-29 | S5-B push FCM bosquejo            | § Push FCM en 06; tareas S5B-8…12; espejo zm-tech (commit pendiente post-APK SDK 56)        |
+| 2026-08-29 | S5-C paridad mobile shadow        | 07-PARIDAD-MOBILE-ZM.md; shadow APK OK core; gaps packs/promos/finanzas                     |
+| 2026-08-30 | S5-C avance P0                    | S5C-1/2/3/11 ✅ PR zm-tech #30; packs/promos/timezone/chicas; espejo sync                   |
 | 2026-08-30 | Schema canónico + índices apt_svc | 07 § Schema canónico; migration `idx_appointment_services_lookup`; PR #31 no CREATE en prod |
-| 2026-08-30 | País / wallclock ADR | 05 addendum: sin `countries`; citas = hora de pared del tenant |
+| 2026-08-30 | País / wallclock ADR              | 05 addendum: sin `countries`; citas = hora de pared del tenant                              |

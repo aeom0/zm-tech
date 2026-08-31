@@ -2,12 +2,7 @@ import { anthropicSecrets } from './env.ts'
 
 // Enum chico de Fase 0 (plan 10-PLAN-waba-sales-assistant.md, sección 5).
 // Un solo llamado a Haiku por mensaje libre — nada de cascada de regex.
-export const WA_INTENTS = [
-  'consultar_producto',
-  'saludo',
-  'hablar_con_vendedor',
-  'otro',
-] as const
+export const WA_INTENTS = ['consultar_producto', 'saludo', 'hablar_con_vendedor', 'otro'] as const
 
 export type WaIntent = (typeof WA_INTENTS)[number]
 

@@ -19,9 +19,7 @@ interface WaTextMessage {
 }
 
 function extractMessage(body: unknown): WaTextMessage | null {
-  const entry = (body as { entry?: unknown[] })?.entry?.[0] as
-    | { changes?: unknown[] }
-    | undefined
+  const entry = (body as { entry?: unknown[] })?.entry?.[0] as { changes?: unknown[] } | undefined
   const change = entry?.changes?.[0] as { value?: { messages?: WaTextMessage[] } } | undefined
   return change?.value?.messages?.[0] ?? null
 }
@@ -29,10 +27,7 @@ function extractMessage(body: unknown): WaTextMessage | null {
 async function findOrCreateConversation(admin: SupabaseClient, storeId: string, phone: string) {
   const { data, error } = await admin
     .from('repmax_wa_conversations')
-    .upsert(
-      { store_id: storeId, phone },
-      { onConflict: 'store_id,phone', ignoreDuplicates: false }
-    )
+    .upsert({ store_id: storeId, phone }, { onConflict: 'store_id,phone', ignoreDuplicates: false })
     .select('id, bot_paused_at')
     .single()
 
@@ -96,7 +91,8 @@ async function replyForConsultarProducto(
   }
 
   const lines = data.map(
-    (p) => `• ${p.title} (${p.brand} ${p.model}) — $${p.price_usd}${p.stock > 0 ? '' : ' (sin stock)'}`
+    (p) =>
+      `• ${p.title} (${p.brand} ${p.model}) — $${p.price_usd}${p.stock > 0 ? '' : ' (sin stock)'}`
   )
   return `Encontré esto:\n${lines.join('\n')}\n\n¿Querés que te confirme disponibilidad con un vendedor?`
 }

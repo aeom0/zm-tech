@@ -26,11 +26,11 @@ en producción). Mientras dura la migración, la documentación de planeación v
 en dos sitios y se sincroniza manualmente — el código de cada app NO se
 sincroniza automático, solo `docs/plans/geema-migration/`:
 
-| Rol            | Repo                                 | Path                                              |
-| -------------- | ------------------------------------- | -------------------------------------------------- |
-| **Canónica**   | `ZM-Lash-and-Nails-Beauty`            | `docs/plans/geema-migration/`                       |
-| **Espejo**     | `zm-tech` (este repo)                 | `docs/geemastudio/docs/plans/geema-migration/`      |
-| **Script**     | `ZM-Lash-and-Nails-Beauty/scripts/sync-geema-migration-docs.sh` | rsync entre ambos              |
+| Rol          | Repo                                                            | Path                                           |
+| ------------ | --------------------------------------------------------------- | ---------------------------------------------- |
+| **Canónica** | `ZM-Lash-and-Nails-Beauty`                                      | `docs/plans/geema-migration/`                  |
+| **Espejo**   | `zm-tech` (este repo)                                           | `docs/geemastudio/docs/plans/geema-migration/` |
+| **Script**   | `ZM-Lash-and-Nails-Beauty/scripts/sync-geema-migration-docs.sh` | rsync entre ambos                              |
 
 ```bash
 # Desde el repo ZM (ZM-Lash-and-Nails-Beauty):
@@ -137,7 +137,7 @@ IA:        Claude claude-haiku-4-5-20251001 — MAX_TOKENS=350, timeout=5000ms
 ## 3. Naming conventions
 
 | Tipo                 | Convención                                    | Ejemplo                                       |
-| -------------------- | ---------------------------------------------- | --------------------------------------------- |
+| -------------------- | --------------------------------------------- | --------------------------------------------- |
 | Componentes React/RN | PascalCase                                    | `ClientCard.tsx`                              |
 | Hooks                | camelCase con `use`                           | `useClientsData.ts`                           |
 | Servicios/utils      | camelCase                                     | `format.ts`, `tenantSettingsService.ts`       |
@@ -359,18 +359,18 @@ BorderRadius: { sm: 6, md: 10, lg: 16, xl: 24, full: 9999 }
 ### Marca (`apps/geemastudio-web/public/`)
 
 | Archivo                          | Uso                                                            |
-| --------------------------------- | ---------------------------------------------------------------- |
+| -------------------------------- | -------------------------------------------------------------- |
 | logo-diamondSparkle.svg          | **Principal** — diamante claro, fondos oscuros / transparentes |
 | logo-diamondSparkle-positive.svg | Export / materiales                                            |
 | logo-diamondSparkle-negative.svg | Preview / redes                                                |
-| favicon.png                      | Favicon                                                          |
+| favicon.png                      | Favicon                                                        |
 
 El símbolo no incluye texto "GeemaStudio". Ver CHANGELOG v1.4.4.
 
 ### Componentes UI mobile
 
 | Componente               | Reglas clave                                             |
-| ------------------------- | ---------------------------------------------------------- |
+| ------------------------ | -------------------------------------------------------- |
 | Boton primario           | expo-linear-gradient con tokens Lunaris, borderRadius 12 |
 | Boton outline            | Border rgba(255,255,255,0.15), bg transparente           |
 | Cards                    | bg backgroundSecondary, border theme.border, radius 16   |
@@ -589,7 +589,7 @@ Audiencia: `owner` / `staff` / `dev`. Siempre autenticados con Supabase Auth.
 **Nunca depende de `web_mode`** — está disponible para todo tenant desde el día 1.
 
 | Ruta                                                                                         | Estado          |
-| ---------------------------------------------------------------------------------------------- | --------------- |
+| -------------------------------------------------------------------------------------------- | --------------- |
 | `/finanzas` + `/finanzas/login`                                                              | ✅ Implementado |
 | `/dashboard`                                                                                 | ✅ Implementado |
 | `/panel/servicios` (`?tab=categorias\|servicios\|packs\|promos`)                             | ✅ Implementado |
@@ -600,15 +600,15 @@ Audiencia: `owner` / `staff` / `dev`. Siempre autenticados con Supabase Auth.
 
 Audiencia: clientes del negocio. Sin auth. Controlado por `tenant_settings.web_mode`.
 
-| Ruta        | Estado                                                                 |
-| ----------- | ----------------------------------------------------------------------- |
+| Ruta        | Estado                                                                |
+| ----------- | --------------------------------------------------------------------- |
 | `/`         | ✅ Landing plataforma GeemaStudio (B2B)                               |
 | `/s/[slug]` | ✅ Landing pública del tenant (SSG + revalidación 5 min; 3 templates) |
 
 #### `web_mode` en `tenant_settings`
 
 | Valor            | Significado                                                         |
-| ----------------- | --------------------------------------------------------------------- |
+| ---------------- | ------------------------------------------------------------------- |
 | `'none'`         | Sin landing pública (default al crear tenant)                       |
 | `'geema_hosted'` | Landing en `geemastudio.app/s/[slug]`                               |
 | `'own_domain'`   | Dominio propio del tenant — GeemaStudio no interviene en el routing |
@@ -729,7 +729,7 @@ yarn db:seed         # seeds template
 7. Logica de negocio en screens: va en hooks o services, nunca en el JSX
 8. Supabase directo en screens: siempre mediado por hook o service
 9. any en TypeScript: usar unknown + type guards
-10. Keys AsyncStorage con prefijo @zm_*: usar @geemastudio/*
+10. Keys AsyncStorage con prefijo @zm__: usar @geemastudio/_
 11. Nombre de ruta "Chicas": usar "Personal" (ya corregido en el repo)
 12. Gradiente en fondos de pantalla completa: solo en CTAs e interactivos
 13. Crear archivos .md sin que se pida: no generar docs automaticamente
