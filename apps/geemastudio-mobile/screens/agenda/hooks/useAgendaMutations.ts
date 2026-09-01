@@ -55,11 +55,11 @@ async function guardOverlapBeforeInsert(args: {
     throw new Error(error.message)
   }
 
-  const existing = (data ?? []) as Array<{
+  const existing = (data ?? []) as {
     id: string
     date: string
     duration: number
-  }>
+  }[]
 
   for (const apt of existing) {
     if (args.excludeAppointmentId && apt.id === args.excludeAppointmentId) {
@@ -391,7 +391,7 @@ export function useAgendaMutations(
   const addReferenceImagesMutation = useMutation({
     mutationFn: async (args: {
       appointmentId: string
-      images: Array<{ uri: string; contentType?: string }>
+      images: { uri: string; contentType?: string }[]
       currentPaths: string[]
       alreadyReceived: boolean
     }) => {
