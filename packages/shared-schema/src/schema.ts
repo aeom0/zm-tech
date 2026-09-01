@@ -133,11 +133,13 @@ export const appointmentServices = pgTable(
     price: decimal('price', { precision: 10, scale: 2 }).notNull(),
     duration: integer('duration').notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
+    tenantId: text('tenant_id').notNull().default('zm-lash-nails'),
   },
   (table) => ({
     appointmentIdIdx: index('idx_appointment_services_appointment_id').on(table.appointmentId),
     serviceIdIdx: index('idx_appointment_services_service_id').on(table.serviceId),
     employeeIdIdx: index('idx_appointment_services_employee_id').on(table.employeeId),
+    tenantIdIdx: index('idx_appointment_services_tenant_id').on(table.tenantId),
   })
 )
 

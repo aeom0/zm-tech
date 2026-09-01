@@ -1,9 +1,10 @@
 import { Alert } from 'react-native'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import * as Haptics from 'expo-haptics'
 
 import { queryClient } from '@/lib/query-client'
 import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/contexts/AuthContext'
 import { subirImagenReferencia } from '@/lib/referenceImages'
 import {
   formatAppointmentWallclock,
@@ -98,7 +99,22 @@ async function guardOverlapForLines(args: {
   }
 }
 
-function buildServiceRows(appointmentId: string, lines: AgendaServiceLine[], services: AgendaService[]) {
+async function resolveTenantId(userId: string | null | undefined): Promise<string | null> {
+  if (!userId) return null
+  const { data } = await supabase
+    .from('profiles')
+    .select('tenant_id')
+    .eq('id', userId)
+    .maybeSingle()
+  return data?.tenant_id ?? null
+}
+
+function buildServiceRows(
+  appointmentId: string,
+  lines: AgendaServiceLine[],
+  services: AgendaService[],
+  tenantId: string
+) {
   return lines.map((line) => ({
     appointment_id: appointmentId,
     service_id: line.serviceId,
@@ -106,6 +122,7 @@ function buildServiceRows(appointmentId: string, lines: AgendaServiceLine[], ser
     pack_id: line.packId ?? null,
     price: lineUnitPrice(line, services).toFixed(2),
     duration: lineDuration(line, services),
+    tenant_id: tenantId,
   }))
 }
 
@@ -114,6 +131,15 @@ export function useAgendaMutations(
   timeZone: string,
   services: AgendaService[]
 ) {
+  const { userId } = useAuth()
+  const tenantQuery = useQuery({
+    queryKey: ['profile_tenant_id', userId],
+    enabled: !!userId,
+    staleTime: 5 * 60_000,
+    queryFn: () => resolveTenantId(userId),
+  })
+  const tenantId = tenantQuery.data ?? null
+
   const createMutation = useMutation({
     mutationFn: async (data: {
       client_name: string
@@ -125,6 +151,9 @@ export function useAgendaMutations(
     }) => {
       if (data.lines.length === 0) {
         throw new Error('Selecciona al menos un servicio')
+      }
+      if (!tenantId) {
+        throw new Error('No se pudo resolver el tenant')
       }
 
       const { totalPrice, totalDuration } = computeServiceLinesTotals(data.lines, services)
@@ -161,7 +190,7 @@ export function useAgendaMutations(
       }
 
       const aptId = (newApt as { id: string }).id
-      const svcRows = buildServiceRows(aptId, data.lines, services)
+      const svcRows = buildServiceRows(aptId, data.lines, services, tenantId)
       const { error: linesError } = await supabase.from('appointment_services').insert(svcRows)
       if (linesError) {
         throw new Error(linesError.message)
@@ -240,6 +269,9 @@ export function useAgendaMutations(
       if (args.lines.length === 0) {
         throw new Error('Selecciona al menos un servicio')
       }
+      if (!tenantId) {
+        throw new Error('No se pudo resolver el tenant')
+      }
 
       const { totalPrice, totalDuration } = computeServiceLinesTotals(args.lines, services)
       const duration = totalDuration || 60
@@ -275,7 +307,7 @@ export function useAgendaMutations(
         throw new Error(delError.message)
       }
 
-      const svcRows = buildServiceRows(args.id, args.lines, services)
+      const svcRows = buildServiceRows(args.id, args.lines, services, tenantId)
       const { error: insError } = await supabase.from('appointment_services').insert(svcRows)
       if (insError) {
         throw new Error(insError.message)

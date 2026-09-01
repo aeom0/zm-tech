@@ -4,6 +4,13 @@
 -- Declarativo Drizzle: packages/shared-schema/src/schema.ts (appointmentServices, appointments.serviceIds/reference*)
 
 -- 1) Tabla appointment_services: líneas de servicio por cita (multi-servicio + packs)
+-- NOTA (2026-08-31): en producción (udelxwwnyivknslueerr) esta tabla ya existía, creada
+-- originalmente en ZM-Lash-and-Nails-Beauty, con `tenant_id` agregado por el retrofit
+-- multi-tenant (20260807133011_tenant_id_retrofit.sql) y políticas RLS ya tenant-scoped
+-- (20260808002956_tenant_rls_policies_part2_66_policies.sql, usa tenant_id = current_tenant_id(),
+-- no `get_my_role()` — esa función no existe en producción). Este CREATE TABLE queda IF NOT EXISTS
+-- solo para entornos nuevos; la sección de RLS se elimina para no duplicar/contradecir las
+-- políticas reales ya vigentes.
 CREATE TABLE IF NOT EXISTS public.appointment_services (
   id varchar PRIMARY KEY DEFAULT gen_random_uuid(),
   appointment_id varchar NOT NULL REFERENCES public.appointments(id) ON DELETE CASCADE,
@@ -12,7 +19,8 @@ CREATE TABLE IF NOT EXISTS public.appointment_services (
   pack_id varchar REFERENCES public.packs(id),
   price numeric(10, 2) NOT NULL,
   duration integer NOT NULL,
-  created_at timestamp NOT NULL DEFAULT now()
+  created_at timestamp NOT NULL DEFAULT now(),
+  tenant_id text NOT NULL DEFAULT 'zm-lash-nails'
 );
 
 CREATE INDEX IF NOT EXISTS idx_appointment_services_appointment_id
@@ -21,28 +29,10 @@ CREATE INDEX IF NOT EXISTS idx_appointment_services_service_id
   ON public.appointment_services (service_id);
 CREATE INDEX IF NOT EXISTS idx_appointment_services_employee_id
   ON public.appointment_services (employee_id);
+CREATE INDEX IF NOT EXISTS idx_appointment_services_tenant_id
+  ON public.appointment_services (tenant_id);
 
 ALTER TABLE public.appointment_services ENABLE ROW LEVEL SECURITY;
-
-DROP POLICY IF EXISTS appointment_services_delete_roles ON public.appointment_services;
-DROP POLICY IF EXISTS appointment_services_insert_roles ON public.appointment_services;
-DROP POLICY IF EXISTS appointment_services_select_roles ON public.appointment_services;
-DROP POLICY IF EXISTS appointment_services_update_roles ON public.appointment_services;
-
--- Mismo criterio que appointments: staff/dev/owner leen y escriben.
-CREATE POLICY appointment_services_delete_roles ON public.appointment_services
-  FOR DELETE USING (get_my_role() = ANY (ARRAY['dev'::text, 'owner'::text, 'staff'::text]));
-
-CREATE POLICY appointment_services_insert_roles ON public.appointment_services
-  FOR INSERT WITH CHECK (get_my_role() = ANY (ARRAY['dev'::text, 'owner'::text, 'staff'::text]));
-
-CREATE POLICY appointment_services_select_roles ON public.appointment_services
-  FOR SELECT USING (get_my_role() = ANY (ARRAY['dev'::text, 'owner'::text, 'staff'::text]));
-
-CREATE POLICY appointment_services_update_roles ON public.appointment_services
-  FOR UPDATE
-  USING (get_my_role() = ANY (ARRAY['dev'::text, 'owner'::text, 'staff'::text]))
-  WITH CHECK (get_my_role() = ANY (ARRAY['dev'::text, 'owner'::text, 'staff'::text]));
 
 -- 2) appointments: columnas para service_ids denormalizado + referencias de imagen
 DO $$
