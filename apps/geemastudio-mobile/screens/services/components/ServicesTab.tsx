@@ -189,6 +189,7 @@ export function ServicesTab() {
       <View style={styles.filterBar}>
         <ScrollFadeRow
           backgroundColor={theme.backgroundRoot}
+          arrowColor={theme.textSecondary}
           contentContainerStyle={styles.filterChips}
         >
           <Pressable

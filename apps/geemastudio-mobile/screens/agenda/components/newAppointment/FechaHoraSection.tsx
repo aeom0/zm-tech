@@ -19,6 +19,7 @@ import {
   sumarDiasEnZonaIANA,
   zonaIANASegura,
 } from '@zmtech/tenant-config'
+import { useSalonHolidays } from '@/hooks/useSalonHolidays'
 
 import { DAYS_ES } from '../../constants'
 import { agendaStyles as styles } from '../../agendaStyles'
@@ -59,6 +60,7 @@ export function FechaHoraSection({
   onChangeMinute,
 }: FechaHoraSectionProps) {
   const tz = zonaIANASegura(timeZone)
+  const { holidayIndex } = useSalonHolidays(true)
 
   const diasVisibles = useMemo(() => {
     const hoy = inicioDiaHoyEnZonaIANA(tz)
@@ -69,7 +71,8 @@ export function FechaHoraSection({
     selectedDate,
     selectedHour * 60 + selectedMinute,
     businessHours,
-    tz
+    tz,
+    holidayIndex
   )
 
   return (
@@ -84,12 +87,17 @@ export function FechaHoraSection({
       <ScrollFadeRow
         backgroundColor={theme.backgroundDefault}
         contentContainerStyle={styles.chipsContainer}
-        showArrows
         arrowColor={theme.textSecondary}
       >
         {diasVisibles.map((d) => {
           const isSelected = d.toDateString() === selectedDate.toDateString()
-          const diaConFranja = diaTieneFranjaAgenda(d, agendaHours, businessHours, tz)
+          const diaConFranja = diaTieneFranjaAgenda(
+            d,
+            agendaHours,
+            businessHours,
+            tz,
+            holidayIndex
+          )
           return (
             <Pressable
               key={d.toISOString()}
@@ -114,13 +122,18 @@ export function FechaHoraSection({
       <ScrollFadeRow
         backgroundColor={theme.backgroundDefault}
         contentContainerStyle={styles.chipsContainer}
-        showArrows
         arrowColor={theme.textSecondary}
         style={{ marginTop: 8 }}
       >
         {agendaHours.map((h) => {
           const isSelected = selectedHour === h
-          const horaPermitida = esInstanteEnHorarioLaboral(selectedDate, h * 60, businessHours, tz)
+          const horaPermitida = esInstanteEnHorarioLaboral(
+            selectedDate,
+            h * 60,
+            businessHours,
+            tz,
+            holidayIndex
+          )
           return (
             <Pressable
               key={h}
@@ -145,7 +158,6 @@ export function FechaHoraSection({
       <ScrollFadeRow
         backgroundColor={theme.backgroundDefault}
         contentContainerStyle={styles.chipsContainer}
-        showArrows
         arrowColor={theme.textSecondary}
         style={{ marginTop: 8 }}
       >
@@ -155,7 +167,8 @@ export function FechaHoraSection({
             selectedDate,
             selectedHour * 60 + m,
             businessHours,
-            tz
+            tz,
+            holidayIndex
           )
           return (
             <Pressable

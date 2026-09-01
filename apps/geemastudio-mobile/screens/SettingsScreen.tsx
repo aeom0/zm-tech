@@ -14,8 +14,14 @@ import type { MoreStackParamList } from '@/navigation/MoreStackNavigator'
 import { SettingsSection } from './settings/components/SettingsSection'
 import { SettingsRow } from './settings/components/SettingsRow'
 import { CurrencyPickerModal } from './settings/components/CurrencyPickerModal'
+import { CountryPickerModal } from './settings/components/CountryPickerModal'
 import { TerminologyEditModal } from './settings/components/TerminologyEditModal'
 import type { Moneda } from './settings/constants'
+import {
+  getCountryPreset,
+  localeFromCountry,
+  type CountryPreset,
+} from '@zmtech/tenant-config'
 
 type Nav = NativeStackNavigationProp<MoreStackParamList, 'Configuracion'>
 
@@ -28,9 +34,17 @@ export default function SettingsScreen() {
   const navigation = useNavigation<Nav>()
 
   const [modalMonedaVisible, setModalMonedaVisible] = useState(false)
+  const [modalPaisVisible, setModalPaisVisible] = useState(false)
   const [modalTerminologiaVisible, setModalTerminologiaVisible] = useState(false)
 
   const isAdmin = role === 'dev' || role === 'owner'
+  const paisActual = getCountryPreset(config.locale.country)
+
+  const handleSeleccionarPais = async (pais: CountryPreset) => {
+    const locale = localeFromCountry(pais.code)
+    if (!locale) return
+    await updateTenant({ locale }, { syncRemote: true })
+  }
 
   const handleSeleccionarMoneda = async (moneda: Moneda) => {
     await updateTenant(
@@ -79,6 +93,17 @@ export default function SettingsScreen() {
             <SettingsRow label="Nombre comercial" value={config.businessName} variant="value" />
             <SettingsRow label="Tipo de negocio" value={config.businessType} variant="value" />
             <SettingsRow
+              label="País"
+              value={
+                paisActual
+                  ? `${paisActual.flag} ${paisActual.label}`
+                  : config.locale.country || '—'
+              }
+              variant="navigate"
+              icon="globe"
+              onPress={() => setModalPaisVisible(true)}
+            />
+            <SettingsRow
               label="Moneda"
               value={`${config.locale.currency.symbol} · ${config.locale.currency.code}`}
               variant="navigate"
@@ -106,6 +131,13 @@ export default function SettingsScreen() {
           </ThemedText>
         </View>
       </ScrollView>
+
+      <CountryPickerModal
+        visible={modalPaisVisible}
+        currentCode={config.locale.country}
+        onSelect={handleSeleccionarPais}
+        onClose={() => setModalPaisVisible(false)}
+      />
 
       <CurrencyPickerModal
         visible={modalMonedaVisible}

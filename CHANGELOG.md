@@ -10,6 +10,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ### Añadido
 
+- **`@zmtech/tenant-config`**: `COUNTRY_PRESETS` + `salon-holidays` (catálogos PE/VE, franja efectiva); UNIQUE `salon_holidays (tenant_id, date)` en shared BD.
 - Documentación raíz del monorepo: `README.md`, `ROADMAP.md`, `CLAUDE.md`, `CHANGELOG.md`.
 
 ### Cambiado

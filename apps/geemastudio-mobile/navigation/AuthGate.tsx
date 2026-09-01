@@ -1,16 +1,17 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, Pressable, View, StyleSheet } from 'react-native'
 import * as SplashScreenExpo from 'expo-splash-screen'
-import * as Updates from 'expo-updates'
 import MainTabNavigator from '@/navigation/MainTabNavigator'
 import { LoginScreen } from '@/screens/LoginScreen'
 import { ThemedText } from '@/components/ThemedText'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
 import { Onboarding } from '@/constants/theme'
+import { useOtaUpdateUiSelector } from '@/stores/otaUpdateUiStore'
 
 SplashScreenExpo.preventAutoHideAsync?.()
 
+import OnboardingCountryScreen from '@/screens/onboarding/OnboardingCountryScreen'
 import OnboardingBusinessTypeScreen from '@/screens/onboarding/OnboardingBusinessTypeScreen'
 import OnboardingBasicInfoScreen from '@/screens/onboarding/OnboardingBasicInfoScreen'
 import OnboardingTeamScreen from '@/screens/onboarding/OnboardingTeamScreen'
@@ -19,12 +20,12 @@ import OnboardingCompleteScreen from '@/screens/onboarding/OnboardingCompleteScr
 import OnboardingAuthScreen from '@/screens/onboarding/OnboardingAuthScreen'
 import OnboardingEntryScreen from '@/screens/onboarding/OnboardingEntryScreen'
 
-/** Pasos wizard: 1 = Tipo negocio, 2 = Datos básicos, 3 = Equipo, 4 = Servicios, 5 = Registro/Login, 6 = Listo */
-type PasoOnboarding = 1 | 2 | 3 | 4 | 5 | 6
+/** 1 País · 2 Tipo · 3 Datos · 4 Equipo · 5 Servicios · 6 Auth · 7 Listo */
+type PasoOnboarding = 1 | 2 | 3 | 4 | 5 | 6 | 7
 
 /**
  * Flujo completo de la app:
- *   (no configurado) Entrada → nuevo negocio (pasos 1-4) → paso 5 auth → paso 6 listo;
+ *   (no configurado) Entrada → nuevo negocio (país + pasos) → auth → listo;
  *           o "ya tengo cuenta" → OnboardingAuthScreen (mismo look del wizard).
  *           → (configurado, no auth) LoginScreen clásico
  *           → (configurado, auth) MainTabNavigator
@@ -43,36 +44,15 @@ export default function AuthGate() {
   // Flag de desarrollo para obligar a pasar por el onboarding completo
   const forceOnboardingDev = __DEV__ && process.env.EXPO_PUBLIC_FORCE_ONBOARDING === 'true'
 
-  // Chequeo OTA al arranque: busca y aplica updates mientras la splash está visible.
-  // Timeout de 8s para no bloquear si no hay red.
-  const otaChecked = useRef(false)
+  const otaListo = useOtaUpdateUiSelector((s) => s.listo)
+  const otaVisible = useOtaUpdateUiSelector((s) => s.visible)
+
+  // Ocultar splash nativa cuando el tenant termina de cargar y el chequeo OTA terminó
   useEffect(() => {
-    if (__DEV__ || otaChecked.current) return
-    otaChecked.current = true
-
-    const checkOTA = async () => {
-      try {
-        const timeout = new Promise<void>((resolve) => setTimeout(resolve, 8000))
-        const update = await Promise.race([Updates.checkForUpdateAsync(), timeout.then(() => null)])
-
-        if (update && 'isAvailable' in update && update.isAvailable) {
-          await Updates.fetchUpdateAsync()
-          await Updates.reloadAsync()
-        }
-      } catch {
-        // Sin red o error inesperado — continuar sin OTA
-      }
-    }
-
-    checkOTA()
-  }, [])
-
-  // Ocultar splash nativa cuando el tenant termina de cargar
-  useEffect(() => {
-    if (!tenantLoading) {
+    if (!tenantLoading && otaListo) {
       SplashScreenExpo.hideAsync?.()
     }
-  }, [tenantLoading])
+  }, [tenantLoading, otaListo])
 
   // Tras un login "ya tengo cuenta" exitoso, si tras 10s el tenant remoto
   // sigue sin hidratar (sin red, o cuenta sin tenant_settings), salimos del
@@ -87,7 +67,11 @@ export default function AuthGate() {
   }, [entryChoice, isAuthenticated, isConfigured])
 
   // Mientras AsyncStorage carga, la splash nativa cubre la pantalla
-  if (tenantLoading) return null
+  if (tenantLoading || !otaListo) return null
+
+  if (otaVisible) {
+    return <View style={styles.otaPlaceholder} />
+  }
 
   // Primero: si no está configurado, o si en desarrollo forzamos onboarding
   // (forceOnboardingDev solo fuerza mientras no se haya completado esta sesión)
@@ -145,23 +129,31 @@ export default function AuthGate() {
 
     // entryChoice === "new" → flujo de wizard completo
     if (paso === 1) {
-      return <OnboardingBusinessTypeScreen onNext={() => setPaso(2)} />
+      return (
+        <OnboardingCountryScreen
+          onNext={() => setPaso(2)}
+          onBack={() => setEntryChoice('none')}
+        />
+      )
     }
     if (paso === 2) {
-      return <OnboardingBasicInfoScreen onNext={() => setPaso(3)} onBack={() => setPaso(1)} />
+      return (
+        <OnboardingBusinessTypeScreen onNext={() => setPaso(3)} onBack={() => setPaso(1)} />
+      )
     }
     if (paso === 3) {
-      return <OnboardingTeamScreen onNext={() => setPaso(4)} onBack={() => setPaso(2)} />
+      return <OnboardingBasicInfoScreen onNext={() => setPaso(4)} onBack={() => setPaso(2)} />
     }
     if (paso === 4) {
-      return <OnboardingServicesScreen onNext={() => setPaso(5)} onBack={() => setPaso(3)} />
+      return <OnboardingTeamScreen onNext={() => setPaso(5)} onBack={() => setPaso(3)} />
     }
-    // Paso 5: crear cuenta / iniciar sesión antes de guardar en la nube
     if (paso === 5) {
+      return <OnboardingServicesScreen onNext={() => setPaso(6)} onBack={() => setPaso(4)} />
+    }
+    if (paso === 6) {
       if (!isAuthenticated) {
-        return <OnboardingAuthScreen onSuccess={() => setPaso(6)} onBack={() => setPaso(4)} />
+        return <OnboardingAuthScreen onSuccess={() => setPaso(7)} onBack={() => setPaso(5)} />
       }
-      // Si ya hay sesión (por ejemplo, usuario vuelve al onboarding), saltamos al último paso
       return (
         <OnboardingCompleteScreen
           onFinish={() => {
@@ -171,7 +163,6 @@ export default function AuthGate() {
         />
       )
     }
-    // paso === 6: pantalla de confirmación final
     return (
       <OnboardingCompleteScreen
         onFinish={() => {
@@ -191,6 +182,10 @@ export default function AuthGate() {
 }
 
 const styles = StyleSheet.create({
+  otaPlaceholder: {
+    flex: 1,
+    backgroundColor: Onboarding.canvasBackground,
+  },
   loadingContainer: {
     flex: 1,
     alignItems: 'center',

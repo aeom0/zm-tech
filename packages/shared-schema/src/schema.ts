@@ -11,6 +11,8 @@ import {
   jsonb,
   check,
   index,
+  date,
+  uniqueIndex,
 } from 'drizzle-orm/pg-core'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
@@ -457,6 +459,35 @@ export const insertTenantSettingsSchema = createInsertSchema(tenantSettings).omi
   updatedAt: true,
 })
 
+/** Feriados / no laborables por tenant (horario reducido o cerrado). */
+export const salonHolidays = pgTable(
+  'salon_holidays',
+  {
+    id: uuid('id')
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    tenantId: text('tenant_id').notNull().default('zm-lash-nails'),
+    date: date('date').notNull(),
+    name: text('name').notNull(),
+    isClosed: boolean('is_closed').notNull().default(false),
+    /** Última hora de inicio de cita (10–18). Default 12. */
+    openUntilHour: integer('open_until_hour').notNull().default(12),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => ({
+    uniqTenantDate: uniqueIndex('salon_holidays_tenant_date_unique').on(t.tenantId, t.date),
+    idxDate: index('idx_salon_holidays_date').on(t.date),
+    idxTenant: index('idx_salon_holidays_tenant_id').on(t.tenantId),
+  })
+)
+
+export const insertSalonHolidaySchema = createInsertSchema(salonHolidays).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+})
+
 export type Employee = typeof employees.$inferSelect
 export type InsertEmployee = z.infer<typeof insertEmployeeSchema>
 export type ServiceCategory = typeof serviceCategories.$inferSelect
@@ -486,3 +517,5 @@ export type InsertPromotionItem = z.infer<typeof insertPromotionItemSchema>
 export type Profile = typeof profiles.$inferSelect
 export type TenantSettings = typeof tenantSettings.$inferSelect
 export type InsertTenantSettings = z.infer<typeof insertTenantSettingsSchema>
+export type SalonHolidayRow = typeof salonHolidays.$inferSelect
+export type InsertSalonHoliday = z.infer<typeof insertSalonHolidaySchema>

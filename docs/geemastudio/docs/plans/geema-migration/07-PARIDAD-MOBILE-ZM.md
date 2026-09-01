@@ -188,11 +188,11 @@ Convergencia corta: Drizzle Geema → **superset tipado de prod**; adaptadores m
 | S5C-2  | Adaptador `usePromosData` + `usePromotionItems` (total desde ítems)                                                | zm-tech      | M        | P0        | ✅ PR #30                               |
 | S5C-3  | Validar `tenant_settings` ZM: timezone `America/Lima`, horarios                                                    | zm-tech + BD | S        | P0        | ✅ PR #30                               |
 | S5C-11 | Adaptador `employees` (sin `payment_mode`/`salary_amount` ZM; `avatar_url` sumado 30-ago) + cache única con agenda | zm-tech      | S        | P0        | ✅ PR #30                               |
-| S5C-4  | Agenda: cargar `appointment_services` + multi-servicio en detalle                                                  | zm-tech      | L        | P1        | En curso (PR #31; schema prod ya listo) |
+| S5C-4  | Agenda: cargar `appointment_services` + multi-servicio en detalle                                                  | zm-tech      | L        | P1        | ✅ 31-ago (detalle editable + packs; OTA preview) |
 | S5C-5  | Portar referencias diseño + badge agenda (WABA)                                                                    | zm-tech      | L        | P1        | Pendiente                               |
-| S5C-6  | Portar `HolidayScreen` + reglas feriado/dom                                                                        | zm-tech      | M        | P1        | Pendiente                               |
+| S5C-6  | Portar `HolidayScreen` + reglas feriado (slots)                                                                    | zm-tech      | M        | P1        | ✅ 31-ago (`FeriadosScreen` + `salon-holidays`) |
 | S5C-7  | Finanzas: panel ejecutivo + `PricingBreakdownCard` (WABA)                                                          | zm-tech      | L        | P1        | Pendiente                               |
-| S5C-8  | Dashboard: ranking top servicios + alertas feriado                                                                 | zm-tech      | S        | P2        | Pendiente                               |
+| S5C-8  | Dashboard: ranking top servicios + alertas feriado                                                                 | zm-tech      | S        | P2        | Parcial — `HolidayAlertBanner` ✅; ranking pendiente |
 | S5C-9  | Documentar en UI dónde está Finanzas (onboarding admin)                                                            | zm-tech      | S        | P2        | Pendiente                               |
 | S5C-10 | Tests smoke: packs/promos/agenda mismo día vs app ZM                                                               | zm-tech      | S        | P0        | Parcial (visual 30-ago)                 |
 

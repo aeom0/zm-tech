@@ -185,6 +185,49 @@ export const agendaStyles = StyleSheet.create({
     width: 560,
     maxHeight: '80%',
   },
+  contentWithPicker: {
+    flex: 1,
+    maxHeight: '92%',
+    paddingHorizontal: 0,
+  },
+  svcRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderRadius: BorderRadius.sm,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    marginBottom: Spacing.xs,
+  },
+  svcName: { fontSize: 14, fontWeight: '500' },
+  svcDetail: { fontSize: 12, marginTop: 2 },
+  totalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.sm,
+  },
+  totalLabel: { fontSize: 13 },
+  totalPrice: { fontSize: 15, fontWeight: '700' },
+  addSvcBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    borderWidth: 1.5,
+    borderStyle: 'dashed',
+    borderRadius: BorderRadius.sm,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    marginTop: Spacing.xs,
+    justifyContent: 'center',
+  },
+  addSvcBtnText: { fontSize: 14, fontWeight: '600' },
+  detailScroll: {
+    flexGrow: 0,
+  },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -251,6 +294,35 @@ export const agendaStyles = StyleSheet.create({
     borderRadius: BorderRadius.sm,
     borderWidth: 1,
     minWidth: 120,
+  },
+
+  pickerTabsRow: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+    marginBottom: Spacing.md,
+  },
+  pickerTab: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: 6,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+  },
+  pickerTabText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+
+  summaryLineRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: Spacing.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.05)',
+  },
+  summaryLineInfo: {
+    flex: 1,
+    marginRight: Spacing.sm,
   },
   serviceChipName: {
     fontSize: 14,
@@ -359,6 +431,49 @@ export const agendaStyles = StyleSheet.create({
   availabilityBannerText: {
     fontSize: 13,
     flex: 1,
+    fontWeight: '600',
+  },
+
+  // Selector de método de pago (al marcar cita completada) — mismo patrón que Dashboard
+  payMethodBox: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    padding: Spacing.md,
+    marginBottom: Spacing.sm,
+    gap: Spacing.sm,
+  },
+  payMethodTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 2,
+  },
+  payMethodOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1.5,
+  },
+  payMethodLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  payMethodActions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: Spacing.sm,
+    marginTop: Spacing.xs,
+  },
+  payMethodCancel: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
+  },
+  payMethodCancelText: {
+    fontSize: 13,
     fontWeight: '600',
   },
 })

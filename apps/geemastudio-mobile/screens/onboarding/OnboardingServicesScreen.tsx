@@ -99,7 +99,7 @@ export default function OnboardingServicesScreen({
   return (
     <OnboardingLayout scrollable={false}>
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-        <ThemedText style={styles.badge}>PASO 4 DE 4</ThemedText>
+        <ThemedText style={styles.badge}>PASO 5 DE 7</ThemedText>
         <OnboardingProgressDots currentStep={4} />
         <ThemedText style={styles.titulo}>Servicios que ofreces</ThemedText>
         <ThemedText style={styles.subtitulo}>Selecciona las categorías para tu negocio</ThemedText>

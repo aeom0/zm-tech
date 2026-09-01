@@ -78,7 +78,7 @@ export default function OnboardingBasicInfoScreen({
   return (
     <OnboardingLayout scrollable>
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-        <ThemedText style={styles.badge}>PASO 2 DE 4</ThemedText>
+        <ThemedText style={styles.badge}>PASO 3 DE 7</ThemedText>
         <OnboardingProgressDots currentStep={2} />
         <ThemedText style={styles.titulo}>Cuéntanos sobre tu negocio</ThemedText>
         <ThemedText style={styles.subtitulo}>Elige el nombre y la identidad visual</ThemedText>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { KeyboardProvider } from 'react-native-keyboard-controller'
@@ -16,9 +16,13 @@ import { AuthProvider, useAuth } from '@/contexts/AuthContext'
 import { TenantProvider } from '@/contexts/TenantContext'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 import { useNotifications } from '@/hooks/useNotifications'
+import { useExpoOTAOnLaunch } from '@/hooks/useExpoOTAOnLaunch'
+import { useOtaUpdateUiSelector } from '@/stores/otaUpdateUiStore'
+import { Onboarding } from '@/constants/theme'
 
 import RootStackNavigator from '@/navigation/RootStackNavigator'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { OtaUpdateOverlay } from '@/components/OtaUpdateOverlay'
 
 /** Tiempo máximo de espera para cargar fuentes (evita "6000ms timeout" en web) */
 const FONT_LOAD_TIMEOUT_MS = 12_000
@@ -29,13 +33,8 @@ const FONT_LOAD_TIMEOUT_MS = 12_000
  */
 const SPLASH_EXTRA_DELAY_MS = 1_200
 
-// Mantener el splash visible hasta que nosotros decidamos ocultarlo
 SplashScreen.preventAutoHideAsync()
 
-/**
- * Precarga Feather (iconos) + Poppins_800ExtraBold (wordmark) con timeout global.
- * Si alguna fuente falla o excede el timeout, la app continúa igual.
- */
 function useFontsReady(): boolean {
   const [ready, setReady] = useState(false)
 
@@ -73,16 +72,17 @@ function AppContent() {
   const { userId } = useAuth()
   useNotifications(userId)
   const fontsReady = useFontsReady()
+  const otaListo = useOtaUpdateUiSelector((s) => s.listo)
 
   useEffect(() => {
-    if (!fontsReady) return
+    if (!fontsReady || !otaListo) return
     const timer = setTimeout(() => {
       SplashScreen.hideAsync()
     }, SPLASH_EXTRA_DELAY_MS)
     return () => clearTimeout(timer)
-  }, [fontsReady])
+  }, [fontsReady, otaListo])
 
-  if (!fontsReady) {
+  if (!fontsReady || !otaListo) {
     return null
   }
 
@@ -100,23 +100,46 @@ function AppContent() {
   )
 }
 
+/**
+ * OtaGate (paridad ZM Lash):
+ * - Corre el hook OTA antes / encima del árbol de auth.
+ * - Mientras el overlay está activo, no monta providers/nav (evita flash Login).
+ */
+function OtaGate() {
+  useExpoOTAOnLaunch()
+  const otaActiva = useOtaUpdateUiSelector((s) => s.visible)
+
+  return (
+    <View style={styles.gate}>
+      <OtaUpdateOverlay />
+      {!otaActiva && (
+        <AuthProvider>
+          <TenantProvider>
+            <ThemeProvider>
+              <QueryClientProvider client={queryClient}>
+                <AppContent />
+              </QueryClientProvider>
+            </ThemeProvider>
+          </TenantProvider>
+        </AuthProvider>
+      )}
+    </View>
+  )
+}
+
 export default function App() {
   return (
-    <AuthProvider>
-      <TenantProvider>
-        <ThemeProvider>
-          <QueryClientProvider client={queryClient}>
-            <ErrorBoundary>
-              <AppContent />
-            </ErrorBoundary>
-          </QueryClientProvider>
-        </ThemeProvider>
-      </TenantProvider>
-    </AuthProvider>
+    <ErrorBoundary>
+      <OtaGate />
+    </ErrorBoundary>
   )
 }
 
 const styles = StyleSheet.create({
+  gate: {
+    flex: 1,
+    backgroundColor: Onboarding.canvasBackground,
+  },
   root: {
     flex: 1,
   },

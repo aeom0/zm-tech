@@ -15,6 +15,7 @@ import {
 import type {
   AgendaEmployee,
   AgendaFormState,
+  AgendaPack,
   AgendaService,
   AgendaServiceCategory,
 } from '../types'
@@ -57,8 +58,8 @@ interface NewAppointmentModalProps {
   employeesLoading: boolean
   employeesError: unknown
   employees: AgendaEmployee[]
-  selectedService: AgendaService | undefined
-  selectedEmployee: AgendaEmployee | undefined
+  packs: AgendaPack[]
+  packsLoading: boolean
   formatDateLabel: (d: Date) => string
   onSubmit: () => void
   createPending: boolean
@@ -99,8 +100,8 @@ export function NewAppointmentModal({
   employeesLoading,
   employeesError,
   employees,
-  selectedService,
-  selectedEmployee,
+  packs,
+  packsLoading,
   formatDateLabel,
   onSubmit,
   createPending,
@@ -182,7 +183,6 @@ export function NewAppointmentModal({
               formData={formData}
               setFormData={setFormData}
               categories={categories}
-              services={services}
             />
 
             <ServicioSection
@@ -194,6 +194,8 @@ export function NewAppointmentModal({
               selectedCategory={selectedCategory}
               servicesLoading={servicesLoading}
               servicesError={servicesError}
+              packs={packs}
+              packsLoading={packsLoading}
             />
 
             <StaffSection
@@ -207,12 +209,13 @@ export function NewAppointmentModal({
               staffPlural={staffPlural}
             />
 
-            {formData.serviceId && formData.employeeId ? (
+            {formData.serviceLines.length > 0 ? (
               <SummaryCard
                 theme={theme}
                 currencySymbol={currencySymbol}
-                selectedService={selectedService}
-                selectedEmployee={selectedEmployee}
+                serviceLines={formData.serviceLines}
+                services={services}
+                employees={employees}
                 staffSingular={staffSingular}
               />
             ) : null}

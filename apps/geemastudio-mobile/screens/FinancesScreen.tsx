@@ -20,6 +20,7 @@ import * as Haptics from 'expo-haptics'
 import Svg, { Path, Circle, Line } from 'react-native-svg'
 
 import { ThemedText } from '@/components/ThemedText'
+import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTheme } from '@/hooks/useTheme'
 import { useResponsive } from '@/hooks/useResponsive'
 import { useTenant } from '@/contexts/TenantContext'
@@ -1289,9 +1290,9 @@ export default function FinancesScreen() {
                   No hay citas recientes para enlazar.
                 </ThemedText>
               ) : (
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
+                <ScrollFadeRow
+                  backgroundColor={theme.backgroundDefault}
+                  arrowColor={theme.textSecondary}
                   contentContainerStyle={styles.appointmentChipsContainer}
                 >
                   <Pressable
@@ -1377,7 +1378,7 @@ export default function FinancesScreen() {
                       </Pressable>
                     )
                   })}
-                </ScrollView>
+                </ScrollFadeRow>
               )}
 
               <ThemedText style={[styles.inputLabel, { color: theme.textSecondary }]}>

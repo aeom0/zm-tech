@@ -6,6 +6,7 @@ import { Spacing } from '@/constants/theme'
 
 import type { TenantConfig, TimeFormatPreference } from '@zmtech/tenant-config'
 import { esCeldaAgendaEnHorarioLaboral, formatoHoraAgendaSlot } from '@zmtech/tenant-config'
+import { useSalonHolidays } from '@/hooks/useSalonHolidays'
 
 import type { AgendaAppointment, AgendaEmployee, AgendaService, AgendaStatusFilter } from '../types'
 import { agendaStyles as styles } from '../agendaStyles'
@@ -71,6 +72,7 @@ export function AgendaCalendarGrid({
   onOpenNew,
   onOpenDetail,
 }: AgendaCalendarGridProps) {
+  const { holidayIndex } = useSalonHolidays(true)
   return (
     <ScrollView
       style={styles.calendarContainer}
@@ -90,7 +92,8 @@ export function AgendaCalendarGrid({
             selectedDate,
             hour,
             businessHours,
-            timeZone
+            timeZone,
+            holidayIndex
           )
           const maxInRow = Math.max(
             1,
@@ -217,7 +220,13 @@ export function AgendaCalendarGrid({
               </ThemedText>
             </View>
             {weekDays.map((date, dayIndex) => {
-              const dentro = esCeldaAgendaEnHorarioLaboral(date, hour, businessHours, timeZone)
+              const dentro = esCeldaAgendaEnHorarioLaboral(
+                date,
+                hour,
+                businessHours,
+                timeZone,
+                holidayIndex
+              )
               const slotAppointments = getAppointmentsForSlot(
                 appointments,
                 date,

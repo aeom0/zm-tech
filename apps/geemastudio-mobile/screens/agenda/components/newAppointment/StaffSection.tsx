@@ -1,14 +1,20 @@
 import React from 'react'
-import { View, ScrollView, Pressable, ActivityIndicator } from 'react-native'
+import { View, Pressable, ActivityIndicator } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
+import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { Spacing } from '@/constants/theme'
 
 import type { AgendaEmployee, AgendaFormState } from '../../types'
 import { agendaStyles as styles } from '../../agendaStyles'
 import type { NewAppointmentModalTheme } from './modalTheme'
 
+/**
+ * Selecciona el profesional "por defecto": el que se asigna a cada nueva línea
+ * de servicio que se agregue desde ServicioSection (no el único de la cita —
+ * una cita puede tener varias líneas con profesionales distintos).
+ */
 interface StaffSectionProps {
   theme: NewAppointmentModalTheme
   formData: AgendaFormState
@@ -56,9 +62,9 @@ export function StaffSection({
           </ThemedText>
         </View>
       ) : (
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
+        <ScrollFadeRow
+          backgroundColor={theme.backgroundDefault}
+          arrowColor={theme.textSecondary}
           contentContainerStyle={styles.chipsContainer}
         >
           {employees.map((employee) => {
@@ -105,7 +111,7 @@ export function StaffSection({
               </Pressable>
             )
           })}
-        </ScrollView>
+        </ScrollFadeRow>
       )}
     </View>
   )

@@ -10,6 +10,9 @@ import { Feather } from '@expo/vector-icons'
 
 import { useTheme } from '@/hooks/useTheme'
 import { useResponsive } from '@/hooks/useResponsive'
+import { useAppointmentCompletion } from '@/hooks/useAppointmentCompletion'
+import { useSalonHolidays } from '@/hooks/useSalonHolidays'
+import { HolidayAlertBanner } from '@/components/HolidayAlertBanner'
 import { useTenant } from '@/contexts/TenantContext'
 import { useAuth } from '@/contexts/AuthContext'
 import { Spacing, Shadows } from '@/constants/theme'
@@ -33,6 +36,7 @@ import {
 import type { MainTabParamList } from '@/navigation/MainTabNavigator'
 
 import { agendaStyles as styles } from './agenda/agendaStyles'
+import { computeServiceLinesTotals } from './agenda/agendaUtils'
 import {
   emptyAgendaForm,
   type AgendaAppointment,
@@ -42,8 +46,17 @@ import {
 } from './agenda/types'
 import { filterAppointmentsForOwnerDay } from './agenda/agendaUtils'
 import { useAgendaCalendar } from './agenda/hooks/useAgendaCalendar'
-import { useAgendaQueries, useServicesByCategory } from './agenda/hooks/useAgendaQueries'
+import {
+  useAgendaQueries,
+  useAppointmentPaymentsQuery,
+  useAppointmentServiceLinesQuery,
+  useServicesByCategory,
+} from './agenda/hooks/useAgendaQueries'
 import { useAgendaMutations } from './agenda/hooks/useAgendaMutations'
+import {
+  useAppointmentServiceEditor,
+  useSyncEditLinesFromQuery,
+} from './agenda/hooks/useAppointmentServiceEditor'
 import { useAvailabilityCheck } from './agenda/hooks/useAvailabilityCheck'
 import { AgendaHeader } from './agenda/components/AgendaHeader'
 import { AgendaWeekDayHeaders } from './agenda/components/AgendaWeekDayHeaders'
@@ -67,6 +80,7 @@ export default function AgendaScreen() {
   const { role, profile, isAdmin, isLoading: authLoading } = useAuth()
   const currencySymbol = config.locale.currency.symbol
   const { isTablet, width } = useResponsive()
+  const { holidayIndex } = useSalonHolidays(true)
 
   const ownerVista = !authLoading && isAdmin
   const staffVista = !authLoading && role === 'staff'
@@ -129,6 +143,8 @@ export default function AgendaScreen() {
     services,
     servicesLoading,
     servicesError,
+    packs,
+    packsLoading,
   } = useAgendaQueries()
 
   const appointmentsDisplayed = useMemo(() => {
@@ -156,13 +172,21 @@ export default function AgendaScreen() {
     () => categories.find((c) => c.id === formData.categoryId),
     [categories, formData.categoryId]
   )
-  const selectedService = useMemo(
-    () => services.find((s) => s.id === formData.serviceId),
-    [services, formData.serviceId]
+  const formTotals = useMemo(
+    () => computeServiceLinesTotals(formData.serviceLines, services),
+    [formData.serviceLines, services]
   )
-  const selectedEmployee = useMemo(
-    () => employees.find((e) => e.id === formData.employeeId),
-    [employees, formData.employeeId]
+
+  const serviceEditor = useAppointmentServiceEditor(services)
+
+  const detailServiceLinesQuery = useAppointmentServiceLinesQuery(
+    detailModalVisible && appointmentDetail ? appointmentDetail.id : null
+  )
+
+  useSyncEditLinesFromQuery(
+    detailServiceLinesQuery.data ?? [],
+    appointmentDetail?.employee_id ?? '',
+    serviceEditor.setEditServiceLines
   )
 
   const onCreateSuccess = useCallback(() => {
@@ -178,8 +202,45 @@ export default function AgendaScreen() {
     setAppointmentDetail(null)
   }, [])
 
-  const { createMutation, deleteAppointmentMutation, updateAppointmentMutation } =
-    useAgendaMutations({ onCreateSuccess, onDeleteSuccess, onUpdateSuccess }, tenantTz)
+  const {
+    createMutation,
+    deleteAppointmentMutation,
+    updateAppointmentMutation,
+    updateAppointmentServicesMutation,
+    completeAppointmentMutation,
+    createPaymentMutation,
+  } = useAgendaMutations({ onCreateSuccess, onDeleteSuccess, onUpdateSuccess }, tenantTz, services)
+
+  const getServiceName = useCallback(
+    (serviceId: string) => services.find((s) => s.id === serviceId)?.name ?? 'Servicio',
+    [services]
+  )
+
+  const paymentsQuery = useAppointmentPaymentsQuery(
+    detailModalVisible && appointmentDetail ? appointmentDetail.id : null
+  )
+  const appointmentPayments = paymentsQuery.data ?? []
+
+  const {
+    payMethodVisible,
+    pendingPayMethod,
+    setPendingPayMethod,
+    handleMarkCompleted,
+    confirmCompleteWithMethod,
+    cancelPayMethod,
+    isCompleting,
+  } = useAppointmentCompletion<AgendaAppointment>({
+    updateAppointmentMutation: completeAppointmentMutation,
+    createPaymentMutation,
+    paymentsByAppointment: appointmentPayments,
+    getServiceName,
+    onCompleted: () => {
+      setDetailModalVisible(false)
+      setAppointmentDetail(null)
+      void refetch()
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+    },
+  })
 
   const route = useRoute<RouteProp<MainTabParamList, 'Agenda'>>()
   const navigation = useNavigation()
@@ -243,16 +304,13 @@ export default function AgendaScreen() {
     setSelectedHour(hour)
     setSelectedMinute(minute)
     const firstCategoryId = categories[0]?.id ?? ''
-    const firstServiceInCategory = firstCategoryId
-      ? services.find((s) => s.category_id === firstCategoryId)
-      : services[0]
     setFormData({
       clientName: '',
       clientPhone: '',
       clientDocument: '',
       categoryId: firstCategoryId,
-      serviceId: firstServiceInCategory?.id ?? '',
       employeeId: employees.length > 0 ? employees[0].id : '',
+      serviceLines: [],
     })
     setModalVisible(true)
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
@@ -261,9 +319,9 @@ export default function AgendaScreen() {
   const handleNewAppointmentDateChange = useCallback(
     (d: Date) => {
       setSelectedDate(d)
-      if (!esCeldaAgendaEnHorarioLaboral(d, selectedHour, businessHoursNorm, tenantTz)) {
+      if (!esCeldaAgendaEnHorarioLaboral(d, selectedHour, businessHoursNorm, tenantTz, holidayIndex)) {
         const first = agendaHours.find((h) =>
-          esCeldaAgendaEnHorarioLaboral(d, h, businessHoursNorm, tenantTz)
+          esCeldaAgendaEnHorarioLaboral(d, h, businessHoursNorm, tenantTz, holidayIndex)
         )
         if (first !== undefined) setSelectedHour(first)
       }
@@ -277,6 +335,21 @@ export default function AgendaScreen() {
     setRescheduleDate(inicioDiaDelInstanteEnZona(aptInst, tenantTz))
     setRescheduleHour(horaCalendarioEnZona(aptInst, tenantTz))
     setRescheduleMinute(minutosDelDiaEnZona(aptInst, tenantTz) % 60)
+
+    const fallbackIds =
+      apt.service_ids && apt.service_ids.length > 0
+        ? apt.service_ids
+        : apt.service_id
+          ? [apt.service_id]
+          : []
+    serviceEditor.setEditServiceLines(
+      fallbackIds.map((svcId) => ({
+        serviceId: svcId,
+        employeeId: apt.employee_id ?? '',
+      }))
+    )
+    serviceEditor.closeSvcPicker()
+
     setDetailModalVisible(true)
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
   }
@@ -299,6 +372,19 @@ export default function AgendaScreen() {
     openAppointmentDetail(apt)
   }
 
+  const handleSaveServices = () => {
+    if (!appointmentDetail) return
+    if (serviceEditor.editServiceLines.length === 0) {
+      Alert.alert('Error', 'Selecciona al menos un servicio')
+      return
+    }
+    updateAppointmentServicesMutation.mutate({
+      id: appointmentDetail.id,
+      date: appointmentDetail.date,
+      lines: serviceEditor.editServiceLines,
+    })
+  }
+
   const handleDeleteAppointment = () => {
     if (!appointmentDetail) return
     Alert.alert('Eliminar cita', `¿Eliminar la cita de ${appointmentDetail.client_name}?`, [
@@ -318,7 +404,8 @@ export default function AgendaScreen() {
         rescheduleDate,
         rescheduleHour * 60 + rescheduleMinute,
         businessHoursNorm,
-        tenantTz
+        tenantTz,
+        holidayIndex
       )
     ) {
       Alert.alert('Fuera de horario', 'Ese día u hora está fuera de la franja del negocio.')
@@ -338,11 +425,11 @@ export default function AgendaScreen() {
       Alert.alert('Error', 'Ingresa el nombre de la clienta')
       return
     }
-    if (!formData.serviceId) {
-      Alert.alert('Error', 'Selecciona un servicio')
+    if (formData.serviceLines.length === 0) {
+      Alert.alert('Error', 'Selecciona al menos un servicio')
       return
     }
-    if (!formData.employeeId) {
+    if (formData.serviceLines.some((line) => !line.employeeId)) {
       Alert.alert('Error', `Selecciona ${config.terminology.staffSingular.toLowerCase()}`)
       return
     }
@@ -351,7 +438,8 @@ export default function AgendaScreen() {
         selectedDate,
         selectedHour * 60 + selectedMinute,
         businessHoursNorm,
-        tenantTz
+        tenantTz,
+        holidayIndex
       )
     ) {
       Alert.alert('Fuera de horario', 'Esa hora está fuera de la franja configurada.')
@@ -362,12 +450,9 @@ export default function AgendaScreen() {
       client_name: formData.clientName.trim(),
       client_phone: formData.clientPhone.trim() || undefined,
       client_document: formData.clientDocument.trim() || undefined,
-      service_id: formData.serviceId,
-      employee_id: formData.employeeId,
       date: formatAppointmentWallclock(appointmentDate, tenantTz),
-      duration: selectedService?.duration || 60,
-      price: selectedService?.price || '0',
       status: 'scheduled',
+      lines: formData.serviceLines,
     })
   }
 
@@ -379,9 +464,9 @@ export default function AgendaScreen() {
   const availability = useAvailabilityCheck({
     employeeId: formData.employeeId,
     startDate: candidateStartDate,
-    durationMinutes: selectedService?.duration || 60,
+    durationMinutes: formTotals.totalDuration || 60,
     timeZone: tenantTz,
-    enabled: modalVisible && !!formData.employeeId && !!formData.serviceId,
+    enabled: modalVisible && !!formData.employeeId && formData.serviceLines.length > 0,
     staleTimeMs: 30_000,
   })
 
@@ -433,23 +518,20 @@ export default function AgendaScreen() {
   const openNewAppointmentForStaff = useCallback(() => {
     const primeraHora =
       agendaHours.find((h) =>
-        esCeldaAgendaEnHorarioLaboral(selectedDate, h, businessHoursNorm, tenantTz)
+        esCeldaAgendaEnHorarioLaboral(selectedDate, h, businessHoursNorm, tenantTz, holidayIndex)
       ) ??
       agendaHours[0] ??
       9
     setSelectedHour(primeraHora)
     setSelectedMinute(0)
     const firstCategoryId = categories[0]?.id ?? ''
-    const firstServiceInCategory = firstCategoryId
-      ? services.find((s) => s.category_id === firstCategoryId)
-      : services[0]
     setFormData({
       clientName: '',
       clientPhone: '',
       clientDocument: '',
       categoryId: firstCategoryId,
-      serviceId: firstServiceInCategory?.id ?? '',
       employeeId: profile?.employee_id ?? '',
+      serviceLines: [],
     })
     setModalVisible(true)
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
@@ -467,7 +549,7 @@ export default function AgendaScreen() {
   const openNewAppointmentQuick = useCallback(() => {
     const primeraHora =
       agendaHours.find((h) =>
-        esCeldaAgendaEnHorarioLaboral(selectedDate, h, businessHoursNorm, tenantTz)
+        esCeldaAgendaEnHorarioLaboral(selectedDate, h, businessHoursNorm, tenantTz, holidayIndex)
       ) ??
       agendaHours[0] ??
       9
@@ -475,6 +557,8 @@ export default function AgendaScreen() {
   }, [agendaHours, selectedDate, businessHoursNorm, tenantTz])
 
   const closeDetailModal = () => {
+    cancelPayMethod()
+    serviceEditor.resetEditor()
     setDetailModalVisible(false)
     setAppointmentDetail(null)
   }
@@ -482,9 +566,9 @@ export default function AgendaScreen() {
   const handleRescheduleDatePick = useCallback(
     (d: Date) => {
       setRescheduleDate(d)
-      if (!esCeldaAgendaEnHorarioLaboral(d, rescheduleHour, businessHoursNorm, tenantTz)) {
+      if (!esCeldaAgendaEnHorarioLaboral(d, rescheduleHour, businessHoursNorm, tenantTz, holidayIndex)) {
         const first = agendaHours.find((h) =>
-          esCeldaAgendaEnHorarioLaboral(d, h, businessHoursNorm, tenantTz)
+          esCeldaAgendaEnHorarioLaboral(d, h, businessHoursNorm, tenantTz, holidayIndex)
         )
         if (first !== undefined) setRescheduleHour(first)
       }
@@ -552,6 +636,8 @@ export default function AgendaScreen() {
         onChangeDay={changeDay}
         onGoToToday={goToToday}
       />
+
+      <HolidayAlertBanner embedded={false} />
 
       {authLoading ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -777,8 +863,8 @@ export default function AgendaScreen() {
         employeesLoading={employeesLoading}
         employeesError={employeesError}
         employees={employees}
-        selectedService={selectedService}
-        selectedEmployee={selectedEmployee}
+        packs={packs}
+        packsLoading={packsLoading}
         formatDateLabel={formatDateLabel}
         onSubmit={handleCreateAppointment}
         createPending={createMutation.isPending}
@@ -794,9 +880,44 @@ export default function AgendaScreen() {
         visible={detailModalVisible}
         onClose={closeDetailModal}
         isTablet={isTablet}
-        theme={theme}
+        theme={{
+          backgroundDefault: theme.backgroundDefault,
+          backgroundSecondary: theme.backgroundSecondary,
+          border: theme.border,
+          text: theme.text,
+          textSecondary: theme.textSecondary,
+          textMuted: theme.textMuted,
+          primary: theme.primary,
+          error: theme.error,
+          success: theme.success,
+        }}
         appointment={appointmentDetail}
         services={services}
+        employees={employees}
+        categories={categories}
+        packs={packs}
+        currencySymbol={currencySymbol}
+        staffSingular={config.terminology.staffSingular}
+        editServiceLines={serviceEditor.editServiceLines}
+        setEditServiceLines={serviceEditor.setEditServiceLines}
+        svcPickerVisible={serviceEditor.svcPickerVisible}
+        svcPickerCatId={serviceEditor.svcPickerCatId}
+        setSvcPickerCatId={serviceEditor.setSvcPickerCatId}
+        svcPickerEmployeeId={serviceEditor.svcPickerEmployeeId}
+        setSvcPickerEmployeeId={serviceEditor.setSvcPickerEmployeeId}
+        pickerSelectedIds={serviceEditor.pickerSelectedIds}
+        onOpenPicker={() =>
+          serviceEditor.openSvcPicker(
+            appointmentDetail?.employee_id ?? employees[0]?.id ?? '',
+            categories
+          )
+        }
+        onClosePicker={serviceEditor.closeSvcPicker}
+        onToggleService={serviceEditor.toggleSvcInPicker}
+        onAddPack={serviceEditor.addPackToLines}
+        onSaveServices={handleSaveServices}
+        isSavingServices={updateAppointmentServicesMutation.isPending}
+        servicesLoading={detailServiceLinesQuery.isLoading}
         agendaHours={agendaHours}
         businessHours={businessHoursNorm}
         timeZone={tenantTz}
@@ -816,6 +937,13 @@ export default function AgendaScreen() {
         availabilityStatus={rescheduleAvailability.status}
         isBusy={rescheduleAvailability.isBusy}
         busyUntilLabel={rescheduleAvailability.busyUntilLabel}
+        isCompleting={isCompleting}
+        payMethodVisible={payMethodVisible}
+        pendingPayMethod={pendingPayMethod}
+        onSelectPayMethod={setPendingPayMethod}
+        onCancelPayMethod={cancelPayMethod}
+        onConfirmPayMethod={confirmCompleteWithMethod}
+        onMarkCompleted={handleMarkCompleted}
       />
 
       <AppointmentPreviewModal

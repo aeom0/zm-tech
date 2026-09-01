@@ -19,6 +19,7 @@ import {
 import type { AgendaAppointment, AgendaEmployee, AgendaService, AgendaStatusFilter } from '../types'
 import { filterAppointmentsForOwnerDay, getServiceName } from '../agendaUtils'
 import { useAgendaClockTick } from '../hooks/useAgendaClockTick'
+import { useSalonHolidays } from '@/hooks/useSalonHolidays'
 import { agendaStyles as sharedStyles } from '../agendaStyles'
 
 const HOUR_ROW_HEIGHT = 64
@@ -97,6 +98,7 @@ export function OwnerDayGrid({
   )
 
   const now = useAgendaClockTick(isTodayInTz)
+  const { holidayIndex } = useSalonHolidays(true)
 
   const dayAppointments = useMemo(
     () =>
@@ -208,7 +210,8 @@ export function OwnerDayGrid({
                       selectedDate,
                       hour,
                       businessHours,
-                      timeZone
+                      timeZone,
+                      holidayIndex
                     )
                     return (
                       <View
@@ -328,7 +331,7 @@ export function OwnerDayGrid({
                   right: 0,
                   top: nowLineTop - 1,
                   height: 2,
-                  backgroundColor: '#FF3B30',
+                  backgroundColor: theme.primary,
                   zIndex: 12,
                 }}
               />

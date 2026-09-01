@@ -4,7 +4,14 @@ import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { useActiveEmployees } from '@/screens/personal/hooks/useEmployeesData'
 
-import type { AgendaAppointment, AgendaService, AgendaServiceCategory } from '../types'
+import type {
+  AgendaAppointment,
+  AgendaAppointmentServiceLine,
+  AgendaPack,
+  AgendaPayment,
+  AgendaService,
+  AgendaServiceCategory,
+} from '../types'
 
 export function useAgendaQueries() {
   const {
@@ -62,6 +69,25 @@ export function useAgendaQueries() {
     },
   })
 
+  const {
+    data: packs = [],
+    isLoading: packsLoading,
+    error: packsError,
+  } = useQuery<AgendaPack[]>({
+    queryKey: ['packs'],
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('packs')
+        .select('id, name, description, price, service_ids, is_active')
+        .eq('is_active', true)
+        .order('name', { ascending: true })
+      if (error) throw new Error(error.message)
+      return (data ?? []) as AgendaPack[]
+    },
+  })
+
   return {
     appointments,
     isLoading,
@@ -73,6 +99,9 @@ export function useAgendaQueries() {
     services,
     servicesLoading,
     servicesError,
+    packs,
+    packsLoading,
+    packsError,
   }
 }
 
@@ -81,4 +110,43 @@ export function useServicesByCategory(services: AgendaService[], categoryId: str
     if (!categoryId) return []
     return services.filter((s) => s.category_id === categoryId)
   }, [services, categoryId])
+}
+
+/**
+ * Pagos (`payments`) de una cita puntual — se consulta solo al abrir el detalle, para
+ * evaluar el gate de abono/pago pendiente del flujo "marcar completada" (mismo patrón
+ * que useAppointmentServiceLinesQuery, scoped a un solo appointment_id).
+ */
+export function useAppointmentPaymentsQuery(appointmentId: string | null) {
+  return useQuery<AgendaPayment[]>({
+    queryKey: ['agenda_payments', appointmentId],
+    enabled: !!appointmentId,
+    staleTime: 30_000,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('payments')
+        .select('appointment_id, amount, is_abono')
+        .eq('appointment_id', appointmentId as string)
+      if (error) throw new Error(error.message)
+      return (data ?? []) as AgendaPayment[]
+    },
+  })
+}
+
+/** Líneas de `appointment_services` de una cita puntual (se consulta al abrir el detalle). */
+export function useAppointmentServiceLinesQuery(appointmentId: string | null) {
+  return useQuery<AgendaAppointmentServiceLine[]>({
+    queryKey: ['appointment_services', appointmentId],
+    enabled: !!appointmentId,
+    staleTime: 30_000,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('appointment_services')
+        .select('id, appointment_id, service_id, employee_id, pack_id, price, duration')
+        .eq('appointment_id', appointmentId as string)
+        .order('created_at', { ascending: true })
+      if (error) throw new Error(error.message)
+      return (data ?? []) as AgendaAppointmentServiceLine[]
+    },
+  })
 }

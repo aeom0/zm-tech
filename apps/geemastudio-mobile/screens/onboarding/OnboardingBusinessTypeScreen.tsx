@@ -10,7 +10,6 @@ import {
   OnboardingProgressDots,
   GradientCTAButton,
 } from '@/screens/onboarding/components'
-import { CurrencyPickerModal } from '@/screens/settings/components/CurrencyPickerModal'
 import { BorderRadius, Colors, Gradients, Onboarding, Spacing } from '@/constants/theme'
 import { useTenant } from '@/contexts/TenantContext'
 import {
@@ -20,12 +19,12 @@ import {
   fullAestheticPreset,
   type TenantConfig,
 } from '@zmtech/tenant-config'
-import { MONEDAS_LATAM, type Moneda } from '@/screens/settings/constants'
 
 type BusinessType = TenantConfig['businessType']
 
 interface OnboardingBusinessTypeScreenProps {
   onNext: () => void
+  onBack?: () => void
 }
 
 function hexToRgba(hex: string, alpha: number): string {
@@ -105,6 +104,7 @@ const SUBTYPES: Partial<Record<BusinessType, SubtypeOpcion[]>> = {
 
 export default function OnboardingBusinessTypeScreen({
   onNext,
+  onBack,
 }: OnboardingBusinessTypeScreenProps) {
   const { config, updateTenant } = useTenant()
 
@@ -112,11 +112,6 @@ export default function OnboardingBusinessTypeScreen({
   // El usuario selecciona el tipo y luego presiona "Continuar".
   const [tipoSeleccionado, setTipoSeleccionado] = useState<BusinessType>(config.businessType)
   const [selectedSubtype, setSelectedSubtype] = useState<TenantConfig['businessSubtype']>(undefined)
-  /** Moneda: solo memoria local hasta Continuar (el modal no llama updateTenant). */
-  const [monedaCode, setMonedaCode] = useState(config.locale.currency.code)
-  const [modalMonedaVisible, setModalMonedaVisible] = useState(false)
-
-  const monedaActual = MONEDAS_LATAM.find((m) => m.code === monedaCode) ?? MONEDAS_LATAM[0]
 
   useEffect(() => {
     setSelectedSubtype(undefined)
@@ -135,24 +130,24 @@ export default function OnboardingBusinessTypeScreen({
       terminology: tipo.preset.terminology,
       businessHours: tipo.preset.businessHours,
       commissions: tipo.preset.commissions,
-      locale: {
-        ...config.locale,
-        currency: { code: monedaActual.code, symbol: monedaActual.symbol },
-      },
+      // Conserva locale del paso País (no pisar country/currency/timezone)
+      locale: config.locale,
     })
     onNext()
-  }
-
-  const onSeleccionarMoneda = (moneda: Moneda) => {
-    setMonedaCode(moneda.code)
   }
 
   return (
     <>
       <OnboardingLayout scrollable>
+        {onBack ? (
+          <Pressable onPress={onBack} style={styles.backRow} hitSlop={8}>
+            <Feather name="chevron-left" size={22} color={Onboarding.textMuted} />
+            <ThemedText style={{ color: Onboarding.textMuted, fontSize: 14 }}>Volver</ThemedText>
+          </Pressable>
+        ) : null}
         <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
           <ThemedText style={[styles.badge, { color: Onboarding.lunarisAccent }]}>
-            PASO 1 DE 4
+            PASO 2 DE 7
           </ThemedText>
           <OnboardingProgressDots currentStep={1} />
           <ThemedText style={[styles.titulo, { color: Onboarding.text }]}>
@@ -287,31 +282,13 @@ export default function OnboardingBusinessTypeScreen({
             </Animated.View>
           ) : null}
 
-          <Animated.View entering={FadeInDown.delay(120).duration(400)} style={styles.monedaCampo}>
-            <ThemedText type="small" style={[styles.monedaLabel, { color: Onboarding.textMuted }]}>
-              Moneda
-            </ThemedText>
-            <Pressable
-              onPress={() => setModalMonedaVisible(true)}
-              style={({ pressed }) => [
-                styles.monedaSelector,
-                pressed && styles.monedaSelectorPressed,
-              ]}
-              accessibilityRole="button"
-              accessibilityLabel="Elegir moneda"
-            >
-              <View style={styles.monedaSelectorIzq}>
-                <ThemedText style={styles.monedaSelectorSymbol}>{monedaActual.symbol}</ThemedText>
-                <View style={styles.monedaSelectorTextos}>
-                  <ThemedText style={styles.monedaSelectorTitulo}>{monedaActual.nombre}</ThemedText>
-                  <ThemedText style={styles.monedaSelectorSub}>
-                    {monedaActual.pais} · {monedaActual.code}
-                  </ThemedText>
-                </View>
-              </View>
-              <Feather name="chevron-down" size={20} color={Onboarding.textMuted} />
-            </Pressable>
-          </Animated.View>
+          <ThemedText
+            type="small"
+            style={[styles.localeHint, { color: Onboarding.textMuted }]}
+          >
+            {config.locale.country} · {config.locale.currency.symbol}{' '}
+            {config.locale.currency.code}
+          </ThemedText>
         </View>
 
         {/* Botón Continuar — mismo patrón que el resto del onboarding */}
@@ -319,13 +296,6 @@ export default function OnboardingBusinessTypeScreen({
           <GradientCTAButton label="Continuar" icon="arrow-right" onPress={continuar} compact />
         </Animated.View>
       </OnboardingLayout>
-
-      <CurrencyPickerModal
-        visible={modalMonedaVisible}
-        currentCode={monedaCode}
-        onSelect={onSeleccionarMoneda}
-        onClose={() => setModalMonedaVisible(false)}
-      />
     </>
   )
 }
@@ -439,52 +409,16 @@ const styles = StyleSheet.create({
     paddingTop: Spacing.sm + 2,
     paddingBottom: Spacing.lg + Spacing.xs,
   },
-  monedaCampo: {
-    marginTop: Spacing.xs,
-  },
-  monedaLabel: {
-    fontSize: 12,
-    marginBottom: Spacing.xs + 2,
-  },
-  monedaSelector: {
+  backRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: Onboarding.chipBackground,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: Onboarding.chipBorder,
-    borderRadius: BorderRadius.card,
-    paddingHorizontal: Spacing.md + 2,
-    paddingVertical: Spacing.sm + 2,
+    alignSelf: 'flex-start',
+    marginBottom: Spacing.sm,
+    gap: 2,
   },
-  monedaSelectorPressed: {
-    opacity: 0.88,
-  },
-  monedaSelectorIzq: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing.md,
-    flex: 1,
-    minWidth: 0,
-  },
-  monedaSelectorTextos: {
-    flex: 1,
-    minWidth: 0,
-  },
-  monedaSelectorSymbol: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: Onboarding.text,
-    minWidth: 32,
-  },
-  monedaSelectorTitulo: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Onboarding.text,
-  },
-  monedaSelectorSub: {
+  localeHint: {
     fontSize: 12,
-    color: Onboarding.textSubtle,
-    marginTop: 2,
+    marginTop: Spacing.sm,
+    textAlign: 'center',
   },
 })

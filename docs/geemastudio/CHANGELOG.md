@@ -7,6 +7,22 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido (31-ago 2026 — País, feriados, Agenda multi-servicio)
+
+- **`@zmtech/tenant-config` — país + feriados**: `country-presets.ts` (`COUNTRY_PRESETS`, `localeFromCountry`); `salon-holidays.ts` (catálogos PE/VE 2026, `resolveFranjaEfectiva`, alerts); `esCeldaAgendaEnHorarioLaboral` / `esInstanteEnHorarioLaboral` / `diaTieneFranjaAgenda` aceptan `SalonHolidayIndex` opcional. `locale.language` ampliado (`es-AR` | `es-CL` | `es-MX`).
+- **BD — `salon_holidays`**: UNIQUE `(tenant_id, date)` (migración `20260831155349`); Drizzle `salonHolidays` en `shared-schema`.
+- **Mobile — onboarding país**: `OnboardingCountryScreen` (paso 1); moneda/TZ/`language` derivados del país; quita selector de moneda del tipo de negocio; Settings con `CountryPickerModal` (+ moneda como override).
+- **Mobile — feriados**: `useSalonHolidays` (auto-seed por `locale.country` si vacío); `FeriadosScreen` (CRUD + recargar nacionales); `HolidayAlertBanner` en Dashboard y Agenda; Agenda respeta franja de feriado/cerrado.
+- **Mobile — Agenda**: editar servicios/packs en cita existente (`SvcPickerContent`, `useAppointmentServiceEditor`, `updateAppointmentServicesMutation`); marcar completada; línea “ahora” con `theme.primary`.
+- **Mobile — UX**: `ScrollFadeRow` con flechas en scrolls horizontales; `OtaUpdateOverlay` + `useExpoOTAOnLaunch` (paridad ZM).
+- **Diseño**: `docs/geemastudio/design/onboarding.pen` alineado a tokens Lunaris + frame `1-Pais`.
+
+### Corregido (31-ago 2026 — Onboarding: banderas SVG + contador de pasos)
+
+- **Mobile — banderas de país**: los badges de texto (código ISO) del onboarding y `CountryPickerModal` (introducidos para cumplir la regla de "sin emojis Unicode") se reemplazan por banderas SVG reales vía nuevo componente `components/CountryFlag.tsx` (paquete `country-flag-icons` + `react-native-svg-transformer` en `metro.config.js`); mantiene el look visual original sin usar emoji Unicode.
+- **Mobile — contador "PASO X DE Y" desalineado**: al insertarse `OnboardingCountryScreen` como nuevo paso 1, el texto quedó en "DE 5" (o "DE 4" en pantallas más viejas) y `OnboardingProgressDots` recibía `currentStep` 1-indexado contra un componente 0-indexado (`TOTAL_STEPS = 7`), desalineando el dot activo y colapsando Auth/Complete en el mismo punto. Corregido: las 7 pantallas del wizard (País → Tipo de negocio → Datos básicos → Equipo → Servicios → Auth → Completado) ahora pasan `currentStep` 0-indexado (0–6) y los textos dicen "PASO N DE 7".
+- **Diseño — `onboarding.pen`**: banderas de emoji reemplazadas por SVG generados (Venezuela, Perú, Colombia, México) en el frame `1-Pais`; ícono genérico ("droplets") desalineado eliminado; pantallas reordenadas 0-Entry → 1-Pais → 2-BusinessType → … → 7-Complete; textos "PASO X DE Y" alineados a "DE 7" en las 5 pantallas del wizard que los muestran.
+
 ### Corregido (31-ago 2026 — Agenda: feedback de nueva cita y reprogramación)
 
 - **Mobile — Agenda**: badge de citas centrado sobre el avatar (antes desalineado); FAB de nueva cita restyled a color del tenant + solo ícono; `ScrollFadeRow` (`components/ScrollFadeRow.tsx`) con flechas táctiles (`showArrows`/`arrowColor`) aplicado a las filas de chips de fecha/hora/minuto en `NewAppointmentModal` y `AppointmentDetailModal`; texto prominente "Hora seleccionada" al reprogramar; selector de minutos (0/15/30/45) agregado al modal de detalle/reprogramación, antes solo disponible al crear cita.

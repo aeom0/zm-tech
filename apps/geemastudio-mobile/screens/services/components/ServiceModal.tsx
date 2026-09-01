@@ -14,6 +14,7 @@ import { Feather } from '@expo/vector-icons'
 import * as Haptics from 'expo-haptics'
 
 import { ThemedText } from '@/components/ThemedText'
+import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { BorderRadius, Spacing, Colors } from '@/constants/theme'
@@ -130,9 +131,9 @@ export function ServiceModal({
             <ThemedText style={[styles.label, { color: theme.textSecondary }]}>
               Categoría
             </ThemedText>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
+            <ScrollFadeRow
+              backgroundColor={theme.backgroundDefault}
+              arrowColor={theme.textSecondary}
               style={styles.chipsScroll}
             >
               {categories.map((c) => {
@@ -156,7 +157,7 @@ export function ServiceModal({
                   </Pressable>
                 )
               })}
-            </ScrollView>
+            </ScrollFadeRow>
 
             <View style={styles.row}>
               <View style={styles.half}>

@@ -1,8 +1,9 @@
 import React from 'react'
-import { ScrollView, View, Pressable } from 'react-native'
+import { View, Pressable, ScrollView } from 'react-native'
 import { Image } from 'expo-image'
 
 import { ThemedText } from '@/components/ThemedText'
+import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { Spacing } from '@/constants/theme'
 
 import type { AgendaEmployee } from '../types'
@@ -17,7 +18,9 @@ interface OwnerStaffAvatarStripProps {
     textMuted: string
     border: string
     backgroundSecondary: string
+    backgroundRoot: string
     primary: string
+    textSecondary: string
   }
   columnWidth: number
   scrollRef?: React.RefObject<ScrollView>
@@ -42,10 +45,10 @@ export function OwnerStaffAvatarStrip({
   if (employees.length === 0) return null
 
   return (
-    <ScrollView
+    <ScrollFadeRow
       ref={scrollRef}
-      horizontal
-      showsHorizontalScrollIndicator={false}
+      backgroundColor={theme.backgroundRoot}
+      arrowColor={theme.textSecondary}
       scrollEventThrottle={16}
       onScroll={onScroll ? (e) => onScroll(e.nativeEvent.contentOffset.x) : undefined}
       style={{ flexGrow: 0, flexShrink: 0 }}
@@ -155,6 +158,6 @@ export function OwnerStaffAvatarStrip({
           </Pressable>
         )
       })}
-    </ScrollView>
+    </ScrollFadeRow>
   )
 }
