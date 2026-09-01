@@ -47,8 +47,8 @@ export default function OnboardingTeamScreen({ onNext, onBack }: OnboardingTeamS
   return (
     <OnboardingLayout scrollable>
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
-        <ThemedText style={styles.badge}>PASO 4 DE 5</ThemedText>
-        <OnboardingProgressDots currentStep={4} />
+        <ThemedText style={styles.badge}>PASO 4 DE 7</ThemedText>
+        <OnboardingProgressDots currentStep={3} />
         <ThemedText style={styles.titulo}>Agrega tu primer {staffLabel}</ThemedText>
         <ThemedText style={styles.subtitulo}>Puedes agregar más después de configurar.</ThemedText>
       </Animated.View>

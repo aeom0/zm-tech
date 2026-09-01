@@ -147,9 +147,9 @@ export default function OnboardingBusinessTypeScreen({
         ) : null}
         <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
           <ThemedText style={[styles.badge, { color: Onboarding.lunarisAccent }]}>
-            PASO 2 DE 5
+            PASO 2 DE 7
           </ThemedText>
-          <OnboardingProgressDots currentStep={2} />
+          <OnboardingProgressDots currentStep={1} />
           <ThemedText style={[styles.titulo, { color: Onboarding.text }]}>
             ¿Qué tipo de negocio tienes?
           </ThemedText>

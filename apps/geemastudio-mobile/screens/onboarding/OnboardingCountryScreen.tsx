@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
+import { CountryFlag } from '@/components/CountryFlag'
 import {
   OnboardingLayout,
   OnboardingProgressDots,
@@ -49,14 +50,16 @@ export default function OnboardingCountryScreen({
   const featured = paises.find((p) => p.featured) ?? paises[0]
   const otros = paises.filter((p) => p.code !== featured?.code)
 
-  const [seleccionado, setSeleccionado] = useState(
-    (config.locale.country as CountryPreset['code']) || featured.code
-  )
+  const [seleccionado, setSeleccionado] = useState(() => {
+    const actual = config.locale.country
+    const esValido = actual && paises.some((p) => p.code === actual)
+    return (esValido ? actual : featured.code) as CountryPreset['code']
+  })
 
   const presetActual = paises.find((p) => p.code === seleccionado) ?? featured
 
   const continuar = async () => {
-    const locale = localeFromCountry(seleccionado)
+    const locale = localeFromCountry(seleccionado) ?? localeFromCountry(featured.code)
     if (!locale) return
     await updateTenant({ locale })
     onNext()
@@ -73,9 +76,9 @@ export default function OnboardingCountryScreen({
 
       <Animated.View entering={FadeInDown.duration(400)} style={styles.header}>
         <ThemedText style={[styles.badge, { color: Onboarding.lunarisAccent }]}>
-          PASO 1 DE 5
+          PASO 1 DE 7
         </ThemedText>
-        <OnboardingProgressDots currentStep={1} />
+        <OnboardingProgressDots currentStep={0} />
         <ThemedText style={[styles.titulo, { color: Onboarding.text }]}>
           ¿Desde dónde operas?
         </ThemedText>
@@ -98,8 +101,13 @@ export default function OnboardingCountryScreen({
               style={styles.featuredBorder}
             >
               <View style={[styles.featuredInner, { backgroundColor: Onboarding.cardBackground }]}>
-                <ThemedText style={styles.flagGrande}>{featured.flag}</ThemedText>
-                <ThemedText style={[styles.featuredLabel, { color: Onboarding.text }]}>
+                <CountryFlag
+                  code={featured.code}
+                  width={76}
+                  borderRadius={16}
+                  borderColor={Gradients.onboarding.start}
+                />
+                <ThemedText style={[styles.featuredLabel, { color: Onboarding.text, marginTop: Spacing.sm }]}>
                   {featured.label}
                 </ThemedText>
                 <ThemedText style={[styles.featuredSub, { color: Onboarding.lunarisAccent }]}>
@@ -118,8 +126,13 @@ export default function OnboardingCountryScreen({
                 },
               ]}
             >
-              <ThemedText style={styles.flagGrande}>{featured.flag}</ThemedText>
-              <ThemedText style={[styles.featuredLabel, { color: Onboarding.text }]}>
+              <CountryFlag
+                code={featured.code}
+                width={76}
+                borderRadius={16}
+                borderColor={Onboarding.border}
+              />
+              <ThemedText style={[styles.featuredLabel, { color: Onboarding.text, marginTop: Spacing.sm }]}>
                 {featured.label}
               </ThemedText>
               <ThemedText style={[styles.featuredSub, { color: Onboarding.textMuted }]}>
@@ -154,7 +167,12 @@ export default function OnboardingCountryScreen({
                   },
                 ]}
               >
-                <ThemedText style={styles.flagPeq}>{pais.flag}</ThemedText>
+                <CountryFlag
+                  code={pais.code}
+                  width={44}
+                  borderRadius={10}
+                  borderColor={activo ? Gradients.onboarding.start : Onboarding.border}
+                />
                 <ThemedText
                   style={[styles.paisLabel, { color: Onboarding.text }]}
                   numberOfLines={2}
@@ -169,7 +187,7 @@ export default function OnboardingCountryScreen({
 
       <View style={styles.footer}>
         <ThemedText style={[styles.hint, { color: Onboarding.textMuted }]}>
-          {presetActual.flag} {presetActual.label} · {presetActual.currency.symbol}{' '}
+          {presetActual.label} · {presetActual.currency.symbol}{' '}
           {presetActual.currency.code}
         </ThemedText>
         <GradientCTAButton label="Continuar →" onPress={continuar} />
@@ -225,10 +243,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: Spacing.lg,
   },
-  flagGrande: {
-    fontSize: 52,
-    marginBottom: Spacing.sm,
-  },
   featuredLabel: {
     fontSize: 22,
     fontWeight: '700',
@@ -265,9 +279,6 @@ const styles = StyleSheet.create({
     minHeight: 88,
     justifyContent: 'center',
     gap: 6,
-  },
-  flagPeq: {
-    fontSize: 28,
   },
   paisLabel: {
     fontSize: 13,

@@ -7,7 +7,7 @@ import { Gradients } from '@/constants/theme'
 const TOTAL_STEPS = 7
 
 interface OnboardingProgressDotsProps {
-  /** 0–6 (entrada sin dots = no se usa 0 en pantallas con pasos del wizard). */
+  /** 0–6, índice del paso activo (0 = País, ..., 6 = Completado). */
   currentStep: number
 }
 

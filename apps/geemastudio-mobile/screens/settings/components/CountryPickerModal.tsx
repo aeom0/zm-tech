@@ -4,6 +4,7 @@ import { Feather } from '@expo/vector-icons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { ThemedText } from '@/components/ThemedText'
+import { CountryFlag } from '@/components/CountryFlag'
 import { useTheme } from '@/hooks/useTheme'
 import { BorderRadius, Spacing } from '@/constants/theme'
 import { countriesForPicker, type CountryPreset } from '@zmtech/tenant-config'
@@ -63,7 +64,12 @@ export function CountryPickerModal({
                     onClose()
                   }}
                 >
-                  <ThemedText style={styles.flag}>{item.flag}</ThemedText>
+                  <CountryFlag
+                    code={item.code}
+                    width={40}
+                    borderRadius={9}
+                    borderColor={selected ? theme.primary : theme.border}
+                  />
                   <View style={styles.texts}>
                     <ThemedText style={[styles.name, { color: theme.text }]}>{item.label}</ThemedText>
                     <ThemedText style={[styles.sub, { color: theme.textMuted }]}>
@@ -113,7 +119,6 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     marginBottom: Spacing.sm,
   },
-  flag: { fontSize: 28 },
   texts: { flex: 1 },
   name: { fontSize: 15, fontWeight: '600' },
   sub: { fontSize: 12, marginTop: 2 },
