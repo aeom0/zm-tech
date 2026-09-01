@@ -55,6 +55,7 @@ export function usePendingBadgeCount() {
         .from('appointments')
         .select('id', { count: 'exact', head: true })
         .not('reference_image_paths', 'is', null)
+        .not('reference_image_paths', 'eq', '{}')
         .is('reference_reviewed_at', null)
       if (error) throw new Error(error.message)
       return count ?? 0
