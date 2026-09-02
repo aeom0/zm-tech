@@ -60,6 +60,16 @@ Plan 03 — brief del audit de paridad (solo lectura): ZM Lash = referencia func
 
 Migración Geema + suite WABA multi-vertical: estado actual, bloqueadores, estandarización barbería/peluquería/spa, roadmap por sprints. **Fuente canónica:** `ZM-Lash-and-Nails-Beauty/docs/plans/geema-migration/` — sincronizar con `yarn sync:geema-migration-docs` (desde ZM) o [SYNC.md](plans/geema-migration/SYNC.md).
 
+### Look Preview (espejo desde ZM, 02-sep-2026)
+
+| Doc | Tema |
+|-----|------|
+| [plans/06-PLAN-preview-virtual-extensiones-ctwa.md](plans/06-PLAN-preview-virtual-extensiones-ctwa.md) | Spike Vertex + piloto Extensiones |
+| [plans/07-PLAN-look-preview-multi-servicio.md](plans/07-PLAN-look-preview-multi-servicio.md) | Producto multi-servicio `look-preview` + Culqi |
+| [plans/07-anexo-prompts-vertex-v1.md](plans/07-anexo-prompts-vertex-v1.md) | 23 prompts VERTEX_READY |
+
+Port a Geema: ticket **S6-LP** tras MVP ZM (Fase B Culqi).
+
 ### [Audit 03 — paridad](../../audit/03-AUDIT-paridad-zmlash-geema.md)
 
 Resultado del audit: matriz feature × superficie, gaps críticos P0–P2, sección “No portar”.
