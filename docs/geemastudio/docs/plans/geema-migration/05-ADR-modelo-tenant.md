@@ -25,11 +25,11 @@ Ambos repos comparten **una BD** (`udelxwwnyivknslueerr`). Sin puente, cada feat
 tenant_settings.tenant_slug text NOT NULL UNIQUE REFERENCES tenants(id)
 ```
 
-| Rol                      | Tabla                         | PK                | Uso                                                                 |
-| ------------------------ | ----------------------------- | ----------------- | ------------------------------------------------------------------- |
-| Aislamiento operativo    | `tenants`                     | `text`            | `profiles.tenant_id`, `clients`, `appointments`, `waba_config`, JWT |
-| Config SaaS / onboarding | `tenant_settings`             | `uuid`            | Horarios UI, terminología, landing, WABA tokens Geema (futuro)      |
-| Puente                   | `tenant_settings.tenant_slug` | FK → `tenants.id` | 1:1 por negocio                                                     |
+| Rol | Tabla | PK | Uso |
+|-----|-------|-----|-----|
+| Aislamiento operativo | `tenants` | `text` | `profiles.tenant_id`, `clients`, `appointments`, `waba_config`, JWT |
+| Config SaaS / onboarding | `tenant_settings` | `uuid` | Horarios UI, terminología, landing, WABA tokens Geema (futuro) |
+| Puente | `tenant_settings.tenant_slug` | FK → `tenants.id` | 1:1 por negocio |
 
 **Reglas:**
 
@@ -58,11 +58,11 @@ tenant_settings.tenant_slug text NOT NULL UNIQUE REFERENCES tenants(id)
 
 ## Alternativas descartadas
 
-| Opción                                          | Por qué no                                             |
-| ----------------------------------------------- | ------------------------------------------------------ |
-| Reemplazar `tenants.text` por UUID en 27 tablas | Migración masiva; riesgo prod Vanessa                  |
-| Solo `tenant_settings` sin `tenants`            | Plan 02 A/B/C ya en prod con text PK                   |
-| Status quo sin `tenant_settings` en BD ZM       | Geema no puede persistir onboarding en shared Supabase |
+| Opción | Por qué no |
+|--------|------------|
+| Reemplazar `tenants.text` por UUID en 27 tablas | Migración masiva; riesgo prod Vanessa |
+| Solo `tenant_settings` sin `tenants` | Plan 02 A/B/C ya en prod con text PK |
+| Status quo sin `tenant_settings` en BD ZM | Geema no puede persistir onboarding en shared Supabase |
 
 ---
 
@@ -78,24 +78,24 @@ tenant_settings.tenant_slug text NOT NULL UNIQUE REFERENCES tenants(id)
 
 ### País: sin tabla `countries` (por ahora)
 
-**Decisión (actualizada 31-ago 2026):** clasificar tenants con `tenant_settings.country` (ISO 3166-1 alpha-2). Catálogo en código: `COUNTRY_PRESETS` en `@zmtech/tenant-config` (onboarding + Settings). Sin tabla SQL `countries` hasta admin multi-tenant lo pida.
+**Decisión:** clasificar tenants con `tenant_settings.country` (ISO 3166-1 alpha-2, ej. `PE`). No crear catálogo `countries` hasta onboarding multi-país o defaults compartidos entre muchos tenants.
 
-| Necesidad                                    | Dónde                                                       |
-| -------------------------------------------- | ----------------------------------------------------------- |
-| Etiqueta / filtro admin                      | `tenant_settings.country`                                   |
-| TZ + moneda + language defaults              | `localeFromCountry` / `COUNTRY_PRESETS` → columnas locale   |
-| Defaults al crear tenant                     | Onboarding paso País + presets `@zmtech/tenant-config`      |
-| Feriados nacionales                          | Catálogos PE/VE en `salon-holidays.ts` → filas `salon_holidays` por `tenant_id` (auto-seed) |
+| Necesidad | Dónde |
+|-----------|--------|
+| Etiqueta / filtro admin | `tenant_settings.country` |
+| TZ + moneda del local | `timezone`, `currency_code`, `currency_symbol` (misma fila) |
+| Defaults al crear tenant | presets `@zmtech/tenant-config` + defaults de columna |
+| Reglas gordas (feriados, impuestos, RUC/RUT) | Futuro: pack por país en código/JSON — no bloquear hoy |
 
 **No** añadir `country_id` a `appointments` / `clients` (se deriva del tenant).  
-**Diferido:** tabla `countries` + FK; copy dialecto/voseo (AR/CL); particionamiento por país.
+**Diferido:** tabla `countries` + FK; particionamiento por país; `CHECK` ISO (opcional cuando haya 2.º país).
 
 ### Citas: wallclock del tenant ≠ “todo UTC”
 
-| Columna / uso                                | Semántica                                                                                                               |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `appointments.date`                          | `timestamp without time zone` = **hora de pared** en IANA del tenant (`America/Lima` para ZM). No interpretar como UTC. |
-| `reference_received_at`, verifications, etc. | `timestamptz` → instante absoluto (UTC en almacenamiento).                                                              |
+| Columna / uso | Semántica |
+|---------------|-----------|
+| `appointments.date` | `timestamp without time zone` = **hora de pared** en IANA del tenant (`America/Lima` para ZM). No interpretar como UTC. |
+| `reference_received_at`, verifications, etc. | `timestamptz` → instante absoluto (UTC en almacenamiento). |
 
 Al expandir a otro país: cada tenant escribe wallclock en **su** timezone configurado; el cliente convierte con `tenant_settings.timezone`, no con el TZ del teléfono del dueño.
 
