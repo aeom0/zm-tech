@@ -97,6 +97,7 @@ export interface PackRawRow {
   category_id?: string | null
   service_ids?: unknown
   is_active: boolean
+  emoji?: string | null
 }
 
 export function rowToPack(row: PackRawRow, dialect: CatalogDialect): Pack {
@@ -110,6 +111,7 @@ export function rowToPack(row: PackRawRow, dialect: CatalogDialect): Pack {
       is_active: row.is_active,
       category_id: row.category_id ?? null,
       pack_price_card: row.pack_price_card != null ? String(row.pack_price_card) : null,
+      badge: row.emoji ?? null,
     }
   }
   return {
@@ -119,6 +121,7 @@ export function rowToPack(row: PackRawRow, dialect: CatalogDialect): Pack {
     price: row.price != null ? String(row.price) : '0.00',
     service_ids: parseServiceIds(row.service_ids),
     is_active: row.is_active,
+    badge: row.emoji ?? null,
   }
 }
 

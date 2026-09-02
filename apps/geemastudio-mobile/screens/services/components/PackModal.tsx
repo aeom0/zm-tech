@@ -14,12 +14,15 @@ import { Feather } from '@expo/vector-icons'
 import * as Haptics from 'expo-haptics'
 
 import { ThemedText } from '@/components/ThemedText'
+import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { BorderRadius, Spacing, Colors } from '@/constants/theme'
 
 import type { Pack, Service, ServiceCategory } from '../types'
 import type { PackPayload } from '../hooks/usePacksData'
+
+const BADGE_PRESETS = ['✨', '💅', '👑', '🪷', '👁️', '💜', '🌟', '💝', '🎁']
 
 interface PackModalProps {
   visible: boolean
@@ -52,6 +55,7 @@ export function PackModal({
   const [price, setPrice] = useState('')
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [isActive, setIsActive] = useState(true)
+  const [badge, setBadge] = useState('✨')
 
   useEffect(() => {
     if (!visible) {
@@ -63,12 +67,14 @@ export function PackModal({
       setPrice(editing.price)
       setSelected(new Set(editing.service_ids ?? []))
       setIsActive(editing.is_active)
+      setBadge(editing.badge?.trim() || '✨')
     } else {
       setName('')
       setDescription('')
       setPrice('')
       setSelected(new Set())
       setIsActive(true)
+      setBadge('✨')
     }
   }, [visible, editing])
 
@@ -120,6 +126,7 @@ export function PackModal({
       service_ids: Array.from(selected),
       is_active: isActive,
       category_id: inferCategoryId(),
+      badge: badge.trim() || null,
     }
     onSave(payload)
   }
@@ -195,6 +202,29 @@ export function PackModal({
               value={price}
               onChangeText={setPrice}
             />
+
+            <ThemedText style={[styles.label, { color: theme.textSecondary }]}>Emoji</ThemedText>
+            <ScrollFadeRow
+              backgroundColor={theme.backgroundDefault}
+              arrowColor={theme.textSecondary}
+              style={styles.presets}
+            >
+              {BADGE_PRESETS.map((em) => (
+                <Pressable
+                  key={em}
+                  style={[
+                    styles.presetChip,
+                    {
+                      borderColor: theme.border,
+                      backgroundColor: badge === em ? theme.primary + '22' : 'transparent',
+                    },
+                  ]}
+                  onPress={() => setBadge(em)}
+                >
+                  <ThemedText style={{ fontSize: 22 }}>{em}</ThemedText>
+                </Pressable>
+              ))}
+            </ScrollFadeRow>
 
             <ThemedText style={[styles.label, { color: theme.textSecondary }]}>
               Servicios incluidos
@@ -312,6 +342,19 @@ const styles = StyleSheet.create({
     minHeight: 80,
     paddingTop: Spacing.md,
     textAlignVertical: 'top',
+  },
+  presets: {
+    flexGrow: 0,
+    marginBottom: Spacing.sm,
+  },
+  presetChip: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: Spacing.sm,
   },
   group: {
     marginBottom: Spacing.md,

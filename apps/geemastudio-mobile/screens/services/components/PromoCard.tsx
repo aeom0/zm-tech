@@ -5,7 +5,7 @@ import { Feather } from '@expo/vector-icons'
 import { ThemedText } from '@/components/ThemedText'
 import type { TenantConfig } from '@zmtech/tenant-config'
 import { formatCurrency } from '@/utils/format'
-import { Shadows } from '@/constants/theme'
+import { Shadows, Spacing } from '@/constants/theme'
 
 import type { Promo } from '../types'
 
@@ -59,6 +59,13 @@ export function PromoCard({
   const badge = (promo.badge ?? '✨').trim() || '✨'
   const accent = promo.accent_color?.trim() || theme.primary
 
+  let daysLeft: number | null = null
+  if (promo.expires_at) {
+    const diff = new Date(promo.expires_at).getTime() - Date.now()
+    daysLeft = Math.ceil(diff / (1000 * 60 * 60 * 24))
+  }
+  const expiringSoon = daysLeft !== null && daysLeft <= 7
+
   return (
     <View
       style={[
@@ -89,7 +96,7 @@ export function PromoCard({
             </ThemedText>
           </View>
           <View style={styles.priceCol}>
-            <ThemedText style={[styles.promoPrice, { color: theme.accent }]}>
+            <ThemedText style={[styles.promoPrice, { color: theme.accent }]} numberOfLines={1}>
               {formatCurrency(amount, config)}
             </ThemedText>
             <ThemedText
@@ -104,6 +111,25 @@ export function PromoCard({
             </ThemedText>
           </View>
         </View>
+        {expiringSoon && (
+          <View style={styles.expiryRow}>
+            <Feather
+              name="clock"
+              size={12}
+              color={daysLeft !== null && daysLeft <= 2 ? theme.error : theme.textMuted}
+            />
+            <ThemedText
+              style={[
+                styles.expiryText,
+                { color: daysLeft !== null && daysLeft <= 2 ? theme.error : theme.textMuted },
+              ]}
+            >
+              {daysLeft !== null && daysLeft <= 0
+                ? 'Vence hoy'
+                : `Vence en ${daysLeft} día${daysLeft !== 1 ? 's' : ''}`}
+            </ThemedText>
+          </View>
+        )}
       </Pressable>
       {onToggleActive && (
         <Pressable style={styles.toggleRow} onPress={onToggleActive} disabled={isToggling}>
@@ -167,11 +193,21 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   promoPrice: {
-    fontSize: 17,
+    fontSize: 20,
     fontWeight: '700',
     marginBottom: 4,
   },
   statusPill: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  expiryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: Spacing.xs,
+  },
+  expiryText: {
     fontSize: 11,
     fontWeight: '600',
   },

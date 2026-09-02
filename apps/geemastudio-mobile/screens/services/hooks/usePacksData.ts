@@ -19,11 +19,13 @@ export interface PackPayload {
   is_active: boolean
   /** Requerido solo en dialecto ZM (packs.category_id NOT NULL). */
   category_id?: string | null
+  /** Emoji del pack (sticker visual en la card). */
+  badge: string | null
 }
 
 const GEEMA_SELECT = 'id, name, description, price, service_ids, is_active'
 const ZM_SELECT =
-  'id, title, description, pack_price, pack_price_card, category_id, service_ids, is_active, display_order'
+  'id, title, description, pack_price, pack_price_card, category_id, service_ids, is_active, display_order, emoji'
 
 export function usePacksData() {
   const queryClient = useQueryClient()
@@ -67,7 +69,7 @@ export function usePacksData() {
           service_ids: serializeServiceIds(payload.service_ids, dialect),
           category_id: payload.category_id,
           is_active: payload.is_active,
-          emoji: '✨',
+          emoji: payload.badge?.trim() || '✨',
           badge: 'PACK',
         })
         if (error) {
@@ -110,6 +112,7 @@ export function usePacksData() {
             service_ids: serializeServiceIds(payload.service_ids, dialect),
             category_id: payload.category_id,
             is_active: payload.is_active,
+            emoji: payload.badge?.trim() || '✨',
           })
           .eq('id', id)
         if (error) {

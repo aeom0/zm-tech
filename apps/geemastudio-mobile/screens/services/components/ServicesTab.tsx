@@ -191,6 +191,7 @@ export function ServicesTab() {
           backgroundColor={theme.backgroundRoot}
           arrowColor={theme.textSecondary}
           contentContainerStyle={styles.filterChips}
+          style={styles.filterScroll}
         >
           <Pressable
             style={[
@@ -235,16 +236,15 @@ export function ServicesTab() {
         </ScrollFadeRow>
         {isAdmin && (
           <Pressable
-            style={[styles.manageBtn, { borderColor: theme.border }]}
+            style={[styles.manageIconBtn, { borderColor: theme.border }]}
             onPress={() => {
               setCategoriesModalVisible(true)
               void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
             }}
+            hitSlop={8}
+            accessibilityLabel="Gestionar categorías"
           >
-            <Feather name="folder" size={16} color={theme.primary} />
-            <ThemedText style={{ color: theme.primary, fontWeight: '600' }}>
-              Gestionar categorías
-            </ThemedText>
+            <Feather name="folder" size={18} color={theme.primary} />
           </Pressable>
         )}
       </View>
@@ -365,8 +365,14 @@ export function ServicesTab() {
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   filterBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: Spacing.lg,
     paddingBottom: Spacing.md,
+    gap: Spacing.sm,
+  },
+  filterScroll: {
+    flex: 1,
   },
   filterChips: {
     gap: Spacing.sm,
@@ -383,16 +389,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  manageBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    alignSelf: 'flex-start',
-    marginTop: Spacing.md,
-    paddingVertical: Spacing.sm,
-    paddingHorizontal: Spacing.md,
+  manageIconBtn: {
+    width: 36,
+    height: 36,
     borderRadius: BorderRadius.full,
     borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   scroll: { flex: 1 },
   empty: {

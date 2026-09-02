@@ -38,6 +38,8 @@ export function PackCard({
   const n = parseFloat(pack.price)
   const amount = Number.isFinite(n) ? n : 0
   const count = pack.service_ids?.length ?? 0
+  const accentColor = theme.accent
+  const badge = pack.badge?.trim()
 
   return (
     <View
@@ -56,6 +58,18 @@ export function PackCard({
         onLongPress={onLongPress}
       >
         <View style={styles.row}>
+          <View
+            style={[
+              styles.iconCircle,
+              { backgroundColor: accentColor + '22', borderColor: accentColor + '55' },
+            ]}
+          >
+            {badge ? (
+              <ThemedText style={styles.badgeEmoji}>{badge}</ThemedText>
+            ) : (
+              <Feather name="package" size={18} color={accentColor} />
+            )}
+          </View>
           <View style={styles.info}>
             <ThemedText style={styles.name}>{pack.name}</ThemedText>
             <View style={styles.meta}>
@@ -71,7 +85,7 @@ export function PackCard({
               )}
             </View>
           </View>
-          <ThemedText style={[styles.price, { color: theme.accent }]}>
+          <ThemedText style={[styles.price, { color: theme.accent }]} numberOfLines={1}>
             {formatCurrency(amount, config)}
           </ThemedText>
         </View>
@@ -111,6 +125,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  iconCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  badgeEmoji: {
+    fontSize: 18,
+  },
   info: {
     flex: 1,
     marginRight: 12,
@@ -135,7 +161,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   price: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
   },
   toggleRow: {

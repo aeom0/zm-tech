@@ -52,7 +52,6 @@ export function ServiceCard({
         {
           backgroundColor: theme.backgroundDefault,
           borderColor: theme.border,
-          borderLeftColor: accentColor,
           opacity: service.is_active ? 1 : 0.65,
         },
         isDragging && styles.cardDragging,
@@ -64,6 +63,14 @@ export function ServiceCard({
         onLongPress={onLongPress}
       >
         <View style={styles.row}>
+          <View
+            style={[
+              styles.iconCircle,
+              { backgroundColor: accentColor + '22', borderColor: accentColor + '55' },
+            ]}
+          >
+            <Feather name="scissors" size={18} color={accentColor} />
+          </View>
           <View style={styles.info}>
             <ThemedText style={styles.name}>{service.name}</ThemedText>
             <View style={styles.meta}>
@@ -78,7 +85,7 @@ export function ServiceCard({
               )}
             </View>
           </View>
-          <ThemedText style={[styles.price, { color: theme.accent }]}>
+          <ThemedText style={[styles.price, { color: theme.accent }]} numberOfLines={1}>
             {formatCurrency(amount, config)}
           </ThemedText>
           {drag && (
@@ -114,7 +121,6 @@ export function ServiceCard({
 const styles = StyleSheet.create({
   card: {
     borderWidth: 1,
-    borderLeftWidth: 4,
     borderRadius: 16,
     marginBottom: 8,
     overflow: 'hidden',
@@ -131,6 +137,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  iconCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
   },
   info: {
     flex: 1,
@@ -156,7 +171,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   price: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
   },
   dragHandle: {
