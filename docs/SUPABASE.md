@@ -68,9 +68,17 @@ RepMAX encaja en esa simetría sin carpeta server: las migraciones viven en `doc
 4. Variables de entorno deben apuntar al proyecto correcto del producto (ver `.env.example` de cada app).
 5. **DDL/SQL contra un proyecto real desde este entorno**: `supabase db query --linked` intenta conectar directo a Postgres (pooler) y falla por timeout — el puerto Postgres suele estar bloqueado en este sandbox. Usar en su lugar el **Management API** por HTTPS con el token de `~/.supabase/access-token`: `POST https://api.supabase.com/v1/projects/{ref}/database/query` con `{"query": "..."}` (curl). Las API keys (anon/service_role) del proyecto se obtienen con `supabase projects api-keys --project-ref <ref>`. Cambios de schema en un proyecto de producción real (como `udelxwwnyivknslueerr`) requieren confirmación explícita del usuario antes de ejecutarse — ver regla del CLAUDE.md raíz.
 
-## MCP / Cursor
+## MCP (Claude Code)
 
-- Servidor **`user-supabase-zmtech`**: ligado al hub `llacowjutjfefboqgfnj`.
-- GeemaStudio (`udelxwwnyivknslueerr`): operar con el MCP/CLI configurado para ese proyecto; no asumir el mismo server que ZMTech.
+Cada repo trae su propio `.mcp.json` en la raíz (gitignored, no se commitea). En `zm-tech`:
+
+| Server            | project_ref            | Auth                                                                     |
+| ------------------ | ---------------------- | ------------------------------------------------------------------------ |
+| `SupabaseZMTech`    | `llacowjutjfefboqgfnj` | OAuth normal (`/mcp` en sesión interactiva)                             |
+| `ClaudeSupabase`    | `udelxwwnyivknslueerr` | **PAT**, no OAuth — ver nota abajo                                       |
+
+**`udelxwwnyivknslueerr` no acepta el flujo OAuth hosted** (`mcp.supabase.com/mcp?project_ref=...`) — falla siempre con `Unrecognized client_id` o `resource: Resource must be a valid MCP endpoint`, causa nunca confirmada del lado de Supabase, específica de la org `ieuurcwqsaplycfufnmw`. Workaround: server MCP local `@supabase/mcp-server-supabase` (instalado global, binario `mcp-server-supabase` en PATH) con un Personal Access Token en la env var `SUPABASE_ZMLASH_PAT` (`~/.bashrc` del usuario) en vez de OAuth. El endpoint HTTP hosted no acepta PAT como Bearer directo — solo el server local lo soporta. Mismo workaround aplica en el repo `ZM-Lash-and-Nails-Beauty` (mismo project_ref). Detalle completo en la memoria del agente (`project_supabase_mcp_config`).
+
+Mapa completo de los 4 repos de ZM Tech ↔ MCP server ↔ project_ref vive solo en memoria del agente (no es específico de este repo). Si hace falta reconfigurar un MCP nuevo bajo la misma org rota, reusar este patrón de PAT + server local en vez de re-diagnosticar OAuth desde cero.
 
 Detalle de producto: `docs/landing/`, `docs/geemastudio/`, `docs/odentalpro/`, `docs/repmax/`.
