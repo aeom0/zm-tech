@@ -29,7 +29,7 @@ interface ServiceCardProps {
   config: TenantConfig
 }
 
-export function ServiceCard({
+function ServiceCardImpl({
   service,
   categoryColor,
   onPress,
@@ -117,6 +117,24 @@ export function ServiceCard({
     </View>
   )
 }
+
+/**
+ * Memoizado con comparador propio: en listas grandes, cada toggle/drag/filtro en
+ * ServicesTab recrea los closures onPress/onLongPress/onToggleActive/drag por item
+ * (son arrow functions inline en renderItem), lo que rompe un React.memo por defecto.
+ * Solo re-renderizamos cuando cambian los datos propios de la card, no por churn de
+ * identidad en callbacks — evita re-render de todas las cards en cada interacción.
+ */
+export const ServiceCard = React.memo(ServiceCardImpl, (prev, next) => {
+  return (
+    prev.service === next.service &&
+    prev.categoryColor === next.categoryColor &&
+    prev.isToggling === next.isToggling &&
+    prev.isDragging === next.isDragging &&
+    prev.theme === next.theme &&
+    prev.config === next.config
+  )
+})
 
 const styles = StyleSheet.create({
   card: {

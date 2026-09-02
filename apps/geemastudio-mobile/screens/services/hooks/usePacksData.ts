@@ -90,6 +90,7 @@ export function usePacksData() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['packs'] })
+      void queryClient.invalidateQueries({ queryKey: ['agenda_packs'] })
       void queryClient.invalidateQueries({ queryKey: ['promotions'] })
     },
   })
@@ -136,6 +137,7 @@ export function usePacksData() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['packs'] })
+      void queryClient.invalidateQueries({ queryKey: ['agenda_packs'] })
       void queryClient.invalidateQueries({ queryKey: ['promotions'] })
     },
   })
@@ -149,6 +151,7 @@ export function usePacksData() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['packs'] })
+      void queryClient.invalidateQueries({ queryKey: ['agenda_packs'] })
       void queryClient.invalidateQueries({ queryKey: ['promotion_items'] })
       void queryClient.invalidateQueries({ queryKey: ['promotions'] })
     },
@@ -169,6 +172,7 @@ export function usePacksData() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['packs'] })
+      void queryClient.invalidateQueries({ queryKey: ['agenda_packs'] })
     },
   })
 

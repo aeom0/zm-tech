@@ -12,7 +12,7 @@ export function useAsignarData() {
 
   // Servicios para enriquecer nombres
   const { data: services = [] } = useQuery<{ id: string; name: string }[]>({
-    queryKey: ['services'],
+    queryKey: ['asignar_services'],
     queryFn: async () => {
       const { data, error } = await supabase.from('services').select('id, name')
       if (error) throw new Error(error.message)

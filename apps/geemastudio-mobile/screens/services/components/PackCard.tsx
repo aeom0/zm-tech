@@ -26,7 +26,7 @@ interface PackCardProps {
   config: TenantConfig
 }
 
-export function PackCard({
+function PackCardImpl({
   pack,
   onPress,
   onLongPress,
@@ -107,6 +107,15 @@ export function PackCard({
     </View>
   )
 }
+
+export const PackCard = React.memo(PackCardImpl, (prev, next) => {
+  return (
+    prev.pack === next.pack &&
+    prev.isToggling === next.isToggling &&
+    prev.theme === next.theme &&
+    prev.config === next.config
+  )
+})
 
 const styles = StyleSheet.create({
   card: {

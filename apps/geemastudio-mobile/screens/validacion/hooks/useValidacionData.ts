@@ -13,7 +13,7 @@ export function useValidacionData() {
   const { data: employees = [] } = useEmployeesQuery({ staleTime: 5 * 60_000 })
 
   const { data: services = [] } = useQuery<{ id: string; name: string }[]>({
-    queryKey: ['services'],
+    queryKey: ['validacion_services'],
     queryFn: async () => {
       const { data, error } = await supabase.from('services').select('id, name')
       if (error) throw new Error(error.message)

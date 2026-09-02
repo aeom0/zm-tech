@@ -5,7 +5,7 @@ import { Feather } from '@expo/vector-icons'
 import { ThemedText } from '@/components/ThemedText'
 import type { TenantConfig } from '@zmtech/tenant-config'
 import { formatCurrency } from '@/utils/format'
-import { Shadows, Spacing } from '@/constants/theme'
+import { BorderRadius, Shadows, Spacing } from '@/constants/theme'
 
 import type { Promo } from '../types'
 
@@ -28,6 +28,12 @@ interface PromoCardProps {
   config: TenantConfig
 }
 
+const HEX_COLOR = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i
+
+function withAlpha(color: string, alpha: string): string {
+  return HEX_COLOR.test(color) ? color + alpha : color
+}
+
 function formatExpires(iso: string | null): string {
   if (!iso) {
     return 'Sin vencimiento'
@@ -44,7 +50,7 @@ function formatExpires(iso: string | null): string {
   }
 }
 
-export function PromoCard({
+function PromoCardImpl({
   promo,
   onPress,
   onLongPress,
@@ -82,10 +88,17 @@ export function PromoCard({
         onPress={onPress}
         onLongPress={onLongPress}
       >
+        <View
+          style={[
+            styles.badgePill,
+            { backgroundColor: withAlpha(accent, '22'), borderColor: withAlpha(accent, '55') },
+          ]}
+        >
+          <ThemedText style={[styles.badgeText, { color: accent }]} numberOfLines={1}>
+            {badge}
+          </ThemedText>
+        </View>
         <View style={styles.topRow}>
-          <View style={[styles.badgeWrap, { borderColor: accent + '55' }]}>
-            <ThemedText style={styles.badgeEmoji}>{badge}</ThemedText>
-          </View>
           <View style={styles.titleBlock}>
             <ThemedText style={styles.title} numberOfLines={2}>
               {promo.title}
@@ -149,6 +162,15 @@ export function PromoCard({
   )
 }
 
+export const PromoCard = React.memo(PromoCardImpl, (prev, next) => {
+  return (
+    prev.promo === next.promo &&
+    prev.isToggling === next.isToggling &&
+    prev.theme === next.theme &&
+    prev.config === next.config
+  )
+})
+
 const styles = StyleSheet.create({
   card: {
     borderWidth: 1,
@@ -166,16 +188,20 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     gap: 12,
   },
-  badgeWrap: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
+  badgePill: {
+    alignSelf: 'flex-start',
+    maxWidth: '100%',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: BorderRadius.full,
     borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    marginBottom: 10,
   },
-  badgeEmoji: {
-    fontSize: 22,
+  badgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
   },
   titleBlock: {
     flex: 1,

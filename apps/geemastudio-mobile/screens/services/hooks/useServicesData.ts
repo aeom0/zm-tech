@@ -98,7 +98,9 @@ export function useServicesData() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['services'] })
+      void queryClient.invalidateQueries({ queryKey: ['agenda_services'] })
       void queryClient.invalidateQueries({ queryKey: ['packs'] })
+      void queryClient.invalidateQueries({ queryKey: ['agenda_packs'] })
     },
   })
 
@@ -120,7 +122,9 @@ export function useServicesData() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['services'] })
+      void queryClient.invalidateQueries({ queryKey: ['agenda_services'] })
       void queryClient.invalidateQueries({ queryKey: ['packs'] })
+      void queryClient.invalidateQueries({ queryKey: ['agenda_packs'] })
     },
   })
 
@@ -133,7 +137,9 @@ export function useServicesData() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['services'] })
+      void queryClient.invalidateQueries({ queryKey: ['agenda_services'] })
       void queryClient.invalidateQueries({ queryKey: ['packs'] })
+      void queryClient.invalidateQueries({ queryKey: ['agenda_packs'] })
     },
     onError: (error: Error) => {
       Alert.alert(
@@ -152,6 +158,7 @@ export function useServicesData() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['services'] })
+      void queryClient.invalidateQueries({ queryKey: ['agenda_services'] })
     },
   })
 
@@ -196,6 +203,7 @@ export function useServicesData() {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['service_categories'] })
       void queryClient.invalidateQueries({ queryKey: ['services'] })
+      void queryClient.invalidateQueries({ queryKey: ['agenda_services'] })
     },
     onError: (error: Error) => {
       Alert.alert(
@@ -239,6 +247,7 @@ export function useServicesData() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['services'] })
+      void queryClient.invalidateQueries({ queryKey: ['agenda_services'] })
     },
   })
 

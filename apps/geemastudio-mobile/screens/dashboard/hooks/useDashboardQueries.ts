@@ -95,7 +95,7 @@ export function useDashboardQueries(
   const { data: employees = [] } = useEmployeesQuery()
 
   const { data: services = [] } = useQuery<DashboardServiceRow[]>({
-    queryKey: ['services'],
+    queryKey: ['dashboard_services'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('services')

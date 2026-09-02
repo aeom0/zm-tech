@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { supabase } from '@/lib/supabase'
 import { useActiveEmployees } from '@/screens/personal/hooks/useEmployeesData'
+import { detectCatalogDialect, rowToPack, type PackRawRow } from '@/screens/services/lib/catalogAdapter'
 
 import type {
   AgendaAppointment,
@@ -56,13 +57,14 @@ export function useAgendaQueries() {
     isLoading: servicesLoading,
     error: servicesError,
   } = useQuery<AgendaService[]>({
-    queryKey: ['services'],
+    queryKey: ['agenda_services'],
     staleTime: 60_000,
     refetchOnWindowFocus: false,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('services')
-        .select('id, name, price, duration, category_id')
+        .select('id, name, price, duration, category_id, is_active')
+        .eq('is_active', true)
         .order('created_at', { ascending: true })
       if (error) throw new Error(error.message)
       return (data ?? []) as AgendaService[]
@@ -74,17 +76,25 @@ export function useAgendaQueries() {
     isLoading: packsLoading,
     error: packsError,
   } = useQuery<AgendaPack[]>({
-    queryKey: ['packs'],
+    queryKey: ['agenda_packs'],
     staleTime: 60_000,
     refetchOnWindowFocus: false,
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('packs')
-        .select('id, name, description, price, service_ids, is_active')
-        .eq('is_active', true)
-        .order('name', { ascending: true })
+      const dialect = await detectCatalogDialect()
+      const { data, error } =
+        dialect === 'zm'
+          ? await supabase
+              .from('packs')
+              .select('id, title, description, pack_price, service_ids, is_active')
+              .eq('is_active', true)
+              .order('title', { ascending: true })
+          : await supabase
+              .from('packs')
+              .select('id, name, description, price, service_ids, is_active')
+              .eq('is_active', true)
+              .order('name', { ascending: true })
       if (error) throw new Error(error.message)
-      return (data ?? []) as AgendaPack[]
+      return ((data ?? []) as PackRawRow[]).map((row) => rowToPack(row, dialect)) as AgendaPack[]
     },
   })
 
