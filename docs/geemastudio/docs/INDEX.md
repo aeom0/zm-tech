@@ -40,6 +40,18 @@ Instalación / notas de beta (si aplica al flujo actual).
 
 Estructura del monorepo y comandos (sin servidor Express).
 
+### [EDGE_FUNCTIONS.md](EDGE_FUNCTIONS.md)
+
+Edge Function `whatsapp-webhook`: secrets, deploy, verificación GET del webhook, SQL de tenant de prueba.
+
+### [WABA_MULTITENANT_ARCHITECTURE.md](WABA_MULTITENANT_ARCHITECTURE.md)
+
+Arquitectura multi-tenant del bot WABA: dónde viven las credenciales por tenant, resolución en runtime, checklist de alta de un tenant nuevo.
+
+### [ADB_CONEXION_MOVIL.md](ADB_CONEXION_MOVIL.md)
+
+Guía de conexión ADB al dispositivo físico de pruebas (Moto G54) desde WSL2 — no específica de GeemaStudio, es tooling local del entorno de desarrollo.
+
 ### [GEEMASTUDIO_V1.3_PLAN.md](GEEMASTUDIO_V1.3_PLAN.md)
 
 Plan de funcionalidades v1.3 (referencia histórica / roadmap parcial).
@@ -50,7 +62,7 @@ Plan 01 — draft jul-2026 (recuperado/espejado 27-ago-2026, fuente canónica en
 
 ### [02-PLAN-retrofit-tenant-id.md](02-PLAN-retrofit-tenant-id.md)
 
-Plan 02 — retrofit `tenant_id` en `udelxwwnyivknslueerr` (ZM Lash = tenant #1 → GeemaStudio multi-tenant). **Fase A/B ✅ prod**; **Fase C RLS pendiente**. Leer antes de tocar migraciones o código de `tenant_id`.
+Plan 02 — retrofit `tenant_id` en `udelxwwnyivknslueerr` (ZM Lash = tenant #1 → GeemaStudio multi-tenant). **Fases A/B/C ✅ prod** (RLS completada 2026-08-08, ver nota de estado al inicio del documento). Leer antes de tocar migraciones o código de `tenant_id`.
 
 ### [03-PLAN-audit-paridad-zmlash-geema.md](03-PLAN-audit-paridad-zmlash-geema.md)
 
@@ -62,11 +74,11 @@ Migración Geema + suite WABA multi-vertical: estado actual, bloqueadores, estan
 
 ### Look Preview (espejo desde ZM, 02-sep-2026)
 
-| Doc | Tema |
-|-----|------|
-| [plans/06-PLAN-preview-virtual-extensiones-ctwa.md](plans/06-PLAN-preview-virtual-extensiones-ctwa.md) | Spike Vertex + piloto Extensiones |
-| [plans/07-PLAN-look-preview-multi-servicio.md](plans/07-PLAN-look-preview-multi-servicio.md) | Producto multi-servicio `look-preview` + Culqi |
-| [plans/07-anexo-prompts-vertex-v1.md](plans/07-anexo-prompts-vertex-v1.md) | 23 prompts VERTEX_READY |
+| Doc                                                                                                    | Tema                                           |
+| ------------------------------------------------------------------------------------------------------ | ---------------------------------------------- |
+| [plans/06-PLAN-preview-virtual-extensiones-ctwa.md](plans/06-PLAN-preview-virtual-extensiones-ctwa.md) | Spike Vertex + piloto Extensiones              |
+| [plans/07-PLAN-look-preview-multi-servicio.md](plans/07-PLAN-look-preview-multi-servicio.md)           | Producto multi-servicio `look-preview` + Culqi |
+| [plans/07-anexo-prompts-vertex-v1.md](plans/07-anexo-prompts-vertex-v1.md)                             | 23 prompts VERTEX_READY                        |
 
 Port a Geema: ticket **S6-LP** tras MVP ZM (Fase B Culqi).
 
@@ -94,6 +106,9 @@ docs/
 ├── design_guidelines.md            # Diseño UI/UX
 ├── DEPLOYMENT.md                   # Deploy Supabase / Vercel / EAS
 ├── MONOREPO_MIGRACION.md           # Monorepo, comandos
+├── EDGE_FUNCTIONS.md               # Edge Function whatsapp-webhook: secrets, deploy
+├── WABA_MULTITENANT_ARCHITECTURE.md # Bot WABA multi-tenant: credenciales, alta de tenant
+├── ADB_CONEXION_MOVIL.md           # ADB al dispositivo físico (tooling, no específico GeemaStudio)
 ├── INSTALACION_BETA.md             # Beta / instalación
 ├── GEEMASTUDIO_V1.3_PLAN.md        # Plan v1.3 (referencia)
 ├── 01-PLAN-monorepo-estructura.md          # Fusión ZMTech+geemastudio → monorepo (espejo)
@@ -118,14 +133,14 @@ docs/audit/
 ### Base de datos (Supabase)
 
 - **Proyecto**: `udelxwwnyivknslueerr`
-- **Schema**: `packages/shared-schema/src/schema.ts` (`yarn db:push`; opcional `yarn db:generate` / `yarn db:studio`)
-- **Seeds**: `scripts/db/` (editar templates antes de `yarn db:seed`)
-- **Migraciones**: `yarn db:push` o SQL Editor / MCP (ver DESARROLLO_LOCAL.md)
-- **SQL de referencia RLS/advisors**: `scripts/db/migrations/20260324_advisor_rls_performance.sql`
+- **Schema**: `packages/shared-schema/src/schema.ts` (`pnpm db:push`; opcional `pnpm db:generate` / `pnpm db:studio`)
+- **Seeds**: `apps/geemastudio-server/scripts/db/` (editar templates SQL; no hay script `db:seed` a nivel raíz)
+- **Migraciones**: `pnpm db:push` o SQL Editor / MCP (ver DESARROLLO_LOCAL.md)
+- **SQL de referencia RLS/advisors**: `apps/geemastudio-server/scripts/db/migrations/20260324_advisor_rls_performance.sql`
 
 ### API
 
-- No hay Express. Cliente usa **Supabase** (`supabase.from('tabla').select()`) desde `apps/mobile/lib/supabase.ts` y TanStack Query.
+- No hay Express. Cliente usa **Supabase** (`supabase.from('tabla').select()`) desde `apps/geemastudio-mobile/lib/supabase.ts` y TanStack Query.
 
 ### Frontend web — dos productos
 
@@ -134,9 +149,9 @@ docs/audit/
 
 ### Frontend mobile
 
-- `apps/mobile/` — Expo SDK **56**, React Native **0.85**, React **19.2**, TypeScript **~6.0**
+- `apps/geemastudio-mobile/` — Expo SDK **56**, React Native **0.85**, React **19.2**, TypeScript **~6.0**
 - components, screens, navigation, contexts, hooks, constants
-- Pantallas modulares: `apps/mobile/screens/<feature>/` (agenda/, dashboard/, finances/, inventory/, ...)
+- Pantallas modulares: `apps/geemastudio-mobile/screens/<feature>/` (agenda/, dashboard/, finances/, inventory/, ...)
 - New Architecture + edge-to-edge Android son obligatorios (ya no se configuran en `app.json`)
 - Dev: Expo Go SDK 56 o **dev client** reconstruido tras el upgrade (`eas build` / `expo run:android`)
 
@@ -147,8 +162,8 @@ docs/audit/
 
 ### Tema / marca
 
-- Mobile: `apps/mobile/constants/theme.ts` + `Gradients.onboarding` (Lunaris turquesa)
-- Web: `apps/web/src/lib/theme.ts` (`LUNARIS`)
+- Mobile: `apps/geemastudio-mobile/constants/theme.ts` + `Gradients.onboarding` (Lunaris turquesa)
+- Web: `apps/geemastudio-web/src/lib/theme.ts` (`LUNARIS`)
 - Tenant en runtime: `TenantContext` + `tenant_settings` + `@zmtech/tenant-config`
 
 ### MCP (Cursor)
@@ -157,12 +172,12 @@ docs/audit/
 
 ### Assets de marca
 
-- `apps/web/public/logo-diamondSparkle.svg` — símbolo principal
-- `apps/web/public/logo-diamondSparkle-positive.svg` / `negative` — variantes
+- `apps/geemastudio-web/public/logo-diamondSparkle.svg` — símbolo principal
+- `apps/geemastudio-web/public/logo-diamondSparkle-positive.svg` / `negative` — variantes
 
 ### EAS (build móvil)
 
-- Configuración: `apps/mobile/eas.json` (ejecutar `eas build` desde `apps/mobile`)
+- Configuración: `apps/geemastudio-mobile/eas.json` (ejecutar `eas build` desde `apps/geemastudio-mobile`)
 - Tras SDK 56: rebuild nativo requerido (runtimeVersion por `sdkVersion`)
 
-**Última actualización**: 2026-07-21 (Plan 01 agregado 2026-08-27, resto del contenido sin tocar — ver nota de estado stale de Fase C pendiente de corrección aparte)
+**Última actualización**: 2026-09-03 — revisión/consolidación de `docs/geemastudio/docs/`: rutas `apps/mobile`→`apps/geemastudio-mobile` y `apps/web`→`apps/geemastudio-web` corregidas en todo el set (excepto donde el texto se refiere explícitamente al repo `ZM-Lash-and-Nails-Beauty`, que sí usa esos nombres); nota de Fase C (RLS `tenant_id`) actualizada a ✅ completada 2026-08-08; agregados `EDGE_FUNCTIONS.md`, `WABA_MULTITENANT_ARCHITECTURE.md`, `ADB_CONEXION_MOVIL.md` al índice (existían en el directorio pero no estaban listados); enlaces relativos rotos corregidos en `plans/06`, `plans/07` y `plans/geema-migration/*` (referencias a `02-PLAN-retrofit-tenant-id.md` / `03-PLAN-audit-paridad-zmlash-geema.md` con la profundidad `../` incorrecta); comandos `yarn *` desactualizados corregidos a `pnpm *` (mapeo real en `package.json` raíz) en README.md, MONOREPO_MIGRACION.md, DESARROLLO_LOCAL.md, DEPLOYMENT.md, INSTALACION_BETA.md, GEEMASTUDIO_MIGRATION_GUIDE.md (sección "Comandos útiles", no la narrativa histórica de FASE 1-6) y tech-debt/TD-001; rutas `scripts/db/` corregidas a `apps/geemastudio-server/scripts/db/` donde aplica (ubicación real tras la migración a monorepo). Queda pendiente de verificación humana: la ubicación correcta de `.env.example` (no existe en la raíz de `zm-tech`; ver nota en DESARROLLO_LOCAL.md) y el estado real de FASE 7C/7D en GEEMASTUDIO_MIGRATION_GUIDE.md.

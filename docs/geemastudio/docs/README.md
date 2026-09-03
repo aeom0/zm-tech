@@ -5,7 +5,7 @@ App de gestión para salones de belleza, barberías y peluquerías (LATAM). Fron
 ## Requisitos
 
 - **Node.js** 22+ (recomendado: `nvm use`, hay `.nvmrc`)
-- **Yarn** 4 (Berry)
+- **pnpm** (ver `packageManager` en `package.json` raíz)
 - Cuenta **Supabase** (proyecto GeemaStudio: `udelxwwnyivknslueerr`)
 
 ## Desarrollo local
@@ -14,8 +14,8 @@ App de gestión para salones de belleza, barberías y peluquerías (LATAM). Fron
 
 ```bash
 git clone <repo>
-cd geemastudio
-yarn install
+cd zm-tech
+pnpm install
 ```
 
 ### 2. Variables de entorno
@@ -35,9 +35,9 @@ Para seeds o scripts con servicio: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, 
 
 El schema se aplica con Drizzle. En WSL puede fallar la conexión TCP directa (IPv6). Opciones:
 
-- **SQL Editor** del Dashboard Supabase: pegar y ejecutar el SQL generado por **`yarn db:generate`** (sale en `./migrations/`)
-- **`yarn db:push`** si tienes conectividad a `db.udelxwwnyivknslueerr.supabase.co:5432`
-- Referencia RLS/advisors ya aplicados en remoto: `scripts/db/migrations/20260324_advisor_rls_performance.sql`
+- **SQL Editor** del Dashboard Supabase: pegar y ejecutar el SQL generado por **`pnpm db:generate`** (sale en `./migrations/`)
+- **`pnpm db:push`** si tienes conectividad a `db.udelxwwnyivknslueerr.supabase.co:5432`
+- Referencia RLS/advisors ya aplicados en remoto: `apps/geemastudio-server/scripts/db/migrations/20260324_advisor_rls_performance.sql`
 
 Ver [DESARROLLO_LOCAL.md](DESARROLLO_LOCAL.md) para detalle.
 
@@ -45,10 +45,10 @@ Ver [DESARROLLO_LOCAL.md](DESARROLLO_LOCAL.md) para detalle.
 
 ```bash
 # App móvil (Expo)
-yarn mobile:dev
+pnpm dev:mobile
 
 # Web (Next.js) — landing + paneles (/finanzas, /dashboard, /panel)
-yarn web:dev
+pnpm dev:web
 ```
 
 Abrir la URL que muestre Expo (web en 8081) o escanear QR con Expo Go.
@@ -57,20 +57,21 @@ Abrir la URL que muestre Expo (web en 8081) o escanear QR con Expo Go.
 
 | Script             | Descripción                                |
 | ------------------ | ------------------------------------------ |
-| `yarn mobile:dev`  | Expo (app móvil)                           |
-| `yarn web:dev`     | Next.js (landing + panel)                  |
-| `yarn db:push`     | Aplicar schema Drizzle a Supabase          |
-| `yarn db:generate` | Generar migraciones SQL en `./migrations/` |
-| `yarn db:studio`   | Drizzle Studio                             |
-| `yarn db:seed`     | Cargar seeds (editar templates antes)      |
-| `yarn lint`        | ESLint                                     |
-| `yarn check:types` | TypeScript                                 |
-| `yarn format`      | Prettier                                   |
+| `pnpm dev:mobile`  | Expo (app móvil)                           |
+| `pnpm dev:web`     | Next.js (landing + panel)                  |
+| `pnpm db:push`     | Aplicar schema Drizzle a Supabase          |
+| `pnpm db:generate` | Generar migraciones SQL en `./migrations/` |
+| `pnpm db:studio`   | Drizzle Studio                             |
+| `pnpm lint`        | ESLint                                     |
+| `pnpm check:types` | TypeScript                                 |
+| `pnpm format`      | Prettier                                   |
+
+No hay script `db:seed` a nivel raíz — los seeds viven en `apps/geemastudio-server/scripts/db/` (templates SQL, editar antes de ejecutar) y `apps/geemastudio-server/scripts/seed-auth-users.mjs`.
 
 ## Estructura resumida
 
-- **`apps/mobile/`** — App Expo: pantallas, navegación, contexts (Auth, Tenant), hooks, tema.
-- **`apps/web/`** — Next.js: landing pública + panel `/finanzas` y `/dashboard` + panel admin `/panel` (login `/login`; **`/panel/servicios`**, **`/panel/horarios`**). Marca: **`src/lib/theme.ts`** (`LUNARIS`).
+- **`apps/geemastudio-mobile/`** — App Expo: pantallas, navegación, contexts (Auth, Tenant), hooks, tema.
+- **`apps/geemastudio-web/`** — Next.js: landing pública + panel `/finanzas` y `/dashboard` + panel admin `/panel` (login `/login`; **`/panel/servicios`**, **`/panel/horarios`**). Marca: **`src/lib/theme.ts`** (`LUNARIS`).
 - **`packages/shared-schema/`** — Schema Drizzle + Zod (tenant_settings, employees, services, etc.).
 - **`packages/tenant-config/`** — Presets por tipo de negocio (spa-nails, barbershop, hair-salon, full-aesthetic).
 

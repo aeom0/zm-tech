@@ -2,7 +2,7 @@
 
 **Estado:** Resuelto (2026-04-03) — tokens `Onboarding`, `BorderRadius.card`, `Colors.*.backgroundSubtle`; layout alineado a `Onboarding.canvasBackground`.
 
-**Archivo:** `apps/mobile/screens/onboarding/OnboardingBusinessTypeScreen.tsx`  
+**Archivo:** `apps/geemastudio-mobile/screens/onboarding/OnboardingBusinessTypeScreen.tsx`  
 **Detectado por:** Cursor Agent (post-implementación subtypes, 2026-04-03)  
 **Prioridad:** Baja — no afecta funcionalidad ni tipos  
 **Bloquea beta:** No
@@ -47,7 +47,7 @@ cambios globales.
 
 ## Alcance del fix
 
-1. Revisar/ampliar `BorderRadius` en `apps/mobile/constants/theme.ts` si hace falta
+1. Revisar/ampliar `BorderRadius` en `apps/geemastudio-mobile/constants/theme.ts` si hace falta
 2. Reemplazar todos los valores de la tabla en `OnboardingBusinessTypeScreen.tsx`
-3. `yarn check:types` — no debe haber errores
+3. `pnpm check:types` — no debe haber errores
 4. Smoke test visual en Android: cards, chips activos/inactivos, check mark

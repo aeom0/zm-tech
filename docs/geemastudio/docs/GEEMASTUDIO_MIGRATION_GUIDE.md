@@ -1,7 +1,7 @@
 # GeemaStudio — Guía de Migración para Claude
 
 > **Fecha de inicio**: 2026-02-19
-> **Estado actual**: FASES 1–6 completadas ✅ | FASE 7: 7A (RLS) y 7B (tenant_settings en onboarding) completados; 7C (pruebas integrales) y 7D (landing) pendientes
+> **Estado actual**: FASES 1–6 completadas ✅ | FASE 7: 7A (RLS) y 7B (tenant_settings en onboarding) completados; 7C (pruebas integrales) y 7D (landing) marcados pendientes en este doc, pero **verificar antes de asumir que siguen pendientes** — la landing pública `/s/[slug]` y el panel (`/panel/*`, `/dashboard`, `/finanzas`) ya existen en `apps/geemastudio-web` (ver [WEB_ARCHITECTURE.md](WEB_ARCHITECTURE.md), rutas marcadas ✅ Implementado); no se confirmó si los entregables específicos de 7D (pricing tiers, testimonios Venezuela) o el checklist de 7C están cerrados — no se actualiza el estado por falta de evidencia directa (2026-09-03).
 
 ---
 
@@ -36,20 +36,20 @@ Se identificaron ~180+ referencias hardcodeadas al salón original distribuidas 
 
 #### Resumen de hallazgos por categoría:
 
-| Categoría                                                 | Archivos principales                                                                                      | Cant. aprox. |
-| --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------ |
-| Nombre del negocio (ZM Lash & Nails)                      | LoginScreen, SettingsScreen, ProfileScreen, DashboardScreen, MainTabNavigator, PersonalScreen, apps/web/* | 22+          |
-| Teléfono (+51 932 535 512)                                | apps/web/src/app/page.tsx, Navbar.tsx                                                                     | 4            |
-| Direcciones físicas (Surco, Lima)                         | apps/web/src/app/page.tsx, layout.tsx                                                                     | 9+           |
-| Redes sociales (@zmlashandnails)                          | apps/web/src/app/page.tsx                                                                                 | 4            |
-| Nombres de empleadas (Vanessa, Stephani, Yosaida, Romina) | page.tsx, finanzas/page.tsx, PersonalScreen, seed-employees.sql, seed-auth-users.mjs                      | 15+          |
-| Supabase IDs hardcodeados (udelxwwnyivknslueerr)          | apps/mobile/lib/supabase.ts, .env.example, apps/web/.env.local.example                                    | 5+           |
-| Colores hardcodeados (#7B2D8E, #D4AF37)                   | app.json, useNotifications.ts, PersonalScreen, MainTabNavigator, tailwind.config.ts, finanzas/*           | 40+          |
-| Moneda S/ hardcodeada                                     | FinancesScreen, DashboardScreen, AgendaScreen, ServicesScreen, InventoryScreen, finanzas/page.tsx         | 50+          |
-| Horarios del salón (10AM-7PM)                             | apps/web/src/app/layout.tsx, page.tsx                                                                     | 4            |
-| Package/bundle names (com.zmlash*)                        | apps/mobile/app.json, google-services.json, package.json raíz                                             | 10+          |
-| Emails @zmlashnails.com                                   | scripts/seed-auth-users.mjs, LoginScreen, PersonalScreen                                                  | 8+           |
-| DB names (zm_lash_nails)                                  | .env.example, seed-services.sql, seed-employees.sql                                                       | 3            |
+| Categoría                                                 | Archivos principales                                                                                                  | Cant. aprox. |
+| --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------ |
+| Nombre del negocio (ZM Lash & Nails)                      | LoginScreen, SettingsScreen, ProfileScreen, DashboardScreen, MainTabNavigator, PersonalScreen, apps/geemastudio-web/* | 22+          |
+| Teléfono (+51 932 535 512)                                | apps/geemastudio-web/src/app/page.tsx, Navbar.tsx                                                                     | 4            |
+| Direcciones físicas (Surco, Lima)                         | apps/geemastudio-web/src/app/page.tsx, layout.tsx                                                                     | 9+           |
+| Redes sociales (@zmlashandnails)                          | apps/geemastudio-web/src/app/page.tsx                                                                                 | 4            |
+| Nombres de empleadas (Vanessa, Stephani, Yosaida, Romina) | page.tsx, finanzas/page.tsx, PersonalScreen, seed-employees.sql, seed-auth-users.mjs                                  | 15+          |
+| Supabase IDs hardcodeados (udelxwwnyivknslueerr)          | apps/geemastudio-mobile/lib/supabase.ts, .env.example, apps/geemastudio-web/.env.local.example                        | 5+           |
+| Colores hardcodeados (#7B2D8E, #D4AF37)                   | app.json, useNotifications.ts, PersonalScreen, MainTabNavigator, tailwind.config.ts, finanzas/*                       | 40+          |
+| Moneda S/ hardcodeada                                     | FinancesScreen, DashboardScreen, AgendaScreen, ServicesScreen, InventoryScreen, finanzas/page.tsx                     | 50+          |
+| Horarios del salón (10AM-7PM)                             | apps/geemastudio-web/src/app/layout.tsx, page.tsx                                                                     | 4            |
+| Package/bundle names (com.zmlash*)                        | apps/geemastudio-mobile/app.json, google-services.json, package.json raíz                                             | 10+          |
+| Emails @zmlashnails.com                                   | scripts/seed-auth-users.mjs, LoginScreen, PersonalScreen                                                              | 8+           |
+| DB names (zm_lash_nails)                                  | .env.example, seed-services.sql, seed-employees.sql                                                                   | 3            |
 
 ---
 
@@ -165,14 +165,14 @@ Horarios típicos:
 
 Agregar `"@zmtech/tenant-config": "workspace:*"` como dependencia en:
 
-- `apps/mobile/package.json`
+- `apps/geemastudio-mobile/package.json`
 - `packages/shared-schema/package.json` (si se necesita)
 
 ---
 
 ### ✅ FASE 3 — Integrar TenantConfig en la app mobile
 
-#### 3.1 Crear `apps/mobile/context/TenantContext.tsx`
+#### 3.1 Crear `apps/geemastudio-mobile/context/TenantContext.tsx`
 
 - Provee el `TenantConfig` activo a toda la app vía React Context
 - Lee de `AsyncStorage` (clave: `@geemastudio/tenant_config`)
@@ -184,34 +184,34 @@ Agregar `"@zmtech/tenant-config": "workspace:*"` como dependencia en:
 
 Archivos a modificar y qué cambiar:
 
-| Archivo                                                | Qué reemplazar                                                            |
-| ------------------------------------------------------ | ------------------------------------------------------------------------- |
-| `apps/mobile/screens/LoginScreen.tsx:127`              | placeholder email `@zmlashnails.com` → `@{dominio}` o genérico            |
-| `apps/mobile/screens/SettingsScreen.tsx:59`            | `"ZM Lash & Nails Beauty"` → `config.businessName`                        |
-| `apps/mobile/screens/ProfileScreen.tsx:35`             | `"Panel de gestión ZM Lash & Nails"` → `config.businessName`              |
-| `apps/mobile/screens/DashboardScreen.tsx:491`          | `"ZM"` → iniciales de `config.businessName`                               |
-| `apps/mobile/navigation/MainTabNavigator.tsx:83`       | `headerTitle: "ZM Lash & Nails"` → `config.businessName`                  |
-| `apps/mobile/screens/PersonalScreen.tsx:261,270,281`   | placeholders con nombres/emails reales → genéricos                        |
-| `apps/mobile/hooks/useNotifications.ts:36,39`          | nombre canal + color → `config.businessName`, `config.theme.primaryColor` |
-| `apps/mobile/screens/FinancesScreen.tsx` (16+ lugares) | `S/` → `config.locale.currency.symbol`                                    |
-| `apps/mobile/screens/DashboardScreen.tsx` (3 lugares)  | `S/` → `config.locale.currency.symbol`                                    |
-| `apps/mobile/screens/AgendaScreen.tsx` (2 lugares)     | `S/` → `config.locale.currency.symbol`                                    |
-| `apps/mobile/screens/ServicesScreen.tsx` (2 lugares)   | `S/` → `config.locale.currency.symbol`                                    |
-| `apps/mobile/screens/InventoryScreen.tsx:499`          | `Costo (S/)` → `Costo (${symbol})`                                        |
-| `apps/mobile/screens/PersonalScreen.tsx:37,38`         | colores preset #7B2D8E, #D4AF37 → usar theme                              |
-| `apps/mobile/navigation/MainTabNavigator.tsx:33,49`    | `#7B2D8E` → `config.theme.primaryColor`                                   |
+| Archivo                                                            | Qué reemplazar                                                            |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| `apps/geemastudio-mobile/screens/LoginScreen.tsx:127`              | placeholder email `@zmlashnails.com` → `@{dominio}` o genérico            |
+| `apps/geemastudio-mobile/screens/SettingsScreen.tsx:59`            | `"ZM Lash & Nails Beauty"` → `config.businessName`                        |
+| `apps/geemastudio-mobile/screens/ProfileScreen.tsx:35`             | `"Panel de gestión ZM Lash & Nails"` → `config.businessName`              |
+| `apps/geemastudio-mobile/screens/DashboardScreen.tsx:491`          | `"ZM"` → iniciales de `config.businessName`                               |
+| `apps/geemastudio-mobile/navigation/MainTabNavigator.tsx:83`       | `headerTitle: "ZM Lash & Nails"` → `config.businessName`                  |
+| `apps/geemastudio-mobile/screens/PersonalScreen.tsx:261,270,281`   | placeholders con nombres/emails reales → genéricos                        |
+| `apps/geemastudio-mobile/hooks/useNotifications.ts:36,39`          | nombre canal + color → `config.businessName`, `config.theme.primaryColor` |
+| `apps/geemastudio-mobile/screens/FinancesScreen.tsx` (16+ lugares) | `S/` → `config.locale.currency.symbol`                                    |
+| `apps/geemastudio-mobile/screens/DashboardScreen.tsx` (3 lugares)  | `S/` → `config.locale.currency.symbol`                                    |
+| `apps/geemastudio-mobile/screens/AgendaScreen.tsx` (2 lugares)     | `S/` → `config.locale.currency.symbol`                                    |
+| `apps/geemastudio-mobile/screens/ServicesScreen.tsx` (2 lugares)   | `S/` → `config.locale.currency.symbol`                                    |
+| `apps/geemastudio-mobile/screens/InventoryScreen.tsx:499`          | `Costo (S/)` → `Costo (${symbol})`                                        |
+| `apps/geemastudio-mobile/screens/PersonalScreen.tsx:37,38`         | colores preset #7B2D8E, #D4AF37 → usar theme                              |
+| `apps/geemastudio-mobile/navigation/MainTabNavigator.tsx:33,49`    | `#7B2D8E` → `config.theme.primaryColor`                                   |
 
 #### 3.3 Actualizar sistema de tema
 
-En `apps/mobile/constants/theme.ts`:
+En `apps/geemastudio-mobile/constants/theme.ts`:
 
 - Crear función `createTheme(config: TenantConfig): Theme`
 - El objeto estático actual pasa a ser el tema del preset `spa-nails` por defecto
-- El hook `useTheme()` en `apps/mobile/hooks/useTheme.ts` debe llamar a `useTenant()` e invocar `createTheme(config)`
+- El hook `useTheme()` en `apps/geemastudio-mobile/hooks/useTheme.ts` debe llamar a `useTenant()` e invocar `createTheme(config)`
 
 #### 3.4 Registrar TenantProvider en App.tsx
 
-Envolver el árbol de navegación con `<TenantProvider>` en `apps/mobile/App.tsx`.
+Envolver el árbol de navegación con `<TenantProvider>` en `apps/geemastudio-mobile/App.tsx`.
 
 ---
 
@@ -237,7 +237,7 @@ Actualizar `README.md` raíz:
 
 ### ✅ FASE 5 — Onboarding flow (pantallas nuevas)
 
-Crear en `apps/mobile/screens/onboarding/`:
+Crear en `apps/geemastudio-mobile/screens/onboarding/`:
 
 ```
 OnboardingBusinessTypeScreen.tsx   ← paso 1: elige tipo de negocio (4 cards)
@@ -306,7 +306,7 @@ Implementado: al completar el flujo de 5 pasos se hace upsert en `tenant_setting
 
 #### FASE 7C — Prueba integral de la app móvil ⏳
 
-Con `yarn mobile:dev` contra el proyecto Supabase `udelxwwnyivknslueerr`:
+Con `pnpm dev:mobile` contra el proyecto Supabase `udelxwwnyivknslueerr`:
 
 - Login con `dev@ejemplo.com` / `Geema2025!` (creado por seed-auth-users.mjs)
 - Login con `propietario@ejemplo.com` / `Geema2025!`
@@ -315,9 +315,9 @@ Con `yarn mobile:dev` contra el proyecto Supabase `udelxwwnyivknslueerr`:
 - Verificar Agenda, Servicios, Inventario, Finanzas
 - Verificar navegación Más → Personal, Inventario, Finanzas (solo dev/owner)
 
-#### FASE 7D — Landing web GeemaStudio (apps/web) ⏳
+#### FASE 7D — Landing web GeemaStudio (apps/geemastudio-web) ⏳
 
-La landing actual (`apps/web`) tiene diseño de conversión general.
+La landing actual (`apps/geemastudio-web`) tiene diseño de conversión general.
 Actualizar/refinar con:
 
 - **Pricing tiers**: Basic, Pro, Elite con trial 14 días sin tarjeta
@@ -351,21 +351,22 @@ del webhook registrada en Meta.
 
 ```bash
 # Instalar dependencias (desde raíz del monorepo)
-yarn install
+pnpm install
 
 # Iniciar Expo (app mobile)
-yarn mobile:dev
+pnpm dev:mobile
 
 # Iniciar web (Next.js)
-yarn web:dev
+pnpm dev:web
 
 # Type checking
-yarn check:types
+pnpm check:types
 
 # Lint
-yarn lint
-yarn lint:fix
+pnpm lint
 ```
+
+> Monorepo real: **pnpm + Turborepo** (ver `package.json` raíz). No existe script `lint:fix` a nivel raíz.
 
 ---
 
@@ -379,5 +380,5 @@ yarn lint:fix
   - Decisión de arquitectura: ZM Lash & Nails es el tenant #1 dentro de GeemaStudio, **no** un ambiente de práctica ni un proyecto a descartar.
   - El proyecto anterior (`xidjomlxpuosupymcsaj`) se eliminó por inactividad en free tier; no contenía datos reales, no se perdió nada.
 - Las variables de entorno de GeemaStudio están en `.env` (no commiteado). Ver `.env.example` para referencia.
-- `apps/mobile/lib/supabase.ts` ✅ ya usa `process.env.EXPO_PUBLIC_SUPABASE_*` (corregido en sesión 2026-03-12).
+- `apps/geemastudio-mobile/lib/supabase.ts` ✅ ya usa `process.env.EXPO_PUBLIC_SUPABASE_*` (corregido en sesión 2026-03-12).
 - Restricción de entorno: puerto 5432 bloqueado en WSL (solo IPv6). Usar SQL Editor del Dashboard para DDL. Ver `docs/DESARROLLO_LOCAL.md`.

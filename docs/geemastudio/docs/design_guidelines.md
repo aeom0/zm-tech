@@ -1,6 +1,6 @@
 # GeemaStudio — Guía de Diseño del Dashboard Administrativo
 
-> En GeemaStudio los colores y terminología vienen del **tenant** (preset o config guardada en `tenant_settings`). La **marca producto GeemaStudio** usa la línea **Lunaris** (turquesa → índigo): mobile `Gradients.onboarding` en `constants/theme.ts`; web `LUNARIS` en `apps/web/src/lib/theme.ts`. La app usa `createTheme(config)` según el preset elegido en el onboarding.
+> En GeemaStudio los colores y terminología vienen del **tenant** (preset o config guardada en `tenant_settings`). La **marca producto GeemaStudio** usa la línea **Lunaris** (turquesa → índigo): mobile `Gradients.onboarding` en `constants/theme.ts`; web `LUNARIS` en `apps/geemastudio-web/src/lib/theme.ts`. La app usa `createTheme(config)` según el preset elegido en el onboarding.
 
 ## 1. Identidad de Marca
 

@@ -27,40 +27,40 @@ Hoy ese costo de adquisición **no se recupera** si no hay cita. El preview virt
 
 ### Hipótesis de producto
 
-| Métrica objetivo | Meta piloto (90 días) |
-|---|---|
-| % chats CTWA Extensiones que pagan preview | ≥ 15 % |
+| Métrica objetivo                            | Meta piloto (90 días)       |
+| ------------------------------------------- | --------------------------- |
+| % chats CTWA Extensiones que pagan preview  | ≥ 15 %                      |
 | Ingreso bruto preview / chat CTWA (blended) | ≥ S/0,80 (cubre ~⅓ del CPA) |
-| Preview pagado → `add_to_cart` en 7 días | ≥ 25 % |
-| Tiempo entrega post-pago | ≤ 2 min (p95) |
+| Preview pagado → `add_to_cart` en 7 días    | ≥ 25 %                      |
+| Tiempo entrega post-pago                    | ≤ 2 min (p95)               |
 
 ### Modelo de precios (pay-first, sin preview gratis ni watermark)
 
-| Paquete | Precio | Contenido |
-|---|---|---|
-| **Pack inicial** | **S/5** | 1 look elegido + **2 looks extra gratis** (3 imágenes total) |
+| Paquete             | Precio  | Contenido                                                          |
+| ------------------- | ------- | ------------------------------------------------------------------ |
+| **Pack inicial**    | **S/5** | 1 look elegido + **2 looks extra gratis** (3 imágenes total)       |
 | **Pack ampliación** | **S/8** | **2 imágenes más** (otros estilos o re-generación con otra selfie) |
 
 **Reglas de producto:**
 
 - **Cobro antes** de procesar la selfie — no hay imagen de resultado sin pago confirmado.
 - Antes del pago sí se muestran **ejemplos del portafolio** (fotos reales del salón, no la cara de la clienta).
-- Copy legal: *preview orientativo; el resultado en salón puede variar según anatomía del ojo y técnica de la especialista*.
+- Copy legal: _preview orientativo; el resultado en salón puede variar según anatomía del ojo y técnica de la especialista_.
 - Los 2 looks “gratis” del pack S/5 son **retención en el hilo** y upsell a agendar — no un regalo independiente del pack.
 
 ---
 
 ## 2. Qué NO es este producto
 
-| Descartado | Motivo |
-|---|---|
-| Leer notificaciones push de Yape | Fuera de scope; políticas Android; no aporta al preview |
-| Preview con marca de agua / freemium | Decisión de producto: pay-first |
-| **Lifting** en v1 automático | Prioridad extensiones + looks combinados vía prompt; lifting solo si QA staff OK |
-| Overlay MediaPipe + PNG | Spike Fase 0 **NO-GO** — descartado |
-| Haiku “pintando” la imagen | Haiku **no edita píxeles** — solo clasifica, valida y recomienda estilo |
-| Widget embebido dentro de WhatsApp | WA solo admite texto, botones, listas e imágenes — no iframe ni componente web |
-| Garantía de resultado idéntico al preview | Producto de inspiración comercial, no contrato de servicio |
+| Descartado                                | Motivo                                                                           |
+| ----------------------------------------- | -------------------------------------------------------------------------------- |
+| Leer notificaciones push de Yape          | Fuera de scope; políticas Android; no aporta al preview                          |
+| Preview con marca de agua / freemium      | Decisión de producto: pay-first                                                  |
+| **Lifting** en v1 automático              | Prioridad extensiones + looks combinados vía prompt; lifting solo si QA staff OK |
+| Overlay MediaPipe + PNG                   | Spike Fase 0 **NO-GO** — descartado                                              |
+| Haiku “pintando” la imagen                | Haiku **no edita píxeles** — solo clasifica, valida y recomienda estilo          |
+| Widget embebido dentro de WhatsApp        | WA solo admite texto, botones, listas e imágenes — no iframe ni componente web   |
+| Garantía de resultado idéntico al preview | Producto de inspiración comercial, no contrato de servicio                       |
 
 ---
 
@@ -77,13 +77,13 @@ Selfie (post-pago o piloto staff)
   → PNG/JPEG resultado → Storage → envío por WA + link descarga web
 ```
 
-| Capa | Herramienta | Rol |
-|---|---|---|
-| **Validación entrada** | Haiku Vision | Rechazar comprobantes, memes, espaldas, ojos tapados |
-| **Render** | **Vertex Gemini Image** (`generateContent`) | Edición conversacional — solo zona pestañas vía prompt |
-| **Auth GCP** | Service account `supabase-vertex-ai` | JWT → OAuth; secret `GCP_SERVICE_ACCOUNT_BASE64` en Edge |
-| **Recomendación estilos 2 y 3** | Haiku + catálogo | Según forma de ojo / intención CTWA / historial sesión |
-| **MediaPipe / overlay PNG** | Archivo (Fase 0) | **No usar en prod** — ver SPIKE-CONCLUSIONS |
+| Capa                            | Herramienta                                 | Rol                                                      |
+| ------------------------------- | ------------------------------------------- | -------------------------------------------------------- |
+| **Validación entrada**          | Haiku Vision                                | Rechazar comprobantes, memes, espaldas, ojos tapados     |
+| **Render**                      | **Vertex Gemini Image** (`generateContent`) | Edición conversacional — solo zona pestañas vía prompt   |
+| **Auth GCP**                    | Service account `supabase-vertex-ai`        | JWT → OAuth; secret `GCP_SERVICE_ACCOUNT_BASE64` en Edge |
+| **Recomendación estilos 2 y 3** | Haiku + catálogo                            | Según forma de ojo / intención CTWA / historial sesión   |
+| **MediaPipe / overlay PNG**     | Archivo (Fase 0)                            | **No usar en prod** — ver SPIKE-CONCLUSIONS              |
 
 **Runbook ops:** [`docs/ops/VERTEX_AI_LASH_PREVIEW.md`](../ops/VERTEX_AI_LASH_PREVIEW.md)
 
@@ -91,7 +91,7 @@ Selfie (post-pago o piloto staff)
 
 El modelo no recibe máscara pixel; el prompt acota la edición:
 
-> *Using the provided selfie, change ONLY the eyelash extensions to [estilo]. Keep everything else exactly the same: skin, eyes, eyebrows, makeup, lighting, background.*
+> _Using the provided selfie, change ONLY the eyelash extensions to [estilo]. Keep everything else exactly the same: skin, eyes, eyebrows, makeup, lighting, background._
 
 Estilos piloto: `Anime`, `Fox`, `Rimel diseño muñeca`, `Lifting + Microblading` (combinados vía copy).
 
@@ -101,13 +101,13 @@ Segunda imagen en `generateContent` — foto real de `/panel/waba/portafolio` pa
 
 ### Piloto validado — Avril (01-sep-2026)
 
-| Campo | Detalle |
-|-------|---------|
-| Teléfono | `51946235797` |
-| Entrada | CTWA "Mirada Espectacular" |
-| Prueba manual | Gemini chat (staff) → imágenes por WA (sin S/5) |
-| Spike Vertex | 1.ª imagen automática `Rimel diseño muñeca` — **GO calidad** |
-| Comando | `yarn lash-preview:vertex …/avril-selfie.jpg "Rimel diseño muñeca"` |
+| Campo         | Detalle                                                             |
+| ------------- | ------------------------------------------------------------------- |
+| Teléfono      | `51946235797`                                                       |
+| Entrada       | CTWA "Mirada Espectacular"                                          |
+| Prueba manual | Gemini chat (staff) → imágenes por WA (sin S/5)                     |
+| Spike Vertex  | 1.ª imagen automática `Rimel diseño muñeca` — **GO calidad**        |
+| Comando       | `yarn lash-preview:vertex …/avril-selfie.jpg "Rimel diseño muñeca"` |
 
 ### Lifting / microblading / cejas
 
@@ -149,7 +149,7 @@ sequenceDiagram
 
 ### 4.3 Upsell S/8
 
-Tras entregar pack S/5, bot ofrece: *"¿Quieres 2 looks más por S/8?"* → mismo flujo de pago → +2 créditos en `lash_preview_orders`.
+Tras entregar pack S/5, bot ofrece: _"¿Quieres 2 looks más por S/8?"_ → mismo flujo de pago → +2 créditos en `lash_preview_orders`.
 
 ---
 
@@ -157,25 +157,25 @@ Tras entregar pack S/5, bot ofrece: *"¿Quieres 2 looks más por S/8?"* → mism
 
 ### 5.1 Componentes nuevos
 
-| Componente | Repo piloto | Repo Geema (destino) |
-|---|---|---|
-| Página pública `/probar-mirada` | `apps/web` (ZM) | `apps/geemastudio-web` (ruta tenant: `/t/{slug}/preview` o subdominio) |
-| Edge `lash-preview` | `supabase/functions/lash-preview` | Mismo motor; `tenant_id` en contexto |
-| Edge `lash-preview-payment` (opcional) | Webhook Culqi / confirmación manual | `geemastudio-server` o Edge unificada |
-| Tablas BD | ver §6 | Mismas tablas con `tenant_id` |
-| Assets overlays | ~~Storage lash-overlays~~ | Referencia portafolio en prompt (opcional); sin biblioteca PNG obligatoria |
-| Panel admin | `/panel/waba/preview` (config precios, ON/OFF, métricas) | Módulo Geema L2 |
+| Componente                             | Repo piloto                                              | Repo Geema (destino)                                                       |
+| -------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Página pública `/probar-mirada`        | `apps/web` (ZM)                                          | `apps/geemastudio-web` (ruta tenant: `/t/{slug}/preview` o subdominio)     |
+| Edge `lash-preview`                    | `supabase/functions/lash-preview`                        | Mismo motor; `tenant_id` en contexto                                       |
+| Edge `lash-preview-payment` (opcional) | Webhook Culqi / confirmación manual                      | `geemastudio-server` o Edge unificada                                      |
+| Tablas BD                              | ver §6                                                   | Mismas tablas con `tenant_id`                                              |
+| Assets overlays                        | ~~Storage lash-overlays~~                                | Referencia portafolio en prompt (opcional); sin biblioteca PNG obligatoria |
+| Panel admin                            | `/panel/waba/preview` (config precios, ON/OFF, métricas) | Módulo Geema L2                                                            |
 
 ### 5.2 Integración WABA existente
 
-| Archivo / módulo actual | Cambio |
-|---|---|
-| `handlers/dispatcher.ts` | CTA post-collage Extensiones → botón preview (si feature flag ON) |
-| `lib/haiku-prompt.ts` | No mezclar con booking; CTA preview es acción determinística, no Haiku |
-| `lib/emotional-selling.ts` | Variante copy: "mira cómo te quedaría" → link preview |
-| `lib/inbound-image.ts` | **No** confundir selfie de preview con `diseno_referencia` / pausa staff — gate por `step` |
-| `whatsapp_sessions.step` | Nuevos: `lash_preview_awaiting_payment`, `lash_preview_awaiting_selfie`, `lash_preview_delivered` |
-| Portafolio | Fuente de referencia marketing + assets |
+| Archivo / módulo actual    | Cambio                                                                                            |
+| -------------------------- | ------------------------------------------------------------------------------------------------- |
+| `handlers/dispatcher.ts`   | CTA post-collage Extensiones → botón preview (si feature flag ON)                                 |
+| `lib/haiku-prompt.ts`      | No mezclar con booking; CTA preview es acción determinística, no Haiku                            |
+| `lib/emotional-selling.ts` | Variante copy: "mira cómo te quedaría" → link preview                                             |
+| `lib/inbound-image.ts`     | **No** confundir selfie de preview con `diseno_referencia` / pausa staff — gate por `step`        |
+| `whatsapp_sessions.step`   | Nuevos: `lash_preview_awaiting_payment`, `lash_preview_awaiting_selfie`, `lash_preview_delivered` |
+| Portafolio                 | Fuente de referencia marketing + assets                                                           |
 
 ### 5.3 Feature flag
 
@@ -247,11 +247,11 @@ CREATE TABLE lash_preview_styles (
 
 Detalle de producto (Culqi primario, Yape puente) → **[Plan 07](./07-PLAN-look-preview-multi-servicio.md)**. Resumen histórico del spike:
 
-| Método | Nota spike |
-|---|---|
-| **Culqi** | Camino recomendado desde el inicio; confirmado con Vanessa → Plan 07 |
-| **Yape manual + comprobante** | Legacy Vision OCR; no escalar a N tenants |
-| **Yape QR + MacroDroid** | Puente opcional Plan 07 (ref code 4 dígitos) |
+| Método                        | Nota spike                                                           |
+| ----------------------------- | -------------------------------------------------------------------- |
+| **Culqi**                     | Camino recomendado desde el inicio; confirmado con Vanessa → Plan 07 |
+| **Yape manual + comprobante** | Legacy Vision OCR; no escalar a N tenants                            |
+| **Yape QR + MacroDroid**      | Puente opcional Plan 07 (ref code 4 dígitos)                         |
 
 ---
 
@@ -268,11 +268,11 @@ Detalle de producto (Culqi primario, Yape puente) → **[Plan 07](./07-PLAN-look
 
 Alineado con [03-WABA-SUITE-ESTANDARIZACION.md](./geema-migration/03-WABA-SUITE-ESTANDARIZACION.md):
 
-| Capa | Contenido preview virtual |
-|---|---|
-| **L1 — Motor** | Edge `lash-preview`, Vertex Gemini Image, integración sesión WA |
-| **L2 — CMS** | Precios packs, ON/OFF, estilos habilitados, copy CTA, assets portafolio |
-| **L3 — Reglas tenant** | `lash_preview: { enabled, packInitialPen, packExtraPen, styles[], retentionDays }` en `tenant_settings` |
+| Capa                     | Contenido preview virtual                                                                                               |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| **L1 — Motor**           | Edge `lash-preview`, Vertex Gemini Image, integración sesión WA                                                         |
+| **L2 — CMS**             | Precios packs, ON/OFF, estilos habilitados, copy CTA, assets portafolio                                                 |
+| **L3 — Reglas tenant**   | `lash_preview: { enabled, packInitialPen, packExtraPen, styles[], retentionDays }` en `tenant_settings`                 |
 | **L4 — Preset vertical** | `spa-nails`: estilos Anime/Fox/…; `barbershop` / `hair-salon`: **off** o preview distinto (fade/corte) en roadmap Geema |
 
 **Paridad ZM → Geema:** implementar primero en repo ZM (`whatsapp-webhook` + `apps/web`); portar a `zm-tech` cuando el piloto supere DoD §11 — no duplicar lógica Vertex.
@@ -325,28 +325,28 @@ Spike cerrado cuando:
 
 ## 12. Métricas y dashboard
 
-| KPI | Fuente |
-|---|---|
-| Impresiones CTA preview en chats CTWA Ext | `wa_messages` + step |
-| Clicks link `/probar-mirada` | web analytics |
-| Pagos S/5 / S/8 | `lash_preview_orders` |
-| Costo compute / imagen | logs Edge + Storage |
-| CPA efectivo CTWA | Ads spend / (citas + ingreso preview) |
-| Preview → cita 7d | join `lash_preview_orders` ↔ `appointments` |
+| KPI                                       | Fuente                                      |
+| ----------------------------------------- | ------------------------------------------- |
+| Impresiones CTA preview en chats CTWA Ext | `wa_messages` + step                        |
+| Clicks link `/probar-mirada`              | web analytics                               |
+| Pagos S/5 / S/8                           | `lash_preview_orders`                       |
+| Costo compute / imagen                    | logs Edge + Storage                         |
+| CPA efectivo CTWA                         | Ads spend / (citas + ingreso preview)       |
+| Preview → cita 7d                         | join `lash_preview_orders` ↔ `appointments` |
 
 ---
 
 ## 13. Riesgos
 
-| Riesgo | Mitigación |
-|---|---|
-| Calidad IA inconsistente | Spike Avril GO; QA staff en primeras 20; copy legal orientativo |
-| Pay-first baja conversión vs freemium | A/B copy; ejemplos portafolio fuertes antes del pago |
-| Selfie ≠ persona (fraude) | No validar identidad en v1; límite 3+2 por teléfono / 24 h |
-| Latencia Edge > 2 min | Vertex ~26 s/imagen; 3 looks en paralelo o secuencial con UX progreso |
-| Costo GCP > margen S/5 | ~USD 0.03–0.08/img; monitorear en panel; créditos trial piloto |
-| IAM / 403 Vertex | Runbook VERTEX_AI_LASH_PREVIEW; roles `ml.developer` + `aiplatform.user` |
-| Play Store / políticas | App ZM no lee notificaciones ajenas; preview es web + WA propio — OK |
+| Riesgo                                | Mitigación                                                               |
+| ------------------------------------- | ------------------------------------------------------------------------ |
+| Calidad IA inconsistente              | Spike Avril GO; QA staff en primeras 20; copy legal orientativo          |
+| Pay-first baja conversión vs freemium | A/B copy; ejemplos portafolio fuertes antes del pago                     |
+| Selfie ≠ persona (fraude)             | No validar identidad en v1; límite 3+2 por teléfono / 24 h               |
+| Latencia Edge > 2 min                 | Vertex ~26 s/imagen; 3 looks en paralelo o secuencial con UX progreso    |
+| Costo GCP > margen S/5                | ~USD 0.03–0.08/img; monitorear en panel; créditos trial piloto           |
+| IAM / 403 Vertex                      | Runbook VERTEX_AI_LASH_PREVIEW; roles `ml.developer` + `aiplatform.user` |
+| Play Store / políticas                | App ZM no lee notificaciones ajenas; preview es web + WA propio — OK     |
 
 ---
 
@@ -362,16 +362,16 @@ Spike cerrado cuando:
 
 ## 15. Referencias
 
-| Doc | Relación |
-|---|---|
-| [07-PLAN-look-preview-multi-servicio.md](./07-PLAN-look-preview-multi-servicio.md) | **Producto** multi-servicio, Culqi, naming `look-preview` |
-| [VERTEX_AI_LASH_PREVIEW.md](../ops/VERTEX_AI_LASH_PREVIEW.md) | **Runbook GCP** — credenciales, IAM, comandos, troubleshooting |
-| [04-PLAN-ctwa-collages-cierre-intencion.md](./04-PLAN-ctwa-collages-cierre-intencion.md) | Entrada CTWA Extensiones |
-| [03-WABA-SUITE-ESTANDARIZACION.md](./geema-migration/03-WABA-SUITE-ESTANDARIZACION.md) | Capas L1–L4 Geema |
-| [02-PLAN-retrofit-tenant-id.md](./02-PLAN-retrofit-tenant-id.md) | `tenant_id` en tablas nuevas |
-| `scripts/lash-overlay-spike/SPIKE-CONCLUSIONS.md` | Historial overlay NO-GO + Vertex GO |
-| `supabase/functions/_shared/vertex-gemini-image.ts` | Cliente Vertex + prompts |
-| `supabase/functions/lash-preview/` | Edge scaffold (renombrar → `look-preview` en Plan 07) |
+| Doc                                                                                      | Relación                                                       |
+| ---------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| [07-PLAN-look-preview-multi-servicio.md](./07-PLAN-look-preview-multi-servicio.md)       | **Producto** multi-servicio, Culqi, naming `look-preview`      |
+| [VERTEX_AI_LASH_PREVIEW.md](../ops/VERTEX_AI_LASH_PREVIEW.md)                            | **Runbook GCP** — credenciales, IAM, comandos, troubleshooting |
+| [04-PLAN-ctwa-collages-cierre-intencion.md](./04-PLAN-ctwa-collages-cierre-intencion.md) | Entrada CTWA Extensiones                                       |
+| [03-WABA-SUITE-ESTANDARIZACION.md](./geema-migration/03-WABA-SUITE-ESTANDARIZACION.md)   | Capas L1–L4 Geema                                              |
+| [02-PLAN-retrofit-tenant-id.md](../02-PLAN-retrofit-tenant-id.md)                        | `tenant_id` en tablas nuevas                                   |
+| `scripts/lash-overlay-spike/SPIKE-CONCLUSIONS.md`                                        | Historial overlay NO-GO + Vertex GO                            |
+| `supabase/functions/_shared/vertex-gemini-image.ts`                                      | Cliente Vertex + prompts                                       |
+| `supabase/functions/lash-preview/`                                                       | Edge scaffold (renombrar → `look-preview` en Plan 07)          |
 
 ---
 

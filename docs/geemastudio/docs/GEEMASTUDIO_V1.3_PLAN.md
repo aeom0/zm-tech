@@ -19,8 +19,8 @@ Estado: **completado (base del trabajo actual)**.
 
 - Búsqueda global de cadenas sensibles (nombres, IDs, colores, `S/`, `es-PE`, `chicas`, etc.).
 - Limpieza selectiva en:
-  - Código fuente mobile (`apps/mobile`).
-  - Código fuente web (`apps/web`).
+  - Código fuente mobile (`apps/geemastudio-mobile`).
+  - Código fuente web (`apps/geemastudio-web`).
   - Paquetes compartidos (`packages/shared-schema`, `packages/tenant-config`).
 - Mantener referencias históricas solo en:
   - `docs/GEEMASTUDIO_MIGRATION_GUIDE.md`.
@@ -61,7 +61,7 @@ Progreso:
 
 ### Subtareas
 
-- Crear helper `formatCurrency(amount, config)` en `apps/mobile/utils/format.ts`:
+- Crear helper `formatCurrency(amount, config)` en `apps/geemastudio-mobile/utils/format.ts`:
   - Usa `Intl.NumberFormat` con:
     - `locale = config.locale.language`.
     - `currency = config.locale.currency.code`.
@@ -87,7 +87,7 @@ Progreso:
 
 ### Alcance
 
-- Nueva carpeta `apps/mobile/screens/clients/`:
+- Nueva carpeta `apps/geemastudio-mobile/screens/clients/`:
   - `types.ts` con:
     - `Client`, `ClientWithMetrics`, `ClientSegment`, `ClientKPIs`.
   - Hooks:
@@ -144,7 +144,7 @@ Estado: **completado**.
 Estado: **completado (mobile)**  
 Progreso:
 
-- Carpeta `apps/mobile/screens/clients/` creada con:
+- Carpeta `apps/geemastudio-mobile/screens/clients/` creada con:
   - `types.ts` (`Client`, `ClientWithMetrics`, `ClientSegment`, `ClientKPIs`).
   - Hooks `useClientsData` y `useClientDetail` con Supabase directo (clients, appointments, payments) y combinación en memoria.
   - Componentes: `ClientsHeader`, `ClientKPIStrip`, `ClientCard`, `ClientDetailModal`, `ClientFilterBar`, `ClientAppointmentRow`.
@@ -159,7 +159,7 @@ Progreso:
 
 ### Alcance
 
-- Arquitectura en `apps/mobile/screens/settings/`:
+- Arquitectura en `apps/geemastudio-mobile/screens/settings/`:
   - `types.ts`.
   - `hooks/useSettingsData.ts`:
     - Versión de app, canal EAS, updateId, info OTA, limpieza de caché, etc.

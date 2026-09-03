@@ -15,7 +15,7 @@
 
 ## Conectar al servidor de desarrollo (opcional — solo para pruebas con Expo)
 
-Si Alberto tiene `yarn mobile:dev` corriendo:
+Si Alberto tiene `pnpm dev:mobile` corriendo:
 
 1. Al abrir la app, tocar el ícono de Expo en la pantalla de inicio
 2. Ingresar la IP local de la máquina de desarrollo: `http://<IP>:8081`

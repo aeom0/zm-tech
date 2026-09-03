@@ -4,7 +4,7 @@ GeemaStudio no tiene servidor propio. El backend es **Supabase** (Auth + PostgRE
 
 ## Requisitos previos
 
-- Node.js 22+, Yarn 4
+- Node.js 22+, pnpm (ver `packageManager` en `package.json` raíz)
 - Cuenta Supabase (proyecto `udelxwwnyivknslueerr`)
 - Cuenta Vercel (web)
 - Cuenta Expo/EAS (móvil)
@@ -14,7 +14,7 @@ GeemaStudio no tiene servidor propio. El backend es **Supabase** (Auth + PostgRE
 El “backend” ya está en Supabase:
 
 - **Auth**: email/password; perfiles y RLS por rol (dev/owner/staff).
-- **Base de datos**: schema aplicado con `yarn db:push` o SQL Editor (ver [DESARROLLO_LOCAL.md](DESARROLLO_LOCAL.md)).
+- **Base de datos**: schema aplicado con `pnpm db:push` o SQL Editor (ver [DESARROLLO_LOCAL.md](DESARROLLO_LOCAL.md)).
 - **tenant_settings**: configuración del negocio; se crea/actualiza desde el onboarding en la app.
 
 No hay que desplegar ningún servidor Express ni Railway. Variables de Supabase (URL, anon key, service role) se usan en build/deploy de web y mobile.
@@ -24,15 +24,15 @@ No hay que desplegar ningún servidor Express ni Railway. Variables de Supabase 
 ### 1. Preparar
 
 ```bash
-yarn install
-yarn web:build
+pnpm install
+pnpm build:web
 ```
 
-El output está en `apps/web/.next`.
+El output está en `apps/geemastudio-web/.next`.
 
 ### 2. Configurar Vercel
 
-- Conectar el repo; **Root Directory**: `apps/web` o configurar build en raíz con `installCommand` que instale workspaces.
+- Conectar el repo; **Root Directory**: `apps/geemastudio-web` o configurar build en raíz con `installCommand` que instale workspaces.
 - Variables de entorno en Vercel:
   - `NEXT_PUBLIC_SUPABASE_URL=https://udelxwwnyivknslueerr.supabase.co`
   - `NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...` (anon key del proyecto)
@@ -46,7 +46,7 @@ vercel --prod
 
 (o push a la rama conectada si está configurado el deploy automático).
 
-**Build en Vercel (monorepo)**: en la raíz del repo, **`vercel.json` no usa `ignoreCommand`** para omitir builds por paths: cada push a la rama de producción (p. ej. `main`) dispara **`yarn web:build`**. Motivo: los `git diff` contra `VERCEL_GIT_PREVIOUS_SHA` fallaban en checkouts **shallow** (`fatal: bad object`). Si necesitas ahorrar minutos, valorar otras estrategias (p. ej. Turborepo remote cache) en lugar de omitir el build por diff.
+**Build en Vercel (monorepo)**: en la raíz del repo, **`vercel.json` no usa `ignoreCommand`** para omitir builds por paths: cada push a la rama de producción (p. ej. `main`) dispara **`pnpm build:web`**. Motivo: los `git diff` contra `VERCEL_GIT_PREVIOUS_SHA` fallaban en checkouts **shallow** (`fatal: bad object`). Si necesitas ahorrar minutos, valorar otras estrategias (p. ej. Turborepo remote cache) en lugar de omitir el build por diff.
 
 ### Rutas protegidas (panel)
 
@@ -55,11 +55,11 @@ vercel --prod
 
 ## Deployment móvil (EAS Build)
 
-La configuración de EAS vive **solo** en `apps/mobile/eas.json` (no hay `eas.json` en la raíz del monorepo). Los comandos `eas build` / `eas update` deben ejecutarse desde `apps/mobile` (o con `--project-dir apps/mobile`).
+La configuración de EAS vive **solo** en `apps/geemastudio-mobile/eas.json` (no hay `eas.json` en la raíz del monorepo). Los comandos `eas build` / `eas update` deben ejecutarse desde `apps/geemastudio-mobile` (o con `--project-dir apps/geemastudio-mobile`).
 
 ### 1. Variables de entorno
 
-En **expo.dev** (variables por entorno: development / preview / production) y, si aplica, en `apps/mobile/eas.json` bajo `build.<profile>.env`, definir:
+En **expo.dev** (variables por entorno: development / preview / production) y, si aplica, en `apps/geemastudio-mobile/eas.json` bajo `build.<profile>.env`, definir:
 
 - `EXPO_PUBLIC_SUPABASE_URL=https://udelxwwnyivknslueerr.supabase.co`
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJ...`
@@ -67,12 +67,12 @@ En **expo.dev** (variables por entorno: development / preview / production) y, s
 ### 2. Build
 
 ```bash
-cd apps/mobile
+cd apps/geemastudio-mobile
 eas build --platform android --profile production
 # o
 eas build --platform ios --profile production
 # preview interno (APK Android)
-yarn build:preview:android
+pnpm --filter geemastudio-mobile build:preview:android
 
 # CI / sin prompts (requiere EXPO_TOKEN en el entorno)
 eas build --profile preview --platform android --non-interactive
@@ -83,7 +83,7 @@ El flag **`--non-interactive`** evita preguntas en terminal; en máquinas sin se
 ### 3. OTA (actualizaciones JS)
 
 ```bash
-cd apps/mobile
+cd apps/geemastudio-mobile
 npx eas-cli@latest update --branch production --message "Descripción"
 # canal preview (builds con perfil preview)
 npx eas-cli@latest update --branch preview --message "Descripción"
@@ -99,7 +99,7 @@ npx eas-cli@latest update --branch preview --message "Descripción"
 
 - [ ] Variables de entorno configuradas (Supabase URL + anon key)
 - [ ] Schema y RLS aplicados en Supabase
-- [ ] Build web (`yarn web:build`) sin errores
+- [ ] Build web (`pnpm build:web`) sin errores
 - [ ] Build EAS o OTA probado en canal correspondiente
 
 ---

@@ -1,13 +1,13 @@
 # GeemaStudio — Arquitectura Web
 
 > **Fecha**: abril 2026  
-> **Estado**: documento de referencia permanente · actualizar ante cualquier cambio estructural en `apps/web`
+> **Estado**: documento de referencia permanente · actualizar ante cualquier cambio estructural en `apps/geemastudio-web`
 
 ---
 
 ## Principio fundamental
 
-`apps/web` contiene **dos productos distintos** que comparten infraestructura (Next.js, Supabase, Vercel) pero sirven audiencias completamente diferentes. Confundirlos genera decisiones de routing, auth y pricing incorrectas.
+`apps/geemastudio-web` contiene **dos productos distintos** que comparten infraestructura (Next.js, Supabase, Vercel) pero sirven audiencias completamente diferentes. Confundirlos genera decisiones de routing, auth y pricing incorrectas.
 
 ---
 

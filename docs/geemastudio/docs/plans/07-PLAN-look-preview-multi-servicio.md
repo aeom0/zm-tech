@@ -16,12 +16,12 @@ ZM paga CPA CTWA (~S/2–3) por chats que muchas veces **no agendan**. El previe
 
 Plan 06 validó calidad con **Vertex Gemini Image** en Extensiones. Este plan **amplía el mismo motor** a lifting, cejas/microblading, uñas, hidralips, etc., sin una Edge Function por categoría.
 
-| Métrica | Meta piloto (90 días) |
-|---|---|
-| % chats CTWA elegibles que pagan preview | ≥ 15 % |
-| Ingreso bruto preview / chat CTWA (blended) | ≥ S/0,80 |
-| Preview pagado → `add_to_cart` en 7 días | ≥ 25 % |
-| Tiempo entrega post-pago | ≤ 2 min (p95) |
+| Métrica                                     | Meta piloto (90 días) |
+| ------------------------------------------- | --------------------- |
+| % chats CTWA elegibles que pagan preview    | ≥ 15 %                |
+| Ingreso bruto preview / chat CTWA (blended) | ≥ S/0,80              |
+| Preview pagado → `add_to_cart` en 7 días    | ≥ 25 %                |
+| Tiempo entrega post-pago                    | ≤ 2 min (p95)         |
 
 **Precios (igual Plan 06):** pack inicial **S/5** (1 look + 2 extra), ampliación **S/8** (+2). Pay-first; sin watermark freemium.
 
@@ -29,11 +29,11 @@ Plan 06 validó calidad con **Vertex Gemini Image** en Extensiones. Este plan **
 
 ## 2. Naming — una sola Edge `look-preview`
 
-| Antes (Plan 06 / scaffold) | Después (este plan) |
-|---|---|
-| Edge `lash-preview` | Edge **`look-preview`** |
-| Tablas `lash_preview_*` | Tablas **`look_preview_*`** |
-| Flag `lash_preview_enabled` | Flag **`look_preview_enabled`** |
+| Antes (Plan 06 / scaffold)    | Después (este plan)                                |
+| ----------------------------- | -------------------------------------------------- |
+| Edge `lash-preview`           | Edge **`look-preview`**                            |
+| Tablas `lash_preview_*`       | Tablas **`look_preview_*`**                        |
+| Flag `lash_preview_enabled`   | Flag **`look_preview_enabled`**                    |
 | Scripts `yarn lash-preview:*` | Preferir `yarn look-preview:*` (alias temporal OK) |
 
 **Decisión:** **no** crear `nails-preview`, `brows-preview`, etc. Misma auth GCP, mismo `vertexGeminiImageEdit`, mismos pagos/órdenes. Solo cambian `category_key` + `prompt_template` (+ foto de referencia opcional).
@@ -46,19 +46,19 @@ Código scaffold actual permanece en `supabase/functions/lash-preview/` hasta el
 
 ### v1 — Rostro (mismo tipo de selfie)
 
-| `category_key` | Estilos piloto (ejemplos) |
-|---|---|
-| `extensiones` | Anime, Fox, Wispy, Volumen, Rimel muñeca / Doll-Eye |
-| `lifting` | Lifting natural, lifting + tinte |
-| `cejas` | Diseño, laminado |
-| `microblading` | Microblading pelo a pelo; combo micro + Doll-Eye |
-| `hidralips` | Volumen / color natural (labios) |
+| `category_key` | Estilos piloto (ejemplos)                           |
+| -------------- | --------------------------------------------------- |
+| `extensiones`  | Anime, Fox, Wispy, Volumen, Rimel muñeca / Doll-Eye |
+| `lifting`      | Lifting natural, lifting + tinte                    |
+| `cejas`        | Diseño, laminado                                    |
+| `microblading` | Microblading pelo a pelo; combo micro + Doll-Eye    |
+| `hidralips`    | Volumen / color natural (labios)                    |
 
 ### v2 — Manos / uñas (otro framing de cámara)
 
-| `category_key` | Nota |
-|---|---|
-| `unas` | Requiere foto de manos/uñas, no selfie facial; UX y validación Haiku distintas |
+| `category_key` | Nota                                                                           |
+| -------------- | ------------------------------------------------------------------------------ |
+| `unas`         | Requiere foto de manos/uñas, no selfie facial; UX y validación Haiku distintas |
 
 Combo CTWA “Mirada Espectacular” (micro + pestañas) = un `style_key` con prompt compuesto (ver §5).
 
@@ -87,13 +87,13 @@ flowchart LR
 
 ### Componentes
 
-| Componente | Rol |
-|---|---|
-| `apps/web` `/probar-mirada` | Selfie, estilo, pago, Realtime, resultado |
-| Edge `look-preview` | Validación + Vertex + Storage + results |
-| Edge `look-preview-payment` o webhook Culqi | Marca orden `paid` + créditos |
-| Edge `yape-ingest` (opcional) | POST desde MacroDroid 932 |
-| `look_preview_styles` | Catálogo prompts por categoría/estilo |
+| Componente                                  | Rol                                       |
+| ------------------------------------------- | ----------------------------------------- |
+| `apps/web` `/probar-mirada`                 | Selfie, estilo, pago, Realtime, resultado |
+| Edge `look-preview`                         | Validación + Vertex + Storage + results   |
+| Edge `look-preview-payment` o webhook Culqi | Marca orden `paid` + créditos             |
+| Edge `yape-ingest` (opcional)               | POST desde MacroDroid 932                 |
+| `look_preview_styles`                       | Catálogo prompts por categoría/estilo     |
 
 ---
 
@@ -146,17 +146,17 @@ Do NOT: overlaid sticker effect, floating eyelashes, plastic fake lashes, cartoo
 Apply: professional salon virtual try-on — seamless hair-by-hair microblading following natural brow arch, plus dark dense Doll-Eye mascara-fiber extensions centered on the upper lash line, photorealistic, natural skin grain preserved.
 ```
 
-Copy legal (UI): *preview orientativo; el resultado en salón puede variar*.
+Copy legal (UI): _preview orientativo; el resultado en salón puede variar_.
 
 ### 5.4 Catálogo v1 (Gemini + guías Vanessa) — completo
 
 Anexo canónico: [`07-anexo-prompts-vertex-v1.md`](./07-anexo-prompts-vertex-v1.md) — **23/23** `style_keys`.
 
-| Grupo | Estilos |
-|---|---|
-| Extensiones (técnica + efecto) | `clasicas` … `anime` (incl. 3D/4D Natural/Ardilla/Cat Eyes/Ojo abierto, Hawaiana, Fox, Mega, Wispy, Mojado, Rímel) |
-| Combo CTWA | `micro_doll_eye` (`combo_mirada`) |
-| Otros | `lifting_pestanas`, `cejas_diseno`, `cejas_laminado`, `microblading_solo`, `hidralips`, `unas_gel_natural`, `unas_diseno_simple` |
+| Grupo                          | Estilos                                                                                                                          |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| Extensiones (técnica + efecto) | `clasicas` … `anime` (incl. 3D/4D Natural/Ardilla/Cat Eyes/Ojo abierto, Hawaiana, Fox, Mega, Wispy, Mojado, Rímel)               |
+| Combo CTWA                     | `micro_doll_eye` (`combo_mirada`)                                                                                                |
+| Otros                          | `lifting_pestanas`, `cejas_diseno`, `cejas_laminado`, `microblading_solo`, `hidralips`, `unas_gel_natural`, `unas_diseno_simple` |
 
 Fuentes: flyers Vanessa + guía Haiku [`extension-effects-guide.ts`](../../supabase/functions/whatsapp-webhook/lib/extension-effects-guide.ts).
 
@@ -166,11 +166,11 @@ Fuentes: flyers Vanessa + guía Haiku [`extension-effects-guide.ts`](../../supab
 
 ## 6. Pagos
 
-| Método | Rol | Notas |
-|---|---|---|
-| **Culqi** (tarjeta / Yape vía Culqi) | **Primario** | Confirmado con Vanessa; automatiza S/5 y S/8; webhook → `paid` |
-| **Yape QR estático + MacroDroid** | Puente opcional | Ref code 4 dígitos en mensaje Yape → `yape-ingest`; validar en 932 que el mensaje aparece en el push |
-| **Comprobante WA + Vision** | Fallback legacy | Flujo citas existente; alta fricción para preview |
+| Método                               | Rol             | Notas                                                                                                |
+| ------------------------------------ | --------------- | ---------------------------------------------------------------------------------------------------- |
+| **Culqi** (tarjeta / Yape vía Culqi) | **Primario**    | Confirmado con Vanessa; automatiza S/5 y S/8; webhook → `paid`                                       |
+| **Yape QR estático + MacroDroid**    | Puente opcional | Ref code 4 dígitos en mensaje Yape → `yape-ingest`; validar en 932 que el mensaje aparece en el push |
+| **Comprobante WA + Vision**          | Fallback legacy | Flujo citas existente; alta fricción para preview                                                    |
 
 ### Culqi (camino feliz)
 
@@ -332,15 +332,15 @@ Selfie por WA si no abre web en 15 min; gate por `step` para no confundir con fo
 
 ## 11. Riesgos
 
-| Riesgo | Mitigación |
-|---|---|
+| Riesgo                              | Mitigación                                              |
+| ----------------------------------- | ------------------------------------------------------- |
 | Calidad inconsistente por categoría | QA staff por estilo; prompts anatómicamente específicos |
-| Culqi onboarding / liquidación | Coordinar con Vanessa; sandbox antes de prod |
-| Mensaje Yape no llega al push | Spike MacroDroid; plan B código 3 dígitos en web |
-| MIUI mata MacroDroid | Autostart + batería sin restricción en 932 |
-| Latencia 3× ~26 s | UX progreso; paralelo o secuencial con estados |
-| Costo Vertex > margen S/5 | Monitoreo panel; créditos GCP piloto |
-| Rename rompe CI/scripts | Un PR: carpeta Edge + workflow + yarn scripts |
+| Culqi onboarding / liquidación      | Coordinar con Vanessa; sandbox antes de prod            |
+| Mensaje Yape no llega al push       | Spike MacroDroid; plan B código 3 dígitos en web        |
+| MIUI mata MacroDroid                | Autostart + batería sin restricción en 932              |
+| Latencia 3× ~26 s                   | UX progreso; paralelo o secuencial con estados          |
+| Costo Vertex > margen S/5           | Monitoreo panel; créditos GCP piloto                    |
+| Rename rompe CI/scripts             | Un PR: carpeta Edge + workflow + yarn scripts           |
 
 ---
 
@@ -356,26 +356,26 @@ Selfie por WA si no abre web en 15 min; gate por `step` para no confundir con fo
 
 ## 13. Capas Geema
 
-| Capa | Look preview |
-|---|---|
-| L1 | Edge `look-preview`, Vertex, sesión WA |
-| L2 | Precios, ON/OFF, estilos, copy CTA, portafolio |
-| L3 | `look_preview: { enabled, packs, styles[], retentionDays }` |
-| L4 | Preset `spa-nails`; otras verticales off o roadmap |
+| Capa | Look preview                                                |
+| ---- | ----------------------------------------------------------- |
+| L1   | Edge `look-preview`, Vertex, sesión WA                      |
+| L2   | Precios, ON/OFF, estilos, copy CTA, portafolio              |
+| L3   | `look_preview: { enabled, packs, styles[], retentionDays }` |
+| L4   | Preset `spa-nails`; otras verticales off o roadmap          |
 
 ---
 
 ## 14. Referencias
 
-| Doc | Relación |
-|---|---|
-| [06-PLAN-preview-virtual-extensiones-ctwa.md](./06-PLAN-preview-virtual-extensiones-ctwa.md) | Spike Vertex + piloto Extensiones |
-| [07-anexo-prompts-vertex-v1.md](./07-anexo-prompts-vertex-v1.md) | Prompts VERTEX_READY por `style_key` (v1 parcial) |
-| [VERTEX_AI_LASH_PREVIEW.md](../ops/VERTEX_AI_LASH_PREVIEW.md) | Runbook GCP (actualizar título/alias en Fase A) |
-| [04-PLAN-ctwa-collages-cierre-intencion.md](./04-PLAN-ctwa-collages-cierre-intencion.md) | Entrada CTWA |
-| [02-PLAN-retrofit-tenant-id.md](./02-PLAN-retrofit-tenant-id.md) | `tenant_id` |
-| `supabase/functions/_shared/vertex-gemini-image.ts` | Cliente Vertex |
-| `supabase/functions/lash-preview/` | Scaffold pre-rename |
+| Doc                                                                                          | Relación                                          |
+| -------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| [06-PLAN-preview-virtual-extensiones-ctwa.md](./06-PLAN-preview-virtual-extensiones-ctwa.md) | Spike Vertex + piloto Extensiones                 |
+| [07-anexo-prompts-vertex-v1.md](./07-anexo-prompts-vertex-v1.md)                             | Prompts VERTEX_READY por `style_key` (v1 parcial) |
+| [VERTEX_AI_LASH_PREVIEW.md](../ops/VERTEX_AI_LASH_PREVIEW.md)                                | Runbook GCP (actualizar título/alias en Fase A)   |
+| [04-PLAN-ctwa-collages-cierre-intencion.md](./04-PLAN-ctwa-collages-cierre-intencion.md)     | Entrada CTWA                                      |
+| [02-PLAN-retrofit-tenant-id.md](../02-PLAN-retrofit-tenant-id.md)                            | `tenant_id`                                       |
+| `supabase/functions/_shared/vertex-gemini-image.ts`                                          | Cliente Vertex                                    |
+| `supabase/functions/lash-preview/`                                                           | Scaffold pre-rename                               |
 
 ---
 
