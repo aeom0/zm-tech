@@ -257,8 +257,13 @@ export function AgendaCalendarGrid({
                       style={[
                         styles.appointmentChip,
                         {
-                          backgroundColor: getEmployeeColor(employees, apt.employee_id) + '20',
-                          borderLeftColor: getEmployeeColor(employees, apt.employee_id),
+                          backgroundColor:
+                            getEmployeeColor(employees, apt.employee_id, theme.primary) + '20',
+                          borderLeftColor: getEmployeeColor(
+                            employees,
+                            apt.employee_id,
+                            theme.primary
+                          ),
                         },
                       ]}
                       onPress={() => onOpenDetail(apt)}
@@ -281,7 +286,7 @@ export function AgendaCalendarGrid({
                         style={[
                           styles.chipEmployee,
                           {
-                            color: getEmployeeColor(employees, apt.employee_id),
+                            color: getEmployeeColor(employees, apt.employee_id, theme.primary),
                           },
                         ]}
                         numberOfLines={1}

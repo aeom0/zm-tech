@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
 import { supabase } from '@/lib/supabase'
@@ -8,7 +9,10 @@ import type {
   DashboardPayment,
   DashboardServiceRow,
   DashboardStats,
+  DashboardTopService,
 } from '../types'
+
+const TOP_SERVICES_LIMIT = 4
 
 async function fetchDashboardStats(startOfDay: string, endOfDay: string): Promise<DashboardStats> {
   const [paymentsRes, completedRes, scheduledRes, inventoryRes] = await Promise.all([
@@ -108,6 +112,36 @@ export function useDashboardQueries(
     },
   })
 
+  const { data: completedServiceIds = [] } = useQuery<string[]>({
+    queryKey: ['dashboard_completed_service_ids'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('appointments')
+        .select('service_id')
+        .eq('status', 'completed')
+        .not('service_id', 'is', null)
+      if (error) {
+        throw new Error(error.message)
+      }
+      return (data ?? []).map((r) => r.service_id as string)
+    },
+  })
+
+  const topServices = useMemo<DashboardTopService[]>(() => {
+    const counts = new Map<string, number>()
+    for (const id of completedServiceIds) {
+      counts.set(id, (counts.get(id) ?? 0) + 1)
+    }
+    return Array.from(counts.entries())
+      .map(([id, count]) => ({
+        id,
+        count,
+        name: services.find((s) => s.id === id)?.name ?? 'Servicio',
+      }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, TOP_SERVICES_LIMIT)
+  }, [completedServiceIds, services])
+
   const appointmentIds = appointments.map((a) => a.id)
 
   const { data: paymentsByAppointment = [] } = useQuery<DashboardPayment[]>({
@@ -136,5 +170,6 @@ export function useDashboardQueries(
     employees,
     services,
     paymentsByAppointment,
+    topServices,
   }
 }

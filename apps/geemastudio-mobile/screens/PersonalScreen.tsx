@@ -25,7 +25,7 @@ import { useTenant } from '@/contexts/TenantContext'
 import { queryClient } from '@/lib/query-client'
 import { supabase } from '@/lib/supabase'
 import { borrarAvatarSiEsStorage, subirAvatarEmpleadoDefault } from '@/lib/employeeAvatar'
-import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { Spacing, BorderRadius } from '@/constants/theme'
 import type { PaymentMode } from '@geemastudio/shared-schema'
 import { EmployeePaymentBadge } from '@/screens/personal/components/EmployeePaymentBadge'
 import { useEmployeesDialect, useEmployeesQuery } from '@/screens/personal/hooks/useEmployeesData'
@@ -447,7 +447,7 @@ export default function PersonalScreen() {
       {isLoading ? (
         <ActivityIndicator
           size="large"
-          color={Colors.light.violet}
+          color={theme.violet}
           style={[styles.loader, { marginTop: headerHeight + Spacing.lg }]}
         />
       ) : (

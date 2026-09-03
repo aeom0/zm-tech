@@ -2,7 +2,6 @@ import React from 'react'
 import { View } from 'react-native'
 
 import { ThemedText } from '@/components/ThemedText'
-import { Colors } from '@/constants/theme'
 
 import { computeServiceLinesTotals, lineUnitPrice } from '../../agendaUtils'
 import type { AgendaEmployee, AgendaService, AgendaServiceLine } from '../../types'
@@ -74,7 +73,7 @@ export function SummaryCard({
       </View>
       <View style={[styles.summaryRow, styles.summaryRowLast]}>
         <ThemedText style={[styles.summaryLabel, { color: theme.textMuted }]}>Total</ThemedText>
-        <ThemedText style={[styles.summaryPrice, { color: Colors.light.gold }]}>
+        <ThemedText style={[styles.summaryPrice, { color: theme.gold }]}>
           {currencySymbol} {totalPrice.toFixed(2)}
         </ThemedText>
       </View>

@@ -3,7 +3,6 @@ import { Pressable, View } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
-import { Colors } from '@/constants/theme'
 
 import type { InventoryItem } from '../types'
 import { inventoryStyles as styles } from '../inventoryStyles'
@@ -15,6 +14,7 @@ interface InventoryItemCardProps {
     border: string
     text: string
     textMuted: string
+    warning: string
   }
   onPress: () => void
   onLongPress: () => void
@@ -38,7 +38,7 @@ export function InventoryItemCard({
         styles.itemCard,
         {
           backgroundColor: theme.backgroundDefault,
-          borderColor: isLowStock ? Colors.light.warning : theme.border,
+          borderColor: isLowStock ? theme.warning : theme.border,
           transform: [{ scale: pressed ? 0.98 : 1 }],
         },
       ]}
@@ -49,8 +49,8 @@ export function InventoryItemCard({
         <View style={styles.itemHeader}>
           <ThemedText style={styles.itemName}>{item.name}</ThemedText>
           {isLowStock && (
-            <View style={[styles.warningBadge, { backgroundColor: Colors.light.warning + '20' }]}>
-              <Feather name="alert-triangle" size={12} color={Colors.light.warning} />
+            <View style={[styles.warningBadge, { backgroundColor: theme.warning + '20' }]}>
+              <Feather name="alert-triangle" size={12} color={theme.warning} />
             </View>
           )}
         </View>
@@ -64,7 +64,7 @@ export function InventoryItemCard({
         >
           <Feather name="minus" size={18} color={theme.text} />
         </Pressable>
-        <ThemedText style={[styles.quantityText, isLowStock && { color: Colors.light.warning }]}>
+        <ThemedText style={[styles.quantityText, isLowStock && { color: theme.warning }]}>
           {item.quantity}
         </ThemedText>
         <Pressable

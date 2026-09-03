@@ -130,9 +130,14 @@ export function PromosTab() {
   )
 
   const savePending = createMutation.isPending || updateMutation.isPending
+  const activeCount = promotions.filter((p) => p.is_active).length
 
   return (
     <View style={styles.flex}>
+      <ThemedText style={[styles.subtitle, { color: theme.textMuted }]}>
+        {activeCount} promoci{activeCount === 1 ? 'ón' : 'ones'} activa
+        {activeCount === 1 ? '' : 's'}
+      </ThemedText>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{
@@ -165,7 +170,7 @@ export function PromosTab() {
               No hay promos
             </ThemedText>
             <ThemedText style={[styles.emptySub, { color: theme.textMuted }]}>
-              Armá combos con precio rebajado
+              Armá promociones con precio rebajado
             </ThemedText>
           </View>
         ) : (
@@ -209,6 +214,12 @@ export function PromosTab() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  subtitle: {
+    fontSize: 13,
+    fontWeight: '500',
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.sm,
+  },
   scroll: { flex: 1 },
   empty: {
     alignItems: 'center',

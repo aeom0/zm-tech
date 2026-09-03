@@ -1,5 +1,13 @@
 import React, { useCallback, useMemo, useState } from 'react'
-import { View, StyleSheet, Pressable, RefreshControl, Alert, ActivityIndicator } from 'react-native'
+import {
+  View,
+  StyleSheet,
+  Pressable,
+  RefreshControl,
+  Alert,
+  ActivityIndicator,
+  TextInput,
+} from 'react-native'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { Feather } from '@expo/vector-icons'
 import * as Haptics from 'expo-haptics'
@@ -41,12 +49,16 @@ export function ServicesTab() {
     toggleActiveMutation,
     createCategoryMutation,
     updateCategoryMutation,
+    updateCategoryIconMutation,
+    supportsCategoryIcons,
     deleteCategoryMutation,
     reorderCategoriesMutation,
     reorderServicesMutation,
   } = useServicesData()
 
   const [filterCategoryId, setFilterCategoryId] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchOpen, setSearchOpen] = useState(false)
   const [modalVisible, setModalVisible] = useState(false)
   const [editing, setEditing] = useState<ServiceRow | null>(null)
   const [categoriesModalVisible, setCategoriesModalVisible] = useState(false)
@@ -62,15 +74,18 @@ export function ServicesTab() {
   }, [services])
 
   const groupedServices = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase()
     const groups = categories.map((category) => ({
       ...category,
-      services: localServices.filter((s) => s.category_id === category.id),
+      services: localServices.filter(
+        (s) => s.category_id === category.id && (!query || s.name.toLowerCase().includes(query))
+      ),
     }))
     if (filterCategoryId) {
       return groups.filter((g) => g.id === filterCategoryId)
     }
     return groups
-  }, [categories, localServices, filterCategoryId])
+  }, [categories, localServices, filterCategoryId, searchQuery])
 
   const handleCategoryDragEnd = useCallback(
     (categoryId: string, data: ServiceRow[]) => {
@@ -186,6 +201,53 @@ export function ServicesTab() {
 
   return (
     <View style={styles.flex}>
+      <View style={styles.subtitleRow}>
+        {searchOpen ? (
+          <View
+            style={[
+              styles.searchRow,
+              { backgroundColor: theme.backgroundSecondary, borderColor: theme.border },
+            ]}
+          >
+            <Feather name="search" size={16} color={theme.textMuted} />
+            <TextInput
+              style={[styles.searchInput, { color: theme.text }]}
+              placeholder="Buscar servicio…"
+              placeholderTextColor={theme.textMuted}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              autoFocus
+            />
+            <Pressable
+              onPress={() => {
+                setSearchOpen(false)
+                setSearchQuery('')
+              }}
+              hitSlop={8}
+            >
+              <Feather name="x" size={16} color={theme.textMuted} />
+            </Pressable>
+          </View>
+        ) : (
+          <>
+            <ThemedText style={[styles.subtitle, { color: theme.textMuted }]}>
+              {services.length} servicio{services.length === 1 ? '' : 's'} · {categories.length}{' '}
+              categoría{categories.length === 1 ? '' : 's'}
+            </ThemedText>
+            <Pressable
+              style={[styles.searchIconBtn, { borderColor: theme.border }]}
+              onPress={() => setSearchOpen(true)}
+              hitSlop={8}
+              accessibilityLabel="Buscar servicio"
+            >
+              <Feather name="search" size={16} color={theme.text} />
+            </Pressable>
+          </>
+        )}
+      </View>
+
+      <ThemedText style={[styles.sectionLabel, { color: theme.textMuted }]}>Categorías</ThemedText>
+
       <View style={styles.filterBar}>
         <ScrollFadeRow
           backgroundColor={theme.backgroundRoot}
@@ -244,7 +306,7 @@ export function ServicesTab() {
             hitSlop={8}
             accessibilityLabel="Gestionar categorías"
           >
-            <Feather name="folder" size={18} color={theme.primary} />
+            <Feather name="edit-2" size={16} color={theme.primary} />
           </Pressable>
         )}
       </View>
@@ -289,14 +351,33 @@ export function ServicesTab() {
               Tocá + para agregar el primero
             </ThemedText>
           </View>
+        ) : groupedServices.every((g) => g.services.length === 0) ? (
+          <View style={styles.empty}>
+            <View style={styles.emptyIcon}>
+              <Feather name="search" size={28} color={theme.textMuted} />
+            </View>
+            <ThemedText style={[styles.emptyTitle, { color: theme.textSecondary }]}>
+              Sin resultados
+            </ThemedText>
+            <ThemedText style={[styles.emptySub, { color: theme.textMuted }]}>
+              Probá con otro nombre o categoría
+            </ThemedText>
+          </View>
         ) : (
           groupedServices.map(
             (category) =>
               category.services.length > 0 && (
                 <View key={category.id} style={styles.section}>
-                  <ThemedText style={[styles.catTitle, { color: category.color ?? theme.primary }]}>
-                    {category.name}
-                  </ThemedText>
+                  <View style={styles.catTitleRow}>
+                    <ThemedText
+                      style={[styles.catTitle, { color: category.color ?? theme.primary }]}
+                    >
+                      {category.name}
+                    </ThemedText>
+                    <ThemedText style={[styles.catCount, { color: theme.textMuted }]}>
+                      {category.services.length} servicio{category.services.length === 1 ? '' : 's'}
+                    </ThemedText>
+                  </View>
                   <NestableDraggableFlatList
                     data={category.services}
                     keyExtractor={(svc) => svc.id}
@@ -309,6 +390,7 @@ export function ServicesTab() {
                       <ServiceCard
                         service={svc}
                         categoryColor={category.color}
+                        categoryIcon={category.icon}
                         onPress={() => openEdit(svc)}
                         onLongPress={() => handleDelete(svc)}
                         onToggleActive={() => handleToggle(svc)}
@@ -350,11 +432,13 @@ export function ServicesTab() {
         categories={categories}
         onCreate={(name) => createCategoryMutation.mutate(name)}
         onRename={(id, name) => updateCategoryMutation.mutate({ id, name })}
+        onUpdateIcon={(id, icon) => updateCategoryIconMutation.mutate({ id, icon })}
+        supportsIcons={supportsCategoryIcons}
         onDelete={(id) => deleteCategoryMutation.mutate(id)}
         onMoveUp={(id) => moveCategory(id, -1)}
         onMoveDown={(id) => moveCategory(id, 1)}
         createPending={createCategoryMutation.isPending}
-        updatePending={updateCategoryMutation.isPending}
+        updatePending={updateCategoryMutation.isPending || updateCategoryIconMutation.isPending}
         deletePending={deleteCategoryMutation.isPending}
         reorderPending={reorderCategoriesMutation.isPending}
       />
@@ -364,6 +448,49 @@ export function ServicesTab() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  subtitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: Spacing.lg,
+    marginBottom: Spacing.sm,
+    height: 36,
+  },
+  subtitle: {
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  searchIconBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  searchRow: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    paddingHorizontal: Spacing.lg,
+    height: 36,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
+    height: '100%',
+  },
+  sectionLabel: {
+    fontSize: 12,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    paddingHorizontal: Spacing.lg,
+    marginBottom: Spacing.xs,
+  },
   filterBar: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -418,10 +545,18 @@ const styles = StyleSheet.create({
   },
   emptySub: { fontSize: 14 },
   section: { marginBottom: Spacing.xl },
+  catTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: Spacing.md,
+  },
   catTitle: {
     fontSize: 16,
     fontWeight: '600',
-    marginBottom: Spacing.md,
+  },
+  catCount: {
+    fontSize: 13,
   },
   fab: {
     position: 'absolute',

@@ -7,7 +7,7 @@ import { RefreshControl, ScrollView, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { ThemedText } from '@/components/ThemedText'
-import { Colors, Spacing } from '@/constants/theme'
+import { Spacing } from '@/constants/theme'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
 import { useAppointmentCompletion } from '@/hooks/useAppointmentCompletion'
@@ -28,6 +28,7 @@ import { DashboardLoading } from './dashboard/components/DashboardLoading'
 import { DashboardLowStockBanner } from './dashboard/components/DashboardLowStockBanner'
 import { DashboardQuickLinksCard } from './dashboard/components/DashboardQuickLinksCard'
 import { DashboardStatCard } from './dashboard/components/DashboardStatCard'
+import { DashboardTopServicesCard } from './dashboard/components/DashboardTopServicesCard'
 import { DashboardUpcomingCard } from './dashboard/components/DashboardUpcomingCard'
 import { HolidayAlertBanner } from '@/components/HolidayAlertBanner'
 import { dashboardStyles as styles } from './dashboard/dashboardStyles'
@@ -83,6 +84,7 @@ export default function DashboardScreen() {
     employees,
     services,
     paymentsByAppointment,
+    topServices,
   } = useDashboardQueries(startOfDay, statsEndOfDay, appointmentsEndOfDay)
 
   const { updateAppointmentMutation, createPaymentMutation } = useDashboardMutations()
@@ -142,7 +144,7 @@ export default function DashboardScreen() {
 
   const getEmployeeColor = (employeeId: string) => {
     const employee = employees.find((e) => e.id === employeeId)
-    return employee?.color ?? Colors.light.violet
+    return employee?.color ?? theme.violet
   }
 
   const upcomingAppointments = useMemo(() => {
@@ -251,6 +253,22 @@ export default function DashboardScreen() {
       />
     ) : null
 
+  const topServicesCard =
+    topServices.length > 0 ? (
+      <DashboardTopServicesCard
+        topServices={topServices}
+        theme={{
+          backgroundDefault: theme.backgroundDefault,
+          backgroundSecondary: theme.backgroundSecondary,
+          border: theme.border,
+          text: theme.text,
+          textSecondary: theme.textSecondary,
+          textMuted: theme.textMuted,
+        }}
+        animatedStyle={animatedItems[7]}
+      />
+    ) : null
+
   const quickLinksCard = isAdmin ? (
     <DashboardQuickLinksCard
       theme={{
@@ -284,7 +302,7 @@ export default function DashboardScreen() {
       }}
       scrollIndicatorInsets={{ bottom: insets.bottom }}
       refreshControl={
-        <RefreshControl refreshing={false} onRefresh={onRefresh} tintColor={Colors.light.violet} />
+        <RefreshControl refreshing={false} onRefresh={onRefresh} tintColor={theme.violet} />
       }
       showsVerticalScrollIndicator={false}
     >
@@ -333,6 +351,8 @@ export default function DashboardScreen() {
               }}
               onViewAllAgenda={() => navigation.navigate('Agenda', {})}
             />
+            {topServicesCard ? <View style={{ height: Spacing.lg }} /> : null}
+            {topServicesCard}
             {quickLinksCard ? <View style={{ height: Spacing.lg }} /> : null}
             {quickLinksCard}
           </View>
@@ -377,6 +397,8 @@ export default function DashboardScreen() {
           />
           {lowStockBanner ? <View style={{ height: Spacing.lg }} /> : null}
           {lowStockBanner}
+          {topServicesCard ? <View style={{ height: Spacing.lg }} /> : null}
+          {topServicesCard}
           {quickLinksCard ? <View style={{ height: Spacing.lg }} /> : null}
           {quickLinksCard}
         </>

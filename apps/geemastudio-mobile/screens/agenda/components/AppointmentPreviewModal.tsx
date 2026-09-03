@@ -64,7 +64,7 @@ export function AppointmentPreviewModal({
 }: AppointmentPreviewModalProps) {
   if (!appointment) return null
 
-  const empColor = getEmployeeColor(employees, appointment.employee_id)
+  const empColor = getEmployeeColor(employees, appointment.employee_id, theme.primary)
   const empName = getEmployeeFirstName(employees, appointment.employee_id) || 'Sin asignar'
   const serviceName = getServiceName(services, appointment.service_id)
   const { label: estadoLabel, tone } = descripcionEstado(appointment.status)

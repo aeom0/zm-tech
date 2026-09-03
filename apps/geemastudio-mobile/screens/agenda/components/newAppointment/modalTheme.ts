@@ -7,5 +7,6 @@ export type NewAppointmentModalTheme = {
   textSecondary: string
   textMuted: string
   primary: string
+  gold: string
   error: string
 }

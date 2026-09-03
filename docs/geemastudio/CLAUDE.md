@@ -234,7 +234,7 @@ Valores del preset `spa-nails` (archivo `presets/spa-nails.ts`):
 5 tabs: **Inicio** (Dashboard), **Agenda**, **Servicios**, **Más** (menú), **Perfil**.
 
 - **Más** (`MoreHomeScreen`) es un `ProfileCard` + grid de categorías (rediseño IA, 30-ago-2026), cada una empuja una subpantalla al mismo `MoreStackNavigator`:
-  - Para rol dev/owner: **Mi negocio** (Horario de trabajo, Datos del negocio —incluye Logo del negocio y terminología del personal—, Personal, Inventario), **Finanzas** (badge pagos pendientes; Finanzas + Validación de Pagos), **Asignar {staff}** (badge citas sin asignar, navega directo sin subpantalla intermedia), **Marketing y Redes** (WhatsApp si `config.features.whatsapp`, Redes Sociales).
+  - Para rol dev/owner: **Mi negocio** (Horario de trabajo, Datos del negocio —incluye Logo del negocio, Colores de marca y terminología del personal—, Personal, Inventario), **Finanzas** (badge pagos pendientes; Finanzas + Validación de Pagos), **Asignar {staff}** (badge citas sin asignar, navega directo sin subpantalla intermedia), **Marketing y Redes** (WhatsApp si `config.features.whatsapp`, Redes Sociales).
   - Para todos los roles: **Ayuda** (FAQ, soporte, versión de la app), **Cuenta** (Apariencia claro/oscuro, Cerrar sesión).
   - Para rol staff (no-admin): categoría "Mi turno" en vez de las categorías admin.
 - Terminología del personal (`config.terminology.staff` / `staffSingular`) es editable desde **Datos del negocio** (modal `TerminologyEditModal`), no solo lectura.
@@ -260,10 +260,17 @@ Flujo de arranque (mobile):
 - **Moneda (web/landing)**: usa `$` USD como símbolo estándar internacional — NO hardcodear `S/`
 - **Terminología del personal**: viene de `config.terminology.staff` — NO hardcodear "chicas"
 - **Nombre del negocio**: viene de `config.businessName` — NO hardcodear nombre específico
-- **Colores**: vienen de `config.theme.primaryColor` / `accentColor` — NO hardcodear violeta/magenta legacy (`#7B2D8E`, `#E91E8C`) ni sustituir el acento del tenant sin criterio
+- **Colores**: vienen de `config.theme.primaryColor` / `accentColor` — NO hardcodear violeta/magenta legacy (`#7B2D8E`, `#E91E8C`) ni sustituir el acento del tenant sin criterio. Auditoría 2-sep-2026: eliminados todos los bypasses restantes (`Colors.light.violet/gold/warning` leídos directo en vez de `theme.violet/gold/warning` vía `useTheme()`) en Dashboard, Finanzas, Inventario, Personal y Agenda; ahora editable post-onboarding desde **Más → Datos del negocio → Colores de marca**
 - **Multiplataforma**: Un solo código para iOS, Android y Web
 - **TypeScript**: `apps/mobile/tsconfig.json` usa `module: "esnext"` (sin extender expo/tsconfig.base.json)
 - Usar `nvm use` para asegurar la versión correcta de Node
+
+## Cambios Recientes (2-sep 2026 — Colores de marca editables + auditoría de hardcodes)
+
+- **Mobile — colores del tenant respetados en toda la app**: auditoría completa de lecturas directas `Colors.light.violet/gold/warning` que bypaseaban `useTheme()`; corregidas en `DashboardScreen`, `DashboardLoading`, `PersonalScreen`, `InventoryScreen`, `InventoryFab`, `InventoryItemModal`, `InventoryItemCard`, `FinancesScreen` (+ `financesStyles.ts`), `agendaUtils.getEmployeeColor` (ahora recibe `fallbackColor` explícito en vez de importar `Colors`) y sus call sites (`AppointmentPreviewModal`, `AgendaCalendarGrid`), `SummaryCard` (nueva cita). También corregido `DemoBanner.tsx`, que usaba el magenta legacy `#E91E8C` en vez de `theme.warning`.
+- **Mobile — nueva pantalla "Colores de marca"** (`screens/settings/TenantColorsScreen.tsx`): permite al owner editar `config.theme.primaryColor`/`accentColor` después del onboarding, reutilizando las paletas (`COLORES_PRIMARIOS`/`COLORES_ACENTO`) y el selector HSV (`CustomColorPickerModal`) del wizard. Accesible desde **Más → Mi negocio → Datos del negocio → Colores de marca**; persiste con `updateTenant({ syncRemote: true })`, mismo patrón que Logo del negocio y terminología del personal.
+- **Mobile — fix preexistente `OtaUpdateOverlay.tsx`**: 21 errores de lint `react-hooks/refs` (acceso a `.current` de `useRef` durante el render) corregidos migrando los 4 `Animated.Value` de `useRef(...).current` a `useState(() => ...)[0]`, preservando identidad estable sin disparar la regla.
+- **OTA**: publicado a `preview` vía `eas update` con estos cambios.
 
 ## Cambios Recientes (ago 2026 — Más: rediseño grid + terminología editable + avatar_url en ZM prod)
 

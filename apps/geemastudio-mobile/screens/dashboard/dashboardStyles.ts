@@ -221,6 +221,23 @@ export const dashboardStyles = StyleSheet.create({
     fontSize: 12,
   },
 
+  // Top services (Servicios más realizados)
+  topServiceRank: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  topServiceRankText: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  topServiceCount: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+
   // View more
   viewMoreBtn: {
     flexDirection: 'row',

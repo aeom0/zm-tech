@@ -30,10 +30,11 @@ export function useStaggeredAnimation(isLoading: boolean) {
   const s4 = useStaggerSlot()
   const s5 = useStaggerSlot()
   const s6 = useStaggerSlot()
+  const s7 = useStaggerSlot()
 
   useEffect(() => {
     if (!isLoading) {
-      ;[s0, s1, s2, s3, s4, s5, s6].forEach((anim, index) => {
+      ;[s0, s1, s2, s3, s4, s5, s6, s7].forEach((anim, index) => {
         const delay = index * 80
         anim.opacity.value = withDelay(
           delay,
@@ -43,7 +44,7 @@ export function useStaggeredAnimation(isLoading: boolean) {
         anim.scale.value = withDelay(delay, withSpring(1, { damping: 18, stiffness: 200 }))
       })
     }
-    // s0–s6 conservan los mismos useSharedValue en cada render
+    // s0–s7 conservan los mismos useSharedValue en cada render
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading])
 
@@ -75,6 +76,10 @@ export function useStaggeredAnimation(isLoading: boolean) {
     useAnimatedStyle(() => ({
       opacity: s6.opacity.value,
       transform: [{ translateY: s6.translateY.value }, { scale: s6.scale.value }],
+    })),
+    useAnimatedStyle(() => ({
+      opacity: s7.opacity.value,
+      transform: [{ translateY: s7.translateY.value }, { scale: s7.scale.value }],
     })),
   ]
 

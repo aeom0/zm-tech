@@ -17,11 +17,7 @@ import { CurrencyPickerModal } from './settings/components/CurrencyPickerModal'
 import { CountryPickerModal } from './settings/components/CountryPickerModal'
 import { TerminologyEditModal } from './settings/components/TerminologyEditModal'
 import type { Moneda } from './settings/constants'
-import {
-  getCountryPreset,
-  localeFromCountry,
-  type CountryPreset,
-} from '@zmtech/tenant-config'
+import { getCountryPreset, localeFromCountry, type CountryPreset } from '@zmtech/tenant-config'
 
 type Nav = NativeStackNavigationProp<MoreStackParamList, 'Configuracion'>
 
@@ -90,14 +86,18 @@ export default function SettingsScreen() {
               icon="image"
               onPress={() => navigation.navigate('LogoNegocio')}
             />
+            <SettingsRow
+              label="Colores de marca"
+              variant="navigate"
+              icon="droplet"
+              onPress={() => navigation.navigate('ColoresNegocio')}
+            />
             <SettingsRow label="Nombre comercial" value={config.businessName} variant="value" />
             <SettingsRow label="Tipo de negocio" value={config.businessType} variant="value" />
             <SettingsRow
               label="País"
               value={
-                paisActual
-                  ? `${paisActual.flag} ${paisActual.label}`
-                  : config.locale.country || '—'
+                paisActual ? `${paisActual.flag} ${paisActual.label}` : config.locale.country || '—'
               }
               variant="navigate"
               icon="globe"

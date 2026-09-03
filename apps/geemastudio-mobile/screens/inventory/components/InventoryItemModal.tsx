@@ -162,7 +162,7 @@ export function InventoryItemModal({
           </View>
 
           <Pressable
-            style={[styles.submitButton, { backgroundColor: Colors.light.violet }]}
+            style={[styles.submitButton, { backgroundColor: theme.primary }]}
             onPress={onSubmit}
             disabled={isSubmitting}
           >

@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-import { Colors, Spacing, BorderRadius, Shadows } from '@/constants/theme'
+import { Spacing, BorderRadius, Shadows } from '@/constants/theme'
 
 import { CHART_PADDING } from './constants'
 
@@ -333,7 +333,6 @@ export const financesStyles = StyleSheet.create({
     width: 7,
     height: 7,
     borderRadius: 4,
-    backgroundColor: Colors.light.gold,
     marginBottom: 2,
   },
   pendienteRow: {

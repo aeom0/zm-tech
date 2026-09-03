@@ -37,3 +37,9 @@ export interface DashboardPayment {
   amount: string
   is_abono: boolean
 }
+
+export interface DashboardTopService {
+  id: string
+  name: string
+  count: number
+}

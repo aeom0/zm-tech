@@ -12,6 +12,7 @@ import type { Service } from '../types'
 interface ServiceCardProps {
   service: Service
   categoryColor?: string | null
+  categoryIcon?: string | null
   onPress: () => void
   onLongPress?: () => void
   onToggleActive?: () => void
@@ -32,6 +33,7 @@ interface ServiceCardProps {
 function ServiceCardImpl({
   service,
   categoryColor,
+  categoryIcon,
   onPress,
   onLongPress,
   onToggleActive,
@@ -69,7 +71,7 @@ function ServiceCardImpl({
               { backgroundColor: accentColor + '22', borderColor: accentColor + '55' },
             ]}
           >
-            <Feather name="scissors" size={18} color={accentColor} />
+            <Feather name={(categoryIcon as any) || 'scissors'} size={18} color={accentColor} />
           </View>
           <View style={styles.info}>
             <ThemedText style={styles.name}>{service.name}</ThemedText>
@@ -129,6 +131,7 @@ export const ServiceCard = React.memo(ServiceCardImpl, (prev, next) => {
   return (
     prev.service === next.service &&
     prev.categoryColor === next.categoryColor &&
+    prev.categoryIcon === next.categoryIcon &&
     prev.isToggling === next.isToggling &&
     prev.isDragging === next.isDragging &&
     prev.theme === next.theme &&

@@ -193,6 +193,25 @@ export function useServicesData() {
     },
   })
 
+  const { data: catalogDialect } = useQuery({
+    queryKey: ['catalog-dialect'],
+    queryFn: detectCatalogDialect,
+    staleTime: Infinity,
+  })
+  const supportsCategoryIcons = catalogDialect !== 'zm'
+
+  const updateCategoryIconMutation = useMutation({
+    mutationFn: async ({ id, icon }: { id: string; icon: string }) => {
+      const { error } = await supabase.from('service_categories').update({ icon }).eq('id', id)
+      if (error) {
+        throw new Error(error.message)
+      }
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['service_categories'] })
+    },
+  })
+
   const deleteCategoryMutation = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from('service_categories').delete().eq('id', id)
@@ -271,6 +290,8 @@ export function useServicesData() {
     toggleActiveMutation,
     createCategoryMutation,
     updateCategoryMutation,
+    updateCategoryIconMutation,
+    supportsCategoryIcons,
     deleteCategoryMutation,
     reorderCategoriesMutation,
     reorderServicesMutation,

@@ -4,7 +4,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { useHeaderHeight } from '@react-navigation/elements'
 import * as Haptics from 'expo-haptics'
 
-import { Colors, Spacing } from '@/constants/theme'
+import { Spacing } from '@/constants/theme'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
 import { useTheme } from '@/hooks/useTheme'
@@ -142,11 +142,7 @@ export default function InventoryScreen() {
         }}
         scrollIndicatorInsets={{ bottom: insets.bottom }}
         refreshControl={
-          <RefreshControl
-            refreshing={isLoading}
-            onRefresh={refetch}
-            tintColor={Colors.light.violet}
-          />
+          <RefreshControl refreshing={isLoading} onRefresh={refetch} tintColor={theme.violet} />
         }
       >
         {filteredItems.length === 0 && !isLoading ? (

@@ -18,12 +18,28 @@ import { BorderRadius, Spacing, Colors } from '@/constants/theme'
 
 import type { ServiceCategory } from '../types'
 
+/** Feather icons cubriendo las categorías típicas de un salón (uñas, pestañas, depilación, faciales, etc). */
+const ICON_OPTIONS = [
+  'scissors',
+  'feather',
+  'eye',
+  'smile',
+  'droplet',
+  'sun',
+  'wind',
+  'heart',
+  'star',
+  'zap',
+] as const
+
 interface CategoriesManageModalProps {
   visible: boolean
   onClose: () => void
   categories: ServiceCategory[]
   onCreate: (name: string) => void
   onRename: (id: string, name: string) => void
+  onUpdateIcon: (id: string, icon: string) => void
+  supportsIcons: boolean
   onDelete: (id: string) => void
   onMoveUp: (id: string) => void
   onMoveDown: (id: string) => void
@@ -39,6 +55,8 @@ export function CategoriesManageModal({
   categories,
   onCreate,
   onRename,
+  onUpdateIcon,
+  supportsIcons,
   onDelete,
   onMoveUp,
   onMoveDown,
@@ -50,6 +68,7 @@ export function CategoriesManageModal({
   const { theme } = useTheme()
   const [newName, setNewName] = useState('')
   const [drafts, setDrafts] = useState<Record<string, string>>({})
+  const [pickerFor, setPickerFor] = useState<string | null>(null)
 
   useEffect(() => {
     if (visible) {
@@ -125,63 +144,120 @@ export function CategoriesManageModal({
 
           <ScrollView style={styles.list}>
             {categories.map((cat, index) => (
-              <View key={cat.id} style={[styles.row, { borderColor: theme.border }]}>
-                <TextInput
-                  style={[
-                    styles.input,
-                    {
-                      flex: 1,
-                      backgroundColor: theme.backgroundSecondary,
-                      color: theme.text,
-                      borderColor: theme.border,
-                    },
-                  ]}
-                  value={drafts[cat.id] ?? cat.name}
-                  onChangeText={(t) => setDrafts((prev) => ({ ...prev, [cat.id]: t }))}
-                  onBlur={() => handleRenameBlur(cat.id, cat.name)}
-                  editable={!updatePending}
-                />
-                <View style={styles.actions}>
-                  <Pressable
-                    onPress={() => onMoveUp(cat.id)}
-                    disabled={index === 0 || reorderPending}
-                  >
-                    <Feather
-                      name="chevron-up"
-                      size={22}
-                      color={index === 0 ? theme.textMuted : theme.primary}
-                    />
-                  </Pressable>
-                  <Pressable
-                    onPress={() => onMoveDown(cat.id)}
-                    disabled={index === categories.length - 1 || reorderPending}
-                  >
-                    <Feather
-                      name="chevron-down"
-                      size={22}
-                      color={index === categories.length - 1 ? theme.textMuted : theme.primary}
-                    />
-                  </Pressable>
-                  <Pressable
-                    onPress={() => {
-                      Alert.alert(
-                        'Eliminar categoría',
-                        `¿Seguro que querés eliminar "${cat.name}"?`,
-                        [
-                          { text: 'Cancelar', style: 'cancel' },
-                          {
-                            text: 'Eliminar',
-                            style: 'destructive',
-                            onPress: () => onDelete(cat.id),
-                          },
-                        ]
-                      )
-                    }}
-                    disabled={deletePending}
-                  >
-                    <Feather name="trash-2" size={20} color={theme.error} />
-                  </Pressable>
+              <View key={cat.id} style={[styles.categoryBlock, { borderColor: theme.border }]}>
+                <View style={styles.row}>
+                  {supportsIcons && (
+                    <Pressable
+                      style={[
+                        styles.iconBtn,
+                        {
+                          backgroundColor: theme.backgroundSecondary,
+                          borderColor: theme.border,
+                        },
+                      ]}
+                      onPress={() => setPickerFor((prev) => (prev === cat.id ? null : cat.id))}
+                    >
+                      <Feather
+                        name={(cat.icon as any) || 'scissors'}
+                        size={18}
+                        color={theme.primary}
+                      />
+                    </Pressable>
+                  )}
+                  <TextInput
+                    style={[
+                      styles.input,
+                      {
+                        flex: 1,
+                        backgroundColor: theme.backgroundSecondary,
+                        color: theme.text,
+                        borderColor: theme.border,
+                      },
+                    ]}
+                    value={drafts[cat.id] ?? cat.name}
+                    onChangeText={(t) => setDrafts((prev) => ({ ...prev, [cat.id]: t }))}
+                    onBlur={() => handleRenameBlur(cat.id, cat.name)}
+                    editable={!updatePending}
+                  />
+                  <View style={styles.actions}>
+                    <Pressable
+                      onPress={() => onMoveUp(cat.id)}
+                      disabled={index === 0 || reorderPending}
+                    >
+                      <Feather
+                        name="chevron-up"
+                        size={22}
+                        color={index === 0 ? theme.textMuted : theme.primary}
+                      />
+                    </Pressable>
+                    <Pressable
+                      onPress={() => onMoveDown(cat.id)}
+                      disabled={index === categories.length - 1 || reorderPending}
+                    >
+                      <Feather
+                        name="chevron-down"
+                        size={22}
+                        color={index === categories.length - 1 ? theme.textMuted : theme.primary}
+                      />
+                    </Pressable>
+                    <Pressable
+                      onPress={() => {
+                        Alert.alert(
+                          'Eliminar categoría',
+                          `¿Seguro que querés eliminar "${cat.name}"?`,
+                          [
+                            { text: 'Cancelar', style: 'cancel' },
+                            {
+                              text: 'Eliminar',
+                              style: 'destructive',
+                              onPress: () => onDelete(cat.id),
+                            },
+                          ]
+                        )
+                      }}
+                      disabled={deletePending}
+                    >
+                      <Feather name="trash-2" size={20} color={theme.error} />
+                    </Pressable>
+                  </View>
                 </View>
+                {pickerFor === cat.id && (
+                  <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    style={styles.iconPicker}
+                    contentContainerStyle={styles.iconPickerContent}
+                  >
+                    {ICON_OPTIONS.map((icon) => {
+                      const selected = (cat.icon ?? 'scissors') === icon
+                      return (
+                        <Pressable
+                          key={icon}
+                          style={[
+                            styles.iconOption,
+                            {
+                              backgroundColor: selected
+                                ? theme.primary + '22'
+                                : theme.backgroundSecondary,
+                              borderColor: selected ? theme.primary : theme.border,
+                            },
+                          ]}
+                          onPress={() => {
+                            onUpdateIcon(cat.id, icon)
+                            setPickerFor(null)
+                          }}
+                          disabled={updatePending}
+                        >
+                          <Feather
+                            name={icon}
+                            size={18}
+                            color={selected ? theme.primary : theme.textMuted}
+                          />
+                        </Pressable>
+                      )
+                    })}
+                  </ScrollView>
+                )}
               </View>
             ))}
           </ScrollView>
@@ -251,17 +327,42 @@ const styles = StyleSheet.create({
   list: {
     maxHeight: 420,
   },
+  categoryBlock: {
+    marginBottom: Spacing.sm,
+    paddingBottom: Spacing.sm,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+  },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
-    marginBottom: Spacing.sm,
-    paddingBottom: Spacing.sm,
-    borderBottomWidth: StyleSheet.hairlineWidth,
   },
   actions: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
+  },
+  iconBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: BorderRadius.sm,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconPicker: {
+    marginTop: Spacing.sm,
+  },
+  iconPickerContent: {
+    gap: 8,
+    paddingRight: Spacing.lg,
+  },
+  iconOption: {
+    width: 40,
+    height: 40,
+    borderRadius: BorderRadius.sm,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 })

@@ -1,4 +1,3 @@
-import { Colors } from '@/constants/theme'
 import {
   esMismoDiaCalendarioEnZona,
   esHoyEnZonaIANA,
@@ -57,9 +56,13 @@ export function getAptsForEmpSlot(
   })
 }
 
-export function getEmployeeColor(employees: AgendaEmployee[], employeeId: string): string {
+export function getEmployeeColor(
+  employees: AgendaEmployee[],
+  employeeId: string,
+  fallbackColor: string
+): string {
   const employee = employees.find((e) => e.id === employeeId)
-  return employee?.color ?? Colors.light.violet
+  return employee?.color ?? fallbackColor
 }
 
 export function getEmployeeFirstName(employees: AgendaEmployee[], employeeId: string): string {
@@ -167,7 +170,10 @@ export function computeServiceLinesTotals(
  * profesional (el "por defecto" vigente al momento de agregarlo) y el precio
  * repartido equitativamente del total del pack.
  */
-export function addPackServiceLines(pack: AgendaPack, defaultEmployeeId: string): AgendaServiceLine[] {
+export function addPackServiceLines(
+  pack: AgendaPack,
+  defaultEmployeeId: string
+): AgendaServiceLine[] {
   const ids = pack.service_ids ?? []
   if (ids.length === 0) return []
   const packTotal = parseFloat(pack.price)

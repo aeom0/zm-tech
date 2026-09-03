@@ -130,6 +130,9 @@ export function PacksTab() {
 
   return (
     <View style={styles.flex}>
+      <ThemedText style={[styles.subtitle, { color: theme.textMuted }]}>
+        {packs.length} pack{packs.length === 1 ? '' : 's'} disponible{packs.length === 1 ? '' : 's'}
+      </ThemedText>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{
@@ -205,6 +208,12 @@ export function PacksTab() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
+  subtitle: {
+    fontSize: 13,
+    fontWeight: '500',
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.sm,
+  },
   scroll: { flex: 1 },
   empty: {
     alignItems: 'center',

@@ -62,8 +62,9 @@ function PromoCardImpl({
   const raw = promo.promo_price
   const n = raw != null ? parseFloat(raw) : NaN
   const amount = Number.isFinite(n) ? n : 0
-  const badge = (promo.badge ?? '✨').trim() || '✨'
-  const accent = promo.accent_color?.trim() || theme.primary
+  const badge = (promo.badge ?? '').trim() || 'PROMO'
+  const rawAccent = promo.accent_color?.trim()
+  const accent = rawAccent && HEX_COLOR.test(rawAccent) ? rawAccent : theme.primary
 
   let daysLeft: number | null = null
   if (promo.expires_at) {

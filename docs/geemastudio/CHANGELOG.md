@@ -7,6 +7,15 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido (2-sep 2026 — Colores de marca editables)
+
+- **Mobile — `TenantColorsScreen`**: nueva pantalla en Más → Datos del negocio para editar `theme.primaryColor`/`accentColor` post-onboarding, reutilizando paletas y selector HSV del wizard; `syncRemote` vía `updateTenant`.
+
+### Corregido (2-sep 2026 — Auditoría de colores del tenant)
+
+- **Mobile — hardcodes de color eliminados**: lecturas directas `Colors.light.violet/gold/warning` (bypaseaban `useTheme()`) corregidas en Dashboard, Finanzas, Inventario, Personal y Agenda (`getEmployeeColor` ahora recibe `fallbackColor` en vez de importar `Colors`); `DemoBanner.tsx` dejó de usar el magenta legacy `#E91E8C`.
+- **Mobile — `OtaUpdateOverlay.tsx`**: 21 errores de lint `react-hooks/refs` corregidos (`useRef(...).current` → `useState(() => ...)[0]` en los 4 `Animated.Value`).
+
 ### Añadido (31-ago 2026 — País, feriados, Agenda multi-servicio)
 
 - **`@zmtech/tenant-config` — país + feriados**: `country-presets.ts` (`COUNTRY_PRESETS`, `localeFromCountry`); `salon-holidays.ts` (catálogos PE/VE 2026, `resolveFranjaEfectiva`, alerts); `esCeldaAgendaEnHorarioLaboral` / `esInstanteEnHorarioLaboral` / `diaTieneFranjaAgenda` aceptan `SalonHolidayIndex` opcional. `locale.language` ampliado (`es-AR` | `es-CL` | `es-MX`).

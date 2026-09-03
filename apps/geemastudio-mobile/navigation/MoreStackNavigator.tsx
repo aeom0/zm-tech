@@ -14,6 +14,7 @@ import FeriadosScreen from '@/screens/holidays/FeriadosScreen'
 import ValidacionPagosScreen from '@/screens/ValidacionPagosScreen'
 import AsignarProfesionalesScreen from '@/screens/AsignarProfesionalesScreen'
 import LogoNegocioScreen from '@/screens/settings/LogoNegocioScreen'
+import TenantColorsScreen from '@/screens/settings/TenantColorsScreen'
 import MiNegocioScreen from '@/screens/more/MiNegocioScreen'
 import EquipoScreen from '@/screens/more/EquipoScreen'
 import FinanzasMenuScreen from '@/screens/more/FinanzasMenuScreen'
@@ -38,6 +39,7 @@ export type MoreStackParamList = {
   HorariosTrabajo: undefined
   Feriados: undefined
   LogoNegocio: undefined
+  ColoresNegocio: undefined
   Perfil: undefined
 }
 
@@ -101,15 +103,16 @@ export default function MoreStackNavigator() {
         component={HorariosTrabajoScreen}
         options={{ title: 'Horario de trabajo' }}
       />
-      <Stack.Screen
-        name="Feriados"
-        component={FeriadosScreen}
-        options={{ title: 'Feriados' }}
-      />
+      <Stack.Screen name="Feriados" component={FeriadosScreen} options={{ title: 'Feriados' }} />
       <Stack.Screen
         name="LogoNegocio"
         component={LogoNegocioScreen}
         options={{ title: 'Logo del negocio' }}
+      />
+      <Stack.Screen
+        name="ColoresNegocio"
+        component={TenantColorsScreen}
+        options={{ title: 'Colores de marca' }}
       />
       <Stack.Screen name="Perfil" component={ProfileScreen} options={{ title: 'Perfil' }} />
     </Stack.Navigator>

@@ -25,7 +25,7 @@ import { useTheme } from '@/hooks/useTheme'
 import { useResponsive } from '@/hooks/useResponsive'
 import { useTenant } from '@/contexts/TenantContext'
 import { formatCurrency } from '@/utils/format'
-import { Colors, Spacing } from '@/constants/theme'
+import { Spacing } from '@/constants/theme'
 import { queryClient } from '@/lib/query-client'
 import { useAuth } from '@/contexts/AuthContext'
 import { supabase } from '@/lib/supabase'
@@ -712,20 +712,14 @@ export default function FinancesScreen() {
           ))}
           <Path
             d={pathData}
-            stroke={Colors.light.gold}
+            stroke={theme.gold}
             strokeWidth={2.5}
             fill="none"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
           {points.map((p, i) => (
-            <Circle
-              key={i}
-              cx={p.x}
-              cy={p.y}
-              r={points.length === 1 ? 6 : 4}
-              fill={Colors.light.gold}
-            />
+            <Circle key={i} cx={p.x} cy={p.y} r={points.length === 1 ? 6 : 4} fill={theme.gold} />
           ))}
         </Svg>
         <View style={styles.chartXLabels}>
@@ -777,11 +771,7 @@ export default function FinancesScreen() {
         }}
         scrollIndicatorInsets={{ bottom: insets.bottom }}
         refreshControl={
-          <RefreshControl
-            refreshing={isLoading}
-            onRefresh={refetch}
-            tintColor={Colors.light.violet}
-          />
+          <RefreshControl refreshing={isLoading} onRefresh={refetch} tintColor={theme.violet} />
         }
       >
         <View style={styles.periodSelector}>
@@ -802,14 +792,14 @@ export default function FinancesScreen() {
             ]}
           >
             <View style={styles.revenueCardHeader}>
-              <Feather name="trending-up" size={20} color={Colors.light.gold} />
+              <Feather name="trending-up" size={20} color={theme.gold} />
               <ThemedText style={[styles.revenueLabel, { color: theme.textSecondary }]}>
                 {isStaffOnly ? 'Mis ganancias' : 'Ingresos Totales'}
               </ThemedText>
             </View>
             <View style={styles.revenueRow}>
               <ThemedText
-                style={[styles.revenueAmount, { color: Colors.light.gold }]}
+                style={[styles.revenueAmount, { color: theme.gold }]}
                 numberOfLines={1}
                 adjustsFontSizeToFit
               >
@@ -903,7 +893,7 @@ export default function FinancesScreen() {
                     <ThemedText style={[styles.desgloseLabel, { color: theme.textMuted }]}>
                       Generado {formatCurrency(row.generado, config)}
                     </ThemedText>
-                    <ThemedText style={[styles.desgloseLabel, { color: Colors.light.gold }]}>
+                    <ThemedText style={[styles.desgloseLabel, { color: theme.gold }]}>
                       Pagado {formatCurrency(row.pagado, config)}
                     </ThemedText>
                     {row.pendiente > 0.01 && (
@@ -990,10 +980,8 @@ export default function FinancesScreen() {
                         {formatMethod(payment.method)}
                       </ThemedText>
                       {payment.is_abono && (
-                        <View
-                          style={[styles.abonoBadge, { backgroundColor: Colors.light.gold + '20' }]}
-                        >
-                          <ThemedText style={[styles.abonoBadgeText, { color: Colors.light.gold }]}>
+                        <View style={[styles.abonoBadge, { backgroundColor: theme.gold + '20' }]}>
+                          <ThemedText style={[styles.abonoBadgeText, { color: theme.gold }]}>
                             Abono 20%
                           </ThemedText>
                         </View>
@@ -1055,7 +1043,7 @@ export default function FinancesScreen() {
                       </View>
                     )}
                   </View>
-                  <ThemedText style={[styles.paymentAmount, { color: Colors.light.gold }]}>
+                  <ThemedText style={[styles.paymentAmount, { color: theme.gold }]}>
                     {currencySymbol}
                     {parseFloat(payment.amount).toFixed(2)}
                   </ThemedText>
@@ -1216,7 +1204,7 @@ export default function FinancesScreen() {
                       <ThemedText style={[styles.abonoResultLabel, { color: theme.textMuted }]}>
                         {`20% = ${currencySymbol}`}
                       </ThemedText>
-                      <ThemedText style={[styles.abonoResultAmount, { color: Colors.light.gold }]}>
+                      <ThemedText style={[styles.abonoResultAmount, { color: theme.gold }]}>
                         {abonoAmount}
                       </ThemedText>
                     </View>
@@ -1332,14 +1320,16 @@ export default function FinancesScreen() {
                             borderColor: isSelected
                               ? theme.primary
                               : abono
-                                ? Colors.light.gold + '80'
+                                ? theme.gold + '80'
                                 : theme.border,
                             backgroundColor: isSelected ? theme.primary : theme.backgroundSecondary,
                           },
                         ]}
                         onPress={() => onSelectAppointment(apt.id)}
                       >
-                        {abono && <View style={styles.abonoChipDot} />}
+                        {abono && (
+                          <View style={[styles.abonoChipDot, { backgroundColor: theme.gold }]} />
+                        )}
                         <ThemedText
                           style={[
                             styles.appointmentChipText,
@@ -1366,7 +1356,7 @@ export default function FinancesScreen() {
                             style={[
                               styles.appointmentChipSubText,
                               {
-                                color: isSelected ? 'rgba(255,255,255,0.85)' : Colors.light.gold,
+                                color: isSelected ? 'rgba(255,255,255,0.85)' : theme.gold,
                                 fontWeight: '700',
                               },
                             ]}

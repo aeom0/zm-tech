@@ -1,16 +1,8 @@
 // components/OtaUpdateOverlay.tsx
 // Pantalla de marca mientras se descarga/aplica una OTA (misma línea que splash nativo)
 
-import React, { useEffect, useRef } from 'react'
-import {
-  Animated,
-  Dimensions,
-  Easing,
-  Image,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { Animated, Dimensions, Easing, Image, StyleSheet, Text, View } from 'react-native'
 import * as SplashScreen from 'expo-splash-screen'
 
 import { Gradients, Onboarding, Spacing } from '@/constants/theme'
@@ -52,10 +44,10 @@ const ICONOS: Record<OtaFase, string> = {
 export function OtaUpdateOverlay(): React.JSX.Element | null {
   const { visible, fase, progreso, mensajeCustom } = useOtaUpdateUiStore()
 
-  const fadeAnim = useRef(new Animated.Value(0)).current
-  const barraAnim = useRef(new Animated.Value(0)).current
-  const spinAnim = useRef(new Animated.Value(0)).current
-  const pulseAnim = useRef(new Animated.Value(1)).current
+  const [fadeAnim] = useState(() => new Animated.Value(0))
+  const [barraAnim] = useState(() => new Animated.Value(0))
+  const [spinAnim] = useState(() => new Animated.Value(0))
+  const [pulseAnim] = useState(() => new Animated.Value(1))
 
   useEffect(() => {
     if (visible) {
@@ -159,11 +151,7 @@ export function OtaUpdateOverlay(): React.JSX.Element | null {
 
         <View style={styles.barraContenedor}>
           <Animated.View
-            style={[
-              styles.barraRelleno,
-              { width: barraAnim },
-              esFinal && styles.barraRellenoExito,
-            ]}
+            style={[styles.barraRelleno, { width: barraAnim }, esFinal && styles.barraRellenoExito]}
           />
         </View>
 
