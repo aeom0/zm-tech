@@ -98,11 +98,48 @@ export const appointments = pgTable(
     notes: text('notes'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     completedAt: timestamp('completed_at'),
+    /**
+     * IDs de todos los servicios de la cita cuando hay más de una línea en
+     * `appointment_services`. `service_id`/`price`/`duration` arriba se
+     * mantienen denormalizados (primera línea / suma) para no romper
+     * lecturas existentes (Dashboard, Finanzas, grids).
+     */
+    serviceIds: text('service_ids').array(),
+    referenceImagePaths: text('reference_image_paths').array(),
+    referenceReceivedAt: timestamp('reference_received_at'),
+    /** null = referencias sin revisar por el staff */
+    referenceReviewedAt: timestamp('reference_reviewed_at'),
   },
   (table) => ({
     clientIdIdx: index('idx_appointments_client_id').on(table.clientId),
     employeeIdIdx: index('idx_appointments_employee_id').on(table.employeeId),
     serviceIdIdx: index('idx_appointments_service_id').on(table.serviceId),
+  })
+)
+
+/** Líneas de servicio de una cita multi-servicio (una fila por servicio+profesional) */
+export const appointmentServices = pgTable(
+  'appointment_services',
+  {
+    id: varchar('id')
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    appointmentId: varchar('appointment_id')
+      .notNull()
+      .references(() => appointments.id, { onDelete: 'cascade' }),
+    serviceId: varchar('service_id').references(() => services.id),
+    employeeId: varchar('employee_id').references(() => employees.id),
+    packId: varchar('pack_id').references(() => packs.id),
+    price: decimal('price', { precision: 10, scale: 2 }).notNull(),
+    duration: integer('duration').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    tenantId: text('tenant_id').notNull().default('zm-lash-nails'),
+  },
+  (table) => ({
+    appointmentIdIdx: index('idx_appointment_services_appointment_id').on(table.appointmentId),
+    serviceIdIdx: index('idx_appointment_services_service_id').on(table.serviceId),
+    employeeIdIdx: index('idx_appointment_services_employee_id').on(table.employeeId),
+    tenantIdIdx: index('idx_appointment_services_tenant_id').on(table.tenantId),
   })
 )
 
@@ -307,6 +344,26 @@ export const appointmentsRelations = relations(appointments, ({ one, many }) => 
     references: [services.id],
   }),
   verifications: many(appointmentVerifications),
+  serviceLines: many(appointmentServices),
+}))
+
+export const appointmentServicesRelations = relations(appointmentServices, ({ one }) => ({
+  appointment: one(appointments, {
+    fields: [appointmentServices.appointmentId],
+    references: [appointments.id],
+  }),
+  service: one(services, {
+    fields: [appointmentServices.serviceId],
+    references: [services.id],
+  }),
+  employee: one(employees, {
+    fields: [appointmentServices.employeeId],
+    references: [employees.id],
+  }),
+  pack: one(packs, {
+    fields: [appointmentServices.packId],
+    references: [packs.id],
+  }),
 }))
 
 export const appointmentVerificationsRelations = relations(appointmentVerifications, ({ one }) => ({
@@ -363,6 +420,10 @@ export const insertClientSchema = createInsertSchema(clients).omit({
   createdAt: true,
 })
 export const insertAppointmentSchema = createInsertSchema(appointments).omit({
+  id: true,
+  createdAt: true,
+})
+export const insertAppointmentServiceSchema = createInsertSchema(appointmentServices).omit({
   id: true,
   createdAt: true,
 })
@@ -498,6 +559,8 @@ export type Client = typeof clients.$inferSelect
 export type InsertClient = z.infer<typeof insertClientSchema>
 export type Appointment = typeof appointments.$inferSelect
 export type InsertAppointment = z.infer<typeof insertAppointmentSchema>
+export type AppointmentService = typeof appointmentServices.$inferSelect
+export type InsertAppointmentService = z.infer<typeof insertAppointmentServiceSchema>
 export type InventoryItem = typeof inventoryItems.$inferSelect
 export type InsertInventoryItem = z.infer<typeof insertInventoryItemSchema>
 export type WhatsappSession = typeof whatsappSessions.$inferSelect

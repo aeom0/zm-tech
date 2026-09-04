@@ -1,9 +1,11 @@
 import { Alert } from 'react-native'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import * as Haptics from 'expo-haptics'
 
 import { queryClient } from '@/lib/query-client'
 import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/contexts/AuthContext'
+import { subirImagenReferencia } from '@/lib/referenceImages'
 import {
   formatAppointmentWallclock,
   formatoHoraHHMMEnZona,
@@ -53,11 +55,11 @@ async function guardOverlapBeforeInsert(args: {
     throw new Error(error.message)
   }
 
-  const existing = (data ?? []) as Array<{
+  const existing = (data ?? []) as {
     id: string
     date: string
     duration: number
-  }>
+  }[]
 
   for (const apt of existing) {
     if (args.excludeAppointmentId && apt.id === args.excludeAppointmentId) {
@@ -97,7 +99,22 @@ async function guardOverlapForLines(args: {
   }
 }
 
-function buildServiceRows(appointmentId: string, lines: AgendaServiceLine[], services: AgendaService[]) {
+async function resolveTenantId(userId: string | null | undefined): Promise<string | null> {
+  if (!userId) return null
+  const { data } = await supabase
+    .from('profiles')
+    .select('tenant_id')
+    .eq('id', userId)
+    .maybeSingle()
+  return data?.tenant_id ?? null
+}
+
+function buildServiceRows(
+  appointmentId: string,
+  lines: AgendaServiceLine[],
+  services: AgendaService[],
+  tenantId: string
+) {
   return lines.map((line) => ({
     appointment_id: appointmentId,
     service_id: line.serviceId,
@@ -105,6 +122,7 @@ function buildServiceRows(appointmentId: string, lines: AgendaServiceLine[], ser
     pack_id: line.packId ?? null,
     price: lineUnitPrice(line, services).toFixed(2),
     duration: lineDuration(line, services),
+    tenant_id: tenantId,
   }))
 }
 
@@ -113,6 +131,15 @@ export function useAgendaMutations(
   timeZone: string,
   services: AgendaService[]
 ) {
+  const { userId } = useAuth()
+  const tenantQuery = useQuery({
+    queryKey: ['profile_tenant_id', userId],
+    enabled: !!userId,
+    staleTime: 5 * 60_000,
+    queryFn: () => resolveTenantId(userId),
+  })
+  const tenantId = tenantQuery.data ?? null
+
   const createMutation = useMutation({
     mutationFn: async (data: {
       client_name: string
@@ -124,6 +151,9 @@ export function useAgendaMutations(
     }) => {
       if (data.lines.length === 0) {
         throw new Error('Selecciona al menos un servicio')
+      }
+      if (!tenantId) {
+        throw new Error('No se pudo resolver el tenant')
       }
 
       const { totalPrice, totalDuration } = computeServiceLinesTotals(data.lines, services)
@@ -160,7 +190,7 @@ export function useAgendaMutations(
       }
 
       const aptId = (newApt as { id: string }).id
-      const svcRows = buildServiceRows(aptId, data.lines, services)
+      const svcRows = buildServiceRows(aptId, data.lines, services, tenantId)
       const { error: linesError } = await supabase.from('appointment_services').insert(svcRows)
       if (linesError) {
         throw new Error(linesError.message)
@@ -239,6 +269,9 @@ export function useAgendaMutations(
       if (args.lines.length === 0) {
         throw new Error('Selecciona al menos un servicio')
       }
+      if (!tenantId) {
+        throw new Error('No se pudo resolver el tenant')
+      }
 
       const { totalPrice, totalDuration } = computeServiceLinesTotals(args.lines, services)
       const duration = totalDuration || 60
@@ -274,7 +307,7 @@ export function useAgendaMutations(
         throw new Error(delError.message)
       }
 
-      const svcRows = buildServiceRows(args.id, args.lines, services)
+      const svcRows = buildServiceRows(args.id, args.lines, services, tenantId)
       const { error: insError } = await supabase.from('appointment_services').insert(svcRows)
       if (insError) {
         throw new Error(insError.message)
@@ -349,6 +382,77 @@ export function useAgendaMutations(
     onError: (e: Error) => Alert.alert('Error', e.message || 'No se pudo registrar el pago'),
   })
 
+  /**
+   * Sube N fotos de referencia (galería, `expo-image-picker`) al bucket `service-references`
+   * y agrega las URLs públicas a `appointments.reference_image_paths` en una sola
+   * actualización (evita condiciones de carrera entre subidas). Marca
+   * `reference_received_at = now()` solo si la cita no tenía referencias aún.
+   */
+  const addReferenceImagesMutation = useMutation({
+    mutationFn: async (args: {
+      appointmentId: string
+      images: { uri: string; contentType?: string }[]
+      currentPaths: string[]
+      alreadyReceived: boolean
+    }) => {
+      const uploadedUrls: string[] = []
+      for (const image of args.images) {
+        const { publicUrl } = await subirImagenReferencia(
+          supabase,
+          args.appointmentId,
+          image.uri,
+          image.contentType
+        )
+        uploadedUrls.push(publicUrl)
+      }
+
+      const newPaths = [...args.currentPaths, ...uploadedUrls]
+      const updatePayload: { reference_image_paths: string[]; reference_received_at?: string } = {
+        reference_image_paths: newPaths,
+      }
+      if (!args.alreadyReceived) {
+        updatePayload.reference_received_at = new Date().toISOString()
+      }
+
+      const { error } = await supabase
+        .from('appointments')
+        .update(updatePayload)
+        .eq('id', args.appointmentId)
+      if (error) {
+        throw new Error(error.message)
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['appointments'] })
+      queryClient.invalidateQueries({ queryKey: ['unreviewed_references_count'] })
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+    },
+    onError: (error: Error) => {
+      Alert.alert('Error', error.message || 'No se pudo subir la foto de referencia')
+    },
+  })
+
+  /** Marca las referencias de la cita como revisadas (`reference_reviewed_at = now()`). */
+  const markReferencesReviewedMutation = useMutation({
+    mutationFn: async (appointmentId: string) => {
+      const { error } = await supabase
+        .from('appointments')
+        .update({ reference_reviewed_at: new Date().toISOString() })
+        .eq('id', appointmentId)
+      if (error) {
+        throw new Error(error.message)
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['appointments'] })
+      queryClient.invalidateQueries({ queryKey: ['unreviewed_references_count'] })
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+    },
+    onError: (error: Error) => {
+      Alert.alert('Error', error.message || 'No se pudo marcar como revisado')
+    },
+  })
+
   return {
     createMutation,
     deleteAppointmentMutation,
@@ -356,5 +460,7 @@ export function useAgendaMutations(
     updateAppointmentServicesMutation,
     completeAppointmentMutation,
     createPaymentMutation,
+    addReferenceImagesMutation,
+    markReferencesReviewedMutation,
   }
 }

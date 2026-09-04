@@ -329,12 +329,40 @@ export function OwnerDayGrid({
                   position: 'absolute',
                   left: 0,
                   right: 0,
-                  top: nowLineTop - 1,
-                  height: 2,
-                  backgroundColor: theme.primary,
+                  top: nowLineTop - 5,
+                  height: 10,
+                  justifyContent: 'center',
                   zIndex: 12,
                 }}
-              />
+              >
+                <View
+                  style={{
+                    position: 'absolute',
+                    left: -3,
+                    width: 8,
+                    height: 8,
+                    borderRadius: 4,
+                    backgroundColor: '#FF3B30',
+                    shadowColor: '#FF3B30',
+                    shadowOpacity: 0.6,
+                    shadowRadius: 4,
+                    shadowOffset: { width: 0, height: 0 },
+                    elevation: 3,
+                  }}
+                />
+                <LinearGradient
+                  colors={['#FF3B30', '#FF3B3099', '#FF3B3020']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={{
+                    position: 'absolute',
+                    left: 6,
+                    right: 0,
+                    height: 1.5,
+                    borderRadius: 1,
+                  }}
+                />
+              </View>
             )}
           </View>
         </ScrollView>

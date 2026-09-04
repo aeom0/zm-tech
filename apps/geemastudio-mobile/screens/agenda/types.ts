@@ -13,6 +13,9 @@ export interface AgendaAppointment {
   service_id: string
   /** Multi-servicio: ids en appointments.service_ids (JSON/array). */
   service_ids?: string[] | null
+  reference_image_paths?: string[] | null
+  reference_received_at?: string | null
+  reference_reviewed_at?: string | null
 }
 
 export interface AgendaEmployee {

@@ -27,7 +27,7 @@ export function useAgendaQueries() {
       const { data, error } = await supabase
         .from('appointments')
         .select(
-          'id, client_name, client_phone, client_document, date, duration, price, status, employee_id, service_id'
+          'id, client_name, client_phone, client_document, date, duration, price, status, employee_id, service_id, reference_image_paths, reference_received_at, reference_reviewed_at'
         )
         .order('date', { ascending: true })
 

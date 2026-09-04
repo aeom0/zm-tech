@@ -1,6 +1,8 @@
-import React, { useMemo } from 'react'
-import { View, Modal, Pressable, ActivityIndicator, ScrollView } from 'react-native'
+import React, { useMemo, useState } from 'react'
+import { View, Modal, Pressable, ActivityIndicator, ScrollView, Alert } from 'react-native'
 import { Feather } from '@expo/vector-icons'
+import { Image } from 'expo-image'
+import * as ImagePicker from 'expo-image-picker'
 
 import { ThemedText } from '@/components/ThemedText'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
@@ -103,7 +105,16 @@ interface AppointmentDetailModalProps {
   onCancelPayMethod: () => void
   onConfirmPayMethod: () => void
   onMarkCompleted: (appointment: AgendaAppointment) => void
+  onAddReferenceImages: (
+    appointment: AgendaAppointment,
+    images: Array<{ uri: string; contentType?: string }>
+  ) => void
+  addReferencePending: boolean
+  onMarkReferencesReviewed: (appointment: AgendaAppointment) => void
+  markReferencesReviewedPending: boolean
 }
+
+const MAX_REFERENCE_IMAGES = 5
 
 export function AppointmentDetailModal({
   visible,
@@ -158,6 +169,10 @@ export function AppointmentDetailModal({
   onCancelPayMethod,
   onConfirmPayMethod,
   onMarkCompleted,
+  onAddReferenceImages,
+  addReferencePending,
+  onMarkReferencesReviewed,
+  markReferencesReviewedPending,
 }: AppointmentDetailModalProps) {
   const { holidayIndex } = useSalonHolidays(true)
   type EnrichedLine = AgendaService & {
@@ -192,6 +207,32 @@ export function AppointmentDetailModal({
 
   const editTotal = enrichedLines.reduce((sum, s) => sum + s.unitPrice, 0)
   const editDur = enrichedLines.reduce((sum, s) => sum + s.duration, 0)
+
+  const referenceImagePaths = appointment?.reference_image_paths ?? []
+  const referenceSlotsLeft = MAX_REFERENCE_IMAGES - referenceImagePaths.length
+  const referencesUnreviewed =
+    referenceImagePaths.length > 0 && !appointment?.reference_reviewed_at
+
+  const handlePickReferenceImages = async () => {
+    if (!appointment || referenceSlotsLeft <= 0) return
+    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    if (!perm.granted) {
+      Alert.alert('Permiso', 'Necesitamos acceso a la galería para elegir las fotos.')
+      return
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsMultipleSelection: true,
+      selectionLimit: referenceSlotsLeft,
+      quality: 0.85,
+    })
+    if (result.canceled || result.assets.length === 0) return
+    const images = result.assets.map((asset) => ({
+      uri: asset.uri,
+      contentType: asset.mimeType ?? 'image/jpeg',
+    }))
+    onAddReferenceImages(appointment, images)
+  }
 
   const canMarkCompleted =
     !!appointment && appointment.status !== 'completed' && appointment.status !== 'cancelled'
@@ -520,6 +561,91 @@ export function AppointmentDetailModal({
                       ) : null}
                     </>
                   ) : null}
+
+                  <View style={styles.formSection}>
+                    <ThemedText style={[styles.sectionLabel, { color: theme.textSecondary }]}>
+                      Referencias
+                    </ThemedText>
+                    {referenceImagePaths.length > 0 ? (
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          flexWrap: 'wrap',
+                          gap: Spacing.sm,
+                          marginBottom: Spacing.sm,
+                        }}
+                      >
+                        {referenceImagePaths.map((uri) => (
+                          <Image
+                            key={uri}
+                            source={{ uri }}
+                            style={{
+                              width: 72,
+                              height: 72,
+                              borderRadius: BorderRadius.md,
+                              backgroundColor: theme.backgroundSecondary,
+                            }}
+                            contentFit="cover"
+                          />
+                        ))}
+                      </View>
+                    ) : (
+                      <ThemedText
+                        style={[
+                          styles.summaryLabel,
+                          { color: theme.textMuted, marginBottom: Spacing.sm },
+                        ]}
+                      >
+                        Sin fotos de referencia todavía.
+                      </ThemedText>
+                    )}
+
+                    {referenceSlotsLeft > 0 ? (
+                      <Pressable
+                        style={[
+                          styles.submitButton,
+                          {
+                            backgroundColor: theme.backgroundSecondary,
+                            borderWidth: 1,
+                            borderColor: theme.border,
+                            marginBottom: referencesUnreviewed ? Spacing.sm : 0,
+                          },
+                        ]}
+                        onPress={handlePickReferenceImages}
+                        disabled={addReferencePending}
+                      >
+                        {addReferencePending ? (
+                          <ActivityIndicator color={theme.primary} />
+                        ) : (
+                          <>
+                            <Feather name="camera" size={18} color={theme.text} />
+                            <ThemedText style={[styles.submitButtonText, { color: theme.text }]}>
+                              Agregar foto
+                            </ThemedText>
+                          </>
+                        )}
+                      </Pressable>
+                    ) : null}
+
+                    {referencesUnreviewed ? (
+                      <Pressable
+                        style={[styles.submitButton, { backgroundColor: theme.success }]}
+                        onPress={() => appointment && onMarkReferencesReviewed(appointment)}
+                        disabled={markReferencesReviewedPending}
+                      >
+                        {markReferencesReviewedPending ? (
+                          <ActivityIndicator color="#FFFFFF" />
+                        ) : (
+                          <>
+                            <Feather name="check" size={18} color="#FFFFFF" />
+                            <ThemedText style={styles.submitButtonText}>
+                              Marcar como revisado
+                            </ThemedText>
+                          </>
+                        )}
+                      </Pressable>
+                    ) : null}
+                  </View>
 
                   <View style={styles.formSection}>
                     <ThemedText style={[styles.sectionLabel, { color: theme.textSecondary }]}>
