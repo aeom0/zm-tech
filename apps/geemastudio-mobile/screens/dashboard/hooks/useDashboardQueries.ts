@@ -69,6 +69,7 @@ export function useDashboardQueries(
   const {
     data: stats,
     isLoading: statsLoading,
+    isError: statsError,
     refetch: refetchStats,
   } = useQuery<DashboardStats>({
     queryKey: ['dashboard_stats', startOfDay, statsEndOfDay],
@@ -78,6 +79,7 @@ export function useDashboardQueries(
   const {
     data: appointments = [],
     isLoading: appointmentsLoading,
+    isError: appointmentsError,
     refetch: refetchAppointments,
   } = useQuery<DashboardAppointment[]>({
     queryKey: ['appointments_upcoming', startOfDay, appointmentsEndOfDay],
@@ -160,16 +162,26 @@ export function useDashboardQueries(
     enabled: appointmentIds.length > 0,
   })
 
+  const hasError = statsError || appointmentsError
+  const refetchAll = () => {
+    refetchStats()
+    refetchAppointments()
+  }
+
   return {
     stats,
     statsLoading,
+    statsError,
     refetchStats,
     appointments,
     appointmentsLoading,
+    appointmentsError,
     refetchAppointments,
     employees,
     services,
     paymentsByAppointment,
     topServices,
+    hasError,
+    refetchAll,
   }
 }

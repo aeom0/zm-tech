@@ -41,6 +41,7 @@ export function useFinancesData(
   const {
     data: payments = [],
     isLoading,
+    isError,
     refetch,
   } = useQuery<FinancesPayment[]>({
     queryKey: ['payments', currentRange.start, currentRange.end, isAdmin ? 'admin' : userId],
@@ -452,6 +453,7 @@ export function useFinancesData(
     employeeEarningsAbonoTotal,
     chartDataByPeriod,
     isLoading,
+    isError,
     refetch,
   }
 }

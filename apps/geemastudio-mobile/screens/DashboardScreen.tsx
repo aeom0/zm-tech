@@ -6,6 +6,7 @@ import React, { useMemo, useState } from 'react'
 import { RefreshControl, ScrollView, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+import { ErrorState } from '@/components/ErrorState'
 import { ThemedText } from '@/components/ThemedText'
 import { Spacing } from '@/constants/theme'
 import { useAuth } from '@/contexts/AuthContext'
@@ -85,6 +86,8 @@ export default function DashboardScreen() {
     services,
     paymentsByAppointment,
     topServices,
+    hasError,
+    refetchAll,
   } = useDashboardQueries(startOfDay, statsEndOfDay, appointmentsEndOfDay)
 
   const { updateAppointmentMutation, createPaymentMutation } = useDashboardMutations()
@@ -172,6 +175,22 @@ export default function DashboardScreen() {
 
   if (isLoading) {
     return <DashboardLoading backgroundColor={theme.backgroundRoot} />
+  }
+
+  if (hasError) {
+    return (
+      <View
+        style={[
+          styles.container,
+          { backgroundColor: theme.backgroundRoot, justifyContent: 'center' },
+        ]}
+      >
+        <ErrorState
+          message="No pudimos cargar el dashboard. Revisa tu conexión e intenta de nuevo."
+          onRetry={refetchAll}
+        />
+      </View>
+    )
   }
 
   const statsRow = (
