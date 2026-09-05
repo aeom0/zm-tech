@@ -18,7 +18,7 @@ Alberto probó **Geema mobile** (APK preview `exposdk:56.0.0`, build `34ec3bc3-5
 |--------------|-----------|
 | Login + tenant ZM | ✅ |
 | Inicio (KPIs, próximas citas) | ✅ parcial |
-| Agenda | ✅ hora Lima (S5C-3); UI distinta a ZM; multi-servicio → S5C-4 |
+| Agenda | ✅ hora Lima (S5C-3); UI distinta a ZM; multi-servicio → S5C-4; **04-sep:** `OwnerDayGrid` reparte carriles si dos citas se solapan en la misma columna |
 | Servicios (catálogo base) | ✅ |
 | Packs / Promos | ✅ adaptador (S5C-1/2) — Alberto confirmó visibles |
 | Clientes | ✅ |
@@ -94,14 +94,21 @@ Geema usa grid día/semana + columnas staff; ZM usa grid 10–18 h Lima con medi
 | Columna | Geema | ZM prod |
 |---------|-------|---------|
 | `name`, `color`, `is_active`, `commission_percentage` | ✅ | ✅ |
+| `commission_mode`, `house_cut_fixed` | ✅ (schema + UI Personal/Finanzas) | ✅ (migración 04-sep-2026) |
 | `avatar_url` | ✅ | ✅ (columna agregada 30-ago-2026, ver nota abajo) |
-| `payment_mode`, `salary_amount` | sí | **no** |
+| `payment_mode`, `salary_amount` | sí | **no** (Geema dialect only; writes ZM las omiten) |
 
 **Cerrado (S5C-11):** `screens/personal/lib/employeesAdapter.ts` + `useEmployeesQuery` / `useActiveEmployees`. Writes ZM omiten `payment_mode`/`salary_amount`; UI oculta modo salario para ZM. Agenda/Asignar/Finanzas/Dashboard/Validación/Personal comparten la misma query.
 
 **Actualización (30-ago-2026):** se agregó `avatar_url text` a `employees` en producción ZM (`udelxwwnyivknslueerr`, vía Management API — conexión directa a Postgres bloqueada en el sandbox), se creó el bucket público `employee-avatars` en Storage, y se subieron/asignaron las fotos reales de Vanessa y Stephani (fuente: sitio web ZM Lash / Sanity CMS). `employeesAdapter.ts` ya no anula `avatar_url` para el dialecto ZM — la columna es común a ambos esquemas ahora, solo `payment_mode`/`salary_amount` siguen siendo geema-only. La app standalone de ZM Lash (`apps/mobile` en este repo) no tiene feature de avatar por empleado, así que no requiere cambios de código — solo se sincroniza este doc. Detalle: `zm-tech/.cursor/skills/geemastudio.md` §8 y `zm-tech/docs/geemastudio/CHANGELOG.md`.
 
-Prod tenant: Vanessa, Stephani, Chica Externa (3 columnas). Staff sin `profiles.employee_id` no ve “su” columna (dato, no bug de cableado).
+**Actualización (04-sep-2026) — personal y comisiones:**
+- Renombre prod: `emp-romina` / label **“Chica Externa”** → **`emp-karelis` / Karelis** (mismas técnicas de extensiones post-1pm; WABA carril sin cambio de IDs de servicio).
+- Alta **`emp-alejandra` / Alejandra**: micropigmentación (Microblading, Microshading, Shading, Delineado de ojos, Microlips). Sugerencia de asignación `cat-microblading` → solo ella.
+- Columnas `commission_mode` (`percent` \| `fixed_house`) + `house_cut_fixed` (S/ por línea). Alejandra: `fixed_house` + **S/50** casa (Vanessa); precios cliente siguen 250/270 (= base profesional + 50).
+- UI: Personal + Finanzas en **ZM mobile** y **Geema mobile** (desglose acumula corte fijo en Vanessa/`owner`). Script: `scripts/db/20260904_employees_karelis_alejandra_commission.sql`.
+
+Prod tenant (4 columnas agenda): **Vanessa**, **Stephani**, **Karelis**, **Alejandra**. Staff sin `profiles.employee_id` no ve “su” columna (dato, no bug de cableado).
 
 ### Timezone / hora de pared (S5C-3)
 

@@ -231,12 +231,23 @@ export function useFinancesData(
 
   const desglosePorChica = useMemo((): FinancesDesgloseRow[] => {
     if (!isAdmin || employeesList.length === 0) return []
-    const byEmployeeActivity: Record<
-      string,
-      { generado: number; pagado: number; pendiente: number }
-    > = {}
+
+    type Acc = {
+      generado: number
+      pagado: number
+      pendiente: number
+      comision: number
+      houseCutEarned: number
+    }
+    const byEmployee: Record<string, Acc> = {}
     for (const emp of employeesList) {
-      byEmployeeActivity[emp.id] = { generado: 0, pagado: 0, pendiente: 0 }
+      byEmployee[emp.id] = {
+        generado: 0,
+        pagado: 0,
+        pendiente: 0,
+        comision: 0,
+        houseCutEarned: 0,
+      }
     }
 
     const paidByApt: Record<string, number> = {}
@@ -246,57 +257,117 @@ export function useFinancesData(
       paidByApt[aid] = (paidByApt[aid] ?? 0) + parseFloat(String(p.amount))
     }
 
-    for (const a of appointmentsInPeriod) {
-      const eid = a.employee_id
-      if (!eid || !byEmployeeActivity[eid]) continue
-      const price = parseFloat(String(a.price))
-      const paid = paidByApt[a.id] ?? 0
-      byEmployeeActivity[eid].generado += price
-      byEmployeeActivity[eid].pagado += paid
-      byEmployeeActivity[eid].pendiente += Math.max(0, price - paid)
+    let totalHouseCuts = 0
+
+    for (const apt of appointmentsInPeriod) {
+      const lines = apt.appointment_services ?? []
+      const totalPaid = paidByApt[apt.id] ?? 0
+
+      if (lines.length > 0) {
+        const totalAptPrice = lines.reduce(
+          (s, l) => s + parseFloat(String(l.price)),
+          0
+        )
+        for (const line of lines) {
+          const eid = line.employee_id
+          if (!eid || !byEmployee[eid]) continue
+          const emp = employeesList.find((e) => e.id === eid)
+          if (!emp) continue
+          const linePrice = parseFloat(String(line.price))
+          const linePct =
+            totalAptPrice > 0 ? linePrice / totalAptPrice : 1 / lines.length
+          byEmployee[eid].generado += linePrice
+          byEmployee[eid].pagado += totalPaid * linePct
+          byEmployee[eid].pendiente += Math.max(0, linePrice - totalPaid * linePct)
+
+          const paymentMode = emp.payment_mode ?? 'commission'
+          const commissionMode = emp.commission_mode ?? 'percent'
+          if (paymentMode !== 'salary' && commissionMode === 'fixed_house') {
+            const house = Math.min(emp.house_cut_fixed ?? 0, linePrice)
+            byEmployee[eid].comision += linePrice - house
+            totalHouseCuts += house
+          }
+        }
+      } else {
+        const eid = apt.employee_id
+        if (!eid || !byEmployee[eid]) continue
+        const emp = employeesList.find((e) => e.id === eid)
+        if (!emp) continue
+        const price = parseFloat(String(apt.price))
+        byEmployee[eid].generado += price
+        byEmployee[eid].pagado += totalPaid
+        byEmployee[eid].pendiente += Math.max(0, price - totalPaid)
+
+        const paymentMode = emp.payment_mode ?? 'commission'
+        const commissionMode = emp.commission_mode ?? 'percent'
+        if (paymentMode !== 'salary' && commissionMode === 'fixed_house') {
+          const house = Math.min(emp.house_cut_fixed ?? 0, price)
+          byEmployee[eid].comision += price - house
+          totalHouseCuts += house
+        }
+      }
+    }
+
+    // Percent / salary / mixed (sin fixed_house por línea)
+    for (const emp of employeesList) {
+      const rec = byEmployee[emp.id]
+      if (!rec) continue
+      const paymentMode = emp.payment_mode ?? 'commission'
+      const commissionMode = emp.commission_mode ?? 'percent'
+      if (paymentMode !== 'salary' && commissionMode === 'fixed_house') continue
+
+      const commissionPercentage =
+        paymentMode === 'salary'
+          ? null
+          : emp.commission_percentage != null
+            ? Number(emp.commission_percentage)
+            : null
+      const salaryAmount = emp.salary_amount
+        ? parseFloat(String(emp.salary_amount))
+        : null
+      const res = calculateEmployeeEarnings({
+        paymentAmount: rec.generado,
+        paymentMode,
+        commissionPercentage,
+        salaryAmount,
+        commissionMode,
+        houseCutFixed: emp.house_cut_fixed,
+      })
+      rec.comision = res.employeeEarns
+    }
+
+    if (totalHouseCuts > 0) {
+      const vanessa =
+        employeesList.find((e) => e.id === 'emp-vanessa' || e.role === 'owner') ??
+        employeesList.find((e) => e.name.toLowerCase().includes('vanessa'))
+      if (vanessa && byEmployee[vanessa.id]) {
+        byEmployee[vanessa.id].comision += totalHouseCuts
+        byEmployee[vanessa.id].houseCutEarned = totalHouseCuts
+      }
     }
 
     return employeesList
       .filter((e) => {
-        const r = byEmployeeActivity[e.id]
-        return r && (r.generado > 0 || r.pagado > 0)
+        const r = byEmployee[e.id]
+        return r && (r.generado > 0 || r.pagado > 0 || r.comision > 0)
       })
       .map((e) => {
-        const activity = byEmployeeActivity[e.id]
-        const paymentMode = e.payment_mode ?? 'commission'
-        const commissionPercentage =
-          paymentMode === 'salary'
-            ? null
-            : e.commission_percentage != null
-              ? Number(e.commission_percentage)
-              : null
-        const salaryAmount = e.salary_amount ? parseFloat(String(e.salary_amount)) : null
-
-        const generadoRes = calculateEmployeeEarnings({
-          paymentAmount: activity.generado,
-          paymentMode,
-          commissionPercentage,
-          salaryAmount,
-        })
-        const pagadoRes = calculateEmployeeEarnings({
-          paymentAmount: activity.pagado,
-          paymentMode,
-          commissionPercentage,
-          salaryAmount,
-        })
-        const pendienteRes = calculateEmployeeEarnings({
-          paymentAmount: activity.pendiente,
-          paymentMode,
-          commissionPercentage,
-          salaryAmount,
-        })
-
+        const r = byEmployee[e.id]
+        const commissionMode = e.commission_mode ?? 'percent'
         return {
           id: e.id,
           name: e.name,
-          generado: generadoRes.employeeEarns,
-          pagado: pagadoRes.employeeEarns,
-          pendiente: pendienteRes.employeeEarns,
+          generado: r.generado,
+          pagado: r.pagado,
+          pendiente: r.pendiente,
+          comision: r.comision,
+          commissionMode,
+          houseCutFixed: e.house_cut_fixed,
+          houseCutEarned: r.houseCutEarned,
+          commissionLabel:
+            commissionMode === 'fixed_house'
+              ? `Comisión (casa ${e.house_cut_fixed ?? 0})`
+              : undefined,
         }
       })
   }, [isAdmin, employeesList, payments, appointmentsInPeriod])
