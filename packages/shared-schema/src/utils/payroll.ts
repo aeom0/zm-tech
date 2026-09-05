@@ -11,6 +11,8 @@ export interface PayrollInput {
   /** Solo aplica si paymentMode === 'commission' (o mixed). Default percent. */
   commissionMode?: CommissionMode | null
   houseCutFixed?: number | null
+  /** Días del período a calcular, para prorratear salaryAmount (asumido mensual = 30 días). Default 30 (mes completo). */
+  periodDays?: number
 }
 
 export interface PayrollResult {
@@ -28,7 +30,10 @@ export function calculateEmployeeEarnings(input: PayrollInput): PayrollResult {
     salaryAmount,
     commissionMode = 'percent',
     houseCutFixed = null,
+    periodDays = 30,
   } = input
+
+  const proratedSalary = salaryAmount != null ? salaryAmount * (periodDays / 30) : 0
 
   switch (paymentMode) {
     case 'commission': {
@@ -53,15 +58,15 @@ export function calculateEmployeeEarnings(input: PayrollInput): PayrollResult {
     }
     case 'salary':
       return {
-        employeeEarns: 0,
-        salonEarns: paymentAmount,
+        employeeEarns: proratedSalary,
+        salonEarns: Math.max(0, paymentAmount - proratedSalary),
         mode: 'salary',
         label: 'Salario fijo',
       }
     case 'mixed': {
       if (commissionMode === 'fixed_house') {
         const house = Math.min(Math.max(houseCutFixed ?? 0, 0), paymentAmount)
-        const employeeEarns = paymentAmount - house
+        const employeeEarns = paymentAmount - house + proratedSalary
         return {
           employeeEarns,
           salonEarns: house,
@@ -73,10 +78,10 @@ export function calculateEmployeeEarnings(input: PayrollInput): PayrollResult {
         }
       }
       const pct = commissionPercentage ?? 0
-      const employeeEarns = paymentAmount * (pct / 100)
+      const employeeEarns = paymentAmount * (pct / 100) + proratedSalary
       return {
         employeeEarns,
-        salonEarns: paymentAmount - employeeEarns,
+        salonEarns: paymentAmount - employeeEarns + proratedSalary,
         mode: 'mixed',
         label: salaryAmount != null ? `${salaryAmount} + ${pct}%` : `${pct}% + salario`,
       }

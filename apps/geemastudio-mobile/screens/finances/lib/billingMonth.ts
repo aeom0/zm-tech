@@ -36,6 +36,20 @@ function addDaysToIsoDate(isoDate: string, delta: number): string {
   return d.toISOString().slice(0, 10)
 }
 
+/**
+ * Convierte un rango de Finanzas (start inclusivo, end exclusivo — el "mañana 00:00"
+ * de buildFinancesDateRanges) a fechas inclusivas period_start/period_end para
+ * commission_payouts (columnas `date`, sin hora).
+ */
+export function rangeToPeriodDates(range: { start: string; end: string }): {
+  periodStart: string
+  periodEnd: string
+} {
+  const periodStart = range.start.slice(0, 10)
+  const periodEnd = addDaysToIsoDate(range.end.slice(0, 10), -1)
+  return { periodStart, periodEnd }
+}
+
 /** Rango de hoy en zona tenant para consultas Supabase (timestamp sin Z). */
 export function getTenantTodayRangeIso(timezone: string): { start: string; end: string } {
   const today = getTenantTodayString(timezone)
@@ -56,11 +70,16 @@ export function getTenantDaysAgoIso(
   return addDaysToIsoDate(today, -Math.max(0, Math.floor(days)))
 }
 
-/** Rangos de período para finanzas (detalle) en zona IANA del tenant. */
+/**
+ * Rangos de período para finanzas (detalle) en zona IANA del tenant.
+ * "week" es una ventana móvil de 7 días (últimos 7 días completos incl. hoy) y "month"
+ * el mes calendario en curso (corte el día 1) — así coincide con el ciclo real de pago
+ * de salario fijo/comisión.
+ */
 export function buildFinancesDateRanges(timezone: string) {
   const { start: todayStart, end: todayEnd } = getTenantTodayRangeIso(timezone)
   const weekStart = `${getTenantDaysAgoIso(timezone, 7)}T00:00:00`
-  const monthStart = `${getTenantDaysAgoIso(timezone, 30)}T00:00:00`
+  const monthStart = `${getTenantBillingMonthKey(timezone)}-01T00:00:00`
   return {
     today: { start: todayStart, end: todayEnd },
     week: { start: weekStart, end: todayEnd },

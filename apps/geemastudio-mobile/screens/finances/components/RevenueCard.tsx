@@ -20,8 +20,24 @@ import {
 import { financesStyles as styles } from '../financesStyles'
 import type { FinancesPeriod } from '../types'
 
+/** "1-5 sep · 5 días" — rango real del período calendario y días transcurridos. */
+function formatMonthRangeLabel(periodStart: string, periodEnd: string, locale: string): string {
+  const start = new Date(`${periodStart}T00:00:00Z`)
+  const end = new Date(`${periodEnd}T00:00:00Z`)
+  const days = Math.round((end.getTime() - start.getTime()) / 86400000) + 1
+  const monthLabel = new Intl.DateTimeFormat(locale, { month: 'short', timeZone: 'UTC' })
+    .format(end)
+    .replace('.', '')
+  const startDay = start.getUTCDate()
+  const endDay = end.getUTCDate()
+  const rangeLabel = startDay === endDay ? `${startDay} ${monthLabel}` : `${startDay}-${endDay} ${monthLabel}`
+  return `${rangeLabel} · ${days} ${days === 1 ? 'día' : 'días'}`
+}
+
 interface Props {
   period: FinancesPeriod
+  periodStart: string
+  periodEnd: string
   displayTotal: number
   totalAbono: number
   abonoDisplayTotal: number
@@ -129,6 +145,8 @@ function SimpleChart({
 
 export function RevenueCard({
   period,
+  periodStart,
+  periodEnd,
   displayTotal,
   totalAbono,
   abonoDisplayTotal,
@@ -173,7 +191,7 @@ export function RevenueCard({
               ? 'Hoy'
               : period === 'week'
                 ? 'Últimos 7 días'
-                : 'Últimos 30 días'}
+                : formatMonthRangeLabel(periodStart, periodEnd, config.locale.language || 'es-VE')}
           </ThemedText>
           <ThemedText style={[styles.transactionCount, { color: theme.textMuted }]}>
             {paymentsCount} {paymentsCount === 1 ? 'transacción' : 'transacciones'}
