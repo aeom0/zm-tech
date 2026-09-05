@@ -26,6 +26,7 @@ import { EmployeeBreakdown } from './finances/components/EmployeeBreakdown'
 import { ServicesRankCard } from './finances/components/ServicesRankCard'
 import { PaymentList } from './finances/components/PaymentList'
 import { PaymentModal } from './finances/components/PaymentModal'
+import { RegisterPayoutModal } from './finances/components/RegisterPayoutModal'
 import { KpiGrid } from './finances/components/executive/KpiGrid'
 import { GrowthChart } from './finances/components/executive/GrowthChart'
 import { ExpenseList } from './finances/components/executive/ExpenseList'
@@ -47,6 +48,7 @@ import { useExpenses } from './finances/hooks/useExpenses'
 import { financesStyles as styles } from './finances/financesStyles'
 import type {
   FinanceView,
+  FinancesDesgloseRow,
   FinancesPeriod,
   OperationalExpense,
 } from './finances/types'
@@ -72,6 +74,8 @@ export default function FinancesScreen() {
   const [growthRange, setGrowthRange] = useState<GrowthRange>('6m')
   const [expenseModalVisible, setExpenseModalVisible] = useState(false)
   const [editingExpense, setEditingExpense] = useState<OperationalExpense | null>(null)
+  const [payoutModalVisible, setPayoutModalVisible] = useState(false)
+  const [payoutRow, setPayoutRow] = useState<FinancesDesgloseRow | null>(null)
 
   const timezone = config.locale.timezone
   const currentMonth = `${getTenantBillingMonthKey(timezone)}-01`
@@ -121,6 +125,10 @@ export default function FinancesScreen() {
     isLoading,
     isError,
     refetch,
+    periodStart,
+    periodEnd,
+    registerPayout,
+    isRegisteringPayout,
   } = useFinancesData(period, currentRange)
 
   const form = usePaymentForm(recentAppointments, abonoPrevioByApt)
@@ -147,6 +155,7 @@ export default function FinancesScreen() {
     void queryClient.invalidateQueries({ queryKey: ['payments'] })
     void queryClient.invalidateQueries({ queryKey: ['executive_financial_summary'] })
     void queryClient.invalidateQueries({ queryKey: ['operational_expenses'] })
+    void queryClient.invalidateQueries({ queryKey: ['commission_payouts'] })
   }
 
   return (
@@ -206,6 +215,8 @@ export default function FinancesScreen() {
             <View style={isTablet ? styles.kpiRowTablet : undefined}>
               <RevenueCard
                 period={period}
+                periodStart={periodStart}
+                periodEnd={periodEnd}
                 displayTotal={displayTotal}
                 totalAbono={totalAbono}
                 abonoDisplayTotal={abonoDisplayTotal}
@@ -216,7 +227,15 @@ export default function FinancesScreen() {
               />
             </View>
 
-            {isAdmin && <EmployeeBreakdown desglose={desglosePorChica} />}
+            {isAdmin && (
+              <EmployeeBreakdown
+                desglose={desglosePorChica}
+                onRegisterPayout={(row) => {
+                  setPayoutRow(row)
+                  setPayoutModalVisible(true)
+                }}
+              />
+            )}
             {isAdmin && <ServicesRankCard data={topServicesRanking} />}
 
             <PaymentList
@@ -314,6 +333,36 @@ export default function FinancesScreen() {
               }
             : undefined
         }
+      />
+
+      <RegisterPayoutModal
+        visible={payoutModalVisible}
+        row={payoutRow}
+        periodStart={periodStart}
+        periodEnd={periodEnd}
+        isPending={isRegisteringPayout}
+        isTablet={isTablet}
+        onClose={() => {
+          setPayoutModalVisible(false)
+          setPayoutRow(null)
+        }}
+        onSubmit={async (data) => {
+          if (!payoutRow) return
+          try {
+            await registerPayout({
+              employee_id: payoutRow.id,
+              period_start: periodStart,
+              period_end: periodEnd,
+              amount: data.amount,
+              method: data.method,
+              notes: data.notes,
+            })
+            setPayoutModalVisible(false)
+            setPayoutRow(null)
+          } catch {
+            // Alert ya mostrado en onError de la mutación; modal se mantiene abierto
+          }
+        }}
       />
     </View>
   )

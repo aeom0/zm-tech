@@ -53,6 +53,24 @@ export interface FinancesDesgloseRow {
   houseCutFixed?: number | null
   houseCutEarned?: number
   commissionLabel?: string
+  /** Suma de commission_payouts que solapan el período filtrado (ver rangeToPeriodDates). */
+  comisionPagada?: number
+  /** max(0, comision - comisionPagada) — lo que falta liquidarle en este período. */
+  comisionPendienteReal?: number
+}
+
+/** Fila de la tabla commission_payouts (registro de pago de comisión al profesional). */
+export interface CommissionPayout {
+  id: string
+  tenant_id: string
+  employee_id: string
+  period_start: string
+  period_end: string
+  amount: string
+  paid_at: string
+  method: string | null
+  notes: string | null
+  created_at: string
 }
 
 export type FinanceView = 'detalle' | 'resumen'

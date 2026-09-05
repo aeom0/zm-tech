@@ -8,6 +8,8 @@ import { fetchEmployeeById } from '@/screens/personal/lib/employeesAdapter'
 import { useEmployeesQuery } from '@/screens/personal/hooks/useEmployeesData'
 
 import { buildTopServicesRanking, type ServiceRankRow } from '../utils/service-ranking'
+import { rangeToPeriodDates } from '../lib/billingMonth'
+import { usePayouts } from './usePayouts'
 import type {
   FinancesAppointmentOption,
   FinancesDesgloseRow,
@@ -37,6 +39,25 @@ export function useFinancesData(
   currentRange: { start: string; end: string }
 ) {
   const { isAdmin, userId } = useAuth()
+
+  const { periodStart, periodEnd } = useMemo(
+    () => rangeToPeriodDates(currentRange),
+    [currentRange]
+  )
+
+  /** Días del período (periodStart-periodEnd inclusive), para prorratear salary_amount (asumido mensual). */
+  const periodDays = useMemo(() => {
+    const start = new Date(`${periodStart}T00:00:00Z`)
+    const end = new Date(`${periodEnd}T00:00:00Z`)
+    return Math.max(1, Math.round((end.getTime() - start.getTime()) / 86400000) + 1)
+  }, [periodStart, periodEnd])
+  const {
+    payoutsByEmployee,
+    registerPayout,
+    isRegistering,
+    deletePayoutById,
+    refetch: refetchPayouts,
+  } = usePayouts(periodStart, periodEnd)
 
   const {
     data: payments = [],
@@ -333,6 +354,7 @@ export function useFinancesData(
         salaryAmount,
         commissionMode,
         houseCutFixed: emp.house_cut_fixed,
+        periodDays,
       })
       rec.comision = res.employeeEarns
     }
@@ -354,7 +376,9 @@ export function useFinancesData(
       })
       .map((e) => {
         const r = byEmployee[e.id]
+        const paymentMode = e.payment_mode ?? 'commission'
         const commissionMode = e.commission_mode ?? 'percent'
+        const comisionPagada = payoutsByEmployee[e.id] ?? 0
         return {
           id: e.id,
           name: e.name,
@@ -366,12 +390,16 @@ export function useFinancesData(
           houseCutFixed: e.house_cut_fixed,
           houseCutEarned: r.houseCutEarned,
           commissionLabel:
-            commissionMode === 'fixed_house'
-              ? `Comisión (casa ${e.house_cut_fixed ?? 0})`
-              : undefined,
+            paymentMode === 'salary'
+              ? 'Salario fijo'
+              : commissionMode === 'fixed_house'
+                ? `Comisión (casa ${e.house_cut_fixed ?? 0})`
+                : undefined,
+          comisionPagada,
+          comisionPendienteReal: Math.max(0, r.comision - comisionPagada),
         }
       })
-  }, [isAdmin, employeesList, payments, appointmentsInPeriod])
+  }, [isAdmin, employeesList, payments, appointmentsInPeriod, payoutsByEmployee])
 
   const totalRevenue = useMemo(
     () => payments.reduce((sum, p) => sum + parseFloat(String(p.amount)), 0),
@@ -387,7 +415,7 @@ export function useFinancesData(
   )
 
   const employeeEarningsTotal = useMemo(() => {
-    if (!payments.length || !myEmployee) return 0
+    if (!myEmployee) return 0
     const paymentMode = myEmployee.payment_mode ?? 'commission'
     const commissionPercentage =
       paymentMode === 'salary' ? null : (myEmployee.commission_percentage ?? null)
@@ -395,16 +423,30 @@ export function useFinancesData(
       ? parseFloat(String(myEmployee.salary_amount))
       : null
 
-    return payments.reduce((sum, p) => {
+    // periodDays: 0 aísla la parte de comisión por pago (evita sumar el salario prorrateado una vez por cada transacción).
+    const commissionSum = payments.reduce((sum, p) => {
       const result = calculateEmployeeEarnings({
         paymentAmount: parseFloat(String(p.amount)),
         paymentMode,
         commissionPercentage,
         salaryAmount,
+        periodDays: 0,
       })
       return sum + result.employeeEarns
     }, 0)
-  }, [payments, myEmployee])
+
+    if (paymentMode === 'salary' || paymentMode === 'mixed') {
+      const salaryRes = calculateEmployeeEarnings({
+        paymentAmount: 0,
+        paymentMode: 'salary',
+        commissionPercentage: null,
+        salaryAmount,
+        periodDays,
+      })
+      return commissionSum + salaryRes.employeeEarns
+    }
+    return commissionSum
+  }, [payments, myEmployee, periodDays])
 
   const employeeEarningsAbonoTotal = useMemo(() => {
     if (!myEmployee) return 0
@@ -423,6 +465,7 @@ export function useFinancesData(
           paymentMode,
           commissionPercentage,
           salaryAmount,
+          periodDays: 0,
         })
         return sum + result.employeeEarns
       }, 0)
@@ -439,6 +482,11 @@ export function useFinancesData(
     return sorted.map((date) => ({ date, total: byDate[date] }))
   }, [payments, period])
 
+  const handleRefetch = () => {
+    void refetch()
+    void refetchPayouts()
+  }
+
   return {
     payments,
     recentAppointments,
@@ -454,6 +502,11 @@ export function useFinancesData(
     chartDataByPeriod,
     isLoading,
     isError,
-    refetch,
+    refetch: handleRefetch,
+    periodStart,
+    periodEnd,
+    registerPayout,
+    isRegisteringPayout: isRegistering,
+    deletePayoutById,
   }
 }

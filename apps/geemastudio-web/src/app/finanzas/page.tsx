@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
@@ -15,10 +15,18 @@ import {
   Smartphone,
   CreditCard,
   Banknote,
+  CheckCircle,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
-import { useFinanzasData } from '@/hooks/finanzas/useFinanzasData'
+import { useFinanzasData, type EmployeeDesglose, type FinanzasPeriod } from '@/hooks/finanzas/useFinanzasData'
 import { LUNARIS } from '@/lib/theme'
+import { RegisterPayoutModal } from './RegisterPayoutModal'
+
+const PERIOD_LABELS: Record<FinanzasPeriod, string> = {
+  day: 'Hoy',
+  week: 'Esta semana',
+  month: 'Este mes',
+}
 
 const METHOD_LABELS: Record<string, string> = {
   cash: 'Efectivo',
@@ -52,6 +60,8 @@ export default function FinanzasPage() {
   const router = useRouter()
   const { isAuthenticated, isLoading: authLoading, isAdmin, profile, logout } = useAuth()
   const finanzas = useFinanzasData()
+  const [payoutRow, setPayoutRow] = useState<EmployeeDesglose | null>(null)
+  const [payoutModalOpen, setPayoutModalOpen] = useState(false)
 
   useEffect(() => {
     if (authLoading) return
@@ -120,6 +130,14 @@ export default function FinanzasPage() {
     citasConPendiente,
     desgloseChicas,
     isLoading,
+    period,
+    setPeriod,
+    periodStart,
+    periodEnd,
+    registerPayout,
+    isRegisteringPayout,
+    payoutError,
+    refetchPayouts,
   } = finanzas
 
   const mesActual = new Date().toLocaleString('es-PE', {
@@ -252,68 +270,135 @@ export default function FinanzasPage() {
         </div>
 
         {/* Desglose por chica */}
-        {!isLoading && desgloseChicas.length > 0 && (
-          <section>
-            <h2 className="mb-3 text-base font-semibold text-zinc-900 dark:text-zinc-100">
-              Por chica — {mesActual}
+        <section>
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+            <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
+              Por chica — {PERIOD_LABELS[period]}
             </h2>
-            <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-zinc-100 dark:border-zinc-800">
-                    <th className="px-4 py-3 text-left font-semibold text-zinc-500 dark:text-zinc-400">
-                      Chica
-                    </th>
-                    <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
-                      Generado
-                    </th>
-                    <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
-                      Cobrado
-                    </th>
-                    <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
-                      Pendiente
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {desgloseChicas.map((e) => (
-                    <tr
-                      key={e.id}
-                      className="border-b border-zinc-50 last:border-0 dark:border-zinc-800/50"
-                    >
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
-                          <span
-                            className="h-2.5 w-2.5 flex-shrink-0 rounded-full"
-                            style={{ backgroundColor: e.color }}
-                          />
-                          <span className="font-medium text-zinc-900 dark:text-zinc-100">
-                            {e.name}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-right text-zinc-700 dark:text-zinc-300">
-                        {fmtS(e.generado)}
-                      </td>
-                      <td className="px-4 py-3 text-right font-semibold text-emerald-600 dark:text-emerald-400">
-                        {fmtS(e.pagado)}
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        {e.pendiente > 0.01 ? (
-                          <span className="font-semibold text-[var(--primary)]">
-                            {fmtS(e.pendiente)}
-                          </span>
-                        ) : (
-                          <span className="text-zinc-400">—</span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="inline-flex rounded-full border border-zinc-200 bg-white p-1 dark:border-zinc-800 dark:bg-zinc-900">
+              {(Object.keys(PERIOD_LABELS) as FinanzasPeriod[]).map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  onClick={() => setPeriod(p)}
+                  className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
+                    period === p
+                      ? 'bg-[var(--primary)] text-white'
+                      : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200'
+                  }`}
+                >
+                  {PERIOD_LABELS[p]}
+                </button>
+              ))}
             </div>
-          </section>
-        )}
+          </div>
+
+          {!isLoading && desgloseChicas.length > 0 ? (
+            <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[720px] text-sm">
+                  <thead>
+                    <tr className="border-b border-zinc-100 dark:border-zinc-800">
+                      <th className="px-4 py-3 text-left font-semibold text-zinc-500 dark:text-zinc-400">
+                        Chica
+                      </th>
+                      <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
+                        Generado
+                      </th>
+                      <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
+                        Cobrado
+                      </th>
+                      <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
+                        Pendiente
+                      </th>
+                      <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
+                        Comisión
+                      </th>
+                      <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
+                        Pagado
+                      </th>
+                      <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
+                        Pendiente real
+                      </th>
+                      <th className="px-4 py-3" />
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {desgloseChicas.map((e) => (
+                      <tr
+                        key={e.id}
+                        className="border-b border-zinc-50 last:border-0 dark:border-zinc-800/50"
+                      >
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            <span
+                              className="h-2.5 w-2.5 flex-shrink-0 rounded-full"
+                              style={{ backgroundColor: e.color }}
+                            />
+                            <span className="font-medium text-zinc-900 dark:text-zinc-100">
+                              {e.name}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-4 py-3 text-right text-zinc-700 dark:text-zinc-300">
+                          {fmtS(e.generado)}
+                        </td>
+                        <td className="px-4 py-3 text-right font-semibold text-emerald-600 dark:text-emerald-400">
+                          {fmtS(e.pagado)}
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          {e.pendiente > 0.01 ? (
+                            <span className="font-semibold text-[var(--primary)]">
+                              {fmtS(e.pendiente)}
+                            </span>
+                          ) : (
+                            <span className="text-zinc-400">—</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-right text-zinc-700 dark:text-zinc-300">
+                          {e.comision > 0 ? fmtS(e.comision) : <span className="text-zinc-400">—</span>}
+                        </td>
+                        <td className="px-4 py-3 text-right text-zinc-500 dark:text-zinc-400">
+                          {fmtS(e.comisionPagada)}
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          {e.comisionPendienteReal > 0.01 ? (
+                            <span className="font-semibold text-amber-600 dark:text-amber-400">
+                              {fmtS(e.comisionPendienteReal)}
+                            </span>
+                          ) : (
+                            <span className="text-zinc-400">—</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          {e.comisionPendienteReal > 0.01 && (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setPayoutRow(e)
+                                setPayoutModalOpen(true)
+                              }}
+                              className="inline-flex items-center gap-1.5 rounded-full border border-[var(--primary)] px-3 py-1 text-xs font-semibold text-[var(--primary)] transition-colors hover:bg-[var(--primary)]/10"
+                            >
+                              <CheckCircle className="h-3.5 w-3.5" />
+                              Marcar pago
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ) : !isLoading ? (
+            <div className="rounded-2xl border border-zinc-200 bg-white py-10 text-center shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+              <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                Sin actividad en este período
+              </p>
+            </div>
+          ) : null}
+        </section>
 
         {/* Historial de pagos */}
         <section>
@@ -434,6 +519,37 @@ export default function FinanzasPage() {
           zmlashnails.com/finanzas · Solo administración
         </p>
       </main>
+
+      <RegisterPayoutModal
+        open={payoutModalOpen}
+        row={payoutRow}
+        periodStart={periodStart}
+        periodEnd={periodEnd}
+        isPending={isRegisteringPayout}
+        error={payoutError}
+        onClose={() => {
+          setPayoutModalOpen(false)
+          setPayoutRow(null)
+        }}
+        onSubmit={async (data) => {
+          if (!payoutRow) return
+          try {
+            await registerPayout({
+              employee_id: payoutRow.id,
+              period_start: periodStart,
+              period_end: periodEnd,
+              amount: data.amount,
+              method: data.method,
+              notes: data.notes,
+            })
+            refetchPayouts()
+            setPayoutModalOpen(false)
+            setPayoutRow(null)
+          } catch {
+            // el error queda visible en el modal via `error` (registerError de la mutación)
+          }
+        }}
+      />
     </div>
   )
 }
