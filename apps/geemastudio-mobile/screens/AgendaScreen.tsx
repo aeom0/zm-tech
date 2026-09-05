@@ -12,6 +12,7 @@ import { useTheme } from '@/hooks/useTheme'
 import { useResponsive } from '@/hooks/useResponsive'
 import { useAppointmentCompletion } from '@/hooks/useAppointmentCompletion'
 import { useSalonHolidays } from '@/hooks/useSalonHolidays'
+import { ErrorState } from '@/components/ErrorState'
 import { HolidayAlertBanner } from '@/components/HolidayAlertBanner'
 import { useTenant } from '@/contexts/TenantContext'
 import { useAuth } from '@/contexts/AuthContext'
@@ -135,6 +136,7 @@ export default function AgendaScreen() {
   const {
     appointments,
     isLoading,
+    appointmentsError,
     refetch,
     employees,
     employeesLoading,
@@ -209,7 +211,22 @@ export default function AgendaScreen() {
     updateAppointmentServicesMutation,
     completeAppointmentMutation,
     createPaymentMutation,
+    addReferenceImagesMutation,
+    markReferencesReviewedMutation,
   } = useAgendaMutations({ onCreateSuccess, onDeleteSuccess, onUpdateSuccess }, tenantTz, services)
+
+  /**
+   * `appointmentDetail` es una copia local (para no perder selección al re-render);
+   * la resincronizamos con la fila fresca de `appointments` cuando invalida una query
+   * (p. ej. tras subir una foto de referencia o marcarla revisada), sin cerrar el modal.
+   */
+  useEffect(() => {
+    if (!appointmentDetail) return
+    const fresh = appointments.find((a) => a.id === appointmentDetail.id)
+    if (fresh && fresh !== appointmentDetail) {
+      setAppointmentDetail(fresh)
+    }
+  }, [appointments, appointmentDetail])
 
   const getServiceName = useCallback(
     (serviceId: string) => services.find((s) => s.id === serviceId)?.name ?? 'Servicio',
@@ -565,6 +582,28 @@ export default function AgendaScreen() {
     openNewAppointment(selectedDate, primeraHora, 0)
   }, [agendaHours, selectedDate, businessHoursNorm, tenantTz])
 
+  const handleAddReferenceImages = useCallback(
+    (
+      appointmentToUpdate: AgendaAppointment,
+      images: Array<{ uri: string; contentType?: string }>
+    ) => {
+      addReferenceImagesMutation.mutate({
+        appointmentId: appointmentToUpdate.id,
+        images,
+        currentPaths: appointmentToUpdate.reference_image_paths ?? [],
+        alreadyReceived: !!appointmentToUpdate.reference_received_at,
+      })
+    },
+    [addReferenceImagesMutation]
+  )
+
+  const handleMarkReferencesReviewed = useCallback(
+    (appointmentToUpdate: AgendaAppointment) => {
+      markReferencesReviewedMutation.mutate(appointmentToUpdate.id)
+    },
+    [markReferencesReviewedMutation]
+  )
+
   const closeDetailModal = () => {
     cancelPayMethod()
     serviceEditor.resetEditor()
@@ -647,6 +686,14 @@ export default function AgendaScreen() {
       />
 
       <HolidayAlertBanner embedded={false} />
+
+      {appointmentsError ? (
+        <ErrorState
+          compact
+          message="No pudimos cargar las citas. Revisa tu conexión e intenta de nuevo."
+          onRetry={refetch}
+        />
+      ) : null}
 
       {authLoading ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -952,6 +999,10 @@ export default function AgendaScreen() {
         onCancelPayMethod={cancelPayMethod}
         onConfirmPayMethod={confirmCompleteWithMethod}
         onMarkCompleted={handleMarkCompleted}
+        onAddReferenceImages={handleAddReferenceImages}
+        addReferencePending={addReferenceImagesMutation.isPending}
+        onMarkReferencesReviewed={handleMarkReferencesReviewed}
+        markReferencesReviewedPending={markReferencesReviewedMutation.isPending}
       />
 
       <AppointmentPreviewModal

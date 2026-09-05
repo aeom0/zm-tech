@@ -46,6 +46,24 @@ export function usePendingBadgeCount() {
     enabled: isAdmin,
   })
 
+  // Citas con fotos de referencia sin revisar (reference_image_paths no vacío
+  // y reference_reviewed_at aún null)
+  const { data: unreviewedReferencesCount = 0 } = useQuery<number>({
+    queryKey: ['unreviewed_references_count'],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('appointments')
+        .select('id', { count: 'exact', head: true })
+        .not('reference_image_paths', 'is', null)
+        .not('reference_image_paths', 'eq', '{}')
+        .is('reference_reviewed_at', null)
+      if (error) throw new Error(error.message)
+      return count ?? 0
+    },
+    refetchInterval: 60_000,
+    enabled: isAdmin,
+  })
+
   // Badge total del tab = solo pagos pendientes
   // (unassignedCount es informacional en el item, no suma al tab)
   const tabBadgeCount = paymentValidationCount
@@ -53,6 +71,7 @@ export function usePendingBadgeCount() {
   return {
     paymentValidationCount,
     unassignedCount,
+    unreviewedReferencesCount,
     tabBadgeCount,
   }
 }
