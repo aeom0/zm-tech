@@ -148,7 +148,7 @@ Detalle extendido: `scripts/db/seeds/README.md`.
 Tablas principales en `packages/shared-schema/src/schema.ts`:
 
 - **profiles** - Perfiles de usuario (id = auth.users.id), rol (dev | owner | staff), employee_id opcional; RLS por rol
-- **employees** - Personal del negocio: nombre, email, color, commission_percentage (%), notas, is_active
+- **employees** - Personal del negocio: nombre, email, color, `commission_percentage` (%), `commission_mode` (`percent` | `fixed_house`), `house_cut_fixed` (S/ casa por línea si fixed_house), notas, is_active; Geema además `payment_mode` / `salary_amount`
 - **service_categories** - Agrupaciones de servicios
 - **services** - Servicios ofrecidos (precio, duración)
 - **clients** - Base de datos de clientes

@@ -7,6 +7,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido (4-sep 2026 — Personal Karelis/Alejandra + comisión fija casa)
+
+- **BD compartida ZM**: `employees.commission_mode` + `house_cut_fixed`; `emp-romina`/`Chica Externa` → `emp-karelis`/Karelis; alta `emp-alejandra` (`fixed_house` S/50) para micro.
+- **Mobile — Personal / Finanzas**: esquema % vs fijo casa; desglose acumula corte en Vanessa; badge “Casa S/…”.
+- **Mobile — Agenda (`OwnerDayGrid`)**: carriles laterales para citas solapadas en la misma columna (texto ya no se pisa).
+
 ### Añadido (2-sep 2026 — Colores de marca editables)
 
 - **Mobile — `TenantColorsScreen`**: nueva pantalla en Más → Datos del negocio para editar `theme.primaryColor`/`accentColor` post-onboarding, reutilizando paletas y selector HSV del wizard; `syncRemote` vía `updateTenant`.

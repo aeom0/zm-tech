@@ -9,6 +9,7 @@ import { useTenant } from '@/contexts/TenantContext'
 import {
   formatHolidayAlertTitle,
   getUpcomingHolidayAlerts,
+  dateKeyEnZona,
   zonaIANASegura,
 } from '@zmtech/tenant-config'
 import { useSalonHolidays } from '@/hooks/useSalonHolidays'
@@ -19,26 +20,13 @@ interface Props {
   embedded?: boolean
 }
 
-function todayKeyInZone(timeZone: string): string {
-  try {
-    return new Intl.DateTimeFormat('en-CA', {
-      timeZone: zonaIANASegura(timeZone),
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    }).format(new Date())
-  } catch {
-    return new Date().toISOString().slice(0, 10)
-  }
-}
-
 export function HolidayAlertBanner({ withinDays = 3, onPress, embedded }: Props) {
   const { theme } = useTheme()
   const { config } = useTenant()
   const { holidayIndex } = useSalonHolidays(true)
 
   const alerts = useMemo(() => {
-    const today = todayKeyInZone(config.locale.timezone)
+    const today = dateKeyEnZona(new Date(), zonaIANASegura(config.locale.timezone))
     return getUpcomingHolidayAlerts(today, holidayIndex, withinDays)
   }, [holidayIndex, withinDays, config.locale.timezone])
 

@@ -26,7 +26,7 @@ import { queryClient } from '@/lib/query-client'
 import { supabase } from '@/lib/supabase'
 import { borrarAvatarSiEsStorage, subirAvatarEmpleadoDefault } from '@/lib/employeeAvatar'
 import { Spacing, BorderRadius } from '@/constants/theme'
-import type { PaymentMode } from '@geemastudio/shared-schema'
+import type { CommissionMode, PaymentMode } from '@geemastudio/shared-schema'
 import { EmployeePaymentBadge } from '@/screens/personal/components/EmployeePaymentBadge'
 import { useEmployeesDialect, useEmployeesQuery } from '@/screens/personal/hooks/useEmployeesData'
 import {
@@ -69,7 +69,9 @@ export default function PersonalScreen() {
     phone: '',
     color: config.theme.primaryColor,
     paymentMode: 'commission' as PaymentMode,
+    commission_mode: 'percent' as CommissionMode,
     commission_percentage: String(config.commissions.defaultStaffPercent),
+    house_cut_fixed: '50',
     salary_amount: '',
     notes: '',
     is_active: true,
@@ -160,10 +162,13 @@ export default function PersonalScreen() {
       email: emp.email ?? '',
       phone: emp.phone ?? '',
       color: emp.color || config.theme.primaryColor,
+      commission_mode: emp.commission_mode === 'fixed_house' ? 'fixed_house' : 'percent',
       commission_percentage:
         emp.commission_percentage != null
           ? String(emp.commission_percentage)
           : String(config.commissions.defaultStaffPercent),
+      house_cut_fixed:
+        emp.house_cut_fixed != null ? String(emp.house_cut_fixed) : '50',
       paymentMode: emp.payment_mode ?? 'commission',
       salary_amount: emp.salary_amount != null ? String(emp.salary_amount) : '',
       notes: emp.notes ?? '',
@@ -184,7 +189,9 @@ export default function PersonalScreen() {
       phone: '',
       color: config.theme.primaryColor,
       paymentMode: 'commission' as PaymentMode,
+      commission_mode: 'percent' as CommissionMode,
       commission_percentage: String(config.commissions.defaultStaffPercent),
+      house_cut_fixed: '50',
       salary_amount: '',
       notes: '',
       is_active: true,
@@ -269,8 +276,20 @@ export default function PersonalScreen() {
     }
 
     let commissionPercentage: number | null = null
+    let houseCutFixed: number | null = null
     const paymentMode = showGeemaExtras ? form.paymentMode : 'commission'
-    if (paymentMode !== 'salary') {
+    const commissionMode =
+      paymentMode === 'salary' ? 'percent' : form.commission_mode
+
+    if (paymentMode !== 'salary' && commissionMode === 'fixed_house') {
+      const cut = parseInt(form.house_cut_fixed, 10)
+      if (Number.isNaN(cut) || cut < 0) {
+        Alert.alert('Error', `El corte fijo de la casa debe ser >= 0 (${currencySymbol})`)
+        return
+      }
+      houseCutFixed = cut
+      commissionPercentage = 0
+    } else if (paymentMode !== 'salary') {
       const commission = parseInt(form.commission_percentage, 10)
       if (Number.isNaN(commission) || commission < 0 || commission > 100) {
         Alert.alert('Error', 'La comisión debe ser un número entre 0 y 100')
@@ -296,6 +315,8 @@ export default function PersonalScreen() {
       phone: form.phone.trim() || null,
       color: form.color.trim() || config.theme.primaryColor,
       commission_percentage: commissionPercentage,
+      commission_mode: commissionMode,
+      house_cut_fixed: houseCutFixed,
       payment_mode: paymentMode,
       salary_amount: paymentMode !== 'commission' ? salaryAmount : null,
       notes: form.notes.trim() || null,
@@ -411,6 +432,9 @@ export default function PersonalScreen() {
           <EmployeePaymentBadge
             mode={emp.payment_mode ?? 'commission'}
             percentage={emp.payment_mode === 'salary' ? null : emp.commission_percentage}
+            commissionMode={emp.commission_mode}
+            houseCutFixed={emp.house_cut_fixed}
+            currencySymbol={currencySymbol}
           />
         </View>
         {emp.email ? (
@@ -678,23 +702,90 @@ export default function PersonalScreen() {
               {(showGeemaExtras ? form.paymentMode !== 'salary' : true) && (
                 <>
                   <ThemedText style={[styles.fieldLabel, { color: theme.textSecondary }]}>
-                    Comisión (%)
+                    Esquema de comisión
                   </ThemedText>
-                  <TextInput
-                    style={[
-                      styles.input,
-                      {
-                        backgroundColor: theme.backgroundSecondary,
-                        color: theme.text,
-                        borderColor: theme.border,
-                      },
-                    ]}
-                    placeholder="40"
-                    placeholderTextColor={theme.textMuted}
-                    value={form.commission_percentage}
-                    onChangeText={(t) => setForm((f) => ({ ...f, commission_percentage: t }))}
-                    keyboardType="number-pad"
-                  />
+                  <View style={styles.paymentModeRow}>
+                    {(
+                      [
+                        { id: 'percent' as CommissionMode, label: 'Porcentaje (%)' },
+                        { id: 'fixed_house' as CommissionMode, label: `Fijo casa (${currencySymbol})` },
+                      ] as const
+                    ).map((opt) => {
+                      const selected = form.commission_mode === opt.id
+                      return (
+                        <Pressable
+                          key={opt.id}
+                          style={[
+                            styles.paymentModeChip,
+                            {
+                              borderColor: selected ? theme.primary : theme.border,
+                              backgroundColor: selected
+                                ? theme.primary + '15'
+                                : theme.backgroundSecondary,
+                            },
+                          ]}
+                          onPress={() =>
+                            setForm((f) => ({ ...f, commission_mode: opt.id }))
+                          }
+                        >
+                          <ThemedText
+                            style={[
+                              styles.paymentModeChipText,
+                              { color: selected ? theme.primary : theme.text },
+                            ]}
+                          >
+                            {opt.label}
+                          </ThemedText>
+                        </Pressable>
+                      )
+                    })}
+                  </View>
+
+                  {form.commission_mode === 'fixed_house' ? (
+                    <>
+                      <ThemedText style={[styles.fieldLabel, { color: theme.textSecondary }]}>
+                        Corte fijo casa ({currencySymbol} por servicio)
+                      </ThemedText>
+                      <TextInput
+                        style={[
+                          styles.input,
+                          {
+                            backgroundColor: theme.backgroundSecondary,
+                            color: theme.text,
+                            borderColor: theme.border,
+                          },
+                        ]}
+                        placeholder="50"
+                        placeholderTextColor={theme.textMuted}
+                        value={form.house_cut_fixed}
+                        onChangeText={(t) => setForm((f) => ({ ...f, house_cut_fixed: t }))}
+                        keyboardType="number-pad"
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <ThemedText style={[styles.fieldLabel, { color: theme.textSecondary }]}>
+                        Comisión (%)
+                      </ThemedText>
+                      <TextInput
+                        style={[
+                          styles.input,
+                          {
+                            backgroundColor: theme.backgroundSecondary,
+                            color: theme.text,
+                            borderColor: theme.border,
+                          },
+                        ]}
+                        placeholder="40"
+                        placeholderTextColor={theme.textMuted}
+                        value={form.commission_percentage}
+                        onChangeText={(t) =>
+                          setForm((f) => ({ ...f, commission_percentage: t }))
+                        }
+                        keyboardType="number-pad"
+                      />
+                    </>
+                  )}
                 </>
               )}
 

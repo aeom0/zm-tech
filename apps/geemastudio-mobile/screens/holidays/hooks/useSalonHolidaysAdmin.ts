@@ -35,7 +35,12 @@ export function useSalonHolidaysAdmin() {
         })
         .select('id, date, name, is_closed, open_until_hour, created_at, updated_at')
         .single()
-      if (error) throw error
+      if (error) {
+        if (error.code === '23505') {
+          throw new Error('Ya existe un feriado registrado para esa fecha.')
+        }
+        throw error
+      }
       return data as SalonHolidayRecord
     },
     onSuccess: () => invalidate(),

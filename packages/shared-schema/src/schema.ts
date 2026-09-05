@@ -27,6 +27,9 @@ export const employees = pgTable('employees', {
   color: text('color').notNull().default('#FFD700'),
   role: text('role').notNull().default('employee'),
   commissionPercentage: integer('commission_percentage').default(0),
+  /** percent (default) | fixed_house — alineado ZM Lash / Vanessa corte fijo */
+  commissionMode: text('commission_mode').notNull().default('percent'),
+  houseCutFixed: integer('house_cut_fixed'),
   paymentMode: text('payment_mode')
     .$type<'commission' | 'salary' | 'mixed'>()
     .default('commission')

@@ -431,6 +431,7 @@ export default function AgendaScreen() {
       id: appointmentDetail.id,
       date: formatAppointmentWallclock(newDate, tenantTz),
       employee_id: appointmentDetail.employee_id,
+      employeeIds: rescheduleEmployeeIds,
       duration: appointmentDetail.duration,
     })
   }
@@ -477,11 +478,11 @@ export default function AgendaScreen() {
   }, [modalVisible, selectedDate, selectedHour, selectedMinute, tenantTz])
 
   const availability = useAvailabilityCheck({
-    employeeId: formData.employeeId,
+    employeeIds: formData.serviceLines.map((line) => line.employeeId),
     startDate: candidateStartDate,
     durationMinutes: formTotals.totalDuration || 60,
     timeZone: tenantTz,
-    enabled: modalVisible && !!formData.employeeId && formData.serviceLines.length > 0,
+    enabled: modalVisible && formData.serviceLines.some((line) => !!line.employeeId),
     staleTimeMs: 30_000,
   })
 
@@ -497,8 +498,16 @@ export default function AgendaScreen() {
     tenantTz,
   ])
 
+  const rescheduleEmployeeIds = useMemo(() => {
+    const fromLines = (detailServiceLinesQuery.data ?? [])
+      .map((line) => line.employee_id)
+      .filter((id): id is string => !!id)
+    if (fromLines.length > 0) return fromLines
+    return appointmentDetail?.employee_id ? [appointmentDetail.employee_id] : []
+  }, [detailServiceLinesQuery.data, appointmentDetail?.employee_id])
+
   const rescheduleAvailability = useAvailabilityCheck({
-    employeeId: appointmentDetail?.employee_id ?? '',
+    employeeIds: rescheduleEmployeeIds,
     startDate: rescheduleStartDate,
     durationMinutes: appointmentDetail?.duration ?? 60,
     excludeAppointmentId: appointmentDetail?.id ?? null,
@@ -933,7 +942,6 @@ export default function AgendaScreen() {
         employees={employees}
         categories={categories}
         packs={packs}
-        currencySymbol={currencySymbol}
         staffSingular={config.terminology.staffSingular}
         editServiceLines={serviceEditor.editServiceLines}
         setEditServiceLines={serviceEditor.setEditServiceLines}

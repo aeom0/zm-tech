@@ -21,7 +21,7 @@ import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { Spacing, BorderRadius } from '@/constants/theme'
-import { formatHolidayUntilLabel, zonaIANASegura } from '@zmtech/tenant-config'
+import { formatHolidayUntilLabel, dateKeyEnZona, zonaIANASegura } from '@zmtech/tenant-config'
 import {
   useSalonHolidaysAdmin,
   type SalonHolidayRecord,
@@ -29,19 +29,6 @@ import {
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 const OPEN_UNTIL_OPTIONS = [12, 13, 14, 15, 16] as const
-
-function todayKeyInZone(timeZone: string): string {
-  try {
-    return new Intl.DateTimeFormat('en-CA', {
-      timeZone: zonaIANASegura(timeZone),
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    }).format(new Date())
-  } catch {
-    return new Date().toISOString().slice(0, 10)
-  }
-}
 
 function formatDateEs(dateKey: string, language: string): string {
   const [y, m, d] = dateKey.slice(0, 10).split('-').map(Number)
@@ -71,7 +58,7 @@ export default function FeriadosScreen() {
     deleteHoliday,
   } = useSalonHolidaysAdmin()
 
-  const today = todayKeyInZone(config.locale.timezone)
+  const today = dateKeyEnZona(new Date(), zonaIANASegura(config.locale.timezone))
 
   const [modalVisible, setModalVisible] = useState(false)
   const [editing, setEditing] = useState<SalonHolidayRecord | null>(null)

@@ -88,15 +88,17 @@ async function guardOverlapForLines(args: {
   excludeAppointmentId?: string | null
 }) {
   const uniqueEmployeeIds = [...new Set(args.employeeIds.filter(Boolean))]
-  for (const employeeId of uniqueEmployeeIds) {
-    await guardOverlapBeforeInsert({
-      employeeId,
-      dateIso: args.dateIso,
-      durationMinutes: args.durationMinutes,
-      timeZone: args.timeZone,
-      excludeAppointmentId: args.excludeAppointmentId,
-    })
-  }
+  await Promise.all(
+    uniqueEmployeeIds.map((employeeId) =>
+      guardOverlapBeforeInsert({
+        employeeId,
+        dateIso: args.dateIso,
+        durationMinutes: args.durationMinutes,
+        timeZone: args.timeZone,
+        excludeAppointmentId: args.excludeAppointmentId,
+      })
+    )
+  )
 }
 
 async function resolveTenantId(userId: string | null | undefined): Promise<string | null> {
@@ -193,6 +195,8 @@ export function useAgendaMutations(
       const svcRows = buildServiceRows(aptId, data.lines, services, tenantId)
       const { error: linesError } = await supabase.from('appointment_services').insert(svcRows)
       if (linesError) {
+        // Evita cita huérfana sin líneas si falla el insert multi-servicio.
+        await supabase.from('appointments').delete().eq('id', aptId)
         throw new Error(linesError.message)
       }
     },
@@ -230,10 +234,15 @@ export function useAgendaMutations(
       id: string
       date: string
       employee_id: string
+      /** Si hay líneas multi-servicio, chequear solape de todas las chicas involucradas. */
+      employeeIds?: string[]
       duration: number
     }) => {
-      await guardOverlapBeforeInsert({
-        employeeId: args.employee_id,
+      await guardOverlapForLines({
+        employeeIds:
+          args.employeeIds && args.employeeIds.length > 0
+            ? args.employeeIds
+            : [args.employee_id],
         dateIso: args.date,
         durationMinutes: args.duration,
         timeZone,

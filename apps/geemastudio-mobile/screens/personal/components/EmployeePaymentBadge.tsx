@@ -1,10 +1,13 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
-import type { PaymentMode } from '@geemastudio/shared-schema'
+import type { CommissionMode, PaymentMode } from '@geemastudio/shared-schema'
 
 interface Props {
   mode: PaymentMode
   percentage?: number | null
+  commissionMode?: CommissionMode | null
+  houseCutFixed?: number | null
+  currencySymbol?: string
 }
 
 const MODE_CONFIG: Record<PaymentMode, { label: (pct?: number | null) => string; color: string }> =
@@ -14,9 +17,28 @@ const MODE_CONFIG: Record<PaymentMode, { label: (pct?: number | null) => string;
     mixed: { label: (pct) => `S+${pct ?? 0}%`, color: '#00897B' },
   }
 
-export function EmployeePaymentBadge({ mode, percentage }: Props) {
-  const cfg = MODE_CONFIG[mode]
+export function EmployeePaymentBadge({
+  mode,
+  percentage,
+  commissionMode,
+  houseCutFixed,
+  currencySymbol = 'S/',
+}: Props) {
+  if (
+    (mode === 'commission' || mode === 'mixed') &&
+    commissionMode === 'fixed_house'
+  ) {
+    return (
+      <View style={[styles.pill, { borderColor: '#9C27B0' }]}>
+        <Text style={[styles.label, { color: '#9C27B0' }]}>
+          Casa {currencySymbol}
+          {houseCutFixed ?? 0}
+        </Text>
+      </View>
+    )
+  }
 
+  const cfg = MODE_CONFIG[mode]
   return (
     <View style={[styles.pill, { borderColor: cfg.color }]}>
       <Text style={[styles.label, { color: cfg.color }]}>{cfg.label(percentage)}</Text>
