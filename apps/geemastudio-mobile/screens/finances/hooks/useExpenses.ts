@@ -1,3 +1,4 @@
+import { Alert } from 'react-native'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 import { queryClient } from '@/lib/query-client'
@@ -41,6 +42,7 @@ export function useExpenses(expenseMonth: string) {
         queryKey: ['executive_financial_summary'],
       })
     },
+    onError: (e: Error) => Alert.alert('Error', e.message || 'No se pudo guardar el gasto'),
   })
 
   const deleteMutation = useMutation({
@@ -53,6 +55,7 @@ export function useExpenses(expenseMonth: string) {
         queryKey: ['executive_financial_summary'],
       })
     },
+    onError: (e: Error) => Alert.alert('Error', e.message || 'No se pudo eliminar el gasto'),
   })
 
   return {

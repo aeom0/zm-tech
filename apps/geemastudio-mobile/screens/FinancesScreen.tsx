@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native'
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
 import { Feather } from '@expo/vector-icons'
 
+import { ErrorState } from '@/components/ErrorState'
 import { useTheme } from '@/hooks/useTheme'
 import { useResponsive } from '@/hooks/useResponsive'
 import { useTenant } from '@/contexts/TenantContext'
@@ -118,6 +119,7 @@ export default function FinancesScreen() {
     employeeEarningsAbonoTotal,
     chartDataByPeriod,
     isLoading,
+    isError,
     refetch,
   } = useFinancesData(period, currentRange)
 
@@ -166,6 +168,14 @@ export default function FinancesScreen() {
         }
       >
         {isAdmin && <ViewToggle view={view} onChangeView={setView} />}
+
+        {isError ? (
+          <ErrorState
+            compact
+            message="No pudimos cargar los pagos. Desliza para reintentar o toca el botón."
+            onRetry={refetch}
+          />
+        ) : null}
 
         {isAdmin && view === 'resumen' ? (
           <>
@@ -273,25 +283,34 @@ export default function FinancesScreen() {
           setEditingExpense(null)
         }}
         onSubmit={async (data) => {
-          await expensesHook.saveExpense({
-            id: editingExpense?.id,
-            data: {
-              category: data.category,
-              label: data.label,
-              amount: data.amount,
-              expense_month: data.expense_month,
-              expense_date: data.amount == null ? null : currentMonth,
-            },
-          })
-          setExpenseModalVisible(false)
-          setEditingExpense(null)
+          try {
+            await expensesHook.saveExpense({
+              id: editingExpense?.id,
+              data: {
+                category: data.category,
+                label: data.label,
+                amount: data.amount,
+                expense_month: data.expense_month,
+                expense_date: data.amount == null ? null : currentMonth,
+              },
+            })
+            setExpenseModalVisible(false)
+            setEditingExpense(null)
+          } catch {
+            // El error ya se muestra al usuario via Alert en onError de la mutación;
+            // se deja el modal abierto para reintentar.
+          }
         }}
         onDelete={
           editingExpense
             ? async (id) => {
-                await expensesHook.deleteExpenseById(id)
-                setExpenseModalVisible(false)
-                setEditingExpense(null)
+                try {
+                  await expensesHook.deleteExpenseById(id)
+                  setExpenseModalVisible(false)
+                  setEditingExpense(null)
+                } catch {
+                  // idem: Alert ya mostrado en onError, modal se mantiene abierto
+                }
               }
             : undefined
         }

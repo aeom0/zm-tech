@@ -18,6 +18,7 @@ export function useAgendaQueries() {
   const {
     data: appointments = [],
     isLoading,
+    error: appointmentsError,
     refetch,
   } = useQuery<AgendaAppointment[]>({
     queryKey: ['appointments'],
@@ -101,6 +102,7 @@ export function useAgendaQueries() {
   return {
     appointments,
     isLoading,
+    appointmentsError,
     refetch,
     employees,
     employeesLoading,
