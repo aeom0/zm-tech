@@ -46,6 +46,16 @@ export const agendaStyles = StyleSheet.create({
     fontWeight: '600',
     letterSpacing: -0.15,
   },
+  statusFilterWrapper: {
+    position: 'relative',
+  },
+  statusFilterFade: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    bottom: 0,
+    width: 32,
+  },
   dayTitleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
