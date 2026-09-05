@@ -20,3 +20,23 @@ export function formatCurrency(amount: number, config: TenantConfig): string {
 
   return `${symbol} ${formatted.replace(/[^\d.,-]+/g, '').trim()}`
 }
+
+/**
+ * Normaliza texto de entrada numérica para parsear como float.
+ * Acepta coma o punto como separador decimal.
+ */
+export function normalizeDecimalInput(text: string): string {
+  const cleaned = text.replace(/[^0-9.,]/g, '')
+  return cleaned.replace(',', '.')
+}
+
+/**
+ * Filtra texto de entrada para campo de precio:
+ * solo dígitos, un separador decimal (coma o punto).
+ */
+export function filterPriceInput(text: string): string {
+  const cleaned = text.replace(/[^0-9.,]/g, '')
+  const parts = cleaned.split(/[,.]/)
+  if (parts.length <= 2) return cleaned
+  return parts[0] + '.' + parts.slice(1).join('')
+}
