@@ -12,6 +12,7 @@ import { useTheme } from '@/hooks/useTheme'
 import { useResponsive } from '@/hooks/useResponsive'
 import { useAppointmentCompletion } from '@/hooks/useAppointmentCompletion'
 import { useSalonHolidays } from '@/hooks/useSalonHolidays'
+import { ErrorState } from '@/components/ErrorState'
 import { HolidayAlertBanner } from '@/components/HolidayAlertBanner'
 import { useTenant } from '@/contexts/TenantContext'
 import { useAuth } from '@/contexts/AuthContext'
@@ -135,6 +136,7 @@ export default function AgendaScreen() {
   const {
     appointments,
     isLoading,
+    appointmentsError,
     refetch,
     employees,
     employeesLoading,
@@ -647,6 +649,14 @@ export default function AgendaScreen() {
       />
 
       <HolidayAlertBanner embedded={false} />
+
+      {appointmentsError ? (
+        <ErrorState
+          compact
+          message="No pudimos cargar las citas. Revisa tu conexión e intenta de nuevo."
+          onRetry={refetch}
+        />
+      ) : null}
 
       {authLoading ? (
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
