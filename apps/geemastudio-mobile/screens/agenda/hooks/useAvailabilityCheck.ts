@@ -51,8 +51,12 @@ function computeOverlapBusyUntil(args: {
   return best
 }
 
+/**
+ * Chequea disponibilidad para uno o varios profesionales (cita multi-servicio).
+ * Si alguno está ocupado, reporta busy hasta que el último de los ocupados termine.
+ */
 export function useAvailabilityCheck(args: {
-  employeeId: string
+  employeeIds: string[]
   startDate: Date | null
   durationMinutes: number
   timeZone: string
@@ -60,9 +64,11 @@ export function useAvailabilityCheck(args: {
   enabled?: boolean
   staleTimeMs?: number
 }) {
+  const uniqueEmployeeIds = [...new Set(args.employeeIds.filter(Boolean))].sort()
+
   const enabled =
     (args.enabled ?? true) &&
-    !!args.employeeId &&
+    uniqueEmployeeIds.length > 0 &&
     !!args.startDate &&
     Number.isFinite(args.durationMinutes) &&
     args.durationMinutes > 0
@@ -74,7 +80,7 @@ export function useAvailabilityCheck(args: {
   const query = useQuery({
     queryKey: [
       'availability_check',
-      args.employeeId,
+      uniqueEmployeeIds,
       start ? formatAppointmentWallclock(start, timeZone) : null,
       durationMinutes,
       args.excludeAppointmentId ?? null,
@@ -85,7 +91,7 @@ export function useAvailabilityCheck(args: {
     queryFn: async () => {
       if (!start) {
         return {
-          existing: [],
+          overlap: null,
           label: null,
         } as const
       }
@@ -94,38 +100,51 @@ export function useAvailabilityCheck(args: {
       const candidateEnd = addMinutes(candidateStart, durationMinutes)
 
       // Ventana chica para no traer toda la tabla.
-      // Le damos un margen por si hay duraciones que arrancan antes/terminan después.
       const windowStart = addMinutes(candidateStart, -12 * 60)
       const windowEnd = addMinutes(candidateEnd, 12 * 60)
 
-      const { data, error } = await supabase
-        .from('appointments')
-        .select('id, date, duration')
-        .eq('employee_id', args.employeeId)
-        .gte('date', formatAppointmentWallclock(windowStart, timeZone))
-        .lte('date', formatAppointmentWallclock(windowEnd, timeZone))
-        .order('date', { ascending: true })
+      const perEmployeeOverlaps = await Promise.all(
+        uniqueEmployeeIds.map(async (employeeId) => {
+          const { data, error } = await supabase
+            .from('appointments')
+            .select('id, date, duration')
+            .eq('employee_id', employeeId)
+            .gte('date', formatAppointmentWallclock(windowStart, timeZone))
+            .lte('date', formatAppointmentWallclock(windowEnd, timeZone))
+            .order('date', { ascending: true })
 
-      if (error) {
-        throw new Error(error.message)
-      }
+          if (error) {
+            throw new Error(error.message)
+          }
 
-      const existing = (data ?? []) as Array<{
-        id: string
-        date: string
-        duration: number
-      }>
+          const existing = (data ?? []) as Array<{
+            id: string
+            date: string
+            duration: number
+          }>
 
-      const overlap = computeOverlapBusyUntil({
-        candidateStart,
-        candidateDurationMinutes: durationMinutes,
-        timeZone,
-        excludeAppointmentId: args.excludeAppointmentId ?? null,
-        existing,
-      })
+          return computeOverlapBusyUntil({
+            candidateStart,
+            candidateDurationMinutes: durationMinutes,
+            timeZone,
+            excludeAppointmentId: args.excludeAppointmentId ?? null,
+            existing,
+          })
+        })
+      )
+
+      // Todos deben estar libres a la vez: busyUntil = cuando termina el último ocupado.
+      const overlap = perEmployeeOverlaps.reduce<
+        { busyUntil: Date; conflictingAppointmentId: string } | null
+      >((latest, candidate) => {
+        if (!candidate) return latest
+        if (!latest || candidate.busyUntil.getTime() > latest.busyUntil.getTime()) {
+          return candidate
+        }
+        return latest
+      }, null)
 
       return {
-        existing,
         overlap,
         label: overlap ? formatoHoraHHMMEnZona(overlap.busyUntil, timeZone) : null,
       } as const

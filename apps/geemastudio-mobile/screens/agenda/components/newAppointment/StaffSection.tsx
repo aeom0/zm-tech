@@ -11,9 +11,10 @@ import { agendaStyles as styles } from '../../agendaStyles'
 import type { NewAppointmentModalTheme } from './modalTheme'
 
 /**
- * Selecciona el profesional "por defecto": el que se asigna a cada nueva línea
- * de servicio que se agregue desde ServicioSection (no el único de la cita —
- * una cita puede tener varias líneas con profesionales distintos).
+ * Selecciona el profesional "por defecto": se asigna a cada nueva línea de
+ * servicio que se agregue desde ServicioSection, y al cambiarlo también
+ * arrastra las líneas ya agregadas que todavía coincidían con el default
+ * anterior (las que el usuario ya reasignó a mano quedan intactas).
  */
 interface StaffSectionProps {
   theme: NewAppointmentModalTheme
@@ -83,6 +84,13 @@ export function StaffSection({
                   setFormData((prev) => ({
                     ...prev,
                     employeeId: employee.id,
+                    // Las líneas que seguían el default anterior se mueven junto con él;
+                    // las que el usuario ya reasignó a mano quedan intactas.
+                    serviceLines: prev.serviceLines.map((line) =>
+                      line.employeeId === prev.employeeId
+                        ? { ...line, employeeId: employee.id }
+                        : line
+                    ),
                   }))
                 }
               >
