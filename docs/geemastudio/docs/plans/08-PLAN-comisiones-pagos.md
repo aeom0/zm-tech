@@ -1,6 +1,6 @@
 # Comisiones por profesional + registro de pago (mobile + web)
 
-> Estado: implementado en mobile + web (04-sep-2026). Pendiente: prueba manual en Expo Go y en `/finanzas` con datos reales.
+> Estado: ✅ cerrado (PR #37, 5-sep-2026). Implementado en mobile + web; verificado en producción por la dueña. Incluyó fix de raíz no anticipado: faltaba la FK `appointment_services.appointment_id → appointments.id`, lo que hacía fallar en silencio el embed de PostgREST usado por `desglosePorChica` — ver `CHANGELOG.md` (5-sep) para el detalle de la limpieza de huérfanas + `ON DELETE CASCADE`.
 
 ## Contexto
 

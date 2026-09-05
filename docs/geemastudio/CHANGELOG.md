@@ -7,6 +7,22 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido (5-sep 2026 — Desglose de comisiones por personal + registro de pagos, PR #37)
+
+- **Mobile — Finanzas**: `EmployeeBreakdown` ahora muestra por chica el desglose de comisión ganada vs. pagada vs. pendiente real en el período (día/semana/mes); `RegisterPayoutModal` para marcar un pago realizado (`usePayouts`, `services/payouts.ts`).
+- **Web — `/finanzas`**: misma UI de pagos portada (`RegisterPayoutModal.tsx`, `usePayouts.ts`, `payoutsService.ts`, `useTenantId.ts`).
+- **Fix raíz BD (producción `udelxwwnyivknslueerr`)**: el embed anidado `appointments.select('..., appointment_services(...)')` de PostgREST fallaba en silencio (sin FK declarada entre `appointment_services.appointment_id` y `appointments.id`), dejando siempre vacíos `EmployeeBreakdown`/`ServicesRankCard`. Se eliminaron 55 filas huérfanas en `appointment_services` (tenant `zm-lash-nails`, acumuladas desde marzo por `deleteAppointmentMutation` sin cascada) y se agregó `appointment_services_appointment_id_fkey ... ON DELETE CASCADE` — desbloquea el embed y previene huérfanas futuras sin tocar código de app. Detalle: `docs/geemastudio/docs/plans/08-PLAN-comisiones-pagos.md`.
+
+### Añadido (5-sep 2026 — CI básico + error handling, PR #36)
+
+- **`.github/workflows/ci.yml`**: pipeline básico (lint + typecheck + build web) en cada push/PR.
+- **Mobile — `ErrorState.tsx`**: componente de fallback reutilizable; adoptado en Dashboard, Agenda y Finanzas para mostrar error + reintento en vez de pantallas en blanco cuando falla una query.
+
+### Añadido (5-sep 2026 — Agenda multi-servicio, packs y referencias, PR #31)
+
+- **Mobile — Agenda**: citas con múltiples servicios/packs por línea (`AppointmentDetailModal`, `useAgendaMutations`, `useAgendaQueries`); flujo de completar cita con edición de líneas (`editTotal`/`editDur`); subida de imágenes de referencia por cita (`referenceImagePaths`, `lib/referenceImages.ts`, máx. `MAX_REFERENCE_IMAGES`) con badge de no revisadas (`usePendingBadgeCount`).
+- **BD**: migración `20260830_appointment_services_multiservicio.sql`.
+
 ### Añadido (4-sep 2026 — Personal Karelis/Alejandra + comisión fija casa)
 
 - **BD compartida ZM**: `employees.commission_mode` + `house_cut_fixed`; `emp-romina`/`Chica Externa` → `emp-karelis`/Karelis; alta `emp-alejandra` (`fixed_house` S/50) para micro.

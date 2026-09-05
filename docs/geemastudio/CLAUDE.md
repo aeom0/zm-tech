@@ -265,6 +265,12 @@ Flujo de arranque (mobile):
 - **TypeScript**: `apps/mobile/tsconfig.json` usa `module: "esnext"` (sin extender expo/tsconfig.base.json)
 - Usar `nvm use` para asegurar la versión correcta de Node
 
+## Cambios Recientes (5-sep 2026 — Agenda multi-servicio/referencias, CI básico, comisiones por personal)
+
+- **Mobile — Agenda (PR #31)**: citas con múltiples servicios/packs por línea; imágenes de referencia por cita (`referenceImagePaths`, `lib/referenceImages.ts`) con badge de pendientes de revisión.
+- **CI (PR #36)**: `.github/workflows/ci.yml` (lint + typecheck + build web) en cada push/PR; `ErrorState.tsx` reutilizable adoptado en Dashboard/Agenda/Finanzas para fallos de query.
+- **Mobile + Web — Finanzas (PR #37)**: `EmployeeBreakdown` muestra comisión ganada/pagada/pendiente por chica y período; `RegisterPayoutModal` para marcar pagos (`usePayouts`). Fix raíz: faltaba FK `appointment_services.appointment_id → appointments.id` (el embed de PostgREST fallaba en silencio); se limpiaron 55 filas huérfanas y se agregó la FK con `ON DELETE CASCADE` en prod (`udelxwwnyivknslueerr`) — ver `docs/geemastudio/docs/plans/08-PLAN-comisiones-pagos.md` y `CHANGELOG.md`.
+
 ## Cambios Recientes (2-sep 2026 — Colores de marca editables + auditoría de hardcodes)
 
 - **Mobile — colores del tenant respetados en toda la app**: auditoría completa de lecturas directas `Colors.light.violet/gold/warning` que bypaseaban `useTheme()`; corregidas en `DashboardScreen`, `DashboardLoading`, `PersonalScreen`, `InventoryScreen`, `InventoryFab`, `InventoryItemModal`, `InventoryItemCard`, `FinancesScreen` (+ `financesStyles.ts`), `agendaUtils.getEmployeeColor` (ahora recibe `fallbackColor` explícito en vez de importar `Colors`) y sus call sites (`AppointmentPreviewModal`, `AgendaCalendarGrid`), `SummaryCard` (nueva cita). También corregido `DemoBanner.tsx`, que usaba el magenta legacy `#E91E8C` en vez de `theme.warning`.

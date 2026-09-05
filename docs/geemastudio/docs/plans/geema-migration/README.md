@@ -20,7 +20,7 @@ Documentación del análisis de convergencia entre **ZM Lash & Nails** (referenc
 | 04 | [04-ROADMAP-SPRINTS.md](./04-ROADMAP-SPRINTS.md) | Sprints 1–7+, DoD, dependencias, estimaciones |
 | 05 | [05-ADR-modelo-tenant.md](./05-ADR-modelo-tenant.md) | Bridge `tenants` ↔ `tenant_settings`; addendum país (sin `countries`) + wallclock vs UTC |
 | 06 | [06-BRANDING-LOGO-Y-DESIGN-TOKENS.md](./06-BRANDING-LOGO-Y-DESIGN-TOKENS.md) | Logo tenant, Storage, push FCM por tenant, tokens ZM ↔ Geema, S5-B |
-| 07 | [07-PARIDAD-MOBILE-ZM.md](./07-PARIDAD-MOBILE-ZM.md) | Shadow APK; S5C P0 ✅; schema canónico; multi-servicio PR #31 (sin SQL CREATE en prod) |
+| 07 | [07-PARIDAD-MOBILE-ZM.md](./07-PARIDAD-MOBILE-ZM.md) | Shadow APK; S5C P0 ✅; schema canónico; multi-servicio + referencias PR #31 mergeado (5-sep) |
 | — | [SYNC.md](./SYNC.md) | Cómo mantener esta carpeta sincronizada entre repos |
 
 ---
