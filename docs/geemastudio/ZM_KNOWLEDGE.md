@@ -47,9 +47,13 @@ Tablas activas en ZM con sus relaciones clave. En GeemaStudio usar el mismo sche
 ```
 profiles           → id = auth.users.id, role (dev|owner|staff), employee_id
 employees          → id, name, email, color (hex), commission_percentage, is_active, notes,
+                     commission_mode (`percent` | `fixed_house`), house_cut_fixed (S/ por línea;
+                     Alejandra = fixed_house 50 — Vanessa retiene S/50; profesional el resto),
                      avatar_url (Storage bucket `employee-avatars`, publico; agregado a la tabla
                      real de ZM el 30-ago-2026 — antes solo existia en tenants Geema-nativos),
                      payment_mode/salary_amount (solo dialecto 'geema', ver employeesAdapter.ts)
+                     -- Prod ZM (04-sep-2026): Vanessa, Stephani, Karelis (ex Chica Externa /
+                     emp-romina), Alejandra (micro). WABA carril Karelis post-1pm sin cambio.
 service_categories → id, name, color (hex), icon, order
 services           → id, name, category_id→service_categories, price, duration, is_active
 clients            → id, name, phone, email, notes, created_at,
@@ -323,9 +327,16 @@ const offsetMs = tzOffset * 60 * 60 * 1000
 ## 9. Finanzas — Desglose por profesional
 
 ```typescript
-const empleadoGana = pago.amount * (employee.commission_percentage / 100)
-const salonGana = pago.amount * (1 - employee.commission_percentage / 100)
+// Modo percent (Stephani, Karelis, …):
+const empleadoGana = generado * (employee.commission_percentage / 100)
+
+// Modo fixed_house (Alejandra): por cada línea de appointment_services
+const house = Math.min(employee.house_cut_fixed ?? 0, linePrice) // ej. S/50
+const profesionalGana = linePrice - house
+// Los `house` se acumulan en la comisión de Vanessa (owner / emp-vanessa)
 ```
+
+UI: Personal → selector % vs fijo casa; Finanzas → `EmployeeBreakdown` muestra etiqueta de corte.
 
 ---
 

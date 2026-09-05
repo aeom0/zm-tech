@@ -17,7 +17,7 @@ import {
 } from '@zmtech/tenant-config'
 
 import type { AgendaAppointment, AgendaEmployee, AgendaService, AgendaStatusFilter } from '../types'
-import { filterAppointmentsForOwnerDay, getServiceName } from '../agendaUtils'
+import { computeOverlapLayout, filterAppointmentsForOwnerDay, getServiceName } from '../agendaUtils'
 import { useAgendaClockTick } from '../hooks/useAgendaClockTick'
 import { useSalonHolidays } from '@/hooks/useSalonHolidays'
 import { agendaStyles as sharedStyles } from '../agendaStyles'
@@ -112,6 +112,25 @@ export function OwnerDayGrid({
     [appointments, selectedDate, employees, statusFilter, timeZone]
   )
 
+  /**
+   * Carriles por profesional para citas que se solapan en el tiempo — evita que
+   * dos citas concurrentes de la misma columna se dibujen una encima de otra.
+   */
+  const overlapLayoutByEmployee = useMemo(() => {
+    const map = new Map<string, Map<string, { lane: number; laneCount: number }>>()
+    for (const emp of employees) {
+      const items = dayAppointments
+        .filter((apt) => apt.employee_id === emp.id)
+        .map((apt) => {
+          const start = instanteCitaDesdeTexto(apt.date, timeZone)
+          const startMin = minutosDelDiaEnZona(start, timeZone)
+          return { id: apt.id, startMin, endMin: startMin + apt.duration }
+        })
+      map.set(emp.id, computeOverlapLayout(items))
+    }
+    return map
+  }, [employees, dayAppointments, timeZone])
+
   const nowLineTop = useMemo(() => {
     if (!isTodayInTz) return null
     const m = minutosDelDiaEnZona(now, timeZone)
@@ -186,6 +205,7 @@ export function OwnerDayGrid({
           >
             {employees.map((emp) => {
               const empApts = dayAppointments.filter((a) => a.employee_id === emp.id)
+              const empLaneLayout = overlapLayoutByEmployee.get(emp.id)
 
               return (
                 <View
@@ -254,14 +274,31 @@ export function OwnerDayGrid({
 
                     const serviceName = getServiceName(services, apt.service_id)
 
+                    // Carril dentro del cluster de citas solapadas de este profesional —
+                    // si hay >1 carril, la cita ocupa solo su fracción del ancho de columna
+                    // en vez de pintarse a ancho completo encima de la otra.
+                    const { lane, laneCount } = empLaneLayout?.get(apt.id) ?? {
+                      lane: 0,
+                      laneCount: 1,
+                    }
+                    const H_MARGIN = 3
+                    const LANE_GAP = 3
+                    const availableWidth = colW - H_MARGIN * 2
+                    const laneWidth =
+                      laneCount > 1
+                        ? (availableWidth - LANE_GAP * (laneCount - 1)) / laneCount
+                        : availableWidth
+                    const left = H_MARGIN + lane * (laneWidth + LANE_GAP)
+                    const isNarrow = laneCount > 1
+
                     return (
                       <Pressable
                         key={apt.id}
                         onPress={() => onOpenDetail(apt)}
                         style={{
                           position: 'absolute',
-                          left: 3,
-                          right: 3,
+                          left,
+                          width: laneWidth,
                           top,
                           height,
                           zIndex: 4,
@@ -272,7 +309,7 @@ export function OwnerDayGrid({
                         <View
                           style={{
                             flex: 1,
-                            padding: Spacing.sm,
+                            padding: isNarrow ? Spacing.xs : Spacing.sm,
                             borderRadius: BorderRadius.md,
                             borderWidth: 1,
                             borderLeftWidth: 4,
@@ -282,9 +319,9 @@ export function OwnerDayGrid({
                           }}
                         >
                           <ThemedText
-                            numberOfLines={2}
+                            numberOfLines={isNarrow ? 1 : 2}
                             style={{
-                              fontSize: 12,
+                              fontSize: isNarrow ? 11 : 12,
                               fontWeight: '700',
                               color: theme.text,
                             }}
@@ -295,7 +332,7 @@ export function OwnerDayGrid({
                             <ThemedText
                               numberOfLines={1}
                               style={{
-                                fontSize: 11,
+                                fontSize: isNarrow ? 10 : 11,
                                 marginTop: 2,
                                 color: theme.textSecondary,
                               }}
@@ -306,7 +343,7 @@ export function OwnerDayGrid({
                           <ThemedText
                             numberOfLines={1}
                             style={{
-                              fontSize: 10,
+                              fontSize: isNarrow ? 9 : 10,
                               marginTop: 2,
                               color: theme.textMuted,
                             }}

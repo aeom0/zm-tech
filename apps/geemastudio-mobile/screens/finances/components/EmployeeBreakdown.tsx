@@ -67,6 +67,26 @@ export function EmployeeBreakdown({ desglose }: Props) {
                   Pendiente {formatCurrency(row.pendiente, config)}
                 </ThemedText>
               )}
+              {row.commissionMode === 'fixed_house' && row.comision != null ? (
+                <ThemedText
+                  style={[styles.desgloseLabel, { color: theme.textSecondary, fontWeight: '600' }]}
+                >
+                  {row.commissionLabel ?? `Comisión (casa ${row.houseCutFixed ?? 0})`}:{' '}
+                  {formatCurrency(row.comision, config)}
+                </ThemedText>
+              ) : row.houseCutEarned && row.houseCutEarned > 0 ? (
+                <ThemedText
+                  style={[styles.desgloseLabel, { color: theme.textSecondary, fontWeight: '600' }]}
+                >
+                  + Corte casa {formatCurrency(row.houseCutEarned, config)}
+                </ThemedText>
+              ) : row.comision != null && row.comision > 0 ? (
+                <ThemedText
+                  style={[styles.desgloseLabel, { color: theme.textSecondary, fontWeight: '600' }]}
+                >
+                  Comisión {formatCurrency(row.comision, config)}
+                </ThemedText>
+              ) : null}
             </View>
           </View>
         ))}

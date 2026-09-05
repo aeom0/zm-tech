@@ -1,4 +1,4 @@
-import type { PaymentMode } from '@geemastudio/shared-schema'
+import type { CommissionMode, PaymentMode } from '@geemastudio/shared-schema'
 
 export interface FinancesPayment {
   id: string
@@ -31,7 +31,10 @@ export interface FinancesServiceOption {
 export interface FinancesEmployeeOption {
   id: string
   name: string
+  role?: string
   payment_mode: PaymentMode
+  commission_mode?: CommissionMode
+  house_cut_fixed?: number | null
   commission_percentage: number | null
   salary_amount: string | null
 }
@@ -45,6 +48,11 @@ export interface FinancesDesgloseRow {
   generado: number
   pagado: number
   pendiente: number
+  comision?: number
+  commissionMode?: CommissionMode
+  houseCutFixed?: number | null
+  houseCutEarned?: number
+  commissionLabel?: string
 }
 
 export type FinanceView = 'detalle' | 'resumen'

@@ -1,4 +1,4 @@
-import type { PaymentMode } from '@geemastudio/shared-schema'
+import type { CommissionMode, PaymentMode } from '@geemastudio/shared-schema'
 
 import { supabase } from '@/lib/supabase'
 import { detectCatalogDialect, type CatalogDialect } from '@/screens/services/lib/catalogAdapter'
@@ -6,11 +6,12 @@ import { detectCatalogDialect, type CatalogDialect } from '@/screens/services/li
 /** Mismo dialecto que packs/promos: ZM prod no tiene extras de Geema en `employees`. */
 export type EmployeesDialect = CatalogDialect
 
+/** commission_mode / house_cut_fixed viven en prod ZM (migración 2026-09-04). */
 export const EMPLOYEE_SELECT_ZM =
-  'id, name, email, phone, color, role, commission_percentage, notes, is_active, created_at, avatar_url, sort_order'
+  'id, name, email, phone, color, role, commission_percentage, commission_mode, house_cut_fixed, notes, is_active, created_at, avatar_url, sort_order'
 
 export const EMPLOYEE_SELECT_GEEMA =
-  'id, name, email, phone, color, role, commission_percentage, notes, is_active, created_at, payment_mode, salary_amount, avatar_url, sort_order'
+  'id, name, email, phone, color, role, commission_percentage, commission_mode, house_cut_fixed, notes, is_active, created_at, payment_mode, salary_amount, avatar_url, sort_order'
 
 export interface EmployeeRow {
   id: string
@@ -20,6 +21,8 @@ export interface EmployeeRow {
   color: string
   role: string
   commission_percentage: number | null
+  commission_mode: CommissionMode
+  house_cut_fixed: number | null
   payment_mode: PaymentMode
   salary_amount: string | null
   notes: string | null
@@ -36,6 +39,8 @@ export interface EmployeeRawRow {
   color: string
   role?: string | null
   commission_percentage?: number | null
+  commission_mode?: string | null
+  house_cut_fixed?: number | null
   payment_mode?: string | null
   salary_amount?: string | number | null
   notes?: string | null
@@ -50,11 +55,17 @@ export interface EmployeeWriteInput {
   phone: string | null
   color: string
   commission_percentage: number | null
+  commission_mode: CommissionMode
+  house_cut_fixed: number | null
   payment_mode: PaymentMode
   salary_amount: number | null
   notes: string | null
   is_active: boolean
   avatar_url: string | null
+}
+
+function parseCommissionMode(raw: string | null | undefined): CommissionMode {
+  return raw === 'fixed_house' ? 'fixed_house' : 'percent'
 }
 
 export function rowToEmployee(row: EmployeeRawRow, dialect: EmployeesDialect): EmployeeRow {
@@ -74,6 +85,8 @@ export function rowToEmployee(row: EmployeeRawRow, dialect: EmployeesDialect): E
     color: row.color,
     role: row.role ?? 'employee',
     commission_percentage: row.commission_percentage ?? 0,
+    commission_mode: parseCommissionMode(row.commission_mode),
+    house_cut_fixed: row.house_cut_fixed ?? null,
     payment_mode: paymentMode,
     salary_amount: row.salary_amount != null ? String(row.salary_amount) : null,
     notes: row.notes ?? null,
@@ -94,6 +107,8 @@ export function toEmployeeWritePayload(
     phone: input.phone,
     color: input.color,
     commission_percentage: input.commission_percentage ?? 0,
+    commission_mode: input.commission_mode,
+    house_cut_fixed: input.commission_mode === 'fixed_house' ? input.house_cut_fixed : null,
     notes: input.notes,
     is_active: input.is_active,
     avatar_url: input.avatar_url,
