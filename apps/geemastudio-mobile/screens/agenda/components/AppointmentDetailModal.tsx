@@ -4,6 +4,8 @@ import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
+import { useTenant } from '@/contexts/TenantContext'
+import { formatCurrency } from '@/utils/format'
 import { BorderRadius, Spacing } from '@/constants/theme'
 
 import { PAYMENT_METHODS } from '@/screens/finances/constants'
@@ -60,7 +62,6 @@ interface AppointmentDetailModalProps {
   employees: AgendaEmployee[]
   categories: AgendaServiceCategory[]
   packs: AgendaPack[]
-  currencySymbol: string
   staffSingular: string
   agendaHours: number[]
   businessHours: TenantConfig['businessHours']
@@ -115,7 +116,6 @@ export function AppointmentDetailModal({
   employees,
   categories,
   packs,
-  currencySymbol,
   staffSingular,
   agendaHours,
   businessHours,
@@ -160,6 +160,7 @@ export function AppointmentDetailModal({
   onMarkCompleted,
 }: AppointmentDetailModalProps) {
   const { holidayIndex } = useSalonHolidays(true)
+  const { config } = useTenant()
   type EnrichedLine = AgendaService & {
     employeeId: string
     employee?: AgendaEmployee
@@ -168,12 +169,16 @@ export function AppointmentDetailModal({
     packId?: string
   }
 
-  const enrichedLines = useMemo(() => {
-    return editServiceLines
+  const { enrichedLines, editTotal, editDur, missingServiceCount } = useMemo(() => {
+    let missing = 0
+    const lines = editServiceLines
       .map((line, idx) => {
         const svc = services.find((s) => s.id === line.serviceId)
         const emp = employees.find((e) => e.id === line.employeeId)
-        if (!svc) return null
+        if (!svc) {
+          missing += 1
+          return null
+        }
         const unitPrice =
           typeof line.priceOverride === 'number' && Number.isFinite(line.priceOverride)
             ? line.priceOverride
@@ -188,10 +193,13 @@ export function AppointmentDetailModal({
         }
       })
       .filter(Boolean) as EnrichedLine[]
+    return {
+      enrichedLines: lines,
+      editTotal: lines.reduce((sum, s) => sum + s.unitPrice, 0),
+      editDur: lines.reduce((sum, s) => sum + s.duration, 0),
+      missingServiceCount: missing,
+    }
   }, [editServiceLines, services, employees])
-
-  const editTotal = enrichedLines.reduce((sum, s) => sum + s.unitPrice, 0)
-  const editDur = enrichedLines.reduce((sum, s) => sum + s.duration, 0)
 
   const canMarkCompleted =
     !!appointment && appointment.status !== 'completed' && appointment.status !== 'cancelled'
@@ -229,7 +237,7 @@ export function AppointmentDetailModal({
                 services={services}
                 employees={employees}
                 packs={packs}
-                currencySymbol={currencySymbol}
+                currencySymbol={config.locale.currency.symbol}
                 staffSingular={staffSingular}
                 selectedCatId={svcPickerCatId}
                 onSelectCat={setSvcPickerCatId}
@@ -340,8 +348,7 @@ export function AppointmentDetailModal({
                               {line.packId ? ' (pack)' : ''}
                             </ThemedText>
                             <ThemedText style={[styles.svcDetail, { color: theme.textMuted }]}>
-                              {line.duration} min · {currencySymbol}{' '}
-                              {line.unitPrice.toFixed(2)}
+                              {line.duration} min · {formatCurrency(line.unitPrice, config)}
                               {line.employee
                                 ? ` · ${line.employee.name.split(' ')[0]}`
                                 : ''}
@@ -362,6 +369,13 @@ export function AppointmentDetailModal({
                         </View>
                       ))
                     )}
+                    {missingServiceCount > 0 ? (
+                      <ThemedText style={[styles.svcDetail, { color: theme.error }]}>
+                        {missingServiceCount === 1
+                          ? '1 servicio de esta cita ya no está disponible y no se muestra en el total.'
+                          : `${missingServiceCount} servicios de esta cita ya no están disponibles y no se muestran en el total.`}
+                      </ThemedText>
+                    ) : null}
                     {enrichedLines.length > 0 ? (
                       <View
                         style={[
@@ -374,7 +388,7 @@ export function AppointmentDetailModal({
                           {enrichedLines.length !== 1 ? 's' : ''} · {editDur} min
                         </ThemedText>
                         <ThemedText style={[styles.totalPrice, { color: theme.primary }]}>
-                          {currencySymbol} {editTotal.toFixed(2)}
+                          {formatCurrency(editTotal, config)}
                         </ThemedText>
                       </View>
                     ) : null}

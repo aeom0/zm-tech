@@ -13,6 +13,8 @@ export interface CompletableAppointment {
   id: string
   price: number | string
   service_id: string
+  /** Multi-servicio: si está presente, se usa para el detalle del pago en lugar de service_id solo. */
+  service_ids?: string[] | null
 }
 
 interface MutateOptions {
@@ -50,7 +52,7 @@ interface UseAppointmentCompletionParams<A extends CompletableAppointment> {
 
 /**
  * Flujo compartido "marcar cita completada" (Dashboard y Agenda):
- * - Si hay un abono (pago parcial) y el total pagado no cubre el precio, bloquea.
+ * - Si hay pago parcial y no cubre el precio, bloquea (Finanzas para el resto).
  * - Si ya está pagada por completo, completa directo sin pedir método de pago.
  * - Si no hay pago aún, muestra el selector de método de pago antes de completar.
  */
@@ -64,27 +66,34 @@ export function useAppointmentCompletion<A extends CompletableAppointment>({
   const [payMethodVisible, setPayMethodVisible] = useState(false)
   const [pendingPayMethod, setPendingPayMethod] = useState('cash')
   const [pendingAppointment, setPendingAppointment] = useState<A | null>(null)
+  const [pendingAmountDue, setPendingAmountDue] = useState(0)
 
-  const completeAppointment = (appointment: A, method?: string) => {
+  const completeAppointment = (appointment: A, method?: string, amountDue?: number) => {
     updateAppointmentMutation.mutate(
       { id: appointment.id, data: { status: 'completed' } },
       {
         onSuccess: () => {
           if (method) {
             const amount =
-              typeof appointment.price === 'number'
+              amountDue ??
+              (typeof appointment.price === 'number'
                 ? appointment.price
-                : parseFloat(String(appointment.price))
+                : parseFloat(String(appointment.price)))
+            const serviceLabel =
+              appointment.service_ids && appointment.service_ids.length > 0
+                ? appointment.service_ids.map(getServiceName).join(' + ')
+                : getServiceName(appointment.service_id)
             createPaymentMutation.mutate({
               appointment_id: appointment.id,
               amount: String(amount),
               method,
               date: new Date().toISOString(),
-              notes: `Cita completada: ${getServiceName(appointment.service_id)}`,
+              notes: `Cita completada: ${serviceLabel}`,
             })
           }
           setPayMethodVisible(false)
           setPendingAppointment(null)
+          setPendingAmountDue(0)
           onCompleted()
         },
       }
@@ -99,10 +108,9 @@ export function useAppointmentCompletion<A extends CompletableAppointment>({
     const paymentsForApt = paymentsByAppointment.filter(
       (p) => p.appointment_id === appointment.id
     )
-    const hasAbono = paymentsForApt.some((p) => p.is_abono)
     const totalPaid = paymentsForApt.reduce((sum, p) => sum + parseFloat(String(p.amount)), 0)
 
-    if (hasAbono && totalPaid < price) {
+    if (totalPaid > 0 && totalPaid < price) {
       Alert.alert(
         'Pago pendiente',
         'Esta cita solo tiene un pago parcial. Para marcarla como completada primero registra el pago del resto en Finanzas.'
@@ -114,18 +122,20 @@ export function useAppointmentCompletion<A extends CompletableAppointment>({
       return
     }
     setPendingAppointment(appointment)
+    setPendingAmountDue(price - totalPaid)
     setPendingPayMethod('cash')
     setPayMethodVisible(true)
   }
 
   const confirmCompleteWithMethod = () => {
     if (!pendingAppointment) return
-    completeAppointment(pendingAppointment, pendingPayMethod)
+    completeAppointment(pendingAppointment, pendingPayMethod, pendingAmountDue)
   }
 
   const cancelPayMethod = () => {
     setPayMethodVisible(false)
     setPendingAppointment(null)
+    setPendingAmountDue(0)
   }
 
   return {
