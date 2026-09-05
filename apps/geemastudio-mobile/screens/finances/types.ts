@@ -46,3 +46,41 @@ export interface FinancesDesgloseRow {
   pagado: number
   pendiente: number
 }
+
+export type FinanceView = 'detalle' | 'resumen'
+
+export const EXPENSE_CATEGORIES = [
+  { id: 'alquiler', label: 'Alquiler' },
+  { id: 'insumos', label: 'Insumos' },
+  { id: 'planilla_fija', label: 'Planilla fija' },
+  { id: 'servicios_basicos', label: 'Servicios básicos' },
+  { id: 'marketing', label: 'Marketing' },
+  { id: 'mantenimiento', label: 'Mantenimiento' },
+  { id: 'comisiones_terceros', label: 'Comisiones' },
+  { id: 'impuestos', label: 'Impuestos' },
+  { id: 'otros', label: 'Otros' },
+] as const
+
+export type ExpenseCategory = (typeof EXPENSE_CATEGORIES)[number]['id']
+
+export interface OperationalExpense {
+  id: string
+  tenant_id: string
+  category: ExpenseCategory
+  label: string
+  amount: string | null
+  expense_month: string
+  expense_date: string | null
+  is_estimated: boolean
+  source: 'manual' | 'recurring_template' | 'whatsapp_ocr'
+  source_ref: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface MonthlyFinancialRow {
+  month: string
+  revenue: number
+  expenses: number
+  ads_spend: number
+}
