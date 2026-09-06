@@ -127,9 +127,9 @@ Prod tenant (4 columnas agenda): **Vanessa**, **Stephani**, **Karelis**, **Aleja
 | Promos + `promotion_items` | ✅ adaptador | Mantener |
 | Personal / chicas ↔ agenda | ✅ adaptador | Mantener |
 | Agenda timezone Lima | ✅ wallclock | Mantener |
-| Agenda multi-servicio | ❌ | Portar `appointment_services` |
-| Referencias diseño WABA | ❌ | Portar inbox + badge agenda |
-| Feriados / slots domingo | ❌ | Portar `HolidayScreen` + lógica |
+| Agenda multi-servicio | ✅ (PR #31) | Mantener |
+| Referencias diseño WABA | ✅ (PR #31) | Mantener |
+| Feriados / slots domingo | ✅ | Mantener (auto-seed por país, superset de ZM) |
 | Finanzas ejecutiva | ❌ | Portar cards WABA/gastos (fase 2 S5-C) |
 | Promo masiva WA | stub | Depende S6 WABA |
 | Dashboard ranking servicios | ❌ | P2 |
@@ -197,8 +197,8 @@ Convergencia corta: Drizzle Geema → **superset tipado de prod**; adaptadores m
 | S5C-11 | Adaptador `employees` (sin `payment_mode`/`salary_amount` ZM; `avatar_url` sumado 30-ago) + cache única con agenda | zm-tech | S | P0 | ✅ PR #30 |
 | S5C-4 | Agenda: cargar `appointment_services` + multi-servicio en detalle | zm-tech | L | P1 | ✅ PR #31 (5-sep) |
 | S5C-5 | Portar referencias diseño + badge agenda (WABA) | zm-tech | L | P1 | ✅ PR #31 (5-sep) |
-| S5C-6 | Portar `HolidayScreen` + reglas feriado/dom | zm-tech | M | P1 | Pendiente |
-| S5C-7 | Finanzas: panel ejecutivo + `PricingBreakdownCard` (WABA) | zm-tech | L | P1 | Pendiente |
+| S5C-6 | Portar `HolidayScreen` + reglas feriado/dom | zm-tech | M | P1 | ✅ (ya en código; auto-seed por país, wired en Dashboard/Agenda; 5-sep: UX delete + badge "Pasado") |
+| S5C-7 | Finanzas: panel ejecutivo + `PricingBreakdownCard` (WABA) | zm-tech | L | P1 | ✅ mobile (KPIs, gastos, comisiones, payouts ya en código); `PricingBreakdownCard`/costos WABA pendiente de suite WABA. Web `/finanzas` (S6-6): 5-sep quitada marca ZM/Vanessa, moneda/fecha tenant-aware |
 | S5C-8 | Dashboard: ranking top servicios + alertas feriado | zm-tech | S | P2 | Pendiente |
 | S5C-9 | Documentar en UI dónde está Finanzas (onboarding admin) | zm-tech | S | P2 | Pendiente |
 | S5C-10 | Tests smoke: packs/promos/agenda mismo día vs app ZM | zm-tech | S | P0 | Parcial (visual 30-ago) |

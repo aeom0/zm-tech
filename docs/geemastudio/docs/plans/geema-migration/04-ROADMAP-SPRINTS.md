@@ -265,10 +265,10 @@ Shadow test 29-ago (APK SDK 56, `alberto@zmlashnails.com`): core OK; packs/promo
 | S5C-2 | Adaptador promos + `promotion_items` | zm-tech | M ✅ |
 | S5C-3 | Validar `tenant_settings` timezone Lima | zm-tech + BD | S ✅ |
 | S5C-11 | Adaptador `employees` ZM + cache única con agenda | zm-tech | S ✅ |
-| S5C-4 | Agenda multi-servicio (`appointment_services`) | zm-tech | L |
-| S5C-5 | Referencias diseño WABA + badge agenda | zm-tech | L |
-| S5C-6 | Feriados + reglas domingo/feriado | zm-tech | M |
-| S5C-7 | Finanzas ejecutiva + costos WABA | zm-tech | L |
+| S5C-4 | Agenda multi-servicio (`appointment_services`) | zm-tech | L ✅ (PR #31) |
+| S5C-5 | Referencias diseño WABA + badge agenda | zm-tech | L ✅ (PR #31) |
+| S5C-6 | Feriados + reglas domingo/feriado | zm-tech | M ✅ |
+| S5C-7 | Finanzas ejecutiva + costos WABA | zm-tech | L ✅ (panel ejecutivo mobile completo; costos WABA pendiente de la suite WABA) |
 | S5C-8 | Dashboard ranking + alertas feriado | zm-tech | S |
 | S5C-9 | UX hint Finanzas en Más | zm-tech | S |
 | S5C-10 | Smoke packs/promos/agenda vs app ZM | zm-tech | S (parcial) |
@@ -296,7 +296,7 @@ Barbería/peluquería pueden onboardear con defaults sensatos.
 | S6-3 | Portar `/panel/waba/mensajes` a geemastudio-web | zm-tech | L |
 | S6-4 | Portar `/panel/waba/campanas` + `/haiku` | zm-tech | M |
 | S6-5 | Portar portafolio + simulador (opcional) | zm-tech | M |
-| S6-6 | Eliminar/rehacer `/finanzas` web Geema (sin marca ZM) | zm-tech | M |
+| S6-6 | Eliminar/rehacer `/finanzas` web Geema (sin marca ZM) | zm-tech | M ✅ (5-sep: quitada marca ZM/Vanessa, moneda/fecha tenant-aware vía `useDashboardTenant`) |
 | S6-7 | Geema mobile: persistir push token + `send-notification` | zm-tech | M |
 
 ### DoD
