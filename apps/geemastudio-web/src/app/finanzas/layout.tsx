@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { FinanzasAuthWrapper } from './FinanzasAuthWrapper'
 
 export const metadata: Metadata = {
-  title: 'Finanzas | ZM Lash & Nails Beauty',
+  title: 'Finanzas',
   description: 'Panel de administración financiera. Resumen por chica, pendiente y pagado.',
   robots: { index: false, follow: false },
 }

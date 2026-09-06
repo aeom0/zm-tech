@@ -19,6 +19,8 @@ import {
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useFinanzasData, type EmployeeDesglose, type FinanzasPeriod } from '@/hooks/finanzas/useFinanzasData'
+import { useDashboardTenant } from '@/hooks/dashboard/useDashboardTenant'
+import { formatDashboardCurrency, resolveDashboardCurrencyCode } from '@/lib/dashboardCurrency'
 import { LUNARIS } from '@/lib/theme'
 import { RegisterPayoutModal } from './RegisterPayoutModal'
 
@@ -43,12 +45,8 @@ function MethodIcon({ method }: { method: string }) {
   return <Banknote className="h-3.5 w-3.5" />
 }
 
-function fmtS(n: number) {
-  return `S/ ${n.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-}
-
 function fmtDate(d: string) {
-  return new Date(d).toLocaleString('es-PE', {
+  return new Date(d).toLocaleString('es-419', {
     day: 'numeric',
     month: 'short',
     hour: '2-digit',
@@ -60,6 +58,10 @@ export default function FinanzasPage() {
   const router = useRouter()
   const { isAuthenticated, isLoading: authLoading, isAdmin, profile, logout } = useAuth()
   const finanzas = useFinanzasData()
+  const tenantQ = useDashboardTenant()
+  const currencyCode = resolveDashboardCurrencyCode(tenantQ.data?.currency_code)
+  const businessName = tenantQ.data?.business_name ?? null
+  const fmtS = (n: number) => formatDashboardCurrency(n, currencyCode)
   const [payoutRow, setPayoutRow] = useState<EmployeeDesglose | null>(null)
   const [payoutModalOpen, setPayoutModalOpen] = useState(false)
 
@@ -106,7 +108,7 @@ export default function FinanzasPage() {
             Solo administración
           </h1>
           <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-            Este panel es solo para Vanessa y administradores. Tus ganancias las ves en la app móvil
+            Este panel es solo para administradores. Tus ganancias las ves en la app móvil
             en Más → Finanzas.
           </p>
           <button
@@ -140,7 +142,7 @@ export default function FinanzasPage() {
     refetchPayouts,
   } = finanzas
 
-  const mesActual = new Date().toLocaleString('es-PE', {
+  const mesActual = new Date().toLocaleString('es-419', {
     month: 'long',
     year: 'numeric',
   })
@@ -196,7 +198,7 @@ export default function FinanzasPage() {
             {mesActual}
           </h1>
           <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-            Panel de finanzas · ZM Lash &amp; Nails Beauty
+            Panel de finanzas{businessName ? ` · ${businessName}` : ''}
           </p>
         </div>
 
@@ -516,7 +518,7 @@ export default function FinanzasPage() {
         </section>
 
         <p className="pb-4 text-center text-xs text-zinc-400 dark:text-zinc-500">
-          zmlashnails.com/finanzas · Solo administración
+          Finanzas · Solo administración
         </p>
       </main>
 
