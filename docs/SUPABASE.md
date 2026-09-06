@@ -29,6 +29,7 @@ URL Geema: `https://udelxwwnyivknslueerr.supabase.co`
 | Tablas                                                        | Producto    | Schema TS / ops                                                                           |
 | ------------------------------------------------------------- | ----------- | ----------------------------------------------------------------------------------------- |
 | `profiles`, `employees`, `appointments`, `tenant_settings`, … | GeemaStudio | `@geemastudio/shared-schema`, `apps/geemastudio-server/` (Drizzle, seeds, Edge Functions) |
+| `tenants` — **fuera del schema Drizzle** | GeemaStudio | Creada fuera de banda (no en `packages/shared-schema`), probablemente asociada a WABA. Columnas: `id text PK`, `business_name`, `vertical`, `status`, `created_at`. `tenant_settings.tenant_slug` (NOT NULL) tiene **FK hacia `tenants.id`** — toda alta nueva de `tenant_settings` (real o demo) requiere antes una fila en `tenants`. Descubierta el 5-sep-2026 al sembrar el mirror `zm-demo`, ver `docs/geemastudio/docs/plans/09-PLAN-landing-multitenant-fase1.md`. |
 
 ### Fuera de uso
 

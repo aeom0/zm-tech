@@ -265,6 +265,12 @@ Flujo de arranque (mobile):
 - **TypeScript**: `apps/mobile/tsconfig.json` usa `module: "esnext"` (sin extender expo/tsconfig.base.json)
 - Usar `nvm use` para asegurar la versión correcta de Node
 
+## Cambios Recientes (5-sep 2026 — Landing multi-tenant Fase 1: theme+secciones compartidas, mirror `zm-demo`)
+
+- **Web — templates de landing**: refactor de los 3 templates (`Elegant/Warm/Modern`, ~95% duplicados) a `theme/` (paleta/tipografía por template) + `sections/` compartidas (`HeroSection`, `GallerySection`, `SalonVideoSection`, `PromotionsSection`, `TeamSection`, `TestimonialsSection`, etc.), condicionales a que su dato tenga contenido. Nuevas columnas en `tenant_settings` (`web_hero_video_url`, `web_salon_video_url`, `web_marquee_text`, `web_gallery`/`web_team`/`web_promos` jsonb, `web_facebook`, `web_tiktok`, `web_map_embed_url`) — migración `20260905_tenant_landing_sections.sql`, aplicada a prod (`udelxwwnyivknslueerr`).
+- **Descubierta tabla `tenants` no documentada** (FK de `tenant_settings.tenant_slug`, fuera del schema Drizzle) — cualquier alta de tenant nueva requiere fila en `tenants` además de `tenant_settings`. Ver `docs/SUPABASE.md`.
+- **Mirror de prueba `zm-demo`**: 3 filas (`zm-demo-elegant/warm/modern`, `is_demo=true`, accesibles solo vía `/s/<slug>`) con contenido real de ZM (Sanity + `landing-data.ts` + fila real de `tenant_settings`), sin tocar la fila real `zm-lash-nails`. Detalle completo, UUIDs y verificación: `docs/geemastudio/docs/plans/09-PLAN-landing-multitenant-fase1.md`.
+
 ## Cambios Recientes (5-sep 2026 — Agenda multi-servicio/referencias, CI básico, comisiones por personal)
 
 - **Mobile — Agenda (PR #31)**: citas con múltiples servicios/packs por línea; imágenes de referencia por cita (`referenceImagePaths`, `lib/referenceImages.ts`) con badge de pendientes de revisión.

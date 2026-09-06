@@ -7,6 +7,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido (5-sep 2026 — Landing multi-tenant Fase 1: theme+secciones compartidas, mirror `zm-demo`)
+
+- **Web — `tenant-landing`**: refactor de los 3 templates a `theme/` + `sections/` compartidas; nuevas secciones (galería, video de salón, promos, equipo, testimonios en carrusel, marquesina). Nuevas columnas en `tenant_settings` (`web_hero_video_url`, `web_salon_video_url`, `web_marquee_text`, `web_gallery`, `web_team`, `web_promos`, `web_facebook`, `web_tiktok`, `web_map_embed_url`), migración `20260905_tenant_landing_sections.sql` aplicada en producción (`udelxwwnyivknslueerr`).
+- **Descubierta tabla `tenants`** (FK de `tenant_settings.tenant_slug`, no estaba en el schema Drizzle del repo) — documentada en `docs/SUPABASE.md`.
+- **Datos de prueba**: mirror `zm-demo-elegant/warm/modern` (`/s/<slug>`) sembrado con contenido real de ZM (Sanity + `landing-data.ts`) para QA visual de las secciones nuevas en los 3 templates, sin afectar la fila real de ZM. Detalle: `docs/geemastudio/docs/plans/09-PLAN-landing-multitenant-fase1.md`.
+
 ### Añadido (5-sep 2026 — Desglose de comisiones por personal + registro de pagos, PR #37)
 
 - **Mobile — Finanzas**: `EmployeeBreakdown` ahora muestra por chica el desglose de comisión ganada vs. pagada vs. pendiente real en el período (día/semana/mes); `RegisterPayoutModal` para marcar un pago realizado (`usePayouts`, `services/payouts.ts`).
