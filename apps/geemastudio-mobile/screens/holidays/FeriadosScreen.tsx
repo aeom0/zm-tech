@@ -221,7 +221,6 @@ export default function FeriadosScreen() {
           return (
             <Pressable
               onPress={() => openEdit(item)}
-              onLongPress={() => handleDelete(item)}
               style={[
                 styles.row,
                 {
@@ -232,7 +231,18 @@ export default function FeriadosScreen() {
               ]}
             >
               <View style={{ flex: 1 }}>
-                <ThemedText style={[styles.rowName, { color: theme.text }]}>{item.name}</ThemedText>
+                <View style={styles.rowNameLine}>
+                  <ThemedText style={[styles.rowName, { color: theme.text }]}>
+                    {item.name}
+                  </ThemedText>
+                  {past ? (
+                    <View style={[styles.pastChip, { backgroundColor: theme.backgroundRoot }]}>
+                      <ThemedText style={[styles.pastChipText, { color: theme.textMuted }]}>
+                        Pasado
+                      </ThemedText>
+                    </View>
+                  ) : null}
+                </View>
                 <ThemedText style={[styles.rowMeta, { color: theme.textMuted }]}>
                   {formatDateEs(item.date, config.locale.language)}
                   {item.is_closed
@@ -247,6 +257,14 @@ export default function FeriadosScreen() {
                 }
                 trackColor={{ false: theme.border, true: theme.primary }}
               />
+              <Pressable
+                onPress={() => handleDelete(item)}
+                hitSlop={10}
+                style={styles.deleteBtn}
+                accessibilityLabel={`Eliminar feriado ${item.name}`}
+              >
+                <Feather name="trash-2" size={18} color={theme.error} />
+              </Pressable>
             </Pressable>
           )
         }}
@@ -394,8 +412,16 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
     gap: Spacing.sm,
   },
+  rowNameLine: { flexDirection: 'row', alignItems: 'center', gap: Spacing.xs },
   rowName: { fontSize: 15, fontWeight: '600' },
+  pastChip: {
+    paddingHorizontal: 8,
+    paddingVertical: 1,
+    borderRadius: BorderRadius.full,
+  },
+  pastChipText: { fontSize: 10, fontWeight: '700' },
   rowMeta: { fontSize: 12, marginTop: 2 },
+  deleteBtn: { paddingLeft: Spacing.sm },
   fab: {
     position: 'absolute',
     right: Spacing.lg,
