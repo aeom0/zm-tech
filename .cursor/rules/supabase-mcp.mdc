@@ -20,8 +20,9 @@ Antes de cualquier SQL/migración, leer [docs/SUPABASE.md](../../docs/SUPABASE.m
 
 | Producto | Ref | Notas |
 |----------|-----|--------|
-| Landing / Odental / RepMAX | `llacowjutjfefboqgfnj` | MCP `user-supabase-zmtech` apunta aquí. Prefijos `odental_*` / `repmax_*`; no tocar tablas de otros productos. |
-| GeemaStudio | `udelxwwnyivknslueerr` | Proyecto beauty dedicado. No asumir el mismo MCP que ZMTech. |
+| Landing / Odental / RepMAX | `llacowjutjfefboqgfnj` | MCP **`SupabaseZMTech`** (`user-SupabaseZMTech` en Cursor). Prefijos `odental_*` / `repmax_*`. |
+| GeemaStudio / ZM Lash | `udelxwwnyivknslueerr` | MCP **`ClaudeSupabase`**. Misma BD; no asumir el hub ZMTech. |
+| Natural Force | `ddfmmgddzphxidocmjba` | MCP **`SupabaseNaturalForce`** (no reusar el nombre SupabaseZMTech). |
 
 ## Uso
 

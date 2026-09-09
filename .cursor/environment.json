@@ -1,0 +1,21 @@
+{
+  "name": "zm-tech",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  "install": "corepack enable && pnpm install",
+  "start": "bash .cursor/cloud-bootstrap-env.sh",
+  "egressAllowlist": [
+    "*.supabase.co",
+    "aws-0-sa-east-1.pooler.supabase.com",
+    "aws-1-sa-east-1.pooler.supabase.com",
+    "registry.npmjs.org",
+    "registry.npmmirror.com",
+    "*.pnpm.io",
+    "github.com",
+    "api.github.com",
+    "objects.githubusercontent.com"
+  ],
+  "egressMode": "parent_plus_network_settings"
+}
