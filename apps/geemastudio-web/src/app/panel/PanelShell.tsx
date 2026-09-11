@@ -4,7 +4,19 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
-import { ChevronDown, LogOut, Menu, Wrench, Sparkles, LayoutGrid, Clock } from 'lucide-react'
+import {
+  ChevronDown,
+  LogOut,
+  Menu,
+  Wrench,
+  Sparkles,
+  LayoutGrid,
+  Clock,
+  Users,
+  UserRound,
+  Settings,
+  Calendar,
+} from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
 
@@ -29,6 +41,26 @@ export function PanelShell({
 
   const navItems = useMemo<NavItem[]>(
     () => [
+      {
+        label: 'Clientes',
+        href: '/panel/clientes',
+        icon: <Users className="h-4 w-4" />,
+      },
+      {
+        label: 'Personal',
+        href: '/panel/personal',
+        icon: <UserRound className="h-4 w-4" />,
+      },
+      {
+        label: 'Configuración',
+        href: '/panel/configuracion',
+        icon: <Settings className="h-4 w-4" />,
+      },
+      {
+        label: 'Agenda',
+        href: '/panel/agenda',
+        icon: <Calendar className="h-4 w-4" />,
+      },
       {
         label: 'Horario',
         href: '/panel/horarios',
@@ -212,7 +244,17 @@ export function PanelShell({
                 <Menu className="h-5 w-5 text-zinc-200" />
               </button>
               <div className="text-sm font-semibold text-white">
-                {pathname?.startsWith('/panel/horarios') ? 'Panel · Horario' : 'Panel · Servicios'}
+                {pathname?.startsWith('/panel/clientes')
+                  ? 'Panel · Clientes'
+                  : pathname?.startsWith('/panel/personal')
+                    ? 'Panel · Personal'
+                    : pathname?.startsWith('/panel/configuracion')
+                      ? 'Panel · Configuración'
+                      : pathname?.startsWith('/panel/agenda')
+                        ? 'Panel · Agenda'
+                        : pathname?.startsWith('/panel/horarios')
+                          ? 'Panel · Horario'
+                          : 'Panel · Servicios'}
               </div>
               <div className="w-10" />
             </div>
