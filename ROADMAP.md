@@ -10,9 +10,10 @@ Próximo foco: iterar proof/casos reales. Ver [docs/landing/ROADMAP.md](docs/lan
 
 ## GeemaStudio
 
-Objetivo actual: llegar a beta v1.5 de producción.
+Objetivo actual: beta v1.5. **Semana 10-sep:** panel web P1 casi cerrado (`/panel/clientes`, `/personal`, `/configuracion`, `/agenda`). Queda `/panel/waba` (S6). S4 WABA crons = camino crítico 2.º tenant (repo ZM).
 
-Ver [docs/geemastudio/ROADMAP.md](docs/geemastudio/ROADMAP.md) para el detalle de sprints y criterios de aceptación.
+Ver [docs/geemastudio/ROADMAP.md](docs/geemastudio/ROADMAP.md).
+
 
 ## OdentalPro
 

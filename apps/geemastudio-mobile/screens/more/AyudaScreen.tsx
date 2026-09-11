@@ -29,7 +29,11 @@ export default function AyudaScreen() {
         icon="help-circle"
         label="Preguntas frecuentes"
         onPress={() =>
-          Alert.alert('Próximamente', 'Las preguntas frecuentes estarán disponibles pronto.')
+          Alert.alert(
+            '¿Dónde están las finanzas?',
+            'En Más → Finanzas encuentras ingresos, pagos y comisiones. Desde Inicio también hay un acceso rápido si eres admin.',
+            [{ text: 'Entendido' }]
+          )
         }
       />
       <MenuRow

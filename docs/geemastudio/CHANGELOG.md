@@ -7,6 +7,15 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido (10-sep 2026 — Alineación docs + S5C-9 + PR-11a panel clientes)
+
+- **Docs**: ROADMAP / Plan 05 resumen / CLAUDE auth / foco semana 10–14 sep alineados al código real (CI ✅, auth real ✅).
+- **Mobile — S5C-9**: hint de dónde está Finanzas en onboarding de cierre, subtítulo del acceso rápido del Dashboard y FAQ en Ayuda (`Más → Finanzas`).
+- **Web — `/panel/clientes`**: lista con búsqueda, KPIs, chips de segmento (VIP / regulares / nuevos / en riesgo), drawer de detalle con historial de citas. Hooks `useClientsData` / `useClientDetail` (paridad mobile). Nav en `PanelShell`.
+- **Web — `/panel/personal`**: CRUD de equipo (nombre, contacto, color, comisión % / corte fijo casa, salario Geema-only, activo, foto Storage `employee-avatars`). Dialecto ZM/Geema vía `payment_mode`. Terminología desde `tenant_settings`.
+- **Web — `/panel/configuracion`**: datos del negocio (nombre, país, moneda, terminología), colores, logo (`tenant-logos`), presencia web (none / Geema `/s/[slug]` / dominio propio) mapeada a `web_enabled`+slug+`custom_domain`+template. Lectura con bridge `id` o `profiles.tenant_id` → `tenant_slug`.
+- **Web — `/panel/agenda`**: grilla día × profesionales activos (timezone/`business_hours` tenant-aware vía `@zmtech/tenant-config`), filtros de status, drawer detalle read-only, lista sin asignar. CRUD de citas sigue en mobile.
+
 ### Añadido (5-sep 2026 — Landing multi-tenant Fase 1: theme+secciones compartidas, mirror `zm-demo`)
 
 - **Web — `tenant-landing`**: refactor de los 3 templates a `theme/` + `sections/` compartidas; nuevas secciones (galería, video de salón, promos, equipo, testimonios en carrusel, marquesina). Nuevas columnas en `tenant_settings` (`web_hero_video_url`, `web_salon_video_url`, `web_marquee_text`, `web_gallery`, `web_team`, `web_promos`, `web_facebook`, `web_tiktok`, `web_map_embed_url`), migración `20260905_tenant_landing_sections.sql` aplicada en producción (`udelxwwnyivknslueerr`).

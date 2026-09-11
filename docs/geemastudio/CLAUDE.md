@@ -251,11 +251,10 @@ Flujo de arranque (mobile):
 
 ## Notas para Desarrollo
 
-- **Autenticación (estado actual)**: `AuthContext` está en **modo desarrollo**, sin Supabase Auth real:
-  - Acepta cualquier email/contraseña no vacíos y crea un perfil dev/owner con un UUID fijo.
-  - Esto permite probar navegación, RLS y flujos de negocio sin montar aún Supabase Auth en mobile.
+- **Autenticación (estado actual)**: `AuthContext` usa **Supabase Auth real** (`signInWithPassword` + sesión + `profiles` / roles `dev` \| `owner` \| `staff`).
   - `LoginScreen` (clásico) se usa para "Ya tengo cuenta" y para re‑ingreso cuando el tenant ya está configurado.
-  - `OnboardingAuthScreen` reutiliza `AuthContext.login` pero con UI alineada al onboarding.
+  - `OnboardingAuthScreen` reutiliza `AuthContext.login` con UI alineada al onboarding.
+  - Pendiente beta: validar happy path auth en build nativo EAS (no solo Expo Go / OTA).
 - **Moneda (mobile)**: viene de `config.locale.currency.symbol` — NO hardcodear `S/`
 - **Moneda (web/landing)**: usa `$` USD como símbolo estándar internacional — NO hardcodear `S/`
 - **Terminología del personal**: viene de `config.terminology.staff` — NO hardcodear "chicas"

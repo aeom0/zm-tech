@@ -200,7 +200,7 @@ Convergencia corta: Drizzle Geema → **superset tipado de prod**; adaptadores m
 | S5C-6 | Portar `HolidayScreen` + reglas feriado/dom | zm-tech | M | P1 | ✅ (ya en código; auto-seed por país, wired en Dashboard/Agenda; 5-sep: UX delete + badge "Pasado") |
 | S5C-7 | Finanzas: panel ejecutivo + `PricingBreakdownCard` (WABA) | zm-tech | L | P1 | ✅ mobile (KPIs, gastos, comisiones, payouts ya en código); `PricingBreakdownCard`/costos WABA pendiente de suite WABA. Web `/finanzas` (S6-6): 5-sep quitada marca ZM/Vanessa, moneda/fecha tenant-aware |
 | S5C-8 | Dashboard: ranking top servicios + alertas feriado | zm-tech | S | P2 | Pendiente |
-| S5C-9 | Documentar en UI dónde está Finanzas (onboarding admin) | zm-tech | S | P2 | Pendiente |
+| S5C-9 | Documentar en UI dónde está Finanzas (onboarding admin) | zm-tech | S | P2 | ✅ 10-sep (OnboardingComplete + Dashboard quick link + Ayuda FAQ) |
 | S5C-10 | Tests smoke: packs/promos/agenda mismo día vs app ZM | zm-tech | S | P0 | Parcial (visual 30-ago) |
 
 ### DoD S5-C (shadow ZM en Geema)

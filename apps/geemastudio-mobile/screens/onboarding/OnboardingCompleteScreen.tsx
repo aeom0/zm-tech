@@ -24,8 +24,12 @@ interface StatItem {
 
 const FEATURES = [
   { icon: 'calendar' as const, text: 'Agenda y citas en tiempo real' },
-  { icon: 'trending-up' as const, text: 'Finanzas y reportes detallados' },
-  { icon: 'users' as const, text: 'Gestión de equipo y comisiones' },
+  {
+    icon: 'trending-up' as const,
+    // S5C-9: Finanzas no está en tabs — el owner la encuentra en Más
+    text: 'Finanzas: Más → Finanzas (ingresos y comisiones)',
+  },
+  { icon: 'users' as const, text: 'Equipo y comisiones desde Más → Equipo' },
 ]
 
 export default function OnboardingCompleteScreen({ onFinish }: OnboardingCompleteScreenProps) {

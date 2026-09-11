@@ -58,7 +58,7 @@ export function DashboardQuickLinksCard({
         <View style={{ flex: 1 }}>
           <ThemedText style={[styles.quickLinkTitle, { color: theme.text }]}>Finanzas</ThemedText>
           <ThemedText style={[styles.quickLinkSub, { color: theme.textSecondary }]}>
-            Ingresos, pagos y comisiones
+            Ingresos y comisiones · también en Más → Finanzas
           </ThemedText>
         </View>
         <Feather name="chevron-right" size={16} color={theme.textMuted} />

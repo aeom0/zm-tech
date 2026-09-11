@@ -51,7 +51,8 @@ Cerrar bloqueadores de schema que impiden dos negocios en la misma BD.
 | **Quién re-loguea** | **Vanessa**, **Stephani**, **Karelis** (y cualquier profile `dev`/`owner`/`staff` con app instalada) |
 | **Post-cambio** | Alberto confirma a Vanessa que las tres pudieron entrar; si falla alguien → rollback plan documentado en PR de migración |
 
-### DoD
+### Estado (sep 2026)
+
 - [x] Migraciones aplicadas en prod con version/name alineados (regla `.cursor/rules/supabase-migrations.mdc`) — S1-1…S1-4
 - [x] QA: dos filas `clients` mismo teléfono, distinto `tenant_id` — INSERT OK
 - [x] QA: dos filas `waba_config` misma key, distinto `tenant_id` — OK
@@ -61,6 +62,8 @@ Cerrar bloqueadores de schema que impiden dos negocios en la misma BD.
 - [x] Auth Hook S1-5 aplicado prod 29-ago (ventana feriado)
 - [ ] Mensaje enviado a Vanessa con ventana acordada; Stephani y Karelis avisadas por Vanessa o Alberto
 - [ ] Re-login verificado en mobile para Vanessa + al menos 1 staff antes de cerrar sprint
+
+> DoD histórico S1 (mismo checklist): ver commits ago 2026.
 
 ### Riesgos
 - Re-login staff tras Auth Hook — mitigado con S1-7 y ventana documentada arriba
@@ -270,7 +273,7 @@ Shadow test 29-ago (APK SDK 56, `alberto@zmlashnails.com`): core OK; packs/promo
 | S5C-6 | Feriados + reglas domingo/feriado | zm-tech | M ✅ |
 | S5C-7 | Finanzas ejecutiva + costos WABA | zm-tech | L ✅ (panel ejecutivo mobile completo; costos WABA pendiente de la suite WABA) |
 | S5C-8 | Dashboard ranking + alertas feriado | zm-tech | S |
-| S5C-9 | UX hint Finanzas en Más | zm-tech | S |
+| S5C-9 | UX hint Finanzas en Más | zm-tech | S ✅ (10-sep) |
 | S5C-10 | Smoke packs/promos/agenda vs app ZM | zm-tech | S (parcial) |
 
 ### DoD
