@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 
 import { createServerSupabaseClient } from '@/lib/supabase-server'
@@ -16,7 +17,9 @@ export default async function PanelLayout({ children }: { children: React.ReactN
 
   return (
     <PanelQueryProvider>
-      <PanelShell userEmail={email}>{children}</PanelShell>
+      <Suspense fallback={<div className="min-h-screen bg-[#0F0F0F]" />}>
+        <PanelShell userEmail={email}>{children}</PanelShell>
+      </Suspense>
     </PanelQueryProvider>
   )
 }
