@@ -152,6 +152,13 @@ export function Navbar() {
           <div onClick={() => setMenuOpen(false)} className="py-2">
             <NavbarDashboardLink scrolled={false} />
           </div>
+          <Link
+            href="/login"
+            onClick={() => setMenuOpen(false)}
+            className="block py-2 font-medium text-white/90 transition-colors hover:text-white"
+          >
+            Iniciar sesión
+          </Link>
           <div className="pt-2">
             <GradientButton href="#precios" size="md" className="w-full justify-center">
               Empezar gratis — 14 días
