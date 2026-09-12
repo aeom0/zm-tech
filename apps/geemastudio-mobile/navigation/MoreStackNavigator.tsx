@@ -21,6 +21,14 @@ import FinanzasMenuScreen from '@/screens/more/FinanzasMenuScreen'
 import MarketingRedesScreen from '@/screens/more/MarketingRedesScreen'
 import AyudaScreen from '@/screens/more/AyudaScreen'
 import CuentaScreen from '@/screens/more/CuentaScreen'
+import MiWebScreen from '@/screens/web/MiWebScreen'
+import MiWebPresenciaScreen from '@/screens/web/MiWebPresenciaScreen'
+import MiWebContenidoScreen from '@/screens/web/MiWebContenidoScreen'
+import MiWebGaleriaScreen from '@/screens/web/MiWebGaleriaScreen'
+import MiWebEquipoScreen from '@/screens/web/MiWebEquipoScreen'
+import MiWebPromosScreen from '@/screens/web/MiWebPromosScreen'
+import MiWebServiciosScreen from '@/screens/web/MiWebServiciosScreen'
+import MiWebResenasScreen from '@/screens/web/MiWebResenasScreen'
 
 export type MoreStackParamList = {
   MoreHome: undefined
@@ -41,6 +49,14 @@ export type MoreStackParamList = {
   LogoNegocio: undefined
   ColoresNegocio: undefined
   Perfil: undefined
+  MiWeb: undefined
+  MiWebPresencia: undefined
+  MiWebContenido: undefined
+  MiWebGaleria: undefined
+  MiWebEquipo: undefined
+  MiWebPromos: undefined
+  MiWebServicios: undefined
+  MiWebResenas: undefined
 }
 
 const Stack = createNativeStackNavigator<MoreStackParamList>()
@@ -115,6 +131,34 @@ export default function MoreStackNavigator() {
         options={{ title: 'Colores de marca' }}
       />
       <Stack.Screen name="Perfil" component={ProfileScreen} options={{ title: 'Perfil' }} />
+      <Stack.Screen name="MiWeb" component={MiWebScreen} options={{ title: 'Mi Web' }} />
+      <Stack.Screen
+        name="MiWebPresencia"
+        component={MiWebPresenciaScreen}
+        options={{ title: 'Presencia web' }}
+      />
+      <Stack.Screen
+        name="MiWebContenido"
+        component={MiWebContenidoScreen}
+        options={{ title: 'Contenido web' }}
+      />
+      <Stack.Screen
+        name="MiWebGaleria"
+        component={MiWebGaleriaScreen}
+        options={{ title: 'Galería' }}
+      />
+      <Stack.Screen name="MiWebEquipo" component={MiWebEquipoScreen} options={{ title: 'Equipo web' }} />
+      <Stack.Screen name="MiWebPromos" component={MiWebPromosScreen} options={{ title: 'Promos web' }} />
+      <Stack.Screen
+        name="MiWebServicios"
+        component={MiWebServiciosScreen}
+        options={{ title: 'Servicios web' }}
+      />
+      <Stack.Screen
+        name="MiWebResenas"
+        component={MiWebResenasScreen}
+        options={{ title: 'Reseñas' }}
+      />
     </Stack.Navigator>
   )
 }
