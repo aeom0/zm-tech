@@ -22,7 +22,7 @@ export default function PanelWabaMensajesPage() {
   const conversationsQuery = useWabaConversations()
   const threadQuery = useWabaThread(selectedPhone)
 
-  const conversations = conversationsQuery.data ?? []
+  const conversations = useMemo(() => conversationsQuery.data ?? [], [conversationsQuery.data])
   const messages = threadQuery.data ?? []
 
   const selected = useMemo(

@@ -58,13 +58,12 @@ export default function PanelPersonalPage() {
   const [isCreating, setIsCreating] = useState(false)
   const [filter, setFilter] = useState<'all' | 'active' | 'inactive'>('all')
 
-  const employees = employeesQuery.data ?? []
-
   const filtered = useMemo(() => {
+    const employees = employeesQuery.data ?? []
     if (filter === 'active') return employees.filter((e) => e.is_active)
     if (filter === 'inactive') return employees.filter((e) => !e.is_active)
     return employees
-  }, [employees, filter])
+  }, [employeesQuery.data, filter])
 
   const openCreate = () => {
     setEditing(null)

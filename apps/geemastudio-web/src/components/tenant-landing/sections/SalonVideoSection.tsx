@@ -17,7 +17,6 @@ export function SalonVideoSection({ data, theme }: SalonVideoSectionProps) {
       <h2 className="mb-5 text-[26px] font-bold tracking-tight" style={{ color: theme.colors.text }}>
         Conoce nuestro espacio
       </h2>
-      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <video controls className="w-full overflow-hidden" style={{ borderRadius: theme.radius.card }} src={data.salonVideoUrl} />
     </section>
   )

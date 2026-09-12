@@ -6,7 +6,10 @@ export default [
   ...nextTypescript,
   {
     rules: {
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
       // Patrones fetch/UI preexistentes; el plugin de React Compiler es demasiado
       // estricto para el código actual de estas apps Next 15.
       'react-hooks/preserve-manual-memoization': 'off',

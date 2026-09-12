@@ -48,7 +48,6 @@ export function HeroSection({ data, theme }: HeroSectionProps) {
       >
         {hasVideo && (
           <>
-            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
             <video
               autoPlay
               muted

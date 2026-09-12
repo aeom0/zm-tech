@@ -35,8 +35,6 @@ export type PromoItemInput = {
   discounted_price: number
 }
 
-const GEEMA_PROMOS_SELECT =
-  'id, title, description, badge, accent_color, promo_price, is_active, expires_at'
 const ZM_PROMOS_SELECT =
   'id, title, description, badge, accent_color, promo_price, is_active, valid_until'
 
