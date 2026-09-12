@@ -21,6 +21,16 @@ No hay que desplegar ningún servidor Express ni Railway. Variables de Supabase 
 
 ## Deployment frontend web (Vercel)
 
+### Host público (temporal)
+
+| Host | Uso |
+|------|-----|
+| **`geema.zmtechdev.com`** | Plataforma Geema (panel + `/s/[slug]`) — proyecto Vercel `geemastudio-web` |
+| `zmtechdev.com` | Landing ZM Tech — proyecto `zmtech` (no tocar) |
+| `{slug}.zmtechdev.com` | Vitrinas RepMAX — proyecto `repmax-web` |
+
+Cuando exista dominio propio (`geemastudio.app`), actualizar DNS/Vercel y `NEXT_PUBLIC_SITE_URL`.
+
 ### 1. Preparar
 
 ```bash
@@ -33,10 +43,20 @@ El output está en `apps/geemastudio-web/.next`.
 ### 2. Configurar Vercel
 
 - Conectar el repo; **Root Directory**: `apps/geemastudio-web` o configurar build en raíz con `installCommand` que instale workspaces.
-- Variables de entorno en Vercel:
+- Variables de entorno en Vercel (Production):
   - `NEXT_PUBLIC_SUPABASE_URL=https://udelxwwnyivknslueerr.supabase.co`
   - `NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...` (anon key del proyecto)
+  - **`NEXT_PUBLIC_SITE_URL=https://geema.zmtechdev.com`**
   - (Opcional) Si se usan cookies SSR de Supabase, no requiere variables extra: se maneja con `@supabase/ssr` y cookies de sesión.
+
+### 2b. Checklist dominio + Auth (post-merge / ops)
+
+1. **Vercel** → proyecto `geemastudio-web` → Domains → Add **`geema.zmtechdev.com`** (NS ya en Vercel).
+2. Confirmar env Production con `NEXT_PUBLIC_SITE_URL` y redeploy.
+3. **Supabase** (`udelxwwnyivknslueerr`) → Authentication → URL configuration:
+   - Site URL: `https://geema.zmtechdev.com`
+   - Redirect URLs: `https://geema.zmtechdev.com/**` (+ localhost y `*.vercel.app` de preview).
+4. Smoke: `/login`, `/panel/servicios`, `/s/<slug-demo>`.
 
 ### 3. Deploy
 
@@ -52,6 +72,7 @@ vercel --prod
 
 - `GET /login` — login del panel (email/password Supabase).
 - `GET /panel/*` — guard SSR basado en cookies (sin sesión redirige a `/login`).
+- Host: `https://geema.zmtechdev.com` (temporal).
 
 ## Deployment móvil (EAS Build)
 

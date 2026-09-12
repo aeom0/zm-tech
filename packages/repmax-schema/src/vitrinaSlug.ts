@@ -13,6 +13,8 @@ export const SLUGS_RESERVADOS_VITRINA = [
   'staging',
   'preview',
   'repmax',
+  'geema',
+  'studio',
   'web',
   'ftp',
   'test',

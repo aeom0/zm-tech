@@ -57,9 +57,12 @@ Un dominio apex y su wildcard pueden repartirse entre proyectos
 distintos en Vercel:
 
 ```
-zmtechdev.com       → proyecto "zmtech"       (landing — sin cambios)
-*.zmtechdev.com      → proyecto "repmax-web"   (vitrinas por tenant — nuevo)
+zmtechdev.com       → proyecto "zmtech"            (landing — sin cambios)
+geema.zmtechdev.com → proyecto "geemastudio-web"   (Geema panel + /s/[slug] — temporal)
+*.zmtechdev.com      → proyecto "repmax-web"        (vitrinas por tenant)
 ```
+
+Slugs reservados (no vitrina): ver `SLUGS_RESERVADOS_VITRINA` en `@repmax/repmax-schema` — incluye `geema` / `studio`.
 
 El `/{slug}` actual **sigue funcionando en paralelo** — no es un
 reemplazo, es aditivo. Cero breaking changes para lo ya mergeado.

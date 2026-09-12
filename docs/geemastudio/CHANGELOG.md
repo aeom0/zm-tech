@@ -7,6 +7,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido (12-sep 2026 — Host temporal geema.zmtechdev.com)
+
+- **Web**: `NEXT_PUBLIC_SITE_URL` + `src/lib/site-url.ts`; preview absoluta de landings `/s/[slug]` en `/panel/configuracion`.
+- **Ops**: host temporal `https://geema.zmtechdev.com` (proyecto Vercel `geemastudio-web`); checklist en `docs/DEPLOYMENT.md` (dominio Vercel + Auth URLs Supabase).
+- **RepMAX**: slugs reservados `geema` / `studio` en `SLUGS_RESERVADOS_VITRINA` (evitar choque con wildcard `*.zmtechdev.com`).
+
 ### Añadido (12-sep 2026 — PR-11e panel WABA MVP)
 
 - **Web — `/panel/waba`**: card de estado (`features_whatsapp` / `features_waba`, phone ID enmascarado, token).

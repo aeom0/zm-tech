@@ -19,7 +19,7 @@
 
 **Disponibilidad**: **siempre activo para todo tenant**, sin importar si el negocio tiene dominio propio, subpath en GeemaStudio, o ninguna web pública. Es independiente del `web_mode` del tenant.
 
-**URL base**: `geemastudio.app` (o el dominio definitivo de la plataforma)
+**URL base (temporal)**: `https://geema.zmtechdev.com` — hasta dominio propio (`geemastudio.app` o similar). Env: `NEXT_PUBLIC_SITE_URL`.
 
 ### Rutas implementadas
 
@@ -96,7 +96,7 @@ El tenant tiene su propio dominio (ej: `zmlashnails.com`). GeemaStudio **no cont
 #### Modo B — Bajo el paraguas GeemaStudio
 
 El tenant no tiene dominio propio o prefiere no gestionarlo. Su landing vive en:
-`geemastudio.app/s/[slug]` (ej: `geemastudio.app/s/salón-glamour`)
+`geema.zmtechdev.com/s/[slug]` (ej: `geema.zmtechdev.com/s/salon-glamour`) — host temporal; futuro `geemastudio.app/s/[slug]`.
 
 - `web_mode = 'geema_hosted'`
 - `slug` único en `tenant_settings` (ej: `'salón-glamour'`)
@@ -150,13 +150,13 @@ ALTER TABLE tenant_settings
 └────────────────┘   └─────────────────┘
 ```
 
-**Regla clave**: el Panel de gestión (Producto 1) **nunca** depende del `web_mode` del tenant. Vanessa entra a `geemastudio.app/finanzas` el día 1 de la migración, independientemente de qué pasa con `zmlashnails.com`.
+**Regla clave**: el Panel de gestión (Producto 1) **nunca** depende del `web_mode` del tenant. Vanessa entra a `geema.zmtechdev.com/finanzas` (host temporal) el día 1 de la migración, independientemente de qué pasa con `zmlashnails.com`.
 
 ---
 
 ## RRSS y dominio de la plataforma
 
-**GeemaStudio** tiene sus propias RRSS (`@geemastudio` en Instagram, Facebook) y su propio dominio de plataforma (pendiente: `geemastudio.app` o similar). Estas son las RRSS de la **plataforma B2B**, no de los tenants.
+**GeemaStudio** tiene sus propias RRSS (`@geemastudio` en Instagram, Facebook) y dominio de plataforma **temporal** `geema.zmtechdev.com` (hasta `geemastudio.app` o similar). Estas son las RRSS de la **plataforma B2B**, no de los tenants.
 
 Cada tenant tiene **sus propias RRSS establecidas** (ej: Vanessa tiene `@zmlashandnails`). GeemaStudio no gestiona ni requiere esas RRSS.
 
@@ -169,7 +169,7 @@ Cada tenant tiene **sus propias RRSS establecidas** (ej: Vanessa tiene `@zmlasha
 
 | Aspecto                | Estado                                                               | Detalle                                        |
 | ---------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
-| Panel de gestión       | Listo en cuanto migre la DB                                          | Accede a `geemastudio.app/finanzas` etc.       |
+| Panel de gestión       | Listo en cuanto migre la DB                                          | Accede a `geema.zmtechdev.com/finanzas` etc. (temporal) |
 | `web_mode` inicial     | `'none'`                                                             | No necesita landing pública al day-1           |
 | `zmlashnails.com`      | Independiente                                                        | Su dominio propio, no lo toca GeemaStudio      |
 | Add-on landing         | Futuro                                                               | Si quieren, GeemaStudio ofrece servicio Modo A |

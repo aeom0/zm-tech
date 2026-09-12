@@ -267,6 +267,7 @@ Flujo de arranque (mobile):
 ## Cambios Recientes (12-sep 2026 — Panel P1 + WABA MVP)
 
 - **Web — panel P1 cerrado**: `/panel/clientes`, `/personal`, `/configuracion`, `/agenda`, **`/waba`** (estado + `/mensajes` + `/haiku`). Nav WhatsApp en `PanelShell`. Hooks en `src/hooks/waba/`.
+- **Host temporal**: `https://geema.zmtechdev.com` (`NEXT_PUBLIC_SITE_URL`) hasta dominio propio.
 - **WABA MVP**: lectura `wa_messages` / `waba_config`; prompt default genérico (sin hardcodear salón). Fuera de MVP: campañas, analytics, simulador.
 - **Estado/pendientes**: ver `docs/geemastudio/ROADMAP.md` § Estado actual; Plan 05 `00-RESUMEN` alineado 12-sep.
 

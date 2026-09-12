@@ -48,6 +48,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 - **S5-C P0/P1 mayor**: packs/promos/timezone/employees ✅ (#30); multi-servicio + referencias ✅ (#31); feriados ✅; finanzas ejecutiva mobile ✅ (costos WABA aún no); **S5C-9** hint Finanzas ✅
 - Core web: `/`, `/finanzas`, `/dashboard`, `/panel/servicios`, `/panel/horarios`, landing tenant `/s/[slug]` (Fase 1)
 - **Panel P1 completo**: clientes, personal, configuración, agenda, **WABA MVP** (estado + mensajes + Haiku) ✅ 12-sep
+- **Host plataforma (temporal)**: `https://geema.zmtechdev.com` — ver `docs/DEPLOYMENT.md` § Host + checklist Auth/Vercel
 - **CI** `.github/workflows/ci.yml` (lint + typecheck + build web) ✅ (#36)
 - **Error handling** pantallas críticas (`ErrorState`) ✅ (#36)
 - Anti-solapamiento citas en mobile ✅
@@ -65,6 +66,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 | 5 | **PR-09** Push FCM E2E | zm-tech | `push_token` + Edge `send-notification` |
 | 6 | Landing Fase 2/3 (CMS + dominio) | zm-tech | No bloquea beta gestión |
 | 7 | PR-10 / 10B WABA avanzado + reenganche | ZM + Geema | Tras S4 + PR-09 |
+| 8 | Activar `geema.zmtechdev.com` en Vercel + Auth URLs | ops | Checklist en `docs/DEPLOYMENT.md` § 2b |
 
 ### Riesgos activos
 

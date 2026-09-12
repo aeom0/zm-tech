@@ -19,6 +19,7 @@ import {
   type WebPresenceMode,
   type WebTemplate,
 } from '@/hooks/configuracion/types'
+import { getSiteUrl, getTenantLandingUrl } from '@/lib/site-url'
 
 const fieldClass =
   'w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white outline-none focus:border-[#40E0D0]/40'
@@ -422,7 +423,7 @@ export default function PanelConfiguracionPage() {
           {(
             [
               { id: 'none' as const, label: 'Sin landing' },
-              { id: 'geema_hosted' as const, label: 'Geema (/s/slug)' },
+              { id: 'geema_hosted' as const, label: 'Geema (geema.zmtechdev.com/s/…)' },
               { id: 'own_domain' as const, label: 'Dominio propio' },
             ] as const
           ).map((opt) => (
@@ -453,16 +454,19 @@ export default function PanelConfiguracionPage() {
                 placeholder="mi-salon"
               />
               {previewSlug ? (
-                <p className="mt-1 flex items-center gap-1 text-xs text-zinc-500">
+                <p className="mt-1 flex flex-wrap items-center gap-1 text-xs text-zinc-500">
                   Preview:{' '}
                   <Link
                     href={`/s/${previewSlug}`}
                     target="_blank"
-                    className="inline-flex items-center gap-1 text-[#40E0D0] hover:underline"
+                    className="inline-flex max-w-full items-center gap-1 break-all text-[#40E0D0] hover:underline"
                   >
-                    /s/{previewSlug}
-                    <ExternalLink className="h-3 w-3" />
+                    {getTenantLandingUrl(previewSlug)}
+                    <ExternalLink className="h-3 w-3 shrink-0" />
                   </Link>
+                  <span className="w-full text-[10px] text-zinc-600">
+                    Host plataforma: {getSiteUrl()} (temporal hasta geemastudio.app)
+                  </span>
                 </p>
               ) : null}
             </div>
