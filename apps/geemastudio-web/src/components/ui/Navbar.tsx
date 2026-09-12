@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { GradientButton } from '@/components/ui/GradientButton'
 import { NavbarDashboardLink } from '@/components/ui/NavbarDashboardLink'
 import { LUNARIS } from '@/lib/theme'
@@ -91,8 +92,8 @@ export function Navbar() {
 
         {/* CTA — desktop */}
         <div className="hidden items-center gap-3 md:flex">
-          <a
-            href="#"
+          <Link
+            href="/login"
             className={`text-sm font-medium transition-colors ${
               scrolled
                 ? 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white'
@@ -100,7 +101,7 @@ export function Navbar() {
             }`}
           >
             Iniciar sesión
-          </a>
+          </Link>
           {/* Divider */}
           <span className="h-5 w-px bg-white/15 dark:bg-white/10" />
           <GradientButton href="#precios" size="sm">
