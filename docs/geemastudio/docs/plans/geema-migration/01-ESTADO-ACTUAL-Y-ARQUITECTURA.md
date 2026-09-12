@@ -79,7 +79,7 @@ Fuente: `zm-tech/docs/audit/03-AUDIT-paridad-zmlash-geema.md`
 | Finanzas | 🟡 (+ ejecutivo ZM) | 🟡 web = copia ZM hardcodeada |
 | WABA bot | ✅ v3.6 | 🟡 webhook básico multi-tenant |
 | Crons WABA (11 jobs) | ✅ | ❌ |
-| Panel `/panel/waba/*` | ✅ 6 rutas | ❌ |
+| Panel `/panel/waba/*` | ✅ 6 rutas | ✅ MVP (estado/mensajes/haiku 12-sep); P2 campañas/analytics ❌ |
 | Promo masiva WA | ✅ | ❌ |
 | Portafolio + Vision pago | ✅ | ❌ |
 | Push FCM E2E | ✅ | 🟡 token descartado en mobile |

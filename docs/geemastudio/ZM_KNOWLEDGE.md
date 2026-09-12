@@ -32,7 +32,7 @@
 | UI tablet responsive                         | ✅                                                   | Parcial            | Media                |
 | Web /finanzas                                | ✅                                                   | ✅                 | —                    |
 | Web /servicios (CRUD)                        | ✅                                                   | ❌                 | Media                |
-| Web /panel/waba/mensajes                     | ✅ v2.3                                              | ❌                 | Roadmap              |
+| Web /panel/waba/mensajes                     | ✅ v2.3                                              | ✅ MVP (12-sep)    | P2 analytics/campañas |
 | Normalización phone_country/phone_normalized | ✅ v2.1                                              | ❌                 | Media                |
 | buildAppointmentWorkLabel (pack_id en citas) | ✅ v2.3                                              | ❌                 | Media                |
 | Landing web                                  | ✅                                                   | ✅                 | —                    |

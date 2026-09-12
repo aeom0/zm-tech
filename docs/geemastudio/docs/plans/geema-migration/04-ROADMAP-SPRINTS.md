@@ -15,8 +15,8 @@
 | **S4** | Crons + RPCs tenant-aware | 11 Edge Functions parametrizadas | S3 |
 | **S5** | Suite L3 — reglas externalizadas | `TenantWabaRules` + seed ZM | S3 |
 | **S5-B** | Branding tenant mobile | Logo Storage + `TenantLogo` + `createTheme` completo | S2 |
-| **S5-C** | Paridad mobile ZM (shadow) | Packs/promos + Lima + chicas ✅; resto P1 | S2 |
-| **S6** | Suite L4 + panel Geema | Presets vertical + `/panel/waba/*` port | S5 |
+| **S5-C** | Paridad mobile ZM (shadow) | Packs/promos + Lima + chicas ✅; S5C-9 ✅; S5C-8 pendiente | S2 |
+| **S6** | Suite L4 + panel Geema | Presets + `/panel/waba/*` — **MVP mensajes/haiku ✅ 12-sep** | S5 |
 | **S7+** | Go-live 2.º tenant | Onboarding → WABA propio + QA | S4, S6 |
 
 ---
@@ -296,15 +296,15 @@ Barbería/peluquería pueden onboardear con defaults sensatos.
 |----|-------|------|----------|
 | S6-1 | `waba-preset-loader`: `businessType` → CTWA + Haiku defaults | ZM/Geema Edge | M |
 | S6-2 | Seed onboarding: `waba_config` + catálogo preset | Geema mobile/server | M |
-| S6-3 | Portar `/panel/waba/mensajes` a geemastudio-web | zm-tech | L |
-| S6-4 | Portar `/panel/waba/campanas` + `/haiku` | zm-tech | M |
+| S6-3 | Portar `/panel/waba/mensajes` a geemastudio-web | zm-tech | L ✅ **12-sep** |
+| S6-4 | Portar `/panel/waba/campanas` + `/haiku` | zm-tech | M — **haiku ✅ 12-sep**; campañas ❌ |
 | S6-5 | Portar portafolio + simulador (opcional) | zm-tech | M |
 | S6-6 | Eliminar/rehacer `/finanzas` web Geema (sin marca ZM) | zm-tech | M ✅ (5-sep: quitada marca ZM/Vanessa, moneda/fecha tenant-aware vía `useDashboardTenant`) |
 | S6-7 | Geema mobile: persistir push token + `send-notification` | zm-tech | M |
 
 ### DoD
 - [ ] Demo `barbershop` con CTWA Corte/Barba/Combo
-- [ ] Owner Geema opera mensajes WA desde panel web
+- [x] Owner Geema opera mensajes WA desde panel web (MVP 12-sep; sin envío manual / campañas)
 - [ ] Audit 03 gaps P0 #1, #2, #4 cerrados o en progreso documentado
 
 ---

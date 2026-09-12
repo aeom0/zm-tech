@@ -16,6 +16,7 @@ import {
   UserRound,
   Settings,
   Calendar,
+  MessageCircle,
 } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
@@ -60,6 +61,11 @@ export function PanelShell({
         label: 'Agenda',
         href: '/panel/agenda',
         icon: <Calendar className="h-4 w-4" />,
+      },
+      {
+        label: 'WhatsApp',
+        href: '/panel/waba',
+        icon: <MessageCircle className="h-4 w-4" />,
       },
       {
         label: 'Horario',
@@ -122,7 +128,11 @@ export function PanelShell({
 
       <nav className="flex-1 space-y-1 p-3">
         {navItems.map((item) => {
-          const isActive = item.href ? pathname === item.href : false
+          const isActive = item.href
+            ? item.href === '/panel/waba'
+              ? Boolean(pathname?.startsWith('/panel/waba'))
+              : pathname === item.href
+            : false
           const base =
             'w-full flex items-center justify-between gap-3 px-3 py-2 rounded-xl border transition-colors'
           const left = (
@@ -252,9 +262,11 @@ export function PanelShell({
                       ? 'Panel · Configuración'
                       : pathname?.startsWith('/panel/agenda')
                         ? 'Panel · Agenda'
-                        : pathname?.startsWith('/panel/horarios')
-                          ? 'Panel · Horario'
-                          : 'Panel · Servicios'}
+                        : pathname?.startsWith('/panel/waba')
+                          ? 'Panel · WhatsApp'
+                          : pathname?.startsWith('/panel/horarios')
+                            ? 'Panel · Horario'
+                            : 'Panel · Servicios'}
               </div>
               <div className="w-10" />
             </div>

@@ -86,4 +86,5 @@ Implementación sugerida (S2-7):
 | 2026-08-30 | S5-C avance P0 | S5C-1/2/3/11 ✅ PR zm-tech #30; packs/promos/timezone/chicas; espejo sync |
 | 2026-08-30 | Schema canónico + índices apt_svc | 07 § Schema canónico; migration `idx_appointment_services_lookup`; PR #31 no CREATE en prod |
 | 2026-08-30 | País / wallclock ADR | 05 addendum: sin `countries`; citas = hora de pared del tenant |
+| 2026-09-12 | Panel WABA MVP Geema | S6-3/haiku ✅; 00/01/04/ROADMAP/WEB_ARCH alineados; campañas/analytics P2 |
 | 2026-09-02 | Look Preview Plan 07 | Planes `06`/`07` + anexo prompts copiados a `zm-tech/.../plans/` (fuera de esta carpeta); ticket S6-LP en roadmap |

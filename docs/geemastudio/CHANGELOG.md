@@ -7,6 +7,16 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido (12-sep 2026 — PR-11e panel WABA MVP)
+
+- **Web — `/panel/waba`**: card de estado (`features_whatsapp` / `features_waba`, phone ID enmascarado, token).
+- **Web — `/panel/waba/mensajes`**: conversaciones desde `wa_messages` + hilo read-only (match clientes por teléfono).
+- **Web — `/panel/waba/haiku`**: editor de system prompt → `waba_config` key `haiku_system_prompt` (default genérico multi-tenant).
+- **Nav**: WhatsApp en `PanelShell` + subnav Estado / Mensajes / Asistente IA; `/panel` redirige a servicios.
+- **Ops**: mensaje claro si faltan `NEXT_PUBLIC_SUPABASE_*` en `supabase-server.ts`.
+- **Docs**: ROADMAP estado/pendientes, Plan 05 (00/01/04/README/SYNC), WEB_ARCHITECTURE, ZM_KNOWLEDGE, README, CLAUDE, raíz `ROADMAP.md`.
+- Fuera de MVP: campañas, analytics/historial, simulador, portafolio, formulario de credenciales Meta.
+
 ### Añadido (10-sep 2026 — Alineación docs + S5C-9 + PR-11a panel clientes)
 
 - **Docs**: ROADMAP / Plan 05 resumen / CLAUDE auth / foco semana 10–14 sep alineados al código real (CI ✅, auth real ✅).

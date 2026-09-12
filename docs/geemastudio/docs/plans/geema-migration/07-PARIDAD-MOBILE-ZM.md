@@ -1,7 +1,7 @@
 # 07 — Paridad mobile Geema ↔ ZM (shadow test)
 
 **Fecha:** 2026-08-30  
-**Estado:** En curso — **S5C-1 / S5C-2 / S5C-3 / S5C-11 ✅** (PR [zm-tech #30](https://github.com/aeom0/zm-tech/pull/30)); resto P1/P2 pendiente  
+**Estado:** En curso — **S5C-1…7 / S5C-9 / S5C-11 ✅**; quedan S5C-8 + smoke Finanzas; panel WABA MVP ✅ (S6 parcial)
 **Repos:** `zm-tech` (`geemastudio-mobile`), referencia `ZM-Lash-and-Nails-Beauty/apps/mobile`  
 **BD:** `udelxwwnyivknslueerr` — tenant #1 `zm-lash-nails`  
 **Código:** rama `cursor/s5c-catalog-adapter-zm` — ZM app legacy **sin cambio**

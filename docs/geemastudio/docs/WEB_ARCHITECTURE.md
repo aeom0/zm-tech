@@ -34,12 +34,15 @@
 | `/panel/personal`  | CRUD equipo: foto, color, comisiones, activo/inactivo           | ✅ Implementado (10-sep) |
 | `/panel/configuracion` | Datos negocio, colores, logo, presencia web (`web_enabled`/slug) | ✅ Implementado (10-sep) |
 | `/panel/agenda`        | Grilla día × profesionales, filtros status, drawer read-only     | ✅ Implementado (10-sep) |
+| `/panel/waba`         | Estado WABA + subnav                                             | ✅ MVP (12-sep)          |
+| `/panel/waba/mensajes`| Conversaciones + hilo (`wa_messages`)                            | ✅ MVP (12-sep)          |
+| `/panel/waba/haiku`   | Editor system prompt (`waba_config.haiku_system_prompt`)         | ✅ MVP (12-sep)          |
 
 ### Rutas pendientes (panel de gestión)
 
 | Ruta                       | Descripción                                                    | Prioridad                   | PR  |
 | -------------------------- | -------------------------------------------------------------- | --------------------------- | --- |
-| `/panel/waba`              | CMS WABA: historial de chats, editor system prompt, analytics  | P1 — solo viable en web     | —   |
+| `/panel/waba` historial/analytics / simulador | Analytics heatmap, simulador, portafolio (resto S6) | P2 post-MVP                 | —   |
 | `/panel/waba/campanas`     | Campañas masivas WA: stepper, segmentación, envío              | P2                          | —   |
 | `/panel/inventario`        | Gestión de inventario y stock                                  | P2                          | —   |
 | `/panel/configuracion/web` | CMS contenido landing (galería, team, etc.) — Fase 2           | P2                          | —   |
@@ -170,7 +173,7 @@ Cada tenant tiene **sus propias RRSS establecidas** (ej: Vanessa tiene `@zmlasha
 | `web_mode` inicial     | `'none'`                                                             | No necesita landing pública al day-1           |
 | `zmlashnails.com`      | Independiente                                                        | Su dominio propio, no lo toca GeemaStudio      |
 | Add-on landing         | Futuro                                                               | Si quieren, GeemaStudio ofrece servicio Modo A |
-| Rutas panel pendientes | `/panel/waba` | P1 — siguiente |
+| Rutas panel pendientes | Campañas WABA / CMS web / inventario | P2 |
 
 ---
 
@@ -182,9 +185,9 @@ Antes de declarar el panel web completo para Tenant #1, deben estar implementada
 - [x] `/panel/personal` — CRUD equipo: foto, color, comisiones, estado activo/inactivo (10-sep)
 - [x] `/panel/configuracion` — logo, nombre, moneda, terminología, presencia web (10-sep; `web_mode` UI mapeado a `web_enabled`)
 - [x] `/panel/agenda` — vista de grilla día + columnas por profesional (10-sep, read-only; CRUD sigue en mobile)
-- [ ] `/panel/waba` — historial chats, editor system prompt Haiku, analytics (A-1 a A-5 portados a web)
+- [x] `/panel/waba` — estado + mensajes + editor Haiku (12-sep MVP). Pendiente P2: analytics, campañas, simulador
 
-Prioridad de implementación recomendada: ~~`clientes`~~ → ~~`personal`~~ → ~~`configuracion`~~ → ~~`agenda`~~ → `waba`.
+Prioridad P1 cerrada: ~~`clientes` → `personal` → `configuracion` → `agenda` → `waba`~~.
 
 ---
 

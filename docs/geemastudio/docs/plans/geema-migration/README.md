@@ -1,8 +1,8 @@
 # Plan 05 — Migración GeemaStudio + suite WABA multi-vertical
 
-> **Fecha:** 2026-08-28 · **Alineado:** 2026-09-10  
+> **Fecha:** 2026-08-28 · **Alineado:** 2026-09-12  
 > **Autor:** Alberto Orta + análisis Cursor (agentes)  
-> **Estado:** S1–S3 ✅; **S4+ pendiente** (crons WABA). Shadow Geema ↔ ZM OK core; **S5-C** casi cerrado (P0/P1 #30/#31 ✅; quedan S5C-8/9 + smoke Finanzas). Panel web: servicios/horarios ✅; clientes → foco semana 10–14 sep. Ver `docs/geemastudio/ROADMAP.md` § Foco semana.
+> **Estado:** S1–S3 ✅; **S4+ pendiente** (crons WABA, repo ZM). **Panel web P1 ✅** (clientes→waba MVP 12-sep). S5-C: S5C-9 ✅; quedan S5C-8 + smoke Finanzas. S6 parcial (mensajes/haiku ✅; presets/campañas ❌). Ver `docs/geemastudio/ROADMAP.md`.
 > **BD compartida:** `udelxwwnyivknslueerr` (ZM Lash = tenant #1 `zm-lash-nails`)
 
 Documentación del análisis de convergencia entre **ZM Lash & Nails** (referencia en producción) y **GeemaStudio** (SaaS multi-tenant en `zm-tech`). Incluye bloqueadores para el 2.º tenant, estandarización WABA para barberías/peluquerías/spas, y roadmap por sprints.

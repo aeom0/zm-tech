@@ -10,7 +10,7 @@ Próximo foco: iterar proof/casos reales. Ver [docs/landing/ROADMAP.md](docs/lan
 
 ## GeemaStudio
 
-Objetivo actual: beta v1.5. **Semana 10-sep:** panel web P1 casi cerrado (`/panel/clientes`, `/personal`, `/configuracion`, `/agenda`). Queda `/panel/waba` (S6). S4 WABA crons = camino crítico 2.º tenant (repo ZM).
+Objetivo actual: beta v1.5. **Panel web P1 cerrado** (12-sep): clientes, personal, configuración, agenda, **WABA MVP** (`/panel/waba` + mensajes + Haiku). Pendientes: smoke Finanzas APK, S5C-8 ranking, P2 WABA (campañas/analytics), S4 crons (repo ZM), Push FCM.
 
 Ver [docs/geemastudio/ROADMAP.md](docs/geemastudio/ROADMAP.md).
 
