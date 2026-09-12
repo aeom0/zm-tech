@@ -1,0 +1,26 @@
+---
+description: Español LATAM neutro — sin voseo (UI, copy, respuestas del agente)
+alwaysApply: true
+---
+
+# Español neutro (sin voseo)
+
+## Regla
+
+- **UI, alerts, docs de producto y respuestas del agente**: español **neutro LATAM** (`tú` / formas impersonales / infinitivo).
+- **Prohibido el voseo** rioplatense (AR/UY): no usar *vos*, *tenés*, *querés*, *necesitás*, *tocá*, *poné*, *sacá*, *mirá*, *agregá*, *subí* (imperativo vos), etc.
+
+## Preferir
+
+| Evitar (voseo) | Usar |
+|----------------|------|
+| Tocá + | Toca + / Pulsa + |
+| Necesitás un slug | Necesitas un slug / Se necesita un slug |
+| Subí una imagen | Sube una imagen |
+| Poné un título | Pon un título / Escribe un título |
+| Si la dejás vacía | Si la dejas vacía |
+
+## Notas
+
+- Jerga cotidiana VE/LATAM está bien (*listo*, *chévere*) **sin** conjugación de voseo.
+- No mezclar voseo en copy aunque el tenant tenga `language` AR/CL hasta que exista un dialecto explícito de producto.

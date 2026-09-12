@@ -12,7 +12,8 @@ alwaysApply: false
 ## Idioma
 
 - **UI y mensajes**: Siempre en **español neutro LATAM** (`es-VE` como referencia).
-- **Jerga**: Natural y cotidiana; se puede usar jerga venezolana cuando encaje (ej. "guardar", "listo", "chévere").
+- **Sin voseo**: no usar formas de *vos* (*tenés*, *tocá*, *poné*, *necesitás*, etc.). Ver regla always-apply `espanol-neutro.mdc`.
+- **Jerga**: Natural y cotidiana; se puede usar jerga venezolana cuando encaje (ej. "guardar", "listo", "chévere") **sin** conjugación rioplatense.
 - **NO hardcodear locale de un país**: moneda, timezone y terminología vienen del tenant activo.
 
 ## Multi-tenancy de locale
