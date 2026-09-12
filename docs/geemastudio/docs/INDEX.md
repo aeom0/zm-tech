@@ -80,6 +80,8 @@ Migración Geema + suite WABA multi-vertical: estado actual, bloqueadores, estan
 | [plans/07-PLAN-look-preview-multi-servicio.md](plans/07-PLAN-look-preview-multi-servicio.md)           | Producto multi-servicio `look-preview` + Culqi |
 | [plans/07-anexo-prompts-vertex-v1.md](plans/07-anexo-prompts-vertex-v1.md)                             | 23 prompts VERTEX_READY                        |
 | [plans/08-PLAN-comisiones-pagos.md](plans/08-PLAN-comisiones-pagos.md)                                 | Comisiones por profesional + registro de pago (PR #37, cerrado) |
+| [plans/09-PLAN-landing-multitenant-fase1.md](plans/09-PLAN-landing-multitenant-fase1.md)               | Landing templates + mirror `zm-demo` (Fase 1) |
+| [plans/10-PLAN-mi-web-cms-fase2.md](plans/10-PLAN-mi-web-cms-fase2.md)                                 | CMS Mi Web mobile + pendientes Fase 3 / panel |
 
 Port a Geema: ticket **S6-LP** tras MVP ZM (Fase B Culqi).
 

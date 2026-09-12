@@ -178,8 +178,10 @@ Detalle: [`docs/plans/geema-migration/`](docs/plans/geema-migration/README.md).
 | Fase | Qué | Estado |
 |------|-----|--------|
 | 1 | Templates + secciones + mirror `zm-demo` | ✅ |
-| 2 | CMS mobile “Mi web” | ❌ |
+| 2 | CMS mobile “Mi Web” (OTA preview 12-sep) | ✅ parcial — ver [`docs/plans/10-PLAN-mi-web-cms-fase2.md`](docs/plans/10-PLAN-mi-web-cms-fase2.md) |
 | 3 | Dominio propio + contenido real ZM | ❌ |
+
+Pendiente post–Fase 2: `/panel/configuracion/web`, migrar Sanity → `zm-lash-nails`, `web_mode` UI, sync catálogo→`web_services`.
 
 ---
 

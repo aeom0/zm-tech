@@ -1,6 +1,6 @@
 # Landing multi-tenant de GeemaStudio — Fase 1: base reutilizable + mirror de prueba `zm-demo`
 
-> Estado: ✅ cerrado (Fase 1). Fase 2 (CMS propio en mobile) y Fase 3 (dominio propio + migración real de ZM) quedan pendientes, ver `docs/plans/floating-beaming-grove.md`-equivalente / plan original de la sesión (no versionado aparte; retomar desde este documento).
+> Estado: ✅ cerrado (Fase 1). Fase 2 (CMS mobile “Mi Web”) → ver [`10-PLAN-mi-web-cms-fase2.md`](10-PLAN-mi-web-cms-fase2.md) (parcial, 12-sep-2026). Fase 3 (dominio propio + migración real de ZM) sigue pendiente.
 
 ## Contexto
 
@@ -74,5 +74,5 @@ URLs de prueba: `/s/zm-demo-elegant`, `/s/zm-demo-warm`, `/s/zm-demo-modern`.
 
 ## Pendiente (fuera de este documento)
 
-- **Fase 2**: CMS propio en `geemastudio-mobile` (sección "Mi web") para editar todos los campos `web_*` de cualquier tenant — ver notas de la sesión original (no versionadas en un doc de plan aparte todavía).
-- **Fase 3**: dominio propio (`custom_domain` vía middleware Next.js) + migración del contenido real de ZM al modelo nuevo — a planear cuando Fase 1 y 2 estén validadas con al menos un tenant genérico (no solo el mirror `zm-demo`).
+- **Fase 2**: ✅ CMS mobile “Mi Web” — detalle y pendientes en [`10-PLAN-mi-web-cms-fase2.md`](10-PLAN-mi-web-cms-fase2.md).
+- **Fase 3**: dominio propio (`custom_domain` vía middleware Next.js) + migración del contenido real de ZM al modelo nuevo — pendiente.
