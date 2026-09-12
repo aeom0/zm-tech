@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useMemo, useState } from 'react'
 import {
   ChevronDown,
@@ -38,7 +38,10 @@ export function PanelShell({
 }) {
   const router = useRouter()
   const pathname = usePathname()
+  const searchParams = useSearchParams()
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  const serviciosTab = searchParams.get('tab')?.toLowerCase() ?? null
 
   const navItems = useMemo<NavItem[]>(
     () => [
@@ -79,19 +82,36 @@ export function PanelShell({
       },
       {
         label: 'Packs',
+        href: '/panel/servicios?tab=packs',
         icon: <Sparkles className="h-4 w-4" />,
-        disabled: true,
-        badge: 'Próximamente',
       },
       {
         label: 'Promos',
+        href: '/panel/servicios?tab=promos',
         icon: <LayoutGrid className="h-4 w-4" />,
-        disabled: true,
-        badge: 'Próximamente',
       },
     ],
     []
   )
+
+  function isNavActive(href: string): boolean {
+    if (href === '/panel/waba') return Boolean(pathname?.startsWith('/panel/waba'))
+    if (href === '/panel/servicios?tab=packs') {
+      return pathname === '/panel/servicios' && serviciosTab === 'packs'
+    }
+    if (href === '/panel/servicios?tab=promos') {
+      return pathname === '/panel/servicios' && serviciosTab === 'promos'
+    }
+    if (href === '/panel/servicios') {
+      // Activo en catálogo base (categorías/servicios), no cuando Packs/Promos
+      return (
+        pathname === '/panel/servicios' &&
+        serviciosTab !== 'packs' &&
+        serviciosTab !== 'promos'
+      )
+    }
+    return pathname === href
+  }
 
   const handleLogout = async () => {
     try {
@@ -128,11 +148,7 @@ export function PanelShell({
 
       <nav className="flex-1 space-y-1 p-3">
         {navItems.map((item) => {
-          const isActive = item.href
-            ? item.href === '/panel/waba'
-              ? Boolean(pathname?.startsWith('/panel/waba'))
-              : pathname === item.href
-            : false
+          const isActive = item.href ? isNavActive(item.href) : false
           const base =
             'w-full flex items-center justify-between gap-3 px-3 py-2 rounded-xl border transition-colors'
           const left = (
@@ -266,7 +282,11 @@ export function PanelShell({
                           ? 'Panel · WhatsApp'
                           : pathname?.startsWith('/panel/horarios')
                             ? 'Panel · Horario'
-                            : 'Panel · Servicios'}
+                            : pathname === '/panel/servicios' && serviciosTab === 'packs'
+                              ? 'Panel · Packs'
+                              : pathname === '/panel/servicios' && serviciosTab === 'promos'
+                                ? 'Panel · Promos'
+                                : 'Panel · Servicios'}
               </div>
               <div className="w-10" />
             </div>
