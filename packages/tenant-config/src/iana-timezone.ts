@@ -33,6 +33,12 @@ export function inicioDiaDelInstanteEnZona(instant: Date, timeZone: string): Dat
   return DateTime.fromJSDate(instant, { zone: z }).startOf('day').toJSDate()
 }
 
+/** Medianoche del día 1 del mes calendario actual, en zona. */
+export function inicioMesActualEnZonaIANA(timeZone: string): Date {
+  const z = zonaIANASegura(timeZone)
+  return DateTime.now().setZone(z).startOf('month').toJSDate()
+}
+
 export function diaLaboralKeyDesdeFechaEnZona(fecha: Date, timeZone: string): DiaLaboralKeyIana {
   const z = zonaIANASegura(timeZone)
   const w = DateTime.fromJSDate(fecha, { zone: z }).weekday
