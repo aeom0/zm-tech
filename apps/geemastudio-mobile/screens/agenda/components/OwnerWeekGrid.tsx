@@ -11,7 +11,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
-import { Spacing } from '@/constants/theme'
+import { Spacing, BorderRadius } from '@/constants/theme'
 import { mixHexColors, getContrastTextColor } from '@/lib/color-hsv'
 import {
   esMismoDiaCalendarioEnZona,
@@ -184,7 +184,7 @@ export function OwnerWeekGrid({
                   style={{
                     marginTop: 3,
                     backgroundColor: isToday ? theme.primary + '30' : theme.backgroundSecondary,
-                    borderRadius: 8,
+                    borderRadius: BorderRadius.xs,
                     paddingHorizontal: 5,
                     paddingVertical: 1,
                     minWidth: 18,
@@ -225,7 +225,7 @@ export function OwnerWeekGrid({
                 borderLeftColor: theme.border,
                 paddingHorizontal: 3,
                 paddingTop: Spacing.sm,
-                gap: 4,
+                gap: Spacing.xs,
                 backgroundColor: isToday ? theme.primary + '08' : 'transparent',
               }}
               onPress={() => onSelectDay(day)}

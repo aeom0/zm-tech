@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
-import { Modal, Pressable, StyleSheet, Text, View } from 'react-native'
+import { Modal, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
 import { Feather } from '@expo/vector-icons'
+
+import { Spacing, BorderRadius } from '@/constants/theme'
 
 interface NotificationItem {
   key: string
@@ -24,6 +26,8 @@ interface NotificationsBellProps {
 
 export function NotificationsBell({ items, theme }: NotificationsBellProps) {
   const [visible, setVisible] = useState(false)
+  const { width } = useWindowDimensions()
+  const panelWidth = Math.min(320, width - Spacing.lg * 2)
   const totalCount = items.reduce((sum, item) => sum + item.count, 0)
 
   return (
@@ -44,7 +48,7 @@ export function NotificationsBell({ items, theme }: NotificationsBellProps) {
 
       <Modal visible={visible} animationType="fade" transparent onRequestClose={() => setVisible(false)}>
         <Pressable style={styles.overlay} onPress={() => setVisible(false)}>
-          <Pressable style={[styles.panel, { backgroundColor: theme.card, borderColor: theme.border }]}>
+          <Pressable style={[styles.panel, { width: panelWidth, backgroundColor: theme.card, borderColor: theme.border }]}>
             <Text style={[styles.panelTitle, { color: theme.text }]}>Notificaciones</Text>
             {items.length === 0 ? (
               <Text style={[styles.emptyText, { color: theme.textSecondary }]}>
@@ -92,8 +96,8 @@ export function NotificationsBell({ items, theme }: NotificationsBellProps) {
 
 const styles = StyleSheet.create({
   trigger: {
-    marginRight: 16,
-    padding: 4,
+    marginRight: Spacing.lg,
+    padding: Spacing.xs,
   },
   badge: {
     position: 'absolute',
@@ -101,7 +105,7 @@ const styles = StyleSheet.create({
     right: -2,
     minWidth: 16,
     height: 16,
-    borderRadius: 8,
+    borderRadius: BorderRadius.full,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 3,
@@ -116,13 +120,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.3)',
     alignItems: 'flex-end',
     paddingTop: 90,
-    paddingRight: 12,
+    paddingRight: Spacing.md,
   },
   panel: {
-    width: 300,
-    borderRadius: 16,
+    borderRadius: BorderRadius.lg,
     borderWidth: StyleSheet.hairlineWidth,
-    padding: 16,
+    padding: Spacing.lg,
     shadowColor: '#000',
     shadowOpacity: 0.15,
     shadowRadius: 12,
@@ -132,20 +135,20 @@ const styles = StyleSheet.create({
   panelTitle: {
     fontSize: 16,
     fontWeight: '700',
-    marginBottom: 12,
+    marginBottom: Spacing.md,
   },
   emptyText: {
     fontSize: 13,
   },
   row: {
     flexDirection: 'row',
-    gap: 10,
-    marginBottom: 12,
+    gap: Spacing.sm,
+    marginBottom: Spacing.md,
   },
   rowIcon: {
     width: 32,
     height: 32,
-    borderRadius: 16,
+    borderRadius: BorderRadius.lg,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -164,10 +167,10 @@ const styles = StyleSheet.create({
   rowCount: {
     minWidth: 18,
     height: 18,
-    borderRadius: 9,
+    borderRadius: BorderRadius.full,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 4,
+    paddingHorizontal: Spacing.xs,
   },
   rowCountText: {
     color: '#FFFFFF',

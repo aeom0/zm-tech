@@ -173,7 +173,7 @@ export function OwnerDayGrid({
                 borderBottomWidth: StyleSheet.hairlineWidth,
                 borderBottomColor: theme.border,
                 justifyContent: 'flex-start',
-                paddingTop: 4,
+                paddingTop: Spacing.xs,
                 alignItems: 'center',
               }}
             >
@@ -343,7 +343,7 @@ export function OwnerDayGrid({
                               overflow: 'hidden',
                             }}
                           >
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.xs }}>
                               <View
                                 style={{
                                   width: 6,
@@ -366,7 +366,7 @@ export function OwnerDayGrid({
                               {serviceCount > 1 && (
                                 <View
                                   style={{
-                                    paddingHorizontal: 4,
+                                    paddingHorizontal: Spacing.xs,
                                     minWidth: 15,
                                     height: 15,
                                     borderRadius: 7.5,
@@ -410,7 +410,7 @@ export function OwnerDayGrid({
                                   name="camera"
                                   size={isNarrow ? 9 : 10}
                                   color={apt.reference_reviewed_at ? cardTextMutedColor : theme.primary}
-                                  style={{ marginLeft: 4 }}
+                                  style={{ marginLeft: Spacing.xs }}
                                 />
                               )}
                             </View>
