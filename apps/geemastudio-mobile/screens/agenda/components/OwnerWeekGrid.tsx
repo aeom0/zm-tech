@@ -7,6 +7,7 @@
  */
 import React, { useMemo } from 'react'
 import { View, ScrollView, Pressable, StyleSheet, RefreshControl } from 'react-native'
+import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
 import { BorderRadius, Spacing } from '@/constants/theme'
@@ -261,16 +262,26 @@ export function OwnerWeekGrid({
                       }}
                     >
                       {/* Hora */}
-                      <ThemedText
-                        numberOfLines={1}
-                        style={{
-                          fontSize: 9,
-                          fontWeight: '700',
-                          color: theme.textMuted,
-                        }}
-                      >
-                        {timeLabel}
-                      </ThemedText>
+                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <ThemedText
+                          numberOfLines={1}
+                          style={{
+                            fontSize: 9,
+                            fontWeight: '700',
+                            color: theme.textMuted,
+                          }}
+                        >
+                          {timeLabel}
+                        </ThemedText>
+                        {(apt.reference_image_paths?.length ?? 0) > 0 && (
+                          <Feather
+                            name="camera"
+                            size={9}
+                            color={apt.reference_reviewed_at ? theme.textMuted : theme.primary}
+                            style={{ marginLeft: 3 }}
+                          />
+                        )}
+                      </View>
                       {/* Servicio o cliente */}
                       <ThemedText
                         numberOfLines={1}
