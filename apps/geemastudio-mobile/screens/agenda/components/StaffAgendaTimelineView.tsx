@@ -16,6 +16,7 @@ import {
 import type { AgendaAppointment, AgendaService } from '../types'
 import {
   filterAppointmentsForOwnerDay,
+  getAppointmentServiceCount,
   getAppointmentServiceNames,
   sortAppointmentsByStart,
 } from '../agendaUtils'
@@ -96,6 +97,7 @@ function TimelineCard({
   tone,
   estadoLabel,
   serviceName,
+  serviceCount,
   theme,
   onPress,
 }: {
@@ -104,6 +106,7 @@ function TimelineCard({
   tone: 'ok' | 'wait' | 'muted'
   estadoLabel: string
   serviceName: string
+  serviceCount: number
   theme: StaffAgendaTimelineViewProps['theme']
   onPress: () => void
 }) {
@@ -140,23 +143,45 @@ function TimelineCard({
               >
                 {apt.client_name}
               </ThemedText>
-              <ThemedText
+              <View
                 style={{
-                  fontSize: 13,
-                  color: theme.textSecondary,
-                  marginTop: 4,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginTop: Spacing.xs,
+                  gap: Spacing.xs,
                 }}
-                numberOfLines={1}
               >
-                {serviceName || '—'}
-              </ThemedText>
+                <ThemedText
+                  style={{
+                    fontSize: 13,
+                    color: theme.textSecondary,
+                    flexShrink: 1,
+                  }}
+                  numberOfLines={1}
+                >
+                  {serviceName || '—'}
+                </ThemedText>
+                {serviceCount > 1 && (
+                  <View
+                    style={{
+                      paddingHorizontal: Spacing.xs,
+                      borderRadius: 6,
+                      backgroundColor: accentColor + '26',
+                    }}
+                  >
+                    <ThemedText style={{ fontSize: 10, fontWeight: '800', color: accentColor }}>
+                      ×{serviceCount}
+                    </ThemedText>
+                  </View>
+                )}
+              </View>
               {apt.duration > 0 && (
                 <View
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
-                    gap: 4,
-                    marginTop: 4,
+                    gap: Spacing.xs,
+                    marginTop: Spacing.xs,
                   }}
                 >
                   <Feather name="clock" size={11} color={theme.textMuted} />
@@ -166,7 +191,7 @@ function TimelineCard({
                 </View>
               )}
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.xs }}>
               {tone === 'ok' ? (
                 <Feather name="check-circle" size={16} color={theme.success} />
               ) : tone === 'wait' ? (
@@ -323,7 +348,7 @@ export function StaffAgendaTimelineView({
                       fontSize: 20,
                       fontWeight: '700',
                       color: theme.text,
-                      marginTop: 4,
+                      marginTop: Spacing.xs,
                     }}
                   >
                     {formatoHoraInstanteEnZona(
@@ -338,7 +363,7 @@ export function StaffAgendaTimelineView({
                     style={{
                       fontSize: 14,
                       color: theme.textSecondary,
-                      marginTop: 4,
+                      marginTop: Spacing.xs,
                     }}
                     numberOfLines={1}
                   >
@@ -356,7 +381,7 @@ export function StaffAgendaTimelineView({
                         style={{
                           flexDirection: 'row',
                           alignItems: 'center',
-                          gap: 4,
+                          gap: Spacing.xs,
                         }}
                       >
                         <Feather name="clock" size={12} color={theme.textMuted} />
@@ -370,7 +395,7 @@ export function StaffAgendaTimelineView({
                         style={{
                           flexDirection: 'row',
                           alignItems: 'center',
-                          gap: 4,
+                          gap: Spacing.xs,
                         }}
                       >
                         <Feather name="tag" size={12} color={theme.textMuted} />
@@ -419,6 +444,7 @@ export function StaffAgendaTimelineView({
             const accentColor =
               tone === 'ok' ? theme.success : tone === 'wait' ? theme.warning : theme.textMuted
             const serviceName = getAppointmentServiceNames(services, apt)
+            const serviceCount = getAppointmentServiceCount(apt)
 
             return (
               <View
@@ -469,6 +495,7 @@ export function StaffAgendaTimelineView({
                   tone={tone}
                   estadoLabel={estadoLabel}
                   serviceName={serviceName}
+                  serviceCount={serviceCount}
                   theme={theme}
                   onPress={() => onOpenDetail(apt)}
                 />
