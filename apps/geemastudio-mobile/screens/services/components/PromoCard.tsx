@@ -176,24 +176,24 @@ const styles = StyleSheet.create({
   card: {
     borderWidth: 1,
     borderRadius: 16,
-    marginBottom: 8,
+    marginBottom: Spacing.sm,
     overflow: 'hidden',
     ...Shadows.sm,
   },
   mainPress: {
-    padding: 16,
-    paddingBottom: 8,
+    padding: Spacing.lg,
+    paddingBottom: Spacing.sm,
   },
   topRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 12,
+    gap: Spacing.md,
   },
   badgePill: {
     alignSelf: 'flex-start',
     maxWidth: '100%',
     paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingVertical: Spacing.xs,
     borderRadius: BorderRadius.full,
     borderWidth: 1,
     marginBottom: 10,
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: '600',
-    marginBottom: 4,
+    marginBottom: Spacing.xs,
   },
   expires: {
     fontSize: 12,
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
   promoPrice: {
     fontSize: 20,
     fontWeight: '700',
-    marginBottom: 4,
+    marginBottom: Spacing.xs,
   },
   statusPill: {
     fontSize: 11,
@@ -231,7 +231,7 @@ const styles = StyleSheet.create({
   expiryRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: Spacing.xs,
     marginTop: Spacing.xs,
   },
   expiryText: {
@@ -242,11 +242,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    gap: 8,
-    marginTop: 4,
-    paddingHorizontal: 16,
+    gap: Spacing.sm,
+    marginTop: Spacing.xs,
+    paddingHorizontal: Spacing.lg,
     paddingTop: 10,
-    paddingBottom: 12,
+    paddingBottom: Spacing.md,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: 'rgba(128,128,128,0.25)',
   },

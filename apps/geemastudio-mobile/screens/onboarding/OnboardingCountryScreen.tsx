@@ -11,7 +11,7 @@ import {
   OnboardingProgressDots,
   GradientCTAButton,
 } from '@/screens/onboarding/components'
-import { Gradients, Onboarding, Spacing } from '@/constants/theme'
+import { BorderRadius, Gradients, Onboarding, Spacing } from '@/constants/theme'
 import { useTenant } from '@/contexts/TenantContext'
 import {
   countriesForPicker,
@@ -229,12 +229,12 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   featuredBorder: {
-    borderRadius: 20,
+    borderRadius: BorderRadius.card,
     padding: 2,
     marginBottom: Spacing.lg,
   },
   featuredInner: {
-    borderRadius: 18,
+    borderRadius: BorderRadius.md,
     paddingVertical: Spacing.xl,
     paddingHorizontal: Spacing.lg,
     alignItems: 'center',
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
   featuredLabel: {
     fontSize: 22,
     fontWeight: '700',
-    marginBottom: 4,
+    marginBottom: Spacing.xs,
   },
   featuredSub: {
     fontSize: 13,

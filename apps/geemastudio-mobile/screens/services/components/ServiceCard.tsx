@@ -5,7 +5,7 @@ import { Feather, MaterialCommunityIcons } from '@expo/vector-icons'
 import { ThemedText } from '@/components/ThemedText'
 import type { TenantConfig } from '@zmtech/tenant-config'
 import { formatCurrency } from '@/utils/format'
-import { Shadows } from '@/constants/theme'
+import { BorderRadius, Shadows, Spacing } from '@/constants/theme'
 import { getDefaultServiceIcon } from '@/constants/serviceIcons'
 
 import type { Service } from '../types'
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   card: {
     borderWidth: 1,
     borderRadius: 16,
-    marginBottom: 8,
+    marginBottom: Spacing.sm,
     overflow: 'hidden',
     ...Shadows.sm,
   },
@@ -156,8 +156,8 @@ const styles = StyleSheet.create({
     ...Shadows.lg,
   },
   mainPress: {
-    padding: 16,
-    paddingBottom: 8,
+    padding: Spacing.lg,
+    paddingBottom: Spacing.sm,
   },
   row: {
     flexDirection: 'row',
@@ -167,25 +167,25 @@ const styles = StyleSheet.create({
   iconCircle: {
     width: 40,
     height: 40,
-    borderRadius: 12,
+    borderRadius: BorderRadius.sm,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 12,
+    marginRight: Spacing.md,
   },
   info: {
     flex: 1,
-    marginRight: 12,
+    marginRight: Spacing.md,
   },
   name: {
     fontSize: 16,
     fontWeight: '600',
-    marginBottom: 4,
+    marginBottom: Spacing.xs,
   },
   meta: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: Spacing.xs,
     flexWrap: 'wrap',
   },
   metaText: {
@@ -194,25 +194,25 @@ const styles = StyleSheet.create({
   inactiveBadge: {
     fontSize: 11,
     fontWeight: '600',
-    marginLeft: 8,
+    marginLeft: Spacing.sm,
   },
   price: {
     fontSize: 20,
     fontWeight: '700',
   },
   dragHandle: {
-    marginLeft: 8,
-    paddingVertical: 4,
+    marginLeft: Spacing.sm,
+    paddingVertical: Spacing.xs,
   },
   toggleRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    gap: 8,
-    marginTop: 4,
-    paddingHorizontal: 16,
+    gap: Spacing.sm,
+    marginTop: Spacing.xs,
+    paddingHorizontal: Spacing.lg,
     paddingTop: 10,
-    paddingBottom: 12,
+    paddingBottom: Spacing.md,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: 'rgba(128,128,128,0.25)',
   },

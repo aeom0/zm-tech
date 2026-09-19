@@ -15,7 +15,7 @@ import {
   COLORES_ACENTO,
   COLORES_PRIMARIOS,
 } from '@/screens/onboarding/constants/colores-onboarding'
-import { Colors, Gradients, Spacing } from '@/constants/theme'
+import { BorderRadius, Colors, Gradients, Spacing } from '@/constants/theme'
 import { useTenant } from '@/contexts/TenantContext'
 
 interface OnboardingBasicInfoScreenProps {
@@ -271,37 +271,37 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.5,
     color: 'rgba(255,255,255,0.5)',
-    marginBottom: 8,
+    marginBottom: Spacing.sm,
   },
   input: {
     backgroundColor: 'rgba(255,255,255,0.06)',
     borderWidth: 0.5,
     borderColor: 'rgba(255,255,255,0.15)',
-    borderRadius: 12,
-    paddingHorizontal: 16,
+    borderRadius: BorderRadius.sm,
+    paddingHorizontal: Spacing.lg,
     paddingVertical: 14,
     fontSize: 15,
     color: '#FFFFFF',
   },
   inputError: { borderColor: Colors.light.error },
-  errorText: { color: Colors.light.error, fontSize: 12, marginTop: 4 },
+  errorText: { color: Colors.light.error, fontSize: 12, marginTop: Spacing.xs },
   paleta: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
+    gap: Spacing.md,
   },
   /** 6 sugeridos + custom en una sola fila; aspectRatio 1 = cuadrados (ancho vía flex). */
   paletaPrimaria: {
     flexDirection: 'row',
     flexWrap: 'nowrap',
-    gap: 4,
+    gap: Spacing.xs,
     alignItems: 'center',
   },
   swatchOuterPrimaria: {
     flex: 1,
     minWidth: 0,
     aspectRatio: 1,
-    borderRadius: 8,
+    borderRadius: BorderRadius.xs,
     overflow: 'hidden',
     borderWidth: 2,
     borderColor: 'transparent',
@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
   swatchOuter: {
     width: 48,
     height: 48,
-    borderRadius: 8,
+    borderRadius: BorderRadius.xs,
     padding: 0,
     alignItems: 'center',
     justifyContent: 'center',
@@ -378,8 +378,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
     paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 20,
+    paddingVertical: Spacing.xs,
+    borderRadius: BorderRadius.card,
   },
   acentoDot: {
     width: 8,

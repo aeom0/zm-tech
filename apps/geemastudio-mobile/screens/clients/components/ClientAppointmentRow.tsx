@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   },
   right: {
     alignItems: 'flex-end',
-    gap: 4,
+    gap: Spacing.xs,
   },
   service: {
     fontSize: 14,
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 3,
-    gap: 4,
+    gap: Spacing.xs,
   },
   empDot: {
     width: 8,

@@ -12,7 +12,7 @@ import {
 } from '@/screens/onboarding/components'
 import { CustomColorPickerModal } from '@/screens/onboarding/components/CustomColorPickerModal'
 import { COLORES_PRIMARIOS } from '@/screens/onboarding/constants/colores-onboarding'
-import { Gradients, Spacing } from '@/constants/theme'
+import { BorderRadius, Gradients, Spacing } from '@/constants/theme'
 import { useTenant } from '@/contexts/TenantContext'
 import { useTheme } from '@/hooks/useTheme'
 
@@ -196,14 +196,14 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.5,
     color: 'rgba(255,255,255,0.5)',
-    marginBottom: 8,
+    marginBottom: Spacing.sm,
   },
   input: {
     backgroundColor: 'rgba(255,255,255,0.06)',
     borderWidth: 0.5,
     borderColor: 'rgba(255,255,255,0.15)',
-    borderRadius: 12,
-    paddingHorizontal: 16,
+    borderRadius: BorderRadius.sm,
+    paddingHorizontal: Spacing.lg,
     paddingVertical: 14,
     fontSize: 15,
     color: '#FFFFFF',
@@ -211,8 +211,8 @@ const styles = StyleSheet.create({
   hint: {
     fontSize: 12,
     textAlign: 'center',
-    marginTop: 8,
-    paddingHorizontal: 16,
+    marginTop: Spacing.sm,
+    paddingHorizontal: Spacing.lg,
   },
   empleadosList: {
     marginTop: Spacing.md,
@@ -239,14 +239,14 @@ const styles = StyleSheet.create({
   paletaFila: {
     flexDirection: 'row',
     flexWrap: 'nowrap',
-    gap: 4,
+    gap: Spacing.xs,
     alignItems: 'center',
   },
   swatchOuterFila: {
     flex: 1,
     minWidth: 0,
     aspectRatio: 1,
-    borderRadius: 8,
+    borderRadius: BorderRadius.xs,
     overflow: 'hidden',
     borderWidth: 2,
     borderColor: 'transparent',

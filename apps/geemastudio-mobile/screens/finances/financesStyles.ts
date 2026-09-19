@@ -205,7 +205,7 @@ export const financesStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing.sm,
-    marginBottom: 4,
+    marginBottom: Spacing.xs,
     flexWrap: 'wrap',
   },
   methodBadge: {
@@ -303,7 +303,7 @@ export const financesStyles = StyleSheet.create({
   closeButton: {
     width: 36,
     height: 36,
-    borderRadius: 18,
+    borderRadius: BorderRadius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -472,7 +472,7 @@ export const financesStyles = StyleSheet.create({
     fontWeight: '600',
   },
   submitButton: {
-    height: 52,
+    height: Spacing.buttonHeight,
     borderRadius: BorderRadius.full,
     flexDirection: 'row',
     alignItems: 'center',

@@ -32,8 +32,8 @@ export const agendaStyles = StyleSheet.create({
     flexGrow: 0,
     gap: 6,
     paddingHorizontal: Spacing.md,
-    paddingTop: 4,
-    paddingBottom: 4,
+    paddingTop: Spacing.xs,
+    paddingBottom: Spacing.xs,
   },
   statusChip: {
     paddingHorizontal: 10,
@@ -82,7 +82,7 @@ export const agendaStyles = StyleSheet.create({
     justifyContent: 'center',
     borderLeftWidth: 3,
     paddingVertical: Spacing.xs,
-    gap: 4,
+    gap: Spacing.xs,
   },
   empDot: {
     width: 8,
@@ -95,14 +95,14 @@ export const agendaStyles = StyleSheet.create({
   },
   empSlot: {
     borderLeftWidth: 0.5,
-    paddingHorizontal: 4,
-    paddingVertical: 4,
+    paddingHorizontal: Spacing.xs,
+    paddingVertical: Spacing.xs,
   },
   aptBlock: {
     borderLeftWidth: 3,
     borderRadius: 6,
     padding: 6,
-    marginBottom: 4,
+    marginBottom: Spacing.xs,
   },
   aptClient: {
     fontSize: 13,
@@ -119,7 +119,7 @@ export const agendaStyles = StyleSheet.create({
   timeColumn: {
     alignItems: 'center',
     justifyContent: 'flex-start',
-    paddingTop: 4,
+    paddingTop: Spacing.xs,
   },
   dayHeader: {
     flex: 1,
@@ -154,7 +154,7 @@ export const agendaStyles = StyleSheet.create({
     minHeight: 56,
   },
   appointmentChip: {
-    paddingHorizontal: 4,
+    paddingHorizontal: Spacing.xs,
     paddingVertical: 2,
     borderRadius: 4,
     borderLeftWidth: 3,
@@ -255,7 +255,7 @@ export const agendaStyles = StyleSheet.create({
   closeButton: {
     width: 36,
     height: 36,
-    borderRadius: 18,
+    borderRadius: BorderRadius.md,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -415,7 +415,7 @@ export const agendaStyles = StyleSheet.create({
   },
 
   submitButton: {
-    height: 52,
+    height: Spacing.buttonHeight,
     borderRadius: BorderRadius.full,
     flexDirection: 'row',
     alignItems: 'center',

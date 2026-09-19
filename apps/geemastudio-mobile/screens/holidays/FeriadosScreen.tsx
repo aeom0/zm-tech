@@ -429,8 +429,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
     paddingHorizontal: Spacing.lg,
-    height: 48,
-    borderRadius: 24,
+    height: Spacing.inputHeight,
+    borderRadius: BorderRadius.lg,
   },
   fabText: { color: '#FFF', fontWeight: '700', fontSize: 15 },
   modalOverlay: {
