@@ -1,6 +1,7 @@
 import React, { useMemo, useRef } from 'react'
 import { View, ScrollView, Pressable, StyleSheet, RefreshControl } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
+import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
 import { BorderRadius, Spacing } from '@/constants/theme'
@@ -341,16 +342,25 @@ export function OwnerDayGrid({
                               {apt.client_name}
                             </ThemedText>
                           )}
-                          <ThemedText
-                            numberOfLines={1}
-                            style={{
-                              fontSize: isNarrow ? 9 : 10,
-                              marginTop: 2,
-                              color: theme.textMuted,
-                            }}
-                          >
-                            {formatoHoraInstanteEnZona(start, timeZone, language, timeFormat)}
-                          </ThemedText>
+                          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2 }}>
+                            <ThemedText
+                              numberOfLines={1}
+                              style={{
+                                fontSize: isNarrow ? 9 : 10,
+                                color: theme.textMuted,
+                              }}
+                            >
+                              {formatoHoraInstanteEnZona(start, timeZone, language, timeFormat)}
+                            </ThemedText>
+                            {(apt.reference_image_paths?.length ?? 0) > 0 && (
+                              <Feather
+                                name="camera"
+                                size={isNarrow ? 9 : 10}
+                                color={apt.reference_reviewed_at ? theme.textMuted : theme.primary}
+                                style={{ marginLeft: 4 }}
+                              />
+                            )}
+                          </View>
                         </View>
                       </Pressable>
                     )
