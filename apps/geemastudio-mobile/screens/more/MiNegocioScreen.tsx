@@ -29,6 +29,11 @@ export default function MiNegocioScreen() {
       showsVerticalScrollIndicator={false}
     >
       <MenuRow
+        icon="briefcase"
+        label="Datos del negocio"
+        onPress={() => navigation.navigate('Configuracion')}
+      />
+      <MenuRow
         icon="clock"
         label="Horario de trabajo"
         onPress={() => navigation.navigate('HorariosTrabajo')}
@@ -39,19 +44,14 @@ export default function MiNegocioScreen() {
         onPress={() => navigation.navigate('Feriados')}
       />
       <MenuRow
-        icon="briefcase"
-        label="Datos del negocio"
-        onPress={() => navigation.navigate('Configuracion')}
+        icon="package"
+        label="Inventario"
+        onPress={() => navigation.navigate('Inventario')}
       />
       <MenuRow
         icon="globe"
         label="Mi Web"
         onPress={() => navigation.navigate('MiWeb')}
-      />
-      <MenuRow
-        icon="package"
-        label="Inventario"
-        onPress={() => navigation.navigate('Inventario')}
       />
     </ScrollView>
   )
