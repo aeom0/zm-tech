@@ -1019,6 +1019,7 @@ export default function AgendaScreen() {
         language={config.locale.language}
         timeFormat={timeFormatReloj}
         currencySymbol={currencySymbol}
+        businessType={config.businessType}
       />
     </View>
   )

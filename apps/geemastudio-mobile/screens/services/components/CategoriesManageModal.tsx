@@ -15,22 +15,10 @@ import * as Haptics from 'expo-haptics'
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { BorderRadius, Spacing, Colors } from '@/constants/theme'
+import { getDefaultServiceIcon, getServiceIconOptions } from '@/constants/serviceIcons'
+import type { TenantConfig } from '@zmtech/tenant-config'
 
 import type { ServiceCategory } from '../types'
-
-/** Feather icons cubriendo las categorías típicas de un salón (uñas, pestañas, depilación, faciales, etc). */
-const ICON_OPTIONS = [
-  'scissors',
-  'feather',
-  'eye',
-  'smile',
-  'droplet',
-  'sun',
-  'wind',
-  'heart',
-  'star',
-  'zap',
-] as const
 
 interface CategoriesManageModalProps {
   visible: boolean
@@ -40,6 +28,7 @@ interface CategoriesManageModalProps {
   onRename: (id: string, name: string) => void
   onUpdateIcon: (id: string, icon: string) => void
   supportsIcons: boolean
+  businessType: TenantConfig['businessType']
   onDelete: (id: string) => void
   onMoveUp: (id: string) => void
   onMoveDown: (id: string) => void
@@ -57,6 +46,7 @@ export function CategoriesManageModal({
   onRename,
   onUpdateIcon,
   supportsIcons,
+  businessType,
   onDelete,
   onMoveUp,
   onMoveDown,
@@ -68,6 +58,8 @@ export function CategoriesManageModal({
   const { theme } = useTheme()
   const [newName, setNewName] = useState('')
   const [drafts, setDrafts] = useState<Record<string, string>>({})
+  const defaultIcon = getDefaultServiceIcon(businessType)
+  const iconOptions = getServiceIconOptions(businessType)
   const [pickerFor, setPickerFor] = useState<string | null>(null)
 
   useEffect(() => {
@@ -158,7 +150,7 @@ export function CategoriesManageModal({
                       onPress={() => setPickerFor((prev) => (prev === cat.id ? null : cat.id))}
                     >
                       <Feather
-                        name={(cat.icon as any) || 'scissors'}
+                        name={(cat.icon as any) || defaultIcon}
                         size={18}
                         color={theme.primary}
                       />
@@ -228,8 +220,8 @@ export function CategoriesManageModal({
                     style={styles.iconPicker}
                     contentContainerStyle={styles.iconPickerContent}
                   >
-                    {ICON_OPTIONS.map((icon) => {
-                      const selected = (cat.icon ?? 'scissors') === icon
+                    {iconOptions.map((icon) => {
+                      const selected = (cat.icon ?? defaultIcon) === icon
                       return (
                         <Pressable
                           key={icon}

@@ -4,6 +4,7 @@ import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
 import { Spacing, BorderRadius } from '@/constants/theme'
+import { getDefaultServiceIcon } from '@/constants/serviceIcons'
 
 import type { TenantConfig, TimeFormatPreference } from '@zmtech/tenant-config'
 import { instanteCitaDesdeTexto, zonaIANASegura } from '@zmtech/tenant-config'
@@ -38,6 +39,7 @@ interface AppointmentPreviewModalProps {
   language: TenantConfig['locale']['language']
   timeFormat: TimeFormatPreference
   currencySymbol: string
+  businessType: TenantConfig['businessType']
 }
 
 function descripcionEstado(status: string): { label: string; tone: 'ok' | 'wait' | 'muted' } {
@@ -61,6 +63,7 @@ export function AppointmentPreviewModal({
   language,
   timeFormat,
   currencySymbol,
+  businessType,
 }: AppointmentPreviewModalProps) {
   if (!appointment) return null
 
@@ -129,7 +132,7 @@ export function AppointmentPreviewModal({
               gap: Spacing.sm,
             }}
           >
-            <Feather name="scissors" size={16} color={theme.textMuted} />
+            <Feather name={getDefaultServiceIcon(businessType)} size={16} color={theme.textMuted} />
             <ThemedText style={{ fontSize: 15, color: theme.text, flex: 1 }}>
               {serviceName || '—'}
             </ThemedText>
@@ -159,7 +162,7 @@ export function AppointmentPreviewModal({
             <View
               style={{
                 paddingHorizontal: Spacing.sm,
-                paddingVertical: 4,
+                paddingVertical: Spacing.xs,
                 borderRadius: BorderRadius.full,
                 backgroundColor: accentColor + '20',
               }}

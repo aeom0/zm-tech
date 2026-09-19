@@ -6,6 +6,7 @@ import { ThemedText } from '@/components/ThemedText'
 import type { TenantConfig } from '@zmtech/tenant-config'
 import { formatCurrency } from '@/utils/format'
 import { Shadows } from '@/constants/theme'
+import { getDefaultServiceIcon } from '@/constants/serviceIcons'
 
 import type { Service } from '../types'
 
@@ -71,7 +72,11 @@ function ServiceCardImpl({
               { backgroundColor: accentColor + '22', borderColor: accentColor + '55' },
             ]}
           >
-            <Feather name={(categoryIcon as any) || 'scissors'} size={18} color={accentColor} />
+            <Feather
+              name={(categoryIcon as any) || getDefaultServiceIcon(config.businessType)}
+              size={18}
+              color={accentColor}
+            />
           </View>
           <View style={styles.info}>
             <ThemedText style={styles.name}>{service.name}</ThemedText>

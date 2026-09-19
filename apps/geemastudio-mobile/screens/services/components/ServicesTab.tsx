@@ -23,6 +23,7 @@ import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { useAuth } from '@/contexts/AuthContext'
 import { Spacing, BorderRadius, Shadows } from '@/constants/theme'
+import { getDefaultServiceIcon } from '@/constants/serviceIcons'
 
 import { useServicesData } from '../hooks/useServicesData'
 import type { ServicePayload } from '../hooks/useServicesData'
@@ -342,7 +343,7 @@ export function ServicesTab() {
         ) : services.length === 0 ? (
           <View style={styles.empty}>
             <View style={styles.emptyIcon}>
-              <Feather name="scissors" size={28} color={theme.textMuted} />
+              <Feather name={getDefaultServiceIcon(config.businessType)} size={28} color={theme.textMuted} />
             </View>
             <ThemedText style={[styles.emptyTitle, { color: theme.textSecondary }]}>
               No hay servicios
@@ -434,6 +435,7 @@ export function ServicesTab() {
         onRename={(id, name) => updateCategoryMutation.mutate({ id, name })}
         onUpdateIcon={(id, icon) => updateCategoryIconMutation.mutate({ id, icon })}
         supportsIcons={supportsCategoryIcons}
+        businessType={config.businessType}
         onDelete={(id) => deleteCategoryMutation.mutate(id)}
         onMoveUp={(id) => moveCategory(id, -1)}
         onMoveDown={(id) => moveCategory(id, 1)}
