@@ -8,6 +8,7 @@ interface NotificationItem {
   title: string
   description: string
   count: number
+  onPress?: () => void
 }
 
 interface NotificationsBellProps {
@@ -51,7 +52,15 @@ export function NotificationsBell({ items, theme }: NotificationsBellProps) {
               </Text>
             ) : (
               items.map((item) => (
-                <View key={item.key} style={styles.row}>
+                <Pressable
+                  key={item.key}
+                  style={styles.row}
+                  disabled={!item.onPress}
+                  onPress={() => {
+                    setVisible(false)
+                    item.onPress?.()
+                  }}
+                >
                   <View style={[styles.rowIcon, { backgroundColor: `${theme.primary}1A` }]}>
                     <Feather name={item.icon} size={18} color={theme.primary} />
                   </View>
@@ -68,7 +77,10 @@ export function NotificationsBell({ items, theme }: NotificationsBellProps) {
                       {item.description}
                     </Text>
                   </View>
-                </View>
+                  {item.onPress ? (
+                    <Feather name="chevron-right" size={16} color={theme.textSecondary} />
+                  ) : null}
+                </Pressable>
               ))
             )}
           </Pressable>

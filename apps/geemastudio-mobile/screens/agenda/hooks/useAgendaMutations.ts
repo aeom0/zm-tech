@@ -433,7 +433,7 @@ export function useAgendaMutations(
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['appointments'] })
-      queryClient.invalidateQueries({ queryKey: ['unreviewed_references_count'] })
+      queryClient.invalidateQueries({ queryKey: ['unreviewed_references'] })
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
     },
     onError: (error: Error) => {
@@ -454,7 +454,7 @@ export function useAgendaMutations(
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['appointments'] })
-      queryClient.invalidateQueries({ queryKey: ['unreviewed_references_count'] })
+      queryClient.invalidateQueries({ queryKey: ['unreviewed_references'] })
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
     },
     onError: (error: Error) => {

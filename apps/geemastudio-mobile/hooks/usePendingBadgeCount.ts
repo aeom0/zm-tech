@@ -1,6 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
+import type { AgendaAppointment } from '@/screens/agenda/types'
+
+export type UnreviewedReferenceAppointment = Pick<
+  AgendaAppointment,
+  'id' | 'client_name' | 'date' | 'reference_image_paths'
+>
 
 /**
  * Devuelve los conteos de badges para el tab Más y sus items.
@@ -48,21 +54,23 @@ export function usePendingBadgeCount() {
 
   // Citas con fotos de referencia sin revisar (reference_image_paths no vacío
   // y reference_reviewed_at aún null)
-  const { data: unreviewedReferencesCount = 0 } = useQuery<number>({
-    queryKey: ['unreviewed_references_count'],
+  const { data: unreviewedReferences = [] } = useQuery<UnreviewedReferenceAppointment[]>({
+    queryKey: ['unreviewed_references'],
     queryFn: async () => {
-      const { count, error } = await supabase
+      const { data, error } = await supabase
         .from('appointments')
-        .select('id', { count: 'exact', head: true })
+        .select('id, client_name, date, reference_image_paths')
         .not('reference_image_paths', 'is', null)
         .not('reference_image_paths', 'eq', '{}')
         .is('reference_reviewed_at', null)
+        .order('date', { ascending: true })
       if (error) throw new Error(error.message)
-      return count ?? 0
+      return data ?? []
     },
     refetchInterval: 60_000,
     enabled: isAdmin,
   })
+  const unreviewedReferencesCount = unreviewedReferences.length
 
   // Badge total del tab = solo pagos pendientes
   // (unassignedCount es informacional en el item, no suma al tab)
@@ -71,6 +79,7 @@ export function usePendingBadgeCount() {
   return {
     paymentValidationCount,
     unassignedCount,
+    unreviewedReferences,
     unreviewedReferencesCount,
     tabBadgeCount,
   }
