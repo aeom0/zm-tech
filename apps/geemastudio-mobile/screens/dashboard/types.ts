@@ -14,6 +14,7 @@ export interface DashboardAppointment {
   status: string
   employee_id: string
   service_id: string
+  service_ids?: string[] | null
 }
 
 export interface DashboardEmployeeRow {

@@ -32,7 +32,7 @@ interface DashboardUpcomingCardProps {
   cardAnimatedStyle?: DashboardAnimatedStyle
   getEmployeeColor: (employeeId: string) => string
   getEmployeeName: (employeeId: string) => string
-  getServiceName: (serviceId: string) => string
+  getServiceNames: (appointment: DashboardAppointment) => string
   getDayLabel: (apptDate: Date) => string
   onOpenAppointment: (appointment: DashboardAppointment) => void
   onViewAllAgenda: () => void
@@ -50,7 +50,7 @@ export function DashboardUpcomingCard({
   cardAnimatedStyle,
   getEmployeeColor,
   getEmployeeName,
-  getServiceName,
+  getServiceNames,
   getDayLabel,
   onOpenAppointment,
   onViewAllAgenda,
@@ -137,7 +137,7 @@ export function DashboardUpcomingCard({
                 isTablet={isTablet}
                 getEmployeeColor={getEmployeeColor}
                 getEmployeeName={getEmployeeName}
-                getServiceName={getServiceName}
+                getServiceNames={getServiceNames}
                 onPress={onOpenAppointment}
               />
             </React.Fragment>

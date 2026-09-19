@@ -15,7 +15,7 @@ import {
   getAppointmentsForSlot,
   getEmployeeColor,
   getEmployeeFirstName,
-  getServiceName,
+  getAppointmentServiceNames,
 } from '../agendaUtils'
 
 interface AgendaCalendarGridProps {
@@ -166,7 +166,7 @@ export function AgendaCalendarGrid({
                           style={[styles.aptService, { color: theme.textSecondary }]}
                           numberOfLines={1}
                         >
-                          {getServiceName(services, apt.service_id)}
+                          {getAppointmentServiceNames(services, apt)}
                         </ThemedText>
                         {apt.client_phone ? (
                           <ThemedText

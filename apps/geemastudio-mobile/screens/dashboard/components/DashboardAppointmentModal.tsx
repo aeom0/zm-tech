@@ -87,7 +87,12 @@ export function DashboardAppointmentModal({
                   {appointment.client_name}
                 </ThemedText>
                 <ThemedText style={[styles.modalService, { color: theme.textSecondary }]}>
-                  {getServiceName(appointment.service_id)}
+                  {(appointment.service_ids && appointment.service_ids.length > 0
+                    ? appointment.service_ids
+                    : [appointment.service_id]
+                  )
+                    .map(getServiceName)
+                    .join(' + ')}
                 </ThemedText>
                 <View style={styles.modalMeta}>
                   <View style={[styles.modalMetaChip, { backgroundColor: `${theme.primary}12` }]}>

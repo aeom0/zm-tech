@@ -9,7 +9,7 @@ import type { TenantConfig, TimeFormatPreference } from '@zmtech/tenant-config'
 import { instanteCitaDesdeTexto, zonaIANASegura } from '@zmtech/tenant-config'
 
 import type { AgendaAppointment, AgendaEmployee, AgendaService } from '../types'
-import { getEmployeeColor, getEmployeeFirstName, getServiceName } from '../agendaUtils'
+import { getEmployeeColor, getEmployeeFirstName, getAppointmentServiceNames } from '../agendaUtils'
 import { agendaStyles as styles } from '../agendaStyles'
 
 type Theme = {
@@ -66,7 +66,7 @@ export function AppointmentPreviewModal({
 
   const empColor = getEmployeeColor(employees, appointment.employee_id, theme.primary)
   const empName = getEmployeeFirstName(employees, appointment.employee_id) || 'Sin asignar'
-  const serviceName = getServiceName(services, appointment.service_id)
+  const serviceName = getAppointmentServiceNames(services, appointment)
   const { label: estadoLabel, tone } = descripcionEstado(appointment.status)
   const accentColor =
     tone === 'ok' ? theme.success : tone === 'wait' ? theme.warning : theme.textMuted
@@ -130,7 +130,7 @@ export function AppointmentPreviewModal({
             }}
           >
             <Feather name="scissors" size={16} color={theme.textMuted} />
-            <ThemedText style={{ fontSize: 15, color: theme.text, flex: 1 }} numberOfLines={1}>
+            <ThemedText style={{ fontSize: 15, color: theme.text, flex: 1 }}>
               {serviceName || '—'}
             </ThemedText>
           </View>
