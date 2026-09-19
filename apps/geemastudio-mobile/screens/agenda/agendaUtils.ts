@@ -75,6 +75,22 @@ export function getServiceName(services: AgendaService[], serviceId: string): st
   return service?.name ?? ''
 }
 
+/** Nombre(s) de servicio de una cita — concatena todos si es multi-servicio. */
+export function getAppointmentServiceNames(
+  services: AgendaService[],
+  apt: Pick<AgendaAppointment, 'service_id' | 'service_ids'>
+): string {
+  const ids = apt.service_ids && apt.service_ids.length > 0 ? apt.service_ids : [apt.service_id]
+  return ids.map((id) => getServiceName(services, id)).join(' + ')
+}
+
+/** Cantidad de servicios de una cita (1 si no es multi-servicio). */
+export function getAppointmentServiceCount(
+  apt: Pick<AgendaAppointment, 'service_id' | 'service_ids'>
+): number {
+  return apt.service_ids && apt.service_ids.length > 0 ? apt.service_ids.length : 1
+}
+
 /** Citas del día en zona, opcionalmente filtradas por profesionales y estado. */
 export function filterAppointmentsForOwnerDay(
   appointments: AgendaAppointment[],

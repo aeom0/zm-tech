@@ -223,19 +223,41 @@ export const dashboardStyles = StyleSheet.create({
 
   // Top services (Servicios más realizados)
   topServiceRank: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
   },
   topServiceRankText: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '700',
   },
   topServiceCount: {
     fontSize: 12,
     fontWeight: '500',
+  },
+  cardHeaderStack: {
+    flexDirection: 'column',
+  },
+  periodToggleRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: Spacing.sm,
+  },
+  periodToggle: {
+    flexDirection: 'row',
+    borderRadius: BorderRadius.full,
+    padding: 2,
+  },
+  periodToggleOption: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: BorderRadius.full,
+  },
+  periodToggleText: {
+    fontSize: 11,
+    fontWeight: '700',
   },
 
   // View more

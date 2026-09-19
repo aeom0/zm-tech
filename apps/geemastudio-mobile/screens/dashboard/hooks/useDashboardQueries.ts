@@ -12,7 +12,9 @@ import type {
   DashboardTopService,
 } from '../types'
 
-const TOP_SERVICES_LIMIT = 4
+const TOP_SERVICES_LIMIT = 5
+
+export type TopServicesPeriod = 'month' | 'all'
 
 async function fetchDashboardStats(startOfDay: string, endOfDay: string): Promise<DashboardStats> {
   const [paymentsRes, completedRes, scheduledRes, inventoryRes] = await Promise.all([
@@ -64,7 +66,9 @@ async function fetchDashboardStats(startOfDay: string, endOfDay: string): Promis
 export function useDashboardQueries(
   startOfDay: string,
   statsEndOfDay: string,
-  appointmentsEndOfDay: string
+  appointmentsEndOfDay: string,
+  topServicesPeriod: TopServicesPeriod,
+  monthStartOfDay: string
 ) {
   const {
     data: stats,
@@ -86,7 +90,7 @@ export function useDashboardQueries(
     queryFn: async () => {
       const { data, error } = await supabase
         .from('appointments')
-        .select('id, client_name, date, duration, price, status, employee_id, service_id')
+        .select('id, client_name, date, duration, price, status, employee_id, service_id, service_ids')
         .gte('date', startOfDay)
         .lte('date', appointmentsEndOfDay)
         .order('date', { ascending: true })
@@ -114,25 +118,34 @@ export function useDashboardQueries(
     },
   })
 
-  const { data: completedServiceIds = [] } = useQuery<string[]>({
-    queryKey: ['dashboard_completed_service_ids'],
+  const { data: completedServices = [] } = useQuery<
+    { service_id: string | null; service_ids: string[] | null }[]
+  >({
+    queryKey: ['dashboard_completed_services', topServicesPeriod, monthStartOfDay],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from('appointments')
-        .select('service_id')
+        .select('service_id, service_ids')
         .eq('status', 'completed')
-        .not('service_id', 'is', null)
+      if (topServicesPeriod === 'month') {
+        query = query.gte('date', monthStartOfDay)
+      }
+      const { data, error } = await query
       if (error) {
         throw new Error(error.message)
       }
-      return (data ?? []).map((r) => r.service_id as string)
+      return data ?? []
     },
   })
 
   const topServices = useMemo<DashboardTopService[]>(() => {
     const counts = new Map<string, number>()
-    for (const id of completedServiceIds) {
-      counts.set(id, (counts.get(id) ?? 0) + 1)
+    for (const apt of completedServices) {
+      const ids = apt.service_ids && apt.service_ids.length > 0 ? apt.service_ids : [apt.service_id]
+      for (const id of ids) {
+        if (!id) continue
+        counts.set(id, (counts.get(id) ?? 0) + 1)
+      }
     }
     return Array.from(counts.entries())
       .map(([id, count]) => ({
@@ -142,7 +155,7 @@ export function useDashboardQueries(
       }))
       .sort((a, b) => b.count - a.count)
       .slice(0, TOP_SERVICES_LIMIT)
-  }, [completedServiceIds, services])
+  }, [completedServices, services])
 
   const appointmentIds = appointments.map((a) => a.id)
 

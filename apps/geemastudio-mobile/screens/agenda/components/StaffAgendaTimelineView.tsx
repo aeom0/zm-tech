@@ -16,7 +16,7 @@ import {
 import type { AgendaAppointment, AgendaService } from '../types'
 import {
   filterAppointmentsForOwnerDay,
-  getServiceName,
+  getAppointmentServiceNames,
   sortAppointmentsByStart,
 } from '../agendaUtils'
 import { useAgendaClockTick } from '../hooks/useAgendaClockTick'
@@ -227,7 +227,7 @@ export function StaffAgendaTimelineView({
       if (endMs >= nowMs) return apt
     }
     return null
-  }, [myDayApts, now])
+  }, [myDayApts, now, timeZone])
 
   if (!staffEmployeeId) {
     return (
@@ -342,7 +342,7 @@ export function StaffAgendaTimelineView({
                     }}
                     numberOfLines={1}
                   >
-                    {getServiceName(services, siguiente.service_id) || '—'}
+                    {getAppointmentServiceNames(services, siguiente) || '—'}
                   </ThemedText>
                   <View
                     style={{
@@ -418,7 +418,7 @@ export function StaffAgendaTimelineView({
             const { label: estadoLabel, tone } = descripcionEstado(apt.status)
             const accentColor =
               tone === 'ok' ? theme.success : tone === 'wait' ? theme.warning : theme.textMuted
-            const serviceName = getServiceName(services, apt.service_id)
+            const serviceName = getAppointmentServiceNames(services, apt)
 
             return (
               <View

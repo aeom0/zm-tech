@@ -1,10 +1,11 @@
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo } from 'react'
 import { View, ScrollView, Pressable, StyleSheet, RefreshControl } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
-import { BorderRadius, Spacing } from '@/constants/theme'
+import { Spacing } from '@/constants/theme'
+import { mixHexColors, getContrastTextColor } from '@/lib/color-hsv'
 import {
   AGENDA_BORDE_VISUAL_MIN,
   esCeldaAgendaEnHorarioLaboral,
@@ -18,11 +19,17 @@ import {
 } from '@zmtech/tenant-config'
 
 import type { AgendaAppointment, AgendaEmployee, AgendaService, AgendaStatusFilter } from '../types'
-import { computeOverlapLayout, filterAppointmentsForOwnerDay, getServiceName } from '../agendaUtils'
+import {
+  computeOverlapLayout,
+  filterAppointmentsForOwnerDay,
+  getAppointmentServiceNames,
+  getAppointmentServiceCount,
+} from '../agendaUtils'
 import { useAgendaClockTick } from '../hooks/useAgendaClockTick'
 import { useSalonHolidays } from '@/hooks/useSalonHolidays'
 import { agendaStyles as sharedStyles } from '../agendaStyles'
 
+const APPOINTMENT_CARD_RADIUS = 10
 const HOUR_ROW_HEIGHT = 64
 const PX_PER_MINUTE = HOUR_ROW_HEIGHT / 60
 const EDGE_BUFFER_HEIGHT = AGENDA_BORDE_VISUAL_MIN * PX_PER_MINUTE
@@ -274,7 +281,8 @@ export function OwnerDayGrid({
                     const height = Math.max(28, Math.min(bottom, totalHeight) - top)
                     if (top >= totalHeight) return null
 
-                    const serviceName = getServiceName(services, apt.service_id)
+                    const serviceName = getAppointmentServiceNames(services, apt)
+                    const serviceCount = getAppointmentServiceCount(apt)
 
                     // Carril dentro del cluster de citas solapadas de este profesional —
                     // si hay >1 carril, la cita ocupa solo su fracción del ancho de columna
@@ -292,6 +300,10 @@ export function OwnerDayGrid({
                         : availableWidth
                     const left = H_MARGIN + lane * (laneWidth + LANE_GAP)
                     const isNarrow = laneCount > 1
+                    const cardTextColor = getContrastTextColor(
+                      mixHexColors(emp.color, theme.card, 0.5)
+                    )
+                    const cardTextMutedColor = cardTextColor + 'B0'
 
                     return (
                       <Pressable
@@ -304,63 +316,105 @@ export function OwnerDayGrid({
                           top,
                           height,
                           zIndex: 4,
-                          borderRadius: BorderRadius.md,
-                          overflow: 'hidden',
                         }}
                       >
                         <View
                           style={{
                             flex: 1,
-                            padding: isNarrow ? Spacing.xs : Spacing.sm,
-                            borderRadius: BorderRadius.md,
-                            borderWidth: 1,
-                            borderLeftWidth: 4,
-                            borderColor: emp.color + '44',
-                            borderLeftColor: emp.color,
-                            backgroundColor: emp.color + '18',
+                            borderRadius: APPOINTMENT_CARD_RADIUS,
+                            shadowColor: emp.color,
+                            shadowOpacity: 0.3,
+                            shadowRadius: 6,
+                            shadowOffset: { width: 0, height: 3 },
+                            elevation: 3,
                           }}
                         >
-                          <ThemedText
-                            numberOfLines={isNarrow ? 1 : 2}
+                          <LinearGradient
+                            colors={[
+                              mixHexColors(emp.color, theme.card, 0.28),
+                              mixHexColors(emp.color, theme.card, 0.72),
+                            ]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
                             style={{
-                              fontSize: isNarrow ? 11 : 12,
-                              fontWeight: '700',
-                              color: theme.text,
+                              flex: 1,
+                              padding: isNarrow ? Spacing.xs : Spacing.sm,
+                              borderRadius: APPOINTMENT_CARD_RADIUS,
+                              overflow: 'hidden',
                             }}
                           >
-                            {serviceName || apt.client_name}
-                          </ThemedText>
-                          {!!serviceName && (
-                            <ThemedText
-                              numberOfLines={1}
-                              style={{
-                                fontSize: isNarrow ? 10 : 11,
-                                marginTop: 2,
-                                color: theme.textSecondary,
-                              }}
-                            >
-                              {apt.client_name}
-                            </ThemedText>
-                          )}
-                          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2 }}>
-                            <ThemedText
-                              numberOfLines={1}
-                              style={{
-                                fontSize: isNarrow ? 9 : 10,
-                                color: theme.textMuted,
-                              }}
-                            >
-                              {formatoHoraInstanteEnZona(start, timeZone, language, timeFormat)}
-                            </ThemedText>
-                            {(apt.reference_image_paths?.length ?? 0) > 0 && (
-                              <Feather
-                                name="camera"
-                                size={isNarrow ? 9 : 10}
-                                color={apt.reference_reviewed_at ? theme.textMuted : theme.primary}
-                                style={{ marginLeft: 4 }}
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                              <View
+                                style={{
+                                  width: 6,
+                                  height: 6,
+                                  borderRadius: 3,
+                                  backgroundColor: emp.color,
+                                }}
                               />
+                              <ThemedText
+                                numberOfLines={isNarrow ? 1 : 2}
+                                style={{
+                                  flex: 1,
+                                  fontSize: isNarrow ? 11 : 12,
+                                  fontWeight: '700',
+                                  color: cardTextColor,
+                                }}
+                              >
+                                {serviceName || apt.client_name}
+                              </ThemedText>
+                              {serviceCount > 1 && (
+                                <View
+                                  style={{
+                                    paddingHorizontal: 4,
+                                    minWidth: 15,
+                                    height: 15,
+                                    borderRadius: 7.5,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    backgroundColor: cardTextColor + '26',
+                                  }}
+                                >
+                                  <ThemedText
+                                    style={{ fontSize: 9, fontWeight: '800', color: cardTextColor }}
+                                  >
+                                    ×{serviceCount}
+                                  </ThemedText>
+                                </View>
+                              )}
+                            </View>
+                            {!!serviceName && (
+                              <ThemedText
+                                numberOfLines={1}
+                                style={{
+                                  fontSize: isNarrow ? 10 : 11,
+                                  marginTop: 2,
+                                  color: cardTextMutedColor,
+                                }}
+                              >
+                                {apt.client_name}
+                              </ThemedText>
                             )}
-                          </View>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2 }}>
+                              <ThemedText
+                                numberOfLines={1}
+                                style={{
+                                  fontSize: isNarrow ? 9 : 10,
+                                  color: cardTextMutedColor,
+                                }}
+                              >
+                                {formatoHoraInstanteEnZona(start, timeZone, language, timeFormat)}
+                              </ThemedText>
+                              {(apt.reference_image_paths?.length ?? 0) > 0 && (
+                                <Feather
+                                  name="camera"
+                                  size={isNarrow ? 9 : 10}
+                                  color={apt.reference_reviewed_at ? cardTextMutedColor : theme.primary}
+                                  style={{ marginLeft: 4 }}
+                                />
+                              )}
+                            </View>
+                          </LinearGradient>
                         </View>
                       </Pressable>
                     )

@@ -19,6 +19,7 @@ import type { MainTabParamList } from '@/navigation/MainTabNavigator'
 import {
   formatAppointmentWallclock,
   inicioDiaHoyEnZonaIANA,
+  inicioMesActualEnZonaIANA,
   sumarDiasEnZonaIANA,
   zonaIANASegura,
 } from '@zmtech/tenant-config'
@@ -40,7 +41,7 @@ import {
   parseAppointmentDate,
 } from './dashboard/dashboardUtils'
 import { useDashboardMutations } from './dashboard/hooks/useDashboardMutations'
-import { useDashboardQueries } from './dashboard/hooks/useDashboardQueries'
+import { useDashboardQueries, type TopServicesPeriod } from './dashboard/hooks/useDashboardQueries'
 import { useStaggeredAnimation } from './dashboard/hooks/useStaggeredAnimation'
 import type { DashboardAppointment } from './dashboard/types'
 
@@ -59,21 +60,25 @@ export default function DashboardScreen() {
   const currencySymbol = config.locale.currency.symbol
   const tenantTz = zonaIANASegura(config.locale.timezone)
 
-  const { startOfDay, statsEndOfDay, appointmentsEndOfDay, today, tomorrow } = useMemo(() => {
-    const start = inicioDiaHoyEnZonaIANA(tenantTz)
-    const nextDay = sumarDiasEnZonaIANA(start, 1, tenantTz)
-    const rangeEnd = sumarDiasEnZonaIANA(start, UPCOMING_DAYS, tenantTz)
-    return {
-      startOfDay: formatAppointmentWallclock(start, tenantTz),
-      statsEndOfDay: formatAppointmentWallclock(new Date(nextDay.getTime() - 1000), tenantTz),
-      appointmentsEndOfDay: formatAppointmentWallclock(
-        new Date(rangeEnd.getTime() - 1000),
-        tenantTz
-      ),
-      today: start,
-      tomorrow: nextDay,
-    }
-  }, [tenantTz])
+  const { startOfDay, statsEndOfDay, appointmentsEndOfDay, monthStartOfDay, today, tomorrow } =
+    useMemo(() => {
+      const start = inicioDiaHoyEnZonaIANA(tenantTz)
+      const nextDay = sumarDiasEnZonaIANA(start, 1, tenantTz)
+      const rangeEnd = sumarDiasEnZonaIANA(start, UPCOMING_DAYS, tenantTz)
+      return {
+        startOfDay: formatAppointmentWallclock(start, tenantTz),
+        statsEndOfDay: formatAppointmentWallclock(new Date(nextDay.getTime() - 1000), tenantTz),
+        appointmentsEndOfDay: formatAppointmentWallclock(
+          new Date(rangeEnd.getTime() - 1000),
+          tenantTz
+        ),
+        monthStartOfDay: formatAppointmentWallclock(inicioMesActualEnZonaIANA(tenantTz), tenantTz),
+        today: start,
+        tomorrow: nextDay,
+      }
+    }, [tenantTz])
+
+  const [topServicesPeriod, setTopServicesPeriod] = useState<TopServicesPeriod>('all')
 
   const {
     stats,
@@ -88,7 +93,13 @@ export default function DashboardScreen() {
     topServices,
     hasError,
     refetchAll,
-  } = useDashboardQueries(startOfDay, statsEndOfDay, appointmentsEndOfDay)
+  } = useDashboardQueries(
+    startOfDay,
+    statsEndOfDay,
+    appointmentsEndOfDay,
+    topServicesPeriod,
+    monthStartOfDay
+  )
 
   const { updateAppointmentMutation, createPaymentMutation } = useDashboardMutations()
 
@@ -99,6 +110,14 @@ export default function DashboardScreen() {
   const getServiceName = (serviceId: string) => {
     const service = services.find((s) => s.id === serviceId)
     return service?.name ?? 'Servicio'
+  }
+
+  const getServiceNames = (appointment: DashboardAppointment) => {
+    const ids =
+      appointment.service_ids && appointment.service_ids.length > 0
+        ? appointment.service_ids
+        : [appointment.service_id]
+    return ids.map(getServiceName).join(' + ')
   }
 
   const getDayLabel = (apptDate: Date) =>
@@ -272,21 +291,23 @@ export default function DashboardScreen() {
       />
     ) : null
 
-  const topServicesCard =
-    topServices.length > 0 ? (
-      <DashboardTopServicesCard
-        topServices={topServices}
-        theme={{
-          backgroundDefault: theme.backgroundDefault,
-          backgroundSecondary: theme.backgroundSecondary,
-          border: theme.border,
-          text: theme.text,
-          textSecondary: theme.textSecondary,
-          textMuted: theme.textMuted,
-        }}
-        animatedStyle={animatedItems[7]}
-      />
-    ) : null
+  const topServicesCard = (
+    <DashboardTopServicesCard
+      topServices={topServices}
+      period={topServicesPeriod}
+      onChangePeriod={setTopServicesPeriod}
+      theme={{
+        backgroundDefault: theme.backgroundDefault,
+        backgroundSecondary: theme.backgroundSecondary,
+        border: theme.border,
+        text: theme.text,
+        textSecondary: theme.textSecondary,
+        textMuted: theme.textMuted,
+        primary: theme.primary,
+      }}
+      animatedStyle={animatedItems[7]}
+    />
+  )
 
   const quickLinksCard = isAdmin ? (
     <DashboardQuickLinksCard
@@ -361,7 +382,7 @@ export default function DashboardScreen() {
               cardAnimatedStyle={animatedItems[0]}
               getEmployeeColor={getEmployeeColor}
               getEmployeeName={getEmployeeName}
-              getServiceName={getServiceName}
+              getServiceNames={getServiceNames}
               getDayLabel={getDayLabel}
               onOpenAppointment={(appt) => {
                 setSelectedAppointment(appt)
@@ -405,7 +426,7 @@ export default function DashboardScreen() {
             cardAnimatedStyle={animatedItems[0]}
             getEmployeeColor={getEmployeeColor}
             getEmployeeName={getEmployeeName}
-            getServiceName={getServiceName}
+            getServiceNames={getServiceNames}
             getDayLabel={getDayLabel}
             onOpenAppointment={(appt) => {
               setSelectedAppointment(appt)

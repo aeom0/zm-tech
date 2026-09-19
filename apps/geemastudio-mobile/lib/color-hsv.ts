@@ -26,6 +26,31 @@ export function rgbToHex(r: number, g: number, b: number): string {
   return `#${clamp(r)}${clamp(g)}${clamp(b)}`.toUpperCase()
 }
 
+/** Mezcla `hexA` y `hexB` — `t=0` devuelve `hexA` puro, `t=1` devuelve `hexB` puro. */
+export function mixHexColors(hexA: string, hexB: string, t: number): string {
+  const a = hexToRgb(hexA) ?? { r: 0, g: 0, b: 0 }
+  const b = hexToRgb(hexB) ?? { r: 0, g: 0, b: 0 }
+  return rgbToHex(a.r + (b.r - a.r) * t, a.g + (b.g - a.g) * t, a.b + (b.b - a.b) * t)
+}
+
+function relativeLuminance(hex: string): number {
+  const { r, g, b } = hexToRgb(hex) ?? { r: 0, g: 0, b: 0 }
+  const lin = (c: number) => {
+    const n = c / 255
+    return n <= 0.03928 ? n / 12.92 : Math.pow((n + 0.055) / 1.055, 2.4)
+  }
+  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b)
+}
+
+/** Color de texto (`light`/`dark`) con mejor contraste sobre `bgHex`. */
+export function getContrastTextColor(
+  bgHex: string,
+  light: string = '#F5F3F7',
+  dark: string = '#1A1620'
+): string {
+  return relativeLuminance(bgHex) > 0.45 ? dark : light
+}
+
 export function rgbToHsv(r: number, g: number, b: number): { h: number; s: number; v: number } {
   const rn = r / 255
   const gn = g / 255

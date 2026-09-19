@@ -7,10 +7,12 @@
  */
 import React, { useMemo } from 'react'
 import { View, ScrollView, Pressable, StyleSheet, RefreshControl } from 'react-native'
+import { LinearGradient } from 'expo-linear-gradient'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
-import { BorderRadius, Spacing } from '@/constants/theme'
+import { Spacing } from '@/constants/theme'
+import { mixHexColors, getContrastTextColor } from '@/lib/color-hsv'
 import {
   esMismoDiaCalendarioEnZona,
   esHoyEnZonaIANA,
@@ -21,7 +23,11 @@ import {
 } from '@zmtech/tenant-config'
 
 import type { AgendaAppointment, AgendaEmployee, AgendaService, AgendaStatusFilter } from '../types'
-import { getServiceName, matchesStatusFilter } from '../agendaUtils'
+import {
+  getAppointmentServiceNames,
+  getAppointmentServiceCount,
+  matchesStatusFilter,
+} from '../agendaUtils'
 
 interface OwnerWeekGridProps {
   tabBarHeight: number
@@ -48,6 +54,8 @@ interface OwnerWeekGridProps {
   onSelectDay: (date: Date) => void
   onOpenDetail: (apt: AgendaAppointment) => void
 }
+
+const WEEK_CHIP_RADIUS = 6
 
 function fmtWeekday(date: Date, language: string, timeZone: string): string {
   return new Intl.DateTimeFormat(language, {
@@ -237,7 +245,10 @@ export function OwnerWeekGrid({
               ) : (
                 dayApts.map((apt) => {
                   const empColor = employeeColorMap[apt.employee_id] ?? theme.primary
-                  const svcName = getServiceName(services, apt.service_id)
+                  const svcName = getAppointmentServiceNames(services, apt)
+                  const svcCount = getAppointmentServiceCount(apt)
+                  const chipTextColor = getContrastTextColor(mixHexColors(empColor, theme.card, 0.5))
+                  const chipTextMutedColor = chipTextColor + 'B0'
                   const timeLabel = formatoHoraInstanteEnZona(
                     instanteCitaDesdeTexto(apt.date, timeZone),
                     timeZone,
@@ -253,60 +264,99 @@ export function OwnerWeekGrid({
                         onOpenDetail(apt)
                       }}
                       style={{
-                        borderRadius: BorderRadius.sm,
-                        borderLeftWidth: 3,
-                        borderLeftColor: empColor,
-                        backgroundColor: empColor + '18',
-                        paddingHorizontal: 4,
-                        paddingVertical: 3,
+                        borderRadius: WEEK_CHIP_RADIUS,
+                        shadowColor: empColor,
+                        shadowOpacity: 0.28,
+                        shadowRadius: 4,
+                        shadowOffset: { width: 0, height: 1 },
+                        elevation: 2,
                       }}
                     >
-                      {/* Hora */}
-                      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <ThemedText
-                          numberOfLines={1}
-                          style={{
-                            fontSize: 9,
-                            fontWeight: '700',
-                            color: theme.textMuted,
-                          }}
-                        >
-                          {timeLabel}
-                        </ThemedText>
-                        {(apt.reference_image_paths?.length ?? 0) > 0 && (
-                          <Feather
-                            name="camera"
-                            size={9}
-                            color={apt.reference_reviewed_at ? theme.textMuted : theme.primary}
-                            style={{ marginLeft: 3 }}
-                          />
-                        )}
-                      </View>
-                      {/* Servicio o cliente */}
-                      <ThemedText
-                        numberOfLines={1}
+                      <LinearGradient
+                        colors={[
+                          mixHexColors(empColor, theme.card, 0.28),
+                          mixHexColors(empColor, theme.card, 0.72),
+                        ]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
                         style={{
-                          fontSize: 10,
-                          fontWeight: '600',
-                          color: theme.text,
-                          marginTop: 1,
+                          borderRadius: WEEK_CHIP_RADIUS,
+                          paddingHorizontal: 4,
+                          paddingVertical: 3,
                         }}
                       >
-                        {svcName || apt.client_name}
-                      </ThemedText>
-                      {/* Cliente (solo si hay nombre de servicio) */}
-                      {!!svcName && (
+                        {/* Hora */}
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                          <View
+                            style={{
+                              width: 5,
+                              height: 5,
+                              borderRadius: 2.5,
+                              backgroundColor: empColor,
+                              marginRight: 3,
+                            }}
+                          />
+                          <ThemedText
+                            numberOfLines={1}
+                            style={{
+                              fontSize: 9,
+                              fontWeight: '700',
+                              color: chipTextMutedColor,
+                            }}
+                          >
+                            {timeLabel}
+                          </ThemedText>
+                          {svcCount > 1 && (
+                            <View
+                              style={{
+                                marginLeft: 3,
+                                paddingHorizontal: 3,
+                                borderRadius: 6,
+                                backgroundColor: chipTextColor + '26',
+                              }}
+                            >
+                              <ThemedText
+                                style={{ fontSize: 8, fontWeight: '800', color: chipTextColor }}
+                              >
+                                ×{svcCount}
+                              </ThemedText>
+                            </View>
+                          )}
+                          {(apt.reference_image_paths?.length ?? 0) > 0 && (
+                            <Feather
+                              name="camera"
+                              size={9}
+                              color={apt.reference_reviewed_at ? chipTextMutedColor : theme.primary}
+                              style={{ marginLeft: 3 }}
+                            />
+                          )}
+                        </View>
+                        {/* Servicio o cliente */}
                         <ThemedText
                           numberOfLines={1}
                           style={{
-                            fontSize: 9,
-                            color: theme.textSecondary,
+                            fontSize: 10,
+                            fontWeight: '600',
+                            color: chipTextColor,
                             marginTop: 1,
                           }}
                         >
-                          {apt.client_name}
+                          {svcName || apt.client_name}
                         </ThemedText>
-                      )}
+                        {/* Cliente (solo si hay nombre de servicio) */}
+                        {!!svcName && (
+                          <ThemedText
+                            numberOfLines={1}
+                            style={{
+                              fontSize: 9,
+                              color: chipTextMutedColor,
+                              marginTop: 1,
+                            }}
+                          >
+                            {apt.client_name}
+                          </ThemedText>
+                        )}
+                      </LinearGradient>
                     </Pressable>
                   )
                 })
