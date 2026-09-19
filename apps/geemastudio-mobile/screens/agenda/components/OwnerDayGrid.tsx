@@ -44,6 +44,7 @@ interface OwnerDayGridProps {
   onRefresh: () => void
   theme: {
     primary: string
+    accent: string
     text: string
     textSecondary: string
     textMuted: string
@@ -379,8 +380,8 @@ export function OwnerDayGrid({
                     width: 8,
                     height: 8,
                     borderRadius: 4,
-                    backgroundColor: '#FF3B30',
-                    shadowColor: '#FF3B30',
+                    backgroundColor: theme.accent,
+                    shadowColor: theme.accent,
                     shadowOpacity: 0.6,
                     shadowRadius: 4,
                     shadowOffset: { width: 0, height: 0 },
@@ -388,7 +389,7 @@ export function OwnerDayGrid({
                   }}
                 />
                 <LinearGradient
-                  colors={['#FF3B30', '#FF3B3099', '#FF3B3020']}
+                  colors={[theme.accent, `${theme.accent}99`, `${theme.accent}20`]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 0 }}
                   style={{

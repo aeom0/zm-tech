@@ -767,6 +767,7 @@ export default function AgendaScreen() {
               onRefresh={refetch}
               theme={{
                 primary: theme.primary,
+                accent: theme.accent,
                 text: theme.text,
                 textSecondary: theme.textSecondary,
                 textMuted: theme.textMuted,
