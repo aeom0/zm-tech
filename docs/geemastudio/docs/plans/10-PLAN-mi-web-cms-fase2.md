@@ -35,13 +35,28 @@ Pantallas: hub, Presencia (activar / template / slug / custom_domain), Contenido
 - Resolución de fila: `id = auth.uid()` o bridge `profiles.tenant_id` → `tenant_slug`.
 - OTA preview publicada (update group `e6daa359-ba48-445a-9ff6-2ae13a1b7934`, runtime `exposdk:56.0.0`).
 
+## Entregado (19-sep-2026)
+
+### Web — `/panel/configuracion/web`
+
+CMS equivalente al de mobile, en el panel web:
+
+| Pieza | Path |
+|-------|------|
+| Servicio | `apps/geemastudio-web/src/hooks/web-config/webSettingsService.ts` |
+| Hooks | `apps/geemastudio-web/src/hooks/web-config/useWebSettings.ts` |
+| UI | `apps/geemastudio-web/src/app/panel/configuracion/web/page.tsx` |
+
+- Una sola página con secciones: Contenido principal (hero tagline, about, marquee, videos), Contacto y redes (+ mapa embed), Estadísticas, Galería, Equipo, Promos, Reseñas, Servicios web — cada colección con editor de filas (agregar/quitar) y upload de imagen a `web-assets` (mismo bucket/convención de paths que mobile: `{tenant_slug}/{gallery|team|promos|reviews}/{timestamp}.{ext}`).
+- Activar/desactivar landing, template, slug y dominio propio siguen en `/panel/configuracion` (sección "Presencia web"), que ahora enlaza a `/panel/configuracion/web` para el contenido.
+- No agrega link en `PanelShell` (nav principal) — se accede desde el link en Configuración; evaluar si amerita entrada propia en el nav cuando haya más uso.
+
 ## Pendiente
 
 | Ítem | Notas | Prioridad |
 |------|--------|-----------|
 | **Fase 3 — dominio propio** | Middleware Next.js para `custom_domain`; hoy es informativo | P2 |
 | **Migrar contenido real ZM** | Sanity (`zmlashnails.com`) → fila `zm-lash-nails` `web_*` (hoy vacía / `web_enabled=false`) | P2 — solo con OK de Vanessa/Alberto |
-| **`/panel/configuracion/web`** | CMS equivalente en panel web (galería, team, etc.) | P2 |
 | **Sync catálogo → `web_services`** | Hoy lista curada aparte; opcional import desde `services`/`packs` | backlog |
 | **`web_mode` explícito** | Panel/mobile siguen mapeando presencia vía `web_enabled` (+ slug/custom_domain); alinear UI a enum `own_domain` / `geema_hosted` / `none` | P2 |
 | Smoke E2E con tenant QA | Activar slug de prueba distinto de demos; no romper fila prod ZM sin plan de contenido | ops |

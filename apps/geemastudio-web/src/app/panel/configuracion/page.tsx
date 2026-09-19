@@ -31,7 +31,7 @@ function Section({
   children,
 }: {
   title: string
-  subtitle?: string
+  subtitle?: React.ReactNode
   children: React.ReactNode
 }) {
   return (
@@ -417,7 +417,15 @@ export default function PanelConfiguracionPage() {
 
       <Section
         title="Presencia web"
-        subtitle="Controla landing pública. Contenido CMS (galería, team…) viene en Fase 2."
+        subtitle={
+          <>
+            Controla landing pública. Contenido (galería, equipo, promos, reseñas…) se edita en{' '}
+            <Link href="/panel/configuracion/web" className="text-[#40E0D0] hover:underline">
+              Mi Web
+            </Link>
+            .
+          </>
+        }
       >
         <div className="flex flex-wrap gap-2">
           {(
