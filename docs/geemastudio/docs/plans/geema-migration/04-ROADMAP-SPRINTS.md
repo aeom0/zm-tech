@@ -15,8 +15,8 @@
 | **S4** | Crons + RPCs tenant-aware | 11 Edge Functions parametrizadas | S3 |
 | **S5** | Suite L3 — reglas externalizadas | `TenantWabaRules` + seed ZM | S3 |
 | **S5-B** | Branding tenant mobile | Logo Storage + `TenantLogo` + `createTheme` completo | S2 |
-| **S5-C** | Paridad mobile ZM (shadow) | Packs/promos + Lima + chicas ✅; S5C-9 ✅; S5C-8 pendiente | S2 |
-| **S6** | Suite L4 + panel Geema | Presets + `/panel/waba/*` — **MVP mensajes/haiku ✅ 12-sep** | S5 |
+| **S5-C** | Paridad mobile ZM (shadow) | Packs/promos + Lima + chicas ✅; resto P1 | S2 |
+| **S6** | Suite L4 + panel Geema | Presets vertical + `/panel/waba/*` port | S5 |
 | **S7+** | Go-live 2.º tenant | Onboarding → WABA propio + QA | S4, S6 |
 
 ---
@@ -51,8 +51,7 @@ Cerrar bloqueadores de schema que impiden dos negocios en la misma BD.
 | **Quién re-loguea** | **Vanessa**, **Stephani**, **Karelis** (y cualquier profile `dev`/`owner`/`staff` con app instalada) |
 | **Post-cambio** | Alberto confirma a Vanessa que las tres pudieron entrar; si falla alguien → rollback plan documentado en PR de migración |
 
-### Estado (sep 2026)
-
+### DoD
 - [x] Migraciones aplicadas en prod con version/name alineados (regla `.cursor/rules/supabase-migrations.mdc`) — S1-1…S1-4
 - [x] QA: dos filas `clients` mismo teléfono, distinto `tenant_id` — INSERT OK
 - [x] QA: dos filas `waba_config` misma key, distinto `tenant_id` — OK
@@ -62,8 +61,6 @@ Cerrar bloqueadores de schema que impiden dos negocios en la misma BD.
 - [x] Auth Hook S1-5 aplicado prod 29-ago (ventana feriado)
 - [ ] Mensaje enviado a Vanessa con ventana acordada; Stephani y Karelis avisadas por Vanessa o Alberto
 - [ ] Re-login verificado en mobile para Vanessa + al menos 1 staff antes de cerrar sprint
-
-> DoD histórico S1 (mismo checklist): ver commits ago 2026.
 
 ### Riesgos
 - Re-login staff tras Auth Hook — mitigado con S1-7 y ventana documentada arriba
@@ -268,12 +265,12 @@ Shadow test 29-ago (APK SDK 56, `alberto@zmlashnails.com`): core OK; packs/promo
 | S5C-2 | Adaptador promos + `promotion_items` | zm-tech | M ✅ |
 | S5C-3 | Validar `tenant_settings` timezone Lima | zm-tech + BD | S ✅ |
 | S5C-11 | Adaptador `employees` ZM + cache única con agenda | zm-tech | S ✅ |
-| S5C-4 | Agenda multi-servicio (`appointment_services`) | zm-tech | L ✅ (PR #31) |
-| S5C-5 | Referencias diseño WABA + badge agenda | zm-tech | L ✅ (PR #31) |
-| S5C-6 | Feriados + reglas domingo/feriado | zm-tech | M ✅ |
-| S5C-7 | Finanzas ejecutiva + costos WABA | zm-tech | L ✅ (panel ejecutivo mobile completo; costos WABA pendiente de la suite WABA) |
+| S5C-4 | Agenda multi-servicio (`appointment_services`) | zm-tech | L |
+| S5C-5 | Referencias diseño WABA + badge agenda | zm-tech | L |
+| S5C-6 | Feriados + reglas domingo/feriado | zm-tech | M |
+| S5C-7 | Finanzas ejecutiva + costos WABA | zm-tech | L |
 | S5C-8 | Dashboard ranking + alertas feriado | zm-tech | S |
-| S5C-9 | UX hint Finanzas en Más | zm-tech | S ✅ (10-sep) |
+| S5C-9 | UX hint Finanzas en Más | zm-tech | S |
 | S5C-10 | Smoke packs/promos/agenda vs app ZM | zm-tech | S (parcial) |
 
 ### DoD
@@ -296,15 +293,15 @@ Barbería/peluquería pueden onboardear con defaults sensatos.
 |----|-------|------|----------|
 | S6-1 | `waba-preset-loader`: `businessType` → CTWA + Haiku defaults | ZM/Geema Edge | M |
 | S6-2 | Seed onboarding: `waba_config` + catálogo preset | Geema mobile/server | M |
-| S6-3 | Portar `/panel/waba/mensajes` a geemastudio-web | zm-tech | L ✅ **12-sep** |
-| S6-4 | Portar `/panel/waba/campanas` + `/haiku` | zm-tech | M — **haiku ✅ 12-sep**; campañas ❌ |
+| S6-3 | Portar `/panel/waba/mensajes` a geemastudio-web | zm-tech | L |
+| S6-4 | Portar `/panel/waba/campanas` + `/haiku` | zm-tech | M |
 | S6-5 | Portar portafolio + simulador (opcional) | zm-tech | M |
-| S6-6 | Eliminar/rehacer `/finanzas` web Geema (sin marca ZM) | zm-tech | M ✅ (5-sep: quitada marca ZM/Vanessa, moneda/fecha tenant-aware vía `useDashboardTenant`) |
+| S6-6 | Eliminar/rehacer `/finanzas` web Geema (sin marca ZM) | zm-tech | M |
 | S6-7 | Geema mobile: persistir push token + `send-notification` | zm-tech | M |
 
 ### DoD
 - [ ] Demo `barbershop` con CTWA Corte/Barba/Combo
-- [x] Owner Geema opera mensajes WA desde panel web (MVP 12-sep; sin envío manual / campañas)
+- [ ] Owner Geema opera mensajes WA desde panel web
 - [ ] Audit 03 gaps P0 #1, #2, #4 cerrados o en progreso documentado
 
 ---
@@ -338,7 +335,7 @@ Primer cliente pagando (o barbería piloto) distinto de ZM.
 | Look Preview multi-servicio (Plan 07 ZM → port) | **Post-MVP ZM** — ver `docs/plans/07-PLAN-look-preview-multi-servicio.md` (espejo en geemastudio/docs/plans); sugerencia ticket **S6-LP** tras Fase B Culqi |
 | Branding logo + tokens (S5-B) | **S5–S6** |
 | Expo 54 → 56 align mobile ZM/Geema | **En curso** — preview build SDK 56 ago 2026 |
-| Fase 5 drill-down `template_analytics` | Backlog |
+| Fase 5 drill-down `template_analytics` | Backend ZM ✅ (sep-2026); UI Geema S5C-7 |
 | Rotar `CRON_SECRET` en Vault | S4 |
 | CI diff sync Plan 05 (`S2-7`) | **S2** (ticket obligatorio, no backlog difuso) |
 

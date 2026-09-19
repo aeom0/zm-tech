@@ -1,7 +1,7 @@
 # 07 — Paridad mobile Geema ↔ ZM (shadow test)
 
 **Fecha:** 2026-08-30  
-**Estado:** En curso — **S5C-1…7 / S5C-9 / S5C-11 ✅**; quedan S5C-8 + smoke Finanzas; panel WABA MVP ✅ (S6 parcial)
+**Estado:** En curso — **S5C-1 / S5C-2 / S5C-3 / S5C-11 ✅** (PR [zm-tech #30](https://github.com/aeom0/zm-tech/pull/30)); resto P1/P2 pendiente  
 **Repos:** `zm-tech` (`geemastudio-mobile`), referencia `ZM-Lash-and-Nails-Beauty/apps/mobile`  
 **BD:** `udelxwwnyivknslueerr` — tenant #1 `zm-lash-nails`  
 **Código:** rama `cursor/s5c-catalog-adapter-zm` — ZM app legacy **sin cambio**
@@ -81,7 +81,7 @@ Geema usa grid día/semana + columnas staff; ZM usa grid 10–18 h Lima con medi
 | Desglose por chica | ✅ | ✅ |
 | Panel ejecutivo (KPIs, gráfico) | ❌ | ✅ |
 | Gastos operativos | ❌ | ✅ |
-| Costos WABA / Meta | ❌ | ✅ (`waba_pricing_daily`) |
+| Costos WABA / Meta | ❌ → S5C-7 | ✅ (`waba_pricing_daily` + `waba_template_analytics_daily` Fase 5) |
 | Uso IA | ❌ | ✅ |
 | Pago en detalle cita (agenda) | ❌ | ✅ |
 
@@ -127,9 +127,9 @@ Prod tenant (4 columnas agenda): **Vanessa**, **Stephani**, **Karelis**, **Aleja
 | Promos + `promotion_items` | ✅ adaptador | Mantener |
 | Personal / chicas ↔ agenda | ✅ adaptador | Mantener |
 | Agenda timezone Lima | ✅ wallclock | Mantener |
-| Agenda multi-servicio | ✅ (PR #31) | Mantener |
-| Referencias diseño WABA | ✅ (PR #31) | Mantener |
-| Feriados / slots domingo | ✅ | Mantener (auto-seed por país, superset de ZM) |
+| Agenda multi-servicio | ❌ | Portar `appointment_services` |
+| Referencias diseño WABA | ❌ | Portar inbox + badge agenda |
+| Feriados / slots domingo | ❌ | Portar `HolidayScreen` + lógica |
 | Finanzas ejecutiva | ❌ | Portar cards WABA/gastos (fase 2 S5-C) |
 | Promo masiva WA | stub | Depende S6 WABA |
 | Dashboard ranking servicios | ❌ | P2 |
@@ -195,12 +195,12 @@ Convergencia corta: Drizzle Geema → **superset tipado de prod**; adaptadores m
 | S5C-2 | Adaptador `usePromosData` + `usePromotionItems` (total desde ítems) | zm-tech | M | P0 | ✅ PR #30 |
 | S5C-3 | Validar `tenant_settings` ZM: timezone `America/Lima`, horarios | zm-tech + BD | S | P0 | ✅ PR #30 |
 | S5C-11 | Adaptador `employees` (sin `payment_mode`/`salary_amount` ZM; `avatar_url` sumado 30-ago) + cache única con agenda | zm-tech | S | P0 | ✅ PR #30 |
-| S5C-4 | Agenda: cargar `appointment_services` + multi-servicio en detalle | zm-tech | L | P1 | ✅ PR #31 (5-sep) |
-| S5C-5 | Portar referencias diseño + badge agenda (WABA) | zm-tech | L | P1 | ✅ PR #31 (5-sep) |
-| S5C-6 | Portar `HolidayScreen` + reglas feriado/dom | zm-tech | M | P1 | ✅ (ya en código; auto-seed por país, wired en Dashboard/Agenda; 5-sep: UX delete + badge "Pasado") |
-| S5C-7 | Finanzas: panel ejecutivo + `PricingBreakdownCard` (WABA) | zm-tech | L | P1 | ✅ mobile (KPIs, gastos, comisiones, payouts ya en código); `PricingBreakdownCard`/costos WABA pendiente de suite WABA. Web `/finanzas` (S6-6): 5-sep quitada marca ZM/Vanessa, moneda/fecha tenant-aware |
+| S5C-4 | Agenda: cargar `appointment_services` + multi-servicio en detalle | zm-tech | L | P1 | En curso (PR #31; schema prod ya listo) |
+| S5C-5 | Portar referencias diseño + badge agenda (WABA) | zm-tech | L | P1 | Pendiente |
+| S5C-6 | Portar `HolidayScreen` + reglas feriado/dom | zm-tech | M | P1 | Pendiente |
+| S5C-7 | Finanzas: panel ejecutivo + `PricingBreakdownCard` (WABA) + drill-down `waba_template_analytics_daily` (Fase 5) | zm-tech | L | P1 | Pendiente (backend ZM ✅ sep-2026) |
 | S5C-8 | Dashboard: ranking top servicios + alertas feriado | zm-tech | S | P2 | Pendiente |
-| S5C-9 | Documentar en UI dónde está Finanzas (onboarding admin) | zm-tech | S | P2 | ✅ 10-sep (OnboardingComplete + Dashboard quick link + Ayuda FAQ) |
+| S5C-9 | Documentar en UI dónde está Finanzas (onboarding admin) | zm-tech | S | P2 | Pendiente |
 | S5C-10 | Tests smoke: packs/promos/agenda mismo día vs app ZM | zm-tech | S | P0 | Parcial (visual 30-ago) |
 
 ### DoD S5-C (shadow ZM en Geema)

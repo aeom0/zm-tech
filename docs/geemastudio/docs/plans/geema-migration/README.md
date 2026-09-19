@@ -1,8 +1,8 @@
 # Plan 05 — Migración GeemaStudio + suite WABA multi-vertical
 
-> **Fecha:** 2026-08-28 · **Alineado:** 2026-09-12  
+> **Fecha:** 2026-08-28  
 > **Autor:** Alberto Orta + análisis Cursor (agentes)  
-> **Estado:** S1–S3 ✅; **S4+ pendiente** (crons WABA, repo ZM). **Panel web P1 ✅** (clientes→waba MVP 12-sep). S5-C: S5C-9 ✅; quedan S5C-8 + smoke Finanzas. S6 parcial (mensajes/haiku ✅; presets/campañas ❌). Ver `docs/geemastudio/ROADMAP.md`.
+> **Estado:** S1–S3 cerrados en prod/código (ago 2026); S4+ pendiente. Shadow Geema ↔ ZM **OK core** (APK SDK 56, 29-ago); **S5-C** en curso — packs/promos/timezone/chicas ✅ (PR zm-tech #30, 30-ago).
 > **BD compartida:** `udelxwwnyivknslueerr` (ZM Lash = tenant #1 `zm-lash-nails`)
 
 Documentación del análisis de convergencia entre **ZM Lash & Nails** (referencia en producción) y **GeemaStudio** (SaaS multi-tenant en `zm-tech`). Incluye bloqueadores para el 2.º tenant, estandarización WABA para barberías/peluquerías/spas, y roadmap por sprints.
@@ -20,7 +20,7 @@ Documentación del análisis de convergencia entre **ZM Lash & Nails** (referenc
 | 04 | [04-ROADMAP-SPRINTS.md](./04-ROADMAP-SPRINTS.md) | Sprints 1–7+, DoD, dependencias, estimaciones |
 | 05 | [05-ADR-modelo-tenant.md](./05-ADR-modelo-tenant.md) | Bridge `tenants` ↔ `tenant_settings`; addendum país (sin `countries`) + wallclock vs UTC |
 | 06 | [06-BRANDING-LOGO-Y-DESIGN-TOKENS.md](./06-BRANDING-LOGO-Y-DESIGN-TOKENS.md) | Logo tenant, Storage, push FCM por tenant, tokens ZM ↔ Geema, S5-B |
-| 07 | [07-PARIDAD-MOBILE-ZM.md](./07-PARIDAD-MOBILE-ZM.md) | Shadow APK; S5C P0 ✅; schema canónico; multi-servicio + referencias PR #31 mergeado (5-sep) |
+| 07 | [07-PARIDAD-MOBILE-ZM.md](./07-PARIDAD-MOBILE-ZM.md) | Shadow APK; S5C P0 ✅; schema canónico; multi-servicio PR #31 (sin SQL CREATE en prod) |
 | — | [SYNC.md](./SYNC.md) | Cómo mantener esta carpeta sincronizada entre repos |
 
 ---
