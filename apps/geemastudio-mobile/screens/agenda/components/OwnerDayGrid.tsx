@@ -343,7 +343,14 @@ export function OwnerDayGrid({
                               overflow: 'hidden',
                             }}
                           >
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.xs }}>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                gap: Spacing.xs,
+                                paddingRight: serviceCount > 1 ? 20 : 0,
+                              }}
+                            >
                               <View
                                 style={{
                                   width: 6,
@@ -363,26 +370,29 @@ export function OwnerDayGrid({
                               >
                                 {serviceName || apt.client_name}
                               </ThemedText>
-                              {serviceCount > 1 && (
-                                <View
-                                  style={{
-                                    paddingHorizontal: Spacing.xs,
-                                    minWidth: 15,
-                                    height: 15,
-                                    borderRadius: 7.5,
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    backgroundColor: cardTextColor + '26',
-                                  }}
-                                >
-                                  <ThemedText
-                                    style={{ fontSize: 9, fontWeight: '800', color: cardTextColor }}
-                                  >
-                                    ×{serviceCount}
-                                  </ThemedText>
-                                </View>
-                              )}
                             </View>
+                            {serviceCount > 1 && (
+                              <View
+                                style={{
+                                  position: 'absolute',
+                                  top: isNarrow ? Spacing.xs : Spacing.sm,
+                                  right: isNarrow ? Spacing.xs : Spacing.sm,
+                                  paddingHorizontal: Spacing.xs,
+                                  minWidth: 15,
+                                  height: 15,
+                                  borderRadius: 7.5,
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  backgroundColor: cardTextColor + '26',
+                                }}
+                              >
+                                <ThemedText
+                                  style={{ fontSize: 9, fontWeight: '800', color: cardTextColor }}
+                                >
+                                  ×{serviceCount}
+                                </ThemedText>
+                              </View>
+                            )}
                             {!!serviceName && (
                               <ThemedText
                                 numberOfLines={1}
