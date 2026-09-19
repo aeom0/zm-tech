@@ -15,6 +15,7 @@ import { useTenant } from '@/contexts/TenantContext'
 import { useAuth } from '@/contexts/AuthContext'
 import { usePendingBadgeCount } from '@/hooks/usePendingBadgeCount'
 import { DemoBanner } from '@/components/DemoBanner'
+import { NotificationsBell } from '@/components/NotificationsBell'
 
 export type MainTabParamList = {
   Dashboard: undefined
@@ -32,6 +33,19 @@ export default function MainTabNavigator() {
   const { config } = useTenant()
   const { isAdmin } = useAuth()
   const { tabBadgeCount, unreviewedReferencesCount } = usePendingBadgeCount()
+
+  const notificationItems = isAdmin
+    ? [
+        {
+          key: 'unreviewed-references',
+          icon: 'image' as const,
+          title: 'Fotos de referencia',
+          description:
+            'Citas con fotos de referencia subidas por la clienta que todavía no revisaste. Ábrelas desde el detalle de la cita en Agenda.',
+          count: unreviewedReferencesCount,
+        },
+      ]
+    : []
 
   const screenOptions = {
     tabBarActiveTintColor: config.theme.primaryColor,
@@ -108,6 +122,20 @@ export default function MainTabNavigator() {
               height: 18,
               borderRadius: 9,
             },
+            headerRight: isAdmin
+              ? () => (
+                  <NotificationsBell
+                    items={notificationItems}
+                    theme={{
+                      text: theme.text,
+                      textSecondary: theme.textSecondary,
+                      card: theme.card,
+                      border: theme.border,
+                      primary: config.theme.primaryColor,
+                    }}
+                  />
+                )
+              : undefined,
           }}
         />
         <Tab.Screen
