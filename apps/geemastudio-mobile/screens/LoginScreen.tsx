@@ -8,14 +8,23 @@
  * - Bajo el hero: businessName del tenant en texto blanco + subtítulo muted
  * - Formulario en card glassmorphism (igual a OnboardingAuthScreen)
  * - CTA: GradientCTAButton primary con gradiente Lunaris (no botón blanco)
+ * - Botón de huella al lado del CTA si biometría está habilitada
  * - Link inferior "¿No tienes cuenta? Crea tu negocio" → onCreateBusiness?()
  * - Botón "¿Olvidaste tu contraseña?" sutil entre campos y CTA
  * - Animaciones: FadeInUp para hero, FadeInDown para card y link
  */
-import React, { useState } from 'react'
-import { View, StyleSheet, TextInput, Pressable } from 'react-native'
+import React, { useState, useCallback } from 'react'
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  Pressable,
+  Alert,
+  ActivityIndicator,
+} from 'react-native'
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated'
-import { Feather } from '@expo/vector-icons'
+import { Feather, Ionicons } from '@expo/vector-icons'
+import { LinearGradient } from 'expo-linear-gradient'
 
 import { ThemedText } from '@/components/ThemedText'
 import { TenantLogoImage } from '@/components/TenantLogoImage'
@@ -26,7 +35,8 @@ import {
 } from '@/screens/onboarding/components'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
-import { Colors, Onboarding, Spacing, BorderRadius } from '@/constants/theme'
+import { useBiometricAuth } from '@/hooks/useBiometricAuth'
+import { Colors, Onboarding, Spacing, BorderRadius, Gradients } from '@/constants/theme'
 
 interface LoginScreenProps {
   onSuccess?: () => void
@@ -38,29 +48,97 @@ const LOGO_SIZE = 80
 export function LoginScreen({ onSuccess, onCreateBusiness }: LoginScreenProps = {}) {
   const { login } = useAuth()
   const { config } = useTenant()
+  const {
+    isAvailable,
+    isEnabled,
+    enableBiometric,
+    authenticateWithBiometric,
+    getBiometricTypeName,
+  } = useBiometricAuth()
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [biometricLoading, setBiometricLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const hasLogo = Boolean(config.logo)
   const businessName = config.businessName || 'GeemaStudio'
+  const showBiometricButton = isAvailable && isEnabled
+  const busy = loading || biometricLoading
+
+  const preguntarHabilitarBiometrica = useCallback(
+    (emailActual: string, passwordActual: string) => {
+      if (!isAvailable || isEnabled) return
+
+      const tipo = getBiometricTypeName()
+      Alert.alert(
+        'Acceso rápido',
+        `¿Deseas habilitar ${tipo} para acceder más rápido la próxima vez?`,
+        [
+          { text: 'No, gracias', style: 'cancel' },
+          {
+            text: 'Sí, habilitar',
+            onPress: () => {
+              void (async () => {
+                const result = await enableBiometric(emailActual, passwordActual)
+                if (!result.success) {
+                  Alert.alert('Error', result.error || 'No se pudo habilitar el acceso rápido')
+                } else {
+                  Alert.alert('Listo', `${tipo} habilitado correctamente`)
+                }
+              })()
+            },
+          },
+        ]
+      )
+    },
+    [enableBiometric, getBiometricTypeName, isAvailable, isEnabled]
+  )
 
   const handleLogin = async () => {
     setError(null)
     setLoading(true)
     try {
-      const result = await login(email.trim(), password)
+      const emailTrim = email.trim()
+      const result = await login(emailTrim, password)
       if (!result.ok) {
         setError(result.error ?? 'Error al iniciar sesión')
       } else {
+        preguntarHabilitarBiometrica(emailTrim, password)
         onSuccess?.()
       }
     } catch {
       setError('Error de conexión')
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleBiometricLogin = async () => {
+    if (busy) return
+    setError(null)
+    setBiometricLoading(true)
+    try {
+      const result = await authenticateWithBiometric()
+      if (result.success && result.email && result.password) {
+        const loginResult = await login(result.email, result.password)
+        if (!loginResult.ok) {
+          setError(
+            loginResult.error ??
+              'Las credenciales guardadas no son válidas. Inicia sesión con correo y contraseña.'
+          )
+        } else {
+          onSuccess?.()
+        }
+      } else if (result.error && result.error !== 'Autenticación cancelada') {
+        setError(result.error)
+      }
+    } catch {
+      setError('Error al autenticar con biometría. Intenta con tu contraseña.')
+    } finally {
+      setBiometricLoading(false)
     }
   }
 
@@ -108,7 +186,7 @@ export function LoginScreen({ onSuccess, onCreateBusiness }: LoginScreenProps = 
                 autoCapitalize="none"
                 autoCorrect={false}
                 keyboardType="email-address"
-                editable={!loading}
+                editable={!busy}
               />
             </View>
           </View>
@@ -132,7 +210,7 @@ export function LoginScreen({ onSuccess, onCreateBusiness }: LoginScreenProps = 
                   setError(null)
                 }}
                 secureTextEntry={!showPassword}
-                editable={!loading}
+                editable={!busy}
               />
               <Pressable
                 onPress={() => setShowPassword((p) => !p)}
@@ -161,13 +239,41 @@ export function LoginScreen({ onSuccess, onCreateBusiness }: LoginScreenProps = 
             </Animated.View>
           ) : null}
 
-          <GradientCTAButton
-            label="Entrar al panel"
-            icon="arrow-right"
-            onPress={handleLogin}
-            loading={loading}
-            style={styles.cta}
-          />
+          <View style={styles.ctaRow}>
+            <GradientCTAButton
+              label="Entrar al panel"
+              icon="arrow-right"
+              onPress={handleLogin}
+              loading={loading}
+              disabled={busy}
+              style={styles.ctaFlex}
+            />
+            {showBiometricButton ? (
+              <Pressable
+                onPress={handleBiometricLogin}
+                disabled={busy}
+                accessibilityLabel={`Entrar con ${getBiometricTypeName()}`}
+                style={({ pressed }) => [
+                  styles.biometricButton,
+                  { opacity: pressed || busy ? 0.75 : 1 },
+                ]}
+              >
+                <LinearGradient
+                  colors={[...Gradients.onboarding.colors]}
+                  locations={[...Gradients.onboarding.locations]}
+                  start={Gradients.onboarding.linearStart}
+                  end={Gradients.onboarding.linearEnd}
+                  style={styles.biometricGradient}
+                >
+                  {biometricLoading ? (
+                    <ActivityIndicator color="#fff" size="small" />
+                  ) : (
+                    <Ionicons name="finger-print" size={28} color="#fff" />
+                  )}
+                </LinearGradient>
+              </Pressable>
+            ) : null}
+          </View>
         </Animated.View>
 
         {onCreateBusiness ? (
@@ -262,7 +368,24 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.dark.error + '15',
   },
   errorText: { fontSize: 13, fontWeight: '500', flex: 1 },
-  cta: { marginTop: Spacing.sm },
+  ctaRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginTop: Spacing.sm,
+  },
+  ctaFlex: { flex: 1, marginTop: 0 },
+  biometricButton: {
+    borderRadius: BorderRadius.lg,
+    overflow: 'hidden',
+  },
+  biometricGradient: {
+    width: 56,
+    height: 56,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: BorderRadius.lg,
+  },
   createWrap: { alignItems: 'center', marginTop: Spacing.lg },
   createText: {
     fontSize: 14,

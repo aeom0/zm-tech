@@ -4,6 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 export const ASYNC_STORAGE_TENANT_CONFIG = '@geemastudio/tenant_config'
 export const ASYNC_STORAGE_TENANT_CONFIGURED = '@geemastudio/tenant_configured'
 export const ASYNC_STORAGE_THEME_PREFERENCE = '@geemastudio/theme_preference'
+/** Flag de acceso rápido con huella / Face ID (credenciales van en SecureStore). */
+export const ASYNC_STORAGE_BIOMETRIC_ENABLED = '@geemastudio/biometric_enabled'
 
 /** Scope legacy de AsyncStorage (antes de `@geemastudio/*`). Construido en runtime para migración sin literales obsoletos en el repo. */
 const LEGACY_SCOPE = ['@', 'salon', 'pro'].join('')
