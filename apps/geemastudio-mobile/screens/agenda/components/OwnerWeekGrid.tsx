@@ -264,6 +264,7 @@ export function OwnerWeekGrid({
                         onOpenDetail(apt)
                       }}
                       style={{
+                        width: '100%',
                         borderRadius: WEEK_CHIP_RADIUS,
                         shadowColor: empColor,
                         shadowOpacity: 0.28,
@@ -283,22 +284,15 @@ export function OwnerWeekGrid({
                           borderRadius: WEEK_CHIP_RADIUS,
                           paddingHorizontal: 4,
                           paddingVertical: 3,
+                          overflow: 'hidden',
                         }}
                       >
                         {/* Hora */}
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                          <View
-                            style={{
-                              width: 5,
-                              height: 5,
-                              borderRadius: 2.5,
-                              backgroundColor: empColor,
-                              marginRight: 3,
-                            }}
-                          />
                           <ThemedText
                             numberOfLines={1}
                             style={{
+                              flexShrink: 1,
                               fontSize: 9,
                               fontWeight: '700',
                               color: chipTextMutedColor,
@@ -309,6 +303,7 @@ export function OwnerWeekGrid({
                           {svcCount > 1 && (
                             <View
                               style={{
+                                flexShrink: 0,
                                 marginLeft: 3,
                                 paddingHorizontal: 3,
                                 borderRadius: 6,
@@ -327,7 +322,7 @@ export function OwnerWeekGrid({
                               name="camera"
                               size={9}
                               color={apt.reference_reviewed_at ? chipTextMutedColor : theme.primary}
-                              style={{ marginLeft: 3 }}
+                              style={{ flexShrink: 0, marginLeft: 3 }}
                             />
                           )}
                         </View>
