@@ -13,7 +13,6 @@ import {
 } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
@@ -38,7 +37,6 @@ const emptyPromo = (): WebPromo => ({
 export default function MiWebPromosScreen() {
   const headerHeight = useHeaderHeight()
   const tabBarHeight = useBottomTabBarHeight()
-  const insets = useSafeAreaInsets()
   const { theme } = useTheme()
   const { data, isLoading } = useWebSettings()
   const update = useUpdateWebSettings()
@@ -150,7 +148,7 @@ export default function MiWebPromosScreen() {
         keyExtractor={(item, i) => `${item.title}-${i}`}
         contentContainerStyle={{
           paddingTop: headerHeight + Spacing.lg,
-          paddingBottom: tabBarHeight + 80 + insets.bottom,
+          paddingBottom: tabBarHeight + 80,
           paddingHorizontal: Spacing.lg,
         }}
         ListHeaderComponent={
@@ -252,7 +250,7 @@ export default function MiWebPromosScreen() {
           setDraft(emptyPromo())
           setModalOpen(true)
         }}
-        style={[styles.fab, { backgroundColor: theme.primary, bottom: Spacing['3xl'] + insets.bottom }]}
+        style={[styles.fab, { backgroundColor: theme.primary, bottom: tabBarHeight + Spacing['3xl'] }]}
       >
         <Feather name="plus" size={28} color={theme.buttonText} />
       </Pressable>
