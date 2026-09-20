@@ -30,7 +30,9 @@ export function HeroSection({ data, theme }: HeroSectionProps) {
     instagram,
     city,
     heroVideoUrl,
+    heroCtaText,
     marqueeText,
+    marqueeSpeed,
   } = data
 
   const subtitle =
@@ -150,7 +152,7 @@ export function HeroSection({ data, theme }: HeroSectionProps) {
               <BookingButton
                 phone={whatsapp}
                 businessName={businessName}
-                label="Reservar cita"
+                label={heroCtaText ?? 'Reservar cita'}
                 className="block flex-1 py-4 text-center text-[15px] font-bold no-underline"
                 style={{
                   background: theme.colors.ctaBg,
@@ -180,7 +182,9 @@ export function HeroSection({ data, theme }: HeroSectionProps) {
               <BookingButton
                 phone={whatsapp}
                 businessName={businessName}
-                label={theme.id === 'elegant' ? 'Reservar cita ahora' : 'Reservar mi turno'}
+                label={
+                  heroCtaText ?? (theme.id === 'elegant' ? 'Reservar cita ahora' : 'Reservar mi turno')
+                }
                 className="mb-2.5 block py-4 text-center text-[15px] font-bold no-underline"
                 style={{
                   background: theme.accentBackground,
@@ -203,7 +207,7 @@ export function HeroSection({ data, theme }: HeroSectionProps) {
           )}
         </div>
       </section>
-      {marqueeText && <MarqueeBanner text={marqueeText} theme={theme} />}
+      {marqueeText && <MarqueeBanner text={marqueeText} theme={theme} speed={marqueeSpeed} />}
     </>
   )
 }

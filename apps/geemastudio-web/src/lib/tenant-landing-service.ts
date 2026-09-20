@@ -40,11 +40,16 @@ const LANDING_SELECT = `
   web_enabled,
   web_hero_video_url,
   web_salon_video_url,
+  web_hero_cta_text,
   web_marquee_text,
+  web_marquee_speed,
   web_gallery,
   web_team,
   web_promos,
-  web_map_embed_url
+  web_map_embed_url,
+  web_promo_banner_url,
+  web_promo_banner_alt,
+  web_promo_banner_active
 `
 
 async function getTenantLandingByColumn(
@@ -128,10 +133,15 @@ function mapRowToLandingData(row: Record<string, unknown>): TenantLandingData {
     businessHours: parseBusinessHours(row.business_hours),
     heroVideoUrl: row.web_hero_video_url ? String(row.web_hero_video_url) : null,
     salonVideoUrl: row.web_salon_video_url ? String(row.web_salon_video_url) : null,
+    heroCtaText: row.web_hero_cta_text ? String(row.web_hero_cta_text) : null,
     marqueeText: row.web_marquee_text ? String(row.web_marquee_text) : null,
+    marqueeSpeed: row.web_marquee_speed ? Number(row.web_marquee_speed) : 30,
     gallery: parseJsonb<WebGalleryItem[]>(row.web_gallery, []),
     team: parseJsonb<WebTeamMember[]>(row.web_team, []),
     promos: parseJsonb<WebPromo[]>(row.web_promos, []),
     mapEmbedUrl: row.web_map_embed_url ? String(row.web_map_embed_url) : null,
+    promoBannerUrl: row.web_promo_banner_url ? String(row.web_promo_banner_url) : null,
+    promoBannerAlt: row.web_promo_banner_alt ? String(row.web_promo_banner_alt) : null,
+    promoBannerActive: Boolean(row.web_promo_banner_active),
   }
 }

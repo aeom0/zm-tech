@@ -26,7 +26,7 @@ export function TestimonialsSection({ data, theme }: TestimonialsSectionProps) {
         className={`rounded-2xl border p-5 ${hasPhotos ? 'w-[260px] flex-shrink-0 snap-center' : 'mb-2.5 last:mb-0'}`}
         style={{ borderColor: theme.colors.cardBorder, background: theme.colors.cardBg }}
       >
-        <ReviewStars color={theme.colors.secondaryAccent} />
+        <ReviewStars color={theme.colors.secondaryAccent} count={review.rating ?? 5} />
         <p className="text-sm leading-relaxed" style={{ color: theme.colors.textMuted }}>
           &ldquo;{review.text}&rdquo;
         </p>

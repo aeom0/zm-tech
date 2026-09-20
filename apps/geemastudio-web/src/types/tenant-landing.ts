@@ -17,6 +17,7 @@ export interface WebReview {
   role: string
   initial: string
   photoUrl?: string
+  rating?: number
 }
 
 export interface WebGalleryItem {
@@ -71,11 +72,16 @@ export interface TenantLandingData {
   businessHours: BusinessHoursConfig | null
   heroVideoUrl: string | null
   salonVideoUrl: string | null
+  heroCtaText: string | null
   marqueeText: string | null
+  marqueeSpeed: number
   gallery: WebGalleryItem[]
   team: WebTeamMember[]
   promos: WebPromo[]
   mapEmbedUrl: string | null
+  promoBannerUrl: string | null
+  promoBannerAlt: string | null
+  promoBannerActive: boolean
 }
 
 export interface TenantLandingProps {

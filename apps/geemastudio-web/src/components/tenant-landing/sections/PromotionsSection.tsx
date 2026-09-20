@@ -7,13 +7,24 @@ interface PromotionsSectionProps {
 }
 
 export function PromotionsSection({ data, theme }: PromotionsSectionProps) {
-  const { promos, whatsapp } = data
-  if (promos.length === 0) return null
+  const { promos, whatsapp, promoBannerUrl, promoBannerActive, promoBannerAlt, businessName } = data
+  if (promos.length === 0 && !(promoBannerActive && promoBannerUrl)) return null
 
   const cleanPhone = whatsapp?.replace(/\D/g, '') ?? ''
 
   return (
     <section className="border-t px-5 py-14" style={{ borderColor: theme.colors.divider }}>
+      {promoBannerActive && promoBannerUrl && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={promoBannerUrl}
+          alt={promoBannerAlt ?? `Promociones ${businessName}`}
+          className="mb-6 w-full object-cover"
+          style={{ borderRadius: theme.radius.card }}
+        />
+      )}
+      {promos.length === 0 ? null : (
+        <>
       <p
         className="mb-1 text-[11px] uppercase tracking-[0.2em]"
         style={{ color: theme.colors.textFaint }}
@@ -97,6 +108,8 @@ export function PromotionsSection({ data, theme }: PromotionsSectionProps) {
           )
         })}
       </div>
+        </>
+      )}
     </section>
   )
 }

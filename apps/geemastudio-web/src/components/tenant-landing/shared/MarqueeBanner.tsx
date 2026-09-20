@@ -3,10 +3,12 @@ import type { LandingTheme } from '../theme/types'
 interface MarqueeBannerProps {
   text: string
   theme: LandingTheme
+  /** Duración del ciclo en segundos (mayor = más lento). Default 30. */
+  speed?: number
 }
 
 /** Franja de texto en scroll horizontal continuo — sin librerías externas. */
-export function MarqueeBanner({ text, theme }: MarqueeBannerProps) {
+export function MarqueeBanner({ text, theme, speed = 30 }: MarqueeBannerProps) {
   const items = Array.from({ length: 8 }, () => text)
 
   return (
@@ -22,7 +24,7 @@ export function MarqueeBanner({ text, theme }: MarqueeBannerProps) {
       `}</style>
       <div
         className="inline-flex items-center gap-8"
-        style={{ animation: 'tenantLandingMarqueeScroll 22s linear infinite' }}
+        style={{ animation: `tenantLandingMarqueeScroll ${speed}s linear infinite` }}
       >
         {[...items, ...items].map((t, i) => (
           <span
