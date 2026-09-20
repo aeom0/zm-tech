@@ -343,61 +343,36 @@ export function OwnerDayGrid({
                               overflow: 'hidden',
                             }}
                           >
-                            <View
+                            <ThemedText
+                              numberOfLines={isNarrow ? 1 : 2}
                               style={{
-                                flexDirection: 'row',
-                                alignItems: 'center',
-                                gap: Spacing.xs,
-                                paddingRight: serviceCount > 1 ? 20 : 0,
+                                paddingRight: serviceCount > 1 ? 16 : 0,
+                                fontSize: isNarrow ? 10 : 11,
+                                fontWeight: '700',
+                                color: cardTextColor,
                               }}
                             >
-                              <View
-                                style={{
-                                  width: 6,
-                                  height: 6,
-                                  borderRadius: 3,
-                                  backgroundColor: emp.color,
-                                }}
-                              />
-                              <ThemedText
-                                numberOfLines={isNarrow ? 1 : 2}
-                                style={{
-                                  flex: 1,
-                                  fontSize: isNarrow ? 11 : 12,
-                                  fontWeight: '700',
-                                  color: cardTextColor,
-                                }}
-                              >
-                                {serviceName || apt.client_name}
-                              </ThemedText>
-                            </View>
+                              {serviceName || apt.client_name}
+                            </ThemedText>
                             {serviceCount > 1 && (
-                              <View
+                              <ThemedText
                                 style={{
                                   position: 'absolute',
-                                  top: isNarrow ? Spacing.xs : Spacing.sm,
-                                  right: isNarrow ? Spacing.xs : Spacing.sm,
-                                  paddingHorizontal: Spacing.xs,
-                                  minWidth: 15,
-                                  height: 15,
-                                  borderRadius: 7.5,
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  backgroundColor: cardTextColor + '26',
+                                  top: 1,
+                                  right: 1,
+                                  fontSize: 9,
+                                  fontWeight: '800',
+                                  color: cardTextMutedColor,
                                 }}
                               >
-                                <ThemedText
-                                  style={{ fontSize: 9, fontWeight: '800', color: cardTextColor }}
-                                >
-                                  ×{serviceCount}
-                                </ThemedText>
-                              </View>
+                                ×{serviceCount}
+                              </ThemedText>
                             )}
                             {!!serviceName && (
                               <ThemedText
                                 numberOfLines={1}
                                 style={{
-                                  fontSize: isNarrow ? 10 : 11,
+                                  fontSize: isNarrow ? 9 : 10,
                                   marginTop: 2,
                                   color: cardTextMutedColor,
                                 }}
@@ -409,7 +384,7 @@ export function OwnerDayGrid({
                               <ThemedText
                                 numberOfLines={1}
                                 style={{
-                                  fontSize: isNarrow ? 9 : 10,
+                                  fontSize: isNarrow ? 8 : 9,
                                   color: cardTextMutedColor,
                                 }}
                               >
