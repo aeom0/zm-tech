@@ -5,7 +5,7 @@ import { TenantLogoImage } from '@/components/TenantLogoImage'
 import { useTenant } from '@/contexts/TenantContext'
 import { useTheme } from '@/hooks/useTheme'
 
-const SIZE = 30
+const SIZE = 36
 
 /** Logo del negocio en la esquina superior izquierda de los tabs principales. */
 export function TabHeaderLogo() {

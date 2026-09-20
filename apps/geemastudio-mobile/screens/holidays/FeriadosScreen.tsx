@@ -14,7 +14,7 @@ import {
   Platform,
 } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
@@ -41,7 +41,7 @@ function formatDateEs(dateKey: string, language: string): string {
 
 export default function FeriadosScreen() {
   const headerHeight = useHeaderHeight()
-  const insets = useSafeAreaInsets()
+  const tabBarHeight = useBottomTabBarHeight()
   const { theme } = useTheme()
   const { config } = useTenant()
   const {
@@ -177,7 +177,7 @@ export default function FeriadosScreen() {
         keyExtractor={(item) => item.id}
         contentContainerStyle={{
           paddingTop: headerHeight + Spacing.md,
-          paddingBottom: insets.bottom + 100,
+          paddingBottom: tabBarHeight + Spacing['3xl'] + Spacing.inputHeight,
           paddingHorizontal: Spacing.lg,
         }}
         refreshControl={
@@ -209,7 +209,7 @@ export default function FeriadosScreen() {
             <ActivityIndicator color={theme.primary} style={{ marginTop: Spacing['3xl'] }} />
           ) : (
             <ThemedText style={[styles.empty, { color: theme.textMuted }]}>
-              No hay feriados. Usa “Recargar nacionales” o agregá uno.
+              No hay feriados. Usa “Recargar nacionales” o agrega uno.
             </ThemedText>
           )
         }
@@ -266,7 +266,7 @@ export default function FeriadosScreen() {
       />
 
       <Pressable
-        style={[styles.fab, { backgroundColor: theme.primary, bottom: insets.bottom + 24 }]}
+        style={[styles.fab, { backgroundColor: theme.primary, bottom: tabBarHeight + Spacing.lg }]}
         onPress={openCreate}
       >
         <Feather name="plus" size={22} color={theme.buttonText} />

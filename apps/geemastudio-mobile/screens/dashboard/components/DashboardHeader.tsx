@@ -1,9 +1,7 @@
 import React from 'react'
 import { View } from 'react-native'
 
-import type { LogoBackgroundStyle } from '@zmtech/tenant-config'
 import { ThemedText } from '@/components/ThemedText'
-import { TenantLogoImage } from '@/components/TenantLogoImage'
 
 import { DashboardAnimatedView, type DashboardAnimatedStyle } from '../hooks/useStaggeredAnimation'
 import { dashboardStyles as styles } from '../dashboardStyles'
@@ -13,10 +11,6 @@ interface DashboardHeaderProps {
   displayNameSuffix: string
   motivationalMessage: string
   dateLabel: string
-  businessInitials: string
-  logoUri?: string
-  logoBgStyle?: LogoBackgroundStyle
-  primaryColor: string
   theme: {
     text: string
     textSecondary: string
@@ -29,16 +23,12 @@ export function DashboardHeader({
   displayNameSuffix,
   motivationalMessage,
   dateLabel,
-  businessInitials,
-  logoUri,
-  logoBgStyle,
-  primaryColor,
   theme,
   animatedStyle,
 }: DashboardHeaderProps) {
   return (
     <DashboardAnimatedView style={[styles.header, animatedStyle]}>
-      <View>
+      <View style={styles.headerText}>
         <ThemedText style={[styles.greeting, { color: theme.textSecondary }]}>
           {greeting}
           {displayNameSuffix}
@@ -52,17 +42,6 @@ export function DashboardHeader({
         >
           {motivationalMessage}
         </ThemedText>
-      </View>
-      <View style={[styles.logoMarkRing, { borderColor: `${primaryColor}40` }]}>
-        {logoUri ? (
-          <TenantLogoImage uri={logoUri} size={40} bgStyle={logoBgStyle} />
-        ) : (
-          <View style={[styles.logoMark, { backgroundColor: `${primaryColor}12` }]}>
-            <ThemedText style={[styles.logoLetter, { color: primaryColor }]}>
-              {businessInitials}
-            </ThemedText>
-          </View>
-        )}
       </View>
     </DashboardAnimatedView>
   )

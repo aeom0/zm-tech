@@ -13,10 +13,10 @@ export const dashboardStyles = StyleSheet.create({
 
   // Header
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     marginBottom: Spacing.xl,
+  },
+  headerText: {
+    flex: 1,
   },
   greeting: {
     fontSize: 14,
@@ -31,26 +31,6 @@ export const dashboardStyles = StyleSheet.create({
     fontSize: 13,
     marginTop: 4,
     fontStyle: 'italic',
-  },
-  logoMarkRing: {
-    width: 46,
-    height: 46,
-    borderRadius: BorderRadius.md,
-    borderWidth: 1.5,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logoMark: {
-    width: 40,
-    height: 40,
-    borderRadius: BorderRadius.sm,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logoLetter: {
-    fontSize: 13,
-    fontWeight: '800',
-    letterSpacing: 0.5,
   },
 
   // Stats row

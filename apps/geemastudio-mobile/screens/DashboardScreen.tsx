@@ -357,10 +357,6 @@ export default function DashboardScreen() {
         displayNameSuffix={displayNameSuffix}
         motivationalMessage={motivationalMessage}
         dateLabel={dateLabel}
-        businessInitials={config.businessName.slice(0, 2).toUpperCase()}
-        logoUri={config.logo}
-        logoBgStyle={isDark ? config.logoBgDark : config.logoBgLight}
-        primaryColor={config.theme.primaryColor}
         theme={{ text: theme.text, textSecondary: theme.textSecondary }}
         animatedStyle={animatedItems[5]}
       />
