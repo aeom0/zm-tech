@@ -8,6 +8,7 @@ import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import type { AgendaFormState, AgendaServiceCategory } from '../../types'
 import { agendaStyles as styles } from '../../agendaStyles'
 import type { NewAppointmentModalTheme } from './modalTheme'
+import { Colors } from '@/constants/theme'
 
 interface CategoriaSectionProps {
   theme: NewAppointmentModalTheme
@@ -56,7 +57,7 @@ export function CategoriaSection({
                 onPress={() => setFormData((prev) => ({ ...prev, categoryId: cat.id }))}
               >
                 <ThemedText
-                  style={[styles.serviceChipName, isSelected && { color: '#FFFFFF' }]}
+                  style={[styles.serviceChipName, isSelected && { color: Colors.light.buttonText }]}
                   numberOfLines={1}
                 >
                   {cat.name}

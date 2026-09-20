@@ -10,7 +10,7 @@ import {
   GradientCTAButton,
   DiamondHero,
 } from '@/screens/onboarding/components'
-import { Spacing } from '@/constants/theme'
+import { Onboarding, Spacing } from '@/constants/theme'
 import { useTenant } from '@/contexts/TenantContext'
 
 interface OnboardingCompleteScreenProps {
@@ -112,7 +112,7 @@ export default function OnboardingCompleteScreen({ onFinish }: OnboardingComplet
           {FEATURES.map((f) => (
             <View key={f.text} style={styles.featureRow}>
               <View style={styles.featureIconBg}>
-                <Feather name={f.icon} size={15} color="#40E0D0" />
+                <Feather name={f.icon} size={15} color={Onboarding.lunarisAccent} />
               </View>
               <ThemedText style={styles.featureText}>{f.text}</ThemedText>
             </View>
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   nombre: {
     fontSize: 17,
     fontWeight: '700',
-    color: '#40E0D0',
+    color: Onboarding.lunarisAccent,
     textAlign: 'center',
     marginTop: Spacing.xs,
   },

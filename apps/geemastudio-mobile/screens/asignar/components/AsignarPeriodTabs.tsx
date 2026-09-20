@@ -3,7 +3,7 @@ import { View, Pressable, StyleSheet } from 'react-native'
 
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
-import { Spacing, BorderRadius } from '@/constants/theme'
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 import type { AsignarPeriod } from '../types'
 
 interface AsignarPeriodTabsProps {
@@ -30,7 +30,7 @@ export function AsignarPeriodTabs({ period, onChange }: AsignarPeriodTabsProps) 
             style={[styles.tab, isActive && { backgroundColor: theme.primary }]}
           >
             <ThemedText
-              style={[styles.tabText, { color: isActive ? '#FFFFFF' : theme.textSecondary }]}
+              style={[styles.tabText, { color: isActive ? Colors.light.buttonText : theme.textSecondary }]}
             >
               {tab.label}
             </ThemedText>

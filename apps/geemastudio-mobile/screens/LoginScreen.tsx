@@ -26,7 +26,7 @@ import {
 } from '@/screens/onboarding/components'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
-import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { Colors, Onboarding, Spacing, BorderRadius } from '@/constants/theme'
 
 interface LoginScreenProps {
   onSuccess?: () => void
@@ -269,5 +269,5 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.5)',
     textAlign: 'center',
   },
-  createLink: { color: '#40E0D0', fontWeight: '600' },
+  createLink: { color: Onboarding.lunarisAccent, fontWeight: '600' },
 })

@@ -15,7 +15,7 @@ import {
   COLORES_ACENTO,
   COLORES_PRIMARIOS,
 } from '@/screens/onboarding/constants/colores-onboarding'
-import { BorderRadius, Colors, Gradients, Spacing } from '@/constants/theme'
+import { BorderRadius, Colors, Gradients, Onboarding, Spacing } from '@/constants/theme'
 import { useTenant } from '@/contexts/TenantContext'
 
 interface OnboardingBasicInfoScreenProps {
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
   badge: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#40E0D0',
+    color: Onboarding.lunarisAccent,
     letterSpacing: 1,
     marginBottom: Spacing.sm,
     textTransform: 'uppercase',

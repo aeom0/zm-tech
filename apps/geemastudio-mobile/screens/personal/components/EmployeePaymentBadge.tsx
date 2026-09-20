@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import type { CommissionMode, PaymentMode } from '@geemastudio/shared-schema'
+import { useTheme } from '@/hooks/useTheme'
 
 interface Props {
   mode: PaymentMode
@@ -10,12 +11,11 @@ interface Props {
   currencySymbol?: string
 }
 
-const MODE_CONFIG: Record<PaymentMode, { label: (pct?: number | null) => string; color: string }> =
-  {
-    commission: { label: (pct) => `${pct ?? 0}%`, color: '#40E0D0' },
-    salary: { label: () => 'Fijo', color: '#1E88E5' },
-    mixed: { label: (pct) => `S+${pct ?? 0}%`, color: '#00897B' },
-  }
+const MODE_LABELS: Record<PaymentMode, (pct?: number | null) => string> = {
+  commission: (pct) => `${pct ?? 0}%`,
+  salary: () => 'Fijo',
+  mixed: (pct) => `S+${pct ?? 0}%`,
+}
 
 export function EmployeePaymentBadge({
   mode,
@@ -24,10 +24,18 @@ export function EmployeePaymentBadge({
   houseCutFixed,
   currencySymbol = 'S/',
 }: Props) {
+  const { theme } = useTheme()
+
+  const modeColor: Record<PaymentMode, string> = {
+    commission: theme.primary,
+    salary: theme.statusInfo,
+    mixed: theme.violetDark,
+  }
+
   if ((mode === 'commission' || mode === 'mixed') && commissionMode === 'fixed_house') {
     return (
-      <View style={[styles.pill, { borderColor: '#9C27B0' }]}>
-        <Text style={[styles.label, { color: '#9C27B0' }]}>
+      <View style={[styles.pill, { borderColor: theme.accent }]}>
+        <Text style={[styles.label, { color: theme.accent }]}>
           Casa {currencySymbol}
           {houseCutFixed ?? 0}
         </Text>
@@ -35,10 +43,10 @@ export function EmployeePaymentBadge({
     )
   }
 
-  const cfg = MODE_CONFIG[mode]
+  const color = modeColor[mode]
   return (
-    <View style={[styles.pill, { borderColor: cfg.color }]}>
-      <Text style={[styles.label, { color: cfg.color }]}>{cfg.label(percentage)}</Text>
+    <View style={[styles.pill, { borderColor: color }]}>
+      <Text style={[styles.label, { color }]}>{MODE_LABELS[mode](percentage)}</Text>
     </View>
   )
 }

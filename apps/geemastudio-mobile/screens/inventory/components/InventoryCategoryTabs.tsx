@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons'
 import * as Haptics from 'expo-haptics'
 
 import { ThemedText } from '@/components/ThemedText'
-import { Spacing, BorderRadius } from '@/constants/theme'
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 
 import type { InventoryCategoryOption } from '../types'
 import { inventoryStyles as styles } from '../inventoryStyles'
@@ -82,7 +82,7 @@ export function InventoryCategoryTabs({
             }}
           >
             <ThemedText
-              style={[styles.tabText, { color: selectedTab === cat.key ? '#FFFFFF' : theme.text }]}
+              style={[styles.tabText, { color: selectedTab === cat.key ? Colors.light.buttonText : theme.text }]}
             >
               {cat.label}
             </ThemedText>
@@ -107,7 +107,7 @@ export function InventoryCategoryTabs({
         <View
           style={{
             flex: 1,
-            backgroundColor: 'rgba(0,0,0,0.5)',
+            backgroundColor: Colors.light.overlay,
             justifyContent: 'center',
             padding: Spacing.xl,
           }}

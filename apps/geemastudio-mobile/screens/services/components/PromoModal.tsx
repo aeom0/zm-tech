@@ -337,7 +337,7 @@ export function PromoModal({
                     borderColor: theme.border,
                   },
                 ]}
-                placeholder="#40E0D0"
+                placeholder={theme.primary}
                 placeholderTextColor={theme.textMuted}
                 autoCapitalize="none"
                 value={accentColor}
@@ -476,7 +476,7 @@ export function PromoModal({
                 disabled={savePending}
               >
                 {savePending ? (
-                  <ActivityIndicator color={Colors.light.white} />
+                  <ActivityIndicator color={Colors.light.buttonText} />
                 ) : (
                   <ThemedText style={styles.submitText}>
                     {editing ? 'Guardar' : 'Crear promo'}
@@ -535,7 +535,7 @@ export function PromoModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: Colors.light.overlay,
     justifyContent: 'flex-end',
   },
   sheet: {
@@ -668,13 +668,13 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   submitText: {
-    color: Colors.light.white,
+    color: Colors.light.buttonText,
     fontSize: 16,
     fontWeight: '600',
   },
   pickerOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.45)',
+    backgroundColor: Colors.light.overlay,
     justifyContent: 'flex-end',
   },
   pickerSheet: {
@@ -701,6 +701,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: Spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(128,128,128,0.25)',
+    borderBottomColor: Colors.light.border,
   },
 })

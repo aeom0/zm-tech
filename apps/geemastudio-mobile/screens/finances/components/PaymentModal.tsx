@@ -349,7 +349,7 @@ export function PaymentModal({
                         style={[
                           styles.appointmentChipSubText,
                           {
-                            color: isSelected ? 'rgba(255,255,255,0.8)' : theme.textMuted,
+                            color: isSelected ? theme.buttonText : theme.textMuted,
                           },
                         ]}
                         numberOfLines={1}
@@ -362,7 +362,7 @@ export function PaymentModal({
                           style={[
                             styles.appointmentChipSubText,
                             {
-                              color: isSelected ? 'rgba(255,255,255,0.85)' : theme.gold,
+                              color: isSelected ? theme.buttonText : theme.gold,
                               fontWeight: '700',
                             },
                           ]}

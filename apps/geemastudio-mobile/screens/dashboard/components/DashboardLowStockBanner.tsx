@@ -3,6 +3,7 @@ import { View } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
+import { hexWithAlpha } from '@/constants/theme'
 
 import { DashboardAnimatedView, type DashboardAnimatedStyle } from '../hooks/useStaggeredAnimation'
 import { dashboardStyles as styles } from '../dashboardStyles'
@@ -13,6 +14,7 @@ interface DashboardLowStockBannerProps {
   theme: {
     gold: string
     textSecondary: string
+    accentLight: string
   }
   animatedStyle?: DashboardAnimatedStyle
 }
@@ -28,7 +30,7 @@ export function DashboardLowStockBanner({
       style={[
         styles.alertBanner,
         {
-          backgroundColor: isDark ? '#3A2800' : '#FFF8E7',
+          backgroundColor: isDark ? theme.accentLight : hexWithAlpha(theme.gold, 0.12),
           borderColor: theme.gold,
         },
         animatedStyle,

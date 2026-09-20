@@ -152,7 +152,7 @@ export function InventoryItemModal({
                   style={[
                     styles.categoryChipText,
                     {
-                      color: formData.category === cat.key ? '#FFFFFF' : theme.text,
+                      color: formData.category === cat.key ? Colors.light.buttonText : theme.text,
                     },
                   ]}
                 >
@@ -168,7 +168,7 @@ export function InventoryItemModal({
             disabled={isSubmitting}
           >
             {isSubmitting ? (
-              <ActivityIndicator color={Colors.light.white} />
+              <ActivityIndicator color={Colors.light.buttonText} />
             ) : (
               <ThemedText style={styles.submitButtonText}>
                 {editingItem ? 'Guardar' : 'Agregar'}

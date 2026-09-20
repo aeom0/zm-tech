@@ -9,6 +9,7 @@ import { PAYMENT_METHODS } from '@/screens/finances/constants'
 import { formatDashboardTime } from '../dashboardUtils'
 import type { DashboardAppointment } from '../types'
 import { dashboardStyles as styles } from '../dashboardStyles'
+import { Colors } from '@/constants/theme'
 
 interface DashboardAppointmentModalProps {
   visible: boolean
@@ -124,10 +125,10 @@ export function DashboardAppointmentModal({
                 disabled={isCompleting}
               >
                 {isCompleting ? (
-                  <ActivityIndicator color="#FFF" size="small" />
+                  <ActivityIndicator color={Colors.light.buttonText} size="small" />
                 ) : (
                   <>
-                    <Feather name="check-circle" size={16} color="#FFF" />
+                    <Feather name="check-circle" size={16} color={Colors.light.buttonText} />
                     <ThemedText style={styles.modalBtnText}>Marcar completada</ThemedText>
                   </>
                 )}
@@ -190,9 +191,9 @@ export function DashboardAppointmentModal({
                       disabled={isCompleting}
                     >
                       {isCompleting ? (
-                        <ActivityIndicator color="#FFF" size="small" />
+                        <ActivityIndicator color={Colors.light.buttonText} size="small" />
                       ) : (
-                        <ThemedText style={[styles.payMethodCancelText, { color: '#FFF' }]}>
+                        <ThemedText style={[styles.payMethodCancelText, { color: Colors.light.buttonText }]}>
                           Confirmar
                         </ThemedText>
                       )}

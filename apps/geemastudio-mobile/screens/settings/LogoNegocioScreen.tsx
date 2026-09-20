@@ -23,7 +23,7 @@ import { TenantLogoImage } from '@/components/TenantLogoImage'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { useLogoUpload } from '@/hooks/useLogoUpload'
-import { Spacing, BorderRadius } from '@/constants/theme'
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 import type { LogoBackgroundStyle } from '@zmtech/tenant-config'
 
 const LOGO_SIZE = 120
@@ -142,7 +142,12 @@ export default function LogoNegocioScreen() {
 
       <Animated.View entering={FadeIn.duration(400)} style={styles.logoWrap}>
         {currentLogo ? (
-          <TenantLogoImage uri={currentLogo} size={LOGO_SIZE} bgStyle={activeBgStyle} />
+          <TenantLogoImage
+            uri={currentLogo}
+            size={LOGO_SIZE}
+            bgStyle={activeBgStyle}
+            shape="roundedSquare"
+          />
         ) : (
           <View
             style={[
@@ -160,7 +165,7 @@ export default function LogoNegocioScreen() {
         )}
         {uploading && (
           <View style={styles.uploadOverlay}>
-            <ActivityIndicator color="#FFFFFF" size="large" />
+            <ActivityIndicator color={Colors.light.buttonText} size="large" />
           </View>
         )}
       </Animated.View>
@@ -208,7 +213,7 @@ export default function LogoNegocioScreen() {
           }}
           style={styles.removeButton}
         >
-          <ThemedText style={{ fontSize: 13, color: theme.error ?? '#E57373' }}>
+          <ThemedText style={{ fontSize: 13, color: theme.error }}>
             Quitar logo
           </ThemedText>
         </Pressable>
@@ -271,7 +276,12 @@ function BgPicker({ title, uri, selected, saving, theme, onSelect }: BgPickerPro
                   },
                 ]}
               >
-                <TenantLogoImage uri={uri} size={SWATCH_SIZE} bgStyle={opt.id} />
+                <TenantLogoImage
+                  uri={uri}
+                  size={SWATCH_SIZE}
+                  bgStyle={opt.id}
+                  shape="roundedSquare"
+                />
                 {saving === opt.id && (
                   <View style={styles.swatchOverlay}>
                     <ActivityIndicator size="small" color={theme.primary} />
@@ -294,7 +304,7 @@ function BgPicker({ title, uri, selected, saving, theme, onSelect }: BgPickerPro
         <View style={styles.bgWarning}>
           <Feather name="alert-circle" size={13} color={theme.textSecondary} />
           <ThemedText style={[styles.bgWarningText, { color: theme.textSecondary }]}>
-            Revisá el logo arriba con este fondo: si no se distingue bien, elegí "Fondo claro" u
+            Revisa el logo arriba con este fondo: si no se distingue bien, elige "Fondo claro" u
             "oscuro" en vez de transparente.
           </ThemedText>
         </View>
@@ -316,7 +326,7 @@ const styles = StyleSheet.create({
   logoWrap: {
     width: LOGO_SIZE,
     height: LOGO_SIZE,
-    borderRadius: LOGO_SIZE / 2,
+    borderRadius: BorderRadius.xs,
     overflow: 'hidden',
     marginBottom: Spacing.xl,
     position: 'relative',
@@ -325,16 +335,16 @@ const styles = StyleSheet.create({
   logoPlaceholder: {
     width: LOGO_SIZE,
     height: LOGO_SIZE,
-    borderRadius: LOGO_SIZE / 2,
+    borderRadius: BorderRadius.xs,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.12)',
+    borderColor: Colors.dark.border,
   },
   logoInitials: { fontSize: 38, fontWeight: '700' },
   uploadOverlay: {
     ...StyleSheet.absoluteFill,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: Colors.light.overlay,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -371,15 +381,15 @@ const styles = StyleSheet.create({
   swatchRing: {
     width: SWATCH_SIZE + 8,
     height: SWATCH_SIZE + 8,
-    borderRadius: (SWATCH_SIZE + 8) / 2,
+    borderRadius: BorderRadius.xs,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
   },
   swatchOverlay: {
     ...StyleSheet.absoluteFill,
-    borderRadius: (SWATCH_SIZE + 8) / 2,
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    borderRadius: BorderRadius.xs,
+    backgroundColor: Colors.light.overlay,
     alignItems: 'center',
     justifyContent: 'center',
   },

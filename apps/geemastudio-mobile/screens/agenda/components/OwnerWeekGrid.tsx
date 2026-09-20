@@ -11,7 +11,7 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
-import { Spacing, BorderRadius } from '@/constants/theme'
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 import { mixHexColors, getContrastTextColor } from '@/lib/color-hsv'
 import {
   esMismoDiaCalendarioEnZona,
@@ -171,7 +171,7 @@ export function OwnerWeekGrid({
                   style={{
                     fontSize: 14,
                     fontWeight: isToday ? '700' : '500',
-                    color: isToday ? '#FFFFFF' : theme.text,
+                    color: isToday ? Colors.light.buttonText : theme.text,
                   }}
                 >
                   {fmtDayNum(day, language, timeZone)}

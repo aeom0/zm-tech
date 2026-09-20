@@ -16,7 +16,7 @@ import * as Haptics from 'expo-haptics'
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
-import { Spacing, BorderRadius, Gradients } from '@/constants/theme'
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 import { CustomColorPickerModal } from '@/screens/onboarding/components/CustomColorPickerModal'
 import {
   COLORES_ACENTO,
@@ -43,7 +43,7 @@ function hexToRgba(hex: string, alpha: number): string {
 export default function TenantColorsScreen() {
   const headerHeight = useHeaderHeight()
   const tabBarHeight = useBottomTabBarHeight()
-  const { theme } = useTheme()
+  const { theme, brandGradient } = useTheme()
   const { config, updateTenant } = useTenant()
 
   const [colorPrimario, setColorPrimario] = useState(config.theme.primaryColor)
@@ -148,9 +148,9 @@ export default function TenantColorsScreen() {
               accessibilityLabel="Elegir color personalizado principal"
             >
               <LinearGradient
-                colors={[...Gradients.onboarding.colors]}
-                start={Gradients.onboarding.linearStart}
-                end={Gradients.onboarding.linearEnd}
+                colors={[...brandGradient.colors]}
+                start={brandGradient.linearStart}
+                end={brandGradient.linearEnd}
                 style={styles.swatchCustomPrimaria}
               >
                 <Feather name="sliders" size={16} color="rgba(255,255,255,0.95)" />
@@ -187,9 +187,9 @@ export default function TenantColorsScreen() {
               accessibilityLabel="Elegir color personalizado de acento"
             >
               <LinearGradient
-                colors={[...Gradients.onboarding.colors]}
-                start={Gradients.onboarding.linearStart}
-                end={Gradients.onboarding.linearEnd}
+                colors={[...brandGradient.colors]}
+                start={brandGradient.linearStart}
+                end={brandGradient.linearEnd}
                 style={styles.swatchCustom}
               >
                 <Feather name="sliders" size={20} color="rgba(255,255,255,0.95)" />
@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   saveButtonLabel: {
-    color: '#FFF',
+    color: Colors.light.buttonText,
     fontSize: 15,
     fontWeight: '700',
   },

@@ -15,7 +15,7 @@ import { Feather } from '@expo/vector-icons'
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
-import { Spacing, BorderRadius } from '@/constants/theme'
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 import { filterPriceInput, normalizeDecimalInput, formatCurrency } from '@/utils/format'
 import type { FinancesDesgloseRow } from '../types'
 
@@ -177,7 +177,7 @@ export function RegisterPayoutModal({
 }
 
 const styles = StyleSheet.create({
-  overlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
+  overlay: { flex: 1, backgroundColor: Colors.light.overlay, justifyContent: 'flex-end' },
   overlayTablet: { justifyContent: 'center', alignItems: 'center' },
   content: {
     borderTopLeftRadius: BorderRadius.xl,

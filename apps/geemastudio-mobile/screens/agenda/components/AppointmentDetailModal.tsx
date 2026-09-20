@@ -8,7 +8,7 @@ import { ThemedText } from '@/components/ThemedText'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTenant } from '@/contexts/TenantContext'
 import { formatCurrency } from '@/utils/format'
-import { BorderRadius, Spacing } from '@/constants/theme'
+import { BorderRadius, Colors, Spacing } from '@/constants/theme'
 
 import { PAYMENT_METHODS } from '@/screens/finances/constants'
 
@@ -465,10 +465,10 @@ export function AppointmentDetailModal({
                           disabled={isSavingServices || editServiceLines.length === 0}
                         >
                           {isSavingServices ? (
-                            <ActivityIndicator color="#FFFFFF" />
+                            <ActivityIndicator color={Colors.light.buttonText} />
                           ) : (
                             <>
-                              <Feather name="save" size={18} color="#FFFFFF" />
+                              <Feather name="save" size={18} color={Colors.light.buttonText} />
                               <ThemedText style={styles.submitButtonText}>
                                 Guardar servicios
                               </ThemedText>
@@ -490,10 +490,10 @@ export function AppointmentDetailModal({
                         disabled={isCompleting}
                       >
                         {isCompleting ? (
-                          <ActivityIndicator color="#FFFFFF" />
+                          <ActivityIndicator color={Colors.light.buttonText} />
                         ) : (
                           <>
-                            <Feather name="check-circle" size={18} color="#FFFFFF" />
+                            <Feather name="check-circle" size={18} color={Colors.light.buttonText} />
                             <ThemedText style={styles.submitButtonText}>
                               Marcar completada
                             </ThemedText>
@@ -568,9 +568,14 @@ export function AppointmentDetailModal({
                               disabled={isCompleting}
                             >
                               {isCompleting ? (
-                                <ActivityIndicator color="#FFF" size="small" />
+                                <ActivityIndicator color={Colors.light.buttonText} size="small" />
                               ) : (
-                                <ThemedText style={[styles.payMethodCancelText, { color: '#FFF' }]}>
+                                <ThemedText
+                                  style={[
+                                    styles.payMethodCancelText,
+                                    { color: Colors.light.buttonText },
+                                  ]}
+                                >
                                   Confirmar
                                 </ThemedText>
                               )}
@@ -653,10 +658,10 @@ export function AppointmentDetailModal({
                         disabled={markReferencesReviewedPending}
                       >
                         {markReferencesReviewedPending ? (
-                          <ActivityIndicator color="#FFFFFF" />
+                          <ActivityIndicator color={Colors.light.buttonText} />
                         ) : (
                           <>
-                            <Feather name="check" size={18} color="#FFFFFF" />
+                            <Feather name="check" size={18} color={Colors.light.buttonText} />
                             <ThemedText style={styles.submitButtonText}>
                               Marcar como revisado
                             </ThemedText>
@@ -701,7 +706,7 @@ export function AppointmentDetailModal({
                             }}
                           >
                             <ThemedText
-                              style={[styles.serviceChipName, isSelected && { color: '#FFFFFF' }]}
+                              style={[styles.serviceChipName, isSelected && { color: Colors.light.buttonText }]}
                             >
                               {DAYS_ES[indiceDiaSemanaJSEnZona(d, timeZone)]}{' '}
                               {diaDelMesEnZona(d, timeZone)}
@@ -744,7 +749,7 @@ export function AppointmentDetailModal({
                             }}
                           >
                             <ThemedText
-                              style={[styles.employeeChipName, isSelected && { color: '#FFFFFF' }]}
+                              style={[styles.employeeChipName, isSelected && { color: Colors.light.buttonText }]}
                             >
                               {rescheduleDate
                                 ? formatoHoraAgendaSlot(
@@ -794,7 +799,7 @@ export function AppointmentDetailModal({
                             }}
                           >
                             <ThemedText
-                              style={[styles.employeeChipName, isSelected && { color: '#FFFFFF' }]}
+                              style={[styles.employeeChipName, isSelected && { color: Colors.light.buttonText }]}
                             >
                               :{String(m).padStart(2, '0')}
                             </ThemedText>
@@ -871,10 +876,10 @@ export function AppointmentDetailModal({
                     disabled={disableReschedule}
                   >
                     {updatePending || availabilityStatus === 'checking' ? (
-                      <ActivityIndicator color="#FFFFFF" />
+                      <ActivityIndicator color={Colors.light.buttonText} />
                     ) : (
                       <>
-                        <Feather name="calendar" size={18} color="#FFFFFF" />
+                        <Feather name="calendar" size={18} color={Colors.light.buttonText} />
                         <ThemedText style={styles.submitButtonText}>
                           {isBusy ? 'Horario ocupado' : 'Reprogramar'}
                         </ThemedText>
@@ -887,10 +892,10 @@ export function AppointmentDetailModal({
                     disabled={deletePending}
                   >
                     {deletePending ? (
-                      <ActivityIndicator color="#FFFFFF" />
+                      <ActivityIndicator color={Colors.light.buttonText} />
                     ) : (
                       <>
-                        <Feather name="trash-2" size={18} color="#FFFFFF" />
+                        <Feather name="trash-2" size={18} color={Colors.light.buttonText} />
                         <ThemedText style={styles.submitButtonText}>Eliminar cita</ThemedText>
                       </>
                     )}

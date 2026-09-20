@@ -15,7 +15,7 @@ import * as Haptics from 'expo-haptics'
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
-import { Spacing, Shadows } from '@/constants/theme'
+import { Spacing } from '@/constants/theme'
 
 import { usePromosData } from '../hooks/usePromosData'
 import type { PromoSavePayload } from '../hooks/usePromosData'
@@ -27,7 +27,7 @@ import { PromoModal } from './PromoModal'
 
 export function PromosTab() {
   const tabBarHeight = useBottomTabBarHeight()
-  const { theme } = useTheme()
+  const { theme, shadows } = useTheme()
   const { config } = useTenant()
 
   const { services } = useServicesData()
@@ -190,10 +190,10 @@ export function PromosTab() {
       </ScrollView>
 
       <Pressable
-        style={[styles.fab, { backgroundColor: config.theme.primaryColor }, Shadows.lg]}
+        style={[styles.fab, { backgroundColor: theme.primary }, shadows.lg]}
         onPress={openNew}
       >
-        <Feather name="plus" size={24} color="#FFFFFF" />
+        <Feather name="plus" size={24} color={theme.buttonText} />
       </Pressable>
 
       <PromoModal

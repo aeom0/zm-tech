@@ -3,7 +3,7 @@ import { Modal, View, StyleSheet, Pressable, SafeAreaView, TextInput } from 'rea
 import { Feather } from '@expo/vector-icons'
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
-import { Spacing, BorderRadius } from '@/constants/theme'
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 
 interface TerminologyEditModalProps {
   visible: boolean
@@ -146,5 +146,5 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     alignItems: 'center',
   },
-  saveButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: '600' },
+  saveButtonText: { color: Colors.light.buttonText, fontSize: 16, fontWeight: '600' },
 })

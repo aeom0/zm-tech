@@ -9,7 +9,7 @@ import { useThemePreference } from '@/contexts/ThemeContext'
 import { useAuth } from '@/contexts/AuthContext'
 import { useHaptics } from '@/hooks/useHaptics'
 import { useDemoReset } from '@/hooks/useDemoReset'
-import { Spacing } from '@/constants/theme'
+import { Spacing, Colors } from '@/constants/theme'
 
 export default function CuentaScreen() {
   const headerHeight = useHeaderHeight()
@@ -54,7 +54,7 @@ export default function CuentaScreen() {
             value={isDark}
             onValueChange={(val) => setPreference(val ? 'dark' : 'light')}
             trackColor={{ true: theme.primary, false: theme.border }}
-            thumbColor="#FFFFFF"
+            thumbColor={Colors.light.buttonText}
           />
         }
       />

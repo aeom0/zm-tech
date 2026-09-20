@@ -2,6 +2,7 @@ import React from 'react'
 import { View, Image, StyleSheet, StyleProp, ViewStyle } from 'react-native'
 
 import type { LogoBackgroundStyle } from '@zmtech/tenant-config'
+import { BorderRadius } from '@/constants/theme'
 import { resolveLogoChipColor } from '@/lib/logoBackground'
 
 interface TenantLogoImageProps {
@@ -10,12 +11,25 @@ interface TenantLogoImageProps {
   bgStyle?: LogoBackgroundStyle
   style?: StyleProp<ViewStyle>
   borderColor?: string
+  /**
+   * `circle` — headers / tabs (default).
+   * `roundedSquare` — selectores de color / preview en Logo del negocio (alineado al onboarding).
+   */
+  shape?: 'circle' | 'roundedSquare'
 }
 
 /** Logo del tenant sobre un "chip" opcional (claro/oscuro) para que se lea con cualquier tema de la app. */
-export function TenantLogoImage({ uri, size, bgStyle, style, borderColor }: TenantLogoImageProps) {
+export function TenantLogoImage({
+  uri,
+  size,
+  bgStyle,
+  style,
+  borderColor,
+  shape = 'circle',
+}: TenantLogoImageProps) {
   const chipColor = resolveLogoChipColor(bgStyle)
   const imageSize = chipColor ? size * 0.68 : size
+  const radius = shape === 'roundedSquare' ? BorderRadius.xs : size / 2
 
   return (
     <View
@@ -24,7 +38,7 @@ export function TenantLogoImage({ uri, size, bgStyle, style, borderColor }: Tena
         {
           width: size,
           height: size,
-          borderRadius: size / 2,
+          borderRadius: radius,
           backgroundColor: chipColor ?? 'transparent',
           borderColor: borderColor ?? 'transparent',
           borderWidth: borderColor ? 1 : 0,

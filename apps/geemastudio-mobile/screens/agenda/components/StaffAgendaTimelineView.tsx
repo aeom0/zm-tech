@@ -4,7 +4,8 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
-import { Gradients, Spacing, BorderRadius } from '@/constants/theme'
+import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { useTheme } from '@/hooks/useTheme'
 import {
   esHoyEnZonaIANA,
   formatoHoraInstanteEnZona,
@@ -228,6 +229,7 @@ export function StaffAgendaTimelineView({
   onOpenDetail,
   onPressNew,
 }: StaffAgendaTimelineViewProps) {
+  const { brandGradient, shadows } = useTheme()
   const isTodayInTz = esHoyEnZonaIANA(selectedDate, timeZone)
   const now = useAgendaClockTick(isTodayInTz)
 
@@ -301,10 +303,10 @@ export function StaffAgendaTimelineView({
         {/* Hero card: próxima cita — LinearGradient como borde exterior, sin overflow:hidden */}
         {siguiente ? (
           <LinearGradient
-            colors={Gradients.onboarding.colors}
-            start={Gradients.onboarding.linearStart}
-            end={Gradients.onboarding.linearEnd}
-            locations={[...Gradients.onboarding.locations]}
+            colors={[...brandGradient.colors]}
+            start={brandGradient.linearStart}
+            end={brandGradient.linearEnd}
+            locations={[...brandGradient.locations]}
             style={{
               borderRadius: BorderRadius.lg,
               padding: 2,
@@ -514,20 +516,14 @@ export function StaffAgendaTimelineView({
           bottom: tabBarHeight + Spacing.md,
           borderRadius: BorderRadius.full,
           overflow: 'hidden',
-          ...StyleSheet.flatten({
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.25,
-            shadowRadius: 8,
-            elevation: 6,
-          }),
+          ...shadows.lg,
         }}
       >
         <LinearGradient
-          colors={Gradients.onboarding.colors}
-          start={Gradients.onboarding.linearStart}
-          end={Gradients.onboarding.linearEnd}
-          locations={[...Gradients.onboarding.locations]}
+          colors={[...brandGradient.colors]}
+          start={brandGradient.linearStart}
+          end={brandGradient.linearEnd}
+          locations={[...brandGradient.locations]}
           style={{
             flexDirection: 'row',
             alignItems: 'center',
@@ -536,8 +532,10 @@ export function StaffAgendaTimelineView({
             gap: Spacing.sm,
           }}
         >
-          <Feather name="plus" size={22} color="#FFFFFF" />
-          <ThemedText style={{ color: '#FFFFFF', fontWeight: '700', fontSize: 15 }}>
+          <Feather name="plus" size={22} color={Colors.light.buttonText} />
+          <ThemedText
+            style={{ color: Colors.light.buttonText, fontWeight: '700', fontSize: 15 }}
+          >
             Nueva cita
           </ThemedText>
         </LinearGradient>

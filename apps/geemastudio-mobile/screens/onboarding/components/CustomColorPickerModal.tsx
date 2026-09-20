@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: 88,
     height: 88,
-    borderRadius: BorderRadius.full,
+    borderRadius: BorderRadius.xs,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: Onboarding.chipBorder,
     marginBottom: Spacing.sm,

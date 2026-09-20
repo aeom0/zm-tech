@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
 import { KeyboardAwareScrollViewCompat } from '@/components/KeyboardAwareScrollViewCompat'
-import { Spacing } from '@/constants/theme'
+import { Spacing, Colors } from '@/constants/theme'
 
 import type { TenantConfig, TimeFormatPreference } from '@zmtech/tenant-config'
 import {
@@ -261,10 +261,10 @@ export function NewAppointmentModal({
             disabled={disableSubmit}
           >
             {createPending || availabilityStatus === 'checking' ? (
-              <ActivityIndicator color="#FFFFFF" />
+              <ActivityIndicator color={Colors.light.buttonText} />
             ) : (
               <>
-                <Feather name="calendar" size={18} color="#FFFFFF" />
+                <Feather name="calendar" size={18} color={Colors.light.buttonText} />
                 <ThemedText style={styles.submitButtonText}>
                   {isBusy ? 'Horario ocupado' : 'Crear Cita'}
                 </ThemedText>

@@ -11,7 +11,7 @@ import {
   DiamondSparkle,
 } from '@/screens/onboarding/components'
 import { useAuth } from '@/contexts/AuthContext'
-import { Colors, Spacing, BorderRadius } from '@/constants/theme'
+import { Colors, Onboarding, Spacing, BorderRadius } from '@/constants/theme'
 
 type AuthFlow = 'wizard' | 'returning'
 
@@ -301,7 +301,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   loginLinkHighlight: {
-    color: '#40E0D0',
+    color: Onboarding.lunarisAccent,
     fontWeight: '600',
   },
 })

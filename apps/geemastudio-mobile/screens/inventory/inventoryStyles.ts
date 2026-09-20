@@ -108,7 +108,7 @@ export const inventoryStyles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: Colors.light.overlay,
     justifyContent: 'flex-end',
   },
   modalContent: {
@@ -154,7 +154,7 @@ export const inventoryStyles = StyleSheet.create({
     marginTop: Spacing['2xl'],
   },
   submitButtonText: {
-    color: Colors.light.white,
+    color: Colors.light.buttonText,
     fontSize: 16,
     fontWeight: '600',
   },

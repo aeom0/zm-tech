@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons'
 import { ThemedText } from '@/components/ThemedText'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTheme } from '@/hooks/useTheme'
-import { Spacing, BorderRadius } from '@/constants/theme'
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 import type { AsignarAppointment } from '../types'
 
 interface Employee {
@@ -109,12 +109,12 @@ export function AsignarRow({ item, employees, isSaving, onAssign, locale }: Asig
                     },
                   ]}
                 >
-                  {isSelected && <Feather name="check" size={12} color="#FFFFFF" />}
+                  {isSelected && <Feather name="check" size={12} color={Colors.light.buttonText} />}
                   <ThemedText
                     style={[
                       styles.chipText,
                       {
-                        color: isSelected ? '#FFFFFF' : theme.textSecondary,
+                        color: isSelected ? Colors.light.buttonText : theme.textSecondary,
                         fontWeight: isSelected ? '600' : '400',
                       },
                     ]}
@@ -140,10 +140,10 @@ export function AsignarRow({ item, employees, isSaving, onAssign, locale }: Asig
               ]}
             >
               {isSaving ? (
-                <ActivityIndicator size="small" color="#FFFFFF" />
+                <ActivityIndicator size="small" color={Colors.light.buttonText} />
               ) : (
                 <>
-                  <Feather name="user-check" size={16} color="#FFFFFF" />
+                  <Feather name="user-check" size={16} color={Colors.light.buttonText} />
                   <ThemedText style={styles.btnText}>Asignar a {selectedEmployeeName}</ThemedText>
                 </>
               )}
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.md,
   },
   btnText: {
-    color: '#FFFFFF',
+    color: Colors.light.buttonText,
     fontSize: 14,
     fontWeight: '600',
   },

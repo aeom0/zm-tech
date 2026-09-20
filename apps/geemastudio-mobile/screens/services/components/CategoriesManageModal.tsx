@@ -127,9 +127,9 @@ export function CategoriesManageModal({
               disabled={createPending || !newName.trim()}
             >
               {createPending ? (
-                <ActivityIndicator color={Colors.light.white} />
+                <ActivityIndicator color={Colors.light.buttonText} />
               ) : (
-                <Feather name="plus" size={20} color={Colors.light.white} />
+                <Feather name="plus" size={20} color={Colors.light.buttonText} />
               )}
             </Pressable>
           </View>
@@ -274,7 +274,7 @@ export function CategoriesManageModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: Colors.light.overlay,
     justifyContent: 'flex-end',
   },
   sheet: {

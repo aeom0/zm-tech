@@ -8,8 +8,9 @@ export const defaultTenantConfig: TenantConfig = {
   tagline: 'Belleza y bienestar',
 
   theme: {
-    primaryColor: '#E91E8C',
-    accentColor: '#FFD700',
+    // Alineado con spa-nails / Lunaris (no magenta legacy)
+    primaryColor: '#40E0D0',
+    accentColor: '#D4AF37',
     darkMode: false,
   },
 

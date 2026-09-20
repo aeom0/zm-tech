@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
-import { BorderRadius, Spacing } from '@/constants/theme'
+import { BorderRadius, Spacing, Colors } from '@/constants/theme'
 
 import type { TenantConfig, TimeFormatPreference } from '@zmtech/tenant-config'
 import {
@@ -133,7 +133,7 @@ export function FechaHoraSection({
                 if (diaConFranja) onChangeDate(d)
               }}
             >
-              <ThemedText style={[styles.serviceChipName, isSelected && { color: '#FFFFFF' }]}>
+              <ThemedText style={[styles.serviceChipName, isSelected && { color: Colors.light.buttonText }]}>
                 {DAYS_ES[indiceDiaSemanaJSEnZona(d, tz)]} {diaDelMesEnZona(d, tz)}
               </ThemedText>
             </Pressable>
@@ -169,7 +169,7 @@ export function FechaHoraSection({
                 if (horaPermitida) onChangeHour(h)
               }}
             >
-              <ThemedText style={[styles.employeeChipName, isSelected && { color: '#FFFFFF' }]}>
+              <ThemedText style={[styles.employeeChipName, isSelected && { color: Colors.light.buttonText }]}>
                 {formatoHoraAgendaSlot(selectedDate, h, tz, language, timeFormat)}
               </ThemedText>
             </Pressable>
@@ -205,7 +205,7 @@ export function FechaHoraSection({
                 if (permitido) onChangeMinute(m)
               }}
             >
-              <ThemedText style={[styles.employeeChipName, isSelected && { color: '#FFFFFF' }]}>
+              <ThemedText style={[styles.employeeChipName, isSelected && { color: Colors.light.buttonText }]}>
                 :{String(m).padStart(2, '0')}
               </ThemedText>
             </Pressable>

@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { ThemedText } from '@/components/ThemedText'
 import { CountryFlag } from '@/components/CountryFlag'
 import { useTheme } from '@/hooks/useTheme'
-import { BorderRadius, Spacing } from '@/constants/theme'
+import { BorderRadius, Spacing, Colors } from '@/constants/theme'
 import { countriesForPicker, type CountryPreset } from '@zmtech/tenant-config'
 
 interface CountryPickerModalProps {
@@ -93,7 +93,7 @@ export function CountryPickerModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: Colors.light.overlay,
     justifyContent: 'flex-end',
   },
   sheet: {

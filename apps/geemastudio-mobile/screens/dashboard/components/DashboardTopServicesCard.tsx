@@ -8,6 +8,7 @@ import { DashboardAnimatedView, type DashboardAnimatedStyle } from '../hooks/use
 import { dashboardStyles as styles } from '../dashboardStyles'
 import type { TopServicesPeriod } from '../hooks/useDashboardQueries'
 import type { DashboardTopService } from '../types'
+import { Colors } from '@/constants/theme'
 
 const RANK_GRADIENTS: Record<number, [string, string]> = {
   0: ['#F7D774', '#C9971F'],
@@ -67,7 +68,7 @@ export function DashboardTopServicesCard({
               <ThemedText
                 style={[
                   styles.periodToggleText,
-                  { color: period === 'month' ? '#FFFFFF' : theme.textSecondary },
+                  { color: period === 'month' ? Colors.light.buttonText : theme.textSecondary },
                 ]}
               >
                 Mes
@@ -83,7 +84,7 @@ export function DashboardTopServicesCard({
               <ThemedText
                 style={[
                   styles.periodToggleText,
-                  { color: period === 'all' ? '#FFFFFF' : theme.textSecondary },
+                  { color: period === 'all' ? Colors.light.buttonText : theme.textSecondary },
                 ]}
               >
                 Histórico
@@ -128,7 +129,7 @@ export function DashboardTopServicesCard({
                     end={{ x: 1, y: 1 }}
                     style={[styles.topServiceRank, { position: 'absolute' }]}
                   />
-                  <ThemedText style={[styles.topServiceRankText, { color: '#FFFFFF' }]}>
+                  <ThemedText style={[styles.topServiceRankText, { color: Colors.light.buttonText }]}>
                     {index + 1}
                   </ThemedText>
                 </View>

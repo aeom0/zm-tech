@@ -151,7 +151,7 @@ export function ServiceModal({
                     ]}
                     onPress={() => setCategoryId(c.id)}
                   >
-                    <ThemedText style={[styles.chipText, sel && { color: Colors.light.white }]}>
+                    <ThemedText style={[styles.chipText, sel && { color: Colors.light.buttonText }]}>
                       {c.name}
                     </ThemedText>
                   </Pressable>
@@ -234,7 +234,7 @@ export function ServiceModal({
               disabled={pending}
             >
               {pending ? (
-                <ActivityIndicator color={Colors.light.white} />
+                <ActivityIndicator color={Colors.light.buttonText} />
               ) : (
                 <ThemedText style={styles.submitText}>
                   {editing ? 'Guardar' : 'Crear servicio'}
@@ -251,7 +251,7 @@ export function ServiceModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: Colors.light.overlay,
     justifyContent: 'flex-end',
   },
   sheet: {
@@ -330,7 +330,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   submitText: {
-    color: Colors.light.white,
+    color: Colors.light.buttonText,
     fontSize: 16,
     fontWeight: '600',
   },

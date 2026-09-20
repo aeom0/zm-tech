@@ -4,7 +4,7 @@ import { Image } from 'expo-image'
 
 import { ThemedText } from '@/components/ThemedText'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
-import { Spacing } from '@/constants/theme'
+import { Spacing, Colors } from '@/constants/theme'
 
 import type { AgendaEmployee } from '../types'
 
@@ -132,7 +132,7 @@ export function OwnerStaffAvatarStrip({
                       fontSize: 10,
                       lineHeight: 12,
                       fontWeight: '700',
-                      color: '#FFFFFF',
+                      color: Colors.light.buttonText,
                       textAlign: 'center',
                       includeFontPadding: false,
                     }}

@@ -288,7 +288,11 @@ export default function DashboardScreen() {
       <DashboardLowStockBanner
         count={stats.lowStockItems}
         isDark={isDark}
-        theme={{ gold: theme.gold, textSecondary: theme.textSecondary }}
+        theme={{
+          gold: theme.gold,
+          textSecondary: theme.textSecondary,
+          accentLight: theme.accentLight,
+        }}
         animatedStyle={animatedItems[4]}
       />
     ) : null

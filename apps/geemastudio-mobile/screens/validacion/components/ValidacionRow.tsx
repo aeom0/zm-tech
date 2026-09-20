@@ -5,7 +5,7 @@ import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { formatCurrency } from '@/utils/format'
-import { Spacing, BorderRadius } from '@/constants/theme'
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 import type { PendingAppointment, VerificationAction } from '../types'
 
 interface ValidacionRowProps {
@@ -97,11 +97,11 @@ export function ValidacionRow({ item, loadingAction, onApprove, onReject }: Vali
             disabled={isLoading}
           >
             {loadingAction === 'approved' ? (
-              <ActivityIndicator size="small" color="#FFFFFF" />
+              <ActivityIndicator size="small" color={Colors.light.buttonText} />
             ) : (
               <>
-                <Feather name="check" size={16} color="#FFFFFF" />
-                <ThemedText style={[styles.btnText, { color: '#FFFFFF' }]}>Aprobar</ThemedText>
+                <Feather name="check" size={16} color={Colors.light.buttonText} />
+                <ThemedText style={[styles.btnText, { color: Colors.light.buttonText }]}>Aprobar</ThemedText>
               </>
             )}
           </Pressable>

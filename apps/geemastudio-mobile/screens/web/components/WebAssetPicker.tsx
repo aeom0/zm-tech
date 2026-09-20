@@ -77,9 +77,9 @@ export function WebAssetPicker({
             style={[styles.btn, { backgroundColor: theme.primary }]}
           >
             {uploading ? (
-              <ActivityIndicator color="#fff" />
+              <ActivityIndicator color={theme.buttonText} />
             ) : (
-              <ThemedText style={styles.btnText}>
+              <ThemedText style={[styles.btnText, { color: theme.buttonText }]}>
                 {imageUrl ? 'Cambiar foto' : 'Subir foto'}
               </ThemedText>
             )}
@@ -116,6 +116,6 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.md,
     alignItems: 'center',
   },
-  btnText: { color: '#fff', fontWeight: '600', fontSize: 14 },
+  btnText: { fontWeight: '600', fontSize: 14 },
   clearBtn: { alignSelf: 'flex-start', paddingVertical: 4 },
 })

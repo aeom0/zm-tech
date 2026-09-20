@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Modal, Pressable, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
-import { Spacing, BorderRadius } from '@/constants/theme'
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 
 interface NotificationItem {
   key: string
@@ -121,13 +121,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 3,
   },
   badgeText: {
-    color: '#FFFFFF',
+    color: Colors.light.buttonText,
     fontSize: 9,
     fontWeight: '700',
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: Colors.light.overlay,
     alignItems: 'flex-end',
     paddingTop: 90,
     paddingRight: Spacing.md,
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.xs,
   },
   rowCountText: {
-    color: '#FFFFFF',
+    color: Colors.light.buttonText,
     fontSize: 10,
     fontWeight: '700',
   },

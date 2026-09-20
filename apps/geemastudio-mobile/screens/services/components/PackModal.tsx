@@ -289,7 +289,7 @@ export function PackModal({
               disabled={savePending}
             >
               {savePending ? (
-                <ActivityIndicator color={Colors.light.white} />
+                <ActivityIndicator color={Colors.light.buttonText} />
               ) : (
                 <ThemedText style={styles.submitText}>
                   {editing ? 'Guardar' : 'Crear pack'}
@@ -306,7 +306,7 @@ export function PackModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: Colors.light.overlay,
     justifyContent: 'flex-end',
   },
   sheet: {
@@ -403,7 +403,7 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.md,
   },
   submitText: {
-    color: Colors.light.white,
+    color: Colors.light.buttonText,
     fontSize: 16,
     fontWeight: '600',
   },

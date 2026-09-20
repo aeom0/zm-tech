@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-import { BorderRadius, Spacing } from '@/constants/theme'
+import { BorderRadius, Colors, Spacing } from '@/constants/theme'
 
 export const agendaStyles = StyleSheet.create({
   container: {
@@ -176,7 +176,7 @@ export const agendaStyles = StyleSheet.create({
 
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: Colors.light.overlay,
     justifyContent: 'flex-end',
   },
   modalOverlayTablet: {
@@ -464,7 +464,7 @@ export const agendaStyles = StyleSheet.create({
     marginBottom: Spacing['3xl'],
   },
   submitButtonText: {
-    color: '#FFFFFF',
+    color: Colors.light.buttonText,
     fontSize: 16,
     fontWeight: '600',
   },

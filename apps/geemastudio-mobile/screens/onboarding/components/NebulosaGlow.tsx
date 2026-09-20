@@ -8,6 +8,7 @@ import Svg, {
   RadialGradient,
   Stop,
 } from 'react-native-svg'
+import { Gradients } from '@/constants/theme'
 
 interface NebulosaGlowProps {
   /** Lado del cuadrado del halo. Desde EntryScreen se pasa 420. */
@@ -45,6 +46,8 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
   const gScale = 175 * ratio
   const blur = 42 * ratio
   const fPad = s * 0.8
+  const turquoise = Gradients.onboarding.start
+  const indigo = Gradients.onboarding.end
 
   return (
     <Svg
@@ -67,9 +70,9 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
           ry={gScale}
           gradientUnits="userSpaceOnUse"
         >
-          <Stop offset="0" stopColor="#40E0D0" stopOpacity={0.6} />
-          <Stop offset="0.5" stopColor="#40E0D0" stopOpacity={0.25} />
-          <Stop offset="1" stopColor="#40E0D0" stopOpacity={0} />
+          <Stop offset="0" stopColor={turquoise} stopOpacity={0.6} />
+          <Stop offset="0.5" stopColor={turquoise} stopOpacity={0.25} />
+          <Stop offset="1" stopColor={turquoise} stopOpacity={0} />
         </RadialGradient>
 
         {/* Índigo — opacidad aumentada para compensar menor luminosidad */}
@@ -81,9 +84,9 @@ export function NebulosaGlow({ size = 420 }: NebulosaGlowProps) {
           ry={gScale}
           gradientUnits="userSpaceOnUse"
         >
-          <Stop offset="0" stopColor="#3949AB" stopOpacity={0.85} />
-          <Stop offset="0.5" stopColor="#3949AB" stopOpacity={0.4} />
-          <Stop offset="1" stopColor="#3949AB" stopOpacity={0} />
+          <Stop offset="0" stopColor={indigo} stopOpacity={0.85} />
+          <Stop offset="0.5" stopColor={indigo} stopOpacity={0.4} />
+          <Stop offset="1" stopColor={indigo} stopOpacity={0} />
         </RadialGradient>
 
         <Filter

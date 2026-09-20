@@ -25,7 +25,7 @@ import { useTenant } from '@/contexts/TenantContext'
 import { queryClient } from '@/lib/query-client'
 import { supabase } from '@/lib/supabase'
 import { borrarAvatarSiEsStorage, subirAvatarEmpleadoDefault } from '@/lib/employeeAvatar'
-import { Spacing, BorderRadius } from '@/constants/theme'
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 import type { CommissionMode, PaymentMode } from '@geemastudio/shared-schema'
 import { EmployeePaymentBadge } from '@/screens/personal/components/EmployeePaymentBadge'
 import { useEmployeesDialect, useEmployeesQuery } from '@/screens/personal/hooks/useEmployeesData'
@@ -504,11 +504,11 @@ export default function PersonalScreen() {
         onPress={openCreate}
         hitSlop={8}
       >
-        <Feather name="plus" size={26} color="#FFF" />
+        <Feather name="plus" size={26} color={theme.buttonText} />
       </Pressable>
 
       <Modal visible={modalVisible} animationType="slide" transparent>
-        <View style={styles.modalOverlay}>
+        <View style={[styles.modalOverlay, { backgroundColor: theme.overlay }]}>
           <View style={[styles.modalContent, { backgroundColor: theme.backgroundDefault }]}>
             <View style={styles.modalHeader}>
               <ThemedText style={styles.modalTitle}>
@@ -888,11 +888,13 @@ export default function PersonalScreen() {
                 disabled={createMutation.isPending || updateMutation.isPending}
               >
                 {createMutation.isPending || updateMutation.isPending ? (
-                  <ActivityIndicator color="#FFF" />
+                  <ActivityIndicator color={theme.buttonText} />
                 ) : (
                   <>
-                    <Feather name="check" size={18} color="#FFF" />
-                    <ThemedText style={styles.saveBtnText}>Guardar</ThemedText>
+                    <Feather name="check" size={18} color={theme.buttonText} />
+                    <ThemedText style={[styles.saveBtnText, { color: theme.buttonText }]}>
+                      Guardar
+                    </ThemedText>
                   </>
                 )}
               </Pressable>
@@ -979,7 +981,7 @@ const styles = StyleSheet.create({
   deniedText: { fontSize: 16, textAlign: 'center' },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: Colors.light.overlay,
     justifyContent: 'flex-end',
   },
   modalContent: {
@@ -1057,11 +1059,11 @@ const styles = StyleSheet.create({
   colorChip: {
     width: 36,
     height: 36,
-    borderRadius: 18,
+    borderRadius: BorderRadius.xs,
   },
   colorChipSelected: {
     borderWidth: 3,
-    borderColor: '#FFFFFF',
+    borderColor: Colors.light.buttonText,
   },
   checkboxRow: {
     flexDirection: 'row',
@@ -1083,7 +1085,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.xl,
     marginBottom: Spacing.xl,
   },
-  saveBtnText: { color: '#FFF', fontSize: 16, fontWeight: '600' },
+  saveBtnText: { fontSize: 16, fontWeight: '600' },
   deleteBtn: {
     flexDirection: 'row',
     alignItems: 'center',

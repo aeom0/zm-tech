@@ -1,5 +1,6 @@
 import { Platform } from 'react-native'
 import type { TenantConfig } from '@zmtech/tenant-config'
+import { mixHexColors } from '@/lib/color-hsv'
 
 export const Colors = {
   light: {
@@ -34,6 +35,11 @@ export const Colors = {
     violetDark: '#076B62',
     violetLight: '#26C6DA',
     cardShadow: 'rgba(64,224,208,0.08)',
+    /** Backdrop de modales / sheets */
+    overlay: 'rgba(0,0,0,0.5)',
+    /** Semánticos fijos cross-tenant */
+    statusInfo: '#1E88E5',
+    whatsapp: '#25D366',
   },
   dark: {
     text: '#F5F5F5',
@@ -66,6 +72,9 @@ export const Colors = {
     violetDark: '#00897B',
     violetLight: '#80DEEA',
     cardShadow: 'rgba(0,0,0,0.4)',
+    overlay: 'rgba(0,0,0,0.5)',
+    statusInfo: '#64B5F6',
+    whatsapp: '#25D366',
   },
 }
 
@@ -160,23 +169,24 @@ export const Fonts = Platform.select({
   },
 })
 
+/** Sombras neutras (sin tinte de marca). Preferir `createShadows(primary)` vía useTheme. */
 export const Shadows = {
   sm: {
-    shadowColor: '#40E0D0',
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
     elevation: 1,
   },
   md: {
-    shadowColor: '#40E0D0',
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 4,
     elevation: 2,
   },
   lg: {
-    shadowColor: '#40E0D0',
+    shadowColor: '#000000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.12,
     shadowRadius: 8,
@@ -184,23 +194,44 @@ export const Shadows = {
   },
 }
 
-// Devuelve una paleta de colores basada en la config del tenant.
-// Los tokens neutros (fondos, textos, bordes) son fijos; solo primary y accent
-// se toman de la config para mantener el contraste y la coherencia visual.
+/** Sombras con tinte del primary del tenant (CTAs, cards destacadas). */
+export function createShadows(primaryColor: string) {
+  return {
+    sm: { ...Shadows.sm, shadowColor: primaryColor },
+    md: { ...Shadows.md, shadowColor: primaryColor },
+    lg: { ...Shadows.lg, shadowColor: primaryColor },
+  }
+}
+
+export type AppTheme = ReturnType<typeof createTheme>
+
+/**
+ * Paleta operativa del tenant.
+ * Neutros fijos; primary/accent y derivados vienen de `TenantConfig`.
+ * Semánticos fijos: success, error, statusInfo, whatsapp, overlay.
+ */
 export function createTheme(config: TenantConfig, isDark: boolean) {
+  const seedPrimary = config.theme.primaryColor
+  const seedAccent = config.theme.accentColor
+  const primary = isDark ? lightenHex(seedPrimary, 0.3) : seedPrimary
+  const accent = seedAccent
   const base = Colors[isDark ? 'dark' : 'light']
+
   return {
     ...base,
-    primary: isDark ? lightenHex(config.theme.primaryColor, 0.3) : config.theme.primaryColor,
-    accent: config.theme.accentColor,
-    violet: isDark ? lightenHex(config.theme.primaryColor, 0.3) : config.theme.primaryColor,
-    link: isDark ? lightenHex(config.theme.primaryColor, 0.3) : config.theme.primaryColor,
-    tabIconSelected: isDark
-      ? lightenHex(config.theme.primaryColor, 0.3)
-      : config.theme.primaryColor,
-    info: isDark ? lightenHex(config.theme.primaryColor, 0.3) : config.theme.primaryColor,
-    gold: config.theme.accentColor,
-    warning: config.theme.accentColor,
+    primary,
+    accent,
+    violet: primary,
+    link: primary,
+    tabIconSelected: primary,
+    info: primary,
+    gold: accent,
+    warning: accent,
+    primaryLight: isDark ? darkenHex(seedPrimary, 0.55) : mixHexColors(seedPrimary, '#FFFFFF', 0.82),
+    accentLight: isDark ? darkenHex(seedAccent, 0.55) : mixHexColors(seedAccent, '#FFFFFF', 0.82),
+    violetDark: isDark ? mixHexColors(primary, '#000000', 0.25) : darkenHex(seedPrimary, 0.22),
+    violetLight: isDark ? lightenHex(primary, 0.2) : lightenHex(seedPrimary, 0.35),
+    cardShadow: isDark ? 'rgba(0,0,0,0.4)' : hexWithAlpha(seedPrimary, 0.08),
   }
 }
 
@@ -225,6 +256,28 @@ export const Gradients = {
 } as const
 
 /**
+ * Gradiente de marca del tenant (CTAs login post-config, tabs, settings).
+ * No usar en shell Geema (onboarding) — ahí va `Gradients.onboarding`.
+ */
+export function createBrandGradient(config: TenantConfig) {
+  const primary = config.theme.primaryColor
+  const accent = config.theme.accentColor
+  const mid1 = mixHexColors(primary, accent, 0.35)
+  const mid2 = mixHexColors(primary, accent, 0.7)
+  return {
+    start: primary,
+    mid2: mid1,
+    mid: mid2,
+    end: accent,
+    colors: [primary, mid1, mid2, accent] as const,
+    locations: [0, 0.35, 0.65, 1] as const,
+    shadow: hexWithAlpha(primary, 0.27),
+    linearStart: { x: 0, y: 0 },
+    linearEnd: { x: 1, y: 1 },
+  }
+}
+
+/**
  * Tokens para canvas oscuro fijo (#111318), p. ej. onboarding.
  * No dependen de claro/oscuro del sistema: el layout fuerza fondo oscuro.
  */
@@ -243,11 +296,36 @@ export const Onboarding = {
   checkBorder: 'rgba(255,255,255,0.25)',
 } as const
 
-// Aclarado muy simple para modo oscuro: aumenta la luminosidad mezclando con blanco.
+/** Hex `#RRGGBB` → `rgba(r,g,b,alpha)`. */
+export function hexWithAlpha(hex: string, alpha: number): string {
+  const raw = hex.replace('#', '')
+  const full =
+    raw.length === 3
+      ? raw
+          .split('')
+          .map((c) => c + c)
+          .join('')
+      : raw
+  if (full.length !== 6) return `rgba(0,0,0,${alpha})`
+  const num = parseInt(full, 16)
+  const r = (num >> 16) & 255
+  const g = (num >> 8) & 255
+  const b = num & 255
+  return `rgba(${r},${g},${b},${alpha})`
+}
+
 function lightenHex(hex: string, amount: number): string {
   const num = parseInt(hex.replace('#', ''), 16)
   const r = Math.min(255, (num >> 16) + Math.round(255 * amount))
   const g = Math.min(255, ((num >> 8) & 0xff) + Math.round(255 * amount))
   const b = Math.min(255, (num & 0xff) + Math.round(255 * amount))
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`
+}
+
+function darkenHex(hex: string, amount: number): string {
+  const num = parseInt(hex.replace('#', ''), 16)
+  const r = Math.max(0, (num >> 16) - Math.round(255 * amount))
+  const g = Math.max(0, ((num >> 8) & 0xff) - Math.round(255 * amount))
+  const b = Math.max(0, (num & 0xff) - Math.round(255 * amount))
   return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`
 }

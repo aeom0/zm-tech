@@ -18,7 +18,7 @@ import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { useUpdateWebSettings, useWebSettings } from '@/hooks/web/useWebSettings'
 import { deleteWebAssetIfStorage } from '@/lib/webAssets'
-import { Spacing, BorderRadius } from '@/constants/theme'
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 import type { WebPromo } from '@/types/web-landing'
 import { WebAssetPicker } from '@/screens/web/components/WebAssetPicker'
 import { WebField } from '@/screens/web/components/WebField'
@@ -172,7 +172,7 @@ export default function MiWebPromosScreen() {
         }}
         style={[styles.fab, { backgroundColor: theme.primary }]}
       >
-        <Feather name="plus" size={28} color="#fff" />
+        <Feather name="plus" size={28} color={theme.buttonText} />
       </Pressable>
 
       <Modal visible={modalOpen} animationType="slide" transparent>
@@ -242,9 +242,9 @@ export default function MiWebPromosScreen() {
                 style={[styles.modalBtn, styles.modalPrimary, { backgroundColor: theme.primary }]}
               >
                 {saving ? (
-                  <ActivityIndicator color="#fff" />
+                  <ActivityIndicator color={theme.buttonText} />
                 ) : (
-                  <ThemedText style={{ color: '#fff', fontWeight: '600' }}>Guardar</ThemedText>
+                  <ThemedText style={{ color: theme.buttonText, fontWeight: '600' }}>Guardar</ThemedText>
                 )}
               </Pressable>
             </View>
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  modalBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
+  modalBackdrop: { flex: 1, backgroundColor: Colors.light.overlay, justifyContent: 'flex-end' },
   modalCard: {
     borderTopLeftRadius: BorderRadius.xl,
     borderTopRightRadius: BorderRadius.xl,

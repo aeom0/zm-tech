@@ -5,7 +5,7 @@ import { useHeaderHeight } from '@react-navigation/elements'
 
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
-import { Spacing, BorderRadius } from '@/constants/theme'
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 
 import { ServicesTab } from './services/components/ServicesTab'
 import { PacksTab } from './services/components/PacksTab'
@@ -47,7 +47,7 @@ export default function ServicesScreen() {
               ]}
               onPress={() => setTab(i)}
             >
-              <ThemedText style={[styles.tabLabel, { color: active ? '#FFFFFF' : theme.text }]}>
+              <ThemedText style={[styles.tabLabel, { color: active ? Colors.light.buttonText : theme.text }]}>
                 {label}
               </ThemedText>
             </Pressable>

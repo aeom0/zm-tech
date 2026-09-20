@@ -17,6 +17,7 @@ import { usePendingBadgeCount } from '@/hooks/usePendingBadgeCount'
 import { DemoBanner } from '@/components/DemoBanner'
 import { AgendaNotifications } from '@/components/AgendaNotifications'
 import { TabHeaderLogo } from '@/components/TabHeaderLogo'
+import { Colors } from '@/constants/theme'
 
 export type MainTabParamList = {
   Dashboard: undefined
@@ -104,7 +105,7 @@ export default function MainTabNavigator() {
             tabBarBadge: unreviewedReferencesCount > 0 ? unreviewedReferencesCount : undefined,
             tabBarBadgeStyle: {
               backgroundColor: config.theme.primaryColor,
-              color: '#FFFFFF',
+              color: Colors.light.buttonText,
               fontSize: 10,
               fontWeight: '700',
               minWidth: 18,
@@ -144,7 +145,7 @@ export default function MainTabNavigator() {
             tabBarBadge: tabBadgeCount > 0 ? tabBadgeCount : undefined,
             tabBarBadgeStyle: {
               backgroundColor: config.theme.primaryColor,
-              color: '#FFFFFF',
+              color: Colors.light.buttonText,
               fontSize: 10,
               fontWeight: '700',
               minWidth: 18,

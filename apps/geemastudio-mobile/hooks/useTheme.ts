@@ -1,4 +1,4 @@
-import { createTheme } from '@/constants/theme'
+import { createShadows, createTheme, createBrandGradient } from '@/constants/theme'
 import { useColorScheme } from '@/hooks/useColorScheme'
 import { useTenant } from '@/contexts/TenantContext'
 
@@ -7,9 +7,13 @@ export function useTheme() {
   const isDark = colorScheme === 'dark'
   const { config } = useTenant()
   const theme = createTheme(config, isDark)
+  const shadows = createShadows(theme.primary)
+  const brandGradient = createBrandGradient(config)
 
   return {
     theme,
     isDark,
+    shadows,
+    brandGradient,
   }
 }

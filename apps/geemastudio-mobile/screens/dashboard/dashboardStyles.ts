@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-import { BorderRadius, Spacing, Shadows } from '@/constants/theme'
+import { BorderRadius, Spacing, Shadows, Colors } from '@/constants/theme'
 
 export const dashboardStyles = StyleSheet.create({
   container: { flex: 1 },
@@ -318,7 +318,7 @@ export const dashboardStyles = StyleSheet.create({
   emptyActionText: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#FFF',
+    color: Colors.light.buttonText,
   },
 
   // Alert banner
@@ -363,7 +363,7 @@ export const dashboardStyles = StyleSheet.create({
   // Modal
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.55)',
+    backgroundColor: Colors.light.overlay,
     justifyContent: 'flex-end',
   },
   modalOverlayTablet: {
@@ -448,7 +448,7 @@ export const dashboardStyles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   modalBtnText: {
-    color: '#FFF',
+    color: Colors.light.buttonText,
     fontSize: 15,
     fontWeight: '700',
   },

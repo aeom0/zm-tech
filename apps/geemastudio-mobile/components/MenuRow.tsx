@@ -5,7 +5,7 @@ import { Feather } from '@expo/vector-icons'
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { useHaptics } from '@/hooks/useHaptics'
-import { Spacing, BorderRadius } from '@/constants/theme'
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 
 export interface MenuRowProps {
   icon: keyof typeof Feather.glyphMap
@@ -92,5 +92,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: Spacing.sm,
   },
-  badgeText: { color: '#FFFFFF', fontSize: 11, fontWeight: '700' },
+  badgeText: { color: Colors.light.buttonText, fontSize: 11, fontWeight: '700' },
 })

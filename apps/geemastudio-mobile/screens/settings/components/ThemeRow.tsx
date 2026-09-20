@@ -2,7 +2,7 @@ import React from 'react'
 import { View, StyleSheet, Pressable } from 'react-native'
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
-import { Spacing, BorderRadius } from '@/constants/theme'
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 import { useThemePreference, ThemePreference } from '@/contexts/ThemeContext'
 
 const OPTIONS: { label: string; value: ThemePreference }[] = [
@@ -48,7 +48,7 @@ export function ThemeRow() {
                 style={[
                   styles.segmentLabel,
                   {
-                    color: isActive ? '#FFFFFF' : theme.textSecondary,
+                    color: isActive ? Colors.light.buttonText : theme.textSecondary,
                   },
                 ]}
               >

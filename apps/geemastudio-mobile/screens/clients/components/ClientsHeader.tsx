@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
-import { Spacing, BorderRadius } from '@/constants/theme'
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 
 interface Props {
   searchQuery: string
@@ -63,7 +63,7 @@ export function ClientsHeader({
             ]}
             onPress={onAddClientPress}
           >
-            <Feather name="user-plus" size={16} color="#FFFFFF" />
+            <Feather name="user-plus" size={16} color={Colors.light.buttonText} />
             <ThemedText style={styles.addButtonText}>Agregar</ThemedText>
           </Pressable>
         )}
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     gap: Spacing.xs,
   },
   addButtonText: {
-    color: '#FFFFFF',
+    color: Colors.light.buttonText,
     fontSize: 13,
     fontWeight: '600',
   },

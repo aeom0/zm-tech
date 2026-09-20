@@ -3,28 +3,31 @@ import { View, StyleSheet } from 'react-native'
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
-import { Spacing, BorderRadius } from '@/constants/theme'
+import { Spacing, BorderRadius, hexWithAlpha } from '@/constants/theme'
 
-function getBannerColors(daysLeft: number) {
+function getBannerColors(
+  daysLeft: number,
+  theme: { error: string; warning: string; accent: string }
+) {
   if (daysLeft <= 0) {
     return {
-      background: '#FEE2E2',
-      border: '#EF4444',
-      text: '#991B1B',
+      background: hexWithAlpha(theme.error, 0.12),
+      border: theme.error,
+      text: theme.error,
     }
   }
   if (daysLeft <= 7) {
     return {
-      background: '#FEF3C7',
-      border: '#F59E0B',
-      text: '#92400E',
+      background: hexWithAlpha(theme.warning, 0.18),
+      border: theme.warning,
+      text: theme.warning,
     }
   }
   if (daysLeft <= 30) {
     return {
-      background: '#FFEDD5',
-      border: '#FB923C',
-      text: '#7C2D12',
+      background: hexWithAlpha(theme.accent, 0.15),
+      border: theme.accent,
+      text: theme.accent,
     }
   }
   return null
@@ -42,7 +45,7 @@ export function TokenWarningBanner() {
 
   const diffMs = new Date(expiryStr).getTime() - Date.now()
   const daysLeft = Math.ceil(diffMs / 86_400_000)
-  const colors = getBannerColors(daysLeft)
+  const colors = getBannerColors(daysLeft, theme)
 
   if (!colors) {
     return null

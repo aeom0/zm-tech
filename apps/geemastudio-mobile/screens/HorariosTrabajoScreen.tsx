@@ -18,7 +18,7 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
-import { Spacing, BorderRadius } from '@/constants/theme'
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 import type { MoreStackParamList } from '@/navigation/MoreStackNavigator'
 import type { TenantConfig, TimeFormatPreference } from '@zmtech/tenant-config'
 import {
@@ -368,7 +368,7 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.md,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(128,128,128,0.2)',
+    borderBottomColor: Colors.light.border,
     fontSize: 15,
   },
   diaCard: {

@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-import { Spacing, BorderRadius, Shadows } from '@/constants/theme'
+import { Spacing, BorderRadius, Shadows, Colors } from '@/constants/theme'
 
 import { CHART_PADDING } from './constants'
 
@@ -270,7 +270,7 @@ export const financesStyles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: Colors.light.overlay,
     justifyContent: 'flex-end',
   },
   modalOverlayTablet: {
@@ -481,7 +481,7 @@ export const financesStyles = StyleSheet.create({
     marginBottom: Spacing['3xl'],
   },
   submitButtonText: {
-    color: '#FFFFFF',
+    color: Colors.light.buttonText,
     fontSize: 16,
     fontWeight: '600',
   },

@@ -3,7 +3,7 @@ import { View, Modal, Pressable, StyleSheet } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
-import { BorderRadius, Spacing } from '@/constants/theme'
+import { BorderRadius, Colors, Spacing } from '@/constants/theme'
 
 import type { TenantConfig } from '@zmtech/tenant-config'
 import type { SalonHolidayIndex } from '@zmtech/tenant-config'
@@ -202,7 +202,7 @@ export function CalendarPickerModal({
                           style={[
                             styles.dayLabel,
                             { color: isSelectable ? theme.text : theme.textMuted },
-                            isSelected && { color: '#FFFFFF', fontWeight: '700' },
+                            isSelected && { color: Colors.light.buttonText, fontWeight: '700' },
                           ]}
                         >
                           {cell.day}
@@ -223,7 +223,7 @@ export function CalendarPickerModal({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.45)',
+    backgroundColor: Colors.light.overlay,
     alignItems: 'center',
     justifyContent: 'center',
     padding: Spacing.lg,

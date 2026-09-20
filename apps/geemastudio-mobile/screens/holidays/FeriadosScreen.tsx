@@ -269,14 +269,14 @@ export default function FeriadosScreen() {
         style={[styles.fab, { backgroundColor: theme.primary, bottom: insets.bottom + 24 }]}
         onPress={openCreate}
       >
-        <Feather name="plus" size={22} color="#FFF" />
-        <ThemedText style={styles.fabText}>Agregar</ThemedText>
+        <Feather name="plus" size={22} color={theme.buttonText} />
+        <ThemedText style={[styles.fabText, { color: theme.buttonText }]}>Agregar</ThemedText>
       </Pressable>
 
       <Modal visible={modalVisible} animationType="slide" transparent>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          style={styles.modalOverlay}
+          style={[styles.modalOverlay, { backgroundColor: theme.overlay }]}
         >
           <View style={[styles.modalCard, { backgroundColor: theme.backgroundDefault }]}>
             <ThemedText style={styles.modalTitle}>
@@ -384,9 +384,11 @@ export default function FeriadosScreen() {
                 ]}
               >
                 {saving ? (
-                  <ActivityIndicator color="#FFF" />
+                  <ActivityIndicator color={theme.buttonText} />
                 ) : (
-                  <ThemedText style={{ color: '#FFF', fontWeight: '700' }}>Guardar</ThemedText>
+                  <ThemedText style={{ color: theme.buttonText, fontWeight: '700' }}>
+                    Guardar
+                  </ThemedText>
                 )}
               </Pressable>
             </View>
@@ -442,10 +444,9 @@ const styles = StyleSheet.create({
     height: Spacing.inputHeight,
     borderRadius: BorderRadius.lg,
   },
-  fabText: { color: '#FFF', fontWeight: '700', fontSize: 15 },
+  fabText: { fontWeight: '700', fontSize: 15 },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'flex-end',
   },
   modalCard: {

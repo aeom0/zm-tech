@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
-import { Spacing } from '@/constants/theme'
+import { Spacing, Colors } from '@/constants/theme'
 
 import { addPackServiceLines, addPromoServiceLines } from '../../agendaUtils'
 import type { AgendaFormState, AgendaPack, AgendaService, AgendaServiceCategory } from '../../types'
@@ -125,7 +125,7 @@ export function ServicioSection({
               onPress={() => setActiveTab(tab.key)}
             >
               <ThemedText
-                style={[styles.pickerTabText, { color: active ? '#FFFFFF' : theme.text }]}
+                style={[styles.pickerTabText, { color: active ? Colors.light.buttonText : theme.text }]}
               >
                 {tab.label}
               </ThemedText>
@@ -191,7 +191,7 @@ export function ServicioSection({
                   onPress={() => toggleService(service.id)}
                 >
                   <ThemedText
-                    style={[styles.serviceChipName, isSelected && { color: '#FFFFFF' }]}
+                    style={[styles.serviceChipName, isSelected && { color: Colors.light.buttonText }]}
                     numberOfLines={1}
                   >
                     {service.name}
@@ -242,7 +242,7 @@ export function ServicioSection({
                   onPress={() => !alreadyAdded && addPack(pack)}
                 >
                   <ThemedText
-                    style={[styles.serviceChipName, alreadyAdded && { color: '#FFFFFF' }]}
+                    style={[styles.serviceChipName, alreadyAdded && { color: Colors.light.buttonText }]}
                     numberOfLines={1}
                   >
                     {pack.name}
@@ -288,7 +288,7 @@ export function ServicioSection({
                 onPress={() => !alreadyAdded && addPromo(promo)}
               >
                 <ThemedText
-                  style={[styles.serviceChipName, alreadyAdded && { color: '#FFFFFF' }]}
+                  style={[styles.serviceChipName, alreadyAdded && { color: Colors.light.buttonText }]}
                   numberOfLines={1}
                 >
                   {promo.badge ? `${promo.badge} ` : ''}

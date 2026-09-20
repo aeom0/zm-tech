@@ -22,7 +22,7 @@ import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { useAuth } from '@/contexts/AuthContext'
-import { Spacing, BorderRadius, Shadows } from '@/constants/theme'
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 import { getDefaultServiceIcon } from '@/constants/serviceIcons'
 
 import { useServicesData } from '../hooks/useServicesData'
@@ -34,7 +34,7 @@ import { CategoriesManageModal } from './CategoriesManageModal'
 
 export function ServicesTab() {
   const tabBarHeight = useBottomTabBarHeight()
-  const { theme } = useTheme()
+  const { theme, shadows } = useTheme()
   const { config } = useTenant()
   const { isAdmin } = useAuth()
 
@@ -268,7 +268,7 @@ export function ServicesTab() {
             onPress={() => setFilterCategoryId(null)}
           >
             <ThemedText
-              style={[styles.filterChipText, { color: !filterCategoryId ? '#FFFFFF' : theme.text }]}
+              style={[styles.filterChipText, { color: !filterCategoryId ? Colors.light.buttonText : theme.text }]}
             >
               Todas
             </ThemedText>
@@ -289,7 +289,7 @@ export function ServicesTab() {
                 onPress={() => setFilterCategoryId(cat.id)}
               >
                 <ThemedText
-                  style={[styles.filterChipText, { color: isSelected ? '#FFFFFF' : theme.text }]}
+                  style={[styles.filterChipText, { color: isSelected ? Colors.light.buttonText : theme.text }]}
                 >
                   {cat.name}
                 </ThemedText>
@@ -414,10 +414,10 @@ export function ServicesTab() {
       </NestableScrollContainer>
 
       <Pressable
-        style={[styles.fab, { backgroundColor: config.theme.primaryColor }, Shadows.lg]}
+        style={[styles.fab, { backgroundColor: theme.primary }, shadows.lg]}
         onPress={openNew}
       >
-        <Feather name="plus" size={24} color="#FFFFFF" />
+        <Feather name="plus" size={24} color={theme.buttonText} />
       </Pressable>
 
       <ServiceModal

@@ -134,7 +134,7 @@ export function SvcPickerContent({
               onPress={() => handleSelectCat(cat.id)}
             >
               <ThemedText
-                style={[styles.catChipText, { color: active ? '#FFFFFF' : theme.text }]}
+                style={[styles.catChipText, { color: active ? Colors.light.buttonText : theme.text }]}
                 numberOfLines={1}
               >
                 {cat.name}
@@ -152,7 +152,7 @@ export function SvcPickerContent({
             onPress={() => setActiveTab(PACKS_TAB)}
           >
             <ThemedText
-              style={[styles.catChipText, { color: isPacksTab ? '#FFFFFF' : theme.text }]}
+              style={[styles.catChipText, { color: isPacksTab ? Colors.light.buttonText : theme.text }]}
             >
               Packs
             </ThemedText>
@@ -168,7 +168,7 @@ export function SvcPickerContent({
             onPress={() => setActiveTab(PROMOS_TAB)}
           >
             <ThemedText
-              style={[styles.catChipText, { color: isPromosTab ? '#FFFFFF' : theme.text }]}
+              style={[styles.catChipText, { color: isPromosTab ? Colors.light.buttonText : theme.text }]}
             >
               Promos
             </ThemedText>
@@ -208,12 +208,12 @@ export function SvcPickerContent({
                   ]}
                 >
                   <ThemedText
-                    style={[styles.empInitial, { color: selected ? '#FFFFFF' : emp.color }]}
+                    style={[styles.empInitial, { color: selected ? Colors.light.buttonText : emp.color }]}
                   >
                     {emp.name[0]}
                   </ThemedText>
                 </View>
-                <ThemedText style={[styles.empName, { color: selected ? '#FFFFFF' : theme.text }]}>
+                <ThemedText style={[styles.empName, { color: selected ? Colors.light.buttonText : theme.text }]}>
                   {emp.name.split(' ')[0]}
                 </ThemedText>
               </Pressable>
@@ -272,7 +272,7 @@ export function SvcPickerContent({
                       },
                     ]}
                   >
-                    {alreadyAdded ? <Feather name="check" size={12} color="#FFFFFF" /> : null}
+                    {alreadyAdded ? <Feather name="check" size={12} color={Colors.light.buttonText} /> : null}
                   </View>
                 </Pressable>
               )
@@ -322,7 +322,7 @@ export function SvcPickerContent({
                       },
                     ]}
                   >
-                    {alreadyAdded ? <Feather name="check" size={12} color="#FFFFFF" /> : null}
+                    {alreadyAdded ? <Feather name="check" size={12} color={Colors.light.buttonText} /> : null}
                   </View>
                 </Pressable>
               )
@@ -367,7 +367,7 @@ export function SvcPickerContent({
                     },
                   ]}
                 >
-                  {isSelected ? <Feather name="check" size={12} color="#FFFFFF" /> : null}
+                  {isSelected ? <Feather name="check" size={12} color={Colors.light.buttonText} /> : null}
                 </View>
               </Pressable>
             )
@@ -376,7 +376,7 @@ export function SvcPickerContent({
       </ScrollView>
 
       <Pressable style={[styles.doneBtn, { backgroundColor: theme.primary }]} onPress={onClose}>
-        <Feather name="check" size={18} color="#FFFFFF" />
+        <Feather name="check" size={18} color={Colors.light.buttonText} />
         <ThemedText style={styles.doneBtnText}>
           Listo ({selectedServiceIds.length} servicio
           {selectedServiceIds.length !== 1 ? 's' : ''})

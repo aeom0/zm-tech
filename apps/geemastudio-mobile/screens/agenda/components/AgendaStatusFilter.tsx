@@ -7,6 +7,7 @@ import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 
 import type { AgendaStatusFilter as StatusFilter } from '../types'
 import { agendaStyles as styles } from '../agendaStyles'
+import { Colors } from '@/constants/theme'
 
 const OPTIONS: { id: StatusFilter; label: string }[] = [
   { id: 'all', label: 'Todas' },
@@ -59,7 +60,7 @@ export function AgendaStatusFilter({ statusFilter, onChange, theme }: AgendaStat
             ]}
           >
             <ThemedText
-              style={[styles.statusChipText, { color: isActive ? '#FFFFFF' : theme.text }]}
+              style={[styles.statusChipText, { color: isActive ? Colors.light.buttonText : theme.text }]}
               numberOfLines={1}
             >
               {opt.label}

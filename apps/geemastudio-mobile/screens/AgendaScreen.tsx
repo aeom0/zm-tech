@@ -16,7 +16,7 @@ import { ErrorState } from '@/components/ErrorState'
 import { HolidayAlertBanner } from '@/components/HolidayAlertBanner'
 import { useTenant } from '@/contexts/TenantContext'
 import { useAuth } from '@/contexts/AuthContext'
-import { Spacing, Shadows } from '@/constants/theme'
+import { Spacing } from '@/constants/theme'
 import {
   esCeldaAgendaEnHorarioLaboral,
   esInstanteEnHorarioLaboral,
@@ -77,7 +77,7 @@ export default function AgendaScreen() {
   const headerHeight = useHeaderHeight()
   const tabBarHeight = useBottomTabBarHeight()
   const insets = useSafeAreaInsets()
-  const { theme } = useTheme()
+  const { theme, shadows } = useTheme()
   const { config } = useTenant()
   const { role, profile, isAdmin, isLoading: authLoading } = useAuth()
   const currencySymbol = config.locale.currency.symbol
@@ -809,13 +809,13 @@ export default function AgendaScreen() {
                 borderRadius: 28,
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: config.theme.primaryColor,
+                backgroundColor: theme.primary,
               },
-              Shadows.lg,
+              shadows.lg,
             ]}
             accessibilityLabel="Nueva cita"
           >
-            <Feather name="plus" size={24} color="#FFFFFF" />
+            <Feather name="plus" size={24} color={theme.buttonText} />
           </Pressable>
         </>
       ) : staffVista ? (

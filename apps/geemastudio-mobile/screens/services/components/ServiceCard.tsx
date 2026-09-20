@@ -5,7 +5,7 @@ import { Feather, MaterialCommunityIcons } from '@expo/vector-icons'
 import { ThemedText } from '@/components/ThemedText'
 import type { TenantConfig } from '@zmtech/tenant-config'
 import { formatCurrency } from '@/utils/format'
-import { BorderRadius, Shadows, Spacing } from '@/constants/theme'
+import { BorderRadius, Shadows, Spacing, Colors } from '@/constants/theme'
 import { getDefaultServiceIcon } from '@/constants/serviceIcons'
 
 import type { Service } from '../types'
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     paddingBottom: Spacing.md,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(128,128,128,0.25)',
+    borderTopColor: Colors.light.border,
   },
   toggleLabel: {
     fontSize: 13,

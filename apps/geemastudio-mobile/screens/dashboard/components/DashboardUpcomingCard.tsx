@@ -10,6 +10,7 @@ import type { DashboardAppointment } from '../types'
 import { dashboardStyles as styles } from '../dashboardStyles'
 
 import { DashboardAppointmentRow } from './DashboardAppointmentRow'
+import { Colors } from '@/constants/theme'
 
 interface DashboardUpcomingCardProps {
   upcomingAppointments: DashboardAppointment[]
@@ -99,7 +100,7 @@ export function DashboardUpcomingCard({
             style={[styles.emptyActionBtn, { backgroundColor: theme.primary }]}
             onPress={onViewAllAgenda}
           >
-            <Feather name="plus" size={14} color="#FFF" />
+            <Feather name="plus" size={14} color={Colors.light.buttonText} />
             <ThemedText style={styles.emptyActionText}>Agendar cita</ThemedText>
           </Pressable>
         </View>

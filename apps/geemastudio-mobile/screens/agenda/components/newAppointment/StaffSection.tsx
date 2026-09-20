@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
-import { Spacing } from '@/constants/theme'
+import { Spacing, Colors } from '@/constants/theme'
 
 import type { AgendaEmployee, AgendaFormState } from '../../types'
 import { agendaStyles as styles } from '../../agendaStyles'
@@ -106,14 +106,14 @@ export function StaffSection({
                     style={[
                       styles.employeeInitial,
                       {
-                        color: isSelected ? '#FFFFFF' : employee.color,
+                        color: isSelected ? Colors.light.buttonText : employee.color,
                       },
                     ]}
                   >
                     {employee.name[0]}
                   </ThemedText>
                 </View>
-                <ThemedText style={[styles.employeeChipName, isSelected && { color: '#FFFFFF' }]}>
+                <ThemedText style={[styles.employeeChipName, isSelected && { color: Colors.light.buttonText }]}>
                   {employee.name.split(' ')[0]}
                 </ThemedText>
               </Pressable>

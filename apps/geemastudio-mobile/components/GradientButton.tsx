@@ -3,6 +3,7 @@ import { Pressable, Text, StyleSheet, ActivityIndicator, ViewStyle, TextStyle } 
 import { LinearGradient } from 'expo-linear-gradient'
 import { Feather } from '@expo/vector-icons'
 import { Gradients, Spacing, BorderRadius, Typography } from '@/constants/theme'
+import { useTheme } from '@/hooks/useTheme'
 
 interface GradientButtonProps {
   label: string
@@ -10,6 +11,8 @@ interface GradientButtonProps {
   loading?: boolean
   disabled?: boolean
   showArrow?: boolean
+  /** `brand` = colores del tenant; `onboarding` = Lunaris (shell Geema) */
+  variant?: 'brand' | 'onboarding'
   style?: ViewStyle
   textStyle?: TextStyle
 }
@@ -20,10 +23,12 @@ export function GradientButton({
   loading = false,
   disabled = false,
   showArrow = true,
+  variant = 'brand',
   style,
   textStyle,
 }: GradientButtonProps) {
-  const g = Gradients.onboarding
+  const { theme, brandGradient } = useTheme()
+  const g = variant === 'onboarding' ? Gradients.onboarding : brandGradient
 
   return (
     <Pressable
@@ -31,24 +36,25 @@ export function GradientButton({
       disabled={disabled || loading}
       style={({ pressed }) => [
         styles.pressable,
+        { shadowColor: g.shadow },
         pressed && styles.pressed,
         disabled && styles.disabled,
         style,
       ]}
     >
       <LinearGradient
-        colors={g.colors}
-        locations={g.locations}
+        colors={[...g.colors]}
+        locations={[...g.locations]}
         start={g.linearStart}
         end={g.linearEnd}
         style={styles.gradient}
       >
         {loading ? (
-          <ActivityIndicator color="#FFFFFF" size="small" />
+          <ActivityIndicator color={theme.buttonText} size="small" />
         ) : (
           <>
-            <Text style={[styles.label, textStyle]}>{label}</Text>
-            {showArrow && <Feather name="arrow-right" size={20} color="#FFFFFF" />}
+            <Text style={[styles.label, { color: theme.buttonText }, textStyle]}>{label}</Text>
+            {showArrow && <Feather name="arrow-right" size={20} color={theme.buttonText} />}
           </>
         )}
       </LinearGradient>
@@ -60,7 +66,6 @@ const styles = StyleSheet.create({
   pressable: {
     width: '100%',
     borderRadius: BorderRadius.sm,
-    shadowColor: Gradients.onboarding.shadow,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 1,
     shadowRadius: 24,
@@ -85,6 +90,5 @@ const styles = StyleSheet.create({
   label: {
     ...Typography.body,
     fontWeight: '700',
-    color: '#FFFFFF',
   },
 })

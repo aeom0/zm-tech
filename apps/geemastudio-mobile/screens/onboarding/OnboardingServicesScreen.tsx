@@ -9,7 +9,7 @@ import {
   OnboardingProgressDots,
   GradientCTAButton,
 } from '@/screens/onboarding/components'
-import { Spacing } from '@/constants/theme'
+import { Onboarding, Spacing } from '@/constants/theme'
 import { useTenant } from '@/contexts/TenantContext'
 import { supabase } from '@/lib/supabase'
 
@@ -132,7 +132,7 @@ export default function OnboardingServicesScreen({
         {/* Contador de seleccionadas */}
         {seleccionadasCount > 0 ? (
           <Animated.View entering={FadeInDown.duration(300)} style={styles.contadorWrap}>
-            <Feather name="heart" size={13} color="#40E0D0" />
+            <Feather name="heart" size={13} color={Onboarding.lunarisAccent} />
             <ThemedText style={styles.contador}>
               {seleccionadasCount}{' '}
               {seleccionadasCount === 1 ? 'categoría seleccionada' : 'categorías seleccionadas'}
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   badge: {
     fontSize: 11,
     fontWeight: '600',
-    color: '#40E0D0',
+    color: Onboarding.lunarisAccent,
     letterSpacing: 1,
     marginBottom: Spacing.sm,
     textTransform: 'uppercase',
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     gap: Spacing.md,
   },
   itemSeleccionado: {
-    borderColor: '#40E0D0',
+    borderColor: Onboarding.lunarisAccent,
     backgroundColor: 'rgba(64,224,208,0.07)',
   },
   itemPressed: { opacity: 0.8 },
@@ -217,8 +217,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   checkboxSelected: {
-    backgroundColor: '#40E0D0',
-    borderColor: '#40E0D0',
+    backgroundColor: Onboarding.lunarisAccent,
+    borderColor: Onboarding.lunarisAccent,
   },
   itemNombre: {
     flex: 1,
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
   },
   contador: {
     fontSize: 13,
-    color: '#40E0D0',
+    color: Onboarding.lunarisAccent,
     fontWeight: '500',
   },
   botones: {
