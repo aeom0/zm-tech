@@ -31,11 +31,11 @@
     "db:studio": "pnpm --filter geemastudio-server exec drizzle-kit studio"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2",
+    "concurrently": "^10.0.5",
     "drizzle-kit": "^0.31.4",
-    "prettier": "^3.8.3",
+    "prettier": "^3.9.8",
     "prettier-plugin-tailwindcss": "^0.8.0",
-    "turbo": "^2.5.4",
+    "turbo": "^2.11.2",
     "typescript": "~6.0.3"
   }
 }
