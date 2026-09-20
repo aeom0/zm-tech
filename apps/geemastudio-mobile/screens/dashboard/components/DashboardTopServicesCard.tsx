@@ -142,9 +142,11 @@ export function DashboardTopServicesCard({
               <ThemedText style={[styles.quickLinkTitle, { flex: 1, color: theme.text }]}>
                 {service.name}
               </ThemedText>
-              <ThemedText style={[styles.topServiceCount, { color: theme.textMuted }]}>
-                {service.count} cita{service.count === 1 ? '' : 's'}
-              </ThemedText>
+              <View style={[styles.topServiceCountBadge, { backgroundColor: `${theme.primary}18` }]}>
+                <ThemedText style={[styles.topServiceCount, { color: theme.primary }]}>
+                  {service.count} cita{service.count === 1 ? '' : 's'}
+                </ThemedText>
+              </View>
             </View>
           )
         })

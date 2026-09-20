@@ -233,9 +233,14 @@ export const dashboardStyles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
   },
+  topServiceCountBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 999,
+  },
   topServiceCount: {
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: '700',
   },
   cardHeaderStack: {
     flexDirection: 'column',
