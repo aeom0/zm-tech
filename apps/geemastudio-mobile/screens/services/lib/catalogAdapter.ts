@@ -97,6 +97,7 @@ export interface PackRawRow {
   category_id?: string | null
   service_ids?: unknown
   is_active: boolean
+  display_order?: number | null
   emoji?: string | null
 }
 
@@ -111,6 +112,7 @@ export function rowToPack(row: PackRawRow, dialect: CatalogDialect): Pack {
       is_active: row.is_active,
       category_id: row.category_id ?? null,
       pack_price_card: row.pack_price_card != null ? String(row.pack_price_card) : null,
+      display_order: row.display_order ?? null,
       badge: row.emoji ?? null,
     }
   }
@@ -135,6 +137,7 @@ export interface PromoRawRow {
   is_active: boolean
   expires_at?: string | null
   valid_until?: string | null
+  display_order?: number | null
 }
 
 /**
@@ -165,6 +168,7 @@ export function rowToPromo(row: PromoRawRow, dialect: CatalogDialect): Promo {
     promo_price: row.promo_price != null ? String(row.promo_price) : null,
     is_active: row.is_active,
     expires_at: dialect === 'zm' ? toIsoOrNull(row.valid_until) : (row.expires_at ?? null),
+    display_order: row.display_order ?? null,
   }
 }
 

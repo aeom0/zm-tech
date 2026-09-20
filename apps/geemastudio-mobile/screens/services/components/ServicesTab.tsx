@@ -76,12 +76,15 @@ export function ServicesTab() {
 
   const groupedServices = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
-    const groups = categories.map((category) => ({
-      ...category,
-      services: localServices.filter(
+    const groups = categories.map((category) => {
+      const inCategory = localServices.filter(
         (s) => s.category_id === category.id && (!query || s.name.toLowerCase().includes(query))
-      ),
-    }))
+      )
+      // Tras un drag, localServices ya trae el orden visual; re-ordenar solo
+      // por activo + sort_order rompería el orden recién guardado (sort_order stale).
+      // El hook ya entrega la lista ordenada; aquí solo filtramos.
+      return { ...category, services: inCategory }
+    })
     if (filterCategoryId) {
       return groups.filter((g) => g.id === filterCategoryId)
     }

@@ -10,6 +10,7 @@ import {
   serializeServiceIds,
   type PackRawRow,
 } from '../lib/catalogAdapter'
+import { sortCatalogList } from '../lib/catalogSort'
 
 export interface PackPayload {
   name: string
@@ -49,7 +50,14 @@ export function usePacksData() {
       if (error) {
         throw new Error(error.message)
       }
-      return ((data ?? []) as PackRawRow[]).map((row) => rowToPack(row, dialect))
+      return sortCatalogList(
+        ((data ?? []) as PackRawRow[]).map((row) => rowToPack(row, dialect)),
+        {
+          getActive: (p) => p.is_active,
+          getOrder: (p) => p.display_order,
+          getName: (p) => p.name,
+        }
+      )
     },
   })
 

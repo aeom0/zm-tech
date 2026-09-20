@@ -15,6 +15,7 @@ import {
   type PromoRawRow,
   type PromotionItemRawRow,
 } from '../lib/catalogAdapter'
+import { sortCatalogList } from '../lib/catalogSort'
 
 export interface PromoItemDraft {
   tempId: string
@@ -51,7 +52,7 @@ function computePromoPriceField(items: PromoItemDraft[]): string | null {
 const GEEMA_PROMOS_SELECT =
   'id, title, description, badge, accent_color, promo_price, is_active, expires_at'
 const ZM_PROMOS_SELECT =
-  'id, title, description, badge, accent_color, promo_price, is_active, valid_until'
+  'id, title, description, badge, accent_color, promo_price, is_active, valid_until, display_order'
 const GEEMA_ITEMS_SELECT = 'id, promo_id, item_type, item_id, quantity, discounted_price'
 const ZM_ITEMS_SELECT =
   'id, promotion_id, item_type, item_id, quantity, discounted_price, sort_order'
@@ -100,7 +101,14 @@ export function usePromosData() {
     queryFn: async () => {
       const dialect = await detectCatalogDialect()
       const rows = await fetchPromotions(dialect)
-      return rows.map((row) => rowToPromo(row, dialect))
+      return sortCatalogList(
+        rows.map((row) => rowToPromo(row, dialect)),
+        {
+          getActive: (p) => p.is_active,
+          getOrder: (p) => p.display_order,
+          getName: (p) => p.title,
+        }
+      )
     },
   })
 
@@ -126,7 +134,12 @@ export function usePromosData() {
 
   // ZM: promo_price casi siempre es NULL en prod; el total real vive en promotion_items.
   const promotionsWithTotals = useMemo(
-    () => applyPromoTotals(promotions, promotionItems),
+    () =>
+      sortCatalogList(applyPromoTotals(promotions, promotionItems), {
+        getActive: (p) => p.is_active,
+        getOrder: (p) => p.display_order,
+        getName: (p) => p.title,
+      }),
     [promotions, promotionItems]
   )
 

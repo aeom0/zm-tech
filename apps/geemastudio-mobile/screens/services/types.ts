@@ -28,6 +28,8 @@ export interface Pack {
   category_id?: string | null
   /** Solo dialecto ZM: precio con recargo por tarjeta. */
   pack_price_card?: string | null
+  /** Solo dialecto ZM: orden de menú. */
+  display_order?: number | null
   /** Emoji del pack (sticker visual en la card). */
   badge: string | null
 }
@@ -41,6 +43,8 @@ export interface Promo {
   promo_price: string | null
   is_active: boolean
   expires_at: string | null
+  /** Solo dialecto ZM: orden de menú. */
+  display_order?: number | null
 }
 
 export interface PromotionItem {

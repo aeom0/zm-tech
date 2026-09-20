@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 import type { Service, ServiceCategory } from '../types'
 import { parsePriceInput, priceToDecimalString } from '../types'
 import { detectCatalogDialect, isMissingColumnError } from '../lib/catalogAdapter'
+import { sortCatalogList } from '../lib/catalogSort'
 
 export interface ServicePayload {
   name: string
@@ -33,7 +34,11 @@ export function useServicesData() {
       if (error) {
         throw new Error(error.message)
       }
-      return (data ?? []) as Service[]
+      return sortCatalogList((data ?? []) as Service[], {
+        getActive: (s) => s.is_active,
+        getOrder: (s) => s.sort_order,
+        getName: (s) => s.name,
+      })
     },
   })
 
@@ -54,18 +59,27 @@ export function useServicesData() {
         if (error) {
           throw new Error(error.message)
         }
-        return ((data ?? []) as Array<{ id: string; name: string; order: number }>).map((row) => ({
-          ...row,
-          color: null,
-          icon: null,
-        }))
+        return sortCatalogList(
+          ((data ?? []) as Array<{ id: string; name: string; order: number }>).map((row) => ({
+            ...row,
+            color: null,
+            icon: null,
+          })),
+          {
+            getOrder: (c) => c.order,
+            getName: (c) => c.name,
+          }
+        )
       }
       const primary = await supabase
         .from('service_categories')
         .select('id, name, color, icon, order')
         .order('order', { ascending: true })
       if (!primary.error) {
-        return (primary.data ?? []) as ServiceCategory[]
+        return sortCatalogList((primary.data ?? []) as ServiceCategory[], {
+          getOrder: (c) => c.order,
+          getName: (c) => c.name,
+        })
       }
       if (!isMissingColumnError(primary.error)) {
         throw new Error(primary.error.message)
@@ -77,8 +91,14 @@ export function useServicesData() {
       if (fallback.error) {
         throw new Error(fallback.error.message)
       }
-      return ((fallback.data ?? []) as Array<{ id: string; name: string; order: number }>).map(
-        (row) => ({ ...row, color: null, icon: null })
+      return sortCatalogList(
+        ((fallback.data ?? []) as Array<{ id: string; name: string; order: number }>).map(
+          (row) => ({ ...row, color: null, icon: null })
+        ),
+        {
+          getOrder: (c) => c.order,
+          getName: (c) => c.name,
+        }
       )
     },
   })
