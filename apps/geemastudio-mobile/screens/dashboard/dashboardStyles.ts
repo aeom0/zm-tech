@@ -27,6 +27,11 @@ export const dashboardStyles = StyleSheet.create({
     fontWeight: '700',
     textTransform: 'capitalize',
   },
+  motivationalText: {
+    fontSize: 13,
+    marginTop: 4,
+    fontStyle: 'italic',
+  },
   logoMarkRing: {
     width: 46,
     height: 46,

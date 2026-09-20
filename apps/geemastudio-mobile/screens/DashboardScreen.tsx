@@ -43,6 +43,7 @@ import {
 import { useDashboardMutations } from './dashboard/hooks/useDashboardMutations'
 import { useDashboardQueries, type TopServicesPeriod } from './dashboard/hooks/useDashboardQueries'
 import { useStaggeredAnimation } from './dashboard/hooks/useStaggeredAnimation'
+import { getRandomMotivationalMessage } from './dashboard/motivationalMessages'
 import type { DashboardAppointment } from './dashboard/types'
 
 /** Ventana de la card "Próximas citas" (hoy + N-1 días siguientes). */
@@ -191,6 +192,7 @@ export default function DashboardScreen() {
   const greeting = getGreeting()
   const displayNameSuffix = profile?.full_name ? `, ${profile.full_name.split(' ')[0]}` : ''
   const dateLabel = formatDashboardDateLong(config.locale.language, tenantTz)
+  const [motivationalMessage] = useState(getRandomMotivationalMessage)
 
   if (isLoading) {
     return <DashboardLoading backgroundColor={theme.backgroundRoot} />
@@ -349,8 +351,11 @@ export default function DashboardScreen() {
       <DashboardHeader
         greeting={greeting}
         displayNameSuffix={displayNameSuffix}
+        motivationalMessage={motivationalMessage}
         dateLabel={dateLabel}
         businessInitials={config.businessName.slice(0, 2).toUpperCase()}
+        logoUri={config.logo}
+        logoBgStyle={isDark ? config.logoBgDark : config.logoBgLight}
         primaryColor={config.theme.primaryColor}
         theme={{ text: theme.text, textSecondary: theme.textSecondary }}
         animatedStyle={animatedItems[5]}
