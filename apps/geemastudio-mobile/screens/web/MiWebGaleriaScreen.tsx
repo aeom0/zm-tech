@@ -11,6 +11,7 @@ import {
 } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
@@ -27,6 +28,7 @@ const emptyItem = (): WebGalleryItem => ({ url: '', alt: '', category: '' })
 export default function MiWebGaleriaScreen() {
   const headerHeight = useHeaderHeight()
   const tabBarHeight = useBottomTabBarHeight()
+  const insets = useSafeAreaInsets()
   const { theme } = useTheme()
   const { data, isLoading } = useWebSettings()
   const update = useUpdateWebSettings()
@@ -120,7 +122,7 @@ export default function MiWebGaleriaScreen() {
         keyExtractor={(item, i) => `${item.url}-${i}`}
         contentContainerStyle={{
           paddingTop: headerHeight + Spacing.lg,
-          paddingBottom: tabBarHeight + 80,
+          paddingBottom: tabBarHeight + 80 + insets.bottom,
           paddingHorizontal: Spacing.lg,
         }}
         ListEmptyComponent={
@@ -157,7 +159,7 @@ export default function MiWebGaleriaScreen() {
 
       <Pressable
         onPress={openNew}
-        style={[styles.fab, { backgroundColor: theme.primary }]}
+        style={[styles.fab, { backgroundColor: theme.primary, bottom: Spacing['3xl'] + insets.bottom }]}
         accessibilityLabel="Agregar foto"
       >
         <Feather name="plus" size={28} color={theme.buttonText} />

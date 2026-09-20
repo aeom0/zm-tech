@@ -12,6 +12,7 @@ import {
 } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
@@ -35,6 +36,7 @@ const emptyReview = (): WebReview => ({
 export default function MiWebResenasScreen() {
   const headerHeight = useHeaderHeight()
   const tabBarHeight = useBottomTabBarHeight()
+  const insets = useSafeAreaInsets()
   const { theme } = useTheme()
   const { data, isLoading } = useWebSettings()
   const update = useUpdateWebSettings()
@@ -115,7 +117,7 @@ export default function MiWebResenasScreen() {
         keyExtractor={(item, i) => `${item.author}-${i}`}
         contentContainerStyle={{
           paddingTop: headerHeight + Spacing.lg,
-          paddingBottom: tabBarHeight + 80,
+          paddingBottom: tabBarHeight + 80 + insets.bottom,
           paddingHorizontal: Spacing.lg,
         }}
         ListEmptyComponent={
@@ -173,7 +175,7 @@ export default function MiWebResenasScreen() {
           setDraft(emptyReview())
           setModalOpen(true)
         }}
-        style={[styles.fab, { backgroundColor: theme.primary }]}
+        style={[styles.fab, { backgroundColor: theme.primary, bottom: Spacing['3xl'] + insets.bottom }]}
       >
         <Feather name="plus" size={28} color={theme.buttonText} />
       </Pressable>
