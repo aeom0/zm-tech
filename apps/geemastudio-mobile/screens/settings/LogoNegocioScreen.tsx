@@ -290,6 +290,15 @@ function BgPicker({ title, uri, selected, saving, theme, onSelect }: BgPickerPro
           )
         })}
       </View>
+      {selected === 'transparent' && (
+        <View style={styles.bgWarning}>
+          <Feather name="alert-circle" size={13} color={theme.textSecondary} />
+          <ThemedText style={[styles.bgWarningText, { color: theme.textSecondary }]}>
+            Revisá el logo arriba con este fondo: si no se distingue bien, elegí "Fondo claro" u
+            "oscuro" en vez de transparente.
+          </ThemedText>
+        </View>
+      )}
     </View>
   )
 }
@@ -375,4 +384,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   swatchLabel: { fontSize: 11, fontWeight: '500', textAlign: 'center' },
+  bgWarning: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: Spacing.xs,
+    marginTop: Spacing.sm,
+  },
+  bgWarningText: { flex: 1, fontSize: 11, lineHeight: 15 },
 })

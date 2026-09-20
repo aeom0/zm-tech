@@ -31,8 +31,7 @@ export function useLogoUpload() {
       )
 
       const response = await fetch(manipulated.uri)
-      const blob = await response.blob()
-      const arrayBuffer = await blob.arrayBuffer()
+      const arrayBuffer = await response.arrayBuffer()
       const uint8Array = new Uint8Array(arrayBuffer)
 
       const filePath = `${userId}/logo.webp`
