@@ -69,7 +69,7 @@ Automotriz, Sports Tech y Enterprise.
 - **Moneda:** Soles peruanos (S/) — `fmtSoles()` en `apps/mobile/utils/format.ts`
 - **Idioma UI:** Español es-PE sin excepción
 - **Paleta:** Violeta #7B2D8E · Violeta claro #E8D4ED · Violeta oscuro #5A1F6A · Oro #D4AF37 · Superficie #F8F5FA
-- **Equipo salón:** Vanessa (owner), Stephani, Yosaida, Romina
+- **Equipo salón:** Vanessa (owner), Stephani. Romina de baja por salud desde feb. 2026 (comentada en `landing-data.ts`, no activa)
 - **Roles:** `dev` | `owner` | `staff`
 - **Integraciones:** WABA bot (+51 981 444 430), Claude Haiku (bot IA, `claude-haiku-4-5-20251001`), FCM push, EAS OTA, Sanity CMS, GitHub Actions
 - **⚠️ WABA token expira ~30 abril 2026** — renovar `WHATSAPP_ACCESS_TOKEN` en Supabase Secrets
