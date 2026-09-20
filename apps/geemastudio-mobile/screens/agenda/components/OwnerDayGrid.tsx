@@ -358,8 +358,8 @@ export function OwnerDayGrid({
                               <ThemedText
                                 style={{
                                   position: 'absolute',
-                                  top: 0,
-                                  right: 2,
+                                  top: -2,
+                                  right: 4,
                                   fontSize: 9,
                                   fontWeight: '800',
                                   color: cardTextMutedColor,
