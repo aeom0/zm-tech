@@ -161,10 +161,7 @@ export async function deleteEmployee(id: string): Promise<void> {
 
 const AVATAR_BUCKET = 'employee-avatars'
 
-export async function uploadEmployeeAvatar(
-  employeeId: string,
-  file: File
-): Promise<string> {
+export async function uploadEmployeeAvatar(employeeId: string, file: File): Promise<string> {
   if (!supabase) throw new Error('Supabase no está configurado')
   const ext = file.type.includes('png') ? 'png' : file.type.includes('webp') ? 'webp' : 'jpg'
   const path = `${employeeId}/${Date.now()}.${ext}`

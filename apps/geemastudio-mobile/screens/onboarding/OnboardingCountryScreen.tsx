@@ -13,11 +13,7 @@ import {
 } from '@/screens/onboarding/components'
 import { BorderRadius, Gradients, Onboarding, Spacing } from '@/constants/theme'
 import { useTenant } from '@/contexts/TenantContext'
-import {
-  countriesForPicker,
-  localeFromCountry,
-  type CountryPreset,
-} from '@zmtech/tenant-config'
+import { countriesForPicker, localeFromCountry, type CountryPreset } from '@zmtech/tenant-config'
 
 interface OnboardingCountryScreenProps {
   onNext: () => void
@@ -41,10 +37,7 @@ function hexToRgba(hex: string, alpha: number): string {
   return `rgba(${r},${g},${b},${alpha})`
 }
 
-export default function OnboardingCountryScreen({
-  onNext,
-  onBack,
-}: OnboardingCountryScreenProps) {
+export default function OnboardingCountryScreen({ onNext, onBack }: OnboardingCountryScreenProps) {
   const { config, updateTenant } = useTenant()
   const paises = useMemo(() => countriesForPicker(), [])
   const featured = paises.find((p) => p.featured) ?? paises[0]
@@ -107,7 +100,9 @@ export default function OnboardingCountryScreen({
                   borderRadius={16}
                   borderColor={Gradients.onboarding.start}
                 />
-                <ThemedText style={[styles.featuredLabel, { color: Onboarding.text, marginTop: Spacing.sm }]}>
+                <ThemedText
+                  style={[styles.featuredLabel, { color: Onboarding.text, marginTop: Spacing.sm }]}
+                >
                   {featured.label}
                 </ThemedText>
                 <ThemedText style={[styles.featuredSub, { color: Onboarding.lunarisAccent }]}>
@@ -132,7 +127,9 @@ export default function OnboardingCountryScreen({
                 borderRadius={16}
                 borderColor={Onboarding.border}
               />
-              <ThemedText style={[styles.featuredLabel, { color: Onboarding.text, marginTop: Spacing.sm }]}>
+              <ThemedText
+                style={[styles.featuredLabel, { color: Onboarding.text, marginTop: Spacing.sm }]}
+              >
                 {featured.label}
               </ThemedText>
               <ThemedText style={[styles.featuredSub, { color: Onboarding.textMuted }]}>
@@ -187,8 +184,7 @@ export default function OnboardingCountryScreen({
 
       <View style={styles.footer}>
         <ThemedText style={[styles.hint, { color: Onboarding.textMuted }]}>
-          {presetActual.label} · {presetActual.currency.symbol}{' '}
-          {presetActual.currency.code}
+          {presetActual.label} · {presetActual.currency.symbol} {presetActual.currency.code}
         </ThemedText>
         <GradientCTAButton label="Continuar →" onPress={continuar} />
       </View>

@@ -33,7 +33,11 @@ export function TestimonialsSection({ data, theme }: TestimonialsSectionProps) {
         <div className="mt-3.5 flex items-center gap-2.5">
           {review.photoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={review.photoUrl} alt={review.author} className="h-8 w-8 flex-shrink-0 rounded-full object-cover" />
+            <img
+              src={review.photoUrl}
+              alt={review.author}
+              className="h-8 w-8 flex-shrink-0 rounded-full object-cover"
+            />
           ) : (
             <div
               className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-[13px] font-bold"
@@ -56,11 +60,20 @@ export function TestimonialsSection({ data, theme }: TestimonialsSectionProps) {
   }
 
   return (
-    <section className="border-t px-5 py-14" style={{ background: theme.colors.bgAlt, borderColor: theme.colors.divider }}>
-      <p className="mb-1 text-[11px] uppercase tracking-[0.2em]" style={{ color: theme.colors.textFaint }}>
+    <section
+      className="border-t px-5 py-14"
+      style={{ background: theme.colors.bgAlt, borderColor: theme.colors.divider }}
+    >
+      <p
+        className="mb-1 text-[11px] uppercase tracking-[0.2em]"
+        style={{ color: theme.colors.textFaint }}
+      >
         Reseñas
       </p>
-      <h2 className="mb-5 text-[26px] font-bold tracking-tight" style={{ color: theme.colors.text }}>
+      <h2
+        className="mb-5 text-[26px] font-bold tracking-tight"
+        style={{ color: theme.colors.text }}
+      >
         {heading}
       </h2>
       {hasPhotos ? (

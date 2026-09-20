@@ -9,31 +9,31 @@ Plan padre: [`07-PLAN-look-preview-multi-servicio.md`](./07-PLAN-look-preview-mu
 
 ## Cobertura
 
-| # | style_key | display | category | mapping_mm | Estado |
-|---|-----------|---------|----------|------------|--------|
-| 1 | `clasicas` | Extensiones Clásicas | `extensiones` | 7-8-9-10-11-10-9-8 mm | ✅ v1 |
-| 2 | `rimel` | Efecto Rímel | `extensiones` | 8-9-10-11-12-11-10 mm | ✅ v1 |
-| 3 | `mojado_wet` | Efecto Mojado (Wet Look) | `extensiones` | 7-8-10-12-12-10-8 mm | ✅ v1 |
-| 4 | `vol_tec_3d_natural` | Vol. Tecnológico 3D - Natural | `extensiones` | 8-9-10-11-10-9-8 mm | ✅ v1 |
-| 5 | `vol_tec_3d_ardilla` | Vol. Tecnológico 3D - Efecto Ardilla | `extensiones` | 7-8-9-10-12-11-9 mm | ✅ v1 |
-| 6 | `vol_tec_3d_cat_eyes` | Vol. Tecnológico 3D - Cat Eyes | `extensiones` | 7-8-9-10-11-12-13 mm | ✅ v1 |
-| 7 | `vol_tec_3d_ojo_abierto` | Vol. Tecnológico 3D - Ojo Abierto | `extensiones` | 7-8-10-12-12-10-7 mm | ✅ v1 |
-| 8 | `vol_tec_4d_natural` | Vol. Tecnológico 4D - Natural | `extensiones` | 8-9-10-11-10-9-8 mm | ✅ v1 |
-| 9 | `vol_tec_4d_ardilla` | Vol. Tecnológico 4D - Efecto Ardilla | `extensiones` | 7-8-9-10-12-11-9 mm | ✅ v1 |
-| 10 | `vol_tec_4d_cat_eyes` | Vol. Tecnológico 4D - Cat Eyes | `extensiones` | 7-8-9-10-11-12-13 mm | ✅ v1 |
-| 11 | `hawaiana` | Efecto Hawaiana | `extensiones` | 7-8-9-10-11-10-9-8 mm | ✅ v1 |
-| 12 | `fox` | Efecto Fox | `extensiones` | 7-8-9-10-11-12-13 mm | ✅ v1 |
-| 13 | `mega_volumen` | Mega Volumen | `extensiones` | 8-9-10-11-10-9-8 mm | ✅ v1 |
-| 14 | `wispy_glam` | Wispy / Wispy Glam | `extensiones` | 7-9-11-12-11-9-7 mm | ✅ v1 |
-| 15 | `anime` | Efecto Anime | `extensiones` | 6-8-10-12-12-10-8-6 mm | ✅ v1 |
-| 16 | `micro_doll_eye` | Combo Mirada Espectacular (Microblading + Efecto Muñeca) | `combo_mirada` | 7-8-10-12-12-10-8 mm (pestañas) | ✅ v1 |
-| 17 | `lifting_pestanas` | Lifting de Pestañas | `lifting` | n/a | ✅ v1 |
-| 18 | `cejas_diseno` | Diseño y Depilación de Cejas | `cejas` | n/a | ✅ v1 |
-| 19 | `cejas_laminado` | Laminado de Cejas | `cejas` | n/a | ✅ v1 |
-| 20 | `microblading_solo` | Microblading de Cejas | `microblading` | n/a | ✅ v1 |
-| 21 | `hidralips` | Hidra Lips / Labios | `hidralips` | n/a | ✅ v1 |
-| 22 | `unas_gel_natural` | Manicure Gel Natural (Rubber / Kapping) | `unas` | n/a | ✅ v1 |
-| 23 | `unas_diseno_simple` | Manicure en Gel con Diseño Soft | `unas` | n/a | ✅ v1 |
+| #   | style_key                | display                                                  | category       | mapping_mm                      | Estado |
+| --- | ------------------------ | -------------------------------------------------------- | -------------- | ------------------------------- | ------ |
+| 1   | `clasicas`               | Extensiones Clásicas                                     | `extensiones`  | 7-8-9-10-11-10-9-8 mm           | ✅ v1  |
+| 2   | `rimel`                  | Efecto Rímel                                             | `extensiones`  | 8-9-10-11-12-11-10 mm           | ✅ v1  |
+| 3   | `mojado_wet`             | Efecto Mojado (Wet Look)                                 | `extensiones`  | 7-8-10-12-12-10-8 mm            | ✅ v1  |
+| 4   | `vol_tec_3d_natural`     | Vol. Tecnológico 3D - Natural                            | `extensiones`  | 8-9-10-11-10-9-8 mm             | ✅ v1  |
+| 5   | `vol_tec_3d_ardilla`     | Vol. Tecnológico 3D - Efecto Ardilla                     | `extensiones`  | 7-8-9-10-12-11-9 mm             | ✅ v1  |
+| 6   | `vol_tec_3d_cat_eyes`    | Vol. Tecnológico 3D - Cat Eyes                           | `extensiones`  | 7-8-9-10-11-12-13 mm            | ✅ v1  |
+| 7   | `vol_tec_3d_ojo_abierto` | Vol. Tecnológico 3D - Ojo Abierto                        | `extensiones`  | 7-8-10-12-12-10-7 mm            | ✅ v1  |
+| 8   | `vol_tec_4d_natural`     | Vol. Tecnológico 4D - Natural                            | `extensiones`  | 8-9-10-11-10-9-8 mm             | ✅ v1  |
+| 9   | `vol_tec_4d_ardilla`     | Vol. Tecnológico 4D - Efecto Ardilla                     | `extensiones`  | 7-8-9-10-12-11-9 mm             | ✅ v1  |
+| 10  | `vol_tec_4d_cat_eyes`    | Vol. Tecnológico 4D - Cat Eyes                           | `extensiones`  | 7-8-9-10-11-12-13 mm            | ✅ v1  |
+| 11  | `hawaiana`               | Efecto Hawaiana                                          | `extensiones`  | 7-8-9-10-11-10-9-8 mm           | ✅ v1  |
+| 12  | `fox`                    | Efecto Fox                                               | `extensiones`  | 7-8-9-10-11-12-13 mm            | ✅ v1  |
+| 13  | `mega_volumen`           | Mega Volumen                                             | `extensiones`  | 8-9-10-11-10-9-8 mm             | ✅ v1  |
+| 14  | `wispy_glam`             | Wispy / Wispy Glam                                       | `extensiones`  | 7-9-11-12-11-9-7 mm             | ✅ v1  |
+| 15  | `anime`                  | Efecto Anime                                             | `extensiones`  | 6-8-10-12-12-10-8-6 mm          | ✅ v1  |
+| 16  | `micro_doll_eye`         | Combo Mirada Espectacular (Microblading + Efecto Muñeca) | `combo_mirada` | 7-8-10-12-12-10-8 mm (pestañas) | ✅ v1  |
+| 17  | `lifting_pestanas`       | Lifting de Pestañas                                      | `lifting`      | n/a                             | ✅ v1  |
+| 18  | `cejas_diseno`           | Diseño y Depilación de Cejas                             | `cejas`        | n/a                             | ✅ v1  |
+| 19  | `cejas_laminado`         | Laminado de Cejas                                        | `cejas`        | n/a                             | ✅ v1  |
+| 20  | `microblading_solo`      | Microblading de Cejas                                    | `microblading` | n/a                             | ✅ v1  |
+| 21  | `hidralips`              | Hidra Lips / Labios                                      | `hidralips`    | n/a                             | ✅ v1  |
+| 22  | `unas_gel_natural`       | Manicure Gel Natural (Rubber / Kapping)                  | `unas`         | n/a                             | ✅ v1  |
+| 23  | `unas_diseno_simple`     | Manicure en Gel con Diseño Soft                          | `unas`         | n/a                             | ✅ v1  |
 
 ## Prompts listos (VERTEX_READY_PROMPT)
 

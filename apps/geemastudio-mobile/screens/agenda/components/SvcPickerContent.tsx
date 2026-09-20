@@ -7,12 +7,7 @@ import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTheme } from '@/hooks/useTheme'
 import { BorderRadius, Colors, Spacing } from '@/constants/theme'
 
-import type {
-  AgendaEmployee,
-  AgendaPack,
-  AgendaService,
-  AgendaServiceCategory,
-} from '../types'
+import type { AgendaEmployee, AgendaPack, AgendaService, AgendaServiceCategory } from '../types'
 
 const PACKS_TAB = '__packs__'
 
@@ -153,17 +148,12 @@ export function SvcPickerContent({
                   ]}
                 >
                   <ThemedText
-                    style={[
-                      styles.empInitial,
-                      { color: selected ? '#FFFFFF' : emp.color },
-                    ]}
+                    style={[styles.empInitial, { color: selected ? '#FFFFFF' : emp.color }]}
                   >
                     {emp.name[0]}
                   </ThemedText>
                 </View>
-                <ThemedText
-                  style={[styles.empName, { color: selected ? '#FFFFFF' : theme.text }]}
-                >
+                <ThemedText style={[styles.empName, { color: selected ? '#FFFFFF' : theme.text }]}>
                   {emp.name.split(' ')[0]}
                 </ThemedText>
               </Pressable>
@@ -203,10 +193,7 @@ export function SvcPickerContent({
                 >
                   <View style={styles.svcRowMain}>
                     <ThemedText
-                      style={[
-                        styles.svcName,
-                        { color: alreadyAdded ? theme.primary : theme.text },
-                      ]}
+                      style={[styles.svcName, { color: alreadyAdded ? theme.primary : theme.text }]}
                       numberOfLines={2}
                     >
                       {pack.name}
@@ -224,9 +211,7 @@ export function SvcPickerContent({
                       },
                     ]}
                   >
-                    {alreadyAdded ? (
-                      <Feather name="check" size={12} color="#FFFFFF" />
-                    ) : null}
+                    {alreadyAdded ? <Feather name="check" size={12} color="#FFFFFF" /> : null}
                   </View>
                 </Pressable>
               )
@@ -257,10 +242,7 @@ export function SvcPickerContent({
                 >
                   <View style={styles.svcRowMain}>
                     <ThemedText
-                      style={[
-                        styles.svcName,
-                        { color: isSelected ? theme.primary : theme.text },
-                      ]}
+                      style={[styles.svcName, { color: isSelected ? theme.primary : theme.text }]}
                       numberOfLines={2}
                     >
                       {service.name}
@@ -286,10 +268,7 @@ export function SvcPickerContent({
         )}
       </ScrollView>
 
-      <Pressable
-        style={[styles.doneBtn, { backgroundColor: theme.primary }]}
-        onPress={onClose}
-      >
+      <Pressable style={[styles.doneBtn, { backgroundColor: theme.primary }]} onPress={onClose}>
         <Feather name="check" size={18} color="#FFFFFF" />
         <ThemedText style={styles.doneBtnText}>
           Listo ({selectedServiceIds.length} servicio

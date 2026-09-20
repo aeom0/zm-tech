@@ -1,14 +1,9 @@
 import { supabase } from '@/lib/supabase'
-import type {
-  ExpenseCategory,
-  MonthlyFinancialRow,
-  OperationalExpense,
-} from '../types'
+import type { ExpenseCategory, MonthlyFinancialRow, OperationalExpense } from '../types'
 
 export function toNumber(value: string | number | null | undefined): number {
   if (value == null) return 0
-  const n =
-    typeof value === 'number' ? value : Number.parseFloat(String(value))
+  const n = typeof value === 'number' ? value : Number.parseFloat(String(value))
   return Number.isFinite(n) ? n : 0
 }
 
@@ -92,10 +87,7 @@ export async function upsertExpense(opts: {
     created_by: opts.data.created_by ?? null,
   }
   if (opts.id) {
-    const { error } = await supabase
-      .from('operational_expenses')
-      .update(row)
-      .eq('id', opts.id)
+    const { error } = await supabase.from('operational_expenses').update(row).eq('id', opts.id)
     if (error) throw new Error(error.message)
     return
   }
@@ -106,9 +98,6 @@ export async function upsertExpense(opts: {
 }
 
 export async function deleteExpense(id: string): Promise<void> {
-  const { error } = await supabase
-    .from('operational_expenses')
-    .delete()
-    .eq('id', id)
+  const { error } = await supabase.from('operational_expenses').delete().eq('id', id)
   if (error) throw new Error(error.message)
 }

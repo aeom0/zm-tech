@@ -101,8 +101,7 @@ export default function MainTabNavigator() {
             title: 'Agenda',
             headerTitle: 'Agenda',
             tabBarIcon: ({ color }) => <Feather name="calendar" size={22} color={color} />,
-            tabBarBadge:
-              unreviewedReferencesCount > 0 ? unreviewedReferencesCount : undefined,
+            tabBarBadge: unreviewedReferencesCount > 0 ? unreviewedReferencesCount : undefined,
             tabBarBadgeStyle: {
               backgroundColor: config.theme.primaryColor,
               color: '#FFFFFF',

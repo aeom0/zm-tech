@@ -14,18 +14,18 @@ Alberto probó **Geema mobile** (APK preview `exposdk:56.0.0`, build `34ec3bc3-5
 
 **Resultado general:** login, datos core y navegación **funcionan**; la sensación de “pocos detalles” viene de **esquema incompatible** en catálogo avanzado y **features operativas ZM no portadas**, no de una app vacía.
 
-| Área probada | Resultado (30-ago) |
-|--------------|-----------|
-| Login + tenant ZM | ✅ |
-| Inicio (KPIs, próximas citas) | ✅ parcial |
-| Agenda | ✅ hora Lima (S5C-3); UI distinta a ZM; multi-servicio → S5C-4; **04-sep:** `OwnerDayGrid` reparte carriles si dos citas se solapan en la misma columna |
-| Servicios (catálogo base) | ✅ |
-| Packs / Promos | ✅ adaptador (S5C-1/2) — Alberto confirmó visibles |
-| Clientes | ✅ |
-| Pagos / Finanzas | ⚠️ no en tabs; **Más → Finanzas** (versión simple; `payment_mode` ZM-safe) |
-| Inventario | ✅ (admin) |
-| Personal / chicas | ✅ adaptador (S5C-11) — misma tabla que columnas de agenda |
-| WABA (promo WA, referencias agenda) | ❌ stub o ausente |
+| Área probada                        | Resultado (30-ago)                                                                                                                                      |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Login + tenant ZM                   | ✅                                                                                                                                                      |
+| Inicio (KPIs, próximas citas)       | ✅ parcial                                                                                                                                              |
+| Agenda                              | ✅ hora Lima (S5C-3); UI distinta a ZM; multi-servicio → S5C-4; **04-sep:** `OwnerDayGrid` reparte carriles si dos citas se solapan en la misma columna |
+| Servicios (catálogo base)           | ✅                                                                                                                                                      |
+| Packs / Promos                      | ✅ adaptador (S5C-1/2) — Alberto confirmó visibles                                                                                                      |
+| Clientes                            | ✅                                                                                                                                                      |
+| Pagos / Finanzas                    | ⚠️ no en tabs; **Más → Finanzas** (versión simple; `payment_mode` ZM-safe)                                                                              |
+| Inventario                          | ✅ (admin)                                                                                                                                              |
+| Personal / chicas                   | ✅ adaptador (S5C-11) — misma tabla que columnas de agenda                                                                                              |
+| WABA (promo WA, referencias agenda) | ❌ stub o ausente                                                                                                                                       |
 
 ---
 
@@ -35,10 +35,10 @@ Alberto probó **Geema mobile** (APK preview `exposdk:56.0.0`, build `34ec3bc3-5
 
 **Esperado (UX distinta), no bug de datos.**
 
-| Pantalla | Comportamiento |
-|----------|----------------|
+| Pantalla   | Comportamiento                                                                                  |
+| ---------- | ----------------------------------------------------------------------------------------------- |
 | **Inicio** | KPI **Completadas** = count citas `completed` hoy. Lista **Próximas citas** = solo `scheduled`. |
-| **Agenda** | Carga todas las citas; filtro default **Todas**. Completadas visibles si día/filtro correctos. |
+| **Agenda** | Carga todas las citas; filtro default **Todas**. Completadas visibles si día/filtro correctos.  |
 
 **Checklist QA agenda** (repetir en validaciones):
 
@@ -53,12 +53,12 @@ Geema usa grid día/semana + columnas staff; ZM usa grid 10–18 h Lima con medi
 
 **Bug de compatibilidad BD** — UI implementada en Geema, esquema divergente.
 
-| Tabla | Geema mobile espera | ZM prod (`shared-schema`) |
-|-------|---------------------|---------------------------|
-| `packs` | `name`, `price`, `service_ids[]` | `title`, `pack_price`, `pack_price_card`, `category_id`, `service_ids` (JSON text) |
-| `promotions` | `expires_at`, `promo_price` único | `valid_until`, `valid_from`, ítems en `promotion_items` |
-| `promotion_items` | — (no usa) | `item_type`, `item_id`, `quantity`, `discounted_price` |
-| `service_categories` | `color`, `icon` (opcional Geema) | `id`, `name`, `order` |
+| Tabla                | Geema mobile espera               | ZM prod (`shared-schema`)                                                          |
+| -------------------- | --------------------------------- | ---------------------------------------------------------------------------------- |
+| `packs`              | `name`, `price`, `service_ids[]`  | `title`, `pack_price`, `pack_price_card`, `category_id`, `service_ids` (JSON text) |
+| `promotions`         | `expires_at`, `promo_price` único | `valid_until`, `valid_from`, ítems en `promotion_items`                            |
+| `promotion_items`    | — (no usa)                        | `item_type`, `item_id`, `quantity`, `discounted_price`                             |
+| `service_categories` | `color`, `icon` (opcional Geema)  | `id`, `name`, `order`                                                              |
 
 **Archivos Geema afectados:**
 
@@ -74,16 +74,16 @@ Geema usa grid día/semana + columnas staff; ZM usa grid 10–18 h Lima con medi
 
 **Parcialmente esperado.**
 
-| Módulo | Geema | ZM |
-|--------|-------|-----|
-| Entrada UI | **Más → Finanzas** | **Más → Finanzas** |
-| CRUD `payments` | ✅ | ✅ |
-| Desglose por chica | ✅ | ✅ |
-| Panel ejecutivo (KPIs, gráfico) | ❌ | ✅ |
-| Gastos operativos | ❌ | ✅ |
-| Costos WABA / Meta | ❌ → S5C-7 | ✅ (`waba_pricing_daily` + `waba_template_analytics_daily` Fase 5) |
-| Uso IA | ❌ | ✅ |
-| Pago en detalle cita (agenda) | ❌ | ✅ |
+| Módulo                          | Geema              | ZM                                                                 |
+| ------------------------------- | ------------------ | ------------------------------------------------------------------ |
+| Entrada UI                      | **Más → Finanzas** | **Más → Finanzas**                                                 |
+| CRUD `payments`                 | ✅                 | ✅                                                                 |
+| Desglose por chica              | ✅                 | ✅                                                                 |
+| Panel ejecutivo (KPIs, gráfico) | ❌                 | ✅                                                                 |
+| Gastos operativos               | ❌                 | ✅                                                                 |
+| Costos WABA / Meta              | ❌ → S5C-7         | ✅ (`waba_pricing_daily` + `waba_template_analytics_daily` Fase 5) |
+| Uso IA                          | ❌                 | ✅                                                                 |
+| Pago en detalle cita (agenda)   | ❌                 | ✅                                                                 |
 
 ### Personal / chicas vs agenda
 
@@ -91,18 +91,19 @@ Geema usa grid día/semana + columnas staff; ZM usa grid 10–18 h Lima con medi
 
 **Bug (30-ago):** Geema pedía columnas que ZM prod no tiene. El listado `select('*')` funcionaba; guardar o recargar agenda con `avatar_url` / `payment_mode` / `salary_amount` fallaba (o se tapaba con cache TanStack compartida `['employees']` y queryFns distintos).
 
-| Columna | Geema | ZM prod |
-|---------|-------|---------|
-| `name`, `color`, `is_active`, `commission_percentage` | ✅ | ✅ |
-| `commission_mode`, `house_cut_fixed` | ✅ (schema + UI Personal/Finanzas) | ✅ (migración 04-sep-2026) |
-| `avatar_url` | ✅ | ✅ (columna agregada 30-ago-2026, ver nota abajo) |
-| `payment_mode`, `salary_amount` | sí | **no** (Geema dialect only; writes ZM las omiten) |
+| Columna                                               | Geema                              | ZM prod                                           |
+| ----------------------------------------------------- | ---------------------------------- | ------------------------------------------------- |
+| `name`, `color`, `is_active`, `commission_percentage` | ✅                                 | ✅                                                |
+| `commission_mode`, `house_cut_fixed`                  | ✅ (schema + UI Personal/Finanzas) | ✅ (migración 04-sep-2026)                        |
+| `avatar_url`                                          | ✅                                 | ✅ (columna agregada 30-ago-2026, ver nota abajo) |
+| `payment_mode`, `salary_amount`                       | sí                                 | **no** (Geema dialect only; writes ZM las omiten) |
 
 **Cerrado (S5C-11):** `screens/personal/lib/employeesAdapter.ts` + `useEmployeesQuery` / `useActiveEmployees`. Writes ZM omiten `payment_mode`/`salary_amount`; UI oculta modo salario para ZM. Agenda/Asignar/Finanzas/Dashboard/Validación/Personal comparten la misma query.
 
 **Actualización (30-ago-2026):** se agregó `avatar_url text` a `employees` en producción ZM (`udelxwwnyivknslueerr`, vía Management API — conexión directa a Postgres bloqueada en el sandbox), se creó el bucket público `employee-avatars` en Storage, y se subieron/asignaron las fotos reales de Vanessa y Stephani (fuente: sitio web ZM Lash / Sanity CMS). `employeesAdapter.ts` ya no anula `avatar_url` para el dialecto ZM — la columna es común a ambos esquemas ahora, solo `payment_mode`/`salary_amount` siguen siendo geema-only. La app standalone de ZM Lash (`apps/mobile` en este repo) no tiene feature de avatar por empleado, así que no requiere cambios de código — solo se sincroniza este doc. Detalle: `zm-tech/.cursor/skills/geemastudio.md` §8 y `zm-tech/docs/geemastudio/CHANGELOG.md`.
 
 **Actualización (04-sep-2026) — personal y comisiones:**
+
 - Renombre prod: `emp-romina` / label **“Chica Externa”** → **`emp-karelis` / Karelis** (mismas técnicas de extensiones post-1pm; WABA carril sin cambio de IDs de servicio).
 - Alta **`emp-alejandra` / Alejandra**: micropigmentación (Microblading, Microshading, Shading, Delineado de ojos, Microlips). Sugerencia de asignación `cat-microblading` → solo ella.
 - Columnas `commission_mode` (`percent` \| `fixed_house`) + `house_cut_fixed` (S/ por línea). Alejandra: `fixed_house` + **S/50** casa (Vanessa); precios cliente siguen 250/270 (= base profesional + 50).
@@ -120,20 +121,20 @@ Prod tenant (4 columnas agenda): **Vanessa**, **Stephani**, **Karelis**, **Aleja
 
 ## Mapa de paridad (mobile)
 
-| Módulo | Geema hoy | Objetivo S5-C |
-|--------|-----------|---------------|
-| Servicios individuales | ✅ | Mantener |
-| Packs | ✅ adaptador | Mantener |
-| Promos + `promotion_items` | ✅ adaptador | Mantener |
-| Personal / chicas ↔ agenda | ✅ adaptador | Mantener |
-| Agenda timezone Lima | ✅ wallclock | Mantener |
-| Agenda multi-servicio | ❌ | Portar `appointment_services` |
-| Referencias diseño WABA | ✅ | Mantener (falta portafolio WABA/análisis, fuera de S5-C) |
-| Feriados / slots domingo | ✅ | Mantener |
-| Finanzas ejecutiva | ❌ | Portar cards WABA/gastos (fase 2 S5-C) |
-| Promo masiva WA | stub | Depende S6 WABA |
-| Dashboard ranking servicios | ❌ | P2 |
-| Push FCM persist token | TODO Geema | S6-7 (paralelo) |
+| Módulo                      | Geema hoy    | Objetivo S5-C                                            |
+| --------------------------- | ------------ | -------------------------------------------------------- |
+| Servicios individuales      | ✅           | Mantener                                                 |
+| Packs                       | ✅ adaptador | Mantener                                                 |
+| Promos + `promotion_items`  | ✅ adaptador | Mantener                                                 |
+| Personal / chicas ↔ agenda  | ✅ adaptador | Mantener                                                 |
+| Agenda timezone Lima        | ✅ wallclock | Mantener                                                 |
+| Agenda multi-servicio       | ❌           | Portar `appointment_services`                            |
+| Referencias diseño WABA     | ✅           | Mantener (falta portafolio WABA/análisis, fuera de S5-C) |
+| Feriados / slots domingo    | ✅           | Mantener                                                 |
+| Finanzas ejecutiva          | ❌           | Portar cards WABA/gastos (fase 2 S5-C)                   |
+| Promo masiva WA             | stub         | Depende S6 WABA                                          |
+| Dashboard ranking servicios | ❌           | P2                                                       |
+| Push FCM persist token      | TODO Geema   | S6-7 (paralelo)                                          |
 
 ---
 
@@ -174,12 +175,12 @@ Geema y ZM consumen `@zmtech/shared-schema` con columnas canónicas + migración
 
 **`udelxwwnyivknslueerr` es la fuente de verdad DDL.** Geema (shadow) consume; no reescribe.
 
-| Objeto | Estado prod | Acción Geema |
-|--------|-------------|--------------|
-| `appointment_services` | Existe (`id` uuid, `pack_id`, `tenant_id`) | **No** `CREATE TABLE` |
-| RLS `apt_svc_*` | `is_admin()` + `current_tenant_id()` | **No** policies con `get_my_role()` (no existe) |
-| `appointments.service_ids` / `reference_image_*` | Existen | **No** `ADD COLUMN` |
-| Índices lookup `appointment_id|service_id|employee_id` | ✅ `20260831011759_idx_appointment_services_lookup` | Delta seguro ya aplicado en ZM |
+| Objeto                                           | Estado prod                                | Acción Geema                                    |
+| ------------------------------------------------ | ------------------------------------------ | ----------------------------------------------- |
+| `appointment_services`                           | Existe (`id` uuid, `pack_id`, `tenant_id`) | **No** `CREATE TABLE`                           |
+| RLS `apt_svc_*`                                  | `is_admin()` + `current_tenant_id()`       | **No** policies con `get_my_role()` (no existe) |
+| `appointments.service_ids` / `reference_image_*` | Existen                                    | **No** `ADD COLUMN`                             |
+| Índices lookup `appointment_id                   | service_id                                 | employee_id`                                    | ✅ `20260831011759_idx_appointment_services_lookup` | Delta seguro ya aplicado en ZM |
 
 Scripts Geema tipo `20260830_appointment_services_multiservicio.sql` (PR [zm-tech #31](https://github.com/aeom0/zm-tech/pull/31)): solo **greenfield** / CI en BD vacía. En shadow ZM: merge código OK; **no** correr el SQL completo.
 
@@ -189,19 +190,19 @@ Convergencia corta: Drizzle Geema → **superset tipado de prod**; adaptadores m
 
 ## Tareas (S5-C)
 
-| ID | Tarea | Repo | Esfuerzo | Prioridad | Estado |
-|----|-------|------|----------|-----------|--------|
-| S5C-1 | Adaptador `usePacksData`: `title`/`pack_price`/`category_id` ZM | zm-tech | M | P0 | ✅ PR #30 |
-| S5C-2 | Adaptador `usePromosData` + `usePromotionItems` (total desde ítems) | zm-tech | M | P0 | ✅ PR #30 |
-| S5C-3 | Validar `tenant_settings` ZM: timezone `America/Lima`, horarios | zm-tech + BD | S | P0 | ✅ PR #30 |
-| S5C-11 | Adaptador `employees` (sin `payment_mode`/`salary_amount` ZM; `avatar_url` sumado 30-ago) + cache única con agenda | zm-tech | S | P0 | ✅ PR #30 |
-| S5C-4 | Agenda: cargar `appointment_services` + multi-servicio en detalle | zm-tech | L | P1 | En curso (PR #31; schema prod ya listo) |
-| S5C-5 | Portar referencias diseño + badge agenda (WABA) | zm-tech | L | P1 | ✅ 19-sep (upload, badge, ícono en grids, campana + inbox seleccionable, navegación a detalle) |
-| S5C-6 | Portar `HolidayScreen` + reglas feriado/dom | zm-tech | M | P1 | ✅ (`FeriadosScreen` + admin CRUD + `HolidayAlertBanner` en Dashboard) |
-| S5C-7 | Finanzas: panel ejecutivo + `PricingBreakdownCard` (WABA) + drill-down `waba_template_analytics_daily` (Fase 5) | zm-tech | L | P1 | Pendiente (backend ZM ✅ sep-2026) |
-| S5C-8 | Dashboard: ranking top servicios + alertas feriado | zm-tech | S | P2 | Pendiente |
-| S5C-9 | Documentar en UI dónde está Finanzas (onboarding admin) | zm-tech | S | P2 | Pendiente |
-| S5C-10 | Tests smoke: packs/promos/agenda mismo día vs app ZM | zm-tech | S | P0 | Parcial (visual 30-ago) |
+| ID     | Tarea                                                                                                              | Repo         | Esfuerzo | Prioridad | Estado                                                                                         |
+| ------ | ------------------------------------------------------------------------------------------------------------------ | ------------ | -------- | --------- | ---------------------------------------------------------------------------------------------- |
+| S5C-1  | Adaptador `usePacksData`: `title`/`pack_price`/`category_id` ZM                                                    | zm-tech      | M        | P0        | ✅ PR #30                                                                                      |
+| S5C-2  | Adaptador `usePromosData` + `usePromotionItems` (total desde ítems)                                                | zm-tech      | M        | P0        | ✅ PR #30                                                                                      |
+| S5C-3  | Validar `tenant_settings` ZM: timezone `America/Lima`, horarios                                                    | zm-tech + BD | S        | P0        | ✅ PR #30                                                                                      |
+| S5C-11 | Adaptador `employees` (sin `payment_mode`/`salary_amount` ZM; `avatar_url` sumado 30-ago) + cache única con agenda | zm-tech      | S        | P0        | ✅ PR #30                                                                                      |
+| S5C-4  | Agenda: cargar `appointment_services` + multi-servicio en detalle                                                  | zm-tech      | L        | P1        | En curso (PR #31; schema prod ya listo)                                                        |
+| S5C-5  | Portar referencias diseño + badge agenda (WABA)                                                                    | zm-tech      | L        | P1        | ✅ 19-sep (upload, badge, ícono en grids, campana + inbox seleccionable, navegación a detalle) |
+| S5C-6  | Portar `HolidayScreen` + reglas feriado/dom                                                                        | zm-tech      | M        | P1        | ✅ (`FeriadosScreen` + admin CRUD + `HolidayAlertBanner` en Dashboard)                         |
+| S5C-7  | Finanzas: panel ejecutivo + `PricingBreakdownCard` (WABA) + drill-down `waba_template_analytics_daily` (Fase 5)    | zm-tech      | L        | P1        | Pendiente (backend ZM ✅ sep-2026)                                                             |
+| S5C-8  | Dashboard: ranking top servicios + alertas feriado                                                                 | zm-tech      | S        | P2        | Pendiente                                                                                      |
+| S5C-9  | Documentar en UI dónde está Finanzas (onboarding admin)                                                            | zm-tech      | S        | P2        | Pendiente                                                                                      |
+| S5C-10 | Tests smoke: packs/promos/agenda mismo día vs app ZM                                                               | zm-tech      | S        | P0        | Parcial (visual 30-ago)                                                                        |
 
 ### DoD S5-C (shadow ZM en Geema)
 
@@ -216,12 +217,12 @@ Convergencia corta: Drizzle Geema → **superset tipado de prod**; adaptadores m
 
 ## Dependencias
 
-| Depende de | Por qué |
-|------------|---------|
-| S2 bridge `tenant_settings` | ✅ Ya en prod |
-| S5-B (opcional) | Branding no bloquea paridad datos |
-| S4 crons tenant-aware | No bloquea mobile lectura |
-| S6 WABA panel | Promo masiva WA fuera de S5-C |
+| Depende de                  | Por qué                           |
+| --------------------------- | --------------------------------- |
+| S2 bridge `tenant_settings` | ✅ Ya en prod                     |
+| S5-B (opcional)             | Branding no bloquea paridad datos |
+| S4 crons tenant-aware       | No bloquea mobile lectura         |
+| S6 WABA panel               | Promo masiva WA fuera de S5-C     |
 
 **Paralelizable con:** S5-B branding, S4 Edge crons.
 
@@ -243,13 +244,13 @@ Registrar hallazgos en este doc § **Notas de validación** (fecha + commit Geem
 
 ### Notas de validación
 
-| Fecha | Build / commit | Notas |
-|-------|----------------|-------|
-| 2026-08-29 | `34ec3bc3…` SDK 56 | Shadow OK core; packs/promos vacíos; finanzas no explorado en tabs; agenda distinta |
-| 2026-08-30 | OTA `3814b188…` (S5C-1…3) | Alberto: packs/promos/agenda visibles. Hora de pared Lima. |
-| 2026-08-30 | OTA `01bdcd1f…` (S5C-11) | Adaptador employees; smoke chicas ↔ agenda pendiente en APK |
-| 2026-08-30 | OTA `d5d0dea9…` | `avatar_url` agregado a `employees` ZM prod + fotos reales Vanessa/Stephani subidas a Storage; `employeesAdapter.ts` ya no lo anula para dialecto ZM. Publicado en canal `preview`. |
-| 2026-08-30 | OTA `fe7cf0aa…` (main) | Dashboard paridad + Equipo/Más + orden chicas + login fix (post #30). [Expo](https://expo.dev/accounts/aeom0/projects/geemastudio-mobile/updates/fe7cf0aa-fd00-4369-892a-6bafd9eeac8e). Sin código de PR #31. |
+| Fecha      | Build / commit            | Notas                                                                                                                                                                                                         |
+| ---------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-08-29 | `34ec3bc3…` SDK 56        | Shadow OK core; packs/promos vacíos; finanzas no explorado en tabs; agenda distinta                                                                                                                           |
+| 2026-08-30 | OTA `3814b188…` (S5C-1…3) | Alberto: packs/promos/agenda visibles. Hora de pared Lima.                                                                                                                                                    |
+| 2026-08-30 | OTA `01bdcd1f…` (S5C-11)  | Adaptador employees; smoke chicas ↔ agenda pendiente en APK                                                                                                                                                   |
+| 2026-08-30 | OTA `d5d0dea9…`           | `avatar_url` agregado a `employees` ZM prod + fotos reales Vanessa/Stephani subidas a Storage; `employeesAdapter.ts` ya no lo anula para dialecto ZM. Publicado en canal `preview`.                           |
+| 2026-08-30 | OTA `fe7cf0aa…` (main)    | Dashboard paridad + Equipo/Más + orden chicas + login fix (post #30). [Expo](https://expo.dev/accounts/aeom0/projects/geemastudio-mobile/updates/fe7cf0aa-fd00-4369-892a-6bafd9eeac8e). Sin código de PR #31. |
 
 **PR:** [aeom0/zm-tech#30](https://github.com/aeom0/zm-tech/pull/30) — OTA preview [01bdcd1f](https://expo.dev/accounts/aeom0/projects/geemastudio-mobile/updates/01bdcd1f-9dd9-472d-a637-383d6bdbeb89)
 

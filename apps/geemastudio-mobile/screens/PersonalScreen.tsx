@@ -167,8 +167,7 @@ export default function PersonalScreen() {
         emp.commission_percentage != null
           ? String(emp.commission_percentage)
           : String(config.commissions.defaultStaffPercent),
-      house_cut_fixed:
-        emp.house_cut_fixed != null ? String(emp.house_cut_fixed) : '50',
+      house_cut_fixed: emp.house_cut_fixed != null ? String(emp.house_cut_fixed) : '50',
       paymentMode: emp.payment_mode ?? 'commission',
       salary_amount: emp.salary_amount != null ? String(emp.salary_amount) : '',
       notes: emp.notes ?? '',
@@ -278,8 +277,7 @@ export default function PersonalScreen() {
     let commissionPercentage: number | null = null
     let houseCutFixed: number | null = null
     const paymentMode = showGeemaExtras ? form.paymentMode : 'commission'
-    const commissionMode =
-      paymentMode === 'salary' ? 'percent' : form.commission_mode
+    const commissionMode = paymentMode === 'salary' ? 'percent' : form.commission_mode
 
     if (paymentMode !== 'salary' && commissionMode === 'fixed_house') {
       const cut = parseInt(form.house_cut_fixed, 10)
@@ -708,7 +706,10 @@ export default function PersonalScreen() {
                     {(
                       [
                         { id: 'percent' as CommissionMode, label: 'Porcentaje (%)' },
-                        { id: 'fixed_house' as CommissionMode, label: `Fijo casa (${currencySymbol})` },
+                        {
+                          id: 'fixed_house' as CommissionMode,
+                          label: `Fijo casa (${currencySymbol})`,
+                        },
                       ] as const
                     ).map((opt) => {
                       const selected = form.commission_mode === opt.id
@@ -724,9 +725,7 @@ export default function PersonalScreen() {
                                 : theme.backgroundSecondary,
                             },
                           ]}
-                          onPress={() =>
-                            setForm((f) => ({ ...f, commission_mode: opt.id }))
-                          }
+                          onPress={() => setForm((f) => ({ ...f, commission_mode: opt.id }))}
                         >
                           <ThemedText
                             style={[
@@ -779,9 +778,7 @@ export default function PersonalScreen() {
                         placeholder="40"
                         placeholderTextColor={theme.textMuted}
                         value={form.commission_percentage}
-                        onChangeText={(t) =>
-                          setForm((f) => ({ ...f, commission_percentage: t }))
-                        }
+                        onChangeText={(t) => setForm((f) => ({ ...f, commission_percentage: t }))}
                         keyboardType="number-pad"
                       />
                     </>

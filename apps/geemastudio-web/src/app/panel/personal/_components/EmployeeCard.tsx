@@ -12,11 +12,7 @@ interface EmployeeCardProps {
   onClick: () => void
 }
 
-function paymentLabel(
-  emp: EmployeeRow,
-  currencyCode: string,
-  showGeemaExtras: boolean
-): string {
+function paymentLabel(emp: EmployeeRow, currencyCode: string, showGeemaExtras: boolean): string {
   if (
     (emp.payment_mode === 'commission' || emp.payment_mode === 'mixed' || !showGeemaExtras) &&
     emp.commission_mode === 'fixed_house'

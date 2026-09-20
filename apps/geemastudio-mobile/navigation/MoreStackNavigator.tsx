@@ -147,8 +147,16 @@ export default function MoreStackNavigator() {
         component={MiWebGaleriaScreen}
         options={{ title: 'Galería' }}
       />
-      <Stack.Screen name="MiWebEquipo" component={MiWebEquipoScreen} options={{ title: 'Equipo web' }} />
-      <Stack.Screen name="MiWebPromos" component={MiWebPromosScreen} options={{ title: 'Promos web' }} />
+      <Stack.Screen
+        name="MiWebEquipo"
+        component={MiWebEquipoScreen}
+        options={{ title: 'Equipo web' }}
+      />
+      <Stack.Screen
+        name="MiWebPromos"
+        component={MiWebPromosScreen}
+        options={{ title: 'Promos web' }}
+      />
       <Stack.Screen
         name="MiWebServicios"
         component={MiWebServiciosScreen}

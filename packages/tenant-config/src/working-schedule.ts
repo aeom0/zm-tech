@@ -1,9 +1,6 @@
 import { defaultTenantConfig } from './defaults'
 import type { TenantConfig } from './types'
-import {
-  resolveFranjaEfectiva,
-  type SalonHolidayIndex,
-} from './salon-holidays'
+import { resolveFranjaEfectiva, type SalonHolidayIndex } from './salon-holidays'
 
 /** Claves de día alineadas con JSON guardado en `business_hours` (sin tildes). */
 export const CLAVES_DIA_LABORAL = [

@@ -607,11 +607,11 @@ Audiencia: clientes del negocio. Sin auth. Controlado por `tenant_settings.web_m
 
 #### `web_mode` en `tenant_settings`
 
-| Valor            | Significado                                                         |
-| ---------------- | ------------------------------------------------------------------- |
-| `'none'`         | Sin landing pública (default al crear tenant)                       |
+| Valor            | Significado                                                                    |
+| ---------------- | ------------------------------------------------------------------------------ |
+| `'none'`         | Sin landing pública (default al crear tenant)                                  |
 | `'geema_hosted'` | Landing en `geema.zmtechdev.com/s/[slug]` (temporal; futuro `geemastudio.app`) |
-| `'own_domain'`   | Dominio propio del tenant — GeemaStudio no interviene en el routing |
+| `'own_domain'`   | Dominio propio del tenant — GeemaStudio no interviene en el routing            |
 
 > ZM Lash & Nails (Vanessa) → `web_mode = 'own_domain'` (informativo, no bloquea el panel).
 > Columnas en BD: `web_mode`, `slug` (único, Modo B), `custom_domain` (informativo, Modo A).

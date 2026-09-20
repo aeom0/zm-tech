@@ -34,7 +34,7 @@ export function ClientKPIStrip({ kpis, currencyCode, isLoading }: ClientKPIStrip
             className="rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-3"
           >
             <div className="text-xs text-zinc-500">{cell.label}</div>
-            <div className="mt-1 text-xl font-semibold text-white tabular-nums">{value}</div>
+            <div className="mt-1 text-xl font-semibold tabular-nums text-white">{value}</div>
           </div>
         )
       })}

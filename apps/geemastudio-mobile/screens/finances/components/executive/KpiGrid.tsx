@@ -28,28 +28,15 @@ function KpiCard({
 }) {
   const { theme } = useTheme()
   const valueColor =
-    tone === 'success'
-      ? theme.success
-      : tone === 'error'
-        ? theme.error
-        : theme.text
+    tone === 'success' ? theme.success : tone === 'error' ? theme.error : theme.text
   return (
     <View
-      style={[
-        styles.card,
-        { backgroundColor: theme.backgroundDefault, borderColor: theme.border },
-      ]}
+      style={[styles.card, { backgroundColor: theme.backgroundDefault, borderColor: theme.border }]}
     >
-      <ThemedText style={[styles.label, { color: theme.textMuted }]}>
-        {label}
-      </ThemedText>
-      <ThemedText style={[styles.value, { color: valueColor }]}>
-        {value}
-      </ThemedText>
+      <ThemedText style={[styles.label, { color: theme.textMuted }]}>{label}</ThemedText>
+      <ThemedText style={[styles.value, { color: valueColor }]}>{value}</ThemedText>
       {hint ? (
-        <ThemedText style={[styles.hint, { color: theme.textMuted }]}>
-          {hint}
-        </ThemedText>
+        <ThemedText style={[styles.hint, { color: theme.textMuted }]}>{hint}</ThemedText>
       ) : null}
     </View>
   )
@@ -58,8 +45,7 @@ function KpiCard({
 export function KpiGrid({ ingresos, gastos, ads, utilidad, margenPct }: Props) {
   const { config } = useTenant()
   const formatValue = (n: number) => formatCurrency(n, config)
-  const utilidadTone =
-    utilidad > 0 ? 'success' : utilidad < 0 ? 'error' : 'default'
+  const utilidadTone = utilidad > 0 ? 'success' : utilidad < 0 ? 'error' : 'default'
   return (
     <View style={styles.grid}>
       <KpiCard label="Ingresos" value={formatValue(ingresos)} />
@@ -68,9 +54,7 @@ export function KpiGrid({ ingresos, gastos, ads, utilidad, margenPct }: Props) {
       <KpiCard
         label="Utilidad neta"
         value={formatValue(utilidad)}
-        hint={
-          margenPct == null ? 'Sin ingresos este mes' : `Margen ${margenPct}%`
-        }
+        hint={margenPct == null ? 'Sin ingresos este mes' : `Margen ${margenPct}%`}
         tone={utilidadTone}
       />
     </View>

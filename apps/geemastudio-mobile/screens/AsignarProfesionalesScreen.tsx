@@ -24,8 +24,7 @@ export default function AsignarProfesionalesScreen() {
   const insets = useSafeAreaInsets()
   const tabBarHeight = TAB_BAR_HEIGHT + insets.bottom
   const { theme } = useTheme()
-  const { employees, upcoming, past, isLoading, refetch, assignMutation, config } =
-    useAsignarData()
+  const { employees, upcoming, past, isLoading, refetch, assignMutation, config } = useAsignarData()
 
   const [period, setPeriod] = useState<AsignarPeriod>('upcoming')
   const data = period === 'upcoming' ? upcoming : past
@@ -78,9 +77,7 @@ export default function AsignarProfesionalesScreen() {
           paddingHorizontal: Spacing.lg,
           flexGrow: 1,
         }}
-        ListHeaderComponent={
-          <AsignarPeriodTabs period={period} onChange={setPeriod} />
-        }
+        ListHeaderComponent={<AsignarPeriodTabs period={period} onChange={setPeriod} />}
         ListHeaderComponentStyle={{ marginBottom: Spacing.md }}
         ListEmptyComponent={
           isLoading ? (

@@ -71,9 +71,12 @@ export function CountryPickerModal({
                     borderColor={selected ? theme.primary : theme.border}
                   />
                   <View style={styles.texts}>
-                    <ThemedText style={[styles.name, { color: theme.text }]}>{item.label}</ThemedText>
+                    <ThemedText style={[styles.name, { color: theme.text }]}>
+                      {item.label}
+                    </ThemedText>
                     <ThemedText style={[styles.sub, { color: theme.textMuted }]}>
-                      {item.currency.symbol} {item.currency.code} · {item.timezone.replace('America/', '')}
+                      {item.currency.symbol} {item.currency.code} ·{' '}
+                      {item.timezone.replace('America/', '')}
                     </ThemedText>
                   </View>
                   {selected ? <Feather name="check" size={18} color={theme.primary} /> : null}

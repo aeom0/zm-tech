@@ -22,7 +22,16 @@ function gradTextStyle(theme: LandingTheme): CSSProperties {
 }
 
 export function HeroSection({ data, theme }: HeroSectionProps) {
-  const { businessName, heroTagline, tagline, whatsapp, instagram, city, heroVideoUrl, marqueeText } = data
+  const {
+    businessName,
+    heroTagline,
+    tagline,
+    whatsapp,
+    instagram,
+    city,
+    heroVideoUrl,
+    marqueeText,
+  } = data
 
   const subtitle =
     heroTagline ??
@@ -35,7 +44,11 @@ export function HeroSection({ data, theme }: HeroSectionProps) {
 
   const hasVideo = !!heroVideoUrl
   const sectionPadding =
-    theme.id === 'elegant' ? 'px-6 pb-16 pt-16 text-center' : theme.id === 'warm' ? 'px-5 pb-12 pt-14' : 'px-5 pb-10 pt-12'
+    theme.id === 'elegant'
+      ? 'px-6 pb-16 pt-16 text-center'
+      : theme.id === 'warm'
+        ? 'px-5 pb-12 pt-14'
+        : 'px-5 pb-10 pt-12'
 
   return (
     <>
@@ -43,7 +56,9 @@ export function HeroSection({ data, theme }: HeroSectionProps) {
         className={`relative overflow-hidden ${sectionPadding}`}
         style={{
           background:
-            theme.id === 'warm' && !hasVideo ? 'linear-gradient(to bottom, #faf7f2, #f2ece2)' : undefined,
+            theme.id === 'warm' && !hasVideo
+              ? 'linear-gradient(to bottom, #faf7f2, #f2ece2)'
+              : undefined,
         }}
       >
         {hasVideo && (
@@ -69,7 +84,11 @@ export function HeroSection({ data, theme }: HeroSectionProps) {
                 color: theme.colors.badgeText,
               }}
             >
-              <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: theme.colors.accent }} aria-hidden />
+              <span
+                className="inline-block h-1.5 w-1.5 rounded-full"
+                style={{ background: theme.colors.accent }}
+                aria-hidden
+              />
               Agenda abierta
             </div>
           )}
@@ -133,7 +152,11 @@ export function HeroSection({ data, theme }: HeroSectionProps) {
                 businessName={businessName}
                 label="Reservar cita"
                 className="block flex-1 py-4 text-center text-[15px] font-bold no-underline"
-                style={{ background: theme.colors.ctaBg, color: theme.colors.ctaText, borderRadius: '14px' }}
+                style={{
+                  background: theme.colors.ctaBg,
+                  color: theme.colors.ctaText,
+                  borderRadius: '14px',
+                }}
               />
               {instagram && (
                 <a

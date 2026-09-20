@@ -16,10 +16,7 @@ interface Props {
   payments: FinancesPayment[]
   serviceNameById: Record<string, string>
   pendienteByAppointmentId: Record<string, number>
-  appointmentNameById: Record<
-    string,
-    { client_name: string; service_id: string | null }
-  >
+  appointmentNameById: Record<string, { client_name: string; service_id: string | null }>
   isAdmin: boolean
   isStaffOnly: boolean
   isTablet: boolean
@@ -116,9 +113,7 @@ export function PaymentList({
               >
                 <View style={styles.paymentInfo}>
                   <View style={styles.paymentHeader}>
-                    <View
-                      style={[styles.methodBadge, { backgroundColor: theme.primary + '15' }]}
-                    >
+                    <View style={[styles.methodBadge, { backgroundColor: theme.primary + '15' }]}>
                       <Feather
                         name={
                           PAYMENT_METHODS.find((m) => m.id === payment.method)?.icon ??
@@ -168,10 +163,7 @@ export function PaymentList({
                   {pendiente != null && pendiente > 0.01 && (
                     <View style={styles.pendienteRow}>
                       <ThemedText
-                        style={[
-                          styles.paymentNotes,
-                          { color: theme.primary, fontWeight: '600' },
-                        ]}
+                        style={[styles.paymentNotes, { color: theme.primary, fontWeight: '600' }]}
                       >
                         Pendiente {formatCurrency(pendiente, config)}
                       </ThemedText>
@@ -190,9 +182,7 @@ export function PaymentList({
                           }}
                         >
                           <Feather name="plus-circle" size={11} color={theme.primary} />
-                          <ThemedText
-                            style={[styles.completarBtnText, { color: theme.primary }]}
-                          >
+                          <ThemedText style={[styles.completarBtnText, { color: theme.primary }]}>
                             Cobrar restante
                           </ThemedText>
                         </Pressable>

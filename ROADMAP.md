@@ -14,7 +14,6 @@ Objetivo actual: beta v1.5. **Panel web P1 cerrado** (12-sep). Host plataforma *
 
 Ver [docs/geemastudio/ROADMAP.md](docs/geemastudio/ROADMAP.md).
 
-
 ## OdentalPro
 
 Apps dedicadas + schema dental multi-tenant. Fases 0–2 hechas; cerrar historia clínica y avanzar a planes / consentimientos / beta tenant #1.

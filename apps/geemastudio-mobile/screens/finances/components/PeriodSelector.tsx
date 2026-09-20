@@ -29,8 +29,7 @@ export function PeriodSelector({ period, onChangePeriod }: Props) {
           style={[
             styles.periodButton,
             {
-              backgroundColor:
-                period === opt.value ? theme.primary : theme.backgroundSecondary,
+              backgroundColor: period === opt.value ? theme.primary : theme.backgroundSecondary,
             },
           ]}
           onPress={() => {

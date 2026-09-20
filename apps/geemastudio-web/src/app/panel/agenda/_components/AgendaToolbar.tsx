@@ -1,11 +1,7 @@
 'use client'
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import {
-  esHoyEnZonaIANA,
-  inicioDiaHoyEnZonaIANA,
-  sumarDiasEnZonaIANA,
-} from '@zmtech/tenant-config'
+import { esHoyEnZonaIANA, inicioDiaHoyEnZonaIANA, sumarDiasEnZonaIANA } from '@zmtech/tenant-config'
 
 import { STATUS_CHIP, type AgendaStatusFilter } from '@/hooks/agenda/types'
 

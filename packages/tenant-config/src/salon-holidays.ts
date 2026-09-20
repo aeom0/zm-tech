@@ -80,7 +80,9 @@ export const HOLIDAY_CATALOGS: Record<string, readonly HolidayCatalogEntry[]> = 
   VE: VE_HOLIDAYS_2026,
 }
 
-export function getHolidayCatalog(country: string | null | undefined): readonly HolidayCatalogEntry[] {
+export function getHolidayCatalog(
+  country: string | null | undefined
+): readonly HolidayCatalogEntry[] {
   if (!country) return []
   return HOLIDAY_CATALOGS[country.toUpperCase()] ?? []
 }
@@ -235,10 +237,7 @@ function dateKeyEnZona(fecha: Date, timeZone: string): string {
   }
 }
 
-export function scheduleHintForDate(
-  dateKey: string,
-  index: SalonHolidayIndex
-): string {
+export function scheduleHintForDate(dateKey: string, index: SalonHolidayIndex): string {
   const h = getHoliday(dateKey, index)
   if (!h) return ''
   if (h.isClosed) return 'Cerrado — sin citas'

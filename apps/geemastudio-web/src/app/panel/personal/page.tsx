@@ -124,7 +124,8 @@ export default function PanelPersonalPage() {
           </button>
         ))}
         <span className="self-center text-xs text-zinc-500">
-          {filtered.length} {filtered.length === 1 ? staffSingular.toLowerCase() : staffPlural.toLowerCase()}
+          {filtered.length}{' '}
+          {filtered.length === 1 ? staffSingular.toLowerCase() : staffPlural.toLowerCase()}
         </span>
       </div>
 
@@ -185,9 +186,7 @@ export default function PanelPersonalPage() {
           editing
             ? () => {
                 if (
-                  !window.confirm(
-                    `¿Eliminar a ${editing.name}? Esta acción no se puede deshacer.`
-                  )
+                  !window.confirm(`¿Eliminar a ${editing.name}? Esta acción no se puede deshacer.`)
                 ) {
                   return
                 }

@@ -336,7 +336,9 @@ export default function AgendaScreen() {
   const handleNewAppointmentDateChange = useCallback(
     (d: Date) => {
       setSelectedDate(d)
-      if (!esCeldaAgendaEnHorarioLaboral(d, selectedHour, businessHoursNorm, tenantTz, holidayIndex)) {
+      if (
+        !esCeldaAgendaEnHorarioLaboral(d, selectedHour, businessHoursNorm, tenantTz, holidayIndex)
+      ) {
         const first = agendaHours.find((h) =>
           esCeldaAgendaEnHorarioLaboral(d, h, businessHoursNorm, tenantTz, holidayIndex)
         )
@@ -614,7 +616,9 @@ export default function AgendaScreen() {
   const handleRescheduleDatePick = useCallback(
     (d: Date) => {
       setRescheduleDate(d)
-      if (!esCeldaAgendaEnHorarioLaboral(d, rescheduleHour, businessHoursNorm, tenantTz, holidayIndex)) {
+      if (
+        !esCeldaAgendaEnHorarioLaboral(d, rescheduleHour, businessHoursNorm, tenantTz, holidayIndex)
+      ) {
         const first = agendaHours.find((h) =>
           esCeldaAgendaEnHorarioLaboral(d, h, businessHoursNorm, tenantTz, holidayIndex)
         )

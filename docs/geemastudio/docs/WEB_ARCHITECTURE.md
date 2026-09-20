@@ -23,29 +23,29 @@
 
 ### Rutas implementadas
 
-| Ruta               | Descripción                                                     | Estado          |
-| ------------------ | --------------------------------------------------------------- | --------------- |
-| `/finanzas`        | Dashboard financiero: ingresos, pagos, validación               | ✅ Implementado |
-| `/finanzas/login`  | Auth de acceso al panel (ruta real, no `/login`)                | ✅ Implementado |
-| `/dashboard`       | KPIs del día/mes, gráfico 7 días, top servicios, próximas citas | ✅ Implementado |
-| `/panel/servicios` | CRUD categorías, servicios, packs, promos (`?tab=`)             | ✅ Implementado |
-| `/panel/horarios`  | Zona horaria IANA + `business_hours` por día                    | ✅ Implementado |
-| `/panel/clientes`  | Lista, KPIs, segmentos VIP/nuevo/riesgo, detalle + historial    | ✅ Implementado (10-sep) |
-| `/panel/personal`  | CRUD equipo: foto, color, comisiones, activo/inactivo           | ✅ Implementado (10-sep) |
+| Ruta                   | Descripción                                                      | Estado                   |
+| ---------------------- | ---------------------------------------------------------------- | ------------------------ |
+| `/finanzas`            | Dashboard financiero: ingresos, pagos, validación                | ✅ Implementado          |
+| `/finanzas/login`      | Auth de acceso al panel (ruta real, no `/login`)                 | ✅ Implementado          |
+| `/dashboard`           | KPIs del día/mes, gráfico 7 días, top servicios, próximas citas  | ✅ Implementado          |
+| `/panel/servicios`     | CRUD categorías, servicios, packs, promos (`?tab=`)              | ✅ Implementado          |
+| `/panel/horarios`      | Zona horaria IANA + `business_hours` por día                     | ✅ Implementado          |
+| `/panel/clientes`      | Lista, KPIs, segmentos VIP/nuevo/riesgo, detalle + historial     | ✅ Implementado (10-sep) |
+| `/panel/personal`      | CRUD equipo: foto, color, comisiones, activo/inactivo            | ✅ Implementado (10-sep) |
 | `/panel/configuracion` | Datos negocio, colores, logo, presencia web (`web_enabled`/slug) | ✅ Implementado (10-sep) |
 | `/panel/agenda`        | Grilla día × profesionales, filtros status, drawer read-only     | ✅ Implementado (10-sep) |
-| `/panel/waba`         | Estado WABA + subnav                                             | ✅ MVP (12-sep)          |
-| `/panel/waba/mensajes`| Conversaciones + hilo (`wa_messages`)                            | ✅ MVP (12-sep)          |
-| `/panel/waba/haiku`   | Editor system prompt (`waba_config.haiku_system_prompt`)         | ✅ MVP (12-sep)          |
+| `/panel/waba`          | Estado WABA + subnav                                             | ✅ MVP (12-sep)          |
+| `/panel/waba/mensajes` | Conversaciones + hilo (`wa_messages`)                            | ✅ MVP (12-sep)          |
+| `/panel/waba/haiku`    | Editor system prompt (`waba_config.haiku_system_prompt`)         | ✅ MVP (12-sep)          |
 
 ### Rutas pendientes (panel de gestión)
 
-| Ruta                       | Descripción                                                    | Prioridad                   | PR  |
-| -------------------------- | -------------------------------------------------------------- | --------------------------- | --- |
-| `/panel/waba` historial/analytics / simulador | Analytics heatmap, simulador, portafolio (resto S6) | P2 post-MVP                 | —   |
-| `/panel/waba/campanas`     | Campañas masivas WA: stepper, segmentación, envío              | P2                          | —   |
-| `/panel/inventario`        | Gestión de inventario y stock                                  | P2                          | —   |
-| `/panel/configuracion/web` | CMS contenido landing (galería, team, etc.)                    | P2 — mobile ✅ Fase 2; panel ❌ | [`10-PLAN-mi-web-cms-fase2.md`](plans/10-PLAN-mi-web-cms-fase2.md) |
+| Ruta                                          | Descripción                                         | Prioridad                       | PR                                                                 |
+| --------------------------------------------- | --------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------ |
+| `/panel/waba` historial/analytics / simulador | Analytics heatmap, simulador, portafolio (resto S6) | P2 post-MVP                     | —                                                                  |
+| `/panel/waba/campanas`                        | Campañas masivas WA: stepper, segmentación, envío   | P2                              | —                                                                  |
+| `/panel/inventario`                           | Gestión de inventario y stock                       | P2                              | —                                                                  |
+| `/panel/configuracion/web`                    | CMS contenido landing (galería, team, etc.)         | P2 — mobile ✅ Fase 2; panel ❌ | [`10-PLAN-mi-web-cms-fase2.md`](plans/10-PLAN-mi-web-cms-fase2.md) |
 
 ### Acciones exclusivas de web
 
@@ -167,13 +167,13 @@ Cada tenant tiene **sus propias RRSS establecidas** (ej: Vanessa tiene `@zmlasha
 
 ## Estado de Vanessa (Tenant #1) en contexto web
 
-| Aspecto                | Estado                                                               | Detalle                                        |
-| ---------------------- | -------------------------------------------------------------------- | ---------------------------------------------- |
-| Panel de gestión       | Listo en cuanto migre la DB                                          | Accede a `geema.zmtechdev.com/finanzas` etc. (temporal) |
-| `web_mode` inicial     | `'none'`                                                             | No necesita landing pública al day-1           |
-| `zmlashnails.com`      | Independiente                                                        | Su dominio propio, no lo toca GeemaStudio      |
-| Add-on landing         | Futuro                                                               | Si quieren, GeemaStudio ofrece servicio Modo A |
-| Rutas panel pendientes | Campañas WABA / CMS web / inventario | P2 |
+| Aspecto                | Estado                               | Detalle                                                 |
+| ---------------------- | ------------------------------------ | ------------------------------------------------------- |
+| Panel de gestión       | Listo en cuanto migre la DB          | Accede a `geema.zmtechdev.com/finanzas` etc. (temporal) |
+| `web_mode` inicial     | `'none'`                             | No necesita landing pública al day-1                    |
+| `zmlashnails.com`      | Independiente                        | Su dominio propio, no lo toca GeemaStudio               |
+| Add-on landing         | Futuro                               | Si quieren, GeemaStudio ofrece servicio Modo A          |
+| Rutas panel pendientes | Campañas WABA / CMS web / inventario | P2                                                      |
 
 ---
 

@@ -1,12 +1,5 @@
 import React, { useState } from 'react'
-import {
-  ActivityIndicator,
-  Alert,
-  Image,
-  Pressable,
-  StyleSheet,
-  View,
-} from 'react-native'
+import { ActivityIndicator, Alert, Image, Pressable, StyleSheet, View } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { Feather } from '@expo/vector-icons'
 

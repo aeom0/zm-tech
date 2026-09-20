@@ -58,14 +58,8 @@ export function useExpoOTAOnLaunch(): void {
     }
 
     let cancelado = false
-    const {
-      mostrarOverlay,
-      setFase,
-      setProgreso,
-      ocultarOverlay,
-      resetStore,
-      marcarListo,
-    } = otaUpdateUiStore
+    const { mostrarOverlay, setFase, setProgreso, ocultarOverlay, resetStore, marcarListo } =
+      otaUpdateUiStore
 
     const ejecutar = async () => {
       let intervalDescarga: ReturnType<typeof setInterval> | null = null

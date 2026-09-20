@@ -229,8 +229,8 @@ export function localeFromCountry(code: string): TenantConfig['locale'] | null {
 /** Featured primero, luego el resto alfabético por label. */
 export function countriesForPicker(): CountryPreset[] {
   const featured = COUNTRY_PRESETS.filter((c) => c.featured)
-  const rest = COUNTRY_PRESETS.filter((c) => !c.featured).slice().sort((a, b) =>
-    a.label.localeCompare(b.label, 'es')
-  )
+  const rest = COUNTRY_PRESETS.filter((c) => !c.featured)
+    .slice()
+    .sort((a, b) => a.label.localeCompare(b.label, 'es'))
   return [...featured, ...rest]
 }

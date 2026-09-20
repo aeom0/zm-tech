@@ -171,15 +171,13 @@ export function useClientsData(searchQuery: string, segment: ClientSegment): Use
           if (!apt.service_id) continue
           serviceFrequency[apt.service_id] = (serviceFrequency[apt.service_id] ?? 0) + 1
         }
-        const [favServiceId] =
-          Object.entries(serviceFrequency).sort((a, b) => b[1] - a[1])[0] ?? []
+        const [favServiceId] = Object.entries(serviceFrequency).sort((a, b) => b[1] - a[1])[0] ?? []
         favoriteService = favServiceId ?? null
       }
 
       const totalVisits = completedApts.length
       const is_vip = totalVisits >= CLIENT_VIP_VISITS || totalSpent >= CLIENT_VIP_SPEND
-      const is_at_risk =
-        daysSinceLastVisit != null && daysSinceLastVisit > CLIENT_AT_RISK_DAYS
+      const is_at_risk = daysSinceLastVisit != null && daysSinceLastVisit > CLIENT_AT_RISK_DAYS
       const is_new =
         lastVisitDate != null &&
         now.getTime() - new Date(lastVisitDate).getTime() < CLIENT_NEW_DAYS * 24 * 60 * 60 * 1000

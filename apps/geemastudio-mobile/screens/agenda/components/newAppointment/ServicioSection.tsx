@@ -7,12 +7,7 @@ import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { Spacing } from '@/constants/theme'
 
 import { addPackServiceLines } from '../../agendaUtils'
-import type {
-  AgendaFormState,
-  AgendaPack,
-  AgendaService,
-  AgendaServiceCategory,
-} from '../../types'
+import type { AgendaFormState, AgendaPack, AgendaService, AgendaServiceCategory } from '../../types'
 import { agendaStyles as styles } from '../../agendaStyles'
 import type { NewAppointmentModalTheme } from './modalTheme'
 
@@ -79,12 +74,10 @@ export function ServicioSection({
       </View>
 
       <View style={styles.pickerTabsRow}>
-        {(
-          [
-            { key: 'services' as const, label: 'Servicios' },
-            { key: 'packs' as const, label: 'Packs' },
-          ]
-        ).map((tab) => {
+        {[
+          { key: 'services' as const, label: 'Servicios' },
+          { key: 'packs' as const, label: 'Packs' },
+        ].map((tab) => {
           const active = activeTab === tab.key
           return (
             <Pressable

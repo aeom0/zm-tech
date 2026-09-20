@@ -130,16 +130,11 @@ export default function AuthGate() {
     // entryChoice === "new" → flujo de wizard completo
     if (paso === 1) {
       return (
-        <OnboardingCountryScreen
-          onNext={() => setPaso(2)}
-          onBack={() => setEntryChoice('none')}
-        />
+        <OnboardingCountryScreen onNext={() => setPaso(2)} onBack={() => setEntryChoice('none')} />
       )
     }
     if (paso === 2) {
-      return (
-        <OnboardingBusinessTypeScreen onNext={() => setPaso(3)} onBack={() => setPaso(1)} />
-      )
+      return <OnboardingBusinessTypeScreen onNext={() => setPaso(3)} onBack={() => setPaso(1)} />
     }
     if (paso === 3) {
       return <OnboardingBasicInfoScreen onNext={() => setPaso(4)} onBack={() => setPaso(2)} />

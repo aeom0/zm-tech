@@ -87,9 +87,9 @@ export function RegisterPayoutModal({
           <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
             <ThemedText style={[styles.periodNote, { color: theme.textMuted }]}>
               Período {periodStart} a {periodEnd}. Comisión pendiente:{' '}
-              {formatCurrency(row.comisionPendienteReal ?? 0, config)}. Si registras un pago de
-              un rango más amplio (ej. el mes completo), aparecerá reflejado también al filtrar
-              por rangos más chicos dentro de ese mes.
+              {formatCurrency(row.comisionPendienteReal ?? 0, config)}. Si registras un pago de un
+              rango más amplio (ej. el mes completo), aparecerá reflejado también al filtrar por
+              rangos más chicos dentro de ese mes.
             </ThemedText>
 
             <ThemedText style={[styles.inputLabel, { color: theme.textSecondary }]}>
@@ -98,7 +98,11 @@ export function RegisterPayoutModal({
             <TextInput
               style={[
                 styles.input,
-                { backgroundColor: theme.backgroundSecondary, color: theme.text, borderColor: theme.border },
+                {
+                  backgroundColor: theme.backgroundSecondary,
+                  color: theme.text,
+                  borderColor: theme.border,
+                },
               ]}
               placeholder="0,00"
               placeholderTextColor={theme.textMuted}
@@ -113,7 +117,11 @@ export function RegisterPayoutModal({
             <TextInput
               style={[
                 styles.input,
-                { backgroundColor: theme.backgroundSecondary, color: theme.text, borderColor: theme.border },
+                {
+                  backgroundColor: theme.backgroundSecondary,
+                  color: theme.text,
+                  borderColor: theme.border,
+                },
               ]}
               placeholder="Efectivo, transferencia..."
               placeholderTextColor={theme.textMuted}
@@ -127,7 +135,11 @@ export function RegisterPayoutModal({
             <TextInput
               style={[
                 styles.input,
-                { backgroundColor: theme.backgroundSecondary, color: theme.text, borderColor: theme.border },
+                {
+                  backgroundColor: theme.backgroundSecondary,
+                  color: theme.text,
+                  borderColor: theme.border,
+                },
               ]}
               placeholder="Notas"
               placeholderTextColor={theme.textMuted}
@@ -183,7 +195,13 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.lg,
   },
   title: { fontSize: 18, fontWeight: '700', flex: 1, marginRight: Spacing.sm },
-  close: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
+  close: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   periodNote: { fontSize: 12, marginBottom: Spacing.md, lineHeight: 17 },
   inputLabel: { fontSize: 14, fontWeight: '600', marginBottom: Spacing.sm, marginTop: Spacing.md },
   input: {

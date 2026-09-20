@@ -24,7 +24,10 @@ function deriveBadge(client: ClientWithMetrics): { label: string; className: str
     return { label: 'VIP', className: 'bg-amber-500/15 text-amber-300 border-amber-500/25' }
   }
   if (days > CLIENT_AT_RISK_DAYS) {
-    return { label: 'En riesgo', className: 'bg-orange-500/15 text-orange-300 border-orange-500/25' }
+    return {
+      label: 'En riesgo',
+      className: 'bg-orange-500/15 text-orange-300 border-orange-500/25',
+    }
   }
   if (client.total_visits > 0 && days <= CLIENT_NEW_DAYS) {
     return { label: 'Nuevo', className: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/25' }
@@ -67,7 +70,8 @@ export function ClientCard({ client, currencyCode, onClick }: ClientCardProps) {
           <span>{client.total_visits} visitas</span>
           <span>{formatDashboardCurrency(client.total_spent, currencyCode)}</span>
           <span>
-            Última: {client.last_visit_date ? formatDateShort(client.last_visit_date) : 'Sin visitas'}
+            Última:{' '}
+            {client.last_visit_date ? formatDateShort(client.last_visit_date) : 'Sin visitas'}
           </span>
         </div>
       </div>

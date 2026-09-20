@@ -14,16 +14,24 @@ export function PromotionsSection({ data, theme }: PromotionsSectionProps) {
 
   return (
     <section className="border-t px-5 py-14" style={{ borderColor: theme.colors.divider }}>
-      <p className="mb-1 text-[11px] uppercase tracking-[0.2em]" style={{ color: theme.colors.textFaint }}>
+      <p
+        className="mb-1 text-[11px] uppercase tracking-[0.2em]"
+        style={{ color: theme.colors.textFaint }}
+      >
         Promociones
       </p>
-      <h2 className="mb-5 text-[26px] font-bold tracking-tight" style={{ color: theme.colors.text }}>
+      <h2
+        className="mb-5 text-[26px] font-bold tracking-tight"
+        style={{ color: theme.colors.text }}
+      >
         Promociones activas
       </h2>
       <div className="flex flex-col gap-3">
         {promos.map((promo, i) => {
           const message = promo.whatsappMessage ?? promo.title
-          const href = cleanPhone ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}` : undefined
+          const href = cleanPhone
+            ? `https://wa.me/${cleanPhone}?text=${encodeURIComponent(message)}`
+            : undefined
 
           return (
             <div
@@ -52,7 +60,10 @@ export function PromotionsSection({ data, theme }: PromotionsSectionProps) {
                 {promo.title}
               </div>
               {promo.description && (
-                <p className="mb-3 text-[13px] leading-relaxed" style={{ color: theme.colors.textMuted }}>
+                <p
+                  className="mb-3 text-[13px] leading-relaxed"
+                  style={{ color: theme.colors.textMuted }}
+                >
                   {promo.description}
                 </p>
               )}
@@ -62,14 +73,22 @@ export function PromotionsSection({ data, theme }: PromotionsSectionProps) {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-block px-4 py-2.5 text-center text-[13px] font-semibold no-underline"
-                  style={{ background: theme.accentBackground, color: theme.colors.accentOn, borderRadius: theme.radius.button }}
+                  style={{
+                    background: theme.accentBackground,
+                    color: theme.colors.accentOn,
+                    borderRadius: theme.radius.button,
+                  }}
                 >
                   {promo.ctaText ?? 'Ver promoción'}
                 </a>
               ) : (
                 <span
                   className="inline-block px-4 py-2.5 text-center text-[13px] font-semibold opacity-55"
-                  style={{ background: theme.accentBackground, color: theme.colors.accentOn, borderRadius: theme.radius.button }}
+                  style={{
+                    background: theme.accentBackground,
+                    color: theme.colors.accentOn,
+                    borderRadius: theme.radius.button,
+                  }}
                 >
                   {promo.ctaText ?? 'Ver promoción'}
                 </span>

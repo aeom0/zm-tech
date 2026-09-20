@@ -74,9 +74,7 @@ export function GrowthChart({ data, range, onChangeRange }: Props) {
   const span = maxV - minV || 1
 
   const points = data.map((row, i) => {
-    const x =
-      PAD.left +
-      (data.length === 1 ? innerW / 2 : (i / (data.length - 1)) * innerW)
+    const x = PAD.left + (data.length === 1 ? innerW / 2 : (i / (data.length - 1)) * innerW)
     const y = PAD.top + ((maxV - netOf(row)) / span) * innerH
     return { x, y }
   })
@@ -87,10 +85,7 @@ export function GrowthChart({ data, range, onChangeRange }: Props) {
 
   return (
     <View
-      style={[
-        styles.card,
-        { backgroundColor: theme.backgroundDefault, borderColor: theme.border },
-      ]}
+      style={[styles.card, { backgroundColor: theme.backgroundDefault, borderColor: theme.border }]}
     >
       <View style={styles.header}>
         <ThemedText style={styles.title}>Crecimiento</ThemedText>
@@ -107,10 +102,7 @@ export function GrowthChart({ data, range, onChangeRange }: Props) {
               style={[
                 styles.chip,
                 {
-                  backgroundColor:
-                    range === opt.value
-                      ? theme.primary
-                      : theme.backgroundSecondary,
+                  backgroundColor: range === opt.value ? theme.primary : theme.backgroundSecondary,
                 },
               ]}
               onPress={() => {
@@ -155,13 +147,7 @@ export function GrowthChart({ data, range, onChangeRange }: Props) {
           />
           <Path d={path} fill="none" stroke={theme.primary} strokeWidth={2.5} />
           {points.map((p, i) => (
-            <Circle
-              key={data[i].month}
-              cx={p.x}
-              cy={p.y}
-              r={3}
-              fill={theme.primary}
-            />
+            <Circle key={data[i].month} cx={p.x} cy={p.y} r={3} fill={theme.primary} />
           ))}
           {data.map((row, i) =>
             i % tickEvery === 0 || i === data.length - 1 ? (

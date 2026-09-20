@@ -57,8 +57,7 @@ export const otaUpdateUiStore = {
 
   setFase: (fase: OtaFase) => setEstado({ fase }),
 
-  setProgreso: (progreso: number) =>
-    setEstado({ progreso: Math.min(100, Math.max(0, progreso)) }),
+  setProgreso: (progreso: number) => setEstado({ progreso: Math.min(100, Math.max(0, progreso)) }),
 
   setMensajeCustom: (mensajeCustom: string | null) => setEstado({ mensajeCustom }),
 

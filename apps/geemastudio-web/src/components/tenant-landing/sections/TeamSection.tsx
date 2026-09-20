@@ -12,10 +12,16 @@ export function TeamSection({ data, theme }: TeamSectionProps) {
 
   return (
     <section className="border-t px-5 py-14" style={{ borderColor: theme.colors.divider }}>
-      <p className="mb-1 text-[11px] uppercase tracking-[0.2em]" style={{ color: theme.colors.textFaint }}>
+      <p
+        className="mb-1 text-[11px] uppercase tracking-[0.2em]"
+        style={{ color: theme.colors.textFaint }}
+      >
         Equipo
       </p>
-      <h2 className="mb-5 text-[26px] font-bold tracking-tight" style={{ color: theme.colors.text }}>
+      <h2
+        className="mb-5 text-[26px] font-bold tracking-tight"
+        style={{ color: theme.colors.text }}
+      >
         Nuestro equipo
       </h2>
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -27,7 +33,11 @@ export function TeamSection({ data, theme }: TeamSectionProps) {
           >
             {member.photoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={member.photoUrl} alt={member.name} className="mb-3 h-16 w-16 rounded-full object-cover" />
+              <img
+                src={member.photoUrl}
+                alt={member.name}
+                className="mb-3 h-16 w-16 rounded-full object-cover"
+              />
             ) : (
               <div
                 className="mb-3 flex h-16 w-16 items-center justify-center rounded-full text-lg font-bold text-white"
@@ -45,7 +55,10 @@ export function TeamSection({ data, theme }: TeamSectionProps) {
             {member.speciality && (
               <span
                 className="mt-2 inline-block rounded-full px-2.5 py-1 text-[11px] font-medium"
-                style={{ background: theme.colors.secondaryAccentBg, color: theme.colors.secondaryAccent }}
+                style={{
+                  background: theme.colors.secondaryAccentBg,
+                  color: theme.colors.secondaryAccent,
+                }}
               >
                 {member.speciality}
               </span>

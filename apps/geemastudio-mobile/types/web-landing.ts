@@ -77,6 +77,4 @@ export interface WebSettings {
 }
 
 /** Patch parcial hacia columnas snake_case (vía servicio) */
-export type WebSettingsPatch = Partial<
-  Omit<WebSettings, 'rowId' | 'tenantSlug'>
->
+export type WebSettingsPatch = Partial<Omit<WebSettings, 'rowId' | 'tenantSlug'>>

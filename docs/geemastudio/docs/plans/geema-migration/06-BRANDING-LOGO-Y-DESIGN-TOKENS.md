@@ -14,9 +14,9 @@
 
 **Decisión de producto:** plataforma Geema vs marca del salón.
 
-| Superficie | Marca |
-|------------|--------|
-| Onboarding “crear negocio”, wordmark GeemaStudio, splash nativa APK | **Geema** (Lunaris fijo) |
+| Superficie                                                                | Marca                                |
+| ------------------------------------------------------------------------- | ------------------------------------ |
+| Onboarding “crear negocio”, wordmark GeemaStudio, splash nativa APK       | **Geema** (Lunaris fijo)             |
 | Login post-config, tabs, agenda, servicios, finanzas, ajustes del negocio | **Tenant** (logo + tokens derivados) |
 
 ---
@@ -25,23 +25,23 @@
 
 ### Ya existe (Geema)
 
-| Pieza | Ubicación |
-|-------|-----------|
-| Columna `tenant_settings.logo_url` | BD prod ✅ |
-| Pantalla upload | `LogoNegocioScreen` — Más → Logo del negocio |
-| Hook upload | `useLogoUpload` → bucket `tenant-logos`, WebP 512px |
-| Login con logo | `LoginScreen` muestra `config.logo` si existe |
+| Pieza                              | Ubicación                                           |
+| ---------------------------------- | --------------------------------------------------- |
+| Columna `tenant_settings.logo_url` | BD prod ✅                                          |
+| Pantalla upload                    | `LogoNegocioScreen` — Más → Logo del negocio        |
+| Hook upload                        | `useLogoUpload` → bucket `tenant-logos`, WebP 512px |
+| Login con logo                     | `LoginScreen` muestra `config.logo` si existe       |
 
 ### Gaps
 
-| # | Gap | Acción |
-|---|-----|--------|
-| L1 | Bucket `tenant-logos` **no existe** en Supabase prod ZM | Migración Storage + RLS |
-| L2 | Path upload usa `userId`; debe ser `tenant_slug` | Fix `useLogoUpload` |
-| L3 | Splash secundaria (React) usa `DiamondHero` genérico | `<TenantLogo>` + fallback iniciales |
-| L4 | `HeaderTitle` usa inicial, no imagen (ZM usa PNG fijo) | Logo 28×28 como ZM |
-| L5 | Overlay OTA (si se porta) | Mismo componente |
-| L6 | Sin `@sentry/react-native` en Geema | Backlog observabilidad (no bloquea branding) |
+| #   | Gap                                                     | Acción                                       |
+| --- | ------------------------------------------------------- | -------------------------------------------- |
+| L1  | Bucket `tenant-logos` **no existe** en Supabase prod ZM | Migración Storage + RLS                      |
+| L2  | Path upload usa `userId`; debe ser `tenant_slug`        | Fix `useLogoUpload`                          |
+| L3  | Splash secundaria (React) usa `DiamondHero` genérico    | `<TenantLogo>` + fallback iniciales          |
+| L4  | `HeaderTitle` usa inicial, no imagen (ZM usa PNG fijo)  | Logo 28×28 como ZM                           |
+| L5  | Overlay OTA (si se porta)                               | Mismo componente                             |
+| L6  | Sin `@sentry/react-native` en Geema                     | Backlog observabilidad (no bloquea branding) |
 
 ### Modelo Storage
 
@@ -60,30 +60,30 @@ RLS: `authenticated` con `tenant_slug = current_tenant_id()` — lectura/escritu
 
 ### Referencia ZM (single-tenant, hoy)
 
-| Pieza | Dónde | Notas |
-|-------|-------|-------|
+| Pieza              | Dónde                                                | Notas                                                                            |
+| ------------------ | ---------------------------------------------------- | -------------------------------------------------------------------------------- |
 | Small icon Android | `apps/mobile/app.json` → plugin `expo-notifications` | `logo-positivo.png` + `color: #7B2D8E` — **compilado en el APK**, no por mensaje |
-| Canales Android | `hooks/useNotifications.ts` | Nombre fijo “ZM Lash & Nails · …”, `lightColor: Colors.light.primary` |
-| Envío FCM | `supabase/functions/send-notification` | Solo `title`, `body`, `channel_id` — sin `color` ni `image` por push |
+| Canales Android    | `hooks/useNotifications.ts`                          | Nombre fijo “ZM Lash & Nails · …”, `lightColor: Colors.light.primary`            |
+| Envío FCM          | `supabase/functions/send-notification`               | Solo `title`, `body`, `channel_id` — sin `color` ni `image` por push             |
 
 El **small icon** de Android debe ser silueta **blanca sobre transparente** (solo canal alpha). El `color` tiñe el círculo de fondo del icono en la barra de estado. Eso explica por qué ZM usa un asset dedicado (`logo-positivo.png`), no el logo a color del salón.
 
 ### Dos capas — no confundir
 
-| Capa | Dónde se ve | ¿Dinámico por tenant en una sola app Geema? |
-|------|-------------|---------------------------------------------|
-| **Small icon** | Barra de estado (silueta monocromática) | ❌ Casi no — drawable **embebido en el APK** |
-| **Rich image + color** | Notificación expandida + tinte de acento | ✅ Sí — campos FCM v1 por mensaje |
+| Capa                   | Dónde se ve                              | ¿Dinámico por tenant en una sola app Geema?  |
+| ---------------------- | ---------------------------------------- | -------------------------------------------- |
+| **Small icon**         | Barra de estado (silueta monocromática)  | ❌ Casi no — drawable **embebido en el APK** |
+| **Rich image + color** | Notificación expandida + tinte de acento | ✅ Sí — campos FCM v1 por mensaje            |
 
 FCM permite `android.notification.icon`, pero el valor es el **nombre de un drawable local** (`res/drawable/…`), no una URL. No hay API estándar para cambiar el small icon por tenant en runtime sin código nativo extra.
 
 ### Decisión de producto (Geema SaaS)
 
-| Superficie push | Marca |
-|-----------------|--------|
-| Small icon barra de estado (APK Geema compartido) | **Geema** — silueta neutra fija en `app.json` |
-| Imagen expandida + color de acento en cada push | **Tenant** — `logo_url` + `primary_color` desde BD |
-| APK white-label por cliente premium | **Tenant** — `notification-icon.png` del tenant en build |
+| Superficie push                                   | Marca                                                    |
+| ------------------------------------------------- | -------------------------------------------------------- |
+| Small icon barra de estado (APK Geema compartido) | **Geema** — silueta neutra fija en `app.json`            |
+| Imagen expandida + color de acento en cada push   | **Tenant** — `logo_url` + `primary_color` desde BD       |
+| APK white-label por cliente premium               | **Tenant** — `notification-icon.png` del tenant en build |
 
 La clienta/staff ve sobre todo la **imagen expandida y el tinte**; el small icon genérico Geema es aceptable en v1 multi-tenant.
 
@@ -94,11 +94,11 @@ tenant-logos/{tenant_slug}/logo.webp                 →  tenant_settings.logo_u
 tenant-logos/{tenant_slug}/notification-icon.png     →  tenant_settings.notification_icon_url (monocromático)
 ```
 
-| Asset | Spec | Uso |
-|-------|------|-----|
-| `logo.webp` | WebP 512px, a color | UI in-app, FCM `android.notification.image` |
+| Asset                   | Spec                                                                      | Uso                                               |
+| ----------------------- | ------------------------------------------------------------------------- | ------------------------------------------------- |
+| `logo.webp`             | WebP 512px, a color                                                       | UI in-app, FCM `android.notification.image`       |
 | `notification-icon.png` | PNG, silueta blanca `#FFFFFF`, fondo transparente, 96×96 y 192×192 export | Preview panel, builds white-label, futuro Notifee |
-| `primary_color` | Ya en BD | FCM `android.notification.color` |
+| `primary_color`         | Ya en BD                                                                  | FCM `android.notification.color`                  |
 
 **Columna nueva (propuesta):** `tenant_settings.notification_icon_url` (text, default `''`). Opcional v2: `push_branding_manual` (bool) si el tenant subió el monocromático a mano.
 
@@ -146,11 +146,11 @@ Extender `send-notification` (y callers que resuelvan tenant del destinatario):
 }
 ```
 
-| Campo FCM | Fuente BD | Efecto |
-|-----------|-----------|--------|
-| `android.notification.color` | `tenant_settings.primary_color` | Tinte acento Android |
-| `android.notification.image` | `tenant_settings.logo_url` | Logo a color en notificación expandida |
-| `apns.fcm_options.image` | mismo URL | Rich notification iOS (requiere extensión) |
+| Campo FCM                    | Fuente BD                       | Efecto                                     |
+| ---------------------------- | ------------------------------- | ------------------------------------------ |
+| `android.notification.color` | `tenant_settings.primary_color` | Tinte acento Android                       |
+| `android.notification.image` | `tenant_settings.logo_url`      | Logo a color en notificación expandida     |
+| `apns.fcm_options.image`     | mismo URL                       | Rich notification iOS (requiere extensión) |
 
 **Resolución tenant:** join `profiles.push_token` → `profiles.tenant_id` → `tenant_settings` (bridge S2 por `tenant_slug`). Fallback: color Geema Lunaris + sin image si tenant sin logo.
 
@@ -166,19 +166,19 @@ Notifications.setNotificationChannelAsync(id, {
   name: `${tenantDisplayName} · ${channelLabel}`,
   lightColor: config.primaryColor,
   importance: AndroidImportance.MAX,
-});
+})
 ```
 
 Recrear canales si cambia `primary_color` (raro) o al login tras cargar `tenant_settings`.
 
 ### Tier 2 — small icon distinto por tenant (backlog, no v1 SaaS)
 
-| Enfoque | Viabilidad | Cuándo |
-|---------|------------|--------|
-| Icono Geema neutro en APK + rich image por push | ✅ v1 | S5B-8…10 |
-| APK white-label: `expo-notifications.icon` = `notification-icon.png` del tenant en EAS build profile | ✅ Premium | S7+ |
-| Notifee + descargar PNG al login + notificación local (data-only FCM) | ⚠️ Complejo | Solo si producto exige barra de estado por tenant |
-| URL remota como small icon vía FCM | ❌ | No soportado |
+| Enfoque                                                                                              | Viabilidad  | Cuándo                                            |
+| ---------------------------------------------------------------------------------------------------- | ----------- | ------------------------------------------------- |
+| Icono Geema neutro en APK + rich image por push                                                      | ✅ v1       | S5B-8…10                                          |
+| APK white-label: `expo-notifications.icon` = `notification-icon.png` del tenant en EAS build profile | ✅ Premium  | S7+                                               |
+| Notifee + descargar PNG al login + notificación local (data-only FCM)                                | ⚠️ Complejo | Solo si producto exige barra de estado por tenant |
+| URL remota como small icon vía FCM                                                                   | ❌          | No soportado                                      |
 
 ### Tier 3 — iOS rich image
 
@@ -214,13 +214,13 @@ useTheme() → createTheme(config, isDark)
 
 A partir de `primaryColor` + `accentColor` (+ `isDark`), generar el mismo set semántico que ZM:
 
-| Token | Fuente |
-|-------|--------|
-| `primary`, `accent`, `link`, `tabIconSelected`, `info`, `gold`, `warning` | Seeds tenant |
-| `primaryLight`, `accentLight` | Mezcla hex / HSL desde seeds |
-| `backgroundSecondary`, `backgroundTertiary`, `border` | Tinte suave del primary |
-| `cardShadow`, `Shadows.*.shadowColor` | Primary con alpha |
-| Dark mode | `lightenHex()` (ya existe) + ajuste contraste |
+| Token                                                                     | Fuente                                        |
+| ------------------------------------------------------------------------- | --------------------------------------------- |
+| `primary`, `accent`, `link`, `tabIconSelected`, `info`, `gold`, `warning` | Seeds tenant                                  |
+| `primaryLight`, `accentLight`                                             | Mezcla hex / HSL desde seeds                  |
+| `backgroundSecondary`, `backgroundTertiary`, `border`                     | Tinte suave del primary                       |
+| `cardShadow`, `Shadows.*.shadowColor`                                     | Primary con alpha                             |
+| Dark mode                                                                 | `lightenHex()` (ya existe) + ajuste contraste |
 
 Semánticos **fijos** cross-tenant (no derivar): `success`, `error`, `caution`, `statusInfo`, `whatsapp`.
 
@@ -236,29 +236,29 @@ Evita divergencia futura entre `apps/mobile/constants/theme.ts` y `geemastudio-m
 
 ### Gradientes
 
-| Token | Uso |
-|-------|-----|
-| `Gradients.onboarding` | Solo shell Geema (wizard nuevo negocio) |
+| Token                     | Uso                                                      |
+| ------------------------- | -------------------------------------------------------- |
+| `Gradients.onboarding`    | Solo shell Geema (wizard nuevo negocio)                  |
 | `Gradients.brand(config)` | CTA login, tabs, settings — derivado de primary → accent |
 
 ---
 
 ## Tareas (S5-B)
 
-| ID | Tarea | Repo | Esfuerzo |
-|----|-------|------|----------|
-| S5B-1 | Migración bucket `tenant-logos` + políticas RLS por `tenant_slug` | ZM migrations | S |
-| S5B-2 | `useLogoUpload`: path `{tenant_slug}/logo.webp` | zm-tech | S |
-| S5B-3 | Componente `TenantLogo` (sizes: 28 / 80 / 280, fallback iniciales) | zm-tech | S |
-| S5B-4 | Cablear logo: `HeaderTitle`, `SplashScreen` React, overlay OTA | zm-tech | M |
-| S5B-5 | `createTheme()` completo (derivados + shadows) | zm-tech | M |
-| S5B-6 | `Gradients.brand` + audit grep `#40E0D0` / `Colors.light.violet` | zm-tech | M |
-| S5B-7 | Paquete `@zmtech/design-tokens` + consumo Geema | zm-tech (+ ZM S7+) | L |
-| S5B-8 | Columna `notification_icon_url` + path Storage `notification-icon.png` | ZM migrations | S |
-| S5B-9 | Generador monocromático post-upload (Edge o hook) + preview en `LogoNegocioScreen` | zm-tech (+ Edge ZM) | M |
-| S5B-10 | `send-notification` tenant-aware: `color` + `image` desde `tenant_settings` | ZM Edge | M |
-| S5B-11 | Canales Android Geema con nombre tenant + `lightColor` dinámico | zm-tech | S |
-| S5B-12 | iOS Notification Service Extension (rich image) | zm-tech | L |
+| ID     | Tarea                                                                              | Repo                | Esfuerzo |
+| ------ | ---------------------------------------------------------------------------------- | ------------------- | -------- |
+| S5B-1  | Migración bucket `tenant-logos` + políticas RLS por `tenant_slug`                  | ZM migrations       | S        |
+| S5B-2  | `useLogoUpload`: path `{tenant_slug}/logo.webp`                                    | zm-tech             | S        |
+| S5B-3  | Componente `TenantLogo` (sizes: 28 / 80 / 280, fallback iniciales)                 | zm-tech             | S        |
+| S5B-4  | Cablear logo: `HeaderTitle`, `SplashScreen` React, overlay OTA                     | zm-tech             | M        |
+| S5B-5  | `createTheme()` completo (derivados + shadows)                                     | zm-tech             | M        |
+| S5B-6  | `Gradients.brand` + audit grep `#40E0D0` / `Colors.light.violet`                   | zm-tech             | M        |
+| S5B-7  | Paquete `@zmtech/design-tokens` + consumo Geema                                    | zm-tech (+ ZM S7+)  | L        |
+| S5B-8  | Columna `notification_icon_url` + path Storage `notification-icon.png`             | ZM migrations       | S        |
+| S5B-9  | Generador monocromático post-upload (Edge o hook) + preview en `LogoNegocioScreen` | zm-tech (+ Edge ZM) | M        |
+| S5B-10 | `send-notification` tenant-aware: `color` + `image` desde `tenant_settings`        | ZM Edge             | M        |
+| S5B-11 | Canales Android Geema con nombre tenant + `lightColor` dinámico                    | zm-tech             | S        |
+| S5B-12 | iOS Notification Service Extension (rich image)                                    | zm-tech             | L        |
 
 ### DoD
 

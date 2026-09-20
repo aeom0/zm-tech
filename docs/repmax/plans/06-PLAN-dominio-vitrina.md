@@ -162,11 +162,11 @@ cambio de nameservers sin recrear esos registros en el nuevo proveedor
 
 ### 8.1 Registros recreados en el panel DNS de Vercel
 
-| Tipo | Name | Value                                   | Priority |
-| ---- | ---- | ---------------------------------------- | -------- |
-| MX   | @    | `mx1.improvmx.com`                       | 10       |
-| MX   | @    | `mx2.improvmx.com`                       | 20       |
-| TXT  | @    | `v=spf1 include:spf.improvmx.com ~all`   | —        |
+| Tipo | Name | Value                                  | Priority |
+| ---- | ---- | -------------------------------------- | -------- |
+| MX   | @    | `mx1.improvmx.com`                     | 10       |
+| MX   | @    | `mx2.improvmx.com`                     | 20       |
+| TXT  | @    | `v=spf1 include:spf.improvmx.com ~all` | —        |
 
 Verificados por captura de pantalla del dashboard de Vercel (Domains →
 `zmtechdev.com` → DNS Records) tras corregir dos errores de UI:

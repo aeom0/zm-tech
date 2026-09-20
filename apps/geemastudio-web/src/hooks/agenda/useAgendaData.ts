@@ -60,9 +60,7 @@ export function useAgendaTenantSchedule() {
       )
       const timeFormat = data?.time_format === '12' ? '12' : '24'
       const currencyCode =
-        typeof data?.currency_code === 'string' && data.currency_code
-          ? data.currency_code
-          : 'PEN'
+        typeof data?.currency_code === 'string' && data.currency_code ? data.currency_code : 'PEN'
 
       return { timezone, businessHours, timeFormat, currencyCode }
     },
@@ -76,9 +74,7 @@ export function useAgendaDayAppointments(
 ) {
   const tz = timezone ? zonaIANASegura(timezone) : null
   const dayKey =
-    selectedDate && tz
-      ? formatAppointmentWallclock(selectedDate, tz).slice(0, 10)
-      : null
+    selectedDate && tz ? formatAppointmentWallclock(selectedDate, tz).slice(0, 10) : null
 
   return useQuery({
     queryKey: ['web_agenda_day', dayKey, tz, statusFilter],

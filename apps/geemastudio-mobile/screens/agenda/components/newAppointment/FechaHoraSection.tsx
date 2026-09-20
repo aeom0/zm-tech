@@ -91,13 +91,7 @@ export function FechaHoraSection({
       >
         {diasVisibles.map((d) => {
           const isSelected = d.toDateString() === selectedDate.toDateString()
-          const diaConFranja = diaTieneFranjaAgenda(
-            d,
-            agendaHours,
-            businessHours,
-            tz,
-            holidayIndex
-          )
+          const diaConFranja = diaTieneFranjaAgenda(d, agendaHours, businessHours, tz, holidayIndex)
           return (
             <Pressable
               key={d.toISOString()}

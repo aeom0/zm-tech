@@ -24,10 +24,7 @@ export function EmployeePaymentBadge({
   houseCutFixed,
   currencySymbol = 'S/',
 }: Props) {
-  if (
-    (mode === 'commission' || mode === 'mixed') &&
-    commissionMode === 'fixed_house'
-  ) {
+  if ((mode === 'commission' || mode === 'mixed') && commissionMode === 'fixed_house') {
     return (
       <View style={[styles.pill, { borderColor: '#9C27B0' }]}>
         <Text style={[styles.label, { color: '#9C27B0' }]}>

@@ -63,7 +63,9 @@ export default function InventoryScreen() {
   const [selectedTab, setSelectedTab] = useState<string>(categories[0]?.key ?? '')
   const [modalVisible, setModalVisible] = useState(false)
   const [editingItem, setEditingItem] = useState<InventoryItem | null>(null)
-  const [formData, setFormData] = useState<InventoryFormState>(() => defaultForm(categories[0]?.key ?? ''))
+  const [formData, setFormData] = useState<InventoryFormState>(() =>
+    defaultForm(categories[0]?.key ?? '')
+  )
 
   const closeModal = useCallback(() => {
     setModalVisible(false)
@@ -87,7 +89,12 @@ export default function InventoryScreen() {
         style: 'destructive',
         onPress: () => {
           if (!cat.id) return
-          deleteCategoryMutation.mutate({ id: cat.id, key: cat.key, label: cat.label, sort_order: 0 })
+          deleteCategoryMutation.mutate({
+            id: cat.id,
+            key: cat.key,
+            label: cat.label,
+            sort_order: 0,
+          })
           if (selectedTab === cat.key) {
             setSelectedTab(categories[0]?.key ?? '')
           }

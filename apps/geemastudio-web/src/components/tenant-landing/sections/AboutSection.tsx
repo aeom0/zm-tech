@@ -11,13 +11,22 @@ export function AboutSection({ data, theme }: AboutSectionProps) {
 
   return (
     <section className="border-t px-5 py-14" style={{ borderColor: theme.colors.divider }}>
-      <p className="mb-1 text-[11px] uppercase tracking-[0.2em]" style={{ color: theme.colors.textFaint }}>
+      <p
+        className="mb-1 text-[11px] uppercase tracking-[0.2em]"
+        style={{ color: theme.colors.textFaint }}
+      >
         Nosotros
       </p>
-      <h2 className="mb-4 text-[26px] font-bold tracking-tight" style={{ color: theme.colors.text }}>
+      <h2
+        className="mb-4 text-[26px] font-bold tracking-tight"
+        style={{ color: theme.colors.text }}
+      >
         Conócenos
       </h2>
-      <p className="whitespace-pre-line text-sm leading-relaxed" style={{ color: theme.colors.textMuted }}>
+      <p
+        className="whitespace-pre-line text-sm leading-relaxed"
+        style={{ color: theme.colors.textMuted }}
+      >
         {data.about}
       </p>
     </section>

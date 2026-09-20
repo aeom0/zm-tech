@@ -17,11 +17,7 @@ import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { Spacing, BorderRadius } from '@/constants/theme'
 import { filterPriceInput, normalizeDecimalInput } from '@/utils/format'
-import {
-  EXPENSE_CATEGORIES,
-  type ExpenseCategory,
-  type OperationalExpense,
-} from '../../types'
+import { EXPENSE_CATEGORIES, type ExpenseCategory, type OperationalExpense } from '../../types'
 
 interface Props {
   visible: boolean
@@ -72,12 +68,7 @@ export function ExpenseModal({
   const canSave = label.trim().length > 0
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="slide"
-      onRequestClose={onClose}
-    >
+    <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <KeyboardAvoidingView
         style={[styles.overlay, isTablet ? styles.overlayTablet : undefined]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -91,27 +82,17 @@ export function ExpenseModal({
           ]}
         >
           <View style={styles.header}>
-            <ThemedText style={styles.title}>
-              {editing ? 'Editar gasto' : 'Nuevo gasto'}
-            </ThemedText>
+            <ThemedText style={styles.title}>{editing ? 'Editar gasto' : 'Nuevo gasto'}</ThemedText>
             <Pressable
               onPress={onClose}
-              style={[
-                styles.close,
-                { backgroundColor: theme.backgroundSecondary },
-              ]}
+              style={[styles.close, { backgroundColor: theme.backgroundSecondary }]}
             >
               <Feather name="x" size={18} color={theme.text} />
             </Pressable>
           </View>
 
-          <ScrollView
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
-            <ThemedText
-              style={[styles.inputLabel, { color: theme.textSecondary }]}
-            >
+          <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+            <ThemedText style={[styles.inputLabel, { color: theme.textSecondary }]}>
               Categoría
             </ThemedText>
             <View style={styles.chips}>
@@ -125,9 +106,7 @@ export function ExpenseModal({
                       styles.chip,
                       {
                         borderColor: selected ? theme.primary : theme.border,
-                        backgroundColor: selected
-                          ? theme.primary
-                          : theme.backgroundSecondary,
+                        backgroundColor: selected ? theme.primary : theme.backgroundSecondary,
                       },
                     ]}
                   >
@@ -145,9 +124,7 @@ export function ExpenseModal({
               })}
             </View>
 
-            <ThemedText
-              style={[styles.inputLabel, { color: theme.textSecondary }]}
-            >
+            <ThemedText style={[styles.inputLabel, { color: theme.textSecondary }]}>
               Concepto
             </ThemedText>
             <TextInput
@@ -165,9 +142,7 @@ export function ExpenseModal({
               onChangeText={setLabel}
             />
 
-            <ThemedText
-              style={[styles.inputLabel, { color: theme.textSecondary }]}
-            >
+            <ThemedText style={[styles.inputLabel, { color: theme.textSecondary }]}>
               Monto ({currencySymbol}) — vacío = pendiente
             </ThemedText>
             <TextInput
@@ -209,22 +184,15 @@ export function ExpenseModal({
               {isPending ? (
                 <ActivityIndicator color={theme.buttonText} />
               ) : (
-                <ThemedText
-                  style={{ color: theme.buttonText, fontWeight: '700' }}
-                >
+                <ThemedText style={{ color: theme.buttonText, fontWeight: '700' }}>
                   Guardar
                 </ThemedText>
               )}
             </Pressable>
 
             {editing && onDelete ? (
-              <Pressable
-                onPress={() => onDelete(editing.id)}
-                style={styles.delete}
-              >
-                <ThemedText style={{ color: theme.error, fontWeight: '600' }}>
-                  Eliminar
-                </ThemedText>
+              <Pressable onPress={() => onDelete(editing.id)} style={styles.delete}>
+                <ThemedText style={{ color: theme.error, fontWeight: '600' }}>Eliminar</ThemedText>
               </Pressable>
             ) : null}
           </ScrollView>

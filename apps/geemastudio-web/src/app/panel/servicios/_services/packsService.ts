@@ -1,4 +1,8 @@
-import { detectCatalogDialect, parseServiceIds, serializeServiceIds } from '@/hooks/servicios/catalogAdapter'
+import {
+  detectCatalogDialect,
+  parseServiceIds,
+  serializeServiceIds,
+} from '@/hooks/servicios/catalogAdapter'
 import { supabase } from '@/lib/supabase'
 
 export type Pack = {
@@ -56,7 +60,10 @@ function normalizeZm(row: Record<string, unknown>): Pack {
   }
 }
 
-async function resolveCategoryId(sb: NonNullable<typeof supabase>, serviceIds: string[]): Promise<string> {
+async function resolveCategoryId(
+  sb: NonNullable<typeof supabase>,
+  serviceIds: string[]
+): Promise<string> {
   if (serviceIds.length === 0) {
     throw new Error('Elegí al menos un servicio para el pack (en ZM hace falta category_id).')
   }

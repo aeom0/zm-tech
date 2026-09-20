@@ -40,10 +40,7 @@ export function useFinancesData(
 ) {
   const { isAdmin, userId } = useAuth()
 
-  const { periodStart, periodEnd } = useMemo(
-    () => rangeToPeriodDates(currentRange),
-    [currentRange]
-  )
+  const { periodStart, periodEnd } = useMemo(() => rangeToPeriodDates(currentRange), [currentRange])
 
   /** Días del período (periodStart-periodEnd inclusive), para prorratear salary_amount (asumido mensual). */
   const periodDays = useMemo(() => {
@@ -227,8 +224,7 @@ export function useFinancesData(
       if (!aid) continue
       const amount = parseFloat(String(p.amount))
       paidByApt[aid] = (paidByApt[aid] ?? 0) + amount
-      const serviceTotal =
-        p.service_total != null ? parseFloat(String(p.service_total)) : null
+      const serviceTotal = p.service_total != null ? parseFloat(String(p.service_total)) : null
       if (
         serviceTotal != null &&
         (totalByApt[aid] == null || serviceTotal > (totalByApt[aid] ?? 0))
@@ -286,18 +282,14 @@ export function useFinancesData(
       const totalPaid = paidByApt[apt.id] ?? 0
 
       if (lines.length > 0) {
-        const totalAptPrice = lines.reduce(
-          (s, l) => s + parseFloat(String(l.price)),
-          0
-        )
+        const totalAptPrice = lines.reduce((s, l) => s + parseFloat(String(l.price)), 0)
         for (const line of lines) {
           const eid = line.employee_id
           if (!eid || !byEmployee[eid]) continue
           const emp = employeesList.find((e) => e.id === eid)
           if (!emp) continue
           const linePrice = parseFloat(String(line.price))
-          const linePct =
-            totalAptPrice > 0 ? linePrice / totalAptPrice : 1 / lines.length
+          const linePct = totalAptPrice > 0 ? linePrice / totalAptPrice : 1 / lines.length
           byEmployee[eid].generado += linePrice
           byEmployee[eid].pagado += totalPaid * linePct
           byEmployee[eid].pendiente += Math.max(0, linePrice - totalPaid * linePct)
@@ -344,9 +336,7 @@ export function useFinancesData(
           : emp.commission_percentage != null
             ? Number(emp.commission_percentage)
             : null
-      const salaryAmount = emp.salary_amount
-        ? parseFloat(String(emp.salary_amount))
-        : null
+      const salaryAmount = emp.salary_amount ? parseFloat(String(emp.salary_amount)) : null
       const res = calculateEmployeeEarnings({
         paymentAmount: rec.generado,
         paymentMode,
@@ -408,9 +398,7 @@ export function useFinancesData(
 
   const totalAbono = useMemo(
     () =>
-      payments
-        .filter((p) => p.is_abono)
-        .reduce((sum, p) => sum + parseFloat(String(p.amount)), 0),
+      payments.filter((p) => p.is_abono).reduce((sum, p) => sum + parseFloat(String(p.amount)), 0),
     [payments]
   )
 

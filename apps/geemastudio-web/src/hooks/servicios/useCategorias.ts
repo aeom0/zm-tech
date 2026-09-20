@@ -94,10 +94,7 @@ export function useUpsertCategoria() {
           payload.color = cat.color
           payload.icon = cat.icon ?? null
         }
-        const { error } = await supabase
-          .from('service_categories')
-          .update(payload)
-          .eq('id', cat.id)
+        const { error } = await supabase.from('service_categories').update(payload).eq('id', cat.id)
         if (error) throw error
         return
       }

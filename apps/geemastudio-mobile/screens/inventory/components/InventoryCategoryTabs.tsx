@@ -67,7 +67,8 @@ export function InventoryCategoryTabs({
               {
                 flex: undefined,
                 paddingHorizontal: Spacing.lg,
-                backgroundColor: selectedTab === cat.key ? theme.primary : theme.backgroundSecondary,
+                backgroundColor:
+                  selectedTab === cat.key ? theme.primary : theme.backgroundSecondary,
               },
             ]}
             onPress={() => {

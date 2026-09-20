@@ -58,9 +58,7 @@ export function ClientDetailDrawer({ client, currencyCode, onClose }: ClientDeta
           />
           <Metric
             label="Última"
-            value={
-              client.last_visit_date ? formatDateShort(client.last_visit_date) : '—'
-            }
+            value={client.last_visit_date ? formatDateShort(client.last_visit_date) : '—'}
           />
         </div>
 
@@ -101,7 +99,10 @@ export function ClientDetailDrawer({ client, currencyCode, onClose }: ClientDeta
                     </div>
                   </div>
                   <div className="text-right text-sm tabular-nums text-zinc-200">
-                    {formatDashboardCurrency(apt.total_paid || parseFloat(apt.price ?? '0'), currencyCode)}
+                    {formatDashboardCurrency(
+                      apt.total_paid || parseFloat(apt.price ?? '0'),
+                      currencyCode
+                    )}
                   </div>
                 </div>
                 {apt.services.length > 0 && (

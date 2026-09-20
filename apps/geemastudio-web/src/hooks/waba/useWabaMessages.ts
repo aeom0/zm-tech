@@ -79,10 +79,7 @@ export function useWabaConversations() {
       const conversations = [...map.values()]
 
       if (conversations.length > 0) {
-        const { data: clients } = await supabase
-          .from('clients')
-          .select('name, phone')
-          .limit(3000)
+        const { data: clients } = await supabase.from('clients').select('name, phone').limit(3000)
 
         const byPhone = new Map<string, string>()
         for (const c of (clients ?? []) as { name?: string; phone?: string }[]) {

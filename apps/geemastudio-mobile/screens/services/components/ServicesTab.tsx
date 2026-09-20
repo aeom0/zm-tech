@@ -343,7 +343,11 @@ export function ServicesTab() {
         ) : services.length === 0 ? (
           <View style={styles.empty}>
             <View style={styles.emptyIcon}>
-              <Feather name={getDefaultServiceIcon(config.businessType)} size={28} color={theme.textMuted} />
+              <Feather
+                name={getDefaultServiceIcon(config.businessType)}
+                size={28}
+                color={theme.textMuted}
+              />
             </View>
             <ThemedText style={[styles.emptyTitle, { color: theme.textSecondary }]}>
               No hay servicios

@@ -24,11 +24,7 @@ import type { MoreStackParamList } from '@/navigation/MoreStackNavigator'
 
 import { PAYMENT_METHODS } from '../constants'
 import { financesStyles as styles } from '../financesStyles'
-import type {
-  FinancesAppointmentOption,
-  FinancesPayment,
-  FinancesPaymentType,
-} from '../types'
+import type { FinancesAppointmentOption, FinancesPayment, FinancesPaymentType } from '../types'
 
 type NavigationProp = CompositeNavigationProp<
   NativeStackNavigationProp<MoreStackParamList, 'Finanzas'>,
@@ -164,9 +160,7 @@ export function PaymentModal({
                         {
                           borderColor: paymentType === t.id ? theme.primary : theme.border,
                           backgroundColor:
-                            paymentType === t.id
-                              ? theme.primary + '15'
-                              : theme.backgroundSecondary,
+                            paymentType === t.id ? theme.primary + '15' : theme.backgroundSecondary,
                         },
                       ]}
                       onPress={() => onChangePaymentType(t.id)}
@@ -303,9 +297,7 @@ export function PaymentModal({
                     {
                       borderColor: theme.border,
                       backgroundColor:
-                        selectedAppointmentId === null
-                          ? theme.primary
-                          : theme.backgroundSecondary,
+                        selectedAppointmentId === null ? theme.primary : theme.backgroundSecondary,
                     },
                   ]}
                   onPress={() => onSelectAppointment(null)}
@@ -336,9 +328,7 @@ export function PaymentModal({
                             : abono
                               ? theme.gold + '80'
                               : theme.border,
-                          backgroundColor: isSelected
-                            ? theme.primary
-                            : theme.backgroundSecondary,
+                          backgroundColor: isSelected ? theme.primary : theme.backgroundSecondary,
                         },
                       ]}
                       onPress={() => onSelectAppointment(apt.id)}

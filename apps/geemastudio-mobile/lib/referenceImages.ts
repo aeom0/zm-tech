@@ -16,12 +16,10 @@ export async function subirImagenReferencia(
   const ext = contentType.includes('png') ? 'png' : contentType.includes('webp') ? 'webp' : 'jpg'
   const path = `${appointmentId}/${Date.now()}.${ext}`
 
-  const { error: upErr } = await client.storage
-    .from(SERVICE_REFERENCES_BUCKET)
-    .upload(path, buf, {
-      contentType,
-      upsert: false,
-    })
+  const { error: upErr } = await client.storage.from(SERVICE_REFERENCES_BUCKET).upload(path, buf, {
+    contentType,
+    upsert: false,
+  })
 
   if (upErr) {
     throw new Error(upErr.message)

@@ -168,10 +168,7 @@ function patchToColumns(patch: WebSettingsPatch): Record<string, unknown> {
   return out
 }
 
-export async function updateWebSettings(
-  rowId: string,
-  patch: WebSettingsPatch
-): Promise<void> {
+export async function updateWebSettings(rowId: string, patch: WebSettingsPatch): Promise<void> {
   const payload = patchToColumns(patch)
   const { error } = await supabase.from('tenant_settings').update(payload).eq('id', rowId)
   if (error) throw new Error(error.message)

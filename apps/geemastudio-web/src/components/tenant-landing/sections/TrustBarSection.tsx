@@ -76,7 +76,10 @@ export function TrustBarSection({ data, theme }: TrustBarSectionProps) {
               className="flex-1 border-r px-3 py-4 text-center last:border-r-0"
               style={{ borderColor: theme.colors.border }}
             >
-              <div className="text-2xl font-extrabold" style={{ color: theme.colors.secondaryAccent }}>
+              <div
+                className="text-2xl font-extrabold"
+                style={{ color: theme.colors.secondaryAccent }}
+              >
                 {stat.value}
               </div>
               <div className="mt-1 text-[11px]" style={{ color: theme.colors.textFaint }}>
@@ -96,7 +99,10 @@ export function TrustBarSection({ data, theme }: TrustBarSectionProps) {
           <div
             key={i}
             className="rounded-[14px] border px-3 py-4 text-center"
-            style={{ borderColor: theme.colors.statCardBorder, background: theme.colors.statCardBg }}
+            style={{
+              borderColor: theme.colors.statCardBorder,
+              background: theme.colors.statCardBg,
+            }}
           >
             <div
               className="text-[22px] font-black tracking-tight"

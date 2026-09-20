@@ -51,52 +51,64 @@ export function EmployeeBreakdown({ desglose, onRegisterPayout }: Props) {
               },
             ]}
           >
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <ThemedText
-              style={[styles.desgloseName, { color: theme.text }]}
-              numberOfLines={1}
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
             >
-              {row.name}
-            </ThemedText>
-            <View style={styles.desgloseAmounts}>
-              <ThemedText style={[styles.desgloseLabel, { color: theme.textMuted }]}>
-                Generado {formatCurrency(row.generado, config)}
+              <ThemedText style={[styles.desgloseName, { color: theme.text }]} numberOfLines={1}>
+                {row.name}
               </ThemedText>
-              <ThemedText style={[styles.desgloseLabel, { color: theme.gold }]}>
-                Pagado {formatCurrency(row.pagado, config)}
-              </ThemedText>
-              {row.pendiente > 0.01 && (
-                <ThemedText
-                  style={[styles.desgloseLabel, { color: theme.primary, fontWeight: '600' }]}
-                >
-                  Pendiente {formatCurrency(row.pendiente, config)}
-                </ThemedText>
-              )}
-              {row.commissionLabel && row.comision != null ? (
-                <ThemedText
-                  style={[styles.desgloseLabel, { color: theme.textSecondary, fontWeight: '600' }]}
-                >
-                  {row.commissionLabel}: {formatCurrency(row.comision, config)}
-                </ThemedText>
-              ) : row.houseCutEarned && row.houseCutEarned > 0 ? (
-                <ThemedText
-                  style={[styles.desgloseLabel, { color: theme.textSecondary, fontWeight: '600' }]}
-                >
-                  + Corte casa {formatCurrency(row.houseCutEarned, config)}
-                </ThemedText>
-              ) : row.comision != null && row.comision > 0 ? (
-                <ThemedText
-                  style={[styles.desgloseLabel, { color: theme.textSecondary, fontWeight: '600' }]}
-                >
-                  Comisión {formatCurrency(row.comision, config)}
-                </ThemedText>
-              ) : null}
-              {row.comision != null && row.comision > 0 ? (
+              <View style={styles.desgloseAmounts}>
                 <ThemedText style={[styles.desgloseLabel, { color: theme.textMuted }]}>
-                  Comisión pagada {formatCurrency(row.comisionPagada ?? 0, config)}
+                  Generado {formatCurrency(row.generado, config)}
                 </ThemedText>
-              ) : null}
-            </View>
+                <ThemedText style={[styles.desgloseLabel, { color: theme.gold }]}>
+                  Pagado {formatCurrency(row.pagado, config)}
+                </ThemedText>
+                {row.pendiente > 0.01 && (
+                  <ThemedText
+                    style={[styles.desgloseLabel, { color: theme.primary, fontWeight: '600' }]}
+                  >
+                    Pendiente {formatCurrency(row.pendiente, config)}
+                  </ThemedText>
+                )}
+                {row.commissionLabel && row.comision != null ? (
+                  <ThemedText
+                    style={[
+                      styles.desgloseLabel,
+                      { color: theme.textSecondary, fontWeight: '600' },
+                    ]}
+                  >
+                    {row.commissionLabel}: {formatCurrency(row.comision, config)}
+                  </ThemedText>
+                ) : row.houseCutEarned && row.houseCutEarned > 0 ? (
+                  <ThemedText
+                    style={[
+                      styles.desgloseLabel,
+                      { color: theme.textSecondary, fontWeight: '600' },
+                    ]}
+                  >
+                    + Corte casa {formatCurrency(row.houseCutEarned, config)}
+                  </ThemedText>
+                ) : row.comision != null && row.comision > 0 ? (
+                  <ThemedText
+                    style={[
+                      styles.desgloseLabel,
+                      { color: theme.textSecondary, fontWeight: '600' },
+                    ]}
+                  >
+                    Comisión {formatCurrency(row.comision, config)}
+                  </ThemedText>
+                ) : null}
+                {row.comision != null && row.comision > 0 ? (
+                  <ThemedText style={[styles.desgloseLabel, { color: theme.textMuted }]}>
+                    Comisión pagada {formatCurrency(row.comisionPagada ?? 0, config)}
+                  </ThemedText>
+                ) : null}
+              </View>
             </View>
             {onRegisterPayout &&
             row.comisionPendienteReal != null &&

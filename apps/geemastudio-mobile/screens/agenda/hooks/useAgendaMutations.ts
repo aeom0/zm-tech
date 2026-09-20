@@ -240,9 +240,7 @@ export function useAgendaMutations(
     }) => {
       await guardOverlapForLines({
         employeeIds:
-          args.employeeIds && args.employeeIds.length > 0
-            ? args.employeeIds
-            : [args.employee_id],
+          args.employeeIds && args.employeeIds.length > 0 ? args.employeeIds : [args.employee_id],
         dateIso: args.date,
         durationMinutes: args.duration,
         timeZone,

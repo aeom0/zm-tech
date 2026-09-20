@@ -61,11 +61,7 @@ export function getTenantTodayRangeIso(timezone: string): { start: string; end: 
 }
 
 /** Fecha calendario del tenant hace N días (YYYY-MM-DD). */
-export function getTenantDaysAgoIso(
-  timezone: string,
-  days: number,
-  d: Date = new Date()
-): string {
+export function getTenantDaysAgoIso(timezone: string, days: number, d: Date = new Date()): string {
   const today = getTenantTodayString(timezone, d)
   return addDaysToIsoDate(today, -Math.max(0, Math.floor(days)))
 }

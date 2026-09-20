@@ -48,7 +48,7 @@ export default function PanelClientesPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Buscar por nombre, teléfono o email"
-            className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-2.5 pl-9 pr-3 text-sm text-white placeholder:text-zinc-500 outline-none focus:border-[#40E0D0]/40"
+            className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-2.5 pl-9 pr-3 text-sm text-white outline-none placeholder:text-zinc-500 focus:border-[#40E0D0]/40"
           />
         </div>
       </div>

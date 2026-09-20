@@ -34,9 +34,7 @@ export function HolidayAlertBanner({ withinDays = 3, onPress, embedded }: Props)
 
   const primary = alerts[0]
   const extra =
-    alerts.length > 1
-      ? ` (+${alerts.length - 1} feriado${alerts.length > 2 ? 's' : ''} más)`
-      : ''
+    alerts.length > 1 ? ` (+${alerts.length - 1} feriado${alerts.length > 2 ? 's' : ''} más)` : ''
 
   const content = (
     <>

@@ -136,10 +136,7 @@ export async function fetchPromotions(): Promise<Promotion[]> {
     return promos
   }
 
-  const { data, error } = await sb
-    .from('promotions')
-    .select('*, promotion_items(*)')
-    .order('title')
+  const { data, error } = await sb.from('promotions').select('*, promotion_items(*)').order('title')
   if (error) throw error
   return (data ?? []).map((row) => {
     const raw = row as Record<string, unknown>

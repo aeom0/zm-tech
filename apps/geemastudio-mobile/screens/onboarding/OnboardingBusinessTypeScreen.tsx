@@ -282,12 +282,8 @@ export default function OnboardingBusinessTypeScreen({
             </Animated.View>
           ) : null}
 
-          <ThemedText
-            type="small"
-            style={[styles.localeHint, { color: Onboarding.textMuted }]}
-          >
-            {config.locale.country} · {config.locale.currency.symbol}{' '}
-            {config.locale.currency.code}
+          <ThemedText type="small" style={[styles.localeHint, { color: Onboarding.textMuted }]}>
+            {config.locale.country} · {config.locale.currency.symbol} {config.locale.currency.code}
           </ThemedText>
         </View>
 

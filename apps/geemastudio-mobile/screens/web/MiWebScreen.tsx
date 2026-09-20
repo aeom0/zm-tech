@@ -1,11 +1,5 @@
 import React from 'react'
-import {
-  ActivityIndicator,
-  Linking,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native'
+import { ActivityIndicator, Linking, ScrollView, StyleSheet, View } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { useNavigation } from '@react-navigation/native'
@@ -73,7 +67,9 @@ export default function MiWebScreen() {
         <ThemedText style={[styles.statusLabel, { color: theme.textSecondary }]}>
           Estado de la landing
         </ThemedText>
-        <ThemedText style={[styles.statusValue, { color: publicada ? theme.primary : theme.warning }]}>
+        <ThemedText
+          style={[styles.statusValue, { color: publicada ? theme.primary : theme.warning }]}
+        >
           {publicada ? 'Publicada en Geema' : 'No publicada'}
         </ThemedText>
         <ThemedText style={{ color: theme.textMuted, fontSize: 13, marginTop: 4 }}>

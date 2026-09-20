@@ -35,11 +35,17 @@ export function ServicesSection({ data, theme }: ServicesSectionProps) {
       </p>
       <h2
         className={
-          theme.id === 'modern' ? 'mb-[18px] text-[28px] font-black tracking-tight' : 'mb-5 text-[26px] font-bold tracking-tight'
+          theme.id === 'modern'
+            ? 'mb-[18px] text-[28px] font-black tracking-tight'
+            : 'mb-5 text-[26px] font-bold tracking-tight'
         }
         style={{ color: theme.colors.text }}
       >
-        {theme.id === 'elegant' ? 'Lo que hacemos por ti' : theme.id === 'warm' ? 'Nuestros servicios' : '¿Qué necesitas hoy?'}
+        {theme.id === 'elegant'
+          ? 'Lo que hacemos por ti'
+          : theme.id === 'warm'
+            ? 'Nuestros servicios'
+            : '¿Qué necesitas hoy?'}
       </h2>
 
       <div className={theme.id === 'elegant' ? 'flex flex-col gap-2.5' : undefined}>
@@ -53,17 +59,26 @@ export function ServicesSection({ data, theme }: ServicesSectionProps) {
               >
                 <div className="mb-1.5 flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <div className="mb-1 flex items-center gap-2 text-[15px] font-bold" style={{ color: theme.colors.text }}>
+                    <div
+                      className="mb-1 flex items-center gap-2 text-[15px] font-bold"
+                      style={{ color: theme.colors.text }}
+                    >
                       <ServiceGlyph iconName={service.icon} size={20} className="inline" />
                       <span>{service.name}</span>
                     </div>
-                    <div className="text-[13px] leading-relaxed" style={{ color: theme.colors.textMuted }}>
+                    <div
+                      className="text-[13px] leading-relaxed"
+                      style={{ color: theme.colors.textMuted }}
+                    >
                       {service.description}
                     </div>
                   </div>
                   <span
                     className="flex-shrink-0 whitespace-nowrap rounded-full px-3 py-1 text-xs font-bold"
-                    style={{ background: theme.colors.secondaryAccentBg, color: theme.colors.secondaryAccent }}
+                    style={{
+                      background: theme.colors.secondaryAccentBg,
+                      color: theme.colors.secondaryAccent,
+                    }}
                   >
                     {service.price}
                   </span>
@@ -91,7 +106,10 @@ export function ServicesSection({ data, theme }: ServicesSectionProps) {
                   <ServiceGlyph iconName={service.icon} size={24} />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <div className="mb-0.5 text-[15px] font-bold" style={{ color: theme.colors.text }}>
+                  <div
+                    className="mb-0.5 text-[15px] font-bold"
+                    style={{ color: theme.colors.text }}
+                  >
                     {service.name}
                   </div>
                   <div className="text-xs" style={{ color: theme.colors.textMuted }}>
@@ -103,7 +121,10 @@ export function ServicesSection({ data, theme }: ServicesSectionProps) {
                     </div>
                   )}
                 </div>
-                <div className="flex-shrink-0 whitespace-nowrap text-[17px] font-extrabold tracking-tight" style={{ color: theme.colors.text }}>
+                <div
+                  className="flex-shrink-0 whitespace-nowrap text-[17px] font-extrabold tracking-tight"
+                  style={{ color: theme.colors.text }}
+                >
                   {service.price}
                 </div>
               </div>
@@ -135,7 +156,10 @@ export function ServicesSection({ data, theme }: ServicesSectionProps) {
                   </div>
                 )}
               </div>
-              <div className="flex-shrink-0 whitespace-nowrap text-[15px] font-bold" style={gradTextStyle}>
+              <div
+                className="flex-shrink-0 whitespace-nowrap text-[15px] font-bold"
+                style={gradTextStyle}
+              >
                 {service.price}
               </div>
             </div>

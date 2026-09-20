@@ -3,10 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Save, Sparkles } from 'lucide-react'
 
-import {
-  DEFAULT_HAIKU_SYSTEM_PROMPT,
-  useHaikuSystemPrompt,
-} from '@/hooks/waba/useHaikuConfig'
+import { DEFAULT_HAIKU_SYSTEM_PROMPT, useHaikuSystemPrompt } from '@/hooks/waba/useHaikuConfig'
 
 export default function PanelWabaHaikuPage() {
   const { query, save } = useHaikuSystemPrompt()
@@ -73,8 +70,7 @@ export default function PanelWabaHaikuPage() {
               </p>
               {query.data?.updatedAt && (
                 <p className="mt-2 text-[11px] text-zinc-500">
-                  Última guardada:{' '}
-                  {new Date(query.data.updatedAt).toLocaleString('es-VE')}
+                  Última guardada: {new Date(query.data.updatedAt).toLocaleString('es-VE')}
                   {!query.data.fromDb ? ' · (default local, aún no en BD)' : ''}
                 </p>
               )}
@@ -118,7 +114,11 @@ export default function PanelWabaHaikuPage() {
                   className="inline-flex items-center gap-2 rounded-xl border border-[#40E0D0]/30 bg-[#40E0D0]/15 px-3 py-2 text-sm font-semibold text-[#40E0D0] disabled:opacity-50"
                 >
                   <Save className="h-4 w-4" />
-                  {save.isPending ? 'Guardando…' : save.isSuccess && !dirty ? 'Guardado' : 'Guardar'}
+                  {save.isPending
+                    ? 'Guardando…'
+                    : save.isSuccess && !dirty
+                      ? 'Guardado'
+                      : 'Guardar'}
                 </button>
               </div>
             </div>

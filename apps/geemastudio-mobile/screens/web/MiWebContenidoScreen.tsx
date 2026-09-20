@@ -138,7 +138,12 @@ export default function MiWebContenidoScreen() {
       <WebField label="Marquesina" value={marqueeText} onChangeText={setMarqueeText} />
 
       <ThemedText
-        style={{ color: theme.textSecondary, fontSize: 12, marginBottom: Spacing.sm, marginTop: Spacing.md }}
+        style={{
+          color: theme.textSecondary,
+          fontSize: 12,
+          marginBottom: Spacing.sm,
+          marginTop: Spacing.md,
+        }}
       >
         Videos (URL)
       </ThemedText>
@@ -158,7 +163,12 @@ export default function MiWebContenidoScreen() {
       />
 
       <ThemedText
-        style={{ color: theme.textSecondary, fontSize: 12, marginBottom: Spacing.sm, marginTop: Spacing.md }}
+        style={{
+          color: theme.textSecondary,
+          fontSize: 12,
+          marginBottom: Spacing.sm,
+          marginTop: Spacing.md,
+        }}
       >
         Contacto y redes
       </ThemedText>
@@ -176,13 +186,23 @@ export default function MiWebContenidoScreen() {
         autoCapitalize="none"
         placeholder="@usuario"
       />
-      <WebField label="Facebook" value={facebook} onChangeText={setFacebook} autoCapitalize="none" />
+      <WebField
+        label="Facebook"
+        value={facebook}
+        onChangeText={setFacebook}
+        autoCapitalize="none"
+      />
       <WebField label="TikTok" value={tiktok} onChangeText={setTiktok} autoCapitalize="none" />
       <WebField label="Dirección" value={address} onChangeText={setAddress} />
       <WebField label="Ciudad" value={city} onChangeText={setCity} />
 
       <ThemedText
-        style={{ color: theme.textSecondary, fontSize: 12, marginBottom: Spacing.sm, marginTop: Spacing.md }}
+        style={{
+          color: theme.textSecondary,
+          fontSize: 12,
+          marginBottom: Spacing.sm,
+          marginTop: Spacing.md,
+        }}
       >
         Stats
       </ThemedText>

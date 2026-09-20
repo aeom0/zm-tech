@@ -28,9 +28,7 @@ export function ExpenseList({ expenses, onEdit }: Props) {
     <View style={styles.wrap}>
       <View style={styles.header}>
         <ThemedText style={styles.title}>Gastos del mes</ThemedText>
-        <ThemedText style={[styles.count, { color: theme.primary }]}>
-          {expenses.length}
-        </ThemedText>
+        <ThemedText style={[styles.count, { color: theme.primary }]}>{expenses.length}</ThemedText>
       </View>
 
       {expenses.length === 0 ? (
@@ -63,19 +61,13 @@ export function ExpenseList({ expenses, onEdit }: Props) {
                 </ThemedText>
               </View>
               {pending ? (
-                <View
-                  style={[styles.badge, { backgroundColor: theme.accentLight }]}
-                >
-                  <ThemedText
-                    style={[styles.badgeText, { color: theme.accent }]}
-                  >
+                <View style={[styles.badge, { backgroundColor: theme.accentLight }]}>
+                  <ThemedText style={[styles.badgeText, { color: theme.accent }]}>
                     Pendiente
                   </ThemedText>
                 </View>
               ) : (
-                <ThemedText style={styles.amount}>
-                  {formatValue(toNumber(row.amount))}
-                </ThemedText>
+                <ThemedText style={styles.amount}>{formatValue(toNumber(row.amount))}</ThemedText>
               )}
               <Feather name="chevron-right" size={16} color={theme.textMuted} />
             </Pressable>

@@ -22,10 +22,7 @@ import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { Spacing, BorderRadius } from '@/constants/theme'
 import { formatHolidayUntilLabel, dateKeyEnZona, zonaIANASegura } from '@zmtech/tenant-config'
-import {
-  useSalonHolidaysAdmin,
-  type SalonHolidayRecord,
-} from './hooks/useSalonHolidaysAdmin'
+import { useSalonHolidaysAdmin, type SalonHolidayRecord } from './hooks/useSalonHolidaysAdmin'
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
 const OPEN_UNTIL_OPTIONS = [12, 13, 14, 15, 16] as const
@@ -193,8 +190,8 @@ export default function FeriadosScreen() {
         ListHeaderComponent={
           <View style={styles.headerActions}>
             <ThemedText style={[styles.hint, { color: theme.textMuted }]}>
-              País: {config.locale.country}. Los cerrados no permiten citas; el
-              resto usa horario reducido (10 AM – open until).
+              País: {config.locale.country}. Los cerrados no permiten citas; el resto usa horario
+              reducido (10 AM – open until).
             </ThemedText>
             <Pressable
               onPress={handleReloadCatalog}
@@ -252,9 +249,7 @@ export default function FeriadosScreen() {
               </View>
               <Switch
                 value={item.is_closed}
-                onValueChange={(v) =>
-                  updateHoliday.mutate({ id: item.id, is_closed: v })
-                }
+                onValueChange={(v) => updateHoliday.mutate({ id: item.id, is_closed: v })}
                 trackColor={{ false: theme.border, true: theme.primary }}
               />
               <Pressable
@@ -295,7 +290,11 @@ export default function FeriadosScreen() {
                 <TextInput
                   style={[
                     styles.input,
-                    { color: theme.text, borderColor: theme.border, backgroundColor: theme.backgroundSecondary },
+                    {
+                      color: theme.text,
+                      borderColor: theme.border,
+                      backgroundColor: theme.backgroundSecondary,
+                    },
                   ]}
                   value={formDate}
                   onChangeText={setFormDate}
@@ -305,7 +304,9 @@ export default function FeriadosScreen() {
                 />
               </>
             ) : (
-              <ThemedText style={[styles.rowMeta, { color: theme.textMuted, marginBottom: Spacing.md }]}>
+              <ThemedText
+                style={[styles.rowMeta, { color: theme.textMuted, marginBottom: Spacing.md }]}
+              >
                 {formatDateEs(formDate, config.locale.language)}
               </ThemedText>
             )}
@@ -313,7 +314,11 @@ export default function FeriadosScreen() {
             <TextInput
               style={[
                 styles.input,
-                { color: theme.text, borderColor: theme.border, backgroundColor: theme.backgroundSecondary },
+                {
+                  color: theme.text,
+                  borderColor: theme.border,
+                  backgroundColor: theme.backgroundSecondary,
+                },
               ]}
               value={formName}
               onChangeText={setFormName}
@@ -321,7 +326,9 @@ export default function FeriadosScreen() {
               placeholderTextColor={theme.textMuted}
             />
             <View style={styles.switchRow}>
-              <ThemedText style={{ color: theme.text, fontWeight: '600' }}>Cerrado (sin citas)</ThemedText>
+              <ThemedText style={{ color: theme.text, fontWeight: '600' }}>
+                Cerrado (sin citas)
+              </ThemedText>
               <Switch
                 value={formClosed}
                 onValueChange={setFormClosed}
@@ -371,7 +378,10 @@ export default function FeriadosScreen() {
               <Pressable
                 onPress={() => void handleSave()}
                 disabled={saving}
-                style={[styles.modalBtn, { backgroundColor: theme.primary, borderColor: theme.primary }]}
+                style={[
+                  styles.modalBtn,
+                  { backgroundColor: theme.primary, borderColor: theme.primary },
+                ]}
               >
                 {saving ? (
                   <ActivityIndicator color="#FFF" />

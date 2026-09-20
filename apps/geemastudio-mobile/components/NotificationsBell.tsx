@@ -46,9 +46,19 @@ export function NotificationsBell({ items, theme }: NotificationsBellProps) {
         )}
       </Pressable>
 
-      <Modal visible={visible} animationType="fade" transparent onRequestClose={() => setVisible(false)}>
+      <Modal
+        visible={visible}
+        animationType="fade"
+        transparent
+        onRequestClose={() => setVisible(false)}
+      >
         <Pressable style={styles.overlay} onPress={() => setVisible(false)}>
-          <Pressable style={[styles.panel, { width: panelWidth, backgroundColor: theme.card, borderColor: theme.border }]}>
+          <Pressable
+            style={[
+              styles.panel,
+              { width: panelWidth, backgroundColor: theme.card, borderColor: theme.border },
+            ]}
+          >
             <Text style={[styles.panelTitle, { color: theme.text }]}>Notificaciones</Text>
             {items.length === 0 ? (
               <Text style={[styles.emptyText, { color: theme.textSecondary }]}>

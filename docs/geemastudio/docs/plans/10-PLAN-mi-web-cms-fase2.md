@@ -20,14 +20,14 @@ Tras [Fase 1](09-PLAN-landing-multitenant-fase1.md) (templates + secciones + mir
 
 ### Mobile
 
-| Pieza | Path |
-|-------|------|
-| Tipos | `apps/geemastudio-mobile/types/web-landing.ts` |
+| Pieza    | Path                                                     |
+| -------- | -------------------------------------------------------- |
+| Tipos    | `apps/geemastudio-mobile/types/web-landing.ts`           |
 | Servicio | `apps/geemastudio-mobile/services/webSettingsService.ts` |
-| Upload | `apps/geemastudio-mobile/lib/webAssets.ts` |
-| Hook | `apps/geemastudio-mobile/hooks/web/useWebSettings.ts` |
-| UI | `apps/geemastudio-mobile/screens/web/*` |
-| Entry | Más → Mi negocio → **Mi Web** |
+| Upload   | `apps/geemastudio-mobile/lib/webAssets.ts`               |
+| Hook     | `apps/geemastudio-mobile/hooks/web/useWebSettings.ts`    |
+| UI       | `apps/geemastudio-mobile/screens/web/*`                  |
+| Entry    | Más → Mi negocio → **Mi Web**                            |
 
 Pantallas: hub, Presencia (activar / template / slug / custom_domain), Contenido, Galería, Equipo, Promos, Servicios web, Reseñas.
 
@@ -41,11 +41,11 @@ Pantallas: hub, Presencia (activar / template / slug / custom_domain), Contenido
 
 CMS equivalente al de mobile, en el panel web:
 
-| Pieza | Path |
-|-------|------|
+| Pieza    | Path                                                              |
+| -------- | ----------------------------------------------------------------- |
 | Servicio | `apps/geemastudio-web/src/hooks/web-config/webSettingsService.ts` |
-| Hooks | `apps/geemastudio-web/src/hooks/web-config/useWebSettings.ts` |
-| UI | `apps/geemastudio-web/src/app/panel/configuracion/web/page.tsx` |
+| Hooks    | `apps/geemastudio-web/src/hooks/web-config/useWebSettings.ts`     |
+| UI       | `apps/geemastudio-web/src/app/panel/configuracion/web/page.tsx`   |
 
 - Una sola página con secciones: Contenido principal (hero tagline, about, marquee, videos), Contacto y redes (+ mapa embed), Estadísticas, Galería, Equipo, Promos, Reseñas, Servicios web — cada colección con editor de filas (agregar/quitar) y upload de imagen a `web-assets` (mismo bucket/convención de paths que mobile: `{tenant_slug}/{gallery|team|promos|reviews}/{timestamp}.{ext}`).
 - Activar/desactivar landing, template, slug y dominio propio siguen en `/panel/configuracion` (sección "Presencia web"), que ahora enlaza a `/panel/configuracion/web` para el contenido.
@@ -53,13 +53,13 @@ CMS equivalente al de mobile, en el panel web:
 
 ## Pendiente
 
-| Ítem | Notas | Prioridad |
-|------|--------|-----------|
-| **Fase 3 — dominio propio** | Middleware Next.js para `custom_domain`; hoy es informativo | P2 |
-| **Migrar contenido real ZM** | Sanity (`zmlashnails.com`) → fila `zm-lash-nails` `web_*` (hoy vacía / `web_enabled=false`) | P2 — solo con OK de Vanessa/Alberto |
-| **Sync catálogo → `web_services`** | Hoy lista curada aparte; opcional import desde `services`/`packs` | backlog |
-| **`web_mode` explícito** | Panel/mobile siguen mapeando presencia vía `web_enabled` (+ slug/custom_domain); alinear UI a enum `own_domain` / `geema_hosted` / `none` | P2 |
-| Smoke E2E con tenant QA | Activar slug de prueba distinto de demos; no romper fila prod ZM sin plan de contenido | ops |
+| Ítem                               | Notas                                                                                                                                     | Prioridad                           |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| **Fase 3 — dominio propio**        | Middleware Next.js para `custom_domain`; hoy es informativo                                                                               | P2                                  |
+| **Migrar contenido real ZM**       | Sanity (`zmlashnails.com`) → fila `zm-lash-nails` `web_*` (hoy vacía / `web_enabled=false`)                                               | P2 — solo con OK de Vanessa/Alberto |
+| **Sync catálogo → `web_services`** | Hoy lista curada aparte; opcional import desde `services`/`packs`                                                                         | backlog                             |
+| **`web_mode` explícito**           | Panel/mobile siguen mapeando presencia vía `web_enabled` (+ slug/custom_domain); alinear UI a enum `own_domain` / `geema_hosted` / `none` | P2                                  |
+| Smoke E2E con tenant QA            | Activar slug de prueba distinto de demos; no romper fila prod ZM sin plan de contenido                                                    | ops                                 |
 
 ## Fuera de alcance (confirmado)
 

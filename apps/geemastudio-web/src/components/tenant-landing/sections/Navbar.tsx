@@ -11,7 +11,8 @@ export function Navbar({ data, theme }: NavbarProps) {
   const { businessName, whatsapp } = data
 
   const paddingX = theme.id === 'elegant' ? 'px-6' : 'px-5'
-  const blur = theme.id === 'warm' ? '' : theme.id === 'modern' ? 'backdrop-blur-xl' : 'backdrop-blur-md'
+  const blur =
+    theme.id === 'warm' ? '' : theme.id === 'modern' ? 'backdrop-blur-xl' : 'backdrop-blur-md'
   const brandClass =
     theme.id === 'elegant'
       ? 'text-xl font-extrabold tracking-tight'
@@ -22,7 +23,7 @@ export function Navbar({ data, theme }: NavbarProps) {
 
   return (
     <nav
-      className={`sticky top-0 z-50 flex items-center justify-between ${paddingX} py-4 border-b ${blur}`}
+      className={`sticky top-0 z-50 flex items-center justify-between ${paddingX} border-b py-4 ${blur}`}
       style={{ background: theme.colors.navBg, borderColor: theme.colors.divider }}
     >
       <div className={brandClass} style={{ color: theme.colors.text }}>

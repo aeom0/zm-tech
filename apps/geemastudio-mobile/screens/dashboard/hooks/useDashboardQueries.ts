@@ -90,7 +90,9 @@ export function useDashboardQueries(
     queryFn: async () => {
       const { data, error } = await supabase
         .from('appointments')
-        .select('id, client_name, date, duration, price, status, employee_id, service_id, service_ids')
+        .select(
+          'id, client_name, date, duration, price, status, employee_id, service_id, service_ids'
+        )
         .gte('date', startOfDay)
         .lte('date', appointmentsEndOfDay)
         .order('date', { ascending: true })

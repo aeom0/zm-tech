@@ -36,14 +36,9 @@ import {
   getTenantBillingMonthKey,
   shiftMonth,
 } from './finances/lib/billingMonth'
-import {
-  useFinancesData,
-} from './finances/hooks/useFinancesData'
+import { useFinancesData } from './finances/hooks/useFinancesData'
 import { usePaymentForm } from './finances/hooks/usePaymentForm'
-import {
-  useExecutiveSummary,
-  type GrowthRange,
-} from './finances/hooks/useExecutiveSummary'
+import { useExecutiveSummary, type GrowthRange } from './finances/hooks/useExecutiveSummary'
 import { useExpenses } from './finances/hooks/useExpenses'
 import { financesStyles as styles } from './finances/financesStyles'
 import type {
@@ -102,9 +97,7 @@ export default function FinancesScreen() {
 
   const utilidad = currentKpi.ingresos - currentKpi.gastos - currentKpi.ads
   const margenPct =
-    currentKpi.ingresos > 0
-      ? Math.round((utilidad / currentKpi.ingresos) * 1000) / 10
-      : null
+    currentKpi.ingresos > 0 ? Math.round((utilidad / currentKpi.ingresos) * 1000) / 10 : null
 
   const dateRanges = useMemo(() => buildFinancesDateRanges(timezone), [timezone])
   const currentRange = dateRanges[period]
@@ -195,11 +188,7 @@ export default function FinancesScreen() {
               utilidad={utilidad}
               margenPct={margenPct}
             />
-            <GrowthChart
-              data={monthlySummary}
-              range={growthRange}
-              onChangeRange={setGrowthRange}
-            />
+            <GrowthChart data={monthlySummary} range={growthRange} onChangeRange={setGrowthRange} />
             <ExpenseList
               expenses={expensesHook.expenses}
               onEdit={(row) => {

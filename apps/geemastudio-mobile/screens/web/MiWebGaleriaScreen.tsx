@@ -124,7 +124,9 @@ export default function MiWebGaleriaScreen() {
           paddingHorizontal: Spacing.lg,
         }}
         ListEmptyComponent={
-          <ThemedText style={{ color: theme.textMuted, textAlign: 'center', marginTop: Spacing['2xl'] }}>
+          <ThemedText
+            style={{ color: theme.textMuted, textAlign: 'center', marginTop: Spacing['2xl'] }}
+          >
             Todavía no hay fotos. Toca + para agregar.
           </ThemedText>
         }
@@ -143,7 +145,9 @@ export default function MiWebGaleriaScreen() {
                 {item.alt}
               </ThemedText>
               {item.category ? (
-                <ThemedText style={{ color: theme.textMuted, fontSize: 12 }}>{item.category}</ThemedText>
+                <ThemedText style={{ color: theme.textMuted, fontSize: 12 }}>
+                  {item.category}
+                </ThemedText>
               ) : null}
             </View>
             <Feather name="chevron-right" size={18} color={theme.textMuted} />
@@ -162,7 +166,14 @@ export default function MiWebGaleriaScreen() {
       <Modal visible={modalOpen} animationType="slide" transparent>
         <View style={styles.modalBackdrop}>
           <View style={[styles.modalCard, { backgroundColor: theme.backgroundRoot }]}>
-            <ThemedText style={{ fontSize: 18, fontWeight: '700', color: theme.text, marginBottom: Spacing.md }}>
+            <ThemedText
+              style={{
+                fontSize: 18,
+                fontWeight: '700',
+                color: theme.text,
+                marginBottom: Spacing.md,
+              }}
+            >
               {editIndex == null ? 'Nueva foto' : 'Editar foto'}
             </ThemedText>
             <WebAssetPicker
@@ -173,7 +184,11 @@ export default function MiWebGaleriaScreen() {
               onUploaded={(url) => setDraft((d) => ({ ...d, url }))}
               onCleared={() => setDraft((d) => ({ ...d, url: '' }))}
             />
-            <WebField label="Descripción (alt)" value={draft.alt} onChangeText={(alt) => setDraft((d) => ({ ...d, alt }))} />
+            <WebField
+              label="Descripción (alt)"
+              value={draft.alt}
+              onChangeText={(alt) => setDraft((d) => ({ ...d, alt }))}
+            />
             <WebField
               label="Categoría (opcional)"
               value={draft.category ?? ''}
@@ -235,7 +250,12 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
     maxHeight: '90%',
   },
-  modalActions: { flexDirection: 'row', justifyContent: 'flex-end', gap: Spacing.md, marginTop: Spacing.md },
+  modalActions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: Spacing.md,
+    marginTop: Spacing.md,
+  },
   modalBtn: { paddingVertical: Spacing.sm, paddingHorizontal: Spacing.md },
   modalPrimary: { borderRadius: BorderRadius.md, minWidth: 96, alignItems: 'center' },
 })

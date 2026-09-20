@@ -7,7 +7,11 @@ import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { Spacing, BorderRadius } from '@/constants/theme'
-import { formatoHoraInstanteEnZona, instanteCitaDesdeTexto, zonaIANASegura } from '@zmtech/tenant-config'
+import {
+  formatoHoraInstanteEnZona,
+  instanteCitaDesdeTexto,
+  zonaIANASegura,
+} from '@zmtech/tenant-config'
 import type { UnreviewedReferenceAppointment } from '@/hooks/usePendingBadgeCount'
 
 interface Props {
@@ -89,14 +93,19 @@ export function ReferencesInboxSheet({ visible, appointments, onClose, onSelect 
                 ]}
                 onPress={() => onSelect(item)}
               >
-                <View style={[styles.iconWrap, { backgroundColor: `${config.theme.primaryColor}18` }]}>
+                <View
+                  style={[styles.iconWrap, { backgroundColor: `${config.theme.primaryColor}18` }]}
+                >
                   <Feather name="image" size={18} color={config.theme.primaryColor} />
                 </View>
                 <View style={styles.rowText}>
                   <ThemedText style={[styles.clientName, { color: theme.text }]} numberOfLines={1}>
                     {item.client_name}
                   </ThemedText>
-                  <ThemedText style={[styles.subtitle, { color: theme.textMuted }]} numberOfLines={1}>
+                  <ThemedText
+                    style={[styles.subtitle, { color: theme.textMuted }]}
+                    numberOfLines={1}
+                  >
                     {formatSubtitle(item)}
                   </ThemedText>
                 </View>

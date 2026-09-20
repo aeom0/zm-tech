@@ -218,8 +218,7 @@ export function AppointmentDetailModal({
 
   const referenceImagePaths = appointment?.reference_image_paths ?? []
   const referenceSlotsLeft = MAX_REFERENCE_IMAGES - referenceImagePaths.length
-  const referencesUnreviewed =
-    referenceImagePaths.length > 0 && !appointment?.reference_reviewed_at
+  const referencesUnreviewed = referenceImagePaths.length > 0 && !appointment?.reference_reviewed_at
 
   const handlePickReferenceImages = async () => {
     if (!appointment || referenceSlotsLeft <= 0) return
@@ -390,17 +389,13 @@ export function AppointmentDetailModal({
                             </ThemedText>
                             <ThemedText style={[styles.svcDetail, { color: theme.textMuted }]}>
                               {line.duration} min · {formatCurrency(line.unitPrice, config)}
-                              {line.employee
-                                ? ` · ${line.employee.name.split(' ')[0]}`
-                                : ''}
+                              {line.employee ? ` · ${line.employee.name.split(' ')[0]}` : ''}
                             </ThemedText>
                           </View>
                           {canEditServices ? (
                             <Pressable
                               onPress={() =>
-                                setEditServiceLines((prev) =>
-                                  prev.filter((_, i) => i !== line.idx)
-                                )
+                                setEditServiceLines((prev) => prev.filter((_, i) => i !== line.idx))
                               }
                               hitSlop={8}
                             >
@@ -419,10 +414,7 @@ export function AppointmentDetailModal({
                     ) : null}
                     {enrichedLines.length > 0 ? (
                       <View
-                        style={[
-                          styles.totalRow,
-                          { backgroundColor: theme.backgroundSecondary },
-                        ]}
+                        style={[styles.totalRow, { backgroundColor: theme.backgroundSecondary }]}
                       >
                         <ThemedText style={[styles.totalLabel, { color: theme.textSecondary }]}>
                           {enrichedLines.length} servicio
@@ -799,10 +791,7 @@ export function AppointmentDetailModal({
                     </ScrollFadeRow>
                     {rescheduleDate && !enFranjaConfigurada ? (
                       <ThemedText
-                        style={[
-                          styles.summaryLabel,
-                          { color: theme.error, marginTop: Spacing.sm },
-                        ]}
+                        style={[styles.summaryLabel, { color: theme.error, marginTop: Spacing.sm }]}
                       >
                         Ese día u hora está fuera de la franja configurada del negocio.
                       </ThemedText>

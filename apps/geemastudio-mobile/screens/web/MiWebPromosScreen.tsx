@@ -120,7 +120,9 @@ export default function MiWebPromosScreen() {
           paddingHorizontal: Spacing.lg,
         }}
         ListEmptyComponent={
-          <ThemedText style={{ color: theme.textMuted, textAlign: 'center', marginTop: Spacing['2xl'] }}>
+          <ThemedText
+            style={{ color: theme.textMuted, textAlign: 'center', marginTop: Spacing['2xl'] }}
+          >
             Sin promos en la landing. Toca + para agregar.
           </ThemedText>
         }
@@ -152,7 +154,9 @@ export default function MiWebPromosScreen() {
             <View style={{ flex: 1 }}>
               <ThemedText style={{ color: theme.text, fontWeight: '600' }}>{item.title}</ThemedText>
               {item.badge ? (
-                <ThemedText style={{ color: theme.textMuted, fontSize: 12 }}>{item.badge}</ThemedText>
+                <ThemedText style={{ color: theme.textMuted, fontSize: 12 }}>
+                  {item.badge}
+                </ThemedText>
               ) : null}
             </View>
             <Feather name="chevron-right" size={18} color={theme.textMuted} />
@@ -177,7 +181,14 @@ export default function MiWebPromosScreen() {
             style={[styles.modalCard, { backgroundColor: theme.backgroundRoot }]}
             keyboardShouldPersistTaps="handled"
           >
-            <ThemedText style={{ fontSize: 18, fontWeight: '700', color: theme.text, marginBottom: Spacing.md }}>
+            <ThemedText
+              style={{
+                fontSize: 18,
+                fontWeight: '700',
+                color: theme.text,
+                marginBottom: Spacing.md,
+              }}
+            >
               {editIndex == null ? 'Nueva promo' : 'Editar promo'}
             </ThemedText>
             <WebAssetPicker
@@ -188,14 +199,22 @@ export default function MiWebPromosScreen() {
               onUploaded={(url) => setDraft((d) => ({ ...d, imageUrl: url }))}
               onCleared={() => setDraft((d) => ({ ...d, imageUrl: '' }))}
             />
-            <WebField label="Título" value={draft.title} onChangeText={(title) => setDraft((d) => ({ ...d, title }))} />
+            <WebField
+              label="Título"
+              value={draft.title}
+              onChangeText={(title) => setDraft((d) => ({ ...d, title }))}
+            />
             <WebField
               label="Descripción"
               value={draft.description ?? ''}
               onChangeText={(description) => setDraft((d) => ({ ...d, description }))}
               multiline
             />
-            <WebField label="Badge" value={draft.badge ?? ''} onChangeText={(badge) => setDraft((d) => ({ ...d, badge }))} />
+            <WebField
+              label="Badge"
+              value={draft.badge ?? ''}
+              onChangeText={(badge) => setDraft((d) => ({ ...d, badge }))}
+            />
             <WebField
               label="Color badge (hex)"
               value={draft.badgeColor ?? ''}

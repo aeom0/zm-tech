@@ -106,8 +106,7 @@ export function useSyncEditLinesFromQuery(
           serviceId: line.service_id as string,
           employeeId: line.employee_id ?? fallbackEmployeeId,
           packId: line.pack_id ?? undefined,
-          priceOverride:
-            line.price != null ? parseFloat(String(line.price)) : undefined,
+          priceOverride: line.price != null ? parseFloat(String(line.price)) : undefined,
         }))
     )
   }, [lines, fallbackEmployeeId, setEditServiceLines])

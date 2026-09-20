@@ -101,10 +101,7 @@ export function useClientDetail(clientId: string | null) {
       return aptRows.map((a) => {
         const totalPaid = (payments ?? [])
           .filter((p: { appointment_id: string; amount: string }) => p.appointment_id === a.id)
-          .reduce(
-            (sum: number, p: { amount: string }) => sum + parseFloat(p.amount ?? '0'),
-            0
-          )
+          .reduce((sum: number, p: { amount: string }) => sum + parseFloat(p.amount ?? '0'), 0)
         const price = parseFloat(a.price ?? '0')
         const namesSnapshot = a.service_names_snapshot ?? null
         const aptLines = (aptSvcLines ?? []).filter(

@@ -142,10 +142,7 @@ export default function PanelAgendaPage() {
               Hora
             </div>
             {activeEmployees.map((emp) => (
-              <div
-                key={emp.id}
-                className="border-b border-white/[0.08] bg-zinc-950/80 px-3 py-3"
-              >
+              <div key={emp.id} className="border-b border-white/[0.08] bg-zinc-950/80 px-3 py-3">
                 <div className="flex items-center gap-2">
                   <span
                     className="h-2.5 w-2.5 shrink-0 rounded-full"
@@ -241,11 +238,11 @@ export default function PanelAgendaPage() {
           language={language}
           serviceName={serviceNameFor(selectedApt)}
           employeeName={
-            selectedApt.employee_id ? empById.get(selectedApt.employee_id)?.name ?? null : null
+            selectedApt.employee_id ? (empById.get(selectedApt.employee_id)?.name ?? null) : null
           }
           employeeColor={
             selectedApt.employee_id
-              ? empById.get(selectedApt.employee_id)?.color ?? '#40E0D0'
+              ? (empById.get(selectedApt.employee_id)?.color ?? '#40E0D0')
               : '#71717a'
           }
           currencyCode={currencyCode}

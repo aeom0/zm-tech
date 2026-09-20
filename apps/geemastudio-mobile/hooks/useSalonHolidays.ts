@@ -109,10 +109,7 @@ export function useSalonHolidays(enabled = true) {
 
   const holidays = holidaysQuery.data ?? []
 
-  const holidayIndex: SalonHolidayIndex = useMemo(
-    () => indexSalonHolidays(holidays),
-    [holidays]
-  )
+  const holidayIndex: SalonHolidayIndex = useMemo(() => indexSalonHolidays(holidays), [holidays])
 
   /** Fallback en memoria si la red falló y hay catálogo de país. */
   const effectiveIndex: SalonHolidayIndex = useMemo(() => {

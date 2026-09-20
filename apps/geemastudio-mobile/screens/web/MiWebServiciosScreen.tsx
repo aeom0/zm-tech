@@ -116,7 +116,9 @@ export default function MiWebServiciosScreen() {
           paddingHorizontal: Spacing.lg,
         }}
         ListEmptyComponent={
-          <ThemedText style={{ color: theme.textMuted, textAlign: 'center', marginTop: Spacing['2xl'] }}>
+          <ThemedText
+            style={{ color: theme.textMuted, textAlign: 'center', marginTop: Spacing['2xl'] }}
+          >
             Sin servicios en la web. Toca + para agregar.
           </ThemedText>
         }
@@ -162,17 +164,32 @@ export default function MiWebServiciosScreen() {
             style={[styles.modalCard, { backgroundColor: theme.backgroundRoot }]}
             keyboardShouldPersistTaps="handled"
           >
-            <ThemedText style={{ fontSize: 18, fontWeight: '700', color: theme.text, marginBottom: Spacing.md }}>
+            <ThemedText
+              style={{
+                fontSize: 18,
+                fontWeight: '700',
+                color: theme.text,
+                marginBottom: Spacing.md,
+              }}
+            >
               {editIndex == null ? 'Nuevo servicio' : 'Editar servicio'}
             </ThemedText>
-            <WebField label="Nombre" value={draft.name} onChangeText={(name) => setDraft((d) => ({ ...d, name }))} />
+            <WebField
+              label="Nombre"
+              value={draft.name}
+              onChangeText={(name) => setDraft((d) => ({ ...d, name }))}
+            />
             <WebField
               label="Descripción"
               value={draft.description}
               onChangeText={(description) => setDraft((d) => ({ ...d, description }))}
               multiline
             />
-            <WebField label="Precio" value={draft.price} onChangeText={(price) => setDraft((d) => ({ ...d, price }))} />
+            <WebField
+              label="Precio"
+              value={draft.price}
+              onChangeText={(price) => setDraft((d) => ({ ...d, price }))}
+            />
             <WebField
               label="Duración"
               value={draft.duration}

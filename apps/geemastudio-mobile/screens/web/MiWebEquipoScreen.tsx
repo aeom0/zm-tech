@@ -118,7 +118,9 @@ export default function MiWebEquipoScreen() {
           paddingHorizontal: Spacing.lg,
         }}
         ListEmptyComponent={
-          <ThemedText style={{ color: theme.textMuted, textAlign: 'center', marginTop: Spacing['2xl'] }}>
+          <ThemedText
+            style={{ color: theme.textMuted, textAlign: 'center', marginTop: Spacing['2xl'] }}
+          >
             Sin miembros en la landing. Toca + para agregar.
           </ThemedText>
         }
@@ -138,7 +140,16 @@ export default function MiWebEquipoScreen() {
             {item.photoUrl ? (
               <Image source={{ uri: item.photoUrl }} style={styles.thumb} />
             ) : (
-              <View style={[styles.thumb, { backgroundColor: item.color || theme.border, alignItems: 'center', justifyContent: 'center' }]}>
+              <View
+                style={[
+                  styles.thumb,
+                  {
+                    backgroundColor: item.color || theme.border,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  },
+                ]}
+              >
                 <ThemedText style={{ color: '#fff', fontWeight: '700' }}>
                   {item.name.slice(0, 1).toUpperCase()}
                 </ThemedText>
@@ -170,7 +181,14 @@ export default function MiWebEquipoScreen() {
             style={[styles.modalCard, { backgroundColor: theme.backgroundRoot }]}
             keyboardShouldPersistTaps="handled"
           >
-            <ThemedText style={{ fontSize: 18, fontWeight: '700', color: theme.text, marginBottom: Spacing.md }}>
+            <ThemedText
+              style={{
+                fontSize: 18,
+                fontWeight: '700',
+                color: theme.text,
+                marginBottom: Spacing.md,
+              }}
+            >
               {editIndex == null ? 'Nuevo miembro' : 'Editar miembro'}
             </ThemedText>
             <WebAssetPicker
@@ -181,8 +199,16 @@ export default function MiWebEquipoScreen() {
               onUploaded={(url) => setDraft((d) => ({ ...d, photoUrl: url }))}
               onCleared={() => setDraft((d) => ({ ...d, photoUrl: '' }))}
             />
-            <WebField label="Nombre" value={draft.name} onChangeText={(name) => setDraft((d) => ({ ...d, name }))} />
-            <WebField label="Rol" value={draft.role} onChangeText={(role) => setDraft((d) => ({ ...d, role }))} />
+            <WebField
+              label="Nombre"
+              value={draft.name}
+              onChangeText={(name) => setDraft((d) => ({ ...d, name }))}
+            />
+            <WebField
+              label="Rol"
+              value={draft.role}
+              onChangeText={(role) => setDraft((d) => ({ ...d, role }))}
+            />
             <WebField
               label="Especialidad"
               value={draft.speciality ?? ''}

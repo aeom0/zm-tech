@@ -133,7 +133,9 @@ export function DashboardTopServicesCard({
                   </ThemedText>
                 </View>
               ) : (
-                <View style={[styles.topServiceRank, { backgroundColor: theme.backgroundSecondary }]}>
+                <View
+                  style={[styles.topServiceRank, { backgroundColor: theme.backgroundSecondary }]}
+                >
                   <ThemedText style={[styles.topServiceRankText, { color: theme.textSecondary }]}>
                     {index + 1}
                   </ThemedText>
@@ -142,7 +144,9 @@ export function DashboardTopServicesCard({
               <ThemedText style={[styles.quickLinkTitle, { flex: 1, color: theme.text }]}>
                 {service.name}
               </ThemedText>
-              <View style={[styles.topServiceCountBadge, { backgroundColor: `${theme.primary}18` }]}>
+              <View
+                style={[styles.topServiceCountBadge, { backgroundColor: `${theme.primary}18` }]}
+              >
                 <ThemedText style={[styles.topServiceCount, { color: theme.primary }]}>
                   {service.count} cita{service.count === 1 ? '' : 's'}
                 </ThemedText>

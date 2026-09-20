@@ -30,7 +30,8 @@ function formatMonthRangeLabel(periodStart: string, periodEnd: string, locale: s
     .replace('.', '')
   const startDay = start.getUTCDate()
   const endDay = end.getUTCDate()
-  const rangeLabel = startDay === endDay ? `${startDay} ${monthLabel}` : `${startDay}-${endDay} ${monthLabel}`
+  const rangeLabel =
+    startDay === endDay ? `${startDay} ${monthLabel}` : `${startDay}-${endDay} ${monthLabel}`
   return `${rangeLabel} · ${days} ${days === 1 ? 'día' : 'días'}`
 }
 
@@ -61,9 +62,7 @@ function SimpleChart({
     return (
       <View style={[styles.noChartData, { height: CHART_HEIGHT }]}>
         <Feather name="bar-chart-2" size={40} color={theme.textMuted} />
-        <ThemedText
-          style={[styles.noChartText, { color: theme.textMuted, marginTop: Spacing.sm }]}
-        >
+        <ThemedText style={[styles.noChartText, { color: theme.textMuted, marginTop: Spacing.sm }]}>
           Sin datos en este período
         </ThemedText>
       </View>
@@ -221,7 +220,11 @@ export function RevenueCard({
           <ThemedText style={styles.chartTitle}>Tendencia de Ingresos</ThemedText>
           {chartData.length > 0 && (
             <ThemedText style={[styles.chartSubtitle, { color: theme.textMuted }]}>
-              Total: {formatCurrency(chartData.reduce((s, d) => s + d.total, 0), config)}
+              Total:{' '}
+              {formatCurrency(
+                chartData.reduce((s, d) => s + d.total, 0),
+                config
+              )}
             </ThemedText>
           )}
         </View>

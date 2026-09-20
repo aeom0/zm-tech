@@ -26,10 +26,10 @@ URL Geema: `https://udelxwwnyivknslueerr.supabase.co`
 
 **`udelxwwnyivknslueerr` (GeemaStudio)**
 
-| Tablas                                                        | Producto    | Schema TS / ops                                                                           |
-| ------------------------------------------------------------- | ----------- | ----------------------------------------------------------------------------------------- |
-| `profiles`, `employees`, `appointments`, `tenant_settings`, … | GeemaStudio | `@geemastudio/shared-schema`, `apps/geemastudio-server/` (Drizzle, seeds, Edge Functions) |
-| `tenants` — **fuera del schema Drizzle** | GeemaStudio | Creada fuera de banda (no en `packages/shared-schema`), probablemente asociada a WABA. Columnas: `id text PK`, `business_name`, `vertical`, `status`, `created_at`. `tenant_settings.tenant_slug` (NOT NULL) tiene **FK hacia `tenants.id`** — toda alta nueva de `tenant_settings` (real o demo) requiere antes una fila en `tenants`. Descubierta el 5-sep-2026 al sembrar el mirror `zm-demo`, ver `docs/geemastudio/docs/plans/09-PLAN-landing-multitenant-fase1.md`. |
+| Tablas                                                        | Producto    | Schema TS / ops                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| ------------------------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `profiles`, `employees`, `appointments`, `tenant_settings`, … | GeemaStudio | `@geemastudio/shared-schema`, `apps/geemastudio-server/` (Drizzle, seeds, Edge Functions)                                                                                                                                                                                                                                                                                                                                                                                 |
+| `tenants` — **fuera del schema Drizzle**                      | GeemaStudio | Creada fuera de banda (no en `packages/shared-schema`), probablemente asociada a WABA. Columnas: `id text PK`, `business_name`, `vertical`, `status`, `created_at`. `tenant_settings.tenant_slug` (NOT NULL) tiene **FK hacia `tenants.id`** — toda alta nueva de `tenant_settings` (real o demo) requiere antes una fila en `tenants`. Descubierta el 5-sep-2026 al sembrar el mirror `zm-demo`, ver `docs/geemastudio/docs/plans/09-PLAN-landing-multitenant-fase1.md`. |
 
 ### Fuera de uso
 
@@ -73,19 +73,19 @@ RepMAX encaja en esa simetría sin carpeta server: las migraciones viven en `doc
 
 Misma clave en `.mcp.json` (Claude) y en Cursor. Un nombre = un proyecto:
 
-| Nombre canónico | project_ref | Repo / uso | Cuenta |
-| --- | --- | --- | --- |
-| **`ClaudeSupabase`** | `udelxwwnyivknslueerr` | Lash + Geema (misma BD) | orta.1 |
-| **`Supabase`** | `lavesnngygpwgmkyvuim` | zetaeme-enterprise-suite | orta.1 |
-| **`SupabaseZMTech`** | `llacowjutjfefboqgfnj` | zm-tech hub (Landing/Odental/RepMAX) | zmtechdev |
-| **`SupabaseNaturalForce`** | `ddfmmgddzphxidocmjba` | naturalforce-suite | zmtechdev |
-| **`SupabaseYla`** | `mwvgtxzvqhducjggycuu` | pausado | zmtechdev |
+| Nombre canónico            | project_ref            | Repo / uso                           | Cuenta    |
+| -------------------------- | ---------------------- | ------------------------------------ | --------- |
+| **`ClaudeSupabase`**       | `udelxwwnyivknslueerr` | Lash + Geema (misma BD)              | orta.1    |
+| **`Supabase`**             | `lavesnngygpwgmkyvuim` | zetaeme-enterprise-suite             | orta.1    |
+| **`SupabaseZMTech`**       | `llacowjutjfefboqgfnj` | zm-tech hub (Landing/Odental/RepMAX) | zmtechdev |
+| **`SupabaseNaturalForce`** | `ddfmmgddzphxidocmjba` | naturalforce-suite                   | zmtechdev |
+| **`SupabaseYla`**          | `mwvgtxzvqhducjggycuu` | pausado                              | zmtechdev |
 
 En `zm-tech` (raíz `.mcp.json` + `.cursor/mcp.json`):
 
-| Server | project_ref | Auth |
-| --- | --- | --- |
-| `SupabaseZMTech` | `llacowjutjfefboqgfnj` | OAuth (`mcp.supabase.com`) |
+| Server           | project_ref            | Auth                                                        |
+| ---------------- | ---------------------- | ----------------------------------------------------------- |
+| `SupabaseZMTech` | `llacowjutjfefboqgfnj` | OAuth (`mcp.supabase.com`)                                  |
 | `ClaudeSupabase` | `udelxwwnyivknslueerr` | **PAT** `SUPABASE_ZMLASH_PAT` + `mcp-server-supabase` local |
 
 **`udelxwwnyivknslueerr` no acepta el flujo OAuth hosted** (`mcp.supabase.com/mcp?project_ref=...`) — falla con `Unrecognized client_id` / resource inválido (org `ieuurcwqsaplycfufnmw`). Workaround: server local `@supabase/mcp-server-supabase` + PAT en `SUPABASE_ZMLASH_PAT` (`~/.bashrc`). Mismo patrón en `ZM-Lash-and-Nails-Beauty`.

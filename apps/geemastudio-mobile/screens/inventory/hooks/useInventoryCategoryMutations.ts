@@ -6,7 +6,10 @@ import { queryClient } from '@/lib/query-client'
 import { supabase } from '@/lib/supabase'
 import { slugifyCategoryKey } from '@/constants/inventoryCategories'
 
-import { INVENTORY_CATEGORIES_QUERY_KEY, type InventoryCategoryRow } from './useInventoryCategoriesQuery'
+import {
+  INVENTORY_CATEGORIES_QUERY_KEY,
+  type InventoryCategoryRow,
+} from './useInventoryCategoriesQuery'
 
 export function useInventoryCategoryMutations() {
   const createMutation = useMutation({

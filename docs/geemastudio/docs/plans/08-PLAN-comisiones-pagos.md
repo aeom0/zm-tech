@@ -70,6 +70,7 @@ y luego se filtra por una semana dentro de ese mes, el pago del mes se refleja t
 
 **Pasos de migración** (vía `mcp__ClaudeSupabase__apply_migration` — la BD real de este
 proyecto es accesible por ese servidor MCP, no por `SupabaseZMTech`):
+
 1. `apply_migration` con el SQL de arriba, nombre `create_commission_payouts`.
 2. `get_advisors` (security + performance) — confirmar 0 warnings nuevos.
 3. `execute_sql`: `select count(*) from employees`, `payments`, `appointments` antes/después

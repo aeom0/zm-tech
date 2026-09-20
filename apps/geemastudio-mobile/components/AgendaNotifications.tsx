@@ -5,7 +5,10 @@ import { NotificationsBell } from '@/components/NotificationsBell'
 import { ReferencesInboxSheet } from '@/screens/agenda/components/ReferencesInboxSheet'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
-import { usePendingBadgeCount, type UnreviewedReferenceAppointment } from '@/hooks/usePendingBadgeCount'
+import {
+  usePendingBadgeCount,
+  type UnreviewedReferenceAppointment,
+} from '@/hooks/usePendingBadgeCount'
 import type { MainTabParamList } from '@/navigation/MainTabNavigator'
 
 /** Campana de Agenda: fotos de referencia sin revisar + inbox seleccionable. */

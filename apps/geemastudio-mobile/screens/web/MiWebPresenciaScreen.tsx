@@ -1,12 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react'
-import {
-  Alert,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  View,
-} from 'react-native'
+import { Alert, Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { useNavigation } from '@react-navigation/native'
@@ -143,7 +136,14 @@ export default function MiWebPresenciaScreen() {
         autoCapitalize="none"
         keyboardType="url"
       />
-      <ThemedText style={{ color: theme.textMuted, fontSize: 12, marginTop: -Spacing.sm, marginBottom: Spacing.md }}>
+      <ThemedText
+        style={{
+          color: theme.textMuted,
+          fontSize: 12,
+          marginTop: -Spacing.sm,
+          marginBottom: Spacing.md,
+        }}
+      >
         geema.zmtechdev.com/s/{slugifyWeb(slug) || '…'}
       </ThemedText>
 

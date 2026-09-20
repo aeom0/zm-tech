@@ -3,7 +3,11 @@ import { useQuery } from '@tanstack/react-query'
 
 import { supabase } from '@/lib/supabase'
 import { useActiveEmployees } from '@/screens/personal/hooks/useEmployeesData'
-import { detectCatalogDialect, rowToPack, type PackRawRow } from '@/screens/services/lib/catalogAdapter'
+import {
+  detectCatalogDialect,
+  rowToPack,
+  type PackRawRow,
+} from '@/screens/services/lib/catalogAdapter'
 
 import type {
   AgendaAppointment,

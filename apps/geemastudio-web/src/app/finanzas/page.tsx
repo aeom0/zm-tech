@@ -18,7 +18,11 @@ import {
   CheckCircle,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
-import { useFinanzasData, type EmployeeDesglose, type FinanzasPeriod } from '@/hooks/finanzas/useFinanzasData'
+import {
+  useFinanzasData,
+  type EmployeeDesglose,
+  type FinanzasPeriod,
+} from '@/hooks/finanzas/useFinanzasData'
 import { useDashboardTenant } from '@/hooks/dashboard/useDashboardTenant'
 import { formatDashboardCurrency, resolveDashboardCurrencyCode } from '@/lib/dashboardCurrency'
 import { LUNARIS } from '@/lib/theme'
@@ -108,8 +112,8 @@ export default function FinanzasPage() {
             Solo administración
           </h1>
           <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-            Este panel es solo para administradores. Tus ganancias las ves en la app móvil
-            en Más → Finanzas.
+            Este panel es solo para administradores. Tus ganancias las ves en la app móvil en Más →
+            Finanzas.
           </p>
           <button
             type="button"
@@ -358,7 +362,11 @@ export default function FinanzasPage() {
                           )}
                         </td>
                         <td className="px-4 py-3 text-right text-zinc-700 dark:text-zinc-300">
-                          {e.comision > 0 ? fmtS(e.comision) : <span className="text-zinc-400">—</span>}
+                          {e.comision > 0 ? (
+                            fmtS(e.comision)
+                          ) : (
+                            <span className="text-zinc-400">—</span>
+                          )}
                         </td>
                         <td className="px-4 py-3 text-right text-zinc-500 dark:text-zinc-400">
                           {fmtS(e.comisionPagada)}
@@ -380,7 +388,7 @@ export default function FinanzasPage() {
                                 setPayoutRow(e)
                                 setPayoutModalOpen(true)
                               }}
-                              className="inline-flex items-center gap-1.5 rounded-full border border-[var(--primary)] px-3 py-1 text-xs font-semibold text-[var(--primary)] transition-colors hover:bg-[var(--primary)]/10"
+                              className="hover:bg-[var(--primary)]/10 inline-flex items-center gap-1.5 rounded-full border border-[var(--primary)] px-3 py-1 text-xs font-semibold text-[var(--primary)] transition-colors"
                             >
                               <CheckCircle className="h-3.5 w-3.5" />
                               Marcar pago

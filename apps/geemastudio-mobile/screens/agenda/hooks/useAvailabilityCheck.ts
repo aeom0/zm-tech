@@ -134,9 +134,10 @@ export function useAvailabilityCheck(args: {
       )
 
       // Todos deben estar libres a la vez: busyUntil = cuando termina el último ocupado.
-      const overlap = perEmployeeOverlaps.reduce<
-        { busyUntil: Date; conflictingAppointmentId: string } | null
-      >((latest, candidate) => {
+      const overlap = perEmployeeOverlaps.reduce<{
+        busyUntil: Date
+        conflictingAppointmentId: string
+      } | null>((latest, candidate) => {
         if (!candidate) return latest
         if (!latest || candidate.busyUntil.getTime() > latest.busyUntil.getTime()) {
           return candidate

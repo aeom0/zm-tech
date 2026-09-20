@@ -21,8 +21,7 @@ export function usePayouts(periodStart: string, periodEnd: string) {
     queryKey: ['commission_payouts', tenantId, periodStart, periodEnd],
     enabled: !!tenantId,
     staleTime: 30 * 1000,
-    queryFn: () =>
-      fetchPayoutsForRange({ tenantId: tenantId!, periodStart, periodEnd }),
+    queryFn: () => fetchPayoutsForRange({ tenantId: tenantId!, periodStart, periodEnd }),
   })
 
   const payoutsByEmployee = useMemo(() => {

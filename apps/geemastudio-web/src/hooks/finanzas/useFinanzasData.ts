@@ -255,14 +255,19 @@ export function useFinanzasData(): FinanzasData {
           .gte('appointments.date', range.start.toISOString())
           .lt('appointments.date', range.end.toISOString())
         setAppointmentServices(
-          ((asData ?? []) as { appointment_id: string; service_id: string; employee_id: string | null; price: string }[]).map(
-            (l) => ({
-              appointment_id: l.appointment_id,
-              service_id: l.service_id,
-              employee_id: l.employee_id,
-              price: l.price,
-            })
-          )
+          (
+            (asData ?? []) as {
+              appointment_id: string
+              service_id: string
+              employee_id: string | null
+              price: string
+            }[]
+          ).map((l) => ({
+            appointment_id: l.appointment_id,
+            service_id: l.service_id,
+            employee_id: l.employee_id,
+            price: l.price,
+          }))
         )
 
         const { data: eData } = await sb
@@ -462,7 +467,14 @@ export function useFinanzasData(): FinanzasData {
     }
 
     return Object.values(byEmp).filter((e) => e.generado > 0 || e.comision > 0)
-  }, [rawAppointments, pagadoPorCita, abonoPorCita, employeesFull, comisionByEmployee, payoutsByEmployee])
+  }, [
+    rawAppointments,
+    pagadoPorCita,
+    abonoPorCita,
+    employeesFull,
+    comisionByEmployee,
+    payoutsByEmployee,
+  ])
 
   return {
     payments,

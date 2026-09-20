@@ -28,9 +28,7 @@ export interface TenantSettingsPanelRow {
   custom_domain: string | null
 }
 
-export type TenantSettingsPatch = Partial<
-  Omit<TenantSettingsPanelRow, 'id' | 'business_type'>
-> & {
+export type TenantSettingsPatch = Partial<Omit<TenantSettingsPanelRow, 'id' | 'business_type'>> & {
   business_name?: string
 }
 

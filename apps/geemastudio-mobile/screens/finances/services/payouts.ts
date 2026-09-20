@@ -38,10 +38,7 @@ export interface PayoutWrite {
   created_by?: string | null
 }
 
-export async function createPayout(opts: {
-  tenantId?: string
-  data: PayoutWrite
-}): Promise<void> {
+export async function createPayout(opts: { tenantId?: string; data: PayoutWrite }): Promise<void> {
   const tenantId = requireTenantId(opts.tenantId)
   const row = {
     tenant_id: tenantId,

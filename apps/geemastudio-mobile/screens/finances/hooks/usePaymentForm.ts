@@ -9,11 +9,7 @@ import { useTenant } from '@/contexts/TenantContext'
 import { formatCurrency } from '@/utils/format'
 
 import { ABONO_PERCENT } from '../constants'
-import type {
-  FinancesAppointmentOption,
-  FinancesPayment,
-  FinancesPaymentType,
-} from '../types'
+import type { FinancesAppointmentOption, FinancesPayment, FinancesPaymentType } from '../types'
 
 interface FormData {
   amount: string
@@ -135,8 +131,7 @@ export function usePaymentForm(
     setEditingPayment(payment)
     setPaymentType(payment.is_abono ? 'abono' : 'full')
     setFormData({
-      amount:
-        typeof payment.amount === 'number' ? String(payment.amount) : (payment.amount ?? ''),
+      amount: typeof payment.amount === 'number' ? String(payment.amount) : (payment.amount ?? ''),
       serviceTotal: payment.service_total != null ? String(payment.service_total) : '',
       method: typeof payment.method === 'string' ? payment.method : 'cash',
       notes: payment.notes != null ? String(payment.notes) : '',

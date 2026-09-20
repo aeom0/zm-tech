@@ -68,7 +68,11 @@ function ImageField({
           )}
         </div>
         <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-xs font-medium text-zinc-200 hover:bg-white/[0.08]">
-          {uploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
+          {uploading ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <Upload className="h-3.5 w-3.5" />
+          )}
           Subir
           <input
             type="file"
@@ -95,13 +99,7 @@ function ImageField({
   )
 }
 
-function RowCard({
-  children,
-  onRemove,
-}: {
-  children: React.ReactNode
-  onRemove: () => void
-}) {
+function RowCard({ children, onRemove }: { children: React.ReactNode; onRemove: () => void }) {
   return (
     <div className="space-y-3 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
       {children}
@@ -367,23 +365,43 @@ export default function PanelWebPage() {
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label className={labelClass}>WhatsApp</label>
-            <input className={fieldClass} value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} />
+            <input
+              className={fieldClass}
+              value={whatsapp}
+              onChange={(e) => setWhatsapp(e.target.value)}
+            />
           </div>
           <div>
             <label className={labelClass}>Instagram</label>
-            <input className={fieldClass} value={instagram} onChange={(e) => setInstagram(e.target.value)} />
+            <input
+              className={fieldClass}
+              value={instagram}
+              onChange={(e) => setInstagram(e.target.value)}
+            />
           </div>
           <div>
             <label className={labelClass}>Facebook</label>
-            <input className={fieldClass} value={facebook} onChange={(e) => setFacebook(e.target.value)} />
+            <input
+              className={fieldClass}
+              value={facebook}
+              onChange={(e) => setFacebook(e.target.value)}
+            />
           </div>
           <div>
             <label className={labelClass}>TikTok</label>
-            <input className={fieldClass} value={tiktok} onChange={(e) => setTiktok(e.target.value)} />
+            <input
+              className={fieldClass}
+              value={tiktok}
+              onChange={(e) => setTiktok(e.target.value)}
+            />
           </div>
           <div>
             <label className={labelClass}>Dirección</label>
-            <input className={fieldClass} value={address} onChange={(e) => setAddress(e.target.value)} />
+            <input
+              className={fieldClass}
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
           </div>
           <div>
             <label className={labelClass}>Ciudad</label>
@@ -405,15 +423,27 @@ export default function PanelWebPage() {
         <div className="grid gap-4 sm:grid-cols-3">
           <div>
             <label className={labelClass}>Clientas atendidas</label>
-            <input className={fieldClass} value={statClients} onChange={(e) => setStatClients(e.target.value)} />
+            <input
+              className={fieldClass}
+              value={statClients}
+              onChange={(e) => setStatClients(e.target.value)}
+            />
           </div>
           <div>
             <label className={labelClass}>Rating</label>
-            <input className={fieldClass} value={statRating} onChange={(e) => setStatRating(e.target.value)} />
+            <input
+              className={fieldClass}
+              value={statRating}
+              onChange={(e) => setStatRating(e.target.value)}
+            />
           </div>
           <div>
             <label className={labelClass}>Años activos</label>
-            <input className={fieldClass} value={statYears} onChange={(e) => setStatYears(e.target.value)} />
+            <input
+              className={fieldClass}
+              value={statYears}
+              onChange={(e) => setStatYears(e.target.value)}
+            />
           </div>
         </div>
       </Section>
@@ -431,7 +461,9 @@ export default function PanelWebPage() {
                     setGallery(gallery.map((g, idx) => (idx === i ? { ...g, url } : g)))
                   )
                 }
-                onClear={() => setGallery(gallery.map((g, idx) => (idx === i ? { ...g, url: '' } : g)))}
+                onClear={() =>
+                  setGallery(gallery.map((g, idx) => (idx === i ? { ...g, url: '' } : g)))
+                }
               />
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
@@ -440,7 +472,9 @@ export default function PanelWebPage() {
                     className={fieldClass}
                     value={item.alt}
                     onChange={(e) =>
-                      setGallery(gallery.map((g, idx) => (idx === i ? { ...g, alt: e.target.value } : g)))
+                      setGallery(
+                        gallery.map((g, idx) => (idx === i ? { ...g, alt: e.target.value } : g))
+                      )
                     }
                   />
                 </div>
@@ -451,7 +485,9 @@ export default function PanelWebPage() {
                     value={item.category ?? ''}
                     onChange={(e) =>
                       setGallery(
-                        gallery.map((g, idx) => (idx === i ? { ...g, category: e.target.value } : g))
+                        gallery.map((g, idx) =>
+                          idx === i ? { ...g, category: e.target.value } : g
+                        )
                       )
                     }
                   />
@@ -479,7 +515,9 @@ export default function PanelWebPage() {
                     setTeam(team.map((m, idx) => (idx === i ? { ...m, photoUrl: url } : m)))
                   )
                 }
-                onClear={() => setTeam(team.map((m, idx) => (idx === i ? { ...m, photoUrl: '' } : m)))}
+                onClear={() =>
+                  setTeam(team.map((m, idx) => (idx === i ? { ...m, photoUrl: '' } : m)))
+                }
               />
               <div className="grid gap-3 sm:grid-cols-2">
                 <div>
@@ -488,7 +526,9 @@ export default function PanelWebPage() {
                     className={fieldClass}
                     value={member.name}
                     onChange={(e) =>
-                      setTeam(team.map((m, idx) => (idx === i ? { ...m, name: e.target.value } : m)))
+                      setTeam(
+                        team.map((m, idx) => (idx === i ? { ...m, name: e.target.value } : m))
+                      )
                     }
                   />
                 </div>
@@ -498,7 +538,9 @@ export default function PanelWebPage() {
                     className={fieldClass}
                     value={member.role}
                     onChange={(e) =>
-                      setTeam(team.map((m, idx) => (idx === i ? { ...m, role: e.target.value } : m)))
+                      setTeam(
+                        team.map((m, idx) => (idx === i ? { ...m, role: e.target.value } : m))
+                      )
                     }
                   />
                 </div>
@@ -520,7 +562,9 @@ export default function PanelWebPage() {
                     className={fieldClass}
                     value={member.phrase ?? ''}
                     onChange={(e) =>
-                      setTeam(team.map((m, idx) => (idx === i ? { ...m, phrase: e.target.value } : m)))
+                      setTeam(
+                        team.map((m, idx) => (idx === i ? { ...m, phrase: e.target.value } : m))
+                      )
                     }
                   />
                 </div>
@@ -530,7 +574,9 @@ export default function PanelWebPage() {
                     className={fieldClass}
                     value={member.color ?? ''}
                     onChange={(e) =>
-                      setTeam(team.map((m, idx) => (idx === i ? { ...m, color: e.target.value } : m)))
+                      setTeam(
+                        team.map((m, idx) => (idx === i ? { ...m, color: e.target.value } : m))
+                      )
                     }
                     placeholder="#40E0D0"
                   />
@@ -538,7 +584,10 @@ export default function PanelWebPage() {
               </div>
             </RowCard>
           ))}
-          <AddButton label="Agregar integrante" onClick={() => setTeam([...team, { name: '', role: '' }])} />
+          <AddButton
+            label="Agregar integrante"
+            onClick={() => setTeam([...team, { name: '', role: '' }])}
+          />
         </div>
       </Section>
 
@@ -566,7 +615,9 @@ export default function PanelWebPage() {
                     className={fieldClass}
                     value={promo.title}
                     onChange={(e) =>
-                      setPromos(promos.map((p, idx) => (idx === i ? { ...p, title: e.target.value } : p)))
+                      setPromos(
+                        promos.map((p, idx) => (idx === i ? { ...p, title: e.target.value } : p))
+                      )
                     }
                   />
                 </div>
@@ -576,7 +627,9 @@ export default function PanelWebPage() {
                     className={fieldClass}
                     value={promo.badge ?? ''}
                     onChange={(e) =>
-                      setPromos(promos.map((p, idx) => (idx === i ? { ...p, badge: e.target.value } : p)))
+                      setPromos(
+                        promos.map((p, idx) => (idx === i ? { ...p, badge: e.target.value } : p))
+                      )
                     }
                   />
                 </div>
@@ -587,7 +640,9 @@ export default function PanelWebPage() {
                     value={promo.description ?? ''}
                     onChange={(e) =>
                       setPromos(
-                        promos.map((p, idx) => (idx === i ? { ...p, description: e.target.value } : p))
+                        promos.map((p, idx) =>
+                          idx === i ? { ...p, description: e.target.value } : p
+                        )
                       )
                     }
                   />
@@ -598,7 +653,9 @@ export default function PanelWebPage() {
                     className={fieldClass}
                     value={promo.ctaText ?? ''}
                     onChange={(e) =>
-                      setPromos(promos.map((p, idx) => (idx === i ? { ...p, ctaText: e.target.value } : p)))
+                      setPromos(
+                        promos.map((p, idx) => (idx === i ? { ...p, ctaText: e.target.value } : p))
+                      )
                     }
                   />
                 </div>
@@ -654,12 +711,16 @@ export default function PanelWebPage() {
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>Rol / relación (ej. &quot;Clienta desde 2023&quot;)</label>
+                  <label className={labelClass}>
+                    Rol / relación (ej. &quot;Clienta desde 2023&quot;)
+                  </label>
                   <input
                     className={fieldClass}
                     value={review.role}
                     onChange={(e) =>
-                      setReviews(reviews.map((r, idx) => (idx === i ? { ...r, role: e.target.value } : r)))
+                      setReviews(
+                        reviews.map((r, idx) => (idx === i ? { ...r, role: e.target.value } : r))
+                      )
                     }
                   />
                 </div>
@@ -669,7 +730,9 @@ export default function PanelWebPage() {
                     className={`${fieldClass} min-h-20`}
                     value={review.text}
                     onChange={(e) =>
-                      setReviews(reviews.map((r, idx) => (idx === i ? { ...r, text: e.target.value } : r)))
+                      setReviews(
+                        reviews.map((r, idx) => (idx === i ? { ...r, text: e.target.value } : r))
+                      )
                     }
                   />
                 </div>
@@ -691,7 +754,9 @@ export default function PanelWebPage() {
           ))}
           <AddButton
             label="Agregar reseña"
-            onClick={() => setReviews([...reviews, { author: '', text: '', role: '', initial: '' }])}
+            onClick={() =>
+              setReviews([...reviews, { author: '', text: '', role: '', initial: '' }])
+            }
           />
         </div>
       </Section>
@@ -729,7 +794,9 @@ export default function PanelWebPage() {
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>Precio (texto libre, ej. &quot;Desde $20&quot;)</label>
+                  <label className={labelClass}>
+                    Precio (texto libre, ej. &quot;Desde $20&quot;)
+                  </label>
                   <input
                     className={fieldClass}
                     value={service.price}
@@ -747,7 +814,9 @@ export default function PanelWebPage() {
                     value={service.duration}
                     onChange={(e) =>
                       setServices(
-                        services.map((s, idx) => (idx === i ? { ...s, duration: e.target.value } : s))
+                        services.map((s, idx) =>
+                          idx === i ? { ...s, duration: e.target.value } : s
+                        )
                       )
                     }
                   />
@@ -759,7 +828,9 @@ export default function PanelWebPage() {
                     value={service.description}
                     onChange={(e) =>
                       setServices(
-                        services.map((s, idx) => (idx === i ? { ...s, description: e.target.value } : s))
+                        services.map((s, idx) =>
+                          idx === i ? { ...s, description: e.target.value } : s
+                        )
                       )
                     }
                   />
@@ -770,7 +841,10 @@ export default function PanelWebPage() {
           <AddButton
             label="Agregar servicio"
             onClick={() =>
-              setServices([...services, { name: '', description: '', price: '', duration: '', icon: 'Sparkles' }])
+              setServices([
+                ...services,
+                { name: '', description: '', price: '', duration: '', icon: 'Sparkles' },
+              ])
             }
           />
         </div>

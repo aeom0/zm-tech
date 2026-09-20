@@ -13,27 +13,27 @@
 
 ## Semáforo
 
-| Área | Estado | Nota |
-|------|--------|------|
-| BD multi-tenant (Plan 02 A/B/C) | 🟢 | `tenant_id` + RLS panel |
-| Plan 02 §11 (pre–2.º tenant) | 🔴 | Uniques `clients`, Auth Hook, routing WABA en repo ZM |
-| Modelo tenant unificado | 🔴 | `tenants` (text) vs `tenant_settings` (UUID) |
-| Geema apps (gestión salón) | 🟡 | Mobile core + packs/promos/chicas/timezone Lima ✅ (S5-C PR #30); multi-servicio, WABA, finanzas ejecutiva pendientes |
-| WABA motor (L1) | 🟢 | Booking, carrito, Haiku shell — reutilizable |
-| WABA multi-tenant runtime | 🔴 | ZM hardcodea `zm-lash-nails`; `waba_config` UNIQUE global |
-| WABA suite multi-vertical (L4) | 🔴 | Presets en `tenant-config`; webhook no los consume |
-| Panel `/panel/waba/*` en Geema | 🔴 | Solo existe en ZM |
+| Área                            | Estado | Nota                                                                                                                  |
+| ------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------- |
+| BD multi-tenant (Plan 02 A/B/C) | 🟢     | `tenant_id` + RLS panel                                                                                               |
+| Plan 02 §11 (pre–2.º tenant)    | 🔴     | Uniques `clients`, Auth Hook, routing WABA en repo ZM                                                                 |
+| Modelo tenant unificado         | 🔴     | `tenants` (text) vs `tenant_settings` (UUID)                                                                          |
+| Geema apps (gestión salón)      | 🟡     | Mobile core + packs/promos/chicas/timezone Lima ✅ (S5-C PR #30); multi-servicio, WABA, finanzas ejecutiva pendientes |
+| WABA motor (L1)                 | 🟢     | Booking, carrito, Haiku shell — reutilizable                                                                          |
+| WABA multi-tenant runtime       | 🔴     | ZM hardcodea `zm-lash-nails`; `waba_config` UNIQUE global                                                             |
+| WABA suite multi-vertical (L4)  | 🔴     | Presets en `tenant-config`; webhook no los consume                                                                    |
+| Panel `/panel/waba/*` en Geema  | 🔴     | Solo existe en ZM                                                                                                     |
 
 ---
 
 ## Estimación
 
-| Fase | Sprints | Entregable |
-|------|---------|------------|
-| Fundación multi-tenant | 1–2 | §11 cerrado + bridge `tenants` ↔ `tenant_settings` |
-| WABA multi-tenant runtime | 3–4 | `tenant_id` en webhook + crons; smoke 2 tenants |
-| Suite productizable | 5–6 | Presets vertical + panel WABA en Geema |
-| Go-live 2.º tenant | 7+ | Onboarding → seed + WABA propio |
+| Fase                      | Sprints | Entregable                                         |
+| ------------------------- | ------- | -------------------------------------------------- |
+| Fundación multi-tenant    | 1–2     | §11 cerrado + bridge `tenants` ↔ `tenant_settings` |
+| WABA multi-tenant runtime | 3–4     | `tenant_id` en webhook + crons; smoke 2 tenants    |
+| Suite productizable       | 5–6     | Presets vertical + panel WABA en Geema             |
+| Go-live 2.º tenant        | 7+      | Onboarding → seed + WABA propio                    |
 
 **Total rough:** 4–6 sprints hasta un 2.º negocio real con WABA completo.
 

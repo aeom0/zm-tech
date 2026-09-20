@@ -23,11 +23,11 @@ No hay que desplegar ningún servidor Express ni Railway. Variables de Supabase 
 
 ### Host público (temporal)
 
-| Host | Uso |
-|------|-----|
+| Host                      | Uso                                                                        |
+| ------------------------- | -------------------------------------------------------------------------- |
 | **`geema.zmtechdev.com`** | Plataforma Geema (panel + `/s/[slug]`) — proyecto Vercel `geemastudio-web` |
-| `zmtechdev.com` | Landing ZM Tech — proyecto `zmtech` (no tocar) |
-| `{slug}.zmtechdev.com` | Vitrinas RepMAX — proyecto `repmax-web` |
+| `zmtechdev.com`           | Landing ZM Tech — proyecto `zmtech` (no tocar)                             |
+| `{slug}.zmtechdev.com`    | Vitrinas RepMAX — proyecto `repmax-web`                                    |
 
 Cuando exista dominio propio (`geemastudio.app`), actualizar DNS/Vercel y `NEXT_PUBLIC_SITE_URL`.
 

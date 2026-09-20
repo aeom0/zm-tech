@@ -23,7 +23,11 @@ export function TenantLandingElegant({ data }: TenantLandingProps) {
   return (
     <div
       className="min-h-screen"
-      style={{ background: theme.colors.bg, color: theme.colors.text, fontFamily: 'system-ui, sans-serif' }}
+      style={{
+        background: theme.colors.bg,
+        color: theme.colors.text,
+        fontFamily: 'system-ui, sans-serif',
+      }}
     >
       <Navbar data={data} theme={theme} />
       <HeroSection data={data} theme={theme} />

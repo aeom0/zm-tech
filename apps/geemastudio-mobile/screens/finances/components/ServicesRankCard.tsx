@@ -44,18 +44,11 @@ export function ServicesRankCard({ data }: Props) {
               },
             ]}
           >
-            <ThemedText style={[rankStyles.rank, { color: theme.textMuted }]}>
-              {i + 1}.
-            </ThemedText>
-            <ThemedText
-              style={[rankStyles.label, { color: theme.text }]}
-              numberOfLines={1}
-            >
+            <ThemedText style={[rankStyles.rank, { color: theme.textMuted }]}>{i + 1}.</ThemedText>
+            <ThemedText style={[rankStyles.label, { color: theme.text }]} numberOfLines={1}>
               {row.label}
             </ThemedText>
-            <View
-              style={[rankStyles.countBadge, { backgroundColor: `${theme.primary}18` }]}
-            >
+            <View style={[rankStyles.countBadge, { backgroundColor: `${theme.primary}18` }]}>
               <ThemedText style={[rankStyles.countText, { color: theme.primary }]}>
                 {row.count}
               </ThemedText>

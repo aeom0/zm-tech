@@ -8,35 +8,35 @@
 
 ## 1. Estado de ZM vs GeemaStudio
 
-| Módulo / Feature                             | ZM (v2.3)                                            | GeemaStudio (v1.3) | Prioridad de port    |
-| -------------------------------------------- | ---------------------------------------------------- | ------------------ | -------------------- |
-| Auth Supabase real                           | ✅                                                   | ⚠️ modo dev        | Alta                 |
-| Dashboard                                    | ✅ v2.1 (logo real, tappable cards, accesos rápidos) | ✅                 | —                    |
-| Agenda modularizada                          | ✅                                                   | ✅                 | —                    |
-| Agenda tablet (CalendarGrid + packs)         | ✅ v2.3                                              | Parcial            | Media                |
-| Servicios + Packs + Promos por ítems         | ✅                                                   | Parcial            | Media                |
-| Finanzas modularizada                        | ✅                                                   | ✅                 | —                    |
-| Finanzas: etiqueta pack/servicio en pagos    | ✅ v2.3                                              | ❌                 | Media                |
-| Inventario                                   | ✅                                                   | ✅                 | —                    |
-| Módulo Clientes (mobile)                     | ✅ v2.0                                              | ✅ v1.3            | —                    |
-| MoreHomeScreen con badges                    | ✅ v1.6                                              | ✅ v1.3            | —                    |
-| SettingsScreen modular                       | ✅ v2.1                                              | ✅ v1.3            | —                    |
-| ThemeContext (Light/Auto/Dark)               | ✅                                                   | ✅ v1.3            | —                    |
-| ValidacionPagosScreen                        | ✅                                                   | ❌                 | Media                |
-| AsignarProfesionalesScreen                   | ✅                                                   | ❌                 | Media                |
-| PromoMasivaScreen (WABA)                     | ✅ v1.8                                              | ❌                 | Baja (requiere WABA) |
-| HistorialPromosScreen                        | ✅                                                   | ❌                 | Baja                 |
-| Notificaciones push (FCM)                    | ✅                                                   | ✅ parcial         | Media                |
-| Bot WABA + Claude Haiku                      | ✅ v1.9–v2.2                                         | ❌                 | Roadmap              |
-| Saludo bienvenida Haiku (6 franjas horarias) | ✅ v2.2                                              | ❌                 | Roadmap              |
-| UI tablet responsive                         | ✅                                                   | Parcial            | Media                |
-| Web /finanzas                                | ✅                                                   | ✅                 | —                    |
-| Web /servicios (CRUD)                        | ✅                                                   | ❌                 | Media                |
+| Módulo / Feature                             | ZM (v2.3)                                            | GeemaStudio (v1.3) | Prioridad de port     |
+| -------------------------------------------- | ---------------------------------------------------- | ------------------ | --------------------- |
+| Auth Supabase real                           | ✅                                                   | ⚠️ modo dev        | Alta                  |
+| Dashboard                                    | ✅ v2.1 (logo real, tappable cards, accesos rápidos) | ✅                 | —                     |
+| Agenda modularizada                          | ✅                                                   | ✅                 | —                     |
+| Agenda tablet (CalendarGrid + packs)         | ✅ v2.3                                              | Parcial            | Media                 |
+| Servicios + Packs + Promos por ítems         | ✅                                                   | Parcial            | Media                 |
+| Finanzas modularizada                        | ✅                                                   | ✅                 | —                     |
+| Finanzas: etiqueta pack/servicio en pagos    | ✅ v2.3                                              | ❌                 | Media                 |
+| Inventario                                   | ✅                                                   | ✅                 | —                     |
+| Módulo Clientes (mobile)                     | ✅ v2.0                                              | ✅ v1.3            | —                     |
+| MoreHomeScreen con badges                    | ✅ v1.6                                              | ✅ v1.3            | —                     |
+| SettingsScreen modular                       | ✅ v2.1                                              | ✅ v1.3            | —                     |
+| ThemeContext (Light/Auto/Dark)               | ✅                                                   | ✅ v1.3            | —                     |
+| ValidacionPagosScreen                        | ✅                                                   | ❌                 | Media                 |
+| AsignarProfesionalesScreen                   | ✅                                                   | ❌                 | Media                 |
+| PromoMasivaScreen (WABA)                     | ✅ v1.8                                              | ❌                 | Baja (requiere WABA)  |
+| HistorialPromosScreen                        | ✅                                                   | ❌                 | Baja                  |
+| Notificaciones push (FCM)                    | ✅                                                   | ✅ parcial         | Media                 |
+| Bot WABA + Claude Haiku                      | ✅ v1.9–v2.2                                         | ❌                 | Roadmap               |
+| Saludo bienvenida Haiku (6 franjas horarias) | ✅ v2.2                                              | ❌                 | Roadmap               |
+| UI tablet responsive                         | ✅                                                   | Parcial            | Media                 |
+| Web /finanzas                                | ✅                                                   | ✅                 | —                     |
+| Web /servicios (CRUD)                        | ✅                                                   | ❌                 | Media                 |
 | Web /panel/waba/mensajes                     | ✅ v2.3                                              | ✅ MVP (12-sep)    | P2 analytics/campañas |
-| Normalización phone_country/phone_normalized | ✅ v2.1                                              | ❌                 | Media                |
-| buildAppointmentWorkLabel (pack_id en citas) | ✅ v2.3                                              | ❌                 | Media                |
-| Landing web                                  | ✅                                                   | ✅                 | —                    |
-| Sanity CMS                                   | ✅                                                   | ❌                 | Baja                 |
+| Normalización phone_country/phone_normalized | ✅ v2.1                                              | ❌                 | Media                 |
+| buildAppointmentWorkLabel (pack_id en citas) | ✅ v2.3                                              | ❌                 | Media                 |
+| Landing web                                  | ✅                                                   | ✅                 | —                     |
+| Sanity CMS                                   | ✅                                                   | ❌                 | Baja                  |
 
 ---
 

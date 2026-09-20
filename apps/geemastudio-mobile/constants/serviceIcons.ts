@@ -37,7 +37,9 @@ export function getDefaultServiceIcon(businessType: TenantConfig['businessType']
 }
 
 /** Lista de íconos para el selector, con los más relevantes al rubro primero. */
-export function getServiceIconOptions(businessType: TenantConfig['businessType']): ServiceIconName[] {
+export function getServiceIconOptions(
+  businessType: TenantConfig['businessType']
+): ServiceIconName[] {
   const primary = getDefaultServiceIcon(businessType)
   return [primary, ...SERVICE_ICON_OPTIONS.filter((icon) => icon !== primary)]
 }

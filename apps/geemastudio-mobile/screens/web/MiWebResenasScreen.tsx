@@ -67,8 +67,7 @@ export default function MiWebResenasScreen() {
       Alert.alert('Datos incompletos', 'Autor y texto son obligatorios.')
       return
     }
-    const initial =
-      draft.initial.trim() || draft.author.trim().slice(0, 1).toUpperCase()
+    const initial = draft.initial.trim() || draft.author.trim().slice(0, 1).toUpperCase()
     const item: WebReview = {
       author: draft.author.trim(),
       text: draft.text.trim(),
@@ -118,7 +117,9 @@ export default function MiWebResenasScreen() {
           paddingHorizontal: Spacing.lg,
         }}
         ListEmptyComponent={
-          <ThemedText style={{ color: theme.textMuted, textAlign: 'center', marginTop: Spacing['2xl'] }}>
+          <ThemedText
+            style={{ color: theme.textMuted, textAlign: 'center', marginTop: Spacing['2xl'] }}
+          >
             Sin reseñas. Toca + para agregar.
           </ThemedText>
         }
@@ -152,7 +153,9 @@ export default function MiWebResenasScreen() {
               </View>
             )}
             <View style={{ flex: 1 }}>
-              <ThemedText style={{ color: theme.text, fontWeight: '600' }}>{item.author}</ThemedText>
+              <ThemedText style={{ color: theme.text, fontWeight: '600' }}>
+                {item.author}
+              </ThemedText>
               <ThemedText style={{ color: theme.textMuted, fontSize: 13 }} numberOfLines={2}>
                 {item.text}
               </ThemedText>
@@ -179,7 +182,14 @@ export default function MiWebResenasScreen() {
             style={[styles.modalCard, { backgroundColor: theme.backgroundRoot }]}
             keyboardShouldPersistTaps="handled"
           >
-            <ThemedText style={{ fontSize: 18, fontWeight: '700', color: theme.text, marginBottom: Spacing.md }}>
+            <ThemedText
+              style={{
+                fontSize: 18,
+                fontWeight: '700',
+                color: theme.text,
+                marginBottom: Spacing.md,
+              }}
+            >
               {editIndex == null ? 'Nueva reseña' : 'Editar reseña'}
             </ThemedText>
             <WebAssetPicker
@@ -201,7 +211,11 @@ export default function MiWebResenasScreen() {
               onChangeText={(initial) => setDraft((d) => ({ ...d, initial }))}
               placeholder="Se completa sola si la dejas vacía"
             />
-            <WebField label="Rol" value={draft.role} onChangeText={(role) => setDraft((d) => ({ ...d, role }))} />
+            <WebField
+              label="Rol"
+              value={draft.role}
+              onChangeText={(role) => setDraft((d) => ({ ...d, role }))}
+            />
             <WebField
               label="Texto"
               value={draft.text}

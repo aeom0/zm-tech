@@ -247,7 +247,9 @@ export function OwnerWeekGrid({
                   const empColor = employeeColorMap[apt.employee_id] ?? theme.primary
                   const svcName = getAppointmentServiceNames(services, apt)
                   const svcCount = getAppointmentServiceCount(apt)
-                  const chipTextColor = getContrastTextColor(mixHexColors(empColor, theme.card, 0.5))
+                  const chipTextColor = getContrastTextColor(
+                    mixHexColors(empColor, theme.card, 0.5)
+                  )
                   const chipTextMutedColor = chipTextColor + 'B0'
                   const timeLabel = formatoHoraInstanteEnZona(
                     instanteCitaDesdeTexto(apt.date, timeZone),
@@ -326,7 +328,9 @@ export function OwnerWeekGrid({
                               <Feather
                                 name="camera"
                                 size={9}
-                                color={apt.reference_reviewed_at ? chipTextMutedColor : theme.primary}
+                                color={
+                                  apt.reference_reviewed_at ? chipTextMutedColor : theme.primary
+                                }
                                 style={{ marginLeft: svcCount > 1 ? 3 : 0 }}
                               />
                             )}

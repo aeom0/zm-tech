@@ -27,8 +27,7 @@ export function ViewToggle({ view, onChangeView }: Props) {
           style={[
             styles.button,
             {
-              backgroundColor:
-                view === opt.value ? theme.primary : theme.backgroundSecondary,
+              backgroundColor: view === opt.value ? theme.primary : theme.backgroundSecondary,
             },
           ]}
           onPress={() => {
@@ -37,10 +36,7 @@ export function ViewToggle({ view, onChangeView }: Props) {
           }}
         >
           <ThemedText
-            style={[
-              styles.text,
-              { color: view === opt.value ? theme.buttonText : theme.text },
-            ]}
+            style={[styles.text, { color: view === opt.value ? theme.buttonText : theme.text }]}
           >
             {opt.label}
           </ThemedText>

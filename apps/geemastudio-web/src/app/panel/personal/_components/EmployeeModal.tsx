@@ -9,10 +9,7 @@ import type {
   EmployeeWriteInput,
   PaymentMode,
 } from '@/hooks/personal/types'
-import {
-  DEFAULT_COMMISSION_PERCENT,
-  PRESET_COLORS,
-} from '@/hooks/personal/types'
+import { DEFAULT_COMMISSION_PERCENT, PRESET_COLORS } from '@/hooks/personal/types'
 
 export interface EmployeeFormState {
   name: string
@@ -221,7 +218,10 @@ export function EmployeeModal({
           </button>
         </header>
 
-        <form onSubmit={handleSubmit} className="min-h-0 flex-1 overflow-y-auto px-5 py-4 space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="min-h-0 flex-1 space-y-4 overflow-y-auto px-5 py-4"
+        >
           <div className="flex items-center gap-4">
             <div
               className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-white/[0.08] text-lg font-bold text-white"

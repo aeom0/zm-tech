@@ -10,7 +10,10 @@ export function MarqueeBanner({ text, theme }: MarqueeBannerProps) {
   const items = Array.from({ length: 8 }, () => text)
 
   return (
-    <div className="overflow-hidden whitespace-nowrap py-2.5" style={{ background: theme.accentBackground }}>
+    <div
+      className="overflow-hidden whitespace-nowrap py-2.5"
+      style={{ background: theme.accentBackground }}
+    >
       <style>{`
         @keyframes tenantLandingMarqueeScroll {
           from { transform: translateX(0); }
@@ -22,7 +25,11 @@ export function MarqueeBanner({ text, theme }: MarqueeBannerProps) {
         style={{ animation: 'tenantLandingMarqueeScroll 22s linear infinite' }}
       >
         {[...items, ...items].map((t, i) => (
-          <span key={i} className="text-sm font-semibold tracking-wide" style={{ color: theme.colors.accentOn }}>
+          <span
+            key={i}
+            className="text-sm font-semibold tracking-wide"
+            style={{ color: theme.colors.accentOn }}
+          >
             {t}
           </span>
         ))}
