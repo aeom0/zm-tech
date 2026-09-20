@@ -200,29 +200,42 @@ useTheme() → Colors[light|dark]   // 100% estático, sin tenant
 
 Tokens clave: `primary`, `accent`, `primaryLight`, `accentLight`, `backgroundSecondary`, `backgroundTertiary`, `cardShadow`, `caution`, `statusInfo`, `whatsapp`, sombras con tinte violeta.
 
-### Geema (hoy)
+### Geema (hoy — sep 2026, post S5B-5/6)
 
 ```
-useTheme() → createTheme(config, isDark)
-  → base Colors[light|dark]   // base Lunaris (primary default #0B7B72)
-  → override: primary, accent, violet, link, tabIconSelected, info, gold, warning
+useTheme() → {
+  theme: createTheme(config, isDark),
+  shadows: createShadows(theme.primary),
+  brandGradient: createBrandGradient(config),
+  isDark,
+}
 ```
 
-**Problema:** derivados y gradientes **no** siguen al tenant. Hardcodes `#40E0D0`, `Gradients.onboarding`, `Colors.light.violet` en ~15 archivos (onboarding, modals, badges).
+`createTheme` deriva desde `primaryColor` + `accentColor`:
+
+| Token | Fuente |
+| ----- | ------ |
+| `primary`, `accent`, `violet`, `link`, `tabIconSelected`, `info`, `gold`, `warning` | Seeds tenant (+ lighten en dark) |
+| `primaryLight`, `accentLight`, `violetDark`, `violetLight`, `cardShadow` | Mezcla / darken desde seeds |
+| `overlay`, `buttonText`, `success`, `error`, `statusInfo`, `whatsapp` | Fijos cross-tenant (o base light/dark) |
+
+**Shell Geema** (onboarding, Login pre-tenant, wordmark `HeaderTitle`, OTA): sigue `Gradients.onboarding` / `Onboarding.*` (Lunaris).
+
+**UI operativa**: 0 literales `#40E0D0` / `#0B7B72` / `#00897B` fuera de `constants/theme.ts`. FABs y CTAs usan `theme.primary` + `shadows.*` + `brandGradient` donde hay gradiente.
 
 ### Objetivo — `createTheme()` completo
 
 A partir de `primaryColor` + `accentColor` (+ `isDark`), generar el mismo set semántico que ZM:
 
-| Token                                                                     | Fuente                                        |
-| ------------------------------------------------------------------------- | --------------------------------------------- |
-| `primary`, `accent`, `link`, `tabIconSelected`, `info`, `gold`, `warning` | Seeds tenant                                  |
-| `primaryLight`, `accentLight`                                             | Mezcla hex / HSL desde seeds                  |
-| `backgroundSecondary`, `backgroundTertiary`, `border`                     | Tinte suave del primary                       |
-| `cardShadow`, `Shadows.*.shadowColor`                                     | Primary con alpha                             |
-| Dark mode                                                                 | `lightenHex()` (ya existe) + ajuste contraste |
+| Token                                                                     | Fuente                                        | Estado |
+| ------------------------------------------------------------------------- | --------------------------------------------- | ------ |
+| `primary`, `accent`, `link`, `tabIconSelected`, `info`, `gold`, `warning` | Seeds tenant                                  | ✅     |
+| `primaryLight`, `accentLight`                                             | Mezcla hex desde seeds                        | ✅     |
+| `backgroundSecondary`, `backgroundTertiary`, `border`                     | Tinte suave del primary                       | ⏳ neutros fijos (OK para contraste) |
+| `cardShadow`, `createShadows(primary)`                                    | Primary con alpha                             | ✅     |
+| Dark mode                                                                 | `lightenHex()` + `darkenHex()`                | ✅     |
 
-Semánticos **fijos** cross-tenant (no derivar): `success`, `error`, `caution`, `statusInfo`, `whatsapp`.
+Semánticos **fijos** cross-tenant (no derivar): `success`, `error`, `statusInfo`, `whatsapp`, `overlay`.
 
 ### Fase 2 — paquete compartido
 
@@ -236,38 +249,53 @@ Evita divergencia futura entre `apps/mobile/constants/theme.ts` y `geemastudio-m
 
 ### Gradientes
 
-| Token                     | Uso                                                      |
-| ------------------------- | -------------------------------------------------------- |
-| `Gradients.onboarding`    | Solo shell Geema (wizard nuevo negocio)                  |
-| `Gradients.brand(config)` | CTA login, tabs, settings — derivado de primary → accent |
+| Token                          | Uso                                                      | Estado |
+| ------------------------------ | -------------------------------------------------------- | ------ |
+| `Gradients.onboarding`         | Solo shell Geema (wizard / login pre-tenant)             | ✅     |
+| `createBrandGradient(config)`  | CTAs ops, staff timeline, Colores de marca, `GradientButton` default | ✅     |
 
 ---
 
 ## Tareas (S5-B)
 
-| ID     | Tarea                                                                              | Repo                | Esfuerzo |
-| ------ | ---------------------------------------------------------------------------------- | ------------------- | -------- |
-| S5B-1  | Migración bucket `tenant-logos` + políticas RLS por `tenant_slug`                  | ZM migrations       | S        |
-| S5B-2  | `useLogoUpload`: path `{tenant_slug}/logo.webp`                                    | zm-tech             | S        |
-| S5B-3  | Componente `TenantLogo` (sizes: 28 / 80 / 280, fallback iniciales)                 | zm-tech             | S        |
-| S5B-4  | Cablear logo: `HeaderTitle`, `SplashScreen` React, overlay OTA                     | zm-tech             | M        |
-| S5B-5  | `createTheme()` completo (derivados + shadows)                                     | zm-tech             | M        |
-| S5B-6  | `Gradients.brand` + audit grep `#40E0D0` / `Colors.light.violet`                   | zm-tech             | M        |
-| S5B-7  | Paquete `@zmtech/design-tokens` + consumo Geema                                    | zm-tech (+ ZM S7+)  | L        |
-| S5B-8  | Columna `notification_icon_url` + path Storage `notification-icon.png`             | ZM migrations       | S        |
-| S5B-9  | Generador monocromático post-upload (Edge o hook) + preview en `LogoNegocioScreen` | zm-tech (+ Edge ZM) | M        |
-| S5B-10 | `send-notification` tenant-aware: `color` + `image` desde `tenant_settings`        | ZM Edge             | M        |
-| S5B-11 | Canales Android Geema con nombre tenant + `lightColor` dinámico                    | zm-tech             | S        |
-| S5B-12 | iOS Notification Service Extension (rich image)                                    | zm-tech             | L        |
+| ID     | Tarea                                                                              | Repo                | Esfuerzo | Estado |
+| ------ | ---------------------------------------------------------------------------------- | ------------------- | -------- | ------ |
+| S5B-1  | Migración bucket `tenant-logos` + políticas RLS por `tenant_slug`                  | ZM migrations       | S        | ⏳     |
+| S5B-2  | `useLogoUpload`: path `{tenant_slug}/logo.webp`                                    | zm-tech             | S        | ⏳     |
+| S5B-3  | Componente `TenantLogo` (sizes: 28 / 80 / 280, fallback iniciales)                 | zm-tech             | S        | ⏳     |
+| S5B-4  | Cablear logo: `HeaderTitle`, `SplashScreen` React, overlay OTA                     | zm-tech             | M        | ⏳     |
+| S5B-5  | `createTheme()` completo (derivados + shadows)                                     | zm-tech             | M        | ✅ sep-2026 |
+| S5B-6  | `Gradients.brand` + audit hardcodes Lunaris en UI ops                              | zm-tech             | M        | ✅ sep-2026 |
+| S5B-7  | Paquete `@zmtech/design-tokens` + consumo Geema                                    | zm-tech (+ ZM S7+)  | L        | ⏳ fase 2 |
+| S5B-8  | Columna `notification_icon_url` + path Storage `notification-icon.png`             | ZM migrations       | S        | ⏳     |
+| S5B-9  | Generador monocromático post-upload (Edge o hook) + preview en `LogoNegocioScreen` | zm-tech (+ Edge ZM) | M        | ⏳     |
+| S5B-10 | `send-notification` tenant-aware: `color` + `image` desde `tenant_settings`        | ZM Edge             | M        | ⏳     |
+| S5B-11 | Canales Android Geema con nombre tenant + `lightColor` dinámico                    | zm-tech             | S        | ⏳     |
+| S5B-12 | iOS Notification Service Extension (rich image)                                    | zm-tech             | L        | ⏳     |
 
 ### DoD
 
 - [ ] Owner ZM sube logo en Geema → visible login, headers y splash secundaria
-- [ ] UI operativa (agenda/servicios) usa violeta/oro ZM sin turquesa Lunaris residual
-- [ ] Segundo tenant (preset barbershop) ve su primary en tabs sin redeploy
+- [x] UI operativa (agenda/servicios/finanzas/…) sin turquesa Lunaris residual — usa `createTheme` / `brandGradient` (verificado grep `#40E0D0` en ops = 0, sep-2026)
+- [x] Segundo tenant (preset barbershop u otro) ve su primary en tabs/FABs sin redeploy — vía `config.theme.primaryColor`
 - [ ] Push a staff Geema muestra logo a color del tenant expandido + tinte `primary_color`
 - [ ] Panel preview del small icon monocromático generado (o upload manual)
-- [ ] ZM app legacy **sin cambio** hasta convergencia explícita
+- [x] ZM app legacy **sin cambio** hasta convergencia explícita
+
+---
+
+## Changelog tokens mobile Geema (sep 2026)
+
+Implementado en `zm-tech` (`apps/geemastudio-mobile`):
+
+1. **`constants/theme.ts`**: `createTheme` con derivados; `createShadows`; `createBrandGradient`; tokens `overlay`, `statusInfo`, `whatsapp`; `Shadows` estáticas neutras (`#000`).
+2. **`hooks/useTheme.ts`**: expone `{ theme, isDark, shadows, brandGradient }`.
+3. **Ops sin Lunaris**: badges nómina, FABs (servicios/agenda/inventario/Mi Web), staff timeline, Colores de marca, modales agenda/finanzas/dashboard/settings.
+4. **Convención**: texto sobre primary → `theme.buttonText` / `Colors.light.buttonText`; backdrops → `theme.overlay` / `Colors.light.overlay`.
+5. **`@zmtech/tenant-config` defaults**: primary alineado a spa-nails Lunaris (`#40E0D0`), no magenta legacy.
+7. **Selectores de color (sep-2026):** swatches en cuadros con `BorderRadius.xs` (no círculos) — Personal, Logo del negocio, `CustomColorPickerModal` preview; `TenantLogoImage` acepta `shape="roundedSquare"`. Headers/tabs siguen en círculo.
+
+**Sync espejo:** este archivo es espejo en zm-tech. Si la canónica ZM debe quedar al día: desde `ZM-Lash-and-Nails-Beauty` correr `./scripts/sync-geema-migration-docs.sh pull` (traer este cambio) o editar allá y `push`.
 
 ---
 

@@ -233,9 +233,9 @@ Detalle: [06-BRANDING-LOGO-Y-DESIGN-TOKENS.md](./06-BRANDING-LOGO-Y-DESIGN-TOKEN
 | S5B-2  | `useLogoUpload` path por `tenant_slug`               | zm-tech          | S        |
 | S5B-3  | Componente `TenantLogo`                              | zm-tech          | S        |
 | S5B-4  | Logo en HeaderTitle, splash React, OTA overlay       | zm-tech          | M        |
-| S5B-5  | `createTheme()` completo (derivados primary/accent)  | zm-tech          | M        |
-| S5B-6  | `Gradients.brand` + audit hardcodes Lunaris          | zm-tech          | M        |
-| S5B-7  | Paquete `@zmtech/design-tokens` (fase 2)             | zm-tech          | L        |
+| S5B-5  | `createTheme()` completo (derivados primary/accent)  | zm-tech          | M        | ✅ sep-2026 |
+| S5B-6  | `Gradients.brand` + audit hardcodes Lunaris          | zm-tech          | M        | ✅ sep-2026 |
+| S5B-7  | Paquete `@zmtech/design-tokens` (fase 2)             | zm-tech          | L        | ⏳         |
 | S5B-8  | `notification_icon_url` + Storage monocromático      | ZM migrations    | S        |
 | S5B-9  | Generador PNG blanco post-upload + preview panel     | zm-tech (+ Edge) | M        |
 | S5B-10 | `send-notification` tenant-aware (`color` + `image`) | ZM Edge          | M        |
@@ -247,11 +247,11 @@ Detalle push FCM: [06-BRANDING-LOGO-Y-DESIGN-TOKENS.md](./06-BRANDING-LOGO-Y-DES
 ### DoD
 
 - [ ] Upload logo ZM en Geema OK (prod)
-- [ ] Agenda/servicios sin `#40E0D0` residual con tenant ZM
+- [x] Agenda/servicios sin `#40E0D0` residual con tenant ZM (S5B-5/6, sep-2026)
 - [ ] Push muestra logo tenant expandido + tinte `primary_color`
-- [ ] ZM app legacy sin cambio hasta convergencia apps
+- [x] ZM app legacy sin cambio hasta convergencia apps
 
-### Hecho en zm-tech (29-ago, pre-S5B)
+Detalle tokens: [06-BRANDING-LOGO-Y-DESIGN-TOKENS.md](./06-BRANDING-LOGO-Y-DESIGN-TOKENS.md) § Changelog tokens mobile Geema.
 
 - `fetchTenantSettings` por `tenant_slug` (bridge S2) — commit `63914c6`
 - EAS env Supabase ZM prod + APK preview SDK 56 en build
