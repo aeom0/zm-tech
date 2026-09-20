@@ -5,7 +5,7 @@ import { ThemedText } from '@/components/ThemedText'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTheme } from '@/hooks/useTheme'
 import { Spacing, BorderRadius } from '@/constants/theme'
-import type { UnassignedAppointment } from '../types'
+import type { AsignarAppointment } from '../types'
 
 interface Employee {
   id: string
@@ -14,7 +14,7 @@ interface Employee {
 }
 
 interface AsignarRowProps {
-  item: UnassignedAppointment
+  item: AsignarAppointment
   employees: Employee[]
   isSaving: boolean
   onAssign: (employeeId: string) => void
@@ -24,6 +24,7 @@ interface AsignarRowProps {
 export function AsignarRow({ item, employees, isSaving, onAssign, locale }: AsignarRowProps) {
   const { theme } = useTheme()
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null)
+  const isAssigned = !!item.employee_id
 
   const fecha = new Date(item.date).toLocaleString(locale, {
     weekday: 'short',
@@ -64,72 +65,91 @@ export function AsignarRow({ item, employees, isSaving, onAssign, locale }: Asig
             {item.serviceName} · {fecha}
           </ThemedText>
         </View>
-        <View style={[styles.warningBadge, { backgroundColor: theme.warning + '20' }]}>
-          <Feather name="alert-circle" size={14} color={theme.warning} />
+        <View
+          style={[
+            styles.warningBadge,
+            { backgroundColor: (isAssigned ? theme.success : theme.warning) + '20' },
+          ]}
+        >
+          <Feather
+            name={isAssigned ? 'check' : 'alert-circle'}
+            size={14}
+            color={isAssigned ? theme.success : theme.warning}
+          />
         </View>
       </View>
 
-      {/* Selector de profesional — chips horizontales */}
-      <ScrollFadeRow
-        backgroundColor={theme.backgroundDefault}
-        arrowColor={theme.textSecondary}
-        contentContainerStyle={styles.chipsContainer}
-      >
-        {employees.map((emp) => {
-          const isSelected = selectedEmployeeId === emp.id
-          return (
+      {isAssigned ? (
+        <View style={[styles.statusBadge, { backgroundColor: theme.success + '20' }]}>
+          <ThemedText style={[styles.statusText, { color: theme.success }]}>
+            Asignado a {item.employeeName ?? '—'}
+          </ThemedText>
+        </View>
+      ) : (
+        <>
+          {/* Selector de profesional — chips horizontales */}
+          <ScrollFadeRow
+            backgroundColor={theme.backgroundDefault}
+            arrowColor={theme.textSecondary}
+            contentContainerStyle={styles.chipsContainer}
+          >
+            {employees.map((emp) => {
+              const isSelected = selectedEmployeeId === emp.id
+              return (
+                <Pressable
+                  key={emp.id}
+                  onPress={() => setSelectedEmployeeId(emp.id)}
+                  disabled={isSaving}
+                  style={({ pressed }) => [
+                    styles.chip,
+                    {
+                      backgroundColor: isSelected ? emp.color + 'CC' : theme.backgroundSecondary,
+                      borderColor: isSelected ? emp.color : theme.border,
+                      opacity: pressed ? 0.8 : 1,
+                    },
+                  ]}
+                >
+                  {isSelected && <Feather name="check" size={12} color="#FFFFFF" />}
+                  <ThemedText
+                    style={[
+                      styles.chipText,
+                      {
+                        color: isSelected ? '#FFFFFF' : theme.textSecondary,
+                        fontWeight: isSelected ? '600' : '400',
+                      },
+                    ]}
+                  >
+                    {emp.name.split(' ')[0]}
+                  </ThemedText>
+                </Pressable>
+              )
+            })}
+          </ScrollFadeRow>
+
+          {/* Botón confirmar — solo visible si hay selección */}
+          {selectedEmployeeId && (
             <Pressable
-              key={emp.id}
-              onPress={() => setSelectedEmployeeId(emp.id)}
+              onPress={handleConfirm}
               disabled={isSaving}
               style={({ pressed }) => [
-                styles.chip,
+                styles.btnConfirm,
                 {
-                  backgroundColor: isSelected ? emp.color + 'CC' : theme.backgroundSecondary,
-                  borderColor: isSelected ? emp.color : theme.border,
-                  opacity: pressed ? 0.8 : 1,
+                  backgroundColor: theme.primary,
+                  opacity: pressed || isSaving ? 0.7 : 1,
                 },
               ]}
             >
-              {isSelected && <Feather name="check" size={12} color="#FFFFFF" />}
-              <ThemedText
-                style={[
-                  styles.chipText,
-                  {
-                    color: isSelected ? '#FFFFFF' : theme.textSecondary,
-                    fontWeight: isSelected ? '600' : '400',
-                  },
-                ]}
-              >
-                {emp.name.split(' ')[0]}
-              </ThemedText>
+              {isSaving ? (
+                <ActivityIndicator size="small" color="#FFFFFF" />
+              ) : (
+                <>
+                  <Feather name="user-check" size={16} color="#FFFFFF" />
+                  <ThemedText style={styles.btnText}>Asignar a {selectedEmployeeName}</ThemedText>
+                </>
+              )}
             </Pressable>
-          )
-        })}
-      </ScrollFadeRow>
-
-      {/* Botón confirmar — solo visible si hay selección */}
-      {selectedEmployeeId && (
-        <Pressable
-          onPress={handleConfirm}
-          disabled={isSaving}
-          style={({ pressed }) => [
-            styles.btnConfirm,
-            {
-              backgroundColor: theme.primary,
-              opacity: pressed || isSaving ? 0.7 : 1,
-            },
-          ]}
-        >
-          {isSaving ? (
-            <ActivityIndicator size="small" color="#FFFFFF" />
-          ) : (
-            <>
-              <Feather name="user-check" size={16} color="#FFFFFF" />
-              <ThemedText style={styles.btnText}>Asignar a {selectedEmployeeName}</ThemedText>
-            </>
           )}
-        </Pressable>
+        </>
       )}
     </View>
   )
@@ -165,6 +185,16 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.xs,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  statusBadge: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
+    borderRadius: BorderRadius.full,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: '700',
   },
   chipsContainer: {
     gap: Spacing.sm,

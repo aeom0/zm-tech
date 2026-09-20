@@ -6,23 +6,26 @@ import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { Spacing } from '@/constants/theme'
 import type { TenantConfig } from '@zmtech/tenant-config'
+import type { AsignarPeriod } from '../types'
 
 interface AsignarEmptyStateProps {
   terminology: TenantConfig['terminology']
+  period: AsignarPeriod
 }
 
 /**
- * Lista vacía: no hay citas sin profesional en la ventana de 7 días.
+ * Lista vacía: no hay citas en la ventana del periodo seleccionado.
  */
-export function AsignarEmptyState({ terminology }: AsignarEmptyStateProps) {
+export function AsignarEmptyState({ terminology, period }: AsignarEmptyStateProps) {
   const { theme } = useTheme()
+  const rangeLabel = period === 'upcoming' ? 'los próximos 7 días' : 'los últimos 7 días'
 
   return (
     <View style={styles.empty}>
       <Feather name="users" size={48} color={theme.success} />
-      <ThemedText style={[styles.emptyTitle, { color: theme.text }]}>Todo asignado</ThemedText>
+      <ThemedText style={[styles.emptyTitle, { color: theme.text }]}>Sin citas</ThemedText>
       <ThemedText style={[styles.emptySub, { color: theme.textMuted }]}>
-        No hay {terminology.appointment}s sin {terminology.staffSingular} en los próximos 7 días.
+        No hay {terminology.appointment}s con {terminology.staffSingular} en {rangeLabel}.
       </ThemedText>
     </View>
   )

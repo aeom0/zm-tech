@@ -8,8 +8,9 @@ import { Spacing } from '@/constants/theme'
 import { AsignarRow } from './asignar/components/AsignarRow'
 import { AsignarEmptyState } from './asignar/components/AsignarEmptyState'
 import { AsignarLoadingPlaceholder } from './asignar/components/AsignarLoadingPlaceholder'
+import { AsignarPeriodTabs } from './asignar/components/AsignarPeriodTabs'
 import { useAsignarData } from './asignar/hooks/useAsignarData'
-import type { UnassignedAppointment, RowAssignState } from './asignar/types'
+import type { AsignarAppointment, AsignarPeriod, RowAssignState } from './asignar/types'
 
 /**
  * Altura aproximada del tab bar (evita useBottomTabBarHeight, que crashea en build
@@ -23,7 +24,11 @@ export default function AsignarProfesionalesScreen() {
   const insets = useSafeAreaInsets()
   const tabBarHeight = TAB_BAR_HEIGHT + insets.bottom
   const { theme } = useTheme()
-  const { employees, unassigned, isLoading, refetch, assignMutation, config } = useAsignarData()
+  const { employees, upcoming, past, isLoading, refetch, assignMutation, config } =
+    useAsignarData()
+
+  const [period, setPeriod] = useState<AsignarPeriod>('upcoming')
+  const data = period === 'upcoming' ? upcoming : past
 
   const [rowSaving, setRowSaving] = useState<RowAssignState>({})
   /** Evita doble submit y mantiene estable `handleAssign` (sin depender de rowSaving) */
@@ -49,7 +54,7 @@ export default function AsignarProfesionalesScreen() {
   )
 
   const renderItem = useCallback(
-    ({ item }: { item: UnassignedAppointment }) => (
+    ({ item }: { item: AsignarAppointment }) => (
       <AsignarRow
         item={item}
         employees={employees}
@@ -64,7 +69,7 @@ export default function AsignarProfesionalesScreen() {
   return (
     <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
       <FlatList
-        data={unassigned}
+        data={data}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         contentContainerStyle={{
@@ -73,11 +78,15 @@ export default function AsignarProfesionalesScreen() {
           paddingHorizontal: Spacing.lg,
           flexGrow: 1,
         }}
+        ListHeaderComponent={
+          <AsignarPeriodTabs period={period} onChange={setPeriod} />
+        }
+        ListHeaderComponentStyle={{ marginBottom: Spacing.md }}
         ListEmptyComponent={
           isLoading ? (
             <AsignarLoadingPlaceholder color={theme.primary} />
           ) : (
-            <AsignarEmptyState terminology={config.terminology} />
+            <AsignarEmptyState terminology={config.terminology} period={period} />
           )
         }
         refreshControl={

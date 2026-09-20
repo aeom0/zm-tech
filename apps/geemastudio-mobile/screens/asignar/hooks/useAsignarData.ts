@@ -3,11 +3,12 @@ import { formatAppointmentWallclock } from '@zmtech/tenant-config'
 import { supabase } from '@/lib/supabase'
 import { useTenant } from '@/contexts/TenantContext'
 import { useActiveEmployees } from '@/screens/personal/hooks/useEmployeesData'
-import type { UnassignedAppointment } from '../types'
+import type { AsignarAppointment } from '../types'
 
 export function useAsignarData() {
   const { config } = useTenant()
   const queryClient = useQueryClient()
+  const timeZone = config.locale.timezone
 
   const { employees } = useActiveEmployees({ staleTime: 5 * 60_000 })
 
@@ -22,41 +23,49 @@ export function useAsignarData() {
     staleTime: 5 * 60_000,
   })
 
-  // Citas sin profesional — próximos 7 días usando timezone del tenant
+  // Citas de los últimos 7 días y los próximos 7 días, usando timezone del tenant
   const {
-    data: rawUnassigned = [],
+    data: rawAppointments = [],
     isLoading,
     isError,
     refetch,
-  } = useQuery<UnassignedAppointment[]>({
-    queryKey: ['appointments', 'unassigned_next_7_days', config.locale.timezone],
+  } = useQuery<AsignarAppointment[]>({
+    queryKey: ['appointments', 'asignar_window_14_days', timeZone],
     queryFn: async () => {
       const now = new Date()
-      const end = new Date()
+      const start = new Date(now)
+      start.setDate(now.getDate() - 7)
+      const end = new Date(now)
       end.setDate(now.getDate() + 7)
 
       const { data, error } = await supabase
         .from('appointments')
-        .select('id, client_name, date, price, service_id, notes')
-        .gte('date', formatAppointmentWallclock(now, config.locale.timezone))
-        .lt('date', formatAppointmentWallclock(end, config.locale.timezone))
+        .select('id, client_name, date, price, service_id, employee_id, status, notes')
+        .gte('date', formatAppointmentWallclock(start, timeZone))
+        .lt('date', formatAppointmentWallclock(end, timeZone))
         .neq('status', 'cancelled')
-        .is('employee_id', null)
         .order('date', { ascending: true })
 
       if (error) throw new Error(error.message)
-      return (data ?? []) as UnassignedAppointment[]
+      return (data ?? []) as AsignarAppointment[]
     },
     refetchInterval: 30_000,
   })
 
   // Enriquecer nombres en memoria
   const serviceById = Object.fromEntries(services.map((s) => [s.id, s]))
+  const employeeById = Object.fromEntries(employees.map((e) => [e.id, e]))
+  const nowWallclock = formatAppointmentWallclock(new Date(), timeZone)
 
-  const unassigned: UnassignedAppointment[] = rawUnassigned.map((apt) => ({
+  const enriched: AsignarAppointment[] = rawAppointments.map((apt) => ({
     ...apt,
     serviceName: apt.service_id ? (serviceById[apt.service_id]?.name ?? '—') : '—',
+    employeeName: apt.employee_id ? employeeById[apt.employee_id]?.name : undefined,
+    employeeColor: apt.employee_id ? employeeById[apt.employee_id]?.color : undefined,
   }))
+
+  const upcoming = enriched.filter((apt) => apt.date >= nowWallclock)
+  const past = enriched.filter((apt) => apt.date < nowWallclock)
 
   // Mutación: asignar profesional a una cita
   const assignMutation = useMutation({
@@ -75,7 +84,7 @@ export function useAsignarData() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['appointments', 'unassigned_next_7_days'],
+        queryKey: ['appointments', 'asignar_window_14_days'],
       })
       queryClient.invalidateQueries({ queryKey: ['badges', 'unassigned_next_7_days'] })
     },
@@ -83,7 +92,8 @@ export function useAsignarData() {
 
   return {
     employees,
-    unassigned,
+    upcoming,
+    past,
     isLoading,
     isError,
     refetch,

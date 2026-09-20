@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
+import { formatAppointmentWallclock } from '@zmtech/tenant-config'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
+import { useTenant } from '@/contexts/TenantContext'
 import type { AgendaAppointment } from '@/screens/agenda/types'
 
 export type UnreviewedReferenceAppointment = Pick<
@@ -15,6 +17,8 @@ export type UnreviewedReferenceAppointment = Pick<
  */
 export function usePendingBadgeCount() {
   const { isAdmin } = useAuth()
+  const { config } = useTenant()
+  const timeZone = config.locale.timezone
 
   // Citas con pago enviado pendiente de validación
   const { data: paymentValidationCount = 0 } = useQuery<number>({
@@ -33,7 +37,7 @@ export function usePendingBadgeCount() {
 
   // Citas SIN profesional asignado en los próximos 7 días (hacia adelante)
   const { data: unassignedCount = 0 } = useQuery<number>({
-    queryKey: ['badges', 'unassigned_next_7_days'],
+    queryKey: ['badges', 'unassigned_next_7_days', timeZone],
     queryFn: async () => {
       const now = new Date()
       const end = new Date()
@@ -41,8 +45,8 @@ export function usePendingBadgeCount() {
       const { count, error } = await supabase
         .from('appointments')
         .select('id', { count: 'exact', head: true })
-        .gte('date', now.toISOString())
-        .lt('date', end.toISOString())
+        .gte('date', formatAppointmentWallclock(now, timeZone))
+        .lt('date', formatAppointmentWallclock(end, timeZone))
         .neq('status', 'cancelled')
         .is('employee_id', null)
       if (error) throw new Error(error.message)
