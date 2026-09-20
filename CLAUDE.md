@@ -10,6 +10,10 @@ Contexto para Claude Code en la raíz del monorepo `zm-tech` (pnpm + Turborepo: 
 4. Rules en `.cursor/rules/*.mdc` según el glob del archivo que estás tocando.
 5. `docs/<producto>/CLAUDE.md` si existe, para contexto específico de ese producto (p. ej. [docs/landing/CLAUDE.md](docs/landing/CLAUDE.md)).
 
+## Claude Code — conectores de claude.ai desactivados
+
+`disableClaudeAiConnectors: true` en `~/.claude/settings.json` (global, aplica también a ZM-Lash-and-Nails-Beauty). Apaga el listado de conectores de cuenta (Gmail, Drive, Slack, Canva, Meta Ads, Vercel, Sanity, etc.) que se inyectaba al inicio de cada chat y agotaba contexto sin uso real en estos repos. **No afecta** los MCP de Supabase de este proyecto (`ClaudeSupabase`, `SupabaseZMTech`), definidos en `.mcp.json`. Si se necesita un conector puntualmente, hay que volver el setting a `false` y recargar la ventana.
+
 ## Overview de producto
 
 Ver [README.md](README.md) para la tabla de productos/apps/packages y comandos de arranque, y [ROADMAP.md](ROADMAP.md) para el estado de cada uno.
