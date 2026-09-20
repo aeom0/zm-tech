@@ -359,7 +359,7 @@ export function OwnerDayGrid({
                                 style={{
                                   position: 'absolute',
                                   top: 0,
-                                  right: 0,
+                                  right: 2,
                                   fontSize: 9,
                                   fontWeight: '800',
                                   color: cardTextMutedColor,
@@ -380,7 +380,9 @@ export function OwnerDayGrid({
                                 {apt.client_name}
                               </ThemedText>
                             )}
-                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2 }}>
+                            <View
+                              style={{ flexDirection: 'row', alignItems: 'center', marginTop: 2 }}
+                            >
                               <ThemedText
                                 numberOfLines={1}
                                 style={{
@@ -394,7 +396,9 @@ export function OwnerDayGrid({
                                 <Feather
                                   name="camera"
                                   size={isNarrow ? 9 : 10}
-                                  color={apt.reference_reviewed_at ? cardTextMutedColor : theme.primary}
+                                  color={
+                                    apt.reference_reviewed_at ? cardTextMutedColor : theme.primary
+                                  }
                                   style={{ marginLeft: Spacing.xs }}
                                 />
                               )}
