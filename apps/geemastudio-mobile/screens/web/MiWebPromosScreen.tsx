@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   ActivityIndicator,
   Alert,
@@ -8,6 +8,7 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  Switch,
   View,
 } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
@@ -47,6 +48,37 @@ export default function MiWebPromosScreen() {
 
   const tenantSlug = data?.tenantSlug || data?.slug || 'tenant'
   const items = useMemo(() => data?.promos ?? [], [data?.promos])
+
+  const [bannerUrl, setBannerUrl] = useState('')
+  const [bannerAlt, setBannerAlt] = useState('')
+  const [bannerActive, setBannerActive] = useState(false)
+  const [bannerSaving, setBannerSaving] = useState(false)
+
+  useEffect(() => {
+    if (!data) return
+    setBannerUrl(data.promoBannerUrl ?? '')
+    setBannerAlt(data.promoBannerAlt ?? '')
+    setBannerActive(data.promoBannerActive)
+  }, [data])
+
+  const persistBanner = useCallback(
+    async (patch: {
+      promoBannerUrl?: string | null
+      promoBannerAlt?: string | null
+      promoBannerActive?: boolean
+    }) => {
+      if (!data) return
+      setBannerSaving(true)
+      try {
+        await update.mutateAsync({ rowId: data.rowId, patch })
+      } catch (e) {
+        Alert.alert('Error', e instanceof Error ? e.message : 'No se pudo guardar el banner')
+      } finally {
+        setBannerSaving(false)
+      }
+    },
+    [data, update]
+  )
 
   const persist = useCallback(
     async (next: WebPromo[]) => {
@@ -119,6 +151,54 @@ export default function MiWebPromosScreen() {
           paddingBottom: tabBarHeight + 80,
           paddingHorizontal: Spacing.lg,
         }}
+        ListHeaderComponent={
+          <View
+            style={[
+              styles.bannerBox,
+              { backgroundColor: theme.backgroundDefault, borderColor: theme.border },
+            ]}
+          >
+            <ThemedText style={{ color: theme.text, fontWeight: '600', marginBottom: Spacing.sm }}>
+              Banner de promociones
+            </ThemedText>
+            <WebAssetPicker
+              label="Imagen del banner"
+              imageUrl={bannerUrl || null}
+              tenantSlug={tenantSlug}
+              folder="banner"
+              onUploaded={(url) => {
+                setBannerUrl(url)
+                void persistBanner({ promoBannerUrl: url })
+              }}
+              onCleared={() => {
+                setBannerUrl('')
+                void persistBanner({ promoBannerUrl: null })
+              }}
+            />
+            <WebField
+              label="Texto alternativo"
+              value={bannerAlt}
+              onChangeText={setBannerAlt}
+              onBlur={() => void persistBanner({ promoBannerAlt: bannerAlt.trim() || null })}
+            />
+            <View style={styles.bannerToggleRow}>
+              <ThemedText style={{ color: theme.text }}>Mostrar banner en la landing</ThemedText>
+              <Switch
+                value={bannerActive}
+                disabled={bannerSaving}
+                onValueChange={(value) => {
+                  setBannerActive(value)
+                  void persistBanner({ promoBannerActive: value })
+                }}
+              />
+            </View>
+            <ThemedText
+              style={{ color: theme.textMuted, fontSize: 12, marginTop: Spacing.sm }}
+            >
+              Promos individuales
+            </ThemedText>
+          </View>
+        }
         ListEmptyComponent={
           <ThemedText
             style={{ color: theme.textMuted, textAlign: 'center', marginTop: Spacing['2xl'] }}
@@ -267,6 +347,18 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.sm,
   },
   thumb: { width: 56, height: 56, borderRadius: BorderRadius.md },
+  bannerBox: {
+    padding: Spacing.md,
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    marginBottom: Spacing.lg,
+  },
+  bannerToggleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: Spacing.xs,
+  },
   fab: {
     position: 'absolute',
     right: Spacing.lg,

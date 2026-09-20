@@ -23,7 +23,9 @@ const WEB_SELECT = `
   custom_domain,
   web_hero_tagline,
   web_about,
+  web_hero_cta_text,
   web_marquee_text,
+  web_marquee_speed,
   web_hero_video_url,
   web_salon_video_url,
   web_whatsapp,
@@ -36,6 +38,9 @@ const WEB_SELECT = `
   web_stat_rating,
   web_stat_years,
   web_map_embed_url,
+  web_promo_banner_url,
+  web_promo_banner_alt,
+  web_promo_banner_active,
   web_gallery,
   web_team,
   web_promos,
@@ -76,7 +81,9 @@ function mapRow(raw: Record<string, unknown>): WebSettings {
     customDomain: nullableText(raw.custom_domain),
     heroTagline: nullableText(raw.web_hero_tagline),
     about: nullableText(raw.web_about),
+    heroCtaText: nullableText(raw.web_hero_cta_text),
     marqueeText: nullableText(raw.web_marquee_text),
+    marqueeSpeed: raw.web_marquee_speed ? Number(raw.web_marquee_speed) : 30,
     heroVideoUrl: nullableText(raw.web_hero_video_url),
     salonVideoUrl: nullableText(raw.web_salon_video_url),
     whatsapp: nullableText(raw.web_whatsapp),
@@ -89,6 +96,9 @@ function mapRow(raw: Record<string, unknown>): WebSettings {
     statRating: String(raw.web_stat_rating ?? '4.9'),
     statYears: String(raw.web_stat_years ?? '3+'),
     mapEmbedUrl: nullableText(raw.web_map_embed_url),
+    promoBannerUrl: nullableText(raw.web_promo_banner_url),
+    promoBannerAlt: nullableText(raw.web_promo_banner_alt),
+    promoBannerActive: Boolean(raw.web_promo_banner_active),
     gallery: parseJsonbArray<WebGalleryItem>(raw.web_gallery),
     team: parseJsonbArray<WebTeamMember>(raw.web_team),
     promos: parseJsonbArray<WebPromo>(raw.web_promos),
@@ -146,7 +156,9 @@ function patchToColumns(patch: WebSettingsPatch): Record<string, unknown> {
   if (patch.customDomain !== undefined) out.custom_domain = patch.customDomain
   if (patch.heroTagline !== undefined) out.web_hero_tagline = patch.heroTagline
   if (patch.about !== undefined) out.web_about = patch.about
+  if (patch.heroCtaText !== undefined) out.web_hero_cta_text = patch.heroCtaText
   if (patch.marqueeText !== undefined) out.web_marquee_text = patch.marqueeText
+  if (patch.marqueeSpeed !== undefined) out.web_marquee_speed = patch.marqueeSpeed
   if (patch.heroVideoUrl !== undefined) out.web_hero_video_url = patch.heroVideoUrl
   if (patch.salonVideoUrl !== undefined) out.web_salon_video_url = patch.salonVideoUrl
   if (patch.whatsapp !== undefined) out.web_whatsapp = patch.whatsapp
@@ -159,6 +171,9 @@ function patchToColumns(patch: WebSettingsPatch): Record<string, unknown> {
   if (patch.statRating !== undefined) out.web_stat_rating = patch.statRating
   if (patch.statYears !== undefined) out.web_stat_years = patch.statYears
   if (patch.mapEmbedUrl !== undefined) out.web_map_embed_url = patch.mapEmbedUrl
+  if (patch.promoBannerUrl !== undefined) out.web_promo_banner_url = patch.promoBannerUrl
+  if (patch.promoBannerAlt !== undefined) out.web_promo_banner_alt = patch.promoBannerAlt
+  if (patch.promoBannerActive !== undefined) out.web_promo_banner_active = patch.promoBannerActive
   if (patch.gallery !== undefined) out.web_gallery = patch.gallery
   if (patch.team !== undefined) out.web_team = patch.team
   if (patch.promos !== undefined) out.web_promos = patch.promos

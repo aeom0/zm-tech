@@ -25,7 +25,9 @@ export default function MiWebContenidoScreen() {
 
   const [heroTagline, setHeroTagline] = useState('')
   const [about, setAbout] = useState('')
+  const [heroCtaText, setHeroCtaText] = useState('')
   const [marqueeText, setMarqueeText] = useState('')
+  const [marqueeSpeed, setMarqueeSpeed] = useState('')
   const [heroVideoUrl, setHeroVideoUrl] = useState('')
   const [salonVideoUrl, setSalonVideoUrl] = useState('')
   const [whatsapp, setWhatsapp] = useState('')
@@ -44,7 +46,9 @@ export default function MiWebContenidoScreen() {
     if (!data) return
     setHeroTagline(data.heroTagline ?? '')
     setAbout(data.about ?? '')
+    setHeroCtaText(data.heroCtaText ?? '')
     setMarqueeText(data.marqueeText ?? '')
+    setMarqueeSpeed(String(data.marqueeSpeed ?? 30))
     setHeroVideoUrl(data.heroVideoUrl ?? '')
     setSalonVideoUrl(data.salonVideoUrl ?? '')
     setWhatsapp(data.whatsapp ?? '')
@@ -70,7 +74,9 @@ export default function MiWebContenidoScreen() {
         patch: {
           heroTagline: emptyToNull(heroTagline),
           about: emptyToNull(about),
+          heroCtaText: emptyToNull(heroCtaText),
           marqueeText: emptyToNull(marqueeText),
+          marqueeSpeed: Math.max(5, parseInt(marqueeSpeed, 10) || 30),
           heroVideoUrl: emptyToNull(heroVideoUrl),
           salonVideoUrl: emptyToNull(salonVideoUrl),
           whatsapp: emptyToNull(whatsapp),
@@ -97,10 +103,12 @@ export default function MiWebContenidoScreen() {
     city,
     data,
     facebook,
+    heroCtaText,
     heroTagline,
     heroVideoUrl,
     instagram,
     mapEmbedUrl,
+    marqueeSpeed,
     marqueeText,
     salonVideoUrl,
     statClients,
@@ -135,7 +143,18 @@ export default function MiWebContenidoScreen() {
       </ThemedText>
       <WebField label="Hero / tagline" value={heroTagline} onChangeText={setHeroTagline} />
       <WebField label="Sobre nosotros" value={about} onChangeText={setAbout} multiline />
+      <WebField
+        label="Texto botón hero (ej. Agendar por WhatsApp)"
+        value={heroCtaText}
+        onChangeText={setHeroCtaText}
+      />
       <WebField label="Marquesina" value={marqueeText} onChangeText={setMarqueeText} />
+      <WebField
+        label="Velocidad marquesina (segundos, mayor = más lento)"
+        value={marqueeSpeed}
+        onChangeText={setMarqueeSpeed}
+        keyboardType="number-pad"
+      />
 
       <ThemedText
         style={{

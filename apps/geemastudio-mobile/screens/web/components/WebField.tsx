@@ -11,8 +11,9 @@ interface WebFieldProps {
   onChangeText: (v: string) => void
   placeholder?: string
   multiline?: boolean
-  keyboardType?: 'default' | 'url' | 'phone-pad' | 'numeric'
+  keyboardType?: 'default' | 'url' | 'phone-pad' | 'numeric' | 'number-pad'
   autoCapitalize?: 'none' | 'sentences' | 'words'
+  onBlur?: () => void
 }
 
 export function WebField({
@@ -23,6 +24,7 @@ export function WebField({
   multiline,
   keyboardType = 'default',
   autoCapitalize = 'sentences',
+  onBlur,
 }: WebFieldProps) {
   const { theme } = useTheme()
 
@@ -32,6 +34,7 @@ export function WebField({
       <TextInput
         value={value}
         onChangeText={onChangeText}
+        onBlur={onBlur}
         placeholder={placeholder}
         placeholderTextColor={theme.textMuted}
         multiline={multiline}

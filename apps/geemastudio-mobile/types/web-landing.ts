@@ -2,7 +2,7 @@
 
 export type WebTemplate = 'elegant' | 'warm' | 'modern'
 
-export type WebAssetFolder = 'gallery' | 'team' | 'promos' | 'reviews'
+export type WebAssetFolder = 'gallery' | 'team' | 'promos' | 'reviews' | 'banner'
 
 export interface WebService {
   name: string
@@ -19,6 +19,7 @@ export interface WebReview {
   role: string
   initial: string
   photoUrl?: string
+  rating?: number
 }
 
 export interface WebGalleryItem {
@@ -56,7 +57,9 @@ export interface WebSettings {
   customDomain: string | null
   heroTagline: string | null
   about: string | null
+  heroCtaText: string | null
   marqueeText: string | null
+  marqueeSpeed: number
   heroVideoUrl: string | null
   salonVideoUrl: string | null
   whatsapp: string | null
@@ -69,6 +72,9 @@ export interface WebSettings {
   statRating: string
   statYears: string
   mapEmbedUrl: string | null
+  promoBannerUrl: string | null
+  promoBannerAlt: string | null
+  promoBannerActive: boolean
   gallery: WebGalleryItem[]
   team: WebTeamMember[]
   promos: WebPromo[]

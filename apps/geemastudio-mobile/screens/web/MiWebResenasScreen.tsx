@@ -29,6 +29,7 @@ const emptyReview = (): WebReview => ({
   role: 'Cliente',
   initial: '',
   photoUrl: '',
+  rating: 5,
 })
 
 export default function MiWebResenasScreen() {
@@ -74,6 +75,7 @@ export default function MiWebResenasScreen() {
       role: draft.role.trim() || 'Cliente',
       initial,
       photoUrl: draft.photoUrl?.trim() || undefined,
+      rating: draft.rating ?? 5,
     }
     const next = [...items]
     if (editIndex == null) next.push(item)
@@ -216,6 +218,27 @@ export default function MiWebResenasScreen() {
               value={draft.role}
               onChangeText={(role) => setDraft((d) => ({ ...d, role }))}
             />
+            <View style={styles.ratingWrap}>
+              <ThemedText style={[styles.ratingLabel, { color: theme.textSecondary }]}>
+                Calificación
+              </ThemedText>
+              <View style={styles.ratingRow}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Pressable
+                    key={star}
+                    onPress={() => setDraft((d) => ({ ...d, rating: star }))}
+                    hitSlop={6}
+                  >
+                    <Feather
+                      name="star"
+                      size={24}
+                      color={theme.primary}
+                      style={{ opacity: star <= (draft.rating ?? 5) ? 1 : 0.3 }}
+                    />
+                  </Pressable>
+                ))}
+              </View>
+            </View>
             <WebField
               label="Texto"
               value={draft.text}
@@ -283,4 +306,7 @@ const styles = StyleSheet.create({
   },
   modalBtn: { paddingVertical: Spacing.sm, paddingHorizontal: Spacing.md },
   modalPrimary: { borderRadius: BorderRadius.md, minWidth: 96, alignItems: 'center' },
+  ratingWrap: { marginBottom: Spacing.md },
+  ratingLabel: { fontSize: 12, marginBottom: Spacing.xs, fontWeight: '500' },
+  ratingRow: { flexDirection: 'row', gap: Spacing.sm },
 })
