@@ -288,44 +288,50 @@ export function OwnerWeekGrid({
                         }}
                       >
                         {/* Hora */}
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                          <ThemedText
-                            numberOfLines={1}
+                        <ThemedText
+                          numberOfLines={1}
+                          style={{
+                            fontSize: 9,
+                            fontWeight: '700',
+                            color: chipTextMutedColor,
+                          }}
+                        >
+                          {timeLabel}
+                        </ThemedText>
+                        {/* Badges: multi-servicio + foto de referencia */}
+                        {(svcCount > 1 || (apt.reference_image_paths?.length ?? 0) > 0) && (
+                          <View
                             style={{
-                              flexShrink: 1,
-                              fontSize: 9,
-                              fontWeight: '700',
-                              color: chipTextMutedColor,
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              marginTop: 2,
                             }}
                           >
-                            {timeLabel}
-                          </ThemedText>
-                          {svcCount > 1 && (
-                            <View
-                              style={{
-                                flexShrink: 0,
-                                marginLeft: 3,
-                                paddingHorizontal: 3,
-                                borderRadius: 6,
-                                backgroundColor: chipTextColor + '26',
-                              }}
-                            >
-                              <ThemedText
-                                style={{ fontSize: 8, fontWeight: '800', color: chipTextColor }}
+                            {svcCount > 1 && (
+                              <View
+                                style={{
+                                  paddingHorizontal: 3,
+                                  borderRadius: 6,
+                                  backgroundColor: chipTextColor + '26',
+                                }}
                               >
-                                ×{svcCount}
-                              </ThemedText>
-                            </View>
-                          )}
-                          {(apt.reference_image_paths?.length ?? 0) > 0 && (
-                            <Feather
-                              name="camera"
-                              size={9}
-                              color={apt.reference_reviewed_at ? chipTextMutedColor : theme.primary}
-                              style={{ flexShrink: 0, marginLeft: 3 }}
-                            />
-                          )}
-                        </View>
+                                <ThemedText
+                                  style={{ fontSize: 8, fontWeight: '800', color: chipTextColor }}
+                                >
+                                  ×{svcCount}
+                                </ThemedText>
+                              </View>
+                            )}
+                            {(apt.reference_image_paths?.length ?? 0) > 0 && (
+                              <Feather
+                                name="camera"
+                                size={9}
+                                color={apt.reference_reviewed_at ? chipTextMutedColor : theme.primary}
+                                style={{ marginLeft: svcCount > 1 ? 3 : 0 }}
+                              />
+                            )}
+                          </View>
+                        )}
                         {/* Servicio o cliente */}
                         <ThemedText
                           numberOfLines={1}
