@@ -536,13 +536,21 @@ export const tenantSettings = pgTable(
     webStatYears: text('web_stat_years').notNull().default('3+'),
     webHeroVideoUrl: text('web_hero_video_url'),
     webSalonVideoUrl: text('web_salon_video_url'),
+    /** Texto del botón CTA del hero, ej. "Agendar por WhatsApp" */
+    webHeroCtaText: text('web_hero_cta_text'),
     webMarqueeText: text('web_marquee_text'),
+    /** Velocidad de desplazamiento del marquee en segundos (mayor = más lento) */
+    webMarqueeSpeed: integer('web_marquee_speed').notNull().default(30),
     webGallery: jsonb('web_gallery').default(sql`'[]'::jsonb`),
     webTeam: jsonb('web_team').default(sql`'[]'::jsonb`),
     webPromos: jsonb('web_promos').default(sql`'[]'::jsonb`),
     webFacebook: text('web_facebook'),
     webTiktok: text('web_tiktok'),
     webMapEmbedUrl: text('web_map_embed_url'),
+    /** Banner/flyer de imagen entre el marquee y la sección de promociones */
+    webPromoBannerUrl: text('web_promo_banner_url'),
+    webPromoBannerAlt: text('web_promo_banner_alt'),
+    webPromoBannerActive: boolean('web_promo_banner_active').notNull().default(false),
   },
   (table) => ({
     webEnabledIdx: index('idx_tenant_settings_web_enabled').on(table.webEnabled),
