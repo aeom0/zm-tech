@@ -42,4 +42,4 @@ UI/UX **4–13** implementados (ago 2026). Ver [UX-BACKLOG.md](./UX-BACKLOG.md) 
 | [README.md](./README.md)         | Stack, env, estructura           |
 | [CHANGELOG.md](./CHANGELOG.md)   | Historial de cambios             |
 | [UX-BACKLOG.md](./UX-BACKLOG.md) | Detalle del próximo bloque UI/UX |
-| [CLAUDE.md](./CLAUDE.md)         | Contexto para agentes            |
+| [AGENTS.md](./AGENTS.md)         | Contexto para agentes            |

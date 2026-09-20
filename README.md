@@ -12,7 +12,7 @@ Monorepo de productos **ZM Tech** — pnpm + Turborepo.
 | **RepMAX**        | `apps/repmax-web`, `apps/repmax-mobile`                                      | `@repmax/repmax-schema`, `@zmtech/tasas` (tasas BCV/USDT, compartido — hoy solo RepMAX) (`@zmtech/tenant-config/repmax` preparado, no cableado) | [docs/repmax](docs/repmax/README.md)                                            |
 | **Hub** (interno) | `apps/hub` _(planificado)_                                                   | `@zmtech/hub-schema` _(planificado)_                                                                                                            | [docs/hub](docs/hub/README.md)                                                  |
 
-Cada producto tiene su propia documentación (`README.md`, `CLAUDE.md`, `ROADMAP.md`, `CHANGELOG.md`) dentro de `docs/<producto>/`. Mapa de proyectos Supabase (varias BDs en el monorepo): [docs/SUPABASE.md](docs/SUPABASE.md). Este README es solo el punto de entrada al monorepo.
+Cada producto tiene su propia documentación (`README.md`, `AGENTS.md`, `ROADMAP.md`, `CHANGELOG.md`) dentro de `docs/<producto>/`. Mapa de proyectos Supabase (varias BDs en el monorepo): [docs/SUPABASE.md](docs/SUPABASE.md). Este README es solo el punto de entrada al monorepo.
 
 ## Requisitos
 
@@ -51,7 +51,7 @@ docs/        # documentación por producto (no skills/rules)
 
 ## Claude Code / Cursor
 
-Reglas y skills del monorepo viven en `.cursor/` (ver [.cursor/README.md](.cursor/README.md) y [.cursorrules](.cursorrules)); `.claude/skills` es symlink a `.cursor/skills`. Contexto adicional para Claude Code en [CLAUDE.md](CLAUDE.md).
+Reglas y skills del monorepo viven en `.cursor/` (ver [.cursor/README.md](.cursor/README.md) y [.cursorrules](.cursorrules)); `.claude/skills` es symlink a `.cursor/skills`. Reglas de agentes en [AGENTS.md](AGENTS.md); adapter Claude Code en [CLAUDE.md](CLAUDE.md).
 
 ## Changelog
 

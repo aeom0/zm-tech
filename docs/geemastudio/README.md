@@ -242,7 +242,7 @@ limit 20;
 - [Guía de migración ZM → GeemaStudio](docs/GEEMASTUDIO_MIGRATION_GUIDE.md)
 - [Lineamientos de diseño](docs/design_guidelines.md)
 - [Desarrollo local / migraciones](docs/DESARROLLO_LOCAL.md)
-- [CLAUDE.md](CLAUDE.md) — instrucciones para Claude Code
+- [AGENTS.md](AGENTS.md) — instrucciones para agentes ([CLAUDE.md](CLAUDE.md) importa AGENTS.md)
 - [.cursor/README.md](.cursor/README.md) — reglas Cursor y MCP (dos proyectos Supabase: ZM y GeemaStudio)
 
 ---

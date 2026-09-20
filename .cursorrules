@@ -2,11 +2,12 @@
 
 ## PRIORIDAD DE LECTURA
 
-1. `.cursor/skills/SKILLS.md` (entrada monorepo) + skill del producto (`geemastudio.md`, `odentalpro-dev`, `zmtech-dev`)
-2. [docs/SUPABASE.md](docs/SUPABASE.md) — mapa de proyectos Supabase y rol de `*-server`
-3. Rules en `.cursor/rules/*.mdc` según globs
-4. Usa @codebase antes de pedir archivos
-5. Código directo primero; no inventar patrones nuevos sin mirar el repo
+1. [AGENTS.md](AGENTS.md) — reglas compartidas multi-agente (Claude Code: [CLAUDE.md](CLAUDE.md) importa con `@AGENTS.md`)
+2. `.cursor/skills/SKILLS.md` (entrada monorepo) + skill del producto (`geemastudio-dev`, `odentalpro-dev`, `zmtech-dev`)
+3. [docs/SUPABASE.md](docs/SUPABASE.md) — mapa de proyectos Supabase y rol de `*-server`
+4. Rules en `.cursor/rules/*.mdc` según globs; `docs/<producto>/AGENTS.md` si aplica
+5. Usa @codebase antes de pedir archivos
+6. Código directo primero; no inventar patrones nuevos sin mirar el repo
 
 ---
 
