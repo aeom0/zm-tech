@@ -37,6 +37,7 @@ import type {
   AgendaServiceCategory,
   AgendaServiceLine,
 } from '../types'
+import type { Promo, PromotionItem } from '../../services/types'
 import { agendaStyles as styles } from '../agendaStyles'
 
 /** Incremento de minutos del picker de hora exacta. */
@@ -83,6 +84,9 @@ interface AppointmentDetailModalProps {
   onClosePicker: () => void
   onToggleService: (serviceId: string, employeeId: string) => void
   onAddPack: (pack: AgendaPack, employeeId: string) => void
+  promotions: Promo[]
+  promotionItems: PromotionItem[]
+  onAddPromo: (promo: Promo, employeeId: string) => void
   onSaveServices: () => void
   isSavingServices: boolean
   servicesLoading?: boolean
@@ -146,6 +150,9 @@ export function AppointmentDetailModal({
   onClosePicker,
   onToggleService,
   onAddPack,
+  promotions,
+  promotionItems,
+  onAddPromo,
   onSaveServices,
   isSavingServices,
   servicesLoading = false,
@@ -277,6 +284,8 @@ export function AppointmentDetailModal({
                 services={services}
                 employees={employees}
                 packs={packs}
+                promotions={promotions}
+                promotionItems={promotionItems}
                 currencySymbol={config.locale.currency.symbol}
                 staffSingular={staffSingular}
                 selectedCatId={svcPickerCatId}
@@ -284,8 +293,12 @@ export function AppointmentDetailModal({
                 selectedEmployeeId={svcPickerEmployeeId}
                 onSelectEmployee={setSvcPickerEmployeeId}
                 selectedServiceIds={pickerSelectedIds}
+                selectedPromoIds={editServiceLines
+                  .map((l) => l.promoId)
+                  .filter((id): id is string => !!id)}
                 onToggleService={onToggleService}
                 onAddPack={onAddPack}
+                onAddPromo={onAddPromo}
                 onClose={onClosePicker}
               />
             ) : (
@@ -433,7 +446,7 @@ export function AppointmentDetailModal({
                         >
                           <Feather name="plus-circle" size={16} color={theme.primary} />
                           <ThemedText style={[styles.addSvcBtnText, { color: theme.primary }]}>
-                            Agregar servicio o pack
+                            Agregar servicio
                           </ThemedText>
                         </Pressable>
                         <Pressable

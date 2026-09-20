@@ -988,6 +988,11 @@ export default function AgendaScreen() {
         onClosePicker={serviceEditor.closeSvcPicker}
         onToggleService={serviceEditor.toggleSvcInPicker}
         onAddPack={serviceEditor.addPackToLines}
+        promotions={activePromotions}
+        promotionItems={promotionItems}
+        onAddPromo={(promo, employeeId) =>
+          serviceEditor.addPromoToLines(promo, promotionItems, packs, employeeId)
+        }
         onSaveServices={handleSaveServices}
         isSavingServices={updateAppointmentServicesMutation.isPending}
         servicesLoading={detailServiceLinesQuery.isLoading}

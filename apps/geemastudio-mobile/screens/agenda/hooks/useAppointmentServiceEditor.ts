@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState, type Dispatch, type SetStateAction } from 'react'
 
-import { addPackServiceLines } from '../agendaUtils'
+import { addPackServiceLines, addPromoServiceLines } from '../agendaUtils'
 import type { AgendaPack, AgendaService, AgendaServiceLine } from '../types'
+import type { Promo, PromotionItem } from '../../services/types'
 
 /**
  * Estado del picker y líneas editables al modificar servicios de una cita existente
@@ -37,6 +38,17 @@ export function useAppointmentServiceEditor(services: AgendaService[]) {
 
   const addPackToLines = (pack: AgendaPack, employeeId: string) => {
     const newLines = addPackServiceLines(pack, employeeId)
+    if (newLines.length === 0) return
+    setEditServiceLines((prev) => [...prev, ...newLines])
+  }
+
+  const addPromoToLines = (
+    promo: Promo,
+    promotionItems: PromotionItem[],
+    packs: AgendaPack[],
+    employeeId: string
+  ) => {
+    const newLines = addPromoServiceLines(promo, promotionItems, packs, employeeId)
     if (newLines.length === 0) return
     setEditServiceLines((prev) => [...prev, ...newLines])
   }
@@ -80,6 +92,7 @@ export function useAppointmentServiceEditor(services: AgendaService[]) {
     closeSvcPicker,
     toggleSvcInPicker,
     addPackToLines,
+    addPromoToLines,
     resetEditor,
     editTotalPrice: editTotals.totalPrice,
     editTotalDuration: editTotals.totalDuration,
