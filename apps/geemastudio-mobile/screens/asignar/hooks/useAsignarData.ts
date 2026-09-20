@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { formatAppointmentWallclock } from '@zmtech/tenant-config'
 import { supabase } from '@/lib/supabase'
 import { useTenant } from '@/contexts/TenantContext'
 import { useActiveEmployees } from '@/screens/personal/hooks/useEmployeesData'
@@ -28,7 +29,7 @@ export function useAsignarData() {
     isError,
     refetch,
   } = useQuery<UnassignedAppointment[]>({
-    queryKey: ['appointments', 'unassigned_next_7_days'],
+    queryKey: ['appointments', 'unassigned_next_7_days', config.locale.timezone],
     queryFn: async () => {
       const now = new Date()
       const end = new Date()
@@ -37,8 +38,8 @@ export function useAsignarData() {
       const { data, error } = await supabase
         .from('appointments')
         .select('id, client_name, date, price, service_id, notes')
-        .gte('date', now.toISOString())
-        .lt('date', end.toISOString())
+        .gte('date', formatAppointmentWallclock(now, config.locale.timezone))
+        .lt('date', formatAppointmentWallclock(end, config.locale.timezone))
         .neq('status', 'cancelled')
         .is('employee_id', null)
         .order('date', { ascending: true })
