@@ -53,7 +53,11 @@ export function InventoryCategoryTabs({
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={[styles.tabBar, { paddingTop: headerPaddingTop + Spacing.sm }]}
+        style={{ flexGrow: 0 }}
+        contentContainerStyle={[
+          styles.tabBar,
+          { paddingTop: headerPaddingTop + Spacing.sm, alignItems: 'center' },
+        ]}
       >
         {categories.map((cat) => (
           <Pressable
