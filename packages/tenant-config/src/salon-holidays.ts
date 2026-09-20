@@ -35,16 +35,18 @@ export interface HolidayAlert {
   scheduleHint: string
 }
 
-/** Feriados nacionales PE 2026 (sin forzar isClosed — eso es datos del tenant ZM). */
+/** Feriados nacionales PE 2026 — alineado al seed operativo de ZM Lash (tenant #1).
+ * Cierres (`isClosed`) = días en que el CC no abre (Las Plazuelas); el admin puede reabrir.
+ * `openUntilHour` solo aplica si el día NO está cerrado. */
 export const PE_HOLIDAYS_2026: readonly HolidayCatalogEntry[] = [
   { date: '2026-01-01', name: 'Año Nuevo' },
   { date: '2026-04-02', name: 'Jueves Santo' },
   { date: '2026-04-03', name: 'Viernes Santo' },
   { date: '2026-05-01', name: 'Día del Trabajo' },
   { date: '2026-06-29', name: 'San Pedro y San Pablo' },
-  { date: '2026-07-23', name: 'Día de la Fuerza Aérea' },
-  { date: '2026-07-28', name: 'Fiestas Patrias' },
-  { date: '2026-07-29', name: 'Fiestas Patrias' },
+  { date: '2026-07-23', name: 'Día de la Fuerza Aérea', isClosed: true },
+  { date: '2026-07-28', name: 'Fiestas Patrias', isClosed: true },
+  { date: '2026-07-29', name: 'Fiestas Patrias', isClosed: true },
   { date: '2026-08-06', name: 'Batalla de Junín', openUntilHour: 14 },
   { date: '2026-08-30', name: 'Santa Rosa de Lima' },
   { date: '2026-10-08', name: 'Combate de Angamos' },
