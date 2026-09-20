@@ -161,6 +161,25 @@ export const inventoryItems = pgTable('inventory_items', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
+export const inventoryCategories = pgTable(
+  'inventory_categories',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    tenantId: text('tenant_id').notNull().default('zm-lash-nails'),
+    key: text('key').notNull(),
+    label: text('label').notNull(),
+    sortOrder: integer('sort_order').notNull().default(0),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantKeyUnique: uniqueIndex('inventory_categories_tenant_key_unique').on(
+      table.tenantId,
+      table.key
+    ),
+    tenantIdIdx: index('idx_inventory_categories_tenant_id').on(table.tenantId),
+  })
+)
+
 export const whatsappSessions = pgTable('whatsapp_sessions', {
   phone: text('phone').primaryKey(),
   cartServiceIds: text('cart_service_ids').notNull().default('[]'),
@@ -427,6 +446,10 @@ export const insertAppointmentSchema = createInsertSchema(appointments).omit({
   createdAt: true,
 })
 export const insertAppointmentServiceSchema = createInsertSchema(appointmentServices).omit({
+  id: true,
+  createdAt: true,
+})
+export const insertInventoryCategorySchema = createInsertSchema(inventoryCategories).omit({
   id: true,
   createdAt: true,
 })

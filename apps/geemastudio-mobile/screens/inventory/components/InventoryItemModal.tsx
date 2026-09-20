@@ -5,8 +5,7 @@ import { Feather } from '@expo/vector-icons'
 import { ThemedText } from '@/components/ThemedText'
 import { Colors } from '@/constants/theme'
 
-import { CATEGORY_LABELS, INVENTORY_CATEGORIES } from '../constants'
-import type { InventoryFormState, InventoryItem } from '../types'
+import type { InventoryCategoryOption, InventoryFormState, InventoryItem } from '../types'
 import { inventoryStyles as styles } from '../inventoryStyles'
 
 interface InventoryItemModalProps {
@@ -14,6 +13,7 @@ interface InventoryItemModalProps {
   editingItem: InventoryItem | null
   formData: InventoryFormState
   setFormData: React.Dispatch<React.SetStateAction<InventoryFormState>>
+  categories: InventoryCategoryOption[]
   currencySymbol: string
   isSubmitting: boolean
   theme: {
@@ -34,6 +34,7 @@ export function InventoryItemModal({
   editingItem,
   formData,
   setFormData,
+  categories,
   currencySymbol,
   isSubmitting,
   theme,
@@ -133,29 +134,29 @@ export function InventoryItemModal({
           <ThemedText style={[styles.inputLabel, { color: theme.textSecondary }]}>
             Categoría
           </ThemedText>
-          <View style={[styles.row, { marginBottom: 0 }]}>
-            {INVENTORY_CATEGORIES.map((cat) => (
+          <View style={[styles.row, { marginBottom: 0, flexWrap: 'wrap' }]}>
+            {categories.map((cat) => (
               <Pressable
-                key={cat}
+                key={cat.key}
                 style={[
                   styles.categoryChip,
                   {
                     backgroundColor:
-                      formData.category === cat ? theme.primary : theme.backgroundSecondary,
-                    borderColor: formData.category === cat ? theme.primary : theme.border,
+                      formData.category === cat.key ? theme.primary : theme.backgroundSecondary,
+                    borderColor: formData.category === cat.key ? theme.primary : theme.border,
                   },
                 ]}
-                onPress={() => setFormData((prev) => ({ ...prev, category: cat }))}
+                onPress={() => setFormData((prev) => ({ ...prev, category: cat.key }))}
               >
                 <ThemedText
                   style={[
                     styles.categoryChipText,
                     {
-                      color: formData.category === cat ? '#FFFFFF' : theme.text,
+                      color: formData.category === cat.key ? '#FFFFFF' : theme.text,
                     },
                   ]}
                 >
-                  {CATEGORY_LABELS[cat]}
+                  {cat.label}
                 </ThemedText>
               </Pressable>
             ))}

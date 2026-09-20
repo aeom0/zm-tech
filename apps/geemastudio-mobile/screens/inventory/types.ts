@@ -1,4 +1,13 @@
-export type InventoryCategory = 'unas' | 'pestanas_cejas' | 'insumos'
+export type InventoryCategory = string
+
+export interface InventoryCategoryOption {
+  key: string
+  label: string
+  /** false = fija por rubro (no editable/eliminable); true = agregada por el owner. */
+  isCustom: boolean
+  /** id en `inventory_categories`, solo presente para categorías custom. */
+  id?: string
+}
 
 export interface InventoryItem {
   id: string

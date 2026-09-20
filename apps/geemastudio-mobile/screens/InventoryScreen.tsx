@@ -5,6 +5,7 @@ import { useHeaderHeight } from '@react-navigation/elements'
 import * as Haptics from 'expo-haptics'
 
 import { Spacing } from '@/constants/theme'
+import { getDefaultInventoryCategories } from '@/constants/inventoryCategories'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
 import { useTheme } from '@/hooks/useTheme'
@@ -16,14 +17,16 @@ import { InventoryEmptyState } from './inventory/components/InventoryEmptyState'
 import { InventoryFab } from './inventory/components/InventoryFab'
 import { InventoryItemCard } from './inventory/components/InventoryItemCard'
 import { InventoryItemModal } from './inventory/components/InventoryItemModal'
+import { useInventoryCategoriesQuery } from './inventory/hooks/useInventoryCategoriesQuery'
+import { useInventoryCategoryMutations } from './inventory/hooks/useInventoryCategoryMutations'
 import { useInventoryMutations } from './inventory/hooks/useInventoryMutations'
 import { useInventoryItemsQuery } from './inventory/hooks/useInventoryQueries'
 import { inventoryStyles as styles } from './inventory/inventoryStyles'
-import type { InventoryCategory, InventoryFormState, InventoryItem } from './inventory/types'
+import type { InventoryCategoryOption, InventoryFormState, InventoryItem } from './inventory/types'
 
-const defaultForm = (): InventoryFormState => ({
+const defaultForm = (categoryKey: string): InventoryFormState => ({
   name: '',
-  category: 'unas',
+  category: categoryKey,
   quantity: '0',
   minStock: '5',
   unit: 'unidad',
@@ -39,10 +42,28 @@ export default function InventoryScreen() {
   const currencySymbol = config.locale.currency.symbol
   const { isAdmin } = useAuth()
 
-  const [selectedTab, setSelectedTab] = useState<InventoryCategory>('unas')
+  const { data: customCategories = [] } = useInventoryCategoriesQuery()
+  const { createMutation: createCategoryMutation, deleteMutation: deleteCategoryMutation } =
+    useInventoryCategoryMutations()
+
+  const categories = useMemo<InventoryCategoryOption[]>(() => {
+    const defaults = getDefaultInventoryCategories(config.businessType).map((cat) => ({
+      ...cat,
+      isCustom: false,
+    }))
+    const custom = customCategories.map((cat) => ({
+      key: cat.key,
+      label: cat.label,
+      isCustom: true,
+      id: cat.id,
+    }))
+    return [...defaults, ...custom]
+  }, [config.businessType, customCategories])
+
+  const [selectedTab, setSelectedTab] = useState<string>(categories[0]?.key ?? '')
   const [modalVisible, setModalVisible] = useState(false)
   const [editingItem, setEditingItem] = useState<InventoryItem | null>(null)
-  const [formData, setFormData] = useState<InventoryFormState>(defaultForm)
+  const [formData, setFormData] = useState<InventoryFormState>(() => defaultForm(categories[0]?.key ?? ''))
 
   const closeModal = useCallback(() => {
     setModalVisible(false)
@@ -54,10 +75,31 @@ export default function InventoryScreen() {
 
   const { data: items = [], isLoading, refetch } = useInventoryItemsQuery()
 
+  const handleAddCategory = (label: string) => {
+    createCategoryMutation.mutate({ label, sortOrder: categories.length })
+  }
+
+  const handleRequestDeleteCategory = (cat: InventoryCategoryOption) => {
+    Alert.alert('Eliminar categoría', `¿Eliminar "${cat.label}"?`, [
+      { text: 'Cancelar', style: 'cancel' },
+      {
+        text: 'Eliminar',
+        style: 'destructive',
+        onPress: () => {
+          if (!cat.id) return
+          deleteCategoryMutation.mutate({ id: cat.id, key: cat.key, label: cat.label, sort_order: 0 })
+          if (selectedTab === cat.key) {
+            setSelectedTab(categories[0]?.key ?? '')
+          }
+        },
+      },
+    ])
+  }
+
   const openNewItem = () => {
     setEditingItem(null)
     setFormData({
-      ...defaultForm(),
+      ...defaultForm(selectedTab),
       category: selectedTab,
     })
     setModalVisible(true)
@@ -123,13 +165,20 @@ export default function InventoryScreen() {
   return (
     <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
       <InventoryCategoryTabs
+        categories={categories}
         selectedTab={selectedTab}
         onSelect={setSelectedTab}
+        onAddCategory={handleAddCategory}
+        onRequestDeleteCategory={handleRequestDeleteCategory}
+        addPending={createCategoryMutation.isPending}
         headerPaddingTop={headerHeight}
         theme={{
           primary: theme.primary,
           backgroundSecondary: theme.backgroundSecondary,
+          backgroundDefault: theme.backgroundDefault,
+          border: theme.border,
           text: theme.text,
+          textMuted: theme.textMuted,
         }}
       />
 
@@ -146,7 +195,10 @@ export default function InventoryScreen() {
         }
       >
         {filteredItems.length === 0 && !isLoading ? (
-          <InventoryEmptyState selectedTab={selectedTab} theme={theme} />
+          <InventoryEmptyState
+            categoryLabel={categories.find((cat) => cat.key === selectedTab)?.label ?? ''}
+            theme={theme}
+          />
         ) : (
           filteredItems.map((item) => (
             <InventoryItemCard
@@ -169,6 +221,7 @@ export default function InventoryScreen() {
         editingItem={editingItem}
         formData={formData}
         setFormData={setFormData}
+        categories={categories}
         currencySymbol={currencySymbol}
         isSubmitting={createMutation.isPending || updateMutation.isPending}
         theme={theme}
