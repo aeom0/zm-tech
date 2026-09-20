@@ -10,6 +10,7 @@ import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { useAuth } from '@/contexts/AuthContext'
 import { Spacing } from '@/constants/theme'
+import { getBusinessTypeLabel } from '@/constants/businessTypeLabels'
 import type { MoreStackParamList } from '@/navigation/MoreStackNavigator'
 import { SettingsSection } from './settings/components/SettingsSection'
 import { SettingsRow } from './settings/components/SettingsRow'
@@ -93,7 +94,11 @@ export default function SettingsScreen() {
               onPress={() => navigation.navigate('ColoresNegocio')}
             />
             <SettingsRow label="Nombre comercial" value={config.businessName} variant="value" />
-            <SettingsRow label="Tipo de negocio" value={config.businessType} variant="value" />
+            <SettingsRow
+              label="Tipo de negocio"
+              value={getBusinessTypeLabel(config.businessType)}
+              variant="value"
+            />
             <SettingsRow
               label="País"
               value={
