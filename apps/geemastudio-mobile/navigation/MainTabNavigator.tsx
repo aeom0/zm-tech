@@ -16,6 +16,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { usePendingBadgeCount } from '@/hooks/usePendingBadgeCount'
 import { DemoBanner } from '@/components/DemoBanner'
 import { AgendaNotifications } from '@/components/AgendaNotifications'
+import { TabHeaderLogo } from '@/components/TabHeaderLogo'
 
 export type MainTabParamList = {
   Dashboard: undefined
@@ -76,6 +77,8 @@ export default function MainTabNavigator() {
       fontWeight: '600',
       fontSize: 17,
     },
+    headerTitleAlign: 'center' as const,
+    headerLeft: () => <TabHeaderLogo />,
   }
 
   return (
