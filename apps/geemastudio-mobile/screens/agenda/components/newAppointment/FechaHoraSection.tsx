@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { View, Pressable } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
@@ -23,6 +23,7 @@ import { useSalonHolidays } from '@/hooks/useSalonHolidays'
 
 import { DAYS_ES } from '../../constants'
 import { agendaStyles as styles } from '../../agendaStyles'
+import { CalendarPickerModal } from '../CalendarPickerModal'
 import type { NewAppointmentModalTheme } from './modalTheme'
 
 /** Ventana de días futuros seleccionables desde el picker — cubre agendar con semanas de anticipación. */
@@ -61,6 +62,7 @@ export function FechaHoraSection({
 }: FechaHoraSectionProps) {
   const tz = zonaIANASegura(timeZone)
   const { holidayIndex } = useSalonHolidays(true)
+  const [calendarVisible, setCalendarVisible] = useState(false)
 
   const diasVisibles = useMemo(() => {
     const hoy = inicioDiaHoyEnZonaIANA(tz)
@@ -77,12 +79,38 @@ export function FechaHoraSection({
 
   return (
     <View style={styles.formSection}>
-      <View style={styles.sectionHeader}>
-        <Feather name="calendar" size={16} color={theme.primary} />
-        <ThemedText style={[styles.sectionLabel, { color: theme.textSecondary }]}>
-          Fecha y hora
-        </ThemedText>
+      <View style={[styles.sectionHeader, { justifyContent: 'space-between' }]}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.xs }}>
+          <Feather name="calendar" size={16} color={theme.primary} />
+          <ThemedText style={[styles.sectionLabel, { color: theme.textSecondary }]}>
+            Fecha y hora
+          </ThemedText>
+        </View>
+        <Pressable
+          onPress={() => setCalendarVisible(true)}
+          style={[
+            styles.calendarPickerButton,
+            { borderColor: theme.border, backgroundColor: theme.backgroundSecondary },
+          ]}
+        >
+          <Feather name="calendar" size={14} color={theme.primary} />
+          <ThemedText style={[styles.calendarPickerButtonText, { color: theme.primary }]}>
+            Calendario
+          </ThemedText>
+        </Pressable>
       </View>
+
+      <CalendarPickerModal
+        visible={calendarVisible}
+        onClose={() => setCalendarVisible(false)}
+        selectedDate={selectedDate}
+        onSelectDate={onChangeDate}
+        theme={theme}
+        timeZone={timeZone}
+        agendaHours={agendaHours}
+        businessHours={businessHours}
+        holidayIndex={holidayIndex}
+      />
 
       <ScrollFadeRow
         backgroundColor={theme.backgroundDefault}

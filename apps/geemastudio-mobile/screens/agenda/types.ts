@@ -45,6 +45,8 @@ export interface AgendaServiceLine {
   employeeId: string
   /** Si la línea proviene de un pack, el id del pack */
   packId?: string
+  /** Si la línea proviene de una promo, el id de la promo (solo UI, no se persiste) */
+  promoId?: string
   /**
    * Monto de esta línea al guardar (para packs: reparto equitativo del total del pack;
    * no se deriva de la suma de precios de catálogo de los servicios incluidos).

@@ -275,12 +275,52 @@ export const agendaStyles = StyleSheet.create({
     textTransform: 'uppercase',
     letterSpacing: 0.5,
   },
+  calendarPickerButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    borderWidth: 1,
+    borderRadius: BorderRadius.sm,
+    paddingHorizontal: Spacing.sm,
+    paddingVertical: 6,
+  },
+  calendarPickerButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
   input: {
     height: 48,
     borderRadius: BorderRadius.sm,
     borderWidth: 1,
     paddingHorizontal: Spacing.lg,
     fontSize: 16,
+  },
+  suggestionsList: {
+    borderRadius: BorderRadius.sm,
+    borderWidth: 1,
+    marginTop: Spacing.xs,
+    overflow: 'hidden',
+  },
+  suggestionItem: {
+    paddingVertical: Spacing.sm,
+    paddingHorizontal: Spacing.lg,
+    borderTopWidth: 1,
+  },
+  suggestionName: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  suggestionMeta: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+  searchInput: {
+    height: 42,
+    borderRadius: BorderRadius.sm,
+    borderWidth: 1,
+    paddingHorizontal: Spacing.lg,
+    fontSize: 14,
+    marginBottom: Spacing.sm,
   },
   chipsContainer: {
     gap: Spacing.sm,

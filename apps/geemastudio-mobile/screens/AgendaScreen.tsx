@@ -54,6 +54,7 @@ import {
   useServicesByCategory,
 } from './agenda/hooks/useAgendaQueries'
 import { useAgendaMutations } from './agenda/hooks/useAgendaMutations'
+import { usePromosData } from './services/hooks/usePromosData'
 import {
   useAppointmentServiceEditor,
   useSyncEditLinesFromQuery,
@@ -148,6 +149,15 @@ export default function AgendaScreen() {
     packs,
     packsLoading,
   } = useAgendaQueries()
+
+  const { promotions, promotionItems, isLoading: promosLoading } = usePromosData()
+  const activePromotions = useMemo(
+    () =>
+      promotions.filter(
+        (p) => p.is_active && (!p.expires_at || new Date(p.expires_at) >= new Date())
+      ),
+    [promotions]
+  )
 
   const appointmentsDisplayed = useMemo(() => {
     if (!employeeColumnFilterId) return appointments
@@ -926,6 +936,9 @@ export default function AgendaScreen() {
         employees={employees}
         packs={packs}
         packsLoading={packsLoading}
+        promotions={activePromotions}
+        promotionItems={promotionItems}
+        promosLoading={promosLoading}
         formatDateLabel={formatDateLabel}
         onSubmit={handleCreateAppointment}
         createPending={createMutation.isPending}

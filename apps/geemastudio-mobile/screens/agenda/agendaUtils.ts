@@ -5,6 +5,7 @@ import {
   instanteCitaDesdeTexto,
 } from '@zmtech/tenant-config'
 
+import type { Promo, PromotionItem } from '../services/types'
 import type {
   AgendaAppointment,
   AgendaEmployee,
@@ -269,4 +270,55 @@ export function addPackServiceLines(
     packId: pack.id,
     priceOverride: shares[idx] ?? 0,
   }))
+}
+
+/**
+ * Expande una promo en líneas de servicio: un ítem `service` agrega `quantity`
+ * líneas con el precio con descuento de la promo; un ítem `pack` expande ese
+ * pack (repartiendo el precio con descuento entre sus servicios) por cada unidad.
+ * Los packs referenciados que ya no existen se omiten en silencio.
+ */
+export function addPromoServiceLines(
+  promo: Promo,
+  promotionItems: PromotionItem[],
+  packs: AgendaPack[],
+  defaultEmployeeId: string
+): AgendaServiceLine[] {
+  const items = promotionItems.filter((i) => i.promo_id === promo.id)
+  const lines: AgendaServiceLine[] = []
+
+  for (const item of items) {
+    const quantity = item.quantity > 0 ? item.quantity : 1
+
+    if (item.item_type === 'service') {
+      for (let i = 0; i < quantity; i++) {
+        lines.push({
+          serviceId: item.item_id,
+          employeeId: defaultEmployeeId,
+          promoId: promo.id,
+          priceOverride: item.discounted_price,
+        })
+      }
+      continue
+    }
+
+    const pack = packs.find((p) => p.id === item.item_id)
+    const packServiceIds = pack?.service_ids ?? []
+    if (packServiceIds.length === 0) continue
+
+    for (let i = 0; i < quantity; i++) {
+      const shares = splitPackTotalEqually(item.discounted_price, packServiceIds.length)
+      packServiceIds.forEach((serviceId, idx) => {
+        lines.push({
+          serviceId,
+          employeeId: defaultEmployeeId,
+          packId: pack!.id,
+          promoId: promo.id,
+          priceOverride: shares[idx] ?? 0,
+        })
+      })
+    }
+  }
+
+  return lines
 }

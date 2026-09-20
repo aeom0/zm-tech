@@ -19,6 +19,7 @@ import type {
   AgendaService,
   AgendaServiceCategory,
 } from '../types'
+import type { Promo, PromotionItem } from '../../services/types'
 import { agendaStyles as styles } from '../agendaStyles'
 import { CategoriaSection } from './newAppointment/CategoriaSection'
 import { ClienteSection } from './newAppointment/ClienteSection'
@@ -60,6 +61,9 @@ interface NewAppointmentModalProps {
   employees: AgendaEmployee[]
   packs: AgendaPack[]
   packsLoading: boolean
+  promotions: Promo[]
+  promotionItems: PromotionItem[]
+  promosLoading: boolean
   formatDateLabel: (d: Date) => string
   onSubmit: () => void
   createPending: boolean
@@ -102,6 +106,9 @@ export function NewAppointmentModal({
   employees,
   packs,
   packsLoading,
+  promotions,
+  promotionItems,
+  promosLoading,
   formatDateLabel,
   onSubmit,
   createPending,
@@ -196,6 +203,9 @@ export function NewAppointmentModal({
               servicesError={servicesError}
               packs={packs}
               packsLoading={packsLoading}
+              promotions={promotions}
+              promotionItems={promotionItems}
+              promosLoading={promosLoading}
             />
 
             <StaffSection
