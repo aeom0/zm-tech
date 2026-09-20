@@ -103,8 +103,15 @@ export function CalendarPickerModal({
       const isPast = offset < 0
       out.push({ day, offset, isPast, isSelectable: false })
     }
+    while (out.length % 7 !== 0) out.push(null)
     return out
   }, [displayYear, displayMonth, hoyYMD])
+
+  const weeks = useMemo(() => {
+    const out: (CalendarCell | null)[][] = []
+    for (let i = 0; i < cells.length; i += 7) out.push(cells.slice(i, i + 7))
+    return out
+  }, [cells])
 
   const canGoPrev = monthOffset > 0
   const canGoNext = monthOffset < MESES_VISIBLES - 1
@@ -156,52 +163,56 @@ export function CalendarPickerModal({
           </View>
 
           <View style={styles.grid}>
-            {cells.map((cell, idx) => {
-              if (!cell) return <View key={`blank-${idx}`} style={styles.dayCell} />
+            {weeks.map((week, weekIdx) => (
+              <View key={`week-${weekIdx}`} style={styles.weekGridRow}>
+                {week.map((cell, idx) => {
+                  if (!cell) return <View key={`blank-${weekIdx}-${idx}`} style={styles.dayCell} />
 
-              const cellDate = sumarDiasEnZonaIANA(hoy, cell.offset, timeZone)
-              const diaConFranja = diaTieneFranjaAgenda(
-                cellDate,
-                agendaHours,
-                businessHours,
-                timeZone,
-                holidayIndex
-              )
-              const isSelectable = !cell.isPast && diaConFranja
-              const isSelected = esMismoDiaCalendarioEnZona(cellDate, selectedDate, timeZone)
+                  const cellDate = sumarDiasEnZonaIANA(hoy, cell.offset, timeZone)
+                  const diaConFranja = diaTieneFranjaAgenda(
+                    cellDate,
+                    agendaHours,
+                    businessHours,
+                    timeZone,
+                    holidayIndex
+                  )
+                  const isSelectable = !cell.isPast && diaConFranja
+                  const isSelected = esMismoDiaCalendarioEnZona(cellDate, selectedDate, timeZone)
 
-              return (
-                <Pressable
-                  key={cell.day}
-                  style={styles.dayCell}
-                  disabled={!isSelectable}
-                  onPress={() => {
-                    if (isSelectable) {
-                      onSelectDate(cellDate)
-                      onClose()
-                    }
-                  }}
-                >
-                  <View
-                    style={[
-                      styles.dayCircle,
-                      isSelected && { backgroundColor: theme.primary },
-                      !isSelectable && !isSelected && styles.dayCircleDisabled,
-                    ]}
-                  >
-                    <ThemedText
-                      style={[
-                        styles.dayLabel,
-                        { color: isSelectable ? theme.text : theme.textMuted },
-                        isSelected && { color: '#FFFFFF', fontWeight: '700' },
-                      ]}
+                  return (
+                    <Pressable
+                      key={cell.day}
+                      style={styles.dayCell}
+                      disabled={!isSelectable}
+                      onPress={() => {
+                        if (isSelectable) {
+                          onSelectDate(cellDate)
+                          onClose()
+                        }
+                      }}
                     >
-                      {cell.day}
-                    </ThemedText>
-                  </View>
-                </Pressable>
-              )
-            })}
+                      <View
+                        style={[
+                          styles.dayCircle,
+                          isSelected && { backgroundColor: theme.primary },
+                          !isSelectable && !isSelected && styles.dayCircleDisabled,
+                        ]}
+                      >
+                        <ThemedText
+                          style={[
+                            styles.dayLabel,
+                            { color: isSelectable ? theme.text : theme.textMuted },
+                            isSelected && { color: '#FFFFFF', fontWeight: '700' },
+                          ]}
+                        >
+                          {cell.day}
+                        </ThemedText>
+                      </View>
+                    </Pressable>
+                  )
+                })}
+              </View>
+            ))}
           </View>
         </Pressable>
       </Pressable>
@@ -259,11 +270,13 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   grid: {
+    flexDirection: 'column',
+  },
+  weekGridRow: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
   },
   dayCell: {
-    width: `${100 / 7}%`,
+    flex: 1,
     aspectRatio: 1,
     alignItems: 'center',
     justifyContent: 'center',

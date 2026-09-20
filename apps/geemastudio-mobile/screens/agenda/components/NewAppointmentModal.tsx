@@ -1,8 +1,9 @@
 import React from 'react'
-import { View, Modal, ScrollView, Pressable, ActivityIndicator } from 'react-native'
+import { View, Modal, Pressable, ActivityIndicator } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
+import { KeyboardAwareScrollViewCompat } from '@/components/KeyboardAwareScrollViewCompat'
 import { Spacing } from '@/constants/theme'
 
 import type { TenantConfig, TimeFormatPreference } from '@zmtech/tenant-config'
@@ -159,9 +160,10 @@ export function NewAppointmentModal({
             </Pressable>
           </View>
 
-          <ScrollView
+          <KeyboardAwareScrollViewCompat
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: Spacing.xl }}
+            bottomOffset={Spacing.xl}
           >
             <ClienteSection
               theme={theme}
@@ -247,7 +249,7 @@ export function NewAppointmentModal({
                 </ThemedText>
               </View>
             ) : null}
-          </ScrollView>
+          </KeyboardAwareScrollViewCompat>
 
           <Pressable
             style={[
