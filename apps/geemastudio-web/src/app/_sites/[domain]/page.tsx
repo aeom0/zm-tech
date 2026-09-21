@@ -1,23 +1,23 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { getTenantLandingBySlug } from '@/lib/tenant-landing-service'
+import { getTenantLandingByDomain } from '@/lib/tenant-landing-service'
 import { buildTenantLandingMetadata, TENANT_LANDING_TEMPLATES } from '@/lib/tenant-landing-render'
 
 interface Props {
-  params: Promise<{ slug: string }>
+  params: Promise<{ domain: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params
-  const data = await getTenantLandingBySlug(slug)
+  const { domain } = await params
+  const data = await getTenantLandingByDomain(domain)
   return buildTenantLandingMetadata(data)
 }
 
 export const revalidate = 300
 
-export default async function TenantLandingPage({ params }: Props) {
-  const { slug } = await params
-  const data = await getTenantLandingBySlug(slug)
+export default async function TenantCustomDomainPage({ params }: Props) {
+  const { domain } = await params
+  const data = await getTenantLandingByDomain(domain)
 
   if (!data) notFound()
 
