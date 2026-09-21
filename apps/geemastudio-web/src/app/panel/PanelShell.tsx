@@ -35,15 +35,53 @@ type NavSection = {
   items: NavItem[]
 }
 
+function TenantLogo({
+  tenantName,
+  tenantLogoUrl,
+  size,
+}: {
+  tenantName?: string | null
+  tenantLogoUrl?: string | null
+  size: number
+}) {
+  if (tenantLogoUrl) {
+    return (
+      <Image
+        src={tenantLogoUrl}
+        alt={tenantName ?? 'Logo del negocio'}
+        width={size}
+        height={size}
+        className="shrink-0 rounded-full object-cover"
+        style={{ width: size, height: size }}
+        unoptimized
+      />
+    )
+  }
+
+  const initial = tenantName?.trim()?.[0]?.toUpperCase() ?? '?'
+  return (
+    <span
+      className="flex shrink-0 items-center justify-center rounded-full border border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 font-semibold text-[var(--tenant-primary)]"
+      style={{ width: size, height: size, fontSize: size * 0.42 }}
+    >
+      {initial}
+    </span>
+  )
+}
+
 export function PanelShell({
   userEmail,
   primaryColor,
   accentColor,
+  tenantName,
+  tenantLogoUrl,
   children,
 }: {
   userEmail: string
   primaryColor?: string | null
   accentColor?: string | null
+  tenantName?: string | null
+  tenantLogoUrl?: string | null
   children: React.ReactNode
 }) {
   const router = useRouter()
@@ -184,21 +222,22 @@ export function PanelShell({
   const SidebarContent = (
     <div className="flex h-full flex-col">
       <div className="border-b border-white/[0.08] px-4 py-4">
-        <Link href="/panel" className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.06]">
+        <div className="flex items-center justify-between gap-3">
+          <Link href="/panel" className="flex min-w-0 items-center gap-2.5">
             <Image
-              src="/logo-diamondSparkle.svg"
+              src="/logo-diamondSparkleNGlow.svg"
               alt="GeemaStudio"
-              width={24}
-              height={24}
-              className="opacity-90"
+              width={40}
+              height={40}
+              className="shrink-0"
             />
-          </div>
-          <div className="leading-tight">
-            <div className="text-sm font-semibold text-white">Panel</div>
-            <div className="text-xs text-zinc-400">GeemaStudio</div>
-          </div>
-        </Link>
+            <div className="min-w-0 leading-tight">
+              <div className="truncate text-sm font-semibold text-white">Panel</div>
+              <div className="truncate text-xs text-zinc-400">GeemaStudio</div>
+            </div>
+          </Link>
+          <TenantLogo tenantName={tenantName} tenantLogoUrl={tenantLogoUrl} size={36} />
+        </div>
       </div>
 
       <nav className="flex-1 space-y-5 overflow-y-auto p-3">
@@ -245,17 +284,15 @@ export function PanelShell({
           {/* Mobile top bar */}
           <div className="sticky top-0 z-30 border-b border-white/[0.08] bg-[#0F0F0F]/90 backdrop-blur md:hidden">
             <div className="flex h-14 items-center justify-between px-4">
-              <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.06]">
-                <Image
-                  src="/logo-diamondSparkle.svg"
-                  alt="GeemaStudio"
-                  width={18}
-                  height={18}
-                  className="opacity-90"
-                />
-              </div>
+              <Image
+                src="/logo-diamondSparkleNGlow.svg"
+                alt="GeemaStudio"
+                width={32}
+                height={32}
+                className="shrink-0"
+              />
               <div className="text-sm font-semibold text-white">Panel · {activePageLabel}</div>
-              <div className="w-8" />
+              <TenantLogo tenantName={tenantName} tenantLogoUrl={tenantLogoUrl} size={28} />
             </div>
           </div>
 
