@@ -67,6 +67,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 | 6   | Landing Fase 2/3 (CMS + dominio)                       | zm-tech    | No bloquea beta gestión                 |
 | 7   | PR-10 / 10B WABA avanzado + reenganche                 | ZM + Geema | Tras S4 + PR-09                         |
 | 8   | Activar `geema.zmtechdev.com` en Vercel + Auth URLs    | ops        | Checklist en `docs/DEPLOYMENT.md` § 2b  |
+| 9   | **PWA — manifest dinámico por tenant**                  | zm-tech    | `app/manifest.ts` server-aware (lee sesión) para que el ícono/nombre de la app instalada use el logo y nombre del tenant en vez de uno fijo; caveat: ícono queda cacheado por dispositivo al instalar (aceptable, 1 negocio = 1 dispositivo). No bloquea beta. |
 
 ### Riesgos activos
 
@@ -215,4 +216,4 @@ Pendiente post–Fase 2: `/panel/configuracion/web`, migrar Sanity → `zm-lash-
 
 ---
 
-_Actualizado: 10 sep 2026 — alineación estado real + foco semanal._
+_Actualizado: 21 sep 2026 — theming por tenant + headers panel + pendiente PWA manifest dinámico._

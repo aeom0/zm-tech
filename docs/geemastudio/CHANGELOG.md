@@ -7,6 +7,16 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido (21-sep 2026 — Login rediseñado + theming por tenant + header con logo tenant)
+
+- **Web — `/login`**: rediseño sin caja/box, logo nebulosa glow más grande, copy orientado al tenant (sin mención a Supabase Auth).
+- **Web — `/panel` theming por tenant**: nuevo `src/lib/tenant-theme.ts` deriva `--tenant-primary` / `--tenant-primary-hover` / `--tenant-accent` desde `tenant_settings.primary_color`/`accent_color` (fallback turquesa Lunaris `#40E0D0`); `panel/layout.tsx` resuelve el brand del tenant server-side (mismo bridge `id` → `profiles.tenant_id` → `tenant_slug`) y lo pasa a `PanelShell`. ~120 usos de `#40E0D0`/`#00897B` reemplazados por las variables CSS en 27 archivos de `/panel/**` (login y `lib/theme.ts` Lunaris quedan fuera, a propósito).
+- **Web — `/panel` dashboard nuevo** (`app/panel/page.tsx`): grid de módulos (Agenda, Clientes, Catálogo, Personal, Horario, WhatsApp, Configuración) como landing tras login, reemplaza el auto-redirect a `/panel/servicios`.
+- **Web — ícono Catálogo**: `Wrench` → `LayoutGrid` (evitar íconos de trade específico tipo tijeras/gema; GeemaStudio es multi-vertical).
+- **Web — tab bar mobile**: WhatsApp reemplaza a Personal en las 4 tabs fijas; Personal se mueve a "Más" (`moreSections`).
+- **Web — headers del panel**: eliminado el cuadro de esquinas redondeadas alrededor del logo GeemaStudio; logo agrandado (nebulosa glow, mismo asset que login) en sidebar y top bar mobile; nuevo componente `TenantLogo` muestra el logo propio del tenant (`tenant_settings.logo_url`, ya subido desde Configuración) del lado derecho, con fallback a inicial del nombre del negocio.
+- **Pendiente identificado**: manifest PWA dinámico (`app/manifest.ts` server-aware) para que el ícono de la app instalada use el logo del tenant en vez de uno fijo — ver ROADMAP § Pendientes.
+
 ### Añadido (12-sep 2026 — Host temporal geema.zmtechdev.com)
 
 - **Web**: `NEXT_PUBLIC_SITE_URL` + `src/lib/site-url.ts`; preview absoluta de landings `/s/[slug]` en `/panel/configuracion`.
