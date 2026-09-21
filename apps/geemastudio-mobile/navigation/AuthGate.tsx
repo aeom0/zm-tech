@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { ActivityIndicator, Pressable, View, StyleSheet } from 'react-native'
 import * as SplashScreenExpo from 'expo-splash-screen'
 import MainTabNavigator from '@/navigation/MainTabNavigator'
 import { LoginScreen } from '@/screens/LoginScreen'
+import { TenantBrandSplashScreen } from '@/screens/TenantBrandSplashScreen'
 import { ThemedText } from '@/components/ThemedText'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
@@ -28,8 +29,10 @@ type PasoOnboarding = 1 | 2 | 3 | 4 | 5 | 6 | 7
  *   (no configurado) Entrada → nuevo negocio (país + pasos) → auth → listo;
  *           o "ya tengo cuenta" → OnboardingAuthScreen (mismo look del wizard).
  *           → (configurado, no auth) LoginScreen clásico
- *           → (configurado, auth) MainTabNavigator
- * La splash nativa (expo-splash-screen) cubre el tiempo de carga inicial.
+ *           → (configurado, auth) splash de marca del tenant → MainTabNavigator
+ *
+ * Orden visual al abrir con sesión persistida:
+ *   splash nativa Geema → (OTA si aplica) → splash marca tenant → panel
  */
 export default function AuthGate() {
   const { isAuthenticated, logout } = useAuth()
@@ -37,15 +40,31 @@ export default function AuthGate() {
   const [paso, setPaso] = useState<PasoOnboarding>(1)
   const [onboardingSessionDone, setOnboardingSessionDone] = useState(false)
   const [tenantHydrationStuck, setTenantHydrationStuck] = useState(false)
+  /**
+   * Splash de marca una vez por entrada al panel (cold start con sesión,
+   * login o biometría). Se resetea al cerrar sesión.
+   */
+  const [brandSplashDone, setBrandSplashDone] = useState(false)
 
   type EntryChoice = 'none' | 'new' | 'existing'
   const [entryChoice, setEntryChoice] = useState<EntryChoice>('none')
+
+  const finishBrandSplash = useCallback(() => {
+    setBrandSplashDone(true)
+  }, [])
 
   // Flag de desarrollo para obligar a pasar por el onboarding completo
   const forceOnboardingDev = __DEV__ && process.env.EXPO_PUBLIC_FORCE_ONBOARDING === 'true'
 
   const otaListo = useOtaUpdateUiSelector((s) => s.listo)
   const otaVisible = useOtaUpdateUiSelector((s) => s.visible)
+
+  // Al cerrar sesión, la próxima entrada vuelve a mostrar la splash de marca
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setBrandSplashDone(false)
+    }
+  }, [isAuthenticated])
 
   // Ocultar splash nativa cuando el tenant termina de cargar y el chequeo OTA terminó
   useEffect(() => {
@@ -171,6 +190,11 @@ export default function AuthGate() {
   // Ya configurado pero sin sesión → login clásico (fuera del wizard)
   if (!isAuthenticated) {
     return <LoginScreen />
+  }
+
+  // Tras splash nativa (+ OTA): marca del tenant, luego el panel
+  if (!brandSplashDone) {
+    return <TenantBrandSplashScreen onFinish={finishBrandSplash} />
   }
 
   return <MainTabNavigator />
