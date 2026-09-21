@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { KeyRound, Lock, Mail } from 'lucide-react'
+import { KeyRound, Mail } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
 
@@ -63,11 +63,19 @@ export default function LoginPage() {
         <main className="flex flex-1 items-center justify-center p-4">
           <div className="w-full max-w-md">
             <div className="mb-8 text-center">
-              <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.06]">
-                <Image src="/logo-diamondSparkle.svg" alt="GeemaStudio" width={28} height={28} />
-              </div>
-              <h1 className="text-xl font-bold text-white">Iniciar sesión</h1>
-              <p className="mt-1 text-sm text-zinc-400">Panel administrativo · Servicios</p>
+              <Image
+                src="/logo-diamondSparkleNGlow.svg"
+                alt="GeemaStudio"
+                width={200}
+                height={200}
+                className="mx-auto -mb-2"
+                priority
+              />
+              <h1 className="text-xl font-bold text-white">Bienvenida a tu panel</h1>
+              <p className="mx-auto mt-2 max-w-xs text-sm text-zinc-400">
+                Gestiona tu agenda, clientas, catálogo de servicios y campañas de WhatsApp desde un
+                mismo lugar.
+              </p>
             </div>
 
             <form
@@ -133,12 +141,9 @@ export default function LoginPage() {
               </button>
             </form>
 
-            <div className="mt-6 text-center text-xs text-zinc-500">
-              <span className="inline-flex items-center gap-1.5">
-                <Lock className="h-3.5 w-3.5" />
-                Misma cuenta que la app (Supabase Auth)
-              </span>
-            </div>
+            <p className="mt-6 text-center text-xs text-zinc-500">
+              ¿No tienes acceso? Contacta a soporte de GeemaStudio.
+            </p>
           </div>
         </main>
       </div>

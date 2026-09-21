@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  logo-diamondSparkleNGlow.svg
+  GeemaStudio — Fuente de verdad para splash-logo.png
+
+  Canvas: 1024×1024 px, fondo transparente
+  Exportar como PNG 1024×1024 con fondo transparente para splash-logo.png
+  (expo-splash-screen pone el fondo #111318)
+
+  Capas (de atrás hacia adelante):
+  1. NebulosaGlow  — dos elipses radiales turquesa/índigo con blur gaussiano
+  2. DiamondSparkle — diamante fotocromático (solo grises/blancos, nunca color)
+  3. SparkleRays    — destellos desde el centro del diamante
+-->
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 1024 1024"
+  width="1024"
+  height="1024"
+>
+  <defs>
+
+    <!-- ── NEBULOSA GLOW ── -->
+
+    <!-- Elipse izquierda: turquesa Lunaris -->
+    <radialGradient id="glow-turquoise" cx="487" cy="512" r="280"
+                    gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#40E0D0" stop-opacity="0.70"/>
+      <stop offset="45%"  stop-color="#40E0D0" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#40E0D0" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Elipse derecha: índigo Lunaris -->
+    <radialGradient id="glow-indigo" cx="537" cy="512" r="280"
+                    gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#3949AB" stop-opacity="0.70"/>
+      <stop offset="45%"  stop-color="#3949AB" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#3949AB" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Filtro blur del glow — área ampliada para que el blur no se corte -->
+    <filter id="nebula-blur" x="-80%" y="-80%" width="260%" height="260%"
+            color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="52"/>
+    </filter>
+
+    <!-- ── DIAMOND SPARKLE ── -->
+
+    <!-- Gradiente cara superior (tabla): blanco → gris medio -->
+    <linearGradient id="g-tabla" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#AAAAAA" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- Borde exterior del diamante -->
+    <linearGradient id="outer-grad" x1="0" y1="0" x2="0" y2="1"
+                    gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.12"/>
+    </linearGradient>
+
+    <!-- Bordes internos de facetas -->
+    <linearGradient id="border-grad" x1="0" y1="0" x2="0" y2="1"
+                    gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.20"/>
+      <stop offset="40%"  stop-color="#FFFFFF" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Centro radial brillante -->
+    <radialGradient id="rg-center" cx="50%" cy="37%" r="28%">
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- ── SPARKLE RAYS ── -->
+    <!-- Destellos desde el centro: arriba, abajo, diag ×4 -->
+    <linearGradient id="sp-up" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="sp-down" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="sp-ul" x1="1" y1="1" x2="0" y2="0">
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="sp-ur" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="sp-dl" x1="1" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="sp-dr" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+
+  </defs>
+
+  <!-- ══════════════════════════════════════════
+       CAPA 1 — NEBULOSA GLOW (detrás de todo)
+       Dos elipses separadas 50px, muy solapadas
+       → se perciben como un blob bicolor
+       ══════════════════════════════════════════ -->
+  <g filter="url(#nebula-blur)">
+    <ellipse cx="487" cy="512" rx="248" ry="248" fill="url(#glow-turquoise)"/>
+    <ellipse cx="537" cy="512" rx="248" ry="248" fill="url(#glow-indigo)"/>
+  </g>
+
+  <!-- ══════════════════════════════════════════
+       CAPA 2 — DIAMOND SPARKLE
+       viewBox original: 0 -8 260 290 → 298 unidades de alto
+       Escalado para caber en ~560px de alto, centrado en 1024×1024.
+
+       Escala: 560 / 298 ≈ 1.879  →  usamos 1.88
+       Ancho resultante: 260 × 1.88 ≈ 489
+       Alto resultante:  298 × 1.88 ≈ 560
+
+       Offset para centrar:
+         tx = (1024 - 489) / 2 = 267.5
+         ty = (1024 - 560) / 2 + (8 × 1.88) = 232 + 15 = 247
+         (los 8px del viewBox offset negativo se compensan)
+       ══════════════════════════════════════════ -->
+  <g transform="translate(267.5, 232) scale(1.88)">
+
+    <!-- Facetas de relleno: fotocromáticas (solo grises) -->
+    <polygon points="74,85  101,85  95,128"        fill="#888888"/>
+    <polygon points="74,85  95,128  26,128"         fill="#444444"/>
+    <polygon points="101,85 159,85 165,128  95,128" fill="url(#g-tabla)"/>
+    <polygon points="159,85 186,85 165,128"         fill="#2A2A2A"/>
+    <polygon points="186,85 234,128 165,128"        fill="#111111"/>
+    <polygon points="26,132  95,132  130,270"       fill="#909090"/>
+    <polygon points="95,132  165,132 130,270"       fill="#1A1A1A"/>
+    <polygon points="165,132 234,132 130,270"       fill="#606060"/>
+
+    <!-- Contorno exterior del diamante -->
+    <polygon points="74,85  186,85  234,130  130,270  26,130"
+             fill="none" stroke="url(#outer-grad)" stroke-width="3"/>
+
+    <!-- Bordes internos de facetas -->
+    <polygon points="74,85  101,85  95,128"
+             fill="none" stroke="url(#border-grad)" stroke-width="0.7"/>
+    <polygon points="74,85  95,128  26,128"
+             fill="none" stroke="url(#border-grad)" stroke-width="0.7"/>
+    <polygon points="101,85 159,85 165,128  95,128"
+             fill="none" stroke="url(#border-grad)" stroke-width="0.7"/>
+    <polygon points="159,85 186,85 165,128"
+             fill="none" stroke="url(#border-grad)" stroke-width="0.7"/>
+    <polygon points="186,85 234,128 165,128"
+             fill="none" stroke="url(#border-grad)" stroke-width="0.7"/>
+    <polygon points="26,132  95,132  130,270"
+             fill="none" stroke="url(#border-grad)" stroke-width="0.7"/>
+    <polygon points="95,132  165,132 130,270"
+             fill="none" stroke="url(#border-grad)" stroke-width="0.7"/>
+    <polygon points="165,132 234,132 130,270"
+             fill="none" stroke="url(#border-grad)" stroke-width="0.7"/>
+
+    <!-- Destellos (sparkle rays) desde cx=130, cy=94 -->
+    <!-- Arriba -->
+    <polygon points="127.5,94  132.5,94  130,-4"           fill="url(#sp-up)"/>
+    <!-- Abajo -->
+    <polygon points="127.5,94  132.5,94  130,192"          fill="url(#sp-down)"/>
+    <!-- Diagonal sup-izq -->
+    <polygon points="128.16,95.68  131.84,92.32  55,12"    fill="url(#sp-ul)"/>
+    <!-- Diagonal sup-der -->
+    <polygon points="128.16,92.32  131.84,95.68  205,12"   fill="url(#sp-ur)"/>
+    <!-- Diagonal inf-izq -->
+    <polygon points="128.14,92.32  131.86,95.68  55,177"   fill="url(#sp-dl)"/>
+    <!-- Diagonal inf-der -->
+    <polygon points="128.14,95.68  131.86,92.32  205,177"  fill="url(#sp-dr)"/>
+
+    <!-- Halo central radial brillante -->
+    <circle cx="130" cy="94" r="73" fill="url(#rg-center)"/>
+
+  </g>
+
+</svg>
