@@ -87,3 +87,4 @@ Implementación sugerida (S2-7):
 | 2026-08-30 | Schema canónico + índices apt_svc | 07 § Schema canónico; migration `idx_appointment_services_lookup`; PR #31 no CREATE en prod |
 | 2026-08-30 | País / wallclock ADR | 05 addendum: sin `countries`; citas = hora de pared del tenant |
 | 2026-09-02 | Look Preview Plan 07 | Planes `06`/`07` + anexo prompts copiados a `zm-tech/.../plans/` (fuera de esta carpeta); ticket S6-LP en roadmap |
+| 2026-09-21 | 08 retail productos | `08-PLAN-retail-productos.md` + README; push espejo `zm-tech` (`1794dff7`) para CI diff-check PR #140 |

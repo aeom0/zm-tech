@@ -24,7 +24,10 @@ ZM sigue siendo fuente de verdad hasta cutover.
 
 ## Modelo de datos (prod `udelxwwnyivknslueerr`)
 
-Migración: `20260921211312_add_retail_product_orders`
+Migraciones:
+
+1. `20260921211312_add_retail_product_orders`
+2. `20260921212252_product_orders_add_pedido_status` — añade status `pedido` + RPC que baja stock solo si venía de `reserved`
 
 ### `inventory_items` (extendido)
 
@@ -38,7 +41,7 @@ Migración: `20260921211312_add_retail_product_orders`
 
 | Columna | Notas |
 |---------|--------|
-| `status` | `reserved` \| `paid` \| `delivered` \| `cancelled` |
+| `status` | `reserved` (hay stock) \| `pedido` (sin stock / preventa) \| `paid` \| `delivered` \| `cancelled` |
 | `source` | `salon` \| `whatsapp` \| `promo` |
 | `unit_price`, `quantity` | Total = unit × qty |
 | `payment_id` | FK → `payments` al marcar pagado |
@@ -50,16 +53,18 @@ RLS: solo `is_admin()` (dev/owner), igual que payments/inventory.
 
 Atómico:
 
-1. Inserta `payments` (sin cita, notas “Venta retail: …”)
-2. Baja `inventory_items.quantity`
-3. Marca orden `paid` + `payment_id` + `paid_at`
+1. Inserta `payments` (sin cita; notas “Venta retail: …” o “Pedido retail: …”)
+2. Si status era `reserved`: baja `inventory_items.quantity` (exige stock ≥ qty)
+3. Si status era `pedido`: **no** toca stock (preventa / llegada posterior)
+4. Marca orden `paid` + `payment_id` + `paid_at`
 
 ## UI canónica (ZM)
 
 **Ruta:** `/panel/productos` (`apps/web/src/app/panel/productos/`)
 
-- Tab **Ventas**: apartados, marcar pagado, entregar, cancelar  
+- Tab **Ventas**: apartados y pedidos abiertos; marcar pagado, entregar, cancelar  
 - Tab **Catálogo**: productos `is_sellable` (precio, stock, descripción)  
+- Al crear o cobrar: push FCM a perfiles `owner`/`dev` (`send-notification`, `data.type=retail`)  
 - Nav: `AdminNav` + card en `/panel`
 
 **Mobile Inventario:** fuera de alcance de este entregable (port posterior).
@@ -68,32 +73,36 @@ Atómico:
 
 ```
 Promo WA / salón → clienta dice sí
-  → Vanessa crea apartado (status=reserved) en /panel/productos
-  → Al cobrar: Marcar pagado → payments + stock−
+  → Vanessa crea orden en /panel/productos
+       · stock OK → status=reserved (apartado)
+       · sin stock → status=pedido (preventa)
+  → Al cobrar: Marcar pagado → payments (+ stock− solo si reserved)
   → Opcional: Marcar entregado
 ```
 
 Haiku (webhook):
 
-- FAQ kit (qué es / cómo se usa / precio S/16)
+- FAQ kit (qué es / cómo se usa / precio S/16) — `FORMAT_INSTRUCTION` CASO kit + bloque **PRODUCTOS RETAIL** en `waba_config.haiku_system_prompt` (override BD) y en CMS defaults
 - Si dice sí: deriva a Vanessa 932; **no** crea `product_orders` solo
-- `action:none`, sin `add_to_cart`
+- `action:none`; prohibido `add_to_cart` / `show_category` en el CASO (prompt). **Pendiente:** guard duro en código si Haiku emite lista igual
 
-## Seed
+## Seed / stock operativo
 
-Ítem: **Kit cuidado pestañas** — S/16, categoría `pestanas_cejas`, stock 20, `is_sellable=true`.
+Ítem: **Kit cuidado pestañas** — S/16, categoría `pestanas_cejas`, `is_sellable=true`.  
+Stock en prod al blast: **6** (ajustar en panel Catálogo).
 
 ## Checklist port Geema
 
 ### Schema / BD
 
-- [ ] Confirmar migración ya aplicada en el proyecto Supabase que use Geema (hoy = mismo `udelx…` vía bridge)
-- [ ] Mirror Drizzle en `zm-tech` shared-schema si diverge del de ZM
+- [ ] Confirmar migraciones retail ya aplicadas en el proyecto Supabase que use Geema (hoy = mismo `udelx…` vía bridge)
+- [ ] Mirror Drizzle en `zm-tech` shared-schema si diverge del de ZM (`pedido` incluido)
 - [ ] Exponer RPC `mark_product_order_paid` en tipos/client Geema
 
 ### Web (`geemastudio-web`)
 
-- [ ] Ruta `/panel/productos` (mismo flujo Ventas + Catálogo)
+- [ ] Ruta `/panel/productos` (mismo flujo Ventas + Catálogo; reserved vs pedido)
+- [ ] Push retail opcional (mismo patrón `send-notification`)
 - [ ] Link en `PanelShell` / dashboard
 - [ ] Auth admin + `tenant_id` scoping (Plan 12 Fase T)
 - [ ] Theming con `--tenant-primary`
@@ -107,6 +116,7 @@ Haiku (webhook):
 
 - [ ] Port CASO kit + bloque PRODUCTOS RETAIL a prompt Geema multi-tenant (copy por `tenant_settings` / `waba_config`)
 - [ ] No meter productos en carrito `service|pack` hasta sprint retail-bot
+- [ ] (Opcional) Guard duro: mensaje retail sin intención de agendar → suprimir `show_category` / `show_packs` / `add_to_cart`
 
 ### Docs Geema a actualizar al portar
 
@@ -122,6 +132,6 @@ Haiku (webhook):
 ## Referencias código ZM
 
 - Schema: `packages/shared-schema/src/schema.ts` (`productOrders`, `inventoryItems.isSellable`)
-- Migración: `supabase/migrations/20260921211312_add_retail_product_orders.sql`
+- Migraciones: `supabase/migrations/20260921211312_add_retail_product_orders.sql`, `…_product_orders_add_pedido_status.sql`
 - UI: `apps/web/src/app/panel/productos/`
-- Haiku: `haiku-prompt.ts` CASO kit; `haiku-cms-defaults.ts` PRODUCTOS RETAIL
+- Haiku: `haiku-prompt.ts` CASO kit; `haiku-cms-defaults.ts` PRODUCTOS RETAIL; BD `waba_config.haiku_system_prompt`
