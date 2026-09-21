@@ -87,7 +87,7 @@ export function CategoriasTab({
       )}
 
       {isLoading ? (
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
@@ -111,7 +111,7 @@ export function CategoriasTab({
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
           {categorias.map((c) => {
             const busy = deletingId === c.id || checkingId === c.id || deletingId !== null
             return (
