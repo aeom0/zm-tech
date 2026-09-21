@@ -62,7 +62,7 @@ Evidencia nav:
 | G3 | Shell: PanelShell ↔ `/dashboard` ↔ `/finanzas` | Hoy hay que recordar 3 URLs; ZM al menos agrupa AdminNav |
 | G4 | Crons / nudges / recordatorios (11+ EFs ZM) | Panel perfecto + bot sin recordatorios = funnel roto |
 | G5 | `countOverlappingAppointments` en webhook Geema | Doble reserva vía bot |
-| G6 | Promo broadcast WA + Reenganchar | Prod ZM (`send-promo-whatsapp`, `send-retouch-reengage`); Geema mobile = placeholder |
+| G6 | Promo broadcast WA + Reenganchar | Prod ZM (`send-promo-whatsapp`, `send-retouch-reengage`). **Envío masivo (mobile) hecho 21-sep-2026** — ver R5; `send-retouch-reengage` sigue pendiente |
 | G7 | Push FCM E2E | Token se obtiene y se descarta (TODO L66); sin EF `send-notification` en repo Geema; callers `payment.ts` invocan EF inexistente; sin Firebase Android `com.geemastudio.app`. Ver Fase X / checklist P1–P23 |
 | G8 | Tenant scoping global en hooks web | Plan 11 solo arregla tablas WABA vía API routes |
 | G9 | Legal por jurisdicción tenant | ZM tiene términos/privacidad/libro reclamaciones |
@@ -149,7 +149,7 @@ Paralelo a Plan 11 Fases 2–3; **después** de foundations UUID:
 | R2 | `appointment-reminders`, `same-day-appointment-reminder` / `send-*` | Recordatorios cita |
 | R3 | `cart-nudge`, `abandoned-cart-reminders`, `silence-watchdog` | Funnel carrito |
 | R4 | `ads-bounce-nudge`, `browse-reengage` | CTWA / browse |
-| R5 | `send-promo-whatsapp` + UI mobile/web stepper | Promo broadcast |
+| R5 | `send-promo-whatsapp` + UI mobile/web stepper | Promo broadcast. **Hecho (21-sep-2026):** wizard mobile 5 pasos (`apps/geemastudio-mobile/screens/promos/`) + Historial, conectados a `promo_broadcasts`/`promo_broadcast_items` y a la EF `send-promo-whatsapp` ya desplegada (no se tocó la EF). Pendiente: prueba manual end-to-end (wizard probado solo hasta preview, sin disparar envío real) |
 | R6 | `send-retouch-reengage`, `retouch-reminders` | Feature flag por vertical |
 | R7 | `look-preview` | Ya tiene Plan 06/07 aparte |
 | R8 | `countOverlappingAppointments` en `geemastudio-server/.../handlers/agenda.ts` | Bug cupo |
