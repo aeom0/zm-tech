@@ -2,11 +2,11 @@ import Link from 'next/link'
 import {
   Calendar,
   Clock,
+  LayoutGrid,
   MessageCircle,
   Settings,
   UserRound,
   Users,
-  Wrench,
 } from 'lucide-react'
 
 const MODULES = [
@@ -26,7 +26,7 @@ const MODULES = [
     href: '/panel/servicios',
     label: 'Catálogo',
     description: 'Servicios, packs y promos',
-    icon: Wrench,
+    icon: LayoutGrid,
   },
   {
     href: '/panel/personal',

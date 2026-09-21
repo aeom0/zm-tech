@@ -7,7 +7,7 @@ import { useMemo, useState } from 'react'
 import {
   ChevronDown,
   LogOut,
-  Wrench,
+  LayoutGrid,
   Clock,
   Users,
   UserRound,
@@ -64,7 +64,7 @@ export function PanelShell({
     label: 'Catálogo',
     shortLabel: 'Catálogo',
     href: '/panel/servicios',
-    icon: <Wrench className="h-4 w-4" />,
+    icon: <LayoutGrid className="h-4 w-4" />,
   }
   const personalItem: NavItem = {
     label: 'Personal',
@@ -99,10 +99,9 @@ export function PanelShell({
   )
 
   // Ítems fijos del bottom tab bar mobile; el resto vive en la hoja "Más".
-  const primaryTabItems: NavItem[] = [agendaItem, clientesItem, catalogoItem, personalItem]
+  const primaryTabItems: NavItem[] = [agendaItem, clientesItem, catalogoItem, wabaItem]
   const moreSections: NavSection[] = [
-    { title: 'Negocio', items: [horarioItem, configuracionItem] },
-    { title: 'Marketing', items: [wabaItem] },
+    { title: 'Negocio', items: [personalItem, horarioItem, configuracionItem] },
   ]
 
   function isNavActive(href: string): boolean {
