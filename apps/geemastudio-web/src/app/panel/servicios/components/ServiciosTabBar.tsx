@@ -32,7 +32,7 @@ export function ServiciosTabBar({
                 t.disabled
                   ? 'cursor-not-allowed border-white/[0.06] bg-white/[0.02] text-zinc-500'
                   : isActive
-                    ? 'border-white/[0.10] bg-white/[0.06] text-white'
+                    ? 'border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 text-[var(--tenant-primary)]'
                     : 'border-white/[0.06] bg-transparent text-zinc-300 hover:border-white/[0.08] hover:bg-white/[0.04]',
               ].join(' ')}
             >
