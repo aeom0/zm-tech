@@ -1,9 +1,11 @@
 'use client'
 
-import { useMemo, useState } from 'react'
-import { ArrowLeft, MessageSquare } from 'lucide-react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { MessageSquare } from 'lucide-react'
 
-import { useWabaConversations, useWabaThread } from '@/hooks/waba/useWabaMessages'
+import { useWabaConversations } from '@/hooks/waba/useWabaMessages'
+import { MessageThread } from './_components/MessageThread'
 
 function formatWhen(iso: string): string {
   if (!iso) return ''
@@ -17,13 +19,29 @@ function formatWhen(iso: string): string {
   })
 }
 
-export default function PanelWabaMensajesPage() {
-  const [selectedPhone, setSelectedPhone] = useState<string | null>(null)
+function PanelWabaMensajesContent() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const phoneParam = searchParams.get('phone')
+
+  const [selectedPhone, setSelectedPhone] = useState<string | null>(phoneParam)
   const conversationsQuery = useWabaConversations()
-  const threadQuery = useWabaThread(selectedPhone)
 
   const conversations = useMemo(() => conversationsQuery.data ?? [], [conversationsQuery.data])
-  const messages = threadQuery.data ?? []
+
+  useEffect(() => {
+    if (phoneParam && phoneParam !== selectedPhone) setSelectedPhone(phoneParam)
+  }, [phoneParam, selectedPhone])
+
+  const selectPhone = (phone: string | null) => {
+    setSelectedPhone(phone)
+    const params = new URLSearchParams(searchParams.toString())
+    if (phone) params.set('phone', phone)
+    else params.delete('phone')
+    router.replace(`/panel/waba/mensajes${params.toString() ? `?${params.toString()}` : ''}`, {
+      scroll: false,
+    })
+  }
 
   const selected = useMemo(
     () => conversations.find((c) => c.phone === selectedPhone) ?? null,
@@ -38,7 +56,7 @@ export default function PanelWabaMensajesPage() {
         <div className="text-xs text-zinc-500">WhatsApp</div>
         <h1 className="text-2xl font-bold text-white">{title}</h1>
         <p className="mt-1 text-sm text-zinc-400">
-          Historial por teléfono. Solo lectura — el envío sale por el bot / Edge.
+          Historial por teléfono. Envío de texto, imagen, audio y documento desde el panel.
         </p>
       </div>
 
@@ -83,7 +101,7 @@ export default function PanelWabaMensajesPage() {
                   <li key={c.phone}>
                     <button
                       type="button"
-                      onClick={() => setSelectedPhone(c.phone)}
+                      onClick={() => selectPhone(c.phone)}
                       className={[
                         'w-full border-b border-white/[0.06] px-4 py-3 text-left transition-colors',
                         active ? 'bg-[var(--tenant-primary)]/10' : 'hover:bg-white/[0.04]',
@@ -101,11 +119,18 @@ export default function PanelWabaMensajesPage() {
                         <div className="mt-0.5 font-mono text-[11px] text-zinc-500">{c.phone}</div>
                       )}
                       <p className="mt-1 line-clamp-2 text-xs text-zinc-400">{c.lastMessage}</p>
-                      {c.inbound24h > 0 && (
-                        <span className="mt-2 inline-block rounded-full border border-[var(--tenant-primary)]/20 bg-[var(--tenant-primary)]/10 px-2 py-0.5 text-[10px] text-[var(--tenant-primary)]">
-                          {c.inbound24h} in · 24h
-                        </span>
-                      )}
+                      <div className="mt-2 flex items-center gap-1.5">
+                        {c.inbound24h > 0 && (
+                          <span className="inline-block rounded-full border border-[var(--tenant-primary)]/20 bg-[var(--tenant-primary)]/10 px-2 py-0.5 text-[10px] text-[var(--tenant-primary)]">
+                            {c.inbound24h} in · 24h
+                          </span>
+                        )}
+                        {c.botPaused && (
+                          <span className="inline-block rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] text-amber-300">
+                            Bot en pausa
+                          </span>
+                        )}
+                      </div>
                     </button>
                   </li>
                 )
@@ -118,74 +143,24 @@ export default function PanelWabaMensajesPage() {
               ' '
             )}
           >
-            {!selectedPhone && (
+            {!selected && (
               <div className="flex flex-1 items-center justify-center p-8 text-sm text-zinc-500">
                 Elegí una conversación
               </div>
             )}
 
-            {selectedPhone && (
-              <>
-                <div className="flex items-center gap-3 border-b border-white/[0.08] px-4 py-3">
-                  <button
-                    type="button"
-                    className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] md:hidden"
-                    onClick={() => setSelectedPhone(null)}
-                    aria-label="Volver a la lista"
-                  >
-                    <ArrowLeft className="h-4 w-4" />
-                  </button>
-                  <div className="min-w-0">
-                    <div className="truncate text-sm font-semibold text-white">
-                      {selected?.displayName || selectedPhone}
-                    </div>
-                    <div className="font-mono text-[11px] text-zinc-500">{selectedPhone}</div>
-                  </div>
-                </div>
-
-                <div className="max-h-[60vh] flex-1 space-y-2 overflow-y-auto p-4">
-                  {threadQuery.isLoading && (
-                    <p className="text-center text-sm text-zinc-500">Cargando hilo…</p>
-                  )}
-                  {threadQuery.isError && (
-                    <p className="text-center text-sm text-red-300">
-                      {threadQuery.error instanceof Error
-                        ? threadQuery.error.message
-                        : 'Error al cargar el hilo'}
-                    </p>
-                  )}
-                  {!threadQuery.isLoading &&
-                    !threadQuery.isError &&
-                    messages.map((m) => {
-                      const out = m.direction === 'out'
-                      return (
-                        <div
-                          key={m.id}
-                          className={['flex', out ? 'justify-end' : 'justify-start'].join(' ')}
-                        >
-                          <div
-                            className={[
-                              'max-w-[85%] rounded-2xl px-3 py-2 text-sm',
-                              out
-                                ? 'bg-[var(--tenant-primary)]/20 text-zinc-100'
-                                : 'bg-white/[0.06] text-zinc-200',
-                            ].join(' ')}
-                          >
-                            <p className="whitespace-pre-wrap break-words">{m.content}</p>
-                            <div className="mt-1 text-[10px] text-zinc-500">
-                              {formatWhen(m.createdAt)}
-                              {m.msgType !== 'text' ? ` · ${m.msgType}` : ''}
-                            </div>
-                          </div>
-                        </div>
-                      )
-                    })}
-                </div>
-              </>
-            )}
+            {selected && <MessageThread conversation={selected} onBack={() => selectPhone(null)} />}
           </section>
         </div>
       )}
     </div>
+  )
+}
+
+export default function PanelWabaMensajesPage() {
+  return (
+    <Suspense fallback={<div className="text-sm text-zinc-500">Cargando…</div>}>
+      <PanelWabaMensajesContent />
+    </Suspense>
   )
 }

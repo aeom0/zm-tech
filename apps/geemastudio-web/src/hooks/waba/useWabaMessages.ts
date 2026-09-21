@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 
 export type WabaDirection = 'in' | 'out'
+export type WabaDeliveryStatus = 'sent' | 'delivered' | 'read' | 'failed' | null
 
 export interface WabaConversation {
   phone: string
@@ -13,6 +14,7 @@ export interface WabaConversation {
   lastDirection: WabaDirection
   lastAt: string
   inbound24h: number
+  botPaused: boolean
 }
 
 export interface WabaMessage {
@@ -22,18 +24,29 @@ export interface WabaMessage {
   content: string
   msgType: string
   createdAt: string
+  wamid: string | null
+  imageUrl: string | null
+  audioUrl: string | null
+  documentUrl: string | null
+  documentName: string | null
+  deliveryStatus: WabaDeliveryStatus
+  deliveryError: string | null
 }
 
 function asDirection(v: unknown): WabaDirection {
   return v === 'out' ? 'out' : 'in'
 }
 
+function asNullableString(v: unknown): string | null {
+  return typeof v === 'string' && v.length > 0 ? v : null
+}
+
 export function useWabaConversations() {
   return useQuery({
     queryKey: ['web_waba_conversations'],
     enabled: !!supabase,
-    staleTime: 20_000,
-    refetchInterval: 45_000,
+    staleTime: 5_000,
+    refetchInterval: 10_000,
     queryFn: async (): Promise<WabaConversation[]> => {
       if (!supabase) throw new Error('Supabase no está configurado')
 
@@ -65,6 +78,7 @@ export function useWabaConversations() {
             lastDirection: direction,
             lastAt: createdAt,
             inbound24h: 0,
+            botPaused: false,
           })
         }
         if (direction === 'in' && createdAt) {
@@ -79,7 +93,12 @@ export function useWabaConversations() {
       const conversations = [...map.values()]
 
       if (conversations.length > 0) {
-        const { data: clients } = await supabase.from('clients').select('name, phone').limit(3000)
+        const phones = conversations.map((c) => c.phone)
+
+        const [{ data: clients }, { data: sessions }] = await Promise.all([
+          supabase.from('clients').select('name, phone').limit(3000),
+          supabase.from('whatsapp_sessions').select('phone, bot_paused_at').in('phone', phones),
+        ])
 
         const byPhone = new Map<string, string>()
         for (const c of (clients ?? []) as { name?: string; phone?: string }[]) {
@@ -100,6 +119,15 @@ export function useWabaConversations() {
             }
           }
         }
+
+        const pausedPhones = new Set(
+          ((sessions ?? []) as { phone?: string; bot_paused_at?: string | null }[])
+            .filter((s) => !!s.bot_paused_at)
+            .map((s) => s.phone)
+        )
+        for (const conv of conversations) {
+          conv.botPaused = pausedPhones.has(conv.phone)
+        }
       }
 
       return conversations
@@ -111,13 +139,15 @@ export function useWabaThread(phone: string | null) {
   return useQuery({
     queryKey: ['web_waba_thread', phone],
     enabled: !!supabase && !!phone,
-    staleTime: 10_000,
-    refetchInterval: 20_000,
+    staleTime: 5_000,
+    refetchInterval: 10_000,
     queryFn: async (): Promise<WabaMessage[]> => {
       if (!supabase || !phone) return []
       const { data, error } = await supabase
         .from('wa_messages')
-        .select('id, phone, content, direction, msg_type, created_at')
+        .select(
+          'id, phone, content, direction, msg_type, created_at, wamid, image_url, audio_url, document_url, document_name, delivery_status, delivery_error'
+        )
         .eq('phone', phone)
         .order('created_at', { ascending: true })
         .limit(200)
@@ -131,6 +161,13 @@ export function useWabaThread(phone: string | null) {
         content: String(row.content ?? ''),
         msgType: String(row.msg_type ?? 'text'),
         createdAt: String(row.created_at ?? ''),
+        wamid: asNullableString(row.wamid),
+        imageUrl: asNullableString(row.image_url),
+        audioUrl: asNullableString(row.audio_url),
+        documentUrl: asNullableString(row.document_url),
+        documentName: asNullableString(row.document_name),
+        deliveryStatus: (asNullableString(row.delivery_status) as WabaDeliveryStatus) ?? null,
+        deliveryError: asNullableString(row.delivery_error),
       }))
     },
   })

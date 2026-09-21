@@ -6,15 +6,44 @@ import { supabase } from '@/lib/supabase'
 
 export type UploadState = 'idle' | 'uploading' | 'success' | 'error'
 
+export type UploadKind = 'image' | 'audio' | 'document'
+
+interface UploadRules {
+  allowedTypes: string[]
+  maxFileSize: number
+  errorMessage: string
+}
+
+const UPLOAD_RULES: Record<UploadKind, UploadRules> = {
+  image: {
+    allowedTypes: ['image/jpeg', 'image/png', 'image/webp'],
+    maxFileSize: 5 * 1024 * 1024,
+    errorMessage: 'Solo se permiten imágenes JPG, PNG o WebP de hasta 5 MB.',
+  },
+  audio: {
+    allowedTypes: ['audio/ogg', 'audio/mpeg', 'audio/mp4', 'audio/aac', 'audio/amr', 'audio/webm'],
+    maxFileSize: 16 * 1024 * 1024,
+    errorMessage: 'Solo se permiten audios OGG, MP3, M4A, AAC o AMR de hasta 16 MB.',
+  },
+  document: {
+    allowedTypes: [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    ],
+    maxFileSize: 25 * 1024 * 1024,
+    errorMessage: 'Solo se permiten documentos PDF, Word o Excel de hasta 25 MB.',
+  },
+}
+
 export interface UseImageUploadResult {
   uploadState: UploadState
   uploadError: string | null
-  uploadImage: (file: File, bucket: string, path: string) => Promise<string>
+  uploadImage: (file: File, bucket: string, path: string, kind?: UploadKind) => Promise<string>
   resetUpload: () => void
 }
-
-const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5 MB
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
 
 export function useImageUpload(): UseImageUploadResult {
   const [uploadState, setUploadState] = useState<UploadState>('idle')
@@ -25,14 +54,19 @@ export function useImageUpload(): UseImageUploadResult {
     setUploadError(null)
   }
 
-  const uploadImage = async (file: File, bucket: string, path: string): Promise<string> => {
+  const uploadImage = async (
+    file: File,
+    bucket: string,
+    path: string,
+    kind: UploadKind = 'image'
+  ): Promise<string> => {
     if (!supabase) throw new Error('Supabase no está configurado')
 
-    if (!ALLOWED_TYPES.includes(file.type) || file.size > MAX_FILE_SIZE) {
-      const msg = 'Solo se permiten imágenes JPG, PNG o WebP de hasta 5 MB.'
-      setUploadError(msg)
+    const rules = UPLOAD_RULES[kind]
+    if (!rules.allowedTypes.includes(file.type) || file.size > rules.maxFileSize) {
+      setUploadError(rules.errorMessage)
       setUploadState('error')
-      throw new Error(msg)
+      throw new Error(rules.errorMessage)
     }
 
     setUploadError(null)
@@ -42,7 +76,7 @@ export function useImageUpload(): UseImageUploadResult {
 
     if (error) {
       setUploadState('error')
-      setUploadError(error.message ?? 'Error al subir la imagen')
+      setUploadError(error.message ?? 'Error al subir el archivo')
       throw error
     }
 
