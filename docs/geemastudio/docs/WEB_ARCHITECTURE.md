@@ -76,8 +76,9 @@ Estas acciones **no existen en la app móvil** por limitaciones de form factor. 
 
 | Ruta        | Descripción                                             | Estado                                                                      |
 | ----------- | ------------------------------------------------------- | --------------------------------------------------------------------------- |
-| `/s/[slug]` | Landing pública del tenant con SSG + revalidación 5 min | ✅ Implementado (3 templates: Elegant Dark, Warm & Organic, Modern Minimal) |
-| `/`         | Landing de la plataforma GeemaStudio (conversión B2B)   | ✅ Implementado                                                             |
+| `/s/[slug]`       | Landing pública del tenant con SSG + revalidación 5 min                    | ✅ Implementado (3 templates: Elegant Dark, Warm & Organic, Modern Minimal) |
+| `/`               | Landing de la plataforma GeemaStudio (conversión B2B)                      | ✅ Implementado                                                             |
+| `/_sites/[domain]`| Landing por `custom_domain` (Modo A) — target del rewrite de `middleware.ts`, no se navega directo | ✅ Implementado (20-sep-2026)                        |
 
 ### Tres modos de presencia web (`web_mode`)
 
@@ -88,10 +89,10 @@ Configurado en `tenant_settings.web_mode`. Determina cómo (o si) el tenant tien
 El tenant tiene su propio dominio (ej: `zmlashnails.com`). GeemaStudio **no controla ese dominio**.
 
 - `web_mode = 'own_domain'`
-- `custom_domain = 'zmlashnails.com'` (informativo, no hay routing automático)
-- GeemaStudio puede ofrecer como **add-on de plan** el servicio de mantenimiento de esa landing: actualización de catálogo, precios, horarios. Es trabajo manual o mediante un subrepositorio independiente.
-- El `middleware.ts` de GeemaStudio **no interviene** en ese dominio.
-- **Ejemplo**: ZM Lash & Nails Beauty (Vanessa) — Tenant #1.
+- `custom_domain = 'zmlashnails.com'` — **`middleware.ts` implementado (20-sep-2026)**: cuando el `Host` de la request no es un host de plataforma (`geema.zmtechdev.com`, `localhost`, `*.vercel.app`), la raíz (`/`) se reescribe hacia `/_sites/[domain]`, que resuelve el contenido vía `getTenantLandingByDomain(custom_domain)` — mismas columnas `web_*` de `tenant_settings` que usa `/s/[slug]` en Modo B. Cualquier otra ruta en ese host responde 404 (ver punto siguiente). Activar esto para ZM Lash real requiere además: (a) apuntar el DNS de `zmlashnails.com` al deploy de `geemastudio-web`, y (b) setear `custom_domain='zmlashnails.com'` + `web_enabled=true` en la fila `zm-lash-nails` — ninguno pasa como efecto secundario de tener el middleware, es un paso de "go live" explícito y separado, condicionado a OK de Vanessa/Alberto sobre el contenido migrado.
+- GeemaStudio puede ofrecer como **add-on de plan** el servicio de mantenimiento de esa landing: actualización de catálogo, precios, horarios, vía el mismo CMS "Mi Web" (`/panel/configuracion/web` o mobile) que usa cualquier tenant. **No se crea un repositorio ni deploy aparte por tenant** — todo vive en `apps/geemastudio-web` de este monorepo; el único caso que justificaría un repo bespoke separado es un diseño 100% custom fuera de los 3 templates (excepción, no default).
+- El Panel de gestión (Producto 1) **nunca** se sirve bajo el dominio propio del tenant, tenga o no `custom_domain` configurado: sigue siempre en el dominio de la plataforma (`geema.zmtechdev.com`, temporal). `middleware.ts` solo reescribe la raíz (`/`) hacia la landing para hosts que no son de plataforma; cualquier otra ruta (`/panel/*`, `/dashboard`, `/finanzas`, `/login`, `/api`, etc.) responde 404 explícitamente en esos hosts, aunque la ruta exista en la app — evita cookies/sesión cross-domain y que rutas de admin queden accesibles o indexables bajo el dominio del cliente.
+- **Ejemplo**: ZM Lash & Nails Beauty (Vanessa) — Tenant #1. Su repo histórico `ZM-Lash-and-Nails-Beauty` es un caso legacy (predata GeemaStudio), no el patrón a replicar para tenants nuevos.
 
 #### Modo B — Bajo el paraguas GeemaStudio
 
@@ -171,8 +172,8 @@ Cada tenant tiene **sus propias RRSS establecidas** (ej: Vanessa tiene `@zmlasha
 | ---------------------- | ------------------------------------ | ------------------------------------------------------- |
 | Panel de gestión       | Listo en cuanto migre la DB          | Accede a `geema.zmtechdev.com/finanzas` etc. (temporal) |
 | `web_mode` inicial     | `'none'`                             | No necesita landing pública al day-1                    |
-| `zmlashnails.com`      | Independiente                        | Su dominio propio, no lo toca GeemaStudio               |
-| Add-on landing         | Futuro                               | Si quieren, GeemaStudio ofrece servicio Modo A          |
+| `zmlashnails.com`      | Independiente hoy (middleware listo) | Su dominio propio sigue sirviendo el repo estático actual; el middleware ya sabe resolverlo hacia `tenant_settings` pero falta el "go live" (DNS + `custom_domain` + `web_enabled=true`), pendiente de OK de contenido |
+| Add-on landing         | Futuro                               | Si quieren, GeemaStudio ofrece servicio Modo A — sin repo aparte, panel sigue en `geema.zmtechdev.com` |
 | Rutas panel pendientes | Campañas WABA / CMS web / inventario | P2                                                      |
 
 ---
