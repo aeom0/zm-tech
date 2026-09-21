@@ -123,7 +123,15 @@ function PanelWabaMensajesContent() {
                         </div>
                       )}
                       <p className="mt-1 line-clamp-2 text-xs text-zinc-400">{c.lastMessage}</p>
-                      <div className="mt-2 flex items-center gap-1.5">
+                      <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                        {c.isBsuid && !c.displayPhone && (
+                          <span
+                            className="inline-block rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-300"
+                            title="Meta no compartió el número (username / BSUID)"
+                          >
+                            Sin teléfono
+                          </span>
+                        )}
                         {c.inbound24h > 0 && (
                           <span className="inline-block rounded-full border border-[var(--tenant-primary)]/20 bg-[var(--tenant-primary)]/10 px-2 py-0.5 text-[10px] text-[var(--tenant-primary)]">
                             {c.inbound24h} in · 24h

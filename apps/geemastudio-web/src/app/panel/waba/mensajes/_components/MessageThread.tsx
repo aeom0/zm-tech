@@ -4,6 +4,8 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   ArrowLeft,
   Ban,
+  Check,
+  Copy,
   FileText,
   Image as ImageIcon,
   Loader2,
@@ -54,6 +56,7 @@ export function MessageThread({
   const [attachError, setAttachError] = useState<string | null>(null)
   const [moderationError, setModerationError] = useState<string | null>(null)
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [copied, setCopied] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const imageInputRef = useRef<HTMLInputElement>(null)
@@ -136,7 +139,21 @@ export function MessageThread({
   useEffect(() => {
     setConfirmDelete(false)
     setModerationError(null)
+    setCopied(false)
   }, [phone])
+
+  const copyValue = conversation.displayPhone || (conversation.isBsuid ? '' : phone)
+
+  const handleCopy = async () => {
+    if (!copyValue) return
+    try {
+      await navigator.clipboard.writeText(copyValue)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    } catch {
+      setModerationError('No se pudo copiar el número')
+    }
+  }
 
   const handlePauseToggle = () => {
     staffSessionMutation.mutate({ phone, action: conversation.botPaused ? 'resume_bot' : 'pause_bot' })
@@ -166,38 +183,73 @@ export function MessageThread({
 
   return (
     <>
-      <div className="flex items-center gap-3 border-b border-white/[0.08] px-4 py-3">
-        <button
-          type="button"
-          className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] md:hidden"
-          onClick={onBack}
-          aria-label="Volver a la lista"
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </button>
-        <div className="min-w-0 flex-1">
-          <div className="truncate text-sm font-semibold text-white">
-            {conversation.displayName ||
-              (conversation.waUsername ? `@${conversation.waUsername}` : null) ||
-              (conversation.isBsuid ? 'Contacto de WhatsApp' : phone)}
-          </div>
-          {(conversation.displayPhone || !conversation.isBsuid) && (
-            <div className="font-mono text-[11px] text-zinc-500">
-              {conversation.displayPhone || phone}
+      <div className="border-b border-white/[0.08] px-3 py-2.5 sm:px-4 sm:py-3">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex min-w-0 flex-1 items-start gap-2">
+            <button
+              type="button"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] md:hidden"
+              onClick={onBack}
+              aria-label="Volver a la lista"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </button>
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-sm font-semibold text-white">
+                {conversation.displayName ||
+                  (conversation.waUsername ? `@${conversation.waUsername}` : null) ||
+                  (conversation.isBsuid ? 'Contacto de WhatsApp' : phone)}
+              </div>
+              <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                {conversation.displayPhone || !conversation.isBsuid ? (
+                  <span className="font-mono text-[11px] text-zinc-500">
+                    {conversation.displayPhone || phone}
+                  </span>
+                ) : (
+                  <span
+                    className="inline-flex shrink-0 items-center rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-300"
+                    title="Meta no compartió el número (username / BSUID)"
+                  >
+                    Sin teléfono
+                  </span>
+                )}
+                <span
+                  className={[
+                    'rounded-full border px-2 py-0.5 text-[10px] font-medium',
+                    conversation.botPaused
+                      ? 'border-amber-500/30 bg-amber-500/10 text-amber-300'
+                      : 'border-emerald-500/25 bg-emerald-500/10 text-emerald-300',
+                  ].join(' ')}
+                >
+                  {conversation.botPaused ? 'Bot en pausa' : 'Bot activo'}
+                </span>
+              </div>
             </div>
-          )}
+          </div>
+          <div className="flex shrink-0 items-center gap-1.5">
+            <button
+              type="button"
+              onClick={handleCopy}
+              disabled={!copyValue}
+              title={copyValue ? 'Copiar número' : 'No hay número para copiar'}
+              className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] text-zinc-300 hover:bg-white/[0.06] disabled:opacity-40 sm:w-auto sm:gap-1.5 sm:px-2.5"
+            >
+              {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+              <span className="hidden sm:inline">{copied ? 'Copiado' : 'Copiar'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setConfirmDelete(true)}
+              disabled={deleteThreadMutation.isPending}
+              title="Eliminar conversación"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] text-zinc-300 hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-300 disabled:opacity-50"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <span
-            className={[
-              'rounded-full border px-2 py-0.5 text-[10px] font-medium',
-              conversation.botPaused
-                ? 'border-amber-500/30 bg-amber-500/10 text-amber-300'
-                : 'border-emerald-500/25 bg-emerald-500/10 text-emerald-300',
-            ].join(' ')}
-          >
-            {conversation.botPaused ? 'Bot en pausa' : 'Bot activo'}
-          </span>
+
+        <div className="mt-2 flex flex-wrap items-center gap-1.5">
           <button
             type="button"
             onClick={handlePauseToggle}
@@ -232,20 +284,11 @@ export function MessageThread({
             )}
             {blockedQuery.data ? 'Desbloquear' : 'Bloquear'}
           </button>
-          <button
-            type="button"
-            onClick={() => setConfirmDelete(true)}
-            disabled={deleteThreadMutation.isPending}
-            title="Eliminar conversación"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] text-zinc-300 hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-300 disabled:opacity-50"
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </button>
         </div>
       </div>
 
       {confirmDelete && (
-        <div className="flex items-center justify-between gap-3 border-b border-red-500/20 bg-red-500/10 px-4 py-2 text-xs text-red-200">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-red-500/20 bg-red-500/10 px-4 py-2 text-xs text-red-200">
           <span>¿Eliminar esta conversación? Se borran todos los mensajes y no se puede deshacer.</span>
           <div className="flex shrink-0 items-center gap-2">
             <button
@@ -309,7 +352,7 @@ export function MessageThread({
           <p className="mb-2 text-[11px] text-red-300">{attachError ?? uploadError}</p>
         )}
         <div className="flex items-end gap-2">
-          <div className="flex gap-1">
+          <div className="flex shrink-0 gap-1">
             <input
               ref={imageInputRef}
               type="file"
@@ -348,7 +391,7 @@ export function MessageThread({
               title="Adjuntar imagen"
               onClick={() => imageInputRef.current?.click()}
               disabled={isBusy}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] text-zinc-300 hover:bg-white/[0.06] disabled:opacity-50"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] text-zinc-300 hover:bg-white/[0.06] disabled:opacity-50"
             >
               <ImageIcon className="h-4 w-4" />
             </button>
@@ -357,7 +400,7 @@ export function MessageThread({
               title="Adjuntar audio"
               onClick={() => audioInputRef.current?.click()}
               disabled={isBusy}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] text-zinc-300 hover:bg-white/[0.06] disabled:opacity-50"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] text-zinc-300 hover:bg-white/[0.06] disabled:opacity-50"
             >
               <Mic className="h-4 w-4" />
             </button>
@@ -366,7 +409,7 @@ export function MessageThread({
               title="Adjuntar documento"
               onClick={() => documentInputRef.current?.click()}
               disabled={isBusy}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] text-zinc-300 hover:bg-white/[0.06] disabled:opacity-50"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] text-zinc-300 hover:bg-white/[0.06] disabled:opacity-50"
             >
               <FileText className="h-4 w-4" />
             </button>
@@ -380,7 +423,7 @@ export function MessageThread({
             placeholder="Escribí un mensaje…"
             rows={1}
             disabled={isBusy}
-            className="min-h-[36px] flex-1 resize-none rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-[var(--tenant-primary)]/40 focus:outline-none disabled:opacity-50"
+            className="min-h-[36px] min-w-0 flex-1 resize-none rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-[var(--tenant-primary)]/40 focus:outline-none disabled:opacity-50"
           />
 
           <button
