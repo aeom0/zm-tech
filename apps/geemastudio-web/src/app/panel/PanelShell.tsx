@@ -116,7 +116,7 @@ export function PanelShell({
       configuracionItem,
       wabaItem,
     ]
-    return allItems.find((item) => isNavActive(item.href))?.label ?? 'Panel'
+    return allItems.find((item) => isNavActive(item.href))?.label ?? 'Inicio'
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
 
@@ -180,7 +180,7 @@ export function PanelShell({
   const SidebarContent = (
     <div className="flex h-full flex-col">
       <div className="border-b border-white/[0.08] px-4 py-4">
-        <Link href="/panel/servicios" className="flex items-center gap-3">
+        <Link href="/panel" className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.06]">
             <Image
               src="/logo-diamondSparkle.svg"

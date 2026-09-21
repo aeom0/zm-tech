@@ -48,7 +48,7 @@ export default function LoginPage() {
         return
       }
 
-      router.replace('/panel/servicios')
+      router.replace('/panel')
       router.refresh()
     } catch {
       setError('Error de conexión')
