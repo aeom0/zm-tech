@@ -41,7 +41,7 @@
 | N16 | **Feriados del salón**                     | Tabla `salon_holidays`; UI admin; slots reducidos/cerrado; WABA consume misma tabla                               | `screens/holidays/**`, `peru-holidays.ts`                                     | ❌                               | Modelo por tenant; seed PE **opcional**, no único                        |
 | N17 | **Configuración / perfil**                 | Tema Claro/Auto/Oscuro; versión/OTA; datos salón                                                                  | `settings/**`, `ProfileScreen`                                                | 🟡                               | Branding desde `tenant_settings`                                         |
 | N18 | **Promo broadcast WA**                     | Stepper 5 pasos; segmentos; historial; Edge `send-promo-whatsapp`                                                 | `screens/promos/**`                                                           | ❌                               | Plantilla Meta por tenant; media_id cache                                |
-| N19 | **Push FCM nativo**                        | Token → `profiles.push_token`; `send-notification` FCM v1; deep links                                             | `useNotifications.ts`, `send-notification`                                    | 🟡 roto E2E                      | Prioridad alta; ya hay stub en Geema                                     |
+| N19 | **Push FCM nativo**                        | Token → `profiles.push_token`; `send-notification` FCM v1; deep links; ~20 triggers WABA | `useNotifications.ts`, `send-notification`                                    | ❌ E2E roto (20-sep): token se loguea y se descarta; sin EF en repo Geema; sin Firebase `com.geemastudio.app`; 3 callers muertos en `payment.ts`. Fallback WA admins ✅. **No portar** Expo `send-push-notification` (E18). Checklist: [`12-PLAN…`](../geemastudio/docs/plans/12-PLAN-panel-parity-zm-lash.md) Fase X P1–P23 · ROADMAP PR-09 | Multi-tenant: `notifyAdmins` por `tenant_id`; canales con `businessName` |
 
 ---
 
@@ -107,7 +107,7 @@
 | E10 | `browse-reengage`                                          | Browse sin carrito                     | ❌                           |
 | E11 | `chat-quality-review`                                      | Push “Revisar YA” (no habla a clienta) | ❌                           |
 | E12 | `waba-staff-session`                                       | Reactivar bot / Haiku agenda           | ❌                           |
-| E13 | `send-notification`                                        | FCM admins                             | ❌ (invocado pero ausente)   |
+| E13 | `send-notification`                                        | FCM admins (FCM v1)                    | ❌ ausente en repo Geema; invocado por `notify.ts` — PR-09 / Plan 12 Fase X |
 | E14 | `waba-pricing-sync`                                        | Costos Meta → Finanzas                 | ❌ (nice-to-have)            |
 | E15 | `sync-anthropic-billing`                                   | Costo Haiku Finanzas                   | ❌                           |
 | E16 | `test-haiku-preview`                                       | Panel Haiku                            | ❌                           |

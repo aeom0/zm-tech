@@ -63,18 +63,18 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 | 2   | **S5C-8** ranking top servicios Dashboard              | zm-tech    | Opcional esta semana                    |
 | 3   | **S4** crons/RPCs WABA tenant-aware + Vault            | ZM         | Bloquea 2.º tenant con bot completo     |
 | 4   | WABA P2: campañas / analytics / simulador / portafolio | zm-tech    | Post-MVP panel                          |
-| 5   | **PR-09** Push FCM E2E                                 | zm-tech    | `push_token` + Edge `send-notification` |
+| 5   | **PR-09** Push FCM E2E                                 | zm-tech    | Checklist P1–P23 en [`12-PLAN-panel-parity`](docs/plans/12-PLAN-panel-parity-zm-lash.md) Fase X; **no** Expo Push |
 | 6   | Landing Fase 2/3 (CMS + dominio)                       | zm-tech    | No bloquea beta gestión                 |
 | 7   | PR-10 / 10B WABA avanzado + reenganche                 | ZM + Geema | Tras S4 + PR-09                         |
 | 8   | Activar `geema.zmtechdev.com` en Vercel + Auth URLs    | ops        | Checklist en `docs/DEPLOYMENT.md` § 2b  |
 
 ### Riesgos activos
 
-- Push FCM: token no se persiste en `profiles.push_token`; sin Edge `send-notification` en Geema
+- Push FCM (**PR-09**): token se obtiene y se descarta (`useNotifications` TODO L66); sin columna en Drizzle; sin Firebase `com.geemastudio.app`; EF `send-notification` ausente en repo Geema aunque `payment.ts` la invoca (3 triggers muertos). Fallback parcial: `notifyAdminPhonesWa`. Detalle: Plan 12 Fase X.
 - Defaults `tenant-config` vs `tenant_settings` — vigilar regresiones en onboarding
 - EAS internal testing: APK preview existe; canal Play internal no validado E2E documentado
 - S4 (crons WABA) bloquea 2.º tenant con bot completo
-- Mensajes WABA en panel: RLS exige `tenant_id` (slug) en JWT; usuarios demo sin claim pueden ver lista vacía
+- Mensajes WABA en panel: RLS / tenant_id (ver Plan 11 Fase 1); inbox solo lectura hasta Fase 3
 
 ### Beta gate (actualizado sep 2026)
 
@@ -88,7 +88,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 | PR-06 / PR-06B Panel servicios            | ✅                                                                   |
 | PR-07 CI GitHub Actions                   | ✅                                                                   |
 | PR-08 Error handling crítico              | ✅ base (`ErrorState`)                                               |
-| PR-09 Push FCM E2E                        | ❌ Pendiente                                                         |
+| PR-09 Push FCM E2E                        | ❌ Pendiente — P0 = token+EF+Firebase; ver Plan 12 Fase X P1–P8      |
 | PR-10 / PR-10B WABA avanzado + reenganche | ❌ Bloqueado tras S4 + PR-09                                         |
 | PR-11 Panel web resto                     | ✅ P1 rutas core (waba MVP 12-sep); P2 campañas/inventario pendiente |
 
@@ -120,7 +120,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 | ------ | --------------------------------------------------------- | ------------------------- |
 | PR-07  | CI GitHub Actions                                         | ✅                        |
 | PR-08  | Error handling dashboard/finanzas/agenda                  | ✅ base                   |
-| PR-09  | Push FCM E2E (`push_token` + `send-notification`)         | ❌                        |
+| PR-09  | Push FCM E2E — nativo FCM v1 (`push_token` + `send-notification`); **no** Expo Push | ❌ Plan 12 Fase X |
 | PR-10  | Bot WABA capa ZM v3.0 (capacidad, silence-watchdog, refs) | ❌ (base multi-tenant ✅) |
 | PR-10B | Motor reenganche WABA multi-tenant                        | ❌ post-beta / post-S4    |
 

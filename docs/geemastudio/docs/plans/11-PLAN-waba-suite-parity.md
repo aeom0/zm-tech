@@ -108,7 +108,7 @@ Copy UI en español neutro (**sin voseo**): corregir el “Elegí una conversaci
 - [ ] M1 — Enviar texto vía `send-whatsapp-notification` con `pauseBot: true` + optimistic UI + refetch
 - [ ] M2 — Pausar bot / Reactivar bot vía `waba-staff-session` (`pause_bot` / `resume_bot`)
 - [ ] M3 — Badge header “Bot activo” / “Bot en pausa” (lee `whatsapp_sessions.bot_paused_at`)
-- [ ] M4 — Banner ámbar cuando pausado (copy: puedes escribir; push si responde — si push aún no está, omitir esa frase)
+- [ ] M4 — Banner ámbar cuando pausado (copy: puedes escribir; “te avisamos por push si responde” solo si PR-09 **P15** está listo — si no, omitir esa frase; ver Plan 12 Fase X)
 - [ ] M5 — Composer: Enter envía, Shift+Enter salto; aviso ventana **24h** Meta bajo el input
 - [ ] M6 — Polling lista + hilo ~10s
 - [ ] M7 — Split lista/hilo desktop; stack mobile con back

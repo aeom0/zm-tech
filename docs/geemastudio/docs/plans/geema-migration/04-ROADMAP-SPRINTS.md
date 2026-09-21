@@ -315,7 +315,7 @@ Barbería/peluquería pueden onboardear con defaults sensatos.
 | S6-4 | Portar `/panel/waba/campanas` + `/haiku`                     | zm-tech             | M        |
 | S6-5 | Portar portafolio + simulador (opcional)                     | zm-tech             | M        |
 | S6-6 | Eliminar/rehacer `/finanzas` web Geema (sin marca ZM)        | zm-tech             | M        |
-| S6-7 | Geema mobile: persistir push token + `send-notification`     | zm-tech             | M        |
+| S6-7 | Geema mobile: Push FCM E2E (**PR-09**) — checklist Plan 12 Fase X P1–P23; **no** Expo Push | zm-tech             | M        |
 
 ### DoD
 

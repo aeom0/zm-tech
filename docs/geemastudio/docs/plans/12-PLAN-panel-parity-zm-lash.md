@@ -63,7 +63,7 @@ Evidencia nav:
 | G4 | Crons / nudges / recordatorios (11+ EFs ZM) | Panel perfecto + bot sin recordatorios = funnel roto |
 | G5 | `countOverlappingAppointments` en webhook Geema | Doble reserva vía bot |
 | G6 | Promo broadcast WA + Reenganchar | Prod ZM (`send-promo-whatsapp`, `send-retouch-reengage`); Geema mobile = placeholder |
-| G7 | Push FCM E2E | Token descartado en Geema mobile; ZM `send-notification` |
+| G7 | Push FCM E2E | Token se obtiene y se descarta (TODO L66); sin EF `send-notification` en repo Geema; callers `payment.ts` invocan EF inexistente; sin Firebase Android `com.geemastudio.app`. Ver Fase X / checklist P1–P23 |
 | G8 | Tenant scoping global en hooks web | Plan 11 solo arregla tablas WABA vía API routes |
 | G9 | Legal por jurisdicción tenant | ZM tiene términos/privacidad/libro reclamaciones |
 | G10 | Docs stale (`WEB_ARCHITECTURE`, audit 03, resumen migración) | CMS web ya existe; panel P1 ya no es "pendiente" |
@@ -157,11 +157,80 @@ Paralelo a Plan 11 Fases 2–3; **después** de foundations UUID:
 Geema hoy: solo `whatsapp-webhook` + `reset-demo-tenant`.  
 ZM: listar en `ZM-Lash-and-Nails-Beauty/supabase/functions/`.
 
-### Fase X — Plataforma (transversal)
+### Fase X — Push FCM E2E (PR-09) + plataforma
 
-1. Push FCM: persistir `profiles.push_token` + port `send-notification` / `send-push-notification`.
-2. CI: listar Edge Functions en workflow (espejo ZM).
-3. Legal pages template por `tenant_settings.country` (backlog post go-live).
+> Auditoría 20-sep-2026. ZM Lash: push FCM nativo **E2E operativo**. Geema: stub mobile + callers rotos (~15% paridad). **No portar** `send-push-notification` (Expo Push legado; ZM tampoco lo usa en prod). Camino canónico: `getDevicePushTokenAsync()` → `profiles.push_token` → EF `send-notification` (FCM v1).
+
+#### Estado Geema hoy (verificado)
+
+| Pieza | Path / nota | Estado |
+|-------|-------------|--------|
+| Obtiene token nativo | `geemastudio-mobile/hooks/useNotifications.ts` L49 | ✅ |
+| Persiste en BD | TODO L66 — solo `console.log` | ❌ |
+| Comentario “sin tabla profiles” L5 | Obsoleto post auth | 🗑️ quitar al portar |
+| `profiles.push_token` en Drizzle | `packages/shared-schema` — sin columna | ❌ (BD `udelx…` puede tenerla por ZM) |
+| `google-services.json` / Firebase `com.geemastudio.app` | No en `app.json` / `app.config.js` | ❌ |
+| EF `send-notification` | Ausente en `geemastudio-server/supabase/functions/` | ❌ |
+| Callers webhook | `notify.ts` → invoke; 3 triggers en `payment.ts` | 🟡 invocan EF inexistente |
+| `notifyAdmins` scope | Solo owner (`id = tenantId`); sin chat/paused/error | 🟡 |
+| Fallback WA admins | `notifyAdminPhonesWa` | ✅ parcial (sin FCM) |
+| Deep link al tap | Solo log; sin `Linking` / appointment-deep-link | ❌ |
+| Campanita Agenda UI | `NotificationsBell` — **no es FCM** | ≠ |
+
+#### Flujo ZM (referencia)
+
+```
+APK → getDevicePushTokenAsync() → profiles.push_token
+  → notifyAdmins* → EF send-notification (FCM v1 + FCM_SERVICE_ACCOUNT)
+  → tap: Agenda (appointment_*) | Linking → /panel/waba/mensajes?phone= (waba_chat)
+```
+
+Ref: `ZM-Lash-and-Nails-Beauty/apps/mobile/hooks/useNotifications.ts`, `supabase/functions/send-notification/`, `whatsapp-webhook/lib/notify.ts` (ClientChat, PausedReply, WaError, QA guard).
+
+#### Checklist Done — Push (estilo inbox M\*)
+
+##### P0 — E2E mínimo (cierra PR-09)
+
+- [ ] **P1** — Columna `profiles.push_token` en Drizzle (+ migración solo si falta en BD para tenants Geema-nativos)
+- [ ] **P2** — `useNotifications`: upsert `push_token` al login/refresh (patrón ZM); quitar TODO y comentario Express
+- [ ] **P3** — Firebase Android app `com.geemastudio.app` + secret EAS `GOOGLE_SERVICES_JSON`
+- [ ] **P4** — `app.config.js` inyecta `googleServicesFile` (patrón ZM)
+- [ ] **P5** — Port EF `send-notification` (FCM v1) a `geemastudio-server/supabase/functions/`
+- [ ] **P6** — Deploy `--no-verify-jwt` + secret Supabase `FCM_SERVICE_ACCOUNT` (mismo proyecto `udelx…` o app Firebase hija)
+- [ ] **P7** — CI zm-tech despliega `send-notification` en push a `main` (espejo ZM)
+- [ ] **P8** — Smoke: owner demo → token en `profiles` → invoke manual EF → push llega al físico
+
+##### P1 — Ops Vanessa (mismo día)
+
+- [ ] **P9** — Push cita WABA nueva (`payment.ts` ya cableado) llega en <30s
+- [ ] **P10** — Push pago por validar (copy claro; deep link opcional en P16)
+- [ ] **P11** — Canales Android: `default`, `waba-chat`, `waba-alerts`, `waba-appointments` (nombre `{businessName} · …`)
+- [ ] **P12** — `notifyAdmins` incluye `owner` + `dev` scoped por `tenant_id`
+- [ ] **P13** — Log `sent/errors` del invoke como ZM (no tragar fallos en silencio)
+
+##### P1.5 — Paridad WABA chat (complementa inbox Plan 11 M4 / M11)
+
+- [ ] **P14** — `notifyAdminsClientChat` + cooldown ~45m + guard `isQaWaPhone`
+- [ ] **P15** — `notifyAdminsPausedClientReply` (debounce ~3m) — “te avisamos si responde”
+- [ ] **P16** — Tap `type=waba_chat` → `Linking.openURL` panel Mensajes `?phone=`
+- [ ] **P17** — Cold start: `getLastNotificationResponseAsync` en `useNotifications`
+
+##### P2 — Paridad ZM v3
+
+- [ ] **P18** — Push imagen/audio diseño (`inbound-image` / `inbound-audio`)
+- [ ] **P19** — Push referencia cita → Agenda (`appointment_reference` + `useOpenAppointmentDeepLink`)
+- [ ] **P20** — `notifyAdminsWaError`
+- [ ] **P21** — Haiku sin crédito + billing Meta #131042
+- [ ] **P22** — Cron `chat-quality-review` + push “Revisar YA”
+- [ ] **P23** — Trigger DB asignación staff: corregir `user_id` → `user_ids[]` si se porta; evaluar multi-tenant
+
+**PR-09 cerrado** = P0 ✅ + P1 ✅ en tenant sandbox (idealmente smoke también con owner ZM en APK Geema). P1.5 va en paralelo / justo después de inbox Fase 3. P2 sigue Plan 12 Fase R / Plan 11 triggers.
+
+#### Otras piezas plataforma (no push)
+
+1. CI: listar / deploy Edge Functions en workflow (además de `send-notification`).
+2. Legal pages template por `tenant_settings.country` (backlog post go-live).
+3. Branding FCM tenant-aware (`color` + `image`) — S5B-10 en `06-BRANDING…`; **después** de P0–P1.
 
 ---
 
@@ -187,10 +256,12 @@ Checklist side-by-side (tenant sandbox Geema vs panel ZM prod):
 - [ ] W5 — WabaNav con al menos: Campañas, Mensajes, Haiku, Historial (Portafolio/Simulador si go-live bot)
 - [ ] W6 — Simulador corre 1 flujo booking feliz contra dispatcher real
 
-### Runtime
+### Runtime / push
 
 - [ ] R1 — Recordatorio 24h o same-day activo en tenant sandbox
 - [ ] R2 — `send-whatsapp-notification` + `waba-staff-session` operativos desde el inbox (prereq W4)
+- [ ] R3 — Push **PR-09 P0+P1** (checklist P1–P13 en Fase X)
+- [ ] R3b — Push P1.5 (P14–P17) alineado a inbox M4/M11 (bot pausado → aviso si responde)
 
 **Go-live ZM (DNS + `web_enabled`) sigue fuera**: requiere OK Vanessa/Alberto + contenido CMS (Plan 10). Este Done es del **panel**, no de la landing pública.
 
@@ -199,12 +270,12 @@ Checklist side-by-side (tenant sandbox Geema vs panel ZM prod):
 ## Orden de sprints sugerido
 
 ```
-Sprint A  Plan 11 F0 + F1  |  Plan 12 Fase 0 docs  |  Fase T arranque
-Sprint B  Plan 11 F2 Haiku |  Fase P1–P2 (finanzas ejecutiva + shell links)
-Sprint C  Plan 11 F3 inbox |  R1 EFs staff/notify  |  P3 deep link clientes
+Sprint A  Plan 11 F0 + F1  |  Plan 12 Fase 0 docs  |  Fase T  |  PR-09 P0 (token+EF+Firebase) en paralelo
+Sprint B  Plan 11 F2 Haiku |  Fase P1–P2 (finanzas ejecutiva + shell)  |  PR-09 P1 smoke Vanessa
+Sprint C  Plan 11 F3 inbox |  R1 EFs staff/notify  |  P3 deep link clientes  |  Push P1.5 (paused reply)
 Sprint D  Campañas + Historial (ex-Fase 5) |  R2 recordatorios
 Sprint E  Simulador + Portafolio |  R3–R4 nudges
-Sprint F  Promo broadcast (R5) |  Push FCM |  decisión inventario/validación web
+Sprint F  Promo broadcast (R5) |  Push P2 (P18–P23) |  decisión inventario/validación web
 ```
 
 ---
@@ -219,9 +290,13 @@ Sprint F  Promo broadcast (R5) |  Push FCM |  decisión inventario/validación w
 | PanelShell | `apps/geemastudio-web/src/app/panel/PanelShell.tsx` |
 | Clientes Geema | `apps/geemastudio-web/src/app/panel/clientes/` |
 | Deep link ZM | `.../clientes/components/ClientDetailSidebar.tsx` |
-| Inventario features | `docs/audit/04-INVENTARIO-features-zm-lash-para-geema.md` |
+| Inventario features | `docs/audit/04-INVENTARIO-features-zm-lash-para-geema.md` (N19 push) |
 | EFs ZM | `ZM-Lash-and-Nails-Beauty/supabase/functions/` |
 | EFs Geema | `apps/geemastudio-server/supabase/functions/` |
+| Push mobile Geema | `apps/geemastudio-mobile/hooks/useNotifications.ts` |
+| Push mobile ZM | `ZM-Lash-and-Nails-Beauty/apps/mobile/hooks/useNotifications.ts` |
+| Push EF ZM | `.../supabase/functions/send-notification/` |
+| Notify WABA Geema | `geemastudio-server/.../whatsapp-webhook/lib/notify.ts` |
 
 ---
 
@@ -231,3 +306,4 @@ Sprint F  Promo broadcast (R5) |  Push FCM |  decisión inventario/validación w
 - Reescribir landing Sanity → mantener CMS Geema.
 - Port 1:1 de branding / copy ZM.
 - Big-bang merge del webhook 2665 líneas: oleadas por módulo (CTWA, staff-echo, portfolio, coalesce).
+- **`send-push-notification` (Expo Push)** — legado en ZM, sin uso con token nativo; no portar.

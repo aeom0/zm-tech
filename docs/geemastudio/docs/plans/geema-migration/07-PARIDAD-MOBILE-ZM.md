@@ -134,7 +134,7 @@ Prod tenant (4 columnas agenda): **Vanessa**, **Stephani**, **Karelis**, **Aleja
 | Finanzas ejecutiva          | ❌           | Portar cards WABA/gastos (fase 2 S5-C)                   |
 | Promo masiva WA             | stub         | Depende S6 WABA                                          |
 | Dashboard ranking servicios | ❌           | P2                                                       |
-| Push FCM persist token      | TODO Geema   | S6-7 (paralelo)                                          |
+| Push FCM persist token      | TODO Geema (token se descarta L66) | **PR-09** / Plan 12 Fase X P1–P23 (S6-7) |
 
 ---
 
