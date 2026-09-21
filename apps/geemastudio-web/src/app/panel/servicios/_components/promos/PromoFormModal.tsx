@@ -127,7 +127,7 @@ function PromoFormModalInner({
           <div className="col-span-2">
             <label className="mb-1 block text-xs text-white/50">Titulo *</label>
             <input
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#40E0D0] focus:outline-none"
+              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
               value={form.title}
               onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
               placeholder="Ej: Promo San Valentin"
@@ -137,7 +137,7 @@ function PromoFormModalInner({
           <div>
             <label className="mb-1 block text-xs text-white/50">Badge</label>
             <input
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#40E0D0] focus:outline-none"
+              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
               value={form.badge}
               onChange={(e) => setForm((f) => ({ ...f, badge: e.target.value }))}
               placeholder="HOT, NUEVO..."
@@ -160,7 +160,7 @@ function PromoFormModalInner({
           <div>
             <label className="mb-1 block text-xs text-white/50">Precio total promo *</label>
             <input
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#40E0D0] focus:outline-none"
+              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
               value={form.promo_price}
               onChange={(e) => setForm((f) => ({ ...f, promo_price: e.target.value }))}
               placeholder="0,00"
@@ -172,7 +172,7 @@ function PromoFormModalInner({
             <label className="mb-1 block text-xs text-white/50">Expira</label>
             <input
               type="date"
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#40E0D0] focus:outline-none"
+              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
               value={form.expires_at}
               onChange={(e) => setForm((f) => ({ ...f, expires_at: e.target.value }))}
             />
@@ -181,7 +181,7 @@ function PromoFormModalInner({
           <div className="col-span-2">
             <label className="mb-1 block text-xs text-white/50">Descripcion</label>
             <textarea
-              className="w-full resize-none rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[#40E0D0] focus:outline-none"
+              className="w-full resize-none rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
               value={form.description}
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               rows={2}
@@ -196,7 +196,7 @@ function PromoFormModalInner({
             <button
               type="button"
               onClick={() => setItems((prev) => [...prev, { ...EMPTY_ITEM }])}
-              className="text-xs text-[#40E0D0] transition-colors hover:text-[#5ee8dc]"
+              className="text-xs text-[var(--tenant-primary)] transition-colors hover:text-[#5ee8dc]"
             >
               + Agregar item
             </button>
@@ -225,7 +225,7 @@ function PromoFormModalInner({
             type="checkbox"
             checked={form.is_active}
             onChange={(e) => setForm((f) => ({ ...f, is_active: e.target.checked }))}
-            className="accent-[#40E0D0]"
+            className="accent-[var(--tenant-primary)]"
           />
           <span className="text-sm text-white/70">Activa</span>
         </label>
@@ -242,7 +242,7 @@ function PromoFormModalInner({
             type="button"
             onClick={() => void handleSubmit()}
             disabled={isPending}
-            className="rounded-lg bg-[#40E0D0] px-4 py-2 text-sm text-white transition-colors hover:bg-[#00897B] disabled:opacity-50"
+            className="rounded-lg bg-[var(--tenant-primary)] px-4 py-2 text-sm text-white transition-colors hover:bg-[var(--tenant-primary-hover)] disabled:opacity-50"
           >
             {isPending ? 'Guardando...' : promo ? 'Actualizar' : 'Crear promo'}
           </button>

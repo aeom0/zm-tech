@@ -187,7 +187,7 @@ export default function PanelHorariosPage() {
           type="button"
           onClick={() => void guardar()}
           disabled={guardando}
-          className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#40E0D0] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#00897B] disabled:opacity-60"
+          className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--tenant-primary-hover)] disabled:opacity-60"
         >
           {guardando ? (
             <>
@@ -226,7 +226,7 @@ export default function PanelHorariosPage() {
             className={[
               'rounded-xl border px-4 py-3 text-sm font-medium transition-colors',
               draftTimeFormat === '24'
-                ? 'border-[#40E0D0] bg-[#40E0D0]/15 text-[#40E0D0]'
+                ? 'border-[var(--tenant-primary)] bg-[var(--tenant-primary)]/15 text-[var(--tenant-primary)]'
                 : 'border-white/[0.12] text-zinc-300 hover:bg-white/[0.04]',
             ].join(' ')}
           >
@@ -238,7 +238,7 @@ export default function PanelHorariosPage() {
             className={[
               'rounded-xl border px-4 py-3 text-sm font-medium transition-colors',
               draftTimeFormat === '12'
-                ? 'border-[#40E0D0] bg-[#40E0D0]/15 text-[#40E0D0]'
+                ? 'border-[var(--tenant-primary)] bg-[var(--tenant-primary)]/15 text-[var(--tenant-primary)]'
                 : 'border-white/[0.12] text-zinc-300 hover:bg-white/[0.04]',
             ].join(' ')}
           >
@@ -261,7 +261,7 @@ export default function PanelHorariosPage() {
                 className={[
                   'w-full px-4 py-3 text-left text-sm transition-colors',
                   sel
-                    ? 'bg-[#40E0D0]/15 font-medium text-[#40E0D0]'
+                    ? 'bg-[var(--tenant-primary)]/15 font-medium text-[var(--tenant-primary)]'
                     : 'text-zinc-300 hover:bg-white/[0.04]',
                 ].join(' ')}
               >
@@ -273,7 +273,7 @@ export default function PanelHorariosPage() {
         <button
           type="button"
           onClick={() => setZonasExpandidas((v) => !v)}
-          className="mt-2 text-xs text-[#40E0D0] hover:underline"
+          className="mt-2 text-xs text-[var(--tenant-primary)] hover:underline"
         >
           {zonasExpandidas ? 'Ver menos' : 'Ver más zonas'}
         </button>
@@ -297,7 +297,7 @@ export default function PanelHorariosPage() {
                       type="checkbox"
                       checked={abierto}
                       onChange={(e) => setDiaAbierto(dia, e.target.checked)}
-                      className="h-4 w-4 rounded border-white/20 bg-white/[0.06] accent-[#40E0D0]"
+                      className="h-4 w-4 rounded border-white/20 bg-white/[0.06] accent-[var(--tenant-primary)]"
                     />
                   </label>
                 </div>

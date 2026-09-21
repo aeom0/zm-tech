@@ -45,7 +45,7 @@ export function ClientCard({ client, currencyCode, onClick }: ClientCardProps) {
       onClick={onClick}
       className="flex w-full items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 text-left transition-colors hover:border-white/[0.14] hover:bg-white/[0.04]"
     >
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[#40E0D0]/25 bg-[#40E0D0]/10 text-sm font-bold text-[#40E0D0]">
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[var(--tenant-primary)]/25 bg-[var(--tenant-primary)]/10 text-sm font-bold text-[var(--tenant-primary)]">
         {initial}
       </div>
       <div className="min-w-0 flex-1">

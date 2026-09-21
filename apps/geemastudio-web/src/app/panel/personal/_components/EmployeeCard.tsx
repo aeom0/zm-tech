@@ -68,7 +68,7 @@ export function EmployeeCard({
         <div className="mt-0.5 truncate text-xs text-zinc-400">
           {employee.phone || employee.email || 'Sin contacto'}
         </div>
-        <div className="mt-1 text-xs text-[#40E0D0]">{pay}</div>
+        <div className="mt-1 text-xs text-[var(--tenant-primary)]">{pay}</div>
       </div>
     </button>
   )
@@ -84,7 +84,7 @@ export function PersonalHeaderActions({ onNew, staffSingular }: PersonalHeaderAc
     <button
       type="button"
       onClick={onNew}
-      className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#40E0D0] px-4 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-[#00897B] hover:text-white"
+      className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-[var(--tenant-primary-hover)] hover:text-white"
     >
       <Plus className="h-4 w-4" />
       Nuevo {staffSingular.toLowerCase()}

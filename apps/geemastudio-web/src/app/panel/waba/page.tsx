@@ -104,7 +104,7 @@ export default function PanelWabaPage() {
               href="/panel/waba/mensajes"
               className="flex items-start gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 transition-colors hover:bg-white/[0.06]"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#40E0D0]/25 bg-[#40E0D0]/10 text-[#40E0D0]">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--tenant-primary)]/25 bg-[var(--tenant-primary)]/10 text-[var(--tenant-primary)]">
                 <MessageSquareText className="h-5 w-5" />
               </span>
               <span>
@@ -118,7 +118,7 @@ export default function PanelWabaPage() {
               href="/panel/waba/haiku"
               className="flex items-start gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 transition-colors hover:bg-white/[0.06]"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#40E0D0]/25 bg-[#40E0D0]/10 text-[#40E0D0]">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--tenant-primary)]/25 bg-[var(--tenant-primary)]/10 text-[var(--tenant-primary)]">
                 <Sparkles className="h-5 w-5" />
               </span>
               <span>

@@ -19,6 +19,7 @@ import {
 } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
+import { tenantCssVars } from '@/lib/tenant-theme'
 
 type NavItem = {
   label: string
@@ -36,9 +37,13 @@ type NavSection = {
 
 export function PanelShell({
   userEmail,
+  primaryColor,
+  accentColor,
   children,
 }: {
   userEmail: string
+  primaryColor?: string | null
+  accentColor?: string | null
   children: React.ReactNode
 }) {
   const router = useRouter()
@@ -139,7 +144,7 @@ export function PanelShell({
           className={[
             'flex h-8 w-8 items-center justify-center rounded-xl border',
             isActive
-              ? 'border-[#40E0D0]/30 bg-[#40E0D0]/15 text-[#40E0D0]'
+              ? 'border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 text-[var(--tenant-primary)]'
               : 'border-white/[0.08] bg-white/[0.04] text-zinc-300',
           ].join(' ')}
         >
@@ -230,7 +235,7 @@ export function PanelShell({
   )
 
   return (
-    <div className="dark">
+    <div className="dark" style={tenantCssVars(primaryColor, accentColor)}>
       <div className="flex min-h-screen bg-[#0F0F0F] text-white">
         {/* Desktop sidebar */}
         <aside className="hidden w-[240px] border-r border-white/[0.08] bg-zinc-900 md:block">
@@ -269,7 +274,7 @@ export function PanelShell({
                     onClick={() => setMoreOpen(false)}
                     className="flex flex-1 flex-col items-center gap-1 py-2.5"
                   >
-                    <span className={isActive ? 'text-[#40E0D0]' : 'text-zinc-400'}>
+                    <span className={isActive ? 'text-[var(--tenant-primary)]' : 'text-zinc-400'}>
                       {item.icon}
                     </span>
                     <span

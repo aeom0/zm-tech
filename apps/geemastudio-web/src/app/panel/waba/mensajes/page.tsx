@@ -86,7 +86,7 @@ export default function PanelWabaMensajesPage() {
                       onClick={() => setSelectedPhone(c.phone)}
                       className={[
                         'w-full border-b border-white/[0.06] px-4 py-3 text-left transition-colors',
-                        active ? 'bg-[#40E0D0]/10' : 'hover:bg-white/[0.04]',
+                        active ? 'bg-[var(--tenant-primary)]/10' : 'hover:bg-white/[0.04]',
                       ].join(' ')}
                     >
                       <div className="flex items-baseline justify-between gap-2">
@@ -102,7 +102,7 @@ export default function PanelWabaMensajesPage() {
                       )}
                       <p className="mt-1 line-clamp-2 text-xs text-zinc-400">{c.lastMessage}</p>
                       {c.inbound24h > 0 && (
-                        <span className="mt-2 inline-block rounded-full border border-[#40E0D0]/20 bg-[#40E0D0]/10 px-2 py-0.5 text-[10px] text-[#40E0D0]">
+                        <span className="mt-2 inline-block rounded-full border border-[var(--tenant-primary)]/20 bg-[var(--tenant-primary)]/10 px-2 py-0.5 text-[10px] text-[var(--tenant-primary)]">
                           {c.inbound24h} in · 24h
                         </span>
                       )}
@@ -167,7 +167,7 @@ export default function PanelWabaMensajesPage() {
                             className={[
                               'max-w-[85%] rounded-2xl px-3 py-2 text-sm',
                               out
-                                ? 'bg-[#40E0D0]/20 text-zinc-100'
+                                ? 'bg-[var(--tenant-primary)]/20 text-zinc-100'
                                 : 'bg-white/[0.06] text-zinc-200',
                             ].join(' ')}
                           >

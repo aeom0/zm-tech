@@ -219,7 +219,7 @@ export default function PanelAgendaPage() {
               <li key={apt.id}>
                 <button
                   type="button"
-                  className="hover:text-[#40E0D0]"
+                  className="hover:text-[var(--tenant-primary)]"
                   onClick={() => setSelectedApt(apt)}
                 >
                   {apt.client_name} · {serviceNameFor(apt)}
@@ -242,7 +242,7 @@ export default function PanelAgendaPage() {
           }
           employeeColor={
             selectedApt.employee_id
-              ? (empById.get(selectedApt.employee_id)?.color ?? '#40E0D0')
+              ? (empById.get(selectedApt.employee_id)?.color ?? 'var(--tenant-primary)')
               : '#71717a'
           }
           currencyCode={currencyCode}

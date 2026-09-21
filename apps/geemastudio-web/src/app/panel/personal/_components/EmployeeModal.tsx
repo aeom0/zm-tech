@@ -188,7 +188,7 @@ export function EmployeeModal({
   }
 
   const fieldClass =
-    'w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white outline-none focus:border-[#40E0D0]/40'
+    'w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white outline-none focus:border-[var(--tenant-primary)]/40'
   const labelClass = 'mb-1 block text-xs text-zinc-500'
 
   return (
@@ -420,7 +420,7 @@ export function EmployeeModal({
             <button
               type="submit"
               disabled={isSaving}
-              className="inline-flex flex-1 items-center justify-center rounded-xl bg-[#40E0D0] px-4 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-[#00897B] hover:text-white disabled:opacity-60"
+              className="inline-flex flex-1 items-center justify-center rounded-xl bg-[var(--tenant-primary)] px-4 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-[var(--tenant-primary-hover)] hover:text-white disabled:opacity-60"
             >
               {isSaving ? 'Guardando…' : 'Guardar'}
             </button>

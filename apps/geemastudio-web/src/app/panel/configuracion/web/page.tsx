@@ -19,7 +19,7 @@ import type {
 } from '@/types/tenant-landing'
 
 const fieldClass =
-  'w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white outline-none focus:border-[#40E0D0]/40'
+  'w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white outline-none focus:border-[var(--tenant-primary)]/40'
 const labelClass = 'mb-1 block text-xs text-zinc-500'
 
 function Section({
@@ -120,7 +120,7 @@ function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="inline-flex items-center gap-2 rounded-xl border border-dashed border-white/[0.15] px-4 py-2.5 text-sm font-medium text-zinc-300 hover:border-[#40E0D0]/40 hover:text-[#40E0D0]"
+      className="inline-flex items-center gap-2 rounded-xl border border-dashed border-white/[0.15] px-4 py-2.5 text-sm font-medium text-zinc-300 hover:border-[var(--tenant-primary)]/40 hover:text-[var(--tenant-primary)]"
     >
       <Plus className="h-4 w-4" />
       {label}
@@ -283,7 +283,7 @@ export default function PanelWebPage() {
           <p className="mt-1 text-sm text-zinc-400">
             Contenido de la landing pública — texto, galería, equipo, promos, reseñas y servicios.
             Activar/desactivar, slug y dominio están en{' '}
-            <Link href="/panel/configuracion" className="text-[#40E0D0] hover:underline">
+            <Link href="/panel/configuracion" className="text-[var(--tenant-primary)] hover:underline">
               Configuración → Presencia web
             </Link>
             .
@@ -293,7 +293,7 @@ export default function PanelWebPage() {
           type="button"
           onClick={() => void handleSave()}
           disabled={saving}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#40E0D0] px-4 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-[#00897B] hover:text-white disabled:opacity-60"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-[var(--tenant-primary-hover)] hover:text-white disabled:opacity-60"
         >
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
           Guardar cambios
@@ -578,7 +578,7 @@ export default function PanelWebPage() {
                         team.map((m, idx) => (idx === i ? { ...m, color: e.target.value } : m))
                       )
                     }
-                    placeholder="#40E0D0"
+                    placeholder="var(--tenant-primary)"
                   />
                 </div>
               </div>

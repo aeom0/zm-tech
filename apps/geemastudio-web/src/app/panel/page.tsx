@@ -70,9 +70,9 @@ export default function PanelIndexPage() {
             <Link
               key={m.href}
               href={m.href}
-              className="flex min-h-[132px] flex-col items-center justify-center gap-2.5 rounded-2xl border border-white/[0.08] bg-zinc-900 p-4 text-center transition-colors hover:border-[#40E0D0]/40 hover:bg-white/[0.04]"
+              className="flex min-h-[132px] flex-col items-center justify-center gap-2.5 rounded-2xl border border-white/[0.08] bg-zinc-900 p-4 text-center transition-colors hover:border-[var(--tenant-primary)]/40 hover:bg-white/[0.04]"
             >
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#40E0D0]/30 bg-[#40E0D0]/10 text-[#40E0D0]">
+              <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 text-[var(--tenant-primary)]">
                 <Icon className="h-5 w-5" />
               </span>
               <span className="text-sm font-semibold text-white">{m.label}</span>

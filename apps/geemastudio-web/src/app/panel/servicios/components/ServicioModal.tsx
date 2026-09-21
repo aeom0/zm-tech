@@ -116,7 +116,7 @@ function ServicioModalForm({
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#40E0D0]"
+              className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]"
               placeholder="Ej. Manicure clásica"
               autoFocus
             />
@@ -128,7 +128,7 @@ function ServicioModalForm({
               <select
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
-                className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#40E0D0]"
+                className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]"
               >
                 {categorias.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -144,7 +144,7 @@ function ServicioModalForm({
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#40E0D0]"
+                className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]"
                 placeholder="15,50"
               />
               <div className="mt-1 text-[11px] text-zinc-500">
@@ -165,7 +165,7 @@ function ServicioModalForm({
                 min={15}
                 value={duration}
                 onChange={(e) => setDuration(parseInt(e.target.value || '0', 10))}
-                className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#40E0D0]"
+                className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]"
               />
             </div>
 
@@ -179,7 +179,7 @@ function ServicioModalForm({
                 className={[
                   'w-full rounded-xl border px-4 py-2.5 text-sm font-semibold transition-colors',
                   isActive
-                    ? 'border-[#40E0D0]/30 bg-[#40E0D0]/15 text-[#40E0D0]'
+                    ? 'border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 text-[var(--tenant-primary)]'
                     : 'border-white/[0.10] bg-white/[0.03] text-zinc-300',
                 ].join(' ')}
               >
@@ -210,7 +210,7 @@ function ServicioModalForm({
                 is_active: isActive,
               })
             }
-            className="rounded-xl bg-[#40E0D0] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#00897B] disabled:opacity-60"
+            className="rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--tenant-primary-hover)] disabled:opacity-60"
           >
             {isSaving ? 'Guardando…' : 'Guardar'}
           </button>

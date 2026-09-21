@@ -73,7 +73,7 @@ export function CategoriasTab({
         <button
           type="button"
           onClick={onNew}
-          className="inline-flex items-center gap-2 rounded-xl bg-[#40E0D0] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#00897B]"
+          className="inline-flex items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--tenant-primary-hover)]"
         >
           <Plus className="h-4 w-4" />
           Nueva
@@ -104,7 +104,7 @@ export function CategoriasTab({
           <button
             type="button"
             onClick={onNew}
-            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#40E0D0] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#00897B]"
+            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--tenant-primary-hover)]"
           >
             <Plus className="h-4 w-4" />
             Nueva categoría

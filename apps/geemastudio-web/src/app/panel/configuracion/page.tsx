@@ -22,7 +22,7 @@ import {
 import { getSiteUrl, getTenantLandingUrl } from '@/lib/site-url'
 
 const fieldClass =
-  'w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white outline-none focus:border-[#40E0D0]/40'
+  'w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white outline-none focus:border-[var(--tenant-primary)]/40'
 const labelClass = 'mb-1 block text-xs text-zinc-500'
 
 function Section({
@@ -61,7 +61,7 @@ export default function PanelConfiguracionPage() {
   const [staffTerm, setStaffTerm] = useState('Profesionales')
   const [staffSingular, setStaffSingular] = useState('Profesional')
   const [appointmentTerm, setAppointmentTerm] = useState('cita')
-  const [primaryColor, setPrimaryColor] = useState('#40E0D0')
+  const [primaryColor, setPrimaryColor] = useState('var(--tenant-primary)')
   const [accentColor, setAccentColor] = useState('#FFD700')
   const [logoUrl, setLogoUrl] = useState('')
   const [presence, setPresence] = useState<WebPresenceMode>('none')
@@ -83,7 +83,7 @@ export default function PanelConfiguracionPage() {
     setStaffTerm(row.staff_terminology || 'Profesionales')
     setStaffSingular(row.staff_singular_terminology || 'Profesional')
     setAppointmentTerm(row.appointment_terminology || 'cita')
-    setPrimaryColor(row.primary_color || '#40E0D0')
+    setPrimaryColor(row.primary_color || 'var(--tenant-primary)')
     setAccentColor(row.accent_color || '#FFD700')
     setLogoUrl(row.logo_url || '')
     setPresence(presenceFromRow(row))
@@ -211,7 +211,7 @@ export default function PanelConfiguracionPage() {
           <h1 className="text-2xl font-bold text-white">Configuración</h1>
           <p className="mt-1 text-sm text-zinc-400">
             Datos del negocio, marca, logo y presencia web. Horarios en{' '}
-            <Link href="/panel/horarios" className="text-[#40E0D0] hover:underline">
+            <Link href="/panel/horarios" className="text-[var(--tenant-primary)] hover:underline">
               Panel · Horario
             </Link>
             .
@@ -221,7 +221,7 @@ export default function PanelConfiguracionPage() {
           type="button"
           onClick={() => void handleSave()}
           disabled={saving}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#40E0D0] px-4 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-[#00897B] hover:text-white disabled:opacity-60"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-[var(--tenant-primary-hover)] hover:text-white disabled:opacity-60"
         >
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
           Guardar cambios
@@ -420,7 +420,7 @@ export default function PanelConfiguracionPage() {
         subtitle={
           <>
             Controla landing pública. Contenido (galería, equipo, promos, reseñas…) se edita en{' '}
-            <Link href="/panel/configuracion/web" className="text-[#40E0D0] hover:underline">
+            <Link href="/panel/configuracion/web" className="text-[var(--tenant-primary)] hover:underline">
               Mi Web
             </Link>
             .
@@ -442,7 +442,7 @@ export default function PanelConfiguracionPage() {
               className={[
                 'rounded-xl border px-4 py-2 text-sm font-medium transition-colors',
                 presence === opt.id
-                  ? 'border-[#40E0D0]/40 bg-[#40E0D0]/15 text-[#40E0D0]'
+                  ? 'border-[var(--tenant-primary)]/40 bg-[var(--tenant-primary)]/15 text-[var(--tenant-primary)]'
                   : 'border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.04]',
               ].join(' ')}
             >
@@ -467,7 +467,7 @@ export default function PanelConfiguracionPage() {
                   <Link
                     href={`/s/${previewSlug}`}
                     target="_blank"
-                    className="inline-flex max-w-full items-center gap-1 break-all text-[#40E0D0] hover:underline"
+                    className="inline-flex max-w-full items-center gap-1 break-all text-[var(--tenant-primary)] hover:underline"
                   >
                     {getTenantLandingUrl(previewSlug)}
                     <ExternalLink className="h-3 w-3 shrink-0" />

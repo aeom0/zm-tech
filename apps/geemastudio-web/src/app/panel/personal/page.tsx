@@ -116,7 +116,7 @@ export default function PanelPersonalPage() {
             className={[
               'rounded-xl border px-4 py-2 text-sm font-medium transition-colors',
               filter === chip.id
-                ? 'border-[#40E0D0]/40 bg-[#40E0D0]/15 text-[#40E0D0]'
+                ? 'border-[var(--tenant-primary)]/40 bg-[var(--tenant-primary)]/15 text-[var(--tenant-primary)]'
                 : 'border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.04]',
             ].join(' ')}
           >

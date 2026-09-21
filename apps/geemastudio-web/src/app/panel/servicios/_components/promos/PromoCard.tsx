@@ -61,7 +61,9 @@ export function PromoCard({ promo, onEdit }: Props) {
               <span
                 className="rounded px-1.5 py-0.5 text-xs font-semibold"
                 style={{
-                  backgroundColor: promo.accent_color ? `${promo.accent_color}33` : '#40E0D033',
+                  backgroundColor: promo.accent_color
+                    ? `${promo.accent_color}33`
+                    : 'color-mix(in srgb, var(--tenant-primary) 20%, transparent)',
                   color: promo.accent_color ?? '#fda4af',
                 }}
               >
@@ -80,7 +82,7 @@ export function PromoCard({ promo, onEdit }: Props) {
             <p className="mt-0.5 line-clamp-1 text-xs text-white/50">{promo.description}</p>
           ) : null}
 
-          <p className="mt-1 text-sm font-semibold text-[#40E0D0]">
+          <p className="mt-1 text-sm font-semibold text-[var(--tenant-primary)]">
             {Number(promo.promo_price).toLocaleString('es-VE', {
               minimumFractionDigits: 2,
             })}
@@ -103,7 +105,7 @@ export function PromoCard({ promo, onEdit }: Props) {
             type="button"
             onClick={() => void handleToggle()}
             className={`relative inline-flex h-4 w-8 shrink-0 rounded-full transition-colors ${
-              promo.is_active ? 'bg-[#40E0D0]' : 'bg-white/20'
+              promo.is_active ? 'bg-[var(--tenant-primary)]' : 'bg-white/20'
             }`}
             aria-label={promo.is_active ? 'Desactivar promo' : 'Activar promo'}
           >

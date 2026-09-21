@@ -54,7 +54,7 @@ export function WabaNav() {
             className={[
               'inline-flex shrink-0 items-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold transition-colors',
               active
-                ? 'border-[#40E0D0]/30 bg-[#40E0D0]/10 text-[#40E0D0]'
+                ? 'border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 text-[var(--tenant-primary)]'
                 : 'border-white/[0.08] bg-white/[0.03] text-zinc-300 hover:bg-white/[0.06]',
             ].join(' ')}
           >

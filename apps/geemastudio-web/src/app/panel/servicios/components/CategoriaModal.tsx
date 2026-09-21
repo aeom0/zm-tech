@@ -85,7 +85,7 @@ function CategoriaModalForm({
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#40E0D0]"
+              className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]"
               placeholder="Ej. Uñas"
               autoFocus
             />
@@ -104,8 +104,8 @@ function CategoriaModalForm({
                 <input
                   value={color}
                   onChange={(e) => setColor(e.target.value)}
-                  className="flex-1 rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#40E0D0]"
-                  placeholder="#40E0D0"
+                  className="flex-1 rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]"
+                  placeholder="var(--tenant-primary)"
                 />
               </div>
             </div>
@@ -117,7 +117,7 @@ function CategoriaModalForm({
               <input
                 value={icon}
                 onChange={(e) => setIcon(e.target.value)}
-                className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#40E0D0]"
+                className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]"
                 placeholder="Feather: scissors"
               />
             </div>
@@ -143,7 +143,7 @@ function CategoriaModalForm({
                 icon: icon.trim() ? icon.trim() : null,
               })
             }
-            className="rounded-xl bg-[#40E0D0] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#00897B] disabled:opacity-60"
+            className="rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--tenant-primary-hover)] disabled:opacity-60"
           >
             {isSaving ? 'Guardando…' : 'Guardar'}
           </button>

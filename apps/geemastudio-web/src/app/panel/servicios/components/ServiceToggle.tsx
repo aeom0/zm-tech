@@ -21,7 +21,7 @@ export function ServiceToggle({
       onClick={() => onChange(!checked)}
       className={[
         'relative inline-flex h-6 w-11 items-center rounded-full border transition-colors',
-        checked ? 'border-[#40E0D0]/60 bg-[#40E0D0]' : 'border-white/[0.10] bg-zinc-700',
+        checked ? 'border-[var(--tenant-primary)]/60 bg-[var(--tenant-primary)]' : 'border-white/[0.10] bg-zinc-700',
         disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
       ].join(' ')}
     >

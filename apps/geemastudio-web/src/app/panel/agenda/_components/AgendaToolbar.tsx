@@ -58,7 +58,7 @@ export function AgendaToolbar({
           <button
             type="button"
             onClick={onToday}
-            className="rounded-xl border border-[#40E0D0]/30 bg-[#40E0D0]/10 px-3 py-1.5 text-xs font-semibold text-[#40E0D0]"
+            className="rounded-xl border border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 px-3 py-1.5 text-xs font-semibold text-[var(--tenant-primary)]"
           >
             Hoy
           </button>
@@ -80,7 +80,7 @@ export function AgendaToolbar({
             className={[
               'rounded-xl border px-3 py-1.5 text-xs font-medium transition-colors',
               statusFilter === chip.id
-                ? 'border-[#40E0D0]/40 bg-[#40E0D0]/15 text-[#40E0D0]'
+                ? 'border-[var(--tenant-primary)]/40 bg-[var(--tenant-primary)]/15 text-[var(--tenant-primary)]'
                 : 'border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.04]',
             ].join(' ')}
           >
