@@ -350,12 +350,10 @@ export function useFinancesData(
     }
 
     if (totalHouseCuts > 0) {
-      const vanessa =
-        employeesList.find((e) => e.id === 'emp-vanessa' || e.role === 'owner') ??
-        employeesList.find((e) => e.name.toLowerCase().includes('vanessa'))
-      if (vanessa && byEmployee[vanessa.id]) {
-        byEmployee[vanessa.id].comision += totalHouseCuts
-        byEmployee[vanessa.id].houseCutEarned = totalHouseCuts
+      const owner = employeesList.find((e) => e.role === 'owner')
+      if (owner && byEmployee[owner.id]) {
+        byEmployee[owner.id].comision += totalHouseCuts
+        byEmployee[owner.id].houseCutEarned = totalHouseCuts
       }
     }
 

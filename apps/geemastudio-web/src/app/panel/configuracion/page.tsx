@@ -487,7 +487,8 @@ export default function PanelConfiguracionPage() {
                 placeholder="midominio.com"
               />
               <p className="mt-1 text-xs text-zinc-500">
-                Informativo por ahora — Geema no enruta dominio custom aún.
+                El routing técnico ya está listo — falta el paso operativo: apuntar el DNS
+                de tu dominio a Geema y activarlo.
               </p>
             </div>
             <div className="sm:col-span-2">

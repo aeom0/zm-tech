@@ -1,31 +1,17 @@
 'use client'
 
-import { useState, Suspense } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { ArrowLeft, Lock, Mail, KeyRound, FlaskConical } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { ArrowLeft, Lock, Mail, KeyRound } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
-
-const DEMO_PASSWORD = 'Geema2025!'
-
-const DEMO_EMAILS = new Set([
-  'demo.salon@ejemplo.com',
-  'demo.nails@ejemplo.com',
-  'demo.barberia@ejemplo.com',
-  'demo.estetica@ejemplo.com',
-])
 
 function LoginForm() {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const { login } = useAuth()
 
-  const demoEmail = searchParams.get('demo') ?? ''
-  const isDemo = DEMO_EMAILS.has(demoEmail)
-
-  // Estado inicial desde query (sin effect — evita set-state-in-effect en build)
-  const [email, setEmail] = useState(demoEmail)
-  const [password, setPassword] = useState(isDemo ? DEMO_PASSWORD : '')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -39,7 +25,7 @@ function LoginForm() {
         router.replace('/finanzas')
         router.refresh()
       } else {
-        setError(result.error ?? 'Error al iniciar sesi\u00f3n')
+        setError(result.error ?? 'Error al iniciar sesión')
       }
     } finally {
       setLoading(false)
@@ -67,42 +53,18 @@ function LoginForm() {
             <div
               className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl"
               style={{
-                backgroundColor: isDemo
-                  ? 'rgba(233,30,140,0.12)'
-                  : 'var(--primary-10, rgba(99,102,241,0.1))',
+                backgroundColor: 'var(--primary-10, rgba(99,102,241,0.1))',
               }}
             >
-              {isDemo ? (
-                <FlaskConical className="h-7 w-7" style={{ color: '#E91E8C' }} />
-              ) : (
-                <Lock className="h-7 w-7 text-[var(--primary)]" />
-              )}
+              <Lock className="h-7 w-7 text-[var(--primary)]" />
             </div>
             <h1 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
-              {isDemo ? 'Acceso demo' : 'Iniciar sesi\u00f3n'}
+              Iniciar sesión
             </h1>
             <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
-              {isDemo
-                ? 'Cuenta demo \u00b7 Los datos se restablecen al cerrar sesi\u00f3n'
-                : 'Panel de finanzas \u00b7 Solo administraci\u00f3n'}
+              Panel de finanzas · Solo administración
             </p>
           </div>
-
-          {/* Banner demo */}
-          {isDemo && (
-            <div
-              className="mb-5 rounded-xl border px-4 py-3 text-sm"
-              style={{
-                backgroundColor: 'rgba(233,30,140,0.08)',
-                borderColor: 'rgba(233,30,140,0.25)',
-                color: '#E91E8C',
-              }}
-            >
-              <span className="font-semibold">Modo demo activo</span>
-              {' · '}
-              Puedes explorar y modificar libremente. Todo se restaura al hacer logout.
-            </div>
-          )}
 
           <form
             onSubmit={handleSubmit}
@@ -155,7 +117,7 @@ function LoginForm() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full rounded-xl border border-zinc-200 bg-zinc-50 py-2.5 pl-10 pr-4 text-zinc-900 placeholder:text-zinc-400 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--primary)] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
-                  placeholder="\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022"
+                  placeholder="••••••••"
                   required
                 />
               </div>
@@ -165,20 +127,14 @@ function LoginForm() {
               type="submit"
               disabled={loading}
               className="w-full rounded-xl py-3 font-semibold text-white transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 active:scale-[0.98] disabled:opacity-60"
-              style={{
-                background: isDemo
-                  ? 'linear-gradient(135deg, #E91E8C 0%, #9C27B0 100%)'
-                  : 'var(--primary)',
-              }}
+              style={{ background: 'var(--primary)' }}
             >
-              {loading ? 'Entrando\u2026' : isDemo ? 'Entrar al demo' : 'Entrar'}
+              {loading ? 'Entrando…' : 'Entrar'}
             </button>
           </form>
 
           <p className="mt-6 text-center text-xs text-zinc-500 dark:text-zinc-500">
-            {isDemo
-              ? 'Cuenta de demo \u00b7 No ingresar datos reales'
-              : 'Misma cuenta que la app m\u00f3vil (Supabase Auth).'}
+            Misma cuenta que la app móvil (Supabase Auth).
           </p>
         </div>
       </main>
@@ -187,9 +143,5 @@ function LoginForm() {
 }
 
 export default function FinanzasLoginPage() {
-  return (
-    <Suspense>
-      <LoginForm />
-    </Suspense>
-  )
+  return <LoginForm />
 }

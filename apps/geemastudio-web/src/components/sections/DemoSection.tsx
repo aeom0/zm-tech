@@ -25,7 +25,6 @@ import {
 import Image from 'next/image'
 import { RevealWrapper } from '@/components/ui/RevealWrapper'
 import { LUNARIS } from '@/lib/theme'
-import { DemoBusinessPicker } from '@/components/ui/DemoBusinessPicker'
 
 const DEMO_TABS: {
   id: string
@@ -886,29 +885,6 @@ export function DemoSection() {
             </div>
           </RevealWrapper>
         </div>
-
-        {/* ── Separador ── */}
-        <RevealWrapper variant="up" delay={100}>
-          <div className="mt-24 border-t border-zinc-800 pt-16">
-            <div className="mb-12 text-center">
-              <span
-                className="mb-3 inline-block text-sm font-semibold uppercase tracking-widest"
-                style={{ color: LUNARIS.primary }}
-              >
-                Cuenta demo
-              </span>
-              <h2 className="text-3xl font-bold text-white md:text-4xl">
-                Pruébalo con tu tipo de negocio
-              </h2>
-              <p className="mx-auto mt-4 max-w-lg text-zinc-400">
-                Elige el negocio que más se parece al tuyo. Entra, explora, modifica lo que quieras
-                — los datos se restablecen solos al cerrar sesión.
-              </p>
-            </div>
-
-            <DemoBusinessPicker />
-          </div>
-        </RevealWrapper>
       </div>
     </section>
   )
