@@ -15,7 +15,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 - **Web — ícono Catálogo**: `Wrench` → `LayoutGrid` (evitar íconos de trade específico tipo tijeras/gema; GeemaStudio es multi-vertical).
 - **Web — tab bar mobile**: WhatsApp reemplaza a Personal en las 4 tabs fijas; Personal se mueve a "Más" (`moreSections`).
 - **Web — headers del panel**: eliminado el cuadro de esquinas redondeadas alrededor del logo GeemaStudio; logo agrandado (nebulosa glow, mismo asset que login) en sidebar y top bar mobile; nuevo componente `TenantLogo` muestra el logo propio del tenant (`tenant_settings.logo_url`, ya subido desde Configuración) del lado derecho, con fallback a inicial del nombre del negocio.
-- **Pendiente identificado**: manifest PWA dinámico (`app/manifest.ts` server-aware) para que el ícono de la app instalada use el logo del tenant en vez de uno fijo — ver ROADMAP § Pendientes.
+- **Web — PWA manifest dinámico por tenant**: nuevo `app/manifest.ts` server-aware; ícono y nombre de la app instalada usan `logo_url`/`business_name` de `tenant_settings` (fallback a branding GeemaStudio sin sesión). Lógica de resolución de marca extraída a `src/lib/tenant-brand.ts` (compartida con `panel/layout.tsx`). `start_url` apunta a `/panel`. Caveat: ícono cacheado por dispositivo al instalar (aceptable, 1 negocio = 1 dispositivo).
 
 ### Añadido (12-sep 2026 — Host temporal geema.zmtechdev.com)
 
