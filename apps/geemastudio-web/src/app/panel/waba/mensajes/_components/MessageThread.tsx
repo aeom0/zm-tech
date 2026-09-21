@@ -1,10 +1,23 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { ArrowLeft, FileText, Image as ImageIcon, Mic, Pause, Play, Send } from 'lucide-react'
+import {
+  ArrowLeft,
+  Ban,
+  FileText,
+  Image as ImageIcon,
+  Loader2,
+  Mic,
+  Pause,
+  Play,
+  Send,
+  ShieldCheck,
+  Trash2,
+} from 'lucide-react'
 
 import { useWabaThread, type WabaConversation } from '@/hooks/waba/useWabaMessages'
 import { useSendWabaMessage, useWabaStaffSession } from '@/hooks/waba/useWabaSend'
+import { useDeleteWabaThread, useToggleWabaBlock, useWabaBlockedStatus } from '@/hooks/waba/useWabaModeration'
 import { useImageUpload } from '@/hooks/waba/useImageUpload'
 import { MessageBubble } from './MessageBubble'
 
@@ -33,9 +46,14 @@ export function MessageThread({
   const sendMutation = useSendWabaMessage(phone)
   const staffSessionMutation = useWabaStaffSession(phone)
   const { uploadImage, uploadState, uploadError, resetUpload } = useImageUpload()
+  const blockedQuery = useWabaBlockedStatus(phone)
+  const toggleBlockMutation = useToggleWabaBlock(phone)
+  const deleteThreadMutation = useDeleteWabaThread()
 
   const [text, setText] = useState('')
   const [attachError, setAttachError] = useState<string | null>(null)
+  const [moderationError, setModerationError] = useState<string | null>(null)
+  const [confirmDelete, setConfirmDelete] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const imageInputRef = useRef<HTMLInputElement>(null)
@@ -115,8 +133,35 @@ export function MessageThread({
     }
   }
 
+  useEffect(() => {
+    setConfirmDelete(false)
+    setModerationError(null)
+  }, [phone])
+
   const handlePauseToggle = () => {
     staffSessionMutation.mutate({ phone, action: conversation.botPaused ? 'resume_bot' : 'pause_bot' })
+  }
+
+  const handleToggleBlock = () => {
+    setModerationError(null)
+    toggleBlockMutation.mutate(undefined, {
+      onError: (err) =>
+        setModerationError(err instanceof Error ? err.message : 'No se pudo actualizar el bloqueo'),
+    })
+  }
+
+  const handleDeleteThread = () => {
+    setModerationError(null)
+    deleteThreadMutation.mutate(phone, {
+      onSuccess: () => {
+        setConfirmDelete(false)
+        onBack()
+      },
+      onError: (err) => {
+        setModerationError(err instanceof Error ? err.message : 'No se pudo eliminar la conversación')
+        setConfirmDelete(false)
+      },
+    })
   }
 
   return (
@@ -156,12 +201,82 @@ export function MessageThread({
             {conversation.botPaused ? <Play className="h-3.5 w-3.5" /> : <Pause className="h-3.5 w-3.5" />}
             {conversation.botPaused ? 'Reactivar bot' : 'Pausar bot'}
           </button>
+          <button
+            type="button"
+            onClick={handleToggleBlock}
+            disabled={toggleBlockMutation.isPending || blockedQuery.isLoading}
+            title={
+              blockedQuery.data
+                ? 'Desbloquear: el bot volverá a responder a este número'
+                : 'Bloquear: el bot dejará de responder a este número'
+            }
+            className={[
+              'inline-flex items-center gap-1.5 rounded-xl border px-2.5 py-1.5 text-xs font-medium disabled:opacity-50',
+              blockedQuery.data
+                ? 'border-red-500/30 bg-red-500/10 text-red-300 hover:bg-red-500/20'
+                : 'border-white/[0.08] bg-white/[0.03] text-zinc-200 hover:bg-white/[0.06]',
+            ].join(' ')}
+          >
+            {toggleBlockMutation.isPending ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : blockedQuery.data ? (
+              <ShieldCheck className="h-3.5 w-3.5" />
+            ) : (
+              <Ban className="h-3.5 w-3.5" />
+            )}
+            {blockedQuery.data ? 'Desbloquear' : 'Bloquear'}
+          </button>
+          <button
+            type="button"
+            onClick={() => setConfirmDelete(true)}
+            disabled={deleteThreadMutation.isPending}
+            title="Eliminar conversación"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] text-zinc-300 hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-300 disabled:opacity-50"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </button>
         </div>
       </div>
+
+      {confirmDelete && (
+        <div className="flex items-center justify-between gap-3 border-b border-red-500/20 bg-red-500/10 px-4 py-2 text-xs text-red-200">
+          <span>¿Eliminar esta conversación? Se borran todos los mensajes y no se puede deshacer.</span>
+          <div className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={handleDeleteThread}
+              disabled={deleteThreadMutation.isPending}
+              className="rounded-lg bg-red-600 px-2.5 py-1 font-semibold text-white hover:bg-red-700 disabled:opacity-60"
+            >
+              {deleteThreadMutation.isPending ? 'Eliminando…' : 'Sí, eliminar'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setConfirmDelete(false)}
+              disabled={deleteThreadMutation.isPending}
+              className="rounded-lg px-2.5 py-1 text-zinc-300 hover:bg-white/[0.06]"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
+
+      {moderationError && (
+        <div className="border-b border-red-500/20 bg-red-500/5 px-4 py-2 text-xs text-red-300">
+          {moderationError}
+        </div>
+      )}
 
       {conversation.botPaused && (
         <div className="border-b border-amber-500/20 bg-amber-500/10 px-4 py-2 text-xs text-amber-200">
           El bot está en pausa para este número — solo el staff responde hasta reactivarlo.
+        </div>
+      )}
+
+      {blockedQuery.data && (
+        <div className="border-b border-red-500/20 bg-red-500/10 px-4 py-2 text-xs text-red-200">
+          Número bloqueado — el bot no le responderá hasta desbloquearlo.
         </div>
       )}
 
