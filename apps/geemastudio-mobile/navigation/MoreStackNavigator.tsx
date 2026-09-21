@@ -29,6 +29,8 @@ import MiWebEquipoScreen from '@/screens/web/MiWebEquipoScreen'
 import MiWebPromosScreen from '@/screens/web/MiWebPromosScreen'
 import MiWebServiciosScreen from '@/screens/web/MiWebServiciosScreen'
 import MiWebResenasScreen from '@/screens/web/MiWebResenasScreen'
+import PromoMasivaScreen from '@/screens/promos/PromoMasivaScreen'
+import HistorialPromosScreen from '@/screens/promos/HistorialPromosScreen'
 
 export type MoreStackParamList = {
   MoreHome: undefined
@@ -57,6 +59,8 @@ export type MoreStackParamList = {
   MiWebPromos: undefined
   MiWebServicios: undefined
   MiWebResenas: undefined
+  PromoMasiva: undefined
+  HistorialPromos: undefined
 }
 
 const Stack = createNativeStackNavigator<MoreStackParamList>()
@@ -166,6 +170,16 @@ export default function MoreStackNavigator() {
         name="MiWebResenas"
         component={MiWebResenasScreen}
         options={{ title: 'Reseñas' }}
+      />
+      <Stack.Screen
+        name="PromoMasiva"
+        component={PromoMasivaScreen}
+        options={{ title: 'Enviar Promo WA' }}
+      />
+      <Stack.Screen
+        name="HistorialPromos"
+        component={HistorialPromosScreen}
+        options={{ title: 'Historial de promos' }}
       />
     </Stack.Navigator>
   )
