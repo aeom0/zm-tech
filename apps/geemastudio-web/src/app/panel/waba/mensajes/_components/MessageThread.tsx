@@ -177,9 +177,15 @@ export function MessageThread({
         </button>
         <div className="min-w-0 flex-1">
           <div className="truncate text-sm font-semibold text-white">
-            {conversation.displayName || phone}
+            {conversation.displayName ||
+              (conversation.waUsername ? `@${conversation.waUsername}` : null) ||
+              (conversation.isBsuid ? 'Contacto de WhatsApp' : phone)}
           </div>
-          <div className="font-mono text-[11px] text-zinc-500">{phone}</div>
+          {(conversation.displayPhone || !conversation.isBsuid) && (
+            <div className="font-mono text-[11px] text-zinc-500">
+              {conversation.displayPhone || phone}
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <span

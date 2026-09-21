@@ -9,7 +9,13 @@ export type WabaDeliveryStatus = 'sent' | 'delivered' | 'read' | 'failed' | null
 
 export interface WabaConversation {
   phone: string
+  /** True si `phone` es un BSUID de Meta (`PE.1123884010210027`), no un teléfono. */
+  isBsuid: boolean
   displayName: string | null
+  /** @usuario de WhatsApp (Meta username), si Meta lo mandó. */
+  waUsername: string | null
+  /** Teléfono E.164 real, resuelto desde la ficha del cliente aunque el hilo sea BSUID. */
+  displayPhone: string | null
   lastMessage: string
   lastDirection: WabaDirection
   lastAt: string
@@ -39,6 +45,15 @@ function asDirection(v: unknown): WabaDirection {
 
 function asNullableString(v: unknown): string | null {
   return typeof v === 'string' && v.length > 0 ? v : null
+}
+
+function isBsuid(value: string): boolean {
+  return /^[A-Z]{2}\./.test(value.trim())
+}
+
+function normalizePhone(value: string): string {
+  if (isBsuid(value)) return value.trim()
+  return value.replace(/\D+/g, '')
 }
 
 export function useWabaConversations() {
@@ -73,7 +88,10 @@ export function useWabaConversations() {
         if (!existing) {
           map.set(phone, {
             phone,
+            isBsuid: isBsuid(phone),
             displayName: null,
+            waUsername: null,
+            displayPhone: isBsuid(phone) ? null : normalizePhone(phone),
             lastMessage: content.slice(0, 160),
             lastDirection: direction,
             lastAt: createdAt,
@@ -96,16 +114,45 @@ export function useWabaConversations() {
         const phones = conversations.map((c) => c.phone)
 
         const [{ data: clients }, { data: sessions }] = await Promise.all([
-          supabase.from('clients').select('name, phone').limit(3000),
+          supabase.from('clients').select('name, phone, wa_user_id, wa_username').limit(5000),
           supabase.from('whatsapp_sessions').select('phone, bot_paused_at').in('phone', phones),
         ])
 
         const byPhone = new Map<string, string>()
-        for (const c of (clients ?? []) as { name?: string; phone?: string }[]) {
-          const p = (c.phone ?? '').replace(/\D+/g, '')
-          if (p && c.name) byPhone.set(p, c.name)
+        const byWaUserId = new Map<
+          string,
+          { name: string | null; username: string | null; phone: string | null }
+        >()
+
+        for (const c of (clients ?? []) as Record<string, unknown>[]) {
+          const name = typeof c.name === 'string' ? c.name : ''
+          const rawPhone = typeof c.phone === 'string' ? c.phone : ''
+          const waUserId = typeof c.wa_user_id === 'string' ? c.wa_user_id : ''
+          const waUsername = typeof c.wa_username === 'string' && c.wa_username ? c.wa_username : null
+
+          if (waUserId) {
+            byWaUserId.set(waUserId.trim(), {
+              name: name || null,
+              username: waUsername,
+              phone: rawPhone ? normalizePhone(rawPhone) : null,
+            })
+          }
+
+          const digits = rawPhone.replace(/\D+/g, '')
+          if (digits && name) byPhone.set(digits, name)
         }
+
         for (const conv of conversations) {
+          if (conv.isBsuid) {
+            const match = byWaUserId.get(conv.phone.trim())
+            if (match) {
+              conv.displayName = match.name
+              conv.waUsername = match.username
+              conv.displayPhone = match.phone
+            }
+            continue
+          }
+
           const digits = conv.phone.replace(/\D+/g, '')
           if (digits && byPhone.has(digits)) {
             conv.displayName = byPhone.get(digits) ?? null

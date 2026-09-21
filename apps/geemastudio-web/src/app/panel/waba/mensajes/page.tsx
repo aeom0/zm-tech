@@ -109,14 +109,18 @@ function PanelWabaMensajesContent() {
                     >
                       <div className="flex items-baseline justify-between gap-2">
                         <span className="truncate text-sm font-semibold text-white">
-                          {c.displayName || c.phone}
+                          {c.displayName ||
+                            (c.waUsername ? `@${c.waUsername}` : null) ||
+                            (c.isBsuid ? 'Contacto de WhatsApp' : c.phone)}
                         </span>
                         <span className="shrink-0 text-[11px] text-zinc-500">
                           {formatWhen(c.lastAt)}
                         </span>
                       </div>
-                      {c.displayName && (
-                        <div className="mt-0.5 font-mono text-[11px] text-zinc-500">{c.phone}</div>
+                      {(c.displayPhone || (!c.isBsuid && c.displayName)) && (
+                        <div className="mt-0.5 font-mono text-[11px] text-zinc-500">
+                          {c.displayPhone || c.phone}
+                        </div>
                       )}
                       <p className="mt-1 line-clamp-2 text-xs text-zinc-400">{c.lastMessage}</p>
                       <div className="mt-2 flex items-center gap-1.5">
