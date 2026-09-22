@@ -37,7 +37,7 @@ export function useSendWabaMessage(phone: string | null) {
   })
 }
 
-export type StaffSessionAction = 'pause_bot' | 'resume_bot'
+export type StaffSessionAction = 'pause_bot' | 'resume_bot' | 'haiku_finish_booking'
 
 async function invokeStaffSession(input: { phone: string; action: StaffSessionAction }) {
   if (!supabase) throw new Error('Supabase no está configurado')

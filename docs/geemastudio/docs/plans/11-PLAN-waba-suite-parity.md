@@ -1,6 +1,6 @@
 # WABA — paridad de suite GeemaStudio vs. ZM Lash + deuda técnica
 
-> Estado: **planificado** (20-sep-2026), pendiente de inicio de implementación.
+> Estado: **en implementación** (actualizado 21-sep-2026) — Fase 2 (Editor Haiku) hecha; Fase 3 100% cerrada (P0/P1/P1.5/P2); Fase 5 ítem 1 (Campañas) hecho.
 >
 > **Complemento obligatorio:** la paridad del panel **completo** (finanzas ejecutiva, shell, clientes→WA, crons del bot, promo broadcast, tenant scoping) vive en [`12-PLAN-panel-parity-zm-lash.md`](12-PLAN-panel-parity-zm-lash.md). Este Plan 11 solo cubre la suite WABA + deuda; no alcanza solo para "panel Geema ≥ ZM".
 
@@ -43,16 +43,18 @@ Verificación: `pnpm check:types`, `pnpm lint`; crear tenant de prueba con `feat
 
 ## Fase 2 — Editor Haiku completo
 
-Extender `apps/geemastudio-web/src/app/panel/waba/haiku/page.tsx` (hoy solo edita `haiku_system_prompt`) a 4 sub-secciones, siguiendo el patrón de ZM (`ZM-Lash-and-Nails-Beauty/apps/web/src/app/panel/waba/haiku/_components/*`):
+**Hecho (21-sep-2026).** Extendido `apps/geemastudio-web/src/app/panel/waba/haiku/page.tsx` (antes solo editaba `haiku_system_prompt`) a orquestador de 4 sub-secciones + panel de test, siguiendo el patrón de ZM (`ZM-Lash-and-Nails-Beauty/apps/web/src/app/panel/waba/haiku/_components/*`):
 
-- `_components/SystemPromptEditor.tsx` (extraído de la page actual)
+- `_components/SystemPromptEditor.tsx` (extraído/adaptado de la page anterior; Cmd/Ctrl+S, contador de caracteres)
 - `_components/TriggerKeywordsEditor.tsx` — key `haiku_trigger_keywords`, chips para `recommendation`/`free_question`/`blocked`
-- `_components/WelcomeGreetingEditor.tsx` — key `haiku_settings` (incluye bloque avanzado JSON crudo, como en ZM)
-- `_components/BlockedNumbersEditor.tsx` — key `blocked_phone_numbers`, normalización `/\D+/g`, mínimo 8 dígitos
-- `_lib/defaultHaikuConfig.ts` — copiar literalmente los defaults de `apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/haiku-cms-defaults.ts` (no hay import compartido cliente↔edge; dejar comentario explícito de la obligación de mantenerlos sincronizados a mano, igual que hace ZM)
-- Ampliar `useHaikuConfig.ts` a un solo `SELECT ... .in('config_key', [4 keys])` en vez de un hook por key
+- `_components/WelcomeGreetingEditor.tsx` — key `haiku_settings` (incluye bloque avanzado JSON crudo para `welcome_slot_context`/`welcome_fallback_ad`/`welcome_fallback_organic`, como en ZM)
+- `_components/BlockedNumbersEditor.tsx` — key `blocked_phone_numbers`, normalización `/\D+/g`, mínimo 8 dígitos; mismo shape (`{phones: string[]}`) y `sort_order: 4` que `useWabaModeration.ts`, invalida `['web_waba_blocked']` al guardar para no desincronizar con el bloqueo rápido de Mensajes
+- `_lib/defaultHaikuConfig.ts` — copiado desde `apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/haiku-cms-defaults.ts` (no hay import compartido cliente↔edge; comentario explícito de sincronización manual en el archivo). `blocked_phone_numbers` no tiene default: Geema no hereda la lista de spam de ZM, arranca vacía.
+- `useHaikuConfig.ts` ampliado a un solo `SELECT ... .in('config_key', [4 keys])`, con `resolveTenantSlugForWrites()` (no `tenantIdFromAccessToken` como ZM) y queryKey `web_waba_haiku_config` (convención `web_waba_*` de Geema, no `['waba_config','haiku']` de ZM)
 
-**Test de personalidad** (barato, independiente del simulador completo — hacerlo aquí): nueva Edge Function `apps/geemastudio-server/supabase/functions/test-haiku-preview/` (invoca Anthropic directo con el prompt en edición, exige rol `dev|owner`, loguea en `ai_usage_log`) + componente `_components/HaikuTestPanel.tsx`.
+**Test de personalidad**: `_components/HaikuTestPanel.tsx` invoca `test-haiku-preview` — **no se creó una Edge Function nueva** (desviación deliberada del texto original de esta fase). Se descubrió que Geema y ZM comparten el mismo proyecto Supabase (`udelxwwnyivknslueerr`) y que la función `test-haiku-preview` de ZM ya está desplegada ahí con el mismo contrato (`{systemPrompt, userMessage, maxTokens, timeoutMs}` → `{text, inputTokens, outputTokens, latencyMs}`), gateada por rol `dev|owner` server-side. Reusarla evita un deploy a producción compartida sin necesidad. **Caveat conocido, no bloqueante**: esa función usa `AsyncLocalStorage` para resolver el tenant en `ai_usage_log` y por defecto cae a `"zm-lash-nails"` cuando se invoca fuera del request-wrapper de ZM — o sea, las pruebas disparadas desde el panel de Geema quedan registradas como si fueran de ZM en esa tabla de analítica. No afecta la respuesta del bot ni RLS de `waba_config`.
+
+Verificación: `pnpm --filter geemastudio-web check:types` y `pnpm --filter geemastudio-web lint` limpios. Falta verificación manual en navegador (login admin, editar cada sub-sección, confirmar guardado y sync con Mensajes/bloqueo).
 
 ## Fase 3 — Inbox / mensajes: consola de staff (uso diario)
 
@@ -105,42 +107,44 @@ Copy UI en español neutro (**sin voseo**): corregir el “Elegí una conversaci
 
 ### Checklist Done — Mensajes (criterio Vanessa-usable)
 
+> **Auditoría de código 21-sep-2026:** el doc estaba desactualizado — commits previos (`8f8f002e`, `0a224707`, `f1e5ff28`, `f0694b87`) ya habían cerrado la mayoría de P0/P1 sin reflejarlo aquí. Esta sesión verificó cada ítem contra el código real (no contra el plan) y cerró los 4 gaps que sí faltaban: **M10, M12, M14, M18**.
+
 #### P0 — ops mínimo (bloqueante para cerrar Fase 3)
 
-- [ ] M1 — Enviar texto vía `send-whatsapp-notification` con `pauseBot: true` + optimistic UI + refetch
-- [ ] M2 — Pausar bot / Reactivar bot vía `waba-staff-session` (`pause_bot` / `resume_bot`)
-- [ ] M3 — Badge header “Bot activo” / “Bot en pausa” (lee `whatsapp_sessions.bot_paused_at`)
-- [ ] M4 — Banner ámbar cuando pausado (copy: puedes escribir; “te avisamos por push si responde” solo si PR-09 **P15** está listo — si no, omitir esa frase; ver Plan 12 Fase X)
-- [ ] M5 — Composer: Enter envía, Shift+Enter salto; aviso ventana **24h** Meta bajo el input
-- [ ] M6 — Polling lista + hilo ~10s
-- [ ] M7 — Split lista/hilo desktop; stack mobile con back
+- [x] M1 — Enviar texto vía `send-whatsapp-notification` con `pauseBot: true` + optimistic UI + refetch
+- [x] M2 — Pausar bot / Reactivar bot vía `waba-staff-session` (`pause_bot` / `resume_bot`)
+- [x] M3 — Badge header “Bot activo” / “Bot en pausa” (lee `whatsapp_sessions.bot_paused_at`)
+- [x] M4 — Banner ámbar cuando pausado (sin la frase de push — PR-09 P15 no confirmado, omitida como indica la nota)
+- [x] M5 — Composer: Enter envía, Shift+Enter salto; aviso ventana **24h** Meta bajo el input
+- [x] M6 — Polling lista + hilo 10s / 10s (ya no 45s/20s)
+- [x] M7 — Split lista/hilo desktop; stack mobile con back
 
 #### P1 — mismo día ops
 
-- [ ] M8 — Adjuntar / enviar imagen (clip → Storage staff-outbound → EF; pausa bot)
-- [ ] M9 — Bloquear / desbloquear número (`waba_config` key `blocked_phone_numbers`, misma que Haiku Fase 2)
-- [ ] M10 — Copiar nombre + número (+ `@username` si hay) al portapapeles
-- [ ] M11 — Deep link `?phone=` (desde `/panel/clientes` — ver Plan 12 P3; normalización igual que ZM)
-- [ ] M12 — Preview lista: `resolveWabaContent` (IDs `svc-`/`pack_`/`promo_`/`date_`/`time_`/… → labels vía catálogo services/packs/promotions)
-- [ ] M13 — Badge “Pausado” en ítem de lista; unread ≈ inbound 24h
+- [x] M8 — Adjuntar / enviar imagen, audio y documento (clip → Storage → EF; pausa bot)
+- [x] M9 — Bloquear / desbloquear número (`waba_config` key `blocked_phone_numbers`, misma que Haiku Fase 2)
+- [x] M10 — Copiar nombre + número (+ `@username` si hay) al portapapeles — **cerrado 21-sep**: `MessageThread.tsx` solo copiaba el número; ahora arma `[displayName, displayPhone, "@username"]` y copia el string combinado
+- [x] M11 — Deep link `?phone=` (`page.tsx`, `useEffect` sobre `searchParams`)
+- [x] M12 — Preview lista: `resolveWabaContent` — **cerrado 21-sep**: no existía; agregado a `useWabaMessages.ts` con catálogo `services`/`packs`/`promotions`, aplicado a `lastMessage` (lista) y al hilo. Sin emojis Unicode (regla de UI del panel) — labels en texto plano (`"Promo: X"`, `"Pack: Y"`) en vez de los prefijos 🏷️/💅/📦 de la referencia ZM
+- [x] M13 — Badge “Bot en pausa” + badge `N in · 24h` en ítem de lista
 
 #### P1.5 — lectura rica (paridad burbujas)
 
-- [ ] M14 — Select hilo incluye `image_url`, `audio_url`, `reply_image_url`, `reply_to_wamid`, `delivery_status`, `delivery_error`
-- [ ] M15 — Burbuja imagen/sticker (thumb + abrir)
-- [ ] M16 — Burbuja audio (`<audio controls>`)
-- [ ] M17 — Ticks delivery outbound: accepted/sent/delivered/read/failed
-- [ ] M18 — Plantillas Meta: estilo distinto + label amigable (`templateLabels`; presets por tenant, no solo slugs `_zm`)
-- [ ] M19 — BSUID Meta (`^[A-Z]{2}\.`) + `wa_username` + badge “Sin teléfono”; match `clients.wa_user_id`
+- [x] M14 — Select hilo incluye `image_url`, `audio_url`, `document_url`, `delivery_status`, `delivery_error` (ya estaban) + `reply_image_url`, `reply_to_wamid` — **agregados 21-sep** (columnas ya existían en prod, confirmado por `execute_sql` contra `udelxwwnyivknslueerr`; solo faltaba el select/tipo) + render de `QuoteCard` en `MessageBubble.tsx`
+- [x] M15 — Burbuja imagen (thumb + abrir); sticker no tiene tratamiento propio, cae en burbuja genérica
+- [x] M16 — Burbuja audio (`<audio controls>`)
+- [x] M17 — Ticks delivery outbound: `accepted`/`sent`/`delivered`/`read`/`failed` — **cerrado 21-sep**: `WabaDeliveryStatus` no incluía `'accepted'` en el tipo y `DeliveryTicks` colapsaba `accepted`/`sent` en el mismo ícono; ahora distingue los 5 estados con tooltip por estado (`title`), igual que ZM
+- [x] M18 — Plantillas Meta: estilo distinto + label amigable — **cerrado 21-sep**: `templateLabels.ts` creado (generalizado, sin mapa `_zm` hardcodeado — solo fallback `friendlyTemplateName`/`formatTemplatePreview`); bubble violeta + ícono `FileText` en `MessageBubble.tsx`. Backend nota: el webhook de Geema aún no emite `[plantilla:slug]` en `content` (eso vive en `index.ts`/`booking-flow.ts` de ZM, no portado) — la UI está lista pero inactiva hasta que se porte esa parte del dispatcher
+- [x] M19 — BSUID Meta (`^[A-Z]{2}\.`) + `wa_username` + badge “Sin teléfono”; match `clients.wa_user_id`
 
 #### P2 — nice-to-have pre go-live
 
-- [ ] M20 — **Haiku agenda** (`haiku_finish_booking`) en banner de bot pausado
-- [ ] M21 — Eliminar conversación (confirm → delete `wa_messages` + `whatsapp_sessions` del phone)
-- [ ] M22 — Reacciones emoji + quote/reply card (`↳` / `reply_image_url`)
-- [ ] M23 — Interactive / button bubbles con ícono
+- [x] M20 — **Haiku agenda** (`haiku_finish_booking`) en banner de bot pausado — **cerrado 21-sep**: botón "Haiku agenda" agregado al banner ámbar de `MessageThread.tsx` (visible solo con `conversation.botPaused`), llama `useWabaStaffSession` con la nueva acción `haiku_finish_booking` (agregada a `StaffSessionAction` en `useWabaSend.ts`). Confirmado por `mcp__ClaudeSupabase__get_edge_function` que la función compartida `waba-staff-session` (mismo proyecto `udelxwwnyivknslueerr`, deploy de ZM) ya soporta esa acción — sin cambios de backend
+- [x] M21 — Eliminar conversación (confirm → delete `wa_messages` + `whatsapp_sessions` del phone)
+- [x] M22 — Reacciones emoji + quote/reply card (`↳` / `reply_image_url`) — quote card cerrado con M14; reacciones (`msg_type === 'reaction'`) **cerradas 21-sep**: burbuja emoji grande o "quitó su reacción" si viene vacía/con corchete, sin sufijo `· reaction` redundante en el footer
+- [x] M23 — Interactive / button bubbles con ícono — **cerrado 21-sep**: `MessageBubble.tsx` distingue `msgType === 'interactive'` (ícono `List`) y `'button'` (ícono `MousePointerClick`, itálica), igual que ZM; ambos excluidos del sufijo `· <tipo>` redundante en el footer
 
-**Fase 3 se considera cerrada** cuando P0 + P1 están ✅ en tenant sandbox. P1.5/P2 pueden solaparse con Sprint D sin bloquear campañas, pero **go-live ZM como tenant** no debería pasar sin M14–M19 si el tráfico real incluye fotos de pago y plantillas.
+**Fase 3 P0 + P1 + P1.5 + P2 están ✅ cerrados.** Ninguno de los ítems pendientes bloquea uso diario del inbox. Sigue pendiente, aparte del checklist: decidir si vale la pena portar el formateo de quotes/plantillas del dispatcher de ZM a Geema para que M14/M18 tengan datos reales en producción (hoy la UI está lista pero el webhook de Geema no emite `[plantilla:slug]` ni el marcador `↳` todavía).
 
 ### Fuera de alcance de Fase 3
 

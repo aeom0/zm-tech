@@ -14,6 +14,7 @@ import {
   Play,
   Send,
   ShieldCheck,
+  Sparkles,
   Trash2,
 } from 'lucide-react'
 
@@ -142,7 +143,12 @@ export function MessageThread({
     setCopied(false)
   }, [phone])
 
-  const copyValue = conversation.displayPhone || (conversation.isBsuid ? '' : phone)
+  const copyParts = [
+    conversation.displayName,
+    conversation.displayPhone || (conversation.isBsuid ? null : phone),
+    conversation.waUsername ? `@${conversation.waUsername}` : null,
+  ].filter((part): part is string => !!part)
+  const copyValue = copyParts.join(' ')
 
   const handleCopy = async () => {
     if (!copyValue) return
@@ -151,12 +157,23 @@ export function MessageThread({
       setCopied(true)
       setTimeout(() => setCopied(false), 1500)
     } catch {
-      setModerationError('No se pudo copiar el número')
+      setModerationError('No se pudo copiar el contacto')
     }
   }
 
   const handlePauseToggle = () => {
     staffSessionMutation.mutate({ phone, action: conversation.botPaused ? 'resume_bot' : 'pause_bot' })
+  }
+
+  const handleHaikuAgenda = () => {
+    setModerationError(null)
+    staffSessionMutation.mutate(
+      { phone, action: 'haiku_finish_booking' },
+      {
+        onError: (err) =>
+          setModerationError(err instanceof Error ? err.message : 'No se pudo ejecutar Haiku agenda'),
+      }
+    )
   }
 
   const handleToggleBlock = () => {
@@ -231,7 +248,7 @@ export function MessageThread({
               type="button"
               onClick={handleCopy}
               disabled={!copyValue}
-              title={copyValue ? 'Copiar número' : 'No hay número para copiar'}
+              title={copyValue ? 'Copiar nombre y contacto' : 'No hay datos de contacto para copiar'}
               className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] text-zinc-300 hover:bg-white/[0.06] disabled:opacity-40 sm:w-auto sm:gap-1.5 sm:px-2.5"
             >
               {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
@@ -319,7 +336,20 @@ export function MessageThread({
 
       {conversation.botPaused && (
         <div className="border-b border-amber-500/20 bg-amber-500/10 px-4 py-2 text-xs text-amber-200">
-          El bot está en pausa para este número — solo el staff responde hasta reactivarlo.
+          <p>El bot está en pausa para este número — solo el staff responde hasta reactivarlo.</p>
+          <button
+            type="button"
+            onClick={handleHaikuAgenda}
+            disabled={staffSessionMutation.isPending}
+            className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-violet-400/40 bg-violet-500/10 px-2.5 py-1.5 text-xs font-medium text-violet-200 hover:bg-violet-500/20 disabled:opacity-50"
+          >
+            {staffSessionMutation.isPending ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Sparkles className="h-3.5 w-3.5" />
+            )}
+            Haiku agenda
+          </button>
         </div>
       )}
 
