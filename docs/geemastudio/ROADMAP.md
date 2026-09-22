@@ -9,7 +9,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 ## Principios de ejecución
 
 - **Beta primero**: cada decisión se toma preguntando si acerca o aleja la beta.
-- **Plan 05 (ago 2026)**: migración ZM ↔ Geema + suite WABA multi-vertical — ver [`docs/plans/geema-migration/`](docs/plans/geema-migration/README.md) (espejo de ZM; sync vía script en repo ZM).
+- **Plan 05 (ago 2026)**: fuente canónica del estado de migración ZM ↔ Geema y la suite WABA multi-vertical. Este roadmap solo cubre beta, producto y prioridades propias de Geema.
 - Estabilizar lo mínimo indispensable, no lo perfecto.
 - Features y deuda técnica en paralelo cuando no hay dependencia entre sí.
 - Entregar en incrementos pequeños con criterios de aceptación claros.
@@ -25,13 +25,13 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 | # | Entregable | Repo | DoD |
 |---|------------|------|-----|
 | 0 | ~~Alinear docs Plan 05 + scorecard Plan 12~~ | ambos | ✅ 22-sep |
-| 1 | Finanzas ejecutiva / Plan 12 no-WABA | zm-tech | Post suite WABA |
-| 2 | (Paralelo otra sesión) reconciliar drift `whatsapp-webhook` prod v655 | ZM | Bundle versionado |
+| 1 | P9–P10 ops Vanessa | zm-tech | Validar push de cita y pago en operación |
+| 2 | Ventas `product_orders` en Geema | zm-tech | Tras catálogo; ZM ya tiene UI |
 | — | S4 crons tenant-aware | ZM | Solo si se abre Track B (2.º tenant) |
 
 **Hecho esta tanda:** Historial · Portafolio · deep link · **Simulador** (Plan 11 F4, reusa EF ZM).
 
-**Fuera de esta semana:** retail bot / `add_to_cart` productos (bloqueado por drift webhook); S7 2.º tenant.
+**Fuera de esta semana:** retail bot / `add_to_cart` productos (pausado por decisión de producto); S7 2.º tenant.
 
 ---
 
@@ -47,6 +47,9 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 - Core web: `/panel/*` P1 (clientes, personal, config, agenda, servicios, horarios, WABA)
 - **Plan 11**: F0/F1 cerradas (21-sep); F2 Haiku ✅; F3 inbox staff ✅; F5.1 Campañas ✅
 - Theming panel + PWA dinámico + tab Productos (catálogo) ✅ 22-sep
+- **Plan 11/12 WABA web**: Historial, Portafolio, deep link Clientes→Mensajes y Simulador ✅ 22-sep
+- **Plan 12 Finanzas**: Resumen|Detalle web + enlaces PanelShell ✅ 22-sep
+- **PR-09 Push FCM**: P0 + P8 ✅ 22-sep; push físico validado, ajustes de assets en curso
 - **Host**: `https://geema.zmtechdev.com`
 - Migración Plan 05: **S1–S3** ✅; **S4** ❌ (repo ZM)
 
@@ -54,28 +57,25 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 
 | # | Ítem | Repo | Notas |
 |---|------|------|-------|
-| 1 | Finanzas ejecutiva web | zm-tech | Plan 12 P1 |
+| 1 | P9–P10 ops Vanessa | zm-tech | Validar push de cita y pago en operación |
 | 2 | Ventas `product_orders` en Geema | zm-tech | Tras catálogo; ZM ya tiene UI |
-| 3 | Reconciliar webhook prod v655 | ZM | Antes de bot retail / redeploy |
-| 4 | **S4** crons + Vault | ZM | Bloquea 2.º tenant |
-| 5 | **PR-09** Push FCM E2E | zm-tech | Plan 12 Fase X |
-| 6 | Smoke Finanzas ZM en APK | zm-tech | DoD S5-C abierto |
+| 3 | **S4** crons + Vault | ZM | Bloquea 2.º tenant |
+| 4 | Smoke Finanzas ZM en APK | zm-tech | Validación mobile pendiente |
 
 ### Riesgos activos
 
-- **Drift `whatsapp-webhook`**: prod v655 sin mirror limpio en repos (CHANGELOG Geema 22-sep) — no redeployar a ciegas
-- Push FCM (**PR-09**): P0 código ✅ (token+Firebase+EAS); P8 smoke APK pendiente; EF canónica en repo ZM (no portar)
+- Push FCM (**PR-09**): P0 + P8 ✅ (push físico validado); ajustes de assets en curso; EF canónica en repo ZM (no portar)
 - S4 (crons WABA) bloquea 2.º tenant con bot completo
-- Retail bot pausado hasta reconciliar webhook
+- Retail bot pausado por producto; no está bloqueado por drift del webhook
 
 ### Beta gate (actualizado 22-sep 2026)
 
 | Ítem | Estado |
 |------|--------|
 | PR-01…PR-08 | ✅ (ver historial abajo) |
-| PR-09 Push FCM E2E | 🟡 P0 ✅ / P8 smoke ⏳ |
+| PR-09 Push FCM E2E | ✅ P0 + P8; ajustes de assets en curso |
 | PR-10 / PR-10B WABA avanzado + reenganche | ❌ post-S4 |
-| PR-11 Panel web | ✅ P1 + Campañas + inbox; ⏳ Historial/Portafolio |
+| PR-11 Panel web | ✅ P1 + Campañas + inbox + Historial + Portafolio + Simulador |
 
 ---
 
@@ -105,7 +105,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 | ------ | --------------------------------------------------------- | ------------------------- |
 | PR-07  | CI GitHub Actions                                         | ✅                        |
 | PR-08  | Error handling dashboard/finanzas/agenda                  | ✅ base                   |
-| PR-09  | Push FCM E2E — nativo FCM v1 (`push_token` + `send-notification`); **no** Expo Push | 🟡 P0 ✅ 22-sep; P8 smoke APK |
+| PR-09  | Push FCM E2E — nativo FCM v1 (`push_token` + `send-notification`); **no** Expo Push | ✅ P0 + P8 22-sep; assets en ajuste |
 | PR-10  | Bot WABA capa ZM v3.0 (capacidad, silence-watchdog, refs) | ❌ (base multi-tenant ✅) |
 | PR-10B | Motor reenganche WABA multi-tenant                        | ❌ post-beta / post-S4    |
 
@@ -138,27 +138,17 @@ Ver [docs/WEB_ARCHITECTURE.md](docs/WEB_ARCHITECTURE.md).
 
 ---
 
-## Migración ZM ↔ Geema (Plan 05) — semáforo
+## Migración ZM ↔ Geema
 
-| Sprint    | Tema                                     | Estado                                             |
-| --------- | ---------------------------------------- | -------------------------------------------------- |
-| S1–S3     | Schema P0 + bridge tenant + WABA runtime | ✅                                                 |
-| **S4**    | Crons/RPCs tenant-aware + Vault          | ❌ **siguiente crítico (repo ZM)**                 |
-| S5 / S5-B | Reglas L3 + branding logo                | Parcial                                            |
-| **S5-C**  | Paridad mobile shadow                    | ✅ casi; quedan S5C-8/9 + smoke Finanzas           |
-| S6        | Presets L4 + `/panel/waba/*`             | 🟡 Mensajes/Haiku/Campañas ✅; Historial/Portafolio/Simulador ❌ |
-| S7+       | Go-live 2.º tenant                       | ❌                                                 |
+El estado de S1–S7, los gates multi-tenant, S4, S5-C, S6 y el segundo tenant
+vive únicamente en el Plan 05:
 
-Detalle: [`docs/plans/geema-migration/`](docs/plans/geema-migration/README.md).
+- [Resumen ejecutivo](docs/plans/geema-migration/00-RESUMEN-EJECUTIVO.md)
+- [Roadmap de migración](docs/plans/geema-migration/04-ROADMAP-SPRINTS.md)
+- [Plan 05 y reglas de sincronización](docs/plans/geema-migration/README.md)
 
-### S5-C restos
+Este archivo no replica ese semáforo para evitar estados contradictorios.
 
-| ID                      | Tarea                                             | Estado                           |
-| ----------------------- | ------------------------------------------------- | -------------------------------- |
-| S5C-8                   | Dashboard ranking top servicios + alertas feriado | Pendiente (esta semana si sobra) |
-| S5C-9                   | Hint UI dónde está Finanzas                       | ✅ 10-sep                        |
-| Smoke Finanzas ZM       | Pagos visibles en Más → Finanzas                  | Pendiente (**vie 11**)           |
-| Costos WABA en Finanzas | `PricingBreakdownCard`                            | Bloqueado a suite WABA           |
 
 ---
 
@@ -204,4 +194,4 @@ Pendiente post–Fase 2: `/panel/configuracion/web`, migrar Sanity → `zm-lash-
 
 ---
 
-_Actualizado: 22 sep 2026 — docs alineados Plan 05/11/12; siguiente = Historial WABA._
+_Actualizado: 22 sep 2026 — beta/producto Geema; el estado de migración vive en Plan 05._

@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+ROADMAP="${ROOT}/docs/geemastudio/ROADMAP.md"
+PLAN12="${ROOT}/docs/geemastudio/docs/plans/12-PLAN-panel-parity-zm-lash.md"
+PLAN05="${ROOT}/docs/geemastudio/docs/plans/geema-migration/04-ROADMAP-SPRINTS.md"
+
+for file in "$ROADMAP" "$PLAN12" "$PLAN05"; do
+  if [[ ! -f "$file" ]]; then
+    echo "Error: falta documento esperado: ${file}" >&2
+    exit 1
+  fi
+done
+
+assert_contains() {
+  local file="$1"
+  local text="$2"
+  if ! grep -Fq -- "$text" "$file"; then
+    echo "Error: estado documental esperado no encontrado en ${file}:" >&2
+    echo "  ${text}" >&2
+    exit 1
+  fi
+}
+
+assert_absent() {
+  local file="$1"
+  local text="$2"
+  if grep -Fq -- "$text" "$file"; then
+    echo "Error: estado documental obsoleto encontrado en ${file}:" >&2
+    echo "  ${text}" >&2
+    exit 1
+  fi
+}
+
+# Hitos cerrados que deben permanecer reflejados en el estado ejecutivo.
+assert_contains "$ROADMAP" "P9–P10 ops Vanessa"
+assert_contains "$ROADMAP" "el estado de migración vive en Plan 05"
+assert_contains "$ROADMAP" "P0 + P8 ✅"
+assert_contains "$PLAN12" "P0 + P8"
+assert_contains "$PLAN05" "PR-09 P0 + P8 validado"
+assert_contains "$PLAN05" "[x] Historial + Portafolio en nav WABA"
+
+# Frases que reabren trabajo ya cerrado o contradicen Track C.
+assert_absent "$ROADMAP" "bloqueado por drift webhook"
+assert_absent "$ROADMAP" "sin mirror limpio"
+assert_absent "$ROADMAP" "siguiente = Historial WABA"
+assert_absent "$ROADMAP" "Historial/Portafolio/Simulador ❌"
+assert_absent "$ROADMAP" "reconciliar drift \`whatsapp-webhook\` prod v655"
+assert_absent "$ROADMAP" "P8 smoke APK pendiente"
+assert_absent "$PLAN12" "P8 smoke APK pendiente"
+
+echo "✓ estado documental Geema consistente"

@@ -1,5 +1,7 @@
 # WABA — paridad de suite GeemaStudio vs. ZM Lash + deuda técnica
 
+> **Responsabilidad documental:** este plan conserva el detalle de implementación y QA de la suite WABA. El estado ejecutivo de migración vive en Plan 05; el criterio de paridad y go-live del panel completo vive en Plan 12.
+
 > Estado: **suite WABA panel cerrada para Track A** (22-sep-2026) — Fases 0–5 (salvo promos/reenganchar) + Simulador F4 ✅. Siguiente fuera de WABA panel: finanzas ejecutiva / runtime bot (Plan 12).
 >
 > **Complemento obligatorio:** la paridad del panel **completo** (finanzas ejecutiva, shell, clientes→WA, crons del bot, promo broadcast, tenant scoping) vive en [`12-PLAN-panel-parity-zm-lash.md`](12-PLAN-panel-parity-zm-lash.md). Este Plan 11 solo cubre la suite WABA + deuda; no alcanza solo para "panel Geema ≥ ZM".

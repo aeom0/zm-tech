@@ -96,4 +96,4 @@ Implementación sugerida (S2-7):
 | 2026-09-22 | Track C webhook reconcile | `09-WEBHOOK-PROD-RECONCILE.md`; v655 = ZM `010b240f`; drift 🔴→🟢 |
 | 2026-09-22 | Plan 12 P1/P2 finanzas ejecutiva Geema | Resumen+Detalle `/finanzas`; PanelShell + card Inicio |
 | 2026-09-22 | Docs alineados pre–Push FCM | Plan 12 scorecard/G*; 09 siguiente → PR-09; README |
-| 2026-09-22 | PR-09 P0 Push FCM | Firebase `com.geemastudio.app` + EAS + `useNotifications` persist; EF solo ZM; P8 smoke APK ⏳ |
+| 2026-09-22 | PR-09 P0 + P8 Push FCM | Firebase `com.geemastudio.app` + EAS + `useNotifications` persist; push físico validado; EF solo ZM; ajustes de assets en curso |

@@ -49,6 +49,6 @@ CLI `supabase functions download` en esta versión de CLI **no** acepta `--outpu
 
 ## Siguiente
 
-- **Push FCM Geema** — Plan 12 Fase X / PR-09: **P0 código ✅** (22-sep); falta **P8** smoke APK Geema. Checklist en `12-PLAN-panel-parity-zm-lash.md`.
+- **Push FCM Geema** — Plan 12 Fase X / PR-09: **P0 + P8 ✅** (push físico validado en APK de producción; ajustes de assets en curso). Checklist en `12-PLAN-panel-parity-zm-lash.md`.
 - Track B / S4: crons tenant-aware antes del 2.º tenant.
 - Si se toca bot retail: rama+PR en ZM, QA, deploy; sin redeploy “a ciegas” desde Geema.

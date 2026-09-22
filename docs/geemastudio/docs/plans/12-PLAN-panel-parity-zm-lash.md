@@ -1,10 +1,12 @@
 # Panel interno GeemaStudio ≥ ZM Lash — paridad completa
 
+> **Responsabilidad documental:** este plan es la fuente del scorecard de paridad del panel y del criterio de go-live Vanessa. Plan 11 conserva el detalle de implementación WABA; Plan 05 conserva el estado ejecutivo de migración.
+
 > Estado: **en curso** (actualizado 22-sep-2026). Complementa [`11-PLAN-waba-suite-parity.md`](11-PLAN-waba-suite-parity.md).
 >
 > Meta: el panel web de Geema (`apps/geemastudio-web`) debe ser **igual o superior** al de ZM Lash canónico (`ZM-Lash-and-Nails-Beauty/apps/web`) antes de migrar a Vanessa como tenant real.
 >
-> **Hecho 22-sep:** Plan 11 WABA suite + Plan 12 P1/P2 finanzas + **PR-09 P0** (token+Firebase+EAS; P8 smoke APK pendiente). **Siguiente:** P8 smoke físico + P9–P10 ops Vanessa.
+> **Hecho 22-sep:** Plan 11 WABA suite + Plan 12 P1/P2 finanzas + **PR-09 P0 + P8** (push físico validado en APK de producción; ajustes de assets en curso). **Siguiente:** P9–P10 ops Vanessa.
 
 ## Relación con Plan 11
 
@@ -46,7 +48,7 @@ Leyenda: ✅ paridad · 🟡 parcial · ❌ falta · ➕ Geema ya superior
 | WABA portafolio | Hasta 4 fotos/servicio | `/panel/waba/portafolio` ✅ 22-sep | ✅ |
 | WABA simulador | Chat QA fidelidad total | `/panel/waba/simulador` ✅ 22-sep (reusa EF ZM) | ✅ |
 | Edge Functions bot/ops | **~25** (repo ZM, BD compartida) | Panel reusa EFs ZM; **bot canónico ZM** (Track C ✅ v655=`main`) | 🟢 Opción A |
-| Push FCM E2E | Operativo (ZM APK) | P0 código ✅ (token+Firebase+EAS); **P8 smoke APK** ⏳ | 🟡 |
+| Push FCM E2E | Operativo (ZM APK) | P0 código + P8 push físico ✅; ajustes de assets en curso | ✅ |
 
 Evidencia nav (22-sep):
 
@@ -68,7 +70,7 @@ Evidencia nav (22-sep):
 | G4 | Crons / nudges / recordatorios (11+ EFs ZM) | Panel perfecto + bot sin recordatorios = funnel roto → S4 |
 | G5 | `countOverlappingAppointments` en webhook Geema | N/A Opción A — bot solo ZM (Track C); no mantener webhook Geema |
 | G6 | Promo broadcast WA + Reenganchar | Prod ZM. **Envío masivo mobile** hecho 21-sep — ver R5; `send-retouch-reengage` sigue pendiente |
-| G7 | Push FCM E2E | **P0 ✅** 22-sep — persist token + Firebase `com.geemastudio.app` + EAS secret; EF canónica ZM. **P8** smoke APK Geema pendiente |
+| G7 | Push FCM E2E | **P0 + P8 ✅** 22-sep — push físico validado en APK de producción; EF canónica ZM. Ajustes de assets en curso |
 | G8 | Tenant scoping global en hooks web | Plan 11 solo arregla tablas WABA vía API routes |
 | G9 | Legal por jurisdicción tenant | ZM tiene términos/privacidad/libro reclamaciones |
 | G10 | Docs stale (`WEB_ARCHITECTURE`, audit 03) | CMS web ya existe; finanzas P1 ✅ — limpiar restos |
@@ -183,7 +185,7 @@ ZM: listar en `ZM-Lash-and-Nails-Beauty/supabase/functions/`.
 | Deep link tap `waba_chat` | `Linking` → `geema.zmtechdev.com/panel/waba/mensajes?phone=` | ✅ |
 | Cold start | `getLastNotificationResponseAsync` | ✅ |
 | Canales Android | `default` / `waba-chat` / `waba-alerts` / `waba-appointments` + `{businessName}` | ✅ |
-| Smoke físico APK Geema | pendiente build EAS + login owner | ⏳ P8 |
+| Smoke físico APK Geema | push físico validado en APK de producción; ajustes de assets en curso | ✅ P8 |
 | Campanita Agenda UI | `NotificationsBell` — **no es FCM** | ≠ |
 
 #### Flujo ZM (referencia)
@@ -218,7 +220,7 @@ BD compartida `udelxwwnyivknslueerr`: la EF **`send-notification` ya corre en pr
 - [x] **P5** — **N/A Opción A** — no portar EF; canónico repo ZM
 - [x] **P6** — Secret `FCM_SERVICE_ACCOUNT` ya en `udelx…` (mismo proyecto Firebase)
 - [x] **P7** — **N/A** — CI deploy solo desde ZM (`ota-production.yml`); no espejo zm-tech
-- [ ] **P8** — Smoke: APK Geema preview → token en `profiles` → invoke EF → push físico ⏳
+- [x] **P8** — Smoke: APK de producción → token en `profiles` → invoke EF → push físico validado
 
 ##### P1 — Ops Vanessa (mismo día)
 

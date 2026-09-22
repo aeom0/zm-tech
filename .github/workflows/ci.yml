@@ -12,6 +12,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  docs-status:
+    name: documentación Geema consistente
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Verificar estados cerrados y próximos hitos
+        run: bash scripts/check-geema-doc-status.sh
+
   lint-typecheck:
     name: lint + typecheck (todos los workspaces)
     runs-on: ubuntu-latest
