@@ -2,7 +2,7 @@
 
 > **Fecha:** 2026-08-28  
 > **Autor:** Alberto Orta + análisis Cursor (agentes)  
-> **Estado:** S1–S3 ✅; S4 crons ❌. Panel Geema WABA: Mensajes/Haiku/Campañas ✅ (Plan 11, 21-sep); siguiente = Historial. Retail: ZM completo (#140); Geema catálogo tab ✅, Ventas/`product_orders` y bot pausados (drift webhook). Docs synced 22-sep.
+> **Estado:** S1–S3 ✅; S4 crons ❌. Panel Geema WABA suite ✅ (Plan 11: Historial/Portafolio/Simulador 22-sep). Track C webhook ✅ ([09](./09-WEBHOOK-PROD-RECONCILE.md)). Retail: ZM completo (#140); Geema catálogo ✅; Ventas/`product_orders` y bot retail pausados por producto (no por drift). Docs synced 22-sep.
 > **BD compartida:** `udelxwwnyivknslueerr` (ZM Lash = tenant #1 `zm-lash-nails`)
 
 Documentación del análisis de convergencia entre **ZM Lash & Nails** (referencia en producción) y **GeemaStudio** (SaaS multi-tenant en `zm-tech`). Incluye bloqueadores para el 2.º tenant, estandarización WABA para barberías/peluquerías/spas, y roadmap por sprints.
@@ -22,6 +22,7 @@ Documentación del análisis de convergencia entre **ZM Lash & Nails** (referenc
 | 06 | [06-BRANDING-LOGO-Y-DESIGN-TOKENS.md](./06-BRANDING-LOGO-Y-DESIGN-TOKENS.md) | Logo tenant, Storage, push FCM por tenant, tokens ZM ↔ Geema, S5-B |
 | 07 | [07-PARIDAD-MOBILE-ZM.md](./07-PARIDAD-MOBILE-ZM.md) | Shadow APK; S5C P0 ✅; schema canónico; multi-servicio PR #31 (sin SQL CREATE en prod) |
 | 08 | [08-PLAN-retail-productos.md](./08-PLAN-retail-productos.md) | Retail ZM `/panel/productos` + `product_orders`; checklist port Geema |
+| 09 | [09-WEBHOOK-PROD-RECONCILE.md](./09-WEBHOOK-PROD-RECONCILE.md) | Track C ✅: prod v655 = ZM `main`; Opción A bot |
 | — | [SYNC.md](./SYNC.md) | Cómo mantener esta carpeta sincronizada entre repos |
 
 ---

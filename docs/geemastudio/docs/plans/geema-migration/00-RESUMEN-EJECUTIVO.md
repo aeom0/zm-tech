@@ -7,7 +7,7 @@
 
 ## Respuesta en una frase
 
-**ZM Lash ya es el tenant #1 en producción** (`zm-lash-nails`); **GeemaStudio ya opera el panel de gestión + suite WABA usable** (inbox staff, Haiku, Campañas, catálogo/Productos) sobre la misma BD — falta **cerrar paridad restante del panel, reconciliar drift del webhook, y S4 (crons tenant-aware) antes del 2.º tenant**.
+**ZM Lash ya es el tenant #1 en producción** (`zm-lash-nails`); **GeemaStudio ya opera el panel de gestión + suite WABA usable** (inbox staff, Haiku, Campañas, catálogo/Productos) sobre la misma BD — falta **cerrar paridad restante del panel (finanzas ejecutiva / push) y S4 (crons tenant-aware) antes del 2.º tenant**. Track C (drift webhook) ✅ cerrado 22-sep.
 
 ---
 
@@ -25,15 +25,15 @@
 | Panel `/panel/waba/*` Geema | 🟢 | Paridad tabs ZM + Estado (incl. Simulador ✅ 22-sep) |
 | Retail `product_orders` | 🟡 | ZM: Ventas+Catálogo+push ✅; Geema: solo tab Catálogo; bot retail pausado |
 | WABA suite multi-vertical (L4) | 🔴 | Presets en `tenant-config`; webhook no los consume aún |
-| Drift `whatsapp-webhook` | 🔴 | Geema CHANGELOG 22-sep: prod v655 sin mirror limpio en repos — no redeployar a ciegas |
+| Drift `whatsapp-webhook` | 🟢 | Track C ✅ — prod v655 = ZM `010b240f` / `main`; ver [09](./09-WEBHOOK-PROD-RECONCILE.md) |
 
 ---
 
 ## Dónde continuar (recomendación 22-sep)
 
-**Track A — cutover Vanessa a Geema (tenant #1):** suite panel WABA ✅ (Historial · Portafolio · deep link · Simulador). Siguiente: ops no-WABA (finanzas ejecutiva) + reconciliar webhook.  
+**Track A — cutover Vanessa a Geema (tenant #1):** suite panel WABA ✅ (Historial · Portafolio · deep link · Simulador). Siguiente: ops no-WABA (finanzas ejecutiva Plan 12 P1).  
 **Track B — 2.º tenant:** S4 crons/Vault en repo ZM (no mezclar con Track A en la misma sesión).  
-**Track C — riesgo:** reconciliar/versionar bundle Edge `whatsapp-webhook` prod antes de cualquier cambio de bot (retail o S4).
+**Track C — riesgo:** ✅ cerrado — bot canónico ZM; redeploy solo desde ZM ([09](./09-WEBHOOK-PROD-RECONCILE.md)).
 
 Detalle vivo: Plan 11/12 en `zm-tech/docs/geemastudio/docs/plans/`; roadmap sprints [04](./04-ROADMAP-SPRINTS.md).
 
@@ -53,7 +53,7 @@ Detalle vivo: Plan 11/12 en `zm-tech/docs/geemastudio/docs/plans/`; roadmap spri
 
 ## Decisión vigente (Opción A)
 
-1. **ZM canónico para el bot** (Edge `whatsapp-webhook` prod) hasta reconciliar drift + S4.
+1. **ZM canónico para el bot** (Edge `whatsapp-webhook` prod) — mirror limpio; S4 sigue en ZM.
 2. **Geema canónico para el panel** de tenant #1 (ops diarias Vanessa) a medida que cierre Plan 11/12.
 3. **Presets `@zmtech/tenant-config`** alimentan L4 cuando el runtime consuma config por tenant.
 
@@ -61,10 +61,10 @@ Detalle vivo: Plan 11/12 en `zm-tech/docs/geemastudio/docs/plans/`; roadmap spri
 
 ## Decisiones pendientes (Alberto)
 
-1. ¿Cutover de Vanessa al panel Geema antes o después de Historial + Portafolio?
-2. ¿Priorizar Track A (panel) o Track C (reconciliar webhook) esta semana?
-3. ¿Primer vertical post-belleza: `barbershop`?
-4. ¿Smoke flag ON en tenant QA antes de tocar crons S4?
+1. ¿Cutover de Vanessa al panel Geema ya (suite WABA ✅) o esperar finanzas ejecutiva?
+2. ¿Primer vertical post-belleza: `barbershop`?
+3. ¿Smoke flag ON en tenant QA antes de tocar crons S4?
+4. ¿Desbloquear bot retail (`add_to_cart` productos) ahora que no hay drift?
 
 ---
 

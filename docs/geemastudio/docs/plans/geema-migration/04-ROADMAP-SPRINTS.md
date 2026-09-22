@@ -307,7 +307,7 @@ Barbería/peluquería pueden onboardear con defaults sensatos.
 - [x] Owner Geema opera mensajes WA desde panel web (consola staff Plan 11)
 - [ ] Historial + Portafolio en nav WABA
 - [ ] Audit 03 gaps P0 #1, #2, #4 cerrados o en progreso documentado
-- [ ] Drift `whatsapp-webhook` prod reconciliado antes de redeploy bot
+- [x] Drift `whatsapp-webhook` prod reconciliado (22-sep Track C — [09](./09-WEBHOOK-PROD-RECONCILE.md); v655 = ZM `main`)
 
 ---
 

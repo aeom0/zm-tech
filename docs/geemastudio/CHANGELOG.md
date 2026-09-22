@@ -7,6 +7,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Documentado (22-sep 2026 — Track C webhook reconcile)
+
+- **Corrección**: el aviso de que prod `whatsapp-webhook` **v655** no tenía mirror en repos era incorrecto. Diff vs `ZM-Lash-and-Nails-Beauty` `main` (`010b240f`): idéntico. Evidencia en `docs/geemastudio/docs/plans/geema-migration/09-WEBHOOK-PROD-RECONCILE.md` (sync desde ZM).
+- **Pendiente bot retail** (`add_to_cart` productos): ya no bloqueado por drift; sigue pausado porque el kit es solo texto Haiku (sin flujo retail en bot). Desbloqueo = feature en repo ZM.
+
 ### Añadido (22-sep 2026 — Simulador WABA)
 
 - **Web — `/panel/waba/simulador`**: port del chat de prueba (Plan 11 Fase 4). Invoca la Edge Function compartida `waba-chat-simulator` (mismo proyecto Supabase que ZM; sin copiar EF). Sesión Alberto/Vanessa QA, CTWA simulado, taps interactivos. Tab en `WabaNav`.
@@ -29,11 +34,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 - **Web — `/panel/waba/mensajes`**: lista de conversaciones alineada al diseño de referencia de `zmlashnails.com/panel/waba/mensajes`. Nuevo `_components/time.ts` (`formatPhone`, `formatRelativeTime`, `formatAbsoluteWhen`, `isWaBsuidKey`); cada fila muestra avatar circular con badge de ventana 24h (`c.inbound24h`), teléfono formateado y hora combinada absoluta + relativa ("22 sep, 14:30 · hace 2 horas").
 - **Web — `/panel/servicios` → tab "Productos"**: nueva pestaña de catálogo para gestionar productos en venta (antes solo Categorías/Servicios/Packs/Promos). CRUD completo sobre `inventory_items` filtrado por `is_sellable=true` (baja = `is_sellable=false`, no borra la fila). Archivos nuevos: `_services/productosService.ts`, `hooks/servicios/useProductos.ts` (TanStack Query v5), `_components/tabs/ProductosTab.tsx`, `_components/productos/{ProductoCard,ProductoFormModal}.tsx`. Imagen vía nuevo bucket Storage `product-images` (mismo patrón RLS que `promo-images`/`tenant-logos`: lectura pública, escritura solo `owner`/`dev`).
 - **BD producción GeemaStudio (`udelxwwnyivknslueerr`)**: columna `inventory_items.image_url` (nueva) + bucket `product-images` (público) + 4 políticas RLS en `storage.objects`.
-- **Alcance — bot WABA pausado a propósito**: se evaluó conectar la venta de productos al flujo del bot (`add_to_cart` desde Haiku) pero se pausó tras detectar que la Edge Function `whatsapp-webhook` en prod está en la versión desplegada **655** sin código equivalente en ningún repo (`zm-tech` ni `ZM-Lash-and-Nails-Beauty`) — desplegar desde local arriesgaba sobreescribir lógica real no versionada del bot en producción. Hallazgo adicional: hoy el bot no tiene ningún flujo funcional de venta de productos — el "kit shampoo" que ya se muestra a clientes es solo texto estático en el system prompt de Haiku, que explícitamente evita llamar `add_to_cart` para items de retail.
+- **Alcance — bot WABA retail**: kit en Haiku = texto estático (sin `add_to_cart` retail). Conectar Productos al bot es feature en ZM; **no** hay drift de webhook (Track C ✅ 22-sep).
 
 ### Pendiente
 
-- **Bot WABA — conectar Productos a `add_to_cart`**: falta portar la venta de productos (tab Productos → `inventory_items.is_sellable`) al flujo del bot de WhatsApp. Bloqueado hasta reconciliar el drift de `whatsapp-webhook` (prod v655 sin código en ningún repo) — antes de tocar esa Edge Function hay que extraer/versionar su lógica real (descargar el bundle desplegado, ej. `supabase functions download`, y diffearlo contra el repo) para no pisar comportamiento en vivo del bot de ZM Lash. Sin fecha asignada.
+- **Bot WABA — conectar Productos a `add_to_cart`**: kit = texto Haiku hoy. Desbloqueo = feature en repo ZM (Track C cerrado; sin bloqueo por drift). Sin fecha.
 - **`product_orders`**: tabla existe en BD pero no tiene ningún flujo que escriba en ella (ni panel ni bot) — evaluar si se usa para registrar las ventas de producto una vez se conecte el bot, o si se descarta.
 
 ### Añadido (21-sep 2026 — Login rediseñado + theming por tenant + header con logo tenant)

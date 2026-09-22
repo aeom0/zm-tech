@@ -19,9 +19,9 @@ En `zm-tech` `main`:
 - Panel theming / dashboard / PWA por tenant hechos
 - **Tab Productos (catálogo)** en `/panel/servicios?tab=productos` — CRUD `inventory_items` `is_sellable` + bucket `product-images` ✅
 - **Ventas / `product_orders`**: aún sin UI en Geema (tabla existe en BD compartida por ZM)
-- **Bot retail**: pausado a propósito — drift Edge `whatsapp-webhook` prod (v655) vs repos; no conectar `add_to_cart` hasta reconciliar
+- **Bot retail**: pausado por **producto** (kit = texto Haiku; sin flujo `add_to_cart` retail). Track C ✅ — ya no hay bloqueo por drift ([09](./09-WEBHOOK-PROD-RECONCILE.md)); desbloquear = feature en repo ZM.
 
-ZM sigue siendo fuente de verdad del flujo Ventas + Haiku kit hasta cutover / reconciliación.
+ZM sigue siendo fuente de verdad del flujo Ventas + Haiku kit hasta cutover / feature retail en bot.
 
 ## Modelo de datos (prod `udelxwwnyivknslueerr`)
 

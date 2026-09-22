@@ -93,3 +93,4 @@ Implementación sugerida (S2-7):
 | 2026-09-22 | Portafolio WABA Geema (Plan 11 F5.3) | `04` S6-5 ✅; `00` → deep link / simulador |
 | 2026-09-22 | Deep link Clientes→Mensajes (Plan 12 P3) | `04` S6-5b ✅; `00` → Simulador |
 | 2026-09-22 | Simulador WABA Geema (Plan 11 F4) | UI + tab; reusa EF ZM; Track A panel WABA cerrado |
+| 2026-09-22 | Track C webhook reconcile | `09-WEBHOOK-PROD-RECONCILE.md`; v655 = ZM `010b240f`; drift 🔴→🟢 |
