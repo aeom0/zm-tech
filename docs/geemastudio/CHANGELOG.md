@@ -12,7 +12,6 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 - **Launcher**: capas oficiales Android — `adaptive-icon-background.png` (degradado full-bleed) + `adaptive-icon.png` (diamante **48 dp** / ~67 % del viewport 72 dp — máximo de la referencia A/B/C). Ya no se pierde el degradado al reducir el logo.
 - **Push small icon**: silueta ~88 % del canvas 96×96 (antes ~55 %, se veía diminuta).
 - Spec documentada en `docs/INDEX.md` § EAS.
-- Preview QA: `apps/geemastudio-mobile/assets/_previews/launcher-48dp-preview.png` (no va al build).
 
 ### Corregido (22-sep 2026 — launcher icon safe zone)
 
