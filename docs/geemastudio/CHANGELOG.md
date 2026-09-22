@@ -7,9 +7,15 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Documentado (22-sep 2026 — Push FCM capas + versiones)
+
+- **Plan 06**: small icon Geema ✅ (diamante + tint `#3949AB`); large/image expandida = `tenant_settings.logo_url` (Tier 1 pendiente en `send-notification`).
+- **Versiones mobile**: `app.json` / `package.json` → **1.2.0**. `versionCode` Android lo sube EAS (`eas.json` production `autoIncrement` + `appVersionSource: remote`). Última prod era `1.1.0` / versionCode **2** → este build quedará **3**.
+
 ### Cambiado (22-sep 2026 — launcher icon Lunaris)
 
-- **Mobile assets** — `icon.png` / `adaptive-icon.png` regenerados desde `logo-diamondSparkle-icon.svg` al patrón **Canva**: degradado a sangre turquesa→índigo→violeta (Lunaris) + diamante centrado. Adaptive = mismo full-bleed (el degradado llena la máscara). `backgroundColor` fallback `#3949AB`.
+- **Mobile assets** — `icon.png` / `adaptive-icon.png` desde `logo-diamondSparkle-icon.svg` (patrón Canva: degradado Lunaris a sangre + diamante de `logo-diamondSparkle-adaptive.svg` al **88 %** ancho y **+20 px** abajo). Adaptive = mismo full-bleed; `backgroundColor` fallback `#3949AB`.
+- **Push small icon** — `notification-icon.png` (silueta blanca 96×96) + plugin `expo-notifications` tint `#3949AB`.
 
 ### Añadido (22-sep 2026 — Push FCM E2E / PR-09 P0)
 

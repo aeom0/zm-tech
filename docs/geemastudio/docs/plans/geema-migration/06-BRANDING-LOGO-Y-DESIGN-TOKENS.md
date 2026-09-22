@@ -56,7 +56,17 @@ RLS: `authenticated` con `tenant_slug = current_tenant_id()` — lectura/escritu
 ## Push FCM — branding por tenant (bosquejo)
 
 **Fecha bosquejo:** 2026-08-29  
-**Estado:** Planificado — depende de S5B-1 (Storage) y S4 tenant-aware en Edge Functions
+**Actualizado:** 2026-09-22 (PR-09)  
+**Estado:** Small icon Geema ✅ (APK). Large/image por tenant → Tier 1 pendiente (`send-notification` + `logo_url`).
+
+### Hecho 22-sep (PR-09 / Geema APK)
+
+| Pieza | Valor |
+|-------|--------|
+| Small icon | `apps/geemastudio-mobile/assets/notification-icon.png` — silueta blanca diamante + alpha |
+| Tint | `#3949AB` (índigo Lunaris) vía plugin `expo-notifications` |
+| Fuente SVG | `notification-icon.svg` |
+| Large / `android.notification.image` | **No** en este build — ver decisión producto abajo |
 
 ### Referencia ZM (single-tenant, hoy)
 
@@ -73,19 +83,20 @@ El **small icon** de Android debe ser silueta **blanca sobre transparente** (sol
 | Capa | Dónde se ve | ¿Dinámico por tenant en una sola app Geema? |
 |------|-------------|---------------------------------------------|
 | **Small icon** | Barra de estado (silueta monocromática) | ❌ Casi no — drawable **embebido en el APK** |
-| **Rich image + color** | Notificación expandida + tinte de acento | ✅ Sí — campos FCM v1 por mensaje |
+| **Rich image + color** | Notificación expandida + tinte de acento | ✅ Sí — campos FCM v1 por mensaje (`logo_url` del tenant) |
 
-FCM permite `android.notification.icon`, pero el valor es el **nombre de un drawable local** (`res/drawable/…`), no una URL. No hay API estándar para cambiar el small icon por tenant en runtime sin código nativo extra.
+FCM permite `android.notification.icon`, pero el valor es el **nombre de un drawable local** (`res/drawable/…`), no una URL. No hay API estándar para cambiar el small icon por tenant en runtime sin código nativo extra. Expo plugin aún no expone `large_notification_icon` local (TODO upstream).
 
-### Decisión de producto (Geema SaaS)
+### Decisión de producto (Geema SaaS) — confirmada 22-sep
 
 | Superficie push | Marca |
 |-----------------|--------|
-| Small icon barra de estado (APK Geema compartido) | **Geema** — silueta neutra fija en `app.json` |
-| Imagen expandida + color de acento en cada push | **Tenant** — `logo_url` + `primary_color` desde BD |
-| APK white-label por cliente premium | **Tenant** — `notification-icon.png` del tenant en build |
+| Small icon barra de estado (APK Geema compartido) | **Geema** — diamante silueta + tint `#3949AB` |
+| Imagen expandida (`android.notification.image`) | **Tenant** — `tenant_settings.logo_url` (logo a color) |
+| Color acento push | **Tenant** — `primary_color` (fallback Lunaris) |
+| APK white-label por cliente premium | **Tenant** — `notification-icon.png` del tenant en build (opcional) |
 
-La clienta/staff ve sobre todo la **imagen expandida y el tinte**; el small icon genérico Geema es aceptable en v1 multi-tenant.
+**Siguiente (no bloquea build):** extender EF `send-notification` (repo ZM, Opción A) para resolver `profiles.tenant_id` → `tenant_settings.logo_url` / `primary_color` y rellenar `image` + `color` en el payload. Fallback: sin image si el tenant no tiene logo.
 
 ### Modelo Storage (extensión logo)
 

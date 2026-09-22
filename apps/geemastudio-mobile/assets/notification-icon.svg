@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  notification-icon — Android small icon (Expo)
+  Silueta blanca opaca + fondo transparente. Tint app.json: #3949AB
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <g transform="translate(48,50) scale(0.30) translate(-130,-177.5)">
+    <polygon points="74,85  186,85  234,130  130,270  26,130" fill="#FFFFFF"/>
+    <polygon points="127.5,94  132.5,94  130,20"  fill="#FFFFFF"/>
+    <polygon points="127.5,94  132.5,94  130,160" fill="#FFFFFF"/>
+    <polygon points="128.2,95.7  131.8,92.3  70,40"  fill="#FFFFFF"/>
+    <polygon points="128.2,92.3  131.8,95.7  190,40" fill="#FFFFFF"/>
+  </g>
+</svg>
