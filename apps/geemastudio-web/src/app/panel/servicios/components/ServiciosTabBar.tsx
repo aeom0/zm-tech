@@ -1,12 +1,13 @@
 'use client'
 
-type TabId = 'categorias' | 'servicios' | 'packs' | 'promos'
+type TabId = 'categorias' | 'servicios' | 'packs' | 'promos' | 'productos'
 
 const TABS: { id: TabId; label: string; disabled?: boolean }[] = [
   { id: 'categorias', label: 'Categorías' },
   { id: 'servicios', label: 'Servicios' },
   { id: 'packs', label: 'Packs' },
   { id: 'promos', label: 'Promos' },
+  { id: 'productos', label: 'Productos' },
 ]
 
 export function ServiciosTabBar({

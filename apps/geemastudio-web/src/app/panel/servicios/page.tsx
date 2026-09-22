@@ -8,6 +8,7 @@ import { CategoriasTab } from './components/CategoriasTab'
 import { ServiciosTab } from './components/ServiciosTab'
 import { PacksTab } from './_components/tabs/PacksTab'
 import { PromosTab } from './_components/tabs/PromosTab'
+import { ProductosTab } from './_components/tabs/ProductosTab'
 import { CategoriaModal } from './components/CategoriaModal'
 import { ServicioModal } from './components/ServicioModal'
 
@@ -19,7 +20,7 @@ import {
 } from '@/hooks/servicios/useCategorias'
 import { useUpsertServicio, type ServicioRow } from '@/hooks/servicios/useServicios'
 
-const TAB_IDS: TabId[] = ['categorias', 'servicios', 'packs', 'promos']
+const TAB_IDS: TabId[] = ['categorias', 'servicios', 'packs', 'promos', 'productos']
 
 function tabDesdeSearchParams(searchParams: URLSearchParams): TabId {
   const raw = searchParams.get('tab')?.toLowerCase()
@@ -57,6 +58,7 @@ export default function PanelServiciosPage() {
       servicios: 'Servicios',
       packs: 'Packs',
       promos: 'Promos',
+      productos: 'Productos',
     }),
     []
   )
@@ -110,7 +112,7 @@ export default function PanelServiciosPage() {
         <div className="text-xs text-zinc-500">Panel</div>
         <h1 className="text-2xl font-bold text-white">{headerTitle}</h1>
         <p className="mt-1 text-sm text-zinc-400">
-          Configura tu catálogo: categorías, servicios, packs y promos.
+          Configura tu catálogo: categorías, servicios, packs, promos y productos.
         </p>
       </div>
 
@@ -143,6 +145,7 @@ export default function PanelServiciosPage() {
 
       {activeTab === 'packs' && <PacksTab />}
       {activeTab === 'promos' && <PromosTab />}
+      {activeTab === 'productos' && <ProductosTab />}
 
       <CategoriaModal
         open={categoriaModalOpen}
