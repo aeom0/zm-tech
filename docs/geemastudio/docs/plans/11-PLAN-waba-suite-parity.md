@@ -1,6 +1,6 @@
 # WABA — paridad de suite GeemaStudio vs. ZM Lash + deuda técnica
 
-> Estado: **en implementación** (actualizado 21-sep-2026) — Fase 2 (Editor Haiku) hecha; Fase 3 100% cerrada (P0/P1/P1.5/P2); Fase 5 ítem 1 (Campañas) hecho.
+> Estado: **en implementación** (actualizado 21-sep-2026) — Fase 0 confirmada resuelta; Fase 1 confirmada no-bloqueante (ver nota abajo); Fase 2 (Editor Haiku) hecha; Fase 3 100% cerrada (P0/P1/P1.5/P2); Fase 5 ítem 1 (Campañas) hecho.
 >
 > **Complemento obligatorio:** la paridad del panel **completo** (finanzas ejecutiva, shell, clientes→WA, crons del bot, promo broadcast, tenant scoping) vive en [`12-PLAN-panel-parity-zm-lash.md`](12-PLAN-panel-parity-zm-lash.md). Este Plan 11 solo cubre la suite WABA + deuda; no alcanza solo para "panel Geema ≥ ZM".
 
@@ -18,28 +18,38 @@ Investigación (3 agentes Explore + lectura directa de `20260406_waba_multitenan
 Ambos deben resolverse primero; todo lo demás en WABA se construye sobre estas dos tablas.
 
 > **Nota (21-sep-2026, port de Campañas):** al portar la pestaña Campañas (`/panel/waba/campanas`, ver Fase 5 más abajo) se verificó en vivo lo contrario a lo que asume este bloqueo: `resolveTenantSlugForWrites()` (slug de texto) **ya guarda correctamente** vía `useHaikuConfig.ts` en producción, y las lecturas `SELECT * FROM waba_config WHERE category = '...'` con la anon key **ya devuelven datos reales** (45 filas de `campanas` para `zm-lash-nails`) sin pasar por ninguna API route server-side. Es decir, ninguno de los dos bloqueos de Fase 1 se confirmó al construir sobre estas tablas — o ya fueron resueltos informalmente en prod, o el análisis original era incorrecto. No se investigó a fondo el porqué (posible RLS con policy adicional para `authenticated` no documentada aquí, o columna `tenant_id` ya en texto pese a lo que dice la migración versionada). Antes de invertir en la Fase 1 tal como está escrita (mover todo a API routes, migrar a UUID), confirmar con Alberto el estado real de la columna/policies — puede que ya no sea bloqueante.
+>
+> **Confirmado (21-sep-2026, `execute_sql` solo lectura sobre `udelxwwnyivknslueerr`):** ambos bloqueos de Fase 1 son inexistentes en prod hoy, la migración versionada `20260406_waba_multitenant.sql` no refleja el estado real de la BD.
+> - `information_schema.columns` muestra `waba_config.tenant_id`, `wa_messages.tenant_id` y `whatsapp_sessions.tenant_id` como **`text`**, no `uuid` — coincide con lo que escribe `resolveTenantSlugForWrites()` (slug). No hay FK a `tenant_settings(id)` en ninguna de las tres tablas (`information_schema.table_constraints` solo devuelve `waba_config_updated_by_fkey`). El "bug de tipo" descrito arriba no existe en la BD real; probablemente la migración versionada quedó desactualizada respecto a un `ALTER TABLE` aplicado directo en el Dashboard.
+> - `pg_policies` muestra políticas reales por tabla, no solo `service_role_only`: `waba_config_admin_only`, `admins_read_wa_messages`/`admins_delete_wa_messages`, `"Whatsapp sessions admin only"` — todas condicionadas a `profiles.role IN ('dev','owner')` (o `is_admin()`) **y** `tenant_id = current_tenant_id()`. `current_tenant_id()` lee el claim `tenant_id` del JWT (`auth.jwt() ->> 'tenant_id'`), es decir texto — coherente con el slug que usa el panel, no con UUID.
+>
+> **Conclusión:** Fase 1 tal como está redactada (migrar a UUID + mover todo a API routes) no aplica al estado actual de prod — haría **más** frágil el acceso (rompería el JWT claim `tenant_id` que ya funciona) sin resolver ningún bug real. Se cierra sin cambios de código. Si en el futuro se necesita mover a API routes (p. ej. por auditoría/logging), es una decisión de arquitectura nueva, no una corrección de bug.
 
 **Fuera de alcance explícito**: el "go live" de ZM en GeemaStudio (DNS + activar fila real `zm-lash-nails`) — eso requiere aprobación aparte de Vanessa/Alberto y ya está documentado como pendiente en [`10-PLAN-mi-web-cms-fase2.md`](10-PLAN-mi-web-cms-fase2.md). Todo el trabajo de este plan se prueba con un tenant/teléfono de prueba dentro de GeemaStudio.
 
 ## Fase 0 — Deuda técnica (independiente de WABA, hacer primero)
 
-1. **`apps/geemastudio-mobile/screens/finances/hooks/useFinancesData.ts:352-360`**: quitar `e.id === 'emp-vanessa'` y el fallback `.name.toLowerCase().includes('vanessa')`. Dejar solo `employeesList.find((e) => e.role === 'owner')`. El fallback por nombre es peligroso en multi-tenant (puede atribuir house-cut a un empleado que se llame "Vanessa" en otro tenant) y no protege el caso real que pretendía cubrir.
-2. **`apps/geemastudio-web/src/app/finanzas/login/page.tsx:9-16`**: `DEMO_PASSWORD`/`DEMO_EMAILS` siempre activos sin gate de entorno. Gatear detrás de `process.env.NEXT_PUBLIC_DEMO_LOGIN_ENABLED === 'true'` (default false en prod). Confirmar antes con Alberto si el prefill demo es un tour de ventas intencional — si sí, documentar por qué se deja público en vez de gatear.
-3. **`apps/geemastudio-web/src/app/panel/configuracion/page.tsx` (~línea 490)**: el copy "Informativo por ahora — Geema no enruta dominio custom aún" quedó stale desde que se implementó `middleware.ts` (commit `065f9c10`). Actualizar el texto para reflejar que el routing técnico ya existe y solo falta el paso operativo (DNS + flag) de activación.
+> **Cerrada (21-sep-2026) — los 3 items ya estaban resueltos en el código actual, sin registro en este plan de cuándo/cómo.** Verificado por lectura directa, no se tocó código en esta revisión:
+> 1. `useFinancesData.ts` — no queda ningún `emp-vanessa`/fallback por nombre; línea 353 usa solo `employeesList.find((e) => e.role === 'owner')`.
+> 2. `finanzas/login/page.tsx` — no existe `DEMO_PASSWORD`/`DEMO_EMAILS` ni prefill demo; el archivo (147 líneas) es un login estándar con `useAuth().login(email, password)`.
+> 3. `panel/configuracion/page.tsx` (~línea 490) — el copy ya dice "El routing técnico ya está listo — falta el paso operativo: apuntar el DNS de tu dominio a Geema y activarlo", no el texto stale original.
+
+1. ~~**`apps/geemastudio-mobile/screens/finances/hooks/useFinancesData.ts:352-360`**: quitar `e.id === 'emp-vanessa'` y el fallback `.name.toLowerCase().includes('vanessa')`.~~
+2. ~~**`apps/geemastudio-web/src/app/finanzas/login/page.tsx:9-16`**: gatear `DEMO_PASSWORD`/`DEMO_EMAILS`.~~
+3. ~~**`apps/geemastudio-web/src/app/panel/configuracion/page.tsx` (~línea 490)**: actualizar copy de dominio custom stale.~~
 
 Verificación: `pnpm lint`, `pnpm check:types` en `geemastudio-web`/`geemastudio-mobile`.
 
 ## Fase 1 — Fundaciones WABA (bloqueante para todo lo demás)
 
-1. **Confirmar estado real en prod** (`udelxwwnyivknslueerr`) del tipo de `waba_config.tenant_id` y si ya existen filas — usar `mcp__SupabaseZMTech__execute_sql` (solo lectura) antes de asumir que el archivo de migración versionado refleja la realidad.
-2. **Unificar en UUID** (el bot real, fuente de verdad activa, ya usa UUID): reemplazar `resolveTenantSlugForWrites()` en `apps/geemastudio-web/src/hooks/waba/useWabaStatus.ts` por resolución del UUID de `tenant_settings.id` (ya calculado como `tenantSettingsId` en `useWabaStatus()` — reusar esa fuente en vez del parseo manual de JWT). Si hay filas existentes con `tenant_id` de texto, backfill vía migración de datos aplicada por Dashboard SQL Editor o Management API (el pooler está bloqueado en WSL) — **marcar para confirmación explícita de Alberto antes de aplicar a prod**.
-3. **Resolver RLS**: mover las lecturas/escrituras del panel detrás de API routes server-side de Next.js que usan `supabaseAdmin` y validan sesión + rol (`dev|owner|staff`) manualmente, en vez de exponer estas tablas a RLS por JWT claim (frágil, como ya demuestra el parseo actual). Crear:
-   - `apps/geemastudio-web/src/app/api/waba/config/route.ts` (GET/PUT `waba_config`)
-   - `apps/geemastudio-web/src/app/api/waba/messages/route.ts` (GET conversaciones/hilo)
-   - Actualizar `useHaikuConfig.ts` y `useWabaMessages.ts` para llamar estas rutas en vez de `supabase.from(...)` directo desde el browser.
-4. **Eliminar o documentar el webhook huérfano** `apps/geemastudio-web/src/app/api/waba/webhook/route.ts` (usa `waba_inbound_messages`, tabla inexistente en migraciones). Verificar primero con grep que nada en Meta Business Manager apunta a esta ruta antes de borrar; si no se puede confirmar, dejar TODO explícito en vez de eliminar a ciegas.
+> **Cerrada (21-sep-2026) — items 1-3 no aplican al estado real de prod, confirmado por SQL de solo lectura (ver nota arriba). Item 4 sigue abierto, no investigado en esta revisión.**
 
-Verificación: `pnpm check:types`, `pnpm lint`; crear tenant de prueba con `features_waba=true` y un `waba_phone_number_id` sandbox; guardar un config desde el panel y confirmar por `execute_sql` (MCP, solo lectura) que la fila queda con el mismo `tenant_id` (UUID) que usa el webhook para ese `phone_number_id`. Confirmar también que un `fetch` directo del browser con la anon key contra `wa_messages`/`waba_config` sigue denegado (RLS intacto) y que solo las nuevas API routes tienen acceso.
+1. ~~**Confirmar estado real en prod**~~ — hecho: `tenant_id` es `text` en las 3 tablas, sin FK a `tenant_settings`.
+2. ~~**Unificar en UUID**~~ — no aplica: no hay bug, el panel y el bot ya coinciden en usar texto (slug) via el claim JWT `tenant_id`. Migrar a UUID *introduciría* una regresión, no la arreglaría.
+3. ~~**Resolver RLS**~~ — no aplica: ya existen policies reales por tabla (`waba_config_admin_only`, `admins_read_wa_messages`, `admins_delete_wa_messages`, `"Whatsapp sessions admin only"`), todas con `role IN ('dev','owner')` + `tenant_id = current_tenant_id()`. No hay que mover nada a API routes para resolver un bloqueo — ese bloqueo no existe.
+4. **Eliminar o documentar el webhook huérfano** `apps/geemastudio-web/src/app/api/waba/webhook/route.ts` — **confirmado roto** (21-sep-2026): la tabla `waba_inbound_messages` que usa para el INSERT no existe en `udelxwwnyivknslueerr` (`information_schema.tables` no la lista). Cualquier request real a esta ruta fallaría con error 500 al escribir. No se puede confirmar desde el repo si Meta Business Manager tiene esta URL configurada como webhook activo — requiere revisar el panel de Meta directamente, algo que Alberto debe confirmar antes de borrar el archivo (si Meta sí le pega, borrarlo rompe la recepción silenciosamente; si no le pega, es código muerto seguro de eliminar).
+
+Verificación (histórica, ya no aplica a 1-3): ~~`pnpm check:types`, `pnpm lint`; crear tenant de prueba...~~
 
 ## Fase 2 — Editor Haiku completo
 
