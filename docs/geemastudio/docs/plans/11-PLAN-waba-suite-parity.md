@@ -1,6 +1,6 @@
 # WABA — paridad de suite GeemaStudio vs. ZM Lash + deuda técnica
 
-> Estado: **en implementación** (actualizado 21-sep-2026) — Fase 0 confirmada resuelta; Fase 1 confirmada no-bloqueante (ver nota abajo); Fase 2 (Editor Haiku) hecha; Fase 3 100% cerrada (P0/P1/P1.5/P2); Fase 5 ítem 1 (Campañas) hecho.
+> Estado: **en implementación** (actualizado 21-sep-2026) — Fase 0 confirmada resuelta; Fase 1 100% cerrada (bloqueos originales no aplicaban + webhook huérfano eliminado); Fase 2 (Editor Haiku) hecha; Fase 3 100% cerrada (P0/P1/P1.5/P2); Fase 5 ítem 1 (Campañas) hecho.
 >
 > **Complemento obligatorio:** la paridad del panel **completo** (finanzas ejecutiva, shell, clientes→WA, crons del bot, promo broadcast, tenant scoping) vive en [`12-PLAN-panel-parity-zm-lash.md`](12-PLAN-panel-parity-zm-lash.md). Este Plan 11 solo cubre la suite WABA + deuda; no alcanza solo para "panel Geema ≥ ZM".
 
@@ -47,7 +47,7 @@ Verificación: `pnpm lint`, `pnpm check:types` en `geemastudio-web`/`geemastudio
 1. ~~**Confirmar estado real en prod**~~ — hecho: `tenant_id` es `text` en las 3 tablas, sin FK a `tenant_settings`.
 2. ~~**Unificar en UUID**~~ — no aplica: no hay bug, el panel y el bot ya coinciden en usar texto (slug) via el claim JWT `tenant_id`. Migrar a UUID *introduciría* una regresión, no la arreglaría.
 3. ~~**Resolver RLS**~~ — no aplica: ya existen policies reales por tabla (`waba_config_admin_only`, `admins_read_wa_messages`, `admins_delete_wa_messages`, `"Whatsapp sessions admin only"`), todas con `role IN ('dev','owner')` + `tenant_id = current_tenant_id()`. No hay que mover nada a API routes para resolver un bloqueo — ese bloqueo no existe.
-4. **Eliminar o documentar el webhook huérfano** `apps/geemastudio-web/src/app/api/waba/webhook/route.ts` — **confirmado roto** (21-sep-2026): la tabla `waba_inbound_messages` que usa para el INSERT no existe en `udelxwwnyivknslueerr` (`information_schema.tables` no la lista). Cualquier request real a esta ruta fallaría con error 500 al escribir. No se puede confirmar desde el repo si Meta Business Manager tiene esta URL configurada como webhook activo — requiere revisar el panel de Meta directamente, algo que Alberto debe confirmar antes de borrar el archivo (si Meta sí le pega, borrarlo rompe la recepción silenciosamente; si no le pega, es código muerto seguro de eliminar).
+4. ~~**Eliminar o documentar el webhook huérfano**~~ — **eliminado (21-sep-2026)**. Confirmado por Graph API (`GET /{WABA_ID}/subscribed_apps` con `WHATSAPP_ACCESS_TOKEN` de zm-lash) que existe una única app de Meta suscrita a este WABA: `ZMLashNails_Oficial` (app_id `2508770349526249`) — Alberto confirmó que es la única app que ha creado. El bot real de ZM corre por la Edge Function `whatsapp-webhook` de Supabase, no por Next.js, así que esa app no puede estar apuntando a `apps/geemastudio-web`. Se borró `apps/geemastudio-web/src/app/api/waba/webhook/route.ts` (y la carpeta `api/waba/` que quedó vacía) más la sección "Webhook WABA (Meta)" de `docs/geemastudio/README.md`, que documentaba este endpoint nunca terminado (escribía a `public.waba_inbound_messages`, tabla inexistente en prod).
 
 Verificación (histórica, ya no aplica a 1-3): ~~`pnpm check:types`, `pnpm lint`; crear tenant de prueba...~~
 
