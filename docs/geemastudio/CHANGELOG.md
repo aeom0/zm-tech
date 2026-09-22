@@ -7,6 +7,10 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Cambiado (22-sep 2026 — launcher icon Lunaris)
+
+- **Mobile assets** — `icon.png` / `adaptive-icon.png` regenerados desde `logo-diamondSparkle-icon.svg` al patrón **Canva**: degradado a sangre turquesa→índigo→violeta (Lunaris) + diamante centrado. Adaptive = mismo full-bleed (el degradado llena la máscara). `backgroundColor` fallback `#3949AB`.
+
 ### Añadido (22-sep 2026 — Push FCM E2E / PR-09 P0)
 
 - **Mobile** — `useNotifications`: persiste `profiles.push_token` (FCM nativo); canales Android `{businessName} · …`; tap `waba_chat` → panel Geema `?phone=`; cold start.
