@@ -3,6 +3,8 @@
 > Estado: **en curso** (actualizado 22-sep-2026). Complementa [`11-PLAN-waba-suite-parity.md`](11-PLAN-waba-suite-parity.md).
 >
 > Meta: el panel web de Geema (`apps/geemastudio-web`) debe ser **igual o superior** al de ZM Lash canónico (`ZM-Lash-and-Nails-Beauty/apps/web`) antes de migrar a Vanessa como tenant real.
+>
+> **Hecho 22-sep:** Plan 11 WABA suite + Plan 12 P1/P2 finanzas. **Siguiente:** Fase X Push FCM (PR-09).
 
 ## Relación con Plan 11
 
@@ -25,7 +27,7 @@ Leyenda: ✅ paridad · 🟡 parcial · ❌ falta · ➕ Geema ya superior
 
 | Módulo web | ZM Lash | Geema | Veredicto |
 |------------|---------|-------|-----------|
-| Shell / nav unificado | Fragmentado (`/finanzas`, `/clientes`, `/servicios`, `/panel/waba`) | `/panel/*` + shells separados finanzas/dashboard | ➕ estructura Geema; 🟡 faltan links cruzados |
+| Shell / nav unificado | Fragmentado (`/finanzas`, `/clientes`, `/servicios`, `/panel/waba`) | `/panel/*` + link Finanzas en PanelShell/Más/Inicio ✅ 22-sep | ➕ |
 | Dashboard KPIs | Solo mobile | `/panel` + `/dashboard` | ➕ |
 | Agenda | Solo mobile | Grilla **read-only** | ➕ vista; 🟡 sin CRUD |
 | Catálogo (cats/servicios/packs/promos) | `/servicios` | `/panel/servicios` | ✅ |
@@ -34,8 +36,8 @@ Leyenda: ✅ paridad · 🟡 parcial · ❌ falta · ➕ Geema ya superior
 | Personal | Solo mobile | CRUD web | ➕ |
 | Horarios / timezone | Mobile | `/panel/horarios` | ➕ |
 | Config + CMS landing | Sanity externo | `/panel/configuracion` + `/web` | ➕ |
-| Finanzas operativas | `/finanzas` | `/finanzas` multi-tenant | 🟡 |
-| Finanzas **ejecutiva** (P&L, gastos, break-even) | `ExecutiveDashboard` + 10 componentes | ❌ web (🟡 mobile) | ❌ |
+| Finanzas operativas | `/finanzas` Detalle | `/finanzas` Detalle multi-tenant | ✅ |
+| Finanzas **ejecutiva** (P&L, gastos, break-even) | `ExecutiveDashboard` | `/finanzas` Resumen ✅ 22-sep (Plan 12 P1) | ✅ |
 | Inventario | Solo mobile | ❌ web · ✅ mobile | ❌ (ambos sin web) |
 | Validación pagos / Asignar staff | Solo mobile | Solo mobile | ❌ web (aceptable si se documenta mobile-first) |
 | WABA tabs | **6** (+ simulador) | **7** (estado + 6 de ZM) | ✅ (Geema tiene Estado extra) |
@@ -43,7 +45,8 @@ Leyenda: ✅ paridad · 🟡 parcial · ❌ falta · ➕ Geema ya superior
 | WABA historial | Analytics desktop | `/panel/waba/historial` ✅ 22-sep | ✅ |
 | WABA portafolio | Hasta 4 fotos/servicio | `/panel/waba/portafolio` ✅ 22-sep | ✅ |
 | WABA simulador | Chat QA fidelidad total | `/panel/waba/simulador` ✅ 22-sep (reusa EF ZM) | ✅ |
-| Edge Functions bot/ops | **~25** (repo ZM, BD compartida) | Panel reusa EFs ZM; webhook Geema incompleto | 🟡 drift prod v655 |
+| Edge Functions bot/ops | **~25** (repo ZM, BD compartida) | Panel reusa EFs ZM; **bot canónico ZM** (Track C ✅ v655=`main`) | 🟢 Opción A |
+| Push FCM E2E | Operativo (ZM APK) | Stub mobile (~15%); **siguiente = Fase X / PR-09** | ❌ |
 
 Evidencia nav (22-sep):
 
@@ -59,16 +62,16 @@ Evidencia nav (22-sep):
 
 | # | Hueco | Por qué importa para Vanessa |
 |---|-------|------------------------------|
-| G1 | Finanzas ejecutiva web | ZM la usa en desktop diario (`finanzas/components/executive/*`) |
-| G2 | Deep link Clientes → hilo WABA | Flujo ops: CRM → chat sin copiar teléfono |
-| G3 | Shell: PanelShell ↔ `/dashboard` ↔ `/finanzas` | Hoy hay que recordar 3 URLs; ZM al menos agrupa AdminNav |
-| G4 | Crons / nudges / recordatorios (11+ EFs ZM) | Panel perfecto + bot sin recordatorios = funnel roto |
-| G5 | `countOverlappingAppointments` en webhook Geema | Doble reserva vía bot |
-| G6 | Promo broadcast WA + Reenganchar | Prod ZM (`send-promo-whatsapp`, `send-retouch-reengage`). **Envío masivo (mobile) hecho 21-sep-2026** — ver R5; `send-retouch-reengage` sigue pendiente |
-| G7 | Push FCM E2E | Token se obtiene y se descarta (TODO L66); sin EF `send-notification` en repo Geema; callers `payment.ts` invocan EF inexistente; sin Firebase Android `com.geemastudio.app`. Ver Fase X / checklist P1–P23 |
+| G1 | ~~Finanzas ejecutiva web~~ | ✅ 22-sep `/finanzas` Resumen (Plan 12 P1) |
+| G2 | ~~Deep link Clientes → hilo WABA~~ | ✅ 22-sep `ClientDetailDrawer` + `waPhone.ts` |
+| G3 | ~~Shell: PanelShell ↔ `/finanzas`~~ | ✅ 22-sep (card Inicio + Más + breadcrumb Panel) |
+| G4 | Crons / nudges / recordatorios (11+ EFs ZM) | Panel perfecto + bot sin recordatorios = funnel roto → S4 |
+| G5 | `countOverlappingAppointments` en webhook Geema | N/A Opción A — bot solo ZM (Track C); no mantener webhook Geema |
+| G6 | Promo broadcast WA + Reenganchar | Prod ZM. **Envío masivo mobile** hecho 21-sep — ver R5; `send-retouch-reengage` sigue pendiente |
+| G7 | Push FCM E2E | **Siguiente** — Fase X / PR-09. Token se obtiene y se descarta (TODO L66); sin Firebase `com.geemastudio.app`. BD compartida ya tiene `send-notification` (repo ZM) |
 | G8 | Tenant scoping global en hooks web | Plan 11 solo arregla tablas WABA vía API routes |
 | G9 | Legal por jurisdicción tenant | ZM tiene términos/privacidad/libro reclamaciones |
-| G10 | Docs stale (`WEB_ARCHITECTURE`, audit 03, resumen migración) | CMS web ya existe; panel P1 ya no es "pendiente" |
+| G10 | Docs stale (`WEB_ARCHITECTURE`, audit 03) | CMS web ya existe; finanzas P1 ✅ — limpiar restos |
 
 ### B. Dentro de Plan 11 pero mal priorizados
 
@@ -189,6 +192,14 @@ APK → getDevicePushTokenAsync() → profiles.push_token
 
 Ref: `ZM-Lash-and-Nails-Beauty/apps/mobile/hooks/useNotifications.ts`, `supabase/functions/send-notification/`, `whatsapp-webhook/lib/notify.ts` (ClientChat, PausedReply, WaError, QA guard).
 
+#### Nota Opción A (22-sep, post Track C)
+
+BD compartida `udelxwwnyivknslueerr`: la EF **`send-notification` ya corre en prod** desde repo ZM. No hace falta un segundo webhook Geema. Para PR-09:
+
+1. **Mobile Geema** debe persistir `profiles.push_token` (mismo schema).
+2. Decidir Firebase: app Android `com.geemastudio.app` + SA en el mismo secreto `FCM_SERVICE_ACCOUNT`, **o** reutilizar proyecto Firebase ZM solo para smoke Vanessa (menos limpio multi-tenant).
+3. Checklist P5 “port EF a geemastudio-server” = opcional si se sigue desplegando solo desde ZM; sí hace falta el **caller** correcto desde bot (ya en ZM `notify.ts`) y CI que no deje la EF huérfana.
+
 #### Checklist Done — Push (estilo inbox M\*)
 
 ##### P0 — E2E mínimo (cierra PR-09)
@@ -287,7 +298,7 @@ Sprint F  Promo broadcast (R5) |  Push P2 (P18–P23) |  decisión inventario/va
 | Área | Path |
 |------|------|
 | Finanzas ejecutiva ZM | `ZM-Lash-and-Nails-Beauty/apps/web/src/app/finanzas/components/executive/` |
-| Finanzas Geema | `apps/geemastudio-web/src/app/finanzas/page.tsx` |
+| Finanzas Geema | `apps/geemastudio-web/src/app/finanzas/` (+ `components/executive/*`, hooks `executive*`) |
 | Executive mobile Geema | `apps/geemastudio-mobile/screens/finances/hooks/useExecutiveSummary.ts` |
 | PanelShell | `apps/geemastudio-web/src/app/panel/PanelShell.tsx` |
 | Clientes Geema | `apps/geemastudio-web/src/app/panel/clientes/` |

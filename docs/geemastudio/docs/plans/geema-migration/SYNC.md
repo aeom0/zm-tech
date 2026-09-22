@@ -95,3 +95,4 @@ Implementación sugerida (S2-7):
 | 2026-09-22 | Simulador WABA Geema (Plan 11 F4) | UI + tab; reusa EF ZM; Track A panel WABA cerrado |
 | 2026-09-22 | Track C webhook reconcile | `09-WEBHOOK-PROD-RECONCILE.md`; v655 = ZM `010b240f`; drift 🔴→🟢 |
 | 2026-09-22 | Plan 12 P1/P2 finanzas ejecutiva Geema | Resumen+Detalle `/finanzas`; PanelShell + card Inicio |
+| 2026-09-22 | Docs alineados pre–Push FCM | Plan 12 scorecard/G*; 09 siguiente → PR-09; README |

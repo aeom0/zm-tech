@@ -16,6 +16,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 - **Corrección**: el aviso de que prod `whatsapp-webhook` **v655** no tenía mirror en repos era incorrecto. Diff vs `ZM-Lash-and-Nails-Beauty` `main` (`010b240f`): idéntico. Evidencia en `docs/geemastudio/docs/plans/geema-migration/09-WEBHOOK-PROD-RECONCILE.md` (sync desde ZM).
 - **Pendiente bot retail** (`add_to_cart` productos): ya no bloqueado por drift; sigue pausado porque el kit es solo texto Haiku (sin flujo retail en bot). Desbloqueo = feature en repo ZM.
+- Plan 12 scorecard/G*: finanzas+shell ✅; **siguiente = Fase X Push FCM (PR-09)**. Nota Opción A: `send-notification` ya en prod (repo ZM / BD compartida).
 
 ### Añadido (22-sep 2026 — Simulador WABA)
 

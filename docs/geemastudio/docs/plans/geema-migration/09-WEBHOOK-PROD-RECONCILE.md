@@ -49,6 +49,6 @@ CLI `supabase functions download` en esta versión de CLI **no** acepta `--outpu
 
 ## Siguiente
 
-- Track A resto: finanzas ejecutiva web (Plan 12 P1), push mobile Geema (S6-7).
+- **Push FCM Geema** — Plan 12 Fase X / PR-09 (S6-7); checklist P0→P1 en `12-PLAN-panel-parity-zm-lash.md`.
 - Track B / S4: crons tenant-aware antes del 2.º tenant.
 - Si se toca bot retail: rama+PR en ZM, QA, deploy; sin redeploy “a ciegas” desde Geema.
