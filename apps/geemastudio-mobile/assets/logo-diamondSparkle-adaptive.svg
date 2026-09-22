@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  FOREGROUND Adaptive Icon — logo ~42 dp (398 px)
-  Safe 66 dp / viewport 72 dp / canvas 108 dp. ~65% del círculo → degradado visible.
+  FOREGROUND Adaptive Icon — logo 48 dp (455 px) = máximo de la referencia.
+  Canvas 108 dp | viewport ~72 dp | safe <=66 dp. ~67% del círculo visible.
+  Spec: developer.android.com/.../icon_design_adaptive
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
   <defs>
@@ -19,7 +20,7 @@
       <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
     </linearGradient>
   </defs>
-  <g transform="translate(232.17, 129.92) scale(2.1526)">
+  <g transform="translate(192.19, 75.34) scale(2.4601)">
 
     <polygon points="74,85  101,85  95,128"        fill="#888888"/>
     <polygon points="74,85  95,128  26,128"         fill="#444444"/>
