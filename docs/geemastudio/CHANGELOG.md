@@ -7,6 +7,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido (22-sep 2026 — Finanzas ejecutiva web)
+
+- **Web — `/finanzas`**: vista **Resumen** (KPIs ingresos/gastos/ads/utilidad, charts Recharts, mix, ranking, break-even) + **Detalle** (operativo previo). RPCs `get_monthly_*` scoped por `profiles.tenant_id`. Toggle Resumen|Detalle; moneda del tenant.
+- **Panel**: link Finanzas en `PanelShell` (Negocio + Más) y card en `/panel` inicio. Breadcrumb finanzas → Panel / Dashboard.
+
 ### Documentado (22-sep 2026 — Track C webhook reconcile)
 
 - **Corrección**: el aviso de que prod `whatsapp-webhook` **v655** no tenía mirror en repos era incorrecto. Diff vs `ZM-Lash-and-Nails-Beauty` `main` (`010b240f`): idéntico. Evidencia en `docs/geemastudio/docs/plans/geema-migration/09-WEBHOOK-PROD-RECONCILE.md` (sync desde ZM).

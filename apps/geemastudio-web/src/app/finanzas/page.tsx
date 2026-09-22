@@ -23,10 +23,14 @@ import {
   type EmployeeDesglose,
   type FinanzasPeriod,
 } from '@/hooks/finanzas/useFinanzasData'
+import { useTenantId } from '@/hooks/finanzas/useTenantId'
 import { useDashboardTenant } from '@/hooks/dashboard/useDashboardTenant'
+import type { GrowthRange } from '@/hooks/finanzas/executiveService'
 import { formatDashboardCurrency, resolveDashboardCurrencyCode } from '@/lib/dashboardCurrency'
 import { LUNARIS } from '@/lib/theme'
 import { RegisterPayoutModal } from './RegisterPayoutModal'
+import { ExecutiveDashboard } from './components/executive/ExecutiveDashboard'
+import { ViewToggle, type FinanceView } from './components/executive/ViewToggle'
 
 const PERIOD_LABELS: Record<FinanzasPeriod, string> = {
   day: 'Hoy',
@@ -62,12 +66,15 @@ export default function FinanzasPage() {
   const router = useRouter()
   const { isAuthenticated, isLoading: authLoading, isAdmin, profile, logout } = useAuth()
   const finanzas = useFinanzasData()
+  const { tenantId } = useTenantId()
   const tenantQ = useDashboardTenant()
   const currencyCode = resolveDashboardCurrencyCode(tenantQ.data?.currency_code)
   const businessName = tenantQ.data?.business_name ?? null
   const fmtS = (n: number) => formatDashboardCurrency(n, currencyCode)
   const [payoutRow, setPayoutRow] = useState<EmployeeDesglose | null>(null)
   const [payoutModalOpen, setPayoutModalOpen] = useState(false)
+  const [view, setView] = useState<FinanceView>('resumen')
+  const [growthRange, setGrowthRange] = useState<GrowthRange>('6m')
 
   useEffect(() => {
     if (authLoading) return
@@ -158,11 +165,11 @@ export default function FinanzasPage() {
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
           <div className="flex items-center gap-3">
             <Link
-              href="/"
+              href="/panel"
               className="inline-flex items-center gap-2 text-sm font-medium text-zinc-600 transition-colors hover:text-[var(--primary)] dark:text-zinc-400"
             >
               <ArrowLeft className="h-4 w-4" />
-              Inicio
+              Panel
             </Link>
             <span className="text-zinc-300 dark:text-zinc-700">/</span>
             <span className="flex items-center gap-1.5 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
@@ -175,6 +182,9 @@ export default function FinanzasPage() {
             >
               Dashboard
             </Link>
+          </div>
+          <div className="hidden sm:block">
+            <ViewToggle view={view} onChange={setView} />
           </div>
           <div className="flex items-center gap-3">
             {profile?.full_name && (
@@ -196,6 +206,21 @@ export default function FinanzasPage() {
       </header>
 
       <main className="mx-auto max-w-5xl space-y-8 px-4 py-8">
+        <div className="flex flex-wrap items-center justify-between gap-3 sm:hidden">
+          <ViewToggle view={view} onChange={setView} />
+        </div>
+
+        {view === 'resumen' ? (
+          <ExecutiveDashboard
+            range={growthRange}
+            onChangeRange={setGrowthRange}
+            tenantId={tenantId}
+            currencyCode={currencyCode}
+            primaryColor={LUNARIS.primaryDark}
+            accentColor={LUNARIS.primary}
+          />
+        ) : (
+          <>
         {/* Título mes */}
         <div>
           <h1 className="text-2xl font-bold capitalize text-zinc-900 dark:text-zinc-100">
@@ -528,6 +553,8 @@ export default function FinanzasPage() {
         <p className="pb-4 text-center text-xs text-zinc-400 dark:text-zinc-500">
           Finanzas · Solo administración
         </p>
+          </>
+        )}
       </main>
 
       <RegisterPayoutModal

@@ -15,6 +15,7 @@ import {
   Calendar,
   MessageCircle,
   MoreHorizontal,
+  TrendingUp,
   X,
 } from 'lucide-react'
 
@@ -119,6 +120,11 @@ export function PanelShell({
     href: '/panel/configuracion',
     icon: <Settings className="h-4 w-4" />,
   }
+  const finanzasItem: NavItem = {
+    label: 'Finanzas',
+    href: '/finanzas',
+    icon: <TrendingUp className="h-4 w-4" />,
+  }
   const wabaItem: NavItem = {
     label: 'WhatsApp',
     href: '/panel/waba',
@@ -129,7 +135,10 @@ export function PanelShell({
     () => [
       { title: 'Operación', items: [agendaItem, clientesItem] },
       { title: 'Catálogo', items: [catalogoItem] },
-      { title: 'Negocio', items: [personalItem, horarioItem, configuracionItem] },
+      {
+        title: 'Negocio',
+        items: [finanzasItem, personalItem, horarioItem, configuracionItem],
+      },
       { title: 'Marketing', items: [wabaItem] },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -139,7 +148,10 @@ export function PanelShell({
   // Ítems fijos del bottom tab bar mobile; el resto vive en la hoja "Más".
   const primaryTabItems: NavItem[] = [agendaItem, clientesItem, catalogoItem, wabaItem]
   const moreSections: NavSection[] = [
-    { title: 'Negocio', items: [personalItem, horarioItem, configuracionItem] },
+    {
+      title: 'Negocio',
+      items: [finanzasItem, personalItem, horarioItem, configuracionItem],
+    },
   ]
 
   function isNavActive(href: string): boolean {
@@ -153,6 +165,7 @@ export function PanelShell({
       agendaItem,
       clientesItem,
       catalogoItem,
+      finanzasItem,
       personalItem,
       horarioItem,
       configuracionItem,

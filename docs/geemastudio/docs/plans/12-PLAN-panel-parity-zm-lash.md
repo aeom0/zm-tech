@@ -125,8 +125,8 @@ Ref: `docs/audit/03-AUDIT-paridad-zmlash-geema.md` (ítems P0 no obsoletos).
 
 | ID | Entregable | Ref ZM | Prioridad |
 |----|------------|--------|-----------|
-| P1 | **Finanzas ejecutiva web**: ViewToggle Resumen/Ejecutivo; port de KPIs, gastos, break-even, charts | `apps/web/src/app/finanzas/components/executive/*` | P1 |
-| P2 | Links en `PanelShell` → `/dashboard` y `/finanzas`; links de vuelta en esos shells | — | P1 |
+| P1 | ~~**Finanzas ejecutiva web**: ViewToggle Resumen/Detalle; KPIs, gastos, break-even, charts~~ | `apps/web/.../executive/*` | ✅ 22-sep Geema `/finanzas` |
+| P2 | ~~Links en `PanelShell` → `/finanzas`; card en `/panel`; vuelta Panel desde finanzas~~ | — | ✅ 22-sep |
 | P3 | ~~Clientes: botón "Abrir chat WA" → `/panel/waba/mensajes?phone=` (misma normalización que ZM)~~ | `ClientDetailSidebar.tsx` L664 | ✅ 22-sep (`ClientDetailDrawer` + `waPhone.ts`) |
 | P4 | Decisión documentada: Validación pagos + Asignar profesionales = **mobile-first** hasta backlog web, **o** MVP web de cola | mobile screens | P2 |
 | P5 | Inventario web CRUD (si Vanessa lo pide en desktop) | `InventoryScreen` patrón | P2 |

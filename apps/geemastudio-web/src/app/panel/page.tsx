@@ -5,6 +5,7 @@ import {
   LayoutGrid,
   MessageCircle,
   Settings,
+  TrendingUp,
   UserRound,
   Users,
 } from 'lucide-react'
@@ -27,6 +28,12 @@ const MODULES = [
     label: 'Catálogo',
     description: 'Servicios, packs y promos',
     icon: LayoutGrid,
+  },
+  {
+    href: '/finanzas',
+    label: 'Finanzas',
+    description: 'Resumen ejecutivo y detalle',
+    icon: TrendingUp,
   },
   {
     href: '/panel/personal',

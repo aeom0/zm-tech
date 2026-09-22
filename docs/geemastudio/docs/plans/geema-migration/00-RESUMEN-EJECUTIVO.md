@@ -7,7 +7,7 @@
 
 ## Respuesta en una frase
 
-**ZM Lash ya es el tenant #1 en producción** (`zm-lash-nails`); **GeemaStudio ya opera el panel de gestión + suite WABA usable** (inbox staff, Haiku, Campañas, catálogo/Productos) sobre la misma BD — falta **cerrar paridad restante del panel (finanzas ejecutiva / push) y S4 (crons tenant-aware) antes del 2.º tenant**. Track C (drift webhook) ✅ cerrado 22-sep.
+**ZM Lash ya es el tenant #1 en producción** (`zm-lash-nails`); **GeemaStudio ya opera el panel de gestión + suite WABA usable** (inbox staff, Haiku, Campañas, catálogo/Productos, **finanzas ejecutiva**) sobre la misma BD — falta **push mobile E2E y S4 (crons tenant-aware) antes del 2.º tenant**. Track C (drift webhook) ✅ cerrado 22-sep.
 
 ---
 
@@ -31,7 +31,7 @@
 
 ## Dónde continuar (recomendación 22-sep)
 
-**Track A — cutover Vanessa a Geema (tenant #1):** suite panel WABA ✅ (Historial · Portafolio · deep link · Simulador). Siguiente: ops no-WABA (finanzas ejecutiva Plan 12 P1).  
+**Track A — cutover Vanessa a Geema (tenant #1):** suite panel WABA ✅ + finanzas ejecutiva ✅ (Plan 12 P1/P2). Siguiente: push FCM (PR-09) o cutover ops.  
 **Track B — 2.º tenant:** S4 crons/Vault en repo ZM (no mezclar con Track A en la misma sesión).  
 **Track C — riesgo:** ✅ cerrado — bot canónico ZM; redeploy solo desde ZM ([09](./09-WEBHOOK-PROD-RECONCILE.md)).
 
@@ -44,7 +44,7 @@ Detalle vivo: Plan 11/12 en `zm-tech/docs/geemastudio/docs/plans/`; roadmap spri
 | Fase | Entregable | Estado |
 |------|------------|--------|
 | Fundación multi-tenant (S1–S3) | §11 + bridge + runtime + flag | ✅ |
-| Paridad panel Geema (Plan 11/12) | Historial + portafolio + finanzas ejecutiva web | 🟡 en curso |
+| Paridad panel Geema (Plan 11/12) | Historial + portafolio + finanzas ejecutiva web | 🟢 WABA+finanzas; falta push |
 | S4 crons tenant-aware | 11 Edge + Vault | ❌ |
 | Suite L4 presets | `barbershop` + loader | ❌ |
 | Go-live 2.º tenant | Onboarding → WABA propio | ❌ |
@@ -61,7 +61,7 @@ Detalle vivo: Plan 11/12 en `zm-tech/docs/geemastudio/docs/plans/`; roadmap spri
 
 ## Decisiones pendientes (Alberto)
 
-1. ¿Cutover de Vanessa al panel Geema ya (suite WABA ✅) o esperar finanzas ejecutiva?
+1. ¿Cutover de Vanessa al panel Geema ya (WABA + finanzas ✅)?
 2. ¿Primer vertical post-belleza: `barbershop`?
 3. ¿Smoke flag ON en tenant QA antes de tocar crons S4?
 4. ¿Desbloquear bot retail (`add_to_cart` productos) ahora que no hay drift?
