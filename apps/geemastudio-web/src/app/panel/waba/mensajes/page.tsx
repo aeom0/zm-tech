@@ -6,18 +6,7 @@ import { MessageSquare } from 'lucide-react'
 
 import { useWabaConversations } from '@/hooks/waba/useWabaMessages'
 import { MessageThread } from './_components/MessageThread'
-
-function formatWhen(iso: string): string {
-  if (!iso) return ''
-  const d = new Date(iso)
-  if (Number.isNaN(d.getTime())) return ''
-  return d.toLocaleString('es-VE', {
-    day: '2-digit',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
-}
+import { formatAbsoluteWhen, formatPhone, formatRelativeTime } from './_components/time'
 
 function PanelWabaMensajesContent() {
   const router = useRouter()
@@ -97,6 +86,18 @@ function PanelWabaMensajesContent() {
             <ul className="max-h-[70vh] overflow-y-auto">
               {conversations.map((c) => {
                 const active = c.phone === selectedPhone
+                const name =
+                  c.displayName ||
+                  (c.waUsername ? `@${c.waUsername}` : null) ||
+                  (c.isBsuid ? 'Contacto de WhatsApp' : formatPhone(c.phone))
+                const phoneLabel = c.displayPhone
+                  ? formatPhone(c.displayPhone)
+                  : !c.isBsuid && c.displayName
+                    ? formatPhone(c.phone)
+                    : null
+                const avatarLabel = (c.displayName || c.waUsername || 'WA').trim().charAt(0).toUpperCase()
+                const badgeCount = c.inbound24h > 99 ? '99+' : String(c.inbound24h)
+
                 return (
                   <li key={c.phone}>
                     <button
@@ -107,41 +108,48 @@ function PanelWabaMensajesContent() {
                         active ? 'bg-[var(--tenant-primary)]/10' : 'hover:bg-white/[0.04]',
                       ].join(' ')}
                     >
-                      <div className="flex items-baseline justify-between gap-2">
-                        <span className="truncate text-sm font-semibold text-white">
-                          {c.displayName ||
-                            (c.waUsername ? `@${c.waUsername}` : null) ||
-                            (c.isBsuid ? 'Contacto de WhatsApp' : c.phone)}
-                        </span>
-                        <span className="shrink-0 text-[11px] text-zinc-500">
-                          {formatWhen(c.lastAt)}
-                        </span>
-                      </div>
-                      {(c.displayPhone || (!c.isBsuid && c.displayName)) && (
-                        <div className="mt-0.5 font-mono text-[11px] text-zinc-500">
-                          {c.displayPhone || c.phone}
+                      <div className="flex items-start gap-3">
+                        <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-xs font-bold text-zinc-200">
+                          {avatarLabel}
+                          {c.inbound24h > 0 && (
+                            <span
+                              className="absolute -right-1 -top-1 rounded-full bg-[var(--tenant-primary)] px-1.5 py-0.5 text-[11px] font-semibold leading-none text-black"
+                              title="Mensajes entrantes dentro de la ventana de 24h"
+                            >
+                              {badgeCount}
+                            </span>
+                          )}
                         </div>
-                      )}
-                      <p className="mt-1 line-clamp-2 text-xs text-zinc-400">{c.lastMessage}</p>
-                      <div className="mt-2 flex flex-wrap items-center gap-1.5">
-                        {c.isBsuid && !c.displayPhone && (
-                          <span
-                            className="inline-block rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-300"
-                            title="Meta no compartió el número (username / BSUID)"
-                          >
-                            Sin teléfono
+
+                        <div className="min-w-0 flex-1">
+                          <span className="block truncate text-sm font-semibold text-white" title={name}>
+                            {name}
                           </span>
-                        )}
-                        {c.inbound24h > 0 && (
-                          <span className="inline-block rounded-full border border-[var(--tenant-primary)]/20 bg-[var(--tenant-primary)]/10 px-2 py-0.5 text-[10px] text-[var(--tenant-primary)]">
-                            {c.inbound24h} in · 24h
-                          </span>
-                        )}
-                        {c.botPaused && (
-                          <span className="inline-block rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] text-amber-300">
-                            Bot en pausa
-                          </span>
-                        )}
+
+                          <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
+                            {phoneLabel && (
+                              <span className="font-mono text-[11px] text-zinc-500">{phoneLabel}</span>
+                            )}
+                            {c.isBsuid && !c.displayPhone && (
+                              <span
+                                className="inline-block rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-300"
+                                title="Meta no compartió el número (username / BSUID)"
+                              >
+                                Sin teléfono
+                              </span>
+                            )}
+                            {c.botPaused && (
+                              <span className="inline-block rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] text-amber-300">
+                                Bot en pausa
+                              </span>
+                            )}
+                            <span className="text-[11px] text-zinc-500" title={formatAbsoluteWhen(c.lastAt)}>
+                              {formatAbsoluteWhen(c.lastAt)} · {formatRelativeTime(c.lastAt)}
+                            </span>
+                          </div>
+
+                          <p className="mt-1 line-clamp-2 text-xs text-zinc-400">{c.lastMessage}</p>
+                        </div>
                       </div>
                     </button>
                   </li>
