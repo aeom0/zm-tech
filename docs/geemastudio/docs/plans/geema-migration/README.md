@@ -2,7 +2,7 @@
 
 > **Fecha:** 2026-08-28  
 > **Autor:** Alberto Orta + análisis Cursor (agentes)  
-> **Estado:** S1–S3 ✅; S4 crons ❌. Panel Geema: WABA suite ✅ + finanzas ejecutiva ✅ (Plan 12 P1/P2, 22-sep). Track C webhook ✅ ([09](./09-WEBHOOK-PROD-RECONCILE.md)). **Siguiente:** Push FCM PR-09 / Plan 12 Fase X. Retail: ZM completo (#140); Geema catálogo ✅; Ventas/`product_orders` y bot retail pausados por producto. Docs synced 22-sep.
+> **Estado:** S1–S3 ✅; S4 crons ❌. Panel Geema: WABA suite ✅ + finanzas ejecutiva ✅ (Plan 12 P1/P2, 22-sep). Track C webhook ✅ ([09](./09-WEBHOOK-PROD-RECONCILE.md)). Push FCM PR-09 **P0 ✅** (P8 smoke APK ⏳). Retail: ZM completo (#140); Geema catálogo ✅; Ventas/`product_orders` y bot retail pausados por producto. Docs synced 22-sep.
 > **BD compartida:** `udelxwwnyivknslueerr` (ZM Lash = tenant #1 `zm-lash-nails`)
 
 Documentación del análisis de convergencia entre **ZM Lash & Nails** (referencia en producción) y **GeemaStudio** (SaaS multi-tenant en `zm-tech`). Incluye bloqueadores para el 2.º tenant, estandarización WABA para barberías/peluquerías/spas, y roadmap por sprints.

@@ -299,7 +299,7 @@ Barbería/peluquería pueden onboardear con defaults sensatos.
 | S6-5 | Portar portafolio + simulador | zm-tech | M ✅ ambos 22-sep (simulador reusa EF ZM) |
 | S6-5b | Deep link Clientes → `/panel/waba/mensajes?phone=` | zm-tech | S ✅ 22-sep |
 | S6-6 | Eliminar/rehacer `/finanzas` web Geema (sin marca ZM) | zm-tech | M ✅ ejecutiva Plan 12 P1 + links P2 (22-sep) |
-| S6-7 | Geema mobile: persistir push token + `send-notification` | zm-tech | M ❌ PR-09 / Plan 12 Fase X |
+| S6-7 | Geema mobile: persistir push token + `send-notification` | zm-tech | M 🟡 PR-09 P0 ✅ 22-sep; P8 smoke APK |
 | S6-8 | Retail: tab Productos catálogo + Ventas `product_orders` | zm-tech | M 🟡 catálogo ✅ 22-sep; Ventas ❌ |
 
 ### DoD

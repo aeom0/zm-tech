@@ -213,14 +213,18 @@ export const wabaInboundMessages = pgTable(
 
 // Tabla de perfiles vinculada a Supabase Auth (auth.users)
 // y opcionalmente a una chica en employees.
+// Alineado a BD compartida udelx… (ZM + Geema): tenant_id + push_token.
 export const profiles = pgTable(
   'profiles',
   {
     id: uuid('id').primaryKey(),
     role: text('role').notNull(), // dev | owner | staff
+    tenantId: text('tenant_id').notNull().default('zm-lash-nails'),
     employeeId: varchar('employee_id').references(() => employees.id),
     fullName: text('full_name'),
     avatarUrl: text('avatar_url'),
+    /** Token FCM/APNs nativo (`getDevicePushTokenAsync`); EF send-notification. */
+    pushToken: text('push_token'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
   },
   (table) => ({

@@ -7,6 +7,14 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido (22-sep 2026 — Push FCM E2E / PR-09 P0)
+
+- **Mobile** — `useNotifications`: persiste `profiles.push_token` (FCM nativo); canales Android `{businessName} · …`; tap `waba_chat` → panel Geema `?phone=`; cold start.
+- **Firebase** — app Android `com.geemastudio.app` en proyecto `zm-lash-nails-beauty` (mismo `FCM_SERVICE_ACCOUNT` que ZM). EAS secret file `GOOGLE_SERVICES_JSON` (preview/production/development). `app.config.js` → `googleServicesFile`.
+- **Schema** — `@geemastudio/shared-schema` `profiles.push_token` + `tenant_id` (BD ya las tenía; sin migración).
+- **Decisión Opción A** — no portar `send-notification` a zm-tech; deploy solo desde repo ZM. P5/P7 N/A.
+- **Bot (repo ZM)** — `notifyAdmins` filtra `tenant_id` (P12). Smoke físico APK Geema = P8 pendiente.
+
 ### Añadido (22-sep 2026 — Finanzas ejecutiva web)
 
 - **Web — `/finanzas`**: vista **Resumen** (KPIs ingresos/gastos/ads/utilidad, charts Recharts, mix, ranking, break-even) + **Detalle** (operativo previo). RPCs `get_monthly_*` scoped por `profiles.tenant_id`. Toggle Resumen|Detalle; moneda del tenant.

@@ -64,7 +64,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 ### Riesgos activos
 
 - **Drift `whatsapp-webhook`**: prod v655 sin mirror limpio en repos (CHANGELOG Geema 22-sep) — no redeployar a ciegas
-- Push FCM (**PR-09**): token se descarta; sin EF `send-notification` en repo Geema
+- Push FCM (**PR-09**): P0 código ✅ (token+Firebase+EAS); P8 smoke APK pendiente; EF canónica en repo ZM (no portar)
 - S4 (crons WABA) bloquea 2.º tenant con bot completo
 - Retail bot pausado hasta reconciliar webhook
 
@@ -73,7 +73,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 | Ítem | Estado |
 |------|--------|
 | PR-01…PR-08 | ✅ (ver historial abajo) |
-| PR-09 Push FCM E2E | ❌ Plan 12 Fase X |
+| PR-09 Push FCM E2E | 🟡 P0 ✅ / P8 smoke ⏳ |
 | PR-10 / PR-10B WABA avanzado + reenganche | ❌ post-S4 |
 | PR-11 Panel web | ✅ P1 + Campañas + inbox; ⏳ Historial/Portafolio |
 
@@ -105,7 +105,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 | ------ | --------------------------------------------------------- | ------------------------- |
 | PR-07  | CI GitHub Actions                                         | ✅                        |
 | PR-08  | Error handling dashboard/finanzas/agenda                  | ✅ base                   |
-| PR-09  | Push FCM E2E — nativo FCM v1 (`push_token` + `send-notification`); **no** Expo Push | ❌ Plan 12 Fase X |
+| PR-09  | Push FCM E2E — nativo FCM v1 (`push_token` + `send-notification`); **no** Expo Push | 🟡 P0 ✅ 22-sep; P8 smoke APK |
 | PR-10  | Bot WABA capa ZM v3.0 (capacidad, silence-watchdog, refs) | ❌ (base multi-tenant ✅) |
 | PR-10B | Motor reenganche WABA multi-tenant                        | ❌ post-beta / post-S4    |
 
