@@ -1,6 +1,6 @@
 # Panel interno GeemaStudio ≥ ZM Lash — paridad completa
 
-> Estado: **planificado** (20-sep-2026). Complementa [`11-PLAN-waba-suite-parity.md`](11-PLAN-waba-suite-parity.md).
+> Estado: **en curso** (actualizado 22-sep-2026). Complementa [`11-PLAN-waba-suite-parity.md`](11-PLAN-waba-suite-parity.md).
 >
 > Meta: el panel web de Geema (`apps/geemastudio-web`) debe ser **igual o superior** al de ZM Lash canónico (`ZM-Lash-and-Nails-Beauty/apps/web`) antes de migrar a Vanessa como tenant real.
 
@@ -19,17 +19,18 @@ Plan 11 sigue siendo el camino de implementación WABA. Este doc:
 
 ---
 
-## Scorecard actual (20-sep-2026)
+## Scorecard actual (22-sep-2026)
 
 Leyenda: ✅ paridad · 🟡 parcial · ❌ falta · ➕ Geema ya superior
 
 | Módulo web | ZM Lash | Geema | Veredicto |
 |------------|---------|-------|-----------|
 | Shell / nav unificado | Fragmentado (`/finanzas`, `/clientes`, `/servicios`, `/panel/waba`) | `/panel/*` + shells separados finanzas/dashboard | ➕ estructura Geema; 🟡 faltan links cruzados |
-| Dashboard KPIs | Solo mobile | `/dashboard` | ➕ |
+| Dashboard KPIs | Solo mobile | `/panel` + `/dashboard` | ➕ |
 | Agenda | Solo mobile | Grilla **read-only** | ➕ vista; 🟡 sin CRUD |
 | Catálogo (cats/servicios/packs/promos) | `/servicios` | `/panel/servicios` | ✅ |
-| Clientes CRM | `/clientes` + deep link WA | `/panel/clientes` sin deep link WA | 🟡 |
+| Productos retail | `/panel/productos` Ventas+Catálogo | Tab Productos catálogo ✅; Ventas ❌ | 🟡 |
+| Clientes CRM | `/clientes` + deep link WA | `/panel/clientes` + deep link WA ✅ 22-sep | ✅ |
 | Personal | Solo mobile | CRUD web | ➕ |
 | Horarios / timezone | Mobile | `/panel/horarios` | ➕ |
 | Config + CMS landing | Sanity externo | `/panel/configuracion` + `/web` | ➕ |
@@ -37,17 +38,17 @@ Leyenda: ✅ paridad · 🟡 parcial · ❌ falta · ➕ Geema ya superior
 | Finanzas **ejecutiva** (P&L, gastos, break-even) | `ExecutiveDashboard` + 10 componentes | ❌ web (🟡 mobile) | ❌ |
 | Inventario | Solo mobile | ❌ web · ✅ mobile | ❌ (ambos sin web) |
 | Validación pagos / Asignar staff | Solo mobile | Solo mobile | ❌ web (aceptable si se documenta mobile-first) |
-| WABA tabs | **6** (campañas, portafolio, mensajes, simulador, haiku, historial) | **3** (estado, mensajes RO, haiku 1 key) | ❌ |
-| WABA inbox (uso diario) | Consola staff completa (~2k LOC) | Solo lectura (~190 LOC) | ❌ → Plan 11 Fase 3 M1–M23 |
-| Edge Functions bot/ops | **~25** | **2** (webhook + reset-demo) | ❌ |
+| WABA tabs | **6** (campañas, portafolio, mensajes, simulador, haiku, historial) | **6** (estado, campañas, portafolio, mensajes, haiku, historial) | 🟡 falta simulador (Geema tiene Estado extra) |
+| WABA inbox (uso diario) | Consola staff completa | Consola staff Plan 11 F3 ✅ | ✅ |
+| WABA historial | Analytics desktop | `/panel/waba/historial` ✅ 22-sep | ✅ |
+| WABA portafolio | Hasta 4 fotos/servicio | `/panel/waba/portafolio` ✅ 22-sep | ✅ |
+| Edge Functions bot/ops | **~25** (repo ZM, BD compartida) | Panel reusa EFs ZM; webhook Geema incompleto | 🟡 drift prod v655 |
 
-Evidencia nav:
+Evidencia nav (22-sep):
 
-- ZM: `ZM-Lash-and-Nails-Beauty/apps/web/src/app/panel/waba/_components/WabaNav.tsx` (6 tabs)
-- Geema: `apps/geemastudio-web/src/app/panel/waba/_components/WabaNav.tsx` (3 tabs)
-- Deep link ZM: `clientes/components/ClientDetailSidebar.tsx` → `/panel/waba/mensajes?phone=`
-- Inbox ZM: `panel/waba/mensajes/_components/MessageThread.tsx` (+ EFs `send-whatsapp-notification`, `waba-staff-session`)
-- Agenda Geema: `panel/agenda/_components/AppointmentDetailDrawer.tsx` — "Vista de solo lectura"
+- Geema WABA: `WabaNav.tsx` → Campañas, Mensajes, Asistente IA (+ página estado)
+- Inbox: Plan 11 Fase 3 M1–M23 cerrados
+- Productos: `/panel/servicios?tab=productos` (catálogo only)
 
 ---
 
@@ -125,7 +126,7 @@ Ref: `docs/audit/03-AUDIT-paridad-zmlash-geema.md` (ítems P0 no obsoletos).
 |----|------------|--------|-----------|
 | P1 | **Finanzas ejecutiva web**: ViewToggle Resumen/Ejecutivo; port de KPIs, gastos, break-even, charts | `apps/web/src/app/finanzas/components/executive/*` | P1 |
 | P2 | Links en `PanelShell` → `/dashboard` y `/finanzas`; links de vuelta en esos shells | — | P1 |
-| P3 | Clientes: botón "Abrir chat WA" → `/panel/waba/mensajes?phone=` (misma normalización que ZM) | `ClientDetailSidebar.tsx` L664 | P1 (después de inbox Fase 3) |
+| P3 | ~~Clientes: botón "Abrir chat WA" → `/panel/waba/mensajes?phone=` (misma normalización que ZM)~~ | `ClientDetailSidebar.tsx` L664 | ✅ 22-sep (`ClientDetailDrawer` + `waPhone.ts`) |
 | P4 | Decisión documentada: Validación pagos + Asignar profesionales = **mobile-first** hasta backlog web, **o** MVP web de cola | mobile screens | P2 |
 | P5 | Inventario web CRUD (si Vanessa lo pide en desktop) | `InventoryScreen` patrón | P2 |
 | P6 | Agenda web: mutaciones mínimas (reasignar / status) — no full CRUD día 1 | drawer actual | P3 |

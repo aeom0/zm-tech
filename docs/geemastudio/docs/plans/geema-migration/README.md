@@ -2,7 +2,7 @@
 
 > **Fecha:** 2026-08-28  
 > **Autor:** Alberto Orta + análisis Cursor (agentes)  
-> **Estado:** S1–S3 cerrados en prod/código (ago 2026); S4+ pendiente. Shadow Geema ↔ ZM **OK core** (APK SDK 56, 29-ago); **S5-C** en curso — packs/promos/timezone/chicas ✅ (PR zm-tech #30, 30-ago).
+> **Estado:** S1–S3 ✅; S4 crons ❌. Panel Geema WABA: Mensajes/Haiku/Campañas ✅ (Plan 11, 21-sep); siguiente = Historial. Retail: ZM completo (#140); Geema catálogo tab ✅, Ventas/`product_orders` y bot pausados (drift webhook). Docs synced 22-sep.
 > **BD compartida:** `udelxwwnyivknslueerr` (ZM Lash = tenant #1 `zm-lash-nails`)
 
 Documentación del análisis de convergencia entre **ZM Lash & Nails** (referencia en producción) y **GeemaStudio** (SaaS multi-tenant en `zm-tech`). Incluye bloqueadores para el 2.º tenant, estandarización WABA para barberías/peluquerías/spas, y roadmap por sprints.

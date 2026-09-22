@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Megaphone, MessageSquareText, Settings2, Sparkles } from 'lucide-react'
+import { BarChart2, Images, Megaphone, MessageSquareText, Settings2, Sparkles } from 'lucide-react'
 import type { ComponentType } from 'react'
 
 type Tab = {
@@ -15,8 +15,10 @@ type Tab = {
 const TABS: Tab[] = [
   { href: '/panel/waba', label: 'Estado', icon: Settings2 },
   { href: '/panel/waba/campanas', label: 'Campañas', icon: Megaphone },
+  { href: '/panel/waba/portafolio', label: 'Portafolio', icon: Images },
   { href: '/panel/waba/mensajes', label: 'Mensajes', icon: MessageSquareText },
   { href: '/panel/waba/haiku', label: 'Asistente IA', icon: Sparkles },
+  { href: '/panel/waba/historial', label: 'Historial', icon: BarChart2 },
 ]
 
 export function WabaNav() {

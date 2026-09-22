@@ -88,3 +88,7 @@ Implementación sugerida (S2-7):
 | 2026-08-30 | País / wallclock ADR | 05 addendum: sin `countries`; citas = hora de pared del tenant |
 | 2026-09-02 | Look Preview Plan 07 | Planes `06`/`07` + anexo prompts copiados a `zm-tech/.../plans/` (fuera de esta carpeta); ticket S6-LP en roadmap |
 | 2026-09-21 | 08 retail productos | `08-PLAN-retail-productos.md` + README; push espejo `zm-tech` (`1794dff7`) para CI diff-check PR #140 |
+| 2026-09-22 | Alineación post Plan 11 + Productos Geema | `00` semáforo, `04` S6-3/4/4b, `08` checklist parcial, README; espejo sync |
+| 2026-09-22 | Historial WABA Geema (Plan 11 F5.2) | `04` S6-4b ✅; `00` Track A → Portafolio |
+| 2026-09-22 | Portafolio WABA Geema (Plan 11 F5.3) | `04` S6-5 ✅; `00` → deep link / simulador |
+| 2026-09-22 | Deep link Clientes→Mensajes (Plan 12 P3) | `04` S6-5b ✅; `00` → Simulador |

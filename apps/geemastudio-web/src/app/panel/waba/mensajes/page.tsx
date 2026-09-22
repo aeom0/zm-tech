@@ -5,8 +5,24 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { MessageSquare } from 'lucide-react'
 
 import { useWabaConversations } from '@/hooks/waba/useWabaMessages'
+import { phonesLikelyMatch } from '@/lib/waPhone'
 import { MessageThread } from './_components/MessageThread'
 import { formatAbsoluteWhen, formatPhone, formatRelativeTime } from './_components/time'
+
+function findConversationByPhoneKey<T extends { phone: string; displayPhone: string | null }>(
+  conversations: T[],
+  phoneKey: string | null,
+): T | null {
+  if (!phoneKey) return null
+  return (
+    conversations.find(
+      (c) =>
+        c.phone === phoneKey ||
+        phonesLikelyMatch(c.phone, phoneKey) ||
+        (c.displayPhone != null && phonesLikelyMatch(c.displayPhone, phoneKey)),
+    ) ?? null
+  )
+}
 
 function PanelWabaMensajesContent() {
   const router = useRouter()
@@ -33,9 +49,18 @@ function PanelWabaMensajesContent() {
   }
 
   const selected = useMemo(
-    () => conversations.find((c) => c.phone === selectedPhone) ?? null,
-    [conversations, selectedPhone]
+    () => findConversationByPhoneKey(conversations, selectedPhone),
+    [conversations, selectedPhone],
   )
+
+  /** Si el deep link llegó con 9 dígitos y el hilo es `51…`, canónica al phone del hilo. */
+  useEffect(() => {
+    if (!selected || !selectedPhone) return
+    if (selected.phone === selectedPhone) return
+    if (!phonesLikelyMatch(selected.phone, selectedPhone)) return
+    selectPhone(selected.phone)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- solo al resolver mismatch URL↔hilo
+  }, [selected, selectedPhone])
 
   const title = conversationsQuery.isLoading ? 'Mensajes' : `Mensajes (${conversations.length})`
 
@@ -165,7 +190,9 @@ function PanelWabaMensajesContent() {
           >
             {!selected && (
               <div className="flex flex-1 items-center justify-center p-8 text-sm text-zinc-500">
-                Elegí una conversación
+                {selectedPhone
+                  ? 'No hay conversación con ese número en este tenant.'
+                  : 'Elige una conversación'}
               </div>
             )}
 

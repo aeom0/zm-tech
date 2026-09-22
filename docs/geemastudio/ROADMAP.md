@@ -18,80 +18,65 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 
 ---
 
-## Foco semana 10–14 sep 2026
+## Foco semana 22–28 sep 2026
 
-> Orden concreto para esta semana. No mezclar con S4 (repo ZM) en la misma sesión salvo que se abra explícitamente.
+> Orden concreto. No mezclar S4 (repo ZM) con Plan 11 (zm-tech) en la misma sesión salvo cambio de contexto explícito.
 
-| #   | Día                    | Entregable                                                                       | Repo          | DoD                        |
-| --- | ---------------------- | -------------------------------------------------------------------------------- | ------------- | -------------------------- |
-| 0   | Jue 10                 | **Alinear docs** (este ROADMAP + semáforo Plan 05 + CLAUDE auth)                 | zm-tech       | Docs reflejan código real  |
-| 1   | Vie 11                 | **S5C-9** — hint UI “Finanzas está en Más” (onboarding/admin)                    | zm-tech       | ✅ hecho 10-sep            |
-| 2   | Vie 11                 | **Smoke Finanzas ZM** — checklist shadow (pagos visibles tenant `zm-lash-nails`) | zm-tech + APK | Cerrar DoD abierto de S5-C |
-| 3   | Sáb–Dom                | **PR-11a** — `/panel/clientes`                                                   | zm-tech       | ✅ 10-sep                  |
-| 3b  | —                      | **PR-11b/c/d** — personal + configuracion + agenda                               | zm-tech       | ✅ 10-sep                  |
-| 3c  | —                      | **PR-11e** — `/panel/waba` MVP (estado + mensajes + Haiku)                       | zm-tech       | ✅ 12-sep                  |
-| 4   | Si sobra               | **S5C-8** — ranking top servicios Dashboard                                      | zm-tech       | opcional                   |
-| —   | Paralelo (otra sesión) | **S4** crons/RPCs WABA tenant-aware + Vault                                      | ZM            | Camino crítico 2.º tenant  |
+| # | Entregable | Repo | DoD |
+|---|------------|------|-----|
+| 0 | ~~Alinear docs Plan 05 + scorecard Plan 12~~ | ambos | ✅ 22-sep |
+| 1 | **Simulador WABA** (Plan 11 F4) | zm-tech | Pre go-live |
+| 2 | (Paralelo otra sesión) reconciliar drift `whatsapp-webhook` prod v655 | ZM | Bundle versionado |
+| — | S4 crons tenant-aware | ZM | Solo si se abre Track B (2.º tenant) |
 
-**Fuera de esta semana (no empezar):** PR-10B reenganche, PromoMasiva, Look Preview, Landing Fase 2/3, S6 WABA campañas/analytics/simulador.
+**Hecho esta tanda:** Historial · Portafolio · deep link Clientes→Mensajes (Plan 12 P3).
+
+**Fuera de esta semana:** retail bot / `add_to_cart` productos (bloqueado por drift webhook); S7 2.º tenant.
 
 ---
 
-## Estado actual (v1.5-unreleased — sep 2026)
+## Estado actual (v1.5-unreleased — 22-sep 2026)
 
-### Completado (hasta 12-sep 2026)
+### Completado (hasta 22-sep 2026)
 
 - Monorepo: `apps/geemastudio-{mobile,web,server}`, `@geemastudio/shared-schema`, `@zmtech/tenant-config`
 - TypeScript ~6, Expo SDK 56, React 19.2, New Architecture
 - **Auth real** mobile: `signInWithPassword` + `profiles` + roles (`dev` \| `owner` \| `staff`)
-- Core mobile: onboarding, agenda (owner grid + staff timeline), servicios/packs/promos (adaptador ZM), clientes, inventario, finanzas (comisiones + payouts), validación pagos, asignar profesionales, feriados, colores de marca
-- **S5-C P0/P1 mayor**: packs/promos/timezone/employees ✅ (#30); multi-servicio + referencias ✅ (#31); feriados ✅; finanzas ejecutiva mobile ✅ (costos WABA aún no); **S5C-9** hint Finanzas ✅
-- Core web: `/`, `/finanzas`, `/dashboard`, `/panel/servicios`, `/panel/horarios`, landing tenant `/s/[slug]` (Fase 1)
-- **Panel P1 completo**: clientes, personal, configuración, agenda, **WABA MVP** (estado + mensajes + Haiku) ✅ 12-sep
-- **Host plataforma (temporal)**: `https://geema.zmtechdev.com` — ver `docs/DEPLOYMENT.md` § Host + checklist Auth/Vercel
-- **CI** `.github/workflows/ci.yml` (lint + typecheck + build web) ✅ (#36)
-- **Error handling** pantallas críticas (`ErrorState`) ✅ (#36)
-- Anti-solapamiento citas en mobile ✅
-- WABA multi-tenant **base** (webhook + `phone_number_id`) — capa ZM v3.0 / reenganche aún no
-- Migración Plan 05: **S1–S3** cerrados en prod/código; **S4+** pendiente (repo ZM)
+- Core mobile: onboarding, agenda, servicios/packs/promos, clientes, inventario, finanzas, feriados, colores de marca, splash tenant, promo broadcast WA
+- **S5-C P0/P1 mayor**: packs/promos/timezone/employees ✅ (#30); multi-servicio + refs ✅ (#31); feriados ✅; finanzas ejecutiva mobile ✅ (costos WABA UI pendiente); **S5C-9** hint Finanzas ✅
+- Core web: `/panel/*` P1 (clientes, personal, config, agenda, servicios, horarios, WABA)
+- **Plan 11**: F0/F1 cerradas (21-sep); F2 Haiku ✅; F3 inbox staff ✅; F5.1 Campañas ✅
+- Theming panel + PWA dinámico + tab Productos (catálogo) ✅ 22-sep
+- **Host**: `https://geema.zmtechdev.com`
+- Migración Plan 05: **S1–S3** ✅; **S4** ❌ (repo ZM)
 
 ### Pendientes (prioridad)
 
-| #   | Ítem                                                   | Repo       | Notas                                   |
-| --- | ------------------------------------------------------ | ---------- | --------------------------------------- |
-| 1   | **Smoke Finanzas ZM** en APK                           | zm-tech    | Pagos visibles Más → Finanzas           |
-| 2   | **S5C-8** ranking top servicios Dashboard              | zm-tech    | Opcional esta semana                    |
-| 3   | **S4** crons/RPCs WABA tenant-aware + Vault            | ZM         | Bloquea 2.º tenant con bot completo     |
-| 4   | WABA P2: campañas / analytics / simulador / portafolio | zm-tech    | Post-MVP panel                          |
-| 5   | **PR-09** Push FCM E2E                                 | zm-tech    | Checklist P1–P23 en [`12-PLAN-panel-parity`](docs/plans/12-PLAN-panel-parity-zm-lash.md) Fase X; **no** Expo Push |
-| 6   | Landing Fase 2/3 (CMS + dominio)                       | zm-tech    | No bloquea beta gestión                 |
-| 7   | PR-10 / 10B WABA avanzado + reenganche                 | ZM + Geema | Tras S4 + PR-09                         |
-| 8   | Activar `geema.zmtechdev.com` en Vercel + Auth URLs    | ops        | Checklist en `docs/DEPLOYMENT.md` § 2b  |
-| 9   | ~~PWA — manifest dinámico por tenant~~                  | zm-tech    | ✅ hecho 21-sep — `app/manifest.ts` server-aware, ícono/nombre de la app instalada usan logo y nombre del tenant. |
+| # | Ítem | Repo | Notas |
+|---|------|------|-------|
+| 1 | **Simulador WABA** (Plan 11 F4) | zm-tech | Pre go-live Vanessa |
+| 2 | Finanzas ejecutiva web | zm-tech | Plan 12 P1 |
+| 3 | Ventas `product_orders` en Geema | zm-tech | Tras catálogo; ZM ya tiene UI |
+| 4 | Reconciliar webhook prod v655 | ZM | Antes de bot retail / redeploy |
+| 5 | **S4** crons + Vault | ZM | Bloquea 2.º tenant |
+| 6 | **PR-09** Push FCM E2E | zm-tech | Plan 12 Fase X |
+| 7 | Smoke Finanzas ZM en APK | zm-tech | DoD S5-C abierto |
 
 ### Riesgos activos
 
-- Push FCM (**PR-09**): token se obtiene y se descarta (`useNotifications` TODO L66); sin columna en Drizzle; sin Firebase `com.geemastudio.app`; EF `send-notification` ausente en repo Geema aunque `payment.ts` la invoca (3 triggers muertos). Fallback parcial: `notifyAdminPhonesWa`. Detalle: Plan 12 Fase X.
-- Defaults `tenant-config` vs `tenant_settings` — vigilar regresiones en onboarding
-- EAS internal testing: APK preview existe; canal Play internal no validado E2E documentado
+- **Drift `whatsapp-webhook`**: prod v655 sin mirror limpio en repos (CHANGELOG Geema 22-sep) — no redeployar a ciegas
+- Push FCM (**PR-09**): token se descarta; sin EF `send-notification` en repo Geema
 - S4 (crons WABA) bloquea 2.º tenant con bot completo
-- Mensajes WABA en panel: RLS / tenant_id (ver Plan 11 Fase 1); inbox solo lectura hasta Fase 3
+- Retail bot pausado hasta reconciliar webhook
 
-### Beta gate (actualizado sep 2026)
+### Beta gate (actualizado 22-sep 2026)
 
-| Ítem                                      | Estado                                                               |
-| ----------------------------------------- | -------------------------------------------------------------------- |
-| PR-01 Auth real mobile                    | ✅                                                                   |
-| PR-02 ThemeContext hydration              | ✅ (sin crashes reportados post-OTA)                                 |
-| PR-03 Defaults multi-tenant               | ✅ parcial (país/moneda/feriados alineados; vigilar edge cases)      |
-| PR-04 EAS Build preview APK               | ✅ parcial — falta canal internal testing formal                     |
-| PR-05 Anti-solapamiento                   | ✅                                                                   |
-| PR-06 / PR-06B Panel servicios            | ✅                                                                   |
-| PR-07 CI GitHub Actions                   | ✅                                                                   |
-| PR-08 Error handling crítico              | ✅ base (`ErrorState`)                                               |
-| PR-09 Push FCM E2E                        | ❌ Pendiente — P0 = token+EF+Firebase; ver Plan 12 Fase X P1–P8      |
-| PR-10 / PR-10B WABA avanzado + reenganche | ❌ Bloqueado tras S4 + PR-09                                         |
-| PR-11 Panel web resto                     | ✅ P1 rutas core (waba MVP 12-sep); P2 campañas/inventario pendiente |
+| Ítem | Estado |
+|------|--------|
+| PR-01…PR-08 | ✅ (ver historial abajo) |
+| PR-09 Push FCM E2E | ❌ Plan 12 Fase X |
+| PR-10 / PR-10B WABA avanzado + reenganche | ❌ post-S4 |
+| PR-11 Panel web | ✅ P1 + Campañas + inbox; ⏳ Historial/Portafolio |
 
 ---
 
@@ -139,10 +124,13 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 | `/panel/personal`          | P1        | ✅ **10-sep** (lista, CRUD, foto, comisiones, dialecto ZM/Geema)          |
 | `/panel/configuracion`     | P1        | ✅ **10-sep** (datos, colores, logo, presencia web)                       |
 | `/panel/agenda`            | P1        | ✅ **10-sep** (grilla día read-only + drawer)                             |
-| `/panel/waba`              | P1        | ✅ **12-sep** MVP: estado, `/mensajes`, `/haiku` (sin campañas/analytics) |
-| `/panel/configuracion/web` | P2        | ❌                                                                        |
-| `/panel/waba/campanas`     | P2        | ❌                                                                        |
-| `/panel/inventario`        | P2        | ❌                                                                        |
+| `/panel/waba`              | P1        | ✅ **22-sep**: estado + campañas + portafolio + mensajes + Haiku + Historial; ⏳ Simulador |
+| `/panel/servicios` Productos | P1      | ✅ catálogo (22-sep); ⏳ Ventas `product_orders`                                              |
+| `/panel/configuracion/web` | P2        | ✅ parcial (CMS Mi Web)                                                                       |
+| `/panel/waba/campanas`     | P1        | ✅ **21-sep**                                                                                 |
+| `/panel/waba/historial`    | P1.5      | ✅ **22-sep**                                                                                 |
+| `/panel/waba/portafolio`   | P2        | ✅ **22-sep**                                                                                 |
+| `/panel/inventario`        | P2        | ❌                                                                                            |
 
 Orden P1 cerrado: ~~`clientes` → `personal` → `configuracion` → `agenda` → `waba`~~.
 
@@ -158,7 +146,7 @@ Ver [docs/WEB_ARCHITECTURE.md](docs/WEB_ARCHITECTURE.md).
 | **S4**    | Crons/RPCs tenant-aware + Vault          | ❌ **siguiente crítico (repo ZM)**                 |
 | S5 / S5-B | Reglas L3 + branding logo                | Parcial                                            |
 | **S5-C**  | Paridad mobile shadow                    | ✅ casi; quedan S5C-8/9 + smoke Finanzas           |
-| S6        | Presets L4 + `/panel/waba/*`             | Parcial — panel MVP ✅ 12-sep; presets/campañas ❌ |
+| S6        | Presets L4 + `/panel/waba/*`             | 🟡 Mensajes/Haiku/Campañas ✅; Historial/Portafolio/Simulador ❌ |
 | S7+       | Go-live 2.º tenant                       | ❌                                                 |
 
 Detalle: [`docs/plans/geema-migration/`](docs/plans/geema-migration/README.md).
@@ -216,4 +204,4 @@ Pendiente post–Fase 2: `/panel/configuracion/web`, migrar Sanity → `zm-lash-
 
 ---
 
-_Actualizado: 21 sep 2026 — theming por tenant + headers panel + pendiente PWA manifest dinámico._
+_Actualizado: 22 sep 2026 — docs alineados Plan 05/11/12; siguiente = Historial WABA._

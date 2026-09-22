@@ -7,6 +7,19 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido (22-sep 2026 — Deep link Clientes → Mensajes WABA)
+
+- **Web — `/panel/clientes`**: enlace "Ver chat de WhatsApp en Mensajes" en el drawer de detalle (`?phone=` con normalización PE 9→`51…`). Helper `lib/waPhone.ts`.
+- **Web — `/panel/waba/mensajes`**: match fuzzy por últimos 9 dígitos al abrir desde CRM; copy "Elige una conversación" (sin voseo).
+
+### Añadido (22-sep 2026 — Portafolio WABA)
+
+- **Web — `/panel/waba/portafolio`**: port del gestor de hasta 4 fotos/servicio (`service_portfolio_images`) desde ZM. Categorías → servicios → slots con upload a `waba-images/portfolio/{serviceId}/{n}.jpg`, captions, mover foto entre servicios. Hook `usePortfolioConfig` escribe `tenant_id` en upsert. Tab "Portafolio" en `WabaNav`. Sin migración (tabla/bucket/RLS ya en prod).
+
+### Añadido (22-sep 2026 — Historial WABA analytics)
+
+- **Web — `/panel/waba/historial`**: port de actividad del bot desde ZM Lash (Plan 11 Fase 5.2). KPIs (mensajes, clientes únicos, respuestas bot/IA), volumen diario/semanal (`recharts`), uso Haiku (`ai_usage_log`), top flujos (`step_before`), heatmap Lima. Tab "Historial" en `WabaNav`. Tema oscuro + `--tenant-primary`. Deps: `recharts`, `date-fns-tz`.
+
 ### Añadido (22-sep 2026 — Tab Productos en Catálogo + rediseño Mensajes WABA)
 
 - **Web — `/panel/waba/mensajes`**: lista de conversaciones alineada al diseño de referencia de `zmlashnails.com/panel/waba/mensajes`. Nuevo `_components/time.ts` (`formatPhone`, `formatRelativeTime`, `formatAbsoluteWhen`, `isWaBsuidKey`); cada fila muestra avatar circular con badge de ventana 24h (`c.inbound24h`), teléfono formateado y hora combinada absoluta + relativa ("22 sep, 14:30 · hace 2 horas").

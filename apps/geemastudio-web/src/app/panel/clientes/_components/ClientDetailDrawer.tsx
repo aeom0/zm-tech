@@ -1,11 +1,13 @@
 'use client'
 
-import { X } from 'lucide-react'
+import Link from 'next/link'
+import { MessageCircle, X } from 'lucide-react'
 
 import { useClientDetail } from '@/hooks/clientes/useClientDetail'
 import type { ClientWithMetrics } from '@/hooks/clientes/types'
 import { formatDashboardCurrency } from '@/lib/dashboardCurrency'
 import { formatDateShort } from '@/lib/format'
+import { waMessagesPhoneKey } from '@/lib/waPhone'
 
 const STATUS_LABEL: Record<string, string> = {
   scheduled: 'Programada',
@@ -23,6 +25,7 @@ interface ClientDetailDrawerProps {
 
 export function ClientDetailDrawer({ client, currencyCode, onClose }: ClientDetailDrawerProps) {
   const { data: history = [], isLoading, isError, error } = useClientDetail(client.id)
+  const waPhone = waMessagesPhoneKey(client.phone)
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
@@ -49,6 +52,18 @@ export function ClientDetailDrawer({ client, currencyCode, onClose }: ClientDeta
             <X className="h-4 w-4" />
           </button>
         </header>
+
+        {waPhone && (
+          <div className="shrink-0 border-b border-white/[0.08] px-5 py-3">
+            <Link
+              href={`/panel/waba/mensajes?phone=${encodeURIComponent(waPhone)}`}
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--tenant-primary)] hover:underline"
+            >
+              <MessageCircle className="h-3.5 w-3.5" />
+              Ver chat de WhatsApp en Mensajes
+            </Link>
+          </div>
+        )}
 
         <div className="grid grid-cols-3 gap-2 border-b border-white/[0.08] px-5 py-3">
           <Metric label="Visitas" value={String(client.total_visits)} />

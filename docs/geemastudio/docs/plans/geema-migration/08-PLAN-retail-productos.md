@@ -11,16 +11,17 @@
 
 Vanessa empieza a vender productos físicos en el salón (kit cuidado pestañas S/16 y siguientes). El sistema estaba modelado solo en **servicios/citas**. Este plan define el contrato de **retail** para ZM y el checklist de port a GeemaStudio.
 
-## Estado Geema al documentar (21-sep-2026)
+## Estado Geema (actualizado 22-sep-2026)
 
 En `zm-tech` `main`:
 
-- Campañas WA + promo broadcast mobile hechos
+- Campañas WA + promo broadcast mobile + inbox staff (Plan 11 F0–F3) hechos
 - Panel theming / dashboard / PWA por tenant hechos
-- Inventario: solo mobile, **sin** venta retail (Plan 12 P5 = inventario web P2)
-- Inbox WABA aún debajo de paridad ZM (Plan 11)
+- **Tab Productos (catálogo)** en `/panel/servicios?tab=productos` — CRUD `inventory_items` `is_sellable` + bucket `product-images` ✅
+- **Ventas / `product_orders`**: aún sin UI en Geema (tabla existe en BD compartida por ZM)
+- **Bot retail**: pausado a propósito — drift Edge `whatsapp-webhook` prod (v655) vs repos; no conectar `add_to_cart` hasta reconciliar
 
-ZM sigue siendo fuente de verdad hasta cutover.
+ZM sigue siendo fuente de verdad del flujo Ventas + Haiku kit hasta cutover / reconciliación.
 
 ## Modelo de datos (prod `udelxwwnyivknslueerr`)
 
@@ -101,11 +102,12 @@ Stock en prod al blast: **6** (ajustar en panel Catálogo).
 
 ### Web (`geemastudio-web`)
 
-- [ ] Ruta `/panel/productos` (mismo flujo Ventas + Catálogo; reserved vs pedido)
-- [ ] Push retail opcional (mismo patrón `send-notification`)
-- [ ] Link en `PanelShell` / dashboard
+- [x] Catálogo sellable — tab Productos en `/panel/servicios` (22-sep)
+- [ ] Flujo Ventas (`product_orders`: reserved/pedido → paid/delivered/cancel) — paridad ZM `/panel/productos`
+- [ ] Push retail opcional (mismo patrón `send-notification`; bloqueado por PR-09 FCM)
+- [ ] Link dedicado en `PanelShell` / dashboard (hoy solo vía Catálogo)
 - [ ] Auth admin + `tenant_id` scoping (Plan 12 Fase T)
-- [ ] Theming con `--tenant-primary`
+- [x] Theming con `--tenant-primary`
 
 ### Mobile (`geemastudio-mobile`)
 
