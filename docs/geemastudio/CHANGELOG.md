@@ -7,6 +7,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Corregido (22-sep 2026 — adaptive capas + notif size)
+
+- **Launcher**: capas oficiales Android — `adaptive-icon-background.png` (degradado full-bleed) + `adaptive-icon.png` (diamante en safe zone **66 dp**). Ya no se pierde el degradado al reducir el logo.
+- **Push small icon**: silueta ~88 % del canvas 96×96 (antes ~55 %, se veía diminuta).
+- Spec documentada en `docs/INDEX.md` § EAS.
+
 ### Corregido (22-sep 2026 — launcher icon safe zone)
 
 - **Mobile icon** — diamante reducido al ~52 % alto / centrado (antes 88 %+20 px). Cabe en máscara circular OEM sin clip; `icon.png` + `adaptive-icon.png` regenerados.

@@ -189,6 +189,16 @@ docs/audit/
   | `versionCode` Android | remoto EAS | Automático en profile `production` (`autoIncrement: true`, `appVersionSource: "remote"`) |
   | Runtime OTA | `runtimeVersion.policy: sdkVersion` | Cambia al subir SDK Expo |
 
-  Historial reciente: preview `1.1.0`/code 1 · prod `1.1.0`/code **2** (20-sep) · próximo prod **1.2.0**/code **3** (FCM + launcher + notification icon).
+  Historial reciente: preview `1.1.0`/code 1 · prod `1.1.0`/code **2** (20-sep) · prod **1.2.0**/code **3** (FCM + launcher) · fix icon capas pendiente rebuild (code **4** cancelado).
+
+  **Adaptive icon (Android oficial)** — [icon_design_adaptive](https://developer.android.com/develop/ui/compose/system/icon_design_adaptive):
+  | Capa | Canvas | Contenido |
+  |------|--------|-----------|
+  | Background | 108×108 dp (full-bleed) | `adaptive-icon-background.png` — degradado Lunaris |
+  | Foreground | 108×108 dp, logo ≤ **66×66 dp** safe | `adaptive-icon.png` — diamante transparente |
+  | Viewport OEM | ~72×72 dp (máscara) | outer 18 dp = mask / parallax |
+
+  Expo: `android.adaptiveIcon.backgroundImage` + `foregroundImage` (+ `backgroundColor` fallback).
+  **Notification small icon**: 96×96 blanco+alpha (~88 % fill); tint `#3949AB`.
 
 **Última actualización**: 2026-09-03 — revisión/consolidación de `docs/geemastudio/docs/`: rutas `apps/mobile`→`apps/geemastudio-mobile` y `apps/web`→`apps/geemastudio-web` corregidas en todo el set (excepto donde el texto se refiere explícitamente al repo `ZM-Lash-and-Nails-Beauty`, que sí usa esos nombres); nota de Fase C (RLS `tenant_id`) actualizada a ✅ completada 2026-08-08; agregados `EDGE_FUNCTIONS.md`, `WABA_MULTITENANT_ARCHITECTURE.md`, `ADB_CONEXION_MOVIL.md` al índice (existían en el directorio pero no estaban listados); enlaces relativos rotos corregidos en `plans/06`, `plans/07` y `plans/geema-migration/*` (referencias a `02-PLAN-retrofit-tenant-id.md` / `03-PLAN-audit-paridad-zmlash-geema.md` con la profundidad `../` incorrecta); comandos `yarn *` desactualizados corregidos a `pnpm *` (mapeo real en `package.json` raíz) en README.md, MONOREPO_MIGRACION.md, DESARROLLO_LOCAL.md, DEPLOYMENT.md, INSTALACION_BETA.md, GEEMASTUDIO_MIGRATION_GUIDE.md (sección "Comandos útiles", no la narrativa histórica de FASE 1-6) y tech-debt/TD-001; rutas `scripts/db/` corregidas a `apps/geemastudio-server/scripts/db/` donde aplica (ubicación real tras la migración a monorepo). Queda pendiente de verificación humana: la ubicación correcta de `.env.example` (no existe en la raíz de `zm-tech`; ver nota en DESARROLLO_LOCAL.md) y el estado real de FASE 7C/7D en GEEMASTUDIO_MIGRATION_GUIDE.md.

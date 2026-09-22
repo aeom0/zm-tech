@@ -22,6 +22,7 @@
       "predictiveBackGestureEnabled": false,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundImage": "./assets/adaptive-icon-background.png",
         "backgroundColor": "#3949AB"
       },
       "permissions": [
