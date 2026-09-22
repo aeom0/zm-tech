@@ -7,6 +7,10 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido (22-sep 2026 — Simulador WABA)
+
+- **Web — `/panel/waba/simulador`**: port del chat de prueba (Plan 11 Fase 4). Invoca la Edge Function compartida `waba-chat-simulator` (mismo proyecto Supabase que ZM; sin copiar EF). Sesión Alberto/Vanessa QA, CTWA simulado, taps interactivos. Tab en `WabaNav`.
+
 ### Añadido (22-sep 2026 — Deep link Clientes → Mensajes WABA)
 
 - **Web — `/panel/clientes`**: enlace "Ver chat de WhatsApp en Mensajes" en el drawer de detalle (`?phone=` con normalización PE 9→`51…`). Helper `lib/waPhone.ts`.

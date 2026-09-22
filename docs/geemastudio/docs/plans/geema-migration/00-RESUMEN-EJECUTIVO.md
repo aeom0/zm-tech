@@ -22,7 +22,7 @@
 | WABA motor (L1) canónico ZM | 🟢 | Booking/carrito/Haiku en Edge ZM (prod) |
 | WABA multi-tenant runtime | 🟡 | Flag `waba_tenant_routing_enabled=false`; smoke QA ON pendiente |
 | Crons/RPCs tenant-aware (S4) | 🔴 | Bloquea 2.º tenant con bot completo |
-| Panel `/panel/waba/*` Geema | 🟡 | Estado + Campañas + Portafolio + Mensajes + Haiku + Historial ✅; falta Simulador |
+| Panel `/panel/waba/*` Geema | 🟢 | Paridad tabs ZM + Estado (incl. Simulador ✅ 22-sep) |
 | Retail `product_orders` | 🟡 | ZM: Ventas+Catálogo+push ✅; Geema: solo tab Catálogo; bot retail pausado |
 | WABA suite multi-vertical (L4) | 🔴 | Presets en `tenant-config`; webhook no los consume aún |
 | Drift `whatsapp-webhook` | 🔴 | Geema CHANGELOG 22-sep: prod v655 sin mirror limpio en repos — no redeployar a ciegas |
@@ -31,7 +31,7 @@
 
 ## Dónde continuar (recomendación 22-sep)
 
-**Track A — cutover Vanessa a Geema (tenant #1):** seguir Plan 11 en `zm-tech` → ~~Historial~~ ✅ → ~~Portafolio~~ ✅ → ~~deep link Clientes→chat~~ ✅ → **simulador** pre go-live.  
+**Track A — cutover Vanessa a Geema (tenant #1):** suite panel WABA ✅ (Historial · Portafolio · deep link · Simulador). Siguiente: ops no-WABA (finanzas ejecutiva) + reconciliar webhook.  
 **Track B — 2.º tenant:** S4 crons/Vault en repo ZM (no mezclar con Track A en la misma sesión).  
 **Track C — riesgo:** reconciliar/versionar bundle Edge `whatsapp-webhook` prod antes de cualquier cambio de bot (retail o S4).
 

@@ -25,11 +25,11 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 | # | Entregable | Repo | DoD |
 |---|------------|------|-----|
 | 0 | ~~Alinear docs Plan 05 + scorecard Plan 12~~ | ambos | ✅ 22-sep |
-| 1 | **Simulador WABA** (Plan 11 F4) | zm-tech | Pre go-live |
+| 1 | Finanzas ejecutiva / Plan 12 no-WABA | zm-tech | Post suite WABA |
 | 2 | (Paralelo otra sesión) reconciliar drift `whatsapp-webhook` prod v655 | ZM | Bundle versionado |
 | — | S4 crons tenant-aware | ZM | Solo si se abre Track B (2.º tenant) |
 
-**Hecho esta tanda:** Historial · Portafolio · deep link Clientes→Mensajes (Plan 12 P3).
+**Hecho esta tanda:** Historial · Portafolio · deep link · **Simulador** (Plan 11 F4, reusa EF ZM).
 
 **Fuera de esta semana:** retail bot / `add_to_cart` productos (bloqueado por drift webhook); S7 2.º tenant.
 
@@ -54,13 +54,12 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 
 | # | Ítem | Repo | Notas |
 |---|------|------|-------|
-| 1 | **Simulador WABA** (Plan 11 F4) | zm-tech | Pre go-live Vanessa |
-| 2 | Finanzas ejecutiva web | zm-tech | Plan 12 P1 |
-| 3 | Ventas `product_orders` en Geema | zm-tech | Tras catálogo; ZM ya tiene UI |
-| 4 | Reconciliar webhook prod v655 | ZM | Antes de bot retail / redeploy |
-| 5 | **S4** crons + Vault | ZM | Bloquea 2.º tenant |
-| 6 | **PR-09** Push FCM E2E | zm-tech | Plan 12 Fase X |
-| 7 | Smoke Finanzas ZM en APK | zm-tech | DoD S5-C abierto |
+| 1 | Finanzas ejecutiva web | zm-tech | Plan 12 P1 |
+| 2 | Ventas `product_orders` en Geema | zm-tech | Tras catálogo; ZM ya tiene UI |
+| 3 | Reconciliar webhook prod v655 | ZM | Antes de bot retail / redeploy |
+| 4 | **S4** crons + Vault | ZM | Bloquea 2.º tenant |
+| 5 | **PR-09** Push FCM E2E | zm-tech | Plan 12 Fase X |
+| 6 | Smoke Finanzas ZM en APK | zm-tech | DoD S5-C abierto |
 
 ### Riesgos activos
 
@@ -124,12 +123,13 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 | `/panel/personal`          | P1        | ✅ **10-sep** (lista, CRUD, foto, comisiones, dialecto ZM/Geema)          |
 | `/panel/configuracion`     | P1        | ✅ **10-sep** (datos, colores, logo, presencia web)                       |
 | `/panel/agenda`            | P1        | ✅ **10-sep** (grilla día read-only + drawer)                             |
-| `/panel/waba`              | P1        | ✅ **22-sep**: estado + campañas + portafolio + mensajes + Haiku + Historial; ⏳ Simulador |
+| `/panel/waba`              | P1        | ✅ **22-sep**: paridad tabs ZM + Estado (campañas, portafolio, mensajes, simulador, haiku, historial) |
 | `/panel/servicios` Productos | P1      | ✅ catálogo (22-sep); ⏳ Ventas `product_orders`                                              |
 | `/panel/configuracion/web` | P2        | ✅ parcial (CMS Mi Web)                                                                       |
 | `/panel/waba/campanas`     | P1        | ✅ **21-sep**                                                                                 |
 | `/panel/waba/historial`    | P1.5      | ✅ **22-sep**                                                                                 |
 | `/panel/waba/portafolio`   | P2        | ✅ **22-sep**                                                                                 |
+| `/panel/waba/simulador`    | P2        | ✅ **22-sep** (reusa EF `waba-chat-simulator`)                                                |
 | `/panel/inventario`        | P2        | ❌                                                                                            |
 
 Orden P1 cerrado: ~~`clientes` → `personal` → `configuracion` → `agenda` → `waba`~~.

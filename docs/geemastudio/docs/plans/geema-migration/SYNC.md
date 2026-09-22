@@ -92,3 +92,4 @@ Implementación sugerida (S2-7):
 | 2026-09-22 | Historial WABA Geema (Plan 11 F5.2) | `04` S6-4b ✅; `00` Track A → Portafolio |
 | 2026-09-22 | Portafolio WABA Geema (Plan 11 F5.3) | `04` S6-5 ✅; `00` → deep link / simulador |
 | 2026-09-22 | Deep link Clientes→Mensajes (Plan 12 P3) | `04` S6-5b ✅; `00` → Simulador |
+| 2026-09-22 | Simulador WABA Geema (Plan 11 F4) | UI + tab; reusa EF ZM; Track A panel WABA cerrado |

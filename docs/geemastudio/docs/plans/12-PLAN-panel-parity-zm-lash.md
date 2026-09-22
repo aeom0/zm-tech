@@ -38,10 +38,11 @@ Leyenda: ✅ paridad · 🟡 parcial · ❌ falta · ➕ Geema ya superior
 | Finanzas **ejecutiva** (P&L, gastos, break-even) | `ExecutiveDashboard` + 10 componentes | ❌ web (🟡 mobile) | ❌ |
 | Inventario | Solo mobile | ❌ web · ✅ mobile | ❌ (ambos sin web) |
 | Validación pagos / Asignar staff | Solo mobile | Solo mobile | ❌ web (aceptable si se documenta mobile-first) |
-| WABA tabs | **6** (campañas, portafolio, mensajes, simulador, haiku, historial) | **6** (estado, campañas, portafolio, mensajes, haiku, historial) | 🟡 falta simulador (Geema tiene Estado extra) |
+| WABA tabs | **6** (+ simulador) | **7** (estado + 6 de ZM) | ✅ (Geema tiene Estado extra) |
 | WABA inbox (uso diario) | Consola staff completa | Consola staff Plan 11 F3 ✅ | ✅ |
 | WABA historial | Analytics desktop | `/panel/waba/historial` ✅ 22-sep | ✅ |
 | WABA portafolio | Hasta 4 fotos/servicio | `/panel/waba/portafolio` ✅ 22-sep | ✅ |
+| WABA simulador | Chat QA fidelidad total | `/panel/waba/simulador` ✅ 22-sep (reusa EF ZM) | ✅ |
 | Edge Functions bot/ops | **~25** (repo ZM, BD compartida) | Panel reusa EFs ZM; webhook Geema incompleto | 🟡 drift prod v655 |
 
 Evidencia nav (22-sep):

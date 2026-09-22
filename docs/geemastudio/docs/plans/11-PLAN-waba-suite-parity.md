@@ -1,6 +1,6 @@
 # WABA — paridad de suite GeemaStudio vs. ZM Lash + deuda técnica
 
-> Estado: **en implementación** (actualizado 22-sep-2026) — Fase 0/1 cerradas; Fase 2–3 ✅; Fase 5 Campañas+Historial+Portafolio ✅; Plan 12 P3 deep link Clientes→Mensajes ✅. **Siguiente Track A: Simulador (Fase 4).**
+> Estado: **suite WABA panel cerrada para Track A** (22-sep-2026) — Fases 0–5 (salvo promos/reenganchar) + Simulador F4 ✅. Siguiente fuera de WABA panel: finanzas ejecutiva / runtime bot (Plan 12).
 >
 > **Complemento obligatorio:** la paridad del panel **completo** (finanzas ejecutiva, shell, clientes→WA, crons del bot, promo broadcast, tenant scoping) vive en [`12-PLAN-panel-parity-zm-lash.md`](12-PLAN-panel-parity-zm-lash.md). Este Plan 11 solo cubre la suite WABA + deuda; no alcanza solo para "panel Geema ≥ ZM".
 
@@ -163,9 +163,9 @@ Copy UI en español neutro (**sin voseo**): corregir el “Elegí una conversaci
 
 ## Fase 4 — Simulador de conversación (fase separada, mayor esfuerzo)
 
-Portar el patrón de fidelidad total de ZM: Edge Function `apps/geemastudio-server/supabase/functions/waba-chat-simulator/` que construye un envelope Meta sintético, reserva 1-2 teléfonos QA por tenant, limpia estado antes de cada corrida (`wa_messages`, `whatsapp_sessions`, `appointment_services`, `appointments`, `payments` filtrados por `tenant_id`+teléfono QA) y llama al **mismo `dispatch()`** que usa `whatsapp-webhook` (verificar que Deno permite importar entre carpetas de functions del mismo proyecto Supabase). Frontend: `apps/geemastudio-web/src/app/panel/waba/simulador/page.tsx` con polling de `wa_messages` (3.5-5s) para burbujas.
+> **Hecho (22-sep-2026) — solo frontend.** Reutiliza la EF `waba-chat-simulator` ya desplegada en `udelx…` (repo ZM); no se copió a `geemastudio-server`. UI: `/panel/waba/simulador` + tab nav. Misma API que ZM (`start_session` / `send_message` / `reset_session`, phones QA `51988800001`/`002`). Caveat: el dispatch del simulador usa el webhook ZM en prod (tenant `zm-lash-nails`); adecuado para validar el bot del tenant #1 antes del cutover Vanessa.
 
-Hacer esta fase solo después de que Fase 1-3 estén sólidas (el simulador amplifica cualquier bug de `tenant_id` restante, al compartir el dispatcher real). Si el tiempo aprieta, es el punto natural de corte — Alberto priorizó Haiku y deuda técnica explícitamente.
+~~Portar el patrón de fidelidad total de ZM: Edge Function `apps/geemastudio-server/supabase/functions/waba-chat-simulator/`…~~
 
 ## Fase 5 — Campañas, historial, portafolio (repriorizado 20-sep)
 
