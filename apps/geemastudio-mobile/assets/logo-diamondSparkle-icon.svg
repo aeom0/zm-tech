@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  logo-diamondSparkle-icon.svg — icon.png (iOS / legacy)
-  Diamante ~50 dp (misma escala que adaptive FG). Degradado full-bleed en una capa.
+  icon.png — diamante ~42 dp (paridad con adaptive FG) + degradado full-bleed.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
   <defs>
@@ -87,7 +86,7 @@
   </g>
   <rect width="1024" height="1024" fill="url(#bloom)"/>
 
-<g transform="translate(178.87, 57.15) scale(2.5626)">
+<g transform="translate(232.17, 129.92) scale(2.1526)">
     <polygon points="74,85  101,85  95,128"        fill="#888888"/>
     <polygon points="74,85  95,128  26,128"         fill="#444444"/>
     <polygon points="101,85 159,85 165,128  95,128" fill="url(#g-tabla)"/>

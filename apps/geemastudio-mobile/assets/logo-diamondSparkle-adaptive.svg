@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  logo-diamondSparkle-adaptive.svg — FOREGROUND Adaptive Icon
-  Canvas 108 dp (1024 px). Logo ~50 dp (474 px) dentro de safe 66 dp.
-  Viewport OEM ~72 dp: el diamante ocupa ~69% → se ve el degradado.
-  Spec: developer.android.com/.../icon_design_adaptive
+  FOREGROUND Adaptive Icon — logo ~42 dp (398 px)
+  Safe 66 dp / viewport 72 dp / canvas 108 dp. ~65% del círculo → degradado visible.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
   <defs>
@@ -21,7 +19,7 @@
       <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
     </linearGradient>
   </defs>
-  <g transform="translate(178.87, 57.15) scale(2.5626)">
+  <g transform="translate(232.17, 129.92) scale(2.1526)">
 
     <polygon points="74,85  101,85  95,128"        fill="#888888"/>
     <polygon points="74,85  95,128  26,128"         fill="#444444"/>
