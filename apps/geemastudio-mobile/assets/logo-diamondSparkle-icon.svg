@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   logo-diamondSparkle-icon.svg
-  88% ancho + +20px abajo. Escala 4.33
+  Safe-zone Android: diamante centrado ~52% alto (escala 2.878).
+  Cabe en máscara circular OEM sin clip (margen vs Galería/Gemini).
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
   <defs>
@@ -87,7 +88,7 @@
   </g>
   <rect width="1024" height="1024" fill="url(#bloom)"/>
 
-<g transform="translate(-51.20, -236.98) scale(4.3323)">
+<g transform="translate(137.86, 1.15) scale(2.8780)">
     <polygon points="74,85  101,85  95,128"        fill="#888888"/>
     <polygon points="74,85  95,128  26,128"         fill="#444444"/>
     <polygon points="101,85 159,85 165,128  95,128" fill="url(#g-tabla)"/>

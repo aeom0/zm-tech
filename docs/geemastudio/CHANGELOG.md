@@ -7,6 +7,10 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Corregido (22-sep 2026 — launcher icon safe zone)
+
+- **Mobile icon** — diamante reducido al ~52 % alto / centrado (antes 88 %+20 px). Cabe en máscara circular OEM sin clip; `icon.png` + `adaptive-icon.png` regenerados.
+
 ### Documentado (22-sep 2026 — Push FCM capas + versiones)
 
 - **Plan 06**: small icon Geema ✅ (diamante + tint `#3949AB`); large/image expandida = `tenant_settings.logo_url` (Tier 1 pendiente en `send-notification`).
