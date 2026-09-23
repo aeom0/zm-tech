@@ -22,6 +22,16 @@ export interface InventoryItem {
   cost: string | null
 }
 
+export interface InventoryMovement {
+  id: string
+  item_id: string | null
+  delta: number
+  quantity_before: number
+  quantity_after: number
+  reason: string
+  created_at: string
+}
+
 export interface InventoryFormState {
   name: string
   category: InventoryCategory

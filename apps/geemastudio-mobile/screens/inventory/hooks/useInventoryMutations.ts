@@ -86,6 +86,7 @@ export function useInventoryMutations(options: UseInventoryMutationsOptions = {}
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['inventory_items'] })
+      queryClient.invalidateQueries({ queryKey: ['inventory_movements'] })
       queryClient.invalidateQueries({ queryKey: ['dashboard_stats'] })
       onCreateOrUpdateSuccess?.()
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)

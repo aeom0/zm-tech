@@ -17,10 +17,14 @@ import { InventoryEmptyState } from './inventory/components/InventoryEmptyState'
 import { InventoryFab } from './inventory/components/InventoryFab'
 import { InventoryItemCard } from './inventory/components/InventoryItemCard'
 import { InventoryItemModal } from './inventory/components/InventoryItemModal'
+import { InventoryMovementList } from './inventory/components/InventoryMovementList'
 import { useInventoryCategoriesQuery } from './inventory/hooks/useInventoryCategoriesQuery'
 import { useInventoryCategoryMutations } from './inventory/hooks/useInventoryCategoryMutations'
 import { useInventoryMutations } from './inventory/hooks/useInventoryMutations'
-import { useInventoryItemsQuery } from './inventory/hooks/useInventoryQueries'
+import {
+  useInventoryItemsQuery,
+  useInventoryMovementsQuery,
+} from './inventory/hooks/useInventoryQueries'
 import { inventoryStyles as styles } from './inventory/inventoryStyles'
 import type { InventoryCategoryOption, InventoryFormState, InventoryItem } from './inventory/types'
 
@@ -76,6 +80,7 @@ export default function InventoryScreen() {
     useInventoryMutations({ onCreateOrUpdateSuccess: closeModal })
 
   const { data: items = [], isLoading, refetch } = useInventoryItemsQuery()
+  const { data: movements = [] } = useInventoryMovementsQuery()
 
   const handleAddCategory = (label: string) => {
     createCategoryMutation.mutate({ label, sortOrder: categories.length })
@@ -219,6 +224,18 @@ export default function InventoryScreen() {
             />
           ))
         )}
+        <InventoryMovementList
+          movements={movements}
+          items={items}
+          theme={{
+            backgroundSecondary: theme.backgroundSecondary,
+            border: theme.border,
+            text: theme.text,
+            textMuted: theme.textMuted,
+            success: theme.success,
+            error: theme.error,
+          }}
+        />
       </ScrollView>
 
       <InventoryFab onPress={openNewItem} />
