@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  adaptive-icon-background v3 — capa BACKGROUND Adaptive Icon, paleta Lunaris.
+  Canvas 108 dp -> 1024 px. Full-bleed (el OEM enmascara).
+  Colores: constants/theme.ts (Gradients.onboarding + Onboarding.canvasBackground).
+  Vectorial (v2 era un JPEG embebido).
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <!-- Base: canvas Lunaris con leve tinte índigo hacia abajo -->
+    <linearGradient id="base" x1="0" y1="0" x2="0" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#111318"/>
+      <stop offset="100%" stop-color="#151A3A"/>
+    </linearGradient>
+    <!-- Halo turquesa tras la corona del diamante -->
+    <radialGradient id="glow-crown" cx="512" cy="270" r="330" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#40E0D0" stop-opacity="0.62"/>
+      <stop offset="45%"  stop-color="#00897B" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#00897B" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Nebulosa inferior: turquesa (izq) -> azul -> índigo (der), como NebulosaGlow -->
+    <radialGradient id="glow-left" cx="360" cy="1000" r="560" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#40E0D0" stop-opacity="0.60"/>
+      <stop offset="50%"  stop-color="#00897B" stop-opacity="0.24"/>
+      <stop offset="100%" stop-color="#00897B" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow-right" cx="700" cy="1000" r="600" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#1E88E5" stop-opacity="0.50"/>
+      <stop offset="50%"  stop-color="#3949AB" stop-opacity="0.34"/>
+      <stop offset="100%" stop-color="#3949AB" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Acento índigo arriba a la derecha para equilibrar -->
+    <radialGradient id="glow-indigo" cx="900" cy="140" r="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#3949AB" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#3949AB" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#base)"/>
+  <rect width="1024" height="1024" fill="url(#glow-indigo)"/>
+  <rect width="1024" height="1024" fill="url(#glow-left)"/>
+  <rect width="1024" height="1024" fill="url(#glow-right)"/>
+  <rect width="1024" height="1024" fill="url(#glow-crown)"/>
+</svg>
