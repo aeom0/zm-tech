@@ -6,7 +6,7 @@
 >
 > Meta: el panel web de Geema (`apps/geemastudio-web`) debe ser **igual o superior** al de ZM Lash canónico (`ZM-Lash-and-Nails-Beauty/apps/web`) antes de migrar a Vanessa como tenant real.
 >
-> **Hecho 22-sep:** Plan 11 WABA suite + Plan 12 P1/P2 finanzas + **PR-09 P0 + P8 + P9 + P10** (push físico, cita WABA y pago por validar recibidos en Geema). **Siguiente:** P14–P17/P2 de paridad WABA.
+> **Hecho 22-sep:** Plan 11 WABA suite + Plan 12 P1/P2 finanzas + **PR-09 P0 + P8 + P9 + P10** (+ **P18–P20 ✅ 23-sep**) (push físico, cita WABA y pago por validar recibidos en Geema). **Siguiente:** P21–P23.
 
 ## Relación con Plan 11
 
@@ -70,7 +70,7 @@ Evidencia nav (22-sep):
 | G4 | Crons / nudges / recordatorios (11+ EFs ZM) | Panel perfecto + bot sin recordatorios = funnel roto → S4 |
 | G5 | `countOverlappingAppointments` en webhook Geema | N/A Opción A — bot solo ZM (Track C); no mantener webhook Geema |
 | G6 | Promo broadcast WA + Reenganchar | Prod ZM. **Envío masivo mobile** hecho 21-sep — ver R5; `send-retouch-reengage` sigue pendiente |
-| G7 | Push FCM E2E | **P0 + P8 ✅** 22-sep — push físico validado en APK de producción; EF canónica ZM. Ajustes de assets en curso |
+| G7 | Push FCM E2E | **P0 + P8 + P18–P20 ✅** 22/23-sep — push físico validado en APK de producción; EF canónica ZM. Ajustes de assets en curso |
 | G8 | Tenant scoping global en hooks web | Plan 11 solo arregla tablas WABA vía API routes |
 | G9 | Legal por jurisdicción tenant | ZM tiene términos/privacidad/libro reclamaciones |
 | G10 | Docs stale (`WEB_ARCHITECTURE`, audit 03) | CMS web ya existe; finanzas P1 ✅ — limpiar restos |

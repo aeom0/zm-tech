@@ -97,3 +97,4 @@ Implementación sugerida (S2-7):
 | 2026-09-22 | Plan 12 P1/P2 finanzas ejecutiva Geema | Resumen+Detalle `/finanzas`; PanelShell + card Inicio |
 | 2026-09-22 | Docs alineados pre–Push FCM | Plan 12 scorecard/G*; 09 siguiente → PR-09; README |
 | 2026-09-22 | PR-09 P0 + P8 Push FCM | Firebase `com.geemastudio.app` + EAS + `useNotifications` persist; push físico validado; EF solo ZM; ajustes de assets en curso |
+| 2026-09-23 | PR-09 P18–P20 Push P2 | `appointment_reference` → Agenda (`navigationRef` + cola cold start); `waba_chat` diseño/error; smoke físico ✅ en APK con OTA prod; EF solo ZM |
