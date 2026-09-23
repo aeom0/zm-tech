@@ -56,7 +56,7 @@ RLS: `authenticated` con `tenant_slug = current_tenant_id()` — lectura/escritu
 ## Push FCM — branding por tenant (bosquejo)
 
 **Fecha bosquejo:** 2026-08-29  
-**Actualizado:** 2026-09-22 (PR-09)  
+**Actualizado:** 2026-09-22 (PR-09)
 **Estado:** Small icon Geema ✅ (APK). Large/image por tenant → Tier 1 pendiente (`send-notification` + `logo_url`).
 
 ### Hecho 22-sep (PR-09 / Geema APK)
