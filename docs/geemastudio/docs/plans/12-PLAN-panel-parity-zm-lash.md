@@ -6,7 +6,7 @@
 >
 > Meta: el panel web de Geema (`apps/geemastudio-web`) debe ser **igual o superior** al de ZM Lash canónico (`ZM-Lash-and-Nails-Beauty/apps/web`) antes de migrar a Vanessa como tenant real.
 >
-> **Hecho 22-sep:** Plan 11 WABA suite + Plan 12 P1/P2 finanzas + **PR-09 P0 + P8** (push físico validado en APK de producción; ajustes de assets en curso). **Siguiente:** P9–P10 ops Vanessa.
+> **Hecho 22-sep:** Plan 11 WABA suite + Plan 12 P1/P2 finanzas + **PR-09 P0 + P8 + P9 + P10** (push físico, cita WABA y pago por validar recibidos en Geema). **Siguiente:** P14–P17/P2 de paridad WABA.
 
 ## Relación con Plan 11
 
@@ -224,8 +224,8 @@ BD compartida `udelxwwnyivknslueerr`: la EF **`send-notification` ya corre en pr
 
 ##### P1 — Ops Vanessa (mismo día)
 
-- [ ] **P9** — Push cita WABA nueva llega en <30s (pendiente P8 + APK)
-- [ ] **P10** — Push pago por validar (pendiente P8)
+- [x] **P9** — Push cita WABA simulada para `+584165434665` llegó a Geema en <30 s; control de segundo push también recibido
+- [x] **P10** — Push de pago por validar recibido en Geema; smoke completo con 3 notificaciones
 - [x] **P11** — Canales Android: `default`, `waba-chat`, `waba-alerts`, `waba-appointments` (`{businessName} · …`)
 - [x] **P12** — `notifyAdmins` `owner`+`dev` + `tenant_id` (ZM `notify.ts`; redeploy webhook)
 - [x] **P13** — Log `sent/errors` del invoke (ya en ZM `notify.ts`)

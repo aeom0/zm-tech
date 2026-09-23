@@ -7,6 +7,14 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Validado (22-sep 2026 — PR-09 P10)
+
+- **Push de pago por validar**: comprobante enviado desde `+584165434665`; el aviso llegó a Geema junto con el resto del smoke, con 3 notificaciones recibidas y sin regresión visible.
+
+### Validado (22-sep 2026 — PR-09 P9)
+
+- **Push de cita WABA**: smoke con `+584165434665` recibió la notificación simulada de cita y un segundo push de control en Geema dentro de la ventana de 30 segundos. No se creó una cita persistente en BD.
+
 ### Corregido (22-sep 2026 — adaptive capas + notif size)
 
 - **Launcher**: capas oficiales Android — `adaptive-icon-background.png` (degradado full-bleed) + `adaptive-icon.png` (diamante **48 dp** / ~67 % del viewport 72 dp — máximo de la referencia A/B/C). Ya no se pierde el degradado al reducir el logo.

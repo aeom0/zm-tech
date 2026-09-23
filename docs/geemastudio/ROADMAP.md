@@ -25,7 +25,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 | # | Entregable | Repo | DoD |
 |---|------------|------|-----|
 | 0 | ~~Alinear docs Plan 05 + scorecard Plan 12~~ | ambos | ✅ 22-sep |
-| 1 | P9–P10 ops Vanessa | zm-tech | Validar push de cita y pago en operación |
+| 1 | P14–P17/P2 push WABA | zm-tech | P9 cita y P10 pago ✅ 22-sep; continuar paridad avanzada |
 | 2 | Ventas `product_orders` en Geema | zm-tech | Tras catálogo; ZM ya tiene UI |
 | — | S4 crons tenant-aware | ZM | Solo si se abre Track B (2.º tenant) |
 
@@ -49,7 +49,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 - Theming panel + PWA dinámico + tab Productos (catálogo) ✅ 22-sep
 - **Plan 11/12 WABA web**: Historial, Portafolio, deep link Clientes→Mensajes y Simulador ✅ 22-sep
 - **Plan 12 Finanzas**: Resumen|Detalle web + enlaces PanelShell ✅ 22-sep
-- **PR-09 Push FCM**: P0 + P8 ✅ 22-sep; push físico validado, ajustes de assets en curso
+- **PR-09 Push FCM**: P0 + P8 + P9 + P10 ✅ 22-sep; push físico, cita WABA y pago por validar validados, ajustes de assets en curso
 - **Host**: `https://geema.zmtechdev.com`
 - Migración Plan 05: **S1–S3** ✅; **S4** ❌ (repo ZM)
 
@@ -57,7 +57,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 
 | # | Ítem | Repo | Notas |
 |---|------|------|-------|
-| 1 | P9–P10 ops Vanessa | zm-tech | Validar push de cita y pago en operación |
+| 1 | P14–P17/P2 push WABA | zm-tech | P9 cita y P10 pago ✅ 22-sep; continuar paridad avanzada |
 | 2 | Ventas `product_orders` en Geema | zm-tech | Tras catálogo; ZM ya tiene UI |
 | 3 | **S4** crons + Vault | ZM | Bloquea 2.º tenant |
 | 4 | Smoke Finanzas ZM en APK | zm-tech | Validación mobile pendiente |
