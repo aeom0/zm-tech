@@ -7,6 +7,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido (23-sep 2026 — Ventas retail Geema)
+
+- **Panel Productos → Ventas**: apartados/pedidos por tenant, cobro atómico vía `mark_product_order_paid`, estados pagado/entregado/cancelado y actualización de stock según disponibilidad.
+- Incluye selección de clienta, teléfono, origen, notas y método de pago; el catálogo existente permanece en la subpestaña Catálogo.
+
 ### Añadido / validado (23-sep 2026 — PR-09 P21–P23)
 
 - **P21**: la alerta `anthropic_credit` abre el editor Haiku en Geema para reponer crédito.

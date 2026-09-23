@@ -33,7 +33,7 @@ Leyenda: ✅ paridad · 🟡 parcial · ❌ falta · ➕ Geema ya superior
 | Dashboard KPIs                                   | Solo mobile                                                         | `/panel` + `/dashboard`                                          | ➕                                              |
 | Agenda                                           | Solo mobile                                                         | Grilla **read-only**                                             | ➕ vista; 🟡 sin CRUD                           |
 | Catálogo (cats/servicios/packs/promos)           | `/servicios`                                                        | `/panel/servicios`                                               | ✅                                              |
-| Productos retail                                 | `/panel/productos` Ventas+Catálogo                                  | Tab Productos catálogo ✅; Ventas ❌                             | 🟡                                              |
+| Productos retail                                 | `/panel/productos` Ventas+Catálogo                                  | Tab Productos catálogo + Ventas ✅ 23-sep                        | ✅                                              |
 | Clientes CRM                                     | `/clientes` + deep link WA                                          | `/panel/clientes` + deep link WA ✅ 22-sep                       | ✅                                              |
 | Personal                                         | Solo mobile                                                         | CRUD web                                                         | ➕                                              |
 | Horarios / timezone                              | Mobile                                                              | `/panel/horarios`                                                | ➕                                              |
@@ -54,7 +54,7 @@ Evidencia nav (22-sep):
 
 - Geema WABA: `WabaNav.tsx` → Campañas, Mensajes, Asistente IA (+ página estado)
 - Inbox: Plan 11 Fase 3 M1–M23 cerrados
-- Productos: `/panel/servicios?tab=productos` (catálogo only)
+- Productos: `/panel/servicios?tab=productos` (catálogo + ventas)
 
 ---
 

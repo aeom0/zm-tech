@@ -58,7 +58,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 | #   | Ítem                             | Repo    | Notas                               |
 | --- | -------------------------------- | ------- | ----------------------------------- |
 | 1   | P14–P17/P2 push WABA             | zm-tech | P9/P10 ✅ 22-sep; P18–P23 ✅ 23-sep |
-| 2   | Ventas `product_orders` en Geema | zm-tech | Tras catálogo; ZM ya tiene UI       |
+| 2   | Ventas `product_orders` en Geema | zm-tech | ✅ 23-sep; flujo operativo en Productos |
 | 3   | **S4** crons + Vault             | ZM      | Bloquea 2.º tenant                  |
 | 4   | Smoke Finanzas ZM en APK         | zm-tech | Validación mobile pendiente         |
 
