@@ -31,7 +31,7 @@
 
 ## Dónde continuar (recomendación 22-sep)
 
-**Track A — cutover Vanessa a Geema (tenant #1):** suite panel WABA ✅ + finanzas ejecutiva ✅ (Plan 12 P1/P2). Siguiente: push FCM (PR-09) o cutover ops.  
+**Track A — cutover Vanessa a Geema (tenant #1):** suite panel WABA ✅ + finanzas ejecutiva ✅ (Plan 12 P1/P2) + push FCM P9/P10 ✅ (cita WABA y pago por validar recibidos en Geema). Siguiente: paridad WABA avanzada o cutover ops.
 **Track B — 2.º tenant:** S4 crons/Vault en repo ZM (no mezclar con Track A en la misma sesión).  
 **Track C — riesgo:** ✅ cerrado — bot canónico ZM; redeploy solo desde ZM ([09](./09-WEBHOOK-PROD-RECONCILE.md)).
 

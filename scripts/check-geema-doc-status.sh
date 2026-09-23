@@ -34,11 +34,11 @@ assert_absent() {
 }
 
 # Hitos cerrados que deben permanecer reflejados en el estado ejecutivo.
-assert_contains "$ROADMAP" "P9–P10 ops Vanessa"
+assert_contains "$ROADMAP" "P14–P17/P2 push WABA"
 assert_contains "$ROADMAP" "el estado de migración vive en Plan 05"
-assert_contains "$ROADMAP" "P0 + P8 ✅"
-assert_contains "$PLAN12" "P0 + P8"
-assert_contains "$PLAN05" "PR-09 P0 + P8 validado"
+assert_contains "$ROADMAP" "P0 + P8 + P9 + P10 ✅"
+assert_contains "$PLAN12" "P0 + P8 + P9 + P10"
+assert_contains "$PLAN05" "PR-09 P0 + P8 + P9 + P10 validados"
 assert_contains "$PLAN05" "[x] Historial + Portafolio en nav WABA"
 
 # Frases que reabren trabajo ya cerrado o contradicen Track C.
