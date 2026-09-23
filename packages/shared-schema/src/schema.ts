@@ -146,20 +146,27 @@ export const appointmentServices = pgTable(
   })
 )
 
-export const inventoryItems = pgTable('inventory_items', {
-  id: varchar('id')
-    .primaryKey()
-    .default(sql`gen_random_uuid()`),
-  name: text('name').notNull(),
-  type: text('type').notNull().default('countable'),
-  category: text('category').notNull().default('insumos'), // unas | pestanas_cejas | insumos
-  quantity: integer('quantity').notNull().default(0),
-  minStock: integer('min_stock').notNull().default(5),
-  unit: text('unit').notNull().default('unidad'),
-  price: decimal('price', { precision: 10, scale: 2 }),
-  cost: decimal('cost', { precision: 10, scale: 2 }),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-})
+export const inventoryItems = pgTable(
+  'inventory_items',
+  {
+    id: varchar('id')
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    tenantId: text('tenant_id').notNull().default('zm-lash-nails'),
+    name: text('name').notNull(),
+    type: text('type').notNull().default('countable'),
+    category: text('category').notNull().default('insumos'), // unas | pestanas_cejas | insumos
+    quantity: integer('quantity').notNull().default(0),
+    minStock: integer('min_stock').notNull().default(5),
+    unit: text('unit').notNull().default('unidad'),
+    price: decimal('price', { precision: 10, scale: 2 }),
+    cost: decimal('cost', { precision: 10, scale: 2 }),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantIdIdx: index('idx_inventory_items_tenant_id').on(table.tenantId),
+  })
+)
 
 export const inventoryCategories = pgTable(
   'inventory_categories',

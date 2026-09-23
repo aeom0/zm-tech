@@ -5,6 +5,7 @@ import * as Haptics from 'expo-haptics'
 import { queryClient } from '@/lib/query-client'
 import { supabase } from '@/lib/supabase'
 import { slugifyCategoryKey } from '@/constants/inventoryCategories'
+import { useProfileTenantId } from '@/screens/finances/hooks/useProfileTenantId'
 
 import {
   INVENTORY_CATEGORIES_QUERY_KEY,
@@ -12,13 +13,17 @@ import {
 } from './useInventoryCategoriesQuery'
 
 export function useInventoryCategoryMutations() {
+  const { tenantId } = useProfileTenantId()
+
   const createMutation = useMutation({
     mutationFn: async ({ label, sortOrder }: { label: string; sortOrder: number }) => {
+      if (!tenantId) throw new Error('No se pudo identificar el negocio.')
       const key = slugifyCategoryKey(label)
       if (!key) {
         throw new Error('Ingresa un nombre válido.')
       }
       const { error } = await supabase.from('inventory_categories').insert({
+        tenant_id: tenantId,
         key,
         label: label.trim(),
         sort_order: sortOrder,
@@ -41,17 +46,23 @@ export function useInventoryCategoryMutations() {
 
   const deleteMutation = useMutation({
     mutationFn: async (category: InventoryCategoryRow) => {
+      if (!tenantId) throw new Error('No se pudo identificar el negocio.')
       const { count, error: countError } = await supabase
         .from('inventory_items')
         .select('id', { count: 'exact', head: true })
         .eq('category', category.key)
+        .eq('tenant_id', tenantId)
       if (countError) {
         throw new Error(countError.message)
       }
       if ((count ?? 0) > 0) {
         throw new Error('Tiene productos asignados. Muévelos a otra categoría antes de eliminarla.')
       }
-      const { error } = await supabase.from('inventory_categories').delete().eq('id', category.id)
+      const { error } = await supabase
+        .from('inventory_categories')
+        .delete()
+        .eq('id', category.id)
+        .eq('tenant_id', tenantId)
       if (error) {
         throw new Error(error.message)
       }

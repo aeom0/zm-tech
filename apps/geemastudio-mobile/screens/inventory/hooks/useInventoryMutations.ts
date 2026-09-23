@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query'
 
 import { queryClient } from '@/lib/query-client'
 import { supabase } from '@/lib/supabase'
+import { useProfileTenantId } from '@/screens/finances/hooks/useProfileTenantId'
 
 import type { InventoryCategory } from '../types'
 
@@ -12,6 +13,7 @@ interface UseInventoryMutationsOptions {
 
 export function useInventoryMutations(options: UseInventoryMutationsOptions = {}) {
   const { onCreateOrUpdateSuccess } = options
+  const { tenantId } = useProfileTenantId()
 
   const createMutation = useMutation({
     mutationFn: async (data: {
@@ -22,7 +24,9 @@ export function useInventoryMutations(options: UseInventoryMutationsOptions = {}
       unit: string
       cost: number | null
     }) => {
+      if (!tenantId) throw new Error('No se pudo identificar el negocio.')
       const payload = {
+        tenant_id: tenantId,
         name: data.name,
         type: 'countable',
         category: data.category,
@@ -61,6 +65,7 @@ export function useInventoryMutations(options: UseInventoryMutationsOptions = {}
         cost: number | null
       }
     }) => {
+      if (!tenantId) throw new Error('No se pudo identificar el negocio.')
       const payload = {
         name: data.name,
         category: data.category,
@@ -70,7 +75,11 @@ export function useInventoryMutations(options: UseInventoryMutationsOptions = {}
         cost: data.cost,
       }
 
-      const { error } = await supabase.from('inventory_items').update(payload).eq('id', id)
+      const { error } = await supabase
+        .from('inventory_items')
+        .update(payload)
+        .eq('id', id)
+        .eq('tenant_id', tenantId)
       if (error) {
         throw new Error(error.message)
       }
@@ -85,22 +94,12 @@ export function useInventoryMutations(options: UseInventoryMutationsOptions = {}
 
   const adjustQuantityMutation = useMutation({
     mutationFn: async ({ id, delta }: { id: string; delta: number }) => {
-      const { data, error } = await supabase
-        .from('inventory_items')
-        .select('quantity')
-        .eq('id', id)
-        .maybeSingle()
+      const { error } = await supabase.rpc('adjust_inventory_quantity', {
+        p_item_id: id,
+        p_delta: delta,
+      })
       if (error) {
         throw new Error(error.message)
-      }
-      const current = data?.quantity ?? 0
-      const next = Math.max(0, current + delta)
-      const { error: updateError } = await supabase
-        .from('inventory_items')
-        .update({ quantity: next })
-        .eq('id', id)
-      if (updateError) {
-        throw new Error(updateError.message)
       }
     },
     onSuccess: () => {
@@ -112,7 +111,12 @@ export function useInventoryMutations(options: UseInventoryMutationsOptions = {}
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from('inventory_items').delete().eq('id', id)
+      if (!tenantId) throw new Error('No se pudo identificar el negocio.')
+      const { error } = await supabase
+        .from('inventory_items')
+        .delete()
+        .eq('id', id)
+        .eq('tenant_id', tenantId)
       if (error) {
         throw new Error(error.message)
       }

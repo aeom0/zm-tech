@@ -11,6 +11,7 @@ export interface InventoryCategoryOption {
 
 export interface InventoryItem {
   id: string
+  tenant_id: string
   name: string
   type: string
   category: InventoryCategory
