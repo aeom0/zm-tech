@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
+import { flushPendingNavigation, navigationRef } from '@/lib/navigationRef'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { KeyboardProvider } from 'react-native-keyboard-controller'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
@@ -90,7 +91,11 @@ function AppContent() {
     <SafeAreaProvider>
       <GestureHandlerRootView style={styles.root}>
         <KeyboardProvider>
-          <NavigationContainer>
+          <NavigationContainer
+            ref={navigationRef}
+            onReady={flushPendingNavigation}
+            onStateChange={flushPendingNavigation}
+          >
             <RootStackNavigator />
           </NavigationContainer>
           <StatusBar style="light" />

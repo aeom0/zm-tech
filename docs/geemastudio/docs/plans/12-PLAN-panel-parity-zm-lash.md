@@ -239,9 +239,9 @@ BD compartida `udelxwwnyivknslueerr`: la EF **`send-notification` ya corre en pr
 
 ##### P2 — Paridad ZM v3
 
-- [ ] **P18** — Push imagen/audio diseño (`inbound-image` / `inbound-audio`)
-- [ ] **P19** — Push referencia cita → Agenda (`appointment_reference` + `useOpenAppointmentDeepLink`)
-- [ ] **P20** — `notifyAdminsWaError`
+- [ ] **P18** — Push imagen/audio diseño (`inbound-image` / `inbound-audio`) — EF ZM ya emite `type=waba_chat` + `phone`; el tap lo abre el routing de P16 (sin código nuevo). Falta smoke físico
+- [ ] **P19** — Push referencia cita → Agenda (`appointment_reference`) — código: `lib/navigationRef.ts` + `handleNotificationData` → `AgendaScreen` (`appointmentId`, cola para cold start). Falta smoke físico (OTA/APK)
+- [ ] **P20** — `notifyAdminsWaError` — EF ZM ya emite `type=waba_chat` (`error_kind`, debounce 10 min); mismo routing que P18. Falta smoke físico
 - [ ] **P21** — Haiku sin crédito + billing Meta #131042
 - [ ] **P22** — Cron `chat-quality-review` + push “Revisar YA”
 - [ ] **P23** — Trigger DB asignación staff: corregir `user_id` → `user_ids[]` si se porta; evaluar multi-tenant
