@@ -6,7 +6,7 @@
 >
 > Meta: el panel web de Geema (`apps/geemastudio-web`) debe ser **igual o superior** al de ZM Lash canónico (`ZM-Lash-and-Nails-Beauty/apps/web`) antes de migrar a Vanessa como tenant real.
 >
-> **Hecho 22-sep:** Plan 11 WABA suite + Plan 12 P1/P2 finanzas + **PR-09 P0 + P8 + P9 + P10** (push físico, cita WABA y pago por validar recibidos en Geema). **Siguiente:** P14–P17/P2 de paridad WABA.
+> **Hecho 22-sep:** Plan 11 WABA suite + Plan 12 P1/P2 finanzas + **PR-09 P0 + P8 + P9 + P10** (+ **P18–P20 ✅ 23-sep**) (push físico, cita WABA y pago por validar recibidos en Geema). **Siguiente:** P21–P23.
 
 ## Relación con Plan 11
 
@@ -70,7 +70,7 @@ Evidencia nav (22-sep):
 | G4 | Crons / nudges / recordatorios (11+ EFs ZM) | Panel perfecto + bot sin recordatorios = funnel roto → S4 |
 | G5 | `countOverlappingAppointments` en webhook Geema | N/A Opción A — bot solo ZM (Track C); no mantener webhook Geema |
 | G6 | Promo broadcast WA + Reenganchar | Prod ZM. **Envío masivo mobile** hecho 21-sep — ver R5; `send-retouch-reengage` sigue pendiente |
-| G7 | Push FCM E2E | **P0 + P8 ✅** 22-sep — push físico validado en APK de producción; EF canónica ZM. Ajustes de assets en curso |
+| G7 | Push FCM E2E | **P0 + P8 + P18–P20 ✅** 22/23-sep — push físico validado en APK de producción; EF canónica ZM. Ajustes de assets en curso |
 | G8 | Tenant scoping global en hooks web | Plan 11 solo arregla tablas WABA vía API routes |
 | G9 | Legal por jurisdicción tenant | ZM tiene términos/privacidad/libro reclamaciones |
 | G10 | Docs stale (`WEB_ARCHITECTURE`, audit 03) | CMS web ya existe; finanzas P1 ✅ — limpiar restos |
@@ -239,9 +239,9 @@ BD compartida `udelxwwnyivknslueerr`: la EF **`send-notification` ya corre en pr
 
 ##### P2 — Paridad ZM v3
 
-- [ ] **P18** — Push imagen/audio diseño (`inbound-image` / `inbound-audio`)
-- [ ] **P19** — Push referencia cita → Agenda (`appointment_reference` + `useOpenAppointmentDeepLink`)
-- [ ] **P20** — `notifyAdminsWaError`
+- [x] **P18** — Push imagen/audio diseño (`inbound-image` / `inbound-audio`) — EF ZM ya emite `type=waba_chat` + `phone`; el tap lo abre el routing de P16 (sin código nuevo). Smoke físico ✅ 23-sep-2026
+- [x] **P19** — Push referencia cita → Agenda (`appointment_reference`) — código: `lib/navigationRef.ts` + `handleNotificationData` → `AgendaScreen` (`appointmentId`, cola para cold start). Smoke físico ✅ 23-sep-2026 (OTA prod + APK)
+- [x] **P20** — `notifyAdminsWaError` — EF ZM ya emite `type=waba_chat` (`error_kind`, debounce 10 min); mismo routing que P18. Smoke físico ✅ 23-sep-2026
 - [ ] **P21** — Haiku sin crédito + billing Meta #131042
 - [ ] **P22** — Cron `chat-quality-review` + push “Revisar YA”
 - [ ] **P23** — Trigger DB asignación staff: corregir `user_id` → `user_ids[]` si se porta; evaluar multi-tenant

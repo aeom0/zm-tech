@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  adaptive-icon-background v4 — capa BACKGROUND Adaptive Icon.
+  Canvas 108 dp -> 1024 px. Full-bleed (el OEM enmascara).
+  Colores tomados de la referencia: índigo profundo arriba (#221F62)
+  a cian brillante (#04EFEA) abajo al centro, con flancos azul acero (#22618C).
+  Vectorial.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="0" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#221D5F"/>
+      <stop offset="55%"  stop-color="#242566"/>
+      <stop offset="100%" stop-color="#22618C"/>
+    </linearGradient>
+    <radialGradient id="glow-cyan" cx="512" cy="1060" r="640" gradientUnits="userSpaceOnUse" gradientTransform="translate(512 1060) scale(1 0.85) translate(-512 -1060)">
+      <stop offset="0%"   stop-color="#04EFEA" stop-opacity="1"/>
+      <stop offset="30%"  stop-color="#16BAC6" stop-opacity="0.75"/>
+      <stop offset="65%"  stop-color="#227097" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#22618C" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Halo suave tras la corona -->
+    <radialGradient id="glow-crown" cx="512" cy="290" r="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#3A5FD0" stop-opacity="0.40"/>
+      <stop offset="100%" stop-color="#3A5FD0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#base)"/>
+  <rect width="1024" height="1024" fill="url(#glow-crown)"/>
+  <rect width="1024" height="1024" fill="url(#glow-cyan)"/>
+</svg>

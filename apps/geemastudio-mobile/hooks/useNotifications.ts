@@ -6,7 +6,8 @@
  *
  * Tipos de data:
  * - waba_chat → abre panel web /panel/waba/mensajes
- * - appointment_reference → se encola cuando exista deep link Agenda (P19)
+ * - appointment_reference → abre Agenda con el detalle de la cita (`appointment_id`)
+ *   (P18/P20 —imagen/audio de diseño, error WA, calidad— llegan como waba_chat)
  */
 import { useEffect, useRef } from 'react'
 import * as Device from 'expo-device'
@@ -14,12 +15,12 @@ import * as Linking from 'expo-linking'
 import * as Notifications from 'expo-notifications'
 import { Platform } from 'react-native'
 import { useTenant } from '@/contexts/TenantContext'
+import { openAgendaAppointment } from '@/lib/navigationRef'
 import { supabase } from '@/lib/supabase'
 
 /** Panel Geema (prod temporal hasta geemastudio.app). Override con EXPO_PUBLIC_SITE_URL. */
 const PANEL_BASE =
-  (typeof process.env.EXPO_PUBLIC_SITE_URL === 'string' &&
-  process.env.EXPO_PUBLIC_SITE_URL.trim()
+  (typeof process.env.EXPO_PUBLIC_SITE_URL === 'string' && process.env.EXPO_PUBLIC_SITE_URL.trim()
     ? process.env.EXPO_PUBLIC_SITE_URL.trim().replace(/\/$/, '')
     : 'https://geema.zmtechdev.com') + '/panel/waba/mensajes'
 
@@ -83,14 +84,22 @@ function handleNotificationData(data: Record<string, unknown> | undefined): void
 
   if (data.type === 'waba_chat') {
     // Preferir phone → panel Geema (el payload del bot ZM trae url zmlashnails.com).
-    const phone =
-      typeof data.phone === 'string' && data.phone.trim() ? data.phone.trim() : ''
+    const phone = typeof data.phone === 'string' && data.phone.trim() ? data.phone.trim() : ''
     const url = phone
       ? `${PANEL_BASE}?phone=${encodeURIComponent(phone)}`
       : typeof data.url === 'string' && data.url.trim()
         ? data.url
         : PANEL_BASE
     void Linking.openURL(url)
+    return
+  }
+
+  if (data.type === 'appointment_reference') {
+    const appointmentId =
+      typeof data.appointment_id === 'string' && data.appointment_id.trim()
+        ? data.appointment_id.trim()
+        : ''
+    if (appointmentId) openAgendaAppointment(appointmentId)
   }
 }
 

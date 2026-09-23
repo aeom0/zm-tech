@@ -25,7 +25,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 | # | Entregable | Repo | DoD |
 |---|------------|------|-----|
 | 0 | ~~Alinear docs Plan 05 + scorecard Plan 12~~ | ambos | ✅ 22-sep |
-| 1 | P14–P17/P2 push WABA | zm-tech | P9 cita y P10 pago ✅ 22-sep; continuar paridad avanzada |
+| 1 | P14–P17/P2 push WABA | zm-tech | P9/P10 ✅ 22-sep; P18–P20 ✅ 23-sep; siguiente P21–P23 (Haiku sin crédito, chat-quality-review push, trigger asignación) |
 | 2 | Ventas `product_orders` en Geema | zm-tech | Tras catálogo; ZM ya tiene UI |
 | — | S4 crons tenant-aware | ZM | Solo si se abre Track B (2.º tenant) |
 
@@ -49,7 +49,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 - Theming panel + PWA dinámico + tab Productos (catálogo) ✅ 22-sep
 - **Plan 11/12 WABA web**: Historial, Portafolio, deep link Clientes→Mensajes y Simulador ✅ 22-sep
 - **Plan 12 Finanzas**: Resumen|Detalle web + enlaces PanelShell ✅ 22-sep
-- **PR-09 Push FCM**: P0 + P8 + P9 + P10 ✅ 22-sep; push físico, cita WABA y pago por validar validados, ajustes de assets en curso
+- **PR-09 Push FCM**: P0 + P8 + P9 + P10 ✅ 22-sep + P18–P20 ✅ 23-sep; push físico, cita WABA y pago por validar validados, ajustes de assets en curso
 - **Host**: `https://geema.zmtechdev.com`
 - Migración Plan 05: **S1–S3** ✅; **S4** ❌ (repo ZM)
 
@@ -57,14 +57,14 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 
 | # | Ítem | Repo | Notas |
 |---|------|------|-------|
-| 1 | P14–P17/P2 push WABA | zm-tech | P9 cita y P10 pago ✅ 22-sep; continuar paridad avanzada |
+| 1 | P14–P17/P2 push WABA | zm-tech | P9/P10 ✅ 22-sep; P18–P20 ✅ 23-sep; siguiente P21–P23 |
 | 2 | Ventas `product_orders` en Geema | zm-tech | Tras catálogo; ZM ya tiene UI |
 | 3 | **S4** crons + Vault | ZM | Bloquea 2.º tenant |
 | 4 | Smoke Finanzas ZM en APK | zm-tech | Validación mobile pendiente |
 
 ### Riesgos activos
 
-- Push FCM (**PR-09**): P0 + P8 ✅ (push físico validado); ajustes de assets en curso; EF canónica en repo ZM (no portar)
+- Push FCM (**PR-09**): P0 + P8–P10 + P18–P20 ✅ (push físico validado); ajustes de assets en curso; EF canónica en repo ZM (no portar)
 - S4 (crons WABA) bloquea 2.º tenant con bot completo
 - Retail bot pausado por producto; no está bloqueado por drift del webhook
 
@@ -73,7 +73,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 | Ítem | Estado |
 |------|--------|
 | PR-01…PR-08 | ✅ (ver historial abajo) |
-| PR-09 Push FCM E2E | ✅ P0 + P8; ajustes de assets en curso |
+| PR-09 Push FCM E2E | ✅ P0 + P8–P10 + P18–P20; ajustes de assets en curso |
 | PR-10 / PR-10B WABA avanzado + reenganche | ❌ post-S4 |
 | PR-11 Panel web | ✅ P1 + Campañas + inbox + Historial + Portafolio + Simulador |
 
@@ -105,7 +105,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 | ------ | --------------------------------------------------------- | ------------------------- |
 | PR-07  | CI GitHub Actions                                         | ✅                        |
 | PR-08  | Error handling dashboard/finanzas/agenda                  | ✅ base                   |
-| PR-09  | Push FCM E2E — nativo FCM v1 (`push_token` + `send-notification`); **no** Expo Push | ✅ P0 + P8 22-sep; assets en ajuste |
+| PR-09  | Push FCM E2E — nativo FCM v1 (`push_token` + `send-notification`); **no** Expo Push | ✅ P0 + P8–P10 22-sep, P18–P20 23-sep; assets en ajuste |
 | PR-10  | Bot WABA capa ZM v3.0 (capacidad, silence-watchdog, refs) | ❌ (base multi-tenant ✅) |
 | PR-10B | Motor reenganche WABA multi-tenant                        | ❌ post-beta / post-S4    |
 

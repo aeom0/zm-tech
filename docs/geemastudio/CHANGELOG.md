@@ -7,6 +7,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido / validado (23-sep 2026 — PR-09 P18–P20)
+
+- **P19**: tap en push `appointment_reference` abre **Agenda** con el detalle de la cita (`lib/navigationRef.ts`, cola para cold start, `NavigationContainer ref`). OTA prod `exposdk:56.0.0` (grupo `61dae045`).
+- **P18 / P20**: sin código nuevo — `waba_chat` (imagen/audio de diseño y `notifyAdminsWaError`) se abre con el routing de P16.
+- Smoke físico ✅ en APK: las 3 pushes llegaron y abrieron la pantalla esperada. EF `send-notification` sigue canónica en ZM (no portada).
+
 ### Validado (22-sep 2026 — PR-09 P10)
 
 - **Push de pago por validar**: comprobante enviado desde `+584165434665`; el aviso llegó a Geema junto con el resto del smoke, con 3 notificaciones recibidas y sin regresión visible.
