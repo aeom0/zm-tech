@@ -105,6 +105,11 @@ export default function MoreHomeScreen() {
               badgeCount={paymentValidationCount}
             />
             <CategoryCard
+              icon="shopping-bag"
+              label="Ventas"
+              onPress={() => navigation.navigate('Ventas')}
+            />
+            <CategoryCard
               icon="users"
               label="Equipo"
               onPress={() => navigation.navigate('Equipo')}

@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import MoreHomeScreen from '@/screens/MoreHomeScreen'
 import FinancesScreen from '@/screens/FinancesScreen'
 import InventoryScreen from '@/screens/InventoryScreen'
+import ProductSalesScreen from '@/screens/ProductSalesScreen'
 import ProfileScreen from '@/screens/ProfileScreen'
 import { useScreenOptions } from '@/hooks/useScreenOptions'
 
@@ -45,6 +46,7 @@ export type MoreStackParamList = {
   Finanzas: undefined
   Personal: undefined
   Inventario: undefined
+  Ventas: undefined
   Configuracion: undefined
   HorariosTrabajo: undefined
   Feriados: undefined
@@ -113,6 +115,7 @@ export default function MoreStackNavigator() {
         component={InventoryScreen}
         options={{ title: 'Inventario' }}
       />
+      <Stack.Screen name="Ventas" component={ProductSalesScreen} options={{ title: 'Ventas' }} />
       <Stack.Screen
         name="Configuracion"
         component={SettingsScreen}
