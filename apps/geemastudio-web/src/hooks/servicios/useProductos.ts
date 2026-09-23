@@ -22,9 +22,11 @@ import { useTenantId } from '../finanzas/useTenantId'
 export const PRODUCTOS_KEY = ['productos'] as const
 
 export function useProductos() {
+  const { tenantId } = useTenantId()
   return useQuery({
-    queryKey: PRODUCTOS_KEY,
-    queryFn: fetchProductos,
+    queryKey: [...PRODUCTOS_KEY, tenantId],
+    enabled: !!tenantId,
+    queryFn: () => fetchProductos(tenantId!),
   })
 }
 
@@ -39,25 +41,36 @@ export function useProductOrders() {
 
 export function useCreateProducto() {
   const qc = useQueryClient()
+  const { tenantId } = useTenantId()
   return useMutation({
-    mutationFn: (input: ProductoInput) => createProducto(input),
+    mutationFn: (input: ProductoInput) =>
+      tenantId
+        ? createProducto(tenantId, input)
+        : Promise.reject(new Error('No se pudo resolver el negocio activo')),
     onSuccess: () => qc.invalidateQueries({ queryKey: PRODUCTOS_KEY }),
   })
 }
 
 export function useUpdateProducto() {
   const qc = useQueryClient()
+  const { tenantId } = useTenantId()
   return useMutation({
     mutationFn: ({ id, input }: { id: string; input: Partial<ProductoInput> }) =>
-      updateProducto(id, input),
+      tenantId
+        ? updateProducto(tenantId, id, input)
+        : Promise.reject(new Error('No se pudo resolver el negocio activo')),
     onSuccess: () => qc.invalidateQueries({ queryKey: PRODUCTOS_KEY }),
   })
 }
 
 export function useUnlistProducto() {
   const qc = useQueryClient()
+  const { tenantId } = useTenantId()
   return useMutation({
-    mutationFn: (id: string) => unlistProducto(id),
+    mutationFn: (id: string) =>
+      tenantId
+        ? unlistProducto(tenantId, id)
+        : Promise.reject(new Error('No se pudo resolver el negocio activo')),
     onSuccess: () => qc.invalidateQueries({ queryKey: PRODUCTOS_KEY }),
   })
 }

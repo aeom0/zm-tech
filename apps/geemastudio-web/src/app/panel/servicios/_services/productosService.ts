@@ -97,22 +97,24 @@ function normalize(row: Record<string, unknown>): Producto {
 }
 
 /** Productos = inventory_items marcados como vendibles al cliente final. */
-export async function fetchProductos(): Promise<Producto[]> {
+export async function fetchProductos(tenantId: string): Promise<Producto[]> {
   const sb = requireSupabase()
   const { data, error } = await sb
     .from('inventory_items')
     .select(SELECT)
+    .eq('tenant_id', tenantId)
     .eq('is_sellable', true)
     .order('name')
   if (error) throw error
   return (data ?? []).map((row) => normalize(row as Record<string, unknown>))
 }
 
-export async function createProducto(input: ProductoInput): Promise<Producto> {
+export async function createProducto(tenantId: string, input: ProductoInput): Promise<Producto> {
   const sb = requireSupabase()
   const { data, error } = await sb
     .from('inventory_items')
     .insert({
+      tenant_id: tenantId,
       name: input.name.trim(),
       description: input.description?.trim() || null,
       price: input.price,
@@ -129,7 +131,11 @@ export async function createProducto(input: ProductoInput): Promise<Producto> {
   return normalize(data as Record<string, unknown>)
 }
 
-export async function updateProducto(id: string, input: Partial<ProductoInput>): Promise<Producto> {
+export async function updateProducto(
+  tenantId: string,
+  id: string,
+  input: Partial<ProductoInput>
+): Promise<Producto> {
   const sb = requireSupabase()
   const payload: Record<string, unknown> = {}
   if (input.name != null) payload.name = input.name.trim()
@@ -145,6 +151,7 @@ export async function updateProducto(id: string, input: Partial<ProductoInput>):
     .from('inventory_items')
     .update(payload)
     .eq('id', id)
+    .eq('tenant_id', tenantId)
     .select(SELECT)
     .single()
   if (error) throw error
@@ -152,9 +159,13 @@ export async function updateProducto(id: string, input: Partial<ProductoInput>):
 }
 
 /** No se borra el insumo: se deja de ofrecer a clientes (is_sellable=false). */
-export async function unlistProducto(id: string): Promise<void> {
+export async function unlistProducto(tenantId: string, id: string): Promise<void> {
   const sb = requireSupabase()
-  const { error } = await sb.from('inventory_items').update({ is_sellable: false }).eq('id', id)
+  const { error } = await sb
+    .from('inventory_items')
+    .update({ is_sellable: false })
+    .eq('id', id)
+    .eq('tenant_id', tenantId)
   if (error) throw error
 }
 
@@ -187,6 +198,7 @@ export async function createProductOrder(
     .from('inventory_items')
     .select('quantity')
     .eq('id', input.inventory_item_id)
+    .eq('tenant_id', tenantId)
     .maybeSingle()
   if (itemError) throw itemError
   if (!item) throw new Error('Producto no encontrado')
