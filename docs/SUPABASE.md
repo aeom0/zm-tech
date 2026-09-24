@@ -61,6 +61,26 @@ RepMAX encaja en esa simetría sin carpeta server: las migraciones viven en `doc
 
 ---
 
+## Keepalive hub Free (`llacowjutjfefboqgfnj`)
+
+El hub está en plan Free: Supabase pausa proyectos con poca **actividad de base de datos** (~7 días). Un aviso por correo (“scheduled to be paused”) puede llegar aunque el CI esté en verde.
+
+| Mecanismo | Archivo / secreto |
+| --------- | ----------------- |
+| GitHub Action (2×/día + manual) | [`.github/workflows/supabase-keepalive.yml`](../.github/workflows/supabase-keepalive.yml) |
+| Secreto Actions | `EXPO_PUBLIC_SUPABASE_ANON_KEY` (anon key del hub) |
+
+El job hace `GET /rest/v1/contacts?select=id&limit=1` y lo mismo en `quote_leads` (PostgREST → Postgres). Eso sí cuenta como actividad.
+
+**No usar** como keepalive:
+
+- `/storage/v1/status` — responde 200 pero **no** toca la BD (falló en sep-2026: Action OK + email de pausa).
+- `GET /rest/v1/` (raíz) — exige `service_role`; con anon da 401.
+
+Tras un warning de pausa: disparar el workflow (`Actions → Supabase Keepalive → Run workflow`) o cualquier app que consulte el hub; el Action diario mantiene el ritmo. Upgrade a Pro elimina la pausa automática.
+
+---
+
 ## Reglas operativas
 
 1. **Antes de SQL/MCP**: confirmar ref del proyecto y prefijo de tablas.
