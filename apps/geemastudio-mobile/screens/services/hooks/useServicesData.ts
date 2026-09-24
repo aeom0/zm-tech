@@ -21,6 +21,7 @@ export function useServicesData() {
   const {
     data: services = [],
     isLoading: servicesLoading,
+    isFetching: servicesFetching,
     isError: servicesError,
     refetch: refetchServices,
   } = useQuery<Service[]>({
@@ -45,6 +46,7 @@ export function useServicesData() {
   const {
     data: categories = [],
     isLoading: categoriesLoading,
+    isFetching: categoriesFetching,
     isError: categoriesError,
     refetch: refetchCategories,
   } = useQuery<ServiceCategory[]>({
@@ -291,17 +293,19 @@ export function useServicesData() {
   })
 
   const isLoading = servicesLoading || categoriesLoading
+  // Pull-to-refresh: isLoading queda false con cache; isFetching sí refleja el refetch.
+  const isFetching = servicesFetching || categoriesFetching
   const isError = servicesError || categoriesError
 
   const refetch = async () => {
-    await refetchServices()
-    await refetchCategories()
+    await Promise.all([refetchServices(), refetchCategories()])
   }
 
   return {
     services,
     categories,
     isLoading,
+    isFetching,
     isError,
     refetch,
     createMutation,

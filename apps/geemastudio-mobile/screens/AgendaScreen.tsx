@@ -272,6 +272,7 @@ export default function AgendaScreen() {
   const route = useRoute<RouteProp<MainTabParamList, 'Agenda'>>()
   const navigation = useNavigation()
   const appointmentIdParam = route.params?.appointmentId
+  const prefillClient = route.params?.prefillClient
 
   useEffect(() => {
     if (appointmentIdParam && appointments.length > 0) {
@@ -291,6 +292,43 @@ export default function AgendaScreen() {
       ).setParams({ appointmentId: undefined })
     }
   }, [appointmentIdParam, appointments, navigation, tenantTz])
+
+  useEffect(() => {
+    if (!prefillClient?.name) return
+    const today = inicioDiaHoyEnZonaIANA(tenantTz)
+    const firstHour =
+      agendaHours.find((h) =>
+        esCeldaAgendaEnHorarioLaboral(today, h, businessHoursNorm, tenantTz, holidayIndex)
+      ) ?? agendaHours[0] ?? 9
+    setSelectedDate(today)
+    setSelectedHour(firstHour)
+    setSelectedMinute(0)
+    const firstCategoryId = categories[0]?.id ?? ''
+    setFormData({
+      clientName: prefillClient.name.toUpperCase(),
+      clientPhone: prefillClient.phone ?? '',
+      clientDocument: '',
+      categoryId: firstCategoryId,
+      employeeId: employees.length > 0 ? employees[0].id : '',
+      serviceLines: [],
+    })
+    setModalVisible(true)
+    ;(
+      navigation as unknown as {
+        setParams: (p: { prefillClient?: undefined }) => void
+      }
+    ).setParams({ prefillClient: undefined })
+    void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+  }, [
+    prefillClient,
+    tenantTz,
+    agendaHours,
+    businessHoursNorm,
+    holidayIndex,
+    categories,
+    employees,
+    navigation,
+  ])
 
   const changeWeek = (delta: number) => {
     setSelectedDate((prev) => sumarSemanasEnZonaIANA(prev, delta, tenantTz))

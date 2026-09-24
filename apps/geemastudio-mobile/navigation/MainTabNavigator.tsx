@@ -21,7 +21,10 @@ import { Colors } from '@/constants/theme'
 
 export type MainTabParamList = {
   Dashboard: undefined
-  Agenda: { appointmentId?: string }
+  Agenda: {
+    appointmentId?: string
+    prefillClient?: { name: string; phone?: string }
+  }
   Services: undefined
   Clients: undefined
   More: undefined

@@ -1,5 +1,6 @@
 import React from 'react'
 import { View, StyleSheet, Pressable } from 'react-native'
+import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
@@ -7,10 +8,16 @@ import { Spacing, BorderRadius } from '@/constants/theme'
 import type { ClientWithMetrics, ClientSegment } from '../types'
 import { useTenant } from '@/contexts/TenantContext'
 import { formatCurrency } from '@/utils/format'
+import {
+  buildWhatsAppUrl,
+  openExternalUrl,
+  reengageMessage,
+} from '../utils/phoneContact'
 
 interface Props {
   client: ClientWithMetrics
   segment: ClientSegment
+  /** CTA rápido en cards en riesgo: reabrir detalle (el banner de recontactar está ahí). */
   onPress: () => void
 }
 
@@ -33,7 +40,7 @@ function getSegmentForClient(client: ClientWithMetrics): ClientSegment {
   return 'all'
 }
 
-export function ClientCard({ client, segment, onPress }: Props) {
+export function ClientCard({ client, segment: _segment, onPress }: Props) {
   const { theme } = useTheme()
   const { config } = useTenant()
 
@@ -54,6 +61,19 @@ export function ClientCard({ client, segment, onPress }: Props) {
         month: 'short',
       })
     : 'Sin visitas'
+
+  const showReengage = derivedSegment === 'at_risk' && Boolean(client.phone?.trim())
+
+  const handleReengage = () => {
+    void openExternalUrl(
+      buildWhatsAppUrl(
+        client.phone,
+        config.locale.country,
+        reengageMessage(client.name, config.businessName)
+      ),
+      'Agrega un teléfono para recontactar.'
+    )
+  }
 
   return (
     <Pressable
@@ -95,7 +115,21 @@ export function ClientCard({ client, segment, onPress }: Props) {
           <ThemedText style={[styles.amount, { color: theme.gold }]}>
             {formatCurrency(client.total_spent, config)}
           </ThemedText>
-          {client.phone ? (
+          {showReengage ? (
+            <Pressable
+              style={[styles.reengageChip, { borderColor: theme.warning }]}
+              onPress={(e) => {
+                e.stopPropagation?.()
+                handleReengage()
+              }}
+              hitSlop={6}
+            >
+              <Feather name="message-circle" size={12} color={theme.warning} />
+              <ThemedText style={[styles.reengageText, { color: theme.warning }]}>
+                Recontactar
+              </ThemedText>
+            </Pressable>
+          ) : client.phone ? (
             <ThemedText style={[styles.phone, { color: theme.textMuted }]} numberOfLines={1}>
               {client.phone}
             </ThemedText>
@@ -172,5 +206,18 @@ const styles = StyleSheet.create({
   },
   phone: {
     fontSize: 11,
+  },
+  reengageChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    borderWidth: 1,
+    borderRadius: BorderRadius.full,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  reengageText: {
+    fontSize: 11,
+    fontWeight: '600',
   },
 })

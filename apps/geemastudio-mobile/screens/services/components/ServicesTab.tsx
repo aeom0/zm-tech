@@ -42,6 +42,7 @@ export function ServicesTab() {
     services,
     categories,
     isLoading,
+    isFetching,
     isError,
     refetch,
     createMutation,
@@ -67,12 +68,21 @@ export function ServicesTab() {
 
   const [localServices, setLocalServices] = useState<ServiceRow[]>(services)
   const isDraggingRef = React.useRef(false)
+  // Solo spinner a pantalla completa en la primera carga (sin cache).
+  // En pull-to-refresh las listas se mantienen montadas: desmontar NestableDraggableFlatList
+  // dentro de NestableScrollContainer deja el gesto de scroll congelado.
+  const showInitialLoader = isLoading && services.length === 0 && categories.length === 0
 
   React.useEffect(() => {
     if (!isDraggingRef.current) {
       setLocalServices(services)
     }
   }, [services])
+
+  const handleRefresh = useCallback(() => {
+    if (isDraggingRef.current) return
+    void refetch()
+  }, [refetch])
 
   const groupedServices = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
@@ -149,7 +159,7 @@ export function ServicesTab() {
 
   const handleDelete = useCallback(
     (s: ServiceRow) => {
-      Alert.alert('Eliminar servicio', `¿Seguro que querés eliminar "${s.name}"?`, [
+      Alert.alert('Eliminar servicio', `¿Seguro que quieres eliminar "${s.name}"?`, [
         { text: 'Cancelar', style: 'cancel' },
         {
           text: 'Eliminar',
@@ -325,24 +335,29 @@ export function ServicesTab() {
           paddingHorizontal: Spacing.lg,
         }}
         refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={refetch} tintColor={theme.primary} />
+          <RefreshControl
+            refreshing={isFetching && !showInitialLoader}
+            onRefresh={handleRefresh}
+            tintColor={theme.primary}
+            colors={[theme.primary]}
+          />
         }
       >
-        {isLoading ? (
+        {showInitialLoader ? (
           <View style={styles.empty}>
             <ActivityIndicator size="large" color={theme.primary} />
             <ThemedText style={[styles.emptySub, { color: theme.textMuted, marginTop: 16 }]}>
               Cargando servicios…
             </ThemedText>
           </View>
-        ) : isError ? (
+        ) : isError && services.length === 0 ? (
           <View style={styles.empty}>
             <Feather name="wifi-off" size={48} color={theme.error} />
             <ThemedText style={[styles.emptyTitle, { color: theme.error }]}>
               Error de conexión
             </ThemedText>
             <ThemedText style={[styles.emptySub, { color: theme.textMuted, textAlign: 'center' }]}>
-              Deslizá hacia abajo para reintentar.
+              Desliza hacia abajo para reintentar.
             </ThemedText>
           </View>
         ) : services.length === 0 ? (

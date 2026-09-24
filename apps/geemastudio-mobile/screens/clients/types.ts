@@ -20,6 +20,8 @@ export interface ClientWithMetrics extends Client {
 
 export type ClientSegment = 'all' | 'vip' | 'regular' | 'at_risk' | 'new'
 
+export type ClientSortKey = 'last_visit' | 'spent' | 'name'
+
 export interface ClientKPIs {
   total_clients: number
   active_this_month: number
