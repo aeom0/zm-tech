@@ -7,15 +7,11 @@ import {
   Alert,
   ActivityIndicator,
   TextInput,
+  ScrollView,
 } from 'react-native'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { Feather } from '@expo/vector-icons'
 import * as Haptics from 'expo-haptics'
-import {
-  NestableScrollContainer,
-  NestableDraggableFlatList,
-  type RenderItemParams,
-} from 'react-native-draggable-flatlist'
 
 import { ThemedText } from '@/components/ThemedText'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
@@ -31,6 +27,11 @@ import type { Service as ServiceRow } from '../types'
 import { ServiceCard } from './ServiceCard'
 import { ServiceModal } from './ServiceModal'
 import { CategoriesManageModal } from './CategoriesManageModal'
+import { ReorderServicesModal } from './ReorderServicesModal'
+
+function servicesSignature(list: ServiceRow[]): string {
+  return list.map((s) => `${s.id}:${s.sort_order}:${s.is_active}:${s.price}:${s.name}`).join('|')
+}
 
 export function ServicesTab() {
   const tabBarHeight = useBottomTabBarHeight()
@@ -67,20 +68,19 @@ export function ServicesTab() {
   const [toggleLoading, setToggleLoading] = useState<Record<string, boolean>>({})
 
   const [localServices, setLocalServices] = useState<ServiceRow[]>(services)
-  const isDraggingRef = React.useRef(false)
   // Solo spinner a pantalla completa en la primera carga (sin cache).
-  // En pull-to-refresh las listas se mantienen montadas: desmontar NestableDraggableFlatList
-  // dentro de NestableScrollContainer deja el gesto de scroll congelado.
   const showInitialLoader = isLoading && services.length === 0 && categories.length === 0
+  const [reorderCategoryId, setReorderCategoryId] = useState<string | null>(null)
 
   React.useEffect(() => {
-    if (!isDraggingRef.current) {
-      setLocalServices(services)
-    }
+    // Evita parpadeo: no reemplazar estado local si el contenido es el mismo
+    // (refetch de TanStack crea arrays/objetos nuevos aunque los datos no cambien).
+    setLocalServices((prev) =>
+      servicesSignature(prev) === servicesSignature(services) ? prev : services
+    )
   }, [services])
 
   const handleRefresh = useCallback(() => {
-    if (isDraggingRef.current) return
     void refetch()
   }, [refetch])
 
@@ -90,9 +90,6 @@ export function ServicesTab() {
       const inCategory = localServices.filter(
         (s) => s.category_id === category.id && (!query || s.name.toLowerCase().includes(query))
       )
-      // Tras un drag, localServices ya trae el orden visual; re-ordenar solo
-      // por activo + sort_order rompería el orden recién guardado (sort_order stale).
-      // El hook ya entrega la lista ordenada; aquí solo filtramos.
       return { ...category, services: inCategory }
     })
     if (filterCategoryId) {
@@ -101,17 +98,34 @@ export function ServicesTab() {
     return groups
   }, [categories, localServices, filterCategoryId, searchQuery])
 
-  const handleCategoryDragEnd = useCallback(
-    (categoryId: string, data: ServiceRow[]) => {
-      isDraggingRef.current = false
+  const reorderCategory = useMemo(
+    () => categories.find((c) => c.id === reorderCategoryId) ?? null,
+    [categories, reorderCategoryId]
+  )
+  const reorderList = useMemo(() => {
+    if (!reorderCategoryId) return []
+    return localServices.filter((s) => s.category_id === reorderCategoryId)
+  }, [localServices, reorderCategoryId])
+
+  const handleReorderSave = useCallback(
+    (orderedIds: string[]) => {
       setLocalServices((prev) => {
-        const others = prev.filter((s) => s.category_id !== categoryId)
-        return [...others, ...data]
+        const byId = new Map(prev.map((s) => [s.id, s]))
+        const reordered = orderedIds
+          .map((id) => byId.get(id))
+          .filter((s): s is ServiceRow => !!s)
+        const others = prev.filter((s) => s.category_id !== reorderCategoryId)
+        return [...others, ...reordered]
       })
-      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-      reorderServicesMutation.mutate(data.map((s) => s.id))
+      reorderServicesMutation.mutate(orderedIds, {
+        onSuccess: () => {
+          setReorderCategoryId(null)
+          void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
+        },
+        onError: (e: Error) => Alert.alert('Error', e.message ?? 'No se pudo guardar el orden'),
+      })
     },
-    [reorderServicesMutation]
+    [reorderCategoryId, reorderServicesMutation]
   )
 
   const openNew = useCallback(() => {
@@ -325,9 +339,8 @@ export function ServicesTab() {
         )}
       </View>
 
-      <NestableScrollContainer
+      <ScrollView
         style={styles.scroll}
-        nestedScrollEnabled
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={{
           paddingTop: Spacing.md,
@@ -373,7 +386,7 @@ export function ServicesTab() {
               No hay servicios
             </ThemedText>
             <ThemedText style={[styles.emptySub, { color: theme.textMuted }]}>
-              Tocá + para agregar el primero
+              Toca + para agregar el primero
             </ThemedText>
           </View>
         ) : groupedServices.every((g) => g.services.length === 0) ? (
@@ -385,7 +398,7 @@ export function ServicesTab() {
               Sin resultados
             </ThemedText>
             <ThemedText style={[styles.emptySub, { color: theme.textMuted }]}>
-              Probá con otro nombre o categoría
+              Prueba con otro nombre o categoría
             </ThemedText>
           </View>
         ) : (
@@ -399,40 +412,45 @@ export function ServicesTab() {
                     >
                       {category.name}
                     </ThemedText>
-                    <ThemedText style={[styles.catCount, { color: theme.textMuted }]}>
-                      {category.services.length} servicio{category.services.length === 1 ? '' : 's'}
-                    </ThemedText>
+                    <View style={styles.catActions}>
+                      <ThemedText style={[styles.catCount, { color: theme.textMuted }]}>
+                        {category.services.length} servicio
+                        {category.services.length === 1 ? '' : 's'}
+                      </ThemedText>
+                      {isAdmin && category.services.length > 1 && (
+                        <Pressable
+                          onPress={() => {
+                            setReorderCategoryId(category.id)
+                            void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+                          }}
+                          hitSlop={8}
+                          style={[styles.reorderBtn, { borderColor: theme.border }]}
+                          accessibilityLabel={`Reordenar ${category.name}`}
+                        >
+                          <Feather name="menu" size={14} color={theme.textSecondary} />
+                        </Pressable>
+                      )}
+                    </View>
                   </View>
-                  <NestableDraggableFlatList
-                    data={category.services}
-                    scrollEnabled={false}
-                    keyExtractor={(svc) => svc.id}
-                    activationDistance={12}
-                    onDragBegin={() => {
-                      isDraggingRef.current = true
-                    }}
-                    onDragEnd={({ data }) => handleCategoryDragEnd(category.id, data)}
-                    renderItem={({ item: svc, drag, isActive }: RenderItemParams<ServiceRow>) => (
-                      <ServiceCard
-                        service={svc}
-                        categoryColor={category.color}
-                        categoryIcon={category.icon}
-                        onPress={() => openEdit(svc)}
-                        onLongPress={() => handleDelete(svc)}
-                        onToggleActive={() => handleToggle(svc)}
-                        isToggling={!!toggleLoading[svc.id]}
-                        drag={drag}
-                        isDragging={isActive}
-                        theme={theme}
-                        config={config}
-                      />
-                    )}
-                  />
+                  {category.services.map((svc) => (
+                    <ServiceCard
+                      key={svc.id}
+                      service={svc}
+                      categoryColor={category.color}
+                      categoryIcon={category.icon}
+                      onPress={() => openEdit(svc)}
+                      onLongPress={() => handleDelete(svc)}
+                      onToggleActive={() => handleToggle(svc)}
+                      isToggling={!!toggleLoading[svc.id]}
+                      theme={theme}
+                      config={config}
+                    />
+                  ))}
                 </View>
               )
           )
         )}
-      </NestableScrollContainer>
+      </ScrollView>
 
       <Pressable
         style={[styles.fab, { backgroundColor: theme.primary }, shadows.lg]}
@@ -450,6 +468,15 @@ export function ServicesTab() {
         savePending={savePending}
         onDelete={handleDelete}
         deletePending={deleteMutation.isPending}
+      />
+
+      <ReorderServicesModal
+        visible={!!reorderCategoryId}
+        categoryName={reorderCategory?.name ?? ''}
+        services={reorderList}
+        saving={reorderServicesMutation.isPending}
+        onClose={() => setReorderCategoryId(null)}
+        onSave={handleReorderSave}
       />
 
       <CategoriesManageModal
@@ -581,9 +608,24 @@ const styles = StyleSheet.create({
   catTitle: {
     fontSize: 16,
     fontWeight: '600',
+    flex: 1,
+    marginRight: Spacing.sm,
+  },
+  catActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
   },
   catCount: {
     fontSize: 13,
+  },
+  reorderBtn: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   fab: {
     position: 'absolute',

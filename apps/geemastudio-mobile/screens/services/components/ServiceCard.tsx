@@ -133,14 +133,24 @@ function ServiceCardImpl({
  * identidad en callbacks — evita re-render de todas las cards en cada interacción.
  */
 export const ServiceCard = React.memo(ServiceCardImpl, (prev, next) => {
+  const a = prev.service
+  const b = next.service
   return (
-    prev.service === next.service &&
+    a.id === b.id &&
+    a.name === b.name &&
+    a.price === b.price &&
+    a.duration === b.duration &&
+    a.is_active === b.is_active &&
+    a.sort_order === b.sort_order &&
+    a.category_id === b.category_id &&
     prev.categoryColor === next.categoryColor &&
     prev.categoryIcon === next.categoryIcon &&
     prev.isToggling === next.isToggling &&
     prev.isDragging === next.isDragging &&
     prev.theme === next.theme &&
-    prev.config === next.config
+    prev.config === next.config &&
+    // drag presente/ausente (listado vs modal) no debe forzar remount visual
+    Boolean(prev.drag) === Boolean(next.drag)
   )
 })
 
