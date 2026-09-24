@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
 import { supabase } from '@/lib/supabase'
+import { useProfileTenantId } from '@/screens/finances/hooks/useProfileTenantId'
 import type { Client, ClientWithMetrics, ClientSegment, ClientKPIs } from '../types'
 
 interface UseClientsDataResult {
@@ -10,6 +11,7 @@ interface UseClientsDataResult {
   kpis: ClientKPIs | null
   isLoading: boolean
   isError: boolean
+  refetch: () => Promise<unknown>
 }
 
 interface RawAppointment {
@@ -30,16 +32,24 @@ interface RawPayment {
 }
 
 export function useClientsData(searchQuery: string, segment: ClientSegment): UseClientsDataResult {
+  const { tenantId, isLoading: tenantLoading } = useProfileTenantId()
+  const queryEnabled = !tenantLoading && !!tenantId
+
   const {
     data: clients = [],
     isLoading: clientsLoading,
     isError: clientsError,
+    refetch: refetchClients,
   } = useQuery<Client[]>({
-    queryKey: ['clients'],
+    queryKey: ['clients', tenantId],
+    enabled: queryEnabled,
+    staleTime: 5 * 60_000,
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('clients')
         .select('id, name, phone, email, notes, created_at')
+        .eq('tenant_id', tenantId)
         .order('created_at', { ascending: false })
 
       if (error) {
@@ -55,14 +65,19 @@ export function useClientsData(searchQuery: string, segment: ClientSegment): Use
 
   const {
     data: appointments = [],
-    isLoading: aptsLoading,
     isError: aptsError,
+    refetch: refetchAppointments,
   } = useQuery<RawAppointment[]>({
-    queryKey: ['clients_appointments'],
+    queryKey: ['clients_appointments', tenantId],
+    enabled: queryEnabled,
+    staleTime: 5 * 60_000,
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('appointments')
-        .select('id, client_id, client_name, date, status, price, service_id')
+        .select('id, client_id, date, status, price, service_id')
+        .eq('tenant_id', tenantId)
+        .eq('status', 'completed')
         .order('date', { ascending: true })
 
       if (error) {
@@ -75,14 +90,19 @@ export function useClientsData(searchQuery: string, segment: ClientSegment): Use
 
   const {
     data: payments = [],
-    isLoading: paymentsLoading,
     isError: paymentsError,
+    refetch: refetchPayments,
   } = useQuery<RawPayment[]>({
-    queryKey: ['clients_payments'],
+    queryKey: ['clients_payments', tenantId],
+    enabled: queryEnabled,
+    staleTime: 5 * 60_000,
+    refetchOnWindowFocus: false,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('payments')
         .select('id, appointment_id, amount, date')
+        .eq('tenant_id', tenantId)
+        .not('appointment_id', 'is', null)
         .order('date', { ascending: true })
 
       if (error) {
@@ -282,7 +302,10 @@ export function useClientsData(searchQuery: string, segment: ClientSegment): Use
     clients: clientsWithMetrics,
     filteredClients,
     kpis,
-    isLoading: clientsLoading || aptsLoading || paymentsLoading,
+    isLoading: clientsLoading || tenantLoading,
     isError: clientsError || aptsError || paymentsError,
+    refetch: async () => {
+      await Promise.all([refetchClients(), refetchAppointments(), refetchPayments()])
+    },
   }
 }
