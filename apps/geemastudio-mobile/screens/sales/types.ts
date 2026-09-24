@@ -9,6 +9,13 @@ export interface SellableProduct {
   unit: string
 }
 
+export interface ProductForm {
+  name: string
+  price: string
+  quantity: string
+  unit: string
+}
+
 export interface ProductOrder {
   id: string
   inventory_item_id: string

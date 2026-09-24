@@ -20,7 +20,13 @@ import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 
 import { useProductSales } from './sales/hooks/useProductSales'
-import type { PaymentMethod, ProductOrder, ProductOrderForm, SellableProduct } from './sales/types'
+import type {
+  PaymentMethod,
+  ProductForm,
+  ProductOrder,
+  ProductOrderForm,
+  SellableProduct,
+} from './sales/types'
 
 type Tab = 'catalog' | 'orders'
 
@@ -30,6 +36,13 @@ const EMPTY_FORM: ProductOrderForm = {
   clientName: '',
   clientPhone: '',
   notes: '',
+}
+
+const EMPTY_PRODUCT_FORM: ProductForm = {
+  name: '',
+  price: '',
+  quantity: '0',
+  unit: 'unidad',
 }
 
 const PAYMENT_METHODS: { id: PaymentMethod; label: string }[] = [
@@ -67,11 +80,21 @@ export default function ProductSalesScreen() {
   const currencySymbol = config.locale.currency.symbol
   const [tab, setTab] = useState<Tab>('catalog')
   const [form, setForm] = useState<ProductOrderForm>(EMPTY_FORM)
+  const [productForm, setProductForm] = useState<ProductForm>(EMPTY_PRODUCT_FORM)
   const [modalVisible, setModalVisible] = useState(false)
+  const [productModalVisible, setProductModalVisible] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState<SellableProduct | null>(null)
+  const [editingProduct, setEditingProduct] = useState<SellableProduct | null>(null)
 
-  const { productsQuery, ordersQuery, createOrderMutation, payOrderMutation, updateOrderMutation } =
-    useProductSales()
+  const {
+    productsQuery,
+    ordersQuery,
+    createOrderMutation,
+    createProductMutation,
+    updateProductMutation,
+    payOrderMutation,
+    updateOrderMutation,
+  } = useProductSales()
   const products = productsQuery.data ?? []
   const orders = ordersQuery.data ?? []
   const isLoading = productsQuery.isLoading || ordersQuery.isLoading
@@ -85,6 +108,39 @@ export default function ProductSalesScreen() {
   const closeOrderForm = () => {
     setModalVisible(false)
     setSelectedProduct(null)
+  }
+
+  const openNewProduct = () => {
+    setEditingProduct(null)
+    setProductForm(EMPTY_PRODUCT_FORM)
+    setProductModalVisible(true)
+  }
+
+  const openEditProduct = (product: SellableProduct) => {
+    setEditingProduct(product)
+    setProductForm({
+      name: product.name,
+      price: product.price?.toFixed(2) ?? '',
+      quantity: String(product.quantity),
+      unit: product.unit,
+    })
+    setProductModalVisible(true)
+  }
+
+  const closeProductForm = () => {
+    setProductModalVisible(false)
+    setEditingProduct(null)
+  }
+
+  const submitProduct = () => {
+    if (editingProduct) {
+      updateProductMutation.mutate(
+        { id: editingProduct.id, form: productForm },
+        { onSuccess: closeProductForm }
+      )
+    } else {
+      createProductMutation.mutate(productForm, { onSuccess: closeProductForm })
+    }
   }
 
   const submitOrder = () => {
@@ -184,7 +240,7 @@ export default function ProductSalesScreen() {
                   { backgroundColor: theme.backgroundDefault, borderColor: theme.border },
                 ]}
               >
-                <View style={styles.cardInfo}>
+                <Pressable style={styles.cardInfo} onPress={() => openEditProduct(product)}>
                   <ThemedText style={styles.cardTitle}>{product.name}</ThemedText>
                   <ThemedText style={{ color: theme.textMuted }}>
                     {product.quantity} {product.unit} disponibles
@@ -194,14 +250,22 @@ export default function ProductSalesScreen() {
                       ? 'Sin precio'
                       : formatMoney(product.price, currencySymbol)}
                   </ThemedText>
-                </View>
-                <Pressable
-                  onPress={() => openOrderForm(product)}
-                  style={[styles.actionButton, { backgroundColor: theme.primary }]}
-                >
-                  <Feather name="shopping-bag" size={16} color="#fff" />
-                  <ThemedText style={styles.actionText}>Apartar</ThemedText>
                 </Pressable>
+                <View style={styles.productActions}>
+                  <Pressable
+                    onPress={() => openEditProduct(product)}
+                    style={[styles.smallButton, { borderColor: theme.border }]}
+                  >
+                    <ThemedText style={{ color: theme.text }}>Editar</ThemedText>
+                  </Pressable>
+                  <Pressable
+                    onPress={() => openOrderForm(product)}
+                    style={[styles.actionButton, { backgroundColor: theme.primary }]}
+                  >
+                    <Feather name="shopping-bag" size={16} color="#fff" />
+                    <ThemedText style={styles.actionText}>Apartar</ThemedText>
+                  </Pressable>
+                </View>
               </View>
             ))
           : orders.map((order) => (
@@ -279,6 +343,16 @@ export default function ProductSalesScreen() {
         )}
       </ScrollView>
 
+      {tab === 'catalog' && (
+        <Pressable
+          onPress={openNewProduct}
+          accessibilityLabel="Agregar producto"
+          style={[styles.fab, { backgroundColor: theme.primary }]}
+        >
+          <Feather name="plus" size={26} color="#fff" />
+        </Pressable>
+      )}
+
       <Modal visible={modalVisible} animationType="slide" transparent>
         <View style={styles.modalOverlay}>
           <View style={[styles.modal, { backgroundColor: theme.backgroundDefault }]}>
@@ -352,6 +426,81 @@ export default function ProductSalesScreen() {
           </View>
         </View>
       </Modal>
+
+      <Modal visible={productModalVisible} animationType="slide" transparent>
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modal, { backgroundColor: theme.backgroundDefault }]}>
+            <View style={styles.modalHeader}>
+              <ThemedText style={styles.cardTitle}>
+                {editingProduct ? 'Editar producto' : 'Nuevo producto'}
+              </ThemedText>
+              <Pressable onPress={closeProductForm}>
+                <Feather name="x" size={24} color={theme.text} />
+              </Pressable>
+            </View>
+            {[
+              {
+                key: 'name',
+                label: 'Nombre',
+                placeholder: 'Ej. Serum de pestañas',
+                keyboardType: 'default' as const,
+              },
+              {
+                key: 'price',
+                label: 'Precio de venta',
+                placeholder: '0.00',
+                keyboardType: 'decimal-pad' as const,
+              },
+              {
+                key: 'quantity',
+                label: 'Stock inicial',
+                placeholder: '0',
+                keyboardType: 'number-pad' as const,
+              },
+              {
+                key: 'unit',
+                label: 'Unidad',
+                placeholder: 'unidad',
+                keyboardType: 'default' as const,
+              },
+            ].map((field) => (
+              <View key={field.key}>
+                <ThemedText style={[styles.label, { color: theme.textMuted }]}>
+                  {field.label}
+                </ThemedText>
+                <TextInput
+                  value={productForm[field.key as keyof ProductForm]}
+                  onChangeText={(value) =>
+                    setProductForm((current) => ({ ...current, [field.key]: value }))
+                  }
+                  placeholder={field.placeholder}
+                  placeholderTextColor={theme.textMuted}
+                  keyboardType={field.keyboardType}
+                  style={[
+                    styles.input,
+                    {
+                      color: theme.text,
+                      borderColor: theme.border,
+                      backgroundColor: theme.backgroundSecondary,
+                    },
+                  ]}
+                />
+              </View>
+            ))}
+            <Pressable
+              onPress={submitProduct}
+              disabled={createProductMutation.isPending || updateProductMutation.isPending}
+              style={[styles.submitButton, { backgroundColor: theme.primary }]}
+            >
+              {createProductMutation.isPending || updateProductMutation.isPending ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <ThemedText style={styles.actionText}>Guardar producto</ThemedText>
+              )}
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </View>
   )
 }
@@ -380,6 +529,7 @@ const styles = StyleSheet.create({
     gap: Spacing.md,
   },
   cardInfo: { flex: 1, gap: 2 },
+  productActions: { flexDirection: 'row', gap: Spacing.sm, alignItems: 'center' },
   cardTitle: { fontSize: 16, fontWeight: '700' },
   price: { fontSize: 16, fontWeight: '700', marginTop: Spacing.xs },
   actionButton: {
@@ -398,6 +548,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   orderActions: { flexDirection: 'row', gap: Spacing.sm, flexWrap: 'wrap' },
+  fab: {
+    position: 'absolute',
+    right: Spacing.lg,
+    bottom: 100,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   empty: { alignItems: 'center', gap: Spacing.md, paddingVertical: Spacing['5xl'] },
   modalOverlay: { flex: 1, justifyContent: 'flex-end', backgroundColor: '#00000066' },
   modal: {
