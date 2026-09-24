@@ -6,7 +6,9 @@
  *
  * Tipos de data:
  * - waba_chat → abre panel web /panel/waba/mensajes
+ * - anthropic_credit → abre el editor Haiku para reponer crédito
  * - appointment_reference → abre Agenda con el detalle de la cita (`appointment_id`)
+ * - appointment_assigned → abre Agenda con el detalle de la cita (`appointment_id`)
  *   (P18/P20 —imagen/audio de diseño, error WA, calidad— llegan como waba_chat)
  */
 import { useEffect, useRef } from 'react'
@@ -23,6 +25,7 @@ const PANEL_BASE =
   (typeof process.env.EXPO_PUBLIC_SITE_URL === 'string' && process.env.EXPO_PUBLIC_SITE_URL.trim()
     ? process.env.EXPO_PUBLIC_SITE_URL.trim().replace(/\/$/, '')
     : 'https://geema.zmtechdev.com') + '/panel/waba/mensajes'
+const HAIKU_PANEL_BASE = PANEL_BASE.replace('/mensajes', '/haiku')
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -94,7 +97,12 @@ function handleNotificationData(data: Record<string, unknown> | undefined): void
     return
   }
 
-  if (data.type === 'appointment_reference') {
+  if (data.type === 'anthropic_credit') {
+    void Linking.openURL(HAIKU_PANEL_BASE)
+    return
+  }
+
+  if (data.type === 'appointment_reference' || data.type === 'appointment_assigned') {
     const appointmentId =
       typeof data.appointment_id === 'string' && data.appointment_id.trim()
         ? data.appointment_id.trim()

@@ -146,20 +146,49 @@ export const appointmentServices = pgTable(
   })
 )
 
-export const inventoryItems = pgTable('inventory_items', {
-  id: varchar('id')
-    .primaryKey()
-    .default(sql`gen_random_uuid()`),
-  name: text('name').notNull(),
-  type: text('type').notNull().default('countable'),
-  category: text('category').notNull().default('insumos'), // unas | pestanas_cejas | insumos
-  quantity: integer('quantity').notNull().default(0),
-  minStock: integer('min_stock').notNull().default(5),
-  unit: text('unit').notNull().default('unidad'),
-  price: decimal('price', { precision: 10, scale: 2 }),
-  cost: decimal('cost', { precision: 10, scale: 2 }),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-})
+export const inventoryItems = pgTable(
+  'inventory_items',
+  {
+    id: varchar('id')
+      .primaryKey()
+      .default(sql`gen_random_uuid()`),
+    tenantId: text('tenant_id').notNull().default('zm-lash-nails'),
+    name: text('name').notNull(),
+    type: text('type').notNull().default('countable'),
+    category: text('category').notNull().default('insumos'), // unas | pestanas_cejas | insumos
+    quantity: integer('quantity').notNull().default(0),
+    minStock: integer('min_stock').notNull().default(5),
+    unit: text('unit').notNull().default('unidad'),
+    price: decimal('price', { precision: 10, scale: 2 }),
+    cost: decimal('cost', { precision: 10, scale: 2 }),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantIdIdx: index('idx_inventory_items_tenant_id').on(table.tenantId),
+  })
+)
+
+export const inventoryMovements = pgTable(
+  'inventory_movements',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    tenantId: text('tenant_id').notNull().default('zm-lash-nails'),
+    itemId: varchar('item_id'),
+    delta: integer('delta').notNull(),
+    quantityBefore: integer('quantity_before').notNull(),
+    quantityAfter: integer('quantity_after').notNull(),
+    reason: text('reason').notNull().default('manual_adjustment'),
+    createdBy: uuid('created_by'),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => ({
+    tenantCreatedIdx: index('inventory_movements_tenant_created_idx').on(
+      table.tenantId,
+      table.createdAt
+    ),
+    itemCreatedIdx: index('inventory_movements_item_created_idx').on(table.itemId, table.createdAt),
+  })
+)
 
 export const inventoryCategories = pgTable(
   'inventory_categories',
@@ -461,6 +490,10 @@ export const insertInventoryItemSchema = createInsertSchema(inventoryItems).omit
   id: true,
   createdAt: true,
 })
+export const insertInventoryMovementSchema = createInsertSchema(inventoryMovements).omit({
+  id: true,
+  createdAt: true,
+})
 export const insertWhatsappSessionSchema = createInsertSchema(whatsappSessions).omit({
   updatedAt: true,
 })
@@ -610,6 +643,8 @@ export type AppointmentService = typeof appointmentServices.$inferSelect
 export type InsertAppointmentService = z.infer<typeof insertAppointmentServiceSchema>
 export type InventoryItem = typeof inventoryItems.$inferSelect
 export type InsertInventoryItem = z.infer<typeof insertInventoryItemSchema>
+export type InventoryMovement = typeof inventoryMovements.$inferSelect
+export type InsertInventoryMovement = z.infer<typeof insertInventoryMovementSchema>
 export type WhatsappSession = typeof whatsappSessions.$inferSelect
 export type InsertWhatsappSession = z.infer<typeof insertWhatsappSessionSchema>
 export type Payment = typeof payments.$inferSelect

@@ -317,6 +317,8 @@ export function ServicesTab() {
 
       <NestableScrollContainer
         style={styles.scroll}
+        nestedScrollEnabled
+        keyboardShouldPersistTaps="handled"
         contentContainerStyle={{
           paddingTop: Spacing.md,
           paddingBottom: tabBarHeight + Spacing.xl + 80,
@@ -388,6 +390,7 @@ export function ServicesTab() {
                   </View>
                   <NestableDraggableFlatList
                     data={category.services}
+                    scrollEnabled={false}
                     keyExtractor={(svc) => svc.id}
                     activationDistance={12}
                     onDragBegin={() => {

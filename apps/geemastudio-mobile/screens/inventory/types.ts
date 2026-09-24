@@ -11,6 +11,7 @@ export interface InventoryCategoryOption {
 
 export interface InventoryItem {
   id: string
+  tenant_id: string
   name: string
   type: string
   category: InventoryCategory
@@ -19,6 +20,16 @@ export interface InventoryItem {
   unit: string
   price: string | null
   cost: string | null
+}
+
+export interface InventoryMovement {
+  id: string
+  item_id: string | null
+  delta: number
+  quantity_before: number
+  quantity_after: number
+  reason: string
+  created_at: string
 }
 
 export interface InventoryFormState {

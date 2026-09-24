@@ -7,6 +7,17 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido (23-sep 2026 — Ventas retail Geema)
+
+- **Panel Productos → Ventas**: apartados/pedidos por tenant, cobro atómico vía `mark_product_order_paid`, estados pagado/entregado/cancelado y actualización de stock según disponibilidad.
+- Incluye selección de clienta, teléfono, origen, notas y método de pago; el catálogo existente permanece en la subpestaña Catálogo.
+
+### Añadido / validado (23-sep 2026 — PR-09 P21–P23)
+
+- **P21**: la alerta `anthropic_credit` abre el editor Haiku en Geema para reponer crédito.
+- **P22**: el cron `chat-quality-review` ya entrega `quality_review` por el routing existente `waba_chat` hacia Mensajes.
+- **P23**: el push `appointment_assigned` abre Agenda con el detalle de la cita; el trigger remoto usa `user_ids[]` y filtra `tenant_id`.
+
 ### Añadido / validado (23-sep 2026 — PR-09 P18–P20)
 
 - **P19**: tap en push `appointment_reference` abre **Agenda** con el detalle de la cita (`lib/navigationRef.ts`, cola para cold start, `NavigationContainer ref`). OTA prod `exposdk:56.0.0` (grupo `61dae045`).

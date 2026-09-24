@@ -175,4 +175,38 @@ export const inventoryStyles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: Spacing.lg,
   },
+  movementTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: Spacing.sm,
+  },
+  movementCard: {
+    borderRadius: BorderRadius.lg,
+    borderWidth: 1,
+    paddingHorizontal: Spacing.lg,
+  },
+  movementRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: Spacing.md,
+    paddingVertical: Spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: '#00000012',
+  },
+  movementInfo: {
+    flex: 1,
+  },
+  movementItemName: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  movementDate: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+  movementDelta: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
 })

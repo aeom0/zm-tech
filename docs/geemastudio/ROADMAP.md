@@ -22,12 +22,12 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 
 > Orden concreto. No mezclar S4 (repo ZM) con Plan 11 (zm-tech) en la misma sesión salvo cambio de contexto explícito.
 
-| # | Entregable | Repo | DoD |
-|---|------------|------|-----|
-| 0 | ~~Alinear docs Plan 05 + scorecard Plan 12~~ | ambos | ✅ 22-sep |
-| 1 | P14–P17/P2 push WABA | zm-tech | P9/P10 ✅ 22-sep; P18–P20 ✅ 23-sep; siguiente P21–P23 (Haiku sin crédito, chat-quality-review push, trigger asignación) |
-| 2 | Ventas `product_orders` en Geema | zm-tech | Tras catálogo; ZM ya tiene UI |
-| — | S4 crons tenant-aware | ZM | Solo si se abre Track B (2.º tenant) |
+| #   | Entregable                                   | Repo    | DoD                                                    |
+| --- | -------------------------------------------- | ------- | ------------------------------------------------------ |
+| 0   | ~~Alinear docs Plan 05 + scorecard Plan 12~~ | ambos   | ✅ 22-sep                                              |
+| 1   | P14–P17/P2 push WABA                         | zm-tech | P9/P10 ✅ 22-sep; P18–P20 ✅ 23-sep; P21–P23 ✅ 23-sep |
+| 2   | Ventas `product_orders` en Geema             | zm-tech | Tras catálogo; ZM ya tiene UI                          |
+| —   | S4 crons tenant-aware                        | ZM      | Solo si se abre Track B (2.º tenant)                   |
 
 **Hecho esta tanda:** Historial · Portafolio · deep link · **Simulador** (Plan 11 F4, reusa EF ZM).
 
@@ -55,12 +55,12 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 
 ### Pendientes (prioridad)
 
-| # | Ítem | Repo | Notas |
-|---|------|------|-------|
-| 1 | P14–P17/P2 push WABA | zm-tech | P9/P10 ✅ 22-sep; P18–P20 ✅ 23-sep; siguiente P21–P23 |
-| 2 | Ventas `product_orders` en Geema | zm-tech | Tras catálogo; ZM ya tiene UI |
-| 3 | **S4** crons + Vault | ZM | Bloquea 2.º tenant |
-| 4 | Smoke Finanzas ZM en APK | zm-tech | Validación mobile pendiente |
+| #   | Ítem                             | Repo    | Notas                               |
+| --- | -------------------------------- | ------- | ----------------------------------- |
+| 1   | P14–P17/P2 push WABA             | zm-tech | P9/P10 ✅ 22-sep; P18–P23 ✅ 23-sep |
+| 2   | Ventas `product_orders` en Geema | zm-tech | ✅ 23-sep; flujo operativo en Productos |
+| 3   | **S4** crons + Vault             | ZM      | Bloquea 2.º tenant                  |
+| 4   | Smoke Finanzas ZM en APK         | zm-tech | Validación mobile pendiente         |
 
 ### Riesgos activos
 
@@ -70,12 +70,12 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 
 ### Beta gate (actualizado 22-sep 2026)
 
-| Ítem | Estado |
-|------|--------|
-| PR-01…PR-08 | ✅ (ver historial abajo) |
-| PR-09 Push FCM E2E | ✅ P0 + P8–P10 + P18–P20; ajustes de assets en curso |
-| PR-10 / PR-10B WABA avanzado + reenganche | ❌ post-S4 |
-| PR-11 Panel web | ✅ P1 + Campañas + inbox + Historial + Portafolio + Simulador |
+| Ítem                                      | Estado                                                        |
+| ----------------------------------------- | ------------------------------------------------------------- |
+| PR-01…PR-08                               | ✅ (ver historial abajo)                                      |
+| PR-09 Push FCM E2E                        | ✅ P0 + P8–P10 + P18–P20; ajustes de assets en curso          |
+| PR-10 / PR-10B WABA avanzado + reenganche | ❌ post-S4                                                    |
+| PR-11 Panel web                           | ✅ P1 + Campañas + inbox + Historial + Portafolio + Simulador |
 
 ---
 
@@ -101,13 +101,13 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 
 ## Sprint 3 — calidad + WABA/push
 
-| PR     | Descripción                                               | Estado                    |
-| ------ | --------------------------------------------------------- | ------------------------- |
-| PR-07  | CI GitHub Actions                                         | ✅                        |
-| PR-08  | Error handling dashboard/finanzas/agenda                  | ✅ base                   |
+| PR     | Descripción                                                                         | Estado                                                  |
+| ------ | ----------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| PR-07  | CI GitHub Actions                                                                   | ✅                                                      |
+| PR-08  | Error handling dashboard/finanzas/agenda                                            | ✅ base                                                 |
 | PR-09  | Push FCM E2E — nativo FCM v1 (`push_token` + `send-notification`); **no** Expo Push | ✅ P0 + P8–P10 22-sep, P18–P20 23-sep; assets en ajuste |
-| PR-10  | Bot WABA capa ZM v3.0 (capacidad, silence-watchdog, refs) | ❌ (base multi-tenant ✅) |
-| PR-10B | Motor reenganche WABA multi-tenant                        | ❌ post-beta / post-S4    |
+| PR-10  | Bot WABA capa ZM v3.0 (capacidad, silence-watchdog, refs)                           | ❌ (base multi-tenant ✅)                               |
+| PR-10B | Motor reenganche WABA multi-tenant                                                  | ❌ post-beta / post-S4                                  |
 
 ---
 
@@ -115,22 +115,22 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 
 > No bloquea beta móvil; sí utilidad real del panel para Tenant #1.
 
-| Ruta                       | Prioridad | Estado                                                                    |
-| -------------------------- | --------- | ------------------------------------------------------------------------- |
-| `/panel/servicios`         | P1        | ✅                                                                        |
-| `/panel/horarios`          | P1        | ✅                                                                        |
-| `/panel/clientes`          | P1        | ✅ **10-sep** (lista, KPIs, segmentos, drawer historial)                  |
-| `/panel/personal`          | P1        | ✅ **10-sep** (lista, CRUD, foto, comisiones, dialecto ZM/Geema)          |
-| `/panel/configuracion`     | P1        | ✅ **10-sep** (datos, colores, logo, presencia web)                       |
-| `/panel/agenda`            | P1        | ✅ **10-sep** (grilla día read-only + drawer)                             |
-| `/panel/waba`              | P1        | ✅ **22-sep**: paridad tabs ZM + Estado (campañas, portafolio, mensajes, simulador, haiku, historial) |
-| `/panel/servicios` Productos | P1      | ✅ catálogo (22-sep); ⏳ Ventas `product_orders`                                              |
-| `/panel/configuracion/web` | P2        | ✅ parcial (CMS Mi Web)                                                                       |
-| `/panel/waba/campanas`     | P1        | ✅ **21-sep**                                                                                 |
-| `/panel/waba/historial`    | P1.5      | ✅ **22-sep**                                                                                 |
-| `/panel/waba/portafolio`   | P2        | ✅ **22-sep**                                                                                 |
-| `/panel/waba/simulador`    | P2        | ✅ **22-sep** (reusa EF `waba-chat-simulator`)                                                |
-| `/panel/inventario`        | P2        | ❌                                                                                            |
+| Ruta                         | Prioridad | Estado                                                                                                |
+| ---------------------------- | --------- | ----------------------------------------------------------------------------------------------------- |
+| `/panel/servicios`           | P1        | ✅                                                                                                    |
+| `/panel/horarios`            | P1        | ✅                                                                                                    |
+| `/panel/clientes`            | P1        | ✅ **10-sep** (lista, KPIs, segmentos, drawer historial)                                              |
+| `/panel/personal`            | P1        | ✅ **10-sep** (lista, CRUD, foto, comisiones, dialecto ZM/Geema)                                      |
+| `/panel/configuracion`       | P1        | ✅ **10-sep** (datos, colores, logo, presencia web)                                                   |
+| `/panel/agenda`              | P1        | ✅ **10-sep** (grilla día read-only + drawer)                                                         |
+| `/panel/waba`                | P1        | ✅ **22-sep**: paridad tabs ZM + Estado (campañas, portafolio, mensajes, simulador, haiku, historial) |
+| `/panel/servicios` Productos | P1        | ✅ catálogo (22-sep); ⏳ Ventas `product_orders`                                                      |
+| `/panel/configuracion/web`   | P2        | ✅ parcial (CMS Mi Web)                                                                               |
+| `/panel/waba/campanas`       | P1        | ✅ **21-sep**                                                                                         |
+| `/panel/waba/historial`      | P1.5      | ✅ **22-sep**                                                                                         |
+| `/panel/waba/portafolio`     | P2        | ✅ **22-sep**                                                                                         |
+| `/panel/waba/simulador`      | P2        | ✅ **22-sep** (reusa EF `waba-chat-simulator`)                                                        |
+| `/panel/inventario`          | P2        | ❌                                                                                                    |
 
 Orden P1 cerrado: ~~`clientes` → `personal` → `configuracion` → `agenda` → `waba`~~.
 
@@ -148,7 +148,6 @@ vive únicamente en el Plan 05:
 - [Plan 05 y reglas de sincronización](docs/plans/geema-migration/README.md)
 
 Este archivo no replica ese semáforo para evitar estados contradictorios.
-
 
 ---
 

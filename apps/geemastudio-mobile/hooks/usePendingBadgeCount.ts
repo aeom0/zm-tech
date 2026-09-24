@@ -76,9 +76,8 @@ export function usePendingBadgeCount() {
   })
   const unreviewedReferencesCount = unreviewedReferences.length
 
-  // Badge total del tab = solo pagos pendientes
-  // (unassignedCount es informacional en el item, no suma al tab)
-  const tabBadgeCount = paymentValidationCount
+  // Badge total del tab: pagos pendientes + citas sin profesional asignado.
+  const tabBadgeCount = paymentValidationCount + unassignedCount
 
   return {
     paymentValidationCount,

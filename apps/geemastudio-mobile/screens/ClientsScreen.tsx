@@ -26,7 +26,7 @@ export default function ClientsScreen() {
   const [selectedClient, setSelectedClient] = useState<ClientWithMetrics | null>(null)
   const [detailVisible, setDetailVisible] = useState(false)
 
-  const { clients, filteredClients, kpis, isLoading, isError } = useClientsData(
+  const { clients, filteredClients, kpis, isLoading, isError, refetch } = useClientsData(
     searchQuery,
     segment
   )
@@ -52,7 +52,11 @@ export default function ClientsScreen() {
         }}
         scrollIndicatorInsets={{ bottom: insets.bottom }}
         refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={() => {}} tintColor={theme.primary} />
+          <RefreshControl
+            refreshing={isLoading}
+            onRefresh={() => void refetch()}
+            tintColor={theme.primary}
+          />
         }
       >
         <ThemedText style={[styles.title, { color: theme.text }]}>Clientes</ThemedText>
