@@ -4,11 +4,11 @@
 
 > **Responsabilidad documental:** este plan es la fuente del scorecard de paridad del panel y del criterio de go-live Vanessa. Plan 12 conserva el detalle de implementación WABA; Plan 04 conserva el estado ejecutivo de migración.
 
-> Estado: **en curso** (actualizado 22-sep-2026). Complementa [`12-PLAN-waba-suite-parity.md`](12-PLAN-waba-suite-parity.md).
+> Estado: **P2 de paridad cerrado; S4 de runtime tenant-aware pendiente** (actualizado 24-sep-2026). Complementa [`12-PLAN-waba-suite-parity.md`](12-PLAN-waba-suite-parity.md).
 >
 > Meta: el panel web de Geema (`apps/geemastudio-web`) debe ser **igual o superior** al de ZM Lash canónico (`ZM-Lash-and-Nails-Beauty/apps/web`) antes de migrar a Vanessa como tenant real.
 >
-> **Hecho 22-sep:** Plan 12 WABA suite + Plan 13 P1/P2 finanzas + **PR-09 P0 + P8 + P9 + P10** (+ **P18–P20 ✅ 23-sep**) (push físico, cita WABA y pago por validar recibidos en Geema). **Siguiente:** P21–P23.
+> **Hecho:** Plan 12 WABA suite + Plan 13 P1/P2 finanzas + **PR-09 P0 + P8 + P9 + P10 + P18–P23 ✅** (push físico, cita WABA, pago por validar, revisión de calidad y asignación de staff). **Siguiente bloqueo:** S4 — crons/RPCs tenant-aware antes del segundo tenant.
 
 ## Relación con Plan 12
 
