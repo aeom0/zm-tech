@@ -1,7 +1,6 @@
 'use client'
 
 import type { DateRange, PeriodKey } from '@/hooks/dashboard/useDashboardPeriod'
-import { LUNARIS } from '@/lib/theme'
 
 const TABS: { key: PeriodKey; label: string }[] = [
   { key: 'week', label: 'Semana' },
@@ -42,7 +41,8 @@ export function PeriodSelector({
               style={
                 active
                   ? {
-                      background: LUNARIS.gradient.css,
+                      background:
+                        'linear-gradient(135deg, var(--tenant-primary), var(--tenant-primary-hover))',
                     }
                   : undefined
               }

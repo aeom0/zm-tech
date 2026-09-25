@@ -1,4 +1,3 @@
-import { LUNARIS } from '@/lib/theme'
 
 interface MetricSkeletonProps {
   variant: 'card' | 'list-item' | 'bar'
@@ -36,7 +35,7 @@ export function MetricSkeleton({ variant, className = '' }: MetricSkeletonProps)
     >
       <div
         className="h-full w-1/3 animate-pulse"
-        style={{ background: LUNARIS.gradient.css, opacity: 0.35 }}
+        style={{ background: 'var(--tenant-primary)', opacity: 0.35 }}
       />
     </div>
   )

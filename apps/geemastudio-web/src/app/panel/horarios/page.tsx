@@ -13,7 +13,6 @@ import {
   validarHorarioCompleto,
 } from '@zmtech/tenant-config'
 
-import { LUNARIS } from '@/lib/theme'
 
 export default function PanelHorariosPage() {
   const [cargando, setCargando] = useState(true)
@@ -152,7 +151,7 @@ export default function PanelHorariosPage() {
   if (cargando) {
     return (
       <div className="flex items-center gap-3 text-zinc-300">
-        <Loader2 className="h-5 w-5 animate-spin" style={{ color: LUNARIS.primary }} />
+        <Loader2 className="h-5 w-5 animate-spin" style={{ color: 'var(--tenant-primary)' }} />
         Cargando horario…
       </div>
     )
@@ -175,7 +174,7 @@ export default function PanelHorariosPage() {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-lg font-semibold text-white">
-            <Clock className="h-5 w-5" style={{ color: LUNARIS.primary }} />
+            <Clock className="h-5 w-5" style={{ color: 'var(--tenant-primary)' }} />
             Horario de trabajo
           </div>
           <p className="mt-2 max-w-prose text-sm text-zinc-400">

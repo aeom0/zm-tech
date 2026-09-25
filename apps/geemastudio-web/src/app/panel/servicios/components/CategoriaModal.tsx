@@ -8,7 +8,7 @@ import { CategoryIcon } from '@/components/CategoryIcon'
 
 import type { CategoriaRow } from '@/hooks/servicios/useCategorias'
 import { useTenantSettings } from '@/hooks/configuracion/useTenantSettings'
-import { LUNARIS } from '@/lib/theme'
+import { DEFAULT_TENANT_PRIMARY } from '@/lib/tenant-theme'
 
 export function CategoriaModal({
   open,
@@ -51,10 +51,11 @@ function CategoriaModalForm({
   const title = initial ? 'Editar categoría' : 'Nueva categoría'
 
   const [name, setName] = useState(initial?.name ?? '')
-  const [color, setColor] = useState(initial?.color ?? LUNARIS.primary)
-  const [icon, setIcon] = useState(initial?.icon ?? '')
-
   const { data: settings } = useTenantSettings()
+  const [color, setColor] = useState(
+    initial?.color ?? settings?.primary_color ?? DEFAULT_TENANT_PRIMARY
+  )
+  const [icon, setIcon] = useState(initial?.icon ?? '')
   const iconGroups = useMemo(
     () => getCategoryIconGroups(settings?.business_type),
     [settings?.business_type]

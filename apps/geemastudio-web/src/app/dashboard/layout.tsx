@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 import { FinanzasAuthWrapper } from '../finanzas/FinanzasAuthWrapper'
 import { PanelQueryProvider } from '../panel/query-provider'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
+import { fetchTenantBrandForUser } from '@/lib/tenant-brand'
 
 export const metadata: Metadata = {
   title: 'Dashboard | GeemaStudio',
@@ -31,8 +32,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
     redirect('/')
   }
 
+  const brand = await fetchTenantBrandForUser(supabase, user.id)
+
   return (
-    <FinanzasAuthWrapper>
+    <FinanzasAuthWrapper primaryColor={brand.primary} accentColor={brand.accent}>
       <PanelQueryProvider>{children}</PanelQueryProvider>
     </FinanzasAuthWrapper>
   )

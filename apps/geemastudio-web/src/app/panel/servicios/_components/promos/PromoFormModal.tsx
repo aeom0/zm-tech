@@ -4,7 +4,8 @@ import { useState } from 'react'
 
 import { useCreatePromo, useUpdatePromo } from '@/hooks/servicios/usePromos'
 import type { PromoItemInput, Promotion } from '../../_services/promosService'
-import { LUNARIS } from '@/lib/theme'
+import { useTenantSettings } from '@/hooks/configuracion/useTenantSettings'
+import { DEFAULT_TENANT_PRIMARY } from '@/lib/tenant-theme'
 import { PromoItemRow } from './PromoItemRow'
 
 interface Props {
@@ -23,15 +24,15 @@ type FormState = {
   expires_at: string
 }
 
-const EMPTY: FormState = {
+const emptyForm = (accentColor: string): FormState => ({
   title: '',
   description: '',
   badge: '',
-  accent_color: LUNARIS.primary,
+  accent_color: accentColor,
   promo_price: '',
   is_active: true,
   expires_at: '',
-}
+})
 
 const EMPTY_ITEM: PromoItemInput = {
   item_type: 'service',
@@ -40,12 +41,12 @@ const EMPTY_ITEM: PromoItemInput = {
   discounted_price: 0,
 }
 
-function formFromPromo(promo: Promotion): FormState {
+function formFromPromo(promo: Promotion, fallbackAccent: string): FormState {
   return {
     title: promo.title,
     description: promo.description ?? '',
     badge: promo.badge ?? '',
-    accent_color: promo.accent_color ?? LUNARIS.primary,
+    accent_color: promo.accent_color ?? fallbackAccent,
     promo_price: String(promo.promo_price).replace('.', ','),
     is_active: promo.is_active,
     expires_at: promo.expires_at ? promo.expires_at.split('T')[0] : '',
@@ -76,7 +77,11 @@ function PromoFormModalInner({
   promo?: Promotion | null
   onClose: () => void
 }) {
-  const [form, setForm] = useState<FormState>(() => (promo ? formFromPromo(promo) : EMPTY))
+  const { data: settings } = useTenantSettings()
+  const brandColor = settings?.primary_color ?? DEFAULT_TENANT_PRIMARY
+  const [form, setForm] = useState<FormState>(() =>
+    promo ? formFromPromo(promo, brandColor) : emptyForm(brandColor)
+  )
   const [items, setItems] = useState<PromoItemInput[]>(() => (promo ? itemsFromPromo(promo) : []))
 
   const create = useCreatePromo()
