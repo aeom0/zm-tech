@@ -3,10 +3,14 @@
 import { useQuery } from '@tanstack/react-query'
 
 import { supabase } from '@/lib/supabase'
-import { useAuth } from '@/contexts/AuthContext'
 
-async function resolveTenantId(userId: string | null): Promise<string | null> {
-  if (!supabase || !userId) return null
+// No depende de AuthContext: /panel no monta AuthProvider (solo /finanzas), así que
+// resolvemos el usuario directo desde la sesión de Supabase.
+async function resolveTenantId(): Promise<string | null> {
+  if (!supabase) return null
+  const { data: sessionData } = await supabase.auth.getSession()
+  const userId = sessionData.session?.user.id
+  if (!userId) return null
   const { data } = await supabase
     .from('profiles')
     .select('tenant_id')
@@ -16,13 +20,10 @@ async function resolveTenantId(userId: string | null): Promise<string | null> {
 }
 
 export function useTenantId() {
-  const { userId } = useAuth()
-
   const query = useQuery({
-    queryKey: ['profile_tenant_id', userId],
-    enabled: !!userId,
+    queryKey: ['profile_tenant_id'],
     staleTime: 5 * 60_000,
-    queryFn: () => resolveTenantId(userId),
+    queryFn: resolveTenantId,
   })
 
   return {
