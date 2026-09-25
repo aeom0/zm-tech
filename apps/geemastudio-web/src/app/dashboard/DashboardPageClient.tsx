@@ -17,7 +17,7 @@ import { TopStaffCard } from './_components/TopStaffCard'
 import { resolveDashboardCurrencyCode } from '@/lib/dashboardCurrency'
 
 export default function DashboardPageClient() {
-  const { period, setPeriod, dateRange, customRange, setCustomRange } = useDashboardPeriod()
+  const { period, setPeriod, dateRange, appointmentsRange, customRange, setCustomRange } = useDashboardPeriod()
 
   const handlePeriodChange = (p: PeriodKey) => {
     if (p === 'custom') {
@@ -30,7 +30,7 @@ export default function DashboardPageClient() {
   const currencyCode = resolveDashboardCurrencyCode(tenantQ.data?.currency_code)
 
   const revenueQ = useDashboardRevenue(dateRange)
-  const appointmentsQ = useDashboardAppointments(dateRange)
+  const appointmentsQ = useDashboardAppointments(appointmentsRange)
   const topStaffQ = useDashboardTopStaff(dateRange)
   const clientsQ = useDashboardClients(dateRange)
 

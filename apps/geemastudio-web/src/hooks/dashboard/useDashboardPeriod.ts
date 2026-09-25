@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { format, startOfMonth, startOfWeek } from 'date-fns'
+import { endOfMonth, endOfWeek, format, startOfMonth, startOfWeek } from 'date-fns'
 
 export type PeriodKey = 'week' | 'month' | 'custom'
 
@@ -38,5 +38,20 @@ export function useDashboardPeriod() {
     )
   }, [period, customRange])
 
-  return { period, setPeriod, dateRange, customRange, setCustomRange }
+  // Citas: incluye las agendadas hasta el cierre de la semana o el mes en curso.
+  const appointmentsRange = useMemo((): DateRange => {
+    const today = new Date()
+    if (period === 'week') {
+      return {
+        from: dateRange.from,
+        to: format(endOfWeek(today, { weekStartsOn: 1 }), 'yyyy-MM-dd'),
+      }
+    }
+    if (period === 'month') {
+      return { from: dateRange.from, to: format(endOfMonth(today), 'yyyy-MM-dd') }
+    }
+    return dateRange
+  }, [period, dateRange])
+
+  return { period, setPeriod, dateRange, appointmentsRange, customRange, setCustomRange }
 }

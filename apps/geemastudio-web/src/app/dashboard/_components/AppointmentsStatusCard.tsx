@@ -45,7 +45,7 @@ export function AppointmentsStatusCard({ data, isLoading }: AppointmentsStatusCa
         Citas por estado
       </div>
       <p className="text-xs text-white/45">
-        Total en el período:{' '}
+        Total del período (incluye agendadas próximas):{' '}
         <span className="font-semibold tabular-nums text-white/90">{totalMain}</span>
       </p>
       <div className="space-y-3">
