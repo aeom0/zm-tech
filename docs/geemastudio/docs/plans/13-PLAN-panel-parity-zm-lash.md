@@ -1,25 +1,25 @@
-# Panel interno GeemaStudio ≥ ZM Lash — paridad completa
+> **Ubicación canónica consolidada:** Plan 13. El archivo de origen se conserva temporalmente como referencia legacy.
 
-> **Legacy:** el documento canónico es [`13-PLAN-panel-parity-zm-lash.md`](13-PLAN-panel-parity-zm-lash.md). Mantener esta ruta solo para compatibilidad de enlaces históricos.
+# Plan 13 — Paridad completa del panel Geema
 
-> **Responsabilidad documental:** este plan es la fuente del scorecard de paridad del panel y del criterio de go-live Vanessa. Plan 11 conserva el detalle de implementación WABA; Plan 05 conserva el estado ejecutivo de migración.
+> **Responsabilidad documental:** este plan es la fuente del scorecard de paridad del panel y del criterio de go-live Vanessa. Plan 12 conserva el detalle de implementación WABA; Plan 04 conserva el estado ejecutivo de migración.
 
-> Estado: **en curso** (actualizado 22-sep-2026). Complementa [`11-PLAN-waba-suite-parity.md`](11-PLAN-waba-suite-parity.md).
+> Estado: **en curso** (actualizado 22-sep-2026). Complementa [`12-PLAN-waba-suite-parity.md`](12-PLAN-waba-suite-parity.md).
 >
 > Meta: el panel web de Geema (`apps/geemastudio-web`) debe ser **igual o superior** al de ZM Lash canónico (`ZM-Lash-and-Nails-Beauty/apps/web`) antes de migrar a Vanessa como tenant real.
 >
-> **Hecho 22-sep:** Plan 11 WABA suite + Plan 12 P1/P2 finanzas + **PR-09 P0 + P8 + P9 + P10** (+ **P18–P20 ✅ 23-sep**) (push físico, cita WABA y pago por validar recibidos en Geema). **Siguiente:** P21–P23.
+> **Hecho 22-sep:** Plan 12 WABA suite + Plan 13 P1/P2 finanzas + **PR-09 P0 + P8 + P9 + P10** (+ **P18–P20 ✅ 23-sep**) (push físico, cita WABA y pago por validar recibidos en Geema). **Siguiente:** P21–P23.
 
-## Relación con Plan 11
+## Relación con Plan 12
 
 | Doc              | Alcance                                                                                               |
 | ---------------- | ----------------------------------------------------------------------------------------------------- |
-| **Plan 11**      | Suite WABA del panel + deuda técnica + foundations (UUID/RLS/API routes)                              |
-| **Este Plan 12** | Paridad del **panel completo** (no solo WABA): finanzas, shell, clientes, ops web, runtime bot, promo |
+| **Plan 12**      | Suite WABA del panel + deuda técnica + foundations (UUID/RLS/API routes)                              |
+| **Este Plan 13** | Paridad del **panel completo** (no solo WABA): finanzas, shell, clientes, ops web, runtime bot, promo |
 
-Plan 11 sigue siendo el camino de implementación WABA. Este doc:
+Plan 12 sigue siendo el camino de implementación WABA. Este doc:
 
-1. Expone huecos que Plan 11 **no cubre** o **subprioriza**.
+1. Expone huecos que Plan 12 **no cubre** o **subprioriza**.
 2. Define fases de panel no-WABA y runtime bot.
 3. Fija criterio Done de paridad side-by-side.
 
@@ -41,11 +41,11 @@ Leyenda: ✅ paridad · 🟡 parcial · ❌ falta · ➕ Geema ya superior
 | Horarios / timezone                              | Mobile                                                              | `/panel/horarios`                                                | ➕                                              |
 | Config + CMS landing                             | Sanity externo                                                      | `/panel/configuracion` + `/web`                                  | ➕                                              |
 | Finanzas operativas                              | `/finanzas` Detalle                                                 | `/finanzas` Detalle multi-tenant                                 | ✅                                              |
-| Finanzas **ejecutiva** (P&L, gastos, break-even) | `ExecutiveDashboard`                                                | `/finanzas` Resumen ✅ 22-sep (Plan 12 P1)                       | ✅                                              |
+| Finanzas **ejecutiva** (P&L, gastos, break-even) | `ExecutiveDashboard`                                                | `/finanzas` Resumen ✅ 22-sep (Plan 13 P1)                       | ✅                                              |
 | Inventario                                       | Solo mobile                                                         | ❌ web · ✅ mobile                                               | ❌ (ambos sin web)                              |
 | Validación pagos / Asignar staff                 | Solo mobile                                                         | Solo mobile                                                      | ❌ web (aceptable si se documenta mobile-first) |
 | WABA tabs                                        | **6** (+ simulador)                                                 | **7** (estado + 6 de ZM)                                         | ✅ (Geema tiene Estado extra)                   |
-| WABA inbox (uso diario)                          | Consola staff completa                                              | Consola staff Plan 11 F3 ✅                                      | ✅                                              |
+| WABA inbox (uso diario)                          | Consola staff completa                                              | Consola staff Plan 12 F3 ✅                                      | ✅                                              |
 | WABA historial                                   | Analytics desktop                                                   | `/panel/waba/historial` ✅ 22-sep                                | ✅                                              |
 | WABA portafolio                                  | Hasta 4 fotos/servicio                                              | `/panel/waba/portafolio` ✅ 22-sep                               | ✅                                              |
 | WABA simulador                                   | Chat QA fidelidad total                                             | `/panel/waba/simulador` ✅ 22-sep (reusa EF ZM)                  | ✅                                              |
@@ -55,45 +55,45 @@ Leyenda: ✅ paridad · 🟡 parcial · ❌ falta · ➕ Geema ya superior
 Evidencia nav (22-sep):
 
 - Geema WABA: `WabaNav.tsx` → Campañas, Mensajes, Asistente IA (+ página estado)
-- Inbox: Plan 11 Fase 3 M1–M23 cerrados
+- Inbox: Plan 12 Fase 3 M1–M23 cerrados
 - Productos: `/panel/servicios?tab=productos` (catálogo + ventas)
 
 ---
 
-## Huecos del Plan 11 (auditoría)
+## Huecos del Plan 12 (auditoría)
 
-### A. Fuera de alcance de Plan 11 (hay que cubrir aquí)
+### A. Fuera de alcance de Plan 12 (hay que cubrir aquí)
 
 | #   | Hueco                                           | Por qué importa para Vanessa                                                                                               |
 | --- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| G1  | ~~Finanzas ejecutiva web~~                      | ✅ 22-sep `/finanzas` Resumen (Plan 12 P1)                                                                                 |
+| G1  | ~~Finanzas ejecutiva web~~                      | ✅ 22-sep `/finanzas` Resumen (Plan 13 P1)                                                                                 |
 | G2  | ~~Deep link Clientes → hilo WABA~~              | ✅ 22-sep `ClientDetailDrawer` + `waPhone.ts`                                                                              |
 | G3  | ~~Shell: PanelShell ↔ `/finanzas`~~             | ✅ 22-sep (card Inicio + Más + breadcrumb Panel)                                                                           |
 | G4  | Crons / nudges / recordatorios (11+ EFs ZM)     | Panel perfecto + bot sin recordatorios = funnel roto → S4                                                                  |
 | G5  | `countOverlappingAppointments` en webhook Geema | N/A Opción A — bot solo ZM (Track C); no mantener webhook Geema                                                            |
 | G6  | Promo broadcast WA + Reenganchar                | Prod ZM. **Envío masivo mobile** hecho 21-sep — ver R5; `send-retouch-reengage` sigue pendiente                            |
 | G7  | Push FCM E2E                                    | **P0 + P8 + P18–P20 ✅** 22/23-sep — push físico validado en APK de producción; EF canónica ZM. Ajustes de assets en curso |
-| G8  | Tenant scoping global en hooks web              | Plan 11 solo arregla tablas WABA vía API routes                                                                            |
+| G8  | Tenant scoping global en hooks web              | Plan 12 solo arregla tablas WABA vía API routes                                                                            |
 | G9  | Legal por jurisdicción tenant                   | ZM tiene términos/privacidad/libro reclamaciones                                                                           |
 | G10 | Docs stale (`WEB_ARCHITECTURE`, audit 03)       | CMS web ya existe; finanzas P1 ✅ — limpiar restos                                                                         |
 
-### B. Dentro de Plan 11 pero mal priorizados
+### B. Dentro de Plan 12 pero mal priorizados
 
-| Ítem Plan 11                         | Problema                                                                          | Ajuste                                              |
+| Ítem Plan 12                         | Problema                                                                          | Ajuste                                              |
 | ------------------------------------ | --------------------------------------------------------------------------------- | --------------------------------------------------- |
 | Fase 5 campañas = "opcional"         | En ZM es **puerta de entrada** al módulo WA (`AdminNav` → `/panel/waba/campanas`) | Subir a **P1** tras Haiku/inbox                     |
 | Fase 5 historial = "opcional"        | Analytics desktop es valor documentado en `WEB_ARCHITECTURE.md`                   | Subir a **P1.5** (bajo riesgo: solo queries)        |
 | Fase 4 simulador = "corte natural"   | Correcto técnicamente; crítico QA **antes** de go-live ZM                         | Mantener después de inbox; no saltar go-live sin él |
-| Promos/Reenganchar = "fase separada" | Subestima: schema + stepper + EF                                                  | Este Plan 12 §Fase R                                |
-| Fase 1 solo API WABA                 | No resuelve RLS/tenant del resto del panel                                        | Plan 12 §Fase T (tenant scoping)                    |
+| Promos/Reenganchar = "fase separada" | Subestima: schema + stepper + EF                                                  | Este Plan 13 §Fase R                                |
+| Fase 1 solo API WABA                 | No resuelve RLS/tenant del resto del panel                                        | Plan 13 §Fase T (tenant scoping)                    |
 | Sin criterio Done side-by-side       | No hay checklist Vanessa-usable                                                   | Ver § Criterio Done abajo                           |
 
-### C. Plan 11 bien priorizado (no tocar)
+### C. Plan 12 bien priorizado (no tocar)
 
 - Fase 0 deuda técnica (Vanessa hardcode, demo login, copy dominio stale)
 - Fase 1 UUID + RLS → API routes (bloqueante)
 - Fase 2 Haiku 4 keys + test preview
-- Fase 3 inbox = **consola de staff** (checklist M1–M23 en Plan 11; cierre mínimo P0+P1)
+- Fase 3 inbox = **consola de staff** (checklist M1–M23 en Plan 12; cierre mínimo P0+P1)
 
 ---
 
@@ -116,11 +116,11 @@ Criterio "superior": paridad de capacidades ZM **más** estos puntos, sin romper
 
 ### Fase 0 — Alineación docs + deuda (rápido)
 
-1. Ejecutar Plan 11 Fase 0 tal cual.
+1. Ejecutar Plan 13 Fase 0 tal cual.
 2. Actualizar `WEB_ARCHITECTURE.md`: CMS `/panel/configuracion/web` = ✅; marcar inventario/validación/asignar como decisión mobile-first o P2.
 3. Nota en `geema-migration/00-RESUMEN-EJECUTIVO.md`: panel WABA ya no es "solo ZM" — es MVP Geema + gap suite.
 
-### Fase T — Tenant scoping panel (P0, paralelo a Plan 11 Fase 1)
+### Fase T — Tenant scoping panel (P0, paralelo a Plan 12 Fase 1)
 
 1. Auditoría de hooks web (`hooks/agenda`, `clientes`, `finanzas`, `servicios`, `personal`, `configuracion`) — ¿filtran por `tenant_id` / `tenant_settings.id`?
 2. Checklist por módulo: lectura + mutación scoped; tests smoke con 2 tenants demo.
@@ -128,7 +128,7 @@ Criterio "superior": paridad de capacidades ZM **más** estos puntos, sin romper
 
 Ref: `docs/audit/03-AUDIT-paridad-zmlash-geema.md` (ítems P0 no obsoletos).
 
-### Fase P — Panel no-WABA (Plan 11B)
+### Fase P — Panel no-WABA (Plan 13B)
 
 | ID  | Entregable                                                                                                                 | Ref ZM                         | Prioridad                                       |
 | --- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------ | ----------------------------------------------- |
@@ -139,7 +139,7 @@ Ref: `docs/audit/03-AUDIT-paridad-zmlash-geema.md` (ítems P0 no obsoletos).
 | P5  | Inventario web CRUD (si Vanessa lo pide en desktop)                                                                        | `InventoryScreen` patrón       | P2                                              |
 | P6  | Agenda web: mutaciones mínimas (reasignar / status) — no full CRUD día 1                                                   | drawer actual                  | P3                                              |
 
-### Fase W — Ajustes a Plan 11 (repriorización)
+### Fase W — Ajustes a Plan 12 (repriorización)
 
 Aplicar sobre el doc 11 sin reescribirlo entero:
 
@@ -148,13 +148,13 @@ Aplicar sobre el doc 11 sin reescribirlo entero:
 3. Portafolio: mantener P2 pero **antes** de go-live ZM si el bot ya sirve `show_portfolio`.
 4. Criterio Done WABA = § Criterio Done (abajo) filas W-\*.
 
-### Fase R — Runtime bot + automation (Plan 12-runtime)
+### Fase R — Runtime bot + automation (Plan 13-runtime)
 
-Paralelo a Plan 11 Fases 2–3; **después** de foundations UUID:
+Paralelo a Plan 12 Fases 2–3; **después** de foundations UUID:
 
 | Oleada | Edge Functions a portar (generalizar tenant)                                                                               | Notas                                                                                                                                                                                                                                                                                                                                               |
 | ------ | -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| R1     | `send-whatsapp-notification`, `waba-staff-session` (`pause_bot`/`resume_bot`/`haiku_finish_booking`), `test-haiku-preview` | Prereq inbox Plan 11 M1–M2 + Haiku test                                                                                                                                                                                                                                                                                                             |
+| R1     | `send-whatsapp-notification`, `waba-staff-session` (`pause_bot`/`resume_bot`/`haiku_finish_booking`), `test-haiku-preview` | Prereq inbox Plan 12 M1–M2 + Haiku test                                                                                                                                                                                                                                                                                                             |
 | R2     | `appointment-reminders`, `same-day-appointment-reminder` / `send-*`                                                        | Recordatorios cita                                                                                                                                                                                                                                                                                                                                  |
 | R3     | `cart-nudge`, `abandoned-cart-reminders`, `silence-watchdog`                                                               | Funnel carrito                                                                                                                                                                                                                                                                                                                                      |
 | R4     | `ads-bounce-nudge`, `browse-reengage`                                                                                      | CTWA / browse                                                                                                                                                                                                                                                                                                                                       |
@@ -232,7 +232,7 @@ BD compartida `udelxwwnyivknslueerr`: la EF **`send-notification` ya corre en pr
 - [x] **P12** — `notifyAdmins` `owner`+`dev` + `tenant_id` (ZM `notify.ts`; redeploy webhook)
 - [x] **P13** — Log `sent/errors` del invoke (ya en ZM `notify.ts`)
 
-##### P1.5 — Paridad WABA chat (complementa inbox Plan 11 M4 / M11)
+##### P1.5 — Paridad WABA chat (complementa inbox Plan 12 M4 / M11)
 
 - [x] **P14** — `notifyAdminsClientChat` + cooldown ~45m + guard `isQaWaPhone` (ya ZM; Opción A)
 - [x] **P15** — `notifyAdminsPausedClientReply` (ya ZM; Opción A)
@@ -248,7 +248,7 @@ BD compartida `udelxwwnyivknslueerr`: la EF **`send-notification` ya corre en pr
 - [x] **P22** — Cron `chat-quality-review` + push “Revisar YA”; `quality_review` usa el routing `waba_chat`
 - [x] **P23** — Trigger DB asignación staff: `user_ids[]`, filtro `tenant_id` y tap que abre Agenda en Geema
 
-**PR-09 cerrado** = P0 ✅ + P1 ✅ en tenant sandbox (idealmente smoke también con owner ZM en APK Geema). P1.5 va en paralelo / justo después de inbox Fase 3. P2 sigue Plan 12 Fase R / Plan 11 triggers.
+**PR-09 cerrado** = P0 ✅ + P1 ✅ en tenant sandbox (idealmente smoke también con owner ZM en APK Geema). P1.5 va en paralelo / justo después de inbox Fase 3. P2 sigue Plan 13 Fase R / Plan 12 triggers.
 
 #### Otras piezas plataforma (no push)
 
@@ -267,14 +267,14 @@ Checklist side-by-side (tenant sandbox Geema vs panel ZM prod):
 - [ ] D1 — Desde `/panel/*` se llega a Finanzas y Dashboard en ≤1 click
 - [ ] D2 — Finanzas web tiene vista Ejecutiva (KPIs + al menos 1 chart P&L o gastos)
 - [ ] D3 — Cliente → "Abrir chat WA" abre el hilo correcto
-- [ ] D4 — Copy de dominio custom refleja middleware real (Plan 11 Fase 0)
+- [ ] D4 — Copy de dominio custom refleja middleware real (Plan 13 Fase 0)
 
-### WABA (extiende Plan 11)
+### WABA (extiende Plan 12)
 
 - [ ] W1 — `waba_config.tenant_id` UUID alineado bot ↔ panel
 - [ ] W2 — Lecturas panel vía API routes; anon directo a tablas WABA = denegado
 - [ ] W3 — Haiku: 4 keys editables + test preview
-- [ ] W4 — Inbox **P0+P1** (Plan 11 M1–M13): texto, pausa/reactiva, badge bot, composer 24h, poll 10s, imagen, bloquear, copiar, `?phone=`, preview catálogo, badge pausado/unread
+- [ ] W4 — Inbox **P0+P1** (Plan 12 M1–M13): texto, pausa/reactiva, badge bot, composer 24h, poll 10s, imagen, bloquear, copiar, `?phone=`, preview catálogo, badge pausado/unread
 - [ ] W4b — Inbox **P1.5** (M14–M19) antes de go-live ZM con tráfico real de fotos/plantillas
 - [ ] W4c — Inbox **P2** (M20–M23): Haiku agenda, borrar hilo, reacciones/quotes — deseable, no bloquea campañas
 - [ ] W5 — WabaNav con al menos: Campañas, Mensajes, Haiku, Historial (Portafolio/Simulador si go-live bot)
@@ -294,9 +294,9 @@ Checklist side-by-side (tenant sandbox Geema vs panel ZM prod):
 ## Orden de sprints sugerido
 
 ```
-Sprint A  Plan 11 F0 + F1  |  Plan 12 Fase 0 docs  |  Fase T  |  PR-09 P0 (token+EF+Firebase) en paralelo
-Sprint B  Plan 11 F2 Haiku |  Fase P1–P2 (finanzas ejecutiva + shell)  |  PR-09 P1 smoke Vanessa
-Sprint C  Plan 11 F3 inbox |  R1 EFs staff/notify  |  P3 deep link clientes  |  Push P1.5 (paused reply)
+Sprint A  Plan 12 F0 + F1  |  Plan 13 Fase 0 docs  |  Fase T  |  PR-09 P0 (token+EF+Firebase) en paralelo
+Sprint B  Plan 12 F2 Haiku |  Fase P1–P2 (finanzas ejecutiva + shell)  |  PR-09 P1 smoke Vanessa
+Sprint C  Plan 12 F3 inbox |  R1 EFs staff/notify  |  P3 deep link clientes  |  Push P1.5 (paused reply)
 Sprint D  Campañas + Historial (ex-Fase 5) |  R2 recordatorios
 Sprint E  Simulador + Portafolio |  R3–R4 nudges
 Sprint F  Promo broadcast (R5) |  Push P2 (P18–P23) |  decisión inventario/validación web
@@ -304,7 +304,7 @@ Sprint F  Promo broadcast (R5) |  Push P2 (P18–P23) |  decisión inventario/va
 
 ---
 
-## Archivos críticos (además de Plan 11)
+## Archivos críticos (además de Plan 12)
 
 | Área                   | Path                                                                                      |
 | ---------------------- | ----------------------------------------------------------------------------------------- |

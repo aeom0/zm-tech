@@ -1,6 +1,7 @@
-# Comisiones por profesional + registro de pago (mobile + web)
+# Plan 09 — Comisiones por profesional y registro de pagos
 
-> **Legacy:** el documento canónico es [`09-PLAN-comisiones-pagos.md`](09-PLAN-comisiones-pagos.md). Mantener esta ruta solo para compatibilidad de enlaces históricos.
+> **Ubicación canónica consolidada:** Plan 09. El archivo de origen se conserva temporalmente como referencia legacy.
+
 
 > Estado: ✅ cerrado (PR #37, 5-sep-2026). Implementado en mobile + web; verificado en producción por la dueña. Incluyó fix de raíz no anticipado: faltaba la FK `appointment_services.appointment_id → appointments.id`, lo que hacía fallar en silencio el embed de PostgREST usado por `desglosePorChica` — ver `CHANGELOG.md` (5-sep) para el detalle de la limpieza de huérfanas + `ON DELETE CASCADE`.
 

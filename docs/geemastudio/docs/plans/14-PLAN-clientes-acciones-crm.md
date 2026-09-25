@@ -1,6 +1,7 @@
-# 13 — Clientes: de buscador a CRM accionable (mobile)
+# Plan 14 — CRM y acciones de clientes
 
-> **Legacy:** el documento canónico es [`14-PLAN-clientes-acciones-crm.md`](14-PLAN-clientes-acciones-crm.md). Mantener esta ruta solo para compatibilidad de enlaces históricos.
+> **Ubicación canónica consolidada:** Plan 14. El archivo de origen se conserva temporalmente como referencia legacy.
+
 
 > **Estado: HECHO P0+P1** (24-sep-2026). P2 pendiente.  
 > App: `apps/geemastudio-mobile` · Pantalla: `ClientsScreen` + `screens/clients/*`  
@@ -51,7 +52,7 @@ Convertir Clientes en herramienta de operación diaria del salón: **ver → act
 
 ## Archivos tocados (previstos)
 
-- `docs/geemastudio/docs/plans/13-PLAN-clientes-acciones-crm.md` (este)  
+- `docs/geemastudio/docs/plans/14-PLAN-clientes-acciones-crm.md` (este)
 - `screens/ClientsScreen.tsx`  
 - `screens/clients/types.ts`  
 - `screens/clients/hooks/useClientsData.ts`  

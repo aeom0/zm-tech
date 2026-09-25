@@ -2,6 +2,8 @@
 
 > **Fuente:** audit de paridad 2026-08-07 (`docs/audit/03-AUDIT-paridad-zmlash-geema.md`) + inventario de pantallas/Edge Functions de ZM Lash v3.6–3.7.
 >
+> **Estado documental:** baseline histórico actualizado con resoluciones hasta 2026-09-24. Este inventario sigue siendo backlog de paridad; el estado ejecutivo vigente está en [`Plan 04`](../geemastudio/docs/plans/04-geema-migration/README.md) y el scorecard de panel en [`Plan 13`](../geemastudio/docs/plans/13-PLAN-panel-parity-zm-lash.md).
+>
 > **Propósito:** lista accionable de lo que ZM Lash tiene hoy en producción y que Geema debe alcanzar (o decidir explícitamente no portar). No es un sprint plan: es el backlog de paridad funcional.
 >
 > **Repos:** `aeom0/ZM-Lash-and-Nails-Beauty` (referencia) · destino `aeom0/zm-tech` (`apps/geemastudio-*`).
@@ -41,7 +43,7 @@
 | N16 | **Feriados del salón**                     | Tabla `salon_holidays`; UI admin; slots reducidos/cerrado; WABA consume misma tabla                               | `screens/holidays/**`, `peru-holidays.ts`                                     | ❌                               | Modelo por tenant; seed PE **opcional**, no único                        |
 | N17 | **Configuración / perfil**                 | Tema Claro/Auto/Oscuro; versión/OTA; datos salón                                                                  | `settings/**`, `ProfileScreen`                                                | 🟡                               | Branding desde `tenant_settings`                                         |
 | N18 | **Promo broadcast WA**                     | Stepper 5 pasos; segmentos; historial; Edge `send-promo-whatsapp`                                                 | `screens/promos/**`                                                           | ❌                               | Plantilla Meta por tenant; media_id cache                                |
-| N19 | **Push FCM nativo**                        | Token → `profiles.push_token`; `send-notification` FCM v1; deep links; ~20 triggers WABA | `useNotifications.ts`, `send-notification`                                    | 🟡 P0 ✅ 22-sep: token persiste; Firebase `com.geemastudio.app` + EAS; EF canónica ZM (Opción A). P8 smoke APK ⏳. **No portar** Expo `send-push-notification` (E18). Checklist: [`12-PLAN…`](../geemastudio/docs/plans/12-PLAN-panel-parity-zm-lash.md) Fase X · ROADMAP PR-09 | `notifyAdmins` por `tenant_id` ✅; canales `{businessName}` ✅ |
+| N19 | **Push FCM nativo**                        | Token → `profiles.push_token`; `send-notification` FCM v1; deep links; ~20 triggers WABA | `useNotifications.ts`, `send-notification`                                    | 🟡 P0 ✅ 22-sep; P8 + P9 + P10 + P18–P20 ✅ 23-sep; token persiste, Firebase `com.geemastudio.app` + EAS; EF canónica ZM (Opción A). Ajustes de assets en curso. **No portar** Expo `send-push-notification` (E18). Checklist: [`13-PLAN-panel-parity-zm-lash.md`](../geemastudio/docs/plans/13-PLAN-panel-parity-zm-lash.md) Fase X · ROADMAP PR-09 | `notifyAdmins` por `tenant_id` ✅; canales `{businessName}` ✅ |
 
 ---
 
@@ -120,7 +122,7 @@
 
 | ID  | Capacidad                      | ZM                                   | Geema                      | Acción                                               |
 | --- | ------------------------------ | ------------------------------------ | -------------------------- | ---------------------------------------------------- |
-| I01 | `tenant_id` + RLS apps gestión | Plan 02 en prod (1 tenant)           | Solo WABA bien scoped      | **P0** portar patrón a todas las tablas/hooks        |
+| I01 | `tenant_id` + RLS apps gestión | Plan 02 en prod (1 tenant)           | Base RLS/tenant ✅; quedan superficies de gestión y operación por endurecer | **P0** completar scoping de todas las tablas/hooks antes del segundo tenant |
 | I02 | Auth Hook JWT claims tenant    | Sí                                   | Verificar                  | Alinear                                              |
 | I03 | Horario semanal configurable   | Hardcode + feriados                  | `/panel/horarios` + mobile | OK Geema; sumar feriados (N16)                       |
 | I04 | `tenant-config` presets        | N/A (marca fija)                     | 4 presets                  | Mantener; fix `es-VE`→locale real                    |
@@ -217,4 +219,4 @@ Onboarding multi-tipo · presets · payment_mode salary/mixed · landing SaaS mu
 - ZM Plan 02 tenant: repo ZM `docs/02-PLAN-retrofit-tenant-id.md`
 - ZM Edge Functions: repo ZM `docs/EDGE_FUNCTIONS.md`
 
-_Última actualización: 2026-08-08._
+_Baseline original: 2026-08-08 · estado de alineación revisado: 2026-09-24._

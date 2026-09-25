@@ -1,4 +1,4 @@
-# Plan 07 — Look Preview multi-servicio (CTWA monetización)
+# Plan 07 — Look Preview multi-servicio
 
 > Documento de **producto** para preview virtual pay-first en **todas** las categorías relevantes del salón (no solo extensiones). Léelo antes de tocar schema, Edge, Culqi o `/probar-mirada`.
 >

@@ -9,7 +9,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 ## Principios de ejecución
 
 - **Beta primero**: cada decisión se toma preguntando si acerca o aleja la beta.
-- **Plan 05 (ago 2026)**: fuente canónica del estado de migración ZM ↔ Geema y la suite WABA multi-vertical. Este roadmap solo cubre beta, producto y prioridades propias de Geema.
+- **Plan 04 (ago 2026)**: fuente canónica del estado de migración ZM ↔ Geema y la suite WABA multi-vertical. Este roadmap solo cubre beta, producto y prioridades propias de Geema.
 - Estabilizar lo mínimo indispensable, no lo perfecto.
 - Features y deuda técnica en paralelo cuando no hay dependencia entre sí.
 - Entregar en incrementos pequeños con criterios de aceptación claros.
@@ -20,16 +20,16 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 
 ## Foco semana 22–28 sep 2026
 
-> Orden concreto. No mezclar S4 (repo ZM) con Plan 11 (zm-tech) en la misma sesión salvo cambio de contexto explícito.
+> Orden concreto. No mezclar S4 (repo ZM) con Plan 12 (zm-tech) en la misma sesión salvo cambio de contexto explícito.
 
 | #   | Entregable                                   | Repo    | DoD                                                    |
 | --- | -------------------------------------------- | ------- | ------------------------------------------------------ |
-| 0   | ~~Alinear docs Plan 05 + scorecard Plan 12~~ | ambos   | ✅ 22-sep                                              |
+| 0   | ~~Alinear docs Plan 04 + scorecard Planes 12/13~~ | ambos   | ✅ 22-sep                                              |
 | 1   | P14–P17/P2 push WABA                         | zm-tech | P9/P10 ✅ 22-sep; P18–P20 ✅ 23-sep; P21–P23 ✅ 23-sep |
 | 2   | Ventas `product_orders` en Geema             | zm-tech | Tras catálogo; ZM ya tiene UI                          |
 | —   | S4 crons tenant-aware                        | ZM      | Solo si se abre Track B (2.º tenant)                   |
 
-**Hecho esta tanda:** Historial · Portafolio · deep link · **Simulador** (Plan 11 F4, reusa EF ZM).
+**Hecho esta tanda:** Historial · Portafolio · deep link · **Simulador** (Plan 12 F4, reusa EF ZM).
 
 **Fuera de esta semana:** retail bot / `add_to_cart` productos (pausado por decisión de producto); S7 2.º tenant.
 
@@ -45,13 +45,13 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 - Core mobile: onboarding, agenda, servicios/packs/promos, clientes, inventario, finanzas, feriados, colores de marca, splash tenant, promo broadcast WA
 - **S5-C P0/P1 mayor**: packs/promos/timezone/employees ✅ (#30); multi-servicio + refs ✅ (#31); feriados ✅; finanzas ejecutiva mobile ✅ (costos WABA UI pendiente); **S5C-9** hint Finanzas ✅
 - Core web: `/panel/*` P1 (clientes, personal, config, agenda, servicios, horarios, WABA)
-- **Plan 11**: F0/F1 cerradas (21-sep); F2 Haiku ✅; F3 inbox staff ✅; F5.1 Campañas ✅
+- **Plan 12**: F0/F1 cerradas (21-sep); F2 Haiku ✅; F3 inbox staff ✅; F5.1 Campañas ✅
 - Theming panel + PWA dinámico + tab Productos (catálogo) ✅ 22-sep
-- **Plan 11/12 WABA web**: Historial, Portafolio, deep link Clientes→Mensajes y Simulador ✅ 22-sep
-- **Plan 12 Finanzas**: Resumen|Detalle web + enlaces PanelShell ✅ 22-sep
+- **Planes 12/13 WABA web**: Historial, Portafolio, deep link Clientes→Mensajes y Simulador ✅ 22-sep
+- **Plan 13 Finanzas**: Resumen|Detalle web + enlaces PanelShell ✅ 22-sep
 - **PR-09 Push FCM**: P0 + P8 + P9 + P10 ✅ 22-sep + P18–P20 ✅ 23-sep; push físico, cita WABA y pago por validar validados, ajustes de assets en curso
 - **Host**: `https://geema.zmtechdev.com`
-- Migración Plan 05: **S1–S3** ✅; **S4** ❌ (repo ZM)
+- Migración Plan 04: **S1–S3** ✅; **S4** ❌ (repo ZM)
 
 ### Pendientes (prioridad)
 
@@ -141,11 +141,11 @@ Ver [docs/WEB_ARCHITECTURE.md](docs/WEB_ARCHITECTURE.md).
 ## Migración ZM ↔ Geema
 
 El estado de S1–S7, los gates multi-tenant, S4, S5-C, S6 y el segundo tenant
-vive únicamente en el Plan 05:
+vive únicamente en el Plan 04:
 
-- [Resumen ejecutivo](docs/plans/geema-migration/00-RESUMEN-EJECUTIVO.md)
-- [Roadmap de migración](docs/plans/geema-migration/04-ROADMAP-SPRINTS.md)
-- [Plan 05 y reglas de sincronización](docs/plans/geema-migration/README.md)
+- [Resumen ejecutivo](docs/plans/04-geema-migration/00-RESUMEN-EJECUTIVO.md)
+- [Roadmap de migración](docs/plans/04-geema-migration/04-ROADMAP-SPRINTS.md)
+- [Plan 04 y reglas de sincronización](docs/plans/04-geema-migration/README.md)
 
 Este archivo no replica ese semáforo para evitar estados contradictorios.
 
@@ -156,7 +156,7 @@ Este archivo no replica ese semáforo para evitar estados contradictorios.
 | Fase | Qué                                      | Estado                                                                                              |
 | ---- | ---------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | 1    | Templates + secciones + mirror `zm-demo` | ✅                                                                                                  |
-| 2    | CMS mobile “Mi Web” (OTA preview 12-sep) | ✅ parcial — ver [`docs/plans/10-PLAN-mi-web-cms-fase2.md`](docs/plans/10-PLAN-mi-web-cms-fase2.md) |
+| 2    | CMS mobile “Mi Web” (OTA preview 12-sep) | ✅ parcial — ver [`docs/plans/11-PLAN-mi-web-cms-fase2.md`](docs/plans/11-PLAN-mi-web-cms-fase2.md) |
 | 3    | Dominio propio + contenido real ZM       | ❌                                                                                                  |
 
 Pendiente post–Fase 2: `/panel/configuracion/web`, migrar Sanity → `zm-lash-nails`, `web_mode` UI, sync catálogo→`web_services`.
@@ -193,4 +193,4 @@ Pendiente post–Fase 2: `/panel/configuracion/web`, migrar Sanity → `zm-lash-
 
 ---
 
-_Actualizado: 22 sep 2026 — beta/producto Geema; el estado de migración vive en Plan 05._
+_Actualizado: 22 sep 2026 — beta/producto Geema; el estado de migración vive en Plan 04._

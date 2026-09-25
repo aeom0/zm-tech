@@ -1,5 +1,10 @@
 # ZM_KNOWLEDGE_FOR_GEEMASTUDIO.md
 
+> **Estado documental:** referencia técnica histórica y de compatibilidad con
+> el tenant `zm-lash-nails`. La arquitectura y los estados vigentes deben
+> consultarse en `AGENTS.md`, `ROADMAP.md` y la serie de planes consolidados.
+> No agregar aquí nuevos estados de roadmap.
+>
 > **Propósito**: Contexto técnico extraído de ZM Lash & Nails Beauty (v2.3) para guiar el desarrollo de GeemaStudio. Todo lo aquí documentado está implementado y probado en producción en ZM. Cada módulo debe portarse a GeemaStudio respetando el sistema multi-tenant: sin hardcodes de nombre, color, moneda ni terminología.
 >
 > **Regla de oro**: Lo que en ZM dice `"chicas"`, `"S/"`, `"#7B2D8E"`, `"ZM Lash"` → en GeemaStudio es `config.terminology.staff`, `config.locale.currency.symbol`, `config.theme.primaryColor`, `config.businessName`.

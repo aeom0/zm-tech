@@ -1,5 +1,10 @@
 # Plan de Fases — GeemaStudio v1.3.0
 
+> **Estado documental:** histórico. Las prioridades y estados vigentes viven en
+> [ROADMAP.md](../ROADMAP.md) y en la serie de [planes consolidados](INDEX.md).
+> Este documento no debe recibir nuevas fases ni convertirse en un roadmap
+> paralelo.
+>
 > Objetivo: limpiar residuos de ZM Lash & Nails, consolidar multi-tenant y portar mejoras clave desde ZM v1.7.
 
 ## Fase 0 — Estado base (v1.2.0)

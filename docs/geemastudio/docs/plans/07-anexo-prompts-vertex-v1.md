@@ -1,4 +1,4 @@
-# Anexo Plan 07 — Prompts Vertex v1 (Gemini + guías Vanessa)
+# Anexo del Plan 07 — Prompts Vertex v1
 
 > **Fuente:** chat Gemini + flyers ZM (`efectos-ext-pestañas`, `vol-tec-3d/4d`, `mirada-espectacular-1/2`).
 > **Origen:** PDF Batch 1 + continue chat 02-sep-2026 (estilos 9–23).

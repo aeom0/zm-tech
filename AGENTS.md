@@ -14,6 +14,16 @@ Monorepo multi-producto (pnpm + Turborepo). Mapa de BDs: [`docs/SUPABASE.md`](do
 5. `docs/<producto>/AGENTS.md` si existe (landing, hub, geemastudio, repmax)
 6. Código del producto antes de inventar patrones
 
+## Documentación ZM → Geema
+
+- La serie canónica de planes Geema es `docs/geemastudio/docs/plans/01–15`.
+- El detalle de migración consolidado está en
+  `docs/geemastudio/docs/plans/04-geema-migration/`.
+- `docs/geemastudio/docs/plans/geema-migration/` es únicamente el espejo
+  temporal del sync con ZM; no crear planes nuevos allí.
+- Los audits de paridad centralizados están en `docs/audit/`; consultar Plan
+  04 y Plan 13 para el estado vigente, no las tablas históricas del baseline.
+
 ## Productos
 
 | Producto | Apps | Packages |

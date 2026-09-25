@@ -14,17 +14,20 @@ description: >
 
 > Lee este archivo **antes de tocar cualquier archivo del repo** GeemaStudio.
 > Complementa `zmtech-dev`. Fuente: código real del repositorio + docs internas.
-> Versión: v1.5.0 (SDK 56 + TS 6) · Actualizado: 30-ago-2026
+> Versión: v1.5.0 (SDK 56 + TS 6) · Actualizado: 24-sep-2026
 
 ---
 
-## 0. Sync espejo — ZM Lash (canónica) ↔ GeemaStudio (espejo)
+## 0. Sync temporal — ZM Lash (canónica) ↔ GeemaStudio (espejo)
 
 GeemaStudio mobile es la generalización multi-tenant de la app mobile de
 **ZM Lash & Nails Beauty** (repo `aeom0/ZM-Lash-and-Nails-Beauty`, cliente real
 en producción). Mientras dura la migración, la documentación de planeación vive
-en dos sitios y se sincroniza manualmente — el código de cada app NO se
-sincroniza automático, solo `docs/plans/geema-migration/`:
+en dos sitios y se sincroniza manualmente. El código de cada app NO se
+sincroniza automáticamente. El script solo cubre el subárbol temporal
+`docs/plans/geema-migration/`; la ubicación canónica consolidada de Geema es
+`docs/geemastudio/docs/plans/04-geema-migration/` y no se sincroniza con este
+workflow:
 
 | Rol          | Repo                                                            | Path                                           |
 | ------------ | --------------------------------------------------------------- | ---------------------------------------------- |
@@ -51,6 +54,10 @@ sincroniza automático, solo `docs/plans/geema-migration/`:
 - Antes de escribir en `docs/plans/geema-migration/` desde este repo (zm-tech),
   confirmar si el cambio debe originarse en la canónica (ZM) y luego `push`earse,
   para no perderlo en el próximo sync.
+- Los audits de paridad viven centralizados en `zm-tech/docs/audit/`; ZM solo
+  conserva el brief y los enlaces de referencia. El baseline vigente es
+  `03-AUDIT-paridad-zmlash-geema.md` + `04-INVENTARIO-features-zm-lash-para-geema.md`;
+  para el estado actual consultar Plan 04 y Plan 13.
 
 ---
 
@@ -714,7 +721,7 @@ yarn db:seed         # seeds template
 16. Rutas de navegacion con nombres neutros: "Personal", "Clients", no "Chicas"
 17. Usar config.locale.timeFormat (12|24) para formato de hora — NO hardcodear AM/PM
 18. Iconos Lucide en web via LucideIcons as Record<string, LucideIcon> — NO emojis en UI web
-19. Si el cambio toca `docs/plans/geema-migration/`, verificar primero si debe originarse en la canónica ZM (ver sección 0) para no perderlo en el siguiente sync
+19. Si el cambio toca `docs/plans/geema-migration/`, verificar primero si debe originarse en la canónica ZM (ver sección 0) para no perderlo en el siguiente sync. La carpeta consolidada `docs/geemastudio/docs/plans/04-geema-migration/` es la referencia final de Geema.
 
 ---
 
@@ -740,7 +747,7 @@ yarn db:seed         # seeds template
 18. Duplicar tipos manualmente: inferir desde Drizzle/Zod como fuente de verdad
 19. Emojis en web UI: toda iconografia web usa Lucide React (ver v1.4.9)
 20. Hardcodear formato de hora (12h/AM-PM): viene de config.locale.timeFormat
-21. Editar `docs/geemastudio/docs/plans/geema-migration/` (espejo) y dejarlo así — si el cambio es relevante también en ZM, coordinar el `push`/`pull` con el script (sección 0), o se pierde en el próximo sync
+21. Editar `docs/geemastudio/docs/plans/geema-migration/` (espejo temporal) y dejarlo así — si el cambio es relevante también en ZM, coordinar el `push`/`pull` con el script (sección 0), o se pierde en el próximo sync. Para documentación nueva o consolidada usar la ubicación canónica del Plan 04.
 
 ---
 

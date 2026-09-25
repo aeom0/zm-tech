@@ -1,5 +1,10 @@
 # GeemaStudio — Guía de Migración para Claude
 
+> **Estado documental:** histórico. La fuente vigente de la convergencia ZM →
+> Geema es el [Plan 04](plans/04-PLAN-migracion-geema.md). Este documento
+> conserva el contexto y las decisiones originales de la migración; no usar sus
+> estados de fases como semáforo actual.
+>
 > **Fecha de inicio**: 2026-02-19
 > **Estado actual**: FASES 1–6 completadas ✅ | FASE 7: 7A (RLS) y 7B (tenant_settings en onboarding) completados; 7C (pruebas integrales) y 7D (landing) marcados pendientes en este doc, pero **verificar antes de asumir que siguen pendientes** — la landing pública `/s/[slug]` y el panel (`/panel/*`, `/dashboard`, `/finanzas`) ya existen en `apps/geemastudio-web` (ver [WEB_ARCHITECTURE.md](WEB_ARCHITECTURE.md), rutas marcadas ✅ Implementado); no se confirmó si los entregables específicos de 7D (pricing tiers, testimonios Venezuela) o el checklist de 7C están cerrados — no se actualiza el estado por falta de evidencia directa (2026-09-03).
 

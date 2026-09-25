@@ -1,4 +1,4 @@
-# Plan 06 — Preview virtual de extensiones (CTWA monetización)
+# Plan 06 — Preview virtual de extensiones y validación Vertex
 
 > **Producto multi-categoría y naming → [Plan 07 — Look Preview](./07-PLAN-look-preview-multi-servicio.md).**  
 > Este Plan 06 queda como **historial del spike** (overlay MediaPipe NO-GO + Vertex Gemini GO) y del piloto **Extensiones** (Avril). Fases de producto (Culqi, `/probar-mirada`, catálogo multi-servicio, renombre `look-preview`) viven en Plan 07.

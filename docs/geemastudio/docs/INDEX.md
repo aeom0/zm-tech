@@ -56,34 +56,37 @@ Guía de conexión ADB al dispositivo físico de pruebas (Moto G54) desde WSL2 �
 
 Plan de funcionalidades v1.3 (referencia histórica / roadmap parcial).
 
-### [01-PLAN-monorepo-estructura.md](01-PLAN-monorepo-estructura.md)
+### [CONSOLIDACION-DOCS-ZM-GEEMA.md](CONSOLIDACION-DOCS-ZM-GEEMA.md)
 
-Plan 01 — draft jul-2026 (recuperado/espejado 27-ago-2026, fuente canónica en `ZM-Lash-and-Nails-Beauty`) de la fusión `ZMTech` (landing) + `geemastudio` en este monorepo. Ya ejecutada; registro histórico.
+Matriz y propuesta de consolidación documental entre ZM Lash y GeemaStudio.
 
-### [02-PLAN-retrofit-tenant-id.md](02-PLAN-retrofit-tenant-id.md)
+### Planes canónicos consolidados 01–15
 
-Plan 02 — retrofit `tenant_id` en `udelxwwnyivknslueerr` (ZM Lash = tenant #1 → GeemaStudio multi-tenant). **Fases A/B/C ✅ prod** (RLS completada 2026-08-08, ver nota de estado al inicio del documento). Leer antes de tocar migraciones o código de `tenant_id`.
+| Plan | Documento | Tema |
+|---:|---|---|
+| 01 | [01-PLAN-monorepo-estructura.md](plans/01-PLAN-monorepo-estructura.md) | Monorepo y estructura |
+| 02 | [02-PLAN-retrofit-tenant-id.md](plans/02-PLAN-retrofit-tenant-id.md) | Multi-tenancy, `tenant_id` y RLS |
+| 03 | [03-PLAN-audit-paridad-zmlash-geema.md](plans/03-PLAN-audit-paridad-zmlash-geema.md) | Auditoría de paridad ZM Lash → Geema |
+| 04 | [04-PLAN-migracion-geema.md](plans/04-PLAN-migracion-geema.md) | Migración y convergencia ZM → Geema |
+| 05 | [05-PLAN-ctwa-collages-cierre-intencion.md](plans/05-PLAN-ctwa-collages-cierre-intencion.md) | CTWA y cierre por intención |
+| 06 | [06-PLAN-preview-virtual-extensiones-ctwa.md](plans/06-PLAN-preview-virtual-extensiones-ctwa.md) | Spike y validación Vertex |
+| 07 | [07-PLAN-look-preview-multi-servicio.md](plans/07-PLAN-look-preview-multi-servicio.md) | Look Preview multi-servicio |
+| 08 | [08-PLAN-dispatcher-modular.md](plans/08-PLAN-dispatcher-modular.md) | Modularización del dispatcher WABA |
+| 09 | [09-PLAN-comisiones-pagos.md](plans/09-PLAN-comisiones-pagos.md) | Comisiones y pagos |
+| 10 | [10-PLAN-landing-multitenant-fase1.md](plans/10-PLAN-landing-multitenant-fase1.md) | Landing pública multi-tenant |
+| 11 | [11-PLAN-mi-web-cms-fase2.md](plans/11-PLAN-mi-web-cms-fase2.md) | CMS Mi Web |
+| 12 | [12-PLAN-waba-suite-parity.md](plans/12-PLAN-waba-suite-parity.md) | Suite WABA |
+| 13 | [13-PLAN-panel-parity-zm-lash.md](plans/13-PLAN-panel-parity-zm-lash.md) | Paridad completa del panel |
+| 14 | [14-PLAN-clientes-acciones-crm.md](plans/14-PLAN-clientes-acciones-crm.md) | CRM y acciones de clientes |
+| 15 | [15-PLAN-retail-productos.md](plans/15-PLAN-retail-productos.md) | Retail y productos |
 
-### [03-PLAN-audit-paridad-zmlash-geema.md](03-PLAN-audit-paridad-zmlash-geema.md)
+Los nombres anteriores se conservan temporalmente como referencias legacy.
+La carpeta [04-geema-migration](plans/04-geema-migration/) conserva el detalle
+interno de la migración y continúa sincronizada mientras el runtime WABA siga
+siendo operativo en ZM.
 
-Plan 03 — brief del audit de paridad (solo lectura): ZM Lash = referencia funcional → GeemaStudio.
-
-### [plans/geema-migration/](plans/geema-migration/) ← **Plan 05 (nuevo)**
-
-Migración Geema + suite WABA multi-vertical: estado actual, bloqueadores, estandarización barbería/peluquería/spa, roadmap por sprints. **Fuente canónica:** `ZM-Lash-and-Nails-Beauty/docs/plans/geema-migration/` — sincronizar con `yarn sync:geema-migration-docs` (desde ZM) o [SYNC.md](plans/geema-migration/SYNC.md).
-
-### Look Preview (espejo desde ZM, 02-sep-2026)
-
-| Doc                                                                                                    | Tema                                                            |
-| ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
-| [plans/06-PLAN-preview-virtual-extensiones-ctwa.md](plans/06-PLAN-preview-virtual-extensiones-ctwa.md) | Spike Vertex + piloto Extensiones                               |
-| [plans/07-PLAN-look-preview-multi-servicio.md](plans/07-PLAN-look-preview-multi-servicio.md)           | Producto multi-servicio `look-preview` + Culqi                  |
-| [plans/07-anexo-prompts-vertex-v1.md](plans/07-anexo-prompts-vertex-v1.md)                             | 23 prompts VERTEX_READY                                         |
-| [plans/08-PLAN-comisiones-pagos.md](plans/08-PLAN-comisiones-pagos.md)                                 | Comisiones por profesional + registro de pago (PR #37, cerrado) |
-| [plans/09-PLAN-landing-multitenant-fase1.md](plans/09-PLAN-landing-multitenant-fase1.md)               | Landing templates + mirror `zm-demo` (Fase 1)                   |
-| [plans/10-PLAN-mi-web-cms-fase2.md](plans/10-PLAN-mi-web-cms-fase2.md)                                 | CMS Mi Web mobile + pendientes Fase 3 / panel                   |
-
-Port a Geema: ticket **S6-LP** tras MVP ZM (Fase B Culqi).
+Anexo de prompts Vertex:
+[07-anexo-prompts-vertex-v1.md](plans/07-anexo-prompts-vertex-v1.md).
 
 ### [Audit 03 — paridad](../../audit/03-AUDIT-paridad-zmlash-geema.md)
 
@@ -114,11 +117,10 @@ docs/
 ├── ADB_CONEXION_MOVIL.md           # ADB al dispositivo físico (tooling, no específico GeemaStudio)
 ├── INSTALACION_BETA.md             # Beta / instalación
 ├── GEEMASTUDIO_V1.3_PLAN.md        # Plan v1.3 (referencia)
-├── 01-PLAN-monorepo-estructura.md          # Fusión ZMTech+geemastudio → monorepo (espejo)
-├── 02-PLAN-retrofit-tenant-id.md           # Retrofit tenant_id (multi-tenant BD)
-├── 03-PLAN-audit-paridad-zmlash-geema.md   # Brief audit paridad ZM ↔ Geema
 ├── plans/
-│   └── geema-migration/                    # Plan 05 — migración + WABA suite (espejo ZM)
+│   ├── 01–15-PLAN-*.md                     # Serie canónica consolidada
+│   ├── 04-geema-migration/                 # Detalle canónico del Plan 04
+│   └── geema-migration/                    # Espejo temporal ZM (legacy)
 └── tech-debt/                              # Deuda técnica (TD-xxx)
 
 # (fuera de docs/geemastudio/docs/)

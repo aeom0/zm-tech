@@ -1,18 +1,18 @@
-# WABA — paridad de suite GeemaStudio vs. ZM Lash + deuda técnica
+> **Ubicación canónica consolidada:** Plan 12. El archivo de origen se conserva temporalmente como referencia legacy.
 
-> **Legacy:** el documento canónico es [`12-PLAN-waba-suite-parity.md`](12-PLAN-waba-suite-parity.md). Mantener esta ruta solo para compatibilidad de enlaces históricos.
+# Plan 12 — Suite WABA y paridad conversacional
 
-> **Responsabilidad documental:** este plan conserva el detalle de implementación y QA de la suite WABA. El estado ejecutivo de migración vive en Plan 05; el criterio de paridad y go-live del panel completo vive en Plan 12.
+> **Responsabilidad documental:** este plan conserva el detalle de implementación y QA de la suite WABA. El estado ejecutivo de migración vive en Plan 04; el criterio de paridad y go-live del panel completo vive en Plan 13.
 
-> Estado: **suite WABA panel cerrada para Track A** (22-sep-2026) — Fases 0–5 (salvo promos/reenganchar) + Simulador F4 ✅. Siguiente fuera de WABA panel: finanzas ejecutiva / runtime bot (Plan 12).
+> Estado: **suite WABA panel cerrada para Track A** (22-sep-2026) — Fases 0–5 (salvo promos/reenganchar) + Simulador F4 ✅. Siguiente fuera de WABA panel: finanzas ejecutiva / runtime bot (Plan 13).
 >
-> **Complemento obligatorio:** la paridad del panel **completo** (finanzas ejecutiva, shell, clientes→WA, crons del bot, promo broadcast, tenant scoping) vive en [`12-PLAN-panel-parity-zm-lash.md`](12-PLAN-panel-parity-zm-lash.md). Este Plan 11 solo cubre la suite WABA + deuda; no alcanza solo para "panel Geema ≥ ZM".
+> **Complemento obligatorio:** la paridad del panel **completo** (finanzas ejecutiva, shell, clientes→WA, crons del bot, promo broadcast, tenant scoping) vive en [`13-PLAN-panel-parity-zm-lash.md`](13-PLAN-panel-parity-zm-lash.md). Este Plan 12 solo cubre la suite WABA + deuda; no alcanza solo para "panel Geema ≥ ZM".
 
 ## Contexto
 
 GeemaStudio es la generalización multi-tenant de ZM Lash & Nails Beauty. Antes de migrar a Vanessa (ZM) como tenant real, el panel WABA de GeemaStudio debe ser igual o mejor que el de ZM Lash canónico — hoy no lo es: le faltan la mayoría de los editores de configuración del bot, el inbox es solo-lectura, no hay simulador ni analytics, y "Promos Masivas"/"Reenganchar" no existen en absoluto. Prioridad #1 marcada explícitamente por Alberto, junto con limpiar 3 items de deuda técnica ya identificados en una auditoría previa.
 
-**Repriorización (20-sep, auditoría Plan 12):** en ZM, **Campañas** es la puerta de entrada del módulo WA (`AdminNav` → `/panel/waba/campanas`) e **Historial** es uso desktop diario — no tratarlos como "opcional nice-to-have". Tras Fases 2–3 de este plan, ejecutar campañas + historial **antes** de portafolio/promos; simulador sigue después de inbox (QA pre go-live). Detalle y scorecard en Plan 12.
+**Repriorización (20-sep, auditoría Plan 13):** en ZM, **Campañas** es la puerta de entrada del módulo WA (`AdminNav` → `/panel/waba/campanas`) e **Historial** es uso desktop diario — no tratarlos como "opcional nice-to-have". Tras Fases 2–3 de este plan, ejecutar campañas + historial **antes** de portafolio/promos; simulador sigue después de inbox (QA pre go-live). Detalle y scorecard en Plan 13.
 
 Investigación (3 agentes Explore + lectura directa de `20260406_waba_multitenant.sql` y `useWabaStatus.ts`) confirmó además dos bloqueos reales no reportados antes:
 
@@ -87,7 +87,7 @@ Verificación: `pnpm --filter geemastudio-web check:types` y `pnpm --filter geem
 
 Hoy Geema: `apps/geemastudio-web/src/app/panel/waba/mensajes/page.tsx` + `hooks/waba/useWabaMessages.ts` — solo lectura, sin composer, sin EFs.
 
-### Backend (prerequisito; alinear con Plan 12 Fase R1)
+### Backend (prerequisito; alinear con Plan 13 Fase R1)
 
 - EF `apps/geemastudio-server/supabase/functions/send-whatsapp-notification/` — `POST { phone, message | imageUrl, pauseBot }` (genérica; hoy solo `notifyAdminPhonesWa()` interno). Enviar texto/imagen **debe** poder pausar el bot (`pauseBot: true`), igual que ZM.
 - EF `apps/geemastudio-server/supabase/functions/waba-staff-session/` — `POST { phone, action }` con acciones ZM reales:
@@ -162,7 +162,7 @@ Copy UI en español neutro (**sin voseo**): corregir el “Elegí una conversaci
 
 ### Fuera de alcance de Fase 3
 
-- Simulador (Fase 4), campañas/historial (Fase 5), promo broadcast (Plan 12 R5).
+- Simulador (Fase 4), campañas/historial (Fase 5), promo broadcast (Plan 13 R5).
 - Realtime Supabase (ZM usa polling; mantener polling).
 
 ## Fase 4 — Simulador de conversación (fase separada, mayor esfuerzo)
@@ -173,7 +173,7 @@ Copy UI en español neutro (**sin voseo**): corregir el “Elegí una conversaci
 
 ## Fase 5 — Campañas, historial, portafolio (repriorizado 20-sep)
 
-> Antes: "opcional". Tras auditoría Plan 12: **campañas + historial = P1** post Fases 2–3; portafolio = P2 pre go-live si el bot sirve portfolio; promos/reenganchar → Plan 12 Fase R.
+> Antes: "opcional". Tras auditoría Plan 13: **campañas + historial = P1** post Fases 2–3; portafolio = P2 pre go-live si el bot sirve portfolio; promos/reenganchar → Plan 13 Fase R.
 
 Orden sugerido dentro de esta fase:
 
@@ -181,7 +181,7 @@ Orden sugerido dentro de esta fase:
    - **Gap descubierto:** `useAuth()`/`AuthContext` (con `isAdmin`) solo está envuelto en `/finanzas`, no en `/panel/*` — cualquier gate de admin bajo `/panel/waba/*` debe resolver el rol por su cuenta (memoria: `project_geemastudio_web_panel_no_authcontext.md`). Ninguna otra pestaña de `/panel/waba/*` (`haiku`, `mensajes`) tiene gate de admin hoy; confían en RLS silenciosamente.
 2. ~~**Historial/analytics** (P1.5): sin migración nueva — queries sobre `wa_messages`/`ai_usage_log`. Portar `useWabaHistorial.ts` y sub-componentes (`VolumeChart`, `SummaryStatsStrip`, `ActivityHeatmap`, `TopFlowsCard`, `HaikuUsageCard`) a `apps/geemastudio-web/src/app/panel/waba/historial/`.~~ **Hecho (22-sep-2026).** Ruta `/panel/waba/historial` + tab en `WabaNav`. Hook y cards portados con tema oscuro Geema (`--tenant-primary`), deps `recharts` + `date-fns-tz`. Copy multi-vertical ("Clientes únicos"). RLS `admins_read_wa_messages` / `ai_usage_log_admin_select` filtra por `current_tenant_id()` (sin `.eq` explícito, igual que ZM). Verificación: `pnpm --filter geemastudio-web check:types`.
 3. ~~**Portafolio** (P2): requiere migración `service_portfolio_images` (`id, service_id, image_url, caption, sort_order CHECK(0..3)`) — confirmación antes de aplicar. Bucket `waba-images/portfolio/{serviceId}/{index+1}.jpg`.~~ **Hecho (22-sep-2026).** **Sin migración nueva**: tabla + RLS + bucket `waba-images` ya existen en prod (`udelx…`). Port: `usePortfolioConfig.ts` (hooks/waba) + `/panel/waba/portafolio` + tab nav. Upsert escribe `tenant_id` vía `resolveTenantSlugForWrites()` (mejora vs ZM que confía en default). Gate admin local (mismo patrón Campañas). Reusa `ConfigImageCard` + `useImageUpload`. Verificación: `pnpm check:types` / `lint`.
-4. **Promos Masivas / Reenganchar**: no mezclar aquí — ver Plan 12 Fase R (`send-promo-whatsapp`, `send-retouch-reengage` + UI stepper).
+4. **Promos Masivas / Reenganchar**: no mezclar aquí — ver Plan 13 Fase R (`send-promo-whatsapp`, `send-retouch-reengage` + UI stepper).
 
 ## Verificación transversal
 
@@ -206,4 +206,4 @@ Orden sugerido dentro de esta fase:
 - `apps/geemastudio-web/src/app/finanzas/login/page.tsx`
 - `apps/geemastudio-web/src/app/panel/configuracion/page.tsx`
 
-Paridad panel completa (finanzas, shell, crons): [`12-PLAN-panel-parity-zm-lash.md`](12-PLAN-panel-parity-zm-lash.md).
+Paridad panel completa (finanzas, shell, crons): [`13-PLAN-panel-parity-zm-lash.md`](13-PLAN-panel-parity-zm-lash.md).

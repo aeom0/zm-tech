@@ -1,12 +1,26 @@
 # Audit 03 — Paridad ZM Lash & Nails (referencia) vs GeemaStudio (multi-tenant)
 
-> **Solo lectura.** Fecha: 2026-08-07. Plan fuente: `docs/geemastudio/docs/03-PLAN-audit-paridad-zmlash-geema.md` (copia también en ZM Lash `docs/03-PLAN-audit-paridad-zmlash-geema.md`).
+> **Solo lectura · baseline histórico.** Auditoría ejecutada el 2026-08-07. Plan fuente: `docs/geemastudio/docs/plans/03-PLAN-audit-paridad-zmlash-geema.md` (la copia del brief permanece en ZM Lash).
 >
 > Repos: `aeom0/ZM-Lash-and-Nails-Beauty` (`/home/alber/ZM-Lash-and-Nails-Beauty`) · `aeom0/zm-tech` Geema (`apps/geemastudio-{web,mobile,server}`).
 >
 > Metodología: verificación punta a punta (UI → hook/servicio → Supabase/Edge), no por nombre de carpeta. Estados: ✅ Completo · 🟡 Parcial · ❌ No existe · ❓ No verificable.
 
 ---
+
+## Estado documental actual — 2026-09-24
+
+Este archivo conserva la fotografía de paridad de agosto y no debe leerse como
+el semáforo vigente. Las resoluciones posteriores se registran en el Plan 04
+canónico y en el scorecard del Plan 13:
+
+- Migración, decisiones de convergencia y estado operativo: [`Plan 04`](../geemastudio/docs/plans/04-geema-migration/README.md).
+- Paridad del panel y go-live: [`Plan 13`](../geemastudio/docs/plans/13-PLAN-panel-parity-zm-lash.md).
+- Inventario accionable derivado de este baseline: [`04-INVENTARIO-features-zm-lash-para-geema.md`](04-INVENTARIO-features-zm-lash-para-geema.md).
+
+Cuando una fila de este audit contradiga esos documentos canónicos, prevalece
+el estado más reciente documentado allí; la fila original se conserva para
+trazabilidad del gap que originó cada decisión.
 
 ## 6.1 Tabla principal
 

@@ -1,6 +1,7 @@
-# Landing multi-tenant de GeemaStudio — Fase 1: base reutilizable + mirror de prueba `zm-demo`
+# Plan 10 — Landing pública multi-tenant
 
-> **Legacy:** el documento canónico es [`10-PLAN-landing-multitenant-fase1.md`](10-PLAN-landing-multitenant-fase1.md). Mantener esta ruta solo para compatibilidad de enlaces históricos.
+> **Ubicación canónica consolidada:** Plan 10. El archivo de origen se conserva temporalmente como referencia legacy.
+
 
 > Estado: ✅ cerrado (Fase 1). Fase 2 (CMS mobile “Mi Web”) → ver [`10-PLAN-mi-web-cms-fase2.md`](10-PLAN-mi-web-cms-fase2.md) (parcial, 12-sep-2026). Fase 3 (dominio propio + migración real de ZM) sigue pendiente.
 

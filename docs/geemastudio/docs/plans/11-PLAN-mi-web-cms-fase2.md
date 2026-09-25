@@ -1,6 +1,7 @@
-# Landing multi-tenant — Fase 2: CMS “Mi Web” (mobile)
+# Plan 11 — CMS Mi Web
 
-> **Legacy:** el documento canónico es [`11-PLAN-mi-web-cms-fase2.md`](11-PLAN-mi-web-cms-fase2.md). Mantener esta ruta solo para compatibilidad de enlaces históricos.
+> **Ubicación canónica consolidada:** Plan 11. El archivo de origen se conserva temporalmente como referencia legacy.
+
 
 > Estado: **parcialmente cerrado** (20-sep-2026). Editor mobile + panel web + Storage RLS + middleware Fase 3 listos; queda el "go live" de dominio propio (DNS + activar fila real) y migración de contenido real de ZM.
 
