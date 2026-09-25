@@ -146,7 +146,8 @@ export function PanelShell({
   )
 
   // Ítems fijos del bottom tab bar mobile; el resto vive en la hoja "Más".
-  const primaryTabItems: NavItem[] = [agendaItem, clientesItem, catalogoItem, wabaItem]
+  // WhatsApp queda en el centro (3.º de 5 slots, contando "Más").
+  const primaryTabItems: NavItem[] = [agendaItem, clientesItem, wabaItem, catalogoItem]
   const moreSections: NavSection[] = [
     {
       title: 'Negocio',
