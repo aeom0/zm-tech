@@ -18,7 +18,19 @@ export default async function FinanzasLayout({ children }: { children: React.Rea
     : { primary: null, accent: null, businessName: null, logoUrl: null }
 
   return (
-    <FinanzasAuthWrapper primaryColor={brand.primary} accentColor={brand.accent}>
+    <FinanzasAuthWrapper
+      primaryColor={brand.primary}
+      accentColor={brand.accent}
+      shell={
+        data.session
+          ? {
+              userEmail: data.session.user.email ?? 'usuario',
+              tenantName: brand.businessName,
+              tenantLogoUrl: brand.logoUrl,
+            }
+          : undefined
+      }
+    >
       {children}
     </FinanzasAuthWrapper>
   )

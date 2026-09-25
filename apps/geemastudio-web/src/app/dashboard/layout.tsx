@@ -35,7 +35,15 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const brand = await fetchTenantBrandForUser(supabase, user.id)
 
   return (
-    <FinanzasAuthWrapper primaryColor={brand.primary} accentColor={brand.accent}>
+    <FinanzasAuthWrapper
+      primaryColor={brand.primary}
+      accentColor={brand.accent}
+      shell={{
+        userEmail: user.email ?? 'usuario',
+        tenantName: brand.businessName,
+        tenantLogoUrl: brand.logoUrl,
+      }}
+    >
       <PanelQueryProvider>{children}</PanelQueryProvider>
     </FinanzasAuthWrapper>
   )

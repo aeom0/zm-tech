@@ -158,6 +158,9 @@ export function PanelShell({
   function isNavActive(href: string): boolean {
     if (href === '/panel/waba') return Boolean(pathname?.startsWith('/panel/waba'))
     if (href === '/panel/servicios') return Boolean(pathname?.startsWith('/panel/servicios'))
+    if (href === '/finanzas') {
+      return Boolean(pathname?.startsWith('/finanzas') || pathname?.startsWith('/dashboard'))
+    }
     return pathname === href
   }
 

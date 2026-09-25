@@ -21,7 +21,7 @@ export function DashboardShell({ businessName, children, topSlot }: DashboardShe
 
   return (
     <div className="min-h-screen bg-[#0F0F0F] text-white">
-      <header className="sticky top-0 z-20 border-b border-white/10 bg-[#0F0F0F]/95 backdrop-blur-md">
+      <header className="relative z-20 border-b border-white/10 bg-[#0F0F0F]/95 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3">
           <div className="flex min-w-0 items-center gap-3">
             <Link
