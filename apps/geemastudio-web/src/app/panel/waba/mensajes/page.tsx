@@ -101,14 +101,14 @@ function PanelWabaMensajesContent() {
         )}
 
       {!conversationsQuery.isError && !conversationsQuery.isLoading && conversations.length > 0 && (
-        <div className="grid min-h-[480px] overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] md:grid-cols-[320px_1fr]">
+        <div className="grid h-[calc(100dvh-15rem)] min-h-[420px] overflow-hidden rounded-2xl md:h-[calc(100dvh-12rem)] border border-white/[0.08] bg-white/[0.02] md:grid-cols-[320px_1fr]">
           <aside
             className={[
-              'border-white/[0.08] md:border-r',
+              'min-h-0 border-white/[0.08] md:border-r',
               selectedPhone ? 'hidden md:block' : 'block',
             ].join(' ')}
           >
-            <ul className="max-h-[70vh] overflow-y-auto">
+            <ul className="h-full overflow-y-auto">
               {conversations.map((c) => {
                 const active = c.phone === selectedPhone
                 const name =
@@ -184,7 +184,7 @@ function PanelWabaMensajesContent() {
           </aside>
 
           <section
-            className={['flex min-h-0 flex-col', selectedPhone ? 'flex' : 'hidden md:flex'].join(
+            className={['min-h-0 flex-col', selectedPhone ? 'flex' : 'hidden md:flex'].join(
               ' '
             )}
           >

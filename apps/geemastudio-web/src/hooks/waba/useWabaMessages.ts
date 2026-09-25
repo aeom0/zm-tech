@@ -1,6 +1,6 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
 import { supabase } from '@/lib/supabase'
 import { formatTemplatePreview, isTemplateContent } from '@/app/panel/waba/mensajes/_components/templateLabels'
@@ -262,15 +262,19 @@ export function useWabaConversations() {
   })
 }
 
-export function useWabaThread(phone: string | null) {
+export const WABA_THREAD_PAGE_SIZE = 50
+
+/** Últimos `limit` mensajes del hilo, en orden cronológico. Subir `limit` trae los anteriores. */
+export function useWabaThread(phone: string | null, limit: number = WABA_THREAD_PAGE_SIZE) {
   const catalogQuery = useWabaCatalog()
   const catalogReady = !!catalogQuery.data
 
   return useQuery({
-    queryKey: ['web_waba_thread', phone, catalogReady],
+    queryKey: ['web_waba_thread', phone, catalogReady, limit],
     enabled: !!supabase && !!phone,
     staleTime: 5_000,
     refetchInterval: 10_000,
+    placeholderData: keepPreviousData,
     queryFn: async (): Promise<WabaMessage[]> => {
       if (!supabase || !phone) return []
       const { data, error } = await supabase
@@ -279,14 +283,14 @@ export function useWabaThread(phone: string | null) {
           'id, phone, content, direction, msg_type, created_at, wamid, image_url, audio_url, document_url, document_name, reply_image_url, reply_to_wamid, delivery_status, delivery_error'
         )
         .eq('phone', phone)
-        .order('created_at', { ascending: true })
-        .limit(200)
+        .order('created_at', { ascending: false })
+        .limit(limit)
 
       if (error) throw new Error(error.message)
 
       const catalog = catalogQuery.data ?? new Map()
 
-      return ((data ?? []) as Record<string, unknown>[]).map((row) => {
+      return ((data ?? []) as Record<string, unknown>[]).reverse().map((row) => {
         const direction = asDirection(row.direction)
         const rawContent = String(row.content ?? '')
         const content = direction === 'in' ? resolveWabaContent(rawContent, catalog) : rawContent

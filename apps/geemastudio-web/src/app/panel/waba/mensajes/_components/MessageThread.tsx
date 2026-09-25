@@ -1,12 +1,13 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import {
   ArrowLeft,
   Ban,
   Check,
   Copy,
   FileText,
+  History,
   Image as ImageIcon,
   Loader2,
   Mic,
@@ -18,7 +19,11 @@ import {
   Trash2,
 } from 'lucide-react'
 
-import { useWabaThread, type WabaConversation } from '@/hooks/waba/useWabaMessages'
+import {
+  useWabaThread,
+  WABA_THREAD_PAGE_SIZE,
+  type WabaConversation,
+} from '@/hooks/waba/useWabaMessages'
 import { useSendWabaMessage, useWabaStaffSession } from '@/hooks/waba/useWabaSend'
 import { useDeleteWabaThread, useToggleWabaBlock, useWabaBlockedStatus } from '@/hooks/waba/useWabaModeration'
 import { useImageUpload } from '@/hooks/waba/useImageUpload'
@@ -45,7 +50,8 @@ export function MessageThread({
   onBack: () => void
 }) {
   const phone = conversation.phone
-  const threadQuery = useWabaThread(phone)
+  const [limit, setLimit] = useState(WABA_THREAD_PAGE_SIZE)
+  const threadQuery = useWabaThread(phone, limit)
   const sendMutation = useSendWabaMessage(phone)
   const staffSessionMutation = useWabaStaffSession(phone)
   const { uploadImage, uploadState, uploadError, resetUpload } = useImageUpload()
@@ -66,10 +72,33 @@ export function MessageThread({
 
   const messages = useMemo(() => threadQuery.data ?? [], [threadQuery.data])
 
-  useEffect(() => {
+  // Hay más mensajes anteriores si la última página vino llena.
+  const hasOlder = messages.length >= limit
+  // Al cargar anteriores no saltamos al fondo: se conserva la posición de lectura.
+  const prependRef = useRef<{ prevHeight: number; prevTop: number } | null>(null)
+
+  useLayoutEffect(() => {
     const el = scrollRef.current
-    if (el) el.scrollTop = el.scrollHeight
+    if (!el) return
+    const prepend = prependRef.current
+    if (prepend) {
+      el.scrollTop = el.scrollHeight - prepend.prevHeight + prepend.prevTop
+      prependRef.current = null
+      return
+    }
+    el.scrollTop = el.scrollHeight
   }, [messages.length, phone])
+
+  useEffect(() => {
+    setLimit(WABA_THREAD_PAGE_SIZE)
+    prependRef.current = null
+  }, [phone])
+
+  const handleLoadOlder = () => {
+    const el = scrollRef.current
+    if (el) prependRef.current = { prevHeight: el.scrollHeight, prevTop: el.scrollTop }
+    setLimit((l) => l + WABA_THREAD_PAGE_SIZE)
+  }
 
   useEffect(() => {
     const ta = textareaRef.current
@@ -359,7 +388,24 @@ export function MessageThread({
         </div>
       )}
 
-      <div ref={scrollRef} className="max-h-[60vh] flex-1 space-y-2 overflow-y-auto p-4">
+      <div ref={scrollRef} className="min-h-0 flex-1 space-y-2 overflow-y-auto p-4">
+        {hasOlder && !threadQuery.isLoading && !threadQuery.isError && (
+          <div className="flex justify-center pb-1">
+            <button
+              type="button"
+              onClick={handleLoadOlder}
+              disabled={threadQuery.isFetching}
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 text-xs text-zinc-300 hover:bg-white/[0.08] disabled:opacity-50"
+            >
+              {threadQuery.isFetching ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <History className="h-3.5 w-3.5" />
+              )}
+              Ver mensajes anteriores
+            </button>
+          </div>
+        )}
         {threadQuery.isLoading && <p className="text-center text-sm text-zinc-500">Cargando hilo…</p>}
         {threadQuery.isError && (
           <p className="text-center text-sm text-red-300">
@@ -371,7 +417,7 @@ export function MessageThread({
           messages.map((m) => <MessageBubble key={m.id} message={m} />)}
       </div>
 
-      <div className="border-t border-white/[0.08] p-3">
+      <div className="shrink-0 border-t border-white/[0.08] p-3">
         {!withinWindow && (
           <p className="mb-2 text-[11px] text-zinc-500">
             Han pasado más de 24h desde el último mensaje del cliente — WhatsApp puede rechazar
@@ -450,7 +496,7 @@ export function MessageThread({
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Escribí un mensaje…"
+            placeholder="Escribe un mensaje…"
             rows={1}
             disabled={isBusy}
             className="min-h-[36px] min-w-0 flex-1 resize-none rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-[var(--tenant-primary)]/40 focus:outline-none disabled:opacity-50"
