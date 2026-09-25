@@ -4,6 +4,8 @@ import { useMemo, useState } from 'react'
 import { X } from 'lucide-react'
 
 import type { CategoriaRow } from '@/hooks/servicios/useCategorias'
+import { useTenantSettings } from '@/hooks/configuracion/useTenantSettings'
+import { CATEGORY_ICONS, getCategoryIconOptions } from '@/lib/categoryIcons'
 import { LUNARIS } from '@/lib/theme'
 
 export function CategoriaModal({
@@ -50,6 +52,12 @@ function CategoriaModalForm({
   const [color, setColor] = useState(initial?.color ?? LUNARIS.primary)
   const [icon, setIcon] = useState(initial?.icon ?? '')
 
+  const { data: settings } = useTenantSettings()
+  const iconOptions = useMemo(
+    () => getCategoryIconOptions(settings?.business_type),
+    [settings?.business_type]
+  )
+
   const canSubmit = useMemo(() => name.trim().length > 0 && !!color, [name, color])
 
   return (
@@ -91,35 +99,64 @@ function CategoriaModalForm({
             />
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <label className="mb-1.5 block text-sm font-medium text-zinc-300">Color</label>
-              <div className="flex items-center gap-3">
-                <input
-                  value={color}
-                  onChange={(e) => setColor(e.target.value)}
-                  type="color"
-                  className="h-11 w-14 rounded-xl border border-white/[0.10] bg-zinc-800 p-1"
-                />
-                <input
-                  value={color}
-                  onChange={(e) => setColor(e.target.value)}
-                  className="flex-1 rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]"
-                  placeholder="var(--tenant-primary)"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="mb-1.5 block text-sm font-medium text-zinc-300">
-                Icono (opcional)
-              </label>
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-zinc-300">Color</label>
+            <div className="flex items-center gap-3">
               <input
-                value={icon}
-                onChange={(e) => setIcon(e.target.value)}
-                className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]"
-                placeholder="Feather: scissors"
+                value={color}
+                onChange={(e) => setColor(e.target.value)}
+                type="color"
+                className="h-11 w-14 rounded-xl border border-white/[0.10] bg-zinc-800 p-1"
               />
+              <input
+                value={color}
+                onChange={(e) => setColor(e.target.value)}
+                className="flex-1 rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]"
+                placeholder="var(--tenant-primary)"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-zinc-300">
+              Icono (opcional)
+            </label>
+            <div className="grid max-h-40 grid-cols-6 gap-2 overflow-y-auto sm:grid-cols-8">
+              <button
+                type="button"
+                onClick={() => setIcon('')}
+                aria-pressed={!icon}
+                className={[
+                  'flex h-10 items-center justify-center rounded-xl border text-[10px] font-semibold transition-colors',
+                  !icon
+                    ? 'border-[var(--tenant-primary)] bg-[var(--tenant-primary)]/15 text-white'
+                    : 'border-white/[0.10] bg-zinc-800 text-zinc-400 hover:bg-white/[0.06]',
+                ].join(' ')}
+              >
+                Ninguno
+              </button>
+              {iconOptions.map((key) => {
+                const { Icon, label } = CATEGORY_ICONS[key]
+                const active = icon === key
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setIcon(key)}
+                    title={label}
+                    aria-label={label}
+                    aria-pressed={active}
+                    className={[
+                      'flex h-10 items-center justify-center rounded-xl border transition-colors',
+                      active
+                        ? 'border-[var(--tenant-primary)] bg-[var(--tenant-primary)]/15 text-white'
+                        : 'border-white/[0.10] bg-zinc-800 text-zinc-300 hover:bg-white/[0.06]',
+                    ].join(' ')}
+                  >
+                    <Icon className="h-5 w-5" />
+                  </button>
+                )
+              })}
             </div>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { Pencil, Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 
 import type { CategoriaRow } from '@/hooks/servicios/useCategorias'
+import { resolveCategoryIcon } from '@/lib/categoryIcons'
 import { supabase } from '@/lib/supabase'
 
 export function CategoriasTab({
@@ -113,21 +114,21 @@ export function CategoriasTab({
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
           {categorias.map((c) => {
+            const Icon = resolveCategoryIcon(c.icon)
             const busy = deletingId === c.id || checkingId === c.id || deletingId !== null
             return (
               <div key={c.id} className="rounded-2xl border border-white/[0.08] bg-zinc-900 p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex min-w-0 items-center gap-3">
                     <span
-                      className="h-6 w-6 flex-shrink-0 rounded-lg border border-white/[0.10]"
+                      className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border border-white/[0.10] text-white"
                       style={{ backgroundColor: c.color }}
                       aria-hidden
-                    />
+                    >
+                      {Icon ? <Icon className="h-4 w-4" /> : null}
+                    </span>
                     <div className="min-w-0">
                       <div className="truncate text-sm font-semibold text-white">{c.name}</div>
-                      <div className="truncate text-xs text-zinc-500">
-                        {c.icon ? `icon: ${c.icon}` : 'sin icono'}
-                      </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-1">
