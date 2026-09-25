@@ -8,10 +8,18 @@ import {
 } from '@zmtech/tenant-config'
 
 import { AgendaAppointmentCard } from './_components/AgendaAppointmentCard'
-import { AgendaToolbar, goToday, shiftDay } from './_components/AgendaToolbar'
+import {
+  AgendaToolbar,
+  goToday,
+  shiftDay,
+  shiftWeek,
+  type AgendaView,
+} from './_components/AgendaToolbar'
+import { AgendaWeekGrid } from './_components/AgendaWeekGrid'
 import { AppointmentDetailDrawer } from './_components/AppointmentDetailDrawer'
 import {
   useAgendaDayAppointments,
+  useAgendaWeekAppointments,
   useAgendaServicesMap,
   useAgendaTenantSchedule,
 } from '@/hooks/agenda/useAgendaData'
@@ -30,6 +38,7 @@ export default function PanelAgendaPage() {
   const language = 'es' as const
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+  const [view, setView] = useState<AgendaView>('day')
   const [statusFilter, setStatusFilter] = useState<AgendaStatusFilter>('all')
   const [selectedApt, setSelectedApt] = useState<AgendaAppointment | null>(null)
 
@@ -38,7 +47,9 @@ export default function PanelAgendaPage() {
     setSelectedDate((prev) => prev ?? goToday(scheduleQuery.data!.timezone))
   }, [scheduleQuery.data])
 
-  const aptsQuery = useAgendaDayAppointments(selectedDate, timezone, statusFilter)
+  const dayQuery = useAgendaDayAppointments(selectedDate, timezone, statusFilter)
+  const weekQuery = useAgendaWeekAppointments(selectedDate, timezone, statusFilter, view === 'week')
+  const aptsQuery = view === 'week' ? weekQuery : dayQuery
 
   const activeEmployees = useMemo(
     () => (employeesQuery.data ?? []).filter((e) => e.is_active),
@@ -96,17 +107,32 @@ export default function PanelAgendaPage() {
         <div className="text-xs text-zinc-500">Panel</div>
         <h1 className="text-2xl font-bold text-white">Agenda</h1>
         <p className="mt-1 text-sm text-zinc-400">
-          Vista día por profesional · zona {timezone} · solo lectura (edición en mobile)
+          {view === 'week' ? 'Vista semanal' : 'Vista día por profesional'} · zona {timezone} · solo
+          lectura (edición en mobile)
         </p>
       </div>
 
       <AgendaToolbar
+        view={view}
+        onViewChange={setView}
         selectedDate={selectedDate}
         timezone={timezone}
         statusFilter={statusFilter}
         onStatusChange={setStatusFilter}
-        onPrev={() => setSelectedDate(shiftDay(selectedDate, -1, timezone))}
-        onNext={() => setSelectedDate(shiftDay(selectedDate, 1, timezone))}
+        onPrev={() =>
+          setSelectedDate(
+            view === 'week'
+              ? shiftWeek(selectedDate, -1, timezone)
+              : shiftDay(selectedDate, -1, timezone)
+          )
+        }
+        onNext={() =>
+          setSelectedDate(
+            view === 'week'
+              ? shiftWeek(selectedDate, 1, timezone)
+              : shiftDay(selectedDate, 1, timezone)
+          )
+        }
         onToday={() => setSelectedDate(goToday(timezone))}
         count={aptsQuery.data?.length ?? 0}
       />
@@ -123,13 +149,30 @@ export default function PanelAgendaPage() {
         </div>
       )}
 
-      {!loading && !errorMessage && activeEmployees.length === 0 && (
+      {!loading && !errorMessage && view === 'day' && activeEmployees.length === 0 && (
         <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-8 text-center text-sm text-zinc-500">
           No hay profesionales activos. Configúralos en Personal.
         </div>
       )}
 
-      {!loading && activeEmployees.length > 0 && (
+      {!loading && view === 'week' && (
+        <AgendaWeekGrid
+          selectedDate={selectedDate}
+          timezone={timezone}
+          timeFormat={timeFormat}
+          language={language}
+          appointments={aptsQuery.data ?? []}
+          employees={activeEmployees}
+          serviceNameFor={serviceNameFor}
+          onSelectDay={(day) => {
+            setSelectedDate(day)
+            setView('day')
+          }}
+          onOpenDetail={setSelectedApt}
+        />
+      )}
+
+      {!loading && view === 'day' && activeEmployees.length > 0 && (
         <div className="overflow-x-auto rounded-2xl border border-white/[0.08]">
           <div
             className="min-w-max"
@@ -209,7 +252,7 @@ export default function PanelAgendaPage() {
         </div>
       )}
 
-      {!loading && unassigned.length > 0 && (
+      {!loading && view === 'day' && unassigned.length > 0 && (
         <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-4">
           <div className="mb-2 text-sm font-semibold text-amber-200">
             Sin asignar ({unassigned.length})

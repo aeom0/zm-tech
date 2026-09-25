@@ -6,6 +6,7 @@ import {
   instanteCitaDesdeTexto,
   esMismoDiaCalendarioEnZona,
   sumarDiasEnZonaIANA,
+  calcularSemanaAgenda,
   zonaIANASegura,
   normalizarHorarioSemanal,
   type TenantConfig,
@@ -103,6 +104,45 @@ export function useAgendaDayAppointments(
         if (!esMismoDiaCalendarioEnZona(instant, selectedDate, tz)) return false
         return matchesStatusFilter(apt.status, statusFilter)
       })
+    },
+  })
+}
+
+/** Citas de la semana domingo→sábado (mismo criterio que mobile) que contiene `selectedDate`. */
+export function useAgendaWeekAppointments(
+  selectedDate: Date | null,
+  timezone: string | undefined,
+  statusFilter: AgendaStatusFilter,
+  enabled: boolean
+) {
+  const tz = timezone ? zonaIANASegura(timezone) : null
+  const week = selectedDate && tz ? calcularSemanaAgenda(selectedDate, tz) : null
+  const weekKey = week ? formatAppointmentWallclock(week.weekStart, tz!).slice(0, 10) : null
+
+  return useQuery({
+    queryKey: ['web_agenda_week', weekKey, tz, statusFilter],
+    enabled: enabled && !!supabase && !!week && !!tz,
+    staleTime: 30_000,
+    queryFn: async (): Promise<AgendaAppointment[]> => {
+      if (!supabase || !week || !tz) return []
+
+      const start = formatAppointmentWallclock(week.weekDays[0], tz)
+      const end = formatAppointmentWallclock(sumarDiasEnZonaIANA(week.weekDays[6], 1, tz), tz)
+
+      const { data, error } = await supabase
+        .from('appointments')
+        .select(
+          'id, client_name, client_phone, date, duration, price, status, employee_id, service_id, service_ids'
+        )
+        .gte('date', start)
+        .lt('date', end)
+        .order('date', { ascending: true })
+
+      if (error) throw new Error(error.message)
+
+      return ((data ?? []) as AgendaAppointment[]).filter((apt) =>
+        matchesStatusFilter(apt.status, statusFilter)
+      )
     },
   })
 }
