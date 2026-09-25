@@ -28,7 +28,6 @@ export default function DashboardPageClient() {
 
   const tenantQ = useDashboardTenant()
   const currencyCode = resolveDashboardCurrencyCode(tenantQ.data?.currency_code)
-  const businessName = tenantQ.data?.business_name ?? null
 
   const revenueQ = useDashboardRevenue(dateRange)
   const appointmentsQ = useDashboardAppointments(dateRange)
@@ -37,7 +36,6 @@ export default function DashboardPageClient() {
 
   return (
     <DashboardShell
-      businessName={businessName}
       topSlot={
         <PeriodSelector
           period={period}

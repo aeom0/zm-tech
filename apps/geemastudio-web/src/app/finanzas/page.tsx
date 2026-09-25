@@ -4,11 +4,9 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import {
-  TrendingUp,
   Lock,
   ArrowLeft,
   LogOut,
-  User,
   DollarSign,
   Clock,
   AlertCircle,
@@ -18,6 +16,7 @@ import {
   CheckCircle,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import { FinanzasSubnav } from './components/FinanzasSubnav'
 import { useFinanzasBrand } from './FinanzasAuthWrapper'
 import {
   useFinanzasData,
@@ -64,7 +63,7 @@ function fmtDate(d: string) {
 
 export default function FinanzasPage() {
   const router = useRouter()
-  const { isAuthenticated, isLoading: authLoading, isAdmin, profile, logout } = useAuth()
+  const { isAuthenticated, isLoading: authLoading, isAdmin, logout } = useAuth()
   const brand = useFinanzasBrand()
   const finanzas = useFinanzasData(brand.primary)
   const { tenantId } = useTenantId()
@@ -161,50 +160,13 @@ export default function FinanzasPage() {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      {/* Header */}
-      <header className="relative z-10 border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-4">
-          <div className="flex items-center gap-3">
-            <Link
-              href="/panel"
-              className="inline-flex items-center gap-2 text-sm font-medium text-zinc-600 transition-colors hover:text-[var(--primary)] dark:text-zinc-400"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Panel
-            </Link>
-            <span className="text-zinc-300 dark:text-zinc-700">/</span>
-            <span className="flex items-center gap-1.5 text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-              <TrendingUp className="h-4 w-4 text-[var(--primary)]" />
-              Finanzas
-            </span>
-            <Link
-              href="/dashboard"
-              className="ml-1 border-l border-zinc-200 pl-3 text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-800 dark:border-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
-            >
-              Dashboard
-            </Link>
-          </div>
+      <div className="border-b border-zinc-200 px-4 py-4 dark:border-zinc-800">
+        <FinanzasSubnav active="/finanzas">
           <div className="hidden sm:block">
             <ViewToggle view={view} onChange={setView} />
           </div>
-          <div className="flex items-center gap-3">
-            {profile?.full_name && (
-              <span className="hidden items-center gap-1.5 text-sm text-zinc-600 dark:text-zinc-400 sm:flex">
-                <User className="h-4 w-4" />
-                {profile.full_name}
-              </span>
-            )}
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="inline-flex items-center gap-2 text-sm text-zinc-500 transition-colors hover:text-zinc-700 dark:hover:text-zinc-300"
-            >
-              <LogOut className="h-4 w-4" />
-              Salir
-            </button>
-          </div>
-        </div>
-      </header>
+        </FinanzasSubnav>
+      </div>
 
       <main className="mx-auto max-w-5xl space-y-8 px-4 py-8">
         <div className="flex flex-wrap items-center justify-between gap-3 sm:hidden">
