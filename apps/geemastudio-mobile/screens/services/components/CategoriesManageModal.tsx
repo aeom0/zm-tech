@@ -15,7 +15,8 @@ import * as Haptics from 'expo-haptics'
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { BorderRadius, Spacing, Colors } from '@/constants/theme'
-import { getDefaultServiceIcon, getServiceIconOptions } from '@/constants/serviceIcons'
+import { CategoryIcon } from '@/components/CategoryIcon'
+import { getCategoryIconGroups, getDefaultCategoryIcon } from '@zmtech/icons'
 import type { TenantConfig } from '@zmtech/tenant-config'
 
 import type { ServiceCategory } from '../types'
@@ -58,8 +59,9 @@ export function CategoriesManageModal({
   const { theme } = useTheme()
   const [newName, setNewName] = useState('')
   const [drafts, setDrafts] = useState<Record<string, string>>({})
-  const defaultIcon = getDefaultServiceIcon(businessType)
-  const iconOptions = getServiceIconOptions(businessType)
+  const defaultIcon = getDefaultCategoryIcon(businessType)
+  const iconGroups = getCategoryIconGroups(businessType)
+  const iconOptions = [...iconGroups.suggested, ...iconGroups.others]
   const [pickerFor, setPickerFor] = useState<string | null>(null)
 
   useEffect(() => {
@@ -149,8 +151,9 @@ export function CategoriesManageModal({
                       ]}
                       onPress={() => setPickerFor((prev) => (prev === cat.id ? null : cat.id))}
                     >
-                      <Feather
-                        name={(cat.icon as any) || defaultIcon}
+                      <CategoryIcon
+                        name={cat.icon}
+                        businessType={businessType}
                         size={18}
                         color={theme.primary}
                       />
@@ -240,7 +243,7 @@ export function CategoriesManageModal({
                           }}
                           disabled={updatePending}
                         >
-                          <Feather
+                          <CategoryIcon
                             name={icon}
                             size={18}
                             color={selected ? theme.primary : theme.textMuted}

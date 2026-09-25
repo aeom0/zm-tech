@@ -4,7 +4,7 @@ import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
 import { Spacing, BorderRadius } from '@/constants/theme'
-import { getDefaultServiceIcon } from '@/constants/serviceIcons'
+import { CategoryIcon } from '@/components/CategoryIcon'
 
 import type { TenantConfig, TimeFormatPreference } from '@zmtech/tenant-config'
 import { instanteCitaDesdeTexto, zonaIANASegura } from '@zmtech/tenant-config'
@@ -132,7 +132,7 @@ export function AppointmentPreviewModal({
               gap: Spacing.sm,
             }}
           >
-            <Feather name={getDefaultServiceIcon(businessType)} size={16} color={theme.textMuted} />
+            <CategoryIcon businessType={businessType} size={16} color={theme.textMuted} />
             <ThemedText style={{ fontSize: 15, color: theme.text, flex: 1 }}>
               {serviceName || '—'}
             </ThemedText>

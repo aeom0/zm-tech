@@ -1,11 +1,13 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { CATEGORY_ICON_LABELS, getCategoryIconGroups } from '@zmtech/icons'
 import { X } from 'lucide-react'
+
+import { CategoryIcon } from '@/components/CategoryIcon'
 
 import type { CategoriaRow } from '@/hooks/servicios/useCategorias'
 import { useTenantSettings } from '@/hooks/configuracion/useTenantSettings'
-import { CATEGORY_ICONS, getCategoryIconGroups } from '@/lib/categoryIcons'
 import { LUNARIS } from '@/lib/theme'
 
 export function CategoriaModal({
@@ -146,7 +148,7 @@ function CategoriaModalForm({
                     </div>
                     <div className="grid grid-cols-6 gap-2 sm:grid-cols-8">
                       {group.keys.map((key) => {
-                        const { Icon, label } = CATEGORY_ICONS[key]
+                        const label = CATEGORY_ICON_LABELS[key]
                         const active = icon === key
                         return (
                           <button
@@ -163,7 +165,7 @@ function CategoriaModalForm({
                                 : 'border-white/[0.10] bg-zinc-800 text-zinc-300 hover:bg-white/[0.06]',
                             ].join(' ')}
                           >
-                            <Icon className="h-5 w-5" />
+                            <CategoryIcon name={key} className="h-5 w-5" />
                           </button>
                         )
                       })}

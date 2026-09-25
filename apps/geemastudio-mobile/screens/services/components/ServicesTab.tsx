@@ -19,7 +19,7 @@ import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { useAuth } from '@/contexts/AuthContext'
 import { Spacing, BorderRadius, Colors } from '@/constants/theme'
-import { getDefaultServiceIcon } from '@/constants/serviceIcons'
+import { CategoryIcon } from '@/components/CategoryIcon'
 
 import { useServicesData } from '../hooks/useServicesData'
 import type { ServicePayload } from '../hooks/useServicesData'
@@ -376,8 +376,8 @@ export function ServicesTab() {
         ) : services.length === 0 ? (
           <View style={styles.empty}>
             <View style={styles.emptyIcon}>
-              <Feather
-                name={getDefaultServiceIcon(config.businessType)}
+              <CategoryIcon
+                businessType={config.businessType}
                 size={28}
                 color={theme.textMuted}
               />
