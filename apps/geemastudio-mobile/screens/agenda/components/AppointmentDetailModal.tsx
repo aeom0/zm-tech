@@ -895,8 +895,8 @@ export function AppointmentDetailModal({
                       <ActivityIndicator color={Colors.light.buttonText} />
                     ) : (
                       <>
-                        <Feather name="trash-2" size={18} color={Colors.light.buttonText} />
-                        <ThemedText style={styles.submitButtonText}>Eliminar cita</ThemedText>
+                        <Feather name="x-circle" size={18} color={Colors.light.buttonText} />
+                        <ThemedText style={styles.submitButtonText}>Cancelar cita</ThemedText>
                       </>
                     )}
                   </Pressable>

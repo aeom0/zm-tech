@@ -109,6 +109,7 @@ export function useAvailabilityCheck(args: {
             .from('appointments')
             .select('id, date, duration')
             .eq('employee_id', employeeId)
+            .neq('status', 'cancelled')
             .gte('date', formatAppointmentWallclock(windowStart, timeZone))
             .lte('date', formatAppointmentWallclock(windowEnd, timeZone))
             .order('date', { ascending: true })

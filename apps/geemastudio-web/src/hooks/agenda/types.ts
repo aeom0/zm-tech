@@ -11,6 +11,8 @@ export interface AgendaAppointment {
   employee_id: string | null
   service_id: string | null
   service_ids: string[] | null
+  cancel_reason?: string | null
+  cancel_note?: string | null
 }
 
 export interface AgendaEmployeeCol {

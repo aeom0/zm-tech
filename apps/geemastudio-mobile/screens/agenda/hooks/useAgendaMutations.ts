@@ -47,6 +47,7 @@ async function guardOverlapBeforeInsert(args: {
     .from('appointments')
     .select('id, date, duration')
     .eq('employee_id', args.employeeId)
+    .neq('status', 'cancelled')
     .gte('date', formatAppointmentWallclock(windowStart, args.timeZone))
     .lte('date', formatAppointmentWallclock(windowEnd, args.timeZone))
     .order('date', { ascending: true })
@@ -211,9 +212,17 @@ export function useAgendaMutations(
     },
   })
 
-  const deleteAppointmentMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from('appointments').delete().eq('id', id)
+  const cancelAppointmentMutation = useMutation({
+    mutationFn: async (args: { id: string; reason: string; note: string }) => {
+      const { error } = await supabase
+        .from('appointments')
+        .update({
+          status: 'cancelled',
+          cancel_reason: args.reason,
+          cancel_note: args.note.trim() || null,
+          cancelled_at: formatAppointmentWallclock(new Date(), timeZone),
+        })
+        .eq('id', args.id)
       if (error) {
         throw new Error(error.message)
       }
@@ -225,7 +234,7 @@ export function useAgendaMutations(
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
     },
     onError: (error: Error) => {
-      Alert.alert('Error', error.message || 'No se pudo eliminar la cita')
+      Alert.alert('Error', error.message || 'No se pudo cancelar la cita')
     },
   })
 
@@ -462,7 +471,7 @@ export function useAgendaMutations(
 
   return {
     createMutation,
-    deleteAppointmentMutation,
+    cancelAppointmentMutation,
     updateAppointmentMutation,
     updateAppointmentServicesMutation,
     completeAppointmentMutation,

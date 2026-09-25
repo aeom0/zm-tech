@@ -7,6 +7,8 @@ import {
   type TimeFormatPreference,
 } from '@zmtech/tenant-config'
 
+import { getCancelReasonLabel } from '@geemastudio/shared-schema'
+
 import { STATUS_LABEL, type AgendaAppointment } from '@/hooks/agenda/types'
 import { formatDashboardCurrency } from '@/lib/dashboardCurrency'
 import { formatDateShort } from '@/lib/format'
@@ -70,6 +72,12 @@ export function AppointmentDetailDrawer({
 
         <div className="space-y-4 px-5 py-4 text-sm">
           <Row label="Estado" value={STATUS_LABEL[apt.status] ?? apt.status} />
+          {apt.status === 'cancelled' && apt.cancel_reason ? (
+            <Row label="Motivo de cancelación" value={getCancelReasonLabel(apt.cancel_reason) ?? ''} />
+          ) : null}
+          {apt.status === 'cancelled' && apt.cancel_note ? (
+            <Row label="Observación" value={apt.cancel_note} />
+          ) : null}
           <Row label="Teléfono" value={apt.client_phone || '—'} />
           <Row label="Servicio" value={serviceName || 'Sin servicio'} />
           <div>

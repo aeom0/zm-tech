@@ -112,6 +112,10 @@ export const appointments = pgTable(
     referenceReceivedAt: timestamp('reference_received_at'),
     /** null = referencias sin revisar por el staff */
     referenceReviewedAt: timestamp('reference_reviewed_at'),
+    /** Motivo elegido por el staff al cancelar (ver APPOINTMENT_CANCEL_REASONS) */
+    cancelReason: text('cancel_reason'),
+    cancelNote: text('cancel_note'),
+    cancelledAt: timestamp('cancelled_at'),
   },
   (table) => ({
     clientIdIdx: index('idx_appointments_client_id').on(table.clientId),

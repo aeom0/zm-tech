@@ -70,6 +70,7 @@ import { OwnerWeekGrid } from './agenda/components/OwnerWeekGrid'
 import { OwnerStaffAvatarStrip } from './agenda/components/OwnerStaffAvatarStrip'
 import { StaffAgendaTimelineView } from './agenda/components/StaffAgendaTimelineView'
 import { NewAppointmentModal } from './agenda/components/NewAppointmentModal'
+import { CancelAppointmentModal } from './agenda/components/CancelAppointmentModal'
 import { AppointmentDetailModal } from './agenda/components/AppointmentDetailModal'
 import { AppointmentPreviewModal } from './agenda/components/AppointmentPreviewModal'
 
@@ -94,6 +95,7 @@ export default function AgendaScreen() {
   const tenantTz = useMemo(() => zonaIANASegura(config.locale.timezone), [config.locale.timezone])
 
   const [selectedDate, setSelectedDate] = useState<Date>(() => inicioDiaHoyEnZonaIANA(tenantTz))
+  const [cancelModalOpen, setCancelModalOpen] = useState(false)
   const [ownerViewMode, setOwnerViewMode] = useState<OwnerViewMode>('day')
   const [modalVisible, setModalVisible] = useState(false)
   const [detailModalVisible, setDetailModalVisible] = useState(false)
@@ -206,6 +208,7 @@ export default function AgendaScreen() {
     setFormData(emptyAgendaForm())
   }, [])
   const onDeleteSuccess = useCallback(() => {
+    setCancelModalOpen(false)
     setDetailModalVisible(false)
     setAppointmentDetail(null)
   }, [])
@@ -216,7 +219,7 @@ export default function AgendaScreen() {
 
   const {
     createMutation,
-    deleteAppointmentMutation,
+    cancelAppointmentMutation,
     updateAppointmentMutation,
     updateAppointmentServicesMutation,
     completeAppointmentMutation,
@@ -452,16 +455,14 @@ export default function AgendaScreen() {
     })
   }
 
-  const handleDeleteAppointment = () => {
+  const handleCancelAppointment = () => {
     if (!appointmentDetail) return
-    Alert.alert('Eliminar cita', `¿Eliminar la cita de ${appointmentDetail.client_name}?`, [
-      { text: 'Cancelar', style: 'cancel' },
-      {
-        text: 'Eliminar',
-        style: 'destructive',
-        onPress: () => deleteAppointmentMutation.mutate(appointmentDetail.id),
-      },
-    ])
+    setCancelModalOpen(true)
+  }
+
+  const handleConfirmCancel = (reason: string, note: string) => {
+    if (!appointmentDetail) return
+    cancelAppointmentMutation.mutate({ id: appointmentDetail.id, reason, note })
   }
 
   const handleReschedule = () => {
@@ -988,6 +989,13 @@ export default function AgendaScreen() {
         clientLabel={config.terminology.client}
       />
 
+      <CancelAppointmentModal
+        visible={cancelModalOpen}
+        clientName={appointmentDetail?.client_name ?? ''}
+        pending={cancelAppointmentMutation.isPending}
+        onClose={() => setCancelModalOpen(false)}
+        onConfirm={handleConfirmCancel}
+      />
       <AppointmentDetailModal
         visible={detailModalVisible}
         onClose={closeDetailModal}
@@ -1047,9 +1055,9 @@ export default function AgendaScreen() {
         onRescheduleHour={setRescheduleHour}
         onRescheduleMinute={setRescheduleMinute}
         onReschedule={handleReschedule}
-        onDelete={handleDeleteAppointment}
+        onDelete={handleCancelAppointment}
         updatePending={updateAppointmentMutation.isPending}
-        deletePending={deleteAppointmentMutation.isPending}
+        deletePending={cancelAppointmentMutation.isPending}
         availabilityStatus={rescheduleAvailability.status}
         isBusy={rescheduleAvailability.isBusy}
         busyUntilLabel={rescheduleAvailability.busyUntilLabel}

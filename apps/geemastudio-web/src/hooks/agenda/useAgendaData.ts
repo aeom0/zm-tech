@@ -90,7 +90,7 @@ export function useAgendaDayAppointments(
       const { data, error } = await supabase
         .from('appointments')
         .select(
-          'id, client_name, client_phone, date, duration, price, status, employee_id, service_id, service_ids'
+          'id, client_name, client_phone, date, duration, price, status, employee_id, service_id, service_ids, cancel_reason, cancel_note'
         )
         .gte('date', start)
         .lt('date', end)
@@ -132,7 +132,7 @@ export function useAgendaWeekAppointments(
       const { data, error } = await supabase
         .from('appointments')
         .select(
-          'id, client_name, client_phone, date, duration, price, status, employee_id, service_id, service_ids'
+          'id, client_name, client_phone, date, duration, price, status, employee_id, service_id, service_ids, cancel_reason, cancel_note'
         )
         .gte('date', start)
         .lt('date', end)
