@@ -5,7 +5,7 @@ import { X } from 'lucide-react'
 
 import type { CategoriaRow } from '@/hooks/servicios/useCategorias'
 import { useTenantSettings } from '@/hooks/configuracion/useTenantSettings'
-import { CATEGORY_ICONS, getCategoryIconOptions } from '@/lib/categoryIcons'
+import { CATEGORY_ICONS, getCategoryIconGroups } from '@/lib/categoryIcons'
 import { LUNARIS } from '@/lib/theme'
 
 export function CategoriaModal({
@@ -53,8 +53,8 @@ function CategoriaModalForm({
   const [icon, setIcon] = useState(initial?.icon ?? '')
 
   const { data: settings } = useTenantSettings()
-  const iconOptions = useMemo(
-    () => getCategoryIconOptions(settings?.business_type),
+  const iconGroups = useMemo(
+    () => getCategoryIconGroups(settings?.business_type),
     [settings?.business_type]
   )
 
@@ -121,42 +121,56 @@ function CategoriaModalForm({
             <label className="mb-1.5 block text-sm font-medium text-zinc-300">
               Icono (opcional)
             </label>
-            <div className="grid max-h-40 grid-cols-6 gap-2 overflow-y-auto sm:grid-cols-8">
+            <div className="max-h-56 space-y-3 overflow-y-auto pr-1">
               <button
                 type="button"
                 onClick={() => setIcon('')}
                 aria-pressed={!icon}
                 className={[
-                  'flex h-10 items-center justify-center rounded-xl border text-[10px] font-semibold transition-colors',
+                  'rounded-xl border px-3 py-1.5 text-xs font-semibold transition-colors',
                   !icon
                     ? 'border-[var(--tenant-primary)] bg-[var(--tenant-primary)]/15 text-white'
                     : 'border-white/[0.10] bg-zinc-800 text-zinc-400 hover:bg-white/[0.06]',
                 ].join(' ')}
               >
-                Ninguno
+                Sin ícono
               </button>
-              {iconOptions.map((key) => {
-                const { Icon, label } = CATEGORY_ICONS[key]
-                const active = icon === key
-                return (
-                  <button
-                    key={key}
-                    type="button"
-                    onClick={() => setIcon(key)}
-                    title={label}
-                    aria-label={label}
-                    aria-pressed={active}
-                    className={[
-                      'flex h-10 items-center justify-center rounded-xl border transition-colors',
-                      active
-                        ? 'border-[var(--tenant-primary)] bg-[var(--tenant-primary)]/15 text-white'
-                        : 'border-white/[0.10] bg-zinc-800 text-zinc-300 hover:bg-white/[0.06]',
-                    ].join(' ')}
-                  >
-                    <Icon className="h-5 w-5" />
-                  </button>
+              {[
+                { title: 'Sugeridos para tu negocio', keys: iconGroups.suggested },
+                { title: 'Otros', keys: iconGroups.others },
+              ].map((group) =>
+                group.keys.length === 0 ? null : (
+                  <div key={group.title}>
+                    <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
+                      {group.title}
+                    </div>
+                    <div className="grid grid-cols-6 gap-2 sm:grid-cols-8">
+                      {group.keys.map((key) => {
+                        const { Icon, label } = CATEGORY_ICONS[key]
+                        const active = icon === key
+                        return (
+                          <button
+                            key={key}
+                            type="button"
+                            onClick={() => setIcon(key)}
+                            title={label}
+                            aria-label={label}
+                            aria-pressed={active}
+                            className={[
+                              'flex h-10 items-center justify-center rounded-xl border transition-colors',
+                              active
+                                ? 'border-[var(--tenant-primary)] bg-[var(--tenant-primary)]/15 text-white'
+                                : 'border-white/[0.10] bg-zinc-800 text-zinc-300 hover:bg-white/[0.06]',
+                            ].join(' ')}
+                          >
+                            <Icon className="h-5 w-5" />
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
                 )
-              })}
+              )}
             </div>
           </div>
         </div>
