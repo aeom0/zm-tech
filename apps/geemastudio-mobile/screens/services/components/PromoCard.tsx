@@ -9,6 +9,10 @@ import { BorderRadius, Shadows, Spacing, Colors } from '@/constants/theme'
 
 import type { Promo } from '../types'
 
+function daysUntil(iso: string): number {
+  return Math.ceil((new Date(iso).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+}
+
 interface PromoCardProps {
   promo: Promo
   onPress: () => void
@@ -66,11 +70,7 @@ function PromoCardImpl({
   const rawAccent = promo.accent_color?.trim()
   const accent = rawAccent && HEX_COLOR.test(rawAccent) ? rawAccent : theme.primary
 
-  let daysLeft: number | null = null
-  if (promo.expires_at) {
-    const diff = new Date(promo.expires_at).getTime() - Date.now()
-    daysLeft = Math.ceil(diff / (1000 * 60 * 60 * 24))
-  }
+  const daysLeft = promo.expires_at ? daysUntil(promo.expires_at) : null
   const expiringSoon = daysLeft !== null && daysLeft <= 7
 
   return (

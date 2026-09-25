@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
+import { useResetOnChange } from '@/hooks/useResetOnChange'
 import {
   View,
   Modal,
@@ -100,7 +101,7 @@ export function PromoModal({
   const [items, setItems] = useState<PromoItemDraft[]>([])
   const [pickerOpen, setPickerOpen] = useState(false)
 
-  useEffect(() => {
+  useResetOnChange([visible, editing, promotionItems], () => {
     if (!visible) {
       return
     }
@@ -130,7 +131,7 @@ export function PromoModal({
       setExpiresInput('')
       setItems([])
     }
-  }, [visible, editing, promotionItems])
+  })
 
   const computedTotal = useMemo(() => {
     let total = 0

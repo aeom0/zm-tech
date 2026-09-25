@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react'
+import { useResetOnChange } from '@/hooks/useResetOnChange'
 import {
   View,
   StyleSheet,
@@ -72,13 +73,13 @@ export function ServicesTab() {
   const showInitialLoader = isLoading && services.length === 0 && categories.length === 0
   const [reorderCategoryId, setReorderCategoryId] = useState<string | null>(null)
 
-  React.useEffect(() => {
+  useResetOnChange([services], () => {
     // Evita parpadeo: no reemplazar estado local si el contenido es el mismo
     // (refetch de TanStack crea arrays/objetos nuevos aunque los datos no cambien).
     setLocalServices((prev) =>
       servicesSignature(prev) === servicesSignature(services) ? prev : services
     )
-  }, [services])
+  })
 
   const handleRefresh = useCallback(() => {
     void refetch()

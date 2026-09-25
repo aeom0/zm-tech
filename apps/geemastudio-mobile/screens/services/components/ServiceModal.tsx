@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import { useResetOnChange } from '@/hooks/useResetOnChange'
 import {
   View,
   Modal,
@@ -52,7 +53,7 @@ export function ServiceModal({
   const [duration, setDuration] = useState('60')
   const [isActive, setIsActive] = useState(true)
 
-  useEffect(() => {
+  useResetOnChange([visible, editing, categories], () => {
     if (!visible) {
       return
     }
@@ -69,7 +70,7 @@ export function ServiceModal({
       setDuration('60')
       setIsActive(true)
     }
-  }, [visible, editing, categories])
+  })
 
   const handleSubmit = () => {
     if (!name.trim() || !price.trim()) {

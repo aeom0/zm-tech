@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import { useResetOnChange } from '@/hooks/useResetOnChange'
 import {
   Modal,
   View,
@@ -45,9 +46,9 @@ export function ReorderServicesModal({
   const insets = useSafeAreaInsets()
   const [data, setData] = useState(services)
 
-  useEffect(() => {
+  useResetOnChange([visible, services], () => {
     if (visible) setData(services)
-  }, [visible, services])
+  })
 
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>

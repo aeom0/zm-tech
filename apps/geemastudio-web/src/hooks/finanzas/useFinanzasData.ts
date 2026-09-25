@@ -3,7 +3,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import { calculateEmployeeEarnings } from '@geemastudio/shared-schema'
 import { supabase } from '@/lib/supabase'
-import { LUNARIS } from '@/lib/theme'
+import { DEFAULT_TENANT_PRIMARY } from '@/lib/tenant-theme'
 import { usePayouts } from './usePayouts'
 
 export type FinanzasPeriod = 'day' | 'week' | 'month'
@@ -110,7 +110,8 @@ function toDateOnly(d: Date) {
   return d.toISOString().slice(0, 10)
 }
 
-export function useFinanzasData(): FinanzasData {
+/** `fallbackColor`: color de marca del tenant para empleados sin color propio. */
+export function useFinanzasData(fallbackColor: string = DEFAULT_TENANT_PRIMARY): FinanzasData {
   const [period, setPeriod] = useState<FinanzasPeriod>('month')
   const [payments, setPayments] = useState<PaymentRow[]>([])
   const [rawAppointments, setRawAppointments] = useState<
@@ -421,7 +422,7 @@ export function useFinanzasData(): FinanzasData {
         byEmp[apt.employee_id] = {
           id: apt.employee_id,
           name: apt.employee_name ?? apt.employee_id,
-          color: apt.employee_color ?? LUNARIS.primaryDark,
+          color: apt.employee_color ?? fallbackColor,
           generado: 0,
           pagado: 0,
           pendiente: 0,
@@ -445,7 +446,7 @@ export function useFinanzasData(): FinanzasData {
         byEmp[emp.id] = {
           id: emp.id,
           name: emp.name,
-          color: emp.color ?? LUNARIS.primaryDark,
+          color: emp.color ?? fallbackColor,
           generado: 0,
           pagado: 0,
           pendiente: 0,
@@ -474,6 +475,7 @@ export function useFinanzasData(): FinanzasData {
     employeesFull,
     comisionByEmployee,
     payoutsByEmployee,
+    fallbackColor,
   ])
 
   return {

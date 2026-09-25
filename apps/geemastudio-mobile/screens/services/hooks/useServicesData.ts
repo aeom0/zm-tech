@@ -62,7 +62,7 @@ export function useServicesData() {
           throw new Error(error.message)
         }
         return sortCatalogList(
-          ((data ?? []) as Array<{ id: string; name: string; order: number }>).map((row) => ({
+          ((data ?? []) as { id: string; name: string; order: number }[]).map((row) => ({
             ...row,
             color: null,
             icon: null,
@@ -94,7 +94,7 @@ export function useServicesData() {
         throw new Error(fallback.error.message)
       }
       return sortCatalogList(
-        ((fallback.data ?? []) as Array<{ id: string; name: string; order: number }>).map(
+        ((fallback.data ?? []) as { id: string; name: string; order: number }[]).map(
           (row) => ({ ...row, color: null, icon: null })
         ),
         {

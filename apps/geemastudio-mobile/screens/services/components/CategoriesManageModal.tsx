@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
+import { useResetOnChange } from '@/hooks/useResetOnChange'
 import {
   View,
   Modal,
@@ -16,7 +17,7 @@ import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { BorderRadius, Spacing, Colors } from '@/constants/theme'
 import { CategoryIcon } from '@/components/CategoryIcon'
-import { getCategoryIconGroups, getDefaultCategoryIcon } from '@zmtech/icons'
+import { CATEGORY_ICON_LABELS, getCategoryIconGroups, getDefaultCategoryIcon } from '@zmtech/icons'
 import type { TenantConfig } from '@zmtech/tenant-config'
 
 import type { ServiceCategory } from '../types'
@@ -61,14 +62,17 @@ export function CategoriesManageModal({
   const [drafts, setDrafts] = useState<Record<string, string>>({})
   const defaultIcon = getDefaultCategoryIcon(businessType)
   const iconGroups = getCategoryIconGroups(businessType)
-  const iconOptions = [...iconGroups.suggested, ...iconGroups.others]
+  const iconSections = [
+    { title: 'Sugeridos para tu negocio', icons: iconGroups.suggested },
+    { title: 'Otros', icons: iconGroups.others },
+  ].filter((section) => section.icons.length > 0)
   const [pickerFor, setPickerFor] = useState<string | null>(null)
 
-  useEffect(() => {
+  useResetOnChange([visible, categories], () => {
     if (visible) {
       setDrafts(Object.fromEntries(categories.map((c) => [c.id, c.name])))
     }
-  }, [visible, categories])
+  })
 
   const busy = createPending || updatePending || deletePending || reorderPending
 
@@ -216,43 +220,49 @@ export function CategoriesManageModal({
                     </Pressable>
                   </View>
                 </View>
-                {pickerFor === cat.id && (
-                  <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    style={styles.iconPicker}
-                    contentContainerStyle={styles.iconPickerContent}
-                  >
-                    {iconOptions.map((icon) => {
-                      const selected = (cat.icon ?? defaultIcon) === icon
-                      return (
-                        <Pressable
-                          key={icon}
-                          style={[
-                            styles.iconOption,
-                            {
-                              backgroundColor: selected
-                                ? theme.primary + '22'
-                                : theme.backgroundSecondary,
-                              borderColor: selected ? theme.primary : theme.border,
-                            },
-                          ]}
-                          onPress={() => {
-                            onUpdateIcon(cat.id, icon)
-                            setPickerFor(null)
-                          }}
-                          disabled={updatePending}
-                        >
-                          <CategoryIcon
-                            name={icon}
-                            size={18}
-                            color={selected ? theme.primary : theme.textMuted}
-                          />
-                        </Pressable>
-                      )
-                    })}
-                  </ScrollView>
-                )}
+                {pickerFor === cat.id &&
+                  iconSections.map((section) => (
+                    <View key={section.title} style={styles.iconPicker}>
+                      <ThemedText style={[styles.iconSectionTitle, { color: theme.textMuted }]}>
+                        {section.title}
+                      </ThemedText>
+                      <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={styles.iconPickerContent}
+                      >
+                        {section.icons.map((icon) => {
+                          const selected = (cat.icon ?? defaultIcon) === icon
+                          return (
+                            <Pressable
+                              key={icon}
+                              style={[
+                                styles.iconOption,
+                                {
+                                  backgroundColor: selected
+                                    ? theme.primary + '22'
+                                    : theme.backgroundSecondary,
+                                  borderColor: selected ? theme.primary : theme.border,
+                                },
+                              ]}
+                              onPress={() => {
+                                onUpdateIcon(cat.id, icon)
+                                setPickerFor(null)
+                              }}
+                              disabled={updatePending}
+                              accessibilityLabel={CATEGORY_ICON_LABELS[icon]}
+                            >
+                              <CategoryIcon
+                                name={icon}
+                                size={18}
+                                color={selected ? theme.primary : theme.textMuted}
+                              />
+                            </Pressable>
+                          )
+                        })}
+                      </ScrollView>
+                    </View>
+                  ))}
               </View>
             ))}
           </ScrollView>
@@ -347,6 +357,11 @@ const styles = StyleSheet.create({
   },
   iconPicker: {
     marginTop: Spacing.sm,
+  },
+  iconSectionTitle: {
+    fontSize: 11,
+    fontWeight: '600',
+    marginBottom: 6,
   },
   iconPickerContent: {
     gap: 8,

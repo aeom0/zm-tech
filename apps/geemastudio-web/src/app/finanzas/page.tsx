@@ -18,6 +18,7 @@ import {
   CheckCircle,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
+import { useFinanzasBrand } from './FinanzasAuthWrapper'
 import {
   useFinanzasData,
   type EmployeeDesglose,
@@ -27,7 +28,6 @@ import { useTenantId } from '@/hooks/finanzas/useTenantId'
 import { useDashboardTenant } from '@/hooks/dashboard/useDashboardTenant'
 import type { GrowthRange } from '@/hooks/finanzas/executiveService'
 import { formatDashboardCurrency, resolveDashboardCurrencyCode } from '@/lib/dashboardCurrency'
-import { LUNARIS } from '@/lib/theme'
 import { RegisterPayoutModal } from './RegisterPayoutModal'
 import { ExecutiveDashboard } from './components/executive/ExecutiveDashboard'
 import { ViewToggle, type FinanceView } from './components/executive/ViewToggle'
@@ -65,7 +65,8 @@ function fmtDate(d: string) {
 export default function FinanzasPage() {
   const router = useRouter()
   const { isAuthenticated, isLoading: authLoading, isAdmin, profile, logout } = useAuth()
-  const finanzas = useFinanzasData()
+  const brand = useFinanzasBrand()
+  const finanzas = useFinanzasData(brand.primary)
   const { tenantId } = useTenantId()
   const tenantQ = useDashboardTenant()
   const currencyCode = resolveDashboardCurrencyCode(tenantQ.data?.currency_code)
@@ -216,8 +217,8 @@ export default function FinanzasPage() {
             onChangeRange={setGrowthRange}
             tenantId={tenantId}
             currencyCode={currencyCode}
-            primaryColor={LUNARIS.primaryDark}
-            accentColor={LUNARIS.primary}
+            primaryColor={brand.primary}
+            accentColor={brand.accent}
           />
         ) : (
           <>
@@ -522,7 +523,7 @@ export default function FinanzasPage() {
                                 <span
                                   className="h-2 w-2 flex-shrink-0 rounded-full"
                                   style={{
-                                    backgroundColor: p.employee_color ?? LUNARIS.primaryDark,
+                                    backgroundColor: p.employee_color ?? brand.primary,
                                   }}
                                 />
                                 {p.employee_name}

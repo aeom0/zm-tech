@@ -1,4 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
+import { useResetOnChange } from '@/hooks/useResetOnChange'
 import {
   View,
   Modal,
@@ -57,7 +58,7 @@ export function PackModal({
   const [isActive, setIsActive] = useState(true)
   const [badge, setBadge] = useState('✨')
 
-  useEffect(() => {
+  useResetOnChange([visible, editing], () => {
     if (!visible) {
       return
     }
@@ -76,7 +77,7 @@ export function PackModal({
       setIsActive(true)
       setBadge('✨')
     }
-  }, [visible, editing])
+  })
 
   const grouped = useMemo(() => {
     return categories.map((cat) => ({
