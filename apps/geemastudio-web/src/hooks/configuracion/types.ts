@@ -23,6 +23,8 @@ export interface TenantSettingsPanelRow {
   logo_bg_light: string | null
   logo_bg_dark: string | null
   features_whatsapp: boolean
+  /** Recargo POS/tarjeta en % (comisión; no es ingreso). */
+  pos_fee_percent: number
   slug: string | null
   web_enabled: boolean
   web_template: WebTemplate

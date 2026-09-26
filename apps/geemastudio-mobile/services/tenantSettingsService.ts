@@ -9,6 +9,7 @@
  *   ADD COLUMN IF NOT EXISTS time_format       text    NOT NULL DEFAULT '24';
  *   ADD COLUMN IF NOT EXISTS logo_bg_light     text    NOT NULL DEFAULT 'transparent',
  *   ADD COLUMN IF NOT EXISTS logo_bg_dark      text    NOT NULL DEFAULT 'transparent';
+ * (pos_fee_percent: ver apps/geemastudio-server/supabase/migrations/*_tenant_settings_pos_fee_percent.sql)
  */
 import { supabase } from '@/lib/supabase'
 import type { TenantConfig, LogoBackgroundStyle } from '@zmtech/tenant-config'
@@ -18,7 +19,7 @@ function toLogoBgStyle(value: string | null | undefined): LogoBackgroundStyle {
 }
 
 const TENANT_SETTINGS_SELECT =
-  'business_name, business_type, business_subtype, service_categories, primary_color, accent_color, currency_code, currency_symbol, country, language, timezone, time_format, client_terminology, staff_terminology, staff_singular_terminology, appointment_terminology, business_hours, contact_info, commission_staff, commission_house, tagline, features_whatsapp, logo_url, logo_bg_light, logo_bg_dark, is_demo, is_configured'
+  'business_name, business_type, business_subtype, service_categories, primary_color, accent_color, currency_code, currency_symbol, country, language, timezone, time_format, client_terminology, staff_terminology, staff_singular_terminology, appointment_terminology, business_hours, contact_info, commission_staff, commission_house, pos_fee_percent, tagline, features_whatsapp, logo_url, logo_bg_light, logo_bg_dark, is_demo, is_configured'
 
 /** Slug operativo del negocio (`profiles.tenant_id` → bridge S2). */
 async function resolveTenantSlug(userId: string): Promise<string | null> {
@@ -55,6 +56,7 @@ function mapConfigToRow(config: TenantConfig, userId: string, tenantSlug?: strin
     contact_info: config.contact,
     commission_staff: config.commissions.defaultStaffPercent,
     commission_house: config.commissions.defaultHousePercent,
+    pos_fee_percent: config.payments?.posFeePercent ?? 5,
     tagline: config.tagline ?? '',
     features_whatsapp: config.features?.whatsapp ?? false,
     logo_url: config.logo ?? '',
@@ -86,6 +88,7 @@ export type TenantSettingsRow = {
   contact_info: TenantConfig['contact']
   commission_staff: number
   commission_house: number
+  pos_fee_percent?: number | string | null
   tagline: string
   features_whatsapp: boolean
   logo_url: string
@@ -131,6 +134,9 @@ function mapRowToConfig(row: TenantSettingsRow): TenantConfig {
     commissions: {
       defaultStaffPercent: row.commission_staff,
       defaultHousePercent: row.commission_house,
+    },
+    payments: {
+      posFeePercent: row.pos_fee_percent != null ? Number(row.pos_fee_percent) : 5,
     },
     features: {
       whatsapp: row.features_whatsapp ?? false,

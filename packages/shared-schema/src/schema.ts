@@ -554,6 +554,8 @@ export const tenantSettings = pgTable(
     contactInfo: jsonb('contact_info'),
     commissionStaff: integer('commission_staff').notNull().default(60),
     commissionHouse: integer('commission_house').notNull().default(40),
+    /** Recargo POS/tarjeta en % (comisión; no cuenta como ingreso). */
+    posFeePercent: decimal('pos_fee_percent', { precision: 5, scale: 2 }).notNull().default('5'),
     isConfigured: boolean('is_configured').notNull().default(false),
     /** Cuenta demo (reset al logout vía Edge reset-demo-tenant) */
     isDemo: boolean('is_demo').notNull().default(false),

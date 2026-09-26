@@ -9,7 +9,6 @@ export interface CatalogService {
   category_id: string | null
   subcategory: string | null
   price: string
-  price_card: string | null
   duration: number
   is_active: boolean
 }
@@ -26,7 +25,6 @@ export interface CatalogPack {
   short_name: string | null
   category_id: string
   pack_price: string
-  pack_price_card: string | null
   service_ids: string | unknown
   display_order: number
   is_active: boolean
@@ -39,7 +37,6 @@ export interface CatalogPromotionItem {
   item_id: string
   quantity: number
   discounted_price: string
-  discounted_price_card: string | null
   sort_order: number
 }
 
@@ -132,7 +129,6 @@ export async function loadCatalog(
     category_id: s.category_id,
     subcategory: null,
     price: String(s.price),
-    price_card: null,
     duration: s.duration,
     is_active: s.is_active,
   }))
@@ -160,7 +156,6 @@ export async function loadCatalog(
       short_name: p.name,
       category_id: firstCat ?? '',
       pack_price: String(p.price),
-      pack_price_card: null,
       service_ids: p.service_ids,
       display_order: idx,
       is_active: p.is_active,
@@ -205,7 +200,6 @@ export async function loadCatalog(
       item_id: it.item_id,
       quantity: it.quantity,
       discounted_price: String(it.discounted_price),
-      discounted_price_card: null,
       sort_order: 0,
     })
   }

@@ -15,7 +15,7 @@ import { Feather } from '@expo/vector-icons'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { supabase } from '@/lib/supabase'
-import { posChargeAmount } from '@/lib/pos-fee'
+import { posChargeAmount, resolvePosFeePercent } from '@/lib/pos-fee'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
 import { useTheme } from '@/hooks/useTheme'
@@ -425,7 +425,7 @@ export function ProductSaleModal({
             )}
             {chargeNow && method === 'card' && total > 0 && (
               <ThemedText style={{ color: theme.textMuted, marginTop: Spacing.xs }}>
-                {`Cobrar en POS: ${formatCurrency(posChargeAmount(total), config)} (incluye 5 % de comisión; el ingreso registrado es ${formatCurrency(total, config)})`}
+                {`Cobrar en POS: ${formatCurrency(posChargeAmount(total, config.payments?.posFeePercent), config)} (incluye ${resolvePosFeePercent(config.payments?.posFeePercent)} % de comisión; el ingreso registrado es ${formatCurrency(total, config)})`}
               </ThemedText>
             )}
 

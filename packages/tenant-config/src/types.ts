@@ -75,6 +75,11 @@ export interface TenantConfig {
     defaultHousePercent: number
   }
 
+  /** Cobros: `posFeePercent` = recargo del POS/tarjeta (comisión, no cuenta como ingreso). Default 5. */
+  payments?: {
+    posFeePercent?: number
+  }
+
   /** Cuenta sandbox demo (reset de datos al cerrar sesión vía Edge) */
   isDemo?: boolean
 

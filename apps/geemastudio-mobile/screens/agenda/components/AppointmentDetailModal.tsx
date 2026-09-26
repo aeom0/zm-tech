@@ -9,7 +9,7 @@ import { ThemedText } from '@/components/ThemedText'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTenant } from '@/contexts/TenantContext'
 import { formatCurrency } from '@/utils/format'
-import { posChargeAmount } from '@/lib/pos-fee'
+import { posChargeAmount, resolvePosFeePercent } from '@/lib/pos-fee'
 import { supabase } from '@/lib/supabase'
 import { BorderRadius, Colors, Spacing } from '@/constants/theme'
 import { useProfileTenantId } from '@/screens/finances/hooks/useProfileTenantId'
@@ -678,7 +678,7 @@ export function AppointmentDetailModal({
                             <ThemedText
                               style={[styles.payMethodLabel, { color: theme.textSecondary }]}
                             >
-                              {`Cobrar en POS: ${formatCurrency(posChargeAmount(editTotal), config)} (incluye 5 % de comisión; el ingreso registrado es ${formatCurrency(editTotal, config)})`}
+                              {`Cobrar en POS: ${formatCurrency(posChargeAmount(editTotal, config.payments?.posFeePercent), config)} (incluye ${resolvePosFeePercent(config.payments?.posFeePercent)} % de comisión; el ingreso registrado es ${formatCurrency(editTotal, config)})`}
                             </ThemedText>
                           )}
                           <View style={styles.payMethodActions}>

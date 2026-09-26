@@ -6,7 +6,7 @@ import type { TenantSettingsPanelRow, TenantSettingsPatch, WebTemplate } from '.
 const SELECT_CORE =
   'id, business_name, business_type, tagline, primary_color, accent_color, currency_code, currency_symbol, country, language, timezone, client_terminology, staff_terminology, staff_singular_terminology, appointment_terminology, logo_url, features_whatsapp, slug, web_enabled, web_template, custom_domain'
 
-const SELECT_WITH_LOGO_BG = `${SELECT_CORE}, logo_bg_light, logo_bg_dark`
+const SELECT_WITH_LOGO_BG = `${SELECT_CORE}, logo_bg_light, logo_bg_dark, pos_fee_percent`
 
 function normalizeRow(raw: Record<string, unknown>): TenantSettingsPanelRow {
   const template = raw.web_template
@@ -33,6 +33,7 @@ function normalizeRow(raw: Record<string, unknown>): TenantSettingsPanelRow {
     logo_bg_light: (raw.logo_bg_light as string | null) ?? null,
     logo_bg_dark: (raw.logo_bg_dark as string | null) ?? null,
     features_whatsapp: Boolean(raw.features_whatsapp),
+    pos_fee_percent: raw.pos_fee_percent != null ? Number(raw.pos_fee_percent) : 5,
     slug: (raw.slug as string | null) ?? null,
     web_enabled: Boolean(raw.web_enabled),
     web_template: webTemplate,

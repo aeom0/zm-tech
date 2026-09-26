@@ -93,7 +93,6 @@ export interface PackRawRow {
   description?: string | null
   price?: string | number | null
   pack_price?: string | number | null
-  pack_price_card?: string | number | null
   category_id?: string | null
   service_ids?: unknown
   is_active: boolean
@@ -111,7 +110,6 @@ export function rowToPack(row: PackRawRow, dialect: CatalogDialect): Pack {
       service_ids: parseServiceIds(row.service_ids),
       is_active: row.is_active,
       category_id: row.category_id ?? null,
-      pack_price_card: row.pack_price_card != null ? String(row.pack_price_card) : null,
       display_order: row.display_order ?? null,
       badge: row.emoji ?? null,
     }

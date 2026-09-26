@@ -5,7 +5,9 @@ import { Feather } from '@expo/vector-icons'
 import { ThemedText } from '@/components/ThemedText'
 
 import { PAYMENT_METHODS } from '@/screens/finances/constants'
-import { posChargeAmount } from '@/lib/pos-fee'
+import { posChargeAmount, resolvePosFeePercent } from '@/lib/pos-fee'
+import { formatCurrency } from '@/utils/format'
+import { useTenant } from '@/contexts/TenantContext'
 
 import { formatDashboardTime } from '../dashboardUtils'
 import type { DashboardAppointment } from '../types'
@@ -60,6 +62,7 @@ export function DashboardAppointmentModal({
   onMarkCompleted,
   onEditInAgenda,
 }: DashboardAppointmentModalProps) {
+  const { config } = useTenant()
   return (
     <Modal visible={visible} animationType="slide" transparent statusBarTranslucent>
       <View style={[styles.modalOverlay, isTablet && styles.modalOverlayTablet]}>
@@ -174,7 +177,7 @@ export function DashboardAppointmentModal({
                   ))}
                   {pendingPayMethod === 'card' && appointment && (
                     <ThemedText style={[styles.payMethodLabel, { color: theme.textSecondary }]}>
-                      {`Cobrar en POS: S/ ${posChargeAmount(parseFloat(String(appointment.price))).toFixed(2)} (incluye 5 % de comisión; el ingreso registrado es S/ ${parseFloat(String(appointment.price)).toFixed(2)})`}
+                      {`Cobrar en POS: ${formatCurrency(posChargeAmount(parseFloat(String(appointment.price)), config.payments?.posFeePercent), config)} (incluye ${resolvePosFeePercent(config.payments?.posFeePercent)} % de comisión; el ingreso registrado es ${formatCurrency(parseFloat(String(appointment.price)), config)})`}
                     </ThemedText>
                   )}
                   <View style={styles.payMethodActions}>

@@ -224,6 +224,7 @@ export function mergeTenantConfig(
     commissions: partial.commissions
       ? { ...prev.commissions, ...partial.commissions }
       : prev.commissions,
+    payments: partial.payments ? { ...prev.payments, ...partial.payments } : prev.payments,
     features: partial.features ? { ...prev.features, ...partial.features } : prev.features,
     isDemo: partial.isDemo !== undefined ? partial.isDemo : prev.isDemo,
     integrations: partial.integrations

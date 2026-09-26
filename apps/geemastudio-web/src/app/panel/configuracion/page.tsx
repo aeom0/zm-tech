@@ -69,6 +69,7 @@ export default function PanelConfiguracionPage() {
   const [customDomain, setCustomDomain] = useState('')
   const [webTemplate, setWebTemplate] = useState<WebTemplate>('elegant')
   const [featuresWhatsapp, setFeaturesWhatsapp] = useState(false)
+  const [posFeePercent, setPosFeePercent] = useState('5')
   const [mensaje, setMensaje] = useState<string | null>(null)
   const [errorLocal, setErrorLocal] = useState<string | null>(null)
 
@@ -91,6 +92,7 @@ export default function PanelConfiguracionPage() {
     setCustomDomain(row.custom_domain ?? '')
     setWebTemplate(row.web_template)
     setFeaturesWhatsapp(row.features_whatsapp)
+    setPosFeePercent(String(row.pos_fee_percent ?? 5))
   }, [row])
 
   const previewSlug = useMemo(() => slugify(slug), [slug])
@@ -118,6 +120,12 @@ export default function PanelConfiguracionPage() {
     const name = businessName.trim()
     if (!name) {
       setErrorLocal('El nombre del negocio es obligatorio')
+      return
+    }
+
+    const posFee = parseFloat(posFeePercent.replace(',', '.'))
+    if (!Number.isFinite(posFee) || posFee < 0 || posFee > 100) {
+      setErrorLocal('El recargo POS debe estar entre 0 y 100 %')
       return
     }
 
@@ -152,6 +160,7 @@ export default function PanelConfiguracionPage() {
           accent_color: accentColor,
           logo_url: logoUrl,
           features_whatsapp: featuresWhatsapp,
+          pos_fee_percent: Math.round(posFee * 100) / 100,
           web_template: webTemplate,
           ...webPatch,
         },
@@ -326,6 +335,19 @@ export default function PanelConfiguracionPage() {
           </div>
         </div>
 
+        <div className="max-w-xs">
+          <label className={labelClass}>Recargo POS / tarjeta (%)</label>
+          <input
+            className={fieldClass}
+            inputMode="decimal"
+            value={posFeePercent}
+            onChange={(e) => setPosFeePercent(e.target.value.replace(/[^0-9,.]/g, ''))}
+          />
+          <p className="mt-1 text-xs text-zinc-500">
+            Comisión del POS: se muestra al cobrar con tarjeta pero no cuenta como ingreso.
+          </p>
+        </div>
+
         <label className="flex items-center gap-2 text-sm text-zinc-300">
           <input
             type="checkbox"
@@ -420,7 +442,10 @@ export default function PanelConfiguracionPage() {
         subtitle={
           <>
             Controla landing pública. Contenido (galería, equipo, promos, reseñas…) se edita en{' '}
-            <Link href="/panel/configuracion/web" className="text-[var(--tenant-primary)] hover:underline">
+            <Link
+              href="/panel/configuracion/web"
+              className="text-[var(--tenant-primary)] hover:underline"
+            >
               Mi Web
             </Link>
             .
@@ -487,8 +512,8 @@ export default function PanelConfiguracionPage() {
                 placeholder="midominio.com"
               />
               <p className="mt-1 text-xs text-zinc-500">
-                El routing técnico ya está listo — falta el paso operativo: apuntar el DNS
-                de tu dominio a Geema y activarlo.
+                El routing técnico ya está listo — falta el paso operativo: apuntar el DNS de tu
+                dominio a Geema y activarlo.
               </p>
             </div>
             <div className="sm:col-span-2">

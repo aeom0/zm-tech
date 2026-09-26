@@ -14,6 +14,7 @@ import {
   type ProductOrderSource,
 } from '@/hooks/servicios/useProductos'
 
+import { useTenantSettings } from '@/hooks/configuracion/useTenantSettings'
 import { ProductoVentaModal } from '../ventas/ProductoVentaModal'
 
 const STATUS_LABELS: Record<ProductOrder['status'], string> = {
@@ -263,6 +264,9 @@ function PaymentModal({
   onConfirm: (method: PaymentMethod) => void
 }) {
   const [method, setMethod] = useState<PaymentMethod>('yape_plin')
+  const { data: settings } = useTenantSettings()
+  const feePercent = settings?.pos_fee_percent ?? 5
+  const base = Number(order.unit_price) * order.quantity
   const product = Array.isArray(order.inventory_items)
     ? order.inventory_items[0]?.name
     : order.inventory_items?.name
@@ -287,6 +291,12 @@ function PaymentModal({
           ))}
         </select>
       </label>
+      {method === 'card' ? (
+        <p className="mt-2 text-xs text-white/50">
+          Cobrar en POS: S/ {(Math.round(base * (1 + feePercent / 100) * 100) / 100).toFixed(2)}{' '}
+          (incluye {feePercent} % de comisión; el ingreso registrado es S/ {base.toFixed(2)})
+        </p>
+      ) : null}
       <ModalActions
         busy={busy}
         onClose={onClose}
