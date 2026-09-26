@@ -61,7 +61,16 @@ export default function DashboardScreen() {
   const currencySymbol = config.locale.currency.symbol
   const tenantTz = zonaIANASegura(config.locale.timezone)
 
-  const { startOfDay, statsEndOfDay, appointmentsEndOfDay, monthStartOfDay, today, tomorrow } =
+  const {
+    startOfDay,
+    statsEndOfDay,
+    appointmentsEndOfDay,
+    monthStartOfDay,
+    paymentStartOfDay,
+    paymentEndOfDay,
+    today,
+    tomorrow,
+  } =
     useMemo(() => {
       const start = inicioDiaHoyEnZonaIANA(tenantTz)
       const nextDay = sumarDiasEnZonaIANA(start, 1, tenantTz)
@@ -74,6 +83,8 @@ export default function DashboardScreen() {
           tenantTz
         ),
         monthStartOfDay: formatAppointmentWallclock(inicioMesActualEnZonaIANA(tenantTz), tenantTz),
+        paymentStartOfDay: start.toISOString(),
+        paymentEndOfDay: nextDay.toISOString(),
         today: start,
         tomorrow: nextDay,
       }
@@ -99,7 +110,9 @@ export default function DashboardScreen() {
     statsEndOfDay,
     appointmentsEndOfDay,
     topServicesPeriod,
-    monthStartOfDay
+    monthStartOfDay,
+    paymentStartOfDay,
+    paymentEndOfDay
   )
 
   const { updateAppointmentMutation, createPaymentMutation } = useDashboardMutations()

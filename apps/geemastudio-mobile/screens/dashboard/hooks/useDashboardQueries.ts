@@ -16,21 +16,30 @@ const TOP_SERVICES_LIMIT = 5
 
 export type TopServicesPeriod = 'month' | 'all'
 
-async function fetchDashboardStats(startOfDay: string, endOfDay: string): Promise<DashboardStats> {
+async function fetchDashboardStats(
+  paymentStartOfDay: string,
+  paymentEndOfDay: string,
+  appointmentStartOfDay: string,
+  appointmentEndOfDay: string
+): Promise<DashboardStats> {
   const [paymentsRes, completedRes, scheduledRes, inventoryRes] = await Promise.all([
-    supabase.from('payments').select('amount').gte('date', startOfDay).lte('date', endOfDay),
+    supabase
+      .from('payments')
+      .select('amount')
+      .gte('date', paymentStartOfDay)
+      .lt('date', paymentEndOfDay),
     supabase
       .from('appointments')
       .select('id', { count: 'exact', head: true })
       .eq('status', 'completed')
-      .gte('date', startOfDay)
-      .lte('date', endOfDay),
+      .gte('date', appointmentStartOfDay)
+      .lte('date', appointmentEndOfDay),
     supabase
       .from('appointments')
       .select('id', { count: 'exact', head: true })
       .eq('status', 'scheduled')
-      .gte('date', startOfDay)
-      .lte('date', endOfDay),
+      .gte('date', appointmentStartOfDay)
+      .lte('date', appointmentEndOfDay),
     supabase.from('inventory_items').select('quantity, min_stock'),
   ])
 
@@ -68,7 +77,9 @@ export function useDashboardQueries(
   statsEndOfDay: string,
   appointmentsEndOfDay: string,
   topServicesPeriod: TopServicesPeriod,
-  monthStartOfDay: string
+  monthStartOfDay: string,
+  paymentStartOfDay: string,
+  paymentEndOfDay: string
 ) {
   const {
     data: stats,
@@ -76,8 +87,14 @@ export function useDashboardQueries(
     isError: statsError,
     refetch: refetchStats,
   } = useQuery<DashboardStats>({
-    queryKey: ['dashboard_stats', startOfDay, statsEndOfDay],
-    queryFn: () => fetchDashboardStats(startOfDay, statsEndOfDay),
+    queryKey: ['dashboard_stats', paymentStartOfDay, paymentEndOfDay, startOfDay, statsEndOfDay],
+    queryFn: () =>
+      fetchDashboardStats(
+        paymentStartOfDay,
+        paymentEndOfDay,
+        startOfDay,
+        statsEndOfDay
+      ),
   })
 
   const {
