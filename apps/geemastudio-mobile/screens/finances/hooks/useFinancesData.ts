@@ -4,7 +4,11 @@ import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
-import { instanteCitaDesdeTexto, zonaIANASegura } from '@zmtech/tenant-config'
+import {
+  instanteCitaDesdeTexto,
+  formatoInstanteEnZona,
+  zonaIANASegura,
+} from '@zmtech/tenant-config'
 import { useProfileTenantId } from './useProfileTenantId'
 import { calculateEmployeeEarnings } from '@geemastudio/shared-schema'
 import { fetchEmployeeById } from '@/screens/personal/lib/employeesAdapter'
@@ -483,12 +487,16 @@ export function useFinancesData(
     const days = period === 'month' ? 30 : 7
     const byDate: Record<string, number> = {}
     for (const p of payments) {
-      const day = String(p.date).slice(0, 10)
+      const day = formatoInstanteEnZona(p.date, tenantTz, 'en-CA', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      })
       byDate[day] = (byDate[day] ?? 0) + parseFloat(String(p.amount))
     }
     const sorted = Object.keys(byDate).sort().slice(-days)
     return sorted.map((date) => ({ date, total: byDate[date] }))
-  }, [payments, period])
+  }, [payments, period, tenantTz])
 
   const handleRefetch = () => {
     void refetch()

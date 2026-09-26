@@ -79,8 +79,10 @@ function SimpleChart({
     x: padding.left + (i / step) * innerW,
     y: padding.top + innerH - (d.total / maxValue) * innerH,
     label: (() => {
-      const dt = new Date(d.date)
-      return period === 'month' ? `${dt.getDate()}/${dt.getMonth() + 1}` : DAYS_SHORT[dt.getDay()]
+      const dt = new Date(`${d.date}T00:00:00Z`)
+      return period === 'month'
+        ? `${dt.getUTCDate()}/${dt.getUTCMonth() + 1}`
+        : DAYS_SHORT[dt.getUTCDay()]
     })(),
   }))
 

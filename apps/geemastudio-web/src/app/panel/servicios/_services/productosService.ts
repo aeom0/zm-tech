@@ -244,7 +244,7 @@ export async function updateProductOrderStatus(
   status: 'delivered' | 'cancelled'
 ): Promise<void> {
   const sb = requireSupabase()
-  const timestamp = new Date().toISOString().replace('T', ' ').slice(0, 19)
+  const timestamp = new Date().toISOString()
   const payload =
     status === 'delivered'
       ? { status, delivered_at: timestamp }

@@ -5,11 +5,11 @@ import { Camera, Check, CheckCheck, File as FileIcon, FileText, List, MousePoint
 import type { WabaMessage } from '@/hooks/waba/useWabaMessages'
 import { formatTemplatePreview, isTemplateContent } from './templateLabels'
 
-function formatTime(iso: string): string {
+function formatTime(iso: string, timeZone: string): string {
   if (!iso) return ''
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return ''
-  return d.toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit' })
+  return d.toLocaleTimeString('es-VE', { hour: '2-digit', minute: '2-digit', timeZone })
 }
 
 function DeliveryTicks({ status }: { status: WabaMessage['deliveryStatus'] }) {
@@ -80,7 +80,13 @@ function QuoteCard({ imageUrl, label }: { imageUrl: string | null; label: string
   )
 }
 
-export function MessageBubble({ message }: { message: WabaMessage }) {
+export function MessageBubble({
+  message,
+  timeZone,
+}: {
+  message: WabaMessage
+  timeZone: string
+}) {
   const out = message.direction === 'out'
   const content = message.content || ''
   const isReaction = message.msgType === 'reaction'
@@ -170,7 +176,7 @@ export function MessageBubble({ message }: { message: WabaMessage }) {
         )}
 
         <div className="flex items-center justify-end gap-1 text-[10px] text-zinc-500">
-          {formatTime(message.createdAt)}
+          {formatTime(message.createdAt, timeZone)}
           {!['text', 'image', 'audio', 'document', 'reaction', 'template', 'interactive', 'button'].includes(
             message.msgType
           )

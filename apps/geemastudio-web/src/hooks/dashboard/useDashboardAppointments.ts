@@ -33,8 +33,8 @@ export function useDashboardAppointments(dateRange: DateRange) {
           total: 0,
         }
       }
-      const fromIso = `${dateRange.from}T00:00:00`
-      const toIso = `${dateRange.to}T23:59:59.999`
+      const fromIso = `${dateRange.from} 00:00:00`
+      const toIso = `${dateRange.to} 23:59:59`
 
       const { data, error } = await supabase
         .from('appointments')

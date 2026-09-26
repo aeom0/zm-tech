@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { instanteCitaDesdeTexto } from '@zmtech/tenant-config'
 
 import { useCreatePromo, useUpdatePromo } from '@/hooks/servicios/usePromos'
 import type { PromoItemInput, Promotion } from '../../_services/promosService'
@@ -78,6 +79,7 @@ function PromoFormModalInner({
   onClose: () => void
 }) {
   const { data: settings } = useTenantSettings()
+  const timezone = settings?.timezone ?? 'America/Caracas'
   const brandColor = settings?.primary_color ?? DEFAULT_TENANT_PRIMARY
   const [form, setForm] = useState<FormState>(() =>
     promo ? formFromPromo(promo, brandColor) : emptyForm(brandColor)
@@ -109,7 +111,9 @@ function PromoFormModalInner({
       accent_color: form.accent_color || null,
       promo_price,
       is_active: form.is_active,
-      expires_at: form.expires_at ? new Date(`${form.expires_at}T12:00:00`).toISOString() : null,
+      expires_at: form.expires_at
+        ? instanteCitaDesdeTexto(`${form.expires_at} 23:59:59`, timezone).toISOString()
+        : null,
     }
 
     if (promo) {

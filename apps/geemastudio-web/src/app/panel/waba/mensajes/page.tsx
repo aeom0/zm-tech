@@ -199,7 +199,13 @@ function PanelWabaMensajesContent() {
               </div>
             )}
 
-            {selected && <MessageThread conversation={selected} onBack={() => selectPhone(null)} />}
+            {selected && (
+              <MessageThread
+                conversation={selected}
+                timeZone={timezone}
+                onBack={() => selectPhone(null)}
+              />
+            )}
           </section>
         </div>
       )}

@@ -33,8 +33,8 @@ export default function DashboardPageClient() {
 
   const revenueQ = useDashboardRevenue(dateRange, timezone)
   const appointmentsQ = useDashboardAppointments(appointmentsRange)
-  const topStaffQ = useDashboardTopStaff(dateRange)
-  const clientsQ = useDashboardClients(dateRange)
+  const topStaffQ = useDashboardTopStaff(dateRange, timezone)
+  const clientsQ = useDashboardClients(dateRange, timezone)
 
   return (
     <DashboardShell

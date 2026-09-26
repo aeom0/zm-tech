@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { supabase } from '@/lib/supabase'
 
-import type { DateRange } from './useDashboardPeriod'
+import { tenantRangeBoundary, type DateRange } from './useDashboardPeriod'
 
 export interface TopStaffEntry {
   employeeId: string
@@ -17,15 +17,18 @@ export interface TopStaffEntry {
  * Top por ingresos: `public.payments` no define `employee_id` (mismo criterio que Drizzle).
  * Aquí se enlaza `appointment_id` → `appointments.employee_id` en memoria, sin joins anidados en PostgREST.
  */
-export function useDashboardTopStaff(dateRange: DateRange) {
+export function useDashboardTopStaff(
+  dateRange: DateRange,
+  timeZone = 'America/Caracas'
+) {
   return useQuery({
-    queryKey: ['dashboard_top_staff', dateRange],
+    queryKey: ['dashboard_top_staff', dateRange, timeZone],
     enabled: !!supabase && !!dateRange.from && !!dateRange.to,
     queryFn: async (): Promise<TopStaffEntry[]> => {
       if (!supabase) return []
 
-      const fromIso = `${dateRange.from}T00:00:00`
-      const toIso = `${dateRange.to}T23:59:59.999`
+      const fromIso = tenantRangeBoundary(dateRange.from, timeZone)
+      const toIso = tenantRangeBoundary(dateRange.to, timeZone, true)
 
       const [paymentsRes, employeesRes] = await Promise.all([
         supabase

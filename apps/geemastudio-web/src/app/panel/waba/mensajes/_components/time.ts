@@ -44,9 +44,14 @@ export function formatRelativeTime(iso: string, timeZone = 'America/Caracas'): s
   if (abs < 60 * 60 * 24) return rtf.format(-Math.round(abs / 3600), 'hour')
   if (abs < 60 * 60 * 24 * 7) return rtf.format(-Math.round(abs / 86400), 'day')
 
-  const dd = String(d.getDate()).padStart(2, '0')
-  const mm = String(d.getMonth() + 1).padStart(2, '0')
-  return `${dd}/${mm}`
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone,
+    day: '2-digit',
+    month: '2-digit',
+  }).formatToParts(d)
+  const day = parts.find((part) => part.type === 'day')?.value ?? ''
+  const month = parts.find((part) => part.type === 'month')?.value ?? ''
+  return `${day}/${month}`
 }
 
 /** Fecha + hora absolutas, para mostrar junto al relativo (no lo reemplaza). */

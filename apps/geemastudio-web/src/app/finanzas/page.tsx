@@ -52,12 +52,13 @@ function MethodIcon({ method }: { method: string }) {
   return <Banknote className="h-3.5 w-3.5" />
 }
 
-function fmtDate(d: string) {
+function fmtDate(d: string, timeZone: string) {
   return new Date(d).toLocaleString('es-419', {
     day: 'numeric',
     month: 'short',
     hour: '2-digit',
     minute: '2-digit',
+    timeZone,
   })
 }
 
@@ -452,7 +453,7 @@ export default function FinanzasPage() {
                           className="border-b border-zinc-50 transition-colors last:border-0 hover:bg-zinc-50/50 dark:border-zinc-800/50 dark:hover:bg-zinc-800/30"
                         >
                           <td className="whitespace-nowrap px-4 py-3 text-zinc-500 dark:text-zinc-400">
-                            {fmtDate(p.date)}
+                            {fmtDate(p.date, tenantQ.data?.timezone ?? 'America/Caracas')}
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex flex-wrap items-center gap-2">

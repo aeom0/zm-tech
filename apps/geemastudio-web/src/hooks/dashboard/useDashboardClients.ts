@@ -4,24 +4,29 @@ import { useQuery } from '@tanstack/react-query'
 
 import { supabase } from '@/lib/supabase'
 
-import type { DateRange } from './useDashboardPeriod'
+import { tenantRangeBoundary, type DateRange } from './useDashboardPeriod'
 
 export interface DashboardClientsResult {
   newCount: number
   returningCount: number
 }
 
-export function useDashboardClients(dateRange: DateRange) {
+export function useDashboardClients(
+  dateRange: DateRange,
+  timeZone = 'America/Caracas'
+) {
   return useQuery({
-    queryKey: ['dashboard_clients', dateRange],
+    queryKey: ['dashboard_clients', dateRange, timeZone],
     enabled: !!supabase && !!dateRange.from && !!dateRange.to,
     queryFn: async (): Promise<DashboardClientsResult> => {
       if (!supabase) {
         return { newCount: 0, returningCount: 0 }
       }
 
-      const fromIso = `${dateRange.from}T00:00:00`
-      const toIso = `${dateRange.to}T23:59:59.999`
+      const fromIso = tenantRangeBoundary(dateRange.from, timeZone)
+      const toIso = tenantRangeBoundary(dateRange.to, timeZone, true)
+      const appointmentFrom = `${dateRange.from} 00:00:00`
+      const appointmentTo = `${dateRange.to} 23:59:59`
 
       const [newClientsRes, appointmentsRes] = await Promise.all([
         supabase
@@ -33,8 +38,8 @@ export function useDashboardClients(dateRange: DateRange) {
           .from('appointments')
           .select('client_id')
           .eq('status', 'completed')
-          .gte('date', fromIso)
-          .lte('date', toIso)
+          .gte('date', appointmentFrom)
+          .lte('date', appointmentTo)
           .not('client_id', 'is', null),
       ])
 

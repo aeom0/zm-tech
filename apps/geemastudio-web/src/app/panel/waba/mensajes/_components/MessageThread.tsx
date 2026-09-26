@@ -45,9 +45,11 @@ function attachmentPath(phone: string, file: File): string {
 export function MessageThread({
   conversation,
   onBack,
+  timeZone,
 }: {
   conversation: WabaConversation
   onBack: () => void
+  timeZone: string
 }) {
   const phone = conversation.phone
   const [limit, setLimit] = useState(WABA_THREAD_PAGE_SIZE)
@@ -414,7 +416,7 @@ export function MessageThread({
         )}
         {!threadQuery.isLoading &&
           !threadQuery.isError &&
-          messages.map((m) => <MessageBubble key={m.id} message={m} />)}
+          messages.map((m) => <MessageBubble key={m.id} message={m} timeZone={timeZone} />)}
       </div>
 
       <div className="shrink-0 border-t border-white/[0.08] p-3">
