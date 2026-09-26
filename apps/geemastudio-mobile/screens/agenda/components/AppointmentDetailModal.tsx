@@ -215,6 +215,10 @@ export function AppointmentDetailModal({
     (sum, item) => sum + Number(item.unit_price) * item.quantity,
     0
   )
+  const productPaidTotal = productOrders
+    .filter((item) => item.status === 'paid' || item.status === 'delivered')
+    .reduce((sum, item) => sum + Number(item.unit_price) * item.quantity, 0)
+  const productPendingTotal = productTotal - productPaidTotal
   type EnrichedLine = AgendaService & {
     employeeId: string
     employee?: AgendaEmployee
@@ -569,6 +573,26 @@ export function AppointmentDetailModal({
                           {formatCurrency(editTotal + productTotal, config)}
                         </ThemedText>
                       </View>
+                      {productPaidTotal > 0 ? (
+                        <View style={styles.totalRow}>
+                          <ThemedText style={[styles.totalLabel, { color: theme.textMuted }]}>
+                            Productos pagados
+                          </ThemedText>
+                          <ThemedText style={[styles.svcDetail, { color: theme.success }]}>
+                            {formatCurrency(productPaidTotal, config)}
+                          </ThemedText>
+                        </View>
+                      ) : null}
+                      {productPendingTotal > 0 ? (
+                        <View style={styles.totalRow}>
+                          <ThemedText style={[styles.totalLabel, { color: theme.textMuted }]}>
+                            Productos por cobrar
+                          </ThemedText>
+                          <ThemedText style={[styles.svcDetail, { color: theme.primary }]}>
+                            {formatCurrency(productPendingTotal, config)}
+                          </ThemedText>
+                        </View>
+                      ) : null}
                     </View>
                   ) : null}
 
