@@ -11,6 +11,7 @@ import { useTenant } from '@/contexts/TenantContext'
 import { formatCurrency } from '@/utils/format'
 import { supabase } from '@/lib/supabase'
 import { BorderRadius, Colors, Spacing } from '@/constants/theme'
+import { useProfileTenantId } from '@/screens/finances/hooks/useProfileTenantId'
 
 import { PAYMENT_METHODS } from '@/screens/finances/constants'
 
@@ -53,6 +54,7 @@ type Theme = {
   textSecondary: string
   textMuted: string
   primary: string
+  gold: string
   error: string
   success: string
 }
@@ -198,13 +200,15 @@ export function AppointmentDetailModal({
 }: AppointmentDetailModalProps) {
   const { holidayIndex } = useSalonHolidays(true)
   const { config } = useTenant()
+  const { tenantId, isLoading: tenantLoading } = useProfileTenantId()
   const { data: productOrders = [] } = useQuery<RetailOrderRow[]>({
-    queryKey: ['retail_product_orders', appointment?.id],
-    enabled: visible && !!appointment?.id,
+    queryKey: ['retail_product_orders', tenantId, appointment?.id],
+    enabled: visible && !tenantLoading && !!tenantId && !!appointment?.id,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('product_orders')
         .select('id, quantity, unit_price, status, inventory_items(name)')
+        .eq('tenant_id', tenantId!)
         .eq('appointment_id', appointment?.id ?? '')
         .neq('status', 'cancelled')
       if (error) throw new Error(error.message)
@@ -521,7 +525,7 @@ export function AppointmentDetailModal({
                       onPress={onAddProduct}
                     >
                       <Feather name="shopping-bag" size={16} color={theme.primary} />
-                      <ThemedText style={[styles.addSvcBtnText, { color: theme.primary }]}>
+                      <ThemedText style={[styles.addSvcBtnText, { color: theme.gold }]}>
                         Agregar producto vendido
                       </ThemedText>
                     </Pressable>

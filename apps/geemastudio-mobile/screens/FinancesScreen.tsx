@@ -75,6 +75,7 @@ export default function FinancesScreen() {
   const [payoutModalVisible, setPayoutModalVisible] = useState(false)
   const [payoutRow, setPayoutRow] = useState<FinancesDesgloseRow | null>(null)
   const [productSaleVisible, setProductSaleVisible] = useState(false)
+  const [quickActionsVisible, setQuickActionsVisible] = useState(false)
 
   const timezone = config.locale.timezone
   const currentMonth = `${getTenantBillingMonthKey(timezone)}-01`
@@ -274,39 +275,52 @@ export default function FinancesScreen() {
       </ScrollView>
 
       {isAdmin && (
-        <Pressable
-          style={[styles.fab, { backgroundColor: theme.primary }]}
-          onPress={() => {
-            if (view === 'resumen') {
-              setEditingExpense(null)
-              setExpenseModalVisible(true)
-            } else {
-              form.openNewPayment()
-            }
-          }}
-        >
-          <Feather name="plus" size={24} color={theme.buttonText} />
-        </Pressable>
-      )}
+        <>
+          {view !== 'resumen' && quickActionsVisible ? (
+            <View style={styles.fabActions}>
+              <Pressable
+                style={[styles.fabAction, { backgroundColor: theme.backgroundDefault }]}
+                onPress={() => {
+                  setQuickActionsVisible(false)
+                  form.openNewPayment()
+                }}
+              >
+                <Feather name="credit-card" size={18} color={theme.primary} />
+                <ThemedText style={[styles.fabActionLabel, { color: theme.text }]}>
+                  Nuevo pago
+                </ThemedText>
+              </Pressable>
+              <Pressable
+                style={[styles.fabAction, { backgroundColor: theme.backgroundDefault }]}
+                onPress={() => {
+                  setQuickActionsVisible(false)
+                  setProductSaleVisible(true)
+                }}
+              >
+                <Feather name="shopping-bag" size={18} color={theme.gold} />
+                <ThemedText style={[styles.fabActionLabel, { color: theme.text }]}>
+                  Venta de producto
+                </ThemedText>
+              </Pressable>
+            </View>
+          ) : null}
 
-      {isAdmin && view !== 'resumen' ? (
-        <Pressable
-          style={[
-            styles.fab,
-            {
-              backgroundColor: theme.gold,
-              bottom: 168,
-              width: 48,
-              height: 48,
-              borderRadius: 24,
-            },
-          ]}
-          onPress={() => setProductSaleVisible(true)}
-          accessibilityLabel="Registrar venta de producto"
-        >
-          <Feather name="shopping-bag" size={21} color={theme.buttonText} />
-        </Pressable>
-      ) : null}
+          <Pressable
+            style={[styles.fab, { backgroundColor: theme.primary }]}
+            onPress={() => {
+              if (view === 'resumen') {
+                setEditingExpense(null)
+                setExpenseModalVisible(true)
+              } else {
+                setQuickActionsVisible((visible) => !visible)
+              }
+            }}
+            accessibilityLabel={view === 'resumen' ? 'Agregar gasto' : 'Agregar movimiento'}
+          >
+            <Feather name={quickActionsVisible ? 'x' : 'plus'} size={24} color={theme.buttonText} />
+          </Pressable>
+        </>
+      )}
 
       <PaymentModal
         visible={form.modalVisible}
@@ -329,13 +343,15 @@ export default function FinancesScreen() {
         onDelete={form.handleDelete}
       />
 
-      <ProductSaleModal
-        visible={productSaleVisible}
-        appointments={recentAppointments}
-        isTablet={isTablet}
-        onClose={() => setProductSaleVisible(false)}
-        onSaved={handleRefresh}
-      />
+      {productSaleVisible ? (
+        <ProductSaleModal
+          visible
+          appointments={recentAppointments}
+          isTablet={isTablet}
+          onClose={() => setProductSaleVisible(false)}
+          onSaved={handleRefresh}
+        />
+      ) : null}
 
       <ExpenseModal
         visible={expenseModalVisible}

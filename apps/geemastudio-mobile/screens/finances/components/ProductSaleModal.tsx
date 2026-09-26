@@ -21,6 +21,7 @@ import { useTheme } from '@/hooks/useTheme'
 import { BorderRadius, Spacing } from '@/constants/theme'
 import { formatCurrency } from '@/utils/format'
 import { ThemedText } from '@/components/ThemedText'
+import { useProfileTenantId } from '../hooks/useProfileTenantId'
 import type { FinancesAppointmentOption } from '../types'
 
 interface SellableProduct {
@@ -70,6 +71,7 @@ export function ProductSaleModal({
   const { theme } = useTheme()
   const { config } = useTenant()
   const { userId } = useAuth()
+  const { tenantId, isLoading: tenantLoading } = useProfileTenantId()
   const queryClient = useQueryClient()
   const [productId, setProductId] = useState('')
   const [quantity, setQuantity] = useState('1')
@@ -82,12 +84,13 @@ export function ProductSaleModal({
   const [notes, setNotes] = useState('')
 
   const { data: products = [], isLoading: productsLoading } = useQuery<SellableProduct[]>({
-    queryKey: ['retail_sellable_products'],
-    enabled: visible,
+    queryKey: ['retail_sellable_products', tenantId],
+    enabled: visible && !tenantLoading && !!tenantId,
     queryFn: async () => {
       const { data, error } = await supabase
         .from('inventory_items')
         .select('id, name, quantity, price, unit')
+        .eq('tenant_id', tenantId!)
         .eq('is_sellable', true)
         .order('name')
       if (error) throw new Error(error.message)
@@ -122,11 +125,13 @@ export function ProductSaleModal({
       if (!selectedProduct) throw new Error('Selecciona un producto')
       if (!clientName.trim()) throw new Error('Ingresa el nombre de la clienta')
       if (total <= 0) throw new Error('El producto no tiene precio de venta')
+      if (!tenantId) throw new Error('No se pudo identificar el negocio')
 
       const status = selectedProduct.quantity >= parsedQuantity ? 'reserved' : 'pedido'
       const { data: order, error } = await supabase
         .from('product_orders')
         .insert({
+          tenant_id: tenantId,
           inventory_item_id: selectedProduct.id,
           appointment_id: appointmentId,
           client_id: clientId,
@@ -162,7 +167,7 @@ export function ProductSaleModal({
         )
       }
       void queryClient.invalidateQueries({
-        queryKey: ['retail_sellable_products'],
+        queryKey: ['retail_sellable_products', tenantId],
       })
       void queryClient.invalidateQueries({ queryKey: ['payments'] })
       void queryClient.invalidateQueries({

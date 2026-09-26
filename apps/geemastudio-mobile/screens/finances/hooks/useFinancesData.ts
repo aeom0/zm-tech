@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
 import { instanteCitaDesdeTexto, zonaIANASegura } from '@zmtech/tenant-config'
+import { useProfileTenantId } from './useProfileTenantId'
 import { calculateEmployeeEarnings } from '@geemastudio/shared-schema'
 import { fetchEmployeeById } from '@/screens/personal/lib/employeesAdapter'
 import { useEmployeesQuery } from '@/screens/personal/hooks/useEmployeesData'
@@ -42,6 +43,7 @@ export function useFinancesData(
 ) {
   const { isAdmin, userId } = useAuth()
   const { config } = useTenant()
+  const { tenantId, isLoading: tenantLoading } = useProfileTenantId()
   const tenantTz = zonaIANASegura(config.locale.timezone)
 
   const { periodStart, periodEnd } = useMemo(() => rangeToPeriodDates(currentRange), [currentRange])
@@ -481,13 +483,21 @@ export function useFinancesData(
   const { data: retailOrders = [] } = useQuery<
     { id: string; quantity: number; unit_price: string; status: string }[]
   >({
-    queryKey: ['retail_product_orders', 'period', currentRange.start, currentRange.end, tenantTz],
+    queryKey: [
+      'retail_product_orders',
+      tenantId,
+      'period',
+      currentRange.start,
+      currentRange.end,
+      tenantTz,
+    ],
     queryFn: async () => {
       const from = instanteCitaDesdeTexto(currentRange.start, tenantTz)
       const to = instanteCitaDesdeTexto(currentRange.end, tenantTz)
       const { data, error } = await supabase
         .from('product_orders')
         .select('id, quantity, unit_price, status')
+        .eq('tenant_id', tenantId!)
         .in('status', ['paid', 'delivered'])
         .gte('paid_at', from.toISOString())
         .lt('paid_at', to.toISOString())
@@ -495,7 +505,10 @@ export function useFinancesData(
       return data ?? []
     },
     enabled:
-      isAdmin && !Number.isNaN(instanteCitaDesdeTexto(currentRange.start, tenantTz).getTime()),
+      isAdmin &&
+      !tenantLoading &&
+      !!tenantId &&
+      !Number.isNaN(instanteCitaDesdeTexto(currentRange.start, tenantTz).getTime()),
   })
 
   const retailRevenue = useMemo(

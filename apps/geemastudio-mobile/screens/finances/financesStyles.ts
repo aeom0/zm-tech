@@ -258,6 +258,26 @@ export const financesStyles = StyleSheet.create({
     justifyContent: 'center',
     ...Shadows.lg,
   },
+  fabActions: {
+    position: 'absolute',
+    right: Spacing.lg,
+    bottom: 168,
+    gap: Spacing.sm,
+    alignItems: 'flex-end',
+  },
+  fabAction: {
+    minHeight: 44,
+    borderRadius: 22,
+    paddingHorizontal: Spacing.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    ...Shadows.md,
+  },
+  fabActionLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
   retailCard: {
     borderWidth: 1,
     borderRadius: 12,

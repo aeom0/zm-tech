@@ -1012,6 +1012,7 @@ export default function AgendaScreen() {
           textSecondary: theme.textSecondary,
           textMuted: theme.textMuted,
           primary: theme.primary,
+          gold: theme.gold,
           error: theme.error,
           success: theme.success,
         }}
