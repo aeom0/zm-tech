@@ -5,6 +5,7 @@ import { Feather } from '@expo/vector-icons'
 import { ThemedText } from '@/components/ThemedText'
 
 import { PAYMENT_METHODS } from '@/screens/finances/constants'
+import { posChargeAmount } from '@/lib/pos-fee'
 
 import { formatDashboardTime } from '../dashboardUtils'
 import type { DashboardAppointment } from '../types'
@@ -171,6 +172,11 @@ export function DashboardAppointmentModal({
                       </ThemedText>
                     </Pressable>
                   ))}
+                  {pendingPayMethod === 'card' && appointment && (
+                    <ThemedText style={[styles.payMethodLabel, { color: theme.textSecondary }]}>
+                      {`Cobrar en POS: S/ ${posChargeAmount(parseFloat(String(appointment.price))).toFixed(2)} (incluye 5 % de comisión; el ingreso registrado es S/ ${parseFloat(String(appointment.price)).toFixed(2)})`}
+                    </ThemedText>
+                  )}
                   <View style={styles.payMethodActions}>
                     <Pressable
                       style={[styles.payMethodCancel, { borderColor: theme.border }]}
@@ -193,7 +199,9 @@ export function DashboardAppointmentModal({
                       {isCompleting ? (
                         <ActivityIndicator color={Colors.light.buttonText} size="small" />
                       ) : (
-                        <ThemedText style={[styles.payMethodCancelText, { color: Colors.light.buttonText }]}>
+                        <ThemedText
+                          style={[styles.payMethodCancelText, { color: Colors.light.buttonText }]}
+                        >
                           Confirmar
                         </ThemedText>
                       )}
