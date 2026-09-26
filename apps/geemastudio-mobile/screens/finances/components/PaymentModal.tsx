@@ -19,6 +19,7 @@ import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { Spacing } from '@/constants/theme'
+import { instanteCitaDesdeTexto, zonaIANASegura } from '@zmtech/tenant-config'
 import type { MainTabParamList } from '@/navigation/MainTabNavigator'
 import type { MoreStackParamList } from '@/navigation/MoreStackNavigator'
 
@@ -88,13 +89,16 @@ export function PaymentModal({
   const { config } = useTenant()
 
   const formatShortDate = (dateString: string) => {
-    const date = new Date(dateString)
+    const date = instanteCitaDesdeTexto(dateString, config.locale.timezone)
+    if (Number.isNaN(date.getTime())) return 'Fecha inválida'
     return date.toLocaleDateString(config.locale.language, {
       weekday: 'short',
       day: 'numeric',
       month: 'short',
       hour: '2-digit',
       minute: '2-digit',
+      hour12: config.locale.timeFormat === '12',
+      timeZone: zonaIANASegura(config.locale.timezone),
     })
   }
 

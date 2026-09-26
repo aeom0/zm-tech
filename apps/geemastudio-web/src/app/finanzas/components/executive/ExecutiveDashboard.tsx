@@ -20,6 +20,7 @@ interface Props {
   onChangeRange: (r: GrowthRange) => void
   tenantId: string | null
   currencyCode: string
+  timezone: string
   primaryColor?: string | null
   accentColor?: string | null
 }
@@ -29,11 +30,12 @@ export function ExecutiveDashboard({
   onChangeRange,
   tenantId,
   currencyCode,
+  timezone,
   primaryColor,
   accentColor,
 }: Props) {
   const [selectedMonth, setSelectedMonth] = useState<string | undefined>(undefined)
-  const dash = useExecutiveDashboard(range, tenantId, selectedMonth)
+  const dash = useExecutiveDashboard(range, tenantId, selectedMonth, timezone)
   const isCurrentMonth = dash.targetMonth === dash.currentMonth
 
   const monthOptions = useMemo(() => {

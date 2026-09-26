@@ -5,7 +5,7 @@ import { differenceInCalendarDays, format, parseISO, subDays } from 'date-fns'
 
 import { supabase } from '@/lib/supabase'
 
-import type { DateRange } from './useDashboardPeriod'
+import { tenantRangeBoundary, type DateRange } from './useDashboardPeriod'
 
 function previousDateRange(range: DateRange): DateRange {
   const from = parseISO(range.from)
@@ -32,9 +32,9 @@ export interface DashboardRevenueResult {
   payments: DashboardPaymentRow[]
 }
 
-export function useDashboardRevenue(dateRange: DateRange) {
+export function useDashboardRevenue(dateRange: DateRange, timeZone = 'America/Caracas') {
   return useQuery({
-    queryKey: ['dashboard_revenue', dateRange],
+    queryKey: ['dashboard_revenue', dateRange, timeZone],
     enabled: !!supabase && !!dateRange.from && !!dateRange.to,
     queryFn: async (): Promise<DashboardRevenueResult> => {
       if (!supabase) {
@@ -47,10 +47,10 @@ export function useDashboardRevenue(dateRange: DateRange) {
       }
 
       const prev = previousDateRange(dateRange)
-      const fromIso = `${dateRange.from}T00:00:00`
-      const toIso = `${dateRange.to}T23:59:59.999`
-      const prevFromIso = `${prev.from}T00:00:00`
-      const prevToIso = `${prev.to}T23:59:59.999`
+      const fromIso = tenantRangeBoundary(dateRange.from, timeZone)
+      const toIso = tenantRangeBoundary(dateRange.to, timeZone, true)
+      const prevFromIso = tenantRangeBoundary(prev.from, timeZone)
+      const prevToIso = tenantRangeBoundary(prev.to, timeZone, true)
 
       const [currentRes, prevRes] = await Promise.all([
         supabase

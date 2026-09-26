@@ -189,7 +189,7 @@ export default function DashboardScreen() {
 
   const visibleLimit = isTablet ? 8 : 5
 
-  const greeting = getGreeting()
+  const greeting = getGreeting(tenantTz)
   const displayNameSuffix = profile?.full_name ? `, ${profile.full_name.split(' ')[0]}` : ''
   const dateLabel = formatDashboardDateLong(config.locale.language, tenantTz)
   const [motivationalMessage] = useState(getRandomMotivationalMessage)

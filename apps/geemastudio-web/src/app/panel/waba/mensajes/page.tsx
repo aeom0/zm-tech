@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { MessageSquare } from 'lucide-react'
 
 import { useWabaConversations } from '@/hooks/waba/useWabaMessages'
+import { useDashboardTenant } from '@/hooks/dashboard/useDashboardTenant'
 import { phonesLikelyMatch } from '@/lib/waPhone'
 import { MessageThread } from './_components/MessageThread'
 import { formatAbsoluteWhen, formatPhone, formatRelativeTime } from './_components/time'
@@ -31,6 +32,8 @@ function PanelWabaMensajesContent() {
 
   const [selectedPhone, setSelectedPhone] = useState<string | null>(phoneParam)
   const conversationsQuery = useWabaConversations()
+  const tenantQuery = useDashboardTenant()
+  const timezone = tenantQuery.data?.timezone ?? 'America/Caracas'
 
   const conversations = useMemo(() => conversationsQuery.data ?? [], [conversationsQuery.data])
 
@@ -168,8 +171,8 @@ function PanelWabaMensajesContent() {
                                 Bot en pausa
                               </span>
                             )}
-                            <span className="text-[11px] text-zinc-500" title={formatAbsoluteWhen(c.lastAt)}>
-                              {formatAbsoluteWhen(c.lastAt)} · {formatRelativeTime(c.lastAt)}
+                            <span className="text-[11px] text-zinc-500" title={formatAbsoluteWhen(c.lastAt, timezone)}>
+                              {formatAbsoluteWhen(c.lastAt, timezone)} · {formatRelativeTime(c.lastAt, timezone)}
                             </span>
                           </div>
 

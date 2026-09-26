@@ -3,8 +3,10 @@ import { useMutation } from '@tanstack/react-query'
 
 import { queryClient } from '@/lib/query-client'
 import { supabase } from '@/lib/supabase'
+import { useProfileTenantId } from '@/screens/finances/hooks/useProfileTenantId'
 
 export function useDashboardMutations() {
+  const { tenantId } = useProfileTenantId()
   const updateAppointmentMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: { status: string } }) => {
       const { error } = await supabase
@@ -30,7 +32,9 @@ export function useDashboardMutations() {
       date: string
       notes: string
     }) => {
+      if (!tenantId) throw new Error('No se pudo identificar el negocio')
       const payload = {
+        tenant_id: tenantId,
         appointment_id: data.appointment_id,
         amount: data.amount,
         method: data.method,

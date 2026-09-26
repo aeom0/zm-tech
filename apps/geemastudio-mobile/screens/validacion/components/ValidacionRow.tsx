@@ -6,6 +6,7 @@ import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { formatCurrency } from '@/utils/format'
 import { Spacing, BorderRadius, Colors } from '@/constants/theme'
+import { instanteCitaDesdeTexto, zonaIANASegura } from '@zmtech/tenant-config'
 import type { PendingAppointment, VerificationAction } from '../types'
 
 interface ValidacionRowProps {
@@ -21,13 +22,18 @@ export function ValidacionRow({ item, loadingAction, onApprove, onReject }: Vali
 
   const isLoading = loadingAction !== null
 
-  const fecha = new Date(item.date).toLocaleString(config.locale.language, {
+  const fecha = instanteCitaDesdeTexto(item.date, config.locale.timezone).toLocaleString(
+    config.locale.language,
+    {
     weekday: 'short',
     day: 'numeric',
     month: 'short',
     hour: '2-digit',
     minute: '2-digit',
-  })
+      hour12: config.locale.timeFormat === '12',
+      timeZone: zonaIANASegura(config.locale.timezone),
+    }
+  )
 
   return (
     <View

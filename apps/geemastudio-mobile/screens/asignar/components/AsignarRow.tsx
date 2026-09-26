@@ -4,7 +4,9 @@ import { Feather } from '@expo/vector-icons'
 import { ThemedText } from '@/components/ThemedText'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTheme } from '@/hooks/useTheme'
+import { useTenant } from '@/contexts/TenantContext'
 import { Spacing, BorderRadius, Colors } from '@/constants/theme'
+import { instanteCitaDesdeTexto, zonaIANASegura } from '@zmtech/tenant-config'
 import type { AsignarAppointment } from '../types'
 
 interface Employee {
@@ -23,15 +25,18 @@ interface AsignarRowProps {
 
 export function AsignarRow({ item, employees, isSaving, onAssign, locale }: AsignarRowProps) {
   const { theme } = useTheme()
+  const { config } = useTenant()
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null)
   const isAssigned = !!item.employee_id
 
-  const fecha = new Date(item.date).toLocaleString(locale, {
+  const fecha = instanteCitaDesdeTexto(item.date, config.locale.timezone).toLocaleString(locale, {
     weekday: 'short',
     day: 'numeric',
     month: 'short',
     hour: '2-digit',
     minute: '2-digit',
+    hour12: config.locale.timeFormat === '12',
+    timeZone: zonaIANASegura(config.locale.timezone),
   })
 
   const selectedEmployeeName = selectedEmployeeId

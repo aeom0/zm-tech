@@ -7,6 +7,7 @@ import { queryClient } from '@/lib/query-client'
 import { supabase } from '@/lib/supabase'
 import { useTenant } from '@/contexts/TenantContext'
 import { formatCurrency } from '@/utils/format'
+import { useProfileTenantId } from './useProfileTenantId'
 
 import { ABONO_PERCENT } from '../constants'
 import type { FinancesAppointmentOption, FinancesPayment, FinancesPaymentType } from '../types'
@@ -30,6 +31,7 @@ export function usePaymentForm(
   abonoPrevioByApt: Record<string, { amount: number; service_total: number }>
 ) {
   const { config } = useTenant()
+  const { tenantId } = useProfileTenantId()
   const currencySymbol = config.locale.currency.symbol
 
   const [modalVisible, setModalVisible] = useState(false)
@@ -58,6 +60,7 @@ export function usePaymentForm(
       is_abono: boolean
       service_total: number | null
       appointment_id: string | null
+      tenant_id: string
     }) => {
       const { error } = await supabase.from('payments').insert(data)
       if (error) throw new Error(error.message)
@@ -195,6 +198,10 @@ export function usePaymentForm(
       Alert.alert('Error', 'Ingresa un monto válido')
       return
     }
+    if (!tenantId) {
+      Alert.alert('Error', 'No se pudo identificar el negocio')
+      return
+    }
 
     const payload = {
       amount: String(num),
@@ -207,6 +214,7 @@ export function usePaymentForm(
           ? parseFloat(formData.serviceTotal.replace(',', '.'))
           : null,
       appointment_id: selectedAppointmentId,
+      tenant_id: tenantId,
     }
 
     if (editingPayment) {

@@ -11,7 +11,7 @@ import { fetchEmployeeById } from '@/screens/personal/lib/employeesAdapter'
 import { useEmployeesQuery } from '@/screens/personal/hooks/useEmployeesData'
 
 import { buildTopServicesRanking, type ServiceRankRow } from '../utils/service-ranking'
-import { rangeToPeriodDates } from '../lib/billingMonth'
+import { buildTenantInstantRange, rangeToPeriodDates } from '../lib/billingMonth'
 import { usePayouts } from './usePayouts'
 import type {
   FinancesAppointmentOption,
@@ -45,6 +45,10 @@ export function useFinancesData(
   const { config } = useTenant()
   const { tenantId, isLoading: tenantLoading } = useProfileTenantId()
   const tenantTz = zonaIANASegura(config.locale.timezone)
+  const paymentRange = useMemo(
+    () => buildTenantInstantRange(currentRange, tenantTz),
+    [currentRange, tenantTz]
+  )
 
   const { periodStart, periodEnd } = useMemo(() => rangeToPeriodDates(currentRange), [currentRange])
 
@@ -68,13 +72,14 @@ export function useFinancesData(
     isError,
     refetch,
   } = useQuery<FinancesPayment[]>({
-    queryKey: ['payments', currentRange.start, currentRange.end, isAdmin ? 'admin' : userId],
+    queryKey: ['payments', paymentRange.start, paymentRange.end, isAdmin ? 'admin' : userId],
     queryFn: async () => {
       let query = supabase
         .from('payments')
         .select('id, appointment_id, amount, method, date, notes, is_abono, service_total')
-        .gte('date', currentRange.start)
-        .lte('date', currentRange.end)
+        .eq('tenant_id', tenantId!)
+        .gte('date', paymentRange.start)
+        .lt('date', paymentRange.end)
         .order('date', { ascending: false })
 
       if (!isAdmin && userId) {
@@ -103,16 +108,21 @@ export function useFinancesData(
       if (error) throw new Error(error.message)
       return (data ?? []) as FinancesPayment[]
     },
+    enabled: !tenantLoading && !!tenantId,
   })
 
   const { data: recentAppointments = [] } = useQuery<FinancesAppointmentOption[]>({
-    queryKey: ['finances_recent_appointments', isAdmin ? 'admin' : userId],
+    queryKey: ['finances_recent_appointments', tenantId, isAdmin ? 'admin' : userId],
     queryFn: async () => {
       let q = supabase
         .from('appointments')
         .select('id, client_id, client_name, date, status, price, service_id, employee_id')
         .order('date', { ascending: false })
         .limit(100)
+
+      if (tenantId) {
+        q = q.eq('tenant_id', tenantId)
+      }
 
       if (!isAdmin && userId) {
         const { data: prof } = await supabase
@@ -129,15 +139,20 @@ export function useFinancesData(
       if (error) throw new Error(error.message)
       return (data ?? []) as FinancesAppointmentOption[]
     },
+    enabled: !tenantLoading && !!tenantId,
   })
 
   const { data: servicesList = [] } = useQuery<FinancesServiceOption[]>({
-    queryKey: ['finances_services'],
+    queryKey: ['finances_services', tenantId],
     queryFn: async () => {
-      const { data, error } = await supabase.from('services').select('id, name')
+      const { data, error } = await supabase
+        .from('services')
+        .select('id, name')
+        .eq('tenant_id', tenantId!)
       if (error) throw new Error(error.message)
       return (data ?? []) as FinancesServiceOption[]
     },
+    enabled: !!tenantId,
   })
 
   const { data: employeesList = [] } = useEmployeesQuery({ enabled: isAdmin })
@@ -158,20 +173,21 @@ export function useFinancesData(
   })
 
   const { data: appointmentsInPeriod = [] } = useQuery<AppointmentInPeriod[]>({
-    queryKey: ['finances_appointments_in_period', currentRange.start, currentRange.end],
+    queryKey: ['finances_appointments_in_period', tenantId, currentRange.start, currentRange.end],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('appointments')
         .select(
           'id, employee_id, price, status, appointment_services(service_id, employee_id, price, pack_id)'
         )
+        .eq('tenant_id', tenantId!)
         .gte('date', currentRange.start)
-        .lte('date', currentRange.end)
+        .lt('date', currentRange.end)
         .neq('status', 'cancelled')
       if (error) throw new Error(error.message)
       return (data ?? []) as AppointmentInPeriod[]
     },
-    enabled: isAdmin,
+    enabled: isAdmin && !tenantLoading && !!tenantId,
   })
 
   const { data: packsList = [] } = useQuery({

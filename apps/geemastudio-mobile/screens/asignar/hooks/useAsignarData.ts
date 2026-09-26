@@ -1,5 +1,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { formatAppointmentWallclock } from '@zmtech/tenant-config'
+import {
+  formatAppointmentWallclock,
+  inicioDiaHoyEnZonaIANA,
+  sumarDiasEnZonaIANA,
+} from '@zmtech/tenant-config'
 import { supabase } from '@/lib/supabase'
 import { useTenant } from '@/contexts/TenantContext'
 import { useActiveEmployees } from '@/screens/personal/hooks/useEmployeesData'
@@ -32,11 +36,9 @@ export function useAsignarData() {
   } = useQuery<AsignarAppointment[]>({
     queryKey: ['appointments', 'asignar_window_14_days', timeZone],
     queryFn: async () => {
-      const now = new Date()
-      const start = new Date(now)
-      start.setDate(now.getDate() - 7)
-      const end = new Date(now)
-      end.setDate(now.getDate() + 7)
+      const now = inicioDiaHoyEnZonaIANA(timeZone)
+      const start = sumarDiasEnZonaIANA(now, -7, timeZone)
+      const end = sumarDiasEnZonaIANA(now, 7, timeZone)
 
       const { data, error } = await supabase
         .from('appointments')

@@ -19,7 +19,7 @@ export function formatPhone(phone: string | null | undefined): string {
   return `+${cc} ${groups.join(' ')}`.trim()
 }
 
-export function formatRelativeTime(iso: string): string {
+export function formatRelativeTime(iso: string, timeZone = 'America/Caracas'): string {
   const ts = Date.parse(iso)
   if (Number.isNaN(ts)) return ''
 
@@ -28,9 +28,13 @@ export function formatRelativeTime(iso: string): string {
   const abs = Math.abs(diffSec)
 
   const d = new Date(ts)
-  const now = new Date()
-  const sameDay =
-    d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth() && d.getDate() === now.getDate()
+  const formatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  })
+  const sameDay = formatter.format(d) === formatter.format(new Date())
   if (sameDay && abs < 60) return 'hace 1 min'
 
   const rtf = new Intl.RelativeTimeFormat('es', { numeric: 'auto' })
@@ -46,7 +50,7 @@ export function formatRelativeTime(iso: string): string {
 }
 
 /** Fecha + hora absolutas, para mostrar junto al relativo (no lo reemplaza). */
-export function formatAbsoluteWhen(iso: string): string {
+export function formatAbsoluteWhen(iso: string, timeZone = 'America/Caracas'): string {
   if (!iso) return ''
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return ''
@@ -55,5 +59,6 @@ export function formatAbsoluteWhen(iso: string): string {
     month: 'short',
     hour: '2-digit',
     minute: '2-digit',
+    timeZone,
   })
 }

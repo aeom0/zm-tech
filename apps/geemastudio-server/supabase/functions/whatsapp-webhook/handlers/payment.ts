@@ -576,6 +576,7 @@ export async function processPaymentScreenshot(
           const proportional =
             totalPrice > 0 ? Math.round((pl.price / totalPrice) * depositAmount * 100) / 100 : 0
           return {
+            tenant_id: tenantId,
             appointment_id: apptId,
             amount: proportional.toString(),
             method: 'yape_plin',
@@ -587,6 +588,7 @@ export async function processPaymentScreenshot(
       )
     } else {
       await supabase.from('payments').insert({
+        tenant_id: tenantId,
         appointment_id: apptId,
         amount: depositAmount.toString(),
         method: 'yape_plin',

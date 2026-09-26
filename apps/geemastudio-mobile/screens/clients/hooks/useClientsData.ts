@@ -3,6 +3,12 @@ import { useQuery } from '@tanstack/react-query'
 
 import { supabase } from '@/lib/supabase'
 import { useProfileTenantId } from '@/screens/finances/hooks/useProfileTenantId'
+import { useTenant } from '@/contexts/TenantContext'
+import {
+  formatAppointmentWallclock,
+  inicioMesActualEnZonaIANA,
+  instanteCitaDesdeTexto,
+} from '@zmtech/tenant-config'
 import type { Client, ClientWithMetrics, ClientSegment, ClientKPIs, ClientSortKey } from '../types'
 
 interface UseClientsDataResult {
@@ -51,12 +57,16 @@ export function useClientsData(
   sortBy: ClientSortKey = 'last_visit'
 ): UseClientsDataResult {
   const { tenantId, isLoading: tenantLoading } = useProfileTenantId()
+  const { config } = useTenant()
+  const tenantTimezone = config.locale.timezone
   const queryEnabled = !tenantLoading && !!tenantId
 
   const monthStartIso = useMemo(() => {
-    const today = new Date()
-    return new Date(today.getFullYear(), today.getMonth(), 1, 0, 0, 0, 0).toISOString()
-  }, [])
+    return formatAppointmentWallclock(
+      inicioMesActualEnZonaIANA(tenantTimezone),
+      tenantTimezone
+    )
+  }, [tenantTimezone])
 
   const {
     data: clients = [],
@@ -199,7 +209,10 @@ export function useClientsData(
         const totalVisits = completedApts.length
         const daysSinceLastVisit =
           lastVisitDate != null
-            ? Math.floor((now - new Date(lastVisitDate).getTime()) / (1000 * 60 * 60 * 24))
+            ? Math.floor(
+                (now - instanteCitaDesdeTexto(lastVisitDate, tenantTimezone).getTime()) /
+                  (1000 * 60 * 60 * 24)
+              )
             : null
 
         const [favServiceId] =
@@ -215,7 +228,8 @@ export function useClientsData(
           is_vip: totalVisits >= VIP_VISITS || totalSpent >= VIP_SPEND,
           is_new:
             lastVisitDate != null &&
-            now - new Date(lastVisitDate).getTime() < NEW_DAYS * 24 * 60 * 60 * 1000,
+            now - instanteCitaDesdeTexto(lastVisitDate, tenantTimezone).getTime() <
+              NEW_DAYS * 24 * 60 * 60 * 1000,
           is_at_risk: daysSinceLastVisit != null && daysSinceLastVisit > AT_RISK_DAYS,
         }
       })
@@ -240,7 +254,7 @@ export function useClientsData(
           avg_ticket: totalClients > 0 ? totalRevenue / totalClients : 0,
         },
       }
-    }, [clients, appointments, payments, monthStartIso])
+    }, [clients, appointments, payments, monthStartIso, tenantTimezone])
 
   const filteredClients = useMemo(() => {
     const normalizedSearch = searchQuery.trim().toLowerCase()
@@ -272,7 +286,11 @@ export function useClientsData(
           return days > AT_RISK_DAYS
         case 'new':
           if (!c.last_visit_date) return false
-          return (now - new Date(c.last_visit_date).getTime()) / (1000 * 60 * 60 * 24) < NEW_DAYS
+          return (
+            (now - instanteCitaDesdeTexto(c.last_visit_date, tenantTimezone).getTime()) /
+              (1000 * 60 * 60 * 24) <
+            NEW_DAYS
+          )
         default:
           return true
       }
@@ -287,14 +305,18 @@ export function useClientsData(
           return a.name.localeCompare(b.name, 'es', { sensitivity: 'base' })
         case 'last_visit':
         default: {
-          const aT = a.last_visit_date ? new Date(a.last_visit_date).getTime() : 0
-          const bT = b.last_visit_date ? new Date(b.last_visit_date).getTime() : 0
+          const aT = a.last_visit_date
+            ? instanteCitaDesdeTexto(a.last_visit_date, tenantTimezone).getTime()
+            : 0
+          const bT = b.last_visit_date
+            ? instanteCitaDesdeTexto(b.last_visit_date, tenantTimezone).getTime()
+            : 0
           return bT - aT
         }
       }
     })
     return sorted
-  }, [clientsWithMetrics, searchQuery, segment, sortBy])
+  }, [clientsWithMetrics, searchQuery, segment, sortBy, tenantTimezone])
 
   return {
     clients: clientsWithMetrics,

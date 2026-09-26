@@ -156,6 +156,7 @@ export default function FinanzasPage() {
   const mesActual = new Date().toLocaleString('es-419', {
     month: 'long',
     year: 'numeric',
+    timeZone: tenantQ.data?.timezone ?? 'America/Caracas',
   })
 
   return (
@@ -179,6 +180,7 @@ export default function FinanzasPage() {
             onChangeRange={setGrowthRange}
             tenantId={tenantId}
             currencyCode={currencyCode}
+            timezone={tenantQ.data?.timezone ?? 'America/Caracas'}
             primaryColor={brand.primary}
             accentColor={brand.accent}
           />

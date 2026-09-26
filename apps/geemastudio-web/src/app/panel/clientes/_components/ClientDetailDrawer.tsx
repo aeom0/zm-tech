@@ -6,7 +6,7 @@ import { MessageCircle, X } from 'lucide-react'
 import { useClientDetail } from '@/hooks/clientes/useClientDetail'
 import type { ClientWithMetrics } from '@/hooks/clientes/types'
 import { formatDashboardCurrency } from '@/lib/dashboardCurrency'
-import { formatDateShort } from '@/lib/format'
+import { formatAppointmentDateShort } from '@/lib/format'
 import { waMessagesPhoneKey } from '@/lib/waPhone'
 
 const STATUS_LABEL: Record<string, string> = {
@@ -20,10 +20,11 @@ const STATUS_LABEL: Record<string, string> = {
 interface ClientDetailDrawerProps {
   client: ClientWithMetrics
   currencyCode: string
+  timezone: string
   onClose: () => void
 }
 
-export function ClientDetailDrawer({ client, currencyCode, onClose }: ClientDetailDrawerProps) {
+export function ClientDetailDrawer({ client, currencyCode, timezone, onClose }: ClientDetailDrawerProps) {
   const { data: history = [], isLoading, isError, error } = useClientDetail(client.id)
   const waPhone = waMessagesPhoneKey(client.phone)
 
@@ -73,7 +74,11 @@ export function ClientDetailDrawer({ client, currencyCode, onClose }: ClientDeta
           />
           <Metric
             label="Última"
-            value={client.last_visit_date ? formatDateShort(client.last_visit_date) : '—'}
+            value={
+              client.last_visit_date
+                ? formatAppointmentDateShort(client.last_visit_date, timezone)
+                : '—'
+            }
           />
         </div>
 
@@ -106,7 +111,7 @@ export function ClientDetailDrawer({ client, currencyCode, onClose }: ClientDeta
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <div className="text-sm font-medium text-white">
-                      {formatDateShort(apt.date)}
+                      {formatAppointmentDateShort(apt.date, timezone)}
                     </div>
                     <div className="mt-0.5 text-xs text-zinc-500">
                       {STATUS_LABEL[apt.status] ?? apt.status}

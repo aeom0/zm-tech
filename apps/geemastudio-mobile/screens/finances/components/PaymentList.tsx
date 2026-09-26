@@ -7,6 +7,7 @@ import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { formatCurrency } from '@/utils/format'
+import { formatoInstanteEnZona } from '@zmtech/tenant-config'
 
 import { PAYMENT_METHODS } from '../constants'
 import { financesStyles as styles } from '../financesStyles'
@@ -46,12 +47,12 @@ export function PaymentList({
   const currencySymbol = config.locale.currency.symbol
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    return date.toLocaleDateString(config.locale.language, {
+    return formatoInstanteEnZona(dateString, config.locale.timezone, config.locale.language, {
       day: 'numeric',
       month: 'short',
       hour: '2-digit',
       minute: '2-digit',
+      hour12: config.locale.timeFormat === '12',
     })
   }
 

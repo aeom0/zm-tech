@@ -20,6 +20,7 @@ import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { BorderRadius, Spacing, Colors } from '@/constants/theme'
 import { formatCurrency } from '@/utils/format'
+import { instanteCitaDesdeTexto, zonaIANASegura } from '@zmtech/tenant-config'
 
 import type { Pack, Promo, PromotionItem, Service } from '../types'
 import type { PromoItemDraft, PromoSavePayload } from '../hooks/usePromosData'
@@ -46,22 +47,25 @@ function newTempId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
 }
 
-function expiresToInput(iso: string | null): string {
+function expiresToInput(iso: string | null, timeZone: string): string {
   if (!iso) {
     return ''
   }
   try {
-    const d = new Date(iso)
-    const y = d.getFullYear()
-    const m = String(d.getMonth() + 1).padStart(2, '0')
-    const day = String(d.getDate()).padStart(2, '0')
-    return `${y}-${m}-${day}`
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: zonaIANASegura(timeZone),
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).formatToParts(new Date(iso))
+    const get = (type: string) => parts.find((part) => part.type === type)?.value ?? ''
+    return `${get('year')}-${get('month')}-${get('day')}`
   } catch {
     return ''
   }
 }
 
-function inputToExpiresIso(yyyyMmDd: string): string | null {
+function inputToExpiresIso(yyyyMmDd: string, timeZone: string): string | null {
   const t = yyyyMmDd.trim()
   if (!t) {
     return null
@@ -73,8 +77,11 @@ function inputToExpiresIso(yyyyMmDd: string): string | null {
   const y = parseInt(m[1], 10)
   const mo = parseInt(m[2], 10) - 1
   const d = parseInt(m[3], 10)
-  const dt = new Date(y, mo, d, 23, 59, 59)
-  return dt.toISOString()
+  const dt = instanteCitaDesdeTexto(
+    `${y}-${String(mo + 1).padStart(2, '0')}-${String(d).padStart(2, '0')} 23:59:59`,
+    timeZone
+  )
+  return Number.isNaN(dt.getTime()) ? null : dt.toISOString()
 }
 
 export function PromoModal({
@@ -111,7 +118,7 @@ export function PromoModal({
       setBadge(editing.badge?.trim() || '✨')
       setAccentColor(editing.accent_color?.trim() ?? '')
       setIsActive(editing.is_active)
-      setExpiresInput(expiresToInput(editing.expires_at))
+      setExpiresInput(expiresToInput(editing.expires_at, config.locale.timezone))
       const lines = promotionItems
         .filter((pi) => pi.promo_id === editing.id)
         .map((pi) => ({
@@ -194,7 +201,7 @@ export function PromoModal({
       Alert.alert('Ítems', 'Agrega al menos un servicio o pack.')
       return
     }
-    const expires_at = inputToExpiresIso(expiresInput)
+    const expires_at = inputToExpiresIso(expiresInput, config.locale.timezone)
     if (expiresInput.trim() && !expires_at) {
       Alert.alert('Vencimiento', 'Usa formato AAAA-MM-DD o deja vacío si no aplica.')
       return

@@ -1,6 +1,8 @@
 import { Text, View } from 'react-native'
 
 import { Spacing } from '@/constants/theme'
+import { useTenant } from '@/contexts/TenantContext'
+import { zonaIANASegura, formatoInstanteEnZona } from '@zmtech/tenant-config'
 
 import { inventoryStyles as styles } from '../inventoryStyles'
 import type { InventoryItem, InventoryMovement } from '../types'
@@ -18,16 +20,18 @@ interface InventoryMovementListProps {
   }
 }
 
-function formatMovementDate(value: string) {
-  return new Intl.DateTimeFormat('es-PE', {
+function formatMovementDate(value: string, language: string, timeZone: string) {
+  return formatoInstanteEnZona(value, timeZone, language, {
     day: '2-digit',
     month: 'short',
     hour: '2-digit',
     minute: '2-digit',
-  }).format(new Date(value))
+    hour12: false,
+  })
 }
 
 export function InventoryMovementList({ movements, items, theme }: InventoryMovementListProps) {
+  const { config } = useTenant()
   if (movements.length === 0) return null
 
   const itemNames = new Map(items.map((item) => [item.id, item.name]))
@@ -51,7 +55,12 @@ export function InventoryMovementList({ movements, items, theme }: InventoryMove
                     'Producto eliminado'}
                 </Text>
                 <Text style={[styles.movementDate, { color: theme.textMuted }]}>
-                  {formatMovementDate(movement.created_at)} · {movement.quantity_before} →{' '}
+                  {formatMovementDate(
+                    movement.created_at,
+                    config.locale.language,
+                    zonaIANASegura(config.locale.timezone)
+                  )}{' '}
+                  · {movement.quantity_before} →{' '}
                   {movement.quantity_after}
                 </Text>
               </View>

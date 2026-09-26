@@ -10,11 +10,12 @@ import {
   type ClientWithMetrics,
 } from '@/hooks/clientes/types'
 import { formatDashboardCurrency } from '@/lib/dashboardCurrency'
-import { formatDateShort } from '@/lib/format'
+import { formatAppointmentDateShort } from '@/lib/format'
 
 interface ClientCardProps {
   client: ClientWithMetrics
   currencyCode: string
+  timezone: string
   onClick: () => void
 }
 
@@ -35,7 +36,7 @@ function deriveBadge(client: ClientWithMetrics): { label: string; className: str
   return null
 }
 
-export function ClientCard({ client, currencyCode, onClick }: ClientCardProps) {
+export function ClientCard({ client, currencyCode, timezone, onClick }: ClientCardProps) {
   const badge = deriveBadge(client)
   const initial = client.name.charAt(0).toUpperCase() || '?'
 
@@ -71,7 +72,9 @@ export function ClientCard({ client, currencyCode, onClick }: ClientCardProps) {
           <span>{formatDashboardCurrency(client.total_spent, currencyCode)}</span>
           <span>
             Última:{' '}
-            {client.last_visit_date ? formatDateShort(client.last_visit_date) : 'Sin visitas'}
+            {client.last_visit_date
+              ? formatAppointmentDateShort(client.last_visit_date, timezone)
+              : 'Sin visitas'}
           </span>
         </div>
       </div>

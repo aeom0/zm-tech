@@ -1,3 +1,5 @@
+import { instanteCitaDesdeTexto } from '@zmtech/tenant-config'
+
 function tenantDateParts(timezone: string, d: Date = new Date()) {
   const parts = new Intl.DateTimeFormat('en-CA', {
     timeZone: timezone,
@@ -81,4 +83,17 @@ export function buildFinancesDateRanges(timezone: string) {
     week: { start: weekStart, end: todayEnd },
     month: { start: monthStart, end: todayEnd },
   } as const
+}
+
+/** Convierte un rango de pared del tenant a instantes UTC para columnas timestamptz. */
+export function buildTenantInstantRange(
+  range: { start: string; end: string },
+  timezone: string
+): { start: string; end: string } {
+  const start = instanteCitaDesdeTexto(range.start, timezone)
+  const end = instanteCitaDesdeTexto(range.end, timezone)
+  return {
+    start: start.toISOString(),
+    end: end.toISOString(),
+  }
 }

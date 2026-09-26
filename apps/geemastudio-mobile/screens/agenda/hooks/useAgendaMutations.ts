@@ -36,8 +36,8 @@ async function guardOverlapBeforeInsert(args: {
   timeZone: string
   excludeAppointmentId?: string | null
 }) {
-  const candidateStart =
-    parseAppointmentWallclock(args.dateIso, args.timeZone) ?? new Date(args.dateIso)
+  const candidateStart = parseAppointmentWallclock(args.dateIso, args.timeZone)
+  if (!candidateStart) throw new Error('La fecha de la cita no es válida.')
   const candidateEnd = addMinutes(candidateStart, args.durationMinutes)
 
   const windowStart = addMinutes(candidateStart, -12 * 60)
@@ -67,7 +67,8 @@ async function guardOverlapBeforeInsert(args: {
       continue
     }
 
-    const start = parseAppointmentWallclock(apt.date, args.timeZone) ?? new Date(apt.date)
+    const start = parseAppointmentWallclock(apt.date, args.timeZone)
+    if (!start) continue
     const end = addMinutes(start, apt.duration)
     const overlaps = start < candidateEnd && end > candidateStart
     if (!overlaps) continue
@@ -374,6 +375,7 @@ export function useAgendaMutations(
       notes: string
     }) => {
       const payload = {
+        tenant_id: tenantId,
         appointment_id: data.appointment_id,
         amount: data.amount,
         method: data.method,

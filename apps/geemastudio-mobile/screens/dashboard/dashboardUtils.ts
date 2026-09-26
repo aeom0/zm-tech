@@ -9,8 +9,14 @@ export function parseAppointmentDate(dateString: string, timeZone: string): Date
   return instanteCitaDesdeTexto(dateString, timeZone)
 }
 
-export function getGreeting(): string {
-  const h = new Date().getHours()
+export function getGreeting(timeZone?: string): string {
+  const h = Number(
+    new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric',
+      hour12: false,
+      ...(timeZone ? { timeZone: zonaIANASegura(timeZone) } : {}),
+    }).format(new Date())
+  )
   if (h < 12) return 'Buenos días'
   if (h < 18) return 'Buenas tardes'
   return 'Buenas noches'

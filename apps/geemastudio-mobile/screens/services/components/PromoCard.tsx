@@ -6,6 +6,7 @@ import { ThemedText } from '@/components/ThemedText'
 import type { TenantConfig } from '@zmtech/tenant-config'
 import { formatCurrency } from '@/utils/format'
 import { BorderRadius, Shadows, Spacing, Colors } from '@/constants/theme'
+import { formatoInstanteEnZona } from '@zmtech/tenant-config'
 
 import type { Promo } from '../types'
 
@@ -38,13 +39,12 @@ function withAlpha(color: string, alpha: string): string {
   return HEX_COLOR.test(color) ? color + alpha : color
 }
 
-function formatExpires(iso: string | null): string {
+function formatExpires(iso: string | null, config: TenantConfig): string {
   if (!iso) {
     return 'Sin vencimiento'
   }
   try {
-    const d = new Date(iso)
-    return d.toLocaleDateString('es-VE', {
+    return formatoInstanteEnZona(iso, config.locale.timezone, config.locale.language, {
       day: '2-digit',
       month: 'short',
       year: 'numeric',
@@ -106,7 +106,7 @@ function PromoCardImpl({
             </ThemedText>
             <ThemedText style={[styles.expires, { color: theme.textMuted }]}>
               <Feather name="calendar" size={11} color={theme.textMuted} />{' '}
-              {formatExpires(promo.expires_at)}
+                {formatExpires(promo.expires_at, config)}
             </ThemedText>
           </View>
           <View style={styles.priceCol}>

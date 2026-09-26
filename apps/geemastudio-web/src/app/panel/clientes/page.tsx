@@ -85,6 +85,7 @@ export default function PanelClientesPage() {
               key={client.id}
               client={client}
               currencyCode={currencyCode}
+              timezone={tenantQuery.data?.timezone ?? 'America/Caracas'}
               onClick={() => setSelected(client)}
             />
           ))}
@@ -95,6 +96,7 @@ export default function PanelClientesPage() {
         <ClientDetailDrawer
           client={selected}
           currencyCode={currencyCode}
+          timezone={tenantQuery.data?.timezone ?? 'America/Caracas'}
           onClose={() => setSelected(null)}
         />
       )}

@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { getLimaDateParts, limaMonthStart } from './executiveDates'
+import { getTenantDateParts, tenantMonthStart } from './executiveDates'
 import {
   countExpensesForMonth,
   fetchMonthlyClientGrowth,
@@ -51,11 +51,11 @@ export const KIND_LABEL: Record<SoldKind, string> = {
   promo: 'Promo',
 }
 
-function limaMonthMeta(iso: string) {
+function tenantMonthMeta(iso: string, timeZone: string) {
   const [y, m] = iso.slice(0, 10).split('-').map(Number)
   const daysDelMes = new Date(y, m, 0).getDate()
-  const today = getLimaDateParts()
-  const sameMonth = limaMonthStart() === `${y}-${String(m).padStart(2, '0')}-01`
+  const today = getTenantDateParts(timeZone)
+  const sameMonth = tenantMonthStart(timeZone) === `${y}-${String(m).padStart(2, '0')}-01`
   const diasRestantes = sameMonth ? Math.max(0, daysDelMes - today.day + 1) : daysDelMes
   return { daysDelMes, diasRestantes }
 }
@@ -63,9 +63,10 @@ function limaMonthMeta(iso: string) {
 export function useExecutiveDashboard(
   range: GrowthRange,
   tenantId: string | null,
-  focusMonth?: string
+  focusMonth?: string,
+  timeZone = 'America/Caracas'
 ) {
-  const currentMonth = limaMonthStart()
+  const currentMonth = tenantMonthStart(timeZone)
   const from = rangeFrom(currentMonth, range)
   const targetMonth = focusMonth ?? currentMonth
   const enabled = Boolean(tenantId)
@@ -133,7 +134,7 @@ export function useExecutiveDashboard(
     const ticket = citas > 0 ? ingresos / citas : null
     const citasNecesarias = ticket && ticket > 0 ? Math.ceil(costos / ticket) : null
     const faltan = citasNecesarias == null ? null : Math.max(0, citasNecesarias - citas)
-    const { daysDelMes, diasRestantes } = limaMonthMeta(targetMonth)
+    const { daysDelMes, diasRestantes } = tenantMonthMeta(targetMonth, timeZone)
     const gastosCargados =
       targetMonth === currentMonth ? (expenseCountQ.data ?? 0) > 0 : true
     return {

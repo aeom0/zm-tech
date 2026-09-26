@@ -1,5 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
+import { useTenant } from '@/contexts/TenantContext'
+import { useProfileTenantId } from '@/screens/finances/hooks/useProfileTenantId'
+import {
+  formatAppointmentWallclock,
+  inicioDiaHoyEnZonaIANA,
+  instanteCitaDesdeTexto,
+} from '@zmtech/tenant-config'
 import type { ClienteSegmento } from '../types'
 
 /**
@@ -14,9 +21,19 @@ function normalizeBlockedDestination(dest: string): string {
 }
 
 export function useClientesSegmento(categoryName: string | null, inactiveOnly = false) {
+  const { config } = useTenant()
+  const { tenantId } = useProfileTenantId()
+  const timeZone = config.locale.timezone
+
   return useQuery<ClienteSegmento[]>({
-    queryKey: ['promo/clientes-segmento', categoryName ?? 'all', inactiveOnly ? '30-plus-days' : 'all'],
+    queryKey: [
+      'promo/clientes-segmento',
+      timeZone,
+      categoryName ?? 'all',
+      inactiveOnly ? '30-plus-days' : 'all',
+    ],
     staleTime: 1000 * 60 * 5,
+    enabled: !!tenantId,
     queryFn: async () => {
       const MAX_ROWS = 10000
 
@@ -26,12 +43,14 @@ export function useClientesSegmento(categoryName: string | null, inactiveOnly = 
             .from('appointments')
             .select('client_id')
             .eq('status', 'completed')
+            .eq('tenant_id', tenantId!)
             .not('client_id', 'is', null)
             .limit(MAX_ROWS),
           supabase
             .from('appointments')
             .select('client_id')
-            .gte('date', new Date().toISOString())
+            .eq('tenant_id', tenantId!)
+            .gte('date', formatAppointmentWallclock(new Date(), timeZone))
             .not('client_id', 'is', null)
             .limit(MAX_ROWS),
           supabase.from('whatsapp_sessions').select('phone, from_ad_at').not('from_ad_at', 'is', null).limit(MAX_ROWS),
@@ -134,8 +153,7 @@ export function useClientesSegmento(categoryName: string | null, inactiveOnly = 
         }
       }
 
-      const today = new Date()
-      today.setHours(0, 0, 0, 0)
+      const today = inicioDiaHoyEnZonaIANA(timeZone)
       const result = clients
         .map((c) => {
           const dest =
@@ -144,7 +162,11 @@ export function useClientesSegmento(categoryName: string | null, inactiveOnly = 
           if (blockedPhones.has(normalizeBlockedDestination(dest))) return null
           const lastAppointmentDate = lastApptMap[c.id] ?? null
           const daysSinceLastVisit = lastAppointmentDate
-            ? Math.floor((today.getTime() - new Date(lastAppointmentDate).setHours(0, 0, 0, 0)) / (1000 * 60 * 60 * 24))
+            ? Math.floor(
+                (today.getTime() -
+                  instanteCitaDesdeTexto(lastAppointmentDate, timeZone).getTime()) /
+                  (1000 * 60 * 60 * 24)
+              )
             : null
           const isMetaAdsLead = metaAdsDestinations.has(normalizeBlockedDestination(dest))
 

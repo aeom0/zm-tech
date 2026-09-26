@@ -2,8 +2,13 @@
 
 import { useEffect, useState, useMemo } from 'react'
 import { calculateEmployeeEarnings } from '@geemastudio/shared-schema'
+import {
+  formatAppointmentWallclock,
+  instanteCitaDesdeTexto,
+} from '@zmtech/tenant-config'
 import { supabase } from '@/lib/supabase'
 import { DEFAULT_TENANT_PRIMARY } from '@/lib/tenant-theme'
+import { useDashboardTenant } from '@/hooks/dashboard/useDashboardTenant'
 import { usePayouts } from './usePayouts'
 
 export type FinanzasPeriod = 'day' | 'week' | 'month'
@@ -67,47 +72,53 @@ type EmployeeCommissionRow = {
   salary_amount: string | null
 }
 
-function startOfDay(d: Date) {
-  const x = new Date(d)
-  x.setHours(0, 0, 0, 0)
-  return x
+function tenantCalendarDate(timeZone: string, date: Date = new Date()): string {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(date)
+  const value = (type: string) => parts.find((part) => part.type === type)?.value ?? '01'
+  return `${value('year')}-${value('month')}-${value('day')}`
 }
 
-function addDays(d: Date, n: number) {
-  const x = new Date(d)
-  x.setDate(x.getDate() + n)
-  return x
+function shiftCalendarDate(dateOnly: string, days: number): string {
+  const date = new Date(`${dateOnly}T00:00:00Z`)
+  date.setUTCDate(date.getUTCDate() + days)
+  return date.toISOString().slice(0, 10)
 }
 
-function startOfWeek(d: Date) {
-  const x = startOfDay(d)
-  const day = x.getDay()
-  const diff = day === 0 ? -6 : 1 - day
-  return addDays(x, diff)
+function nextMonth(dateOnly: string): string {
+  const date = new Date(`${dateOnly.slice(0, 7)}-01T00:00:00Z`)
+  date.setUTCMonth(date.getUTCMonth() + 1)
+  return date.toISOString().slice(0, 10)
 }
 
-function startOfMonth(d: Date) {
-  const x = new Date(d.getFullYear(), d.getMonth(), 1)
-  x.setHours(0, 0, 0, 0)
-  return x
-}
-
-function buildRange(period: FinanzasPeriod): { start: Date; end: Date } {
-  const now = new Date()
-  if (period === 'day') {
-    const s = startOfDay(now)
-    return { start: s, end: addDays(s, 1) }
+function buildRange(period: FinanzasPeriod, timeZone: string): { start: Date; end: Date } {
+  const today = tenantCalendarDate(timeZone)
+  const date = new Date(`${today}T00:00:00Z`)
+  const day = date.getUTCDay()
+  const startDate =
+    period === 'day'
+      ? today
+      : period === 'week'
+        ? shiftCalendarDate(today, day === 0 ? -6 : 1 - day)
+        : `${today.slice(0, 8)}01`
+  const endDate =
+    period === 'day'
+      ? shiftCalendarDate(startDate, 1)
+      : period === 'week'
+        ? shiftCalendarDate(startDate, 7)
+        : nextMonth(startDate)
+  return {
+    start: instanteCitaDesdeTexto(`${startDate} 00:00:00`, timeZone),
+    end: instanteCitaDesdeTexto(`${endDate} 00:00:00`, timeZone),
   }
-  if (period === 'week') {
-    const s = startOfWeek(now)
-    return { start: s, end: addDays(s, 7) }
-  }
-  const s = startOfMonth(now)
-  return { start: s, end: new Date(s.getFullYear(), s.getMonth() + 1, 1) }
 }
 
-function toDateOnly(d: Date) {
-  return d.toISOString().slice(0, 10)
+function toDateOnly(d: Date, timeZone: string) {
+  return formatAppointmentWallclock(d, timeZone).slice(0, 10)
 }
 
 /** `fallbackColor`: color de marca del tenant para empleados sin color propio. */
@@ -128,10 +139,23 @@ export function useFinanzasData(fallbackColor: string = DEFAULT_TENANT_PRIMARY):
   >([])
   const [employeesFull, setEmployeesFull] = useState<EmployeeCommissionRow[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const tenantSettings = useDashboardTenant()
+  const timeZone = tenantSettings.data?.timezone ?? 'America/Caracas'
 
-  const range = useMemo(() => buildRange(period), [period])
-  const periodStart = useMemo(() => toDateOnly(range.start), [range])
-  const periodEnd = useMemo(() => toDateOnly(addDays(range.end, -1)), [range])
+  const range = useMemo(() => buildRange(period, timeZone), [period, timeZone])
+  const periodStart = useMemo(() => toDateOnly(range.start, timeZone), [range, timeZone])
+  const periodEnd = useMemo(
+    () => shiftCalendarDate(toDateOnly(range.end, timeZone), -1),
+    [range, timeZone]
+  )
+  const appointmentRangeStart = useMemo(
+    () => formatAppointmentWallclock(range.start, timeZone),
+    [range, timeZone]
+  )
+  const appointmentRangeEnd = useMemo(
+    () => formatAppointmentWallclock(range.end, timeZone),
+    [range, timeZone]
+  )
   /** Días del período, para prorratear salary_amount (asumido mensual). */
   const periodDays = useMemo(
     () => Math.max(1, Math.round((range.end.getTime() - range.start.getTime()) / 86400000)),
@@ -226,8 +250,8 @@ export function useFinanzasData(fallbackColor: string = DEFAULT_TENANT_PRIMARY):
         const { data: aData } = await sb
           .from('appointments')
           .select('id, employee_id, price, employees(name, color)')
-          .gte('date', range.start.toISOString())
-          .lt('date', range.end.toISOString())
+          .gte('date', appointmentRangeStart)
+          .lt('date', appointmentRangeEnd)
 
         type AppointmentJoinRow = {
           id: string
@@ -253,8 +277,8 @@ export function useFinanzasData(fallbackColor: string = DEFAULT_TENANT_PRIMARY):
         const { data: asData } = await sb
           .from('appointment_services')
           .select('appointment_id, service_id, employee_id, price, appointments!inner(date)')
-          .gte('appointments.date', range.start.toISOString())
-          .lt('appointments.date', range.end.toISOString())
+          .gte('appointments.date', appointmentRangeStart)
+          .lt('appointments.date', appointmentRangeEnd)
         setAppointmentServices(
           (
             (asData ?? []) as {
@@ -283,7 +307,7 @@ export function useFinanzasData(fallbackColor: string = DEFAULT_TENANT_PRIMARY):
     }
 
     fetchAll()
-  }, [range])
+  }, [range, appointmentRangeStart, appointmentRangeEnd])
 
   const totalMes = useMemo(() => payments.reduce((s, p) => s + parseFloat(p.amount), 0), [payments])
 

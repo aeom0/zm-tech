@@ -8,6 +8,7 @@ import { Spacing, BorderRadius } from '@/constants/theme'
 import type { ClientWithMetrics, ClientSegment } from '../types'
 import { useTenant } from '@/contexts/TenantContext'
 import { formatCurrency } from '@/utils/format'
+import { instanteCitaDesdeTexto, zonaIANASegura } from '@zmtech/tenant-config'
 import {
   buildWhatsAppUrl,
   openExternalUrl,
@@ -56,10 +57,14 @@ export function ClientCard({ client, segment: _segment, onPress }: Props) {
           : null
 
   const lastVisitLabel = client.last_visit_date
-    ? new Date(client.last_visit_date).toLocaleDateString(config.locale.language, {
+    ? instanteCitaDesdeTexto(client.last_visit_date, config.locale.timezone).toLocaleDateString(
+        config.locale.language,
+        {
         day: 'numeric',
         month: 'short',
-      })
+          timeZone: zonaIANASegura(config.locale.timezone),
+        }
+      )
     : 'Sin visitas'
 
   const showReengage = derivedSegment === 'at_risk' && Boolean(client.phone?.trim())

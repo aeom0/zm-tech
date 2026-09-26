@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase'
 export interface DashboardTenantRow {
   business_name: string
   currency_code: string | null
+  timezone: string
 }
 
 export function useDashboardTenant(enabled = true) {
@@ -21,7 +22,7 @@ export function useDashboardTenant(enabled = true) {
       if (!user) return null
       const { data, error } = await supabase
         .from('tenant_settings')
-        .select('business_name, currency_code')
+        .select('business_name, currency_code, timezone')
         .eq('id', user.id)
         .maybeSingle()
       if (error) throw new Error(error.message)
@@ -29,6 +30,7 @@ export function useDashboardTenant(enabled = true) {
       return {
         business_name: data.business_name as string,
         currency_code: (data.currency_code as string | null) ?? null,
+        timezone: (data.timezone as string | null) ?? 'America/Caracas',
       }
     },
     staleTime: 60_000,

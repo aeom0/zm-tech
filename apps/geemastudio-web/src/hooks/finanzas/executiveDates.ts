@@ -24,7 +24,6 @@ export function fmtCompactMoney(n: number, currencyCode = 'PEN') {
 /** Alias histórico. */
 export const fmtCompactSoles = fmtCompactMoney
 
-const LIMA_TZ = 'America/Lima'
 const MONTH_SHORT = [
   'Ene',
   'Feb',
@@ -40,14 +39,14 @@ const MONTH_SHORT = [
   'Dic',
 ] as const
 
-/** Partes de calendario en zona Lima (default PE; otros TZ → Fase T). */
-export function getLimaDateParts(d: Date = new Date()): {
+/** Partes de calendario en la zona IANA del tenant. */
+export function getTenantDateParts(timeZone: string, d: Date = new Date()): {
   y: number
   m: number
   day: number
 } {
   const fmt = new Intl.DateTimeFormat('en-CA', {
-    timeZone: LIMA_TZ,
+    timeZone,
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
@@ -61,9 +60,9 @@ export function getLimaDateParts(d: Date = new Date()): {
   }
 }
 
-/** Primer día del mes Lima como `YYYY-MM-01`. */
-export function limaMonthStart(d: Date = new Date()): string {
-  const { y, m } = getLimaDateParts(d)
+/** Primer día del mes del tenant como `YYYY-MM-01`. */
+export function tenantMonthStart(timeZone: string, d: Date = new Date()): string {
+  const { y, m } = getTenantDateParts(timeZone, d)
   return `${y}-${String(m + 1).padStart(2, '0')}-01`
 }
 

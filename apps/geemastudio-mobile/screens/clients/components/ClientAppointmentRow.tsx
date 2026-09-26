@@ -6,6 +6,7 @@ import { useTheme } from '@/hooks/useTheme'
 import { Spacing, BorderRadius } from '@/constants/theme'
 import { useTenant } from '@/contexts/TenantContext'
 import { formatCurrency } from '@/utils/format'
+import { instanteCitaDesdeTexto, zonaIANASegura } from '@zmtech/tenant-config'
 import type { AppointmentHistory } from '../types'
 
 interface Props {
@@ -19,12 +20,17 @@ export function ClientAppointmentRow({ appointment }: Props) {
   const { date, status, services, employee_name, employee_color, total_paid, pending_amount } =
     appointment
 
-  const dateLabel = new Date(date).toLocaleString(config.locale.language, {
+  const dateLabel = instanteCitaDesdeTexto(date, config.locale.timezone).toLocaleString(
+    config.locale.language,
+    {
     day: 'numeric',
     month: 'short',
     hour: '2-digit',
     minute: '2-digit',
-  })
+      hour12: config.locale.timeFormat === '12',
+      timeZone: zonaIANASegura(config.locale.timezone),
+    }
+  )
 
   const statusConfig =
     status === 'completed'

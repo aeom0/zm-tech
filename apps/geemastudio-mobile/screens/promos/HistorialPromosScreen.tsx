@@ -13,6 +13,7 @@ import { useHaptics } from '@/hooks/useHaptics'
 import { Spacing, BorderRadius } from '@/constants/theme'
 import { supabase } from '@/lib/supabase'
 import type { PromoBroadcast } from './types'
+import { formatoInstanteEnZona } from '@zmtech/tenant-config'
 
 function extractPromoImagePath(imageUrl: string | null): string | null {
   if (!imageUrl) return null
@@ -121,8 +122,7 @@ export default function HistorialPromosScreen() {
 
   const formatDate = (value: string | null) => {
     if (!value) return 'Sin fecha'
-    const d = new Date(value)
-    return d.toLocaleString(config.locale.language, {
+    return formatoInstanteEnZona(value, config.locale.timezone, config.locale.language, {
       day: '2-digit',
       month: 'short',
       hour: '2-digit',

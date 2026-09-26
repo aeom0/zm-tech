@@ -1,5 +1,9 @@
 import { useQuery } from '@tanstack/react-query'
-import { formatAppointmentWallclock } from '@zmtech/tenant-config'
+import {
+  formatAppointmentWallclock,
+  inicioDiaHoyEnZonaIANA,
+  sumarDiasEnZonaIANA,
+} from '@zmtech/tenant-config'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
@@ -39,9 +43,8 @@ export function usePendingBadgeCount() {
   const { data: unassignedCount = 0 } = useQuery<number>({
     queryKey: ['badges', 'unassigned_next_7_days', timeZone],
     queryFn: async () => {
-      const now = new Date()
-      const end = new Date()
-      end.setDate(now.getDate() + 7)
+      const now = inicioDiaHoyEnZonaIANA(timeZone)
+      const end = sumarDiasEnZonaIANA(now, 7, timeZone)
       const { count, error } = await supabase
         .from('appointments')
         .select('id', { count: 'exact', head: true })

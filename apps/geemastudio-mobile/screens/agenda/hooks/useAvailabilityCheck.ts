@@ -37,7 +37,8 @@ function computeOverlapBusyUntil(args: {
     if (args.excludeAppointmentId && apt.id === args.excludeAppointmentId) {
       continue
     }
-    const start = parseAppointmentWallclock(apt.date, args.timeZone) ?? new Date(apt.date)
+    const start = parseAppointmentWallclock(apt.date, args.timeZone)
+    if (!start) continue
     const end = addMinutes(start, apt.duration)
 
     const overlaps = start < candidateEnd && end > args.candidateStart

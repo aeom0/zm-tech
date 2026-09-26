@@ -11,7 +11,7 @@ import { getCancelReasonLabel } from '@geemastudio/shared-schema'
 
 import { STATUS_LABEL, type AgendaAppointment } from '@/hooks/agenda/types'
 import { formatDashboardCurrency } from '@/lib/dashboardCurrency'
-import { formatDateShort } from '@/lib/format'
+import { formatAppointmentDateShort } from '@/lib/format'
 
 interface AppointmentDetailDrawerProps {
   apt: AgendaAppointment
@@ -58,7 +58,7 @@ export function AppointmentDetailDrawer({
             <div className="text-xs text-zinc-500">Cita</div>
             <h2 className="truncate text-lg font-bold text-white">{apt.client_name}</h2>
             <p className="mt-1 text-sm text-zinc-400">
-              {formatDateShort(apt.date)} · {hora}
+              {formatAppointmentDateShort(apt.date, timezone)} · {hora}
             </p>
           </div>
           <button

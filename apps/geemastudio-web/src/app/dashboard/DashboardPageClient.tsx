@@ -17,7 +17,10 @@ import { TopStaffCard } from './_components/TopStaffCard'
 import { resolveDashboardCurrencyCode } from '@/lib/dashboardCurrency'
 
 export default function DashboardPageClient() {
-  const { period, setPeriod, dateRange, appointmentsRange, customRange, setCustomRange } = useDashboardPeriod()
+  const tenantQ = useDashboardTenant()
+  const timezone = tenantQ.data?.timezone ?? 'America/Caracas'
+  const { period, setPeriod, dateRange, appointmentsRange, customRange, setCustomRange } =
+    useDashboardPeriod(timezone)
 
   const handlePeriodChange = (p: PeriodKey) => {
     if (p === 'custom') {
@@ -26,10 +29,9 @@ export default function DashboardPageClient() {
     setPeriod(p)
   }
 
-  const tenantQ = useDashboardTenant()
   const currencyCode = resolveDashboardCurrencyCode(tenantQ.data?.currency_code)
 
-  const revenueQ = useDashboardRevenue(dateRange)
+  const revenueQ = useDashboardRevenue(dateRange, timezone)
   const appointmentsQ = useDashboardAppointments(appointmentsRange)
   const topStaffQ = useDashboardTopStaff(dateRange)
   const clientsQ = useDashboardClients(dateRange)
