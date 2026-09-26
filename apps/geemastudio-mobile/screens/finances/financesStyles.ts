@@ -258,6 +258,22 @@ export const financesStyles = StyleSheet.create({
     justifyContent: 'center',
     ...Shadows.lg,
   },
+  retailCard: {
+    borderWidth: 1,
+    borderRadius: 12,
+    padding: Spacing.md,
+    marginTop: Spacing.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.md,
+  },
+  retailCardIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   kpiRowTablet: {
     flexDirection: 'row',
     gap: Spacing.md,

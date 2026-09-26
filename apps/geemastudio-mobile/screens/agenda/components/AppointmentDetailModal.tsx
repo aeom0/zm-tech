@@ -3,11 +3,13 @@ import { View, Modal, Pressable, ActivityIndicator, ScrollView, Alert } from 're
 import { Feather } from '@expo/vector-icons'
 import { Image } from 'expo-image'
 import * as ImagePicker from 'expo-image-picker'
+import { useQuery } from '@tanstack/react-query'
 
 import { ThemedText } from '@/components/ThemedText'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTenant } from '@/contexts/TenantContext'
 import { formatCurrency } from '@/utils/format'
+import { supabase } from '@/lib/supabase'
 import { BorderRadius, Colors, Spacing } from '@/constants/theme'
 
 import { PAYMENT_METHODS } from '@/screens/finances/constants'
@@ -117,6 +119,17 @@ interface AppointmentDetailModalProps {
   addReferencePending: boolean
   onMarkReferencesReviewed: (appointment: AgendaAppointment) => void
   markReferencesReviewedPending: boolean
+  onAddProduct: () => void
+  /** Modales hijos: en iOS deben vivir DENTRO de este Modal para presentarse encima. */
+  nestedModals?: React.ReactNode
+}
+
+interface RetailOrderRow {
+  id: string
+  quantity: number
+  unit_price: string
+  status: string
+  inventory_items: { name: string } | null
 }
 
 const MAX_REFERENCE_IMAGES = 5
@@ -180,9 +193,28 @@ export function AppointmentDetailModal({
   addReferencePending,
   onMarkReferencesReviewed,
   markReferencesReviewedPending,
+  onAddProduct,
+  nestedModals,
 }: AppointmentDetailModalProps) {
   const { holidayIndex } = useSalonHolidays(true)
   const { config } = useTenant()
+  const { data: productOrders = [] } = useQuery<RetailOrderRow[]>({
+    queryKey: ['retail_product_orders', appointment?.id],
+    enabled: visible && !!appointment?.id,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('product_orders')
+        .select('id, quantity, unit_price, status, inventory_items(name)')
+        .eq('appointment_id', appointment?.id ?? '')
+        .neq('status', 'cancelled')
+      if (error) throw new Error(error.message)
+      return (data ?? []) as unknown as RetailOrderRow[]
+    },
+  })
+  const productTotal = productOrders.reduce(
+    (sum, item) => sum + Number(item.unit_price) * item.quantity,
+    0
+  )
   type EnrichedLine = AgendaService & {
     employeeId: string
     employee?: AgendaEmployee
@@ -477,7 +509,68 @@ export function AppointmentDetailModal({
                         </Pressable>
                       </>
                     ) : null}
+                    <Pressable
+                      style={[
+                        styles.addSvcBtn,
+                        { borderColor: theme.primary, marginTop: Spacing.sm },
+                      ]}
+                      onPress={onAddProduct}
+                    >
+                      <Feather name="shopping-bag" size={16} color={theme.primary} />
+                      <ThemedText style={[styles.addSvcBtnText, { color: theme.primary }]}>
+                        Agregar producto vendido
+                      </ThemedText>
+                    </Pressable>
                   </View>
+
+                  {productOrders.length > 0 ? (
+                    <View style={styles.formSection}>
+                      <View style={styles.sectionHeader}>
+                        <Feather name="shopping-bag" size={16} color={theme.primary} />
+                        <ThemedText style={[styles.sectionLabel, { color: theme.textSecondary }]}>
+                          Productos vendidos
+                        </ThemedText>
+                      </View>
+                      {productOrders.map((item) => (
+                        <View
+                          key={item.id}
+                          style={[
+                            styles.svcRow,
+                            {
+                              backgroundColor: theme.backgroundSecondary,
+                              borderColor: theme.border,
+                            },
+                          ]}
+                        >
+                          <View style={{ flex: 1 }}>
+                            <ThemedText style={[styles.svcName, { color: theme.text }]}>
+                              {item.inventory_items?.name ?? 'Producto'} × {item.quantity}
+                            </ThemedText>
+                            <ThemedText style={[styles.svcDetail, { color: theme.textMuted }]}>
+                              {item.status === 'paid' || item.status === 'delivered'
+                                ? 'Pagado'
+                                : item.status === 'pedido'
+                                  ? 'Pedido'
+                                  : 'Apartado'}
+                            </ThemedText>
+                          </View>
+                          <ThemedText style={[styles.svcDetail, { color: theme.primary }]}>
+                            {formatCurrency(Number(item.unit_price) * item.quantity, config)}
+                          </ThemedText>
+                        </View>
+                      ))}
+                      <View
+                        style={[styles.totalRow, { backgroundColor: theme.backgroundSecondary }]}
+                      >
+                        <ThemedText style={[styles.totalLabel, { color: theme.textSecondary }]}>
+                          Total visita
+                        </ThemedText>
+                        <ThemedText style={[styles.totalPrice, { color: theme.primary }]}>
+                          {formatCurrency(editTotal + productTotal, config)}
+                        </ThemedText>
+                      </View>
+                    </View>
+                  ) : null}
 
                   {canMarkCompleted ? (
                     <>
@@ -493,7 +586,11 @@ export function AppointmentDetailModal({
                           <ActivityIndicator color={Colors.light.buttonText} />
                         ) : (
                           <>
-                            <Feather name="check-circle" size={18} color={Colors.light.buttonText} />
+                            <Feather
+                              name="check-circle"
+                              size={18}
+                              color={Colors.light.buttonText}
+                            />
                             <ThemedText style={styles.submitButtonText}>
                               Marcar completada
                             </ThemedText>
@@ -706,7 +803,10 @@ export function AppointmentDetailModal({
                             }}
                           >
                             <ThemedText
-                              style={[styles.serviceChipName, isSelected && { color: Colors.light.buttonText }]}
+                              style={[
+                                styles.serviceChipName,
+                                isSelected && { color: Colors.light.buttonText },
+                              ]}
                             >
                               {DAYS_ES[indiceDiaSemanaJSEnZona(d, timeZone)]}{' '}
                               {diaDelMesEnZona(d, timeZone)}
@@ -749,7 +849,10 @@ export function AppointmentDetailModal({
                             }}
                           >
                             <ThemedText
-                              style={[styles.employeeChipName, isSelected && { color: Colors.light.buttonText }]}
+                              style={[
+                                styles.employeeChipName,
+                                isSelected && { color: Colors.light.buttonText },
+                              ]}
                             >
                               {rescheduleDate
                                 ? formatoHoraAgendaSlot(
@@ -799,7 +902,10 @@ export function AppointmentDetailModal({
                             }}
                           >
                             <ThemedText
-                              style={[styles.employeeChipName, isSelected && { color: Colors.light.buttonText }]}
+                              style={[
+                                styles.employeeChipName,
+                                isSelected && { color: Colors.light.buttonText },
+                              ]}
                             >
                               :{String(m).padStart(2, '0')}
                             </ThemedText>
@@ -906,6 +1012,7 @@ export function AppointmentDetailModal({
           ) : null}
         </View>
       </View>
+      {nestedModals}
     </Modal>
   )
 }

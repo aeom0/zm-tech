@@ -10,7 +10,9 @@ import { Feather } from '@expo/vector-icons'
 import { ErrorState } from '@/components/ErrorState'
 import { useTheme } from '@/hooks/useTheme'
 import { useResponsive } from '@/hooks/useResponsive'
+import { ThemedText } from '@/components/ThemedText'
 import { useTenant } from '@/contexts/TenantContext'
+import { formatCurrency } from '@/utils/format'
 import { Spacing } from '@/constants/theme'
 import { queryClient } from '@/lib/query-client'
 import { useAuth } from '@/contexts/AuthContext'
@@ -114,6 +116,8 @@ export default function FinancesScreen() {
     topServicesRanking,
     totalRevenue,
     totalAbono,
+    retailRevenue,
+    retailOrdersCount,
     employeeEarningsTotal,
     employeeEarningsAbonoTotal,
     chartDataByPeriod,
@@ -217,6 +221,30 @@ export default function FinancesScreen() {
                 isTablet={isTablet}
               />
             </View>
+
+            {isAdmin && (
+              <View
+                style={[
+                  styles.retailCard,
+                  { backgroundColor: theme.backgroundDefault, borderColor: theme.primary + '80' },
+                ]}
+              >
+                <View style={[styles.retailCardIcon, { backgroundColor: theme.primary + '20' }]}>
+                  <Feather name="shopping-bag" size={18} color={theme.primary} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <ThemedText style={{ color: theme.textMuted, fontSize: 12 }}>
+                    Retail cobrado
+                  </ThemedText>
+                  <ThemedText style={{ color: theme.text, fontSize: 18, fontWeight: '700' }}>
+                    {formatCurrency(retailRevenue, config)}
+                  </ThemedText>
+                </View>
+                <ThemedText style={{ color: theme.textMuted, fontSize: 12 }}>
+                  {retailOrdersCount} venta{retailOrdersCount === 1 ? '' : 's'}
+                </ThemedText>
+              </View>
+            )}
 
             {isAdmin && (
               <EmployeeBreakdown

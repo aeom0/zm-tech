@@ -72,6 +72,7 @@ import { StaffAgendaTimelineView } from './agenda/components/StaffAgendaTimeline
 import { NewAppointmentModal } from './agenda/components/NewAppointmentModal'
 import { CancelAppointmentModal } from './agenda/components/CancelAppointmentModal'
 import { AppointmentDetailModal } from './agenda/components/AppointmentDetailModal'
+import { ProductSaleModal } from './finances/components/ProductSaleModal'
 import { AppointmentPreviewModal } from './agenda/components/AppointmentPreviewModal'
 
 export default function AgendaScreen() {
@@ -99,6 +100,7 @@ export default function AgendaScreen() {
   const [ownerViewMode, setOwnerViewMode] = useState<OwnerViewMode>('day')
   const [modalVisible, setModalVisible] = useState(false)
   const [detailModalVisible, setDetailModalVisible] = useState(false)
+  const [productSaleVisible, setProductSaleVisible] = useState(false)
   const [appointmentDetail, setAppointmentDetail] = useState<AgendaAppointment | null>(null)
   const [previewModalVisible, setPreviewModalVisible] = useState(false)
   const [previewAppointment, setPreviewAppointment] = useState<AgendaAppointment | null>(null)
@@ -302,7 +304,9 @@ export default function AgendaScreen() {
     const firstHour =
       agendaHours.find((h) =>
         esCeldaAgendaEnHorarioLaboral(today, h, businessHoursNorm, tenantTz, holidayIndex)
-      ) ?? agendaHours[0] ?? 9
+      ) ??
+      agendaHours[0] ??
+      9
     setSelectedDate(today)
     setSelectedHour(firstHour)
     setSelectedMinute(0)
@@ -1072,6 +1076,30 @@ export default function AgendaScreen() {
         addReferencePending={addReferenceImagesMutation.isPending}
         onMarkReferencesReviewed={handleMarkReferencesReviewed}
         markReferencesReviewedPending={markReferencesReviewedMutation.isPending}
+        onAddProduct={() => setProductSaleVisible(true)}
+        nestedModals={
+          <ProductSaleModal
+            visible={productSaleVisible}
+            appointments={appointments.map((apt) => ({
+              id: apt.id,
+              client_id: null,
+              client_name: apt.client_name,
+              date: apt.date,
+              status: apt.status,
+              price: apt.price,
+              service_id: apt.service_id,
+              employee_id: apt.employee_id,
+            }))}
+            initialAppointmentId={appointmentDetail?.id}
+            initialClientName={appointmentDetail?.client_name}
+            initialClientPhone={appointmentDetail?.client_phone}
+            isTablet={isTablet}
+            onClose={() => setProductSaleVisible(false)}
+            onSaved={() => {
+              void refetch()
+            }}
+          />
+        }
       />
 
       <AppointmentPreviewModal
