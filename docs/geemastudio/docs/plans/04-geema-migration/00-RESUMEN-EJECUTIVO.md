@@ -1,6 +1,6 @@
 # 00 — Resumen ejecutivo
 
-**Fecha:** 2026-08-28 · **Actualizado:** 2026-09-22  
+**Fecha:** 2026-08-28 · **Actualizado:** 2026-09-26
 **Pregunta:** ¿En qué punto estamos para migrar a Geema como plataforma (ZM = tenant #1) y estandarizar WABA para barberías, peluquerías, etc.?
 
 ---
@@ -23,7 +23,8 @@
 | WABA multi-tenant runtime | 🟡 | Flag `waba_tenant_routing_enabled=false`; smoke QA ON pendiente |
 | Crons/RPCs tenant-aware (S4) | 🔴 | Bloquea 2.º tenant con bot completo |
 | Panel `/panel/waba/*` Geema | 🟢 | Paridad tabs ZM + Estado (incl. Simulador ✅ 22-sep) |
-| Retail `product_orders` | 🟡 | ZM: Ventas+Catálogo+push ✅; Geema: solo tab Catálogo; bot retail pausado |
+| Retail `product_orders` | 🟢 | Contrato temporal normalizado; pagos y estados usan `timestamptz`; bot retail pausado |
+| Fechas y zonas horarias | 🟢 | Instantes UTC para pagos/retail; citas wallclock en IANA del tenant; mobile + web alineados |
 | WABA suite multi-vertical (L4) | 🔴 | Presets en `tenant-config`; webhook no los consume aún |
 | Drift `whatsapp-webhook` | 🟢 | Track C ✅ — prod v655 = ZM `010b240f` / `main`; ver [09](./09-WEBHOOK-PROD-RECONCILE.md) |
 
@@ -31,7 +32,7 @@
 
 ## Dónde continuar (recomendación 22-sep)
 
-**Track A — cutover Vanessa a Geema (tenant #1):** suite panel WABA ✅ + finanzas ejecutiva ✅ (Plan 13 P1/P2) + push FCM P9/P10 ✅ (cita WABA y pago por validar recibidos en Geema). Siguiente: paridad WABA avanzada o cutover ops.
+**Track A — cutover Vanessa a Geema (tenant #1):** suite panel WABA ✅ + finanzas ejecutiva ✅ (Plan 13 P1/P2) + push FCM P9/P10 ✅ + contrato transversal de fechas ejecutado 26-sep. Siguiente: paridad WABA avanzada o cutover ops.
 **Track B — 2.º tenant:** S4 crons/Vault en repo ZM (no mezclar con Track A en la misma sesión).  
 **Track C — riesgo:** ✅ cerrado — bot canónico ZM; redeploy solo desde ZM ([09](./09-WEBHOOK-PROD-RECONCILE.md)).
 

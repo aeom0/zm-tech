@@ -95,8 +95,31 @@ tenant_settings.tenant_slug text NOT NULL UNIQUE REFERENCES tenants(id)
 | Columna / uso | Semántica |
 |---------------|-----------|
 | `appointments.date` | `timestamp without time zone` = **hora de pared** en IANA del tenant (`America/Lima` para ZM). No interpretar como UTC. |
+| `payments.date` | `timestamptz` → instante absoluto; se filtra en UTC y se muestra en `tenant_settings.timezone`. |
+| `product_orders.created_at`, `paid_at`, `delivered_at`, `cancelled_at` | `timestamptz` → instantes absolutos; nunca guardar una fecha recortada sin offset. |
 | `reference_received_at`, verifications, etc. | `timestamptz` → instante absoluto (UTC en almacenamiento). |
 
 Al expandir a otro país: cada tenant escribe wallclock en **su** timezone configurado; el cliente convierte con `tenant_settings.timezone`, no con el TZ del teléfono del dueño.
+
+### Corrección transversal ejecutada — 26-sep-2026
+
+La migración `20260926101500_normalize_event_timestamps.sql` convirtió a
+`timestamptz` los eventos reales de pagos y retail, interpretando los datos
+históricos como UTC según el contrato vigente. `appointments.date` se conservó
+sin zona porque representa la hora de pared de la agenda.
+
+Reglas de implementación verificadas:
+
+- Instantes (`payments`, `product_orders`, inventario y WABA): consultar con
+  límites ISO UTC y formatear con la IANA del tenant.
+- Citas: consultar y persistir como `YYYY-MM-DD HH:mm:ss` en la zona del tenant;
+  convertir a `Date` solo mediante los helpers de `@zmtech/tenant-config`.
+- No usar la zona horaria del dispositivo/navegador para calcular “hoy”,
+  rangos, agrupaciones de gráficos o etiquetas.
+- Los inserts de pagos incluyen `tenant_id` explícito; el RPC
+  `mark_product_order_paid` ya no depende de un default histórico de ZM Lash.
+
+La corrección fue validada con typecheck/lint, datos de producción de ZM Lash,
+dos commits publicados en `main` y OTA mobile en la rama `production`.
 
 Detalle operativo Geema: [07-PARIDAD-MOBILE-ZM.md](./07-PARIDAD-MOBILE-ZM.md) § Timezone / Schema canónico.

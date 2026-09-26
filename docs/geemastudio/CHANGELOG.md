@@ -7,6 +7,21 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Corregido (26-sep 2026 — fechas y zonas horarias multi-tenant)
+
+- `payments.date` y los timestamps de `product_orders` usan `timestamptz`;
+  `appointments.date` conserva su semántica de hora de pared del tenant.
+- Mobile y web convierten rangos de pagos/retail a UTC y presentan instantes
+  con `tenant_settings.timezone` (IANA), sin depender del reloj del dispositivo
+  o navegador.
+- Se corrigieron Dashboard, Finanzas, Clientes, gráficos de ingresos, WABA,
+  promociones y estados de productos.
+- Migración de producción aplicada en Geema (`udelxwwnyivknslueerr`) y RPC
+  `mark_product_order_paid` actualizado para insertar `tenant_id` explícito.
+- Validación: typecheck/lint correctos; commits `56ce07ea`, `2499b3da`,
+  `dcc8a10a` y `bc5bd71f` publicados en `main`; OTA production publicada
+  para las correcciones mobile.
+
 ### Añadido (23-sep 2026 — Ventas retail Geema)
 
 - **Panel Productos → Ventas**: apartados/pedidos por tenant, cobro atómico vía `mark_product_order_paid`, estados pagado/entregado/cancelado y actualización de stock según disponibilidad.
