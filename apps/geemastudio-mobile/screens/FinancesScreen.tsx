@@ -26,6 +26,7 @@ import { EmployeeBreakdown } from './finances/components/EmployeeBreakdown'
 import { ServicesRankCard } from './finances/components/ServicesRankCard'
 import { PaymentList } from './finances/components/PaymentList'
 import { PaymentModal } from './finances/components/PaymentModal'
+import { ProductSaleModal } from './finances/components/ProductSaleModal'
 import { RegisterPayoutModal } from './finances/components/RegisterPayoutModal'
 import { KpiGrid } from './finances/components/executive/KpiGrid'
 import { GrowthChart } from './finances/components/executive/GrowthChart'
@@ -71,6 +72,7 @@ export default function FinancesScreen() {
   const [editingExpense, setEditingExpense] = useState<OperationalExpense | null>(null)
   const [payoutModalVisible, setPayoutModalVisible] = useState(false)
   const [payoutRow, setPayoutRow] = useState<FinancesDesgloseRow | null>(null)
+  const [productSaleVisible, setProductSaleVisible] = useState(false)
 
   const timezone = config.locale.timezone
   const currentMonth = `${getTenantBillingMonthKey(timezone)}-01`
@@ -259,6 +261,25 @@ export default function FinancesScreen() {
         </Pressable>
       )}
 
+      {isAdmin && view !== 'resumen' ? (
+        <Pressable
+          style={[
+            styles.fab,
+            {
+              backgroundColor: theme.gold,
+              bottom: 168,
+              width: 48,
+              height: 48,
+              borderRadius: 24,
+            },
+          ]}
+          onPress={() => setProductSaleVisible(true)}
+          accessibilityLabel="Registrar venta de producto"
+        >
+          <Feather name="shopping-bag" size={21} color={theme.buttonText} />
+        </Pressable>
+      ) : null}
+
       <PaymentModal
         visible={form.modalVisible}
         editingPayment={form.editingPayment}
@@ -278,6 +299,14 @@ export default function FinancesScreen() {
         onSelectAppointment={form.onSelectAppointment}
         onSubmit={form.handleSubmit}
         onDelete={form.handleDelete}
+      />
+
+      <ProductSaleModal
+        visible={productSaleVisible}
+        appointments={recentAppointments}
+        isTablet={isTablet}
+        onClose={() => setProductSaleVisible(false)}
+        onSaved={handleRefresh}
       />
 
       <ExpenseModal

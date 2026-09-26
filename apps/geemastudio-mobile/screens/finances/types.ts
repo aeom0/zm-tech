@@ -15,6 +15,7 @@ export type FinancesPeriod = 'today' | 'week' | 'month'
 
 export interface FinancesAppointmentOption {
   id: string
+  client_id?: string | null
   client_name: string
   date: string
   status: string

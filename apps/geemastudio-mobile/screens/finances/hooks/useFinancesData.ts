@@ -104,7 +104,7 @@ export function useFinancesData(
     queryFn: async () => {
       let q = supabase
         .from('appointments')
-        .select('id, client_name, date, status, price, service_id, employee_id')
+        .select('id, client_id, client_name, date, status, price, service_id, employee_id')
         .order('date', { ascending: false })
         .limit(100)
 
