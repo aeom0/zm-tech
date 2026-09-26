@@ -14,6 +14,7 @@ export interface TenantSettingsPanelRow {
   currency_symbol: string
   country: string
   language: string
+  timezone: string
   client_terminology: string
   staff_terminology: string
   staff_singular_terminology: string

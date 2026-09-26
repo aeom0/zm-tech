@@ -4,7 +4,7 @@ import { supabase } from '@/lib/supabase'
 import type { TenantSettingsPanelRow, TenantSettingsPatch, WebTemplate } from './types'
 
 const SELECT_CORE =
-  'id, business_name, business_type, tagline, primary_color, accent_color, currency_code, currency_symbol, country, language, client_terminology, staff_terminology, staff_singular_terminology, appointment_terminology, logo_url, features_whatsapp, slug, web_enabled, web_template, custom_domain'
+  'id, business_name, business_type, tagline, primary_color, accent_color, currency_code, currency_symbol, country, language, timezone, client_terminology, staff_terminology, staff_singular_terminology, appointment_terminology, logo_url, features_whatsapp, slug, web_enabled, web_template, custom_domain'
 
 const SELECT_WITH_LOGO_BG = `${SELECT_CORE}, logo_bg_light, logo_bg_dark`
 
@@ -24,6 +24,7 @@ function normalizeRow(raw: Record<string, unknown>): TenantSettingsPanelRow {
     currency_symbol: String(raw.currency_symbol ?? '$'),
     country: String(raw.country ?? ''),
     language: String(raw.language ?? 'es'),
+    timezone: String(raw.timezone ?? 'America/Caracas'),
     client_terminology: String(raw.client_terminology ?? 'cliente'),
     staff_terminology: String(raw.staff_terminology ?? 'Profesionales'),
     staff_singular_terminology: String(raw.staff_singular_terminology ?? 'Profesional'),
