@@ -14,6 +14,11 @@ import {
   type ProductOrderSource,
 } from '@/hooks/servicios/useProductos'
 
+import { useTenantSettings } from '@/hooks/configuracion/useTenantSettings'
+import {
+  formatDashboardCurrency,
+  resolveDashboardCurrencyCode,
+} from '@/lib/dashboardCurrency'
 import { ProductoVentaModal } from '../ventas/ProductoVentaModal'
 
 const STATUS_LABELS: Record<ProductOrder['status'], string> = {
@@ -263,6 +268,11 @@ function PaymentModal({
   onConfirm: (method: PaymentMethod) => void
 }) {
   const [method, setMethod] = useState<PaymentMethod>('yape_plin')
+  const { data: settings } = useTenantSettings()
+  const feePercent = settings?.pos_fee_percent ?? 5
+  const base = Number(order.unit_price) * order.quantity
+  const currencyCode = resolveDashboardCurrencyCode(settings?.currency_code)
+  const fmt = (amount: number) => formatDashboardCurrency(amount, currencyCode)
   const product = Array.isArray(order.inventory_items)
     ? order.inventory_items[0]?.name
     : order.inventory_items?.name
@@ -270,8 +280,7 @@ function PaymentModal({
   return (
     <Modal title="Registrar pago" onClose={onClose}>
       <p className="mb-4 text-sm text-white/65">
-        {product ?? 'Producto'} · {order.client_name || 'Clienta'} · S/{' '}
-        {(Number(order.unit_price) * order.quantity).toFixed(2)}
+        {product ?? 'Producto'} · {order.client_name || 'Clienta'} · {fmt(base)}
       </p>
       <label className="block text-xs text-white/50">
         Método
@@ -287,6 +296,12 @@ function PaymentModal({
           ))}
         </select>
       </label>
+      {method === 'card' ? (
+        <p className="mt-2 text-xs text-white/50">
+          Cobrar en POS: {fmt(Math.round(base * (1 + feePercent / 100) * 100) / 100)} (incluye{' '}
+          {feePercent} % de comisión; el ingreso registrado es {fmt(base)})
+        </p>
+      ) : null}
       <ModalActions
         busy={busy}
         onClose={onClose}

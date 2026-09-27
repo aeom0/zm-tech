@@ -17,6 +17,8 @@ import { SettingsRow } from './settings/components/SettingsRow'
 import { CurrencyPickerModal } from './settings/components/CurrencyPickerModal'
 import { CountryPickerModal } from './settings/components/CountryPickerModal'
 import { TerminologyEditModal } from './settings/components/TerminologyEditModal'
+import { PosFeeEditModal } from './settings/components/PosFeeEditModal'
+import { resolvePosFeePercent } from '@/lib/pos-fee'
 import type { Moneda } from './settings/constants'
 import { getCountryPreset, localeFromCountry, type CountryPreset } from '@zmtech/tenant-config'
 
@@ -33,6 +35,7 @@ export default function SettingsScreen() {
   const [modalMonedaVisible, setModalMonedaVisible] = useState(false)
   const [modalPaisVisible, setModalPaisVisible] = useState(false)
   const [modalTerminologiaVisible, setModalTerminologiaVisible] = useState(false)
+  const [modalPosFeeVisible, setModalPosFeeVisible] = useState(false)
 
   const isAdmin = role === 'dev' || role === 'owner'
   const paisActual = getCountryPreset(config.locale.country)
@@ -66,6 +69,10 @@ export default function SettingsScreen() {
       },
       { syncRemote: true }
     )
+  }
+
+  const handleGuardarPosFee = async (percent: number) => {
+    await updateTenant({ payments: { posFeePercent: percent } }, { syncRemote: true })
   }
 
   return (
@@ -122,6 +129,13 @@ export default function SettingsScreen() {
               icon="users"
               onPress={() => setModalTerminologiaVisible(true)}
             />
+            <SettingsRow
+              label="Recargo POS (tarjeta)"
+              value={`${resolvePosFeePercent(config.payments?.posFeePercent)} %`}
+              variant="navigate"
+              icon="credit-card"
+              onPress={() => setModalPosFeeVisible(true)}
+            />
           </SettingsSection>
         )}
 
@@ -157,6 +171,13 @@ export default function SettingsScreen() {
         staffSingular={config.terminology.staffSingular}
         onSave={handleGuardarTerminologia}
         onClose={() => setModalTerminologiaVisible(false)}
+      />
+
+      <PosFeeEditModal
+        visible={modalPosFeeVisible}
+        percent={resolvePosFeePercent(config.payments?.posFeePercent)}
+        onSave={handleGuardarPosFee}
+        onClose={() => setModalPosFeeVisible(false)}
       />
     </>
   )

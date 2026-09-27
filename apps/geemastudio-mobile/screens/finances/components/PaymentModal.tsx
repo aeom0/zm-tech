@@ -18,7 +18,9 @@ import { ThemedText } from '@/components/ThemedText'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
+import { formatCurrency } from '@/utils/format'
 import { Spacing } from '@/constants/theme'
+import { posChargeAmount, resolvePosFeePercent } from '@/lib/pos-fee'
 import { instanteCitaDesdeTexto, zonaIANASegura } from '@zmtech/tenant-config'
 import type { MainTabParamList } from '@/navigation/MainTabNavigator'
 import type { MoreStackParamList } from '@/navigation/MoreStackNavigator'
@@ -281,6 +283,11 @@ export function PaymentModal({
                 </Pressable>
               ))}
             </View>
+            {formData.method === 'card' && parseFloat(formData.amount.replace(',', '.')) > 0 && (
+              <ThemedText style={[styles.noAppointmentsText, { color: theme.textMuted }]}>
+                {`Cobrar en POS: ${formatCurrency(posChargeAmount(parseFloat(formData.amount.replace(',', '.')), config.payments?.posFeePercent), config)} (incluye ${resolvePosFeePercent(config.payments?.posFeePercent)} % de comisión). Registra aquí solo el monto sin comisión.`}
+              </ThemedText>
+            )}
 
             <ThemedText style={[styles.inputLabel, { color: theme.textSecondary }]}>
               Vincular a cita (opcional)

@@ -5,6 +5,9 @@ import { Feather } from '@expo/vector-icons'
 import { ThemedText } from '@/components/ThemedText'
 
 import { PAYMENT_METHODS } from '@/screens/finances/constants'
+import { posChargeAmount, resolvePosFeePercent } from '@/lib/pos-fee'
+import { formatCurrency } from '@/utils/format'
+import { useTenant } from '@/contexts/TenantContext'
 
 import { formatDashboardTime } from '../dashboardUtils'
 import type { DashboardAppointment } from '../types'
@@ -59,6 +62,7 @@ export function DashboardAppointmentModal({
   onMarkCompleted,
   onEditInAgenda,
 }: DashboardAppointmentModalProps) {
+  const { config } = useTenant()
   return (
     <Modal visible={visible} animationType="slide" transparent statusBarTranslucent>
       <View style={[styles.modalOverlay, isTablet && styles.modalOverlayTablet]}>
@@ -171,6 +175,11 @@ export function DashboardAppointmentModal({
                       </ThemedText>
                     </Pressable>
                   ))}
+                  {pendingPayMethod === 'card' && appointment && (
+                    <ThemedText style={[styles.payMethodLabel, { color: theme.textSecondary }]}>
+                      {`Cobrar en POS: ${formatCurrency(posChargeAmount(parseFloat(String(appointment.price)), config.payments?.posFeePercent), config)} (incluye ${resolvePosFeePercent(config.payments?.posFeePercent)} % de comisión; el ingreso registrado es ${formatCurrency(parseFloat(String(appointment.price)), config)})`}
+                    </ThemedText>
+                  )}
                   <View style={styles.payMethodActions}>
                     <Pressable
                       style={[styles.payMethodCancel, { borderColor: theme.border }]}
@@ -193,7 +202,9 @@ export function DashboardAppointmentModal({
                       {isCompleting ? (
                         <ActivityIndicator color={Colors.light.buttonText} size="small" />
                       ) : (
-                        <ThemedText style={[styles.payMethodCancelText, { color: Colors.light.buttonText }]}>
+                        <ThemedText
+                          style={[styles.payMethodCancelText, { color: Colors.light.buttonText }]}
+                        >
                           Confirmar
                         </ThemedText>
                       )}

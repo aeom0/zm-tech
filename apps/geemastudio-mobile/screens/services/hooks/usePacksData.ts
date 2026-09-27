@@ -26,7 +26,7 @@ export interface PackPayload {
 
 const GEEMA_SELECT = 'id, name, description, price, service_ids, is_active'
 const ZM_SELECT =
-  'id, title, description, pack_price, pack_price_card, category_id, service_ids, is_active, display_order, emoji'
+  'id, title, description, pack_price, category_id, service_ids, is_active, display_order, emoji'
 
 export function usePacksData() {
   const queryClient = useQueryClient()

@@ -9,6 +9,7 @@ import { ThemedText } from '@/components/ThemedText'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTenant } from '@/contexts/TenantContext'
 import { formatCurrency } from '@/utils/format'
+import { posChargeAmount, resolvePosFeePercent } from '@/lib/pos-fee'
 import { supabase } from '@/lib/supabase'
 import { BorderRadius, Colors, Spacing } from '@/constants/theme'
 import { useProfileTenantId } from '@/screens/finances/hooks/useProfileTenantId'
@@ -673,6 +674,13 @@ export function AppointmentDetailModal({
                               </ThemedText>
                             </Pressable>
                           ))}
+                          {pendingPayMethod === 'card' && (
+                            <ThemedText
+                              style={[styles.payMethodLabel, { color: theme.textSecondary }]}
+                            >
+                              {`Cobrar en POS: ${formatCurrency(posChargeAmount(editTotal, config.payments?.posFeePercent), config)} (incluye ${resolvePosFeePercent(config.payments?.posFeePercent)} % de comisión; el ingreso registrado es ${formatCurrency(editTotal, config)})`}
+                            </ThemedText>
+                          )}
                           <View style={styles.payMethodActions}>
                             <Pressable
                               style={[styles.payMethodCancel, { borderColor: theme.border }]}
