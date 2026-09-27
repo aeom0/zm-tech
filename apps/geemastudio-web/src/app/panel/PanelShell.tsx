@@ -179,6 +179,10 @@ export function PanelShell({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
 
+  const moreTabActive =
+    moreOpen ||
+    moreSections.some((section) => section.items.some((item) => isNavActive(item.href)))
+
   const handleLogout = async () => {
     try {
       await supabase?.auth.signOut()
@@ -345,11 +349,23 @@ export function PanelShell({
                 type="button"
                 onClick={() => setMoreOpen(true)}
                 className="flex flex-1 flex-col items-center gap-1 py-2.5"
+                aria-expanded={moreOpen}
               >
-                <span className="text-zinc-400">
+                <span
+                  className={
+                    moreTabActive ? 'text-[var(--tenant-primary)]' : 'text-zinc-400'
+                  }
+                >
                   <MoreHorizontal className="h-4 w-4" />
                 </span>
-                <span className="text-[11px] font-medium text-zinc-400">Más</span>
+                <span
+                  className={[
+                    'text-[11px] font-medium',
+                    moreTabActive ? 'text-white' : 'text-zinc-400',
+                  ].join(' ')}
+                >
+                  Más
+                </span>
               </button>
             </div>
           </nav>

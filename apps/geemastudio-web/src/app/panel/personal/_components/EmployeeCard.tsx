@@ -87,7 +87,8 @@ export function PersonalHeaderActions({ onNew, staffSingular }: PersonalHeaderAc
       className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-[var(--tenant-primary-hover)] hover:text-white"
     >
       <Plus className="h-4 w-4" />
-      Nuevo {staffSingular.toLowerCase()}
+      {staffSingular.trim().toLocaleLowerCase('es').endsWith('a') ? 'Nueva' : 'Nuevo'}{' '}
+      {staffSingular.toLowerCase()}
     </button>
   )
 }

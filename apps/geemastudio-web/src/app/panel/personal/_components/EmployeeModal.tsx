@@ -203,7 +203,12 @@ export function EmployeeModal({
         <header className="flex items-center justify-between border-b border-white/[0.08] px-5 py-4">
           <div>
             <div className="text-xs text-zinc-500">
-              {isCreating ? 'Nuevo' : 'Editar'} {staffSingular.toLowerCase()}
+              {isCreating
+                ? staffSingular.trim().toLocaleLowerCase('es').endsWith('a')
+                  ? 'Nueva'
+                  : 'Nuevo'
+                : 'Editar'}{' '}
+              {staffSingular.toLowerCase()}
             </div>
             <h2 className="text-lg font-bold text-white">
               {isCreating ? `Agregar ${staffSingular.toLowerCase()}` : form.name || staffSingular}

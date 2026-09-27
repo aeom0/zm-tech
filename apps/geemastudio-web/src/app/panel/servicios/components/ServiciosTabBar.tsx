@@ -19,7 +19,7 @@ export function ServiciosTabBar({
 }) {
   return (
     <div className="relative">
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div className="flex flex-wrap gap-2 pb-1">
         {TABS.map((t) => {
           const isActive = activeTab === t.id
           return (
@@ -42,7 +42,6 @@ export function ServiciosTabBar({
           )
         })}
       </div>
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[#0F0F0F] to-transparent sm:hidden" />
     </div>
   )
 }

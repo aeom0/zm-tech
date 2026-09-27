@@ -35,7 +35,7 @@ export function WabaNav() {
 
   return (
     <nav
-      className="flex items-center gap-2 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      className="flex flex-wrap items-center gap-2"
       aria-label="Secciones de WhatsApp"
     >
       {TABS.map((t) => {
