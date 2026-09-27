@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { KeyRound, Mail } from 'lucide-react'
+import { Eye, EyeOff, KeyRound, Mail } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
 
@@ -11,6 +11,7 @@ export default function LoginPage() {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [mostrarContrasena, setMostrarContrasena] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -71,10 +72,9 @@ export default function LoginPage() {
                 className="mx-auto -mb-2"
                 priority
               />
-              <h1 className="text-xl font-bold text-white">Bienvenida a tu panel</h1>
+              <h1 className="text-xl font-bold text-white">Entra a tu panel</h1>
               <p className="mx-auto mt-2 max-w-xs text-sm text-zinc-400">
-                Gestiona tu agenda, clientas, catálogo de servicios y campañas de WhatsApp desde un
-                mismo lugar.
+                Agenda, clientes, catálogo y WhatsApp. Todo en un solo lugar.
               </p>
             </div>
 
@@ -104,7 +104,7 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 py-2.5 pl-10 pr-4 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#40E0D0]"
-                    placeholder="tu@correo.com"
+                    placeholder="correo@negocio.com"
                     required
                   />
                 </div>
@@ -121,14 +121,27 @@ export default function LoginPage() {
                   <KeyRound className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
                   <input
                     id="password"
-                    type="password"
+                    type={mostrarContrasena ? 'text' : 'password'}
                     autoComplete="current-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 py-2.5 pl-10 pr-4 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#40E0D0]"
-                    placeholder="••••••••"
+                    className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 py-2.5 pl-10 pr-11 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#40E0D0]"
+                    placeholder="Tu contraseña"
                     required
                   />
+                  <button
+                    type="button"
+                    onClick={() => setMostrarContrasena((visible) => !visible)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 transition-colors hover:text-zinc-300 focus:outline-none focus-visible:text-[#40E0D0]"
+                    aria-label={mostrarContrasena ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                    aria-pressed={mostrarContrasena}
+                  >
+                    {mostrarContrasena ? (
+                      <EyeOff className="h-4 w-4" aria-hidden />
+                    ) : (
+                      <Eye className="h-4 w-4" aria-hidden />
+                    )}
+                  </button>
                 </div>
               </div>
 
