@@ -33,7 +33,7 @@ Fuente canónica del análisis de convergencia entre **ZM Lash & Nails** (refere
 |------|------|--------|
 | [02-PLAN-retrofit-tenant-id](../02-PLAN-retrofit-tenant-id.md) | `tenant_id` en BD + RLS | Fases A/B/C ✅; §11 pendiente |
 | [03-PLAN-audit-paridad-zmlash-geema](../03-PLAN-audit-paridad-zmlash-geema.md) | Brief audit paridad | Audit ejecutado → `zm-tech/docs/audit/03-AUDIT-*.md` |
-| [04-PLAN-ctwa-collages-cierre-intencion](../04-PLAN-ctwa-collages-cierre-intencion.md) | CTWA belleza (ZM) | Producto ZM; preset `spa-nails` en suite |
+| [05-PLAN-ctwa-collages-cierre-intencion](../05-PLAN-ctwa-collages-cierre-intencion.md) | CTWA belleza (ZM) | Producto ZM; preset `spa-nails` en suite |
 
 ---
 

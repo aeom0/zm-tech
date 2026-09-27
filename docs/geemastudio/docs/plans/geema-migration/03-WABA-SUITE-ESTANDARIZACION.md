@@ -169,7 +169,7 @@ No eliminar — mover a **config del tenant**, no al código compartido:
 
 - `docs/waba/WABA_CAPACITY.md` — modelo capacidad ZM (generalizar)
 - `zm-tech/docs/geemastudio/docs/WABA_MULTITENANT_ARCHITECTURE.md` — diseño Geema
-- `docs/plans/04-PLAN-ctwa-collages-cierre-intencion.md` — CTWA belleza (preset `spa-nails`)
+- `docs/plans/05-PLAN-ctwa-collages-cierre-intencion.md` — CTWA belleza (preset `spa-nails`)
 
 ---
 
