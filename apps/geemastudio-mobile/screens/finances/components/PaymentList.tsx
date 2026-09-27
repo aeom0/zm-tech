@@ -27,6 +27,7 @@ interface Props {
 }
 
 function formatMethod(method: string): string {
+  if (method === 'yape_plin') return 'Yape/Plin'
   return PAYMENT_METHODS.find((m) => m.id === method)?.label ?? method
 }
 
@@ -117,7 +118,9 @@ export function PaymentList({
                     <View style={[styles.methodBadge, { backgroundColor: theme.primary + '15' }]}>
                       <Feather
                         name={
-                          PAYMENT_METHODS.find((m) => m.id === payment.method)?.icon ??
+                          (payment.method === 'yape_plin'
+                            ? 'smartphone'
+                            : PAYMENT_METHODS.find((m) => m.id === payment.method)?.icon) ??
                           'dollar-sign'
                         }
                         size={14}

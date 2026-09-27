@@ -4,17 +4,17 @@ import { useQuery } from '@tanstack/react-query'
 
 import { supabase } from '@/lib/supabase'
 
-import { tenantRangeBoundary, type DateRange } from './useDashboardPeriod'
+import type { DateRange } from './useDashboardPeriod'
 
 export interface DashboardClientsResult {
   newCount: number
   returningCount: number
 }
 
-export function useDashboardClients(
-  dateRange: DateRange,
-  timeZone = 'America/Caracas'
-) {
+const LOTE_IDS = 100
+
+/** Clientas con cita completada en el período: nueva si esa es su primera, recurrente si ya había venido. */
+export function useDashboardClients(dateRange: DateRange, timeZone = 'America/Caracas') {
   return useQuery({
     queryKey: ['dashboard_clients', dateRange, timeZone],
     enabled: !!supabase && !!dateRange.from && !!dateRange.to,
@@ -23,60 +23,54 @@ export function useDashboardClients(
         return { newCount: 0, returningCount: 0 }
       }
 
-      const fromIso = tenantRangeBoundary(dateRange.from, timeZone)
-      const toIso = tenantRangeBoundary(dateRange.to, timeZone, true)
       const appointmentFrom = `${dateRange.from} 00:00:00`
       const appointmentTo = `${dateRange.to} 23:59:59`
 
-      const [newClientsRes, appointmentsRes] = await Promise.all([
-        supabase
-          .from('clients')
-          .select('id, created_at')
-          .gte('created_at', fromIso)
-          .lte('created_at', toIso),
-        supabase
-          .from('appointments')
-          .select('client_id')
-          .eq('status', 'completed')
-          .gte('date', appointmentFrom)
-          .lte('date', appointmentTo)
-          .not('client_id', 'is', null),
-      ])
+      const inRangeRes = await supabase
+        .from('appointments')
+        .select('client_id')
+        .eq('status', 'completed')
+        .gte('date', appointmentFrom)
+        .lte('date', appointmentTo)
+        .not('client_id', 'is', null)
 
-      if (newClientsRes.error) throw new Error(newClientsRes.error.message)
-      if (appointmentsRes.error) throw new Error(appointmentsRes.error.message)
+      if (inRangeRes.error) throw new Error(inRangeRes.error.message)
 
-      const newRows = newClientsRes.data ?? []
-      const newIds = new Set(newRows.map((r) => (r as { id: string }).id))
-      const newCount = newIds.size
-
-      const aptClientIds = [
+      const ids = [
         ...new Set(
-          (appointmentsRes.data ?? [])
-            .map((r) => (r as { client_id: string | null }).client_id)
+          (inRangeRes.data ?? [])
+            .map((row) => (row as { client_id: string | null }).client_id)
             .filter((id): id is string => typeof id === 'string')
         ),
       ]
 
-      if (aptClientIds.length === 0) {
-        return { newCount, returningCount: 0 }
+      if (ids.length === 0) {
+        return { newCount: 0, returningCount: 0 }
       }
 
-      const { data: clientRows, error: clientsErr } = await supabase
-        .from('clients')
-        .select('id, created_at')
-        .in('id', aptClientIds)
+      const priorIds = new Set<string>()
+      for (let i = 0; i < ids.length; i += LOTE_IDS) {
+        const lote = ids.slice(i, i + LOTE_IDS)
+        const priorRes = await supabase
+          .from('appointments')
+          .select('client_id')
+          .eq('status', 'completed')
+          .lt('date', appointmentFrom)
+          .in('client_id', lote)
 
-      if (clientsErr) throw new Error(clientsErr.message)
+        if (priorRes.error) throw new Error(priorRes.error.message)
+        for (const row of priorRes.data ?? []) {
+          const id = (row as { client_id: string | null }).client_id
+          if (id) priorIds.add(id)
+        }
+      }
 
       let returningCount = 0
-      for (const row of clientRows ?? []) {
-        const r = row as { id: string; created_at: string }
-        if (newIds.has(r.id)) continue
-        if (r.created_at < fromIso) returningCount += 1
+      for (const id of ids) {
+        if (priorIds.has(id)) returningCount += 1
       }
 
-      return { newCount, returningCount }
+      return { newCount: ids.length - returningCount, returningCount }
     },
   })
 }

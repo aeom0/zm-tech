@@ -7,13 +7,12 @@ import type { AppointmentsByStatus } from '@/hooks/dashboard/useDashboardAppoint
 import { MetricSkeleton } from './MetricSkeleton'
 
 const STATUS_META: {
-  key: keyof Pick<AppointmentsByStatus, 'completed' | 'confirmed' | 'scheduled' | 'cancelled'>
+  key: keyof Pick<AppointmentsByStatus, 'completed' | 'pending' | 'cancelled'>
   label: string
   color: string
 }[] = [
   { key: 'completed', label: 'Completadas', color: '#22c55e' },
-  { key: 'confirmed', label: 'Confirmadas', color: '#3b82f6' },
-  { key: 'scheduled', label: 'Agendadas', color: '#eab308' },
+  { key: 'pending', label: 'Pendientes', color: '#eab308' },
   { key: 'cancelled', label: 'Canceladas', color: '#ef4444' },
 ]
 
@@ -29,9 +28,8 @@ export function AppointmentsStatusCard({ data, isLoading }: AppointmentsStatusCa
 
   const grouped = data ?? {
     completed: 0,
+    pending: 0,
     cancelled: 0,
-    scheduled: 0,
-    confirmed: 0,
     other: 0,
     total: 0,
   }
@@ -39,14 +37,13 @@ export function AppointmentsStatusCard({ data, isLoading }: AppointmentsStatusCa
   const totalMain = STATUS_META.reduce((s, m) => s + grouped[m.key], 0) + grouped.other
 
   return (
-    <div className="space-y-4 rounded-xl border border-white/10 bg-[#1A1A1A] p-5">
-      <div className="flex items-center gap-2 text-sm font-medium text-white/60">
+    <div className="space-y-4 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="flex items-center gap-2 text-sm font-medium text-zinc-500 dark:text-zinc-400">
         <CalendarRange className="h-4 w-4 text-sky-400" />
         Citas por estado
       </div>
-      <p className="text-xs text-white/45">
-        Total del período (incluye agendadas próximas):{' '}
-        <span className="font-semibold tabular-nums text-white/90">{totalMain}</span>
+      <p className="text-xs text-zinc-400">
+        {totalMain} con fecha en el período. Cada cita está en un solo estado.
       </p>
       <div className="space-y-3">
         {STATUS_META.map(({ key, label, color }) => {
@@ -55,12 +52,12 @@ export function AppointmentsStatusCard({ data, isLoading }: AppointmentsStatusCa
           return (
             <div key={key}>
               <div className="mb-1 flex justify-between text-xs">
-                <span className="text-white/70">{label}</span>
-                <span className="tabular-nums text-white/90">
+                <span className="text-zinc-500 dark:text-zinc-400">{label}</span>
+                <span className="tabular-nums text-zinc-800 dark:text-zinc-200">
                   {n} ({pct}%)
                 </span>
               </div>
-              <div className="h-2 overflow-hidden rounded-full bg-white/[0.07]">
+              <div className="h-2 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
                 <div
                   className="h-full rounded-full transition-all"
                   style={{
@@ -75,10 +72,10 @@ export function AppointmentsStatusCard({ data, isLoading }: AppointmentsStatusCa
         {grouped.other > 0 ? (
           <div>
             <div className="mb-1 flex justify-between text-xs">
-              <span className="text-white/70">Otras</span>
-              <span className="tabular-nums text-white/90">{grouped.other}</span>
+              <span className="text-zinc-500 dark:text-zinc-400">Otras</span>
+              <span className="tabular-nums text-zinc-800 dark:text-zinc-200">{grouped.other}</span>
             </div>
-            <div className="h-2 overflow-hidden rounded-full bg-white/[0.07]">
+            <div className="h-2 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
               <div
                 className="h-full rounded-full bg-white/30 transition-all"
                 style={{

@@ -23,6 +23,8 @@ interface Props {
   timezone: string
   primaryColor?: string | null
   accentColor?: string | null
+  clientTerm?: string
+  appointmentTerm?: string
 }
 
 export function ExecutiveDashboard({
@@ -33,6 +35,8 @@ export function ExecutiveDashboard({
   timezone,
   primaryColor,
   accentColor,
+  clientTerm,
+  appointmentTerm,
 }: Props) {
   const [selectedMonth, setSelectedMonth] = useState<string | undefined>(undefined)
   const dash = useExecutiveDashboard(range, tenantId, selectedMonth, timezone)
@@ -115,7 +119,12 @@ export function ExecutiveDashboard({
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <ProfitChart data={dash.monthly} loading={dash.isLoading} />
-          <ClientGrowthChart data={dash.growth} loading={dash.isLoading} />
+          <ClientGrowthChart
+            data={dash.growth}
+            loading={dash.isLoading}
+            clientTerm={clientTerm}
+            appointmentTerm={appointmentTerm}
+          />
         </div>
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">

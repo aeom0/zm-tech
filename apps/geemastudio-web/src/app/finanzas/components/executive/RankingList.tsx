@@ -30,7 +30,7 @@ export function RankingList({ data, loading }: Props) {
   const max = Math.max(1, ...data.map((row) => row.revenue))
 
   return (
-    <ChartCard title="Más vendidos" subtitle="Por ingreso en citas completed del rango">
+    <ChartCard title="Más vendidos" subtitle="Por ingreso en citas completadas del rango">
       {loading ? (
         <ChartSkeleton height={320} />
       ) : data.length === 0 ? (

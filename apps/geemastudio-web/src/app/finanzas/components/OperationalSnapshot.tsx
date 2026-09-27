@@ -5,20 +5,28 @@ import { useDashboardClients } from '@/hooks/dashboard/useDashboardClients'
 import type { PeriodKey } from '@/hooks/dashboard/useDashboardPeriod'
 import { useDashboardPeriod } from '@/hooks/dashboard/useDashboardPeriod'
 import { useDashboardRevenue } from '@/hooks/dashboard/useDashboardRevenue'
-import { useDashboardTenant } from '@/hooks/dashboard/useDashboardTenant'
 import { useDashboardTopStaff } from '@/hooks/dashboard/useDashboardTopStaff'
-import { AppointmentsStatusCard } from './_components/AppointmentsStatusCard'
-import { ClientsOverviewCard } from './_components/ClientsOverviewCard'
-import { DashboardShell } from './_components/DashboardShell'
-import { PeriodSelector } from './_components/PeriodSelector'
-import { RevenueCard } from './_components/RevenueCard'
-import { StatsGrid } from './_components/StatsGrid'
-import { TopStaffCard } from './_components/TopStaffCard'
-import { resolveDashboardCurrencyCode } from '@/lib/dashboardCurrency'
+import { AppointmentsStatusCard } from '@/app/dashboard/_components/AppointmentsStatusCard'
+import { ClientsOverviewCard } from '@/app/dashboard/_components/ClientsOverviewCard'
+import { PeriodSelector } from '@/app/dashboard/_components/PeriodSelector'
+import { RevenueCard } from '@/app/dashboard/_components/RevenueCard'
+import { StatsGrid } from '@/app/dashboard/_components/StatsGrid'
+import { TopStaffCard } from '@/app/dashboard/_components/TopStaffCard'
 
-export default function DashboardPageClient() {
-  const tenantQ = useDashboardTenant()
-  const timezone = tenantQ.data?.timezone ?? 'America/Caracas'
+interface OperationalSnapshotProps {
+  timezone: string
+  currencyCode: string
+  tenantLoading: boolean
+  clientTerm?: string
+}
+
+/** Métricas operativas que antes vivían en la pestaña Dashboard. */
+export function OperationalSnapshot({
+  timezone,
+  currencyCode,
+  tenantLoading,
+  clientTerm,
+}: OperationalSnapshotProps) {
   const { period, setPeriod, dateRange, appointmentsRange, customRange, setCustomRange } =
     useDashboardPeriod(timezone)
 
@@ -29,16 +37,20 @@ export default function DashboardPageClient() {
     setPeriod(p)
   }
 
-  const currencyCode = resolveDashboardCurrencyCode(tenantQ.data?.currency_code)
-
   const revenueQ = useDashboardRevenue(dateRange, timezone)
   const appointmentsQ = useDashboardAppointments(appointmentsRange)
   const topStaffQ = useDashboardTopStaff(dateRange, timezone)
   const clientsQ = useDashboardClients(dateRange, timezone)
 
   return (
-    <DashboardShell
-      topSlot={
+    <section className="space-y-4">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">Operación</h2>
+          <p className="mt-0.5 text-sm text-zinc-500 dark:text-zinc-400">
+            Caja, citas y clientes del período.
+          </p>
+        </div>
         <PeriodSelector
           period={period}
           onPeriodChange={handlePeriodChange}
@@ -46,39 +58,35 @@ export default function DashboardPageClient() {
           customRange={customRange}
           onCustomRangeChange={(r) => setCustomRange(r)}
         />
-      }
-    >
+      </div>
+
       <StatsGrid>
         <RevenueCard
           totalRevenue={revenueQ.data?.totalRevenue ?? 0}
           avgPerAppointment={revenueQ.data?.avgPerAppointment ?? 0}
           prevPeriodRevenue={revenueQ.data?.prevPeriodRevenue ?? 0}
           currencyCode={currencyCode}
-          isLoading={revenueQ.isLoading || tenantQ.isLoading}
+          isLoading={revenueQ.isLoading || tenantLoading}
         />
         <AppointmentsStatusCard data={appointmentsQ.data} isLoading={appointmentsQ.isLoading} />
         <TopStaffCard
           items={topStaffQ.data}
           currencyCode={currencyCode}
-          isLoading={topStaffQ.isLoading || tenantQ.isLoading}
+          isLoading={topStaffQ.isLoading || tenantLoading}
         />
         <ClientsOverviewCard
           newCount={clientsQ.data?.newCount ?? 0}
           returningCount={clientsQ.data?.returningCount ?? 0}
           isLoading={clientsQ.isLoading}
+          clientTerm={clientTerm}
         />
       </StatsGrid>
 
       {revenueQ.isError ? (
-        <p className="mt-6 text-sm text-red-400">
+        <p className="text-sm text-red-400">
           No se pudieron cargar los ingresos. Revisa tu sesión y vuelve a intentar.
         </p>
       ) : null}
-      {!revenueQ.isLoading && revenueQ.data?.payments.length === 0 ? (
-        <p className="mt-6 text-center text-sm text-white/45">
-          No hay pagos registrados en este período. Cuando muevas caja, aquí verás el resumen.
-        </p>
-      ) : null}
-    </DashboardShell>
+    </section>
   )
 }

@@ -5,6 +5,8 @@ import { differenceInCalendarDays, format, parseISO, subDays } from 'date-fns'
 
 import { supabase } from '@/lib/supabase'
 
+import { diaSiguiente, ticketCitasCompletadas } from '@/lib/ticketCitas'
+
 import { tenantRangeBoundary, type DateRange } from './useDashboardPeriod'
 
 function previousDateRange(range: DateRange): DateRange {
@@ -72,13 +74,16 @@ export function useDashboardRevenue(dateRange: DateRange, timeZone = 'America/Ca
 
       const rows = (currentRes.data ?? []) as DashboardPaymentRow[]
       let totalRevenue = 0
-      const appointmentIds = new Set<string>()
       for (const p of rows) {
-        totalRevenue += Number.parseFloat(p.amount)
-        if (p.appointment_id) appointmentIds.add(p.appointment_id)
+        const amount = Number.parseFloat(p.amount)
+        if (Number.isFinite(amount)) totalRevenue += amount
       }
-      const uniqueAppointments = appointmentIds.size
-      const avgPerAppointment = uniqueAppointments > 0 ? totalRevenue / uniqueAppointments : 0
+
+      const ticket = await ticketCitasCompletadas(
+        `${dateRange.from} 00:00:00`,
+        `${diaSiguiente(dateRange.to)} 00:00:00`
+      )
+      const avgPerAppointment = ticket.ticket ?? 0
 
       const prevRows = prevRes.data ?? []
       const prevPeriodRevenue = prevRows.reduce(

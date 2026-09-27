@@ -1,5 +1,5 @@
-import DashboardPageClient from './DashboardPageClient'
+import { redirect } from 'next/navigation'
 
 export default function DashboardPage() {
-  return <DashboardPageClient />
+  redirect('/finanzas')
 }

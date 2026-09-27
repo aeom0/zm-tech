@@ -32,7 +32,7 @@ const MODULES = [
   {
     href: '/finanzas',
     label: 'Finanzas',
-    description: 'Resumen ejecutivo y detalle',
+    description: 'Operación, resumen y detalle',
     icon: TrendingUp,
   },
   {

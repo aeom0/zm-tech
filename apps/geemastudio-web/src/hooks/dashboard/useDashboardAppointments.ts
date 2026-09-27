@@ -6,14 +6,14 @@ import { supabase } from '@/lib/supabase'
 
 import type { DateRange } from './useDashboardPeriod'
 
-export type AppointmentStatusBucket =
-  'completed' | 'cancelled' | 'scheduled' | 'confirmed' | 'other'
+export type AppointmentStatusBucket = 'completed' | 'pending' | 'cancelled' | 'other'
 
 export interface AppointmentsByStatus {
   completed: number
+  /** scheduled y confirmed: en la agenda siguen pendientes. */
+  pending: number
+  /** cancelled y no_show. */
   cancelled: number
-  scheduled: number
-  confirmed: number
   other: number
   total: number
 }
@@ -26,9 +26,8 @@ export function useDashboardAppointments(dateRange: DateRange) {
       if (!supabase) {
         return {
           completed: 0,
+          pending: 0,
           cancelled: 0,
-          scheduled: 0,
-          confirmed: 0,
           other: 0,
           total: 0,
         }
@@ -46,9 +45,8 @@ export function useDashboardAppointments(dateRange: DateRange) {
 
       const grouped: AppointmentsByStatus = {
         completed: 0,
+        pending: 0,
         cancelled: 0,
-        scheduled: 0,
-        confirmed: 0,
         other: 0,
         total: 0,
       }
@@ -57,9 +55,8 @@ export function useDashboardAppointments(dateRange: DateRange) {
         const status = (row as { status: string }).status
         grouped.total += 1
         if (status === 'completed') grouped.completed += 1
-        else if (status === 'cancelled') grouped.cancelled += 1
-        else if (status === 'scheduled') grouped.scheduled += 1
-        else if (status === 'confirmed') grouped.confirmed += 1
+        else if (status === 'scheduled' || status === 'confirmed') grouped.pending += 1
+        else if (status === 'cancelled' || status === 'no_show') grouped.cancelled += 1
         else grouped.other += 1
       }
 

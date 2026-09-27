@@ -31,7 +31,7 @@ const STATUS_LABELS: Record<ProductOrder['status'], string> = {
 
 const METHOD_LABELS: Record<PaymentMethod, string> = {
   cash: 'Efectivo',
-  yape_plin: 'Yape / Plin',
+  yape_plin: 'Yape/Plin',
   transfer: 'Transferencia',
   card: 'Tarjeta',
 }

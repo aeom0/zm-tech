@@ -46,7 +46,7 @@ interface Props {
 
 const PAYMENT_METHODS = [
   { id: 'cash', label: 'Efectivo' },
-  { id: 'yape_plin', label: 'Yape / Plin' },
+  { id: 'yape_plin', label: 'Yape/Plin' },
   { id: 'card', label: 'Tarjeta' },
   { id: 'transfer', label: 'Transferencia' },
 ] as const

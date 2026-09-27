@@ -8,6 +8,8 @@ export interface DashboardTenantRow {
   business_name: string
   currency_code: string | null
   timezone: string
+  client_terminology: string
+  appointment_terminology: string
 }
 
 export function useDashboardTenant(enabled = true) {
@@ -22,7 +24,9 @@ export function useDashboardTenant(enabled = true) {
       if (!user) return null
       const { data, error } = await supabase
         .from('tenant_settings')
-        .select('business_name, currency_code, timezone')
+        .select(
+          'business_name, currency_code, timezone, client_terminology, appointment_terminology'
+        )
         .eq('id', user.id)
         .maybeSingle()
       if (error) throw new Error(error.message)
@@ -31,6 +35,9 @@ export function useDashboardTenant(enabled = true) {
         business_name: data.business_name as string,
         currency_code: (data.currency_code as string | null) ?? null,
         timezone: (data.timezone as string | null) ?? 'America/Caracas',
+        client_terminology: (data.client_terminology as string | null)?.trim() || 'cliente',
+        appointment_terminology:
+          (data.appointment_terminology as string | null)?.trim() || 'cita',
       }
     },
     staleTime: 60_000,

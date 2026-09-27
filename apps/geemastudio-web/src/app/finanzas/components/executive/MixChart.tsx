@@ -17,7 +17,7 @@ export function MixChart({ data, loading }: Props) {
   return (
     <ChartCard
       title="Ingresos por tipo"
-      subtitle="Servicios, packs y promos en citas completed"
+      subtitle="Servicios, packs y promos en citas completadas"
     >
       {loading ? (
         <div className="flex flex-col items-center gap-4 sm:flex-row">
@@ -36,7 +36,7 @@ export function MixChart({ data, loading }: Props) {
           </div>
         </div>
       ) : total <= 0 ? (
-        <ChartEmpty message="Sin ventas completed en este rango." />
+        <ChartEmpty message="Sin ventas completadas en este rango." />
       ) : (
         <div className="flex flex-col items-center gap-4 sm:flex-row">
           <div className="h-[200px] w-full shrink-0 sm:w-[200px]">

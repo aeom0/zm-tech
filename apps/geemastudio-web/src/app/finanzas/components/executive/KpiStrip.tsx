@@ -61,7 +61,7 @@ function KpiCard({
     <div
       className={`min-w-0 rounded-2xl border p-4 shadow-sm sm:p-5 ${
         hero
-          ? 'col-span-2 border-[var(--primary)]/20 bg-gradient-to-br from-[var(--primary)]/10 to-[var(--accent,#FFD700)]/10 motion-reduce:transition-none lg:col-span-1'
+          ? 'border-[var(--primary)]/20 bg-gradient-to-br from-[var(--primary)]/10 to-[var(--accent,#FFD700)]/10 motion-reduce:transition-none sm:col-span-2 lg:col-span-1'
           : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900'
       }`}
     >
@@ -72,7 +72,7 @@ function KpiCard({
           >
             <Icon className="h-4 w-4" aria-hidden />
           </div>
-          <span className="truncate text-sm font-medium text-zinc-500 dark:text-zinc-400">
+          <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
             {label}
           </span>
         </div>
@@ -108,7 +108,7 @@ export function KpiStrip({
   const UtilidadIcon = utilidad >= 0 ? TrendingUp : TrendingDown
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
       <KpiCard
         label="Ingresos"
         value={fmt(ingresos)}

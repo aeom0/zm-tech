@@ -18,7 +18,7 @@ interface TopStaffCardProps {
 export function TopStaffCard({ items, currencyCode, isLoading }: TopStaffCardProps) {
   if (isLoading) {
     return (
-      <div className="space-y-3 rounded-xl border border-white/10 bg-[#1A1A1A] p-5">
+      <div className="space-y-3 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
         <MetricSkeleton variant="bar" />
         <MetricSkeleton variant="list-item" />
         <MetricSkeleton variant="list-item" />
@@ -31,13 +31,13 @@ export function TopStaffCard({ items, currencyCode, isLoading }: TopStaffCardPro
   const max = list.reduce((m, x) => Math.max(m, x.revenue), 0) || 1
 
   return (
-    <div className="space-y-4 rounded-xl border border-white/10 bg-[#1A1A1A] p-5">
-      <div className="flex items-center gap-2 text-sm font-medium text-white/60">
+    <div className="space-y-4 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="flex items-center gap-2 text-sm font-medium text-zinc-500 dark:text-zinc-400">
         <Sparkles className="h-4 w-4 text-violet-400" />
         Top profesionales por ingresos
       </div>
       {list.length === 0 ? (
-        <p className="py-2 text-sm text-white/45">
+        <p className="py-2 text-sm text-zinc-400">
           No hay pagos vinculados a citas en este período.
         </p>
       ) : (
@@ -61,12 +61,12 @@ export function TopStaffCard({ items, currencyCode, isLoading }: TopStaffCardPro
                 </span>
                 <div className="min-w-0 flex-1 space-y-1">
                   <div className="flex justify-between gap-2 text-sm">
-                    <span className="truncate text-white">{row.name}</span>
-                    <span className="shrink-0 tabular-nums text-white/80">
+                    <span className="truncate text-zinc-900 dark:text-zinc-100">{row.name}</span>
+                    <span className="shrink-0 tabular-nums text-zinc-600 dark:text-zinc-300">
                       {formatDashboardCurrency(row.revenue, currencyCode)}
                     </span>
                   </div>
-                  <div className="h-2 overflow-hidden rounded-full bg-white/[0.07]">
+                  <div className="h-2 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
                     <div
                       className="h-full rounded-full"
                       style={{

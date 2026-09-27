@@ -23,7 +23,7 @@ export function BreakEvenCard({ data, loading }: Props) {
   return (
     <ChartCard
       title="Punto de equilibrio"
-      subtitle="Citas completed del mes vs costos (gastos + ads)"
+      subtitle="Citas completadas del mes frente a costos (gastos + ads)"
     >
       {loading ? (
         <div className="space-y-4">
@@ -58,7 +58,11 @@ export function BreakEvenCard({ data, loading }: Props) {
             <Metric
               label="Ticket promedio"
               value={data.ticket == null ? '—' : fmt(data.ticket)}
-              hint={data.citas === 0 ? 'Sin citas completed' : `${data.citas} citas`}
+              hint={
+                data.citas === 0
+                  ? 'Sin citas completadas'
+                  : `${data.citas} citas completadas`
+              }
             />
             <Metric
               label="Citas para equilibrar"

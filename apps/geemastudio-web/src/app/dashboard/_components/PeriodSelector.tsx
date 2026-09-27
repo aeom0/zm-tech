@@ -36,7 +36,7 @@ export function PeriodSelector({
               className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
                 active
                   ? 'text-white shadow-lg'
-                  : 'border border-white/15 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white'
+                  : 'border border-zinc-200 bg-zinc-50 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'
               }`}
               style={
                 active
@@ -54,7 +54,7 @@ export function PeriodSelector({
       </div>
 
       {period === 'custom' && (
-        <div className="flex flex-wrap items-center gap-3 text-sm text-white/60">
+        <div className="flex flex-wrap items-center gap-3 text-sm text-zinc-500 dark:text-zinc-400">
           <label className="flex items-center gap-2">
             <span className="shrink-0">Desde</span>
             <input
@@ -66,7 +66,7 @@ export function PeriodSelector({
                   to: customRange?.to ?? dateRange.to,
                 })
               }
-              className="rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-white"
+              className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
             />
           </label>
           <label className="flex items-center gap-2">
@@ -80,7 +80,7 @@ export function PeriodSelector({
                   to: e.target.value,
                 })
               }
-              className="rounded-lg border border-white/15 bg-black/40 px-3 py-2 text-white"
+              className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-zinc-900 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
             />
           </label>
         </div>

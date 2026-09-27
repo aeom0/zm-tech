@@ -2,7 +2,9 @@
 
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { getTenantDateParts, tenantMonthStart } from './executiveDates'
+import { ticketCitasCompletadas } from '@/lib/ticketCitas'
+
+import { getTenantDateParts, shiftMonth, tenantMonthStart } from './executiveDates'
 import {
   countExpensesForMonth,
   fetchMonthlyClientGrowth,
@@ -91,6 +93,16 @@ export function useExecutiveDashboard(
     queryFn: () =>
       fetchSoldItemRanking({ from, to: currentMonth, limit: 40, tenantId: tenantId! }),
   })
+  const ticketQ = useQuery({
+    queryKey: ['web_exec_ticket', tenantId, targetMonth],
+    staleTime: 60_000,
+    enabled,
+    queryFn: () =>
+      ticketCitasCompletadas(
+        `${targetMonth} 00:00:00`,
+        `${shiftMonth(targetMonth, 1)} 00:00:00`
+      ),
+  })
   const expenseCountQ = useQuery({
     queryKey: ['web_exec_expense_count', tenantId, currentMonth],
     staleTime: 60_000,
@@ -127,11 +139,10 @@ export function useExecutiveDashboard(
   }, [ranking])
 
   const breakEven = useMemo<BreakEven>(() => {
-    const growthRow = growth.find((r) => r.month_start.slice(0, 10) === targetMonth)
-    const citas = growthRow?.citas ?? 0
     const { ingresos, gastos, ads } = currentKpi
     const costos = gastos + ads
-    const ticket = citas > 0 ? ingresos / citas : null
+    const citas = ticketQ.data?.citas ?? 0
+    const ticket = ticketQ.data?.ticket ?? null
     const citasNecesarias = ticket && ticket > 0 ? Math.ceil(costos / ticket) : null
     const faltan = citasNecesarias == null ? null : Math.max(0, citasNecesarias - citas)
     const { daysDelMes, diasRestantes } = tenantMonthMeta(targetMonth, timeZone)
@@ -150,7 +161,7 @@ export function useExecutiveDashboard(
       diasDelMes: daysDelMes,
       gastosCargados,
     }
-  }, [growth, currentKpi, targetMonth, currentMonth, expenseCountQ.data])
+  }, [currentKpi, targetMonth, currentMonth, expenseCountQ.data, ticketQ.data, timeZone])
 
   return {
     currentMonth,
@@ -167,12 +178,14 @@ export function useExecutiveDashboard(
       summaryQ.isLoading ||
       growthQ.isLoading ||
       rankingQ.isLoading ||
+      ticketQ.isLoading ||
       expenseCountQ.isLoading,
-    isError: summaryQ.isError || growthQ.isError || rankingQ.isError,
+    isError: summaryQ.isError || growthQ.isError || rankingQ.isError || ticketQ.isError,
     errorMessage:
       (summaryQ.error as Error | undefined)?.message ??
       (growthQ.error as Error | undefined)?.message ??
       (rankingQ.error as Error | undefined)?.message ??
+      (ticketQ.error as Error | undefined)?.message ??
       null,
   }
 }

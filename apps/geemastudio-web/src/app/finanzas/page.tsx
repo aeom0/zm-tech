@@ -16,7 +16,7 @@ import {
   CheckCircle,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
-import { FinanzasSubnav } from './components/FinanzasSubnav'
+import { OperationalSnapshot } from './components/OperationalSnapshot'
 import { useFinanzasBrand } from './FinanzasAuthWrapper'
 import {
   useFinanzasData,
@@ -42,12 +42,13 @@ const METHOD_LABELS: Record<string, string> = {
   card: 'Tarjeta',
   yape: 'Yape',
   plin: 'Plin',
+  yape_plin: 'Yape/Plin',
   transfer: 'Transferencia',
 }
 
 function MethodIcon({ method }: { method: string }) {
   if (method === 'card') return <CreditCard className="h-3.5 w-3.5" />
-  if (method === 'yape' || method === 'plin' || method === 'transfer')
+  if (method === 'yape' || method === 'plin' || method === 'yape_plin' || method === 'transfer')
     return <Smartphone className="h-3.5 w-3.5" />
   return <Banknote className="h-3.5 w-3.5" />
 }
@@ -163,19 +164,20 @@ export default function FinanzasPage() {
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
       <div className="border-b border-zinc-200 px-4 py-4 dark:border-zinc-800">
-        <FinanzasSubnav active="/finanzas">
-          <div className="hidden sm:block">
-            <ViewToggle view={view} onChange={setView} />
-          </div>
-        </FinanzasSubnav>
+        <div className="mx-auto flex max-w-6xl sm:justify-end">
+          <ViewToggle view={view} onChange={setView} className="w-full sm:w-auto" />
+        </div>
       </div>
 
-      <main className="mx-auto max-w-5xl space-y-8 px-4 py-8">
-        <div className="flex flex-wrap items-center justify-between gap-3 sm:hidden">
-          <ViewToggle view={view} onChange={setView} />
-        </div>
-
+      <main className="mx-auto max-w-6xl space-y-8 px-4 py-8">
         {view === 'resumen' ? (
+          <>
+          <OperationalSnapshot
+            timezone={tenantQ.data?.timezone ?? 'America/Caracas'}
+            currencyCode={currencyCode}
+            tenantLoading={tenantQ.isLoading}
+            clientTerm={tenantQ.data?.client_terminology}
+          />
           <ExecutiveDashboard
             range={growthRange}
             onChangeRange={setGrowthRange}
@@ -184,7 +186,10 @@ export default function FinanzasPage() {
             timezone={tenantQ.data?.timezone ?? 'America/Caracas'}
             primaryColor={brand.primary}
             accentColor={brand.accent}
+            clientTerm={tenantQ.data?.client_terminology}
+            appointmentTerm={tenantQ.data?.appointment_terminology}
           />
+          </>
         ) : (
           <>
         {/* Título mes */}
@@ -291,7 +296,71 @@ export default function FinanzasPage() {
           </div>
 
           {!isLoading && desgloseChicas.length > 0 ? (
-            <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+            <>
+            <ul className="space-y-3 md:hidden">
+              {desgloseChicas.map((e) => (
+                <li
+                  key={e.id}
+                  className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
+                >
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="h-2.5 w-2.5 shrink-0 rounded-full"
+                      style={{ backgroundColor: e.color }}
+                    />
+                    <span className="font-medium text-zinc-900 dark:text-zinc-100">{e.name}</span>
+                  </div>
+                  <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
+                    <div>
+                      <dt className="text-xs text-zinc-500">Generado</dt>
+                      <dd className="tabular-nums text-zinc-800 dark:text-zinc-200">{fmtS(e.generado)}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs text-zinc-500">Cobrado</dt>
+                      <dd className="tabular-nums font-semibold text-emerald-600 dark:text-emerald-400">
+                        {fmtS(e.pagado)}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs text-zinc-500">Pendiente</dt>
+                      <dd className="tabular-nums text-[var(--primary)]">
+                        {e.pendiente > 0.01 ? fmtS(e.pendiente) : '—'}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs text-zinc-500">Comisión</dt>
+                      <dd className="tabular-nums text-zinc-800 dark:text-zinc-200">
+                        {e.comision > 0 ? fmtS(e.comision) : '—'}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs text-zinc-500">Pagado</dt>
+                      <dd className="tabular-nums text-zinc-500">{fmtS(e.comisionPagada)}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs text-zinc-500">Pendiente real</dt>
+                      <dd className="tabular-nums font-semibold text-amber-600 dark:text-amber-400">
+                        {e.comisionPendienteReal > 0.01 ? fmtS(e.comisionPendienteReal) : '—'}
+                      </dd>
+                    </div>
+                  </dl>
+                  {e.comisionPendienteReal > 0.01 ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPayoutRow(e)
+                        setPayoutModalOpen(true)
+                      }}
+                      className="hover:bg-[var(--primary)]/10 mt-3 inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-full border border-[var(--primary)] px-3 py-2 text-sm font-semibold text-[var(--primary)]"
+                    >
+                      <CheckCircle className="h-4 w-4" />
+                      Marcar pago
+                    </button>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+            <div className="hidden overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm md:block dark:border-zinc-800 dark:bg-zinc-900">
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[720px] text-sm">
                   <thead>
@@ -392,6 +461,7 @@ export default function FinanzasPage() {
                 </table>
               </div>
             </div>
+            </>
           ) : !isLoading ? (
             <div className="rounded-2xl border border-zinc-200 bg-white py-10 text-center shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
               <p className="text-sm text-zinc-500 dark:text-zinc-400">
@@ -422,7 +492,51 @@ export default function FinanzasPage() {
                 <p className="text-sm text-zinc-500 dark:text-zinc-400">Sin pagos este mes</p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
+              <>
+              <ul className="divide-y divide-zinc-100 md:hidden dark:divide-zinc-800">
+                {payments.map((p) => {
+                  const monto = parseFloat(p.amount)
+                  const total = p.service_total ? parseFloat(p.service_total) : null
+                  return (
+                    <li key={p.id} className="space-y-1 px-4 py-3">
+                      <div className="flex items-start justify-between gap-3">
+                        <p className="min-w-0 font-medium text-zinc-900 dark:text-zinc-100">
+                          {p.client_name || 'Sin cita vinculada'}
+                        </p>
+                        <p className="shrink-0 font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
+                          {fmtS(monto)}
+                        </p>
+                      </div>
+                      {p.service_name ? (
+                        <p className="text-xs text-zinc-400">{p.service_name}</p>
+                      ) : null}
+                      <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-500">
+                        <span>{fmtDate(p.date, tenantQ.data?.timezone ?? 'America/Caracas')}</span>
+                        {p.employee_name ? (
+                          <span className="inline-flex items-center gap-1">
+                            <span
+                              className="h-1.5 w-1.5 rounded-full"
+                              style={{ backgroundColor: p.employee_color ?? brand.primary }}
+                            />
+                            {p.employee_name}
+                          </span>
+                        ) : null}
+                        <span className="inline-flex items-center gap-1">
+                          <MethodIcon method={p.method} />
+                          {METHOD_LABELS[p.method] ?? p.method}
+                        </span>
+                      </p>
+                      {p.is_abono ? (
+                        <p className="text-xs font-semibold text-amber-600 dark:text-amber-400">
+                          Adelanto 20%{total ? ` / ${fmtS(total)}` : ''}
+                        </p>
+                      ) : null}
+                      {p.notes ? <p className="text-xs italic text-zinc-400">{p.notes}</p> : null}
+                    </li>
+                  )
+                })}
+              </ul>
+              <div className="hidden overflow-x-auto md:block">
                 <table className="w-full min-w-[600px] text-sm">
                   <thead>
                     <tr className="border-b border-zinc-100 dark:border-zinc-800">
@@ -512,6 +626,7 @@ export default function FinanzasPage() {
                   </tbody>
                 </table>
               </div>
+              </>
             )}
           </div>
         </section>

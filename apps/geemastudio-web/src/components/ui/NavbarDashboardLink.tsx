@@ -38,12 +38,12 @@ export function NavbarDashboardLink({ scrolled }: { scrolled: boolean }) {
 
   return (
     <Link
-      href="/dashboard"
+      href="/finanzas"
       className={`text-sm font-medium transition-colors hover:text-primary ${
         scrolled ? 'text-zinc-700 dark:text-zinc-300' : 'text-white/90 hover:text-white'
       }`}
     >
-      Dashboard
+      Finanzas
     </Link>
   )
 }
