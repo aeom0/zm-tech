@@ -12,7 +12,7 @@
 | **S1** | Schema P0 multi-tenant | Migraciones §11 + `waba_config` + debounce | — |
 | **S2** | Modelo tenant unificado | Bridge `tenants` ↔ `tenant_settings` + Drizzle | S1 |
 | **S3** | WABA runtime multi-tenant | Routing + thread `tenantId` en webhook ZM | S1, S2 |
-| **S4** | Crons + RPCs tenant-aware | 11 Edge Functions parametrizadas | S3 |
+| **S4** | Crons + RPCs tenant-aware | 14 Edge + 4 RPCs; loop Meta Ads en S7 | S3 |
 | **S5** | Suite L3 — reglas externalizadas | `TenantWabaRules` + seed ZM | S3 |
 | **S5-B** | Branding tenant mobile | Logo Storage + `TenantLogo` + `createTheme` completo | S2 |
 | **S5-C** | Paridad mobile ZM (shadow) | Packs/promos + Lima + chicas ✅; resto P1 | S2 |
@@ -183,13 +183,12 @@ Ningún cron cruza tenants.
 - [x] Ningún token Meta/WABA nuevo en SQL migración ni en `app_config` (solo Vault, `waba_token_<tenant_id>`)
 - [x] Al menos un cron tenant-aware invocado vía `invoke_cron_edge_function()` + Vault verificado (ticks reales confirmados en `cron.job_run_details` + `query_logs` para `ads-bounce-nudge` y `same-day-appointment-reminder`)
 
-**Cerrado (28-sep-2026).** 14 Edge Functions + 4 RPCs migrados en batches A–F
-(rama `claude/tenant-aware-crons-s4-6775`, ver plan detallado). Batch F
-(`sync-meta-ads-spend`) queda con el loop de tenants Meta Ads documentado
-pero comentado — se activa recién en S7 cuando exista un 2.º tenant con
-cuenta Ads propia (confirmado con Alberto antes de tocar esas credenciales).
-`generate-recurring-expenses` (Batch E) no necesitó cambios: ya cargaba
-templates de todos los tenants y usaba el `tenant_id` propio de cada fila.
+**Cerrado (27-sep-2026, PR #151).** 14 Edge Functions + 4 RPCs en batches A–F.
+Batch F (`sync-meta-ads-spend`) deja el loop de tenants Meta Ads documentado
+y sin activar: se prende en S7, cuando un 2.º tenant tenga cuenta Ads propia.
+`generate-recurring-expenses` (Batch E) no cambió: ya usaba el `tenant_id` de cada fila.
+
+**Review del mismo PR.** La migración en prod es `20260927221658_tenant_aware_waba_rpcs_and_vault_token` (el archivo local usa ese version). `20260927233639_revoke_waba_find_rpc_from_anon` quita `EXECUTE` de las 4 `waba_find_*` a `anon` y `authenticated`: `REVOKE FROM PUBLIC` no alcanza porque los default privileges las reabren al crear la función. `ads-bounce-nudge` filtra `waba_config` y `clients` por `tenant_id`. Los senders responden 503 si el tenant del payload, del broadcast o de la clienta no tiene número WABA activo. `deno lint` de `supabase/functions` en cero. Pendiente operativo, no bloquea el merge: ticks de `appointment-reminders` (14:00 UTC) y `retouch-reminders` (15:00 UTC) del día siguiente.
 
 ---
 
