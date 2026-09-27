@@ -1,5 +1,13 @@
 import React, { useState } from 'react'
-import { Modal, View, StyleSheet, Pressable, SafeAreaView, TextInput } from 'react-native'
+import {
+  Modal,
+  View,
+  StyleSheet,
+  Pressable,
+  SafeAreaView,
+  TextInput,
+  ActivityIndicator,
+} from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
@@ -8,7 +16,7 @@ import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 interface PosFeeEditModalProps {
   visible: boolean
   percent: number
-  onSave: (percent: number) => void
+  onSave: (percent: number) => Promise<void>
   onClose: () => void
 }
 
@@ -16,19 +24,33 @@ export function PosFeeEditModal({ visible, percent, onSave, onClose }: PosFeeEdi
   const { theme } = useTheme()
   const [value, setValue] = useState(String(percent))
   const [prevVisible, setPrevVisible] = useState(visible)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   if (visible !== prevVisible) {
     setPrevVisible(visible)
-    if (visible) setValue(String(percent))
+    if (visible) {
+      setValue(String(percent))
+      setError(null)
+      setSaving(false)
+    }
   }
 
   const parsed = parseFloat(value.replace(',', '.'))
-  const canSave = Number.isFinite(parsed) && parsed >= 0 && parsed <= 100
+  const canSave = Number.isFinite(parsed) && parsed >= 0 && parsed <= 100 && !saving
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!canSave) return
-    onSave(Math.round(parsed * 100) / 100)
-    onClose()
+    setSaving(true)
+    setError(null)
+    try {
+      await onSave(Math.round(parsed * 100) / 100)
+      onClose()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'No se pudo guardar el recargo')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -71,10 +93,14 @@ export function PosFeeEditModal({ visible, percent, onSave, onClose }: PosFeeEdi
             placeholder="5"
             placeholderTextColor={theme.textMuted}
             keyboardType="decimal-pad"
+            editable={!saving}
           />
+          {error ? (
+            <ThemedText style={[styles.error, { color: theme.error }]}>{error}</ThemedText>
+          ) : null}
 
           <Pressable
-            onPress={handleSave}
+            onPress={() => void handleSave()}
             disabled={!canSave}
             style={({ pressed }) => [
               styles.saveButton,
@@ -84,7 +110,11 @@ export function PosFeeEditModal({ visible, percent, onSave, onClose }: PosFeeEdi
               },
             ]}
           >
-            <ThemedText style={styles.saveButtonText}>Guardar</ThemedText>
+            {saving ? (
+              <ActivityIndicator color={Colors.light.buttonText} />
+            ) : (
+              <ThemedText style={styles.saveButtonText}>Guardar</ThemedText>
+            )}
           </Pressable>
         </View>
       </SafeAreaView>
@@ -119,4 +149,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   saveButtonText: { color: Colors.light.buttonText, fontSize: 16, fontWeight: '600' },
+  error: { fontSize: 13, marginTop: Spacing.sm },
 })
