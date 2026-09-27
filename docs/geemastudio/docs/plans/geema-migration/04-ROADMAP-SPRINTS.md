@@ -178,10 +178,18 @@ Ningún cron cruza tenants.
 **Referencias:** `docs/ops/DEPLOYMENT.md` § Vault · `scripts/db/` crons con `invoke_cron_edge_function` · `sync-meta-ads-spend` (rotar a este patrón si aún usa env global `META_*`).
 
 ### DoD
-- [ ] Cada función del diff listada en `deploy-edge-functions` workflow
-- [ ] QA cruzado 2 tenants sin nudge cruzado
-- [ ] Ningún token Meta/WABA nuevo en SQL migración ni en `app_config`
-- [ ] Al menos un cron tenant-aware invocado vía `invoke_cron_edge_function()` + Vault verificado
+- [x] Cada función del diff listada en `deploy-edge-functions` workflow
+- [x] QA cruzado 2 tenants sin nudge cruzado (`yarn waba:validate:cron-tenant-isolation`, 4 RPCs, 4/4 sin fuga)
+- [x] Ningún token Meta/WABA nuevo en SQL migración ni en `app_config` (solo Vault, `waba_token_<tenant_id>`)
+- [x] Al menos un cron tenant-aware invocado vía `invoke_cron_edge_function()` + Vault verificado (ticks reales confirmados en `cron.job_run_details` + `query_logs` para `ads-bounce-nudge` y `same-day-appointment-reminder`)
+
+**Cerrado (28-sep-2026).** 14 Edge Functions + 4 RPCs migrados en batches A–F
+(rama `claude/tenant-aware-crons-s4-6775`, ver plan detallado). Batch F
+(`sync-meta-ads-spend`) queda con el loop de tenants Meta Ads documentado
+pero comentado — se activa recién en S7 cuando exista un 2.º tenant con
+cuenta Ads propia (confirmado con Alberto antes de tocar esas credenciales).
+`generate-recurring-expenses` (Batch E) no necesitó cambios: ya cargaba
+templates de todos los tenants y usaba el `tenant_id` propio de cada fila.
 
 ---
 
