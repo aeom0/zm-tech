@@ -243,6 +243,7 @@ export function useClientsData(
         (c) => c.days_since_last_visit != null && c.days_since_last_visit > AT_RISK_DAYS
       ).length
       const totalRevenue = clientsWithMetricsLocal.reduce((sum, c) => sum + c.total_spent, 0)
+      const totalVisits = clientsWithMetricsLocal.reduce((sum, c) => sum + c.total_visits, 0)
 
       return {
         clientsWithMetrics: clientsWithMetricsLocal,
@@ -251,7 +252,7 @@ export function useClientsData(
           active_this_month: activeThisMonth,
           vip_count: vipClients,
           at_risk_count: atRiskClients,
-          avg_ticket: totalClients > 0 ? totalRevenue / totalClients : 0,
+          avg_ticket: totalVisits > 0 ? totalRevenue / totalVisits : 0,
         },
       }
     }, [clients, appointments, payments, monthStartIso, tenantTimezone])

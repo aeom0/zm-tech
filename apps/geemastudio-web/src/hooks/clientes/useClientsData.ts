@@ -54,7 +54,7 @@ export function useClientsData(searchQuery: string, segment: ClientSegment): Use
       const { data, error } = await supabase
         .from('clients')
         .select('id, name, phone, email, notes, created_at')
-        .order('created_at', { ascending: false })
+        .order('name', { ascending: true })
       if (error) throw new Error(error.message)
       return (data ?? []) as Client[]
     },
@@ -211,6 +211,7 @@ export function useClientsData(searchQuery: string, segment: ClientSegment): Use
     }).length
 
     const totalRevenue = clientsWithMetricsLocal.reduce((sum, c) => sum + c.total_spent, 0)
+    const totalVisits = clientsWithMetricsLocal.reduce((sum, c) => sum + c.total_visits, 0)
 
     return {
       clientsWithMetrics: clientsWithMetricsLocal,
@@ -219,7 +220,7 @@ export function useClientsData(searchQuery: string, segment: ClientSegment): Use
         active_this_month: activeThisMonth,
         vip_count: vipClients,
         at_risk_count: atRiskClients,
-        avg_ticket: totalClients > 0 ? totalRevenue / totalClients : 0,
+        avg_ticket: totalVisits > 0 ? totalRevenue / totalVisits : 0,
       } satisfies ClientKPIs,
     }
   }, [clients, appointments, payments, monthStart])
@@ -239,7 +240,7 @@ export function useClientsData(searchQuery: string, segment: ClientSegment): Use
 
     const now = new Date()
 
-    return base.filter((c) => {
+    const filtrados = base.filter((c) => {
       if (segment === 'all') return true
       const days = c.days_since_last_visit != null ? c.days_since_last_visit : Infinity
 
@@ -260,6 +261,10 @@ export function useClientsData(searchQuery: string, segment: ClientSegment): Use
           return true
       }
     })
+
+    return [...filtrados].sort((a, b) =>
+      a.name.localeCompare(b.name, 'es', { sensitivity: 'base', numeric: true })
+    )
   }, [clientsWithMetrics, searchQuery, segment])
 
   const firstError = clientsErr ?? aptsErr ?? paymentsErr
