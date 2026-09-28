@@ -21,13 +21,13 @@ type Tab = {
 }
 
 const TABS: Tab[] = [
-  { href: '/panel/waba', label: 'Estado', icon: Settings2 },
+  { href: '/panel/waba/mensajes', label: 'Mensajes', icon: MessageSquareText },
   { href: '/panel/waba/campanas', label: 'Campañas', icon: Megaphone },
   { href: '/panel/waba/portafolio', label: 'Portafolio', icon: Images },
-  { href: '/panel/waba/mensajes', label: 'Mensajes', icon: MessageSquareText },
-  { href: '/panel/waba/simulador', label: 'Simulador', icon: MessageSquare },
   { href: '/panel/waba/haiku', label: 'Asistente IA', icon: Sparkles },
+  { href: '/panel/waba/simulador', label: 'Simulador', icon: MessageSquare },
   { href: '/panel/waba/historial', label: 'Historial', icon: BarChart2 },
+  { href: '/panel/waba', label: 'Estado', icon: Settings2 },
 ]
 
 export function WabaNav() {

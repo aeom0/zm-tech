@@ -48,9 +48,9 @@ const MODULES = [
     icon: Clock,
   },
   {
-    href: '/panel/waba',
+    href: '/panel/waba/mensajes',
     label: 'WhatsApp',
-    description: 'Campañas y mensajes del bot',
+    description: 'Mensajes, bot y campañas',
     icon: MessageCircle,
   },
   {

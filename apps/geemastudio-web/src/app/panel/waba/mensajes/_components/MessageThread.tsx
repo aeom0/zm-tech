@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import Link from 'next/link'
 import {
   ArrowLeft,
   Ban,
@@ -17,6 +18,8 @@ import {
   ShieldCheck,
   Sparkles,
   Trash2,
+  User,
+  Zap,
 } from 'lucide-react'
 
 import {
@@ -27,6 +30,8 @@ import {
 import { useSendWabaMessage, useWabaStaffSession } from '@/hooks/waba/useWabaSend'
 import { useDeleteWabaThread, useToggleWabaBlock, useWabaBlockedStatus } from '@/hooks/waba/useWabaModeration'
 import { useImageUpload } from '@/hooks/waba/useImageUpload'
+import { useTenantSettings } from '@/hooks/configuracion/useTenantSettings'
+import { getTenantLandingUrl } from '@/lib/site-url'
 import { MessageBubble } from './MessageBubble'
 
 const TEXTAREA_LINE_HEIGHT_PX = 22
@@ -60,6 +65,8 @@ export function MessageThread({
   const blockedQuery = useWabaBlockedStatus(phone)
   const toggleBlockMutation = useToggleWabaBlock(phone)
   const deleteThreadMutation = useDeleteWabaThread()
+  const tenantSettingsQuery = useTenantSettings()
+  const bookingUrl = tenantSettingsQuery.data?.slug ? getTenantLandingUrl(tenantSettingsQuery.data.slug) : ''
 
   const [text, setText] = useState('')
   const [attachError, setAttachError] = useState<string | null>(null)
@@ -229,6 +236,40 @@ export function MessageThread({
     })
   }
 
+  const quickReplies = useMemo(() => {
+    const rawName = conversation.displayName?.trim()
+    const firstName = rawName ? ` ${rawName.split(' ')[0]}` : ''
+    return [
+      {
+        id: 'saludo',
+        label: 'Saludo',
+        text: `¡Hola${firstName}! Gracias por escribirnos. ¿En qué podemos ayudarte hoy?`,
+      },
+      {
+        id: 'agendar',
+        label: 'Agendar cita',
+        text: bookingUrl
+          ? `Puedes ver nuestros servicios y reservar tu cita directamente aquí: ${bookingUrl}`
+          : 'Indícanos qué servicio deseas realizarte y en qué fecha u horario te gustaría tu cita.',
+      },
+      {
+        id: 'confirmar',
+        label: 'Confirmar cita',
+        text: '¡Tu cita quedó confirmada con éxito! Te esperamos.',
+      },
+      {
+        id: 'pago',
+        label: 'Medios de pago',
+        text: 'Aceptamos transferencias bancarias, efectivo y Yape/Plin.',
+      },
+    ]
+  }, [conversation.displayName, bookingUrl])
+
+  const handleApplyQuickReply = (quickText: string) => {
+    setText((prev) => (prev.trim() ? `${prev.trim()}\n${quickText}` : quickText))
+    textareaRef.current?.focus()
+  }
+
   return (
     <>
       <div className="border-b border-white/[0.08] px-3 py-2.5 sm:px-4 sm:py-3">
@@ -332,6 +373,21 @@ export function MessageThread({
             )}
             {blockedQuery.data ? 'Desbloquear' : 'Bloquear'}
           </button>
+
+          {conversation.displayName || conversation.displayPhone || (!conversation.isBsuid && conversation.phone) ? (
+            <Link
+              href={`/panel/clientes?search=${encodeURIComponent(
+                conversation.displayName || conversation.displayPhone || conversation.phone
+              )}`}
+              target="_blank"
+              rel="noreferrer"
+              title="Ver ficha en Clientes (abre en pestaña nueva)"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-white/[0.08] bg-white/[0.03] px-2.5 py-1.5 text-xs text-zinc-200 hover:bg-white/[0.06]"
+            >
+              <User className="h-3.5 w-3.5 text-zinc-400" />
+              <span>Ver en Clientes</span>
+            </Link>
+          ) : null}
         </div>
       </div>
 
@@ -429,6 +485,24 @@ export function MessageThread({
         {(attachError || uploadError) && (
           <p className="mb-2 text-[11px] text-red-300">{attachError ?? uploadError}</p>
         )}
+
+        <div className="mb-2 flex items-center gap-1.5 overflow-x-auto pb-0.5 text-xs scrollbar-none">
+          <span className="inline-flex shrink-0 items-center gap-1 text-[11px] font-medium text-zinc-500">
+            <Zap className="h-3 w-3 text-[var(--tenant-primary)]" />
+            Rápidas:
+          </span>
+          {quickReplies.map((qr) => (
+            <button
+              key={qr.id}
+              type="button"
+              onClick={() => handleApplyQuickReply(qr.text)}
+              className="shrink-0 rounded-lg border border-white/[0.08] bg-white/[0.03] px-2 py-0.5 text-[11px] text-zinc-300 transition-colors hover:border-[var(--tenant-primary)]/40 hover:bg-white/[0.06] hover:text-white"
+            >
+              {qr.label}
+            </button>
+          ))}
+        </div>
+
         <div className="flex items-end gap-2">
           <div className="flex shrink-0 gap-1">
             <input

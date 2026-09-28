@@ -1,6 +1,7 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Search } from 'lucide-react'
 
 import { ClientCard } from './_components/ClientCard'
@@ -12,10 +13,17 @@ import type { ClientSegment, ClientWithMetrics } from '@/hooks/clientes/types'
 import { useDashboardTenant } from '@/hooks/dashboard/useDashboardTenant'
 import { resolveDashboardCurrencyCode } from '@/lib/dashboardCurrency'
 
-export default function PanelClientesPage() {
-  const [searchQuery, setSearchQuery] = useState('')
+function PanelClientesContent() {
+  const searchParams = useSearchParams()
+  const initialSearch = searchParams.get('search') ?? ''
+  const [searchQuery, setSearchQuery] = useState(initialSearch)
   const [segment, setSegment] = useState<ClientSegment>('all')
   const [selected, setSelected] = useState<ClientWithMetrics | null>(null)
+
+  useEffect(() => {
+    const q = searchParams.get('search')
+    if (q != null) setSearchQuery(q)
+  }, [searchParams])
 
   const tenantQuery = useDashboardTenant()
   const currencyCode = resolveDashboardCurrencyCode(tenantQuery.data?.currency_code)
@@ -101,5 +109,13 @@ export default function PanelClientesPage() {
         />
       )}
     </div>
+  )
+}
+
+export default function PanelClientesPage() {
+  return (
+    <Suspense fallback={<div className="text-sm text-zinc-500">Cargando…</div>}>
+      <PanelClientesContent />
+    </Suspense>
   )
 }

@@ -90,6 +90,7 @@ export interface WabaConversation {
   waUsername: string | null
   /** Teléfono E.164 real, resuelto desde la ficha del cliente aunque el hilo sea BSUID. */
   displayPhone: string | null
+  clientId: string | null
   lastMessage: string
   lastDirection: WabaDirection
   lastAt: string
@@ -172,6 +173,7 @@ export function useWabaConversations() {
             displayName: null,
             waUsername: null,
             displayPhone: isBsuid(phone) ? null : normalizePhone(phone),
+            clientId: null,
             lastMessage: labelForPreview(direction, content, catalog).slice(0, 160),
             lastDirection: direction,
             lastAt: createdAt,
@@ -194,17 +196,18 @@ export function useWabaConversations() {
         const phones = conversations.map((c) => c.phone)
 
         const [{ data: clients }, { data: sessions }] = await Promise.all([
-          supabase.from('clients').select('name, phone, wa_user_id, wa_username').limit(5000),
+          supabase.from('clients').select('id, name, phone, wa_user_id, wa_username').limit(5000),
           supabase.from('whatsapp_sessions').select('phone, bot_paused_at').in('phone', phones),
         ])
 
-        const byPhone = new Map<string, string>()
+        const byPhone = new Map<string, { id: string; name: string }>()
         const byWaUserId = new Map<
           string,
-          { name: string | null; username: string | null; phone: string | null }
+          { id: string; name: string | null; username: string | null; phone: string | null }
         >()
 
         for (const c of (clients ?? []) as Record<string, unknown>[]) {
+          const id = typeof c.id === 'string' ? c.id : ''
           const name = typeof c.name === 'string' ? c.name : ''
           const rawPhone = typeof c.phone === 'string' ? c.phone : ''
           const waUserId = typeof c.wa_user_id === 'string' ? c.wa_user_id : ''
@@ -212,6 +215,7 @@ export function useWabaConversations() {
 
           if (waUserId) {
             byWaUserId.set(waUserId.trim(), {
+              id,
               name: name || null,
               username: waUsername,
               phone: rawPhone ? normalizePhone(rawPhone) : null,
@@ -219,7 +223,7 @@ export function useWabaConversations() {
           }
 
           const digits = rawPhone.replace(/\D+/g, '')
-          if (digits && name) byPhone.set(digits, name)
+          if (digits && (name || id)) byPhone.set(digits, { id, name })
         }
 
         for (const conv of conversations) {
@@ -229,18 +233,22 @@ export function useWabaConversations() {
               conv.displayName = match.name
               conv.waUsername = match.username
               conv.displayPhone = match.phone
+              conv.clientId = match.id || null
             }
             continue
           }
 
           const digits = conv.phone.replace(/\D+/g, '')
           if (digits && byPhone.has(digits)) {
-            conv.displayName = byPhone.get(digits) ?? null
+            const match = byPhone.get(digits)
+            conv.displayName = match?.name ?? null
+            conv.clientId = match?.id ?? null
           } else if (digits.length >= 9) {
             const suffix = digits.slice(-9)
-            for (const [k, name] of byPhone) {
+            for (const [k, match] of byPhone) {
               if (k.endsWith(suffix)) {
-                conv.displayName = name
+                conv.displayName = match.name
+                conv.clientId = match.id
                 break
               }
             }
