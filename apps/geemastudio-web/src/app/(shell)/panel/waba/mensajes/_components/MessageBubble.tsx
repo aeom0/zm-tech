@@ -101,10 +101,10 @@ export function MessageBubble({
   const showQuoteCard = !out && (Boolean(message.replyImageUrl) || Boolean(quoteLabel))
 
   return (
-    <div className={['flex w-full', out ? 'justify-end pl-6' : 'justify-start pr-6'].join(' ')}>
+    <div className={['flex w-full', out ? 'justify-end pl-3 sm:pl-10' : 'justify-start pr-3 sm:pr-10'].join(' ')}>
       <div
         className={[
-          'max-w-[90%] sm:max-w-[80%] space-y-1.5 rounded-2xl px-3 py-2 text-sm min-w-0',
+          'max-w-[90%] sm:max-w-[80%] min-w-0 overflow-hidden space-y-1.5 rounded-2xl px-3 py-2 text-sm',
           out
             ? isTemplate
               ? 'bg-violet-500/20 text-violet-100'
@@ -126,9 +126,11 @@ export function MessageBubble({
         )}
 
         {message.audioUrl && (
-          <audio controls className="w-full max-w-[240px]" src={message.audioUrl}>
-            Tu navegador no soporta audio.
-          </audio>
+          <div className="max-w-full overflow-hidden">
+            <audio controls className="w-full max-w-[240px]" src={message.audioUrl}>
+              Tu navegador no soporta audio.
+            </audio>
+          </div>
         )}
 
         {message.documentUrl && (

@@ -446,7 +446,11 @@ export function MessageThread({
         </div>
       )}
 
-      <div ref={scrollRef} className="min-h-0 flex-1 space-y-2 overflow-y-auto p-4">
+      <div
+        ref={scrollRef}
+        className="min-h-0 flex-1 space-y-2 overflow-x-hidden overflow-y-auto p-2.5 sm:p-4"
+      >
+
         {hasOlder && !threadQuery.isLoading && !threadQuery.isError && (
           <div className="flex justify-center pb-1">
             <button

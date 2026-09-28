@@ -153,7 +153,7 @@ function PanelWabaMensajesContent() {
       {!conversationsQuery.isError && !conversationsQuery.isLoading && conversations.length > 0 && (
         <div
           className={[
-            'grid overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] md:grid-cols-[340px_1fr]',
+            'grid grid-rows-[1fr] overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] md:grid-cols-[340px_1fr]',
             selectedPhone
               ? 'h-[calc(100dvh-8rem)] md:h-[calc(100dvh-12rem)]'
               : 'h-[calc(100dvh-14rem)] min-h-[440px] md:h-[calc(100dvh-12rem)]',
@@ -161,7 +161,7 @@ function PanelWabaMensajesContent() {
         >
           <aside
             className={[
-              'min-h-0 flex flex-col border-white/[0.08] md:border-r',
+              'h-full min-h-0 flex flex-col border-white/[0.08] md:border-r',
               selectedPhone ? 'hidden md:flex' : 'flex',
             ].join(' ')}
           >
@@ -330,9 +330,10 @@ function PanelWabaMensajesContent() {
           </aside>
 
           <section
-            className={['min-h-0 flex-col', selectedPhone ? 'flex' : 'hidden md:flex'].join(
-              ' '
-            )}
+            className={[
+              'h-full min-h-0 flex-col',
+              selectedPhone ? 'flex' : 'hidden md:flex',
+            ].join(' ')}
           >
             {!selected && (
               <div className="flex flex-1 items-center justify-center p-8 text-sm text-zinc-500">

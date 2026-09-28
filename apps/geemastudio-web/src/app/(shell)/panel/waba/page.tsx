@@ -1,9 +1,65 @@
 'use client'
 
 import Link from 'next/link'
-import { AlertCircle, CheckCircle2, MessageSquareText, Sparkles } from 'lucide-react'
+import type { ComponentType } from 'react'
+import {
+  AlertCircle,
+  BarChart2,
+  CheckCircle2,
+  Images,
+  Megaphone,
+  MessageSquare,
+  MessageSquareText,
+  Sparkles,
+} from 'lucide-react'
 
 import { useWabaStatus } from '@/hooks/waba/useWabaStatus'
+
+type QuickLink = {
+  href: string
+  label: string
+  description: string
+  icon: ComponentType<{ className?: string }>
+}
+
+const QUICK_LINKS: QuickLink[] = [
+  {
+    href: '/panel/waba/mensajes',
+    label: 'Mensajes',
+    description: 'Conversaciones e hilos desde wa_messages',
+    icon: MessageSquareText,
+  },
+  {
+    href: '/panel/waba/campanas',
+    label: 'Campañas',
+    description: 'Envíos masivos por WhatsApp con segmentación',
+    icon: Megaphone,
+  },
+  {
+    href: '/panel/waba/portafolio',
+    label: 'Portafolio',
+    description: 'Catálogo de servicios y fotos compartidas por el bot',
+    icon: Images,
+  },
+  {
+    href: '/panel/waba/haiku',
+    label: 'Asistente IA',
+    description: 'System prompt Haiku (waba_config)',
+    icon: Sparkles,
+  },
+  {
+    href: '/panel/waba/simulador',
+    label: 'Simulador',
+    description: 'Probar respuestas del bot sin enviar mensajes reales',
+    icon: MessageSquare,
+  },
+  {
+    href: '/panel/waba/historial',
+    label: 'Historial',
+    description: 'Analytics de actividad, volumen y top flujos',
+    icon: BarChart2,
+  },
+]
 
 function maskId(id: string | null): string {
   if (!id) return '—'
@@ -99,35 +155,22 @@ export default function PanelWabaPage() {
             </dl>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Link
-              href="/panel/waba/mensajes"
-              className="flex items-start gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 transition-colors hover:bg-white/[0.06]"
-            >
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--tenant-primary)]/25 bg-[var(--tenant-primary)]/10 text-[var(--tenant-primary)]">
-                <MessageSquareText className="h-5 w-5" />
-              </span>
-              <span>
-                <span className="block text-sm font-semibold text-white">Mensajes</span>
-                <span className="mt-0.5 block text-xs text-zinc-400">
-                  Conversaciones e hilos desde wa_messages
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {QUICK_LINKS.map(({ href, label, description, icon: Icon }) => (
+              <Link
+                key={href}
+                href={href}
+                className="flex items-start gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 transition-colors hover:bg-white/[0.06]"
+              >
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--tenant-primary)]/25 bg-[var(--tenant-primary)]/10 text-[var(--tenant-primary)]">
+                  <Icon className="h-5 w-5" />
                 </span>
-              </span>
-            </Link>
-            <Link
-              href="/panel/waba/haiku"
-              className="flex items-start gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 transition-colors hover:bg-white/[0.06]"
-            >
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--tenant-primary)]/25 bg-[var(--tenant-primary)]/10 text-[var(--tenant-primary)]">
-                <Sparkles className="h-5 w-5" />
-              </span>
-              <span>
-                <span className="block text-sm font-semibold text-white">Asistente IA</span>
-                <span className="mt-0.5 block text-xs text-zinc-400">
-                  System prompt Haiku (waba_config)
+                <span>
+                  <span className="block text-sm font-semibold text-white">{label}</span>
+                  <span className="mt-0.5 block text-xs text-zinc-400">{description}</span>
                 </span>
-              </span>
-            </Link>
+              </Link>
+            ))}
           </div>
         </>
       )}
