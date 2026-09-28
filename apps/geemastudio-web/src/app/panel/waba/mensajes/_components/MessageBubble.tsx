@@ -101,10 +101,10 @@ export function MessageBubble({
   const showQuoteCard = !out && (Boolean(message.replyImageUrl) || Boolean(quoteLabel))
 
   return (
-    <div className={['flex', out ? 'justify-end' : 'justify-start'].join(' ')}>
+    <div className={['flex w-full', out ? 'justify-end pl-6' : 'justify-start pr-6'].join(' ')}>
       <div
         className={[
-          'max-w-[85%] space-y-1.5 rounded-2xl px-3 py-2 text-sm',
+          'max-w-[90%] sm:max-w-[80%] space-y-1.5 rounded-2xl px-3 py-2 text-sm min-w-0',
           out
             ? isTemplate
               ? 'bg-violet-500/20 text-violet-100'
@@ -150,28 +150,28 @@ export function MessageBubble({
             <p className="text-xs italic text-zinc-400">quitó su reacción</p>
           )
         ) : isTemplate ? (
-          <p className="flex items-start gap-2 whitespace-pre-wrap break-words">
+          <p className="flex items-start gap-2 whitespace-pre-wrap break-words [overflow-wrap:anywhere]">
             <FileText className="mt-0.5 h-4 w-4 shrink-0 text-violet-300" />
-            <span>
+            <span className="min-w-0 flex-1">
               <span className="mb-0.5 block text-[11px] uppercase tracking-wide text-violet-300/80">Plantilla</span>
               {formatTemplatePreview(bodyWithoutQuote)}
             </span>
           </p>
         ) : isInteractive ? (
-          <p className="flex items-center gap-2">
+          <p className="flex items-center gap-2 [overflow-wrap:anywhere]">
             <List className="h-4 w-4 shrink-0 text-zinc-400" />
-            {bodyWithoutQuote || '[interactivo]'}
+            <span className="min-w-0 flex-1">{bodyWithoutQuote || '[interactivo]'}</span>
           </p>
         ) : isButton ? (
-          <p className="flex items-center gap-2 italic text-zinc-400">
+          <p className="flex items-center gap-2 italic text-zinc-400 [overflow-wrap:anywhere]">
             <MousePointerClick className="h-4 w-4 shrink-0" />
-            {bodyWithoutQuote || '[seleccionó una opción]'}
+            <span className="min-w-0 flex-1">{bodyWithoutQuote || '[seleccionó una opción]'}</span>
           </p>
         ) : (
           bodyWithoutQuote &&
           !bodyWithoutQuote.startsWith('[imagen]') &&
           !bodyWithoutQuote.startsWith('[audio]') && (
-            <p className="whitespace-pre-wrap break-words">{bodyWithoutQuote}</p>
+            <p className="whitespace-pre-wrap break-words [overflow-wrap:anywhere]">{bodyWithoutQuote}</p>
           )
         )}
 

@@ -475,7 +475,7 @@ export function MessageThread({
           messages.map((m) => <MessageBubble key={m.id} message={m} timeZone={timeZone} />)}
       </div>
 
-      <div className="shrink-0 border-t border-white/[0.08] p-3">
+      <div className="shrink-0 border-t border-white/[0.08] bg-[#0F0F0F] p-2.5 pb-2 sm:p-3 sm:pb-3">
         {!withinWindow && (
           <p className="mb-2 text-[11px] text-zinc-500">
             Han pasado más de 24h desde el último mensaje del cliente — WhatsApp puede rechazar
@@ -503,7 +503,7 @@ export function MessageThread({
           ))}
         </div>
 
-        <div className="flex items-end gap-2">
+        <div className="flex items-end gap-1.5 sm:gap-2">
           <div className="flex shrink-0 gap-1">
             <input
               ref={imageInputRef}

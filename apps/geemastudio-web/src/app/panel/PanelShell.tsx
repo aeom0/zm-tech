@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
 import {
   ChevronDown,
+  HelpCircle,
   LogOut,
   LayoutGrid,
   Clock,
@@ -16,7 +17,6 @@ import {
   MessageCircle,
   MoreHorizontal,
   TrendingUp,
-  X,
 } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
@@ -87,7 +87,6 @@ export function PanelShell({
 }) {
   const router = useRouter()
   const pathname = usePathname()
-  const [moreOpen, setMoreOpen] = useState(false)
 
   const agendaItem: NavItem = {
     label: 'Agenda',
@@ -130,6 +129,16 @@ export function PanelShell({
     href: '/panel/waba/mensajes',
     icon: <MessageCircle className="h-4 w-4" />,
   }
+  const ayudaItem: NavItem = {
+    label: 'Ayuda',
+    href: '/panel/ayuda',
+    icon: <HelpCircle className="h-4 w-4" />,
+  }
+  const masItem: NavItem = {
+    label: 'Más',
+    href: '/panel/mas',
+    icon: <MoreHorizontal className="h-4 w-4" />,
+  }
 
   const navSections = useMemo<NavSection[]>(
     () => [
@@ -140,14 +149,14 @@ export function PanelShell({
         items: [finanzasItem, personalItem, horarioItem, configuracionItem],
       },
       { title: 'Marketing', items: [wabaItem] },
+      { title: 'Soporte', items: [ayudaItem] },
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 
-  // Ítems fijos del bottom tab bar mobile; el resto vive en la hoja "Más".
-  // WhatsApp queda en el centro (3.º de 5 slots, contando "Más").
-  const primaryTabItems: NavItem[] = [agendaItem, clientesItem, wabaItem, catalogoItem]
+  // Ítems fijos del bottom tab bar mobile; WhatsApp en el centro y Más como pantalla completa
+  const primaryTabItems: NavItem[] = [agendaItem, clientesItem, wabaItem, catalogoItem, masItem]
   const moreSections: NavSection[] = [
     {
       title: 'Negocio',
@@ -163,6 +172,9 @@ export function PanelShell({
     if (href === '/finanzas') {
       return Boolean(pathname?.startsWith('/finanzas') || pathname?.startsWith('/dashboard'))
     }
+    if (href === '/panel/mas') {
+      return Boolean(pathname?.startsWith('/panel/mas'))
+    }
     return pathname === href
   }
 
@@ -176,14 +188,14 @@ export function PanelShell({
       horarioItem,
       configuracionItem,
       wabaItem,
+      ayudaItem,
+      masItem,
     ]
     return allItems.find((item) => isNavActive(item.href))?.label ?? 'Inicio'
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
 
-  const moreTabActive =
-    moreOpen ||
-    moreSections.some((section) => section.items.some((item) => isNavActive(item.href)))
+  const moreTabActive = isNavActive('/panel/mas')
 
   const handleLogout = async () => {
     try {
@@ -319,7 +331,14 @@ export function PanelShell({
             </div>
           </div>
 
-          <main className="p-4 pb-24 md:p-8 md:pb-8">{children}</main>
+          <main
+            className={[
+              'p-4 pb-24 md:p-8 md:pb-8',
+              pathname?.startsWith('/panel/waba/mensajes') ? 'p-2 pb-20 md:p-8 md:pb-8' : '',
+            ].join(' ')}
+          >
+            {children}
+          </main>
 
           {/* Mobile bottom tab bar */}
           <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-white/[0.08] bg-zinc-900/95 backdrop-blur md:hidden">
@@ -330,7 +349,6 @@ export function PanelShell({
                   <Link
                     key={item.href}
                     href={item.href}
-                    onClick={() => setMoreOpen(false)}
                     className="flex flex-1 flex-col items-center gap-1 py-2.5"
                   >
                     <span className={isActive ? 'text-[var(--tenant-primary)]' : 'text-zinc-400'}>
@@ -347,85 +365,9 @@ export function PanelShell({
                   </Link>
                 )
               })}
-              <button
-                type="button"
-                onClick={() => setMoreOpen(true)}
-                className="flex flex-1 flex-col items-center gap-1 py-2.5"
-                aria-expanded={moreOpen}
-              >
-                <span
-                  className={
-                    moreTabActive ? 'text-[var(--tenant-primary)]' : 'text-zinc-400'
-                  }
-                >
-                  <MoreHorizontal className="h-4 w-4" />
-                </span>
-                <span
-                  className={[
-                    'text-[11px] font-medium',
-                    moreTabActive ? 'text-white' : 'text-zinc-400',
-                  ].join(' ')}
-                >
-                  Más
-                </span>
-              </button>
             </div>
           </nav>
         </div>
-
-        {/* Mobile "Más" sheet */}
-        {moreOpen && (
-          <div className="fixed inset-0 z-40 md:hidden">
-            <button
-              type="button"
-              aria-label="Cerrar menú"
-              onClick={() => setMoreOpen(false)}
-              className="absolute inset-0 bg-black/60"
-            />
-            <div className="absolute inset-x-0 bottom-0 max-h-[80vh] overflow-y-auto rounded-t-2xl border-t border-white/[0.08] bg-zinc-900 pb-[env(safe-area-inset-bottom)]">
-              <div className="flex items-center justify-between border-b border-white/[0.08] px-4 py-3">
-                <div className="text-sm font-semibold text-white">Más</div>
-                <button
-                  type="button"
-                  aria-label="Cerrar"
-                  onClick={() => setMoreOpen(false)}
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.04]"
-                >
-                  <X className="h-4 w-4 text-zinc-300" />
-                </button>
-              </div>
-
-              <div className="space-y-5 p-3">
-                {moreSections.map((section) => (
-                  <div key={section.title} className="space-y-1">
-                    <div className="px-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
-                      {section.title}
-                    </div>
-                    {section.items.map((item) => renderNavLink(item, () => setMoreOpen(false)))}
-                  </div>
-                ))}
-
-                <div className="border-t border-white/[0.08] pt-3">
-                  <div className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2">
-                    <div className="min-w-0">
-                      <div className="text-xs text-zinc-500">Sesión</div>
-                      <div className="truncate text-sm text-zinc-200">{userEmail}</div>
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={handleLogout}
-                    className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-2 text-sm font-semibold text-red-300 transition-colors hover:bg-red-500/15"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    Cerrar sesión
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   )

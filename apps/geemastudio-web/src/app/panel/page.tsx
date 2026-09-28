@@ -2,6 +2,7 @@ import Link from 'next/link'
 import {
   Calendar,
   Clock,
+  HelpCircle,
   LayoutGrid,
   MessageCircle,
   Settings,
@@ -58,6 +59,12 @@ const MODULES = [
     label: 'Configuración',
     description: 'Datos del negocio y dominio',
     icon: Settings,
+  },
+  {
+    href: '/panel/ayuda',
+    label: 'Ayuda',
+    description: 'Preguntas y soporte técnico',
+    icon: HelpCircle,
   },
 ]
 

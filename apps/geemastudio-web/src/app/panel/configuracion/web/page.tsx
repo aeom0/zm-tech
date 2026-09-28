@@ -17,6 +17,7 @@ import type {
   WebService,
   WebTeamMember,
 } from '@/types/tenant-landing'
+import { ConfiguracionNav } from '../_components/ConfiguracionNav'
 
 const fieldClass =
   'w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white outline-none focus:border-[var(--tenant-primary)]/40'
@@ -270,15 +271,10 @@ export default function PanelWebPage() {
 
   return (
     <div className="space-y-6">
+      <ConfiguracionNav />
+
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <Link
-            href="/panel/configuracion"
-            className="mb-2 inline-flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            Configuración
-          </Link>
           <h1 className="text-2xl font-bold text-white">Mi Web</h1>
           <p className="mt-1 text-sm text-zinc-400">
             Contenido de la landing pública — texto, galería, equipo, promos, reseñas y servicios.

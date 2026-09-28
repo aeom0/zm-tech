@@ -109,7 +109,7 @@ function PanelWabaMensajesContent() {
   const title = conversationsQuery.isLoading ? 'Mensajes' : `Mensajes (${conversations.length})`
 
   return (
-    <div className="space-y-4">
+    <div className={selectedPhone ? 'space-y-0 md:space-y-4' : 'space-y-4'}>
       <div className={selectedPhone ? 'hidden md:block' : 'block'}>
         <div className="text-xs text-zinc-500">WhatsApp</div>
         <h1 className="text-2xl font-bold text-white">{title}</h1>
@@ -149,8 +149,8 @@ function PanelWabaMensajesContent() {
           className={[
             'grid overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] md:grid-cols-[340px_1fr]',
             selectedPhone
-              ? 'h-[calc(100dvh-7.5rem)] md:h-[calc(100dvh-12rem)]'
-              : 'h-[calc(100dvh-13rem)] min-h-[440px] md:h-[calc(100dvh-12rem)]',
+              ? 'h-[calc(100dvh-8rem)] md:h-[calc(100dvh-12rem)]'
+              : 'h-[calc(100dvh-14rem)] min-h-[440px] md:h-[calc(100dvh-12rem)]',
           ].join(' ')}
         >
           <aside

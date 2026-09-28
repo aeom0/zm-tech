@@ -20,6 +20,7 @@ import {
   type WebTemplate,
 } from '@/hooks/configuracion/types'
 import { getSiteUrl, getTenantLandingUrl } from '@/lib/site-url'
+import { ConfiguracionNav } from './_components/ConfiguracionNav'
 
 const fieldClass =
   'w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white outline-none focus:border-[var(--tenant-primary)]/40'
@@ -61,7 +62,7 @@ export default function PanelConfiguracionPage() {
   const [staffTerm, setStaffTerm] = useState('Profesionales')
   const [staffSingular, setStaffSingular] = useState('Profesional')
   const [appointmentTerm, setAppointmentTerm] = useState('cita')
-  const [primaryColor, setPrimaryColor] = useState('var(--tenant-primary)')
+  const [primaryColor, setPrimaryColor] = useState('#40E0D0')
   const [accentColor, setAccentColor] = useState('#FFD700')
   const [logoUrl, setLogoUrl] = useState('')
   const [presence, setPresence] = useState<WebPresenceMode>('none')
@@ -84,7 +85,7 @@ export default function PanelConfiguracionPage() {
     setStaffTerm(row.staff_terminology || 'Profesionales')
     setStaffSingular(row.staff_singular_terminology || 'Profesional')
     setAppointmentTerm(row.appointment_terminology || 'cita')
-    setPrimaryColor(row.primary_color || 'var(--tenant-primary)')
+    setPrimaryColor(row.primary_color || '#40E0D0')
     setAccentColor(row.accent_color || '#FFD700')
     setLogoUrl(row.logo_url || '')
     setPresence(presenceFromRow(row))
@@ -214,16 +215,14 @@ export default function PanelConfiguracionPage() {
 
   return (
     <div className="space-y-6">
+      <ConfiguracionNav />
+
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <div className="text-xs text-zinc-500">Panel</div>
           <h1 className="text-2xl font-bold text-white">Configuración</h1>
           <p className="mt-1 text-sm text-zinc-400">
-            Datos del negocio, marca, logo y presencia web. Horarios en{' '}
-            <Link href="/panel/horarios" className="text-[var(--tenant-primary)] hover:underline">
-              Panel · Horario
-            </Link>
-            .
+            Datos del negocio, marca, logo y presencia web.
           </p>
         </div>
         <button
