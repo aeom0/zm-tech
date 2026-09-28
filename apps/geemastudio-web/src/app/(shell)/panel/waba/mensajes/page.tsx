@@ -161,7 +161,7 @@ function PanelWabaMensajesContent() {
         >
           <aside
             className={[
-              'h-full min-h-0 flex flex-col border-white/[0.08] md:border-r',
+              'h-full min-h-0 min-w-0 flex flex-col border-white/[0.08] md:border-r',
               selectedPhone ? 'hidden md:flex' : 'flex',
             ].join(' ')}
           >
@@ -331,7 +331,7 @@ function PanelWabaMensajesContent() {
 
           <section
             className={[
-              'h-full min-h-0 flex-col',
+              'h-full min-h-0 min-w-0 flex-col',
               selectedPhone ? 'flex' : 'hidden md:flex',
             ].join(' ')}
           >
