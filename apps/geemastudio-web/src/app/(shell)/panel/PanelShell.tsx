@@ -20,7 +20,6 @@ import {
 } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
-import { tenantCssVars } from '@/lib/tenant-theme'
 
 type NavItem = {
   label: string
@@ -62,7 +61,7 @@ function TenantLogo({
   const initial = tenantName?.trim()?.[0]?.toUpperCase() ?? '?'
   return (
     <span
-      className="flex shrink-0 items-center justify-center rounded-full border border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 font-semibold text-[var(--tenant-primary)]"
+      className="border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 flex shrink-0 items-center justify-center rounded-full border font-semibold text-[var(--tenant-primary)]"
       style={{ width: size, height: size, fontSize: size * 0.42 }}
     >
       {initial}
@@ -72,15 +71,11 @@ function TenantLogo({
 
 export function PanelShell({
   userEmail,
-  primaryColor,
-  accentColor,
   tenantName,
   tenantLogoUrl,
   children,
 }: {
   userEmail: string
-  primaryColor?: string | null
-  accentColor?: string | null
   tenantName?: string | null
   tenantLogoUrl?: string | null
   children: React.ReactNode
@@ -308,66 +303,64 @@ export function PanelShell({
   )
 
   return (
-    <div className="dark" style={tenantCssVars(primaryColor, accentColor)}>
-      <div className="flex min-h-screen bg-[#0F0F0F] text-white">
-        {/* Desktop sidebar */}
-        <aside className="hidden w-[240px] border-r border-white/[0.08] bg-zinc-900 md:block">
-          {SidebarContent}
-        </aside>
+    <div className="flex min-h-screen bg-[#0F0F0F] text-white">
+      {/* Desktop sidebar */}
+      <aside className="hidden w-[240px] border-r border-white/[0.08] bg-zinc-900 md:block">
+        {SidebarContent}
+      </aside>
 
-        <div className="min-w-0 flex-1">
-          {/* Mobile top bar */}
-          <div className="sticky top-0 z-30 border-b border-white/[0.08] bg-[#0F0F0F]/90 backdrop-blur md:hidden">
-            <div className="flex h-14 items-center justify-between px-4">
-              <Image
-                src="/logo-diamondSparkleNGlow.svg"
-                alt="GeemaStudio"
-                width={32}
-                height={32}
-                className="shrink-0"
-              />
-              <div className="text-sm font-semibold text-white">Panel · {activePageLabel}</div>
-              <TenantLogo tenantName={tenantName} tenantLogoUrl={tenantLogoUrl} size={28} />
-            </div>
+      <div className="min-w-0 flex-1">
+        {/* Mobile top bar */}
+        <div className="sticky top-0 z-30 border-b border-white/[0.08] bg-[#0F0F0F]/90 backdrop-blur md:hidden">
+          <div className="flex h-14 items-center justify-between px-4">
+            <Image
+              src="/logo-diamondSparkleNGlow.svg"
+              alt="GeemaStudio"
+              width={32}
+              height={32}
+              className="shrink-0"
+            />
+            <div className="text-sm font-semibold text-white">Panel · {activePageLabel}</div>
+            <TenantLogo tenantName={tenantName} tenantLogoUrl={tenantLogoUrl} size={28} />
           </div>
-
-          <main
-            className={[
-              'p-4 pb-24 md:p-8 md:pb-8',
-              pathname?.startsWith('/panel/waba/mensajes') ? 'p-2 pb-20 md:p-8 md:pb-8' : '',
-            ].join(' ')}
-          >
-            {children}
-          </main>
-
-          {/* Mobile bottom tab bar */}
-          <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-white/[0.08] bg-zinc-900/95 backdrop-blur md:hidden">
-            <div className="flex items-stretch justify-between px-1 pb-[env(safe-area-inset-bottom)]">
-              {primaryTabItems.map((item) => {
-                const isActive = isNavActive(item.href)
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="flex flex-1 flex-col items-center gap-1 py-2.5"
-                  >
-                    <span className={isActive ? 'text-[var(--tenant-primary)]' : 'text-zinc-400'}>
-                      {item.icon}
-                    </span>
-                    <span
-                      className={[
-                        'text-[11px] font-medium',
-                        isActive ? 'text-white' : 'text-zinc-400',
-                      ].join(' ')}
-                    >
-                      {item.shortLabel ?? item.label}
-                    </span>
-                  </Link>
-                )
-              })}
-            </div>
-          </nav>
         </div>
+
+        <main
+          className={[
+            'p-4 pb-24 md:p-8 md:pb-8',
+            pathname?.startsWith('/panel/waba/mensajes') ? 'p-2 pb-20 md:p-8 md:pb-8' : '',
+          ].join(' ')}
+        >
+          {children}
+        </main>
+
+        {/* Mobile bottom tab bar */}
+        <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-white/[0.08] bg-zinc-900/95 backdrop-blur md:hidden">
+          <div className="flex items-stretch justify-between px-1 pb-[env(safe-area-inset-bottom)]">
+            {primaryTabItems.map((item) => {
+              const isActive = isNavActive(item.href)
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="flex flex-1 flex-col items-center gap-1 py-2.5"
+                >
+                  <span className={isActive ? 'text-[var(--tenant-primary)]' : 'text-zinc-400'}>
+                    {item.icon}
+                  </span>
+                  <span
+                    className={[
+                      'text-[11px] font-medium',
+                      isActive ? 'text-white' : 'text-zinc-400',
+                    ].join(' ')}
+                  >
+                    {item.shortLabel ?? item.label}
+                  </span>
+                </Link>
+              )
+            })}
+          </div>
+        </nav>
       </div>
     </div>
   )

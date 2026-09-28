@@ -11,7 +11,7 @@ import {
   type Promotion,
   type PromotionInput,
   type PromoItemInput,
-} from '@/app/panel/servicios/_services/promosService'
+} from '@/app/(shell)/panel/servicios/_services/promosService'
 
 export const PROMOS_KEY = ['promotions'] as const
 

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react'
 
-import type { ProductOrderSource, Producto } from '@/app/panel/servicios/_services/productosService'
+import type { ProductOrderSource, Producto } from '@/app/(shell)/panel/servicios/_services/productosService'
 
 export function ProductoVentaModal({
   products,

@@ -47,6 +47,24 @@
 | `/panel/inventario`                           | Gestión de inventario y stock                       | P2                              | —                                                                  |
 | `/panel/configuracion/web`                    | CMS contenido landing (galería, team, etc.)         | P2 — mobile ✅ Fase 2; panel ❌ | [`10-PLAN-mi-web-cms-fase2.md`](plans/10-PLAN-mi-web-cms-fase2.md) |
 
+### Estructura interna: route group `(shell)` compartido
+
+`/panel/*`, `/finanzas` y `/dashboard` cuelgan de `src/app/(shell)/` (route group de Next.js — no aparece en la URL). Antes eran tres árboles de layout independientes (`app/panel/layout.tsx`, `app/finanzas/layout.tsx`, `app/dashboard/layout.tsx`), cada uno montando su propia instancia de `PanelShell` (sidebar), `QueryClientProvider` y `AuthProvider`; al navegar entre `/panel/*` y `/finanzas`/`/dashboard` Next.js desmontaba y remontaba el layout completo (parpadeo de página, sidebar incluido), porque no compartían el mismo nodo de layout en el árbol.
+
+Estructura actual:
+
+```
+src/app/(shell)/
+  layout.tsx           # único: fetch sesión + marca del tenant, monta ShellProviders
+  ShellProviders.tsx    # 'use client': QueryClientProvider + AuthProvider + PanelShell (una sola instancia)
+  finanzas-brand-context.tsx
+  panel/                # layout.tsx solo hace el redirect a /login si no hay sesión
+  finanzas/             # layout.tsx solo metadata; auth propia (login sin sidebar) vía useAuth()
+  dashboard/            # layout.tsx solo el guard de rol staff
+```
+
+`ShellProviders` decide si envuelve `children` con `PanelShell` según la ruta (`/finanzas/login` queda sin sidebar). Cualquier sección nueva del panel de gestión debe vivir bajo `(shell)/` para no reintroducir el remount.
+
 ### Acciones exclusivas de web
 
 Estas acciones **no existen en la app móvil** por limitaciones de form factor. Son parte central del valor del producto para el dueño del negocio:

@@ -10,7 +10,7 @@ import {
   updatePack,
   type Pack,
   type PackInput,
-} from '@/app/panel/servicios/_services/packsService'
+} from '@/app/(shell)/panel/servicios/_services/packsService'
 
 export const PACKS_KEY = ['packs'] as const
 

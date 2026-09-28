@@ -6,12 +6,12 @@ import type { PeriodKey } from '@/hooks/dashboard/useDashboardPeriod'
 import { useDashboardPeriod } from '@/hooks/dashboard/useDashboardPeriod'
 import { useDashboardRevenue } from '@/hooks/dashboard/useDashboardRevenue'
 import { useDashboardTopStaff } from '@/hooks/dashboard/useDashboardTopStaff'
-import { AppointmentsStatusCard } from '@/app/dashboard/_components/AppointmentsStatusCard'
-import { ClientsOverviewCard } from '@/app/dashboard/_components/ClientsOverviewCard'
-import { PeriodSelector } from '@/app/dashboard/_components/PeriodSelector'
-import { RevenueCard } from '@/app/dashboard/_components/RevenueCard'
-import { StatsGrid } from '@/app/dashboard/_components/StatsGrid'
-import { TopStaffCard } from '@/app/dashboard/_components/TopStaffCard'
+import { AppointmentsStatusCard } from '@/app/(shell)/dashboard/_components/AppointmentsStatusCard'
+import { ClientsOverviewCard } from '@/app/(shell)/dashboard/_components/ClientsOverviewCard'
+import { PeriodSelector } from '@/app/(shell)/dashboard/_components/PeriodSelector'
+import { RevenueCard } from '@/app/(shell)/dashboard/_components/RevenueCard'
+import { StatsGrid } from '@/app/(shell)/dashboard/_components/StatsGrid'
+import { TopStaffCard } from '@/app/(shell)/dashboard/_components/TopStaffCard'
 
 interface OperationalSnapshotProps {
   timezone: string

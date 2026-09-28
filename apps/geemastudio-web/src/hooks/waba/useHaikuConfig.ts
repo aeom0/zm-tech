@@ -14,7 +14,7 @@ import {
   DEFAULT_WELCOME_GENERATION_SYSTEM,
   DEFAULT_WELCOME_GREETING_TEMPLATE,
   DEFAULT_WELCOME_SLOT_CONTEXT,
-} from '@/app/panel/waba/haiku/_lib/defaultHaikuConfig'
+} from '@/app/(shell)/panel/waba/haiku/_lib/defaultHaikuConfig'
 
 export type HaikuSettings = {
   max_tokens: number

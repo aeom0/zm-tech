@@ -3,7 +3,7 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
 import { supabase } from '@/lib/supabase'
-import { formatTemplatePreview, isTemplateContent } from '@/app/panel/waba/mensajes/_components/templateLabels'
+import { formatTemplatePreview, isTemplateContent } from '@/app/(shell)/panel/waba/mensajes/_components/templateLabels'
 
 type CatalogMap = Map<string, string>
 

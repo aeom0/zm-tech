@@ -17,7 +17,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { OperationalSnapshot } from './components/OperationalSnapshot'
-import { useFinanzasBrand } from './FinanzasAuthWrapper'
+import { useFinanzasBrand } from '../finanzas-brand-context'
 import {
   useFinanzasData,
   type EmployeeDesglose,

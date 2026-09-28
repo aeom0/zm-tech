@@ -16,7 +16,7 @@ import {
   type ProductOrderSource,
   type Producto,
   type ProductoInput,
-} from '@/app/panel/servicios/_services/productosService'
+} from '@/app/(shell)/panel/servicios/_services/productosService'
 import { useTenantId } from '../finanzas/useTenantId'
 
 export const PRODUCTOS_KEY = ['productos'] as const
