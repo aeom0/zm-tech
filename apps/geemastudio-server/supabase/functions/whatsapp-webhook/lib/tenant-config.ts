@@ -20,7 +20,7 @@ export function waConfigFromTenant(row: TenantWabaRecord): WaSendConfig {
   }
 }
 
-export async function loadTenantByPhoneNumberId(
+export function loadTenantByPhoneNumberId(
   supabase: SupabaseClient,
   phoneNumberId: string
 ): Promise<TenantWabaRecord | null> {
