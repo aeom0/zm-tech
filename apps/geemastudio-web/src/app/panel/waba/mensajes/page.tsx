@@ -42,9 +42,15 @@ function PanelWabaMensajesContent() {
 
   const conversations = useMemo(() => conversationsQuery.data ?? [], [conversationsQuery.data])
 
+  /**
+   * Solo reacciona a cambios de `phoneParam` (no de `selectedPhone`): al tocar la
+   * flecha atrás, `selectPhone` limpia el estado local antes de que `router.replace`
+   * actualice la URL, y si este efecto también dependiera de `selectedPhone` volvería
+   * a sincronizar con el `phoneParam` todavía viejo, revirtiendo el back en el primer toque.
+   */
   useEffect(() => {
-    if (phoneParam && phoneParam !== selectedPhone) setSelectedPhone(phoneParam)
-  }, [phoneParam, selectedPhone])
+    setSelectedPhone(phoneParam)
+  }, [phoneParam])
 
   const selectPhone = (phone: string | null) => {
     setSelectedPhone(phone)
