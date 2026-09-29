@@ -10,6 +10,7 @@ import {
   Megaphone,
   MessageSquare,
   MessageSquareText,
+  SlidersHorizontal,
   Sparkles,
 } from 'lucide-react'
 
@@ -58,6 +59,12 @@ const QUICK_LINKS: QuickLink[] = [
     label: 'Historial',
     description: 'Analytics de actividad, volumen y top flujos',
     icon: BarChart2,
+  },
+  {
+    href: '/panel/waba/reglas',
+    label: 'Reglas',
+    description: 'Horario, abono y chicas por categoría',
+    icon: SlidersHorizontal,
   },
 ]
 
