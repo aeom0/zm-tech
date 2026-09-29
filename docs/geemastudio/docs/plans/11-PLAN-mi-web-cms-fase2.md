@@ -74,6 +74,32 @@ CMS equivalente al de mobile, en el panel web:
 | **`web_mode` explícito**           | Panel/mobile siguen mapeando presencia vía `web_enabled` (+ slug/custom_domain); alinear UI a enum `own_domain` / `geema_hosted` / `none` | P2                                  |
 | Smoke E2E con tenant QA            | Activar slug de prueba distinto de demos; no romper fila prod ZM sin plan de contenido                                                    | ops                                 |
 
+## Decisión y riesgo: tenants con dominio y landing propios (29-sep-2026)
+
+**Principio:** el tenant puede conservar su dominio y su landing y aun así gestionar su contenido desde Mi Web. Hay dos modos de servir ese contenido:
+
+| Modo | Quién renderiza | Ejemplo |
+| ---- | --------------- | ------- |
+| **Hospedado en Geema** | `geemastudio-web` (`/s/[slug]` o `/_sites/[domain]`) | Tenants sin landing propia |
+| **Landing propia que consume Mi Web** | El sitio del tenant lee las columnas `web_*` de su fila | ZM Lash (`zmlashnails.com`, hoy con Sanity) |
+
+**Fase de prueba de ZM Lash:** pueden convivir la landing propia (`zmlashnails.com`) y la de Geema (`/s/zm-lash-nails`) porque son proyectos y URLs distintos. La de Geema sirve como vista previa; la fila `zm-lash-nails` es la única fuente de contenido.
+
+**Riesgo del go-live por Modo A (apuntar el DNS de `zmlashnails.com` a `geemastudio-web`):** el middleware solo sirve `/` bajo un dominio propio y responde 404 en el resto. `zmlashnails.com` aloja hoy también, en el proyecto de Lash:
+
+- Páginas legales: `/privacidad`, `/terminos-y-condiciones`, `/libro-de-reclamaciones` (el libro de reclamaciones es obligatorio en Perú).
+- Panel web de Lash: `/panel/*`, `/finanzas`, `/clientes`, `/servicios`. Las alertas de WhatsApp ya enlazan a `zmlashnails.com/panel/waba/mensajes`.
+
+Cambiar el DNS sin resolver esto dejaría todo eso en 404. Antes de cualquier go-live por Modo A hay que decidir dónde vive cada pieza (por ejemplo, subdominio para el panel de Lash y páginas legales dentro de la landing de Geema).
+
+**Camino recomendado para ZM Lash (Modo B):** conservar `zmlashnails.com` en el proyecto de Lash y reemplazar Sanity por lectura de `tenant_settings.web_*` (mismo contenido que edita Mi Web). Requiere:
+
+1. Política de lectura pública acotada a las columnas de contenido web de ese tenant (hoy `tenant_landing_public_read` exige `web_enabled = true`, y la fila de ZM está en `false`). Cambio en producción: requiere OK explícito.
+2. Migrar el contenido real de Sanity a la fila `zm-lash-nails` (ver Pendiente).
+3. Que la landing de Lash lea esos datos (con los valores actuales como respaldo si la lectura falla) y revalide en el servidor.
+
+Pendiente de decidir: si el Modo B se ofrece como capacidad general (lectura pública del contenido web por tenant) para futuros tenants con landing propia.
+
 ## Fuera de alcance (confirmado)
 
 - Staff editando CMS (solo `owner` / `dev`).
