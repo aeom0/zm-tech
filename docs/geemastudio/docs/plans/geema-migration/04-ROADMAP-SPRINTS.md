@@ -205,7 +205,7 @@ y sin activar: se prende en S7, cuando un 2.º tenant tenga cuenta Ads propia.
 | S5-2 | Migrar `EMPLOYEE_CATEGORIES`, horarios, pagos ZM a seed config | ZM | M ✅ PR #156 (`ADMIN_PHONE`/feriados fuera) |
 | S5-3 | Capacidad genérica (sin UUIDs hardcode) | ZM Edge | M ✅ (PR #156, con S5-2) |
 | S5-4 | `peru-holidays` → leer `salon_holidays` tenant primero | ZM Edge | S ✅ PR #155 |
-| S5-5 | Panel editar reglas básicas (horarios, depósito, staff↔cat) | ZM web | M ✅ `/panel/waba/reglas` |
+| S5-5 | Panel editar reglas básicas (horarios, depósito, staff↔cat) | ZM web y Geema web | M ✅ `/panel/waba/reglas` en ambos |
 
 ### DoD
 - [ ] ZM prod comportamiento idéntico pre/post (suites QA verdes)
@@ -217,7 +217,7 @@ y sin activar: se prende en S7, cuando un 2.º tenant tenga cuenta Ads propia.
 - **S5-2 ✅ PR #156.** Horarios, staff por categoría, medios de pago, tasa de domingo y monto fijo salen de `waba_rules`. Cache 5 min por tenant. Sin carga, ZM usa el hardcode. Fuera: `ADMIN_PHONE`, `YAPE_PLIN_NUMBER` y el horario de feriados.
 - **S5-3 ✅ PR #156.** Topes, categorías y servicios especiales, carril Karelis, servicios sin carril, hora de tarde y almuerzo salen de `waba_rules.capacity`. El reparto `stephani`/`karelis` sigue siendo el modelo de ZM.
 - **S5-4 ✅ PR #155.** `ensureSalonHolidaysLoaded` filtra por `tenant_id` y cachea por tenant. ZM sin filas usa el seed; otro tenant queda sin feriados. El copy del CC Las Plazuelas solo aplica a ZM. Drizzle alineado a `salon_holidays_tenant_date_unique` (el índice ya estaba en prod; no hubo DDL nuevo).
-- **S5-5 ✅** Panel ZM `/panel/waba/reglas`: horario, abono fijo, adelanto de domingo y chicas por categoría. No reescribe cupo ni medios de pago. El bot lo lee en el siguiente ciclo de 5 minutos.
+- **S5-5 ✅** Panel `/panel/waba/reglas` en ZM y en Geema: horario, abono fijo, adelanto de domingo y chicas por categoría. No reescribe cupo ni medios de pago. El bot lo lee en el siguiente ciclo de 5 minutos.
 
 ---
 
