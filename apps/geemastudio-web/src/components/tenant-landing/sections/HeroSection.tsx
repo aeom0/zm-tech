@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import { Scissors } from 'lucide-react'
+import { socialProfileUrl } from '@zmtech/tenant-config'
 import type { TenantLandingData } from '@/types/tenant-landing'
 import type { LandingTheme } from '../theme/types'
 import { BookingButton } from '../shared/BookingButton'
@@ -162,7 +163,7 @@ export function HeroSection({ data, theme }: HeroSectionProps) {
               />
               {instagram && (
                 <a
-                  href={`https://instagram.com/${instagram.replace('@', '')}`}
+                  href={socialProfileUrl('instagram', instagram) ?? '#'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="whitespace-nowrap border px-4 py-4 text-center text-[15px] font-semibold no-underline"
@@ -194,7 +195,7 @@ export function HeroSection({ data, theme }: HeroSectionProps) {
               />
               {theme.id === 'elegant' && instagram && (
                 <a
-                  href={`https://instagram.com/${instagram.replace('@', '')}`}
+                  href={socialProfileUrl('instagram', instagram) ?? '#'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block rounded-full border py-3.5 text-center text-[14px] font-semibold no-underline"

@@ -1,5 +1,5 @@
 import React from 'react'
-import { ScrollView, StyleSheet, Alert } from 'react-native'
+import { ScrollView, StyleSheet } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { useNavigation } from '@react-navigation/native'
@@ -17,9 +17,6 @@ export default function MarketingRedesScreen() {
   const { theme } = useTheme()
   const { config } = useTenant()
   const navigation = useNavigation<NativeStackNavigationProp<MoreStackParamList>>()
-
-  const showProximamente = (feature: string) =>
-    Alert.alert('Próximamente', `${feature} estará disponible en una próxima versión.`)
 
   return (
     <ScrollView
@@ -48,7 +45,7 @@ export default function MarketingRedesScreen() {
       <MenuRow
         icon="instagram"
         label="Redes Sociales"
-        onPress={() => showProximamente('La gestión de redes sociales')}
+        onPress={() => navigation.navigate('RedesSociales')}
       />
     </ScrollView>
   )

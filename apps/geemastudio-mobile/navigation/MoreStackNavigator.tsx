@@ -25,6 +25,7 @@ import CuentaScreen from '@/screens/more/CuentaScreen'
 import MiWebScreen from '@/screens/web/MiWebScreen'
 import MiWebPresenciaScreen from '@/screens/web/MiWebPresenciaScreen'
 import MiWebContenidoScreen from '@/screens/web/MiWebContenidoScreen'
+import RedesSocialesScreen from '@/screens/more/RedesSocialesScreen'
 import MiWebGaleriaScreen from '@/screens/web/MiWebGaleriaScreen'
 import MiWebEquipoScreen from '@/screens/web/MiWebEquipoScreen'
 import MiWebPromosScreen from '@/screens/web/MiWebPromosScreen'
@@ -39,6 +40,7 @@ export type MoreStackParamList = {
   Equipo: undefined
   FinanzasMenu: undefined
   MarketingRedes: undefined
+  RedesSociales: undefined
   Ayuda: undefined
   Cuenta: undefined
   ValidacionPagos: undefined
@@ -95,6 +97,11 @@ export default function MoreStackNavigator() {
         name="MarketingRedes"
         component={MarketingRedesScreen}
         options={{ title: 'Marketing y Redes' }}
+      />
+      <Stack.Screen
+        name="RedesSociales"
+        component={RedesSocialesScreen}
+        options={{ title: 'Redes sociales' }}
       />
       <Stack.Screen name="Ayuda" component={AyudaScreen} options={{ title: 'Ayuda' }} />
       <Stack.Screen name="Cuenta" component={CuentaScreen} options={{ title: 'Cuenta' }} />

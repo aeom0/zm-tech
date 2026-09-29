@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { socialProfileUrl } from '@zmtech/tenant-config'
 import { MapPin } from 'lucide-react'
 import type { TenantLandingData } from '@/types/tenant-landing'
 import type { LandingTheme } from '../theme/types'
@@ -11,12 +12,19 @@ interface SiteFooterProps {
 export function SiteFooter({ data, theme }: SiteFooterProps) {
   const { businessName, whatsapp, instagram, facebook, tiktok, address, city } = data
 
-  const pills: string[] = []
-  if (whatsapp) pills.push('WhatsApp')
-  if (instagram) pills.push(theme.id === 'modern' ? instagram : 'Instagram')
-  if (facebook) pills.push('Facebook')
-  if (tiktok) pills.push('TikTok')
-  if (theme.id === 'elegant' && address) pills.push('Ubicación')
+  const pills: { label: string; href: string | null }[] = []
+  if (whatsapp) {
+    pills.push({ label: 'WhatsApp', href: `https://wa.me/${whatsapp.replace(/\D/g, '')}` })
+  }
+  if (instagram) {
+    pills.push({
+      label: theme.id === 'modern' ? instagram : 'Instagram',
+      href: socialProfileUrl('instagram', instagram),
+    })
+  }
+  if (facebook) pills.push({ label: 'Facebook', href: socialProfileUrl('facebook', facebook) })
+  if (tiktok) pills.push({ label: 'TikTok', href: socialProfileUrl('tiktok', tiktok) })
+  if (theme.id === 'elegant' && address) pills.push({ label: 'Ubicación', href: null })
 
   return (
     <footer
@@ -41,19 +49,31 @@ export function SiteFooter({ data, theme }: SiteFooterProps) {
         </p>
       )}
       <div className="mb-6 flex flex-wrap gap-1">
-        {pills.map((pill) => (
-          <span
-            key={pill}
-            className="inline-block rounded-full border px-4 py-1.5 text-xs"
-            style={{
+        {pills.map((pill) => {
+          const pillProps = {
+            className: 'inline-block rounded-full border px-4 py-1.5 text-xs no-underline',
+            style: {
               borderColor: theme.colors.footerPillBorder,
               background: theme.colors.footerPillBg,
               color: theme.colors.footerPillText,
-            }}
-          >
-            {pill}
-          </span>
-        ))}
+            },
+          }
+          return pill.href ? (
+            <a
+              key={pill.label}
+              href={pill.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              {...pillProps}
+            >
+              {pill.label}
+            </a>
+          ) : (
+            <span key={pill.label} {...pillProps}>
+              {pill.label}
+            </span>
+          )
+        })}
       </div>
       <p
         className="border-t pt-4 text-[11px]"
