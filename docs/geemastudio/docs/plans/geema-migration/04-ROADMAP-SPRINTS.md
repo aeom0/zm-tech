@@ -284,8 +284,10 @@ Shadow test 29-ago (APK SDK 56, `alberto@zmlashnails.com`): core OK; packs/promo
 - [x] Packs y promos ZM visibles en Geema (30-ago)
 - [x] Agenda mismo día en hora Lima (S5C-3)
 - [x] Más → chicas cableado a agenda (S5C-11)
-- [ ] Finanzas en Más lista pagos tenant (smoke explícito)
+- [x] Finanzas en Más lista pagos tenant (smoke explícito, 28-sep-2026 — device Moto G54, ver [07](./07-PARIDAD-MOBILE-ZM.md) § Notas de validación)
 - [x] ZM app legacy sin cambio
+
+**DoD shadow-baseline cerrado (28-sep-2026).** Quedan pendientes P1/P2 (S5C-4…S5C-9) fuera del DoD mínimo.
 
 ---
 

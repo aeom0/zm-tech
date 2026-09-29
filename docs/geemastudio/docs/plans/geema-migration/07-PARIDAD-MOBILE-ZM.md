@@ -202,13 +202,14 @@ Convergencia corta: Drizzle Geema → **superset tipado de prod**; adaptadores m
 | S5C-8 | Dashboard: ranking top servicios + alertas feriado | zm-tech | S | P2 | Pendiente |
 | S5C-9 | Documentar en UI dónde está Finanzas (onboarding admin) | zm-tech | S | P2 | Pendiente |
 | S5C-10 | Tests smoke: packs/promos/agenda mismo día vs app ZM | zm-tech | S | P0 | Parcial (visual 30-ago) |
+| S5C-12 | Smoke Más → Finanzas: historial de pagos tenant ZM vs app ZM | zm-tech | S | P0 | ✅ 28-sep (device Moto G54) |
 
 ### DoD S5-C (shadow ZM en Geema)
 
 - [x] Servicios → tabs **Packs** y **Promos** muestran datos ZM prod (Alberto, 30-ago)
 - [x] Agenda mismo día: citas en hora Lima, no corridas −5 h (S5C-3)
 - [x] Más → chicas cableado a columnas de agenda; writes ZM-safe (S5C-11)
-- [ ] **Más → Finanzas** lista pagos del tenant ZM (smoke explícito)
+- [x] **Más → Finanzas** lista pagos del tenant ZM (smoke explícito, 28-sep-2026)
 - [x] `tenant_settings.timezone` = Lima; citas no “desaparecen” por offset
 - [x] ZM app legacy **sin cambio** (Geema es consumidor adaptador)
 
@@ -250,6 +251,7 @@ Registrar hallazgos en este doc § **Notas de validación** (fecha + commit Geem
 | 2026-08-30 | OTA `01bdcd1f…` (S5C-11) | Adaptador employees; smoke chicas ↔ agenda pendiente en APK |
 | 2026-08-30 | OTA `d5d0dea9…` | `avatar_url` agregado a `employees` ZM prod + fotos reales Vanessa/Stephani subidas a Storage; `employeesAdapter.ts` ya no lo anula para dialecto ZM. Publicado en canal `preview`. |
 | 2026-08-30 | OTA `fe7cf0aa…` (main) | Dashboard paridad + Equipo/Más + orden chicas + login fix (post #30). [Expo](https://expo.dev/accounts/aeom0/projects/geemastudio-mobile/updates/fe7cf0aa-fd00-4369-892a-6bafd9eeac8e). Sin código de PR #31. |
+| 2026-09-28 | `d8f93e1c` (main) | Smoke físico Moto G54 (`ZY22K2LZW3`), sesión Alberto/dev tenant ZM: Más → Finanzas → Resumen semana S/902,00 (13 transacciones, adelantos 20% S/25, retail S/16); Por chica con nombres reales (Vanessa Douglas, Stephani Manrique, Karelis); Historial de Pagos lista los 13 pagos individuales (cliente, método, fecha, monto), incluido el pago de hoy (Patricia Valverde S/50 Efectivo) que coincide con "Ingresos hoy" del Dashboard. Cierra S5C-12 / DoD pendiente. |
 
 **PR:** [aeom0/zm-tech#30](https://github.com/aeom0/zm-tech/pull/30) — OTA preview [01bdcd1f](https://expo.dev/accounts/aeom0/projects/geemastudio-mobile/updates/01bdcd1f-9dd9-472d-a637-383d6bdbeb89)
 
