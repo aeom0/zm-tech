@@ -7,7 +7,7 @@
 
 ## Respuesta en una frase
 
-**ZM Lash ya es el tenant #1 en producción** (`zm-lash-nails`); **GeemaStudio ya opera el panel de gestión + suite WABA usable** (inbox staff, Haiku, Campañas, catálogo/Productos, **finanzas ejecutiva**) sobre la misma BD. **S4 (crons y RPCs tenant-aware) está cerrado** (PR #151). **S5 va a medias:** S5-1 a S5-4 están en el webhook (PR #154, #155, #156): el bot lee `waba_rules` y los feriados van por tenant. Falta el panel (S5-5). Antes del 2.º tenant siguen el smoke del flag de routing, S5-5, S6 y el loop Meta Ads (diferido a S7). Track C (drift webhook) ✅ cerrado 22-sep.
+**ZM Lash ya es el tenant #1 en producción** (`zm-lash-nails`); **GeemaStudio ya opera el panel de gestión + suite WABA usable** (inbox staff, Haiku, Campañas, catálogo/Productos, **finanzas ejecutiva**) sobre la misma BD. **S4 (crons y RPCs tenant-aware) está cerrado** (PR #151). **S5 (reglas del bot) está cerrado en código** (PR #154, #155, #156): el webhook lee `waba_rules` y el panel `/panel/waba/reglas` edita horario, abono y staff. Antes del 2.º tenant siguen el smoke del flag de routing, S6 y el loop Meta Ads (diferido a S7). Track C (drift webhook) ✅ cerrado 22-sep.
 
 ---
 
@@ -22,7 +22,7 @@
 | WABA motor (L1) canónico ZM | 🟢 | Booking/carrito/Haiku en Edge ZM (prod) |
 | WABA multi-tenant runtime | 🟡 | Flag `waba_tenant_routing_enabled=false`; smoke QA ON pendiente |
 | Crons/RPCs tenant-aware (S4) | 🟢 | PR #151. Loop Meta Ads diferido a S7 |
-| Reglas WABA por tenant (S5) | 🟡 | S5-1 a S5-4 ✅ (PR #154, #155, #156). El bot ya lee `waba_rules`. Falta S5-5 (panel) |
+| Reglas WABA por tenant (S5) | 🟢 | S5-1 a S5-5 ✅. Panel `/panel/waba/reglas`. Cupo por servicio sigue en el JSON |
 | Panel `/panel/waba/*` Geema | 🟢 | Paridad tabs ZM + Estado (incl. Simulador ✅ 22-sep) |
 | Retail `product_orders` | 🟡 | ZM: Ventas+Catálogo+push ✅; Geema: solo tab Catálogo; bot retail pausado |
 | WABA suite multi-vertical (L4) | 🔴 | Presets en `tenant-config`; webhook no los consume aún |
@@ -33,7 +33,7 @@
 ## Dónde continuar (recomendación 22-sep)
 
 **Track A — cutover Vanessa a Geema (tenant #1):** suite panel WABA ✅ + finanzas ejecutiva ✅ (Plan 12 P1/P2) + push FCM P9/P10 ✅ (cita WABA y pago por validar recibidos en Geema). Siguiente: paridad WABA avanzada o cutover ops.
-**Track B — 2.º tenant:** S4 ✅ (PR #151). S5-1 a S5-4 ✅ (PR #154, #155, #156). Siguiente: smoke del flag de routing en tenant QA, S5-5 (panel), S6, y el loop Meta Ads en S7.  
+**Track B — 2.º tenant:** S4 ✅ (PR #151). S5 ✅ en código (PR #154, #155, #156, panel de reglas). Siguiente: smoke del flag de routing en tenant QA, S6, y el loop Meta Ads en S7.  
 **Track C — riesgo:** ✅ cerrado — bot canónico ZM; redeploy solo desde ZM ([09](./09-WEBHOOK-PROD-RECONCILE.md)).
 
 Detalle vivo: Plan 11/12 en `zm-tech/docs/geemastudio/docs/plans/`; roadmap sprints [04](./04-ROADMAP-SPRINTS.md).
@@ -47,7 +47,7 @@ Detalle vivo: Plan 11/12 en `zm-tech/docs/geemastudio/docs/plans/`; roadmap spri
 | Fundación multi-tenant (S1–S3) | §11 + bridge + runtime + flag | ✅ |
 | Paridad panel Geema (Plan 11/12) | Historial + portafolio + finanzas ejecutiva web | 🟢 WABA+finanzas; falta push |
 | S4 crons tenant-aware | 14 Edge + 4 RPCs + Vault | ✅ PR #151; Meta Ads en S7 |
-| S5 reglas WABA | `waba_rules` + feriados por tenant | 🟡 S5-1 a S5-4 ✅ (#154, #155, #156); S5-5 panel abierto |
+| S5 reglas WABA | `waba_rules` + panel de reglas | ✅ S5-1 a S5-5 (#154, #155, #156) |
 | Suite L4 presets | `barbershop` + loader | ❌ |
 | Go-live 2.º tenant | Onboarding → WABA propio | ❌ |
 

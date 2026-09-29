@@ -118,3 +118,4 @@ Implementación sugerida (S2-7):
 | 2026-09-27 | S4 crons/RPCs ✅ | `00`/`04`/`09`/README: PR #151; review (REVOKE anon, senders 503, ads-bounce por tenant); loop Meta Ads en S7 |
 | 2026-09-28 | S5-1 y S5-4 parciales | PR #154 `waba_rules` (sin consumidores). PR #155 feriados por tenant. `00`/`03`/`04`/`09`/README/CHANGELOG. S5-2/3/5 abiertos |
 | 2026-09-28 | S5-2 y S5-3 en el bot | PR #156: horarios, staff, pagos y cupo leen `waba_rules`. `00`/`04`/`09`/README. S5-5 (panel) sigue abierto |
+| 2026-09-28 | S5-5 panel de reglas | `/panel/waba/reglas` edita horario, abono y staff. Cupo y medios de pago no se tocan. Tareas S5-1 a S5-5 cerradas |
