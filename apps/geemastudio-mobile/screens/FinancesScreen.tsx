@@ -34,6 +34,7 @@ import { KpiGrid } from './finances/components/executive/KpiGrid'
 import { GrowthChart } from './finances/components/executive/GrowthChart'
 import { ExpenseList } from './finances/components/executive/ExpenseList'
 import { ExpenseModal } from './finances/components/executive/ExpenseModal'
+import { PricingBreakdownCard } from './finances/components/PricingBreakdownCard'
 import {
   buildFinancesDateRanges,
   getTenantBillingMonthKey,
@@ -280,6 +281,8 @@ export default function FinancesScreen() {
               onDeletePayment={form.handleDelete}
               onOpenNewPayment={form.openNewPayment}
             />
+
+            {isAdmin && <PricingBreakdownCard />}
           </>
         )}
       </ScrollView>
