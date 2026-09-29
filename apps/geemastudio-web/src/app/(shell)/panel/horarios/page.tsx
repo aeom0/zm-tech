@@ -186,7 +186,7 @@ export default function PanelHorariosPage() {
           type="button"
           onClick={() => void guardar()}
           disabled={guardando}
-          className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--tenant-primary-hover)] disabled:opacity-60"
+          className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2.5 text-sm font-semibold text-[var(--tenant-on-primary)] transition-colors hover:bg-[var(--tenant-primary-hover)] disabled:opacity-60"
         >
           {guardando ? (
             <>

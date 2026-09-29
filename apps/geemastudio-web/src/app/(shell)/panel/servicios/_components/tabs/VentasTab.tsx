@@ -112,7 +112,7 @@ export function VentasTab() {
           type="button"
           onClick={() => setSaleOpen(true)}
           disabled={products.length === 0}
-          className="inline-flex items-center gap-2 rounded-lg bg-[var(--tenant-primary)] px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--tenant-primary-hover)] disabled:cursor-not-allowed disabled:opacity-40"
+          className="inline-flex items-center gap-2 rounded-lg bg-[var(--tenant-primary)] px-3 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] transition-colors hover:bg-[var(--tenant-primary-hover)] disabled:cursor-not-allowed disabled:opacity-40"
         >
           <ShoppingBag className="h-4 w-4" />
           Nuevo apartado
@@ -246,7 +246,7 @@ function ActionButton({
       className={[
         'inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors',
         primary
-          ? 'bg-[var(--tenant-primary)] text-white hover:bg-[var(--tenant-primary-hover)]'
+          ? 'bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)] hover:bg-[var(--tenant-primary-hover)]'
           : 'border border-white/10 text-white/65 hover:bg-white/[0.05] hover:text-white',
       ].join(' ')}
     >
@@ -352,7 +352,7 @@ function ModalActions({
         type="button"
         onClick={onConfirm}
         disabled={busy}
-        className="rounded-lg bg-[var(--tenant-primary)] px-3 py-2 text-sm font-semibold text-white disabled:opacity-40"
+        className="rounded-lg bg-[var(--tenant-primary)] px-3 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] disabled:opacity-40"
       >
         {busy ? 'Registrando…' : confirmLabel}
       </button>

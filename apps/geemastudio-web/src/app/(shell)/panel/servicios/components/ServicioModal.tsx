@@ -284,7 +284,7 @@ function ServicioModalForm({
                 ...(supportsIcons && { icon }),
               })
             }
-            className="rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--tenant-primary-hover)] disabled:opacity-60"
+            className="rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] transition-colors hover:bg-[var(--tenant-primary-hover)] disabled:opacity-60"
           >
             {isSaving ? 'Guardando…' : 'Guardar'}
           </button>

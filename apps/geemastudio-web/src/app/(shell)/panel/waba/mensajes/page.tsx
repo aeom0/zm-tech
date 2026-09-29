@@ -280,7 +280,7 @@ function PanelWabaMensajesContent() {
                             {avatarLabel}
                             {c.inbound24h > 0 && (
                               <span
-                                className="absolute -right-1 -top-1 rounded-full bg-[var(--tenant-primary)] px-1.5 py-0.5 text-[11px] font-semibold leading-none text-black"
+                                className="absolute -right-1 -top-1 rounded-full bg-[var(--tenant-primary)] px-1.5 py-0.5 text-[11px] font-semibold leading-none text-[var(--tenant-on-primary)]"
                                 title="Mensajes entrantes dentro de la ventana de 24h"
                               >
                                 {badgeCount}

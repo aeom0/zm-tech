@@ -289,7 +289,7 @@ export default function PanelWebPage() {
           type="button"
           onClick={() => void handleSave()}
           disabled={saving}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-[var(--tenant-primary-hover)] hover:text-white disabled:opacity-60"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2.5 text-sm font-semibold text-[var(--tenant-on-primary)] hover:bg-[var(--tenant-primary-hover)] hover:text-[var(--tenant-on-primary-hover)] disabled:opacity-60"
         >
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
           Guardar cambios

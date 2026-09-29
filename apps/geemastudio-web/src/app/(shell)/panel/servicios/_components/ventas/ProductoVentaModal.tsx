@@ -118,7 +118,7 @@ export function ProductoVentaModal({
                 notes,
               })
             }
-            className="rounded-lg bg-[var(--tenant-primary)] px-3 py-2 text-sm font-semibold text-white disabled:opacity-40"
+            className="rounded-lg bg-[var(--tenant-primary)] px-3 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] disabled:opacity-40"
           >
             {busy ? 'Guardando…' : 'Apartar'}
           </button>

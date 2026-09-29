@@ -28,10 +28,40 @@ function darkenHex(hex: string, amount: number): string {
   return rgbToHex(rgb.map((c) => c * (1 - amount)) as [number, number, number])
 }
 
+function relativeLuminance(hex: string): number {
+  const [r, g, b] = hexToRgb(hex) ?? [0, 0, 0]
+  const lin = (c: number) => {
+    const n = c / 255
+    return n <= 0.03928 ? n / 12.92 : ((n + 0.055) / 1.055) ** 2.4
+  }
+  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b)
+}
+
+const ON_LIGHT_BG = '#18181B'
+const ON_DARK_BG = '#FFFFFF'
+
+/**
+ * Texto legible (casi negro o blanco) sobre un fondo de marca arbitrario.
+ * Elige el que da mayor ratio de contraste WCAG, así funciona con cualquier color
+ * que elija el tenant (morado oscuro, turquesa claro, amarillo, etc.).
+ */
+export function onColor(bgHex: string): string {
+  const l = relativeLuminance(bgHex)
+  const withWhite = 1.05 / (l + 0.05)
+  const withDark = (l + 0.05) / (relativeLuminance(ON_LIGHT_BG) + 0.05)
+  return withWhite >= withDark ? ON_DARK_BG : ON_LIGHT_BG
+}
+
 export type TenantCssVars = React.CSSProperties & {
   '--tenant-primary': string
   '--tenant-primary-hover': string
   '--tenant-accent': string
+  /** Texto/íconos sobre superficies rellenas con `--tenant-primary`. */
+  '--tenant-on-primary': string
+  /** Texto/íconos sobre superficies rellenas con `--tenant-primary-hover`. */
+  '--tenant-on-primary-hover': string
+  /** Texto/íconos sobre superficies rellenas con `--tenant-accent`. */
+  '--tenant-on-accent': string
 }
 
 export function tenantCssVars(
@@ -41,9 +71,14 @@ export function tenantCssVars(
   const primary = isValidHex(primaryColor) ? primaryColor : DEFAULT_TENANT_PRIMARY
   const accent = isValidHex(accentColor) ? accentColor : DEFAULT_TENANT_ACCENT
 
+  const primaryHover = darkenHex(primary, 0.22)
+
   return {
     '--tenant-primary': primary,
-    '--tenant-primary-hover': darkenHex(primary, 0.22),
+    '--tenant-primary-hover': primaryHover,
     '--tenant-accent': accent,
+    '--tenant-on-primary': onColor(primary),
+    '--tenant-on-primary-hover': onColor(primaryHover),
+    '--tenant-on-accent': onColor(accent),
   }
 }

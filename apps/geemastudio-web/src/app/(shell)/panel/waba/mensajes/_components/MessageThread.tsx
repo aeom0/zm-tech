@@ -586,7 +586,7 @@ export function MessageThread({
             type="button"
             onClick={handleSend}
             disabled={isBusy || !text.trim()}
-            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--tenant-primary)] text-black disabled:opacity-40"
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)] disabled:opacity-40"
             aria-label="Enviar"
           >
             <Send className="h-4 w-4" />

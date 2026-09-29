@@ -54,7 +54,7 @@ export function HistorialClient() {
               className={[
                 'min-h-[40px] whitespace-nowrap px-3 py-2 text-sm font-semibold transition-colors',
                 period === p.id
-                  ? 'bg-[var(--tenant-primary)] text-white'
+                  ? 'bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)]'
                   : 'text-zinc-400 hover:bg-white/[0.06]',
               ].join(' ')}
             >

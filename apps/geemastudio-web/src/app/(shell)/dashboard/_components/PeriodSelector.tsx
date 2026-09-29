@@ -35,7 +35,7 @@ export function PeriodSelector({
               onClick={() => onPeriodChange(t.key)}
               className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
                 active
-                  ? 'text-white shadow-lg'
+                  ? 'text-[var(--tenant-on-primary)] shadow-lg'
                   : 'border border-zinc-200 bg-zinc-50 text-zinc-600 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700'
               }`}
               style={

@@ -425,7 +425,7 @@ export function EmployeeModal({
             <button
               type="submit"
               disabled={isSaving}
-              className="inline-flex flex-1 items-center justify-center rounded-xl bg-[var(--tenant-primary)] px-4 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-[var(--tenant-primary-hover)] hover:text-white disabled:opacity-60"
+              className="inline-flex flex-1 items-center justify-center rounded-xl bg-[var(--tenant-primary)] px-4 py-2.5 text-sm font-semibold text-[var(--tenant-on-primary)] hover:bg-[var(--tenant-primary-hover)] hover:text-[var(--tenant-on-primary-hover)] disabled:opacity-60"
             >
               {isSaving ? 'Guardando…' : 'Guardar'}
             </button>

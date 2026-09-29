@@ -261,7 +261,7 @@ function ProductoFormModalInner({
             type="button"
             onClick={() => void handleSubmit()}
             disabled={isPending}
-            className="rounded-lg bg-[var(--tenant-primary)] px-4 py-2 text-sm text-white transition-colors hover:bg-[var(--tenant-primary-hover)] disabled:opacity-50"
+            className="rounded-lg bg-[var(--tenant-primary)] px-4 py-2 text-sm text-[var(--tenant-on-primary)] transition-colors hover:bg-[var(--tenant-primary-hover)] disabled:opacity-50"
           >
             {isPending ? 'Guardando...' : producto ? 'Actualizar' : 'Crear producto'}
           </button>

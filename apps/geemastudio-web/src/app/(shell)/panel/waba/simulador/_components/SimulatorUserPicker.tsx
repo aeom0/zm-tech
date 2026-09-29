@@ -35,7 +35,7 @@ export function SimulatorUserPicker({
               className={[
                 'min-h-10 rounded-[10px] px-3 text-sm font-semibold transition-colors disabled:opacity-60',
                 active
-                  ? 'bg-[var(--tenant-primary)] text-white shadow-sm'
+                  ? 'bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)] shadow-sm'
                   : 'text-zinc-300 hover:bg-white/[0.06]',
               ].join(' ')}
               title={`Teléfono QA ${opt.phone}`}

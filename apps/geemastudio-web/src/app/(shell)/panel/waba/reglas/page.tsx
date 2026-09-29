@@ -238,7 +238,7 @@ export default function PanelWabaReglasPage() {
               type="button"
               onClick={() => void save()}
               disabled={!dirty || status === 'saving'}
-              className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+              className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] disabled:opacity-50"
             >
               <SlidersHorizontal className="h-4 w-4" />
               Guardar reglas

@@ -212,7 +212,7 @@ export function ChatSimulator() {
             type="submit"
             disabled={busy || !phone || (!draft.trim() && !fromAdMode)}
             aria-label="Enviar"
-            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl bg-[var(--tenant-primary)] text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)] transition-opacity hover:opacity-90 disabled:opacity-50"
           >
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           </button>

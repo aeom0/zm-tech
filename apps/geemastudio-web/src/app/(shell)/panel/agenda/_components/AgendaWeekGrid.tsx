@@ -79,7 +79,7 @@ export function AgendaWeekGrid({
               <span
                 className={[
                   'flex h-7 w-7 items-center justify-center rounded-full text-sm',
-                  today ? 'bg-[var(--tenant-primary)] font-bold text-black' : 'font-medium text-white',
+                  today ? 'bg-[var(--tenant-primary)] font-bold text-[var(--tenant-on-primary)]' : 'font-medium text-white',
                 ].join(' ')}
               >
                 {day.toLocaleDateString('es-419', { timeZone: timezone, day: 'numeric' })}
