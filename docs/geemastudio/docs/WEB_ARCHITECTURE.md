@@ -123,6 +123,18 @@ El tenant no tiene dominio propio o prefiere no gestionarlo. Su landing vive en:
 - El `middleware.ts` dirige `/s/[slug]` al tenant correcto.
 - Incluido en el plan Estándar o superior (sin costo extra de hosting).
 
+#### Modo D — Landing propia que consume Mi Web (29-sep-2026)
+
+El tenant conserva su dominio **y su propio sitio** (proyecto y deploy propios), pero el contenido se edita desde Mi Web. El sitio del tenant lee las columnas `web_*` de su fila. No pasa por `middleware.ts` ni por `/_sites/[domain]`: `custom_domain` puede quedar nulo, el DNS no cambia y las páginas legales y el panel propio del tenant no se tocan.
+
+> En `plans/11-PLAN-mi-web-cms-fase2.md` este modo aparece como "Modo B" (landing propia). Aquí se nombra Modo D para no chocar con el Modo B de esta página (Geema-hosted).
+
+- Primer caso: ZM Lash (`zmlashnails.com`, `apps/web` de `ZM-Lash-and-Nails-Beauty`). Plan de ejecución en Plan 11 § "Modo B — ejecución para ZM Lash".
+- Lectura pública por la vista `public.tenant_landing_public` (solo columnas web, filtrada por `web_enabled = true`), no por acceso directo a `tenant_settings`. Motivo: `anon` tiene grants sobre todas las columnas de la tabla, incluidas las de WABA y comisiones (`waba_access_token`, `waba_verify_token`, `commission_*`); publicar la fila completa las expondría.
+- Capacidad general para futuros tenants con landing propia: cada uno consume su fila con el mismo contrato (`WebGalleryItem`, `WebTeamMember`, `WebPromo`, `WebReview`), con respaldo local si la lectura falla.
+- Las imágenes viven en `web-assets/{tenant_slug}/{gallery|team|promos|banner}/`; no depender de CDN externos (Sanity) una vez migrado.
+- Con `web_enabled = true` la landing de Geema (`/s/[slug]`) también queda pública: aceptado en la fase de prueba, ambas conviven.
+
 #### Modo C — Sin web pública
 
 El tenant opera sin landing pública. Capta clientes 100% por WhatsApp o referidos.
@@ -164,7 +176,7 @@ ALTER TABLE tenant_settings
 │   (Producto 1) │   │  (Producto 2)   │
 │                │   │                 │
 │  Siempre ON    │   │  web_mode:      │
-│  Todo tenant   │   │  A / B / C      │
+│  Todo tenant   │   │  A / B / C / D  │
 │  Auth required │   │  Sin auth       │
 └────────────────┘   └─────────────────┘
 ```
@@ -190,7 +202,7 @@ Cada tenant tiene **sus propias RRSS establecidas** (ej: Vanessa tiene `@zmlasha
 | ---------------------- | ------------------------------------ | ------------------------------------------------------- |
 | Panel de gestión       | Listo en cuanto migre la DB          | Accede a `geema.zmtechdev.com/finanzas` etc. (temporal) |
 | `web_mode` inicial     | `'none'`                             | No necesita landing pública al day-1                    |
-| `zmlashnails.com`      | Independiente hoy (middleware listo) | Su dominio propio sigue sirviendo el repo estático actual; el middleware ya sabe resolverlo hacia `tenant_settings` pero falta el "go live" (DNS + `custom_domain` + `web_enabled=true`), pendiente de OK de contenido |
+| `zmlashnails.com`      | Independiente hoy (Modo D en preparación) | Su dominio sigue en el proyecto de Lash (landing con Sanity + hardcode, páginas legales y `/panel`). Camino elegido: Modo D, la landing lee `tenant_settings.web_*` (contenido ya cargado en la fila; faltan imágenes a Storage, vista de lectura pública y cambios de código — ver Plan 11). El Modo A (DNS a Geema) queda descartado para ZM por el riesgo sobre legales y panel |
 | Add-on landing         | Futuro                               | Si quieren, GeemaStudio ofrece servicio Modo A — sin repo aparte, panel sigue en `geema.zmtechdev.com` |
 | Rutas panel pendientes | Campañas WABA / CMS web / inventario | P2                                                      |
 

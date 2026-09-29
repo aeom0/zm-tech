@@ -69,7 +69,7 @@ CMS equivalente al de mobile, en el panel web:
 | Ítem                               | Notas                                                                                                                                     | Prioridad                           |
 | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
 | **Fase 3 — go live dominio propio** | Middleware ya implementado (ver arriba). Falta: apuntar DNS `zmlashnails.com` → deploy `geemastudio-web`, y setear `custom_domain`/`web_enabled=true` en fila `zm-lash-nails` | P2 — solo con OK de Vanessa/Alberto |
-| **Migrar contenido real ZM**       | Sanity (`zmlashnails.com`) → fila `zm-lash-nails` `web_*` (hoy vacía / `web_enabled=false`)                                               | P2 — solo con OK de Vanessa/Alberto |
+| **Migrar contenido real ZM**       | Textos y estructura ya migrados y verificados contra Sanity (29-sep-2026). Falta: imágenes a Storage y `web_enabled` (ver § Modo B — ejecución) | P2 — solo con OK de Vanessa/Alberto |
 | **Sync catálogo → `web_services`** | Hoy lista curada aparte; opcional import desde `services`/`packs`                                                                         | backlog                             |
 | **`web_mode` explícito**           | Panel/mobile siguen mapeando presencia vía `web_enabled` (+ slug/custom_domain); alinear UI a enum `own_domain` / `geema_hosted` / `none` | P2                                  |
 | Smoke E2E con tenant QA            | Activar slug de prueba distinto de demos; no romper fila prod ZM sin plan de contenido                                                    | ops                                 |
@@ -98,7 +98,49 @@ Cambiar el DNS sin resolver esto dejaría todo eso en 404. Antes de cualquier go
 2. Migrar el contenido real de Sanity a la fila `zm-lash-nails` (ver Pendiente).
 3. Que la landing de Lash lea esos datos (con los valores actuales como respaldo si la lectura falla) y revalide en el servidor.
 
-Pendiente de decidir: si el Modo B se ofrece como capacidad general (lectura pública del contenido web por tenant) para futuros tenants con landing propia.
+Pendiente de decidir: si el Modo B se ofrece como capacidad general (lectura pública del contenido web por tenant) para futuros tenants con landing propia. Recomendación: sí, mediante la vista `tenant_landing_public` descrita abajo.
+
+## Modo B — ejecución para ZM Lash (29-sep-2026)
+
+> Nomenclatura: en [`WEB_ARCHITECTURE.md`](../WEB_ARCHITECTURE.md) este modo se llama **Modo D** (landing propia que consume Mi Web), porque allí "Modo B" es Geema-hosted (`/s/[slug]`). Es el mismo modo.
+
+### Estado verificado (SELECT de solo lectura en prod + dataset público de Sanity `9yt27c72`)
+
+- La fila `zm-lash-nails` ya tiene el contenido en `web_*` y coincide con Sanity: hero (tagline, subtítulo, botón, video), marquesina (texto, velocidad 55), banner de promos, galería (14, mismo orden), promos (4, mismos badges y mensajes), reseñas (5), stats, dirección, mapa, redes, `business_hours` (L-S 10:00-18:00, D 10:30-13:00). `promosSection` no existe en Sanity (nada que migrar).
+- Diferencias: `web_team` (editado en Geema, más nuevo) tiene especialidades distintas a Sanity; Andreina está inactiva en Sanity y ausente en `web_team` (correcto). `web_promo_banner_alt` es nulo y `web_salon_video_url` es nulo.
+- Las 21 imágenes (14 galería, 2 equipo, 4 promos, 1 banner) siguen en `cdn.sanity.io`. En Storage solo existe `web-assets/zm-lash-nails/team/1789945830238.webp`, sin referenciar.
+- `web_enabled = false`. La única política anon es `tenant_landing_public_read` (fila completa, `web_enabled = true`).
+- **Riesgo de seguridad:** `anon` tiene SELECT, INSERT y UPDATE sobre las 69 columnas de `tenant_settings`, incluidas `waba_access_token`, `waba_verify_token`, `waba_payment_info`, `waba_admin_phones`, `commission_*` y `contact_info`. Hoy ninguna fila guarda tokens y las 3 filas públicas son demos, pero activar `web_enabled` con la política actual expondría la fila completa a anon. La lectura pública del Modo B va por una vista acotada, no por `web_enabled` sobre la tabla.
+- SEO: las 5 reseñas son de relleno (no reales). El JSON-LD no tiene `aggregateRating` ni `review` (correcto mientras sean de relleno), muestra cierre 19:00 (real 18:00) y usa el teléfono WABA.
+
+### Decisiones (29-sep-2026)
+
+1. Las imágenes de Sanity se copian a Storage.
+2. `web_whatsapp` = `51932535512` (línea de staff). La WABA `51981444430` queda solo para Ads.
+3. Lectura pública por vista, no por política de fila completa.
+4. La landing de Lash lee `web_*` con respaldo a Sanity y hardcode.
+5. Fuente de verdad del equipo: `web_team`; confirmar especialidades con Vanessa/Alberto antes del go-live.
+
+### Fases
+
+Toda escritura en prod requiere OK explícito en ese momento. Código de Lash en una sola rama y un solo PR.
+
+| Fase | Contenido | Repo | Estado |
+| ---- | --------- | ---- | ------ |
+| 0 | Documentación (este plan, `WEB_ARCHITECTURE`, CHANGELOG) | zm-tech / Lash | En curso |
+| 1 | Copiar las 21 imágenes a `web-assets/zm-lash-nails/{gallery,team,promos,banner}/{ts}.webp`, actualizar URLs en `web_gallery`, `web_team`, `web_promos`, `web_promo_banner_url`. Primero dry-run y respaldo de las columnas. Completar `web_promo_banner_alt`; decidir `web_salon_video_url` (`Reel_Promo_IG_opt.mp4` ya está en `web-assets`) | script en scratchpad | Pendiente OK |
+| 2 | Vista `public.tenant_landing_public` (`security_invoker = false`, solo columnas web + `business_name`, `slug`, `tagline`, `custom_domain`, `business_hours`, `currency_symbol`, `web_template`, filtrada por `web_enabled = true`) con `GRANT SELECT` a anon. Migración versionada en Lash y espejo en `apps/geemastudio-server/scripts/db/migrations/`. Endurecimiento aparte: `REVOKE INSERT, UPDATE` de anon en `tenant_settings` y evaluar quitar SELECT de anon sobre columnas sensibles, verificando antes que ningún cliente anon use `select *`. Luego `web_enabled = true` en `zm-lash-nails` | ambos | Pendiente OK (DDL prod) |
+| 3 | `apps/web`: `lib/tenant-landing.ts` sobre la vista; `page.tsx` usa `web_*` ?? Sanity ?? hardcode; los componentes de galería, equipo, promos y reseñas pasan de `urlFor` a URL directa; ubicación, footer, stats y `count(services)` desde `web_*`; `remotePatterns` para `udelxwwnyivknslueerr.supabase.co/storage/v1/object/public/web-assets/**`; revalidación al guardar en Mi Web o `revalidate` más corto | Lash | Pendiente |
+| 4 | SEO: JSON-LD con teléfono de staff, horario de `business_hours` (18:00), dirección y `sameAs`; metadata desde `web_hero_tagline` y `web_about` | Lash | Pendiente |
+| 5 | Reseñas reales de Google: cargar en `web_reviews`, alinear `web_stat_rating` con la nota real, agregar `aggregateRating` y `review` al JSON-LD solo con datos verificables del perfil. Bloqueada por datos (nota, cantidad, autor, texto, estrellas, fecha) | Lash + BD | Bloqueada |
+| 6 | Retiro de Sanity (`sanity.ts`, `schemas/`, `sanity.config.ts`, `@sanity/*`, `api/revalidate`). `zmlashnails.com` se queda en el proyecto de Lash; `custom_domain` de la fila permanece nulo, así que el middleware de Geema no interviene y las páginas legales y `/panel` no cambian | Lash | Posterior |
+
+### Verificación
+
+1. Fase 1: 0 URLs `cdn.sanity.io` en `web_*` y las nuevas responden 200.
+2. Fase 2: como anon, la vista devuelve solo columnas web; tras el endurecimiento, leer `waba_access_token` como anon falla; demos y `geemastudio-web` siguen resolviendo.
+3. Fase 3: `yarn check:types`, `yarn lint`, comparación visual con Sanity apagado y encendido, cambio de texto en Mi Web reflejado tras revalidar, y respaldo cuando la vista no responde.
+4. Fase 4: validación del JSON-LD en la prueba de resultados enriquecidos de Google sobre el preview de Vercel.
 
 ## Fuera de alcance (confirmado)
 
