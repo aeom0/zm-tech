@@ -19,6 +19,7 @@ interface InventoryCategoryTabsProps {
   headerPaddingTop: number
   theme: {
     primary: string
+    buttonText: string
     backgroundSecondary: string
     backgroundDefault: string
     border: string
@@ -82,7 +83,7 @@ export function InventoryCategoryTabs({
             }}
           >
             <ThemedText
-              style={[styles.tabText, { color: selectedTab === cat.key ? Colors.light.buttonText : theme.text }]}
+              style={[styles.tabText, { color: selectedTab === cat.key ? theme.buttonText : theme.text }]}
             >
               {cat.label}
             </ThemedText>

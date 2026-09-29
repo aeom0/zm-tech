@@ -208,7 +208,7 @@ export default function ClientsScreen() {
         onPress={openCreate}
         accessibilityLabel="Agregar cliente"
       >
-        <Feather name="plus" size={24} color={Colors.light.buttonText} />
+        <Feather name="plus" size={24} color={theme.buttonText} />
       </Pressable>
 
       <ClientDetailModal

@@ -133,7 +133,7 @@ export function FechaHoraSection({
                 if (diaConFranja) onChangeDate(d)
               }}
             >
-              <ThemedText style={[styles.serviceChipName, isSelected && { color: Colors.light.buttonText }]}>
+              <ThemedText style={[styles.serviceChipName, isSelected && { color: theme.buttonText }]}>
                 {DAYS_ES[indiceDiaSemanaJSEnZona(d, tz)]} {diaDelMesEnZona(d, tz)}
               </ThemedText>
             </Pressable>
@@ -169,7 +169,7 @@ export function FechaHoraSection({
                 if (horaPermitida) onChangeHour(h)
               }}
             >
-              <ThemedText style={[styles.employeeChipName, isSelected && { color: Colors.light.buttonText }]}>
+              <ThemedText style={[styles.employeeChipName, isSelected && { color: theme.buttonText }]}>
                 {formatoHoraAgendaSlot(selectedDate, h, tz, language, timeFormat)}
               </ThemedText>
             </Pressable>
@@ -205,7 +205,7 @@ export function FechaHoraSection({
                 if (permitido) onChangeMinute(m)
               }}
             >
-              <ThemedText style={[styles.employeeChipName, isSelected && { color: Colors.light.buttonText }]}>
+              <ThemedText style={[styles.employeeChipName, isSelected && { color: theme.buttonText }]}>
                 :{String(m).padStart(2, '0')}
               </ThemedText>
             </Pressable>

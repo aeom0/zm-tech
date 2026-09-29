@@ -47,7 +47,7 @@ export default function ServicesScreen() {
               ]}
               onPress={() => setTab(i)}
             >
-              <ThemedText style={[styles.tabLabel, { color: active ? Colors.light.buttonText : theme.text }]}>
+              <ThemedText style={[styles.tabLabel, { color: active ? theme.buttonText : theme.text }]}>
                 {label}
               </ThemedText>
             </Pressable>

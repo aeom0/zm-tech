@@ -169,7 +169,7 @@ export function ServiceModal({
                     ]}
                     onPress={() => setCategoryId(c.id)}
                   >
-                    <ThemedText style={[styles.chipText, sel && { color: Colors.light.buttonText }]}>
+                    <ThemedText style={[styles.chipText, sel && { color: theme.buttonText }]}>
                       {c.name}
                     </ThemedText>
                   </Pressable>

@@ -43,6 +43,7 @@ interface OwnerWeekGridProps {
   onRefresh: () => void
   theme: {
     primary: string
+    buttonText: string
     text: string
     textSecondary: string
     textMuted: string
@@ -171,7 +172,7 @@ export function OwnerWeekGrid({
                   style={{
                     fontSize: 14,
                     fontWeight: isToday ? '700' : '500',
-                    color: isToday ? Colors.light.buttonText : theme.text,
+                    color: isToday ? theme.buttonText : theme.text,
                   }}
                 >
                   {fmtDayNum(day, language, timeZone)}

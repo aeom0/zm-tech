@@ -139,7 +139,7 @@ export function ValidacionRow({ item, loadingAction, onApprove, onReject }: Vali
             ) : (
               <>
                 <Feather name="check" size={16} color={Colors.light.buttonText} />
-                <ThemedText style={[styles.btnText, { color: Colors.light.buttonText }]}>Aprobar</ThemedText>
+                <ThemedText style={[styles.btnText, { color: theme.buttonText }]}>Aprobar</ThemedText>
               </>
             )}
           </Pressable>

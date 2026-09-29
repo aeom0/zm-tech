@@ -55,6 +55,7 @@ type Theme = {
   textSecondary: string
   textMuted: string
   primary: string
+  buttonText: string
   gold: string
   error: string
   success: string
@@ -510,7 +511,7 @@ export function AppointmentDetailModal({
                           ) : (
                             <>
                               <Feather name="save" size={18} color={Colors.light.buttonText} />
-                              <ThemedText style={styles.submitButtonText}>
+                              <ThemedText style={[styles.submitButtonText, { color: theme.buttonText }]}>
                                 Guardar servicios
                               </ThemedText>
                             </>
@@ -841,7 +842,7 @@ export function AppointmentDetailModal({
                             <ThemedText
                               style={[
                                 styles.serviceChipName,
-                                isSelected && { color: Colors.light.buttonText },
+                                isSelected && { color: theme.buttonText },
                               ]}
                             >
                               {DAYS_ES[indiceDiaSemanaJSEnZona(d, timeZone)]}{' '}
@@ -887,7 +888,7 @@ export function AppointmentDetailModal({
                             <ThemedText
                               style={[
                                 styles.employeeChipName,
-                                isSelected && { color: Colors.light.buttonText },
+                                isSelected && { color: theme.buttonText },
                               ]}
                             >
                               {rescheduleDate
@@ -940,7 +941,7 @@ export function AppointmentDetailModal({
                             <ThemedText
                               style={[
                                 styles.employeeChipName,
-                                isSelected && { color: Colors.light.buttonText },
+                                isSelected && { color: theme.buttonText },
                               ]}
                             >
                               :{String(m).padStart(2, '0')}
@@ -1022,7 +1023,7 @@ export function AppointmentDetailModal({
                     ) : (
                       <>
                         <Feather name="calendar" size={18} color={Colors.light.buttonText} />
-                        <ThemedText style={styles.submitButtonText}>
+                        <ThemedText style={[styles.submitButtonText, { color: theme.buttonText }]}>
                           {isBusy ? 'Horario ocupado' : 'Reprogramar'}
                         </ThemedText>
                       </>

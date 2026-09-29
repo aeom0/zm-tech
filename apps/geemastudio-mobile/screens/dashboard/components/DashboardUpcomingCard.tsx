@@ -25,6 +25,7 @@ interface DashboardUpcomingCardProps {
     backgroundSecondary: string
     border: string
     primary: string
+    buttonText: string
     text: string
     textSecondary: string
     textMuted: string
@@ -100,8 +101,8 @@ export function DashboardUpcomingCard({
             style={[styles.emptyActionBtn, { backgroundColor: theme.primary }]}
             onPress={onViewAllAgenda}
           >
-            <Feather name="plus" size={14} color={Colors.light.buttonText} />
-            <ThemedText style={styles.emptyActionText}>Agendar cita</ThemedText>
+            <Feather name="plus" size={14} color={theme.buttonText} />
+            <ThemedText style={[styles.emptyActionText, { color: theme.buttonText }]}>Agendar cita</ThemedText>
           </Pressable>
         </View>
       ) : (

@@ -1,6 +1,6 @@
 import { Platform } from 'react-native'
 import type { TenantConfig } from '@zmtech/tenant-config'
-import { mixHexColors } from '@/lib/color-hsv'
+import { mixHexColors, getContrastTextColor } from '@/lib/color-hsv'
 
 export const Colors = {
   light: {
@@ -216,11 +216,18 @@ export function createTheme(config: TenantConfig, isDark: boolean) {
   const primary = isDark ? lightenHex(seedPrimary, 0.3) : seedPrimary
   const accent = seedAccent
   const base = Colors[isDark ? 'dark' : 'light']
+  const onPrimary = getContrastTextColor(primary, '#FFFFFF', '#1A1A1A')
+  const onAccent = getContrastTextColor(accent, '#FFFFFF', '#1A1A1A')
 
   return {
     ...base,
     primary,
     accent,
+    /** Texto/íconos sobre superficies rellenas con `primary` (legible con cualquier color de marca). */
+    onPrimary,
+    onAccent,
+    /** Alias histórico de `onPrimary`: los botones/chips rellenos usan `primary`. */
+    buttonText: onPrimary,
     violet: primary,
     link: primary,
     tabIconSelected: primary,

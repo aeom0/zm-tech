@@ -186,6 +186,7 @@ export default function InventoryScreen() {
         headerPaddingTop={headerHeight}
         theme={{
           primary: theme.primary,
+          buttonText: theme.buttonText,
           backgroundSecondary: theme.backgroundSecondary,
           backgroundDefault: theme.backgroundDefault,
           border: theme.border,

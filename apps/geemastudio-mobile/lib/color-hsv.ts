@@ -48,7 +48,12 @@ export function getContrastTextColor(
   light: string = '#F5F3F7',
   dark: string = '#1A1620'
 ): string {
-  return relativeLuminance(bgHex) > 0.45 ? dark : light
+  // Elige el texto con mayor ratio de contraste WCAG (no un umbral fijo: con 0.45
+  // los morados medios quedaban con texto oscuro ilegible).
+  const l = relativeLuminance(bgHex)
+  const withLight = (relativeLuminance(light) + 0.05) / (l + 0.05)
+  const withDark = (l + 0.05) / (relativeLuminance(dark) + 0.05)
+  return withLight >= withDark ? light : dark
 }
 
 export function rgbToHsv(r: number, g: number, b: number): { h: number; s: number; v: number } {

@@ -24,6 +24,7 @@ interface InventoryItemModalProps {
     textSecondary: string
     textMuted: string
     primary: string
+    buttonText: string
   }
   onClose: () => void
   onSubmit: () => void
@@ -152,7 +153,7 @@ export function InventoryItemModal({
                   style={[
                     styles.categoryChipText,
                     {
-                      color: formData.category === cat.key ? Colors.light.buttonText : theme.text,
+                      color: formData.category === cat.key ? theme.buttonText : theme.text,
                     },
                   ]}
                 >
@@ -170,7 +171,7 @@ export function InventoryItemModal({
             {isSubmitting ? (
               <ActivityIndicator color={Colors.light.buttonText} />
             ) : (
-              <ThemedText style={styles.submitButtonText}>
+              <ThemedText style={[styles.submitButtonText, { color: theme.buttonText }]}>
                 {editingItem ? 'Guardar' : 'Agregar'}
               </ThemedText>
             )}

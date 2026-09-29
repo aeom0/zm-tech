@@ -323,6 +323,7 @@ export default function DashboardScreen() {
         textSecondary: theme.textSecondary,
         textMuted: theme.textMuted,
         primary: theme.primary,
+        buttonText: theme.buttonText,
       }}
       animatedStyle={animatedItems[7]}
     />
@@ -392,6 +393,7 @@ export default function DashboardScreen() {
                 backgroundSecondary: theme.backgroundSecondary,
                 border: theme.border,
                 primary: theme.primary,
+                buttonText: theme.buttonText,
                 text: theme.text,
                 textSecondary: theme.textSecondary,
                 textMuted: theme.textMuted,
@@ -436,6 +438,7 @@ export default function DashboardScreen() {
               backgroundSecondary: theme.backgroundSecondary,
               border: theme.border,
               primary: theme.primary,
+              buttonText: theme.buttonText,
               text: theme.text,
               textSecondary: theme.textSecondary,
               textMuted: theme.textMuted,

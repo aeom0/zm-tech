@@ -125,7 +125,7 @@ export function ServicioSection({
               onPress={() => setActiveTab(tab.key)}
             >
               <ThemedText
-                style={[styles.pickerTabText, { color: active ? Colors.light.buttonText : theme.text }]}
+                style={[styles.pickerTabText, { color: active ? theme.buttonText : theme.text }]}
               >
                 {tab.label}
               </ThemedText>
@@ -191,7 +191,7 @@ export function ServicioSection({
                   onPress={() => toggleService(service.id)}
                 >
                   <ThemedText
-                    style={[styles.serviceChipName, isSelected && { color: Colors.light.buttonText }]}
+                    style={[styles.serviceChipName, isSelected && { color: theme.buttonText }]}
                     numberOfLines={1}
                   >
                     {service.name}
@@ -242,7 +242,7 @@ export function ServicioSection({
                   onPress={() => !alreadyAdded && addPack(pack)}
                 >
                   <ThemedText
-                    style={[styles.serviceChipName, alreadyAdded && { color: Colors.light.buttonText }]}
+                    style={[styles.serviceChipName, alreadyAdded && { color: theme.buttonText }]}
                     numberOfLines={1}
                   >
                     {pack.name}
@@ -288,7 +288,7 @@ export function ServicioSection({
                 onPress={() => !alreadyAdded && addPromo(promo)}
               >
                 <ThemedText
-                  style={[styles.serviceChipName, alreadyAdded && { color: Colors.light.buttonText }]}
+                  style={[styles.serviceChipName, alreadyAdded && { color: theme.buttonText }]}
                   numberOfLines={1}
                 >
                   {promo.badge ? `${promo.badge} ` : ''}

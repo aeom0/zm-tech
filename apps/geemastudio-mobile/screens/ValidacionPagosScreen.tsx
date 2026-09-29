@@ -99,7 +99,7 @@ export default function ValidacionPagosScreen() {
             ]}
           >
             <ThemedText
-              style={[styles.chipText, { color: isActive ? Colors.light.buttonText : theme.text }]}
+              style={[styles.chipText, { color: isActive ? theme.buttonText : theme.text }]}
             >
               {f.label}
               {counts[f.id] > 0 ? ` · ${counts[f.id]}` : ''}

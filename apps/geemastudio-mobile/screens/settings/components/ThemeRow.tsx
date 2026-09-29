@@ -48,7 +48,7 @@ export function ThemeRow() {
                 style={[
                   styles.segmentLabel,
                   {
-                    color: isActive ? Colors.light.buttonText : theme.textSecondary,
+                    color: isActive ? theme.buttonText : theme.textSecondary,
                   },
                 ]}
               >

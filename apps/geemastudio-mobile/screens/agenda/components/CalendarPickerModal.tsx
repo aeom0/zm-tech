@@ -27,6 +27,7 @@ interface CalendarPickerTheme {
   textSecondary: string
   textMuted: string
   primary: string
+  buttonText: string
 }
 
 interface CalendarPickerModalProps {
@@ -202,7 +203,7 @@ export function CalendarPickerModal({
                           style={[
                             styles.dayLabel,
                             { color: isSelectable ? theme.text : theme.textMuted },
-                            isSelected && { color: Colors.light.buttonText, fontWeight: '700' },
+                            isSelected && { color: theme.buttonText, fontWeight: '700' },
                           ]}
                         >
                           {cell.day}

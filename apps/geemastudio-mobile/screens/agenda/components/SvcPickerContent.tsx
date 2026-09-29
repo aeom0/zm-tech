@@ -134,7 +134,7 @@ export function SvcPickerContent({
               onPress={() => handleSelectCat(cat.id)}
             >
               <ThemedText
-                style={[styles.catChipText, { color: active ? Colors.light.buttonText : theme.text }]}
+                style={[styles.catChipText, { color: active ? theme.buttonText : theme.text }]}
                 numberOfLines={1}
               >
                 {cat.name}
@@ -152,7 +152,7 @@ export function SvcPickerContent({
             onPress={() => setActiveTab(PACKS_TAB)}
           >
             <ThemedText
-              style={[styles.catChipText, { color: isPacksTab ? Colors.light.buttonText : theme.text }]}
+              style={[styles.catChipText, { color: isPacksTab ? theme.buttonText : theme.text }]}
             >
               Packs
             </ThemedText>
@@ -168,7 +168,7 @@ export function SvcPickerContent({
             onPress={() => setActiveTab(PROMOS_TAB)}
           >
             <ThemedText
-              style={[styles.catChipText, { color: isPromosTab ? Colors.light.buttonText : theme.text }]}
+              style={[styles.catChipText, { color: isPromosTab ? theme.buttonText : theme.text }]}
             >
               Promos
             </ThemedText>
@@ -213,7 +213,7 @@ export function SvcPickerContent({
                     {emp.name[0]}
                   </ThemedText>
                 </View>
-                <ThemedText style={[styles.empName, { color: selected ? Colors.light.buttonText : theme.text }]}>
+                <ThemedText style={[styles.empName, { color: selected ? theme.buttonText : theme.text }]}>
                   {emp.name.split(' ')[0]}
                 </ThemedText>
               </Pressable>
@@ -377,7 +377,7 @@ export function SvcPickerContent({
 
       <Pressable style={[styles.doneBtn, { backgroundColor: theme.primary }]} onPress={onClose}>
         <Feather name="check" size={18} color={Colors.light.buttonText} />
-        <ThemedText style={styles.doneBtnText}>
+        <ThemedText style={[styles.doneBtnText, { color: theme.buttonText }]}>
           Listo ({selectedServiceIds.length} servicio
           {selectedServiceIds.length !== 1 ? 's' : ''})
         </ThemedText>

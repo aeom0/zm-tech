@@ -261,11 +261,11 @@ export function NewAppointmentModal({
             disabled={disableSubmit}
           >
             {createPending || availabilityStatus === 'checking' ? (
-              <ActivityIndicator color={Colors.light.buttonText} />
+              <ActivityIndicator color={theme.buttonText} />
             ) : (
               <>
-                <Feather name="calendar" size={18} color={Colors.light.buttonText} />
-                <ThemedText style={styles.submitButtonText}>
+                <Feather name="calendar" size={18} color={theme.buttonText} />
+                <ThemedText style={[styles.submitButtonText, { color: theme.buttonText }]}>
                   {isBusy ? 'Horario ocupado' : 'Crear Cita'}
                 </ThemedText>
               </>

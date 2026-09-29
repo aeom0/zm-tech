@@ -135,7 +135,7 @@ export function CategoriesManageModal({
               {createPending ? (
                 <ActivityIndicator color={Colors.light.buttonText} />
               ) : (
-                <Feather name="plus" size={20} color={Colors.light.buttonText} />
+                <Feather name="plus" size={20} color={theme.buttonText} />
               )}
             </Pressable>
           </View>

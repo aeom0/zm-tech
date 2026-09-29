@@ -28,6 +28,7 @@ interface DashboardTopServicesCardProps {
     textSecondary: string
     textMuted: string
     primary: string
+    buttonText: string
   }
   animatedStyle?: DashboardAnimatedStyle
 }
@@ -68,7 +69,7 @@ export function DashboardTopServicesCard({
               <ThemedText
                 style={[
                   styles.periodToggleText,
-                  { color: period === 'month' ? Colors.light.buttonText : theme.textSecondary },
+                  { color: period === 'month' ? theme.buttonText : theme.textSecondary },
                 ]}
               >
                 Mes
@@ -84,7 +85,7 @@ export function DashboardTopServicesCard({
               <ThemedText
                 style={[
                   styles.periodToggleText,
-                  { color: period === 'all' ? Colors.light.buttonText : theme.textSecondary },
+                  { color: period === 'all' ? theme.buttonText : theme.textSecondary },
                 ]}
               >
                 Histórico
@@ -129,7 +130,7 @@ export function DashboardTopServicesCard({
                     end={{ x: 1, y: 1 }}
                     style={[styles.topServiceRank, { position: 'absolute' }]}
                   />
-                  <ThemedText style={[styles.topServiceRankText, { color: Colors.light.buttonText }]}>
+                  <ThemedText style={[styles.topServiceRankText, { color: theme.buttonText }]}>
                     {index + 1}
                   </ThemedText>
                 </View>

@@ -113,7 +113,7 @@ export function StaffSection({
                     {employee.name[0]}
                   </ThemedText>
                 </View>
-                <ThemedText style={[styles.employeeChipName, isSelected && { color: Colors.light.buttonText }]}>
+                <ThemedText style={[styles.employeeChipName, isSelected && { color: theme.buttonText }]}>
                   {employee.name.split(' ')[0]}
                 </ThemedText>
               </Pressable>

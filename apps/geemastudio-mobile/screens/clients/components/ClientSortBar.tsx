@@ -44,7 +44,7 @@ export function ClientSortBar({ sortBy, onSortChange }: Props) {
             onPress={() => onSortChange(s.id)}
           >
             <ThemedText
-              style={[styles.chipText, { color: active ? Colors.light.buttonText : theme.text }]}
+              style={[styles.chipText, { color: active ? theme.buttonText : theme.text }]}
             >
               {s.label}
             </ThemedText>

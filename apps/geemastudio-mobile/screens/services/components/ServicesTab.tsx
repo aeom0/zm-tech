@@ -297,7 +297,7 @@ export function ServicesTab() {
             onPress={() => setFilterCategoryId(null)}
           >
             <ThemedText
-              style={[styles.filterChipText, { color: !filterCategoryId ? Colors.light.buttonText : theme.text }]}
+              style={[styles.filterChipText, { color: !filterCategoryId ? theme.buttonText : theme.text }]}
             >
               Todas
             </ThemedText>
@@ -318,7 +318,7 @@ export function ServicesTab() {
                 onPress={() => setFilterCategoryId(cat.id)}
               >
                 <ThemedText
-                  style={[styles.filterChipText, { color: isSelected ? Colors.light.buttonText : theme.text }]}
+                  style={[styles.filterChipText, { color: isSelected ? theme.buttonText : theme.text }]}
                 >
                   {cat.name}
                 </ThemedText>

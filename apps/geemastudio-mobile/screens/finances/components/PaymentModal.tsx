@@ -465,7 +465,7 @@ export function PaymentModal({
             ) : (
               <>
                 <Feather name="check" size={18} color={theme.buttonText} />
-                <ThemedText style={styles.submitButtonText}>
+                <ThemedText style={[styles.submitButtonText, { color: theme.buttonText }]}>
                   {editingPayment ? 'Guardar' : 'Registrar pago'}
                 </ThemedText>
               </>

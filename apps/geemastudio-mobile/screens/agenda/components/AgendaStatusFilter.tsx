@@ -21,6 +21,7 @@ interface AgendaStatusFilterProps {
   onChange: (v: StatusFilter) => void
   theme: {
     primary: string
+    buttonText: string
     backgroundRoot: string
     backgroundSecondary: string
     border: string
@@ -60,7 +61,7 @@ export function AgendaStatusFilter({ statusFilter, onChange, theme }: AgendaStat
             ]}
           >
             <ThemedText
-              style={[styles.statusChipText, { color: isActive ? Colors.light.buttonText : theme.text }]}
+              style={[styles.statusChipText, { color: isActive ? theme.buttonText : theme.text }]}
               numberOfLines={1}
             >
               {opt.label}

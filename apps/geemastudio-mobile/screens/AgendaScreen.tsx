@@ -794,6 +794,7 @@ export default function AgendaScreen() {
               onRefresh={refetch}
               theme={{
                 primary: theme.primary,
+                buttonText: theme.buttonText,
                 text: theme.text,
                 textSecondary: theme.textSecondary,
                 textMuted: theme.textMuted,
@@ -878,6 +879,7 @@ export default function AgendaScreen() {
           currencySymbol={currencySymbol}
           theme={{
             primary: theme.primary,
+            buttonText: theme.buttonText,
             accent: theme.accent,
             text: theme.text,
             textSecondary: theme.textSecondary,
@@ -1012,6 +1014,7 @@ export default function AgendaScreen() {
           textSecondary: theme.textSecondary,
           textMuted: theme.textMuted,
           primary: theme.primary,
+          buttonText: theme.buttonText,
           gold: theme.gold,
           error: theme.error,
           success: theme.success,

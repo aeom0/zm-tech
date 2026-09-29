@@ -30,7 +30,7 @@ export function AsignarPeriodTabs({ period, onChange }: AsignarPeriodTabsProps) 
             style={[styles.tab, isActive && { backgroundColor: theme.primary }]}
           >
             <ThemedText
-              style={[styles.tabText, { color: isActive ? Colors.light.buttonText : theme.textSecondary }]}
+              style={[styles.tabText, { color: isActive ? theme.buttonText : theme.textSecondary }]}
             >
               {tab.label}
             </ThemedText>

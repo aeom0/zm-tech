@@ -44,7 +44,7 @@ export function ClientFilterBar({ segment, onSegmentChange }: Props) {
             ]}
             onPress={() => onSegmentChange(seg.id)}
           >
-            <ThemedText style={[styles.chipText, { color: isActive ? Colors.light.buttonText : theme.text }]}>
+            <ThemedText style={[styles.chipText, { color: isActive ? theme.buttonText : theme.text }]}>
               {seg.label}
             </ThemedText>
           </Pressable>

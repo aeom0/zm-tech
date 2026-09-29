@@ -119,7 +119,7 @@ export function AsignarRow({ item, employees, isSaving, onAssign, locale }: Asig
                     style={[
                       styles.chipText,
                       {
-                        color: isSelected ? Colors.light.buttonText : theme.textSecondary,
+                        color: isSelected ? theme.buttonText : theme.textSecondary,
                         fontWeight: isSelected ? '600' : '400',
                       },
                     ]}

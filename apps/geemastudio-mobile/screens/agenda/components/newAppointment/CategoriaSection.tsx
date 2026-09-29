@@ -57,7 +57,7 @@ export function CategoriaSection({
                 onPress={() => setFormData((prev) => ({ ...prev, categoryId: cat.id }))}
               >
                 <ThemedText
-                  style={[styles.serviceChipName, isSelected && { color: Colors.light.buttonText }]}
+                  style={[styles.serviceChipName, isSelected && { color: theme.buttonText }]}
                   numberOfLines={1}
                 >
                   {cat.name}

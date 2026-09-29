@@ -40,6 +40,7 @@ interface StaffAgendaTimelineViewProps {
   currencySymbol: string
   theme: {
     primary: string
+    buttonText: string
     accent: string
     text: string
     textSecondary: string
@@ -532,7 +533,7 @@ export function StaffAgendaTimelineView({
             gap: Spacing.sm,
           }}
         >
-          <Feather name="plus" size={22} color={Colors.light.buttonText} />
+          <Feather name="plus" size={22} color={theme.buttonText} />
           <ThemedText
             style={{ color: Colors.light.buttonText, fontWeight: '700', fontSize: 15 }}
           >
