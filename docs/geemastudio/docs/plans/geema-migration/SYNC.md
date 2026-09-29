@@ -116,3 +116,4 @@ Implementación sugerida (S2-7):
 | 2026-09-22 | PR-09 P0 + P8 Push FCM | Firebase `com.geemastudio.app` + EAS + `useNotifications` persist; push físico validado; EF solo ZM; ajustes de assets en curso |
 | 2026-09-23 | PR-09 P18–P20 Push P2 | `appointment_reference` → Agenda (`navigationRef` + cola cold start); `waba_chat` diseño/error; smoke físico ✅ en APK con OTA prod; EF solo ZM |
 | 2026-09-27 | S4 crons/RPCs ✅ | `00`/`04`/`09`/README: PR #151; review (REVOKE anon, senders 503, ads-bounce por tenant); loop Meta Ads en S7 |
+| 2026-09-28 | S5-1 y S5-4 parciales | PR #154 `waba_rules` (sin consumidores). PR #155 feriados por tenant. `00`/`03`/`04`/`09`/README/CHANGELOG. S5-2/3/5 abiertos |

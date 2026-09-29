@@ -2,7 +2,7 @@
 
 > **Fecha:** 2026-08-28  
 > **Autor:** Alberto Orta + análisis Cursor (agentes)  
-> **Estado:** S1–S4 ✅ (S4 crons/RPCs, PR #151, 27-sep; loop Meta Ads diferido a S7). Panel Geema: WABA suite ✅ + finanzas ejecutiva ✅ (Plan 12 P1/P2, 22-sep). Track C webhook ✅ ([09](./09-WEBHOOK-PROD-RECONCILE.md)). Push FCM PR-09 **P0 + P8 + P9 + P10 + P18–P20 ✅** (push físico, cita WABA, pago por validar, imagen/audio de diseño, referencia→Agenda y error WABA validados 23-sep; ajustes de assets en curso). Retail: ZM completo (#140); Geema catálogo ✅; Ventas/`product_orders` y bot retail pausados por producto. Docs synced 27-sep.
+> **Estado:** S1–S4 ✅ (S4 crons/RPCs, PR #151, 27-sep; loop Meta Ads diferido a S7). S5 parcial: S5-1 ✅ PR #154 y S5-4 ✅ PR #155 (28-sep); S5-2/S5-3/S5-5 abiertos. Panel Geema: WABA suite ✅ + finanzas ejecutiva ✅ (Plan 12 P1/P2, 22-sep). Track C webhook ✅ ([09](./09-WEBHOOK-PROD-RECONCILE.md)). Push FCM PR-09 **P0 + P8 + P9 + P10 + P18–P20 ✅** (push físico, cita WABA, pago por validar, imagen/audio de diseño, referencia→Agenda y error WABA validados 23-sep; ajustes de assets en curso). Retail: ZM completo (#140); Geema catálogo ✅; Ventas/`product_orders` y bot retail pausados por producto. Docs synced 28-sep.
 > **BD compartida:** `udelxwwnyivknslueerr` (ZM Lash = tenant #1 `zm-lash-nails`)
 
 Fuente canónica del análisis de convergencia entre **ZM Lash & Nails** (referencia en producción) y **GeemaStudio** (SaaS multi-tenant en `zm-tech`). Incluye bloqueadores para el 2.º tenant, estandarización WABA para barberías/peluquerías/spas, y roadmap por sprints. El resumen ejecutivo y el roadmap de esta carpeta son la única fuente del estado de migración; los documentos específicos de WABA y panel mantienen el detalle de implementación.
