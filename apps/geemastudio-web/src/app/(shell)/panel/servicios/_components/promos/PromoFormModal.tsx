@@ -144,7 +144,7 @@ function PromoFormModalInner({
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-white/50">Badge</label>
+            <label className="mb-1 block text-xs text-white/50">Etiqueta</label>
             <input
               className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
               value={form.badge}
@@ -154,7 +154,7 @@ function PromoFormModalInner({
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-white/50">Color badge</label>
+            <label className="mb-1 block text-xs text-white/50">Color de la etiqueta</label>
             <div className="flex items-center gap-2">
               <input
                 type="color"

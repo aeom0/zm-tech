@@ -49,7 +49,7 @@ export default function MiWebPresenciaScreen() {
     if (!data) return
     const slugLimpio = slugifyWeb(slug)
     if (webEnabled && !slugLimpio) {
-      Alert.alert('Falta el slug', 'Para publicar en Geema necesitas un slug (ej. mi-salon).')
+      Alert.alert('Falta la dirección', 'Para publicar tu página en Geema necesitas una dirección (ej. mi-salon).')
       return
     }
     setGuardando(true)
@@ -92,9 +92,9 @@ export default function MiWebPresenciaScreen() {
     >
       <View style={[styles.row, { borderColor: theme.border }]}>
         <View style={{ flex: 1 }}>
-          <ThemedText style={{ fontWeight: '600', color: theme.text }}>Publicar landing</ThemedText>
+          <ThemedText style={{ fontWeight: '600', color: theme.text }}>Publicar página web</ThemedText>
           <ThemedText style={{ color: theme.textMuted, fontSize: 13, marginTop: 2 }}>
-            Activa /s/[slug] en Geema
+            Tu página quedará disponible en Geema
           </ThemedText>
         </View>
         <Switch
@@ -104,7 +104,7 @@ export default function MiWebPresenciaScreen() {
         />
       </View>
 
-      <ThemedText style={[styles.section, { color: theme.textSecondary }]}>Template</ThemedText>
+      <ThemedText style={[styles.section, { color: theme.textSecondary }]}>Diseño</ThemedText>
       <View style={styles.templateRow}>
         {TEMPLATES.map((t) => {
           const active = webTemplate === t.id
@@ -129,7 +129,7 @@ export default function MiWebPresenciaScreen() {
       </View>
 
       <WebField
-        label="Slug (URL pública)"
+        label="Dirección de tu página"
         value={slug}
         onChangeText={setSlug}
         placeholder="mi-salon"

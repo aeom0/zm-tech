@@ -45,7 +45,7 @@ const QUICK_LINKS: QuickLink[] = [
   {
     href: '/panel/waba/haiku',
     label: 'Asistente IA',
-    description: 'System prompt Haiku (waba_config)',
+    description: 'Personalidad y reglas del asistente de WhatsApp',
     icon: Sparkles,
   },
   {
@@ -105,7 +105,7 @@ export default function PanelWabaPage() {
 
       {isError && (
         <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-          {error instanceof Error ? error.message : 'No se pudo cargar el estado WABA'}
+          {error instanceof Error ? error.message : 'No se pudo cargar el estado de WhatsApp'}
         </div>
       )}
 
@@ -121,19 +121,19 @@ export default function PanelWabaPage() {
             <div className="flex flex-wrap items-center gap-2">
               <StatusPill
                 ok={data.featuresWhatsapp}
-                label={data.featuresWhatsapp ? 'WhatsApp UI activo' : 'WhatsApp UI off'}
+                label={data.featuresWhatsapp ? 'WhatsApp activo' : 'WhatsApp desactivado'}
               />
               <StatusPill
                 ok={data.featuresWaba}
-                label={data.featuresWaba ? 'Bot WABA activo' : 'Bot WABA off'}
+                label={data.featuresWaba ? 'Asistente activo' : 'Asistente desactivado'}
               />
               <StatusPill
                 ok={Boolean(data.phoneNumberId)}
-                label={data.phoneNumberId ? 'Phone number ID' : 'Sin phone ID'}
+                label={data.phoneNumberId ? 'Número conectado' : 'Sin número conectado'}
               />
               <StatusPill
                 ok={data.hasAccessToken}
-                label={data.hasAccessToken ? 'Token configurado' : 'Sin token'}
+                label={data.hasAccessToken ? 'Conexión vigente' : 'Sin conexión'}
               />
             </div>
 
@@ -143,20 +143,9 @@ export default function PanelWabaPage() {
                 <dd className="mt-1 text-sm text-zinc-100">{data.businessName || '—'}</dd>
               </div>
               <div>
-                <dt className="text-xs text-zinc-500">Tenant slug</dt>
-                <dd className="mt-1 font-mono text-sm text-zinc-100">{data.tenantSlug || '—'}</dd>
-              </div>
-              <div>
-                <dt className="text-xs text-zinc-500">Phone number ID</dt>
+                <dt className="text-xs text-zinc-500">Número de WhatsApp conectado</dt>
                 <dd className="mt-1 font-mono text-sm text-zinc-100">
                   {maskId(data.phoneNumberId)}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-xs text-zinc-500">Webhook</dt>
-                <dd className="mt-1 text-sm text-zinc-400">
-                  Configurado en Meta → Edge Function del proyecto Supabase (ops, no desde este
-                  panel).
                 </dd>
               </div>
             </dl>

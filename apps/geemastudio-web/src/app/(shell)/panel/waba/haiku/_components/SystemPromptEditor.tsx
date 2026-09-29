@@ -56,12 +56,12 @@ export function SystemPromptEditor({
           <div className="flex items-center gap-2">
             <h2 className="text-base font-bold text-white">Personalidad del bot</h2>
             <span className="rounded-full border border-[var(--tenant-primary)]/20 bg-[var(--tenant-primary)]/10 px-2 py-0.5 text-[11px] text-[var(--tenant-primary)]">
-              Haiku
+              IA
             </span>
           </div>
           <p className="mt-1 text-sm text-zinc-400">
-            Define tono, límites y cómo debe guiar a agendar. No hardcodees datos de un solo salón
-            si el tenant es multi-marca.
+            Define tono, límites y cómo debe guiar a agendar. No incluyas datos que solo apliquen a una
+            sede o marca.
           </p>
         </div>
         <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-[var(--tenant-primary)]/25 bg-[var(--tenant-primary)]/10 text-[var(--tenant-primary)]">

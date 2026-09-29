@@ -73,7 +73,7 @@ export default function MiWebScreen() {
           {publicada ? 'Publicada en Geema' : 'No publicada'}
         </ThemedText>
         <ThemedText style={{ color: theme.textMuted, fontSize: 13, marginTop: 4 }}>
-          Template: {data.webTemplate}
+          Diseño: {data.webTemplate}
           {data.slug ? ` · /s/${data.slug}` : ''}
         </ThemedText>
         {previewUrl && publicada ? (
@@ -88,7 +88,7 @@ export default function MiWebScreen() {
 
       <MenuRow
         icon="settings"
-        label="Presencia (activar, template, slug)"
+        label="Presencia (activar, diseño, dirección)"
         onPress={() => navigation.navigate('MiWebPresencia')}
       />
       <MenuRow

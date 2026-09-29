@@ -17,7 +17,7 @@ export default function PanelWabaHaikuPage() {
         <div className="text-xs text-zinc-500">WhatsApp</div>
         <h1 className="text-2xl font-bold text-white">Asistente IA</h1>
         <p className="mt-1 text-sm text-zinc-400">
-          Configuración completa del bot Haiku: personalidad, keywords de activación, saludo de
+          Configuración completa del asistente: personalidad, palabras clave de activación, saludo de
           bienvenida y números bloqueados.
         </p>
       </div>

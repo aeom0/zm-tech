@@ -197,7 +197,7 @@ export default function LogoNegocioScreen() {
           onPress={async () => {
             Alert.alert(
               'Quitar logo',
-              '¿Seguro que quieres quitar el logo? Se usarán las iniciales como fallback.',
+              '¿Seguro que quieres quitar el logo? Se mostrarán las iniciales de tu negocio en su lugar.',
               [
                 { text: 'Cancelar', style: 'cancel' },
                 {

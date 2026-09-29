@@ -86,9 +86,9 @@ export function WelcomeGreetingEditor({
     const organic = tryParseRecord(fallbackOrganicDraft)
 
     const errors: typeof jsonErrors = {}
-    if (!slot) errors.slot = 'JSON inválido: debe ser un objeto de strings'
-    if (!ad) errors.ad = 'JSON inválido: debe ser un objeto de strings'
-    if (!organic) errors.organic = 'JSON inválido: debe ser un objeto de strings'
+    if (!slot) errors.slot = 'Formato inválido: debe ser un objeto de textos'
+    if (!ad) errors.ad = 'Formato inválido: debe ser un objeto de textos'
+    if (!organic) errors.organic = 'Formato inválido: debe ser un objeto de textos'
     setJsonErrors(errors)
     if (!slot || !ad || !organic) return null
 
@@ -128,7 +128,7 @@ export function WelcomeGreetingEditor({
       <div className="space-y-4 p-5">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           <NumberField
-            label="max_tokens (chat)"
+            label="Largo máximo de respuesta (chat)"
             value={draft.max_tokens}
             onChange={(n) => {
               setDraft({ ...draft, max_tokens: n })
@@ -152,7 +152,7 @@ export function WelcomeGreetingEditor({
             }}
           />
           <NumberField
-            label="welcome_max_tokens"
+            label="Largo máximo del saludo"
             value={draft.welcome_max_tokens ?? 0}
             onChange={(n) => {
               setDraft({ ...draft, welcome_max_tokens: n })
@@ -183,7 +183,7 @@ export function WelcomeGreetingEditor({
         </label>
 
         <label className="block">
-          <span className="mb-1 block text-xs text-zinc-500">System prompt — solo saludo</span>
+          <span className="mb-1 block text-xs text-zinc-500">Instrucciones — solo saludo</span>
           <textarea
             value={draft.welcome_generation_system ?? ''}
             onChange={(e) => {
@@ -219,7 +219,7 @@ export function WelcomeGreetingEditor({
                 {jsonErrors.slot && <p className="mt-1 text-xs text-red-300">{jsonErrors.slot}</p>}
               </label>
               <label className="block">
-                <span className="mb-1 block text-xs text-zinc-500">welcome_fallback_ad</span>
+                <span className="mb-1 block text-xs text-zinc-500">Saludo de respaldo (anuncios)</span>
                 <textarea
                   value={fallbackAdDraft}
                   onChange={(e) => setFallbackAdDraft(e.target.value)}
@@ -230,7 +230,7 @@ export function WelcomeGreetingEditor({
                 {jsonErrors.ad && <p className="mt-1 text-xs text-red-300">{jsonErrors.ad}</p>}
               </label>
               <label className="block">
-                <span className="mb-1 block text-xs text-zinc-500">welcome_fallback_organic</span>
+                <span className="mb-1 block text-xs text-zinc-500">Saludo de respaldo (orgánico)</span>
                 <textarea
                   value={fallbackOrganicDraft}
                   onChange={(e) => setFallbackOrganicDraft(e.target.value)}

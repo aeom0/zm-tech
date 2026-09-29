@@ -300,7 +300,7 @@ function PanelWabaMensajesContent() {
                               {c.isBsuid && !c.displayPhone && (
                                 <span
                                   className="inline-block rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-300"
-                                  title="Meta no compartió el número (username / BSUID)"
+                                  title="Meta no compartió el número (usuario oculto)"
                                 >
                                   Sin teléfono
                                 </span>
@@ -338,7 +338,7 @@ function PanelWabaMensajesContent() {
             {!selected && (
               <div className="flex flex-1 items-center justify-center p-8 text-sm text-zinc-500">
                 {selectedPhone
-                  ? 'No hay conversación con ese número en este tenant.'
+                  ? 'No hay conversación con ese número en tu negocio.'
                   : 'Elige una conversación'}
               </div>
             )}

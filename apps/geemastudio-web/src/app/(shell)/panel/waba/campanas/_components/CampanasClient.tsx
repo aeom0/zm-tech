@@ -303,35 +303,35 @@ export function CampanasClient() {
 
   const saveEmotionalAlmostCloseExt = async () => {
     if (!emotionalAlmostCloseExtRow) {
-      throw new Error('Falta la migración de venta emocional CTWA (emotional_almost_close_lines_ext).')
+      throw new Error('Esta opción aún no está disponible para tu negocio. Contacta a soporte.')
     }
     await mutation.mutateAsync({ id: emotionalAlmostCloseExtRow.id, config_value: linesToConfigValue(emotionalAlmostCloseExt) })
   }
 
   const saveEmotionalAlmostCloseLift = async () => {
     if (!emotionalAlmostCloseLiftRow) {
-      throw new Error('Falta la migración de venta emocional CTWA (emotional_almost_close_lines_lift).')
+      throw new Error('Esta opción aún no está disponible para tu negocio. Contacta a soporte.')
     }
     await mutation.mutateAsync({ id: emotionalAlmostCloseLiftRow.id, config_value: linesToConfigValue(emotionalAlmostCloseLift) })
   }
 
   const saveEmotionalDeclineReply = async () => {
     if (!emotionalDeclineReplyRow) {
-      throw new Error('Falta la migración de venta emocional CTWA (emotional_decline_reply_ctwa).')
+      throw new Error('Esta opción aún no está disponible para tu negocio. Contacta a soporte.')
     }
     await mutation.mutateAsync({ id: emotionalDeclineReplyRow.id, config_value: { text: emotionalDeclineReply } })
   }
 
   const saveEmotionalNudge2Reply = async () => {
     if (!emotionalNudge2ReplyRow) {
-      throw new Error('Falta la migración de venta emocional CTWA (emotional_nudge2_reply_ctwa).')
+      throw new Error('Esta opción aún no está disponible para tu negocio. Contacta a soporte.')
     }
     await mutation.mutateAsync({ id: emotionalNudge2ReplyRow.id, config_value: { text: emotionalNudge2Reply } })
   }
 
   const saveEmotionalPriceCtaExt = async () => {
     if (!emotionalPriceCtaExtRow) {
-      throw new Error('Falta la migración de venta emocional CTWA (emotional_price_cta_ext).')
+      throw new Error('Esta opción aún no está disponible para tu negocio. Contacta a soporte.')
     }
     await mutation.mutateAsync({ id: emotionalPriceCtaExtRow.id, config_value: { text: emotionalPriceCtaExt } })
   }
@@ -425,7 +425,7 @@ export function CampanasClient() {
       />
 
       <ConfigImageCard
-        title="Extensiones imagen 1 (CTWA)"
+        title="Extensiones imagen 1 (anuncios)"
         description="Tras elegir Extensiones en la pregunta de interés. Solo si tiene URL."
         imageUrl={metaAdsExtensionesImage1Url}
         caption={metaAdsExtensionesImage1Caption}
@@ -437,7 +437,7 @@ export function CampanasClient() {
       />
 
       <ConfigImageCard
-        title="Extensiones imagen 2 (CTWA)"
+        title="Extensiones imagen 2 (anuncios)"
         description="Segunda imagen de Extensiones. Solo si tiene URL."
         imageUrl={metaAdsExtensionesImage2Url}
         caption={metaAdsExtensionesImage2Caption}
@@ -449,7 +449,7 @@ export function CampanasClient() {
       />
 
       <ConfigImageCard
-        title="Lifting imagen 1 (CTWA)"
+        title="Lifting imagen 1 (anuncios)"
         description="Tras elegir Lifting en la pregunta de interés. Solo si tiene URL."
         imageUrl={metaAdsLiftingImage1Url}
         caption={metaAdsLiftingImage1Caption}
@@ -461,7 +461,7 @@ export function CampanasClient() {
       />
 
       <ConfigImageCard
-        title="Lifting imagen 2 (CTWA)"
+        title="Lifting imagen 2 (anuncios)"
         description="Segunda imagen de Lifting. Solo si tiene URL."
         imageUrl={metaAdsLiftingImage2Url}
         caption={metaAdsLiftingImage2Caption}
@@ -554,7 +554,7 @@ export function CampanasClient() {
       <div className="space-y-4 rounded-2xl border border-[var(--tenant-primary)]/25 bg-[var(--tenant-primary)]/[0.04] p-5">
         <div className="flex items-center gap-2">
           <Megaphone className="h-4 w-4 text-[var(--tenant-primary)]" />
-          <h2 className="text-base font-bold text-white">Venta emocional CTWA (v1)</h2>
+          <h2 className="text-base font-bold text-white">Venta emocional en anuncios</h2>
         </div>
         <p className="text-sm text-zinc-400">
           Solo leads Meta Ads con Extensiones o Lifting en carrito. Usa <code className="text-xs">{'{servicio}'}</code> y{' '}
@@ -587,7 +587,7 @@ export function CampanasClient() {
         />
 
         <ConfigTextCard
-          title="Nudge 2 suave (carrito abandonado CTWA)"
+          title="Nudge 2 suave (carrito abandonado anuncios)"
           description="Sin urgencia fría; el carrito se vacía igual tras 90 min."
           value={emotionalNudge2Reply}
           onChange={setEmotionalNudge2Reply}
@@ -595,7 +595,7 @@ export function CampanasClient() {
         />
 
         <ConfigTextCard
-          title="Caption foto al cotizar precio (CTWA Extensiones)"
+          title="Caption foto al cotizar precio (anuncios · Extensiones)"
           description="Cuando el bot envía foto proactiva tras dar precio."
           value={emotionalPriceCtaExt}
           onChange={setEmotionalPriceCtaExt}

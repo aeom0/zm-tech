@@ -19,7 +19,7 @@ import {
   type WebPresenceMode,
   type WebTemplate,
 } from '@/hooks/configuracion/types'
-import { getSiteUrl, getTenantLandingUrl } from '@/lib/site-url'
+import { getTenantLandingUrl } from '@/lib/site-url'
 import { ConfiguracionNav } from './_components/ConfiguracionNav'
 
 const fieldClass =
@@ -131,7 +131,7 @@ export default function PanelConfiguracionPage() {
     }
 
     if (presence === 'geema_hosted' && !previewSlug) {
-      setErrorLocal('Para Geema hosting necesitas un slug válido (ej. mi-salon)')
+      setErrorLocal('Para publicar tu página en Geema necesitas una dirección válida (ej. mi-salon)')
       return
     }
     if (presence === 'own_domain' && !customDomain.trim()) {
@@ -403,7 +403,7 @@ export default function PanelConfiguracionPage() {
         </div>
       </Section>
 
-      <Section title="Logo" subtitle="Bucket tenant-logos · se guarda al subir.">
+      <Section title="Logo" subtitle="Se guarda al subir la imagen.">
         <div className="flex flex-wrap items-center gap-4">
           <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.04]">
             {logoUrl ? (
@@ -454,7 +454,7 @@ export default function PanelConfiguracionPage() {
         <div className="flex flex-wrap gap-2">
           {(
             [
-              { id: 'none' as const, label: 'Sin landing' },
+              { id: 'none' as const, label: 'Sin página web' },
               { id: 'geema_hosted' as const, label: 'Geema (geema.zmtechdev.com/s/…)' },
               { id: 'own_domain' as const, label: 'Dominio propio' },
             ] as const
@@ -478,7 +478,7 @@ export default function PanelConfiguracionPage() {
         {(presence === 'geema_hosted' || presence === 'own_domain') && (
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
-              <label className={labelClass}>Slug</label>
+              <label className={labelClass}>Dirección de tu página</label>
               <input
                 className={fieldClass}
                 value={slug}
@@ -487,7 +487,7 @@ export default function PanelConfiguracionPage() {
               />
               {previewSlug ? (
                 <p className="mt-1 flex flex-wrap items-center gap-1 text-xs text-zinc-500">
-                  Preview:{' '}
+                  Vista previa:{' '}
                   <Link
                     href={`/s/${previewSlug}`}
                     target="_blank"
@@ -496,9 +496,6 @@ export default function PanelConfiguracionPage() {
                     {getTenantLandingUrl(previewSlug)}
                     <ExternalLink className="h-3 w-3 shrink-0" />
                   </Link>
-                  <span className="w-full text-[10px] text-zinc-600">
-                    Host plataforma: {getSiteUrl()} (temporal hasta geemastudio.app)
-                  </span>
                 </p>
               ) : null}
             </div>
@@ -511,12 +508,11 @@ export default function PanelConfiguracionPage() {
                 placeholder="midominio.com"
               />
               <p className="mt-1 text-xs text-zinc-500">
-                El routing técnico ya está listo — falta el paso operativo: apuntar el DNS de tu
-                dominio a Geema y activarlo.
+                Para usar tu dominio, contacta a soporte y lo conectamos a tu página.
               </p>
             </div>
             <div className="sm:col-span-2">
-              <label className={labelClass}>Template landing</label>
+              <label className={labelClass}>Diseño de tu página</label>
               <select
                 className={fieldClass}
                 value={webTemplate}

@@ -190,11 +190,11 @@ export function PromoModal({
       return
     }
     if (t.length > TITLE_MAX) {
-      Alert.alert('Título', `Máximo ${TITLE_MAX} caracteres (Meta WABA).`)
+      Alert.alert('Título', `Máximo ${TITLE_MAX} caracteres (límite de WhatsApp).`)
       return
     }
     if (description.trim().length > DESC_MAX) {
-      Alert.alert('Descripción', `Máximo ${DESC_MAX} caracteres (Meta WABA).`)
+      Alert.alert('Descripción', `Máximo ${DESC_MAX} caracteres (límite de WhatsApp).`)
       return
     }
     if (items.length === 0) {
@@ -295,7 +295,7 @@ export function PromoModal({
                 multiline
               />
 
-              <ThemedText style={[styles.label, { color: theme.textSecondary }]}>Badge</ThemedText>
+              <ThemedText style={[styles.label, { color: theme.textSecondary }]}>Etiqueta</ThemedText>
               <ScrollFadeRow
                 backgroundColor={theme.backgroundDefault}
                 arrowColor={theme.textSecondary}

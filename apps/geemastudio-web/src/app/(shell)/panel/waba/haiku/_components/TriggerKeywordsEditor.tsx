@@ -75,7 +75,7 @@ function KeywordsSection({
               add()
             }
           }}
-          placeholder="Agregar keyword…"
+          placeholder="Agregar palabra clave…"
           className="flex-1 rounded-lg border border-white/[0.08] bg-[#0F0F0F] px-2.5 py-1.5 text-xs text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-[var(--tenant-primary)]/40"
         />
         <button

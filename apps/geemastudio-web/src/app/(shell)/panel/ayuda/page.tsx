@@ -149,7 +149,7 @@ const FAQS: FaqItem[] = [
     category: 'configuracion',
     question: '¿Cómo activo mi página web pública para que las clientas vean los servicios?',
     answer:
-      'En Configuración → Presencia web activa el modo "Geema hosted", elige un slug para tu negocio (por ejemplo "mi-salon") y guarda los cambios. Tu catálogo estará disponible en geema.zmtechdev.com/s/mi-salon.',
+      'En Configuración → Presencia web activa la opción "Geema", elige la dirección de tu página (por ejemplo "mi-salon") y guarda los cambios. Tu catálogo estará disponible en geema.zmtechdev.com/s/mi-salon.',
     link: { href: '/panel/configuracion', label: 'Configurar Web' },
   },
 ]

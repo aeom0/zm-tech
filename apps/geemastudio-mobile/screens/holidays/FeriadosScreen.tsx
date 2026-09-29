@@ -191,7 +191,7 @@ export default function FeriadosScreen() {
           <View style={styles.headerActions}>
             <ThemedText style={[styles.hint, { color: theme.textMuted }]}>
               País: {config.locale.country}. Los cerrados no permiten citas; el resto usa horario
-              reducido (10 AM – open until).
+              reducido (de 10 AM hasta la hora de cierre que elijas).
             </ThemedText>
             <Pressable
               onPress={handleReloadCatalog}

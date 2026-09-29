@@ -618,7 +618,7 @@ export default function PanelWebPage() {
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>Badge (opcional)</label>
+                  <label className={labelClass}>Etiqueta (opcional)</label>
                   <input
                     className={fieldClass}
                     value={promo.badge ?? ''}
@@ -759,7 +759,7 @@ export default function PanelWebPage() {
 
       <Section
         title="Servicios web"
-        subtitle="Lista curada para la landing — independiente del catálogo de agenda."
+        subtitle="Lista de servicios para tu página web — independiente del catálogo de agenda."
       >
         <div className="space-y-3">
           {services.map((service, i) => (

@@ -53,10 +53,10 @@ export function TokenWarningBanner() {
 
   const label =
     daysLeft <= 0
-      ? 'El token de WhatsApp Business ha vencido. Renueva las credenciales para que los mensajes sigan funcionando.'
+      ? 'La conexión con WhatsApp Business ha vencido. Renuévala para que los mensajes sigan funcionando.'
       : daysLeft === 1
-        ? 'El token de WhatsApp Business vence en 1 día. Renueva las credenciales lo antes posible.'
-        : `El token de WhatsApp Business vence en ${daysLeft} días. Planifica la renovación para no perder el canal.`
+        ? 'La conexión con WhatsApp Business vence en 1 día. Renuévala lo antes posible.'
+        : `La conexión con WhatsApp Business vence en ${daysLeft} días. Planifica la renovación para no perder el canal.`
 
   return (
     <View

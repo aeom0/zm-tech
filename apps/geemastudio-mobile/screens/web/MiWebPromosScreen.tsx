@@ -182,7 +182,7 @@ export default function MiWebPromosScreen() {
               onBlur={() => void persistBanner({ promoBannerAlt: bannerAlt.trim() || null })}
             />
             <View style={styles.bannerToggleRow}>
-              <ThemedText style={{ color: theme.text }}>Mostrar banner en la landing</ThemedText>
+              <ThemedText style={{ color: theme.text }}>Mostrar banner en tu página web</ThemedText>
               <Switch
                 value={bannerActive}
                 disabled={bannerSaving}
@@ -291,12 +291,12 @@ export default function MiWebPromosScreen() {
               multiline
             />
             <WebField
-              label="Badge"
+              label="Etiqueta"
               value={draft.badge ?? ''}
               onChangeText={(badge) => setDraft((d) => ({ ...d, badge }))}
             />
             <WebField
-              label="Color badge (hex)"
+              label="Color de la etiqueta (hex)"
               value={draft.badgeColor ?? ''}
               onChangeText={(badgeColor) => setDraft((d) => ({ ...d, badgeColor }))}
               autoCapitalize="none"

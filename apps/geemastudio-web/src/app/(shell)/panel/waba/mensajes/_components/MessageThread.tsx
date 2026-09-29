@@ -209,7 +209,7 @@ export function MessageThread({
       { phone, action: 'haiku_finish_booking' },
       {
         onError: (err) =>
-          setModerationError(err instanceof Error ? err.message : 'No se pudo ejecutar Haiku agenda'),
+          setModerationError(err instanceof Error ? err.message : 'No se pudo iniciar la agenda con el asistente'),
       }
     )
   }
@@ -297,7 +297,7 @@ export function MessageThread({
                 ) : (
                   <span
                     className="inline-flex shrink-0 items-center rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-300"
-                    title="Meta no compartió el número (username / BSUID)"
+                    title="Meta no compartió el número (usuario oculto)"
                   >
                     Sin teléfono
                   </span>
@@ -435,7 +435,7 @@ export function MessageThread({
             ) : (
               <Sparkles className="h-3.5 w-3.5" />
             )}
-            Haiku agenda
+            Agendar con asistente
           </button>
         </div>
       )}
