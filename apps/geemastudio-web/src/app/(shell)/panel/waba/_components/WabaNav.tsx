@@ -9,6 +9,7 @@ import {
   MessageSquare,
   MessageSquareText,
   Settings2,
+  SlidersHorizontal,
   Sparkles,
 } from 'lucide-react'
 import type { ComponentType } from 'react'
@@ -27,6 +28,7 @@ const TABS: Tab[] = [
   { href: '/panel/waba/haiku', label: 'Asistente IA', icon: Sparkles },
   { href: '/panel/waba/simulador', label: 'Simulador', icon: MessageSquare },
   { href: '/panel/waba/historial', label: 'Historial', icon: BarChart2 },
+  { href: '/panel/waba/reglas', label: 'Reglas', icon: SlidersHorizontal },
   { href: '/panel/waba', label: 'Estado', icon: Settings2 },
 ]
 
