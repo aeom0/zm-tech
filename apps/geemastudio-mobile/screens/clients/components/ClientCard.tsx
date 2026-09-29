@@ -92,11 +92,6 @@ export function ClientCard({ client, segment: _segment, onPress }: Props) {
       ]}
       onPress={onPress}
     >
-      <View style={[styles.avatar, { backgroundColor: `${theme.primary}18` }]}>
-        <ThemedText style={[styles.avatarText, { color: theme.primary }]}>
-          {client.name.charAt(0).toUpperCase()}
-        </ThemedText>
-      </View>
       <View style={styles.info}>
         <View style={styles.topRow}>
           <ThemedText style={[styles.name, { color: theme.text }]}>{client.name}</ThemedText>
@@ -153,18 +148,6 @@ const styles = StyleSheet.create({
     borderRadius: BorderRadius.lg,
     borderWidth: 1,
     marginBottom: Spacing.sm,
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: Spacing.md,
-  },
-  avatarText: {
-    fontSize: 18,
-    fontWeight: '700',
   },
   info: {
     flex: 1,

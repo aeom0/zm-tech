@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   Modal,
   View,
@@ -15,6 +15,7 @@ import { Feather } from '@expo/vector-icons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { ThemedText } from '@/components/ThemedText'
+import { useResetOnChange } from '@/hooks/useResetOnChange'
 import { useTheme } from '@/hooks/useTheme'
 import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 import type { ClientFormPayload } from '../hooks/useClientsMutations'
@@ -36,13 +37,13 @@ export function ClientFormModal({ visible, mode, initial, saving, onClose, onSav
   const [email, setEmail] = useState('')
   const [notes, setNotes] = useState('')
 
-  useEffect(() => {
+  useResetOnChange([visible, initial], () => {
     if (!visible) return
     setName(initial?.name ?? '')
     setPhone(initial?.phone ?? '')
     setEmail(initial?.email ?? '')
     setNotes(initial?.notes ?? '')
-  }, [visible, initial])
+  })
 
   const handleSave = () => {
     if (!name.trim()) {

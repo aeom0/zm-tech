@@ -4,7 +4,7 @@ import { Alert } from 'react-native'
 import { supabase } from '@/lib/supabase'
 import type { Service, ServiceCategory } from '../types'
 import { parsePriceInput, priceToDecimalString } from '../types'
-import { detectCatalogDialect, isMissingColumnError } from '../lib/catalogAdapter'
+import { isMissingColumnError } from '../lib/catalogAdapter'
 import { sortCatalogList } from '../lib/catalogSort'
 
 export interface ServicePayload {
@@ -60,27 +60,6 @@ export function useServicesData() {
   } = useQuery<ServiceCategory[]>({
     queryKey: ['service_categories'],
     queryFn: async () => {
-      const dialect = await detectCatalogDialect()
-      if (dialect === 'zm') {
-        const { data, error } = await supabase
-          .from('service_categories')
-          .select('id, name, order')
-          .order('order', { ascending: true })
-        if (error) {
-          throw new Error(error.message)
-        }
-        return sortCatalogList(
-          ((data ?? []) as { id: string; name: string; order: number }[]).map((row) => ({
-            ...row,
-            color: null,
-            icon: null,
-          })),
-          {
-            getOrder: (c) => c.order,
-            getName: (c) => c.name,
-          }
-        )
-      }
       const primary = await supabase
         .from('service_categories')
         .select('id, name, color, icon, order')
@@ -93,6 +72,24 @@ export function useServicesData() {
       }
       if (!isMissingColumnError(primary.error)) {
         throw new Error(primary.error.message)
+      }
+      const withIcon = await supabase
+        .from('service_categories')
+        .select('id, name, icon, order')
+        .order('order', { ascending: true })
+      if (!withIcon.error) {
+        return sortCatalogList(
+          ((withIcon.data ?? []) as { id: string; name: string; icon: string | null; order: number }[]).map(
+            (row) => ({ ...row, color: null })
+          ),
+          {
+            getOrder: (c) => c.order,
+            getName: (c) => c.name,
+          }
+        )
+      }
+      if (!isMissingColumnError(withIcon.error)) {
+        throw new Error(withIcon.error.message)
       }
       const fallback = await supabase
         .from('service_categories')
@@ -225,12 +222,20 @@ export function useServicesData() {
     },
   })
 
-  const { data: catalogDialect } = useQuery({
-    queryKey: ['catalog-dialect'],
-    queryFn: detectCatalogDialect,
+  const { data: supportsCategoryIcons = false } = useQuery({
+    queryKey: ['service-categories-icon-support'],
+    queryFn: async () => {
+      const { error } = await supabase.from('service_categories').select('icon').limit(1)
+      if (!error) {
+        return true
+      }
+      if (isMissingColumnError(error)) {
+        return false
+      }
+      throw new Error(error.message)
+    },
     staleTime: Infinity,
   })
-  const supportsCategoryIcons = catalogDialect !== 'zm'
 
   const { data: supportsServiceIcons = false } = useQuery({
     queryKey: ['services-icon-support'],

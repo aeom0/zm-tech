@@ -47,7 +47,7 @@ export default function ClientsScreen() {
   const [detailVisible, setDetailVisible] = useState(false)
   const [formVisible, setFormVisible] = useState(false)
 
-  const { clients, filteredClients, kpis, isLoading, isFetching, isError, refetch } =
+  const { clients, totalClients, filteredClients, kpis, isLoading, isFetching, isError, refetch } =
     useClientsData(searchQuery, segment, sortBy)
   const { createMutation } = useClientsMutations()
 
@@ -86,6 +86,22 @@ export default function ClientsScreen() {
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
   }, [])
 
+  const rangeLabel = useMemo(() => {
+    if (clients.length === 0) {
+      return null
+    }
+    const fmt = (n: number) => n.toLocaleString('es')
+    const total = Math.max(totalClients ?? 0, clients.length)
+    const isFiltered = searchQuery.trim().length > 0 || segment !== 'all'
+    if (isFiltered) {
+      return `${fmt(filteredClients.length)} de los ${fmt(clients.length)} clientes cargados`
+    }
+    if (total > clients.length) {
+      return `Mostrando 1 a ${fmt(clients.length)} de ${fmt(total)} clientes. Usa el buscador para encontrar al resto.`
+    }
+    return null
+  }, [clients.length, totalClients, filteredClients.length, searchQuery, segment])
+
   const listHeader = useMemo(
     () => (
       <View>
@@ -97,13 +113,17 @@ export default function ClientsScreen() {
         <ClientsHeader
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
-          totalCount={clients.length}
+          totalCount={totalClients ?? clients.length}
           onAddClientPress={openCreate}
         />
 
         <ClientFilterBar segment={segment} onSegmentChange={setSegment} />
         <ClientSortBar sortBy={sortBy} onSortChange={setSortBy} />
         <ClientKPIStrip kpis={kpis} />
+
+        {rangeLabel ? (
+          <ThemedText style={[styles.rangeLabel, { color: theme.textMuted }]}>{rangeLabel}</ThemedText>
+        ) : null}
 
         {isError ? (
           <ThemedText style={[styles.errorText, { color: theme.error }]}>
@@ -115,9 +135,12 @@ export default function ClientsScreen() {
     [
       theme.text,
       theme.textSecondary,
+      theme.textMuted,
       theme.error,
       searchQuery,
       clients.length,
+      totalClients,
+      rangeLabel,
       segment,
       sortBy,
       kpis,
@@ -230,6 +253,11 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginTop: 4,
     marginBottom: Spacing.lg,
+  },
+  rangeLabel: {
+    fontSize: 12,
+    marginTop: Spacing.xs,
+    marginBottom: Spacing.md,
   },
   errorText: {
     fontSize: 13,

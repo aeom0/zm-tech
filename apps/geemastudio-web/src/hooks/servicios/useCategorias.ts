@@ -18,13 +18,32 @@ export interface CategoriaRow {
   order: number
 }
 
-function mapZmRow(row: { id: string; name: string; order: number }): CategoriaRow {
+let iconSupport: Promise<boolean> | null = null
+
+/** true si `service_categories.icon` existe (migración 20260929130000). Cacheado por sesión. */
+function categoriasIconSupported(): Promise<boolean> {
+  if (!iconSupport) {
+    iconSupport = (async () => {
+      if (!supabase) return false
+      const { error } = await supabase.from('service_categories').select('icon').limit(1)
+      if (!error) return true
+      if (isMissingColumnError(error)) return false
+      iconSupport = null
+      throw error
+    })()
+  }
+  return iconSupport
+}
+
+function mapZmRow(
+  row: { id: string; name: string; order: number; icon?: string | null }
+): CategoriaRow {
   return {
     id: row.id,
     name: row.name,
     order: row.order ?? 0,
     color: DEFAULT_CATEGORY_COLOR,
-    icon: null,
+    icon: row.icon ?? null,
   }
 }
 
@@ -41,12 +60,18 @@ export function useCategorias() {
       const dialect = await detectCatalogDialect(supabase)
 
       if (dialect === 'zm') {
+        const withIcon = (await categoriasIconSupported()) ? ', icon' : ''
         const { data, error } = await supabase
           .from('service_categories')
-          .select('id, name, order')
+          .select(`id, name, order${withIcon}`)
           .order('order', { ascending: true })
         if (error) throw error
-        return ((data ?? []) as Array<{ id: string; name: string; order: number }>).map(mapZmRow)
+        return ((data ?? []) as unknown as Array<{
+          id: string
+          name: string
+          order: number
+          icon?: string | null
+        }>).map(mapZmRow)
       }
 
       const primary = await supabase
@@ -93,6 +118,8 @@ export function useUpsertCategoria() {
         if (dialect === 'geema') {
           payload.color = cat.color
           payload.icon = cat.icon ?? null
+        } else if (await categoriasIconSupported()) {
+          payload.icon = cat.icon ?? null
         }
         const { error } = await supabase.from('service_categories').update(payload).eq('id', cat.id)
         if (error) throw error
@@ -103,6 +130,7 @@ export function useUpsertCategoria() {
         const { error } = await supabase.from('service_categories').insert({
           name: cat.name,
           order: 99,
+          ...((await categoriasIconSupported()) && { icon: cat.icon ?? null }),
         })
         if (error) throw error
         return

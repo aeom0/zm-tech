@@ -13,6 +13,8 @@ import type { Client, ClientWithMetrics, ClientSegment, ClientKPIs, ClientSortKe
 
 interface UseClientsDataResult {
   clients: ClientWithMetrics[]
+  /** Total real en BD (el listado se acota a CLIENTS_FETCH_LIMIT). Null mientras carga. */
+  totalClients: number | null
   filteredClients: ClientWithMetrics[]
   kpis: ClientKPIs | null
   isLoading: boolean
@@ -39,7 +41,7 @@ const VIP_SPEND = 5 * 50
 const AT_RISK_DAYS = 45
 const NEW_DAYS = 30
 /** Tope de filas en listado (paridad ZM). FlatList virtualiza; el tope acota red + métricas. */
-const CLIENTS_FETCH_LIMIT = 300
+export const CLIENTS_FETCH_LIMIT = 300
 
 function emptyKpis(): ClientKPIs {
   return {
@@ -70,6 +72,7 @@ export function useClientsData(
 
   const {
     data: clients = [],
+    dataUpdatedAt: clientsUpdatedAt,
     isLoading: clientsLoading,
     isFetching: clientsFetching,
     isError: clientsError,
@@ -95,10 +98,30 @@ export function useClientsData(
     },
   })
 
+  const { data: totalCount = null } = useQuery<number>({
+    queryKey: ['clients', 'total', tenantId],
+    enabled: queryEnabled,
+    staleTime: 5 * 60_000,
+    refetchOnWindowFocus: false,
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('clients')
+        .select('id', { count: 'exact', head: true })
+        .eq('tenant_id', tenantId)
+
+      if (error) {
+        throw new Error(error.message)
+      }
+
+      return count ?? 0
+    },
+  })
+
   const clientIds = useMemo(() => clients.map((c) => c.id), [clients])
 
   const {
     data: appointments = [],
+    dataUpdatedAt: aptsUpdatedAt,
     isFetching: aptsFetching,
     isError: aptsError,
     refetch: refetchAppointments,
@@ -128,6 +151,7 @@ export function useClientsData(
 
   const {
     data: payments = [],
+    dataUpdatedAt: paymentsUpdatedAt,
     isFetching: paymentsFetching,
     isError: paymentsError,
     refetch: refetchPayments,
@@ -150,6 +174,9 @@ export function useClientsData(
       return (data ?? []) as RawPayment[]
     },
   })
+
+  // Referencia temporal pura: momento de la última carga de datos (evita Date.now() en render).
+  const now = Math.max(clientsUpdatedAt, aptsUpdatedAt, paymentsUpdatedAt)
 
   const { clientsWithMetrics, kpis }: { clientsWithMetrics: ClientWithMetrics[]; kpis: ClientKPIs } =
     useMemo(() => {
@@ -176,8 +203,6 @@ export function useClientsData(
         if (Number.isNaN(amt)) continue
         paymentsByAppointment[aptId] = (paymentsByAppointment[aptId] ?? 0) + amt
       }
-
-      const now = Date.now()
 
       const clientsWithMetricsLocal: ClientWithMetrics[] = clients.map((client) => {
         const completedApts = appointmentsByClient[client.id] ?? []
@@ -234,7 +259,7 @@ export function useClientsData(
         }
       })
 
-      const totalClients = clientsWithMetricsLocal.length
+      const totalClients = Math.max(clientsWithMetricsLocal.length, totalCount ?? 0)
       const activeThisMonth = clientsWithMetricsLocal.filter(
         (c) => c.last_visit_date != null && c.last_visit_date >= monthStartIso
       ).length
@@ -255,7 +280,7 @@ export function useClientsData(
           avg_ticket: totalVisits > 0 ? totalRevenue / totalVisits : 0,
         },
       }
-    }, [clients, appointments, payments, monthStartIso, tenantTimezone])
+    }, [clients, appointments, payments, monthStartIso, tenantTimezone, totalCount, now])
 
   const filteredClients = useMemo(() => {
     const normalizedSearch = searchQuery.trim().toLowerCase()
@@ -270,8 +295,6 @@ export function useClientsData(
         )
       })
     }
-
-    const now = Date.now()
 
     const filtered = base.filter((c) => {
       if (segment === 'all') return true
@@ -317,10 +340,11 @@ export function useClientsData(
       }
     })
     return sorted
-  }, [clientsWithMetrics, searchQuery, segment, sortBy, tenantTimezone])
+  }, [clientsWithMetrics, searchQuery, segment, sortBy, tenantTimezone, now])
 
   return {
     clients: clientsWithMetrics,
+    totalClients: totalCount,
     filteredClients,
     kpis,
     isLoading: clientsLoading || tenantLoading,
