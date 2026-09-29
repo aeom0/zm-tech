@@ -7,13 +7,13 @@ import { useTenant } from '@/contexts/TenantContext'
 import { formatCurrency } from '@/utils/format'
 import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 import { instanteCitaDesdeTexto, zonaIANASegura } from '@zmtech/tenant-config'
-import type { PendingAppointment, VerificationAction } from '../types'
+import type { ValidacionItem, VerificationAction } from '../types'
 
 interface ValidacionRowProps {
-  item: PendingAppointment
+  item: ValidacionItem
   loadingAction: VerificationAction | null // null = sin spinner
-  onApprove: () => void
-  onReject: () => void
+  onApprove?: () => void
+  onReject?: () => void
 }
 
 export function ValidacionRow({ item, loadingAction, onApprove, onReject }: ValidacionRowProps) {
@@ -34,6 +34,13 @@ export function ValidacionRow({ item, loadingAction, onApprove, onReject }: Vali
       timeZone: zonaIANASegura(config.locale.timezone),
     }
   )
+
+  const resolvedLabel = item.resolvedAt
+    ? new Date(item.resolvedAt.endsWith('Z') || item.resolvedAt.includes('+') ? item.resolvedAt : `${item.resolvedAt}Z`).toLocaleDateString(
+        config.locale.language,
+        { day: 'numeric', month: 'short', timeZone: zonaIANASegura(config.locale.timezone) }
+      )
+    : ''
 
   return (
     <View
@@ -62,11 +69,36 @@ export function ValidacionRow({ item, loadingAction, onApprove, onReject }: Vali
         </View>
 
         <ThemedText style={[styles.meta, { color: theme.textSecondary }]}>
-          {item.serviceName} · {item.employeeName}
+          {item.employeeName ? `${item.serviceName} · ${item.employeeName}` : item.serviceName}
         </ThemedText>
         <ThemedText style={[styles.meta, { color: theme.textMuted }]}>{fecha}</ThemedText>
 
+        {item.readOnly && item.status !== 'pending' && (
+          <View style={styles.resolvedRow}>
+            <Feather
+              name={item.status === 'approved' ? 'check-circle' : 'x-circle'}
+              size={14}
+              color={item.status === 'approved' ? theme.success : theme.error}
+            />
+            <ThemedText
+              style={[
+                styles.meta,
+                { color: item.status === 'approved' ? theme.success : theme.error },
+              ]}
+            >
+              {item.status === 'approved' ? 'Validado' : 'Rechazado'}
+              {resolvedLabel ? ` · ${resolvedLabel}` : ''}
+            </ThemedText>
+          </View>
+        )}
+        {item.readOnly && item.status === 'pending' && (
+          <ThemedText style={[styles.meta, { color: theme.textMuted }]}>
+            Pendiente de validación
+          </ThemedText>
+        )}
+
         {/* Acciones per-row */}
+        {!item.readOnly && (
         <View style={styles.actions}>
           {/* Botón Rechazar */}
           <Pressable
@@ -112,6 +144,7 @@ export function ValidacionRow({ item, loadingAction, onApprove, onReject }: Vali
             )}
           </Pressable>
         </View>
+        )}
       </View>
     </View>
   )
@@ -150,6 +183,7 @@ const styles = StyleSheet.create({
   meta: {
     fontSize: 13,
   },
+  resolvedRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   actions: {
     flexDirection: 'row',
     gap: Spacing.sm,

@@ -1,24 +1,38 @@
 import React, { useState, useCallback } from 'react'
-import { View, FlatList, StyleSheet, RefreshControl } from 'react-native'
+import { View, FlatList, StyleSheet, RefreshControl, Pressable } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
-import { Spacing } from '@/constants/theme'
+import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 import { ValidacionRow } from './validacion/components/ValidacionRow'
 import { useValidacionData } from './validacion/hooks/useValidacionData'
-import type { PendingAppointment, VerificationAction, RowLoadingState } from './validacion/types'
+import type {
+  ValidacionItem,
+  ValidacionFilter,
+  VerificationAction,
+  RowLoadingState,
+} from './validacion/types'
+
+const FILTERS: { id: ValidacionFilter; label: string }[] = [
+  { id: 'pending', label: 'Por validar' },
+  { id: 'approved', label: 'Validados' },
+  { id: 'rejected', label: 'Rechazados' },
+]
 
 export default function ValidacionPagosScreen() {
   const headerHeight = useHeaderHeight()
   const tabBarHeight = useBottomTabBarHeight()
   const { theme } = useTheme()
-  const { pending, isLoading, refetch, verifyMutation } = useValidacionData()
+  const { byFilter, counts, historyDays, refetchAll, verifyMutation } = useValidacionData()
+  const [filter, setFilter] = useState<ValidacionFilter>('pending')
 
   // Estado per-row: { [appointmentId]: 'approved' | 'rejected' | null }
   const [rowLoading, setRowLoading] = useState<RowLoadingState>({})
+
+  const active = byFilter[filter]
 
   const handleVerify = useCallback(
     async (appointmentId: string, action: VerificationAction) => {
@@ -38,7 +52,7 @@ export default function ValidacionPagosScreen() {
   )
 
   const renderItem = useCallback(
-    ({ item }: { item: PendingAppointment }) => (
+    ({ item }: { item: ValidacionItem }) => (
       <ValidacionRow
         item={item}
         loadingAction={rowLoading[item.id] ?? null}
@@ -49,31 +63,85 @@ export default function ValidacionPagosScreen() {
     [rowLoading, handleVerify]
   )
 
-  const EmptyState = () => (
-    <View style={styles.empty}>
-      <Feather name="check-circle" size={48} color={theme.success} />
-      <ThemedText style={[styles.emptyTitle, { color: theme.text }]}>Todo al día</ThemedText>
-      <ThemedText style={[styles.emptySub, { color: theme.textMuted }]}>
-        No hay pagos pendientes de validación.
-      </ThemedText>
+  const emptyCopy: Record<ValidacionFilter, { icon: 'check-circle' | 'inbox'; title: string; sub: string }> = {
+    pending: {
+      icon: 'check-circle',
+      title: 'Todo al día',
+      sub: 'No hay pagos pendientes de validación.',
+    },
+    approved: {
+      icon: 'inbox',
+      title: 'Sin pagos validados',
+      sub: `No hay pagos validados en los últimos ${historyDays} días.`,
+    },
+    rejected: {
+      icon: 'inbox',
+      title: 'Sin pagos rechazados',
+      sub: `No hay pagos rechazados en los últimos ${historyDays} días.`,
+    },
+  }
+  const empty = emptyCopy[filter]
+
+  const listHeader = (
+    <View style={styles.chips}>
+      {FILTERS.map((f) => {
+        const isActive = filter === f.id
+        return (
+          <Pressable
+            key={f.id}
+            onPress={() => setFilter(f.id)}
+            style={[
+              styles.chip,
+              {
+                borderColor: isActive ? theme.primary : theme.border,
+                backgroundColor: isActive ? theme.primary : theme.backgroundSecondary,
+              },
+            ]}
+          >
+            <ThemedText
+              style={[styles.chipText, { color: isActive ? Colors.light.buttonText : theme.text }]}
+            >
+              {f.label}
+              {counts[f.id] > 0 ? ` · ${counts[f.id]}` : ''}
+            </ThemedText>
+          </Pressable>
+        )
+      })}
     </View>
   )
 
   return (
     <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
       <FlatList
-        data={pending}
+        data={active.data ?? []}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
+        ListHeaderComponent={listHeader}
         contentContainerStyle={{
           paddingTop: headerHeight + Spacing.lg,
           paddingBottom: tabBarHeight + Spacing['3xl'],
           paddingHorizontal: Spacing.lg,
           flexGrow: 1,
         }}
-        ListEmptyComponent={isLoading ? null : <EmptyState />}
+        ListEmptyComponent={
+          active.isLoading ? null : (
+            <View style={styles.empty}>
+              <Feather
+                name={empty.icon}
+                size={48}
+                color={filter === 'pending' ? theme.success : theme.textMuted}
+              />
+              <ThemedText style={[styles.emptyTitle, { color: theme.text }]}>{empty.title}</ThemedText>
+              <ThemedText style={[styles.emptySub, { color: theme.textMuted }]}>{empty.sub}</ThemedText>
+            </View>
+          )
+        }
         refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={refetch} tintColor={theme.primary} />
+          <RefreshControl
+            refreshing={active.isRefetching}
+            onRefresh={refetchAll}
+            tintColor={theme.primary}
+          />
         }
         showsVerticalScrollIndicator={false}
       />
@@ -83,6 +151,21 @@ export default function ValidacionPagosScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
+  chips: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+    marginBottom: Spacing.md,
+  },
+  chip: {
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.xs,
+    borderRadius: BorderRadius.full,
+    borderWidth: 1,
+  },
+  chipText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
   empty: {
     flex: 1,
     alignItems: 'center',

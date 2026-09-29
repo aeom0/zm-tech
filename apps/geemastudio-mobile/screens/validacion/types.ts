@@ -1,18 +1,22 @@
-export interface PendingAppointment {
+export type VerificationAction = 'approved' | 'rejected'
+
+export type ValidacionFilter = 'pending' | 'approved' | 'rejected'
+
+export interface ValidacionItem {
   id: string
   client_name: string
+  /** Fecha de la cita, en texto de BD (sin zona). */
   date: string
   price: number
-  service_id: string | null
-  employee_id: string | null
-  notes: string | null
-  // enriquecidos en memoria
-  serviceName?: string
+  serviceName: string
   employeeName?: string
   employeeColor?: string
+  status: ValidacionFilter
+  /** Cuándo se aprobó o rechazó (solo historial). */
+  resolvedAt?: string | null
+  /** Sin botones de acción: historial, o pago pendiente que se resuelve desde WhatsApp. */
+  readOnly: boolean
 }
-
-export type VerificationAction = 'approved' | 'rejected'
 
 export interface RowLoadingState {
   [appointmentId: string]: VerificationAction | null

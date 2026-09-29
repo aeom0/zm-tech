@@ -3,7 +3,35 @@ import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
 import { useEmployeesQuery } from '@/screens/personal/hooks/useEmployeesData'
-import type { PendingAppointment, VerificationAction } from '../types'
+import { detectCatalogDialect } from '@/screens/services/lib/catalogAdapter'
+import type { ValidacionItem, ValidacionFilter, VerificationAction } from '../types'
+
+/** Ventana del historial: evita listas enormes y mantiene la pantalla ágil. */
+const HISTORY_DAYS = 30
+const HISTORY_LIMIT = 100
+
+const historySince = () => new Date(Date.now() - HISTORY_DAYS * 86_400_000).toISOString()
+
+interface AppointmentRow {
+  id: string
+  client_name: string
+  date: string
+  price: number
+  service_id: string | null
+  employee_id: string | null
+}
+
+interface ZmVerificationRow {
+  id: string
+  client_name: string
+  service_name: string
+  appointment_date: string
+  amount_deposit: number | string | null
+  amount_total: number | string | null
+  kind: string | null
+  approved_at: string | null
+  rejected_at: string | null
+}
 
 export function useValidacionData() {
   const { userId } = useAuth()
@@ -22,38 +50,116 @@ export function useValidacionData() {
     staleTime: 5 * 60_000,
   })
 
-  // Citas pendientes de validación
-  const {
-    data: rawPending = [],
-    isLoading,
-    isError,
-    refetch,
-  } = useQuery<PendingAppointment[]>({
-    queryKey: ['validacion_pagos_pending'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('appointments')
-        .select('id, client_name, date, price, service_id, employee_id, notes')
-        .eq('status', 'payment_submitted')
-        .order('date', { ascending: true })
-      if (error) throw new Error(error.message)
-      return (data ?? []) as PendingAppointment[]
-    },
-    refetchInterval: 30_000,
+  const { data: dialect } = useQuery({
+    queryKey: ['validacion_dialect'],
+    queryFn: detectCatalogDialect,
+    staleTime: Infinity,
   })
 
-  // Enriquecer con nombres en memoria
   const employeeById = Object.fromEntries(employees.map((e) => [e.id, e]))
   const serviceById = Object.fromEntries(services.map((s) => [s.id, s]))
 
-  const pending: PendingAppointment[] = rawPending.map((apt) => ({
-    ...apt,
+  const enrich = (
+    apt: AppointmentRow,
+    status: ValidacionFilter,
+    resolvedAt: string | null,
+    readOnly: boolean
+  ): ValidacionItem => ({
+    id: apt.id,
+    client_name: apt.client_name,
+    date: apt.date,
+    price: Number(apt.price),
     serviceName: apt.service_id ? (serviceById[apt.service_id]?.name ?? '—') : '—',
-    employeeName: apt.employee_id ? (employeeById[apt.employee_id]?.name ?? '—') : 'Sin asignar',
-    employeeColor: apt.employee_id
-      ? (employeeById[apt.employee_id]?.color ?? undefined)
-      : undefined,
-  }))
+    employeeName: apt.employee_id
+      ? (employeeById[apt.employee_id]?.name ?? '—')
+      : 'Sin asignar',
+    employeeColor: apt.employee_id ? (employeeById[apt.employee_id]?.color ?? undefined) : undefined,
+    status,
+    resolvedAt,
+    readOnly,
+  })
+
+  const listQuery = (filter: ValidacionFilter) => ({
+    queryKey: ['validacion_pagos', filter, dialect],
+    enabled: dialect !== undefined,
+    refetchInterval: 30_000,
+    queryFn: async (): Promise<ValidacionItem[]> => {
+      // Tenants con verificaciones propias (ZM): el pago vive en appointment_verifications.
+      if (dialect === 'zm') {
+        const statusByFilter = {
+          pending: 'payment_submitted',
+          approved: 'approved',
+          rejected: 'rejected',
+        } as const
+        let q = supabase
+          .from('appointment_verifications')
+          .select(
+            'id, client_name, service_name, appointment_date, amount_deposit, amount_total, kind, approved_at, rejected_at'
+          )
+          .eq('status', statusByFilter[filter])
+          .order('created_at', { ascending: false })
+          .limit(HISTORY_LIMIT)
+        if (filter !== 'pending') q = q.gte('created_at', historySince())
+        const { data, error } = await q
+        if (error) throw new Error(error.message)
+        return ((data ?? []) as ZmVerificationRow[]).map((v) => ({
+          id: v.id,
+          client_name: v.client_name,
+          date: v.appointment_date,
+          price: Number(v.kind === 'post_service_payment' ? v.amount_total : v.amount_deposit) || 0,
+          serviceName: v.service_name || '—',
+          status: filter,
+          resolvedAt: v.approved_at ?? v.rejected_at,
+          // La aprobación de estos pagos también avisa a la clienta por WhatsApp y se hace desde el otro flujo.
+          readOnly: true,
+        }))
+      }
+
+      if (filter === 'pending') {
+        const { data, error } = await supabase
+          .from('appointments')
+          .select('id, client_name, date, price, service_id, employee_id')
+          .eq('status', 'payment_submitted')
+          .order('date', { ascending: true })
+        if (error) throw new Error(error.message)
+        return ((data ?? []) as AppointmentRow[]).map((a) => enrich(a, 'pending', null, false))
+      }
+
+      const { data: verifs, error: vErr } = await supabase
+        .from('appointment_verifications')
+        .select('appointment_id, verified_at')
+        .eq('action', filter)
+        .gte('verified_at', historySince())
+        .order('verified_at', { ascending: false })
+        .limit(HISTORY_LIMIT)
+      if (vErr) throw new Error(vErr.message)
+      const rows = verifs ?? []
+      if (rows.length === 0) return []
+      const { data: apts, error: aErr } = await supabase
+        .from('appointments')
+        .select('id, client_name, date, price, service_id, employee_id')
+        .in(
+          'id',
+          rows.map((r) => r.appointment_id)
+        )
+      if (aErr) throw new Error(aErr.message)
+      const aptById = new Map(((apts ?? []) as AppointmentRow[]).map((a) => [a.id, a]))
+      return rows.flatMap((r) => {
+        const apt = aptById.get(r.appointment_id)
+        return apt ? [enrich(apt, filter, r.verified_at, true)] : []
+      })
+    },
+  })
+
+  const pendingQ = useQuery(listQuery('pending'))
+  const approvedQ = useQuery(listQuery('approved'))
+  const rejectedQ = useQuery(listQuery('rejected'))
+
+  const byFilter = {
+    pending: pendingQ,
+    approved: approvedQ,
+    rejected: rejectedQ,
+  }
 
   // Mutación: aprobar o rechazar una cita — per-row
   const verifyMutation = useMutation({
@@ -64,7 +170,6 @@ export function useValidacionData() {
       appointmentId: string
       action: VerificationAction
     }) => {
-      // 1. Registrar en appointment_verifications
       const { error: verifyError } = await supabase.from('appointment_verifications').insert({
         appointment_id: appointmentId,
         verified_by: userId!,
@@ -72,7 +177,6 @@ export function useValidacionData() {
       })
       if (verifyError) throw new Error(verifyError.message)
 
-      // 2. Actualizar status en appointments
       const newStatus = action === 'approved' ? 'completed' : 'cancelled'
       const { error: updateError } = await supabase
         .from('appointments')
@@ -81,20 +185,21 @@ export function useValidacionData() {
       if (updateError) throw new Error(updateError.message)
     },
     onSuccess: () => {
-      // Invalida badges Y la lista de pendientes
-      queryClient.invalidateQueries({ queryKey: ['validacion_pagos_pending'] })
-      queryClient.invalidateQueries({
-        queryKey: ['badges', 'payment_submitted'],
-      })
+      queryClient.invalidateQueries({ queryKey: ['validacion_pagos'] })
+      queryClient.invalidateQueries({ queryKey: ['badges', 'payment_submitted'] })
       queryClient.invalidateQueries({ queryKey: ['appointments'] })
     },
   })
 
   return {
-    pending,
-    isLoading,
-    isError,
-    refetch,
+    byFilter,
+    counts: {
+      pending: pendingQ.data?.length ?? 0,
+      approved: approvedQ.data?.length ?? 0,
+      rejected: rejectedQ.data?.length ?? 0,
+    },
+    historyDays: HISTORY_DAYS,
+    refetchAll: () => Promise.all([pendingQ.refetch(), approvedQ.refetch(), rejectedQ.refetch()]),
     verifyMutation,
     config,
   }
