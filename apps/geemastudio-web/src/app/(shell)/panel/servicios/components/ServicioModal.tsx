@@ -2,6 +2,11 @@
 
 import { useMemo, useState } from 'react'
 import { X } from 'lucide-react'
+import { CATEGORY_ICON_LABELS, getCategoryIconGroups, getDefaultCategoryIcon } from '@zmtech/icons'
+
+import { CategoryIcon } from '@/components/CategoryIcon'
+import { useTenantSettings } from '@/hooks/configuracion/useTenantSettings'
+import { useServiciosIconSupport } from '@/hooks/servicios/useServicios'
 
 import type { CategoriaRow } from '@/hooks/servicios/useCategorias'
 import type { ServicioRow } from '@/hooks/servicios/useServicios'
@@ -28,6 +33,7 @@ export function ServicioModal({
     price: string
     duration: number
     is_active: boolean
+    icon?: string | null
   }) => void
 }) {
   if (!open) return null
@@ -65,6 +71,7 @@ function ServicioModalForm({
     price: string
     duration: number
     is_active: boolean
+    icon?: string | null
   }) => void
 }) {
   const title = initial ? 'Editar servicio' : 'Nuevo servicio'
@@ -76,6 +83,17 @@ function ServicioModalForm({
   const [price, setPrice] = useState(initial?.price ?? '')
   const [duration, setDuration] = useState(initial?.duration ?? 60)
   const [isActive, setIsActive] = useState(initial?.is_active ?? true)
+  const [icon, setIcon] = useState<string | null>(initial?.icon ?? null)
+  const { data: settings } = useTenantSettings()
+  const { data: supportsIcons = false } = useServiciosIconSupport()
+  const iconGroups = useMemo(
+    () => getCategoryIconGroups(settings?.business_type),
+    [settings?.business_type]
+  )
+  const inheritedIcon =
+    categorias.find((c) => c.id === categoryId)?.icon ??
+    getDefaultCategoryIcon(settings?.business_type)
+  const currentIcon = icon ?? inheritedIcon
 
   const canSubmit = useMemo(() => {
     if (!name.trim()) return false
@@ -154,6 +172,61 @@ function ServicioModalForm({
             </div>
           </div>
 
+          {supportsIcons && (
+            <div>
+              <div className="mb-1.5 flex items-center justify-between">
+                <label className="text-sm font-medium text-zinc-300">Ícono</label>
+                {icon && (
+                  <button
+                    type="button"
+                    onClick={() => setIcon(null)}
+                    className="text-xs font-semibold text-[var(--tenant-primary)] hover:underline"
+                  >
+                    Usar el de la categoría
+                  </button>
+                )}
+              </div>
+              <div className="max-h-44 space-y-3 overflow-y-auto pr-1">
+                {[
+                  { title: 'Sugeridos para tu negocio', keys: iconGroups.suggested },
+                  { title: 'Otros', keys: iconGroups.others },
+                ].map((group) =>
+                  group.keys.length === 0 ? null : (
+                    <div key={group.title}>
+                      <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
+                        {group.title}
+                      </div>
+                      <div className="grid grid-cols-6 gap-2 sm:grid-cols-8">
+                        {group.keys.map((key) => {
+                          const label = CATEGORY_ICON_LABELS[key]
+                          const active = currentIcon === key
+                          return (
+                            <button
+                              key={key}
+                              type="button"
+                              onClick={() => setIcon(key)}
+                              title={label}
+                              aria-label={label}
+                              aria-pressed={active}
+                              className={[
+                                'flex h-10 items-center justify-center rounded-xl border transition-colors',
+                                active
+                                  ? 'border-[var(--tenant-primary)] bg-[var(--tenant-primary)]/15 text-white'
+                                  : 'border-white/[0.10] bg-zinc-800 text-zinc-300 hover:bg-white/[0.06]',
+                              ].join(' ')}
+                            >
+                              <CategoryIcon name={key} className="h-5 w-5" />
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )
+                )}
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <label className="mb-1.5 block text-sm font-medium text-zinc-300">
@@ -208,6 +281,7 @@ function ServicioModalForm({
                 price: String(price),
                 duration,
                 is_active: isActive,
+                ...(supportsIcons && { icon }),
               })
             }
             className="rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[var(--tenant-primary-hover)] disabled:opacity-60"

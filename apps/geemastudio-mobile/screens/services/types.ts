@@ -15,6 +15,8 @@ export interface Service {
   duration: number
   is_active: boolean
   sort_order: number | null
+  /** Clave de @zmtech/icons; null = hereda el ícono de la categoría. */
+  icon?: string | null
 }
 
 export interface Pack {

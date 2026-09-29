@@ -144,6 +144,7 @@ export const ServiceCard = React.memo(ServiceCardImpl, (prev, next) => {
     a.is_active === b.is_active &&
     a.sort_order === b.sort_order &&
     a.category_id === b.category_id &&
+    a.icon === b.icon &&
     prev.categoryColor === next.categoryColor &&
     prev.categoryIcon === next.categoryIcon &&
     prev.isToggling === next.isToggling &&

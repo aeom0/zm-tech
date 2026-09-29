@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
+import { isMissingColumnError } from './catalogAdapter'
 
 export interface ServicioRow {
   id: string
@@ -10,6 +11,23 @@ export interface ServicioRow {
   price: string
   duration: number
   is_active: boolean
+  /** Clave de @zmtech/icons; null/ausente = hereda el ícono de la categoría. */
+  icon?: string | null
+}
+
+/** true si la BD ya tiene `services.icon` (migración 20260929120000). */
+export function useServiciosIconSupport() {
+  return useQuery({
+    queryKey: ['web_servicios_icon_support'],
+    staleTime: Infinity,
+    queryFn: async () => {
+      if (!supabase) return false
+      const { error } = await supabase.from('services').select('icon').limit(1)
+      if (!error) return true
+      if (isMissingColumnError(error)) return false
+      throw error
+    },
+  })
 }
 
 export function useServicios(categoryId?: string) {
@@ -22,16 +40,19 @@ export function useServicios(categoryId?: string) {
         )
       }
 
-      let q = supabase
-        .from('services')
-        .select('id, name, category_id, price, duration, is_active')
-        .order('name', { ascending: true })
+      const base = 'id, name, category_id, price, duration, is_active'
+      const run = (cols: string) => {
+        let q = supabase!.from('services').select(cols).order('name', { ascending: true })
+        if (categoryId) q = q.eq('category_id', categoryId)
+        return q
+      }
 
-      if (categoryId) q = q.eq('category_id', categoryId)
-
-      const { data, error } = await q
-      if (error) throw error
-      return data as ServicioRow[]
+      let res = await run(`${base}, icon`)
+      if (res.error && isMissingColumnError(res.error)) {
+        res = await run(base)
+      }
+      if (res.error) throw res.error
+      return (res.data ?? []) as unknown as ServicioRow[]
     },
   })
 }
@@ -47,6 +68,7 @@ export function useUpsertServicio() {
         price: string
         duration: number
         is_active?: boolean
+        icon?: string | null
       }
     ) => {
       if (!supabase) throw new Error('Supabase no está configurado')
@@ -58,6 +80,7 @@ export function useUpsertServicio() {
         price: normalizedPrice,
         duration: svc.duration,
         is_active: svc.is_active ?? true,
+        ...(svc.icon !== undefined && { icon: svc.icon }),
       }
 
       if (svc.id) {

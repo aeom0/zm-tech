@@ -3,6 +3,7 @@
 import { Pencil, Plus, Trash2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
+import { CategoryIcon } from '@/components/CategoryIcon'
 import type { CategoriaRow } from '@/hooks/servicios/useCategorias'
 import type { ServicioRow } from '@/hooks/servicios/useServicios'
 import { useDeleteServicio, useServicios, useToggleServicio } from '@/hooks/servicios/useServicios'
@@ -165,7 +166,13 @@ export function ServiciosTab({
                       className="border-b border-white/[0.06] transition-colors last:border-0 hover:bg-white/[0.03]"
                     >
                       <td className="px-4 py-3">
-                        <div className="font-semibold text-white">{s.name}</div>
+                        <div className="flex items-center gap-2 font-semibold text-white">
+                          <CategoryIcon
+                            name={s.icon ?? cat?.icon}
+                            className="h-4 w-4 shrink-0 text-zinc-400"
+                          />
+                          {s.name}
+                        </div>
                       </td>
                       <td className="px-4 py-3">
                         {cat ? (
@@ -233,7 +240,13 @@ export function ServiciosTab({
                 <div key={s.id} className="rounded-2xl border border-white/[0.08] bg-zinc-900 p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
-                      <div className="text-sm font-semibold text-white">{s.name}</div>
+                      <div className="flex items-center gap-2 text-sm font-semibold text-white">
+                        <CategoryIcon
+                          name={s.icon ?? cat?.icon}
+                          className="h-4 w-4 shrink-0 text-zinc-400"
+                        />
+                        {s.name}
+                      </div>
                       <div className="mt-1 flex items-center gap-2 text-xs text-zinc-400">
                         {cat ? (
                           <span className="inline-flex items-center gap-1.5">

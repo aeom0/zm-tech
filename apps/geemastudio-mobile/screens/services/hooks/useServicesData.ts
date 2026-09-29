@@ -13,6 +13,8 @@ export interface ServicePayload {
   price: string
   duration: number
   is_active: boolean
+  /** undefined = no tocar la columna (BD sin `services.icon`). */
+  icon?: string | null
 }
 
 export function useServicesData() {
@@ -27,15 +29,21 @@ export function useServicesData() {
   } = useQuery<Service[]>({
     queryKey: ['services'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('services')
-        .select('id, name, category_id, price, duration, is_active, sort_order')
-        .order('sort_order', { ascending: true, nullsFirst: false })
-        .order('created_at', { ascending: true })
-      if (error) {
-        throw new Error(error.message)
+      const base = 'id, name, category_id, price, duration, is_active, sort_order'
+      const run = (cols: string) =>
+        supabase
+          .from('services')
+          .select(cols)
+          .order('sort_order', { ascending: true, nullsFirst: false })
+          .order('created_at', { ascending: true })
+      let res = await run(`${base}, icon`)
+      if (res.error && isMissingColumnError(res.error)) {
+        res = await run(base)
       }
-      return sortCatalogList((data ?? []) as Service[], {
+      if (res.error) {
+        throw new Error(res.error.message)
+      }
+      return sortCatalogList((res.data ?? []) as unknown as Service[], {
         getActive: (s) => s.is_active,
         getOrder: (s) => s.sort_order,
         getName: (s) => s.name,
@@ -113,6 +121,7 @@ export function useServicesData() {
         price: priceToDecimalString(parsePriceInput(payload.price)),
         duration: payload.duration,
         is_active: payload.is_active,
+        ...(payload.icon !== undefined && { icon: payload.icon }),
       })
       if (error) {
         throw new Error(error.message)
@@ -136,6 +145,7 @@ export function useServicesData() {
           price: priceToDecimalString(parsePriceInput(payload.price)),
           duration: payload.duration,
           is_active: payload.is_active,
+          ...(payload.icon !== undefined && { icon: payload.icon }),
         })
         .eq('id', id)
       if (error) {
@@ -221,6 +231,21 @@ export function useServicesData() {
     staleTime: Infinity,
   })
   const supportsCategoryIcons = catalogDialect !== 'zm'
+
+  const { data: supportsServiceIcons = false } = useQuery({
+    queryKey: ['services-icon-support'],
+    queryFn: async () => {
+      const { error } = await supabase.from('services').select('icon').limit(1)
+      if (!error) {
+        return true
+      }
+      if (isMissingColumnError(error)) {
+        return false
+      }
+      throw new Error(error.message)
+    },
+    staleTime: Infinity,
+  })
 
   const updateCategoryIconMutation = useMutation({
     mutationFn: async ({ id, icon }: { id: string; icon: string }) => {
@@ -316,6 +341,7 @@ export function useServicesData() {
     updateCategoryMutation,
     updateCategoryIconMutation,
     supportsCategoryIcons,
+    supportsServiceIcons,
     deleteCategoryMutation,
     reorderCategoriesMutation,
     reorderServicesMutation,

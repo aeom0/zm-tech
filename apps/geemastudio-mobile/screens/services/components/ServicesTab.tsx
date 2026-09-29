@@ -31,7 +31,7 @@ import { CategoriesManageModal } from './CategoriesManageModal'
 import { ReorderServicesModal } from './ReorderServicesModal'
 
 function servicesSignature(list: ServiceRow[]): string {
-  return list.map((s) => `${s.id}:${s.sort_order}:${s.is_active}:${s.price}:${s.name}`).join('|')
+  return list.map((s) => `${s.id}:${s.sort_order}:${s.is_active}:${s.price}:${s.name}:${s.icon ?? ''}`).join('|')
 }
 
 export function ServicesTab() {
@@ -55,6 +55,7 @@ export function ServicesTab() {
     updateCategoryMutation,
     updateCategoryIconMutation,
     supportsCategoryIcons,
+    supportsServiceIcons,
     deleteCategoryMutation,
     reorderCategoriesMutation,
     reorderServicesMutation,
@@ -438,7 +439,7 @@ export function ServicesTab() {
                       key={svc.id}
                       service={svc}
                       categoryColor={category.color}
-                      categoryIcon={category.icon}
+                      categoryIcon={svc.icon ?? category.icon}
                       onPress={() => openEdit(svc)}
                       onLongPress={() => handleDelete(svc)}
                       onToggleActive={() => handleToggle(svc)}
@@ -465,6 +466,7 @@ export function ServicesTab() {
         onClose={closeModal}
         editing={editing}
         categories={categories}
+        supportsIcons={supportsServiceIcons}
         onSave={handleSave}
         savePending={savePending}
         onDelete={handleDelete}

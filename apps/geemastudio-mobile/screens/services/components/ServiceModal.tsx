@@ -20,6 +20,9 @@ import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { BorderRadius, Spacing, Colors } from '@/constants/theme'
 
+import { CategoryIcon } from '@/components/CategoryIcon'
+import { CATEGORY_ICON_LABELS, getCategoryIconGroups, getDefaultCategoryIcon } from '@zmtech/icons'
+
 import type { Service, ServiceCategory } from '../types'
 import type { ServicePayload } from '../hooks/useServicesData'
 
@@ -28,6 +31,7 @@ interface ServiceModalProps {
   onClose: () => void
   editing: Service | null
   categories: ServiceCategory[]
+  supportsIcons: boolean
   onSave: (payload: ServicePayload) => void
   savePending: boolean
   onDelete: (s: Service) => void
@@ -39,6 +43,7 @@ export function ServiceModal({
   onClose,
   editing,
   categories,
+  supportsIcons,
   onSave,
   savePending,
   onDelete,
@@ -52,6 +57,7 @@ export function ServiceModal({
   const [price, setPrice] = useState('')
   const [duration, setDuration] = useState('60')
   const [isActive, setIsActive] = useState(true)
+  const [icon, setIcon] = useState<string | null>(null)
 
   useResetOnChange([visible, editing, categories], () => {
     if (!visible) {
@@ -63,12 +69,14 @@ export function ServiceModal({
       setPrice(editing.price)
       setDuration(String(editing.duration))
       setIsActive(editing.is_active)
+      setIcon(editing.icon ?? null)
     } else {
       setName('')
       setCategoryId(categories[0]?.id ?? '')
       setPrice('')
       setDuration('60')
       setIsActive(true)
+      setIcon(null)
     }
   })
 
@@ -88,11 +96,20 @@ export function ServiceModal({
       price,
       duration: dur,
       is_active: isActive,
+      ...(supportsIcons && { icon }),
     }
     onSave(payload)
   }
 
   const pending = savePending
+  const selectedCategory = categories.find((c) => c.id === categoryId)
+  const inheritedIcon = selectedCategory?.icon ?? getDefaultCategoryIcon(config.businessType)
+  const currentIcon = icon ?? inheritedIcon
+  const iconGroups = getCategoryIconGroups(config.businessType)
+  const iconSections = [
+    { title: 'Sugeridos para tu negocio', icons: iconGroups.suggested },
+    { title: 'Otros', icons: iconGroups.others },
+  ].filter((section) => section.icons.length > 0)
 
   return (
     <Modal visible={visible} animationType="slide" transparent>
@@ -159,6 +176,62 @@ export function ServiceModal({
                 )
               })}
             </ScrollFadeRow>
+
+            {supportsIcons && (
+              <>
+                <View style={styles.iconLabelRow}>
+                  <ThemedText style={[styles.label, styles.iconLabel, { color: theme.textSecondary }]}>
+                    Ícono
+                  </ThemedText>
+                  {icon && (
+                    <Pressable onPress={() => setIcon(null)} hitSlop={8}>
+                      <ThemedText style={{ color: theme.primary, fontSize: 13 }}>
+                        Usar el de la categoría
+                      </ThemedText>
+                    </Pressable>
+                  )}
+                </View>
+                {iconSections.map((section) => (
+                  <View key={section.title} style={styles.iconSection}>
+                    <ThemedText style={[styles.iconSectionTitle, { color: theme.textMuted }]}>
+                      {section.title}
+                    </ThemedText>
+                    <ScrollView
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={styles.iconPickerContent}
+                      keyboardShouldPersistTaps="handled"
+                    >
+                      {section.icons.map((name) => {
+                        const selected = currentIcon === name
+                        return (
+                          <Pressable
+                            key={name}
+                            style={[
+                              styles.iconOption,
+                              {
+                                backgroundColor: selected
+                                  ? theme.primary + '22'
+                                  : theme.backgroundSecondary,
+                                borderColor: selected ? theme.primary : theme.border,
+                              },
+                            ]}
+                            onPress={() => setIcon(name)}
+                            accessibilityLabel={CATEGORY_ICON_LABELS[name]}
+                          >
+                            <CategoryIcon
+                              name={name}
+                              size={18}
+                              color={selected ? theme.primary : theme.textMuted}
+                            />
+                          </Pressable>
+                        )
+                      })}
+                    </ScrollView>
+                  </View>
+                ))}
+              </>
+            )}
 
             <View style={styles.row}>
               <View style={styles.half}>
@@ -298,6 +371,34 @@ const styles = StyleSheet.create({
   chipText: {
     fontSize: 14,
     fontWeight: '500',
+  },
+  iconLabelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  iconLabel: {
+    marginBottom: Spacing.sm,
+  },
+  iconSection: {
+    marginBottom: Spacing.sm,
+  },
+  iconSectionTitle: {
+    fontSize: 11,
+    fontWeight: '600',
+    marginBottom: 6,
+  },
+  iconPickerContent: {
+    gap: 8,
+    paddingRight: Spacing.lg,
+  },
+  iconOption: {
+    width: 40,
+    height: 40,
+    borderRadius: BorderRadius.sm,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   row: {
     flexDirection: 'row',
