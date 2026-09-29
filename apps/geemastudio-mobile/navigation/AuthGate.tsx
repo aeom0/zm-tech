@@ -1,3 +1,4 @@
+import { useResetOnChange } from '@/hooks/useResetOnChange'
 import React, { useCallback, useEffect, useState } from 'react'
 import { ActivityIndicator, Pressable, View, StyleSheet } from 'react-native'
 import * as SplashScreenExpo from 'expo-splash-screen'
@@ -60,11 +61,9 @@ export default function AuthGate() {
   const otaVisible = useOtaUpdateUiSelector((s) => s.visible)
 
   // Al cerrar sesión, la próxima entrada vuelve a mostrar la splash de marca
-  useEffect(() => {
-    if (!isAuthenticated) {
-      setBrandSplashDone(false)
-    }
-  }, [isAuthenticated])
+  useResetOnChange([isAuthenticated], () => {
+    if (!isAuthenticated) setBrandSplashDone(false)
+  })
 
   // Ocultar splash nativa cuando el tenant termina de cargar y el chequeo OTA terminó
   useEffect(() => {
@@ -76,14 +75,15 @@ export default function AuthGate() {
   // Tras un login "ya tengo cuenta" exitoso, si tras 10s el tenant remoto
   // sigue sin hidratar (sin red, o cuenta sin tenant_settings), salimos del
   // spinner infinito y ofrecemos reintentar/cerrar sesión.
+  const esperandoTenant = entryChoice === 'existing' && isAuthenticated && !isConfigured
+  useResetOnChange([esperandoTenant], () => {
+    if (!esperandoTenant) setTenantHydrationStuck(false)
+  })
   useEffect(() => {
-    if (entryChoice !== 'existing' || !isAuthenticated || isConfigured) {
-      setTenantHydrationStuck(false)
-      return
-    }
+    if (!esperandoTenant) return
     const timer = setTimeout(() => setTenantHydrationStuck(true), 10000)
     return () => clearTimeout(timer)
-  }, [entryChoice, isAuthenticated, isConfigured])
+  }, [esperandoTenant])
 
   // Mientras AsyncStorage carga, la splash nativa cubre la pantalla
   if (tenantLoading || !otaListo) return null
