@@ -65,7 +65,7 @@ async function resolveCategoryId(
   serviceIds: string[]
 ): Promise<string> {
   if (serviceIds.length === 0) {
-    throw new Error('Elegí al menos un servicio para el pack (en ZM hace falta category_id).')
+    throw new Error('Elige al menos un servicio para el pack (en ZM hace falta category_id).')
   }
   const { data, error } = await sb
     .from('services')

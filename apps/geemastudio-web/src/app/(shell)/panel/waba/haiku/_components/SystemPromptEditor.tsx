@@ -60,7 +60,7 @@ export function SystemPromptEditor({
             </span>
           </div>
           <p className="mt-1 text-sm text-zinc-400">
-            Definí tono, límites y cómo debe guiar a agendar. No hardcodees datos de un solo salón
+            Define tono, límites y cómo debe guiar a agendar. No hardcodees datos de un solo salón
             si el tenant es multi-marca.
           </p>
         </div>

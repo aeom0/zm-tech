@@ -81,7 +81,7 @@ export function HaikuTestPanel({ systemPrompt, settings }: { systemPrompt: strin
         <div>
           <h2 className="text-base font-bold text-white">Test de personalidad</h2>
           <p className="mt-1 text-sm text-zinc-400">
-            Probá el system prompt en edición (sin guardar) contra un mensaje de ejemplo.
+            Prueba el system prompt en edición (sin guardar) contra un mensaje de ejemplo.
           </p>
         </div>
       </div>
