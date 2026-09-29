@@ -50,5 +50,5 @@ CLI `supabase functions download` en esta versión de CLI **no** acepta `--outpu
 ## Siguiente
 
 - **Push FCM Geema** — Plan 12 Fase X / PR-09: **P0 + P8 + P9 + P10 + P18–P20 ✅** (smoke físico 23-sep: waba_chat diseño/error + appointment_reference→Agenda; ajustes de assets en curso). Checklist en `12-PLAN-panel-parity-zm-lash.md`.
-- Track B: S4 crons/RPCs ✅ (PR #151). S5-1 ✅ (PR #154) y S5-4 ✅ (PR #155). Antes del 2.º tenant: smoke del flag de routing, S5-2/S5-3/S5-5, S6, loop Meta Ads en S7.
+- Track B: S4 crons/RPCs ✅ (PR #151). S5-1 a S5-4 ✅ (PR #154, #155, #156). Antes del 2.º tenant: smoke del flag de routing, S5-5 (panel), S6, loop Meta Ads en S7.
 - Si se toca bot retail: rama+PR en ZM, QA, deploy; sin redeploy “a ciegas” desde Geema.

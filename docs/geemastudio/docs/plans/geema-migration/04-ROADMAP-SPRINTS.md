@@ -13,7 +13,7 @@
 | **S2** | Modelo tenant unificado | Bridge `tenants` ↔ `tenant_settings` + Drizzle | S1 |
 | **S3** | WABA runtime multi-tenant | Routing + thread `tenantId` en webhook ZM | S1, S2 |
 | **S4** | Crons + RPCs tenant-aware | 14 Edge + 4 RPCs; loop Meta Ads en S7 | S3 |
-| **S5** | Suite L3 — reglas externalizadas | S5-1 y S5-4 ✅; S5-2/3/5 pendientes | S3 |
+| **S5** | Suite L3 — reglas externalizadas | S5-1 a S5-4 ✅; S5-5 pendiente | S3 |
 | **S5-B** | Branding tenant mobile | Logo Storage + `TenantLogo` + `createTheme` completo | S2 |
 | **S5-C** | Paridad mobile ZM (shadow) | Packs/promos + Lima + chicas ✅; resto P1 | S2 |
 | **S6** | Suite L4 + panel Geema | Presets vertical + `/panel/waba/*` port | S5 |
@@ -202,8 +202,8 @@ y sin activar: se prende en S7, cuando un 2.º tenant tenga cuenta Ads propia.
 | ID | Tarea | Repo | Esfuerzo |
 |----|-------|------|----------|
 | S5-1 | Definir `TenantWabaRules` + storage JSONB | ZM schema + Edge | M ✅ PR #154 |
-| S5-2 | Migrar `EMPLOYEE_CATEGORIES`, horarios, pagos ZM a seed config | ZM | M |
-| S5-3 | Capacidad genérica (sin UUIDs hardcode) | ZM Edge | M |
+| S5-2 | Migrar `EMPLOYEE_CATEGORIES`, horarios, pagos ZM a seed config | ZM | M ✅ PR #156 (`ADMIN_PHONE`/feriados fuera) |
+| S5-3 | Capacidad genérica (sin UUIDs hardcode) | ZM Edge | M ✅ (PR #156, con S5-2) |
 | S5-4 | `peru-holidays` → leer `salon_holidays` tenant primero | ZM Edge | S ✅ PR #155 |
 | S5-5 | Panel editar reglas básicas (horarios, depósito, staff↔cat) | ZM web o Geema web | M |
 
@@ -211,9 +211,11 @@ y sin activar: se prende en S7, cuando un 2.º tenant tenga cuenta Ads propia.
 - [ ] ZM prod comportamiento idéntico pre/post (suites QA verdes)
 - [ ] Segundo tenant puede definir horarios/capacidad distintos sin deploy
 
-**Parcial (28-sep-2026).** El sprint no está cerrado: S5-2, S5-3 y S5-5 siguen abiertos, y el DoD de arriba también.
+**Parcial (28-sep-2026).** S5-1 a S5-4 están en el webhook. S5-5 (panel para editar las reglas) sigue abierto, y el DoD de arriba también: falta ver un segundo tenant en prod.
 
-- **S5-1 ✅ PR #154.** Columna `tenant_settings.waba_rules`, tipo `TenantWabaRules` y `getTenantWabaRules()` (si no hay fila, `DEFAULT_ZM_WABA_RULES`). Seed de `zm-lash-nails` aplicado. Migración `20260929013934_add_waba_rules_to_tenant_settings`. Ningún handler lee el JSON todavía. La capacidad se modela por categoría y servicio (`specialCategoryIds`, `extensionesKarelisServiceIds`, `unassignedCapServiceIds`, `mealBreak`), no por `employeeId`.
+- **S5-1 ✅ PR #154.** Columna `tenant_settings.waba_rules`, tipo `TenantWabaRules` y `getTenantWabaRules()` (si no hay fila, `DEFAULT_ZM_WABA_RULES`). Seed de `zm-lash-nails` aplicado. Migración `20260929013934_add_waba_rules_to_tenant_settings`. La capacidad se modela por categoría y servicio, no por `employeeId`.
+- **S5-2 ✅ PR #156.** Horarios, staff por categoría, medios de pago, tasa de domingo y monto fijo salen de `waba_rules`. Cache 5 min por tenant. Sin carga, ZM usa el hardcode. Fuera: `ADMIN_PHONE`, `YAPE_PLIN_NUMBER` y el horario de feriados.
+- **S5-3 ✅ PR #156.** Topes, categorías y servicios especiales, carril Karelis, servicios sin carril, hora de tarde y almuerzo salen de `waba_rules.capacity`. El reparto `stephani`/`karelis` sigue siendo el modelo de ZM.
 - **S5-4 ✅ PR #155.** `ensureSalonHolidaysLoaded` filtra por `tenant_id` y cachea por tenant. ZM sin filas usa el seed; otro tenant queda sin feriados. El copy del CC Las Plazuelas solo aplica a ZM. Drizzle alineado a `salon_holidays_tenant_date_unique` (el índice ya estaba en prod; no hubo DDL nuevo).
 
 ---
