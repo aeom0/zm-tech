@@ -1,7 +1,7 @@
 # 07 — Paridad mobile Geema ↔ ZM (shadow test)
 
 **Fecha:** 2026-08-30  
-**Estado:** En curso — **S5C-1 / S5C-2 / S5C-3 / S5C-11 ✅** (PR [zm-tech #30](https://github.com/aeom0/zm-tech/pull/30)); resto P1/P2 pendiente  
+**Estado:** DoD shadow-baseline cerrado (28-sep-2026). **S5C-1/2/3/4/5/6/8/9/11/12 ✅**; único P1/P2 pendiente real: `PricingBreakdownCard`/costos WABA de S5C-7 (28-sep-2026: corrige regresión de sync del 19-sep que había revertido S5C-4/5/6/8/9 a "Pendiente" en este doc sin que el código hubiera retrocedido — ver commits `4cca05a8`, `bd8b74ba`, `4274624b` en zm-tech)  
 **Repos:** `zm-tech` (`geemastudio-mobile`), referencia `ZM-Lash-and-Nails-Beauty/apps/mobile`  
 **BD:** `udelxwwnyivknslueerr` — tenant #1 `zm-lash-nails`  
 **Código:** rama `cursor/s5c-catalog-adapter-zm` — ZM app legacy **sin cambio**
@@ -79,11 +79,11 @@ Geema usa grid día/semana + columnas staff; ZM usa grid 10–18 h Lima con medi
 | Entrada UI | **Más → Finanzas** | **Más → Finanzas** |
 | CRUD `payments` | ✅ | ✅ |
 | Desglose por chica | ✅ | ✅ |
-| Panel ejecutivo (KPIs, gráfico) | ❌ | ✅ |
-| Gastos operativos | ❌ | ✅ |
-| Costos WABA / Meta | ❌ → S5C-7 | ✅ (`waba_pricing_daily` + `waba_template_analytics_daily` Fase 5) |
-| Uso IA | ❌ | ✅ |
-| Pago en detalle cita (agenda) | ❌ | ✅ |
+| Panel ejecutivo (KPIs, gráfico) | ✅ PR #33 (S5C-7) | ✅ |
+| Gastos operativos | ✅ PR #33 (S5C-7) | ✅ |
+| Costos WABA / Meta | ❌ — pendiente real de S5C-7 | ✅ (`waba_pricing_daily` + `waba_template_analytics_daily` Fase 5) |
+| Uso IA | ✅ PR #33 (S5C-7) | ✅ |
+| Pago en detalle cita (agenda) | ✅ | ✅ |
 
 ### Personal / chicas vs agenda
 
@@ -195,12 +195,12 @@ Convergencia corta: Drizzle Geema → **superset tipado de prod**; adaptadores m
 | S5C-2 | Adaptador `usePromosData` + `usePromotionItems` (total desde ítems) | zm-tech | M | P0 | ✅ PR #30 |
 | S5C-3 | Validar `tenant_settings` ZM: timezone `America/Lima`, horarios | zm-tech + BD | S | P0 | ✅ PR #30 |
 | S5C-11 | Adaptador `employees` (sin `payment_mode`/`salary_amount` ZM; `avatar_url` sumado 30-ago) + cache única con agenda | zm-tech | S | P0 | ✅ PR #30 |
-| S5C-4 | Agenda: cargar `appointment_services` + multi-servicio en detalle | zm-tech | L | P1 | En curso (PR #31; schema prod ya listo) |
-| S5C-5 | Portar referencias diseño + badge agenda (WABA) | zm-tech | L | P1 | Pendiente |
-| S5C-6 | Portar `HolidayScreen` + reglas feriado/dom | zm-tech | M | P1 | Pendiente |
-| S5C-7 | Finanzas: panel ejecutivo + `PricingBreakdownCard` (WABA) + drill-down `waba_template_analytics_daily` (Fase 5) | zm-tech | L | P1 | Pendiente (backend ZM ✅ sep-2026) |
-| S5C-8 | Dashboard: ranking top servicios + alertas feriado | zm-tech | S | P2 | Pendiente |
-| S5C-9 | Documentar en UI dónde está Finanzas (onboarding admin) | zm-tech | S | P2 | Pendiente |
+| S5C-4 | Agenda: cargar `appointment_services` + multi-servicio en detalle | zm-tech | L | P1 | ✅ PR #31 (5-sep) + fixes badge (19-sep) |
+| S5C-5 | Portar referencias diseño + badge agenda (WABA) | zm-tech | L | P1 | ✅ PR #31 (5-sep) + fixes posición/recorte badge (19-sep) |
+| S5C-6 | Portar `HolidayScreen` + reglas feriado/dom | zm-tech | M | P1 | ✅ `FeriadosScreen` + `useSalonHolidaysAdmin` + `HolidayAlertBanner` (Agenda/Dashboard); UX borrar + chip "Pasado" (5-sep, FAB 20-sep) |
+| S5C-7 | Finanzas: panel ejecutivo + `PricingBreakdownCard` (WABA) + drill-down `waba_template_analytics_daily` (Fase 5) | zm-tech | L | P1 | ✅ panel ejecutivo mobile (PR #33: KPIs, gastos, comisiones, payouts, ranking). **Pendiente real**: `PricingBreakdownCard` / costos WABA (`waba_pricing_daily` + `waba_template_analytics_daily`) — sin portar a Geema mobile |
+| S5C-8 | Dashboard: ranking top servicios + alertas feriado | zm-tech | S | P2 | ✅ `DashboardTopServicesCard` + `HolidayAlertBanner embedded` en `DashboardScreen` |
+| S5C-9 | Documentar en UI dónde está Finanzas (onboarding admin) | zm-tech | S | P2 | ✅ 10-sep (`OnboardingComplete` + quick link Dashboard + FAQ en Ayuda) |
 | S5C-10 | Tests smoke: packs/promos/agenda mismo día vs app ZM | zm-tech | S | P0 | Parcial (visual 30-ago) |
 | S5C-12 | Smoke Más → Finanzas: historial de pagos tenant ZM vs app ZM | zm-tech | S | P0 | ✅ 28-sep (device Moto G54) |
 

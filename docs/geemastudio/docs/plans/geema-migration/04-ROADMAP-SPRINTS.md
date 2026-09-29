@@ -272,12 +272,12 @@ Shadow test 29-ago (APK SDK 56, `alberto@zmlashnails.com`): core OK; packs/promo
 | S5C-2 | Adaptador promos + `promotion_items` | zm-tech | M ✅ |
 | S5C-3 | Validar `tenant_settings` timezone Lima | zm-tech + BD | S ✅ |
 | S5C-11 | Adaptador `employees` ZM + cache única con agenda | zm-tech | S ✅ |
-| S5C-4 | Agenda multi-servicio (`appointment_services`) | zm-tech | L |
-| S5C-5 | Referencias diseño WABA + badge agenda | zm-tech | L |
-| S5C-6 | Feriados + reglas domingo/feriado | zm-tech | M |
-| S5C-7 | Finanzas ejecutiva + costos WABA | zm-tech | L |
-| S5C-8 | Dashboard ranking + alertas feriado | zm-tech | S |
-| S5C-9 | UX hint Finanzas en Más | zm-tech | S |
+| S5C-4 | Agenda multi-servicio (`appointment_services`) | zm-tech | L ✅ PR #31 |
+| S5C-5 | Referencias diseño WABA + badge agenda | zm-tech | L ✅ PR #31 |
+| S5C-6 | Feriados + reglas domingo/feriado | zm-tech | M ✅ |
+| S5C-7 | Finanzas ejecutiva + costos WABA | zm-tech | L 🟡 ejecutiva ✅ PR #33; costos WABA (`PricingBreakdownCard`) pendiente |
+| S5C-8 | Dashboard ranking + alertas feriado | zm-tech | S ✅ |
+| S5C-9 | UX hint Finanzas en Más | zm-tech | S ✅ |
 | S5C-10 | Smoke packs/promos/agenda vs app ZM | zm-tech | S (parcial) |
 
 ### DoD
@@ -287,7 +287,7 @@ Shadow test 29-ago (APK SDK 56, `alberto@zmlashnails.com`): core OK; packs/promo
 - [x] Finanzas en Más lista pagos tenant (smoke explícito, 28-sep-2026 — device Moto G54, ver [07](./07-PARIDAD-MOBILE-ZM.md) § Notas de validación)
 - [x] ZM app legacy sin cambio
 
-**DoD shadow-baseline cerrado (28-sep-2026).** Quedan pendientes P1/P2 (S5C-4…S5C-9) fuera del DoD mínimo.
+**DoD shadow-baseline cerrado (28-sep-2026).** S5C-4/5/6/8/9 ya estaban ✅ en código (regresión de doc del 19-sep corregida el 28-sep — ver [07](./07-PARIDAD-MOBILE-ZM.md)). Único pendiente real: costos WABA (`PricingBreakdownCard`) de S5C-7.
 
 ---
 
@@ -349,7 +349,7 @@ Primer cliente pagando (o barbería piloto) distinto de ZM.
 | Look Preview multi-servicio (Plan 07 ZM → port) | **Post-MVP ZM** — ver `docs/plans/07-PLAN-look-preview-multi-servicio.md` (espejo en geemastudio/docs/plans); sugerencia ticket **S6-LP** tras Fase B Culqi |
 | Branding logo + tokens (S5-B) | **S5–S6** |
 | Expo 54 → 56 align mobile ZM/Geema | **En curso** — preview build SDK 56 ago 2026 |
-| Fase 5 drill-down `template_analytics` | Backend ZM ✅ (sep-2026); UI Geema S5C-7 |
+| Fase 5 drill-down `template_analytics` | Backend ZM ✅ (sep-2026); UI Geema pendiente (`PricingBreakdownCard`, S5C-7) |
 | Rotar `CRON_SECRET` en Vault | S4 |
 | CI diff sync Plan 05 (`S2-7`) | **S2** (ticket obligatorio, no backlog difuso) |
 
