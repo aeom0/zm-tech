@@ -39,6 +39,13 @@ function withAlpha(color: string, alpha: string): string {
   return HEX_COLOR.test(color) ? color + alpha : color
 }
 
+/** Separa el emoji inicial del texto: "✨" -> ['✨',''], "🔥 Oferta" -> ['🔥','Oferta'], "PROMO" -> ['','PROMO']. */
+function splitBadge(raw: string | null): { emoji: string; label: string } {
+  const value = (raw ?? '').trim()
+  const m = /^([^\p{L}\p{N}\s]+)\s*(.*)$/u.exec(value)
+  return m ? { emoji: m[1], label: m[2] } : { emoji: '', label: value }
+}
+
 function formatExpires(iso: string | null, config: TenantConfig): string {
   if (!iso) {
     return 'Sin vencimiento'
@@ -66,7 +73,8 @@ function PromoCardImpl({
   const raw = promo.promo_price
   const n = raw != null ? parseFloat(raw) : NaN
   const amount = Number.isFinite(n) ? n : 0
-  const badge = (promo.badge ?? '').trim() || 'PROMO'
+  const { emoji, label } = splitBadge(promo.badge)
+  const badge = label || 'PROMO'
   const rawAccent = promo.accent_color?.trim()
   const accent = rawAccent && HEX_COLOR.test(rawAccent) ? rawAccent : theme.primary
 
@@ -89,15 +97,18 @@ function PromoCardImpl({
         onPress={onPress}
         onLongPress={onLongPress}
       >
-        <View
-          style={[
-            styles.badgePill,
-            { backgroundColor: withAlpha(accent, '22'), borderColor: withAlpha(accent, '55') },
-          ]}
-        >
-          <ThemedText style={[styles.badgeText, { color: accent }]} numberOfLines={1}>
-            {badge}
-          </ThemedText>
+        <View style={styles.badgeRow}>
+          {emoji ? <ThemedText style={styles.badgeEmoji}>{emoji}</ThemedText> : null}
+          <View
+            style={[
+              styles.badgePill,
+              { backgroundColor: withAlpha(accent, '22'), borderColor: withAlpha(accent, '55') },
+            ]}
+          >
+            <ThemedText style={[styles.badgeText, { color: accent }]} numberOfLines={1}>
+              {badge}
+            </ThemedText>
+          </View>
         </View>
         <View style={styles.topRow}>
           <View style={styles.titleBlock}>
@@ -189,14 +200,22 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     gap: Spacing.md,
   },
+  badgeRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginBottom: 10,
+  },
+  badgeEmoji: {
+    fontSize: 22,
+    lineHeight: 28,
+  },
   badgePill: {
-    alignSelf: 'flex-start',
-    maxWidth: '100%',
+    flexShrink: 1,
     paddingHorizontal: 10,
     paddingVertical: Spacing.xs,
     borderRadius: BorderRadius.full,
     borderWidth: 1,
-    marginBottom: 10,
   },
   badgeText: {
     fontSize: 11,

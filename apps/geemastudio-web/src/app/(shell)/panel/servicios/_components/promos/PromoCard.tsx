@@ -7,6 +7,13 @@ import { useDeletePromo, useTogglePromoActive } from '@/hooks/servicios/usePromo
 import type { Promotion } from '../../_services/promosService'
 import { SavingIndicator } from '../shared/SavingIndicator'
 
+/** Separa el emoji inicial del texto: "🔥 Oferta" -> ['🔥','Oferta'], "PROMO" -> ['','PROMO']. */
+function splitBadge(raw: string | null): { emoji: string; label: string } {
+  const value = (raw ?? '').trim()
+  const m = /^([^\p{L}\p{N}\s]+)\s*(.*)$/u.exec(value)
+  return m ? { emoji: m[1], label: m[2] } : { emoji: '', label: value }
+}
+
 interface Props {
   promo: Promotion
   onEdit: (promo: Promotion) => void
@@ -43,6 +50,7 @@ export function PromoCard({ promo, onEdit }: Props) {
     }
   }
 
+  const { emoji, label } = splitBadge(promo.badge)
   const itemCount = promo.promotion_items?.length ?? 0
   const isExpired = promo.expires_at ? new Date(promo.expires_at) < new Date() : false
 
@@ -55,6 +63,11 @@ export function PromoCard({ promo, onEdit }: Props) {
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
+            {emoji ? (
+              <span className="text-xl leading-none" aria-hidden>
+                {emoji}
+              </span>
+            ) : null}
             <h3 className="truncate text-sm font-medium text-white">{promo.title}</h3>
 
             {promo.badge ? (
@@ -67,7 +80,7 @@ export function PromoCard({ promo, onEdit }: Props) {
                   color: promo.accent_color ?? '#fda4af',
                 }}
               >
-                {promo.badge}
+                {label || 'PROMO'}
               </span>
             ) : null}
 
