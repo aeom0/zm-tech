@@ -1,40 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  adaptive-icon-background — capa BACKGROUND Adaptive Icon
-  Canvas 108 dp → 1024 px. Full-bleed (el OEM enmascara).
-  Spec: https://developer.android.com/develop/ui/compose/system/icon_design_adaptive
+  adaptive-icon-background v4 — capa BACKGROUND Adaptive Icon.
+  Canvas 108 dp -> 1024 px. Full-bleed (el OEM enmascara).
+  Colores tomados de la referencia: índigo profundo arriba (#221F62)
+  a cian brillante (#04EFEA) abajo al centro, con flancos azul acero (#22618C).
+  Vectorial.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
   <defs>
-    <linearGradient id="canva-wash" x1="0" y1="0" x2="1024" y2="1024" gradientUnits="userSpaceOnUse">
-      <stop offset="0%"   stop-color="#40E0D0"/>
-      <stop offset="38%"  stop-color="#3D6FD8"/>
-      <stop offset="72%"  stop-color="#3949AB"/>
-      <stop offset="100%" stop-color="#5B35C5"/>
+    <linearGradient id="base" x1="0" y1="0" x2="0" y2="1024" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#221D5F"/>
+      <stop offset="55%"  stop-color="#242566"/>
+      <stop offset="100%" stop-color="#22618C"/>
     </linearGradient>
-    <radialGradient id="bloom" cx="48%" cy="46%" r="55%">
-      <stop offset="0%"   stop-color="#FFFFFF" stop-opacity="0.14"/>
-      <stop offset="45%"  stop-color="#7AD4FF" stop-opacity="0.08"/>
-      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    <radialGradient id="glow-cyan" cx="512" cy="1060" r="640" gradientUnits="userSpaceOnUse" gradientTransform="translate(512 1060) scale(1 0.85) translate(-512 -1060)">
+      <stop offset="0%"   stop-color="#04EFEA" stop-opacity="1"/>
+      <stop offset="30%"  stop-color="#16BAC6" stop-opacity="0.75"/>
+      <stop offset="65%"  stop-color="#227097" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#22618C" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="glow-turquoise" cx="420" cy="400" r="380" gradientUnits="userSpaceOnUse">
-      <stop offset="0%"   stop-color="#40E0D0" stop-opacity="0.50"/>
-      <stop offset="55%"  stop-color="#40E0D0" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#40E0D0" stop-opacity="0"/>
+    <!-- Halo suave tras la corona -->
+    <radialGradient id="glow-crown" cx="512" cy="290" r="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#3A5FD0" stop-opacity="0.40"/>
+      <stop offset="100%" stop-color="#3A5FD0" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="glow-indigo" cx="620" cy="620" r="400" gradientUnits="userSpaceOnUse">
-      <stop offset="0%"   stop-color="#7B5CFF" stop-opacity="0.45"/>
-      <stop offset="55%"  stop-color="#3949AB" stop-opacity="0.18"/>
-      <stop offset="100%" stop-color="#3949AB" stop-opacity="0"/>
-    </radialGradient>
-    <filter id="nebula-blur" x="-80%" y="-80%" width="260%" height="260%" color-interpolation-filters="sRGB">
-      <feGaussianBlur in="SourceGraphic" stdDeviation="56"/>
-    </filter>
   </defs>
-  <rect width="1024" height="1024" fill="url(#canva-wash)"/>
-  <g filter="url(#nebula-blur)">
-    <ellipse cx="420" cy="400" rx="340" ry="340" fill="url(#glow-turquoise)"/>
-    <ellipse cx="620" cy="620" rx="360" ry="360" fill="url(#glow-indigo)"/>
-  </g>
-  <rect width="1024" height="1024" fill="url(#bloom)"/>
+  <rect width="1024" height="1024" fill="url(#base)"/>
+  <rect width="1024" height="1024" fill="url(#glow-crown)"/>
+  <rect width="1024" height="1024" fill="url(#glow-cyan)"/>
 </svg>
