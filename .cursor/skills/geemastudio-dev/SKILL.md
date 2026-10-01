@@ -370,9 +370,22 @@ BorderRadius: { sm: 6, md: 10, lg: 16, xl: 24, full: 9999 }
 | logo-diamondSparkle.svg          | **Principal** — diamante claro, fondos oscuros / transparentes |
 | logo-diamondSparkle-positive.svg | Export / materiales                                            |
 | logo-diamondSparkle-negative.svg | Preview / redes                                                |
-| favicon.png                      | Favicon                                                        |
+| logo-diamondSparkleNGlow.svg     | Diamante + nebulosa (login, panel); fuente de splash-logo.png  |
+| favicon.png (192×192)            | Favicon, desde logo-diamondSparkle-icon.svg                    |
+| icon-192.png / icon-512.png      | Íconos PWA (manifest), desde logo-diamondSparkle-icon.svg      |
 
 El símbolo no incluye texto "GeemaStudio". Ver CHANGELOG v1.4.4.
+
+Mobile (`apps/geemastudio-mobile/assets/`), fuentes SVG → PNG (export 1024×1024 con Inkscape):
+
+| Fuente                                | PNG                                      |
+| ------------------------------------- | ---------------------------------------- |
+| logo-diamondSparkleNGlow.svg          | splash-logo.png (transparente)           |
+| logo-diamondSparkle-icon.svg          | icon.png (opaco; = adaptive-bg + adaptive) |
+| logo-diamondSparkle-adaptive.svg      | adaptive-icon.png (transparente)         |
+| logo-diamondSparkle-adaptive-bg.svg   | adaptive-icon-background.png (opaco)     |
+
+`notification-icon.png/.svg` (push Android) no se regenera con este flujo.
 
 ### Componentes UI mobile
 

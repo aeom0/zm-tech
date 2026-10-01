@@ -210,9 +210,11 @@ Marca principal: solo el símbolo en `logo-diamondSparkle.svg` (sin texto en el 
 | `logo-diamondSparkle.svg`          | **Principal** — diamante claro, fondos oscuros o transparentes |
 | `logo-diamondSparkle-positive.svg` | Opcional — export con fondo claro (p. ej. materiales)          |
 | `logo-diamondSparkle-negative.svg` | Opcional — preview con fondo negro (redes)                     |
-| `favicon.png`                      | Favicon (desde `logo-diamondSparkle.svg`)                      |
+| `logo-diamondSparkleNGlow.svg`     | Diamante + nebulosa (login, panel); fuente de `splash-logo.png` |
+| `favicon.png`                      | Favicon 192×192 (desde `logo-diamondSparkle-icon.svg`)         |
+| `icon-192.png` / `icon-512.png`    | Íconos PWA del manifest (desde `logo-diamondSparkle-icon.svg`) |
 
-En `apps/mobile/assets/`: misma pieza + `splash-icon.png` raster del diamante.
+En `apps/geemastudio-mobile/assets/`: mismos SVG + `splash-logo.png`, `icon.png`, `adaptive-icon.png` y `adaptive-icon-background.png` exportados desde `NGlow`, `-icon`, `-adaptive` y `-adaptive-bg`.
 
 ---
 

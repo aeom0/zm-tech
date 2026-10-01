@@ -41,9 +41,11 @@ alwaysApply: false
 
 En `apps/geemastudio-web/public/`:
 - **`logo-diamondSparkle.svg`** — marca por defecto (solo diamante, sin texto en el asset; fondos oscuros / transparentes).
-- `logo-diamondSparkle-positive.svg` / `negative` — opcionales para export o redes (no sustituyen al principal en UI salvo necesidad).
+- `logo-diamondSparkleNGlow.svg` — diamante + nebulosa (login y panel); fuente de `splash-logo.png` en mobile.
+- `logo-diamondSparkle-positive.svg` / `negative` — opcionales para export o redes (no sustituyen al principal en UI salvo necesidad). Derivados del principal: negative = fondo negro; positive = luminosidad invertida sobre fondo blanco.
+- `favicon.png` (192×192), `icon-192.png`, `icon-512.png` — exportados desde `logo-diamondSparkle-icon.svg` (fondo índigo→cian + diamante); el manifest PWA usa 192 y 512.
 
-Navbar (landing): mismo `logo-diamondSparkle.svg`; wordmark **Geema** + **Studio** (gradiente `LUNARIS.gradient.css90` en Studio); badge Beta con `LUNARIS.badge`. Con header claro tras scroll (modo claro) aplicar `invert` al diamante; en `dark:` sin invert; texto **Geema** legible en barra clara (`text-zinc-900` / `dark:text-white`). Footer y splash: mismo SVG / PNG derivado. `favicon.png` desde el diamante principal.
+Navbar (landing): mismo `logo-diamondSparkle.svg`; wordmark **Geema** + **Studio** (gradiente `LUNARIS.gradient.css90` en Studio); badge Beta con `LUNARIS.badge`. Con header claro tras scroll (modo claro) aplicar `invert` al diamante; en `dark:` sin invert; texto **Geema** legible en barra clara (`text-zinc-900` / `dark:text-white`). Footer y splash: mismo SVG / PNG derivado. Favicon y PWA: ver `logo-diamondSparkle-icon.svg` (mobile `assets/`).
 
 ## Reglas de trabajo
 

@@ -7,6 +7,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Cambiado (1-oct 2026 — assets de marca v2)
+
+- **Marca** — `logo-diamondSparkle.svg` y `logo-diamondSparkleNGlow.svg` sustituidos por los nuevos (export Affinity) en mobile y web. `-negative` / `-positive` regenerados desde el principal (negative: fondo negro; positive: luminosidad invertida sobre blanco).
+- **Mobile** — `logo-diamondSparkle-adaptive.svg` y `-adaptive-bg.svg` sustituidos (fondo índigo `#221D5F` → cian); `logo-diamondSparkle-icon.svg` = unión de ambos. PNG regenerados con Inkscape a 1024×1024: `splash-logo.png` (antes 900×900) desde `NGlow`, `icon.png`, `adaptive-icon.png`, `adaptive-icon-background.png`. Requiere rebuild nativo. Se eliminaron `icon-v3/v4.png` y los `-adaptive[-bg]-v2/v3/v4.svg`. `notification-icon` y `backgroundColor` de `app.json` sin cambios.
+- **Web** — `favicon.png` pasa de 48×48 a 192×192 desde `logo-diamondSparkle-icon.svg`; nuevos `icon-192.png` / `icon-512.png` declarados en `manifest.ts`.
+
 ### Corregido (26-sep 2026 — fechas y zonas horarias multi-tenant)
 
 - `payments.date` y los timestamps de `product_orders` usan `timestamptz`;

@@ -179,6 +179,8 @@ docs/audit/
 
 - `apps/geemastudio-web/public/logo-diamondSparkle.svg` — símbolo principal
 - `apps/geemastudio-web/public/logo-diamondSparkle-positive.svg` / `negative` — variantes
+- `apps/geemastudio-web/public/favicon.png`, `icon-192.png`, `icon-512.png` — desde `logo-diamondSparkle-icon.svg` (mobile `assets/`)
+- `apps/geemastudio-mobile/assets/` — fuentes SVG (`NGlow`, `-icon`, `-adaptive`, `-adaptive-bg`) y PNG exportados
 
 ### EAS (build móvil)
 
@@ -196,7 +198,7 @@ docs/audit/
   **Adaptive icon (Android oficial)** — [icon_design_adaptive](https://developer.android.com/develop/ui/compose/system/icon_design_adaptive):
   | Capa | Canvas | Contenido |
   |------|--------|-----------|
-  | Background | 108×108 dp (full-bleed) | `adaptive-icon-background.png` — degradado Lunaris |
+  | Background | 108×108 dp (full-bleed) | `adaptive-icon-background.png` — degradado índigo → cian |
   | Foreground | 108×108 dp, logo ≤ **66×66 dp** safe | `adaptive-icon.png` — diamante transparente |
   | Viewport OEM | ~72×72 dp (máscara) | outer 18 dp = mask / parallax |
 
