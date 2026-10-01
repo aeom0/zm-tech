@@ -13,7 +13,10 @@ const BACKGROUND_COLOR = '#0F0F0F'
 // por ruta, así que este mismo manifest sirve landing, login y panel.
 export default async function manifest(): Promise<MetadataRoute.Manifest> {
   let name = 'GeemaStudio'
-  let icons: MetadataRoute.Manifest['icons'] = [{ src: '/favicon.png', sizes: 'any' }]
+  let icons: MetadataRoute.Manifest['icons'] = [
+    { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+    { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+  ]
   let themeColor = DEFAULT_TENANT_PRIMARY
 
   try {
