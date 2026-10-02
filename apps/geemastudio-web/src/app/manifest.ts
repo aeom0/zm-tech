@@ -6,6 +6,34 @@ import { DEFAULT_TENANT_PRIMARY } from '@/lib/tenant-theme'
 
 const BACKGROUND_COLOR = '#0F0F0F'
 
+type ManifestIcon = NonNullable<MetadataRoute.Manifest['icons']>[number]
+
+const FALLBACK_ICONS: ManifestIcon[] = [
+  {
+    src: '/icon-192.png',
+    sizes: '192x192',
+    type: 'image/png',
+    purpose: 'any',
+  },
+  {
+    src: '/icon-512.png',
+    sizes: '512x512',
+    type: 'image/png',
+    purpose: 'any',
+  },
+  {
+    src: '/icon-512.png',
+    sizes: '512x512',
+    type: 'image/png',
+    purpose: 'maskable',
+  },
+  {
+    src: '/favicon.png',
+    sizes: 'any',
+    type: 'image/png',
+  },
+]
+
 // Ícono/nombre de la app instalada (launcher) usan el logo y nombre del tenant
 // cuando hay sesión activa; si no, cae al branding fijo de GeemaStudio. El
 // ícono queda cacheado por dispositivo al instalar — aceptable (1 negocio =
@@ -13,10 +41,7 @@ const BACKGROUND_COLOR = '#0F0F0F'
 // por ruta, así que este mismo manifest sirve landing, login y panel.
 export default async function manifest(): Promise<MetadataRoute.Manifest> {
   let name = 'GeemaStudio'
-  let icons: MetadataRoute.Manifest['icons'] = [
-    { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
-    { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
-  ]
+  let icons: MetadataRoute.Manifest['icons'] = FALLBACK_ICONS
   let themeColor = DEFAULT_TENANT_PRIMARY
 
   try {
@@ -27,7 +52,26 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     if (userId) {
       const brand = await fetchTenantBrandForUser(supabase, userId)
       if (brand.businessName) name = brand.businessName
-      if (brand.logoUrl) icons = [{ src: brand.logoUrl, sizes: 'any' }]
+      if (brand.logoUrl) {
+        icons = [
+          {
+            src: brand.logoUrl,
+            sizes: '192x192',
+            purpose: 'any',
+          },
+          {
+            src: brand.logoUrl,
+            sizes: '512x512',
+            purpose: 'any',
+          },
+          {
+            src: brand.logoUrl,
+            sizes: '512x512',
+            purpose: 'maskable',
+          },
+          ...FALLBACK_ICONS,
+        ]
+      }
       if (brand.primary) themeColor = brand.primary
     }
   } catch {
@@ -39,7 +83,9 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     short_name: name,
     description: 'Gestión de agenda, personal, inventario y finanzas para tu salón de belleza.',
     start_url: '/panel',
+    scope: '/',
     display: 'standalone',
+    orientation: 'portrait-primary',
     background_color: BACKGROUND_COLOR,
     theme_color: themeColor,
     icons,

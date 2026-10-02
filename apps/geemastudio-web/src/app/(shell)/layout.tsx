@@ -1,6 +1,28 @@
+import type { Metadata } from 'next'
+
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { fetchTenantBrandForUser, type TenantBrand } from '@/lib/tenant-brand'
 import { ShellProviders } from './ShellProviders'
+
+export async function generateMetadata(): Promise<Metadata> {
+  const supabase = await createServerSupabaseClient()
+  const { data } = await supabase.auth.getSession()
+
+  const brand: TenantBrand = data.session
+    ? await fetchTenantBrandForUser(supabase, data.session.user.id)
+    : { primary: null, accent: null, businessName: null, logoUrl: null }
+
+  return {
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: 'black-translucent',
+      title: brand.businessName || 'GeemaStudio',
+    },
+    icons: {
+      apple: brand.logoUrl || '/apple-touch-icon.png',
+    },
+  }
+}
 
 /**
  * Layout compartido por /panel, /finanzas y /dashboard: monta el sidebar

@@ -1,5 +1,6 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
+import { PwaRegister } from '@/components/pwa/PwaRegister'
 import './globals.css'
 
 const inter = Inter({
@@ -7,6 +8,13 @@ const inter = Inter({
   weight: ['400', '500', '600', '700', '800'],
   display: 'swap',
 })
+
+export const viewport: Viewport = {
+  themeColor: '#0F0F0F',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+}
 
 export const metadata: Metadata = {
   title: 'GeemaStudio — Gestión inteligente para barberías, spas y peluquerías',
@@ -23,6 +31,12 @@ export const metadata: Metadata = {
   ],
   icons: {
     icon: '/favicon.png',
+    apple: '/apple-touch-icon.png',
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'GeemaStudio',
   },
   openGraph: {
     title: 'GeemaStudio — Gestión inteligente para tu negocio de belleza',
@@ -51,7 +65,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body className={`${inter.className} antialiased`}>{children}</body>
+      <body className={`${inter.className} antialiased`}>
+        {children}
+        <PwaRegister />
+      </body>
     </html>
   )
 }
