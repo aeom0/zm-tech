@@ -23,53 +23,34 @@ export async function GET(request: NextRequest) {
         if (res.ok) {
           const buffer = Buffer.from(await res.arrayBuffer())
 
-          if (isMaskable) {
-            // Safe zone de maskable icon en Android (círculo 66-70%).
-            // Fondo con el color primario del tenant o negro Lunaris #0F0F0F.
-            const innerSize = Math.round(size * 0.70)
-            const resizedLogo = await sharp(buffer)
-              .resize(innerSize, innerSize, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
-              .png()
-              .toBuffer()
+          // Los logos suelen ser blancos/transparentes: siempre se asientan sobre el
+          // color primario del tenant (o negro Lunaris #0F0F0F) para que no queden
+          // invisibles en el launcher. Maskable respeta la safe zone (~70%); "any"
+          // y apple-touch-icon usan más área.
+          const innerSize = Math.round(size * (isMaskable ? 0.7 : 0.8))
+          const resizedLogo = await sharp(buffer)
+            .resize(innerSize, innerSize, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+            .png()
+            .toBuffer()
 
-            const bgColor = brand.primary || '#0F0F0F'
-            const canvas = await sharp({
-              create: {
-                width: size,
-                height: size,
-                channels: 4,
-                background: bgColor,
-              },
-            })
-              .composite([
-                {
-                  input: resizedLogo,
-                  gravity: 'center',
-                },
-              ])
-              .png()
-              .toBuffer()
+          const canvas = await sharp({
+            create: {
+              width: size,
+              height: size,
+              channels: 4,
+              background: brand.primary || '#0F0F0F',
+            },
+          })
+            .composite([{ input: resizedLogo, gravity: 'center' }])
+            .png()
+            .toBuffer()
 
-            return new NextResponse(canvas, {
-              headers: {
-                'Content-Type': 'image/png',
-                'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800',
-              },
-            })
-          } else {
-            // Purpose: any -> Logo escalado en PNG transparente
-            const pngBuffer = await sharp(buffer)
-              .resize(size, size, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
-              .png()
-              .toBuffer()
-
-            return new NextResponse(pngBuffer, {
-              headers: {
-                'Content-Type': 'image/png',
-                'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800',
-              },
-            })
-          }
+          return new NextResponse(new Uint8Array(canvas), {
+            headers: {
+              'Content-Type': 'image/png',
+              'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800',
+            },
+          })
         }
       }
     }
