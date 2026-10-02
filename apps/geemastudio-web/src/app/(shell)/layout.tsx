@@ -48,8 +48,14 @@ export default async function ShellLayout({ children }: { children: React.ReactN
     ? await fetchTenantBrandForUser(supabase, data.session.user.id)
     : { primary: null, accent: null, businessName: null, logoUrl: null, tenantSlug: null }
 
+  // El tenant va en la URL: el manifest no depende de que el navegador envíe cookies.
+  const manifestUrl = brand.tenantSlug
+    ? `/manifest.webmanifest?tenant=${brand.tenantSlug}`
+    : '/manifest.webmanifest'
+
   return (
     <>
+      <link rel="manifest" href={manifestUrl} />
       <ShellProviders
         session={data.session ? { userEmail: data.session.user.email ?? 'usuario' } : null}
         primaryColor={brand.primary}

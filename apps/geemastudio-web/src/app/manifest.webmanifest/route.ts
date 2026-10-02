@@ -37,6 +37,7 @@ export async function GET(request: NextRequest) {
   let name = 'GeemaStudio'
   let icons = FALLBACK_ICONS
   let themeColor = DEFAULT_TENANT_PRIMARY
+  let tenantSlugResolved: string | null = null
 
   try {
     const { searchParams } = request.nextUrl
@@ -56,6 +57,8 @@ export async function GET(request: NextRequest) {
         tenantSlug = brand.tenantSlug || null
       }
     }
+
+    tenantSlugResolved = tenantSlug
 
     if (brand?.businessName) {
       name = brand.businessName
@@ -108,7 +111,8 @@ export async function GET(request: NextRequest) {
   return NextResponse.json(manifest, {
     headers: {
       'Content-Type': 'application/manifest+json; charset=utf-8',
-      'Cache-Control': 'public, max-age=0, must-revalidate',
+      'Cache-Control': 'private, no-cache',
+      'X-Manifest-Tenant': tenantSlugResolved ?? 'none',
     },
   })
 }
