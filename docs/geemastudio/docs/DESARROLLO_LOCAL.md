@@ -33,7 +33,7 @@ El estado vigente de funciones (`search_path`), índices de FK y políticas RLS 
 
 ### Avatar del personal (Storage)
 
-- **Bucket `employee-avatars`** (sin migración versionada; SQL original en el historial de git, commit `a0926cdb`, `scripts/db/migrations/202603301200_employee_avatar_url_storage.sql`): añade `employees.avatar_url`, crea bucket **`employee-avatars`** (público, imágenes) y políticas de Storage para que solo `dev`/`owner` suban o borren archivos.
+- **`apps/geemastudio-server/supabase/migrations/20261002031345_employee_avatars_bucket_policies.sql`**: añade `employees.avatar_url`, crea bucket **`employee-avatars`** (público, imágenes) y políticas de Storage para que solo `dev`/`owner` suban o borren archivos.
 - Otro proyecto Supabase: ejecutar ese SQL en el editor o `apply_migration` con el mismo contenido.
 - La app móvil sube archivos con la **anon key** autenticada; si falta el bucket o las políticas, fallará el guardado de la foto en Personal.
 
