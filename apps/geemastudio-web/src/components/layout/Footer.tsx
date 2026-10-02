@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { BrandMark } from '@/components/ui/BrandMark'
 
 const NAV_LINKS = [
   { label: 'Funciones', href: '#funciones' },
@@ -16,13 +16,7 @@ export function Footer() {
           {/* Brand */}
           <div>
             <div className="mb-4 flex items-center">
-              <Image
-                src="/logo-diamondSparkle.svg"
-                alt="GeemaStudio"
-                width={34}
-                height={39}
-                className="h-9 w-auto"
-              />
+              <BrandMark />
             </div>
             <p className="text-sm leading-relaxed text-zinc-400">
               Plataforma de gestión para barberías, spas, peluquerías y estéticas en LATAM. Organiza

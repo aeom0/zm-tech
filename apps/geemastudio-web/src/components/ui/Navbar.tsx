@@ -1,11 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { GradientButton } from '@/components/ui/GradientButton'
 import { NavbarDashboardLink } from '@/components/ui/NavbarDashboardLink'
-import { LUNARIS } from '@/lib/theme'
+import { BrandMark } from '@/components/ui/BrandMark'
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -35,41 +34,11 @@ export function Navbar() {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
         {/* Logo — ícono + wordmark + badge */}
         <a href="#" className="group flex items-center gap-2.5" aria-label="GeemaStudio — inicio">
-          <Image
-            src="/logo-diamondSparkle.svg"
-            alt="GeemaStudio"
-            width={44}
-            height={50}
+          <BrandMark
             priority
-            className="h-11 w-auto shrink-0"
+            geemaClassName={scrolled ? 'text-zinc-900 dark:text-white' : 'text-white'}
+            glowClassName={scrolled ? 'opacity-40 dark:opacity-60' : 'opacity-60'}
           />
-          <span
-            className={`text-[19px] font-bold tracking-tight ${
-              scrolled ? 'text-zinc-900 dark:text-white' : 'text-white'
-            }`}
-          >
-            Geema
-            <span
-              style={{
-                background: LUNARIS.gradient.css90,
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-              }}
-            >
-              Studio
-            </span>
-          </span>
-          <span
-            style={{
-              border: `1px solid ${LUNARIS.badge.border}`,
-              background: LUNARIS.badge.bg,
-              color: LUNARIS.badge.text,
-            }}
-            className="rounded-full px-1.5 py-0.5 text-[10px] font-semibold tracking-wide"
-          >
-            Beta
-          </span>
         </a>
 
         {/* Links — desktop */}
