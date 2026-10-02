@@ -76,6 +76,20 @@ export function AgendaToolbar({
         </button>
         <button
           type="button"
+          onClick={onToggleView}
+          className="min-w-0 flex-1 rounded-xl px-2 py-1 text-center transition-colors hover:bg-white/[0.04]"
+          aria-label={isWeek ? 'Volver a vista de día' : 'Ver semana completa'}
+        >
+          <div className="truncate text-sm font-semibold text-white">{label}</div>
+          <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--tenant-primary)]">
+            {isWeek ? 'Semana · clic para ver día' : 'Día · clic para ver semana'}
+            <span className="ml-2 font-normal normal-case tracking-normal text-zinc-500">
+              {count} {count === 1 ? 'cita' : 'citas'}
+            </span>
+          </div>
+        </button>
+        <button
+          type="button"
           onClick={onNext}
           className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04] text-zinc-200 hover:bg-white/[0.08]"
           aria-label={isWeek ? 'Semana siguiente' : 'Día siguiente'}
@@ -91,20 +105,6 @@ export function AgendaToolbar({
             Hoy
           </button>
         )}
-        <button
-          type="button"
-          onClick={onToggleView}
-          className="min-w-0 flex-1 rounded-xl px-2 py-1 text-left transition-colors hover:bg-white/[0.04]"
-          aria-label={isWeek ? 'Volver a vista de día' : 'Ver semana completa'}
-        >
-          <div className="truncate text-sm font-semibold text-white">{label}</div>
-          <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--tenant-primary)]">
-            {isWeek ? 'Semana · clic para ver día' : 'Día · clic para ver semana'}
-            <span className="ml-2 font-normal normal-case tracking-normal text-zinc-500">
-              {count} {count === 1 ? 'cita' : 'citas'}
-            </span>
-          </div>
-        </button>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
