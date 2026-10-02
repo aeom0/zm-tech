@@ -129,18 +129,17 @@ export default async function PanelMasPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3.5 py-2">
+          <div className="flex items-center justify-center gap-2.5 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3">
             <Image
               src="/logo-diamondSparkleNGlow.svg"
               alt="GeemaStudio"
-              width={22}
-              height={22}
+              width={28}
+              height={28}
               className="shrink-0"
             />
-            <div className="text-left leading-tight">
-              <span className="block text-[11px] font-medium text-white">GeemaStudio</span>
-              <span className="block text-[10px] text-zinc-500">por ZM Tech</span>
-            </div>
+            <span className="whitespace-nowrap text-base font-semibold text-white">
+              GeemaStudio <span className="font-normal text-zinc-500">por ZM Tech</span>
+            </span>
           </div>
         </div>
       </div>
