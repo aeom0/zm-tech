@@ -1,0 +1,127 @@
+{
+  "web_gallery": [
+    {
+      "alt": "Extensiones Volumen Ruso",
+      "url": "https://cdn.sanity.io/images/9yt27c72/production/e60027a087d48b2cd6f1c789bdaf2a7f7cebf828-736x560.jpg",
+      "category": "Pestañas"
+    },
+    {
+      "alt": "Lifting",
+      "url": "https://cdn.sanity.io/images/9yt27c72/production/e885fd48b26008dc27dbcb01b831133bf01cfe3c-736x556.jpg",
+      "category": "Pestañas"
+    },
+    {
+      "alt": "Manicure en Gel",
+      "url": "https://cdn.sanity.io/images/9yt27c72/production/02691e0bdc823eb39ee6167350161d7c238893d2-736x556.jpg",
+      "category": "Uñas"
+    },
+    {
+      "alt": "Microblading Cejas",
+      "url": "https://cdn.sanity.io/images/9yt27c72/production/f0830ca2ba22d48c8b55d0b2815be1a038b9f175-736x556.jpg",
+      "category": "Microblading"
+    },
+    {
+      "alt": "Manicure en Gel",
+      "url": "https://cdn.sanity.io/images/9yt27c72/production/698e297f4395de9817099b5f60c12f5e4182ce1d-736x556.jpg",
+      "category": "Uñas"
+    },
+    {
+      "alt": "Laminado de Cejas",
+      "url": "https://cdn.sanity.io/images/9yt27c72/production/e2dc64b4ef8e0e004950aa9a187bf90c4f8f05d5-736x556.jpg",
+      "category": "Cejas"
+    },
+    {
+      "alt": "Lifting + Tinturado",
+      "url": "https://cdn.sanity.io/images/9yt27c72/production/61b1a0ab9b7bb509190e6c701839639954ee6885-736x556.jpg",
+      "category": "Pestañas"
+    },
+    {
+      "alt": "Pedicure en Gel",
+      "url": "https://cdn.sanity.io/images/9yt27c72/production/120804bd8b0641c704253596f63f72903de1bca0-1536x1024.png",
+      "category": "Uñas"
+    },
+    {
+      "alt": "Extensiones de Pestañas Clásicas",
+      "url": "https://cdn.sanity.io/images/9yt27c72/production/a6435ad7d4b0a4951e0e9205f82d69924700cffb-853x1280.jpg",
+      "category": "Pestañas"
+    },
+    {
+      "alt": "Extensiones de Volumen Tecnológico 3D",
+      "url": "https://cdn.sanity.io/images/9yt27c72/production/8f83a9c6c9dd9067607b7f2372c449bf3de051a2-1536x1024.jpg",
+      "category": "Pestañas"
+    },
+    {
+      "alt": "Extensiones Efecto Mojado",
+      "url": "https://cdn.sanity.io/images/9yt27c72/production/0206dfc1c673c16d11e25562607930d58baef47a-1280x853.jpg",
+      "category": "Pestañas"
+    },
+    {
+      "alt": "Microshading",
+      "url": "https://cdn.sanity.io/images/9yt27c72/production/0c221fd912cfa76e84ac046c9eb4951120c4d82c-1024x1299.jpg",
+      "category": "Cejas"
+    },
+    {
+      "alt": "Manicure en Polygel",
+      "url": "https://cdn.sanity.io/images/9yt27c72/production/f30db42b007b9a28d882fc510fc06160ec5e2554-1024x1536.png",
+      "category": "Uñas"
+    },
+    {
+      "alt": "Manicure en Rubber",
+      "url": "https://cdn.sanity.io/images/9yt27c72/production/5dd482790dd0eb6f3e6ac9c7b581edd775c12601-1024x1536.png",
+      "category": "Uñas"
+    }
+  ],
+  "web_team": [
+    {
+      "name": "Vanessa",
+      "role": "Lashista",
+      "color": "#D4AF37",
+      "phrase": "Tu mirada es mi lienzo",
+      "photoUrl": "https://cdn.sanity.io/images/9yt27c72/production/e55712ff0ef911a59201a7b3db462940d11d2cce-2388x2388.png",
+      "speciality": "Lifting + Laminado + Depilación + HidraLips"
+    },
+    {
+      "name": "Stephani",
+      "role": "Lashista",
+      "color": "#9B59B6",
+      "phrase": "Cada detalle cuenta",
+      "photoUrl": "https://cdn.sanity.io/images/9yt27c72/production/bbe6af9ab8a083bdcc965386cd7bcb4ff617cf27-2388x2388.png",
+      "speciality": "Uñas y Extensiones"
+    }
+  ],
+  "web_promos": [
+    {
+      "badge": "PARA TUS PESTAÑAS",
+      "title": "Extensiones desde S/ 100",
+      "ctaText": "Ver promociones",
+      "imageUrl": "https://cdn.sanity.io/images/9yt27c72/production/0fa9e992aa7df64499e4712655dbf390203676eb-1086x1448.png",
+      "badgeColor": "violet",
+      "whatsappMessage": "Hola, quiero ver las promos de extensiones de pestañas 👁️"
+    },
+    {
+      "badge": "PARA TUS MANOS Y PIES",
+      "title": "Manicure + Pedicure en Gel",
+      "ctaText": "Ver promociones",
+      "imageUrl": "https://cdn.sanity.io/images/9yt27c72/production/c659d2cc985bc727eacb1cb3c495e770183a8dc4-1086x1448.jpg",
+      "badgeColor": "pink",
+      "whatsappMessage": "Hola, quiero ver las promos de uñas y pedicure 💅"
+    },
+    {
+      "badge": "UNA MIRADA ESPECTACULAR",
+      "title": "Volumen Tecnológico 3D",
+      "ctaText": "Ver promociones",
+      "imageUrl": "https://cdn.sanity.io/images/9yt27c72/production/5a51ecb64dd278e56c5dde7db6ed65b5f1bb6416-1024x1536.png",
+      "badgeColor": "gold",
+      "whatsappMessage": "Hola, quiero saber del Volumen Tecnológico 3D ✨"
+    },
+    {
+      "badge": "REALZA TU MIRADA",
+      "title": "Lifting + Laminado de Cejas",
+      "ctaText": "Ver promociones",
+      "imageUrl": "https://cdn.sanity.io/images/9yt27c72/production/a8f40c994823281224773588f409167ebb60e2e0-1024x1536.png",
+      "badgeColor": "violet",
+      "whatsappMessage": "Hola, quiero info del Lifting + Laminado o Planchado de cejas 👁️"
+    }
+  ],
+  "web_promo_banner_url": "https://cdn.sanity.io/images/9yt27c72/production/55144670a42c603681cf1dae1071c6c356339a65-2560x1440.jpg"
+}
