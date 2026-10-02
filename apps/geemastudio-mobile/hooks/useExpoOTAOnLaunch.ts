@@ -21,7 +21,7 @@ const OTA_CHECK_TIMEOUT_MS = 5000
  */
 export const OTA_RELOAD_SCREEN: ReloadScreenOptions = {
   backgroundColor: Onboarding.canvasBackground,
-  image: require('@/assets/splash-logo.png'),
+  image: require('@/assets/ota-reload-logo.png'),
   imageResizeMode: 'contain',
   fade: true,
   spinner: { enabled: false },
