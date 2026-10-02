@@ -1,0 +1,1 @@
+UPDATE look_preview_styles SET updated_at = now() WHERE tenant_id = 'zm-lash-nails' AND prompt_template ILIKE '%LENGTH CAP%' AND category_key IN ('extensiones', 'combo_mirada', 'lifting'); -- prompts ya aplicados via seed v1.1; esta migración documenta el length cap en schema_migrations;

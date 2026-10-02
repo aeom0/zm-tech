@@ -46,6 +46,7 @@ Ver [README.md](README.md) y [ROADMAP.md](ROADMAP.md).
 - **Sin emojis Unicode en UI** (web/mobile/panel): Lucide o íconos vectoriales. **Excepción:** copy/plantillas **WABA**.
 - Capas: `UI → Hooks → Services/lib (Supabase) → Types`. Sin lógica de negocio en presentación.
 - `*-server` = ops/DB/Edge, no API JWT. RepMAX no tiene `repmax-server`.
+- **Migraciones GeemaStudio (regla dura):** `apps/geemastudio-server/supabase/migrations/` debe estar siempre 1:1 con `supabase_migrations.schema_migrations` de `udelx…` (mismo `version` + `name`). Al aplicar una migración remota (MCP `apply_migration` asigna la versión), renombrar el archivo local a `<version>_<name>.sql` en el mismo commit; nunca dejar archivos locales sin aplicar ni versiones remotas sin archivo. Verificar con `list_migrations` antes de hacer push.
 
 ## Comandos
 

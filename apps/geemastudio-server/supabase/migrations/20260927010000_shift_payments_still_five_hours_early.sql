@@ -1,0 +1,2 @@
+-- Registrada en el historial remoto sin statements (aplicada manualmente / repair).
+-- Se conserva el archivo para mantener alineadas las versiones local y remota.
