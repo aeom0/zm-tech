@@ -5,7 +5,6 @@ import {
   Clock,
   HelpCircle,
   LayoutGrid,
-  LogOut,
   MessageCircle,
   Settings,
   TrendingUp,

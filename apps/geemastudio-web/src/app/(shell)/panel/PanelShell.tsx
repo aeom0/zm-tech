@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import {
   ChevronDown,
   HelpCircle,
@@ -158,12 +158,6 @@ export function PanelShell({
 
   // Ítems fijos del bottom tab bar mobile; WhatsApp en el centro y Más como pantalla completa
   const primaryTabItems: NavItem[] = [agendaItem, clientesItem, wabaItem, catalogoItem, masItem]
-  const moreSections: NavSection[] = [
-    {
-      title: 'Negocio',
-      items: [finanzasItem, personalItem, horarioItem, configuracionItem],
-    },
-  ]
 
   function isNavActive(href: string): boolean {
     if (href === '/panel/waba' || href === '/panel/waba/mensajes') {
@@ -195,8 +189,6 @@ export function PanelShell({
     return allItems.find((item) => isNavActive(item.href))?.label ?? 'Inicio'
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
-
-  const moreTabActive = isNavActive('/panel/mas')
 
   const handleLogout = async () => {
     try {
