@@ -50,7 +50,7 @@ Al iniciar la app por primera vez (sin config guardada), se muestra el **onboard
 4. **Categorías de servicios** — confirma las categorías sugeridas por tipo
 5. **Resumen** — revisión y confirmación; al terminar se persiste en `tenant_settings` (Supabase) y en AsyncStorage (`@geemastudio/tenant_config`)
 
-La configuración se sincroniza con la tabla `tenant_settings` en Supabase y es editable después desde Configuración (incluye **horario de trabajo**: zona horaria IANA + franja por día en `business_hours`, también en el panel web `/panel/horarios`). La **Agenda** móvil usa esa zona y franja para el calendario y las citas (`@zmtech/tenant-config`: Luxon + `working-schedule`). Las **fotos del personal** (`employees.avatar_url`) se configuran en Más → Personal y se guardan en el bucket Storage **`employee-avatars`** (ver `scripts/db/migrations/202603301200_employee_avatar_url_storage.sql`).
+La configuración se sincroniza con la tabla `tenant_settings` en Supabase y es editable después desde Configuración (incluye **horario de trabajo**: zona horaria IANA + franja por día en `business_hours`, también en el panel web `/panel/horarios`). La **Agenda** móvil usa esa zona y franja para el calendario y las citas (`@zmtech/tenant-config`: Luxon + `working-schedule`). Las **fotos del personal** (`employees.avatar_url`) se configuran en Más → Personal y se guardan en el bucket Storage **`employee-avatars`** (ver `apps/geemastudio-server/supabase/migrations/00000000000000_baseline_full_schema.sql`).
 
 Para configurar manualmente, edita los seeds antes de ejecutarlos:
 
@@ -76,7 +76,7 @@ pnpm db:seed
 - **Estado servidor**: TanStack React Query v5
 - **Animaciones**: React Native Reanimated 4
 - **Backend**: Supabase (Auth + PostgREST) — sin servidor Express. Proyecto: `udelxwwnyivknslueerr`
-- **Schema compartido**: Drizzle ORM + Zod (`packages/shared-schema`) — índices FK y tabla `appointment_verifications` alineados con Supabase; RLS/funciones documentadas en `scripts/db/migrations/20260324_advisor_rls_performance.sql` (aplicación remota vía MCP o SQL Editor si aplica)
+- **Schema compartido**: Drizzle ORM + Zod (`packages/shared-schema`) — índices FK y tabla `appointment_verifications` alineados con Supabase; RLS/funciones documentadas en `apps/geemastudio-server/supabase/migrations/00000000000000_baseline_full_schema.sql` (aplicación remota vía MCP o SQL Editor si aplica)
 - **Config de tenant**: `packages/tenant-config` (`@zmtech/tenant-config`) — presets, `TenantConfig` (incluye `features?.whatsapp` para promo WA / ajustes)
 - **Web**: Next.js (`apps/web`) — landing pública + paneles `/dashboard` (KPIs) y `/finanzas` (solo rol `owner`/`dev`; login en `/finanzas/login`). **Paleta de marca (Lunaris)**: `apps/web/src/lib/theme.ts` (`LUNARIS`) — gradientes, `#40E0D0` / `#00897B`, glow; alineada con `Gradients.onboarding` en mobile.
 - **Web (panel)**: área autenticada en `/panel` — **P1 cerrado 12-sep**: servicios, horarios, clientes, personal, configuración, agenda, WABA MVP (estado/mensajes/Haiku), **dashboard `/panel` (21-sep)**. Login `/login` (rediseñado 21-sep, sin box, logo nebulosa glow). **Theming por tenant (21-sep)**: `lib/tenant-theme.ts` deriva `--tenant-primary`/`--tenant-accent` desde `tenant_settings.primary_color`/`accent_color` (fallback Lunaris `#40E0D0`); headers muestran logo GeemaStudio + logo propio del tenant (`TenantLogo`). Landing/login siguen con Lunaris fija.

@@ -47,8 +47,8 @@ Los 4 tenants demo tienen `is_demo = true` en `tenant_settings`.
 **Stored procedure:** `public.seed_demo_tenant(p_tenant_id UUID)`  
 **Migraciones relacionadas:**
 
-- `20260403_add_is_demo_to_tenant_settings.sql`
-- `20260403_create_seed_demo_tenant_function.sql`
+- Columna `is_demo` de `tenant_settings`: ya incluida en el baseline remoto
+- `seed_demo_tenant_function.sql` (esta carpeta; aún NO aplicada en remoto — aplicar con `apply_migration` y renombrar según la regla de alineación)
 
 ## IDs de referencia (Supabase dev — udelxwwnyivknslueerr)
 

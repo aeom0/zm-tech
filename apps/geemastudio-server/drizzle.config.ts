@@ -7,7 +7,7 @@ if (!process.env.DATABASE_URL) {
 
 export default defineConfig({
   // Salida de `pnpm db:generate` (migraciones versionadas). `pnpm db:push` usa solo el schema.
-  // RLS, funciones y políticas consolidadas ya aplicadas en Supabase — ver scripts/db/migrations/20260324_advisor_rls_performance.sql
+  // RLS, funciones y políticas consolidadas ya aplicadas en Supabase — ver apps/geemastudio-server/supabase/migrations/00000000000000_baseline_full_schema.sql
   out: './migrations',
   schema: '../../packages/shared-schema/src/schema.ts',
   dialect: 'postgresql',

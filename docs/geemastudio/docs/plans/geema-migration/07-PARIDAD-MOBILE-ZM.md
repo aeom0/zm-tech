@@ -181,7 +181,7 @@ Geema y ZM consumen `@zmtech/shared-schema` con columnas canónicas + migración
 | `appointments.service_ids` / `reference_image_*` | Existen | **No** `ADD COLUMN` |
 | Índices lookup `appointment_id|service_id|employee_id` | ✅ `20260831011759_idx_appointment_services_lookup` | Delta seguro ya aplicado en ZM |
 
-Scripts Geema tipo `20260830_appointment_services_multiservicio.sql` (PR [zm-tech #31](https://github.com/aeom0/zm-tech/pull/31)): solo **greenfield** / CI en BD vacía. En shadow ZM: merge código OK; **no** correr el SQL completo.
+Scripts Geema tipo historial en `00000000000000_baseline_full_schema` (PR [zm-tech #31](https://github.com/aeom0/zm-tech/pull/31)): solo **greenfield** / CI en BD vacía. En shadow ZM: merge código OK; **no** correr el SQL completo.
 
 Convergencia corta: Drizzle Geema → **superset tipado de prod**; adaptadores mobile se apagan; extras solo-Geema (`payment_mode`, etc.) llegan a prod solo con migration canónica en repo ZM.
 

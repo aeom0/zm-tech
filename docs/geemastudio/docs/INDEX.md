@@ -141,7 +141,7 @@ docs/audit/
 - **Schema**: `packages/shared-schema/src/schema.ts` (`pnpm db:push`; opcional `pnpm db:generate` / `pnpm db:studio`)
 - **Seeds**: `apps/geemastudio-server/scripts/db/` (editar templates SQL; no hay script `db:seed` a nivel raíz)
 - **Migraciones**: `pnpm db:push` o SQL Editor / MCP (ver DESARROLLO_LOCAL.md)
-- **SQL de referencia RLS/advisors**: `apps/geemastudio-server/scripts/db/migrations/20260324_advisor_rls_performance.sql`
+- **SQL de referencia RLS/advisors**: `apps/geemastudio-server/supabase/migrations/00000000000000_baseline_full_schema.sql`
 
 ### API
 

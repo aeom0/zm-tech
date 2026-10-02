@@ -37,7 +37,7 @@ El schema se aplica con Drizzle. En WSL puede fallar la conexión TCP directa (I
 
 - **SQL Editor** del Dashboard Supabase: pegar y ejecutar el SQL generado por **`pnpm db:generate`** (sale en `./migrations/`)
 - **`pnpm db:push`** si tienes conectividad a `db.udelxwwnyivknslueerr.supabase.co:5432`
-- Referencia RLS/advisors ya aplicados en remoto: `apps/geemastudio-server/scripts/db/migrations/20260324_advisor_rls_performance.sql`
+- Referencia RLS/advisors ya aplicados en remoto: `apps/geemastudio-server/supabase/migrations/00000000000000_baseline_full_schema.sql`
 
 Ver [DESARROLLO_LOCAL.md](DESARROLLO_LOCAL.md) para detalle.
 

@@ -297,7 +297,7 @@ Flujo de arranque (mobile):
 
 ## Cambios Recientes (abr 2026 — Onboarding: subtype, tenant_settings, tokens TD-001, color HSV)
 
-- **`@zmtech/tenant-config`**: `businessSubtype` y `serviceCategories` opcionales; presets con defaults; `tenant_settings` en Drizzle + SQL `20260403_tenant_subtype_categories.sql` + `tenantSettingsService` mapea `business_subtype` / `service_categories`.
+- **`@zmtech/tenant-config`**: `businessSubtype` y `serviceCategories` opcionales; presets con defaults; `tenant_settings` en Drizzle + SQL historial en `00000000000000_baseline_full_schema` + `tenantSettingsService` mapea `business_subtype` / `service_categories`.
 - **Onboarding paso 1**: `OnboardingBusinessTypeScreen` — chips de subtype por `businessType`, `FadeInDown`, gradiente en chip activo; TD-001: tokens **`Onboarding`**, **`BorderRadius`**, `OnboardingLayout` → `Onboarding.canvasBackground`.
 - **Onboarding paso 2**: `CustomColorPickerModal` + `lib/color-hsv.ts` + `@react-native-community/slider` para color fuera de la paleta fija.
 - **Docs**: `docs/tech-debt/TD-001-onboarding-tokens.md` resuelto; `docs/INDEX.md` enlaza `tech-debt/`.
@@ -310,7 +310,7 @@ Flujo de arranque (mobile):
 
 - **Mobile — selector de moneda multi-LATAM** (`SettingsScreen` + `OnboardingBasicInfoScreen`): `CurrencyPickerModal` pageSheet con 19 monedas LATAM; persiste `locale.currency` (`code` + `symbol`) en `TenantConfig` con `syncRemote`. Constantes en `apps/mobile/screens/settings/constants.ts`.
 - **Mobile — Personal (CRUD completo)**: FAB "+" crea nuevo profesional (formulario completo); botón "Eliminar" en modal con confirmación; `createMutation` (INSERT) + `deleteMutation` (DELETE + limpieza avatar en Storage). `handleSave` distingue creación vs edición.
-- **Mobile — Agenda (KPI + UI compacta + formato 12/24 h)**: nuevo `AgendaDayKPIStrip` con 3 métricas del día (citas, ingresos `currencySymbol`, sin asignar con badge warning); UI compacta con safe-area; `locale.timeFormat` (12|24) expuesto en `display-time.ts`, grids owner/staff/calendar y modal detalle; `tenant_settings.time_format` en Drizzle schema + SQL `scripts/db/migrations/20260402_tenant_time_format.sql`; panel web `/panel/horarios` expone el picker de formato.
+- **Mobile — Agenda (KPI + UI compacta + formato 12/24 h)**: nuevo `AgendaDayKPIStrip` con 3 métricas del día (citas, ingresos `currencySymbol`, sin asignar con badge warning); UI compacta con safe-area; `locale.timeFormat` (12|24) expuesto en `display-time.ts`, grids owner/staff/calendar y modal detalle; `tenant_settings.time_format` en Drizzle schema + SQL `apps/geemastudio-server/supabase/migrations/00000000000000_baseline_full_schema.sql`; panel web `/panel/horarios` expone el picker de formato.
 
 ## Cambios Recientes (abr 2026 — v1.4.8 — Lunaris web + Vercel + DiamondHero)
 
@@ -353,7 +353,7 @@ Flujo de arranque (mobile):
 
 - **Supabase (remoto)**: correcciones **Security / Performance Advisor** — `search_path` fijo en `update_updated_at_column`, `get_my_role`, `block_role_change_for_non_dev`; índices en FKs (`appointments`, `payments`, `profiles`, `services`); RLS consolidada (una política por comando por tabla) y políticas con `(SELECT auth.uid())` donde el linter lo pedía. _Leaked password protection_ queda como limitación de plan Free si aplica.
 - **Drizzle** (`packages/shared-schema/src/schema.ts`): mismos índices declarados; tabla **`appointment_verifications`** + Zod/relaciones; scripts **`yarn db:generate`** y **`yarn db:studio`**; carpeta **`migrations/`** para salida de generate.
-- **Documentación SQL**: `scripts/db/migrations/20260324_advisor_rls_performance.sql` como referencia; `README.md`, `CHANGELOG.md`, `docs/DESARROLLO_LOCAL.md`, `docs/INDEX.md` actualizados.
+- **Documentación SQL**: `apps/geemastudio-server/supabase/migrations/00000000000000_baseline_full_schema.sql` como referencia; `README.md`, `CHANGELOG.md`, `docs/DESARROLLO_LOCAL.md`, `docs/INDEX.md` actualizados.
 
 ## Cambios Recientes (mar 2026 — PR-13: pagos de empleados)
 
