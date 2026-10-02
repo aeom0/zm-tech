@@ -10,16 +10,26 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const brand: TenantBrand = data.session
     ? await fetchTenantBrandForUser(supabase, data.session.user.id)
-    : { primary: null, accent: null, businessName: null, logoUrl: null }
+    : { primary: null, accent: null, businessName: null, logoUrl: null, tenantSlug: null }
+
+  const manifestUrl = brand.tenantSlug
+    ? `/manifest.webmanifest?tenant=${brand.tenantSlug}`
+    : '/manifest.webmanifest'
+
+  const appleIcon =
+    brand.tenantSlug && brand.logoUrl
+      ? `/api/pwa/icon?tenant=${brand.tenantSlug}&size=192`
+      : brand.logoUrl || '/apple-touch-icon.png'
 
   return {
+    manifest: manifestUrl,
     appleWebApp: {
       capable: true,
       statusBarStyle: 'black-translucent',
       title: brand.businessName || 'GeemaStudio',
     },
     icons: {
-      apple: brand.logoUrl || '/apple-touch-icon.png',
+      apple: appleIcon,
     },
   }
 }
@@ -41,17 +51,24 @@ export default async function ShellLayout({ children }: { children: React.ReactN
 
   const brand: TenantBrand = data.session
     ? await fetchTenantBrandForUser(supabase, data.session.user.id)
-    : { primary: null, accent: null, businessName: null, logoUrl: null }
+    : { primary: null, accent: null, businessName: null, logoUrl: null, tenantSlug: null }
+
+  const manifestUrl = brand.tenantSlug
+    ? `/manifest.webmanifest?tenant=${brand.tenantSlug}`
+    : '/manifest.webmanifest'
 
   return (
-    <ShellProviders
-      session={data.session ? { userEmail: data.session.user.email ?? 'usuario' } : null}
-      primaryColor={brand.primary}
-      accentColor={brand.accent}
-      tenantName={brand.businessName}
-      tenantLogoUrl={brand.logoUrl}
-    >
-      {children}
-    </ShellProviders>
+    <>
+      <link rel="manifest" href={manifestUrl} crossOrigin="use-credentials" />
+      <ShellProviders
+        session={data.session ? { userEmail: data.session.user.email ?? 'usuario' } : null}
+        primaryColor={brand.primary}
+        accentColor={brand.accent}
+        tenantName={brand.businessName}
+        tenantLogoUrl={brand.logoUrl}
+      >
+        {children}
+      </ShellProviders>
+    </>
   )
 }

@@ -8,22 +8,38 @@ export type TenantBrand = {
   accent: string | null
   businessName: string | null
   logoUrl: string | null
+  tenantSlug: string | null
 }
 
-const BRAND_SELECT = 'primary_color, accent_color, business_name, logo_url'
+const BRAND_SELECT = 'primary_color, accent_color, business_name, logo_url, tenant_slug'
 
 function toBrand(row: {
   primary_color?: string | null
   accent_color?: string | null
   business_name?: string | null
   logo_url?: string | null
+  tenant_slug?: string | null
 } | null): TenantBrand {
   return {
     primary: row?.primary_color ?? null,
     accent: row?.accent_color ?? null,
     businessName: row?.business_name ?? null,
     logoUrl: row?.logo_url || null,
+    tenantSlug: row?.tenant_slug || null,
   }
+}
+
+export async function fetchTenantBrandBySlug(
+  supabase: Awaited<ReturnType<typeof createServerSupabaseClient>>,
+  tenantSlug: string
+): Promise<TenantBrand> {
+  const bySlug = await supabase
+    .from('tenant_settings')
+    .select(BRAND_SELECT)
+    .eq('tenant_slug', tenantSlug)
+    .maybeSingle()
+
+  return toBrand(bySlug.data)
 }
 
 export async function fetchTenantBrandForUser(
