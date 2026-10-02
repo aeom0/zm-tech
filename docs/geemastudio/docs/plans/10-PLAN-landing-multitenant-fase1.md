@@ -22,7 +22,7 @@ Para poder hacer QA visual de las secciones nuevas con contenido real (en vez de
 
 ## Schema nuevo (aditivo, vía MCP `apply_migration`, aplicado a producción)
 
-Migración `apps/geemastudio-server/scripts/db/migrations/20260905_tenant_landing_sections.sql` (patrón `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`, idéntico al de `20260402_tenant_landing_pages.sql`):
+Migración `apps/geemastudio-server/supabase/migrations/20260906001646_tenant_landing_sections.sql` (patrón `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`, idéntico al de `20260402_tenant_landing_pages.sql`):
 
 ```sql
 ALTER TABLE public.tenant_settings

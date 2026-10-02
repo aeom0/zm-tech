@@ -15,7 +15,7 @@ Tras [Fase 1](09-PLAN-landing-multitenant-fase1.md) (templates + secciones + mir
 
 ### Storage
 
-- Migración [`20260912_web_assets_storage_rls.sql`](../../../apps/geemastudio-server/scripts/db/migrations/20260912_web_assets_storage_rls.sql) aplicada en prod (`udelxwwnyivknslueerr`):
+- Migración [`20260912142138_web_assets_storage_rls.sql`](../../../apps/geemastudio-server/supabase/migrations/20260912142138_web_assets_storage_rls.sql) aplicada en prod (`udelxwwnyivknslueerr`):
   - `public_read_web_assets`
   - `owner_dev_insert_web_assets`
   - `owner_dev_delete_web_assets`
