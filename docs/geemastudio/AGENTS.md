@@ -157,6 +157,15 @@ Tablas principales en `packages/shared-schema/src/schema.ts`:
 
 RLS en Supabase (mobile ya migrado 100% a estas tablas): profiles (lectura propia; admins ven/editan todos), employees (todos autenticados leen; solo admins escriben), appointments (staff/dev/owner leen y escriben), payments e inventory_items (solo dev/owner), tenant_settings (solo dev/owner).
 
+
+### Privilegios de `anon` (crítico, 2-oct-2026)
+
+Supabase concede `ALL` a `anon` y `authenticated` sobre todo objeto nuevo de `public`. La migración `20261002120954_revoke_anon_table_grants` quitó esos grants a `anon` y dejó los default privileges sin `anon`. Reglas:
+
+- Vistas públicas (`tenant_brand_public`, `tenant_landing_public`): `REVOKE ALL ... FROM anon, authenticated` y luego `GRANT SELECT`. Una vista simple con `security_invoker = false` es auto-actualizable y escribe como `postgres`, saltándose RLS.
+- `tenant_settings`: `anon` solo lee columnas de contenido web (GRANT por columna). No agregar columnas sensibles a ese GRANT.
+- Tras cada migración sobre `public`, `role_table_grants` de `anon` solo debe listar `SELECT` de las vistas públicas.
+
 ## Sistema de Tenant (`@zmtech/tenant-config`)
 
 El paquete `packages/tenant-config` define la interface `TenantConfig` y cuatro presets:

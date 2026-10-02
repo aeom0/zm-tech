@@ -53,6 +53,10 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 - **Host**: `https://geema.zmtechdev.com`
 - Migración Plan 04: **S1–S3** ✅; **S4** ❌ (repo ZM)
 
+### Corte 1 validado (2-oct 2026)
+
+Panel y app de ZM en Geema: checklist D1–D4, W1–W6, R1–R3b del Plan 13 completo (ver [Plan 13 § Validación Corte 1](docs/plans/13-PLAN-panel-parity-zm-lash.md)). Endurecimiento de `anon` aplicado en prod (`20261002120954_revoke_anon_table_grants`).
+
 ### Pendientes (prioridad)
 
 | #   | Ítem                             | Repo    | Notas                               |
@@ -61,6 +65,7 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 | 2   | Ventas `product_orders` en Geema | zm-tech | ✅ 23-sep; flujo operativo en Productos |
 | 3   | **S4** crons + Vault             | ZM      | Bloquea 2.º tenant                  |
 | 4   | Smoke Finanzas ZM en APK         | zm-tech | Validación mobile pendiente         |
+| 5   | **Corte 2** — landing `zmlashnails.com` (Plan 11 Modo B) | ambos | Faltan reseñas reales (Fase 5), confirmar `web_team` con Vanessa y retiro de Sanity (Fase 6) |
 
 ### Riesgos activos
 

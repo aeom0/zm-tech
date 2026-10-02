@@ -7,6 +7,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Validado (2-oct 2026 — Corte 1: panel y app de ZM en Geema)
+
+- **Plan 13** — checklist D1–D4, W1–W6, R1–R3b completo: código y prod (solo lectura) más confirmación de Alberto para Simulador y push físico; evidencia en § "Validación Corte 1". **Corte 1 cerrado.**
+- **Seguridad (prod)** — migración `20261002120954_revoke_anon_table_grants`: `anon` sin privilegios de escritura en `public`, lectura de `tenant_settings` acotada a columnas web, vistas `tenant_brand_public` / `tenant_landing_public` solo `SELECT` (eran escribibles por anon/authenticated sobre `tenant_settings`, saltándose RLS) y default privileges sin grants a `anon`.
+- **Confirmado** — `web_enabled=true` en `zm-lash-nails` es intencional (1-oct). `wa_error_log` 48 h sin errores nuevos.
+
 ### Cambiado (1-oct 2026 — assets de marca v2)
 
 - **Marca** — `logo-diamondSparkle.svg` y `logo-diamondSparkleNGlow.svg` sustituidos por los nuevos (export Affinity) en mobile y web. `-negative` / `-positive` regenerados desde el principal (negative: fondo negro; positive: luminosidad invertida sobre blanco).

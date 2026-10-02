@@ -32,7 +32,7 @@
 
 ## Dónde continuar (recomendación 22-sep)
 
-**Track A — cutover Vanessa a Geema (tenant #1):** suite panel WABA ✅ + finanzas ejecutiva ✅ (Plan 12 P1/P2) + push FCM P9/P10 ✅ (cita WABA y pago por validar recibidos en Geema). Siguiente: paridad WABA avanzada o cutover ops.
+**Track A — cutover Vanessa a Geema (tenant #1):** **Corte 1 (panel y app) validado el 2-oct-2026** — checklist D1–D4, W1–W6, R1–R3b del Plan 13 completo (código + prod en solo lectura; Simulador y push físico confirmados por Alberto). Falta el Corte 2 (landing `zmlashnails.com`, Plan 11 Modo B): reseñas reales de Google (bloqueada por datos), confirmar `web_team` con Vanessa y retiro de Sanity. Detalle: Plan 13 § Validación Corte 1 (zm-tech PR #45).
 **Track B — 2.º tenant:** S4 ✅ (PR #151). S5 ✅ en código (PR #154, #155, #156, panel de reglas). Siguiente: smoke del flag de routing en tenant QA, S6, y el loop Meta Ads en S7.  
 **Track C — riesgo:** ✅ cerrado — bot canónico ZM; redeploy solo desde ZM ([09](./09-WEBHOOK-PROD-RECONCILE.md)).
 
@@ -61,9 +61,26 @@ Detalle vivo: Plan 11/12 en `zm-tech/docs/geemastudio/docs/plans/`; roadmap spri
 
 ---
 
+## Corte 1 — hallazgos de seguridad (2-oct-2026)
+
+Corregidos en prod con la migración `20261002120954_revoke_anon_table_grants` (archivo en `zm-tech/apps/geemastudio-server/supabase/migrations/`; **no** se duplica en este repo, la BD es compartida).
+
+| # | Hallazgo | Estado |
+|---|----------|--------|
+| H1 | `anon` con GRANT completo (incl. DELETE/TRUNCATE) sobre ~46 tablas de `public`, frenado solo por RLS | ✅ revocado |
+| H2 | Policy `tenant_landing_public_read` dejaba a `anon` leer la fila completa de un tenant con `web_enabled = true` (incl. `waba_*`, `contact_info`) | ✅ lectura anon acotada a columnas web |
+| H3 | `wa_error_log` 48 h: 3 entradas, ya corregidas (#160 BSUID, `96425bbc` foto de tardanzas, guard de cita fantasma) | ✅ sin errores nuevos |
+| H4 | Vistas `tenant_brand_public` / `tenant_landing_public`: simples, `security_invoker = false`, con INSERT/UPDATE/DELETE para anon y authenticated; escribían en `tenant_settings` saltándose RLS | ✅ solo `SELECT` |
+
+**Decisión confirmada:** `web_enabled = true` en `zm-lash-nails` es intencional (activado el 1-oct).
+
+**Causa común:** Supabase concede ALL a `anon`/`authenticated` sobre todo objeto nuevo de `public`. Regla para ZM y Geema: tras crear tabla o vista pública, `REVOKE ALL ... FROM anon` y conceder solo lo necesario (ver `packages/shared-schema/AGENTS.md` § RLS).
+
+---
+
 ## Decisiones pendientes (Alberto)
 
-1. ¿Cutover de Vanessa al panel Geema ya (WABA + finanzas ✅)?
+1. ~~¿Cutover de Vanessa al panel Geema ya?~~ Corte 1 validado (2-oct); pendiente definir fecha y aviso al equipo.
 2. ¿Primer vertical post-belleza: `barbershop`?
 3. ¿Smoke flag ON en tenant QA antes del 2.º tenant?
 4. ¿Desbloquear bot retail (`add_to_cart` productos) ahora que no hay drift?
