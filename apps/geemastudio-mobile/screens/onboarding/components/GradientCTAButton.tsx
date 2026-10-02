@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   gradient: {
+    flexGrow: 1,
     paddingHorizontal: Spacing.xl,
     alignItems: 'center',
     justifyContent: 'center',
@@ -110,12 +111,15 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   outlineGradientBorder: {
+    flexGrow: 1,
     borderRadius: BorderRadius.lg,
     padding: 1.5,
   },
   outlineInner: {
+    flexGrow: 1,
     paddingHorizontal: Spacing.xl,
     alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: BorderRadius.lg - 1.5,
     backgroundColor: '#0D0D12',
   },

@@ -9,9 +9,14 @@ import {
   OnboardingProgressDots,
   GradientCTAButton,
   DiamondSparkle,
+  NebulosaGlow,
 } from '@/screens/onboarding/components'
 import { useAuth } from '@/contexts/AuthContext'
 import { Colors, Onboarding, Spacing, BorderRadius } from '@/constants/theme'
+
+const LOGO_STAGE_HEIGHT = 190
+const LOGO_SIZE = 130
+const GLOW_SIZE = 300
 
 type AuthFlow = 'wizard' | 'returning'
 
@@ -61,8 +66,11 @@ export default function OnboardingAuthScreen({
               <OnboardingProgressDots currentStep={5} />
             </View>
           ) : (
-            <View style={styles.logoWrap}>
-              <DiamondSparkle size={52} />
+            <View style={styles.logoStage}>
+              <View style={styles.glowWrapper}>
+                <NebulosaGlow size={GLOW_SIZE} />
+              </View>
+              <DiamondSparkle size={LOGO_SIZE} />
             </View>
           )}
         </Animated.View>
@@ -158,7 +166,7 @@ export default function OnboardingAuthScreen({
               style={styles.btnHalf}
             />
             <GradientCTAButton
-              label={esRegreso ? 'Entrar' : 'Crear cuenta y continuar'}
+              label={esRegreso ? 'Entrar' : 'Crear cuenta'}
               icon="arrow-right"
               onPress={handleSubmit}
               loading={loading}
@@ -196,10 +204,19 @@ const styles = StyleSheet.create({
   },
   logoRow: {
     alignItems: 'center',
-    marginBottom: Spacing['2xl'],
+    marginBottom: Spacing.lg,
   },
-  logoWrap: {
+  logoStage: {
+    width: '100%',
+    height: LOGO_STAGE_HEIGHT,
     alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'visible',
+  },
+  glowWrapper: {
+    position: 'absolute',
+    top: (LOGO_STAGE_HEIGHT - GLOW_SIZE) / 2,
+    alignSelf: 'center',
   },
   dotsRow: {
     flexDirection: 'row',
