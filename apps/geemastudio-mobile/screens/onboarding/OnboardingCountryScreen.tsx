@@ -13,7 +13,9 @@ import {
 } from '@/screens/onboarding/components'
 import { BorderRadius, Gradients, Onboarding, Spacing } from '@/constants/theme'
 import { useTenant } from '@/contexts/TenantContext'
-import { countriesForPicker, localeFromCountry, type CountryPreset } from '@zmtech/tenant-config'
+import { COUNTRY_PRESETS, localeFromCountry, type CountryPreset } from '@zmtech/tenant-config'
+import { CurrencyPickerModal } from '@/screens/settings/components/CurrencyPickerModal'
+import type { Moneda } from '@/screens/settings/constants'
 
 interface OnboardingCountryScreenProps {
   onNext: () => void
@@ -37,24 +39,46 @@ function hexToRgba(hex: string, alpha: number): string {
   return `rgba(${r},${g},${b},${alpha})`
 }
 
+/** País sugerido a partir de la zona horaria del dispositivo (solo si es inequívoco). */
+function detectSuggestedCountry(paises: CountryPreset[]): CountryPreset | undefined {
+  let tz: string | undefined
+  try {
+    tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+  } catch {
+    return undefined
+  }
+  if (!tz) return undefined
+  const matches = paises.filter((p) => p.timezone === tz)
+  return matches.length === 1 ? matches[0] : undefined
+}
+
 export default function OnboardingCountryScreen({ onNext, onBack }: OnboardingCountryScreenProps) {
-  const { config, updateTenant } = useTenant()
-  const paises = useMemo(() => countriesForPicker(), [])
-  const featured = paises.find((p) => p.featured) ?? paises[0]
+  const { updateTenant } = useTenant()
+  const paises = useMemo(
+    () => [...COUNTRY_PRESETS].sort((a, b) => a.label.localeCompare(b.label, 'es')),
+    []
+  )
+  const featured = useMemo(() => detectSuggestedCountry(paises), [paises])
   const otros = paises.filter((p) => p.code !== featured?.code)
 
-  const [seleccionado, setSeleccionado] = useState(() => {
-    const actual = config.locale.country
-    const esValido = actual && paises.some((p) => p.code === actual)
-    return (esValido ? actual : featured.code) as CountryPreset['code']
-  })
+  // `config.locale.country` trae VE por defecto: no es una elección del usuario, así que se ignora.
+  const [seleccionado, setSeleccionado] = useState<CountryPreset['code'] | null>(null)
+  const [moneda, setMoneda] = useState<{ code: string; symbol: string } | null>(null)
+  const [modalMonedaVisible, setModalMonedaVisible] = useState(false)
 
-  const presetActual = paises.find((p) => p.code === seleccionado) ?? featured
+  const presetActual = paises.find((p) => p.code === seleccionado)
+  const monedaActual = moneda ?? presetActual?.currency
+
+  const elegirPais = (code: CountryPreset['code']) => {
+    setSeleccionado(code)
+    setMoneda(null)
+  }
 
   const continuar = async () => {
-    const locale = localeFromCountry(seleccionado) ?? localeFromCountry(featured.code)
+    if (!seleccionado) return
+    const locale = localeFromCountry(seleccionado)
     if (!locale) return
-    await updateTenant({ locale })
+    await updateTenant({ locale: moneda ? { ...locale, currency: moneda } : locale })
     onNext()
   }
 
@@ -76,13 +100,18 @@ export default function OnboardingCountryScreen({ onNext, onBack }: OnboardingCo
           ¿Desde dónde operas?
         </ThemedText>
         <ThemedText style={[styles.subtitulo, { color: Onboarding.textMuted }]}>
-          Moneda, zona horaria y feriados se configuran según tu país
+          Zona horaria y feriados se configuran según tu país. La moneda la puedes cambiar.
         </ThemedText>
       </Animated.View>
 
+      {featured ? (
+        <>
+          <ThemedText style={[styles.otrosLabel, { color: Onboarding.textMuted }]}>
+            Sugerido para ti
+          </ThemedText>
       <Animated.View entering={FadeInDown.delay(80).duration(400)}>
         <Pressable
-          onPress={() => setSeleccionado(featured.code)}
+          onPress={() => elegirPais(featured.code)}
           style={({ pressed }) => [pressed && { opacity: 0.92 }]}
         >
           {seleccionado === featured.code ? (
@@ -139,9 +168,11 @@ export default function OnboardingCountryScreen({ onNext, onBack }: OnboardingCo
           )}
         </Pressable>
       </Animated.View>
+        </>
+      ) : null}
 
       <ThemedText style={[styles.otrosLabel, { color: Onboarding.textMuted }]}>
-        Otros países
+        {featured ? 'Otros países' : 'Elige tu país'}
       </ThemedText>
       <View style={styles.grid}>
         {otros.map((pais, i) => {
@@ -153,7 +184,7 @@ export default function OnboardingCountryScreen({ onNext, onBack }: OnboardingCo
               style={styles.gridItem}
             >
               <Pressable
-                onPress={() => setSeleccionado(pais.code)}
+                onPress={() => elegirPais(pais.code)}
                 style={[
                   styles.paisCard,
                   {
@@ -183,11 +214,29 @@ export default function OnboardingCountryScreen({ onNext, onBack }: OnboardingCo
       </View>
 
       <View style={styles.footer}>
-        <ThemedText style={[styles.hint, { color: Onboarding.textMuted }]}>
-          {presetActual.label} · {presetActual.currency.symbol} {presetActual.currency.code}
-        </ThemedText>
-        <GradientCTAButton label="Continuar →" onPress={continuar} />
+        {presetActual && monedaActual ? (
+          <Pressable
+            onPress={() => setModalMonedaVisible(true)}
+            style={styles.monedaRow}
+            hitSlop={8}
+          >
+            <ThemedText style={[styles.hint, { color: Onboarding.textMuted }]}>
+              Moneda: {monedaActual.symbol} {monedaActual.code}
+            </ThemedText>
+            <ThemedText style={[styles.hint, styles.cambiar, { color: Onboarding.lunarisAccent }]}>
+              Cambiar
+            </ThemedText>
+          </Pressable>
+        ) : null}
+        <GradientCTAButton label="Continuar →" onPress={continuar} disabled={!seleccionado} />
       </View>
+
+      <CurrencyPickerModal
+        visible={modalMonedaVisible}
+        currentCode={monedaActual?.code ?? ''}
+        onSelect={(m: Moneda) => setMoneda({ code: m.code, symbol: m.symbol })}
+        onClose={() => setModalMonedaVisible(false)}
+      />
     </OnboardingLayout>
   )
 }
@@ -288,5 +337,14 @@ const styles = StyleSheet.create({
   hint: {
     fontSize: 13,
     textAlign: 'center',
+  },
+  monedaRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: Spacing.sm,
+  },
+  cambiar: {
+    fontWeight: '600',
   },
 })
