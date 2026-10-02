@@ -9,6 +9,7 @@ import {
   type TimeFormatPreference,
 } from '@zmtech/tenant-config'
 
+import { agendaCardGradient } from './AgendaAppointmentCard'
 import type { AgendaAppointment } from '@/hooks/agenda/types'
 
 interface AgendaWeekGridProps {
@@ -131,8 +132,7 @@ export function AgendaWeekGrid({
                       onClick={() => onOpenDetail(apt)}
                       className="block w-full overflow-hidden rounded-md px-1.5 py-1 text-left transition hover:brightness-125"
                       style={{
-                        backgroundColor: `color-mix(in srgb, ${color} 28%, #18181b)`,
-                        borderLeft: `3px solid ${color}`,
+                        background: agendaCardGradient(color),
                       }}
                       title={`${apt.client_name} · ${hora} · ${svc}`}
                     >

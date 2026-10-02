@@ -114,7 +114,7 @@ export default function PanelAgendaPage() {
 
       <AgendaToolbar
         view={view}
-        onViewChange={setView}
+        onToggleView={() => setView((v) => (v === 'day' ? 'week' : 'day'))}
         selectedDate={selectedDate}
         timezone={timezone}
         statusFilter={statusFilter}
@@ -197,7 +197,7 @@ export default function PanelAgendaPage() {
             ))}
 
             <div
-              className="relative border-r border-white/[0.08] bg-zinc-950"
+              className="sticky left-0 z-20 border-r border-white/[0.08] bg-zinc-950"
               style={{ height: gridHeight }}
             >
               {gridHours.map((h, i) => (

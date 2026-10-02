@@ -15,7 +15,7 @@ export type AgendaView = 'day' | 'week'
 
 interface AgendaToolbarProps {
   view: AgendaView
-  onViewChange: (v: AgendaView) => void
+  onToggleView: () => void
   selectedDate: Date
   timezone: string
   statusFilter: AgendaStatusFilter
@@ -28,7 +28,7 @@ interface AgendaToolbarProps {
 
 export function AgendaToolbar({
   view,
-  onViewChange,
+  onToggleView,
   selectedDate,
   timezone,
   statusFilter,
@@ -91,32 +91,23 @@ export function AgendaToolbar({
             Hoy
           </button>
         )}
-        <div className="min-w-0 flex-1">
+        <button
+          type="button"
+          onClick={onToggleView}
+          className="min-w-0 flex-1 rounded-xl px-2 py-1 text-left transition-colors hover:bg-white/[0.04]"
+          aria-label={isWeek ? 'Volver a vista de día' : 'Ver semana completa'}
+        >
           <div className="truncate text-sm font-semibold text-white">{label}</div>
-          <div className="text-xs text-zinc-500">
-            {count} {count === 1 ? 'cita' : 'citas'}
+          <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--tenant-primary)]">
+            {isWeek ? 'Semana · clic para ver día' : 'Día · clic para ver semana'}
+            <span className="ml-2 font-normal normal-case tracking-normal text-zinc-500">
+              {count} {count === 1 ? 'cita' : 'citas'}
+            </span>
           </div>
-        </div>
+        </button>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
-        <div className="mr-1 inline-flex overflow-hidden rounded-xl border border-white/[0.08]">
-          {(['day', 'week'] as const).map((v) => (
-            <button
-              key={v}
-              type="button"
-              onClick={() => onViewChange(v)}
-              className={[
-                'px-3 py-1.5 text-xs font-semibold transition-colors',
-                view === v
-                  ? 'bg-[var(--tenant-primary)]/15 text-[var(--tenant-primary)]'
-                  : 'bg-white/[0.02] text-zinc-300 hover:bg-white/[0.04]',
-              ].join(' ')}
-            >
-              {v === 'day' ? 'Día' : 'Semana'}
-            </button>
-          ))}
-        </div>
         {STATUS_CHIP.map((chip) => (
           <button
             key={chip.id}
