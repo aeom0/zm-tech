@@ -278,7 +278,7 @@ Checklist side-by-side (tenant sandbox Geema vs panel ZM prod):
 - [x] W4b — Inbox **P1.5** (M14–M19) antes de go-live ZM con tráfico real de fotos/plantillas
 - [x] W4c — Inbox **P2** (M20–M23): Haiku agenda, borrar hilo, reacciones/quotes — deseable, no bloquea campañas
 - [x] W5 — WabaNav con al menos: Campañas, Mensajes, Haiku, Historial (Portafolio/Simulador si go-live bot)
-- [ ] W6 — Simulador corre 1 flujo booking feliz contra dispatcher real
+- [x] W6 — Simulador corre 1 flujo booking feliz contra dispatcher real
 
 ### Runtime / push
 
@@ -306,12 +306,12 @@ Revisión contra código (`apps/geemastudio-web`) y prod (`udelxwwnyivknslueerr`
 | R2 | `send-whatsapp-notification` v47 y `waba-staff-session` v122 ACTIVE; el inbox los invoca (M1/M2) |
 | R3 / R3b | `profiles.push_token` en 6 de 7 perfiles; P1–P23 ✅ en este plan (smoke físico 23-sep). `send-notification` v27 ACTIVE |
 
-**Sin verificar en esta pasada:** W6 (correr el Simulador con un flujo de booking real) y un smoke físico de push reciente.
+**Confirmado por Alberto (2-oct-2026):** W6 (Simulador funciona) y smoke físico de push (las notificaciones llegan).
 
 **Hallazgos (corregidos en prod el 2-oct-2026 con la migración `20261002120954_revoke_anon_table_grants`)**
 
 - **H1 (corregido):** `anon` tenía GRANT completo (incl. INSERT/UPDATE/DELETE/TRUNCATE) sobre ~46 tablas de `public`, frenado solo por RLS. Ahora `anon` no tiene privilegios de escritura en ninguna tabla y los default privileges ya no le conceden nada en objetos nuevos.
-- **H2 (corregido):** `web_enabled = true` en `zm-lash-nails` (el Plan 11 la documentaba en `false`) más la policy `tenant_landing_public_read` dejaban leer la fila completa a `anon`. Ahora `anon` solo puede leer las columnas de contenido web de `tenant_settings`; `waba_*`, `contact_info`, `commission_*` y `pos_fee_percent` quedan fuera. Pendiente de decisión: si `web_enabled = true` fue intencional.
+- **H2 (corregido):** `web_enabled = true` en `zm-lash-nails` (el Plan 11 la documentaba en `false`) más la policy `tenant_landing_public_read` dejaban leer la fila completa a `anon`. Ahora `anon` solo puede leer las columnas de contenido web de `tenant_settings`; `waba_*`, `contact_info`, `commission_*` y `pos_fee_percent` quedan fuera. `web_enabled = true` fue intencional (activado el 1-oct-2026).
 - **H4 (corregido, el más grave):** `tenant_brand_public` y `tenant_landing_public` son vistas simples (auto-actualizables), `security_invoker = false` y propiedad de `postgres`, con INSERT/UPDATE/DELETE concedidos a `anon` y `authenticated` por los default privileges. Por esa vía se podía escribir o borrar en `tenant_settings` saltándose RLS. Ahora son solo `SELECT`. Regla para vistas públicas nuevas: `REVOKE ALL` y luego `GRANT SELECT`.
 - **H3:** `wa_error_log` 48 h: 3 entradas, todas ya atendidas (guard de cita fantasma 30-sep, `payment_verification_insert` BSUID corregido en #160, media 400 de la foto de tardanzas corregido en `96425bbc`). Sin errores nuevos.
 
