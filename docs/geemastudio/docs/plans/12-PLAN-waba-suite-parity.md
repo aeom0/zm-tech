@@ -14,7 +14,7 @@ GeemaStudio es la generalización multi-tenant de ZM Lash & Nails Beauty. Antes 
 
 **Repriorización (20-sep, auditoría Plan 13):** en ZM, **Campañas** es la puerta de entrada del módulo WA (`AdminNav` → `/panel/waba/campanas`) e **Historial** es uso desktop diario — no tratarlos como "opcional nice-to-have". Tras Fases 2–3 de este plan, ejecutar campañas + historial **antes** de portafolio/promos; simulador sigue después de inbox (QA pre go-live). Detalle y scorecard en Plan 13.
 
-Investigación (3 agentes Explore + lectura directa de historial en `00000000000000_baseline_full_schema` y `useWabaStatus.ts`) confirmó además dos bloqueos reales no reportados antes:
+Investigación (3 agentes Explore + lectura directa de `20260406_waba_multitenant.sql` (archivo retirado; ver historial de git, commit `a0926cdb`) y `useWabaStatus.ts`) confirmó además dos bloqueos reales no reportados antes:
 
 1. **Bug de tipo `tenant_id`**: la migración declara `waba_config.tenant_id UUID NOT NULL REFERENCES tenant_settings(id)` (igual en `whatsapp_sessions`, `wa_messages`). El webhook real (`tenant-resolver.ts`) usa ese UUID consistentemente. Pero el panel web (`useWabaStatus.ts`, función `resolveTenantSlugForWrites()`) resuelve deliberadamente un **slug de texto** y lo usa como `tenant_id` al hacer `upsert` en `waba_config` — comentario en el propio código dice "usan tenant_id = slug (texto), no UUID", lo cual contradice la migración. Resultado: o el `upsert` del panel falla (`invalid input syntax for type uuid`), o si la columna real en prod ya fue alterada informalmente, el panel escribe filas que el bot nunca lee. Cualquiera de los dos escenarios es inaceptable para construir más UI encima.
 2. **RLS bloqueante**: `waba_config`, `whatsapp_sessions`, `wa_messages` solo tienen policy `service_role_only` (`TO service_role USING (true)`), sin ninguna policy para `authenticated`. El panel usa el cliente browser con `NEXT_PUBLIC_SUPABASE_ANON_KEY` (rol `authenticated`/`anon`), así que las lecturas actuales del panel (`useHaikuConfig`, `useWabaMessages`) deberían estar denegadas por RLS en producción real — es un bloqueo funcional, no solo un riesgo teórico.
@@ -23,7 +23,7 @@ Ambos deben resolverse primero; todo lo demás en WABA se construye sobre estas 
 
 > **Nota (21-sep-2026, port de Campañas):** al portar la pestaña Campañas (`/panel/waba/campanas`, ver Fase 5 más abajo) se verificó en vivo lo contrario a lo que asume este bloqueo: `resolveTenantSlugForWrites()` (slug de texto) **ya guarda correctamente** vía `useHaikuConfig.ts` en producción, y las lecturas `SELECT * FROM waba_config WHERE category = '...'` con la anon key **ya devuelven datos reales** (45 filas de `campanas` para `zm-lash-nails`) sin pasar por ninguna API route server-side. Es decir, ninguno de los dos bloqueos de Fase 1 se confirmó al construir sobre estas tablas — o ya fueron resueltos informalmente en prod, o el análisis original era incorrecto. No se investigó a fondo el porqué (posible RLS con policy adicional para `authenticated` no documentada aquí, o columna `tenant_id` ya en texto pese a lo que dice la migración versionada). Antes de invertir en la Fase 1 tal como está escrita (mover todo a API routes, migrar a UUID), confirmar con Alberto el estado real de la columna/policies — puede que ya no sea bloqueante.
 >
-> **Confirmado (21-sep-2026, `execute_sql` solo lectura sobre `udelxwwnyivknslueerr`):** ambos bloqueos de Fase 1 son inexistentes en prod hoy, la migración versionada historial en `00000000000000_baseline_full_schema` no refleja el estado real de la BD.
+> **Confirmado (21-sep-2026, `execute_sql` solo lectura sobre `udelxwwnyivknslueerr`):** ambos bloqueos de Fase 1 son inexistentes en prod hoy, la migración versionada `20260406_waba_multitenant.sql` (archivo retirado; ver historial de git, commit `a0926cdb`) no refleja el estado real de la BD.
 > - `information_schema.columns` muestra `waba_config.tenant_id`, `wa_messages.tenant_id` y `whatsapp_sessions.tenant_id` como **`text`**, no `uuid` — coincide con lo que escribe `resolveTenantSlugForWrites()` (slug). No hay FK a `tenant_settings(id)` en ninguna de las tres tablas (`information_schema.table_constraints` solo devuelve `waba_config_updated_by_fkey`). El "bug de tipo" descrito arriba no existe en la BD real; probablemente la migración versionada quedó desactualizada respecto a un `ALTER TABLE` aplicado directo en el Dashboard.
 > - `pg_policies` muestra políticas reales por tabla, no solo `service_role_only`: `waba_config_admin_only`, `admins_read_wa_messages`/`admins_delete_wa_messages`, `"Whatsapp sessions admin only"` — todas condicionadas a `profiles.role IN ('dev','owner')` (o `is_admin()`) **y** `tenant_id = current_tenant_id()`. `current_tenant_id()` lee el claim `tenant_id` del JWT (`auth.jwt() ->> 'tenant_id'`), es decir texto — coherente con el slug que usa el panel, no con UUID.
 >
@@ -191,7 +191,7 @@ Orden sugerido dentro de esta fase:
 
 ## Archivos críticos
 
-- `apps/geemastudio-server/supabase/migrations/00000000000000_baseline_full_schema.sql`
+- `20260406_waba_multitenant.sql` (archivo retirado; ver historial de git, commit `a0926cdb`)
 - `apps/geemastudio-web/src/hooks/waba/useWabaStatus.ts`
 - `apps/geemastudio-web/src/hooks/waba/useHaikuConfig.ts`
 - `apps/geemastudio-web/src/hooks/waba/useWabaMessages.ts` (MVP RO → ampliar en Fase 3)

@@ -50,7 +50,7 @@ Al iniciar la app por primera vez (sin config guardada), se muestra el **onboard
 4. **Categorías de servicios** — confirma las categorías sugeridas por tipo
 5. **Resumen** — revisión y confirmación; al terminar se persiste en `tenant_settings` (Supabase) y en AsyncStorage (`@geemastudio/tenant_config`)
 
-La configuración se sincroniza con la tabla `tenant_settings` en Supabase y es editable después desde Configuración (incluye **horario de trabajo**: zona horaria IANA + franja por día en `business_hours`, también en el panel web `/panel/horarios`). La **Agenda** móvil usa esa zona y franja para el calendario y las citas (`@zmtech/tenant-config`: Luxon + `working-schedule`). Las **fotos del personal** (`employees.avatar_url`) se configuran en Más → Personal y se guardan en el bucket Storage **`employee-avatars`** (ver `apps/geemastudio-server/supabase/migrations/00000000000000_baseline_full_schema.sql`).
+La configuración se sincroniza con la tabla `tenant_settings` en Supabase y es editable después desde Configuración (incluye **horario de trabajo**: zona horaria IANA + franja por día en `business_hours`, también en el panel web `/panel/horarios`). La **Agenda** móvil usa esa zona y franja para el calendario y las citas (`@zmtech/tenant-config`: Luxon + `working-schedule`). Las **fotos del personal** (`employees.avatar_url`) se configuran en Más → Personal y se guardan en el bucket Storage **`employee-avatars`** (sin migración versionada; ver `docs/DESARROLLO_LOCAL.md`).
 
 Para configurar manualmente, edita los seeds antes de ejecutarlos:
 

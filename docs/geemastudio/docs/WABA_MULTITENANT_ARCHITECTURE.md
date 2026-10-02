@@ -18,7 +18,7 @@ Cada tenant tiene su propio WABA modelado como columnas en su fila de
 - `waba_payment_info`
 - `features_waba` (interruptor — debe estar en `true` para que el tenant reciba tráfico)
 
-Fuente SQL: `supabase/migrations/00000000000000_baseline_full_schema.sql`. Resolución en runtime:
+Fuente SQL: `20260406_waba_multitenant.sql` (archivo retirado; ver historial de git, commit `a0926cdb`). Resolución en runtime:
 `supabase/functions/whatsapp-webhook/lib/tenant-resolver.ts`.
 
 > **Nota operativa**: también hay detalle de secrets, deploy y SQL de prueba en

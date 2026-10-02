@@ -176,7 +176,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 ### Añadido (5-sep 2026 — Agenda multi-servicio, packs y referencias, PR #31)
 
 - **Mobile — Agenda**: citas con múltiples servicios/packs por línea (`AppointmentDetailModal`, `useAgendaMutations`, `useAgendaQueries`); flujo de completar cita con edición de líneas (`editTotal`/`editDur`); subida de imágenes de referencia por cita (`referenceImagePaths`, `lib/referenceImages.ts`, máx. `MAX_REFERENCE_IMAGES`) con badge de no revisadas (`usePendingBadgeCount`).
-- **BD**: migración historial en `00000000000000_baseline_full_schema`.
+- **BD**: migración `20260830_appointment_services_multiservicio.sql` (archivo retirado; ver historial de git, commit `a0926cdb`).
 
 ### Añadido (4-sep 2026 — Personal Karelis/Alejandra + comisión fija casa)
 
@@ -288,7 +288,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ### Añadido
 
-- **Empleados — foto de perfil**: columna `employees.avatar_url`, bucket público Supabase **`employee-avatars`** (RLS: lectura abierta; escritura solo `dev`/`owner`), migración `apps/geemastudio-server/supabase/migrations/00000000000000_baseline_full_schema.sql` (también aplicable vía MCP `apply_migration`).
+- **Empleados — foto de perfil**: columna `employees.avatar_url`, bucket público Supabase **`employee-avatars`** (RLS: lectura abierta; escritura solo `dev`/`owner`), migración `202603301200_employee_avatar_url_storage.sql` (archivo retirado; ver historial de git, commit `a0926cdb`) (también aplicable vía MCP `apply_migration`).
 - **Mobile — Personal**: `expo-image-picker` (galería/cámara, recorte 1:1), subida con `apps/mobile/lib/employeeAvatar.ts`, preview en lista y modal; quitar foto borra referencia y el objeto en Storage cuando la URL es del bucket.
 - **Mobile — Agenda**: misma foto en **cabecera por profesional (tablet / vista semana legacy)** (`AgendaEmployeeHeaders`) y en **franja de equipo (vista dueño)** (`OwnerStaffAvatarStrip`); query `employees` incluye `avatar_url`.
 
@@ -324,7 +324,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 - Tabla **`appointment_verifications`** en `packages/shared-schema` (Drizzle + Zod + relaciones con `appointments`), alineada con Supabase.
 - Scripts **`yarn db:generate`** y **`yarn db:studio`** en la raíz del monorepo.
 - Carpeta **`migrations/`** en la raíz (salida prevista de Drizzle Kit) con `.gitkeep`.
-- SQL de referencia **`apps/geemastudio-server/supabase/migrations/00000000000000_baseline_full_schema.sql`**: `search_path` en funciones públicas, índices FK, políticas RLS consolidadas y patrón initplan seguro para `auth.uid()` (ya aplicado en proyecto Supabase GeemaStudio vía MCP).
+- SQL de referencia **`20260324_advisor_rls_performance.sql` (archivo retirado; ver historial de git, commit `a0926cdb`)**: `search_path` en funciones públicas, índices FK, políticas RLS consolidadas y patrón initplan seguro para `auth.uid()` (ya aplicado en proyecto Supabase GeemaStudio vía MCP).
 - **Web (panel)**: ruta autenticada **`/panel/servicios`** — CRUD de **`service_categories`** y **`services`** (toggle inline `is_active`, PR-06) más CRUD de **`packs`**, **`promotions`** y **`promotion_items`** (PR-06B; Supabase directo, TanStack Query). Tabs con título tipo _Catálogo de Servicios › …_ y tab activo sincronizado con query **`?tab=`** (`categorias` | `servicios` | `packs` | `promos`).
 - **Web (auth)**: login básico en **`/login`** para acceso al panel y layout SSR con guard de sesión.
 - **Mobile (Agenda)**: chequeo de disponibilidad y **bloqueo de solapes** al crear/reprogramar citas (incluye guard previo al insert/update para evitar race conditions).

@@ -29,17 +29,17 @@ pnpm db:generate
 
 ### SQL de RLS / advisors (referencia)
 
-El archivo **`apps/geemastudio-server/supabase/migrations/00000000000000_baseline_full_schema.sql`** documenta y reproduce (si lo ejecutas entero) los cambios de **Database Advisor** ya aplicados en el proyecto Supabase GeemaStudio: `search_path` en funciones, índices de FK, políticas RLS unificadas. En WSL sin IPv6 a TCP, suele aplicarse con el **SQL Editor** del dashboard o con **MCP Supabase** (`apply_migration`) desde Cursor.
+El estado vigente de funciones (`search_path`), índices de FK y políticas RLS (cambios de **Database Advisor**, ya aplicados) está en **`apps/geemastudio-server/supabase/migrations/00000000000000_baseline_full_schema.sql`** y en las migraciones posteriores de `apps/geemastudio-server/supabase/migrations/`; ya aplicados en el proyecto Supabase GeemaStudio: `search_path` en funciones, índices de FK, políticas RLS unificadas. En WSL sin IPv6 a TCP, suele aplicarse con el **SQL Editor** del dashboard o con **MCP Supabase** (`apply_migration`) desde Cursor.
 
 ### Avatar del personal (Storage)
 
-- **`apps/geemastudio-server/supabase/migrations/00000000000000_baseline_full_schema.sql`**: añade `employees.avatar_url`, crea bucket **`employee-avatars`** (público, imágenes) y políticas de Storage para que solo `dev`/`owner` suban o borren archivos.
+- **Bucket `employee-avatars`** (sin migración versionada; SQL original en el historial de git, commit `a0926cdb`, `scripts/db/migrations/202603301200_employee_avatar_url_storage.sql`): añade `employees.avatar_url`, crea bucket **`employee-avatars`** (público, imágenes) y políticas de Storage para que solo `dev`/`owner` suban o borren archivos.
 - Otro proyecto Supabase: ejecutar ese SQL en el editor o `apply_migration` con el mismo contenido.
 - La app móvil sube archivos con la **anon key** autenticada; si falta el bucket o las políticas, fallará el guardado de la foto en Personal.
 
 ### Tenant: subtype y categorías de servicio (`tenant_settings`)
 
-- **`apps/geemastudio-server/supabase/migrations/00000000000000_baseline_full_schema.sql`**: columnas **`business_subtype`** (text, nullable) y **`service_categories`** (jsonb, default `[]`). Aplicar en **SQL Editor** o MCP **`apply_migration`** (proyecto GeemaStudio). El mapeo mobile está en `apps/geemastudio-mobile/services/tenantSettingsService.ts`; el schema Drizzle en `packages/shared-schema`.
+- **`apps/geemastudio-server/supabase/migrations/20260829223024_create_tenant_settings_bridge.sql`**: columnas **`business_subtype`** (text, nullable) y **`service_categories`** (jsonb, default `[]`). Aplicar en **SQL Editor** o MCP **`apply_migration`** (proyecto GeemaStudio). El mapeo mobile está en `apps/geemastudio-mobile/services/tenantSettingsService.ts`; el schema Drizzle en `packages/shared-schema`.
 
 ### Logo del negocio (Storage)
 
