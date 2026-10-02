@@ -38,7 +38,6 @@ function deriveBadge(client: ClientWithMetrics): { label: string; className: str
 
 export function ClientCard({ client, currencyCode, timezone, onClick }: ClientCardProps) {
   const badge = deriveBadge(client)
-  const initial = client.name.charAt(0).toUpperCase() || '?'
 
   return (
     <button
@@ -46,9 +45,6 @@ export function ClientCard({ client, currencyCode, timezone, onClick }: ClientCa
       onClick={onClick}
       className="flex w-full items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 text-left transition-colors hover:border-white/[0.14] hover:bg-white/[0.04]"
     >
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-[var(--tenant-primary)]/25 bg-[var(--tenant-primary)]/10 text-sm font-bold text-[var(--tenant-primary)]">
-        {initial}
-      </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <span className="truncate text-sm font-semibold text-white">{client.name}</span>
