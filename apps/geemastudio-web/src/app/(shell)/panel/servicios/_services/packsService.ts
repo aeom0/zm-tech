@@ -12,6 +12,7 @@ export type Pack = {
   price: number
   service_ids: string[]
   is_active: boolean
+  emoji?: string | null
   /** ZM: category_id NOT NULL; se infiere del primer servicio al guardar. */
   category_id?: string | null
 }
@@ -22,6 +23,7 @@ export type PackInput = {
   price: number
   service_ids: string[]
   is_active: boolean
+  emoji?: string
 }
 
 const GEEMA_SELECT = 'id, name, description, price, service_ids, is_active'
@@ -56,6 +58,7 @@ function normalizeZm(row: Record<string, unknown>): Pack {
     price: Number(row.pack_price) || 0,
     service_ids: parseServiceIds(row.service_ids),
     is_active: Boolean(row.is_active),
+    emoji: row.emoji != null ? String(row.emoji) : null,
     category_id: row.category_id != null ? String(row.category_id) : null,
   }
 }
@@ -114,7 +117,7 @@ export async function createPack(input: PackInput): Promise<Pack> {
         service_ids: serializeServiceIds(input.service_ids, dialect),
         category_id,
         is_active: input.is_active,
-        emoji: '✨',
+        emoji: input.emoji?.trim() || '✨',
         badge: 'PACK',
       })
       .select(ZM_SELECT)
@@ -153,6 +156,7 @@ export async function updatePack(id: string, input: Partial<PackInput>): Promise
       payload.category_id = await resolveCategoryId(sb, serviceIds)
     }
     if (input.is_active != null) payload.is_active = input.is_active
+    if (input.emoji !== undefined) payload.emoji = input.emoji.trim() || '✨'
 
     const { data, error } = await sb
       .from('packs')

@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 import { useCreatePack, useUpdatePack } from '@/hooks/servicios/usePacks'
 import type { Pack } from '../../_services/packsService'
+import { DEFAULT_CATALOG_EMOJI, EmojiPicker, PACK_QUICK_EMOJIS } from '../shared/EmojiPicker'
 import { ServicePickerCheckbox } from './ServicePickerCheckbox'
 
 interface Props {
@@ -14,6 +15,7 @@ interface Props {
 
 type FormState = {
   name: string
+  emoji: string
   description: string
   price: string
   service_ids: string[]
@@ -22,6 +24,7 @@ type FormState = {
 
 const EMPTY: FormState = {
   name: '',
+  emoji: DEFAULT_CATALOG_EMOJI,
   description: '',
   price: '',
   service_ids: [],
@@ -31,6 +34,7 @@ const EMPTY: FormState = {
 function formFromPack(pack: Pack): FormState {
   return {
     name: pack.name,
+    emoji: pack.emoji || DEFAULT_CATALOG_EMOJI,
     description: pack.description ?? '',
     price: String(pack.price).replace('.', ','),
     service_ids: pack.service_ids,
@@ -56,6 +60,7 @@ function PackFormModalInner({ pack, onClose }: { pack?: Pack | null; onClose: ()
 
     const input = {
       name: form.name.trim(),
+      emoji: form.emoji.trim() || DEFAULT_CATALOG_EMOJI,
       description: form.description.trim() || null,
       price,
       service_ids: form.service_ids,
@@ -84,6 +89,11 @@ function PackFormModalInner({ pack, onClose }: { pack?: Pack | null; onClose: ()
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
               placeholder="Ej: Pack novias"
             />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-xs text-white/50">Emoji</label>
+            <EmojiPicker emojis={PACK_QUICK_EMOJIS} value={form.emoji} onChange={(emoji) => setForm((f) => ({ ...f, emoji }))} />
           </div>
 
           <div>

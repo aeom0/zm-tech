@@ -49,7 +49,10 @@ export function PackCard({ pack, onEdit }: Props) {
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <h3 className="truncate text-sm font-medium text-white">{pack.name}</h3>
+          <h3 className="truncate text-sm font-medium text-white">
+            {pack.emoji ? <span aria-hidden>{pack.emoji} </span> : null}
+            {pack.name}
+          </h3>
           {pack.description ? (
             <p className="mt-0.5 line-clamp-1 text-xs text-white/50">{pack.description}</p>
           ) : null}

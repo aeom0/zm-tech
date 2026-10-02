@@ -50,7 +50,8 @@ export function PromoCard({ promo, onEdit }: Props) {
     }
   }
 
-  const { emoji, label } = splitBadge(promo.badge)
+  const { emoji: badgeEmoji, label } = splitBadge(promo.badge)
+  const emoji = promo.emoji || badgeEmoji
   const itemCount = promo.promotion_items?.length ?? 0
   const isExpired = promo.expires_at ? new Date(promo.expires_at) < new Date() : false
 

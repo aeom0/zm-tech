@@ -19,6 +19,7 @@ export type Promotion = {
   title: string
   description: string | null
   badge: string | null
+  emoji?: string | null
   accent_color: string | null
   promo_price: number
   is_active: boolean
@@ -36,7 +37,7 @@ export type PromoItemInput = {
 }
 
 const ZM_PROMOS_SELECT =
-  'id, title, description, badge, accent_color, promo_price, is_active, valid_until'
+  'id, title, description, badge, emoji, accent_color, promo_price, is_active, valid_until'
 
 function requireSupabase() {
   if (!supabase) {
@@ -84,6 +85,7 @@ function normalizePromotion(
     title: String(row.title),
     description: row.description != null ? String(row.description) : null,
     badge: row.badge != null ? String(row.badge) : null,
+    emoji: row.emoji != null ? String(row.emoji) : null,
     accent_color: row.accent_color != null ? String(row.accent_color) : null,
     promo_price: Number.isFinite(promoPrice) ? promoPrice : 0,
     is_active: Boolean(row.is_active),
@@ -168,7 +170,7 @@ export async function createPromotion(
         promo_price,
         is_active: input.is_active,
         valid_until: input.expires_at,
-        emoji: '✨',
+        emoji: input.emoji?.trim() || '✨',
         service_ids: '[]',
       })
       .select('id')
@@ -197,7 +199,9 @@ export async function createPromotion(
     return normalizePromotion(full as Record<string, unknown>, dialect, fullItems)
   }
 
-  const { data: promo, error } = await sb.from('promotions').insert(input).select().single()
+  // Dialecto Geema: la columna emoji no existe en ese esquema.
+  const { emoji: _emoji, ...geemaInput } = input
+  const { data: promo, error } = await sb.from('promotions').insert(geemaInput).select().single()
   if (error) throw error
   const promoId = String((promo as { id: string }).id)
 
@@ -240,6 +244,7 @@ export async function updatePromotion(
     if (input.title != null) payload.title = input.title.trim()
     if (input.description !== undefined) payload.description = input.description?.trim() || ''
     if (input.badge !== undefined) payload.badge = input.badge?.trim() || 'PROMO'
+    if (input.emoji !== undefined) payload.emoji = input.emoji?.trim() || '✨'
     if (input.accent_color !== undefined) payload.accent_color = input.accent_color?.trim() || null
     if (input.is_active != null) payload.is_active = input.is_active
     if (input.expires_at !== undefined) payload.valid_until = input.expires_at
@@ -267,7 +272,8 @@ export async function updatePromotion(
     return
   }
 
-  const { error } = await sb.from('promotions').update(input).eq('id', id)
+  const { emoji: _emoji, ...geemaInput } = input
+  const { error } = await sb.from('promotions').update(geemaInput).eq('id', id)
   if (error) throw error
 
   if (items !== undefined) {

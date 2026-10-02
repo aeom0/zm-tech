@@ -7,6 +7,7 @@ import { useCreatePromo, useUpdatePromo } from '@/hooks/servicios/usePromos'
 import type { PromoItemInput, Promotion } from '../../_services/promosService'
 import { useTenantSettings } from '@/hooks/configuracion/useTenantSettings'
 import { DEFAULT_TENANT_PRIMARY } from '@/lib/tenant-theme'
+import { DEFAULT_CATALOG_EMOJI, EmojiPicker, PROMO_QUICK_EMOJIS } from '../shared/EmojiPicker'
 import { PromoItemRow } from './PromoItemRow'
 
 interface Props {
@@ -17,6 +18,7 @@ interface Props {
 
 type FormState = {
   title: string
+  emoji: string
   description: string
   badge: string
   accent_color: string
@@ -27,6 +29,7 @@ type FormState = {
 
 const emptyForm = (accentColor: string): FormState => ({
   title: '',
+  emoji: DEFAULT_CATALOG_EMOJI,
   description: '',
   badge: '',
   accent_color: accentColor,
@@ -45,6 +48,7 @@ const EMPTY_ITEM: PromoItemInput = {
 function formFromPromo(promo: Promotion, fallbackAccent: string): FormState {
   return {
     title: promo.title,
+    emoji: promo.emoji || DEFAULT_CATALOG_EMOJI,
     description: promo.description ?? '',
     badge: promo.badge ?? '',
     accent_color: promo.accent_color ?? fallbackAccent,
@@ -106,6 +110,7 @@ function PromoFormModalInner({
 
     const input = {
       title: form.title.trim(),
+      emoji: form.emoji.trim() || DEFAULT_CATALOG_EMOJI,
       description: form.description.trim() || null,
       badge: form.badge.trim() || null,
       accent_color: form.accent_color || null,
@@ -141,6 +146,11 @@ function PromoFormModalInner({
               onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
               placeholder="Ej: Promo San Valentin"
             />
+          </div>
+
+          <div className="col-span-2">
+            <label className="mb-1 block text-xs text-white/50">Emoji</label>
+            <EmojiPicker emojis={PROMO_QUICK_EMOJIS} value={form.emoji} onChange={(emoji) => setForm((f) => ({ ...f, emoji }))} />
           </div>
 
           <div>
