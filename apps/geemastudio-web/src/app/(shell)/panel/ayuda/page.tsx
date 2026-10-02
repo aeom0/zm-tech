@@ -296,7 +296,7 @@ export default function PanelAyudaPage() {
 
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <a
-            href="https://wa.me/584120000000?text=Hola,%20necesito%20asistencia%20con%20el%20panel%20de%20GeemaStudio"
+            href="https://wa.me/584144940417?text=Hola,%20necesito%20asistencia%20con%20el%20panel%20de%20GeemaStudio"
             target="_blank"
             rel="noreferrer"
             className="flex items-center gap-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3.5 text-emerald-200 transition-colors hover:bg-emerald-500/15"
