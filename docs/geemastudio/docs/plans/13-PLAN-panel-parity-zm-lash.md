@@ -264,28 +264,55 @@ Checklist side-by-side (tenant sandbox Geema vs panel ZM prod):
 
 ### Shell / ops
 
-- [ ] D1 — Desde `/panel/*` se llega a Finanzas y Dashboard en ≤1 click
-- [ ] D2 — Finanzas web tiene vista Ejecutiva (KPIs + al menos 1 chart P&L o gastos)
-- [ ] D3 — Cliente → "Abrir chat WA" abre el hilo correcto
-- [ ] D4 — Copy de dominio custom refleja middleware real (Plan 13 Fase 0)
+- [x] D1 — Desde `/panel/*` se llega a Finanzas y Dashboard en ≤1 click
+- [x] D2 — Finanzas web tiene vista Ejecutiva (KPIs + al menos 1 chart P&L o gastos)
+- [x] D3 — Cliente → "Abrir chat WA" abre el hilo correcto
+- [x] D4 — Copy de dominio custom refleja middleware real (Plan 13 Fase 0)
 
 ### WABA (extiende Plan 12)
 
-- [ ] W1 — `waba_config.tenant_id` UUID alineado bot ↔ panel
-- [ ] W2 — Lecturas panel vía API routes; anon directo a tablas WABA = denegado
-- [ ] W3 — Haiku: 4 keys editables + test preview
-- [ ] W4 — Inbox **P0+P1** (Plan 12 M1–M13): texto, pausa/reactiva, badge bot, composer 24h, poll 10s, imagen, bloquear, copiar, `?phone=`, preview catálogo, badge pausado/unread
-- [ ] W4b — Inbox **P1.5** (M14–M19) antes de go-live ZM con tráfico real de fotos/plantillas
-- [ ] W4c — Inbox **P2** (M20–M23): Haiku agenda, borrar hilo, reacciones/quotes — deseable, no bloquea campañas
-- [ ] W5 — WabaNav con al menos: Campañas, Mensajes, Haiku, Historial (Portafolio/Simulador si go-live bot)
+- [x] W1 — `waba_config.tenant_id` UUID alineado bot ↔ panel
+- [x] W2 — Lecturas panel vía API routes; anon directo a tablas WABA = denegado
+- [x] W3 — Haiku: 4 keys editables + test preview
+- [x] W4 — Inbox **P0+P1** (Plan 12 M1–M13): texto, pausa/reactiva, badge bot, composer 24h, poll 10s, imagen, bloquear, copiar, `?phone=`, preview catálogo, badge pausado/unread
+- [x] W4b — Inbox **P1.5** (M14–M19) antes de go-live ZM con tráfico real de fotos/plantillas
+- [x] W4c — Inbox **P2** (M20–M23): Haiku agenda, borrar hilo, reacciones/quotes — deseable, no bloquea campañas
+- [x] W5 — WabaNav con al menos: Campañas, Mensajes, Haiku, Historial (Portafolio/Simulador si go-live bot)
 - [ ] W6 — Simulador corre 1 flujo booking feliz contra dispatcher real
 
 ### Runtime / push
 
-- [ ] R1 — Recordatorio 24h o same-day activo en tenant sandbox
-- [ ] R2 — `send-whatsapp-notification` + `waba-staff-session` operativos desde el inbox (prereq W4)
-- [ ] R3 — Push **PR-09 P0+P1** (checklist P1–P13 en Fase X)
-- [ ] R3b — Push P1.5 (P14–P17) alineado a inbox M4/M11 (bot pausado → aviso si responde)
+- [x] R1 — Recordatorio 24h o same-day activo en tenant sandbox
+- [x] R2 — `send-whatsapp-notification` + `waba-staff-session` operativos desde el inbox (prereq W4)
+- [x] R3 — Push **PR-09 P0+P1** (checklist P1–P13 en Fase X)
+- [x] R3b — Push P1.5 (P14–P17) alineado a inbox M4/M11 (bot pausado → aviso si responde)
+
+### Validación Corte 1 (2-oct-2026)
+
+Revisión contra código (`apps/geemastudio-web`) y prod (`udelxwwnyivknslueerr`, solo SELECT). Rama `claude/validar-corte1-geema-d4f8a2`.
+
+| Ítem | Evidencia |
+| ---- | --------- |
+| D1 | `PanelShell.tsx`: ítem Finanzas en el nav; `/dashboard` cuenta como Finanzas |
+| D2 | `finanzas/components/executive/` (KpiStrip, ProfitChart, BreakEvenCard, MixChart, etc.) |
+| D3 | `ClientDetailDrawer.tsx` enlaza `/panel/waba/mensajes?phone=` |
+| D4 | `configuracion/page.tsx`: "contacta a soporte y lo conectamos"; ya no promete dominio automático |
+| W1 | `waba_config.tenant_id` = slug `zm-lash-nails` (texto, no UUID; el criterio original decía UUID). RLS por `profiles.tenant_id` |
+| W2 | RLS activo y sin policy `anon` en `waba_config`, `wa_messages`, `whatsapp_sessions`, `wa_error_log`, `tenant_waba_numbers`, `push_tokens`, `appointment_verifications`. Ver hallazgo H1 |
+| W3 | Editores de prompt, keywords, saludo y bloqueados + `HaikuTestPanel`; keys en prod: `haiku_system_prompt`, `haiku_settings` (`welcome_*`), `blocked_phone_numbers` |
+| W4 / W4b / W4c | Plan 12 M1–M23 marcados ✅ y `mensajes/` coincide (pausa/reactiva, composer 24h, poll, adjuntos, bloqueo, ticks, plantillas, reacciones, borrar hilo, Haiku agenda) |
+| W5 | `WabaNav.tsx`: Mensajes, Campañas, Portafolio, Asistente IA, Simulador, Historial, Reglas, Estado |
+| R1 | Prod: crons `appointment-reminders-daily`, `same-day-appointment-reminder-every-15min`, `retouch-reminders-daily`, `abandoned-cart-reminders` activos. No hay tenant sandbox |
+| R2 | `send-whatsapp-notification` v47 y `waba-staff-session` v122 ACTIVE; el inbox los invoca (M1/M2) |
+| R3 / R3b | `profiles.push_token` en 6 de 7 perfiles; P1–P23 ✅ en este plan (smoke físico 23-sep). `send-notification` v27 ACTIVE |
+
+**Sin verificar en esta pasada:** W6 (correr el Simulador con un flujo de booking real) y un smoke físico de push reciente.
+
+**Hallazgos**
+
+- **H1 (seguridad, defensa en profundidad):** `anon` conserva GRANT completo (incl. INSERT/UPDATE/DELETE/TRUNCATE) sobre las tablas WABA, `tenant_settings`, `push_tokens` y `appointment_verifications`. Hoy lo frena RLS, pero un cambio de policy o una tabla sin RLS lo abriría. Corrección propuesta: `REVOKE ALL ... FROM anon` en esas tablas. Requiere OK explícito (escritura en prod).
+- **H2:** `tenant_settings.web_enabled = true` en la fila `zm-lash-nails` (el Plan 11 la documentaba en `false`). La policy `tenant_landing_public_read` deja a `anon` leer la fila completa; hoy `waba_access_token`, `waba_payment_info` y `waba_admin_phones` son nulos, pero `contact_info` está poblado. Confirmar si fue intencional y revocar columnas sensibles o migrar la lectura a la vista `tenant_landing_public`.
+- **H3:** `wa_error_log` 48 h: 3 entradas, todas ya atendidas (guard de cita fantasma 30-sep, `payment_verification_insert` BSUID corregido en #160, media 400 de la foto de tardanzas corregido en `96425bbc`). Sin errores nuevos.
 
 **Go-live ZM (DNS + `web_enabled`) sigue fuera**: requiere OK Vanessa/Alberto + contenido CMS (Plan 10). Este Done es del **panel**, no de la landing pública.
 

@@ -7,6 +7,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Validado (2-oct 2026 — Corte 1: panel y app de ZM en Geema)
+
+- **Plan 13** — checklist D1–D4, W1–W5, R1–R3b marcado contra código y prod (solo lectura); evidencia en § "Validación Corte 1". Pendiente: W6 (Simulador con booking real).
+- **Hallazgos** — H1 `anon` con GRANT completo sobre tablas WABA y `tenant_settings` (lo frena RLS); H2 `web_enabled=true` en `zm-lash-nails` con lectura anon de fila completa; H3 sin errores nuevos en `wa_error_log`.
+
 ### Cambiado (1-oct 2026 — assets de marca v2)
 
 - **Marca** — `logo-diamondSparkle.svg` y `logo-diamondSparkleNGlow.svg` sustituidos por los nuevos (export Affinity) en mobile y web. `-negative` / `-positive` regenerados desde el principal (negative: fondo negro; positive: luminosidad invertida sobre blanco).
