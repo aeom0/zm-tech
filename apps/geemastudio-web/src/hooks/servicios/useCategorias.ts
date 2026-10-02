@@ -20,7 +20,7 @@ export interface CategoriaRow {
 
 let iconSupport: Promise<boolean> | null = null
 
-/** true si `service_categories.icon` existe (migración 20260929130000). Cacheado por sesión. */
+/** true si `service_categories.icon` existe (migración 20260929122656). Cacheado por sesión. */
 function categoriasIconSupported(): Promise<boolean> {
   if (!iconSupport) {
     iconSupport = (async () => {

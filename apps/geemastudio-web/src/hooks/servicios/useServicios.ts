@@ -15,7 +15,7 @@ export interface ServicioRow {
   icon?: string | null
 }
 
-/** true si la BD ya tiene `services.icon` (migración 20260929120000). */
+/** true si la BD ya tiene `services.icon` (migración 20260929122147). */
 export function useServiciosIconSupport() {
   return useQuery({
     queryKey: ['web_servicios_icon_support'],

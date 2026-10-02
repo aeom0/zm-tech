@@ -103,7 +103,7 @@ Al expandir a otro país: cada tenant escribe wallclock en **su** timezone confi
 
 ### Corrección transversal ejecutada — 26-sep-2026
 
-La migración `20260926101500_normalize_event_timestamps.sql` convirtió a
+La migración `20260926140544_normalize_event_timestamps.sql` convirtió a
 `timestamptz` los eventos reales de pagos y retail, interpretando los datos
 históricos como UTC según el contrato vigente. `appointments.date` se conservó
 sin zona porque representa la hora de pared de la agenda.
