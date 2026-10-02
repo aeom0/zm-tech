@@ -34,7 +34,7 @@ export function ProductoCard({ producto, onEdit }: Props) {
       <div className="aspect-square w-full bg-black/30">
         {producto.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element -- URL de Storage, tamaño variable
-          <img src={producto.image_url} alt={producto.name} className="h-full w-full object-cover" />
+          <img src={producto.image_url} alt={producto.name} className="h-full w-full object-contain" />
         ) : (
           <div className="flex h-full w-full items-center justify-center text-xs text-white/30">
             Sin imagen
