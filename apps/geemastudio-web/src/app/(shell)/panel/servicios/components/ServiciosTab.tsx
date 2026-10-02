@@ -8,6 +8,7 @@ import type { CategoriaRow } from '@/hooks/servicios/useCategorias'
 import type { ServicioRow } from '@/hooks/servicios/useServicios'
 import { useDeleteServicio, useServicios, useToggleServicio } from '@/hooks/servicios/useServicios'
 import { ServiceToggle } from './ServiceToggle'
+import { ScrollFadeRow } from '@/components/ui/ScrollFadeRow'
 
 function fmtUsd(price: string) {
   const n = Number.parseFloat(String(price))
@@ -74,8 +75,7 @@ export function ServiciosTab({
       </div>
 
       {categorias.length > 0 && (
-        <div className="relative">
-          <div className="flex gap-2 overflow-x-auto pb-1">
+        <ScrollFadeRow backgroundColor="#0F0F0F" className="flex gap-2 pb-1">
             {chips.map((ch) => {
               const isActive =
                 ch.id === 'all' ? !selectedCategoryId : selectedCategoryId === ch.id
@@ -100,9 +100,7 @@ export function ServiciosTab({
                 </button>
               )
             })}
-          </div>
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[#0F0F0F] to-transparent sm:hidden" />
-        </div>
+        </ScrollFadeRow>
       )}
 
       {errorMessage && (

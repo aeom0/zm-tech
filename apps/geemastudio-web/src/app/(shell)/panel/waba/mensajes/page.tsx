@@ -9,6 +9,7 @@ import { useDashboardTenant } from '@/hooks/dashboard/useDashboardTenant'
 import { phonesLikelyMatch } from '@/lib/waPhone'
 import { MessageThread } from './_components/MessageThread'
 import { formatAbsoluteWhen, formatPhone, formatRelativeTime } from './_components/time'
+import { ScrollFadeRow } from '@/components/ui/ScrollFadeRow'
 
 type FilterType = 'all' | 'active24h' | 'paused'
 
@@ -188,7 +189,7 @@ function PanelWabaMensajesContent() {
                 )}
               </div>
 
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 text-xs scrollbar-none">
+              <ScrollFadeRow backgroundColor="#131313" className="flex items-center gap-1.5 pb-0.5 text-xs">
                 <button
                   type="button"
                   onClick={() => setFilter('all')}
@@ -237,7 +238,7 @@ function PanelWabaMensajesContent() {
                     </span>
                   )}
                 </button>
-              </div>
+              </ScrollFadeRow>
             </div>
 
             {/* Listado de conversaciones filtradas */}

@@ -20,6 +20,7 @@ import {
 } from 'lucide-react'
 
 import { useTenantSettings } from '@/hooks/configuracion/useTenantSettings'
+import { ScrollFadeRow } from '@/components/ui/ScrollFadeRow'
 
 type FaqCategory = 'todas' | 'agenda' | 'waba' | 'finanzas' | 'clientes' | 'configuracion'
 
@@ -217,7 +218,7 @@ export default function PanelAyudaPage() {
       </div>
 
       {/* Chips de categorías */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+      <ScrollFadeRow backgroundColor="#0F0F0F" className="flex items-center gap-2 pb-1">
         {CATEGORIES.map((cat) => (
           <button
             key={cat.id}
@@ -233,7 +234,7 @@ export default function PanelAyudaPage() {
             {cat.label}
           </button>
         ))}
-      </div>
+      </ScrollFadeRow>
 
       {/* Lista de Preguntas / Acordeón */}
       <div className="space-y-3">
