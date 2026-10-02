@@ -12,15 +12,15 @@
       <stop offset="55%"  stop-color="#242566"/>
       <stop offset="100%" stop-color="#22618C"/>
     </linearGradient>
-    <radialGradient id="glow-cyan" cx="512" cy="1060" r="640" gradientUnits="userSpaceOnUse" gradientTransform="translate(512 1060) scale(1 0.85) translate(-512 -1060)">
+    <radialGradient id="glow-cyan" cx="512" cy="920" r="480" gradientUnits="userSpaceOnUse" gradientTransform="translate(512 920) scale(1 0.75) translate(-512 -920)">
       <stop offset="0%"   stop-color="#04EFEA" stop-opacity="1"/>
       <stop offset="30%"  stop-color="#16BAC6" stop-opacity="0.75"/>
       <stop offset="65%"  stop-color="#227097" stop-opacity="0.30"/>
       <stop offset="100%" stop-color="#22618C" stop-opacity="0"/>
     </radialGradient>
-    <!-- Halo suave tras la corona -->
-    <radialGradient id="glow-crown" cx="512" cy="290" r="300" gradientUnits="userSpaceOnUse">
-      <stop offset="0%"   stop-color="#3A5FD0" stop-opacity="0.40"/>
+    <!-- Halo suave tras la corona reducida -->
+    <radialGradient id="glow-crown" cx="512" cy="350" r="240" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#3A5FD0" stop-opacity="0.45"/>
       <stop offset="100%" stop-color="#3A5FD0" stop-opacity="0"/>
     </radialGradient>
   </defs>
@@ -29,7 +29,7 @@
   <rect width="1024" height="1024" fill="url(#glow-cyan)"/>
   </g>
   <g id="diamante">
-    <g transform="matrix(2.4601,0,0,2.4601,192.19,75.34)">
+    <g transform="matrix(1.7221,0,0,1.7221,288.13,218.68)">
         <g transform="matrix(1,0,0,1,0,20.730864)">
             <g transform="matrix(1.365151,0,0,1.365151,-47.469659,-54.507111)">
                 <g transform="matrix(0.406488,0,0,0.406488,-78.122841,-30.624771)">
