@@ -10,6 +10,7 @@
  * - CTA: GradientCTAButton primary con gradiente Lunaris (no botón blanco)
  * - Botón de huella al lado del CTA si biometría está habilitada
  * - Link inferior "¿No tienes cuenta? Crea tu negocio" → onCreateBusiness?()
+ * - Link "¿No eres {negocio}? Usar otro negocio" → olvida el tenant local y vuelve al onboarding
  * - Botón "¿Olvidaste tu contraseña?" sutil entre campos y CTA
  * - Animaciones: FadeInUp para hero, FadeInDown para card y link
  */
@@ -41,17 +42,20 @@ import { Colors, Onboarding, Spacing, BorderRadius, Gradients } from '@/constant
 interface LoginScreenProps {
   onSuccess?: () => void
   onCreateBusiness?: () => void
+  /** Se llama tras olvidar el negocio local, para reiniciar el flujo de onboarding. */
+  onSwitchBusiness?: () => void
 }
 
 const LOGO_SIZE = 80
 
-export function LoginScreen({ onSuccess, onCreateBusiness }: LoginScreenProps = {}) {
+export function LoginScreen({ onSuccess, onCreateBusiness, onSwitchBusiness }: LoginScreenProps = {}) {
   const { login } = useAuth()
-  const { config } = useTenant()
+  const { config, resetTenant } = useTenant()
   const {
     isAvailable,
     isEnabled,
     enableBiometric,
+    disableBiometric,
     authenticateWithBiometric,
     getBiometricTypeName,
   } = useBiometricAuth()
@@ -114,6 +118,28 @@ export function LoginScreen({ onSuccess, onCreateBusiness }: LoginScreenProps = 
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleSwitchBusiness = () => {
+    if (busy) return
+    Alert.alert(
+      `¿No eres ${businessName}?`,
+      'Se quitará este negocio del dispositivo y volverás al inicio para entrar con otra cuenta o crear un negocio nuevo.',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Usar otro negocio',
+          style: 'destructive',
+          onPress: () => {
+            void (async () => {
+              await disableBiometric()
+              await resetTenant()
+              onSwitchBusiness?.()
+            })()
+          },
+        },
+      ]
+    )
   }
 
   const handleBiometricLogin = async () => {
@@ -286,6 +312,15 @@ export function LoginScreen({ onSuccess, onCreateBusiness }: LoginScreenProps = 
             </ThemedText>
           </Animated.View>
         ) : null}
+
+        <Animated.View entering={FadeInDown.duration(500).delay(300)} style={styles.createWrap}>
+          <ThemedText style={styles.createText}>
+            ¿No eres {businessName}?{' '}
+            <ThemedText style={styles.createLink} onPress={handleSwitchBusiness}>
+              Usar otro negocio
+            </ThemedText>
+          </ThemedText>
+        </Animated.View>
       </View>
     </OnboardingLayout>
   )

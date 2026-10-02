@@ -32,6 +32,8 @@ interface TenantContextValue {
     options?: { syncRemote?: boolean }
   ) => Promise<void>
   markConfigured: () => Promise<{ ok: boolean; error?: string }>
+  /** Olvida el negocio guardado en el dispositivo para volver al onboarding desde cero. */
+  resetTenant: () => Promise<void>
   isConfigured: boolean
   isLoading: boolean
   pendingOnboardingEmployees: PendingOnboardingEmployee[]
@@ -56,6 +58,14 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
 
   const addPendingOnboardingEmployee = useCallback((row: Omit<PendingOnboardingEmployee, 'id'>) => {
     setPendingOnboardingEmployees((prev) => [...prev, { ...row, id: nuevoIdPendiente() }])
+  }, [])
+
+  const resetTenant = useCallback(async () => {
+    await AsyncStorage.multiRemove([...ALL_TENANT_ASYNC_KEYS])
+    setConfig(defaultTenantConfig)
+    setPendingOnboardingEmployees([])
+    setIsConfigured(false)
+    queryClient.clear()
   }, [])
 
   const updateTenant = useCallback(
@@ -206,6 +216,7 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
         config,
         updateTenant,
         markConfigured,
+        resetTenant,
         isConfigured,
         isLoading,
         pendingOnboardingEmployees,

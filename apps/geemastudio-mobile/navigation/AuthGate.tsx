@@ -189,7 +189,15 @@ export default function AuthGate() {
 
   // Ya configurado pero sin sesión → login clásico (fuera del wizard)
   if (!isAuthenticated) {
-    return <LoginScreen />
+    return (
+      <LoginScreen
+        onSwitchBusiness={() => {
+          setEntryChoice('none')
+          setPaso(1)
+          setOnboardingSessionDone(false)
+        }}
+      />
+    )
   }
 
   // Tras splash nativa (+ OTA): marca del tenant, luego el panel
