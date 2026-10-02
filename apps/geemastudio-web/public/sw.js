@@ -1,5 +1,5 @@
 // Service Worker para GeemaStudio PWA
-const CACHE_NAME = 'geema-pwa-v1'
+const CACHE_NAME = 'geema-pwa-v2'
 
 self.addEventListener('install', () => {
   self.skipWaiting()
@@ -23,8 +23,14 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(event.request.url)
 
-  // Ignorar API, peticiones externas y WebSocket
-  if (url.pathname.startsWith('/api') || url.origin !== self.location.origin) {
+  // Ignorar navegaciones (el SW no debe interferir con redirects/auth), API,
+  // manifest, peticiones externas y WebSocket
+  if (
+    event.request.mode === 'navigate' ||
+    url.pathname.startsWith('/api') ||
+    url.pathname.endsWith('.webmanifest') ||
+    url.origin !== self.location.origin
+  ) {
     return
   }
 
@@ -46,8 +52,9 @@ self.addEventListener('fetch', (event) => {
         }
         return response
       })
-      .catch(() => {
-        return caches.match(event.request)
+      .catch(async () => {
+        const cached = await caches.match(event.request)
+        return cached || Response.error()
       })
   )
 })
