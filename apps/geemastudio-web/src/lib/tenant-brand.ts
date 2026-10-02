@@ -33,8 +33,10 @@ export async function fetchTenantBrandBySlug(
   supabase: Awaited<ReturnType<typeof createServerSupabaseClient>>,
   tenantSlug: string
 ): Promise<TenantBrand> {
+  // Vista pública: el manifest y los iconos PWA se piden sin sesión (anon) y
+  // tenant_settings solo es legible por dev/owner.
   const bySlug = await supabase
-    .from('tenant_settings')
+    .from('tenant_brand_public')
     .select(BRAND_SELECT)
     .eq('tenant_slug', tenantSlug)
     .maybeSingle()

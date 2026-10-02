@@ -77,6 +77,10 @@ export async function GET(request: NextRequest) {
     console.error('[PWA Icon Error]', err)
   }
 
+  if (tenantSlug) {
+    console.warn(`[PWA Icon] Sin logo para el tenant "${tenantSlug}", usando ícono de GeemaStudio`)
+  }
+
   // Fallback a los iconos estándar de GeemaStudio
   try {
     const fallbackPath = path.join(
@@ -88,6 +92,7 @@ export async function GET(request: NextRequest) {
     return new NextResponse(file, {
       headers: {
         'Content-Type': 'image/png',
+        'X-Pwa-Icon-Source': 'fallback',
         'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800',
       },
     })

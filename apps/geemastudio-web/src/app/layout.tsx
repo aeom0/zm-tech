@@ -65,6 +65,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
+      <head>
+        {/* Único manifest de la app: se resuelve por sesión (cookies) en la ruta. */}
+        <link rel="manifest" href="/manifest.webmanifest" crossOrigin="use-credentials" />
+      </head>
       <body className={`${inter.className} antialiased`}>
         {children}
         <PwaRegister />
