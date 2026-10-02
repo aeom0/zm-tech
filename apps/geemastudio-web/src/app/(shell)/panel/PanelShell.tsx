@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   ChevronDown,
   HelpCircle,
@@ -82,6 +82,12 @@ export function PanelShell({
 }) {
   const router = useRouter()
   const pathname = usePathname()
+
+  // En la PWA la posición de scroll se arrastra entre pantallas y deja el título oculto
+  // bajo la barra superior; `instant` evita el `scroll-behavior: smooth` global.
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+  }, [pathname])
 
   const agendaItem: NavItem = {
     label: 'Agenda',
