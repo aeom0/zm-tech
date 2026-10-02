@@ -1,7 +1,7 @@
 # Plan 17 — Planes de suscripción conectados (landing, panel web, mobile) + descarga del APK
 
 **Fecha:** 2026-10-02
-**Estado:** Fases 1–2 ✅ (2-oct-2026); Fases 3–5 pendientes
+**Estado:** Fases 1–4 ✅ (2-oct-2026; uso WABA y avisos por función pendientes); Fase 5 pendiente
 **Repos:** `zm-tech` (schema, web, mobile, server). BD: `udelxwwnyivknslueerr`.
 
 ## Contexto

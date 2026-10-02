@@ -12,6 +12,7 @@ import {
   uploadEmployeeAvatar,
 } from './employeesService'
 import type { EmployeeWriteInput } from './types'
+import { WEB_TENANT_SUBSCRIPTION_KEY } from '../plan/usePlan'
 
 export const WEB_EMPLOYEES_KEY = ['web_employees'] as const
 
@@ -63,6 +64,7 @@ export function useUpsertEmployee() {
     },
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: WEB_EMPLOYEES_KEY })
+      void qc.invalidateQueries({ queryKey: WEB_TENANT_SUBSCRIPTION_KEY })
     },
   })
 }
@@ -77,6 +79,7 @@ export function useDeleteEmployee() {
     },
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: WEB_EMPLOYEES_KEY })
+      void qc.invalidateQueries({ queryKey: WEB_TENANT_SUBSCRIPTION_KEY })
     },
   })
 }

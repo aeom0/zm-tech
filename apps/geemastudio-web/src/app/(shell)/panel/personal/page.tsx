@@ -12,6 +12,8 @@ import {
   useUpsertEmployee,
 } from '@/hooks/personal/useEmployees'
 import type { EmployeeRow } from '@/hooks/personal/types'
+import { PlanLimitNotice } from '@/components/plan/PlanLimitNotice'
+import { usePlan } from '@/hooks/plan/usePlan'
 import { resolveDashboardCurrencyCode } from '@/lib/dashboardCurrency'
 import { supabase } from '@/lib/supabase'
 import { useQuery } from '@tanstack/react-query'
@@ -47,6 +49,7 @@ export default function PanelPersonalPage() {
   const remove = useDeleteEmployee()
   const tenantQuery = useDashboardTenant()
   const labelsQuery = useStaffLabels()
+  const { subscription: plan, staffStatus } = usePlan()
 
   const currencyCode = resolveDashboardCurrencyCode(tenantQuery.data?.currency_code)
   const showGeemaExtras = dialectQuery.data === 'geema'
@@ -100,6 +103,16 @@ export default function PanelPersonalPage() {
         </div>
         <PersonalHeaderActions onNew={openCreate} staffSingular={staffSingular} />
       </div>
+
+      {plan && (
+        <PlanLimitNotice
+          status={staffStatus}
+          resource={staffPlural.toLowerCase()}
+          usage={plan.staff_count}
+          limit={plan.max_staff}
+          planName={plan.plan_name}
+        />
+      )}
 
       <div className="flex flex-wrap gap-2">
         {(
