@@ -49,6 +49,7 @@ export default function MiNegocioScreen() {
         onPress={() => navigation.navigate('Inventario')}
       />
       <MenuRow icon="globe" label="Mi Web" onPress={() => navigation.navigate('MiWeb')} />
+      <MenuRow icon="award" label="Mi plan" onPress={() => navigation.navigate('MiPlan')} />
     </ScrollView>
   )
 }
