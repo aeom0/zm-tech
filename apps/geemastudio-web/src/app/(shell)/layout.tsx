@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 import { createServerSupabaseClient } from '@/lib/supabase-server'
-import { fetchTenantBrandForUser, type TenantBrand } from '@/lib/tenant-brand'
+import { fetchTenantBrandForUser, pwaIconUrl, type TenantBrand } from '@/lib/tenant-brand'
 import { ShellProviders } from './ShellProviders'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -14,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const appleIcon =
     brand.tenantSlug && brand.logoUrl
-      ? `/api/pwa/icon?tenant=${brand.tenantSlug}&size=192`
+      ? pwaIconUrl({ ...brand, tenantSlug: brand.tenantSlug }, 192)
       : brand.logoUrl || '/apple-touch-icon.png'
 
   return {

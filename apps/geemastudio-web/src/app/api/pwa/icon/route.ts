@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
           return new NextResponse(new Uint8Array(canvas), {
             headers: {
               'Content-Type': 'image/png',
-              'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800',
+              'Cache-Control': 'public, max-age=86400',
             },
           })
         }
@@ -74,7 +74,7 @@ export async function GET(request: NextRequest) {
       headers: {
         'Content-Type': 'image/png',
         'X-Pwa-Icon-Source': 'fallback',
-        'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800',
+        'Cache-Control': 'public, max-age=86400',
       },
     })
   } catch {

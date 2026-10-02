@@ -73,3 +73,20 @@ export async function fetchTenantBrandForUser(
 
   return toBrand(bySlug.data)
 }
+
+/** Hash corto de logo + color: cambia la URL del ícono PWA cuando el tenant cambia su marca (evita caché vieja). */
+function brandVersion(brand: Pick<TenantBrand, 'logoUrl' | 'primary'>): string {
+  const input = `v2|${brand.logoUrl ?? ''}|${brand.primary ?? ''}`
+  let h = 5381
+  for (let i = 0; i < input.length; i++) h = ((h << 5) + h + input.charCodeAt(i)) >>> 0
+  return h.toString(36)
+}
+
+export function pwaIconUrl(
+  brand: Pick<TenantBrand, 'logoUrl' | 'primary'> & { tenantSlug: string },
+  size: number,
+  maskable = false
+): string {
+  const q = `tenant=${encodeURIComponent(brand.tenantSlug)}&size=${size}${maskable ? '&maskable=1' : ''}`
+  return `/api/pwa/icon?${q}&v=${brandVersion(brand)}`
+}

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase-server'
-import { fetchTenantBrandForUser, fetchTenantBrandBySlug, type TenantBrand } from '@/lib/tenant-brand'
+import { fetchTenantBrandForUser, fetchTenantBrandBySlug, pwaIconUrl, type TenantBrand } from '@/lib/tenant-brand'
 import { DEFAULT_TENANT_PRIMARY } from '@/lib/tenant-theme'
 
 export const dynamic = 'force-dynamic'
@@ -67,24 +67,23 @@ export async function GET(request: NextRequest) {
     if (tenantSlug && brand?.logoUrl) {
       icons = [
         {
-          src: `/api/pwa/icon?tenant=${tenantSlug}&size=192`,
+          src: pwaIconUrl({ ...brand, tenantSlug }, 192),
           sizes: '192x192',
           type: 'image/png',
           purpose: 'any',
         },
         {
-          src: `/api/pwa/icon?tenant=${tenantSlug}&size=512`,
+          src: pwaIconUrl({ ...brand, tenantSlug }, 512),
           sizes: '512x512',
           type: 'image/png',
           purpose: 'any',
         },
         {
-          src: `/api/pwa/icon?tenant=${tenantSlug}&size=512&maskable=1`,
+          src: pwaIconUrl({ ...brand, tenantSlug }, 512, true),
           sizes: '512x512',
           type: 'image/png',
           purpose: 'maskable',
         },
-        ...FALLBACK_ICONS,
       ]
     }
 
