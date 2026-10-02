@@ -10,7 +10,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ### Documentación
 
-- Plan 11 (Mi Web CMS, Modo B/D): Fase 5 con datos cargados (8 reseñas reales de Google, `web_stat_rating` 5.0) y código en PR de Lash; `web_team` con 2 chicas confirmado como intencional.
+- Plan 11 (Mi Web CMS, Modo B/D): Fase 5 con datos cargados (8 reseñas reales de Google, `web_stat_rating` 5.0) y código mergeado en Lash #162 (validado en Google Rich Results); `web_team` con 2 chicas confirmado como intencional.
 
 ### Añadido
 
