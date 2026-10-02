@@ -8,6 +8,10 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Documentación
+
+- Plan 11 (Mi Web CMS, Modo B/D): Fase 5 con datos cargados (8 reseñas reales de Google, `web_stat_rating` 5.0) y código en PR de Lash; `web_team` con 2 chicas confirmado como intencional.
+
 ### Añadido
 
 - **`@zmtech/tenant-config`**: `COUNTRY_PRESETS` + `salon-holidays` (catálogos PE/VE, franja efectiva); UNIQUE `salon_holidays (tenant_id, date)` en shared BD.
