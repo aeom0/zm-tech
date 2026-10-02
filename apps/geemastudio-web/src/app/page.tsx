@@ -8,8 +8,14 @@ import { PricingSection } from '@/components/sections/PricingSection'
 import { FaqSection } from '@/components/sections/FaqSection'
 import { CtaSection } from '@/components/sections/CtaSection'
 import { Footer } from '@/components/layout/Footer'
+import { getLandingPlans } from '@/lib/plans-service'
 
-export default function LandingPage() {
+// Los precios salen de la tabla `plans`; se revalidan cada hora.
+export const revalidate = 3600
+
+export default async function LandingPage() {
+  const plans = await getLandingPlans()
+
   return (
     <div className="min-h-screen overflow-x-hidden">
       <Navbar />
@@ -18,7 +24,7 @@ export default function LandingPage() {
       <FeaturesSection />
       <DemoSection />
       <SocialProofSection />
-      <PricingSection />
+      <PricingSection plans={plans} />
       <FaqSection />
       <CtaSection />
       <Footer />
