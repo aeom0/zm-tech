@@ -6,6 +6,7 @@
       "**": false
     }
   },
+  "ignoreCommand": "[ \"$VERCEL_ENV\" != \"production\" ] || npx turbo-ignore repmax-web",
   "crons": [
     {
       "path": "/api/cron/guardar-tasa-bcv-diario",
