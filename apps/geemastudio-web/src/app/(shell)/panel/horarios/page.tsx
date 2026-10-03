@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { Clock, Loader2 } from 'lucide-react'
+import { ConfiguracionNav } from '../configuracion/_components/ConfiguracionNav'
 
 import { supabase } from '@/lib/supabase'
 import type { TenantConfig, TimeFormatPreference } from '@zmtech/tenant-config'
@@ -36,7 +37,7 @@ export default function PanelHorariosPage() {
       if (!supabase) {
         await Promise.resolve()
         if (cancelled) return
-        setErrorCarga('Supabase no está configurado.')
+        setErrorCarga('No se pudo conectar. Intenta de nuevo.')
         setCargando(false)
         return
       }
@@ -151,14 +152,20 @@ export default function PanelHorariosPage() {
 
   if (cargando) {
     return (
-      <StateNote kind="loading">Cargando horario…</StateNote>
+      <div className="max-w-2xl space-y-6">
+        <ConfiguracionNav />
+        <StateNote kind="loading">Cargando horario…</StateNote>
+      </div>
     )
   }
 
   if (errorCarga) {
     return (
-      <div className="rounded-xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200">
-        {errorCarga}
+      <div className="max-w-2xl space-y-6">
+        <ConfiguracionNav />
+        <div className="rounded-xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200">
+          {errorCarga}
+        </div>
       </div>
     )
   }
@@ -169,6 +176,7 @@ export default function PanelHorariosPage() {
 
   return (
     <div className="max-w-2xl space-y-8">
+      <ConfiguracionNav />
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 text-lg font-semibold text-fg">
@@ -177,7 +185,7 @@ export default function PanelHorariosPage() {
           </div>
           <p className="mt-2 max-w-prose text-sm text-fg-muted">
             Define la zona horaria del negocio y la franja de apertura por día. Los cambios aplican
-            en el panel y quedan en Supabase para la app móvil cuando sincronice.
+            en el panel y también se reflejan en la app del celular.
           </p>
         </div>
         <button

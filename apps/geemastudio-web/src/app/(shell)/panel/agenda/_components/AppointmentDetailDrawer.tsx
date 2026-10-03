@@ -99,7 +99,7 @@ export function AppointmentDetailDrawer({
             value={formatDashboardCurrency(parseFloat(apt.price || '0'), currencyCode)}
           />
           <p className="pt-2 text-xs text-fg-subtle">
-            Vista de solo lectura. Crear / editar citas sigue en la app mobile por ahora.
+            Vista de solo lectura. Crear / editar citas se hace desde la app del celular por ahora.
           </p>
         </div>
       </aside>

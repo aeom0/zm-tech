@@ -168,9 +168,13 @@ export function PanelShell({
     if (href === '/finanzas') {
       return Boolean(pathname?.startsWith('/finanzas') || pathname?.startsWith('/dashboard'))
     }
+    if (href === '/panel/configuracion') {
+      return Boolean(pathname?.startsWith('/panel/configuracion') || pathname === '/panel/horarios')
+    }
     if (href === '/panel/mas') {
       return Boolean(pathname?.startsWith('/panel/mas'))
     }
+    if (href === '/panel/horarios') return false
     return pathname === href
   }
 

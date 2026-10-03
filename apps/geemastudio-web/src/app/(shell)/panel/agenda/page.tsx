@@ -106,7 +106,7 @@ export default function PanelAgendaPage() {
   return (
     <div className="space-y-6">
       <PageHeader title="Agenda" description={<>{view === 'week' ? 'Vista semanal' : 'Vista día por profesional'} · zona {timezone} · solo
-          lectura (edición en mobile)</>} />
+          lectura (edición desde la app del celular)</>} />
 
       <AgendaToolbar
         view={view}

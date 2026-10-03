@@ -244,25 +244,34 @@ export default function PanelWebPage() {
 
   if (settingsQuery.isLoading) {
     return (
-      <div className="flex items-center gap-2 text-sm text-fg-muted">
-        <Loader2 className="h-4 w-4 animate-spin" />
-        Cargando contenido de Mi Web…
+      <div className="space-y-6">
+        <ConfiguracionNav />
+        <div className="flex items-center gap-2 text-sm text-fg-muted">
+          <Loader2 className="h-4 w-4 animate-spin" />
+          Cargando contenido de Mi Web…
+        </div>
       </div>
     )
   }
 
   if (settingsQuery.isError) {
     return (
-      <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200">
-        {(settingsQuery.error as Error)?.message ?? 'Error al cargar'}
+      <div className="space-y-6">
+        <ConfiguracionNav />
+        <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200">
+          {(settingsQuery.error as Error)?.message ?? 'Error al cargar'}
+        </div>
       </div>
     )
   }
 
   if (!row) {
     return (
-      <div className="rounded-2xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-900 dark:text-amber-100">
-        No encontramos la configuración de tu negocio. Completa el registro inicial en la app móvil.
+      <div className="space-y-6">
+        <ConfiguracionNav />
+        <div className="rounded-2xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-900 dark:text-amber-100">
+          No encontramos la configuración de tu negocio. Completa el registro inicial en la app del celular.
+        </div>
       </div>
     )
   }
@@ -278,7 +287,7 @@ export default function PanelWebPage() {
           <h1 className="text-2xl font-bold text-fg">Mi Web</h1>
           <p className="mt-1 text-sm text-fg-muted">
             Contenido de la landing pública — texto, galería, equipo, promos, reseñas y servicios.
-            Activar/desactivar, slug y dominio están en{' '}
+            Activar o desactivar tu web, su dirección y tu dominio propio están en{' '}
             <Link href="/panel/configuracion" className="text-tenant-text hover:underline">
               Configuración → Presencia web
             </Link>
