@@ -78,31 +78,18 @@ export async function fetchEmployeeServiceIds(employeeId: string): Promise<strin
   return (data ?? []).map((r) => String(r.service_id))
 }
 
-/** Reemplaza la lista de servicios y la bandera "hace todos". */
+/** Reemplaza la lista de servicios y la bandera "hace todos" en una sola transacción. */
 export async function saveEmployeeServices(args: {
   employeeId: string
   doesAll: boolean
   serviceIds: string[]
 }): Promise<void> {
-  const client = db()
-  const { error: upErr } = await client
-    .from('employees')
-    .update({ does_all_services: args.doesAll })
-    .eq('id', args.employeeId)
-  fail(upErr)
-
-  const { error: delErr } = await client
-    .from('employee_services')
-    .delete()
-    .eq('employee_id', args.employeeId)
-  fail(delErr)
-
-  if (!args.doesAll && args.serviceIds.length > 0) {
-    const { error: insErr } = await client
-      .from('employee_services')
-      .insert(args.serviceIds.map((service_id) => ({ employee_id: args.employeeId, service_id })))
-    fail(insErr)
-  }
+  const { error } = await db().rpc('save_employee_services', {
+    p_employee_id: args.employeeId,
+    p_does_all: args.doesAll,
+    p_service_ids: args.serviceIds,
+  })
+  fail(error)
 }
 
 // --- Horario semanal ----------------------------------------------------------
@@ -118,18 +105,12 @@ export async function fetchWorkShifts(employeeId: string): Promise<WorkShift[]> 
   return (data ?? []) as WorkShift[]
 }
 
-/** Lista vacía = hereda el horario del negocio. */
+/** Lista vacía = hereda el horario del negocio. Una sola transacción. */
 export async function saveWorkShifts(employeeId: string, shifts: WorkShift[]): Promise<void> {
-  const client = db()
-  const { error: delErr } = await client
-    .from('employee_work_hours')
-    .delete()
-    .eq('employee_id', employeeId)
-  fail(delErr)
-  if (shifts.length === 0) return
-  const { error } = await client
-    .from('employee_work_hours')
-    .insert(shifts.map((s) => ({ employee_id: employeeId, ...s })))
+  const { error } = await db().rpc('save_employee_work_hours', {
+    p_employee_id: employeeId,
+    p_shifts: shifts,
+  })
   fail(error)
 }
 

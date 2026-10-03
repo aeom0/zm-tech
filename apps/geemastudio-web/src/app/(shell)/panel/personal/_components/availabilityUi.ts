@@ -1,3 +1,5 @@
+import { zonaIANASegura } from '@zmtech/tenant-config'
+
 export const fieldClass =
   'w-full rounded-xl border border-fg/[0.08] bg-fg/[0.04] px-3 py-2.5 text-base md:text-sm text-fg outline-none focus:border-[var(--tenant-primary)]/40'
 export const labelClass = 'mb-1 block text-xs text-fg-subtle'
@@ -6,9 +8,15 @@ export const primaryBtnClass =
 export const ghostBtnClass =
   'min-h-[44px] md:min-h-[36px] inline-flex items-center justify-center gap-2 rounded-xl border border-fg/[0.08] bg-fg/[0.04] px-3 py-2 text-sm font-medium text-fg-soft hover:bg-fg/[0.08]'
 
-/** Fecha local YYYY-MM-DD (para inputs type="date"). */
-export function todayIso(): string {
-  return new Date().toLocaleDateString('en-CA')
+/** Hoy en la zona del negocio, YYYY-MM-DD (para inputs type="date"). */
+export function todayIso(timeZone?: string | null): string {
+  const zone = zonaIANASegura(timeZone)
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone: zone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date())
 }
 
 /** '2026-10-24' → '24 oct 2026' sin pasar por zona horaria. */

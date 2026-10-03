@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { CalendarOff, Loader2, Trash2, UserCheck } from 'lucide-react'
 import {
   EMPLOYEE_TIME_OFF_KINDS,
@@ -67,10 +67,12 @@ export function TimeOffTab({
   employee,
   employees,
   staffSingular,
+  timezone,
 }: {
   employee: EmployeeRow
   employees: EmployeeRow[]
   staffSingular: string
+  timezone?: string | null
 }) {
   const timeOff = useTimeOff(employee.id)
   const coverages = useCoverages()
@@ -85,8 +87,9 @@ export function TimeOffTab({
 
   // Formulario de ausencia
   const [kind, setKind] = useState<EmployeeTimeOffKind>('vacation')
-  const [from, setFrom] = useState(todayIso())
-  const [to, setTo] = useState(todayIso())
+  const [from, setFrom] = useState(() => todayIso(timezone))
+  const [to, setTo] = useState(() => todayIso(timezone))
+  const [datesTouched, setDatesTouched] = useState(false)
   const [openEnded, setOpenEnded] = useState(false)
   const [partial, setPartial] = useState(false)
   const [startTime, setStartTime] = useState('09:00')
@@ -97,10 +100,25 @@ export function TimeOffTab({
 
   // Formulario de cobertura
   const [covering, setCovering] = useState('')
-  const [covFrom, setCovFrom] = useState(todayIso())
-  const [covTo, setCovTo] = useState(todayIso())
+  const [covFrom, setCovFrom] = useState(() => todayIso(timezone))
+  const [covTo, setCovTo] = useState(() => todayIso(timezone))
+  const [covDatesTouched, setCovDatesTouched] = useState(false)
   const [covNote, setCovNote] = useState('')
   const [covError, setCovError] = useState<string | null>(null)
+
+  // La zona del negocio puede llegar después del primer render.
+  useEffect(() => {
+    if (!timezone || datesTouched) return
+    const hoy = todayIso(timezone)
+    setFrom(hoy)
+    setTo(hoy)
+  }, [timezone, datesTouched])
+  useEffect(() => {
+    if (!timezone || covDatesTouched) return
+    const hoy = todayIso(timezone)
+    setCovFrom(hoy)
+    setCovTo(hoy)
+  }, [timezone, covDatesTouched])
 
   const effectiveTo = openEnded ? null : to
   const rangeValid = !!from && (openEnded || (!!to && to >= from))
@@ -121,9 +139,13 @@ export function TimeOffTab({
     covValid ? { employeeId: employee.id, dateFrom: covFrom, dateTo: covTo } : null
   )
 
+  const offReviewing = rangeValid && (offAffected.isLoading || offAffected.isFetching)
+  const covReviewing = covValid && (covAffected.isLoading || covAffected.isFetching)
+
   const submitTimeOff = (e: React.FormEvent) => {
     e.preventDefault()
     setOffError(null)
+    if (offReviewing) return
     if (!rangeValid) return setOffError('Revisa las fechas: el fin no puede ser anterior al inicio.')
     if (partial && endTime <= startTime) return setOffError('La hora de fin debe ser posterior al inicio.')
     addTimeOff.mutate(
@@ -144,6 +166,7 @@ export function TimeOffTab({
   const submitCoverage = (e: React.FormEvent) => {
     e.preventDefault()
     setCovError(null)
+    if (covReviewing) return
     if (!covering) return setCovError(`Elige quién cubre a ${employee.name}.`)
     if (!covValid) return setCovError('Revisa las fechas: el fin no puede ser anterior al inicio.')
     addCoverage.mutate(
@@ -180,11 +203,11 @@ export function TimeOffTab({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className={labelClass} htmlFor="to-from">Desde</label>
-              <input id="to-from" type="date" className={fieldClass} value={from} onChange={(e) => setFrom(e.target.value)} />
+              <input id="to-from" type="date" className={fieldClass} value={from} onChange={(e) => { setDatesTouched(true); setFrom(e.target.value) }} />
             </div>
             <div>
               <label className={labelClass} htmlFor="to-to">Hasta</label>
-              <input id="to-to" type="date" className={fieldClass} value={to} min={from} disabled={openEnded} onChange={(e) => setTo(e.target.value)} />
+              <input id="to-to" type="date" className={fieldClass} value={to} min={from} disabled={openEnded} onChange={(e) => { setDatesTouched(true); setTo(e.target.value) }} />
             </div>
           </div>
           <label className="flex min-h-[44px] cursor-pointer items-center gap-3 text-sm text-fg">
@@ -225,9 +248,13 @@ export function TimeOffTab({
           {offError && <StateNote kind="error">{offError}</StateNote>}
           {addTimeOff.error && <StateNote kind="error">{(addTimeOff.error as Error).message}</StateNote>}
           <div className="flex justify-end">
-            <button type="submit" className={primaryBtnClass} disabled={addTimeOff.isPending}>
-              {addTimeOff.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-              {(offAffected.data?.length ?? 0) > 0 ? 'Guardar de todos modos' : 'Guardar ausencia'}
+            <button type="submit" className={primaryBtnClass} disabled={addTimeOff.isPending || offReviewing}>
+              {(addTimeOff.isPending || offReviewing) && <Loader2 className="h-4 w-4 animate-spin" />}
+              {offReviewing
+                ? 'Revisando citas…'
+                : (offAffected.data?.length ?? 0) > 0
+                  ? 'Guardar de todos modos'
+                  : 'Guardar ausencia'}
             </button>
           </div>
         </form>
@@ -290,11 +317,11 @@ export function TimeOffTab({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className={labelClass} htmlFor="cov-from">Desde</label>
-              <input id="cov-from" type="date" className={fieldClass} value={covFrom} onChange={(e) => setCovFrom(e.target.value)} />
+              <input id="cov-from" type="date" className={fieldClass} value={covFrom} onChange={(e) => { setCovDatesTouched(true); setCovFrom(e.target.value) }} />
             </div>
             <div>
               <label className={labelClass} htmlFor="cov-to">Hasta</label>
-              <input id="cov-to" type="date" className={fieldClass} value={covTo} min={covFrom} onChange={(e) => setCovTo(e.target.value)} />
+              <input id="cov-to" type="date" className={fieldClass} value={covTo} min={covFrom} onChange={(e) => { setCovDatesTouched(true); setCovTo(e.target.value) }} />
             </div>
           </div>
           <div>
@@ -305,9 +332,13 @@ export function TimeOffTab({
           {covError && <StateNote kind="error">{covError}</StateNote>}
           {addCoverage.error && <StateNote kind="error">{(addCoverage.error as Error).message}</StateNote>}
           <div className="flex justify-end">
-            <button type="submit" className={primaryBtnClass} disabled={addCoverage.isPending}>
-              {addCoverage.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-              Guardar cobertura
+            <button type="submit" className={primaryBtnClass} disabled={addCoverage.isPending || covReviewing}>
+              {(addCoverage.isPending || covReviewing) && <Loader2 className="h-4 w-4 animate-spin" />}
+              {covReviewing
+                ? 'Revisando citas…'
+                : (covAffected.data?.length ?? 0) > 0
+                  ? 'Guardar de todos modos'
+                  : 'Guardar cobertura'}
             </button>
           </div>
         </form>

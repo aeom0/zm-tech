@@ -17,6 +17,24 @@ type Week = Record<number, Shift[]>
 
 const DEFAULT_SHIFT: Shift = { start: '09:00', end: '18:00' }
 
+/** Suma minutos a HH:MM sin pasar de 23:59. */
+function addMinutes(hhmm: string, minutes: number): string {
+  const [h, m] = hhmm.split(':').map(Number)
+  const total = Math.min((h ?? 0) * 60 + (m ?? 0) + minutes, 23 * 60 + 59)
+  const hh = Math.floor(total / 60)
+  const mm = total % 60
+  return `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`
+}
+
+/** El turno nuevo arranca cuando termina el último, para no solaparse. */
+function nextShift(shifts: Shift[]): Shift {
+  if (shifts.length === 0) return { ...DEFAULT_SHIFT }
+  const start = [...shifts].sort((a, b) => a.end.localeCompare(b.end)).at(-1)?.end ?? '09:00'
+  const end = addMinutes(start, 240)
+  if (end <= start) return { start: '18:00', end: '22:00' }
+  return { start, end }
+}
+
 function emptyWeek(): Week {
   return { 0: [], 1: [], 2: [], 3: [], 4: [], 5: [], 6: [] }
 }
@@ -137,12 +155,7 @@ export function ScheduleTab({ employee, staffSingular }: { employee: EmployeeRow
                       type="button"
                       aria-label={`Agregar turno el ${d.label.toLowerCase()}`}
                       className={`${ghostBtnClass} !px-2`}
-                      onClick={() =>
-                        update(d.weekday, [
-                          ...shifts,
-                          shifts.length === 0 ? { ...DEFAULT_SHIFT } : { start: '14:00', end: '18:00' },
-                        ])
-                      }
+                      onClick={() => update(d.weekday, [...shifts, nextShift(shifts)])}
                     >
                       <Plus className="h-4 w-4" />
                     </button>

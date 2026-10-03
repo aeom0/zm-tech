@@ -172,6 +172,7 @@ export default function PanelPersonalPage() {
         employee={availabilityFor}
         employees={employeesQuery.data ?? []}
         staffSingular={staffSingular}
+        timezone={tenantQuery.data?.timezone}
         onClose={() => setAvailabilityFor(null)}
       />
       <EmployeeModal

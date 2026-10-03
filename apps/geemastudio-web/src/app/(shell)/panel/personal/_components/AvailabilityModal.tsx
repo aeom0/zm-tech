@@ -15,11 +15,18 @@ interface AvailabilityModalProps {
   employee: EmployeeRow | null
   employees: EmployeeRow[]
   staffSingular: string
+  timezone?: string | null
   onClose: () => void
 }
 
 /** Ficha de disponibilidad: qué servicios hace, cuándo trabaja y cuándo falta (Plan 18). */
-export function AvailabilityModal({ employee, employees, staffSingular, onClose }: AvailabilityModalProps) {
+export function AvailabilityModal({
+  employee,
+  employees,
+  staffSingular,
+  timezone,
+  onClose,
+}: AvailabilityModalProps) {
   const [tab, setTab] = useState<Tab>('services')
   if (!employee) return null
 
@@ -58,7 +65,13 @@ export function AvailabilityModal({ employee, employees, staffSingular, onClose 
           {tab === 'services' && <ServicesTab key={employee.id} employee={employee} staffSingular={staffSingular} />}
           {tab === 'schedule' && <ScheduleTab key={employee.id} employee={employee} staffSingular={staffSingular} />}
           {tab === 'timeoff' && (
-            <TimeOffTab key={employee.id} employee={employee} employees={employees} staffSingular={staffSingular} />
+            <TimeOffTab
+              key={employee.id}
+              employee={employee}
+              employees={employees}
+              staffSingular={staffSingular}
+              timezone={timezone}
+            />
           )}
         </div>
       </div>
