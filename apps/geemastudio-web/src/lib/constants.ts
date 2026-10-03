@@ -215,6 +215,8 @@ export const COMPARISON_FEATURES: {
   basic: boolean | string
   pro: boolean | string
   elite: boolean | string
+  /** 'waba_limit': los valores salen de los planes (tabla `plans`); basic/pro/elite son solo respaldo. */
+  source?: 'waba_limit'
 }[] = [
   { label: 'App móvil (iOS + Android)', basic: true, pro: true, elite: true },
   { label: 'Agenda de citas', basic: true, pro: true, elite: true },
@@ -240,6 +242,7 @@ export const COMPARISON_FEATURES: {
     basic: '300',
     pro: '1.000',
     elite: '∞',
+    source: 'waba_limit',
   },
   {
     label: 'Add-on mensajes extra',

@@ -6,6 +6,28 @@ import { PricingCard } from '@/components/ui/PricingCard'
 import { RevealWrapper } from '@/components/ui/RevealWrapper'
 import { MessageCircle, ChevronDown, Check } from 'lucide-react'
 
+function wabaLimitLabel(plan: Plan | undefined, fallback: boolean | string): boolean | string {
+  if (!plan) return fallback
+  return plan.wabaConversations === 'unlimited'
+    ? '∞'
+    : plan.wabaConversations.toLocaleString('es')
+}
+
+/** Filas de la comparativa; la de mensajes incluidos se alimenta de `plans` para no duplicar límites. */
+function buildComparisonRows(plans: Plan[]) {
+  const byName = (name: string) => plans.find((p) => p.name.toLowerCase() === name)
+  return COMPARISON_FEATURES.map((feat) =>
+    feat.source === 'waba_limit'
+      ? {
+          ...feat,
+          basic: wabaLimitLabel(byName('basic'), feat.basic),
+          pro: wabaLimitLabel(byName('pro'), feat.pro),
+          elite: wabaLimitLabel(byName('elite'), feat.elite),
+        }
+      : feat,
+  )
+}
+
 export function PricingSection({ plans }: { plans: Plan[] }) {
   const [annual, setAnnual] = useState(false)
   const [showComparison, setShowComparison] = useState(false)
@@ -168,7 +190,7 @@ export function PricingSection({ plans }: { plans: Plan[] }) {
                   </tr>
                 </thead>
                 <tbody>
-                  {COMPARISON_FEATURES.map((feat, i) => (
+                  {buildComparisonRows(plans).map((feat, i) => (
                     <tr
                       key={feat.label}
                       className={
