@@ -1,7 +1,7 @@
 # Plan 18 — Gestión de profesionales y disponibilidad
 
 **Fecha:** 2026-10-03
-**Estado:** Borrador — decisiones de alcance confirmadas, sin implementar
+**Estado:** Fases 0–6 hechas y en producción (2026-10-03); falta Fase 7 (mobile) y validar la config con Vanessa
 **Repos afectados:** `zm-tech` (schema, web, mobile) y `ZM-Lash-and-Nails-Beauty` (Edge `whatsapp-webhook`, que es la fuente real del webhook en prod)
 **Relacionado:** Plan 08 (dispatcher), Plan 16 (multi-sucursal), Plan 12 (paridad panel)
 
@@ -187,8 +187,8 @@ La agenda web y la pantalla de asignación pasan a sugerir solo profesionales el
 | 2 | **Hecha** (`20261003145120_get_available_slots`, 164 ms para 31 días). Función `get_available_slots` + pruebas SQL con el caso ZM (24-oct, 5-dic, desde la 1 pm, multi-servicio) | Casos de prueba abajo |
 | 3 | **Hecha.** Tipos en `@geemastudio/shared-schema`; hooks y servicios web/mobile (capa UI → hooks → services) | `pnpm check:types` |
 | 4 | **Hecha** (pestañas Servicios, Horario, Ausencias y coberturas; pendiente: bloques en agenda, sugerir solo elegibles y revisión visual) UI web: ficha de profesional | Revisión visual claro/oscuro, mobile web |
-| 5 | **Hecha en código, sin desplegar** (PR ZM #164). Motor v2 y RPC de bot aplicados en BD. En el bot, `hasSlotCapacityForServices` suma una verificación contra `get_day_slots_for_bot` (caché 8 s; no bloquea sin reglas, con error o fuera de la grilla de 15 min). Al reprogramar sí consulta el motor y le pasa la cita que se mueve (`p_exclude_appointment_id`) para no contarla como ocupada. El selector de horas y los `CUPOS REALES` de Haiku pasan por esa misma función. Decisión: el bot sigue creando citas con `employee_id` null y Vanessa asigna, porque guardar `employee_id` dispara `trg_notify_appointment_assigned`. Despliegue del webhook solo con confirmación |
-| 6 | Cargar la configuración de ZM Lash desde la UI (no por SQL) y validar con Vanessa | Checklist de aceptación |
+| 5 | **Hecha y desplegada** (PR ZM #164 mergeado; `whatsapp-webhook` v710 en prod el 2026-10-03, sin errores `[AVAIL]` en logs). Motor v2 y RPC de bot aplicados en BD. En el bot, `hasSlotCapacityForServices` suma una verificación contra `get_day_slots_for_bot` (caché 8 s; no bloquea sin reglas, con error o fuera de la grilla de 15 min). Al reprogramar sí consulta el motor y le pasa la cita que se mueve (`p_exclude_appointment_id`) para no contarla como ocupada. El selector de horas y los `CUPOS REALES` de Haiku pasan por esa misma función. Decisión: el bot sigue creando citas con `employee_id` null y Vanessa asigna, porque guardar `employee_id` dispara `trg_notify_appointment_assigned`. Despliegue del webhook solo con confirmación |
+| 6 | **Cargada por SQL (no por la UI) y probada con el motor; pendiente validar con Vanessa.** Reglas tomadas de `staffByCategory` y `EXTENSIONES_KARELIS_SERVICE_IDS` del bot: Karelis solo anime, fox, hawaiana, mega volumen, wispy glam y retiro de pestañas, lunes a sábado 13:00–19:00; Stephani el resto de extensiones, lifting, cejas y rostro, depilación y uñas; Vanessa lifting y retiro; Alejandra microblading. Coberturas de Karelis a Stephani el 2026-10-24 y el 2026-12-05. Ningún servicio activo queda sin profesional. Pruebas: anime lunes 13:00–17:00 (Karelis); clásicas lunes 10:00–17:00 (Stephani); 24-oct clásicas, uñas y anime desde 13:00 (Karelis); microblading 10:00–17:00 (Alejandra); anime domingo sin horarios. Pendiente de confirmar: Karelis no tiene horario de domingo, y el historial de 120 días muestra a Vanessa atendiendo cejas, depilación, uñas y microblading, que hoy no le corresponden | Checklist de aceptación |
 | 7 | Mobile: tres pestañas en Equipo → Personal | |
 
 Regla dura de migraciones: aplicar en remoto (con confirmación explícita), renombrar el archivo local a `<version>_<name>.sql` en el mismo commit y verificar con `list_migrations` antes de hacer push. Nunca dejar archivos locales sin aplicar.
