@@ -50,7 +50,7 @@ export function WabaNav() {
               <div
                 key={t.href}
                 aria-disabled="true"
-                className="flex min-h-[56px] cursor-not-allowed flex-col items-center justify-center gap-1 rounded-xl border border-white/[0.06] bg-white/[0.02] px-1 py-2 text-center text-[11px] text-zinc-500 opacity-60 md:min-h-0 md:flex-row md:gap-2 md:px-3 md:text-sm"
+                className="flex min-h-[56px] cursor-not-allowed flex-col items-center justify-center gap-1 rounded-xl border border-fg/[0.06] bg-card px-1 py-2 text-center text-[11px] text-fg-subtle opacity-60 md:min-h-0 md:flex-row md:gap-2 md:px-3 md:text-sm"
               >
                 <Icon className="h-4 w-4" />
                 {t.label}
@@ -67,7 +67,7 @@ export function WabaNav() {
                 'flex min-h-[56px] flex-col items-center justify-center gap-1 rounded-xl border px-1 py-2 text-center text-[11px] font-semibold leading-tight transition-colors md:min-h-0 md:flex-row md:gap-2 md:px-3 md:text-sm',
                 active
                   ? 'border-[var(--tenant-primary)] bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)]'
-                  : 'border-white/[0.08] bg-white/[0.03] text-zinc-300 hover:bg-white/[0.06]',
+                  : 'border-fg/[0.08] bg-fg/[0.03] text-fg-soft hover:bg-fg/[0.06]',
               ].join(' ')}
             >
               <Icon className="h-4 w-4" />

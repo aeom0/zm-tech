@@ -34,17 +34,17 @@ export function ActivityHeatmap({ celdas, totalEntrantesPeriodo }: ActivityHeatm
   const horasEtiqueta = [0, 3, 6, 9, 12, 15, 18, 21]
 
   return (
-    <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
-      <h3 className="mb-3 text-sm font-semibold text-white">
+    <div className="rounded-2xl border border-fg/[0.08] bg-fg/[0.03] p-4">
+      <h3 className="mb-3 text-sm font-semibold text-fg">
         Actividad por hora (mensajes entrantes)
       </h3>
-      <p className="mb-3 text-xs text-zinc-400">
+      <p className="mb-3 text-xs text-fg-muted">
         Zona horaria Lima. Celda más oscura = más mensajes en esa franja.
       </p>
 
       <div className="overflow-x-auto">
         <div
-          className="inline-grid min-w-[280px] gap-px rounded-xl bg-white/[0.06] p-1"
+          className="inline-grid min-w-[280px] gap-px rounded-xl bg-fg/[0.06] p-1"
           style={{
             gridTemplateColumns: `44px repeat(7, minmax(0, 1fr))`,
             gridTemplateRows: `auto repeat(24, minmax(0, 10px))`,
@@ -52,17 +52,14 @@ export function ActivityHeatmap({ celdas, totalEntrantesPeriodo }: ActivityHeatm
         >
           <div />
           {DIAS_CORTO.map((d) => (
-            <div
-              key={d}
-              className="py-1 text-center text-[10px] font-semibold text-zinc-400"
-            >
+            <div key={d} className="py-1 text-center text-[10px] font-semibold text-fg-muted">
               {d}
             </div>
           ))}
 
           {Array.from({ length: 24 }, (_, hora) => (
             <div key={hora} className="contents">
-              <div className="flex items-center justify-end pr-1 text-[9px] tabular-nums text-zinc-500">
+              <div className="flex items-center justify-end pr-1 text-[9px] tabular-nums text-fg-subtle">
                 {horasEtiqueta.includes(hora) ? `${hora}h` : ''}
               </div>
               {DIAS_CORTO.map((_, dia) => {
@@ -71,7 +68,7 @@ export function ActivityHeatmap({ celdas, totalEntrantesPeriodo }: ActivityHeatm
                 return (
                   <div
                     key={`${dia}-${hora}`}
-                    className="rounded-[1px] bg-[#25D366]"
+                    className="rounded-[1px] bg-[var(--chart-wa)]"
                     style={{ opacity }}
                     title={`${DIAS_CORTO[dia]} ${hora}h — ${count} mensajes`}
                     onMouseEnter={() => setHover({ dia, hora, count })}
@@ -85,7 +82,7 @@ export function ActivityHeatmap({ celdas, totalEntrantesPeriodo }: ActivityHeatm
       </div>
 
       {hover && (
-        <p className="mt-3 text-xs tabular-nums text-zinc-300">
+        <p className="mt-3 text-xs tabular-nums text-fg-soft">
           {DIAS_CORTO[hover.dia]} {hover.hora}h — {hover.count.toLocaleString('es-PE')} mensajes
         </p>
       )}

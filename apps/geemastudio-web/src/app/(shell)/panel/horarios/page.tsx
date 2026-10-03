@@ -13,7 +13,6 @@ import {
   validarHorarioCompleto,
 } from '@zmtech/tenant-config'
 
-
 export default function PanelHorariosPage() {
   const [cargando, setCargando] = useState(true)
   const [errorCarga, setErrorCarga] = useState<string | null>(null)
@@ -150,7 +149,7 @@ export default function PanelHorariosPage() {
 
   if (cargando) {
     return (
-      <div className="flex items-center gap-3 text-zinc-300">
+      <div className="flex items-center gap-3 text-fg-soft">
         <Loader2 className="h-5 w-5 animate-spin" style={{ color: 'var(--tenant-primary)' }} />
         Cargando horario…
       </div>
@@ -159,7 +158,7 @@ export default function PanelHorariosPage() {
 
   if (errorCarga) {
     return (
-      <div className="rounded-xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+      <div className="rounded-xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200">
         {errorCarga}
       </div>
     )
@@ -173,11 +172,11 @@ export default function PanelHorariosPage() {
     <div className="max-w-2xl space-y-8">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2 text-lg font-semibold text-white">
+          <div className="flex items-center gap-2 text-lg font-semibold text-fg">
             <Clock className="h-5 w-5" style={{ color: 'var(--tenant-primary)' }} />
             Horario de trabajo
           </div>
-          <p className="mt-2 max-w-prose text-sm text-zinc-400">
+          <p className="mt-2 max-w-prose text-sm text-fg-muted">
             Define la zona horaria del negocio y la franja de apertura por día. Los cambios aplican
             en el panel y quedan en Supabase para la app móvil cuando sincronice.
           </p>
@@ -204,8 +203,8 @@ export default function PanelHorariosPage() {
           className={[
             'rounded-xl border px-4 py-3 text-sm',
             mensaje.toLowerCase().includes('guardad')
-              ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-200'
-              : 'border-amber-500/30 bg-amber-500/10 text-amber-100',
+              ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-800 dark:text-emerald-200'
+              : 'border-amber-500/30 bg-amber-500/10 text-amber-900 dark:text-amber-100',
           ].join(' ')}
         >
           {mensaje}
@@ -213,8 +212,8 @@ export default function PanelHorariosPage() {
       ) : null}
 
       <section>
-        <h2 className="mb-2 text-sm font-semibold text-zinc-200">Formato de hora en la app</h2>
-        <p className="mb-3 max-w-prose text-xs text-zinc-500">
+        <h2 className="mb-2 text-sm font-semibold text-fg-soft">Formato de hora en la app</h2>
+        <p className="mb-3 max-w-prose text-xs text-fg-subtle">
           Cómo se muestran las horas en la agenda móvil. Los horarios de apertura siguen en 24 h al
           editarlos.
         </p>
@@ -225,8 +224,8 @@ export default function PanelHorariosPage() {
             className={[
               'rounded-xl border px-4 py-3 text-sm font-medium transition-colors',
               draftTimeFormat === '24'
-                ? 'border-[var(--tenant-primary)] bg-[var(--tenant-primary)]/15 text-[var(--tenant-primary)]'
-                : 'border-white/[0.12] text-zinc-300 hover:bg-white/[0.04]',
+                ? 'bg-[var(--tenant-primary)]/15 border-[var(--tenant-primary)] text-tenant-text'
+                : 'border-fg/[0.12] text-fg-soft hover:bg-fg/[0.04]',
             ].join(' ')}
           >
             24 horas
@@ -237,8 +236,8 @@ export default function PanelHorariosPage() {
             className={[
               'rounded-xl border px-4 py-3 text-sm font-medium transition-colors',
               draftTimeFormat === '12'
-                ? 'border-[var(--tenant-primary)] bg-[var(--tenant-primary)]/15 text-[var(--tenant-primary)]'
-                : 'border-white/[0.12] text-zinc-300 hover:bg-white/[0.04]',
+                ? 'bg-[var(--tenant-primary)]/15 border-[var(--tenant-primary)] text-tenant-text'
+                : 'border-fg/[0.12] text-fg-soft hover:bg-fg/[0.04]',
             ].join(' ')}
           >
             12 horas (AM / PM)
@@ -247,9 +246,9 @@ export default function PanelHorariosPage() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-sm font-semibold text-zinc-200">Zona horaria</h2>
-        <p className="mb-3 text-xs text-zinc-500">Seleccionada: {draftTimezone}</p>
-        <div className="divide-y divide-white/[0.06] overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.02]">
+        <h2 className="mb-2 text-sm font-semibold text-fg-soft">Zona horaria</h2>
+        <p className="mb-3 text-xs text-fg-subtle">Seleccionada: {draftTimezone}</p>
+        <div className="divide-y divide-fg/[0.06] overflow-hidden rounded-xl border border-fg/[0.08] bg-card">
           {zonasVisibles.map((z) => {
             const sel = z.value === draftTimezone
             return (
@@ -260,8 +259,8 @@ export default function PanelHorariosPage() {
                 className={[
                   'w-full px-4 py-3 text-left text-sm transition-colors',
                   sel
-                    ? 'bg-[var(--tenant-primary)]/15 font-medium text-[var(--tenant-primary)]'
-                    : 'text-zinc-300 hover:bg-white/[0.04]',
+                    ? 'bg-[var(--tenant-primary)]/15 font-medium text-tenant-text'
+                    : 'text-fg-soft hover:bg-fg/[0.04]',
                 ].join(' ')}
               >
                 {z.label}
@@ -272,57 +271,55 @@ export default function PanelHorariosPage() {
         <button
           type="button"
           onClick={() => setZonasExpandidas((v) => !v)}
-          className="mt-2 text-xs text-[var(--tenant-primary)] hover:underline"
+          className="mt-2 text-xs text-tenant-text hover:underline"
         >
           {zonasExpandidas ? 'Ver menos' : 'Ver más zonas'}
         </button>
       </section>
 
       <section>
-        <h2 className="mb-4 text-sm font-semibold text-zinc-200">Por día</h2>
+        <h2 className="mb-4 text-sm font-semibold text-fg-soft">Por día</h2>
         <div className="space-y-3">
           {CLAVES_DIA_LABORAL.map((dia) => {
             const slot = draftHours[dia]
             const abierto = slot !== null && slot !== undefined
             return (
-              <div key={dia} className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
+              <div key={dia} className="rounded-xl border border-fg/[0.08] bg-card p-4">
                 <div className="flex items-center justify-between gap-3">
-                  <span className="text-sm font-medium text-zinc-100">
-                    {ETIQUETA_DIA_LABORAL[dia]}
-                  </span>
-                  <label className="flex cursor-pointer items-center gap-2 text-xs text-zinc-400">
+                  <span className="text-sm font-medium text-fg">{ETIQUETA_DIA_LABORAL[dia]}</span>
+                  <label className="flex cursor-pointer items-center gap-2 text-xs text-fg-muted">
                     Abierto
                     <input
                       type="checkbox"
                       checked={abierto}
                       onChange={(e) => setDiaAbierto(dia, e.target.checked)}
-                      className="h-4 w-4 rounded border-white/20 bg-white/[0.06] accent-[var(--tenant-primary)]"
+                      className="h-4 w-4 rounded border-fg/20 bg-fg/[0.06] accent-[var(--tenant-primary)]"
                     />
                   </label>
                 </div>
                 {abierto && slot ? (
                   <div className="mt-3 grid grid-cols-2 gap-3">
                     <div>
-                      <span className="text-[11px] uppercase tracking-wide text-zinc-500">
+                      <span className="text-[11px] uppercase tracking-wide text-fg-subtle">
                         Apertura
                       </span>
                       <input
                         value={slot.open}
                         onChange={(e) => setHorasDia(dia, 'open', e.target.value)}
                         placeholder="09:00"
-                        className="mt-1 w-full rounded-lg border border-white/[0.1] bg-[#0F0F0F] px-3 py-2 text-sm text-white placeholder:text-zinc-600"
+                        className="mt-1 w-full rounded-lg border border-fg/[0.1] bg-app px-3 py-2 text-sm text-white placeholder:text-fg-subtle"
                         maxLength={5}
                       />
                     </div>
                     <div>
-                      <span className="text-[11px] uppercase tracking-wide text-zinc-500">
+                      <span className="text-[11px] uppercase tracking-wide text-fg-subtle">
                         Cierre
                       </span>
                       <input
                         value={slot.close}
                         onChange={(e) => setHorasDia(dia, 'close', e.target.value)}
                         placeholder="18:00"
-                        className="mt-1 w-full rounded-lg border border-white/[0.1] bg-[#0F0F0F] px-3 py-2 text-sm text-white placeholder:text-zinc-600"
+                        className="mt-1 w-full rounded-lg border border-fg/[0.1] bg-app px-3 py-2 text-sm text-white placeholder:text-fg-subtle"
                         maxLength={5}
                       />
                     </div>

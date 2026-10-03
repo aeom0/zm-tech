@@ -2,10 +2,7 @@
 
 import { useMemo, useState } from 'react'
 import { monthTick } from '@/hooks/finanzas/executiveDates'
-import {
-  useExecutiveDashboard,
-  type GrowthRange,
-} from '@/hooks/finanzas/useExecutiveDashboard'
+import { useExecutiveDashboard, type GrowthRange } from '@/hooks/finanzas/useExecutiveDashboard'
 import { BreakEvenCard } from './BreakEvenCard'
 import { ClientGrowthChart } from './ClientGrowthChart'
 import { ExecutiveFmtProvider } from './ExecutiveFmtContext'
@@ -84,9 +81,7 @@ export function ExecutiveDashboard({
               id="executive-month-select"
               value={dash.targetMonth}
               onChange={(e) =>
-                setSelectedMonth(
-                  e.target.value === dash.currentMonth ? undefined : e.target.value
-                )
+                setSelectedMonth(e.target.value === dash.currentMonth ? undefined : e.target.value)
               }
               className="h-11 cursor-pointer rounded-full border border-zinc-200 bg-white px-4 text-sm font-semibold text-zinc-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300"
             >

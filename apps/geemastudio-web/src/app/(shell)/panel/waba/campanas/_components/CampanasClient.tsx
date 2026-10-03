@@ -39,7 +39,11 @@ function useIsAdmin() {
         data: { user },
       } = await supabase.auth.getUser()
       if (!user) return false
-      const { data } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle()
+      const { data } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .maybeSingle()
       const role = (data as { role?: string } | null)?.role
       return role === 'dev' || role === 'owner'
     },
@@ -180,7 +184,7 @@ export function CampanasClient() {
 
   if (isAdminQuery.isLoading) {
     return (
-      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-8 text-center text-sm text-zinc-500">
+      <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
         Cargando…
       </div>
     )
@@ -189,18 +193,23 @@ export function CampanasClient() {
   if (!isAdminQuery.data) {
     return (
       <div className="mx-auto max-w-md py-16 text-center">
-        <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-300">
+        <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-700 dark:text-amber-300">
           <Lock className="h-7 w-7" />
         </div>
-        <h1 className="text-xl font-bold text-white">Solo administración</h1>
-        <p className="mt-2 text-sm text-zinc-400">Este módulo es solo para administración.</p>
+        <h1 className="text-xl font-bold text-fg">Solo administración</h1>
+        <p className="mt-2 text-sm text-fg-muted">Este módulo es solo para administración.</p>
       </div>
     )
   }
 
   const isLoading = query.isLoading
   const loadError = query.error ? (query.error as Error).message : null
-  const missingSeed = !metaAdsImageRow || !metaAdsCaptionRow || !metaAdsServicesRow || !metaAdsBounceNudgeRow || !tardanzaImageRow
+  const missingSeed =
+    !metaAdsImageRow ||
+    !metaAdsCaptionRow ||
+    !metaAdsServicesRow ||
+    !metaAdsBounceNudgeRow ||
+    !tardanzaImageRow
 
   const businessName = statusQuery.data?.businessName || 'el salón'
 
@@ -217,7 +226,10 @@ export function CampanasClient() {
       throw new Error('No se pudo guardar porque falta configuración inicial de imagen 2.')
     }
     await mutation.mutateAsync({ id: metaAdsImage2Row.id, config_value: { url: metaAdsImage2Url } })
-    await mutation.mutateAsync({ id: metaAdsImage2CaptionRow.id, config_value: { text: metaAdsImage2Caption } })
+    await mutation.mutateAsync({
+      id: metaAdsImage2CaptionRow.id,
+      config_value: { text: metaAdsImage2Caption },
+    })
   }
 
   const saveMetaAdsImage3 = async () => {
@@ -225,7 +237,10 @@ export function CampanasClient() {
       throw new Error('No se pudo guardar porque falta configuración inicial de imagen 3.')
     }
     await mutation.mutateAsync({ id: metaAdsImage3Row.id, config_value: { url: metaAdsImage3Url } })
-    await mutation.mutateAsync({ id: metaAdsImage3CaptionRow.id, config_value: { text: metaAdsImage3Caption } })
+    await mutation.mutateAsync({
+      id: metaAdsImage3CaptionRow.id,
+      config_value: { text: metaAdsImage3Caption },
+    })
   }
 
   const saveMetaAdsImage4 = async () => {
@@ -233,14 +248,20 @@ export function CampanasClient() {
       throw new Error('No se pudo guardar porque falta configuración inicial de imagen 4.')
     }
     await mutation.mutateAsync({ id: metaAdsImage4Row.id, config_value: { url: metaAdsImage4Url } })
-    await mutation.mutateAsync({ id: metaAdsImage4CaptionRow.id, config_value: { text: metaAdsImage4Caption } })
+    await mutation.mutateAsync({
+      id: metaAdsImage4CaptionRow.id,
+      config_value: { text: metaAdsImage4Caption },
+    })
   }
 
   const saveMetaAdsExtensionesImage1 = async () => {
     if (!metaAdsExtensionesImage1Row || !metaAdsExtensionesImage1CaptionRow) {
       throw new Error('No se pudo guardar porque falta configuración de Extensiones imagen 1.')
     }
-    await mutation.mutateAsync({ id: metaAdsExtensionesImage1Row.id, config_value: { url: metaAdsExtensionesImage1Url } })
+    await mutation.mutateAsync({
+      id: metaAdsExtensionesImage1Row.id,
+      config_value: { url: metaAdsExtensionesImage1Url },
+    })
     await mutation.mutateAsync({
       id: metaAdsExtensionesImage1CaptionRow.id,
       config_value: { text: metaAdsExtensionesImage1Caption },
@@ -251,7 +272,10 @@ export function CampanasClient() {
     if (!metaAdsExtensionesImage2Row || !metaAdsExtensionesImage2CaptionRow) {
       throw new Error('No se pudo guardar porque falta configuración de Extensiones imagen 2.')
     }
-    await mutation.mutateAsync({ id: metaAdsExtensionesImage2Row.id, config_value: { url: metaAdsExtensionesImage2Url } })
+    await mutation.mutateAsync({
+      id: metaAdsExtensionesImage2Row.id,
+      config_value: { url: metaAdsExtensionesImage2Url },
+    })
     await mutation.mutateAsync({
       id: metaAdsExtensionesImage2CaptionRow.id,
       config_value: { text: metaAdsExtensionesImage2Caption },
@@ -262,7 +286,10 @@ export function CampanasClient() {
     if (!metaAdsLiftingImage1Row || !metaAdsLiftingImage1CaptionRow) {
       throw new Error('No se pudo guardar porque falta configuración de Lifting imagen 1.')
     }
-    await mutation.mutateAsync({ id: metaAdsLiftingImage1Row.id, config_value: { url: metaAdsLiftingImage1Url } })
+    await mutation.mutateAsync({
+      id: metaAdsLiftingImage1Row.id,
+      config_value: { url: metaAdsLiftingImage1Url },
+    })
     await mutation.mutateAsync({
       id: metaAdsLiftingImage1CaptionRow.id,
       config_value: { text: metaAdsLiftingImage1Caption },
@@ -273,7 +300,10 @@ export function CampanasClient() {
     if (!metaAdsLiftingImage2Row || !metaAdsLiftingImage2CaptionRow) {
       throw new Error('No se pudo guardar porque falta configuración de Lifting imagen 2.')
     }
-    await mutation.mutateAsync({ id: metaAdsLiftingImage2Row.id, config_value: { url: metaAdsLiftingImage2Url } })
+    await mutation.mutateAsync({
+      id: metaAdsLiftingImage2Row.id,
+      config_value: { url: metaAdsLiftingImage2Url },
+    })
     await mutation.mutateAsync({
       id: metaAdsLiftingImage2CaptionRow.id,
       config_value: { text: metaAdsLiftingImage2Caption },
@@ -284,14 +314,20 @@ export function CampanasClient() {
     if (!metaAdsServicesRow) {
       throw new Error('No se pudo guardar el texto porque falta configuración inicial.')
     }
-    await mutation.mutateAsync({ id: metaAdsServicesRow.id, config_value: { text: metaAdsServicesText } })
+    await mutation.mutateAsync({
+      id: metaAdsServicesRow.id,
+      config_value: { text: metaAdsServicesText },
+    })
   }
 
   const saveMetaAdsBounceNudgeText = async () => {
     if (!metaAdsBounceNudgeRow) {
       throw new Error('No se pudo guardar el reenganche porque falta configuración inicial.')
     }
-    await mutation.mutateAsync({ id: metaAdsBounceNudgeRow.id, config_value: { text: metaAdsBounceNudgeText } })
+    await mutation.mutateAsync({
+      id: metaAdsBounceNudgeRow.id,
+      config_value: { text: metaAdsBounceNudgeText },
+    })
   }
 
   const linesToConfigValue = (raw: string) => ({
@@ -305,35 +341,50 @@ export function CampanasClient() {
     if (!emotionalAlmostCloseExtRow) {
       throw new Error('Esta opción aún no está disponible para tu negocio. Contacta a soporte.')
     }
-    await mutation.mutateAsync({ id: emotionalAlmostCloseExtRow.id, config_value: linesToConfigValue(emotionalAlmostCloseExt) })
+    await mutation.mutateAsync({
+      id: emotionalAlmostCloseExtRow.id,
+      config_value: linesToConfigValue(emotionalAlmostCloseExt),
+    })
   }
 
   const saveEmotionalAlmostCloseLift = async () => {
     if (!emotionalAlmostCloseLiftRow) {
       throw new Error('Esta opción aún no está disponible para tu negocio. Contacta a soporte.')
     }
-    await mutation.mutateAsync({ id: emotionalAlmostCloseLiftRow.id, config_value: linesToConfigValue(emotionalAlmostCloseLift) })
+    await mutation.mutateAsync({
+      id: emotionalAlmostCloseLiftRow.id,
+      config_value: linesToConfigValue(emotionalAlmostCloseLift),
+    })
   }
 
   const saveEmotionalDeclineReply = async () => {
     if (!emotionalDeclineReplyRow) {
       throw new Error('Esta opción aún no está disponible para tu negocio. Contacta a soporte.')
     }
-    await mutation.mutateAsync({ id: emotionalDeclineReplyRow.id, config_value: { text: emotionalDeclineReply } })
+    await mutation.mutateAsync({
+      id: emotionalDeclineReplyRow.id,
+      config_value: { text: emotionalDeclineReply },
+    })
   }
 
   const saveEmotionalNudge2Reply = async () => {
     if (!emotionalNudge2ReplyRow) {
       throw new Error('Esta opción aún no está disponible para tu negocio. Contacta a soporte.')
     }
-    await mutation.mutateAsync({ id: emotionalNudge2ReplyRow.id, config_value: { text: emotionalNudge2Reply } })
+    await mutation.mutateAsync({
+      id: emotionalNudge2ReplyRow.id,
+      config_value: { text: emotionalNudge2Reply },
+    })
   }
 
   const saveEmotionalPriceCtaExt = async () => {
     if (!emotionalPriceCtaExtRow) {
       throw new Error('Esta opción aún no está disponible para tu negocio. Contacta a soporte.')
     }
-    await mutation.mutateAsync({ id: emotionalPriceCtaExtRow.id, config_value: { text: emotionalPriceCtaExt } })
+    await mutation.mutateAsync({
+      id: emotionalPriceCtaExtRow.id,
+      config_value: { text: emotionalPriceCtaExt },
+    })
   }
 
   const saveTardanzaImage = async () => {
@@ -347,17 +398,17 @@ export function CampanasClient() {
     <div className="space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <div className="text-xs text-zinc-500">WhatsApp</div>
-          <h1 className="text-2xl font-bold text-white">Campañas (Meta Ads + tardanzas)</h1>
-          <p className="mt-1 text-sm text-zinc-400">
-            Cambia imágenes y textos sin ayuda técnica. Si ocurre un problema, el bot seguirá respondiendo con la
-            configuración actual.
+          <div className="text-xs text-fg-subtle">WhatsApp</div>
+          <h1 className="text-2xl font-bold text-fg">Campañas (Meta Ads + tardanzas)</h1>
+          <p className="mt-1 text-sm text-fg-muted">
+            Cambia imágenes y textos sin ayuda técnica. Si ocurre un problema, el bot seguirá
+            respondiendo con la configuración actual.
           </p>
         </div>
         <button
           type="button"
           onClick={() => query.refetch()}
-          className="inline-flex shrink-0 items-center gap-2 text-sm text-zinc-500 transition-colors hover:text-zinc-300"
+          className="inline-flex shrink-0 items-center gap-2 text-sm text-fg-subtle transition-colors hover:text-fg-soft"
         >
           <RefreshCw className="h-4 w-4" />
           Refrescar
@@ -365,14 +416,21 @@ export function CampanasClient() {
       </div>
 
       {loadError && (
-        <div role="alert" className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+        <div
+          role="alert"
+          className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200"
+        >
           No se pudo cargar la configuración de campañas. Inténtalo nuevamente en unos segundos.
         </div>
       )}
 
       {missingSeed && !isLoading && (
-        <div role="alert" className="rounded-2xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-200">
-          Faltan datos iniciales para esta pantalla. Avísale al equipo técnico para habilitar esta sección.
+        <div
+          role="alert"
+          className="rounded-2xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-800 dark:text-amber-200"
+        >
+          Faltan datos iniciales para esta pantalla. Avísale al equipo técnico para habilitar esta
+          sección.
         </div>
       )}
 
@@ -472,28 +530,32 @@ export function CampanasClient() {
         uploadPath="campanas/meta-ads-lifting-2.jpg"
       />
 
-      <div className="overflow-hidden rounded-2xl border border-[var(--tenant-primary)]/25 bg-[var(--tenant-primary)]/[0.04]">
+      <div className="border-[var(--tenant-primary)]/25 bg-[var(--tenant-primary)]/[0.04] overflow-hidden rounded-2xl border">
         <button
           type="button"
           onClick={() => setPreviewOpen((v) => !v)}
           className="flex w-full items-center justify-between px-5 py-4 text-left"
         >
           <div>
-            <h2 className="text-base font-semibold text-white">Vista previa del flujo</h2>
-            <p className="mt-0.5 text-xs text-zinc-400">Así ve la clienta los mensajes cuando llega desde un anuncio</p>
+            <h2 className="text-base font-semibold text-fg">Vista previa del flujo</h2>
+            <p className="mt-0.5 text-xs text-fg-muted">
+              Así ve la clienta los mensajes cuando llega desde un anuncio
+            </p>
           </div>
-          <ChevronDown className={`h-4 w-4 text-zinc-500 transition-transform ${previewOpen ? 'rotate-180' : ''}`} />
+          <ChevronDown
+            className={`h-4 w-4 text-fg-subtle transition-transform ${previewOpen ? 'rotate-180' : ''}`}
+          />
         </button>
 
         {previewOpen && (
-          <div className="space-y-3 border-t border-white/[0.08] px-5 pb-6 pt-4">
+          <div className="space-y-3 border-t border-fg/[0.08] px-5 pb-6 pt-4">
             <div className="mx-auto max-w-sm space-y-2 rounded-xl bg-[#0b141a] p-4">
               {metaAdsServicesText && (
                 <div className="max-w-[85%] rounded-xl rounded-tl-none bg-[#1f2c33] px-3 py-2 shadow-sm">
                   <p className="whitespace-pre-wrap break-words text-[13px] leading-snug text-zinc-100">
                     {metaAdsServicesText.replace('{nombre}', ' Vanessa')}
                   </p>
-                  <span className="float-right mt-1 text-[10px] text-zinc-500">ahora</span>
+                  <span className="float-right mt-1 text-[10px] text-zinc-400">ahora</span>
                 </div>
               )}
 
@@ -505,29 +567,38 @@ export function CampanasClient() {
               ]
                 .filter(({ url }) => url.trim() !== '')
                 .map(({ url, caption }, i) => (
-                  <div key={i} className="max-w-[85%] overflow-hidden rounded-xl rounded-tl-none bg-[#1f2c33] shadow-sm">
+                  <div
+                    key={i}
+                    className="max-w-[85%] overflow-hidden rounded-xl rounded-tl-none bg-[#1f2c33] shadow-sm"
+                  >
                     {/* eslint-disable-next-line @next/next/no-img-element -- preview de URL arbitraria configurada por admin, con fallback onError */}
                     <img
                       src={url}
                       alt={`Imagen ${i + 1}`}
-                      className="max-h-72 w-full bg-black/30 object-contain"
+                      className="max-h-72 w-full bg-scrim/30 object-contain"
                       onError={(e) => {
                         ;(e.target as HTMLImageElement).style.display = 'none'
                       }}
                     />
                     {caption && (
-                      <p className="whitespace-pre-wrap px-3 py-2 text-[12px] leading-snug text-zinc-200">{caption}</p>
+                      <p className="whitespace-pre-wrap px-3 py-2 text-[12px] leading-snug text-zinc-300">
+                        {caption}
+                      </p>
                     )}
-                    <span className="float-right px-3 pb-2 text-[10px] text-zinc-500">ahora</span>
+                    <span className="float-right px-3 pb-2 text-[10px] text-zinc-400">ahora</span>
                   </div>
                 ))}
 
-              {[metaAdsImageUrl, metaAdsImage2Url, metaAdsImage3Url, metaAdsImage4Url].every((u) => !u.trim()) && (
-                <p className="py-4 text-center text-xs text-zinc-500">Agrega al menos una imagen para ver la vista previa</p>
+              {[metaAdsImageUrl, metaAdsImage2Url, metaAdsImage3Url, metaAdsImage4Url].every(
+                (u) => !u.trim()
+              ) && (
+                <p className="py-4 text-center text-xs text-zinc-400">
+                  Agrega al menos una imagen para ver la vista previa
+                </p>
               )}
             </div>
 
-            <p className="text-center text-[11px] text-zinc-500">
+            <p className="text-center text-[11px] text-fg-subtle">
               El nombre {'"{nombre}"'} se reemplaza por el nombre real de la clienta
             </p>
           </div>
@@ -551,13 +622,14 @@ export function CampanasClient() {
         onSave={saveMetaAdsBounceNudgeText}
       />
 
-      <div className="space-y-4 rounded-2xl border border-[var(--tenant-primary)]/25 bg-[var(--tenant-primary)]/[0.04] p-5">
+      <div className="border-[var(--tenant-primary)]/25 bg-[var(--tenant-primary)]/[0.04] space-y-4 rounded-2xl border p-5">
         <div className="flex items-center gap-2">
-          <Megaphone className="h-4 w-4 text-[var(--tenant-primary)]" />
-          <h2 className="text-base font-bold text-white">Venta emocional en anuncios</h2>
+          <Megaphone className="h-4 w-4 text-tenant-text" />
+          <h2 className="text-base font-bold text-fg">Venta emocional en anuncios</h2>
         </div>
-        <p className="text-sm text-zinc-400">
-          Solo leads Meta Ads con Extensiones o Lifting en carrito. Usa <code className="text-xs">{'{servicio}'}</code> y{' '}
+        <p className="text-sm text-fg-muted">
+          Solo leads Meta Ads con Extensiones o Lifting en carrito. Usa{' '}
+          <code className="text-xs">{'{servicio}'}</code> y{' '}
           <code className="text-xs">{'{parte}'}</code> donde aplique.
         </p>
 
@@ -615,7 +687,9 @@ export function CampanasClient() {
         uploadPath="campanas/tardanza-policy.jpg"
       />
 
-      <p className="pb-4 text-center text-[11px] text-zinc-500">Módulo WhatsApp · Solo administración</p>
+      <p className="pb-4 text-center text-[11px] text-fg-subtle">
+        Módulo WhatsApp · Solo administración
+      </p>
     </div>
   )
 }

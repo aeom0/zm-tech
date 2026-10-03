@@ -131,17 +131,15 @@ function PromoFormModalInner({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-      <div className="max-h-[90vh] w-full max-w-lg space-y-4 overflow-y-auto rounded-xl border border-white/10 bg-[#1a1d26] p-6">
-        <h2 className="text-lg font-semibold text-white">
-          {promo ? 'Editar promo' : 'Nueva promo'}
-        </h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-scrim/60 p-4 backdrop-blur-sm">
+      <div className="max-h-[90vh] w-full max-w-lg space-y-4 overflow-y-auto rounded-xl border border-fg/10 bg-surface p-6">
+        <h2 className="text-lg font-semibold text-fg">{promo ? 'Editar promo' : 'Nueva promo'}</h2>
 
         <div className="grid grid-cols-2 gap-3">
           <div className="col-span-2">
-            <label className="mb-1 block text-xs text-white/50">Titulo *</label>
+            <label className="mb-1 block text-xs text-fg/50">Titulo *</label>
             <input
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
+              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
               value={form.title}
               onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
               placeholder="Ej: Promo San Valentin"
@@ -149,14 +147,18 @@ function PromoFormModalInner({
           </div>
 
           <div className="col-span-2">
-            <label className="mb-1 block text-xs text-white/50">Emoji</label>
-            <EmojiPicker emojis={PROMO_QUICK_EMOJIS} value={form.emoji} onChange={(emoji) => setForm((f) => ({ ...f, emoji }))} />
+            <label className="mb-1 block text-xs text-fg/50">Emoji</label>
+            <EmojiPicker
+              emojis={PROMO_QUICK_EMOJIS}
+              value={form.emoji}
+              onChange={(emoji) => setForm((f) => ({ ...f, emoji }))}
+            />
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-white/50">Etiqueta</label>
+            <label className="mb-1 block text-xs text-fg/50">Etiqueta</label>
             <input
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
+              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
               value={form.badge}
               onChange={(e) => setForm((f) => ({ ...f, badge: e.target.value }))}
               placeholder="HOT, NUEVO..."
@@ -164,7 +166,7 @@ function PromoFormModalInner({
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-white/50">Color de la etiqueta</label>
+            <label className="mb-1 block text-xs text-fg/50">Color de la etiqueta</label>
             <div className="flex items-center gap-2">
               <input
                 type="color"
@@ -172,14 +174,14 @@ function PromoFormModalInner({
                 onChange={(e) => setForm((f) => ({ ...f, accent_color: e.target.value }))}
                 className="h-8 w-8 cursor-pointer rounded border-0 bg-transparent"
               />
-              <span className="text-xs text-white/40">{form.accent_color}</span>
+              <span className="text-xs text-fg/40">{form.accent_color}</span>
             </div>
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-white/50">Precio total promo *</label>
+            <label className="mb-1 block text-xs text-fg/50">Precio total promo *</label>
             <input
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
+              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
               value={form.promo_price}
               onChange={(e) => setForm((f) => ({ ...f, promo_price: e.target.value }))}
               placeholder="0,00"
@@ -188,19 +190,19 @@ function PromoFormModalInner({
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-white/50">Expira</label>
+            <label className="mb-1 block text-xs text-fg/50">Expira</label>
             <input
               type="date"
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
+              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
               value={form.expires_at}
               onChange={(e) => setForm((f) => ({ ...f, expires_at: e.target.value }))}
             />
           </div>
 
           <div className="col-span-2">
-            <label className="mb-1 block text-xs text-white/50">Descripcion</label>
+            <label className="mb-1 block text-xs text-fg/50">Descripcion</label>
             <textarea
-              className="w-full resize-none rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
+              className="w-full resize-none rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
               value={form.description}
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               rows={2}
@@ -211,11 +213,11 @@ function PromoFormModalInner({
 
         <div>
           <div className="mb-2 flex items-center justify-between">
-            <label className="text-xs text-white/50">Items de la promo</label>
+            <label className="text-xs text-fg/50">Items de la promo</label>
             <button
               type="button"
               onClick={() => setItems((prev) => [...prev, { ...EMPTY_ITEM }])}
-              className="text-xs text-[var(--tenant-primary)] transition-colors hover:text-[#5ee8dc]"
+              className="text-xs text-tenant-text transition-colors hover:opacity-80"
             >
               + Agregar item
             </button>
@@ -232,7 +234,7 @@ function PromoFormModalInner({
               />
             ))}
             {items.length === 0 ? (
-              <p className="py-4 text-center text-xs text-white/20">
+              <p className="py-4 text-center text-xs text-fg/20">
                 Sin items: agrega servicios o packs con precio especial
               </p>
             ) : null}
@@ -246,14 +248,14 @@ function PromoFormModalInner({
             onChange={(e) => setForm((f) => ({ ...f, is_active: e.target.checked }))}
             className="accent-[var(--tenant-primary)]"
           />
-          <span className="text-sm text-white/70">Activa</span>
+          <span className="text-sm text-fg/70">Activa</span>
         </label>
 
         <div className="flex justify-end gap-2 pt-2">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm text-white/60 transition-colors hover:text-white"
+            className="px-4 py-2 text-sm text-fg/60 transition-colors hover:text-fg"
           >
             Cancelar
           </button>

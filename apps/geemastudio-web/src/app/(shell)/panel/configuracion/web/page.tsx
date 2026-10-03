@@ -20,8 +20,8 @@ import type {
 import { ConfiguracionNav } from '../_components/ConfiguracionNav'
 
 const fieldClass =
-  'w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white outline-none focus:border-[var(--tenant-primary)]/40'
-const labelClass = 'mb-1 block text-xs text-zinc-500'
+  'w-full rounded-xl border border-fg/[0.08] bg-fg/[0.04] px-3 py-2.5 text-sm text-fg outline-none focus:border-[var(--tenant-primary)]/40'
+const labelClass = 'mb-1 block text-xs text-fg-subtle'
 
 function Section({
   title,
@@ -33,10 +33,10 @@ function Section({
   children: React.ReactNode
 }) {
   return (
-    <section className="space-y-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5">
+    <section className="space-y-4 rounded-2xl border border-fg/[0.08] bg-card p-5">
       <div>
-        <h2 className="text-base font-semibold text-white">{title}</h2>
-        {subtitle ? <p className="mt-1 text-sm text-zinc-400">{subtitle}</p> : null}
+        <h2 className="text-base font-semibold text-fg">{title}</h2>
+        {subtitle ? <p className="mt-1 text-sm text-fg-muted">{subtitle}</p> : null}
       </div>
       {children}
     </section>
@@ -60,15 +60,15 @@ function ImageField({
     <div>
       <label className={labelClass}>{label}</label>
       <div className="flex items-center gap-3">
-        <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.04]">
+        <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-fg/[0.08] bg-fg/[0.04]">
           {url ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={url} alt={label} className="h-full w-full object-cover" />
           ) : (
-            <span className="text-[10px] text-zinc-500">Sin foto</span>
+            <span className="text-[10px] text-fg-subtle">Sin foto</span>
           )}
         </div>
-        <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-xs font-medium text-zinc-200 hover:bg-white/[0.08]">
+        <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-fg/[0.08] bg-fg/[0.04] px-3 py-2 text-xs font-medium text-fg-soft hover:bg-fg/[0.08]">
           {uploading ? (
             <Loader2 className="h-3.5 w-3.5 animate-spin" />
           ) : (
@@ -90,7 +90,7 @@ function ImageField({
           <button
             type="button"
             onClick={onClear}
-            className="text-xs text-red-300 hover:text-red-200"
+            className="text-xs text-red-700 hover:text-red-800 dark:text-red-300 dark:hover:text-red-200"
           >
             Quitar
           </button>
@@ -102,12 +102,12 @@ function ImageField({
 
 function RowCard({ children, onRemove }: { children: React.ReactNode; onRemove: () => void }) {
   return (
-    <div className="space-y-3 rounded-xl border border-white/[0.08] bg-white/[0.02] p-4">
+    <div className="space-y-3 rounded-xl border border-fg/[0.08] bg-card p-4">
       {children}
       <button
         type="button"
         onClick={onRemove}
-        className="inline-flex items-center gap-1.5 text-xs text-red-300 hover:text-red-200"
+        className="inline-flex items-center gap-1.5 text-xs text-red-700 hover:text-red-800 dark:text-red-300 dark:hover:text-red-200"
       >
         <Trash2 className="h-3.5 w-3.5" />
         Eliminar
@@ -121,7 +121,7 @@ function AddButton({ label, onClick }: { label: string; onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="inline-flex items-center gap-2 rounded-xl border border-dashed border-white/[0.15] px-4 py-2.5 text-sm font-medium text-zinc-300 hover:border-[var(--tenant-primary)]/40 hover:text-[var(--tenant-primary)]"
+      className="hover:border-[var(--tenant-primary)]/40 inline-flex items-center gap-2 rounded-xl border border-dashed border-fg/[0.15] px-4 py-2.5 text-sm font-medium text-fg-soft hover:text-tenant-text"
     >
       <Plus className="h-4 w-4" />
       {label}
@@ -244,7 +244,7 @@ export default function PanelWebPage() {
 
   if (settingsQuery.isLoading) {
     return (
-      <div className="flex items-center gap-2 text-sm text-zinc-400">
+      <div className="flex items-center gap-2 text-sm text-fg-muted">
         <Loader2 className="h-4 w-4 animate-spin" />
         Cargando contenido de Mi Web…
       </div>
@@ -253,7 +253,7 @@ export default function PanelWebPage() {
 
   if (settingsQuery.isError) {
     return (
-      <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+      <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200">
         {(settingsQuery.error as Error)?.message ?? 'Error al cargar'}
       </div>
     )
@@ -261,7 +261,7 @@ export default function PanelWebPage() {
 
   if (!row) {
     return (
-      <div className="rounded-2xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+      <div className="rounded-2xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-900 dark:text-amber-100">
         No encontramos `tenant_settings` para esta sesión.
       </div>
     )
@@ -275,11 +275,11 @@ export default function PanelWebPage() {
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Mi Web</h1>
-          <p className="mt-1 text-sm text-zinc-400">
+          <h1 className="text-2xl font-bold text-fg">Mi Web</h1>
+          <p className="mt-1 text-sm text-fg-muted">
             Contenido de la landing pública — texto, galería, equipo, promos, reseñas y servicios.
             Activar/desactivar, slug y dominio están en{' '}
-            <Link href="/panel/configuracion" className="text-[var(--tenant-primary)] hover:underline">
+            <Link href="/panel/configuracion" className="text-tenant-text hover:underline">
               Configuración → Presencia web
             </Link>
             .
@@ -301,8 +301,8 @@ export default function PanelWebPage() {
           className={[
             'rounded-2xl border px-4 py-3 text-sm',
             errorLocal
-              ? 'border-red-500/25 bg-red-500/10 text-red-200'
-              : 'border-emerald-500/25 bg-emerald-500/10 text-emerald-200',
+              ? 'border-red-500/25 bg-red-500/10 text-red-800 dark:text-red-200'
+              : 'border-emerald-500/25 bg-emerald-500/10 text-emerald-800 dark:text-emerald-200',
           ].join(' ')}
         >
           {errorLocal ?? mensaje}

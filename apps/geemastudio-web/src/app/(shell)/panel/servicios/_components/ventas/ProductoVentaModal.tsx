@@ -2,7 +2,10 @@
 
 import { useMemo, useState } from 'react'
 
-import type { ProductOrderSource, Producto } from '@/app/(shell)/panel/servicios/_services/productosService'
+import type {
+  ProductOrderSource,
+  Producto,
+} from '@/app/(shell)/panel/servicios/_services/productosService'
 
 export function ProductoVentaModal({
   products,
@@ -35,10 +38,10 @@ export function ProductoVentaModal({
   )
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 sm:items-center sm:p-4">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-scrim/60 p-0 sm:items-center sm:p-4">
       <button type="button" aria-label="Cerrar" className="absolute inset-0" onClick={onClose} />
-      <div className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-t-2xl border border-white/10 bg-[#1a1d26] p-5 sm:rounded-2xl">
-        <h2 className="mb-4 text-lg font-semibold text-white">Nuevo apartado</h2>
+      <div className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-t-2xl border border-fg/10 bg-surface p-5 sm:rounded-2xl">
+        <h2 className="mb-4 text-lg font-semibold text-fg">Nuevo apartado</h2>
         <div className="space-y-3">
           <Field label="Producto">
             <select
@@ -100,7 +103,7 @@ export function ProductoVentaModal({
           </Field>
         </div>
         <div className="flex justify-end gap-2 pt-4">
-          <button type="button" onClick={onClose} className="px-3 py-2 text-sm text-white/50">
+          <button type="button" onClick={onClose} className="px-3 py-2 text-sm text-fg/50">
             Cancelar
           </button>
           <button
@@ -130,10 +133,10 @@ export function ProductoVentaModal({
           min-height: 2.5rem;
           width: 100%;
           border-radius: 0.5rem;
-          border: 1px solid rgb(255 255 255 / 0.1);
-          background: rgb(255 255 255 / 0.05);
+          border: 1px solid rgb(var(--fg-rgb) / 0.1);
+          background: rgb(var(--fg-rgb) / 0.05);
           padding: 0.5rem 0.75rem;
-          color: white;
+          color: rgb(var(--fg-rgb));
           font-size: 0.875rem;
         }
       `}</style>
@@ -143,7 +146,7 @@ export function ProductoVentaModal({
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <label className="block text-xs text-white/50">
+    <label className="block text-xs text-fg/50">
       {label}
       {children}
     </label>

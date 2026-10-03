@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { fetchTenantBrandForUser, pwaIconUrl, type TenantBrand } from '@/lib/tenant-brand'
+import { THEME_INIT_SCRIPT } from '@/lib/theme-mode'
 import { ShellProviders } from './ShellProviders'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -56,6 +57,7 @@ export default async function ShellLayout({ children }: { children: React.ReactN
   return (
     <>
       <link rel="manifest" href={manifestUrl} />
+      <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       <ShellProviders
         session={data.session ? { userEmail: data.session.user.email ?? 'usuario' } : null}
         primaryColor={brand.primary}

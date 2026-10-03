@@ -54,9 +54,9 @@ export function ProductosTab() {
       {view === 'ventas' ? (
         <VentasTab />
       ) : isLoading ? (
-        <div className="py-8 text-center text-sm text-white/30">Cargando...</div>
+        <div className="py-8 text-center text-sm text-fg/30">Cargando...</div>
       ) : productos.length === 0 ? (
-        <div className="py-12 text-center text-white/30">
+        <div className="py-12 text-center text-fg/30">
           <ShoppingBag className="mx-auto mb-2 h-10 w-10 opacity-40" />
           <p className="text-sm">Todavía no hay productos en venta</p>
           <p className="mt-1 text-xs">Agrega el primero con foto, precio y stock</p>
@@ -90,8 +90,8 @@ function ViewButton({
       className={[
         'rounded-lg border px-3 py-1.5 text-sm font-semibold transition-colors',
         active
-          ? 'border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 text-[var(--tenant-primary)]'
-          : 'border-white/[0.06] text-white/50 hover:bg-white/[0.04] hover:text-white',
+          ? 'border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 text-tenant-text'
+          : 'border-fg/[0.06] text-fg/50 hover:bg-fg/[0.04] hover:text-fg',
       ].join(' ')}
     >
       {children}

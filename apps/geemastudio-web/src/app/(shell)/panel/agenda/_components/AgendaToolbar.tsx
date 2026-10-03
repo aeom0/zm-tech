@@ -69,7 +69,7 @@ export function AgendaToolbar({
         <button
           type="button"
           onClick={onPrev}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04] text-zinc-200 hover:bg-white/[0.08]"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] text-fg-soft hover:bg-fg/[0.08]"
           aria-label={isWeek ? 'Semana anterior' : 'Día anterior'}
         >
           <ChevronLeft className="h-4 w-4" />
@@ -77,13 +77,13 @@ export function AgendaToolbar({
         <button
           type="button"
           onClick={onToggleView}
-          className="min-w-0 flex-1 rounded-xl px-2 py-1 text-center transition-colors hover:bg-white/[0.04]"
+          className="min-w-0 flex-1 rounded-xl px-2 py-1 text-center transition-colors hover:bg-fg/[0.04]"
           aria-label={isWeek ? 'Volver a vista de día' : 'Ver semana completa'}
         >
-          <div className="truncate text-sm font-semibold text-white">{label}</div>
-          <div className="text-[10px] font-semibold uppercase tracking-wide text-[var(--tenant-primary)]">
+          <div className="truncate text-sm font-semibold text-fg">{label}</div>
+          <div className="text-[10px] font-semibold uppercase tracking-wide text-tenant-text">
             {isWeek ? 'Semana · clic para ver día' : 'Día · clic para ver semana'}
-            <span className="ml-2 font-normal normal-case tracking-normal text-zinc-500">
+            <span className="ml-2 font-normal normal-case tracking-normal text-fg-subtle">
               {count} {count === 1 ? 'cita' : 'citas'}
             </span>
           </div>
@@ -91,7 +91,7 @@ export function AgendaToolbar({
         <button
           type="button"
           onClick={onNext}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04] text-zinc-200 hover:bg-white/[0.08]"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] text-fg-soft hover:bg-fg/[0.08]"
           aria-label={isWeek ? 'Semana siguiente' : 'Día siguiente'}
         >
           <ChevronRight className="h-4 w-4" />
@@ -100,7 +100,7 @@ export function AgendaToolbar({
           <button
             type="button"
             onClick={onToday}
-            className="rounded-xl border border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 px-3 py-1.5 text-xs font-semibold text-[var(--tenant-primary)]"
+            className="border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 rounded-xl border px-3 py-1.5 text-xs font-semibold text-tenant-text"
           >
             Hoy
           </button>
@@ -116,8 +116,8 @@ export function AgendaToolbar({
             className={[
               'rounded-xl border px-3 py-1.5 text-xs font-medium transition-colors',
               statusFilter === chip.id
-                ? 'border-[var(--tenant-primary)]/40 bg-[var(--tenant-primary)]/15 text-[var(--tenant-primary)]'
-                : 'border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.04]',
+                ? 'border-[var(--tenant-primary)]/40 bg-[var(--tenant-primary)]/15 text-tenant-text'
+                : 'border-fg/[0.08] bg-card text-fg-soft hover:bg-fg/[0.04]',
             ].join(' ')}
           >
             {chip.label}

@@ -26,7 +26,7 @@ export function PacksTab() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-white/50">
+        <p className="text-sm text-fg/50">
           {packs.length} pack{packs.length !== 1 ? 's' : ''} registrado
         </p>
         <button
@@ -43,9 +43,9 @@ export function PacksTab() {
       </div>
 
       {isLoading ? (
-        <div className="py-8 text-center text-sm text-white/30">Cargando...</div>
+        <div className="py-8 text-center text-sm text-fg/30">Cargando...</div>
       ) : packs.length === 0 ? (
-        <div className="py-12 text-center text-white/30">
+        <div className="py-12 text-center text-fg/30">
           <Package className="mx-auto mb-2 h-10 w-10 opacity-40" />
           <p className="text-sm">Todavía no hay packs</p>
           <p className="mt-1 text-xs">Arma tu primer combo de servicios</p>

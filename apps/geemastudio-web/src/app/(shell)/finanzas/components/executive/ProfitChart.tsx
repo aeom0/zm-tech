@@ -12,12 +12,7 @@ import {
 } from 'recharts'
 import { monthTick } from '@/hooks/finanzas/executiveDates'
 import type { MonthlyFinancialRow } from '@/hooks/finanzas/executiveService'
-import {
-  ChartCard,
-  ChartEmpty,
-  ChartSkeleton,
-  SwatchLegend,
-} from './ChartCard'
+import { ChartCard, ChartEmpty, ChartSkeleton, SwatchLegend } from './ChartCard'
 import { useExecutiveFmt } from './ExecutiveFmtContext'
 
 interface Props {
@@ -37,9 +32,7 @@ export function ProfitChart({ data, loading }: Props) {
       utilidad,
     }
   })
-  const hasMovement = chartData.some(
-    (r) => r.ingresos !== 0 || r.gastos !== 0 || r.ads !== 0
-  )
+  const hasMovement = chartData.some((r) => r.ingresos !== 0 || r.gastos !== 0 || r.ads !== 0)
 
   return (
     <ChartCard

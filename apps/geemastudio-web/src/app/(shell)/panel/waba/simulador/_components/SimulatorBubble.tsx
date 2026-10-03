@@ -39,11 +39,11 @@ export function SimulatorBubbleView({
             ? message.fromAd
               ? 'rounded-br-md bg-violet-600 text-white'
               : 'rounded-br-md bg-emerald-600 text-white'
-            : 'rounded-bl-md border border-white/[0.08] bg-white/[0.06] text-zinc-100',
+            : 'rounded-bl-md border border-fg/[0.08] bg-fg/[0.06] text-fg',
         ].join(' ')}
       >
         {message.fromAd && (
-          <span className="mb-1 inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-violet-100/95">
+          <span className="mb-1 inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-violet-900/95 dark:text-violet-100/95">
             <Megaphone className="h-3 w-3" />
             vía anuncio
           </span>
@@ -62,7 +62,7 @@ export function SimulatorBubbleView({
                 <img
                   src={message.image_url}
                   alt={imageCaption || 'Foto del bot'}
-                  className="h-16 w-16 shrink-0 rounded-xl border border-white/10 object-cover transition-opacity group-hover:opacity-90"
+                  className="h-16 w-16 shrink-0 rounded-xl border border-fg/10 object-cover transition-opacity group-hover:opacity-90"
                   loading="lazy"
                 />
                 {imageCaption && <span>{imageCaption}</span>}
@@ -85,7 +85,7 @@ export function SimulatorBubbleView({
                   <span
                     className={[
                       'mb-0.5 block text-[10px] uppercase tracking-wide',
-                      isUser ? 'text-emerald-100/90' : 'text-zinc-400',
+                      isUser ? 'text-emerald-900/90 dark:text-emerald-100/90' : 'text-fg-muted',
                     ].join(' ')}
                   >
                     Menú
@@ -113,9 +113,9 @@ export function SimulatorBubbleView({
               'mt-1 text-right text-[10px] tabular-nums',
               isUser
                 ? message.fromAd
-                  ? 'text-violet-100/80'
-                  : 'text-emerald-100/80'
-                : 'text-zinc-500',
+                  ? 'text-violet-900/80 dark:text-violet-100/80'
+                  : 'text-emerald-900/80 dark:text-emerald-100/80'
+                : 'text-fg-subtle',
             ].join(' ')}
           >
             {time}

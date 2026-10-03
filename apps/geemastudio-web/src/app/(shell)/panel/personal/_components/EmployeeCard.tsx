@@ -39,10 +39,10 @@ export function EmployeeCard({
     <button
       type="button"
       onClick={onClick}
-      className="flex w-full items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 text-left transition-colors hover:border-white/[0.14] hover:bg-white/[0.04]"
+      className="flex w-full items-center gap-3 rounded-2xl border border-fg/[0.08] bg-card px-4 py-3 text-left transition-colors hover:border-fg/[0.14] hover:bg-fg/[0.04]"
     >
       <div
-        className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/[0.08] text-sm font-bold text-white"
+        className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-fg/[0.08] text-sm font-bold text-fg"
         style={{ backgroundColor: `${employee.color}33` }}
       >
         {employee.avatar_url ? (
@@ -58,17 +58,17 @@ export function EmployeeCard({
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="truncate text-sm font-semibold text-white">{employee.name}</span>
+          <span className="truncate text-sm font-semibold text-fg">{employee.name}</span>
           {!employee.is_active && (
-            <span className="rounded-full border border-white/[0.08] bg-white/[0.06] px-2 py-0.5 text-[10px] uppercase tracking-wide text-zinc-400">
+            <span className="rounded-full border border-fg/[0.08] bg-fg/[0.06] px-2 py-0.5 text-[10px] uppercase tracking-wide text-fg-muted">
               Inactivo
             </span>
           )}
         </div>
-        <div className="mt-0.5 truncate text-xs text-zinc-400">
+        <div className="mt-0.5 truncate text-xs text-fg-muted">
           {employee.phone || employee.email || 'Sin contacto'}
         </div>
-        <div className="mt-1 text-xs text-[var(--tenant-primary)]">{pay}</div>
+        <div className="mt-1 text-xs text-tenant-text">{pay}</div>
       </div>
     </button>
   )

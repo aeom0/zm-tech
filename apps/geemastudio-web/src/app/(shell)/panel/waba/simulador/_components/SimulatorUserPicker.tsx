@@ -18,9 +18,9 @@ export function SimulatorUserPicker({
 }) {
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <span className="text-xs font-medium text-zinc-500">Probar como</span>
+      <span className="text-xs font-medium text-fg-subtle">Probar como</span>
       <div
-        className="inline-flex rounded-xl border border-white/[0.08] bg-white/[0.03] p-0.5"
+        className="inline-flex rounded-xl border border-fg/[0.08] bg-fg/[0.03] p-0.5"
         role="group"
         aria-label="Usuario del simulador"
       >
@@ -36,7 +36,7 @@ export function SimulatorUserPicker({
                 'min-h-10 rounded-[10px] px-3 text-sm font-semibold transition-colors disabled:opacity-60',
                 active
                   ? 'bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)] shadow-sm'
-                  : 'text-zinc-300 hover:bg-white/[0.06]',
+                  : 'text-fg-soft hover:bg-fg/[0.06]',
               ].join(' ')}
               title={`Teléfono QA ${opt.phone}`}
             >

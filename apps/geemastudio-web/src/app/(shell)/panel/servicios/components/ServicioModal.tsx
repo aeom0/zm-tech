@@ -107,21 +107,23 @@ function ServicioModalForm({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <button
         type="button"
-        className="absolute inset-0 bg-black/70"
+        className="absolute inset-0 bg-scrim/70"
         aria-label="Cerrar"
         onClick={onClose}
       />
 
-      <div className="relative w-full max-w-lg rounded-2xl border border-white/[0.08] bg-zinc-900 shadow-xl">
-        <div className="flex items-center justify-between border-b border-white/[0.08] px-5 py-4">
+      <div className="relative w-full max-w-lg rounded-2xl border border-fg/[0.08] bg-surface shadow-xl">
+        <div className="flex items-center justify-between border-b border-fg/[0.08] px-5 py-4">
           <div>
-            <div className="text-sm font-semibold text-white">{title}</div>
-            <div className="mt-0.5 text-xs text-zinc-500">Precio en $ (USD) para el panel web.</div>
+            <div className="text-sm font-semibold text-fg">{title}</div>
+            <div className="mt-0.5 text-xs text-fg-subtle">
+              Precio en $ (USD) para el panel web.
+            </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04] text-zinc-300 transition-colors hover:bg-white/[0.06]"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] text-fg-soft transition-colors hover:bg-fg/[0.06]"
             aria-label="Cerrar modal"
           >
             <X className="h-4 w-4" />
@@ -130,11 +132,11 @@ function ServicioModalForm({
 
         <div className="space-y-4 p-5">
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-zinc-300">Nombre</label>
+            <label className="mb-1.5 block text-sm font-medium text-fg-soft">Nombre</label>
             <input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]"
+              className="w-full rounded-xl border border-fg/[0.10] bg-elevated px-4 py-2.5 text-fg placeholder:text-fg-subtle focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]"
               placeholder="Ej. Manicure clásica"
               autoFocus
             />
@@ -142,11 +144,11 @@ function ServicioModalForm({
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-zinc-300">Categoría</label>
+              <label className="mb-1.5 block text-sm font-medium text-fg-soft">Categoría</label>
               <select
                 value={categoryId}
                 onChange={(e) => setCategoryId(e.target.value)}
-                className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]"
+                className="w-full rounded-xl border border-fg/[0.10] bg-elevated px-4 py-2.5 text-fg focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]"
               >
                 {categorias.map((c) => (
                   <option key={c.id} value={c.id}>
@@ -157,17 +159,17 @@ function ServicioModalForm({
             </div>
 
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-zinc-300">Precio ($)</label>
+              <label className="mb-1.5 block text-sm font-medium text-fg-soft">Precio ($)</label>
               <input
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 inputMode="decimal"
-                className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]"
+                className="w-full rounded-xl border border-fg/[0.10] bg-elevated px-4 py-2.5 text-fg placeholder:text-fg-subtle focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]"
                 placeholder="15,50"
               />
-              <div className="mt-1 text-[11px] text-zinc-500">
-                Acepta coma: <span className="text-zinc-400">15,50</span> →{' '}
-                <span className="text-zinc-400">15.50</span>
+              <div className="mt-1 text-[11px] text-fg-subtle">
+                Acepta coma: <span className="text-fg-muted">15,50</span> →{' '}
+                <span className="text-fg-muted">15.50</span>
               </div>
             </div>
           </div>
@@ -175,12 +177,12 @@ function ServicioModalForm({
           {supportsIcons && (
             <div>
               <div className="mb-1.5 flex items-center justify-between">
-                <label className="text-sm font-medium text-zinc-300">Ícono</label>
+                <label className="text-sm font-medium text-fg-soft">Ícono</label>
                 {icon && (
                   <button
                     type="button"
                     onClick={() => setIcon(null)}
-                    className="text-xs font-semibold text-[var(--tenant-primary)] hover:underline"
+                    className="text-xs font-semibold text-tenant-text hover:underline"
                   >
                     Usar el de la categoría
                   </button>
@@ -193,7 +195,7 @@ function ServicioModalForm({
                 ].map((group) =>
                   group.keys.length === 0 ? null : (
                     <div key={group.title}>
-                      <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
+                      <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-fg-subtle">
                         {group.title}
                       </div>
                       <div className="grid grid-cols-6 gap-2 sm:grid-cols-8">
@@ -211,8 +213,8 @@ function ServicioModalForm({
                               className={[
                                 'flex h-10 items-center justify-center rounded-xl border transition-colors',
                                 active
-                                  ? 'border-[var(--tenant-primary)] bg-[var(--tenant-primary)]/15 text-white'
-                                  : 'border-white/[0.10] bg-zinc-800 text-zinc-300 hover:bg-white/[0.06]',
+                                  ? 'bg-[var(--tenant-primary)]/15 border-[var(--tenant-primary)] text-fg'
+                                  : 'border-fg/[0.10] bg-elevated text-fg-soft hover:bg-fg/[0.06]',
                               ].join(' ')}
                             >
                               <CategoryIcon name={key} className="h-5 w-5" />
@@ -229,7 +231,7 @@ function ServicioModalForm({
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-zinc-300">
+              <label className="mb-1.5 block text-sm font-medium text-fg-soft">
                 Duración (min)
               </label>
               <input
@@ -238,12 +240,12 @@ function ServicioModalForm({
                 min={15}
                 value={duration}
                 onChange={(e) => setDuration(parseInt(e.target.value || '0', 10))}
-                className="w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]"
+                className="w-full rounded-xl border border-fg/[0.10] bg-elevated px-4 py-2.5 text-fg placeholder:text-fg-subtle focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]"
               />
             </div>
 
             <div>
-              <label className="mb-1.5 block text-sm font-medium text-zinc-300">Activo</label>
+              <label className="mb-1.5 block text-sm font-medium text-fg-soft">Activo</label>
               <button
                 type="button"
                 role="switch"
@@ -252,8 +254,8 @@ function ServicioModalForm({
                 className={[
                   'w-full rounded-xl border px-4 py-2.5 text-sm font-semibold transition-colors',
                   isActive
-                    ? 'border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 text-[var(--tenant-primary)]'
-                    : 'border-white/[0.10] bg-white/[0.03] text-zinc-300',
+                    ? 'border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 text-tenant-text'
+                    : 'border-fg/[0.10] bg-fg/[0.03] text-fg-soft',
                 ].join(' ')}
               >
                 {isActive ? 'Activo' : 'Inactivo'}
@@ -262,11 +264,11 @@ function ServicioModalForm({
           </div>
         </div>
 
-        <div className="flex items-center justify-end gap-3 border-t border-white/[0.08] px-5 py-4">
+        <div className="flex items-center justify-end gap-3 border-t border-fg/[0.08] px-5 py-4">
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl border border-white/[0.10] bg-transparent px-4 py-2 text-sm font-semibold text-zinc-200 transition-colors hover:bg-white/[0.04]"
+            className="rounded-xl border border-fg/[0.10] bg-transparent px-4 py-2 text-sm font-semibold text-fg-soft transition-colors hover:bg-fg/[0.04]"
           >
             Cancelar
           </button>

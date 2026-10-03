@@ -53,7 +53,9 @@ function formFromProducto(p: Producto): FormState {
 export function ProductoFormModal({ open, producto, onClose }: Props) {
   if (!open) return null
 
-  return <ProductoFormModalInner key={producto?.id ?? 'new'} producto={producto} onClose={onClose} />
+  return (
+    <ProductoFormModalInner key={producto?.id ?? 'new'} producto={producto} onClose={onClose} />
+  )
 }
 
 function ProductoFormModalInner({
@@ -111,15 +113,15 @@ function ProductoFormModalInner({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-      <div className="max-h-[90vh] w-full max-w-md space-y-4 overflow-y-auto rounded-xl border border-white/10 bg-[#1a1d26] p-6">
-        <h2 className="text-lg font-semibold text-white">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-scrim/60 p-4 backdrop-blur-sm">
+      <div className="max-h-[90vh] w-full max-w-md space-y-4 overflow-y-auto rounded-xl border border-fg/10 bg-surface p-6">
+        <h2 className="text-lg font-semibold text-fg">
           {producto ? 'Editar producto' : 'Nuevo producto'}
         </h2>
 
         <div className="space-y-3">
           <div>
-            <label className="mb-1 block text-xs text-white/50">Imagen</label>
+            <label className="mb-1 block text-xs text-fg/50">Imagen</label>
             <input
               ref={fileInputRef}
               type="file"
@@ -132,52 +134,54 @@ function ProductoFormModalInner({
               className={[
                 'flex w-full cursor-pointer items-center gap-3 rounded-lg border-2 border-dashed px-3 py-3 transition-colors',
                 uploadState === 'uploading'
-                  ? 'pointer-events-none border-white/10 bg-white/5'
-                  : 'border-white/10 hover:border-[var(--tenant-primary)]/50 hover:bg-[var(--tenant-primary)]/5',
+                  ? 'pointer-events-none border-fg/10 bg-fg/5'
+                  : 'hover:border-[var(--tenant-primary)]/50 hover:bg-[var(--tenant-primary)]/5 border-fg/10',
               ].join(' ')}
             >
               {form.image_url ? (
                 // eslint-disable-next-line @next/next/no-img-element -- preview de URL de Storage
                 <img src={form.image_url} alt="" className="h-12 w-12 rounded-md object-cover" />
               ) : (
-                <div className="flex h-12 w-12 items-center justify-center rounded-md bg-white/5 text-white/30">
+                <div className="flex h-12 w-12 items-center justify-center rounded-md bg-fg/5 text-fg/30">
                   <UploadCloud className="h-5 w-5" />
                 </div>
               )}
               <div className="min-w-0 flex-1 text-sm">
                 {uploadState === 'uploading' ? (
-                  <span className="inline-flex items-center gap-1.5 text-white/60">
+                  <span className="inline-flex items-center gap-1.5 text-fg/60">
                     <Loader2 className="h-3.5 w-3.5 animate-spin" />
                     Subiendo…
                   </span>
                 ) : uploadState === 'success' ? (
-                  <span className="inline-flex items-center gap-1.5 text-emerald-300">
+                  <span className="inline-flex items-center gap-1.5 text-emerald-700 dark:text-emerald-300">
                     <CheckCircle2 className="h-3.5 w-3.5" />
                     Imagen lista
                   </span>
                 ) : (
-                  <span className="text-white/50">Haz clic para subir una foto</span>
+                  <span className="text-fg/50">Haz clic para subir una foto</span>
                 )}
-                <p className="text-xs text-white/30">JPG, PNG o WebP · máx. 5 MB</p>
+                <p className="text-xs text-fg/30">JPG, PNG o WebP · máx. 5 MB</p>
               </div>
             </div>
             {form.image_url && (
               <button
                 type="button"
                 onClick={() => setForm((f) => ({ ...f, image_url: '' }))}
-                className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-red-300 hover:underline"
+                className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-red-700 hover:underline dark:text-red-300"
               >
                 <Trash2 className="h-3 w-3" />
                 Quitar imagen
               </button>
             )}
-            {uploadError && <p className="mt-1.5 text-xs text-red-300">{uploadError}</p>}
+            {uploadError && (
+              <p className="mt-1.5 text-xs text-red-700 dark:text-red-300">{uploadError}</p>
+            )}
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-white/50">Nombre *</label>
+            <label className="mb-1 block text-xs text-fg/50">Nombre *</label>
             <input
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
+              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
               value={form.name}
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
               placeholder="Ej: Kit cuidado pestañas"
@@ -185,9 +189,9 @@ function ProductoFormModalInner({
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-white/50">Descripción</label>
+            <label className="mb-1 block text-xs text-fg/50">Descripción</label>
             <textarea
-              className="w-full resize-none rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
+              className="w-full resize-none rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
               value={form.description}
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               rows={3}
@@ -197,9 +201,9 @@ function ProductoFormModalInner({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1 block text-xs text-white/50">Precio</label>
+              <label className="mb-1 block text-xs text-fg/50">Precio</label>
               <input
-                className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
+                className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
                 value={form.price}
                 onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
                 placeholder="0,00"
@@ -207,9 +211,9 @@ function ProductoFormModalInner({
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs text-white/50">Unidad</label>
+              <label className="mb-1 block text-xs text-fg/50">Unidad</label>
               <input
-                className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
+                className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
                 value={form.unit}
                 onChange={(e) => setForm((f) => ({ ...f, unit: e.target.value }))}
                 placeholder="unidad, kit, ml..."
@@ -219,18 +223,18 @@ function ProductoFormModalInner({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="mb-1 block text-xs text-white/50">Cantidad en stock</label>
+              <label className="mb-1 block text-xs text-fg/50">Cantidad en stock</label>
               <input
-                className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
+                className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
                 value={form.quantity}
                 onChange={(e) => setForm((f) => ({ ...f, quantity: e.target.value }))}
                 inputMode="numeric"
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs text-white/50">Stock mínimo</label>
+              <label className="mb-1 block text-xs text-fg/50">Stock mínimo</label>
               <input
-                className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
+                className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
                 value={form.min_stock}
                 onChange={(e) => setForm((f) => ({ ...f, min_stock: e.target.value }))}
                 inputMode="numeric"
@@ -239,9 +243,9 @@ function ProductoFormModalInner({
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-white/50">Categoría</label>
+            <label className="mb-1 block text-xs text-fg/50">Categoría</label>
             <input
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
+              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
               value={form.category}
               onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
               placeholder="Opcional"
@@ -253,7 +257,7 @@ function ProductoFormModalInner({
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm text-white/60 transition-colors hover:text-white"
+            className="px-4 py-2 text-sm text-fg/60 transition-colors hover:text-fg"
           >
             Cancelar
           </button>

@@ -8,9 +8,9 @@ interface Props {
 
 const messages: Record<SavingState, { text: string; className: string } | null> = {
   idle: null,
-  saving: { text: 'Guardando...', className: 'text-amber-400/90' },
-  saved: { text: 'Listo', className: 'text-emerald-400' },
-  error: { text: 'Error al guardar', className: 'text-red-400' },
+  saving: { text: 'Guardando...', className: 'text-amber-700/90 dark:text-amber-400/90' },
+  saved: { text: 'Listo', className: 'text-emerald-700 dark:text-emerald-400' },
+  error: { text: 'Error al guardar', className: 'text-red-700 dark:text-red-400' },
 }
 
 export function SavingIndicator({ state }: Props) {

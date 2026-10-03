@@ -20,7 +20,7 @@ export function ServicePickerCheckbox({ selectedIds, onChange }: Props) {
       {activeServices.map((svc) => (
         <label
           key={svc.id}
-          className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-white/5"
+          className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-fg/5"
         >
           <input
             type="checkbox"
@@ -28,8 +28,8 @@ export function ServicePickerCheckbox({ selectedIds, onChange }: Props) {
             onChange={() => toggle(svc.id)}
             className="accent-[var(--tenant-primary)]"
           />
-          <span className="text-sm text-white/80">{svc.name}</span>
-          <span className="ml-auto text-xs text-white/40">
+          <span className="text-sm text-fg/80">{svc.name}</span>
+          <span className="ml-auto text-xs text-fg/40">
             {Number.parseFloat(String(svc.price)).toLocaleString('es-VE', {
               minimumFractionDigits: 2,
             })}

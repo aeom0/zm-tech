@@ -49,14 +49,18 @@ export function ClientsOverviewCard({
             <UserPlus className="h-3.5 w-3.5" />
             {etiquetaNuevas}
           </div>
-          <p className="text-2xl font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">{newCount}</p>
+          <p className="text-2xl font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
+            {newCount}
+          </p>
         </div>
         <div>
           <div className="mb-1 flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
             <Users className="h-3.5 w-3.5" />
             Recurrentes
           </div>
-          <p className="text-2xl font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">{returningCount}</p>
+          <p className="text-2xl font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
+            {returningCount}
+          </p>
         </div>
       </div>
 

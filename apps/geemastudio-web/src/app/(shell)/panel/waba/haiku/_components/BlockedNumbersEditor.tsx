@@ -56,22 +56,22 @@ export function BlockedNumbersEditor({
   }
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03]">
-      <div className="border-b border-white/[0.08] p-5">
-        <h2 className="text-base font-bold text-white">Números bloqueados</h2>
-        <p className="mt-1 text-sm text-zinc-400">
-          El bot ignora mensajes de estos números (spam, competencia, pruebas). Se sincroniza con
-          el bloqueo rápido desde Mensajes.
+    <section className="overflow-hidden rounded-2xl border border-fg/[0.08] bg-fg/[0.03]">
+      <div className="border-b border-fg/[0.08] p-5">
+        <h2 className="text-base font-bold text-fg">Números bloqueados</h2>
+        <p className="mt-1 text-sm text-fg-muted">
+          El bot ignora mensajes de estos números (spam, competencia, pruebas). Se sincroniza con el
+          bloqueo rápido desde Mensajes.
         </p>
       </div>
 
       <div className="space-y-3 p-5">
         <div className="flex flex-wrap gap-1.5">
-          {draft.length === 0 && <p className="text-xs text-zinc-500">Sin números bloqueados.</p>}
+          {draft.length === 0 && <p className="text-xs text-fg-subtle">Sin números bloqueados.</p>}
           {draft.map((phone) => (
             <span
               key={phone}
-              className="inline-flex items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-1 text-xs text-zinc-200"
+              className="inline-flex items-center gap-1 rounded-full border border-fg/[0.08] bg-fg/[0.04] px-2.5 py-1 text-xs text-fg-soft"
             >
               {phone}
               <button
@@ -80,7 +80,7 @@ export function BlockedNumbersEditor({
                   setDraft(draft.filter((p) => p !== phone))
                   setDirty(true)
                 }}
-                className="text-zinc-500 hover:text-zinc-200"
+                className="text-fg-subtle hover:text-fg-soft"
                 aria-label={`Desbloquear ${phone}`}
               >
                 <X className="h-3 w-3" />
@@ -103,32 +103,36 @@ export function BlockedNumbersEditor({
               }
             }}
             placeholder="Ej. 51987654321"
-            className="flex-1 rounded-lg border border-white/[0.08] bg-[#0F0F0F] px-2.5 py-1.5 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-[var(--tenant-primary)]/40"
+            className="focus:border-[var(--tenant-primary)]/40 flex-1 rounded-lg border border-fg/[0.08] bg-app px-2.5 py-1.5 text-sm text-fg outline-none placeholder:text-fg-subtle"
           />
           <button
             type="button"
             onClick={add}
-            className="inline-flex items-center gap-1 rounded-lg border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 text-xs text-zinc-300 hover:bg-white/[0.06]"
+            className="inline-flex items-center gap-1 rounded-lg border border-fg/[0.08] bg-fg/[0.04] px-3 py-1.5 text-xs text-fg-soft hover:bg-fg/[0.06]"
           >
             <Plus className="h-3.5 w-3.5" />
             Bloquear
           </button>
         </div>
-        {inputError && <p className="text-xs text-red-300">{inputError}</p>}
+        {inputError && <p className="text-xs text-red-700 dark:text-red-300">{inputError}</p>}
 
         <div className="flex justify-end">
           <button
             type="button"
             disabled={state === 'saving' || !dirty}
             onClick={() => void handleSave()}
-            className="inline-flex items-center gap-2 rounded-xl border border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 px-3 py-2 text-sm font-semibold text-[var(--tenant-primary)] disabled:opacity-50"
+            className="border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold text-tenant-text disabled:opacity-50"
           >
             <Save className="h-4 w-4" />
-            {state === 'saving' ? 'Guardando…' : state === 'saved' && !dirty ? 'Guardado' : 'Guardar'}
+            {state === 'saving'
+              ? 'Guardando…'
+              : state === 'saved' && !dirty
+                ? 'Guardado'
+                : 'Guardar'}
           </button>
         </div>
 
-        {error && <p className="text-sm text-red-300">{error}</p>}
+        {error && <p className="text-sm text-red-700 dark:text-red-300">{error}</p>}
       </div>
     </section>
   )

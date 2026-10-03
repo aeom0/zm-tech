@@ -72,9 +72,9 @@ export default function PanelIndexPage() {
   return (
     <div className="space-y-6">
       <div>
-        <div className="text-xs text-zinc-500">Panel</div>
-        <h1 className="text-2xl font-bold text-white">Inicio</h1>
-        <p className="mt-1 text-sm text-zinc-400">Elige el módulo al que deseas acceder.</p>
+        <div className="text-xs text-fg-subtle">Panel</div>
+        <h1 className="text-2xl font-bold text-fg">Inicio</h1>
+        <p className="mt-1 text-sm text-fg-muted">Elige el módulo al que deseas acceder.</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
@@ -84,13 +84,13 @@ export default function PanelIndexPage() {
             <Link
               key={m.href}
               href={m.href}
-              className="flex min-h-[132px] flex-col items-center justify-center gap-2.5 rounded-2xl border border-white/[0.08] bg-zinc-900 p-4 text-center transition-colors hover:border-[var(--tenant-primary)]/40 hover:bg-white/[0.04]"
+              className="hover:border-[var(--tenant-primary)]/40 flex min-h-[132px] flex-col items-center justify-center gap-2.5 rounded-2xl border border-fg/[0.08] bg-surface p-4 text-center transition-colors hover:bg-fg/[0.04]"
             >
-              <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 text-[var(--tenant-primary)]">
+              <span className="border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 flex h-11 w-11 items-center justify-center rounded-xl border text-tenant-text">
                 <Icon className="h-5 w-5" />
               </span>
-              <span className="text-sm font-semibold text-white">{m.label}</span>
-              <span className="text-xs text-zinc-500">{m.description}</span>
+              <span className="text-sm font-semibold text-fg">{m.label}</span>
+              <span className="text-xs text-fg-subtle">{m.description}</span>
             </Link>
           )
         })}

@@ -4,10 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Loader2, Megaphone, RotateCcw, Send } from 'lucide-react'
 import { SimulatorBubbleView } from './SimulatorBubble'
 import { SimulatorUserPicker } from './SimulatorUserPicker'
-import {
-  DEFAULT_CTWA_BOILERPLATE_TEXT,
-  useSimulatorChat,
-} from '../_hooks/useSimulatorChat'
+import { DEFAULT_CTWA_BOILERPLATE_TEXT, useSimulatorChat } from '../_hooks/useSimulatorChat'
 
 export function ChatSimulator() {
   const {
@@ -81,12 +78,12 @@ export function ChatSimulator() {
 
   return (
     <div className="mx-auto flex h-[calc(100dvh-8.5rem)] min-h-[28rem] max-w-2xl flex-col">
-      <header className="shrink-0 space-y-3 border-b border-white/[0.08] px-1 pb-3 pt-1 sm:px-0">
+      <header className="shrink-0 space-y-3 border-b border-fg/[0.08] px-1 pb-3 pt-1 sm:px-0">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <div className="text-xs text-zinc-500">WhatsApp</div>
-            <h1 className="text-xl font-bold text-white sm:text-2xl">Simulador de chat</h1>
-            <p className="mt-0.5 text-sm text-zinc-400">
+            <div className="text-xs text-fg-subtle">WhatsApp</div>
+            <h1 className="text-xl font-bold text-fg sm:text-2xl">Simulador de chat</h1>
+            <p className="mt-0.5 text-sm text-fg-muted">
               Prueba cómo responde el bot sin usar WhatsApp real (teléfonos QA).
             </p>
           </div>
@@ -94,7 +91,7 @@ export function ChatSimulator() {
             type="button"
             disabled={busy || !phone}
             onClick={() => void handleReset()}
-            className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 text-sm font-semibold text-zinc-200 transition-colors hover:bg-white/[0.06] disabled:opacity-50"
+            className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-3 text-sm font-semibold text-fg-soft transition-colors hover:bg-fg/[0.06] disabled:opacity-50"
           >
             <RotateCcw className="h-4 w-4" />
             Reiniciar conversación
@@ -112,7 +109,7 @@ export function ChatSimulator() {
             }}
           />
           {user && (
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-fg-subtle">
               Sesión de prueba · {user === 'vanessa' ? 'Vanessa' : 'Alberto'}
               {phone ? ` · ${phone}` : ''}
             </p>
@@ -121,11 +118,11 @@ export function ChatSimulator() {
       </header>
 
       <div
-        className="min-h-0 flex-1 space-y-2.5 overflow-y-auto bg-[radial-gradient(ellipse_at_top,_rgba(255,255,255,0.04),_transparent_60%)] px-1 py-4 sm:px-0"
+        className="min-h-0 flex-1 space-y-2.5 overflow-y-auto bg-[radial-gradient(ellipse_at_top,_rgb(var(--fg-rgb)_/_0.04),_transparent_60%)] px-1 py-4 sm:px-0"
         aria-live="polite"
       >
         {starting && messages.length === 0 && (
-          <div className="flex justify-center py-12 text-sm text-zinc-500">
+          <div className="flex justify-center py-12 text-sm text-fg-subtle">
             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
             Preparando sesión…
           </div>
@@ -133,7 +130,7 @@ export function ChatSimulator() {
 
         {!starting && messages.length === 0 && (
           <div className="flex justify-center py-12">
-            <p className="max-w-xs text-center text-sm text-zinc-400">
+            <p className="max-w-xs text-center text-sm text-fg-muted">
               Escribe como lo haría un cliente, o activa &quot;Simular desde anuncio&quot; para
               entrar como desde una publicidad.
             </p>
@@ -150,7 +147,7 @@ export function ChatSimulator() {
 
         {loading && (
           <div className="flex justify-start">
-            <div className="inline-flex items-center gap-2 rounded-2xl rounded-bl-md border border-white/[0.08] bg-white/[0.06] px-3 py-2 text-xs text-zinc-400">
+            <div className="inline-flex items-center gap-2 rounded-2xl rounded-bl-md border border-fg/[0.08] bg-fg/[0.06] px-3 py-2 text-xs text-fg-muted">
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
               El bot está respondiendo…
             </div>
@@ -163,13 +160,13 @@ export function ChatSimulator() {
       {error && (
         <div
           role="alert"
-          className="mx-1 mb-2 shrink-0 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-200 sm:mx-0"
+          className="mx-1 mb-2 shrink-0 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-800 dark:text-amber-200 sm:mx-0"
         >
           {error}
         </div>
       )}
 
-      <div className="shrink-0 space-y-2 border-t border-white/[0.08] bg-zinc-950/80 px-1 py-3 sm:px-0">
+      <div className="shrink-0 space-y-2 border-t border-fg/[0.08] bg-sunken/80 px-1 py-3 sm:px-0">
         <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
@@ -179,15 +176,15 @@ export function ChatSimulator() {
             className={[
               'inline-flex min-h-9 items-center gap-1.5 rounded-xl border px-3 text-xs font-semibold transition-colors disabled:opacity-50',
               fromAdMode
-                ? 'border-violet-500/40 bg-violet-500/15 text-violet-300'
-                : 'border-white/[0.08] text-zinc-300 hover:bg-white/[0.06]',
+                ? 'border-violet-500/40 bg-violet-500/15 text-violet-700 dark:text-violet-300'
+                : 'border-fg/[0.08] text-fg-soft hover:bg-fg/[0.06]',
             ].join(' ')}
           >
             <Megaphone className="h-3.5 w-3.5" />
             Simular desde anuncio
           </button>
           {fromAdMode && (
-            <span className="text-[11px] text-violet-400">
+            <span className="text-[11px] text-violet-700 dark:text-violet-400">
               El próximo mensaje entra como desde un anuncio (solo una vez)
             </span>
           )}
@@ -203,8 +200,8 @@ export function ChatSimulator() {
             }
             disabled={busy || !phone}
             className={[
-              'min-h-11 flex-1 rounded-xl border bg-white/[0.03] px-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]/40 disabled:opacity-60',
-              fromAdMode ? 'border-violet-500/40' : 'border-white/[0.08]',
+              'focus:ring-[var(--tenant-primary)]/40 min-h-11 flex-1 rounded-xl border bg-fg/[0.03] px-3 text-sm text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 disabled:opacity-60',
+              fromAdMode ? 'border-violet-500/40' : 'border-fg/[0.08]',
             ].join(' ')}
             autoComplete="off"
           />
@@ -221,7 +218,7 @@ export function ChatSimulator() {
         <div className="flex items-center justify-between gap-2">
           <button
             type="button"
-            className="text-xs font-medium text-zinc-500 transition-colors hover:text-[var(--tenant-primary)]"
+            className="text-xs font-medium text-fg-subtle transition-colors hover:text-tenant-text"
             onClick={() => setShowTapField((v) => !v)}
           >
             {showTapField ? 'Ocultar opción de menú' : 'Elegir opción de menú (avanzado)'}
@@ -235,13 +232,13 @@ export function ChatSimulator() {
               onChange={(e) => setTapId(e.target.value)}
               placeholder="Código de opción (ej. Extensiones del anuncio)"
               disabled={busy || !phone}
-              className="min-h-10 flex-1 rounded-xl border border-dashed border-white/[0.12] bg-transparent px-3 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]/40 disabled:opacity-60"
+              className="focus:ring-[var(--tenant-primary)]/40 min-h-10 flex-1 rounded-xl border border-dashed border-fg/[0.12] bg-transparent px-3 text-xs text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 disabled:opacity-60"
               autoComplete="off"
             />
             <button
               type="submit"
               disabled={busy || !phone || !tapId.trim()}
-              className="min-h-10 rounded-xl border border-white/[0.08] px-3 text-xs font-semibold text-zinc-200 hover:bg-white/[0.06] disabled:opacity-50"
+              className="min-h-10 rounded-xl border border-fg/[0.08] px-3 text-xs font-semibold text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50"
             >
               Enviar opción
             </button>

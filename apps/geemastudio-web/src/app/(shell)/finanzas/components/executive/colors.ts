@@ -1,9 +1,6 @@
 'use client'
 
-import {
-  DEFAULT_TENANT_ACCENT,
-  DEFAULT_TENANT_PRIMARY,
-} from '@/lib/tenant-theme'
+import { DEFAULT_TENANT_ACCENT, DEFAULT_TENANT_PRIMARY } from '@/lib/tenant-theme'
 
 /** Paleta de charts (Recharts no lee CSS vars). Usa marca del tenant si es hex válido. */
 export function chartColors(primaryHex?: string | null, accentHex?: string | null) {

@@ -57,7 +57,7 @@ export function PromoCard({ promo, onEdit }: Props) {
 
   return (
     <div
-      className={`rounded-xl border border-white/10 bg-white/5 p-4 transition-opacity ${
+      className={`rounded-xl border border-fg/10 bg-fg/5 p-4 transition-opacity ${
         !promo.is_active || isExpired ? 'opacity-50' : ''
       }`}
     >
@@ -69,7 +69,7 @@ export function PromoCard({ promo, onEdit }: Props) {
                 {emoji}
               </span>
             ) : null}
-            <h3 className="truncate text-sm font-medium text-white">{promo.title}</h3>
+            <h3 className="truncate text-sm font-medium text-fg">{promo.title}</h3>
 
             {promo.badge ? (
               <span
@@ -78,7 +78,7 @@ export function PromoCard({ promo, onEdit }: Props) {
                   backgroundColor: promo.accent_color
                     ? `${promo.accent_color}33`
                     : 'color-mix(in srgb, var(--tenant-primary) 20%, transparent)',
-                  color: promo.accent_color ?? '#fda4af',
+                  color: promo.accent_color ?? 'var(--tenant-text)',
                 }}
               >
                 {label || 'PROMO'}
@@ -86,23 +86,23 @@ export function PromoCard({ promo, onEdit }: Props) {
             ) : null}
 
             {isExpired ? (
-              <span className="rounded bg-red-500/20 px-1.5 py-0.5 text-xs text-red-400">
+              <span className="rounded bg-red-500/20 px-1.5 py-0.5 text-xs text-red-700 dark:text-red-400">
                 Vencida
               </span>
             ) : null}
           </div>
 
           {promo.description ? (
-            <p className="mt-0.5 line-clamp-1 text-xs text-white/50">{promo.description}</p>
+            <p className="mt-0.5 line-clamp-1 text-xs text-fg/50">{promo.description}</p>
           ) : null}
 
-          <p className="mt-1 text-sm font-semibold text-[var(--tenant-primary)]">
+          <p className="mt-1 text-sm font-semibold text-tenant-text">
             {Number(promo.promo_price).toLocaleString('es-VE', {
               minimumFractionDigits: 2,
             })}
           </p>
 
-          <p className="mt-0.5 text-xs text-white/30">
+          <p className="mt-0.5 text-xs text-fg/30">
             {itemCount} item{itemCount !== 1 ? 's' : ''}
             {promo.expires_at ? (
               <span className="ml-2">
@@ -119,7 +119,7 @@ export function PromoCard({ promo, onEdit }: Props) {
             type="button"
             onClick={() => void handleToggle()}
             className={`relative inline-flex h-4 w-8 shrink-0 rounded-full transition-colors ${
-              promo.is_active ? 'bg-[var(--tenant-primary)]' : 'bg-white/20'
+              promo.is_active ? 'bg-[var(--tenant-primary)]' : 'bg-fg/20'
             }`}
             aria-label={promo.is_active ? 'Desactivar promo' : 'Activar promo'}
           >
@@ -133,7 +133,7 @@ export function PromoCard({ promo, onEdit }: Props) {
           <button
             type="button"
             onClick={() => onEdit(promo)}
-            className="p-1.5 text-white/40 transition-colors hover:text-white"
+            className="p-1.5 text-fg/40 transition-colors hover:text-fg"
             aria-label="Editar promo"
           >
             <Pencil className="h-4 w-4" />
@@ -143,7 +143,7 @@ export function PromoCard({ promo, onEdit }: Props) {
             type="button"
             onClick={() => void handleDelete()}
             disabled={deletePromo.isPending}
-            className="p-1.5 text-white/40 transition-colors hover:text-red-400 disabled:opacity-30"
+            className="p-1.5 text-fg/40 transition-colors hover:text-red-700 disabled:opacity-30 dark:hover:text-red-400"
             aria-label="Eliminar promo"
           >
             <Trash2 className="h-4 w-4" />

@@ -31,12 +31,12 @@ function NumberField({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-xs text-zinc-500">{label}</span>
+      <span className="mb-1 block text-xs text-fg-subtle">{label}</span>
       <input
         type="number"
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="w-full rounded-lg border border-white/[0.08] bg-[#0F0F0F] px-2.5 py-1.5 text-sm text-zinc-100 outline-none focus:border-[var(--tenant-primary)]/40"
+        className="focus:border-[var(--tenant-primary)]/40 w-full rounded-lg border border-fg/[0.08] bg-app px-2.5 py-1.5 text-sm text-fg outline-none"
       />
     </label>
   )
@@ -116,12 +116,12 @@ export function WelcomeGreetingEditor({
   }
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03]">
-      <div className="border-b border-white/[0.08] p-5">
-        <h2 className="text-base font-bold text-white">Saludo de bienvenida</h2>
-        <p className="mt-1 text-sm text-zinc-400">
-          Plantilla y ajustes numéricos para el primer contacto (clienta nueva). El bloque
-          avanzado controla tono por franja horaria y textos de respaldo si la IA falla.
+    <section className="overflow-hidden rounded-2xl border border-fg/[0.08] bg-fg/[0.03]">
+      <div className="border-b border-fg/[0.08] p-5">
+        <h2 className="text-base font-bold text-fg">Saludo de bienvenida</h2>
+        <p className="mt-1 text-sm text-fg-muted">
+          Plantilla y ajustes numéricos para el primer contacto (clienta nueva). El bloque avanzado
+          controla tono por franja horaria y textos de respaldo si la IA falla.
         </p>
       </div>
 
@@ -170,7 +170,7 @@ export function WelcomeGreetingEditor({
         </div>
 
         <label className="block">
-          <span className="mb-1 block text-xs text-zinc-500">Plantilla de referencia</span>
+          <span className="mb-1 block text-xs text-fg-subtle">Plantilla de referencia</span>
           <textarea
             value={draft.welcome_greeting_template ?? ''}
             onChange={(e) => {
@@ -178,12 +178,12 @@ export function WelcomeGreetingEditor({
               setDirty(true)
             }}
             rows={4}
-            className="w-full resize-y rounded-xl border border-white/[0.08] bg-[#0F0F0F] px-3 py-2.5 text-sm text-zinc-100 outline-none focus:border-[var(--tenant-primary)]/40"
+            className="focus:border-[var(--tenant-primary)]/40 w-full resize-y rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 text-sm text-fg outline-none"
           />
         </label>
 
         <label className="block">
-          <span className="mb-1 block text-xs text-zinc-500">Instrucciones — solo saludo</span>
+          <span className="mb-1 block text-xs text-fg-subtle">Instrucciones — solo saludo</span>
           <textarea
             value={draft.welcome_generation_system ?? ''}
             onChange={(e) => {
@@ -191,54 +191,70 @@ export function WelcomeGreetingEditor({
               setDirty(true)
             }}
             rows={8}
-            className="w-full resize-y rounded-xl border border-white/[0.08] bg-[#0F0F0F] px-3 py-2.5 font-mono text-sm text-zinc-100 outline-none focus:border-[var(--tenant-primary)]/40"
+            className="focus:border-[var(--tenant-primary)]/40 w-full resize-y rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 font-mono text-sm text-fg outline-none"
           />
         </label>
 
-        <div className="rounded-xl border border-white/[0.08]">
+        <div className="rounded-xl border border-fg/[0.08]">
           <button
             type="button"
             onClick={() => setAdvancedOpen((v) => !v)}
-            className="flex w-full items-center gap-2 px-4 py-3 text-sm font-semibold text-zinc-300"
+            className="flex w-full items-center gap-2 px-4 py-3 text-sm font-semibold text-fg-soft"
           >
-            {advancedOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+            {advancedOpen ? (
+              <ChevronDown className="h-4 w-4" />
+            ) : (
+              <ChevronRight className="h-4 w-4" />
+            )}
             Avanzado — tono por franja y respaldos (JSON)
           </button>
 
           {advancedOpen && (
-            <div className="space-y-3 border-t border-white/[0.08] p-4">
+            <div className="space-y-3 border-t border-fg/[0.08] p-4">
               <label className="block">
-                <span className="mb-1 block text-xs text-zinc-500">welcome_slot_context</span>
+                <span className="mb-1 block text-xs text-fg-subtle">welcome_slot_context</span>
                 <textarea
                   value={slotContextDraft}
                   onChange={(e) => setSlotContextDraft(e.target.value)}
                   onBlur={() => setDirty(true)}
                   rows={6}
-                  className="w-full resize-y rounded-xl border border-white/[0.08] bg-[#0F0F0F] px-3 py-2.5 font-mono text-xs text-zinc-100 outline-none focus:border-[var(--tenant-primary)]/40"
+                  className="focus:border-[var(--tenant-primary)]/40 w-full resize-y rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 font-mono text-xs text-fg outline-none"
                 />
-                {jsonErrors.slot && <p className="mt-1 text-xs text-red-300">{jsonErrors.slot}</p>}
+                {jsonErrors.slot && (
+                  <p className="mt-1 text-xs text-red-700 dark:text-red-300">{jsonErrors.slot}</p>
+                )}
               </label>
               <label className="block">
-                <span className="mb-1 block text-xs text-zinc-500">Saludo de respaldo (anuncios)</span>
+                <span className="mb-1 block text-xs text-fg-subtle">
+                  Saludo de respaldo (anuncios)
+                </span>
                 <textarea
                   value={fallbackAdDraft}
                   onChange={(e) => setFallbackAdDraft(e.target.value)}
                   onBlur={() => setDirty(true)}
                   rows={6}
-                  className="w-full resize-y rounded-xl border border-white/[0.08] bg-[#0F0F0F] px-3 py-2.5 font-mono text-xs text-zinc-100 outline-none focus:border-[var(--tenant-primary)]/40"
+                  className="focus:border-[var(--tenant-primary)]/40 w-full resize-y rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 font-mono text-xs text-fg outline-none"
                 />
-                {jsonErrors.ad && <p className="mt-1 text-xs text-red-300">{jsonErrors.ad}</p>}
+                {jsonErrors.ad && (
+                  <p className="mt-1 text-xs text-red-700 dark:text-red-300">{jsonErrors.ad}</p>
+                )}
               </label>
               <label className="block">
-                <span className="mb-1 block text-xs text-zinc-500">Saludo de respaldo (orgánico)</span>
+                <span className="mb-1 block text-xs text-fg-subtle">
+                  Saludo de respaldo (orgánico)
+                </span>
                 <textarea
                   value={fallbackOrganicDraft}
                   onChange={(e) => setFallbackOrganicDraft(e.target.value)}
                   onBlur={() => setDirty(true)}
                   rows={6}
-                  className="w-full resize-y rounded-xl border border-white/[0.08] bg-[#0F0F0F] px-3 py-2.5 font-mono text-xs text-zinc-100 outline-none focus:border-[var(--tenant-primary)]/40"
+                  className="focus:border-[var(--tenant-primary)]/40 w-full resize-y rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 font-mono text-xs text-fg outline-none"
                 />
-                {jsonErrors.organic && <p className="mt-1 text-xs text-red-300">{jsonErrors.organic}</p>}
+                {jsonErrors.organic && (
+                  <p className="mt-1 text-xs text-red-700 dark:text-red-300">
+                    {jsonErrors.organic}
+                  </p>
+                )}
               </label>
             </div>
           )}
@@ -249,14 +265,18 @@ export function WelcomeGreetingEditor({
             type="button"
             disabled={state === 'saving' || !dirty}
             onClick={() => void handleSave()}
-            className="inline-flex items-center gap-2 rounded-xl border border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 px-3 py-2 text-sm font-semibold text-[var(--tenant-primary)] disabled:opacity-50"
+            className="border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold text-tenant-text disabled:opacity-50"
           >
             <Save className="h-4 w-4" />
-            {state === 'saving' ? 'Guardando…' : state === 'saved' && !dirty ? 'Guardado' : 'Guardar'}
+            {state === 'saving'
+              ? 'Guardando…'
+              : state === 'saved' && !dirty
+                ? 'Guardado'
+                : 'Guardar'}
           </button>
         </div>
 
-        {error && <p className="text-sm text-red-300">{error}</p>}
+        {error && <p className="text-sm text-red-700 dark:text-red-300">{error}</p>}
       </div>
     </section>
   )

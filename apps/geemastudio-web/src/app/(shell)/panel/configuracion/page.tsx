@@ -23,8 +23,8 @@ import { getTenantLandingUrl } from '@/lib/site-url'
 import { ConfiguracionNav } from './_components/ConfiguracionNav'
 
 const fieldClass =
-  'w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white outline-none focus:border-[var(--tenant-primary)]/40'
-const labelClass = 'mb-1 block text-xs text-zinc-500'
+  'w-full rounded-xl border border-fg/[0.08] bg-fg/[0.04] px-3 py-2.5 text-sm text-fg outline-none focus:border-[var(--tenant-primary)]/40'
+const labelClass = 'mb-1 block text-xs text-fg-subtle'
 
 function Section({
   title,
@@ -36,10 +36,10 @@ function Section({
   children: React.ReactNode
 }) {
   return (
-    <section className="space-y-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5">
+    <section className="space-y-4 rounded-2xl border border-fg/[0.08] bg-card p-5">
       <div>
-        <h2 className="text-base font-semibold text-white">{title}</h2>
-        {subtitle ? <p className="mt-1 text-sm text-zinc-400">{subtitle}</p> : null}
+        <h2 className="text-base font-semibold text-fg">{title}</h2>
+        {subtitle ? <p className="mt-1 text-sm text-fg-muted">{subtitle}</p> : null}
       </div>
       {children}
     </section>
@@ -131,7 +131,9 @@ export default function PanelConfiguracionPage() {
     }
 
     if (presence === 'geema_hosted' && !previewSlug) {
-      setErrorLocal('Para publicar tu página en Geema necesitas una dirección válida (ej. mi-salon)')
+      setErrorLocal(
+        'Para publicar tu página en Geema necesitas una dirección válida (ej. mi-salon)'
+      )
       return
     }
     if (presence === 'own_domain' && !customDomain.trim()) {
@@ -187,7 +189,7 @@ export default function PanelConfiguracionPage() {
 
   if (settingsQuery.isLoading) {
     return (
-      <div className="flex items-center gap-2 text-sm text-zinc-400">
+      <div className="flex items-center gap-2 text-sm text-fg-muted">
         <Loader2 className="h-4 w-4 animate-spin" />
         Cargando configuración…
       </div>
@@ -196,7 +198,7 @@ export default function PanelConfiguracionPage() {
 
   if (settingsQuery.isError) {
     return (
-      <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+      <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200">
         {(settingsQuery.error as Error)?.message ?? 'Error al cargar'}
       </div>
     )
@@ -204,7 +206,7 @@ export default function PanelConfiguracionPage() {
 
   if (!row) {
     return (
-      <div className="rounded-2xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+      <div className="rounded-2xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-900 dark:text-amber-100">
         No encontramos `tenant_settings` para esta sesión. Completa el onboarding en mobile o
         verifica el bridge `profiles.tenant_id` → `tenant_slug`.
       </div>
@@ -219,9 +221,9 @@ export default function PanelConfiguracionPage() {
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="text-xs text-zinc-500">Panel</div>
-          <h1 className="text-2xl font-bold text-white">Configuración</h1>
-          <p className="mt-1 text-sm text-zinc-400">
+          <div className="text-xs text-fg-subtle">Panel</div>
+          <h1 className="text-2xl font-bold text-fg">Configuración</h1>
+          <p className="mt-1 text-sm text-fg-muted">
             Datos del negocio, marca, logo y presencia web.
           </p>
         </div>
@@ -241,8 +243,8 @@ export default function PanelConfiguracionPage() {
           className={[
             'rounded-2xl border px-4 py-3 text-sm',
             errorLocal
-              ? 'border-red-500/25 bg-red-500/10 text-red-200'
-              : 'border-emerald-500/25 bg-emerald-500/10 text-emerald-200',
+              ? 'border-red-500/25 bg-red-500/10 text-red-800 dark:text-red-200'
+              : 'border-emerald-500/25 bg-emerald-500/10 text-emerald-800 dark:text-emerald-200',
           ].join(' ')}
         >
           {errorLocal ?? mensaje}
@@ -342,17 +344,17 @@ export default function PanelConfiguracionPage() {
             value={posFeePercent}
             onChange={(e) => setPosFeePercent(e.target.value.replace(/[^0-9,.]/g, ''))}
           />
-          <p className="mt-1 text-xs text-zinc-500">
+          <p className="mt-1 text-xs text-fg-subtle">
             Comisión del POS: se muestra al cobrar con tarjeta pero no cuenta como ingreso.
           </p>
         </div>
 
-        <label className="flex items-center gap-2 text-sm text-zinc-300">
+        <label className="flex items-center gap-2 text-sm text-fg-soft">
           <input
             type="checkbox"
             checked={featuresWhatsapp}
             onChange={(e) => setFeaturesWhatsapp(e.target.checked)}
-            className="h-4 w-4 rounded border-white/20 bg-white/10"
+            className="h-4 w-4 rounded border-fg/20 bg-fg/10"
           />
           WhatsApp / WABA habilitado en el producto
         </label>
@@ -367,7 +369,7 @@ export default function PanelConfiguracionPage() {
                 type="color"
                 value={primaryColor}
                 onChange={(e) => setPrimaryColor(e.target.value)}
-                className="h-10 w-14 cursor-pointer rounded-lg border border-white/[0.08] bg-transparent"
+                className="h-10 w-14 cursor-pointer rounded-lg border border-fg/[0.08] bg-transparent"
               />
               <input
                 className={`${fieldClass} w-28 font-mono`}
@@ -383,7 +385,7 @@ export default function PanelConfiguracionPage() {
                 type="color"
                 value={accentColor}
                 onChange={(e) => setAccentColor(e.target.value)}
-                className="h-10 w-14 cursor-pointer rounded-lg border border-white/[0.08] bg-transparent"
+                className="h-10 w-14 cursor-pointer rounded-lg border border-fg/[0.08] bg-transparent"
               />
               <input
                 className={`${fieldClass} w-28 font-mono`}
@@ -393,7 +395,7 @@ export default function PanelConfiguracionPage() {
             </div>
           </div>
           <div
-            className="rounded-2xl border border-white/[0.08] px-5 py-3 text-sm font-semibold text-zinc-950"
+            className="rounded-2xl border border-fg/[0.08] px-5 py-3 text-sm font-semibold text-zinc-950"
             style={{
               background: `linear-gradient(135deg, ${primaryColor}, ${accentColor})`,
             }}
@@ -405,15 +407,15 @@ export default function PanelConfiguracionPage() {
 
       <Section title="Logo" subtitle="Se guarda al subir la imagen.">
         <div className="flex flex-wrap items-center gap-4">
-          <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.04]">
+          <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-fg/[0.08] bg-fg/[0.04]">
             {logoUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={logoUrl} alt="Logo" className="h-full w-full object-contain" />
             ) : (
-              <span className="text-xs text-zinc-500">Sin logo</span>
+              <span className="text-xs text-fg-subtle">Sin logo</span>
             )}
           </div>
-          <label className="inline-flex cursor-pointer items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04] px-4 py-2.5 text-sm font-medium text-zinc-200 hover:bg-white/[0.08]">
+          <label className="inline-flex cursor-pointer items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] px-4 py-2.5 text-sm font-medium text-fg-soft hover:bg-fg/[0.08]">
             {uploadLogo.isPending ? 'Subiendo…' : 'Subir logo'}
             <input
               type="file"
@@ -428,7 +430,7 @@ export default function PanelConfiguracionPage() {
               onClick={() => {
                 setLogoUrl('')
               }}
-              className="text-sm text-red-300 hover:text-red-200"
+              className="text-sm text-red-700 hover:text-red-800 dark:text-red-300 dark:hover:text-red-200"
             >
               Quitar (guarda para aplicar)
             </button>
@@ -441,10 +443,7 @@ export default function PanelConfiguracionPage() {
         subtitle={
           <>
             Controla landing pública. Contenido (galería, equipo, promos, reseñas…) se edita en{' '}
-            <Link
-              href="/panel/configuracion/web"
-              className="text-[var(--tenant-primary)] hover:underline"
-            >
+            <Link href="/panel/configuracion/web" className="text-tenant-text hover:underline">
               Mi Web
             </Link>
             .
@@ -466,8 +465,8 @@ export default function PanelConfiguracionPage() {
               className={[
                 'rounded-xl border px-4 py-2 text-sm font-medium transition-colors',
                 presence === opt.id
-                  ? 'border-[var(--tenant-primary)]/40 bg-[var(--tenant-primary)]/15 text-[var(--tenant-primary)]'
-                  : 'border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.04]',
+                  ? 'border-[var(--tenant-primary)]/40 bg-[var(--tenant-primary)]/15 text-tenant-text'
+                  : 'border-fg/[0.08] bg-card text-fg-soft hover:bg-fg/[0.04]',
               ].join(' ')}
             >
               {opt.label}
@@ -486,12 +485,12 @@ export default function PanelConfiguracionPage() {
                 placeholder="mi-salon"
               />
               {previewSlug ? (
-                <p className="mt-1 flex flex-wrap items-center gap-1 text-xs text-zinc-500">
+                <p className="mt-1 flex flex-wrap items-center gap-1 text-xs text-fg-subtle">
                   Vista previa:{' '}
                   <Link
                     href={`/s/${previewSlug}`}
                     target="_blank"
-                    className="inline-flex max-w-full items-center gap-1 break-all text-[var(--tenant-primary)] hover:underline"
+                    className="inline-flex max-w-full items-center gap-1 break-all text-tenant-text hover:underline"
                   >
                     {getTenantLandingUrl(previewSlug)}
                     <ExternalLink className="h-3 w-3 shrink-0" />
@@ -507,7 +506,7 @@ export default function PanelConfiguracionPage() {
                 onChange={(e) => setCustomDomain(e.target.value)}
                 placeholder="midominio.com"
               />
-              <p className="mt-1 text-xs text-zinc-500">
+              <p className="mt-1 text-xs text-fg-subtle">
                 Para usar tu dominio, contacta a soporte y lo conectamos a tu página.
               </p>
             </div>

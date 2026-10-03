@@ -52,6 +52,40 @@ export function onColor(bgHex: string): string {
   return withWhite >= withDark ? ON_DARK_BG : ON_LIGHT_BG
 }
 
+/** Mezcla `hex` con `target` (0 = hex, 1 = target). */
+function mixHex(hex: string, target: [number, number, number], amount: number): string {
+  const rgb = hexToRgb(hex)
+  if (!rgb) return hex
+  return rgbToHex(rgb.map((c, i) => c + (target[i] - c) * amount) as [number, number, number])
+}
+
+function contrastRatio(a: string, b: string): number {
+  const la = relativeLuminance(a)
+  const lb = relativeLuminance(b)
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05)
+}
+
+const LIGHT_SURFACE = '#FFFFFF'
+const DARK_SURFACE = '#0F0F0F'
+const MIN_TEXT_CONTRAST = 4.5
+
+/**
+ * Variante del color de marca apta como TEXTO/ícono sobre una superficie
+ * (no como relleno). Ajusta el tono hacia negro (fondo claro) o blanco (fondo
+ * oscuro) en pasos pequeños hasta alcanzar contraste WCAG AA, preservando el
+ * matiz; si el color ya cumple, se devuelve sin cambios.
+ */
+export function textSafeColor(hex: string, surface: 'light' | 'dark'): string {
+  const bg = surface === 'light' ? LIGHT_SURFACE : DARK_SURFACE
+  const target: [number, number, number] = surface === 'light' ? [0, 0, 0] : [255, 255, 255]
+  let out = hex
+  for (let amount = 0; amount <= 1.0001; amount += 0.05) {
+    out = mixHex(hex, target, amount)
+    if (contrastRatio(out, bg) >= MIN_TEXT_CONTRAST) return out
+  }
+  return out
+}
+
 export type TenantCssVars = React.CSSProperties & {
   '--tenant-primary': string
   '--tenant-primary-hover': string
@@ -62,6 +96,10 @@ export type TenantCssVars = React.CSSProperties & {
   '--tenant-on-primary-hover': string
   /** Texto/íconos sobre superficies rellenas con `--tenant-accent`. */
   '--tenant-on-accent': string
+  /** Color de marca como texto/ícono sobre superficies claras (AA). */
+  '--tenant-text-light': string
+  /** Color de marca como texto/ícono sobre superficies oscuras (AA). */
+  '--tenant-text-dark': string
 }
 
 export function tenantCssVars(
@@ -80,5 +118,7 @@ export function tenantCssVars(
     '--tenant-on-primary': onColor(primary),
     '--tenant-on-primary-hover': onColor(primaryHover),
     '--tenant-on-accent': onColor(accent),
+    '--tenant-text-light': textSafeColor(primary, 'light'),
+    '--tenant-text-dark': textSafeColor(primary, 'dark'),
   }
 }

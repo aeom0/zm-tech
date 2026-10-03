@@ -28,8 +28,8 @@ export function ClientSegmentBar({ active, onChange }: ClientSegmentBarProps) {
             className={[
               'rounded-xl border px-4 py-2 text-sm font-medium transition-colors',
               isActive
-                ? 'border-[var(--tenant-primary)]/40 bg-[var(--tenant-primary)]/15 text-[var(--tenant-primary)]'
-                : 'border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:border-white/[0.12] hover:bg-white/[0.04]',
+                ? 'border-[var(--tenant-primary)]/40 bg-[var(--tenant-primary)]/15 text-tenant-text'
+                : 'border-fg/[0.08] bg-card text-fg-soft hover:border-fg/[0.12] hover:bg-fg/[0.04]',
             ].join(' ')}
           >
             {seg.label}

@@ -18,7 +18,11 @@ export function ProductoCard({ producto, onEdit }: Props) {
   const lowStock = producto.quantity <= producto.min_stock
 
   async function handleUnlist() {
-    if (!window.confirm(`Quitar "${producto.name}" del catálogo de venta? El insumo sigue en inventario.`))
+    if (
+      !window.confirm(
+        `Quitar "${producto.name}" del catálogo de venta? El insumo sigue en inventario.`
+      )
+    )
       return
     setSavingState('saving')
     try {
@@ -30,13 +34,17 @@ export function ProductoCard({ producto, onEdit }: Props) {
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10 bg-white/5">
-      <div className="aspect-square w-full bg-black/30">
+    <div className="overflow-hidden rounded-xl border border-fg/10 bg-fg/5">
+      <div className="aspect-square w-full bg-scrim/30">
         {producto.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element -- URL de Storage, tamaño variable
-          <img src={producto.image_url} alt={producto.name} className="h-full w-full object-contain" />
+          <img
+            src={producto.image_url}
+            alt={producto.name}
+            className="h-full w-full object-contain"
+          />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-xs text-white/30">
+          <div className="flex h-full w-full items-center justify-center text-xs text-fg/30">
             Sin imagen
           </div>
         )}
@@ -45,22 +53,22 @@ export function ProductoCard({ producto, onEdit }: Props) {
       <div className="p-4">
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0 flex-1">
-            <h3 className="truncate text-sm font-medium text-white">{producto.name}</h3>
+            <h3 className="truncate text-sm font-medium text-fg">{producto.name}</h3>
             {producto.description ? (
-              <p className="mt-0.5 line-clamp-2 text-xs text-white/50">{producto.description}</p>
+              <p className="mt-0.5 line-clamp-2 text-xs text-fg/50">{producto.description}</p>
             ) : null}
-            <p className="mt-1 text-sm font-semibold text-[var(--tenant-primary)]">
+            <p className="mt-1 text-sm font-semibold text-tenant-text">
               {producto.price != null
                 ? producto.price.toLocaleString('es-VE', { minimumFractionDigits: 2 })
                 : 'Sin precio'}
             </p>
-            <div className="mt-1 flex items-center gap-1.5 text-xs text-white/30">
+            <div className="mt-1 flex items-center gap-1.5 text-xs text-fg/30">
               <span>
                 {producto.quantity} {producto.unit} en stock
               </span>
               {lowStock && (
                 <span
-                  className="inline-flex items-center gap-1 rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-300"
+                  className="inline-flex items-center gap-1 rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:text-amber-300"
                   title={`Stock mínimo: ${producto.min_stock}`}
                 >
                   <AlertTriangle className="h-3 w-3" />
@@ -75,7 +83,7 @@ export function ProductoCard({ producto, onEdit }: Props) {
             <button
               type="button"
               onClick={() => onEdit(producto)}
-              className="p-1.5 text-white/40 transition-colors hover:text-white"
+              className="p-1.5 text-fg/40 transition-colors hover:text-fg"
               aria-label="Editar producto"
             >
               <Pencil className="h-4 w-4" />
@@ -84,7 +92,7 @@ export function ProductoCard({ producto, onEdit }: Props) {
               type="button"
               onClick={() => void handleUnlist()}
               disabled={unlist.isPending}
-              className="p-1.5 text-white/40 transition-colors hover:text-red-400 disabled:opacity-30"
+              className="p-1.5 text-fg/40 transition-colors hover:text-red-700 disabled:opacity-30 dark:hover:text-red-400"
               aria-label="Quitar del catálogo"
               title="Quitar del catálogo (no borra el insumo del inventario)"
             >

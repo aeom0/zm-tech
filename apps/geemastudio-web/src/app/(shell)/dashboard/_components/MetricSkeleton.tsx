@@ -1,4 +1,3 @@
-
 interface MetricSkeletonProps {
   variant: 'card' | 'list-item' | 'bar'
   className?: string
@@ -7,7 +6,9 @@ interface MetricSkeletonProps {
 export function MetricSkeleton({ variant, className = '' }: MetricSkeletonProps) {
   if (variant === 'card') {
     return (
-      <div className={`space-y-4 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 ${className}`}>
+      <div
+        className={`space-y-4 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 ${className}`}
+      >
         <div className="h-4 w-24 animate-pulse rounded bg-zinc-100 dark:bg-zinc-800" />
         <div className="h-10 w-40 animate-pulse rounded bg-zinc-100 dark:bg-zinc-800" />
         <div className="h-3 w-full max-w-[160px] animate-pulse rounded bg-zinc-100 dark:bg-zinc-800" />
@@ -31,7 +32,7 @@ export function MetricSkeleton({ variant, className = '' }: MetricSkeletonProps)
   return (
     <div
       className={`h-3 w-full overflow-hidden rounded-full ${className}`}
-      style={{ background: 'rgba(255,255,255,0.08)' }}
+      style={{ background: 'rgb(var(--fg-rgb) / 0.08)' }}
     >
       <div
         className="h-full w-1/3 animate-pulse"

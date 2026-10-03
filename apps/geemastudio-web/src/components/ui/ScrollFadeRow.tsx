@@ -20,11 +20,11 @@ const EPSILON = 4
 /** Web de `ScrollFadeRow` (mobile): scroll horizontal con degradado en bordes y flechas. */
 export function ScrollFadeRow({
   children,
-  backgroundColor = '#09090b',
+  backgroundColor = 'rgb(var(--app-rgb))',
   className = '',
   wrapperClassName = '',
   fadeWidth = 40,
-  arrowClassName = 'text-zinc-300',
+  arrowClassName = 'text-fg-soft',
 }: ScrollFadeRowProps) {
   const ref = useRef<HTMLDivElement>(null)
   const [canLeft, setCanLeft] = useState(false)
@@ -76,7 +76,7 @@ export function ScrollFadeRow({
             type="button"
             onClick={() => scrollByStep(-1)}
             aria-label="Desplazar a la izquierda"
-            className={`pointer-events-auto flex h-7 w-7 items-center justify-center rounded-full hover:bg-white/10 ${arrowClassName}`}
+            className={`pointer-events-auto flex h-7 w-7 items-center justify-center rounded-full hover:bg-fg/10 ${arrowClassName}`}
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
@@ -91,7 +91,7 @@ export function ScrollFadeRow({
             type="button"
             onClick={() => scrollByStep(1)}
             aria-label="Desplazar a la derecha"
-            className={`pointer-events-auto flex h-7 w-7 items-center justify-center rounded-full hover:bg-white/10 ${arrowClassName}`}
+            className={`pointer-events-auto flex h-7 w-7 items-center justify-center rounded-full hover:bg-fg/10 ${arrowClassName}`}
           >
             <ChevronRight className="h-4 w-4" />
           </button>

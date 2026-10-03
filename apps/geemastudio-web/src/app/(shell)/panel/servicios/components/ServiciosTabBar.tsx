@@ -31,10 +31,10 @@ export function ServiciosTabBar({
             className={[
               'min-w-[30%] flex-1 whitespace-nowrap rounded-xl border px-3 py-2.5 text-sm font-semibold transition-colors md:min-w-0 md:flex-none md:px-4 md:py-2',
               t.disabled
-                ? 'cursor-not-allowed border-white/[0.06] bg-white/[0.02] text-zinc-500'
+                ? 'cursor-not-allowed border-fg/[0.06] bg-card text-fg-subtle'
                 : isActive
                   ? 'border-[var(--tenant-primary)] bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)]'
-                  : 'border-white/[0.06] bg-transparent text-zinc-300 hover:border-white/[0.08] hover:bg-white/[0.04]',
+                  : 'border-fg/[0.06] bg-transparent text-fg-soft hover:border-fg/[0.08] hover:bg-fg/[0.04]',
             ].join(' ')}
           >
             {t.label}

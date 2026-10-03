@@ -1,22 +1,9 @@
 'use client'
 
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts'
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { monthTick } from '@/hooks/finanzas/executiveDates'
 import type { ClientGrowthRow } from '@/hooks/finanzas/executiveService'
-import {
-  ChartCard,
-  ChartEmpty,
-  ChartSkeleton,
-  SwatchLegend,
-} from './ChartCard'
+import { ChartCard, ChartEmpty, ChartSkeleton, SwatchLegend } from './ChartCard'
 import { useExecutiveFmt } from './ExecutiveFmtContext'
 
 interface Props {
@@ -97,9 +84,7 @@ function GrowthTooltip({
         {row.citas} {visitas} {hechas}
       </p>
       {deMas > 0 ? (
-        <p className="mt-1 text-zinc-500 dark:text-zinc-400">
-          {extra}
-        </p>
+        <p className="mt-1 text-zinc-500 dark:text-zinc-400">{extra}</p>
       ) : (
         <p className="mt-1 text-zinc-500 dark:text-zinc-400">
           Cada {clientTerm} tuvo una sola {appointmentTerm}.
@@ -128,9 +113,7 @@ export function ClientGrowthChart({
     recurrentes: row.recurrentes,
     citas: row.citas,
   }))
-  const hasMovement = chartData.some(
-    (r) => r.nuevas > 0 || r.recurrentes > 0 || r.citas > 0
-  )
+  const hasMovement = chartData.some((r) => r.nuevas > 0 || r.recurrentes > 0 || r.citas > 0)
 
   return (
     <ChartCard

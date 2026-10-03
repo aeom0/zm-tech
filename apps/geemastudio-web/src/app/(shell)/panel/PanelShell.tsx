@@ -19,6 +19,7 @@ import {
   TrendingUp,
 } from 'lucide-react'
 
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { supabase } from '@/lib/supabase'
 
 type NavItem = {
@@ -61,7 +62,7 @@ function TenantLogo({
   const initial = tenantName?.trim()?.[0]?.toUpperCase() ?? '?'
   return (
     <span
-      className="border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 flex shrink-0 items-center justify-center rounded-full border font-semibold text-[var(--tenant-primary)]"
+      className="border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 flex shrink-0 items-center justify-center rounded-full border font-semibold text-tenant-text"
       style={{ width: size, height: size, fontSize: size * 0.42 }}
     >
       {initial}
@@ -209,22 +210,20 @@ export function PanelShell({
           className={[
             'flex h-8 w-8 items-center justify-center rounded-xl border',
             isActive
-              ? 'border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 text-[var(--tenant-primary)]'
-              : 'border-white/[0.08] bg-white/[0.04] text-zinc-300',
+              ? 'border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 text-tenant-text'
+              : 'border-fg/[0.08] bg-fg/[0.04] text-fg-soft',
           ].join(' ')}
         >
           {item.icon}
         </span>
-        <span
-          className={['text-sm font-medium', isActive ? 'text-white' : 'text-zinc-300'].join(' ')}
-        >
+        <span className={['text-sm font-medium', isActive ? 'text-fg' : 'text-fg-soft'].join(' ')}>
           {item.label}
         </span>
       </span>
     )
 
     const right = item.badge ? (
-      <span className="rounded-full border border-white/[0.08] bg-white/[0.06] px-2 py-0.5 text-[11px] text-zinc-400">
+      <span className="rounded-full border border-fg/[0.08] bg-fg/[0.06] px-2 py-0.5 text-[11px] text-fg-muted">
         {item.badge}
       </span>
     ) : null
@@ -237,8 +236,8 @@ export function PanelShell({
         className={[
           base,
           isActive
-            ? 'border-white/[0.10] bg-white/[0.06]'
-            : 'border-transparent bg-transparent hover:border-white/[0.08] hover:bg-white/[0.04]',
+            ? 'border-fg/[0.10] bg-fg/[0.06]'
+            : 'border-transparent bg-transparent hover:border-fg/[0.08] hover:bg-fg/[0.04]',
         ].join(' ')}
       >
         {left}
@@ -249,7 +248,7 @@ export function PanelShell({
 
   const SidebarContent = (
     <div className="flex h-full flex-col">
-      <div className="border-b border-white/[0.08] px-4 py-4">
+      <div className="border-b border-fg/[0.08] px-4 py-4">
         <div className="flex items-center justify-between gap-3">
           <Link href="/panel" className="flex min-w-0 items-center gap-2.5">
             <Image
@@ -260,8 +259,8 @@ export function PanelShell({
               className="shrink-0"
             />
             <div className="min-w-0 leading-tight">
-              <div className="truncate text-sm font-semibold text-white">Panel</div>
-              <div className="truncate text-xs text-zinc-400">GeemaStudio</div>
+              <div className="truncate text-sm font-semibold text-fg">Panel</div>
+              <div className="truncate text-xs text-fg-muted">GeemaStudio</div>
             </div>
           </Link>
           <TenantLogo tenantName={tenantName} tenantLogoUrl={tenantLogoUrl} size={36} />
@@ -271,7 +270,7 @@ export function PanelShell({
       <nav className="flex-1 space-y-5 overflow-y-auto p-3">
         {navSections.map((section) => (
           <div key={section.title} className="space-y-1">
-            <div className="px-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+            <div className="px-3 text-[11px] font-semibold uppercase tracking-wider text-fg-subtle">
               {section.title}
             </div>
             {section.items.map((item) => renderNavLink(item, () => {}))}
@@ -279,19 +278,22 @@ export function PanelShell({
         ))}
       </nav>
 
-      <div className="border-t border-white/[0.08] p-3">
-        <div className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2">
+      <div className="border-t border-fg/[0.08] p-3">
+        <div className="mb-3">
+          <ThemeToggle compact />
+        </div>
+        <div className="flex items-center justify-between gap-3 rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-3 py-2">
           <div className="min-w-0">
-            <div className="text-xs text-zinc-500">Sesión</div>
-            <div className="truncate text-sm text-zinc-200">{userEmail}</div>
+            <div className="text-xs text-fg-subtle">Sesión</div>
+            <div className="truncate text-sm text-fg-soft">{userEmail}</div>
           </div>
-          <ChevronDown className="h-4 w-4 text-zinc-500" />
+          <ChevronDown className="h-4 w-4 text-fg-subtle" />
         </div>
 
         <button
           type="button"
           onClick={handleLogout}
-          className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-2 text-sm font-semibold text-red-300 transition-colors hover:bg-red-500/15"
+          className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-2 text-sm font-semibold text-red-700 transition-colors hover:bg-red-500/15 dark:text-red-300"
         >
           <LogOut className="h-4 w-4" />
           Cerrar sesión
@@ -301,15 +303,15 @@ export function PanelShell({
   )
 
   return (
-    <div className="flex min-h-screen bg-[#0F0F0F] text-white">
+    <div className="flex min-h-screen bg-app text-fg">
       {/* Desktop sidebar */}
-      <aside className="hidden w-[240px] border-r border-white/[0.08] bg-zinc-900 md:block">
+      <aside className="hidden w-[240px] border-r border-fg/[0.08] bg-surface md:block">
         {SidebarContent}
       </aside>
 
       <div className="min-w-0 flex-1">
         {/* Mobile top bar */}
-        <div className="sticky top-0 z-30 border-b border-white/[0.08] bg-[#0F0F0F]/90 backdrop-blur md:hidden">
+        <div className="sticky top-0 z-30 border-b border-fg/[0.08] bg-app/90 backdrop-blur md:hidden">
           <div className="flex h-14 items-center justify-between px-4">
             <Image
               src="/logo-diamondSparkleNGlow.svg"
@@ -318,7 +320,7 @@ export function PanelShell({
               height={32}
               className="shrink-0"
             />
-            <div className="text-sm font-semibold text-white">Panel · {activePageLabel}</div>
+            <div className="text-sm font-semibold text-fg">Panel · {activePageLabel}</div>
             <TenantLogo tenantName={tenantName} tenantLogoUrl={tenantLogoUrl} size={28} />
           </div>
         </div>
@@ -333,7 +335,7 @@ export function PanelShell({
         </main>
 
         {/* Mobile bottom tab bar */}
-        <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-white/[0.08] bg-zinc-900/95 backdrop-blur md:hidden">
+        <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-fg/[0.08] bg-surface/95 backdrop-blur md:hidden">
           <div className="flex items-stretch justify-between px-1 pb-[env(safe-area-inset-bottom)]">
             {primaryTabItems.map((item) => {
               const isActive = isNavActive(item.href)
@@ -343,13 +345,13 @@ export function PanelShell({
                   href={item.href}
                   className="flex flex-1 flex-col items-center gap-1 py-2.5"
                 >
-                  <span className={isActive ? 'text-[var(--tenant-primary)]' : 'text-zinc-400'}>
+                  <span className={isActive ? 'text-tenant-text' : 'text-fg-muted'}>
                     {item.icon}
                   </span>
                   <span
                     className={[
                       'text-[11px] font-medium',
-                      isActive ? 'text-white' : 'text-zinc-400',
+                      isActive ? 'text-fg' : 'text-fg-muted',
                     ].join(' ')}
                   >
                     {item.shortLabel ?? item.label}

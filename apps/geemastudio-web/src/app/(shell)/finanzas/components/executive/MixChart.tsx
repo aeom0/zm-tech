@@ -15,10 +15,7 @@ export function MixChart({ data, loading }: Props) {
   const total = data.reduce((sum, row) => sum + row.revenue, 0)
 
   return (
-    <ChartCard
-      title="Ingresos por tipo"
-      subtitle="Servicios, packs y promos en citas completadas"
-    >
+    <ChartCard title="Ingresos por tipo" subtitle="Servicios, packs y promos en citas completadas">
       {loading ? (
         <div className="flex flex-col items-center gap-4 sm:flex-row">
           <div
@@ -60,8 +57,7 @@ export function MixChart({ data, loading }: Props) {
                     if (!active || !payload?.length) return null
                     const slice = payload[0]?.payload as MixSlice | undefined
                     if (!slice) return null
-                    const pct =
-                      total > 0 ? Math.round((slice.revenue / total) * 1000) / 10 : 0
+                    const pct = total > 0 ? Math.round((slice.revenue / total) * 1000) / 10 : 0
                     return (
                       <div className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-xs shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
                         <p className="font-medium">{slice.label}</p>
@@ -76,7 +72,7 @@ export function MixChart({ data, loading }: Props) {
               </PieChart>
             </ResponsiveContainer>
           </div>
-          <ul className="min-w-0 w-full space-y-2">
+          <ul className="w-full min-w-0 space-y-2">
             {data.map((slice) => {
               const pct = total > 0 ? Math.round((slice.revenue / total) * 1000) / 10 : 0
               return (

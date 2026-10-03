@@ -109,9 +109,9 @@ export default function PanelServiciosPage() {
   return (
     <div className="space-y-6">
       <div>
-        <div className="text-xs text-zinc-500">Panel</div>
-        <h1 className="text-2xl font-bold text-white">{headerTitle}</h1>
-        <p className="mt-1 text-sm text-zinc-400">
+        <div className="text-xs text-fg-subtle">Panel</div>
+        <h1 className="text-2xl font-bold text-fg">{headerTitle}</h1>
+        <p className="mt-1 text-sm text-fg-muted">
           Configura tu catálogo: categorías, servicios, packs, promos y productos.
         </p>
       </div>

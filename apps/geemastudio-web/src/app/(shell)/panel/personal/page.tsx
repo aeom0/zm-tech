@@ -96,9 +96,9 @@ export default function PanelPersonalPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <div className="text-xs text-zinc-500">Panel</div>
-          <h1 className="text-2xl font-bold text-white">{staffPlural}</h1>
-          <p className="mt-1 text-sm text-zinc-400">
+          <div className="text-xs text-fg-subtle">Panel</div>
+          <h1 className="text-2xl font-bold text-fg">{staffPlural}</h1>
+          <p className="mt-1 text-sm text-fg-muted">
             Equipo, colores de agenda, comisiones y foto de perfil.
           </p>
         </div>
@@ -136,33 +136,33 @@ export default function PanelPersonalPage() {
             className={[
               'rounded-xl border px-4 py-2 text-sm font-medium transition-colors',
               filter === chip.id
-                ? 'border-[var(--tenant-primary)]/40 bg-[var(--tenant-primary)]/15 text-[var(--tenant-primary)]'
-                : 'border-white/[0.08] bg-white/[0.02] text-zinc-300 hover:bg-white/[0.04]',
+                ? 'border-[var(--tenant-primary)]/40 bg-[var(--tenant-primary)]/15 text-tenant-text'
+                : 'border-fg/[0.08] bg-card text-fg-soft hover:bg-fg/[0.04]',
             ].join(' ')}
           >
             {chip.label}
           </button>
         ))}
-        <span className="self-center text-xs text-zinc-500">
+        <span className="self-center text-xs text-fg-subtle">
           {filtered.length}{' '}
           {filtered.length === 1 ? staffSingular.toLowerCase() : staffPlural.toLowerCase()}
         </span>
       </div>
 
       {errorMessage && (
-        <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+        <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200">
           {errorMessage}
         </div>
       )}
 
       {employeesQuery.isLoading && (
-        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-8 text-center text-sm text-zinc-500">
+        <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
           Cargando {staffPlural.toLowerCase()}…
         </div>
       )}
 
       {!employeesQuery.isLoading && !errorMessage && filtered.length === 0 && (
-        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-8 text-center text-sm text-zinc-500">
+        <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
           No hay {staffPlural.toLowerCase()} en este filtro.
         </div>
       )}

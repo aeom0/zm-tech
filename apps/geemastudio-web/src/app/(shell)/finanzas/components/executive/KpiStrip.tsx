@@ -1,12 +1,6 @@
 'use client'
 
-import {
-  DollarSign,
-  Megaphone,
-  TrendingDown,
-  TrendingUp,
-  Wallet,
-} from 'lucide-react'
+import { DollarSign, Megaphone, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
 import { useExecutiveFmt } from './ExecutiveFmtContext'
 import { MiniSparkline } from './MiniSparkline'
 
@@ -55,13 +49,13 @@ function KpiCard({
       ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
       : tone === 'danger'
         ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
-        : 'bg-[var(--primary)]/10 text-[var(--primary)]'
+        : 'bg-[var(--primary)]/10 text-tenant-text'
 
   return (
     <div
       className={`min-w-0 rounded-2xl border p-4 shadow-sm sm:p-5 ${
         hero
-          ? 'border-[var(--primary)]/20 bg-gradient-to-br from-[var(--primary)]/10 to-[var(--accent,#FFD700)]/10 motion-reduce:transition-none sm:col-span-2 lg:col-span-1'
+          ? 'border-[var(--primary)]/20 from-[var(--primary)]/10 to-[var(--accent,#FFD700)]/10 bg-gradient-to-br motion-reduce:transition-none sm:col-span-2 lg:col-span-1'
           : 'border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900'
       }`}
     >
@@ -72,9 +66,7 @@ function KpiCard({
           >
             <Icon className="h-4 w-4" aria-hidden />
           </div>
-          <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-            {label}
-          </span>
+          <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">{label}</span>
         </div>
         {!loading && sparkline && sparkline.length >= 2 ? (
           <MiniSparkline values={sparkline} tone={tone} />

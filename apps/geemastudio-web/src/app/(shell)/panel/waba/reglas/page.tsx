@@ -11,8 +11,7 @@ import {
   type BasicRulesForm,
 } from './_lib/rules-form'
 
-const inputClass =
-  'w-full rounded-xl border border-white/[0.08] bg-black/20 px-3 py-2 text-sm text-white'
+const inputClass = 'w-full rounded-xl border border-fg/[0.08] bg-scrim/20 px-3 py-2 text-sm text-fg'
 
 export default function PanelWabaReglasPage() {
   const { query, mutation } = useWabaRules()
@@ -85,30 +84,30 @@ export default function PanelWabaReglasPage() {
   return (
     <div className="space-y-4">
       <div>
-        <div className="text-xs text-zinc-500">WhatsApp</div>
-        <h1 className="text-2xl font-bold text-white">Reglas del bot</h1>
-        <p className="mt-1 text-sm text-zinc-400">
+        <div className="text-xs text-fg-subtle">WhatsApp</div>
+        <h1 className="text-2xl font-bold text-fg">Reglas del bot</h1>
+        <p className="mt-1 text-sm text-fg-muted">
           Horario, abono y qué chica atiende cada categoría. El cupo y los medios de pago no se
           modifican aquí. El bot aplica el cambio en unos 5 minutos, sin deploy.
         </p>
       </div>
 
       {query.isError && (
-        <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+        <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200">
           {query.error instanceof Error ? query.error.message : 'No se pudieron cargar las reglas'}
         </div>
       )}
 
       {query.isLoading && (
-        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-8 text-center text-sm text-zinc-500">
+        <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
           Cargando reglas…
         </div>
       )}
 
       {form && snapshot && (
         <>
-          <section className="space-y-4 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5">
-            <h2 className="text-base font-bold text-white">Horario</h2>
+          <section className="space-y-4 rounded-2xl border border-fg/[0.08] bg-fg/[0.03] p-5">
+            <h2 className="text-base font-bold text-fg">Horario</h2>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <TimeField
                 label="Lunes a sábado, abre"
@@ -131,10 +130,10 @@ export default function PanelWabaReglasPage() {
                 onChange={(sundayClose) => set({ sundayClose })}
               />
             </div>
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-fg-subtle">
               Domingo vacío significa que ese día no se agenda.
             </p>
-            <div className="flex flex-wrap gap-4 text-sm text-zinc-300">
+            <div className="flex flex-wrap gap-4 text-sm text-fg-soft">
               <label className="inline-flex min-h-11 items-center gap-2">
                 <input
                   type="checkbox"
@@ -153,7 +152,7 @@ export default function PanelWabaReglasPage() {
               </label>
             </div>
             <label className="block space-y-1">
-              <span className="text-xs font-medium text-zinc-500">Horarios extra del domingo</span>
+              <span className="text-xs font-medium text-fg-subtle">Horarios extra del domingo</span>
               <input
                 className={inputClass}
                 value={form.sundayExtra}
@@ -163,11 +162,11 @@ export default function PanelWabaReglasPage() {
             </label>
           </section>
 
-          <section className="space-y-4 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5">
-            <h2 className="text-base font-bold text-white">Abono</h2>
+          <section className="space-y-4 rounded-2xl border border-fg/[0.08] bg-fg/[0.03] p-5">
+            <h2 className="text-base font-bold text-fg">Abono</h2>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <label className="block space-y-1">
-                <span className="text-xs font-medium text-zinc-500">
+                <span className="text-xs font-medium text-fg-subtle">
                   Abono fijo sin historial (S/)
                 </span>
                 <input
@@ -178,7 +177,7 @@ export default function PanelWabaReglasPage() {
                 />
               </label>
               <label className="block space-y-1">
-                <span className="text-xs font-medium text-zinc-500">Adelanto del domingo (%)</span>
+                <span className="text-xs font-medium text-fg-subtle">Adelanto del domingo (%)</span>
                 <input
                   className={inputClass}
                   inputMode="decimal"
@@ -187,7 +186,7 @@ export default function PanelWabaReglasPage() {
                 />
               </label>
             </div>
-            <label className="inline-flex min-h-11 items-center gap-2 text-sm text-zinc-300">
+            <label className="inline-flex min-h-11 items-center gap-2 text-sm text-fg-soft">
               <input
                 type="checkbox"
                 checked={form.requiresHistoryForRate}
@@ -197,16 +196,16 @@ export default function PanelWabaReglasPage() {
             </label>
           </section>
 
-          <section className="space-y-4 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5">
-            <h2 className="text-base font-bold text-white">Chicas por categoría</h2>
+          <section className="space-y-4 rounded-2xl border border-fg/[0.08] bg-fg/[0.03] p-5">
+            <h2 className="text-base font-bold text-fg">Chicas por categoría</h2>
             <div className="space-y-4">
               {categories.map((category) => (
                 <div key={category.id} className="space-y-2">
-                  <h3 className="text-sm text-zinc-200">{category.name}</h3>
+                  <h3 className="text-sm text-fg-soft">{category.name}</h3>
                   <div className="flex flex-wrap gap-2">
                     {snapshot.employees.map((employee) => {
                       const selected = (form.staffByCategory[category.id] ?? []).includes(
-                        employee.id,
+                        employee.id
                       )
                       return (
                         <button
@@ -217,8 +216,8 @@ export default function PanelWabaReglasPage() {
                           className={[
                             'min-h-11 rounded-xl border px-3 py-2 text-sm',
                             selected
-                              ? 'border-[var(--tenant-primary)]/40 bg-[var(--tenant-primary)]/10 text-[var(--tenant-primary)]'
-                              : 'border-white/[0.08] text-zinc-300',
+                              ? 'border-[var(--tenant-primary)]/40 bg-[var(--tenant-primary)]/10 text-tenant-text'
+                              : 'border-fg/[0.08] text-fg-soft',
                             employee.isActive ? '' : 'opacity-60',
                           ].join(' ')}
                         >
@@ -243,12 +242,12 @@ export default function PanelWabaReglasPage() {
               <SlidersHorizontal className="h-4 w-4" />
               Guardar reglas
             </button>
-            {status === 'saved' && <span className="text-sm text-zinc-400">Guardado.</span>}
+            {status === 'saved' && <span className="text-sm text-fg-muted">Guardado.</span>}
             {status === 'error' && message && (
-              <span className="text-sm text-red-300">{message}</span>
+              <span className="text-sm text-red-700 dark:text-red-300">{message}</span>
             )}
             {!dirty && status === 'idle' && (
-              <span className="text-sm text-zinc-500">Sin cambios.</span>
+              <span className="text-sm text-fg-subtle">Sin cambios.</span>
             )}
           </div>
         </>
@@ -268,7 +267,7 @@ function TimeField({
 }) {
   return (
     <label className="block space-y-1">
-      <span className="text-xs font-medium text-zinc-500">{label}</span>
+      <span className="text-xs font-medium text-fg-subtle">{label}</span>
       <input
         className={inputClass}
         type="time"

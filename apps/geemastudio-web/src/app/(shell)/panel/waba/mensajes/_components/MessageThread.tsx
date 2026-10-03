@@ -28,7 +28,11 @@ import {
   type WabaConversation,
 } from '@/hooks/waba/useWabaMessages'
 import { useSendWabaMessage, useWabaStaffSession } from '@/hooks/waba/useWabaSend'
-import { useDeleteWabaThread, useToggleWabaBlock, useWabaBlockedStatus } from '@/hooks/waba/useWabaModeration'
+import {
+  useDeleteWabaThread,
+  useToggleWabaBlock,
+  useWabaBlockedStatus,
+} from '@/hooks/waba/useWabaModeration'
 import { useImageUpload } from '@/hooks/waba/useImageUpload'
 import { useTenantSettings } from '@/hooks/configuracion/useTenantSettings'
 import { getTenantLandingUrl } from '@/lib/site-url'
@@ -67,7 +71,9 @@ export function MessageThread({
   const toggleBlockMutation = useToggleWabaBlock(phone)
   const deleteThreadMutation = useDeleteWabaThread()
   const tenantSettingsQuery = useTenantSettings()
-  const bookingUrl = tenantSettingsQuery.data?.slug ? getTenantLandingUrl(tenantSettingsQuery.data.slug) : ''
+  const bookingUrl = tenantSettingsQuery.data?.slug
+    ? getTenantLandingUrl(tenantSettingsQuery.data.slug)
+    : ''
 
   const [text, setText] = useState('')
   const [attachError, setAttachError] = useState<string | null>(null)
@@ -201,7 +207,10 @@ export function MessageThread({
   }
 
   const handlePauseToggle = () => {
-    staffSessionMutation.mutate({ phone, action: conversation.botPaused ? 'resume_bot' : 'pause_bot' })
+    staffSessionMutation.mutate({
+      phone,
+      action: conversation.botPaused ? 'resume_bot' : 'pause_bot',
+    })
   }
 
   const handleHaikuAgenda = () => {
@@ -210,7 +219,9 @@ export function MessageThread({
       { phone, action: 'haiku_finish_booking' },
       {
         onError: (err) =>
-          setModerationError(err instanceof Error ? err.message : 'No se pudo iniciar la agenda con el asistente'),
+          setModerationError(
+            err instanceof Error ? err.message : 'No se pudo iniciar la agenda con el asistente'
+          ),
       }
     )
   }
@@ -231,7 +242,9 @@ export function MessageThread({
         onBack()
       },
       onError: (err) => {
-        setModerationError(err instanceof Error ? err.message : 'No se pudo eliminar la conversación')
+        setModerationError(
+          err instanceof Error ? err.message : 'No se pudo eliminar la conversación'
+        )
         setConfirmDelete(false)
       },
     })
@@ -273,31 +286,31 @@ export function MessageThread({
 
   return (
     <>
-      <div className="border-b border-white/[0.08] px-3 py-2.5 sm:px-4 sm:py-3">
+      <div className="border-b border-fg/[0.08] px-3 py-2.5 sm:px-4 sm:py-3">
         <div className="flex items-start justify-between gap-2">
           <div className="flex min-w-0 flex-1 items-start gap-2">
             <button
               type="button"
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] md:hidden"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-fg/[0.08] md:hidden"
               onClick={onBack}
               aria-label="Volver a la lista"
             >
               <ArrowLeft className="h-4 w-4" />
             </button>
             <div className="min-w-0 flex-1">
-              <div className="truncate text-sm font-semibold text-white">
+              <div className="truncate text-sm font-semibold text-fg">
                 {conversation.displayName ||
                   (conversation.waUsername ? `@${conversation.waUsername}` : null) ||
                   (conversation.isBsuid ? 'Contacto de WhatsApp' : phone)}
               </div>
               <div className="mt-1 flex flex-wrap items-center gap-1.5">
                 {conversation.displayPhone || !conversation.isBsuid ? (
-                  <span className="font-mono text-[11px] text-zinc-500">
+                  <span className="font-mono text-[11px] text-fg-subtle">
                     {conversation.displayPhone || phone}
                   </span>
                 ) : (
                   <span
-                    className="inline-flex shrink-0 items-center rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-300"
+                    className="inline-flex shrink-0 items-center rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:text-amber-300"
                     title="Meta no compartió el número (usuario oculto)"
                   >
                     Sin teléfono
@@ -307,8 +320,8 @@ export function MessageThread({
                   className={[
                     'rounded-full border px-2 py-0.5 text-[10px] font-medium',
                     conversation.botPaused
-                      ? 'border-amber-500/30 bg-amber-500/10 text-amber-300'
-                      : 'border-emerald-500/25 bg-emerald-500/10 text-emerald-300',
+                      ? 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300'
+                      : 'border-emerald-500/25 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300',
                   ].join(' ')}
                 >
                   {conversation.botPaused ? 'Bot en pausa' : 'Bot activo'}
@@ -321,10 +334,16 @@ export function MessageThread({
               type="button"
               onClick={handleCopy}
               disabled={!copyValue}
-              title={copyValue ? 'Copiar nombre y contacto' : 'No hay datos de contacto para copiar'}
-              className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] text-zinc-300 hover:bg-white/[0.06] disabled:opacity-40 sm:w-auto sm:gap-1.5 sm:px-2.5"
+              title={
+                copyValue ? 'Copiar nombre y contacto' : 'No hay datos de contacto para copiar'
+              }
+              className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:bg-fg/[0.06] disabled:opacity-40 sm:w-auto sm:gap-1.5 sm:px-2.5"
             >
-              {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Copy className="h-3.5 w-3.5" />}
+              {copied ? (
+                <Check className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400" />
+              ) : (
+                <Copy className="h-3.5 w-3.5" />
+              )}
               <span className="hidden sm:inline">{copied ? 'Copiado' : 'Copiar'}</span>
             </button>
             <button
@@ -332,7 +351,7 @@ export function MessageThread({
               onClick={() => setConfirmDelete(true)}
               disabled={deleteThreadMutation.isPending}
               title="Eliminar conversación"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] text-zinc-300 hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-300 disabled:opacity-50"
+              className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-700 disabled:opacity-50 dark:hover:text-red-300"
             >
               <Trash2 className="h-3.5 w-3.5" />
             </button>
@@ -344,9 +363,13 @@ export function MessageThread({
             type="button"
             onClick={handlePauseToggle}
             disabled={staffSessionMutation.isPending}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-white/[0.08] bg-white/[0.03] px-2.5 py-1.5 text-xs text-zinc-200 hover:bg-white/[0.06] disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-2.5 py-1.5 text-xs text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50"
           >
-            {conversation.botPaused ? <Play className="h-3.5 w-3.5" /> : <Pause className="h-3.5 w-3.5" />}
+            {conversation.botPaused ? (
+              <Play className="h-3.5 w-3.5" />
+            ) : (
+              <Pause className="h-3.5 w-3.5" />
+            )}
             {conversation.botPaused ? 'Reactivar bot' : 'Pausar bot'}
           </button>
           <button
@@ -361,8 +384,8 @@ export function MessageThread({
             className={[
               'inline-flex items-center gap-1.5 rounded-xl border px-2.5 py-1.5 text-xs font-medium disabled:opacity-50',
               blockedQuery.data
-                ? 'border-red-500/30 bg-red-500/10 text-red-300 hover:bg-red-500/20'
-                : 'border-white/[0.08] bg-white/[0.03] text-zinc-200 hover:bg-white/[0.06]',
+                ? 'border-red-500/30 bg-red-500/10 text-red-700 hover:bg-red-500/20 dark:text-red-300'
+                : 'border-fg/[0.08] bg-fg/[0.03] text-fg-soft hover:bg-fg/[0.06]',
             ].join(' ')}
           >
             {toggleBlockMutation.isPending ? (
@@ -375,7 +398,9 @@ export function MessageThread({
             {blockedQuery.data ? 'Desbloquear' : 'Bloquear'}
           </button>
 
-          {conversation.displayName || conversation.displayPhone || (!conversation.isBsuid && conversation.phone) ? (
+          {conversation.displayName ||
+          conversation.displayPhone ||
+          (!conversation.isBsuid && conversation.phone) ? (
             <Link
               href={`/panel/clientes?search=${encodeURIComponent(
                 conversation.displayName || conversation.displayPhone || conversation.phone
@@ -383,9 +408,9 @@ export function MessageThread({
               target="_blank"
               rel="noreferrer"
               title="Ver ficha en Clientes (abre en pestaña nueva)"
-              className="inline-flex items-center gap-1.5 rounded-xl border border-white/[0.08] bg-white/[0.03] px-2.5 py-1.5 text-xs text-zinc-200 hover:bg-white/[0.06]"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-2.5 py-1.5 text-xs text-fg-soft hover:bg-fg/[0.06]"
             >
-              <User className="h-3.5 w-3.5 text-zinc-400" />
+              <User className="h-3.5 w-3.5 text-fg-muted" />
               <span>Ver en Clientes</span>
             </Link>
           ) : null}
@@ -393,8 +418,10 @@ export function MessageThread({
       </div>
 
       {confirmDelete && (
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-red-500/20 bg-red-500/10 px-4 py-2 text-xs text-red-200">
-          <span>¿Eliminar esta conversación? Se borran todos los mensajes y no se puede deshacer.</span>
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-red-500/20 bg-red-500/10 px-4 py-2 text-xs text-red-800 dark:text-red-200">
+          <span>
+            ¿Eliminar esta conversación? Se borran todos los mensajes y no se puede deshacer.
+          </span>
           <div className="flex shrink-0 items-center gap-2">
             <button
               type="button"
@@ -408,7 +435,7 @@ export function MessageThread({
               type="button"
               onClick={() => setConfirmDelete(false)}
               disabled={deleteThreadMutation.isPending}
-              className="rounded-lg px-2.5 py-1 text-zinc-300 hover:bg-white/[0.06]"
+              className="rounded-lg px-2.5 py-1 text-fg-soft hover:bg-fg/[0.06]"
             >
               Cancelar
             </button>
@@ -417,19 +444,19 @@ export function MessageThread({
       )}
 
       {moderationError && (
-        <div className="border-b border-red-500/20 bg-red-500/5 px-4 py-2 text-xs text-red-300">
+        <div className="border-b border-red-500/20 bg-red-500/5 px-4 py-2 text-xs text-red-700 dark:text-red-300">
           {moderationError}
         </div>
       )}
 
       {conversation.botPaused && (
-        <div className="border-b border-amber-500/20 bg-amber-500/10 px-4 py-2 text-xs text-amber-200">
+        <div className="border-b border-amber-500/20 bg-amber-500/10 px-4 py-2 text-xs text-amber-800 dark:text-amber-200">
           <p>El bot está en pausa para este número — solo el staff responde hasta reactivarlo.</p>
           <button
             type="button"
             onClick={handleHaikuAgenda}
             disabled={staffSessionMutation.isPending}
-            className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-violet-400/40 bg-violet-500/10 px-2.5 py-1.5 text-xs font-medium text-violet-200 hover:bg-violet-500/20 disabled:opacity-50"
+            className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-violet-400/40 bg-violet-500/10 px-2.5 py-1.5 text-xs font-medium text-violet-800 hover:bg-violet-500/20 disabled:opacity-50 dark:text-violet-200"
           >
             {staffSessionMutation.isPending ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -442,23 +469,22 @@ export function MessageThread({
       )}
 
       {blockedQuery.data && (
-        <div className="border-b border-red-500/20 bg-red-500/10 px-4 py-2 text-xs text-red-200">
+        <div className="border-b border-red-500/20 bg-red-500/10 px-4 py-2 text-xs text-red-800 dark:text-red-200">
           Número bloqueado — el bot no le responderá hasta desbloquearlo.
         </div>
       )}
 
       <div
         ref={scrollRef}
-        className="min-h-0 flex-1 space-y-2 overflow-x-hidden overflow-y-auto p-2.5 sm:p-4"
+        className="min-h-0 flex-1 space-y-2 overflow-y-auto overflow-x-hidden p-2.5 sm:p-4"
       >
-
         {hasOlder && !threadQuery.isLoading && !threadQuery.isError && (
           <div className="flex justify-center pb-1">
             <button
               type="button"
               onClick={handleLoadOlder}
               disabled={threadQuery.isFetching}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1.5 text-xs text-zinc-300 hover:bg-white/[0.08] disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-full border border-fg/[0.08] bg-fg/[0.04] px-3 py-1.5 text-xs text-fg-soft hover:bg-fg/[0.08] disabled:opacity-50"
             >
               {threadQuery.isFetching ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -469,10 +495,14 @@ export function MessageThread({
             </button>
           </div>
         )}
-        {threadQuery.isLoading && <p className="text-center text-sm text-zinc-500">Cargando hilo…</p>}
+        {threadQuery.isLoading && (
+          <p className="text-center text-sm text-fg-subtle">Cargando hilo…</p>
+        )}
         {threadQuery.isError && (
-          <p className="text-center text-sm text-red-300">
-            {threadQuery.error instanceof Error ? threadQuery.error.message : 'Error al cargar el hilo'}
+          <p className="text-center text-sm text-red-700 dark:text-red-300">
+            {threadQuery.error instanceof Error
+              ? threadQuery.error.message
+              : 'Error al cargar el hilo'}
           </p>
         )}
         {!threadQuery.isLoading &&
@@ -480,24 +510,26 @@ export function MessageThread({
           messages.map((m) => <MessageBubble key={m.id} message={m} timeZone={timeZone} />)}
       </div>
 
-      <div className="shrink-0 border-t border-white/[0.08] bg-[#0F0F0F] p-2.5 pb-2 sm:p-3 sm:pb-3">
+      <div className="shrink-0 border-t border-fg/[0.08] bg-app p-2.5 pb-2 sm:p-3 sm:pb-3">
         {!withinWindow && (
-          <p className="mb-2 text-[11px] text-zinc-500">
+          <p className="mb-2 text-[11px] text-fg-subtle">
             Han pasado más de 24h desde el último mensaje del cliente — WhatsApp puede rechazar
             texto libre fuera de plantilla.
           </p>
         )}
         {(attachError || uploadError) && (
-          <p className="mb-2 text-[11px] text-red-300">{attachError ?? uploadError}</p>
+          <p className="mb-2 text-[11px] text-red-700 dark:text-red-300">
+            {attachError ?? uploadError}
+          </p>
         )}
 
         <ScrollFadeRow
-          backgroundColor="#0F0F0F"
+          backgroundColor="rgb(var(--app-rgb))"
           wrapperClassName="mb-2"
           className="flex items-center gap-1.5 pb-0.5 text-xs"
         >
-          <span className="inline-flex shrink-0 items-center gap-1 text-[11px] font-medium text-zinc-500">
-            <Zap className="h-3 w-3 text-[var(--tenant-primary)]" />
+          <span className="inline-flex shrink-0 items-center gap-1 text-[11px] font-medium text-fg-subtle">
+            <Zap className="h-3 w-3 text-tenant-text" />
             Rápidas:
           </span>
           {quickReplies.map((qr) => (
@@ -505,7 +537,7 @@ export function MessageThread({
               key={qr.id}
               type="button"
               onClick={() => handleApplyQuickReply(qr.text)}
-              className="shrink-0 rounded-lg border border-white/[0.08] bg-white/[0.03] px-2 py-0.5 text-[11px] text-zinc-300 transition-colors hover:border-[var(--tenant-primary)]/40 hover:bg-white/[0.06] hover:text-white"
+              className="hover:border-[var(--tenant-primary)]/40 shrink-0 rounded-lg border border-fg/[0.08] bg-fg/[0.03] px-2 py-0.5 text-[11px] text-fg-soft transition-colors hover:bg-fg/[0.06] hover:text-fg"
             >
               {qr.label}
             </button>
@@ -552,7 +584,7 @@ export function MessageThread({
               title="Adjuntar imagen"
               onClick={() => imageInputRef.current?.click()}
               disabled={isBusy}
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] text-zinc-300 hover:bg-white/[0.06] disabled:opacity-50"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50"
             >
               <ImageIcon className="h-4 w-4" />
             </button>
@@ -561,7 +593,7 @@ export function MessageThread({
               title="Adjuntar audio"
               onClick={() => audioInputRef.current?.click()}
               disabled={isBusy}
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] text-zinc-300 hover:bg-white/[0.06] disabled:opacity-50"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50"
             >
               <Mic className="h-4 w-4" />
             </button>
@@ -570,7 +602,7 @@ export function MessageThread({
               title="Adjuntar documento"
               onClick={() => documentInputRef.current?.click()}
               disabled={isBusy}
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/[0.08] text-zinc-300 hover:bg-white/[0.06] disabled:opacity-50"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50"
             >
               <FileText className="h-4 w-4" />
             </button>
@@ -584,7 +616,7 @@ export function MessageThread({
             placeholder="Escribe un mensaje…"
             rows={1}
             disabled={isBusy}
-            className="min-h-[36px] min-w-0 flex-1 resize-none rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-[var(--tenant-primary)]/40 focus:outline-none disabled:opacity-50"
+            className="focus:border-[var(--tenant-primary)]/40 min-h-[36px] min-w-0 flex-1 resize-none rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-3 py-2 text-sm text-fg placeholder:text-fg-subtle focus:outline-none disabled:opacity-50"
           />
 
           <button

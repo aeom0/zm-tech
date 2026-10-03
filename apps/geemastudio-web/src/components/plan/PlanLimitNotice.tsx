@@ -24,8 +24,8 @@ export function PlanLimitNotice({ status, resource, usage, limit, planName }: Pr
       className={[
         'flex flex-col gap-2 rounded-2xl border px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between',
         over
-          ? 'border-amber-500/30 bg-amber-500/10 text-amber-100'
-          : 'border-sky-500/25 bg-sky-500/10 text-sky-100',
+          ? 'border-amber-500/30 bg-amber-500/10 text-amber-900 dark:text-amber-100'
+          : 'border-sky-500/25 bg-sky-500/10 text-sky-900 dark:text-sky-100',
       ].join(' ')}
     >
       <span className="flex items-start gap-2">

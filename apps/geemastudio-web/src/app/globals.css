@@ -16,6 +16,54 @@
   }
 }
 
+/*
+ * Tokens semánticos del shell (panel/finanzas/dashboard). Canales RGB para
+ * poder usar opacidad de Tailwind (bg-fg/[0.04]). Los valores oscuros replican
+ * el look original del panel; el modo se controla con la clase `dark` en
+ * el contenedor del shell (ver ThemeProvider).
+ */
+:root {
+  --app-rgb: 250 250 250;
+  --surface-rgb: 255 255 255;
+  --fg-rgb: 24 24 27;
+  --fg-soft-rgb: 63 63 70;
+  --fg-muted-rgb: 82 82 91;
+  --fg-subtle-rgb: 113 113 122;
+  --scrim-rgb: 24 24 27;
+  --elevated-rgb: 244 244 245;
+  --elevated-2-rgb: 228 228 231;
+  --sunken-rgb: 244 244 245;
+  --line-rgb: 228 228 231;
+  --line-strong-rgb: 212 212 216;
+  --card: #ffffff;
+  --chart-wa: #138a46;
+}
+
+/* En el contenedor del shell (donde viven las vars --tenant-*). */
+.shell-root {
+  --tenant-text: var(--tenant-text-light, #00897b);
+}
+.dark .shell-root {
+  --tenant-text: var(--tenant-text-dark, #40e0d0);
+}
+
+.dark {
+  --app-rgb: 15 15 15;
+  --surface-rgb: 24 24 27;
+  --fg-rgb: 255 255 255;
+  --fg-soft-rgb: 212 212 216;
+  --fg-muted-rgb: 161 161 170;
+  --fg-subtle-rgb: 113 113 122;
+  --scrim-rgb: 0 0 0;
+  --elevated-rgb: 39 39 42;
+  --elevated-2-rgb: 63 63 70;
+  --sunken-rgb: 9 9 11;
+  --line-rgb: 39 39 42;
+  --line-strong-rgb: 63 63 70;
+  --card: rgb(255 255 255 / 0.02);
+  --chart-wa: #25d366;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);

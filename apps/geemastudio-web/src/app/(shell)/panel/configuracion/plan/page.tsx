@@ -31,27 +31,19 @@ function limitLabel(limit: number | null, unit: string): string {
   return limit === null ? `${unit} ilimitados` : `${limit} ${unit}`
 }
 
-function UsageBar({
-  label,
-  usage,
-  limit,
-}: {
-  label: string
-  usage: number
-  limit: number | null
-}) {
+function UsageBar({ label, usage, limit }: { label: string; usage: number; limit: number | null }) {
   const status = getUsageStatus(usage, limit)
   const pct = limit === null || limit === 0 ? 0 : Math.min(100, Math.round((usage / limit) * 100))
 
   return (
     <div>
       <div className="mb-1.5 flex items-center justify-between text-sm">
-        <span className="text-zinc-300">{label}</span>
-        <span className="tabular-nums text-zinc-400">
+        <span className="text-fg-soft">{label}</span>
+        <span className="tabular-nums text-fg-muted">
           {usage} / {limit === null ? 'ilimitado' : limit}
         </span>
       </div>
-      <div className="h-2 overflow-hidden rounded-full bg-white/[0.08]">
+      <div className="h-2 overflow-hidden rounded-full bg-fg/[0.08]">
         <div
           className={`h-full rounded-full transition-all ${BAR_CLASS[status]}`}
           style={{ width: limit === null ? '0%' : `${pct}%` }}
@@ -61,15 +53,7 @@ function UsageBar({
   )
 }
 
-function PlanCard({
-  plan,
-  current,
-  annual,
-}: {
-  plan: Plan
-  current: boolean
-  annual: boolean
-}) {
+function PlanCard({ plan, current, annual }: { plan: Plan; current: boolean; annual: boolean }) {
   const price = annual ? plan.annual_price : plan.monthly_price
 
   return (
@@ -78,26 +62,26 @@ function PlanCard({
         'flex flex-col rounded-2xl border p-5',
         current
           ? 'border-[var(--tenant-primary)]/40 bg-[var(--tenant-primary)]/10'
-          : 'border-white/[0.08] bg-white/[0.02]',
+          : 'border-fg/[0.08] bg-card',
       ].join(' ')}
     >
       <div className="flex items-center justify-between">
-        <h3 className="text-base font-semibold text-white">{plan.name}</h3>
+        <h3 className="text-base font-semibold text-fg">{plan.name}</h3>
         {current && (
-          <span className="rounded-full bg-[var(--tenant-primary)]/20 px-2.5 py-0.5 text-xs font-semibold text-[var(--tenant-primary)]">
+          <span className="bg-[var(--tenant-primary)]/20 rounded-full px-2.5 py-0.5 text-xs font-semibold text-tenant-text">
             Tu plan
           </span>
         )}
       </div>
-      <p className="mt-1 text-xs text-zinc-500">{plan.description}</p>
-      <p className="mt-3 text-2xl font-bold tabular-nums text-white">
+      <p className="mt-1 text-xs text-fg-subtle">{plan.description}</p>
+      <p className="mt-3 text-2xl font-bold tabular-nums text-fg">
         ${price}
-        <span className="text-sm font-normal text-zinc-500">/mes</span>
+        <span className="text-sm font-normal text-fg-subtle">/mes</span>
       </p>
-      <ul className="mt-4 space-y-1.5 text-sm text-zinc-300">
+      <ul className="mt-4 space-y-1.5 text-sm text-fg-soft">
         {plan.features.map((f) => (
           <li key={f} className="flex items-start gap-2">
-            <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-400" />
+            <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-700 dark:text-emerald-400" />
             <span>{f}</span>
           </li>
         ))}
@@ -124,28 +108,28 @@ export default function PanelPlanPage() {
       <ConfiguracionNav />
 
       <div>
-        <div className="text-xs text-zinc-500">Panel</div>
-        <h1 className="text-2xl font-bold text-white">Mi plan</h1>
-        <p className="mt-1 text-sm text-zinc-400">
+        <div className="text-xs text-fg-subtle">Panel</div>
+        <h1 className="text-2xl font-bold text-fg">Mi plan</h1>
+        <p className="mt-1 text-sm text-fg-muted">
           Tu plan, el uso frente a los límites y las opciones disponibles.
         </p>
       </div>
 
       {error && (
-        <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+        <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200">
           {(error as Error).message}
         </div>
       )}
 
       {isLoading && (
-        <div className="flex items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-8 text-sm text-zinc-500">
+        <div className="flex items-center justify-center gap-2 rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-sm text-fg-subtle">
           <Loader2 className="h-4 w-4 animate-spin" />
           Cargando plan…
         </div>
       )}
 
       {!isLoading && !error && !sub && (
-        <div className="rounded-2xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+        <div className="rounded-2xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-900 dark:text-amber-100">
           No encontramos una suscripción para este negocio. Escríbenos y la activamos.
         </div>
       )}
@@ -170,24 +154,28 @@ export default function PanelPlanPage() {
             />
           )}
 
-          <section className="space-y-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5">
+          <section className="space-y-4 rounded-2xl border border-fg/[0.08] bg-card p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <h2 className="text-base font-semibold text-white">Plan {sub.plan_name}</h2>
-                <p className="mt-1 text-sm text-zinc-400">
+                <h2 className="text-base font-semibold text-fg">Plan {sub.plan_name}</h2>
+                <p className="mt-1 text-sm text-fg-muted">
                   Facturación {annual ? 'anual' : 'mensual'}
                   {trialEnd && sub.subscription_status === 'trial'
                     ? ` · Prueba hasta el ${trialEnd}`
                     : ''}
                 </p>
               </div>
-              <span className="rounded-full border border-white/[0.1] bg-white/[0.04] px-3 py-1 text-xs font-semibold text-zinc-200">
+              <span className="rounded-full border border-fg/[0.1] bg-fg/[0.04] px-3 py-1 text-xs font-semibold text-fg-soft">
                 {STATUS_LABEL[sub.subscription_status]}
               </span>
             </div>
 
             <div className="space-y-4">
-              <UsageBar label="Profesionales activos" usage={sub.staff_count} limit={sub.max_staff} />
+              <UsageBar
+                label="Profesionales activos"
+                usage={sub.staff_count}
+                limit={sub.max_staff}
+              />
               {wabaUsage && (
                 <div>
                   <UsageBar
@@ -195,9 +183,9 @@ export default function PanelPlanPage() {
                     usage={wabaUsage.service_messages}
                     limit={sub.waba_conversations}
                   />
-                  <p className="mt-1.5 text-xs text-zinc-500">
-                    Solo cuentan respuestas dentro de la ventana de 24 h; los mensajes que llegan por
-                    anuncios no cuentan.
+                  <p className="mt-1.5 text-xs text-fg-subtle">
+                    Solo cuentan respuestas dentro de la ventana de 24 h; los mensajes que llegan
+                    por anuncios no cuentan.
                     {wabaUsage.data_through
                       ? ` Datos al ${new Date(`${wabaUsage.data_through}T12:00:00`).toLocaleDateString('es', { day: 'numeric', month: 'long' })}.`
                       : ''}
@@ -207,13 +195,13 @@ export default function PanelPlanPage() {
             </div>
 
             <dl className="grid gap-3 text-sm sm:grid-cols-2">
-              <div className="rounded-xl bg-white/[0.03] px-3 py-2.5">
-                <dt className="text-xs text-zinc-500">Sedes</dt>
-                <dd className="text-zinc-200">{limitLabel(sub.max_branches, 'sedes')}</dd>
+              <div className="rounded-xl bg-fg/[0.03] px-3 py-2.5">
+                <dt className="text-xs text-fg-subtle">Sedes</dt>
+                <dd className="text-fg-soft">{limitLabel(sub.max_branches, 'sedes')}</dd>
               </div>
-              <div className="rounded-xl bg-white/[0.03] px-3 py-2.5">
-                <dt className="text-xs text-zinc-500">Mensajes de servicio de WhatsApp por mes</dt>
-                <dd className="text-zinc-200">
+              <div className="rounded-xl bg-fg/[0.03] px-3 py-2.5">
+                <dt className="text-xs text-fg-subtle">Mensajes de servicio de WhatsApp por mes</dt>
+                <dd className="text-fg-soft">
                   {sub.waba_conversations === null
                     ? 'Ilimitados'
                     : `${sub.waba_conversations.toLocaleString('es')} incluidos`}
@@ -224,7 +212,7 @@ export default function PanelPlanPage() {
 
           <section className="space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-base font-semibold text-white">Planes disponibles</h2>
+              <h2 className="text-base font-semibold text-fg">Planes disponibles</h2>
               <a
                 href={CONTACT_URL}
                 target="_blank"
@@ -237,7 +225,12 @@ export default function PanelPlanPage() {
             </div>
             <div className="grid gap-4 md:grid-cols-3">
               {(plansQuery.data ?? []).map((p) => (
-                <PlanCard key={p.code} plan={p} current={p.code === sub.plan_code} annual={annual} />
+                <PlanCard
+                  key={p.code}
+                  plan={p}
+                  current={p.code === sub.plan_code}
+                  annual={annual}
+                />
               ))}
             </div>
           </section>

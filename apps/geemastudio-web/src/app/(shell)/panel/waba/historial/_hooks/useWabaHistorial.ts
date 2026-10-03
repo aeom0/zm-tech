@@ -89,7 +89,7 @@ function fechaMedioDiaLima(dateKey: string): Date {
 
 function construirVolumen(
   rows: Array<{ direction: string; created_at: string }>,
-  period: HistorialPeriod,
+  period: HistorialPeriod
 ): VolumeDatum[] {
   const porSemana = period === '90d'
   const map = new Map<string, { recibidos: number; enviados: number }>()
@@ -182,7 +182,7 @@ function etiquetaFlujo(paso: string): { texto: string; fija: boolean } {
 }
 
 function topFlujosDesdeRows(
-  rows: Array<{ step_before: string | null; direction: string }>,
+  rows: Array<{ step_before: string | null; direction: string }>
 ): FlowDatum[] {
   const counts = new Map<string, number>()
   for (const row of rows) {

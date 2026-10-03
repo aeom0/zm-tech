@@ -6,7 +6,6 @@ import { formatDashboardCurrency } from '@/lib/dashboardCurrency'
 
 import type { TopStaffEntry } from '@/hooks/dashboard/useDashboardTopStaff'
 
-
 import { MetricSkeleton } from './MetricSkeleton'
 
 interface TopStaffCardProps {

@@ -58,11 +58,7 @@ export function BreakEvenCard({ data, loading }: Props) {
             <Metric
               label="Ticket promedio"
               value={data.ticket == null ? '—' : fmt(data.ticket)}
-              hint={
-                data.citas === 0
-                  ? 'Sin citas completadas'
-                  : `${data.citas} citas completadas`
-              }
+              hint={data.citas === 0 ? 'Sin citas completadas' : `${data.citas} citas completadas`}
             />
             <Metric
               label="Citas para equilibrar"
@@ -125,9 +121,7 @@ function Metric({
       <p className="text-xs text-zinc-500 dark:text-zinc-400">{label}</p>
       <p
         className={`mt-0.5 text-base font-semibold tabular-nums ${
-          emphasize
-            ? 'text-emerald-600 dark:text-emerald-400'
-            : 'text-zinc-900 dark:text-zinc-100'
+          emphasize ? 'text-emerald-600 dark:text-emerald-400' : 'text-zinc-900 dark:text-zinc-100'
         }`}
       >
         {value}

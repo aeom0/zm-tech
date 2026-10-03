@@ -38,7 +38,7 @@ function LoginForm() {
         <div className="mx-auto max-w-md px-4 py-4">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm font-medium text-zinc-600 transition-colors hover:text-[var(--primary)] dark:text-zinc-400"
+            className="inline-flex items-center gap-2 text-sm font-medium text-zinc-600 transition-colors hover:text-tenant-text dark:text-zinc-400"
           >
             <ArrowLeft className="h-4 w-4" />
             Volver
@@ -56,11 +56,9 @@ function LoginForm() {
                 backgroundColor: 'var(--primary-10, rgba(99,102,241,0.1))',
               }}
             >
-              <Lock className="h-7 w-7 text-[var(--primary)]" />
+              <Lock className="h-7 w-7 text-tenant-text" />
             </div>
-            <h1 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
-              Iniciar sesión
-            </h1>
+            <h1 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">Iniciar sesión</h1>
             <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
               Panel de finanzas · Solo administración
             </p>

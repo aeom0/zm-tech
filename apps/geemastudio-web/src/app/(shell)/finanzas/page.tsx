@@ -109,7 +109,7 @@ export default function FinanzasPage() {
           <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 text-sm font-medium text-zinc-600 transition-colors hover:text-[var(--primary)] dark:text-zinc-400"
+              className="inline-flex items-center gap-2 text-sm font-medium text-zinc-600 transition-colors hover:text-tenant-text dark:text-zinc-400"
             >
               <ArrowLeft className="h-4 w-4" />
               Volver al inicio
@@ -181,468 +181,482 @@ export default function FinanzasPage() {
         />
         {view === 'resumen' ? (
           <>
-          <OperationalSnapshot
-            timezone={tenantQ.data?.timezone ?? 'America/Caracas'}
-            currencyCode={currencyCode}
-            tenantLoading={tenantQ.isLoading}
-            clientTerm={tenantQ.data?.client_terminology}
-          />
-          <ExecutiveDashboard
-            range={growthRange}
-            onChangeRange={setGrowthRange}
-            tenantId={tenantId}
-            currencyCode={currencyCode}
-            timezone={tenantQ.data?.timezone ?? 'America/Caracas'}
-            primaryColor={brand.primary}
-            accentColor={brand.accent}
-            clientTerm={tenantQ.data?.client_terminology}
-            appointmentTerm={tenantQ.data?.appointment_terminology}
-          />
+            <OperationalSnapshot
+              timezone={tenantQ.data?.timezone ?? 'America/Caracas'}
+              currencyCode={currencyCode}
+              tenantLoading={tenantQ.isLoading}
+              clientTerm={tenantQ.data?.client_terminology}
+            />
+            <ExecutiveDashboard
+              range={growthRange}
+              onChangeRange={setGrowthRange}
+              tenantId={tenantId}
+              currencyCode={currencyCode}
+              timezone={tenantQ.data?.timezone ?? 'America/Caracas'}
+              primaryColor={brand.primary}
+              accentColor={brand.accent}
+              clientTerm={tenantQ.data?.client_terminology}
+              appointmentTerm={tenantQ.data?.appointment_terminology}
+            />
           </>
         ) : (
           <>
-        {/* Título mes */}
-        <div>
-          <h1 className="text-2xl font-bold capitalize text-zinc-900 dark:text-zinc-100">
-            {mesActual}
-          </h1>
-          <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
-            Panel de finanzas{businessName ? ` · ${businessName}` : ''}
-          </p>
-        </div>
-
-        {/* KPI Cards */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-            <div className="mb-3 flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/10">
-                <DollarSign className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-              </div>
-              <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-                Total cobrado
-              </span>
+            {/* Título mes */}
+            <div>
+              <h1 className="text-2xl font-bold capitalize text-zinc-900 dark:text-zinc-100">
+                {mesActual}
+              </h1>
+              <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                Panel de finanzas{businessName ? ` · ${businessName}` : ''}
+              </p>
             </div>
-            {isLoading ? (
-              <div className="h-8 w-24 animate-pulse rounded bg-zinc-100 dark:bg-zinc-800" />
-            ) : (
-              <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
-                {fmtS(totalMes)}
-              </p>
-            )}
-            {!isLoading && totalAbonos > 0 && (
-              <p className="mt-1 flex items-center gap-1 text-xs text-zinc-400">
-                <Smartphone className="h-3 w-3" />
-                Adelantos: {fmtS(totalAbonos)}
-              </p>
-            )}
-          </div>
 
-          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-            <div className="mb-3 flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-500/10">
-                <Clock className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-              </div>
-              <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-                Pendiente mes
-              </span>
-            </div>
-            {isLoading ? (
-              <div className="h-8 w-24 animate-pulse rounded bg-zinc-100 dark:bg-zinc-800" />
-            ) : (
-              <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
-                {fmtS(pendienteMes)}
-              </p>
-            )}
-            {!isLoading && (
-              <p className="mt-1 text-xs text-zinc-400">
-                {citasConPendiente} citas con pago parcial
-              </p>
-            )}
-          </div>
-
-          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-            <div className="mb-3 flex items-center gap-2">
-              <div className="bg-[var(--primary)]/10 flex h-8 w-8 items-center justify-center rounded-xl">
-                <AlertCircle className="h-4 w-4 text-[var(--primary)]" />
-              </div>
-              <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
-                Transacciones
-              </span>
-            </div>
-            {isLoading ? (
-              <div className="h-8 w-16 animate-pulse rounded bg-zinc-100 dark:bg-zinc-800" />
-            ) : (
-              <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
-                {payments.length}
-              </p>
-            )}
-            <p className="mt-1 text-xs text-zinc-400">este mes</p>
-          </div>
-        </div>
-
-        {/* Desglose por chica */}
-        <section>
-          <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-            <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
-              Por chica — {PERIOD_LABELS[period]}
-            </h2>
-            <div className="inline-flex rounded-full border border-zinc-200 bg-white p-1 dark:border-zinc-800 dark:bg-zinc-900">
-              {(Object.keys(PERIOD_LABELS) as FinanzasPeriod[]).map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  onClick={() => setPeriod(p)}
-                  className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
-                    period === p
-                      ? 'bg-[var(--primary)] text-white'
-                      : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200'
-                  }`}
-                >
-                  {PERIOD_LABELS[p]}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {!isLoading && desgloseChicas.length > 0 ? (
-            <>
-            <ul className="space-y-3 md:hidden">
-              {desgloseChicas.map((e) => (
-                <li
-                  key={e.id}
-                  className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
-                >
-                  <div className="flex items-center gap-2">
-                    <span
-                      className="h-2.5 w-2.5 shrink-0 rounded-full"
-                      style={{ backgroundColor: e.color }}
-                    />
-                    <span className="font-medium text-zinc-900 dark:text-zinc-100">{e.name}</span>
+            {/* KPI Cards */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                <div className="mb-3 flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500/10">
+                    <DollarSign className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                   </div>
-                  <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
-                    <div>
-                      <dt className="text-xs text-zinc-500">Generado</dt>
-                      <dd className="tabular-nums text-zinc-800 dark:text-zinc-200">{fmtS(e.generado)}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-xs text-zinc-500">Cobrado</dt>
-                      <dd className="tabular-nums font-semibold text-emerald-600 dark:text-emerald-400">
-                        {fmtS(e.pagado)}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="text-xs text-zinc-500">Pendiente</dt>
-                      <dd className="tabular-nums text-[var(--primary)]">
-                        {e.pendiente > 0.01 ? fmtS(e.pendiente) : '—'}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="text-xs text-zinc-500">Comisión</dt>
-                      <dd className="tabular-nums text-zinc-800 dark:text-zinc-200">
-                        {e.comision > 0 ? fmtS(e.comision) : '—'}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="text-xs text-zinc-500">Pagado</dt>
-                      <dd className="tabular-nums text-zinc-500">{fmtS(e.comisionPagada)}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-xs text-zinc-500">Pendiente real</dt>
-                      <dd className="tabular-nums font-semibold text-amber-600 dark:text-amber-400">
-                        {e.comisionPendienteReal > 0.01 ? fmtS(e.comisionPendienteReal) : '—'}
-                      </dd>
-                    </div>
-                  </dl>
-                  {e.comisionPendienteReal > 0.01 ? (
+                  <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+                    Total cobrado
+                  </span>
+                </div>
+                {isLoading ? (
+                  <div className="h-8 w-24 animate-pulse rounded bg-zinc-100 dark:bg-zinc-800" />
+                ) : (
+                  <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+                    {fmtS(totalMes)}
+                  </p>
+                )}
+                {!isLoading && totalAbonos > 0 && (
+                  <p className="mt-1 flex items-center gap-1 text-xs text-zinc-400">
+                    <Smartphone className="h-3 w-3" />
+                    Adelantos: {fmtS(totalAbonos)}
+                  </p>
+                )}
+              </div>
+
+              <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                <div className="mb-3 flex items-center gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-500/10">
+                    <Clock className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+                    Pendiente mes
+                  </span>
+                </div>
+                {isLoading ? (
+                  <div className="h-8 w-24 animate-pulse rounded bg-zinc-100 dark:bg-zinc-800" />
+                ) : (
+                  <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+                    {fmtS(pendienteMes)}
+                  </p>
+                )}
+                {!isLoading && (
+                  <p className="mt-1 text-xs text-zinc-400">
+                    {citasConPendiente} citas con pago parcial
+                  </p>
+                )}
+              </div>
+
+              <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                <div className="mb-3 flex items-center gap-2">
+                  <div className="bg-[var(--primary)]/10 flex h-8 w-8 items-center justify-center rounded-xl">
+                    <AlertCircle className="h-4 w-4 text-tenant-text" />
+                  </div>
+                  <span className="text-sm font-medium text-zinc-500 dark:text-zinc-400">
+                    Transacciones
+                  </span>
+                </div>
+                {isLoading ? (
+                  <div className="h-8 w-16 animate-pulse rounded bg-zinc-100 dark:bg-zinc-800" />
+                ) : (
+                  <p className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+                    {payments.length}
+                  </p>
+                )}
+                <p className="mt-1 text-xs text-zinc-400">este mes</p>
+              </div>
+            </div>
+
+            {/* Desglose por chica */}
+            <section>
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+                <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
+                  Por chica — {PERIOD_LABELS[period]}
+                </h2>
+                <div className="inline-flex rounded-full border border-zinc-200 bg-white p-1 dark:border-zinc-800 dark:bg-zinc-900">
+                  {(Object.keys(PERIOD_LABELS) as FinanzasPeriod[]).map((p) => (
                     <button
+                      key={p}
                       type="button"
-                      onClick={() => {
-                        setPayoutRow(e)
-                        setPayoutModalOpen(true)
-                      }}
-                      className="hover:bg-[var(--primary)]/10 mt-3 inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-full border border-[var(--primary)] px-3 py-2 text-sm font-semibold text-[var(--primary)]"
+                      onClick={() => setPeriod(p)}
+                      className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
+                        period === p
+                          ? 'bg-[var(--primary)] text-white'
+                          : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200'
+                      }`}
                     >
-                      <CheckCircle className="h-4 w-4" />
-                      Marcar pago
+                      {PERIOD_LABELS[p]}
                     </button>
-                  ) : null}
-                </li>
-              ))}
-            </ul>
-            <div className="hidden overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm md:block dark:border-zinc-800 dark:bg-zinc-900">
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[720px] text-sm">
-                  <thead>
-                    <tr className="border-b border-zinc-100 dark:border-zinc-800">
-                      <th className="px-4 py-3 text-left font-semibold text-zinc-500 dark:text-zinc-400">
-                        Chica
-                      </th>
-                      <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
-                        Generado
-                      </th>
-                      <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
-                        Cobrado
-                      </th>
-                      <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
-                        Pendiente
-                      </th>
-                      <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
-                        Comisión
-                      </th>
-                      <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
-                        Pagado
-                      </th>
-                      <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
-                        Pendiente real
-                      </th>
-                      <th className="px-4 py-3" />
-                    </tr>
-                  </thead>
-                  <tbody>
+                  ))}
+                </div>
+              </div>
+
+              {!isLoading && desgloseChicas.length > 0 ? (
+                <>
+                  <ul className="space-y-3 md:hidden">
                     {desgloseChicas.map((e) => (
-                      <tr
+                      <li
                         key={e.id}
-                        className="border-b border-zinc-50 last:border-0 dark:border-zinc-800/50"
+                        className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
                       >
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-2">
-                            <span
-                              className="h-2.5 w-2.5 flex-shrink-0 rounded-full"
-                              style={{ backgroundColor: e.color }}
-                            />
-                            <span className="font-medium text-zinc-900 dark:text-zinc-100">
-                              {e.name}
-                            </span>
-                          </div>
-                        </td>
-                        <td className="px-4 py-3 text-right text-zinc-700 dark:text-zinc-300">
-                          {fmtS(e.generado)}
-                        </td>
-                        <td className="px-4 py-3 text-right font-semibold text-emerald-600 dark:text-emerald-400">
-                          {fmtS(e.pagado)}
-                        </td>
-                        <td className="px-4 py-3 text-right">
-                          {e.pendiente > 0.01 ? (
-                            <span className="font-semibold text-[var(--primary)]">
-                              {fmtS(e.pendiente)}
-                            </span>
-                          ) : (
-                            <span className="text-zinc-400">—</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 text-right text-zinc-700 dark:text-zinc-300">
-                          {e.comision > 0 ? (
-                            fmtS(e.comision)
-                          ) : (
-                            <span className="text-zinc-400">—</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 text-right text-zinc-500 dark:text-zinc-400">
-                          {fmtS(e.comisionPagada)}
-                        </td>
-                        <td className="px-4 py-3 text-right">
-                          {e.comisionPendienteReal > 0.01 ? (
-                            <span className="font-semibold text-amber-600 dark:text-amber-400">
-                              {fmtS(e.comisionPendienteReal)}
-                            </span>
-                          ) : (
-                            <span className="text-zinc-400">—</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 text-right">
-                          {e.comisionPendienteReal > 0.01 && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setPayoutRow(e)
-                                setPayoutModalOpen(true)
-                              }}
-                              className="hover:bg-[var(--primary)]/10 inline-flex items-center gap-1.5 rounded-full border border-[var(--primary)] px-3 py-1 text-xs font-semibold text-[var(--primary)] transition-colors"
-                            >
-                              <CheckCircle className="h-3.5 w-3.5" />
-                              Marcar pago
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            </>
-          ) : !isLoading ? (
-            <div className="rounded-2xl border border-zinc-200 bg-white py-10 text-center shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-              <p className="text-sm text-zinc-500 dark:text-zinc-400">
-                Sin actividad en este período
-              </p>
-            </div>
-          ) : null}
-        </section>
-
-        {/* Historial de pagos */}
-        <section>
-          <h2 className="mb-3 text-base font-semibold text-zinc-900 dark:text-zinc-100">
-            Pagos — {mesActual}
-          </h2>
-          <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
-            {isLoading ? (
-              <div className="space-y-3 p-6">
-                {[1, 2, 3].map((i) => (
-                  <div
-                    key={i}
-                    className="h-12 animate-pulse rounded-lg bg-zinc-100 dark:bg-zinc-800"
-                  />
-                ))}
-              </div>
-            ) : payments.length === 0 ? (
-              <div className="py-12 text-center">
-                <DollarSign className="mx-auto mb-3 h-10 w-10 text-zinc-300 dark:text-zinc-700" />
-                <p className="text-sm text-zinc-500 dark:text-zinc-400">Sin pagos este mes</p>
-              </div>
-            ) : (
-              <>
-              <ul className="divide-y divide-zinc-100 md:hidden dark:divide-zinc-800">
-                {payments.map((p) => {
-                  const monto = parseFloat(p.amount)
-                  const total = p.service_total ? parseFloat(p.service_total) : null
-                  return (
-                    <li key={p.id} className="space-y-1 px-4 py-3">
-                      <div className="flex items-start justify-between gap-3">
-                        <p className="min-w-0 font-medium text-zinc-900 dark:text-zinc-100">
-                          {p.client_name || 'Sin cita vinculada'}
-                        </p>
-                        <p className="shrink-0 font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
-                          {fmtS(monto)}
-                        </p>
-                      </div>
-                      {p.service_name ? (
-                        <p className="text-xs text-zinc-400">{p.service_name}</p>
-                      ) : null}
-                      <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-500">
-                        <span>{fmtDate(p.date, tenantQ.data?.timezone ?? 'America/Caracas')}</span>
-                        {p.employee_name ? (
-                          <span className="inline-flex items-center gap-1">
-                            <span
-                              className="h-1.5 w-1.5 rounded-full"
-                              style={{ backgroundColor: p.employee_color ?? brand.primary }}
-                            />
-                            {p.employee_name}
+                        <div className="flex items-center gap-2">
+                          <span
+                            className="h-2.5 w-2.5 shrink-0 rounded-full"
+                            style={{ backgroundColor: e.color }}
+                          />
+                          <span className="font-medium text-zinc-900 dark:text-zinc-100">
+                            {e.name}
                           </span>
+                        </div>
+                        <dl className="mt-3 grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
+                          <div>
+                            <dt className="text-xs text-zinc-500">Generado</dt>
+                            <dd className="tabular-nums text-zinc-800 dark:text-zinc-200">
+                              {fmtS(e.generado)}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt className="text-xs text-zinc-500">Cobrado</dt>
+                            <dd className="font-semibold tabular-nums text-emerald-600 dark:text-emerald-400">
+                              {fmtS(e.pagado)}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt className="text-xs text-zinc-500">Pendiente</dt>
+                            <dd className="tabular-nums text-tenant-text">
+                              {e.pendiente > 0.01 ? fmtS(e.pendiente) : '—'}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt className="text-xs text-zinc-500">Comisión</dt>
+                            <dd className="tabular-nums text-zinc-800 dark:text-zinc-200">
+                              {e.comision > 0 ? fmtS(e.comision) : '—'}
+                            </dd>
+                          </div>
+                          <div>
+                            <dt className="text-xs text-zinc-500">Pagado</dt>
+                            <dd className="tabular-nums text-zinc-500">{fmtS(e.comisionPagada)}</dd>
+                          </div>
+                          <div>
+                            <dt className="text-xs text-zinc-500">Pendiente real</dt>
+                            <dd className="font-semibold tabular-nums text-amber-600 dark:text-amber-400">
+                              {e.comisionPendienteReal > 0.01 ? fmtS(e.comisionPendienteReal) : '—'}
+                            </dd>
+                          </div>
+                        </dl>
+                        {e.comisionPendienteReal > 0.01 ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPayoutRow(e)
+                              setPayoutModalOpen(true)
+                            }}
+                            className="hover:bg-[var(--primary)]/10 mt-3 inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-full border border-[var(--primary)] px-3 py-2 text-sm font-semibold text-tenant-text"
+                          >
+                            <CheckCircle className="h-4 w-4" />
+                            Marcar pago
+                          </button>
                         ) : null}
-                        <span className="inline-flex items-center gap-1">
-                          <MethodIcon method={p.method} />
-                          {METHOD_LABELS[p.method] ?? p.method}
-                        </span>
-                      </p>
-                      {p.is_abono ? (
-                        <p className="text-xs font-semibold text-amber-600 dark:text-amber-400">
-                          Adelanto 20%{total ? ` / ${fmtS(total)}` : ''}
-                        </p>
-                      ) : null}
-                      {p.notes ? <p className="text-xs italic text-zinc-400">{p.notes}</p> : null}
-                    </li>
-                  )
-                })}
-              </ul>
-              <div className="hidden overflow-x-auto md:block">
-                <table className="w-full min-w-[600px] text-sm">
-                  <thead>
-                    <tr className="border-b border-zinc-100 dark:border-zinc-800">
-                      <th className="px-4 py-3 text-left font-semibold text-zinc-500 dark:text-zinc-400">
-                        Fecha
-                      </th>
-                      <th className="px-4 py-3 text-left font-semibold text-zinc-500 dark:text-zinc-400">
-                        Cliente / Servicio
-                      </th>
-                      <th className="px-4 py-3 text-left font-semibold text-zinc-500 dark:text-zinc-400">
-                        Chica
-                      </th>
-                      <th className="px-4 py-3 text-left font-semibold text-zinc-500 dark:text-zinc-400">
-                        Método
-                      </th>
-                      <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
-                        Monto
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {payments.map((p) => {
-                      const monto = parseFloat(p.amount)
-                      const total = p.service_total ? parseFloat(p.service_total) : null
-                      return (
-                        <tr
-                          key={p.id}
-                          className="border-b border-zinc-50 transition-colors last:border-0 hover:bg-zinc-50/50 dark:border-zinc-800/50 dark:hover:bg-zinc-800/30"
-                        >
-                          <td className="whitespace-nowrap px-4 py-3 text-zinc-500 dark:text-zinc-400">
-                            {fmtDate(p.date, tenantQ.data?.timezone ?? 'America/Caracas')}
-                          </td>
-                          <td className="px-4 py-3">
-                            <div className="flex flex-wrap items-center gap-2">
-                              {p.client_name && (
-                                <span className="font-medium text-zinc-900 dark:text-zinc-100">
-                                  {p.client_name}
-                                </span>
-                              )}
-                              {p.service_name && (
-                                <span className="text-xs text-zinc-400">{p.service_name}</span>
-                              )}
-                              {!p.client_name && !p.service_name && (
-                                <span className="text-xs italic text-zinc-400">
-                                  Sin cita vinculada
-                                </span>
-                              )}
-                              {p.is_abono && (
-                                <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
-                                  <Smartphone className="h-3 w-3" />
-                                  Adelanto 20%
-                                  {total && <span className="opacity-70"> / {fmtS(total)}</span>}
-                                </span>
-                              )}
-                              {p.notes && (
-                                <span className="text-xs italic text-zinc-400">{p.notes}</span>
-                              )}
-                            </div>
-                          </td>
-                          <td className="px-4 py-3">
-                            {p.employee_name ? (
-                              <span className="inline-flex items-center gap-1.5 text-zinc-700 dark:text-zinc-300">
-                                <span
-                                  className="h-2 w-2 flex-shrink-0 rounded-full"
-                                  style={{
-                                    backgroundColor: p.employee_color ?? brand.primary,
-                                  }}
-                                />
-                                {p.employee_name}
-                              </span>
-                            ) : (
-                              <span className="text-zinc-400">—</span>
-                            )}
-                          </td>
-                          <td className="px-4 py-3">
-                            <span className="inline-flex items-center gap-1.5 text-zinc-600 dark:text-zinc-400">
-                              <MethodIcon method={p.method} />
-                              {METHOD_LABELS[p.method] ?? p.method}
-                            </span>
-                          </td>
-                          <td className="whitespace-nowrap px-4 py-3 text-right font-semibold text-zinc-900 dark:text-zinc-100">
-                            {fmtS(monto)}
-                          </td>
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </div>
-              </>
-            )}
-          </div>
-        </section>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="hidden overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900 md:block">
+                    <div className="overflow-x-auto">
+                      <table className="w-full min-w-[720px] text-sm">
+                        <thead>
+                          <tr className="border-b border-zinc-100 dark:border-zinc-800">
+                            <th className="px-4 py-3 text-left font-semibold text-zinc-500 dark:text-zinc-400">
+                              Chica
+                            </th>
+                            <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
+                              Generado
+                            </th>
+                            <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
+                              Cobrado
+                            </th>
+                            <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
+                              Pendiente
+                            </th>
+                            <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
+                              Comisión
+                            </th>
+                            <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
+                              Pagado
+                            </th>
+                            <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
+                              Pendiente real
+                            </th>
+                            <th className="px-4 py-3" />
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {desgloseChicas.map((e) => (
+                            <tr
+                              key={e.id}
+                              className="border-b border-zinc-50 last:border-0 dark:border-zinc-800/50"
+                            >
+                              <td className="px-4 py-3">
+                                <div className="flex items-center gap-2">
+                                  <span
+                                    className="h-2.5 w-2.5 flex-shrink-0 rounded-full"
+                                    style={{ backgroundColor: e.color }}
+                                  />
+                                  <span className="font-medium text-zinc-900 dark:text-zinc-100">
+                                    {e.name}
+                                  </span>
+                                </div>
+                              </td>
+                              <td className="px-4 py-3 text-right text-zinc-700 dark:text-zinc-300">
+                                {fmtS(e.generado)}
+                              </td>
+                              <td className="px-4 py-3 text-right font-semibold text-emerald-600 dark:text-emerald-400">
+                                {fmtS(e.pagado)}
+                              </td>
+                              <td className="px-4 py-3 text-right">
+                                {e.pendiente > 0.01 ? (
+                                  <span className="font-semibold text-tenant-text">
+                                    {fmtS(e.pendiente)}
+                                  </span>
+                                ) : (
+                                  <span className="text-zinc-400">—</span>
+                                )}
+                              </td>
+                              <td className="px-4 py-3 text-right text-zinc-700 dark:text-zinc-300">
+                                {e.comision > 0 ? (
+                                  fmtS(e.comision)
+                                ) : (
+                                  <span className="text-zinc-400">—</span>
+                                )}
+                              </td>
+                              <td className="px-4 py-3 text-right text-zinc-500 dark:text-zinc-400">
+                                {fmtS(e.comisionPagada)}
+                              </td>
+                              <td className="px-4 py-3 text-right">
+                                {e.comisionPendienteReal > 0.01 ? (
+                                  <span className="font-semibold text-amber-600 dark:text-amber-400">
+                                    {fmtS(e.comisionPendienteReal)}
+                                  </span>
+                                ) : (
+                                  <span className="text-zinc-400">—</span>
+                                )}
+                              </td>
+                              <td className="px-4 py-3 text-right">
+                                {e.comisionPendienteReal > 0.01 && (
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setPayoutRow(e)
+                                      setPayoutModalOpen(true)
+                                    }}
+                                    className="hover:bg-[var(--primary)]/10 inline-flex items-center gap-1.5 rounded-full border border-[var(--primary)] px-3 py-1 text-xs font-semibold text-tenant-text transition-colors"
+                                  >
+                                    <CheckCircle className="h-3.5 w-3.5" />
+                                    Marcar pago
+                                  </button>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </>
+              ) : !isLoading ? (
+                <div className="rounded-2xl border border-zinc-200 bg-white py-10 text-center shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                  <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                    Sin actividad en este período
+                  </p>
+                </div>
+              ) : null}
+            </section>
 
-        <p className="pb-4 text-center text-xs text-zinc-400 dark:text-zinc-500">
-          Finanzas · Solo administración
-        </p>
+            {/* Historial de pagos */}
+            <section>
+              <h2 className="mb-3 text-base font-semibold text-zinc-900 dark:text-zinc-100">
+                Pagos — {mesActual}
+              </h2>
+              <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+                {isLoading ? (
+                  <div className="space-y-3 p-6">
+                    {[1, 2, 3].map((i) => (
+                      <div
+                        key={i}
+                        className="h-12 animate-pulse rounded-lg bg-zinc-100 dark:bg-zinc-800"
+                      />
+                    ))}
+                  </div>
+                ) : payments.length === 0 ? (
+                  <div className="py-12 text-center">
+                    <DollarSign className="mx-auto mb-3 h-10 w-10 text-zinc-300 dark:text-zinc-700" />
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400">Sin pagos este mes</p>
+                  </div>
+                ) : (
+                  <>
+                    <ul className="divide-y divide-zinc-100 dark:divide-zinc-800 md:hidden">
+                      {payments.map((p) => {
+                        const monto = parseFloat(p.amount)
+                        const total = p.service_total ? parseFloat(p.service_total) : null
+                        return (
+                          <li key={p.id} className="space-y-1 px-4 py-3">
+                            <div className="flex items-start justify-between gap-3">
+                              <p className="min-w-0 font-medium text-zinc-900 dark:text-zinc-100">
+                                {p.client_name || 'Sin cita vinculada'}
+                              </p>
+                              <p className="shrink-0 font-semibold tabular-nums text-zinc-900 dark:text-zinc-100">
+                                {fmtS(monto)}
+                              </p>
+                            </div>
+                            {p.service_name ? (
+                              <p className="text-xs text-zinc-400">{p.service_name}</p>
+                            ) : null}
+                            <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-zinc-500">
+                              <span>
+                                {fmtDate(p.date, tenantQ.data?.timezone ?? 'America/Caracas')}
+                              </span>
+                              {p.employee_name ? (
+                                <span className="inline-flex items-center gap-1">
+                                  <span
+                                    className="h-1.5 w-1.5 rounded-full"
+                                    style={{ backgroundColor: p.employee_color ?? brand.primary }}
+                                  />
+                                  {p.employee_name}
+                                </span>
+                              ) : null}
+                              <span className="inline-flex items-center gap-1">
+                                <MethodIcon method={p.method} />
+                                {METHOD_LABELS[p.method] ?? p.method}
+                              </span>
+                            </p>
+                            {p.is_abono ? (
+                              <p className="text-xs font-semibold text-amber-600 dark:text-amber-400">
+                                Adelanto 20%{total ? ` / ${fmtS(total)}` : ''}
+                              </p>
+                            ) : null}
+                            {p.notes ? (
+                              <p className="text-xs italic text-zinc-400">{p.notes}</p>
+                            ) : null}
+                          </li>
+                        )
+                      })}
+                    </ul>
+                    <div className="hidden overflow-x-auto md:block">
+                      <table className="w-full min-w-[600px] text-sm">
+                        <thead>
+                          <tr className="border-b border-zinc-100 dark:border-zinc-800">
+                            <th className="px-4 py-3 text-left font-semibold text-zinc-500 dark:text-zinc-400">
+                              Fecha
+                            </th>
+                            <th className="px-4 py-3 text-left font-semibold text-zinc-500 dark:text-zinc-400">
+                              Cliente / Servicio
+                            </th>
+                            <th className="px-4 py-3 text-left font-semibold text-zinc-500 dark:text-zinc-400">
+                              Chica
+                            </th>
+                            <th className="px-4 py-3 text-left font-semibold text-zinc-500 dark:text-zinc-400">
+                              Método
+                            </th>
+                            <th className="px-4 py-3 text-right font-semibold text-zinc-500 dark:text-zinc-400">
+                              Monto
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {payments.map((p) => {
+                            const monto = parseFloat(p.amount)
+                            const total = p.service_total ? parseFloat(p.service_total) : null
+                            return (
+                              <tr
+                                key={p.id}
+                                className="border-b border-zinc-50 transition-colors last:border-0 hover:bg-zinc-50/50 dark:border-zinc-800/50 dark:hover:bg-zinc-800/30"
+                              >
+                                <td className="whitespace-nowrap px-4 py-3 text-zinc-500 dark:text-zinc-400">
+                                  {fmtDate(p.date, tenantQ.data?.timezone ?? 'America/Caracas')}
+                                </td>
+                                <td className="px-4 py-3">
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    {p.client_name && (
+                                      <span className="font-medium text-zinc-900 dark:text-zinc-100">
+                                        {p.client_name}
+                                      </span>
+                                    )}
+                                    {p.service_name && (
+                                      <span className="text-xs text-zinc-400">
+                                        {p.service_name}
+                                      </span>
+                                    )}
+                                    {!p.client_name && !p.service_name && (
+                                      <span className="text-xs italic text-zinc-400">
+                                        Sin cita vinculada
+                                      </span>
+                                    )}
+                                    {p.is_abono && (
+                                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                                        <Smartphone className="h-3 w-3" />
+                                        Adelanto 20%
+                                        {total && (
+                                          <span className="opacity-70"> / {fmtS(total)}</span>
+                                        )}
+                                      </span>
+                                    )}
+                                    {p.notes && (
+                                      <span className="text-xs italic text-zinc-400">
+                                        {p.notes}
+                                      </span>
+                                    )}
+                                  </div>
+                                </td>
+                                <td className="px-4 py-3">
+                                  {p.employee_name ? (
+                                    <span className="inline-flex items-center gap-1.5 text-zinc-700 dark:text-zinc-300">
+                                      <span
+                                        className="h-2 w-2 flex-shrink-0 rounded-full"
+                                        style={{
+                                          backgroundColor: p.employee_color ?? brand.primary,
+                                        }}
+                                      />
+                                      {p.employee_name}
+                                    </span>
+                                  ) : (
+                                    <span className="text-zinc-400">—</span>
+                                  )}
+                                </td>
+                                <td className="px-4 py-3">
+                                  <span className="inline-flex items-center gap-1.5 text-zinc-600 dark:text-zinc-400">
+                                    <MethodIcon method={p.method} />
+                                    {METHOD_LABELS[p.method] ?? p.method}
+                                  </span>
+                                </td>
+                                <td className="whitespace-nowrap px-4 py-3 text-right font-semibold text-zinc-900 dark:text-zinc-100">
+                                  {fmtS(monto)}
+                                </td>
+                              </tr>
+                            )
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </>
+                )}
+              </div>
+            </section>
+
+            <p className="pb-4 text-center text-xs text-zinc-400 dark:text-zinc-500">
+              Finanzas · Solo administración
+            </p>
           </>
         )}
       </main>

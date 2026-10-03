@@ -4,7 +4,10 @@
  */
 export function friendlyTemplateName(slug: string): string {
   const key = slug.trim().toLowerCase()
-  const base = key.replace(/_(zm|geema)$/, '').replace(/_/g, ' ').trim()
+  const base = key
+    .replace(/_(zm|geema)$/, '')
+    .replace(/_/g, ' ')
+    .trim()
   if (!base) return 'Plantilla'
   return base.charAt(0).toUpperCase() + base.slice(1)
 }

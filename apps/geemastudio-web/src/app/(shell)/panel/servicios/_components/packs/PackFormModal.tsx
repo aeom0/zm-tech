@@ -76,15 +76,15 @@ function PackFormModalInner({ pack, onClose }: { pack?: Pack | null; onClose: ()
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-md space-y-4 rounded-xl border border-white/10 bg-[#1a1d26] p-6">
-        <h2 className="text-lg font-semibold text-white">{pack ? 'Editar pack' : 'Nuevo pack'}</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-scrim/60 p-4 backdrop-blur-sm">
+      <div className="w-full max-w-md space-y-4 rounded-xl border border-fg/10 bg-surface p-6">
+        <h2 className="text-lg font-semibold text-fg">{pack ? 'Editar pack' : 'Nuevo pack'}</h2>
 
         <div className="space-y-3">
           <div>
-            <label className="mb-1 block text-xs text-white/50">Nombre *</label>
+            <label className="mb-1 block text-xs text-fg/50">Nombre *</label>
             <input
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
+              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
               value={form.name}
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
               placeholder="Ej: Pack novias"
@@ -92,14 +92,18 @@ function PackFormModalInner({ pack, onClose }: { pack?: Pack | null; onClose: ()
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-white/50">Emoji</label>
-            <EmojiPicker emojis={PACK_QUICK_EMOJIS} value={form.emoji} onChange={(emoji) => setForm((f) => ({ ...f, emoji }))} />
+            <label className="mb-1 block text-xs text-fg/50">Emoji</label>
+            <EmojiPicker
+              emojis={PACK_QUICK_EMOJIS}
+              value={form.emoji}
+              onChange={(emoji) => setForm((f) => ({ ...f, emoji }))}
+            />
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-white/50">Descripción</label>
+            <label className="mb-1 block text-xs text-fg/50">Descripción</label>
             <textarea
-              className="w-full resize-none rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
+              className="w-full resize-none rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
               value={form.description}
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               rows={2}
@@ -108,9 +112,9 @@ function PackFormModalInner({ pack, onClose }: { pack?: Pack | null; onClose: ()
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-white/50">Precio *</label>
+            <label className="mb-1 block text-xs text-fg/50">Precio *</label>
             <input
-              className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
+              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
               value={form.price}
               onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
               placeholder="0,00"
@@ -119,10 +123,10 @@ function PackFormModalInner({ pack, onClose }: { pack?: Pack | null; onClose: ()
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-white/50">
+            <label className="mb-1 block text-xs text-fg/50">
               Servicios incluidos ({form.service_ids.length} seleccionados)
             </label>
-            <div className="rounded-lg border border-white/10 bg-white/5 p-2">
+            <div className="rounded-lg border border-fg/10 bg-fg/5 p-2">
               <ServicePickerCheckbox
                 selectedIds={form.service_ids}
                 onChange={(ids) => setForm((f) => ({ ...f, service_ids: ids }))}
@@ -137,7 +141,7 @@ function PackFormModalInner({ pack, onClose }: { pack?: Pack | null; onClose: ()
               onChange={(e) => setForm((f) => ({ ...f, is_active: e.target.checked }))}
               className="accent-[var(--tenant-primary)]"
             />
-            <span className="text-sm text-white/70">Activo</span>
+            <span className="text-sm text-fg/70">Activo</span>
           </label>
         </div>
 
@@ -145,7 +149,7 @@ function PackFormModalInner({ pack, onClose }: { pack?: Pack | null; onClose: ()
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm text-white/60 transition-colors hover:text-white"
+            className="px-4 py-2 text-sm text-fg/60 transition-colors hover:text-fg"
           >
             Cancelar
           </button>

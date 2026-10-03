@@ -95,7 +95,7 @@ export default function PanelAgendaPage() {
 
   if (!selectedDate) {
     return (
-      <div className="text-sm text-zinc-400">
+      <div className="text-sm text-fg-muted">
         {scheduleQuery.isLoading ? 'Cargando agenda…' : 'Preparando zona horaria…'}
       </div>
     )
@@ -104,9 +104,9 @@ export default function PanelAgendaPage() {
   return (
     <div className="space-y-6">
       <div>
-        <div className="text-xs text-zinc-500">Panel</div>
-        <h1 className="text-2xl font-bold text-white">Agenda</h1>
-        <p className="mt-1 text-sm text-zinc-400">
+        <div className="text-xs text-fg-subtle">Panel</div>
+        <h1 className="text-2xl font-bold text-fg">Agenda</h1>
+        <p className="mt-1 text-sm text-fg-muted">
           {view === 'week' ? 'Vista semanal' : 'Vista día por profesional'} · zona {timezone} · solo
           lectura (edición en mobile)
         </p>
@@ -138,19 +138,19 @@ export default function PanelAgendaPage() {
       />
 
       {errorMessage && (
-        <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+        <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200">
           {errorMessage}
         </div>
       )}
 
       {loading && (
-        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-8 text-center text-sm text-zinc-500">
+        <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
           Cargando citas…
         </div>
       )}
 
       {!loading && !errorMessage && view === 'day' && activeEmployees.length === 0 && (
-        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-8 text-center text-sm text-zinc-500">
+        <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
           No hay profesionales activos. Configúralos en Personal.
         </div>
       )}
@@ -173,7 +173,7 @@ export default function PanelAgendaPage() {
       )}
 
       {!loading && view === 'day' && activeEmployees.length > 0 && (
-        <div className="overflow-x-auto rounded-2xl border border-white/[0.08]">
+        <div className="overflow-x-auto rounded-2xl border border-fg/[0.08]">
           <div
             className="min-w-max"
             style={{
@@ -181,29 +181,29 @@ export default function PanelAgendaPage() {
               gridTemplateColumns: `56px repeat(${activeEmployees.length}, minmax(160px, 1fr))`,
             }}
           >
-            <div className="sticky left-0 z-20 border-b border-r border-white/[0.08] bg-zinc-950 px-2 py-3 text-[10px] text-zinc-500">
+            <div className="sticky left-0 z-20 border-b border-r border-fg/[0.08] bg-sunken px-2 py-3 text-[10px] text-fg-subtle">
               Hora
             </div>
             {activeEmployees.map((emp) => (
-              <div key={emp.id} className="border-b border-white/[0.08] bg-zinc-950/80 px-3 py-3">
+              <div key={emp.id} className="border-b border-fg/[0.08] bg-sunken/80 px-3 py-3">
                 <div className="flex items-center gap-2">
                   <span
                     className="h-2.5 w-2.5 shrink-0 rounded-full"
                     style={{ backgroundColor: emp.color }}
                   />
-                  <span className="truncate text-xs font-semibold text-white">{emp.name}</span>
+                  <span className="truncate text-xs font-semibold text-fg">{emp.name}</span>
                 </div>
               </div>
             ))}
 
             <div
-              className="sticky left-0 z-20 border-r border-white/[0.08] bg-zinc-950"
+              className="sticky left-0 z-20 border-r border-fg/[0.08] bg-sunken"
               style={{ height: gridHeight }}
             >
               {gridHours.map((h, i) => (
                 <div
                   key={h}
-                  className="absolute left-0 right-0 border-t border-white/[0.04] px-1 text-[10px] text-zinc-500"
+                  className="absolute left-0 right-0 border-t border-fg/[0.04] px-1 text-[10px] text-fg-subtle"
                   style={{ top: i * PX_PER_HOUR, height: PX_PER_HOUR }}
                 >
                   {String(h).padStart(2, '0')}:00
@@ -216,13 +216,13 @@ export default function PanelAgendaPage() {
               return (
                 <div
                   key={emp.id}
-                  className="relative border-l border-white/[0.06] bg-white/[0.01]"
+                  className="relative border-l border-fg/[0.06] bg-card"
                   style={{ height: gridHeight }}
                 >
                   {gridHours.map((h, i) => (
                     <div
                       key={h}
-                      className="absolute left-0 right-0 border-t border-white/[0.04]"
+                      className="absolute left-0 right-0 border-t border-fg/[0.04]"
                       style={{ top: i * PX_PER_HOUR, height: PX_PER_HOUR }}
                     />
                   ))}
@@ -254,15 +254,15 @@ export default function PanelAgendaPage() {
 
       {!loading && view === 'day' && unassigned.length > 0 && (
         <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-4">
-          <div className="mb-2 text-sm font-semibold text-amber-200">
+          <div className="mb-2 text-sm font-semibold text-amber-800 dark:text-amber-200">
             Sin asignar ({unassigned.length})
           </div>
-          <ul className="space-y-1 text-sm text-zinc-300">
+          <ul className="space-y-1 text-sm text-fg-soft">
             {unassigned.map((apt) => (
               <li key={apt.id}>
                 <button
                   type="button"
-                  className="hover:text-[var(--tenant-primary)]"
+                  className="hover:text-tenant-text"
                   onClick={() => setSelectedApt(apt)}
                 >
                   {apt.client_name} · {serviceNameFor(apt)}

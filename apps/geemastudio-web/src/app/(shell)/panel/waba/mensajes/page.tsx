@@ -15,7 +15,7 @@ type FilterType = 'all' | 'active24h' | 'paused'
 
 function findConversationByPhoneKey<T extends { phone: string; displayPhone: string | null }>(
   conversations: T[],
-  phoneKey: string | null,
+  phoneKey: string | null
 ): T | null {
   if (!phoneKey) return null
   return (
@@ -23,7 +23,7 @@ function findConversationByPhoneKey<T extends { phone: string; displayPhone: str
       (c) =>
         c.phone === phoneKey ||
         phonesLikelyMatch(c.phone, phoneKey) ||
-        (c.displayPhone != null && phonesLikelyMatch(c.displayPhone, phoneKey)),
+        (c.displayPhone != null && phonesLikelyMatch(c.displayPhone, phoneKey))
     ) ?? null
   )
 }
@@ -65,7 +65,7 @@ function PanelWabaMensajesContent() {
 
   const selected = useMemo(
     () => findConversationByPhoneKey(conversations, selectedPhone),
-    [conversations, selectedPhone],
+    [conversations, selectedPhone]
   )
 
   /** Si el deep link llegó con 9 dígitos y el hilo es `51…`, canónica al phone del hilo. */
@@ -118,15 +118,15 @@ function PanelWabaMensajesContent() {
   return (
     <div className={selectedPhone ? 'space-y-0 md:space-y-4' : 'space-y-4'}>
       <div className={selectedPhone ? 'hidden md:block' : 'block'}>
-        <div className="text-xs text-zinc-500">WhatsApp</div>
-        <h1 className="text-2xl font-bold text-white">{title}</h1>
-        <p className="mt-1 text-sm text-zinc-400">
+        <div className="text-xs text-fg-subtle">WhatsApp</div>
+        <h1 className="text-2xl font-bold text-fg">{title}</h1>
+        <p className="mt-1 text-sm text-fg-muted">
           Historial por teléfono. Envío de texto, imagen, audio y documento desde el panel.
         </p>
       </div>
 
       {conversationsQuery.isError && (
-        <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+        <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200">
           {conversationsQuery.error instanceof Error
             ? conversationsQuery.error.message
             : 'No se pudieron cargar las conversaciones'}
@@ -134,7 +134,7 @@ function PanelWabaMensajesContent() {
       )}
 
       {!conversationsQuery.isError && conversationsQuery.isLoading && (
-        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-8 text-center text-sm text-zinc-500">
+        <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
           Cargando conversaciones…
         </div>
       )}
@@ -142,9 +142,9 @@ function PanelWabaMensajesContent() {
       {!conversationsQuery.isError &&
         !conversationsQuery.isLoading &&
         conversations.length === 0 && (
-          <div className="flex flex-col items-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-12 text-center">
-            <MessageSquare className="h-8 w-8 text-zinc-600" />
-            <p className="text-sm text-zinc-400">
+          <div className="flex flex-col items-center gap-3 rounded-2xl border border-fg/[0.08] bg-card px-4 py-12 text-center">
+            <MessageSquare className="h-8 w-8 text-fg-subtle" />
+            <p className="text-sm text-fg-muted">
               Todavía no hay mensajes en <span className="font-mono">wa_messages</span> para este
               tenant.
             </p>
@@ -154,7 +154,7 @@ function PanelWabaMensajesContent() {
       {!conversationsQuery.isError && !conversationsQuery.isLoading && conversations.length > 0 && (
         <div
           className={[
-            'grid grid-rows-[1fr] overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] md:grid-cols-[340px_1fr]',
+            'grid grid-rows-[1fr] overflow-hidden rounded-2xl border border-fg/[0.08] bg-card md:grid-cols-[340px_1fr]',
             selectedPhone
               ? 'h-[calc(100dvh-8rem)] md:h-[calc(100dvh-12rem)]'
               : 'h-[calc(100dvh-14rem)] min-h-[440px] md:h-[calc(100dvh-12rem)]',
@@ -162,26 +162,26 @@ function PanelWabaMensajesContent() {
         >
           <aside
             className={[
-              'h-full min-h-0 min-w-0 flex flex-col border-white/[0.08] md:border-r',
+              'flex h-full min-h-0 min-w-0 flex-col border-fg/[0.08] md:border-r',
               selectedPhone ? 'hidden md:flex' : 'flex',
             ].join(' ')}
           >
             {/* Buscador y filtros rápidos */}
-            <div className="shrink-0 space-y-2 border-b border-white/[0.08] p-3">
+            <div className="shrink-0 space-y-2 border-b border-fg/[0.08] p-3">
               <div className="relative">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-500" />
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-fg-subtle" />
                 <input
                   type="search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Buscar por nombre o número…"
-                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] py-1.5 pl-8 pr-7 text-xs text-white outline-none placeholder:text-zinc-500 focus:border-[var(--tenant-primary)]/40"
+                  className="focus:border-[var(--tenant-primary)]/40 w-full rounded-xl border border-fg/[0.08] bg-fg/[0.04] py-1.5 pl-8 pr-7 text-xs text-fg outline-none placeholder:text-fg-subtle"
                 />
                 {search && (
                   <button
                     type="button"
                     onClick={() => setSearch('')}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-fg-subtle hover:text-fg-soft"
                     aria-label="Limpiar búsqueda"
                   >
                     <X className="h-3.5 w-3.5" />
@@ -189,15 +189,18 @@ function PanelWabaMensajesContent() {
                 )}
               </div>
 
-              <ScrollFadeRow backgroundColor="#131313" className="flex items-center gap-1.5 pb-0.5 text-xs">
+              <ScrollFadeRow
+                backgroundColor="rgb(var(--surface-rgb))"
+                className="flex items-center gap-1.5 pb-0.5 text-xs"
+              >
                 <button
                   type="button"
                   onClick={() => setFilter('all')}
                   className={[
                     'shrink-0 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors',
                     filter === 'all'
-                      ? 'bg-white/10 font-semibold text-white'
-                      : 'text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200',
+                      ? 'bg-fg/10 font-semibold text-fg'
+                      : 'text-fg-muted hover:bg-fg/[0.04] hover:text-fg-soft',
                   ].join(' ')}
                 >
                   Todos ({stats.total})
@@ -209,13 +212,13 @@ function PanelWabaMensajesContent() {
                   className={[
                     'inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors',
                     filter === 'active24h'
-                      ? 'bg-emerald-500/20 font-semibold text-emerald-300'
-                      : 'text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200',
+                      ? 'bg-emerald-500/20 font-semibold text-emerald-700 dark:text-emerald-300'
+                      : 'text-fg-muted hover:bg-fg/[0.04] hover:text-fg-soft',
                   ].join(' ')}
                 >
                   <span>24h activas</span>
                   {stats.count24h > 0 && (
-                    <span className="rounded-full bg-emerald-500/30 px-1.5 py-0.5 text-[10px] text-emerald-200">
+                    <span className="rounded-full bg-emerald-500/30 px-1.5 py-0.5 text-[10px] text-emerald-800 dark:text-emerald-200">
                       {stats.count24h}
                     </span>
                   )}
@@ -227,13 +230,13 @@ function PanelWabaMensajesContent() {
                   className={[
                     'inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors',
                     filter === 'paused'
-                      ? 'bg-amber-500/20 font-semibold text-amber-300'
-                      : 'text-zinc-400 hover:bg-white/[0.04] hover:text-zinc-200',
+                      ? 'bg-amber-500/20 font-semibold text-amber-700 dark:text-amber-300'
+                      : 'text-fg-muted hover:bg-fg/[0.04] hover:text-fg-soft',
                   ].join(' ')}
                 >
                   <span>En pausa</span>
                   {stats.countPaused > 0 && (
-                    <span className="rounded-full bg-amber-500/30 px-1.5 py-0.5 text-[10px] text-amber-200">
+                    <span className="rounded-full bg-amber-500/30 px-1.5 py-0.5 text-[10px] text-amber-800 dark:text-amber-200">
                       {stats.countPaused}
                     </span>
                   )}
@@ -243,7 +246,7 @@ function PanelWabaMensajesContent() {
 
             {/* Listado de conversaciones filtradas */}
             {filteredConversations.length === 0 ? (
-              <div className="flex flex-1 items-center justify-center p-6 text-center text-xs text-zinc-500">
+              <div className="flex flex-1 items-center justify-center p-6 text-center text-xs text-fg-subtle">
                 {search || filter !== 'all'
                   ? 'No hay conversaciones que coincidan con los filtros.'
                   : 'No hay conversaciones registradas.'}
@@ -261,7 +264,10 @@ function PanelWabaMensajesContent() {
                     : !c.isBsuid && c.displayName
                       ? formatPhone(c.phone)
                       : null
-                  const avatarLabel = (c.displayName || c.waUsername || 'WA').trim().charAt(0).toUpperCase()
+                  const avatarLabel = (c.displayName || c.waUsername || 'WA')
+                    .trim()
+                    .charAt(0)
+                    .toUpperCase()
                   const badgeCount = c.inbound24h > 99 ? '99+' : String(c.inbound24h)
 
                   return (
@@ -270,14 +276,14 @@ function PanelWabaMensajesContent() {
                         type="button"
                         onClick={() => selectPhone(c.phone)}
                         className={[
-                          'w-full border-b border-white/[0.06] px-4 py-3 text-left transition-colors',
+                          'w-full border-b border-fg/[0.06] px-4 py-3 text-left transition-colors',
                           active
-                            ? 'border-l-2 border-l-[var(--tenant-primary)] bg-[var(--tenant-primary)]/10'
-                            : 'hover:bg-white/[0.04]',
+                            ? 'bg-[var(--tenant-primary)]/10 border-l-2 border-l-[var(--tenant-primary)]'
+                            : 'hover:bg-fg/[0.04]',
                         ].join(' ')}
                       >
                         <div className="flex items-start gap-3">
-                          <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/[0.08] text-xs font-bold text-zinc-200">
+                          <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-fg/[0.08] text-xs font-bold text-fg-soft">
                             {avatarLabel}
                             {c.inbound24h > 0 && (
                               <span
@@ -290,34 +296,44 @@ function PanelWabaMensajesContent() {
                           </div>
 
                           <div className="min-w-0 flex-1">
-                            <span className="block truncate text-sm font-semibold text-white" title={name}>
+                            <span
+                              className="block truncate text-sm font-semibold text-fg"
+                              title={name}
+                            >
                               {name}
                             </span>
 
                             <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-1">
                               {phoneLabel && (
-                                <span className="font-mono text-[11px] text-zinc-500">{phoneLabel}</span>
+                                <span className="font-mono text-[11px] text-fg-subtle">
+                                  {phoneLabel}
+                                </span>
                               )}
                               {c.isBsuid && !c.displayPhone && (
                                 <span
-                                  className="inline-block rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-300"
+                                  className="inline-block rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:text-amber-300"
                                   title="Meta no compartió el número (usuario oculto)"
                                 >
                                   Sin teléfono
                                 </span>
                               )}
                               {c.botPaused && (
-                                <span className="inline-block rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] text-amber-300">
+                                <span className="inline-block rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] text-amber-700 dark:text-amber-300">
                                   Bot en pausa
                                 </span>
                               )}
-                              <span className="text-[11px] text-zinc-500" title={formatAbsoluteWhen(c.lastAt, timezone)}>
+                              <span
+                                className="text-[11px] text-fg-subtle"
+                                title={formatAbsoluteWhen(c.lastAt, timezone)}
+                              >
                                 {formatRelativeTime(c.lastAt, timezone)}
                               </span>
                             </div>
 
-                            <p className="mt-1 line-clamp-2 text-xs text-zinc-400">
-                              {c.lastDirection === 'out' ? <span className="text-zinc-500">Tú: </span> : null}
+                            <p className="mt-1 line-clamp-2 text-xs text-fg-muted">
+                              {c.lastDirection === 'out' ? (
+                                <span className="text-fg-subtle">Tú: </span>
+                              ) : null}
                               {c.lastMessage}
                             </p>
                           </div>
@@ -337,7 +353,7 @@ function PanelWabaMensajesContent() {
             ].join(' ')}
           >
             {!selected && (
-              <div className="flex flex-1 items-center justify-center p-8 text-sm text-zinc-500">
+              <div className="flex flex-1 items-center justify-center p-8 text-sm text-fg-subtle">
                 {selectedPhone
                   ? 'No hay conversación con ese número en tu negocio.'
                   : 'Elige una conversación'}
@@ -360,7 +376,7 @@ function PanelWabaMensajesContent() {
 
 export default function PanelWabaMensajesPage() {
   return (
-    <Suspense fallback={<div className="text-sm text-zinc-500">Cargando…</div>}>
+    <Suspense fallback={<div className="text-sm text-fg-subtle">Cargando…</div>}>
       <PanelWabaMensajesContent />
     </Suspense>
   )

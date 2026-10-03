@@ -52,7 +52,7 @@ export function AgendaWeekGrid({
   )
 
   return (
-    <div className="overflow-x-auto rounded-2xl border border-white/[0.08]">
+    <div className="overflow-x-auto rounded-2xl border border-fg/[0.08]">
       <div className="grid min-w-[760px] grid-cols-7">
         {weekDays.map((day, i) => {
           const today = esHoyEnZonaIANA(day, timezone)
@@ -63,16 +63,16 @@ export function AgendaWeekGrid({
               type="button"
               onClick={() => onSelectDay(day)}
               className={[
-                'flex flex-col items-center gap-1 border-b border-white/[0.08] px-2 py-3 transition-colors hover:bg-white/[0.04]',
+                'flex flex-col items-center gap-1 border-b border-fg/[0.08] px-2 py-3 transition-colors hover:bg-fg/[0.04]',
                 i > 0 ? 'border-l border-l-white/[0.06]' : '',
-                today ? 'bg-[var(--tenant-primary)]/[0.06]' : 'bg-zinc-950/80',
+                today ? 'bg-[var(--tenant-primary)]/[0.06]' : 'bg-sunken/80',
               ].join(' ')}
               aria-label="Ver día"
             >
               <span
                 className={[
                   'text-[10px] font-semibold uppercase tracking-wide',
-                  today ? 'text-[var(--tenant-primary)]' : 'text-zinc-500',
+                  today ? 'text-tenant-text' : 'text-fg-subtle',
                 ].join(' ')}
               >
                 {day.toLocaleDateString('es-419', { timeZone: timezone, weekday: 'short' })}
@@ -80,7 +80,9 @@ export function AgendaWeekGrid({
               <span
                 className={[
                   'flex h-7 w-7 items-center justify-center rounded-full text-sm',
-                  today ? 'bg-[var(--tenant-primary)] font-bold text-[var(--tenant-on-primary)]' : 'font-medium text-white',
+                  today
+                    ? 'bg-[var(--tenant-primary)] font-bold text-[var(--tenant-on-primary)]'
+                    : 'font-medium text-fg',
                 ].join(' ')}
               >
                 {day.toLocaleDateString('es-419', { timeZone: timezone, day: 'numeric' })}
@@ -91,8 +93,8 @@ export function AgendaWeekGrid({
                   count === 0
                     ? 'invisible'
                     : today
-                      ? 'bg-[var(--tenant-primary)]/20 text-[var(--tenant-primary)]'
-                      : 'bg-white/[0.06] text-zinc-400',
+                      ? 'bg-[var(--tenant-primary)]/20 text-tenant-text'
+                      : 'bg-fg/[0.06] text-fg-muted',
                 ].join(' ')}
               >
                 {count}
@@ -108,12 +110,12 @@ export function AgendaWeekGrid({
               key={`c-${i}`}
               className={[
                 'min-h-[260px] space-y-1.5 p-1.5',
-                i > 0 ? 'border-l border-white/[0.06]' : '',
-                today ? 'bg-[var(--tenant-primary)]/[0.04]' : 'bg-white/[0.01]',
+                i > 0 ? 'border-l border-fg/[0.06]' : '',
+                today ? 'bg-[var(--tenant-primary)]/[0.04]' : 'bg-card',
               ].join(' ')}
             >
               {byDay[i].length === 0 ? (
-                <div className="pt-4 text-center text-xs text-zinc-600">—</div>
+                <div className="pt-4 text-center text-xs text-fg-subtle">—</div>
               ) : (
                 byDay[i].map((apt) => {
                   const color = (apt.employee_id && colorById.get(apt.employee_id)) || '#71717a'
@@ -136,16 +138,16 @@ export function AgendaWeekGrid({
                       }}
                       title={`${apt.client_name} · ${hora} · ${svc}`}
                     >
-                      <div className="flex items-center gap-1 text-[10px] font-bold text-white/70">
+                      <div className="flex items-center gap-1 text-[10px] font-bold text-fg/70">
                         <span className="truncate">{hora}</span>
                         {svcCount > 1 && (
-                          <span className="rounded bg-white/15 px-1 text-[9px] font-extrabold text-white">
+                          <span className="rounded bg-fg/15 px-1 text-[9px] font-extrabold text-fg">
                             ×{svcCount}
                           </span>
                         )}
                       </div>
-                      <div className="truncate text-[11px] font-semibold text-white">{svc}</div>
-                      <div className="truncate text-[10px] text-white/60">{apt.client_name}</div>
+                      <div className="truncate text-[11px] font-semibold text-fg">{svc}</div>
+                      <div className="truncate text-[10px] text-fg/60">{apt.client_name}</div>
                     </button>
                   )
                 })

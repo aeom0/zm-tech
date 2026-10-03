@@ -80,8 +80,8 @@ function StatusPill({ ok, label }: { ok: boolean; label: string }) {
       className={[
         'inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-medium',
         ok
-          ? 'border-emerald-500/25 bg-emerald-500/10 text-emerald-300'
-          : 'border-amber-500/25 bg-amber-500/10 text-amber-200',
+          ? 'border-emerald-500/25 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300'
+          : 'border-amber-500/25 bg-amber-500/10 text-amber-800 dark:text-amber-200',
       ].join(' ')}
     >
       {ok ? <CheckCircle2 className="h-3.5 w-3.5" /> : <AlertCircle className="h-3.5 w-3.5" />}
@@ -96,28 +96,28 @@ export default function PanelWabaPage() {
   return (
     <div className="space-y-6">
       <div>
-        <div className="text-xs text-zinc-500">Panel</div>
-        <h1 className="text-2xl font-bold text-white">WhatsApp</h1>
-        <p className="mt-1 text-sm text-zinc-400">
+        <div className="text-xs text-fg-subtle">Panel</div>
+        <h1 className="text-2xl font-bold text-fg">WhatsApp</h1>
+        <p className="mt-1 text-sm text-fg-muted">
           Estado de la integración WABA, historial de chats y personalidad del asistente.
         </p>
       </div>
 
       {isError && (
-        <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+        <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200">
           {error instanceof Error ? error.message : 'No se pudo cargar el estado de WhatsApp'}
         </div>
       )}
 
       {isLoading && (
-        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-8 text-center text-sm text-zinc-500">
+        <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
           Cargando estado…
         </div>
       )}
 
       {!isLoading && data && (
         <>
-          <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-5">
+          <div className="rounded-2xl border border-fg/[0.08] bg-fg/[0.03] p-5">
             <div className="flex flex-wrap items-center gap-2">
               <StatusPill
                 ok={data.featuresWhatsapp}
@@ -139,14 +139,12 @@ export default function PanelWabaPage() {
 
             <dl className="mt-5 grid gap-4 sm:grid-cols-2">
               <div>
-                <dt className="text-xs text-zinc-500">Negocio</dt>
-                <dd className="mt-1 text-sm text-zinc-100">{data.businessName || '—'}</dd>
+                <dt className="text-xs text-fg-subtle">Negocio</dt>
+                <dd className="mt-1 text-sm text-fg">{data.businessName || '—'}</dd>
               </div>
               <div>
-                <dt className="text-xs text-zinc-500">Número de WhatsApp conectado</dt>
-                <dd className="mt-1 font-mono text-sm text-zinc-100">
-                  {maskId(data.phoneNumberId)}
-                </dd>
+                <dt className="text-xs text-fg-subtle">Número de WhatsApp conectado</dt>
+                <dd className="mt-1 font-mono text-sm text-fg">{maskId(data.phoneNumberId)}</dd>
               </div>
             </dl>
           </div>
@@ -156,14 +154,14 @@ export default function PanelWabaPage() {
               <Link
                 key={href}
                 href={href}
-                className="flex items-start gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4 transition-colors hover:bg-white/[0.06]"
+                className="flex items-start gap-3 rounded-2xl border border-fg/[0.08] bg-fg/[0.03] p-4 transition-colors hover:bg-fg/[0.06]"
               >
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[var(--tenant-primary)]/25 bg-[var(--tenant-primary)]/10 text-[var(--tenant-primary)]">
+                <span className="border-[var(--tenant-primary)]/25 bg-[var(--tenant-primary)]/10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border text-tenant-text">
                   <Icon className="h-5 w-5" />
                 </span>
                 <span>
-                  <span className="block text-sm font-semibold text-white">{label}</span>
-                  <span className="mt-0.5 block text-xs text-zinc-400">{description}</span>
+                  <span className="block text-sm font-semibold text-fg">{label}</span>
+                  <span className="mt-0.5 block text-xs text-fg-muted">{description}</span>
                 </span>
               </Link>
             ))}
@@ -172,7 +170,7 @@ export default function PanelWabaPage() {
       )}
 
       {!isLoading && !isError && !data && (
-        <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-8 text-center text-sm text-zinc-500">
+        <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
           No hay tenant_settings para esta sesión.
         </div>
       )}

@@ -29,12 +29,9 @@ export function ClientKPIStrip({ kpis, currencyCode, isLoading }: ClientKPIStrip
             : String(raw)
 
         return (
-          <div
-            key={cell.key}
-            className="rounded-2xl border border-white/[0.08] bg-white/[0.02] px-4 py-3"
-          >
-            <div className="text-xs text-zinc-500">{cell.label}</div>
-            <div className="mt-1 text-xl font-semibold tabular-nums text-white">{value}</div>
+          <div key={cell.key} className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-3">
+            <div className="text-xs text-fg-subtle">{cell.label}</div>
+            <div className="mt-1 text-xl font-semibold tabular-nums text-fg">{value}</div>
           </div>
         )
       })}

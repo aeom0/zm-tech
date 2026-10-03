@@ -23,7 +23,7 @@ export function PromoItemRow({ item, index, onChange, onRemove }: Props) {
       : packs.filter((p) => p.is_active).map((p) => ({ id: p.id, label: p.name }))
 
   return (
-    <div className="flex items-center gap-2 rounded-lg bg-white/5 p-2">
+    <div className="flex items-center gap-2 rounded-lg bg-fg/5 p-2">
       <select
         value={item.item_type}
         onChange={(e) =>
@@ -33,7 +33,7 @@ export function PromoItemRow({ item, index, onChange, onRemove }: Props) {
             item_id: '',
           })
         }
-        className="rounded border-0 bg-white/10 px-2 py-1 text-xs text-white"
+        className="rounded border-0 bg-fg/10 px-2 py-1 text-xs text-fg"
       >
         <option value="service">Servicio</option>
         <option value="pack">Pack</option>
@@ -42,7 +42,7 @@ export function PromoItemRow({ item, index, onChange, onRemove }: Props) {
       <select
         value={item.item_id}
         onChange={(e) => onChange(index, { ...item, item_id: e.target.value })}
-        className="min-w-0 flex-1 rounded border-0 bg-white/10 px-2 py-1 text-xs text-white"
+        className="min-w-0 flex-1 rounded border-0 bg-fg/10 px-2 py-1 text-xs text-fg"
       >
         <option value="">Seleccionar...</option>
         {options.map((o) => (
@@ -64,13 +64,13 @@ export function PromoItemRow({ item, index, onChange, onRemove }: Props) {
         }}
         placeholder="Precio"
         inputMode="decimal"
-        className="w-20 rounded border-0 bg-white/10 px-2 py-1 text-xs text-white"
+        className="w-20 rounded border-0 bg-fg/10 px-2 py-1 text-xs text-fg"
       />
 
       <button
         type="button"
         onClick={() => onRemove(index)}
-        className="text-white/30 transition-colors hover:text-red-400"
+        className="text-fg/30 transition-colors hover:text-red-700 dark:hover:text-red-400"
         aria-label="Quitar item"
       >
         <X className="h-4 w-4" />

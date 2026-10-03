@@ -23,7 +23,7 @@ export function FeatureAvailabilityNotice({ feature, label, included, tone = 'pa
       role="status"
       className={[
         'flex flex-col gap-2 rounded-2xl border border-sky-500/25 bg-sky-500/10 px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between',
-        tone === 'panel' ? 'text-sky-100' : 'text-sky-900 dark:text-sky-100',
+        tone === 'panel' ? 'text-sky-900 dark:text-sky-100' : 'text-sky-900 dark:text-sky-100',
       ].join(' ')}
     >
       <span className="flex items-start gap-2">

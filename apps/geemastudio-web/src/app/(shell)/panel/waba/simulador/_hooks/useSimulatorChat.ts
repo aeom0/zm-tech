@@ -173,7 +173,7 @@ export function useSimulatorChat() {
       setMessages((prev) => [...prev, ...botBubbles])
       if (botBubbles.length === 0) {
         setError(
-          'El bot no respondió esta vez. Vuelve a enviar el mensaje o reinicia la conversación.',
+          'El bot no respondió esta vez. Vuelve a enviar el mensaje o reinicia la conversación.'
         )
       }
     } catch (e) {

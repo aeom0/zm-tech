@@ -19,7 +19,13 @@ type TestResult = {
  * función nueva: el `ai_usage_log` de estas pruebas queda atribuido a "zm-lash-nails"
  * (limitación conocida del AsyncLocalStorage de esa función, no bloqueante).
  */
-export function HaikuTestPanel({ systemPrompt, settings }: { systemPrompt: string; settings: HaikuSettings }) {
+export function HaikuTestPanel({
+  systemPrompt,
+  settings,
+}: {
+  systemPrompt: string
+  settings: HaikuSettings
+}) {
   const [userMessage, setUserMessage] = useState('¿Qué me recomiendan para mi primera cita?')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<TestResult | null>(null)
@@ -34,17 +40,16 @@ export function HaikuTestPanel({ systemPrompt, settings }: { systemPrompt: strin
     setError(null)
     setResult(null)
     try {
-      const { data, error: invokeError } = await supabase.functions.invoke<TestResult | { error: string }>(
-        'test-haiku-preview',
-        {
-          body: {
-            systemPrompt,
-            userMessage,
-            maxTokens: settings.max_tokens,
-            timeoutMs: Math.min(8000, Math.max(1000, settings.timeout_ms)),
-          },
-        }
-      )
+      const { data, error: invokeError } = await supabase.functions.invoke<
+        TestResult | { error: string }
+      >('test-haiku-preview', {
+        body: {
+          systemPrompt,
+          userMessage,
+          maxTokens: settings.max_tokens,
+          timeoutMs: Math.min(8000, Math.max(1000, settings.timeout_ms)),
+        },
+      })
 
       if (invokeError) {
         let message = invokeError.message
@@ -73,14 +78,14 @@ export function HaikuTestPanel({ systemPrompt, settings }: { systemPrompt: strin
   }
 
   return (
-    <section className="overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.03]">
-      <div className="flex items-start gap-3 border-b border-white/[0.08] p-5">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[var(--tenant-primary)]/25 bg-[var(--tenant-primary)]/10 text-[var(--tenant-primary)]">
+    <section className="overflow-hidden rounded-2xl border border-fg/[0.08] bg-fg/[0.03]">
+      <div className="flex items-start gap-3 border-b border-fg/[0.08] p-5">
+        <div className="border-[var(--tenant-primary)]/25 bg-[var(--tenant-primary)]/10 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border text-tenant-text">
           <TestTube2 className="h-4 w-4" />
         </div>
         <div>
-          <h2 className="text-base font-bold text-white">Test de personalidad</h2>
-          <p className="mt-1 text-sm text-zinc-400">
+          <h2 className="text-base font-bold text-fg">Test de personalidad</h2>
+          <p className="mt-1 text-sm text-fg-muted">
             Prueba el system prompt en edición (sin guardar) contra un mensaje de ejemplo.
           </p>
         </div>
@@ -88,12 +93,12 @@ export function HaikuTestPanel({ systemPrompt, settings }: { systemPrompt: strin
 
       <div className="space-y-3 p-5">
         <label className="block">
-          <span className="mb-1 block text-xs text-zinc-500">Mensaje de la clienta</span>
+          <span className="mb-1 block text-xs text-fg-subtle">Mensaje de la clienta</span>
           <textarea
             value={userMessage}
             onChange={(e) => setUserMessage(e.target.value)}
             rows={3}
-            className="w-full resize-y rounded-xl border border-white/[0.08] bg-[#0F0F0F] px-3 py-2.5 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-[var(--tenant-primary)]/40"
+            className="focus:border-[var(--tenant-primary)]/40 w-full resize-y rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 text-sm text-fg outline-none placeholder:text-fg-subtle"
           />
         </label>
 
@@ -101,18 +106,18 @@ export function HaikuTestPanel({ systemPrompt, settings }: { systemPrompt: strin
           type="button"
           disabled={loading || !systemPrompt.trim()}
           onClick={() => void runTest()}
-          className="inline-flex items-center gap-2 rounded-xl border border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 px-3 py-2 text-sm font-semibold text-[var(--tenant-primary)] disabled:opacity-50"
+          className="border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold text-tenant-text disabled:opacity-50"
         >
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           {loading ? 'Probando…' : 'Probar'}
         </button>
 
-        {error && <p className="text-sm text-red-300">{error}</p>}
+        {error && <p className="text-sm text-red-700 dark:text-red-300">{error}</p>}
 
         {result && (
-          <div className="space-y-2 rounded-xl border border-white/[0.08] bg-black/20 p-4">
-            <p className="whitespace-pre-wrap text-sm text-zinc-100">{result.text}</p>
-            <p className="text-[11px] text-zinc-500">
+          <div className="space-y-2 rounded-xl border border-fg/[0.08] bg-scrim/20 p-4">
+            <p className="whitespace-pre-wrap text-sm text-fg">{result.text}</p>
+            <p className="text-[11px] text-fg-subtle">
               {result.latencyMs} ms · {result.inputTokens} in / {result.outputTokens} out tokens
             </p>
           </div>

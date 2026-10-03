@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import { AuthProvider } from '@/contexts/AuthContext'
 import { tenantCssVars } from '@/lib/tenant-theme'
+import { ThemeProvider } from '@/lib/theme-mode'
 import { PanelShell } from './panel/PanelShell'
 import { FinanzasBrandContext, type FinanzasBrand } from './finanzas-brand-context'
 
@@ -39,28 +40,30 @@ export function ShellProviders({
 
   return (
     <div
-      className="dark"
+      className="shell-root"
       style={
         { ...vars, '--primary': brand.primary, '--accent': brand.accent } as React.CSSProperties
       }
     >
-      <QueryClientProvider client={queryClient}>
-        <FinanzasBrandContext.Provider value={brand}>
-          <AuthProvider>
-            {framed && session ? (
-              <PanelShell
-                userEmail={session.userEmail}
-                tenantName={tenantName}
-                tenantLogoUrl={tenantLogoUrl}
-              >
-                {children}
-              </PanelShell>
-            ) : (
-              children
-            )}
-          </AuthProvider>
-        </FinanzasBrandContext.Provider>
-      </QueryClientProvider>
+      <ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <FinanzasBrandContext.Provider value={brand}>
+            <AuthProvider>
+              {framed && session ? (
+                <PanelShell
+                  userEmail={session.userEmail}
+                  tenantName={tenantName}
+                  tenantLogoUrl={tenantLogoUrl}
+                >
+                  {children}
+                </PanelShell>
+              ) : (
+                children
+              )}
+            </AuthProvider>
+          </FinanzasBrandContext.Provider>
+        </QueryClientProvider>
+      </ThemeProvider>
     </div>
   )
 }

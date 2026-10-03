@@ -27,7 +27,11 @@ function useIsAdmin() {
         data: { user },
       } = await supabase.auth.getUser()
       if (!user) return false
-      const { data } = await supabase.from('profiles').select('role').eq('id', user.id).maybeSingle()
+      const { data } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .maybeSingle()
       const role = (data as { role?: string } | null)?.role
       return role === 'dev' || role === 'owner'
     },
@@ -83,16 +87,16 @@ export function PortafolioClient() {
   if (isAdminQuery.isLoading) {
     return (
       <div className="flex items-center justify-center py-16">
-        <div className="text-sm text-zinc-400">Cargando…</div>
+        <div className="text-sm text-fg-muted">Cargando…</div>
       </div>
     )
   }
 
   if (!isAdminQuery.data) {
     return (
-      <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-6 py-16 text-center">
-        <Lock className="h-8 w-8 text-zinc-500" />
-        <p className="text-sm text-zinc-400">
+      <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-fg/[0.08] bg-fg/[0.03] px-6 py-16 text-center">
+        <Lock className="h-8 w-8 text-fg-subtle" />
+        <p className="text-sm text-fg-muted">
           Solo owners y developers pueden gestionar el portafolio.
         </p>
       </div>
@@ -112,12 +116,12 @@ export function PortafolioClient() {
     <div className="space-y-5 sm:space-y-6">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <div className="mb-1 flex items-center gap-2 text-[var(--tenant-primary)]">
+          <div className="mb-1 flex items-center gap-2 text-tenant-text">
             <Images className="h-5 w-5" />
             <span className="text-xs font-semibold uppercase tracking-wide">WhatsApp</span>
           </div>
-          <h1 className="text-xl font-bold text-white sm:text-2xl">Portafolio de trabajos</h1>
-          <p className="mt-1 text-sm text-zinc-400">
+          <h1 className="text-xl font-bold text-fg sm:text-2xl">Portafolio de trabajos</h1>
+          <p className="mt-1 text-sm text-fg-muted">
             Hasta {PORTFOLIO_SLOTS} fotos por servicio del catálogo. Cuando un cliente pide ver
             trabajos, el bot envía las del servicio concreto (o una lista si solo indica el rubro).
           </p>
@@ -125,7 +129,7 @@ export function PortafolioClient() {
         <button
           type="button"
           onClick={refetchAll}
-          className="inline-flex min-h-[36px] shrink-0 items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-200"
+          className="inline-flex min-h-[36px] shrink-0 items-center gap-1.5 text-xs text-fg-subtle hover:text-fg-soft"
         >
           <RefreshCw
             className={`h-3.5 w-3.5 ${
@@ -139,7 +143,7 @@ export function PortafolioClient() {
       {(catalog.error || counts.error || slotsQuery.error) && (
         <div
           role="alert"
-          className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-200"
+          className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200"
         >
           No se pudo cargar el portafolio. Inténtalo de nuevo.
         </div>
@@ -161,8 +165,8 @@ export function PortafolioClient() {
               className={[
                 'inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-sm font-semibold transition-colors',
                 active
-                  ? 'border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 text-[var(--tenant-primary)]'
-                  : 'border-white/[0.08] bg-white/[0.03] text-zinc-300 hover:bg-white/[0.06]',
+                  ? 'border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 text-tenant-text'
+                  : 'border-fg/[0.08] bg-fg/[0.03] text-fg-soft hover:bg-fg/[0.06]',
               ].join(' ')}
             >
               {cat.name}
@@ -177,27 +181,26 @@ export function PortafolioClient() {
       </div>
 
       {catalog.isLoading ? (
-        <p className="text-sm text-zinc-500">Cargando catálogo…</p>
+        <p className="text-sm text-fg-subtle">Cargando catálogo…</p>
       ) : (
         <div className="grid gap-4 sm:grid-cols-[minmax(12rem,18rem)_1fr] sm:items-start sm:gap-6">
           <div className="sm:hidden">
-            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-zinc-500">
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-fg-subtle">
               Servicio — {activeCatName}
             </label>
             {servicesInCat.length === 0 ? (
-              <p className="text-sm text-zinc-500">Sin servicios activos.</p>
+              <p className="text-sm text-fg-subtle">Sin servicios activos.</p>
             ) : (
               <select
                 value={activeServiceId ?? ''}
                 onChange={(e) => setActiveServiceId(e.target.value)}
-                className="w-full rounded-xl border border-white/[0.08] bg-zinc-900 px-3 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]/40"
+                className="focus:ring-[var(--tenant-primary)]/40 w-full rounded-xl border border-fg/[0.08] bg-surface px-3 py-2.5 text-sm text-fg focus:outline-none focus:ring-2"
               >
                 {servicesInCat.map((svc) => {
                   const n = counts.data?.[svc.id] ?? 0
                   return (
                     <option key={svc.id} value={svc.id}>
-                      {svc.name}{' '}
-                      {n > 0 ? `· ${n}/${PORTFOLIO_SLOTS} fotos` : '· sin fotos'}
+                      {svc.name} {n > 0 ? `· ${n}/${PORTFOLIO_SLOTS} fotos` : '· sin fotos'}
                     </option>
                   )
                 })}
@@ -205,13 +208,13 @@ export function PortafolioClient() {
             )}
           </div>
 
-          <div className="hidden max-h-[min(32rem,calc(100vh-14rem))] min-h-0 overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.03] sm:flex sm:flex-col">
-            <p className="shrink-0 border-b border-white/[0.06] px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-zinc-500">
+          <div className="hidden max-h-[min(32rem,calc(100vh-14rem))] min-h-0 overflow-hidden rounded-xl border border-fg/[0.08] bg-fg/[0.03] sm:flex sm:flex-col">
+            <p className="shrink-0 border-b border-fg/[0.06] px-3 py-2.5 text-xs font-semibold uppercase tracking-wide text-fg-subtle">
               Servicios — {activeCatName}
             </p>
             <div className="min-h-0 flex-1 space-y-0.5 overflow-y-auto overscroll-contain p-1.5">
               {servicesInCat.length === 0 ? (
-                <p className="px-2 py-3 text-sm text-zinc-500">Sin servicios activos.</p>
+                <p className="px-2 py-3 text-sm text-fg-subtle">Sin servicios activos.</p>
               ) : (
                 servicesInCat.map((svc) => {
                   const n = counts.data?.[svc.id] ?? 0
@@ -230,13 +233,13 @@ export function PortafolioClient() {
                         'w-full rounded-lg border px-3 py-2 text-left text-sm transition-colors',
                         active
                           ? 'border-[var(--tenant-primary)]/50 bg-[var(--tenant-primary)]/15'
-                          : 'border-transparent hover:bg-white/[0.06]',
+                          : 'border-transparent hover:bg-fg/[0.06]',
                       ].join(' ')}
                     >
                       <span
                         className={[
                           'block break-words font-medium leading-snug',
-                          active ? 'text-white' : 'text-zinc-200',
+                          active ? 'text-fg' : 'text-fg-soft',
                         ].join(' ')}
                       >
                         {label}
@@ -244,7 +247,7 @@ export function PortafolioClient() {
                       <span
                         className={[
                           'mt-0.5 block text-[10px] leading-tight',
-                          n > 0 ? 'text-[var(--tenant-primary)]' : 'text-zinc-500',
+                          n > 0 ? 'text-tenant-text' : 'text-fg-subtle',
                         ].join(' ')}
                       >
                         {n > 0 ? `${n}/${PORTFOLIO_SLOTS} fotos` : 'Sin fotos'}
@@ -258,15 +261,14 @@ export function PortafolioClient() {
 
           <div className="min-w-0 space-y-4">
             {!activeServiceId || !activeService ? (
-              <p className="text-sm text-zinc-500">Elige un servicio para subir fotos.</p>
+              <p className="text-sm text-fg-subtle">Elige un servicio para subir fotos.</p>
             ) : slotsQuery.isLoading ? (
-              <p className="text-sm text-zinc-500">Cargando imágenes…</p>
+              <p className="text-sm text-fg-subtle">Cargando imágenes…</p>
             ) : (
               <>
-                <p className="text-xs text-zinc-400">
-                  Servicio:{' '}
-                  <strong className="text-zinc-100">{activeService.name}</strong>. Sube JPG/PNG/WebP
-                  (máx. 5 MB). Caption vacío → se usa el nombre del servicio al enviar.
+                <p className="text-xs text-fg-muted">
+                  Servicio: <strong className="text-fg">{activeService.name}</strong>. Sube
+                  JPG/PNG/WebP (máx. 5 MB). Caption vacío → se usa el nombre del servicio al enviar.
                   {isSaving ? ' Guardando…' : ''}
                 </p>
 
@@ -320,7 +322,7 @@ export function PortafolioClient() {
                               [index]: e.target.value,
                             }))
                           }
-                          className="min-w-0 flex-1 rounded-lg border border-white/[0.08] bg-zinc-900 px-2.5 py-1.5 text-xs text-zinc-200 focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]/40"
+                          className="focus:ring-[var(--tenant-primary)]/40 min-w-0 flex-1 rounded-lg border border-fg/[0.08] bg-surface px-2.5 py-1.5 text-xs text-fg-soft focus:outline-none focus:ring-2"
                         >
                           <option value="">Mover a otro servicio…</option>
                           {services
@@ -354,13 +356,13 @@ export function PortafolioClient() {
                               })
                             } catch (e) {
                               setMoveError(
-                                e instanceof Error ? e.message : 'No se pudo mover la foto',
+                                e instanceof Error ? e.message : 'No se pudo mover la foto'
                               )
                             } finally {
                               setMovingIndex(null)
                             }
                           }}
-                          className="shrink-0 rounded-lg border border-white/[0.08] px-3 py-1.5 text-xs font-semibold text-zinc-200 hover:bg-white/[0.06] disabled:opacity-50"
+                          className="shrink-0 rounded-lg border border-fg/[0.08] px-3 py-1.5 text-xs font-semibold text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50"
                         >
                           {movingIndex === index ? 'Moviendo…' : 'Mover'}
                         </button>
@@ -371,7 +373,7 @@ export function PortafolioClient() {
                 {moveError && (
                   <div
                     role="alert"
-                    className="rounded-xl border border-red-500/25 bg-red-500/10 px-3 py-2 text-sm text-red-200"
+                    className="rounded-xl border border-red-500/25 bg-red-500/10 px-3 py-2 text-sm text-red-800 dark:text-red-200"
                   >
                     {moveError}
                   </div>

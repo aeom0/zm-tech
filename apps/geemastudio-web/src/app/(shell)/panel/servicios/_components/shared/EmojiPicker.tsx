@@ -1,7 +1,20 @@
 'use client'
 
 /** Emojis rápidos (también se usan en las listas WABA). Mismo set que el panel de ZM Lash. */
-export const PACK_QUICK_EMOJIS = ['✨', '💅', '👁️', '🪷', '🎨', '🌿', '💜', '🌟', '🎁', '👑', '💝', '🔥'] as const
+export const PACK_QUICK_EMOJIS = [
+  '✨',
+  '💅',
+  '👁️',
+  '🪷',
+  '🎨',
+  '🌿',
+  '💜',
+  '🌟',
+  '🎁',
+  '👑',
+  '💝',
+  '🔥',
+] as const
 
 /** Promos: igual que ZM Lash, con la calabaza de temporada al inicio. */
 export const PROMO_QUICK_EMOJIS = ['🎃', ...PACK_QUICK_EMOJIS] as const
@@ -26,8 +39,8 @@ export function EmojiPicker({ emojis, value, onChange }: Props) {
             onClick={() => onChange(e)}
             className={`h-9 min-w-[36px] rounded-lg border text-lg transition-colors ${
               value === e
-                ? 'border-[var(--tenant-primary)] bg-[var(--tenant-primary)]/15'
-                : 'border-white/10 bg-white/5 hover:bg-white/10'
+                ? 'bg-[var(--tenant-primary)]/15 border-[var(--tenant-primary)]'
+                : 'border-fg/10 bg-fg/5 hover:bg-fg/10'
             }`}
           >
             {e}
@@ -39,7 +52,7 @@ export function EmojiPicker({ emojis, value, onChange }: Props) {
         maxLength={8}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:border-[var(--tenant-primary)] focus:outline-none"
+        className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
         placeholder="Otro emoji (opcional)"
         aria-label="Emoji personalizado"
       />

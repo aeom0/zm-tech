@@ -15,10 +15,7 @@ import {
 } from '@/hooks/servicios/useProductos'
 
 import { useTenantSettings } from '@/hooks/configuracion/useTenantSettings'
-import {
-  formatDashboardCurrency,
-  resolveDashboardCurrencyCode,
-} from '@/lib/dashboardCurrency'
+import { formatDashboardCurrency, resolveDashboardCurrencyCode } from '@/lib/dashboardCurrency'
 import { ProductoVentaModal } from '../ventas/ProductoVentaModal'
 
 const STATUS_LABELS: Record<ProductOrder['status'], string> = {
@@ -99,14 +96,12 @@ export function VentasTab() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-sm text-white/60">
+          <p className="text-sm text-fg/60">
             {openOrders
               ? `${openOrders} venta${openOrders === 1 ? '' : 's'} por cerrar`
               : 'Sin ventas pendientes'}
           </p>
-          <p className="mt-1 text-xs text-white/35">
-            Registra apartados y cobra sin crear una cita.
-          </p>
+          <p className="mt-1 text-xs text-fg/35">Registra apartados y cobra sin crear una cita.</p>
         </div>
         <button
           type="button"
@@ -122,25 +117,25 @@ export function VentasTab() {
       {error ? (
         <div
           role="alert"
-          className="rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-2 text-sm text-red-200"
+          className="rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-2 text-sm text-red-800 dark:text-red-200"
         >
           {error}
         </div>
       ) : null}
 
       {ordersQuery.isLoading ? (
-        <div className="py-10 text-center text-sm text-white/40">Cargando ventas…</div>
+        <div className="py-10 text-center text-sm text-fg/40">Cargando ventas…</div>
       ) : ordersQuery.error ? (
-        <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-200">
+        <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-800 dark:text-red-200">
           No se pudieron cargar las ventas.
         </div>
       ) : orders.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-white/10 py-12 text-center text-sm text-white/35">
+        <div className="rounded-xl border border-dashed border-fg/10 py-12 text-center text-sm text-fg/35">
           Todavía no hay apartados ni pedidos.
         </div>
       ) : (
-        <div className="overflow-hidden rounded-xl border border-white/10 bg-white/[0.03]">
-          <ul className="divide-y divide-white/[0.06]">
+        <div className="overflow-hidden rounded-xl border border-fg/10 bg-fg/[0.03]">
+          <ul className="divide-y divide-fg/[0.06]">
             {orders.map((order) => (
               <OrderRow
                 key={order.id}
@@ -196,16 +191,16 @@ function OrderRow({
     <li className="space-y-2 px-4 py-3">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0">
-          <p className="font-medium text-white">
+          <p className="font-medium text-fg">
             {product ?? 'Producto'}{' '}
-            <span className="font-normal text-white/50">×{order.quantity}</span>
+            <span className="font-normal text-fg/50">×{order.quantity}</span>
           </p>
-          <p className="mt-1 text-xs text-white/45">
+          <p className="mt-1 text-xs text-fg/45">
             {order.client_name || 'Sin nombre'}
             {order.client_phone ? ` · ${order.client_phone}` : ''} · S/ {total.toFixed(2)}
           </p>
         </div>
-        <span className="rounded-md border border-white/10 bg-white/[0.05] px-2 py-1 text-[11px] text-white/65">
+        <span className="rounded-md border border-fg/10 bg-fg/[0.05] px-2 py-1 text-[11px] text-fg/65">
           {STATUS_LABELS[order.status]}
         </span>
       </div>
@@ -247,7 +242,7 @@ function ActionButton({
         'inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors',
         primary
           ? 'bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)] hover:bg-[var(--tenant-primary-hover)]'
-          : 'border border-white/10 text-white/65 hover:bg-white/[0.05] hover:text-white',
+          : 'border border-fg/10 text-fg/65 hover:bg-fg/[0.05] hover:text-fg',
       ].join(' ')}
     >
       {icon}
@@ -279,15 +274,15 @@ function PaymentModal({
 
   return (
     <Modal title="Registrar pago" onClose={onClose}>
-      <p className="mb-4 text-sm text-white/65">
+      <p className="mb-4 text-sm text-fg/65">
         {product ?? 'Producto'} · {order.client_name || 'Clienta'} · {fmt(base)}
       </p>
-      <label className="block text-xs text-white/50">
+      <label className="block text-xs text-fg/50">
         Método
         <select
           value={method}
           onChange={(event) => setMethod(event.target.value as PaymentMethod)}
-          className="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white"
+          className="mt-1 w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg"
         >
           {(Object.keys(METHOD_LABELS) as PaymentMethod[]).map((key) => (
             <option key={key} value={key}>
@@ -297,7 +292,7 @@ function PaymentModal({
         </select>
       </label>
       {method === 'card' ? (
-        <p className="mt-2 text-xs text-white/50">
+        <p className="mt-2 text-xs text-fg/50">
           Cobrar en POS: {fmt(Math.round(base * (1 + feePercent / 100) * 100) / 100)} (incluye{' '}
           {feePercent} % de comisión; el ingreso registrado es {fmt(base)})
         </p>
@@ -322,10 +317,10 @@ function Modal({
   onClose: () => void
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 sm:items-center sm:p-4">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-scrim/60 p-0 sm:items-center sm:p-4">
       <button type="button" aria-label="Cerrar" className="absolute inset-0" onClick={onClose} />
-      <div className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-t-2xl border border-white/10 bg-[#1a1d26] p-5 sm:rounded-2xl">
-        <h2 className="mb-4 text-lg font-semibold text-white">{title}</h2>
+      <div className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-t-2xl border border-fg/10 bg-surface p-5 sm:rounded-2xl">
+        <h2 className="mb-4 text-lg font-semibold text-fg">{title}</h2>
         {children}
       </div>
     </div>
@@ -345,7 +340,7 @@ function ModalActions({
 }) {
   return (
     <div className="flex justify-end gap-2 pt-4">
-      <button type="button" onClick={onClose} className="px-3 py-2 text-sm text-white/50">
+      <button type="button" onClick={onClose} className="px-3 py-2 text-sm text-fg/50">
         Cancelar
       </button>
       <button

@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
+
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import {
   Calendar,
   Clock,
@@ -101,7 +103,7 @@ export default async function PanelMasPage() {
   return (
     <div className="space-y-6">
       {/* Header con logos e identidad */}
-      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 sm:p-6">
+      <div className="rounded-2xl border border-fg/[0.08] bg-card p-5 sm:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
             {brand.logoUrl ? (
@@ -110,25 +112,25 @@ export default async function PanelMasPage() {
                 alt={brand.businessName ?? 'Logo del negocio'}
                 width={56}
                 height={56}
-                className="h-14 w-14 shrink-0 rounded-2xl border border-white/[0.1] object-cover"
+                className="h-14 w-14 shrink-0 rounded-2xl border border-fg/[0.1] object-cover"
                 unoptimized
               />
             ) : (
-              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 text-xl font-bold text-[var(--tenant-primary)]">
+              <div className="border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border text-xl font-bold text-tenant-text">
                 {initial}
               </div>
             )}
             <div className="min-w-0">
-              <h1 className="truncate text-xl font-bold text-white sm:text-2xl">
+              <h1 className="truncate text-xl font-bold text-fg sm:text-2xl">
                 {brand.businessName || 'GeemaStudio'}
               </h1>
-              <p className="truncate text-xs text-zinc-400 sm:text-sm">
+              <p className="truncate text-xs text-fg-muted sm:text-sm">
                 Panel de control y menú principal
               </p>
             </div>
           </div>
 
-          <div className="flex items-center justify-center gap-2.5 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3">
+          <div className="flex items-center justify-center gap-2.5 rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-4 py-3">
             <Image
               src="/logo-diamondSparkleNGlow.svg"
               alt="GeemaStudio"
@@ -136,8 +138,8 @@ export default async function PanelMasPage() {
               height={28}
               className="shrink-0"
             />
-            <span className="whitespace-nowrap text-base font-semibold text-white">
-              GeemaStudio <span className="font-normal text-zinc-500">por ZM Tech</span>
+            <span className="whitespace-nowrap text-base font-semibold text-fg">
+              GeemaStudio <span className="font-normal text-fg-subtle">por ZM Tech</span>
             </span>
           </div>
         </div>
@@ -147,7 +149,7 @@ export default async function PanelMasPage() {
       <div className="space-y-6">
         {MODULE_SECTIONS.map((section) => (
           <div key={section.title} className="space-y-3">
-            <div className="px-1 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            <div className="px-1 text-xs font-semibold uppercase tracking-wider text-fg-muted">
               {section.title}
             </div>
 
@@ -158,13 +160,13 @@ export default async function PanelMasPage() {
                   <Link
                     key={m.href}
                     href={m.href}
-                    className="flex min-h-[124px] flex-col items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-zinc-900/90 p-3.5 text-center transition-colors hover:border-[var(--tenant-primary)]/40 hover:bg-white/[0.04] active:scale-[0.98]"
+                    className="hover:border-[var(--tenant-primary)]/40 flex min-h-[124px] flex-col items-center justify-center gap-2 rounded-2xl border border-fg/[0.08] bg-surface/90 p-3.5 text-center transition-colors hover:bg-fg/[0.04] active:scale-[0.98]"
                   >
-                    <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 text-[var(--tenant-primary)]">
+                    <span className="border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 flex h-10 w-10 items-center justify-center rounded-xl border text-tenant-text">
                       <Icon className="h-5 w-5" />
                     </span>
-                    <span className="text-sm font-semibold text-white">{m.label}</span>
-                    <span className="line-clamp-2 text-[11px] text-zinc-500">{m.description}</span>
+                    <span className="text-sm font-semibold text-fg">{m.label}</span>
+                    <span className="line-clamp-2 text-[11px] text-fg-subtle">{m.description}</span>
                   </Link>
                 )
               })}
@@ -173,12 +175,24 @@ export default async function PanelMasPage() {
         ))}
       </div>
 
+      {/* Apariencia */}
+      <div className="rounded-2xl border border-fg/[0.08] bg-card p-4 sm:p-5">
+        <div className="mb-3">
+          <div className="text-sm font-semibold text-fg">Apariencia</div>
+          <div className="text-xs text-fg-subtle">
+            Elige el tema de la app en este dispositivo. “Sistema” sigue el de tu teléfono o
+            computadora.
+          </div>
+        </div>
+        <ThemeToggle />
+      </div>
+
       {/* Cuenta y sesión */}
-      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-4 sm:p-5">
+      <div className="rounded-2xl border border-fg/[0.08] bg-card p-4 sm:p-5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="min-w-0">
-            <div className="text-xs text-zinc-500">Sesión iniciada como</div>
-            <div className="truncate text-sm font-medium text-zinc-200">{userEmail}</div>
+            <div className="text-xs text-fg-subtle">Sesión iniciada como</div>
+            <div className="truncate text-sm font-medium text-fg-soft">{userEmail}</div>
           </div>
           <MasLogoutButton />
         </div>

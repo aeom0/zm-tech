@@ -1,13 +1,7 @@
 import { getCategoryIconShape, ICON_STROKE_WIDTH } from '@zmtech/icons'
 import { createElement } from 'react'
 
-export function CategoryIcon({
-  name,
-  className,
-}: {
-  name?: string | null
-  className?: string
-}) {
+export function CategoryIcon({ name, className }: { name?: string | null; className?: string }) {
   const shape = getCategoryIconShape(name)
   if (!shape) return null
 

@@ -188,21 +188,21 @@ export function EmployeeModal({
   }
 
   const fieldClass =
-    'w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white outline-none focus:border-[var(--tenant-primary)]/40'
-  const labelClass = 'mb-1 block text-xs text-zinc-500'
+    'w-full rounded-xl border border-fg/[0.08] bg-fg/[0.04] px-3 py-2.5 text-sm text-fg outline-none focus:border-[var(--tenant-primary)]/40'
+  const labelClass = 'mb-1 block text-xs text-fg-subtle'
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
       <button
         type="button"
         aria-label="Cerrar"
-        className="absolute inset-0 bg-black/60"
+        className="absolute inset-0 bg-scrim/60"
         onClick={onClose}
       />
-      <div className="relative z-10 flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl border border-white/[0.08] bg-zinc-950 sm:rounded-3xl">
-        <header className="flex items-center justify-between border-b border-white/[0.08] px-5 py-4">
+      <div className="relative z-10 flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl border border-fg/[0.08] bg-sunken sm:rounded-3xl">
+        <header className="flex items-center justify-between border-b border-fg/[0.08] px-5 py-4">
           <div>
-            <div className="text-xs text-zinc-500">
+            <div className="text-xs text-fg-subtle">
               {isCreating
                 ? staffSingular.trim().toLocaleLowerCase('es').endsWith('a')
                   ? 'Nueva'
@@ -210,16 +210,16 @@ export function EmployeeModal({
                 : 'Editar'}{' '}
               {staffSingular.toLowerCase()}
             </div>
-            <h2 className="text-lg font-bold text-white">
+            <h2 className="text-lg font-bold text-fg">
               {isCreating ? `Agregar ${staffSingular.toLowerCase()}` : form.name || staffSingular}
             </h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04]"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04]"
           >
-            <X className="h-4 w-4 text-zinc-300" />
+            <X className="h-4 w-4 text-fg-soft" />
           </button>
         </header>
 
@@ -229,7 +229,7 @@ export function EmployeeModal({
         >
           <div className="flex items-center gap-4">
             <div
-              className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-white/[0.08] text-lg font-bold text-white"
+              className="flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl border border-fg/[0.08] text-lg font-bold text-fg"
               style={{ backgroundColor: `${form.color}33` }}
             >
               {avatarSrc ? (
@@ -240,7 +240,7 @@ export function EmployeeModal({
               )}
             </div>
             <div className="flex flex-col gap-2">
-              <label className="inline-flex cursor-pointer items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-xs font-medium text-zinc-200 hover:bg-white/[0.08]">
+              <label className="inline-flex cursor-pointer items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] px-3 py-2 text-xs font-medium text-fg-soft hover:bg-fg/[0.08]">
                 Subir foto
                 <input
                   type="file"
@@ -260,7 +260,7 @@ export function EmployeeModal({
                     setAvatarFile(null)
                     setRemoveAvatar(true)
                   }}
-                  className="text-left text-xs text-red-300 hover:text-red-200"
+                  className="text-left text-xs text-red-700 hover:text-red-800 dark:text-red-300 dark:hover:text-red-200"
                 >
                   Quitar foto
                 </button>
@@ -308,7 +308,7 @@ export function EmployeeModal({
                   onClick={() => setForm((f) => ({ ...f, color: c }))}
                   className={[
                     'h-9 w-9 rounded-lg border-2 transition-transform',
-                    form.color === c ? 'scale-110 border-white' : 'border-transparent',
+                    form.color === c ? 'scale-110 border-fg' : 'border-transparent',
                   ].join(' ')}
                   style={{ backgroundColor: c }}
                   aria-label={`Color ${c}`}
@@ -318,7 +318,7 @@ export function EmployeeModal({
                 type="color"
                 value={form.color}
                 onChange={(e) => setForm((f) => ({ ...f, color: e.target.value }))}
-                className="h-9 w-9 cursor-pointer rounded-lg border border-white/[0.08] bg-transparent"
+                className="h-9 w-9 cursor-pointer rounded-lg border border-fg/[0.08] bg-transparent"
               />
             </div>
           </div>
@@ -405,23 +405,23 @@ export function EmployeeModal({
             />
           </div>
 
-          <label className="flex items-center gap-2 text-sm text-zinc-300">
+          <label className="flex items-center gap-2 text-sm text-fg-soft">
             <input
               type="checkbox"
               checked={form.is_active}
               onChange={(e) => setForm((f) => ({ ...f, is_active: e.target.checked }))}
-              className="h-4 w-4 rounded border-white/20 bg-white/10"
+              className="h-4 w-4 rounded border-fg/20 bg-fg/10"
             />
             Activo / aparece en agenda
           </label>
 
           {formError && (
-            <div className="rounded-xl border border-red-500/25 bg-red-500/10 px-3 py-2 text-sm text-red-200">
+            <div className="rounded-xl border border-red-500/25 bg-red-500/10 px-3 py-2 text-sm text-red-800 dark:text-red-200">
               {formError}
             </div>
           )}
 
-          <div className="flex flex-col gap-2 border-t border-white/[0.08] pt-4 sm:flex-row">
+          <div className="flex flex-col gap-2 border-t border-fg/[0.08] pt-4 sm:flex-row">
             <button
               type="submit"
               disabled={isSaving}
@@ -434,7 +434,7 @@ export function EmployeeModal({
                 type="button"
                 disabled={isDeleting || isSaving}
                 onClick={onDelete}
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-red-500/25 bg-red-500/10 px-4 py-2.5 text-sm font-semibold text-red-300 hover:bg-red-500/15 disabled:opacity-60"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-red-500/25 bg-red-500/10 px-4 py-2.5 text-sm font-semibold text-red-700 hover:bg-red-500/15 disabled:opacity-60 dark:text-red-300"
               >
                 <Trash2 className="h-4 w-4" />
                 {isDeleting ? 'Eliminando…' : 'Eliminar'}
