@@ -262,7 +262,7 @@ export default function PanelWebPage() {
   if (!row) {
     return (
       <div className="rounded-2xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-900 dark:text-amber-100">
-        No encontramos `tenant_settings` para esta sesión.
+        No encontramos la configuración de tu negocio. Completa el registro inicial en la app móvil.
       </div>
     )
   }

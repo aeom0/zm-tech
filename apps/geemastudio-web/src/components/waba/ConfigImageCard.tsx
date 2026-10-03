@@ -173,7 +173,7 @@ export function ConfigImageCard({
                 <>
                   <CheckCircle2 className="h-6 w-6 text-emerald-700 dark:text-emerald-400" />
                   <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">
-                    Imagen lista ✓
+                    Imagen lista
                   </span>
                 </>
               ) : (

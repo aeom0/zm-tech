@@ -27,7 +27,7 @@ const QUICK_LINKS: QuickLink[] = [
   {
     href: '/panel/waba/mensajes',
     label: 'Mensajes',
-    description: 'Conversaciones e hilos desde wa_messages',
+    description: 'Conversaciones de WhatsApp con tus clientes',
     icon: MessageSquareText,
   },
   {
@@ -171,7 +171,7 @@ export default function PanelWabaPage() {
 
       {!isLoading && !isError && !data && (
         <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
-          No hay tenant_settings para esta sesión.
+          Aún no hay configuración del negocio para esta sesión.
         </div>
       )}
     </div>

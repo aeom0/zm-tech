@@ -145,8 +145,7 @@ function PanelWabaMensajesContent() {
           <div className="flex flex-col items-center gap-3 rounded-2xl border border-fg/[0.08] bg-card px-4 py-12 text-center">
             <MessageSquare className="h-8 w-8 text-fg-subtle" />
             <p className="text-sm text-fg-muted">
-              Todavía no hay mensajes en <span className="font-mono">wa_messages</span> para este
-              tenant.
+              Todavía no hay mensajes de WhatsApp en tu negocio.
             </p>
           </div>
         )}
@@ -156,8 +155,8 @@ function PanelWabaMensajesContent() {
           className={[
             'grid grid-rows-[1fr] overflow-hidden rounded-2xl border border-fg/[0.08] bg-card md:grid-cols-[340px_1fr]',
             selectedPhone
-              ? 'h-[calc(100dvh-8rem)] md:h-[calc(100dvh-12rem)]'
-              : 'h-[calc(100dvh-14rem)] min-h-[440px] md:h-[calc(100dvh-12rem)]',
+              ? 'h-[calc(100dvh-9rem-env(safe-area-inset-bottom))] md:h-[calc(100dvh-12rem)]'
+              : 'h-[calc(100dvh-15rem-env(safe-area-inset-bottom))] min-h-[440px] md:h-[calc(100dvh-12rem)]',
           ].join(' ')}
         >
           <aside
