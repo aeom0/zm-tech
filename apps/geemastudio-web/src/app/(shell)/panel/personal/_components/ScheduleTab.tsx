@@ -97,6 +97,13 @@ export function ScheduleTab({ employee, staffSingular }: { employee: EmployeeRow
   }
 
   if (query.isLoading) return <StateNote kind="loading">Cargando horario…</StateNote>
+  if (query.isError || !query.data) {
+    return (
+      <StateNote kind="error">
+        No se pudo cargar el horario. Recarga antes de guardar, para no borrar los turnos.
+      </StateNote>
+    )
+  }
 
   const error = custom ? validate(week) : null
   const noShifts = custom && WEEK_DAYS.every((d) => (week[d.weekday] ?? []).length === 0)
@@ -206,7 +213,8 @@ export function ScheduleTab({ employee, staffSingular }: { employee: EmployeeRow
 
       {noShifts && (
         <StateNote kind="warning">
-          Sin ningún turno, {staffSingular.toLowerCase()} no recibirá citas.
+          Agrega al menos un turno, o vuelve a usar el horario del negocio. Guardar sin turnos borraría el
+          horario de {staffSingular.toLowerCase()}.
         </StateNote>
       )}
       {error && <StateNote kind="error">{error}</StateNote>}
@@ -218,7 +226,12 @@ export function ScheduleTab({ employee, staffSingular }: { employee: EmployeeRow
             <Check className="h-4 w-4" /> Guardado
           </span>
         )}
-        <button type="button" className={primaryBtnClass} disabled={save.isPending || !!error} onClick={submit}>
+        <button
+          type="button"
+          className={primaryBtnClass}
+          disabled={save.isPending || !!error || noShifts}
+          onClick={submit}
+        >
           {save.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
           Guardar horario
         </button>

@@ -458,6 +458,19 @@ export default function PersonalScreen() {
         </View>
       </View>
       <Pressable
+        onPress={() =>
+          navigation.navigate('DisponibilidadPersonal', {
+            employeeId: emp.id,
+            employeeName: emp.name,
+          })
+        }
+        accessibilityLabel={`Servicios, horario y ausencias de ${emp.name}`}
+        hitSlop={8}
+        style={styles.dragHandle}
+      >
+        <Feather name="calendar" size={20} color={theme.primary} />
+      </Pressable>
+      <Pressable
         onLongPress={() => {
           isDraggingRef.current = true
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
@@ -925,6 +938,22 @@ export default function PersonalScreen() {
                   </>
                 )}
               </Pressable>
+
+              {!isCreating && editing && (
+                <Pressable
+                  style={[styles.deleteBtn, { borderColor: theme.primary }]}
+                  onPress={() => {
+                    const target = { employeeId: editing.id, employeeName: editing.name }
+                    closeModal()
+                    navigation.navigate('DisponibilidadPersonal', target)
+                  }}
+                >
+                  <Feather name="calendar" size={16} color={theme.primary} />
+                  <ThemedText style={[styles.deleteBtnText, { color: theme.primary }]}>
+                    Servicios, horario y ausencias
+                  </ThemedText>
+                </Pressable>
+              )}
 
               {!isCreating && editing && (
                 <Pressable

@@ -9,6 +9,7 @@ import ProfileScreen from '@/screens/ProfileScreen'
 import { useScreenOptions } from '@/hooks/useScreenOptions'
 
 import PersonalScreen from '@/screens/PersonalScreen'
+import DisponibilidadPersonalScreen from '@/screens/personal/DisponibilidadPersonalScreen'
 import SettingsScreen from '@/screens/SettingsScreen'
 import HorariosTrabajoScreen from '@/screens/HorariosTrabajoScreen'
 import FeriadosScreen from '@/screens/holidays/FeriadosScreen'
@@ -48,6 +49,7 @@ export type MoreStackParamList = {
   AsignarProfesionales: undefined
   Finanzas: undefined
   Personal: undefined
+  DisponibilidadPersonal: { employeeId: string; employeeName: string }
   Inventario: undefined
   Ventas: undefined
   Configuracion: undefined
@@ -119,6 +121,11 @@ export default function MoreStackNavigator() {
       />
       <Stack.Screen name="Finanzas" component={FinancesScreen} options={{ title: 'Finanzas' }} />
       <Stack.Screen name="Personal" component={PersonalScreen} options={{ title: 'Personal' }} />
+      <Stack.Screen
+        name="DisponibilidadPersonal"
+        component={DisponibilidadPersonalScreen}
+        options={{ title: 'Disponibilidad' }}
+      />
       <Stack.Screen
         name="Inventario"
         component={InventoryScreen}
