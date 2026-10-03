@@ -10,6 +10,8 @@ import {
   validateBasicRules,
   type BasicRulesForm,
 } from './_lib/rules-form'
+import { StateNote } from '@/components/ui/StateNote'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 const inputClass =
   'w-full rounded-xl border border-fg/[0.08] bg-scrim/20 px-3 py-2 text-base md:text-sm text-fg'
@@ -84,14 +86,8 @@ export default function PanelWabaReglasPage() {
 
   return (
     <div className="space-y-4">
-      <div>
-        <div className="text-xs text-fg-subtle">WhatsApp</div>
-        <h1 className="text-2xl font-bold text-fg">Reglas del bot</h1>
-        <p className="mt-1 text-sm text-fg-muted">
-          Horario, abono y qué chica atiende cada categoría. El cupo y los medios de pago no se
-          modifican aquí. El bot aplica el cambio en unos 5 minutos, sin deploy.
-        </p>
-      </div>
+      <PageHeader eyebrow="WhatsApp" title="Reglas del bot" description={<>Horario, abono y qué chica atiende cada categoría. El cupo y los medios de pago no se
+          modifican aquí. El bot aplica el cambio en unos 5 minutos, sin deploy.</>} />
 
       {query.isError && (
         <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200">
@@ -100,9 +96,7 @@ export default function PanelWabaReglasPage() {
       )}
 
       {query.isLoading && (
-        <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
-          Cargando reglas…
-        </div>
+        <StateNote kind="loading">Cargando reglas…</StateNote>
       )}
 
       {form && snapshot && (

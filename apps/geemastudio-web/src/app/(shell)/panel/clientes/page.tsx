@@ -12,6 +12,8 @@ import { useClientsData } from '@/hooks/clientes/useClientsData'
 import type { ClientSegment, ClientWithMetrics } from '@/hooks/clientes/types'
 import { useDashboardTenant } from '@/hooks/dashboard/useDashboardTenant'
 import { resolveDashboardCurrencyCode } from '@/lib/dashboardCurrency'
+import { StateNote } from '@/components/ui/StateNote'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 function PanelClientesContent() {
   const searchParams = useSearchParams()
@@ -42,13 +44,7 @@ function PanelClientesContent() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <div className="text-xs text-fg-subtle">Panel</div>
-          <h1 className="text-2xl font-bold text-fg">Clientes</h1>
-          <p className="mt-1 text-sm text-fg-muted">
-            Base de clientas, segmentos VIP / nuevos / en riesgo e historial de citas.
-          </p>
-        </div>
+        <PageHeader title="Clientes" description="Base de clientas, segmentos VIP / nuevos / en riesgo e historial de citas." />
         <div className="relative w-full sm:max-w-xs">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-fg-subtle" />
           <input
@@ -75,15 +71,11 @@ function PanelClientesContent() {
       )}
 
       {!isError && isLoading && (
-        <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
-          Cargando clientes…
-        </div>
+        <StateNote kind="loading">Cargando clientes…</StateNote>
       )}
 
       {!isError && !isLoading && filteredClients.length === 0 && (
-        <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
-          No hay clientes en este filtro.
-        </div>
+        <StateNote kind="empty">No hay clientes en este filtro.</StateNote>
       )}
 
       {!isError && !isLoading && filteredClients.length > 0 && (

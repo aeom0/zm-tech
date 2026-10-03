@@ -9,6 +9,7 @@ import { useCampanasConfig, type WabaConfigRow } from '@/hooks/waba/useCampanasC
 import { useWabaStatus } from '@/hooks/waba/useWabaStatus'
 import { ConfigImageCard } from '@/components/waba/ConfigImageCard'
 import { ConfigTextCard } from '@/components/waba/ConfigTextCard'
+import { StateNote } from '@/components/ui/StateNote'
 
 /** Referencia estable cuando `query.data` es undefined (evita nuevo [] cada render). */
 const EMPTY_WABA_ROWS: WabaConfigRow[] = []
@@ -184,9 +185,7 @@ export function CampanasClient() {
 
   if (isAdminQuery.isLoading) {
     return (
-      <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
-        Cargando…
-      </div>
+      <StateNote kind="loading">Cargando…</StateNote>
     )
   }
 

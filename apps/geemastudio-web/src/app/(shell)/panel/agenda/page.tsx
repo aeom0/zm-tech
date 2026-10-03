@@ -25,6 +25,8 @@ import {
 } from '@/hooks/agenda/useAgendaData'
 import { PX_PER_HOUR, type AgendaAppointment, type AgendaStatusFilter } from '@/hooks/agenda/types'
 import { useEmployees } from '@/hooks/personal/useEmployees'
+import { StateNote } from '@/components/ui/StateNote'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 export default function PanelAgendaPage() {
   const scheduleQuery = useAgendaTenantSchedule()
@@ -103,14 +105,8 @@ export default function PanelAgendaPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <div className="text-xs text-fg-subtle">Panel</div>
-        <h1 className="text-2xl font-bold text-fg">Agenda</h1>
-        <p className="mt-1 text-sm text-fg-muted">
-          {view === 'week' ? 'Vista semanal' : 'Vista día por profesional'} · zona {timezone} · solo
-          lectura (edición en mobile)
-        </p>
-      </div>
+      <PageHeader title="Agenda" description={<>{view === 'week' ? 'Vista semanal' : 'Vista día por profesional'} · zona {timezone} · solo
+          lectura (edición en mobile)</>} />
 
       <AgendaToolbar
         view={view}
@@ -144,15 +140,11 @@ export default function PanelAgendaPage() {
       )}
 
       {loading && (
-        <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
-          Cargando citas…
-        </div>
+        <StateNote kind="loading">Cargando citas…</StateNote>
       )}
 
       {!loading && !errorMessage && view === 'day' && activeEmployees.length === 0 && (
-        <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
-          No hay profesionales activos. Configúralos en Personal.
-        </div>
+        <StateNote kind="empty">No hay profesionales activos. Configúralos en Personal.</StateNote>
       )}
 
       {!loading && view === 'week' && (

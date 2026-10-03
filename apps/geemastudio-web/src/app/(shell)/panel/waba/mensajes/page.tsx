@@ -10,6 +10,7 @@ import { phonesLikelyMatch } from '@/lib/waPhone'
 import { MessageThread } from './_components/MessageThread'
 import { formatAbsoluteWhen, formatPhone, formatRelativeTime } from './_components/time'
 import { ScrollFadeRow } from '@/components/ui/ScrollFadeRow'
+import { StateNote } from '@/components/ui/StateNote'
 
 type FilterType = 'all' | 'active24h' | 'paused'
 
@@ -134,9 +135,7 @@ function PanelWabaMensajesContent() {
       )}
 
       {!conversationsQuery.isError && conversationsQuery.isLoading && (
-        <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
-          Cargando conversaciones…
-        </div>
+        <StateNote kind="loading">Cargando conversaciones…</StateNote>
       )}
 
       {!conversationsQuery.isError &&

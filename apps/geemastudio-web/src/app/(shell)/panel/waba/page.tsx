@@ -15,6 +15,8 @@ import {
 } from 'lucide-react'
 
 import { useWabaStatus } from '@/hooks/waba/useWabaStatus'
+import { StateNote } from '@/components/ui/StateNote'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 type QuickLink = {
   href: string
@@ -95,13 +97,7 @@ export default function PanelWabaPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <div className="text-xs text-fg-subtle">Panel</div>
-        <h1 className="text-2xl font-bold text-fg">WhatsApp</h1>
-        <p className="mt-1 text-sm text-fg-muted">
-          Estado de la integración WABA, historial de chats y personalidad del asistente.
-        </p>
-      </div>
+      <PageHeader title="WhatsApp" description="Estado de la integración WABA, historial de chats y personalidad del asistente." />
 
       {isError && (
         <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200">
@@ -110,9 +106,7 @@ export default function PanelWabaPage() {
       )}
 
       {isLoading && (
-        <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
-          Cargando estado…
-        </div>
+        <StateNote kind="loading">Cargando estado…</StateNote>
       )}
 
       {!isLoading && data && (
@@ -170,9 +164,7 @@ export default function PanelWabaPage() {
       )}
 
       {!isLoading && !isError && !data && (
-        <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
-          Aún no hay configuración del negocio para esta sesión.
-        </div>
+        <StateNote kind="empty">Aún no hay configuración del negocio para esta sesión.</StateNote>
       )}
     </div>
   )

@@ -8,6 +8,7 @@ import type { Producto } from '../../_services/productosService'
 import { ProductoCard } from '../productos/ProductoCard'
 import { ProductoFormModal } from '../productos/ProductoFormModal'
 import { VentasTab } from './VentasTab'
+import { StateNote } from '@/components/ui/StateNote'
 
 export function ProductosTab() {
   const { data: productos = [], isLoading } = useProductos()
@@ -54,7 +55,7 @@ export function ProductosTab() {
       {view === 'ventas' ? (
         <VentasTab />
       ) : isLoading ? (
-        <div className="py-8 text-center text-sm text-fg/30">Cargando...</div>
+        <StateNote kind="loading">Cargando…</StateNote>
       ) : productos.length === 0 ? (
         <div className="py-12 text-center text-fg/30">
           <ShoppingBag className="mx-auto mb-2 h-10 w-10 opacity-40" />

@@ -19,6 +19,7 @@ import {
   type CategoriaRow,
 } from '@/hooks/servicios/useCategorias'
 import { useUpsertServicio, type ServicioRow } from '@/hooks/servicios/useServicios'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 const TAB_IDS: TabId[] = ['categorias', 'servicios', 'packs', 'promos', 'productos']
 
@@ -108,13 +109,7 @@ export default function PanelServiciosPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <div className="text-xs text-fg-subtle">Panel</div>
-        <h1 className="text-2xl font-bold text-fg">{headerTitle}</h1>
-        <p className="mt-1 text-sm text-fg-muted">
-          Configura tu catálogo: categorías, servicios, packs, promos y productos.
-        </p>
-      </div>
+      <PageHeader title={headerTitle} description="Configura tu catálogo: categorías, servicios, packs, promos y productos." />
 
       <ServiciosTabBar activeTab={activeTab} onChange={handleTabChange} />
 

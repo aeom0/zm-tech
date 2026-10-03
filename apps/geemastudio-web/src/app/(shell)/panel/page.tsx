@@ -10,6 +10,7 @@ import {
   UserRound,
   Users,
 } from 'lucide-react'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 const MODULES = [
   {
@@ -71,11 +72,7 @@ const MODULES = [
 export default function PanelIndexPage() {
   return (
     <div className="space-y-6">
-      <div>
-        <div className="text-xs text-fg-subtle">Panel</div>
-        <h1 className="text-2xl font-bold text-fg">Inicio</h1>
-        <p className="mt-1 text-sm text-fg-muted">Elige el módulo al que deseas acceder.</p>
-      </div>
+      <PageHeader title="Inicio" description="Elige el módulo al que deseas acceder." />
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
         {MODULES.map((m) => {

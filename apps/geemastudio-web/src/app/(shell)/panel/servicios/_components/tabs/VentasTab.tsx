@@ -17,6 +17,7 @@ import {
 import { useTenantSettings } from '@/hooks/configuracion/useTenantSettings'
 import { formatDashboardCurrency, resolveDashboardCurrencyCode } from '@/lib/dashboardCurrency'
 import { ProductoVentaModal } from '../ventas/ProductoVentaModal'
+import { StateNote } from '@/components/ui/StateNote'
 
 const STATUS_LABELS: Record<ProductOrder['status'], string> = {
   reserved: 'Apartado',
@@ -124,7 +125,7 @@ export function VentasTab() {
       ) : null}
 
       {ordersQuery.isLoading ? (
-        <div className="py-10 text-center text-sm text-fg/40">Cargando ventas…</div>
+        <StateNote kind="loading">Cargando ventas…</StateNote>
       ) : ordersQuery.error ? (
         <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-800 dark:text-red-200">
           No se pudieron cargar las ventas.

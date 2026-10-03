@@ -11,6 +11,7 @@ import {
 import { PlanLimitNotice } from '@/components/plan/PlanLimitNotice'
 import { usePlan, usePublicPlans } from '@/hooks/plan/usePlan'
 import { ConfiguracionNav } from '../_components/ConfiguracionNav'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 const CONTACT_URL = 'https://wa.me/51932535512'
 
@@ -107,13 +108,7 @@ export default function PanelPlanPage() {
     <div className="space-y-6">
       <ConfiguracionNav />
 
-      <div>
-        <div className="text-xs text-fg-subtle">Panel</div>
-        <h1 className="text-2xl font-bold text-fg">Mi plan</h1>
-        <p className="mt-1 text-sm text-fg-muted">
-          Tu plan, el uso frente a los límites y las opciones disponibles.
-        </p>
-      </div>
+      <PageHeader title="Mi plan" description="Tu plan, el uso frente a los límites y las opciones disponibles." />
 
       {error && (
         <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200">

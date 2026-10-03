@@ -12,6 +12,7 @@ import {
   normalizarHorarioSemanal,
   validarHorarioCompleto,
 } from '@zmtech/tenant-config'
+import { StateNote } from '@/components/ui/StateNote'
 
 export default function PanelHorariosPage() {
   const [cargando, setCargando] = useState(true)
@@ -149,10 +150,7 @@ export default function PanelHorariosPage() {
 
   if (cargando) {
     return (
-      <div className="flex items-center gap-3 text-fg-soft">
-        <Loader2 className="h-5 w-5 animate-spin" style={{ color: 'var(--tenant-primary)' }} />
-        Cargando horario…
-      </div>
+      <StateNote kind="loading">Cargando horario…</StateNote>
     )
   }
 

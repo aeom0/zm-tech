@@ -7,6 +7,8 @@ import { TriggerKeywordsEditor } from './_components/TriggerKeywordsEditor'
 import { WelcomeGreetingEditor } from './_components/WelcomeGreetingEditor'
 import { BlockedNumbersEditor } from './_components/BlockedNumbersEditor'
 import { HaikuTestPanel } from './_components/HaikuTestPanel'
+import { StateNote } from '@/components/ui/StateNote'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 export default function PanelWabaHaikuPage() {
   const { query, saveSystemPrompt, saveTriggerKeywords, saveSettings, saveBlockedPhones } =
@@ -14,14 +16,8 @@ export default function PanelWabaHaikuPage() {
 
   return (
     <div className="space-y-4">
-      <div>
-        <div className="text-xs text-fg-subtle">WhatsApp</div>
-        <h1 className="text-2xl font-bold text-fg">Asistente IA</h1>
-        <p className="mt-1 text-sm text-fg-muted">
-          Configuración completa del asistente: personalidad, palabras clave de activación, saludo
-          de bienvenida y números bloqueados.
-        </p>
-      </div>
+      <PageHeader eyebrow="WhatsApp" title="Asistente IA" description={<>Configuración completa del asistente: personalidad, palabras clave de activación, saludo
+          de bienvenida y números bloqueados.</>} />
 
       {query.isError && (
         <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200">
@@ -30,9 +26,7 @@ export default function PanelWabaHaikuPage() {
       )}
 
       {query.isLoading && (
-        <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
-          Cargando configuración…
-        </div>
+        <StateNote kind="loading">Cargando configuración…</StateNote>
       )}
 
       {!query.isLoading && !query.isError && query.data && (

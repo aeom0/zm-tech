@@ -6,6 +6,7 @@ import { ChevronDown, Mail, MessageCircle, Search, X } from 'lucide-react'
 
 import { useTenantSettings } from '@/hooks/configuracion/useTenantSettings'
 import { FilterChips } from '@/components/ui/FilterChips'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 type FaqCategory = 'todas' | 'agenda' | 'waba' | 'finanzas' | 'clientes' | 'configuracion'
 
@@ -169,13 +170,7 @@ export default function PanelAyudaPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       {/* Encabezado */}
-      <div>
-        <div className="text-xs text-fg-subtle">Panel</div>
-        <h1 className="text-2xl font-bold text-fg">Centro de Ayuda</h1>
-        <p className="mt-1 text-sm text-fg-muted">
-          Respuestas a preguntas frecuentes, guías de operación y soporte técnico directo.
-        </p>
-      </div>
+      <PageHeader title="Centro de Ayuda" description="Respuestas a preguntas frecuentes, guías de operación y soporte técnico directo." />
 
       {/* Buscador */}
       <div className="relative">

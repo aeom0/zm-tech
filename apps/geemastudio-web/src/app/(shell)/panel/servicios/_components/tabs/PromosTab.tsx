@@ -7,6 +7,7 @@ import { usePromos } from '@/hooks/servicios/usePromos'
 import type { Promotion } from '../../_services/promosService'
 import { PromoCard } from '../promos/PromoCard'
 import { PromoFormModal } from '../promos/PromoFormModal'
+import { StateNote } from '@/components/ui/StateNote'
 
 export function PromosTab() {
   const { data: promos = [], isLoading } = usePromos()
@@ -48,7 +49,7 @@ export function PromosTab() {
       </div>
 
       {isLoading ? (
-        <div className="py-8 text-center text-sm text-fg/30">Cargando...</div>
+        <StateNote kind="loading">Cargando…</StateNote>
       ) : promos.length === 0 ? (
         <div className="py-12 text-center text-fg/30">
           <Sparkles className="mx-auto mb-2 h-10 w-10 opacity-40" />

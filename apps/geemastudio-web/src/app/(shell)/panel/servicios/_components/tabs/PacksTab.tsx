@@ -7,6 +7,7 @@ import { usePacks } from '@/hooks/servicios/usePacks'
 import type { Pack } from '../../_services/packsService'
 import { PackCard } from '../packs/PackCard'
 import { PackFormModal } from '../packs/PackFormModal'
+import { StateNote } from '@/components/ui/StateNote'
 
 export function PacksTab() {
   const { data: packs = [], isLoading } = usePacks()
@@ -43,7 +44,7 @@ export function PacksTab() {
       </div>
 
       {isLoading ? (
-        <div className="py-8 text-center text-sm text-fg/30">Cargando...</div>
+        <StateNote kind="loading">Cargando…</StateNote>
       ) : packs.length === 0 ? (
         <div className="py-12 text-center text-fg/30">
           <Package className="mx-auto mb-2 h-10 w-10 opacity-40" />

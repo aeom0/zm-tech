@@ -20,6 +20,8 @@ import { supabase } from '@/lib/supabase'
 import { useQuery } from '@tanstack/react-query'
 import { FilterChips } from '@/components/ui/FilterChips'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
+import { StateNote } from '@/components/ui/StateNote'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 function useStaffLabels() {
   return useQuery({
@@ -98,13 +100,7 @@ export default function PanelPersonalPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <div className="text-xs text-fg-subtle">Panel</div>
-          <h1 className="text-2xl font-bold text-fg">{staffPlural}</h1>
-          <p className="mt-1 text-sm text-fg-muted">
-            Equipo, colores de agenda, comisiones y foto de perfil.
-          </p>
-        </div>
+        <PageHeader title={staffPlural} description="Equipo, colores de agenda, comisiones y foto de perfil." />
         <PersonalHeaderActions onNew={openCreate} staffSingular={staffSingular} />
       </div>
 
@@ -148,15 +144,11 @@ export default function PanelPersonalPage() {
       )}
 
       {employeesQuery.isLoading && (
-        <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
-          Cargando {staffPlural.toLowerCase()}…
-        </div>
+        <StateNote kind="loading">Cargando {staffPlural.toLowerCase()}…</StateNote>
       )}
 
       {!employeesQuery.isLoading && !errorMessage && filtered.length === 0 && (
-        <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-8 text-center text-sm text-fg-subtle">
-          No hay {staffPlural.toLowerCase()} en este filtro.
-        </div>
+        <StateNote kind="empty">No hay {staffPlural.toLowerCase()} en este filtro.</StateNote>
       )}
 
       {!employeesQuery.isLoading && filtered.length > 0 && (

@@ -21,6 +21,8 @@ import {
 } from '@/hooks/configuracion/types'
 import { getTenantLandingUrl } from '@/lib/site-url'
 import { ConfiguracionNav } from './_components/ConfiguracionNav'
+import { StateNote } from '@/components/ui/StateNote'
+import { PageHeader } from '@/components/ui/PageHeader'
 
 const fieldClass =
   'w-full rounded-xl border border-fg/[0.08] bg-fg/[0.04] px-3 py-2.5 text-base md:text-sm text-fg outline-none focus:border-[var(--tenant-primary)]/40'
@@ -189,10 +191,7 @@ export default function PanelConfiguracionPage() {
 
   if (settingsQuery.isLoading) {
     return (
-      <div className="flex items-center gap-2 text-sm text-fg-muted">
-        <Loader2 className="h-4 w-4 animate-spin" />
-        Cargando configuración…
-      </div>
+      <StateNote kind="loading">Cargando configuración…</StateNote>
     )
   }
 
@@ -220,13 +219,7 @@ export default function PanelConfiguracionPage() {
       <ConfiguracionNav />
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <div className="text-xs text-fg-subtle">Panel</div>
-          <h1 className="text-2xl font-bold text-fg">Configuración</h1>
-          <p className="mt-1 text-sm text-fg-muted">
-            Datos del negocio, marca, logo y presencia web.
-          </p>
-        </div>
+        <PageHeader title="Configuración" description="Datos del negocio, marca, logo y presencia web." />
         <button
           type="button"
           onClick={() => void handleSave()}
