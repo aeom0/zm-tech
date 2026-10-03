@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { ArrowLeft, Loader2, Plus, Save, Trash2, Upload } from 'lucide-react'
+import { Loader2, Plus, Save, Trash2, Upload } from 'lucide-react'
 
 import {
   useUpdateWebSettings,

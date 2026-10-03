@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Clock, Globe, Sliders } from 'lucide-react'
+import { Clock, Globe, Sliders, Sparkles } from 'lucide-react'
 import type { ComponentType } from 'react'
 
 type Tab = {
@@ -15,6 +15,7 @@ const TABS: Tab[] = [
   { href: '/panel/configuracion', label: 'General', icon: Sliders },
   { href: '/panel/configuracion/web', label: 'Mi Web', icon: Globe },
   { href: '/panel/horarios', label: 'Horarios', icon: Clock },
+  { href: '/panel/configuracion/plan', label: 'Mi plan', icon: Sparkles },
 ]
 
 export function ConfiguracionNav() {

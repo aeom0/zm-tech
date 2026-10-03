@@ -28,6 +28,8 @@ import { useDashboardTenant } from '@/hooks/dashboard/useDashboardTenant'
 import type { GrowthRange } from '@/hooks/finanzas/executiveService'
 import { formatDashboardCurrency, resolveDashboardCurrencyCode } from '@/lib/dashboardCurrency'
 import { RegisterPayoutModal } from './RegisterPayoutModal'
+import { FeatureAvailabilityNotice } from '@/components/plan/FeatureAvailabilityNotice'
+import { usePlan } from '@/hooks/plan/usePlan'
 import { ExecutiveDashboard } from './components/executive/ExecutiveDashboard'
 import { ViewToggle, type FinanceView } from './components/executive/ViewToggle'
 
@@ -67,6 +69,7 @@ export default function FinanzasPage() {
   const router = useRouter()
   const { isAuthenticated, isLoading: authLoading, isAdmin, logout } = useAuth()
   const brand = useFinanzasBrand()
+  const { can } = usePlan()
   const finanzas = useFinanzasData(brand.primary)
   const { tenantId } = useTenantId()
   const tenantQ = useDashboardTenant()
@@ -170,6 +173,12 @@ export default function FinanzasPage() {
       </div>
 
       <main className="mx-auto max-w-6xl space-y-8 px-4 py-8">
+        <FeatureAvailabilityNotice
+          feature="finances"
+          label="las finanzas y reportes"
+          included={can('finances')}
+          tone="adaptive"
+        />
         {view === 'resumen' ? (
           <>
           <OperationalSnapshot

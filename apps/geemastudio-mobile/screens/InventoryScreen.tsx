@@ -25,6 +25,8 @@ import {
   useInventoryItemsQuery,
   useInventoryMovementsQuery,
 } from './inventory/hooks/useInventoryQueries'
+import { FeatureAvailabilityBanner } from '@/components/FeatureAvailabilityBanner'
+import { usePlan } from '@/hooks/usePlan'
 import { inventoryStyles as styles } from './inventory/inventoryStyles'
 import type { InventoryCategoryOption, InventoryFormState, InventoryItem } from './inventory/types'
 
@@ -43,6 +45,7 @@ export default function InventoryScreen() {
   const tabBarHeight = useBottomTabBarHeight()
   const { theme } = useTheme()
   const { config } = useTenant()
+  const { can } = usePlan()
   const currencySymbol = config.locale.currency.symbol
   const { isAdmin } = useAuth()
 
@@ -207,6 +210,11 @@ export default function InventoryScreen() {
           <RefreshControl refreshing={isLoading} onRefresh={refetch} tintColor={theme.violet} />
         }
       >
+        <FeatureAvailabilityBanner
+          feature="inventory"
+          label="el inventario"
+          included={can('inventory')}
+        />
         {filteredItems.length === 0 && !isLoading ? (
           <InventoryEmptyState
             categoryLabel={categories.find((cat) => cat.key === selectedTab)?.label ?? ''}

@@ -1,7 +1,20 @@
 {
-  "ignoreCommand": "npx turbo-ignore",
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "**": false
+    }
+  },
+  "ignoreCommand": "[ \"$VERCEL_ENV\" != \"production\" ] || npx turbo-ignore repmax-web",
   "crons": [
-    { "path": "/api/cron/guardar-tasa-bcv-diario", "schedule": "30 4 * * *" },
-    { "path": "/api/cron/guardar-tasa-usdt-diario", "schedule": "35 4 * * *" }
+    {
+      "path": "/api/cron/guardar-tasa-bcv-diario",
+      "schedule": "30 4 * * *"
+    },
+    {
+      "path": "/api/cron/guardar-tasa-usdt-diario",
+      "schedule": "35 4 * * *"
+    }
   ]
 }

@@ -1,12 +1,34 @@
 'use client'
 
 import { useState } from 'react'
-import { PLANS, COMPARISON_FEATURES, WABA_ADDON_TIERS } from '@/lib/constants'
+import { COMPARISON_FEATURES, WABA_ADDON_TIERS, type Plan } from '@/lib/constants'
 import { PricingCard } from '@/components/ui/PricingCard'
 import { RevealWrapper } from '@/components/ui/RevealWrapper'
 import { MessageCircle, ChevronDown, Check } from 'lucide-react'
 
-export function PricingSection() {
+function wabaLimitLabel(plan: Plan | undefined, fallback: boolean | string): boolean | string {
+  if (!plan) return fallback
+  return plan.wabaConversations === 'unlimited'
+    ? '∞'
+    : plan.wabaConversations.toLocaleString('es')
+}
+
+/** Filas de la comparativa; la de mensajes incluidos se alimenta de `plans` para no duplicar límites. */
+function buildComparisonRows(plans: Plan[]) {
+  const byName = (name: string) => plans.find((p) => p.name.toLowerCase() === name)
+  return COMPARISON_FEATURES.map((feat) =>
+    feat.source === 'waba_limit'
+      ? {
+          ...feat,
+          basic: wabaLimitLabel(byName('basic'), feat.basic),
+          pro: wabaLimitLabel(byName('pro'), feat.pro),
+          elite: wabaLimitLabel(byName('elite'), feat.elite),
+        }
+      : feat,
+  )
+}
+
+export function PricingSection({ plans }: { plans: Plan[] }) {
   const [annual, setAnnual] = useState(false)
   const [showComparison, setShowComparison] = useState(false)
   const [showAddon, setShowAddon] = useState(false)
@@ -71,7 +93,7 @@ export function PricingSection() {
 
         {/* Cards */}
         <div className="mb-12 grid grid-cols-1 items-end gap-6 md:grid-cols-3">
-          {PLANS.map((plan, i) => (
+          {plans.map((plan, i) => (
             <RevealWrapper key={plan.name} variant="up" delay={i * 100}>
               <PricingCard plan={plan} annual={annual} />
             </RevealWrapper>
@@ -92,7 +114,7 @@ export function PricingSection() {
             >
               <span className="flex items-center gap-2 font-semibold text-[#25D366]">
                 <MessageCircle size={15} strokeWidth={2} />
-                <span>¿Necesitas más conversaciones de WhatsApp?</span>
+                <span>¿Necesitas más mensajes de WhatsApp?</span>
               </span>
               <ChevronDown
                 size={16}
@@ -155,7 +177,7 @@ export function PricingSection() {
                 <thead>
                   <tr className="bg-zinc-50 dark:bg-zinc-900">
                     <th className="px-6 py-3 text-left font-medium text-zinc-500">Función</th>
-                    {PLANS.map((p) => (
+                    {plans.map((p) => (
                       <th
                         key={p.name}
                         className={`px-6 py-3 text-center font-bold ${
@@ -168,7 +190,7 @@ export function PricingSection() {
                   </tr>
                 </thead>
                 <tbody>
-                  {COMPARISON_FEATURES.map((feat, i) => (
+                  {buildComparisonRows(plans).map((feat, i) => (
                     <tr
                       key={feat.label}
                       className={

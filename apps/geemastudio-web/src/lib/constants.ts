@@ -103,10 +103,9 @@ export const PLANS: Plan[] = [
     ],
     wabaFeatures: [
       'WhatsApp 24/7 con asistente IA',
-      '50 conversaciones/mes incluidas',
-      'Add-on: +50 conv. por $4',
+      '300 mensajes de servicio/mes incluidos',
     ],
-    wabaConversations: 50,
+    wabaConversations: 300,
     highlighted: false,
     cta: 'Empezar gratis',
   },
@@ -127,10 +126,10 @@ export const PLANS: Plan[] = [
     ],
     wabaFeatures: [
       'WhatsApp 24/7 con asistente IA',
-      '300 conversaciones/mes incluidas',
+      '1.000 mensajes de servicio/mes incluidos',
       'Envío de promos masivas por WA',
     ],
-    wabaConversations: 300,
+    wabaConversations: 1000,
     highlighted: true,
     cta: 'Empezar gratis',
   },
@@ -151,7 +150,7 @@ export const PLANS: Plan[] = [
     ],
     wabaFeatures: [
       'WhatsApp 24/7 con asistente IA avanzada',
-      'Conversaciones ilimitadas',
+      'Mensajes de servicio ilimitados',
       'Flujo de pago por captura WA',
       'Foto previa al servicio por WA',
     ],
@@ -205,9 +204,9 @@ export const FAQS = [
       'Sí. El bot funciona con WhatsApp Business API (WABA) de Meta — diferente a la app WhatsApp Business normal. Desde GeemaStudio te guiamos paso a paso para conectar tu número. El proceso toma menos de 15 minutos y Meta lo aprueba en 1-2 días hábiles.',
   },
   {
-    question: '¿Qué pasa cuando se agotan las conversaciones del mes?',
+    question: '¿Qué pasa cuando se agotan los mensajes de servicio del mes?',
     answer:
-      'El bot notifica al propietario del negocio por la app antes de llegar al límite. Puedes comprar packs adicionales desde Configuración (50 conv/$4, 200/$12, 500/$24) o activar la compra automática para que nunca se interrumpa el servicio.',
+      'El bot notifica al propietario del negocio por la app antes de llegar al límite. Puedes comprar packs adicionales desde Configuración (50 mensajes/$4, 200/$12, 500/$24) o activar la compra automática para que nunca se interrumpa el servicio.',
   },
 ]
 
@@ -216,6 +215,8 @@ export const COMPARISON_FEATURES: {
   basic: boolean | string
   pro: boolean | string
   elite: boolean | string
+  /** 'waba_limit': los valores salen de los planes (tabla `plans`); basic/pro/elite son solo respaldo. */
+  source?: 'waba_limit'
 }[] = [
   { label: 'App móvil (iOS + Android)', basic: true, pro: true, elite: true },
   { label: 'Agenda de citas', basic: true, pro: true, elite: true },
@@ -237,13 +238,14 @@ export const COMPARISON_FEATURES: {
     elite: true,
   },
   {
-    label: 'Conversaciones incluidas/mes',
-    basic: '50',
-    pro: '300',
+    label: 'Mensajes de servicio incluidos/mes',
+    basic: '300',
+    pro: '1.000',
     elite: '∞',
+    source: 'waba_limit',
   },
   {
-    label: 'Add-on conversaciones extra',
+    label: 'Add-on mensajes extra',
     basic: true,
     pro: true,
     elite: false,

@@ -11,8 +11,8 @@ export function PricingCard({ plan, annual }: Props) {
   const price = annual ? plan.annualPrice : plan.monthlyPrice
   const wabaLabel =
     plan.wabaConversations === 'unlimited'
-      ? 'Conversaciones ilimitadas'
-      : `${plan.wabaConversations} conversaciones/mes`
+      ? 'Mensajes de servicio ilimitados'
+      : `${plan.wabaConversations.toLocaleString('es')} mensajes de servicio/mes`
 
   return (
     <div

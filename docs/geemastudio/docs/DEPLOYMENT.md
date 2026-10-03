@@ -66,7 +66,7 @@ vercel --prod
 
 (o push a la rama conectada si está configurado el deploy automático).
 
-**Build en Vercel (monorepo)**: en la raíz del repo, **`vercel.json` no usa `ignoreCommand`** para omitir builds por paths: cada push a la rama de producción (p. ej. `main`) dispara **`pnpm build:web`**. Motivo: los `git diff` contra `VERCEL_GIT_PREVIOUS_SHA` fallaban en checkouts **shallow** (`fatal: bad object`). Si necesitas ahorrar minutos, valorar otras estrategias (p. ej. Turborepo remote cache) en lugar de omitir el build por diff.
+**Build en Vercel (monorepo)**: cada app (`landing`, `geemastudio-web`, `repmax-web`) tiene su `vercel.json` con `git.deploymentEnabled` (`main: true`, resto de ramas `false`, así los previews no crean deployments) y un `ignoreCommand` que solo construye en producción y cuando `turbo-ignore <app>` detecta cambios en esa app o sus dependencias. Mismo comando en *Ignored Build Step* de cada proyecto Vercel. Los checks de CI (lint, typecheck, build) corren en GitHub Actions, no en Vercel. Limitación: sin deployment previo con SHA conocido, `turbo-ignore` construye por seguridad.
 
 ### Rutas protegidas (panel)
 

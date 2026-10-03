@@ -42,6 +42,8 @@ import {
 import { useFinancesData } from './finances/hooks/useFinancesData'
 import { usePaymentForm } from './finances/hooks/usePaymentForm'
 import { useExecutiveSummary, type GrowthRange } from './finances/hooks/useExecutiveSummary'
+import { FeatureAvailabilityBanner } from '@/components/FeatureAvailabilityBanner'
+import { usePlan } from '@/hooks/usePlan'
 import { useExpenses } from './finances/hooks/useExpenses'
 import { financesStyles as styles } from './finances/financesStyles'
 import type {
@@ -58,6 +60,7 @@ export default function FinancesScreen() {
   const { theme } = useTheme()
   const { config } = useTenant()
   const { isAdmin } = useAuth()
+  const { can } = usePlan()
   const { isTablet } = useResponsive()
   const navigation =
     useNavigation<
@@ -176,6 +179,13 @@ export default function FinancesScreen() {
           />
         }
       >
+        <FeatureAvailabilityBanner
+          feature="finances"
+          label="las finanzas y reportes"
+          included={can('finances')}
+          onPress={() => navigation.navigate('MiPlan')}
+        />
+
         {isAdmin && <ViewToggle view={view} onChangeView={setView} />}
 
         {isError ? (
