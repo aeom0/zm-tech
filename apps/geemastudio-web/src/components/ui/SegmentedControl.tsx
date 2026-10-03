@@ -20,7 +20,7 @@ export function SegmentedControl<T extends string>({
     <div
       role="tablist"
       aria-label={ariaLabel}
-      className={`flex overflow-hidden rounded-full border border-line-strong bg-card ${className}`}
+      className={`flex w-full gap-1 rounded-2xl border border-line-strong bg-card p-1 sm:w-auto ${className}`}
     >
       {options.map((opt) => {
         const active = value === opt.value
@@ -31,7 +31,7 @@ export function SegmentedControl<T extends string>({
             role="tab"
             aria-selected={active}
             onClick={() => onChange(opt.value)}
-            className={`inline-flex min-h-[44px] min-w-[44px] flex-1 cursor-pointer items-center justify-center gap-2 px-4 text-sm font-semibold transition-colors sm:flex-none md:min-h-[40px] ${
+            className={`inline-flex min-h-[44px] min-w-0 flex-1 cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-xl px-3 text-sm font-semibold transition-colors sm:flex-none sm:px-5 md:min-h-[40px] ${
               active
                 ? 'bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)]'
                 : 'text-fg-muted hover:bg-fg/[0.06]'

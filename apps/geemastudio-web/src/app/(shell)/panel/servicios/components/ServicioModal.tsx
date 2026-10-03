@@ -254,7 +254,7 @@ function ServicioModalForm({
                 className={[
                   'w-full rounded-xl border px-4 py-2.5 text-sm font-semibold transition-colors',
                   isActive
-                    ? 'border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 text-tenant-text'
+                    ? 'border-[var(--tenant-primary)] bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)]'
                     : 'border-fg/[0.10] bg-fg/[0.03] text-fg-soft',
                 ].join(' ')}
               >

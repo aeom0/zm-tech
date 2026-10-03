@@ -1,5 +1,7 @@
 'use client'
 
+import { LayoutDashboard, ListChecks } from 'lucide-react'
+
 import { SegmentedControl } from '@/components/ui/SegmentedControl'
 import type { GrowthRange } from '@/hooks/finanzas/executiveService'
 
@@ -21,8 +23,8 @@ export function ViewToggle({
       value={view}
       onChange={onChange}
       options={[
-        { value: 'resumen', label: 'Resumen' },
-        { value: 'detalle', label: 'Detalle' },
+        { value: 'resumen', label: 'Resumen', icon: <LayoutDashboard className="h-4 w-4" /> },
+        { value: 'detalle', label: 'Detalle', icon: <ListChecks className="h-4 w-4" /> },
       ]}
     />
   )

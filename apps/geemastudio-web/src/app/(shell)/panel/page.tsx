@@ -74,20 +74,20 @@ export default function PanelIndexPage() {
     <div className="space-y-6">
       <PageHeader title="Inicio" description="Elige el módulo al que deseas acceder." />
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+      <div className="grid auto-rows-fr grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
         {MODULES.map((m) => {
           const Icon = m.icon
           return (
             <Link
               key={m.href}
               href={m.href}
-              className="hover:border-[var(--tenant-primary)]/40 flex min-h-[132px] flex-col items-center justify-center gap-2.5 rounded-2xl border border-fg/[0.08] bg-surface p-4 text-center transition-colors hover:bg-fg/[0.04]"
+              className="hover:border-[var(--tenant-primary)]/40 flex h-full min-h-[148px] flex-col items-center justify-start gap-2.5 pt-5 rounded-2xl border border-fg/[0.08] bg-surface p-4 text-center transition-colors hover:bg-fg/[0.04]"
             >
               <span className="border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 flex h-11 w-11 items-center justify-center rounded-xl border text-tenant-text">
                 <Icon className="h-5 w-5" />
               </span>
               <span className="text-sm font-semibold text-fg">{m.label}</span>
-              <span className="text-xs text-fg-subtle">{m.description}</span>
+              <span className="min-h-[2rem] text-xs leading-4 text-fg-subtle">{m.description}</span>
             </Link>
           )
         })}

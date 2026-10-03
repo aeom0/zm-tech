@@ -116,7 +116,7 @@ export function AgendaToolbar({
             className={[
               'rounded-xl border px-3 py-1.5 text-xs font-medium transition-colors',
               statusFilter === chip.id
-                ? 'border-[var(--tenant-primary)]/40 bg-[var(--tenant-primary)]/15 text-tenant-text'
+                ? 'border-[var(--tenant-primary)] bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)]'
                 : 'border-fg/[0.08] bg-card text-fg-soft hover:bg-fg/[0.04]',
             ].join(' ')}
           >

@@ -45,7 +45,8 @@ export function FilterChips<T extends string>({
         aria-pressed={active}
         onClick={() => onChange(opt.id)}
         className={[
-          'inline-flex min-h-[44px] shrink-0 items-center gap-2 whitespace-nowrap rounded-full border px-4 text-sm font-medium transition-colors md:min-h-[36px]',
+          'inline-flex min-h-[44px] items-center gap-2 whitespace-nowrap rounded-full border px-4 text-sm font-medium transition-colors md:min-h-[36px]',
+          scroll ? 'shrink-0' : 'flex-1 justify-center md:flex-none',
           active
             ? 'border-[var(--tenant-primary)] bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)]'
             : 'border-fg/[0.08] bg-card text-fg-soft hover:bg-fg/[0.06]',

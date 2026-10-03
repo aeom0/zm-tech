@@ -171,7 +171,7 @@ export function TriggerKeywordsEditor({
             type="button"
             disabled={state === 'saving' || !dirty}
             onClick={() => void handleSave()}
-            className="border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold text-tenant-text disabled:opacity-50"
+            className="min-h-[44px] border-[var(--tenant-primary)] bg-[var(--tenant-primary)] inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] md:min-h-0 disabled:opacity-50"
           >
             <Save className="h-4 w-4" />
             {state === 'saving'

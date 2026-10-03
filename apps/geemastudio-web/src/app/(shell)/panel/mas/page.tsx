@@ -153,20 +153,20 @@ export default async function PanelMasPage() {
               {section.title}
             </div>
 
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+            <div className="grid auto-rows-fr grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
               {section.items.map((m) => {
                 const Icon = m.icon
                 return (
                   <Link
                     key={m.href}
                     href={m.href}
-                    className="hover:border-[var(--tenant-primary)]/40 flex min-h-[124px] flex-col items-center justify-center gap-2 rounded-2xl border border-fg/[0.08] bg-surface/90 p-3.5 text-center transition-colors hover:bg-fg/[0.04] active:scale-[0.98]"
+                    className="hover:border-[var(--tenant-primary)]/40 flex h-full min-h-[148px] flex-col items-center justify-start gap-2 rounded-2xl border border-fg/[0.08] bg-surface/90 p-3.5 text-center transition-colors hover:bg-fg/[0.04] active:scale-[0.98]"
                   >
                     <span className="border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 flex h-10 w-10 items-center justify-center rounded-xl border text-tenant-text">
                       <Icon className="h-5 w-5" />
                     </span>
                     <span className="text-sm font-semibold text-fg">{m.label}</span>
-                    <span className="line-clamp-2 text-[11px] text-fg-subtle">{m.description}</span>
+                    <span className="line-clamp-2 min-h-[2rem] text-xs leading-4 text-fg-subtle">{m.description}</span>
                   </Link>
                 )
               })}

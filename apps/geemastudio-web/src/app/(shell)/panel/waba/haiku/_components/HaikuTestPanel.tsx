@@ -106,7 +106,7 @@ export function HaikuTestPanel({
           type="button"
           disabled={loading || !systemPrompt.trim()}
           onClick={() => void runTest()}
-          className="border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/15 inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold text-tenant-text disabled:opacity-50"
+          className="min-h-[44px] border-[var(--tenant-primary)] bg-[var(--tenant-primary)] inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] md:min-h-0 disabled:opacity-50"
         >
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           {loading ? 'Probando…' : 'Probar'}

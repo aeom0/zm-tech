@@ -32,6 +32,7 @@ import { FeatureAvailabilityNotice } from '@/components/plan/FeatureAvailability
 import { usePlan } from '@/hooks/plan/usePlan'
 import { ExecutiveDashboard } from './components/executive/ExecutiveDashboard'
 import { ViewToggle, type FinanceView } from './components/executive/ViewToggle'
+import { SegmentedControl } from '@/components/ui/SegmentedControl'
 
 const PERIOD_LABELS: Record<FinanzasPeriod, string> = {
   day: 'Hoy',
@@ -286,22 +287,15 @@ export default function FinanzasPage() {
                 <h2 className="text-base font-semibold text-zinc-900 dark:text-zinc-100">
                   Por chica — {PERIOD_LABELS[period]}
                 </h2>
-                <div className="inline-flex rounded-full border border-zinc-200 bg-white p-1 dark:border-zinc-800 dark:bg-zinc-900">
-                  {(Object.keys(PERIOD_LABELS) as FinanzasPeriod[]).map((p) => (
-                    <button
-                      key={p}
-                      type="button"
-                      onClick={() => setPeriod(p)}
-                      className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
-                        period === p
-                          ? 'bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)]'
-                          : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200'
-                      }`}
-                    >
-                      {PERIOD_LABELS[p]}
-                    </button>
-                  ))}
-                </div>
+                <SegmentedControl
+                  ariaLabel="Periodo del desglose"
+                  value={period}
+                  onChange={setPeriod}
+                  options={(Object.keys(PERIOD_LABELS) as FinanzasPeriod[]).map((p) => ({
+                    value: p,
+                    label: PERIOD_LABELS[p],
+                  }))}
+                />
               </div>
 
               {!isLoading && desgloseChicas.length > 0 ? (

@@ -8,6 +8,7 @@ import type { Producto } from '../../_services/productosService'
 import { ProductoCard } from '../productos/ProductoCard'
 import { ProductoFormModal } from '../productos/ProductoFormModal'
 import { VentasTab } from './VentasTab'
+import { SegmentedControl } from '@/components/ui/SegmentedControl'
 import { StateNote } from '@/components/ui/StateNote'
 
 export function ProductosTab() {
@@ -29,14 +30,15 @@ export function ProductosTab() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex gap-2">
-          <ViewButton active={view === 'catalogo'} onClick={() => setView('catalogo')}>
-            Catálogo
-          </ViewButton>
-          <ViewButton active={view === 'ventas'} onClick={() => setView('ventas')}>
-            Ventas
-          </ViewButton>
-        </div>
+        <SegmentedControl
+          ariaLabel="Vista de productos"
+          value={view}
+          onChange={setView}
+          options={[
+            { value: 'catalogo', label: 'Catálogo' },
+            { value: 'ventas', label: 'Ventas' },
+          ]}
+        />
         {view === 'catalogo' ? (
           <button
             type="button"
@@ -72,30 +74,5 @@ export function ProductosTab() {
 
       <ProductoFormModal open={modalOpen} producto={editing} onClose={handleClose} />
     </div>
-  )
-}
-
-function ViewButton({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean
-  onClick: () => void
-  children: React.ReactNode
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={[
-        'min-h-[44px] md:min-h-[36px] rounded-lg border px-3 py-1.5 text-sm font-semibold transition-colors',
-        active
-          ? 'border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 text-tenant-text'
-          : 'border-fg/[0.06] text-fg/50 hover:bg-fg/[0.04] hover:text-fg',
-      ].join(' ')}
-    >
-      {children}
-    </button>
   )
 }

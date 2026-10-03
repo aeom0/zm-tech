@@ -12,6 +12,7 @@ import {
   normalizarHorarioSemanal,
   validarHorarioCompleto,
 } from '@zmtech/tenant-config'
+import { SegmentedControl } from '@/components/ui/SegmentedControl'
 import { StateNote } from '@/components/ui/StateNote'
 
 export default function PanelHorariosPage() {
@@ -215,32 +216,16 @@ export default function PanelHorariosPage() {
           Cómo se muestran las horas en la agenda móvil. Los horarios de apertura siguen en 24 h al
           editarlos.
         </p>
-        <div className="mb-8 flex flex-wrap gap-3">
-          <button
-            type="button"
-            onClick={() => setDraftTimeFormat('24')}
-            className={[
-              'rounded-xl border px-4 py-3 text-sm font-medium transition-colors',
-              draftTimeFormat === '24'
-                ? 'bg-[var(--tenant-primary)]/15 border-[var(--tenant-primary)] text-tenant-text'
-                : 'border-fg/[0.12] text-fg-soft hover:bg-fg/[0.04]',
-            ].join(' ')}
-          >
-            24 horas
-          </button>
-          <button
-            type="button"
-            onClick={() => setDraftTimeFormat('12')}
-            className={[
-              'rounded-xl border px-4 py-3 text-sm font-medium transition-colors',
-              draftTimeFormat === '12'
-                ? 'bg-[var(--tenant-primary)]/15 border-[var(--tenant-primary)] text-tenant-text'
-                : 'border-fg/[0.12] text-fg-soft hover:bg-fg/[0.04]',
-            ].join(' ')}
-          >
-            12 horas (AM / PM)
-          </button>
-        </div>
+        <SegmentedControl
+          className="mb-8 sm:w-auto"
+          ariaLabel="Formato de hora"
+          value={draftTimeFormat}
+          onChange={setDraftTimeFormat}
+          options={[
+            { value: '24', label: '24 horas' },
+            { value: '12', label: '12 horas (AM / PM)' },
+          ]}
+        />
       </section>
 
       <section>
@@ -255,9 +240,9 @@ export default function PanelHorariosPage() {
                 type="button"
                 onClick={() => setDraftTimezone(z.value)}
                 className={[
-                  'w-full px-4 py-3 text-left text-sm transition-colors',
+                  'min-h-[44px] w-full px-4 py-3 text-left text-sm transition-colors',
                   sel
-                    ? 'bg-[var(--tenant-primary)]/15 font-medium text-tenant-text'
+                    ? 'bg-[var(--tenant-primary)] font-semibold text-[var(--tenant-on-primary)]'
                     : 'text-fg-soft hover:bg-fg/[0.04]',
                 ].join(' ')}
               >
@@ -305,7 +290,7 @@ export default function PanelHorariosPage() {
                         value={slot.open}
                         onChange={(e) => setHorasDia(dia, 'open', e.target.value)}
                         placeholder="09:00"
-                        className="mt-1 w-full rounded-lg border border-fg/[0.1] bg-app px-3 py-2 text-base text-white placeholder:text-fg-subtle md:text-sm"
+                        className="mt-1 w-full rounded-lg border border-fg/[0.1] bg-app px-3 py-2 text-base text-fg placeholder:text-fg-subtle md:text-sm"
                         maxLength={5}
                       />
                     </div>
@@ -317,7 +302,7 @@ export default function PanelHorariosPage() {
                         value={slot.close}
                         onChange={(e) => setHorasDia(dia, 'close', e.target.value)}
                         placeholder="18:00"
-                        className="mt-1 w-full rounded-lg border border-fg/[0.1] bg-app px-3 py-2 text-base text-white placeholder:text-fg-subtle md:text-sm"
+                        className="mt-1 w-full rounded-lg border border-fg/[0.1] bg-app px-3 py-2 text-base text-fg placeholder:text-fg-subtle md:text-sm"
                         maxLength={5}
                       />
                     </div>
