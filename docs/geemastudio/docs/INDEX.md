@@ -81,6 +81,7 @@ Matriz y propuesta de consolidación documental entre ZM Lash y GeemaStudio.
 | 15 | [15-PLAN-retail-productos.md](plans/15-PLAN-retail-productos.md) | Retail y productos |
 | 16 | [16-PLAN-multi-sucursal.md](plans/16-PLAN-multi-sucursal.md) | Multi-sucursal |
 | 17 | [17-PLAN-planes-suscripcion-y-descarga-apk.md](plans/17-PLAN-planes-suscripcion-y-descarga-apk.md) | Planes de suscripción y descarga del APK |
+| 18 | [18-PLAN-gestion-profesionales-disponibilidad.md](plans/18-PLAN-gestion-profesionales-disponibilidad.md) | Gestión de profesionales y disponibilidad |
 
 Los nombres anteriores se conservan temporalmente como referencias legacy.
 La carpeta [04-geema-migration](plans/04-geema-migration/) conserva el detalle
@@ -120,7 +121,7 @@ docs/
 ├── INSTALACION_BETA.md             # Beta / instalación
 ├── GEEMASTUDIO_V1.3_PLAN.md        # Plan v1.3 (referencia)
 ├── plans/
-│   ├── 01–17-PLAN-*.md                     # Serie canónica consolidada
+│   ├── 01–18-PLAN-*.md                     # Serie canónica consolidada
 │   ├── 04-geema-migration/                 # Detalle canónico del Plan 04
 │   └── geema-migration/                    # Espejo temporal ZM (legacy)
 └── tech-debt/                              # Deuda técnica (TD-xxx)

@@ -1,6 +1,6 @@
 'use client'
 
-import { Plus } from 'lucide-react'
+import { CalendarClock, Plus } from 'lucide-react'
 
 import type { EmployeeRow } from '@/hooks/personal/types'
 import { formatDashboardCurrency } from '@/lib/dashboardCurrency'
@@ -10,6 +10,7 @@ interface EmployeeCardProps {
   currencyCode: string
   showGeemaExtras: boolean
   onClick: () => void
+  onAvailability: () => void
 }
 
 function paymentLabel(emp: EmployeeRow, currencyCode: string, showGeemaExtras: boolean): string {
@@ -31,15 +32,17 @@ export function EmployeeCard({
   currencyCode,
   showGeemaExtras,
   onClick,
+  onAvailability,
 }: EmployeeCardProps) {
   const initial = employee.name.charAt(0).toUpperCase() || '?'
   const pay = paymentLabel(employee, currencyCode, showGeemaExtras)
 
   return (
+    <div className="flex w-full items-center gap-2 rounded-2xl border border-fg/[0.08] bg-card pr-3 transition-colors hover:border-fg/[0.14] hover:bg-fg/[0.04]">
     <button
       type="button"
       onClick={onClick}
-      className="flex w-full items-center gap-3 rounded-2xl border border-fg/[0.08] bg-card px-4 py-3 text-left transition-colors hover:border-fg/[0.14] hover:bg-fg/[0.04]"
+      className="flex min-w-0 flex-1 items-center gap-3 px-4 py-3 text-left"
     >
       <div
         className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-fg/[0.08] text-sm font-bold text-fg"
@@ -71,6 +74,16 @@ export function EmployeeCard({
         <div className="mt-1 text-xs text-tenant-text">{pay}</div>
       </div>
     </button>
+    <button
+      type="button"
+      onClick={onAvailability}
+      aria-label={`Disponibilidad de ${employee.name}`}
+      title="Servicios, horario y ausencias"
+      className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] text-fg-soft hover:bg-fg/[0.08] md:h-9 md:w-9"
+    >
+      <CalendarClock className="h-4 w-4" />
+    </button>
+    </div>
   )
 }
 
