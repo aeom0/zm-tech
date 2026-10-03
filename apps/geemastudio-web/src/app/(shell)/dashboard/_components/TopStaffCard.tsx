@@ -2,6 +2,7 @@
 
 import { Sparkles } from 'lucide-react'
 
+import { onColor } from '@/lib/tenant-theme'
 import { formatDashboardCurrency } from '@/lib/dashboardCurrency'
 
 import type { TopStaffEntry } from '@/hooks/dashboard/useDashboardTopStaff'
@@ -52,8 +53,11 @@ export function TopStaffCard({ items, currencyCode, isLoading }: TopStaffCardPro
             return (
               <li key={row.employeeId} className="flex items-center gap-3">
                 <span
-                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
-                  style={{ backgroundColor: dot }}
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold"
+                  style={{
+                    backgroundColor: dot,
+                    color: dot.startsWith('#') ? onColor(dot) : 'var(--tenant-on-primary)',
+                  }}
                   title={row.name}
                 >
                   {i + 1}
