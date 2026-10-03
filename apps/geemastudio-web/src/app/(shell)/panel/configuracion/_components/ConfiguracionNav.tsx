@@ -22,34 +22,33 @@ export function ConfiguracionNav() {
   const pathname = usePathname()
 
   return (
-    <nav
-      className="flex flex-wrap items-center gap-2"
-      aria-label="Secciones de Configuración"
-    >
-      {TABS.map((t) => {
-        const Icon = t.icon
-        const active =
-          t.href === '/panel/configuracion'
-            ? pathname === '/panel/configuracion'
-            : Boolean(pathname?.startsWith(t.href))
+    <nav aria-label="Secciones de Configuración">
+      <div className="grid grid-cols-4 gap-2 md:flex md:flex-wrap md:items-center">
+        {TABS.map((t) => {
+          const Icon = t.icon
+          const active =
+            t.href === '/panel/configuracion'
+              ? pathname === '/panel/configuracion'
+              : Boolean(pathname?.startsWith(t.href))
 
-        return (
-          <Link
-            key={t.href}
-            href={t.href}
-            aria-current={active ? 'page' : undefined}
-            className={[
-              'inline-flex shrink-0 items-center gap-2 rounded-xl border px-3 py-2 text-sm font-semibold transition-colors',
-              active
-                ? 'border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 text-[var(--tenant-primary)]'
-                : 'border-white/[0.08] bg-white/[0.03] text-zinc-300 hover:bg-white/[0.06]',
-            ].join(' ')}
-          >
-            <Icon className="h-4 w-4" />
-            {t.label}
-          </Link>
-        )
-      })}
+          return (
+            <Link
+              key={t.href}
+              href={t.href}
+              aria-current={active ? 'page' : undefined}
+              className={[
+                'flex min-h-[56px] flex-col items-center justify-center gap-1 rounded-xl border px-1 py-2 text-center text-[11px] font-semibold leading-tight transition-colors md:min-h-0 md:flex-row md:gap-2 md:px-3 md:text-sm',
+                active
+                  ? 'border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 text-[var(--tenant-primary)]'
+                  : 'border-white/[0.08] bg-white/[0.03] text-zinc-300 hover:bg-white/[0.06]',
+              ].join(' ')}
+            >
+              <Icon className="h-4 w-4" />
+              {t.label}
+            </Link>
+          )
+        })}
+      </div>
     </nav>
   )
 }
