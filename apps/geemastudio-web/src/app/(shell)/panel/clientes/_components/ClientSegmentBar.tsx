@@ -1,8 +1,9 @@
 'use client'
 
+import { FilterChips, type FilterChipOption } from '@/components/ui/FilterChips'
 import type { ClientSegment } from '@/hooks/clientes/types'
 
-const SEGMENTS: { id: ClientSegment; label: string }[] = [
+const SEGMENTS: FilterChipOption<ClientSegment>[] = [
   { id: 'all', label: 'Todos' },
   { id: 'vip', label: 'VIP' },
   { id: 'regular', label: 'Regulares' },
@@ -17,25 +18,11 @@ interface ClientSegmentBarProps {
 
 export function ClientSegmentBar({ active, onChange }: ClientSegmentBarProps) {
   return (
-    <div className="flex flex-wrap gap-2">
-      {SEGMENTS.map((seg) => {
-        const isActive = active === seg.id
-        return (
-          <button
-            key={seg.id}
-            type="button"
-            onClick={() => onChange(seg.id)}
-            className={[
-              'rounded-xl border px-4 py-2 text-sm font-medium transition-colors',
-              isActive
-                ? 'border-[var(--tenant-primary)]/40 bg-[var(--tenant-primary)]/15 text-tenant-text'
-                : 'border-fg/[0.08] bg-card text-fg-soft hover:border-fg/[0.12] hover:bg-fg/[0.04]',
-            ].join(' ')}
-          >
-            {seg.label}
-          </button>
-        )
-      })}
-    </div>
+    <FilterChips
+      ariaLabel="Segmento de clientes"
+      options={SEGMENTS}
+      value={active}
+      onChange={onChange}
+    />
   )
 }

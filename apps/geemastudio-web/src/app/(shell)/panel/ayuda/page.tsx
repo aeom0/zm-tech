@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { ChevronDown, Mail, MessageCircle, Search, X } from 'lucide-react'
 
 import { useTenantSettings } from '@/hooks/configuracion/useTenantSettings'
-import { ScrollFadeRow } from '@/components/ui/ScrollFadeRow'
+import { FilterChips } from '@/components/ui/FilterChips'
 
 type FaqCategory = 'todas' | 'agenda' | 'waba' | 'finanzas' | 'clientes' | 'configuracion'
 
@@ -200,23 +200,13 @@ export default function PanelAyudaPage() {
       </div>
 
       {/* Chips de categorías */}
-      <ScrollFadeRow backgroundColor="rgb(var(--app-rgb))" className="flex items-center gap-2 pb-1">
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat.id}
-            type="button"
-            onClick={() => setCategory(cat.id)}
-            className={[
-              'shrink-0 rounded-xl border px-3 py-1.5 text-xs font-medium transition-colors',
-              category === cat.id
-                ? 'border-[var(--tenant-primary)]/40 bg-[var(--tenant-primary)]/15 font-semibold text-tenant-text'
-                : 'border-fg/[0.08] bg-card text-fg-muted hover:bg-fg/[0.05] hover:text-fg-soft',
-            ].join(' ')}
-          >
-            {cat.label}
-          </button>
-        ))}
-      </ScrollFadeRow>
+      <FilterChips
+        scroll
+        ariaLabel="Categoría de ayuda"
+        options={CATEGORIES}
+        value={category}
+        onChange={setCategory}
+      />
 
       {/* Lista de Preguntas / Acordeón */}
       <div className="space-y-3">

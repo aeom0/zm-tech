@@ -18,6 +18,7 @@ import { usePlan } from '@/hooks/plan/usePlan'
 import { resolveDashboardCurrencyCode } from '@/lib/dashboardCurrency'
 import { supabase } from '@/lib/supabase'
 import { useQuery } from '@tanstack/react-query'
+import { FilterChips } from '@/components/ui/FilterChips'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 function useStaffLabels() {
@@ -123,33 +124,22 @@ export default function PanelPersonalPage() {
         included={can('commissions')}
       />
 
-      <div className="flex flex-wrap gap-2">
-        {(
-          [
-            { id: 'all', label: 'Todos' },
-            { id: 'active', label: 'Activos' },
-            { id: 'inactive', label: 'Inactivos' },
-          ] as const
-        ).map((chip) => (
-          <button
-            key={chip.id}
-            type="button"
-            onClick={() => setFilter(chip.id)}
-            className={[
-              'rounded-xl border px-4 py-2 text-sm font-medium transition-colors',
-              filter === chip.id
-                ? 'border-[var(--tenant-primary)]/40 bg-[var(--tenant-primary)]/15 text-tenant-text'
-                : 'border-fg/[0.08] bg-card text-fg-soft hover:bg-fg/[0.04]',
-            ].join(' ')}
-          >
-            {chip.label}
-          </button>
-        ))}
-        <span className="self-center text-xs text-fg-subtle">
+      <FilterChips
+        ariaLabel="Estado del personal"
+        value={filter}
+        onChange={setFilter}
+        options={[
+          { id: 'all', label: 'Todos' },
+          { id: 'active', label: 'Activos' },
+          { id: 'inactive', label: 'Inactivos' },
+        ]}
+        trailing={
+          <span className="self-center text-xs text-fg-subtle">
           {filtered.length}{' '}
           {filtered.length === 1 ? staffSingular.toLowerCase() : staffPlural.toLowerCase()}
         </span>
-      </div>
+        }
+      />
 
       {errorMessage && (
         <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200">

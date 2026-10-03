@@ -8,7 +8,7 @@ import type { CategoriaRow } from '@/hooks/servicios/useCategorias'
 import type { ServicioRow } from '@/hooks/servicios/useServicios'
 import { useDeleteServicio, useServicios, useToggleServicio } from '@/hooks/servicios/useServicios'
 import { ServiceToggle } from './ServiceToggle'
-import { ScrollFadeRow } from '@/components/ui/ScrollFadeRow'
+import { FilterChips } from '@/components/ui/FilterChips'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 function fmtUsd(price: string) {
@@ -47,7 +47,6 @@ export function ServiciosTab({
       {
         id: 'all',
         label: 'Todos',
-        color: '#52525b',
       },
       ...categorias.map((c) => ({ id: c.id, label: c.name, color: c.color })),
     ]
@@ -77,31 +76,13 @@ export function ServiciosTab({
       </div>
 
       {categorias.length > 0 && (
-        <ScrollFadeRow backgroundColor="rgb(var(--app-rgb))" className="flex gap-2 pb-1">
-          {chips.map((ch) => {
-            const isActive = ch.id === 'all' ? !selectedCategoryId : selectedCategoryId === ch.id
-            return (
-              <button
-                key={ch.id}
-                type="button"
-                onClick={() => setSelectedCategoryId(ch.id === 'all' ? undefined : ch.id)}
-                className={[
-                  'inline-flex items-center gap-2 whitespace-nowrap rounded-xl border px-3 py-2 text-sm font-semibold transition-colors',
-                  isActive
-                    ? 'border-fg/[0.10] bg-fg/[0.06] text-fg'
-                    : 'border-fg/[0.06] bg-transparent text-fg-soft hover:border-fg/[0.08] hover:bg-fg/[0.04]',
-                ].join(' ')}
-              >
-                <span
-                  className="h-2.5 w-2.5 rounded-full border border-fg/[0.12]"
-                  style={{ backgroundColor: ch.color }}
-                  aria-hidden
-                />
-                {ch.label}
-              </button>
-            )
-          })}
-        </ScrollFadeRow>
+        <FilterChips
+          scroll
+          ariaLabel="Categoría de servicios"
+          options={chips}
+          value={selectedCategoryId ?? 'all'}
+          onChange={(id) => setSelectedCategoryId(id === 'all' ? undefined : id)}
+        />
       )}
 
       {errorMessage && (

@@ -196,7 +196,7 @@ function PanelWabaMensajesContent() {
                   type="button"
                   onClick={() => setFilter('all')}
                   className={[
-                    'shrink-0 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors',
+                    'shrink-0 min-h-10 rounded-lg px-3 text-xs md:min-h-8 font-medium transition-colors',
                     filter === 'all'
                       ? 'bg-fg/10 font-semibold text-fg'
                       : 'text-fg-muted hover:bg-fg/[0.04] hover:text-fg-soft',
@@ -209,7 +209,7 @@ function PanelWabaMensajesContent() {
                   type="button"
                   onClick={() => setFilter('active24h')}
                   className={[
-                    'inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors',
+                    'inline-flex shrink-0 items-center gap-1.5 min-h-10 rounded-lg px-3 text-xs md:min-h-8 font-medium transition-colors',
                     filter === 'active24h'
                       ? 'bg-emerald-500/20 font-semibold text-emerald-700 dark:text-emerald-300'
                       : 'text-fg-muted hover:bg-fg/[0.04] hover:text-fg-soft',
@@ -227,7 +227,7 @@ function PanelWabaMensajesContent() {
                   type="button"
                   onClick={() => setFilter('paused')}
                   className={[
-                    'inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors',
+                    'inline-flex shrink-0 items-center gap-1.5 min-h-10 rounded-lg px-3 text-xs md:min-h-8 font-medium transition-colors',
                     filter === 'paused'
                       ? 'bg-amber-500/20 font-semibold text-amber-700 dark:text-amber-300'
                       : 'text-fg-muted hover:bg-fg/[0.04] hover:text-fg-soft',
