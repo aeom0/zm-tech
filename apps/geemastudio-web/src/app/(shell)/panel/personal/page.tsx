@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react'
 
 import { EmployeeCard, PersonalHeaderActions } from './_components/EmployeeCard'
+import { AvailabilityModal } from './_components/AvailabilityModal'
 import { EmployeeModal } from './_components/EmployeeModal'
 import { useDashboardTenant } from '@/hooks/dashboard/useDashboardTenant'
 import {
@@ -65,6 +66,7 @@ export default function PanelPersonalPage() {
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState<EmployeeRow | null>(null)
   const [isCreating, setIsCreating] = useState(false)
+  const [availabilityFor, setAvailabilityFor] = useState<EmployeeRow | null>(null)
   const [filter, setFilter] = useState<'all' | 'active' | 'inactive'>('all')
 
   const filtered = useMemo(() => {
@@ -100,7 +102,7 @@ export default function PanelPersonalPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <PageHeader title={staffPlural} description="Equipo, colores de agenda, comisiones y foto de perfil." />
+        <PageHeader title={staffPlural} description="Equipo, servicios que hace cada uno, horarios, ausencias, comisiones y foto de perfil." />
         <PersonalHeaderActions onNew={openCreate} staffSingular={staffSingular} />
       </div>
 
@@ -160,11 +162,18 @@ export default function PanelPersonalPage() {
               currencyCode={currencyCode}
               showGeemaExtras={showGeemaExtras}
               onClick={() => openEdit(emp)}
+              onAvailability={() => setAvailabilityFor(emp)}
             />
           ))}
         </div>
       )}
 
+      <AvailabilityModal
+        employee={availabilityFor}
+        employees={employeesQuery.data ?? []}
+        staffSingular={staffSingular}
+        onClose={() => setAvailabilityFor(null)}
+      />
       <EmployeeModal
         open={modalOpen}
         initial={editing}

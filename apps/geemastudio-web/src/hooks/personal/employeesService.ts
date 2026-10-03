@@ -83,6 +83,7 @@ function rowToEmployee(row: Record<string, unknown>, dialect: CatalogDialect): E
     salary_amount: row.salary_amount != null ? String(row.salary_amount) : null,
     notes: (row.notes as string | null) ?? null,
     is_active: Boolean(row.is_active),
+    does_all_services: row.does_all_services !== false,
     avatar_url: (row.avatar_url as string | null) ?? null,
     sort_order: (row.sort_order as number | null) ?? null,
   }

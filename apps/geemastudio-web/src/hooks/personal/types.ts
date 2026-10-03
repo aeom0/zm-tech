@@ -16,6 +16,8 @@ export interface EmployeeRow {
   salary_amount: string | null
   notes: string | null
   is_active: boolean
+  /** true = hace todos los servicios; false = solo los de employee_services. */
+  does_all_services: boolean
   avatar_url: string | null
   sort_order: number | null
 }
@@ -36,10 +38,10 @@ export interface EmployeeWriteInput {
 }
 
 export const EMPLOYEE_SELECT_ZM =
-  'id, name, email, phone, color, role, commission_percentage, commission_mode, house_cut_fixed, notes, is_active, created_at, avatar_url, sort_order'
+  'id, name, email, phone, color, role, commission_percentage, commission_mode, house_cut_fixed, notes, is_active, does_all_services, created_at, avatar_url, sort_order'
 
 export const EMPLOYEE_SELECT_GEEMA =
-  'id, name, email, phone, color, role, commission_percentage, commission_mode, house_cut_fixed, notes, is_active, created_at, payment_mode, salary_amount, avatar_url, sort_order'
+  'id, name, email, phone, color, role, commission_percentage, commission_mode, house_cut_fixed, notes, is_active, does_all_services, created_at, payment_mode, salary_amount, avatar_url, sort_order'
 
 export const PRESET_COLORS = [
   '#40E0D0',
