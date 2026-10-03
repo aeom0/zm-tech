@@ -410,7 +410,7 @@ export function EmployeeModal({
               type="checkbox"
               checked={form.is_active}
               onChange={(e) => setForm((f) => ({ ...f, is_active: e.target.checked }))}
-              className="h-4 w-4 rounded border-fg/20 bg-fg/10"
+              className="h-5 w-5 rounded accent-[var(--tenant-primary)]"
             />
             Activo / aparece en agenda
           </label>

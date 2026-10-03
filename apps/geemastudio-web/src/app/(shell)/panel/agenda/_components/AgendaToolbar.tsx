@@ -81,7 +81,7 @@ export function AgendaToolbar({
           aria-label={isWeek ? 'Volver a vista de día' : 'Ver semana completa'}
         >
           <div className="truncate text-sm font-semibold text-fg">{label}</div>
-          <div className="text-[10px] font-semibold uppercase tracking-wide text-tenant-text">
+          <div className="text-[11px] font-semibold uppercase tracking-wide text-tenant-text">
             {isWeek ? 'Semana · clic para ver día' : 'Día · clic para ver semana'}
             <span className="ml-2 font-normal normal-case tracking-normal text-fg-subtle">
               {count} {count === 1 ? 'cita' : 'citas'}

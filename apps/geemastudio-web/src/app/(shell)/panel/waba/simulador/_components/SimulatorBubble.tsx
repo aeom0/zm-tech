@@ -43,7 +43,7 @@ export function SimulatorBubbleView({
         ].join(' ')}
       >
         {message.fromAd && (
-          <span className="mb-1 inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-violet-900/95 dark:text-violet-100/95">
+          <span className="mb-1 inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-violet-900/95 dark:text-violet-100/95">
             <Megaphone className="h-3 w-3" />
             vía anuncio
           </span>
@@ -84,7 +84,7 @@ export function SimulatorBubbleView({
                 {isList && (
                   <span
                     className={[
-                      'mb-0.5 block text-[10px] uppercase tracking-wide',
+                      'mb-0.5 block text-[11px] uppercase tracking-wide',
                       isUser ? 'text-emerald-900/90 dark:text-emerald-100/90' : 'text-fg-muted',
                     ].join(' ')}
                   >
@@ -110,7 +110,7 @@ export function SimulatorBubbleView({
         {time && (
           <div
             className={[
-              'mt-1 text-right text-[10px] tabular-nums',
+              'mt-1 text-right text-[11px] tabular-nums',
               isUser
                 ? message.fromAd
                   ? 'text-violet-900/80 dark:text-violet-100/80'

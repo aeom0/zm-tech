@@ -139,7 +139,7 @@ function PackFormModalInner({ pack, onClose }: { pack?: Pack | null; onClose: ()
               type="checkbox"
               checked={form.is_active}
               onChange={(e) => setForm((f) => ({ ...f, is_active: e.target.checked }))}
-              className="accent-[var(--tenant-primary)]"
+              className="h-5 w-5 accent-[var(--tenant-primary)]"
             />
             <span className="text-sm text-fg/70">Activo</span>
           </label>

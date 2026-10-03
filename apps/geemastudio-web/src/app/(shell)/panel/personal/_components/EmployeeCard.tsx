@@ -60,7 +60,7 @@ export function EmployeeCard({
         <div className="flex items-center gap-2">
           <span className="truncate text-sm font-semibold text-fg">{employee.name}</span>
           {!employee.is_active && (
-            <span className="rounded-full border border-fg/[0.08] bg-fg/[0.06] px-2 py-0.5 text-[10px] uppercase tracking-wide text-fg-muted">
+            <span className="rounded-full border border-fg/[0.08] bg-fg/[0.06] px-2 py-0.5 text-[11px] uppercase tracking-wide text-fg-muted">
               Inactivo
             </span>
           )}

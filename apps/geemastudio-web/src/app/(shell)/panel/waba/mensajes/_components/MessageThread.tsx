@@ -310,7 +310,7 @@ export function MessageThread({
                   </span>
                 ) : (
                   <span
-                    className="inline-flex shrink-0 items-center rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:text-amber-300"
+                    className="inline-flex shrink-0 items-center rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[11px] font-medium text-amber-700 dark:text-amber-300"
                     title="Meta no compartió el número (usuario oculto)"
                   >
                     Sin teléfono
@@ -318,7 +318,7 @@ export function MessageThread({
                 )}
                 <span
                   className={[
-                    'rounded-full border px-2 py-0.5 text-[10px] font-medium',
+                    'rounded-full border px-2 py-0.5 text-[11px] font-medium',
                     conversation.botPaused
                       ? 'border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300'
                       : 'border-emerald-500/25 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300',

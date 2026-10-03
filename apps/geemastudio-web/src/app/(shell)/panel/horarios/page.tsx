@@ -291,7 +291,7 @@ export default function PanelHorariosPage() {
                       type="checkbox"
                       checked={abierto}
                       onChange={(e) => setDiaAbierto(dia, e.target.checked)}
-                      className="h-4 w-4 rounded border-fg/20 bg-fg/[0.06] accent-[var(--tenant-primary)]"
+                      className="h-5 w-5 rounded accent-[var(--tenant-primary)]"
                     />
                   </label>
                 </div>

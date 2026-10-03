@@ -554,7 +554,7 @@ export function CampanasClient() {
                   <p className="whitespace-pre-wrap break-words text-[13px] leading-snug text-zinc-100">
                     {metaAdsServicesText.replace('{nombre}', ' Vanessa')}
                   </p>
-                  <span className="float-right mt-1 text-[10px] text-zinc-400">ahora</span>
+                  <span className="float-right mt-1 text-[11px] text-zinc-400">ahora</span>
                 </div>
               )}
 
@@ -584,7 +584,7 @@ export function CampanasClient() {
                         {caption}
                       </p>
                     )}
-                    <span className="float-right px-3 pb-2 text-[10px] text-zinc-400">ahora</span>
+                    <span className="float-right px-3 pb-2 text-[11px] text-zinc-400">ahora</span>
                   </div>
                 ))}
 

@@ -57,7 +57,7 @@ export function ClientCard({ client, currencyCode, timezone, onClick }: ClientCa
           {badge && (
             <span
               className={[
-                'shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide',
+                'shrink-0 rounded-full border px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide',
                 badge.className,
               ].join(' ')}
             >

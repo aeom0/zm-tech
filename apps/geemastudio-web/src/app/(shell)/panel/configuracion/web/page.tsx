@@ -65,7 +65,7 @@ function ImageField({
             // eslint-disable-next-line @next/next/no-img-element
             <img src={url} alt={label} className="h-full w-full object-cover" />
           ) : (
-            <span className="text-[10px] text-fg-subtle">Sin foto</span>
+            <span className="text-[11px] text-fg-subtle">Sin foto</span>
           )}
         </div>
         <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-fg/[0.08] bg-fg/[0.04] px-3 py-2 text-xs font-medium text-fg-soft hover:bg-fg/[0.08]">

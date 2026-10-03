@@ -216,7 +216,7 @@ function PanelWabaMensajesContent() {
                 >
                   <span>24h activas</span>
                   {stats.count24h > 0 && (
-                    <span className="rounded-full bg-emerald-500/30 px-1.5 py-0.5 text-[10px] text-emerald-800 dark:text-emerald-200">
+                    <span className="rounded-full bg-emerald-500/30 px-1.5 py-0.5 text-[11px] text-emerald-800 dark:text-emerald-200">
                       {stats.count24h}
                     </span>
                   )}
@@ -234,7 +234,7 @@ function PanelWabaMensajesContent() {
                 >
                   <span>En pausa</span>
                   {stats.countPaused > 0 && (
-                    <span className="rounded-full bg-amber-500/30 px-1.5 py-0.5 text-[10px] text-amber-800 dark:text-amber-200">
+                    <span className="rounded-full bg-amber-500/30 px-1.5 py-0.5 text-[11px] text-amber-800 dark:text-amber-200">
                       {stats.countPaused}
                     </span>
                   )}
@@ -309,14 +309,14 @@ function PanelWabaMensajesContent() {
                               )}
                               {c.isBsuid && !c.displayPhone && (
                                 <span
-                                  className="inline-block rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 dark:text-amber-300"
+                                  className="inline-block rounded-md border border-amber-500/30 bg-amber-500/10 px-1.5 py-0.5 text-[11px] font-medium text-amber-700 dark:text-amber-300"
                                   title="Meta no compartió el número (usuario oculto)"
                                 >
                                   Sin teléfono
                                 </span>
                               )}
                               {c.botPaused && (
-                                <span className="inline-block rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] text-amber-700 dark:text-amber-300">
+                                <span className="inline-block rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[11px] text-amber-700 dark:text-amber-300">
                                   Bot en pausa
                                 </span>
                               )}

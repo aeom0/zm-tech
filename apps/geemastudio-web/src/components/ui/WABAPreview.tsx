@@ -77,7 +77,7 @@ export function WABAPreview() {
 
       {/* Badge 24/7 */}
       <div className="absolute right-3 top-3">
-        <span className="rounded-full bg-[#25D366] px-2 py-0.5 text-[10px] font-bold text-white">
+        <span className="rounded-full bg-[#25D366] px-2 py-0.5 text-[11px] font-bold text-white">
           24/7
         </span>
       </div>

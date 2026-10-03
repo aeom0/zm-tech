@@ -127,14 +127,14 @@ export function PromoCard({ promo, onEdit }: Props) {
           <button
             type="button"
             onClick={() => void handleToggle()}
-            className={`relative inline-flex h-4 w-8 shrink-0 rounded-full transition-colors ${
+            className={`relative inline-flex h-6 w-11 shrink-0 rounded-full before:absolute before:-inset-y-2.5 before:inset-x-0 before:content-[''] transition-colors ${
               promo.is_active ? 'bg-[var(--tenant-primary)]' : 'bg-fg/20'
             }`}
             aria-label={promo.is_active ? 'Desactivar promo' : 'Activar promo'}
           >
             <span
-              className={`absolute top-0.5 block h-3 w-3 rounded-full bg-white transition-[left] ${
-                promo.is_active ? 'left-[18px]' : 'left-0.5'
+              className={`absolute top-0.5 block h-5 w-5 rounded-full bg-white transition-[left] ${
+                promo.is_active ? 'left-[22px]' : 'left-0.5'
               }`}
             />
           </button>

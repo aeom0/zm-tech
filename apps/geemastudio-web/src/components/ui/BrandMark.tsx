@@ -55,7 +55,7 @@ export function BrandMark({
           background: LUNARIS.badge.bg,
           color: LUNARIS.badge.text,
         }}
-        className="rounded-full px-1.5 py-0.5 text-[10px] font-semibold tracking-wide"
+        className="rounded-full px-1.5 py-0.5 text-[11px] font-semibold tracking-wide"
       >
         Beta
       </span>

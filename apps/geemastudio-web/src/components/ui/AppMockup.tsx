@@ -166,7 +166,7 @@ export function AppMockup() {
         >
           {/* Status bar */}
           <div className="flex flex-shrink-0 items-center justify-between px-5 pb-1 pt-3">
-            <span className="text-[10px] font-medium text-white/50">9:41</span>
+            <span className="text-[11px] font-medium text-white/50">9:41</span>
             {/* Notch */}
             <div className="h-4 w-16 rounded-full bg-black" />
             <div className="flex items-center gap-1">
@@ -221,7 +221,7 @@ export function AppMockup() {
                   </span>
                 </div>
                 <div className="text-sm font-bold text-white">{screen.label}</div>
-                <div className="mt-0.5 text-[10px] text-white/50">{screen.subtitle}</div>
+                <div className="mt-0.5 text-[11px] text-white/50">{screen.subtitle}</div>
               </div>
               <div
                 className="flex h-8 w-8 items-center justify-center rounded-xl text-white"
@@ -262,10 +262,10 @@ export function AppMockup() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-[11px] font-semibold text-white">{item.name}</div>
-                    <div className="truncate text-[10px] text-white/50">{item.service}</div>
+                    <div className="truncate text-[11px] text-white/50">{item.service}</div>
                   </div>
                   <div className="flex flex-shrink-0 flex-col items-end gap-0.5">
-                    <span className="text-[10px] text-white/60">{item.time}</span>
+                    <span className="text-[11px] text-white/60">{item.time}</span>
                     <div
                       className="h-1.5 w-1.5 rounded-full"
                       style={{
@@ -337,7 +337,7 @@ export function AppMockup() {
         className="absolute -left-6 bottom-24 whitespace-nowrap rounded-2xl border border-zinc-100 bg-white px-3 py-2 shadow-xl transition-all duration-500 dark:border-zinc-800 dark:bg-zinc-900"
         style={{ opacity: animating ? 0 : 1 }}
       >
-        <div className="text-[10px] text-zinc-500 dark:text-zinc-400">
+        <div className="text-[11px] text-zinc-500 dark:text-zinc-400">
           {screen.id === 'agenda' && 'Ocupación'}
           {screen.id === 'finanzas' && 'Vs. mes anterior'}
           {screen.id === 'personal' && 'Satisfacción'}

@@ -86,7 +86,7 @@ function QuoteCard({ imageUrl, label }: { imageUrl: string | null; label: string
         </span>
       )}
       <div className="min-w-0 flex-1">
-        <div className="mb-0.5 text-[10px] uppercase leading-none tracking-wide text-fg-subtle">
+        <div className="mb-0.5 text-[11px] uppercase leading-none tracking-wide text-fg-subtle">
           Respondiendo a
         </div>
         <div className="truncate text-xs leading-snug text-fg-soft">
@@ -198,7 +198,7 @@ export function MessageBubble({ message, timeZone }: { message: WabaMessage; tim
           )
         )}
 
-        <div className="flex items-center justify-end gap-1 text-[10px] text-fg-subtle">
+        <div className="flex items-center justify-end gap-1 text-[11px] text-fg-subtle">
           {formatTime(message.createdAt, timeZone)}
           {![
             'text',
@@ -216,7 +216,7 @@ export function MessageBubble({ message, timeZone }: { message: WabaMessage; tim
         </div>
 
         {message.deliveryStatus === 'failed' && message.deliveryError && (
-          <p className="text-[10px] text-red-700 dark:text-red-300">{message.deliveryError}</p>
+          <p className="text-[11px] text-red-700 dark:text-red-300">{message.deliveryError}</p>
         )}
       </div>
     </div>

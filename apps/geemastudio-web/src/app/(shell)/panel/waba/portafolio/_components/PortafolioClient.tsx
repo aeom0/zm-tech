@@ -171,7 +171,7 @@ export function PortafolioClient() {
             >
               {cat.name}
               {filled > 0 && (
-                <span className="text-[10px] font-normal opacity-70">
+                <span className="text-[11px] font-normal opacity-70">
                   {filled} foto{filled !== 1 ? 's' : ''}
                 </span>
               )}
@@ -246,7 +246,7 @@ export function PortafolioClient() {
                       </span>
                       <span
                         className={[
-                          'mt-0.5 block text-[10px] leading-tight',
+                          'mt-0.5 block text-[11px] leading-tight',
                           n > 0 ? 'text-tenant-text' : 'text-fg-subtle',
                         ].join(' ')}
                       >

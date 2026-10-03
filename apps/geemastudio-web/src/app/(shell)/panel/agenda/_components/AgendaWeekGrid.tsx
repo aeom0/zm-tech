@@ -71,7 +71,7 @@ export function AgendaWeekGrid({
             >
               <span
                 className={[
-                  'text-[10px] font-semibold uppercase tracking-wide',
+                  'text-[11px] font-semibold uppercase tracking-wide',
                   today ? 'text-tenant-text' : 'text-fg-subtle',
                 ].join(' ')}
               >
@@ -89,7 +89,7 @@ export function AgendaWeekGrid({
               </span>
               <span
                 className={[
-                  'min-w-[18px] rounded px-1.5 text-[10px] font-bold',
+                  'min-w-[18px] rounded px-1.5 text-[11px] font-bold',
                   count === 0
                     ? 'invisible'
                     : today
@@ -138,16 +138,16 @@ export function AgendaWeekGrid({
                       }}
                       title={`${apt.client_name} · ${hora} · ${svc}`}
                     >
-                      <div className="flex items-center gap-1 text-[10px] font-bold text-fg/70">
+                      <div className="flex items-center gap-1 text-[11px] font-bold text-fg/70">
                         <span className="truncate">{hora}</span>
                         {svcCount > 1 && (
-                          <span className="rounded bg-fg/15 px-1 text-[9px] font-extrabold text-fg">
+                          <span className="rounded bg-fg/15 px-1 text-[11px] font-extrabold text-fg">
                             ×{svcCount}
                           </span>
                         )}
                       </div>
                       <div className="truncate text-[11px] font-semibold text-fg">{svc}</div>
-                      <div className="truncate text-[10px] text-fg/60">{apt.client_name}</div>
+                      <div className="truncate text-[11px] text-fg/60">{apt.client_name}</div>
                     </button>
                   )
                 })

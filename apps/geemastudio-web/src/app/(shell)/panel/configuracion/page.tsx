@@ -347,7 +347,7 @@ export default function PanelConfiguracionPage() {
             type="checkbox"
             checked={featuresWhatsapp}
             onChange={(e) => setFeaturesWhatsapp(e.target.checked)}
-            className="h-4 w-4 rounded border-fg/20 bg-fg/10"
+            className="h-5 w-5 rounded accent-[var(--tenant-primary)]"
           />
           WhatsApp / WABA habilitado en el producto
         </label>

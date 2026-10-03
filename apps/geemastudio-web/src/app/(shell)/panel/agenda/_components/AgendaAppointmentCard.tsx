@@ -64,12 +64,12 @@ export function AgendaAppointmentCard({
       <div className="truncate text-[11px] font-semibold text-white">
         {hora} · {apt.client_name}
       </div>
-      <div className="truncate text-[10px] text-white/70">
+      <div className="truncate text-[11px] text-white/70">
         {serviceName}
         {extra}
       </div>
       {height >= 48 && (
-        <div className="mt-0.5 truncate text-[10px] text-white/60">
+        <div className="mt-0.5 truncate text-[11px] text-white/60">
           {STATUS_LABEL[apt.status] ?? apt.status} ·{' '}
           {formatDashboardCurrency(parseFloat(apt.price || '0'), currencyCode)}
         </div>

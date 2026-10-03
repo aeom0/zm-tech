@@ -173,7 +173,7 @@ export default function PanelAgendaPage() {
               gridTemplateColumns: `56px repeat(${activeEmployees.length}, minmax(160px, 1fr))`,
             }}
           >
-            <div className="sticky left-0 z-20 border-b border-r border-fg/[0.08] bg-sunken px-2 py-3 text-[10px] text-fg-subtle">
+            <div className="sticky left-0 z-20 border-b border-r border-fg/[0.08] bg-sunken px-2 py-3 text-[11px] text-fg-subtle">
               Hora
             </div>
             {activeEmployees.map((emp) => (
@@ -195,7 +195,7 @@ export default function PanelAgendaPage() {
               {gridHours.map((h, i) => (
                 <div
                   key={h}
-                  className="absolute left-0 right-0 border-t border-fg/[0.04] px-1 text-[10px] text-fg-subtle"
+                  className="absolute left-0 right-0 border-t border-fg/[0.04] px-1 text-[11px] text-fg-subtle"
                   style={{ top: i * PX_PER_HOUR, height: PX_PER_HOUR }}
                 >
                   {String(h).padStart(2, '0')}:00

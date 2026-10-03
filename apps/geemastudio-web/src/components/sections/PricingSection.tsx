@@ -8,9 +8,7 @@ import { MessageCircle, ChevronDown, Check } from 'lucide-react'
 
 function wabaLimitLabel(plan: Plan | undefined, fallback: boolean | string): boolean | string {
   if (!plan) return fallback
-  return plan.wabaConversations === 'unlimited'
-    ? '∞'
-    : plan.wabaConversations.toLocaleString('es')
+  return plan.wabaConversations === 'unlimited' ? '∞' : plan.wabaConversations.toLocaleString('es')
 }
 
 /** Filas de la comparativa; la de mensajes incluidos se alimenta de `plans` para no duplicar límites. */
@@ -24,7 +22,7 @@ function buildComparisonRows(plans: Plan[]) {
           pro: wabaLimitLabel(byName('pro'), feat.pro),
           elite: wabaLimitLabel(byName('elite'), feat.elite),
         }
-      : feat,
+      : feat
   )
 }
 

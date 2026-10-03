@@ -184,7 +184,8 @@ export function HeroSection({ data, theme }: HeroSectionProps) {
                 phone={whatsapp}
                 businessName={businessName}
                 label={
-                  heroCtaText ?? (theme.id === 'elegant' ? 'Reservar cita ahora' : 'Reservar mi turno')
+                  heroCtaText ??
+                  (theme.id === 'elegant' ? 'Reservar cita ahora' : 'Reservar mi turno')
                 }
                 className="mb-2.5 block py-4 text-center text-[15px] font-bold no-underline"
                 style={{

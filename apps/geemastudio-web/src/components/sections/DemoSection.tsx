@@ -123,7 +123,7 @@ function PhoneShell({
     >
       {/* Status bar */}
       <div className="flex flex-shrink-0 items-center justify-between px-4 pb-1 pt-3">
-        <span className="text-[10px] font-medium text-white/40">9:41</span>
+        <span className="text-[11px] font-medium text-white/40">9:41</span>
         <div className="h-3 w-12 rounded-full bg-black" />
         <div className="flex items-center gap-1">
           <div className="flex h-2.5 items-end gap-px">
@@ -155,7 +155,7 @@ function PhoneShell({
               height={12}
               className="h-2.5 w-auto"
             />
-            <span className="text-[9px] font-bold">
+            <span className="text-[11px] font-bold">
               <span className="text-white/50">Geema</span>
               <span
                 style={{
@@ -170,7 +170,7 @@ function PhoneShell({
             </span>
           </div>
           <p className="text-[13px] font-bold leading-tight text-white">{title}</p>
-          <p className="mt-0.5 text-[9px] text-white/40">{subtitle}</p>
+          <p className="mt-0.5 text-[11px] text-white/40">{subtitle}</p>
         </div>
         {headerRight ?? (
           <div
@@ -267,7 +267,7 @@ function AgendaMockup({ accent }: { accent: string }) {
       headerRight={
         <div className="flex items-center gap-1">
           <ChevronLeft size={12} color="rgba(255,255,255,0.4)" />
-          <span className="text-[9px] text-white/40">Abr</span>
+          <span className="text-[11px] text-white/40">Abr</span>
           <ChevronRight size={12} color="rgba(255,255,255,0.4)" />
         </div>
       }
@@ -279,7 +279,7 @@ function AgendaMockup({ accent }: { accent: string }) {
             <div key={d} className="flex flex-1 flex-col items-center gap-0.5">
               <span className="text-[8px] text-white/30">{d}</span>
               <div
-                className="flex h-6 w-6 items-center justify-center rounded-full text-[9px] font-bold"
+                className="flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-bold"
                 style={
                   i === selectedDay
                     ? { background: accent, color: '#000' }
@@ -339,13 +339,13 @@ function AgendaMockup({ accent }: { accent: string }) {
                 style={{ backgroundColor: apt.color }}
               />
               <span
-                className="w-8 flex-shrink-0 text-[10px] font-bold"
+                className="w-8 flex-shrink-0 text-[11px] font-bold"
                 style={{ color: apt.color }}
               >
                 {apt.time}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[10px] font-semibold text-white">{apt.client}</p>
+                <p className="truncate text-[11px] font-semibold text-white">{apt.client}</p>
                 <p className="truncate text-[8px] text-white/40">{apt.service}</p>
               </div>
               <div
@@ -403,7 +403,7 @@ function FinanzasMockup({ accent }: { accent: string }) {
           {['Hoy', 'Semana', 'Mes'].map((p, i) => (
             <div
               key={p}
-              className="flex-1 py-1.5 text-center text-[9px] font-semibold"
+              className="flex-1 py-1.5 text-center text-[11px] font-semibold"
               style={
                 i === 2
                   ? { backgroundColor: accent, color: '#000' }
@@ -423,13 +423,13 @@ function FinanzasMockup({ accent }: { accent: string }) {
             border: `1px solid ${accent}30`,
           }}
         >
-          <p className="mb-0.5 text-[9px] text-white/40">Ingresos este mes</p>
+          <p className="mb-0.5 text-[11px] text-white/40">Ingresos este mes</p>
           <p className="text-2xl font-bold" style={{ color: accent }}>
             $ 6,240
           </p>
           <div className="mt-0.5 flex items-center justify-center gap-1">
             <TrendingUp size={9} color="#22c55e" strokeWidth={2.5} />
-            <span className="text-[9px] font-semibold text-green-400">+15% vs. mes anterior</span>
+            <span className="text-[11px] font-semibold text-green-400">+15% vs. mes anterior</span>
           </div>
         </div>
 
@@ -470,9 +470,9 @@ function FinanzasMockup({ accent }: { accent: string }) {
                 {p.client[0]}
               </div>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-[9px] font-semibold text-white">{p.client}</p>
+                <p className="truncate text-[11px] font-semibold text-white">{p.client}</p>
               </div>
-              <span className="text-[9px] font-bold" style={{ color: accent }}>
+              <span className="text-[11px] font-bold" style={{ color: accent }}>
                 {p.amount}
               </span>
               <span
@@ -562,17 +562,17 @@ function PersonalMockup({ accent }: { accent: string }) {
             }}
           >
             <div
-              className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl text-[10px] font-bold text-white"
+              className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl text-[11px] font-bold text-white"
               style={{ backgroundColor: `${s.color}50` }}
             >
               {s.initials}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-[10px] font-semibold text-white">{s.name}</p>
+              <p className="truncate text-[11px] font-semibold text-white">{s.name}</p>
               <p className="text-[8px] text-white/40">{s.role}</p>
             </div>
             <div className="flex flex-col items-end gap-0.5">
-              <span className="text-[9px] font-bold" style={{ color: s.color }}>
+              <span className="text-[11px] font-bold" style={{ color: s.color }}>
                 {s.ingreso}
               </span>
               <span className="text-[8px] text-white/30">{s.citas} citas</span>
@@ -638,7 +638,7 @@ function InventarioMockup({ accent }: { accent: string }) {
           }}
         >
           <AlertTriangle size={11} color="#F59E0B" strokeWidth={2} />
-          <span className="text-[9px] font-semibold text-yellow-400">2 productos bajo mínimo</span>
+          <span className="text-[11px] font-semibold text-yellow-400">2 productos bajo mínimo</span>
         </div>
 
         {/* Items de inventario */}
@@ -656,7 +656,7 @@ function InventarioMockup({ accent }: { accent: string }) {
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-1">
-                  <p className="truncate text-[9px] font-semibold text-white">{item.name}</p>
+                  <p className="truncate text-[11px] font-semibold text-white">{item.name}</p>
                   {item.lowStock && <AlertTriangle size={8} color="#F59E0B" strokeWidth={2.5} />}
                 </div>
                 <p className="text-[8px] text-white/30">
@@ -725,7 +725,7 @@ function WhatsAppMockup({ accent }: { accent: string }) {
             <MessageCircle size={12} color="white" strokeWidth={2} />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-[9px] font-bold text-white">Nail &amp; Glow Spa</p>
+            <p className="text-[11px] font-bold text-white">Nail &amp; Glow Spa</p>
             <p className="text-[8px] text-green-400">● En línea · bot activo</p>
           </div>
           <span
@@ -751,7 +751,7 @@ function WhatsAppMockup({ accent }: { accent: string }) {
                   border: msg.from === 'bot' ? '1px solid rgba(37,211,102,0.25)' : 'none',
                 }}
               >
-                <p className="text-[9px] leading-relaxed text-white">{msg.text}</p>
+                <p className="text-[11px] leading-relaxed text-white">{msg.text}</p>
               </div>
             </div>
           ))}
@@ -765,7 +765,7 @@ function WhatsAppMockup({ accent }: { accent: string }) {
             border: '1px solid rgba(255,255,255,0.1)',
           }}
         >
-          <span className="flex-1 text-[9px] text-white/20">Escribe un mensaje…</span>
+          <span className="flex-1 text-[11px] text-white/20">Escribe un mensaje…</span>
           <div
             className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full"
             style={{ backgroundColor: accent }}

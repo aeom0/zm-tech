@@ -14,7 +14,7 @@ function KindBadge({ kind }: { kind: SoldKind }) {
   const { kindColor } = useExecutiveFmt()
   return (
     <span
-      className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+      className="inline-flex items-center rounded-md px-1.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide"
       style={{
         color: kindColor[kind],
         backgroundColor: `${kindColor[kind]}18`,

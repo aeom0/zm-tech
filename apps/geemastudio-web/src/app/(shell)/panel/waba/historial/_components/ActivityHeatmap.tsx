@@ -52,14 +52,14 @@ export function ActivityHeatmap({ celdas, totalEntrantesPeriodo }: ActivityHeatm
         >
           <div />
           {DIAS_CORTO.map((d) => (
-            <div key={d} className="py-1 text-center text-[10px] font-semibold text-fg-muted">
+            <div key={d} className="py-1 text-center text-[11px] font-semibold text-fg-muted">
               {d}
             </div>
           ))}
 
           {Array.from({ length: 24 }, (_, hora) => (
             <div key={hora} className="contents">
-              <div className="flex items-center justify-end pr-1 text-[9px] tabular-nums text-fg-subtle">
+              <div className="flex items-center justify-end pr-1 text-[11px] tabular-nums text-fg-subtle">
                 {horasEtiqueta.includes(hora) ? `${hora}h` : ''}
               </div>
               {DIAS_CORTO.map((_, dia) => {
