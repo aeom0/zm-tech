@@ -16,6 +16,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 - **Vercel** — previews desactivados y build solo de la app afectada en `main`.
 - **Pendiente** — Fase 5 (descarga del APK) pospuesta; precios de add-ons a la espera de la tarifa de Meta.
 
+### Corregido (2-oct 2026 — plantilla de cita al reprogramar)
+
+- Migración `20261002143847_reset_appointment_reminders_on_date_change` en la BD compartida: al cambiar `appointments.date` (reprogramar en la app de Geema, en la de ZM o por el bot) se limpian `reminder_sent_at`, `same_day_reminder_sent_at` y `client_confirmed_at`. Sin eso el cron de 24 h no manda la plantilla de la hora nueva.
+- El reintento del recordatorio del mismo día queda en el runtime WABA de ZM (`same-day-appointment-reminder`), que es el que corre en `udelxwwnyivknslueerr` para los dos productos. El token de ese cron vive en Vault (`waba_token_zm-lash-nails`), compartido.
+
 ### Validado (2-oct 2026 — Corte 1: panel y app de ZM en Geema)
 
 - **Plan 13** — checklist D1–D4, W1–W6, R1–R3b completo: código y prod (solo lectura) más confirmación de Alberto para Simulador y push físico; evidencia en § "Validación Corte 1". **Corte 1 cerrado.**
