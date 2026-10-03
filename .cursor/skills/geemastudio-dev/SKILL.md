@@ -378,12 +378,12 @@ El símbolo no incluye texto "GeemaStudio". Ver CHANGELOG v1.4.4.
 
 Mobile (`apps/geemastudio-mobile/assets/`), fuentes SVG → PNG (export 1024×1024 con Inkscape):
 
-| Fuente                                | PNG                                      |
-| ------------------------------------- | ---------------------------------------- |
-| logo-diamondSparkleNGlow.svg          | splash-logo.png (transparente)           |
-| logo-diamondSparkle-icon.svg          | icon.png (opaco; = adaptive-bg + adaptive) |
-| logo-diamondSparkle-adaptive.svg      | adaptive-icon.png (transparente)         |
-| logo-diamondSparkle-adaptive-bg.svg   | adaptive-icon-background.png (opaco)     |
+| Fuente                              | PNG                                        |
+| ----------------------------------- | ------------------------------------------ |
+| logo-diamondSparkleNGlow.svg        | splash-logo.png (transparente)             |
+| logo-diamondSparkle-icon.svg        | icon.png (opaco; = adaptive-bg + adaptive) |
+| logo-diamondSparkle-adaptive.svg    | adaptive-icon.png (transparente)           |
+| logo-diamondSparkle-adaptive-bg.svg | adaptive-icon-background.png (opaco)       |
 
 `notification-icon.png/.svg` (push Android) no se regenera con este flujo.
 
