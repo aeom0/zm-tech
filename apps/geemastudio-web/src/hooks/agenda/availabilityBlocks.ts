@@ -18,6 +18,28 @@ function toMinutes(time: string): number {
   return (h || 0) * 60 + (m || 0)
 }
 
+/** Recorta [start, end) para que no pise intervalos ya ocupados por un bloque más importante. */
+function gapsOutside(
+  start: number,
+  end: number,
+  occupied: { startMin: number; endMin: number }[]
+): { start: number; end: number }[] {
+  let free = [{ start, end }]
+  for (const block of occupied) {
+    const next: { start: number; end: number }[] = []
+    for (const piece of free) {
+      if (block.endMin <= piece.start || block.startMin >= piece.end) {
+        next.push(piece)
+        continue
+      }
+      if (block.startMin > piece.start) next.push({ start: piece.start, end: block.startMin })
+      if (block.endMin < piece.end) next.push({ start: block.endMin, end: piece.end })
+    }
+    free = next
+  }
+  return free.filter((piece) => piece.end > piece.start)
+}
+
 /**
  * Bloques no disponibles por profesional para un día: cubierta por otra, ausencias (todo el día
  * o por tramo) y fuera de su horario propio. Mismas reglas que `get_available_slots`.
@@ -34,12 +56,15 @@ export function buildDayBlocks(
     const cover = data.coverages.find((c) => c.covered_employee_id === id)
     if (cover) {
       const by = nameById.get(cover.covering_employee_id)
+      // Cubierta todo el día: no se pinta horario ni ausencia encima.
       blocks.push({
         startMin: 0,
         endMin: DAY_MINUTES,
         label: by ? `Cubierta por ${by}` : 'Cubierta por otra persona',
         tone: 'covered',
       })
+      result.set(id, blocks)
+      continue
     }
 
     for (const t of data.timeOff.filter((x) => x.employee_id === id)) {
@@ -62,28 +87,21 @@ export function buildDayBlocks(
         .filter((s) => s.start_time && s.end_time)
         .map((s) => ({ start: toMinutes(s.start_time), end: toMinutes(s.end_time) }))
         .sort((a, b) => a.start - b.start)
+      const raw: { start: number; end: number }[] = []
       if (real.length === 0) {
-        blocks.push({ startMin: 0, endMin: DAY_MINUTES, label: 'No trabaja este día', tone: 'off' })
+        raw.push({ start: 0, end: DAY_MINUTES })
       } else {
         let cursor = 0
         for (const r of real) {
-          if (r.start > cursor) {
-            blocks.push({
-              startMin: cursor,
-              endMin: r.start,
-              label: 'Fuera de horario',
-              tone: 'off',
-            })
-          }
+          if (r.start > cursor) raw.push({ start: cursor, end: r.start })
           cursor = Math.max(cursor, r.end)
         }
-        if (cursor < DAY_MINUTES) {
-          blocks.push({
-            startMin: cursor,
-            endMin: DAY_MINUTES,
-            label: 'Fuera de horario',
-            tone: 'off',
-          })
+        if (cursor < DAY_MINUTES) raw.push({ start: cursor, end: DAY_MINUTES })
+      }
+      const label = real.length === 0 ? 'No trabaja este día' : 'Fuera de horario'
+      for (const piece of raw) {
+        for (const gap of gapsOutside(piece.start, piece.end, blocks)) {
+          blocks.push({ startMin: gap.start, endMin: gap.end, label, tone: 'off' })
         }
       }
     }
