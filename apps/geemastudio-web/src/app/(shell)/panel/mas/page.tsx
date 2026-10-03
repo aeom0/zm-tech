@@ -37,7 +37,7 @@ const MODULE_SECTIONS = [
       {
         href: '/panel/waba/mensajes',
         label: 'WhatsApp',
-        description: 'Bandeja de chats, bot y respuestas',
+        description: 'Bandeja de chats, asistente y respuestas',
         icon: MessageCircle,
       },
     ],

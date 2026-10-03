@@ -142,7 +142,7 @@ async function selectByFilter(
   column: 'id' | 'tenant_slug',
   value: string
 ): Promise<WebSettings | null> {
-  if (!supabase) throw new Error('Supabase no está configurado')
+  if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
 
   const { data, error } = await supabase
     .from('tenant_settings')
@@ -156,7 +156,7 @@ async function selectByFilter(
 }
 
 export async function fetchWebSettings(): Promise<WebSettings | null> {
-  if (!supabase) throw new Error('Supabase no está configurado')
+  if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
 
   const {
     data: { user },
@@ -205,7 +205,7 @@ function patchToColumns(patch: WebSettingsPatch): Record<string, unknown> {
 }
 
 export async function updateWebSettings(rowId: string, patch: WebSettingsPatch): Promise<void> {
-  if (!supabase) throw new Error('Supabase no está configurado')
+  if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
   const payload = patchToColumns(patch)
   const { error } = await supabase.from('tenant_settings').update(payload).eq('id', rowId)
   if (error) throw new Error(error.message)
@@ -220,7 +220,7 @@ export async function uploadWebAsset(
   folder: WebAssetFolder,
   file: File
 ): Promise<string> {
-  if (!supabase) throw new Error('Supabase no está configurado')
+  if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
   const slug = tenantSlug.trim() || 'tenant'
   const ext = (file.type.split('/')[1] || 'webp').toLowerCase()
   const path = `${slug}/${folder}/${Date.now()}.${ext}`

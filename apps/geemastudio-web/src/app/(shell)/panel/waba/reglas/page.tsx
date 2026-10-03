@@ -86,8 +86,8 @@ export default function PanelWabaReglasPage() {
 
   return (
     <div className="space-y-4">
-      <PageHeader eyebrow="WhatsApp" title="Reglas del bot" description={<>Horario, abono y qué chica atiende cada categoría. El cupo y los medios de pago no se
-          modifican aquí. El bot aplica el cambio en unos 5 minutos, sin deploy.</>} />
+      <PageHeader eyebrow="WhatsApp" title="Reglas del asistente" description={<>Horario, abono y qué chica atiende cada categoría. El cupo y los medios de pago no se
+          modifican aquí. El asistente aplica el cambio en unos 5 minutos, sin que tengas que hacer nada.</>} />
 
       {query.isError && (
         <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200">
@@ -135,7 +135,7 @@ export default function PanelWabaReglasPage() {
                   checked={form.slot00}
                   onChange={(e) => set({ slot00: e.target.checked })}
                 />
-                Slots en punto (:00)
+                Citas en punto (:00)
               </label>
               <label className="inline-flex min-h-11 items-center gap-2">
                 <input
@@ -143,7 +143,7 @@ export default function PanelWabaReglasPage() {
                   checked={form.slot30}
                   onChange={(e) => set({ slot30: e.target.checked })}
                 />
-                Slots y media (:30)
+                Citas y media (:30)
               </label>
             </div>
             <label className="block space-y-1">

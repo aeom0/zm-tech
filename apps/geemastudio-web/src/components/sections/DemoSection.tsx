@@ -93,7 +93,7 @@ const DEMO_TABS: {
     icon: MessageCircle,
     title: 'Agenda por WhatsApp',
     description:
-      'El bot atiende a tus clientes 24/7: responde, muestra el catálogo, toma la cita y envía confirmación con IA.',
+      'El asistente atiende a tus clientes 24/7: responde, muestra el catálogo, toma la cita y envía confirmación con IA.',
     accent: '#25D366',
     stats: [
       { value: '24/7', label: 'Disponible sin intervención humana' },

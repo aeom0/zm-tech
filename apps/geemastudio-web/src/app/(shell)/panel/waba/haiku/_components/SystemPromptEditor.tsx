@@ -54,7 +54,7 @@ export function SystemPromptEditor({
       <div className="flex items-start justify-between gap-4 border-b border-fg/[0.08] p-5">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-base font-bold text-fg">Personalidad del bot</h2>
+            <h2 className="text-base font-bold text-fg">Personalidad del asistente</h2>
             <span className="border-[var(--tenant-primary)]/20 bg-[var(--tenant-primary)]/10 rounded-full border px-2 py-0.5 text-[11px] text-tenant-text">
               IA
             </span>
@@ -78,7 +78,7 @@ export function SystemPromptEditor({
           }}
           rows={18}
           className="focus:border-[var(--tenant-primary)]/40 min-h-[400px] w-full resize-y rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 font-mono text-base text-fg outline-none placeholder:text-fg-subtle md:text-sm"
-          placeholder="Cómo debe hablar el bot…"
+          placeholder="Cómo debe hablar el asistente…"
         />
 
         <div className="flex flex-wrap items-center justify-between gap-3">

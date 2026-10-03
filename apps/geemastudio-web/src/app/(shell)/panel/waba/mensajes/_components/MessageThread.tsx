@@ -326,7 +326,7 @@ export function MessageThread({
                       : 'border-emerald-500/25 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300',
                   ].join(' ')}
                 >
-                  {conversation.botPaused ? 'Bot en pausa' : 'Bot activo'}
+                  {conversation.botPaused ? 'Asistente en pausa' : 'Asistente activo'}
                 </span>
               </div>
             </div>
@@ -372,7 +372,7 @@ export function MessageThread({
             ) : (
               <Pause className="h-3.5 w-3.5" />
             )}
-            {conversation.botPaused ? 'Reactivar bot' : 'Pausar bot'}
+            {conversation.botPaused ? 'Reactivar asistente' : 'Pausar asistente'}
           </button>
           <button
             type="button"
@@ -380,8 +380,8 @@ export function MessageThread({
             disabled={toggleBlockMutation.isPending || blockedQuery.isLoading}
             title={
               blockedQuery.data
-                ? 'Desbloquear: el bot volverá a responder a este número'
-                : 'Bloquear: el bot dejará de responder a este número'
+                ? 'Desbloquear: el asistente volverá a responder a este número'
+                : 'Bloquear: el asistente dejará de responder a este número'
             }
             className={[
               'inline-flex min-h-[44px] items-center gap-1.5 rounded-xl border px-2.5 py-1.5 text-xs font-medium disabled:opacity-50 md:min-h-0',
@@ -453,7 +453,7 @@ export function MessageThread({
 
       {conversation.botPaused && (
         <div className="border-b border-amber-500/20 bg-amber-500/10 px-4 py-2 text-xs text-amber-800 dark:text-amber-200">
-          <p>El bot está en pausa para este número — solo el staff responde hasta reactivarlo.</p>
+          <p>El asistente está en pausa para este número — solo el staff responde hasta reactivarlo.</p>
           <button
             type="button"
             onClick={handleHaikuAgenda}
@@ -472,7 +472,7 @@ export function MessageThread({
 
       {blockedQuery.data && (
         <div className="border-b border-red-500/20 bg-red-500/10 px-4 py-2 text-xs text-red-800 dark:text-red-200">
-          Número bloqueado — el bot no le responderá hasta desbloquearlo.
+          Número bloqueado — el asistente no le responderá hasta desbloquearlo.
         </div>
       )}
 

@@ -22,7 +22,7 @@ function useIsAdmin() {
     queryKey: ['web_waba_portafolio_is_admin'],
     enabled: !!supabase,
     queryFn: async (): Promise<boolean> => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const {
         data: { user },
       } = await supabase.auth.getUser()
@@ -123,7 +123,7 @@ export function PortafolioClient() {
           <h1 className="text-xl font-bold text-fg sm:text-2xl">Portafolio de trabajos</h1>
           <p className="mt-1 text-sm text-fg-muted">
             Hasta {PORTFOLIO_SLOTS} fotos por servicio del catálogo. Cuando un cliente pide ver
-            trabajos, el bot envía las del servicio concreto (o una lista si solo indica el rubro).
+            trabajos, el asistente envía las del servicio concreto (o una lista si solo indica el rubro).
           </p>
         </div>
         <button

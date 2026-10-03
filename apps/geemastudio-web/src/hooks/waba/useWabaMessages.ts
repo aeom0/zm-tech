@@ -58,7 +58,7 @@ function useWabaCatalog() {
     enabled: !!supabase,
     staleTime: 5 * 60_000,
     queryFn: async (): Promise<CatalogMap> => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const [svcs, packs, promos] = await Promise.all([
         supabase.from('services').select('id, name'),
         supabase.from('packs').select('id, title'),
@@ -143,7 +143,7 @@ export function useWabaConversations() {
     staleTime: 5_000,
     refetchInterval: 10_000,
     queryFn: async (): Promise<WabaConversation[]> => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
 
       const { data, error } = await supabase
         .from('wa_messages')

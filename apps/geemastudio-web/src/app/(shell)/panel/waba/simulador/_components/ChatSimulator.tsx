@@ -84,7 +84,7 @@ export function ChatSimulator() {
             <div className="text-xs text-fg-subtle">WhatsApp</div>
             <h1 className="text-xl font-bold text-fg sm:text-2xl">Simulador de chat</h1>
             <p className="mt-0.5 text-sm text-fg-muted">
-              Prueba cómo responde el bot sin usar WhatsApp real (teléfonos QA).
+              Prueba cómo responde el asistente sin enviar mensajes reales (teléfonos de prueba).
             </p>
           </div>
           <button
@@ -149,7 +149,7 @@ export function ChatSimulator() {
           <div className="flex justify-start">
             <div className="inline-flex items-center gap-2 rounded-2xl rounded-bl-md border border-fg/[0.08] bg-fg/[0.06] px-3 py-2 text-xs text-fg-muted">
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              El bot está respondiendo…
+              El asistente está respondiendo…
             </div>
           </div>
         )}

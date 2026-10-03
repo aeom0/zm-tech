@@ -24,7 +24,7 @@ export function useClientDetail(clientId: string | null) {
     staleTime: 60_000,
     queryFn: async (): Promise<AppointmentHistory[]> => {
       if (!clientId) return []
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
 
       const { data: apts, error } = await supabase
         .from('appointments')

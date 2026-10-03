@@ -22,7 +22,7 @@ export function useWabaStatus() {
     enabled: !!supabase,
     staleTime: 30_000,
     queryFn: async (): Promise<WabaStatus | null> => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const base = await fetchTenantSettingsForSession()
       if (!base) return null
 
@@ -74,7 +74,7 @@ function looksLikeUuid(value: string): boolean {
  * Orden: JWT claim → tenant_settings.tenant_slug → profiles.tenant_id si no es UUID.
  */
 export async function resolveTenantSlugForWrites(): Promise<string> {
-  if (!supabase) throw new Error('Supabase no está configurado')
+  if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
   const {
     data: { session },
   } = await supabase.auth.getSession()

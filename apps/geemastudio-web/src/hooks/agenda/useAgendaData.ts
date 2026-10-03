@@ -21,7 +21,7 @@ export function useAgendaTenantSchedule() {
     enabled: !!supabase,
     staleTime: 60_000,
     queryFn: async () => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const {
         data: { user },
       } = await supabase.auth.getUser()
@@ -153,7 +153,7 @@ export function useAgendaServicesMap() {
     enabled: !!supabase,
     staleTime: 120_000,
     queryFn: async () => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const { data, error } = await supabase.from('services').select('id, name')
       if (error) throw new Error(error.message)
       const map = new Map<string, string>()

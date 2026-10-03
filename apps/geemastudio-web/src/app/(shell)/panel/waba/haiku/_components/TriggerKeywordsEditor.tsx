@@ -128,7 +128,7 @@ export function TriggerKeywordsEditor({
       <div className="border-b border-fg/[0.08] p-5">
         <h2 className="text-base font-bold text-fg">Keywords de activación</h2>
         <p className="mt-1 text-sm text-fg-muted">
-          Frases que cambian el comportamiento del bot: piden recomendación, hacen preguntas libres
+          Frases que cambian el comportamiento del asistente: piden recomendación, hacen preguntas libres
           o solicitan hablar con una persona. Sin fila guardada en BD se usa el default de fábrica.
         </p>
         <p className="mt-1 text-xs text-fg-subtle">{total} keywords en total</p>
@@ -147,7 +147,7 @@ export function TriggerKeywordsEditor({
         />
         <KeywordsSection
           title="Pregunta libre"
-          description="Dudas generales que el bot responde sin salir del guion."
+          description="Dudas generales que el asistente responde sin salir del guion."
           color="green"
           values={draft.free_question}
           onChange={(v) => {
@@ -157,7 +157,7 @@ export function TriggerKeywordsEditor({
         />
         <KeywordsSection
           title="Pide humano"
-          description="Corta el bot y marca la conversación para atención manual."
+          description="Corta el asistente y marca la conversación para atención manual."
           color="red"
           values={draft.blocked}
           onChange={(v) => {

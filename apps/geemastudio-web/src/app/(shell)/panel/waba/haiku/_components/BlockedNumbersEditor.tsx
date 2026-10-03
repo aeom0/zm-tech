@@ -60,7 +60,7 @@ export function BlockedNumbersEditor({
       <div className="border-b border-fg/[0.08] p-5">
         <h2 className="text-base font-bold text-fg">Números bloqueados</h2>
         <p className="mt-1 text-sm text-fg-muted">
-          El bot ignora mensajes de estos números (spam, competencia, pruebas). Se sincroniza con el
+          El asistente ignora mensajes de estos números (spam, competencia, pruebas). Se sincroniza con el
           bloqueo rápido desde Mensajes.
         </p>
       </div>

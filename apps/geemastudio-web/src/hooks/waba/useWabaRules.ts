@@ -31,7 +31,7 @@ export function useWabaRules() {
     queryKey: ['tenant_settings', 'waba_rules'],
     enabled: !!supabase,
     queryFn: async (): Promise<WabaRulesSnapshot> => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const tenantId = await resolveTenantSlugForWrites()
       const [settingsRes, employeesRes, categoriesRes] = await Promise.all([
         supabase
@@ -89,7 +89,7 @@ export function useWabaRules() {
       tenantSlug: string
       rules: Record<string, unknown>
     }) => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const { error } = await supabase
         .from('tenant_settings')
         .update({ waba_rules: rules, updated_at: new Date().toISOString() })

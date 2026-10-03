@@ -38,7 +38,7 @@ export function useUpdateTenantSettings() {
 export function useUploadTenantLogo() {
   return useMutation({
     mutationFn: async (file: File) => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const {
         data: { user },
       } = await supabase.auth.getUser()

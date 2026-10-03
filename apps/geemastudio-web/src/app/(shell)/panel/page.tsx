@@ -52,7 +52,7 @@ const MODULES = [
   {
     href: '/panel/waba/mensajes',
     label: 'WhatsApp',
-    description: 'Mensajes, bot y campañas',
+    description: 'Mensajes, asistente y campañas',
     icon: MessageCircle,
   },
   {

@@ -38,7 +38,7 @@ export function SimulatorUserPicker({
                   ? 'bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)] shadow-sm'
                   : 'text-fg-soft hover:bg-fg/[0.06]',
               ].join(' ')}
-              title={`Teléfono QA ${opt.phone}`}
+              title={`Teléfono de prueba ${opt.phone}`}
             >
               {opt.label}
             </button>

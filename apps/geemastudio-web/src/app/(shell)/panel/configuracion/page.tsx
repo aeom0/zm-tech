@@ -349,7 +349,7 @@ export default function PanelConfiguracionPage() {
             onChange={(e) => setFeaturesWhatsapp(e.target.checked)}
             className="h-5 w-5 rounded accent-[var(--tenant-primary)]"
           />
-          WhatsApp / WABA habilitado en el producto
+          WhatsApp habilitado para tu negocio
         </label>
       </Section>
 

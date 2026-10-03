@@ -35,7 +35,7 @@ function useIsAdmin() {
     queryKey: ['web_waba_campanas_is_admin'],
     enabled: !!supabase,
     queryFn: async (): Promise<boolean> => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const {
         data: { user },
       } = await supabase.auth.getUser()
@@ -400,7 +400,7 @@ export function CampanasClient() {
           <div className="text-xs text-fg-subtle">WhatsApp</div>
           <h1 className="text-2xl font-bold text-fg">Campañas (Meta Ads + tardanzas)</h1>
           <p className="mt-1 text-sm text-fg-muted">
-            Cambia imágenes y textos sin ayuda técnica. Si ocurre un problema, el bot seguirá
+            Cambia imágenes y textos sin ayuda técnica. Si ocurre un problema, el asistente seguirá
             respondiendo con la configuración actual.
           </p>
         </div>
@@ -638,7 +638,7 @@ export function CampanasClient() {
           value={emotionalAlmostCloseExt}
           onChange={setEmotionalAlmostCloseExt}
           onSave={saveEmotionalAlmostCloseExt}
-          note="El bot añade al final: «Te reenviamos el calendario 👇»"
+          note="El asistente añade al final: «Te reenviamos el calendario 👇»"
         />
 
         <ConfigTextCard
@@ -667,7 +667,7 @@ export function CampanasClient() {
 
         <ConfigTextCard
           title="Caption foto al cotizar precio (anuncios · Extensiones)"
-          description="Cuando el bot envía foto proactiva tras dar precio."
+          description="Cuando el asistente envía foto proactiva tras dar precio."
           value={emotionalPriceCtaExt}
           onChange={setEmotionalPriceCtaExt}
           onSave={saveEmotionalPriceCtaExt}

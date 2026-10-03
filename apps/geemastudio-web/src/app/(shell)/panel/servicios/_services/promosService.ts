@@ -42,7 +42,7 @@ const ZM_PROMOS_SELECT =
 function requireSupabase() {
   if (!supabase) {
     throw new Error(
-      'Supabase no está configurado. Revisa NEXT_PUBLIC_SUPABASE_* en apps/web/.env.local'
+      'No se pudo conectar. Intenta de nuevo.'
     )
   }
   return supabase

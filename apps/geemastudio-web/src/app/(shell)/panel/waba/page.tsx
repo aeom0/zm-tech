@@ -41,7 +41,7 @@ const QUICK_LINKS: QuickLink[] = [
   {
     href: '/panel/waba/portafolio',
     label: 'Portafolio',
-    description: 'Catálogo de servicios y fotos compartidas por el bot',
+    description: 'Catálogo de servicios y fotos compartidas por el asistente',
     icon: Images,
   },
   {
@@ -53,7 +53,7 @@ const QUICK_LINKS: QuickLink[] = [
   {
     href: '/panel/waba/simulador',
     label: 'Simulador',
-    description: 'Probar respuestas del bot sin enviar mensajes reales',
+    description: 'Probar respuestas del asistente sin enviar mensajes reales',
     icon: MessageSquare,
   },
   {
@@ -97,7 +97,7 @@ export default function PanelWabaPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="WhatsApp" description="Estado de la integración WABA, historial de chats y personalidad del asistente." />
+      <PageHeader title="WhatsApp" description="Estado de tu WhatsApp, historial de chats y personalidad del asistente." />
 
       {isError && (
         <div className="rounded-2xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-sm text-red-800 dark:text-red-200">

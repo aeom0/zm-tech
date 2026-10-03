@@ -47,7 +47,7 @@ export type SendTextOptions = {
 }
 
 async function invokeSimulator(body: Record<string, unknown>) {
-  if (!supabase) throw new Error('Supabase no está configurado')
+  if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
 
   const { data: sessionData } = await supabase.auth.getSession()
   if (!sessionData?.session?.access_token) {
@@ -173,7 +173,7 @@ export function useSimulatorChat() {
       setMessages((prev) => [...prev, ...botBubbles])
       if (botBubbles.length === 0) {
         setError(
-          'El bot no respondió esta vez. Vuelve a enviar el mensaje o reinicia la conversación.'
+          'El asistente no respondió esta vez. Vuelve a enviar el mensaje o reinicia la conversación.'
         )
       }
     } catch (e) {
@@ -220,7 +220,7 @@ export function useSimulatorChat() {
       }))
       setMessages((prev) => [...prev, ...botBubbles])
       if (botBubbles.length === 0) {
-        setError('El bot no respondió a esa opción. Prueba otra o reinicia la conversación.')
+        setError('El asistente no respondió a esa opción. Prueba otra o reinicia la conversación.')
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'No se pudo enviar la opción')

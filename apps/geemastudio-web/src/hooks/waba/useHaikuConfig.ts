@@ -96,7 +96,7 @@ export function useHaikuConfig() {
     enabled: !!supabase,
     staleTime: 30_000,
     queryFn: async (): Promise<HaikuConfig> => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const { data, error } = await supabase
         .from('waba_config')
         .select('config_key, config_value, updated_at')
@@ -202,7 +202,7 @@ export function useHaikuConfig() {
       label: string
       sort_order: number
     }) => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const tenant_id = await resolveTenantSlugForWrites()
 
       const { error } = await supabase.from('waba_config').upsert(

@@ -25,7 +25,7 @@ export function useCampanasConfig() {
     queryKey: ['web_waba_config', 'campanas'],
     enabled: !!supabase,
     queryFn: async (): Promise<WabaConfigRow[]> => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const { data, error } = await supabase
         .from('waba_config')
         .select('*')
@@ -38,7 +38,7 @@ export function useCampanasConfig() {
 
   const mutation = useMutation({
     mutationFn: async ({ id, config_value }: { id: string; config_value: Record<string, unknown> }) => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       // Resuelve el tenant aunque no se use en el UPDATE (RLS ya valida vía current_tenant_id());
       // sirve para fallar rápido y con mensaje claro si la sesión no tiene tenant resuelto.
       await resolveTenantSlugForWrites()

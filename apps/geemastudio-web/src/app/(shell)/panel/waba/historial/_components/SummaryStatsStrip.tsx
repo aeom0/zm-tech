@@ -28,11 +28,11 @@ export function SummaryStatsStrip({
       icon: Users,
       label: 'Clientes únicos',
       value: clientesUnicos,
-      hint: 'Que escribieron al bot',
+      hint: 'Que escribieron al asistente',
     },
     {
       icon: Send,
-      label: 'Respuestas del bot',
+      label: 'Respuestas del asistente',
       value: respuestasBot,
       hint: 'Mensajes enviados al cliente',
     },

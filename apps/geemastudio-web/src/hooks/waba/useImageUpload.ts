@@ -60,7 +60,7 @@ export function useImageUpload(): UseImageUploadResult {
     path: string,
     kind: UploadKind = 'image'
   ): Promise<string> => {
-    if (!supabase) throw new Error('Supabase no está configurado')
+    if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
 
     const rules = UPLOAD_RULES[kind]
     if (!rules.allowedTypes.includes(file.type) || file.size > rules.maxFileSize) {

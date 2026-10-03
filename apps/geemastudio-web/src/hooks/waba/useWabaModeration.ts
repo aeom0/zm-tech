@@ -8,7 +8,7 @@ import { resolveTenantSlugForWrites } from './useWabaStatus'
 const BLOCKED_CONFIG_KEY = 'blocked_phone_numbers'
 
 async function fetchBlockedPhones(): Promise<string[]> {
-  if (!supabase) throw new Error('Supabase no está configurado')
+  if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
   const { data, error } = await supabase
     .from('waba_config')
     .select('config_value')
@@ -38,7 +38,7 @@ export function useToggleWabaBlock(phone: string | null) {
 
   return useMutation({
     mutationFn: async (): Promise<boolean> => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       if (!phone) throw new Error('Falta el teléfono')
 
       const currentList = await fetchBlockedPhones()
@@ -76,7 +76,7 @@ export function useDeleteWabaThread() {
 
   return useMutation({
     mutationFn: async (phone: string) => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
 
       const { error: messagesError } = await supabase.from('wa_messages').delete().eq('phone', phone)
       if (messagesError) throw new Error(messagesError.message)

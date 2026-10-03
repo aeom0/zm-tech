@@ -36,7 +36,7 @@ export function useServicios(categoryId?: string) {
     queryFn: async () => {
       if (!supabase) {
         throw new Error(
-          'Supabase no está configurado. Revisa NEXT_PUBLIC_SUPABASE_* en apps/web/.env.local'
+          'No se pudo conectar. Intenta de nuevo.'
         )
       }
 
@@ -71,7 +71,7 @@ export function useUpsertServicio() {
         icon?: string | null
       }
     ) => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
 
       const normalizedPrice = String(svc.price).replace(',', '.')
       const payload = {
@@ -100,7 +100,7 @@ export function useToggleServicio() {
 
   return useMutation({
     mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const { error } = await supabase.from('services').update({ is_active }).eq('id', id)
       if (error) throw error
     },
@@ -113,7 +113,7 @@ export function useDeleteServicio() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const { error } = await supabase.from('services').delete().eq('id', id)
       if (error) throw error
     },

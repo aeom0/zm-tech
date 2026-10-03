@@ -287,7 +287,7 @@ export function useWabaHistorial(period: HistorialPeriod) {
     enabled: !!supabase,
     staleTime: 5 * 60 * 1000,
     queryFn: async () => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const { data, error } = await supabase
         .from('wa_messages')
         .select('direction, created_at, phone')
@@ -324,7 +324,7 @@ export function useWabaHistorial(period: HistorialPeriod) {
     enabled: !!supabase,
     staleTime: 5 * 60 * 1000,
     queryFn: async () => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const { data, error } = await supabase
         .from('wa_messages')
         .select('step_before, direction, created_at')

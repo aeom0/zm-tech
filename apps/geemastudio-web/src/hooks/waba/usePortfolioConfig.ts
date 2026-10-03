@@ -61,7 +61,7 @@ export function usePortfolioCatalog() {
     queryKey: ['web_waba_portfolio_catalog'],
     enabled: !!supabase,
     queryFn: async () => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const [catsRes, svcsRes] = await Promise.all([
         supabase
           .from('service_categories')
@@ -89,7 +89,7 @@ export function usePortfolioImageCounts() {
     queryKey: ['web_waba_portfolio_counts'],
     enabled: !!supabase,
     queryFn: async () => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const { data, error } = await supabase.from('service_portfolio_images').select('service_id')
       if (error) throw error
       const counts: Record<string, number> = {}
@@ -109,7 +109,7 @@ export function useServicePortfolioSlots(serviceId: string | null) {
     queryKey: ['web_waba_portfolio_slots', serviceId],
     enabled: !!supabase && !!serviceId,
     queryFn: async () => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const { data, error } = await supabase
         .from('service_portfolio_images')
         .select('id, image_url, caption, sort_order')
@@ -135,7 +135,7 @@ export function useServicePortfolioSlots(serviceId: string | null) {
       caption: string
       existingId?: string
     }) => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const { serviceId: sid, sortOrder, url, caption, existingId } = args
       const trimmed = url.trim()
 
@@ -206,7 +206,7 @@ export function useMoveSlotMutation() {
       sourceServiceId: string
       targetServiceId: string
     }) => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const { existingId, targetServiceId } = args
 
       const { data: targetRows, error: targetErr } = await supabase

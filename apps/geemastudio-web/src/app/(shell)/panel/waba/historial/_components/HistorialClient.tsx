@@ -7,6 +7,7 @@ import {
   WABA_HISTORIAL_MSG_CAP,
   type HistorialPeriod,
 } from '../_hooks/useWabaHistorial'
+import { SegmentedControl } from '@/components/ui/SegmentedControl'
 import { SummaryStatsStrip } from './SummaryStatsStrip'
 import { VolumeChart } from './VolumeChart'
 import { HaikuUsageCard } from './HaikuUsageCard'
@@ -39,29 +40,18 @@ export function HistorialClient() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <div className="text-xs text-fg-subtle">WhatsApp</div>
-          <h1 className="text-2xl font-bold text-fg">Actividad del bot</h1>
+          <h1 className="text-2xl font-bold text-fg">Actividad del asistente</h1>
           <p className="mt-1 text-sm text-fg-muted">
             Resumen de conversaciones de WhatsApp y del asistente, sin abrir chat por chat.
           </p>
         </div>
 
-        <div className="flex shrink-0 overflow-x-auto rounded-xl border border-fg/[0.08]">
-          {PERIODOS.map((p) => (
-            <button
-              key={p.id}
-              type="button"
-              onClick={() => setPeriod(p.id)}
-              className={[
-                'min-h-[40px] whitespace-nowrap px-3 py-2 text-sm font-semibold transition-colors',
-                period === p.id
-                  ? 'bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)]'
-                  : 'text-fg-muted hover:bg-fg/[0.06]',
-              ].join(' ')}
-            >
-              {p.label}
-            </button>
-          ))}
-        </div>
+        <SegmentedControl
+          ariaLabel="Periodo"
+          value={period}
+          onChange={setPeriod}
+          options={PERIODOS.map((p) => ({ value: p.id, label: p.label }))}
+        />
       </div>
 
       {errorVolumen && (

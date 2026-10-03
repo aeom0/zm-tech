@@ -33,7 +33,7 @@ export function HaikuTestPanel({
 
   const runTest = async () => {
     if (!supabase) {
-      setError('Supabase no está configurado')
+      setError('No se pudo conectar. Intenta de nuevo.')
       return
     }
     setLoading(true)
@@ -71,7 +71,7 @@ export function HaikuTestPanel({
       if (data && 'error' in data) throw new Error(data.error)
       setResult(data as TestResult)
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'No se pudo probar el bot')
+      setError(e instanceof Error ? e.message : 'No se pudo probar el asistente')
     } finally {
       setLoading(false)
     }

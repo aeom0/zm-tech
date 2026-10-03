@@ -37,7 +37,7 @@ export function useUpdateWebSettings() {
 export function useUploadWebAsset() {
   return useMutation({
     mutationFn: async (args: { tenantSlug: string; folder: WebAssetFolder; file: File }) => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       return uploadWebAsset(args.tenantSlug, args.folder, args.file)
     },
   })

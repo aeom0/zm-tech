@@ -47,13 +47,13 @@ const FAQS: FaqItem[] = [
       'Una cita puede estar agendada (scheduled), confirmada (payment_submitted/confirmed), completada (completed), no asistió (no_show) o cancelada (cancelled). Cada estado actualiza automáticamente los indicadores del día.',
   },
 
-  // WhatsApp y Bot WABA
+  // WhatsApp y asistente WABA
   {
     id: 'pausar-bot',
     category: 'waba',
-    question: '¿Cómo atiendo a una clienta por WhatsApp sin que el bot interfiera?',
+    question: '¿Cómo atiendo a una clienta por WhatsApp sin que el asistente interfiera?',
     answer:
-      'Entra a WhatsApp → Mensajes, abre la conversación con la clienta y pulsa el botón "Pausar bot". A partir de ese momento, el bot se detiene para ese número y tú puedes responder manualmente. Al terminar, pulsa "Reactivar bot".',
+      'Entra a WhatsApp → Mensajes, abre la conversación con la clienta y pulsa el botón "Pausar asistente". A partir de ese momento, el asistente se detiene para ese número y tú puedes responder manualmente. Al terminar, pulsa "Reactivar asistente".',
     link: { href: '/panel/waba/mensajes', label: 'Ir a Mensajes de WhatsApp' },
   },
   {
@@ -61,7 +61,7 @@ const FAQS: FaqItem[] = [
     category: 'waba',
     question: '¿Qué es la ventana de 24 horas de WhatsApp?',
     answer:
-      'Por política oficial de Meta (WhatsApp Business API), cuando una clienta escribe un mensaje se abre una ventana de atención de 24 horas en la que puedes enviar texto libre, fotos, audios y documentos sin costo adicional. Pasadas las 24 horas, solo se pueden enviar plantillas oficiales aprobadas por Meta.',
+      'Por política oficial de Meta (WhatsApp Business), cuando una clienta escribe un mensaje se abre una ventana de atención de 24 horas en la que puedes enviar texto libre, fotos, audios y documentos sin costo adicional. Pasadas las 24 horas, solo se pueden enviar plantillas oficiales aprobadas por Meta.',
   },
   {
     id: 'respuestas-rapidas',
@@ -144,7 +144,7 @@ const FAQS: FaqItem[] = [
 const CATEGORIES: { id: FaqCategory; label: string }[] = [
   { id: 'todas', label: 'Todas las preguntas' },
   { id: 'agenda', label: 'Agenda y Citas' },
-  { id: 'waba', label: 'WhatsApp y Bot' },
+  { id: 'waba', label: 'WhatsApp y asistente' },
   { id: 'finanzas', label: 'Finanzas y POS' },
   { id: 'clientes', label: 'Clientes' },
   { id: 'configuracion', label: 'Configuración' },
@@ -179,7 +179,7 @@ export default function PanelAyudaPage() {
           type="search"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Buscar una duda o función (ej. cancelar cita, pausar bot, POS, comisiones)…"
+          placeholder="Buscar una duda o función (ej. cancelar cita, pausar asistente, POS, comisiones)…"
           className="focus:border-[var(--tenant-primary)]/40 w-full rounded-2xl border border-fg/[0.08] bg-fg/[0.04] py-3 pl-10 pr-9 text-base text-fg outline-none placeholder:text-fg-subtle md:text-sm"
         />
         {search && (

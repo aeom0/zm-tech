@@ -17,7 +17,7 @@ export interface SendWabaMessageInput {
 }
 
 async function invokeSendWhatsapp(input: SendWabaMessageInput) {
-  if (!supabase) throw new Error('Supabase no está configurado')
+  if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
   const { data, error } = await supabase.functions.invoke('send-whatsapp-notification', {
     body: input,
   })
@@ -40,11 +40,11 @@ export function useSendWabaMessage(phone: string | null) {
 export type StaffSessionAction = 'pause_bot' | 'resume_bot' | 'haiku_finish_booking'
 
 async function invokeStaffSession(input: { phone: string; action: StaffSessionAction }) {
-  if (!supabase) throw new Error('Supabase no está configurado')
+  if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
   const { data, error } = await supabase.functions.invoke('waba-staff-session', {
     body: input,
   })
-  if (error) throw new Error(error.message ?? 'Error al actualizar el bot')
+  if (error) throw new Error(error.message ?? 'Error al actualizar el asistente')
   return data
 }
 

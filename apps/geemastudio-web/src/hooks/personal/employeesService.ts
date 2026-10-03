@@ -32,7 +32,7 @@ let detectPromise: Promise<CatalogDialect> | null = null
 /** Sondea si `employees.payment_mode` existe (Geema) o no (ZM). */
 export async function detectEmployeesDialect(): Promise<CatalogDialect> {
   if (cachedDialect) return cachedDialect
-  if (!supabase) throw new Error('Supabase no está configurado')
+  if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
 
   if (!detectPromise) {
     detectPromise = (async () => {
@@ -112,7 +112,7 @@ export function toEmployeeWritePayload(
 }
 
 export async function fetchAllEmployees(): Promise<EmployeeRow[]> {
-  if (!supabase) throw new Error('Supabase no está configurado')
+  if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
   const dialect = await detectEmployeesDialect()
   const select = dialect === 'zm' ? EMPLOYEE_SELECT_ZM : EMPLOYEE_SELECT_GEEMA
 
@@ -129,7 +129,7 @@ export async function fetchAllEmployees(): Promise<EmployeeRow[]> {
 }
 
 export async function insertEmployee(input: EmployeeWriteInput): Promise<EmployeeRow> {
-  if (!supabase) throw new Error('Supabase no está configurado')
+  if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
   const dialect = await detectEmployeesDialect()
   const select = dialect === 'zm' ? EMPLOYEE_SELECT_ZM : EMPLOYEE_SELECT_GEEMA
 
@@ -144,7 +144,7 @@ export async function insertEmployee(input: EmployeeWriteInput): Promise<Employe
 }
 
 export async function updateEmployee(id: string, input: EmployeeWriteInput): Promise<void> {
-  if (!supabase) throw new Error('Supabase no está configurado')
+  if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
   const dialect = await detectEmployeesDialect()
   const { error } = await supabase
     .from('employees')
@@ -154,7 +154,7 @@ export async function updateEmployee(id: string, input: EmployeeWriteInput): Pro
 }
 
 export async function deleteEmployee(id: string): Promise<void> {
-  if (!supabase) throw new Error('Supabase no está configurado')
+  if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
   const { error } = await supabase.from('employees').delete().eq('id', id)
   if (error) throw new Error(error.message)
 }
@@ -162,7 +162,7 @@ export async function deleteEmployee(id: string): Promise<void> {
 const AVATAR_BUCKET = 'employee-avatars'
 
 export async function uploadEmployeeAvatar(employeeId: string, file: File): Promise<string> {
-  if (!supabase) throw new Error('Supabase no está configurado')
+  if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
   const ext = file.type.includes('png') ? 'png' : file.type.includes('webp') ? 'webp' : 'jpg'
   const path = `${employeeId}/${Date.now()}.${ext}`
   const { error } = await supabase.storage.from(AVATAR_BUCKET).upload(path, file, {

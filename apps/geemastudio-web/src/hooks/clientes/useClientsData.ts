@@ -50,7 +50,7 @@ export function useClientsData(searchQuery: string, segment: ClientSegment): Use
   } = useQuery<Client[]>({
     queryKey: ['web_clients'],
     queryFn: async () => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const { data, error } = await supabase
         .from('clients')
         .select('id, name, phone, email, notes, created_at')
@@ -71,7 +71,7 @@ export function useClientsData(searchQuery: string, segment: ClientSegment): Use
   } = useQuery<RawAppointment[]>({
     queryKey: ['web_clients_appointments'],
     queryFn: async () => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const { data, error } = await supabase
         .from('appointments')
         .select('id, client_id, client_name, date, status, price, service_id')
@@ -89,7 +89,7 @@ export function useClientsData(searchQuery: string, segment: ClientSegment): Use
   } = useQuery<RawPayment[]>({
     queryKey: ['web_clients_payments'],
     queryFn: async () => {
-      if (!supabase) throw new Error('Supabase no está configurado')
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
       const { data, error } = await supabase
         .from('payments')
         .select('id, appointment_id, amount, date')

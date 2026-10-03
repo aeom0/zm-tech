@@ -48,7 +48,7 @@ async function selectByFilter(
   column: 'id' | 'tenant_slug',
   value: string
 ): Promise<TenantSettingsPanelRow | null> {
-  if (!supabase) throw new Error('Supabase no está configurado')
+  if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
 
   const withBg = await supabase
     .from('tenant_settings')
@@ -83,7 +83,7 @@ async function selectByFilter(
 }
 
 export async function fetchTenantSettingsForSession(): Promise<TenantSettingsPanelRow | null> {
-  if (!supabase) throw new Error('Supabase no está configurado')
+  if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
 
   const {
     data: { user },
@@ -112,7 +112,7 @@ export async function updateTenantSettings(
   rowId: string,
   patch: TenantSettingsPatch
 ): Promise<void> {
-  if (!supabase) throw new Error('Supabase no está configurado')
+  if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
 
   const payload: Record<string, unknown> = { ...patch, updated_at: new Date().toISOString() }
 
@@ -134,7 +134,7 @@ export async function updateTenantSettings(
 const LOGO_BUCKET = 'tenant-logos'
 
 export async function uploadTenantLogo(userId: string, file: File): Promise<string> {
-  if (!supabase) throw new Error('Supabase no está configurado')
+  if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
   const path = `${userId}/logo.webp`
   const { error } = await supabase.storage.from(LOGO_BUCKET).upload(path, file, {
     contentType: file.type || 'image/webp',

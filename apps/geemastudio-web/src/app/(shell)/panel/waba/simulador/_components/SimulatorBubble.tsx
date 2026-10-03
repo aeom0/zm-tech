@@ -61,7 +61,7 @@ export function SimulatorBubbleView({
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={message.image_url}
-                  alt={imageCaption || 'Foto del bot'}
+                  alt={imageCaption || 'Foto del asistente'}
                   className="h-16 w-16 shrink-0 rounded-xl border border-fg/10 object-cover transition-opacity group-hover:opacity-90"
                   loading="lazy"
                 />

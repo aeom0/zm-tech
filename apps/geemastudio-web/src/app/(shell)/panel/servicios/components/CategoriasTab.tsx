@@ -32,7 +32,7 @@ export function CategoriasTab({
 
   const confirmDelete = async (cat: CategoriaRow) => {
     if (!supabase) {
-      alert('Supabase no está configurado')
+      alert('No se pudo conectar. Intenta de nuevo.')
       return
     }
 
