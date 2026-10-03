@@ -89,7 +89,7 @@ export default function PlanScreen() {
   const headerHeight = useHeaderHeight()
   const tabBarHeight = useBottomTabBarHeight()
   const { theme } = useTheme()
-  const { subscription: sub, staffStatus, isLoading, error } = usePlan()
+  const { subscription: sub, staffStatus, wabaUsage, wabaStatus, isLoading, error } = usePlan()
   const plansQuery = usePublicPlans()
 
   const annual = sub?.billing_cycle === 'annual'
@@ -133,6 +133,16 @@ export default function PlanScreen() {
             planName={sub.plan_name}
           />
 
+          {wabaUsage ? (
+            <PlanLimitBanner
+              status={wabaStatus}
+              resource="mensajes de servicio de WhatsApp"
+              usage={wabaUsage.service_messages}
+              limit={sub.waba_conversations}
+              planName={sub.plan_name}
+            />
+          ) : null}
+
           <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
             <View style={styles.cardHeader}>
               <ThemedText style={styles.cardTitle}>Plan {sub.plan_name}</ThemedText>
@@ -146,13 +156,31 @@ export default function PlanScreen() {
             </ThemedText>
 
             <UsageBar label="Profesionales activos" usage={sub.staff_count} limit={sub.max_staff} />
+            {wabaUsage ? (
+              <>
+                <UsageBar
+                  label="Mensajes de servicio de WhatsApp (mes)"
+                  usage={wabaUsage.service_messages}
+                  limit={sub.waba_conversations}
+                />
+                <ThemedText style={{ color: theme.textSecondary, fontSize: 12 }}>
+                  Solo cuentan respuestas dentro de la ventana de 24 h; los mensajes que llegan por
+                  anuncios no cuentan.
+                  {wabaUsage.data_through
+                    ? ` Datos al ${new Date(`${wabaUsage.data_through}T12:00:00`).toLocaleDateString('es', { day: 'numeric', month: 'long' })}.`
+                    : ''}
+                </ThemedText>
+              </>
+            ) : null}
 
             <ThemedText style={styles.meta}>
               Sedes: {sub.max_branches === null ? 'ilimitadas' : sub.max_branches}
             </ThemedText>
             <ThemedText style={styles.meta}>
-              Conversaciones de WhatsApp por mes:{' '}
-              {sub.waba_conversations === null ? 'ilimitadas' : `${sub.waba_conversations} incluidas`}
+              Mensajes de servicio de WhatsApp por mes:{' '}
+              {sub.waba_conversations === null
+                ? 'ilimitados'
+                : `${sub.waba_conversations.toLocaleString('es')} incluidos`}
             </ThemedText>
           </View>
 

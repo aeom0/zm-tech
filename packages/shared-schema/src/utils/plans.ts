@@ -38,6 +38,17 @@ export interface TenantSubscription {
   staff_count: number
 }
 
+/**
+ * Fila de la vista `public.tenant_waba_usage`: mensajes de servicio reales del mes en curso
+ * (SERVICE/FREE_CUSTOMER_SERVICE; excluye FREE_ENTRY_POINT). `data_through` = último día sincronizado.
+ */
+export interface TenantWabaUsage {
+  tenant_id: string
+  month_start: string
+  service_messages: number
+  data_through: string | null
+}
+
 export interface PlanLimits {
   maxBranches: number | null
   maxStaff: number | null

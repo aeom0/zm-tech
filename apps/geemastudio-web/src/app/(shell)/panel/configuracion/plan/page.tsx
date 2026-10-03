@@ -107,7 +107,7 @@ function PlanCard({
 }
 
 export default function PanelPlanPage() {
-  const { subscription: sub, staffStatus, isLoading, error } = usePlan()
+  const { subscription: sub, staffStatus, wabaUsage, wabaStatus, isLoading, error } = usePlan()
   const plansQuery = usePublicPlans()
 
   const annual = sub?.billing_cycle === 'annual'
@@ -160,6 +160,16 @@ export default function PanelPlanPage() {
             planName={sub.plan_name}
           />
 
+          {wabaUsage && (
+            <PlanLimitNotice
+              status={wabaStatus}
+              resource="mensajes de servicio de WhatsApp"
+              usage={wabaUsage.service_messages}
+              limit={sub.waba_conversations}
+              planName={sub.plan_name}
+            />
+          )}
+
           <section className="space-y-4 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
@@ -178,6 +188,22 @@ export default function PanelPlanPage() {
 
             <div className="space-y-4">
               <UsageBar label="Profesionales activos" usage={sub.staff_count} limit={sub.max_staff} />
+              {wabaUsage && (
+                <div>
+                  <UsageBar
+                    label="Mensajes de servicio de WhatsApp (mes)"
+                    usage={wabaUsage.service_messages}
+                    limit={sub.waba_conversations}
+                  />
+                  <p className="mt-1.5 text-xs text-zinc-500">
+                    Solo cuentan respuestas dentro de la ventana de 24 h; los mensajes que llegan por
+                    anuncios no cuentan.
+                    {wabaUsage.data_through
+                      ? ` Datos al ${new Date(`${wabaUsage.data_through}T12:00:00`).toLocaleDateString('es', { day: 'numeric', month: 'long' })}.`
+                      : ''}
+                  </p>
+                </div>
+              )}
             </div>
 
             <dl className="grid gap-3 text-sm sm:grid-cols-2">
@@ -186,11 +212,11 @@ export default function PanelPlanPage() {
                 <dd className="text-zinc-200">{limitLabel(sub.max_branches, 'sedes')}</dd>
               </div>
               <div className="rounded-xl bg-white/[0.03] px-3 py-2.5">
-                <dt className="text-xs text-zinc-500">Conversaciones de WhatsApp por mes</dt>
+                <dt className="text-xs text-zinc-500">Mensajes de servicio de WhatsApp por mes</dt>
                 <dd className="text-zinc-200">
                   {sub.waba_conversations === null
-                    ? 'Ilimitadas'
-                    : `${sub.waba_conversations} incluidas`}
+                    ? 'Ilimitados'
+                    : `${sub.waba_conversations.toLocaleString('es')} incluidos`}
                 </dd>
               </div>
             </dl>

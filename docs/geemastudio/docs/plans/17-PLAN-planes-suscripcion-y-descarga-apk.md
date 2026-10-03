@@ -1,7 +1,7 @@
 # Plan 17 — Planes de suscripción conectados (landing, panel web, mobile) + descarga del APK
 
 **Fecha:** 2026-10-02
-**Estado:** Fases 1–4 ✅ (2-oct-2026; uso WABA y avisos por función pendientes); Fase 5 pendiente
+**Estado:** Fases 1–4 ✅ (2/3-oct-2026); Fase 5 pendiente
 **Repos:** `zm-tech` (schema, web, mobile, server). BD: `udelxwwnyivknslueerr`.
 
 ## Contexto
@@ -42,7 +42,7 @@ Aplicar con MCP `apply_migration` y renombrar el archivo local a `<version>_<nam
 ## Fase 4 — Panel web y mobile
 
 - Hook `usePlan()` en web (`apps/geemastudio-web/src/hooks/`) y mobile (`apps/geemastudio-mobile/hooks/`), ambos sobre la vista/RPC de Fase 1 y `getUsageStatus`.
-- Pantalla "Mi plan": plan actual, estado, fin de trial, barras de uso (empleados, conversaciones WABA) contra límite, comparativo de planes y CTA "Contactar" (sin checkout). Web: `panel/configuracion`. Mobile: `screens/settings/` (junto a `LogoNegocioScreen`).
+- Pantalla "Mi plan": plan actual, estado, fin de trial, barras de uso (empleados, mensajes de servicio WABA) contra límite, comparativo de planes y CTA "Contactar" (sin checkout). Web: `panel/configuracion`. Mobile: `screens/settings/` (junto a `LogoNegocioScreen`).
 - Avisos (banner no bloqueante) al llegar a 80% y al superar el límite: en alta de empleados (`panel/personal` / `screens/personal`) y en el panel de WABA. Funciones por plan (Inventario, Finanzas, Comisiones desde Pro): aviso de "disponible en Pro" sin ocultar el acceso.
 - Backstop: mostrar el aviso también si el servidor detecta exceso; no se añade bloqueo en RLS en esta fase.
 - Reglas: textos en español LATAM neutro, íconos Lucide/vectoriales (sin emojis), capas UI → hooks → services → types.
@@ -76,3 +76,10 @@ Aplicar con MCP `apply_migration` y renombrar el archivo local a `<version>_<nam
 ## Fuera de alcance
 
 Cobro/checkout, bloqueo duro por límites, límite de sedes efectivo (depende del Plan 16), iOS/TestFlight, Play Store.
+
+## Decisión WABA (3-oct-2026)
+
+- Unidad del límite: **mensajes de servicio reales del mes** (`SERVICE/FREE_CUSTOMER_SERVICE` en `waba_pricing_daily`; excluye `FREE_ENTRY_POINT`), según el pricing de Meta del 1-oct-2026 (ver `docs/WABA_PRICING_OCT2026_ZM.md`).
+- Límites: Basic 300, Pro 1.000, Elite ilimitado (`plans.waba_conversations` conserva el nombre de columna).
+- Uso: vista `tenant_waba_usage` (security_invoker; solo owner/dev del tenant ven datos). Se sincroniza con días de retraso: la UI muestra "Datos al <fecha>".
+- Pendiente: recalcular precios del add-on (`WABA_ADDON_TIERS`, hoy 50/$4, 200/$12, 500/$24) y `COMPARISON_FEATURES` aún hardcodeado en la landing.

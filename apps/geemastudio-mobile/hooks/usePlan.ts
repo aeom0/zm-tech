@@ -5,6 +5,7 @@ import {
   type Plan,
   type PlanFeature,
   type TenantSubscription,
+  type TenantWabaUsage,
   type UsageStatus,
 } from '@geemastudio/shared-schema'
 
@@ -32,6 +33,23 @@ async function fetchPublicPlans(): Promise<Plan[]> {
   return data ?? []
 }
 
+async function fetchWabaUsage(): Promise<TenantWabaUsage | null> {
+  const { data, error } = await supabase
+    .from('tenant_waba_usage')
+    .select('*')
+    .maybeSingle<TenantWabaUsage>()
+  if (error) throw new Error(error.message)
+  return data
+}
+
+export function useWabaUsage() {
+  return useQuery({
+    queryKey: ['waba-usage'],
+    queryFn: fetchWabaUsage,
+    staleTime: 5 * 60_000,
+  })
+}
+
 export function usePublicPlans() {
   return useQuery({
     queryKey: ['public-plans'],
@@ -57,9 +75,15 @@ export function usePlan(options?: { staffCount?: number }) {
     ? getUsageStatus(staffCount, subscription.max_staff)
     : 'ok'
 
+  const wabaUsage = useWabaUsage().data ?? null
+  const wabaStatus: UsageStatus =
+    subscription && wabaUsage ? getUsageStatus(wabaUsage.service_messages, subscription.waba_conversations) : 'ok'
+
   return {
     ...query,
     subscription,
+    wabaUsage,
+    wabaStatus,
     staffCount,
     staffStatus,
     can: (feature: PlanFeature) => (subscription ? hasFeature(subscription.plan_code, feature) : true),

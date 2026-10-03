@@ -12,6 +12,7 @@ import {
   useUpsertEmployee,
 } from '@/hooks/personal/useEmployees'
 import type { EmployeeRow } from '@/hooks/personal/types'
+import { FeatureAvailabilityNotice } from '@/components/plan/FeatureAvailabilityNotice'
 import { PlanLimitNotice } from '@/components/plan/PlanLimitNotice'
 import { usePlan } from '@/hooks/plan/usePlan'
 import { resolveDashboardCurrencyCode } from '@/lib/dashboardCurrency'
@@ -49,7 +50,7 @@ export default function PanelPersonalPage() {
   const remove = useDeleteEmployee()
   const tenantQuery = useDashboardTenant()
   const labelsQuery = useStaffLabels()
-  const { subscription: plan, staffStatus } = usePlan()
+  const { subscription: plan, staffStatus, can } = usePlan()
 
   const currencyCode = resolveDashboardCurrencyCode(tenantQuery.data?.currency_code)
   const showGeemaExtras = dialectQuery.data === 'geema'
@@ -113,6 +114,12 @@ export default function PanelPersonalPage() {
           planName={plan.plan_name}
         />
       )}
+
+      <FeatureAvailabilityNotice
+        feature="commissions"
+        label="las comisiones automáticas"
+        included={can('commissions')}
+      />
 
       <div className="flex flex-wrap gap-2">
         {(

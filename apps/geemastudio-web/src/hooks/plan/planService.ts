@@ -1,6 +1,6 @@
 'use client'
 
-import type { Plan, TenantSubscription } from '@geemastudio/shared-schema'
+import type { Plan, TenantSubscription, TenantWabaUsage } from '@geemastudio/shared-schema'
 
 import { supabase } from '@/lib/supabase'
 
@@ -25,4 +25,15 @@ export async function fetchPublicPlans(): Promise<Plan[]> {
     .returns<Plan[]>()
   if (error) throw new Error(error.message)
   return data ?? []
+}
+
+/** Mensajes de servicio WABA del mes (vista tenant_waba_usage). Solo owner/dev ven datos; otros roles ven 0. */
+export async function fetchWabaUsage(): Promise<TenantWabaUsage | null> {
+  if (!supabase) throw new Error('Supabase no está configurado')
+  const { data, error } = await supabase
+    .from('tenant_waba_usage')
+    .select('*')
+    .maybeSingle<TenantWabaUsage>()
+  if (error) throw new Error(error.message)
+  return data
 }

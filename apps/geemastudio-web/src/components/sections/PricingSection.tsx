@@ -92,7 +92,7 @@ export function PricingSection({ plans }: { plans: Plan[] }) {
             >
               <span className="flex items-center gap-2 font-semibold text-[#25D366]">
                 <MessageCircle size={15} strokeWidth={2} />
-                <span>¿Necesitas más conversaciones de WhatsApp?</span>
+                <span>¿Necesitas más mensajes de WhatsApp?</span>
               </span>
               <ChevronDown
                 size={16}

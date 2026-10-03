@@ -24,6 +24,7 @@ import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
+import { FeatureAvailabilityBanner } from '@/components/FeatureAvailabilityBanner'
 import { PlanLimitBanner } from '@/components/PlanLimitBanner'
 import { usePlan } from '@/hooks/usePlan'
 import type { MoreStackParamList } from '@/navigation/MoreStackNavigator'
@@ -85,7 +86,7 @@ export default function PersonalScreen() {
   const { data: employees = [], isLoading } = useEmployeesQuery()
   const navigation = useNavigation<NativeStackNavigationProp<MoreStackParamList, 'Personal'>>()
   const activeStaffCount = employees.filter((e) => e.is_active).length
-  const { subscription: plan, staffStatus } = usePlan({ staffCount: activeStaffCount })
+  const { subscription: plan, staffStatus, can } = usePlan({ staffCount: activeStaffCount })
   const [orderedEmployees, setOrderedEmployees] = useState<EmployeeRow[]>(employees)
   const isDraggingRef = useRef(false)
 
@@ -508,6 +509,12 @@ export default function PersonalScreen() {
                   onPress={() => navigation.navigate('MiPlan')}
                 />
               ) : null}
+              <FeatureAvailabilityBanner
+                feature="commissions"
+                label="las comisiones automáticas"
+                included={can('commissions')}
+                onPress={() => navigation.navigate('MiPlan')}
+              />
               <ThemedText style={[styles.hint, { color: theme.textSecondary }]}>
                 {showGeemaExtras
                   ? `Toca a una ${staffSingular.toLowerCase()} para editar datos, modo de pago y foto para la agenda. Mantén presionado el ícono de la derecha para reordenar.`
