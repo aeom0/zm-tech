@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { useDeletePromo, useTogglePromoActive } from '@/hooks/servicios/usePromos'
 import type { Promotion } from '../../_services/promosService'
 import { SavingIndicator } from '../shared/SavingIndicator'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 /** Separa el emoji inicial del texto: "🔥 Oferta" -> ['🔥','Oferta'], "PROMO" -> ['','PROMO']. */
 function splitBadge(raw: string | null): { emoji: string; label: string } {
@@ -21,6 +22,7 @@ interface Props {
 
 export function PromoCard({ promo, onEdit }: Props) {
   const deletePromo = useDeletePromo()
+  const { confirm, dialog } = useConfirm()
   const toggleActive = useTogglePromoActive()
   const [savingState, setSavingState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
 
@@ -40,7 +42,13 @@ export function PromoCard({ promo, onEdit }: Props) {
   }
 
   async function handleDelete() {
-    if (!window.confirm(`Eliminar la promo "${promo.title}"? Se eliminaran sus items.`)) return
+    const ok = await confirm({
+      title: `¿Eliminar la promo "${promo.title}"?`,
+      description: 'Se eliminarán sus ítems.',
+      confirmLabel: 'Eliminar',
+      destructive: true,
+    })
+    if (!ok) return
     setSavingState('saving')
     try {
       await deletePromo.mutateAsync(promo.id)
@@ -56,6 +64,7 @@ export function PromoCard({ promo, onEdit }: Props) {
   const isExpired = promo.expires_at ? new Date(promo.expires_at) < new Date() : false
 
   return (
+    <>
     <div
       className={`rounded-xl border border-fg/10 bg-fg/5 p-4 transition-opacity ${
         !promo.is_active || isExpired ? 'opacity-50' : ''
@@ -151,5 +160,7 @@ export function PromoCard({ promo, onEdit }: Props) {
         </div>
       </div>
     </div>
+      {dialog}
+    </>
   )
 }

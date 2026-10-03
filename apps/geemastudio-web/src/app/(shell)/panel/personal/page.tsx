@@ -18,6 +18,7 @@ import { usePlan } from '@/hooks/plan/usePlan'
 import { resolveDashboardCurrencyCode } from '@/lib/dashboardCurrency'
 import { supabase } from '@/lib/supabase'
 import { useQuery } from '@tanstack/react-query'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 function useStaffLabels() {
   return useQuery({
@@ -48,6 +49,7 @@ export default function PanelPersonalPage() {
   const dialectQuery = useEmployeesDialect()
   const upsert = useUpsertEmployee()
   const remove = useDeleteEmployee()
+  const { confirm, dialog } = useConfirm()
   const tenantQuery = useDashboardTenant()
   const labelsQuery = useStaffLabels()
   const { subscription: plan, staffStatus, can } = usePlan()
@@ -204,12 +206,14 @@ export default function PanelPersonalPage() {
         }}
         onDelete={
           editing
-            ? () => {
-                if (
-                  !window.confirm(`¿Eliminar a ${editing.name}? Esta acción no se puede deshacer.`)
-                ) {
-                  return
-                }
+            ? async () => {
+                const ok = await confirm({
+                  title: `¿Eliminar a ${editing.name}?`,
+                  description: 'Esta acción no se puede deshacer.',
+                  confirmLabel: 'Eliminar',
+                  destructive: true,
+                })
+                if (!ok) return
                 remove.mutate(
                   { id: editing.id, avatar_url: editing.avatar_url },
                   { onSuccess: () => closeModal() }
@@ -218,6 +222,7 @@ export default function PanelPersonalPage() {
             : undefined
         }
       />
+      {dialog}
     </div>
   )
 }

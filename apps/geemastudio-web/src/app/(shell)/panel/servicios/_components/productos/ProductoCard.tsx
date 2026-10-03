@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { useUnlistProducto } from '@/hooks/servicios/useProductos'
 import type { Producto } from '../../_services/productosService'
 import { SavingIndicator } from '../shared/SavingIndicator'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 interface Props {
   producto: Producto
@@ -15,15 +16,17 @@ interface Props {
 export function ProductoCard({ producto, onEdit }: Props) {
   const unlist = useUnlistProducto()
   const [savingState, setSavingState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
+  const { confirm, dialog } = useConfirm()
   const lowStock = producto.quantity <= producto.min_stock
 
   async function handleUnlist() {
-    if (
-      !window.confirm(
-        `Quitar "${producto.name}" del catálogo de venta? El insumo sigue en inventario.`
-      )
-    )
-      return
+    const ok = await confirm({
+      title: `¿Quitar "${producto.name}" del catálogo de venta?`,
+      description: 'El insumo sigue en inventario.',
+      confirmLabel: 'Quitar',
+      destructive: true,
+    })
+    if (!ok) return
     setSavingState('saving')
     try {
       await unlist.mutateAsync(producto.id)
@@ -34,6 +37,7 @@ export function ProductoCard({ producto, onEdit }: Props) {
   }
 
   return (
+    <>
     <div className="overflow-hidden rounded-xl border border-fg/10 bg-fg/5">
       <div className="aspect-square w-full bg-scrim/30">
         {producto.image_url ? (
@@ -102,5 +106,7 @@ export function ProductoCard({ producto, onEdit }: Props) {
         </div>
       </div>
     </div>
+      {dialog}
+    </>
   )
 }

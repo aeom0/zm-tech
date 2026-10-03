@@ -9,6 +9,7 @@ import type { ServicioRow } from '@/hooks/servicios/useServicios'
 import { useDeleteServicio, useServicios, useToggleServicio } from '@/hooks/servicios/useServicios'
 import { ServiceToggle } from './ServiceToggle'
 import { ScrollFadeRow } from '@/components/ui/ScrollFadeRow'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 function fmtUsd(price: string) {
   const n = Number.parseFloat(String(price))
@@ -26,6 +27,7 @@ export function ServiciosTab({
   onEdit: (svc: ServicioRow) => void
 }) {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | undefined>(undefined)
+  const { confirm, dialog } = useConfirm()
 
   const serviciosQuery = useServicios(selectedCategoryId)
   const toggleMutation = useToggleServicio()
@@ -210,8 +212,8 @@ export function ServiciosTab({
                           <button
                             type="button"
                             disabled={deleteMutation.isPending}
-                            onClick={() => {
-                              const ok = window.confirm(`¿Eliminar el servicio "${s.name}"?`)
+                            onClick={async () => {
+                              const ok = await confirm({ title: `¿Eliminar el servicio "${s.name}"?`, confirmLabel: 'Eliminar', destructive: true })
                               if (ok) deleteMutation.mutate(s.id)
                             }}
                             className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-red-500/20 bg-red-500/10 text-red-700 transition-colors hover:bg-red-500/15 disabled:opacity-60 dark:text-red-300 md:h-9 md:w-9"
@@ -283,8 +285,8 @@ export function ServiciosTab({
                     <button
                       type="button"
                       disabled={deleteMutation.isPending}
-                      onClick={() => {
-                        const ok = window.confirm(`¿Eliminar el servicio "${s.name}"?`)
+                      onClick={async () => {
+                        const ok = await confirm({ title: `¿Eliminar el servicio "${s.name}"?`, confirmLabel: 'Eliminar', destructive: true })
                         if (ok) deleteMutation.mutate(s.id)
                       }}
                       className="inline-flex items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-2 text-sm font-semibold text-red-700 transition-colors hover:bg-red-500/15 disabled:opacity-60 dark:text-red-300"
@@ -299,6 +301,7 @@ export function ServiciosTab({
           </div>
         </div>
       )}
+      {dialog}
     </section>
   )
 }

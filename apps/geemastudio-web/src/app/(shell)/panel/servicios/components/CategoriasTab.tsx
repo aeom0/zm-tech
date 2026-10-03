@@ -8,6 +8,7 @@ import { useState } from 'react'
 import type { CategoriaRow } from '@/hooks/servicios/useCategorias'
 import { CategoryIcon } from '@/components/CategoryIcon'
 import { supabase } from '@/lib/supabase'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 export function CategoriasTab({
   categorias,
@@ -27,6 +28,7 @@ export function CategoriasTab({
   deletingId: string | null
 }) {
   const [checkingId, setCheckingId] = useState<string | null>(null)
+  const { confirm, dialog } = useConfirm()
 
   const confirmDelete = async (cat: CategoriaRow) => {
     if (!supabase) {
@@ -42,22 +44,18 @@ export function CategoriasTab({
         .eq('category_id', cat.id)
 
       if (error) {
-        const ok = window.confirm(
-          `¿Eliminar la categoría "${cat.name}"? (No pude validar servicios asociados)`
-        )
+        const ok = await confirm({ title: `¿Eliminar la categoría "${cat.name}"?`, description: 'No se pudo validar si tiene servicios asociados.', confirmLabel: 'Eliminar', destructive: true })
         if (ok) onDelete(cat.id)
         return
       }
 
       if ((count ?? 0) > 0) {
-        const ok = window.confirm(
-          `Esta categoría tiene ${count} servicio(s). Si la borras, los servicios quedarán sin categoría o fallará por restricciones.\n\n¿Seguro que quieres eliminar "${cat.name}"?`
-        )
+        const ok = await confirm({ title: `¿Eliminar "${cat.name}"?`, description: `Tiene ${count} servicio(s). Si la eliminas, quedarán sin categoría o la acción puede fallar por restricciones.`, confirmLabel: 'Eliminar', destructive: true })
         if (ok) onDelete(cat.id)
         return
       }
 
-      const ok = window.confirm(`¿Eliminar la categoría "${cat.name}"?`)
+      const ok = await confirm({ title: `¿Eliminar la categoría "${cat.name}"?`, confirmLabel: 'Eliminar', destructive: true })
       if (ok) onDelete(cat.id)
     } finally {
       setCheckingId(null)
@@ -157,6 +155,7 @@ export function CategoriasTab({
           })}
         </div>
       )}
+      {dialog}
     </section>
   )
 }

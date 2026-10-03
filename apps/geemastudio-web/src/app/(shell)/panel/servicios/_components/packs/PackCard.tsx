@@ -6,6 +6,7 @@ import { useState } from 'react'
 import { useDeletePack, useTogglePackActive } from '@/hooks/servicios/usePacks'
 import type { Pack } from '../../_services/packsService'
 import { SavingIndicator } from '../shared/SavingIndicator'
+import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 interface Props {
   pack: Pack
@@ -14,6 +15,7 @@ interface Props {
 
 export function PackCard({ pack, onEdit }: Props) {
   const deletePack = useDeletePack()
+  const { confirm, dialog } = useConfirm()
   const toggleActive = useTogglePackActive()
   const [savingState, setSavingState] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle')
 
@@ -33,7 +35,12 @@ export function PackCard({ pack, onEdit }: Props) {
   }
 
   async function handleDelete() {
-    if (!window.confirm(`Eliminar el pack \"${pack.name}\"?`)) return
+    const ok = await confirm({
+      title: `¿Eliminar el pack "${pack.name}"?`,
+      confirmLabel: 'Eliminar',
+      destructive: true,
+    })
+    if (!ok) return
     setSavingState('saving')
     try {
       await deletePack.mutateAsync(pack.id)
@@ -44,6 +51,7 @@ export function PackCard({ pack, onEdit }: Props) {
   }
 
   return (
+    <>
     <div
       className={`rounded-xl border border-fg/10 bg-fg/5 p-4 transition-opacity ${!pack.is_active ? 'opacity-50' : ''}`}
     >
@@ -99,5 +107,7 @@ export function PackCard({ pack, onEdit }: Props) {
         </div>
       </div>
     </div>
+      {dialog}
+    </>
   )
 }
