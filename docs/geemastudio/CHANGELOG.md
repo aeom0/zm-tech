@@ -7,6 +7,15 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido (2/3-oct 2026 — Plan 17: planes de suscripción)
+
+- **BD (prod)** — tablas `plans` y columnas de suscripción en `tenants` (`plan_code`, `billing_cycle`, `subscription_status`, `trial_ends_at`); vistas `tenant_subscription` y `tenant_waba_usage`; ZM Lash en Pro. Migraciones `20261002142459_create_plans_and_tenant_subscription`, `20261003020256_waba_service_message_limits`, `20261003021154_waba_pricing_sync_daily` (sync WABA diario 6 a. m. Lima).
+- **Límites WABA** — se miden en mensajes de servicio reales del mes (Basic 300, Pro 1.000, Elite ilimitado), alineados al pricing de Meta del 1-oct-2026.
+- **Shared schema** — `getUsageStatus`, `hasFeature`, `getFeatureMinPlan` y tipos de plan.
+- **Web y mobile** — pantalla "Mi plan" con barras de uso, avisos de límite sin bloqueo y avisos "disponible en Pro" en Inventario, Finanzas y Comisiones. La landing lee los planes desde BD (fallback a constantes).
+- **Vercel** — previews desactivados y build solo de la app afectada en `main`.
+- **Pendiente** — Fase 5 (descarga del APK) pospuesta; precios de add-ons a la espera de la tarifa de Meta.
+
 ### Validado (2-oct 2026 — Corte 1: panel y app de ZM en Geema)
 
 - **Plan 13** — checklist D1–D4, W1–W6, R1–R3b completo: código y prod (solo lectura) más confirmación de Alberto para Simulador y push físico; evidencia en § "Validación Corte 1". **Corte 1 cerrado.**
