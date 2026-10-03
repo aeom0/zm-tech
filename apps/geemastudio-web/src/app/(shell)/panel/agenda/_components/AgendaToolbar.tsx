@@ -100,7 +100,7 @@ export function AgendaToolbar({
           <button
             type="button"
             onClick={onToday}
-            className="min-h-[44px] md:min-h-[36px] border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 rounded-xl border px-3 py-1.5 text-xs font-semibold text-tenant-text"
+            className="border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 min-h-[44px] rounded-xl border px-3 py-1.5 text-xs font-semibold text-tenant-text md:min-h-[36px]"
           >
             Hoy
           </button>

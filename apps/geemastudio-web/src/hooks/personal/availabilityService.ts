@@ -227,3 +227,48 @@ export async function fetchAffectedAppointments(args: {
       : all
   return filtered.sort((a, b) => a.date.localeCompare(b.date))
 }
+
+// --- Agenda: disponibilidad de un día -----------------------------------------
+
+export interface DayAvailability {
+  timeOff: TimeOffRecord[]
+  coverages: CoverageRecord[]
+  shifts: (WorkShift & { employee_id: string })[]
+}
+
+/** Ausencias, coberturas y turnos que afectan a un día (YYYY-MM-DD). */
+export async function fetchDayAvailability(dayIso: string): Promise<DayAvailability> {
+  const client = db()
+  const weekday = new Date(`${dayIso}T00:00:00Z`).getUTCDay()
+  const [timeOff, coverages, shifts] = await Promise.all([
+    client
+      .from('employee_time_off')
+      .select('id, employee_id, kind, date_from, date_to, start_time, end_time, reason, is_paid')
+      .lte('date_from', dayIso)
+      .or(`date_to.is.null,date_to.gte.${dayIso}`),
+    client
+      .from('employee_coverages')
+      .select('id, covered_employee_id, covering_employee_id, date_from, date_to, note')
+      .lte('date_from', dayIso)
+      .gte('date_to', dayIso),
+    client.from('employee_work_hours').select('employee_id, weekday, start_time, end_time'),
+  ])
+  fail(timeOff.error)
+  fail(coverages.error)
+  fail(shifts.error)
+  // Para saber si una profesional tiene horario propio hace falta toda su semana,
+  // pero solo se pintan los turnos del día; el resto se descarta aquí.
+  const allShifts = (shifts.data ?? []) as (WorkShift & { employee_id: string })[]
+  const withSchedule = new Set(allShifts.map((r) => r.employee_id))
+  return {
+    timeOff: (timeOff.data ?? []) as TimeOffRecord[],
+    coverages: (coverages.data ?? []) as CoverageRecord[],
+    shifts: [
+      ...allShifts.filter((r) => r.weekday === weekday),
+      // marcador: tiene horario propio pero ninguno ese día (día libre)
+      ...[...withSchedule]
+        .filter((id) => !allShifts.some((r) => r.employee_id === id && r.weekday === weekday))
+        .map((employee_id) => ({ employee_id, weekday, start_time: '', end_time: '' })),
+    ],
+  }
+}

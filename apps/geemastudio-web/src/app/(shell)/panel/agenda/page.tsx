@@ -2,12 +2,14 @@
 
 import { useEffect, useMemo, useState } from 'react'
 import {
+  formatAppointmentWallclock,
   horasVisiblesParaAgenda,
   instanteCitaDesdeTexto,
   minutosDelDiaEnZona,
 } from '@zmtech/tenant-config'
 
 import { AgendaAppointmentCard } from './_components/AgendaAppointmentCard'
+import { AgendaAvailabilityBlock } from './_components/AgendaAvailabilityBlock'
 import {
   AgendaToolbar,
   goToday,
@@ -24,6 +26,8 @@ import {
   useAgendaTenantSchedule,
 } from '@/hooks/agenda/useAgendaData'
 import { PX_PER_HOUR, type AgendaAppointment, type AgendaStatusFilter } from '@/hooks/agenda/types'
+import { buildDayBlocks, type AvailabilityBlock } from '@/hooks/agenda/availabilityBlocks'
+import { useDayAvailability } from '@/hooks/personal/useAvailability'
 import { useEmployees } from '@/hooks/personal/useEmployees'
 import { StateNote } from '@/components/ui/StateNote'
 import { PageHeader } from '@/components/ui/PageHeader'
@@ -77,6 +81,31 @@ export default function PanelAgendaPage() {
     return 'Servicio'
   }
 
+  const dayIso = useMemo(
+    () =>
+      selectedDate && view === 'day'
+        ? formatAppointmentWallclock(selectedDate, timezone).slice(0, 10)
+        : null,
+    [selectedDate, view, timezone]
+  )
+  const dayAvailability = useDayAvailability(dayIso)
+  const blocksByEmployee = useMemo(() => {
+    if (!dayAvailability.data) return new Map()
+    return buildDayBlocks(
+      dayAvailability.data,
+      activeEmployees.map((e) => e.id),
+      new Map(activeEmployees.map((e) => [e.id, e.name]))
+    )
+  }, [dayAvailability.data, activeEmployees])
+  const coveringNames = useMemo(() => {
+    const names = new Map<string, string>()
+    for (const c of dayAvailability.data?.coverages ?? []) {
+      const covered = activeEmployees.find((e) => e.id === c.covered_employee_id)
+      if (covered) names.set(c.covering_employee_id, covered.name)
+    }
+    return names
+  }, [dayAvailability.data, activeEmployees])
+
   const empById = useMemo(() => new Map(activeEmployees.map((e) => [e.id, e])), [activeEmployees])
 
   const unassigned = useMemo(
@@ -105,8 +134,15 @@ export default function PanelAgendaPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Agenda" description={<>{view === 'week' ? 'Vista semanal' : 'Vista día por profesional'} · zona {timezone} · solo
-          lectura (edición desde la app del celular)</>} />
+      <PageHeader
+        title="Agenda"
+        description={
+          <>
+            {view === 'week' ? 'Vista semanal' : 'Vista día por profesional'} · zona {timezone} ·
+            solo lectura (edición desde la app del celular)
+          </>
+        }
+      />
 
       <AgendaToolbar
         view={view}
@@ -139,9 +175,7 @@ export default function PanelAgendaPage() {
         </div>
       )}
 
-      {loading && (
-        <StateNote kind="loading">Cargando citas…</StateNote>
-      )}
+      {loading && <StateNote kind="loading">Cargando citas…</StateNote>}
 
       {!loading && !errorMessage && view === 'day' && activeEmployees.length === 0 && (
         <StateNote kind="empty">No hay profesionales activos. Configúralos en Personal.</StateNote>
@@ -185,6 +219,11 @@ export default function PanelAgendaPage() {
                   />
                   <span className="truncate text-xs font-semibold text-fg">{emp.name}</span>
                 </div>
+                {coveringNames.has(emp.id) && (
+                  <div className="mt-1 truncate text-[11px] text-sky-700 dark:text-sky-300">
+                    Cubre a {coveringNames.get(emp.id)}
+                  </div>
+                )}
               </div>
             ))}
 
@@ -218,6 +257,16 @@ export default function PanelAgendaPage() {
                       style={{ top: i * PX_PER_HOUR, height: PX_PER_HOUR }}
                     />
                   ))}
+                  {(blocksByEmployee.get(emp.id) ?? []).map(
+                    (block: AvailabilityBlock, i: number) => (
+                      <AgendaAvailabilityBlock
+                        key={i}
+                        block={block}
+                        hourStart={hourStart}
+                        hourEnd={hourEnd}
+                      />
+                    )
+                  )}
                   {colApts.map((apt) => {
                     const start = instanteCitaDesdeTexto(apt.date, timezone)
                     const mins = minutosDelDiaEnZona(start, timezone)

@@ -7,6 +7,7 @@ import {
   deleteTimeOff,
   fetchAffectedAppointments,
   fetchCoverages,
+  fetchDayAvailability,
   fetchEmployeeServiceIds,
   fetchTimeOff,
   fetchWorkShifts,
@@ -18,6 +19,8 @@ import {
   type TimeOffInput,
   type WorkShift,
 } from './availabilityService'
+import { supabase } from '@/lib/supabase'
+
 import { WEB_EMPLOYEES_KEY } from './useEmployees'
 
 const servicesKey = (id: string) => ['web_employee_services', id] as const
@@ -119,5 +122,14 @@ export function useAffectedAppointments(
     queryKey: ['web_affected_appointments', args],
     enabled: !!args && !!args.dateFrom,
     queryFn: () => fetchAffectedAppointments(args!),
+  })
+}
+
+export function useDayAvailability(dayIso: string | null) {
+  return useQuery({
+    queryKey: ['agenda_day_availability', dayIso],
+    enabled: !!supabase && !!dayIso,
+    staleTime: 30_000,
+    queryFn: () => fetchDayAvailability(dayIso!),
   })
 }
