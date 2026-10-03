@@ -136,7 +136,7 @@ export function CategoriasTab({
                     <button
                       type="button"
                       onClick={() => onEdit(c)}
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] text-fg-soft transition-colors hover:bg-fg/[0.06]"
+                      className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] text-fg-soft transition-colors hover:bg-fg/[0.06] md:h-9 md:w-9"
                       aria-label={`Editar ${c.name}`}
                     >
                       <Pencil className="h-4 w-4" />
@@ -145,7 +145,7 @@ export function CategoriasTab({
                       type="button"
                       disabled={busy}
                       onClick={() => void confirmDelete(c)}
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-red-500/20 bg-red-500/10 text-red-700 transition-colors hover:bg-red-500/15 disabled:opacity-60 dark:text-red-300"
+                      className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-red-500/20 bg-red-500/10 text-red-700 transition-colors hover:bg-red-500/15 disabled:opacity-60 dark:text-red-300 md:h-9 md:w-9"
                       aria-label={`Eliminar ${c.name}`}
                     >
                       <Trash2 className="h-4 w-4" />

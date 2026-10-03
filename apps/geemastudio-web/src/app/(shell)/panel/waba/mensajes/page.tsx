@@ -175,7 +175,7 @@ function PanelWabaMensajesContent() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Buscar por nombre o número…"
-                  className="focus:border-[var(--tenant-primary)]/40 w-full rounded-xl border border-fg/[0.08] bg-fg/[0.04] py-1.5 pl-8 pr-7 text-xs text-fg outline-none placeholder:text-fg-subtle"
+                  className="focus:border-[var(--tenant-primary)]/40 w-full rounded-xl border border-fg/[0.08] bg-fg/[0.04] py-1.5 pl-8 pr-7 text-base text-fg outline-none placeholder:text-fg-subtle md:text-xs"
                 />
                 {search && (
                   <button

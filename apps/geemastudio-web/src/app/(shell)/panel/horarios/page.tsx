@@ -307,7 +307,7 @@ export default function PanelHorariosPage() {
                         value={slot.open}
                         onChange={(e) => setHorasDia(dia, 'open', e.target.value)}
                         placeholder="09:00"
-                        className="mt-1 w-full rounded-lg border border-fg/[0.1] bg-app px-3 py-2 text-sm text-white placeholder:text-fg-subtle"
+                        className="mt-1 w-full rounded-lg border border-fg/[0.1] bg-app px-3 py-2 text-base text-white placeholder:text-fg-subtle md:text-sm"
                         maxLength={5}
                       />
                     </div>
@@ -319,7 +319,7 @@ export default function PanelHorariosPage() {
                         value={slot.close}
                         onChange={(e) => setHorasDia(dia, 'close', e.target.value)}
                         placeholder="18:00"
-                        className="mt-1 w-full rounded-lg border border-fg/[0.1] bg-app px-3 py-2 text-sm text-white placeholder:text-fg-subtle"
+                        className="mt-1 w-full rounded-lg border border-fg/[0.1] bg-app px-3 py-2 text-base text-white placeholder:text-fg-subtle md:text-sm"
                         maxLength={5}
                       />
                     </div>

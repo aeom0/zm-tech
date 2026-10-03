@@ -188,7 +188,7 @@ export function EmployeeModal({
   }
 
   const fieldClass =
-    'w-full rounded-xl border border-fg/[0.08] bg-fg/[0.04] px-3 py-2.5 text-sm text-fg outline-none focus:border-[var(--tenant-primary)]/40'
+    'w-full rounded-xl border border-fg/[0.08] bg-fg/[0.04] px-3 py-2.5 text-base md:text-sm text-fg outline-none focus:border-[var(--tenant-primary)]/40'
   const labelClass = 'mb-1 block text-xs text-fg-subtle'
 
   return (
@@ -199,7 +199,7 @@ export function EmployeeModal({
         className="absolute inset-0 bg-scrim/60"
         onClick={onClose}
       />
-      <div className="relative z-10 flex max-h-[92vh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl border border-fg/[0.08] bg-sunken sm:rounded-3xl">
+      <div className="relative z-10 flex max-h-[92dvh] w-full max-w-lg flex-col overflow-hidden rounded-t-3xl border border-fg/[0.08] bg-sunken sm:rounded-3xl">
         <header className="flex items-center justify-between border-b border-fg/[0.08] px-5 py-4">
           <div>
             <div className="text-xs text-fg-subtle">
@@ -217,7 +217,7 @@ export function EmployeeModal({
           <button
             type="button"
             onClick={onClose}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04]"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] md:h-9 md:w-9"
           >
             <X className="h-4 w-4 text-fg-soft" />
           </button>

@@ -36,7 +36,7 @@ function NumberField({
         type="number"
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="focus:border-[var(--tenant-primary)]/40 w-full rounded-lg border border-fg/[0.08] bg-app px-2.5 py-1.5 text-sm text-fg outline-none"
+        className="focus:border-[var(--tenant-primary)]/40 w-full rounded-lg border border-fg/[0.08] bg-app px-2.5 py-1.5 text-base text-fg outline-none md:text-sm"
       />
     </label>
   )
@@ -178,7 +178,7 @@ export function WelcomeGreetingEditor({
               setDirty(true)
             }}
             rows={4}
-            className="focus:border-[var(--tenant-primary)]/40 w-full resize-y rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 text-sm text-fg outline-none"
+            className="focus:border-[var(--tenant-primary)]/40 w-full resize-y rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 text-base text-fg outline-none md:text-sm"
           />
         </label>
 
@@ -191,7 +191,7 @@ export function WelcomeGreetingEditor({
               setDirty(true)
             }}
             rows={8}
-            className="focus:border-[var(--tenant-primary)]/40 w-full resize-y rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 font-mono text-sm text-fg outline-none"
+            className="focus:border-[var(--tenant-primary)]/40 w-full resize-y rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 font-mono text-base text-fg outline-none md:text-sm"
           />
         </label>
 
@@ -218,7 +218,7 @@ export function WelcomeGreetingEditor({
                   onChange={(e) => setSlotContextDraft(e.target.value)}
                   onBlur={() => setDirty(true)}
                   rows={6}
-                  className="focus:border-[var(--tenant-primary)]/40 w-full resize-y rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 font-mono text-xs text-fg outline-none"
+                  className="focus:border-[var(--tenant-primary)]/40 w-full resize-y rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 font-mono text-base text-fg outline-none md:text-xs"
                 />
                 {jsonErrors.slot && (
                   <p className="mt-1 text-xs text-red-700 dark:text-red-300">{jsonErrors.slot}</p>
@@ -233,7 +233,7 @@ export function WelcomeGreetingEditor({
                   onChange={(e) => setFallbackAdDraft(e.target.value)}
                   onBlur={() => setDirty(true)}
                   rows={6}
-                  className="focus:border-[var(--tenant-primary)]/40 w-full resize-y rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 font-mono text-xs text-fg outline-none"
+                  className="focus:border-[var(--tenant-primary)]/40 w-full resize-y rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 font-mono text-base text-fg outline-none md:text-xs"
                 />
                 {jsonErrors.ad && (
                   <p className="mt-1 text-xs text-red-700 dark:text-red-300">{jsonErrors.ad}</p>
@@ -248,7 +248,7 @@ export function WelcomeGreetingEditor({
                   onChange={(e) => setFallbackOrganicDraft(e.target.value)}
                   onBlur={() => setDirty(true)}
                   rows={6}
-                  className="focus:border-[var(--tenant-primary)]/40 w-full resize-y rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 font-mono text-xs text-fg outline-none"
+                  className="focus:border-[var(--tenant-primary)]/40 w-full resize-y rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 font-mono text-base text-fg outline-none md:text-xs"
                 />
                 {jsonErrors.organic && (
                   <p className="mt-1 text-xs text-red-700 dark:text-red-300">

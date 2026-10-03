@@ -76,15 +76,15 @@ function PackFormModalInner({ pack, onClose }: { pack?: Pack | null; onClose: ()
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-scrim/60 p-4 backdrop-blur-sm">
-      <div className="w-full max-w-md space-y-4 rounded-xl border border-fg/10 bg-surface p-6">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-scrim/60 backdrop-blur-sm sm:items-center sm:p-4">
+      <div className="max-h-[90dvh] w-full max-w-md space-y-4 overflow-y-auto rounded-t-2xl border border-fg/10 bg-surface p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:rounded-2xl">
         <h2 className="text-lg font-semibold text-fg">{pack ? 'Editar pack' : 'Nuevo pack'}</h2>
 
         <div className="space-y-3">
           <div>
             <label className="mb-1 block text-xs text-fg/50">Nombre *</label>
             <input
-              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
+              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-base text-fg focus:border-[var(--tenant-primary)] focus:outline-none md:text-sm"
               value={form.name}
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
               placeholder="Ej: Pack novias"
@@ -103,7 +103,7 @@ function PackFormModalInner({ pack, onClose }: { pack?: Pack | null; onClose: ()
           <div>
             <label className="mb-1 block text-xs text-fg/50">Descripción</label>
             <textarea
-              className="w-full resize-none rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
+              className="w-full resize-none rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-base text-fg focus:border-[var(--tenant-primary)] focus:outline-none md:text-sm"
               value={form.description}
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               rows={2}
@@ -114,7 +114,7 @@ function PackFormModalInner({ pack, onClose }: { pack?: Pack | null; onClose: ()
           <div>
             <label className="mb-1 block text-xs text-fg/50">Precio *</label>
             <input
-              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
+              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-base text-fg focus:border-[var(--tenant-primary)] focus:outline-none md:text-sm"
               value={form.price}
               onChange={(e) => setForm((f) => ({ ...f, price: e.target.value }))}
               placeholder="0,00"

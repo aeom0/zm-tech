@@ -40,7 +40,7 @@ export function ProductoVentaModal({
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-scrim/60 p-0 sm:items-center sm:p-4">
       <button type="button" aria-label="Cerrar" className="absolute inset-0" onClick={onClose} />
-      <div className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-t-2xl border border-fg/10 bg-surface p-5 sm:rounded-2xl">
+      <div className="relative max-h-[90dvh] w-full max-w-md overflow-y-auto rounded-t-2xl border border-fg/10 bg-surface p-5 sm:rounded-2xl">
         <h2 className="mb-4 text-lg font-semibold text-fg">Nuevo apartado</h2>
         <div className="space-y-3">
           <Field label="Producto">

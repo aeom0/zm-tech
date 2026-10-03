@@ -232,7 +232,7 @@ export function ChatSimulator() {
               onChange={(e) => setTapId(e.target.value)}
               placeholder="Código de opción (ej. Extensiones del anuncio)"
               disabled={busy || !phone}
-              className="focus:ring-[var(--tenant-primary)]/40 min-h-10 flex-1 rounded-xl border border-dashed border-fg/[0.12] bg-transparent px-3 text-xs text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 disabled:opacity-60"
+              className="focus:ring-[var(--tenant-primary)]/40 min-h-10 flex-1 rounded-xl border border-dashed border-fg/[0.12] bg-transparent px-3 text-base text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 disabled:opacity-60 md:text-xs"
               autoComplete="off"
             />
             <button

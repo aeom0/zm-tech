@@ -34,7 +34,7 @@ function SegmentedControl<T extends string>({
             onClick={() => onChange(opt.value)}
             className={`min-h-[44px] min-w-[44px] flex-1 cursor-pointer px-4 py-2 text-sm font-semibold transition-colors sm:flex-none ${
               active
-                ? 'bg-[var(--primary)] text-white'
+                ? 'bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)]'
                 : 'text-zinc-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-800'
             }`}
           >

@@ -11,7 +11,8 @@ import {
   type BasicRulesForm,
 } from './_lib/rules-form'
 
-const inputClass = 'w-full rounded-xl border border-fg/[0.08] bg-scrim/20 px-3 py-2 text-sm text-fg'
+const inputClass =
+  'w-full rounded-xl border border-fg/[0.08] bg-scrim/20 px-3 py-2 text-base md:text-sm text-fg'
 
 export default function PanelWabaReglasPage() {
   const { query, mutation } = useWabaRules()

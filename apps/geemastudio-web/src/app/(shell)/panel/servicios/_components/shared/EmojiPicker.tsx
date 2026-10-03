@@ -52,7 +52,7 @@ export function EmojiPicker({ emojis, value, onChange }: Props) {
         maxLength={8}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
+        className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-base text-fg focus:border-[var(--tenant-primary)] focus:outline-none md:text-sm"
         placeholder="Otro emoji (opcional)"
         aria-label="Emoji personalizado"
       />

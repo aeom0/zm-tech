@@ -20,7 +20,7 @@ import type {
 import { ConfiguracionNav } from '../_components/ConfiguracionNav'
 
 const fieldClass =
-  'w-full rounded-xl border border-fg/[0.08] bg-fg/[0.04] px-3 py-2.5 text-sm text-fg outline-none focus:border-[var(--tenant-primary)]/40'
+  'w-full rounded-xl border border-fg/[0.08] bg-fg/[0.04] px-3 py-2.5 text-base md:text-sm text-fg outline-none focus:border-[var(--tenant-primary)]/40'
 const labelClass = 'mb-1 block text-xs text-fg-subtle'
 
 function Section({

@@ -76,7 +76,7 @@ function KeywordsSection({
             }
           }}
           placeholder="Agregar palabra clave…"
-          className="focus:border-[var(--tenant-primary)]/40 flex-1 rounded-lg border border-fg/[0.08] bg-app px-2.5 py-1.5 text-xs text-fg outline-none placeholder:text-fg-subtle"
+          className="focus:border-[var(--tenant-primary)]/40 flex-1 rounded-lg border border-fg/[0.08] bg-app px-2.5 py-1.5 text-base text-fg outline-none placeholder:text-fg-subtle md:text-xs"
         />
         <button
           type="button"

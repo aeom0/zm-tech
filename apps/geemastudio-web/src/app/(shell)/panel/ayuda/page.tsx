@@ -185,7 +185,7 @@ export default function PanelAyudaPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Buscar una duda o función (ej. cancelar cita, pausar bot, POS, comisiones)…"
-          className="focus:border-[var(--tenant-primary)]/40 w-full rounded-2xl border border-fg/[0.08] bg-fg/[0.04] py-3 pl-10 pr-9 text-sm text-fg outline-none placeholder:text-fg-subtle"
+          className="focus:border-[var(--tenant-primary)]/40 w-full rounded-2xl border border-fg/[0.08] bg-fg/[0.04] py-3 pl-10 pr-9 text-base text-fg outline-none placeholder:text-fg-subtle md:text-sm"
         />
         {search && (
           <button

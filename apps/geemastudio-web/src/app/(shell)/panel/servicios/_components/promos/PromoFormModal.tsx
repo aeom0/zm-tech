@@ -131,15 +131,15 @@ function PromoFormModalInner({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-scrim/60 p-4 backdrop-blur-sm">
-      <div className="max-h-[90vh] w-full max-w-lg space-y-4 overflow-y-auto rounded-xl border border-fg/10 bg-surface p-6">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-scrim/60 backdrop-blur-sm sm:items-center sm:p-4">
+      <div className="max-h-[90dvh] w-full max-w-lg space-y-4 overflow-y-auto rounded-t-2xl border border-fg/10 bg-surface p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:rounded-2xl">
         <h2 className="text-lg font-semibold text-fg">{promo ? 'Editar promo' : 'Nueva promo'}</h2>
 
         <div className="grid grid-cols-2 gap-3">
           <div className="col-span-2">
             <label className="mb-1 block text-xs text-fg/50">Titulo *</label>
             <input
-              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
+              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-base text-fg focus:border-[var(--tenant-primary)] focus:outline-none md:text-sm"
               value={form.title}
               onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
               placeholder="Ej: Promo San Valentin"
@@ -158,7 +158,7 @@ function PromoFormModalInner({
           <div>
             <label className="mb-1 block text-xs text-fg/50">Etiqueta</label>
             <input
-              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
+              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-base text-fg focus:border-[var(--tenant-primary)] focus:outline-none md:text-sm"
               value={form.badge}
               onChange={(e) => setForm((f) => ({ ...f, badge: e.target.value }))}
               placeholder="HOT, NUEVO..."
@@ -181,7 +181,7 @@ function PromoFormModalInner({
           <div>
             <label className="mb-1 block text-xs text-fg/50">Precio total promo *</label>
             <input
-              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
+              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-base text-fg focus:border-[var(--tenant-primary)] focus:outline-none md:text-sm"
               value={form.promo_price}
               onChange={(e) => setForm((f) => ({ ...f, promo_price: e.target.value }))}
               placeholder="0,00"
@@ -193,7 +193,7 @@ function PromoFormModalInner({
             <label className="mb-1 block text-xs text-fg/50">Expira</label>
             <input
               type="date"
-              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
+              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-base text-fg focus:border-[var(--tenant-primary)] focus:outline-none md:text-sm"
               value={form.expires_at}
               onChange={(e) => setForm((f) => ({ ...f, expires_at: e.target.value }))}
             />
@@ -202,7 +202,7 @@ function PromoFormModalInner({
           <div className="col-span-2">
             <label className="mb-1 block text-xs text-fg/50">Descripcion</label>
             <textarea
-              className="w-full resize-none rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg focus:border-[var(--tenant-primary)] focus:outline-none"
+              className="w-full resize-none rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-base text-fg focus:border-[var(--tenant-primary)] focus:outline-none md:text-sm"
               value={form.description}
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               rows={2}

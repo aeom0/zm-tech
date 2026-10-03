@@ -104,7 +104,7 @@ function ServicioModalForm({
   }, [name, categoryId, price, duration])
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-4">
       <button
         type="button"
         className="absolute inset-0 bg-scrim/70"
@@ -112,7 +112,7 @@ function ServicioModalForm({
         onClick={onClose}
       />
 
-      <div className="relative w-full max-w-lg rounded-2xl border border-fg/[0.08] bg-surface shadow-xl">
+      <div className="relative max-h-[90dvh] w-full max-w-lg overflow-y-auto rounded-t-2xl border border-fg/[0.08] bg-surface pb-[env(safe-area-inset-bottom)] shadow-xl sm:rounded-2xl">
         <div className="flex items-center justify-between border-b border-fg/[0.08] px-5 py-4">
           <div>
             <div className="text-sm font-semibold text-fg">{title}</div>
@@ -123,7 +123,7 @@ function ServicioModalForm({
           <button
             type="button"
             onClick={onClose}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] text-fg-soft transition-colors hover:bg-fg/[0.06]"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] text-fg-soft transition-colors hover:bg-fg/[0.06] md:h-9 md:w-9"
             aria-label="Cerrar modal"
           >
             <X className="h-4 w-4" />

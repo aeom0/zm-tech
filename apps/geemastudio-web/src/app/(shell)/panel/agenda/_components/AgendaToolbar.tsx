@@ -69,7 +69,7 @@ export function AgendaToolbar({
         <button
           type="button"
           onClick={onPrev}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] text-fg-soft hover:bg-fg/[0.08]"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] text-fg-soft hover:bg-fg/[0.08] md:h-9 md:w-9"
           aria-label={isWeek ? 'Semana anterior' : 'Día anterior'}
         >
           <ChevronLeft className="h-4 w-4" />
@@ -91,7 +91,7 @@ export function AgendaToolbar({
         <button
           type="button"
           onClick={onNext}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] text-fg-soft hover:bg-fg/[0.08]"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] text-fg-soft hover:bg-fg/[0.08] md:h-9 md:w-9"
           aria-label={isWeek ? 'Semana siguiente' : 'Día siguiente'}
         >
           <ChevronRight className="h-4 w-4" />

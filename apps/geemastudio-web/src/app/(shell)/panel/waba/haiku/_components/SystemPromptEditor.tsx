@@ -77,7 +77,7 @@ export function SystemPromptEditor({
             setDirty(true)
           }}
           rows={18}
-          className="focus:border-[var(--tenant-primary)]/40 min-h-[400px] w-full resize-y rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 font-mono text-sm text-fg outline-none placeholder:text-fg-subtle"
+          className="focus:border-[var(--tenant-primary)]/40 min-h-[400px] w-full resize-y rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 font-mono text-base text-fg outline-none placeholder:text-fg-subtle md:text-sm"
           placeholder="Cómo debe hablar el bot…"
         />
 

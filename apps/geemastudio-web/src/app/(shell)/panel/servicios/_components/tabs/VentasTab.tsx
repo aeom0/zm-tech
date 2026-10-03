@@ -282,7 +282,7 @@ function PaymentModal({
         <select
           value={method}
           onChange={(event) => setMethod(event.target.value as PaymentMethod)}
-          className="mt-1 w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-sm text-fg"
+          className="mt-1 w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-base text-fg md:text-sm"
         >
           {(Object.keys(METHOD_LABELS) as PaymentMethod[]).map((key) => (
             <option key={key} value={key}>

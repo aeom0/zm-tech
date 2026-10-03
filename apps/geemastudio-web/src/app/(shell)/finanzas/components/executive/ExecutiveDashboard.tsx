@@ -83,7 +83,7 @@ export function ExecutiveDashboard({
               onChange={(e) =>
                 setSelectedMonth(e.target.value === dash.currentMonth ? undefined : e.target.value)
               }
-              className="h-11 cursor-pointer rounded-full border border-zinc-200 bg-white px-4 text-sm font-semibold text-zinc-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300"
+              className="h-11 cursor-pointer rounded-full border border-zinc-200 bg-white px-4 text-base font-semibold text-zinc-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 md:text-sm"
             >
               {monthOptions.map((m) => (
                 <option key={m} value={m}>

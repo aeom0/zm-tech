@@ -64,7 +64,7 @@ export function AppointmentDetailDrawer({
           <button
             type="button"
             onClick={onClose}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04]"
+            className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] md:h-9 md:w-9"
           >
             <X className="h-4 w-4 text-fg-soft" />
           </button>

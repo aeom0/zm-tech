@@ -33,7 +33,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-zinc-950">
+    <div className="flex min-h-[100dvh] flex-col bg-app">
       <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
         <div className="mx-auto max-w-md px-4 py-4">
           <Link
@@ -50,12 +50,7 @@ function LoginForm() {
         <div className="w-full max-w-md">
           {/* Header */}
           <div className="mb-8 text-center">
-            <div
-              className="mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl"
-              style={{
-                backgroundColor: 'var(--primary-10, rgba(99,102,241,0.1))',
-              }}
-            >
+            <div className="bg-[var(--tenant-primary)]/10 mb-4 inline-flex h-14 w-14 items-center justify-center rounded-2xl">
               <Lock className="h-7 w-7 text-tenant-text" />
             </div>
             <h1 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">Iniciar sesión</h1>
@@ -124,8 +119,8 @@ function LoginForm() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl py-3 font-semibold text-white transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 active:scale-[0.98] disabled:opacity-60"
-              style={{ background: 'var(--primary)' }}
+              className="min-h-[44px] w-full rounded-xl py-3 font-semibold text-[var(--tenant-on-primary)] transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 active:scale-[0.98] disabled:opacity-60"
+              style={{ background: 'var(--tenant-primary)' }}
             >
               {loading ? 'Entrando…' : 'Entrar'}
             </button>

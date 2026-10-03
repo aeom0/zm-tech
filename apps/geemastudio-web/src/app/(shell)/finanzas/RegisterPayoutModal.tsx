@@ -42,8 +42,8 @@ export function RegisterPayoutModal({
   const canSave = Number.isFinite(parsedAmount) && parsedAmount > 0
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-      <div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-6 shadow-xl dark:border-zinc-800 dark:bg-zinc-900">
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-scrim/50 sm:items-center sm:px-4">
+      <div className="max-h-[90dvh] w-full max-w-md overflow-y-auto rounded-t-2xl border border-zinc-200 bg-white p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] shadow-xl dark:border-zinc-800 dark:bg-zinc-900 sm:rounded-2xl">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-100">
             Marcar pago — {row.name}
@@ -72,7 +72,7 @@ export function RegisterPayoutModal({
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
           placeholder="0.00"
-          className="mb-3 w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-900 outline-none focus:border-[var(--primary)] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+          className="mb-3 w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-base text-zinc-900 outline-none focus:border-[var(--primary)] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 md:text-sm"
         />
 
         <label className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
@@ -83,7 +83,7 @@ export function RegisterPayoutModal({
           value={method}
           onChange={(e) => setMethod(e.target.value)}
           placeholder="Efectivo, transferencia..."
-          className="mb-3 w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-900 outline-none focus:border-[var(--primary)] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+          className="mb-3 w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-base text-zinc-900 outline-none focus:border-[var(--primary)] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 md:text-sm"
         />
 
         <label className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
@@ -94,7 +94,7 @@ export function RegisterPayoutModal({
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="Notas"
-          className="mb-5 w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-900 outline-none focus:border-[var(--primary)] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
+          className="mb-5 w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-base text-zinc-900 outline-none focus:border-[var(--primary)] dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100 md:text-sm"
         />
 
         {error && (
@@ -113,7 +113,7 @@ export function RegisterPayoutModal({
               notes: notes.trim() || null,
             })
           }
-          className="w-full rounded-full bg-[var(--primary)] py-2.5 text-sm font-bold text-white transition-opacity disabled:opacity-50"
+          className="w-full rounded-full bg-[var(--tenant-primary)] py-2.5 text-sm font-bold text-[var(--tenant-on-primary)] transition-opacity disabled:opacity-50"
         >
           {isPending ? 'Guardando…' : 'Registrar pago'}
         </button>

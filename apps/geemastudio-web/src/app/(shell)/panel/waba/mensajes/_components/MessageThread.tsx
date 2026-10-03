@@ -291,7 +291,7 @@ export function MessageThread({
           <div className="flex min-w-0 flex-1 items-start gap-2">
             <button
               type="button"
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-fg/[0.08] md:hidden"
+              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-fg/[0.08] md:hidden md:h-9 md:w-9"
               onClick={onBack}
               aria-label="Volver a la lista"
             >
@@ -337,7 +337,7 @@ export function MessageThread({
               title={
                 copyValue ? 'Copiar nombre y contacto' : 'No hay datos de contacto para copiar'
               }
-              className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:bg-fg/[0.06] disabled:opacity-40 sm:w-auto sm:gap-1.5 sm:px-2.5"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:bg-fg/[0.06] disabled:opacity-40 sm:w-auto sm:gap-1.5 sm:px-2.5 md:h-9 md:w-9"
             >
               {copied ? (
                 <Check className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400" />
@@ -351,7 +351,7 @@ export function MessageThread({
               onClick={() => setConfirmDelete(true)}
               disabled={deleteThreadMutation.isPending}
               title="Eliminar conversación"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-700 disabled:opacity-50 dark:hover:text-red-300"
+              className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-700 disabled:opacity-50 dark:hover:text-red-300 md:h-9 md:w-9"
             >
               <Trash2 className="h-3.5 w-3.5" />
             </button>
@@ -584,7 +584,7 @@ export function MessageThread({
               title="Adjuntar imagen"
               onClick={() => imageInputRef.current?.click()}
               disabled={isBusy}
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50"
+              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50 md:h-9 md:w-9"
             >
               <ImageIcon className="h-4 w-4" />
             </button>
@@ -593,7 +593,7 @@ export function MessageThread({
               title="Adjuntar audio"
               onClick={() => audioInputRef.current?.click()}
               disabled={isBusy}
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50"
+              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50 md:h-9 md:w-9"
             >
               <Mic className="h-4 w-4" />
             </button>
@@ -602,7 +602,7 @@ export function MessageThread({
               title="Adjuntar documento"
               onClick={() => documentInputRef.current?.click()}
               disabled={isBusy}
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50"
+              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50 md:h-9 md:w-9"
             >
               <FileText className="h-4 w-4" />
             </button>
@@ -616,14 +616,14 @@ export function MessageThread({
             placeholder="Escribe un mensaje…"
             rows={1}
             disabled={isBusy}
-            className="focus:border-[var(--tenant-primary)]/40 min-h-[36px] min-w-0 flex-1 resize-none rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-3 py-2 text-sm text-fg placeholder:text-fg-subtle focus:outline-none disabled:opacity-50"
+            className="focus:border-[var(--tenant-primary)]/40 min-h-[36px] min-w-0 flex-1 resize-none rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-3 py-2 text-base text-fg placeholder:text-fg-subtle focus:outline-none disabled:opacity-50 md:text-sm"
           />
 
           <button
             type="button"
             onClick={handleSend}
             disabled={isBusy || !text.trim()}
-            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)] disabled:opacity-40"
+            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)] disabled:opacity-40 md:h-9 md:w-9"
             aria-label="Enviar"
           >
             <Send className="h-4 w-4" />

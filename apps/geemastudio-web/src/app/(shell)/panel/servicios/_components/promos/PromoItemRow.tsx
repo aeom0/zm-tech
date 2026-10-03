@@ -33,7 +33,7 @@ export function PromoItemRow({ item, index, onChange, onRemove }: Props) {
             item_id: '',
           })
         }
-        className="rounded border-0 bg-fg/10 px-2 py-1 text-xs text-fg"
+        className="rounded border-0 bg-fg/10 px-2 py-1 text-base text-fg md:text-xs"
       >
         <option value="service">Servicio</option>
         <option value="pack">Pack</option>
@@ -42,7 +42,7 @@ export function PromoItemRow({ item, index, onChange, onRemove }: Props) {
       <select
         value={item.item_id}
         onChange={(e) => onChange(index, { ...item, item_id: e.target.value })}
-        className="min-w-0 flex-1 rounded border-0 bg-fg/10 px-2 py-1 text-xs text-fg"
+        className="min-w-0 flex-1 rounded border-0 bg-fg/10 px-2 py-1 text-base text-fg md:text-xs"
       >
         <option value="">Seleccionar...</option>
         {options.map((o) => (
@@ -64,7 +64,7 @@ export function PromoItemRow({ item, index, onChange, onRemove }: Props) {
         }}
         placeholder="Precio"
         inputMode="decimal"
-        className="w-20 rounded border-0 bg-fg/10 px-2 py-1 text-xs text-fg"
+        className="w-20 rounded border-0 bg-fg/10 px-2 py-1 text-base text-fg md:text-xs"
       />
 
       <button

@@ -207,7 +207,7 @@ export function ConfigImageCard({
                 value={caption}
                 onChange={(e) => onChangeCaption(e.target.value)}
                 placeholder="Texto corto debajo de la imagen"
-                className="focus:border-[var(--tenant-primary)]/40 w-full rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 text-sm text-fg outline-none placeholder:text-fg-subtle"
+                className="focus:border-[var(--tenant-primary)]/40 w-full rounded-xl border border-fg/[0.08] bg-app px-3 py-2.5 text-base text-fg outline-none placeholder:text-fg-subtle md:text-sm"
               />
             </div>
           )}

@@ -94,7 +94,7 @@ export default function FinanzasPage() {
 
   if (authLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-950">
+      <div className="flex min-h-[60dvh] items-center justify-center">
         <div className="text-sm text-zinc-500 dark:text-zinc-400">Cargando…</div>
       </div>
     )
@@ -104,7 +104,7 @@ export default function FinanzasPage() {
 
   if (!isAdmin) {
     return (
-      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+      <div>
         <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
           <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
             <Link
@@ -165,14 +165,14 @@ export default function FinanzasPage() {
   })
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <div className="border-b border-zinc-200 px-4 py-4 dark:border-zinc-800">
+    <div>
+      <div className="border-b border-line pb-4">
         <div className="mx-auto flex max-w-6xl sm:justify-end">
           <ViewToggle view={view} onChange={setView} className="w-full sm:w-auto" />
         </div>
       </div>
 
-      <main className="mx-auto max-w-6xl space-y-8 px-4 py-8">
+      <main className="mx-auto max-w-6xl space-y-8 pt-6">
         <FeatureAvailabilityNotice
           feature="finances"
           label="las finanzas y reportes"
@@ -294,7 +294,7 @@ export default function FinanzasPage() {
                       onClick={() => setPeriod(p)}
                       className={`rounded-full px-3 py-1 text-xs font-semibold transition-colors ${
                         period === p
-                          ? 'bg-[var(--primary)] text-white'
+                          ? 'bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)]'
                           : 'text-zinc-500 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-zinc-200'
                       }`}
                     >

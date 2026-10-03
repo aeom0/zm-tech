@@ -194,7 +194,7 @@ export function PortafolioClient() {
               <select
                 value={activeServiceId ?? ''}
                 onChange={(e) => setActiveServiceId(e.target.value)}
-                className="focus:ring-[var(--tenant-primary)]/40 w-full rounded-xl border border-fg/[0.08] bg-surface px-3 py-2.5 text-sm text-fg focus:outline-none focus:ring-2"
+                className="focus:ring-[var(--tenant-primary)]/40 w-full rounded-xl border border-fg/[0.08] bg-surface px-3 py-2.5 text-base text-fg focus:outline-none focus:ring-2 md:text-sm"
               >
                 {servicesInCat.map((svc) => {
                   const n = counts.data?.[svc.id] ?? 0
@@ -322,7 +322,7 @@ export function PortafolioClient() {
                               [index]: e.target.value,
                             }))
                           }
-                          className="focus:ring-[var(--tenant-primary)]/40 min-w-0 flex-1 rounded-lg border border-fg/[0.08] bg-surface px-2.5 py-1.5 text-xs text-fg-soft focus:outline-none focus:ring-2"
+                          className="focus:ring-[var(--tenant-primary)]/40 min-w-0 flex-1 rounded-lg border border-fg/[0.08] bg-surface px-2.5 py-1.5 text-base text-fg-soft focus:outline-none focus:ring-2 md:text-xs"
                         >
                           <option value="">Mover a otro servicio…</option>
                           {services
