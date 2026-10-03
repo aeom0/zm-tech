@@ -162,9 +162,9 @@ Todas las comparaciones se hacen en hora local del tenant (`appointments.date` e
 ## Bot WABA y Haiku
 
 - `agenda.ts` (`sendDateSelector` / `sendTimeSelector`) deja de calcular y llama a `get_available_slots`.
-- `payment.ts` guarda `employee_id` en `appointments` y `appointment_services` con la asignación del slot elegido; se revalida el slot al confirmar (otro cliente pudo tomarlo).
+- **Decidido:** el bot no guarda `employee_id` (queda null y Vanessa asigna desde AsignarChicas), porque `trg_notify_appointment_assigned` avisaría a la profesional al insertar. Revisar si se quiere asignación automática más adelante (requeriría suprimir ese aviso en citas del bot).
 - Se retira `employee_categories_by_service_category` de `dispatcher.ts` cuando el backfill esté verificado.
-- **Haiku** no recibe reglas en bruto, sino el resultado ya calculado: "para anime el 24-oct solo hay desde la 1 pm con Karelis", y para fechas sin cupo, la alternativa más cercana. Nunca inventa disponibilidad: si el motor devuelve vacío, lo dice y propone otra fecha.
+- **Haiku** no recibe reglas en bruto, sino el resultado ya calculado: los `CUPOS REALES` que arma `formatAvailableHours` pasan por el mismo filtro del motor, así que no hace falta cambiar su prompt. Idea original: "para anime el 24-oct solo hay desde la 1 pm con Karelis", y para fechas sin cupo, la alternativa más cercana. Nunca inventa disponibilidad: si el motor devuelve vacío, lo dice y propone otra fecha.
 - Respetar la regla de reconciliar prod/repo del webhook antes de desplegar (el repo ya difiere de prod en v655).
 
 ## UI web (`/panel/personal`)
@@ -187,7 +187,7 @@ La agenda web y la pantalla de asignación pasan a sugerir solo profesionales el
 | 2 | **Hecha** (`20261003145120_get_available_slots`, 164 ms para 31 días). Función `get_available_slots` + pruebas SQL con el caso ZM (24-oct, 5-dic, desde la 1 pm, multi-servicio) | Casos de prueba abajo |
 | 3 | **Hecha.** Tipos en `@geemastudio/shared-schema`; hooks y servicios web/mobile (capa UI → hooks → services) | `pnpm check:types` |
 | 4 | **Hecha** (pestañas Servicios, Horario, Ausencias y coberturas; pendiente: bloques en agenda, sugerir solo elegibles y revisión visual) UI web: ficha de profesional | Revisión visual claro/oscuro, mobile web |
-| 5 | **En curso.** Motor v2 y RPC de bot aplicados (`20261003145912_get_available_slots_v2_bot_rpc`; caso clásica sin asignar probado). Pendiente en repo ZM: gate aditivo (AND) en `hasSlotCapacityForServices`/`slotHasAvailability` con caché corta y paso libre si `configured = false` o hay error; guardar `employee_id`; Haiku con resultado calculado. Despliegue del webhook solo con confirmación | Simulador WABA `/panel/waba/simulador` |
+| 5 | **Hecha en código, sin desplegar** (PR ZM #164). Motor v2 y RPC de bot aplicados en BD. En el bot, `hasSlotCapacityForServices` suma una verificación contra `get_day_slots_for_bot` (caché 8 s; no bloquea sin reglas, con error, al reprogramar o fuera de la grilla de 15 min). El selector de horas y los `CUPOS REALES` de Haiku pasan por esa misma función. Decisión: el bot sigue creando citas con `employee_id` null y Vanessa asigna, porque guardar `employee_id` dispara `trg_notify_appointment_assigned`. Despliegue del webhook solo con confirmación |
 | 6 | Cargar la configuración de ZM Lash desde la UI (no por SQL) y validar con Vanessa | Checklist de aceptación |
 | 7 | Mobile: tres pestañas en Equipo → Personal | |
 
