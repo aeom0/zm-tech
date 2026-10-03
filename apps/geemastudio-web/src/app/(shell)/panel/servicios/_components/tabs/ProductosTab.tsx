@@ -89,7 +89,7 @@ function ViewButton({
       type="button"
       onClick={onClick}
       className={[
-        'rounded-lg border px-3 py-1.5 text-sm font-semibold transition-colors',
+        'min-h-[44px] md:min-h-[36px] rounded-lg border px-3 py-1.5 text-sm font-semibold transition-colors',
         active
           ? 'border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 text-tenant-text'
           : 'border-fg/[0.06] text-fg/50 hover:bg-fg/[0.04] hover:text-fg',

@@ -81,7 +81,7 @@ function KeywordsSection({
         <button
           type="button"
           onClick={add}
-          className="inline-flex items-center gap-1 rounded-lg border border-fg/[0.08] bg-fg/[0.04] px-2.5 py-1.5 text-xs text-fg-soft hover:bg-fg/[0.06]"
+          className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1 rounded-lg border border-fg/[0.08] bg-fg/[0.04] px-2.5 py-1.5 text-xs text-fg-soft hover:bg-fg/[0.06]"
         >
           <Plus className="h-3.5 w-3.5" />
           Agregar

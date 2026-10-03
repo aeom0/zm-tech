@@ -240,7 +240,7 @@ function ActionButton({
       type="button"
       onClick={onClick}
       className={[
-        'inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors',
+        'min-h-[44px] md:min-h-[36px] inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors',
         primary
           ? 'bg-[var(--tenant-primary)] text-[var(--tenant-on-primary)] hover:bg-[var(--tenant-primary-hover)]'
           : 'border border-fg/10 text-fg/65 hover:bg-fg/[0.05] hover:text-fg',
@@ -348,7 +348,7 @@ function ModalActions({
         type="button"
         onClick={onConfirm}
         disabled={busy}
-        className="rounded-lg bg-[var(--tenant-primary)] px-3 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] disabled:opacity-40"
+        className="min-h-[44px] md:min-h-[36px] rounded-lg bg-[var(--tenant-primary)] px-3 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] disabled:opacity-40"
       >
         {busy ? 'Registrando…' : confirmLabel}
       </button>

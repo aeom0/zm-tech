@@ -363,7 +363,7 @@ export function MessageThread({
             type="button"
             onClick={handlePauseToggle}
             disabled={staffSessionMutation.isPending}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-2.5 py-1.5 text-xs text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50"
+            className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-2.5 py-1.5 text-xs text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50"
           >
             {conversation.botPaused ? (
               <Play className="h-3.5 w-3.5" />
@@ -382,7 +382,7 @@ export function MessageThread({
                 : 'Bloquear: el bot dejará de responder a este número'
             }
             className={[
-              'inline-flex items-center gap-1.5 rounded-xl border px-2.5 py-1.5 text-xs font-medium disabled:opacity-50',
+              'min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 rounded-xl border px-2.5 py-1.5 text-xs font-medium disabled:opacity-50',
               blockedQuery.data
                 ? 'border-red-500/30 bg-red-500/10 text-red-700 hover:bg-red-500/20 dark:text-red-300'
                 : 'border-fg/[0.08] bg-fg/[0.03] text-fg-soft hover:bg-fg/[0.06]',
@@ -408,7 +408,7 @@ export function MessageThread({
               target="_blank"
               rel="noreferrer"
               title="Ver ficha en Clientes (abre en pestaña nueva)"
-              className="inline-flex items-center gap-1.5 rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-2.5 py-1.5 text-xs text-fg-soft hover:bg-fg/[0.06]"
+              className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-2.5 py-1.5 text-xs text-fg-soft hover:bg-fg/[0.06]"
             >
               <User className="h-3.5 w-3.5 text-fg-muted" />
               <span>Ver en Clientes</span>
@@ -427,7 +427,7 @@ export function MessageThread({
               type="button"
               onClick={handleDeleteThread}
               disabled={deleteThreadMutation.isPending}
-              className="rounded-lg bg-red-600 px-2.5 py-1 font-semibold text-white hover:bg-red-700 disabled:opacity-60"
+              className="min-h-[44px] md:min-h-0 rounded-lg bg-red-600 px-2.5 py-1 font-semibold text-white hover:bg-red-700 disabled:opacity-60"
             >
               {deleteThreadMutation.isPending ? 'Eliminando…' : 'Sí, eliminar'}
             </button>
@@ -456,7 +456,7 @@ export function MessageThread({
             type="button"
             onClick={handleHaikuAgenda}
             disabled={staffSessionMutation.isPending}
-            className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-violet-400/40 bg-violet-500/10 px-2.5 py-1.5 text-xs font-medium text-violet-800 hover:bg-violet-500/20 disabled:opacity-50 dark:text-violet-200"
+            className="min-h-[44px] md:min-h-0 mt-2 inline-flex items-center gap-1.5 rounded-lg border border-violet-400/40 bg-violet-500/10 px-2.5 py-1.5 text-xs font-medium text-violet-800 hover:bg-violet-500/20 disabled:opacity-50 dark:text-violet-200"
           >
             {staffSessionMutation.isPending ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -484,7 +484,7 @@ export function MessageThread({
               type="button"
               onClick={handleLoadOlder}
               disabled={threadQuery.isFetching}
-              className="inline-flex items-center gap-1.5 rounded-full border border-fg/[0.08] bg-fg/[0.04] px-3 py-1.5 text-xs text-fg-soft hover:bg-fg/[0.08] disabled:opacity-50"
+              className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 rounded-full border border-fg/[0.08] bg-fg/[0.04] px-3 py-1.5 text-xs text-fg-soft hover:bg-fg/[0.08] disabled:opacity-50"
             >
               {threadQuery.isFetching ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />

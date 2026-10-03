@@ -84,7 +84,7 @@ export function PersonalHeaderActions({ onNew, staffSingular }: PersonalHeaderAc
     <button
       type="button"
       onClick={onNew}
-      className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2.5 text-sm font-semibold text-[var(--tenant-on-primary)] hover:bg-[var(--tenant-primary-hover)] hover:text-[var(--tenant-on-primary-hover)]"
+      className="min-h-[44px] md:min-h-[36px] inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2.5 text-sm font-semibold text-[var(--tenant-on-primary)] hover:bg-[var(--tenant-primary-hover)] hover:text-[var(--tenant-on-primary-hover)]"
     >
       <Plus className="h-4 w-4" />
       {staffSingular.trim().toLocaleLowerCase('es').endsWith('a') ? 'Nueva' : 'Nuevo'}{' '}

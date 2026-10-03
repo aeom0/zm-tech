@@ -74,7 +74,7 @@ export function CategoriasTab({
         <button
           type="button"
           onClick={onNew}
-          className="inline-flex items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] transition-colors hover:bg-[var(--tenant-primary-hover)]"
+          className="min-h-[44px] md:min-h-[36px] inline-flex items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] transition-colors hover:bg-[var(--tenant-primary-hover)]"
         >
           <Plus className="h-4 w-4" />
           Nueva
@@ -105,7 +105,7 @@ export function CategoriasTab({
           <button
             type="button"
             onClick={onNew}
-            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] transition-colors hover:bg-[var(--tenant-primary-hover)]"
+            className="min-h-[44px] md:min-h-[36px] mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] transition-colors hover:bg-[var(--tenant-primary-hover)]"
           >
             <Plus className="h-4 w-4" />
             Nueva categoría
