@@ -14,6 +14,7 @@ import {
   Mic,
   Pause,
   Play,
+  Plus,
   Send,
   ShieldCheck,
   Sparkles,
@@ -80,6 +81,7 @@ export function MessageThread({
   const [moderationError, setModerationError] = useState<string | null>(null)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [attachOpen, setAttachOpen] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const imageInputRef = useRef<HTMLInputElement>(null)
@@ -363,7 +365,7 @@ export function MessageThread({
             type="button"
             onClick={handlePauseToggle}
             disabled={staffSessionMutation.isPending}
-            className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-2.5 py-1.5 text-xs text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50"
+            className="inline-flex min-h-[44px] items-center gap-1.5 rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-2.5 py-1.5 text-xs text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50 md:min-h-0"
           >
             {conversation.botPaused ? (
               <Play className="h-3.5 w-3.5" />
@@ -382,7 +384,7 @@ export function MessageThread({
                 : 'Bloquear: el bot dejará de responder a este número'
             }
             className={[
-              'min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 rounded-xl border px-2.5 py-1.5 text-xs font-medium disabled:opacity-50',
+              'inline-flex min-h-[44px] items-center gap-1.5 rounded-xl border px-2.5 py-1.5 text-xs font-medium disabled:opacity-50 md:min-h-0',
               blockedQuery.data
                 ? 'border-red-500/30 bg-red-500/10 text-red-700 hover:bg-red-500/20 dark:text-red-300'
                 : 'border-fg/[0.08] bg-fg/[0.03] text-fg-soft hover:bg-fg/[0.06]',
@@ -408,7 +410,7 @@ export function MessageThread({
               target="_blank"
               rel="noreferrer"
               title="Ver ficha en Clientes (abre en pestaña nueva)"
-              className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-2.5 py-1.5 text-xs text-fg-soft hover:bg-fg/[0.06]"
+              className="inline-flex min-h-[44px] items-center gap-1.5 rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-2.5 py-1.5 text-xs text-fg-soft hover:bg-fg/[0.06] md:min-h-0"
             >
               <User className="h-3.5 w-3.5 text-fg-muted" />
               <span>Ver en Clientes</span>
@@ -427,7 +429,7 @@ export function MessageThread({
               type="button"
               onClick={handleDeleteThread}
               disabled={deleteThreadMutation.isPending}
-              className="min-h-[44px] md:min-h-0 rounded-lg bg-red-600 px-2.5 py-1 font-semibold text-white hover:bg-red-700 disabled:opacity-60"
+              className="min-h-[44px] rounded-lg bg-red-600 px-2.5 py-1 font-semibold text-white hover:bg-red-700 disabled:opacity-60 md:min-h-0"
             >
               {deleteThreadMutation.isPending ? 'Eliminando…' : 'Sí, eliminar'}
             </button>
@@ -456,7 +458,7 @@ export function MessageThread({
             type="button"
             onClick={handleHaikuAgenda}
             disabled={staffSessionMutation.isPending}
-            className="min-h-[44px] md:min-h-0 mt-2 inline-flex items-center gap-1.5 rounded-lg border border-violet-400/40 bg-violet-500/10 px-2.5 py-1.5 text-xs font-medium text-violet-800 hover:bg-violet-500/20 disabled:opacity-50 dark:text-violet-200"
+            className="mt-2 inline-flex min-h-[44px] items-center gap-1.5 rounded-lg border border-violet-400/40 bg-violet-500/10 px-2.5 py-1.5 text-xs font-medium text-violet-800 hover:bg-violet-500/20 disabled:opacity-50 dark:text-violet-200 md:min-h-0"
           >
             {staffSessionMutation.isPending ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -484,7 +486,7 @@ export function MessageThread({
               type="button"
               onClick={handleLoadOlder}
               disabled={threadQuery.isFetching}
-              className="min-h-[44px] md:min-h-0 inline-flex items-center gap-1.5 rounded-full border border-fg/[0.08] bg-fg/[0.04] px-3 py-1.5 text-xs text-fg-soft hover:bg-fg/[0.08] disabled:opacity-50"
+              className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-fg/[0.08] bg-fg/[0.04] px-3 py-1.5 text-xs text-fg-soft hover:bg-fg/[0.08] disabled:opacity-50 md:min-h-0"
             >
               {threadQuery.isFetching ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -545,7 +547,7 @@ export function MessageThread({
         </ScrollFadeRow>
 
         <div className="flex items-end gap-1.5 sm:gap-2">
-          <div className="flex shrink-0 gap-1">
+          <div className="relative flex shrink-0">
             <input
               ref={imageInputRef}
               type="file"
@@ -581,31 +583,39 @@ export function MessageThread({
             />
             <button
               type="button"
-              title="Adjuntar imagen"
-              onClick={() => imageInputRef.current?.click()}
+              onClick={() => setAttachOpen((v) => !v)}
               disabled={isBusy}
+              aria-label="Adjuntar"
+              aria-expanded={attachOpen}
               className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50 md:h-9 md:w-9"
             >
-              <ImageIcon className="h-4 w-4" />
+              <Plus className={`h-5 w-5 transition-transform ${attachOpen ? 'rotate-45' : ''}`} />
             </button>
-            <button
-              type="button"
-              title="Adjuntar audio"
-              onClick={() => audioInputRef.current?.click()}
-              disabled={isBusy}
-              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50 md:h-9 md:w-9"
-            >
-              <Mic className="h-4 w-4" />
-            </button>
-            <button
-              type="button"
-              title="Adjuntar documento"
-              onClick={() => documentInputRef.current?.click()}
-              disabled={isBusy}
-              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50 md:h-9 md:w-9"
-            >
-              <FileText className="h-4 w-4" />
-            </button>
+            {attachOpen && (
+              <>
+                <div className="fixed inset-0 z-10" onClick={() => setAttachOpen(false)} />
+                <div className="absolute bottom-full left-0 z-20 mb-2 w-48 overflow-hidden rounded-xl border border-line bg-surface py-1 shadow-xl">
+                  {[
+                    { label: 'Imagen', Icon: ImageIcon, ref: imageInputRef },
+                    { label: 'Audio', Icon: Mic, ref: audioInputRef },
+                    { label: 'Documento', Icon: FileText, ref: documentInputRef },
+                  ].map(({ label, Icon, ref }) => (
+                    <button
+                      key={label}
+                      type="button"
+                      onClick={() => {
+                        setAttachOpen(false)
+                        ref.current?.click()
+                      }}
+                      className="flex min-h-[44px] w-full items-center gap-3 px-3 text-sm text-fg hover:bg-fg/[0.06]"
+                    >
+                      <Icon className="h-4 w-4 text-fg-soft" />
+                      {label}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
           </div>
 
           <textarea
@@ -616,7 +626,7 @@ export function MessageThread({
             placeholder="Escribe un mensaje…"
             rows={1}
             disabled={isBusy}
-            className="focus:border-[var(--tenant-primary)]/40 min-h-[36px] min-w-0 flex-1 resize-none rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-3 py-2 text-base text-fg placeholder:text-fg-subtle focus:outline-none disabled:opacity-50 md:text-sm"
+            className="focus:border-[var(--tenant-primary)]/40 min-h-[44px] min-w-0 flex-1 resize-none rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-3 py-2 text-base text-fg placeholder:text-fg-subtle focus:outline-none disabled:opacity-50 md:min-h-[36px] md:text-sm"
           />
 
           <button
