@@ -66,7 +66,7 @@ vercel --prod
 
 (o push a la rama conectada si está configurado el deploy automático).
 
-**Build en Vercel (monorepo)**: cada app (`landing`, `geemastudio-web`, `repmax-web`) tiene su `vercel.json` con `git.deploymentEnabled` (`main: true`, resto de ramas `false`, así los previews no crean deployments) y un `ignoreCommand` que solo construye en producción y cuando `turbo-ignore <app>` detecta cambios en esa app o sus dependencias. Mismo comando en *Ignored Build Step* de cada proyecto Vercel. Los checks de CI (lint, typecheck, build) corren en GitHub Actions, no en Vercel. Limitación: sin deployment previo con SHA conocido, `turbo-ignore` construye por seguridad.
+**Build en Vercel (monorepo)**: cada app (`landing`, `geemastudio-web`, `repmax-web`) tiene su `vercel.json` con `git.deploymentEnabled` (`main: true`, resto de ramas `false`, así los previews no crean deployments). Los proyectos usan la omisión nativa de Vercel (*Settings → Build and Deployment → Root Directory → Skip deployment*, API `enableAffectedProjectsDeployments`): no construye una app si no cambió su código, sus dependencias internas ni el lockfile para ella, y no ocupa slots de build ni crea deployments cancelados. No usar `ignoreCommand` ni *Ignored Build Step* (pisarían la omisión nativa y `turbo-ignore` está deprecado). Requisito: dependencias internas declaradas en cada `package.json` y nombres de workspace únicos. Los checks de CI (lint, typecheck, build) corren en GitHub Actions.
 
 ### Rutas protegidas (panel)
 
