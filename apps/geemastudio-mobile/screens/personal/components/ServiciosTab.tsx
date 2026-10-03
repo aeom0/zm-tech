@@ -63,6 +63,13 @@ export function ServiciosTab({
   if (catalogLoading || current.isLoading) {
     return <ActivityIndicator style={{ marginTop: 32 }} color={theme.primary} />
   }
+  if (current.isError || !current.data) {
+    return (
+      <AvailabilityNote kind="error">
+        No se pudieron cargar los servicios. Recarga antes de guardar, para no borrar la lista.
+      </AvailabilityNote>
+    )
+  }
 
   const missingSelection = !doesAll && selected.size === 0
 
@@ -146,7 +153,7 @@ export function ServiciosTab({
 
       <Pressable
         style={[av.primaryBtn, { backgroundColor: theme.primary, opacity: save.isPending ? 0.6 : 1 }]}
-        disabled={save.isPending}
+        disabled={save.isPending || !current.isSuccess}
         onPress={() =>
           save.mutate(
             { doesAll, serviceIds: Array.from(selected) },

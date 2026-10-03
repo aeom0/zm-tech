@@ -55,6 +55,13 @@ export function ServicesTab({ employee, staffSingular }: { employee: EmployeeRow
   if (categories.isLoading || services.isLoading || current.isLoading) {
     return <StateNote kind="loading">Cargando servicios…</StateNote>
   }
+  if (current.isError || !current.data) {
+    return (
+      <StateNote kind="error">
+        No se pudieron cargar los servicios. Recarga antes de guardar, para no borrar la lista.
+      </StateNote>
+    )
+  }
 
   const missingSelection = !doesAll && selected.size === 0
 
@@ -139,7 +146,7 @@ export function ServicesTab({ employee, staffSingular }: { employee: EmployeeRow
         <button
           type="button"
           className={primaryBtnClass}
-          disabled={save.isPending}
+          disabled={save.isPending || !current.isSuccess}
           onClick={() =>
             save.mutate(
               { doesAll, serviceIds: Array.from(selected) },

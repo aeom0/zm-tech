@@ -350,6 +350,8 @@ export function AusenciasTab({
 
       {timeOff.isLoading ? (
         <ActivityIndicator color={theme.primary} />
+      ) : timeOff.isError ? (
+        <AvailabilityNote kind="error">No se pudieron cargar las ausencias.</AvailabilityNote>
       ) : (timeOff.data ?? []).length === 0 ? (
         <AvailabilityNote kind="info">{`${staffSingular} no tiene ausencias registradas.`}</AvailabilityNote>
       ) : (
@@ -382,6 +384,9 @@ export function AusenciasTab({
         ))
       )}
 
+      {coverages.isError && (
+        <AvailabilityNote kind="error">No se pudieron cargar las coberturas.</AvailabilityNote>
+      )}
       <ThemedText style={av.sectionTitle}>Coberturas</ThemedText>
       <ThemedText type="small" style={{ color: theme.textMuted }}>
         {`Quien cubre hereda todos los servicios de ${employeeName} esos días, y ${employeeName} no recibe citas.`}

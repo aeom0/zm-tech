@@ -104,6 +104,13 @@ export function HorarioTab({
   }
 
   if (query.isLoading) return <ActivityIndicator style={{ marginTop: 32 }} color={theme.primary} />
+  if (query.isError || !query.data) {
+    return (
+      <AvailabilityNote kind="error">
+        No se pudo cargar el horario. Recarga antes de guardar, para no borrar los turnos.
+      </AvailabilityNote>
+    )
+  }
 
   const error = custom ? validate(week) : null
   const noShifts = custom && WEEK_DAYS.every((d) => (week[d.weekday] ?? []).length === 0)
@@ -224,15 +231,18 @@ export function HorarioTab({
 
       {noShifts && (
         <AvailabilityNote kind="warning">
-          {`Sin ningún turno, ${staffSingular.toLowerCase()} no recibirá citas.`}
+          {`Agrega al menos un turno, o vuelve a usar el horario del negocio. Guardar sin turnos borraría el horario de ${staffSingular.toLowerCase()}.`}
         </AvailabilityNote>
       )}
       {error && <AvailabilityNote kind="error">{error}</AvailabilityNote>}
       {save.error && <AvailabilityNote kind="error">{(save.error as Error).message}</AvailabilityNote>}
 
       <Pressable
-        style={[av.primaryBtn, { backgroundColor: theme.primary, opacity: save.isPending || error ? 0.6 : 1 }]}
-        disabled={save.isPending || !!error}
+        style={[
+          av.primaryBtn,
+          { backgroundColor: theme.primary, opacity: save.isPending || error || noShifts ? 0.6 : 1 },
+        ]}
+        disabled={save.isPending || !!error || noShifts}
         onPress={submit}
       >
         {save.isPending ? (
