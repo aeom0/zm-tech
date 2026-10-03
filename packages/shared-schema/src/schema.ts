@@ -13,6 +13,9 @@ import {
   index,
   date,
   uniqueIndex,
+  smallint,
+  time,
+  primaryKey,
 } from 'drizzle-orm/pg-core'
 import { createInsertSchema } from 'drizzle-zod'
 import { z } from 'zod'
@@ -39,6 +42,8 @@ export const employees = pgTable('employees', {
   /** URL pública en Storage (bucket `employee-avatars`) o enlace externo. */
   avatarUrl: text('avatar_url'),
   isActive: boolean('is_active').notNull().default(true),
+  /** true = hace todos los servicios; false = solo los de `employee_services` (Plan 18). */
+  doesAllServices: boolean('does_all_services').notNull().default(true),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 
@@ -635,6 +640,95 @@ export const insertSalonHolidaySchema = createInsertSchema(salonHolidays).omit({
   createdAt: true,
   updatedAt: true,
 })
+
+// --- Plan 18: disponibilidad por profesional ---------------------------------
+
+export const employeeServices = pgTable(
+  'employee_services',
+  {
+    tenantId: text('tenant_id').notNull(),
+    employeeId: varchar('employee_id').notNull(),
+    serviceId: varchar('service_id').notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.employeeId, t.serviceId] }),
+    idxTenantService: index('idx_employee_services_tenant_service').on(t.tenantId, t.serviceId),
+  })
+)
+
+/** Varias filas por día = turno partido. Sin filas = hereda el horario del negocio. */
+export const employeeWorkHours = pgTable('employee_work_hours', {
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  tenantId: text('tenant_id').notNull(),
+  employeeId: varchar('employee_id').notNull(),
+  /** 0 = domingo … 6 = sábado */
+  weekday: smallint('weekday').notNull(),
+  startTime: time('start_time').notNull(),
+  endTime: time('end_time').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
+export const EMPLOYEE_TIME_OFF_KINDS = [
+  'vacation',
+  'permission',
+  'sick_leave',
+  'personal',
+  'training',
+  'day_off',
+  'other',
+] as const
+export type EmployeeTimeOffKind = (typeof EMPLOYEE_TIME_OFF_KINDS)[number]
+
+export const employeeTimeOff = pgTable('employee_time_off', {
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  tenantId: text('tenant_id').notNull(),
+  employeeId: varchar('employee_id').notNull(),
+  kind: text('kind').$type<EmployeeTimeOffKind>().notNull().default('other'),
+  dateFrom: date('date_from').notNull(),
+  /** null = hasta nuevo aviso */
+  dateTo: date('date_to'),
+  /** start/end nulos = día completo */
+  startTime: time('start_time'),
+  endTime: time('end_time'),
+  reason: text('reason'),
+  isPaid: boolean('is_paid'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
+export const employeeCoverages = pgTable('employee_coverages', {
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  tenantId: text('tenant_id').notNull(),
+  coveredEmployeeId: varchar('covered_employee_id').notNull(),
+  coveringEmployeeId: varchar('covering_employee_id').notNull(),
+  dateFrom: date('date_from').notNull(),
+  dateTo: date('date_to').notNull(),
+  note: text('note'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
+export type EmployeeServiceRow = typeof employeeServices.$inferSelect
+export type EmployeeWorkHoursRow = typeof employeeWorkHours.$inferSelect
+export type EmployeeTimeOffRow = typeof employeeTimeOff.$inferSelect
+export type EmployeeCoverageRow = typeof employeeCoverages.$inferSelect
+
+/** Resultado de `get_available_slots` (una entrada por servicio del carrito, en orden). */
+export interface AvailableSlotAssignment {
+  service_id: string
+  employee_id: string
+  starts_at: string
+  duration: number
+}
+export interface AvailableSlot {
+  slot_start: string
+  assignments: AvailableSlotAssignment[]
+}
 
 export type Employee = typeof employees.$inferSelect
 export type InsertEmployee = z.infer<typeof insertEmployeeSchema>
