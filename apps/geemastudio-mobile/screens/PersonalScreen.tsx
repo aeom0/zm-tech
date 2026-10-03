@@ -928,6 +928,22 @@ export default function PersonalScreen() {
 
               {!isCreating && editing && (
                 <Pressable
+                  style={[styles.deleteBtn, { borderColor: theme.border }]}
+                  onPress={() => {
+                    const target = { employeeId: editing.id, employeeName: editing.name }
+                    closeModal()
+                    navigation.navigate('DisponibilidadPersonal', target)
+                  }}
+                >
+                  <Feather name="calendar" size={16} color={theme.textSecondary} />
+                  <ThemedText style={[styles.deleteBtnText, { color: theme.textSecondary }]}>
+                    Servicios, horario y ausencias
+                  </ThemedText>
+                </Pressable>
+              )}
+
+              {!isCreating && editing && (
+                <Pressable
                   style={[styles.deleteBtn, { borderColor: theme.error }]}
                   onPress={confirmDelete}
                   disabled={deleteMutation.isPending}
