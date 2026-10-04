@@ -114,6 +114,26 @@ export async function saveWorkShifts(employeeId: string, shifts: WorkShift[]): P
   fail(error)
 }
 
+export async function fetchBookingLeadDays(employeeId: string): Promise<number> {
+  const { data, error } = await db()
+    .from('employees')
+    .select('booking_lead_days')
+    .eq('id', employeeId)
+    .maybeSingle()
+  fail(error)
+  return data?.booking_lead_days ?? 0
+}
+
+/** 0 = se puede agendar hoy. No cambia el horario. */
+export async function saveBookingLeadDays(employeeId: string, days: number): Promise<void> {
+  const lead = Math.min(30, Math.max(0, Math.trunc(days)))
+  const { error } = await db()
+    .from('employees')
+    .update({ booking_lead_days: lead })
+    .eq('id', employeeId)
+  fail(error)
+}
+
 // --- Ausencias ----------------------------------------------------------------
 
 export async function fetchTimeOff(employeeId: string): Promise<TimeOffRecord[]> {

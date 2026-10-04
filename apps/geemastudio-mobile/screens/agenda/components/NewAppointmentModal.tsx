@@ -121,6 +121,12 @@ export function NewAppointmentModal({
   clientLabel,
 }: NewAppointmentModalProps) {
   const clientSectionTitle = clientLabel.charAt(0).toUpperCase() + clientLabel.slice(1)
+  const serviceDay = new Intl.DateTimeFormat('en-CA', {
+    timeZone: zonaIANASegura(timeZone),
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(selectedDate)
 
   const disableSubmit = createPending || isBusy || availabilityStatus === 'checking'
 
@@ -208,6 +214,7 @@ export function NewAppointmentModal({
               promotions={promotions}
               promotionItems={promotionItems}
               promosLoading={promosLoading}
+              serviceDay={serviceDay}
             />
 
             <StaffSection
@@ -219,6 +226,7 @@ export function NewAppointmentModal({
               employeesError={employeesError}
               staffSingular={staffSingular}
               staffPlural={staffPlural}
+              serviceDay={serviceDay}
             />
 
             {formData.serviceLines.length > 0 ? (

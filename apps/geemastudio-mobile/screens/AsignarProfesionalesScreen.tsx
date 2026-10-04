@@ -9,6 +9,8 @@ import { AsignarRow } from './asignar/components/AsignarRow'
 import { AsignarEmptyState } from './asignar/components/AsignarEmptyState'
 import { AsignarLoadingPlaceholder } from './asignar/components/AsignarLoadingPlaceholder'
 import { AsignarPeriodTabs } from './asignar/components/AsignarPeriodTabs'
+import { useServiceEligibility } from '@/screens/personal/hooks/useAvailability'
+import { employeeCanDoServices, uniqueServiceIds } from '@/screens/personal/lib/serviceEligibility'
 import { useAsignarData } from './asignar/hooks/useAsignarData'
 import type { AsignarAppointment, AsignarPeriod, RowAssignState } from './asignar/types'
 
@@ -25,6 +27,7 @@ export default function AsignarProfesionalesScreen() {
   const tabBarHeight = TAB_BAR_HEIGHT + insets.bottom
   const { theme } = useTheme()
   const { employees, upcoming, past, isLoading, refetch, assignMutation, config } = useAsignarData()
+  const eligibility = useServiceEligibility()
 
   const [period, setPeriod] = useState<AsignarPeriod>('upcoming')
   const data = period === 'upcoming' ? upcoming : past
@@ -56,13 +59,26 @@ export default function AsignarProfesionalesScreen() {
     ({ item }: { item: AsignarAppointment }) => (
       <AsignarRow
         item={item}
-        employees={employees}
+        employees={
+          eligibility.data
+            ? employees.filter((employee) =>
+                employeeCanDoServices(
+                  eligibility.data!,
+                  employee.id,
+                  uniqueServiceIds(item.service_id, item.service_ids, item.line_service_ids),
+                  item.date.slice(0, 10),
+                ),
+              )
+            : []
+        }
+        eligibilityReady={!eligibility.isLoading && !!eligibility.data}
+        eligibilityError={eligibility.isError}
         isSaving={rowSaving[item.id] ?? false}
         onAssign={(employeeId) => handleAssign(item.id, employeeId)}
         locale={config.locale.language}
       />
     ),
-    [employees, rowSaving, handleAssign, config.locale.language]
+    [employees, eligibility.data, eligibility.isLoading, eligibility.isError, rowSaving, handleAssign, config.locale.language]
   )
 
   return (

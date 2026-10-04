@@ -11,6 +11,13 @@ import type { AgendaFormState, AgendaPack, AgendaService, AgendaServiceCategory 
 import type { Promo, PromotionItem } from '../../../services/types'
 import { agendaStyles as styles } from '../../agendaStyles'
 import type { NewAppointmentModalTheme } from './modalTheme'
+import { useServiceEligibility } from '@/screens/personal/hooks/useAvailability'
+import {
+  employeeCanDoService,
+  employeeCanDoServices,
+  servicesOfPack,
+  servicesOfPromo,
+} from '@/screens/personal/lib/serviceEligibility'
 
 type PickerTab = 'services' | 'packs' | 'promos'
 
@@ -28,6 +35,7 @@ interface ServicioSectionProps {
   promotions: Promo[]
   promotionItems: PromotionItem[]
   promosLoading: boolean
+  serviceDay: string
 }
 
 export function ServicioSection({
@@ -36,7 +44,7 @@ export function ServicioSection({
   formData,
   setFormData,
   servicesByCategory,
-  selectedCategory,
+  selectedCategory: _selectedCategory,
   servicesLoading,
   servicesError,
   packs,
@@ -44,7 +52,9 @@ export function ServicioSection({
   promotions,
   promotionItems,
   promosLoading,
+  serviceDay,
 }: ServicioSectionProps) {
+  const eligibility = useServiceEligibility()
   const [activeTab, setActiveTab] = useState<PickerTab>('services')
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -54,21 +64,40 @@ export function ServicioSection({
     .filter((id): id is string => !!id)
 
   const normalizedQuery = searchQuery.trim().toUpperCase()
+  const index = eligibility.data
 
   const filteredServices = useMemo(() => {
-    if (!normalizedQuery) return servicesByCategory
-    return servicesByCategory.filter((s) => s.name.toUpperCase().includes(normalizedQuery))
-  }, [servicesByCategory, normalizedQuery])
+    const visible = servicesByCategory.filter((service) =>
+      index ? employeeCanDoService(index, formData.employeeId, service.id, serviceDay) : false,
+    )
+    if (!normalizedQuery) return visible
+    return visible.filter((s) => s.name.toUpperCase().includes(normalizedQuery))
+  }, [servicesByCategory, normalizedQuery, index, formData.employeeId, serviceDay])
 
   const filteredPacks = useMemo(() => {
-    if (!normalizedQuery) return packs
-    return packs.filter((p) => p.name.toUpperCase().includes(normalizedQuery))
-  }, [packs, normalizedQuery])
+    const visible = packs.filter((pack) =>
+      index
+        ? employeeCanDoServices(index, formData.employeeId, servicesOfPack(pack.service_ids), serviceDay)
+        : false,
+    )
+    if (!normalizedQuery) return visible
+    return visible.filter((p) => p.name.toUpperCase().includes(normalizedQuery))
+  }, [packs, normalizedQuery, index, formData.employeeId, serviceDay])
 
   const filteredPromos = useMemo(() => {
-    if (!normalizedQuery) return promotions
-    return promotions.filter((p) => p.title.toUpperCase().includes(normalizedQuery))
-  }, [promotions, normalizedQuery])
+    const visible = promotions.filter((promo) =>
+      index
+        ? employeeCanDoServices(
+            index,
+            formData.employeeId,
+            servicesOfPromo(promo.id, promotionItems, packs),
+            serviceDay,
+          )
+        : false,
+    )
+    if (!normalizedQuery) return visible
+    return visible.filter((p) => p.title.toUpperCase().includes(normalizedQuery))
+  }, [promotions, normalizedQuery, index, formData.employeeId, serviceDay, promotionItems, packs])
 
   const toggleService = (serviceId: string) => {
     setFormData((prev) => {
@@ -165,9 +194,13 @@ export function ServicioSection({
           </ThemedText>
         ) : filteredServices.length === 0 ? (
           <ThemedText style={[styles.emptyText, { color: theme.textMuted }]}>
-            {normalizedQuery
-              ? 'Sin resultados para tu búsqueda.'
-              : `No hay servicios en ${selectedCategory?.name}.`}
+            {eligibility.isLoading
+              ? 'Verificando servicios…'
+              : eligibility.isError
+                ? 'No se pudo verificar qué servicios realiza.'
+                : normalizedQuery
+                  ? 'Sin resultados para tu búsqueda.'
+                  : 'No realiza servicios de esta categoría.'}
           </ThemedText>
         ) : (
           <ScrollFadeRow

@@ -7,7 +7,7 @@ import { ThemedText } from '@/components/ThemedText'
 import { useResetOnChange } from '@/hooks/useResetOnChange'
 import { useTheme } from '@/hooks/useTheme'
 
-import { useSaveWorkShifts, useWorkShifts } from '../hooks/useAvailability'
+import { useBookingLeadDays, useSaveBookingLeadDays, useSaveWorkShifts, useWorkShifts } from '../hooks/useAvailability'
 import { isValidTime } from '../lib/availabilityUi'
 import { AvailabilityNote } from './AvailabilityNote'
 import { av } from './availabilityStyles'
@@ -64,9 +64,12 @@ export function HorarioTab({
 }) {
   const { theme } = useTheme()
   const query = useWorkShifts(employeeId)
+  const leadQuery = useBookingLeadDays(employeeId)
   const save = useSaveWorkShifts(employeeId)
+  const saveLead = useSaveBookingLeadDays(employeeId)
   const [custom, setCustom] = useState(false)
   const [week, setWeek] = useState<Week>(emptyWeek())
+  const [leadDays, setLeadDays] = useState(0)
   const [saved, setSaved] = useState(false)
 
   useResetOnChange([query.data], () => {
@@ -77,6 +80,11 @@ export function HorarioTab({
     }
     setWeek(w)
     setCustom(query.data.length > 0)
+  })
+
+  useResetOnChange([leadQuery.data], () => {
+    if (leadQuery.data === undefined) return
+    setLeadDays(leadQuery.data)
   })
 
   const update = (weekday: number, next: Shift[]) => {
@@ -103,8 +111,10 @@ export function HorarioTab({
     })
   }
 
-  if (query.isLoading) return <ActivityIndicator style={{ marginTop: 32 }} color={theme.primary} />
-  if (query.isError || !query.data) {
+  if (query.isLoading || leadQuery.isLoading) {
+    return <ActivityIndicator style={{ marginTop: 32 }} color={theme.primary} />
+  }
+  if (query.isError || !query.data || leadQuery.isError || leadQuery.data === undefined) {
     return (
       <AvailabilityNote kind="error">
         No se pudo cargar el horario. Recarga antes de guardar, para no borrar los turnos.
@@ -125,7 +135,17 @@ export function HorarioTab({
           }))
         )
       : []
-    save.mutate(shifts, { onSuccess: () => setSaved(true) })
+    save.mutate(shifts, {
+      onSuccess: () => {
+        saveLead.mutate(leadDays, { onSuccess: () => setSaved(true) })
+      },
+    })
+  }
+
+  const pending = save.isPending || saveLead.isPending
+  const changeLead = (next: number) => {
+    setSaved(false)
+    setLeadDays(Math.min(30, Math.max(0, next)))
   }
 
   const inputStyle = [
@@ -236,16 +256,45 @@ export function HorarioTab({
       )}
       {error && <AvailabilityNote kind="error">{error}</AvailabilityNote>}
       {save.error && <AvailabilityNote kind="error">{(save.error as Error).message}</AvailabilityNote>}
+      {saveLead.error && (
+        <AvailabilityNote kind="error">{(saveLead.error as Error).message}</AvailabilityNote>
+      )}
+
+      <View style={[av.card, { borderColor: theme.border, backgroundColor: theme.backgroundDefault }]}>
+        <ThemedText style={av.title}>Días de aviso para citas nuevas</ThemedText>
+        <ThemedText type="small" style={{ color: theme.textMuted }}>
+          0 permite agendar hoy. 1, desde mañana. Al asignar a mano se puede elegir igual.
+        </ThemedText>
+        <View style={av.row}>
+          <Pressable
+            onPress={() => changeLead(leadDays - 1)}
+            disabled={leadDays <= 0}
+            accessibilityLabel="Restar un día de aviso"
+            style={[av.iconBtn, { borderColor: theme.border, opacity: leadDays <= 0 ? 0.4 : 1 }]}
+          >
+            <Feather name="minus" size={18} color={theme.textSecondary} />
+          </Pressable>
+          <ThemedText style={[av.title, { minWidth: 28, textAlign: 'center' }]}>{leadDays}</ThemedText>
+          <Pressable
+            onPress={() => changeLead(leadDays + 1)}
+            disabled={leadDays >= 30}
+            accessibilityLabel="Sumar un día de aviso"
+            style={[av.iconBtn, { borderColor: theme.border, opacity: leadDays >= 30 ? 0.4 : 1 }]}
+          >
+            <Feather name="plus" size={18} color={theme.textSecondary} />
+          </Pressable>
+        </View>
+      </View>
 
       <Pressable
         style={[
           av.primaryBtn,
-          { backgroundColor: theme.primary, opacity: save.isPending || error || noShifts ? 0.6 : 1 },
+          { backgroundColor: theme.primary, opacity: pending || error || noShifts ? 0.6 : 1 },
         ]}
-        disabled={save.isPending || !!error || noShifts}
+        disabled={pending || !!error || noShifts}
         onPress={submit}
       >
-        {save.isPending ? (
+        {pending ? (
           <ActivityIndicator color={theme.buttonText} />
         ) : (
           <Feather name={saved ? 'check' : 'save'} size={18} color={theme.buttonText} />

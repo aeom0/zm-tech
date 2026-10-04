@@ -6,6 +6,7 @@ import {
   deleteCoverage,
   deleteTimeOff,
   fetchAffectedAppointments,
+  fetchBookingLeadDays,
   fetchCoverages,
   fetchDayAvailability,
   fetchEmployeeServiceIds,
@@ -13,6 +14,7 @@ import {
   fetchWorkShifts,
   insertCoverage,
   insertTimeOff,
+  saveBookingLeadDays,
   saveEmployeeServices,
   saveWorkShifts,
   type CoverageInput,
@@ -25,6 +27,7 @@ import { WEB_EMPLOYEES_KEY } from './useEmployees'
 
 const servicesKey = (id: string) => ['web_employee_services', id] as const
 const hoursKey = (id: string) => ['web_employee_work_hours', id] as const
+const leadKey = (id: string) => ['web_employee_booking_lead', id] as const
 const timeOffKey = (id: string) => ['web_employee_time_off', id] as const
 const COVERAGES_KEY = ['web_employee_coverages'] as const
 
@@ -61,6 +64,22 @@ export function useSaveWorkShifts(employeeId: string) {
   return useMutation({
     mutationFn: (shifts: WorkShift[]) => saveWorkShifts(employeeId, shifts),
     onSuccess: () => void qc.invalidateQueries({ queryKey: hoursKey(employeeId) }),
+  })
+}
+
+export function useBookingLeadDays(employeeId: string | undefined) {
+  return useQuery({
+    queryKey: leadKey(employeeId ?? ''),
+    enabled: !!employeeId,
+    queryFn: () => fetchBookingLeadDays(employeeId!),
+  })
+}
+
+export function useSaveBookingLeadDays(employeeId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (days: number) => saveBookingLeadDays(employeeId, days),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: leadKey(employeeId) }),
   })
 }
 

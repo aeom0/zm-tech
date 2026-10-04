@@ -6,6 +6,8 @@ export interface AsignarAppointment {
   date: string
   price: number
   service_id: string | null
+  service_ids?: string[] | null
+  line_service_ids?: string[]
   employee_id: string | null
   status: string
   notes: string | null

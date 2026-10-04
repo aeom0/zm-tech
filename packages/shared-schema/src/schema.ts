@@ -44,6 +44,8 @@ export const employees = pgTable('employees', {
   isActive: boolean('is_active').notNull().default(true),
   /** true = hace todos los servicios; false = solo los de `employee_services` (Plan 18). */
   doesAllServices: boolean('does_all_services').notNull().default(true),
+  /** Días de anticipación para citas nuevas. 0 = hoy. No aplica al asignar a mano. */
+  bookingLeadDays: smallint('booking_lead_days').notNull().default(0),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 })
 

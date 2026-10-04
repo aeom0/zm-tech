@@ -42,14 +42,37 @@ export function useAsignarData() {
 
       const { data, error } = await supabase
         .from('appointments')
-        .select('id, client_name, date, price, service_id, employee_id, status, notes')
+        .select('id, client_name, date, price, service_id, service_ids, employee_id, status, notes')
         .gte('date', formatAppointmentWallclock(start, timeZone))
         .lt('date', formatAppointmentWallclock(end, timeZone))
         .neq('status', 'cancelled')
         .order('date', { ascending: true })
 
       if (error) throw new Error(error.message)
-      return (data ?? []) as AsignarAppointment[]
+      const rows = (data ?? []) as AsignarAppointment[]
+      if (rows.length === 0) return rows
+
+      const { data: lines, error: linesError } = await supabase
+        .from('appointment_services')
+        .select('appointment_id, service_id')
+        .in(
+          'appointment_id',
+          rows.map((row) => row.id),
+        )
+      if (linesError) throw new Error(linesError.message)
+
+      const byAppointment = new Map<string, string[]>()
+      for (const line of lines ?? []) {
+        const appointmentId = String(line.appointment_id)
+        const list = byAppointment.get(appointmentId) ?? []
+        if (line.service_id) list.push(String(line.service_id))
+        byAppointment.set(appointmentId, list)
+      }
+      return rows.map((row) => ({
+        ...row,
+        service_ids: Array.isArray(row.service_ids) ? row.service_ids.map(String) : [],
+        line_service_ids: byAppointment.get(row.id) ?? [],
+      }))
     },
     refetchInterval: 30_000,
   })
