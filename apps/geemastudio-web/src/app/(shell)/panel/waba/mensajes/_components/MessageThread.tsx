@@ -354,23 +354,24 @@ export function MessageThread({
               title={
                 copyValue ? 'Copiar nombre y contacto' : 'No hay datos de contacto para copiar'
               }
-              className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:bg-fg/[0.06] disabled:opacity-40 sm:w-auto sm:gap-1.5 sm:px-2.5 md:h-9 md:w-9"
+              aria-label="Copiar nombre y contacto"
+              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:bg-fg/[0.06] disabled:opacity-40 md:h-9 md:w-9"
             >
               {copied ? (
-                <Check className="h-3.5 w-3.5 text-emerald-700 dark:text-emerald-400" />
+                <Check className="h-4 w-4 text-emerald-700 dark:text-emerald-400" />
               ) : (
-                <Copy className="h-3.5 w-3.5" />
+                <Copy className="h-4 w-4" />
               )}
-              <span className="hidden sm:inline">{copied ? 'Copiado' : 'Copiar'}</span>
             </button>
             <button
               type="button"
               onClick={() => setConfirmDelete(true)}
               disabled={deleteThreadMutation.isPending}
               title="Eliminar conversación"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-700 disabled:opacity-50 dark:hover:text-red-300 md:h-9 md:w-9"
+              aria-label="Eliminar conversación"
+              className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-fg/[0.08] text-fg-soft hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-700 disabled:opacity-50 dark:hover:text-red-300 md:h-9 md:w-9"
             >
-              <Trash2 className="h-3.5 w-3.5" />
+              <Trash2 className="h-4 w-4" />
             </button>
           </div>
         </div>
@@ -380,7 +381,7 @@ export function MessageThread({
             type="button"
             onClick={handlePauseToggle}
             disabled={staffSessionMutation.isPending}
-            className="inline-flex min-h-[44px] items-center gap-1.5 rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-2.5 py-1.5 text-xs text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50 md:min-h-0"
+            className="inline-flex min-h-[44px] min-w-0 flex-1 items-center justify-center gap-1.5 rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-2.5 py-1.5 text-xs text-fg-soft hover:bg-fg/[0.06] disabled:opacity-50 sm:flex-none md:min-h-0"
           >
             {conversation.botPaused ? (
               <Play className="h-3.5 w-3.5" />
@@ -393,7 +394,7 @@ export function MessageThread({
             type="button"
             onClick={handleHaikuAgenda}
             disabled={staffSessionMutation.isPending}
-            className="inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-xl border border-violet-400/40 bg-violet-500/10 px-2.5 py-1.5 text-xs font-medium text-violet-800 hover:bg-violet-500/20 disabled:opacity-50 dark:text-violet-200 sm:w-auto md:min-h-0"
+            className="inline-flex min-h-[44px] min-w-0 flex-1 items-center justify-center gap-1.5 rounded-xl border border-violet-400/40 bg-violet-500/10 px-2.5 py-1.5 text-xs font-medium text-violet-800 hover:bg-violet-500/20 disabled:opacity-50 dark:text-violet-200 sm:flex-none md:min-h-0"
           >
             {staffSessionMutation.isPending ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />

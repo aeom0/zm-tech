@@ -22,13 +22,32 @@ export function useDashboardTenant(enabled = true) {
         data: { user },
       } = await supabase.auth.getUser()
       if (!user) return null
-      const { data, error } = await supabase
+      const cols =
+        'business_name, currency_code, timezone, client_terminology, appointment_terminology'
+      let { data, error } = await supabase
         .from('tenant_settings')
-        .select(
-          'business_name, currency_code, timezone, client_terminology, appointment_terminology'
-        )
+        .select(cols)
         .eq('id', user.id)
         .maybeSingle()
+      // Staff/owners sin fila propia: resolver el tenant por profiles.tenant_id
+      // (sin esto el timezone caía al default y el panel mostraba hora de Caracas).
+      if (!data) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('tenant_id')
+          .eq('id', user.id)
+          .maybeSingle()
+        const slug = profile?.tenant_id as string | null | undefined
+        if (slug) {
+          const bySlug = await supabase
+            .from('tenant_settings')
+            .select(cols)
+            .eq('tenant_slug', slug)
+            .maybeSingle()
+          data = bySlug.data
+          error = bySlug.error
+        }
+      }
       if (error) throw new Error(error.message)
       if (!data) return null
       return {
