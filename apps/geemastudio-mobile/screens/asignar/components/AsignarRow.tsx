@@ -18,12 +18,22 @@ interface Employee {
 interface AsignarRowProps {
   item: AsignarAppointment
   employees: Employee[]
+  eligibilityReady: boolean
+  eligibilityError: boolean
   isSaving: boolean
   onAssign: (employeeId: string) => void
   locale: string // config.locale.language
 }
 
-export function AsignarRow({ item, employees, isSaving, onAssign, locale }: AsignarRowProps) {
+export function AsignarRow({
+  item,
+  employees,
+  eligibilityReady,
+  eligibilityError,
+  isSaving,
+  onAssign,
+  locale,
+}: AsignarRowProps) {
   const { theme } = useTheme()
   const { config } = useTenant()
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null)
@@ -90,6 +100,18 @@ export function AsignarRow({ item, employees, isSaving, onAssign, locale }: Asig
             Asignado a {item.employeeName ?? '—'}
           </ThemedText>
         </View>
+      ) : eligibilityError ? (
+        <ThemedText style={[styles.meta, { color: theme.error }]}>
+          No se pudo verificar quién puede hacer este servicio.
+        </ThemedText>
+      ) : !eligibilityReady ? (
+        <ThemedText style={[styles.meta, { color: theme.textSecondary }]}>
+          Verificando quién puede hacerlo…
+        </ThemedText>
+      ) : employees.length === 0 ? (
+        <ThemedText style={[styles.meta, { color: theme.textSecondary }]}>
+          Nadie del equipo realiza este servicio ese día.
+        </ThemedText>
       ) : (
         <>
           {/* Selector de profesional — chips horizontales */}

@@ -342,6 +342,7 @@ export function AppointmentDetailModal({
                 onAddPack={onAddPack}
                 onAddPromo={onAddPromo}
                 onClose={onClosePicker}
+                serviceDay={appointment.date.slice(0, 10)}
               />
             ) : (
               <>

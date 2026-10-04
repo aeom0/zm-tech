@@ -9,6 +9,13 @@ import { BorderRadius, Colors, Spacing } from '@/constants/theme'
 
 import type { AgendaEmployee, AgendaPack, AgendaService, AgendaServiceCategory } from '../types'
 import type { Promo, PromotionItem } from '../../services/types'
+import { useServiceEligibility } from '@/screens/personal/hooks/useAvailability'
+import {
+  employeeCanDoService,
+  employeeCanDoServices,
+  servicesOfPack,
+  servicesOfPromo,
+} from '@/screens/personal/lib/serviceEligibility'
 
 const PACKS_TAB = '__packs__'
 const PROMOS_TAB = '__promos__'
@@ -32,6 +39,8 @@ interface SvcPickerContentProps {
   onAddPack: (pack: AgendaPack, employeeId: string) => void
   onAddPromo: (promo: Promo, employeeId: string) => void
   onClose: () => void
+  /** Día de la cita (YYYY-MM-DD) para respetar coberturas. */
+  serviceDay: string
 }
 
 export function SvcPickerContent({
@@ -40,7 +49,7 @@ export function SvcPickerContent({
   employees,
   packs,
   promotions,
-  promotionItems: _promotionItems,
+  promotionItems,
   currencySymbol,
   staffSingular,
   selectedCatId,
@@ -53,8 +62,10 @@ export function SvcPickerContent({
   onAddPack,
   onAddPromo,
   onClose,
+  serviceDay,
 }: SvcPickerContentProps) {
   const { theme } = useTheme()
+  const eligibility = useServiceEligibility()
   const [activeTab, setActiveTab] = useState(selectedCatId || categories[0]?.id || '')
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -64,19 +75,37 @@ export function SvcPickerContent({
   const activePromos = promotions.filter((p) => p.is_active)
 
   const query = searchQuery.trim().toUpperCase()
-  const filteredPacks = useMemo(
-    () => (query ? activePacks.filter((p) => p.name.toUpperCase().includes(query)) : activePacks),
-    [activePacks, query]
-  )
-  const filteredPromos = useMemo(
-    () =>
-      query ? activePromos.filter((p) => p.title.toUpperCase().includes(query)) : activePromos,
-    [activePromos, query]
-  )
+  const index = eligibility.data
+  const filteredPacks = useMemo(() => {
+    const visible = activePacks.filter((pack) =>
+      index
+        ? employeeCanDoServices(index, selectedEmployeeId, servicesOfPack(pack.service_ids), serviceDay)
+        : false,
+    )
+    return query ? visible.filter((p) => p.name.toUpperCase().includes(query)) : visible
+  }, [activePacks, query, index, selectedEmployeeId, serviceDay])
+  const filteredPromos = useMemo(() => {
+    const visible = activePromos.filter((promo) =>
+      index
+        ? employeeCanDoServices(
+            index,
+            selectedEmployeeId,
+            servicesOfPromo(promo.id, promotionItems, packs),
+            serviceDay,
+          )
+        : false,
+    )
+    return query ? visible.filter((p) => p.title.toUpperCase().includes(query)) : visible
+  }, [activePromos, query, index, selectedEmployeeId, serviceDay, promotionItems, packs])
   const filteredServices = useMemo(() => {
     const byCategory = services.filter((s) => s.category_id === activeTab)
-    return query ? byCategory.filter((s) => s.name.toUpperCase().includes(query)) : byCategory
-  }, [services, activeTab, query])
+    const visible = byCategory.filter((service) =>
+      eligibility.data
+        ? employeeCanDoService(eligibility.data, selectedEmployeeId, service.id, serviceDay)
+        : false,
+    )
+    return query ? visible.filter((s) => s.name.toUpperCase().includes(query)) : visible
+  }, [services, activeTab, query, eligibility.data, selectedEmployeeId, serviceDay])
 
   const handleSelectCat = (id: string) => {
     setActiveTab(id)
@@ -328,9 +357,17 @@ export function SvcPickerContent({
               )
             })
           )
+        ) : eligibility.isLoading ? (
+          <ThemedText style={[styles.empty, { color: theme.textMuted }]}>
+            Verificando servicios de esta profesional…
+          </ThemedText>
+        ) : eligibility.isError ? (
+          <ThemedText style={[styles.empty, { color: theme.error }]}>
+            No se pudo verificar qué servicios realiza.
+          </ThemedText>
         ) : filteredServices.length === 0 ? (
           <ThemedText style={[styles.empty, { color: theme.textMuted }]}>
-            No hay servicios en esta categoría
+            No realiza servicios de esta categoría.
           </ThemedText>
         ) : (
           filteredServices.map((service) => {

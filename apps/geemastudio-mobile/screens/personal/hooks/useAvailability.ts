@@ -8,10 +8,13 @@ import {
   fetchCoverages,
   fetchEmployeeDoesAll,
   fetchEmployeeServiceIds,
+  fetchServiceEligibility,
   fetchTimeOff,
+  fetchBookingLeadDays,
   fetchWorkShifts,
   insertCoverage,
   insertTimeOff,
+  saveBookingLeadDays,
   saveEmployeeServices,
   saveWorkShifts,
   type CoverageInput,
@@ -19,8 +22,11 @@ import {
   type WorkShift,
 } from '../lib/availabilityAdapter'
 
+export const SERVICE_ELIGIBILITY_KEY = ['service_eligibility'] as const
+
 const servicesKey = (id: string) => ['employee_services', id] as const
 const hoursKey = (id: string) => ['employee_work_hours', id] as const
+const leadKey = (id: string) => ['employee_booking_lead', id] as const
 const timeOffKey = (id: string) => ['employee_time_off', id] as const
 const COVERAGES_KEY = ['employee_coverages'] as const
 
@@ -42,6 +48,7 @@ export function useSaveEmployeeServices(employeeId: string) {
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: servicesKey(employeeId) })
       void qc.invalidateQueries({ queryKey: EMPLOYEES_QUERY_KEY })
+      void qc.invalidateQueries({ queryKey: SERVICE_ELIGIBILITY_KEY })
     },
   })
 }
@@ -58,6 +65,21 @@ export function useSaveWorkShifts(employeeId: string) {
   return useMutation({
     mutationFn: (shifts: WorkShift[]) => saveWorkShifts(employeeId, shifts),
     onSuccess: () => void qc.invalidateQueries({ queryKey: hoursKey(employeeId) }),
+  })
+}
+
+export function useBookingLeadDays(employeeId: string) {
+  return useQuery({
+    queryKey: leadKey(employeeId),
+    queryFn: () => fetchBookingLeadDays(employeeId),
+  })
+}
+
+export function useSaveBookingLeadDays(employeeId: string) {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (days: number) => saveBookingLeadDays(employeeId, days),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: leadKey(employeeId) }),
   })
 }
 
@@ -92,7 +114,10 @@ export function useAddCoverage() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (input: CoverageInput) => insertCoverage(input),
-    onSuccess: () => void qc.invalidateQueries({ queryKey: COVERAGES_KEY }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: COVERAGES_KEY })
+      void qc.invalidateQueries({ queryKey: SERVICE_ELIGIBILITY_KEY })
+    },
   })
 }
 
@@ -100,7 +125,10 @@ export function useDeleteCoverage() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => deleteCoverage(id),
-    onSuccess: () => void qc.invalidateQueries({ queryKey: COVERAGES_KEY }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: COVERAGES_KEY })
+      void qc.invalidateQueries({ queryKey: SERVICE_ELIGIBILITY_KEY })
+    },
   })
 }
 
@@ -118,5 +146,13 @@ export function useAffectedAppointments(
     queryKey: ['affected_appointments', args],
     enabled: !!args && !!args.dateFrom,
     queryFn: () => fetchAffectedAppointments(args!),
+  })
+}
+
+export function useServiceEligibility() {
+  return useQuery({
+    queryKey: SERVICE_ELIGIBILITY_KEY,
+    staleTime: 60_000,
+    queryFn: fetchServiceEligibility,
   })
 }

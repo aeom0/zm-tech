@@ -9,6 +9,8 @@ import { Spacing, Colors } from '@/constants/theme'
 import type { AgendaEmployee, AgendaFormState } from '../../types'
 import { agendaStyles as styles } from '../../agendaStyles'
 import type { NewAppointmentModalTheme } from './modalTheme'
+import { useServiceEligibility } from '@/screens/personal/hooks/useAvailability'
+import { employeeCanDoService } from '@/screens/personal/lib/serviceEligibility'
 
 /**
  * Selecciona el profesional "por defecto": se asigna a cada nueva línea de
@@ -25,6 +27,7 @@ interface StaffSectionProps {
   employeesError: unknown
   staffSingular: string
   staffPlural: string
+  serviceDay: string
 }
 
 export function StaffSection({
@@ -36,7 +39,9 @@ export function StaffSection({
   employeesError,
   staffSingular,
   staffPlural,
+  serviceDay,
 }: StaffSectionProps) {
+  const eligibility = useServiceEligibility()
   return (
     <View style={styles.formSection}>
       <View style={styles.sectionHeader}>
@@ -84,13 +89,19 @@ export function StaffSection({
                   setFormData((prev) => ({
                     ...prev,
                     employeeId: employee.id,
-                    // Las líneas que seguían el default anterior se mueven junto con él;
-                    // las que el usuario ya reasignó a mano quedan intactas.
-                    serviceLines: prev.serviceLines.map((line) =>
-                      line.employeeId === prev.employeeId
-                        ? { ...line, employeeId: employee.id }
-                        : line
-                    ),
+                    // Las líneas que seguían el default anterior se mueven junto con él.
+                    // Si la profesional nueva no realiza un servicio, esa línea se quita.
+                    serviceLines: prev.serviceLines.flatMap((line) => {
+                      const employeeId =
+                        line.employeeId === prev.employeeId ? employee.id : line.employeeId
+                      if (
+                        eligibility.data &&
+                        !employeeCanDoService(eligibility.data, employeeId, line.serviceId, serviceDay)
+                      ) {
+                        return []
+                      }
+                      return [{ ...line, employeeId }]
+                    }),
                   }))
                 }
               >

@@ -1,6 +1,11 @@
 import type { EmployeeTimeOffKind } from '@geemastudio/shared-schema'
 
 import { supabase } from '@/lib/supabase'
+import {
+  EMPTY_ELIGIBILITY,
+  type CoverageWindow,
+  type ServiceEligibilityIndex,
+} from './serviceEligibility'
 
 function db() {
   return supabase
@@ -121,6 +126,26 @@ export async function saveWorkShifts(employeeId: string, shifts: WorkShift[]): P
   fail(error)
 }
 
+export async function fetchBookingLeadDays(employeeId: string): Promise<number> {
+  const { data, error } = await db()
+    .from('employees')
+    .select('booking_lead_days')
+    .eq('id', employeeId)
+    .maybeSingle()
+  fail(error)
+  return data?.booking_lead_days ?? 0
+}
+
+/** 0 = se puede agendar hoy. No cambia el horario. */
+export async function saveBookingLeadDays(employeeId: string, days: number): Promise<void> {
+  const lead = Math.min(30, Math.max(0, Math.trunc(days)))
+  const { error } = await db()
+    .from('employees')
+    .update({ booking_lead_days: lead })
+    .eq('id', employeeId)
+  fail(error)
+}
+
 // --- Ausencias ----------------------------------------------------------------
 
 export async function fetchTimeOff(employeeId: string): Promise<TimeOffRecord[]> {
@@ -234,3 +259,37 @@ export async function fetchAffectedAppointments(args: {
       : all
   return filtered.sort((a, b) => a.date.localeCompare(b.date))
 }
+
+export async function fetchServiceEligibility(): Promise<ServiceEligibilityIndex> {
+  const [employees, links, coverages] = await Promise.all([
+    db().from('employees').select('id, does_all_services').eq('is_active', true),
+    db().from('employee_services').select('employee_id, service_id'),
+    db()
+      .from('employee_coverages')
+      .select('covered_employee_id, covering_employee_id, date_from, date_to'),
+  ])
+  fail(employees.error)
+  fail(links.error)
+  fail(coverages.error)
+
+  const doesAll = new Set<string>()
+  for (const row of employees.data ?? []) {
+    if (row.does_all_services) doesAll.add(String(row.id))
+  }
+  const serviceIdsByEmployee = new Map<string, Set<string>>()
+  for (const row of links.data ?? []) {
+    const employeeId = String(row.employee_id)
+    const set = serviceIdsByEmployee.get(employeeId) ?? new Set<string>()
+    set.add(String(row.service_id))
+    serviceIdsByEmployee.set(employeeId, set)
+  }
+  const windows: CoverageWindow[] = (coverages.data ?? []).map((row) => ({
+    coveredId: String(row.covered_employee_id),
+    coveringId: String(row.covering_employee_id),
+    dateFrom: String(row.date_from).slice(0, 10),
+    dateTo: String(row.date_to).slice(0, 10),
+  }))
+  return { doesAll, serviceIdsByEmployee, coverages: windows }
+}
+
+export { EMPTY_ELIGIBILITY }

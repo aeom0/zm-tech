@@ -1,10 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { Check, Copy, Loader2, Plus, Trash2 } from 'lucide-react'
+import { Check, Copy, Loader2, Minus, Plus, Trash2 } from 'lucide-react'
 import { WEEK_DAYS, trimTime } from '@geemastudio/shared-schema'
 
-import { useSaveWorkShifts, useWorkShifts } from '@/hooks/personal/useAvailability'
+import { useBookingLeadDays, useSaveBookingLeadDays, useSaveWorkShifts, useWorkShifts } from '@/hooks/personal/useAvailability'
 import type { EmployeeRow } from '@/hooks/personal/types'
 import { StateNote } from '@/components/ui/StateNote'
 import { fieldClass, ghostBtnClass, primaryBtnClass } from './availabilityUi'
@@ -57,9 +57,12 @@ function validate(week: Week): string | null {
 
 export function ScheduleTab({ employee, staffSingular }: { employee: EmployeeRow; staffSingular: string }) {
   const query = useWorkShifts(employee.id)
+  const leadQuery = useBookingLeadDays(employee.id)
   const save = useSaveWorkShifts(employee.id)
+  const saveLead = useSaveBookingLeadDays(employee.id)
   const [custom, setCustom] = useState(false)
   const [week, setWeek] = useState<Week>(emptyWeek())
+  const [leadDays, setLeadDays] = useState(0)
   const [saved, setSaved] = useState(false)
 
   useEffect(() => {
@@ -71,6 +74,11 @@ export function ScheduleTab({ employee, staffSingular }: { employee: EmployeeRow
     setWeek(w)
     setCustom(query.data.length > 0)
   }, [query.data])
+
+  useEffect(() => {
+    if (leadQuery.data === undefined) return
+    setLeadDays(leadQuery.data)
+  }, [leadQuery.data])
 
   const update = (weekday: number, next: Shift[]) => {
     setSaved(false)
@@ -96,8 +104,8 @@ export function ScheduleTab({ employee, staffSingular }: { employee: EmployeeRow
     })
   }
 
-  if (query.isLoading) return <StateNote kind="loading">Cargando horario…</StateNote>
-  if (query.isError || !query.data) {
+  if (query.isLoading || leadQuery.isLoading) return <StateNote kind="loading">Cargando horario…</StateNote>
+  if (query.isError || !query.data || leadQuery.isError || leadQuery.data === undefined) {
     return (
       <StateNote kind="error">
         No se pudo cargar el horario. Recarga antes de guardar, para no borrar los turnos.
@@ -118,7 +126,17 @@ export function ScheduleTab({ employee, staffSingular }: { employee: EmployeeRow
           }))
         )
       : []
-    save.mutate(shifts, { onSuccess: () => setSaved(true) })
+    save.mutate(shifts, {
+      onSuccess: () => {
+        saveLead.mutate(leadDays, { onSuccess: () => setSaved(true) })
+      },
+    })
+  }
+
+  const pending = save.isPending || saveLead.isPending
+  const changeLead = (next: number) => {
+    setSaved(false)
+    setLeadDays(Math.min(30, Math.max(0, next)))
   }
 
   return (
@@ -219,6 +237,35 @@ export function ScheduleTab({ employee, staffSingular }: { employee: EmployeeRow
       )}
       {error && <StateNote kind="error">{error}</StateNote>}
       {save.error && <StateNote kind="error">{(save.error as Error).message}</StateNote>}
+      {saveLead.error && <StateNote kind="error">{(saveLead.error as Error).message}</StateNote>}
+
+      <div className="rounded-2xl border border-fg/[0.08] bg-card px-4 py-3">
+        <p className="text-sm font-semibold text-fg">Días de aviso para citas nuevas</p>
+        <p className="mt-1 text-xs text-fg-subtle">
+          0 permite agendar hoy. 1, desde mañana. Al asignar a mano se puede elegir igual.
+        </p>
+        <div className="mt-3 flex items-center gap-2">
+          <button
+            type="button"
+            className={ghostBtnClass}
+            aria-label="Restar un día de aviso"
+            disabled={leadDays <= 0}
+            onClick={() => changeLead(leadDays - 1)}
+          >
+            <Minus className="h-4 w-4" />
+          </button>
+          <span className="min-w-8 text-center text-sm font-semibold text-fg">{leadDays}</span>
+          <button
+            type="button"
+            className={ghostBtnClass}
+            aria-label="Sumar un día de aviso"
+            disabled={leadDays >= 30}
+            onClick={() => changeLead(leadDays + 1)}
+          >
+            <Plus className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
 
       <div className="flex items-center justify-end gap-3">
         {saved && (
@@ -229,10 +276,10 @@ export function ScheduleTab({ employee, staffSingular }: { employee: EmployeeRow
         <button
           type="button"
           className={primaryBtnClass}
-          disabled={save.isPending || !!error || noShifts}
+          disabled={pending || !!error || noShifts}
           onClick={submit}
         >
-          {save.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+          {pending && <Loader2 className="h-4 w-4 animate-spin" />}
           Guardar horario
         </button>
       </div>
