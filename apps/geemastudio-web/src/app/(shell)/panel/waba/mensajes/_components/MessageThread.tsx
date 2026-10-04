@@ -147,7 +147,22 @@ export function MessageThread({
     sendMutation.mutate(
       { phone, message: trimmed, pauseBot: true },
       {
-        onSuccess: () => setText(''),
+        onSuccess: (data) => {
+          const results = Array.isArray(data) ? data : [data]
+          const metaError = results.find(
+            (r) => r && typeof r === 'object' && 'error' in (r as Record<string, unknown>)
+          ) as { error?: { message?: string } } | undefined
+          if (metaError) {
+            setAttachError(
+              `WhatsApp rechazó el mensaje: ${metaError.error?.message ?? 'error desconocido'}`
+            )
+            return
+          }
+          setAttachError(null)
+          setText('')
+        },
+        onError: (err) =>
+          setAttachError(err instanceof Error ? err.message : 'No se pudo enviar el mensaje'),
       }
     )
   }
@@ -376,6 +391,19 @@ export function MessageThread({
           </button>
           <button
             type="button"
+            onClick={handleHaikuAgenda}
+            disabled={staffSessionMutation.isPending}
+            className="inline-flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded-xl border border-violet-400/40 bg-violet-500/10 px-2.5 py-1.5 text-xs font-medium text-violet-800 hover:bg-violet-500/20 disabled:opacity-50 dark:text-violet-200 sm:w-auto md:min-h-0"
+          >
+            {staffSessionMutation.isPending ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Sparkles className="h-3.5 w-3.5" />
+            )}
+            Agendar con asistente
+          </button>
+          <button
+            type="button"
             onClick={handleToggleBlock}
             disabled={toggleBlockMutation.isPending || blockedQuery.isLoading}
             title={
@@ -454,19 +482,6 @@ export function MessageThread({
       {conversation.botPaused && (
         <div className="border-b border-amber-500/20 bg-amber-500/10 px-4 py-2 text-xs text-amber-800 dark:text-amber-200">
           <p>El asistente está en pausa para este número — solo el staff responde hasta reactivarlo.</p>
-          <button
-            type="button"
-            onClick={handleHaikuAgenda}
-            disabled={staffSessionMutation.isPending}
-            className="mt-2 inline-flex min-h-[44px] items-center gap-1.5 rounded-lg border border-violet-400/40 bg-violet-500/10 px-2.5 py-1.5 text-xs font-medium text-violet-800 hover:bg-violet-500/20 disabled:opacity-50 dark:text-violet-200 md:min-h-0"
-          >
-            {staffSessionMutation.isPending ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <Sparkles className="h-3.5 w-3.5" />
-            )}
-            Agendar con asistente
-          </button>
         </div>
       )}
 
