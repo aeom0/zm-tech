@@ -10,7 +10,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 ### Añadido (5-oct 2026 — pagos por concepto)
 
 - **BD (prod)** — `payments.kind` (`deposit` / `service` / `product`) con backfill de los 238 pagos; trigger `payments_set_default_kind` (si el escritor no manda `kind`: abono → `deposit`, resto → `service`) y `mark_product_order_paid` crea el pago como `product`. Migraciones `20261005035706_add_payments_kind` y `20261005041900_payments_kind_default_and_retail_rpc`. Motivo (Ana Paula, ZM): un pago final con kit incluido no se podía asignar a servicio vs producto y el KPI «Abonos» contaba pagos finales parciales.
-- **Mobile · Finanzas** — el modal de pago suma el tipo «Producto» y guarda `kind` según el tipo elegido (adelanto → `deposit`, completo/completar → `service`, producto → `product`); al editar se reabre con el tipo correcto. La lista muestra la etiqueta «Adelanto» / «Producto» en vez de «Abono 20%» fijo.
+- **Mobile · Finanzas** — el modal de pago suma el tipo «Producto» y guarda `kind` según el tipo elegido (adelanto → `deposit`, completo/completar → `service`, producto → `product`); al editar se reabre con el tipo correcto. La lista muestra la etiqueta «Adelanto» / «Producto» en vez de «Abono 20%» fijo. Ese tipo solo clasifica el pago: no crea `product_orders` ni descuenta stock. La venta retail sigue en Productos.
 - **Seguridad** — migración `20261005043000_revoke_anon_mark_product_order_paid`: `anon` ya no ejecuta `mark_product_order_paid`.
 - **Roadmap** — propuesta de `title`/`short_name` para packs «tinturado» (pestañas vs cejas vs rímel), a validar con Vanessa.
 - **Pendiente** — repartir un único pago en varias partes (servicio + producto) desde el modal.
