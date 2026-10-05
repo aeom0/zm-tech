@@ -16,6 +16,10 @@ export interface ValidacionItem {
   resolvedAt?: string | null
   /** Sin botones de acción: historial, o pago pendiente que se resuelve desde WhatsApp. */
   readOnly: boolean
+  /** Solo tenants con verificaciones propias: el adelanto se marcó como perdido (registro interno). */
+  depositForfeited?: boolean
+  /** Muestra el control para marcar / quitar «Adelanto perdido» (adelantos por validar o validados). */
+  canMarkForfeit?: boolean
 }
 
 export interface RowLoadingState {

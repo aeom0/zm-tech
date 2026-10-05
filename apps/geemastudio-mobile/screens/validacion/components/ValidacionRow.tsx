@@ -14,9 +14,18 @@ interface ValidacionRowProps {
   loadingAction: VerificationAction | null // null = sin spinner
   onApprove?: () => void
   onReject?: () => void
+  onToggleForfeit?: () => void
+  forfeitBusy?: boolean
 }
 
-export function ValidacionRow({ item, loadingAction, onApprove, onReject }: ValidacionRowProps) {
+export function ValidacionRow({
+  item,
+  loadingAction,
+  onApprove,
+  onReject,
+  onToggleForfeit,
+  forfeitBusy = false,
+}: ValidacionRowProps) {
   const { theme } = useTheme()
   const { config } = useTenant()
 
@@ -95,6 +104,43 @@ export function ValidacionRow({ item, loadingAction, onApprove, onReject }: Vali
           <ThemedText style={[styles.meta, { color: theme.textMuted }]}>
             Pendiente de validación
           </ThemedText>
+        )}
+
+        {item.depositForfeited && (
+          <View style={styles.resolvedRow}>
+            <Feather name="alert-triangle" size={14} color={theme.error} />
+            <ThemedText style={[styles.meta, { color: theme.error, fontWeight: '600' }]}>
+              Adelanto perdido
+            </ThemedText>
+          </View>
+        )}
+        {item.canMarkForfeit && onToggleForfeit && (
+          <Pressable
+            style={styles.forfeitLink}
+            hitSlop={8}
+            disabled={forfeitBusy}
+            onPress={onToggleForfeit}
+          >
+            {forfeitBusy ? (
+              <ActivityIndicator size="small" color={theme.error} />
+            ) : (
+              <>
+                <Feather
+                  name="alert-triangle"
+                  size={12}
+                  color={item.depositForfeited ? theme.textMuted : theme.error}
+                />
+                <ThemedText
+                  style={[
+                    styles.forfeitLinkText,
+                    { color: item.depositForfeited ? theme.textMuted : theme.error },
+                  ]}
+                >
+                  {item.depositForfeited ? 'Quitar marca' : 'Marcar adelanto perdido'}
+                </ThemedText>
+              </>
+            )}
+          </Pressable>
         )}
 
         {/* Acciones per-row */}
@@ -183,6 +229,8 @@ const styles = StyleSheet.create({
   meta: {
     fontSize: 13,
   },
+  forfeitLink: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: Spacing.xs },
+  forfeitLinkText: { fontSize: 12, fontWeight: '600' },
   resolvedRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   actions: {
     flexDirection: 'row',

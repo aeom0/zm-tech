@@ -1,12 +1,12 @@
 import React, { useState, useCallback } from 'react'
-import { View, FlatList, StyleSheet, RefreshControl, Pressable } from 'react-native'
+import { View, FlatList, StyleSheet, RefreshControl, Pressable, Alert } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
-import { Spacing, BorderRadius, Colors } from '@/constants/theme'
+import { Spacing, BorderRadius } from '@/constants/theme'
 import { ValidacionRow } from './validacion/components/ValidacionRow'
 import { useValidacionData } from './validacion/hooks/useValidacionData'
 import type {
@@ -26,7 +26,8 @@ export default function ValidacionPagosScreen() {
   const headerHeight = useHeaderHeight()
   const tabBarHeight = useBottomTabBarHeight()
   const { theme } = useTheme()
-  const { byFilter, counts, historyDays, refetchAll, verifyMutation } = useValidacionData()
+  const { byFilter, counts, historyDays, refetchAll, verifyMutation, forfeitMutation } =
+    useValidacionData()
   const [filter, setFilter] = useState<ValidacionFilter>('pending')
 
   // Estado per-row: { [appointmentId]: 'approved' | 'rejected' | null }
@@ -51,6 +52,27 @@ export default function ValidacionPagosScreen() {
     [rowLoading, verifyMutation]
   )
 
+  const handleForfeit = useCallback(
+    (item: ValidacionItem) => {
+      const marcar = !item.depositForfeited
+      Alert.alert(
+        marcar ? 'Marcar adelanto perdido' : 'Quitar marca',
+        marcar
+          ? `¿Marcar el adelanto de ${item.client_name} como perdido?\n\nSolo queda registrado para ti; no se avisa a la clienta por WhatsApp.`
+          : `¿Quitar la marca de adelanto perdido de ${item.client_name}?`,
+        [
+          { text: 'Cancelar', style: 'cancel' },
+          {
+            text: marcar ? 'Marcar' : 'Quitar',
+            style: marcar ? 'destructive' : 'default',
+            onPress: () => forfeitMutation.mutate({ verificationId: item.id, forfeited: marcar }),
+          },
+        ]
+      )
+    },
+    [forfeitMutation]
+  )
+
   const renderItem = useCallback(
     ({ item }: { item: ValidacionItem }) => (
       <ValidacionRow
@@ -58,9 +80,11 @@ export default function ValidacionPagosScreen() {
         loadingAction={rowLoading[item.id] ?? null}
         onApprove={() => handleVerify(item.id, 'approved')}
         onReject={() => handleVerify(item.id, 'rejected')}
+        onToggleForfeit={() => handleForfeit(item)}
+        forfeitBusy={forfeitMutation.isPending && forfeitMutation.variables?.verificationId === item.id}
       />
     ),
-    [rowLoading, handleVerify]
+    [rowLoading, handleVerify, handleForfeit, forfeitMutation.isPending, forfeitMutation.variables]
   )
 
   const emptyCopy: Record<ValidacionFilter, { icon: 'check-circle' | 'inbox'; title: string; sub: string }> = {
