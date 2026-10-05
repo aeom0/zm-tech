@@ -174,6 +174,7 @@ export function PanelShell({
     if (href === '/panel/mas') {
       return Boolean(pathname?.startsWith('/panel/mas'))
     }
+    if (href === '/panel/personal') return Boolean(pathname?.startsWith('/panel/personal'))
     if (href === '/panel/horarios') return false
     return pathname === href
   }

@@ -78,6 +78,17 @@ export async function fetchEmployeeServiceIds(employeeId: string): Promise<strin
   return (data ?? []).map((r) => String(r.service_id))
 }
 
+export async function fetchAllServiceCounts(): Promise<Record<string, number>> {
+  const { data, error } = await db().from('employee_services').select('employee_id')
+  fail(error)
+  const counts: Record<string, number> = {}
+  for (const r of data ?? []) {
+    const id = String(r.employee_id)
+    counts[id] = (counts[id] ?? 0) + 1
+  }
+  return counts
+}
+
 /** Reemplaza la lista de servicios y la bandera "hace todos" en una sola transacción. */
 export async function saveEmployeeServices(args: {
   employeeId: string
@@ -103,6 +114,16 @@ export async function fetchWorkShifts(employeeId: string): Promise<WorkShift[]> 
     .order('start_time')
   fail(error)
   return (data ?? []) as WorkShift[]
+}
+
+export async function fetchAllWorkShifts(): Promise<(WorkShift & { employee_id: string })[]> {
+  const { data, error } = await db()
+    .from('employee_work_hours')
+    .select('employee_id, weekday, start_time, end_time')
+    .order('weekday')
+    .order('start_time')
+  fail(error)
+  return (data ?? []) as (WorkShift & { employee_id: string })[]
 }
 
 /** Lista vacía = hereda el horario del negocio. Una sola transacción. */
@@ -142,6 +163,15 @@ export async function fetchTimeOff(employeeId: string): Promise<TimeOffRecord[]>
     .select('id, employee_id, kind, date_from, date_to, start_time, end_time, reason, is_paid')
     .eq('employee_id', employeeId)
     .order('date_from', { ascending: false })
+  fail(error)
+  return (data ?? []) as TimeOffRecord[]
+}
+
+export async function fetchAllTimeOff(): Promise<TimeOffRecord[]> {
+  const { data, error } = await db()
+    .from('employee_time_off')
+    .select('id, employee_id, kind, date_from, date_to, start_time, end_time, reason, is_paid')
+    .order('date_from', { ascending: true })
   fail(error)
   return (data ?? []) as TimeOffRecord[]
 }

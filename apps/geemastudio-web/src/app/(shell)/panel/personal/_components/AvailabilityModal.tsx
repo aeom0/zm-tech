@@ -16,6 +16,10 @@ interface AvailabilityModalProps {
   employees: EmployeeRow[]
   staffSingular: string
   timezone?: string | null
+  /** Muestra solo esa sección (sin pestañas): se usa desde las pantallas del equipo. */
+  only?: Tab
+  /** Si se pasa, el encabezado permite cambiar de profesional. */
+  onSwitch?: (employee: EmployeeRow) => void
   onClose: () => void
 }
 
@@ -25,10 +29,14 @@ export function AvailabilityModal({
   employees,
   staffSingular,
   timezone,
+  only,
+  onSwitch,
   onClose,
 }: AvailabilityModalProps) {
-  const [tab, setTab] = useState<Tab>('services')
+  const [pickedTab, setTab] = useState<Tab>('services')
   if (!employee) return null
+  const tab = only ?? pickedTab
+  const activeEmployees = employees.filter((e) => e.is_active || e.id === employee.id)
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center">
@@ -36,8 +44,28 @@ export function AvailabilityModal({
       <div className="relative z-10 flex max-h-[92dvh] w-full max-w-xl flex-col overflow-hidden rounded-t-3xl border border-fg/[0.08] bg-sunken sm:rounded-3xl">
         <header className="flex items-center justify-between border-b border-fg/[0.08] px-5 py-4">
           <div>
-            <div className="text-xs text-fg-subtle">Disponibilidad</div>
-            <h2 className="text-lg font-bold text-fg">{employee.name}</h2>
+            <div className="text-xs text-fg-subtle">
+              {only === 'services' ? 'Servicios' : only === 'schedule' ? 'Horario' : only === 'timeoff' ? 'Ausencias' : 'Disponibilidad'}
+            </div>
+            {onSwitch ? (
+              <select
+                aria-label={`Elegir ${staffSingular.toLowerCase()}`}
+                value={employee.id}
+                onChange={(e) => {
+                  const next = activeEmployees.find((x) => x.id === e.target.value)
+                  if (next) onSwitch(next)
+                }}
+                className="mt-0.5 rounded-lg border border-fg/[0.08] bg-fg/[0.04] px-2 py-1 text-lg font-bold text-fg"
+              >
+                {activeEmployees.map((e) => (
+                  <option key={e.id} value={e.id}>
+                    {e.name}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <h2 className="text-lg font-bold text-fg">{employee.name}</h2>
+            )}
           </div>
           <button
             type="button"
@@ -48,6 +76,7 @@ export function AvailabilityModal({
             <X className="h-4 w-4 text-fg-soft" />
           </button>
         </header>
+        {!only && (
         <div className="border-b border-fg/[0.08] px-5 py-3">
           <SegmentedControl<Tab>
             ariaLabel="Secciones de disponibilidad"
@@ -61,6 +90,7 @@ export function AvailabilityModal({
             ]}
           />
         </div>
+        )}
         <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">
           {tab === 'services' && <ServicesTab key={employee.id} employee={employee} staffSingular={staffSingular} />}
           {tab === 'schedule' && <ScheduleTab key={employee.id} employee={employee} staffSingular={staffSingular} />}

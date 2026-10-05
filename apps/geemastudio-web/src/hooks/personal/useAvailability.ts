@@ -6,6 +6,9 @@ import {
   deleteCoverage,
   deleteTimeOff,
   fetchAffectedAppointments,
+  fetchAllServiceCounts,
+  fetchAllTimeOff,
+  fetchAllWorkShifts,
   fetchBookingLeadDays,
   fetchCoverages,
   fetchDayAvailability,
@@ -29,6 +32,9 @@ const servicesKey = (id: string) => ['web_employee_services', id] as const
 const hoursKey = (id: string) => ['web_employee_work_hours', id] as const
 const leadKey = (id: string) => ['web_employee_booking_lead', id] as const
 const timeOffKey = (id: string) => ['web_employee_time_off', id] as const
+const ALL_SERVICES_KEY = ['web_employee_services'] as const
+const ALL_HOURS_KEY = ['web_employee_work_hours'] as const
+const ALL_TIME_OFF_KEY = ['web_employee_time_off'] as const
 const COVERAGES_KEY = ['web_employee_coverages'] as const
 
 export function useEmployeeServiceIds(employeeId: string | undefined) {
@@ -45,7 +51,7 @@ export function useSaveEmployeeServices(employeeId: string) {
     mutationFn: (args: { doesAll: boolean; serviceIds: string[] }) =>
       saveEmployeeServices({ employeeId, ...args }),
     onSuccess: () => {
-      void qc.invalidateQueries({ queryKey: servicesKey(employeeId) })
+      void qc.invalidateQueries({ queryKey: ALL_SERVICES_KEY })
       void qc.invalidateQueries({ queryKey: WEB_EMPLOYEES_KEY })
     },
   })
@@ -63,7 +69,7 @@ export function useSaveWorkShifts(employeeId: string) {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (shifts: WorkShift[]) => saveWorkShifts(employeeId, shifts),
-    onSuccess: () => void qc.invalidateQueries({ queryKey: hoursKey(employeeId) }),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: ALL_HOURS_KEY }),
   })
 }
 
@@ -91,19 +97,32 @@ export function useTimeOff(employeeId: string | undefined) {
   })
 }
 
-export function useAddTimeOff(employeeId: string) {
+/** Datos de todo el equipo para las pantallas Horarios, Ausencias y Servicios. */
+export function useAllTimeOff() {
+  return useQuery({ queryKey: [...ALL_TIME_OFF_KEY, 'all'], queryFn: fetchAllTimeOff })
+}
+
+export function useAllWorkShifts() {
+  return useQuery({ queryKey: [...ALL_HOURS_KEY, 'all'], queryFn: fetchAllWorkShifts })
+}
+
+export function useAllServiceCounts() {
+  return useQuery({ queryKey: [...ALL_SERVICES_KEY, 'all'], queryFn: fetchAllServiceCounts })
+}
+
+export function useAddTimeOff(_employeeId: string) {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (input: TimeOffInput) => insertTimeOff(input),
-    onSuccess: () => void qc.invalidateQueries({ queryKey: timeOffKey(employeeId) }),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: ALL_TIME_OFF_KEY }),
   })
 }
 
-export function useDeleteTimeOff(employeeId: string) {
+export function useDeleteTimeOff(_employeeId: string) {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => deleteTimeOff(id),
-    onSuccess: () => void qc.invalidateQueries({ queryKey: timeOffKey(employeeId) }),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: ALL_TIME_OFF_KEY }),
   })
 }
 

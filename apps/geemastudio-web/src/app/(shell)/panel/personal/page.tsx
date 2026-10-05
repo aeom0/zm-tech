@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react'
 
+import { PersonalSubNav } from './_components/PersonalSubNav'
 import { EmployeeCard, PersonalHeaderActions } from './_components/EmployeeCard'
 import { AvailabilityModal } from './_components/AvailabilityModal'
 import { EmployeeModal } from './_components/EmployeeModal'
@@ -17,36 +18,11 @@ import { FeatureAvailabilityNotice } from '@/components/plan/FeatureAvailability
 import { PlanLimitNotice } from '@/components/plan/PlanLimitNotice'
 import { usePlan } from '@/hooks/plan/usePlan'
 import { resolveDashboardCurrencyCode } from '@/lib/dashboardCurrency'
-import { supabase } from '@/lib/supabase'
-import { useQuery } from '@tanstack/react-query'
+import { useStaffLabels } from '@/hooks/personal/useStaffLabels'
 import { FilterChips } from '@/components/ui/FilterChips'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 import { StateNote } from '@/components/ui/StateNote'
 import { PageHeader } from '@/components/ui/PageHeader'
-
-function useStaffLabels() {
-  return useQuery({
-    queryKey: ['web_staff_terminology'],
-    enabled: !!supabase,
-    staleTime: 60_000,
-    queryFn: async () => {
-      if (!supabase) return { plural: 'Profesionales', singular: 'Profesional' }
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-      if (!user) return { plural: 'Profesionales', singular: 'Profesional' }
-      const { data } = await supabase
-        .from('tenant_settings')
-        .select('staff_terminology, staff_singular_terminology')
-        .eq('id', user.id)
-        .maybeSingle()
-      return {
-        plural: (data?.staff_terminology as string | undefined) || 'Profesionales',
-        singular: (data?.staff_singular_terminology as string | undefined) || 'Profesional',
-      }
-    },
-  })
-}
 
 export default function PanelPersonalPage() {
   const employeesQuery = useEmployees()
@@ -105,6 +81,8 @@ export default function PanelPersonalPage() {
         <PageHeader title={staffPlural} description="Equipo, servicios que hace cada uno, horarios, ausencias, comisiones y foto de perfil." />
         <PersonalHeaderActions onNew={openCreate} staffSingular={staffSingular} />
       </div>
+
+      <PersonalSubNav staffPlural={staffPlural} />
 
       {plan && (
         <PlanLimitNotice
