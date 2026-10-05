@@ -226,7 +226,7 @@ SELECT cron.schedule(
   $cron$
   SELECT net.http_post(
     url := 'https://udelxwwnyivknslueerr.supabase.co/functions/v1/generate-recurring-expenses',
-    headers := '{"Content-Type": "application/json", "Authorization": "Bearer 018a377de3c62c57890cbbe3157bff592dcb19b3844b4541317a136ce538a5b8"}'::jsonb,
+    headers := '{"Content-Type": "application/json", "Authorization": "Bearer <CRON_SECRET_REDACTED>"}'::jsonb,
     body := '{}'::jsonb
   );
   $cron$
@@ -238,7 +238,7 @@ SELECT cron.schedule(
   $cron$
   SELECT net.http_post(
     url := 'https://udelxwwnyivknslueerr.supabase.co/functions/v1/sync-meta-ads-spend',
-    headers := '{"Content-Type": "application/json", "Authorization": "Bearer 018a377de3c62c57890cbbe3157bff592dcb19b3844b4541317a136ce538a5b8"}'::jsonb,
+    headers := '{"Content-Type": "application/json", "Authorization": "Bearer <CRON_SECRET_REDACTED>"}'::jsonb,
     body := '{}'::jsonb
   );
   $cron$
