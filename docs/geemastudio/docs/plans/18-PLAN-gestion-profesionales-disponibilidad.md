@@ -180,6 +180,8 @@ Ficha de profesional con tres pestañas, con `config.terminology.staff` / `staff
 
 La agenda web y la pantalla de asignación pasan a sugerir solo profesionales elegibles. Mobile (Equipo → Personal) replica las tres pestañas en una segunda entrega, consumiendo el mismo motor.
 
+**Reorganización (5-oct-2026):** Horarios, Ausencias y Servicios se exponen además como pantallas independientes del equipo, en mobile (Más → Equipo) y en web (`/panel/personal/horarios`, `/ausencias`, `/servicios`). Cada una lista a todo el equipo con su resumen y edita con los mismos formularios; la ficha por profesional queda como atajo. Sin cambios de modelo ni de motor.
+
 ## Plan de implementación
 
 | Fase | Contenido | Verificación |

@@ -7,6 +7,18 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido (5-oct 2026 — Equipo y Finanzas como pantallas independientes)
+
+- **Mobile · Más → Equipo** — Horarios, Ausencias y Servicios por profesional pasan a ser filas propias del menú (antes solo se llegaba por Personal → profesional → Disponibilidad, 3 toques). Cada pantalla lista a todo el equipo con su resumen (días de trabajo, ausencias vigentes y próximas con coberturas, «N de M servicios») y edita en un modal con los mismos formularios del Plan 18. La ficha por profesional se conserva como atajo y su título pasa a «Horarios y servicios». Sin cambios de BD.
+- **Web · `/panel/personal`** — subnavegación Profesionales / Horarios / Ausencias / Servicios con las rutas `/panel/personal/horarios`, `/ausencias` y `/servicios`. Ausencias incluye «Nueva ausencia» con selector de profesional. `AvailabilityModal` acepta `only` y `onSwitch`; la ficha de tres pestañas sigue disponible desde la tarjeta. El menú lateral mantiene «Personal» activo en las subpáginas.
+- **Mobile · Más → Finanzas** — Nuevo pago, Venta de producto e Historial de pagos (o «Mis pagos») son acciones del menú, cada una en su modal independiente.
+- **Mobile · Agenda** — la vista semanal marca el feriado en las cabeceras de día (punto rojo si el salón cierra, ámbar si no).
+- **Mobile · Citas** — al crear una cita se busca o crea la ficha de cliente por teléfono y se guarda `client_id`; se completaron 5 citas existentes. **Web · WhatsApp** — el nombre del contacto cae a la cita si no hay ficha y el teléfono del encabezado del chat usa el formato `+51 983 582 219`.
+
+### Cambiado (5-oct 2026 — pulido de Finanzas mobile)
+
+- Nuevo pago e Historial de pagos: tipos de pago en cuadrícula 2×2, chips de método y tarjetas de cita con alto uniforme (44–72 px), botón «Cobrar restante» de 36 px, monto sin solaparse con el texto, encabezado del historial bajo la barra de estado en Android y sin título repetido.
+
 ### Añadido (5-oct 2026 — pagos por concepto)
 
 - **BD (prod)** — `payments.kind` (`deposit` / `service` / `product`) con backfill de los 238 pagos; trigger `payments_set_default_kind` (si el escritor no manda `kind`: abono → `deposit`, resto → `service`) y `mark_product_order_paid` crea el pago como `product`. Migraciones `20261005035706_add_payments_kind` y `20261005041900_payments_kind_default_and_retail_rpc`. Motivo (Ana Paula, ZM): un pago final con kit incluido no se podía asignar a servicio vs producto y el KPI «Abonos» contaba pagos finales parciales.

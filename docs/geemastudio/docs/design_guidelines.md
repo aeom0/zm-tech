@@ -103,6 +103,18 @@
 - Radio de Borde: 12px
 - Altura: 48px
 
+**Chips y selectores**:
+
+- Zona táctil mínima de 44 px de alto; los selectores de tipo (2 o 3 opciones con texto largo) van en cuadrícula, con el texto en una línea
+- Chips de elección de cita: alto uniforme (72 px), el seleccionado en primario
+- Espaciado entre chips con `gap` (sm), sin márgenes extra por chip
+
+**Modales**:
+
+- Encabezado con título y botón de cierre de 40 px; en Android, `pageSheet` ocupa toda la pantalla, así que el encabezado suma el inset superior
+- Botón principal fijo al pie con margen superior (md), sin tapar el último campo
+- En iOS no se apilan dos `Modal`: se oculta el primero y se reabre al cerrar el segundo
+
 **Íconos**:
 
 - Usar íconos Feather de @expo/vector-icons
@@ -142,7 +154,15 @@
 
 - Selector de período: Hoy, Semana, Mes
 - Visualización grande de ingresos con acento dorado
-- Lista de historial de pagos
+- Menú de acciones independientes (cada una abre su modal): Nuevo pago, Venta de producto, Historial de pagos («Mis pagos» para staff), Finanzas y Validación de pagos
+- Historial en modal: título en el encabezado y solo el conteo («N pagos») sobre la lista
+
+### Equipo
+
+- Menú de filas independientes: Profesionales, Horarios, Ausencias, Servicios por profesional y Asignar profesionales
+- Horarios y Servicios: una tarjeta por profesional con su resumen; al tocarla se edita en un modal
+- Ausencias: botón primario «Nueva ausencia» arriba y listas «Vigentes y próximas», «Coberturas» y «Anteriores»
+- Las funciones de uso habitual no se esconden dentro de otra ficha: van como acción visible del menú de su sección
 
 ## 7. Sistema de Espaciado
 
