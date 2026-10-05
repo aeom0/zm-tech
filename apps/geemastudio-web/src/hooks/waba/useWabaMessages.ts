@@ -195,10 +195,28 @@ export function useWabaConversations() {
       if (conversations.length > 0) {
         const phones = conversations.map((c) => c.phone)
 
-        const [{ data: clients }, { data: sessions }] = await Promise.all([
+        const [{ data: clients }, { data: sessions }, { data: appts }] = await Promise.all([
           supabase.from('clients').select('id, name, phone, wa_user_id, wa_username').limit(5000),
           supabase.from('whatsapp_sessions').select('phone, bot_paused_at').in('phone', phones),
+          // Citas sin client_id (reserva manual/walk-in): el nombre vive solo en la cita.
+          supabase
+            .from('appointments')
+            .select('client_name, client_phone, whatsapp_phone, date')
+            .order('date', { ascending: false })
+            .limit(2000),
         ])
+
+        const apptNameByDigits = new Map<string, string>()
+        for (const a of (appts ?? []) as Record<string, unknown>[]) {
+          const name = typeof a.client_name === 'string' ? a.client_name.trim() : ''
+          if (!name) continue
+          for (const raw of [a.whatsapp_phone, a.client_phone]) {
+            const d = typeof raw === 'string' ? raw.replace(/\D+/g, '') : ''
+            if (d.length >= 9 && !apptNameByDigits.has(d.slice(-9))) {
+              apptNameByDigits.set(d.slice(-9), name)
+            }
+          }
+        }
 
         const byPhone = new Map<string, { id: string; name: string }>()
         const byWaUserId = new Map<
@@ -253,6 +271,12 @@ export function useWabaConversations() {
               }
             }
           }
+        }
+
+        for (const conv of conversations) {
+          if (conv.displayName || conv.isBsuid) continue
+          const digits = conv.phone.replace(/\D+/g, '')
+          if (digits.length >= 9) conv.displayName = apptNameByDigits.get(digits.slice(-9)) ?? null
         }
 
         const pausedPhones = new Set(
