@@ -38,6 +38,7 @@ import { useImageUpload } from '@/hooks/waba/useImageUpload'
 import { useTenantSettings } from '@/hooks/configuracion/useTenantSettings'
 import { getTenantLandingUrl } from '@/lib/site-url'
 import { MessageBubble } from './MessageBubble'
+import { formatPhone } from './time'
 import { ScrollFadeRow } from '@/components/ui/ScrollFadeRow'
 
 const TEXTAREA_LINE_HEIGHT_PX = 22
@@ -318,12 +319,12 @@ export function MessageThread({
               <div className="truncate text-sm font-semibold text-fg">
                 {conversation.displayName ||
                   (conversation.waUsername ? `@${conversation.waUsername}` : null) ||
-                  (conversation.isBsuid ? 'Contacto de WhatsApp' : phone)}
+                  (conversation.isBsuid ? 'Contacto de WhatsApp' : formatPhone(phone))}
               </div>
               <div className="mt-1 flex flex-wrap items-center gap-1.5">
                 {conversation.displayPhone || !conversation.isBsuid ? (
                   <span className="font-mono text-[11px] text-fg-subtle">
-                    {conversation.displayPhone || phone}
+                    {formatPhone(conversation.displayPhone || phone)}
                   </span>
                 ) : (
                   <span
