@@ -32,6 +32,8 @@ export interface PromoSavePayload {
   accent_color: string | null
   is_active: boolean
   expires_at: string | null
+  /** Solo dialecto ZM: minutos en agenda; null = suma de servicios. */
+  slot_minutes?: number | null
   items: PromoItemDraft[]
 }
 
@@ -52,7 +54,7 @@ function computePromoPriceField(items: PromoItemDraft[]): string | null {
 const GEEMA_PROMOS_SELECT =
   'id, title, description, badge, accent_color, promo_price, is_active, expires_at'
 const ZM_PROMOS_SELECT =
-  'id, title, description, badge, accent_color, promo_price, is_active, valid_until, display_order'
+  'id, title, description, badge, accent_color, promo_price, is_active, valid_until, display_order, slot_minutes'
 const GEEMA_ITEMS_SELECT = 'id, promo_id, item_type, item_id, quantity, discounted_price'
 const ZM_ITEMS_SELECT =
   'id, promotion_id, item_type, item_id, quantity, discounted_price, sort_order'
@@ -158,6 +160,7 @@ export function usePromosData() {
             promo_price,
             is_active: payload.is_active,
             valid_until: payload.expires_at,
+            slot_minutes: payload.slot_minutes ?? null,
             emoji: '✨',
             service_ids: '[]',
           })
@@ -235,6 +238,7 @@ export function usePromosData() {
             promo_price,
             is_active: payload.is_active,
             valid_until: payload.expires_at,
+            slot_minutes: payload.slot_minutes ?? null,
           })
           .eq('id', id)
         if (upErr) {

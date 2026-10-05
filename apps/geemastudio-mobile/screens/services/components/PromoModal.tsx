@@ -105,6 +105,7 @@ export function PromoModal({
   const [accentColor, setAccentColor] = useState('')
   const [isActive, setIsActive] = useState(true)
   const [expiresInput, setExpiresInput] = useState('')
+  const [slotMinutes, setSlotMinutes] = useState('')
   const [items, setItems] = useState<PromoItemDraft[]>([])
   const [pickerOpen, setPickerOpen] = useState(false)
 
@@ -119,6 +120,7 @@ export function PromoModal({
       setAccentColor(editing.accent_color?.trim() ?? '')
       setIsActive(editing.is_active)
       setExpiresInput(expiresToInput(editing.expires_at, config.locale.timezone))
+      setSlotMinutes(editing.slot_minutes ? String(editing.slot_minutes) : '')
       const lines = promotionItems
         .filter((pi) => pi.promo_id === editing.id)
         .map((pi) => ({
@@ -136,6 +138,7 @@ export function PromoModal({
       setAccentColor('')
       setIsActive(true)
       setExpiresInput('')
+      setSlotMinutes('')
       setItems([])
     }
   })
@@ -213,6 +216,7 @@ export function PromoModal({
       accent_color: accentColor.trim() || null,
       is_active: isActive,
       expires_at,
+      slot_minutes: Number.parseInt(slotMinutes, 10) > 0 ? Number.parseInt(slotMinutes, 10) : null,
       items,
     }
     onSave(payload)
@@ -295,7 +299,9 @@ export function PromoModal({
                 multiline
               />
 
-              <ThemedText style={[styles.label, { color: theme.textSecondary }]}>Etiqueta</ThemedText>
+              <ThemedText style={[styles.label, { color: theme.textSecondary }]}>
+                Etiqueta
+              </ThemedText>
               <ScrollFadeRow
                 backgroundColor={theme.backgroundDefault}
                 arrowColor={theme.textSecondary}
@@ -460,6 +466,25 @@ export function PromoModal({
                 value={expiresInput}
                 onChangeText={setExpiresInput}
                 autoCapitalize="none"
+              />
+
+              <ThemedText style={[styles.label, { color: theme.textSecondary }]}>
+                Duración en agenda (min, opcional)
+              </ThemedText>
+              <TextInput
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: theme.backgroundSecondary,
+                    color: theme.text,
+                    borderColor: theme.border,
+                  },
+                ]}
+                placeholder="Vacío = suma de los servicios"
+                placeholderTextColor={theme.textMuted}
+                keyboardType="number-pad"
+                value={slotMinutes}
+                onChangeText={(v) => setSlotMinutes(v.replace(/\D/g, ''))}
               />
 
               {editing && (
