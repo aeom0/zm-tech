@@ -4,6 +4,7 @@ import * as Haptics from 'expo-haptics'
 
 import { queryClient } from '@/lib/query-client'
 import { supabase } from '@/lib/supabase'
+import { findOrCreateClientId } from '@/lib/clientLink'
 import { useAuth } from '@/contexts/AuthContext'
 import { subirImagenReferencia } from '@/lib/referenceImages'
 import {
@@ -170,8 +171,16 @@ export function useAgendaMutations(
         timeZone,
       })
 
+      // Vincula la cita a la ficha del cliente (la crea si no existe); sin esto no aparece en Clientes ni en promos.
+      const clientId = await findOrCreateClientId({
+        name: data.client_name,
+        phone: data.client_phone,
+        tenantId,
+      }).catch(() => null)
+
       const firstLine = data.lines[0]
       const payload = {
+        ...(clientId ? { client_id: clientId } : {}),
         client_name: data.client_name,
         client_phone: data.client_phone ?? null,
         client_document: data.client_document ?? null,
