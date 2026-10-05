@@ -90,6 +90,26 @@ export async function fetchEmployeeServiceIds(employeeId: string): Promise<strin
   return (data ?? []).map((r) => String(r.service_id))
 }
 
+export async function fetchAllEmployeeServices(): Promise<{
+  doesAllById: Record<string, boolean>
+  countById: Record<string, number>
+}> {
+  const [emps, links] = await Promise.all([
+    db().from('employees').select('id, does_all_services'),
+    db().from('employee_services').select('employee_id'),
+  ])
+  fail(emps.error)
+  fail(links.error)
+  const doesAllById: Record<string, boolean> = {}
+  for (const e of emps.data ?? []) doesAllById[String(e.id)] = e.does_all_services !== false
+  const countById: Record<string, number> = {}
+  for (const l of links.data ?? []) {
+    const id = String(l.employee_id)
+    countById[id] = (countById[id] ?? 0) + 1
+  }
+  return { doesAllById, countById }
+}
+
 /** Reemplaza la lista de servicios y la bandera "hace todos" en una sola transacción. */
 export async function saveEmployeeServices(args: {
   employeeId: string
@@ -115,6 +135,16 @@ export async function fetchWorkShifts(employeeId: string): Promise<WorkShift[]> 
     .order('start_time')
   fail(error)
   return (data ?? []) as WorkShift[]
+}
+
+export async function fetchAllWorkShifts(): Promise<(WorkShift & { employee_id: string })[]> {
+  const { data, error } = await db()
+    .from('employee_work_hours')
+    .select('employee_id, weekday, start_time, end_time')
+    .order('weekday')
+    .order('start_time')
+  fail(error)
+  return (data ?? []) as (WorkShift & { employee_id: string })[]
 }
 
 /** Lista vacía = hereda el horario del negocio. Una sola transacción. */
@@ -154,6 +184,15 @@ export async function fetchTimeOff(employeeId: string): Promise<TimeOffRecord[]>
     .select('id, employee_id, kind, date_from, date_to, start_time, end_time, reason, is_paid')
     .eq('employee_id', employeeId)
     .order('date_from', { ascending: false })
+  fail(error)
+  return (data ?? []) as TimeOffRecord[]
+}
+
+export async function fetchAllTimeOff(): Promise<TimeOffRecord[]> {
+  const { data, error } = await db()
+    .from('employee_time_off')
+    .select('id, employee_id, kind, date_from, date_to, start_time, end_time, reason, is_paid')
+    .order('date_from', { ascending: true })
   fail(error)
   return (data ?? []) as TimeOffRecord[]
 }

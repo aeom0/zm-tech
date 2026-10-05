@@ -38,6 +38,21 @@ export default function EquipoScreen() {
         onPress={() => navigation.navigate('Personal')}
       />
       <MenuRow
+        icon="clock"
+        label="Horarios"
+        onPress={() => navigation.navigate('HorariosEquipo')}
+      />
+      <MenuRow
+        icon="calendar"
+        label="Ausencias"
+        onPress={() => navigation.navigate('AusenciasEquipo')}
+      />
+      <MenuRow
+        icon="scissors"
+        label="Servicios por profesional"
+        onPress={() => navigation.navigate('ServiciosEquipo')}
+      />
+      <MenuRow
         icon="users"
         label={`Asignar ${config.terminology.staff || 'Profesionales'}`}
         onPress={() => navigation.navigate('AsignarProfesionales')}

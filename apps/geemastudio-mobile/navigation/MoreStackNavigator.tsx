@@ -9,6 +9,8 @@ import ProfileScreen from '@/screens/ProfileScreen'
 import { useScreenOptions } from '@/hooks/useScreenOptions'
 
 import PersonalScreen from '@/screens/PersonalScreen'
+import AusenciasEquipoScreen from '@/screens/personal/AusenciasEquipoScreen'
+import { HorariosEquipoScreen, ServiciosEquipoScreen } from '@/screens/personal/EquipoDisponibilidadScreen'
 import DisponibilidadPersonalScreen from '@/screens/personal/DisponibilidadPersonalScreen'
 import SettingsScreen from '@/screens/SettingsScreen'
 import HorariosTrabajoScreen from '@/screens/HorariosTrabajoScreen'
@@ -49,6 +51,9 @@ export type MoreStackParamList = {
   AsignarProfesionales: undefined
   Finanzas: undefined
   Personal: undefined
+  AusenciasEquipo: undefined
+  HorariosEquipo: undefined
+  ServiciosEquipo: undefined
   DisponibilidadPersonal: { employeeId: string; employeeName: string }
   Inventario: undefined
   Ventas: undefined
@@ -122,9 +127,24 @@ export default function MoreStackNavigator() {
       <Stack.Screen name="Finanzas" component={FinancesScreen} options={{ title: 'Finanzas' }} />
       <Stack.Screen name="Personal" component={PersonalScreen} options={{ title: 'Personal' }} />
       <Stack.Screen
+        name="AusenciasEquipo"
+        component={AusenciasEquipoScreen}
+        options={{ title: 'Ausencias' }}
+      />
+      <Stack.Screen
+        name="HorariosEquipo"
+        component={HorariosEquipoScreen}
+        options={{ title: 'Horarios del equipo' }}
+      />
+      <Stack.Screen
+        name="ServiciosEquipo"
+        component={ServiciosEquipoScreen}
+        options={{ title: 'Servicios por profesional' }}
+      />
+      <Stack.Screen
         name="DisponibilidadPersonal"
         component={DisponibilidadPersonalScreen}
-        options={{ title: 'Disponibilidad' }}
+        options={{ title: 'Horarios y servicios' }}
       />
       <Stack.Screen
         name="Inventario"
