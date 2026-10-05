@@ -10,6 +10,7 @@ import { useDeleteServicio, useServicios, useToggleServicio } from '@/hooks/serv
 import { ServiceToggle } from './ServiceToggle'
 import { FilterChips } from '@/components/ui/FilterChips'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
+import { useVesRate } from '@/hooks/useVesRate'
 
 function fmtUsd(price: string) {
   const n = Number.parseFloat(String(price))
@@ -27,6 +28,7 @@ export function ServiciosTab({
   onEdit: (svc: ServicioRow) => void
 }) {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | undefined>(undefined)
+  const { formatBs } = useVesRate()
   const { confirm, dialog } = useConfirm()
 
   const serviciosQuery = useServicios(selectedCategoryId)
@@ -170,6 +172,11 @@ export function ServiciosTab({
                       </td>
                       <td className="px-4 py-3 text-right font-semibold text-fg-soft">
                         {fmtUsd(s.price)}
+                        {formatBs(s.price) && (
+                          <div className="text-[11px] font-normal text-fg-subtle">
+                            ≈ {formatBs(s.price)}
+                          </div>
+                        )}
                       </td>
                       <td className="px-4 py-3 text-right text-fg-muted">{s.duration} min</td>
                       <td className="px-4 py-3 text-center">
@@ -244,6 +251,9 @@ export function ServiciosTab({
                         <span>{s.duration} min</span>
                         <span className="text-fg-subtle">•</span>
                         <span className="font-semibold text-fg-soft">{fmtUsd(s.price)}</span>
+                        {formatBs(s.price) && (
+                          <span className="text-fg-subtle">≈ {formatBs(s.price)}</span>
+                        )}
                       </div>
                     </div>
 

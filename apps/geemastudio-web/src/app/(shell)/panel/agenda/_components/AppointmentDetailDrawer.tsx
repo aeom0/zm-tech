@@ -12,6 +12,7 @@ import { getCancelReasonLabel } from '@geemastudio/shared-schema'
 import { STATUS_LABEL, type AgendaAppointment } from '@/hooks/agenda/types'
 import { formatDashboardCurrency } from '@/lib/dashboardCurrency'
 import { formatAppointmentDateShort } from '@/lib/format'
+import { useVesRate } from '@/hooks/useVesRate'
 
 interface AppointmentDetailDrawerProps {
   apt: AgendaAppointment
@@ -36,6 +37,7 @@ export function AppointmentDetailDrawer({
   currencyCode,
   onClose,
 }: AppointmentDetailDrawerProps) {
+  const { formatBs } = useVesRate()
   const start = instanteCitaDesdeTexto(apt.date, timezone)
   const hora = formatoHoraInstanteEnZona(
     start,
@@ -98,6 +100,7 @@ export function AppointmentDetailDrawer({
             label="Precio"
             value={formatDashboardCurrency(parseFloat(apt.price || '0'), currencyCode)}
           />
+          {formatBs(apt.price) && <Row label="Equivalente en Bs." value={`≈ ${formatBs(apt.price)}`} />}
           <p className="pt-2 text-xs text-fg-subtle">
             Vista de solo lectura. Crear / editar citas se hace desde la app del celular por ahora.
           </p>

@@ -6,6 +6,7 @@ import { CATEGORY_ICON_LABELS, getCategoryIconGroups, getDefaultCategoryIcon } f
 
 import { CategoryIcon } from '@/components/CategoryIcon'
 import { useTenantSettings } from '@/hooks/configuracion/useTenantSettings'
+import { useVesRate } from '@/hooks/useVesRate'
 import { useServiciosIconSupport } from '@/hooks/servicios/useServicios'
 
 import type { CategoriaRow } from '@/hooks/servicios/useCategorias'
@@ -81,6 +82,7 @@ function ServicioModalForm({
     initial?.category_id ?? defaultCategoryId ?? categorias[0]?.id ?? ''
   )
   const [price, setPrice] = useState(initial?.price ?? '')
+  const { formatBs } = useVesRate()
   const [duration, setDuration] = useState(initial?.duration ?? 60)
   const [isActive, setIsActive] = useState(initial?.is_active ?? true)
   const [icon, setIcon] = useState<string | null>(initial?.icon ?? null)
@@ -167,6 +169,11 @@ function ServicioModalForm({
                 className="w-full rounded-xl border border-fg/[0.10] bg-elevated px-4 py-2.5 text-fg placeholder:text-fg-subtle focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--tenant-primary)]"
                 placeholder="15,50"
               />
+              {formatBs(price.replace(',', '.')) && (
+                <div className="mt-1 text-[11px] text-fg-subtle">
+                  ≈ {formatBs(price.replace(',', '.'))} a la tasa del día
+                </div>
+              )}
               <div className="mt-1 text-[11px] text-fg-subtle">
                 Acepta coma: <span className="text-fg-muted">15,50</span> →{' '}
                 <span className="text-fg-muted">15.50</span>

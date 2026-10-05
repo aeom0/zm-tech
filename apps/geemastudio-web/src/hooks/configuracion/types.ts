@@ -25,6 +25,10 @@ export interface TenantSettingsPanelRow {
   features_whatsapp: boolean
   /** Recargo POS/tarjeta en % (comisión; no es ingreso). */
   pos_fee_percent: number
+  /** Solo VE: true = usar `tasa_manual_usd_ves` en vez de la BCV en vivo. */
+  usar_tasa_manual: boolean
+  /** Solo VE: Bs por USD fijados por el negocio (override / respaldo). */
+  tasa_manual_usd_ves: number | null
   slug: string | null
   web_enabled: boolean
   web_template: WebTemplate

@@ -21,6 +21,8 @@ import {
 } from '@/hooks/configuracion/types'
 import { getTenantLandingUrl } from '@/lib/site-url'
 import { ConfiguracionNav } from './_components/ConfiguracionNav'
+import { TasasEnVivo } from './_components/TasasEnVivo'
+import { useVesRate } from '@/hooks/useVesRate'
 import { StateNote } from '@/components/ui/StateNote'
 import { PageHeader } from '@/components/ui/PageHeader'
 
@@ -49,6 +51,7 @@ function Section({
 }
 
 export default function PanelConfiguracionPage() {
+  const ves = useVesRate()
   const settingsQuery = useTenantSettings()
   const update = useUpdateTenantSettings()
   const uploadLogo = useUploadTenantLogo()
@@ -73,6 +76,8 @@ export default function PanelConfiguracionPage() {
   const [webTemplate, setWebTemplate] = useState<WebTemplate>('elegant')
   const [featuresWhatsapp, setFeaturesWhatsapp] = useState(false)
   const [posFeePercent, setPosFeePercent] = useState('5')
+  const [usarTasaManual, setUsarTasaManual] = useState(false)
+  const [tasaManual, setTasaManual] = useState('')
   const [mensaje, setMensaje] = useState<string | null>(null)
   const [errorLocal, setErrorLocal] = useState<string | null>(null)
 
@@ -96,6 +101,8 @@ export default function PanelConfiguracionPage() {
     setWebTemplate(row.web_template)
     setFeaturesWhatsapp(row.features_whatsapp)
     setPosFeePercent(String(row.pos_fee_percent ?? 5))
+    setUsarTasaManual(row.usar_tasa_manual)
+    setTasaManual(row.tasa_manual_usd_ves != null ? String(row.tasa_manual_usd_ves) : '')
   }, [row])
 
   const previewSlug = useMemo(() => slugify(slug), [slug])
@@ -129,6 +136,13 @@ export default function PanelConfiguracionPage() {
     const posFee = parseFloat(posFeePercent.replace(',', '.'))
     if (!Number.isFinite(posFee) || posFee < 0 || posFee > 100) {
       setErrorLocal('El recargo POS debe estar entre 0 y 100 %')
+      return
+    }
+
+    const tasaManualNum = parseFloat(tasaManual.replace(',', '.'))
+    const tasaManualValida = Number.isFinite(tasaManualNum) && tasaManualNum > 0
+    if (country === 'VE' && usarTasaManual && !tasaManualValida) {
+      setErrorLocal('Indica la tasa manual (Bs por USD) o desactiva la tasa manual')
       return
     }
 
@@ -166,6 +180,14 @@ export default function PanelConfiguracionPage() {
           logo_url: logoUrl,
           features_whatsapp: featuresWhatsapp,
           pos_fee_percent: Math.round(posFee * 100) / 100,
+          ...(country === 'VE'
+            ? {
+                usar_tasa_manual: usarTasaManual,
+                tasa_manual_usd_ves: tasaManualValida
+                  ? Math.round(tasaManualNum * 10000) / 10000
+                  : null,
+              }
+            : {}),
           web_template: webTemplate,
           ...webPatch,
         },
@@ -341,6 +363,33 @@ export default function PanelConfiguracionPage() {
             Comisión del POS: se muestra al cobrar con tarjeta pero no cuenta como ingreso.
           </p>
         </div>
+
+        {country === 'VE' && (
+          <div className="max-w-md space-y-3 rounded-xl border border-fg/[0.10] p-4">
+            <div className="text-sm font-medium text-fg-soft">Tasa de cambio (Bs por USD)</div>
+            <TasasEnVivo tasas={ves.tasas} loading={ves.isLoading} />
+            <label className="flex items-center gap-2 text-sm text-fg-soft">
+              <input
+                type="checkbox"
+                checked={usarTasaManual}
+                onChange={(e) => setUsarTasaManual(e.target.checked)}
+                className="h-5 w-5 rounded accent-[var(--tenant-primary)]"
+              />
+              Usar tasa manual
+            </label>
+            <input
+              className={fieldClass}
+              inputMode="decimal"
+              placeholder="0,00"
+              value={tasaManual}
+              onChange={(e) => setTasaManual(e.target.value.replace(/[^0-9,.]/g, ''))}
+            />
+            <p className="text-xs text-fg-subtle">
+              Por defecto se usa la tasa BCV. Con la tasa manual activa, los equivalentes en Bs
+              usan la tuya; si no hay BCV disponible, se usa como respaldo.
+            </p>
+          </div>
+        )}
 
         <label className="flex items-center gap-2 text-sm text-fg-soft">
           <input

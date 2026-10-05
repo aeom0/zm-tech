@@ -7,7 +7,7 @@ const SELECT_CORE =
   'id, business_name, business_type, tagline, primary_color, accent_color, currency_code, currency_symbol, country, language, timezone, client_terminology, staff_terminology, staff_singular_terminology, appointment_terminology, logo_url, features_whatsapp, slug, web_enabled, web_template, custom_domain'
 
 /** El recargo no depende de logo_bg_*: si esas columnas faltan, igual hay que leerlo. */
-const SELECT_WITH_POS = `${SELECT_CORE}, pos_fee_percent`
+const SELECT_WITH_POS = `${SELECT_CORE}, pos_fee_percent, usar_tasa_manual, tasa_manual_usd_ves`
 
 const SELECT_WITH_LOGO_BG = `${SELECT_WITH_POS}, logo_bg_light, logo_bg_dark`
 
@@ -37,6 +37,8 @@ function normalizeRow(raw: Record<string, unknown>): TenantSettingsPanelRow {
     logo_bg_dark: (raw.logo_bg_dark as string | null) ?? null,
     features_whatsapp: Boolean(raw.features_whatsapp),
     pos_fee_percent: raw.pos_fee_percent != null ? Number(raw.pos_fee_percent) : 5,
+    usar_tasa_manual: Boolean(raw.usar_tasa_manual),
+    tasa_manual_usd_ves: raw.tasa_manual_usd_ves != null ? Number(raw.tasa_manual_usd_ves) : null,
     slug: (raw.slug as string | null) ?? null,
     web_enabled: Boolean(raw.web_enabled),
     web_template: webTemplate,
