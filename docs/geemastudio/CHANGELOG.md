@@ -7,6 +7,17 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Añadido (5-oct 2026 — tasas BCV/USDT y pagos en Bs para Venezuela)
+
+- **BD (prod)** — `exchange_rates_bcv` y `exchange_rates_usdt` (globales; lectura solo `authenticated`, escritura `service_role`), `tenant_settings.usar_tasa_manual` / `tasa_manual_usd_ves` y `payments.paid_currency` / `exchange_rate` / `amount_ves`. Migraciones `20261005191145_exchange_rates_ve` y `20261005192305_payments_ves`. Los precios siguen en USD; `payments.amount` queda en USD y un pago en Bs guarda además el monto en Bs y la tasa usada (snapshot, no se recalcula). Solo se envían las columnas nuevas en tenants VE.
+- **Web · crons** — `/api/cron/guardar-tasa-bcv-diario` y `/guardar-tasa-usdt-diario` (`vercel.json`, 04:30 y 04:35 UTC) escriben en esas tablas con `supabaseAdmin`. Requieren `CRON_SECRET` y `SUPABASE_SERVICE_ROLE_KEY` en Vercel (Production).
+- **Paquete `@zmtech/tasas`** — `resolverTasasDuales` (cliente con nombres de tabla inyectables, compartido con RepMAX), `formatearBs`. Hook `useTasaCambio` en mobile y web: tasa efectiva = manual (si está activa) → BCV → manual de respaldo.
+- **Mobile (solo tenants VE)** — equivalente «≈ Bs.» en resumen de cita, selector de servicios y detalle de cita; Nuevo pago con chips USD / Bs. y vista previa de la conversión; métodos por país (VE: Pago móvil y Zelle; PE: Yape y Plin); Ajustes → «Tasa de cambio» (BCV vs USDT, diferencia, tasa manual). Pendiente: equivalentes en Bs y ajuste de tasa en web.
+
+### Seguridad (5-oct 2026)
+
+- Se rotó el `CRON_SECRET` de pg_cron → Edge Functions (Vault `cron_secret` + secret de las Edge Functions) tras una alerta de GitGuardian: el valor estaba en texto plano en `20260817233632_executive_finance_panel.sql`. El archivo ahora trae `<CRON_SECRET_REDACTED>`; el valor viejo sigue en el historial de git pero ya no es válido.
+
 ### Añadido (5-oct 2026 — Equipo y Finanzas como pantallas independientes)
 
 - **Mobile · Más → Equipo** — Horarios, Ausencias y Servicios por profesional pasan a ser filas propias del menú (antes solo se llegaba por Personal → profesional → Disponibilidad, 3 toques). Cada pantalla lista a todo el equipo con su resumen (días de trabajo, ausencias vigentes y próximas con coberturas, «N de M servicios») y edita en un modal con los mismos formularios del Plan 18. La ficha por profesional se conserva como atajo y su título pasa a «Horarios y servicios». Sin cambios de BD.

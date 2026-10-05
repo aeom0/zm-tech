@@ -47,6 +47,7 @@ El output está en `apps/geemastudio-web/.next`.
   - `NEXT_PUBLIC_SUPABASE_URL=https://udelxwwnyivknslueerr.supabase.co`
   - `NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...` (anon key del proyecto)
   - **`NEXT_PUBLIC_SITE_URL=https://geema.zmtechdev.com`**
+  - **`SUPABASE_SERVICE_ROLE_KEY`** (service role de `udelx…`) y **`CRON_SECRET`** (secreto propio de Vercel, distinto del `cron_secret` del Vault): los usan los crons de tasas (`/api/cron/guardar-tasa-bcv-diario`, `/guardar-tasa-usdt-diario`). Tras definirlas hay que redesplegar; para sembrar tasas, llamar a cada ruta con `Authorization: Bearer $CRON_SECRET`.
   - (Opcional) Si se usan cookies SSR de Supabase, no requiere variables extra: se maneja con `@supabase/ssr` y cookies de sesión.
 
 ### 2b. Checklist dominio + Auth (post-merge / ops)

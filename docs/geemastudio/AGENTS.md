@@ -152,8 +152,8 @@ Tablas principales en `packages/shared-schema/src/schema.ts`:
 - **clients** - Base de datos de clientes
 - **appointments** - Citas programadas con verificación de disponibilidad
 - **inventory_items** - Productos y suministros
-- **payments** - Registros financieros
-- **tenant_settings** - Config del negocio: entre otras, `timezone` (IANA), `business_hours` (franja por día), `client_terminology`, `tagline`, `features_whatsapp`; alineado con `TenantConfig` y upserts desde mobile/web panel
+- **payments** - Registros financieros; `amount` siempre en la moneda del tenant (USD en VE). Tenants VE: `paid_currency` (`USD`/`VES`), `exchange_rate` y `amount_ves` (snapshot del pago en Bs)
+- **tenant_settings** - Config del negocio: entre otras, `timezone` (IANA), `business_hours` (franja por día), `client_terminology`, `tagline`, `features_whatsapp`, `usar_tasa_manual` / `tasa_manual_usd_ves` (VE); alineado con `TenantConfig` y upserts desde mobile/web panel
 
 RLS en Supabase (mobile ya migrado 100% a estas tablas): profiles (lectura propia; admins ven/editan todos), employees (todos autenticados leen; solo admins escriben), appointments (staff/dev/owner leen y escriben), payments e inventory_items (solo dev/owner), tenant_settings (solo dev/owner).
 
