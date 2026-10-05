@@ -57,6 +57,7 @@ export function PackModal({
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [isActive, setIsActive] = useState(true)
   const [badge, setBadge] = useState('✨')
+  const [slotMinutes, setSlotMinutes] = useState('')
 
   useResetOnChange([visible, editing], () => {
     if (!visible) {
@@ -69,6 +70,7 @@ export function PackModal({
       setSelected(new Set(editing.service_ids ?? []))
       setIsActive(editing.is_active)
       setBadge(editing.badge?.trim() || '✨')
+      setSlotMinutes(editing.slot_minutes ? String(editing.slot_minutes) : '')
     } else {
       setName('')
       setDescription('')
@@ -76,6 +78,7 @@ export function PackModal({
       setSelected(new Set())
       setIsActive(true)
       setBadge('✨')
+      setSlotMinutes('')
     }
   })
 
@@ -128,6 +131,7 @@ export function PackModal({
       is_active: isActive,
       category_id: inferCategoryId(),
       badge: badge.trim() || null,
+      slot_minutes: Number.parseInt(slotMinutes, 10) > 0 ? Number.parseInt(slotMinutes, 10) : null,
     }
     onSave(payload)
   }
@@ -202,6 +206,25 @@ export function PackModal({
               keyboardType="decimal-pad"
               value={price}
               onChangeText={setPrice}
+            />
+
+            <ThemedText style={[styles.label, { color: theme.textSecondary }]}>
+              Duración en agenda (min, opcional)
+            </ThemedText>
+            <TextInput
+              style={[
+                styles.input,
+                {
+                  backgroundColor: theme.backgroundSecondary,
+                  color: theme.text,
+                  borderColor: theme.border,
+                },
+              ]}
+              placeholder="Vacío = suma de los servicios"
+              placeholderTextColor={theme.textMuted}
+              keyboardType="number-pad"
+              value={slotMinutes}
+              onChangeText={(v) => setSlotMinutes(v.replace(/\D/g, ''))}
             />
 
             <ThemedText style={[styles.label, { color: theme.textSecondary }]}>Emoji</ThemedText>

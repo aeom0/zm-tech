@@ -24,6 +24,8 @@ export type Promotion = {
   promo_price: number
   is_active: boolean
   expires_at: string | null
+  /** Minutos en agenda (incluye turnover). null = suma de duraciones de sus servicios. */
+  slot_minutes?: number | null
   promotion_items?: PromoItem[]
 }
 
@@ -37,7 +39,7 @@ export type PromoItemInput = {
 }
 
 const ZM_PROMOS_SELECT =
-  'id, title, description, badge, emoji, accent_color, promo_price, is_active, valid_until'
+  'id, title, description, badge, emoji, accent_color, promo_price, is_active, valid_until, slot_minutes'
 
 function requireSupabase() {
   if (!supabase) {
@@ -90,6 +92,7 @@ function normalizePromotion(
     promo_price: Number.isFinite(promoPrice) ? promoPrice : 0,
     is_active: Boolean(row.is_active),
     expires_at: expires,
+    slot_minutes: Number(row.slot_minutes) > 0 ? Number(row.slot_minutes) : null,
     promotion_items: items,
   }
 }
@@ -171,6 +174,7 @@ export async function createPromotion(
         is_active: input.is_active,
         valid_until: input.expires_at,
         emoji: input.emoji?.trim() || '✨',
+        slot_minutes: input.slot_minutes ?? null,
         service_ids: '[]',
       })
       .select('id')
@@ -248,6 +252,7 @@ export async function updatePromotion(
     if (input.accent_color !== undefined) payload.accent_color = input.accent_color?.trim() || null
     if (input.is_active != null) payload.is_active = input.is_active
     if (input.expires_at !== undefined) payload.valid_until = input.expires_at
+    if (input.slot_minutes !== undefined) payload.slot_minutes = input.slot_minutes
     if (promo_price !== undefined) payload.promo_price = promo_price
 
     const { error } = await sb.from('promotions').update(payload).eq('id', id)

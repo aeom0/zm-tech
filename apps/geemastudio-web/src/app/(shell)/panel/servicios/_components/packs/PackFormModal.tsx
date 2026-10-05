@@ -18,6 +18,7 @@ type FormState = {
   emoji: string
   description: string
   price: string
+  slot_minutes: string
   service_ids: string[]
   is_active: boolean
 }
@@ -27,6 +28,7 @@ const EMPTY: FormState = {
   emoji: DEFAULT_CATALOG_EMOJI,
   description: '',
   price: '',
+  slot_minutes: '',
   service_ids: [],
   is_active: true,
 }
@@ -37,6 +39,7 @@ function formFromPack(pack: Pack): FormState {
     emoji: pack.emoji || DEFAULT_CATALOG_EMOJI,
     description: pack.description ?? '',
     price: String(pack.price).replace('.', ','),
+    slot_minutes: pack.slot_minutes ? String(pack.slot_minutes) : '',
     service_ids: pack.service_ids,
     is_active: pack.is_active,
   }
@@ -65,6 +68,7 @@ function PackFormModalInner({ pack, onClose }: { pack?: Pack | null; onClose: ()
       price,
       service_ids: form.service_ids,
       is_active: form.is_active,
+      slot_minutes: Number.parseInt(form.slot_minutes, 10) > 0 ? Number.parseInt(form.slot_minutes, 10) : null,
     }
 
     if (pack) {
@@ -120,6 +124,23 @@ function PackFormModalInner({ pack, onClose }: { pack?: Pack | null; onClose: ()
               placeholder="0,00"
               inputMode="decimal"
             />
+          </div>
+
+          <div>
+            <label className="mb-1 block text-xs text-fg/50">Duración en agenda (min)</label>
+            <input
+              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-base text-fg focus:border-[var(--tenant-primary)] focus:outline-none md:text-sm"
+              value={form.slot_minutes}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, slot_minutes: e.target.value.replace(/\D/g, '') }))
+              }
+              placeholder="Vacío = suma de los servicios"
+              inputMode="numeric"
+            />
+            <p className="mt-1 text-xs text-fg/40">
+              Si lo llenas, el bot usa este tiempo (incluye limpieza) en lugar de sumar las
+              duraciones.
+            </p>
           </div>
 
           <div>

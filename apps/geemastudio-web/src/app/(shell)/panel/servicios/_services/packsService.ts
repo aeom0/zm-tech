@@ -15,6 +15,8 @@ export type Pack = {
   emoji?: string | null
   /** ZM: category_id NOT NULL; se infiere del primer servicio al guardar. */
   category_id?: string | null
+  /** Minutos en agenda (incluye turnover). null = suma de duraciones de sus servicios. */
+  slot_minutes?: number | null
 }
 
 export type PackInput = {
@@ -24,11 +26,12 @@ export type PackInput = {
   service_ids: string[]
   is_active: boolean
   emoji?: string
+  slot_minutes?: number | null
 }
 
 const GEEMA_SELECT = 'id, name, description, price, service_ids, is_active'
 const ZM_SELECT =
-  'id, title, description, pack_price, category_id, service_ids, is_active, display_order, emoji'
+  'id, title, description, pack_price, category_id, service_ids, is_active, display_order, emoji, slot_minutes'
 
 function requireSupabase() {
   if (!supabase) {
@@ -60,6 +63,7 @@ function normalizeZm(row: Record<string, unknown>): Pack {
     is_active: Boolean(row.is_active),
     emoji: row.emoji != null ? String(row.emoji) : null,
     category_id: row.category_id != null ? String(row.category_id) : null,
+    slot_minutes: Number(row.slot_minutes) > 0 ? Number(row.slot_minutes) : null,
   }
 }
 
@@ -119,6 +123,7 @@ export async function createPack(input: PackInput): Promise<Pack> {
         is_active: input.is_active,
         emoji: input.emoji?.trim() || '✨',
         badge: 'PACK',
+        slot_minutes: input.slot_minutes ?? null,
       })
       .select(ZM_SELECT)
       .single()
@@ -157,6 +162,7 @@ export async function updatePack(id: string, input: Partial<PackInput>): Promise
     }
     if (input.is_active != null) payload.is_active = input.is_active
     if (input.emoji !== undefined) payload.emoji = input.emoji.trim() || '✨'
+    if (input.slot_minutes !== undefined) payload.slot_minutes = input.slot_minutes
 
     const { data, error } = await sb
       .from('packs')

@@ -22,11 +22,13 @@ export interface PackPayload {
   category_id?: string | null
   /** Emoji del pack (sticker visual en la card). */
   badge: string | null
+  /** Solo dialecto ZM: minutos en agenda; null = suma de servicios. */
+  slot_minutes?: number | null
 }
 
 const GEEMA_SELECT = 'id, name, description, price, service_ids, is_active'
 const ZM_SELECT =
-  'id, title, description, pack_price, category_id, service_ids, is_active, display_order, emoji'
+  'id, title, description, pack_price, category_id, service_ids, is_active, display_order, emoji, slot_minutes'
 
 export function usePacksData() {
   const queryClient = useQueryClient()
@@ -78,6 +80,7 @@ export function usePacksData() {
           category_id: payload.category_id,
           is_active: payload.is_active,
           emoji: payload.badge?.trim() || '✨',
+          slot_minutes: payload.slot_minutes ?? null,
           badge: 'PACK',
         })
         if (error) {
@@ -122,6 +125,7 @@ export function usePacksData() {
             category_id: payload.category_id,
             is_active: payload.is_active,
             emoji: payload.badge?.trim() || '✨',
+            slot_minutes: payload.slot_minutes ?? null,
           })
           .eq('id', id)
         if (error) {
