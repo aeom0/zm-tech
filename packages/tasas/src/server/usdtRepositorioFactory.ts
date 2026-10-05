@@ -36,11 +36,16 @@ export interface RepositorioTasasUsdt {
   }): Promise<void>
 }
 
-/** Tabla compartida cross-producto: hub_tasas_usdt (ver docs/hub/supabase/migrations/). */
-const TABLA = 'hub_tasas_usdt'
+/** Tabla compartida del hub: hub_tasas_usdt (ver docs/hub/supabase/migrations/). */
+export const TABLA_USDT_HUB = 'hub_tasas_usdt'
 const MERCADO = 'binance'
 
-export function crearRepositorioTasasUsdt(cliente: ClienteTasasUsdt): RepositorioTasasUsdt {
+/** `tabla` permite apuntar a otro proyecto Supabase con el mismo schema (ej. GeemaStudio). */
+export function crearRepositorioTasasUsdt(
+  cliente: ClienteTasasUsdt,
+  tabla: string = TABLA_USDT_HUB
+): RepositorioTasasUsdt {
+  const TABLA = tabla
   return {
     async obtenerUltimaHasta(fechaMax: string) {
       const { data, error } = await cliente

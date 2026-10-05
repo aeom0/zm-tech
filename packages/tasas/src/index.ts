@@ -28,6 +28,9 @@ export { calcularMargenReal, calcularPrecioSugerido } from './calcularMargen'
 
 export { calcularSpreadInfo } from './spread'
 
+export { resolverTasasDuales, TABLAS_TASAS_HUB } from './clienteTasasDuales'
+export type { ClienteLecturaTasas, TablasTasas } from './clienteTasasDuales'
+
 export {
   FERIADOS_BANCARIOS_VE,
   esFeriadoBancario,

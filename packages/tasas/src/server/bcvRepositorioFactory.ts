@@ -21,10 +21,15 @@ type QueryTasasBcv = {
   maybeSingle: () => PromiseLike<{ data: FilaTasasBcv | null; error: unknown }>
 }
 
-/** Tabla compartida cross-producto: hub_tasas_bcv (ver docs/hub/supabase/migrations/). */
-const TABLA = 'hub_tasas_bcv'
+/** Tabla compartida del hub: hub_tasas_bcv (ver docs/hub/supabase/migrations/). */
+export const TABLA_BCV_HUB = 'hub_tasas_bcv'
 
-export function crearRepositorioTasasBcv(cliente: ClienteTasasBcv): RepositorioTasasBcv {
+/** `tabla` permite apuntar a otro proyecto Supabase con el mismo schema (ej. GeemaStudio). */
+export function crearRepositorioTasasBcv(
+  cliente: ClienteTasasBcv,
+  tabla: string = TABLA_BCV_HUB
+): RepositorioTasasBcv {
+  const TABLA = tabla
   return {
     async obtenerPorFecha(fecha: string) {
       const { data, error } = await cliente

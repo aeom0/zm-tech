@@ -6,5 +6,15 @@
       "**": false
     }
   },
-  "ignoreCommand": "[ \"$VERCEL_ENV\" != \"production\" ] || npx turbo-ignore geemastudio-web"
+  "ignoreCommand": "[ \"$VERCEL_ENV\" != \"production\" ] || npx turbo-ignore geemastudio-web",
+  "crons": [
+    {
+      "path": "/api/cron/guardar-tasa-bcv-diario",
+      "schedule": "30 4 * * *"
+    },
+    {
+      "path": "/api/cron/guardar-tasa-usdt-diario",
+      "schedule": "35 4 * * *"
+    }
+  ]
 }
