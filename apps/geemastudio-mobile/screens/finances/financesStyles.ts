@@ -157,6 +157,7 @@ export const financesStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: Spacing.lg,
     marginBottom: Spacing.lg,
   },
   sectionTitle: {
@@ -190,7 +191,8 @@ export const financesStyles = StyleSheet.create({
   },
   paymentCard: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    gap: Spacing.md,
     justifyContent: 'space-between',
     padding: Spacing.lg,
     borderRadius: BorderRadius.lg,
@@ -200,6 +202,7 @@ export const financesStyles = StyleSheet.create({
   },
   paymentInfo: {
     flex: 1,
+    minWidth: 0,
   },
   paymentHeader: {
     flexDirection: 'row',
@@ -246,6 +249,7 @@ export const financesStyles = StyleSheet.create({
   paymentAmount: {
     fontSize: 18,
     fontWeight: '700',
+    flexShrink: 0,
   },
   fab: {
     position: 'absolute',
@@ -337,8 +341,8 @@ export const financesStyles = StyleSheet.create({
     fontWeight: '700',
   },
   closeButton: {
-    width: 36,
-    height: 36,
+    width: 40,
+    height: 40,
     borderRadius: BorderRadius.md,
     alignItems: 'center',
     justifyContent: 'center',
@@ -352,17 +356,17 @@ export const financesStyles = StyleSheet.create({
   paymentTypeChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.xs,
+    gap: Spacing.sm,
+    minHeight: 48,
     paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
     borderRadius: BorderRadius.full,
     borderWidth: 1.5,
-    flex: 1,
-    minWidth: 100,
+    flexGrow: 1,
+    flexBasis: '47%',
     justifyContent: 'center',
   },
   paymentTypeChipText: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '600',
   },
   abonoChipDot: {
@@ -376,20 +380,20 @@ export const financesStyles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.sm,
     marginLeft: 36,
-    marginTop: 2,
+    marginTop: Spacing.sm,
     flexWrap: 'wrap',
   },
   completarBtn: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 3,
-    paddingHorizontal: Spacing.sm,
-    paddingVertical: 2,
-    borderRadius: BorderRadius.xs,
+    gap: 6,
+    minHeight: 36,
+    paddingHorizontal: Spacing.md,
+    borderRadius: BorderRadius.full,
     borderWidth: 1,
   },
   completarBtnText: {
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: '700',
   },
   abonoToggle: {
@@ -445,9 +449,9 @@ export const financesStyles = StyleSheet.create({
   methodChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.xs,
-    paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
+    gap: Spacing.sm,
+    minHeight: 44,
+    paddingHorizontal: Spacing.lg,
     borderRadius: BorderRadius.full,
     borderWidth: 1,
   },
@@ -465,11 +469,13 @@ export const financesStyles = StyleSheet.create({
   },
   appointmentChip: {
     paddingHorizontal: Spacing.md,
-    paddingVertical: Spacing.sm,
+    paddingVertical: Spacing.md,
     borderRadius: BorderRadius.md,
     borderWidth: 1,
-    marginRight: Spacing.sm,
+    minWidth: 120,
     maxWidth: 220,
+    minHeight: 72,
+    justifyContent: 'center',
   },
   appointmentChipText: {
     fontSize: 13,
@@ -514,6 +520,7 @@ export const financesStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: Spacing.sm,
+    marginTop: Spacing.md,
     marginBottom: Spacing['3xl'],
   },
   submitButtonText: {

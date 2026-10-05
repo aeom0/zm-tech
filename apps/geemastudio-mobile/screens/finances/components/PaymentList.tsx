@@ -21,6 +21,8 @@ interface Props {
   isAdmin: boolean
   isStaffOnly: boolean
   isTablet: boolean
+  /** false cuando un encabezado externo (p. ej. el modal) ya muestra el título. */
+  showTitle?: boolean
   onEditPayment: (payment: FinancesPayment) => void
   onDeletePayment: (payment: FinancesPayment) => void
   onOpenNewPayment: (aptId?: string, type?: FinancesPaymentType) => void
@@ -39,6 +41,7 @@ export function PaymentList({
   isAdmin,
   isStaffOnly,
   isTablet,
+  showTitle = true,
   onEditPayment,
   onDeletePayment,
   onOpenNewPayment,
@@ -60,12 +63,20 @@ export function PaymentList({
   return (
     <>
       <View style={styles.sectionHeader}>
-        <ThemedText style={styles.sectionTitle}>
-          {isStaffOnly ? 'Mis pagos' : 'Historial de Pagos'}
-        </ThemedText>
-        <ThemedText style={[styles.paymentCount, { color: theme.primary }]}>
-          {payments.length}
-        </ThemedText>
+        {showTitle ? (
+          <>
+            <ThemedText style={styles.sectionTitle}>
+              {isStaffOnly ? 'Mis pagos' : 'Historial de Pagos'}
+            </ThemedText>
+            <ThemedText style={[styles.paymentCount, { color: theme.primary }]}>
+              {payments.length}
+            </ThemedText>
+          </>
+        ) : (
+          <ThemedText style={{ color: theme.textSecondary }}>
+            {payments.length === 1 ? '1 pago' : `${payments.length} pagos`}
+          </ThemedText>
+        )}
       </View>
 
       {payments.length === 0 ? (
@@ -185,7 +196,7 @@ export function PaymentList({
                             onOpenNewPayment(payment.appointment_id ?? undefined, 'completar')
                           }}
                         >
-                          <Feather name="plus-circle" size={11} color={theme.primary} />
+                          <Feather name="plus-circle" size={14} color={theme.primary} />
                           <ThemedText style={[styles.completarBtnText, { color: theme.primary }]}>
                             Cobrar restante
                           </ThemedText>

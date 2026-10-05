@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, ScrollView, Pressable, Modal, StyleSheet } from 'react-native'
+import { View, ScrollView, Pressable, Modal, Platform, StyleSheet } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -47,7 +47,7 @@ export function PaymentHistoryModal({
       onRequestClose={onClose}
     >
       <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
-        <View style={[styles.header, { paddingTop: Spacing.lg }]}>
+        <View style={[styles.header, { paddingTop: (Platform.OS === 'android' ? insets.top : 0) + Spacing.lg }]}>
           <ThemedText style={financesModalStyles.modalTitle}>
             {listProps.isStaffOnly ? 'Mis pagos' : 'Historial de pagos'}
           </ThemedText>
@@ -70,7 +70,7 @@ export function PaymentHistoryModal({
           showsVerticalScrollIndicator={false}
         >
           <PeriodSelector period={period} onChangePeriod={onChangePeriod} />
-          <PaymentList {...listProps} />
+          <PaymentList {...listProps} showTitle={false} />
         </ScrollView>
       </View>
     </Modal>
