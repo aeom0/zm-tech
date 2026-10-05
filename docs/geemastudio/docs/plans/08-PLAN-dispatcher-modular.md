@@ -3,12 +3,12 @@
 > **Ubicación canónica consolidada:** Plan 08. El archivo de origen se conserva temporalmente como referencia legacy.
 
 
-> Extraer el waterfall de [`handlers/dispatcher.ts`](../../supabase/functions/whatsapp-webhook/handlers/dispatcher.ts) a módulos por flujo **sin cambiar el orden de los `if`**. No es un router nuevo ni cutover a Haiku.
+> Extraer el waterfall de [`handlers/dispatcher.ts`](https://github.com/aeom0/ZM-Lash-and-Nails-Beauty/blob/main/supabase/functions/whatsapp-webhook/handlers/dispatcher.ts) a módulos por flujo **sin cambiar el orden de los `if`**. No es un router nuevo ni cutover a Haiku.
 
 **Última actualización:** 2026-09-17  
 **Estado:** Fase 1 **merged** (PR [#131](https://github.com/aeom0/ZM-Lash-and-Nails-Beauty/pull/131); helpers + CTWA + taps de menú; `dispatcher.ts` ~2500 líneas). **Prueba real B4 / Edgar …2122 pendiente** (no bloquea merges posteriores de fixes en la misma rama de producto).
 
-Relacionado: [`plan-haiku-primero-informativo.md`](../waba/plan-haiku-primero-informativo.md) (Batches 1–4: Haiku antes de boilerplate en gates 🟡/🟢). Este plan **no** reabre no-cutover; 🔴 pago / cita / identidad siguen determinísticos.
+Relacionado: [`plan-haiku-primero-informativo.md`](https://github.com/aeom0/ZM-Lash-and-Nails-Beauty/blob/main/docs/waba/plan-haiku-primero-informativo.md) (Batches 1–4: Haiku antes de boilerplate en gates 🟡/🟢). Este plan **no** reabre no-cutover; 🔴 pago / cita / identidad siguen determinísticos.
 
 ## Problema
 
@@ -31,7 +31,7 @@ Punto de entrada sin cambios: `index.ts` y el simulador importan `dispatch` desd
 
 ### Fase 1 — este PR (~2500–2800 líneas en `dispatcher.ts`)
 
-Carpeta [`handlers/dispatch/`](../../supabase/functions/whatsapp-webhook/handlers/dispatch/):
+Carpeta [`handlers/dispatch/`](https://github.com/aeom0/ZM-Lash-and-Nails-Beauty/blob/main/supabase/functions/whatsapp-webhook/handlers/dispatch/):
 
 | Módulo               | Qué sale de `dispatcher.ts`                                                            |
 | -------------------- | -------------------------------------------------------------------------------------- |

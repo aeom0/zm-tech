@@ -12,8 +12,8 @@
 | **S1** | Schema P0 multi-tenant | Migraciones §11 + `waba_config` + debounce | — |
 | **S2** | Modelo tenant unificado | Bridge `tenants` ↔ `tenant_settings` + Drizzle | S1 |
 | **S3** | WABA runtime multi-tenant | Routing + thread `tenantId` en webhook ZM | S1, S2 |
-| **S4** | Crons + RPCs tenant-aware | 11 Edge Functions parametrizadas | S3 |
-| **S5** | Suite L3 — reglas externalizadas | `TenantWabaRules` + seed ZM | S3 |
+| **S4** | Crons + RPCs tenant-aware | 14 Edge + 4 RPCs; loop Meta Ads en S7 | S3 |
+| **S5** | Suite L3 — reglas externalizadas | S5-1 a S5-5 ✅ | S3 |
 | **S5-B** | Branding tenant mobile | Logo Storage + `TenantLogo` + `createTheme` completo | S2 |
 | **S5-C** | Paridad mobile ZM (shadow) | Packs/promos + Lima + chicas ✅; resto P1 | S2 |
 | **S6** | Suite L4 + panel Geema | Presets vertical + `/panel/waba/*` port | S5 |
@@ -83,7 +83,7 @@ Un solo modelo de aislamiento para apps Geema y ZM.
 | S2-4 | Merge schema Geema → superset o package compartido | zm-tech | L |
 | S2-5 | `AuthContext` lee `tenant_id` del JWT (mobile + web) | Ambos | S |
 | S2-6 | RLS `operational_expenses` con filtro tenant | ZM migrations | S |
-| S2-7 | **CI:** job que falle si `sync-geema-migration-docs.sh diff` no está vacío | ZM o zm-tech | S |
+| S2-7 | ~~CI de sync de docs~~ — obsoleto: sin espejo desde oct-2026 | — | — |
 
 ### DoD
 - [x] `yarn db:push` / Drizzle alineado (`tenant_settings`, `profiles.tenantId`)
@@ -178,10 +178,17 @@ Ningún cron cruza tenants.
 **Referencias:** `docs/ops/DEPLOYMENT.md` § Vault · `scripts/db/` crons con `invoke_cron_edge_function` · `sync-meta-ads-spend` (rotar a este patrón si aún usa env global `META_*`).
 
 ### DoD
-- [ ] Cada función del diff listada en `deploy-edge-functions` workflow
-- [ ] QA cruzado 2 tenants sin nudge cruzado
-- [ ] Ningún token Meta/WABA nuevo en SQL migración ni en `app_config`
-- [ ] Al menos un cron tenant-aware invocado vía `invoke_cron_edge_function()` + Vault verificado
+- [x] Cada función del diff listada en `deploy-edge-functions` workflow
+- [x] QA cruzado 2 tenants sin nudge cruzado (`yarn waba:validate:cron-tenant-isolation`, 4 RPCs, 4/4 sin fuga)
+- [x] Ningún token Meta/WABA nuevo en SQL migración ni en `app_config` (solo Vault, `waba_token_<tenant_id>`)
+- [x] Al menos un cron tenant-aware invocado vía `invoke_cron_edge_function()` + Vault verificado (ticks reales confirmados en `cron.job_run_details` + `query_logs` para `ads-bounce-nudge` y `same-day-appointment-reminder`)
+
+**Cerrado (27-sep-2026, PR #151).** 14 Edge Functions + 4 RPCs en batches A–F.
+Batch F (`sync-meta-ads-spend`) deja el loop de tenants Meta Ads documentado
+y sin activar: se prende en S7, cuando un 2.º tenant tenga cuenta Ads propia.
+`generate-recurring-expenses` (Batch E) no cambió: ya usaba el `tenant_id` de cada fila.
+
+**Review del mismo PR.** La migración en prod es `20260927221658_tenant_aware_waba_rpcs_and_vault_token` (el archivo local usa ese version). `20260927233639_revoke_waba_find_rpc_from_anon` quita `EXECUTE` de las 4 `waba_find_*` a `anon` y `authenticated`: `REVOKE FROM PUBLIC` no alcanza porque los default privileges las reabren al crear la función. `ads-bounce-nudge` filtra `waba_config` y `clients` por `tenant_id`. Los senders responden 503 si el tenant del payload, del broadcast o de la clienta no tiene número WABA activo. `deno lint` de `supabase/functions` en cero. Pendiente operativo, no bloquea el merge: ticks de `appointment-reminders` (14:00 UTC) y `retouch-reminders` (15:00 UTC) del día siguiente.
 
 ---
 
@@ -194,15 +201,23 @@ Ningún cron cruza tenants.
 
 | ID | Tarea | Repo | Esfuerzo |
 |----|-------|------|----------|
-| S5-1 | Definir `TenantWabaRules` + storage JSONB | ZM schema + Edge | M |
-| S5-2 | Migrar `EMPLOYEE_CATEGORIES`, horarios, pagos ZM a seed config | ZM | M |
-| S5-3 | Capacidad genérica (sin UUIDs hardcode) | ZM Edge | M |
-| S5-4 | `peru-holidays` → leer `salon_holidays` tenant primero | ZM Edge | S |
-| S5-5 | Panel editar reglas básicas (horarios, depósito, staff↔cat) | ZM web o Geema web | M |
+| S5-1 | Definir `TenantWabaRules` + storage JSONB | ZM schema + Edge | M ✅ PR #154 |
+| S5-2 | Migrar `EMPLOYEE_CATEGORIES`, horarios, pagos ZM a seed config | ZM | M ✅ PR #156 (`ADMIN_PHONE`/feriados fuera) |
+| S5-3 | Capacidad genérica (sin UUIDs hardcode) | ZM Edge | M ✅ (PR #156, con S5-2) |
+| S5-4 | `peru-holidays` → leer `salon_holidays` tenant primero | ZM Edge | S ✅ PR #155 |
+| S5-5 | Panel editar reglas básicas (horarios, depósito, staff↔cat) | ZM web y Geema web | M ✅ `/panel/waba/reglas` en ambos |
 
 ### DoD
 - [ ] ZM prod comportamiento idéntico pre/post (suites QA verdes)
 - [ ] Segundo tenant puede definir horarios/capacidad distintos sin deploy
+
+**Tareas cerradas (28-sep-2026).** S5-1 a S5-5 están hechas. El DoD de un segundo salón en prod sigue abierto: el panel cubre horario, abono y staff; el cupo por servicio sigue en el JSON.
+
+- **S5-1 ✅ PR #154.** Columna `tenant_settings.waba_rules`, tipo `TenantWabaRules` y `getTenantWabaRules()` (si no hay fila, `DEFAULT_ZM_WABA_RULES`). Seed de `zm-lash-nails` aplicado. Migración `20260929013934_add_waba_rules_to_tenant_settings`. La capacidad se modela por categoría y servicio, no por `employeeId`.
+- **S5-2 ✅ PR #156.** Horarios, staff por categoría, medios de pago, tasa de domingo y monto fijo salen de `waba_rules`. Cache 5 min por tenant. Sin carga, ZM usa el hardcode. Fuera: `ADMIN_PHONE`, `YAPE_PLIN_NUMBER` y el horario de feriados.
+- **S5-3 ✅ PR #156.** Topes, categorías y servicios especiales, carril Karelis, servicios sin carril, hora de tarde y almuerzo salen de `waba_rules.capacity`. El reparto `stephani`/`karelis` sigue siendo el modelo de ZM.
+- **S5-4 ✅ PR #155.** `ensureSalonHolidaysLoaded` filtra por `tenant_id` y cachea por tenant. ZM sin filas usa el seed; otro tenant queda sin feriados. El copy del CC Las Plazuelas solo aplica a ZM. Drizzle alineado a `salon_holidays_tenant_date_unique` (el índice ya estaba en prod; no hubo DDL nuevo).
+- **S5-5 ✅** Panel `/panel/waba/reglas` en ZM y en Geema: horario, abono fijo, adelanto de domingo y chicas por categoría. No reescribe cupo ni medios de pago. El bot lo lee en el siguiente ciclo de 5 minutos.
 
 ---
 
@@ -265,20 +280,22 @@ Shadow test 29-ago (APK SDK 56, `alberto@zmlashnails.com`): core OK; packs/promo
 | S5C-2 | Adaptador promos + `promotion_items` | zm-tech | M ✅ |
 | S5C-3 | Validar `tenant_settings` timezone Lima | zm-tech + BD | S ✅ |
 | S5C-11 | Adaptador `employees` ZM + cache única con agenda | zm-tech | S ✅ |
-| S5C-4 | Agenda multi-servicio (`appointment_services`) | zm-tech | L |
-| S5C-5 | Referencias diseño WABA + badge agenda | zm-tech | L |
-| S5C-6 | Feriados + reglas domingo/feriado | zm-tech | M |
-| S5C-7 | Finanzas ejecutiva + costos WABA | zm-tech | L |
-| S5C-8 | Dashboard ranking + alertas feriado | zm-tech | S |
-| S5C-9 | UX hint Finanzas en Más | zm-tech | S |
+| S5C-4 | Agenda multi-servicio (`appointment_services`) | zm-tech | L ✅ PR #31 |
+| S5C-5 | Referencias diseño WABA + badge agenda | zm-tech | L ✅ PR #31 |
+| S5C-6 | Feriados + reglas domingo/feriado | zm-tech | M ✅ |
+| S5C-7 | Finanzas ejecutiva + costos WABA | zm-tech | L 🟡 ejecutiva ✅ PR #33; costos WABA (`PricingBreakdownCard`) pendiente |
+| S5C-8 | Dashboard ranking + alertas feriado | zm-tech | S ✅ |
+| S5C-9 | UX hint Finanzas en Más | zm-tech | S ✅ |
 | S5C-10 | Smoke packs/promos/agenda vs app ZM | zm-tech | S (parcial) |
 
 ### DoD
 - [x] Packs y promos ZM visibles en Geema (30-ago)
 - [x] Agenda mismo día en hora Lima (S5C-3)
 - [x] Más → chicas cableado a agenda (S5C-11)
-- [ ] Finanzas en Más lista pagos tenant (smoke explícito)
+- [x] Finanzas en Más lista pagos tenant (smoke explícito, 28-sep-2026 — device Moto G54, ver [07](./07-PARIDAD-MOBILE-ZM.md) § Notas de validación)
 - [x] ZM app legacy sin cambio
+
+**DoD shadow-baseline cerrado (28-sep-2026).** S5C-4/5/6/8/9 ya estaban ✅ en código (regresión de doc del 19-sep corregida el 28-sep — ver [07](./07-PARIDAD-MOBILE-ZM.md)). Único pendiente real: costos WABA (`PricingBreakdownCard`) de S5C-7.
 
 ---
 
@@ -293,18 +310,18 @@ Barbería/peluquería pueden onboardear con defaults sensatos.
 |----|-------|------|----------|
 | S6-1 | `waba-preset-loader`: `businessType` → CTWA + Haiku defaults | ZM/Geema Edge | M |
 | S6-2 | Seed onboarding: `waba_config` + catálogo preset | Geema mobile/server | M |
-| S6-3 | Portar `/panel/waba/mensajes` a geemastudio-web | zm-tech | L ✅ Plan 12 Fase 3 (21-sep) |
+| S6-3 | Portar `/panel/waba/mensajes` a geemastudio-web | zm-tech | L ✅ Plan 11 Fase 3 (21-sep) |
 | S6-4 | Portar `/panel/waba/campanas` + `/haiku` | zm-tech | M ✅ Haiku F2 + Campañas F5.1 (21-sep) |
-| S6-4b | Portar `/panel/waba/historial` (analytics) | zm-tech | M ✅ 22-sep Plan 12 F5.2 |
+| S6-4b | Portar `/panel/waba/historial` (analytics) | zm-tech | M ✅ 22-sep Plan 11 F5.2 |
 | S6-5 | Portar portafolio + simulador | zm-tech | M ✅ ambos 22-sep (simulador reusa EF ZM) |
 | S6-5b | Deep link Clientes → `/panel/waba/mensajes?phone=` | zm-tech | S ✅ 22-sep |
-| S6-6 | Eliminar/rehacer `/finanzas` web Geema (sin marca ZM) | zm-tech | M ✅ ejecutiva Plan 13 P1 + links P2 (22-sep) |
+| S6-6 | Eliminar/rehacer `/finanzas` web Geema (sin marca ZM) | zm-tech | M ✅ ejecutiva Plan 12 P1 + links P2 (22-sep) |
 | S6-7 | Geema mobile: persistir push token + `send-notification` | zm-tech | M ✅ PR-09 P0 + P8 + P9 + P10 + P18–P20 validados; ajustes de assets en curso |
 | S6-8 | Retail: tab Productos catálogo + Ventas `product_orders` | zm-tech | M 🟡 catálogo ✅ 22-sep; Ventas ❌ |
 
 ### DoD
 - [ ] Demo `barbershop` con CTWA Corte/Barba/Combo
-- [x] Owner Geema opera mensajes WA desde panel web (consola staff Plan 12)
+- [x] Owner Geema opera mensajes WA desde panel web (consola staff Plan 11)
 - [x] Historial + Portafolio en nav WABA
 - [ ] Audit 03 gaps P0 #1, #2, #4 cerrados o en progreso documentado
 - [x] Drift `whatsapp-webhook` prod reconciliado (22-sep Track C — [09](./09-WEBHOOK-PROD-RECONCILE.md); v655 = ZM `main`)
@@ -323,7 +340,7 @@ Primer cliente pagando (o barbería piloto) distinto de ZM.
 | S7-1 | INSERT `tenants` + `tenant_settings` + profiles staff | S |
 | S7-2 | Configurar número WABA Meta + webhook + `tenant_waba_numbers` | M |
 | S7-3 | Seed catálogo desde preset `barbershop` o custom | M |
-| S7-4 | Smoke chat real + monitoreo `wa_error_log` 48h | S |
+| S7-4 | Smoke chat real + monitoreo `wa_error_log` 48h. **Ojo (PR #173):** el flag `waba_tenant_routing_enabled` se cachea hasta 5 min por isolate; esperar ese lapso al activar o apagar (kill switch incluido) | S |
 | S7-5 | Decisión monorepo único (Opción C largo plazo) — ADR | — |
 
 ### DoD
@@ -340,9 +357,9 @@ Primer cliente pagando (o barbería piloto) distinto de ZM.
 | Look Preview multi-servicio (Plan 07 ZM → port) | **Post-MVP ZM** — ver `docs/plans/07-PLAN-look-preview-multi-servicio.md` (espejo en geemastudio/docs/plans); sugerencia ticket **S6-LP** tras Fase B Culqi |
 | Branding logo + tokens (S5-B) | **S5–S6** |
 | Expo 54 → 56 align mobile ZM/Geema | **En curso** — preview build SDK 56 ago 2026 |
-| Fase 5 drill-down `template_analytics` | Backend ZM ✅ (sep-2026); UI Geema S5C-7 |
+| Fase 5 drill-down `template_analytics` | Backend ZM ✅ (sep-2026); UI Geema pendiente (`PricingBreakdownCard`, S5C-7) |
 | Rotar `CRON_SECRET` en Vault | S4 |
-| CI diff sync Plan 04 (`S2-7`) | **S2** (ticket obligatorio, no backlog difuso) |
+| CI diff sync Plan 05 (`S2-7`) | **S2** (ticket obligatorio, no backlog difuso) |
 
 ---
 
@@ -360,5 +377,4 @@ Primer cliente pagando (o barbería piloto) distinto de ZM.
 ## Mantenimiento de este plan
 
 - Actualizar tablas de estado al cerrar cada sprint.
-- Sincronizar carpeta con Geema: ver [SYNC.md](./SYNC.md).
 - Cambios de alcance → editar aquí + `00-RESUMEN-EJECUTIVO.md`.

@@ -57,7 +57,7 @@ trazabilidad del gap que originó cada decisión.
 - **Qué falta:** filtros `.eq("tenant_id", …)` (o JWT claim + RLS por tenant) en **todas** las queries de gestión: `appointments`, `clients`, `payments`, `services`, `employees`, `inventory_items`, packs/promos. Hoy `rg tenant_id` en `geemastudio-web` y `geemastudio-mobile` = **0**. El bot WABA sí scopea; los paneles no.
 - **Por qué crítico:** un `owner` de tenant A vería/editaría datos de tenant B. Sin esto no se puede vender el producto.
 - **Esfuerzo:** L (schema Drizzle + migraciones faltantes en payments/inventory/… + RLS + reescritura de hooks + QA cruzado).
-- **Ref ZM:** Plan 02 en `docs/02-PLAN-retrofit-tenant-id.md` (ya aplicado en ZM prod) como patrón de referencia, no copy-paste ciego.
+- **Ref ZM:** Plan 02 en `docs/geemastudio/docs/plans/02-PLAN-retrofit-tenant-id.md` (ya aplicado en ZM prod) como patrón de referencia, no copy-paste ciego.
 
 ### 2. `/finanzas` web es ZM Lash hardcodeado + sin tenant — **riesgo de marca y de datos**
 

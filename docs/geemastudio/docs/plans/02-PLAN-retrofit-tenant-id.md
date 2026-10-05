@@ -7,7 +7,7 @@
 
 **Última actualización:** 2026-09-02 (nota de estado — ver abajo; cuerpo original sin tocar, fecha 2026-08-07)
 **Autor del plan:** Alberto Orta (Founder & CTO, ZM Tech)
-**Estado general:** Fase A ✅ + Fase B ✅ en prod. Fase C (RLS por `tenant_id`) ✅ completada en prod el 2026-08-08 (`20260808002620_tenant_rls_base_functions_and_tenants_table.sql` + `20260808002956_tenant_rls_policies_part2_66_policies.sql`, confirmado también en `plans/geema-migration/01-ESTADO-ACTUAL-Y-ARQUITECTURA.md` y `plans/geema-migration/README.md`). El resto de este documento (redactado el 2026-08-07, un día antes de Fase C) queda como registro histórico salvo la sección "Estado de ejecución" al final, corregida abajo.
+**Estado general:** Fase A ✅ + Fase B ✅ en prod. Fase C (RLS por `tenant_id`) ✅ completada en prod el 2026-08-08 (`20260808002620_tenant_rls_base_functions_and_tenants_table.sql` + `20260808002956_tenant_rls_policies_part2_66_policies.sql`, confirmado también en `plans/04-geema-migration/01-ESTADO-ACTUAL-Y-ARQUITECTURA.md` y `plans/04-geema-migration/README.md`). El resto de este documento (redactado el 2026-08-07, un día antes de Fase C) queda como registro histórico salvo la sección "Estado de ejecución" al final, corregida abajo.
 
 ---
 
@@ -128,5 +128,5 @@ Antes de eso, `tenant_id` existe como columna pero no protege nada — cualquier
 - **Fase B — grep:** sin otros `onConflict` sobre `whatsapp_sessions`. Panel web solo SELECT/DELETE por `phone` (MessageThread, useWabaMessages, ClientDetailSidebar).
 - **Fase B — PK:** ✅ `PRIMARY KEY (tenant_id, phone)` en prod.
 - **Fase B — deploy Edge:** ✅ `whatsapp-webhook` v370 + `chat-quality-review` / `send-retouch-reengage` / `retouch-reminders` redesplegados a mano; smoke inbound QA `51999000999` → sesión con `tenant_id = zm-lash-nails` + outbound OK. CI _OTA Production_ (merge PR #9) también redesplegó el resto del job; `ads-bounce-nudge` reportó `No change found` (bundle idéntico, exit 0 — no es fallo silencioso del workflow).
-- **Fase C:** ✅ Prod 2026-08-08 — tabla `tenants`, `current_tenant_id()`, Auth Hook JWT y 66 RLS policies aplicadas (ver migraciones citadas arriba en "Estado general"). Nota: el panel (mobile/web con JWT) ya aísla por tenant; el bot WABA usa `service_role` y sigue bypasseando RLS (sigue operando single-tenant en código) — detalle en `plans/geema-migration/01-ESTADO-ACTUAL-Y-ARQUITECTURA.md` y `plans/geema-migration/02-BLOQUEADORES-MULTI-TENANT.md`.
+- **Fase C:** ✅ Prod 2026-08-08 — tabla `tenants`, `current_tenant_id()`, Auth Hook JWT y 66 RLS policies aplicadas (ver migraciones citadas arriba en "Estado general"). Nota: el panel (mobile/web con JWT) ya aísla por tenant; el bot WABA usa `service_role` y sigue bypasseando RLS (sigue operando single-tenant en código) — detalle en `plans/04-geema-migration/01-ESTADO-ACTUAL-Y-ARQUITECTURA.md` y `plans/geema-migration/02-BLOQUEADORES-MULTI-TENANT.md`.
 - **Housekeeping pendiente (no bloquea bot):** consolidar baseline + `migrations_backup/` en un PR de schema aparte; alinear project knowledge zm-tech/Geema con esta copia.

@@ -19,8 +19,8 @@ Monorepo multi-producto (pnpm + Turborepo). Mapa de BDs: [`docs/SUPABASE.md`](do
 - La serie canónica de planes Geema es `docs/geemastudio/docs/plans/01–15`.
 - El detalle de migración consolidado está en
   `docs/geemastudio/docs/plans/04-geema-migration/`.
-- `docs/geemastudio/docs/plans/geema-migration/` es únicamente el espejo
-  temporal del sync con ZM; no crear planes nuevos allí.
+- Ya no hay espejo ni sync con ZM: `04-geema-migration/` es la única copia
+  (ZM retiró la suya en oct-2026).
 - Los audits de paridad centralizados están en `docs/audit/`; consultar Plan
   04 y Plan 13 para el estado vigente, no las tablas históricas del baseline.
 

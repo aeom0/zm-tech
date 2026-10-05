@@ -56,7 +56,7 @@
 │       ├── seed-employees-template.sql # Empleados genéricos (editar antes de usar)
 │       └── seed-employees-example.sql  # Referencia: equipo ZM Lash & Nails
 ├── docs/
-│   ├── GEEMASTUDIO_MIGRATION_GUIDE.md # Plan de migración ZM → monorepo GeemaStudio
+│   ├── INDEX.md                    # Índice; planes en docs/plans/
 │   └── design_guidelines.md        # Sistema de diseño
 └── .cursor/                # Reglas de desarrollo con Cursor AI
 ```
@@ -309,7 +309,7 @@ Flujo de arranque (mobile):
 - **`@zmtech/tenant-config`**: `businessSubtype` y `serviceCategories` opcionales; presets con defaults; `tenant_settings` en Drizzle + SQL `20260403_tenant_subtype_categories.sql` (archivo retirado; ver historial de git, commit `a0926cdb`) + `tenantSettingsService` mapea `business_subtype` / `service_categories`.
 - **Onboarding paso 1**: `OnboardingBusinessTypeScreen` — chips de subtype por `businessType`, `FadeInDown`, gradiente en chip activo; TD-001: tokens **`Onboarding`**, **`BorderRadius`**, `OnboardingLayout` → `Onboarding.canvasBackground`.
 - **Onboarding paso 2**: `CustomColorPickerModal` + `lib/color-hsv.ts` + `@react-native-community/slider` para color fuera de la paleta fija.
-- **Docs**: `docs/tech-debt/TD-001-onboarding-tokens.md` resuelto; `docs/INDEX.md` enlaza `tech-debt/`.
+- **Docs**: TD-001 (tokens onboarding) resuelto; su doc se retiró en la limpieza de oct-2026.
 
 ## Cambios Recientes (abr 2026 — Web: eliminación de emojis + íconos Lucide)
 

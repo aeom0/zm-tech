@@ -120,8 +120,8 @@ Entrega el markdown y un resumen de 5-8 líneas en el chat con: cuántos gaps cr
 El brief de este Plan 03 se conserva como alcance metodológico. El resultado
 ejecutado del audit vive en:
 
-- [`docs/audit/03-AUDIT-paridad-zmlash-geema.md`](../../audit/03-AUDIT-paridad-zmlash-geema.md)
-- [`docs/audit/04-INVENTARIO-features-zm-lash-para-geema.md`](../../audit/04-INVENTARIO-features-zm-lash-para-geema.md)
+- [`docs/audit/03-AUDIT-paridad-zmlash-geema.md`](../../../audit/03-AUDIT-paridad-zmlash-geema.md)
+- [`docs/audit/04-INVENTARIO-features-zm-lash-para-geema.md`](../../../audit/04-INVENTARIO-features-zm-lash-para-geema.md)
 
 Los estados de esos documentos son históricos y deben actualizarse mediante el
 roadmap vigente de Geema y los Planes 04, 12, 13 y 14. No deben interpretarse

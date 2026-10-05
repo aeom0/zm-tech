@@ -29,7 +29,7 @@ Ambos deben resolverse primero; todo lo demás en WABA se construye sobre estas 
 >
 > **Conclusión:** Fase 1 tal como está redactada (migrar a UUID + mover todo a API routes) no aplica al estado actual de prod — haría **más** frágil el acceso (rompería el JWT claim `tenant_id` que ya funciona) sin resolver ningún bug real. Se cierra sin cambios de código. Si en el futuro se necesita mover a API routes (p. ej. por auditoría/logging), es una decisión de arquitectura nueva, no una corrección de bug.
 
-**Fuera de alcance explícito**: el "go live" de ZM en GeemaStudio (DNS + activar fila real `zm-lash-nails`) — eso requiere aprobación aparte de Vanessa/Alberto y ya está documentado como pendiente en [`10-PLAN-mi-web-cms-fase2.md`](10-PLAN-mi-web-cms-fase2.md). Todo el trabajo de este plan se prueba con un tenant/teléfono de prueba dentro de GeemaStudio.
+**Fuera de alcance explícito**: el "go live" de ZM en GeemaStudio (DNS + activar fila real `zm-lash-nails`) — eso requiere aprobación aparte de Vanessa/Alberto y ya está documentado como pendiente en [`11-PLAN-mi-web-cms-fase2.md`](11-PLAN-mi-web-cms-fase2.md). Todo el trabajo de este plan se prueba con un tenant/teléfono de prueba dentro de GeemaStudio.
 
 ## Fase 0 — Deuda técnica (independiente de WABA, hacer primero)
 

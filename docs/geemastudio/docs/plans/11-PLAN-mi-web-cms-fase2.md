@@ -7,7 +7,7 @@
 
 ## Contexto
 
-Tras [Fase 1](09-PLAN-landing-multitenant-fase1.md) (templates + secciones + mirror `zm-demo`), se implementó el CMS propio en `geemastudio-mobile` para que owner/dev editen columnas `web_*` de `tenant_settings`, con upload de imágenes al bucket `web-assets`.
+Tras [Fase 1](10-PLAN-landing-multitenant-fase1.md) (templates + secciones + mirror `zm-demo`), se implementó el CMS propio en `geemastudio-mobile` para que owner/dev editen columnas `web_*` de `tenant_settings`, con upload de imágenes al bucket `web-assets`.
 
 **Piloto:** login ZM (`alberto@` / `vanessa@`) escribe en la fila `zm-lash-nails` (no en `zm-demo-*`). Preview Geema-hosted: `https://geema.zmtechdev.com/s/{slug}` cuando `web_enabled` + slug.
 
@@ -15,7 +15,7 @@ Tras [Fase 1](09-PLAN-landing-multitenant-fase1.md) (templates + secciones + mir
 
 ### Storage
 
-- Migración [`20260912142138_web_assets_storage_rls.sql`](../../../apps/geemastudio-server/supabase/migrations/20260912142138_web_assets_storage_rls.sql) aplicada en prod (`udelxwwnyivknslueerr`):
+- Migración [`20260912142138_web_assets_storage_rls.sql`](../../../../apps/geemastudio-server/supabase/migrations/20260912142138_web_assets_storage_rls.sql) aplicada en prod (`udelxwwnyivknslueerr`):
   - `public_read_web_assets`
   - `owner_dev_insert_web_assets`
   - `owner_dev_delete_web_assets`
@@ -58,9 +58,9 @@ CMS equivalente al de mobile, en el panel web:
 
 ### Fase 3 — middleware `custom_domain`
 
-- [`apps/geemastudio-web/src/middleware.ts`](../../../apps/geemastudio-web/src/middleware.ts): si el `Host` no es de plataforma (`geema.zmtechdev.com` / `localhost` / `*.vercel.app`), reescribe **solo la raíz** (`/`) hacia `/_sites/[domain]`; cualquier otra ruta responde 404 en ese host (el panel nunca queda accesible bajo el dominio del tenant).
-- [`apps/geemastudio-web/src/app/_sites/[domain]/page.tsx`](../../../apps/geemastudio-web/src/app/_sites/[domain]/page.tsx) + `not-found.tsx`: resuelve la landing vía `getTenantLandingByDomain(custom_domain)` (ya existía en `tenant-landing-service.ts`), mismo patrón que `/s/[slug]`.
-- Lógica de selección de template/metadata extraída a [`apps/geemastudio-web/src/lib/tenant-landing-render.tsx`](../../../apps/geemastudio-web/src/lib/tenant-landing-render.tsx), compartida entre `/s/[slug]` y `/_sites/[domain]`.
+- [`apps/geemastudio-web/src/middleware.ts`](../../../../apps/geemastudio-web/src/middleware.ts): si el `Host` no es de plataforma (`geema.zmtechdev.com` / `localhost` / `*.vercel.app`), reescribe **solo la raíz** (`/`) hacia `/_sites/[domain]`; cualquier otra ruta responde 404 en ese host (el panel nunca queda accesible bajo el dominio del tenant).
+- [`apps/geemastudio-web/src/app/_sites/[domain]/page.tsx`](../../../../apps/geemastudio-web/src/app/_sites/[domain]/page.tsx) + `not-found.tsx`: resuelve la landing vía `getTenantLandingByDomain(custom_domain)` (ya existía en `tenant-landing-service.ts`), mismo patrón que `/s/[slug]`.
+- Lógica de selección de template/metadata extraída a [`apps/geemastudio-web/src/lib/tenant-landing-render.tsx`](../../../../apps/geemastudio-web/src/lib/tenant-landing-render.tsx), compartida entre `/s/[slug]` y `/_sites/[domain]`.
 - Diseño acordado (20-sep-2026), documentado en `docs/geemastudio/docs/WEB_ARCHITECTURE.md` §Modo A: sin repos aparte por tenant, panel siempre en `geema.zmtechdev.com`.
 - **No incluye** el "go live" de ZM Lash: falta apuntar el DNS de `zmlashnails.com` al deploy de `geemastudio-web` y setear `custom_domain`/`web_enabled=true` en la fila real — eso sigue condicionado a OK de Vanessa/Alberto sobre el contenido (ver ítem "Migrar contenido real ZM" abajo).
 

@@ -15,7 +15,7 @@ Vanessa empieza a vender productos físicos en el salón (kit cuidado pestañas 
 
 En `zm-tech` `main`:
 
-- Campañas WA + promo broadcast mobile + inbox staff (Plan 12 F0–F3) hechos
+- Campañas WA + promo broadcast mobile + inbox staff (Plan 11 F0–F3) hechos
 - Panel theming / dashboard / PWA por tenant hechos
 - **Tab Productos (catálogo)** en `/panel/servicios?tab=productos` — CRUD `inventory_items` `is_sellable` + bucket `product-images` ✅
 - **Ventas / `product_orders`**: aún sin UI en Geema (tabla existe en BD compartida por ZM)
@@ -106,7 +106,7 @@ Stock en prod al blast: **6** (ajustar en panel Catálogo).
 - [ ] Flujo Ventas (`product_orders`: reserved/pedido → paid/delivered/cancel) — paridad ZM `/panel/productos`
 - [ ] Push retail opcional (mismo patrón `send-notification`; bloqueado por PR-09 FCM)
 - [ ] Link dedicado en `PanelShell` / dashboard (hoy solo vía Catálogo)
-- [ ] Auth admin + `tenant_id` scoping (Plan 13 Fase T)
+- [ ] Auth admin + `tenant_id` scoping (Plan 12 Fase T)
 - [x] Theming con `--tenant-primary`
 
 ### Mobile (`geemastudio-mobile`)

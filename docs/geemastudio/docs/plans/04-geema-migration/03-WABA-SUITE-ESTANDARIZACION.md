@@ -56,10 +56,10 @@ El WABA de ZM es **~80% motor genérico** (L1) y **~70% reglas ZM** (L3–L4). L
 |---------|------------------|-------------------|
 | `EMPLOYEE_CATEGORIES` | `constants.ts` | Tabla `employee_category_assignments` o JSON tenant |
 | Horarios / slots | `constants.ts` | `tenant_settings.businessHours` + reglas slot |
-| Capacidad (tope 1/2, carriles) | `agenda.ts`, `WABA_CAPACITY.md` | `tenant_waba_rules.capacity` |
+| Capacidad (tope 1/2, carriles) | `agenda.ts`, `WABA_CAPACITY.md` | `tenant_settings.waba_rules.capacity` (columna ✅ S5-1; el cupo en runtime sigue en código, S5-3) |
 | CTWA interés (Ext/Lift/Uñas/Otro) | `dispatcher.ts` | Preset L4 por `businessType` |
 | Subcategorías virtuales uñas/ext | `menu.ts` | `service_categories.metadata` |
-| Feriados PE seed | `peru-holidays.ts` | `salon_holidays` por tenant |
+| Feriados PE seed | `peru-holidays.ts` | `salon_holidays` por tenant ✅ S5-4 (PR #155). El webhook filtra `tenant_id`; ZM sin filas usa el seed |
 | Pagos / ubicación ZM | `constants.ts`, `salon-location.ts` | `tenant_settings.contact` + CMS |
 | Expertise Haiku uñas/pestañas | `haiku-cms-defaults.ts` | Defaults por `businessType` |
 | Plantillas Meta `*_zm` | varios handlers | `tenant_message_templates` |
@@ -82,7 +82,11 @@ Archivos: `zm-tech/packages/tenant-config/src/presets/{spa-nails,barbershop,hair
 
 ---
 
-## 5. Interfaz propuesta `TenantWabaRules` (L3)
+## 5. Interfaz `TenantWabaRules` (L3)
+
+Definida en S5-1 (PR #154), en `supabase/functions/whatsapp-webhook/lib/tenant-rules.ts`. Vive en `tenant_settings.waba_rules`. Ningún handler la lee todavía (S5-2 y S5-3).
+
+La capacidad no usa carriles por `employeeId`: el cupo real mira categoría y servicio. No reintroducir `lanes[].employeeIds`.
 
 ```typescript
 interface TenantWabaRules {
@@ -91,6 +95,7 @@ interface TenantWabaRules {
     weekday: { open: string; close: string };
     sunday?: { open: string; close: string };
     slotMinutes: number[];
+    sundayExtraSlots?: string[];
   };
   deposit: {
     fixedAmount?: number;
@@ -100,11 +105,16 @@ interface TenantWabaRules {
   capacity: {
     defaultCap: number;
     specialCap?: number;
-    lanes?: Array<{
-      employeeIds: string[];
-      serviceIds?: string[];
-      afterHour?: number;
-    }>;
+    specialCategoryIds?: string[];
+    specialExtraServiceIds?: string[];
+    extensionesKarelisServiceIds?: string[];
+    karelisAfterHour?: number;
+    unassignedCapServiceIds?: string[];
+    mealBreak?: {
+      startMinutes: number;
+      endMinutes: number;
+      durationMinutes: number;
+    };
   };
   staffByCategory: Record<string, string[]>;
   ctwaInterestOptions?: Array<{
@@ -117,8 +127,6 @@ interface TenantWabaRules {
 }
 ```
 
-Almacenamiento: columna JSONB en `tenant_settings` o keys estructuradas en `waba_config`.
-
 ---
 
 ## 6. Prioridades suite (orden de implementación)
@@ -128,7 +136,7 @@ Almacenamiento: columna JSONB en `tenant_settings` o keys estructuradas en `waba
 | P0 | Routing `phone_number_id → tenant_id` | L1 | M |
 | P0 | `waba_config` por tenant | L2 | M |
 | P0 | Catálogo + sesiones filtradas | L1 | M |
-| P1 | Externalizar `constants.ts` → `TenantWabaRules` | L3 | L |
+| P1 | Externalizar `constants.ts` → `TenantWabaRules` (tipo + columna ✅ S5-1; handlers siguen en hardcode, S5-2/S5-3) | L3 | L |
 | P1 | Capacidad genérica (sin UUIDs ZM) | L3 | M |
 | P1 | CTWA interest desde preset | L4 | M |
 | P1 | Haiku defaults por `businessType` | L4 | M |
@@ -169,7 +177,7 @@ No eliminar — mover a **config del tenant**, no al código compartido:
 
 - `docs/waba/WABA_CAPACITY.md` — modelo capacidad ZM (generalizar)
 - `zm-tech/docs/geemastudio/docs/WABA_MULTITENANT_ARCHITECTURE.md` — diseño Geema
-- `docs/plans/04-PLAN-ctwa-collages-cierre-intencion.md` — CTWA belleza (preset `spa-nails`)
+- `docs/plans/05-PLAN-ctwa-collages-cierre-intencion.md` — CTWA belleza (preset `spa-nails`)
 
 ---
 

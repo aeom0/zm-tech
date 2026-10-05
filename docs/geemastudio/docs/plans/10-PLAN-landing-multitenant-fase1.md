@@ -3,7 +3,7 @@
 > **Ubicación canónica consolidada:** Plan 10. El archivo de origen se conserva temporalmente como referencia legacy.
 
 
-> Estado: ✅ cerrado (Fase 1). Fase 2 (CMS mobile “Mi Web”) → ver [`10-PLAN-mi-web-cms-fase2.md`](10-PLAN-mi-web-cms-fase2.md) (parcial, 12-sep-2026). Fase 3 (dominio propio + migración real de ZM) sigue pendiente.
+> Estado: ✅ cerrado (Fase 1). Fase 2 (CMS mobile “Mi Web”) → ver [`11-PLAN-mi-web-cms-fase2.md`](11-PLAN-mi-web-cms-fase2.md) (parcial, 12-sep-2026). Fase 3 (dominio propio + migración real de ZM) sigue pendiente.
 
 ## Contexto
 
@@ -78,5 +78,5 @@ URLs de prueba: `/s/zm-demo-elegant`, `/s/zm-demo-warm`, `/s/zm-demo-modern`.
 
 ## Pendiente (fuera de este documento)
 
-- **Fase 2**: ✅ CMS mobile “Mi Web” — detalle y pendientes en [`10-PLAN-mi-web-cms-fase2.md`](10-PLAN-mi-web-cms-fase2.md).
+- **Fase 2**: ✅ CMS mobile “Mi Web” — detalle y pendientes en [`11-PLAN-mi-web-cms-fase2.md`](11-PLAN-mi-web-cms-fase2.md).
 - **Fase 3**: dominio propio (`custom_domain` vía middleware Next.js) + migración del contenido real de ZM al modelo nuevo — pendiente.

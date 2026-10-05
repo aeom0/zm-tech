@@ -129,7 +129,7 @@ Este monorepo usa la convención estándar `apps/` para aplicaciones y `packages
 │       └── seed-employees-example.sql   # Referencia: equipo de ZM Lash & Nails
 ├── migrations/                        # Salida de `pnpm db:generate` (Drizzle Kit)
 └── docs/
-    ├── GEEMASTUDIO_MIGRATION_GUIDE.md  # Plan de migración ZM → GeemaStudio (monorepo)
+    ├── plans/                       # Serie de planes 01–18 (ver docs/INDEX.md)
     └── design_guidelines.md         # Sistema de diseño
 ```
 
@@ -193,7 +193,7 @@ DATABASE_URL=postgresql://user:pass@host:5432/nombre_bd
 ## Documentación
 
 - [Índice de docs](docs/INDEX.md) — mapa de guías en `docs/`
-- [Guía de migración ZM → GeemaStudio](docs/GEEMASTUDIO_MIGRATION_GUIDE.md)
+- [Plan 04 — migración ZM → Geema](docs/plans/04-geema-migration/README.md)
 - [Lineamientos de diseño](docs/design_guidelines.md)
 - [Desarrollo local / migraciones](docs/DESARROLLO_LOCAL.md)
 - [AGENTS.md](AGENTS.md) — instrucciones para agentes ([CLAUDE.md](CLAUDE.md) importa AGENTS.md)

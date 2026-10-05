@@ -45,7 +45,7 @@
 | `/panel/waba` historial/analytics / simulador | Analytics heatmap, simulador, portafolio (resto S6) | P2 post-MVP                     | —                                                                  |
 | `/panel/waba/campanas`                        | Campañas masivas WA: stepper, segmentación, envío   | P2                              | —                                                                  |
 | `/panel/inventario`                           | Gestión de inventario y stock                       | P2                              | —                                                                  |
-| `/panel/configuracion/web`                    | CMS contenido landing (galería, team, etc.)         | P2 — mobile ✅ Fase 2; panel ❌ | [`10-PLAN-mi-web-cms-fase2.md`](plans/10-PLAN-mi-web-cms-fase2.md) |
+| `/panel/configuracion/web`                    | CMS contenido landing (galería, team, etc.)         | P2 — mobile ✅ Fase 2; panel ❌ | [`11-PLAN-mi-web-cms-fase2.md`](plans/11-PLAN-mi-web-cms-fase2.md) |
 
 ### Estructura interna: route group `(shell)` compartido
 

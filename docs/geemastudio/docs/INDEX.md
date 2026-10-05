@@ -16,10 +16,6 @@ Descripción del producto, tipos de negocio, inicio rápido, stack, variables de
 
 Desarrollo local: WSL, migraciones sin TCP (SQL Editor), seeds, variables.
 
-### [GEEMASTUDIO_MIGRATION_GUIDE.md](GEEMASTUDIO_MIGRATION_GUIDE.md)
-
-Guía de migración ZM → GeemaStudio: fases, tenant_config, onboarding, tenant_settings.
-
 ### [WEB_ARCHITECTURE.md](WEB_ARCHITECTURE.md) ← nuevo
 
 Arquitectura web: dos productos (panel de gestión vs landing pública), modos `web_mode` (A/B/C), rutas implementadas y pendientes del panel, relación con RRSS y dominio de la plataforma.
@@ -36,10 +32,6 @@ Despliegue: Supabase (backend), Vercel (web), EAS (móvil).
 
 Instalación / notas de beta (si aplica al flujo actual).
 
-### [MONOREPO_MIGRACION.md](MONOREPO_MIGRACION.md)
-
-Estructura del monorepo y comandos (sin servidor Express).
-
 ### [EDGE_FUNCTIONS.md](EDGE_FUNCTIONS.md)
 
 Edge Function `whatsapp-webhook`: secrets, deploy, verificación GET del webhook, SQL de tenant de prueba.
@@ -52,22 +44,18 @@ Arquitectura multi-tenant del bot WABA: dónde viven las credenciales por tenant
 
 Guía de conexión ADB al dispositivo físico de pruebas (Moto G54) desde WSL2 — no específica de GeemaStudio, es tooling local del entorno de desarrollo.
 
-### [GEEMASTUDIO_V1.3_PLAN.md](GEEMASTUDIO_V1.3_PLAN.md)
-
-Plan de funcionalidades v1.3 (referencia histórica / roadmap parcial).
-
 ### [CONSOLIDACION-DOCS-ZM-GEEMA.md](CONSOLIDACION-DOCS-ZM-GEEMA.md)
 
-Matriz y propuesta de consolidación documental entre ZM Lash y GeemaStudio.
+Estado de la consolidación documental ZM → Geema y tabla de equivalencias de numeración antigua.
 
-### Planes canónicos consolidados 01–17
+### Planes 01–18
 
 | Plan | Documento | Tema |
 |---:|---|---|
 | 01 | [01-PLAN-monorepo-estructura.md](plans/01-PLAN-monorepo-estructura.md) | Monorepo y estructura |
 | 02 | [02-PLAN-retrofit-tenant-id.md](plans/02-PLAN-retrofit-tenant-id.md) | Multi-tenancy, `tenant_id` y RLS |
 | 03 | [03-PLAN-audit-paridad-zmlash-geema.md](plans/03-PLAN-audit-paridad-zmlash-geema.md) | Auditoría de paridad ZM Lash → Geema |
-| 04 | [04-PLAN-migracion-geema.md](plans/04-PLAN-migracion-geema.md) | Migración y convergencia ZM → Geema |
+| 04 | [04-geema-migration/](plans/04-geema-migration/README.md) | Migración y convergencia ZM → Geema |
 | 05 | [05-PLAN-ctwa-collages-cierre-intencion.md](plans/05-PLAN-ctwa-collages-cierre-intencion.md) | CTWA y cierre por intención |
 | 06 | [06-PLAN-preview-virtual-extensiones-ctwa.md](plans/06-PLAN-preview-virtual-extensiones-ctwa.md) | Spike y validación Vertex |
 | 07 | [07-PLAN-look-preview-multi-servicio.md](plans/07-PLAN-look-preview-multi-servicio.md) | Look Preview multi-servicio |
@@ -83,13 +71,9 @@ Matriz y propuesta de consolidación documental entre ZM Lash y GeemaStudio.
 | 17 | [17-PLAN-planes-suscripcion-y-descarga-apk.md](plans/17-PLAN-planes-suscripcion-y-descarga-apk.md) | Planes de suscripción y descarga del APK |
 | 18 | [18-PLAN-gestion-profesionales-disponibilidad.md](plans/18-PLAN-gestion-profesionales-disponibilidad.md) | Gestión de profesionales y disponibilidad |
 
-Los nombres anteriores se conservan temporalmente como referencias legacy.
-La carpeta [04-geema-migration](plans/04-geema-migration/) conserva el detalle
-interno de la migración y continúa sincronizada mientras el runtime WABA siga
-siendo operativo en ZM.
+La carpeta [04-geema-migration](plans/04-geema-migration/) es la única copia del detalle de migración (ya sin sync con ZM). Equivalencias de numeración antigua: [CONSOLIDACION-DOCS-ZM-GEEMA.md](CONSOLIDACION-DOCS-ZM-GEEMA.md).
 
-Anexo de prompts Vertex:
-[07-anexo-prompts-vertex-v1.md](plans/07-anexo-prompts-vertex-v1.md).
+Anexos Look Preview: [Vertex v1](plans/07-anexo-prompts-vertex-v1.md) · [Gemini original v1](plans/07-anexo-prompts-gemini-original-v1.md).
 
 ### [Audit 03 — paridad](../../audit/03-AUDIT-paridad-zmlash-geema.md)
 
@@ -99,10 +83,6 @@ Resultado del audit: matriz feature × superficie, gaps críticos P0–P2, secci
 
 Backlog accionable: ~50 capacidades de ZM Lash (mobile, web, WABA, Edge Functions) con estado en Geema, rutas de referencia y oleadas de implementación.
 
-### [tech-debt/](tech-debt/) (deuda técnica)
-
-Seguimiento puntual (p. ej. [TD-001 — tokens onboarding](tech-debt/TD-001-onboarding-tokens.md)).
-
 ## Organización de archivos
 
 ```
@@ -110,21 +90,16 @@ docs/
 ├── INDEX.md                        # Este archivo
 ├── README.md                       # Setup inicial
 ├── DESARROLLO_LOCAL.md             # Migraciones, seeds, WSL
-├── GEEMASTUDIO_MIGRATION_GUIDE.md  # Fases de migración ZM → GeemaStudio
 ├── WEB_ARCHITECTURE.md             # Arquitectura web: dos productos, web_mode, rutas
 ├── design_guidelines.md            # Diseño UI/UX
 ├── DEPLOYMENT.md                   # Deploy Supabase / Vercel / EAS
-├── MONOREPO_MIGRACION.md           # Monorepo, comandos
 ├── EDGE_FUNCTIONS.md               # Edge Function whatsapp-webhook: secrets, deploy
 ├── WABA_MULTITENANT_ARCHITECTURE.md # Bot WABA multi-tenant: credenciales, alta de tenant
 ├── ADB_CONEXION_MOVIL.md           # ADB al dispositivo físico (tooling, no específico GeemaStudio)
 ├── INSTALACION_BETA.md             # Beta / instalación
-├── GEEMASTUDIO_V1.3_PLAN.md        # Plan v1.3 (referencia)
 ├── plans/
 │   ├── 01–18-PLAN-*.md                     # Serie canónica consolidada
-│   ├── 04-geema-migration/                 # Detalle canónico del Plan 04
-│   └── geema-migration/                    # Espejo temporal ZM (legacy)
-└── tech-debt/                              # Deuda técnica (TD-xxx)
+│   └── 04-geema-migration/                 # Detalle del Plan 04
 
 # (fuera de docs/geemastudio/docs/)
 docs/audit/

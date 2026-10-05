@@ -1,7 +1,7 @@
 # 07 — Paridad mobile Geema ↔ ZM (shadow test)
 
 **Fecha:** 2026-08-30  
-**Estado:** En curso — **S5C-1 / S5C-2 / S5C-3 / S5C-11 ✅** (PR [zm-tech #30](https://github.com/aeom0/zm-tech/pull/30)); resto P1/P2 pendiente  
+**Estado:** DoD shadow-baseline cerrado (28-sep-2026). **S5C-1/2/3/4/5/6/8/9/11/12 ✅**; único P1/P2 pendiente real: `PricingBreakdownCard`/costos WABA de S5C-7 (28-sep-2026: corrige regresión de sync del 19-sep que había revertido S5C-4/5/6/8/9 a "Pendiente" en este doc sin que el código hubiera retrocedido — ver commits `4cca05a8`, `bd8b74ba`, `4274624b` en zm-tech)  
 **Repos:** `zm-tech` (`geemastudio-mobile`), referencia `ZM-Lash-and-Nails-Beauty/apps/mobile`  
 **BD:** `udelxwwnyivknslueerr` — tenant #1 `zm-lash-nails`  
 **Código:** rama `cursor/s5c-catalog-adapter-zm` — ZM app legacy **sin cambio**
@@ -79,11 +79,11 @@ Geema usa grid día/semana + columnas staff; ZM usa grid 10–18 h Lima con medi
 | Entrada UI | **Más → Finanzas** | **Más → Finanzas** |
 | CRUD `payments` | ✅ | ✅ |
 | Desglose por chica | ✅ | ✅ |
-| Panel ejecutivo (KPIs, gráfico) | ❌ | ✅ |
-| Gastos operativos | ❌ | ✅ |
-| Costos WABA / Meta | ❌ → S5C-7 | ✅ (`waba_pricing_daily` + `waba_template_analytics_daily` Fase 5) |
-| Uso IA | ❌ | ✅ |
-| Pago en detalle cita (agenda) | ❌ | ✅ |
+| Panel ejecutivo (KPIs, gráfico) | ✅ PR #33 (S5C-7) | ✅ |
+| Gastos operativos | ✅ PR #33 (S5C-7) | ✅ |
+| Costos WABA / Meta | ❌ — pendiente real de S5C-7 | ✅ (`waba_pricing_daily` + `waba_template_analytics_daily` Fase 5) |
+| Uso IA | ✅ PR #33 (S5C-7) | ✅ |
+| Pago en detalle cita (agenda) | ✅ | ✅ |
 
 ### Personal / chicas vs agenda
 
@@ -195,20 +195,21 @@ Convergencia corta: Drizzle Geema → **superset tipado de prod**; adaptadores m
 | S5C-2 | Adaptador `usePromosData` + `usePromotionItems` (total desde ítems) | zm-tech | M | P0 | ✅ PR #30 |
 | S5C-3 | Validar `tenant_settings` ZM: timezone `America/Lima`, horarios | zm-tech + BD | S | P0 | ✅ PR #30 |
 | S5C-11 | Adaptador `employees` (sin `payment_mode`/`salary_amount` ZM; `avatar_url` sumado 30-ago) + cache única con agenda | zm-tech | S | P0 | ✅ PR #30 |
-| S5C-4 | Agenda: cargar `appointment_services` + multi-servicio en detalle | zm-tech | L | P1 | En curso (PR #31; schema prod ya listo) |
-| S5C-5 | Portar referencias diseño + badge agenda (WABA) | zm-tech | L | P1 | Pendiente |
-| S5C-6 | Portar `HolidayScreen` + reglas feriado/dom | zm-tech | M | P1 | Pendiente |
-| S5C-7 | Finanzas: panel ejecutivo + `PricingBreakdownCard` (WABA) + drill-down `waba_template_analytics_daily` (Fase 5) | zm-tech | L | P1 | Pendiente (backend ZM ✅ sep-2026) |
-| S5C-8 | Dashboard: ranking top servicios + alertas feriado | zm-tech | S | P2 | Pendiente |
-| S5C-9 | Documentar en UI dónde está Finanzas (onboarding admin) | zm-tech | S | P2 | Pendiente |
+| S5C-4 | Agenda: cargar `appointment_services` + multi-servicio en detalle | zm-tech | L | P1 | ✅ PR #31 (5-sep) + fixes badge (19-sep) |
+| S5C-5 | Portar referencias diseño + badge agenda (WABA) | zm-tech | L | P1 | ✅ PR #31 (5-sep) + fixes posición/recorte badge (19-sep) |
+| S5C-6 | Portar `HolidayScreen` + reglas feriado/dom | zm-tech | M | P1 | ✅ `FeriadosScreen` + `useSalonHolidaysAdmin` + `HolidayAlertBanner` (Agenda/Dashboard); UX borrar + chip "Pasado" (5-sep, FAB 20-sep) |
+| S5C-7 | Finanzas: panel ejecutivo + `PricingBreakdownCard` (WABA) + drill-down `waba_template_analytics_daily` (Fase 5) | zm-tech | L | P1 | ✅ panel ejecutivo mobile (PR #33: KPIs, gastos, comisiones, payouts, ranking). **Pendiente real**: `PricingBreakdownCard` / costos WABA (`waba_pricing_daily` + `waba_template_analytics_daily`) — sin portar a Geema mobile |
+| S5C-8 | Dashboard: ranking top servicios + alertas feriado | zm-tech | S | P2 | ✅ `DashboardTopServicesCard` + `HolidayAlertBanner embedded` en `DashboardScreen` |
+| S5C-9 | Documentar en UI dónde está Finanzas (onboarding admin) | zm-tech | S | P2 | ✅ 10-sep (`OnboardingComplete` + quick link Dashboard + FAQ en Ayuda) |
 | S5C-10 | Tests smoke: packs/promos/agenda mismo día vs app ZM | zm-tech | S | P0 | Parcial (visual 30-ago) |
+| S5C-12 | Smoke Más → Finanzas: historial de pagos tenant ZM vs app ZM | zm-tech | S | P0 | ✅ 28-sep (device Moto G54) |
 
 ### DoD S5-C (shadow ZM en Geema)
 
 - [x] Servicios → tabs **Packs** y **Promos** muestran datos ZM prod (Alberto, 30-ago)
 - [x] Agenda mismo día: citas en hora Lima, no corridas −5 h (S5C-3)
 - [x] Más → chicas cableado a columnas de agenda; writes ZM-safe (S5C-11)
-- [ ] **Más → Finanzas** lista pagos del tenant ZM (smoke explícito)
+- [x] **Más → Finanzas** lista pagos del tenant ZM (smoke explícito, 28-sep-2026)
 - [x] `tenant_settings.timezone` = Lima; citas no “desaparecen” por offset
 - [x] ZM app legacy **sin cambio** (Geema es consumidor adaptador)
 
@@ -250,6 +251,7 @@ Registrar hallazgos en este doc § **Notas de validación** (fecha + commit Geem
 | 2026-08-30 | OTA `01bdcd1f…` (S5C-11) | Adaptador employees; smoke chicas ↔ agenda pendiente en APK |
 | 2026-08-30 | OTA `d5d0dea9…` | `avatar_url` agregado a `employees` ZM prod + fotos reales Vanessa/Stephani subidas a Storage; `employeesAdapter.ts` ya no lo anula para dialecto ZM. Publicado en canal `preview`. |
 | 2026-08-30 | OTA `fe7cf0aa…` (main) | Dashboard paridad + Equipo/Más + orden chicas + login fix (post #30). [Expo](https://expo.dev/accounts/aeom0/projects/geemastudio-mobile/updates/fe7cf0aa-fd00-4369-892a-6bafd9eeac8e). Sin código de PR #31. |
+| 2026-09-28 | `d8f93e1c` (main) | Smoke físico Moto G54 (`ZY22K2LZW3`), sesión Alberto/dev tenant ZM: Más → Finanzas → Resumen semana S/902,00 (13 transacciones, adelantos 20% S/25, retail S/16); Por chica con nombres reales (Vanessa Douglas, Stephani Manrique, Karelis); Historial de Pagos lista los 13 pagos individuales (cliente, método, fecha, monto), incluido el pago de hoy (Patricia Valverde S/50 Efectivo) que coincide con "Ingresos hoy" del Dashboard. Cierra S5C-12 / DoD pendiente. |
 
 **PR:** [aeom0/zm-tech#30](https://github.com/aeom0/zm-tech/pull/30) — OTA preview [01bdcd1f](https://expo.dev/accounts/aeom0/projects/geemastudio-mobile/updates/01bdcd1f-9dd9-472d-a637-383d6bdbeb89)
 

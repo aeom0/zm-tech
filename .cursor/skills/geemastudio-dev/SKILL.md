@@ -18,48 +18,20 @@ description: >
 
 ---
 
-## 0. Sync temporal — ZM Lash (canónica) ↔ GeemaStudio (espejo)
+## 0. Docs de migración ZM → Geema
 
-GeemaStudio mobile es la generalización multi-tenant de la app mobile de
-**ZM Lash & Nails Beauty** (repo `aeom0/ZM-Lash-and-Nails-Beauty`, cliente real
-en producción). Mientras dura la migración, la documentación de planeación vive
-en dos sitios y se sincroniza manualmente. El código de cada app NO se
-sincroniza automáticamente. El script solo cubre el subárbol temporal
-`docs/plans/geema-migration/`; la ubicación canónica consolidada de Geema es
-`docs/geemastudio/docs/plans/04-geema-migration/` y no se sincroniza con este
-workflow:
+GeemaStudio mobile es la generalización multi-tenant de la app de **ZM Lash &
+Nails Beauty** (`aeom0/ZM-Lash-and-Nails-Beauty`, cliente real en producción).
+Desde oct-2026 **no hay sync de docs**: los planes (serie `01–18`) y el detalle
+de migración (`docs/geemastudio/docs/plans/04-geema-migration/`) viven solo en
+este repo; ZM ya no guarda copia.
 
-| Rol          | Repo                                                            | Path                                           |
-| ------------ | --------------------------------------------------------------- | ---------------------------------------------- |
-| **Canónica** | `ZM-Lash-and-Nails-Beauty`                                      | `docs/plans/geema-migration/`                  |
-| **Espejo**   | `zm-tech` (este repo)                                           | `docs/geemastudio/docs/plans/geema-migration/` |
-| **Script**   | `ZM-Lash-and-Nails-Beauty/scripts/sync-geema-migration-docs.sh` | rsync entre ambos                              |
-
-```bash
-# Desde el repo ZM (ZM-Lash-and-Nails-Beauty):
-./scripts/sync-geema-migration-docs.sh push        # canónica → espejo Geema (uso normal)
-./scripts/sync-geema-migration-docs.sh pull         # espejo Geema → canónica (raro, solo si se editó el espejo)
-./scripts/sync-geema-migration-docs.sh diff         # muestra diferencias
-./scripts/sync-geema-migration-docs.sh diff-check   # exit 1 si hay divergencia (usable en CI/hook)
-```
-
-- El script hace `rsync -av --delete`, así que `pull`/`push` **sobreescriben** el
-  lado destino — no editar directamente el lado espejo si se va a hacer `push`
-  después, se pierde el cambio.
-- Convención de commits del espejo en zm-tech: `docs(geemastudio): sincroniza espejo ...`
-  o `docs(geema): ... (sync ZM)` / `(sync desde ZM)`.
-- Cambios de **código** (no docs) que aplican a ambas apps (ej. fix en
-  `avatar_url`, paridad de features) se portean a mano siguiendo el checklist
-  de multi-tenancy de la sección 5.1 — no hay script para eso.
-- Antes de escribir en `docs/plans/geema-migration/` desde este repo (zm-tech),
-  confirmar si el cambio debe originarse en la canónica (ZM) y luego `push`earse,
-  para no perderlo en el próximo sync.
-- Los audits de paridad viven centralizados en `zm-tech/docs/audit/`; ZM solo
-  conserva el brief y los enlaces de referencia. El baseline vigente es
-  `03-AUDIT-paridad-zmlash-geema.md` + `04-INVENTARIO-features-zm-lash-para-geema.md`;
+- Cambios de **código** que aplican a ambas apps se portean a mano siguiendo el
+  checklist de multi-tenancy de la sección 5.1.
+- Los audits de paridad viven en `zm-tech/docs/audit/`
+  (`03-AUDIT-paridad-zmlash-geema.md` + `04-INVENTARIO-features-zm-lash-para-geema.md`);
   para el estado actual consultar Plan 04 y Plan 13.
-
----
+- Equivalencias de numeración antigua: `docs/geemastudio/docs/CONSOLIDACION-DOCS-ZM-GEEMA.md`.
 
 ## 1. Qué es este proyecto
 
@@ -734,7 +706,7 @@ yarn db:seed         # seeds template
 16. Rutas de navegacion con nombres neutros: "Personal", "Clients", no "Chicas"
 17. Usar config.locale.timeFormat (12|24) para formato de hora — NO hardcodear AM/PM
 18. Iconos Lucide en web via LucideIcons as Record<string, LucideIcon> — NO emojis en UI web
-19. Si el cambio toca `docs/plans/geema-migration/`, verificar primero si debe originarse en la canónica ZM (ver sección 0) para no perderlo en el siguiente sync. La carpeta consolidada `docs/geemastudio/docs/plans/04-geema-migration/` es la referencia final de Geema.
+19. Docs de migración: editar solo `docs/geemastudio/docs/plans/04-geema-migration/` (ya no hay espejo ni sync con ZM).
 
 ---
 
@@ -760,7 +732,7 @@ yarn db:seed         # seeds template
 18. Duplicar tipos manualmente: inferir desde Drizzle/Zod como fuente de verdad
 19. Emojis en web UI: toda iconografia web usa Lucide React (ver v1.4.9)
 20. Hardcodear formato de hora (12h/AM-PM): viene de config.locale.timeFormat
-21. Editar `docs/geemastudio/docs/plans/geema-migration/` (espejo temporal) y dejarlo así — si el cambio es relevante también en ZM, coordinar el `push`/`pull` con el script (sección 0), o se pierde en el próximo sync. Para documentación nueva o consolidada usar la ubicación canónica del Plan 04.
+21. Recrear un espejo/sync de docs con ZM: la única copia es `plans/04-geema-migration/`.
 
 ---
 

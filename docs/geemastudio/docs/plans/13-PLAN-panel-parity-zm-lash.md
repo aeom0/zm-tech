@@ -118,7 +118,7 @@ Criterio "superior": paridad de capacidades ZM **más** estos puntos, sin romper
 
 1. Ejecutar Plan 13 Fase 0 tal cual.
 2. Actualizar `WEB_ARCHITECTURE.md`: CMS `/panel/configuracion/web` = ✅; marcar inventario/validación/asignar como decisión mobile-first o P2.
-3. Nota en `geema-migration/00-RESUMEN-EJECUTIVO.md`: panel WABA ya no es "solo ZM" — es MVP Geema + gap suite.
+3. Nota en `04-geema-migration/00-RESUMEN-EJECUTIVO.md`: panel WABA ya no es "solo ZM" — es MVP Geema + gap suite.
 
 ### Fase T — Tenant scoping panel (P0, paralelo a Plan 12 Fase 1)
 

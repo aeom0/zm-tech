@@ -1,8 +1,8 @@
-# Plan 04 — Migración GeemaStudio + suite WABA multi-vertical
+# Plan 05 — Migración GeemaStudio + suite WABA multi-vertical
 
 > **Fecha:** 2026-08-28  
 > **Autor:** Alberto Orta + análisis Cursor (agentes)  
-> **Estado:** S1–S3 ✅; S4 crons ❌. Panel Geema: WABA suite ✅ + finanzas ejecutiva ✅ (Plan 13 P1/P2, 22-sep). Track C webhook ✅ ([09](./09-WEBHOOK-PROD-RECONCILE.md)). Push FCM PR-09 **P0 + P8 + P9 + P10 + P18–P20 ✅** (push físico, cita WABA, pago por validar, imagen/audio de diseño, referencia→Agenda y error WABA validados 23-sep; ajustes de assets en curso). Retail: ZM completo (#140); Geema catálogo ✅; Ventas/`product_orders` y bot retail pausados por producto. Docs synced 23-sep.
+> **Estado:** S1–S4 ✅ (S4 crons/RPCs, PR #151, 27-sep; loop Meta Ads diferido a S7). S5 ✅ en código (PR #154, #155, #156, panel `/panel/waba/reglas`, 28-sep). Panel Geema: WABA suite ✅ + finanzas ejecutiva ✅ (Plan 12 P1/P2, 22-sep). Track C webhook ✅ ([09](./09-WEBHOOK-PROD-RECONCILE.md)). Push FCM PR-09 **P0 + P8 + P9 + P10 + P18–P20 ✅** (push físico, cita WABA, pago por validar, imagen/audio de diseño, referencia→Agenda y error WABA validados 23-sep; ajustes de assets en curso). Retail: ZM completo (#140); Geema catálogo ✅; Ventas/`product_orders` y bot retail pausados por producto. Docs synced 28-sep.
 > **BD compartida:** `udelxwwnyivknslueerr` (ZM Lash = tenant #1 `zm-lash-nails`)
 
 Fuente canónica del análisis de convergencia entre **ZM Lash & Nails** (referencia en producción) y **GeemaStudio** (SaaS multi-tenant en `zm-tech`). Incluye bloqueadores para el 2.º tenant, estandarización WABA para barberías/peluquerías/spas, y roadmap por sprints. El resumen ejecutivo y el roadmap de esta carpeta son la única fuente del estado de migración; los documentos específicos de WABA y panel mantienen el detalle de implementación.
@@ -23,7 +23,7 @@ Fuente canónica del análisis de convergencia entre **ZM Lash & Nails** (refere
 | 07 | [07-PARIDAD-MOBILE-ZM.md](./07-PARIDAD-MOBILE-ZM.md) | Shadow APK; S5C P0 ✅; schema canónico; multi-servicio PR #31 (sin SQL CREATE en prod) |
 | 08 | [08-PLAN-retail-productos.md](./08-PLAN-retail-productos.md) | Retail ZM `/panel/productos` + `product_orders`; checklist port Geema |
 | 09 | [09-WEBHOOK-PROD-RECONCILE.md](./09-WEBHOOK-PROD-RECONCILE.md) | Track C ✅: prod v655 = ZM `main`; Opción A bot |
-| — | [SYNC.md](./SYNC.md) | Cómo mantener esta carpeta sincronizada entre repos |
+| 10 | [10-PLAN-traslado-waba-a-geema.md](./10-PLAN-traslado-waba-a-geema.md) | Traslado de la suite WABA (27 Edge) a `geemastudio-server`; renombre visible de la BD |
 
 ---
 
@@ -48,10 +48,7 @@ Fuente canónica del análisis de convergencia entre **ZM Lash & Nails** (refere
 
 ---
 
-## Sincronización entre repos
+## Fuente de verdad
 
-**Fuente temporal:** esta carpeta en ZM (`docs/plans/geema-migration/`).
-
-**Copia consolidada Geema:** `zm-tech/docs/geemastudio/docs/plans/04-geema-migration/`.
-
-Ver [SYNC.md](./SYNC.md) para el script y reglas de edición.
+Esta carpeta vive **solo en Geema** (`zm-tech`). Desde oct-2026 ZM ya no guarda
+copia ni hay script de sync; los cambios se editan aquí directamente.

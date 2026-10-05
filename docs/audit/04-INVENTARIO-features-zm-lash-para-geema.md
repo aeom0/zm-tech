@@ -215,8 +215,8 @@ Onboarding multi-tipo · presets · payment_mode salary/mixed · landing SaaS mu
 ## 9. Referencias
 
 - Audit paridad: [`docs/audit/03-AUDIT-paridad-zmlash-geema.md`](./03-AUDIT-paridad-zmlash-geema.md)
-- Plan: [`docs/geemastudio/docs/03-PLAN-audit-paridad-zmlash-geema.md`](../geemastudio/docs/03-PLAN-audit-paridad-zmlash-geema.md)
-- ZM Plan 02 tenant: repo ZM `docs/02-PLAN-retrofit-tenant-id.md`
+- Plan: [`docs/geemastudio/docs/plans/03-PLAN-audit-paridad-zmlash-geema.md`](../geemastudio/docs/plans/03-PLAN-audit-paridad-zmlash-geema.md)
+- ZM Plan 02 tenant: `docs/geemastudio/docs/plans/02-PLAN-retrofit-tenant-id.md`
 - ZM Edge Functions: repo ZM `docs/EDGE_FUNCTIONS.md`
 
 _Baseline original: 2026-08-08 · estado de alineación revisado: 2026-09-24._
