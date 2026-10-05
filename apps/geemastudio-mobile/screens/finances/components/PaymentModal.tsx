@@ -10,9 +10,6 @@ import {
   Platform,
 } from 'react-native'
 import { Feather } from '@expo/vector-icons'
-import type { CompositeNavigationProp } from '@react-navigation/native'
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs'
 
 import { ThemedText } from '@/components/ThemedText'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
@@ -22,17 +19,13 @@ import { formatCurrency } from '@/utils/format'
 import { Spacing } from '@/constants/theme'
 import { posChargeAmount, resolvePosFeePercent } from '@/lib/pos-fee'
 import { instanteCitaDesdeTexto, zonaIANASegura } from '@zmtech/tenant-config'
-import type { MainTabParamList } from '@/navigation/MainTabNavigator'
-import type { MoreStackParamList } from '@/navigation/MoreStackNavigator'
 
 import { PAYMENT_METHODS } from '../constants'
 import { financesStyles as styles } from '../financesStyles'
 import type { FinancesAppointmentOption, FinancesPayment, FinancesPaymentType } from '../types'
 
-type NavigationProp = CompositeNavigationProp<
-  NativeStackNavigationProp<MoreStackParamList, 'Finanzas'>,
-  BottomTabNavigationProp<MainTabParamList, 'More'>
->
+/** Solo se usa `getParent()` para saltar a Agenda; sirve desde cualquier pantalla del stack Más. */
+type NavigationProp = { getParent: () => unknown }
 
 interface Props {
   visible: boolean
@@ -421,7 +414,7 @@ export function PaymentModal({
                   onClose()
                   if (aptId) {
                     const tabNav = navigation.getParent()
-                    if (tabNav && 'navigate' in tabNav) {
+                    if (tabNav && typeof tabNav === 'object' && 'navigate' in tabNav) {
                       ;(
                         tabNav as {
                           navigate: (a: string, b?: { appointmentId: string }) => void
