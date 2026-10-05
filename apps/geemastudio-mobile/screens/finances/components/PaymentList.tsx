@@ -130,10 +130,10 @@ export function PaymentList({
                     <ThemedText style={styles.paymentMethod}>
                       {formatMethod(payment.method)}
                     </ThemedText>
-                    {payment.is_abono && (
+                    {(payment.is_abono || payment.kind === 'product') && (
                       <View style={[styles.abonoBadge, { backgroundColor: theme.gold + '20' }]}>
                         <ThemedText style={[styles.abonoBadgeText, { color: theme.gold }]}>
-                          Abono 20%
+                          {payment.kind === 'product' ? 'Producto' : 'Adelanto'}
                         </ThemedText>
                       </View>
                     )}

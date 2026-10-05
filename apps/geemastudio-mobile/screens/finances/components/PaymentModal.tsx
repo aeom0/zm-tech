@@ -157,6 +157,11 @@ export function PaymentModal({
                         label: 'Completar 80%',
                         icon: 'refresh-cw' as const,
                       },
+                      {
+                        id: 'producto' as FinancesPaymentType,
+                        label: 'Producto',
+                        icon: 'shopping-bag' as const,
+                      },
                     ] as const
                   ).map((t) => (
                     <Pressable

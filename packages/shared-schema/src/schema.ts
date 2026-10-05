@@ -288,6 +288,8 @@ export const payments = pgTable(
     date: timestamp('date', { withTimezone: true }).defaultNow().notNull(),
     tenantId: text('tenant_id').notNull(),
     notes: text('notes'),
+    // deposit | service | product (CHECK en BD); is_abono = (kind = 'deposit')
+    kind: text('kind'),
     isAbono: boolean('is_abono').notNull().default(false),
     serviceTotal: decimal('service_total', { precision: 10, scale: 2 }),
   },

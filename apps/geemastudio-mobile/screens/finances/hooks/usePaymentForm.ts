@@ -10,7 +10,13 @@ import { formatCurrency } from '@/utils/format'
 import { useProfileTenantId } from './useProfileTenantId'
 
 import { ABONO_PERCENT } from '../constants'
-import type { FinancesAppointmentOption, FinancesPayment, FinancesPaymentType } from '../types'
+import { paymentKindFromType } from '../types'
+import type {
+  FinancesAppointmentOption,
+  FinancesPayment,
+  FinancesPaymentKind,
+  FinancesPaymentType,
+} from '../types'
 
 interface FormData {
   amount: string
@@ -58,6 +64,7 @@ export function usePaymentForm(
       date: string
       notes: string | null
       is_abono: boolean
+      kind: FinancesPaymentKind
       service_total: number | null
       appointment_id: string | null
       tenant_id: string
@@ -85,6 +92,7 @@ export function usePaymentForm(
         date: string
         notes: string | null
         is_abono: boolean
+        kind: FinancesPaymentKind
         service_total: number | null
         appointment_id: string | null
       }
@@ -132,7 +140,9 @@ export function usePaymentForm(
 
   const openEditPayment = (payment: FinancesPayment) => {
     setEditingPayment(payment)
-    setPaymentType(payment.is_abono ? 'abono' : 'full')
+    setPaymentType(
+      payment.kind === 'product' ? 'producto' : payment.is_abono ? 'abono' : 'full'
+    )
     setFormData({
       amount: typeof payment.amount === 'number' ? String(payment.amount) : (payment.amount ?? ''),
       serviceTotal: payment.service_total != null ? String(payment.service_total) : '',
@@ -209,6 +219,7 @@ export function usePaymentForm(
       date: editingPayment ? editingPayment.date : new Date().toISOString(),
       notes: formData.notes.trim() || null,
       is_abono: paymentType === 'abono',
+      kind: paymentKindFromType(paymentType),
       service_total:
         paymentType === 'abono' && formData.serviceTotal.trim()
           ? parseFloat(formData.serviceTotal.replace(',', '.'))

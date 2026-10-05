@@ -65,7 +65,24 @@ Panel y app de ZM en Geema: checklist D1–D4, W1–W6, R1–R3b del Plan 13 com
 | 2   | Ventas `product_orders` en Geema | zm-tech | ✅ 23-sep; flujo operativo en Productos |
 | 3   | **S4** crons + Vault             | ZM      | Bloquea 2.º tenant                  |
 | 4   | Smoke Finanzas ZM en APK         | zm-tech | Validación mobile pendiente         |
+| 6   | Repartir un pago en servicio + producto | zm-tech | PR #55 solo tiene chip por concepto; falta split en `PaymentModal` y mostrar `kind` en finanzas web |
+| 7   | Nombres de packs «tinturado» (lash vs cejas vs rímel) | zm-tech | Ver propuesta abajo; **esperar confirmación de Vanessa** antes de tocar catálogo |
 | 5   | **Corte 2** — landing `zmlashnails.com` (Plan 11 Modo B) | ambos | Faltan reseñas reales (Fase 5), confirmar `web_team` con Vanessa y retiro de Sanity (Fase 6) |
+
+### Propuesta: `title` / `short_name` de packs y servicios «tinturado» (5-oct 2026)
+
+Problema: en WhatsApp (título de lista interactiva ≤ 24 caracteres) «Lifting + Tinturado» se recorta y no dice si el tinte es de pestañas, de cejas o efecto rímel. Hoy en BD: «Diseño + Tinturado de Cejas» (S/50), «Diseño Cejas + Tinturado» (S/70), «Lifting + Tinturado» (S/60). Los tres nombres son parecidos y ambiguos.
+
+Regla propuesta: `title` completo y explícito; `short_name` ≤ 24 caracteres con el objeto (pestañas/cejas) siempre visible. Borrador (a validar con Vanessa, incluido si «rímel» es servicio aparte o variante):
+
+| Actual | `title` propuesto | `short_name` propuesto |
+| --- | --- | --- |
+| Lifting + Tinturado | Lifting de Pestañas + Tinte de Pestañas | Lifting + Tinte Pest. |
+| Diseño + Tinturado de Cejas | Diseño de Cejas + Tinte de Cejas | Diseño + Tinte Cejas |
+| Diseño Cejas + Tinturado | (duplicado del anterior: confirmar diferencia con Vanessa y fusionar o renombrar) | — |
+| Efecto rímel (si es variante) | Tinte de Pestañas efecto Rímel | Tinte Pest. Rímel |
+
+Pasos: confirmar con Vanessa → UPDATE de `services`/`packs` (title, short_name) vía migración o panel → revisar prompts Haiku y listas WABA que citen esos nombres. No cambiar precios ni `service_ids`.
 
 ### Riesgos activos
 
