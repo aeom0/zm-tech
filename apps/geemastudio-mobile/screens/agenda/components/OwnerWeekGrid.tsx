@@ -11,10 +11,13 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
+import { useSalonHolidays } from '@/hooks/useSalonHolidays'
 import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 import { mixHexColors, getContrastTextColor } from '@/lib/color-hsv'
 import {
+  dateKeyEnZona,
   esMismoDiaCalendarioEnZona,
+  getHoliday,
   esHoyEnZonaIANA,
   formatoHoraInstanteEnZona,
   instanteCitaDesdeTexto,
@@ -51,6 +54,8 @@ interface OwnerWeekGridProps {
     backgroundRoot: string
     backgroundSecondary: string
     card: string
+    error: string
+    warning: string
   }
   onSelectDay: (date: Date) => void
   onOpenDetail: (apt: AgendaAppointment) => void
@@ -85,6 +90,7 @@ export function OwnerWeekGrid({
   onSelectDay,
   onOpenDetail,
 }: OwnerWeekGridProps) {
+  const { holidayIndex } = useSalonHolidays(true)
   const employeeColorMap = useMemo(() => {
     const m: Record<string, string> = {}
     for (const e of employees) m[e.id] = e.color
@@ -131,6 +137,7 @@ export function OwnerWeekGrid({
         {weekDays.map((day, i) => {
           const isToday = esHoyEnZonaIANA(day, timeZone)
           const count = aptsByDay[i]?.length ?? 0
+          const holiday = getHoliday(dateKeyEnZona(day, timeZone), holidayIndex)
           return (
             <Pressable
               key={i}
@@ -178,6 +185,19 @@ export function OwnerWeekGrid({
                   {fmtDayNum(day, language, timeZone)}
                 </ThemedText>
               </View>
+
+              {holiday ? (
+                <View
+                  accessibilityLabel={`Feriado: ${holiday.name}`}
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: 3,
+                    marginTop: 3,
+                    backgroundColor: holiday.isClosed ? theme.error : theme.warning,
+                  }}
+                />
+              ) : null}
 
               {/* Badge contador de citas */}
               {count > 0 ? (

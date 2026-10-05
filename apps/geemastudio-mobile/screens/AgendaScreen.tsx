@@ -802,6 +802,8 @@ export default function AgendaScreen() {
                 backgroundRoot: theme.backgroundRoot,
                 backgroundSecondary: theme.backgroundSecondary,
                 card: theme.card,
+                error: theme.error,
+                warning: theme.warning,
               }}
               onSelectDay={handleWeekDaySelect}
               onOpenDetail={openAppointmentPreview}
