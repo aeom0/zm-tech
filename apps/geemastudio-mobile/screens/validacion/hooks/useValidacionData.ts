@@ -31,6 +31,7 @@ interface ZmVerificationRow {
   kind: string | null
   approved_at: string | null
   rejected_at: string | null
+  deposit_forfeit_risk: boolean | null
 }
 
 export function useValidacionData() {
@@ -94,7 +95,7 @@ export function useValidacionData() {
         let q = supabase
           .from('appointment_verifications')
           .select(
-            'id, client_name, service_name, appointment_date, amount_deposit, amount_total, kind, approved_at, rejected_at'
+            'id, client_name, service_name, appointment_date, amount_deposit, amount_total, kind, approved_at, rejected_at, deposit_forfeit_risk'
           )
           .eq('status', statusByFilter[filter])
           .order('created_at', { ascending: false })
@@ -112,6 +113,8 @@ export function useValidacionData() {
           resolvedAt: v.approved_at ?? v.rejected_at,
           // La aprobación de estos pagos también avisa a la clienta por WhatsApp y se hace desde el otro flujo.
           readOnly: true,
+          depositForfeited: v.deposit_forfeit_risk === true,
+          canMarkForfeit: v.kind !== 'post_service_payment' && filter !== 'rejected',
         }))
       }
 
@@ -191,6 +194,20 @@ export function useValidacionData() {
     },
   })
 
+  // Marca interna «Adelanto perdido»: no avisa a la clienta.
+  const forfeitMutation = useMutation({
+    mutationFn: async ({ verificationId, forfeited }: { verificationId: string; forfeited: boolean }) => {
+      const { error } = await supabase
+        .from('appointment_verifications')
+        .update({ deposit_forfeit_risk: forfeited, updated_at: new Date().toISOString() })
+        .eq('id', verificationId)
+      if (error) throw new Error(error.message)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['validacion_pagos'] })
+    },
+  })
+
   return {
     byFilter,
     counts: {
@@ -201,6 +218,7 @@ export function useValidacionData() {
     historyDays: HISTORY_DAYS,
     refetchAll: () => Promise.all([pendingQ.refetch(), approvedQ.refetch(), rejectedQ.refetch()]),
     verifyMutation,
+    forfeitMutation,
     config,
   }
 }
