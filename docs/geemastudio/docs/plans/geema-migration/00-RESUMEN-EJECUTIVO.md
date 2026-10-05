@@ -1,6 +1,6 @@
 # 00 — Resumen ejecutivo
 
-**Fecha:** 2026-08-28 · **Actualizado:** 2026-09-28  
+**Fecha:** 2026-08-28 · **Actualizado:** 2026-10-05  
 **Pregunta:** ¿En qué punto estamos para migrar a Geema como plataforma (ZM = tenant #1) y estandarizar WABA para barberías, peluquerías, etc.?
 
 ---
@@ -37,6 +37,14 @@
 **Track C — riesgo:** ✅ cerrado — bot canónico ZM; redeploy solo desde ZM ([09](./09-WEBHOOK-PROD-RECONCILE.md)).
 
 Detalle vivo: Plan 11/12 en `zm-tech/docs/geemastudio/docs/plans/`; roadmap sprints [04](./04-ROADMAP-SPRINTS.md).
+
+---
+
+## Actualización 5-oct-2026 — retiro de la UI de ZM y traslado WABA
+
+- **PR #172 ✅:** `apps/mobile` y las rutas de panel de `apps/web` (`panel`, `finanzas`, `servicios`, `clientes`) eliminadas de este repo; el equipo opera 100 % en Geema. El workflow `ota-production.yml` queda solo con deploy de Edge Functions. La landing sigue aquí.
+- **Plan [10](./10-PLAN-traslado-waba-a-geema.md) (propuesto):** traslado de la suite WABA (27 Edge Functions) a `geemastudio-server`. Es un traslado de código/ownership de deploy: el proyecto Supabase no cambia, solo su **nombre visible** (→ «Geema»), así que URL Edge, webhook Meta, secrets y crons no se tocan.
+- **PR #173 ✅:** el webhook cachea 5 min el tenant del número y 60 s catálogo + `waba_config` (menos lecturas a la API). Efecto operativo: `waba_tenant_routing_enabled` tarda hasta 5 min en aplicarse (activar o apagar) y precios/copy hasta 60 s.
 
 ---
 

@@ -1,6 +1,6 @@
 # 10 — Traslado de la suite WABA a Geema (`geemastudio-server`)
 
-**Fecha:** 2026-10-05 · **Estado:** propuesto (nada ejecutado)
+**Fecha:** 2026-10-05 · **Estado:** propuesto (nada ejecutado). PR #172 (retiro de mobile/panel) y PR #173 (caché del webhook) ya mergeados.
 **Decisiones de Alberto (5-oct):** (1) renombrar la BD es **solo el nombre visible** (el ref `udelxwwnyivknslueerr` no cambia); (2) la suite WABA va al **servicio multi-tenant** (`zm-tech/apps/geemastudio-server`); (3) este documento es el plan, sin ejecución.
 **Contexto:** `apps/mobile` y panel web de ZM retirados (PR #172). Este repo queda con landing + Edge/WABA + migraciones.
 
@@ -26,6 +26,7 @@ Por eso el riesgo real es **deploy ownership / drift** (Track C, [09](./09-WEBHO
 - **Geema (`geemastudio-server/supabase/functions/`):** solo `whatsapp-webhook` (25 `.ts`, 264 KB, **fork antiguo** con `tenant-resolver.ts`) y `reset-demo-tenant`. **No debe desplegarse** (09 §Reglas). Hoy zm-tech **no tiene workflow de deploy Edge** (`ci.yml`, `claude.yml`, `repmax-ota.yml`, `supabase-keepalive.yml`).
 - **Migraciones:** 75 de las 82 versiones locales de ZM ya existen también en `geemastudio-server/supabase/migrations/` (100). Regla vigente: ficheros alineados con `schema_migrations`.
 - **Acoplamientos compartidos a resolver:** `packages/policies-text` (usado por `whatsapp-webhook/lib/policies.ts`), `packages/shared-schema` (`@zm/shared-schema` ↔ `@geemastudio/shared-schema`), `supabase/functions/_shared/*` (tenant-waba, lima-datetime, wa-recipient, vertex-gemini-image…), `deno.json`/`deno.lock`.
+- **Caché en el webhook (PR #173, 5-oct):** `lib/ttl-cache.ts` (`cachedLoad`) cachea en el isolate el tenant del número (5 min, `tenant-resolver.ts`) y catálogo + `waba_config` (60 s, `services-catalog.ts` / `waba-config.ts`); los fallos no se cachean. Va incluido en la copia de F1; no cambia el plan.
 - **Estado multi-tenant:** S1–S5 ✅ (flag `waba_tenant_routing_enabled=false` en prod). Pendiente S6 (presets L4), smoke del flag, S7.
 
 ## 3. Inventario a trasladar (27 funciones)
@@ -103,6 +104,7 @@ Es un cambio de metadato, no de infraestructura:
 | Cron deja de dispararse tras redeploy | Verificar la siguiente ejecución de cada `cron.job` en F3 |
 | Pérdida de la regla «desplegar tras cada cambio» | Se traslada a AGENTS/CLAUDE de zm-tech en F4 |
 | Rutinas/agentes remotos apuntan al repo viejo | D3 |
+| Caché del webhook (PR #173) enmascara cambios al verificar F3 | Tras cada deploy el isolate arranca en frío, pero un cambio de BD tarda hasta 60 s (catálogo/config) o 5 min (routing). Esperar ese lapso en los smokes |
 
 ## 8. Orden y estimación
 

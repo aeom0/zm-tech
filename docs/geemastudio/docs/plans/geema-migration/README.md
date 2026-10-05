@@ -23,6 +23,7 @@ Fuente canónica del análisis de convergencia entre **ZM Lash & Nails** (refere
 | 07 | [07-PARIDAD-MOBILE-ZM.md](./07-PARIDAD-MOBILE-ZM.md) | Shadow APK; S5C P0 ✅; schema canónico; multi-servicio PR #31 (sin SQL CREATE en prod) |
 | 08 | [08-PLAN-retail-productos.md](./08-PLAN-retail-productos.md) | Retail ZM `/panel/productos` + `product_orders`; checklist port Geema |
 | 09 | [09-WEBHOOK-PROD-RECONCILE.md](./09-WEBHOOK-PROD-RECONCILE.md) | Track C ✅: prod v655 = ZM `main`; Opción A bot |
+| 10 | [10-PLAN-traslado-waba-a-geema.md](./10-PLAN-traslado-waba-a-geema.md) | Traslado de la suite WABA (27 Edge) a `geemastudio-server`; renombre visible de la BD |
 | — | [SYNC.md](./SYNC.md) | Cómo mantener esta carpeta sincronizada entre repos |
 
 ---

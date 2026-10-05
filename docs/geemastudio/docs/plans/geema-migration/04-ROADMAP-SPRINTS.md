@@ -340,7 +340,7 @@ Primer cliente pagando (o barbería piloto) distinto de ZM.
 | S7-1 | INSERT `tenants` + `tenant_settings` + profiles staff | S |
 | S7-2 | Configurar número WABA Meta + webhook + `tenant_waba_numbers` | M |
 | S7-3 | Seed catálogo desde preset `barbershop` o custom | M |
-| S7-4 | Smoke chat real + monitoreo `wa_error_log` 48h | S |
+| S7-4 | Smoke chat real + monitoreo `wa_error_log` 48h. **Ojo (PR #173):** el flag `waba_tenant_routing_enabled` se cachea hasta 5 min por isolate; esperar ese lapso al activar o apagar (kill switch incluido) | S |
 | S7-5 | Decisión monorepo único (Opción C largo plazo) — ADR | — |
 
 ### DoD

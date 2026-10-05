@@ -7,6 +7,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Docs (5-oct 2026 — retiro de la UI de ZM y plan de traslado WABA)
+
+- **ZM retira `apps/mobile` y el panel web** (PR #172 del repo ZM): Geema es la única UI de gestión del tenant `zm-lash-nails`. En ZM queda landing + Edge/WABA + migraciones.
+- **Plan `geema-migration/10`** (espejo): traslado de las 27 Edge Functions WABA a `geemastudio-server/supabase/functions/` (copia 1:1, workflow de deploy propio, cambio de ownership en una ventana, limpieza de ZM). El proyecto Supabase no cambia; solo su nombre visible → «Geema». No desplegar el fork viejo `whatsapp-webhook` de este repo.
+- **Caché del webhook** (PR #173 de ZM): tenant del número 5 min; catálogo y `waba_config` 60 s. El flag `waba_tenant_routing_enabled` tarda hasta 5 min en aplicarse; un precio editado en Geema, hasta 60 s en el bot.
+
 ### Añadido (5-oct 2026 — tasas BCV/USDT y pagos en Bs para Venezuela)
 
 - **BD (prod)** — `exchange_rates_bcv` y `exchange_rates_usdt` (globales; lectura solo `authenticated`, escritura `service_role`), `tenant_settings.usar_tasa_manual` / `tasa_manual_usd_ves` y `payments.paid_currency` / `exchange_rate` / `amount_ves`. Migraciones `20261005191145_exchange_rates_ve` y `20261005192305_payments_ves`. Los precios siguen en USD; `payments.amount` queda en USD y un pago en Bs guarda además el monto en Bs y la tasa usada (snapshot, no se recalcula). Solo se envían las columnas nuevas en tenants VE.
