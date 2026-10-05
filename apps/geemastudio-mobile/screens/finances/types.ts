@@ -9,7 +9,11 @@ export interface FinancesPayment {
   notes: string | null
   is_abono?: boolean
   service_total?: string | null
+  /** Concepto: adelanto del cupo, pago del servicio o venta de producto. */
+  kind?: FinancesPaymentKind | null
 }
+
+export type FinancesPaymentKind = 'deposit' | 'service' | 'product'
 
 export type FinancesPeriod = 'today' | 'week' | 'month'
 
@@ -40,8 +44,15 @@ export interface FinancesEmployeeOption {
   salary_amount: string | null
 }
 
-/** Pago libre, adelanto WhatsApp (20%), o completar el 80% restante */
-export type FinancesPaymentType = 'full' | 'abono' | 'completar'
+/** Pago libre, adelanto WhatsApp (20%), completar el 80% restante, o producto (retail) */
+export type FinancesPaymentType = 'full' | 'abono' | 'completar' | 'producto'
+
+/** Concepto que se guarda en payments.kind según el tipo elegido en el modal. */
+export function paymentKindFromType(type: FinancesPaymentType): FinancesPaymentKind {
+  if (type === 'abono') return 'deposit'
+  if (type === 'producto') return 'product'
+  return 'service'
+}
 
 export interface FinancesDesgloseRow {
   id: string
