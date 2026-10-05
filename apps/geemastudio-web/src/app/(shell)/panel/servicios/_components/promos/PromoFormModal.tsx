@@ -23,6 +23,7 @@ type FormState = {
   badge: string
   accent_color: string
   promo_price: string
+  slot_minutes: string
   is_active: boolean
   expires_at: string
 }
@@ -34,6 +35,7 @@ const emptyForm = (accentColor: string): FormState => ({
   badge: '',
   accent_color: accentColor,
   promo_price: '',
+  slot_minutes: '',
   is_active: true,
   expires_at: '',
 })
@@ -53,6 +55,7 @@ function formFromPromo(promo: Promotion, fallbackAccent: string): FormState {
     badge: promo.badge ?? '',
     accent_color: promo.accent_color ?? fallbackAccent,
     promo_price: String(promo.promo_price).replace('.', ','),
+    slot_minutes: promo.slot_minutes ? String(promo.slot_minutes) : '',
     is_active: promo.is_active,
     expires_at: promo.expires_at ? promo.expires_at.split('T')[0] : '',
   }
@@ -115,6 +118,7 @@ function PromoFormModalInner({
       badge: form.badge.trim() || null,
       accent_color: form.accent_color || null,
       promo_price,
+      slot_minutes: Number.parseInt(form.slot_minutes, 10) > 0 ? Number.parseInt(form.slot_minutes, 10) : null,
       is_active: form.is_active,
       expires_at: form.expires_at
         ? instanteCitaDesdeTexto(`${form.expires_at} 23:59:59`, timezone).toISOString()
@@ -197,6 +201,23 @@ function PromoFormModalInner({
               value={form.expires_at}
               onChange={(e) => setForm((f) => ({ ...f, expires_at: e.target.value }))}
             />
+          </div>
+
+          <div className="col-span-2">
+            <label className="mb-1 block text-xs text-fg/50">Duración en agenda (min)</label>
+            <input
+              className="w-full rounded-lg border border-fg/10 bg-fg/5 px-3 py-2 text-base text-fg focus:border-[var(--tenant-primary)] focus:outline-none md:text-sm"
+              value={form.slot_minutes}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, slot_minutes: e.target.value.replace(/\D/g, '') }))
+              }
+              placeholder="Vacío = suma de los servicios"
+              inputMode="numeric"
+            />
+            <p className="mt-1 text-xs text-fg/40">
+              Si lo llenas, el bot usa este tiempo (incluye limpieza) en lugar de sumar las
+              duraciones.
+            </p>
           </div>
 
           <div className="col-span-2">
