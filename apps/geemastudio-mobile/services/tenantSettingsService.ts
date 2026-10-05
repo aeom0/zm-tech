@@ -19,7 +19,7 @@ function toLogoBgStyle(value: string | null | undefined): LogoBackgroundStyle {
 }
 
 const TENANT_SETTINGS_SELECT =
-  'business_name, business_type, business_subtype, service_categories, primary_color, accent_color, currency_code, currency_symbol, country, language, timezone, time_format, client_terminology, staff_terminology, staff_singular_terminology, appointment_terminology, business_hours, contact_info, commission_staff, commission_house, pos_fee_percent, tagline, features_whatsapp, logo_url, logo_bg_light, logo_bg_dark, is_demo, is_configured'
+  'business_name, business_type, business_subtype, service_categories, primary_color, accent_color, currency_code, currency_symbol, country, language, timezone, time_format, client_terminology, staff_terminology, staff_singular_terminology, appointment_terminology, business_hours, contact_info, commission_staff, commission_house, pos_fee_percent, usar_tasa_manual, tasa_manual_usd_ves, tagline, features_whatsapp, logo_url, logo_bg_light, logo_bg_dark, is_demo, is_configured'
 
 /** Slug operativo del negocio (`profiles.tenant_id` → bridge S2). */
 async function resolveTenantSlug(userId: string): Promise<string | null> {
@@ -57,6 +57,8 @@ function mapConfigToRow(config: TenantConfig, userId: string, tenantSlug?: strin
     commission_staff: config.commissions.defaultStaffPercent,
     commission_house: config.commissions.defaultHousePercent,
     pos_fee_percent: config.payments?.posFeePercent ?? 5,
+    usar_tasa_manual: config.payments?.usarTasaManual ?? false,
+    tasa_manual_usd_ves: config.payments?.tasaManualUsdVes ?? null,
     tagline: config.tagline ?? '',
     features_whatsapp: config.features?.whatsapp ?? false,
     logo_url: config.logo ?? '',
@@ -89,6 +91,8 @@ export type TenantSettingsRow = {
   commission_staff: number
   commission_house: number
   pos_fee_percent?: number | string | null
+  usar_tasa_manual?: boolean | null
+  tasa_manual_usd_ves?: number | string | null
   tagline: string
   features_whatsapp: boolean
   logo_url: string
@@ -137,6 +141,8 @@ function mapRowToConfig(row: TenantSettingsRow): TenantConfig {
     },
     payments: {
       posFeePercent: row.pos_fee_percent != null ? Number(row.pos_fee_percent) : 5,
+      usarTasaManual: row.usar_tasa_manual ?? false,
+      tasaManualUsdVes: row.tasa_manual_usd_ves != null ? Number(row.tasa_manual_usd_ves) : null,
     },
     features: {
       whatsapp: row.features_whatsapp ?? false,

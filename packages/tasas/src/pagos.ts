@@ -75,3 +75,11 @@ function validarTasa(tasaBcv: number): void {
 function redondear(valor: number): number {
   return Math.round((valor + Number.EPSILON) * 100) / 100
 }
+
+/** "Bs. 1.234,56" — formato manual (sin Intl) para resultado igual en Hermes, web y tests. */
+export function formatearBs(monto: number): string {
+  const seguro = Number.isFinite(monto) ? monto : 0
+  const [entero, decimales] = Math.abs(seguro).toFixed(2).split('.')
+  const miles = entero.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+  return `${seguro < 0 ? '-' : ''}Bs. ${miles},${decimales}`
+}

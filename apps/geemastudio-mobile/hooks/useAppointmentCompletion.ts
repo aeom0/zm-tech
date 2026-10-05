@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { Alert } from 'react-native'
 
+import { useVesRate } from './useVesRate'
+import { vesFieldsForQuickMethod, type PaymentVesFields } from '@/lib/payments-ves'
+
 /** Fila mínima de `payments` necesaria para evaluar el gate de abono/pago pendiente. */
 export interface AppointmentCompletionPayment {
   appointment_id: string | null
@@ -34,6 +37,7 @@ interface CreatePaymentMutation {
       method: string
       date: string
       notes: string
+      ves?: PaymentVesFields
     },
     options?: MutateOptions
   ) => void
@@ -67,6 +71,7 @@ export function useAppointmentCompletion<A extends CompletableAppointment>({
   const [pendingPayMethod, setPendingPayMethod] = useState('cash')
   const [pendingAppointment, setPendingAppointment] = useState<A | null>(null)
   const [pendingAmountDue, setPendingAmountDue] = useState(0)
+  const { rate: vesRate } = useVesRate()
 
   const completeAppointment = (appointment: A, method?: string, amountDue?: number) => {
     updateAppointmentMutation.mutate(
@@ -89,6 +94,7 @@ export function useAppointmentCompletion<A extends CompletableAppointment>({
               method,
               date: new Date().toISOString(),
               notes: `Cita completada: ${serviceLabel}`,
+              ves: vesFieldsForQuickMethod(method, amount, vesRate),
             })
           }
           setPayMethodVisible(false)

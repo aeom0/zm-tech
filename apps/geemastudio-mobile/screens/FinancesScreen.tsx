@@ -344,6 +344,9 @@ export default function FinancesScreen() {
         selectedAppointmentId={form.selectedAppointmentId}
         abonoAmount={form.abonoAmount}
         currencySymbol={form.currencySymbol}
+        vesEnabled={form.vesEnabled}
+        vesRate={form.vesRate}
+        onChangeCurrency={form.onChangeCurrency}
         recentAppointments={recentAppointments}
         abonoPrevioByApt={abonoPrevioByApt}
         isPending={form.isPending}

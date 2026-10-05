@@ -6,13 +6,26 @@ export const ABONO_PERCENT = 0.2
 
 export const DAYS_SHORT = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
 
-export const PAYMENT_METHODS = [
-  { id: 'cash', label: 'Efectivo', icon: 'dollar-sign' as const },
-  { id: 'card', label: 'Tarjeta', icon: 'credit-card' as const },
-  { id: 'yape', label: 'Yape', icon: 'smartphone' as const },
-  { id: 'plin', label: 'Plin', icon: 'smartphone' as const },
-  { id: 'transfer', label: 'Transferencia', icon: 'smartphone' as const },
+/** `countries` ausente = disponible en todos los países. */
+export const PAYMENT_METHODS: {
+  id: string
+  label: string
+  icon: 'dollar-sign' | 'credit-card' | 'smartphone'
+  countries?: string[]
+}[] = [
+  { id: 'cash', label: 'Efectivo', icon: 'dollar-sign' },
+  { id: 'card', label: 'Tarjeta', icon: 'credit-card' },
+  { id: 'yape', label: 'Yape', icon: 'smartphone', countries: ['PE'] },
+  { id: 'plin', label: 'Plin', icon: 'smartphone', countries: ['PE'] },
+  { id: 'pago_movil', label: 'Pago Móvil', icon: 'smartphone', countries: ['VE'] },
+  { id: 'zelle', label: 'Zelle', icon: 'dollar-sign', countries: ['VE'] },
+  { id: 'transfer', label: 'Transferencia', icon: 'smartphone' },
 ]
+
+/** Métodos de pago ofrecidos según el país del tenant. */
+export function paymentMethodsForCountry(country: string) {
+  return PAYMENT_METHODS.filter((m) => !m.countries || m.countries.includes(country))
+}
 
 export const CHART_HEIGHT = 160
 export const CHART_PADDING = { top: 8, right: 24, bottom: 28, left: 8 }

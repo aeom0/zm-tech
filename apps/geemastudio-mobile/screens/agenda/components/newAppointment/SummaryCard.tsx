@@ -2,6 +2,7 @@ import React from 'react'
 import { View } from 'react-native'
 
 import { ThemedText } from '@/components/ThemedText'
+import { BsHint } from '@/components/BsHint'
 
 import { computeServiceLinesTotals, lineUnitPrice } from '../../agendaUtils'
 import type { AgendaEmployee, AgendaService, AgendaServiceLine } from '../../types'
@@ -77,6 +78,7 @@ export function SummaryCard({
           {currencySymbol} {totalPrice.toFixed(2)}
         </ThemedText>
       </View>
+      <BsHint usd={totalPrice} style={{ textAlign: 'right' }} />
     </View>
   )
 }

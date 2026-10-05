@@ -11,6 +11,12 @@ export interface FinancesPayment {
   service_total?: string | null
   /** Concepto: adelanto del cupo, pago del servicio o venta de producto. */
   kind?: FinancesPaymentKind | null
+  /** Solo tenants VE: moneda en que se pagó; `amount` siempre queda en USD. */
+  paid_currency?: 'USD' | 'VES' | null
+  /** Bs por USD usados al registrar el pago (snapshot). */
+  exchange_rate?: string | number | null
+  /** Monto pagado en Bs cuando paid_currency = 'VES'. */
+  amount_ves?: string | number | null
 }
 
 export type FinancesPaymentKind = 'deposit' | 'service' | 'product'

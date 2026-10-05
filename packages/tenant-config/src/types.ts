@@ -78,6 +78,10 @@ export interface TenantConfig {
   /** Cobros: `posFeePercent` = recargo del POS/tarjeta (comisión, no cuenta como ingreso). Default 5. */
   payments?: {
     posFeePercent?: number
+    /** Solo VE: true = usar `tasaManualUsdVes` en vez de la BCV en vivo. */
+    usarTasaManual?: boolean
+    /** Solo VE: Bs por USD fijados por el negocio (override / respaldo de la BCV). */
+    tasaManualUsdVes?: number | null
   }
 
   /** Cuenta sandbox demo (reset de datos al cerrar sesión vía Edge) */

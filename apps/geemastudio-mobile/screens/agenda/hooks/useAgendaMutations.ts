@@ -4,6 +4,7 @@ import * as Haptics from 'expo-haptics'
 
 import { queryClient } from '@/lib/query-client'
 import { supabase } from '@/lib/supabase'
+import type { PaymentVesFields } from '@/lib/payments-ves'
 import { findOrCreateClientId } from '@/lib/clientLink'
 import { useAuth } from '@/contexts/AuthContext'
 import { subirImagenReferencia } from '@/lib/referenceImages'
@@ -382,6 +383,7 @@ export function useAgendaMutations(
       method: string
       date: string
       notes: string
+      ves?: PaymentVesFields
     }) => {
       const payload = {
         tenant_id: tenantId,
@@ -392,6 +394,7 @@ export function useAgendaMutations(
         notes: data.notes,
         is_abono: false,
         service_total: null,
+        ...(data.ves ?? {}),
       }
 
       const { error } = await supabase.from('payments').insert(payload)

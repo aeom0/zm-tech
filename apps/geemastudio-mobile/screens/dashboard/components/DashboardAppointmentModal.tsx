@@ -3,8 +3,9 @@ import { ActivityIndicator, Modal, Pressable, View } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
+import { BsHint } from '@/components/BsHint'
 
-import { PAYMENT_METHODS } from '@/screens/finances/constants'
+import { paymentMethodsForCountry } from '@/screens/finances/constants'
 import { posChargeAmount, resolvePosFeePercent } from '@/lib/pos-fee'
 import { formatCurrency } from '@/utils/format'
 import { useTenant } from '@/contexts/TenantContext'
@@ -121,6 +122,7 @@ export function DashboardAppointmentModal({
                     </ThemedText>
                   </View>
                 </View>
+                <BsHint usd={appointment.price} style={{ marginTop: 4 }} />
               </View>
 
               <Pressable
@@ -148,7 +150,7 @@ export function DashboardAppointmentModal({
                   <ThemedText style={[styles.payMethodTitle, { color: theme.text }]}>
                     ¿Cómo pagó?
                   </ThemedText>
-                  {PAYMENT_METHODS.map((m) => (
+                  {paymentMethodsForCountry(config.locale.country).map((m) => (
                     <Pressable
                       key={m.id}
                       style={[

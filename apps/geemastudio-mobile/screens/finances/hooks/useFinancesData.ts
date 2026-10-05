@@ -80,7 +80,7 @@ export function useFinancesData(
     queryFn: async () => {
       let query = supabase
         .from('payments')
-        .select('id, appointment_id, amount, method, date, notes, is_abono, service_total, kind')
+        .select('id, appointment_id, amount, method, date, notes, is_abono, service_total, kind, paid_currency, exchange_rate, amount_ves')
         .eq('tenant_id', tenantId!)
         .gte('date', paymentRange.start)
         .lt('date', paymentRange.end)

@@ -20,7 +20,10 @@ import { Spacing } from '@/constants/theme'
 import { posChargeAmount, resolvePosFeePercent } from '@/lib/pos-fee'
 import { instanteCitaDesdeTexto, zonaIANASegura } from '@zmtech/tenant-config'
 
-import { PAYMENT_METHODS } from '../constants'
+import { convertirBsAUsd, convertirUsdABs, formatearBs } from '@zmtech/tasas'
+
+import { paymentMethodsForCountry } from '../constants'
+import type { PaymentFormData } from '../hooks/usePaymentForm'
 import { financesStyles as styles } from '../financesStyles'
 import type { FinancesAppointmentOption, FinancesPayment, FinancesPaymentType } from '../types'
 
@@ -31,23 +34,15 @@ interface Props {
   visible: boolean
   editingPayment: FinancesPayment | null
   paymentType: FinancesPaymentType
-  formData: {
-    amount: string
-    serviceTotal: string
-    method: string
-    notes: string
-  }
-  setFormData: React.Dispatch<
-    React.SetStateAction<{
-      amount: string
-      serviceTotal: string
-      method: string
-      notes: string
-    }>
-  >
+  formData: PaymentFormData
+  setFormData: React.Dispatch<React.SetStateAction<PaymentFormData>>
   selectedAppointmentId: string | null
   abonoAmount: string | null
   currencySymbol: string
+  /** Tenant VE: permite registrar el pago en Bs con la tasa vigente. */
+  vesEnabled: boolean
+  vesRate: number | null
+  onChangeCurrency: (currency: 'USD' | 'VES') => void
   recentAppointments: FinancesAppointmentOption[]
   abonoPrevioByApt: Record<string, { amount: number; service_total: number }>
   isPending: boolean
@@ -69,6 +64,9 @@ export function PaymentModal({
   selectedAppointmentId,
   abonoAmount,
   currencySymbol,
+  vesEnabled,
+  vesRate,
+  onChangeCurrency,
   recentAppointments,
   abonoPrevioByApt,
   isPending,
@@ -82,6 +80,25 @@ export function PaymentModal({
 }: Props) {
   const { theme } = useTheme()
   const { config } = useTenant()
+
+  const enBs = vesEnabled && formData.currency === 'VES'
+  const montoNum = parseFloat(formData.amount.replace(',', '.'))
+  const montoValido = Number.isFinite(montoNum) && montoNum > 0
+  const abonoNum = abonoAmount != null ? parseFloat(abonoAmount) : null
+  // Equivalente en la otra moneda para que el cajero verifique antes de registrar.
+  const equivalente = (() => {
+    if (!vesEnabled || !vesRate) return null
+    if (paymentType === 'abono') {
+      if (abonoNum == null || !Number.isFinite(abonoNum)) return null
+      return enBs
+        ? `Cobrar ${formatearBs(convertirUsdABs(abonoNum, vesRate))}`
+        : `≈ ${formatearBs(convertirUsdABs(abonoNum, vesRate))}`
+    }
+    if (!montoValido) return null
+    return enBs
+      ? `≈ ${currencySymbol}${convertirBsAUsd(montoNum, vesRate).toFixed(2)}`
+      : `≈ ${formatearBs(convertirUsdABs(montoNum, vesRate))}`
+  })()
 
   const formatShortDate = (dateString: string) => {
     const date = instanteCitaDesdeTexto(dateString, config.locale.timezone)
@@ -190,6 +207,51 @@ export function PaymentModal({
               </>
             )}
 
+            {vesEnabled && (
+              <>
+                <ThemedText style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                  Moneda del pago
+                </ThemedText>
+                <View style={styles.paymentTypeRow}>
+                  {(
+                    [
+                      { id: 'USD' as const, label: `Dólares (${currencySymbol})` },
+                      { id: 'VES' as const, label: 'Bolívares (Bs.)' },
+                    ] as const
+                  ).map((c) => (
+                    <Pressable
+                      key={c.id}
+                      style={[
+                        styles.paymentTypeChip,
+                        {
+                          borderColor: formData.currency === c.id ? theme.primary : theme.border,
+                          backgroundColor:
+                            formData.currency === c.id
+                              ? theme.primary + '15'
+                              : theme.backgroundSecondary,
+                        },
+                      ]}
+                      onPress={() => onChangeCurrency(c.id)}
+                    >
+                      <ThemedText
+                        style={[
+                          styles.paymentTypeChipText,
+                          { color: formData.currency === c.id ? theme.primary : theme.text },
+                        ]}
+                      >
+                        {c.label}
+                      </ThemedText>
+                    </Pressable>
+                  ))}
+                </View>
+                <ThemedText style={[styles.noAppointmentsText, { color: theme.textMuted }]}>
+                  {vesRate
+                    ? `Tasa: ${vesRate.toFixed(2)} Bs por ${currencySymbol}`
+                    : 'Sin tasa de cambio disponible. Configúrala en Ajustes.'}
+                </ThemedText>
+              </>
+            )}
+
             {paymentType === 'abono' ? (
               <>
                 <ThemedText style={[styles.inputLabel, { color: theme.textSecondary }]}>
@@ -222,11 +284,16 @@ export function PaymentModal({
                     </ThemedText>
                   </View>
                 )}
+                {equivalente && (
+                  <ThemedText style={[styles.noAppointmentsText, { color: theme.textMuted }]}>
+                    {equivalente}
+                  </ThemedText>
+                )}
               </>
             ) : (
               <>
                 <ThemedText style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                  {`Monto (${currencySymbol})`}
+                  {`Monto (${enBs ? 'Bs.' : currencySymbol})`}
                 </ThemedText>
                 <TextInput
                   style={[
@@ -243,6 +310,11 @@ export function PaymentModal({
                   value={formData.amount}
                   onChangeText={(text) => setFormData((p) => ({ ...p, amount: text }))}
                 />
+                {equivalente && (
+                  <ThemedText style={[styles.noAppointmentsText, { color: theme.textMuted }]}>
+                    {equivalente}
+                  </ThemedText>
+                )}
               </>
             )}
 
@@ -250,7 +322,7 @@ export function PaymentModal({
               Método de pago
             </ThemedText>
             <View style={styles.methodRow}>
-              {PAYMENT_METHODS.map((m) => (
+              {paymentMethodsForCountry(config.locale.country).map((m) => (
                 <Pressable
                   key={m.id}
                   style={[

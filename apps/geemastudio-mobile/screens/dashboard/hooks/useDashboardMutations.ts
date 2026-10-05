@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query'
 
 import { queryClient } from '@/lib/query-client'
 import { supabase } from '@/lib/supabase'
+import type { PaymentVesFields } from '@/lib/payments-ves'
 import { useProfileTenantId } from '@/screens/finances/hooks/useProfileTenantId'
 
 export function useDashboardMutations() {
@@ -31,6 +32,7 @@ export function useDashboardMutations() {
       method: string
       date: string
       notes: string
+      ves?: PaymentVesFields
     }) => {
       if (!tenantId) throw new Error('No se pudo identificar el negocio')
       const payload = {
@@ -42,6 +44,7 @@ export function useDashboardMutations() {
         notes: data.notes,
         is_abono: false,
         service_total: null,
+        ...(data.ves ?? {}),
       }
 
       const { error } = await supabase.from('payments').insert(payload)

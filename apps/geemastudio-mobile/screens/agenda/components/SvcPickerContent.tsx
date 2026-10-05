@@ -3,6 +3,7 @@ import { View, ScrollView, Pressable, TextInput, StyleSheet } from 'react-native
 import { Feather } from '@expo/vector-icons'
 
 import { ThemedText } from '@/components/ThemedText'
+import { BsHint } from '@/components/BsHint'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTheme } from '@/hooks/useTheme'
 import { BorderRadius, Colors, Spacing } from '@/constants/theme'
@@ -394,6 +395,7 @@ export function SvcPickerContent({
                   <ThemedText style={[styles.svcDetail, { color: theme.textMuted }]}>
                     {service.duration} min · {currencySymbol} {service.price}
                   </ThemedText>
+                  <BsHint usd={service.price} />
                 </View>
                 <View
                   style={[

@@ -9,6 +9,8 @@ import { useTenant } from '@/contexts/TenantContext'
 import { formatCurrency } from '@/utils/format'
 import { formatoInstanteEnZona } from '@zmtech/tenant-config'
 
+import { formatearBs } from '@zmtech/tasas'
+
 import { PAYMENT_METHODS } from '../constants'
 import { financesStyles as styles } from '../financesStyles'
 import type { FinancesPayment, FinancesPaymentType } from '../types'
@@ -152,6 +154,11 @@ export function PaymentList({
                   <ThemedText style={[styles.paymentDate, { color: theme.textMuted }]}>
                     {formatDate(payment.date)}
                   </ThemedText>
+                  {payment.amount_ves != null && payment.exchange_rate != null && (
+                    <ThemedText style={[styles.paymentNotes, { color: theme.textMuted }]}>
+                      {`${formatearBs(Number(payment.amount_ves))} · tasa ${Number(payment.exchange_rate).toFixed(2)}`}
+                    </ThemedText>
+                  )}
                   {linkedAppointment && (
                     <ThemedText
                       style={[styles.paymentLinkedAppointment, { color: theme.text }]}

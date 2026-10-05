@@ -14,7 +14,7 @@ import { supabase } from '@/lib/supabase'
 import { BorderRadius, Colors, Spacing } from '@/constants/theme'
 import { useProfileTenantId } from '@/screens/finances/hooks/useProfileTenantId'
 
-import { PAYMENT_METHODS } from '@/screens/finances/constants'
+import { paymentMethodsForCountry } from '@/screens/finances/constants'
 
 import type { TenantConfig } from '@zmtech/tenant-config'
 import type { TimeFormatPreference } from '@zmtech/tenant-config'
@@ -642,7 +642,7 @@ export function AppointmentDetailModal({
                           <ThemedText style={[styles.payMethodTitle, { color: theme.text }]}>
                             ¿Cómo pagó?
                           </ThemedText>
-                          {PAYMENT_METHODS.map((m) => (
+                          {paymentMethodsForCountry(config.locale.country).map((m) => (
                             <Pressable
                               key={m.id}
                               style={[

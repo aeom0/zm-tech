@@ -18,6 +18,9 @@ import { CurrencyPickerModal } from './settings/components/CurrencyPickerModal'
 import { CountryPickerModal } from './settings/components/CountryPickerModal'
 import { TerminologyEditModal } from './settings/components/TerminologyEditModal'
 import { PosFeeEditModal } from './settings/components/PosFeeEditModal'
+import { TasaCambioModal } from './settings/components/TasaCambioModal'
+import { useVesRate } from '@/hooks/useVesRate'
+import { formatearBs } from '@zmtech/tasas'
 import { resolvePosFeePercent } from '@/lib/pos-fee'
 import type { Moneda } from './settings/constants'
 import { getCountryPreset, localeFromCountry, type CountryPreset } from '@zmtech/tenant-config'
@@ -36,6 +39,8 @@ export default function SettingsScreen() {
   const [modalPaisVisible, setModalPaisVisible] = useState(false)
   const [modalTerminologiaVisible, setModalTerminologiaVisible] = useState(false)
   const [modalPosFeeVisible, setModalPosFeeVisible] = useState(false)
+  const [modalTasaVisible, setModalTasaVisible] = useState(false)
+  const ves = useVesRate()
 
   const isAdmin = role === 'dev' || role === 'owner'
   const paisActual = getCountryPreset(config.locale.country)
@@ -73,6 +78,14 @@ export default function SettingsScreen() {
 
   const handleGuardarPosFee = async (percent: number) => {
     await updateTenant({ payments: { posFeePercent: percent } }, { syncRemote: true })
+  }
+
+  const handleGuardarTasa = async (usarTasaManual: boolean, tasaManualUsdVes: number | null) => {
+    await updateTenant(
+      { payments: { usarTasaManual, tasaManualUsdVes } },
+      { syncRemote: true }
+    )
+    void ves.refrescar()
   }
 
   return (
@@ -136,6 +149,19 @@ export default function SettingsScreen() {
               icon="credit-card"
               onPress={() => setModalPosFeeVisible(true)}
             />
+            {ves.enabled && (
+              <SettingsRow
+                label="Tasa de cambio"
+                value={
+                  ves.rate
+                    ? `${formatearBs(ves.rate)} · ${config.payments?.usarTasaManual ? 'Manual' : 'BCV'}`
+                    : 'Sin tasa'
+                }
+                variant="navigate"
+                icon="dollar-sign"
+                onPress={() => setModalTasaVisible(true)}
+              />
+            )}
           </SettingsSection>
         )}
 
@@ -178,6 +204,16 @@ export default function SettingsScreen() {
         percent={resolvePosFeePercent(config.payments?.posFeePercent)}
         onSave={handleGuardarPosFee}
         onClose={() => setModalPosFeeVisible(false)}
+      />
+
+      <TasaCambioModal
+        visible={modalTasaVisible}
+        usarManual={config.payments?.usarTasaManual ?? false}
+        tasaManual={config.payments?.tasaManualUsdVes ?? null}
+        tasas={ves.tasas}
+        loading={ves.isLoading}
+        onSave={handleGuardarTasa}
+        onClose={() => setModalTasaVisible(false)}
       />
     </>
   )
