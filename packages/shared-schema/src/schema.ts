@@ -769,3 +769,136 @@ export type TenantSettings = typeof tenantSettings.$inferSelect
 export type InsertTenantSettings = z.infer<typeof insertTenantSettingsSchema>
 export type SalonHolidayRow = typeof salonHolidays.$inferSelect
 export type InsertSalonHoliday = z.infer<typeof insertSalonHolidaySchema>
+
+// --- Tablas portadas desde el schema de ZM (plan 10 F5, 6-oct-2026) ---
+
+export const tenants = pgTable('tenants', {
+  id: text('id').primaryKey(),
+  businessName: text('business_name').notNull(),
+  vertical: text('vertical').notNull().default('beauty'),
+  status: text('status').notNull().default('active'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+})
+export type TenantsRow = typeof tenants.$inferSelect
+
+export const pushTokens = pgTable('push_tokens', {
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  userId: uuid('user_id'),
+  token: text('token').notNull(),
+  platform: text('platform').default('expo'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+export type PushTokensRow = typeof pushTokens.$inferSelect
+
+export const promoBroadcasts = pgTable('promo_broadcasts', {
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  title: text('title').notNull(),
+  template: text('template').notNull(),
+  bodyText: text('body_text').notNull(),
+  imageUrl: text('image_url'),
+  waMediaId: text('wa_media_id'),
+  status: text('status').notNull().default('draft'),
+  totalSent: integer('total_sent').notNull().default(0),
+  totalFailed: integer('total_failed').notNull().default(0),
+  createdBy: uuid('created_by').references(() => profiles.id),
+  sentAt: timestamp('sent_at'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+})
+export type PromoBroadcastsRow = typeof promoBroadcasts.$inferSelect
+
+export const promoBroadcastItems = pgTable('promo_broadcast_items', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  broadcastId: uuid('broadcast_id')
+    .notNull()
+    .references(() => promoBroadcasts.id, { onDelete: 'cascade' }),
+  clientId: varchar('client_id').references(() => clients.id),
+  clientName: text('client_name').notNull(),
+  phone: text('phone').notNull(),
+  status: text('status').notNull().default('pending'),
+  errorMsg: text('error_msg'),
+  sentAt: timestamp('sent_at'),
+})
+export type PromoBroadcastItemsRow = typeof promoBroadcastItems.$inferSelect
+
+export const wabaPricingSyncLog = pgTable('waba_pricing_sync_log', {
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  waba_id: text('waba_id').notNull(),
+  range_start: date('range_start').notNull(),
+  range_end: date('range_end').notNull(),
+  status: text('status').notNull(),
+  error_message: text('error_message'),
+  rows_upserted: integer('rows_upserted').notNull().default(0),
+  executed_at: timestamp('executed_at', { withTimezone: true }).defaultNow().notNull(),
+})
+export type WabaPricingSyncLogRow = typeof wabaPricingSyncLog.$inferSelect
+
+export const metaAdsSyncLog = pgTable('meta_ads_sync_log', {
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  tenantId: text('tenant_id').notNull(),
+  accountId: text('account_id').notNull(),
+  spendDate: date('spend_date'),
+  status: text('status').notNull(),
+  errorMessage: text('error_message'),
+  rowsUpserted: integer('rows_upserted').notNull().default(0),
+  executedAt: timestamp('executed_at', { withTimezone: true }).defaultNow().notNull(),
+})
+export type MetaAdsSyncLogRow = typeof metaAdsSyncLog.$inferSelect
+
+export const lookPreviewOrders = pgTable('look_preview_orders', {
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  tenantId: text('tenant_id')
+    .notNull()
+    .references(() => tenants.id),
+  phone: text('phone').notNull(),
+  bsuid: text('bsuid'),
+  clientId: text('client_id').references(() => clients.id),
+  sessionToken: uuid('session_token')
+    .notNull()
+    .default(sql`gen_random_uuid()`),
+  pack: text('pack').notNull(),
+  categoryKey: text('category_key').notNull(),
+  styleKey: text('style_key'),
+  creditsTotal: integer('credits_total').notNull(),
+  creditsUsed: integer('credits_used').notNull().default(0),
+  amountPen: decimal('amount_pen', { precision: 10, scale: 2 }).notNull(),
+  paymentStatus: text('payment_status').notNull().default('pending'),
+  status: text('status').notNull().default('pending_payment'),
+  paymentProvider: text('payment_provider'),
+  paymentRef: text('payment_ref'),
+  paymentRefCode: text('payment_ref_code'),
+  selfiePath: text('selfie_path'),
+  yapeAudit: jsonb('yape_audit'),
+  paidAt: timestamp('paid_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+})
+export type LookPreviewOrdersRow = typeof lookPreviewOrders.$inferSelect
+
+export const lookPreviewResults = pgTable('look_preview_results', {
+  id: uuid('id')
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  tenantId: text('tenant_id')
+    .notNull()
+    .references(() => tenants.id),
+  orderId: uuid('order_id')
+    .notNull()
+    .references(() => lookPreviewOrders.id, { onDelete: 'cascade' }),
+  styleKey: text('style_key').notNull(),
+  sourceStoragePath: text('source_storage_path').notNull(),
+  resultStoragePath: text('result_storage_path').notNull(),
+  haikuValidation: jsonb('haiku_validation'),
+  vertexMeta: jsonb('vertex_meta'),
+  latencyMs: integer('latency_ms'),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+})
+export type LookPreviewResultsRow = typeof lookPreviewResults.$inferSelect
