@@ -1,0 +1,123 @@
+name: Deploy Edge Functions (WABA)
+
+# Plan 10, F2. Solo manual hasta el cutover (F3): ZM sigue siendo el deployer
+# de producción y nunca debe haber dos deployers a la vez. En F3 se agrega el
+# trigger `push` (paths apps/geemastudio-server/supabase/functions/**) y se
+# apaga el job de ZM el mismo día.
+
+permissions:
+  contents: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      function:
+        description: 'Función a desplegar (nombre) o "all"'
+        required: true
+        default: generate-recurring-expenses
+      dry_run:
+        description: 'Solo verificar (deno check + inventario), sin desplegar'
+        type: boolean
+        default: true
+
+defaults:
+  run:
+    shell: bash
+    working-directory: apps/geemastudio-server
+
+env:
+  PROJECT_REF: udelxwwnyivknslueerr
+  # Funciones con código aquí que NO se despliegan desde este workflow:
+  # send-push-notification / abandoned-cart-reminders: desplegadas a mano en
+  # marzo-2026, sin SHA conocido; decidir migrar o retirar antes de gestionarlas.
+  # reset-demo-tenant: propia de Geema, no vive en la BD de prod.
+  UNMANAGED: "send-push-notification abandoned-cart-reminders reset-demo-tenant"
+
+jobs:
+  verify:
+    name: Verificar (inventario + deno check)
+    runs-on: ubuntu-latest
+    if: github.repository == 'aeom0/zm-tech'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      # Toda carpeta con index.ts debe estar en la matriz del job deploy o en
+      # UNMANAGED; si no, falla (evita funciones nuevas sin deploy, ver incidentes
+      # waba-staff-session / PR #40 y #44 de ZM).
+      - name: Guard de inventario
+        run: |
+          matrix=$(grep -oE '^ +- \{ name: [a-z0-9-]+' ../../.github/workflows/edge-functions.yml | awk '{print $NF}')
+          missing=0
+          for d in supabase/functions/*/; do
+            n=$(basename "$d"); [ -f "$d/index.ts" ] || continue
+            if ! grep -qx "$n" <<<"$matrix" && ! grep -qw "$n" <<<"$UNMANAGED"; then
+              echo "::error::$n no está en la matriz de edge-functions.yml ni en UNMANAGED"; missing=1
+            fi
+          done
+          exit $missing
+
+      - name: deno check (webhook + held-slot-watch)
+        run: |
+          cd supabase/functions
+          deno check whatsapp-webhook/index.ts
+          deno check held-slot-watch/index.ts
+
+  deploy:
+    name: Deploy ${{ matrix.fn.name }}
+    needs: verify
+    if: inputs.dry_run == false
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        fn:
+          # jwt=false -> --no-verify-jwt (Meta / pg_cron con service_role)
+          - { name: whatsapp-webhook, jwt: false }
+          - { name: held-slot-watch, jwt: false }
+          - { name: send-promo-whatsapp, jwt: false }
+          - { name: test-haiku-preview, jwt: true }
+          - { name: look-preview, jwt: true }
+          - { name: waba-pricing-sync, jwt: true }
+          - { name: waba-staff-session, jwt: false }
+          - { name: waba-chat-simulator, jwt: false }
+          - { name: ads-bounce-nudge, jwt: false }
+          - { name: browse-reengage, jwt: false }
+          - { name: cart-nudge, jwt: false }
+          - { name: silence-watchdog, jwt: false }
+          - { name: chat-quality-review, jwt: false }
+          - { name: send-whatsapp-notification, jwt: false }
+          - { name: send-notification, jwt: false }
+          - { name: appointment-reminders, jwt: false }
+          - { name: send-appointment-reminder, jwt: false }
+          - { name: same-day-appointment-reminder, jwt: false }
+          - { name: send-same-day-reminder, jwt: false }
+          - { name: retouch-reminders, jwt: false }
+          - { name: send-retouch-reengage, jwt: false }
+          - { name: generate-recurring-expenses, jwt: false }
+          - { name: sync-meta-ads-spend, jwt: false }
+          - { name: sync-anthropic-billing, jwt: true }
+    steps:
+      - name: Seleccionar función
+        id: sel
+        run: |
+          if [ "${{ inputs.function }}" = "all" ] || [ "${{ inputs.function }}" = "${{ matrix.fn.name }}" ]; then
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v7
+        if: steps.sel.outputs.go == 'true'
+      - uses: supabase/setup-cli@v3
+        if: steps.sel.outputs.go == 'true'
+        with:
+          version: latest
+      - name: Deploy
+        if: steps.sel.outputs.go == 'true'
+        run: |
+          flag=""; [ "${{ matrix.fn.jwt }}" = "false" ] && flag="--no-verify-jwt"
+          supabase functions deploy "${{ matrix.fn.name }}" --project-ref "$PROJECT_REF" $flag
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
