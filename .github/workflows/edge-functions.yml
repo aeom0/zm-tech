@@ -102,6 +102,7 @@ jobs:
     steps:
       - name: Seleccionar función
         id: sel
+        working-directory: .
         run: |
           if [ "${{ inputs.function }}" = "all" ] || [ "${{ inputs.function }}" = "${{ matrix.fn.name }}" ]; then
             echo "go=true" >> "$GITHUB_OUTPUT"
