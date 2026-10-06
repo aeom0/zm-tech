@@ -3,8 +3,9 @@ import type { AvailabilityBlock } from '@/hooks/agenda/availabilityBlocks'
 
 interface AgendaAvailabilityBlockProps {
   block: AvailabilityBlock
-  hourStart: number
-  hourEnd: number
+  /** Minuto del día donde empieza la grilla (incluye el borde visual). */
+  gridStartMin: number
+  gridEndMin: number
 }
 
 const TONE_CLASS: Record<AvailabilityBlock['tone'], string> = {
@@ -16,13 +17,13 @@ const TONE_CLASS: Record<AvailabilityBlock['tone'], string> = {
 /** Franja no disponible dentro de la columna de una profesional (solo lectura, bajo las citas). */
 export function AgendaAvailabilityBlock({
   block,
-  hourStart,
-  hourEnd,
+  gridStartMin,
+  gridEndMin,
 }: AgendaAvailabilityBlockProps) {
-  const from = Math.max(block.startMin, hourStart * 60)
-  const to = Math.min(block.endMin, hourEnd * 60)
+  const from = Math.max(block.startMin, gridStartMin)
+  const to = Math.min(block.endMin, gridEndMin)
   if (to <= from) return null
-  const top = ((from - hourStart * 60) / 60) * PX_PER_HOUR
+  const top = ((from - gridStartMin) / 60) * PX_PER_HOUR
   const height = ((to - from) / 60) * PX_PER_HOUR
 
   return (

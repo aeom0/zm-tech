@@ -1,15 +1,9 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import {
-  formatAppointmentWallclock,
-  horasVisiblesParaAgenda,
-  instanteCitaDesdeTexto,
-  minutosDelDiaEnZona,
-} from '@zmtech/tenant-config'
+import { formatAppointmentWallclock, horasVisiblesParaAgenda } from '@zmtech/tenant-config'
 
-import { AgendaAppointmentCard } from './_components/AgendaAppointmentCard'
-import { AgendaAvailabilityBlock } from './_components/AgendaAvailabilityBlock'
+import { AgendaDayGrid } from './_components/AgendaDayGrid'
 import {
   AgendaToolbar,
   goToday,
@@ -25,8 +19,8 @@ import {
   useAgendaServicesMap,
   useAgendaTenantSchedule,
 } from '@/hooks/agenda/useAgendaData'
-import { PX_PER_HOUR, type AgendaAppointment, type AgendaStatusFilter } from '@/hooks/agenda/types'
-import { buildDayBlocks, type AvailabilityBlock } from '@/hooks/agenda/availabilityBlocks'
+import type { AgendaAppointment, AgendaStatusFilter } from '@/hooks/agenda/types'
+import { buildDayBlocks } from '@/hooks/agenda/availabilityBlocks'
 import { useDayAvailability } from '@/hooks/personal/useAvailability'
 import { useEmployees } from '@/hooks/personal/useEmployees'
 import { StateNote } from '@/components/ui/StateNote'
@@ -71,14 +65,12 @@ export default function PanelAgendaPage() {
     return list.length ? list : [10, 11, 12, 13, 14, 15, 16, 17, 18]
   }, [hourStart, hourEnd])
 
-  const gridHeight = gridHours.length * PX_PER_HOUR
   const serviceMap = servicesQuery.data ?? new Map<string, string>()
 
   const serviceNameFor = (apt: AgendaAppointment) => {
-    if (apt.service_id && serviceMap.has(apt.service_id)) {
-      return serviceMap.get(apt.service_id)!
-    }
-    return 'Servicio'
+    const ids = apt.service_ids?.length ? apt.service_ids : [apt.service_id]
+    const names = ids.flatMap((id) => (id && serviceMap.get(id)) || [])
+    return names.length ? names.join(' + ') : 'Servicio'
   }
 
   const dayIso = useMemo(
@@ -199,98 +191,20 @@ export default function PanelAgendaPage() {
       )}
 
       {!loading && view === 'day' && activeEmployees.length > 0 && (
-        <div className="overflow-x-auto rounded-2xl border border-fg/[0.08]">
-          <div
-            className="min-w-max"
-            style={{
-              display: 'grid',
-              gridTemplateColumns: `56px repeat(${activeEmployees.length}, minmax(160px, 1fr))`,
-            }}
-          >
-            <div className="sticky left-0 z-20 border-b border-r border-fg/[0.08] bg-sunken px-2 py-3 text-[11px] text-fg-subtle">
-              Hora
-            </div>
-            {activeEmployees.map((emp) => (
-              <div key={emp.id} className="border-b border-fg/[0.08] bg-sunken/80 px-3 py-3">
-                <div className="flex items-center gap-2">
-                  <span
-                    className="h-2.5 w-2.5 shrink-0 rounded-full"
-                    style={{ backgroundColor: emp.color }}
-                  />
-                  <span className="truncate text-xs font-semibold text-fg">{emp.name}</span>
-                </div>
-                {coveringNames.has(emp.id) && (
-                  <div className="mt-1 truncate text-[11px] text-sky-700 dark:text-sky-300">
-                    Cubre a {coveringNames.get(emp.id)}
-                  </div>
-                )}
-              </div>
-            ))}
-
-            <div
-              className="sticky left-0 z-20 border-r border-fg/[0.08] bg-sunken"
-              style={{ height: gridHeight }}
-            >
-              {gridHours.map((h, i) => (
-                <div
-                  key={h}
-                  className="absolute left-0 right-0 border-t border-fg/[0.04] px-1 text-[11px] text-fg-subtle"
-                  style={{ top: i * PX_PER_HOUR, height: PX_PER_HOUR }}
-                >
-                  {String(h).padStart(2, '0')}:00
-                </div>
-              ))}
-            </div>
-
-            {activeEmployees.map((emp) => {
-              const colApts = (aptsQuery.data ?? []).filter((a) => a.employee_id === emp.id)
-              return (
-                <div
-                  key={emp.id}
-                  className="relative border-l border-fg/[0.06] bg-card"
-                  style={{ height: gridHeight }}
-                >
-                  {gridHours.map((h, i) => (
-                    <div
-                      key={h}
-                      className="absolute left-0 right-0 border-t border-fg/[0.04]"
-                      style={{ top: i * PX_PER_HOUR, height: PX_PER_HOUR }}
-                    />
-                  ))}
-                  {(blocksByEmployee.get(emp.id) ?? []).map(
-                    (block: AvailabilityBlock, i: number) => (
-                      <AgendaAvailabilityBlock
-                        key={i}
-                        block={block}
-                        hourStart={hourStart}
-                        hourEnd={hourEnd}
-                      />
-                    )
-                  )}
-                  {colApts.map((apt) => {
-                    const start = instanteCitaDesdeTexto(apt.date, timezone)
-                    const mins = minutosDelDiaEnZona(start, timezone)
-                    if (!Number.isFinite(mins)) return null
-                    return (
-                      <AgendaAppointmentCard
-                        key={apt.id}
-                        apt={apt}
-                        timezone={timezone}
-                        timeFormat={timeFormat}
-                        language={language}
-                        serviceName={serviceNameFor(apt)}
-                        currencyCode={currencyCode}
-                        color={emp.color}
-                        hourStart={hourStart}
-                        onClick={() => setSelectedApt(apt)}
-                      />
-                    )
-                  })}
-                </div>
-              )
-            })}
-          </div>
-        </div>
+        <AgendaDayGrid
+          selectedDate={selectedDate}
+          timezone={timezone}
+          timeFormat={timeFormat}
+          language={language}
+          businessHours={businessHours}
+          gridHours={gridHours}
+          employees={activeEmployees}
+          appointments={aptsQuery.data ?? []}
+          blocksByEmployee={blocksByEmployee}
+          coveringNames={coveringNames}
+          serviceNameFor={serviceNameFor}
+          onOpenDetail={setSelectedApt}
+        />
       )}
 
       {!loading && view === 'day' && unassigned.length > 0 && (

@@ -49,4 +49,5 @@ export function matchesStatusFilter(status: string, filter: AgendaStatusFilter):
   return status === filter
 }
 
-export const PX_PER_HOUR = 72
+/** Alto de una hora en la grilla de día (igual que `HOUR_ROW_HEIGHT` de mobile). */
+export const PX_PER_HOUR = 64
