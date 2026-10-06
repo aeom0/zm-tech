@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "updated": "2026-09-06",
+  "description": "Banco de referencias de estilo para Vertex look-preview. Separado del portafolio WABA/CTWA.",
+  "storage_bucket": "waba-images",
+  "storage_prefix": "look-preview-refs",
+  "public_base_url": "https://udelxwwnyivknslueerr.supabase.co/storage/v1/object/public/waba-images/look-preview-refs",
+  "styles": {
+    "anime": {
+      "local": "anime/anime-ref1.jpg",
+      "storage_path": "look-preview-refs/anime/anime-ref1.jpg",
+      "url": "https://udelxwwnyivknslueerr.supabase.co/storage/v1/object/public/waba-images/look-preview-refs/anime/anime-ref1.jpg",
+      "qa_status": "GO",
+      "qa_date": "2026-09-06",
+      "notes": "Recorte de espigas Manga wearable (7 picos superiores). Ancla COUNT/SPACING/RHYTHM. Validado con prompt anatómico/simplificado (puntas a mitad del párpado móvil, bajo el pliegue). Selfie QA: Avril. Renombrado crease-half.jpg → anime-ref1.jpg (07-sep-2026)."
+    }
+  }
+}

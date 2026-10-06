@@ -1,0 +1,20 @@
+{
+  "POLITICAS_CITA_WHATSAPP": "📋 *Políticas de la cita:*\n\n⏰ *Tardanzas:* Si llegas más de 15 min tarde, el servicio puede acortarse o reprogramarse según disponibilidad.\n\n❌ *Cancelación:* Avisa con mínimo 24 horas de anticipación.\n\n🚫 *Inasistencia:* Si no avisas y no te presentas, el turno se pierde y el adelanto no es reembolsable.\n\n🔄 *Reprogramación:* Se permite una sola vez, con aviso de mínimo 24 h antes de la cita y según disponibilidad. El adelanto se mantiene a tu favor. A partir de la segunda aplican condiciones del salón.\n\n💰 *Adelanto:* Reserva tu cupo y *no es reembolsable* si cancelas, no asistes o tienes un imprevisto; la alternativa es reprogramar una sola vez, según lo indicado arriba. Si somos nosotras quienes no podemos atenderte, reprogramamos sin costo o te reembolsamos el adelanto. Al enviar tu pago aceptas estas condiciones.\n\n📄 Términos completos: zmlashnails.com/terminos-y-condiciones\n\n_ZM Lash & Nails Beauty · @zmlashandnails_",
+  "CONSIDERACIONES_PREVIAS_BY_CATEGORY": {
+    "cat-extensiones": "• *Pestañas (extensiones):* Ven desmaquillada (sin rímel ni delineador en ojos). Evita cremas grasas en la zona el día de la cita.",
+    "cat-lifting": "• *Lifting de pestañas:* Ven desmaquillada. Zona de ojos limpia; evita cremas el día del servicio.",
+    "cat-cejas-rostro": "• *Cejas y rostro:* Ven desmaquillada. Si usas retinol o ácidos en la zona, coméntalo antes.",
+    "cat-unas": "• *Uñas:* Ven sin esmalte en manos o pies (según el servicio). Uñas limpias y cortas facilitan el trabajo.",
+    "cat-microblading": "• *Microblading / cejas / labios:* Ven desmaquillada. No anticoagulantes ni alcohol 24 h antes. Evita sol fuerte y exfoliantes en la zona 48 h antes.",
+    "cat-depilacion": "• *Depilación:* Zona limpia y seca. Evita cremas el día del servicio. Si es zona sensible, avisa con anticipación."
+  },
+  "CONSIDERACIONES_PREVIAS_HEADER": "📌 *Antes de tu cita:*\n\n",
+  "CONSIDERACIONES_PREVIAS_GENERIC_LINES": [
+    "• Pestañas (extensiones, lifting): ven *desmaquillada* (sin rímel, sin delineador en ojos).",
+    "• Cejas y rostro: ven *desmaquillada*. Si usas retinol o ácidos, coméntalo antes.",
+    "• Microblading / cejas / labios: ven *desmaquillada*. No anticoagulantes ni alcohol 24 h antes.",
+    "• Uñas: ven *sin esmalte* (manos o pies según el servicio). Uñas limpias y cortas.",
+    "• Depilación: zona *limpia y seca*. Evita cremas el día del servicio."
+  ],
+  "CONSIDERACIONES_PREVIAS_FOOTER": "\n\n_(Aplican las que correspondan a tu servicio)_"
+}
