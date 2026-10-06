@@ -28,10 +28,8 @@ defaults:
 env:
   PROJECT_REF: udelxwwnyivknslueerr
   # Funciones con código aquí que NO se despliegan desde este workflow:
-  # send-push-notification / abandoned-cart-reminders: desplegadas a mano en
-  # marzo-2026, sin SHA conocido; decidir migrar o retirar antes de gestionarlas.
   # reset-demo-tenant: propia de Geema, no vive en la BD de prod.
-  UNMANAGED: "send-push-notification abandoned-cart-reminders reset-demo-tenant"
+  UNMANAGED: "reset-demo-tenant"
 
 jobs:
   verify:
@@ -99,6 +97,8 @@ jobs:
           - { name: generate-recurring-expenses, jwt: false }
           - { name: sync-meta-ads-spend, jwt: false }
           - { name: sync-anthropic-billing, jwt: true }
+          - { name: send-push-notification, jwt: true }
+          - { name: abandoned-cart-reminders, jwt: false }
     steps:
       - name: Seleccionar función
         id: sel
