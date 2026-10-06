@@ -1,0 +1,97 @@
+// menu-ids.ts — IDs de menú / carrito y ecos Meta (Plan 08)
+
+import { WA_IDS } from "../../lib/constants.ts";
+
+export const ECHO_TITLES = [
+  "servicio agregado",
+  "agregar más servicios",
+  "ver mi selección",
+  "agregar otro servicio",
+  "ver otras promos",
+  "agregar esta promo al carrito",
+  "confirmar promo",
+  "ver opciones",
+  "elegir",
+  "opciones",
+  "revisar servicios elegidos",
+  "reservar con los servicios elegidos",
+  "vaciar carrito",
+  "eliminar todo y empezar de cero",
+  "ver servicios de esta categoría",
+  "elige una categoría",
+  "reserva tu próxima cita",
+  "servicios y paquetes con precios",
+  "consulta nuestros horarios de atención",
+  "cómo llegar al salón",
+  "ver subcategorías",
+  "subcategorías uñas",
+  "subcategorías extensiones",
+  "elegir más servicios",
+  "ver promos activas",
+  "🏠 menú principal",
+  "volver al inicio",
+  "↩ ver categorías",
+  "↩ ver subcategorías",
+  "↩ atrás",
+  "◀ anteriores",
+  "↩ ver selección",
+  "↩ elegir otro día",
+  "ver servicios y packs",
+  "volver al listado",
+  "✨ ver servicios",
+  "ver todas las categorías",
+  "ver subcategorías de uñas",
+  "subcategorías de uñas",
+  "uñas clásicas y gel",
+  "uñas polygel",
+  "uñas soft gel",
+  "uñas acrílicas",
+  "otros servicios de uñas",
+  "extensiones nuevas",
+  "retoques de extensiones",
+  "1 servicio disponible",
+  "2 servicios disponibles",
+  "3 servicios disponibles",
+  "4 servicios disponibles",
+  "5 servicios disponibles",
+  "6 servicios disponibles",
+  "7 servicios disponibles",
+  "8 servicios disponibles",
+  "9 servicios disponibles",
+];
+
+export const MENU_MAIN_OPTIONS = [
+  "ver_promos",
+  "ver_packs",
+  "agendar_cita",
+  "mi_cita",
+  "ver_servicios",
+  "horarios",
+  "ubicacion",
+  "consultar_horarios",
+];
+
+/** Navegación de carrito: no debe quedar atrapada en awaiting_datetime (Alberto VE …0417). */
+export const CART_NAV_IDS = [
+  WA_IDS.AGREGAR_OTRO,
+  WA_IDS.VACIAR_CARRITO,
+  WA_IDS.VER_SELECCION,
+  WA_IDS.AGENDAR_YA,
+  WA_IDS.VOLVER_CARRITO,
+  WA_IDS.VOLVER_FECHAS,
+] as const;
+
+export const PITEM_PREFIX = "pitem_";
+
+export const SALUDOS = [
+  "hola",
+  "buenos días",
+  "buenos dias",
+  "buenas tardes",
+  "buenas noches",
+  "hi",
+  "hello",
+  "menu",
+  "menú",
+  "inicio",
+];
