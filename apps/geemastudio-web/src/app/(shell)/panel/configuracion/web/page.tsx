@@ -293,6 +293,9 @@ export default function PanelWebPage() {
             </Link>
             .
           </p>
+          <p className="mt-1 text-sm text-fg-muted">
+            Los cambios guardados pueden tardar hasta 5 minutos en verse en tu sitio.
+          </p>
         </div>
         <button
           type="button"
