@@ -18,10 +18,12 @@ export function formatBusinessHours(hours: BusinessHoursConfig | null): DayEntry
         enabled: false,
       }
     }
+    // El esquema guardado es `{ open, close }` o null (cerrado); `enabled` es opcional.
+    const enabled = config.enabled ?? true
     return {
       label: ETIQUETA_DIA_LABORAL[day],
-      hours: config.enabled ? `${config.open} – ${config.close}` : 'Cerrado',
-      enabled: config.enabled,
+      hours: enabled ? `${config.open} – ${config.close}` : 'Cerrado',
+      enabled,
     }
   })
 }

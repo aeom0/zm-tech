@@ -46,7 +46,7 @@ export interface WebPromo {
 }
 
 export interface BusinessHoursConfig {
-  [day: string]: { open: string; close: string; enabled: boolean }
+  [day: string]: { open: string; close: string; enabled?: boolean } | null
 }
 
 export interface TenantLandingData {
