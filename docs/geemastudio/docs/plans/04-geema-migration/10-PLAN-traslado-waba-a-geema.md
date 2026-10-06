@@ -84,8 +84,9 @@ Cada una conserva su flag `--no-verify-jwt` actual (ver `.cursor/rules/current-d
 | F0 | ✅ | Baseline prod: **28 funciones** ACTIVE; `whatsapp-webhook` **v740** (el plan decía v655). |
 | F1 | ✅ | zm-tech #57: copia 1:1 de `supabase/functions/**` (29 carpetas), QA `scripts/waba-*`, `policies-text/data.json`, `docs/{waba,ops}`, look-preview + scripts GCP. Reemplazó el fork viejo del webhook (queda en historial). `diff -rq` ZM↔zm-tech = 0; QA `quick-wins` 24/24. |
 | F2 | ✅ | zm-tech #58/#59: `.github/workflows/edge-functions.yml` (solo `workflow_dispatch`, inputs `function`/`dry_run`, matriz de 24 funciones + guard de inventario). Secret `SUPABASE_ACCESS_TOKEN` copiado a zm-tech. Deploy real probado con `generate-recurring-expenses` → v56, `verify_jwt` intacto. |
-| F3 | ⏳ | Pendiente: ventana tranquila (noche/domingo temprano; nudges corren 9–22 Lima). |
-| F4–F5 | ⏳ | Sin iniciar. |
+| F3 | ✅ | 6-oct: 26 funciones desplegadas desde zm-tech (webhook al final); `send-push-notification` y `abandoned-cart-reminders` migradas a la matriz; trigger `push` (#62); job de ZM apagado. Fix posterior: sesión de pago abandonada (#63). |
+| F4 | ✅ | #64: 6 migraciones de ZM copiadas, regla de alineación y reglas operativas en `AGENTS.md`. |
+| F5 | ✅ | 6-oct: ZM borró `supabase/`, `packages/`, scripts QA/DB/GCP, `docs/waba` y workflows de Edge. Rutina «WABA Haiku Analysis» reapuntada a zm-tech (#65, D3 ✅); 8 tablas portadas a `shared-schema` (#66, D6 ✅). Queda F6 (parametrizar hardcodes de ZM + routing multi-tenant). |
 
 **Hallazgos a tener en cuenta en F3**
 - `send-push-notification` y `abandoned-cart-reminders` están en prod desde marzo con deploy manual (fuera del CI de ZM, SHA sin verificar). Hoy están en `UNMANAGED` del workflow. Decidir: migrar a la matriz o retirar.
