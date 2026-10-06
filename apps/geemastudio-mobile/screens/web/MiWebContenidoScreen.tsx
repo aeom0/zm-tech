@@ -148,7 +148,7 @@ export default function MiWebContenidoScreen() {
         value={heroCtaText}
         onChangeText={setHeroCtaText}
       />
-      <WebField label="Marquesina" value={marqueeText} onChangeText={setMarqueeText} />
+      <WebField label="Marquesina" value={marqueeText} onChangeText={setMarqueeText} wrap />
       <WebField
         label="Velocidad marquesina (segundos, mayor = más lento)"
         value={marqueeSpeed}
@@ -170,6 +170,7 @@ export default function MiWebContenidoScreen() {
         label="Video hero"
         value={heroVideoUrl}
         onChangeText={setHeroVideoUrl}
+        wrap
         autoCapitalize="none"
         keyboardType="url"
       />
@@ -177,6 +178,7 @@ export default function MiWebContenidoScreen() {
         label="Video del salón"
         value={salonVideoUrl}
         onChangeText={setSalonVideoUrl}
+        wrap
         autoCapitalize="none"
         keyboardType="url"
       />
@@ -233,6 +235,7 @@ export default function MiWebContenidoScreen() {
         label="Mapa embed (URL)"
         value={mapEmbedUrl}
         onChangeText={setMapEmbedUrl}
+        wrap
         autoCapitalize="none"
         keyboardType="url"
       />
