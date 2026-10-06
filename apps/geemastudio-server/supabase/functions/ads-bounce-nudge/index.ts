@@ -4,6 +4,12 @@
 // Texto libre dentro de ventana 24h (sin plantilla).
 // Horario de ENVÍO propio (9–22 Lima, todos los días) — independiente del salón.
 
+import {
+  clearAnthropicCreditExhaustedFlag,
+  logAIUsage,
+  reportAnthropicApiFailure,
+} from "../whatsapp-webhook/lib/haiku-usage.ts";
+import type { SupabaseClient } from "../whatsapp-webhook/lib/supabase.ts";
 import { addressWithoutHello } from "../whatsapp-webhook/lib/client-address.ts";
 import { runWithRequestTenantId } from "../whatsapp-webhook/lib/tenant.ts";
 import { getSupabase } from "../whatsapp-webhook/lib/supabase.ts";
@@ -17,7 +23,11 @@ import {
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const CRON_SECRET = Deno.env.get("CRON_SECRET");
+const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
 const LIMA_UTC_OFFSET = 5; // UTC-5
+const HAIKU_TIMEOUT_MS = 5000;
+const HAIKU_MODEL = "claude-haiku-4-5-20251001";
+const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
 
 /** Elegible tras 90 min sin 2.º inbound (no molestar si sigue activa). */
 const NUDGE_MIN = 90;
@@ -29,7 +39,7 @@ const CANDIDATE_MAX_MINUTES = 24 * 60;
 
 const DEFAULT_NUDGE_TEXT =
   "¿Sigues interesada en lo que viste en Instagram? 💜\n" +
-  "Cuéntanos qué te gustaría (pestañas, cejas, uñas…) y te pasamos precios. También puedes escribirnos al 932 535 512 y te asesoramos con gusto.";
+  "Cuéntanos qué te gustaría (pestañas, cejas, uñas…) y te pasamos precios y horarios aquí mismo.";
 
 interface BounceCandidate {
   phone: string;
@@ -103,6 +113,94 @@ async function loadNudgeText(tenantId: string): Promise<string> {
   return typeof text === "string" && text.trim()
     ? text.trim()
     : DEFAULT_NUDGE_TEXT;
+}
+
+
+/**
+ * Copy por rubro (análisis 06-oct): el texto de `waba_config` lista pestañas
+ * (Clásicas/Rímel/3D/4D/Lifting) y contradecía a clientas que ya habían pedido
+ * uñas/cejas. Haiku lee el hilo y redacta el nudge del rubro conversado.
+ *  - string  → copy del rubro específico
+ *  - ""      → sin rubro claro (clic de anuncio sin contexto): copy de waba_config
+ *  - null    → Haiku falló: copy genérico neutral (no asume pestañas)
+ */
+async function askHaikuBounceCopy(
+  supabase: SupabaseClient,
+  phone: string,
+  tenantId: string,
+): Promise<string | null> {
+  if (!ANTHROPIC_API_KEY) return null;
+  const rows = (await supabaseRequest(
+    `wa_messages?phone=eq.${encodeURIComponent(phone)}&tenant_id=eq.${encodeURIComponent(tenantId)}&select=direction,content&order=created_at.desc&limit=8`,
+  )) as Array<{ direction: string; content: string | null }> | null;
+  if (!rows) return null;
+  const transcript = rows
+    .reverse()
+    .map((m) => `[${m.direction}] ${(m.content ?? "").slice(0, 300)}`)
+    .join("\n");
+
+  const systemPrompt =
+    "Eres parte del equipo de ZM Lash & Nails Beauty (salón en Perú). Una clienta " +
+    "llegó desde un anuncio de Instagram/Meta, recibió respuesta y no volvió a " +
+    "escribir en ~2 h. 'in' = clienta, 'out' = equipo/bot. Redacta 1–2 líneas " +
+    "para retomar, en español peruano, tono asesora cercana. " +
+    "Si el hilo muestra un rubro concreto (uñas, pestañas, cejas, lifting, " +
+    "depilación, etc.), habla SOLO de ese rubro e invita a elegir el servicio o " +
+    "el día; NO listes otros rubros ni servicios de otro rubro. " +
+    "Si el hilo no muestra ningún rubro concreto, devuelve message vacío. " +
+    "PROHIBIDO: apodos (babe, amor, cielo, linda, reina…), saludar con Hola, " +
+    "inventar precios/horarios/dirección, redirigir al 932 (este YA es el canal), " +
+    "decir que dejas calendario. Responde ÚNICAMENTE JSON: " +
+    '{"message": "texto o cadena vacía"}';
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), HAIKU_TIMEOUT_MS);
+  try {
+    const response = await fetch(ANTHROPIC_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: HAIKU_MODEL,
+        max_tokens: 200,
+        system: systemPrompt,
+        messages: [{ role: "user", content: transcript }],
+      }),
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    if (!response.ok) {
+      const errText = await response.text().catch(() => "");
+      void reportAnthropicApiFailure(supabase, {
+        status: response.status,
+        bodyText: errText,
+        source: "ads_bounce_nudge",
+        phoneNumber: phone,
+      });
+      return null;
+    }
+    const data = await response.json();
+    void clearAnthropicCreditExhaustedFlag(supabase);
+    void logAIUsage(
+      supabase,
+      "ads_bounce_nudge",
+      (data?.usage?.input_tokens as number) ?? 0,
+      (data?.usage?.output_tokens as number) ?? 0,
+      phone,
+    );
+    const rawText = (data?.content?.[0]?.text as string | undefined)?.trim();
+    const jsonMatch = rawText?.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) return null;
+    const parsed = JSON.parse(jsonMatch[0]);
+    return typeof parsed.message === "string" ? parsed.message.trim() : null;
+  } catch (err) {
+    clearTimeout(timeoutId);
+    console.error("[ads-bounce-nudge] Haiku:", (err as Error).message);
+    return null;
+  }
 }
 
 async function sendTextWA(
@@ -345,7 +443,12 @@ Deno.serve(async (req: Request) => {
             : `clients?or=(phone.eq.${encodeURIComponent(phone)},phone_normalized.eq.${encodeURIComponent(phone.slice(-9))})${tenantFilter}&select=name&limit=1`,
         )) as Array<{ name?: string }> | null;
         const clientName = clientRows?.[0]?.name ?? null;
-        const styled = addressWithoutHello(clientName, nudgeText);
+        const haikuCopy = await askHaikuBounceCopy(supabase, phone, tenantId);
+        const copy =
+          haikuCopy === null
+            ? DEFAULT_NUDGE_TEXT
+            : haikuCopy || nudgeText;
+        const styled = addressWithoutHello(clientName, copy);
         const ok = await sendTextWA(creds, phone, styled);
         if (!ok) {
           errors.push(`${phone}: WA send failed`);
