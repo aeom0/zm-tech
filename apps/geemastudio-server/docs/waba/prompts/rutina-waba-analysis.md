@@ -1,6 +1,6 @@
 # Rutina Claude Code — Análisis de calidad WABA (interdiaria)
 
-Fuente de verdad del prompt: **este archivo**. Genera reportes en `docs/waba/analysis/`.
+Fuente de verdad del prompt: **este archivo**. Genera reportes en `apps/geemastudio-server/docs/waba/analysis/`.
 
 ## Cómo correrlo en Claude Code (recomendado)
 
@@ -9,9 +9,9 @@ En el scheduled task / custom instruction usa solo esto:
 
 ```
 Lee y ejecuta al pie de la letra el prompt en:
-docs/waba/prompts/rutina-waba-analysis.md
+apps/geemastudio-server/docs/waba/prompts/rutina-waba-analysis.md
 (sección "Prompt (copiar y pegar en Claude Code)" — el bloque entre fences).
-Repo en main, sync antes de analizar. MCP Supabase del proyecto ZM.
+Repo en main, sync antes de analizar. MCP Supabase del proyecto (udelxwwnyivknslueerr).
 ```
 
 Tras cambiar este `.md` en `main`, la próxima corrida ya usa la versión nueva sin tocar la UI.
@@ -31,14 +31,14 @@ patterns where the Haiku AI agent FAILED to guide clients toward booking
 an appointment. Then produce an actionable report.
 
 ## CONTEXT
-- Repo: aeom0/ZM-Lash-and-Nails-Beauty (branch: main)
+- Repo: aeom0/zm-tech (branch: main)
 - Supabase project: udelxwwnyivknslueerr
 - MCP Supabase: **ClaudeSupabase** (`project-0-ZM-Lash-and-Nails-Beauty-ClaudeSupabase`) — execute_sql
-- Main bot file: supabase/functions/whatsapp-webhook/handlers/dispatcher.ts (orquestador ~2500 líneas)
+- Main bot file: apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/dispatcher.ts (orquestador ~2500 líneas)
 - Plan 08 Fase 1 (merged #131): helpers en `handlers/dispatch/*` (CTWA, menu-taps, haiku-handoff,
   cart-booking, closing-intents, campaign-images, anti-spam, menu-ids, runtime). Al citar causa raíz,
   mirar también esos módulos — no asumir que todo vive en `dispatcher.ts`.
-- AI handler: supabase/functions/whatsapp-webhook/handlers/ai-assistant.ts
+- AI handler: apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/ai-assistant.ts
 - Haiku libs: lib/haiku-prompt.ts, lib/haiku-greeting.ts, lib/haiku-cms-defaults.ts
 - Meta Ads CTA: lib/meta-ads-cta.ts (`isMetaAdsBoilerplateCta` / `isKnownCtwaCampaignCopy` — BP vs intención;
   Set 2026 "Mirada Espectacular"; **Set-Oct 2026** "estilo de pestañas me queda mejor"; strip emoji; coalesce)
@@ -47,16 +47,16 @@ an appointment. Then produce an actionable report.
   (`meta_ads_hero_*` / `meta_ads_image_*` suelen ir vacíos). Collages **segmentados** tras rubro Ext/Lift:
   `meta_ads_extensiones_image_1/2` + `meta_ads_lifting_image_1` — ver WABA_HAIKU_DIRECTRICES §2.2.
   **No** flaggear el saludo de interés como “menú dump”, ni la ausencia de genéricos como bug.
-- Product guidelines: docs/waba/prompts/WABA_HAIKU_DIRECTRICES.md
-- Haiku-primero informativo: docs/waba/plan-haiku-primero-informativo.md — Batches 1–4 **código en main**
+- Product guidelines: apps/geemastudio-server/docs/waba/prompts/WABA_HAIKU_DIRECTRICES.md
+- Haiku-primero informativo: apps/geemastudio-server/docs/waba/plan-haiku-primero-informativo.md — Batches 1–4 **código en main**
   (#120 / #131). **B4 prueba real pendiente** (Edgar …2122). No marcar handoff intencional a Haiku
   (browsing catch-all / mid-agenda / pregunta mid-boleta) como DISPATCHER_BYPASS.
-- Prior reports: docs/waba/analysis/LECCIONES.md (closed patterns) + the single live YYYY-MM-DD-analysis.md
-  (see docs/waba/analysis/README.md retention — do NOT keep a growing pile of reports)
+- Prior reports: apps/geemastudio-server/docs/waba/analysis/LECCIONES.md (closed patterns) + the single live YYYY-MM-DD-analysis.md
+  (see apps/geemastudio-server/docs/waba/analysis/README.md retention — do NOT keep a growing pile of reports)
 - Closed patterns: if LECCIONES marks a pattern ✅ and ALL sample failures are **before** the noted deploy →
   🟢 evidencia que motivó el fix, **not** a new open [P#]. Do not resurrect old PR narratives (ej. #20 / 13-ago)
   as open Quick Wins without §2b.
-- QA validation: docs/waba/WABA_SIMULATION_VALIDATION.md
+- QA validation: apps/geemastudio-server/docs/waba/WABA_SIMULATION_VALIDATION.md
   (incl. `:datetime-cupo`, `:price-list-bullets`, `:pack-confirm`, `:promo-weekday-gate`, `:slot-occupation`,
   `:client-address`, `:parse-fallback`, `:haiku-first-informational`)
 
@@ -113,7 +113,7 @@ Read WABA_HAIKU_DIRECTRICES.md §2.2 and ROADMAP.md § "Horarios y pago al agend
   (producto aún abierto: Eli …1033, Yoja …9827 — ver LECCIONES § Pendiente producto).
 
 ## QA PHONES (excluir de métricas de clientas)
-Ver `QA_PHONES` / extras en `scripts/waba-cleanup-all-qa.mjs` — excluir al menos:
+Ver `QA_PHONES` / extras en `apps/geemastudio-server/scripts/waba-cleanup-all-qa.mjs` — excluir al menos:
 - `51999000970`–`51999000999` (suites validate*; piso bajó a **970** el 15-sep — view-packs `…977`)
 - `51911100001`, simulador `51988800001` / `51988800002`
 - Alberto VE `584144940417`
@@ -178,50 +178,50 @@ Only continue to the steps below if there is at least 1 inbound message.
 
 ### 2. Read current bot code (on main)
 Read these files to understand the CURRENT state on main:
-- supabase/functions/whatsapp-webhook/handlers/dispatcher.ts (orquestador)
-- supabase/functions/whatsapp-webhook/handlers/dispatch/* (Plan 08 Fase 1: CTWA, menu-taps,
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/dispatcher.ts (orquestador)
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/dispatch/* (Plan 08 Fase 1: CTWA, menu-taps,
   haiku-handoff, cart-booking, closing-intents, campaign-images, anti-spam, …)
-- supabase/functions/whatsapp-webhook/handlers/ai-assistant.ts
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/ai-assistant.ts
   (`CUPOS REALES`, `forceBulletLineBreaks` / sanitizeHaikuText, sticky cupo)
-- supabase/functions/whatsapp-webhook/handlers/booking-flow.ts
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/booking-flow.ts
   (matchers: `matchesLocationQuestion`, `looksLikeServiceBrowseIntent`, clases/retiro,
    `tryCompleteBookingFromText`, **`trySoftRescheduleFromText`** (origen real de los mensajes de cupo a clientas con
    cita `scheduled`: "Horarios con cupo… elige uno de los botones"), hora suelta + `selected_day` también en `browsing`)
-- supabase/functions/whatsapp-webhook/handlers/retouch-reengage.ts (reenganche retoque; rama `expired`) y
-  `supabase/functions/cart-nudge/index.ts` (copy de nudges)
-- supabase/functions/whatsapp-webhook/handlers/steps.ts
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/retouch-reengage.ts (reenganche retoque; rama `expired`) y
+  `apps/geemastudio-server/supabase/functions/cart-nudge/index.ts` (copy de nudges)
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/steps.ts
   (`awaiting_payment_screenshot` / mid-pago; excepción Haiku pregunta mid-boleta)
-- supabase/functions/whatsapp-webhook/handlers/payment.ts
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/payment.ts
   (`finalizeBookingAfterDatetimeSelection`, `sendPaymentSummary`, `processPaymentScreenshot`,
    deposit fijo S/25 vs rate domingo)
-- supabase/functions/whatsapp-webhook/handlers/pending-appointment.ts
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/pending-appointment.ts
   (`clientRequiresFixedDeposit` / historial `completed`; Mi cita / reprogramación)
-- supabase/functions/whatsapp-webhook/lib/image-classify.ts
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/image-classify.ts
   + `handlers/payment-screenshot-detected.ts` (comprobante fuera de depósito → no design-pause)
-- supabase/functions/whatsapp-webhook/lib/haiku-prompt.ts (FORMAT_INSTRUCTION, actions, viñetas)
-- supabase/functions/whatsapp-webhook/lib/haiku-cms-defaults.ts
-- supabase/functions/whatsapp-webhook/lib/extension-effects-guide.ts (mapa Clásicas/Rímel/3D/4D/Lifting + CTWA Set-Oct)
-- supabase/functions/whatsapp-webhook/lib/edu-guides.ts (pelo a pelo + fichas Extensiones_* + mapping)
-- supabase/functions/whatsapp-webhook/lib/meta-ads-cta.ts
-- supabase/functions/whatsapp-webhook/lib/campaign-collage.ts (collages Ext/Lift post-rubro)
-- supabase/functions/whatsapp-webhook/lib/services-catalog.ts (`promoAppliesOnWeekday` / `valid_days`)
-- supabase/functions/whatsapp-webhook/lib/slot-occupation.ts (turnover 30/15 + almuerzo Stephani)
-- supabase/functions/whatsapp-webhook/lib/client-address.ts (Srta. / honorífico)
-- supabase/functions/whatsapp-webhook/lib/pending-price-cta.ts (confirm pack/servicio cotizado)
-- supabase/functions/whatsapp-webhook/lib/reply-context.ts (quote / swipe-right, si existe)
-- supabase/functions/whatsapp-webhook/handlers/client-identity.ts
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/haiku-prompt.ts (FORMAT_INSTRUCTION, actions, viñetas)
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/haiku-cms-defaults.ts
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/extension-effects-guide.ts (mapa Clásicas/Rímel/3D/4D/Lifting + CTWA Set-Oct)
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/edu-guides.ts (pelo a pelo + fichas Extensiones_* + mapping)
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/meta-ads-cta.ts
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/campaign-collage.ts (collages Ext/Lift post-rubro)
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/services-catalog.ts (`promoAppliesOnWeekday` / `valid_days`)
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/slot-occupation.ts (turnover 30/15 + almuerzo Stephani)
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/client-address.ts (Srta. / honorífico)
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/pending-price-cta.ts (confirm pack/servicio cotizado)
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/reply-context.ts (quote / swipe-right, si existe)
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/client-identity.ts
   (`fetchClientIdentityRow` / `findClientByWaRecipient` — BSUID)
-- supabase/functions/whatsapp-webhook/lib/inbound-gate.ts (trailing quiet / coalesce)
-- supabase/functions/whatsapp-webhook/lib/salon-location.ts (`resolveUbicacionReply` / Kennedy)
-- supabase/functions/whatsapp-webhook/lib/waba-config.ts (`loadRecentStaffOutboundPhoneSet`)
-- docs/waba/prompts/WABA_HAIKU_DIRECTRICES.md
-- docs/waba/plan-haiku-primero-informativo.md (Batches 1–4 código ✅; B4 prueba real pendiente.
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/inbound-gate.ts (trailing quiet / coalesce)
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/salon-location.ts (`resolveUbicacionReply` / Kennedy)
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/waba-config.ts (`loadRecentStaffOutboundPhoneSet`)
+- apps/geemastudio-server/docs/waba/prompts/WABA_HAIKU_DIRECTRICES.md
+- apps/geemastudio-server/docs/waba/plan-haiku-primero-informativo.md (Batches 1–4 código ✅; B4 prueba real pendiente.
   No marcar como DISPATCHER_BYPASS el handoff intencional a Haiku)
 - zm-tech/docs/geemastudio/docs/plans/08-PLAN-dispatcher-modular.md (Fase 1 merged #131)
-- docs/waba/WABA_CAPACITY.md (tope 1 / 2 especial + ocupación real)
+- apps/geemastudio-server/docs/waba/WABA_CAPACITY.md (tope 1 / 2 especial + ocupación real)
 
 Also list commits on main **during the analysis window** (and skim their messages + touched files):
-  git log --oneline --since='<window start ISO>' --until='<window end ISO>' origin/main -- supabase/functions/
+  git log --oneline --since='<window start ISO>' --until='<window end ISO>' origin/main -- apps/geemastudio-server/supabase/functions/
 
 Note: DETERMINISTIC_INTENTS, SALUDOS, echo filter, fromAd/CTWA detection, rate_limit_per_hour,
 msgHasSpecificIntent, add_to_cart actions, `isMetaAdsBoilerplateCta`, `isKnownCtwaCampaignCopy`,
@@ -284,7 +284,7 @@ hay un segundo emisor":
 2. Un mensaje "correctivo" tardío (minutos después) o "sin emisor claro en el código" → primero revisar si es `panel`.
    (25-sep: la "autocorrección a los 18 min" de Nélida y el "segundo emisor" de Carmen eran ambos staff.)
 3. Para cada OUT `bot`, identificar el **camino real** con `step_before` del IN previo + el texto: buscar el literal del
-   OUT en `supabase/functions/whatsapp-webhook` (`rg -F "<frase única>"`). Ese archivo/función es la causa raíz,
+   OUT en `apps/geemastudio-server/supabase/functions/whatsapp-webhook` (`rg -F "<frase única>"`). Ese archivo/función es la causa raíz,
    **no** el matcher que "suena" parecido. Si el literal no existe en código → es Haiku libre o `panel`.
 4. **Prohibido** escribir causa raíz con "probablemente"/"podría ser" en un [P#] o Quick Win. Sin evidencia
    (literal en código + `source` + `step_before`) → va a "Necesita Revisión de Alberto" como *sin causa raíz*,
@@ -384,23 +384,21 @@ Note staff interventions after "Revisar YA" as STAFF_TAKEOVER when applicable (p
 
 ### 6. Identify recurring patterns (2+ occurrences OR 2nd consecutive day)
 Group by failure type and specific trigger. Note exact client phrases.
-Compare with docs/waba/analysis/LECCIONES.md and the current live report — mark REINCIDENCIA if same pattern persists.
+Compare with apps/geemastudio-server/docs/waba/analysis/LECCIONES.md and the current live report — mark REINCIDENCIA if same pattern persists.
 Include table **Estado de fixes del análisis anterior** (🟢 fix aplicado | 🟡 reincidencia | 🔴 sin fix).
 Apply §2b: never mark 🔴 if HEAD already contains the matcher/handler for that phrase and sample times are pre-deploy.
 
 ### 7. Commit report (retention)
-Create file: docs/waba/analysis/YYYY-MM-DD-analysis.md (today's date in America/Lima)
+Create file: apps/geemastudio-server/docs/waba/analysis/YYYY-MM-DD-analysis.md (today's date in America/Lima)
 
 **Retention (mandatory)**:
 1. If closed findings from the previous live report are not yet in LECCIONES.md, append short rows there.
-2. Delete the previous `docs/waba/analysis/*-analysis.md` (keep only the new file + README.md + LECCIONES.md).
+2. Delete the previous `apps/geemastudio-server/docs/waba/analysis/*-analysis.md` (keep only the new file + README.md + LECCIONES.md).
 3. Update pointers in:
-   - `docs/waba/analysis/README.md`
-   - `docs/INDEX.md` (§ Análisis WABA)
-   - `.cursor/rules/waba-seguimiento.mdc` ("Último reporte" + pendientes si aplica — **no** tabla de hitos históricos)
+   - `apps/geemastudio-server/docs/waba/analysis/README.md`
 
 Then (docs-only → `main` directo):
-  git add docs/waba/analysis/ docs/INDEX.md .cursor/rules/waba-seguimiento.mdc CHANGELOG.md
+  git add apps/geemastudio-server/docs/waba/analysis/
   git commit -m "docs(waba): análisis de conversaciones WABA YYYY-MM-DD"
   git push origin main
 
@@ -468,7 +466,7 @@ PHANTOM_BOOKING_ACK | PRICE_LIST_FORMAT | OTHER
 
 ## Quick Wins
 Low-risk fixes Alberto can ask Cursor to apply (table: pattern | file | change).
-Tras un fix, convertir el hilo en script según docs/waba/WABA_SIMULATION_VALIDATION.md.
+Tras un fix, convertir el hilo en script según apps/geemastudio-server/docs/waba/WABA_SIMULATION_VALIDATION.md.
 
 ## Necesita Revisión de Alberto
 Medium/High risk or product decisions (ej. P1 bounce vs CTA conversacional).
@@ -485,8 +483,8 @@ Medium/High risk or product decisions (ej. P1 bounce vs CTA conversacional).
 
 ## CONSTRAINTS
 - DO NOT modify application source (TypeScript Edge Functions, apps) — only:
-  `docs/waba/analysis/**`, `docs/INDEX.md`, `docs/waba/prompts/rutina-waba-analysis.md` (si la rutina misma necesita ajuste),
-  y `.cursor/rules/waba-seguimiento.mdc` (puntero "Último reporte" + hitos)
+  `apps/geemastudio-server/docs/waba/analysis/**`, `apps/geemastudio-server/docs/waba/prompts/rutina-waba-analysis.md` (si la rutina misma necesita ajuste),
+ 
 - DO NOT send any WhatsApp messages
 - DO NOT expose full phone numbers — last 4 digits only
 - NEVER commit application code directly to main. Branch + PR for code. **Docs-only** (analysis report, LECCIONES, INDEX, `.mdc` pointer, CHANGELOG) may push straight to `main`.
@@ -494,7 +492,7 @@ Medium/High risk or product decisions (ej. P1 bounce vs CTA conversacional).
 - If Supabase query fails, log error and exit without creating a file
 - Read WABA_HAIKU_DIRECTRICES.md to judge whether behavior violated product intent
 - Always sync and analyze `main` — never report from a feature branch without noting it
-- After writing the new report: append closed findings to LECCIONES.md; delete older `*-analysis.md`; keep only README + LECCIONES + the new report; update INDEX + `.cursor/rules/waba-seguimiento.mdc`
+- After writing the new report: append closed findings to LECCIONES.md; delete older `*-analysis.md`; keep only README + LECCIONES + the new report; actualiza el puntero «Último reporte» en `analysis/README.md`
 - Before any 🔴 / Quick Win: §2b (git show in-window commits + rg matchers on HEAD + pre- vs post-deploy timestamps + LECCIONES «Cerrados post-reporte»)
 ```
 
@@ -505,7 +503,7 @@ Medium/High risk or product decisions (ej. P1 bounce vs CTA conversacional).
 | Item       | Valor                                                                                                                           |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | Frecuencia | Interdiaria (~cada 48 h)                                                                                                        |
-| Reportes   | `docs/waba/analysis/` — **1** `YYYY-MM-DD-analysis.md` vivo + `LECCIONES.md` + `README.md`                                      |
+| Reportes   | `apps/geemastudio-server/docs/waba/analysis/` — **1** `YYYY-MM-DD-analysis.md` vivo + `LECCIONES.md` + `README.md`                                      |
 | Commit     | Docs-only → push a `main` OK. Si hay código: rama + PR ready (no draft), un PR por tanda; mismo incidente → misma rama hasta QA |
 | Sin datos  | No crear archivo ni commit                                                                                                      |
 
@@ -513,5 +511,5 @@ Medium/High risk or product decisions (ej. P1 bounce vs CTA conversacional).
 
 - [WABA_HAIKU_DIRECTRICES.md](./WABA_HAIKU_DIRECTRICES.md) — cómo debe comportarse el bot (producto)
 - [EDGE_FUNCTIONS.md](../../ops/EDGE_FUNCTIONS.md) — arquitectura técnica del webhook
-- [docs/waba/analysis/README.md](../analysis/README.md) — retención + último reporte
-- [docs/waba/analysis/LECCIONES.md](../analysis/LECCIONES.md) — patrones cerrados
+- [apps/geemastudio-server/docs/waba/analysis/README.md](../analysis/README.md) — retención + último reporte
+- [apps/geemastudio-server/docs/waba/analysis/LECCIONES.md](../analysis/LECCIONES.md) — patrones cerrados
