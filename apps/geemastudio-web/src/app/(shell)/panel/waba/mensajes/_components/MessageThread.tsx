@@ -334,6 +334,14 @@ export function MessageThread({
                     Sin teléfono
                   </span>
                 )}
+                {conversation.isBsuid && conversation.waUsername && conversation.displayName && (
+                  <span
+                    className="max-w-[10rem] truncate text-[11px] font-medium text-fg-subtle"
+                    title="Usuario de WhatsApp"
+                  >
+                    @{conversation.waUsername}
+                  </span>
+                )}
                 <span
                   className={[
                     'rounded-full border px-2 py-0.5 text-[11px] font-medium',

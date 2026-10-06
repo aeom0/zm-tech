@@ -262,6 +262,8 @@ function PanelWabaMensajesContent() {
                     : !c.isBsuid && c.displayName
                       ? formatPhone(c.phone)
                       : null
+                  // El nombre ya muestra @usuario cuando no hay displayName.
+                  const showUsername = c.isBsuid && !!c.waUsername && !!c.displayName
                   const avatarLabel = (c.displayName || c.waUsername || 'WA')
                     .trim()
                     .charAt(0)
@@ -305,6 +307,14 @@ function PanelWabaMensajesContent() {
                               {phoneLabel && (
                                 <span className="font-mono text-[11px] text-fg-subtle">
                                   {phoneLabel}
+                                </span>
+                              )}
+                              {showUsername && (
+                                <span
+                                  className="max-w-full truncate text-[11px] font-medium text-fg-subtle"
+                                  title="Usuario de WhatsApp"
+                                >
+                                  @{c.waUsername}
                                 </span>
                               )}
                               {c.isBsuid && !c.displayPhone && (
