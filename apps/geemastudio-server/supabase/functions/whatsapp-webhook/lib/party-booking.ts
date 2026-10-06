@@ -46,6 +46,8 @@ export interface PartyBooking {
   /** Pack de dos personas (mismo servicio). El precio es el del pack, no 2× catálogo. */
   pack_id?: string | null;
   pack_price?: number | null;
+  /** Veces que se re-preguntó el nombre de la acompañante (tope en resumeCompanionAskIfNeeded). */
+  companion_asks?: number;
 }
 
 export const PARTY_AT_LIMIT_MESSAGE =
@@ -98,6 +100,10 @@ export function parsePartyBooking(raw: unknown): PartyBooking | null {
         typeof o.pack_price === "number" && Number.isFinite(o.pack_price)
           ? o.pack_price
           : null,
+      companion_asks:
+        typeof o.companion_asks === "number" && o.companion_asks > 0
+          ? o.companion_asks
+          : 0,
     };
   } catch {
     return null;

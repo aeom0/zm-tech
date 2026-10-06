@@ -80,6 +80,19 @@ export function textInterruptsCompanionName(text: string): boolean {
   return false;
 }
 
+const NON_NAME_REPLY =
+  /^(hola+|holi+s?|buen(a|o)s?( (dias|tardes|noches))?|hey|ola|gracias|muchas gracias|ok(i|is|ey)?|oka|si+|sip|no|nop|dale|listo|claro|ya|bien|bueno|perfecto|hasta luego|chao|nada|ninguna|nadie)$/;
+
+function normalizeForNameCheck(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z\s]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 /** Nombre de persona: pocas palabras, sin pregunta ni verbo de servicio. */
 export function looksLikePersonName(text: string): boolean {
   const clean = text.trim().replace(/\s+/g, " ");
@@ -87,6 +100,7 @@ export function looksLikePersonName(text: string): boolean {
   if (textInterruptsCompanionName(clean)) return false;
   const words = clean.split(" ");
   if (words.length > 4) return false;
+  if (NON_NAME_REPLY.test(normalizeForNameCheck(clean))) return false;
   return /^[\p{L}\s.'’-]+$/u.test(clean);
 }
 

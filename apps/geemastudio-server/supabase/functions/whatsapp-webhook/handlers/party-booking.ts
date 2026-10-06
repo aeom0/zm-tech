@@ -197,6 +197,15 @@ export async function resumeCompanionAskIfNeeded(
   const guest = party?.members.find((m) => m.role === "guest");
   if (guest?.name && party?.collecting !== "guest_name") return false;
   if (party?.collecting === "guest_name") {
+    // Tope: tras 2 re-preguntas sin respuesta la clienta cambió de tema; se
+    // libera el party para no pegar la pregunta a respuestas ajenas (…5630 ×4).
+    const asks = party.companion_asks ?? 0;
+    if (asks >= 2) {
+      await clearPartyBooking(supabase, phone);
+      return false;
+    }
+    party.companion_asks = asks + 1;
+    await saveParty(supabase, phone, party);
     await sendMessage(phone, COMPANION_NAME_ASK);
     return true;
   }
