@@ -21,6 +21,7 @@ import { deleteWebAssetIfStorage } from '@/lib/webAssets'
 import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 import type { WebTeamMember } from '@/types/web-landing'
 import { WebAssetPicker } from '@/screens/web/components/WebAssetPicker'
+import { WebColorPicker } from '@/screens/web/components/WebColorPicker'
 import { WebField } from '@/screens/web/components/WebField'
 
 const emptyMember = (): WebTeamMember => ({
@@ -221,12 +222,10 @@ export default function MiWebEquipoScreen() {
               onChangeText={(phrase) => setDraft((d) => ({ ...d, phrase }))}
               multiline
             />
-            <WebField
-              label="Color (hex, opcional)"
+            <WebColorPicker
+              label="Color (opcional)"
               value={draft.color ?? ''}
-              onChangeText={(color) => setDraft((d) => ({ ...d, color }))}
-              autoCapitalize="none"
-              placeholder={theme.accent}
+              onChange={(color) => setDraft((d) => ({ ...d, color }))}
             />
             <View style={styles.modalActions}>
               <Pressable onPress={() => setModalOpen(false)} style={styles.modalBtn}>

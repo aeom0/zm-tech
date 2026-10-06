@@ -18,6 +18,7 @@ import { useTheme } from '@/hooks/useTheme'
 import { useUpdateWebSettings, useWebSettings } from '@/hooks/web/useWebSettings'
 import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 import type { WebService } from '@/types/web-landing'
+import { WebIconPicker } from '@/screens/web/components/WebIconPicker'
 import { WebField } from '@/screens/web/components/WebField'
 
 const emptyService = (): WebService => ({
@@ -196,12 +197,10 @@ export default function MiWebServiciosScreen() {
               onChangeText={(duration) => setDraft((d) => ({ ...d, duration }))}
               placeholder="45 min"
             />
-            <WebField
-              label="Ícono Lucide"
+            <WebIconPicker
+              label="Ícono"
               value={draft.icon}
-              onChangeText={(icon) => setDraft((d) => ({ ...d, icon }))}
-              autoCapitalize="none"
-              placeholder="Sparkles"
+              onChange={(icon) => setDraft((d) => ({ ...d, icon }))}
             />
             <View style={styles.modalActions}>
               <Pressable onPress={() => setModalOpen(false)} style={styles.modalBtn}>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Loader2, Plus, Save, Trash2, Upload } from 'lucide-react'
+import { Clock, Loader2, Plus, Save, Trash2, Upload } from 'lucide-react'
 
 import {
   useUpdateWebSettings,
@@ -18,6 +18,8 @@ import type {
   WebTeamMember,
 } from '@/types/tenant-landing'
 import { ConfiguracionNav } from '../_components/ConfiguracionNav'
+import { ColorField } from './_components/ColorField'
+import { IconSelect } from './_components/IconSelect'
 
 const fieldClass =
   'w-full rounded-xl border border-fg/[0.08] bg-fg/[0.04] px-3 py-2.5 text-base md:text-sm text-fg outline-none focus:border-[var(--tenant-primary)]/40'
@@ -270,7 +272,8 @@ export default function PanelWebPage() {
       <div className="space-y-6">
         <ConfiguracionNav />
         <div className="rounded-2xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-900 dark:text-amber-100">
-          No encontramos la configuración de tu negocio. Completa el registro inicial en la app del celular.
+          No encontramos la configuración de tu negocio. Completa el registro inicial en la app del
+          celular.
         </div>
       </div>
     )
@@ -427,6 +430,19 @@ export default function PanelWebPage() {
         </div>
       </Section>
 
+      <Section
+        title="Horario de atención"
+        subtitle="Tu página publica el mismo horario que usa la agenda."
+      >
+        <Link
+          href="/panel/horarios"
+          className="inline-flex items-center gap-2 rounded-xl border border-fg/[0.08] bg-fg/[0.04] px-4 py-2.5 text-sm font-medium text-fg hover:bg-fg/[0.08]"
+        >
+          <Clock className="h-4 w-4" />
+          Editar horario
+        </Link>
+      </Section>
+
       <Section title="Estadísticas (social proof)">
         <div className="grid gap-4 sm:grid-cols-3">
           <div>
@@ -577,16 +593,13 @@ export default function PanelWebPage() {
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>Color (hex, opcional)</label>
-                  <input
-                    className={fieldClass}
+                  <label className={labelClass}>Color (opcional)</label>
+                  <ColorField
+                    inputClass={fieldClass}
                     value={member.color ?? ''}
-                    onChange={(e) =>
-                      setTeam(
-                        team.map((m, idx) => (idx === i ? { ...m, color: e.target.value } : m))
-                      )
+                    onChange={(color) =>
+                      setTeam(team.map((m, idx) => (idx === i ? { ...m, color } : m)))
                     }
-                    placeholder="var(--tenant-primary)"
                   />
                 </div>
               </div>
@@ -790,14 +803,11 @@ export default function PanelWebPage() {
                   />
                 </div>
                 <div>
-                  <label className={labelClass}>Ícono Lucide (ej. &quot;Sparkles&quot;)</label>
-                  <input
-                    className={fieldClass}
+                  <label className={labelClass}>Ícono</label>
+                  <IconSelect
                     value={service.icon}
-                    onChange={(e) =>
-                      setServices(
-                        services.map((s, idx) => (idx === i ? { ...s, icon: e.target.value } : s))
-                      )
+                    onChange={(icon) =>
+                      setServices(services.map((s, idx) => (idx === i ? { ...s, icon } : s)))
                     }
                   />
                 </div>

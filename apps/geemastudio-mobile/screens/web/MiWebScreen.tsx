@@ -100,6 +100,11 @@ export default function MiWebScreen() {
         onPress={() => navigation.navigate('MiWebContenido')}
       />
       <MenuRow
+        icon="clock"
+        label="Horario de atención"
+        onPress={() => navigation.navigate('HorariosTrabajo')}
+      />
+      <MenuRow
         icon="image"
         label="Galería"
         badgeCount={data.gallery.length || undefined}
