@@ -1,0 +1,34 @@
+---
+description: Alinear nombres de migraciones SQL local ↔ schema_migrations en prod (Supabase).
+alwaysApply: true
+---
+
+# Migraciones Supabase — nombres alineados (local = remoto)
+
+**Regla sin excepción:** el archivo en `apps/geemastudio-server/supabase/migrations/` debe coincidir con la fila en `supabase_migrations.schema_migrations` (prod `udelxwwnyivknslueerr`).
+
+Formato: `{version}_{name}.sql` donde:
+
+- `version` = timestamp exacto registrado en prod (ej. `20260807195811`)
+- `name` = `name` de `schema_migrations` (ej. `add_pending_price_cta`)
+
+```
+# ❌ BAD — inventar timestamp local distinto al de apply_migration MCP
+supabase/migrations/20260807195739_pending_price_cta.sql
+# prod: version=20260807195811, name=add_pending_price_cta
+
+# ✅ GOOD
+supabase/migrations/20260807195811_add_pending_price_cta.sql
+```
+
+## Checklist al aplicar DDL
+
+1. Preferir `supabase migration new <nombre_snake>` para generar el archivo **antes** de aplicar, **o**
+2. Si usas MCP `apply_migration({ name, query })`:
+   - Tras aplicar, consultar:  
+     `SELECT version, name FROM supabase_migrations.schema_migrations ORDER BY version DESC LIMIT 5;`
+   - Renombrar/crear el archivo local como `{version}_{name}.sql` **en el mismo PR** (nunca dejar divergencia).
+3. `apps/geemastudio-server/scripts/db/*.sql` puede ser copia idempotente de documentación/ops; el canónico versionado es `apps/geemastudio-server/supabase/migrations/`.
+4. Antes de un squash/baseline: `ls supabase/migrations/` debe ser un superconjunto exacto (por version+name) de lo que hay en prod.
+
+**Por qué:** PR #11 (Plan 02) y PR #12 (`pending_price_cta`) tropezaron con timestamps MCP ≠ locales; el próximo baseline vuelve a romper si no se alinea al momento.

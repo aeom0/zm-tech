@@ -116,3 +116,11 @@ curl -sS "https://api.supabase.com/v1/projects/llacowjutjfefboqgfnj/database/que
 ```
 
 DDL en prod: confirmación explícita del usuario. Geema `db:push` vive en `apps/geemastudio-server` y apunta a `udelx…`.
+
+## Edge Functions / WABA (desde plan 10 F3, 6-oct-2026)
+
+- Código en `apps/geemastudio-server/supabase/functions/**`; **único deployer**: `.github/workflows/edge-functions.yml` (push a `main` bajo esa ruta despliega todas; manual por `workflow_dispatch` con input `function`). Proyecto Supabase `udelxwwnyivknslueerr`.
+- Función nueva = agregarla a la matriz del workflow (el guard de inventario falla si falta).
+- Migraciones: `apps/geemastudio-server/supabase/migrations/`, nombres alineados con `schema_migrations` (ver `.cursor/rules/supabase-migrations.mdc`).
+- El webhook no tiene preview por PR: tras mergear, esperar el deploy del workflow antes de probar por WhatsApp. QA solo con teléfonos `51999000978`–`999`.
+- Caché del isolate (`lib/ttl-cache.ts`): tenant 5 min; catálogo y `waba_config` 60 s.
