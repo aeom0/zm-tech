@@ -191,6 +191,7 @@ Pendiente post–Fase 2: `/panel/configuracion/web`, migrar Sanity → `zm-lash-
 - Sentry mobile, `ClientCard` rediseño, Look Preview (Plan 07)
 - Testing por capas, SEO/a11y web
 - Optimización queries + timezone dashboard web
+- Acceso biométrico en la PWA del panel (WebAuthn): fase 1 desbloqueo local con huella/Face ID (toggle en ajustes, sobre la sesión Supabase); fase 2 passkey como login real (Edge Function + tabla de credenciales, requiere DDL con confirmación)
 
 ---
 
