@@ -397,12 +397,18 @@ Create file: apps/geemastudio-server/docs/waba/analysis/YYYY-MM-DD-analysis.md (
 3. Update pointers in:
    - `apps/geemastudio-server/docs/waba/analysis/README.md`
 
-Then (docs-only → `main` directo):
+Luego publicar **solo en la rama `claude/waba-analysis`** (nunca en `main`, ni docs-only):
+  git fetch origin
+  git checkout -B claude/waba-analysis origin/main   # lleva consigo los cambios sin commitear del paso anterior
   git add apps/geemastudio-server/docs/waba/analysis/
   git commit -m "docs(waba): análisis de conversaciones WABA YYYY-MM-DD"
-  git push origin main
+  git push --force-with-lease -u origin claude/waba-analysis
 
-Si la tanda incluye **código**, usar rama + PR (agrupar; no un PR por pasada).
+La rama se **reinicia desde `origin/main` en cada corrida**: contiene solo el último reporte vivo encima de main.
+Si Alberto no mergeó el reporte anterior, el nuevo lo reemplaza (retención = 1 reporte vivo). No abrir PR ni mergear:
+Alberto revisa la rama y la mergea cuando quiera. En el resumen final indicar el nombre de la rama y el SHA del commit.
+
+Si la tanda incluye **código**, usar otra rama + PR (agrupar; no un PR por pasada); el código nunca va en `claude/waba-analysis`.
 
 ---
 
@@ -487,7 +493,7 @@ Medium/High risk or product decisions (ej. P1 bounce vs CTA conversacional).
  
 - DO NOT send any WhatsApp messages
 - DO NOT expose full phone numbers — last 4 digits only
-- NEVER commit application code directly to main. Branch + PR for code. **Docs-only** (analysis report, LECCIONES, INDEX, `.mdc` pointer, CHANGELOG) may push straight to `main`.
+- NEVER push to `main` (ni código ni docs). El reporte de análisis (y README/LECCIONES si cambian) va a la rama `claude/waba-analysis`; Alberto la mergea. El código va en otra rama + PR.
 - **One PR per code batch** (Vercel Hobby): same incident → same branch until QA (anti-example 29-ago: #85/#86/#87). See CLAUDE.md § Agrupar cambios.
 - If Supabase query fails, log error and exit without creating a file
 - Read WABA_HAIKU_DIRECTRICES.md to judge whether behavior violated product intent
@@ -504,7 +510,7 @@ Medium/High risk or product decisions (ej. P1 bounce vs CTA conversacional).
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | Frecuencia | Interdiaria (~cada 48 h)                                                                                                        |
 | Reportes   | `apps/geemastudio-server/docs/waba/analysis/` — **1** `YYYY-MM-DD-analysis.md` vivo + `LECCIONES.md` + `README.md`                                      |
-| Commit     | Docs-only → push a `main` OK. Si hay código: rama + PR ready (no draft), un PR por tanda; mismo incidente → misma rama hasta QA |
+| Commit     | Reporte → rama `claude/waba-analysis` (reset desde main + `--force-with-lease`), sin PR ni push a `main`. Si hay código: otra rama + PR ready (no draft), un PR por tanda |
 | Sin datos  | No crear archivo ni commit                                                                                                      |
 
 ## Relacionados
