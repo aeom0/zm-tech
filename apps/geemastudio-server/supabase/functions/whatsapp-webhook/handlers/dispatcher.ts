@@ -125,7 +125,12 @@ import {
   matchesDateCorrectionIntent,
   messageMentionsCalendarDate,
 } from "./booking-flow.ts";
-import { isDeclineIntent, remapMenuTextUserInput } from "./menu-remap.ts";
+import {
+  isDeclineIntent,
+  isShortAffirmativeText,
+  remapMenuTextUserInput,
+} from "./menu-remap.ts";
+import { clientTypedPortion } from "../lib/reply-context.ts";
 import { shouldSkipDesignPauseForQa } from "../lib/design-staff-hours.mjs";
 import {
   buildPersonalAdviceHandoffMessage,
@@ -2730,11 +2735,20 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
         haikuRuntime.rate_limit_per_hour,
       ))
     ) {
-      const handled = await handleAIMessage(
-        { phoneNumber, contactName, catalog, supabase, phoneCountry },
-        trigger,
-        wabaConfig,
-      );
+      const aiCtx = {
+        phoneNumber,
+        contactName,
+        catalog,
+        supabase,
+        phoneCountry,
+      };
+      let handled = await handleAIMessage(aiCtx, trigger, wabaConfig);
+      // Haiku-first: un timeout/error transitorio (Vane Pernia …3993, 6-oct-2026:
+      // "Perfecto\nSi" → sin llamada registrada → 932) no debe mandar a la
+      // clienta al staff; un reintento antes del fallback estático.
+      if (!handled && trigger.type === "fallback") {
+        handled = await handleAIMessage(aiCtx, trigger, wabaConfig);
+      }
       if (handled) {
         // Haiku sí resolvió — corta la racha de fallos si venía contando.
         if (session?.haiku_fallback_count) {
@@ -2756,6 +2770,22 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
           !(await hasRecentOutboundPendingPrompt(supabase, phoneNumber))
         ) {
           await sendMessage(phoneNumber, "¡Nos vemos! 💜");
+          return;
+        }
+        // Sin Haiku tras reintento: afirmación suelta ("Si", "Perfecto") tras una
+        // pregunta del bot → categorías, no 932.
+        if (
+          clientTypedPortion(trigger.originalMessage)
+            .split(/\n+/)
+            .every((l) =>
+              isShortAffirmativeText(l.replace(/[!¡.,\s]+$/g, ""))
+            )
+        ) {
+          await sendMessage(
+            phoneNumber,
+            "Te dejo las categorías para que elijas lo que te interesa 💜",
+          );
+          await sendCategoriesList(phoneNumber, catalog.categories);
           return;
         }
         // Sin Haiku (crédito/timeout): si huele a catálogo, menú en vez de 932
