@@ -1886,13 +1886,40 @@ export async function handleAIMessage(
     if (trigger.type === "opt_out") {
       // Baja de marketing: promos y reenganches la respetan (lista aparte de
       // blocked_phone_numbers: el bot sigue respondiendo si ella escribe).
-      try {
-        const { addMarketingOptOutPhone } = await import(
-          "../lib/waba-config.ts"
-        );
-        await addMarketingOptOutPhone(supabase, phoneNumber);
-      } catch (err) {
-        console.error("[AI] opt_out: no se pudo registrar la baja:", err);
+      // Si no se puede registrar (2 intentos), degradar: pausar el hilo (los
+      // crons de reenganche respetan la pausa) y avisar al staff para que la
+      // agregue a mano — nunca prometer la baja sin dejar rastro accionable.
+      const { addMarketingOptOutPhone } = await import("../lib/waba-config.ts");
+      let optOutSaved = false;
+      let optOutErr: unknown;
+      for (let attempt = 0; attempt < 2 && !optOutSaved; attempt++) {
+        if (attempt > 0) await new Promise((r) => setTimeout(r, 300));
+        try {
+          await addMarketingOptOutPhone(supabase, phoneNumber);
+          optOutSaved = true;
+        } catch (err) {
+          optOutErr = err;
+          console.error(`[AI] opt_out intento ${attempt + 1}:`, err);
+        }
+      }
+      if (!optOutSaved) {
+        try {
+          const { upsertSession } = await import("../lib/supabase.ts");
+          await upsertSession(supabase, phoneNumber, {
+            bot_paused_at: new Date().toISOString(),
+          });
+          const { notifyAdmins } = await import("../lib/notify.ts");
+          await notifyAdmins(
+            supabase,
+            "⚠️ Baja STOP sin registrar",
+            `${phoneNumber.slice(-4)} escribió STOP y no se pudo guardar la baja (${
+              optOutErr instanceof Error ? optOutErr.message : "error"
+            }). Chat pausado: agrégala a marketing_opt_out.`,
+            { type: "waba_chat", reason: "opt_out_failed", phone: phoneNumber },
+          );
+        } catch (err) {
+          console.error("[AI] opt_out: degradación falló:", err);
+        }
       }
       const { sendMessage } = await import("../wa-api.ts");
       await sendMessage(

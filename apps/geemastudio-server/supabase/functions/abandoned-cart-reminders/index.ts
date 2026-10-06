@@ -11,6 +11,8 @@ const WHATSAPP_ACCESS_TOKEN = Deno.env.get("WHATSAPP_ACCESS_TOKEN")!;
 const WHATSAPP_PHONE_NUMBER_ID = Deno.env.get("WHATSAPP_PHONE_NUMBER_ID")!;
 
 const LIMA_UTC_OFFSET_HOURS = 5; // Lima = UTC-5
+// Función legacy de un solo número WABA (env): la lista de bajas es la del tenant ZM.
+const LEGACY_TENANT_ID = "zm-lash-nails";
 
 interface SessionRow {
   phone: string;
@@ -156,6 +158,7 @@ Deno.serve(async (req: Request) => {
       "phone, cart_service_ids, cart_items, step, updated_at, nudge1_sent_at, nudge2_sent_at",
     )
     .eq("step", "browsing")
+    .eq("tenant_id", LEGACY_TENANT_ID)
     .gte("updated_at", windowStart)
     .lte("updated_at", windowEnd);
 
@@ -173,7 +176,35 @@ Deno.serve(async (req: Request) => {
     );
   }
 
-  const allSessions = ((sessions ?? []) as SessionRow[]).filter(hasCartItems);
+  // Baja de marketing (STOP): fail-closed, si no se puede leer la lista no se envía.
+  const { data: optOutConfig, error: optOutError } = await supabase
+    .from("waba_config")
+    .select("config_value")
+    .eq("tenant_id", LEGACY_TENANT_ID)
+    .eq("config_key", "marketing_opt_out")
+    .eq("is_active", true)
+    .maybeSingle();
+  if (optOutError) {
+    console.error(
+      "[abandoned-cart-reminders] Error leyendo marketing_opt_out:",
+      optOutError,
+    );
+    return new Response(
+      JSON.stringify({ error: "No se pudo verificar la lista de bajas" }),
+      { status: 503, headers: { "Content-Type": "application/json" } },
+    );
+  }
+  const optOutRaw = (optOutConfig?.config_value as { phones?: unknown } | null)
+    ?.phones;
+  const optOutPhones = new Set(
+    Array.isArray(optOutRaw)
+      ? optOutRaw.filter((v): v is string => typeof v === "string")
+      : [],
+  );
+
+  const allSessions = ((sessions ?? []) as SessionRow[])
+    .filter(hasCartItems)
+    .filter((s) => !optOutPhones.has(s.phone));
   console.log(
     `[abandoned-cart-reminders] ${allSessions.length} sesión(es) con carrito activo`,
   );
