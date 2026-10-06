@@ -1,11 +1,12 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
+import localFont from 'next/font/local'
 import { PwaRegister } from '@/components/pwa/PwaRegister'
 import './globals.css'
 
-const inter = Inter({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
+// Local (no next/font/google): el build no depende de la red hacia Google Fonts.
+const inter = localFont({
+  src: './fonts/inter-latin-wght-normal.woff2',
+  weight: '100 900',
   display: 'swap',
 })
 
