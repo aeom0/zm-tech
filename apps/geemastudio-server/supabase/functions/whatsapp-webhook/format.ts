@@ -272,7 +272,7 @@ export function getMenuResponse(option: string): string {
   )
     return "📅 *Agendar Cita*\n\nSelecciona *Ver servicios* para elegir uno o más servicios y luego podrás agendar.";
   if (l === "horarios" || l === "3" || l.includes("horario"))
-    return "🕐 *Horarios de Atención*\n\n📅 Lunes a Sábado\n⏰ 10:00 AM - 6:00 PM\n\n📅 Domingos\n⏰ 10:30 AM - 1:00 PM (previa cita)";
+    return "🕐 *Horarios de Atención*\n\n📅 Lunes a Sábado (con cita previa)\n⏰ 10:00 AM - 6:00 PM\n\n📅 Domingos\n⏰ 10:30 AM - 1:00 PM (previa cita)";
   if (
     l === "ubicacion" ||
     l === "4" ||

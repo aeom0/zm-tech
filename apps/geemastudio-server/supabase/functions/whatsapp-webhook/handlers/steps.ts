@@ -40,7 +40,7 @@ import {
 import { WABA_PANEL_BASE } from "../lib/panel-url.ts";
 
 const DEFAULT_HORARIOS_TEXT =
-  "🕐 *Horarios de Atención*\n\n📅 Lunes a Sábado\n⏰ 10:00 AM - 6:00 PM\n\n📅 Domingos\n⏰ 10:30 AM - 1:00 PM (previa cita + adelanto 20%)\n\n📅 Feriados\n⏰ 10:00 AM - 12:00 PM (cuando el CC abre)\n🚫 23, 28 y 29 jul: *cerrado* (CC no abre)";
+  "🕐 *Horarios de Atención*\n\n📅 Lunes a Sábado (con cita previa)\n⏰ 10:00 AM - 6:00 PM\n\n📅 Domingos\n⏰ 10:30 AM - 1:00 PM (previa cita + adelanto 20%)\n\n📅 Feriados\n⏰ 10:00 AM - 12:00 PM (cuando el CC abre)\n🚫 23, 28 y 29 jul: *cerrado* (CC no abre)";
 
 const VOUCHER_REMINDER =
   "Cuando puedas, envía la foto del voucher o captura del comprobante como imagen, " +

@@ -79,7 +79,7 @@ export const HAIKU_SYSTEM_PROMPT_BASE_DEFAULT = [
   `Referencia: ${SALON_REFERENCE}`,
   `Google Maps: ${SALON_MAPS_URL}`,
   `Estacionamiento: ${SALON_PARKING_NOTE}`,
-  "Horarios: Lunes a Sábado 10 AM - 6 PM | Domingos 10:30 AM - 1 PM (previa cita)",
+  "Horarios: Lunes a Sábado 10 AM - 6 PM (con cita previa) | Domingos 10:30 AM - 1 PM (previa cita)",
   "WhatsApp directo: +51 932 535 512",
   "Pagos en el salón: efectivo, Yape, Plin y tarjeta (POS). La tarjeta puede tener recargo de comisión; se informa al cobrar. El adelanto para reservar por este chat es solo Yape o Plin al 932 535 512, no Visa.",
   "Instagram: @zmlashandnails",
