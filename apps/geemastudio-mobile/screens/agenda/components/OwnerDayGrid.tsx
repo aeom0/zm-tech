@@ -8,6 +8,7 @@ import { Spacing } from '@/constants/theme'
 import { mixHexColors, getContrastTextColor } from '@/lib/color-hsv'
 import {
   AGENDA_BORDE_VISUAL_MIN,
+  computeOverlapLayout,
   esCeldaAgendaEnHorarioLaboral,
   esHoyEnZonaIANA,
   formatoHoraAgendaSlot,
@@ -20,7 +21,6 @@ import {
 
 import type { AgendaAppointment, AgendaEmployee, AgendaService, AgendaStatusFilter } from '../types'
 import {
-  computeOverlapLayout,
   filterAppointmentsForOwnerDay,
   getAppointmentServiceNames,
   getAppointmentServiceCount,
