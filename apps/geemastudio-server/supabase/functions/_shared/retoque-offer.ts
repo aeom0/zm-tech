@@ -227,6 +227,9 @@ export async function sendRetouchOfferForClient(
 
   const offerId = resolveRetouchServiceId(lastSvc, catalog);
   const offerSvc = catalog.find((s) => s.id === offerId) ?? lastSvc;
+  if (offerSvc.is_active === false) {
+    return { ok: false, skipped: true, reason: "service_inactive", phone };
+  }
   const firstName =
     String(client.name ?? "")
       .trim()

@@ -484,6 +484,26 @@ export async function handleRetouchTemplateButton(opts: {
     return true;
   }
 
+  // Servicio ofrecido ya no está en el catálogo activo (desactivado tras enviar
+  // la plantilla; …9705 Pedicure Clásico, análisis 06-oct [P1]): no abrir
+  // calendario con carrito vacío — avisar y mostrar el catálogo.
+  if (!catalog.servicesById.has(safeCtx.serviceId)) {
+    await clearCart(supabase, phoneNumber);
+    await clearOffer(supabase, phoneNumber, { step: "browsing" });
+    await safeSendText(
+      supabase,
+      phoneNumber,
+      "Ese servicio ya no lo tenemos disponible 💜 ¿Qué te gustaría agendar? Aquí tienes opciones:",
+    );
+    await sendOtroServicioCatalog(
+      phoneNumber,
+      catalog,
+      safeCtx.categoryId,
+      supabase,
+    );
+    return true;
+  }
+
   // Agendar: si el TTL del recordatorio venció, un solo mensaje +
   // calendario del servicio ofrecido — nunca saludo "te enviaremos el selector"
   // seguido de "Esa oferta ya venció" (Gaby …4563, análisis 05-ago [P4]).
