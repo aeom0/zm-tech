@@ -1,6 +1,6 @@
 # 10 — Traslado de la suite WABA a Geema (`geemastudio-server`)
 
-**Fecha:** 2026-10-05 · **Estado:** propuesto (nada ejecutado). PR #172 (retiro de mobile/panel) y PR #173 (caché del webhook) ya mergeados.
+**Fecha:** 2026-10-05 · **Estado:** F0–F2 ✅ (6-oct-2026); F3 (cutover) pendiente — ver «Avance» abajo. PR #172 (retiro de mobile/panel) y PR #173 (caché del webhook) ya mergeados.
 **Decisiones de Alberto (5-oct):** (1) renombrar la BD es **solo el nombre visible** (el ref `udelxwwnyivknslueerr` no cambia); (2) la suite WABA va al **servicio multi-tenant** (`zm-tech/apps/geemastudio-server`); (3) este documento es el plan, sin ejecución.
 **Contexto:** `apps/mobile` y panel web de ZM retirados (PR #172). Este repo queda con landing + Edge/WABA + migraciones.
 
@@ -76,6 +76,26 @@ Cada una conserva su flag `--no-verify-jwt` actual (ver `.cursor/rules/current-d
 1. Borrar `supabase/functions`, `supabase/migrations`, `packages/{policies-text,shared-schema}`, `scripts/db`, `scripts/waba-*`, `.github/workflows/ota-production.yml`, `docs/waba` (mover a zm-tech/histórico). Quedan: `apps/web` (landing) + docs del tenant.
 2. Actualizar `AGENTS.md`/`CLAUDE.md`/`.cursor/rules` (ya no hay Edge ni BD aquí). El repo ZM pasa a ser «landing + brief del tenant» y puede renombrarse (`zmlashnails-landing`) o, si la landing de Geema (`apps/landing`, Plan 10 Modo B/Corte 2) la reemplaza, archivarse.
 3. Cuidado: Vercel vigila este repo (`zmlashnails.com`); el renombre del repo afecta la integración → hacerlo solo con la landing ya migrada.
+
+## Avance (actualizado 2026-10-06)
+
+| Fase | Estado | Evidencia |
+|---|---|---|
+| F0 | ✅ | Baseline prod: **28 funciones** ACTIVE; `whatsapp-webhook` **v740** (el plan decía v655). |
+| F1 | ✅ | zm-tech #57: copia 1:1 de `supabase/functions/**` (29 carpetas), QA `scripts/waba-*`, `policies-text/data.json`, `docs/{waba,ops}`, look-preview + scripts GCP. Reemplazó el fork viejo del webhook (queda en historial). `diff -rq` ZM↔zm-tech = 0; QA `quick-wins` 24/24. |
+| F2 | ✅ | zm-tech #58/#59: `.github/workflows/edge-functions.yml` (solo `workflow_dispatch`, inputs `function`/`dry_run`, matriz de 24 funciones + guard de inventario). Secret `SUPABASE_ACCESS_TOKEN` copiado a zm-tech. Deploy real probado con `generate-recurring-expenses` → v56, `verify_jwt` intacto. |
+| F3 | ⏳ | Pendiente: ventana tranquila (noche/domingo temprano; nudges corren 9–22 Lima). |
+| F4–F5 | ⏳ | Sin iniciar. |
+
+**Hallazgos a tener en cuenta en F3**
+- `send-push-notification` y `abandoned-cart-reminders` están en prod desde marzo con deploy manual (fuera del CI de ZM, SHA sin verificar). Hoy están en `UNMANAGED` del workflow. Decidir: migrar a la matriz o retirar.
+- `deno check` falla en ZM (y por tanto aquí) para `abandoned-cart-reminders` y `waba-chat-simulator`; ya ocurría antes del traslado y el CI solo chequea `whatsapp-webhook` y `held-slot-watch`.
+- `generate-recurring-expenses` ya se despliega desde zm-tech; el SHA del bundle cambia por el path del entrypoint (no es drift). No tocarla en ZM hasta F3.
+- Antes de F3 confirmar que `main` de ZM no tenga cambios de bot sin desplegar y congelar cambios del bot.
+- F3 debe incluir el mismo día: trigger `push` en `edge-functions.yml` y apagar el job `deploy-edge-functions` de ZM. Rollback = redeploy desde ZM. Smoke con teléfonos QA `51999000978`–`999`.
+
+**Decisiones D1–D6 (resueltas el 6-oct):** D1 docs en zm-tech (copiadas en F1; ZM conserva la fuente hasta F5) · D2 look-preview se mueve con las Edge · D4 secret creado · D5 job único con matriz. Abiertas: D3 (rutinas remotas que clonan el repo de ZM), D6 (drift shared-schema).
+**Acordado:** el traslado es copia 1:1; parametrizar los hardcodes de ZM (nombre, dirección, abono S/25, copy) y activar `waba_tenant_routing_enabled` es una fase posterior (F6).
 
 ## 5. Renombre «visible» de la BD
 
