@@ -1,14 +1,17 @@
 name: Deploy Edge Functions (WABA)
 
-# Plan 10, F2. Solo manual hasta el cutover (F3): ZM sigue siendo el deployer
-# de producción y nunca debe haber dos deployers a la vez. En F3 se agrega el
-# trigger `push` (paths apps/geemastudio-server/supabase/functions/**) y se
-# apaga el job de ZM el mismo día.
+# Plan 10, F3 (6-oct-2026): este workflow es el ÚNICO deployer de las Edge
+# Functions de producción. Un push a main bajo supabase/functions/** despliega
+# todas (cambios en _shared afectan a varias); manual: input `function`.
 
 permissions:
   contents: read
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/geemastudio-server/supabase/functions/**'
   workflow_dispatch:
     inputs:
       function:
@@ -66,7 +69,7 @@ jobs:
   deploy:
     name: Deploy ${{ matrix.fn.name }}
     needs: verify
-    if: inputs.dry_run == false
+    if: github.event_name == 'push' || inputs.dry_run == false
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -104,7 +107,7 @@ jobs:
         id: sel
         working-directory: .
         run: |
-          if [ "${{ inputs.function }}" = "all" ] || [ "${{ inputs.function }}" = "${{ matrix.fn.name }}" ]; then
+          if [ "${{ github.event_name }}" = "push" ] || [ "${{ inputs.function }}" = "all" ] || [ "${{ inputs.function }}" = "${{ matrix.fn.name }}" ]; then
             echo "go=true" >> "$GITHUB_OUTPUT"
           else
             echo "go=false" >> "$GITHUB_OUTPUT"
