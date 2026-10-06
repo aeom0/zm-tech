@@ -84,6 +84,9 @@ export default function MiWebScreen() {
             Abrir vista previa
           </ThemedText>
         ) : null}
+        <ThemedText style={{ color: theme.textMuted, fontSize: 13, marginTop: Spacing.sm }}>
+          Los cambios guardados pueden tardar hasta 5 minutos en verse en tu sitio.
+        </ThemedText>
       </View>
 
       <MenuRow
