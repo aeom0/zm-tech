@@ -147,6 +147,22 @@ async function loadBlockedPhones(tenantId: string): Promise<Set<string>> {
   }
 }
 
+/** Baja de marketing (STOP). Fail-closed: `null` = la query falló → lanzar. */
+async function loadMarketingOptOutPhones(
+  tenantId: string,
+): Promise<Set<string>> {
+  const rows = (await supabaseRequest(
+    `waba_config?config_key=eq.marketing_opt_out&tenant_id=eq.${encodeURIComponent(tenantId)}&is_active=eq.true&select=config_value&limit=1`,
+  )) as Array<{ config_value?: { phones?: unknown } }> | null;
+  if (rows === null) throw new Error("marketing_opt_out query falló");
+  const raw = rows[0]?.config_value?.phones;
+  return new Set(
+    Array.isArray(raw)
+      ? raw.map((v) => (typeof v === "string" ? v.trim() : "")).filter(Boolean)
+      : [],
+  );
+}
+
 /**
  * Sesiones con staff takeover (foto diseño / pausa manual).
  *
@@ -242,10 +258,12 @@ Deno.serve(async (req: Request) => {
   ): Promise<void> {
     let blockedPhones: Set<string>;
     let pausedPhones: Set<string>;
+    let optOutPhones: Set<string>;
     let staffRecentPhones: Set<string>;
     try {
       blockedPhones = await loadBlockedPhones(tenantId);
       pausedPhones = await loadPausedPhones(tenantId);
+      optOutPhones = await loadMarketingOptOutPhones(tenantId);
       staffRecentPhones = await loadRecentStaffOutboundPhones(tenantId);
     } catch (err) {
       console.error(
@@ -258,6 +276,7 @@ Deno.serve(async (req: Request) => {
     const silentPhones = new Set([
       ...blockedPhones,
       ...pausedPhones,
+      ...optOutPhones,
       ...staffRecentPhones,
     ]);
     const candidates = (

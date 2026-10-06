@@ -1884,6 +1884,16 @@ export async function handleAIMessage(
 
   try {
     if (trigger.type === "opt_out") {
+      // Baja de marketing: promos y reenganches la respetan (lista aparte de
+      // blocked_phone_numbers: el bot sigue respondiendo si ella escribe).
+      try {
+        const { addMarketingOptOutPhone } = await import(
+          "../lib/waba-config.ts"
+        );
+        await addMarketingOptOutPhone(supabase, phoneNumber);
+      } catch (err) {
+        console.error("[AI] opt_out: no se pudo registrar la baja:", err);
+      }
       const { sendMessage } = await import("../wa-api.ts");
       await sendMessage(
         phoneNumber,

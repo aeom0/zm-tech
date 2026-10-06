@@ -227,15 +227,32 @@ Deno.serve(async (req: Request) => {
     .eq("config_key", "blocked_phone_numbers")
     .eq("is_active", true)
     .maybeSingle();
-  const blockedPhones = new Set(
-    Array.isArray(
-      (blockedConfig?.config_value as { phones?: unknown[] })?.phones,
-    )
-      ? (blockedConfig?.config_value as { phones: unknown[] }).phones
+  // Baja de marketing (STOP): fail-closed, un error de lectura aborta el envío.
+  const { data: optOutConfig, error: optOutError } = await supabaseAdmin
+    .from("waba_config")
+    .select("config_value")
+    .eq("tenant_id", tenantId)
+    .eq("config_key", "marketing_opt_out")
+    .eq("is_active", true)
+    .maybeSingle();
+  if (optOutError) {
+    console.error("[send-promo-whatsapp] Error cargando bajas:", optOutError);
+    return new Response("No se pudo verificar la lista de bajas", {
+      status: 503,
+    });
+  }
+  const phonesOf = (cfg: unknown): string[] => {
+    const raw = (cfg as { phones?: unknown[] } | null)?.phones;
+    return Array.isArray(raw)
+      ? raw
           .filter((phone): phone is string => typeof phone === "string")
           .map(normalizeBlockedDestination)
-      : [],
-  );
+      : [];
+  };
+  const blockedPhones = new Set([
+    ...phonesOf(blockedConfig?.config_value),
+    ...phonesOf(optOutConfig?.config_value),
+  ]);
 
   const { data: broadcast, error: broadcastError } = await supabaseAdmin
     .from("promo_broadcasts")

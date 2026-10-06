@@ -169,6 +169,82 @@ export async function loadBlockedPhoneSet(
 }
 
 /**
+ * Baja de marketing (clienta escribió STOP). Distinta de `blocked_phone_numbers`:
+ * el bot SIGUE respondiendo si ella escribe; solo se le deja de enviar
+ * promociones y reenganches proactivos.
+ */
+export const MARKETING_OPT_OUT_KEY = "marketing_opt_out";
+
+/** Fail-closed: si falla la lectura, lanza (los crons abortan el envío). */
+export async function loadMarketingOptOutPhoneSet(
+  supabase: SupabaseClient,
+  tenantId?: string,
+): Promise<Set<string>> {
+  const scoped = tenantId?.trim() || getRequestTenantId();
+  const { data, error } = await supabase
+    .from("waba_config")
+    .select("config_value")
+    .eq("tenant_id", scoped)
+    .eq("config_key", MARKETING_OPT_OUT_KEY)
+    .eq("is_active", true)
+    .maybeSingle();
+  if (error) {
+    throw new Error(`loadMarketingOptOutPhoneSet falló: ${error.message}`);
+  }
+  const raw = (data?.config_value as { phones?: unknown } | null)?.phones;
+  return new Set(
+    Array.isArray(raw)
+      ? raw
+          .map((v) => (typeof v === "string" ? v.trim() : ""))
+          .filter(Boolean)
+      : [],
+  );
+}
+
+/** Agrega `phone` a la lista de baja de marketing (idempotente). */
+export async function addMarketingOptOutPhone(
+  supabase: SupabaseClient,
+  phone: string,
+  tenantId?: string,
+): Promise<void> {
+  const scoped = tenantId?.trim() || getRequestTenantId();
+  const { data, error } = await supabase
+    .from("waba_config")
+    .select("id, config_value")
+    .eq("tenant_id", scoped)
+    .eq("config_key", MARKETING_OPT_OUT_KEY)
+    .eq("is_active", true)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!data) {
+    const { error: insErr } = await supabase.from("waba_config").insert({
+      tenant_id: scoped,
+      config_key: MARKETING_OPT_OUT_KEY,
+      label: "Baja de promociones (STOP)",
+      category: "campanas",
+      config_value: { phones: [phone] },
+      is_active: true,
+      sort_order: 5,
+    });
+    if (insErr) throw new Error(insErr.message);
+    return;
+  }
+  const raw = (data.config_value as { phones?: unknown } | null)?.phones;
+  const phones = Array.isArray(raw)
+    ? raw.filter((v): v is string => typeof v === "string")
+    : [];
+  if (phones.includes(phone)) return;
+  const { error: updErr } = await supabase
+    .from("waba_config")
+    .update({
+      config_value: { phones: [...phones, phone] },
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", data.id);
+  if (updErr) throw new Error(updErr.message);
+}
+
+/**
  * Teléfonos con `bot_paused_at` (foto diseño → staff takeover).
  *
  * Fail-closed: si PostgREST falla (timeout/504 transitorio) incluso tras
@@ -263,12 +339,13 @@ export async function loadRecentStaffOutboundPhoneSet(
 export async function loadSilentPhoneSet(
   supabase: SupabaseClient,
 ): Promise<Set<string>> {
-  const [blocked, paused, staffRecent] = await Promise.all([
+  const [blocked, paused, staffRecent, optOut] = await Promise.all([
     loadBlockedPhoneSet(supabase),
     loadPausedPhoneSet(supabase),
     loadRecentStaffOutboundPhoneSet(supabase),
+    loadMarketingOptOutPhoneSet(supabase),
   ]);
-  return new Set([...blocked, ...paused, ...staffRecent]);
+  return new Set([...blocked, ...paused, ...staffRecent, ...optOut]);
 }
 
 /** Palabras disparadoras del asistente (panel → `haiku_trigger_keywords`). */
