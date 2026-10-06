@@ -1,5 +1,6 @@
 // dispatcher.ts — Orquestador WABA (Plan 08 Fase 1)
 
+import { isStalePaymentRestart } from "../lib/stale-payment-session.ts";
 import {
   sendMessage as _sendMessage,
   sendInteractiveList as _sendInteractiveList,
@@ -1121,6 +1122,19 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
       step: "browsing",
       awaiting_screenshot: false,
     });
+  }
+
+  // Pago abandonado hace horas + saludo/"agendar": reiniciar, no seguir en el paso de pago
+  if (
+    msgType === "text" &&
+    isStalePaymentRestart(
+      session as Parameters<typeof isStalePaymentRestart>[0],
+      messageText,
+    )
+  ) {
+    await clearCart(supabase, phoneNumber);
+    await upsertSession(supabase, phoneNumber, { party_booking: null });
+    session = (await getSession(supabase, phoneNumber)) ?? session;
   }
 
   // Abono fijo S/25: resumen → (espera) datos → (espera) adelanto → voucher
