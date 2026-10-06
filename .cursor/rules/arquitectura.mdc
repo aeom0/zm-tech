@@ -26,14 +26,14 @@ zm-tech/
 │   │   ├── hooks/
 │   │   ├── lib/               # supabase.ts, query-client.ts
 │   │   └── constants/         # theme.ts
-│   └── geemastudio-server/    # Drizzle / seeds / scripts
+│   └── geemastudio-server/    # Edge WABA, migraciones, Drizzle, seeds
 ├── packages/
 │   ├── shared-schema/         # @geemastudio/shared-schema
 │   └── tenant-config/         # @zmtech/tenant-config
 └── docs/geemastudio/          # Docs de producto (no skills/rules)
 ```
 
-**IMPORTANTE**: No hay servidor Express. La app mobile y web conectan directo a Supabase (proyecto `xidjomlxpuosupymcsaj`).
+**IMPORTANTE**: No hay servidor Express. La app mobile y web conectan directo a Supabase (proyecto `udelxwwnyivknslueerr`). El ref legacy `xidjomlxpuosupymcsaj` ya no existe. Edge Functions y migraciones viven en `apps/geemastudio-server/` (único deployer: `.github/workflows/edge-functions.yml`). El repo ZM Lash solo conserva la landing.
 
 ## Stack
 
@@ -51,12 +51,11 @@ zm-tech/
 - **Dos productos distintos** (ver `docs/WEB_ARCHITECTURE.md`):
   - **Panel de gestión** (auth, siempre activo para todo tenant): `/finanzas`, `/dashboard`, `/panel/*`. Independiente de `web_mode`.
   - **Landing pública del tenant** (sin auth, opcional): `/s/[slug]` — controlada por `tenant_settings.web_mode` (`'none'` | `'geema_hosted'` | `'own_domain'`).
-- Panel implementado: `/finanzas` + `/finanzas/login` + `/dashboard` + `/panel/servicios` (`?tab=`) + `/panel/horarios`
-- Panel pendiente (PR-11): `/panel/clientes`, `/panel/personal`, `/panel/waba`, `/panel/agenda`, `/panel/configuracion`
+- Panel en `apps/geemastudio-web/src/app/(shell)/panel`: `/finanzas`, `/dashboard`, `/panel/servicios` (`?tab=`), `/panel/horarios`, `/panel/clientes`, `/panel/personal`, `/panel/agenda`, `/panel/waba`, `/panel/configuracion`
 - Login del panel: `/finanzas/login` (o `/login` para `/panel/*`); staff → redirect a `/`
 
 ### Base de datos (Supabase)
-- **Proyecto**: `xidjomlxpuosupymcsaj`
+- **Proyecto**: `udelxwwnyivknslueerr`
 - Tablas: profiles, tenant_settings, employees, service_categories, services, **packs**, **promotions**, **promotion_items**, clients, appointments, payments, inventory_items. RLS por rol (dev/owner/staff) y tenant cuando aplique
 - Helper `get_my_role()` para RLS; `tenant_settings` con `business_name`, `business_type`, colores, moneda, `web_mode` (`'none'`|`'geema_hosted'`|`'own_domain'`), `slug`, `custom_domain`, etc.
 - Migraciones: Drizzle; `pnpm db:push`

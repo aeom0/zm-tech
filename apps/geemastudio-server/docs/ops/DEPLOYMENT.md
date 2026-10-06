@@ -1,6 +1,8 @@
-# 🚀 Guía de Deployment
+# Guía de Deployment
 
-Guía completa para desplegar ZM Lash & Nails Beauty en producción.
+Guía de despliegue del salón. La landing `zmlashnails.com` sale del repo ZM Lash. App, panel y Edge salen de zm-tech.
+
+> El deploy de Edge es `.github/workflows/edge-functions.yml`. `ota-production.yml` y `yarn db:push` / `yarn deploy:*` de este archivo son del repo ZM anterior al 6-oct-2026. Schema: `pnpm db:push` desde la raíz de zm-tech.
 
 ## 📋 Requisitos Previos
 

@@ -1,6 +1,8 @@
 # Edge Functions — Supabase
 
-Documentación de las Edge Functions del proyecto ZM Lash & Nails Beauty (Supabase).
+Documentación de las Edge Functions del salón (proyecto `udelxwwnyivknslueerr`).
+
+> Desde el 6-oct-2026 el código vive en `apps/geemastudio-server/supabase/functions/` y el único deployer es `.github/workflows/edge-functions.yml` de zm-tech. Las menciones de este archivo a `ota-production.yml`, `apps/mobile` de ZM o `yarn deploy:*` son anteriores al traslado.
 
 ---
 

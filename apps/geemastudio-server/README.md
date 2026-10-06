@@ -9,7 +9,8 @@
 | `drizzle.config.ts` | `pnpm db:push` / `db:generate` / `db:studio` (schema `@geemastudio/shared-schema`) |
 | `migrations/`       | Salida de Drizzle generate                                                         |
 | `scripts/`          | Seeds Auth y SQL de ejemplo                                                        |
-| `supabase/`         | Migraciones de referencia + Edge Functions (WABA, reset demo, …)                   |
+| `supabase/migrations/` | Historial alineado con `schema_migrations` de `udelx…`                          |
+| `supabase/functions/` | Edge Functions (WABA, push, crons, reset demo). Único deployer: `.github/workflows/edge-functions.yml` |
 
 ## Proyecto Supabase
 
@@ -26,14 +27,11 @@ pnpm --filter geemastudio-server exec tsx scripts/seed-auth-users.mjs
 
 No hay `dev:server` ni Express.
 
-## WABA (Edge Functions) — traslado desde ZM (oct-2026, fase F1)
+## WABA (Edge Functions) — dueño desde plan 10 F5 (6-oct-2026)
 
-`supabase/functions/**` es una copia 1:1 del código WABA de `aeom0/ZM-Lash-and-Nails-Beauty`
-(29 carpetas, incluida `_shared`; `reset-demo-tenant` es propia de Geema). **Aún no se despliega desde aquí**:
-el deploy sigue en ZM hasta el cutover (plan 10, F3) — nunca dos deployers a la vez.
+`supabase/functions/**` es el código vigente del bot. El repo ZM Lash ya no tiene `supabase/`. **Único deployer:** `.github/workflows/edge-functions.yml` (push a `main` bajo esa ruta, o `workflow_dispatch`). No desplegar desde ZM Lash.
 
-- QA: `scripts/waba-validate-*` (p. ej. `deno run --allow-read --allow-env --config supabase/functions/deno.json scripts/waba-validate-quick-wins.ts`).
+- QA: `scripts/waba-validate-*`. Teléfonos `51999000978`–`999`.
 - Políticas: `policies-text/data.json` → `node scripts/copy-policies-to-edge.js` regenera `whatsapp-webhook/lib/policies.ts`.
-- Docs operativas: `docs/waba/`, `docs/ops/` (copia; la fuente de verdad sigue en ZM hasta F5).
-- El fork anterior de `whatsapp-webhook` (25 archivos) se reemplazó; queda en el historial de git.
+- Docs: `docs/waba/`, `docs/ops/` (fuente de verdad aquí). Análisis de chats: rama `claude/waba-analysis`, no `main`.
 - Plan: `docs/geemastudio/docs/plans/04-geema-migration/10-PLAN-traslado-waba-a-geema.md`.

@@ -67,7 +67,7 @@ Panel y app de ZM en Geema: checklist D1–D4, W1–W6, R1–R3b del Plan 13 com
 | 4   | Smoke Finanzas ZM en APK         | zm-tech | Validación mobile pendiente         |
 | 6   | Repartir un pago en servicio + producto | zm-tech | PR #55 solo tiene chip por concepto; falta split en `PaymentModal` y mostrar `kind` en finanzas web |
 | 7   | Nombres de packs «tinturado» (lash vs cejas vs rímel) | zm-tech | Ver propuesta abajo; **esperar confirmación de Vanessa** antes de tocar catálogo |
-| 5   | **Corte 2** — landing `zmlashnails.com` (Plan 11 Modo B) | ambos | Faltan reseñas reales (Fase 5), confirmar `web_team` con Vanessa y retiro de Sanity (Fase 6) |
+| 5   | **Corte 2** — landing `zmlashnails.com` (Plan 11 Modo D) | ZM | Sanity retirado (5-oct). Siguen reseñas reales, confirmar `web_team` con Vanessa, `web_whatsapp`, banner y video |
 
 ### Propuesta: `title` / `short_name` de packs y servicios «tinturado» (5-oct 2026)
 

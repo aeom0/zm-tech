@@ -60,21 +60,17 @@ Automotriz, Sports Tech y Enterprise.
 
 - **Cliente:** Vanessa (hermana de Alberto)
 - **Ubicación:** Lima, Perú
-- **Repo:** `aeom0/ZM-Lash-and-Nails-Beauty` (privado)
-- **Web:** `zmlashnails.com` (Vercel Hobby)
+- **Repo:** `aeom0/ZM-Lash-and-Nails-Beauty` (privado) — desde el 6-oct-2026 **solo landing** (`apps/web`) y docs operativos. App, panel, Edge, WABA, schema y migraciones viven en este monorepo (`geemastudio-*`). Commit directo a `main` en ese repo.
+- **Web:** `zmlashnails.com` (Vercel Hobby). Contenido desde Mi Web (`tenant_landing_public`); Sanity retirado (5-oct-2026).
 - **Vertical:** Beauty / salón de uñas y pestañas
-- **Versión:** v2.1 · **Skill detallado:** `.claude/SKILLS.md` del repo
-- **Stack:** Expo SDK 54 + React Native 0.81 + React 19 + Next.js 15 + Supabase + Drizzle ORM + Yarn + EAS
-- **Supabase project:** `udelxwwnyivknslueerr`
-- **Moneda:** Soles peruanos (S/) — `fmtSoles()` en `apps/mobile/utils/format.ts`
-- **Idioma UI:** Español es-PE sin excepción
-- **Paleta:** Violeta #7B2D8E · Violeta claro #E8D4ED · Violeta oscuro #5A1F6A · Oro #D4AF37 · Superficie #F8F5FA
-- **Equipo salón:** Vanessa (owner), Stephani. Romina de baja por salud desde feb. 2026 (comentada en `landing-data.ts`, no activa)
-- **Roles:** `dev` | `owner` | `staff`
-- **Integraciones:** WABA bot (+51 981 444 430), Claude Haiku (bot IA, `claude-haiku-4-5-20251001`), FCM push, EAS OTA, Sanity CMS, GitHub Actions
-- **⚠️ WABA token expira ~30 abril 2026** — renovar `WHATSAPP_ACCESS_TOKEN` en Supabase Secrets
-- **Patrones críticos:** TanStack Query v5 (breaking vs v4), `appointments.date` en UTC → mostrar con `timeZone: "America/Lima"`, títulos WABA lista máx 24 chars (`LIST_TITLE_MAX`), NO hay Express (directo a Supabase), `whatsapp-webhook` deploy siempre con `--no-verify-jwt`
-- **Estado:** En producción ✅
+- **Stack del repo ZM:** Next.js 15 + Yarn. Sin Expo, sin React Native, sin `supabase/functions`.
+- **Supabase project:** `udelxwwnyivknslueerr` (misma BD que Geema; tenant `zm-lash-nails`)
+- **Moneda:** Soles peruanos (S/)
+- **Idioma UI:** Español es-PE
+- **Paleta landing:** Violeta #7B2D8E · Oro #D4AF37
+- **Equipo salón:** Vanessa (owner), Stephani. Romina de baja por salud desde feb. 2026
+- **Bot WABA:** código en `apps/geemastudio-server/supabase/functions/whatsapp-webhook/`. Deploy solo con `.github/workflows/edge-functions.yml` de zm-tech (`--no-verify-jwt` en el webhook). No desplegar desde el repo ZM.
+- **Estado:** Landing en producción. Operación del salón (app + panel) en Geema.
 
 #### 2. Guataparo Bienes Raíces
 
@@ -246,17 +242,20 @@ pnpm build
 pnpm lint
 pnpm typecheck
 
-# ZM Lash & Nails Beauty (yarn)
-nvm use                          # siempre primero
-yarn dev                         # app móvil Expo
-yarn web:dev                     # Next.js web
-yarn db:push                     # schema Drizzle
-cd apps/mobile && npx eas update --branch production --message "..."
+# ZM Lash (yarn) — solo landing apps/web. Sin Expo, sin db:push, sin Edge.
+nvm use
+yarn dev                         # Next.js
+yarn check:types && yarn lint
 
-# Monorepos Yarn 4 (geemastudio legacy, condoapp, ia-scout360, zetaeme)
-# RepMAX activo: pnpm en zm-tech
+# GeemaStudio (pnpm, este monorepo)
+pnpm dev:web
+pnpm dev:mobile
+pnpm db:push                     # schema; si el pooler no responde, Management API
+# OTA: desde apps/geemastudio-mobile, no desde el repo ZM Lash
+
+# Otros monorepos Yarn 4 (condoapp, ia-scout360, zetaeme)
 yarn install
-yarn dev / yarn web:dev / yarn mobile:dev
+yarn dev
 yarn check:types && yarn lint
 
 # Monorepo pnpm (guataparobr)

@@ -64,30 +64,13 @@
 ## Comandos de Desarrollo
 
 ```bash
-# Solo Expo (apps/mobile)
-yarn mobile:dev
-
-# Solo web (Next.js, apps/web)
-yarn web:dev
-
-# Aplicar schema a PostgreSQL
-yarn db:push
-
-# Cargar datos de ejemplo (templates genéricos)
-yarn db:seed
-
-# Linting y formateo
-yarn lint
-yarn lint:fix
-yarn format
-
-# Type checking
-yarn check:types
-
-# Build web
-yarn build
-yarn web:build
-yarn mobile:build
+# Desde la raíz de zm-tech (pnpm). apps/mobile y apps/web de este doc = geemastudio-mobile / geemastudio-web.
+pnpm dev:mobile
+pnpm dev:web
+pnpm db:push
+pnpm db:seed
+pnpm lint
+pnpm check:types
 ```
 
 ## Configuración del Entorno

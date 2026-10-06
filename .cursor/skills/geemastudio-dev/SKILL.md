@@ -6,8 +6,8 @@ description: >
   Actívalo cuando el usuario mencione GeemaStudio, Geema, salones/barberías/spas
   multi-tenant, migración ZM Lash → Geema, tenant-config, o Lunaris (paleta
   #40E0D0/#00897B). Contiene stack, estructura de carpetas, convenciones,
-  patrones arquitectónicos, schema Supabase y el proceso de sync espejo con
-  el repo canónico ZM Lash & Nails Beauty.
+  patrones arquitectónicos y schema Supabase. ZM Lash (repo aparte) es solo
+  la landing; app, panel, Edge y WABA viven en este monorepo.
 ---
 
 # GeemaStudio — Dev Skill
@@ -83,7 +83,7 @@ Supabase JS          v2
 ### Monorepo
 
 ```
-Yarn                 4 (PnP)
+pnpm                 11 + Turborepo (no Yarn)
 TypeScript           ~6.0.3 (resolutions en package.json raíz)
 Turborepo            ^2.x
 Workspaces:
@@ -103,7 +103,11 @@ WSL          Ubuntu en Windows 11
 NO Express   — mobile y web conectan directo a Supabase
 ```
 
-### Bot WABA (`supabase/functions/whatsapp-webhook/`)
+### Bot WABA (`apps/geemastudio-server/supabase/functions/whatsapp-webhook/`)
+
+Único deployer: `.github/workflows/edge-functions.yml` (push a `main` en esa ruta).
+El repo ZM Lash ya no tiene `supabase/functions`. Análisis de chats: rama
+`claude/waba-analysis`, no `main`.
 
 ```
 Runtime:   Deno (Supabase Edge Functions)
@@ -248,7 +252,7 @@ const { data: payments } = await supabase
 ### 4.6 Migraciones de BD — restriccion WSL
 
 ```
-Puerto Postgres (5432 / pooler) BLOQUEADO en WSL/sandbox → yarn db:push y
+Puerto Postgres (5432 / pooler) BLOQUEADO en WSL/sandbox → pnpm db:push y
 `supabase db query --linked` (conexion directa) NO funcionan; fallan por timeout.
 
 Usar SIEMPRE:
@@ -586,7 +590,7 @@ Audiencia: `owner` / `staff` / `dev`. Siempre autenticados con Supabase Auth.
 | `/dashboard`                                                                                 | ✅ Implementado |
 | `/panel/servicios` (`?tab=categorias\|servicios\|packs\|promos`)                             | ✅ Implementado |
 | `/panel/horarios`                                                                            | ✅ Implementado |
-| `/panel/clientes`, `/panel/personal`, `/panel/agenda`, `/panel/waba`, `/panel/configuracion` | ⏳ PR-11        |
+| `/panel/clientes`, `/panel/personal`, `/panel/agenda`, `/panel/waba`, `/panel/configuracion` | ✅ En `src/app/(shell)/panel` |
 
 #### Producto 2 — Landing pública del tenant (opcional)
 
@@ -675,13 +679,12 @@ password: Geema2025!
 ## 11. Comandos del proyecto
 
 ```bash
-yarn mobile:dev      # Expo en 8081
-yarn web:dev         # Next.js
-yarn check:types     # correr SIEMPRE antes de commit
-yarn lint
-yarn lint:fix
-# yarn db:push       # NO en WSL — usar Supabase Dashboard SQL Editor
-yarn db:seed         # seeds template
+pnpm dev:mobile      # Expo en 8081
+pnpm dev:web         # Next.js
+pnpm check:types     # correr SIEMPRE antes de commit
+pnpm lint
+# pnpm db:push       # NO en WSL si el pooler no responde — Management API o SQL Editor
+pnpm db:seed         # seeds template
 ```
 
 ---
@@ -715,7 +718,7 @@ yarn db:seed         # seeds template
 1. Hardcodear valores de negocio: "S/", "Chicas", "#7B2D8E", "ZM Lash", "America/Lima" fija
 2. TanStack Query v4: useQuery(['key'], fn) — obsoleto en este proyecto
 3. Joins encadenados PostgREST: causan [] silencioso, sin error visible
-4. yarn db:push en WSL: el puerto 5432 esta bloqueado
+4. pnpm db:push en WSL si el pooler no responde: el puerto 5432 esta bloqueado; usar Management API
 5. result.uri en expo-image-picker: es SDK menor a 48, usar result.assets[0].uri
 6. Queries de badge sin refetchInterval ni enabled: badges desactualizados
 7. Logica de negocio en screens: va en hooks o services, nunca en el JSX
@@ -749,9 +752,9 @@ yarn db:seed         # seeds template
 
 Formato `mcpServers` objeto — el formato antiguo `tools` block esta obsoleto.
 
-**GeemaStudio no tiene un MCP Supabase dedicado**: el conector `mcp__claude_ai_SupabaseZMTech` (Claude Code) solo lista los proyectos `naturalforce-suite` y `ZMTech`/`llacowjutjfefboqgfnj` — **no** incluye `udelxwwnyivknslueerr`. Para operar sobre el proyecto real de GeemaStudio usar el **Supabase CLI local ya autenticado** (`supabase projects list` / `api-keys` / `db query`) y el Management API por HTTPS — ver `docs/SUPABASE.md` §5 y §4.6 arriba. Los refs `xidjomlxpuosupymcsaj` (Geema legacy, eliminado) y cualquier mención a `udelxwwnyivknslueerr` como "solo lectura" son historicos — el proyecto real y unico de GeemaStudio hoy es `udelxwwnyivknslueerr`.
+**MCP de Geema / ZM Lash:** `ClaudeSupabase` → proyecto `udelxwwnyivknslueerr`. El hub `llacowjutjfefboqgfnj` es `SupabaseZMTech` y no incluye las tablas del salón. El ref `xidjomlxpuosupymcsaj` ya no existe. Si el pooler no responde, Management API por HTTPS — ver `docs/SUPABASE.md`.
 
 ---
 
 _Migrado desde `.cursor/skills/geemastudio.md` a skill registrado el 30-ago-2026._
-_Generado: marzo 2026. Actualizado: 30-ago-2026 (rediseño Más + avatar_url en ZM prod + skill registrado + sync espejo documentado)._
+_Generado: marzo 2026. Actualizado: 6-oct-2026 (WABA y Edge en geemastudio-server; ZM Lash solo landing; comandos pnpm)._

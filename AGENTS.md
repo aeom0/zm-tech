@@ -16,7 +16,7 @@ Monorepo multi-producto (pnpm + Turborepo). Mapa de BDs: [`docs/SUPABASE.md`](do
 
 ## Documentación ZM → Geema
 
-- La serie canónica de planes Geema es `docs/geemastudio/docs/plans/01–15`.
+- La serie canónica de planes Geema es `docs/geemastudio/docs/plans/01–18`.
 - El detalle de migración consolidado está en
   `docs/geemastudio/docs/plans/04-geema-migration/`.
 - Ya no hay espejo ni sync con ZM: `04-geema-migration/` es la única copia
@@ -124,3 +124,5 @@ DDL en prod: confirmación explícita del usuario. Geema `db:push` vive en `apps
 - Migraciones: `apps/geemastudio-server/supabase/migrations/`, nombres alineados con `schema_migrations` (ver `.cursor/rules/supabase-migrations.mdc`).
 - El webhook no tiene preview por PR: tras mergear, esperar el deploy del workflow antes de probar por WhatsApp. QA solo con teléfonos `51999000978`–`999`.
 - Caché del isolate (`lib/ttl-cache.ts`): tenant 5 min; catálogo y `waba_config` 60 s.
+- Análisis de conversaciones: el prompt vive en `apps/geemastudio-server/docs/waba/prompts/rutina-waba-analysis.md`. El reporte se publica **solo** en la rama `claude/waba-analysis` (se reinicia desde `origin/main` en cada corrida, `push --force-with-lease`). No va a `main` ni abre PR. Si la tanda incluye código, va en otra rama + PR.
+- Repo `aeom0/ZM-Lash-and-Nails-Beauty` (desde plan 10 F5, 6-oct-2026): solo landing `apps/web` (`zmlashnails.com`) y docs operativos (`docs/ops/`, `docs/meta-ads.md`). App, panel, Edge, WABA, schema y migraciones viven en este repo. No desplegar Edge ni correr `db:push` desde ZM Lash.

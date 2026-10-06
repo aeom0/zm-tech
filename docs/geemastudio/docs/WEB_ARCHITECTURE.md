@@ -202,7 +202,7 @@ Cada tenant tiene **sus propias RRSS establecidas** (ej: Vanessa tiene `@zmlasha
 | ---------------------- | ------------------------------------ | ------------------------------------------------------- |
 | Panel de gestión       | Listo en cuanto migre la DB          | Accede a `geema.zmtechdev.com/finanzas` etc. (temporal) |
 | `web_mode` inicial     | `'none'`                             | No necesita landing pública al day-1                    |
-| `zmlashnails.com`      | Independiente hoy (Modo D en preparación) | Su dominio sigue en el proyecto de Lash (landing con Sanity + hardcode, páginas legales y `/panel`). Camino elegido: Modo D, la landing lee `tenant_settings.web_*` (contenido ya cargado en la fila; faltan imágenes a Storage, vista de lectura pública y cambios de código — ver Plan 11). El Modo A (DNS a Geema) queda descartado para ZM por el riesgo sobre legales y panel |
+| `zmlashnails.com`      | Modo D en producción (oct-2026) | Landing en el repo ZM Lash (`apps/web` solamente). Lee `tenant_landing_public` (Mi Web); Sanity y el `/panel` de ese dominio se retiraron. El panel del salón es Geema. Siguen `web_whatsapp`, banner y video. El Modo A (DNS a Geema) queda descartado por legales |
 | Add-on landing         | Futuro                               | Si quieren, GeemaStudio ofrece servicio Modo A — sin repo aparte, panel sigue en `geema.zmtechdev.com` |
 | Rutas panel pendientes | Campañas WABA / CMS web / inventario | P2                                                      |
 
