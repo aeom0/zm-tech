@@ -170,7 +170,20 @@ export function findQuotedOfferIdsInText(
   for (const pack of catalog.packsById.values()) {
     const titleN = normForMatch(pack.title ?? "");
     const shortN = normForMatch(pack.short_name ?? "");
-    const hit = (titleN.length >= 5 && t.includes(titleN)) ||
+    // Haiku suele parafrasear el pack ("Lifting de Pestañas + Planchado de
+    // Cejas: S/90" vs título "Lifting + Planchado", …7393): también es pack
+    // cotizado si el texto trae el precio del pack y TODOS sus servicios.
+    const memberIds = parsePackServiceIds(pack);
+    const priceN = Math.round(Number(pack.pack_price));
+    const byMembers = memberIds.length >= 2 && priceN > 0 &&
+      new RegExp(`S\\s*/\\s*${priceN}(?!\\d)`, "i").test(text ?? "") &&
+      memberIds.every((sid) => {
+        const svc = catalog.servicesById.get(sid);
+        const n = normForMatch(svc?.name ?? "");
+        return n.length >= 3 && t.includes(n);
+      });
+    const hit = byMembers ||
+      (titleN.length >= 5 && t.includes(titleN)) ||
       (shortN.length >= 5 && t.includes(shortN));
     if (!hit) continue;
     ids.push(pack.id);
