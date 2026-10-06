@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Wrapper local — gcloud sin depender de PATH recargado
+exec "$HOME/google-cloud-sdk/google-cloud-sdk/bin/gcloud" "$@"
