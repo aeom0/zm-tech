@@ -11,7 +11,7 @@ import { useTheme } from '@/hooks/useTheme'
 import { useWebSettings } from '@/hooks/web/useWebSettings'
 import { Spacing, BorderRadius } from '@/constants/theme'
 import type { MoreStackParamList } from '@/navigation/MoreStackNavigator'
-import { previewLandingUrl } from '@/screens/web/constants'
+import { WEB_TEMPLATE_OPTIONS, previewLandingUrl } from '@/screens/web/constants'
 
 type Nav = NativeStackNavigationProp<MoreStackParamList, 'MiWeb'>
 
@@ -73,7 +73,8 @@ export default function MiWebScreen() {
           {publicada ? 'Publicada en Geema' : 'No publicada'}
         </ThemedText>
         <ThemedText style={{ color: theme.textMuted, fontSize: 13, marginTop: 4 }}>
-          Diseño: {data.webTemplate}
+          Diseño:{' '}
+          {WEB_TEMPLATE_OPTIONS.find((t) => t.id === data.webTemplate)?.label ?? data.webTemplate}
           {data.slug ? ` · /s/${data.slug}` : ''}
         </ThemedText>
         {previewUrl && publicada ? (

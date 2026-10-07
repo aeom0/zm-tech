@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import React, { useCallback, useLayoutEffect, useState } from 'react'
 import { Alert, ScrollView } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
@@ -42,8 +42,10 @@ export default function MiWebContenidoScreen() {
   const [mapEmbedUrl, setMapEmbedUrl] = useState('')
   const [guardando, setGuardando] = useState(false)
 
-  useEffect(() => {
-    if (!data) return
+  // Sincroniza el formulario cuando llegan datos nuevos (patrón React: ajustar estado durante el render)
+  const [syncedData, setSyncedData] = useState(data)
+  if (data && data !== syncedData) {
+    setSyncedData(data)
     setHeroTagline(data.heroTagline ?? '')
     setAbout(data.about ?? '')
     setHeroCtaText(data.heroCtaText ?? '')
@@ -61,7 +63,7 @@ export default function MiWebContenidoScreen() {
     setStatRating(data.statRating)
     setStatYears(data.statYears)
     setMapEmbedUrl(data.mapEmbedUrl ?? '')
-  }, [data])
+  }
 
   const emptyToNull = (v: string) => (v.trim() ? v.trim() : null)
 

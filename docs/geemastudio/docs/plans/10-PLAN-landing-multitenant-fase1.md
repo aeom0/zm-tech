@@ -72,7 +72,7 @@ URLs de prueba: `/s/zm-demo-elegant`, `/s/zm-demo-warm`, `/s/zm-demo-modern`.
   zm-demo-elegant: web_template=elegant, web_enabled=true, is_demo=true, gallery=14, team=2, promos=4, services=6, reviews=5
   zm-demo-modern:  web_template=modern,  web_enabled=true, is_demo=true, gallery=14, team=2, promos=4, services=6, reviews=5
   zm-demo-warm:    web_template=warm,    web_enabled=true, is_demo=true, gallery=14, team=2, promos=4, services=6, reviews=5
-  zm-lash-nails:   web_template=elegant, web_enabled=false, is_demo=false, gallery=0, team=0, promos=0, services=0, reviews=0  (sin cambios)
+  zm-lash-nails:   web_template=elegant, web_enabled=true (desde 1-oct-2026; se mantiene a propósito junto a zmlashnails.com), is_demo=false
   ```
 - Pendiente (no bloqueante para cerrar Fase 1): QA visual manual de las 3 URLs `/s/zm-demo-*` en los 3 templates; `yarn workspace geemastudio-web tsc --noEmit` no se corrió en esta sesión — correr antes de dar por cerrado el refactor de templates si no se corrió ya en el trabajo previo a esta sesión.
 
