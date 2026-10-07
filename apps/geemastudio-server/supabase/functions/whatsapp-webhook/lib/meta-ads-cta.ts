@@ -71,9 +71,10 @@ function isMetaAdsBoilerplateCtaSingle(trimmed: string): boolean {
 
   if (/^hola\s+quiero\s+mas\s+informacion\s*$/.test(normalized)) return true;
   if (
-    /^hola\s+me\s+gustaria\s+conseguir\s+mas\s+informacion\s+sobre\s+esto\s*$/.test(
-      normalized,
-    )
+    /^hola\s+me\s+gustaria\s+conseguir\s+mas\s+informacion\s+sobre\s+esto\s*$/
+      .test(
+        normalized,
+      )
   ) {
     return true;
   }

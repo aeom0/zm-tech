@@ -37,7 +37,8 @@ export const EMPTY_PAYMENT_EXTRACTION: PaymentExtraction = {
   operacion_ultimos4: "No detectado",
 };
 
-const PROMPT = `Analiza esta imagen enviada por una clienta a un bot de WhatsApp de un salón de belleza (ZM Lash & Nails, Perú).
+const PROMPT =
+  `Analiza esta imagen enviada por una clienta a un bot de WhatsApp de un salón de belleza (ZM Lash & Nails, Perú).
 
 PASO 1 - Clasifica en exactamente una categoría:
 - "comprobante_pago": captura de Yape, Plin, transferencia bancaria o voucher, con monto y datos de la operación.
@@ -94,10 +95,9 @@ export function parseClassifyResult(raw: string): {
     if (!validKinds.includes(parsed?.kind)) return empty;
     return {
       kind: parsed.kind as ImageKind,
-      extraction:
-        parsed.kind === "comprobante_pago"
-          ? (normalizeExtraction(parsed.extraction) ?? EMPTY_PAYMENT_EXTRACTION)
-          : null,
+      extraction: parsed.kind === "comprobante_pago"
+        ? (normalizeExtraction(parsed.extraction) ?? EMPTY_PAYMENT_EXTRACTION)
+        : null,
     };
   } catch {
     return empty;
@@ -201,12 +201,15 @@ export async function classifyInboundImage(
         opts.phoneNumber,
       );
     }
-    const rawText =
-      data?.content?.find((b: { type: string }) => b.type === "text")?.text ??
+    const rawText = data?.content?.find((b: { type: string }) =>
+      b.type === "text"
+    )?.text ??
       "";
     const { kind, extraction } = parseClassifyResult(rawText);
     console.log(
-      `[image-classify] kind=${kind ?? "null"} ms=${latencyMs} in=${tokensIn} out=${tokensOut}`,
+      `[image-classify] kind=${
+        kind ?? "null"
+      } ms=${latencyMs} in=${tokensIn} out=${tokensOut}`,
     );
     return { kind, extraction, latencyMs, tokensIn, tokensOut };
   } catch (err) {

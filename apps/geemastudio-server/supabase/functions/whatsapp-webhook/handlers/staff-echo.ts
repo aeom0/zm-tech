@@ -44,8 +44,7 @@ export async function handleStaffMessageEchoes(
     const wamid = typeof echo.id === "string" ? echo.id : null;
 
     // Destinatario = clienta (campo `to` en el eco)
-    const toRaw =
-      (typeof echo.to === "string" && echo.to) ||
+    const toRaw = (typeof echo.to === "string" && echo.to) ||
       (typeof echo.recipient_id === "string" && echo.recipient_id) ||
       "";
     const phone = waConversationKey(toRaw);
@@ -64,10 +63,9 @@ export async function handleStaffMessageEchoes(
     }
 
     const content = echoContent(echo).slice(0, 2000);
-    const msgType =
-      typeof echo.type === "string" && echo.type.length > 0
-        ? echo.type
-        : "text";
+    const msgType = typeof echo.type === "string" && echo.type.length > 0
+      ? echo.type
+      : "text";
 
     await supabase.from("wa_messages").insert({
       phone,
@@ -78,9 +76,9 @@ export async function handleStaffMessageEchoes(
       ...(wamid ? { wamid } : {}),
       ...(wamid
         ? {
-            delivery_status: "accepted",
-            delivery_status_at: new Date().toISOString(),
-          }
+          delivery_status: "accepted",
+          delivery_status_at: new Date().toISOString(),
+        }
         : {}),
     });
 

@@ -6,12 +6,12 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import {
+  isLashBotoxServiceName,
+  isLiftingServiceName,
   LIFTING_RICINO_MAX_DAYS,
   LIFTING_RICINO_MIN_DAYS,
   LIFTING_RICINO_TEMPLATE_LANG,
   LIFTING_RICINO_TEMPLATE_NAME,
-  isLashBotoxServiceName,
-  isLiftingServiceName,
   type RetouchServiceRow,
 } from "./retouch-resolve.ts";
 import {
@@ -97,12 +97,11 @@ export async function sendLiftingRicinoNudgeForClient(
     return { ok: false, skipped: true, reason: "client_missing" };
   }
 
-  const phone =
-    normalizeWaPhonePe(
-      client.phone_country === "PE" && client.phone_normalized
-        ? `51${client.phone_normalized}`
-        : client.phone,
-    ) ??
+  const phone = normalizeWaPhonePe(
+    client.phone_country === "PE" && client.phone_normalized
+      ? `51${client.phone_normalized}`
+      : client.phone,
+  ) ??
     normalizeWaPhonePe(client.phone) ??
     (typeof client.wa_user_id === "string" && isWaBsuid(client.wa_user_id)
       ? client.wa_user_id
@@ -192,10 +191,9 @@ export async function sendLiftingRicinoNudgeForClient(
     };
   }
 
-  const firstName =
-    String(client.name ?? "")
-      .trim()
-      .split(/\s+/)[0] || "hola";
+  const firstName = String(client.name ?? "")
+    .trim()
+    .split(/\s+/)[0] || "hola";
 
   const sent = await sendRicinoTemplate(creds, phone, firstName);
   if (!sent.ok) {

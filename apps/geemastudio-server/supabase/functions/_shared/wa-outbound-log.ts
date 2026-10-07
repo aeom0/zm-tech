@@ -35,9 +35,9 @@ export async function logWaOutboundMessage(
     // accepted = Meta API OK; delivered/read/failed llegan por webhook statuses
     ...(opts.wamid
       ? {
-          delivery_status: "accepted",
-          delivery_status_at: new Date().toISOString(),
-        }
+        delivery_status: "accepted",
+        delivery_status_at: new Date().toISOString(),
+      }
       : {}),
   });
 

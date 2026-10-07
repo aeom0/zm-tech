@@ -34,8 +34,8 @@ async function getFCMAccessToken(): Promise<string> {
   const encoder = new TextEncoder();
   const b64url = (data: string) =>
     btoa(data).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-  const toSign =
-    b64url(JSON.stringify(header)) + "." + b64url(JSON.stringify(payload));
+  const toSign = b64url(JSON.stringify(header)) + "." +
+    b64url(JSON.stringify(payload));
   const pem = sa.private_key
     .replace(/-----BEGIN PRIVATE KEY-----/, "")
     .replace(/-----END PRIVATE KEY-----/, "")
@@ -53,8 +53,8 @@ async function getFCMAccessToken(): Promise<string> {
     key,
     encoder.encode(toSign),
   );
-  const jwt =
-    toSign + "." + b64url(String.fromCharCode(...new Uint8Array(signature)));
+  const jwt = toSign + "." +
+    b64url(String.fromCharCode(...new Uint8Array(signature)));
   const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -119,17 +119,16 @@ Deno.serve(async (req: Request) => {
     user_ids = Array.isArray(parsed.user_ids) ? parsed.user_ids : [];
     title = typeof parsed.title === "string" ? parsed.title : "Notificación";
     body = typeof parsed.body === "string" ? parsed.body : "";
-    data =
-      parsed.data &&
-      typeof parsed.data === "object" &&
-      !Array.isArray(parsed.data)
-        ? Object.fromEntries(
-            Object.entries(parsed.data).filter(
-              (e): e is [string, string] =>
-                typeof e[0] === "string" && typeof e[1] === "string",
-            ),
-          )
-        : undefined;
+    data = parsed.data &&
+        typeof parsed.data === "object" &&
+        !Array.isArray(parsed.data)
+      ? Object.fromEntries(
+        Object.entries(parsed.data).filter(
+          (e): e is [string, string] =>
+            typeof e[0] === "string" && typeof e[1] === "string",
+        ),
+      )
+      : undefined;
   } catch {
     return new Response(
       JSON.stringify({ error: "Body JSON inválido (user_ids, title, body)" }),
@@ -192,7 +191,8 @@ Deno.serve(async (req: Request) => {
     );
   }
 
-  const url = `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`;
+  const url =
+    `https://fcm.googleapis.com/v1/projects/${projectId}/messages:send`;
   let sent = 0;
   const errors: string[] = [];
 

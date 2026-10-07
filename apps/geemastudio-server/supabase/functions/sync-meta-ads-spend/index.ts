@@ -86,9 +86,13 @@ function limaYmd(d = new Date()): { year: number; month: number; day: number } {
 function limaDateOffset(days: number): string {
   const { year, month, day } = limaYmd();
   const utc = new Date(Date.UTC(year, month - 1, day + days));
-  return `${utc.getUTCFullYear()}-${String(utc.getUTCMonth() + 1).padStart(2, "0")}-${String(
-    utc.getUTCDate(),
-  ).padStart(2, "0")}`;
+  return `${utc.getUTCFullYear()}-${
+    String(utc.getUTCMonth() + 1).padStart(2, "0")
+  }-${
+    String(
+      utc.getUTCDate(),
+    ).padStart(2, "0")
+  }`;
 }
 
 function parseYmd(value: string | undefined): string | null {
@@ -139,8 +143,8 @@ Deno.serve(async (req: Request) => {
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
   const authHeader = req.headers.get("Authorization") ?? "";
   const isCron = Boolean(cronSecret) && authHeader === `Bearer ${cronSecret}`;
-  const isServiceRole =
-    Boolean(serviceKey) && authHeader === `Bearer ${serviceKey}`;
+  const isServiceRole = Boolean(serviceKey) &&
+    authHeader === `Bearer ${serviceKey}`;
   if (!isCron && !isServiceRole) {
     return json({ success: false, error: "No autorizado" }, 401);
   }

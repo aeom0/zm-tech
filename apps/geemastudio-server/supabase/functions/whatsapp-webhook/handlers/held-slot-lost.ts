@@ -134,7 +134,9 @@ async function composeLostHoldText(
 
   const user =
     `Explica con calma, sin culpar, que el horario prometido ya no tiene cupo.\n` +
-    `- Tratamiento: ${firstName ? `Srta. ${firstName}` : "sin nombre, no inventes uno"}\n` +
+    `- Tratamiento: ${
+      firstName ? `Srta. ${firstName}` : "sin nombre, no inventes uno"
+    }\n` +
     `- Horario que se perdió (úsala tal cual): ${whenLabel}\n` +
     `- ${paidLine}\n` +
     `El mensaje debe incluir la frase exacta «no tiene cupo». ` +

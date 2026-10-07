@@ -4,8 +4,8 @@ import { sendMessage } from "../wa-api.ts";
 import {
   findClientByWaRecipient,
   getPhoneCountryAndNormalizedFromWa,
-  upsertSession,
   type SupabaseClient,
+  upsertSession,
 } from "../lib/supabase.ts";
 import { isWaBsuid } from "../lib/wa-recipient.mjs";
 
@@ -25,9 +25,10 @@ export function matchesAlreadyHaveDataIntent(text: string): boolean {
     /\bustedes\s+ya\s+tienen\b/.test(t) ||
     /\bya\s+tienen\s+(mis\s+)?datos\b/.test(t) ||
     /\bmis\s+datos\b.*\b(ya|tienen|tienen)\b/.test(t) ||
-    /\bya\s+(estan|está|esta)\s+(en\s+)?(el\s+)?(sistema|ficha|base|agenda)\b/.test(
-      t,
-    ) ||
+    /\bya\s+(estan|está|esta)\s+(en\s+)?(el\s+)?(sistema|ficha|base|agenda)\b/
+      .test(
+        t,
+      ) ||
     /\bya\s+me\s+registr/.test(t) ||
     /\bya\s+los\s+tienen\b/.test(t) ||
     /\bya\s+(te\s+)?(deje|pase|envie|mande)\s+(los\s+)?datos/.test(t) ||
@@ -48,8 +49,9 @@ export function looksLikeIdentityAttempt(text: string): boolean {
   // DNI/CE típicos o mención explícita
   if (/\b\d{8}\b/.test(raw)) return true;
   if (/\b(?:dni|ce|carnet|documento)\b/i.test(raw)) return true;
-  if (/\b(?:c\.?\s*e\.?)\s*[:\-]?\s*[a-zA-Z0-9]{8,12}\b/i.test(raw))
+  if (/\b(?:c\.?\s*e\.?)\s*[:\-]?\s*[a-zA-Z0-9]{8,12}\b/i.test(raw)) {
     return true;
+  }
   // Nombre + algo numérico (parcial)
   const letters = raw.replace(/[^a-záéíóúñüA-ZÁÉÍÓÚÑÜ\s]/g, " ").trim();
   const words = letters.split(/\s+/).filter((w) => w.length >= 2);
@@ -93,21 +95,22 @@ export function buildIdentityStatusReply(
     return "Tu ficha ya está completa 💜 ¡Gracias!";
   }
 
-  const missingJoin =
-    missingParts.length === 1
-      ? missingParts[0]
-      : `${missingParts.slice(0, -1).join(", ")} y ${missingParts[missingParts.length - 1]}`;
+  const missingJoin = missingParts.length === 1
+    ? missingParts[0]
+    : `${missingParts.slice(0, -1).join(", ")} y ${
+      missingParts[missingParts.length - 1]
+    }`;
 
-  const example =
-    hasRealName && nameWords.length === 1
-      ? `(ej: ${nameWords[0].charAt(0)}${nameWords[0].slice(1).toLowerCase()} López 87654321)`
-      : "(ej: María García 87654321)";
+  const example = hasRealName && nameWords.length === 1
+    ? `(ej: ${nameWords[0].charAt(0)}${
+      nameWords[0].slice(1).toLowerCase()
+    } López 87654321)`
+    : "(ej: María García 87654321)";
 
   if (haveParts.length > 0) {
-    const haveJoin =
-      haveParts.length === 1
-        ? haveParts[0]
-        : `${haveParts[0]} y ${haveParts[1]}`;
+    const haveJoin = haveParts.length === 1
+      ? haveParts[0]
+      : `${haveParts[0]} y ${haveParts[1]}`;
     const passPronoun = missingParts.length === 1 ? "lo" : "los";
     return (
       `En tu ficha tengo: ${haveJoin}. Me falta ${missingJoin} — es para *actualizar nuestra agenda* 📋 ` +
@@ -456,9 +459,10 @@ export function isIdentityEscapeMessage(
   if (!looksLikeIdentityAttempt(text)) {
     const norm = t.normalize("NFD").replace(/\p{M}/gu, "");
     if (
-      /\b(malaso|malo|error|bug|robot|bot|cuelga|colgo|equivoc|otra fecha|no toque|no toqué|incorrect)\b/.test(
-        norm,
-      )
+      /\b(malaso|malo|error|bug|robot|bot|cuelga|colgo|equivoc|otra fecha|no toque|no toqué|incorrect)\b/
+        .test(
+          norm,
+        )
     ) {
       return true;
     }
@@ -475,7 +479,15 @@ export function isIdentityEscapeMessage(
       .toLowerCase()
       .normalize("NFD")
       .replace(/\p{M}/gu, "");
-    const SHORT_ACK_WORDS = new Set(["ok", "oka", "okey", "okay", "ya", "si", "no"]);
+    const SHORT_ACK_WORDS = new Set([
+      "ok",
+      "oka",
+      "okey",
+      "okay",
+      "ya",
+      "si",
+      "no",
+    ]);
     if (stripped.length <= 2 && !SHORT_ACK_WORDS.has(normalizedStripped)) {
       return true;
     }

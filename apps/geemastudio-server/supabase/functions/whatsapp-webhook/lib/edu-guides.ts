@@ -121,17 +121,19 @@ export function matchesMappingExplainIntent(text: string): boolean {
   if (/\b(mapping|mapeo|mapas?\s+de\s+longitud)/.test(t)) return true;
   if (
     /\b(disenos?|diseños?)\b/.test(t) &&
-    /(pestan|extension|ojo|gato|ardilla|muneca|abierto|clasic|rimel|3d|4d)/.test(
-      t,
-    )
+    /(pestan|extension|ojo|gato|ardilla|muneca|abierto|clasic|rimel|3d|4d)/
+      .test(
+        t,
+      )
   ) {
     return true;
   }
   // “quiero ver los diseños” / “qué diseños hay” sin foto de portafolio explícita
   if (
-    /(ver|mostrar|pasan|pasa|mandan|manda)\s+(los\s+)?(disenos?|diseños?|mapas?)/.test(
-      t,
-    )
+    /(ver|mostrar|pasan|pasa|mandan|manda)\s+(los\s+)?(disenos?|diseños?|mapas?)/
+      .test(
+        t,
+      )
   ) {
     return true;
   }
@@ -199,9 +201,10 @@ export function matchesFiberCardIntent(text: string): boolean {
   const t = norm(text ?? "");
   if (!t) return false;
   if (!pickMappingTechnique(t)) return false;
-  return /(foto|ver|mostrar|mand|pas|referenc|explic|que\s+es|como\s+es|ficha|info|precio|cuanto|estilo|queda)/.test(
-    t,
-  );
+  return /(foto|ver|mostrar|mand|pas|referenc|explic|que\s+es|como\s+es|ficha|info|precio|cuanto|estilo|queda)/
+    .test(
+      t,
+    );
 }
 
 export function parseEduGuideActionParam(param: string): EduGuideKind | null {
@@ -226,8 +229,7 @@ export function getEduGuideImage(
   const meta = GUIDE_META[kind];
   const url = getConfigText(wabaConfig, meta.urlKey, "").trim();
   if (!url) return null;
-  const caption =
-    getConfigText(wabaConfig, meta.captionKey, "").trim() ||
+  const caption = getConfigText(wabaConfig, meta.captionKey, "").trim() ||
     meta.defaultCaption;
   return { url, caption };
 }
@@ -258,9 +260,10 @@ export function matchesFiberCompareGuideIntent(text: string): boolean {
   const t = norm(text ?? "");
   if (!t) return false;
   if (detectLashFiberKeys(text).length < 2) return false;
-  return /(foto|ver|mostrar|mand|pas|diferenc|compar|estilo|queda|tipo\s+de\s+fibra|referenc)/.test(
-    t,
-  );
+  return /(foto|ver|mostrar|mand|pas|diferenc|compar|estilo|queda|tipo\s+de\s+fibra|referenc)/
+    .test(
+      t,
+    );
 }
 
 /**

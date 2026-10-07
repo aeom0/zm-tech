@@ -9,16 +9,16 @@ import {
 import { persistInboundWaImage } from "../lib/inbound-image.ts";
 import {
   classifyInboundImage,
-  parseOcrMonto,
-  paymentMethodFromExtraction,
   EMPTY_PAYMENT_EXTRACTION,
+  parseOcrMonto,
   type PaymentExtraction,
+  paymentMethodFromExtraction,
 } from "../lib/image-classify.ts";
 import { sendPaymentVerificationTemplate } from "../lib/payment-template.ts";
 import type { SupabaseClient } from "../lib/supabase.ts";
 import {
-  findClientByWaRecipient,
   appointmentPhoneForRecipient,
+  findClientByWaRecipient,
   getPhoneCountryAndNormalizedFromWa,
 } from "../lib/supabase.ts";
 import { isWaBsuid } from "../lib/wa-recipient.mjs";
@@ -140,8 +140,9 @@ export async function tryHandlePaymentScreenshotDetected(opts: {
   const mediaId = imageData?.id;
   if (!mediaId) return false;
 
-  const caption =
-    typeof imageData?.caption === "string" ? imageData.caption : null;
+  const caption = typeof imageData?.caption === "string"
+    ? imageData.caption
+    : null;
   const imageUrl = await persistInboundWaImage(supabase, {
     phone: phoneNumber,
     mediaId,
@@ -163,8 +164,8 @@ export async function tryHandlePaymentScreenshotDetected(opts: {
     return false;
   }
 
-  const extraction: PaymentExtraction =
-    classified.extraction ?? EMPTY_PAYMENT_EXTRACTION;
+  const extraction: PaymentExtraction = classified.extraction ??
+    EMPTY_PAYMENT_EXTRACTION;
   const clientData = await findClientByWaRecipient(supabase, phoneNumber);
   const apptPhone = appointmentPhoneForRecipient(phoneNumber);
   const recent = await findMostRecentAppointmentForPhone(supabase, phoneNumber);
@@ -179,8 +180,9 @@ export async function tryHandlePaymentScreenshotDetected(opts: {
   if (recent) {
     appointmentId = recent.id;
     serviceName = await resolveServiceName(supabase, recent.service_id);
-    const dateRaw =
-      typeof recent.date === "string" ? recent.date : String(recent.date);
+    const dateRaw = typeof recent.date === "string"
+      ? recent.date
+      : String(recent.date);
     // recent.date (appointments.date) ya es literal Lima — guardar tal cual, sin fingir "Z"
     // (la columna es timestamp WITHOUT time zone: un "Z" falso no la vuelve UTC real).
     appointmentDateIso = dateRaw;
@@ -197,8 +199,7 @@ export async function tryHandlePaymentScreenshotDetected(opts: {
     if (ocrMonto) amountTotal = ocrMonto;
   }
 
-  const clientName =
-    clientData?.name?.trim() ||
+  const clientName = clientData?.name?.trim() ||
     recent?.client_name?.trim() ||
     contactName?.trim() ||
     "Cliente WhatsApp";
@@ -238,12 +239,14 @@ export async function tryHandlePaymentScreenshotDetected(opts: {
     appointmentDateLabel: dateLabel.slice(0, 60),
     extraction,
   }).catch((err) =>
-    console.error("[payment-screenshot-detected] template:", err),
+    console.error("[payment-screenshot-detected] template:", err)
   );
 
   await sendMessage(phoneNumber, CLIENT_ACK);
   console.log(
-    `[payment-screenshot-detected] post_service ver=${verification.id.slice(0, 8)} phone=…${phoneNumber.slice(-4)}`,
+    `[payment-screenshot-detected] post_service ver=${
+      verification.id.slice(0, 8)
+    } phone=…${phoneNumber.slice(-4)}`,
   );
   return true;
 }

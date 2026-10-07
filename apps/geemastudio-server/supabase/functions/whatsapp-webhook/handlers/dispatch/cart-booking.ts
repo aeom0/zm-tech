@@ -7,15 +7,15 @@ import {
   orderedServicesFromIds,
 } from "../../format.ts";
 import {
-  getSession,
-  upsertSession,
   addCartItems,
+  type CartItem,
   expandCartItemsToServiceIds,
+  getSession,
   replaceCartKeepingSchedule,
   type SupabaseClient,
-  type CartItem,
+  upsertSession,
 } from "../../lib/supabase.ts";
-import { WA_IDS, getEmployeeCategories } from "../../lib/constants.ts";
+import { getEmployeeCategories, WA_IDS } from "../../lib/constants.ts";
 import type { ServiceCatalog } from "../../lib/services-catalog.ts";
 import {
   getCartDayRestrictionCaveat,
@@ -28,14 +28,14 @@ import {
 } from "../menu.ts";
 import {
   getSessionSelectedDay,
-  resendDatetimeSelectors,
   openBookingCalendarForCart,
+  resendDatetimeSelectors,
 } from "../booking-flow.ts";
 import { isShortAffirmativeText } from "../menu-remap.ts";
 import { matchesQuotedOfferConfirm } from "../../lib/pending-price-cta.ts";
 import {
-  shouldBlockAdditionalBooking,
   ADDITIONAL_BOOKING_BLOCK_MESSAGE,
+  shouldBlockAdditionalBooking,
 } from "../pending-appointment.ts";
 
 /** Tras agregar ítem por lista interactiva → mismo camino que Haiku add_to_cart. */
@@ -120,8 +120,7 @@ export async function trySwapCartFromStaleCatalogTap(opts: {
   }
 
   const current = session?.cartItems ?? [];
-  const sameAlone =
-    current.length === 1 &&
+  const sameAlone = current.length === 1 &&
     current[0]!.item_type === replacement[0]!.item_type &&
     current[0]!.item_id === replacement[0]!.item_id;
 
@@ -204,8 +203,7 @@ export async function tryAcceptPendingPriceCta(opts: {
   const sentAt = session?.pending_price_cta_at
     ? new Date(session.pending_price_cta_at).getTime()
     : 0;
-  const pendingFresh =
-    Boolean(pendingId) &&
+  const pendingFresh = Boolean(pendingId) &&
     Boolean(sentAt) &&
     Date.now() - sentAt <= PENDING_PRICE_CTA_TTL_MS;
   const offerIds = [...new Set(quotedIds)];
@@ -216,8 +214,7 @@ export async function tryAcceptPendingPriceCta(opts: {
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "");
-  const wantsPackOnly =
-    /\bpack\b/.test(confirmNorm) &&
+  const wantsPackOnly = /\bpack\b/.test(confirmNorm) &&
     !/\b(mojado|extension|lifting|promo)\b/.test(confirmNorm);
   if (wantsPackOnly) {
     const onlyPacks = offerIds.filter((id) => catalog.packsById.has(id));
@@ -303,7 +300,9 @@ export async function tryAcceptPendingPriceCta(opts: {
   const total = toAdd.reduce((a, i) => a + i.price, 0);
   await sendMessage(
     phoneNumber,
-    `✅ Listo: *${labels.join(" + ")}* (S/ ${total.toFixed(0)})\n\n📅 ¿Qué día te queda bien?`,
+    `✅ Listo: *${labels.join(" + ")}* (S/ ${
+      total.toFixed(0)
+    })\n\n📅 ¿Qué día te queda bien?`,
   );
   await openBookingAfterCartAdd(supabase, phoneNumber, catalog);
   return true;
@@ -339,8 +338,7 @@ export async function applyPendingPriceCtaBeforeDatetimeTap(opts: {
   const sentAt = session?.pending_price_cta_at
     ? new Date(session.pending_price_cta_at).getTime()
     : 0;
-  const fresh =
-    Boolean(pendingId) &&
+  const fresh = Boolean(pendingId) &&
     Boolean(sentAt) &&
     Date.now() - sentAt <= PENDING_PRICE_CTA_TTL_MS;
   if (!fresh) return false;
@@ -419,7 +417,8 @@ export async function tryAcceptPendingPortfolioCta(opts: {
   const sentAt = session?.pending_portfolio_cta_at
     ? new Date(session.pending_portfolio_cta_at).getTime()
     : 0;
-  const fresh = Boolean(sentAt) && Date.now() - sentAt <= PENDING_PORTFOLIO_CTA_TTL_MS;
+  const fresh = Boolean(sentAt) &&
+    Date.now() - sentAt <= PENDING_PORTFOLIO_CTA_TTL_MS;
   if (!fresh) return false;
 
   await upsertSession(supabase, phoneNumber, {
@@ -510,8 +509,7 @@ export async function proceedToBookingWithCurrentCart(
     messageText?: string;
   },
 ): Promise<void> {
-  const hasCart =
-    (session?.cartItems?.length ?? 0) > 0 ||
+  const hasCart = (session?.cartItems?.length ?? 0) > 0 ||
     (session?.serviceIds?.length ?? 0) > 0;
   if (!hasCart) {
     await sendMessage(
@@ -522,8 +520,8 @@ export async function proceedToBookingWithCurrentCart(
     return;
   }
 
-  const rescheduleIdEarly =
-    opts?.rescheduleAppointmentId ?? session?.reschedule_appointment_id ?? null;
+  const rescheduleIdEarly = opts?.rescheduleAppointmentId ??
+    session?.reschedule_appointment_id ?? null;
   if (
     await shouldBlockAdditionalBooking(supabase, phoneNumber, {
       rescheduleAppointmentId: rescheduleIdEarly,
@@ -534,8 +532,8 @@ export async function proceedToBookingWithCurrentCart(
   }
 
   const cartItems = session?.cartItems ?? [];
-  const useCartItems =
-    cartItems.length > 0 && cartItems.some((i) => i.price > 0);
+  const useCartItems = cartItems.length > 0 &&
+    cartItems.some((i) => i.price > 0);
   let summary: string;
   let orderedServices: {
     id: string;
@@ -620,8 +618,8 @@ export async function proceedToBookingWithCurrentCart(
     (a: number, s: { duration: number }) => a + s.duration,
     0,
   );
-  const rescheduleId =
-    opts?.rescheduleAppointmentId ?? session?.reschedule_appointment_id ?? null;
+  const rescheduleId = opts?.rescheduleAppointmentId ??
+    session?.reschedule_appointment_id ?? null;
 
   // Sticky / fecha en mensaje → hora (o cierra si trae hora); no lista genérica 7 días
   const opened = await openBookingCalendarForCart(

@@ -182,8 +182,7 @@ async function askHaikuQuality(
     "- client_confused: clienta molesta/confundida porque no le respondieron bien (ej. por qué no dice el precio)\n" +
     "Si no hay ninguno, needs_alert=false y flags=[].";
 
-  const userPrompt =
-    `Teléfono …${phone.slice(-4)}\n` +
+  const userPrompt = `Teléfono …${phone.slice(-4)}\n` +
     `Paso sesión: ${step ?? "browsing"}\n` +
     `Carrito actual: ${cartLabel}\n\n` +
     `Transcript (más reciente al final):\n${transcript}`;
@@ -239,20 +238,18 @@ async function askHaikuQuality(
     const parsed = JSON.parse(jsonMatch[0]) as Partial<HaikuVerdict>;
     const flags = Array.isArray(parsed.flags)
       ? parsed.flags.filter(
-          (f) => typeof f === "string" && ALLOWED_FLAGS.has(f),
-        )
+        (f) => typeof f === "string" && ALLOWED_FLAGS.has(f),
+      )
       : [];
-    const severity =
-      parsed.severity === "high" || parsed.severity === "low"
-        ? parsed.severity
-        : "medium";
+    const severity = parsed.severity === "high" || parsed.severity === "low"
+      ? parsed.severity
+      : "medium";
     return {
       needs_alert: Boolean(parsed.needs_alert) && flags.length > 0,
       flags,
-      summary:
-        typeof parsed.summary === "string" && parsed.summary.trim()
-          ? parsed.summary.trim().slice(0, 160)
-          : flags.map((f) => FLAG_LABELS[f] ?? f).join("; "),
+      summary: typeof parsed.summary === "string" && parsed.summary.trim()
+        ? parsed.summary.trim().slice(0, 160)
+        : flags.map((f) => FLAG_LABELS[f] ?? f).join("; "),
       severity,
     };
   } catch (err) {
@@ -374,7 +371,9 @@ Deno.serve(async (req: Request) => {
                 .eq("phone", row.phone)
                 .eq("tenant_id", tenant.tenantId);
               console.log(
-                `[chat-quality-review] skip CTWA temprano …${row.phone.slice(-4)} inbounds=${nIn}`,
+                `[chat-quality-review] skip CTWA temprano …${
+                  row.phone.slice(-4)
+                } inbounds=${nIn}`,
               );
               continue;
             }
@@ -426,8 +425,7 @@ Deno.serve(async (req: Request) => {
               summary: verdict.summary,
               severity: verdict.severity,
             });
-            const whoLabel =
-              display.firstName ||
+            const whoLabel = display.firstName ||
               (display.waUsername ? `@${display.waUsername}` : null) ||
               "Sin teléfono";
             await notifyAdmins(supabase, title, body, {
@@ -440,7 +438,9 @@ Deno.serve(async (req: Request) => {
             });
             alerted++;
             console.log(
-              `[chat-quality-review] alert ${whoLabel} …${row.phone.slice(-4)} flags=${flags.join(",")}`,
+              `[chat-quality-review] alert ${whoLabel} …${
+                row.phone.slice(-4)
+              } flags=${flags.join(",")}`,
             );
           }
 

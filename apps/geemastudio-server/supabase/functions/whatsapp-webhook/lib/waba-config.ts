@@ -5,10 +5,10 @@ import type { SupabaseClient } from "./supabase.ts";
 import { getRequestTenantId } from "./tenant.ts";
 import { cachedLoad } from "./ttl-cache.ts";
 import {
+  HAIKU_RUNTIME_NUMERIC_DEFAULTS,
   HAIKU_SYSTEM_EMERGENCY_ONE_LINE,
   HAIKU_SYSTEM_PROMPT_BASE_DEFAULT,
   HAIKU_TRIGGER_KEYWORDS_DEFAULT,
-  HAIKU_RUNTIME_NUMERIC_DEFAULTS,
   HAIKU_WELCOME_FALLBACK_AD_DEFAULT,
   HAIKU_WELCOME_FALLBACK_ORGANIC_DEFAULT,
   HAIKU_WELCOME_GENERATION_SYSTEM_DEFAULT,
@@ -91,8 +91,7 @@ export function getConfigText(
   fallback: string,
 ): string {
   const entry = config.get(key);
-  const text =
-    (entry as Record<string, unknown> | undefined)?.text ??
+  const text = (entry as Record<string, unknown> | undefined)?.text ??
     (entry as Record<string, unknown> | undefined)?.url;
   return typeof text === "string" && text.trim() ? text : fallback;
 }
@@ -195,8 +194,8 @@ export async function loadMarketingOptOutPhoneSet(
   return new Set(
     Array.isArray(raw)
       ? raw
-          .map((v) => (typeof v === "string" ? v.trim() : ""))
-          .filter(Boolean)
+        .map((v) => (typeof v === "string" ? v.trim() : ""))
+        .filter(Boolean)
       : [],
   );
 }
@@ -269,7 +268,7 @@ export async function loadPausedPhoneSet(
       return new Set(
         (data ?? [])
           .map((r: { phone?: string }) =>
-            typeof r.phone === "string" ? r.phone.trim() : "",
+            typeof r.phone === "string" ? r.phone.trim() : ""
           )
           .filter(Boolean),
       );
@@ -311,7 +310,7 @@ export async function loadRecentStaffOutboundPhoneSet(
       return new Set(
         (data ?? [])
           .map((r: { phone?: string }) =>
-            typeof r.phone === "string" ? r.phone.trim() : "",
+            typeof r.phone === "string" ? r.phone.trim() : ""
           )
           .filter(Boolean),
       );
@@ -381,16 +380,15 @@ export function getHaikuTriggerKeywordsFromWaba(
   }
 
   const o = raw as Record<string, unknown>;
-  const recommendation =
-    "recommendation" in o
-      ? normalizeKeywordList(o.recommendation)
-      : [...D.recommendation];
-  const free_question =
-    "free_question" in o
-      ? normalizeKeywordList(o.free_question)
-      : [...D.free_question];
-  const blocked =
-    "blocked" in o ? normalizeKeywordList(o.blocked) : [...D.blocked];
+  const recommendation = "recommendation" in o
+    ? normalizeKeywordList(o.recommendation)
+    : [...D.recommendation];
+  const free_question = "free_question" in o
+    ? normalizeKeywordList(o.free_question)
+    : [...D.free_question];
+  const blocked = "blocked" in o
+    ? normalizeKeywordList(o.blocked)
+    : [...D.blocked];
 
   return { recommendation, free_question, blocked };
 }
@@ -398,10 +396,9 @@ export function getHaikuTriggerKeywordsFromWaba(
 /** System prompt base (sin catálogo). Vacío en BD → texto default del CMS. */
 export function getHaikuSystemPromptBase(config: WabaConfigMap): string {
   const raw = config.get("haiku_system_prompt");
-  const c =
-    raw && typeof raw === "object"
-      ? (raw as Record<string, unknown>).content
-      : undefined;
+  const c = raw && typeof raw === "object"
+    ? (raw as Record<string, unknown>).content
+    : undefined;
   if (typeof c === "string" && c.trim()) return c.trim();
   return HAIKU_SYSTEM_PROMPT_BASE_DEFAULT;
 }
@@ -450,8 +447,9 @@ export function getHaikuRuntimeSettings(
 ): HaikuRuntimeSettings {
   const N = HAIKU_RUNTIME_NUMERIC_DEFAULTS;
   const raw = config.get("haiku_settings");
-  const o =
-    raw && typeof raw === "object" ? (raw as Record<string, unknown>) : {};
+  const o = raw && typeof raw === "object"
+    ? (raw as Record<string, unknown>)
+    : {};
 
   const welcomeTmpl = o.welcome_greeting_template;
   const welcomeGen = o.welcome_generation_system;

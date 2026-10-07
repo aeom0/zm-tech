@@ -2,19 +2,27 @@
 // No editar a mano; editar data.json y ejecutar: yarn copy-policies
 
 export const CONSIDERACIONES_PREVIAS_BY_CATEGORY: Record<string, string> = {
-  "cat-extensiones": `• *Pestañas (extensiones):* Ven desmaquillada (sin rímel ni delineador en ojos). Evita cremas grasas en la zona el día de la cita.`,
-  "cat-lifting": `• *Lifting de pestañas:* Ven desmaquillada. Zona de ojos limpia; evita cremas el día del servicio.`,
-  "cat-cejas-rostro": `• *Cejas y rostro:* Ven desmaquillada. Si usas retinol o ácidos en la zona, coméntalo antes.`,
-  "cat-unas": `• *Uñas:* Ven sin esmalte en manos o pies (según el servicio). Uñas limpias y cortas facilitan el trabajo.`,
-  "cat-microblading": `• *Microblading / cejas / labios:* Ven desmaquillada. No anticoagulantes ni alcohol 24 h antes. Evita sol fuerte y exfoliantes en la zona 48 h antes.`,
-  "cat-depilacion": `• *Depilación:* Zona limpia y seca. Evita cremas el día del servicio. Si es zona sensible, avisa con anticipación.`,
+  "cat-extensiones":
+    `• *Pestañas (extensiones):* Ven desmaquillada (sin rímel ni delineador en ojos). Evita cremas grasas en la zona el día de la cita.`,
+  "cat-lifting":
+    `• *Lifting de pestañas:* Ven desmaquillada. Zona de ojos limpia; evita cremas el día del servicio.`,
+  "cat-cejas-rostro":
+    `• *Cejas y rostro:* Ven desmaquillada. Si usas retinol o ácidos en la zona, coméntalo antes.`,
+  "cat-unas":
+    `• *Uñas:* Ven sin esmalte en manos o pies (según el servicio). Uñas limpias y cortas facilitan el trabajo.`,
+  "cat-microblading":
+    `• *Microblading / cejas / labios:* Ven desmaquillada. No anticoagulantes ni alcohol 24 h antes. Evita sol fuerte y exfoliantes en la zona 48 h antes.`,
+  "cat-depilacion":
+    `• *Depilación:* Zona limpia y seca. Evita cremas el día del servicio. Si es zona sensible, avisa con anticipación.`,
 };
 
 const CONSIDERACIONES_PREVIAS_HEADER = `📌 *Antes de tu cita:*
 
 `;
 
-export function getConsideracionesPreviasWhatsApp(categoryIds: string[]): string {
+export function getConsideracionesPreviasWhatsApp(
+  categoryIds: string[],
+): string {
   const seen = new Set<string>();
   const lines: string[] = [];
   for (const id of categoryIds) {

@@ -25,7 +25,6 @@ export {
   isWithinDesignStaffHours,
 };
 
-
 /**
  * Descarga media de Meta, sube a Storage público y actualiza `wa_messages.image_url`
  * por `media_id` (fila inbound ya insertada en el claim).
@@ -35,8 +34,8 @@ export async function persistInboundWaImage(
   opts: { phone: string; mediaId: string; caption?: string | null },
 ): Promise<string | null> {
   const folder = waStorageFolder(opts.phone);
-  const shortId =
-    opts.mediaId.replace(/\D/g, "").slice(-14) || opts.mediaId.slice(-12);
+  const shortId = opts.mediaId.replace(/\D/g, "").slice(-14) ||
+    opts.mediaId.slice(-12);
   const fileName = `inbound-chat/${folder}/${Date.now()}_${shortId}.jpg`;
 
   const uploaded = await uploadWhatsAppMediaToStorage(
@@ -107,8 +106,9 @@ export async function tryHandleDesignImageTakeover(opts: {
   const mediaId = imageData?.id;
   if (!mediaId) return false;
 
-  const caption =
-    typeof imageData?.caption === "string" ? imageData.caption : null;
+  const caption = typeof imageData?.caption === "string"
+    ? imageData.caption
+    : null;
   const imageUrl = await persistInboundWaImage(supabase, {
     phone: phoneNumber,
     mediaId,
@@ -152,7 +152,9 @@ export async function tryHandleDesignImageTakeover(opts: {
   }
 
   console.log(
-    `[inbound-image] takeover ${phoneNumber.slice(-4)} paused=${!alreadyPaused ? "new" : "again"} url=${imageUrl ? "yes" : "no"}`,
+    `[inbound-image] takeover ${phoneNumber.slice(-4)} paused=${
+      !alreadyPaused ? "new" : "again"
+    } url=${imageUrl ? "yes" : "no"}`,
   );
   return true;
 }

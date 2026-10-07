@@ -72,10 +72,9 @@ export function parseSunatNpsJson(raw) {
     if (parsed?.ok !== true) {
       return {
         ...empty,
-        reason:
-          typeof parsed?.reason === "string" && parsed.reason.trim()
-            ? parsed.reason.trim().slice(0, 80)
-            : "not_nps",
+        reason: typeof parsed?.reason === "string" && parsed.reason.trim()
+          ? parsed.reason.trim().slice(0, 80)
+          : "not_nps",
       };
     }
     const periodo = String(parsed.periodo ?? "").replace(/\D/g, "");
@@ -106,10 +105,9 @@ export function parseSunatNpsJson(raw) {
  */
 export function isPdfDocumentMessage(message) {
   if (!message || message.type !== "document") return false;
-  const doc =
-    message.document && typeof message.document === "object"
-      ? /** @type {Record<string, unknown>} */ (message.document)
-      : null;
+  const doc = message.document && typeof message.document === "object"
+    ? /** @type {Record<string, unknown>} */ (message.document)
+    : null;
   if (!doc) return false;
   const mime = String(doc.mime_type ?? "").toLowerCase().split(";")[0].trim();
   const filename = String(doc.filename ?? "").toLowerCase();

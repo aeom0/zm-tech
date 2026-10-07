@@ -19,10 +19,9 @@ export function runWithRequestTenantId<T>(
   tenantId: string,
   fn: () => T | Promise<T>,
 ): T | Promise<T> {
-  const id =
-    typeof tenantId === "string" && tenantId.trim()
-      ? tenantId.trim()
-      : DEFAULT_TENANT_ID;
+  const id = typeof tenantId === "string" && tenantId.trim()
+    ? tenantId.trim()
+    : DEFAULT_TENANT_ID;
   return tenantContext.run(id, fn);
 }
 

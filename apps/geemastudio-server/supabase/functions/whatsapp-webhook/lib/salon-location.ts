@@ -33,10 +33,12 @@ export const SALON_PARKING_NOTE =
   "En el creativo, *movilidad gratis* significa *estacionamiento gratis* del CC. Las Plazuelas (así se dice en Perú). El parking del centro comercial es sin costo.";
 
 /** Respuesta fija cuando preguntan movilidad / estacionamiento. */
-export const DEFAULT_ESTACIONAMIENTO_TEXT = `Sí 💜 Si te refieres a lo del creativo: *movilidad gratis* = *estacionamiento gratis* del CC. Las Plazuelas — en Perú se usa esa frase para el parking del mall.\n\nPuedes dejar el auto en el estacionamiento del centro comercial sin costo. No es taxi ni Uber: es el parking del CC.`;
+export const DEFAULT_ESTACIONAMIENTO_TEXT =
+  `Sí 💜 Si te refieres a lo del creativo: *movilidad gratis* = *estacionamiento gratis* del CC. Las Plazuelas — en Perú se usa esa frase para el parking del mall.\n\nPuedes dejar el auto en el estacionamiento del centro comercial sin costo. No es taxi ni Uber: es el parking del CC.`;
 
 /** Texto completo que envía el bot (fallback si no hay fila en waba_config). */
-export const DEFAULT_UBICACION_TEXT = `📍 *Nuestra ubicación*\n\n${SALON_ADDRESS_MULTILINE}\n\n📌 *Referencia:* ${SALON_REFERENCE}\n\n🅿️ ${SALON_PARKING_NOTE}\n\n🗺️ Google Maps:\n${SALON_MAPS_URL}`;
+export const DEFAULT_UBICACION_TEXT =
+  `📍 *Nuestra ubicación*\n\n${SALON_ADDRESS_MULTILINE}\n\n📌 *Referencia:* ${SALON_REFERENCE}\n\n🅿️ ${SALON_PARKING_NOTE}\n\n🗺️ Google Maps:\n${SALON_MAPS_URL}`;
 
 /** True si pregunta por Kennedy / Amistad (landmark confuso o zona correcta). */
 export function mentionsKennedyOrAmistadLandmark(lower: string): boolean {

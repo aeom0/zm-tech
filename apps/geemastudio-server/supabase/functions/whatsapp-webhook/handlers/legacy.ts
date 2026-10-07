@@ -1,6 +1,6 @@
 // legacy.ts — Formato n8n/Make: crear cita desde payload JSON (no desde webhook Meta)
 
-import { getSupabase, getOrCreateClient } from "../lib/supabase.ts";
+import { getOrCreateClient, getSupabase } from "../lib/supabase.ts";
 import { toLimaLocalTimestamp } from "../format.ts";
 import { checkAvailability } from "./agenda.ts";
 
@@ -16,7 +16,7 @@ export async function handleLegacyPayload(
     .select("*")
     .eq("is_active", true);
   const service = (services ?? []).find((s: { name: string }) =>
-    s.name.toLowerCase().includes((serviceName ?? "").toLowerCase()),
+    s.name.toLowerCase().includes((serviceName ?? "").toLowerCase())
   );
   const { data: employees } = await supabase
     .from("employees")
@@ -24,7 +24,7 @@ export async function handleLegacyPayload(
     .eq("is_active", true);
   const employee =
     (employees ?? []).find((e: { name: string }) =>
-      e.name.toLowerCase().includes((employeeName ?? "").toLowerCase()),
+      e.name.toLowerCase().includes((employeeName ?? "").toLowerCase())
     ) ?? (employees ?? [])[0];
 
   if (!service || !employee) {

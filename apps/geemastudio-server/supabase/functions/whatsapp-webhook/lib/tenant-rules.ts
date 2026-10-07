@@ -154,27 +154,23 @@ function normalizeSchedule(
   if (!isPlainObject(raw)) return fallback;
   const weekday = isPlainObject(raw.weekday)
     ? {
-        open:
-          typeof raw.weekday.open === "string"
-            ? raw.weekday.open
-            : fallback.weekday.open,
-        close:
-          typeof raw.weekday.close === "string"
-            ? raw.weekday.close
-            : fallback.weekday.close,
-      }
+      open: typeof raw.weekday.open === "string"
+        ? raw.weekday.open
+        : fallback.weekday.open,
+      close: typeof raw.weekday.close === "string"
+        ? raw.weekday.close
+        : fallback.weekday.close,
+    }
     : fallback.weekday;
   const sunday = isPlainObject(raw.sunday)
     ? {
-        open:
-          typeof raw.sunday.open === "string"
-            ? raw.sunday.open
-            : (fallback.sunday?.open ?? ""),
-        close:
-          typeof raw.sunday.close === "string"
-            ? raw.sunday.close
-            : (fallback.sunday?.close ?? ""),
-      }
+      open: typeof raw.sunday.open === "string"
+        ? raw.sunday.open
+        : (fallback.sunday?.open ?? ""),
+      close: typeof raw.sunday.close === "string"
+        ? raw.sunday.close
+        : (fallback.sunday?.close ?? ""),
+    }
     : fallback.sunday;
   const slotMinutes = Array.isArray(raw.slotMinutes)
     ? raw.slotMinutes.filter((n: unknown) => typeof n === "number")
@@ -196,16 +192,15 @@ function normalizeDeposit(
 ): TenantWabaDepositRules {
   if (!isPlainObject(raw)) return fallback;
   return {
-    fixedAmount:
-      typeof raw.fixedAmount === "number"
-        ? raw.fixedAmount
-        : fallback.fixedAmount,
-    sundayRate:
-      typeof raw.sundayRate === "number" ? raw.sundayRate : fallback.sundayRate,
-    requiresHistoryForRate:
-      typeof raw.requiresHistoryForRate === "boolean"
-        ? raw.requiresHistoryForRate
-        : fallback.requiresHistoryForRate,
+    fixedAmount: typeof raw.fixedAmount === "number"
+      ? raw.fixedAmount
+      : fallback.fixedAmount,
+    sundayRate: typeof raw.sundayRate === "number"
+      ? raw.sundayRate
+      : fallback.sundayRate,
+    requiresHistoryForRate: typeof raw.requiresHistoryForRate === "boolean"
+      ? raw.requiresHistoryForRate
+      : fallback.requiresHistoryForRate,
   };
 }
 
@@ -216,20 +211,22 @@ function normalizeCapacity(
   if (!isPlainObject(raw)) return fallback;
   const mealBreak = isPlainObject(raw.mealBreak)
     ? (() => {
-        const { startMinutes, endMinutes, durationMinutes } =
-          raw.mealBreak as Record<string, unknown>;
-        return typeof startMinutes === "number" &&
+      const { startMinutes, endMinutes, durationMinutes } = raw
+        .mealBreak as Record<string, unknown>;
+      return typeof startMinutes === "number" &&
           typeof endMinutes === "number" &&
           typeof durationMinutes === "number"
-          ? { startMinutes, endMinutes, durationMinutes }
-          : fallback.mealBreak;
-      })()
+        ? { startMinutes, endMinutes, durationMinutes }
+        : fallback.mealBreak;
+    })()
     : fallback.mealBreak;
   return {
-    defaultCap:
-      typeof raw.defaultCap === "number" ? raw.defaultCap : fallback.defaultCap,
-    specialCap:
-      typeof raw.specialCap === "number" ? raw.specialCap : fallback.specialCap,
+    defaultCap: typeof raw.defaultCap === "number"
+      ? raw.defaultCap
+      : fallback.defaultCap,
+    specialCap: typeof raw.specialCap === "number"
+      ? raw.specialCap
+      : fallback.specialCap,
     specialCategoryIds: Array.isArray(raw.specialCategoryIds)
       ? normalizeStringArray(raw.specialCategoryIds, [])
       : fallback.specialCategoryIds,
@@ -237,14 +234,13 @@ function normalizeCapacity(
       ? normalizeStringArray(raw.specialExtraServiceIds, [])
       : fallback.specialExtraServiceIds,
     extensionesKarelisServiceIds: Array.isArray(
-      raw.extensionesKarelisServiceIds,
-    )
+        raw.extensionesKarelisServiceIds,
+      )
       ? normalizeStringArray(raw.extensionesKarelisServiceIds, [])
       : fallback.extensionesKarelisServiceIds,
-    karelisAfterHour:
-      typeof raw.karelisAfterHour === "number"
-        ? raw.karelisAfterHour
-        : fallback.karelisAfterHour,
+    karelisAfterHour: typeof raw.karelisAfterHour === "number"
+      ? raw.karelisAfterHour
+      : fallback.karelisAfterHour,
     unassignedCapServiceIds: Array.isArray(raw.unassignedCapServiceIds)
       ? normalizeStringArray(raw.unassignedCapServiceIds, [])
       : fallback.unassignedCapServiceIds,
@@ -275,8 +271,9 @@ export function normalizeTenantWabaRules(
 ): TenantWabaRules {
   if (!isPlainObject(raw)) return fallback;
   return {
-    timezone:
-      typeof raw.timezone === "string" ? raw.timezone : fallback.timezone,
+    timezone: typeof raw.timezone === "string"
+      ? raw.timezone
+      : fallback.timezone,
     schedule: normalizeSchedule(raw.schedule, fallback.schedule),
     deposit: normalizeDeposit(raw.deposit, fallback.deposit),
     capacity: normalizeCapacity(raw.capacity, fallback.capacity),
@@ -287,14 +284,12 @@ export function normalizeTenantWabaRules(
     ctwaInterestOptions: Array.isArray(raw.ctwaInterestOptions)
       ? (raw.ctwaInterestOptions as TenantWabaCtwaInterestOption[])
       : fallback.ctwaInterestOptions,
-    coordinationPhone:
-      typeof raw.coordinationPhone === "string"
-        ? raw.coordinationPhone
-        : fallback.coordinationPhone,
-    paymentMethodsText:
-      typeof raw.paymentMethodsText === "string"
-        ? raw.paymentMethodsText
-        : fallback.paymentMethodsText,
+    coordinationPhone: typeof raw.coordinationPhone === "string"
+      ? raw.coordinationPhone
+      : fallback.coordinationPhone,
+    paymentMethodsText: typeof raw.paymentMethodsText === "string"
+      ? raw.paymentMethodsText
+      : fallback.paymentMethodsText,
   };
 }
 

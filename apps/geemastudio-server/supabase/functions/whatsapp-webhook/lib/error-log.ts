@@ -21,12 +21,11 @@ export async function logWaError(
     const err = params.error;
     // Los errores de PostgREST son objetos planos ({ message, code, details, hint }),
     // no `Error`: String(err) daba "[object Object]" y ocultaba la causa real.
-    const message =
-      err instanceof Error
-        ? err.message
-        : err && typeof err === "object"
-          ? JSON.stringify(err)
-          : String(err);
+    const message = err instanceof Error
+      ? err.message
+      : err && typeof err === "object"
+      ? JSON.stringify(err)
+      : String(err);
     const stack = err instanceof Error ? (err.stack ?? null) : null;
 
     const { error: insertErr } = await supabase.from("wa_error_log").insert({

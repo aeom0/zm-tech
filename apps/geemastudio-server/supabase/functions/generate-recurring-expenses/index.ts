@@ -47,8 +47,8 @@ Deno.serve(async (req: Request) => {
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
   const authHeader = req.headers.get("Authorization") ?? "";
   const isCron = Boolean(cronSecret) && authHeader === `Bearer ${cronSecret}`;
-  const isServiceRole =
-    Boolean(serviceKey) && authHeader === `Bearer ${serviceKey}`;
+  const isServiceRole = Boolean(serviceKey) &&
+    authHeader === `Bearer ${serviceKey}`;
   if (!isCron && !isServiceRole) {
     return json({ success: false, error: "No autorizado" }, 401);
   }
@@ -59,10 +59,9 @@ Deno.serve(async (req: Request) => {
   const lima = limaYmd();
   const forceDayRaw = req.headers.get("X-QA-Force-Day")?.trim() ?? "";
   const forceDay = Number.parseInt(forceDayRaw, 10);
-  const day =
-    Number.isInteger(forceDay) && forceDay >= 1 && forceDay <= 28
-      ? forceDay
-      : lima.day;
+  const day = Number.isInteger(forceDay) && forceDay >= 1 && forceDay <= 28
+    ? forceDay
+    : lima.day;
 
   const expenseMonth = `${lima.year}-${String(lima.month).padStart(2, "0")}-01`;
 
@@ -91,12 +90,13 @@ Deno.serve(async (req: Request) => {
     label: t.label,
     amount: t.is_variable ? null : t.default_amount,
     expense_month: expenseMonth,
-    expense_date:
-      t.is_variable || t.day_of_month == null
-        ? null
-        : `${lima.year}-${String(lima.month).padStart(2, "0")}-${String(
-            t.day_of_month,
-          ).padStart(2, "0")}`,
+    expense_date: t.is_variable || t.day_of_month == null
+      ? null
+      : `${lima.year}-${String(lima.month).padStart(2, "0")}-${
+        String(
+          t.day_of_month,
+        ).padStart(2, "0")
+      }`,
     is_estimated: Boolean(t.is_variable),
     source: "recurring_template",
     source_ref: t.id,

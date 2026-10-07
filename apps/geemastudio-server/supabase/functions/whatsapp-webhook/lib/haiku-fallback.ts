@@ -5,7 +5,9 @@
 
 export const HAIKU_FALLBACK_PAUSE_THRESHOLD = 3;
 
-export function nextHaikuFallbackState(currentCount: number | null | undefined): {
+export function nextHaikuFallbackState(
+  currentCount: number | null | undefined,
+): {
   /** Valor a persistir en `whatsapp_sessions.haiku_fallback_count`. */
   nextCount: number;
   /** Si true: setear `bot_paused_at`, avisar clienta y push al staff. */

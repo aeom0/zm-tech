@@ -56,9 +56,9 @@ export function logOutMessage(
       ...(wamid ? { wamid } : {}),
       ...(wamid
         ? {
-            delivery_status: "accepted",
-            delivery_status_at: new Date().toISOString(),
-          }
+          delivery_status: "accepted",
+          delivery_status_at: new Date().toISOString(),
+        }
         : {}),
     }),
   )

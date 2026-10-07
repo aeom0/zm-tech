@@ -118,7 +118,9 @@ export async function sendPaymentVerificationTemplate(
         : null;
     await logOutMessage(
       ADMIN_PHONE,
-      `[plantilla] ${TEMPLATE_NAME} · ${opts.clientName} · ${opts.serviceName} · ver=${opts.verificationId.slice(0, 8)}`,
+      `[plantilla] ${TEMPLATE_NAME} · ${opts.clientName} · ${opts.serviceName} · ver=${
+        opts.verificationId.slice(0, 8)
+      }`,
       "text",
       opts.imageUrl,
       "template",

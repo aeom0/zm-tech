@@ -8,16 +8,16 @@ import {
   handleAIMessage,
   isAIRateLimited,
 } from "../ai-assistant.ts";
-import { sessionHasCart, isMostlyLocationQuestion } from "../booking-flow.ts";
+import { isMostlyLocationQuestion, sessionHasCart } from "../booking-flow.ts";
 import {
-  upsertSession,
-  type SupabaseClient,
   type CartItem,
+  type SupabaseClient,
+  upsertSession,
 } from "../../lib/supabase.ts";
 import type { ServiceCatalog } from "../../lib/services-catalog.ts";
 import {
-  getHaikuTriggerKeywordsFromWaba,
   getHaikuRuntimeSettings,
+  getHaikuTriggerKeywordsFromWaba,
   type WabaConfigMap,
 } from "../../lib/waba-config.ts";
 
@@ -43,12 +43,11 @@ export async function tryHandOffUnrecognizedToHaiku(
   const text = opts.prompt.trim();
   if (!text) return false;
   const haikuKeywords = getHaikuTriggerKeywordsFromWaba(opts.wabaConfig);
-  const trigger =
-    detectAITrigger(
-      text,
-      haikuKeywords,
-      sessionHasCart(opts.session ?? null),
-    ) ?? ({ type: "fallback", originalMessage: text } as const);
+  const trigger = detectAITrigger(
+    text,
+    haikuKeywords,
+    sessionHasCart(opts.session ?? null),
+  ) ?? ({ type: "fallback", originalMessage: text } as const);
   if (
     await isAIRateLimited(
       opts.supabase,

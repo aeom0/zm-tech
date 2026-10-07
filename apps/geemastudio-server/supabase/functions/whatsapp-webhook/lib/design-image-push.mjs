@@ -17,8 +17,7 @@ export function isDamagedNailsImageCaption(caption) {
     .replace(/\p{M}/gu, "");
   if (!c) return false;
 
-  const mentionsNails =
-    /\bunas?\b/.test(c) ||
+  const mentionsNails = /\bunas?\b/.test(c) ||
     /\b(rubber|ruber|soft\s*gel|poly\s*gel|polygel|builder(\s+gel)?)\b/.test(c);
 
   if (/\breclamo\b/.test(c)) return true;
@@ -81,12 +80,14 @@ export function getDesignImagePushCopy(opts) {
   if (damaged) {
     return {
       title: "📷 Uñas dañadas · Revisar YA",
-      body: `${name}: foto de uñas caídas/lastimadas (posible otro salón o reclamo). Bot en pausa. ${bodyExtra}`,
+      body:
+        `${name}: foto de uñas caídas/lastimadas (posible otro salón o reclamo). Bot en pausa. ${bodyExtra}`,
     };
   }
 
   return {
     title: "📷 Foto diseño · Revisar YA",
-    body: `${name}: foto de diseño (puede cambiar precio/tiempo). Bot en pausa. ${bodyExtra}`,
+    body:
+      `${name}: foto de diseño (puede cambiar precio/tiempo). Bot en pausa. ${bodyExtra}`,
   };
 }

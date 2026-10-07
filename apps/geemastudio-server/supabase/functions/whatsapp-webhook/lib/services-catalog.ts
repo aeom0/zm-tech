@@ -1,9 +1,9 @@
 // services-catalog.ts — Catálogo unificado de servicios, categorías, packs y promociones (una sola carga desde BD)
 
-import type { SupabaseClient, CartItem } from "./supabase.ts";
+import type { CartItem, SupabaseClient } from "./supabase.ts";
 import { getRequestTenantId } from "./tenant.ts";
 import type { PortfolioIndexEntry } from "./portfolio.ts";
-import { portfolioIndexFromRows, type PortfolioImageRow } from "./portfolio.ts";
+import { type PortfolioImageRow, portfolioIndexFromRows } from "./portfolio.ts";
 import { cachedLoad } from "./ttl-cache.ts";
 import {
   getDefaultOverlapCap,
@@ -186,12 +186,12 @@ async function loadCatalogFromDb(
   const promotionIds = promosRaw.map((p) => p.id);
   const itemsQuery = promotionIds.length
     ? await supabase
-        .from("promotion_items")
-        .select(
-          "id, promotion_id, item_type, item_id, quantity, discounted_price, sort_order",
-        )
-        .in("promotion_id", promotionIds)
-        .order("sort_order", { ascending: true })
+      .from("promotion_items")
+      .select(
+        "id, promotion_id, item_type, item_id, quantity, discounted_price, sort_order",
+      )
+      .in("promotion_id", promotionIds)
+      .order("sort_order", { ascending: true })
     : { data: [], error: null };
   const itemsRows = itemsQuery.data;
 
@@ -240,10 +240,9 @@ async function loadCatalogFromDb(
     const ids: string[] = [];
     for (const it of promo.items) {
       const qty = Math.max(1, Number(it.quantity) || 1);
-      const base =
-        it.item_type === "pack"
-          ? parsePackServiceIds(packsById.get(it.item_id) ?? null)
-          : [it.item_id];
+      const base = it.item_type === "pack"
+        ? parsePackServiceIds(packsById.get(it.item_id) ?? null)
+        : [it.item_id];
       for (let i = 0; i < qty; i++) ids.push(...base);
     }
     if (ids.length > 0) packSlotMinutes.set(compositionKey(ids), minutes);
@@ -261,8 +260,7 @@ async function loadCatalogFromDb(
     portfolioIndex,
     packSlotMinutes,
   };
-  const store =
-    !catRes.error &&
+  const store = !catRes.error &&
     !svcRes.error &&
     !packRes.error &&
     !promosRes.error &&
@@ -507,15 +505,17 @@ export function recomputeCartItemsForWeekday(
 ): { items: CartItem[]; adjustments: CartPriceAdjustment[] } {
   const adjustments: CartPriceAdjustment[] = [];
   const next = items.map((it) => {
-    const svc =
-      it.item_type === "service" ? catalog.servicesById.get(it.item_id) : null;
-    const pack =
-      it.item_type === "pack" ? catalog.packsById.get(it.item_id) : null;
+    const svc = it.item_type === "service"
+      ? catalog.servicesById.get(it.item_id)
+      : null;
+    const pack = it.item_type === "pack"
+      ? catalog.packsById.get(it.item_id)
+      : null;
     const catalogPrice = svc
       ? parseFloat(String(svc.price))
       : pack
-        ? parseFloat(String(pack.pack_price))
-        : it.price;
+      ? parseFloat(String(pack.pack_price))
+      : it.price;
     if (!Number.isFinite(catalogPrice)) return it;
     const correctPrice = resolveCartItemPrice(
       catalog,
@@ -692,5 +692,7 @@ export function getCartDayRestrictionCaveat(
   }
   if (!days.size) return null;
   const sorted = WEEKDAY_ORDER_ES.filter((d) => days.has(d));
-  return `💜 El precio con descuento aplica ${sorted.join(", ")} — se confirma al elegir tu fecha.`;
+  return `💜 El precio con descuento aplica ${
+    sorted.join(", ")
+  } — se confirma al elegir tu fecha.`;
 }

@@ -22,7 +22,8 @@ const MODEL = "claude-haiku-4-5-20251001";
 const TIMEOUT_MS = 20000;
 const MAX_PDF_BYTES = 8 * 1024 * 1024;
 
-const NPS_PROMPT = `Eres un extractor de Constancia NPS (Sunat, Perú). El documento adjunto es un PDF.
+const NPS_PROMPT =
+  `Eres un extractor de Constancia NPS (Sunat, Perú). El documento adjunto es un PDF.
 
 Tarea: si ES una Constancia NPS con tributos del período, extrae:
 - periodo: AAAAMM del período tributario (ej. julio 2026 → "202607"). No uses la fecha de emisión si el período es otro.
@@ -149,12 +150,15 @@ async function extractNpsFromPdf(
       tokensOut,
       opts.phoneNumber,
     );
-    const rawText =
-      data?.content?.find((b: { type: string }) => b.type === "text")?.text ??
+    const rawText = data?.content?.find((b: { type: string }) =>
+      b.type === "text"
+    )?.text ??
       "";
     const parsed = parseSunatNpsJson(rawText);
     console.log(
-      `[expense-ocr] ok=${parsed.ok} periodo=${parsed.periodo ?? "n/a"} ms=${latencyMs}`,
+      `[expense-ocr] ok=${parsed.ok} periodo=${
+        parsed.periodo ?? "n/a"
+      } ms=${latencyMs}`,
     );
     return parsed;
   } catch (err) {
@@ -201,8 +205,9 @@ export async function tryHandleSunatNpsOcr(opts: {
     supabase,
     phoneNumber,
   });
-  const expenseMonth =
-    parsed.ok && parsed.periodo ? expenseMonthFromPeriod(parsed.periodo) : null;
+  const expenseMonth = parsed.ok && parsed.periodo
+    ? expenseMonthFromPeriod(parsed.periodo)
+    : null;
 
   if (!parsed.ok || parsed.total == null || !expenseMonth) {
     await sendMessage(phoneNumber, RESEND_COPY);
@@ -242,7 +247,9 @@ export async function tryHandleSunatNpsOcr(opts: {
 
   await sendMessage(
     phoneNumber,
-    `Sunat período ${parsed.periodo} registrado: S/ ${formatSoles(parsed.total)}`,
+    `Sunat período ${parsed.periodo} registrado: S/ ${
+      formatSoles(parsed.total)
+    }`,
   );
   return true;
 }

@@ -1,57 +1,57 @@
 // booking-flow.ts — Fast-lane agendar, parse hora, recuperación de sesión
 
 import {
-  parseDatetimeES,
-  parseDateOnlyKey,
   hasExplicitTime,
+  parseDateOnlyKey,
+  parseDatetimeES,
 } from "../parse-datetime-es.ts";
 import {
   collapseSlotsToClientHours,
   formatHourCompact,
 } from "../lib/duo-pack.ts";
 import {
+  getSession,
   type SupabaseClient,
   upsertSession,
-  getSession,
 } from "../lib/supabase.ts";
 import {
-  shouldBlockAdditionalBooking,
-  newBookingOverlapsExisting,
   ADDITIONAL_BOOKING_BLOCK_MESSAGE,
   BOOKING_OVERLAP_MESSAGE,
-  STAFF_COORDINATION_PHONE,
+  finalizeRescheduleAppointment,
   getPendingAppointmentsForPhone,
   matchesAttendanceAffirmation,
-  finalizeRescheduleAppointment,
+  newBookingOverlapsExisting,
+  shouldBlockAdditionalBooking,
+  STAFF_COORDINATION_PHONE,
   startRescheduleFromAppointment,
 } from "./pending-appointment.ts";
 import {
   getEmployeeCategories,
   getSalonTimeSlots,
   isValidSalonSlot,
-  WA_IDS,
   LIMA_UTC_OFFSET_HOURS,
+  WA_IDS,
 } from "../lib/constants.ts";
 import type { ServiceCatalog } from "../lib/services-catalog.ts";
 import { overlapCapForCart } from "../lib/services-catalog.ts";
 import type { CartItem } from "../lib/supabase.ts";
 import { clientTypedPortion } from "../lib/reply-context.ts";
 import {
+  countOverlappingAppointments,
+  hasSlotCapacityForServices,
   sendDateSelector,
   sendTimeSelector,
-  hasSlotCapacityForServices,
-  countOverlappingAppointments,
 } from "./agenda.ts";
 import { finalizeBookingAfterDatetimeSelection } from "./payment.ts";
 import { sendMessage } from "../wa-api.ts";
-import { parseLimaLocalToDate, formatDateSpanish } from "../format.ts";
+import { formatDateSpanish, parseLimaLocalToDate } from "../format.ts";
 import {
   getDateKeyLima,
+  getSalonClosedMessage,
   isPeruHoliday,
   isSalonClosed,
   isSunday,
   isZmMallClosed,
-  getSalonClosedMessage,
 } from "../lib/peru-holidays.ts";
 
 /** Clienta quiere cambiar el servicio del carrito / reprogramación (Patricia …5300). */
@@ -60,25 +60,29 @@ export function matchesServiceChangeIntent(text: string): boolean {
   if (!t.trim()) return false;
   return (
     /\bya\s+no\s+quiero\b/.test(t) ||
-    /\bno\s+quiero\s+(el|la|las|los|ese|esa|mas|más|builder|soft|poly|lifting|esmalte|gel|acrilico|rubber|polygel|anime|4d|3d)\b/.test(
-      t,
-    ) ||
+    /\bno\s+quiero\s+(el|la|las|los|ese|esa|mas|más|builder|soft|poly|lifting|esmalte|gel|acrilico|rubber|polygel|anime|4d|3d)\b/
+      .test(
+        t,
+      ) ||
     /\bcambiar\s+(el\s+)?servicio\b/.test(t) ||
     /\bcambia(r|me)?\s+(a|por)\b/.test(t) ||
     /\bcambio\s+(a|de|por)\b/.test(t) ||
     /\ben\s+vez\s+de\b/.test(t) ||
     /\ben\s+lugar\s+de\b/.test(t) ||
-    /\bsolo\s+(quiero|esmalte|manicure|pedicure|lifting|builder|soft|poly)\b/.test(
-      t,
-    ) ||
+    /\bsolo\s+(quiero|esmalte|manicure|pedicure|lifting|builder|soft|poly)\b/
+      .test(
+        t,
+      ) ||
     /\bprefiero\b/.test(t) ||
     // "Mejor 4D" / "mejor las Anime" — no "mejor el viernes" ni "mejor me cambia"
-    /\bmejor\s+(?:el|la|las|los|solo)\s+(?!lunes|martes|miercoles|jueves|viernes|sabado|domingo|hoy|manana)[a-z0-9áéíóúñ]{2,}/.test(
-      t,
-    ) ||
-    /\bmejor\s+(?!me\b|el\b|la\b|las\b|los\b|hoy\b|manana\b|para\b)[a-z0-9áéíóúñ]{2,}/.test(
-      t,
-    )
+    /\bmejor\s+(?:el|la|las|los|solo)\s+(?!lunes|martes|miercoles|jueves|viernes|sabado|domingo|hoy|manana)[a-z0-9áéíóúñ]{2,}/
+      .test(
+        t,
+      ) ||
+    /\bmejor\s+(?!me\b|el\b|la\b|las\b|los\b|hoy\b|manana\b|para\b)[a-z0-9áéíóúñ]{2,}/
+      .test(
+        t,
+      )
   );
 }
 
@@ -107,24 +111,27 @@ export function mentionedServiceCategoryIds(text: string): Set<string> {
     .replace(/\p{M}/gu, "");
   const cats = new Set<string>();
   if (
-    /\b(cejas|dise[nñ]o\s+de\s+cejas|laminado\s+de\s+cejas|microblading)\b/.test(
-      t,
-    )
+    /\b(cejas|dise[nñ]o\s+de\s+cejas|laminado\s+de\s+cejas|microblading)\b/
+      .test(
+        t,
+      )
   ) {
     cats.add("cat-cejas-rostro");
   }
   if (
-    /\b(manicure|pedicure|u[nñ]as|builder|rubber|polygel|esmalte|acrilico)\b/.test(
-      t,
-    )
+    /\b(manicure|pedicure|u[nñ]as|builder|rubber|polygel|esmalte|acrilico)\b/
+      .test(
+        t,
+      )
   ) {
     cats.add("cat-unas");
   }
   if (/\blifting\b/.test(t)) cats.add("cat-lifting");
   if (
-    /\b(extensiones|pesta[nñ]as|volumen|clasicas|rimel|hawaiana|anime|fox|wispy|mojado)\b/.test(
-      t,
-    )
+    /\b(extensiones|pesta[nñ]as|volumen|clasicas|rimel|hawaiana|anime|fox|wispy|mojado)\b/
+      .test(
+        t,
+      )
   ) {
     cats.add("cat-extensiones");
   }
@@ -203,12 +210,14 @@ export function matchesMidAgendaBrowseOrAddIntent(text: string): boolean {
     new RegExp(
       `\\b(agregar|a[ñn]adir|sumar|tambi[eé]n\\s+(?:${QUERER_RE})|ademas\\s+(?:${QUERER_RE})|además\\s+(?:${QUERER_RE}))\\b`,
     ).test(lower) ||
-    /\b(ver|mostrar|ense[nñ]ar|pasame|p[aá]same).{0,24}(servicio|servicios|u[nñ]as|extensi|ceja|lifting|categor)/.test(
-      lower,
-    ) ||
-    /\b(qu[eé]\s+tienes|qu[eé]\s+hay|tienen|tienes|nunca\s+me\s+he\s+puesto|opciones\s+de)\b/.test(
-      lower,
-    )
+    /\b(ver|mostrar|ense[nñ]ar|pasame|p[aá]same).{0,24}(servicio|servicios|u[nñ]as|extensi|ceja|lifting|categor)/
+      .test(
+        lower,
+      ) ||
+    /\b(qu[eé]\s+tienes|qu[eé]\s+hay|tienen|tienes|nunca\s+me\s+he\s+puesto|opciones\s+de)\b/
+      .test(
+        lower,
+      )
   );
 }
 
@@ -227,12 +236,14 @@ export function shouldSkipDatetimeResendAfterHaiku(text: string): boolean {
   // respuesta (caso Gimena …5978, 17-sep-2026).
   if (/\b(horarios?|disponib\w*|cupos?)\b/.test(lower)) return true;
   return (
-    /\b(foto|fotos|imagen|im[aá]genes|portafolio|dise[nñ]o|efecto|ardilla|mu[nñ]eca|ojo\s+de\s+gato|ojo\s+abierto|r[ií]mel|wispy|cl[aá]sicas?)\b/.test(
-      lower,
-    ) ||
-    /\b(me\s+voy\s+por|voy\s+por|prefiero\s+el|prefiero\s+la|ese\s+look|ese\s+efecto)\b/.test(
-      lower,
-    )
+    /\b(foto|fotos|imagen|im[aá]genes|portafolio|dise[nñ]o|efecto|ardilla|mu[nñ]eca|ojo\s+de\s+gato|ojo\s+abierto|r[ií]mel|wispy|cl[aá]sicas?)\b/
+      .test(
+        lower,
+      ) ||
+    /\b(me\s+voy\s+por|voy\s+por|prefiero\s+el|prefiero\s+la|ese\s+look|ese\s+efecto)\b/
+      .test(
+        lower,
+      )
   );
 }
 
@@ -317,16 +328,13 @@ export function isMostlyOpenHoursQuestion(lower: string): boolean {
  */
 export function matchesDepositFaqIntent(lower: string): boolean {
   const t = lower.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().trim();
-  const mentionsDeposit =
-    /\b(adelanto|abono|deposito)\b/.test(t) ||
+  const mentionsDeposit = /\b(adelanto|abono|deposito)\b/.test(t) ||
     /\bs\/?\s*25\b/.test(t) ||
     /\b(los?\s+)?25\b/.test(t);
-  const asksAparte =
-    /\b(aparte|adicional(?:es)?|extra)\b/.test(t) ||
+  const asksAparte = /\b(aparte|adicional(?:es)?|extra)\b/.test(t) ||
     /\b(pago\s+adicional(?:es)?)\b/.test(t) ||
     /\b(se\s+suma|suma\s+al|encima\s+del)\b/.test(t);
-  const asksWhy =
-    /\b(para\s+que|por\s+que|pa\s+que|porque)\b/.test(t) ||
+  const asksWhy = /\b(para\s+que|por\s+que|pa\s+que|porque)\b/.test(t) ||
     /\b(para\s+que\s+sirve|que\s+cubre)\b/.test(t);
   // Follow-ups cortos sin repetir "adelanto" (Lizbeth 2.º msg / "son adicionales")
   if (
@@ -465,16 +473,18 @@ export function looksLikeServiceBrowseIntent(text: string): boolean {
     return true;
   }
   if (
-    /\b(lifting|pestanas|pestañas|cejas|extensiones|microblading|depilaci)\b/.test(
-      lower,
-    )
+    /\b(lifting|pestanas|pestañas|cejas|extensiones|microblading|depilaci)\b/
+      .test(
+        lower,
+      )
   ) {
     return true;
   }
   if (
-    /\b(diseno|diseño|ojo\s+abierto|ojo\s+de\s+gato|ardilla|muneca|muñeca|wispy)\b/.test(
-      lower,
-    )
+    /\b(diseno|diseño|ojo\s+abierto|ojo\s+de\s+gato|ardilla|muneca|muñeca|wispy)\b/
+      .test(
+        lower,
+      )
   ) {
     return true;
   }
@@ -508,7 +518,8 @@ No se agenda por este chat 🙏 Para fechas e inscripción escríbenos al 📱 *
  * Curso de extensiones de pestañas — lead capture (caso Johanna …9981, Vanessa).
  * No se agenda por el bot; pide datos y el staff continúa.
  */
-export const DEFAULT_CURSOS_EXTENSIONES_TEXT = `Si, hacemos cursos especializados en extensiones de pestañas personalizado 🌷
+export const DEFAULT_CURSOS_EXTENSIONES_TEXT =
+  `Si, hacemos cursos especializados en extensiones de pestañas personalizado 🌷
 
 Brindarme los siguientes datos para poder enviarte la información:
 
@@ -519,7 +530,8 @@ Brindarme los siguientes datos para poder enviarte la información:
 
 🌷 Nivel principiante ó nivel medio?`;
 
-export const CURSO_LEAD_THANKS_TEXT = `¡Gracias! 💜 Recibimos tus datos. Una asesora te enviará la información del curso de extensiones en breve.`;
+export const CURSO_LEAD_THANKS_TEXT =
+  `¡Gracias! 💜 Recibimos tus datos. Una asesora te enviará la información del curso de extensiones en breve.`;
 
 /** Step tras enviar el formulario de curso de extensiones. */
 export const AWAITING_CURSO_LEAD = "awaiting_curso_lead";
@@ -607,7 +619,8 @@ export function isMostlyClassesQuestion(lower: string): boolean {
 }
 
 /** Copy: por qué se cobra retiro si viene de otro local (Vanessa). */
-export const DEFAULT_RETIRO_OTRO_SALON_TEXT = `Si vienes con un trabajo hecho de *otro local* se te cobrará el *retiro*.
+export const DEFAULT_RETIRO_OTRO_SALON_TEXT =
+  `Si vienes con un trabajo hecho de *otro local* se te cobrará el *retiro*.
 
 *¿Por qué?*
 🪻 No sabemos qué marca de producto usaron en tus uñas
@@ -626,8 +639,7 @@ Si el mantenimiento es de trabajo hecho *aquí en ZM*, no aplica ese cargo. ¿Vi
  */
 export function matchesRetiroInfoQuestion(lower: string): boolean {
   const hasRetiro = /\bretiro\b/.test(lower);
-  const hasOtro =
-    /\botro\s+(sal[oó]n|local)\b/.test(lower) ||
+  const hasOtro = /\botro\s+(sal[oó]n|local)\b/.test(lower) ||
     /\botra\s+(salon|salón|local)\b/.test(lower) ||
     /\bde\s+otro\b/.test(lower) ||
     /\botro\s+lado\b/.test(lower);
@@ -708,7 +720,8 @@ export function matchesCartSelectionQuestion(lower: string): boolean {
 
 /** Mensaje estándar cuando piden agendar para otra persona o múltiples citas. */
 /** Legacy: el dispatcher ya no lo usa como bloqueo ciego (flujo party). */
-export const THIRD_PARTY_BOOKING_MESSAGE = `¡Claro! 💜 Puedo agendar hasta *2 citas* en este chat (tú + acompañante, o solo para otra persona).\n\nSi ya tienes 2 programadas, escríbenos al 📱 *${STAFF_COORDINATION_PHONE}*.`;
+export const THIRD_PARTY_BOOKING_MESSAGE =
+  `¡Claro! 💜 Puedo agendar hasta *2 citas* en este chat (tú + acompañante, o solo para otra persona).\n\nSi ya tienes 2 programadas, escríbenos al 📱 *${STAFF_COORDINATION_PHONE}*.`;
 /** Reclamo/garantía en texto libre (no confirmación de cita) — caso Lili 04-ago-2026. */
 export function matchesComplaintIntent(text: string): boolean {
   const t = text.toLowerCase().normalize("NFD").replace(/\p{M}/gu, "");
@@ -752,7 +765,8 @@ export function matchesComplaintIntent(text: string): boolean {
 }
 
 /** Mensaje estándar cuando el texto libre suena a reclamo/garantía, no a agendado. */
-export const COMPLAINT_MESSAGE = `¡Uy, lamento leer esto! 💜 Para casos de garantía nuestro equipo te atiende directo al 📱 *${STAFF_COORDINATION_PHONE}* y lo revisamos contigo.\n\nNo quiero agendarte una cita nueva por error — escríbenos a ese número y coordinamos.`;
+export const COMPLAINT_MESSAGE =
+  `¡Uy, lamento leer esto! 💜 Para casos de garantía nuestro equipo te atiende directo al 📱 *${STAFF_COORDINATION_PHONE}* y lo revisamos contigo.\n\nNo quiero agendarte una cita nueva por error — escríbenos a ese número y coordinamos.`;
 
 function normalizeIntentText(text: string): string {
   return text
@@ -865,9 +879,10 @@ export function isMostlyPartyIntent(text: string): boolean {
 
   // Residuo con precio/promo/servicio → mixto aunque sea corto
   if (
-    /\b(cu[aá]nto|precio|precios|costo|cuesta|vale|promo|promoci[oó]n|descuento|oferta|pack|lifting|pesta[nñ]as|cejas|u[nñ]as|extensiones|manicure|gel)\b/i.test(
-      stripped,
-    )
+    /\b(cu[aá]nto|precio|precios|costo|cuesta|vale|promo|promoci[oó]n|descuento|oferta|pack|lifting|pesta[nñ]as|cejas|u[nñ]as|extensiones|manicure|gel)\b/i
+      .test(
+        stripped,
+      )
   ) {
     return false;
   }
@@ -904,8 +919,7 @@ const CART_INSPECT_NAV_PHRASES = [
  * ("cuánto sería el total si le agrego lifting") → Haiku antes del resumen.
  */
 export function isMostlyCartInspectQuestion(lower: string): boolean {
-  const hitsCart =
-    matchesCartSelectionQuestion(lower) ||
+  const hitsCart = matchesCartSelectionQuestion(lower) ||
     matchesCartTotalQuestion(lower) ||
     CART_INSPECT_NAV_PHRASES.some((k) => lower.includes(k));
   if (!hitsCart) return false;
@@ -991,8 +1005,7 @@ export function matchesCartCorrectionIntent(lower: string): boolean {
 }
 
 export function matchesHorariosAvailabilityQuery(lower: string): boolean {
-  const hasHorario =
-    lower.includes("horario") ||
+  const hasHorario = lower.includes("horario") ||
     lower.includes("disponib") ||
     lower.includes("disponible") ||
     lower.includes("cupo");
@@ -1051,8 +1064,9 @@ export function parseTimeSlot(
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "");
 
-  if (t === "mediodia" || t.includes("mediodia"))
+  if (t === "mediodia" || t.includes("mediodia")) {
     return { hour: 12, minute: 0 };
+  }
 
   // Minutos: ":" (estándar), "," / "." (PE/WhatsApp: "3,30", "3.30")
   const ampm = t.match(/\b(\d{1,2})(?:[:.,](\d{2}))?\s*(am|pm)\b/);
@@ -1407,16 +1421,17 @@ export function matchesDateAvailabilityQuestion(text: string): boolean {
   const raw = text.trim();
   if (!raw) return false;
   const t = raw.toLowerCase().normalize("NFD").replace(/\p{M}/gu, "");
-  const asks =
-    /\bno\s+veo\b/.test(t) ||
+  const asks = /\bno\s+veo\b/.test(t) ||
     /\bno\s+(trabajan|abren|atienden)\b/.test(t) ||
-    /\b(trabajan|abren|atienden)\s+(el\s+)?(lunes|martes|miercoles|jueves|viernes|sabado|domingo)\b/.test(
-      t,
-    ) ||
-    (/\?/.test(raw) &&
-      /\b(trabajan|abren|atienden|disponible|disponib\w*|cupos?|en\s+la\s+lista|hay\s+espacio|hay\s+cupo)\b/.test(
+    /\b(trabajan|abren|atienden)\s+(el\s+)?(lunes|martes|miercoles|jueves|viernes|sabado|domingo)\b/
+      .test(
         t,
-      ));
+      ) ||
+    (/\?/.test(raw) &&
+      /\b(trabajan|abren|atienden|disponible|disponib\w*|cupos?|en\s+la\s+lista|hay\s+espacio|hay\s+cupo)\b/
+        .test(
+          t,
+        ));
   if (!asks) return false;
   return (
     messageMentionsCalendarDate(raw) ||
@@ -1499,14 +1514,16 @@ export function matchesDateCorrectionIntent(text: string): boolean {
     return false;
   }
   return (
-    /\b(mejor|prefiero|preferiria|preferiría|cambia|cambiar|en realidad|en vez|en lugar|otra fecha|reprogram|pasame al|pásame al|mueve|muéve|movamos|dejalo para|déjalo para)\b/.test(
-      t,
-    ) ||
+    /\b(mejor|prefiero|preferiria|preferiría|cambia|cambiar|en realidad|en vez|en lugar|otra fecha|reprogram|pasame al|pásame al|mueve|muéve|movamos|dejalo para|déjalo para)\b/
+      .test(
+        t,
+      ) ||
     /\bno\s+(el|la|al)\s+\d{1,2}\b/.test(t) ||
     // "no domingo", "no es sábado", "mañana es sábado no domingo" (Angie 14/15-ago)
-    /\bno\s+(es\s+)?(lunes|martes|miercoles|jueves|viernes|sabado|domingo)\b/.test(
-      t,
-    )
+    /\bno\s+(es\s+)?(lunes|martes|miercoles|jueves|viernes|sabado|domingo)\b/
+      .test(
+        t,
+      )
   );
 }
 
@@ -1594,16 +1611,15 @@ export async function openBookingCalendarForCart(
 ): Promise<boolean> {
   if (!sessionHasCart(session)) return false;
 
-  const rescheduleId =
-    opts?.rescheduleAppointmentId ?? session?.reschedule_appointment_id ?? null;
+  const rescheduleId = opts?.rescheduleAppointmentId ??
+    session?.reschedule_appointment_id ?? null;
 
   // Última fecha del mensaje gana sobre sticky previo
   const fromMsg = opts?.messageText
     ? extractDateIntentFromText(opts.messageText)
     : null;
   const todayKey = getDateKeyLima(new Date());
-  const rawSticky =
-    fromMsg?.dateKey ??
+  const rawSticky = fromMsg?.dateKey ??
     getSessionSelectedDay(session as Record<string, unknown>);
   const stickyDay = stickyDayIfBookable(rawSticky, {
     fromMessage: Boolean(fromMsg?.dateKey),
@@ -1864,10 +1880,9 @@ export async function tryCompleteBookingFromText(
 
   // Solo día (sin hora) → selected_day + lista de horas (última fecha gana)
   const dateIntent = extractDateIntentFromText(messageText);
-  const dateOnlyKey =
-    dateIntent && !dateIntent.hasTime
-      ? dateIntent.dateKey
-      : parseDateOnlyKey(messageText);
+  const dateOnlyKey = dateIntent && !dateIntent.hasTime
+    ? dateIntent.dateKey
+    : parseDateOnlyKey(messageText);
   if (dateOnlyKey && !isMostlyTimeChoice(messageText)) {
     if (isSalonClosed(dateOnlyKey)) {
       await sendMessage(phoneNumber, getSalonClosedMessage(dateOnlyKey));
@@ -1969,7 +1984,9 @@ export async function tryCompleteBookingFromText(
     );
     await sendMessage(
       phoneNumber,
-      `Ese horario (${formatHour12(hourLima, minuteLima)}) está fuera de nuestro horario 🕐\n\n` +
+      `Ese horario (${
+        formatHour12(hourLima, minuteLima)
+      }) está fuera de nuestro horario 🕐\n\n` +
         `${formatHoursHint(dateKey, dayOfWeek)}\n\n` +
         `Horarios con cupo ese día: ${free}`,
     );
@@ -2061,7 +2078,9 @@ export async function tryAnswerSpecificHourAvailability(
   if (!messageText.trim() || !sessionHasCart(session)) return false;
   if (session?.step !== "awaiting_datetime") return false;
   if (session?.reschedule_appointment_id) return false;
-  if (!/\b(tienen?|hay|queda[n]?|libre|disponible|dispo)\b/i.test(messageText)) {
+  if (
+    !/\b(tienen?|hay|queda[n]?|libre|disponible|dispo)\b/i.test(messageText)
+  ) {
     return false;
   }
 
@@ -2102,7 +2121,9 @@ export async function tryAnswerSpecificHourAvailability(
     );
     await sendMessage(
       phoneNumber,
-      `Ese horario (${formatHour12(slot.hour, slot.minute)}) está fuera de nuestro horario 🕐\n\n` +
+      `Ese horario (${
+        formatHour12(slot.hour, slot.minute)
+      }) está fuera de nuestro horario 🕐\n\n` +
         `${formatHoursHint(dateKey, dayOfWeek)}\n\n` +
         `Horarios con cupo ese día: ${free}`,
     );
@@ -2148,7 +2169,9 @@ export function buildTimeInputFromParsedHour(
   parsedHour: number,
   parsedMinute = 0,
 ): string {
-  return `${WA_IDS.TIME_PREFIX}${selectedDay}T${parsedHour.toString().padStart(2, "0")}${parsedMinute.toString().padStart(2, "0")}`;
+  return `${WA_IDS.TIME_PREFIX}${selectedDay}T${
+    parsedHour.toString().padStart(2, "0")
+  }${parsedMinute.toString().padStart(2, "0")}`;
 }
 
 /**
@@ -2190,9 +2213,10 @@ export async function trySoftRescheduleFromText(
   }
   // Servicio + fecha sin carrito → Haiku/add_to_cart, no pisar con soft reschedule
   if (
-    /\b(lifting|pestañas|pestanas|extensiones|uñas|unas|cejas|depil|microblading|builder|soft\s*gel|rubber|retoque|laminado|manicure|pedicure|planchado|botox)\b/i.test(
-      messageText,
-    )
+    /\b(lifting|pestañas|pestanas|extensiones|uñas|unas|cejas|depil|microblading|builder|soft\s*gel|rubber|retoque|laminado|manicure|pedicure|planchado|botox)\b/i
+      .test(
+        messageText,
+      )
   ) {
     return false;
   }
@@ -2203,8 +2227,7 @@ export async function trySoftRescheduleFromText(
   // cuando el mensaje ya traía "a las 4pm" — Pati-E).
   {
     const slotAlways = parseTimeSlot(messageText);
-    const dayForTime =
-      intent?.dateKey ??
+    const dayForTime = intent?.dateKey ??
       (hasExplicitTime(messageText)
         ? dateKeyFromAppointmentDate(pending[0]!.date)
         : null) ??
@@ -2282,7 +2305,9 @@ export async function trySoftRescheduleFromText(
     ) {
       await sendMessage(
         phoneNumber,
-        `Perfecto 💜 Tu cita sigue confirmada para el ${formatDateSpanish(currentApptDate)}. ¡Te esperamos!`,
+        `Perfecto 💜 Tu cita sigue confirmada para el ${
+          formatDateSpanish(currentApptDate)
+        }. ¡Te esperamos!`,
       );
       return true;
     }
@@ -2301,7 +2326,9 @@ export async function trySoftRescheduleFromText(
       );
       await sendMessage(
         phoneNumber,
-        `Ese horario (${formatHour12(hourLima, minuteLima)}) está fuera de nuestro horario 🕐\n\n` +
+        `Ese horario (${
+          formatHour12(hourLima, minuteLima)
+        }) está fuera de nuestro horario 🕐\n\n` +
           `${formatHoursHint(intent.dateKey, dayOfWeek)}\n\n` +
           `Horarios con cupo ese día: ${free}`,
       );

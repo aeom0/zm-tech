@@ -35,15 +35,16 @@ export async function handleWabaAccountEvent(
   try {
     if (!isWabaAccountEventField(opts.field)) return false;
 
-    const value =
-      opts.value && typeof opts.value === "object" ? opts.value : {};
+    const value = opts.value && typeof opts.value === "object"
+      ? opts.value
+      : {};
     const meta = value.metadata as Record<string, unknown> | undefined;
-    const fromMeta =
-      typeof meta?.phone_number_id === "string" ? meta.phone_number_id : null;
-    const fromValue =
-      typeof value.phone_number_id === "string"
-        ? value.phone_number_id
-        : null;
+    const fromMeta = typeof meta?.phone_number_id === "string"
+      ? meta.phone_number_id
+      : null;
+    const fromValue = typeof value.phone_number_id === "string"
+      ? value.phone_number_id
+      : null;
 
     const { error } = await supabase.from("waba_account_event_log").insert({
       tenant_id: opts.tenantId || "zm-lash-nails",
@@ -63,7 +64,9 @@ export async function handleWabaAccountEvent(
     }
 
     console.log(
-      `[WABA] account event persisted field=${opts.field} phone_number_id=${opts.phoneNumberId || fromMeta || fromValue || "?"}`,
+      `[WABA] account event persisted field=${opts.field} phone_number_id=${
+        opts.phoneNumberId || fromMeta || fromValue || "?"
+      }`,
     );
     return true;
   } catch (e) {

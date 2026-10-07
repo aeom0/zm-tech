@@ -72,7 +72,9 @@ export async function employeeRulesDecision(
 ): Promise<EmployeeRulesDecision> {
   if (serviceIds.length === 0) return "legacy";
   const minutes = Number(hhmm.slice(3, 5));
-  if (!Number.isFinite(minutes) || minutes % STEP_MINUTES !== 0) return "legacy";
+  if (!Number.isFinite(minutes) || minutes % STEP_MINUTES !== 0) {
+    return "legacy";
+  }
   const day = await loadDaySlots(
     supabase,
     dateKey,

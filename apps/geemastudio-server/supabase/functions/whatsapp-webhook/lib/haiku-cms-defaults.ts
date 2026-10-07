@@ -227,7 +227,8 @@ export const HAIKU_WELCOME_GREETING_TEMPLATE_DEFAULT = [
   "Cuando quieras reservar, escribe *agendar* y te guiamos con el menú.",
 ].join("\n");
 
-export const HAIKU_WELCOME_GENERATION_SYSTEM_DEFAULT = `Eres parte del equipo de ZM Lash & Nails Beauty, salón premium de uñas y pestañas en Lima, Perú. Respondes el WhatsApp del salón como una asesora real — profesional, cercana y directa.
+export const HAIKU_WELCOME_GENERATION_SYSTEM_DEFAULT =
+  `Eres parte del equipo de ZM Lash & Nails Beauty, salón premium de uñas y pestañas en Lima, Perú. Respondes el WhatsApp del salón como una asesora real — profesional, cercana y directa.
 
 VOCABULARIO PROHIBIDO (sin excepciones):
 - Consentir, consentirte, mimar, mimarte, acicalar, malcriarte, date tu gustito, date un gustito
@@ -259,7 +260,8 @@ export const HAIKU_WELCOME_SLOT_CONTEXT_DEFAULT: Record<string, string> = {
     "Es madrugada (entre medianoche y las 6am). Tono cómplice y directo: escribir a esta hora para planear tu look muestra buen gusto. No menciones la hora ni pidas disculpas. Vocabulario aspiracional: lucir espectacular, pestañas deslumbrantes.",
   manana:
     "Es mañana temprano (6am–10am). Tono energético y profesional: arrancar el día pensando en tu imagen personal es una gran señal. Vocabulario aspiracional: look increíble, cejas perfectas, elevar tu estilo.",
-  dia: "Es mediodía (10am–1pm). Tono directo y cálido: el momento ideal para agendar y lucir al 100. Vocabulario aspiracional: resultados que hablan solos, definir tu mirada.",
+  dia:
+    "Es mediodía (10am–1pm). Tono directo y cálido: el momento ideal para agendar y lucir al 100. Vocabulario aspiracional: resultados que hablan solos, definir tu mirada.",
   tarde:
     "Es tarde (1pm–6pm). Tono aspiracional y seguro: tarde perfecta para planear el próximo look. Vocabulario aspiracional: pestañas deslumbrantes, cejas perfectas, subir de nivel.",
   noche:
@@ -273,7 +275,8 @@ export const HAIKU_WELCOME_FALLBACK_AD_DEFAULT: Record<string, string> = {
     "¡Hola Srta. {nombre}!, viste nuestra promo y ya estamos aquí 💜 Aquí la tienes completa 👇",
   manana:
     "¡Hola Srta. {nombre}! Empezar el día pensando en tu look es una gran señal ✨ Viste nuestra promo — aquí están todos los detalles 👇",
-  dia: "¡Hola Srta. {nombre}! 💜 Viste nuestra promo y llegaste al lugar indicado. Aquí tienes todo 👇",
+  dia:
+    "¡Hola Srta. {nombre}! 💜 Viste nuestra promo y llegaste al lugar indicado. Aquí tienes todo 👇",
   tarde:
     "¡Hola Srta. {nombre}! Buenas tardes ✨ Nuestra promo es justo lo que buscas para elevar tu look — mírala 👇",
   noche:
@@ -287,7 +290,8 @@ export const HAIKU_WELCOME_FALLBACK_ORGANIC_DEFAULT: Record<string, string> = {
     "¡Hola Srta. {nombre}!, qué bueno que nos escribes 💜 Mira lo que tenemos para que luzcas espectacular 👇",
   manana:
     "¡Hola Srta. {nombre}! Buen día ✨ Estamos listas para ayudarte a lucir al 100 — aquí tienes nuestros servicios y promos 👇",
-  dia: "¡Hola Srta. {nombre}! 💜 Bienvenida a ZM Lash & Nails. Aquí tienes nuestras promos y servicios del mes 👇",
+  dia:
+    "¡Hola Srta. {nombre}! 💜 Bienvenida a ZM Lash & Nails. Aquí tienes nuestras promos y servicios del mes 👇",
   tarde:
     "¡Hola Srta. {nombre}! Tarde perfecta para definir tu próximo look ✨ Mira lo mejor que tenemos este mes 👇",
   noche:

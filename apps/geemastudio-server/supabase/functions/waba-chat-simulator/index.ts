@@ -362,8 +362,8 @@ async function runSendMessage(
   }
   const contactName = contactNameForUser(simUser);
   const fromAdSimulated = opts.fromAdSimulated === true;
-  const headline =
-    (opts.referralHeadline ?? "").trim() || DEFAULT_CTWA_REFERRAL_HEADLINE;
+  const headline = (opts.referralHeadline ?? "").trim() ||
+    DEFAULT_CTWA_REFERRAL_HEADLINE;
   const interactiveId = (opts.interactiveId ?? "").trim();
   const interactiveTitle = (opts.interactiveTitle ?? "").trim();
 
@@ -385,16 +385,17 @@ async function runSendMessage(
   }
 
   // Referral solo en texto (primer msg CTWA). Un tap interactivo no lleva referral.
-  const referral =
-    fromAdSimulated && !interactiveId ? buildSimReferral(headline) : null;
+  const referral = fromAdSimulated && !interactiveId
+    ? buildSimReferral(headline)
+    : null;
 
   const built = interactiveId
     ? buildInteractiveEnvelope(
-        phone,
-        interactiveId,
-        interactiveTitle || interactiveId,
-        contactName,
-      )
+      phone,
+      interactiveId,
+      interactiveTitle || interactiveId,
+      contactName,
+    )
     : buildTextEnvelope(phone, text, contactName, referral);
 
   const { body, message } = built;
@@ -525,8 +526,9 @@ Deno.serve(async (req: Request) => {
     interactiveId = String(body.interactiveId ?? "");
     interactiveTitle = String(body.interactiveTitle ?? "");
     fromAdSimulated = body.fromAdSimulated === true;
-    referralHeadline =
-      body.referralHeadline == null ? null : String(body.referralHeadline);
+    referralHeadline = body.referralHeadline == null
+      ? null
+      : String(body.referralHeadline);
   } catch {
     return json({ error: "Bad request" }, 400);
   }

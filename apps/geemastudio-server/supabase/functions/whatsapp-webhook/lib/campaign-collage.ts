@@ -83,8 +83,8 @@ export function getCampaignCollageUrl(
   if (!cfg) return null;
   const url = getConfigText(wabaConfig, cfg.urlKey, "").trim();
   if (!url) return null;
-  const caption =
-    getConfigText(wabaConfig, cfg.captionKey, "").trim() || cfg.defaultCaption;
+  const caption = getConfigText(wabaConfig, cfg.captionKey, "").trim() ||
+    cfg.defaultCaption;
   return { url, caption };
 }
 
@@ -104,13 +104,14 @@ export function hasSpecificLashEffectIntent(text: string): boolean {
   typed = typed.replace(/^\[Respondiendo a\][\s\S]*$/i, "").trim();
 
   const barePrice =
-    /^(precios?|cuanto(s)?(\s+(cuesta|vale|sale|es))?\??|tarifas?)\s*\??$/i.test(
-      typed
-        .toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .trim(),
-    );
+    /^(precios?|cuanto(s)?(\s+(cuesta|vale|sale|es))?\??|tarifas?)\s*\??$/i
+      .test(
+        typed
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .trim(),
+      );
   if (barePrice) return false;
 
   const t = norm(typed);
@@ -142,9 +143,10 @@ export function hasGenericLashRubroPriceIntent(text: string): boolean {
   if (!t) return false;
 
   const asksPrice =
-    /\b(precio|precios|cuanto|cuanta|cuesta|cuestan|vale|valen|costo|costos|tarifa|tarifas|cotiza|cotizacion)\b/.test(
-      t,
-    );
+    /\b(precio|precios|cuanto|cuanta|cuesta|cuestan|vale|valen|costo|costos|tarifa|tarifas|cotiza|cotizacion)\b/
+      .test(
+        t,
+      );
   const rubroLash = /(pestan|extension|lifting|lash\s*botox)/.test(t);
 
   return asksPrice && rubroLash;

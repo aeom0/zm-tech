@@ -55,8 +55,9 @@ Deno.serve(async (req: Request) => {
     const creds = await getTenantWabaCredentials(supabase, tenant);
     if (!creds) continue;
 
-    await runWithRequestTenantId(tenant.tenantId, () =>
-      processTenantRetouch(tenant.tenantId, creds),
+    await runWithRequestTenantId(
+      tenant.tenantId,
+      () => processTenantRetouch(tenant.tenantId, creds),
     );
   }
 

@@ -4,8 +4,8 @@
  */
 import type { ServiceCatalog } from "./services-catalog.ts";
 import {
-  isSpecialOverlapCart,
   cartExtensionesLanes,
+  isSpecialOverlapCart,
 } from "./services-catalog.ts";
 
 /** Misma línea staff que pending-appointment (evitar import circular). */
@@ -76,10 +76,9 @@ export function emptyPartyBooking(
 export function parsePartyBooking(raw: unknown): PartyBooking | null {
   if (raw == null || raw === "") return null;
   try {
-    const o =
-      typeof raw === "string"
-        ? (JSON.parse(raw) as PartyBooking)
-        : (raw as PartyBooking);
+    const o = typeof raw === "string"
+      ? (JSON.parse(raw) as PartyBooking)
+      : (raw as PartyBooking);
     if (!o || typeof o !== "object") return null;
     if (!Array.isArray(o.members)) return null;
     return {
@@ -200,7 +199,8 @@ export function inferPartyModeFromText(text: string): PartyMode | null {
 }
 
 export function partyMemberLabel(member: PartyMember): string {
-  return member.name?.trim() || (member.role === "guest" ? "acompañante" : "tú");
+  return member.name?.trim() ||
+    (member.role === "guest" ? "acompañante" : "tú");
 }
 
 export function partyIsReady(party: PartyBooking | null): boolean {

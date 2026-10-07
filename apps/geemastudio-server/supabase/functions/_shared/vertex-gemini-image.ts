@@ -58,10 +58,9 @@ function vertexGenerateContentUrl(
   // gemini-3.1-flash-image (y otros modelos nuevos) solo sirven por el endpoint
   // global (sin prefijo de región en el host); us-central1/etc. siguen siendo
   // regionales para modelos como gemini-2.5-flash-image.
-  const host =
-    location === "global"
-      ? "aiplatform.googleapis.com"
-      : `${location}-aiplatform.googleapis.com`;
+  const host = location === "global"
+    ? "aiplatform.googleapis.com"
+    : `${location}-aiplatform.googleapis.com`;
   return `https://${host}/v1/projects/${projectId}/locations/${location}/publishers/google/models/${model}:generateContent`;
 }
 
@@ -71,10 +70,10 @@ export async function vertexGeminiImageEdit(
 ): Promise<VertexImageEditResult> {
   const sa = parseGoogleServiceAccount();
   const projectId = getGoogleProjectId(sa);
-  const location =
-    input.location ?? Deno.env.get("GCP_LOCATION") ?? DEFAULT_LOCATION;
-  const model =
-    input.model ?? Deno.env.get("GEMINI_IMAGE_MODEL") ?? DEFAULT_MODEL;
+  const location = input.location ?? Deno.env.get("GCP_LOCATION") ??
+    DEFAULT_LOCATION;
+  const model = input.model ?? Deno.env.get("GEMINI_IMAGE_MODEL") ??
+    DEFAULT_MODEL;
   const mimeType = input.mimeType ?? "image/jpeg";
 
   const parts: Array<Record<string, unknown>> = [
@@ -122,8 +121,8 @@ export async function vertexGeminiImageEdit(
   const data = await res.json();
   const candidates = data.candidates as
     | Array<{
-        content?: { parts?: Array<Record<string, unknown>> };
-      }>
+      content?: { parts?: Array<Record<string, unknown>> };
+    }>
     | undefined;
 
   let imageBytes: Uint8Array | null = null;

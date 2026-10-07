@@ -75,7 +75,8 @@ async function uploadImageToWhatsApp(
   const imageRes = await fetch(imageUrl);
   if (!imageRes.ok) {
     throw new Error(
-      `No se pudo descargar la imagen desde Storage: ${imageRes.status} ${await imageRes.text()}`,
+      `No se pudo descargar la imagen desde Storage: ${imageRes.status} ${await imageRes
+        .text()}`,
     );
   }
   const blob = await imageRes.blob();
@@ -197,10 +198,9 @@ Deno.serve(async (req: Request) => {
     );
     return new Response("Error cargando broadcast", { status: 500 });
   }
-  const broadcastTenantId =
-    typeof broadcastTenant?.tenant_id === "string"
-      ? broadcastTenant.tenant_id.trim()
-      : "";
+  const broadcastTenantId = typeof broadcastTenant?.tenant_id === "string"
+    ? broadcastTenant.tenant_id.trim()
+    : "";
   if (!broadcastTenantId) {
     return new Response("Broadcast not found", { status: 404 });
   }
@@ -245,8 +245,8 @@ Deno.serve(async (req: Request) => {
     const raw = (cfg as { phones?: unknown[] } | null)?.phones;
     return Array.isArray(raw)
       ? raw
-          .filter((phone): phone is string => typeof phone === "string")
-          .map(normalizeBlockedDestination)
+        .filter((phone): phone is string => typeof phone === "string")
+        .map(normalizeBlockedDestination)
       : [];
   };
   const blockedPhones = new Set([

@@ -32,8 +32,8 @@ Deno.serve(async (req: Request) => {
   const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
   const authHeader = req.headers.get("Authorization") ?? "";
   const isCron = Boolean(cronSecret) && authHeader === `Bearer ${cronSecret}`;
-  const isServiceRole =
-    Boolean(serviceKey) && authHeader === `Bearer ${serviceKey}`;
+  const isServiceRole = Boolean(serviceKey) &&
+    authHeader === `Bearer ${serviceKey}`;
   if (!isCron && !isServiceRole) {
     return json({ success: false, error: "No autorizado" }, 401);
   }
@@ -41,8 +41,9 @@ Deno.serve(async (req: Request) => {
   let appointmentId = "";
   try {
     const body = (await req.json()) as { appointment_id?: unknown };
-    appointmentId =
-      typeof body.appointment_id === "string" ? body.appointment_id.trim() : "";
+    appointmentId = typeof body.appointment_id === "string"
+      ? body.appointment_id.trim()
+      : "";
   } catch {
     return json({ success: false, error: "JSON inválido" }, 400);
   }
@@ -67,8 +68,9 @@ Deno.serve(async (req: Request) => {
     "zm-lash-nails";
 
   try {
-    const result = await runWithRequestTenantId(tenantId, () =>
-      scanHeldSlotsForAppointment(supabase, appointmentId),
+    const result = await runWithRequestTenantId(
+      tenantId,
+      () => scanHeldSlotsForAppointment(supabase, appointmentId),
     );
     return json({ success: true, notified: result.notified });
   } catch (err) {

@@ -2,10 +2,10 @@
 
 import { sendMessage } from "../wa-api.ts";
 import {
-  getSession,
-  upsertSession,
   clearCart,
+  getSession,
   type SupabaseClient,
+  upsertSession,
 } from "../lib/supabase.ts";
 import { notifyAdmins, notifyAdminsPausedClientReply } from "../lib/notify.ts";
 import { uploadWhatsAppMedia } from "../lib/notify.ts";
@@ -24,18 +24,18 @@ import {
 } from "./payment.ts";
 import { sendMenuWithPromos } from "./menu.ts";
 import {
+  matchesDateCorrectionIntent,
+  matchesDepositFaqIntent,
   matchesLocationQuestion,
   matchesOpenHoursQuestion,
-  matchesDepositFaqIntent,
-  matchesDateCorrectionIntent,
-  matchesSoftRescheduleIntent,
   matchesServiceChangeIntent,
+  matchesSoftRescheduleIntent,
 } from "./booking-flow.ts";
 import {
+  matchesAlreadyHaveDataIntent,
   parseClientIdentity,
   parseClientIdentityStitchingFragments,
   updateClientIdentity,
-  matchesAlreadyHaveDataIntent,
 } from "./client-identity.ts";
 import { WABA_PANEL_BASE } from "../lib/panel-url.ts";
 
@@ -112,7 +112,10 @@ async function wasDepositReminderRecentlySent(
     .ilike("content", "%nombre y apellido%DNI o CE%")
     .limit(1);
   if (error) {
-    console.error("[WABA] wasDepositReminderRecentlySent query:", error.message);
+    console.error(
+      "[WABA] wasDepositReminderRecentlySent query:",
+      error.message,
+    );
     return false;
   }
   return (data?.length ?? 0) > 0;
@@ -124,9 +127,10 @@ function matchesBoletaGiveUpIntent(text: string): boolean {
   const t = text.toLowerCase().normalize("NFD").replace(/\p{M}/gu, "");
   if (/\bya\s+agend/.test(t)) return true;
   if (
-    /\bire\s+el\s+(lunes|martes|miercoles|jueves|viernes|sabado|domingo)\b/.test(
-      t,
-    )
+    /\bire\s+el\s+(lunes|martes|miercoles|jueves|viernes|sabado|domingo)\b/
+      .test(
+        t,
+      )
   ) {
     return true;
   }
@@ -202,7 +206,9 @@ export async function handleAwaitingPreServicePhoto(
     });
     await sendMessage(
       phoneNumber,
-      `✅ ¡Foto recibida!\n\n*Foto 2 de 2:* Ahora envía una foto de ${pendingAreas[1]} 💜`,
+      `✅ ¡Foto recibida!\n\n*Foto 2 de 2:* Ahora envía una foto de ${
+        pendingAreas[1]
+      } 💜`,
     );
   } else {
     await upsertSession(supabase, phoneNumber, {
@@ -318,9 +324,8 @@ export async function handleFixedDepositSteps(
     return false;
   }
 
-  const rawText =
-    (message.type === "text" &&
-      (message as { text?: { body?: string } }).text?.body) ||
+  const rawText = (message.type === "text" &&
+    (message as { text?: { body?: string } }).text?.body) ||
     messageText ||
     "";
   const lower = rawText.trim().toLowerCase();
@@ -363,8 +368,7 @@ export async function handleFixedDepositSteps(
     return false;
   }
 
-  const wantsDateChange =
-    matchesDateCorrectionIntent(rawText) ||
+  const wantsDateChange = matchesDateCorrectionIntent(rawText) ||
     matchesSoftRescheduleIntent(rawText) ||
     /\bsemana que viene\b/.test(lower);
   if (lower && wantsDateChange) {
@@ -450,8 +454,7 @@ export async function handleFixedDepositSteps(
     return true;
   }
 
-  const identity =
-    parseClientIdentity(rawText, { senderPhone: phoneNumber }) ??
+  const identity = parseClientIdentity(rawText, { senderPhone: phoneNumber }) ??
     (await parseIdentityFromRecentInbound(supabase, phoneNumber, rawText));
   if (!identity) {
     // Sin ficha legible: no saltar al adelanto (se quedaba sin datos de boleta).
@@ -504,9 +507,8 @@ export async function handleAwaitingPaymentScreenshot(
   session: Awaited<ReturnType<typeof getSession>>,
   opts?: { ubicacionText?: string; horariosText?: string },
 ): Promise<boolean> {
-  const rawText =
-    (message.type === "text" &&
-      (message as { text?: { body?: string } }).text?.body) ||
+  const rawText = (message.type === "text" &&
+    (message as { text?: { body?: string } }).text?.body) ||
     messageText ||
     "";
   const textForCancel = rawText.trim().toLowerCase();
@@ -595,7 +597,7 @@ export async function handleAwaitingPaymentScreenshot(
     mediaId: imageData.id,
     caption: null,
   }).catch((err: unknown) =>
-    console.error("[WABA] persist comprobante para panel:", err),
+    console.error("[WABA] persist comprobante para panel:", err)
   );
   await processPaymentScreenshot(supabase, phoneNumber, screenshotUrl, session);
   return true;

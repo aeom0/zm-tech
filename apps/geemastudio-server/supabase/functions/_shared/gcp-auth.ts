@@ -71,8 +71,8 @@ export async function getGoogleAccessToken(
   };
 
   const encoder = new TextEncoder();
-  const toSign =
-    b64url(JSON.stringify(header)) + "." + b64url(JSON.stringify(payload));
+  const toSign = b64url(JSON.stringify(header)) + "." +
+    b64url(JSON.stringify(payload));
   const pem = sa.private_key
     .replace(/-----BEGIN PRIVATE KEY-----/, "")
     .replace(/-----END PRIVATE KEY-----/, "")
@@ -90,8 +90,8 @@ export async function getGoogleAccessToken(
     key,
     encoder.encode(toSign),
   );
-  const jwt =
-    toSign + "." + b64url(String.fromCharCode(...new Uint8Array(signature)));
+  const jwt = toSign + "." +
+    b64url(String.fromCharCode(...new Uint8Array(signature)));
 
   const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",

@@ -119,7 +119,6 @@ export function hasFlexibleMealBreak(
   return breakWindowEnd - cursor >= meal.durationMinutes;
 }
 
-
 /** Camillas del salón: todo lo que no es uñas usa una. */
 export const SALON_BEDS = 2;
 
