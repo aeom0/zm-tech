@@ -82,7 +82,7 @@ No todas las 48 son candidatas a Haiku: ver **Grupo A / Grupo B** más abajo.
 | 34 | `sessionHasCart` / `isSessionStale` | `booking-flow.ts` — utilitarias, no clasifican intención (**Grupo B**) |
 | 37 | `detectLiftingCareReply` | `retouch-reengage.ts` — sí/no aceite de ricino; universo acotado (**Grupo B** en producción; ver notas) |
 | 45 | `matchesNaturalClosingIntent` + `hasRecentOutboundPendingPrompt` | `dispatcher.ts` — cierre natural ("Nos vemos", "Gracias") sin Haiku→932; guard ~15s si OUT dejó pregunta/lista pendiente (Loren, PR #20) |
-| 46 | rama `opt_out` en `detectAITrigger` | `ai-assistant.ts` — `STOP`/`baja`/unsubscribe determinístico; nunca pasa a Haiku (quick win 19-ago) |
+| 46 | rama `opt_out` en `detectAITrigger` | `ai-assistant.ts` — `STOP`/`baja`/unsubscribe determinístico (`matchesMarketingOptOut`); nunca pasa a Haiku; se evalúa en `dispatcher.ts` antes del saludo (6-oct) |
 | 47 | `tryAcceptPendingPriceCta` | `dispatcher.ts` / `cart-booking.ts` — "Si"/"Ok" corto tras CTA foto proactiva (`pending_price_cta_*` en sesión; Zandry …0030, 07-ago) |
 | 47b | `tryAcceptPendingPortfolioCta` | `dispatcher.ts` / `cart-booking.ts` — "Sii" corto tras oferta condicional de fotos (`pending_portfolio_cta_at`; Jacqueline …2438, PR #137) |
 | 48 | step `awaiting_ctwa_interest` | `dispatcher.ts` — tap Extensiones/Lifting/Otro post-CTWA (PR #58–#61, 23-ago); mayormente IDs interactivos (**Grupo B**) |

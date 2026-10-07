@@ -550,4 +550,21 @@ Los cuatro fixes están en la misma rama/PR (`claude/fix-waba-button-race-menu-f
 
 ---
 
+## Cerrados 6-oct 2026 — reporte 2026-10-06
+
+| Patrón | Qué era | Resolución | QA / refs |
+| ------ | ------- | ---------- | --------- |
+| [P1] Retoque de un servicio inactivo | "Agendar" desde `retoque_reenganche_zm` con servicio dado de baja dejaba al flujo sin catálogo | `retouch-reengage.ts` ofrece el catálogo si el servicio ya no existe; `retoque-offer.ts` no envía la plantilla si `is_active=false` | `69a5b967` |
+| [P2] Pack de 2 personas toma "hola" como nombre | `looksLikePersonName` aceptaba saludos y acks; el bot preguntaba por la acompañante sin límite | `NON_NAME_REPLY` en `duo-pack.ts`; `companion_asks` limita a 2 preguntas | `5cca0372` |
+| Ads-bounce listaba pestañas a todas | Copy único para cualquier rubro | Haiku redacta el copy según el rubro conversado; si falla, texto neutro sin remitir al 932 | `faeace57` |
+| Horario sin "con cita previa" | El copy prometía atención sin cita; el salón trabaja por citas | "(con cita previa)" en `format.ts`, `steps.ts`, `dispatcher.ts` y la regla de Haiku | `37539233` |
+| Pack cotizado parafraseado por Haiku (`…7393`) | El CTA de precio no reconocía el pack si Haiku lo redactaba distinto | `pending-price-cta.ts`: pack cuenta como cotizado si el texto trae su precio y todos sus servicios | `8884b556` |
+| Visagismo y Lifting + Tinturado mal explicados (`…0073`) | Haiku sumaba depilación a Diseño de Cejas y decía que Lifting + Tinturado incluía cejas | Bloque de regla en `haiku-prompt.ts`: visagismo = Diseño de Cejas (incluye depilación y relleno); Lifting + Tinturado es de pestañas (S/60, promo S/50) | `2b362d8a`, `e1908b60` |
+| Copy de adelanto sin espacios entre párrafos | Un solo bloque de texto, difícil de leer | Un párrafo por idea en los defaults de `payment.ts` y en `waba_config.deposit_fixed_instructions_text` | `6cfb2436`, migración `20261007003532` |
+| STOP no registraba la baja en el primer mensaje | El saludo de entrada ganaba a la rama `opt_out` de `detectAITrigger` | `matchesMarketingOptOut` se evalúa en `dispatcher.ts` antes de saludo/menú; `retoque-offer.ts` respeta `marketing_opt_out` (fail-closed) | `8ab24c8e`, `43090db8`; probado en el simulador del panel (`51988800001`) |
+
+Datos de catálogo en prod (sin migración): pack "Lifting + Tinturado" desactivado y reemplazado por promo S/50 sobre el servicio "Lifting + Tinturado de Pestañas" (S/60); "Diseño + Tinturado de Cejas" renombrado; duplicados de packs, servicios y Depilación de Patillas unificados; servicios inactivos sin citas eliminados. Cita de `…0073` creada a mano (9-oct 17:30, sin adelanto: el bot informó falta de cupo antes del sistema de camillas). `…8663` ya estaba cancelada, con adelanto no reembolsable.
+
+---
+
 _Actualizar esta tabla al cerrar Quick Wins del reporte vivo; no reabrir reportes borrados._
