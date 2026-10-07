@@ -135,6 +135,23 @@ export async function sendRetouchOfferForClient(
     return { ok: false, skipped: true, reason: "no_phone" };
   }
 
+  // Baja de marketing (STOP): fail-closed, si no se puede leer la lista no se envía.
+  const { data: optOutRow, error: optOutErr } = await supabase
+    .from("waba_config")
+    .select("config_value")
+    .eq("tenant_id", tenantId)
+    .eq("config_key", "marketing_opt_out")
+    .eq("is_active", true)
+    .maybeSingle();
+  if (optOutErr) {
+    return { ok: false, skipped: true, reason: "opt_out_check_failed", phone };
+  }
+  const optOutPhones = (optOutRow?.config_value as { phones?: unknown } | null)
+    ?.phones;
+  if (Array.isArray(optOutPhones) && optOutPhones.includes(phone)) {
+    return { ok: false, skipped: true, reason: "marketing_opt_out", phone };
+  }
+
   const now = new Date();
 
   // Cita futura scheduled → no molestar. `date` es hora Lima literal: comparar
