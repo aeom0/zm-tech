@@ -156,8 +156,8 @@ export function HeroSection({ data, theme }: HeroSectionProps) {
                 label={heroCtaText ?? 'Reservar cita'}
                 className="block flex-1 py-4 text-center text-[15px] font-bold no-underline"
                 style={{
-                  background: theme.colors.ctaBg,
-                  color: theme.colors.ctaText,
+                  background: theme.accentBackground,
+                  color: theme.colors.accentOn,
                   borderRadius: '14px',
                 }}
               />

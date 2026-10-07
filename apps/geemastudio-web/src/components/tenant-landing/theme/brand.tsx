@@ -115,6 +115,10 @@ export function applyBrand(theme: LandingTheme, brand: LandingBrand | null): Lan
     accent: textAccent,
     accentOn,
     badgeText: textAccent,
+    // Navbar en las 3 plantillas. ctaBg no se toca en Warm/Modern: ahí es el fondo
+    // del bloque final, no el botón (el hero de Modern usa accentBackground).
+    navCtaBg: fill,
+    navCtaText: accentOn,
   }
 
   if (theme.id === 'warm') {
@@ -129,8 +133,6 @@ export function applyBrand(theme: LandingTheme, brand: LandingBrand | null): Lan
     colors.secondaryAccentBg = withAlpha(primary, 0.12)
     colors.badgeBg = withAlpha(primary, 0.12)
     colors.badgeBorder = withAlpha(primary, 0.3)
-    colors.navCtaBg = fill
-    colors.navCtaText = accentOn
     colors.ctaBg = `linear-gradient(135deg, ${withAlpha(primary, 0.12)} 0%, ${withAlpha(accent, 0.08)} 100%)`
   }
 
