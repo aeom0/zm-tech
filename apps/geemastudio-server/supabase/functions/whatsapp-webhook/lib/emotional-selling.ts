@@ -3,7 +3,7 @@
  *
  * Alcance v1: solo leads con `from_ad_at` y carrito 100 % cat-extensiones / cat-lifting.
  * Tras días de prueba en prod se ampliará (uñas, orgánico, más momentos del funnel).
- * Ver docs/waba/prompts/WABA_HAIKU_DIRECTRICES.md § Venta emocional CTWA.
+ * Ver docs/waba/tenants/zm-lash/directrices-haiku.md § Venta emocional CTWA.
  */
 
 import type { ServiceCatalog } from "./services-catalog.ts";

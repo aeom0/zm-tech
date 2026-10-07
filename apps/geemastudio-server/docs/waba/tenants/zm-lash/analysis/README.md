@@ -21,10 +21,10 @@ Reportes interdiarios (~48 h) de conversaciones WhatsApp → patrones donde el b
 
 ## Cómo correr la rutina
 
-Prompt completo: [`docs/waba/prompts/rutina-waba-analysis.md`](../prompts/rutina-waba-analysis.md).
+Prompt completo: [`docs/waba/prompts/rutina-waba-analysis.md`](../../../prompts/rutina-waba-analysis.md).
 
-Contexto producto: [`WABA_HAIKU_DIRECTRICES.md`](../prompts/WABA_HAIKU_DIRECTRICES.md) · abono S/25 / 20% domingo: [`ROADMAP.md`](../../ROADMAP.md) § Horarios y pago.  
-QA post-fix: [`WABA_SIMULATION_VALIDATION.md`](../WABA_SIMULATION_VALIDATION.md) (`:fixed-deposit`, `:payment-verification`, `:datetime-cupo`, `:price-list-bullets`, `:pack-confirm`, `:haiku-first-informational`).
+Contexto producto: [`directrices-haiku.md`](../directrices-haiku.md) · abono S/25 / 20% domingo: [`ROADMAP.md`](../../../../../../../ROADMAP.md) § Horarios y pago.  
+QA post-fix: [`WABA_SIMULATION_VALIDATION.md`](../../../WABA_SIMULATION_VALIDATION.md) (`:fixed-deposit`, `:payment-verification`, `:datetime-cupo`, `:price-list-bullets`, `:pack-confirm`, `:haiku-first-informational`).
 
 ## Capas de monitoreo (02-ago — no confundir con bugs de Haiku)
 

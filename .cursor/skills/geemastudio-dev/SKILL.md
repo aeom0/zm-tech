@@ -752,7 +752,7 @@ pnpm db:seed         # seeds template
 
 Formato `mcpServers` objeto — el formato antiguo `tools` block esta obsoleto.
 
-**MCP de Geema / ZM Lash:** `ClaudeSupabase` → proyecto `udelxwwnyivknslueerr`. El hub `llacowjutjfefboqgfnj` es `SupabaseZMTech` y no incluye las tablas del salón. El ref `xidjomlxpuosupymcsaj` ya no existe. Si el pooler no responde, Management API por HTTPS — ver `docs/SUPABASE.md`.
+**MCP de Geema (multi-tenant):** `ClaudeSupabase` → proyecto `udelxwwnyivknslueerr`. El hub `llacowjutjfefboqgfnj` es `SupabaseZMTech` y no incluye las tablas de Geema. El ref `xidjomlxpuosupymcsaj` ya no existe. Si el pooler no responde, Management API por HTTPS — ver `docs/SUPABASE.md`.
 
 ---
 

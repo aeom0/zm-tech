@@ -96,7 +96,7 @@ Misma clave en `.mcp.json` (Claude) y en Cursor. Un nombre = un proyecto:
 
 | Nombre canónico            | project_ref            | Repo / uso                           | Cuenta    |
 | -------------------------- | ---------------------- | ------------------------------------ | --------- |
-| **`ClaudeSupabase`**       | `udelxwwnyivknslueerr` | Lash + Geema (misma BD)              | orta.1    |
+| **`ClaudeSupabase`**       | `udelxwwnyivknslueerr` | GeemaStudio (multi-tenant)           | orta.1    |
 | **`Supabase`**             | `lavesnngygpwgmkyvuim` | zetaeme-enterprise-suite             | orta.1    |
 | **`SupabaseZMTech`**       | `llacowjutjfefboqgfnj` | zm-tech hub (Landing/Odental/RepMAX) | zmtechdev |
 | **`SupabaseNaturalForce`** | `ddfmmgddzphxidocmjba` | naturalforce-suite                   | zmtechdev |
@@ -109,7 +109,7 @@ En `zm-tech` (raíz `.mcp.json` + `.cursor/mcp.json`):
 | `SupabaseZMTech` | `llacowjutjfefboqgfnj` | OAuth (`mcp.supabase.com`)                                  |
 | `ClaudeSupabase` | `udelxwwnyivknslueerr` | **PAT** `SUPABASE_ZMLASH_PAT` + `mcp-server-supabase` local |
 
-**`udelxwwnyivknslueerr` no acepta el flujo OAuth hosted** (`mcp.supabase.com/mcp?project_ref=...`) — falla con `Unrecognized client_id` / resource inválido (org `ieuurcwqsaplycfufnmw`). Workaround: server local `@supabase/mcp-server-supabase` + PAT en `SUPABASE_ZMLASH_PAT` (`~/.bashrc`). Mismo patrón en `ZM-Lash-and-Nails-Beauty`.
+**`udelxwwnyivknslueerr` no acepta el flujo OAuth hosted** (`mcp.supabase.com/mcp?project_ref=...`) — falla con `Unrecognized client_id` / resource inválido (org `ieuurcwqsaplycfufnmw`). Workaround: server local `@supabase/mcp-server-supabase` + PAT en `SUPABASE_ZMLASH_PAT` (`~/.bashrc`). Mismo patrón en `ZM-Lash-and-Nails-Beauty`. El nombre `SUPABASE_ZMLASH_PAT` es legado: el PAT es de la cuenta orta.1 y da acceso a toda la BD de Geema, no a un tenant.
 
 Prefijos de tool en Claude Code: `mcp__ClaudeSupabase__…`, `mcp__SupabaseZMTech__…`, etc. En Cursor: `project-0-…-ClaudeSupabase` / `user-SupabaseZMTech` (prefijo de workspace/user).
 
