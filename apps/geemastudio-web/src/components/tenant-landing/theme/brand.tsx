@@ -74,6 +74,20 @@ export function onColor(...fills: string[]): string {
 }
 
 /**
+ * Extremo final del degradado de Elegant: se acerca al acento todo lo que permita que el texto
+ * del botón mantenga 4.5:1 sobre ambos extremos (primario y acento pueden tener luminosidades
+ * muy distintas, ej. morado + dorado). Si no hay mezcla que cumpla, el relleno queda plano.
+ */
+function gradientEndFor(primary: string, accent: string): string {
+  for (let t = 1; t > 0; t -= 0.1) {
+    const end = mix(primary, accent, t)
+    const text = onColor(primary, end)
+    if (Math.min(contrastRatio(primary, text), contrastRatio(end, text)) >= 4.5) return end
+  }
+  return primary
+}
+
+/**
  * Aplica la marca del tenant sobre una plantilla base: cambia solo los tokens de acento
  * (relleno, texto de acento, badges, CTA) y deja fondos, tipografía y radios de la plantilla.
  * Si algún color no es un hex válido devuelve la plantilla sin cambios.
@@ -89,10 +103,12 @@ export function applyBrand(theme: LandingTheme, brand: LandingBrand | null): Lan
   // Un relleno casi igual al fondo (negro sobre Elegant, blanco sobre Warm) dejaría el botón invisible.
   const solidPrimary = contrastRatio(bg, primary) >= 1.5 ? primary : textAccent
   const solidAccent = contrastRatio(bg, accent) >= 1.5 ? accent : readableOn(bg, accent, 3)
-  const fill = isElegant
-    ? `linear-gradient(135deg, ${solidPrimary} 0%, ${solidAccent} 100%)`
-    : solidPrimary
-  const accentOn = onColor(solidPrimary, isElegant ? solidAccent : solidPrimary)
+  const gradientEnd = isElegant ? gradientEndFor(solidPrimary, solidAccent) : solidPrimary
+  const fill =
+    gradientEnd === solidPrimary
+      ? solidPrimary
+      : `linear-gradient(135deg, ${solidPrimary} 0%, ${gradientEnd} 100%)`
+  const accentOn = onColor(solidPrimary, gradientEnd)
 
   const colors: LandingTheme['colors'] = {
     ...theme.colors,
