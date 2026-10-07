@@ -3,6 +3,7 @@
 import { createClient } from '@supabase/supabase-js'
 import type {
   BusinessHoursConfig,
+  TenantLandingBrand,
   TenantLandingData,
   WebGalleryItem,
   WebPromo,
@@ -17,6 +18,7 @@ const supabasePublic = createClient(
 )
 
 const LANDING_SELECT = `
+  tenant_slug,
   business_name,
   slug,
   web_template,
@@ -65,7 +67,24 @@ async function getTenantLandingByColumn(
 
   if (error || !data) return null
 
-  return mapRowToLandingData(data)
+  const brand = await getTenantBrand(data.tenant_slug)
+  return mapRowToLandingData(data, brand)
+}
+
+/**
+ * Colores de marca del tenant desde la vista pública `tenant_brand_public`
+ * (la tabla `tenant_settings` no expone los colores al rol anon).
+ * Ante cualquier fallo devuelve null: la landing usa la paleta base de su plantilla.
+ */
+async function getTenantBrand(tenantSlug: unknown): Promise<TenantLandingBrand | null> {
+  if (typeof tenantSlug !== 'string' || !tenantSlug) return null
+  const { data, error } = await supabasePublic
+    .from('tenant_brand_public')
+    .select('primary_color, accent_color')
+    .eq('tenant_slug', tenantSlug)
+    .maybeSingle()
+  if (error || !data?.primary_color || !data?.accent_color) return null
+  return { primary: String(data.primary_color), accent: String(data.accent_color) }
 }
 
 export async function getTenantLandingBySlug(slug: string): Promise<TenantLandingData | null> {
@@ -104,7 +123,10 @@ function parseBusinessHours(val: unknown): BusinessHoursConfig | null {
   return null
 }
 
-function mapRowToLandingData(row: Record<string, unknown>): TenantLandingData {
+function mapRowToLandingData(
+  row: Record<string, unknown>,
+  brand: TenantLandingBrand | null
+): TenantLandingData {
   const taglineRaw = row.tagline != null ? String(row.tagline).trim() : ''
 
   const tpl = row.web_template
@@ -114,6 +136,7 @@ function mapRowToLandingData(row: Record<string, unknown>): TenantLandingData {
     businessName: String(row.business_name ?? ''),
     slug: String(row.slug ?? ''),
     webTemplate,
+    brand,
     customDomain: row.custom_domain ? String(row.custom_domain) : null,
     tagline: taglineRaw.length > 0 ? taglineRaw : null,
     heroTagline: row.web_hero_tagline ? String(row.web_hero_tagline) : null,

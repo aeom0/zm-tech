@@ -49,10 +49,17 @@ export interface BusinessHoursConfig {
   [day: string]: { open: string; close: string; enabled?: boolean } | null
 }
 
+/** Colores de marca del tenant; null si no hay fila de marca (la plantilla usa su paleta base). */
+export interface TenantLandingBrand {
+  primary: string
+  accent: string
+}
+
 export interface TenantLandingData {
   businessName: string
   slug: string
   webTemplate: WebTemplate
+  brand: TenantLandingBrand | null
   customDomain: string | null
   tagline: string | null
   about: string | null

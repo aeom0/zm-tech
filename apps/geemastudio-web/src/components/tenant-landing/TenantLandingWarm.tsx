@@ -1,4 +1,4 @@
-import { warmTheme } from './theme/presets'
+import { getLandingTheme } from './theme/presets'
 import {
   Navbar,
   HeroSection,
@@ -18,7 +18,7 @@ import { WhatsAppFAB } from './shared/WhatsAppFAB'
 import type { TenantLandingProps } from '@/types/tenant-landing'
 
 export function TenantLandingWarm({ data }: TenantLandingProps) {
-  const theme = warmTheme
+  const theme = getLandingTheme('warm', data.brand)
 
   return (
     <div
