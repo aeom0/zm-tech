@@ -21,13 +21,10 @@ import {
 } from "../lib/services-catalog.ts";
 import {
   confirmsTwoPersonPack,
-  formatHourCompact,
   isTwoPersonSameServiceIds,
   looksLikePersonName,
-  mentionsTwoPeople,
   textInterruptsCompanionName,
 } from "../lib/duo-pack.ts";
-import { getDateKeyLima } from "../lib/peru-holidays.ts";
 import {
   emptyPartyBooking,
   parsePartyBooking,

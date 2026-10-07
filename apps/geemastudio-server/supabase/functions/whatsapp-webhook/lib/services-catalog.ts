@@ -113,7 +113,7 @@ const catalogInflight = new Map<string, Promise<ServiceCatalog>>();
  * Reusa el resultado 60 s en el isolate: el catálogo no cambia en medio de un chat
  * y cada select cuenta en Log ingestion.
  */
-export async function loadCatalog(
+export function loadCatalog(
   supabase: SupabaseClient,
   tenantId?: string,
 ): Promise<ServiceCatalog> {

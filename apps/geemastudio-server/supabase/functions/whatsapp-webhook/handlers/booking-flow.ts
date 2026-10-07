@@ -341,7 +341,9 @@ export function matchesDepositFaqIntent(lower: string): boolean {
 }
 
 /** Ubicación / dirección / cómo llegar (Maps). */
-export function matchesLocationQuestion(lower: string): boolean {
+export function matchesLocationQuestion(raw: string): boolean {
+  // Solo lo tipeado: no heredar palabras del mensaje citado (↳).
+  const lower = clientTypedPortion(raw);
   return (
     /\bd[oó]nde\s+queda/.test(lower) ||
     /\bd[oó]nde\s+est[aá]n/.test(lower) ||
@@ -1630,6 +1632,29 @@ export async function openBookingCalendarForCart(
       sess,
       catalog,
     );
+  }
+
+  // Día ya fijado (sticky) + hora dada en este mismo mensaje sin fecha
+  // ("a las 5 pm" tras ver cupos de hoy): usar esa hora, no re-preguntarla.
+  // SAM, 7-oct: Haiku prometió «5 PM, dame un momento» y el bot reabrió la lista.
+  if (stickyDay && !fromMsg && !rescheduleId && opts?.messageText) {
+    const slot = parseTimeSlot(opts.messageText);
+    if (slot && hasExplicitTime(opts.messageText)) {
+      await upsertSession(supabase, phoneNumber, {
+        step: "awaiting_datetime",
+        selected_day: stickyDay,
+        reschedule_appointment_id: null,
+        employee_assignments: JSON.stringify({}),
+      });
+      const done = await tryCompleteBookingFromText(
+        supabase,
+        phoneNumber,
+        `${slot.hour}:${String(slot.minute).padStart(2, "0")}`,
+        { ...session, step: "awaiting_datetime", selected_day: stickyDay },
+        catalog,
+      );
+      if (done) return true;
+    }
   }
 
   if (stickyDay) {

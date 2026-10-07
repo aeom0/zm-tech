@@ -36,7 +36,7 @@ const configInflight = new Map<string, Promise<WabaConfigMap>>();
  * Nunca lanza excepción para no interrumpir el flujo del bot.
  * El acierto vive 60 s en el isolate; un fallo no se cachea.
  */
-export async function loadWabaConfig(
+export function loadWabaConfig(
   supabase: SupabaseClient,
   tenantId?: string,
 ): Promise<WabaConfigMap> {

@@ -4,6 +4,8 @@
  * Haiku y fallbacks del webhook deben importar de aquí — no duplicar Wong/KFC/Maps.
  */
 
+import { clientTypedPortion } from "./reply-context.ts";
+
 export const SALON_ADDRESS =
   "Calle Artesanos 150, Local 205, CC. Las Plazuelas de Surco, Santiago de Surco, Lima";
 
@@ -46,7 +48,10 @@ export function mentionsKennedyOrAmistadLandmark(lower: string): boolean {
 }
 
 /** True si pregunta por estacionamiento / "movilidad gratis" del creativo. */
-export function matchesParkingOrMovilidadQuestion(lower: string): boolean {
+export function matchesParkingOrMovilidadQuestion(raw: string): boolean {
+  // Solo lo tipeado: la cita (↳) puede traer "estacionamiento" de nuestro
+  // propio mensaje y un "Confirmo" no es una pregunta (SAM, 7-oct).
+  const lower = clientTypedPortion(raw);
   return (
     /\bestacionamiento\b/.test(lower) ||
     /\bparking\b/.test(lower) ||
