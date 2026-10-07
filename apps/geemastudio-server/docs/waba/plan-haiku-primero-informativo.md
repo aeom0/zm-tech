@@ -8,7 +8,7 @@
 > **Estado (18-sep-2026):** Batches **1 y 2** ✅ (PR #120, validados en vivo).
 > Batch **3** ✅ (carrito/ubicación, QA B1–B3b). Batch **4** ✅ catch-all
 > `browsing` + agendar mixto (Edgar …2122) — **validado en tráfico real**: análisis
-> de rutina 17-sep (`docs/waba/analysis/2026-09-17-analysis.md`, 19 hilos, 0 bugs
+> de rutina 17-sep (`docs/waba/tenants/zm-lash/analysis/2026-09-17-analysis.md`, 19 hilos, 0 bugs
 > nuevos atribuibles a Batch 4; casos Yelitza/Jerita/Virginia post-merge sin
 > regresión). Pago/identidad siguen determinísticos. Dispatcher:
 > [`08-PLAN-dispatcher-modular.md`](https://github.com/aeom0/zm-tech/blob/main/docs/geemastudio/docs/plans/08-PLAN-dispatcher-modular.md) Fase 1 código ✅.
@@ -105,7 +105,7 @@ decisión del *caller*, no una limitación de Haiku.
   van a Haiku (el parser de hora ya no gana a ciegas). Pago/identidad no se
   ejecutan por Haiku.
   **Validado**: análisis de rutina 17-sep (19 hilos, ventana 15→17-sep) sin
-  bugs nuevos atribuibles a este batch — ver `docs/waba/analysis/2026-09-17-analysis.md`.
+  bugs nuevos atribuibles a este batch — ver `docs/waba/tenants/zm-lash/analysis/2026-09-17-analysis.md`.
 
 ### Notas de revisión Batch 3 (cerradas en Batch 4)
 

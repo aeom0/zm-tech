@@ -3,7 +3,7 @@
  * CTWA pregunta de interés — QA A–H + extras.
  *
  * Actualizado 09-sep-2026: la lista interactiva del 1.er turno CTWA se
- * eliminó por completo (análisis docs/waba/analysis/2026-09-09-ctwa-lista-inicial.md
+ * eliminó por completo (análisis docs/waba/tenants/zm-lash/analysis/2026-09-09-ctwa-lista-inicial.md
  * — 40% de silencio total tras verla). Ahora solo se manda saludo + typing
  * indicator; el texto libre de respuesta sigue el mismo ruteo. Los taps a
  * IDs de la lista vieja (ctwa_interest_*) siguen soportados por

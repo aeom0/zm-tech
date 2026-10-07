@@ -13,7 +13,7 @@ Herramienta operativa para **reproducir conversaciones WhatsApp sin escribir des
 | Situación                                                 | Usar simulación           | Usar chat real               |
 | --------------------------------------------------------- | ------------------------- | ---------------------------- |
 | Regresión tras fix en `whatsapp-webhook`                  | ✅                        | Opcional                     |
-| Caso en reporte vivo o [LECCIONES](analysis/LECCIONES.md) | ✅                        | Si la clienta puede cooperar |
+| Caso en reporte vivo o [LECCIONES](tenants/zm-lash/analysis/LECCIONES.md) | ✅                        | Si la clienta puede cooperar |
 | Validar Haiku / Mi cita / coalesce                        | ✅                        | —                            |
 | Hora en app móvil (timezone Agenda)                       | Parcial (solo BD)         | ✅ Abrir cita en mobile      |
 | Push FCM / plantillas Meta / ventana 24h                  | ❌                        | Manual                       |
@@ -22,7 +22,7 @@ Herramienta operativa para **reproducir conversaciones WhatsApp sin escribir des
 Complementa (no reemplaza):
 
 - [rutina-waba-analysis.md](prompts/rutina-waba-analysis.md) — análisis retrospectivo 48 h
-- [WABA_HAIKU_DIRECTRICES.md](prompts/WABA_HAIKU_DIRECTRICES.md) — criterios de calidad del bot
+- [WABA_HAIKU_DIRECTRICES.md](tenants/zm-lash/directrices-haiku.md) — criterios de calidad del bot
 - [EDGE_FUNCTIONS.md](EDGE_FUNCTIONS.md) — contrato del webhook
 - [WABA_CAPACITY.md](WABA_CAPACITY.md) — tope de solape 1 vs 2 (carrito especial)
 
@@ -391,7 +391,7 @@ Si `outbound` está vacío pero `haiku` tiene filas → el dispatch llegó a Hai
 
 ### C. Anti-patrones (desde análisis)
 
-Tomar la tabla de [WABA_HAIKU_DIRECTRICES.md](prompts/WABA_HAIKU_DIRECTRICES.md) y convertir cada fila en regex `mustNotMatch`.
+Tomar la tabla de [WABA_HAIKU_DIRECTRICES.md](tenants/zm-lash/directrices-haiku.md) y convertir cada fila en regex `mustNotMatch`.
 
 ### D. Estado de BD (fallback)
 
@@ -508,7 +508,7 @@ main();
 #!/usr/bin/env node
 /**
  * Caso: <descripción breve>
- * Origen: docs/waba/analysis/YYYY-MM-DD-analysis.md — P<N> / hilo …XXXX
+ * Origen: docs/waba/tenants/zm-lash/analysis/YYYY-MM-DD-analysis.md — P<N> / hilo …XXXX
  */
 import crypto from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
@@ -573,7 +573,7 @@ Ver implementación en `scripts/lib/waba-sim-assert.mjs` (`assertOutbound`, `pol
 
 ## De un reporte de análisis a un caso automatizado
 
-1. **Leer** el reporte vivo `docs/waba/analysis/YYYY-MM-DD-analysis.md` o [LECCIONES.md](analysis/LECCIONES.md) — bloque «Hilo reconstruido» si aplica.
+1. **Leer** el reporte vivo `docs/waba/tenants/zm-lash/analysis/YYYY-MM-DD-analysis.md` o [LECCIONES.md](tenants/zm-lash/analysis/LECCIONES.md) — bloque «Hilo reconstruido» si aplica.
 2. **Identificar** el mensaje `IN` que disparó el fallo y el `step` de sesión en ese momento.
 3. **Copiar** el texto exacto de la clienta (incluye tildes y puntuación).
 4. **Definir**:

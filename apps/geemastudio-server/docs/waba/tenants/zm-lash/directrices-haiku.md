@@ -5,7 +5,7 @@
 
 **Implementación**: `supabase/functions/whatsapp-webhook/`  
 **Config editable**: tabla `waba_config` + panel `/panel/waba/campanas`  
-**Análisis de calidad**: rutina → [rutina-waba-analysis.md](./rutina-waba-analysis.md) · lecciones [../analysis/LECCIONES.md](../analysis/LECCIONES.md) · [README carpeta](../analysis/README.md)
+**Análisis de calidad**: rutina → [rutina-waba-analysis.md](../../prompts/rutina-waba-analysis.md) · contexto [contexto-analisis.md](./contexto-analisis.md) · lecciones [analysis/LECCIONES.md](./analysis/LECCIONES.md) · [README carpeta](./analysis/README.md)
 
 ---
 
@@ -68,7 +68,7 @@ Los creativos son las mismas URLs opcionales que CTWA (hasta 4). Si el panel no 
 2. **Diseño/mapeo** (mismo SKU): ojo de gato, ardilla, ojo abierto, muñeca.
 3. Fotos / explicación de **fibra** → fichas `edu-fiber-{clasicas|rimel|3d|4d}` (`Extensiones_*.jpeg`: técnica + diseños). Varias fibras → esas fichas + Fox/Anime del portafolio (no volcar solo diseños Rímel — Nicole …5813).
 4. “Precios” + “extensiones” → cotizar fibras en texto (`action:none`); evitar laberinto de listas (Jerita …8523). Prompt: sin `show_category` en extensiones salvo que pida el menú.
-   - Este caso cubre texto libre. Reincidencia del **mismo cliente vía taps** (navegación por `list_reply.id`, donde Haiku no interviene por diseño) resuelta aparte con `catalog_nav_taps_count` — ver `docs/waba/analysis/LECCIONES.md` § "Fix 18-sep — laberinto de taps de catálogo".
+   - Este caso cubre texto libre. Reincidencia del **mismo cliente vía taps** (navegación por `list_reply.id`, donde Haiku no interviene por diseño) resuelta aparte con `catalog_nav_taps_count` — ver `docs/waba/tenants/zm-lash/analysis/LECCIONES.md` § "Fix 18-sep — laberinto de taps de catálogo".
 
 **Flujo de bienvenida** (clienta nueva **o recurrente** con sesión stale / anuncio):
 
@@ -368,7 +368,7 @@ Prefijos fuera de `SPANISH_ONLY_CODES`: Haiku responde **bilingüe** (español +
 2. Staff aprueba (`post_service_payment`) → mensaje corto de pago recibido
 3. En `deposit`, cita queda / se confirma `scheduled`
 
-Detalle técnico: [EDGE_FUNCTIONS.md](../EDGE_FUNCTIONS.md) § Clasificación de imágenes + plantilla `pago_recibido_validar_zm`.
+Detalle técnico: [EDGE_FUNCTIONS.md](../../../ops/EDGE_FUNCTIONS.md) § Clasificación de imágenes + plantilla `pago_recibido_validar_zm`.
 
 ---
 
@@ -421,7 +421,7 @@ Código: CASO en `FORMAT_INSTRUCTION` (`haiku-prompt.ts`); bloque **PRODUCTOS RE
 
 Campañas outbound con plantilla `promo_zm_v1` → Edge Function `send-promo-whatsapp`, pantalla `PromoMasivaScreen`. **No confundir** con el flujo conversacional Haiku.
 
-Documentación: [EDGE_FUNCTIONS.md](../EDGE_FUNCTIONS.md), implementación ya en producción (v1.8+).
+Documentación: [EDGE_FUNCTIONS.md](../../../ops/EDGE_FUNCTIONS.md), implementación ya en producción (v1.8+).
 
 ---
 

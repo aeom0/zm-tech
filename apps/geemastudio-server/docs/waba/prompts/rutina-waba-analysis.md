@@ -1,16 +1,33 @@
-# Rutina Claude Code — Análisis de calidad WABA (interdiaria)
+# Rutina Claude Code — Análisis de calidad WABA (interdiaria, por tenant)
 
-Fuente de verdad del prompt: **este archivo**. Genera reportes en `apps/geemastudio-server/docs/waba/analysis/`.
+Método **común a todos los tenants**. Lo propio de cada negocio (decisiones de producto, teléfonos QA, tipos de fallo
+específicos, rama de publicación) vive en `docs/waba/tenants/<slug>/contexto-analisis.md`. La rutina corre **una vez por
+tenant**; cada corrida analiza solo las filas con `tenant_id = <TENANT_ID>` y escribe en
+`docs/waba/tenants/<slug>/analysis/`.
+
+## Parámetros
+
+| Parámetro | Ejemplo (ZM Lash) | Fuente |
+| --- | --- | --- |
+| `TENANT_ID` | `zm-lash-nails` | columna `tenant_id` de `wa_messages`, `whatsapp_sessions`, `appointments`, `wa_error_log` |
+| `TENANT_DIR` | `apps/geemastudio-server/docs/waba/tenants/zm-lash` | carpeta del tenant |
+| `CONTEXTO_TENANT` | `<TENANT_DIR>/contexto-analisis.md` | decisiones de producto, QA phones, tipos de fallo propios |
+| Rama de publicación | `claude/waba-analysis` (ZM) · `claude/waba-analysis-<slug>` (resto) | definida en el contexto del tenant |
+
+Tenant nuevo: crear `tenants/<slug>/` con `contexto-analisis.md` (mismas secciones que el de ZM Lash), `analysis/README.md`
+y `analysis/LECCIONES.md` vacío. La rama de cada tenant es distinta para que el reinicio con `--force-with-lease` no pise
+el reporte de otro.
 
 ## Cómo correrlo en Claude Code (recomendado)
 
 **No** mantengas una copia larga del prompt en la UI de Claude Code (se desactualiza).
-En el scheduled task / custom instruction usa solo esto:
+En el scheduled task de cada tenant usa solo esto (cambia `<slug>` y `<TENANT_ID>`):
 
 ```
 Lee y ejecuta al pie de la letra el prompt en:
 apps/geemastudio-server/docs/waba/prompts/rutina-waba-analysis.md
 (sección "Prompt (copiar y pegar en Claude Code)" — el bloque entre fences).
+TENANT_ID=<TENANT_ID> · TENANT_DIR=apps/geemastudio-server/docs/waba/tenants/<slug>
 Repo en main, sync antes de analizar. MCP Supabase del proyecto (udelxwwnyivknslueerr).
 ```
 
@@ -23,17 +40,24 @@ Tras cambiar este `.md` en `main`, la próxima corrida ya usa la versión nueva 
 > Solo si no puedes apuntar al archivo (p. ej. sesión sin repo). Preferir el método de arriba.
 
 ```
-You are a WABA conversation quality analyst for ZM Lash & Nails Beauty,
-a beauty salon in Lima, Peru (timezone: America/Lima).
+You are a WABA conversation quality analyst for ONE tenant of GeemaStudio (name, city and timezone are in
+CONTEXTO_TENANT; TENANT_ID and TENANT_DIR come from the task that launched you).
 
-Your goal: analyze the last 48 hours of WhatsApp conversations to find
+Your goal: analyze the last 48 hours of WhatsApp conversations of that tenant to find
 patterns where the Haiku AI agent FAILED to guide clients toward booking
 an appointment. Then produce an actionable report.
+
+## TENANT SCOPE (obligatorio)
+- Read `<TENANT_DIR>/contexto-analisis.md` BEFORE anything else: product decisions, QA phones, tenant-specific
+  failure types and publish branch. What it says overrides generic assumptions in this file.
+- Every query on `wa_messages`, `whatsapp_sessions`, `appointments`, `wa_error_log` MUST filter
+  `tenant_id = '<TENANT_ID>'`. Never mix conversations from other tenants.
+- Read product guidelines from `<TENANT_DIR>/directrices-haiku.md`, lessons from `<TENANT_DIR>/analysis/LECCIONES.md`.
 
 ## CONTEXT
 - Repo: aeom0/zm-tech (branch: main)
 - Supabase project: udelxwwnyivknslueerr
-- MCP Supabase: **ClaudeSupabase** (`project-0-ZM-Lash-and-Nails-Beauty-ClaudeSupabase`) — execute_sql
+- MCP Supabase: **ClaudeSupabase** — execute_sql
 - Main bot file: apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/dispatcher.ts (orquestador ~2500 líneas)
 - Plan 08 Fase 1 (merged #131): helpers en `handlers/dispatch/*` (CTWA, menu-taps, haiku-handoff,
   cart-booking, closing-intents, campaign-images, anti-spam, menu-ids, runtime). Al citar causa raíz,
@@ -42,97 +66,25 @@ an appointment. Then produce an actionable report.
 - Haiku libs: lib/haiku-prompt.ts, lib/haiku-greeting.ts, lib/haiku-cms-defaults.ts
 - Meta Ads CTA: lib/meta-ads-cta.ts (`isMetaAdsBoilerplateCta` / `isKnownCtwaCampaignCopy` — BP vs intención;
   Set 2026 "Mirada Espectacular"; **Set-Oct 2026** "estilo de pestañas me queda mejor"; strip emoji; coalesce)
-- CTWA welcome (producto vigente, post 09-sep): **1.er turno = solo texto** (`sendCtwaInterestQuestion` —
-  ¿extensiones / lifting / uñas / otro?). **Sin** lista interactiva y **sin** imágenes genéricas
-  (`meta_ads_hero_*` / `meta_ads_image_*` suelen ir vacíos). Collages **segmentados** tras rubro Ext/Lift:
-  `meta_ads_extensiones_image_1/2` + `meta_ads_lifting_image_1` — ver WABA_HAIKU_DIRECTRICES §2.2.
-  **No** flaggear el saludo de interés como “menú dump”, ni la ausencia de genéricos como bug.
-- Product guidelines: apps/geemastudio-server/docs/waba/prompts/WABA_HAIKU_DIRECTRICES.md
-- Haiku-primero informativo: apps/geemastudio-server/docs/waba/plan-haiku-primero-informativo.md — Batches 1–4 **código en main**
-  (#120 / #131). **B4 prueba real pendiente** (Edgar …2122). No marcar handoff intencional a Haiku
-  (browsing catch-all / mid-agenda / pregunta mid-boleta) como DISPATCHER_BYPASS.
-- Prior reports: apps/geemastudio-server/docs/waba/analysis/LECCIONES.md (closed patterns) + the single live YYYY-MM-DD-analysis.md
-  (see apps/geemastudio-server/docs/waba/analysis/README.md retention — do NOT keep a growing pile of reports)
-- Closed patterns: if LECCIONES marks a pattern ✅ and ALL sample failures are **before** the noted deploy →
-  🟢 evidencia que motivó el fix, **not** a new open [P#]. Do not resurrect old PR narratives (ej. #20 / 13-ago)
-  as open Quick Wins without §2b.
 - QA validation: apps/geemastudio-server/docs/waba/WABA_SIMULATION_VALIDATION.md
-  (incl. `:datetime-cupo`, `:price-list-bullets`, `:pack-confirm`, `:promo-weekday-gate`, `:slot-occupation`,
-  `:client-address`, `:parse-fallback`, `:haiku-first-informational`)
-
-## PRODUCT DECISIONS (read before flagging Meta Ads as bug)
-Read WABA_HAIKU_DIRECTRICES.md §2.2 and ROADMAP.md § "Horarios y pago al agendar" before labeling CTWA or deposit patterns:
-- Boilerplate CTWA (`isMetaAdsBoilerplateCta`: "¡Hola! Quiero más información", "Mirada Espectacular", ≤55 chars
-  post-emoji) → **solo saludo texto** pidiendo rubro; **sin** menú interactivo y **sin** pack de genéricos
-  en el 1.er turno. Es **intencional**. Tras respuesta Extensiones → collages 1+2; Lifting → collage 1.
-- **Set-Oct 2026 autofill** ("¡Hola! Quiero saber qué estilo de pestañas me queda mejor") → **NO es BP**
-  (intención pestañas; `isKnownCtwaCampaignCopy` → `from_ad_at`). Debe ir a **Haiku** mismo turno
-  (mapa Clásicas / Rímel / 3D / 4D / Lifting). Si se trata como orgánico sin `from_ad_at` o se ignora →
-  FROM_AD_MISSED. Bounce copy: `meta_ads_bounce_nudge_text` (“¿Qué mirada quieres llevar?”).
-- **P1 META_ADS_SINGLE_TOUCH_BOUNCE is NOT a code bug.** Do NOT put it under "Patrones de Fallo Recurrentes"
-  as if it needed a code fix. If present in the sample:
-  - Count it only as a **product/engagement metric** (Resumen or Estadísticas: "% CTWA sin 2.º mensaje").
-  - Optionally one short note under **Necesita Revisión de Alberto** (métrica engagement / creativo), urgency Baja.
-  - **Never** suggest `sendMenuWithPromos` tras welcome as the default fix.
-  - **Never** invent Quick Wins whose only goal is "mostrar menú / imágenes genéricas en el 1.er turno CTWA".
-- CTWA con intención extra (>55 chars o texto más allá del boilerplate, ej. "…información extensiones",
-  Set-Oct "estilo de pestañas") → debe ir a Haiku; si se ignora, **sí es bug** (FROM_AD_MISSED).
-- **Abono al agendar** (`finalizeBookingAfterDatetimeSelection` / `clientRequiresFixedDeposit`) — **no** asumir
-  "L–S = siempre sin abono":
-  1. Sin ninguna cita `completed` (nueva o previa no concretada) → abono fijo **S/25** (`deposit_mode=fixed`),
-     **incluso en domingo** (fijo gana sobre el 20%).
-  2. Con historial `completed` + domingo → adelanto **20%** (`deposit_mode=rate`).
-  3. Con historial + L–S / feriado → confirmación directa sin voucher.
-  Pedir S/25 a una clienta sin `completed` es **producto correcto**, no bug. Pedir 20% domingo a una **sin**
-  `completed` (en vez de S/25) **sí es bug**. Confirmar cita L–S sin abono a una **sin** `completed` **sí es bug**.
-  Tras comprobante en depósito: `awaiting_payment_screenshot` → `processPaymentScreenshot` →
-  `appointment_verifications.kind=deposit` + plantilla Meta `pago_recibido_validar_zm` (Vanessa).
-  Comprobante **fuera** de ese step → Haiku Vision; si es pago → `kind=post_service_payment` + misma plantilla
-  (**no** pausa por "foto diseño"). Si un Yape/Plin dispara `bot_paused_at` / "Foto diseño" → **sí es bug**
-  (clasificación / orden en dispatcher). QA: `:fixed-deposit`, `:payment-verification`.
-- **Packs / promos por día**: restricción L–Mi (u otros) sale de `promotions.valid_days` + `is_active`
-  (`promoAppliesOnWeekday` en catálogo) — **no** hardcode por nombre. Si staff desactiva o cambia días
-  en panel y el bot sigue el hardcode viejo → bug (cerrado 17-sep; QA `:promo-weekday-gate`).
-- **Cupo / "hay horario?"**: Haiku debe recibir bloque `CUPOS REALES` (día sticky `selected_day` si el
-  texto no nombra día y el step es `awaiting_datetime`). Hora suelta ("12:30") con día sticky debe
-  cerrar cita (también en `browsing`). Si Haiku dice "cita confirmada" **sin** fila en `appointments`
-  → **sí es bug** (DATE_PARSE / cierre fantasma). QA: `:datetime-cupo`, `:slot-occupation`.
-- **"en la mañana" ≠ mañana (día siguiente)**: "sábado en la mañana" = sábado AM, no jueves. Cerrado
-  Yelitza …1186 (#130). QA: `:parse-fallback`.
-- **Pregunta mid-boleta / mid-identidad**: en `awaiting_deposit_boleta`, si el texto no parsea ficha y
-  parece pregunta (precio/servicios) → Haiku primero es **intencional** (excepción Haiku-primero 17-sep).
-  El resto del step (DNI, cancelar, Maps) sigue determinístico. **No** marcar como ACTIVE_STEP_MISROUTE.
-- Sesión stale post-cita app: trigger BD `reset_waba_session_after_app_booking` (desde 2026-07-03) resetea
-  `awaiting_datetime` al INSERT con `source != 'whatsapp'`.
-- Reenganches: `ads-bounce-nudge` (1×/episodio CTWA), `browse-reengage` (máx. 1× por episodio desde último inbound;
-  no debe apilarse tras ads-bounce). Si ves ×2–3 "¿sigues ahí?" sin nuevo inbound → **sí es bug** (spam).
-- **silence-watchdog** es **24/7** (no gate 9–22). Nudges de marketing (cart/browse/ads-bounce) sí respetan 9–22 Lima.
-- **Monitoreo staff (02-ago)**: `chat-quality-review` (cron */15) y push de `wa_error_log` **no hablan a la clienta**.
-  Push "WhatsApp · Revisar YA · {nombre}" = el auditor ya marcó un hilo; **no** es un fallo nuevo por sí solo.
-  Cruzar con el hilo: si hay precio sin aclarar / carrito ≠ pedido / promo ignorada → tipificar como M/N/O abajo
-  (producto aún abierto: Eli …1033, Yoja …9827 — ver LECCIONES § Pendiente producto).
-
-## QA PHONES (excluir de métricas de clientas)
-Ver `QA_PHONES` / extras en `apps/geemastudio-server/scripts/waba-cleanup-all-qa.mjs` — excluir al menos:
-- `51999000970`–`51999000999` (suites validate*; piso bajó a **970** el 15-sep — view-packs `…977`)
-- `51911100001`, simulador `51988800001` / `51988800002`
-- Alberto VE `584144940417`
-- Excluir de "conversaciones analizadas" y conteos de fallo salvo depuración QA explícita.
-- Tras validar: **siempre** `yarn waba:cleanup:qa`.
-- `ai_usage_log` con `phone_hash` sin filas en `wa_messages` → cruzar con QA antes de reportar anomalía.
+- Haiku-primero informativo: apps/geemastudio-server/docs/waba/plan-haiku-primero-informativo.md
+- Prior reports: `<TENANT_DIR>/analysis/LECCIONES.md` (closed patterns) + the single live YYYY-MM-DD-analysis.md
+  (see `<TENANT_DIR>/analysis/README.md` retention — do NOT keep a growing pile of reports)
+- Closed patterns: if LECCIONES marks a pattern ✅ and ALL sample failures are **before** the noted deploy →
+  🟢 evidencia que motivó el fix, **not** a new open [P#]. Do not resurrect old PR narratives as open Quick Wins without §2b.
 
 ## KEY TABLES
-- `wa_messages`: phone, direction ('in'|'out'), msg_type, content, step_before, created_at
-- `whatsapp_sessions`: phone, step, cart_items, parsed_datetime, selected_day (sticky cupo/hora),
+- `wa_messages`: tenant_id, phone, direction ('in'|'out'), msg_type, content, step_before, created_at
+- `whatsapp_sessions`: tenant_id, phone, step, cart_items, parsed_datetime, selected_day (sticky cupo/hora),
   deposit_mode ('fixed'|'rate'|null), bot_paused_at, updated_at
-- `appointments`: client_id, client_phone, source ('whatsapp'|null), status, date, created_at
+- `appointments`: tenant_id, client_id, client_phone, source ('whatsapp'|null), status, date, created_at
   (`date` = timestamp **sin** TZ → hora Lima literal)
-- `clients`: id, phone, phone_normalized, phone_country, name
-- `ai_usage_log`: trigger_type, input_tokens, output_tokens, phone_hash, created_at
-- `appointment_verifications`: abono/comprobante vía bot; `kind` = `deposit` | `post_service_payment`;
+- `clients`: tenant_id, id, phone, phone_normalized, phone_country, name
+- `ai_usage_log`: tenant_id, trigger_type, input_tokens, output_tokens, phone_hash, created_at
+- `appointment_verifications`: tenant_id, abono/comprobante vía bot; `kind` = `deposit` | `post_service_payment`;
   `status` payment_submitted|approved|rejected (presence of deposit row ≈ booking via abono WABA);
   `appointment_date` = timestamp **sin** TZ → Lima literal (igual `appointments.date`; no timestamptz)
-- `wa_error_log`: kind, phone, detail, created_at (retención 7d) — silences / crashes
+- `wa_error_log`: tenant_id, kind, phone, detail, created_at (retención 7d) — silences / crashes
 - `whatsapp_sessions.quality_review_sent_at`: si está set en la ventana, el cron ya alertó staff (Revisar YA)
 
 Phone matching: normalize to digits; match by last 9 digits for prefix variations (51 vs none).
@@ -146,26 +98,22 @@ Before reading code or writing the report:
   git checkout main
   git pull origin main
 Confirm `git branch --show-current` = main. Read bot files from this working tree.
+Record in report: **Tenant**: `<TENANT_ID>`.
 Record in report: **Commit analizado**: `<short SHA>` (`git rev-parse --short HEAD`).
+
 
 ### 1. Query wa_messages for last 48 hours
 Query inbound messages (text + interactive/button — CTWA y listas):
 
   SELECT phone, direction, msg_type, content, step_before, created_at
   FROM wa_messages
-  WHERE created_at > NOW() - INTERVAL '48 hours'
+  WHERE tenant_id = '<TENANT_ID>'
+    AND created_at > NOW() - INTERVAL '48 hours'
     AND direction = 'in'
     AND msg_type IN ('text', 'interactive', 'button')
-    AND phone NOT IN (
-      '51999000970','51999000971','51999000972','51999000973','51999000974',
-      '51999000975','51999000976','51999000977','51999000978','51999000979',
-      '51999000980','51999000981','51999000982','51999000983','51999000984',
-      '51999000985','51999000986','51999000987','51999000988','51999000989',
-      '51999000990','51999000991','51999000992','51999000993','51999000994',
-      '51999000995','51999000996','51999000997','51999000998','51999000999',
-      '51911100001','51988800001','51988800002','584144940417'
-    )
+    AND phone NOT IN (<QA_PHONES del contexto del tenant>)
   ORDER BY phone ASC, created_at ASC
+
 
 ## EARLY EXIT — NO DATA
 If the query returns 0 rows (no inbound messages in the last 48 hours):
@@ -175,6 +123,7 @@ If the query returns 0 rows (no inbound messages in the last 48 hours):
 - EXIT immediately
 
 Only continue to the steps below if there is at least 1 inbound message.
+
 
 ### 2. Read current bot code (on main)
 Read these files to understand the CURRENT state on main:
@@ -214,7 +163,7 @@ Read these files to understand the CURRENT state on main:
 - apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/inbound-gate.ts (trailing quiet / coalesce)
 - apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/salon-location.ts (`resolveUbicacionReply` / Kennedy)
 - apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/waba-config.ts (`loadRecentStaffOutboundPhoneSet`)
-- apps/geemastudio-server/docs/waba/prompts/WABA_HAIKU_DIRECTRICES.md
+- <TENANT_DIR>/directrices-haiku.md
 - apps/geemastudio-server/docs/waba/plan-haiku-primero-informativo.md (Batches 1–4 código ✅; B4 prueba real pendiente.
   No marcar como DISPATCHER_BYPASS el handoff intencional a Haiku)
 - zm-tech/docs/geemastudio/docs/plans/08-PLAN-dispatcher-modular.md (Fase 1 merged #131)
@@ -251,13 +200,15 @@ Before labeling a pattern as "sin fix" / proposing a Quick Win:
    `source=bot`? ¿el literal está en la ruta que nombro? ¿el fix propuesto lo evitaría? Si no sobrevive → mover a
    "Necesita Revisión" o eliminar. Ver §3b.
 
+
 ### 3. Fetch all messages for active phones
 For each phone that had inbound messages, fetch the full thread (both directions):
 
   SELECT phone, direction, source, msg_type, content, step_before,
          created_at AT TIME ZONE 'America/Lima' AS lima_time
   FROM wa_messages
-  WHERE phone IN (...active phones...)
+  WHERE tenant_id = '<TENANT_ID>'
+    AND phone IN (...active phones...)
     AND created_at > NOW() - INTERVAL '48 hours'
   ORDER BY phone ASC, created_at ASC
 
@@ -266,13 +217,15 @@ Also fetch session state:
   SELECT phone, step, cart_items, parsed_datetime, selected_day, deposit_mode, bot_paused_at, updated_at,
          quality_review_sent_at, watchdog_sent_at, from_ad_at
   FROM whatsapp_sessions
-  WHERE phone IN (...active phones...)
+  WHERE tenant_id = '<TENANT_ID>'
+    AND phone IN (...active phones...)
 
 Also scan errors (last 48h):
 
   SELECT kind, phone, left(detail, 200) AS detail, created_at
   FROM wa_error_log
-  WHERE created_at > NOW() - INTERVAL '48 hours'
+  WHERE tenant_id = '<TENANT_ID>'
+    AND created_at > NOW() - INTERVAL '48 hours'
   ORDER BY created_at DESC
   LIMIT 40
 
@@ -303,14 +256,16 @@ Query appointments created in the last 48 hours (match by client_phone Y client_
            WHERE v.appointment_id = a.id ORDER BY v.created_at DESC LIMIT 1) AS verification_kind
   FROM appointments a
   LEFT JOIN clients c ON c.id = a.client_id
-  WHERE a.created_at > NOW() - INTERVAL '48 hours'
+  WHERE a.tenant_id = '<TENANT_ID>'
+    AND a.created_at > NOW() - INTERVAL '48 hours'
     AND a.status IN ('scheduled','pending','confirmed','completed')
 
 Also scan recent verifications (deposit vs post_service), even if appointment_id is null:
 
   SELECT id, kind, status, client_phone, client_name, amount_total, created_at
   FROM appointment_verifications
-  WHERE created_at > NOW() - INTERVAL '48 hours'
+  WHERE tenant_id = '<TENANT_ID>'
+    AND created_at > NOW() - INTERVAL '48 hours'
   ORDER BY created_at DESC
   LIMIT 40
 
@@ -340,81 +295,43 @@ G) ACTIVE_STEP_MISROUTE — client in active step (awaiting_datetime, awaiting_p
 H) PENDING_APPOINTMENT_MISSED — getPendingAppointmentsForPhone > 0 but time/date correction
    did not route to mi_cita / reschedule (e.g. "No es a las 11", "coordine para las 4:45")
 I) STAFF_TAKEOVER — manual staff messages detected after bot failure (gap >5 min, personalized text)
-J) FROM_AD_MISSED — CTWA con intención extra ignorada; boilerplate procesado como orgánico con menú completo
-K) META_ADS_SINGLE_TOUCH_BOUNCE — solo welcome CTWA (boilerplate), sin 2.º mensaje de la clienta.
-   **Producto / engagement (§2.2), NO bug de código.** No listar como [P#] de fallo ni Quick Win de menú.
-   Reportar solo como métrica (% bounce CTWA) + opcional nota Baja en "Necesita Revisión de Alberto".
-L) REENGAGE_SPAM — `browse-reengage` / ads-bounce / watchdog se re-disparan ≥2× sobre el mismo silencio
-   (sin inbound nuevo entre envíos). Sí es bug de infraestructura de reenganche.
-M) UNANSWERED_PRICE — clienta pregunta precio/total concreto; bot no aclara cifra o deja sin siguiente paso
-   (caso Eli ago-2026). Suele coincidir con `quality_review_sent_at` / flag precio.
-N) CART_MISMATCH — carrito con ítems que no coinciden con lo pedido (dup pack+servicio, ítem de más)
-   (caso Yoja). Sí es bug de producto/Haiku aunque el bot haya respondido texto.
-O) PROMO_IGNORED — clienta menciona descuento/%/promo del creativo y el carrito/respuesta no la refleja.
-P) DEPOSIT_MISROUTE — modo de abono incorrecto vs PRODUCT DECISIONS (ej. 20% a nueva sin `completed`;
-   cita L–S confirmada sin S/25 a nueva; fija S/25 omitida). Cruzar `deposit_mode` + historial `completed`.
-Q) PAYMENT_AS_DESIGN — imagen comprobante (Yape/Plin) tratada como foto diseño (`bot_paused_at` /
-   push "Foto diseño") en vez de Vision → `post_service` o path depósito. Bug post-PR #29 si reincide.
-R) PHANTOM_BOOKING_ACK — Haiku (u otro OUT) afirma "cita confirmada" / horario reservado **sin** fila
-   nueva en `appointments` (ni verification). Típico: hora suelta sin sticky `selected_day`, o cupo
-   respondido a ciegas. Cruzar wa_messages OUT vs appointments.created_at. QA hist.: `:datetime-cupo`.
-S) PRICE_LIST_FORMAT — lista de precios en **una sola línea** con 🌸/⭐ inline (sin `\n` por ítem).
-   No bloquea agendar por sí solo; sí degrada UX. Post-fix 17-sep: prompt + `forceBulletLineBreaks`.
-   Si reincide post-deploy → tipificar aquí (no como UNANSWERED_PRICE). QA: `:price-list-bullets`.
+**Tipos propios del tenant (J en adelante):** ver `<TENANT_DIR>/contexto-analisis.md`.
+Usa solo esos nombres o `OTHER`.
 
-T) FALSE_CUPO_ON_CONFIRMED_APPT — clienta con cita `scheduled` escribe asistencia/agradecimiento/hora igual a la
-   de su cita ("Estaré a las 10", "Gracias" tras dar hora) y el bot responde con lista de cupos/"elige un botón"
-   (`trySoftRescheduleFromText`). Comparar la hora citada con `appointments.date` antes de llamarlo corrección.
-   QA: `:time-ack`.
-U) PAYMENT_STEP_QUESTION_UNANSWERED — texto libre en `awaiting_payment_screenshot` (ej. "¿puedo pagar mañana?",
-   "Okey") recibe la plantilla del voucher repetida sin acuse ni aviso a staff. Post 26-sep: ack neutro + push staff
-   (`:fixed-deposit` caso Q). Reincidencia → bug.
-V) STALE_OFFER_COPY — reenganche/nudge con copy falso o contradictorio (ej. "la oferta venció" cuando ya hubo visita
-   posterior; "listos" para 1 servicio). Cruzar con `completed` posterior al último appointment.
-
-Also flag **positive patterns**: add_to_cart worked, natural close without menu loop, Mi cita + corrección hora,
-depósito S/25 o 20% → comprobante → plantilla/verificación, Vision distingue pago vs diseño,
-CUPOS REALES con día sticky, confirmación de pack cotizado → carrito (no menú Categorías),
-viñetas de precios 1 por línea.
-**Regla anti-falso-positivo (lección 25-sep):** un hilo solo es "Positivo / sin fallos" tras revisar **cada** IN con
-pregunta o petición y confirmar que el OUT siguiente la **responde** (no una plantilla genérica). Una pregunta
-respondida con plantilla ≠ éxito aunque la clienta convierta después (Angelly …7854 se marcó "positivo" con
-"¿puedo pagar mañana?" sin responder; era el fallo U).
-Note staff interventions after "Revisar YA" as STAFF_TAKEOVER when applicable (positive ops, not a bot success).
+Also flag **positive patterns** (lista en el contexto del tenant; mínimo: add_to_cart funcionó, cierre natural sin loop de menú).
 
 ### 6. Identify recurring patterns (2+ occurrences OR 2nd consecutive day)
 Group by failure type and specific trigger. Note exact client phrases.
-Compare with apps/geemastudio-server/docs/waba/analysis/LECCIONES.md and the current live report — mark REINCIDENCIA if same pattern persists.
+Compare with <TENANT_DIR>/analysis/LECCIONES.md and the current live report — mark REINCIDENCIA if same pattern persists.
 Include table **Estado de fixes del análisis anterior** (🟢 fix aplicado | 🟡 reincidencia | 🔴 sin fix).
 Apply §2b: never mark 🔴 if HEAD already contains the matcher/handler for that phrase and sample times are pre-deploy.
 
 ### 7. Commit report (retention)
-Create file: apps/geemastudio-server/docs/waba/analysis/YYYY-MM-DD-analysis.md (today's date in America/Lima)
+Create file: <TENANT_DIR>/analysis/YYYY-MM-DD-analysis.md (today's date in the tenant timezone)
 
 **Retention (mandatory)**:
 1. If closed findings from the previous live report are not yet in LECCIONES.md, append short rows there.
-2. Delete the previous `apps/geemastudio-server/docs/waba/analysis/*-analysis.md` (keep only the new file + README.md + LECCIONES.md).
-3. Update pointers in:
-   - `apps/geemastudio-server/docs/waba/analysis/README.md`
+2. Delete the previous `<TENANT_DIR>/analysis/*-analysis.md` (keep only the new file + README.md + LECCIONES.md).
+3. Update pointers in `<TENANT_DIR>/analysis/README.md`.
 
-Luego publicar **solo en la rama `claude/waba-analysis`** (nunca en `main`, ni docs-only):
+Luego publicar **solo en la rama de publicación del tenant** (ver su contexto; nunca en `main`, ni docs-only):
   git fetch origin
-  git checkout -B claude/waba-analysis origin/main   # lleva consigo los cambios sin commitear del paso anterior
-  git add apps/geemastudio-server/docs/waba/analysis/
-  git commit -m "docs(waba): análisis de conversaciones WABA YYYY-MM-DD"
-  git push --force-with-lease -u origin claude/waba-analysis
+  git checkout -B <RAMA_TENANT> origin/main   # lleva consigo los cambios sin commitear del paso anterior
+  git add <TENANT_DIR>/analysis/
+  git commit -m "docs(waba): análisis de conversaciones WABA <TENANT_ID> YYYY-MM-DD"
+  git push --force-with-lease -u origin <RAMA_TENANT>
 
-La rama se **reinicia desde `origin/main` en cada corrida**: contiene solo el último reporte vivo encima de main.
-Si Alberto no mergeó el reporte anterior, el nuevo lo reemplaza (retención = 1 reporte vivo). No abrir PR ni mergear:
+La rama se **reinicia desde `origin/main` en cada corrida**: contiene solo el último reporte vivo del tenant encima de main.
+Si Alberto no mergeó el reporte anterior, el nuevo lo reemplaza (retención = 1 reporte vivo por tenant). No abrir PR ni mergear:
 Alberto revisa la rama y la mergea cuando quiera. En el resumen final indicar el nombre de la rama y el SHA del commit.
 
-Si la tanda incluye **código**, usar otra rama + PR (agrupar; no un PR por pasada); el código nunca va en `claude/waba-analysis`.
+Si la tanda incluye **código**, usar otra rama + PR (agrupar; no un PR por pasada); el código nunca va en la rama de análisis.
 
 ---
 
 Report format:
 
-# WABA Haiku Analysis — [DATE]
+# WABA Haiku Analysis — [TENANT_ID] — [DATE]
 
 **Period**: últimas 48 horas ([UTC start] → [UTC end]), hora Lima
 **Generated by**: Claude Code Routine
@@ -453,14 +370,8 @@ ASCII trees per critical thread (IN/OUT, timestamps Lima, failure markers).
 
 ### [P1] [Pattern Name] — N ocurrencias
 
-**Tipo**: DISPATCHER_BYPASS | HAIKU_DROPPED | RATE_LIMIT | DATE_PARSE | FALLBACK | WELCOME_LOOP |
-ACTIVE_STEP_MISROUTE | PENDING_APPOINTMENT_MISSED | STAFF_TAKEOVER | FROM_AD_MISSED | REENGAGE_SPAM |
-UNANSWERED_PRICE | CART_MISMATCH | PROMO_IGNORED | DEPOSIT_MISROUTE | PAYMENT_AS_DESIGN |
-PHANTOM_BOOKING_ACK | PRICE_LIST_FORMAT | OTHER
-(Do **not** use META_ADS_SINGLE_TOUCH_BOUNCE here — that goes to metrics / Alberto Baja only.)
-(Do **not** list "Revisar YA push fired" as its own [P#] — tipify the underlying M/N/O / silence instead.)
-(Do **not** flag Haiku mid-boleta answering a service/price question as ACTIVE_STEP_MISROUTE —
-  that exception is intentional; see PRODUCT DECISIONS.)
+**Tipo**: uno de los tipos de §5 (genéricos A–I + los del contexto del tenant) | OTHER
+(Respetar las exclusiones que declare el contexto del tenant: tipos que son métrica/producto y no [P#].)
 **Teléfonos afectados**: …XXXX (last 4 digits only)
 **Estado**: 🟢 nuevo | 🟡 reincidencia | 🔴 reincidencia sin fix | ⚪ producto (no bug)
 
@@ -475,7 +386,7 @@ Low-risk fixes Alberto can ask Cursor to apply (table: pattern | file | change).
 Tras un fix, convertir el hilo en script según apps/geemastudio-server/docs/waba/WABA_SIMULATION_VALIDATION.md.
 
 ## Necesita Revisión de Alberto
-Medium/High risk or product decisions (ej. P1 bounce vs CTA conversacional).
+Medium/High risk or product decisions.
 
 ## Estadísticas
 - Horas más activas (Lima)
@@ -485,37 +396,34 @@ Medium/High risk or product decisions (ej. P1 bounce vs CTA conversacional).
 
 ---
 
-*Análisis generado automáticamente. Números de teléfono anonimizados (últimos 4 dígitos).*
-
 ## CONSTRAINTS
 - DO NOT modify application source (TypeScript Edge Functions, apps) — only:
-  `apps/geemastudio-server/docs/waba/analysis/**`, `apps/geemastudio-server/docs/waba/prompts/rutina-waba-analysis.md` (si la rutina misma necesita ajuste),
- 
+  `<TENANT_DIR>/analysis/**` y `apps/geemastudio-server/docs/waba/prompts/rutina-waba-analysis.md` (si la rutina misma necesita ajuste).
 - DO NOT send any WhatsApp messages
 - DO NOT expose full phone numbers — last 4 digits only
-- NEVER push to `main` (ni código ni docs). El reporte de análisis (y README/LECCIONES si cambian) va a la rama `claude/waba-analysis`; Alberto la mergea. El código va en otra rama + PR.
-- **One PR per code batch** (Vercel Hobby): same incident → same branch until QA (anti-example 29-ago: #85/#86/#87). See CLAUDE.md § Agrupar cambios.
+- NEVER push to `main` (ni código ni docs). El reporte (y README/LECCIONES si cambian) va a la rama de publicación del tenant; Alberto la mergea. El código va en otra rama + PR.
+- **One PR per code batch** (Vercel Hobby): same incident → same branch until QA. See CLAUDE.md § Agrupar cambios.
 - If Supabase query fails, log error and exit without creating a file
-- Read WABA_HAIKU_DIRECTRICES.md to judge whether behavior violated product intent
+- Read `<TENANT_DIR>/directrices-haiku.md` to judge whether behavior violated product intent
 - Always sync and analyze `main` — never report from a feature branch without noting it
 - After writing the new report: append closed findings to LECCIONES.md; delete older `*-analysis.md`; keep only README + LECCIONES + the new report; actualiza el puntero «Último reporte» en `analysis/README.md`
 - Before any 🔴 / Quick Win: §2b (git show in-window commits + rg matchers on HEAD + pre- vs post-deploy timestamps + LECCIONES «Cerrados post-reporte»)
+- Un tenant por corrida. Si `<TENANT_DIR>/contexto-analisis.md` no existe, salir sin crear archivos.
 ```
 
 ---
 
 ## Frecuencia y ubicación
 
-| Item       | Valor                                                                                                                           |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| Frecuencia | Interdiaria (~cada 48 h)                                                                                                        |
-| Reportes   | `apps/geemastudio-server/docs/waba/analysis/` — **1** `YYYY-MM-DD-analysis.md` vivo + `LECCIONES.md` + `README.md`                                      |
-| Commit     | Reporte → rama `claude/waba-analysis` (reset desde main + `--force-with-lease`), sin PR ni push a `main`. Si hay código: otra rama + PR ready (no draft), un PR por tanda |
-| Sin datos  | No crear archivo ni commit                                                                                                      |
+| Item       | Valor |
+| ---------- | ----- |
+| Frecuencia | Interdiaria (~cada 48 h), una corrida por tenant |
+| Reportes   | `docs/waba/tenants/<slug>/analysis/` — **1** `YYYY-MM-DD-analysis.md` vivo + `LECCIONES.md` + `README.md` |
+| Commit     | Reporte → rama de publicación del tenant (reset desde main + `--force-with-lease`), sin PR ni push a `main`. Si hay código: otra rama + PR ready (no draft), un PR por tanda |
+| Sin datos  | No crear archivo ni commit |
 
 ## Relacionados
 
-- [WABA_HAIKU_DIRECTRICES.md](./WABA_HAIKU_DIRECTRICES.md) — cómo debe comportarse el bot (producto)
+- Tenant ZM Lash: [contexto](../tenants/zm-lash/contexto-analisis.md) · [directrices](../tenants/zm-lash/directrices-haiku.md) · [análisis](../tenants/zm-lash/analysis/README.md)
 - [EDGE_FUNCTIONS.md](../../ops/EDGE_FUNCTIONS.md) — arquitectura técnica del webhook
-- [apps/geemastudio-server/docs/waba/analysis/README.md](../analysis/README.md) — retención + último reporte
-- [apps/geemastudio-server/docs/waba/analysis/LECCIONES.md](../analysis/LECCIONES.md) — patrones cerrados
+- [WABA_MULTITENANT_ARCHITECTURE.md](../../../../../docs/geemastudio/docs/WABA_MULTITENANT_ARCHITECTURE.md) — alta de WABA por tenant

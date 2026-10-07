@@ -4,7 +4,7 @@
  * Al llegar al umbral, se invita a contar en palabras propias qué busca en
  * vez de reenviar otra lista (caso Jerita PE...8523, laberinto de listas vía
  * taps — Haiku nunca interviene en navegación por IDs interactivos, solo en
- * texto libre). Tono alineado con venta emocional (WABA_HAIKU_DIRECTRICES.md
+ * texto libre). Tono alineado con venta emocional (tenants/zm-lash/directrices-haiku.md
  * § Venta emocional CTWA): acompañar, no apurar ni sonar transaccional.
  */
 

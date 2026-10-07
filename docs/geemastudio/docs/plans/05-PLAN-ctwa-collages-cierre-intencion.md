@@ -68,7 +68,7 @@ yarn waba:cleanup:qa
 
 ## 5. Docs (reorg)
 
-Canónicos: `docs/plans/`, `docs/waba/`, `docs/ops/`, `docs/product/`. **Sin stubs** en raíz de `docs/`. Rutina: `docs/waba/prompts/rutina-waba-analysis.md` → `docs/waba/analysis/`.
+Canónicos: `docs/plans/`, `docs/waba/`, `docs/ops/`, `docs/product/`. **Sin stubs** en raíz de `docs/`. Rutina: `docs/waba/prompts/rutina-waba-analysis.md` → `docs/waba/tenants/zm-lash/analysis/`.
 
 ---
 
