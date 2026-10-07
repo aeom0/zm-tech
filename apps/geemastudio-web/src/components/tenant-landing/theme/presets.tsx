@@ -1,4 +1,6 @@
 import { LUNARIS } from '@/lib/theme'
+import type { TenantLandingData } from '@/types/tenant-landing'
+import { applyBrand } from './brand'
 import type { LandingTheme } from './types'
 
 const grad = LUNARIS.gradient.css
@@ -145,4 +147,18 @@ export const modernTheme: LandingTheme = {
       <strong style={{ color: '#00b87a' }}>{nameTail}</strong>
     )
   },
+}
+
+const BASE_THEMES: Record<TenantLandingData['webTemplate'], LandingTheme> = {
+  elegant: elegantTheme,
+  warm: warmTheme,
+  modern: modernTheme,
+}
+
+/** Tema de la plantilla elegida, con los colores de marca del tenant (si los tiene). */
+export function getLandingTheme(
+  template: TenantLandingData['webTemplate'],
+  brand: TenantLandingData['brand']
+): LandingTheme {
+  return applyBrand(BASE_THEMES[template], brand)
 }

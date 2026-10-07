@@ -1,4 +1,4 @@
-import { elegantTheme } from './theme/presets'
+import { getLandingTheme } from './theme/presets'
 import {
   Navbar,
   HeroSection,
@@ -18,7 +18,7 @@ import { WhatsAppFAB } from './shared/WhatsAppFAB'
 import type { TenantLandingProps } from '@/types/tenant-landing'
 
 export function TenantLandingElegant({ data }: TenantLandingProps) {
-  const theme = elegantTheme
+  const theme = getLandingTheme('elegant', data.brand)
 
   return (
     <div
