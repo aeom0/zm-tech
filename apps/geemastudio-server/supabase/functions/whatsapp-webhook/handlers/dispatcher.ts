@@ -61,6 +61,7 @@ import {
 import {
   detectAITrigger,
   handleAIMessage,
+  matchesMarketingOptOut,
   isAIRateLimited,
 } from "./ai-assistant.ts";
 import {
@@ -1277,6 +1278,17 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
   rt.lower = lower;
   rt.isInteractive = Boolean(isInteractive);
   rt.session = session;
+
+  // ── STOP: baja de marketing antes de cualquier saludo/menú/flujo (también en
+  // el primer mensaje: sin esto caía al saludo de entrada y no se registraba).
+  if (!interactiveId && messageText.trim() && matchesMarketingOptOut(messageText)) {
+    const handledOptOut = await handleAIMessage(
+      { phoneNumber, contactName, catalog, supabase, phoneCountry },
+      { type: "opt_out", originalMessage: messageText.trim() },
+      wabaConfig,
+    );
+    if (handledOptOut) return;
+  }
 
   // ── "Ya" / "ya gracias" = acuerdo cerrado (PE) — no menú ni re-agendar ─────
   if (

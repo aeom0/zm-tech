@@ -229,6 +229,13 @@ const DETERMINISTIC_INTENTS: { keywords: string[]; exact?: boolean }[] = [
   },
 ];
 
+/** Baja de marketing (STOP): cumplimiento, determinístico por diseño (no es texto libre). */
+export function matchesMarketingOptOut(text: string): boolean {
+  return /^(stop|baja|unsubscribe|cancelar\s+(?:suscripci[oó]n|promociones?)|no\s+quiero\s+(?:más|mas)\s+(?:mensajes|promociones?))[\s!.]*$/i.test(
+    text.trim(),
+  );
+}
+
 /**
  * Clasifica si el mensaje debe ser atendido por IA.
  * Retorna null si el flujo determinístico debe manejarlo.
@@ -269,11 +276,7 @@ export function detectAITrigger(
   // Baja/opt-out: nunca enviar estas solicitudes a Haiku ni interpretarlas
   // como una pregunta libre. La pausa definitiva de campañas se gestiona en
   // el bloqueo operativo del número; aquí evitamos una respuesta de IA-talk.
-  if (
-    /^(stop|baja|unsubscribe|cancelar\s+(?:suscripci[oó]n|promociones?)|no\s+quiero\s+(?:más|mas)\s+(?:mensajes|promociones?))[\s!.]*$/i.test(
-      trimmed,
-    )
-  ) {
+  if (matchesMarketingOptOut(trimmed)) {
     return { type: "opt_out", originalMessage: trimmed };
   }
 
