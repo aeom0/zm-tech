@@ -599,7 +599,7 @@ Audiencia: clientes del negocio. Sin auth. Controlado por `tenant_settings.web_m
 | Ruta        | Estado                                                                |
 | ----------- | --------------------------------------------------------------------- |
 | `/`         | ✅ Landing plataforma GeemaStudio (B2B)                               |
-| `/s/[slug]` | ✅ Landing pública del tenant (SSG + revalidación 5 min; 3 templates) |
+| `/s/[slug]` | ✅ Landing pública del tenant (SSG + revalidación 5 min; 3 templates; colores del tenant vía `tenant_brand_public` + `getLandingTheme`; el tenant elige template en Mi Web → Presencia, mobile y panel web) |
 
 #### `web_mode` en `tenant_settings`
 

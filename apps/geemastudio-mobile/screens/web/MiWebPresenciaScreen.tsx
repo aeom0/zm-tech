@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react'
-import { Alert, Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native'
+import { Alert, Linking, Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { useNavigation } from '@react-navigation/native'
@@ -12,16 +12,12 @@ import { slugifyWeb } from '@/services/webSettingsService'
 import { Spacing, BorderRadius } from '@/constants/theme'
 import type { MoreStackParamList } from '@/navigation/MoreStackNavigator'
 import type { WebTemplate } from '@/types/web-landing'
+import { Feather } from '@expo/vector-icons'
+import { WEB_TEMPLATE_OPTIONS, previewLandingUrl } from '@/screens/web/constants'
 import { WebField } from '@/screens/web/components/WebField'
 import { useWebSaveHeader } from '@/screens/web/components/useWebSaveHeader'
 
 type Nav = NativeStackNavigationProp<MoreStackParamList, 'MiWebPresencia'>
-
-const TEMPLATES: { id: WebTemplate; label: string }[] = [
-  { id: 'elegant', label: 'Elegant' },
-  { id: 'warm', label: 'Warm' },
-  { id: 'modern', label: 'Modern' },
-]
 
 export default function MiWebPresenciaScreen() {
   const navigation = useNavigation<Nav>()
@@ -49,7 +45,10 @@ export default function MiWebPresenciaScreen() {
     if (!data) return
     const slugLimpio = slugifyWeb(slug)
     if (webEnabled && !slugLimpio) {
-      Alert.alert('Falta la dirección', 'Para publicar tu página en Geema necesitas una dirección (ej. mi-salon).')
+      Alert.alert(
+        'Falta la dirección',
+        'Para publicar tu página en Geema necesitas una dirección (ej. mi-salon).'
+      )
       return
     }
     setGuardando(true)
@@ -92,7 +91,9 @@ export default function MiWebPresenciaScreen() {
     >
       <View style={[styles.row, { borderColor: theme.border }]}>
         <View style={{ flex: 1 }}>
-          <ThemedText style={{ fontWeight: '600', color: theme.text }}>Publicar página web</ThemedText>
+          <ThemedText style={{ fontWeight: '600', color: theme.text }}>
+            Publicar página web
+          </ThemedText>
           <ThemedText style={{ color: theme.textMuted, fontSize: 13, marginTop: 2 }}>
             Tu página quedará disponible en Geema
           </ThemedText>
@@ -105,24 +106,47 @@ export default function MiWebPresenciaScreen() {
       </View>
 
       <ThemedText style={[styles.section, { color: theme.textSecondary }]}>Diseño</ThemedText>
-      <View style={styles.templateRow}>
-        {TEMPLATES.map((t) => {
+      <ThemedText style={{ color: theme.textMuted, fontSize: 12, marginBottom: Spacing.sm }}>
+        Usa los colores de tu negocio. Mira un ejemplo antes de elegir.
+      </ThemedText>
+      <View style={styles.templateList}>
+        {WEB_TEMPLATE_OPTIONS.map((t) => {
           const active = webTemplate === t.id
           return (
             <Pressable
               key={t.id}
               onPress={() => setWebTemplate(t.id)}
+              accessibilityRole="radio"
+              accessibilityState={{ selected: active }}
               style={[
-                styles.chip,
+                styles.card,
                 {
                   borderColor: active ? theme.primary : theme.border,
                   backgroundColor: active ? `${theme.primary}22` : theme.backgroundDefault,
                 },
               ]}
             >
-              <ThemedText style={{ color: active ? theme.primary : theme.text, fontWeight: '600' }}>
-                {t.label}
-              </ThemedText>
+              <View style={{ flex: 1 }}>
+                <ThemedText
+                  style={{ color: active ? theme.primary : theme.text, fontWeight: '600' }}
+                >
+                  {t.label}
+                </ThemedText>
+                <ThemedText style={{ color: theme.textMuted, fontSize: 12, marginTop: 2 }}>
+                  {t.description}
+                </ThemedText>
+                <Pressable
+                  onPress={() => void Linking.openURL(previewLandingUrl(t.demoSlug))}
+                  hitSlop={8}
+                  style={styles.demoLink}
+                >
+                  <Feather name="external-link" size={13} color={theme.link} />
+                  <ThemedText style={{ color: theme.link, fontSize: 12, fontWeight: '600' }}>
+                    Ver ejemplo
+                  </ThemedText>
+                </Pressable>
+              </View>
+              {active ? <Feather name="check-circle" size={20} color={theme.primary} /> : null}
             </Pressable>
           )
         })}
@@ -171,12 +195,14 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.lg,
   },
   section: { fontSize: 12, fontWeight: '600', marginBottom: Spacing.sm },
-  templateRow: { flexDirection: 'row', gap: Spacing.sm, marginBottom: Spacing.lg },
-  chip: {
-    flex: 1,
+  templateList: { gap: Spacing.sm, marginBottom: Spacing.lg },
+  card: {
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: Spacing.sm + 2,
+    gap: Spacing.md,
+    padding: Spacing.md,
     borderRadius: BorderRadius.md,
     borderWidth: 1,
   },
+  demoLink: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: Spacing.sm },
 })
