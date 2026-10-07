@@ -49,11 +49,11 @@ async function readRoutingEnabled(
  * El resultado se reusa 5 min por número: cada status de Meta (enviado,
  * entregado, leído) pasaba por estas dos lecturas.
  */
-export async function resolveTenantFromPhoneNumberId(
+export function resolveTenantFromPhoneNumberId(
   supabase: SupabaseClient,
   phoneNumberId: string | null,
 ): Promise<string> {
-  if (!phoneNumberId) return DEFAULT_TENANT_ID;
+  if (!phoneNumberId) return Promise.resolve(DEFAULT_TENANT_ID);
   return cachedLoad(
     routeCache,
     routeInflight,
@@ -79,10 +79,9 @@ async function resolveTenantFromDb(
     return { value: DEFAULT_TENANT_ID, store: false };
   }
 
-  const candidate =
-    typeof data?.tenant_id === "string" && data.tenant_id.trim()
-      ? data.tenant_id.trim()
-      : DEFAULT_TENANT_ID;
+  const candidate = typeof data?.tenant_id === "string" && data.tenant_id.trim()
+    ? data.tenant_id.trim()
+    : DEFAULT_TENANT_ID;
 
   const routing = await readRoutingEnabled(supabase, candidate);
   if (routing === "error") {

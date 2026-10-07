@@ -39,6 +39,7 @@ import {
 } from "../format.ts";
 import { MENU_MAIN_OPTIONS, SALUDOS } from "./dispatch/menu-ids.ts";
 import { logWaError } from "../lib/error-log.ts";
+import { hasExplicitTime } from "../parse-datetime-es.ts";
 import {
   FABRICATED_BOOKING_SAFE_REPLY,
   hasFabricatedBookingClaim,
@@ -674,6 +675,18 @@ export function parseAIResponse(raw: string): AIResponse {
   if (actionRaw.startsWith("add_to_cart:")) {
     const param = actionRaw.slice("add_to_cart:".length).trim();
     return withAction({ type: "add_to_cart", param });
+  }
+
+  const confirmTime = actionRaw.match(/^confirm_booking:(\d{1,2}):(\d{2})$/);
+  if (confirmTime) {
+    const h = Number(confirmTime[1]);
+    const m = Number(confirmTime[2]);
+    if (h <= 23 && m <= 59) {
+      return withAction({
+        type: "confirm_booking",
+        param: `${h}:${confirmTime[2]}`,
+      });
+    }
   }
 
   if (actionRaw === "escalate_staff" || actionRaw.startsWith("escalate_staff:")) {
@@ -1818,7 +1831,12 @@ async function executeAIAction(
             session = await getSession(supabase, phoneNumber);
           }
         }
-        const textToClose = originalMessage?.trim() ?? "";
+        // «Confirmo» no trae hora: Haiku la pasa en confirm_booking:HH:MM desde
+        // el historial (SAM, 7-oct). El día sale de selected_day en la sesión.
+        const typedClose = originalMessage?.trim() ?? "";
+        const textToClose = action.param && !hasExplicitTime(typedClose)
+          ? action.param
+          : typedClose;
         const closed = textToClose
           ? await tryCompleteBookingFromText(
               supabase,

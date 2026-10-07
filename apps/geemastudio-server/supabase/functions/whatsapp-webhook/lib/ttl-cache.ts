@@ -4,7 +4,7 @@
 
 type Entry<T> = { value: T; at: number };
 
-export async function cachedLoad<T>(
+export function cachedLoad<T>(
   cache: Map<string, Entry<T>>,
   inflight: Map<string, Promise<T>>,
   key: string,
@@ -12,7 +12,7 @@ export async function cachedLoad<T>(
   load: () => Promise<{ value: T; store: boolean }>,
 ): Promise<T> {
   const hit = cache.get(key);
-  if (hit && Date.now() - hit.at < ttlMs) return hit.value;
+  if (hit && Date.now() - hit.at < ttlMs) return Promise.resolve(hit.value);
 
   const pending = inflight.get(key);
   if (pending) return pending;
