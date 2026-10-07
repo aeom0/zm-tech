@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import {
   ActivityIndicator,
   Alert,
@@ -54,12 +54,14 @@ export default function MiWebPromosScreen() {
   const [bannerActive, setBannerActive] = useState(false)
   const [bannerSaving, setBannerSaving] = useState(false)
 
-  useEffect(() => {
-    if (!data) return
+  // Sincroniza el formulario cuando llegan datos nuevos (patrón React: ajustar estado durante el render)
+  const [syncedData, setSyncedData] = useState(data)
+  if (data && data !== syncedData) {
+    setSyncedData(data)
     setBannerUrl(data.promoBannerUrl ?? '')
     setBannerAlt(data.promoBannerAlt ?? '')
     setBannerActive(data.promoBannerActive)
-  }, [data])
+  }
 
   const persistBanner = useCallback(
     async (patch: {
@@ -192,9 +194,7 @@ export default function MiWebPromosScreen() {
                 }}
               />
             </View>
-            <ThemedText
-              style={{ color: theme.textMuted, fontSize: 12, marginTop: Spacing.sm }}
-            >
+            <ThemedText style={{ color: theme.textMuted, fontSize: 12, marginTop: Spacing.sm }}>
               Promos individuales
             </ThemedText>
           </View>
@@ -250,7 +250,10 @@ export default function MiWebPromosScreen() {
           setDraft(emptyPromo())
           setModalOpen(true)
         }}
-        style={[styles.fab, { backgroundColor: theme.primary, bottom: tabBarHeight + Spacing['3xl'] }]}
+        style={[
+          styles.fab,
+          { backgroundColor: theme.primary, bottom: tabBarHeight + Spacing['3xl'] },
+        ]}
       >
         <Feather name="plus" size={28} color={theme.buttonText} />
       </Pressable>
@@ -324,7 +327,9 @@ export default function MiWebPromosScreen() {
                 {saving ? (
                   <ActivityIndicator color={theme.buttonText} />
                 ) : (
-                  <ThemedText style={{ color: theme.buttonText, fontWeight: '600' }}>Guardar</ThemedText>
+                  <ThemedText style={{ color: theme.buttonText, fontWeight: '600' }}>
+                    Guardar
+                  </ThemedText>
                 )}
               </Pressable>
             </View>

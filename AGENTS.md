@@ -46,6 +46,7 @@ Ver [README.md](README.md) y [ROADMAP.md](ROADMAP.md).
 - **Sin emojis Unicode en UI** (web/mobile/panel): Lucide o íconos vectoriales. **Excepción:** copy/plantillas **WABA**.
 - Capas: `UI → Hooks → Services/lib (Supabase) → Types`. Sin lógica de negocio en presentación.
 - `*-server` = ops/DB/Edge, no API JWT. RepMAX no tiene `repmax-server`.
+- **Errores preexistentes (regla dura):** si al validar (lint, tipos, tests) aparecen errores que ya estaban antes de tu cambio, se corrigen en el mismo trabajo; no se dejan como "preexistentes".
 - **Migraciones GeemaStudio (regla dura):** `apps/geemastudio-server/supabase/migrations/` debe estar siempre 1:1 con `supabase_migrations.schema_migrations` de `udelx…` (mismo `version` + `name`). Al aplicar una migración remota (MCP `apply_migration` asigna la versión), renombrar el archivo local a `<version>_<name>.sql` en el mismo commit; nunca dejar archivos locales sin aplicar ni versiones remotas sin archivo. Verificar con `list_migrations` antes de hacer push.
 - **WABA: Haiku primero (regla dura):** todo texto libre del cliente en el bot lo lee Haiku antes que cualquier regex/matcher de intent. Los regex solo se permiten para dinero/citas/identidad/pago (ver `apps/geemastudio-server/docs/waba/plan-haiku-primero-informativo.md`) y taps interactivos. Prohibido arreglar un caso agregando palabras a un regex o un matcher determinístico nuevo para texto libre. Si Haiku falla (timeout/error), reintentar y degradar a un menú útil; nunca remitir al 932 por una falla transitoria.
 

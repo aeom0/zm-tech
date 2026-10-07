@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react'
+import React, { useCallback, useLayoutEffect, useState } from 'react'
 import { Alert, Linking, Pressable, ScrollView, StyleSheet, Switch, View } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
@@ -33,13 +33,15 @@ export default function MiWebPresenciaScreen() {
   const [customDomain, setCustomDomain] = useState('')
   const [guardando, setGuardando] = useState(false)
 
-  useEffect(() => {
-    if (!data) return
+  // Sincroniza el formulario cuando llegan datos nuevos (patrón React: ajustar estado durante el render)
+  const [syncedData, setSyncedData] = useState(data)
+  if (data && data !== syncedData) {
+    setSyncedData(data)
     setWebEnabled(data.webEnabled)
     setWebTemplate(data.webTemplate)
     setSlug(data.slug ?? '')
     setCustomDomain(data.customDomain ?? '')
-  }, [data])
+  }
 
   const guardar = useCallback(async () => {
     if (!data) return
