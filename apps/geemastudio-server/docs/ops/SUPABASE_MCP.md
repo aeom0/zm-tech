@@ -1,8 +1,8 @@
-# Supabase MCP — nombres canónicos (ZM Lash / Geema)
+# Supabase MCP — nombres canónicos (GeemaStudio)
 
 ## Proyecto
 
-- **Ref**: `udelxwwnyivknslueerr` (ZM Lash = Geema, cuenta orta.1)
+- **Ref**: `udelxwwnyivknslueerr` (BD de GeemaStudio, multi-tenant: ZM Lash es un tenant más; cuenta orta.1)
 - **Nombre canónico** (Claude Desktop / Claude Code / Cursor): **`ClaudeSupabase`**
 - **Config Claude**: `.mcp.json` → `ClaudeSupabase` (stdio + `SUPABASE_ZMLASH_PAT`)
 - **Config Cursor**: `.cursor/mcp.json` → misma clave `ClaudeSupabase`
@@ -13,7 +13,9 @@ Tras Reload Window:
 
 `project-0-ZM-Lash-and-Nails-Beauty-ClaudeSupabase`
 
-(antes se llamaba `…-supabase-zm`). No usar `user-SupabaseZMTech` ni otros MCP de la cuenta zmtechdev para SQL de este salón.
+(El prefijo `ZM-Lash-and-Nails-Beauty` es solo el nombre del workspace de Cursor; el servidor sigue siendo el de Geema, no uno de ZM Lash.)
+
+(antes se llamaba `…-supabase-zm`). No usar `user-SupabaseZMTech` ni otros MCP de la cuenta zmtechdev para SQL de Geema. Filtrar siempre por `tenant_id` al consultar datos de un tenant.
 
 Si no aparece: **Developer: Reload Window** y re-auth OAuth/PAT si Cursor lo pide.
 

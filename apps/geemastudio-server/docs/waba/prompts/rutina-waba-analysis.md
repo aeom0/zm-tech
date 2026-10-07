@@ -57,7 +57,7 @@ an appointment. Then produce an actionable report.
 ## CONTEXT
 - Repo: aeom0/zm-tech (branch: main)
 - Supabase project: udelxwwnyivknslueerr
-- MCP Supabase: **ClaudeSupabase** — execute_sql
+- MCP Supabase: **ClaudeSupabase** — execute_sql. Es la BD de GeemaStudio (multi-tenant), no de un tenant: sin el filtro `tenant_id` mezcla negocios.
 - Main bot file: apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/dispatcher.ts (orquestador ~2500 líneas)
 - Plan 08 Fase 1 (merged #131): helpers en `handlers/dispatch/*` (CTWA, menu-taps, haiku-handoff,
   cart-booking, closing-intents, campaign-images, anti-spam, menu-ids, runtime). Al citar causa raíz,
