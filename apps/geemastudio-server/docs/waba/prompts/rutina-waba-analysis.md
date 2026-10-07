@@ -31,6 +31,15 @@ TENANT_ID=<TENANT_ID> · TENANT_DIR=apps/geemastudio-server/docs/waba/tenants/<s
 Repo en main, sync antes de analizar. MCP Supabase del proyecto (udelxwwnyivknslueerr).
 ```
 
+### Rutinas activas
+
+| Tenant | Rutina (Claude Code, RemoteTrigger) | Frecuencia | Rama de reportes |
+| --- | --- | --- | --- |
+| ZM Lash (`zm-lash-nails`) | `WABA Haiku Analysis — ZM Lash & Nails` (`trig_019e6ruNMKxAAju55G4fKYyS`) | días impares, 11:00 UTC | `claude/waba-analysis` |
+
+Al crear la rutina de un tenant nuevo, agrega su fila aquí. El prompt de la rutina debe llevar siempre `TENANT_ID` y
+`TENANT_DIR`; sin ellos la corrida no sabe qué tenant analizar.
+
 Tras cambiar este `.md` en `main`, la próxima corrida ya usa la versión nueva sin tocar la UI.
 
 ---
