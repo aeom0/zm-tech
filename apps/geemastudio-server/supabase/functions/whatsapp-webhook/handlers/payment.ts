@@ -93,8 +93,17 @@ Cuando pagues, mándanos el print de pantalla para confirmar tu cita 💜
 
 *Importante:*
 ⏰ Tolerancia el día de tu cita: {tolerancia} minutos.
-📅 Si por algún motivo ya no puedes venir, avísanos con anticipación. Detrás de cada cita hay otra personita esperando un espacio.
-⚠️ *El adelanto no es reembolsable* si cancelas, no asistes o tienes un imprevisto. Puedes reprogramar *una sola vez*, avisando con mínimo 24 horas de anticipación y sujeto a disponibilidad; tu adelanto se mantiene a tu favor. Si somos nosotras quienes no podemos atenderte, reprogramamos sin costo o te reembolsamos el adelanto.
+
+📅 Si por algún motivo ya no puedes venir, avísanos con anticipación.
+
+Detrás de cada cita hay otra personita esperando un espacio.
+
+⚠️ *El adelanto no es reembolsable* si cancelas, no asistes o tienes un imprevisto.
+
+Puedes reprogramar *una sola vez*, avisando con mínimo 24 horas de anticipación y sujeto a disponibilidad; tu adelanto se mantiene a tu favor.
+
+Si somos nosotras quienes no podemos atenderte, reprogramamos sin costo o te reembolsamos el adelanto.
+
 📝 Al enviar tu pago aceptas estas condiciones: zmlashnails.com/terminos-y-condiciones
 
 ¡Gracias por confiar en ZM Lash and Nails Beauty! 🌸✨`;
@@ -116,8 +125,17 @@ Cuando pagues, mándanos el print de pantalla para confirmar tu cita 💜
 
 *Importante:*
 ⏰ Tolerancia el día de tu cita: {tolerancia} minutos.
-📅 Si por algún motivo ya no puedes venir, avísanos con anticipación. Detrás de cada cita hay otra personita esperando un espacio.
-⚠️ *El pago no es reembolsable* si cancelas, no asistes o tienes un imprevisto. Puedes reprogramar *una sola vez*, avisando con mínimo 24 horas de anticipación y sujeto a disponibilidad; tu pago se mantiene a tu favor. Si somos nosotras quienes no podemos atenderte, reprogramamos sin costo o te reembolsamos el pago.
+
+📅 Si por algún motivo ya no puedes venir, avísanos con anticipación.
+
+Detrás de cada cita hay otra personita esperando un espacio.
+
+⚠️ *El pago no es reembolsable* si cancelas, no asistes o tienes un imprevisto.
+
+Puedes reprogramar *una sola vez*, avisando con mínimo 24 horas de anticipación y sujeto a disponibilidad; tu pago se mantiene a tu favor.
+
+Si somos nosotras quienes no podemos atenderte, reprogramamos sin costo o te reembolsamos el pago.
+
 📝 Al enviar tu pago aceptas estas condiciones: zmlashnails.com/terminos-y-condiciones
 
 ¡Gracias por confiar en ZM Lash and Nails Beauty! 🌸✨`;
