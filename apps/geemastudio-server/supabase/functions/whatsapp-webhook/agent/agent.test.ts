@@ -12,10 +12,12 @@ import {
   AGENT_INSTRUCTIONS,
   buildAgentSystem,
   limaNowBlock,
+  stepContextBlock,
 } from "./prompt.ts";
 import {
   AGENT_TOOLS,
   dayFacts,
+  isPreAppointmentStep,
   resolveBookingItems,
   runAgentTool,
 } from "./tools.ts";
@@ -41,11 +43,25 @@ Deno.test("agent flag: apagado por defecto y con allowlist", () => {
   assertEquals(isAgentEnabledFor(withAllow, "51911111111"), false);
 });
 
-Deno.test("agente solo en browsing o sin sesión", () => {
+Deno.test("agente atiende browsing, reserva en curso, boleta y comprobante (texto)", () => {
   assertEquals(agentOwnsStep(null), true);
   assertEquals(agentOwnsStep("browsing"), true);
-  assertEquals(agentOwnsStep("awaiting_datetime"), false);
-  assertEquals(agentOwnsStep("awaiting_deposit_boleta"), false);
+  for (
+    const step of [
+      "awaiting_datetime",
+      "awaiting_client_identity",
+      "awaiting_deposit_datos",
+      "awaiting_deposit_boleta",
+      "awaiting_payment_screenshot",
+    ]
+  ) assertEquals(agentOwnsStep(step), true, step);
+  for (
+    const step of [
+      "awaiting_payment_info",
+      "awaiting_pre_service_photo",
+      "completed",
+    ]
+  ) assertEquals(agentOwnsStep(step), false, step);
 });
 
 Deno.test("historial: quita el inbound actual, empieza en user y marca staff", () => {
@@ -280,6 +296,10 @@ Deno.test("tools: el agente expone carrito, día, equipo y reserva; sin selector
       "consultar_dia",
       "consultar_equipo",
       "reservar_horario",
+      "reprogramar_cita",
+      "cancelar_cita",
+      "registrar_identidad",
+      "descartar_reserva",
     ]
   ) assertEquals(names.includes(n), true, n);
   assertEquals(names.includes("pasar_a_agendar"), false);
@@ -593,9 +613,52 @@ Deno.test("prompt: no menciona herramientas inexistentes", () => {
   for (const m of AGENT_INSTRUCTIONS.matchAll(/\b([a-z]+_[a-z_]+)\b/g)) {
     const w = m[1];
     if (
-      /^(ver|buscar|agregar|quitar|consultar|reservar|escalar|info)_/.test(w)
+      /^(ver|buscar|agregar|quitar|consultar|reservar|reprogramar|cancelar|registrar|descartar|escalar|info)_/
+        .test(w)
     ) {
       assertEquals(names.has(w), true, w);
     }
   }
+});
+
+Deno.test("tools: registrar_identidad rechaza documento inválido sin avanzar el turno", async () => {
+  const ctx = toolCtx();
+  const r = await runAgentTool(
+    "registrar_identidad",
+    { nombre: "María García", documento: "123" },
+    ctx,
+  );
+  assertEquals(r.isError, true);
+  assertEquals(ctx.turnHandled, false);
+});
+
+Deno.test("tools: reprogramar y cancelar sin citas pendientes devuelven error", async () => {
+  for (const name of ["reprogramar_cita", "cancelar_cita"]) {
+    const ctx = toolCtx();
+    const r = await runAgentTool(
+      name,
+      { cita_id: null, fecha: "2031-03-05", hora: "11:00" },
+      ctx,
+    );
+    assertEquals(r.isError, true, name);
+    assertStringIncludes(r.content, "No tiene citas");
+    assertEquals(ctx.turnHandled, false);
+  }
+});
+
+Deno.test("tools: descartar_reserva solo aplica a una reserva en curso", async () => {
+  const r = await runAgentTool("descartar_reserva", {}, toolCtx());
+  assertEquals(r.isError, true);
+});
+
+Deno.test("isPreAppointmentStep y contexto de paso del prompt", () => {
+  assertEquals(isPreAppointmentStep("awaiting_deposit_boleta"), true);
+  assertEquals(isPreAppointmentStep("awaiting_payment_screenshot"), true);
+  assertEquals(isPreAppointmentStep("browsing"), false);
+  assertEquals(isPreAppointmentStep(null), false);
+  assertStringIncludes(
+    stepContextBlock("awaiting_payment_screenshot"),
+    "comprobante",
+  );
+  assertEquals(stepContextBlock("browsing"), "");
 });
