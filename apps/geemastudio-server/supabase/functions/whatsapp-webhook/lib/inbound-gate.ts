@@ -550,6 +550,7 @@ export async function shouldSkipDispatchPeerAlreadyHandled(
 export async function coalesceTextBurstIfNeeded(
   supabase: SupabaseClient,
   phone: string,
+  windowMs = COALESCE_WINDOW_MS,
 ): Promise<CoalescedInbound | null> {
   const acquired = await tryAcquirePhoneLock(supabase, phone);
   if (!acquired) {
@@ -561,8 +562,9 @@ export async function coalesceTextBurstIfNeeded(
   }
 
   const startedAtMs = Date.now();
+  const waitMs = Math.max(0, windowMs ?? COALESCE_WINDOW_MS);
   try {
-    await sleep(COALESCE_WINDOW_MS);
+    await sleep(waitMs);
     await waitTrailingEdgeForNewInbound(supabase, phone, startedAtMs);
     const bundle = await coalesceRecentInboundBundle(supabase, phone);
     // Antes del release: peers que vean OUT del líder no deben dropear INs
@@ -588,9 +590,14 @@ export async function coalesceTextBurstIfNeeded(
 export async function coalesceTextBurstWithRetry(
   supabase: SupabaseClient,
   phone: string,
+  windowMs = COALESCE_WINDOW_MS,
 ): Promise<CoalescedInbound | null> {
   for (let attempt = 0; attempt < COALESCE_LOCK_RETRY_MAX; attempt++) {
-    const bundle = await coalesceTextBurstIfNeeded(supabase, phone);
+    const bundle = await coalesceTextBurstIfNeeded(
+      supabase,
+      phone,
+      windowMs ?? COALESCE_WINDOW_MS,
+    );
     if (bundle !== null) return bundle;
     if (attempt < COALESCE_LOCK_RETRY_MAX - 1) {
       await sleep(COALESCE_LOCK_RETRY_MS);

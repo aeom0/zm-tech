@@ -5,6 +5,17 @@ import {
   runAgent,
   sanitizeAgentReply,
 } from "./agent.ts";
+import {
+  AGENT_COALESCE_WINDOW_MS,
+  imageTurnForAgent,
+  isClassicTemplateButton,
+  isPaymentVerifyPayload,
+  sessionDefersToClassic,
+  tapToAgentUtterance,
+} from "./inbound-route.ts";
+import { COALESCE_WINDOW_MS } from "../lib/inbound-gate.ts";
+import { AWAITING_CURSO_LEAD } from "../handlers/booking-flow.ts";
+import { AWAITING_NO_SHOW_REASON } from "../handlers/no-show.ts";
 import type { AgentApiResult } from "./anthropic.ts";
 import { buildAgentHistory } from "./history.ts";
 import {
@@ -41,9 +52,10 @@ Deno.test("agent flag: apagado por defecto y con allowlist", () => {
   });
   assertEquals(isAgentEnabledFor(withAllow, "51999000978"), true);
   assertEquals(isAgentEnabledFor(withAllow, "51911111111"), false);
+  assertEquals(isAgentEnabledFor(withAllow, "51988800001"), true);
 });
 
-Deno.test("agente atiende browsing, reserva en curso, boleta y comprobante (texto)", () => {
+Deno.test("agente atiende browsing, boleta, cita anotada y cita registrada", () => {
   assertEquals(agentOwnsStep(null), true);
   assertEquals(agentOwnsStep("browsing"), true);
   for (
@@ -53,15 +65,43 @@ Deno.test("agente atiende browsing, reserva en curso, boleta y comprobante (text
       "awaiting_deposit_datos",
       "awaiting_deposit_boleta",
       "awaiting_payment_screenshot",
-    ]
-  ) assertEquals(agentOwnsStep(step), true, step);
-  for (
-    const step of [
       "awaiting_payment_info",
-      "awaiting_pre_service_photo",
       "completed",
     ]
-  ) assertEquals(agentOwnsStep(step), false, step);
+  ) assertEquals(agentOwnsStep(step), true, step);
+  assertEquals(agentOwnsStep("awaiting_pre_service_photo"), false);
+  assertEquals(agentOwnsStep(AWAITING_CURSO_LEAD), false);
+  assertEquals(agentOwnsStep(AWAITING_NO_SHOW_REASON), false);
+});
+
+Deno.test("entrada: comprobante y plantillas no las decide el modelo", () => {
+  assertEquals(isPaymentVerifyPayload("pay_verify_approve:abc"), true);
+  assertEquals(isPaymentVerifyPayload("pay_verify_reject:abc"), true);
+  assertEquals(isPaymentVerifyPayload("mi_cita"), false);
+  assertEquals(isClassicTemplateButton("Confirmo mi cita"), true);
+  assertEquals(isClassicTemplateButton("No podré asistir"), true);
+  assertEquals(isClassicTemplateButton("Agendar"), true);
+  assertEquals(isClassicTemplateButton("quiero lifting"), false);
+  assertEquals(
+    tapToAgentUtterance("mi_cita")?.includes("consultar_mi_cita"),
+    true,
+  );
+  assertEquals(tapToAgentUtterance("date_2026-10-09"), null);
+  assertEquals(tapToAgentUtterance("mi_cita_ver_menu"), null);
+  assertEquals(
+    sessionDefersToClassic({
+      step: "browsing",
+      party_booking: '{"mode":"together"}',
+    }),
+    true,
+  );
+  assertEquals(sessionDefersToClassic({ step: AWAITING_CURSO_LEAD }), true);
+  assertEquals(
+    sessionDefersToClassic({ step: "browsing", party_booking: null }),
+    false,
+  );
+  assertEquals(imageTurnForAgent("", true).includes("anuncio"), true);
+  assertEquals(AGENT_COALESCE_WINDOW_MS < COALESCE_WINDOW_MS, true);
 });
 
 Deno.test("historial: quita el inbound actual, empieza en user y marca staff", () => {

@@ -2,6 +2,8 @@
 // Auth: JWT usuario (dev/owner/staff) o service_role. verify_jwt gateway = false.
 // Patrón: mismo esqueleto que waba-staff-session; importa dispatch del webhook.
 import { createClient } from "@supabase/supabase-js";
+import { runAgent } from "../whatsapp-webhook/agent/agent.ts";
+import { routeAgentInbound } from "../whatsapp-webhook/agent/inbound.ts";
 import { dispatch } from "../whatsapp-webhook/handlers/dispatcher.ts";
 import { preferClientDisplayName } from "../whatsapp-webhook/lib/client-address.ts";
 import { claimInboundMessage } from "../whatsapp-webhook/lib/inbound-gate.ts";
@@ -440,32 +442,77 @@ async function runSendMessage(
   const fromAd = fromAdSimulated && !interactiveId;
   const referralHeadline = fromAd ? headline : null;
 
+  let usedAgent = false;
   try {
-    await dispatch({
-      body,
-      message,
+    const routed = await routeAgentInbound({
+      supabase,
+      wabaConfig,
       phoneNumber: phone,
       contactName: displayName,
+      message: message as Record<string, unknown>,
       messageText,
-      isNew,
-      supabase,
-      catalog,
-      wabaConfig,
+      interactiveId,
+      interactiveTitle: interactiveTitle || null,
       fromAd,
-      referralHeadline,
-      phoneCountry: client?.phone_country ?? "PE",
-      messagePreview: inboundPreview,
-      inboundReceivedAt,
     });
+    if (routed.kind === "agent") {
+      usedAgent = true;
+      const agentHandled = await runAgent({
+        supabase,
+        phoneNumber: phone,
+        contactName: displayName,
+        catalog,
+        wabaConfig,
+        phoneCountry: client?.phone_country ?? "PE",
+        messageText: routed.text,
+      });
+      if (!agentHandled) {
+        await dispatch({
+          body,
+          message,
+          phoneNumber: phone,
+          contactName: displayName,
+          messageText,
+          isNew,
+          supabase,
+          catalog,
+          wabaConfig,
+          tenantId: TENANT_ID,
+          fromAd,
+          referralHeadline,
+          phoneCountry: client?.phone_country ?? "PE",
+          messagePreview: inboundPreview,
+          inboundReceivedAt,
+        });
+      }
+    } else if (routed.kind === "classic") {
+      await dispatch({
+        body,
+        message,
+        phoneNumber: phone,
+        contactName: displayName,
+        messageText,
+        isNew,
+        supabase,
+        catalog,
+        wabaConfig,
+        tenantId: TENANT_ID,
+        fromAd,
+        referralHeadline,
+        phoneCountry: client?.phone_country ?? "PE",
+        messagePreview: inboundPreview,
+        inboundReceivedAt,
+      });
+    }
   } catch (err) {
     // Meta suele fallar/aceptar QA; el dispatcher puede lanzar si sendMessage
     // revienta — igual devolvemos lo que sí se haya logueado en wa_messages.
     console.error("[waba-chat-simulator] dispatch:", err);
   }
 
-  // CTWA puede emitir saludo + lista (+ imágenes en taps); dar un poco más de margen.
+  // El agente tarda más que el menú clásico (modelo + herramientas).
   const bubbles = await pollOutboundBubbles(supabase, phone, sinceIso, {
-    timeoutMs: fromAd ? 5000 : 3500,
+    timeoutMs: usedAgent ? 40_000 : fromAd ? 5000 : 3500,
   });
   return { ok: true, phone, inboundPreview, fromAd, bubbles };
 }

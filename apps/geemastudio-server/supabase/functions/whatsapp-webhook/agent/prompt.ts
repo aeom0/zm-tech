@@ -22,7 +22,8 @@ export const AGENT_INSTRUCTIONS = `MODO AGENTE (WhatsApp):
 - Nunca digas que una cita quedó confirmada: la cita solo existe cuando el sistema la registra tras el adelanto.
 - Citas ya creadas: consultar_mi_cita lista las citas con su id. Para cambiar fecha u hora, confirma el nuevo día con consultar_dia y usa reprogramar_cita (el sistema envía la confirmación; no escribas nada más). Para cancelar, confirma primero que lo desea y usa cancelar_cita: si tiene adelanto la herramienta lo rechaza y debes usar escalar_a_humano.
 - Nombre y documento (DNI o CE): cuando la clienta los escriba, usa registrar_identidad con el nombre y el documento tal cual los dio; nunca los inventes ni los completes.
-- Adelanto y pago: los montos, la cuenta y los datos de pago los envía el sistema; tú nunca los dictas. Si todavía no ha pagado y ya no quiere seguir, usa descartar_reserva. El comprobante lo recibe el sistema cuando envía la imagen: si pregunta, indícale que lo envíe como foto o captura.
+- Adelanto y pago: los montos, la cuenta y los datos de pago los envía el sistema; tú nunca los dictas. Si todavía no ha pagado y ya no quiere seguir, usa descartar_reserva. El comprobante lo registra el sistema cuando llega la foto: si pregunta, indícale que lo envíe como imagen. No inventes montos ni digas que el pago ya se validó.
+- Si el mensaje dice que envió una foto o una nota de voz, responde a eso. No afirmes que viste el diseño ni que escuchaste el audio.
 - Reclamos, devoluciones, cancelar con adelanto, asesoría personal o algo que no puedas resolver: escalar_a_humano.
 - Si la clienta responde con una sola palabra de cortesía, contesta natural; no repitas información ya dada.`;
 
@@ -42,6 +43,10 @@ export function stepContextBlock(step: string | null | undefined): string {
       return "ESTADO DE LA SESIÓN: reserva sin adelanto aún; faltan nombre completo y DNI/CE para la boleta (registrar_identidad envía luego los datos de pago). Si cambia de día, usa consultar_dia y reservar_horario; si desiste, descartar_reserva. El cupo no está reservado hasta recibir el comprobante.";
     case "awaiting_payment_screenshot":
       return "ESTADO DE LA SESIÓN: ya recibió los datos del adelanto; falta que envíe la captura del comprobante como imagen. Responde dudas (info_negocio) y recuérdaselo con calidez; si cambia de día, reservar_horario; si desiste, descartar_reserva. El cupo no está reservado hasta recibir el comprobante.";
+    case "awaiting_payment_info":
+      return "ESTADO DE LA SESIÓN: la reserva quedó anotada sin pedir adelanto. Ayuda con dudas o con consultar_mi_cita. No pidas comprobante ni dictes montos.";
+    case "completed":
+      return "ESTADO DE LA SESIÓN: la cita ya quedó registrada. Ayuda con consultar_mi_cita, cambios de horario o dudas. No vuelvas a pedir el comprobante.";
     default:
       return "";
   }

@@ -21,6 +21,8 @@ import { containsRefundPromise } from "../lib/staff-escalation.ts";
 import { getClientContext } from "../handlers/ai-assistant.ts";
 import { sendMessage } from "../wa-api.ts";
 import { notifyStaffPaymentStepText } from "../handlers/steps.ts";
+import { sessionDefersToClassic } from "./inbound-route.ts";
+import { isSimulatorQaPhone } from "../lib/qa-phone.mjs";
 import { AWAITING_CLIENT_IDENTITY } from "../handlers/client-identity.ts";
 import {
   AWAITING_DEPOSIT_BOLETA,
@@ -42,9 +44,9 @@ const REFUND_SAFE_REPLY =
   "Entiendo 💜 Esto lo revisa una persona del equipo y te escribe en breve.";
 
 /**
- * Pasos de sesión en los que el agente responde texto. Imágenes (comprobante,
- * fotos previas) y taps de listas siguen en el flujo clásico, que valida el
- * pago por código.
+ * Pasos de sesión en los que el agente responde texto.
+ * Curso, no-show y party siguen en el dispatcher (sessionDefersToClassic).
+ * El comprobante por imagen no pasa por aquí: lo entrega routeAgentInbound.
  */
 const AGENT_STEPS = new Set([
   "browsing",
@@ -53,6 +55,8 @@ const AGENT_STEPS = new Set([
   AWAITING_DEPOSIT_DATOS,
   AWAITING_DEPOSIT_BOLETA,
   "awaiting_payment_screenshot",
+  "awaiting_payment_info",
+  "completed",
 ]);
 
 export function agentOwnsStep(step: string | null | undefined): boolean {
@@ -70,7 +74,10 @@ export function isAgentEnabledFor(
     "agent_phone_allowlist",
     "phones",
   );
-  return allow.length === 0 || allow.includes(phoneNumber);
+  if (allow.length === 0 || allow.includes(phoneNumber)) return true;
+  // El simulador del panel (51988800001/002) prueba el agente sin abrir
+  // el tráfico real: la allowlist de QA sigue cerrando a las clientas.
+  return isSimulatorQaPhone(phoneNumber);
 }
 
 /** Compuerta completa: flag, tipo de mensaje y paso de sesión. */
@@ -83,6 +90,7 @@ export async function shouldRunAgent(opts: {
   if (!opts.isPlainText) return false;
   if (!isAgentEnabledFor(opts.wabaConfig, opts.phoneNumber)) return false;
   const session = await getSession(opts.supabase, opts.phoneNumber);
+  if (sessionDefersToClassic(session)) return false;
   return agentOwnsStep(session?.step);
 }
 

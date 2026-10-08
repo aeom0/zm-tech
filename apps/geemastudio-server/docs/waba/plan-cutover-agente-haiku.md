@@ -128,6 +128,22 @@ si `crear_cita` devolvió el ID de la fila. La guarda `fabricated-booking-guard`
 - Herramientas nuevas: `reprogramar_cita` (reutiliza `finalizeRescheduleAppointment`), `cancelar_cita` (solo sin adelanto ni comprobante; si no, `escalar_a_humano`), `registrar_identidad` (valida con `parseClientIdentity`; en la boleta envía los datos del adelanto por código) y `descartar_reserva`.
 - Siguen en el flujo clásico, por validar dinero por código: la imagen del comprobante (`processPaymentScreenshot`), fotos previas, taps de listas y `awaiting_payment_info`. Se migran al agente en un paso aparte (necesita entrada multimodal).
 
+## Cierre antes de la Fase 3 (8-oct-2026)
+
+Decisiones y qué atiende ya el agente (`routeAgentInbound`). La Fase 3 (borrar el dispatcher) sigue en un PR aparte, después de una semana estable con tráfico real.
+
+- **Comprobante por imagen.** No es una herramienta del modelo. Si el paso es `awaiting_payment_screenshot` (o `awaiting_screenshot`), el webhook llama a `handleAwaitingPaymentScreenshot` → `processPaymentScreenshot`. El monto y la cita los escribe ese flujo. Una imagen fuera de ese paso pasa primero por el clasificador y por la foto de referencia de una cita ya creada; si no aplica, el agente solo recibe el texto de la foto y no afirma haberla visto.
+- **Fotos previas** (`awaiting_pre_service_photo` y `_2`). El flujo ya estaba apagado en el dispatcher. Se elimina: la sesión vuelve a `browsing` y la imagen sigue como cualquier otra foto.
+- **Audio.** Se guarda en el panel y el agente pide que lo escriba. No pausa el bot.
+- **«Mi cita».** El tap `mi_cita` entra al agente y debe usar `consultar_mi_cita`. El resto de listas (categorías, día, hora) sigue en el dispatcher hasta la Fase 3.
+- **Botones de verificación de pago** (`pay_verify_approve` / `pay_verify_reject`). Los atiende el mismo handler de Vanessa, antes del modelo. Los botones de plantilla (confirmo, no podré asistir, tardanza, retoque) siguen en el dispatcher.
+- **`awaiting_payment_info` y `completed`.** Los absorbe el agente (texto).
+- **Party, curso y no-show.** Se quedan en el dispatcher. No se eliminan: son máquinas de estado (acompañante, lead de curso, motivo de inasistencia).
+- **Cancelar con adelanto.** Se queda en `escalar_a_humano`. El adelanto ya está cobrado; reembolso o pérdida lo decide una persona.
+- **Latencia.** Un turno de QA midió 14–28 s. Unos 6 s son la agrupación (ventana 4.5 s + quietud 1.5 s), pensada para que el bot viejo no contestara un fragmento con un menú. Con el agente esa ventana base pasa a 1.5 s; la quietud de 1.5 s se mantiene para ráfagas cortas. El tiempo del modelo no cambia en este paso.
+- **Simulador.** `waba-chat-simulator` entra al agente cuando `agent_enabled` está prendido, también en `51988800001` y `51988800002`, sin sacar la allowlist de las clientas. Los scripts `waba-validate-*` pegan al webhook real: en teléfonos `51999000978`–`999` ya pasan por el agente.
+- **Tráfico real.** La allowlist sigue en `51999000978`–`999`. La semana estable empieza cuando este código esté desplegado y el QA de comprobante, foto y «Mi cita» haya pasado. Abrirla antes pondría a las clientas en el build anterior.
+
 ## Flag y despliegue
 
 - Clave `agent_enabled` en `waba_config` (por tenant, caché de 60 s ya existente). Además `agent_phone_allowlist` (lista de teléfonos): vacía = todo el tenant; con teléfonos = solo esos (QA `51999000978` a `999`).
