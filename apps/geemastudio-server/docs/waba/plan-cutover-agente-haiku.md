@@ -4,9 +4,10 @@
 > **Reemplaza** la decisión de *no cutover* de [`plan-haiku-primero-informativo.md`](plan-haiku-primero-informativo.md)
 > y la sección histórica *Evaluación de arquitectura* (antes en ZM Lash `ROADMAP.md`; ya apunta acá).
 >
-> **Estado (8-oct-2026):** Fase 1 en código — PR [#77](https://github.com/aeom0/zm-tech/pull/77)
-> (`agent/` + `agent_enabled` / allowlist). Modelo `claude-haiku-5-5`, `effort: medium`.
-> Híbrido: agente en `browsing`/sin sesión; pago/identidad siguen en `dispatch` hasta Fase 2.
+> **Estado (8-oct-2026, noche):** Fases 1 y 2 desplegadas (PRs #77–#84). El agente atiende **todo el tráfico
+> de ZM Lash** desde el 8-oct (allowlist vacía). Modelo `claude-haiku-5-5`, `effort: medium`. El dispatcher
+> sigue como respaldo (falla del agente, party, curso, no-show, botones de plantilla) hasta la Fase 3, que
+> se hace tras una semana estable.
 > **Venta emocional CTWA:** se inyecta si `from_ad_at` (mismo CMS `haiku_emotional_selling_ctwa_ext_lift`
 > + nota de tools del agente). Nudges/captions de `lib/emotional-selling.ts` siguen en el flujo clásico.
 
@@ -122,11 +123,11 @@ si `crear_cita` devolvió el ID de la fila. La guarda `fabricated-booking-guard`
 - Mientras `session.step` esté en uno de esos pasos, `runAgent` **no corre** y el mensaje sigue por `dispatch` como hoy. Al volver a `browsing` o `null`, retoma el agente.
 - La Fase 2 elimina este puente y el flujo viejo.
 
-## Estado Fase 2 (8-oct-2026, PR en revisión)
+## Estado Fase 2 (8-oct-2026, desplegada)
 
 - El agente atiende texto en `browsing`, `awaiting_datetime`, `awaiting_client_identity`, `awaiting_deposit_datos`, `awaiting_deposit_boleta` y `awaiting_payment_screenshot`.
 - Herramientas nuevas: `reprogramar_cita` (reutiliza `finalizeRescheduleAppointment`), `cancelar_cita` (solo sin adelanto ni comprobante; si no, `escalar_a_humano`), `registrar_identidad` (valida con `parseClientIdentity`; en la boleta envía los datos del adelanto por código) y `descartar_reserva`.
-- Siguen en el flujo clásico, por validar dinero por código: la imagen del comprobante (`processPaymentScreenshot`), fotos previas, taps de listas y `awaiting_payment_info`. Se migran al agente en un paso aparte (necesita entrada multimodal).
+- Comprobante, imágenes, audio y «Mi cita»: ver «Cierre antes de la Fase 3» (ya cubiertos).
 
 ## Cierre antes de la Fase 3 (8-oct-2026)
 
@@ -134,7 +135,7 @@ Decisiones y qué atiende ya el agente (`routeAgentInbound`). La Fase 3 (borrar 
 
 - **Comprobante por imagen.** No es una herramienta del modelo. Si el paso es `awaiting_payment_screenshot` (o `awaiting_screenshot`), el webhook llama a `handleAwaitingPaymentScreenshot` → `processPaymentScreenshot`. El monto y la cita los escribe ese flujo. Una imagen fuera de ese paso pasa primero por el clasificador y por la foto de referencia de una cita ya creada; si no aplica, el agente solo recibe el texto de la foto y no afirma haberla visto.
 - **Fotos previas** (`awaiting_pre_service_photo` y `_2`). El flujo ya estaba apagado en el dispatcher. Se elimina: la sesión vuelve a `browsing` y la imagen sigue como cualquier otra foto.
-- **Audio.** Se guarda en el panel y el agente pide que lo escriba. No pausa el bot.
+- **Audio.** Se guarda en el panel y el agente pide que lo escriba. No pausa el bot ni avisa al equipo (pendiente: transcribir la nota y que el agente escale solo si hay un problema o pide hablar con una persona; la API de Mensajes no acepta audio, hace falta transcripción previa).
 - **«Mi cita».** El tap `mi_cita` entra al agente y debe usar `consultar_mi_cita`. El resto de listas (categorías, día, hora) sigue en el dispatcher hasta la Fase 3.
 - **Botones de verificación de pago** (`pay_verify_approve` / `pay_verify_reject`). Los atiende el mismo handler de Vanessa, antes del modelo. Los botones de plantilla (confirmo, no podré asistir, tardanza, retoque) siguen en el dispatcher.
 - **`awaiting_payment_info` y `completed`.** Los absorbe el agente (texto).
@@ -142,7 +143,8 @@ Decisiones y qué atiende ya el agente (`routeAgentInbound`). La Fase 3 (borrar 
 - **Cancelar con adelanto.** Se queda en `escalar_a_humano`. El adelanto ya está cobrado; reembolso o pérdida lo decide una persona.
 - **Latencia.** Un turno de QA midió 14–28 s. Unos 6 s son la agrupación (ventana 4.5 s + quietud 1.5 s), pensada para que el bot viejo no contestara un fragmento con un menú. Con el agente esa ventana base pasa a 1.5 s; la quietud de 1.5 s se mantiene para ráfagas cortas. El tiempo del modelo no cambia en este paso.
 - **Simulador.** `waba-chat-simulator` entra al agente cuando `agent_enabled` está prendido, también en `51988800001` y `51988800002`, sin sacar la allowlist de las clientas. Los scripts `waba-validate-*` pegan al webhook real: en teléfonos `51999000978`–`999` ya pasan por el agente.
-- **Tráfico real.** La allowlist sigue en `51999000978`–`999`. La semana estable empieza cuando este código esté desplegado y el QA de comprobante, foto y «Mi cita» haya pasado. Abrirla antes pondría a las clientas en el build anterior.
+- **Tráfico real.** QA de comprobante, foto, nota de voz y «Mi cita» pasó el 8-oct. La allowlist se vació ese día (`agent_phone_allowlist.phones = []`): el agente atiende a todas las clientas de ZM Lash. La semana estable cuenta desde ahí. Rollback: `agent_enabled = false`.
+- **Lecciones del primer día.** (1) El thinking cuenta en `max_tokens`: se subió a 4096, se reintenta ante `stop_reason: max_tokens` y se recorta a la última línea completa. (2) Cada promo muestra su vigencia en el catálogo y en `buscar_servicios`; «Solo Halloween» nombra la campaña, no limita el día. (3) Horas, días, servicios y precios van en viñetas, una por línea (🌸/⭐; el emoji de la promo, 🎃 en Halloween, para promos).
 
 ## Flag y despliegue
 
