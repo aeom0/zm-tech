@@ -9,6 +9,7 @@ import type { AgentApiResult } from "./anthropic.ts";
 import { buildAgentHistory } from "./history.ts";
 import {
   AGENT_EMOTIONAL_TOOL_NOTE,
+  AGENT_INSTRUCTIONS,
   buildAgentSystem,
   limaNowBlock,
 } from "./prompt.ts";
@@ -258,9 +259,10 @@ function toolCtx() {
     phoneNumber: "51999000978",
     contactName: "QA",
     catalog: emptyCatalog,
-    wabaConfig: {} as WabaConfigMap,
+    wabaConfig: new Map() as WabaConfigMap,
     messageText: "hola",
     turnHandled: false,
+    sentToClient: false,
   };
 }
 
@@ -270,6 +272,7 @@ Deno.test("tools: el agente expone carrito, día, equipo y reserva; sin selector
     const n of [
       "buscar_servicios",
       "info_negocio",
+      "ver_guia",
       "ver_portafolio",
       "ver_carrito",
       "agregar_al_carrito",
@@ -567,4 +570,32 @@ Deno.test("tools: info_negocio entrega datos oficiales", async () => {
   assertStringIncludes(pol.content, "Cancelación");
   const bad = await runAgentTool("info_negocio", { tema: "x" }, toolCtx());
   assertEquals(bad.isError, true);
+});
+
+Deno.test("tools: info_negocio prefiere waba_config.ubicacion_text", async () => {
+  const ctx = {
+    ...toolCtx(),
+    wabaConfig: cfg({ ubicacion_text: { text: "Sede Nueva 123" } }),
+  };
+  const ub = await runAgentTool("info_negocio", { tema: "ubicacion" }, ctx);
+  assertStringIncludes(ub.content, "Sede Nueva 123");
+});
+
+Deno.test("tools: ver_guia sin imagen configurada devuelve error", async () => {
+  const r = await runAgentTool("ver_guia", { guia: "fiber_3d" }, toolCtx());
+  assertEquals(r.isError, true);
+  assertEquals(toolCtx().sentToClient, false);
+});
+
+Deno.test("prompt: no menciona herramientas inexistentes", () => {
+  assertEquals(AGENT_INSTRUCTIONS.includes("consultar_horarios"), false);
+  const names = new Set(AGENT_TOOLS.map((t) => t.name));
+  for (const m of AGENT_INSTRUCTIONS.matchAll(/\b([a-z]+_[a-z_]+)\b/g)) {
+    const w = m[1];
+    if (
+      /^(ver|buscar|agregar|quitar|consultar|reservar|escalar|info)_/.test(w)
+    ) {
+      assertEquals(names.has(w), true, w);
+    }
+  }
 });
