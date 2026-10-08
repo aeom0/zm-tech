@@ -467,6 +467,29 @@ async function resolveOwnAppointment(
   };
 }
 
+/** Cita pendiente de la clienta con exactamente los mismos servicios que el carrito (posible duplicado). */
+async function findPendingWithSameServices(
+  ctx: AgentToolContext,
+  cartServiceIds: string[],
+): Promise<PendingAppointmentRow | null> {
+  const key = (ids: string[]) => [...new Set(ids)].sort().join("|");
+  const target = key(cartServiceIds);
+  const rows = await getPendingAppointmentsForPhone(
+    ctx.supabase,
+    ctx.phoneNumber,
+  );
+  for (const row of rows) {
+    const loaded = await loadAppointmentCartItems(ctx.supabase, row.id);
+    if (!loaded.ok) continue;
+    const ids = resolveBookingItems(
+      loaded.items.map((i) => i.item_id),
+      ctx.catalog,
+    ).serviceIds;
+    if (key(ids) === target) return row;
+  }
+  return null;
+}
+
 /**
  * Valida día/hora contra feriados, horario del salón, cupo y reglas del personal.
  * `excludeAppointmentId` ignora la propia cita al reprogramar.
@@ -1111,6 +1134,14 @@ export async function runAgentTool(
         if (items.length === 0) {
           return { content: "El carrito está vacío.", isError: true };
         }
+        const duplicate = await findPendingWithSameServices(ctx, serviceIds);
+        if (duplicate) {
+          return {
+            content:
+              `La clienta ya tiene una cita con esos mismos servicios [${duplicate.id}] (${duplicate.date}). Si quiere otro horario usa reprogramar_cita; no crees una cita duplicada.`,
+            isError: true,
+          };
+        }
         const slot = await checkSlot(ctx, {
           fecha: String(input.fecha ?? ""),
           hora: String(input.hora ?? ""),
@@ -1202,6 +1233,12 @@ export async function runAgentTool(
             isError: true,
           };
         }
+        // finalizeRescheduleAppointment lee y limpia el carrito de la sesión:
+        // se guarda el que la clienta tenía en armado para devolvérselo.
+        const before = await getSession(ctx.supabase, ctx.phoneNumber);
+        const prevItems = (before?.cartItems ?? []).filter((i: CartItem) =>
+          i.item_id
+        );
         // finalizeRescheduleAppointment lee el carrito de la sesión: se fija el de la cita.
         await upsertSession(ctx.supabase, ctx.phoneNumber, {
           cart_items: JSON.stringify(loaded.items),
@@ -1217,6 +1254,19 @@ export async function runAgentTool(
           slot.when,
           ctx.catalog,
         );
+        if (prevItems.length > 0) {
+          await upsertSession(ctx.supabase, ctx.phoneNumber, {
+            cart_items: JSON.stringify(prevItems),
+            cart_service_ids: JSON.stringify(
+              await expandCartItemsToServiceIds(ctx.supabase, prevItems),
+            ),
+            reschedule_appointment_id: null,
+            step: "browsing",
+          });
+        } else {
+          // Si finalize falló antes de limpiar, no dejar la sesión en modo reprogramación.
+          await clearCart(ctx.supabase, ctx.phoneNumber);
+        }
         ctx.turnHandled = true;
         return {
           content:

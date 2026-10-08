@@ -20,6 +20,7 @@ import {
 import { containsRefundPromise } from "../lib/staff-escalation.ts";
 import { getClientContext } from "../handlers/ai-assistant.ts";
 import { sendMessage } from "../wa-api.ts";
+import { notifyStaffPaymentStepText } from "../handlers/steps.ts";
 import { AWAITING_CLIENT_IDENTITY } from "../handlers/client-identity.ts";
 import {
   AWAITING_DEPOSIT_BOLETA,
@@ -139,6 +140,13 @@ export async function runAgent(opts: {
       sessionStep: session?.step ?? null,
     });
     const messages: AgentMessage[] = [...history.messages];
+
+    // Mid-pago el equipo debe ver lo que escribe la clienta (el bot clásico lo
+    // avisaba con debounce de 3 min); un fallo del aviso no frena el turno.
+    if (session?.step === "awaiting_payment_screenshot") {
+      await notifyStaffPaymentStepText(supabase, phoneNumber, opts.messageText)
+        .catch((err: unknown) => console.error("[AGENT] aviso a staff:", err));
+    }
 
     for (let i = 0; i < AGENT_MAX_ITERATIONS; i++) {
       // Un reintento ante falla transitoria de la API.
