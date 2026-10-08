@@ -122,6 +122,12 @@ si `crear_cita` devolvió el ID de la fila. La guarda `fabricated-booking-guard`
 - Mientras `session.step` esté en uno de esos pasos, `runAgent` **no corre** y el mensaje sigue por `dispatch` como hoy. Al volver a `browsing` o `null`, retoma el agente.
 - La Fase 2 elimina este puente y el flujo viejo.
 
+## Estado Fase 2 (8-oct-2026, PR en revisión)
+
+- El agente atiende texto en `browsing`, `awaiting_datetime`, `awaiting_client_identity`, `awaiting_deposit_datos`, `awaiting_deposit_boleta` y `awaiting_payment_screenshot`.
+- Herramientas nuevas: `reprogramar_cita` (reutiliza `finalizeRescheduleAppointment`), `cancelar_cita` (solo sin adelanto ni comprobante; si no, `escalar_a_humano`), `registrar_identidad` (valida con `parseClientIdentity`; en la boleta envía los datos del adelanto por código) y `descartar_reserva`.
+- Siguen en el flujo clásico, por validar dinero por código: la imagen del comprobante (`processPaymentScreenshot`), fotos previas, taps de listas y `awaiting_payment_info`. Se migran al agente en un paso aparte (necesita entrada multimodal).
+
 ## Flag y despliegue
 
 - Clave `agent_enabled` en `waba_config` (por tenant, caché de 60 s ya existente). Además `agent_phone_allowlist` (lista de teléfonos): vacía = todo el tenant; con teléfonos = solo esos (QA `51999000978` a `999`).

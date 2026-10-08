@@ -9,6 +9,8 @@ import type { SupabaseClient } from "../lib/supabase.ts";
 import {
   addCartItems,
   type CartItem,
+  clearCart,
+  expandCartItemsToServiceIds,
   getSession,
   upsertSession,
 } from "../lib/supabase.ts";
@@ -36,11 +38,27 @@ import {
 } from "../handlers/booking-flow.ts";
 import { hasSlotCapacityForServices } from "../handlers/agenda.ts";
 import {
+  finalizeRescheduleAppointment,
   getPendingAppointmentsForPhone,
+  loadAppointmentCartItems,
+  markDepositForfeitRiskIfLateChange,
   newBookingOverlapsExisting,
+  type PendingAppointmentRow,
   shouldBlockAdditionalBooking,
 } from "../handlers/pending-appointment.ts";
-import { finalizeBookingAfterDatetimeSelection } from "../handlers/payment.ts";
+import {
+  AWAITING_DEPOSIT_BOLETA,
+  AWAITING_DEPOSIT_DATOS,
+  finalizeBookingAfterDatetimeSelection,
+  sendFixedDepositAdelantoStep,
+} from "../handlers/payment.ts";
+import {
+  AWAITING_CLIENT_IDENTITY,
+  parseClientIdentity,
+  updateClientIdentity,
+} from "../handlers/client-identity.ts";
+import { notifyAdmins } from "../lib/notify.ts";
+import { toLimaLocalTimestamp } from "../format.ts";
 import { employeeRulesAllowSlot } from "../lib/employee-availability.ts";
 import {
   DEFAULT_UBICACION_TEXT,
@@ -269,9 +287,78 @@ export const AGENT_TOOLS: AgentToolDef[] = [
     },
   },
   {
+    name: "reprogramar_cita",
+    description:
+      "Cambia fecha y hora de una cita ya creada de la clienta (mismos servicios). Valida cupo, personal y feriados, y recalcula el precio según el día. " +
+      "Úsala cuando la clienta confirmó el nuevo día y hora. Después NO escribas nada más: el sistema envía la confirmación.",
+    strict: true,
+    input_schema: {
+      type: "object",
+      properties: {
+        cita_id: {
+          type: ["string", "null"],
+          description:
+            "ID de la cita (de consultar_mi_cita), o null si solo tiene una.",
+        },
+        fecha: { type: "string", description: "Nuevo día YYYY-MM-DD (Lima)." },
+        hora: {
+          type: "string",
+          description: "Nueva hora HH:MM de 24 h (Lima).",
+        },
+      },
+      required: ["cita_id", "fecha", "hora"],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "cancelar_cita",
+    description:
+      "Cancela una cita ya creada SIN adelanto cuando la clienta lo pide de forma explícita. Si la cita tiene adelanto o comprobante, la herramienta lo rechaza y debes usar escalar_a_humano.",
+    strict: true,
+    input_schema: {
+      type: "object",
+      properties: {
+        cita_id: {
+          type: ["string", "null"],
+          description:
+            "ID de la cita (de consultar_mi_cita), o null si solo tiene una.",
+        },
+      },
+      required: ["cita_id"],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "registrar_identidad",
+    description:
+      "Guarda en la ficha de la clienta su nombre completo y documento (DNI de 8 dígitos o CE). Úsala cuando los escriba (para la boleta del adelanto o para completar su ficha). " +
+      "En el paso de boleta, el sistema envía solo los datos del adelanto.",
+    strict: true,
+    input_schema: {
+      type: "object",
+      properties: {
+        nombre: { type: "string", description: "Nombre y apellido." },
+        documento: { type: "string", description: "DNI (8 dígitos) o CE." },
+      },
+      required: ["nombre", "documento"],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "descartar_reserva",
+    description:
+      "Descarta la reserva en curso (carrito, día y hora elegidos) cuando la clienta ya no quiere seguir antes de pagar el adelanto. No toca citas ya creadas.",
+    strict: true,
+    input_schema: {
+      type: "object",
+      properties: {},
+      additionalProperties: false,
+    },
+  },
+  {
     name: "consultar_mi_cita",
     description:
-      "Lista las citas pendientes de la clienta (fecha, servicios, precio). Úsala cuando pregunte por su cita.",
+      "Lista las citas pendientes de la clienta (id, fecha, servicios, precio). Úsala cuando pregunte por su cita.",
     strict: true,
     input_schema: {
       type: "object",
@@ -341,6 +428,136 @@ function itemName(catalog: ServiceCatalog, it: CartItem): string {
   }
   const s = catalog.servicesById.get(it.item_id);
   return s?.short_name || s?.name || it.item_id;
+}
+
+/** Pasos en los que todavía no existe la cita (el flujo de reserva sigue abierto). */
+export function isPreAppointmentStep(step: string | null | undefined): boolean {
+  return step === "awaiting_datetime" || step === AWAITING_DEPOSIT_DATOS ||
+    step === AWAITING_DEPOSIT_BOLETA || step === "awaiting_payment_screenshot";
+}
+
+/** Cita pendiente de esta clienta por id (o la única si no se indica). */
+async function resolveOwnAppointment(
+  ctx: AgentToolContext,
+  citaId: unknown,
+): Promise<
+  { ok: true; row: PendingAppointmentRow } | { ok: false; content: string }
+> {
+  const rows = await getPendingAppointmentsForPhone(
+    ctx.supabase,
+    ctx.phoneNumber,
+  );
+  if (rows.length === 0) {
+    return { ok: false, content: "No tiene citas pendientes registradas." };
+  }
+  const id = typeof citaId === "string" && citaId ? citaId : null;
+  if (id) {
+    const row = rows.find((r) => r.id === id);
+    return row ? { ok: true, row } : {
+      ok: false,
+      content: "Esa cita no es de la clienta o ya no está activa.",
+    };
+  }
+  if (rows.length === 1) return { ok: true, row: rows[0] };
+  return {
+    ok: false,
+    content: `Tiene varias citas; pregunta cuál y pasa cita_id:\n${
+      rows.map((r) => `- [${r.id}] ${r.date}`).join("\n")
+    }`,
+  };
+}
+
+/** Cita pendiente de la clienta con exactamente los mismos servicios que el carrito (posible duplicado). */
+async function findPendingWithSameServices(
+  ctx: AgentToolContext,
+  cartServiceIds: string[],
+): Promise<PendingAppointmentRow | null> {
+  const key = (ids: string[]) => [...new Set(ids)].sort().join("|");
+  const target = key(cartServiceIds);
+  const rows = await getPendingAppointmentsForPhone(
+    ctx.supabase,
+    ctx.phoneNumber,
+  );
+  for (const row of rows) {
+    const loaded = await loadAppointmentCartItems(ctx.supabase, row.id);
+    if (!loaded.ok) continue;
+    const ids = resolveBookingItems(
+      loaded.items.map((i) => i.item_id),
+      ctx.catalog,
+    ).serviceIds;
+    if (key(ids) === target) return row;
+  }
+  return null;
+}
+
+/**
+ * Valida día/hora contra feriados, horario del salón, cupo y reglas del personal.
+ * `excludeAppointmentId` ignora la propia cita al reprogramar.
+ */
+async function checkSlot(
+  ctx: AgentToolContext,
+  o: {
+    fecha: string;
+    hora: string;
+    serviceIds: string[];
+    duration: number;
+    excludeAppointmentId?: string | null;
+  },
+): Promise<
+  { ok: true; when: Date; fecha: string } | { ok: false; content: string }
+> {
+  const { fecha, hora, serviceIds, duration } = o;
+  const m = hora.match(/^(\d{1,2}):(\d{2})$/);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha) || !m) {
+    return { ok: false, content: "fecha u hora inválida (YYYY-MM-DD / HH:MM)" };
+  }
+  const [h, min] = [Number(m[1]), Number(m[2])];
+  if (isSalonClosed(fecha)) {
+    return { ok: false, content: getSalonClosedMessage(fecha) };
+  }
+  const when = limaDateKeyAndTimeToUtc(fecha, h, min);
+  if (!when || when.getTime() <= Date.now()) {
+    return { ok: false, content: "ese horario ya pasó o no es válido" };
+  }
+  const cap = overlapCapForCart(serviceIds, ctx.catalog);
+  const freeHours = () =>
+    formatAvailableHours(
+      ctx.supabase,
+      fecha,
+      duration,
+      o.excludeAppointmentId ?? undefined,
+      cap,
+      ctx.catalog,
+      serviceIds,
+    );
+  if (!isValidSalonSlot(h, min, dayOfWeekFromDateKey(fecha), fecha)) {
+    return {
+      ok: false,
+      content:
+        `Fuera del horario del salón. Horarios con cupo ese día: ${await freeHours()}`,
+    };
+  }
+  const hhmmKey = `${String(h).padStart(2, "0")}:${
+    String(min).padStart(2, "0")
+  }`;
+  const ok = await hasSlotCapacityForServices(
+    ctx.supabase,
+    ctx.catalog,
+    when,
+    duration,
+    serviceIds,
+    cap,
+    o.excludeAppointmentId ?? undefined,
+  ) &&
+    await employeeRulesAllowSlot(ctx.supabase, fecha, hhmmKey, serviceIds);
+  if (!ok) {
+    return {
+      ok: false,
+      content:
+        `Sin cupo a las ${hhmmKey}. Horarios con cupo ese día: ${await freeHours()}`,
+    };
+  }
+  return { ok: true, when, fecha };
 }
 
 async function cartSummary(ctx: AgentToolContext): Promise<string> {
@@ -913,47 +1130,26 @@ export async function runAgentTool(
       }
 
       case "reservar_horario": {
-        const fecha = String(input.fecha ?? "");
-        const hora = String(input.hora ?? "");
-        const m = hora.match(/^(\d{1,2}):(\d{2})$/);
-        if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha) || !m) {
-          return {
-            content: "fecha u hora inválida (YYYY-MM-DD / HH:MM)",
-            isError: true,
-          };
-        }
-        const [h, min] = [Number(m[1]), Number(m[2])];
-        if (isSalonClosed(fecha)) {
-          return { content: getSalonClosedMessage(fecha), isError: true };
-        }
         const { items, duration, serviceIds } = await loadCartIds(ctx);
         if (items.length === 0) {
           return { content: "El carrito está vacío.", isError: true };
         }
-        const when = limaDateKeyAndTimeToUtc(fecha, h, min);
-        if (!when || when.getTime() <= Date.now()) {
-          return {
-            content: "ese horario ya pasó o no es válido",
-            isError: true,
-          };
-        }
-        const dow = dayOfWeekFromDateKey(fecha);
-        if (!isValidSalonSlot(h, min, dow, fecha)) {
-          const free = await formatAvailableHours(
-            ctx.supabase,
-            fecha,
-            duration,
-            undefined,
-            overlapCapForCart(serviceIds, ctx.catalog),
-            ctx.catalog,
-            serviceIds,
-          );
+        const duplicate = await findPendingWithSameServices(ctx, serviceIds);
+        if (duplicate) {
           return {
             content:
-              `Fuera del horario del salón. Horarios con cupo ese día: ${free}`,
+              `La clienta ya tiene una cita con esos mismos servicios [${duplicate.id}] (${duplicate.date}). Si quiere otro horario usa reprogramar_cita; no crees una cita duplicada.`,
             isError: true,
           };
         }
+        const slot = await checkSlot(ctx, {
+          fecha: String(input.fecha ?? ""),
+          hora: String(input.hora ?? ""),
+          serviceIds,
+          duration,
+        });
+        if (!slot.ok) return { content: slot.content, isError: true };
+        const { when, fecha } = slot;
         const session = await getSession(ctx.supabase, ctx.phoneNumber);
         if (
           await shouldBlockAdditionalBooking(ctx.supabase, ctx.phoneNumber, {
@@ -980,40 +1176,6 @@ export async function runAgentTool(
             isError: true,
           };
         }
-        const cap = overlapCapForCart(serviceIds, ctx.catalog);
-        const hhmmKey = `${String(h).padStart(2, "0")}:${
-          String(min).padStart(2, "0")
-        }`;
-        const ok = await hasSlotCapacityForServices(
-          ctx.supabase,
-          ctx.catalog,
-          when,
-          duration,
-          serviceIds,
-          cap,
-        ) &&
-          await employeeRulesAllowSlot(
-            ctx.supabase,
-            fecha,
-            hhmmKey,
-            serviceIds,
-          );
-        if (!ok) {
-          const free = await formatAvailableHours(
-            ctx.supabase,
-            fecha,
-            duration,
-            undefined,
-            cap,
-            ctx.catalog,
-            serviceIds,
-          );
-          return {
-            content:
-              `Sin cupo a las ${hhmmKey}. Horarios con cupo ese día: ${free}`,
-            isError: true,
-          };
-        }
         const mensaje = String(input.mensaje ?? "").trim();
         if (mensaje) await sendMessage(ctx.phoneNumber, mensaje);
         await finalizeBookingAfterDatetimeSelection(
@@ -1029,6 +1191,215 @@ export async function runAgentTool(
         };
       }
 
+      case "reprogramar_cita": {
+        const found = await resolveOwnAppointment(ctx, input.cita_id);
+        if (!found.ok) return { content: found.content, isError: true };
+        const loaded = await loadAppointmentCartItems(
+          ctx.supabase,
+          found.row.id,
+        );
+        if (!loaded.ok) {
+          return {
+            content:
+              "No se pudieron leer los servicios de la cita; usa escalar_a_humano.",
+            isError: true,
+          };
+        }
+        const cartIds = loaded.items.map((i) => i.item_id);
+        const { duration, serviceIds } = resolveBookingItems(
+          cartIds,
+          ctx.catalog,
+        );
+        const slot = await checkSlot(ctx, {
+          fecha: String(input.fecha ?? ""),
+          hora: String(input.hora ?? ""),
+          serviceIds,
+          duration,
+          excludeAppointmentId: found.row.id,
+        });
+        if (!slot.ok) return { content: slot.content, isError: true };
+        if (
+          await newBookingOverlapsExisting(
+            ctx.supabase,
+            ctx.phoneNumber,
+            slot.when,
+            duration,
+            found.row.id,
+          )
+        ) {
+          return {
+            content:
+              "Ese horario se cruza con otra cita pendiente de la clienta.",
+            isError: true,
+          };
+        }
+        // finalizeRescheduleAppointment lee y limpia el carrito de la sesión:
+        // se guarda el que la clienta tenía en armado para devolvérselo.
+        const before = await getSession(ctx.supabase, ctx.phoneNumber);
+        const prevItems = (before?.cartItems ?? []).filter((i: CartItem) =>
+          i.item_id
+        );
+        // finalizeRescheduleAppointment lee el carrito de la sesión: se fija el de la cita.
+        await upsertSession(ctx.supabase, ctx.phoneNumber, {
+          cart_items: JSON.stringify(loaded.items),
+          cart_service_ids: JSON.stringify(
+            await expandCartItemsToServiceIds(ctx.supabase, loaded.items),
+          ),
+          reschedule_appointment_id: found.row.id,
+        });
+        await finalizeRescheduleAppointment(
+          ctx.supabase,
+          ctx.phoneNumber,
+          found.row.id,
+          slot.when,
+          ctx.catalog,
+        );
+        if (prevItems.length > 0) {
+          await upsertSession(ctx.supabase, ctx.phoneNumber, {
+            cart_items: JSON.stringify(prevItems),
+            cart_service_ids: JSON.stringify(
+              await expandCartItemsToServiceIds(ctx.supabase, prevItems),
+            ),
+            reschedule_appointment_id: null,
+            step: "browsing",
+          });
+        } else {
+          // Si finalize falló antes de limpiar, no dejar la sesión en modo reprogramación.
+          await clearCart(ctx.supabase, ctx.phoneNumber);
+        }
+        ctx.turnHandled = true;
+        return {
+          content:
+            "Reprogramación procesada y confirmación enviada. No escribas nada más.",
+        };
+      }
+
+      case "cancelar_cita": {
+        const found = await resolveOwnAppointment(ctx, input.cita_id);
+        if (!found.ok) return { content: found.content, isError: true };
+        const { data: ver } = await ctx.supabase
+          .from("appointment_verifications")
+          .select("id")
+          .eq("appointment_id", found.row.id)
+          .in("status", ["payment_submitted", "approved"])
+          .limit(1);
+        const { data: appt } = await ctx.supabase
+          .from("appointments")
+          .select("deposit_amount")
+          .eq("id", found.row.id)
+          .maybeSingle();
+        const depositAmount = parseFloat(
+          String(
+            (appt as { deposit_amount?: string } | null)?.deposit_amount ?? 0,
+          ),
+        ) || 0;
+        if ((ver?.length ?? 0) > 0 || depositAmount > 0) {
+          await markDepositForfeitRiskIfLateChange(ctx.supabase, found.row.id);
+          return {
+            content:
+              "La cita tiene adelanto: cancelar y devolver lo decide una persona del equipo. Usa escalar_a_humano con el motivo.",
+            isError: true,
+          };
+        }
+        const { error } = await ctx.supabase
+          .from("appointments")
+          .update({
+            status: "cancelled",
+            cancel_reason: "client_request",
+            cancel_note: "Cancelada por la clienta vía WhatsApp (agente)",
+            cancelled_at: toLimaLocalTimestamp(new Date()),
+          })
+          .eq("id", found.row.id)
+          .eq("status", "scheduled");
+        if (error) {
+          console.error("[AGENT] cancelar_cita:", error.message);
+          return {
+            content: "No se pudo cancelar; usa escalar_a_humano.",
+            isError: true,
+          };
+        }
+        await notifyAdmins(
+          ctx.supabase,
+          "Cita cancelada (WABA)",
+          `${ctx.phoneNumber} — ${
+            found.row.serviceLabels.join(" + ")
+          } — ${found.row.date}`,
+          {
+            screen: "Agenda",
+            appointmentId: found.row.id,
+            phone: ctx.phoneNumber,
+          },
+        );
+        return {
+          content:
+            "Cita cancelada (no tenía adelanto). Confírmalo con calidez y ofrece reagendar cuando quiera.",
+        };
+      }
+
+      case "registrar_identidad": {
+        const nombre = String(input.nombre ?? "").trim();
+        const documento = String(input.documento ?? "").trim();
+        const identity = parseClientIdentity(`${nombre} ${documento}`, {
+          senderPhone: ctx.phoneNumber,
+        });
+        if (!identity) {
+          return {
+            content:
+              "Nombre completo (nombre y apellido) o documento (DNI de 8 dígitos / CE) no válidos. Pídeselos de nuevo.",
+            isError: true,
+          };
+        }
+        const result = await updateClientIdentity(
+          ctx.supabase,
+          ctx.phoneNumber,
+          identity,
+        );
+        if (!result.ok) {
+          return {
+            content: result.reason === "dni_taken"
+              ? "Ese documento ya está registrado en otra ficha; pídele que lo verifique o usa escalar_a_humano."
+              : "No se pudo guardar la ficha; reintenta o usa escalar_a_humano.",
+            isError: true,
+          };
+        }
+        const session = await getSession(ctx.supabase, ctx.phoneNumber);
+        if (session?.step === AWAITING_DEPOSIT_BOLETA) {
+          // Los datos de pago salen del código (monto fijo de la config).
+          await sendFixedDepositAdelantoStep(ctx.supabase, ctx.phoneNumber);
+          ctx.turnHandled = true;
+          return {
+            content:
+              "Ficha guardada y datos del adelanto enviados. No escribas nada más.",
+          };
+        }
+        if (session?.step === AWAITING_CLIENT_IDENTITY) {
+          await upsertSession(ctx.supabase, ctx.phoneNumber, {
+            step: "browsing",
+          });
+        }
+        return {
+          content:
+            "Ficha guardada. Agradece brevemente y continúa donde quedaron.",
+        };
+      }
+
+      case "descartar_reserva": {
+        // Reserva en curso (antes del comprobante): no hay cita creada todavía.
+        const session = await getSession(ctx.supabase, ctx.phoneNumber);
+        if (!isPreAppointmentStep(session?.step)) {
+          return {
+            content:
+              "No hay una reserva en curso que descartar (para una cita ya creada usa cancelar_cita).",
+            isError: true,
+          };
+        }
+        await clearCart(ctx.supabase, ctx.phoneNumber);
+        return {
+          content:
+            "Reserva en curso descartada y carrito vacío. Confírmalo y ofrece retomar cuando quiera.",
+        };
+      }
+
       case "consultar_mi_cita": {
         const rows = await getPendingAppointmentsForPhone(
           ctx.supabase,
@@ -1040,9 +1411,9 @@ export async function runAgentTool(
         return {
           content: rows
             .map((r) =>
-              `- ${r.date} · ${r.serviceLabels.join(" + ") || "servicio"} · S/${
-                parseFloat(r.price).toFixed(0)
-              } · ${r.duration} min`
+              `- [${r.id}] ${r.date} · ${
+                r.serviceLabels.join(" + ") || "servicio"
+              } · S/${parseFloat(r.price).toFixed(0)} · ${r.duration} min`
             )
             .join("\n"),
         };

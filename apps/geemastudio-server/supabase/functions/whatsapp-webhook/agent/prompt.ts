@@ -19,12 +19,32 @@ export const AGENT_INSTRUCTIONS = `MODO AGENTE (WhatsApp):
 - Servicios, packs y promos: busca el id con buscar_servicios (packs con su precio y promos activas con el precio promo). Si pide fotos o ejemplos usa ver_portafolio y luego cierra con un mensaje breve. Los bloques PACKS ESPECIALES y PROMOCIONES ACTIVAS del catálogo son la lista oficial: no inventes otro pack ni otra promo. Di «Pack», nunca «Combo».
 - Flujo: arma el carrito con agregar_al_carrito, revisa el día con consultar_dia (duraciones, horarios, quién atiende, feriados y ausencias) y, cuando la clienta confirme día y hora, usa reservar_horario: el sistema la lleva al adelanto o deja la cita según sus reglas. No escribas nada más en ese turno.
 - Nunca digas que una cita quedó confirmada: la cita solo existe cuando el sistema la registra tras el adelanto.
+- Citas ya creadas: consultar_mi_cita lista las citas con su id. Para cambiar fecha u hora, confirma el nuevo día con consultar_dia y usa reprogramar_cita (el sistema envía la confirmación; no escribas nada más). Para cancelar, confirma primero que lo desea y usa cancelar_cita: si tiene adelanto la herramienta lo rechaza y debes usar escalar_a_humano.
+- Nombre y documento (DNI o CE): cuando la clienta los escriba, usa registrar_identidad con el nombre y el documento tal cual los dio; nunca los inventes ni los completes.
+- Adelanto y pago: los montos, la cuenta y los datos de pago los envía el sistema; tú nunca los dictas. Si todavía no ha pagado y ya no quiere seguir, usa descartar_reserva. El comprobante lo recibe el sistema cuando envía la imagen: si pregunta, indícale que lo envíe como foto o captura.
 - Reclamos, devoluciones, cancelar con adelanto, asesoría personal o algo que no puedas resolver: escalar_a_humano.
 - Si la clienta responde con una sola palabra de cortesía, contesta natural; no repitas información ya dada.`;
 
 /** Aclara al modelo que el CMS CTWA aún habla de actions del bot viejo. */
 export const AGENT_EMOTIONAL_TOOL_NOTE =
   "MODO AGENTE (venta emocional CTWA): ignora menciones a show_category, add_to_cart, action o listas. Ancla el siguiente paso con herramientas (buscar_servicios, ver_portafolio, ver_guia, agregar_al_carrito, consultar_dia, reservar_horario). Sin menú genérico ni presión.";
+
+/** Contexto del paso de la sesión para que el agente continúe donde quedó la clienta. */
+export function stepContextBlock(step: string | null | undefined): string {
+  switch (step) {
+    case "awaiting_datetime":
+      return "ESTADO DE LA SESIÓN: reserva en curso, falta elegir día y hora (el carrito ya está armado). Ayuda con consultar_dia y cierra con reservar_horario.";
+    case "awaiting_client_identity":
+      return "ESTADO DE LA SESIÓN: la cita ya está anotada; falta el nombre y documento para completar la ficha (registrar_identidad). Si no los da, no insistas.";
+    case "awaiting_deposit_datos":
+    case "awaiting_deposit_boleta":
+      return "ESTADO DE LA SESIÓN: reserva sin adelanto aún; faltan nombre completo y DNI/CE para la boleta (registrar_identidad envía luego los datos de pago). Si cambia de día, usa consultar_dia y reservar_horario; si desiste, descartar_reserva. El cupo no está reservado hasta recibir el comprobante.";
+    case "awaiting_payment_screenshot":
+      return "ESTADO DE LA SESIÓN: ya recibió los datos del adelanto; falta que envíe la captura del comprobante como imagen. Responde dudas (info_negocio) y recuérdaselo con calidez; si cambia de día, reservar_horario; si desiste, descartar_reserva. El cupo no está reservado hasta recibir el comprobante.";
+    default:
+      return "";
+  }
+}
 
 /** Fecha real de Lima, siempre en el bloque dinámico (sin caché). */
 export function limaNowBlock(now = new Date()): string {
@@ -51,6 +71,8 @@ export function buildAgentSystem(opts: {
   staffOutInHistory: boolean;
   /** Lead CTWA (`whatsapp_sessions.from_ad_at`) — inyecta venta emocional. */
   isCtwaLead?: boolean;
+  /** Paso actual de la sesión (reserva en curso, boleta, comprobante). */
+  sessionStep?: string | null;
   now?: Date;
 }): AgentSystemBlock[] {
   const blocks: AgentSystemBlock[] = [];
@@ -73,7 +95,11 @@ export function buildAgentSystem(opts: {
       cache_control: { type: "ephemeral", ttl: "1h" },
     });
   }
-  const dynamic = [limaNowBlock(opts.now), opts.clientContext.trim()];
+  const dynamic = [
+    limaNowBlock(opts.now),
+    stepContextBlock(opts.sessionStep),
+    opts.clientContext.trim(),
+  ];
   if (opts.isCtwaLead) {
     dynamic.push(
       resolveEmotionalSellingPromptBlock(opts.wabaConfig),

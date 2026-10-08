@@ -74,7 +74,7 @@ async function wasPaymentStepAckRecentlySent(
 }
 
 /** Push a staff (debounce 3 min por teléfono) con el texto que la clienta escribió al pagar. */
-async function notifyStaffPaymentStepText(
+export async function notifyStaffPaymentStepText(
   supabase: SupabaseClient,
   phone: string,
   text: string,

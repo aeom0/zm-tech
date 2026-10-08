@@ -717,6 +717,54 @@ function aggregatePackPrices(
   return items;
 }
 
+/** Reconstruye los ítems de carrito (servicios/packs) de una cita ya creada; sin efectos. */
+export async function loadAppointmentCartItems(
+  supabase: SupabaseClient,
+  appointmentId: string,
+): Promise<
+  { ok: true; items: CartItem[] } | {
+    ok: false;
+    reason: "query_error" | "no_services";
+  }
+> {
+  const { data: lines, error: linesErr } = await supabase
+    .from("appointment_services")
+    .select("service_id, pack_id, price, duration")
+    .eq("appointment_id", appointmentId);
+  if (linesErr) return { ok: false, reason: "query_error" };
+
+  if (lines && lines.length > 0) {
+    return {
+      ok: true,
+      items: aggregatePackPrices(
+        lines as {
+          service_id: string;
+          pack_id: string | null;
+          price: string | number;
+          duration: number | null;
+        }[],
+      ),
+    };
+  }
+  const { data: legacy } = await supabase
+    .from("appointments")
+    .select("service_id, price, duration")
+    .eq("id", appointmentId)
+    .maybeSingle();
+  if (!legacy?.service_id) return { ok: false, reason: "no_services" };
+  return {
+    ok: true,
+    items: [
+      {
+        item_type: "service",
+        item_id: legacy.service_id,
+        quantity: 1,
+        price: parseFloat(String(legacy.price)) || 0,
+      },
+    ],
+  };
+}
+
 /**
  * Carga líneas de la cita, arma carrito y abre selector de fecha (flujo reprogramación).
  */
@@ -740,52 +788,17 @@ export async function startRescheduleFromAppointment(
     return;
   }
 
-  const { data: lines, error: linesErr } = await supabase
-    .from("appointment_services")
-    .select("service_id, pack_id, price, duration")
-    .eq("appointment_id", appointmentId);
-
-  if (linesErr) {
+  const loaded = await loadAppointmentCartItems(supabase, appointmentId);
+  if (!loaded.ok) {
     await sendMessage(
       phone,
-      "Hubo un error al cargar tu cita. Escríbenos al 📱 932 535 512 💜",
+      loaded.reason === "query_error"
+        ? "Hubo un error al cargar tu cita. Escríbenos al 📱 932 535 512 💜"
+        : "No pudimos reconstruir los servicios de tu cita. Llámanos al 📱 932 535 512.",
     );
     return;
   }
-
-  let cartItems: CartItem[] = [];
-  if (lines && lines.length > 0) {
-    cartItems = aggregatePackPrices(
-      lines as {
-        service_id: string;
-        pack_id: string | null;
-        price: string | number;
-        duration: number | null;
-      }[],
-    );
-  } else {
-    const { data: legacy } = await supabase
-      .from("appointments")
-      .select("service_id, price, duration")
-      .eq("id", appointmentId)
-      .maybeSingle();
-    if (!legacy?.service_id) {
-      await sendMessage(
-        phone,
-        "No pudimos reconstruir los servicios de tu cita. Llámanos al 📱 932 535 512.",
-      );
-      return;
-    }
-    const pr = parseFloat(String(legacy.price)) || 0;
-    cartItems = [
-      {
-        item_type: "service",
-        item_id: legacy.service_id,
-        quantity: 1,
-        price: pr,
-      },
-    ];
-  }
+  const cartItems = loaded.items;
 
   const serviceIds = await expandCartItemsToServiceIds(supabase, cartItems);
   await upsertSession(supabase, phone, {

@@ -20,6 +20,12 @@ import {
 import { containsRefundPromise } from "../lib/staff-escalation.ts";
 import { getClientContext } from "../handlers/ai-assistant.ts";
 import { sendMessage } from "../wa-api.ts";
+import { notifyStaffPaymentStepText } from "../handlers/steps.ts";
+import { AWAITING_CLIENT_IDENTITY } from "../handlers/client-identity.ts";
+import {
+  AWAITING_DEPOSIT_BOLETA,
+  AWAITING_DEPOSIT_DATOS,
+} from "../handlers/payment.ts";
 import {
   type AgentApiResult,
   type AgentMessage,
@@ -35,9 +41,22 @@ export const AGENT_MAX_ITERATIONS = 5;
 const REFUND_SAFE_REPLY =
   "Entiendo 💜 Esto lo revisa una persona del equipo y te escribe en breve.";
 
-/** Pasos de sesión en los que el agente puede responder (el resto lo lleva el flujo clásico). */
+/**
+ * Pasos de sesión en los que el agente responde texto. Imágenes (comprobante,
+ * fotos previas) y taps de listas siguen en el flujo clásico, que valida el
+ * pago por código.
+ */
+const AGENT_STEPS = new Set([
+  "browsing",
+  "awaiting_datetime",
+  AWAITING_CLIENT_IDENTITY,
+  AWAITING_DEPOSIT_DATOS,
+  AWAITING_DEPOSIT_BOLETA,
+  "awaiting_payment_screenshot",
+]);
+
 export function agentOwnsStep(step: string | null | undefined): boolean {
-  return !step || step === "browsing";
+  return !step || AGENT_STEPS.has(step);
 }
 
 /** Flag por tenant (`agent_enabled`) + allowlist opcional de teléfonos. */
@@ -118,8 +137,16 @@ export async function runAgent(opts: {
       clientContext,
       staffOutInHistory: history.staffOutInHistory,
       isCtwaLead: Boolean(session?.from_ad_at),
+      sessionStep: session?.step ?? null,
     });
     const messages: AgentMessage[] = [...history.messages];
+
+    // Mid-pago el equipo debe ver lo que escribe la clienta (el bot clásico lo
+    // avisaba con debounce de 3 min); un fallo del aviso no frena el turno.
+    if (session?.step === "awaiting_payment_screenshot") {
+      await notifyStaffPaymentStepText(supabase, phoneNumber, opts.messageText)
+        .catch((err: unknown) => console.error("[AGENT] aviso a staff:", err));
+    }
 
     for (let i = 0; i < AGENT_MAX_ITERATIONS; i++) {
       // Un reintento ante falla transitoria de la API.

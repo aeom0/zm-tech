@@ -12,10 +12,12 @@ import {
   AGENT_INSTRUCTIONS,
   buildAgentSystem,
   limaNowBlock,
+  stepContextBlock,
 } from "./prompt.ts";
 import {
   AGENT_TOOLS,
   dayFacts,
+  isPreAppointmentStep,
   resolveBookingItems,
   runAgentTool,
 } from "./tools.ts";
@@ -41,11 +43,25 @@ Deno.test("agent flag: apagado por defecto y con allowlist", () => {
   assertEquals(isAgentEnabledFor(withAllow, "51911111111"), false);
 });
 
-Deno.test("agente solo en browsing o sin sesión", () => {
+Deno.test("agente atiende browsing, reserva en curso, boleta y comprobante (texto)", () => {
   assertEquals(agentOwnsStep(null), true);
   assertEquals(agentOwnsStep("browsing"), true);
-  assertEquals(agentOwnsStep("awaiting_datetime"), false);
-  assertEquals(agentOwnsStep("awaiting_deposit_boleta"), false);
+  for (
+    const step of [
+      "awaiting_datetime",
+      "awaiting_client_identity",
+      "awaiting_deposit_datos",
+      "awaiting_deposit_boleta",
+      "awaiting_payment_screenshot",
+    ]
+  ) assertEquals(agentOwnsStep(step), true, step);
+  for (
+    const step of [
+      "awaiting_payment_info",
+      "awaiting_pre_service_photo",
+      "completed",
+    ]
+  ) assertEquals(agentOwnsStep(step), false, step);
 });
 
 Deno.test("historial: quita el inbound actual, empieza en user y marca staff", () => {
@@ -280,6 +296,10 @@ Deno.test("tools: el agente expone carrito, día, equipo y reserva; sin selector
       "consultar_dia",
       "consultar_equipo",
       "reservar_horario",
+      "reprogramar_cita",
+      "cancelar_cita",
+      "registrar_identidad",
+      "descartar_reserva",
     ]
   ) assertEquals(names.includes(n), true, n);
   assertEquals(names.includes("pasar_a_agendar"), false);
@@ -593,9 +613,230 @@ Deno.test("prompt: no menciona herramientas inexistentes", () => {
   for (const m of AGENT_INSTRUCTIONS.matchAll(/\b([a-z]+_[a-z_]+)\b/g)) {
     const w = m[1];
     if (
-      /^(ver|buscar|agregar|quitar|consultar|reservar|escalar|info)_/.test(w)
+      /^(ver|buscar|agregar|quitar|consultar|reservar|reprogramar|cancelar|registrar|descartar|escalar|info)_/
+        .test(w)
     ) {
       assertEquals(names.has(w), true, w);
     }
   }
+});
+
+Deno.test("tools: registrar_identidad rechaza documento inválido sin avanzar el turno", async () => {
+  const ctx = toolCtx();
+  const r = await runAgentTool(
+    "registrar_identidad",
+    { nombre: "María García", documento: "123" },
+    ctx,
+  );
+  assertEquals(r.isError, true);
+  assertEquals(ctx.turnHandled, false);
+});
+
+Deno.test("tools: reprogramar y cancelar sin citas pendientes devuelven error", async () => {
+  for (const name of ["reprogramar_cita", "cancelar_cita"]) {
+    const ctx = toolCtx();
+    const r = await runAgentTool(
+      name,
+      { cita_id: null, fecha: "2031-03-05", hora: "11:00" },
+      ctx,
+    );
+    assertEquals(r.isError, true, name);
+    assertStringIncludes(r.content, "No tiene citas");
+    assertEquals(ctx.turnHandled, false);
+  }
+});
+
+Deno.test("tools: descartar_reserva solo aplica a una reserva en curso", async () => {
+  const r = await runAgentTool("descartar_reserva", {}, toolCtx());
+  assertEquals(r.isError, true);
+});
+
+Deno.test("isPreAppointmentStep y contexto de paso del prompt", () => {
+  assertEquals(isPreAppointmentStep("awaiting_deposit_boleta"), true);
+  assertEquals(isPreAppointmentStep("awaiting_payment_screenshot"), true);
+  assertEquals(isPreAppointmentStep("browsing"), false);
+  assertEquals(isPreAppointmentStep(null), false);
+  assertStringIncludes(
+    stepContextBlock("awaiting_payment_screenshot"),
+    "comprobante",
+  );
+  assertEquals(stepContextBlock("browsing"), "");
+});
+
+type DbLog = { table: string; op: string; payload?: unknown }[];
+
+// Stub por tabla: ignora filtros y devuelve las filas fijas; registra escrituras.
+// deno-lint-ignore no-explicit-any
+function loggingStub(fixtures: Record<string, unknown[]>, log: DbLog): any {
+  const builder = (table: string): unknown =>
+    new Proxy({}, {
+      get(_t, prop: string) {
+        const rows = fixtures[table] ?? [];
+        if (prop === "then") {
+          return (resolve: (v: unknown) => void) =>
+            resolve({ data: rows, error: null, count: rows.length });
+        }
+        if (prop === "maybeSingle" || prop === "single") {
+          return () => Promise.resolve({ data: rows[0] ?? null, error: null });
+        }
+        if (["update", "insert", "upsert", "delete"].includes(prop)) {
+          return (payload?: unknown) => {
+            log.push({ table, op: prop, payload });
+            return builder(table);
+          };
+        }
+        return () => builder(table);
+      },
+    });
+  return { from: (table: string) => builder(table) };
+}
+
+const SVC = {
+  id: "s1",
+  name: "Pelo a pelo",
+  price: "100",
+  duration: 120,
+  category_id: "c1",
+};
+const apptRow = (id: string) => ({
+  id,
+  date: "2099-01-10 11:00:00",
+  price: "100",
+  duration: 120,
+  client_phone: "51999000978",
+  status: "scheduled",
+  service_id: "s1",
+});
+const catalogS1 = {
+  ...emptyCatalog,
+  servicesById: new Map([["s1", SVC]]),
+  services: [SVC],
+} as unknown as ServiceCatalog;
+
+function dbCtx(fixtures: Record<string, unknown[]>, log: DbLog) {
+  return {
+    ...toolCtx(),
+    supabase: loggingStub(fixtures, log),
+    catalog: catalogS1,
+  };
+}
+
+Deno.test("tools: cita_id ajena se rechaza en reprogramar y cancelar", async () => {
+  for (const name of ["reprogramar_cita", "cancelar_cita"]) {
+    const log: DbLog = [];
+    const ctx = dbCtx({
+      clients: [{ id: "c1" }],
+      appointments: [apptRow("a1")],
+      appointment_services: [{ appointment_id: "a1", service_id: "s1" }],
+      services: [{ id: "s1", name: "Pelo a pelo" }],
+    }, log);
+    const r = await runAgentTool(
+      name,
+      { cita_id: "otra", fecha: "2099-01-12", hora: "11:00" },
+      ctx,
+    );
+    assertEquals(r.isError, true, name);
+    assertStringIncludes(r.content, "no es de la clienta");
+    assertEquals(log.length, 0, "sin escrituras");
+  }
+});
+
+Deno.test("tools: con varias citas pide cita_id y lista las opciones", async () => {
+  const log: DbLog = [];
+  const ctx = dbCtx({
+    clients: [{ id: "c1" }],
+    appointments: [apptRow("a1"), apptRow("a2")],
+    appointment_services: [{ appointment_id: "a1", service_id: "s1" }],
+    services: [{ id: "s1", name: "Pelo a pelo" }],
+  }, log);
+  const r = await runAgentTool("cancelar_cita", { cita_id: null }, ctx);
+  assertEquals(r.isError, true);
+  assertStringIncludes(r.content, "[a1]");
+  assertStringIncludes(r.content, "[a2]");
+  assertEquals(log.length, 0);
+});
+
+Deno.test("tools: cancelar_cita con comprobante no cancela y pide escalar", async () => {
+  const log: DbLog = [];
+  const ctx = dbCtx({
+    clients: [{ id: "c1" }],
+    appointments: [{ ...apptRow("a1"), deposit_amount: "0" }],
+    appointment_services: [{ appointment_id: "a1", service_id: "s1" }],
+    services: [{ id: "s1", name: "Pelo a pelo" }],
+    appointment_verifications: [{ id: "v1" }],
+  }, log);
+  const r = await runAgentTool("cancelar_cita", { cita_id: "a1" }, ctx);
+  assertEquals(r.isError, true);
+  assertStringIncludes(r.content, "escalar_a_humano");
+  assertEquals(
+    log.some((l) =>
+      l.table === "appointments" && l.op === "update" &&
+      (l.payload as { status?: string })?.status === "cancelled"
+    ),
+    false,
+  );
+});
+
+Deno.test("tools: cancelar_cita con adelanto registrado en la cita no cancela", async () => {
+  const log: DbLog = [];
+  const ctx = dbCtx({
+    clients: [{ id: "c1" }],
+    appointments: [{ ...apptRow("a1"), deposit_amount: "25" }],
+    appointment_services: [{ appointment_id: "a1", service_id: "s1" }],
+    services: [{ id: "s1", name: "Pelo a pelo" }],
+  }, log);
+  const r = await runAgentTool("cancelar_cita", { cita_id: "a1" }, ctx);
+  assertEquals(r.isError, true);
+  assertEquals(
+    log.some((l) => (l.payload as { status?: string })?.status === "cancelled"),
+    false,
+  );
+});
+
+Deno.test("tools: cancelar_cita sin adelanto marca la cita como cancelled", async () => {
+  const log: DbLog = [];
+  const ctx = dbCtx({
+    clients: [{ id: "c1" }],
+    appointments: [{ ...apptRow("a1"), deposit_amount: "0" }],
+    appointment_services: [{ appointment_id: "a1", service_id: "s1" }],
+    services: [{ id: "s1", name: "Pelo a pelo" }],
+  }, log);
+  const r = await runAgentTool("cancelar_cita", { cita_id: "a1" }, ctx);
+  assertEquals(r.isError, undefined);
+  const upd = log.find((l) =>
+    l.table === "appointments" &&
+    (l.payload as { status?: string })?.status === "cancelled"
+  );
+  assertEquals(upd !== undefined, true);
+});
+
+Deno.test("tools: reservar_horario rechaza una cita duplicada con los mismos servicios", async () => {
+  const log: DbLog = [];
+  const ctx = dbCtx({
+    clients: [{ id: "c1" }],
+    appointments: [apptRow("a1")],
+    appointment_services: [{
+      appointment_id: "a1",
+      service_id: "s1",
+      pack_id: null,
+      price: "100",
+      duration: 120,
+    }],
+    services: [{ id: "s1", name: "Pelo a pelo" }],
+    whatsapp_sessions: [{
+      phone: "51999000978",
+      step: "browsing",
+      cart_items: JSON.stringify([
+        { item_type: "service", item_id: "s1", quantity: 1, price: 100 },
+      ]),
+    }],
+  }, log);
+  const r = await runAgentTool(
+    "reservar_horario",
+    { fecha: "2099-01-12", hora: "11:00", mensaje: "" },
+    ctx,
+  );
+  assertEquals(r.isError, true);
+  assertStringIncludes(r.content, "reprogramar_cita");
+  assertEquals(ctx.turnHandled, false);
 });
