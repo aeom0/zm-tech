@@ -52,6 +52,7 @@ import {
 } from "./lib/reply-context.ts";
 import { sendMessage } from "./wa-api.ts";
 import { dispatch } from "./handlers/dispatcher.ts";
+import { runAgent, shouldRunAgent } from "./agent/agent.ts";
 import { handleLegacyPayload } from "./handlers/legacy.ts";
 import { logWaError } from "./lib/error-log.ts";
 import { preferClientDisplayName } from "./lib/client-address.ts";
@@ -497,6 +498,24 @@ async function processMessage(body: Record<string, unknown>): Promise<void> {
       }
 
       try {
+        // Cutover agente Haiku 5.5: solo texto libre, con flag por tenant y
+        // allowlist. Si el agente falla sin haber respondido, cae al dispatch.
+        const agentHandled = await shouldRunAgent({
+          supabase,
+          wabaConfig,
+          phoneNumber,
+          isPlainText: !interactiveId && msgType === "text" &&
+            effectiveText.trim().length > 0,
+        }) && await runAgent({
+          supabase,
+          phoneNumber,
+          contactName: displayName,
+          catalog,
+          wabaConfig,
+          phoneCountry: client?.phone_country ?? null,
+          messageText: effectiveText,
+        });
+        if (agentHandled) return;
         await dispatch({
           body,
           message,

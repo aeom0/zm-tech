@@ -105,6 +105,12 @@ No sustituyen collages CTWA. Portafolio = ojos reales (Fox/Anime/etc. sin ficha 
 
 ### 2.3 Venta emocional CTWA (v1 — Extensiones / Lifting)
 
+> **Agente Haiku 5.5 (cutover Fase 1):** si `agent_enabled` y la sesión tiene `from_ad_at`,
+> `agent/prompt.ts` inyecta el mismo bloque CMS `haiku_emotional_selling_ctwa_ext_lift`
+> más una nota que mapea actions viejas a tools. Nudges/captions de
+> `lib/emotional-selling.ts` (cart-nudge, decline, price CTA) siguen en el flujo clásico.
+> Ver [`plan-cutover-agente-haiku.md`](../../plan-cutover-agente-haiku.md).
+
 **Motivación**: caso MORELIAMM — el bot llegó a `awaiting_datetime` pero solo reenvió copy operativo; la conversión emocional (imagen + halago) la hizo staff manual. v1 automatiza el momento **casi cierra** para leads con `from_ad_at` y carrito 100 % `cat-extensiones` o `cat-lifting`.
 
 | Capa                      | Qué hace                                                                                                                                    |

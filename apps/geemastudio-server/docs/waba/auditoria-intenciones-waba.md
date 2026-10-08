@@ -2,10 +2,9 @@
 
 > Generado 05-ago-2026 leyendo directo `dispatcher.ts`, `booking-flow.ts`, `pending-appointment.ts`, `promo-intent.ts` desde `aeom0/ZM-Lash-and-Nails-Beauty@main`.
 > Complementado el mismo día con research de Cursor (grep repo + conteo de calls en `dispatcher.ts`) y tabla intent → handler (Claude).
-> **Última sync:** 28-ago-2026 — bloque #25 extraído a `handlers/menu-remap.ts` + QA `yarn waba:validate:menu-remap`; prompt sombra endurecido (auditoría manual 7 desacuerdos 28-ago); decisión producto: **sin cutover Haiku-router** (regex conservador ganó 7/7 en prod). Sync previa 23-ago: fixes post-audit, métricas piloto sombra.
-> **Sync 16-sep-2026:** plan complementario [`plan-haiku-primero-informativo.md`](plan-haiku-primero-informativo.md) — para los gates 🟡/🟢 informativos de esta lista (no los 5 🔴 críticos evaluados en el piloto sombra), cuando el regex no matchea limpio ya no se cae directo a boilerplate: se intenta Haiku primero (`tryHandOffUnrecognizedToHaiku`), boilerplate queda de respaldo. **Batches 1–2** ✅ (PR #120). **Batch 3** ✅ (carrito/ubicación si `!isMostly*`, QA B1–B3b). **Batch 4** ✅ catch-all `browsing` + `isMostlyAgendarNav` (Edgar …2122).
-> Objetivo: mapa completo de "quién decide qué" antes de que Haiku participe, como insumo para diseñar el piloto de clasificación única (modo sombra).
-> Relacionado: `ROADMAP.md` § Evaluación de arquitectura — clasificación de intención por Haiku · implementación sombra: `lib/intent-shadow.ts` · remapeo menú: `handlers/menu-remap.ts`.
+> **Sync 8-oct-2026:** cutover al agente Haiku 5.5 — [`plan-cutover-agente-haiku.md`](plan-cutover-agente-haiku.md) (PR zm-tech #77). Con `agent_enabled`, este inventario aplica al **fallback** `dispatch` (pago/identidad y flag apagado). La decisión «sin cutover Haiku-router» (28-ago) queda histórica; el agente no es un router JSON sobre regex, sino tools + validación en código.
+> **Última sync previa:** 28-ago-2026 — bloque #25 → `handlers/menu-remap.ts`; piloto sombra; decisión entonces: sin cutover Haiku-router. **16-sep:** [`plan-haiku-primero-informativo.md`](plan-haiku-primero-informativo.md) Batches 1–4 ✅ (bot clásico).
+> Objetivo original: mapa de "quién decide qué" antes de Haiku (piloto sombra). Sombra: `lib/intent-shadow.ts` · remapeo: `handlers/menu-remap.ts`.
 
 ## Resultado clave
 

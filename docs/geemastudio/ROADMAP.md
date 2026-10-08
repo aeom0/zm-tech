@@ -57,6 +57,10 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 
 Panel y app de ZM en Geema: checklist D1–D4, W1–W6, R1–R3b del Plan 13 completo (ver [Plan 13 § Validación Corte 1](docs/plans/13-PLAN-panel-parity-zm-lash.md)). Endurecimiento de `anon` aplicado en prod (`20261002120954_revoke_anon_table_grants`).
 
+### WABA — cutover agente Haiku 5.5 (8-oct 2026)
+
+Fase 1 detrás de `agent_enabled` / allowlist — [plan](../../apps/geemastudio-server/docs/waba/plan-cutover-agente-haiku.md) (PR #77). Híbrido: agente en browsing; pago/identidad en `dispatch`. Venta emocional CTWA se conserva. Fases 2–3 (pago en tools + borrar bot viejo) pendientes.
+
 ### Pendientes (prioridad)
 
 | #   | Ítem                             | Repo    | Notas                               |
