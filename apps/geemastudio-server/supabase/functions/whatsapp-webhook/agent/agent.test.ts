@@ -355,6 +355,97 @@ Deno.test("tools: buscar_servicios filtra por palabras sin acentos y usa categor
     ctx,
   );
   assertStringIncludes(miss.content, "Sin resultados");
+  const byCat = await runAgentTool(
+    "buscar_servicios",
+    { consulta: null, categoria_id: "c1" },
+    ctx,
+  );
+  assertStringIncludes(byCat.content, "[s1]");
+});
+
+Deno.test("buscar_servicios y el prompt del agente incluyen promo y pack", async () => {
+  const service = {
+    id: "s1",
+    name: "Extensiones 3D",
+    short_name: null,
+    category_id: "c1",
+    subcategory: null,
+    price: "120",
+    duration: 90,
+    is_active: true,
+  };
+  const pack = {
+    id: "p1",
+    title: "Mirada completa",
+    short_name: "Mirada",
+    category_id: "c1",
+    pack_price: "180",
+    service_ids: ["s1"],
+    is_active: true,
+    display_order: 1,
+  };
+  const catalog = {
+    ...emptyCatalog,
+    servicesById: new Map([["s1", service]]),
+    packsById: new Map([["p1", pack]]),
+    servicesByCategory: new Map([["c1", [service]]]),
+    packsByCategory: new Map([["c1", [pack]]]),
+    services: [service],
+    packs: [pack],
+    categories: [{ id: "c1", name: "Pestañas", order: 1 }],
+    promotions: [
+      {
+        id: "pr1",
+        title: "Set octubre pestañas",
+        description: "3D a precio promo",
+        emoji: "",
+        badge: "15%",
+        valid_until: null,
+        valid_days: "1,2,3",
+        is_active: true,
+        display_order: 1,
+        items: [
+          {
+            item_type: "service",
+            item_id: "s1",
+            quantity: 1,
+            discounted_price: "90",
+          },
+        ],
+      },
+    ],
+  } as unknown as ServiceCatalog;
+  const hit = await runAgentTool(
+    "buscar_servicios",
+    { consulta: "promos", categoria_id: null },
+    { ...toolCtx(), catalog },
+  );
+  assertStringIncludes(hit.content, "Set octubre pestañas");
+  assertStringIncludes(hit.content, "S/90");
+  assertStringIncludes(hit.content, "[s1]");
+  const blocks = buildAgentSystem({
+    wabaConfig: cfg({}),
+    catalog,
+    clientContext: "CLIENTA: test",
+    staffOutInHistory: false,
+    now: new Date("2026-10-08T15:00:00Z"),
+  });
+  const appendix = blocks.map((b) => b.text).join("\n");
+  assertStringIncludes(appendix, "PROMOCIONES ACTIVAS");
+  assertStringIncludes(appendix, "Set octubre pestañas");
+  assertStringIncludes(appendix, "promo S/90");
+  assertStringIncludes(appendix, "PACKS ESPECIALES");
+  assertStringIncludes(appendix, "[p1]");
+  assertStringIncludes(appendix, "Mirada");
+  const packs = await runAgentTool(
+    "buscar_servicios",
+    { consulta: "packs", categoria_id: null },
+    { ...toolCtx(), catalog },
+  );
+  assertStringIncludes(packs.content, "[p1]");
+  assertStringIncludes(packs.content, "Mirada completa");
+  assertStringIncludes(packs.content, "S/180");
+  assertEquals(packs.content.includes("Extensiones 3D"), false);
 });
 
 // Stub por tabla: cualquier cadena resuelve a las filas de esa tabla.

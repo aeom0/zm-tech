@@ -424,6 +424,19 @@ export async function dayFacts(
 const norm = (t: string) =>
   t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
+const PROMO_QUERY_WORDS = new Set([
+  "promo",
+  "promos",
+  "promocion",
+  "promociones",
+  "descuento",
+  "descuentos",
+  "oferta",
+  "ofertas",
+]);
+
+const PACK_QUERY_WORDS = new Set(["pack", "packs"]);
+
 /** Búsqueda de catálogo para el modelo: todas las palabras deben aparecer. */
 export function searchCatalog(
   catalog: ServiceCatalog,
@@ -431,11 +444,57 @@ export function searchCatalog(
   categoriaId: string | null,
 ): string[] {
   const words = norm(consulta ?? "").split(/\s+/).filter((w) => w.length > 1);
+  const matchWords = words.filter((w) =>
+    !PROMO_QUERY_WORDS.has(w) && !PACK_QUERY_WORDS.has(w)
+  );
+  const asksPromos = words.some((w) => PROMO_QUERY_WORDS.has(w));
+  const asksPacks = words.some((w) => PACK_QUERY_WORDS.has(w));
+  const onlyPromos = asksPromos && !asksPacks && matchWords.length === 0;
+  const onlyPacks = asksPacks && !asksPromos && matchWords.length === 0;
   const catName = (id: string | null) =>
     catalog.categories.find((c) => c.id === id)?.name ?? "";
   const lines: string[] = [];
-  const matches = (hay: string) => words.every((w) => norm(hay).includes(w));
+  const matches = (hay: string) =>
+    matchWords.every((w) => norm(hay).includes(w));
+  const promoLines: string[] = [];
+  for (const promo of catalog.promotions) {
+    if (promo.is_active === false) continue;
+    const itemBits = (promo.items ?? []).map((it) => {
+      const pack = it.item_type === "pack"
+        ? catalog.packsById.get(it.item_id)
+        : undefined;
+      const svc = it.item_type === "service"
+        ? catalog.servicesById.get(it.item_id)
+        : undefined;
+      const name = it.item_type === "pack"
+        ? (pack?.short_name ?? pack?.title ?? "pack")
+        : (svc?.name ?? "servicio");
+      const disc = parseFloat(String(it.discounted_price)) || 0;
+      return `${name} [${it.item_id}] S/${disc.toFixed(0)}`;
+    });
+    const hay = `${promo.title} ${promo.description ?? ""} ${promo.badge ?? ""} ${
+      itemBits.join(" ")
+    }`;
+    if (categoriaId) {
+      const inCat = (promo.items ?? []).some((it) => {
+        const cat = it.item_type === "pack"
+          ? catalog.packsById.get(it.item_id)?.category_id
+          : catalog.servicesById.get(it.item_id)?.category_id;
+        return cat === categoriaId;
+      });
+      if (!inCat) continue;
+    }
+    if (matchWords.length > 0 && !matches(hay)) continue;
+    if (!asksPromos && matchWords.length === 0 && words.length > 0) continue;
+    const days = promo.valid_days ? ` · días ${promo.valid_days}` : "";
+    promoLines.push(
+      `- promo ${promo.title}${promo.badge ? ` (${promo.badge})` : ""}${days}: ${
+        itemBits.join("; ") || (promo.description ?? "").trim()
+      }`,
+    );
+  }
   for (const sv of catalog.services) {
+    if (onlyPromos || onlyPacks) break;
     if (sv.is_active === false) continue;
     if (categoriaId && sv.category_id !== categoriaId) continue;
     const hay = `${sv.name} ${sv.short_name ?? ""} ${sv.subcategory ?? ""} ${
@@ -455,13 +514,16 @@ export function searchCatalog(
     );
   }
   for (const pk of catalog.packs) {
+    if (onlyPromos) break;
     if (pk.is_active === false) continue;
     if (categoriaId && pk.category_id !== categoriaId) continue;
-    if (
-      !matches(`${pk.title} ${pk.short_name ?? ""} ${catName(pk.category_id)}`)
-    ) {
-      continue;
-    }
+    const included = parsePackServiceIds(pk)
+      .map((id) => catalog.servicesById.get(id)?.name ?? "")
+      .join(" ");
+    const hay = `${pk.title} ${pk.short_name ?? ""} ${
+      catName(pk.category_id)
+    } ${included}`;
+    if (!onlyPacks && !matches(hay)) continue;
     const price = resolveCartItemPrice(
       catalog,
       "pack",
@@ -475,7 +537,7 @@ export function searchCatalog(
       } · ${duration} min · ${catName(pk.category_id)}`,
     );
   }
-  return lines.slice(0, 15);
+  return [...promoLines, ...lines].slice(0, 15);
 }
 
 export async function runAgentTool(
