@@ -110,6 +110,10 @@ export function MessageBubble({ message, timeZone }: { message: WabaMessage; tim
   const { body: bodyWithoutQuote, quoteLabel } = hasReplyQuote
     ? splitQuotePreview(content)
     : { body: content, quoteLabel: null }
+  // `[imagen] <pie>`: el prefijo es solo marcador; el pie de foto sí se muestra.
+  const visibleText = bodyWithoutQuote.startsWith('[audio]')
+    ? ''
+    : bodyWithoutQuote.replace(/^\[imagen\]\s*/, '').trim()
   const showQuoteCard = !out && (Boolean(message.replyImageUrl) || Boolean(quoteLabel))
 
   return (
@@ -189,11 +193,9 @@ export function MessageBubble({ message, timeZone }: { message: WabaMessage; tim
             <span className="min-w-0 flex-1">{bodyWithoutQuote || '[seleccionó una opción]'}</span>
           </p>
         ) : (
-          bodyWithoutQuote &&
-          !bodyWithoutQuote.startsWith('[imagen]') &&
-          !bodyWithoutQuote.startsWith('[audio]') && (
+          visibleText && (
             <p className="whitespace-pre-wrap break-words [overflow-wrap:anywhere]">
-              {bodyWithoutQuote}
+              {visibleText}
             </p>
           )
         )}
