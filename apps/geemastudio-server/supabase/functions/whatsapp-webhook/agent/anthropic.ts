@@ -8,7 +8,7 @@ import { reportAnthropicApiFailure } from "../lib/haiku-usage.ts";
 
 export const AGENT_MODEL = "claude-haiku-5-5";
 export const AGENT_EFFORT = "medium" as const;
-export const AGENT_MAX_TOKENS = 2048;
+export const AGENT_MAX_TOKENS = 4096;
 export const AGENT_TIMEOUT_MS = 25_000;
 
 const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";

@@ -4,6 +4,7 @@ import {
   isAgentEnabledFor,
   runAgent,
   sanitizeAgentReply,
+  trimToCompleteLines,
 } from "./agent.ts";
 import {
   AGENT_COALESCE_WINDOW_MS,
@@ -13,6 +14,7 @@ import {
   sessionDefersToClassic,
   tapToAgentUtterance,
 } from "./inbound-route.ts";
+import { promoValidityNote } from "../lib/haiku-prompt.ts";
 import { COALESCE_WINDOW_MS } from "../lib/inbound-gate.ts";
 import { AWAITING_CURSO_LEAD } from "../handlers/booking-flow.ts";
 import { AWAITING_NO_SHOW_REASON } from "../handlers/no-show.ts";
@@ -879,4 +881,42 @@ Deno.test("tools: reservar_horario rechaza una cita duplicada con los mismos ser
   assertEquals(r.isError, true);
   assertStringIncludes(r.content, "reprogramar_cita");
   assertEquals(ctx.turnHandled, false);
+});
+
+Deno.test("trimToCompleteLines descarta la línea cortada por max_tokens", () => {
+  assertEquals(
+    trimToCompleteLines(
+      "Hola\n- Clásicas S/50\n- Anime S/110 (picos marcados, efecto mu",
+    ),
+    "Hola\n- Clásicas S/50",
+  );
+  assertEquals(trimToCompleteLines("una sola línea"), "una sola línea");
+});
+
+Deno.test("runAgent: max_tokens reintenta el turno antes de enviar", async () => {
+  let calls = 0;
+  const handled = await runWith(() => {
+    calls++;
+    return Promise.resolve({
+      content: [{ type: "thinking", thinking: "..." }],
+      stopReason: calls === 1 ? "max_tokens" : "end_turn",
+      inputTokens: 1,
+      outputTokens: 1,
+      cacheCreationInputTokens: 0,
+      cacheReadInputTokens: 0,
+    });
+  });
+  assertEquals(calls, 2);
+  assertEquals(handled, false);
+});
+
+Deno.test("promoValidityNote expone fecha de fin y días", () => {
+  assertEquals(
+    promoValidityNote({ valid_until: "2026-10-31 23:59:59", valid_days: null }),
+    "vigente hasta el 2026-10-31, aplica todos los días",
+  );
+  assertEquals(
+    promoValidityNote({ valid_until: null, valid_days: "1,6" }),
+    "sin fecha de fin, solo lunes, sábado",
+  );
 });

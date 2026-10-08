@@ -211,7 +211,7 @@ export function buildCatalogAppendix(catalog: ServiceCatalog): string {
 
   if (catalog.promotions.length > 0) {
     lines.push(
-      "PROMOCIONES ACTIVAS (precios EXACTOS de BD — NUNCA recalcules % ni inventes cifras):",
+      "PROMOCIONES ACTIVAS (precios EXACTOS de BD — NUNCA recalcules % ni inventes cifras; las listadas están vigentes hoy):",
     );
     for (const promo of catalog.promotions) {
       const badge = promo.badge ? ` (${promo.badge})` : "";
@@ -219,7 +219,7 @@ export function buildCatalogAppendix(catalog: ServiceCatalog): string {
       lines.push(
         `- ${promo.emoji} ${promo.title}${badge}${
           description ? ` — ${description}` : ""
-        }`,
+        } [${promoValidityNote(promo)}]`,
       );
       for (const item of promo.items ?? []) {
         const pack = item.item_type === "pack"
@@ -928,4 +928,32 @@ export function composeHaikuChatSystemBlocks(
   }
 
   return blocks;
+}
+
+const PROMO_DAY_NAMES = [
+  "",
+  "lunes",
+  "martes",
+  "miércoles",
+  "jueves",
+  "viernes",
+  "sábado",
+  "domingo",
+];
+
+/**
+ * Vigencia legible de una promo. «Solo Halloween» en la descripción nombra la
+ * campaña; lo que limita son las fechas y los días, y el modelo debe verlos.
+ */
+export function promoValidityNote(
+  promo: { valid_until: string | null; valid_days: string | null },
+): string {
+  const until = promo.valid_until
+    ? `vigente hasta el ${promo.valid_until.slice(0, 10)}`
+    : "sin fecha de fin";
+  const days = (promo.valid_days ?? "").split(",").map((d) => d.trim())
+    .filter(Boolean).map((d) => PROMO_DAY_NAMES[Number(d)]).filter(Boolean);
+  return `${until}, ${
+    days.length ? `solo ${days.join(", ")}` : "aplica todos los días"
+  }`;
 }
