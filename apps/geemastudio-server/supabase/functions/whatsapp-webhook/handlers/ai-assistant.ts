@@ -1010,7 +1010,7 @@ async function clientChoseListWhileHaikuThought(
   }
 }
 
-async function executeAIAction(
+export async function executeAIAction(
   action: AIAction,
   ctx: AIContext,
   wabaConfig?: WabaConfigMap,
