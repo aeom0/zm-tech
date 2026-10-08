@@ -39,6 +39,7 @@ import {
 } from "../format.ts";
 import { MENU_MAIN_OPTIONS, SALUDOS } from "./dispatch/menu-ids.ts";
 import { logWaError } from "../lib/error-log.ts";
+import { templateLogToHistoryText } from "../lib/template-history.ts";
 import { hasExplicitTime } from "../parse-datetime-es.ts";
 import {
   FABRICATED_BOOKING_SAFE_REPLY,
@@ -2000,7 +2001,7 @@ export async function handleAIMessage(
           .from("wa_messages")
           .select("direction, msg_type, content, created_at, source")
           .eq("phone", phoneNumber)
-          .eq("msg_type", "text")
+          .in("msg_type", ["text", "template"])
           .gte(
             "created_at",
             new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
@@ -2051,6 +2052,9 @@ export async function handleAIMessage(
       let content = String(row.content ?? "").trim();
       const textMatch = content.match(/<text>([\s\S]*?)<\/text>/);
       if (textMatch) content = textMatch[1].trim();
+      if (row.msg_type === "template") {
+        content = templateLogToHistoryText(content);
+      }
       if (!content) continue;
       // Tras takeover: OUT del panel/app deben verse como equipo (no como Haiku).
       const src = String(
