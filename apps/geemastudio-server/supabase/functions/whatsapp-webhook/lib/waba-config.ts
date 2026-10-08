@@ -93,7 +93,10 @@ export function getConfigText(
   const entry = config.get(key);
   const text = (entry as Record<string, unknown> | undefined)?.text ??
     (entry as Record<string, unknown> | undefined)?.url;
-  return typeof text === "string" && text.trim() ? text : fallback;
+  // Algunas filas se sembraron con "\\n" literal (SQL sin E''): saltos reales.
+  return typeof text === "string" && text.trim()
+    ? text.replaceAll("\\n", "\n")
+    : fallback;
 }
 
 /** Número positivo desde waba_config (amount / minutes / value). */
