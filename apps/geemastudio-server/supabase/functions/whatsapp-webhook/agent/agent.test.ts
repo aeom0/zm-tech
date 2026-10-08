@@ -8,7 +8,7 @@ import {
 import type { AgentApiResult } from "./anthropic.ts";
 import { buildAgentHistory } from "./history.ts";
 import { limaNowBlock } from "./prompt.ts";
-import { resolveBookingItems } from "./tools.ts";
+import { AGENT_TOOLS, resolveBookingItems, runAgentTool } from "./tools.ts";
 import type { ServiceCatalog } from "../lib/services-catalog.ts";
 import type { WabaConfigMap } from "../lib/waba-config.ts";
 
@@ -198,4 +198,72 @@ Deno.test("runAgent: respuesta sin texto devuelve false", async () => {
     })
   );
   assertEquals(handled, false);
+});
+
+function toolCtx() {
+  return {
+    supabase: stubSupabase(),
+    phoneNumber: "51999000978",
+    contactName: "QA",
+    catalog: emptyCatalog,
+    wabaConfig: {} as WabaConfigMap,
+    messageText: "hola",
+    turnHandled: false,
+  };
+}
+
+Deno.test("tools: el agente expone carrito, día, equipo y reserva; sin selector viejo", () => {
+  const names = AGENT_TOOLS.map((t) => t.name);
+  for (
+    const n of [
+      "ver_carrito",
+      "agregar_al_carrito",
+      "quitar_del_carrito",
+      "consultar_dia",
+      "consultar_equipo",
+      "reservar_horario",
+    ]
+  ) assertEquals(names.includes(n), true, n);
+  assertEquals(names.includes("pasar_a_agendar"), false);
+});
+
+Deno.test("tools: agregar_al_carrito rechaza ids fuera del catálogo", async () => {
+  const r = await runAgentTool(
+    "agregar_al_carrito",
+    { ids: ["nope"] },
+    toolCtx(),
+  );
+  assertEquals(r.isError, true);
+  assertStringIncludes(r.content, "nope");
+});
+
+Deno.test("tools: consultar_dia valida formato y fechas pasadas", async () => {
+  const bad = await runAgentTool(
+    "consultar_dia",
+    { fecha: "mañana" },
+    toolCtx(),
+  );
+  assertEquals(bad.isError, true);
+  const past = await runAgentTool(
+    "consultar_dia",
+    { fecha: "2020-01-01" },
+    toolCtx(),
+  );
+  assertStringIncludes(past.content, "pasó");
+});
+
+Deno.test("tools: reservar_horario valida entrada y no marca turno atendido", async () => {
+  const ctx = toolCtx();
+  const r = await runAgentTool(
+    "reservar_horario",
+    { fecha: "x", hora: "y", mensaje: "" },
+    ctx,
+  );
+  assertEquals(r.isError, true);
+  assertEquals(ctx.turnHandled, false);
+});
+
+Deno.test("tools: tool desconocida devuelve error", async () => {
+  const r = await runAgentTool("pasar_a_agendar", {}, toolCtx());
+  assertEquals(r.isError, true);
 });

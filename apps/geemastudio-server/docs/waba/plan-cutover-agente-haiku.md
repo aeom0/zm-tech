@@ -92,7 +92,10 @@ y elimina todas las reglas del tipo «usa action:none», «NO add_to_cart» y si
 | `ver_guia` | Envía las guías educativas (pelo a pelo, mapping, efectos) |
 | `ver_mi_cita` | Citas pendientes/confirmadas de la clienta |
 | `derivar_a_persona` | Escala al staff (reclamo, reembolso, falla del salón, asesoría personal) con motivo; reutiliza `escalateToStaff` |
-| `pasar_a_agendar` | **Híbrido temporal.** Deja el carrito en la sesión (IDs validados contra el catálogo) y entrega el tramo de agendado/pago al flujo viejo |
+| `ver_carrito`, `agregar_al_carrito`, `quitar_del_carrito` | El agente arma el carrito; IDs validados contra el catálogo y precio puesto por el sistema |
+| `consultar_dia` | Horarios libres del carrito, duración por servicio y bloque, quién atiende cada servicio (RPC `get_available_slots`), feriados/cierres, adelanto de domingo y ausencias/coberturas del personal |
+| `consultar_equipo` | Personal activo, servicios que hace cada quien, horarios y ausencias |
+| `reservar_horario` | Valida cupo y reglas y entrega a `finalizeBookingAfterDatetimeSelection` (adelanto fijo, 20 % domingo o cita directa). Sin selector de fecha/hora del flujo viejo |
 
 ### Fase 2: herramientas con consecuencias (reemplazan al híbrido)
 
@@ -110,7 +113,7 @@ si `crear_cita` devolvió el ID de la fila. La guarda `fabricated-booking-guard`
 ## Híbrido temporal (Fase 1 en producción)
 
 - Con el flag prendido, el agente atiende todo.
-- Cuando la clienta decide agendar, el agente llama `pasar_a_agendar`; la sesión pasa a los pasos del flujo viejo (`awaiting_datetime`, `awaiting_deposit_*`, `awaiting_payment_screenshot`, etc.).
+- El agente conduce todo hasta elegir día y hora; `reservar_horario` entrega solo el cobro/confirmación al flujo viejo (`awaiting_deposit_*`, `awaiting_payment_screenshot`, etc.) hasta la Fase 2.
 - Mientras `session.step` esté en uno de esos pasos, `runAgent` **no corre** y el mensaje sigue por `dispatch` como hoy. Al volver a `browsing` o `null`, retoma el agente.
 - La Fase 2 elimina este puente y el flujo viejo.
 
@@ -172,7 +175,7 @@ No se elimina: pre-procesamiento de entrada, `send-*` y crons de reenganche/reco
 ## Entregables por fase
 
 - **Fase 0 (previa):** este plan aprobado; constante de modelo y helper común de llamada a la API con los cambios de Haiku 5.5.
-- **Fase 1:** `agent/` + herramientas de lectura + `pasar_a_agendar` + flag/allowlist + pruebas + QA. PR 1.
+- **Fase 1:** `agent/` + herramientas de lectura + tools de carrito, `consultar_dia`/`consultar_equipo` y `reservar_horario` + flag/allowlist + pruebas + QA. PR 1.
 - **Fase 2:** herramientas de citas e identidad/pago, extraídas de `payment.ts`, `pending-appointment.ts` y `booking-flow.ts`. PR 2 (puede dividirse por herramienta).
 - **Fase 3:** borrar el bot viejo. PR 3, solo cuando el agente lleve al menos una semana estable en ZM Lash.
 - **Cierre:** actualizar `ROADMAP.md`, `plan-haiku-primero-informativo.md`, `AGENTS.md`, `auditoria-intenciones-waba.md` y la rutina de análisis.
