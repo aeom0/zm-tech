@@ -102,6 +102,15 @@ export function extractText(result: AgentApiResult): string {
     .join("\n\n");
 }
 
+/**
+ * Respuesta cortada por max_tokens: descarta la última línea incompleta para
+ * no mandar una frase a medias (p. ej. "efecto mu").
+ */
+export function trimToCompleteLines(text: string): string {
+  const cut = text.lastIndexOf("\n");
+  return cut > 0 ? text.slice(0, cut).trimEnd() : text;
+}
+
 export function sanitizeAgentReply(text: string): string {
   if (hasFabricatedBookingClaim(text)) return FABRICATED_BOOKING_SAFE_REPLY;
   if (containsRefundPromise(text)) return REFUND_SAFE_REPLY;
@@ -156,6 +165,7 @@ export async function runAgent(opts: {
         .catch((err: unknown) => console.error("[AGENT] aviso a staff:", err));
     }
 
+    let truncatedRetried = false;
     for (let i = 0; i < AGENT_MAX_ITERATIONS; i++) {
       // Un reintento ante falla transitoria de la API.
       let result = await callApi({
@@ -188,13 +198,23 @@ export async function runAgent(opts: {
         },
       );
 
+      if (result.stopReason === "max_tokens" && !truncatedRetried) {
+        // El thinking cuenta en max_tokens: un turno largo sale cortado.
+        truncatedRetried = true;
+        console.warn("[AGENT] max_tokens: reintentando turno");
+        continue;
+      }
+
       if (result.stopReason === "refusal") {
         return toolCtx.turnHandled || toolCtx.sentToClient;
       }
 
       if (result.stopReason !== "tool_use") {
         if (toolCtx.turnHandled) return true;
-        const text = extractText(result);
+        let text = extractText(result);
+        if (result.stopReason === "max_tokens") {
+          text = trimToCompleteLines(text);
+        }
         if (!text) return toolCtx.sentToClient;
         await sendMessage(phoneNumber, sanitizeAgentReply(text));
         return true;
