@@ -6,6 +6,8 @@ Herramienta operativa para **reproducir conversaciones WhatsApp sin escribir des
 **Plantilla**: `scripts/waba-validate-template.mjs`  
 **Librería**: `scripts/lib/waba-sim-*.mjs`
 
+El panel (`waba-chat-simulator`) llama al agente Haiku antes que al dispatcher cuando `agent_enabled` está prendido. Los teléfonos del simulador (`51988800001`, `51988800002`) entran aunque la allowlist de producción siga en `51999000978`–`999`. Un turno del agente puede tardar ~30 s: el panel espera hasta 40 s. Los scripts `waba-validate-*` no usan ese panel: postean al webhook, así que en un teléfono de QA ya ejercitan el agente.
+
 ---
 
 ## Cuándo usar esta guía

@@ -52,7 +52,9 @@ import {
 } from "./lib/reply-context.ts";
 import { sendMessage } from "./wa-api.ts";
 import { dispatch } from "./handlers/dispatcher.ts";
-import { runAgent, shouldRunAgent } from "./agent/agent.ts";
+import { isAgentEnabledFor, runAgent } from "./agent/agent.ts";
+import { routeAgentInbound } from "./agent/inbound.ts";
+import { AGENT_COALESCE_WINDOW_MS } from "./agent/inbound-route.ts";
 import { handleLegacyPayload } from "./handlers/legacy.ts";
 import { logWaError } from "./lib/error-log.ts";
 import { preferClientDisplayName } from "./lib/client-address.ts";
@@ -285,9 +287,16 @@ async function processMessage(body: Record<string, unknown>): Promise<void> {
       if (isTextBurst) {
         // Reintentar lock: no dropear follow-ups CTWA (~5s) si el peer ya soltó.
         // null = lock agotado → peer coalesció la ráfaga; no despachar Haiku otra vez.
+        // Con el agente, la ventana base baja a 1.5 s: el turno siguiente
+        // queda serializado y no hace falta esperar 4.5 s para evitar un menú.
+        const earlyConfig = await loadWabaConfig(supabase, tenantId);
+        const coalesceWindow = isAgentEnabledFor(earlyConfig, phoneNumber)
+          ? AGENT_COALESCE_WINDOW_MS
+          : undefined;
         const burst = await coalesceTextBurstWithRetry(
           supabase,
           phoneNumber,
+          coalesceWindow,
         );
         const combined = burst?.text ?? null;
         coveredThroughIso = burst?.coveredThroughIso ?? null;
@@ -498,24 +507,32 @@ async function processMessage(body: Record<string, unknown>): Promise<void> {
       }
 
       try {
-        // Cutover agente Haiku 5.5: solo texto libre, con flag por tenant y
-        // allowlist. Si el agente falla sin haber respondido, cae al dispatch.
-        const agentHandled = await shouldRunAgent({
+        // Cutover agente: texto, imagen, audio y «Mi cita».
+        // Si el agente falla sin haber respondido, cae al dispatch.
+        const routed = await routeAgentInbound({
           supabase,
           wabaConfig,
-          phoneNumber,
-          isPlainText: !interactiveId && msgType === "text" &&
-            effectiveText.trim().length > 0,
-        }) && await runAgent({
-          supabase,
           phoneNumber,
           contactName: displayName,
-          catalog,
-          wabaConfig,
-          phoneCountry: client?.phone_country ?? null,
+          message: message as Record<string, unknown>,
           messageText: effectiveText,
+          interactiveId,
+          interactiveTitle,
+          fromAd,
         });
-        if (agentHandled) return;
+        if (routed.kind === "handled") return;
+        if (routed.kind === "agent") {
+          const agentHandled = await runAgent({
+            supabase,
+            phoneNumber,
+            contactName: displayName,
+            catalog,
+            wabaConfig,
+            phoneCountry: client?.phone_country ?? null,
+            messageText: routed.text,
+          });
+          if (agentHandled) return;
+        }
         await dispatch({
           body,
           message,
