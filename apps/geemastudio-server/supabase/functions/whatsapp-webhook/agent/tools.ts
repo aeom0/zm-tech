@@ -742,7 +742,7 @@ export function searchCatalog(
     if (!asksPromos && matchWords.length === 0 && words.length > 0) continue;
     const days = promo.valid_days ? ` · días ${promo.valid_days}` : "";
     promoLines.push(
-      `- promo ${promo.title}${
+      `- promo ${promo.emoji ? `${promo.emoji} ` : ""}${promo.title}${
         promo.badge ? ` (${promo.badge})` : ""
       }${days} [${promoValidityNote(promo)}]: ${
         itemBits.join("; ") || (promo.description ?? "").trim()
