@@ -42,6 +42,14 @@ import {
 } from "../handlers/pending-appointment.ts";
 import { finalizeBookingAfterDatetimeSelection } from "../handlers/payment.ts";
 import { employeeRulesAllowSlot } from "../lib/employee-availability.ts";
+import {
+  DEFAULT_UBICACION_TEXT,
+  SALON_NOT_AT_KENNEDY,
+} from "../lib/salon-location.ts";
+import {
+  getConsideracionesPreviasWhatsApp,
+  getPoliticasCitaWhatsApp,
+} from "../lib/policies.ts";
 import { escalateToStaff } from "../lib/staff-escalation.ts";
 import type { WabaConfigMap } from "../lib/waba-config.ts";
 import { sendMessage } from "../wa-api.ts";
@@ -114,6 +122,24 @@ export const AGENT_TOOLS: AgentToolDef[] = [
         },
       },
       required: ["servicio_id", "pedido"],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "info_negocio",
+    description:
+      "Datos oficiales del salón: ubicación y estacionamiento, políticas de la cita (tardanza, cancelación, reprogramación, adelanto) " +
+      "y recomendaciones previas para los servicios del carrito. Úsala en vez de improvisar estos datos.",
+    strict: true,
+    input_schema: {
+      type: "object",
+      properties: {
+        tema: {
+          type: "string",
+          enum: ["ubicacion", "politicas", "antes_de_la_cita"],
+        },
+      },
+      required: ["tema"],
       additionalProperties: false,
     },
   },
@@ -329,7 +355,7 @@ async function employeeNames(
   );
 }
 
-async function dayFacts(
+export async function dayFacts(
   ctx: AgentToolContext,
   fecha: string,
 ): Promise<string[]> {
@@ -503,6 +529,34 @@ export async function runAgentTool(
           content:
             "Fotos enviadas (o enlace al Instagram si no hay). Cierra con un mensaje breve que ancle el siguiente paso.",
         };
+      }
+
+      case "info_negocio": {
+        const tema = String(input.tema ?? "");
+        if (tema === "ubicacion") {
+          return {
+            content:
+              `${DEFAULT_UBICACION_TEXT}\n\nSi pregunta por Parque Kennedy: ${SALON_NOT_AT_KENNEDY}`,
+          };
+        }
+        if (tema === "politicas") {
+          return { content: getPoliticasCitaWhatsApp() };
+        }
+        if (tema === "antes_de_la_cita") {
+          const session = await getSession(ctx.supabase, ctx.phoneNumber);
+          const cats = new Set<string>();
+          for (const it of (session?.cartItems ?? []) as CartItem[]) {
+            const cat = it.item_type === "pack"
+              ? ctx.catalog.packsById.get(it.item_id)?.category_id
+              : ctx.catalog.servicesById.get(it.item_id)?.category_id;
+            if (cat) cats.add(cat);
+          }
+          return {
+            content: getConsideracionesPreviasWhatsApp([...cats]) ||
+              "Sin recomendaciones previas para lo que hay en el carrito.",
+          };
+        }
+        return { content: "tema inválido", isError: true };
       }
 
       case "ver_carrito":

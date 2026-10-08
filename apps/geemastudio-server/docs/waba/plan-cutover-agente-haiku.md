@@ -90,6 +90,7 @@ y elimina todas las reglas del tipo «usa action:none», «NO add_to_cart» y si
 | `buscar_servicios` | Servicios/packs/promos por categoría o texto, con precio y duración reales del catálogo |
 | `ver_horarios` | Horas libres de un día para una lista de servicios (usa capacidad real, camas, empleadas, feriados) |
 | `info_salon` | Ubicación, estacionamiento, horario de atención, políticas, adelanto |
+| `info_negocio` | Ubicación/estacionamiento, políticas de la cita y recomendaciones previas del carrito (fuentes oficiales: `salon-location.ts`, `policies.ts`) |
 | `ver_portafolio` | Envía imágenes del portafolio de un servicio o categoría |
 | `ver_guia` | Envía las guías educativas (pelo a pelo, mapping, efectos) |
 | `ver_mi_cita` | Citas pendientes/confirmadas de la clienta |

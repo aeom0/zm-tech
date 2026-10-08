@@ -12,7 +12,13 @@ import {
   buildAgentSystem,
   limaNowBlock,
 } from "./prompt.ts";
-import { AGENT_TOOLS, resolveBookingItems, runAgentTool } from "./tools.ts";
+import {
+  AGENT_TOOLS,
+  dayFacts,
+  resolveBookingItems,
+  runAgentTool,
+} from "./tools.ts";
+import { hydrateSalonHolidays } from "../lib/peru-holidays.ts";
 import type { ServiceCatalog } from "../lib/services-catalog.ts";
 import type { WabaConfigMap } from "../lib/waba-config.ts";
 import { EMOTIONAL_SELLING_CTWA_EXT_LIFT_DEFAULT } from "../lib/emotional-selling.ts";
@@ -263,6 +269,7 @@ Deno.test("tools: el agente expone carrito, día, equipo y reserva; sin selector
   for (
     const n of [
       "buscar_servicios",
+      "info_negocio",
       "ver_portafolio",
       "ver_carrito",
       "agregar_al_carrito",
@@ -348,4 +355,125 @@ Deno.test("tools: buscar_servicios filtra por palabras sin acentos y usa categor
     ctx,
   );
   assertStringIncludes(miss.content, "Sin resultados");
+});
+
+// Stub por tabla: cualquier cadena resuelve a las filas de esa tabla.
+// deno-lint-ignore no-explicit-any
+function tableStub(tables: Record<string, unknown[]>): any {
+  return {
+    from(table: string) {
+      const chain: Record<string, unknown> = {};
+      const self = new Proxy(chain, {
+        get(_t, prop) {
+          if (prop === "then") {
+            return (resolve: (v: unknown) => void) =>
+              resolve({ data: tables[table] ?? [], error: null });
+          }
+          return () => self;
+        },
+      });
+      return self;
+    },
+  };
+}
+
+Deno.test("dayFacts: feriado, domingo, ausencia parcial y cobertura", async () => {
+  hydrateSalonHolidays([
+    {
+      date: "2031-03-04",
+      is_closed: false,
+      open_until_hour: 14,
+      name: "Feriado QA",
+    },
+    {
+      date: "2031-03-05",
+      is_closed: true,
+      open_until_hour: null,
+      name: "Cierre QA",
+    },
+  ]);
+  const ctx = {
+    ...toolCtx(),
+    supabase: tableStub({
+      employees: [{ id: "e1", name: "Ana" }, { id: "e2", name: "Luz" }],
+      employee_time_off: [
+        {
+          employee_id: "e1",
+          kind: "sick_leave",
+          date_from: "2031-03-01",
+          date_to: "2031-03-10",
+          start_time: null,
+          end_time: null,
+        },
+        {
+          employee_id: "e2",
+          kind: "permission",
+          date_from: "2031-03-04",
+          date_to: "2031-03-04",
+          start_time: "14:00:00",
+          end_time: "16:00:00",
+        },
+        {
+          employee_id: "e2",
+          kind: "vacation",
+          date_from: "2031-02-01",
+          date_to: "2031-02-10",
+          start_time: null,
+          end_time: null,
+        },
+      ],
+      employee_coverages: [
+        { covered_employee_id: "e1", covering_employee_id: "e2" },
+      ],
+    }),
+  };
+  const facts = (await dayFacts(ctx, "2031-03-04")).join("\n");
+  assertStringIncludes(facts, "Feriado");
+  assertStringIncludes(facts, "14:00");
+  assertStringIncludes(facts, "Ana todo el día");
+  assertStringIncludes(facts, "Luz de 14:00 a 16:00");
+  assertStringIncludes(facts, "Luz cubre a Ana");
+  assertEquals(facts.includes("vacation"), false);
+  // 2031-03-09 es domingo: adelanto 20%
+  const dom = (await dayFacts(ctx, "2031-03-09")).join("\n");
+  assertStringIncludes(dom, "adelanto");
+});
+
+Deno.test("tools: día cerrado se informa y reservar_horario lo rechaza", async () => {
+  hydrateSalonHolidays([
+    {
+      date: "2031-03-05",
+      is_closed: true,
+      open_until_hour: null,
+      name: "Cierre QA",
+    },
+  ]);
+  const ctx = toolCtx();
+  const dia = await runAgentTool("consultar_dia", { fecha: "2031-03-05" }, ctx);
+  assertEquals(dia.isError ?? false, false);
+  assertStringIncludes(dia.content, "2031-03-05");
+  const res = await runAgentTool(
+    "reservar_horario",
+    { fecha: "2031-03-05", hora: "11:00", mensaje: "ok" },
+    ctx,
+  );
+  assertEquals(res.isError, true);
+  assertEquals(ctx.turnHandled, false);
+});
+
+Deno.test("tools: info_negocio entrega datos oficiales", async () => {
+  const ub = await runAgentTool(
+    "info_negocio",
+    { tema: "ubicacion" },
+    toolCtx(),
+  );
+  assertStringIncludes(ub.content, "Artesanos");
+  const pol = await runAgentTool(
+    "info_negocio",
+    { tema: "politicas" },
+    toolCtx(),
+  );
+  assertStringIncludes(pol.content, "Cancelación");
+  const bad = await runAgentTool("info_negocio", { tema: "x" }, toolCtx());
+  assertEquals(bad.isError, true);
 });
