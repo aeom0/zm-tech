@@ -13,6 +13,14 @@ Directrices del bot: [directrices-haiku.md](./directrices-haiku.md) · lecciones
 - Derivación humana: Vanessa **932 535 512**. Plantilla Meta de pago: `pago_recibido_validar_zm`.
 
 ## Contexto específico
+- **Cutover del agente Haiku 5.5: 2026-10-08, ~18:20 Lima (23:20 UTC).** Antes, el tráfico real lo llevó el bot clásico
+  (la allowlist de `agent_phone_allowlist` solo tenía teléfonos QA). Desde esa hora la allowlist está vacía: el agente
+  atiende a todas las clientas y el dispatcher es respaldo. Confirma la hora real con la primera fila de `ai_usage_log`
+  con `trigger_type = 'agent'` de un teléfono que no sea QA. Los reportes de este periodo mezclan ambos regímenes: separa
+  los hilos por la hora del cutover (§2 de la rutina).
+- **Reglas del agente que NO son bug:** promos «Solo Halloween» (vigencia 1–31 oct) aplican todos los días salvo `valid_days`;
+  el agente pide por escrito las notas de voz y no avisa al equipo (limitación conocida, ver AG6); cancelar con adelanto va
+  a `escalar_a_humano` por diseño; el comprobante lo procesa el flujo por código, no el modelo.
 - CTWA welcome (producto vigente, post 09-sep): **1.er turno = solo texto** (`sendCtwaInterestQuestion` —
   ¿extensiones / lifting / uñas / otro?). **Sin** lista interactiva y **sin** imágenes genéricas
   (`meta_ads_hero_*` / `meta_ads_image_*` suelen ir vacíos). Collages **segmentados** tras rubro Ext/Lift:
@@ -89,7 +97,7 @@ Read directrices-haiku.md §2.2 and ROADMAP.md § "Horarios y pago al agendar" b
 Ver `QA_PHONES` / extras en `apps/geemastudio-server/scripts/waba-cleanup-all-qa.mjs` — excluir al menos:
 - `51999000970`–`51999000999` (suites validate*; piso bajó a **970** el 15-sep — view-packs `…977`)
 - `51911100001`, simulador `51988800001` / `51988800002`
-- Alberto VE `584144940417`
+- Alberto VE `584144940417` (prueba manual; ahora atendido por el agente como cualquier clienta, pero **excluir** de métricas)
 - Excluir de "conversaciones analizadas" y conteos de fallo salvo depuración QA explícita.
 - Tras validar: **siempre** `yarn waba:cleanup:qa`.
 - `ai_usage_log` con `phone_hash` sin filas en `wa_messages` → cruzar con QA antes de reportar anomalía.

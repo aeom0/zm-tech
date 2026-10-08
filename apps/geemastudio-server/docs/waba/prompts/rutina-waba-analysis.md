@@ -67,7 +67,12 @@ an appointment. Then produce an actionable report.
 - Repo: aeom0/zm-tech (branch: main)
 - Supabase project: udelxwwnyivknslueerr
 - MCP Supabase: **ClaudeSupabase** — execute_sql. Es la BD de GeemaStudio (multi-tenant), no de un tenant: sin el filtro `tenant_id` mezcla negocios.
-- Main bot file: apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/dispatcher.ts (orquestador ~2500 líneas)
+- **Quién atiende (desde el cutover del 8-oct-2026):** con `agent_enabled` el **agente Haiku 5.5** (`agent/`: `agent.ts`,
+  `tools.ts`, `prompt.ts`, `inbound.ts`, `inbound-route.ts`) atiende el texto, las imágenes, el audio y el tap «Mi cita»
+  antes del dispatcher. El bot clásico (`handlers/dispatcher.ts`, ~2500 líneas) queda como **respaldo**: falla del agente,
+  party, curso, no-show y botones de plantilla. Lee `agent/` primero; el dispatcher solo para esos casos.
+  Confirma el estado real del flag en `waba_config` (`agent_enabled`, `agent_phone_allowlist`) y la hora del cutover en
+  el contexto del tenant.
 - Plan 08 Fase 1 (merged #131): helpers en `handlers/dispatch/*` (CTWA, menu-taps, haiku-handoff,
   cart-booking, closing-intents, campaign-images, anti-spam, menu-ids, runtime). Al citar causa raíz,
   mirar también esos módulos — no asumir que todo vive en `dispatcher.ts`.
@@ -76,7 +81,7 @@ an appointment. Then produce an actionable report.
 - Meta Ads CTA: lib/meta-ads-cta.ts (`isMetaAdsBoilerplateCta` / `isKnownCtwaCampaignCopy` — BP vs intención;
   Set 2026 "Mirada Espectacular"; **Set-Oct 2026** "estilo de pestañas me queda mejor"; strip emoji; coalesce)
 - QA validation: apps/geemastudio-server/docs/waba/WABA_SIMULATION_VALIDATION.md
-- Cutover agente Haiku 5.5: apps/geemastudio-server/docs/waba/plan-cutover-agente-haiku.md (Fase 1 / flag `agent_enabled`)
+- Cutover agente Haiku 5.5: apps/geemastudio-server/docs/waba/plan-cutover-agente-haiku.md (Fases 1–2 desplegadas; flag `agent_enabled`; Fase 3 = borrar el dispatcher)
 - Haiku-primero informativo (bot clásico / histórico): apps/geemastudio-server/docs/waba/plan-haiku-primero-informativo.md
 - Prior reports: `<TENANT_DIR>/analysis/LECCIONES.md` (closed patterns) + the single live YYYY-MM-DD-analysis.md
   (see `<TENANT_DIR>/analysis/README.md` retention — do NOT keep a growing pile of reports)
@@ -90,7 +95,8 @@ an appointment. Then produce an actionable report.
 - `appointments`: tenant_id, client_id, client_phone, source ('whatsapp'|null), status, date, created_at
   (`date` = timestamp **sin** TZ → hora Lima literal)
 - `clients`: tenant_id, id, phone, phone_normalized, phone_country, name
-- `ai_usage_log`: tenant_id, trigger_type, input_tokens, output_tokens, phone_hash, created_at
+- `ai_usage_log`: tenant_id, trigger_type (`agent` = agente Haiku 5.5; los demás son el bot clásico), input_tokens,
+  output_tokens, phone_hash, created_at. Sirve para saber si un turno lo llevó el agente o el bot clásico.
 - `appointment_verifications`: tenant_id, abono/comprobante vía bot; `kind` = `deposit` | `post_service_payment`;
   `status` payment_submitted|approved|rejected (presence of deposit row ≈ booking via abono WABA);
   `appointment_date` = timestamp **sin** TZ → Lima literal (igual `appointments.date`; no timestamptz)
@@ -136,7 +142,14 @@ Only continue to the steps below if there is at least 1 inbound message.
 
 
 ### 2. Read current bot code (on main)
-Read these files to understand the CURRENT state on main:
+Read these files to understand the CURRENT state on main. **Empieza por el agente** (es quien responde al tráfico):
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/agent/prompt.ts (reglas del agente: formato en viñetas,
+  promos con vigencia, horarios completos, citas, identidad, pago)
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/agent/tools.ts (buscar_servicios, consultar_dia,
+  reservar_horario, reprogramar_cita, cancelar_cita, registrar_identidad, descartar_reserva, escalar_a_humano…)
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/agent/agent.ts, anthropic.ts (loop, `max_tokens`,
+  reintentos, `sanitizeAgentReply`), inbound.ts + inbound-route.ts (qué entra al agente y qué cae al dispatcher)
+Luego el bot clásico, solo como respaldo:
 - apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/dispatcher.ts (orquestador)
 - apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/dispatch/* (Plan 08 Fase 1: CTWA, menu-taps,
   haiku-handoff, cart-booking, closing-intents, campaign-images, anti-spam, …)
@@ -179,6 +192,11 @@ Read these files to understand the CURRENT state on main:
   No marcar como DISPATCHER_BYPASS el handoff intencional a Haiku/agente)
 - zm-tech/docs/geemastudio/docs/plans/08-PLAN-dispatcher-modular.md (Fase 1 merged #131)
 - apps/geemastudio-server/docs/waba/WABA_CAPACITY.md (tope 1 / 2 especial + ocupación real)
+
+**Antes/después del cutover.** El contexto del tenant da la hora del cutover. Los hilos anteriores a esa hora los llevó el
+bot clásico: sus fallos son 🟢 evidencia que motivó el cutover, **no** [P#] abiertos ni Quick Wins sobre el dispatcher
+(aplica §2b). Para cada hilo posterior, comprueba si lo llevó el agente (`ai_usage_log.trigger_type = 'agent'` cerca de
+los OUT) o cayó al clásico (fallback). Reporta la métrica «% de turnos por agente vs clásico».
 
 Also list commits on main **during the analysis window** (and skim their messages + touched files):
   git log --oneline --since='<window start ISO>' --until='<window end ISO>' origin/main -- apps/geemastudio-server/supabase/functions/
@@ -249,7 +267,10 @@ hay un segundo emisor":
    (25-sep: la "autocorrección a los 18 min" de Nélida y el "segundo emisor" de Carmen eran ambos staff.)
 3. Para cada OUT `bot`, identificar el **camino real** con `step_before` del IN previo + el texto: buscar el literal del
    OUT en `apps/geemastudio-server/supabase/functions/whatsapp-webhook` (`rg -F "<frase única>"`). Ese archivo/función es la causa raíz,
-   **no** el matcher que "suena" parecido. Si el literal no existe en código → es Haiku libre o `panel`.
+   **no** el matcher que "suena" parecido. Si el literal no existe en código → es **el agente** (texto libre del modelo,
+   verifícalo con `ai_usage_log` `agent`) o `panel`. Mensajes de pago/cita/adelanto con literal en `handlers/` los
+   escribe el flujo por código aunque los dispare una herramienta del agente: la causa raíz es la herramienta o su
+   argumento, no el texto.
 4. **Prohibido** escribir causa raíz con "probablemente"/"podría ser" en un [P#] o Quick Win. Sin evidencia
    (literal en código + `source` + `step_before`) → va a "Necesita Revisión de Alberto" como *sin causa raíz*,
    sin proponer fix concreto.
@@ -306,10 +327,26 @@ G) ACTIVE_STEP_MISROUTE — client in active step (awaiting_datetime, awaiting_p
 H) PENDING_APPOINTMENT_MISSED — getPendingAppointmentsForPhone > 0 but time/date correction
    did not route to mi_cita / reschedule (e.g. "No es a las 11", "coordine para las 4:45")
 I) STAFF_TAKEOVER — manual staff messages detected after bot failure (gap >5 min, personalized text)
+**Tipos del agente (desde el cutover, genéricos para todo tenant con `agent_enabled`):**
+AG1) AGENT_TRUNCATED — OUT del agente que termina a media frase o sin cierre (`max_tokens`; el thinking cuenta en el tope).
+AG2) AGENT_FACT_ERROR — precio, promo, vigencia, horario o disponibilidad que contradice el catálogo o el resultado de
+   `consultar_dia` / `buscar_servicios` (ej. promo vigente descartada por la fecha; horarios recortados; precio regular
+   presentado como promo). Cruza el OUT con el catálogo y con `appointments`.
+AG3) AGENT_FORMAT — horas, días, servicios o precios en prosa corrida en vez de viñetas, una por línea (🌸/⭐; el emoji de
+   la promo, p. ej. 🎃, para promos).
+AG4) AGENT_FALLBACK_TO_CLASSIC — el agente falló (API, timeout, `max_tokens`) y el turno cayó al bot clásico; o el
+   menú clásico apareció donde el agente debía llevar la charla.
+AG5) AGENT_MISSED_ESCALATION — la clienta tiene un problema, reclama o pide hablar con una persona y no hubo
+   `escalar_a_humano`; o escaló sin motivo.
+AG6) AGENT_AUDIO — nota de voz: hoy el agente pide que la escriban y no avisa al equipo. Si la clienta tenía un problema o
+   se queda sin respuesta, repórtalo como [P#] de producto (pendiente: transcripción), con el conteo de audios.
+AG7) AGENT_TOOL_MISUSE — herramienta con argumentos erróneos o doble reserva, cita duplicada, carrito que no coincide
+   con lo pedido (mismo criterio que N) CART_MISMATCH).
+Los tipos A) y F) solo aplican a turnos que cayeron al dispatcher; para el agente usa AG1–AG7.
 **Tipos propios del tenant (J en adelante):** ver `<TENANT_DIR>/contexto-analisis.md`.
 Usa solo esos nombres o `OTHER`.
 
-Also flag **positive patterns** (lista en el contexto del tenant; mínimo: add_to_cart funcionó, cierre natural sin loop de menú).
+Also flag **positive patterns** (lista en el contexto del tenant; mínimo: carrito/cita bien armados por el agente, cierre natural sin loop de menú, escalada correcta a staff).
 
 ### 6. Identify recurring patterns (2+ occurrences OR 2nd consecutive day)
 Group by failure type and specific trigger. Note exact client phrases.
@@ -346,7 +383,8 @@ Report format:
 
 **Period**: últimas 48 horas ([UTC start] → [UTC end]), hora Lima
 **Generated by**: Claude Code Routine
-**Rama analizada**: main — dispatcher.ts + handlers/dispatch/* + ai-assistant.ts + haiku-*
+**Rama analizada**: main — agent/* (agente Haiku 5.5) + dispatcher.ts + handlers/dispatch/* como respaldo + haiku-*
+**Cutover agente**: [fecha/hora del contexto del tenant] — % de turnos del período atendidos por agente vs clásico
 **Commit analizado**: [short SHA]
 **Análisis previo**: [link to previous report if exists]
 
