@@ -102,6 +102,7 @@ export async function runAgent(opts: {
     wabaConfig: opts.wabaConfig,
     messageText: opts.messageText,
     turnHandled: false,
+    sentToClient: false,
   };
 
   try {
@@ -138,7 +139,7 @@ export async function runAgent(opts: {
           phoneNumber,
         });
       }
-      if (!result) return toolCtx.turnHandled;
+      if (!result) return toolCtx.turnHandled || toolCtx.sentToClient;
 
       await logAIUsage(
         supabase,
@@ -152,12 +153,14 @@ export async function runAgent(opts: {
         },
       );
 
-      if (result.stopReason === "refusal") return toolCtx.turnHandled;
+      if (result.stopReason === "refusal") {
+        return toolCtx.turnHandled || toolCtx.sentToClient;
+      }
 
       if (result.stopReason !== "tool_use") {
         if (toolCtx.turnHandled) return true;
         const text = extractText(result);
-        if (!text) return false;
+        if (!text) return toolCtx.sentToClient;
         await sendMessage(phoneNumber, sanitizeAgentReply(text));
         return true;
       }
@@ -178,9 +181,9 @@ export async function runAgent(opts: {
       }
       messages.push({ role: "user", content: toolResults });
     }
-    return toolCtx.turnHandled;
+    return toolCtx.turnHandled || toolCtx.sentToClient;
   } catch (err) {
     console.error("[AGENT] runAgent:", err);
-    return toolCtx.turnHandled;
+    return toolCtx.turnHandled || toolCtx.sentToClient;
   }
 }

@@ -50,6 +50,11 @@ import {
   getConsideracionesPreviasWhatsApp,
   getPoliticasCitaWhatsApp,
 } from "../lib/policies.ts";
+import {
+  getEduGuideImage,
+  parseEduGuideActionParam,
+} from "../lib/edu-guides.ts";
+import { getConfigText } from "../lib/waba-config.ts";
 import { escalateToStaff } from "../lib/staff-escalation.ts";
 import type { WabaConfigMap } from "../lib/waba-config.ts";
 import { sendMessage } from "../wa-api.ts";
@@ -66,6 +71,8 @@ export interface AgentToolContext {
   messageText: string;
   /** Se marca cuando una tool ya respondió/derivó: el agente no envía más texto. */
   turnHandled: boolean;
+  /** Ya se envió algo a la clienta (fotos/guía): si el modelo falla después, no se cae al bot viejo. */
+  sentToClient: boolean;
 }
 
 export interface AgentToolResult {
@@ -140,6 +147,35 @@ export const AGENT_TOOLS: AgentToolDef[] = [
         },
       },
       required: ["tema"],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "ver_guia",
+    description:
+      "Envía la guía visual de extensiones: pelo_a_pelo (qué es la técnica), fiber_* (ficha de la técnica y sus diseños), " +
+      "mapping_* (mapa de longitudes). Úsala cuando pregunte cómo es la técnica, qué diseños hay o las longitudes.",
+    strict: true,
+    input_schema: {
+      type: "object",
+      properties: {
+        guia: {
+          type: "string",
+          enum: [
+            "pelo_a_pelo",
+            "fiber_clasicas",
+            "fiber_rimel",
+            "fiber_3d",
+            "fiber_4d",
+            "mapping_clasicas",
+            "mapping_rimel",
+            "mapping_mojado",
+            "mapping_3d",
+            "mapping_4d",
+          ],
+        },
+      },
+      required: ["guia"],
       additionalProperties: false,
     },
   },
@@ -472,9 +508,9 @@ export function searchCatalog(
       const disc = parseFloat(String(it.discounted_price)) || 0;
       return `${name} [${it.item_id}] S/${disc.toFixed(0)}`;
     });
-    const hay = `${promo.title} ${promo.description ?? ""} ${promo.badge ?? ""} ${
-      itemBits.join(" ")
-    }`;
+    const hay = `${promo.title} ${promo.description ?? ""} ${
+      promo.badge ?? ""
+    } ${itemBits.join(" ")}`;
     if (categoriaId) {
       const inCat = (promo.items ?? []).some((it) => {
         const cat = it.item_type === "pack"
@@ -488,9 +524,9 @@ export function searchCatalog(
     if (!asksPromos && matchWords.length === 0 && words.length > 0) continue;
     const days = promo.valid_days ? ` · días ${promo.valid_days}` : "";
     promoLines.push(
-      `- promo ${promo.title}${promo.badge ? ` (${promo.badge})` : ""}${days}: ${
-        itemBits.join("; ") || (promo.description ?? "").trim()
-      }`,
+      `- promo ${promo.title}${
+        promo.badge ? ` (${promo.badge})` : ""
+      }${days}: ${itemBits.join("; ") || (promo.description ?? "").trim()}`,
     );
   }
   for (const sv of catalog.services) {
@@ -587,6 +623,7 @@ export async function runAgentTool(
           })),
           portfolioIndex: ctx.catalog.portfolioIndex ?? [],
         });
+        ctx.sentToClient = true;
         return {
           content:
             "Fotos enviadas (o enlace al Instagram si no hay). Cierra con un mensaje breve que ancle el siguiente paso.",
@@ -597,8 +634,13 @@ export async function runAgentTool(
         const tema = String(input.tema ?? "");
         if (tema === "ubicacion") {
           return {
-            content:
-              `${DEFAULT_UBICACION_TEXT}\n\nSi pregunta por Parque Kennedy: ${SALON_NOT_AT_KENNEDY}`,
+            content: `${
+              getConfigText(
+                ctx.wabaConfig,
+                "ubicacion_text",
+                DEFAULT_UBICACION_TEXT,
+              )
+            }\n\nSi pregunta por Parque Kennedy: ${SALON_NOT_AT_KENNEDY}`,
           };
         }
         if (tema === "politicas") {
@@ -619,6 +661,25 @@ export async function runAgentTool(
           };
         }
         return { content: "tema inválido", isError: true };
+      }
+
+      case "ver_guia": {
+        const kind = parseEduGuideActionParam(String(input.guia ?? ""));
+        const guide = kind ? getEduGuideImage(ctx.wabaConfig, kind) : null;
+        if (!guide) {
+          return {
+            content:
+              "Esa guía no está disponible; explícalo con tus palabras o usa ver_portafolio.",
+            isError: true,
+          };
+        }
+        const { sendImage } = await import("../wa-api.ts");
+        await sendImage(ctx.phoneNumber, guide.url, guide.caption);
+        ctx.sentToClient = true;
+        return {
+          content:
+            "Guía enviada con su pie de foto. Cierra con un mensaje breve que ancle el siguiente paso.",
+        };
       }
 
       case "ver_carrito":
