@@ -7,10 +7,15 @@ import {
 } from "./agent.ts";
 import type { AgentApiResult } from "./anthropic.ts";
 import { buildAgentHistory } from "./history.ts";
-import { limaNowBlock } from "./prompt.ts";
+import {
+  AGENT_EMOTIONAL_TOOL_NOTE,
+  buildAgentSystem,
+  limaNowBlock,
+} from "./prompt.ts";
 import { AGENT_TOOLS, resolveBookingItems, runAgentTool } from "./tools.ts";
 import type { ServiceCatalog } from "../lib/services-catalog.ts";
 import type { WabaConfigMap } from "../lib/waba-config.ts";
+import { EMOTIONAL_SELLING_CTWA_EXT_LIFT_DEFAULT } from "../lib/emotional-selling.ts";
 
 const cfg = (entries: Record<string, Record<string, unknown>>): WabaConfigMap =>
   new Map(Object.entries(entries));
@@ -96,6 +101,47 @@ Deno.test("historial: gap >2h descarta lo anterior", () => {
 Deno.test("limaNowBlock usa la fecha de Lima", () => {
   const block = limaNowBlock(new Date("2026-10-09T03:30:00Z")); // 22:30 del 8 en Lima
   assertStringIncludes(block, "2026-10-08");
+});
+
+Deno.test("buildAgentSystem: CTWA inyecta venta emocional + nota de tools", () => {
+  const emptyCatalog = {
+    services: [],
+    packs: [],
+    categories: [],
+    promotions: [],
+    servicesByCategory: new Map(),
+    packsByCategory: new Map(),
+    servicesById: new Map(),
+    packsById: new Map(),
+    portfolioIndex: [],
+  } as unknown as ServiceCatalog;
+  const withCtwa = buildAgentSystem({
+    wabaConfig: cfg({}),
+    catalog: emptyCatalog,
+    clientContext: "CLIENTA: test",
+    staffOutInHistory: false,
+    isCtwaLead: true,
+    now: new Date("2026-10-08T15:00:00Z"),
+  });
+  const dynamic = withCtwa[withCtwa.length - 1]!.text;
+  assertStringIncludes(dynamic, "VENTA EMOCIONAL CTWA");
+  assertStringIncludes(dynamic, AGENT_EMOTIONAL_TOOL_NOTE.slice(0, 40));
+  assertStringIncludes(
+    dynamic,
+    EMOTIONAL_SELLING_CTWA_EXT_LIFT_DEFAULT.slice(0, 40),
+  );
+  const organic = buildAgentSystem({
+    wabaConfig: cfg({}),
+    catalog: emptyCatalog,
+    clientContext: "CLIENTA: test",
+    staffOutInHistory: false,
+    isCtwaLead: false,
+    now: new Date("2026-10-08T15:00:00Z"),
+  });
+  assertEquals(
+    organic[organic.length - 1]!.text.includes("VENTA EMOCIONAL CTWA"),
+    false,
+  );
 });
 
 Deno.test("sanitizeAgentReply bloquea confirmación fabricada y promesa de reembolso", () => {

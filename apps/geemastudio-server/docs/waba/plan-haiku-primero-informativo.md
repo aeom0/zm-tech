@@ -1,17 +1,18 @@
-# Plan: Haiku-primero para preguntas informativas del bot WABA (no-cutover)
+# Plan: Haiku-primero para preguntas informativas del bot WABA (histórico)
 
-> Origen: pedido explícito de Alberto (13-sep-2026) tras el caso "Y anime tienen o wispy"
-> (boilerplate genérico + spam del selector de fecha). Complementa, sin contradecir,
-> la decisión de **no cutover** documentada en [`ROADMAP.md`](../../ROADMAP.md) §
-> *Evaluación de arquitectura — clasificación de intención por Haiku*.
+> **Superseded (8-oct-2026):** el cutover al agente Haiku 5.5 con tools está en
+> [`plan-cutover-agente-haiku.md`](plan-cutover-agente-haiku.md) (Fase 1: PR zm-tech #77).
+> Este plan sigue describiendo el comportamiento del **bot clásico** (fallback cuando
+> `agent_enabled=false` o steps de pago/identidad). No abrir PRs nuevos de regex
+> informativos: el camino es el agente.
 >
-> **Estado (18-sep-2026):** Batches **1 y 2** ✅ (PR #120, validados en vivo).
-> Batch **3** ✅ (carrito/ubicación, QA B1–B3b). Batch **4** ✅ catch-all
-> `browsing` + agendar mixto (Edgar …2122) — **validado en tráfico real**: análisis
-> de rutina 17-sep (`docs/waba/tenants/zm-lash/analysis/2026-09-17-analysis.md`, 19 hilos, 0 bugs
-> nuevos atribuibles a Batch 4; casos Yelitza/Jerita/Virginia post-merge sin
-> regresión). Pago/identidad siguen determinísticos. Dispatcher:
-> [`08-PLAN-dispatcher-modular.md`](https://github.com/aeom0/zm-tech/blob/main/docs/geemastudio/docs/plans/08-PLAN-dispatcher-modular.md) Fase 1 código ✅.
+> Origen: pedido explícito de Alberto (13-sep-2026) tras el caso "Y anime tienen o wispy"
+> (boilerplate genérico + spam del selector de fecha). En su momento complementaba la
+> decisión de **no cutover** del piloto sombra (ago-2026); esa decisión quedó anulada
+> por el plan de cutover al agente.
+>
+> **Estado Batches 1–4 (18-sep-2026):** ✅ en el bot clásico (PR #120 / #131; B4 validado
+> en tráfico real 17-sep). Pago/identidad siguen determinísticos en el híbrido Fase 1.
 
 ## Contexto
 
@@ -20,8 +21,9 @@ independientes antes de que Haiku participe (inventario completo:
 [`auditoria-intenciones-waba.md`](auditoria-intenciones-waba.md)). En agosto corrió en
 producción un piloto "modo sombra" que comparó regex vs Haiku **solo en los 5 intents
 🔴 críticos** de dinero/citas (crear cita, reprogramar, confirmar, reclamo). Ahí el
-regex ganó 7/7 en auditoría manual, y la decisión fue **no hacer cutover** — correcta y
-vigente, **no se revisita en este plan**.
+regex ganó 7/7 en auditoría manual, y la decisión entonces fue **no hacer cutover**.
+Esa decisión quedó anulada el 8-oct-2026 por el agente con tools; este texto describe
+el fallback clásico.
 
 El problema real, confirmado en vivo el 13-sep (Alberto VE …0417): los gates 🟡/🟢
 (informativos/navegación, ej. `matchesMidAgendaBrowseOrAddIntent`,

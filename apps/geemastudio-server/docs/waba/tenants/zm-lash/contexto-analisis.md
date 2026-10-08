@@ -18,9 +18,10 @@ Directrices del bot: [directrices-haiku.md](./directrices-haiku.md) · lecciones
   (`meta_ads_hero_*` / `meta_ads_image_*` suelen ir vacíos). Collages **segmentados** tras rubro Ext/Lift:
   `meta_ads_extensiones_image_1/2` + `meta_ads_lifting_image_1` — ver directrices-haiku §2.2.
   **No** flaggear el saludo de interés como “menú dump”, ni la ausencia de genéricos como bug.
-- Haiku-primero informativo: apps/geemastudio-server/docs/waba/plan-haiku-primero-informativo.md — Batches 1–4 **código en main**
-  (#120 / #131). **B4 prueba real pendiente** (Edgar …2122). No marcar handoff intencional a Haiku
-  (browsing catch-all / mid-agenda / pregunta mid-boleta) como DISPATCHER_BYPASS.
+- Cutover agente: apps/geemastudio-server/docs/waba/plan-cutover-agente-haiku.md — con `agent_enabled`,
+  texto libre en browsing lo atiende el agente (tools). Fallback = bot clásico. Venta emocional CTWA
+  sigue (prompt CMS + nudges). No marcar handoff intencional a Haiku/agente como DISPATCHER_BYPASS.
+- Haiku-primero (histórico / bot clásico): plan-haiku-primero-informativo.md — Batches 1–4 en main.
 - Prior reports: apps/geemastudio-server/docs/waba/tenants/zm-lash/analysis/LECCIONES.md (closed patterns) + the single live YYYY-MM-DD-analysis.md
   (see apps/geemastudio-server/docs/waba/tenants/zm-lash/analysis/README.md retention — do NOT keep a growing pile of reports)
 - Closed patterns: if LECCIONES marks a pattern ✅ and ALL sample failures are **before** the noted deploy →

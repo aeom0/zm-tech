@@ -105,9 +105,10 @@ export async function runAgent(opts: {
   };
 
   try {
-    const [clientContext, history] = await Promise.all([
+    const [clientContext, history, session] = await Promise.all([
       getClientContext(supabase, phoneNumber),
       loadAgentHistory(supabase, phoneNumber, opts.messageText),
+      getSession(supabase, phoneNumber),
     ]);
     const system = buildAgentSystem({
       wabaConfig: opts.wabaConfig,
@@ -115,6 +116,7 @@ export async function runAgent(opts: {
       phoneCountry: opts.phoneCountry,
       clientContext,
       staffOutInHistory: history.staffOutInHistory,
+      isCtwaLead: Boolean(session?.from_ad_at),
     });
     const messages: AgentMessage[] = [...history.messages];
 

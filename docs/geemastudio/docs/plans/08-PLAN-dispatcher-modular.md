@@ -3,12 +3,12 @@
 > **Ubicación canónica consolidada:** Plan 08. El archivo de origen se conserva temporalmente como referencia legacy.
 
 
-> Extraer el waterfall de [`handlers/dispatcher.ts`](https://github.com/aeom0/ZM-Lash-and-Nails-Beauty/blob/main/supabase/functions/whatsapp-webhook/handlers/dispatcher.ts) a módulos por flujo **sin cambiar el orden de los `if`**. No es un router nuevo ni cutover a Haiku.
+> Extraer el waterfall de [`handlers/dispatcher.ts`](https://github.com/aeom0/zm-tech/blob/main/apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/dispatcher.ts) a módulos por flujo **sin cambiar el orden de los `if`**. No es un router nuevo ni cutover a Haiku.
 
-**Última actualización:** 2026-09-17  
-**Estado:** Fase 1 **merged** (PR [#131](https://github.com/aeom0/ZM-Lash-and-Nails-Beauty/pull/131); helpers + CTWA + taps de menú; `dispatcher.ts` ~2500 líneas). **Prueba real B4 / Edgar …2122 pendiente** (no bloquea merges posteriores de fixes en la misma rama de producto).
+**Última actualización:** 2026-10-08  
+**Estado:** Fase 1 **merged** (PR [#131](https://github.com/aeom0/ZM-Lash-and-Nails-Beauty/pull/131); helpers + CTWA + taps; `dispatcher.ts` ~2500 líneas). El cutover al agente Haiku 5.5 es otro track: [`plan-cutover-agente-haiku.md`](https://github.com/aeom0/zm-tech/blob/main/apps/geemastudio-server/docs/waba/plan-cutover-agente-haiku.md) (zm-tech PR #77) — con flag, el agente corre *antes* de `dispatch`; este plan sigue siendo la modularización del fallback.
 
-Relacionado: [`plan-haiku-primero-informativo.md`](https://github.com/aeom0/ZM-Lash-and-Nails-Beauty/blob/main/docs/waba/plan-haiku-primero-informativo.md) (Batches 1–4: Haiku antes de boilerplate en gates 🟡/🟢). Este plan **no** reabre no-cutover; 🔴 pago / cita / identidad siguen determinísticos.
+Relacionado (histórico): [`plan-haiku-primero-informativo.md`](https://github.com/aeom0/zm-tech/blob/main/apps/geemastudio-server/docs/waba/plan-haiku-primero-informativo.md). En el híbrido Fase 1, 🔴 pago / cita / identidad siguen determinísticos vía `dispatch`.
 
 ## Problema
 

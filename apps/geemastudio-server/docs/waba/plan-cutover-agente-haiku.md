@@ -2,11 +2,13 @@
 
 > Origen: pedido explícito de Alberto (8-oct-2026) tras otra tanda de fallas del bot.
 > **Reemplaza** la decisión de *no cutover* de [`plan-haiku-primero-informativo.md`](plan-haiku-primero-informativo.md)
-> y la sección *Evaluación de arquitectura* de [`ROADMAP.md`](../../ROADMAP.md). Tras aprobarse,
-> actualizar ambos y la regla dura «WABA: Haiku primero» de `AGENTS.md`.
+> y la sección histórica *Evaluación de arquitectura* (antes en ZM Lash `ROADMAP.md`; ya apunta acá).
 >
-> **Estado:** plan escrito, sin código. Decisiones tomadas: modelo `claude-haiku-5-5`,
-> `effort: medium`, corte con flag por tenant, híbrido temporal mientras no exista la Fase 2.
+> **Estado (8-oct-2026):** Fase 1 en código — PR [#77](https://github.com/aeom0/zm-tech/pull/77)
+> (`agent/` + `agent_enabled` / allowlist). Modelo `claude-haiku-5-5`, `effort: medium`.
+> Híbrido: agente en `browsing`/sin sesión; pago/identidad siguen en `dispatch` hasta Fase 2.
+> **Venta emocional CTWA:** se inyecta si `from_ad_at` (mismo CMS `haiku_emotional_selling_ctwa_ext_lift`
+> + nota de tools del agente). Nudges/captions de `lib/emotional-selling.ts` siguen en el flujo clásico.
 
 ## Por qué
 

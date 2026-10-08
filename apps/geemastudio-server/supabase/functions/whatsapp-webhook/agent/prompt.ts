@@ -7,6 +7,7 @@ import {
   buildCatalogAppendix,
   buildLanguageInstruction,
 } from "../lib/haiku-prompt.ts";
+import { resolveEmotionalSellingPromptBlock } from "../lib/emotional-selling.ts";
 import type { AgentSystemBlock } from "./anthropic.ts";
 
 export const AGENT_INSTRUCTIONS = `MODO AGENTE (WhatsApp):
@@ -17,6 +18,10 @@ export const AGENT_INSTRUCTIONS = `MODO AGENTE (WhatsApp):
 - Nunca digas que una cita quedó confirmada: la cita solo existe cuando el sistema la registra tras el adelanto.
 - Reclamos, devoluciones, cancelar con adelanto, asesoría personal o algo que no puedas resolver: escalar_a_humano.
 - Si la clienta responde con una sola palabra de cortesía, contesta natural; no repitas información ya dada.`;
+
+/** Aclara al modelo que el CMS CTWA aún habla de actions del bot viejo. */
+export const AGENT_EMOTIONAL_TOOL_NOTE =
+  "MODO AGENTE (venta emocional CTWA): ignora menciones a show_category, add_to_cart, action o listas. Ancla el siguiente paso con herramientas (buscar_servicios, ver_portafolio, agregar_al_carrito, consultar_dia, reservar_horario). Sin menú genérico ni presión.";
 
 /** Fecha real de Lima, siempre en el bloque dinámico (sin caché). */
 export function limaNowBlock(now = new Date()): string {
@@ -41,6 +46,8 @@ export function buildAgentSystem(opts: {
   phoneCountry?: string | null;
   clientContext: string;
   staffOutInHistory: boolean;
+  /** Lead CTWA (`whatsapp_sessions.from_ad_at`) — inyecta venta emocional. */
+  isCtwaLead?: boolean;
   now?: Date;
 }): AgentSystemBlock[] {
   const blocks: AgentSystemBlock[] = [];
@@ -64,6 +71,12 @@ export function buildAgentSystem(opts: {
     });
   }
   const dynamic = [limaNowBlock(opts.now), opts.clientContext.trim()];
+  if (opts.isCtwaLead) {
+    dynamic.push(
+      resolveEmotionalSellingPromptBlock(opts.wabaConfig),
+      AGENT_EMOTIONAL_TOOL_NOTE,
+    );
+  }
   if (opts.staffOutInHistory) {
     dynamic.push(
       "CONTEXTO STAFF: el equipo humano escribió en este hilo (mensajes marcados [Equipo — mensaje del staff]). No contradigas lo que dijo el equipo y continúa desde ahí.",

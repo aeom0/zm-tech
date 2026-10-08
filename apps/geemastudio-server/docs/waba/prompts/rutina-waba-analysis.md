@@ -76,7 +76,8 @@ an appointment. Then produce an actionable report.
 - Meta Ads CTA: lib/meta-ads-cta.ts (`isMetaAdsBoilerplateCta` / `isKnownCtwaCampaignCopy` — BP vs intención;
   Set 2026 "Mirada Espectacular"; **Set-Oct 2026** "estilo de pestañas me queda mejor"; strip emoji; coalesce)
 - QA validation: apps/geemastudio-server/docs/waba/WABA_SIMULATION_VALIDATION.md
-- Haiku-primero informativo: apps/geemastudio-server/docs/waba/plan-haiku-primero-informativo.md
+- Cutover agente Haiku 5.5: apps/geemastudio-server/docs/waba/plan-cutover-agente-haiku.md (Fase 1 / flag `agent_enabled`)
+- Haiku-primero informativo (bot clásico / histórico): apps/geemastudio-server/docs/waba/plan-haiku-primero-informativo.md
 - Prior reports: `<TENANT_DIR>/analysis/LECCIONES.md` (closed patterns) + the single live YYYY-MM-DD-analysis.md
   (see `<TENANT_DIR>/analysis/README.md` retention — do NOT keep a growing pile of reports)
 - Closed patterns: if LECCIONES marks a pattern ✅ and ALL sample failures are **before** the noted deploy →
@@ -173,8 +174,9 @@ Read these files to understand the CURRENT state on main:
 - apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/salon-location.ts (`resolveUbicacionReply` / Kennedy)
 - apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/waba-config.ts (`loadRecentStaffOutboundPhoneSet`)
 - <TENANT_DIR>/directrices-haiku.md
-- apps/geemastudio-server/docs/waba/plan-haiku-primero-informativo.md (Batches 1–4 código ✅; B4 prueba real pendiente.
-  No marcar como DISPATCHER_BYPASS el handoff intencional a Haiku)
+- apps/geemastudio-server/docs/waba/plan-cutover-agente-haiku.md (Fase 1; flag `agent_enabled`)
+- apps/geemastudio-server/docs/waba/plan-haiku-primero-informativo.md (histórico / bot clásico.
+  No marcar como DISPATCHER_BYPASS el handoff intencional a Haiku/agente)
 - zm-tech/docs/geemastudio/docs/plans/08-PLAN-dispatcher-modular.md (Fase 1 merged #131)
 - apps/geemastudio-server/docs/waba/WABA_CAPACITY.md (tope 1 / 2 especial + ocupación real)
 
