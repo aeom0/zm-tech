@@ -58,10 +58,9 @@ export async function generateWelcomeGreeting(
 ): Promise<string | null> {
   const slot = getTimeSlot();
   const slotCtx = settings.welcome_slot_context[slot] ?? "";
-  const promosLine =
-    promoTitles.length > 0
-      ? `Promos activas: ${promoTitles.slice(0, 3).join(", ")}.`
-      : "No hay promos activas este momento.";
+  const promosLine = promoTitles.length > 0
+    ? `Promos activas: ${promoTitles.slice(0, 3).join(", ")}.`
+    : "No hay promos activas este momento.";
   const adCtx = fromAd
     ? "La clienta llegó haciendo clic en un anuncio de Instagram o Facebook — ya mostró interés previo en nuestras promos."
     : "La clienta llegó de forma orgánica por WhatsApp.";

@@ -234,11 +234,12 @@ Deno.serve(async (req: Request) => {
     const {
       data: { user },
     } = await supabase.auth.getUser();
-    if (!user)
+    if (!user) {
       return new Response("Unauthorized", {
         status: 401,
         headers: CORS_HEADERS,
       });
+    }
   }
 
   let phone: string,
@@ -274,7 +275,9 @@ Deno.serve(async (req: Request) => {
     });
   }
   // Permitir solo resumeBot sin mensaje (botón "Reactivar bot" del panel)
-  if (!message && !imageUrl && !audioUrl && !documentUrl && resumeBot !== true) {
+  if (
+    !message && !imageUrl && !audioUrl && !documentUrl && resumeBot !== true
+  ) {
     return new Response("Missing message, imageUrl, audioUrl or documentUrl", {
       status: 400,
       headers: CORS_HEADERS,
@@ -330,8 +333,8 @@ Deno.serve(async (req: Request) => {
   }
 
   const sessionKey = waConversationKey(phone);
-  const sentOk =
-    results.length > 0 && results.some((r) => !metaApiReturnedError(r));
+  const sentOk = results.length > 0 &&
+    results.some((r) => !metaApiReturnedError(r));
 
   // Reactivar bot solo si el panel lo pide explícitamente (resumeBot: true).
   if (resumeBot === true && sessionKey && (results.length === 0 || sentOk)) {

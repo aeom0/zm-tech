@@ -91,9 +91,10 @@ export function matchesNaturalClosingIntent(text: string): boolean {
     return true;
   }
   if (
-    /^(ok|oki|okis|oka|okiss|okey|dale|listo|super|perfecto|igualmente)?\s*gracias\s*$/.test(
-      cleaned,
-    )
+    /^(ok|oki|okis|oka|okiss|okey|dale|listo|super|perfecto|igualmente)?\s*gracias\s*$/
+      .test(
+        cleaned,
+      )
   ) {
     return true;
   }

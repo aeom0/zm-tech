@@ -4,7 +4,10 @@
  */
 
 import type { ServiceCatalog } from "./services-catalog.ts";
-import { parsePackServiceIds, resolveCartItemPrice } from "./services-catalog.ts";
+import {
+  parsePackServiceIds,
+  resolveCartItemPrice,
+} from "./services-catalog.ts";
 import type { CartItem, SupabaseClient } from "./supabase.ts";
 import { addCartItems, upsertSession } from "./supabase.ts";
 

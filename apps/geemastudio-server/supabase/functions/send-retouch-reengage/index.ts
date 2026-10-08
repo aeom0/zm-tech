@@ -128,10 +128,9 @@ Deno.serve(async (req: Request) => {
       { status: 500, headers: { "Content-Type": "application/json" } },
     );
   }
-  const clientTenantId =
-    typeof clientTenant?.tenant_id === "string"
-      ? clientTenant.tenant_id.trim()
-      : "";
+  const clientTenantId = typeof clientTenant?.tenant_id === "string"
+    ? clientTenant.tenant_id.trim()
+    : "";
   if (!clientTenantId) {
     return new Response(
       JSON.stringify({ ok: false, error: "client_not_found" }),

@@ -1,8 +1,8 @@
 // anti-spam.ts — Números bloqueados y copy de operadores (Plan 08)
 
 import {
-  getConfigStringArray,
   FALLBACK_BLOCKED_PHONE_NUMBERS,
+  getConfigStringArray,
   type WabaConfigMap,
 } from "../../lib/waba-config.ts";
 
@@ -55,21 +55,23 @@ export function isBlockedPhone(
 export function isSpamOperatorCopy(messageText: string): boolean {
   const msgNormalized = messageText.trim().toLowerCase();
   return SPAM_PATTERNS.some((pattern) =>
-    msgNormalized.includes(pattern.toLowerCase()),
+    msgNormalized.includes(pattern.toLowerCase())
   );
 }
 
 export function isWaBusinessAutoReply(messageText: string): boolean {
   const msgNormalized = messageText.trim().toLowerCase();
   return (
-    /^(hola[,!]?\s+)?(gracias por (contactarnos|escribirnos|comunicarte)|en qu[eé] te puedo ayudar)/i.test(
-      messageText.trim(),
-    ) ||
+    /^(hola[,!]?\s+)?(gracias por (contactarnos|escribirnos|comunicarte)|en qu[eé] te puedo ayudar)/i
+      .test(
+        messageText.trim(),
+      ) ||
     (msgNormalized.length > 40 &&
       msgNormalized.length < 280 &&
-      /\b(horario de atenci[oó]n|responderemos lo antes posible|este chat es atendido)\b/.test(
-        msgNormalized,
-      ) &&
+      /\b(horario de atenci[oó]n|responderemos lo antes posible|este chat es atendido)\b/
+        .test(
+          msgNormalized,
+        ) &&
       !/\b(cita|agendar|precio|cu[aá]nto|lifting|u[nñ]as|pesta[nñ]as)\b/.test(
         msgNormalized,
       ))

@@ -1,15 +1,15 @@
 // handlers/agenda.ts — Selector de fecha/hora y disponibilidad
 
-import { sendMessage, sendInteractiveList } from "../wa-api.ts";
+import { sendInteractiveList, sendMessage } from "../wa-api.ts";
 import { buildTimeListPage } from "./menu.ts";
 import { formatDateKeyShort, parseLimaLocalToDate } from "../format.ts";
 import type { SupabaseClient } from "../lib/supabase.ts";
 import { employeeRulesDecision } from "../lib/employee-availability.ts";
 import { isTwoPersonSameServiceIds } from "../lib/duo-pack.ts";
 import type {
-  ServiceCatalog,
   CatalogService,
   ExtensionesLane,
+  ServiceCatalog,
 } from "../lib/services-catalog.ts";
 import {
   cartExtensionesLanes,
@@ -31,22 +31,22 @@ import {
   turnoverMinutesForCategory,
 } from "../lib/slot-occupation.ts";
 import {
-  WA_IDS,
+  getKarelisAfternoonStartHour,
   getSalonTimeSlots,
   LIMA_UTC_OFFSET_HOURS,
+  WA_IDS,
   YAPE_PLIN_NUMBER,
-  getKarelisAfternoonStartHour,
 } from "../lib/constants.ts";
 import {
+  getAdvancePaymentRate,
   getDateKeyFromYmd,
   getDateKeyLima,
   getDateSelectorDescription,
   getHolidayOpenUntilHour,
+  getSalonClosedMessage,
   isPeruHoliday,
   isSalonClosed,
   isSunday,
-  getAdvancePaymentRate,
-  getSalonClosedMessage,
 } from "../lib/peru-holidays.ts";
 
 /** Fecha/hora de gestión: todo en hora Lima (UTC-5). Convierte hora Lima → Date UTC para comparar con BD. */
@@ -78,7 +78,9 @@ function formatSlotLabel(hour: number, minute: number): string {
 }
 
 function buildTimeRowId(dateKey: string, hour: number, minute: number): string {
-  return `${WA_IDS.TIME_PREFIX}${dateKey}T${hour.toString().padStart(2, "0")}${minute.toString().padStart(2, "0")}`;
+  return `${WA_IDS.TIME_PREFIX}${dateKey}T${hour.toString().padStart(2, "0")}${
+    minute.toString().padStart(2, "0")
+  }`;
 }
 
 const SHORT_SERVICE_MAX_MINUTES = 60;
@@ -245,10 +247,12 @@ export async function loadDayOccupiedAppointments(
         svcErr.message,
       );
     } else {
-      for (const row of (svcRows ?? []) as {
-        appointment_id: string;
-        service_id: string;
-      }[]) {
+      for (
+        const row of (svcRows ?? []) as {
+          appointment_id: string;
+          service_id: string;
+        }[]
+      ) {
         const list = svcByAppt.get(row.appointment_id) ?? [];
         list.push(row.service_id);
         svcByAppt.set(row.appointment_id, list);
@@ -385,11 +389,15 @@ export async function getEvaluationWindowsTodayLabel(
     .slice(0, 2)
     .map(
       (w) =>
-        `${formatSlotLabel(Math.floor(w.start / 60), w.start % 60)}–${formatSlotLabel(Math.floor(w.end / 60), w.end % 60)}`,
+        `${formatSlotLabel(Math.floor(w.start / 60), w.start % 60)}–${
+          formatSlotLabel(Math.floor(w.end / 60), w.end % 60)
+        }`,
     );
 
   return (
-    `VENTANAS DE EVALUACIÓN HOY: ${ranges.join(" y ")} (huecos libres mientras ` +
+    `VENTANAS DE EVALUACIÓN HOY: ${
+      ranges.join(" y ")
+    } (huecos libres mientras ` +
     "ya hay equipo en el salón por citas agendadas — no encima de otra clienta). " +
     "Solo en estos rangos se puede ofrecer la evaluación gratuita de 15 min " +
     "sin cita previa — fuera de estos rangos no hay evaluación disponible hoy."
@@ -515,14 +523,13 @@ export async function countOverlappingAppointments(
   const catalog = opts?.catalog;
   const serviceIds = opts?.serviceIds ?? [];
   const candidate = buildCandidateInterval(date, catalog, serviceIds, duration);
-  const dayAppts =
-    opts?.preloaded ??
+  const dayAppts = opts?.preloaded ??
     (await loadDayOccupiedAppointments(supabase, dateKey, catalog, excludeId));
   return dayAppts.filter((a) =>
     intervalsOverlap(candidate, {
       start: a.startMinutes,
       end: a.endMinutes,
-    }),
+    })
   ).length;
 }
 
@@ -546,14 +553,13 @@ export async function getOverlappingAppointmentsWithLanes(
   const dateKey = opts?.dateKey ?? getDateKeyLima(date);
   const serviceIds = opts?.serviceIds ?? [];
   const candidate = buildCandidateInterval(date, catalog, serviceIds, duration);
-  const dayAppts =
-    opts?.preloaded ??
+  const dayAppts = opts?.preloaded ??
     (await loadDayOccupiedAppointments(supabase, dateKey, catalog, excludeId));
   const overlapping = dayAppts.filter((a) =>
     intervalsOverlap(candidate, {
       start: a.startMinutes,
       end: a.endMinutes,
-    }),
+    })
   );
   const occupiedLanes = new Set<ExtensionesLane>();
   for (const appt of overlapping) {
@@ -575,8 +581,8 @@ export function isSlotFreeForLanes(
   cap: number,
   requiredLanes: Set<ExtensionesLane>,
 ): boolean {
-  const karelisInPlay =
-    requiredLanes.has("karelis") || occupiedLanes.has("karelis");
+  const karelisInPlay = requiredLanes.has("karelis") ||
+    occupiedLanes.has("karelis");
   const effectiveCap = karelisInPlay ? Math.max(cap, 2) : cap;
   if (count >= effectiveCap) return false;
   for (const lane of requiredLanes) {
@@ -610,7 +616,7 @@ function passesBedGate(
   if (needed === 0) return true;
   // Pico de camillas simultáneas dentro de la ventana de la candidata.
   const overlapping = dayAppts.filter((a) =>
-    intervalsOverlap(candidate, { start: a.startMinutes, end: a.endMinutes }),
+    intervalsOverlap(candidate, { start: a.startMinutes, end: a.endMinutes })
   );
   const points = [
     candidate.start,
@@ -656,10 +662,19 @@ export async function hasSlotCapacityForServices(
     if (decision === "allow") {
       const salonClose = salonCloseMinutesForDateKey(dateKey);
       const incomingNeedsMeal = cartNeedsStephaniMeal(serviceIds, catalog);
-      const candidate = buildCandidateInterval(date, catalog, serviceIds, duration);
-      const dayAppts =
-        opts?.preloaded ??
-        (await loadDayOccupiedAppointments(supabase, dateKey, catalog, excludeId));
+      const candidate = buildCandidateInterval(
+        date,
+        catalog,
+        serviceIds,
+        duration,
+      );
+      const dayAppts = opts?.preloaded ??
+        (await loadDayOccupiedAppointments(
+          supabase,
+          dateKey,
+          catalog,
+          excludeId,
+        ));
       return (
         passesMealGate(dayAppts, candidate, incomingNeedsMeal, salonClose) &&
         passesBedGate(dayAppts, candidate, serviceIds, catalog)
@@ -681,8 +696,7 @@ export async function hasSlotCapacityForServices(
   const salonClose = salonCloseMinutesForDateKey(dateKey);
   const incomingNeedsMeal = cartNeedsStephaniMeal(serviceIds, catalog);
   const candidate = buildCandidateInterval(date, catalog, serviceIds, duration);
-  const dayAppts =
-    opts?.preloaded ??
+  const dayAppts = opts?.preloaded ??
     (await loadDayOccupiedAppointments(supabase, dateKey, catalog, excludeId));
   if (!passesMealGate(dayAppts, candidate, incomingNeedsMeal, salonClose)) {
     return false;
@@ -694,7 +708,7 @@ export async function hasSlotCapacityForServices(
       intervalsOverlap(candidate, {
         start: a.startMinutes,
         end: a.endMinutes,
-      }),
+      })
     ).length;
     return overlapping < cap;
   }
@@ -769,8 +783,7 @@ async function slotHasAvailability(
     serviceIds,
     totalDuration,
   );
-  const dayAppts =
-    preloaded ??
+  const dayAppts = preloaded ??
     (await loadDayOccupiedAppointments(
       supabase,
       dateKey,
@@ -796,7 +809,7 @@ async function slotHasAvailability(
     intervalsOverlap(candidate, {
       start: a.startMinutes,
       end: a.endMinutes,
-    }),
+    })
   ).length;
   return overlapping < cap;
 }
@@ -878,10 +891,9 @@ export async function sendDateSelector(
     return;
   }
 
-  const requiredLanes =
-    catalog && serviceIds.length > 0
-      ? cartExtensionesLanes(serviceIds, catalog)
-      : new Set<ExtensionesLane>();
+  const requiredLanes = catalog && serviceIds.length > 0
+    ? cartExtensionesLanes(serviceIds, catalog)
+    : new Set<ExtensionesLane>();
   const dayCache = new Map<string, LoadedOccupiedAppointment[]>();
 
   const nowUtc = new Date();
@@ -1049,10 +1061,9 @@ export async function sendTimeSelector(
     return true;
   }
 
-  const requiredLanes =
-    catalog && serviceIds.length > 0
-      ? cartExtensionesLanes(serviceIds, catalog)
-      : new Set<ExtensionesLane>();
+  const requiredLanes = catalog && serviceIds.length > 0
+    ? cartExtensionesLanes(serviceIds, catalog)
+    : new Set<ExtensionesLane>();
   const dayCache = new Map<string, LoadedOccupiedAppointment[]>();
 
   const slots = getSalonTimeSlots(dayOfWeek, dateKey);

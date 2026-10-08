@@ -119,8 +119,7 @@ export function buildLanguageInstruction(
   if (SPANISH_ONLY_CODES.has(phoneCountry)) return null;
 
   const language = getLanguageForCountry(phoneCountry);
-  const langName =
-    language ??
+  const langName = language ??
     "el idioma principal usado en el país del prefijo telefónico (si no estás segura, inglés y español)";
 
   return [
@@ -172,7 +171,9 @@ export function buildCatalogAppendix(catalog: ServiceCatalog): string {
           listPrice,
         );
         lines.push(
-          `- [${svc.id}] ${svc.name} — S/${formatPromptPrice(price)} (cita ~${svc.duration} min en salón)`,
+          `- [${svc.id}] ${svc.name} — S/${
+            formatPromptPrice(price)
+          } (cita ~${svc.duration} min en salón)`,
         );
       }
     }
@@ -221,31 +222,31 @@ export function buildCatalogAppendix(catalog: ServiceCatalog): string {
         }`,
       );
       for (const item of promo.items ?? []) {
-        const pack =
-          item.item_type === "pack"
-            ? catalog.packsById.get(item.item_id)
-            : undefined;
-        const svc =
-          item.item_type === "service"
-            ? catalog.servicesById.get(item.item_id)
-            : undefined;
-        const name =
-          item.item_type === "pack"
-            ? (pack?.short_name ?? pack?.title ?? "pack")
-            : (svc?.name ?? "servicio");
-        const full =
-          item.item_type === "pack"
-            ? parseFloat(String(pack?.pack_price ?? 0)) || 0
-            : parseFloat(String(svc?.price ?? 0)) || 0;
+        const pack = item.item_type === "pack"
+          ? catalog.packsById.get(item.item_id)
+          : undefined;
+        const svc = item.item_type === "service"
+          ? catalog.servicesById.get(item.item_id)
+          : undefined;
+        const name = item.item_type === "pack"
+          ? (pack?.short_name ?? pack?.title ?? "pack")
+          : (svc?.name ?? "servicio");
+        const full = item.item_type === "pack"
+          ? parseFloat(String(pack?.pack_price ?? 0)) || 0
+          : parseFloat(String(svc?.price ?? 0)) || 0;
         const disc = parseFloat(String(item.discounted_price)) || 0;
         const qty = item.quantity > 1 ? ` ×${item.quantity}` : "";
         if (full > 0 && disc > 0 && Math.abs(full - disc) >= 0.5) {
           lines.push(
-            `  - [${item.item_id}] ${name}${qty} — full S/${formatPromptPrice(full)} → promo S/${formatPromptPrice(disc)}`,
+            `  - [${item.item_id}] ${name}${qty} — full S/${
+              formatPromptPrice(full)
+            } → promo S/${formatPromptPrice(disc)}`,
           );
         } else {
           lines.push(
-            `  - [${item.item_id}] ${name}${qty} — S/${formatPromptPrice(disc || full)}`,
+            `  - [${item.item_id}] ${name}${qty} — S/${
+              formatPromptPrice(disc || full)
+            }`,
           );
         }
       }

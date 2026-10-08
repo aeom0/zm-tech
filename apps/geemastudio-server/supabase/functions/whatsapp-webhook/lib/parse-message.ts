@@ -11,8 +11,9 @@ function getReplyField(
   field: string,
 ): string | undefined {
   const reply = obj[keySnake] ?? obj[keyCamel];
-  if (!reply || typeof reply !== "object" || !(field in reply))
+  if (!reply || typeof reply !== "object" || !(field in reply)) {
     return undefined;
+  }
   const val = (reply as Record<string, unknown>)[field];
   return val != null ? String(val) : undefined;
 }
@@ -55,7 +56,7 @@ export function getInteractiveTitle(
 
   return (
     getReplyField(obj, "list_reply", "listReply", "title") ??
-    getReplyField(obj, "button_reply", "buttonReply", "title")
+      getReplyField(obj, "button_reply", "buttonReply", "title")
   );
 }
 

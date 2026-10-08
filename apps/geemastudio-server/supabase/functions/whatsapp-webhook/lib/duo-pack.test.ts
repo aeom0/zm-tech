@@ -28,7 +28,10 @@ Deno.test("la lista a la clienta queda en punto", () => {
   ]);
   assert(collapsed.length === 3, "tres horas");
   assert(collapsed[0].hour === 10 && collapsed[0].minute === 0, "10 en punto");
-  assert(collapsed[2].hour === 17 && collapsed[2].minute === 30, "solo la media");
+  assert(
+    collapsed[2].hour === 17 && collapsed[2].minute === 30,
+    "solo la media",
+  );
   assert(formatHourCompact(10, 0) === "10 AM", "10 AM");
   assert(formatHourCompact(17, 0) === "5 PM", "5 PM");
   assert(formatHourCompact(17, 30) === "5:30 PM", "5:30 sigue visible");

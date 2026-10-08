@@ -2,26 +2,26 @@
 // CRÍTICO: verify_jwt debe ser false (Meta no envía JWT). Ver docs/ops/EDGE_FUNCTIONS.md.
 
 import {
-  validateGetVerify,
-  parsePostBody,
   isWhatsAppPayload,
+  parsePostBody,
+  validateGetVerify,
 } from "./lib/auth.ts";
 import {
-  getSupabase,
   getOrCreateClient,
   getSession,
+  getSupabase,
   logMessage as logInMessage,
 } from "./lib/supabase.ts";
 import {
   claimInboundMessage,
   coalesceTextBurstWithRetry,
-  shouldSkipDispatchPeerAlreadyHandled,
-  isInboundAfterLeaderCoalesceCoverage,
   isInboundAfterDispatchAnswered,
+  isInboundAfterLeaderCoalesceCoverage,
   markDispatchAnsweredThrough,
-  waitAndClaimDispatchTurn,
   POST_WAIT_SKIP_LOOKBACK_MS,
   releaseDispatchTurn,
+  shouldSkipDispatchPeerAlreadyHandled,
+  waitAndClaimDispatchTurn,
 } from "./lib/inbound-gate.ts";
 import { initMessageLogger } from "./lib/message-logger.ts";
 import { loadCatalog } from "./lib/services-catalog.ts";
@@ -34,10 +34,10 @@ import { runWithRequestTenantId } from "./lib/tenant.ts";
 import { ensureSalonHolidaysLoaded } from "./lib/peru-holidays.ts";
 import { ensureTenantWabaRulesLoaded } from "./lib/tenant-rules.ts";
 import {
-  getMessageText,
+  getButtonReplyText,
   getInteractiveId,
   getInteractiveTitle,
-  getButtonReplyText,
+  getMessageText,
   getReactionEmoji,
   getReferral,
   isFromAd,
@@ -86,10 +86,9 @@ async function processMessage(body: Record<string, unknown>): Promise<void> {
           field: String(change.field),
           value: value ?? null,
           phoneNumberId,
-          wabaId:
-            (typeof entry?.id === "string" && entry.id !== ""
-              ? entry.id
-              : null) ??
+          wabaId: (typeof entry?.id === "string" && entry.id !== ""
+            ? entry.id
+            : null) ??
             Deno.env.get("WABA_ID") ??
             Deno.env.get("WHATSAPP_BUSINESS_ACCOUNT_ID") ??
             null,
@@ -141,8 +140,7 @@ async function processMessage(body: Record<string, unknown>): Promise<void> {
         string,
         unknown
       >;
-      const contactName =
-        (contact?.profile as Record<string, string>)?.name ??
+      const contactName = (contact?.profile as Record<string, string>)?.name ??
         "Cliente WhatsApp";
       const contactUsernameRaw = (contact?.profile as Record<string, string>)
         ?.username;
@@ -195,16 +193,14 @@ async function processMessage(body: Record<string, unknown>): Promise<void> {
       const mediaPayload = message[msgType] as
         | Record<string, unknown>
         | undefined;
-      const mediaId =
-        mediaPayload && typeof mediaPayload.id === "string"
-          ? mediaPayload.id
-          : null;
+      const mediaId = mediaPayload && typeof mediaPayload.id === "string"
+        ? mediaPayload.id
+        : null;
       // Preferir el título legible sobre el ID interno para el log (panel web-waba-mensajes).
       // Usar || (no ??) para que un messageText vacío (mensajes button/image) no
       // corte la cadena y caiga al siguiente valor legible.
       // reactionEmoji: emoji real de "reaction" (Meta) en vez del literal "[reaction]".
-      const inContent =
-        interactiveTitle ||
+      const inContent = interactiveTitle ||
         buttonReplyText ||
         messageText ||
         interactiveId ||
@@ -270,14 +266,14 @@ async function processMessage(body: Record<string, unknown>): Promise<void> {
           mediaId,
           caption: null,
         }).catch((err: unknown) =>
-          console.error("[WABA] persist sticker:", err),
+          console.error("[WABA] persist sticker:", err)
         );
       }
 
       const inboundReceivedAt = Date.now();
 
-      const isTextBurst =
-        !interactiveId && msgType === "text" && messageText.length > 0;
+      const isTextBurst = !interactiveId && msgType === "text" &&
+        messageText.length > 0;
 
       // Para respuestas de botón de plantilla (quick reply), pasar el texto del
       // botón al dispatcher como si fuera texto libre (p. ej. "Confirmar").
@@ -541,18 +537,16 @@ async function processMessage(body: Record<string, unknown>): Promise<void> {
       const contact = (val?.contacts as unknown[])?.[0] as
         | Record<string, unknown>
         | undefined;
-      const fromPhone =
-        typeof msg?.from === "string" && msg.from.length > 0
-          ? msg.from
-          : undefined;
+      const fromPhone = typeof msg?.from === "string" && msg.from.length > 0
+        ? msg.from
+        : undefined;
       const fromUserIdRaw =
         (typeof msg?.from_user_id === "string" && msg.from_user_id) ||
         (typeof contact?.user_id === "string" && contact.user_id) ||
         undefined;
-      fromUserId =
-        typeof fromUserIdRaw === "string" && isWaBsuid(fromUserIdRaw)
-          ? fromUserIdRaw
-          : undefined;
+      fromUserId = typeof fromUserIdRaw === "string" && isWaBsuid(fromUserIdRaw)
+        ? fromUserIdRaw
+        : undefined;
       // Misma clave de hilo que el happy path (E.164 o BSUID).
       to = waConversationKey(fromPhone || fromUserId || "") || undefined;
       contactName = (contact?.profile as Record<string, string> | undefined)
@@ -626,7 +620,7 @@ Deno.serve(async (req: Request) => {
       g.EdgeRuntime.waitUntil(promise);
     } else {
       void promise.catch((e) =>
-        console.error("[WABA] processMessage error:", e),
+        console.error("[WABA] processMessage error:", e)
       );
     }
   } catch {

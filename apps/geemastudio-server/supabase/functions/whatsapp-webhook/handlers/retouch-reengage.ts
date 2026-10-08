@@ -10,9 +10,9 @@ import type { ServiceCatalog } from "../lib/services-catalog.ts";
 import {
   addToCart,
   clearCart,
-  upsertSession,
   logMessage,
   type SupabaseClient,
+  upsertSession,
 } from "../lib/supabase.ts";
 import { sendMessage } from "../wa-api.ts";
 import { callAnthropicAPI } from "./ai-assistant.ts";
@@ -154,11 +154,11 @@ async function generateHaikuReengageText(
   kind: RetouchButtonKind,
   ctx: OfferCtx,
 ): Promise<string | null> {
-  const daysBit =
-    ctx.daysSince != null
-      ? `Han pasado ${ctx.daysSince} días desde su última visita.`
-      : "Vuelve tras un tiempo sin visitarnos.";
-  const system = `Eres parte del equipo de ZM Lash & Nails Beauty (Surco, Perú). Respondes el WhatsApp como una asesora real del salón.
+  const daysBit = ctx.daysSince != null
+    ? `Han pasado ${ctx.daysSince} días desde su última visita.`
+    : "Vuelve tras un tiempo sin visitarnos.";
+  const system =
+    `Eres parte del equipo de ZM Lash & Nails Beauty (Surco, Perú). Respondes el WhatsApp como una asesora real del salón.
 Tono: cálido, cercano, profesional; la clienta debe sentir que es importante para el equipo y que están pendientes de ella y sus servicios.
 Reglas:
 - 2 a 4 frases cortas en español (es-PE).
@@ -171,16 +171,21 @@ Reglas:
 
   let userMsg: string;
   if (kind === "agendar") {
-    userMsg = `La clienta ${ctx.clientName} tocó Agendar en el recordatorio de retoque.
-Servicio ofrecido: ${ctx.serviceName}${ctx.categoryName ? ` (${ctx.categoryName})` : ""}.
+    userMsg =
+      `La clienta ${ctx.clientName} tocó Agendar en el recordatorio de retoque.
+Servicio ofrecido: ${ctx.serviceName}${
+        ctx.categoryName ? ` (${ctx.categoryName})` : ""
+      }.
 ${daysBit} Tiene ~${ctx.totalVisits} visitas completadas.
 Escribe un mensaje breve agradeciendo su confianza e invitándola a elegir día y hora en el selector que le enviaremos justo después. No listes días.`;
   } else if (kind === "otro") {
-    userMsg = `La clienta ${ctx.clientName} tocó "Otro servicio" en el recordatorio de retoque (habíamos ofrecido ${ctx.serviceName}).
+    userMsg =
+      `La clienta ${ctx.clientName} tocó "Otro servicio" en el recordatorio de retoque (habíamos ofrecido ${ctx.serviceName}).
 ${daysBit}
 Escribe un mensaje breve mostrando apertura a lo que quiera esta vez; le enviaremos la lista de su categoría después.`;
   } else {
-    userMsg = `La clienta ${ctx.clientName} tocó "Más adelante" en el recordatorio de retoque (${ctx.serviceName}).
+    userMsg =
+      `La clienta ${ctx.clientName} tocó "Más adelante" en el recordatorio de retoque (${ctx.serviceName}).
 Escribe UNA frase cálida respetando su tiempo, sin presión ni menú.`;
   }
 
@@ -234,8 +239,9 @@ function categoryFromSessionCart(
   let cart: Array<{ item_type?: string; item_id?: string }> = [];
   try {
     const raw = session?.cart_items;
-    cart =
-      typeof raw === "string" ? JSON.parse(raw) : ((raw as typeof cart) ?? []);
+    cart = typeof raw === "string"
+      ? JSON.parse(raw)
+      : ((raw as typeof cart) ?? []);
   } catch {
     return null;
   }
@@ -248,8 +254,9 @@ function categoryFromSessionCart(
     if (!pack?.category_id) return null;
     return {
       categoryId: pack.category_id,
-      categoryName:
-        catalog.categories.find((c) => c.id === pack.category_id)?.name ?? null,
+      categoryName: catalog.categories.find((c) =>
+        c.id === pack.category_id
+      )?.name ?? null,
     };
   }
   const svc = catalog.servicesById.get(id);

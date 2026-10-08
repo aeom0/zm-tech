@@ -42,7 +42,8 @@ export const EMOTIONAL_NUDGE2_REPLY_CTWA_DEFAULT =
 export const EMOTIONAL_PRICE_CTA_EXT_DEFAULT =
   "Así puede quedar {parte} con {servicio} ✨\nEsa mirada que buscas puede ser tuya — ¿te agendo cuando te animes? 💜";
 
-export const EMOTIONAL_SELLING_CTWA_EXT_LIFT_DEFAULT = `VENTA EMOCIONAL CTWA (Extensiones / Lifting) — solo si la clienta llegó por anuncio Meta:
+export const EMOTIONAL_SELLING_CTWA_EXT_LIFT_DEFAULT =
+  `VENTA EMOCIONAL CTWA (Extensiones / Lifting) — solo si la clienta llegó por anuncio Meta:
 - Tono: metáfora suave (valoración, invertir en ti, merecer verte bien). PROHIBIDO rol de psicóloga/terapeuta ni claims médicos.
 - Máx 2 burbujas cortas; siempre anclar a un paso concreto (show_category, add_to_cart, calendario). Nunca inventar precios.
 - Precio genérico pestañas: valida el deseo + beneficio emocional breve antes de la lista.
@@ -183,14 +184,12 @@ export function buildAlmostCloseNudge1Text(
   serviceName: string,
   dayAlreadyPicked = false,
 ): string {
-  const key =
-    rubro === "lifting"
-      ? "emotional_almost_close_lines_lift"
-      : "emotional_almost_close_lines_ext";
-  const defaults =
-    rubro === "lifting"
-      ? EMOTIONAL_ALMOST_CLOSE_LINES_LIFT_DEFAULT
-      : EMOTIONAL_ALMOST_CLOSE_LINES_EXT_DEFAULT;
+  const key = rubro === "lifting"
+    ? "emotional_almost_close_lines_lift"
+    : "emotional_almost_close_lines_ext";
+  const defaults = rubro === "lifting"
+    ? EMOTIONAL_ALMOST_CLOSE_LINES_LIFT_DEFAULT
+    : EMOTIONAL_ALMOST_CLOSE_LINES_EXT_DEFAULT;
   const allLines = getConfigLines(wabaConfig, key, defaults);
   // Si el día ya está elegido (falta solo la hora), evita líneas que invitan
   // a "elegir el día" — Doris …8088 recibió "Solo falta elegir el día" con

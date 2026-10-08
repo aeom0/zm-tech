@@ -118,7 +118,8 @@ async function askHaikuReengage(
     "nena, bebé, cariño, reina, princesa, mamacita. PROHIBIDO volver a decir ¡Hola!/Hola " +
     "(el saludo ya se dio). Trata como Srta. {nombre} si lo conoces; si no, directo al tema. " +
     "NO inventes precios. " +
-    "DATOS REALES del salón (úsalos tal cual si la clienta preguntó; NUNCA inventes dirección, distrito, horarios ni precios): dirección: " + SALON_ADDRESS + ". " +
+    "DATOS REALES del salón (úsalos tal cual si la clienta preguntó; NUNCA inventes dirección, distrito, horarios ni precios): dirección: " +
+    SALON_ADDRESS + ". " +
     "NUNCA " +
     "digas que le dejas calendario/días. NUNCA redirijas al 932 (este YA es el " +
     "canal). Responde ÚNICAMENTE JSON: " +
@@ -198,8 +199,8 @@ Deno.serve(async (req: Request) => {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const qaBypassHours =
-    isCron && req.headers.get("X-QA-Bypass-Hours") === "true";
+  const qaBypassHours = isCron &&
+    req.headers.get("X-QA-Bypass-Hours") === "true";
 
   const supabase = getSupabase();
   const nowIso = new Date().toISOString();
@@ -304,7 +305,9 @@ Deno.serve(async (req: Request) => {
             lastOutRow?.source === "staff_app"
           ) {
             console.log(
-              `[browse-reengage] skip staff OUT reciente: ${row.phone.slice(-4)}`,
+              `[browse-reengage] skip staff OUT reciente: ${
+                row.phone.slice(-4)
+              }`,
             );
             await supabase
               .from("whatsapp_sessions")
@@ -324,10 +327,9 @@ Deno.serve(async (req: Request) => {
 
           // Bias: si Haiku falla, sí reenganchar (no perder lead)
           let shouldSend = verdict?.shouldSend ?? true;
-          let message =
-            verdict?.shouldSend && verdict.message.trim()
-              ? verdict.message.trim()
-              : FALLBACK_MESSAGE;
+          let message = verdict?.shouldSend && verdict.message.trim()
+            ? verdict.message.trim()
+            : FALLBACK_MESSAGE;
 
           if (verdict && !verdict.shouldSend) {
             shouldSend = false;
@@ -351,9 +353,10 @@ Deno.serve(async (req: Request) => {
           if (shouldSend) {
             // Defensa: no prometer calendario
             if (
-              /d[ií]as?\s+disponibles|te\s+dejo\s+los\s+d[ií]as|calendario/i.test(
-                message,
-              )
+              /d[ií]as?\s+disponibles|te\s+dejo\s+los\s+d[ií]as|calendario/i
+                .test(
+                  message,
+                )
             ) {
               message = FALLBACK_MESSAGE;
             }
@@ -400,7 +403,9 @@ Deno.serve(async (req: Request) => {
             // CTWA bounce: deja el reenganche a ads-bounce
             if (fromAdAt > 0 && fromAdAt >= lastInAt) {
               console.log(
-                `[browse-reengage] skip CTWA → ads-bounce: ${row.phone.slice(-4)}`,
+                `[browse-reengage] skip CTWA → ads-bounce: ${
+                  row.phone.slice(-4)
+                }`,
               );
               await supabase
                 .from("whatsapp_sessions")
@@ -418,7 +423,9 @@ Deno.serve(async (req: Request) => {
               (cartNudge2At > 0 && cartNudge2At >= lastInAt)
             ) {
               console.log(
-                `[browse-reengage] skip ya reenganchada: ${row.phone.slice(-4)}`,
+                `[browse-reengage] skip ya reenganchada: ${
+                  row.phone.slice(-4)
+                }`,
               );
               await supabase
                 .from("whatsapp_sessions")
@@ -433,7 +440,11 @@ Deno.serve(async (req: Request) => {
               row.phone,
             );
             const styledMessage = addressWithoutHello(clientName, message);
-            const sentResult = await sendTextWA(creds, row.phone, styledMessage);
+            const sentResult = await sendTextWA(
+              creds,
+              row.phone,
+              styledMessage,
+            );
             if (sentResult.ok) {
               sent++;
               const { data: inserted } = await supabase
@@ -459,8 +470,8 @@ Deno.serve(async (req: Request) => {
               await supabase
                 .from("whatsapp_sessions")
                 .update({
-                  browse_reengage_sent_at:
-                    inserted?.created_at ?? new Date().toISOString(),
+                  browse_reengage_sent_at: inserted?.created_at ??
+                    new Date().toISOString(),
                 })
                 .eq("phone", row.phone)
                 .eq("tenant_id", tenant.tenantId);

@@ -141,21 +141,18 @@ Deno.serve(async (req: Request) => {
     );
     const latencyMs = Date.now() - started;
 
-    const text =
-      (Array.isArray(anthropicJson?.content) &&
-        anthropicJson.content
-          .map((p) => p?.text)
-          .filter(Boolean)
-          .join("")) ||
+    const text = (Array.isArray(anthropicJson?.content) &&
+      anthropicJson.content
+        .map((p) => p?.text)
+        .filter(Boolean)
+        .join("")) ||
       "";
-    const inputTokens =
-      typeof anthropicJson?.usage?.input_tokens === "number"
-        ? anthropicJson.usage.input_tokens
-        : null;
-    const outputTokens =
-      typeof anthropicJson?.usage?.output_tokens === "number"
-        ? anthropicJson.usage.output_tokens
-        : null;
+    const inputTokens = typeof anthropicJson?.usage?.input_tokens === "number"
+      ? anthropicJson.usage.input_tokens
+      : null;
+    const outputTokens = typeof anthropicJson?.usage?.output_tokens === "number"
+      ? anthropicJson.usage.output_tokens
+      : null;
 
     return json({ text, inputTokens, outputTokens, latencyMs }, 200);
   } catch (e) {

@@ -12,7 +12,6 @@ import { WABA_PANEL_BASE } from "./panel-url.ts";
 /** Bucket público separado de waba-images: ese solo permite mime image/*. */
 export const INBOUND_AUDIO_BUCKET = "waba-audio";
 
-
 /** Sin franjas horarias (a diferencia del ack de foto diseño) — la clienta solo
  * necesita saber que alguien va a escuchar el audio y responderle. */
 export const AUDIO_ACK_MESSAGE =
@@ -28,8 +27,8 @@ export async function persistInboundWaAudio(
   opts: { phone: string; mediaId: string },
 ): Promise<string | null> {
   const folder = waStorageFolder(opts.phone);
-  const shortId =
-    opts.mediaId.replace(/\D/g, "").slice(-14) || opts.mediaId.slice(-12);
+  const shortId = opts.mediaId.replace(/\D/g, "").slice(-14) ||
+    opts.mediaId.slice(-12);
   const fileName = `inbound-chat/${folder}/${Date.now()}_${shortId}.ogg`;
 
   const uploaded = await uploadWhatsAppMediaToStorage(
@@ -115,8 +114,12 @@ export async function tryHandleAudioTakeover(opts: {
     ? "🎤 Otro audio · WhatsApp"
     : "🎤 Audio · Revisar YA";
   const body = alreadyPaused
-    ? `${firstName} mandó otro audio.${audioUrl ? " Abre el chat para escucharlo." : ""}`
-    : `${firstName} envió una nota de voz. Bot en pausa.${audioUrl ? " Abre el chat para escucharlo." : ""}`;
+    ? `${firstName} mandó otro audio.${
+      audioUrl ? " Abre el chat para escucharlo." : ""
+    }`
+    : `${firstName} envió una nota de voz. Bot en pausa.${
+      audioUrl ? " Abre el chat para escucharlo." : ""
+    }`;
 
   void notifyAdmins(supabase, title, body, {
     type: "waba_chat",
@@ -131,7 +134,9 @@ export async function tryHandleAudioTakeover(opts: {
   }
 
   console.log(
-    `[inbound-audio] takeover ${phoneNumber.slice(-4)} paused=${!alreadyPaused ? "new" : "again"} url=${audioUrl ? "yes" : "no"}`,
+    `[inbound-audio] takeover ${phoneNumber.slice(-4)} paused=${
+      !alreadyPaused ? "new" : "again"
+    } url=${audioUrl ? "yes" : "no"}`,
   );
   return true;
 }

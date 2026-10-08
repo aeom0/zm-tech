@@ -55,24 +55,27 @@ export function textInterruptsCompanionName(text: string): boolean {
     .replace(/[\u0300-\u036f]/g, "");
   if (!lower) return false;
   if (
-    /\b(donde|ubicad|direccion|mapa|maps|cupo|disponib|horario|precio|cuanto|promocion|promo|yape|plin)\b/.test(
-      lower,
-    )
+    /\b(donde|ubicad|direccion|mapa|maps|cupo|disponib|horario|precio|cuanto|promocion|promo|yape|plin)\b/
+      .test(
+        lower,
+      )
   ) {
     return true;
   }
   if (
-    /\b(manana|hoy|pasado|lunes|martes|miercoles|jueves|viernes|sabado|domingo)\b/.test(
-      lower,
-    )
+    /\b(manana|hoy|pasado|lunes|martes|miercoles|jueves|viernes|sabado|domingo)\b/
+      .test(
+        lower,
+      )
   ) {
     return true;
   }
   if (/\b(a las|am|pm)\b/.test(lower) && /\d/.test(lower)) return true;
   if (
-    /\b(tiene|tienen|tambien|servicio|servicios|unas|como es|que es|quiero|gustaria|cupo)\b/.test(
-      lower,
-    )
+    /\b(tiene|tienen|tambien|servicio|servicios|unas|como es|que es|quiero|gustaria|cupo)\b/
+      .test(
+        lower,
+      )
   ) {
     return true;
   }
@@ -129,7 +132,10 @@ export function confirmsTwoPersonPack(text: string): boolean {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "");
   if (!lower) return false;
-  if (/\b(cuanto|precio|que es|como es)\b/.test(lower) && !/\bme gusta\b/.test(lower)) {
+  if (
+    /\b(cuanto|precio|que es|como es)\b/.test(lower) &&
+    !/\bme gusta\b/.test(lower)
+  ) {
     return false;
   }
   return (

@@ -100,16 +100,15 @@ export async function logAIUsage(
       phone_hash: phoneHash,
       tenant_id: getRequestTenantId(),
     };
-    const withCache =
-      cacheTokens?.cacheCreationInputTokens != null ||
-      cacheTokens?.cacheReadInputTokens != null
-        ? {
-            ...baseRow,
-            cache_creation_input_tokens:
-              cacheTokens.cacheCreationInputTokens ?? null,
-            cache_read_input_tokens: cacheTokens.cacheReadInputTokens ?? null,
-          }
-        : baseRow;
+    const withCache = cacheTokens?.cacheCreationInputTokens != null ||
+        cacheTokens?.cacheReadInputTokens != null
+      ? {
+        ...baseRow,
+        cache_creation_input_tokens: cacheTokens.cacheCreationInputTokens ??
+          null,
+        cache_read_input_tokens: cacheTokens.cacheReadInputTokens ?? null,
+      }
+      : baseRow;
 
     let { error } = await supabase.from("ai_usage_log").insert(withCache);
     // Fail-soft si la migración de columnas cache aún no está aplicada:

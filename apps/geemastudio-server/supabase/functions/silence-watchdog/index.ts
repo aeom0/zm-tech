@@ -155,12 +155,12 @@ async function askHaikuIfNeedsResponse(
       "días ni horas. Si hace falta responder, pide nombre+DNI/CE en un solo " +
       "mensaje o espera al equipo. No digas que la cita ya está reservada."
     : ctx.hasCart
-      ? "La clienta TIENE servicios en carrito (o está eligiendo fecha). " +
-        "Puedes invitarla a elegir día: el sistema adjuntará la lista interactiva de días. " +
-        'Ej: "¿Te animas a agendar? Te dejo los días disponibles 👇"'
-      : "La clienta NO tiene carrito activo. NUNCA digas que le dejas días, calendario " +
-        "ni lista de horarios (no se enviará ninguna lista). Si conviene agendar, " +
-        "invítala a escribir *agendar* o a decir qué servicio quiere.";
+    ? "La clienta TIENE servicios en carrito (o está eligiendo fecha). " +
+      "Puedes invitarla a elegir día: el sistema adjuntará la lista interactiva de días. " +
+      'Ej: "¿Te animas a agendar? Te dejo los días disponibles 👇"'
+    : "La clienta NO tiene carrito activo. NUNCA digas que le dejas días, calendario " +
+      "ni lista de horarios (no se enviará ninguna lista). Si conviene agendar, " +
+      "invítala a escribir *agendar* o a decir qué servicio quiere.";
 
   const systemPrompt =
     "Eres parte del equipo de ZM Lash & Nails Beauty (salón de belleza en Perú) " +
@@ -174,8 +174,11 @@ async function askHaikuIfNeedsResponse(
     "cielo, linda, hermosa, bella, guapa, nena, bebé, cariño, reina). PROHIBIDO " +
     "¡Hola!/Hola (ya hubo saludo). Usa Srta. {nombre} si lo conoces. Que " +
     "retome el hilo de forma natural (no genérico) y ofrezca ayuda concreta. " +
-    "DATOS REALES del salón (úsalos tal cual si la clienta preguntó; NUNCA inventes dirección, distrito, horarios ni precios): dirección: " + SALON_ADDRESS + ". " +
-    `Contexto sesión: step=${ctx.step ?? "browsing"}, has_cart=${ctx.hasCart}. ` +
+    "DATOS REALES del salón (úsalos tal cual si la clienta preguntó; NUNCA inventes dirección, distrito, horarios ni precios): dirección: " +
+    SALON_ADDRESS + ". " +
+    `Contexto sesión: step=${
+      ctx.step ?? "browsing"
+    }, has_cart=${ctx.hasCart}. ` +
     calendarRule +
     " Responde ÚNICAMENTE con JSON válido, sin texto " +
     'adicional: {"needs_response": boolean, "message": "texto o cadena vacía"}';
@@ -252,8 +255,7 @@ function finalizeWatchdogMessage(
   ctx: SessionContext,
 ): { message: string; attachCalendar: boolean } {
   let message = raw.trim() || FALLBACK_MESSAGE;
-  const canAttach =
-    !isDepositOrPaymentStep(ctx.step) &&
+  const canAttach = !isDepositOrPaymentStep(ctx.step) &&
     (ctx.hasCart || ctx.step === "awaiting_datetime");
 
   if (canAttach) {
@@ -360,10 +362,9 @@ Deno.serve(async (req: Request) => {
             ctx,
           );
           let needsResponse = verdict?.needsResponse ?? true; // bias: responder ante duda
-          let rawMessage =
-            verdict?.needsResponse && verdict.message.trim()
-              ? verdict.message.trim()
-              : FALLBACK_MESSAGE;
+          let rawMessage = verdict?.needsResponse && verdict.message.trim()
+            ? verdict.message.trim()
+            : FALLBACK_MESSAGE;
 
           // En medio de agendar: aunque Haiku diga "charla cerrada", reenganchar
           // con calendario (caso Yesenia: "Instagram verdad" + carrito vacío ya no,
@@ -380,8 +381,7 @@ Deno.serve(async (req: Request) => {
           ) {
             // Asegurar CTA de calendario si hay carrito
             if (!/agendar|d[ií]a|cita/i.test(rawMessage)) {
-              rawMessage =
-                rawMessage.trim() +
+              rawMessage = rawMessage.trim() +
                 " ¿Seguimos con tu cita? Te dejo los días 👇";
             }
           }
@@ -418,7 +418,9 @@ Deno.serve(async (req: Request) => {
                 if (ok) calendarsSent++;
                 else {
                   console.warn(
-                    `[silence-watchdog] No se pudo adjuntar calendario: ${row.phone.slice(-4)}`,
+                    `[silence-watchdog] No se pudo adjuntar calendario: ${
+                      row.phone.slice(-4)
+                    }`,
                   );
                 }
               }

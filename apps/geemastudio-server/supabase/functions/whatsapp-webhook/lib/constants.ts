@@ -236,35 +236,35 @@ export const KARELIS_AFTERNOON_START_HOUR = 13;
 export function getSpecialOverlapCategories(): readonly string[] {
   return (
     getLoadedWabaRules()?.capacity.specialCategoryIds ??
-    SPECIAL_OVERLAP_CATEGORIES
+      SPECIAL_OVERLAP_CATEGORIES
   );
 }
 
 export function getSpecialOverlapExtraServiceIds(): readonly string[] {
   return (
     getLoadedWabaRules()?.capacity.specialExtraServiceIds ??
-    SPECIAL_OVERLAP_EXTRA_SERVICE_IDS
+      SPECIAL_OVERLAP_EXTRA_SERVICE_IDS
   );
 }
 
 export function getExtensionesKarelisServiceIds(): readonly string[] {
   return (
     getLoadedWabaRules()?.capacity.extensionesKarelisServiceIds ??
-    EXTENSIONES_KARELIS_SERVICE_IDS
+      EXTENSIONES_KARELIS_SERVICE_IDS
   );
 }
 
 export function getExtensionesNoLaneServiceIds(): readonly string[] {
   return (
     getLoadedWabaRules()?.capacity.unassignedCapServiceIds ??
-    EXTENSIONES_NO_LANE_SERVICE_IDS
+      EXTENSIONES_NO_LANE_SERVICE_IDS
   );
 }
 
 export function getKarelisAfternoonStartHour(): number {
   return (
     getLoadedWabaRules()?.capacity.karelisAfterHour ??
-    KARELIS_AFTERNOON_START_HOUR
+      KARELIS_AFTERNOON_START_HOUR
   );
 }
 

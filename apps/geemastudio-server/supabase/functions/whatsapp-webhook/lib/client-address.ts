@@ -115,7 +115,9 @@ export function addressWithoutHello(
     }
   }
   if (!capitalized) return `${srta} 💜`;
-  return `${srta}, ${capitalized.charAt(0).toLowerCase()}${capitalized.slice(1)}`;
+  return `${srta}, ${capitalized.charAt(0).toLowerCase()}${
+    capitalized.slice(1)
+  }`;
 }
 
 function escapeRegExp(s: string): string {

@@ -5,12 +5,12 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import {
-  RETOUCH_COOLDOWN_DAYS,
-  RETOUCH_TEMPLATE_LANG,
-  RETOUCH_TEMPLATE_NAME,
   formatDaysSincePhrase,
   intervalDaysForService,
   resolveRetouchServiceId,
+  RETOUCH_COOLDOWN_DAYS,
+  RETOUCH_TEMPLATE_LANG,
+  RETOUCH_TEMPLATE_NAME,
   type RetouchServiceRow,
 } from "./retouch-resolve.ts";
 import {
@@ -120,12 +120,11 @@ export async function sendRetouchOfferForClient(
     return { ok: false, reason: "client_not_found", skipped: true };
   }
 
-  const phone =
-    normalizeWaPhonePe(
-      client.phone_country === "PE" && client.phone_normalized
-        ? `51${client.phone_normalized}`
-        : client.phone,
-    ) ??
+  const phone = normalizeWaPhonePe(
+    client.phone_country === "PE" && client.phone_normalized
+      ? `51${client.phone_normalized}`
+      : client.phone,
+  ) ??
     normalizeWaPhonePe(client.phone) ??
     (typeof client.wa_user_id === "string" && isWaBsuid(client.wa_user_id)
       ? client.wa_user_id
@@ -210,8 +209,7 @@ export async function sendRetouchOfferForClient(
     (lines?.[0] as { service_id?: string } | undefined)?.service_id ?? null;
   if (!lastServiceId) {
     const ids = lastApt.service_ids as string[] | null;
-    lastServiceId =
-      (Array.isArray(ids) && ids[0]) ||
+    lastServiceId = (Array.isArray(ids) && ids[0]) ||
       (lastApt.service_id as string | null) ||
       null;
   }
@@ -247,10 +245,9 @@ export async function sendRetouchOfferForClient(
   if (offerSvc.is_active === false) {
     return { ok: false, skipped: true, reason: "service_inactive", phone };
   }
-  const firstName =
-    String(client.name ?? "")
-      .trim()
-      .split(/\s+/)[0] || "hola";
+  const firstName = String(client.name ?? "")
+    .trim()
+    .split(/\s+/)[0] || "hola";
   const daysPhrase = formatDaysSincePhrase(daysSince);
 
   const sent = await sendTemplate(

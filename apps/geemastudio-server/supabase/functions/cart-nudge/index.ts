@@ -249,8 +249,8 @@ Deno.serve(async (req: Request) => {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const qaBypassHours =
-    isCron && req.headers.get("X-QA-Bypass-Hours") === "true";
+  const qaBypassHours = isCron &&
+    req.headers.get("X-QA-Bypass-Hours") === "true";
 
   const now = new Date();
   const nowIso = now.toISOString();
@@ -281,8 +281,9 @@ Deno.serve(async (req: Request) => {
     const creds = await getTenantWabaCredentials(supabase, tenant);
     if (!creds) continue;
 
-    await runWithRequestTenantId(tenant.tenantId, () =>
-      processTenantCartNudge(tenant.tenantId, creds),
+    await runWithRequestTenantId(
+      tenant.tenantId,
+      () => processTenantCartNudge(tenant.tenantId, creds),
     );
   }
 
@@ -332,169 +333,181 @@ Deno.serve(async (req: Request) => {
     ]);
 
     for (const session of candidates) {
-    const phone = session.phone;
-    const updatedAt = new Date(session.updated_at);
-    const minutesInactive = (now.getTime() - updatedAt.getTime()) / 60000;
-    const cartDesc = getCartDescription(
-      session.cart_items,
-      session.cart_service_ids,
-    );
+      const phone = session.phone;
+      const updatedAt = new Date(session.updated_at);
+      const minutesInactive = (now.getTime() - updatedAt.getTime()) / 60000;
+      const cartDesc = getCartDescription(
+        session.cart_items,
+        session.cart_service_ids,
+      );
 
-    try {
-      // Guard cruzado: otro reenganche ya habló en este episodio (sin inbound nuevo)
-      const { data: lastInRow } = await supabase
-        .from("wa_messages")
-        .select("created_at")
-        .eq("phone", phone)
-        .eq("tenant_id", tenantId)
-        .eq("direction", "in")
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      const lastInAt = lastInRow?.created_at
-        ? new Date(lastInRow.created_at).getTime()
-        : 0;
-      const browseAt = session.browse_reengage_sent_at
-        ? new Date(session.browse_reengage_sent_at).getTime()
-        : 0;
-      const adsAt = session.ads_bounce_nudge_sent_at
-        ? new Date(session.ads_bounce_nudge_sent_at).getTime()
-        : 0;
-      const watchAt = session.watchdog_sent_at
-        ? new Date(session.watchdog_sent_at).getTime()
-        : 0;
-      if (
-        (browseAt > 0 && browseAt >= lastInAt) ||
-        (adsAt > 0 && adsAt >= lastInAt) ||
-        (watchAt > 0 && watchAt >= lastInAt)
-      ) {
-        console.log(`[cart-nudge] skip ya reenganchada: ${phone.slice(-4)}`);
-        continue;
-      }
-
-      // ── Nudge 2: ≥90 min desde nudge1 (colchón 24h si se difirió de noche) ──
-      if (session.nudge1_sent_at && !session.nudge2_sent_at) {
-        const minutesSinceNudge1 =
-          (now.getTime() - new Date(session.nudge1_sent_at).getTime()) / 60000;
+      try {
+        // Guard cruzado: otro reenganche ya habló en este episodio (sin inbound nuevo)
+        const { data: lastInRow } = await supabase
+          .from("wa_messages")
+          .select("created_at")
+          .eq("phone", phone)
+          .eq("tenant_id", tenantId)
+          .eq("direction", "in")
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        const lastInAt = lastInRow?.created_at
+          ? new Date(lastInRow.created_at).getTime()
+          : 0;
+        const browseAt = session.browse_reengage_sent_at
+          ? new Date(session.browse_reengage_sent_at).getTime()
+          : 0;
+        const adsAt = session.ads_bounce_nudge_sent_at
+          ? new Date(session.ads_bounce_nudge_sent_at).getTime()
+          : 0;
+        const watchAt = session.watchdog_sent_at
+          ? new Date(session.watchdog_sent_at).getTime()
+          : 0;
         if (
-          minutesSinceNudge1 >= NUDGE2_MIN &&
-          minutesSinceNudge1 <= CANDIDATE_MAX_MINUTES
+          (browseAt > 0 && browseAt >= lastInAt) ||
+          (adsAt > 0 && adsAt >= lastInAt) ||
+          (watchAt > 0 && watchAt >= lastInAt)
         ) {
+          console.log(`[cart-nudge] skip ya reenganchada: ${phone.slice(-4)}`);
+          continue;
+        }
+
+        // ── Nudge 2: ≥90 min desde nudge1 (colchón 24h si se difirió de noche) ──
+        if (session.nudge1_sent_at && !session.nudge2_sent_at) {
+          const minutesSinceNudge1 =
+            (now.getTime() - new Date(session.nudge1_sent_at).getTime()) /
+            60000;
+          if (
+            minutesSinceNudge1 >= NUDGE2_MIN &&
+            minutesSinceNudge1 <= CANDIDATE_MAX_MINUTES
+          ) {
+            const clientName = await loadClientNameForPhone(supabase, phone);
+            const serviceIds = await resolveSessionServiceIds(
+              supabase,
+              session,
+            );
+            const emotionalNudge2 = isCtwaEmotionalEligible(
+              session.from_ad_at,
+              serviceIds,
+              catalog,
+            );
+            const rawMsg2 = emotionalNudge2
+              ? buildEmotionalNudge2Text(wabaConfig, cartDesc)
+              : `Vemos que dejaste ${cartDesc} ${
+                listosWord(cartDesc)
+              } para agendar en ZM Lash & Nails Beauty 💜\n\n` +
+                `Si ya no deseas continuar, no hay problema 😊 Pero si quieres tu cita, solo escribe *agendar* y te ayudamos en segundos.\n\n` +
+                `_Tu selección se liberará pronto._ ✨`;
+            const msg2 = addressWithoutHello(clientName, rawMsg2);
+            await sendTextWA(
+              creds,
+              phone,
+              msg2,
+              undefined,
+              emotionalNudge2 ? "emotional" : "generic",
+            );
+            await supabaseRequest(
+              `whatsapp_sessions?phone=eq.${
+                encodeURIComponent(phone)
+              }&tenant_id=eq.${encodeURIComponent(tenantId)}`,
+              "PATCH",
+              {
+                cart_items: "[]",
+                cart_service_ids: "[]",
+                nudge2_sent_at: nowIso,
+                step: "browsing",
+              },
+            );
+            nudge2Count++;
+            continue;
+          }
+        }
+
+        // ── Nudge 1: ≥12 min sin actividad (colchón 24h si se difirió) ─────────
+        if (
+          !session.nudge1_sent_at &&
+          minutesInactive >= NUDGE1_MIN &&
+          minutesInactive <= CANDIDATE_MAX_MINUTES
+        ) {
+          const enCalendario = session.step === "awaiting_datetime";
+          // Si ya eligió el día (solo falta hora), no invitarla a "elegir el día"
+          // de nuevo — Doris …8088 recibió esa copy con el día ya elegido,
+          // reenviando en realidad el selector de hora (12-sep-2026).
+          const dayAlreadyPicked = Boolean(session.selected_day);
           const clientName = await loadClientNameForPhone(supabase, phone);
           const serviceIds = await resolveSessionServiceIds(supabase, session);
-          const emotionalNudge2 = isCtwaEmotionalEligible(
-            session.from_ad_at,
-            serviceIds,
-            catalog,
-          );
-          const rawMsg2 = emotionalNudge2
-            ? buildEmotionalNudge2Text(wabaConfig, cartDesc)
-            : `Vemos que dejaste ${cartDesc} ${listosWord(cartDesc)} para agendar en ZM Lash & Nails Beauty 💜\n\n` +
-              `Si ya no deseas continuar, no hay problema 😊 Pero si quieres tu cita, solo escribe *agendar* y te ayudamos en segundos.\n\n` +
-              `_Tu selección se liberará pronto._ ✨`;
-          const msg2 = addressWithoutHello(clientName, rawMsg2);
+          const rubro = primaryRubroFromServiceIds(serviceIds, catalog);
+          const emotionalAlmostClose = enCalendario &&
+            rubro != null &&
+            isCtwaEmotionalEligible(session.from_ad_at, serviceIds, catalog);
+          const serviceName = primaryServiceLabel(serviceIds, catalog);
+          const rawMsg = emotionalAlmostClose && rubro
+            ? buildAlmostCloseNudge1Text(
+              wabaConfig,
+              phone,
+              rubro,
+              serviceName,
+              dayAlreadyPicked,
+            )
+            : enCalendario
+            ? dayAlreadyPicked
+              ? `Tienes ${cartDesc} ${
+                listosWord(cartDesc)
+              } — solo falta elegir la hora 💜\n\n` +
+                `Te reenviamos el horario disponible 👇`
+              : `Tienes ${cartDesc} ${
+                listosWord(cartDesc)
+              } — solo falta elegir día y hora 💜\n\n` +
+                `Te reenviamos el calendario 👇`
+            : `Tienes ${cartDesc} en tu selección y aún no confirmaste tu cita 💜\n\n` +
+              `¿Seguimos? Escribe *agendar* y te paso al calendario en segundos 🗓️`;
+          const msg = addressWithoutHello(clientName, rawMsg);
+          if (emotionalAlmostClose && rubro) {
+            const image = resolveAlmostCloseImage(
+              wabaConfig,
+              catalog,
+              serviceIds,
+              serviceName,
+            );
+            if (image?.url) {
+              await sendImageWA(
+                creds,
+                phone,
+                image.url,
+                image.caption ?? "",
+                session.step,
+                "emotional",
+              );
+            }
+          }
           await sendTextWA(
             creds,
             phone,
-            msg2,
-            undefined,
-            emotionalNudge2 ? "emotional" : "generic",
+            msg,
+            session.step,
+            emotionalAlmostClose ? "emotional" : "generic",
           );
+          if (enCalendario) {
+            const sent = await resendCalendarForPhone(supabase, phone, catalog);
+            if (!sent) {
+              console.warn(
+                `[cart-nudge] No se pudo reenviar calendario para ${phone}`,
+              );
+            }
+          }
           await supabaseRequest(
-            `whatsapp_sessions?phone=eq.${encodeURIComponent(phone)}&tenant_id=eq.${encodeURIComponent(tenantId)}`,
+            `whatsapp_sessions?phone=eq.${
+              encodeURIComponent(phone)
+            }&tenant_id=eq.${encodeURIComponent(tenantId)}`,
             "PATCH",
-            {
-              cart_items: "[]",
-              cart_service_ids: "[]",
-              nudge2_sent_at: nowIso,
-              step: "browsing",
-            },
+            { nudge1_sent_at: nowIso },
           );
-          nudge2Count++;
-          continue;
+          nudge1Count++;
         }
+      } catch (err) {
+        errors.push(`${phone}: ${err}`);
       }
-
-      // ── Nudge 1: ≥12 min sin actividad (colchón 24h si se difirió) ─────────
-      if (
-        !session.nudge1_sent_at &&
-        minutesInactive >= NUDGE1_MIN &&
-        minutesInactive <= CANDIDATE_MAX_MINUTES
-      ) {
-        const enCalendario = session.step === "awaiting_datetime";
-        // Si ya eligió el día (solo falta hora), no invitarla a "elegir el día"
-        // de nuevo — Doris …8088 recibió esa copy con el día ya elegido,
-        // reenviando en realidad el selector de hora (12-sep-2026).
-        const dayAlreadyPicked = Boolean(session.selected_day);
-        const clientName = await loadClientNameForPhone(supabase, phone);
-        const serviceIds = await resolveSessionServiceIds(supabase, session);
-        const rubro = primaryRubroFromServiceIds(serviceIds, catalog);
-        const emotionalAlmostClose =
-          enCalendario &&
-          rubro != null &&
-          isCtwaEmotionalEligible(session.from_ad_at, serviceIds, catalog);
-        const serviceName = primaryServiceLabel(serviceIds, catalog);
-        const rawMsg =
-          emotionalAlmostClose && rubro
-            ? buildAlmostCloseNudge1Text(
-                wabaConfig,
-                phone,
-                rubro,
-                serviceName,
-                dayAlreadyPicked,
-              )
-            : enCalendario
-              ? dayAlreadyPicked
-                ? `Tienes ${cartDesc} ${listosWord(cartDesc)} — solo falta elegir la hora 💜\n\n` +
-                  `Te reenviamos el horario disponible 👇`
-                : `Tienes ${cartDesc} ${listosWord(cartDesc)} — solo falta elegir día y hora 💜\n\n` +
-                  `Te reenviamos el calendario 👇`
-              : `Tienes ${cartDesc} en tu selección y aún no confirmaste tu cita 💜\n\n` +
-                `¿Seguimos? Escribe *agendar* y te paso al calendario en segundos 🗓️`;
-        const msg = addressWithoutHello(clientName, rawMsg);
-        if (emotionalAlmostClose && rubro) {
-          const image = resolveAlmostCloseImage(
-            wabaConfig,
-            catalog,
-            serviceIds,
-            serviceName,
-          );
-          if (image?.url) {
-            await sendImageWA(
-              creds,
-              phone,
-              image.url,
-              image.caption ?? "",
-              session.step,
-              "emotional",
-            );
-          }
-        }
-        await sendTextWA(
-          creds,
-          phone,
-          msg,
-          session.step,
-          emotionalAlmostClose ? "emotional" : "generic",
-        );
-        if (enCalendario) {
-          const sent = await resendCalendarForPhone(supabase, phone, catalog);
-          if (!sent) {
-            console.warn(
-              `[cart-nudge] No se pudo reenviar calendario para ${phone}`,
-            );
-          }
-        }
-        await supabaseRequest(
-          `whatsapp_sessions?phone=eq.${encodeURIComponent(phone)}&tenant_id=eq.${encodeURIComponent(tenantId)}`,
-          "PATCH",
-          { nudge1_sent_at: nowIso },
-        );
-        nudge1Count++;
-      }
-    } catch (err) {
-      errors.push(`${phone}: ${err}`);
-    }
     }
   }
 

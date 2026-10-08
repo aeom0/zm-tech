@@ -9,27 +9,27 @@ import {
   type SupabaseClient,
 } from "../lib/supabase.ts";
 import {
-  getPendingAppointmentsForPhone,
+  ADDITIONAL_BOOKING_BLOCK_MESSAGE,
   formatPendingSummaryLines,
+  getPendingAppointmentsForPhone,
   matchesMiCitaIntent,
   shouldBlockAdditionalBooking,
-  ADDITIONAL_BOOKING_BLOCK_MESSAGE,
 } from "./pending-appointment.ts";
 import {
   getHaikuRuntimeSettings,
-  resolveChatSystemPromptBase,
   type HaikuTriggerKeywordLists,
+  resolveChatSystemPromptBase,
   type WabaConfigMap,
 } from "../lib/waba-config.ts";
 import { HAIKU_RUNTIME_NUMERIC_DEFAULTS } from "../lib/haiku-cms-defaults.ts";
 import {
-  sessionHasCart,
-  matchesServiceChangeIntent,
   extractDateIntentFromText,
   formatAvailableHours,
-  matchesHorariosAvailabilityQuery,
-  shouldSkipDatetimeResendAfterHaiku,
   getSessionSelectedDay,
+  matchesHorariosAvailabilityQuery,
+  matchesServiceChangeIntent,
+  sessionHasCart,
+  shouldSkipDatetimeResendAfterHaiku,
 } from "./booking-flow.ts";
 import {
   formatCartSummaryFromLines,
@@ -61,7 +61,9 @@ function getTodayLimaGuardrailBlock(): string {
   }).formatToParts(new Date());
   const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
   return (
-    `FECHA DE HOY (Lima): ${get("weekday")} ${get("day")} de ${get("month")}.\n` +
+    `FECHA DE HOY (Lima): ${get("weekday")} ${get("day")} de ${
+      get("month")
+    }.\n` +
     "PROHIBIDO decir o inventar qué día de la semana es hoy o cualquier otra fecha " +
     "(aunque la clienta lo afirme o corrija) — usa SOLO la fecha de arriba. " +
     "PROHIBIDO confirmar una cita u horario como agendado en texto libre " +
@@ -232,9 +234,10 @@ const DETERMINISTIC_INTENTS: { keywords: string[]; exact?: boolean }[] = [
 
 /** Baja de marketing (STOP): cumplimiento, determinístico por diseño (no es texto libre). */
 export function matchesMarketingOptOut(text: string): boolean {
-  return /^(stop|baja|unsubscribe|cancelar\s+(?:suscripci[oó]n|promociones?)|no\s+quiero\s+(?:más|mas)\s+(?:mensajes|promociones?))[\s!.]*$/i.test(
-    text.trim(),
-  );
+  return /^(stop|baja|unsubscribe|cancelar\s+(?:suscripci[oó]n|promociones?)|no\s+quiero\s+(?:más|mas)\s+(?:mensajes|promociones?))[\s!.]*$/i
+    .test(
+      text.trim(),
+    );
 }
 
 /**
@@ -267,8 +270,9 @@ export function detectAITrigger(
   }
 
   // IDs de carrito/menú
-  if (CART_IDS.includes(lower) || MENU_MAIN_OPTIONS.includes(lower))
+  if (CART_IDS.includes(lower) || MENU_MAIN_OPTIONS.includes(lower)) {
     return null;
+  }
 
   // Saludos cortos (≤20 chars) — no activar Haiku para "hola", "buenos días", etc.
   // Mensajes más largos con saludo al inicio ("Hola, ¿cuánto cuesta el lifting?") sí van a Haiku.
@@ -289,9 +293,10 @@ export function detectAITrigger(
   if (
     !matchesHorariosAvailabilityQuery(lower) &&
     /\b(mañana|manana|pasado\s+mañana|pasado\s+manana)\b/i.test(lower) &&
-    /\b(cita|agendar|agenda|reservar|reserva|horario|disponible|espacio)\b/i.test(
-      lower,
-    )
+    /\b(cita|agendar|agenda|reservar|reserva|horario|disponible|espacio)\b/i
+      .test(
+        lower,
+      )
   ) {
     if (hasCart) return null;
     return { type: "booking_request", originalMessage: trimmed };
@@ -358,8 +363,9 @@ export async function getClientContext(
   phoneNumber: string,
 ): Promise<string> {
   try {
-    const { country, normalized } =
-      getPhoneCountryAndNormalizedFromWa(phoneNumber);
+    const { country, normalized } = getPhoneCountryAndNormalizedFromWa(
+      phoneNumber,
+    );
     const digitsOnly = phoneNumber.replace(/\D/g, "");
     let { data: client } = await supabase
       .from("clients")
@@ -386,8 +392,9 @@ export async function getClientContext(
       .eq("phone", phoneNumber)
       .maybeSingle();
 
-    const sessionStep =
-      typeof waSession?.step === "string" ? waSession.step : "";
+    const sessionStep = typeof waSession?.step === "string"
+      ? waSession.step
+      : "";
     const awaitingDatetime = sessionStep === "awaiting_datetime";
     const rescheduleId =
       typeof waSession?.reschedule_appointment_id === "string"
@@ -395,23 +402,25 @@ export async function getClientContext(
         : null;
     const isRescheduling = !!rescheduleId && awaitingDatetime;
 
-    let pendingBlock =
-      pending.length > 0
-        ? isRescheduling
-          ? `\nREPROGRAMANDO cita activa:\n${formatPendingSummaryLines(pending)}\n` +
-            `Si pide CAMBIAR el servicio (ej. "ya no quiero Builder, solo esmalte/manicure"), ` +
-            `usa add_to_cart con el NUEVO servicio del catálogo (reemplaza el carrito; no duplica cita). ` +
-            `NO inventes hora confirmada — sigue eligiendo día/hora con los botones.`
-          : `\nCITA PROGRAMADA (reserva activa en este número):\n${formatPendingSummaryLines(pending)}\n` +
-            `NO uses add_to_cart ni abras otro agendado. Si pide otra cita, otra persona u otro horario, indica que escriba al 📱 932 535 512. Para cambiar fecha/hora: *Mi cita* o que escriba la hora (ej. *10 am*) — el sistema la aplica; PROHIBIDO decir que ya cambiaste la cita.`
-        : `\nSIN CITA PROGRAMADA: este número no tiene ninguna reserva activa.\n` +
-          `PROHIBIDO confirmar una cita, decir "te esperamos", "¿a qué hora llegas?", "nos vemos" o dar por hecho que va a venir. ` +
-          `Si dice que ya viene, que está en camino o que tiene cita, avísale con amabilidad que no encontramos su reserva y ofrécele agendar (*agendar*) o escribir al 📱 932 535 512.`;
+    let pendingBlock = pending.length > 0
+      ? isRescheduling
+        ? `\nREPROGRAMANDO cita activa:\n${
+          formatPendingSummaryLines(pending)
+        }\n` +
+          `Si pide CAMBIAR el servicio (ej. "ya no quiero Builder, solo esmalte/manicure"), ` +
+          `usa add_to_cart con el NUEVO servicio del catálogo (reemplaza el carrito; no duplica cita). ` +
+          `NO inventes hora confirmada — sigue eligiendo día/hora con los botones.`
+        : `\nCITA PROGRAMADA (reserva activa en este número):\n${
+          formatPendingSummaryLines(pending)
+        }\n` +
+          `NO uses add_to_cart ni abras otro agendado. Si pide otra cita, otra persona u otro horario, indica que escriba al 📱 932 535 512. Para cambiar fecha/hora: *Mi cita* o que escriba la hora (ej. *10 am*) — el sistema la aplica; PROHIBIDO decir que ya cambiaste la cita.`
+      : `\nSIN CITA PROGRAMADA: este número no tiene ninguna reserva activa.\n` +
+        `PROHIBIDO confirmar una cita, decir "te esperamos", "¿a qué hora llegas?", "nos vemos" o dar por hecho que va a venir. ` +
+        `Si dice que ya viene, que está en camino o que tiene cita, avísale con amabilidad que no encontramos su reserva y ofrécele agendar (*agendar*) o escribir al 📱 932 535 512.`;
 
-    const verificationId =
-      typeof waSession?.verification_id === "string"
-        ? waSession.verification_id
-        : null;
+    const verificationId = typeof waSession?.verification_id === "string"
+      ? waSession.verification_id
+      : null;
     if (await depositAwaitingReview(supabase, phoneNumber, verificationId)) {
       pendingBlock +=
         `\nPAGO EN REVISIÓN: el comprobante del abono ya llegó y sigue sin aprobar. ` +
@@ -444,16 +453,19 @@ export async function getClientContext(
             .from("services")
             .select("id, name, price")
             .in("id", svcIds);
-          for (const item of cartItems.filter(
-            (i: { item_type: string }) => i.item_type === "service",
-          )) {
+          for (
+            const item of cartItems.filter(
+              (i: { item_type: string }) => i.item_type === "service",
+            )
+          ) {
             const svc = (svcs ?? []).find(
               (s: { id: string }) => s.id === item.item_id,
             );
-            if (svc)
+            if (svc) {
               names.push(
                 `${svc.name} (S/${parseFloat(String(item.price)).toFixed(0)})`,
               );
+            }
           }
         }
         if (packIds.length > 0) {
@@ -461,42 +473,52 @@ export async function getClientContext(
             .from("packs")
             .select("id, title, short_name")
             .in("id", packIds);
-          for (const item of cartItems.filter(
-            (i: { item_type: string }) => i.item_type === "pack",
-          )) {
+          for (
+            const item of cartItems.filter(
+              (i: { item_type: string }) => i.item_type === "pack",
+            )
+          ) {
             const pack = (packs ?? []).find(
               (p: { id: string }) => p.id === item.item_id,
             );
-            if (pack)
+            if (pack) {
               names.push(
-                `${pack.short_name ?? pack.title} (S/${parseFloat(String(item.price)).toFixed(0)})`,
+                `${pack.short_name ?? pack.title} (S/${
+                  parseFloat(String(item.price)).toFixed(0)
+                })`,
               );
+            }
           }
         }
         if (names.length > 0) {
           if (pending.length > 0 && !isRescheduling) {
-            cartBlock = `\nCARRITO ACTIVO (${names.length} ítem${names.length > 1 ? "s" : ""}) pero ya hay CITA PROGRAMADA — NO uses add_to_cart ni abras otro agendado.`;
+            cartBlock = `\nCARRITO ACTIVO (${names.length} ítem${
+              names.length > 1 ? "s" : ""
+            }) pero ya hay CITA PROGRAMADA — NO uses add_to_cart ni abras otro agendado.`;
           } else if (awaitingDatetime) {
             cartBlock =
-              `\nAGENDANDO (paso fecha/hora) — carrito:\n${names.map((n) => `- ${n}`).join("\n")}\n` +
+              `\nAGENDANDO (paso fecha/hora) — carrito:\n${
+                names.map((n) => `- ${n}`).join("\n")
+              }\n` +
               `PROHIBIDO decir "reservado", "agendado", "cita confirmada" o inventar hora.\n` +
               `Si pide el MISMO servicio otra vez: action:none e invita a elegir día/hora.\n` +
               `Si pide CAMBIAR / reemplazar el servicio ("ya no quiero X, solo Y"): usa add_to_cart con el NUEVO ID (el sistema reemplaza el carrito).\n` +
               `Si la pregunta NO tiene que ver con elegir fecha/hora (ej. duda sobre otro producto/servicio): respóndela y cierra con UNA frase corta invitando a seguir con día/hora u otro servicio (ej. "¿Seguimos con tu cita o quieres agregar algo más?") — no repitas los botones, ya los tiene arriba.`;
           } else {
             cartBlock =
-              `\nCARRITO ACTIVO (${names.length} ítem${names.length > 1 ? "s" : ""}):\n${names.map((n) => `- ${n}`).join("\n")}\n` +
+              `\nCARRITO ACTIVO (${names.length} ítem${
+                names.length > 1 ? "s" : ""
+              }):\n${names.map((n) => `- ${n}`).join("\n")}\n` +
               `NO uses show_menu. Si ya eligió estos servicios, NO uses add_to_cart otra vez — invita a confirmar fecha. ` +
               `add_to_cart SOLO si pide AGREGAR un servicio distinto al carrito.`;
           }
         }
       } else if (Array.isArray(cartIds) && cartIds.length > 0) {
-        cartBlock =
-          pending.length > 0 && !isRescheduling
-            ? "\nCARRITO ACTIVO pero ya hay CITA PROGRAMADA — NO uses add_to_cart."
-            : awaitingDatetime
-              ? "\nAGENDANDO fecha/hora con carrito. Si cambia de servicio → add_to_cart del nuevo. NO digas que ya está reservado."
-              : "\nCARRITO ACTIVO: la clienta ya tiene servicios seleccionados. NO uses show_menu. Invita a agendar (sin re-agregar al carrito).";
+        cartBlock = pending.length > 0 && !isRescheduling
+          ? "\nCARRITO ACTIVO pero ya hay CITA PROGRAMADA — NO uses add_to_cart."
+          : awaitingDatetime
+          ? "\nAGENDANDO fecha/hora con carrito. Si cambia de servicio → add_to_cart del nuevo. NO digas que ya está reservado."
+          : "\nCARRITO ACTIVO: la clienta ya tiene servicios seleccionados. NO uses show_menu. Invita a agendar (sin re-agregar al carrito).";
       }
     } catch {
       // silencioso
@@ -528,11 +550,11 @@ export async function getClientContext(
     const lastDt = parseLimaLocalToDate(String(appts[0].date));
     const lastDate = lastDt
       ? lastDt.toLocaleDateString("es-PE", {
-          timeZone: "America/Lima",
-          day: "2-digit",
-          month: "long",
-          year: "numeric",
-        })
+        timeZone: "America/Lima",
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      })
       : String(appts[0].date);
 
     const serviceNames = appts
@@ -551,7 +573,9 @@ export async function getClientContext(
 
     return [
       "HISTORIAL DE LA CLIENTA:",
-      `- Es clienta recurrente (${appts.length} visita${appts.length !== 1 ? "s" : ""} previas)`,
+      `- Es clienta recurrente (${appts.length} visita${
+        appts.length !== 1 ? "s" : ""
+      } previas)`,
       `- Última visita: ${lastDate}`,
       uniqueNames.length > 0
         ? `- Servicios anteriores: ${uniqueNames.join(", ")}`
@@ -628,13 +652,10 @@ export function parseAIResponse(raw: string): AIResponse {
     .slice(0, HAIKU_MAX_TEXT_BUBBLES);
 
   // Preferir <text>…</text>; si Haiku omite wrappers, un solo bloque limpio
-  const texts =
-    textBlocks.length > 0
-      ? textBlocks
-      : (() => {
-          const fallback = sanitizeHaikuText(raw);
-          return fallback ? [fallback] : [];
-        })();
+  const texts = textBlocks.length > 0 ? textBlocks : (() => {
+    const fallback = sanitizeHaikuText(raw);
+    return fallback ? [fallback] : [];
+  })();
   const text = texts[0] ?? "";
 
   const withAction = (action?: AIAction): AIResponse => ({
@@ -689,7 +710,9 @@ export function parseAIResponse(raw: string): AIResponse {
     }
   }
 
-  if (actionRaw === "escalate_staff" || actionRaw.startsWith("escalate_staff:")) {
+  if (
+    actionRaw === "escalate_staff" || actionRaw.startsWith("escalate_staff:")
+  ) {
     const param = actionRaw.split(":")[1]?.trim() || "money";
     return withAction({ type: "escalate_staff", param });
   }
@@ -800,25 +823,27 @@ export async function callAnthropicAPI(
     phoneNumber?: string;
     source?: string;
   },
-): Promise<{
-  text: string;
-  texts: string[];
-  inputTokens: number;
-  outputTokens: number;
-  cacheCreationInputTokens: number;
-  cacheReadInputTokens: number;
-  action?: AIAction;
-} | null> {
+): Promise<
+  {
+    text: string;
+    texts: string[];
+    inputTokens: number;
+    outputTokens: number;
+    cacheCreationInputTokens: number;
+    cacheReadInputTokens: number;
+    action?: AIAction;
+  } | null
+> {
   const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
   if (!apiKey) {
     console.error("[AI] ANTHROPIC_API_KEY no configurada");
     return null;
   }
 
-  const max_tokens =
-    opts?.max_tokens ?? HAIKU_RUNTIME_NUMERIC_DEFAULTS.max_tokens;
-  const timeout_ms =
-    opts?.timeout_ms ?? HAIKU_RUNTIME_NUMERIC_DEFAULTS.timeout_ms;
+  const max_tokens = opts?.max_tokens ??
+    HAIKU_RUNTIME_NUMERIC_DEFAULTS.max_tokens;
+  const timeout_ms = opts?.timeout_ms ??
+    HAIKU_RUNTIME_NUMERIC_DEFAULTS.timeout_ms;
   const source = opts?.source ?? "callAnthropicAPI";
 
   // Construir mensajes: historial previo + mensaje actual
@@ -902,8 +927,9 @@ export async function callAnthropicAPI(
       }
       // Si Haiku ya pidió confirm_booking, conservar la action: el texto
       // fabricado se sustituye, pero el cierre determinístico sí debe correr.
-      const keepConfirm =
-        parsed.action?.type === "confirm_booking" ? parsed.action : undefined;
+      const keepConfirm = parsed.action?.type === "confirm_booking"
+        ? parsed.action
+        : undefined;
       return {
         text: FABRICATED_BOOKING_SAFE_REPLY,
         texts: [FABRICATED_BOOKING_SAFE_REPLY],
@@ -924,8 +950,8 @@ export async function callAnthropicAPI(
       outputTokens: (data?.usage?.output_tokens as number) ?? 0,
       cacheCreationInputTokens:
         (data?.usage?.cache_creation_input_tokens as number) ?? 0,
-      cacheReadInputTokens:
-        (data?.usage?.cache_read_input_tokens as number) ?? 0,
+      cacheReadInputTokens: (data?.usage?.cache_read_input_tokens as number) ??
+        0,
     };
   } catch (err) {
     clearTimeout(timeoutId);
@@ -1108,8 +1134,7 @@ async function executeAIAction(
         const cartNames = (session?.serviceIds ?? [])
           .map((id: string) => catalog.servicesById.get(id)?.name ?? "")
           .filter(Boolean);
-        const kind =
-          parseEduGuideActionParam(action.param ?? "") ??
+        const kind = parseEduGuideActionParam(action.param ?? "") ??
           pickEduGuideToSend(originalMessage ?? "", cartNames) ??
           "pelo_a_pelo";
         const guide = getEduGuideImage(wabaConfig, kind);
@@ -1230,7 +1255,8 @@ async function executeAIAction(
               );
               if (!alreadySent) {
                 if (collage) {
-                  const ctaCaption = `${collage.caption}\n¿Le agendo *${match.serviceName}*? 💜`;
+                  const ctaCaption =
+                    `${collage.caption}\n¿Le agendo *${match.serviceName}*? 💜`;
                   await sendImage(phoneNumber, collage.url, ctaCaption);
                 } else {
                   await sendImage(
@@ -1356,21 +1382,21 @@ async function executeAIAction(
         const validSvcs = ids
           .map((id) => catalog.servicesById.get(id))
           .filter(Boolean) as {
-          id: string;
-          name: string;
-          price: string;
-          duration: number;
-          category_id?: string;
-        }[];
+            id: string;
+            name: string;
+            price: string;
+            duration: number;
+            category_id?: string;
+          }[];
         const validPacks = ids
           .map((id) => catalog.packsById.get(id))
           .filter(Boolean) as {
-          id: string;
-          title: string;
-          short_name: string | null;
-          pack_price: string;
-          category_id?: string;
-        }[];
+            id: string;
+            title: string;
+            short_name: string | null;
+            pack_price: string;
+            category_id?: string;
+          }[];
 
         if (validSvcs.length === 0 && validPacks.length === 0) {
           // Haiku mandó un add_to_cart cuyo id no matchea el catálogo (uuid
@@ -1441,14 +1467,16 @@ async function executeAIAction(
         );
         const duoPack = validPacks.find((p) => {
           const fullPack = catalog.packsById.get(p.id);
-          return fullPack
-            ? isDuoPackIds(parseDuoPackIds(fullPack))
-            : false;
+          return fullPack ? isDuoPackIds(parseDuoPackIds(fullPack)) : false;
         });
         if (duoPack) {
           const full = catalog.packsById.get(duoPack.id) ?? duoPack;
-          const { startTwoPersonPackBooking } = await import("./party-booking.ts");
-          const { parseBookingDatetimeFromMessage } = await import("./booking-flow.ts");
+          const { startTwoPersonPackBooking } = await import(
+            "./party-booking.ts"
+          );
+          const { parseBookingDatetimeFromMessage } = await import(
+            "./booking-flow.ts"
+          );
           const when = parseBookingDatetimeFromMessage(
             originalMessage ?? "",
             (sessNow ?? {}) as Record<string, unknown>,
@@ -1480,22 +1508,23 @@ async function executeAIAction(
           ...validSvcs.map((s) => s.id),
           ...validPacks.map((p) => p.id),
         ];
-        const allAlreadyInCart =
-          existingIds.size > 0 && newIds.every((id) => existingIds.has(id));
-        const inDatetime =
-          sessNow?.step === "awaiting_datetime" && existingIds.size > 0;
+        const allAlreadyInCart = existingIds.size > 0 &&
+          newIds.every((id) => existingIds.has(id));
+        const inDatetime = sessNow?.step === "awaiting_datetime" &&
+          existingIds.size > 0;
         const msgLow = (originalMessage ?? "").toLowerCase();
         const asksPrice =
           /\b(cu[aá]nto|precios?|costo|cuesta|total|vale|sale)\b/i.test(msgLow);
         const wantsExtraService =
-          /\b(agregar|añadir|anadir|suma|sumar|además|ademas|otro servicio|también quiero|tambien quiero)\b/.test(
-            msgLow,
-          );
+          /\b(agregar|añadir|anadir|suma|sumar|además|ademas|otro servicio|también quiero|tambien quiero)\b/
+            .test(
+              msgLow,
+            );
         const wantsReplaceService = matchesServiceChangeIntent(
           originalMessage ?? "",
         );
-        const namesNewService =
-          newIds.some((id) => !existingIds.has(id)) && newIds.length > 0;
+        const namesNewService = newIds.some((id) => !existingIds.has(id)) &&
+          newIds.length > 0;
 
         // UNANSWERED_PRICE: "cuánto es" mid-carrito → resumen con S/, no solo "Ya tienes eso"
         if (asksPrice) {
@@ -1509,7 +1538,11 @@ async function executeAIAction(
             );
             await sm(
               phoneNumber,
-              `Tu selección:\n🌸 ${label.replace(/ \+ /g, "\n🌸 ")}\n\n*Total: S/ ${total.toFixed(0)}*\n\n📅 ¿Qué día y hora te quedan bien?`,
+              `Tu selección:\n🌸 ${
+                label.replace(/ \+ /g, "\n🌸 ")
+              }\n\n*Total: S/ ${
+                total.toFixed(0)
+              }*\n\n📅 ¿Qué día y hora te quedan bien?`,
             );
             await resendDatetimeSelectors(
               phoneNumber,
@@ -1555,7 +1588,9 @@ async function executeAIAction(
           const total = replacement.reduce((a, i) => a + i.price, 0);
           await sm(
             phoneNumber,
-            `✅ Cambié tu selección a: *${names}* (S/ ${total.toFixed(0)})\n\n📅 Sigue eligiendo día u hora 👇`,
+            `✅ Cambié tu selección a: *${names}* (S/ ${
+              total.toFixed(0)
+            })\n\n📅 Sigue eligiendo día u hora 👇`,
           );
           const fresh = await getSession(supabase, phoneNumber);
           await resendDatetimeSelectors(
@@ -1700,19 +1735,19 @@ async function executeAIAction(
             .select("id")
             .eq("is_active", true);
           (allEmps ?? []).forEach((e: { id: string }) =>
-            possibleEmpIds.add(e.id),
+            possibleEmpIds.add(e.id)
           );
         }
 
-        const totalDuration =
-          validSvcs.reduce((a, s) => a + (s.duration ?? 60), 0) || 60;
+        const totalDuration = validSvcs.reduce((a, s) =>
+          a + (s.duration ?? 60), 0) || 60;
         const { parsePackServiceIds, overlapCapForCart } = await import(
           "../lib/services-catalog.ts"
         );
         const idsForCap = [
           ...validSvcs.map((s) => s.id),
           ...validPacks.flatMap((p) =>
-            parsePackServiceIds(p as { service_ids?: unknown }),
+            parsePackServiceIds(p as { service_ids?: unknown })
           ),
         ];
         const cap = overlapCapForCart(idsForCap, catalog);
@@ -1771,13 +1806,15 @@ async function executeAIAction(
             .select("id")
             .eq("is_active", true);
           (allEmps ?? []).forEach((e: { id: string }) =>
-            possibleEmpIds.add(e.id),
+            possibleEmpIds.add(e.id)
           );
         }
 
         await sendMessage(
           phoneNumber,
-          `✅ *${svc.name}* agregado — S/ ${price.toFixed(0)}\n\n📅 ¿Qué día te viene bien?`,
+          `✅ *${svc.name}* agregado — S/ ${
+            price.toFixed(0)
+          }\n\n📅 ¿Qué día te viene bien?`,
         );
         const { overlapCapForCart } = await import(
           "../lib/services-catalog.ts"
@@ -1839,12 +1876,12 @@ async function executeAIAction(
           : typedClose;
         const closed = textToClose
           ? await tryCompleteBookingFromText(
-              supabase,
-              phoneNumber,
-              textToClose,
-              session ?? null,
-              catalog,
-            )
+            supabase,
+            phoneNumber,
+            textToClose,
+            session ?? null,
+            catalog,
+          )
           : false;
         if (!closed && session?.serviceIds?.length) {
           // Carrito válido pero sin día/hora parseable en el texto: seguir con
@@ -1933,7 +1970,9 @@ export async function handleAIMessage(
           await notifyAdmins(
             supabase,
             "⚠️ Baja STOP sin registrar",
-            `${phoneNumber.slice(-4)} escribió STOP y no se pudo guardar la baja (${
+            `${
+              phoneNumber.slice(-4)
+            } escribió STOP y no se pudo guardar la baja (${
               optOutErr instanceof Error ? optOutErr.message : "error"
             }). Chat pausado: agrégala a marketing_opt_out.`,
             { type: "waba_chat", reason: "opt_out_failed", phone: phoneNumber },
@@ -2069,17 +2108,16 @@ export async function handleAIMessage(
       // Haiku despedía con «De nada, nos vemos» en un ok. La cita no existe
       // hasta el comprobante. Haiku-primero: se le dice el paso, no se corta
       // el turno con un copy fijo.
-      const cartLockedNote =
-        aiSession.step === "awaiting_payment_screenshot"
-          ? "CONTEXTO: esta cita TODAVÍA NO existe en la agenda. Falta la captura del adelanto. " +
-            "action:none. Si dice ok, gracias o similar, NO te despidas y NO digas «nos vemos» ni «de nada»: " +
-            "recuérdale que mande el print de Yape o Plin para reservar el cupo. " +
-            "NO uses add_to_cart ni digas que ya agregaste otro servicio."
-          : "CONTEXTO: esta cita TODAVÍA NO existe en la agenda. El servicio y la hora ya están elegidos; " +
-            "solo falta el nombre y el DNI/CE para la boleta, y después el adelanto. " +
-            "action:none. Si dice ok, gracias o similar, NO es despedida: NO digas «nos vemos» ni «de nada». " +
-            "Recuérdale el dato que falta. Si pregunta un precio, confírmalo y dile que otro servicio " +
-            "se coordina aparte una vez cerrada esta cita. NO uses add_to_cart.";
+      const cartLockedNote = aiSession.step === "awaiting_payment_screenshot"
+        ? "CONTEXTO: esta cita TODAVÍA NO existe en la agenda. Falta la captura del adelanto. " +
+          "action:none. Si dice ok, gracias o similar, NO te despidas y NO digas «nos vemos» ni «de nada»: " +
+          "recuérdale que mande el print de Yape o Plin para reservar el cupo. " +
+          "NO uses add_to_cart ni digas que ya agregaste otro servicio."
+        : "CONTEXTO: esta cita TODAVÍA NO existe en la agenda. El servicio y la hora ya están elegidos; " +
+          "solo falta el nombre y el DNI/CE para la boleta, y después el adelanto. " +
+          "action:none. Si dice ok, gracias o similar, NO es despedida: NO digas «nos vemos» ni «de nada». " +
+          "Recuérdale el dato que falta. Si pregunta un precio, confírmalo y dile que otro servicio " +
+          "se coordina aparte una vez cerrada esta cita. NO uses add_to_cart.";
       dynamicBlockText = dynamicBlockText
         ? `${cartLockedNote}\n\n${dynamicBlockText}`
         : cartLockedNote;
@@ -2096,8 +2134,9 @@ export async function handleAIMessage(
     const bookingDate = extractDateIntentFromText(
       trigger.originalMessage,
     )?.dateKey;
-    const currentSession =
-      trigger.type === "booking_request" ? aiSession : null;
+    const currentSession = trigger.type === "booking_request"
+      ? aiSession
+      : null;
     if (
       trigger.type === "booking_request" &&
       bookingDate &&
@@ -2112,7 +2151,9 @@ export async function handleAIMessage(
         const options = shortServices
           .map(
             (service) =>
-              `- [${service.id}] ${service.name} — S/${parseFloat(service.price).toFixed(0)} (cita ~${service.duration} min en salón)`,
+              `- [${service.id}] ${service.name} — S/${
+                parseFloat(service.price).toFixed(0)
+              } (cita ~${service.duration} min en salón)`,
           )
           .join("\n");
         const shortOpts =
@@ -2132,15 +2173,14 @@ export async function handleAIMessage(
     // esto Haiku respondía de memoria del historial (que podía traer un "no
     // hay cupo" ya desactualizado) en vez de re-chequear (Alberto VE …4665,
     // 17-sep-2026).
-    const horariosOnlyNoDay =
-      !bookingDate &&
+    const horariosOnlyNoDay = !bookingDate &&
       (/\b(horarios?|disponib\w*|cupos?)\b/i.test(trigger.originalMessage) ||
-        /\b(ya\s+(pudo|pudiste|puede)\s+revisar|pudo\s+revisar|alguna\s+novedad|hay\s+novedad)\b/i.test(
-          trigger.originalMessage,
-        )) &&
+        /\b(ya\s+(pudo|pudiste|puede)\s+revisar|pudo\s+revisar|alguna\s+novedad|hay\s+novedad)\b/i
+          .test(
+            trigger.originalMessage,
+          )) &&
       aiSession?.step === "awaiting_datetime";
-    const horariosBookingDate =
-      bookingDate ??
+    const horariosBookingDate = bookingDate ??
       (horariosOnlyNoDay
         ? getSessionSelectedDay(aiSession as Record<string, unknown> | null)
         : null);
@@ -2151,11 +2191,10 @@ export async function handleAIMessage(
     ) {
       const { overlapCapForCart } = await import("../lib/services-catalog.ts");
       const ids = (aiSession?.serviceIds ?? []) as string[];
-      const dur =
-        ids.reduce(
-          (sum, id) => sum + (catalog.servicesById.get(id)?.duration ?? 0),
-          0,
-        ) || 90;
+      const dur = ids.reduce(
+        (sum, id) => sum + (catalog.servicesById.get(id)?.duration ?? 0),
+        0,
+      ) || 90;
       const cap = overlapCapForCart(ids, catalog);
       const hours = await formatAvailableHours(
         supabase,
@@ -2188,8 +2227,7 @@ export async function handleAIMessage(
           sessionHasCart(aiSession),
         );
       }
-      const cupos =
-        `CUPOS REALES PARA ${horariosBookingDate}: ${hours}\n` +
+      const cupos = `CUPOS REALES PARA ${horariosBookingDate}: ${hours}\n` +
         "Cita solo esas horas. NO afirmes cupo si dice «ninguno libre». action:none. NO add_to_cart. " +
         "FORMATO: UNA burbuja corta con las horas en punto separadas por coma (10 AM, 11 AM, 12 PM). " +
         "No armes una viñeta por cada media hora. Si ella escribe una media (5:30) dentro del horario, no la rechaces: el sistema la valida.";
@@ -2232,12 +2270,11 @@ export async function handleAIMessage(
     );
 
     const { sendMessage } = await import("../wa-api.ts");
-    let bubbles =
-      result.texts?.length > 0
-        ? result.texts
-        : result.text.trim()
-          ? [result.text]
-          : [];
+    let bubbles = result.texts?.length > 0
+      ? result.texts
+      : result.text.trim()
+      ? [result.text]
+      : [];
 
     // Guardia de política: el adelanto no es reembolsable. Si Haiku insinúa
     // devolución/reembolso/trámite, se reemplaza por el texto fijo.
@@ -2305,8 +2342,7 @@ export async function handleAIMessage(
 
     // add_to_cart: executeAIAction manda su propio ack + calendario; no duplicar
     // la última burbuja de Haiku si es solo CTA de agendar — sí enviamos las de precio.
-    const alreadyGreeted =
-      (priorOut.data?.length ?? 0) > 0 ||
+    const alreadyGreeted = (priorOut.data?.length ?? 0) > 0 ||
       history.some((h) => h.role === "assistant");
     const srtaUsedCount = history.filter(
       (h) => h.role === "assistant" && /\bSrta\./i.test(h.content),
@@ -2323,8 +2359,7 @@ export async function handleAIMessage(
     // clienta veía "agregamos X a tu carrito" seguido de la corrección del
     // guard. Se suprime aquí la burbuja de Haiku cuando el add_to_cart va a
     // ser bloqueado de todas formas, para no mandar la confirmación falsa.
-    const cartLockedStep =
-      aiSession?.step === "awaiting_deposit_boleta" ||
+    const cartLockedStep = aiSession?.step === "awaiting_deposit_boleta" ||
       aiSession?.step === "awaiting_deposit_datos" ||
       aiSession?.step === "awaiting_payment_screenshot";
     if (result.action?.type === "add_to_cart" && cartLockedStep) {
@@ -2346,8 +2381,12 @@ export async function handleAIMessage(
     }
 
     {
-      const { findTwoPersonPack, startTwoPersonPackBooking, getPartyFromSession, resumeCompanionAskIfNeeded } =
-        await import("./party-booking.ts");
+      const {
+        findTwoPersonPack,
+        startTwoPersonPackBooking,
+        getPartyFromSession,
+        resumeCompanionAskIfNeeded,
+      } = await import("./party-booking.ts");
       const { getSession: readPartySess } = await import("../lib/supabase.ts");
       const askedInBubbles = bubbles.some((b) => /qui[eé]n te acompa/i.test(b));
       const sessParty = await readPartySess(supabase, phoneNumber);
@@ -2456,7 +2495,7 @@ export async function handleAIMessage(
         "../lib/pending-price-cta.ts"
       );
       const haikuQuotesPack = findQuotedIds(haikuText, catalog).some((id) =>
-        catalog.packsById.has(id),
+        catalog.packsById.has(id)
       );
       if (haikuHasPrice && !haikuQuotesPack) {
         const { haikuAlreadyAskedToConfirm } = await import(
@@ -2523,8 +2562,7 @@ export async function handleAIMessage(
                       match.serviceName,
                       matchCatId,
                       {
-                        isCtwa:
-                          Boolean(aiSession?.from_ad_at) &&
+                        isCtwa: Boolean(aiSession?.from_ad_at) &&
                           matchCatId === "cat-extensiones",
                         wabaConfig,
                       },
@@ -2592,7 +2630,9 @@ export async function handleAIMessage(
             pending_price_cta_at: new Date().toISOString(),
           });
           console.log(
-            `[AI] pending_price_cta set (action none): ${serviceName ?? serviceId}`,
+            `[AI] pending_price_cta set (action none): ${
+              serviceName ?? serviceId
+            }`,
           );
         }
       }

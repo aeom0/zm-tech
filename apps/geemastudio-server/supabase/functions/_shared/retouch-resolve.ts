@@ -84,8 +84,9 @@ export function isLiftingServiceName(name: string): boolean {
 export function styleTokens(name: string): string[] {
   const n = normalizeServiceName(name);
   const tokens: string[] = [];
-  if (n.includes("clasic") || n.includes("rimel"))
+  if (n.includes("clasic") || n.includes("rimel")) {
     tokens.push("clasicas_rimel");
+  }
   if (n.includes("mojado")) tokens.push("mojado");
   if (n.includes("baby") && n.includes("3d")) tokens.push("baby3d");
   if (n.includes("baby") && n.includes("4d")) tokens.push("baby4d");
@@ -154,13 +155,11 @@ export function intervalDaysForService(
       return RETOUCH_INTERVAL.builderRubberPoly;
     }
     // Pedicure / pies en gel (sin soft/manicure/manos)
-    const isPedi =
-      n.includes("pedicure") ||
+    const isPedi = n.includes("pedicure") ||
       n.includes("pedi gel") ||
       n.includes("pies en gel") ||
       n.includes("pies gel");
-    const isManos =
-      n.includes("soft gel") ||
+    const isManos = n.includes("soft gel") ||
       n.includes("softgel") ||
       n.includes("manicure") ||
       n.includes("manos en gel") ||

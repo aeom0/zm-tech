@@ -2,64 +2,65 @@
 
 import { sendMessage } from "../wa-api.ts";
 import {
-  formatSoles,
   formatSessionDatetimeIso,
-  orderedServicesFromIds,
+  formatSoles,
   isBusinessHours,
-  toLimaLocalTimestamp,
   limaIsoWeekday,
+  orderedServicesFromIds,
+  toLimaLocalTimestamp,
 } from "../format.ts";
 import {
   compositionKey,
   loadCatalog,
-  recomputeCartItemsForWeekday,
   overlapCapForCart,
+  recomputeCartItemsForWeekday,
 } from "../lib/services-catalog.ts";
 import {
-  getSession,
-  upsertSession,
-  expandCartItemsToLines,
-  cartItemsToDisplayLabel,
-  findClientByWaRecipient,
   appointmentPhoneForRecipient,
-  type SupabaseClient,
   type CartItem,
+  cartItemsToDisplayLabel,
+  expandCartItemsToLines,
+  findClientByWaRecipient,
+  getSession,
+  type SupabaseClient,
+  upsertSession,
 } from "../lib/supabase.ts";
 import { getLoadedWabaRules } from "../lib/tenant-rules-store.ts";
 import { getMediosDePago, YAPE_PLIN_NUMBER } from "../lib/constants.ts";
 import {
-  getAdvancePaymentRate,
-  formatAdvancePercent,
   FIXED_DEPOSIT_AMOUNT,
+  formatAdvancePercent,
+  getAdvancePaymentRate,
 } from "../lib/peru-holidays.ts";
 import {
-  loadWabaConfig,
-  getConfigText,
   getConfigPositiveNumber,
+  getConfigText,
+  loadWabaConfig,
   type WabaConfigMap,
 } from "../lib/waba-config.ts";
 import { getConsideracionesPreviasWhatsApp } from "../lib/policies.ts";
 import { notifyAdmins } from "../lib/notify.ts";
 import {
-  shouldBlockAdditionalBooking,
-  newBookingOverlapsExisting,
   ADDITIONAL_BOOKING_BLOCK_MESSAGE,
   BOOKING_OVERLAP_MESSAGE,
-  STAFF_COORDINATION_PHONE,
   clientRequiresFixedDeposit,
+  newBookingOverlapsExisting,
+  shouldBlockAdditionalBooking,
+  STAFF_COORDINATION_PHONE,
 } from "./pending-appointment.ts";
 import { hasSlotCapacityForServices } from "./agenda.ts";
 import { notifyHeldSlotLost } from "./held-slot-lost.ts";
 import {
   parsePartyBooking,
   partyCreatingCount,
-  partyMemberLabel,
   type PartyMember,
+  partyMemberLabel,
 } from "../lib/party-booking.ts";
 import { askClientIdentityIfNeeded } from "./client-identity.ts";
 import { logWaError } from "../lib/error-log.ts";
 
-const BOOKING_INSERT_FAIL_MESSAGE = `Tuve un problema al guardar tu cita 🙏 Por favor escríbenos al 📱 *${STAFF_COORDINATION_PHONE}* y la confirmamos a manita, así no se pierde tu horario.`;
+const BOOKING_INSERT_FAIL_MESSAGE =
+  `Tuve un problema al guardar tu cita 🙏 Por favor escríbenos al 📱 *${STAFF_COORDINATION_PHONE}* y la confirmamos a manita, así no se pierde tu horario.`;
 
 /** Reparte el precio del pack en soles con céntimos que suman el total. */
 function splitPackPrice(total: number, parts: number, index: number): number {
@@ -82,7 +83,8 @@ Envíanos en un mensaje:
 🪻 Celular / WhatsApp
 🪷 DNI / CE`;
 
-export const DEFAULT_DEPOSIT_FIXED_ADELANTO = `*Adelanto para reservar tu cupo* ✨
+export const DEFAULT_DEPOSIT_FIXED_ADELANTO =
+  `*Adelanto para reservar tu cupo* ✨
 
 Realiza un adelanto de S/{monto} vía Yape o Plin al:
 
@@ -112,7 +114,8 @@ Si somos nosotras quienes no podemos atenderte, reprogramamos sin costo o te ree
  * Cuando el total del carrito es menor al abono fijo habitual (S/25): se pide
  * el pago completo. Mezcla A+B (producto 12-sep-2026) — no decir "adelanto".
  */
-export const DEFAULT_DEPOSIT_FIXED_FULL_PAYMENT = `*Pago para confirmar tu cita* ✨
+export const DEFAULT_DEPOSIT_FIXED_FULL_PAYMENT =
+  `*Pago para confirmar tu cita* ✨
 
 Tu servicio es S/{monto}, así que para reservar el cupo te pedimos el *pago completo* (no un adelanto parcial). Como es menor al abono habitual de S/{abono_fijo}, el pago cubre el total y el día de tu cita no queda saldo.
 
@@ -141,7 +144,8 @@ Si somos nosotras quienes no podemos atenderte, reprogramamos sin costo o te ree
 ¡Gracias por confiar en ZM Lash and Nails Beauty! 🌸✨`;
 
 /** Monolito legacy (tests / CMS viejo). Preferir burbujas en `buildFixedDepositBubblesFromConfig`. */
-export const DEFAULT_DEPOSIT_FIXED_INSTRUCTIONS = `${DEFAULT_DEPOSIT_FIXED_DATOS}
+export const DEFAULT_DEPOSIT_FIXED_INSTRUCTIONS =
+  `${DEFAULT_DEPOSIT_FIXED_DATOS}
 
 ${DEFAULT_DEPOSIT_FIXED_ADELANTO}
 `;
@@ -230,16 +234,19 @@ export function buildFixedDepositBubblesFromConfig(
         .trim();
       const datos = rawDatos.startsWith("*")
         ? rawDatos
-        : `*Datos para la boleta* 🪷\n\n${rawDatos.replace(/^Envíanos tus datos para la boleta:\s*/i, "Envíanos en un mensaje:\n")}`;
+        : `*Datos para la boleta* 🪷\n\n${
+          rawDatos.replace(
+            /^Envíanos tus datos para la boleta:\s*/i,
+            "Envíanos en un mensaje:\n",
+          )
+        }`;
       const adelanto = splitOnTwo.slice(1).join("\n").trim();
       return {
         datos,
-        adelanto: adelanto.startsWith("*")
-          ? adelanto
-          : adelanto.replace(
-              /^2\.\s*Realiza un adelanto/i,
-              "*Adelanto para reservar tu cupo* ✨\n\nRealiza un adelanto",
-            ),
+        adelanto: adelanto.startsWith("*") ? adelanto : adelanto.replace(
+          /^2\.\s*Realiza un adelanto/i,
+          "*Adelanto para reservar tu cupo* ✨\n\nRealiza un adelanto",
+        ),
       };
     }
     // CMS solo con copy de adelanto (sin paso 1)
@@ -345,8 +352,8 @@ async function resolveCartTotalPrice(
   session: Record<string, unknown> & { cartItems?: CartItem[] },
 ): Promise<number> {
   const cartItems = session.cartItems ?? [];
-  const useCartItems =
-    cartItems.length > 0 && cartItems.some((i) => i.price > 0);
+  const useCartItems = cartItems.length > 0 &&
+    cartItems.some((i) => i.price > 0);
   if (useCartItems) {
     return cartItems.reduce((sum, it) => sum + it.quantity * it.price, 0);
   }
@@ -434,17 +441,20 @@ async function tryFinalizePartyAppointments(
 
   const clientData = await findClientByWaRecipient(supabase, phone);
   const apptPhone = appointmentPhoneForRecipient(phone);
-  const created: { id: string; member: PartyMember; price: number; dateLima: string }[] =
-    [];
+  const created: {
+    id: string;
+    member: PartyMember;
+    price: number;
+    dateLima: string;
+  }[] = [];
   // Duración configurada del pack/promo (composición de TODOS los miembros): cada cita la guarda
   // para que el motor de capacidad reserve el tiempo real (p. ej. 2 lifting simultáneos = 75).
   const partyCatalog = await loadCatalog(supabase);
-  const partySlotMinutes =
-    members.length > 1 && party.mode === "together"
-      ? (partyCatalog.packSlotMinutes?.get(
-          compositionKey(members.flatMap((m) => m.service_ids)),
-        ) ?? null)
-      : null;
+  const partySlotMinutes = members.length > 1 && party.mode === "together"
+    ? (partyCatalog.packSlotMinutes?.get(
+      compositionKey(members.flatMap((m) => m.service_ids)),
+    ) ?? null)
+    : null;
 
   for (const member of members) {
     const { data: svcs } = await supabase
@@ -458,7 +468,10 @@ async function tryFinalizePartyAppointments(
       duration: number | null;
       category_id: string | null;
     };
-    const ordered = orderedServicesFromIds(member.service_ids, svcs ?? []) as Svc[];
+    const ordered = orderedServicesFromIds(
+      member.service_ids,
+      svcs ?? [],
+    ) as Svc[];
     if (!ordered.length) continue;
 
     const catalogSum = ordered.reduce(
@@ -466,16 +479,13 @@ async function tryFinalizePartyAppointments(
       0,
     );
     const memberIndex = members.indexOf(member);
-    const price =
-      party.pack_price != null && members.length > 0
-        ? splitPackPrice(party.pack_price, members.length, memberIndex)
-        : catalogSum;
-    const duration =
-      partySlotMinutes ??
+    const price = party.pack_price != null && members.length > 0
+      ? splitPackPrice(party.pack_price, members.length, memberIndex)
+      : catalogSum;
+    const duration = partySlotMinutes ??
       ordered.reduce((s, svc) => s + (svc.duration ?? 60), 0);
     const names = ordered.map((s) => s.name).join(" + ");
-    const iso =
-      member.datetime_iso ??
+    const iso = member.datetime_iso ??
       (session.parsed_datetime as string) ??
       new Date().toISOString();
     const dateLima = toLimaLocalTimestamp(new Date(iso));
@@ -484,25 +494,23 @@ async function tryFinalizePartyAppointments(
       .filter((m) => m !== member)
       .map((m) => partyMemberLabel(m))
       .join(", ");
-    const noteParty =
-      party.mode === "together"
-        ? `Multi-cita WABA (${partyMemberLabel(member)}${otherNames ? ` + ${otherNames}` : ""}).`
-        : `Cita a nombre de terceros vía WABA (${partyMemberLabel(member)}).`;
+    const noteParty = party.mode === "together"
+      ? `Multi-cita WABA (${partyMemberLabel(member)}${
+        otherNames ? ` + ${otherNames}` : ""
+      }).`
+      : `Cita a nombre de terceros vía WABA (${partyMemberLabel(member)}).`;
 
     const appt = await insertAppointmentChecked(
       supabase,
       phone,
       {
-        client_id:
-          member.role === "primary" ? (clientData?.id ?? null) : null,
-        client_name:
-          member.name?.trim() ||
+        client_id: member.role === "primary" ? (clientData?.id ?? null) : null,
+        client_name: member.name?.trim() ||
           (member.role === "primary"
             ? (clientData?.name ?? "Cliente WhatsApp")
             : "Acompañante"),
         client_phone: apptPhone,
-        client_document:
-          member.dni ??
+        client_document: member.dni ??
           (member.role === "primary"
             ? ((clientData as { dni?: string | null })?.dni ?? null)
             : null),
@@ -555,7 +563,9 @@ async function tryFinalizePartyAppointments(
 
   const totalPrice = created.reduce((s, c) => s + c.price, 0);
   const allNames = created
-    .map((c) => `${partyMemberLabel(c.member)}: ${c.member.service_ids.length} svc`)
+    .map((c) =>
+      `${partyMemberLabel(c.member)}: ${c.member.service_ids.length} svc`
+    )
     .join(" · ");
   const serviceLabelParts: string[] = [];
   for (const c of created) {
@@ -570,9 +580,11 @@ async function tryFinalizePartyAppointments(
   const datesLine = created
     .map(
       (c) =>
-        `📅 ${partyMemberLabel(c.member)}: ${formatSessionDatetimeIso(
-          new Date(c.member.datetime_iso ?? c.dateLima).toISOString(),
-        )}`,
+        `📅 ${partyMemberLabel(c.member)}: ${
+          formatSessionDatetimeIso(
+            new Date(c.member.datetime_iso ?? c.dateLima).toISOString(),
+          )
+        }`,
     )
     .join("\n");
 
@@ -581,17 +593,15 @@ async function tryFinalizePartyAppointments(
     const verificationIds: string[] = [];
     // Una verificación por cita (schema 1:1 appointment_id)
     for (const c of created) {
-      const share =
-        totalPrice > 0
-          ? Math.ceil(depositAmount * (c.price / totalPrice))
-          : depositAmount;
+      const share = totalPrice > 0
+        ? Math.ceil(depositAmount * (c.price / totalPrice))
+        : depositAmount;
       const { data: verification } = await supabase
         .from("appointment_verifications")
         .insert({
           appointment_id: c.id,
           client_phone: apptPhone ?? phone,
-          client_name:
-            c.member.name?.trim() ||
+          client_name: c.member.name?.trim() ||
             (clientData?.name ?? "Cliente WhatsApp"),
           service_name: serviceLabelParts.join(" | "),
           appointment_date: c.dateLima,
@@ -621,7 +631,9 @@ async function tryFinalizePartyAppointments(
     await notifyAdmins(
       supabase,
       "💰 Multi-cita WABA (abono enviado)",
-      `${clientData?.name ?? "Cliente"} — ${created.length} citas — total S/ ${totalPrice.toFixed(0)}`,
+      `${clientData?.name ?? "Cliente"} — ${created.length} citas — total S/ ${
+        totalPrice.toFixed(0)
+      }`,
       {
         screen: "ValidacionPagos",
         verificationId: verificationIds[0] ?? "",
@@ -678,7 +690,7 @@ async function tryFinalizePartyAppointments(
         ).slice(0, 60),
         extraction,
       }).catch((err) =>
-        console.error("[WABA] party sendPaymentVerificationTemplate:", err),
+        console.error("[WABA] party sendPaymentVerificationTemplate:", err)
       );
     }
 
@@ -700,7 +712,9 @@ async function tryFinalizePartyAppointments(
   await notifyAdmins(
     supabase,
     "📅 Multi-cita agendada (WABA)",
-    `${clientData?.name ?? "Cliente"} — ${created.length} citas — total S/ ${totalPrice.toFixed(0)}`,
+    `${clientData?.name ?? "Cliente"} — ${created.length} citas — total S/ ${
+      totalPrice.toFixed(0)
+    }`,
     { screen: "Agenda", appointmentId: created[0].id, phone },
   );
 
@@ -740,8 +754,8 @@ export async function sendConfirmedBookingSummary(
   }
 
   const cartItems = session.cartItems ?? [];
-  const useCartItems =
-    cartItems.length > 0 && cartItems.some((i) => i.price > 0);
+  const useCartItems = cartItems.length > 0 &&
+    cartItems.some((i) => i.price > 0);
 
   let totalPrice = 0;
   let servicesLine = "";
@@ -795,15 +809,22 @@ export async function sendConfirmedBookingSummary(
     }
     totalPrice = lines.reduce((s, l) => s + l.quantity * l.unitPrice, 0);
     allServiceNames = lines.map((l) => l.name).join(" + ");
-    servicesLine =
-      lines.length > 1
-        ? lines
-            .map(
-              (l) =>
-                `🌸 ${l.quantity > 1 ? `${l.quantity} × ` : ""}${l.name} — S/ ${formatSoles(l.quantity * l.unitPrice)}`,
-            )
-            .join("\n")
-        : `💅 ${lines.map((l) => (l.quantity > 1 ? `${l.quantity} × ${l.name}` : l.name)).join(" + ")}`;
+    servicesLine = lines.length > 1
+      ? lines
+        .map(
+          (l) =>
+            `🌸 ${l.quantity > 1 ? `${l.quantity} × ` : ""}${l.name} — S/ ${
+              formatSoles(l.quantity * l.unitPrice)
+            }`,
+        )
+        .join("\n")
+      : `💅 ${
+        lines.map((
+          l,
+        ) => (l.quantity > 1 ? `${l.quantity} × ${l.name}` : l.name)).join(
+          " + ",
+        )
+      }`;
   } else {
     const cartIds = JSON.parse(
       (session.cart_service_ids as string) ?? "[]",
@@ -825,15 +846,14 @@ export async function sendConfirmedBookingSummary(
       0,
     );
     allServiceNames = services.map((s: SvcRow) => s.name).join(" + ");
-    servicesLine =
-      services.length > 1
-        ? services
-            .map(
-              (s: SvcRow) =>
-                `🌸 ${s.name} — S/ ${formatSoles(parseFloat(String(s.price)))}`,
-            )
-            .join("\n")
-        : `💅 Servicio: ${services.map((s: SvcRow) => s.name).join(" + ")}`;
+    servicesLine = services.length > 1
+      ? services
+        .map(
+          (s: SvcRow) =>
+            `🌸 ${s.name} — S/ ${formatSoles(parseFloat(String(s.price)))}`,
+        )
+        .join("\n")
+      : `💅 Servicio: ${services.map((s: SvcRow) => s.name).join(" + ")}`;
     services.forEach((s: SvcRow) => {
       const cid = s.category_id ?? undefined;
       if (cid) categoryIds.push(cid);
@@ -844,8 +864,8 @@ export async function sendConfirmedBookingSummary(
   const clientData = await findClientByWaRecipient(supabase, phone);
   const apptPhone = appointmentPhoneForRecipient(phone);
 
-  const appointmentDate =
-    (session.parsed_datetime as string) ?? new Date().toISOString();
+  const appointmentDate = (session.parsed_datetime as string) ??
+    new Date().toISOString();
   const appointmentDateLima = toLimaLocalTimestamp(new Date(appointmentDate));
 
   const createdAppts: { id: string }[] = [];
@@ -864,15 +884,15 @@ export async function sendConfirmedBookingSummary(
       const svc = (svcsForNames ?? []).find(
         (s: { id: string }) => s.id === line.service_id,
       );
-      if ((svc as { category_id?: string })?.category_id)
+      if ((svc as { category_id?: string })?.category_id) {
         catIds.add((svc as { category_id: string }).category_id);
+      }
     }
     categoryIds.splice(0, categoryIds.length, ...[...catIds]);
     totalPrice = total;
 
     const blockedExtra = await shouldBlockAdditionalBooking(supabase, phone);
-    const overlapsExisting =
-      !blockedExtra &&
+    const overlapsExisting = !blockedExtra &&
       (await newBookingOverlapsExisting(
         supabase,
         phone,
@@ -907,7 +927,9 @@ export async function sendConfirmedBookingSummary(
         source: "whatsapp",
         whatsapp_phone: phone,
         deposit_amount: "0",
-        notes: `Cita agendada vía WhatsApp.${lines.length > 1 ? ` (${allServiceNames})` : ""}`,
+        notes: `Cita agendada vía WhatsApp.${
+          lines.length > 1 ? ` (${allServiceNames})` : ""
+        }`,
       },
       {
         flow: "sendConfirmedBookingSummary",
@@ -973,8 +995,7 @@ export async function sendConfirmedBookingSummary(
       supabase,
       phone,
     );
-    const overlapsExistingLegacy =
-      !blockedExtraLegacy &&
+    const overlapsExistingLegacy = !blockedExtraLegacy &&
       (await newBookingOverlapsExisting(
         supabase,
         phone,
@@ -1009,7 +1030,9 @@ export async function sendConfirmedBookingSummary(
         source: "whatsapp",
         whatsapp_phone: phone,
         deposit_amount: "0",
-        notes: `Cita agendada vía WhatsApp.${allServices.length > 1 ? ` (${allServiceNames})` : ""}`,
+        notes: `Cita agendada vía WhatsApp.${
+          allServices.length > 1 ? ` (${allServiceNames})` : ""
+        }`,
       },
       {
         flow: "sendConfirmedBookingSummary",
@@ -1051,7 +1074,9 @@ export async function sendConfirmedBookingSummary(
   await notifyAdmins(
     supabase,
     "📅 Nueva cita agendada (WABA)",
-    `${clientData?.name ?? "Cliente"} — ${allServiceNames} — ${formatSessionDatetimeIso(appointmentDate)}`,
+    `${clientData?.name ?? "Cliente"} — ${allServiceNames} — ${
+      formatSessionDatetimeIso(appointmentDate)
+    }`,
     { screen: "Agenda", appointmentId: firstApptId, phone },
   );
 
@@ -1064,18 +1089,18 @@ export async function sendConfirmedBookingSummary(
     phone,
     inHours
       ? `✅ *¡Tu cita está confirmada!* 💜\n\n` +
-          `📋 *Resumen:*\n` +
-          `${servicesLine}\n` +
-          `📅 Fecha: ${dateStr}\n` +
-          `💰 Total: S/ ${formatSoles(totalPrice)}\n\n` +
-          `Nuestro equipo te atenderá con gusto. El pago se realiza el día de tu cita.\n\n` +
-          `¡Te esperamos! 🌸${consideracionesBlock}`
+        `📋 *Resumen:*\n` +
+        `${servicesLine}\n` +
+        `📅 Fecha: ${dateStr}\n` +
+        `💰 Total: S/ ${formatSoles(totalPrice)}\n\n` +
+        `Nuestro equipo te atenderá con gusto. El pago se realiza el día de tu cita.\n\n` +
+        `¡Te esperamos! 🌸${consideracionesBlock}`
       : `✅ *¡Tu cita está anotada!* 💜\n\n` +
-          `📋 *Resumen:*\n` +
-          `${servicesLine}\n` +
-          `📅 Fecha: ${dateStr}\n` +
-          `💰 Total: S/ ${formatSoles(totalPrice)}\n\n` +
-          `En cuanto abramos te confirmamos. El pago se realiza el día de tu cita. ¡Gracias! 🌸${consideracionesBlock}`,
+        `📋 *Resumen:*\n` +
+        `${servicesLine}\n` +
+        `📅 Fecha: ${dateStr}\n` +
+        `💰 Total: S/ ${formatSoles(totalPrice)}\n\n` +
+        `En cuanto abramos te confirmamos. El pago se realiza el día de tu cita. ¡Gracias! 🌸${consideracionesBlock}`,
   );
 
   // Dato adicional: nombre + DNI/CE si faltan en BD (no bloquea la cita)
@@ -1100,8 +1125,8 @@ export async function sendPaymentSummary(
   },
 ) {
   const cartItems = session.cartItems ?? [];
-  const useCartItems =
-    cartItems.length > 0 && cartItems.some((i) => i.price > 0);
+  const useCartItems = cartItems.length > 0 &&
+    cartItems.some((i) => i.price > 0);
 
   let totalPrice: number;
   let servicesLine: string;
@@ -1144,15 +1169,22 @@ export async function sendPaymentSummary(
       }
     }
     totalPrice = lines.reduce((s, l) => s + l.quantity * l.unitPrice, 0);
-    servicesLine =
-      lines.length > 1
-        ? lines
-            .map(
-              (l) =>
-                `🌸 ${l.quantity > 1 ? `${l.quantity} × ` : ""}${l.name} — S/ ${formatSoles(l.quantity * l.unitPrice)}`,
-            )
-            .join("\n")
-        : `💅 ${lines.map((l) => (l.quantity > 1 ? `${l.quantity} × ${l.name}` : l.name)).join(" + ")}`;
+    servicesLine = lines.length > 1
+      ? lines
+        .map(
+          (l) =>
+            `🌸 ${l.quantity > 1 ? `${l.quantity} × ` : ""}${l.name} — S/ ${
+              formatSoles(l.quantity * l.unitPrice)
+            }`,
+        )
+        .join("\n")
+      : `💅 ${
+        lines.map((
+          l,
+        ) => (l.quantity > 1 ? `${l.quantity} × ${l.name}` : l.name)).join(
+          " + ",
+        )
+      }`;
   } else {
     const cartIds = JSON.parse(
       (session.cart_service_ids as string) ?? "[]",
@@ -1168,23 +1200,21 @@ export async function sendPaymentSummary(
       (sum: number, s: SvcRow) => sum + parseFloat(String(s.price)),
       0,
     );
-    servicesLine =
-      services.length > 1
-        ? services
-            .map(
-              (s: SvcRow) =>
-                `🌸 ${s.name} — S/ ${formatSoles(parseFloat(String(s.price)))}`,
-            )
-            .join("\n")
-        : `💅 Servicio: ${services.map((s: SvcRow) => s.name).join(" + ")}`;
+    servicesLine = services.length > 1
+      ? services
+        .map(
+          (s: SvcRow) =>
+            `🌸 ${s.name} — S/ ${formatSoles(parseFloat(String(s.price)))}`,
+        )
+        .join("\n")
+      : `💅 Servicio: ${services.map((s: SvcRow) => s.name).join(" + ")}`;
   }
 
   const dateStr = session.parsed_datetime
     ? formatSessionDatetimeIso(session.parsed_datetime as string)
     : "fecha acordada";
 
-  const useFixed =
-    typeof opts?.fixedAmount === "number" &&
+  const useFixed = typeof opts?.fixedAmount === "number" &&
     Number.isFinite(opts.fixedAmount) &&
     opts.fixedAmount > 0;
 
@@ -1220,12 +1250,11 @@ export async function sendPaymentSummary(
   const pct = formatAdvancePercent(advanceRate);
   const deposit = Math.ceil(totalPrice * advanceRate);
 
-  const advanceNote =
-    advanceRate >= 0.5
-      ? `\n📅 *Feriado — previa cita:* sin el adelanto del ${pct}% no podemos reservar el turno. ` +
-        `Tras validar tu pago te confirmamos aquí. Dudas urgentes: 📱 *${YAPE_PLIN_NUMBER}*.\n`
-      : `\n📅 *Domingo — cita previa:* sin el adelanto del ${pct}% no podemos reservar el turno. ` +
-        `Tras validar tu pago te confirmamos aquí. Dudas urgentes: 📱 *${YAPE_PLIN_NUMBER}*.\n`;
+  const advanceNote = advanceRate >= 0.5
+    ? `\n📅 *Feriado — previa cita:* sin el adelanto del ${pct}% no podemos reservar el turno. ` +
+      `Tras validar tu pago te confirmamos aquí. Dudas urgentes: 📱 *${YAPE_PLIN_NUMBER}*.\n`
+    : `\n📅 *Domingo — cita previa:* sin el adelanto del ${pct}% no podemos reservar el turno. ` +
+      `Tras validar tu pago te confirmamos aquí. Dudas urgentes: 📱 *${YAPE_PLIN_NUMBER}*.\n`;
 
   await sendMessage(
     phone,
@@ -1234,14 +1263,18 @@ export async function sendPaymentSummary(
       `📅 Fecha: ${dateStr}\n` +
       `💰 Total: S/ ${formatSoles(totalPrice)}\n\n` +
       advanceNote +
-      `Para confirmar tu cita, realiza un adelanto del *${pct} (S/ ${formatSoles(deposit)})* vía:\n\n` +
+      `Para confirmar tu cita, realiza un adelanto del *${pct} (S/ ${
+        formatSoles(deposit)
+      })* vía:\n\n` +
       `${getMediosDePago()}\n\n` +
       `Luego envíame:\n` +
       `• Foto del voucher o captura de pantalla del comprobante\n` +
       `• Nombre completo\n` +
       `• Número de DNI o CE\n` +
       `• Teléfono\n\n` +
-      `_El saldo restante (S/ ${formatSoles(totalPrice - deposit)}) se paga el día de tu cita._\n\n` +
+      `_El saldo restante (S/ ${
+        formatSoles(totalPrice - deposit)
+      }) se paga el día de tu cita._\n\n` +
       `_Si te equivocaste o quieres cambiar algo, escribe_ *Cancelar* _para volver a empezar._`,
   );
 
@@ -1360,7 +1393,9 @@ export async function processPaymentScreenshot(
       const cartItemsEarly =
         (session as { cartItems?: CartItem[] }).cartItems ?? [];
       let totalForDeposit = 0;
-      if (cartItemsEarly.length > 0 && cartItemsEarly.some((i) => i.price > 0)) {
+      if (
+        cartItemsEarly.length > 0 && cartItemsEarly.some((i) => i.price > 0)
+      ) {
         const lines = await expandCartItemsToLines(supabase, cartItemsEarly);
         totalForDeposit = lines.reduce((s, l) => s + l.price, 0);
       } else {
@@ -1371,7 +1406,9 @@ export async function processPaymentScreenshot(
             .select("price")
             .in("id", m.service_ids);
           for (const s of svcs ?? []) {
-            totalForDeposit += parseFloat(String((s as { price: string }).price));
+            totalForDeposit += parseFloat(
+              String((s as { price: string }).price),
+            );
           }
         }
       }
@@ -1388,9 +1425,9 @@ export async function processPaymentScreenshot(
         : (getAdvancePaymentRate(dateKeyEarly) ?? 0.2);
       const depositAmountEarly = isFixedEarly
         ? capFixedDepositToTotal(
-            await resolveFixedDepositAmount(supabase),
-            totalForDeposit,
-          )
+          await resolveFixedDepositAmount(supabase),
+          totalForDeposit,
+        )
         : Math.ceil(totalForDeposit * (advanceRateEarly ?? 0.2));
       if (
         await tryFinalizePartyAppointments(supabase, phoneNumber, session, {
@@ -1408,8 +1445,8 @@ export async function processPaymentScreenshot(
   const clientData = await findClientByWaRecipient(supabase, phoneNumber);
   const apptPhone = appointmentPhoneForRecipient(phoneNumber);
 
-  const appointmentDate =
-    (session.parsed_datetime as string) ?? new Date().toISOString();
+  const appointmentDate = (session.parsed_datetime as string) ??
+    new Date().toISOString();
   const appointmentDateLima = toLimaLocalTimestamp(new Date(appointmentDate));
   const dateKey = appointmentDateLima.slice(0, 10);
   const depositMode =
@@ -1419,8 +1456,8 @@ export async function processPaymentScreenshot(
     ? null
     : (getAdvancePaymentRate(dateKey) ?? 0.2);
   const cartItems = (session as { cartItems?: CartItem[] }).cartItems ?? [];
-  const useCartItems =
-    cartItems.length > 0 && cartItems.some((i) => i.price > 0);
+  const useCartItems = cartItems.length > 0 &&
+    cartItems.some((i) => i.price > 0);
 
   let allServiceNames: string;
   let totalPrice: number;
@@ -1440,8 +1477,9 @@ export async function processPaymentScreenshot(
       const svc = (svcsForNames ?? []).find(
         (s: { id: string }) => s.id === line.service_id,
       );
-      if ((svc as { category_id?: string })?.category_id)
+      if ((svc as { category_id?: string })?.category_id) {
         catIds.add((svc as { category_id: string }).category_id);
+      }
     }
     categoryIds = [...catIds];
     allServiceNames = await cartItemsToDisplayLabel(supabase, cartItems);
@@ -1493,7 +1531,9 @@ export async function processPaymentScreenshot(
         source: "whatsapp",
         whatsapp_phone: phoneNumber,
         deposit_amount: "0",
-        notes: `Reserva vía WhatsApp. Pago pendiente de validación.${lines.length > 1 ? ` (${allServiceNames})` : ""}`,
+        notes: `Reserva vía WhatsApp. Pago pendiente de validación.${
+          lines.length > 1 ? ` (${allServiceNames})` : ""
+        }`,
       },
       {
         flow: "processPaymentScreenshot",
@@ -1598,7 +1638,9 @@ export async function processPaymentScreenshot(
         source: "whatsapp",
         whatsapp_phone: phoneNumber,
         deposit_amount: "0",
-        notes: `Reserva vía WhatsApp. Pago pendiente de validación.${allServices.length > 1 ? ` (${allServiceNames})` : ""}`,
+        notes: `Reserva vía WhatsApp. Pago pendiente de validación.${
+          allServices.length > 1 ? ` (${allServiceNames})` : ""
+        }`,
       },
       {
         flow: "processPaymentScreenshot",
@@ -1623,9 +1665,9 @@ export async function processPaymentScreenshot(
 
   const depositAmount = isFixedDeposit
     ? capFixedDepositToTotal(
-        await resolveFixedDepositAmount(supabase),
-        totalPrice,
-      )
+      await resolveFixedDepositAmount(supabase),
+      totalPrice,
+    )
     : Math.ceil(totalPrice * (advanceRate ?? 0.2));
   if (!createdAppts.length) {
     console.error("[WABA] processPaymentScreenshot sin citas creadas");
@@ -1647,8 +1689,8 @@ export async function processPaymentScreenshot(
       amount_total: totalPrice,
       payment_screenshot_url: screenshotUrl,
       pre_service_photo_url: (session.pre_service_photo_url as string) ?? null,
-      pre_service_photo_url_2:
-        (session.pre_service_photo_url_2 as string) ?? null,
+      pre_service_photo_url_2: (session.pre_service_photo_url_2 as string) ??
+        null,
       status: "payment_submitted",
       kind: "deposit",
     })
@@ -1679,8 +1721,14 @@ export async function processPaymentScreenshot(
     await notifyAdmins(
       supabase,
       "⚠️ Pago sin registro de validación",
-      `${clientData?.name ?? "Cliente"} (${phoneNumber}) envió comprobante pero no se pudo registrar. Revisar en el chat WA y validar a mano.`,
-      { screen: "Agenda", appointmentId: firstApptId ?? "", phone: phoneNumber },
+      `${
+        clientData?.name ?? "Cliente"
+      } (${phoneNumber}) envió comprobante pero no se pudo registrar. Revisar en el chat WA y validar a mano.`,
+      {
+        screen: "Agenda",
+        appointmentId: firstApptId ?? "",
+        phone: phoneNumber,
+      },
     );
   }
 
@@ -1696,13 +1744,12 @@ export async function processPaymentScreenshot(
   });
 
   const inHours = isBusinessHours();
-  const servicesLine =
-    createdAppts.length > 1
-      ? allServiceNames
-          .split(" + ")
-          .map((n) => `🌸 ${n}`)
-          .join("\n")
-      : `🌸 Servicio: ${allServiceNames}`;
+  const servicesLine = createdAppts.length > 1
+    ? allServiceNames
+      .split(" + ")
+      .map((n) => `🌸 ${n}`)
+      .join("\n")
+    : `🌸 Servicio: ${allServiceNames}`;
   const consideraciones = getConsideracionesPreviasWhatsApp(categoryIds);
   const consideracionesBlock = consideraciones ? `\n\n${consideraciones}` : "";
   await sendMessage(
@@ -1726,7 +1773,9 @@ export async function processPaymentScreenshot(
   await notifyAdmins(
     supabase,
     "💳 Nuevo pago por validar",
-    `${clientData?.name ?? "Cliente"} reservó ${allServiceNames} para ${formatSessionDatetimeIso(appointmentDate)}`,
+    `${clientData?.name ?? "Cliente"} reservó ${allServiceNames} para ${
+      formatSessionDatetimeIso(appointmentDate)
+    }`,
     {
       screen: "ValidacionPagos",
       verificationId: verification?.id ?? "",
@@ -1737,7 +1786,9 @@ export async function processPaymentScreenshot(
   await notifyAdmins(
     supabase,
     "Nueva cita agendada",
-    `${clientData?.name ?? "Cliente"} — ${allServiceNames} · ${formatSessionDatetimeIso(appointmentDate)}`,
+    `${clientData?.name ?? "Cliente"} — ${allServiceNames} · ${
+      formatSessionDatetimeIso(appointmentDate)
+    }`,
     { screen: "Agenda", appointmentId: firstApptId ?? "", phone: phoneNumber },
   );
 
@@ -1779,7 +1830,7 @@ export async function processPaymentScreenshot(
       ),
       extraction,
     }).catch((err) =>
-      console.error("[WABA] sendPaymentVerificationTemplate:", err),
+      console.error("[WABA] sendPaymentVerificationTemplate:", err)
     );
   } else if (verification?.id) {
     console.warn(

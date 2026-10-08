@@ -1,8 +1,8 @@
 import { assertEquals } from "@std/assert";
 import {
-  runWithRequestTenantId,
-  getRequestTenantId,
   DEFAULT_TENANT_ID,
+  getRequestTenantId,
+  runWithRequestTenantId,
 } from "./tenant.ts";
 
 Deno.test(

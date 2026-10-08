@@ -12,12 +12,12 @@ import {
   reportAnthropicApiFailure,
 } from "./haiku-usage.ts";
 import {
-  sessionHasCart,
+  extractDateIntentFromText,
+  isMostlyTimeChoice,
   matchesComplaintIntent,
   matchesSoftRescheduleIntent,
-  extractDateIntentFromText,
   parseBookingDatetimeFromMessage,
-  isMostlyTimeChoice,
+  sessionHasCart,
 } from "../handlers/booking-flow.ts";
 import { getPendingAppointmentsForPhone } from "../handlers/pending-appointment.ts";
 import { parseDateOnlyKey } from "../parse-datetime-es.ts";
@@ -99,7 +99,8 @@ const MODEL = "claude-haiku-4-5-20251001";
 const SHADOW_MAX_TOKENS = 40;
 const SHADOW_TIMEOUT_MS = 3500;
 
-export const SHADOW_SYSTEM_PROMPT = `Eres un clasificador de intención para el WhatsApp de un salón de belleza (ZM Lash & Nails, Perú).
+export const SHADOW_SYSTEM_PROMPT =
+  `Eres un clasificador de intención para el WhatsApp de un salón de belleza (ZM Lash & Nails, Perú).
 Devuelve ÚNICAMENTE un JSON válido, sin markdown ni texto extra:
 {"intent":"<valor>"}
 
@@ -206,10 +207,9 @@ export function wouldTryCompleteBookingFromText(
   if (session?.reschedule_appointment_id) return false;
 
   const dateIntent = extractDateIntentFromText(messageText);
-  const dateOnlyKey =
-    dateIntent && !dateIntent.hasTime
-      ? dateIntent.dateKey
-      : parseDateOnlyKey(messageText);
+  const dateOnlyKey = dateIntent && !dateIntent.hasTime
+    ? dateIntent.dateKey
+    : parseDateOnlyKey(messageText);
   if (dateOnlyKey && !isMostlyTimeChoice(messageText)) return true;
 
   const bookingDate = parseBookingDatetimeFromMessage(
@@ -259,8 +259,8 @@ export async function computeRegexShadowIntent(
   // (María Elena …6497, research 10-sep).
   if (!step || step === "browsing") {
     const exactConfirm = REMINDER_TEXT_CONFIRM_RE.test(text);
-    const phraseConfirm =
-      !/\bno\b/i.test(text) && REMINDER_TEXT_CONFIRM_PHRASE_RE.test(text);
+    const phraseConfirm = !/\bno\b/i.test(text) &&
+      REMINDER_TEXT_CONFIRM_PHRASE_RE.test(text);
     if (exactConfirm || phraseConfirm) {
       const pending = await getPendingAppointmentsForPhone(
         supabase,
@@ -283,8 +283,7 @@ export async function computeRegexShadowIntent(
   // Soft-reschedule: el intent gate; trySoftRescheduleFromText además evita
   // carrito mid-agendado — reflejamos ese guard para no etiquetar crear_cita como soft.
   if (matchesSoftRescheduleIntent(text)) {
-    const midBooking =
-      sessionHasCart(session) &&
+    const midBooking = sessionHasCart(session) &&
       (step === "browsing" || step === "awaiting_datetime" || !step);
     if (!midBooking) {
       const pending = await getPendingAppointmentsForPhone(

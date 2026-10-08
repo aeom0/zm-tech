@@ -148,9 +148,10 @@ function parseFecha(
   // frase de cancelación. Sin este guard, "hoy" en "hoy no podré ir" ganaba
   // y se ofrecían horarios de HOY en vez de sábado (Maribel Merino, 21-sep).
   const nombraOtroDiaSemana =
-    /(pr[oó]ximo|este|el)\s+(lunes|martes|miércoles|miercoles|jueves|viernes|sábado|sabado|domingo)/.test(
-      t,
-    );
+    /(pr[oó]ximo|este|el)\s+(lunes|martes|miércoles|miercoles|jueves|viernes|sábado|sabado|domingo)/
+      .test(
+        t,
+      );
   if (/\bhoy(?:\s+d[ií]a)?\b/.test(t) && !nombraOtroDiaSemana) {
     return hoyParts();
   }
@@ -268,13 +269,17 @@ function parseFecha(
       const año = ref.getFullYear();
       for (let m = 0; m < 12; m++) {
         const d = new Date(año, m, dia);
-        if (d.getDate() === dia && d.getDay() === diaSemanaEsperado && d >= hoy)
+        if (
+          d.getDate() === dia && d.getDay() === diaSemanaEsperado && d >= hoy
+        ) {
           return { año: d.getFullYear(), mes: d.getMonth(), dia: d.getDate() };
+        }
       }
       for (let m = 0; m < 12; m++) {
         const d = new Date(año + 1, m, dia);
-        if (d.getDate() === dia && d.getDay() === diaSemanaEsperado)
+        if (d.getDate() === dia && d.getDay() === diaSemanaEsperado) {
           return { año: d.getFullYear(), mes: d.getMonth(), dia: d.getDate() };
+        }
       }
     }
   }
@@ -343,9 +348,10 @@ export function hasExplicitTime(texto: string): boolean {
   }
   // (?!\w): "la 3D" / "la 4D" no es hora (Sayuri 09-sep-2026 → SLOT_TAKEN fantasma)
   if (
-    /(?:a\s+las?|las?)\s+\d{1,2}(?::\d{2})?(?:\s*(?:am|pm|a\.m\.|p\.m\.))?(?!\w)/i.test(
-      t,
-    )
+    /(?:a\s+las?|las?)\s+\d{1,2}(?::\d{2})?(?:\s*(?:am|pm|a\.m\.|p\.m\.))?(?!\w)/i
+      .test(
+        t,
+      )
   ) {
     return true;
   }
@@ -392,13 +398,12 @@ export function parseDatetimeES(
   );
   // "15 de agosto" / "14 agosto" → el 15/14 es día, NO hora (Pati/Treysy)
   const diaDeMes = t.match(/(\d{1,2})\s+(?:de\s+)?([a-záéíóúñ]+)/i);
-  const diaDeMesEsMes =
-    !!diaDeMes && resolveMonthIndex(diaDeMes[2]) !== undefined;
+  const diaDeMesEsMes = !!diaDeMes &&
+    resolveMonthIndex(diaDeMes[2]) !== undefined;
   let horaCandidato = horaConPrefijo?.[1] ?? undefined;
   if (!horaCandidato && horaSolo?.[1]) {
     const solo = horaSolo[1].trim();
-    const soloEsDiaDelMes =
-      diaDeMesEsMes &&
+    const soloEsDiaDelMes = diaDeMesEsMes &&
       solo === diaDeMes![1] &&
       !/(?:am|pm|a\.m\.|p\.m\.|:)/i.test(solo);
     // Número suelto sin am/pm/":" (sin marcador explícito de hora): solo se
@@ -408,8 +413,8 @@ export function parseDatetimeES(
     // (caso Lili 04-ago-2026, cita fantasma creada por error).
     const esNumeroSueltoSinMarcador = /^\d{1,2}$/.test(solo);
     const wordCount = t.split(/\s+/).filter(Boolean).length;
-    const esNumeroSueltoEnMensajeLargo =
-      esNumeroSueltoSinMarcador && wordCount > 4;
+    const esNumeroSueltoEnMensajeLargo = esNumeroSueltoSinMarcador &&
+      wordCount > 4;
     if (!soloEsDiaDelMes && !esNumeroSueltoEnMensajeLargo) horaCandidato = solo;
   }
   // "medio día" sin número
@@ -436,8 +441,9 @@ export function parseDatetimeES(
     .replace(/\bmediodia\b/gi, "")
     .trim();
   if (textoParaFecha) fecha = parseFecha(textoParaFecha, ref);
-  if (!fecha && horaCandidato)
+  if (!fecha && horaCandidato) {
     fecha = { año: ref.getFullYear(), mes: ref.getMonth(), dia: ref.getDate() };
+  }
   if (!fecha) {
     const h = parseHora(t);
     if (h) {

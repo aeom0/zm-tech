@@ -67,8 +67,8 @@ function seedState(): HolidayState {
       is_closed: (PERU_HOLIDAYS_CLOSED_SEED as readonly string[]).includes(
         date,
       ),
-      open_until_hour:
-        PERU_HOLIDAY_OPEN_UNTIL_SEED[date] ?? DEFAULT_HOLIDAY_OPEN_UNTIL,
+      open_until_hour: PERU_HOLIDAY_OPEN_UNTIL_SEED[date] ??
+        DEFAULT_HOLIDAY_OPEN_UNTIL,
     })),
   );
 }
@@ -182,7 +182,9 @@ export async function ensureSalonHolidaysLoaded(
 
     if (error || !data) {
       console.warn(
-        `[WABA] salon_holidays no disponible (${tenantId}), ${holidayFallbackLabel(tenantId)}:`,
+        `[WABA] salon_holidays no disponible (${tenantId}), ${
+          holidayFallbackLabel(tenantId)
+        }:`,
         error?.message,
       );
       resetToSeed(tenantId);
@@ -191,7 +193,9 @@ export async function ensureSalonHolidaysLoaded(
 
     if (data.length === 0) {
       console.warn(
-        `[WABA] salon_holidays vacío (${tenantId}), ${holidayFallbackLabel(tenantId)}`,
+        `[WABA] salon_holidays vacío (${tenantId}), ${
+          holidayFallbackLabel(tenantId)
+        }`,
       );
       resetToSeed(tenantId);
       return;
@@ -287,7 +291,9 @@ export function getDateKeyFromYmd(
   month: number,
   day: number,
 ): string {
-  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+  return `${year}-${String(month).padStart(2, "0")}-${
+    String(day).padStart(2, "0")
+  }`;
 }
 
 export function getDateKeyLima(d: Date): string {

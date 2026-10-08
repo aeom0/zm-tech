@@ -1,6 +1,6 @@
 // handlers/menu.ts — Menú principal, categorías, servicios, promos y opciones de carrito
 
-import { sendMessage, sendInteractiveList } from "../wa-api.ts";
+import { sendInteractiveList, sendMessage } from "../wa-api.ts";
 import { formatSoles, LIST_TITLE_MAX } from "../format.ts";
 import type { SupabaseClient } from "../lib/supabase.ts";
 import type { CatalogPack } from "../lib/services-catalog.ts";
@@ -50,15 +50,17 @@ export function classifyUnasService(nameRaw: string): UnasSubcategoryKey {
     name.includes("poly gel") ||
     name.includes("polygel") ||
     name.includes("polly gel")
-  )
+  ) {
     return "polygel";
+  }
   if (
     name.includes("soft gel") ||
     name.includes("softgel") ||
     (name.includes("soft") && name.includes("gel")) ||
     name.includes("tips")
-  )
+  ) {
     return "softgel";
+  }
   if (name.includes("acríl") || name.includes("acril")) return "otros";
   if (isUnasAddOnOrRetiro(name)) return "otros";
   return "clasicas";
@@ -95,7 +97,7 @@ export function getExtensionesSubcategoryLabel(
 ): string {
   return (
     EXTENSIONES_SUBCATEGORY_LABELS[key] ??
-    EXTENSIONES_SUBCATEGORY_LABELS.extensiones_nuevas
+      EXTENSIONES_SUBCATEGORY_LABELS.extensiones_nuevas
   );
 }
 
@@ -110,10 +112,9 @@ export async function sendMenuWithPromos(
   opts?: SendMenuWithPromosOptions,
 ) {
   const variant = opts?.variant ?? "default";
-  const menuBody =
-    variant === "after_meta_ads"
-      ? "¿Qué te gustaría hacer ahora? Toca *Ver opciones* y elige promos, servicios o agendar 💜"
-      : "ZM Lash & Nails Beauty 💜\nEspecialistas en extensiones, lifting, uñas, cejas y más. Estamos en Las Plazuelas de Surco, Local 205. ¿En qué podemos ayudarte?";
+  const menuBody = variant === "after_meta_ads"
+    ? "¿Qué te gustaría hacer ahora? Toca *Ver opciones* y elige promos, servicios o agendar 💜"
+    : "ZM Lash & Nails Beauty 💜\nEspecialistas en extensiones, lifting, uñas, cejas y más. Estamos en Las Plazuelas de Surco, Local 205. ¿En qué podemos ayudarte?";
 
   const now = new Date().toISOString();
   const { data: promosData } = await supabase
@@ -130,10 +131,10 @@ export async function sendMenuWithPromos(
   // Máx DESCRIPTION_MAX_CHARS caracteres para la descripción del list (WhatsApp). Mostrar solo primeras 2 promos para no cortar texto.
   const promoDescription = hasPromos
     ? promos
-        .slice(0, 2)
-        .map((p: { emoji: string; title: string }) => `${p.emoji} ${p.title}`)
-        .join(" · ")
-        .slice(0, DESCRIPTION_MAX_CHARS)
+      .slice(0, 2)
+      .map((p: { emoji: string; title: string }) => `${p.emoji} ${p.title}`)
+      .join(" · ")
+      .slice(0, DESCRIPTION_MAX_CHARS)
     : "Promos activas y paquetes especiales";
 
   const ok = await sendInteractiveList(
@@ -188,10 +189,9 @@ export async function sendMenuWithPromos(
   );
 
   if (!ok) {
-    const fallbackIntro =
-      variant === "after_meta_ads"
-        ? "¿Qué te gustaría hacer ahora?\n\n"
-        : "ZM Lash & Nails Beauty 💜\nEspecialistas en extensiones, lifting, uñas, cejas y más. Las Plazuelas de Surco, Local 205.\n\n";
+    const fallbackIntro = variant === "after_meta_ads"
+      ? "¿Qué te gustaría hacer ahora?\n\n"
+      : "ZM Lash & Nails Beauty 💜\nEspecialistas en extensiones, lifting, uñas, cejas y más. Las Plazuelas de Surco, Local 205.\n\n";
     await sendMessage(
       to,
       fallbackIntro +
@@ -217,10 +217,9 @@ export async function sendCategoriesList(
     const name = c.name.trim();
     const title = name.slice(0, TITLE_MAX_CHARS);
     const baseDesc = "Ver servicios de esta categoría";
-    const description =
-      name.length > TITLE_MAX_CHARS
-        ? `${name} — ${baseDesc}`.slice(0, DESCRIPTION_MAX_CHARS)
-        : baseDesc;
+    const description = name.length > TITLE_MAX_CHARS
+      ? `${name} — ${baseDesc}`.slice(0, DESCRIPTION_MAX_CHARS)
+      : baseDesc;
     return {
       id: `${WA_IDS.CATEGORY_PREFIX}${c.id}`,
       title,
@@ -263,10 +262,9 @@ export async function sendCategoriesAndPromosListFromCatalog(
     const name = c.name.trim();
     const title = listTitle(name);
     const baseDesc = "Ver servicios de esta categoría";
-    const description =
-      name.length > TITLE_MAX_CHARS
-        ? `${name} — ${baseDesc}`.slice(0, DESCRIPTION_MAX_CHARS)
-        : baseDesc;
+    const description = name.length > TITLE_MAX_CHARS
+      ? `${name} — ${baseDesc}`.slice(0, DESCRIPTION_MAX_CHARS)
+      : baseDesc;
     return {
       id: `${WA_IDS.CATEGORY_PREFIX}${c.id}`,
       title,
@@ -282,8 +280,8 @@ export async function sendCategoriesAndPromosListFromCatalog(
   // Categorías primero; promos al final — máx 10 filas Meta.
   // Reserva: Ver mi selección + Menú (+ promo opcional).
   const promoRowsTotal = hasPromos ? 1 : 0;
-  const maxCategoryRows =
-    WABA_LIST_ROW_MAX - promoRowsTotal - 2; /* selección + menú */
+  const maxCategoryRows = WABA_LIST_ROW_MAX - promoRowsTotal -
+    2; /* selección + menú */
   sections.push({
     title: "Categorías",
     rows: [
@@ -314,8 +312,7 @@ export async function sendCategoriesAndPromosListFromCatalog(
     });
   }
 
-  const fallback =
-    displayCats.map((c) => `🌸 ${c.name}`).join("\n") +
+  const fallback = displayCats.map((c) => `🌸 ${c.name}`).join("\n") +
     (hasPromos ? "\n🌸 Promos" : "");
 
   const ok = await sendInteractiveList(
@@ -425,7 +422,9 @@ export async function sendUnasSubcategoriesList(
       const list = groups[key];
       const count = list.length;
       const title = listTitle(getUnasSubcategoryLabel(key));
-      const description = `${count} servicio${count > 1 ? "s" : ""} disponibles`;
+      const description = `${count} servicio${
+        count > 1 ? "s" : ""
+      } disponibles`;
       return {
         // id: subcat_cat-unas__clasicas
         id: `${WA_IDS.SUBCATEGORY_PREFIX}cat-unas__${key}`,
@@ -450,8 +449,9 @@ export async function sendUnasSubcategoriesList(
     },
   ];
 
-  const packsHint =
-    packs.length > 0 ? " También hay packs en cada subcategoría." : "";
+  const packsHint = packs.length > 0
+    ? " También hay packs en cada subcategoría."
+    : "";
 
   const ok = await sendInteractiveList(
     to,
@@ -509,7 +509,9 @@ export async function sendExtensionesSubcategoriesList(
       const list = groups[key];
       const count = list.length;
       const title = listTitle(getExtensionesSubcategoryLabel(key));
-      const description = `${count} servicio${count > 1 ? "s" : ""} disponibles`;
+      const description = `${count} servicio${
+        count > 1 ? "s" : ""
+      } disponibles`;
       return {
         // id: subcat_cat-extensiones__extensiones_nuevas
         id: `${WA_IDS.SUBCATEGORY_PREFIX}cat-extensiones__${key}`,
@@ -540,8 +542,9 @@ export async function sendExtensionesSubcategoriesList(
     },
   ];
 
-  const packsHint =
-    packs.length > 0 ? " También hay packs en cada subcategoría." : "";
+  const packsHint = packs.length > 0
+    ? " También hay packs en cada subcategoría."
+    : "";
 
   const ok = await sendInteractiveList(
     to,
@@ -674,18 +677,23 @@ export async function sendServicesList(
   const fallback = [
     ...packs.map(
       (p) =>
-        `${(p.short_name || p.title).trim()} — S/ ${formatSoles(parseFloat(String(p.pack_price)) || 0)}`,
+        `${(p.short_name || p.title).trim()} — S/ ${
+          formatSoles(parseFloat(String(p.pack_price)) || 0)
+        }`,
     ),
     ...list.map(
       (s) =>
-        `${s.name.trim()} — S/ ${formatSoles(parseFloat(String(s.price)) || 0)}`,
+        `${s.name.trim()} — S/ ${
+          formatSoles(parseFloat(String(s.price)) || 0)
+        }`,
     ),
   ].join("\n");
 
-  const packsNote =
-    packs.length > 0
-      ? ` Incluye ${packs.length} pack${packs.length > 1 ? "s" : ""} al inicio de la lista.`
-      : "";
+  const packsNote = packs.length > 0
+    ? ` Incluye ${packs.length} pack${
+      packs.length > 1 ? "s" : ""
+    } al inicio de la lista.`
+    : "";
   const ok = await sendInteractiveList(
     to,
     categoryName,
@@ -721,21 +729,25 @@ export async function sendCategoryViewChoice(
   const rows = [
     ...(servicesCount > 0
       ? [
-          {
-            id: `${WA_IDS.VIEW_PREFIX}${scopeId}__services`,
-            title: listTitle(`✨ Ver Servicios (${servicesCount})`),
-            description: `${servicesCount} servicio${servicesCount > 1 ? "s" : ""} disponibles`,
-          },
-        ]
+        {
+          id: `${WA_IDS.VIEW_PREFIX}${scopeId}__services`,
+          title: listTitle(`✨ Ver Servicios (${servicesCount})`),
+          description: `${servicesCount} servicio${
+            servicesCount > 1 ? "s" : ""
+          } disponibles`,
+        },
+      ]
       : []),
     ...(packsCount > 0
       ? [
-          {
-            id: `${WA_IDS.VIEW_PREFIX}${scopeId}__packs`,
-            title: listTitle(`📦 Ver Packs (${packsCount})`),
-            description: `${packsCount} pack${packsCount > 1 ? "s" : ""} disponibles`,
-          },
-        ]
+        {
+          id: `${WA_IDS.VIEW_PREFIX}${scopeId}__packs`,
+          title: listTitle(`📦 Ver Packs (${packsCount})`),
+          description: `${packsCount} pack${
+            packsCount > 1 ? "s" : ""
+          } disponibles`,
+        },
+      ]
       : []),
     catalogBackToParentFromScope(scopeId),
   ];
@@ -754,7 +766,9 @@ export async function sendCategoryViewChoice(
     await sendMessage(
       to,
       `💅 *${categoryName}:*\n\n` +
-        `Tenemos ${servicesCount} servicio${servicesCount === 1 ? "" : "s"} y ${packsCount} pack${packsCount === 1 ? "" : "s"}.\n\n` +
+        `Tenemos ${servicesCount} servicio${
+          servicesCount === 1 ? "" : "s"
+        } y ${packsCount} pack${packsCount === 1 ? "" : "s"}.\n\n` +
         "Escribe *menu* para volver al inicio si no ves los botones interactivos.",
     );
   }
@@ -827,7 +841,9 @@ export function buildTimeListPage(
   }
   if (safeOffset > 0) {
     rows.push({
-      id: `${WA_IDS.TIME_PAGE_PREFIX}${dateKey}__${prevCatalogPageOffset(slots.length, safeOffset)}`,
+      id: `${WA_IDS.TIME_PAGE_PREFIX}${dateKey}__${
+        prevCatalogPageOffset(slots.length, safeOffset)
+      }`,
       title: "◀ Anteriores",
       description: "Horarios anteriores",
     });
@@ -912,12 +928,11 @@ export function parseViewPayload(payload: string): {
   const sep = payload.lastIndexOf("__");
   const scopeId = sep >= 0 ? payload.slice(0, sep) : payload;
   const modeRaw = sep >= 0 ? payload.slice(sep + 2) : "";
-  const mode =
-    modeRaw === "packs"
-      ? "packs"
-      : modeRaw === "chooser"
-        ? "chooser"
-        : "services";
+  const mode = modeRaw === "packs"
+    ? "packs"
+    : modeRaw === "chooser"
+    ? "chooser"
+    : "services";
   return { scopeId, mode };
 }
 
@@ -1017,21 +1032,23 @@ export async function sendServicesOnlyList(
     ...serviceRows,
     ...(hasMore
       ? [
-          {
-            id: `${WA_IDS.SERVICES_PAGE_PREFIX}${scopeId}__${nextOffset}`,
-            title: "▶ Ver más servicios",
-            description: `${sorted.length - nextOffset} servicio(s) más`,
-          },
-        ]
+        {
+          id: `${WA_IDS.SERVICES_PAGE_PREFIX}${scopeId}__${nextOffset}`,
+          title: "▶ Ver más servicios",
+          description: `${sorted.length - nextOffset} servicio(s) más`,
+        },
+      ]
       : []),
     ...(offset > 0
       ? [
-          {
-            id: `${WA_IDS.SERVICES_PAGE_PREFIX}${scopeId}__${prevCatalogPageOffset(sorted.length, offset)}`,
-            title: "◀ Anteriores",
-            description: "Página anterior",
-          },
-        ]
+        {
+          id: `${WA_IDS.SERVICES_PAGE_PREFIX}${scopeId}__${
+            prevCatalogPageOffset(sorted.length, offset)
+          }`,
+          title: "◀ Anteriores",
+          description: "Página anterior",
+        },
+      ]
       : []),
     catalogBackToChooser(scopeId),
   ];
@@ -1039,16 +1056,17 @@ export async function sendServicesOnlyList(
   const fallback = page
     .map(
       (s) =>
-        `${s.name.trim()} — S/ ${formatSoles(parseFloat(String(s.price)) || 0)}`,
+        `${s.name.trim()} — S/ ${
+          formatSoles(parseFloat(String(s.price)) || 0)
+        }`,
     )
     .join("\n");
 
   // offset>0 → header distinto ("Más · …") para no chocar con el debounce BD
   // del mismo título en ~30s (página 1 = "Servicios · …").
-  const listHeader =
-    offset > 0
-      ? listTitle(`Más · ${categoryName}`)
-      : listTitle(`Servicios · ${categoryName}`);
+  const listHeader = offset > 0
+    ? listTitle(`Más · ${categoryName}`)
+    : listTitle(`Servicios · ${categoryName}`);
   const ok = await sendInteractiveList(
     to,
     listHeader,
@@ -1096,21 +1114,23 @@ export async function sendPacksOnlyList(
     ...packRows,
     ...(hasMore
       ? [
-          {
-            id: `${WA_IDS.PACKS_PAGE_PREFIX}${scopeId}__${nextOffset}`,
-            title: "▶ Ver más packs",
-            description: `${packs.length - nextOffset} pack(s) más`,
-          },
-        ]
+        {
+          id: `${WA_IDS.PACKS_PAGE_PREFIX}${scopeId}__${nextOffset}`,
+          title: "▶ Ver más packs",
+          description: `${packs.length - nextOffset} pack(s) más`,
+        },
+      ]
       : []),
     ...(offset > 0
       ? [
-          {
-            id: `${WA_IDS.PACKS_PAGE_PREFIX}${scopeId}__${prevCatalogPageOffset(packs.length, offset)}`,
-            title: "◀ Anteriores",
-            description: "Página anterior",
-          },
-        ]
+        {
+          id: `${WA_IDS.PACKS_PAGE_PREFIX}${scopeId}__${
+            prevCatalogPageOffset(packs.length, offset)
+          }`,
+          title: "◀ Anteriores",
+          description: "Página anterior",
+        },
+      ]
       : []),
     catalogBackToChooser(scopeId),
   ];
@@ -1118,14 +1138,15 @@ export async function sendPacksOnlyList(
   const fallback = page
     .map(
       (p) =>
-        `${(p.short_name || p.title).trim()} — S/ ${formatSoles(parseFloat(String(p.pack_price)) || 0)}`,
+        `${(p.short_name || p.title).trim()} — S/ ${
+          formatSoles(parseFloat(String(p.pack_price)) || 0)
+        }`,
     )
     .join("\n");
 
-  const listHeader =
-    offset > 0
-      ? listTitle(`Más packs · ${categoryName}`)
-      : listTitle(`Packs · ${categoryName}`);
+  const listHeader = offset > 0
+    ? listTitle(`Más packs · ${categoryName}`)
+    : listTitle(`Packs · ${categoryName}`);
   const ok = await sendInteractiveList(
     to,
     listHeader,
@@ -1189,7 +1210,9 @@ export async function sendPromosListFromCatalog(
   const fallback = promos
     .map(
       (p: PromoForList) =>
-        `${p.emoji} *${p.title}*\n  ${(p.description ?? "").trim() || "Ver ítems"}`,
+        `${p.emoji} *${p.title}*\n  ${
+          (p.description ?? "").trim() || "Ver ítems"
+        }`,
     )
     .join("\n\n");
   const ok = await sendInteractiveList(
@@ -1261,7 +1284,9 @@ export async function sendPromosList(to: string, supabase: SupabaseClient) {
   const fallback = promos
     .map(
       (p: PromoRow) =>
-        `${p.emoji} *${p.title}*\n  ${(p.description ?? "").trim() || "Ver ítems"}`,
+        `${p.emoji} *${p.title}*\n  ${
+          (p.description ?? "").trim() || "Ver ítems"
+        }`,
     )
     .join("\n\n");
 
@@ -1304,26 +1329,26 @@ export async function sendCartOptions(
     },
     ...(hasItems
       ? [
-          {
-            id: WA_IDS.VER_SELECCION,
-            title: "Ver mi selección",
-            description: "Revisar servicios elegidos",
-          },
-        ]
+        {
+          id: WA_IDS.VER_SELECCION,
+          title: "Ver mi selección",
+          description: "Revisar servicios elegidos",
+        },
+      ]
       : []),
     ...(hasItems
       ? [
-          {
-            id: WA_IDS.AGENDAR_YA,
-            title: "Agendar cita",
-            description: "Reservar con los servicios elegidos",
-          },
-          {
-            id: WA_IDS.VACIAR_CARRITO,
-            title: "Vaciar carrito",
-            description: "Eliminar todo y empezar de cero",
-          },
-        ]
+        {
+          id: WA_IDS.AGENDAR_YA,
+          title: "Agendar cita",
+          description: "Reservar con los servicios elegidos",
+        },
+        {
+          id: WA_IDS.VACIAR_CARRITO,
+          title: "Vaciar carrito",
+          description: "Eliminar todo y empezar de cero",
+        },
+      ]
       : []),
     {
       id: "menu",
@@ -1331,21 +1356,21 @@ export async function sendCartOptions(
       description: "Volver al inicio",
     },
   ];
-  const body =
-    opts?.bodyOverride !== undefined
-      ? opts.bodyOverride
-      : hasItems
-        ? `${summary}\n\n¿Reservamos tu cita? Elige *Agendar cita* 👇`
-        : "¿Reservamos tu cita? Elige *Agendar cita* 👇";
+  const body = opts?.bodyOverride !== undefined
+    ? opts.bodyOverride
+    : hasItems
+    ? `${summary}\n\n¿Reservamos tu cita? Elige *Agendar cita* 👇`
+    : "¿Reservamos tu cita? Elige *Agendar cita* 👇";
   const header = opts?.headerOverride ?? "Servicio agregado";
   const ok = await sendInteractiveList(to, header, body, "Opciones", [
     { title: "Acciones", rows },
   ]);
-  if (!ok)
+  if (!ok) {
     await sendMessage(
       to,
       hasItems
         ? `${summary}\n\nEscribe *agregar* para más o *agendar* para reservar.`
         : "Escribe *agregar* para más o *agendar* para reservar.",
     );
+  }
 }

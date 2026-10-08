@@ -168,8 +168,9 @@ export async function sendMessage(to: string, body: string, log?: OutLogger) {
   });
   const data = await res.json().catch(() => null);
   if (!res.ok) {
-    const errText =
-      data != null ? JSON.stringify(data).slice(0, 300) : "unknown";
+    const errText = data != null
+      ? JSON.stringify(data).slice(0, 300)
+      : "unknown";
     console.error("[WABA] WhatsApp API sendMessage:", res.status, errText);
     throw new Error(`WhatsApp API ${res.status}: ${errText.slice(0, 200)}`);
   }
@@ -236,8 +237,9 @@ export async function sendImage(
   });
   const data = await res.json().catch(() => null);
   if (!res.ok) {
-    const errText =
-      data != null ? JSON.stringify(data).slice(0, 300) : "unknown";
+    const errText = data != null
+      ? JSON.stringify(data).slice(0, 300)
+      : "unknown";
     console.error("[WABA] WhatsApp API sendImage:", res.status, errText);
   } else {
     const logContent = caption ? `[imagen] ${caption}` : "[imagen]";
@@ -328,8 +330,9 @@ export async function sendInteractiveList(
   });
   const data = await res.json().catch(() => null);
   if (!res.ok) {
-    const errText =
-      data != null ? JSON.stringify(data).slice(0, 300) : "unknown";
+    const errText = data != null
+      ? JSON.stringify(data).slice(0, 300)
+      : "unknown";
     console.error(
       "[WABA] sendInteractiveList failed:",
       res.status,

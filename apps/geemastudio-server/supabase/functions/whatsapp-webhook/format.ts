@@ -26,7 +26,9 @@ export function toLimaLocalTimestamp(date: Date): string {
     hour12: false,
   }).formatToParts(date);
   const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
-  return `${get("year")}-${get("month")}-${get("day")} ${get("hour")}:${get("minute")}:${get("second")}`;
+  return `${get("year")}-${get("month")}-${get("day")} ${get("hour")}:${
+    get("minute")
+  }:${get("second")}`;
 }
 
 /**
@@ -262,23 +264,27 @@ export function limaIsoWeekday(date: Date): number {
 
 export function getMenuResponse(option: string): string {
   const l = option.toLowerCase().trim();
-  if (l === "mi_cita" || (l.includes("mi cita") && !l.includes("agendar")))
+  if (l === "mi_cita" || (l.includes("mi cita") && !l.includes("agendar"))) {
     return "📋 *Mi cita*\n\nSi ya tienes una cita pendiente, puedes ver el resumen y *cambiar fecha u hora* sin duplicar la reserva.";
+  }
   if (
     l === "agendar_cita" ||
     l === "2" ||
     (l.includes("agendar") && !l.includes("mi cita")) ||
     (l.includes("cita") && l.includes("agendar"))
-  )
+  ) {
     return "📅 *Agendar Cita*\n\nSelecciona *Ver servicios* para elegir uno o más servicios y luego podrás agendar.";
-  if (l === "horarios" || l === "3" || l.includes("horario"))
+  }
+  if (l === "horarios" || l === "3" || l.includes("horario")) {
     return "🕐 *Horarios de Atención*\n\n📅 Lunes a Sábado (con cita previa)\n⏰ 10:00 AM - 6:00 PM\n\n📅 Domingos\n⏰ 10:30 AM - 1:00 PM (previa cita)";
+  }
   if (
     l === "ubicacion" ||
     l === "4" ||
     l.includes("ubicaci") ||
     l.includes("donde")
-  )
+  ) {
     return DEFAULT_UBICACION_TEXT;
+  }
   return "No entendí tu mensaje 🫶 Escribe *menu* para ver las opciones disponibles.";
 }

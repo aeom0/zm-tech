@@ -56,7 +56,9 @@ export async function notifyAdmins(
   const total = (result as { total_tokens?: number } | null)?.total_tokens;
   const errors = (result as { errors?: string[] } | null)?.errors;
   console.log(
-    `[WABA] notifyAdmins ok title="${title.slice(0, 40)}" sent=${sent ?? "?"}/${total ?? "?"} admins=${admins.length}`,
+    `[WABA] notifyAdmins ok title="${title.slice(0, 40)}" sent=${sent ?? "?"}/${
+      total ?? "?"
+    } admins=${admins.length}`,
   );
   if (errors?.length) {
     console.error("[WABA] notifyAdmins FCM errors:", errors.slice(0, 3));
@@ -126,8 +128,8 @@ export async function notifyAdminsClientChat(
       ? `Anuncio: ${opts.referralHeadline.slice(0, 40)}`
       : "Desde anuncio Meta"
     : opts.isNew
-      ? "Primera vez"
-      : "Retomó conversación";
+    ? "Primera vez"
+    : "Retomó conversación";
 
   const body = `${firstName}: ${preview}`;
 
@@ -221,8 +223,9 @@ export async function notifyAdminsPausedClientReply(
 function errorAlertKind(errorMessage: string): string {
   const m = errorMessage.trim();
   if (m === "missing_from_phone") return "missing_from_phone";
-  if (m === "skip_dispatch_lock_exhausted")
+  if (m === "skip_dispatch_lock_exhausted") {
     return "skip_dispatch_lock_exhausted";
+  }
   if (/replace/i.test(m)) return "replace_crash";
   return (
     m
@@ -249,10 +252,9 @@ export async function notifyAdminsWaError(
   try {
     // El catch del webhook a veces deja phone=null en CTWA/BSUID y solo
     // mete from_user_id en context (caso validate:bsuid → push "María" a staff).
-    const fromUserIdCtx =
-      typeof opts.context?.from_user_id === "string"
-        ? opts.context.from_user_id
-        : null;
+    const fromUserIdCtx = typeof opts.context?.from_user_id === "string"
+      ? opts.context.from_user_id
+      : null;
     const qaDest = opts.phone || fromUserIdCtx;
     if (qaDest && isQaWaPhone(qaDest)) {
       console.log(
@@ -269,8 +271,8 @@ export async function notifyAdminsWaError(
     const phoneKey = opts.phone
       ? opts.phone
       : fromUserId
-        ? `nouser:${fromUserId}`
-        : "nouser:unknown";
+      ? `nouser:${fromUserId}`
+      : "nouser:unknown";
 
     const { data: claimed, error: claimErr } = await supabase.rpc(
       "waba_claim_action_debounce",
@@ -294,13 +296,13 @@ export async function notifyAdminsWaError(
       return;
     }
 
-    const contactName =
-      typeof opts.context?.contact_name === "string"
-        ? opts.context.contact_name
-        : null;
+    const contactName = typeof opts.context?.contact_name === "string"
+      ? opts.context.contact_name
+      : null;
     // Solo preview del mensaje de la clienta — nunca context.note (forense/técnico).
-    const preview =
-      typeof opts.context?.preview === "string" ? opts.context.preview : null;
+    const preview = typeof opts.context?.preview === "string"
+      ? opts.context.preview
+      : null;
 
     const { title, body } = formatWaErrorPushCopy({
       kind,
@@ -357,8 +359,9 @@ export async function uploadWhatsAppMediaToStorage(
 
     // Meta a veces envía mime_type con parámetros (ej. "audio/ogg; codecs=opus")
     // que no matchean allowed_mime_types del bucket (Supabase exige match exacto).
-    const rawMimeType =
-      typeof mediaData.mime_type === "string" ? mediaData.mime_type : "";
+    const rawMimeType = typeof mediaData.mime_type === "string"
+      ? mediaData.mime_type
+      : "";
     const contentType = rawMimeType.split(";")[0].trim() || fallbackMimeType;
 
     const { data, error } = await supabase.storage

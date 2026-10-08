@@ -49,12 +49,11 @@ export function extractMetaWamid(data: unknown): string | null {
 }
 
 function rowFromQuoted(data: Record<string, unknown>): QuotedMessageRow | null {
-  const imageUrl =
-    typeof data.image_url === "string" && data.image_url.trim()
-      ? data.image_url.trim()
-      : null;
-  const content =
-    String(data.content ?? "").trim() || (imageUrl ? "[imagen]" : "");
+  const imageUrl = typeof data.image_url === "string" && data.image_url.trim()
+    ? data.image_url.trim()
+    : null;
+  const content = String(data.content ?? "").trim() ||
+    (imageUrl ? "[imagen]" : "");
   if (!content && !imageUrl) return null;
   return {
     content: content || "[imagen]",
@@ -115,8 +114,7 @@ export async function resolveQuotedMessage(
         ? lastOut.image_url.trim()
         : null;
     // Evitar atribuir un "Si" al último "envía el voucher" / ack corto
-    const looksLikeCreative =
-      msgType === "image" ||
+    const looksLikeCreative = msgType === "image" ||
       msgType === "interactive" ||
       Boolean(imageUrl) ||
       content.includes("[imagen]") ||
@@ -138,8 +136,7 @@ export async function withNearbyImageCaption(
   phone: string,
   quoted: QuotedMessageRow,
 ): Promise<QuotedMessageRow> {
-  const isImage =
-    quoted.msg_type === "image" ||
+  const isImage = quoted.msg_type === "image" ||
     Boolean(quoted.image_url) ||
     /^\[imagen\]/i.test(quoted.content);
   if (!isImage || !quoted.created_at) return quoted;
@@ -199,9 +196,10 @@ export function isBarePriceAsk(text: string): boolean {
     .replace(/[\u0300-\u036f]/g, "")
     .trim();
   if (!raw || raw.length > 40) return false;
-  return /^(precios?|cuanto(s)?(\s+(cuesta|vale|sale|es))?\??|tarifas?)\s*\??$/.test(
-    raw,
-  );
+  return /^(precios?|cuanto(s)?(\s+(cuesta|vale|sale|es))?\??|tarifas?)\s*\??$/
+    .test(
+      raw,
+    );
 }
 
 /**

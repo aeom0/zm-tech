@@ -9,17 +9,17 @@ import { WA_IDS } from "../lib/constants.ts";
 import { matchesQuotedOfferConfirm } from "../lib/pending-price-cta.ts";
 import { matchesPurePromosNavigationIntent } from "../lib/promo-intent.ts";
 import {
+  matchesCartCorrectionIntent,
   matchesCartSelectionQuestion,
   matchesCartTotalQuestion,
-  sessionHasCart,
   matchesHorariosAvailabilityQuery,
   matchesServiceChangeIntent,
-  matchesCartCorrectionIntent,
   messageMentionsCalendarDate,
+  sessionHasCart,
 } from "./booking-flow.ts";
 import {
-  matchesMiCitaIntent,
   matchesCancelCitaIntent,
+  matchesMiCitaIntent,
 } from "./pending-appointment.ts";
 import { hasExplicitTime } from "../parse-datetime-es.ts";
 
@@ -153,8 +153,7 @@ export function isDeclineIntent(lower: string): boolean {
   /** Frases nuevas PR #81 — solo declinan si no hay señal de agendar/fecha (P0). */
   const NEG_SENSITIVE = ["más adelante", "por ahora no", "todavía no"];
 
-  const hasBookingSignal =
-    /\b(agend|reserv|cita)\w*\b/i.test(lower) ||
+  const hasBookingSignal = /\b(agend|reserv|cita)\w*\b/i.test(lower) ||
     messageMentionsCalendarDate(lower) ||
     hasExplicitTime(lower);
 
@@ -220,7 +219,7 @@ export function remapMenuTextUserInput(opts: {
 
   if (
     ["agregar", "agregar otro", "otro servicio"].some((k) =>
-      new RegExp(`\\b${k}\\b`, "i").test(lower),
+      new RegExp(`\\b${k}\\b`, "i").test(lower)
     ) &&
     !mentionsPackOrCombo &&
     !mentionsMultiple &&
@@ -261,7 +260,7 @@ export function remapMenuTextUserInput(opts: {
 
   if (
     ["pack", "packs", "paquete", "paquetes", "combo", "combos"].some((k) =>
-      lower.includes(k),
+      lower.includes(k)
     )
   ) {
     if (!isMostlyPacksNav(lower)) return { kind: "no_match" };

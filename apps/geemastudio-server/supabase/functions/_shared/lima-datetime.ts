@@ -93,10 +93,9 @@ export function formatAppointmentDateForClient(
   const minute = get("minute");
   const dayPeriod = get("dayPeriod").toUpperCase();
 
-  const time =
-    minute === "00"
-      ? `${hour}:00 ${dayPeriod}`
-      : `${hour}:${minute} ${dayPeriod}`;
+  const time = minute === "00"
+    ? `${hour}:00 ${dayPeriod}`
+    : `${hour}:${minute} ${dayPeriod}`;
   return `${weekday} ${day} de ${month} a las ${time}`;
 }
 

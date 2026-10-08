@@ -70,8 +70,8 @@ const DISPATCH_INFLIGHT_TTL_SECONDS = 30;
  * con 12s a secas, un follow-up que esperó >12s ya no ve su propio IN y re-despacha
  * Haiku (Shantal …5482, Rossy …4575, Lucy …8203; 23-sep-2026).
  */
-export const POST_WAIT_SKIP_LOOKBACK_MS =
-  COALESCE_LOOKBACK_MS + DISPATCH_INFLIGHT_TTL_SECONDS * 1000;
+export const POST_WAIT_SKIP_LOOKBACK_MS = COALESCE_LOOKBACK_MS +
+  DISPATCH_INFLIGHT_TTL_SECONDS * 1000;
 
 /** Reintentos al esperar que se libere el turno de otro leader del mismo teléfono. */
 const DISPATCH_INFLIGHT_RETRY_MAX = 14;

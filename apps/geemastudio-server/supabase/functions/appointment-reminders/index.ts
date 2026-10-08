@@ -13,7 +13,8 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
 // URL interna de la función send-appointment-reminder dentro del mismo proyecto
-const SEND_REMINDER_URL = `${SUPABASE_URL}/functions/v1/send-appointment-reminder`;
+const SEND_REMINDER_URL =
+  `${SUPABASE_URL}/functions/v1/send-appointment-reminder`;
 
 /**
  * Destino Cloud API: E.164 o BSUID (PE.…).
@@ -129,8 +130,9 @@ Deno.serve(async (req: Request) => {
   let totalRows = 0;
 
   for (const tenant of activeTenants) {
-    await runWithRequestTenantId(tenant.tenantId, () =>
-      processTenantReminders(tenant.tenantId),
+    await runWithRequestTenantId(
+      tenant.tenantId,
+      () => processTenantReminders(tenant.tenantId),
     );
   }
 
@@ -237,8 +239,7 @@ Deno.serve(async (req: Request) => {
     }
 
     for (const appt of rows) {
-      const phone =
-        resolveWaDest(appt.client_phone) ??
+      const phone = resolveWaDest(appt.client_phone) ??
         (appt.client_id
           ? (waUserIdByClient.get(appt.client_id) ?? null)
           : null);

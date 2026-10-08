@@ -156,8 +156,9 @@ export async function getOrCreateClient(
   opts?: { username?: string | null },
 ) {
   const tenantId = getRequestTenantId();
-  const usernameRaw =
-    typeof opts?.username === "string" ? opts.username.trim() : "";
+  const usernameRaw = typeof opts?.username === "string"
+    ? opts.username.trim()
+    : "";
   const username = usernameRaw.replace(/^@+/, "").slice(0, 80) || null;
 
   // BSUID-only (Meta usernames / CTWA sin teléfono): clave = wa_user_id.
@@ -344,8 +345,9 @@ export async function findClientByWaRecipient(
       .maybeSingle();
     return data ?? null;
   }
-  const { country, normalized } =
-    getPhoneCountryAndNormalizedFromWa(waRecipient);
+  const { country, normalized } = getPhoneCountryAndNormalizedFromWa(
+    waRecipient,
+  );
   const { data } = await supabase
     .from("clients")
     .select("id, name, dni")
@@ -376,24 +378,20 @@ export async function getSession(supabase: SupabaseClient, phone: string) {
   const legacyIds = data.cart_service_ids
     ? (JSON.parse(data.cart_service_ids) as string[])
     : ([] as string[]);
-  const rescheduleId =
-    (data as { reschedule_appointment_id?: string | null })
-      .reschedule_appointment_id ?? null;
+  const rescheduleId = (data as { reschedule_appointment_id?: string | null })
+    .reschedule_appointment_id ?? null;
 
   return {
     ...data,
     step: data.step as string,
     reschedule_appointment_id: rescheduleId,
     serviceIds: legacyIds,
-    cartItems:
-      cartItems.length > 0
-        ? cartItems
-        : legacyIds.map((id) => ({
-            item_type: "service" as const,
-            item_id: id,
-            quantity: 1,
-            price: 0,
-          })),
+    cartItems: cartItems.length > 0 ? cartItems : legacyIds.map((id) => ({
+      item_type: "service" as const,
+      item_id: id,
+      quantity: 1,
+      price: 0,
+    })),
     parsedDatetime: data.parsed_datetime
       ? new Date(data.parsed_datetime)
       : null,
@@ -733,8 +731,9 @@ export async function addCartItems(
   phone: string,
   items: CartItem[],
 ): Promise<CartItem[]> {
-  if (items.length === 0)
+  if (items.length === 0) {
     return (await getSession(supabase, phone))?.cartItems ?? [];
+  }
   const session = await getSession(supabase, phone);
   const current = session?.cartItems ?? [];
   const next = await mergeCartItemsDedup(supabase, current, items);
@@ -785,8 +784,9 @@ export async function replaceCartKeepingSchedule(
   await upsertSession(supabase, phone, {
     cart_items: JSON.stringify(items),
     cart_service_ids: JSON.stringify(serviceIds),
-    step:
-      session?.step === "awaiting_datetime" ? "awaiting_datetime" : "browsing",
+    step: session?.step === "awaiting_datetime"
+      ? "awaiting_datetime"
+      : "browsing",
     reschedule_appointment_id: session?.reschedule_appointment_id ?? null,
     ...(selectedDay ? { selected_day: selectedDay } : {}),
     employee_assignments: JSON.stringify({}),

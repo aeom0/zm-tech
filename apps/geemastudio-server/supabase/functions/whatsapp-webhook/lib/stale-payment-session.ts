@@ -17,7 +17,11 @@ const FRESH_START_RE =
   /^\s*(hola|holi|holis|hey|buen[oa]s?(\s+(dias|tardes|noches))?)\b|\b(agendar|reservar|reserva|quiero\s+(una\s+)?cita|sacar\s+(una\s+)?cita)\b/;
 
 export function isStalePaymentRestart(
-  session: { step?: string | null; awaiting_screenshot?: boolean | null; updated_at?: string | null } | null,
+  session: {
+    step?: string | null;
+    awaiting_screenshot?: boolean | null;
+    updated_at?: string | null;
+  } | null,
   text: string,
   now = Date.now(),
 ): boolean {

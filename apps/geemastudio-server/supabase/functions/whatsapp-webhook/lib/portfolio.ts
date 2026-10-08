@@ -283,8 +283,7 @@ export function getPortfolioInstagramFallback(): string {
 export function matchesPortfolioOfferPhrase(text: string): boolean {
   const t = (text ?? "").toLowerCase();
   if (!t) return false;
-  const mentionsPortfolio =
-    /\bfotos?\s+reales?\b/.test(t) ||
+  const mentionsPortfolio = /\bfotos?\s+reales?\b/.test(t) ||
     /\bver\s+ejemplos\b/.test(t) ||
     /\bfotos?\s+de\s+(trabajos|ejemplos|referencia)\b/.test(t) ||
     /\b(el\s+|la\s+)?portafolio\b/.test(t);
@@ -558,13 +557,10 @@ export async function sendPortfolioImagesOrdered(
   if (slots.length === 0) return false;
 
   const preferred = new Set((preferredUrls ?? []).filter(Boolean));
-  const ordered =
-    preferred.size === 0
-      ? slots
-      : [
-          ...slots.filter((s) => preferred.has(s.url)),
-          ...slots.filter((s) => !preferred.has(s.url)),
-        ];
+  const ordered = preferred.size === 0 ? slots : [
+    ...slots.filter((s) => preferred.has(s.url)),
+    ...slots.filter((s) => !preferred.has(s.url)),
+  ];
 
   for (const slot of ordered) {
     await sendImage(
@@ -622,8 +618,7 @@ export function sendFromCaptionHits(
   const preferredUrls = [
     ...new Set(hits.filter((h) => h.serviceId === hostId).map((h) => h.url)),
   ];
-  const hostName =
-    index.find((e) => e.serviceId === hostId)?.serviceName ??
+  const hostName = index.find((e) => e.serviceId === hostId)?.serviceName ??
     topHits[0].serviceName;
   return sendPortfolioImagesForService(
     supabase,
@@ -703,11 +698,11 @@ export async function resolveAndSendPortfolio(opts: {
   // ── 0) Fichas Extensiones_* (Clásicas/Rímel/3D/4D) + resto por portafolio ──
   // Nicole: «fotos 3D, rimel y foxy» → fichas edu (diseños) + Fox del portafolio.
   const fiberKeys = detectLashFiberKeys(messageText);
-  const wantsFiberRefs =
-    fiberKeys.length >= 1 &&
-    /(foto|ver|mostrar|mand|pas|referenc|diseñ|diseno|estilo|explic|que\s+es)/i.test(
-      messageText,
-    );
+  const wantsFiberRefs = fiberKeys.length >= 1 &&
+    /(foto|ver|mostrar|mand|pas|referenc|diseñ|diseno|estilo|explic|que\s+es)/i
+      .test(
+        messageText,
+      );
   if (wantsFiberRefs && !isServiceUuid(paramTrim)) {
     try {
       const { fiberEduKindForLashKey, getEduGuideImage } = await import(
@@ -793,8 +788,9 @@ export async function resolveAndSendPortfolio(opts: {
     categoryId: isPortfolioCategoryId(catId) ? catId : null,
   });
   // Si filtrar por cat no dio hits, reintentar global (anfitrión puede estar en otra cat)
-  const captionHits =
-    msgHits.length > 0 ? msgHits : matchPortfolioByCaption(captionQuery, index);
+  const captionHits = msgHits.length > 0
+    ? msgHits
+    : matchPortfolioByCaption(captionQuery, index);
 
   if (captionHits.length > 0 && !isServiceUuid(paramTrim)) {
     // Solo ganar por caption si el score es sólido (≥4 = un token útil)
@@ -1144,8 +1140,8 @@ export function findBestPortfolioMatchForText(
   const quote = extractPriceQuote(text);
   const scoped = categoryId
     ? index.filter(
-        (entry) => !entry.categoryId || entry.categoryId === categoryId,
-      )
+      (entry) => !entry.categoryId || entry.categoryId === categoryId,
+    )
     : index;
 
   if (quote) {

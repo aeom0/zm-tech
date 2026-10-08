@@ -3,15 +3,15 @@
  * Entrada: matchesThirdPartyBookingIntent → startPartyBookingFlow
  */
 import {
-  getSession,
-  upsertSession,
-  clearCart,
   addCartItems,
-  findClientByWaRecipient,
   type CartItem,
+  clearCart,
+  findClientByWaRecipient,
+  getSession,
   type SupabaseClient,
+  upsertSession,
 } from "../lib/supabase.ts";
-import { sendMessage, sendInteractiveList } from "../wa-api.ts";
+import { sendInteractiveList, sendMessage } from "../wa-api.ts";
 import { sendCategoriesList } from "./menu.ts";
 import {
   loadCatalog,
@@ -26,17 +26,17 @@ import {
   textInterruptsCompanionName,
 } from "../lib/duo-pack.ts";
 import {
-  emptyPartyBooking,
-  parsePartyBooking,
-  serializePartyBooking,
-  PARTY_MODE_TOGETHER_ID,
-  PARTY_MODE_GUEST_ID,
-  PARTY_AT_LIMIT_MESSAGE,
   canShareSlot,
+  emptyPartyBooking,
   inferPartyModeFromText,
-  partyMemberLabel,
-  type PartyBooking,
   MAX_SCHEDULED_PER_CHAT,
+  parsePartyBooking,
+  PARTY_AT_LIMIT_MESSAGE,
+  PARTY_MODE_GUEST_ID,
+  PARTY_MODE_TOGETHER_ID,
+  type PartyBooking,
+  partyMemberLabel,
+  serializePartyBooking,
 } from "../lib/party-booking.ts";
 import { getPendingAppointmentsForPhone } from "./pending-appointment.ts";
 import { sendDateSelector } from "./agenda.ts";
@@ -150,8 +150,7 @@ export async function holdDuoPackForCompanionName(
 
   const serviceIds = (session?.serviceIds ?? []) as string[];
   const catalog = await loadCatalog(supabase);
-  const pack =
-    (party?.pack_id ? catalog.packsById.get(party.pack_id) : null) ??
+  const pack = (party?.pack_id ? catalog.packsById.get(party.pack_id) : null) ??
     (isTwoPersonSameServiceIds(serviceIds)
       ? findTwoPersonPack(catalog, serviceIds[0])
       : null);
@@ -234,7 +233,10 @@ export async function maybeStartDuoPackFromConfirm(
   catalog: ServiceCatalog,
 ): Promise<boolean> {
   if (!confirmsTwoPersonPack(messageText)) return false;
-  if (textInterruptsCompanionName(messageText) && !/\bpack\b/.test(messageText.toLowerCase())) {
+  if (
+    textInterruptsCompanionName(messageText) &&
+    !/\bpack\b/.test(messageText.toLowerCase())
+  ) {
     return false;
   }
   const session = await getSession(supabase, phone);
@@ -268,8 +270,20 @@ export async function startPartyBookingFlow(
   if (inferred === "together") {
     party.mode = "together";
     party.members = [
-      { role: "primary", name: null, dni: null, service_ids: [], datetime_iso: null },
-      { role: "guest", name: null, dni: null, service_ids: [], datetime_iso: null },
+      {
+        role: "primary",
+        name: null,
+        dni: null,
+        service_ids: [],
+        datetime_iso: null,
+      },
+      {
+        role: "guest",
+        name: null,
+        dni: null,
+        service_ids: [],
+        datetime_iso: null,
+      },
     ];
     party.collecting = "guest_name";
     await saveParty(supabase, phone, party, { step: "browsing" });
@@ -285,7 +299,13 @@ export async function startPartyBookingFlow(
   if (inferred === "guest_only") {
     party.mode = "guest_only";
     party.members = [
-      { role: "guest", name: null, dni: null, service_ids: [], datetime_iso: null },
+      {
+        role: "guest",
+        name: null,
+        dni: null,
+        service_ids: [],
+        datetime_iso: null,
+      },
     ];
     party.collecting = "guest_name";
     await saveParty(supabase, phone, party, { step: "browsing" });
@@ -333,16 +353,27 @@ export async function handlePartyModeTap(
     return false;
   }
   const session = await getSession(supabase, phone);
-  const party =
-    parsePartyBooking(
-      (session as { party_booking?: string | null })?.party_booking,
-    ) ?? emptyPartyBooking("mode");
+  const party = parsePartyBooking(
+    (session as { party_booking?: string | null })?.party_booking,
+  ) ?? emptyPartyBooking("mode");
 
   if (rowId === PARTY_MODE_TOGETHER_ID) {
     party.mode = "together";
     party.members = [
-      { role: "primary", name: null, dni: null, service_ids: [], datetime_iso: null },
-      { role: "guest", name: null, dni: null, service_ids: [], datetime_iso: null },
+      {
+        role: "primary",
+        name: null,
+        dni: null,
+        service_ids: [],
+        datetime_iso: null,
+      },
+      {
+        role: "guest",
+        name: null,
+        dni: null,
+        service_ids: [],
+        datetime_iso: null,
+      },
     ];
     party.collecting = "guest_name";
     await saveParty(supabase, phone, party);
@@ -356,7 +387,13 @@ export async function handlePartyModeTap(
 
   party.mode = "guest_only";
   party.members = [
-    { role: "guest", name: null, dni: null, service_ids: [], datetime_iso: null },
+    {
+      role: "guest",
+      name: null,
+      dni: null,
+      service_ids: [],
+      datetime_iso: null,
+    },
   ];
   party.collecting = "guest_name";
   await saveParty(supabase, phone, party);
@@ -378,8 +415,8 @@ async function askForMemberService(
     cart_service_ids: "[]",
   });
   const catalog = await loadCatalog(supabase);
-  const member =
-    party.members.find((m) => m.role === which) ?? party.members[0];
+  const member = party.members.find((m) => m.role === which) ??
+    party.members[0];
   const label = partyMemberLabel(member);
   await sendMessage(
     phone,
@@ -396,12 +433,15 @@ async function continueDuoPackAfterNames(
   phone: string,
   party: PartyBooking,
 ): Promise<void> {
-  const pending = party.members.find((m) => m.datetime_iso)?.datetime_iso ?? null;
+  const pending = party.members.find((m) => m.datetime_iso)?.datetime_iso ??
+    null;
   if (pending && party.slot_strategy === "same") {
     for (const member of party.members) member.datetime_iso = pending;
     party.collecting = "ready";
     await saveParty(supabase, phone, party);
-    const { finalizeBookingAfterDatetimeSelection } = await import("./payment.ts");
+    const { finalizeBookingAfterDatetimeSelection } = await import(
+      "./payment.ts"
+    );
     const { getDateKeyLima } = await import("../lib/peru-holidays.ts");
     const chosen = new Date(pending);
     await finalizeBookingAfterDatetimeSelection(
@@ -442,7 +482,8 @@ export async function tryHandlePartyText(
     return false;
   }
   if (
-    (party.collecting === "guest_name" || party.collecting === "primary_name") &&
+    (party.collecting === "guest_name" ||
+      party.collecting === "primary_name") &&
     !looksLikePersonName(messageText)
   ) {
     return false;
@@ -538,8 +579,7 @@ export async function tryCapturePartyServiceTap(
     return false;
   }
 
-  const role =
-    party.collecting === "primary_service" ? "primary" : "guest";
+  const role = party.collecting === "primary_service" ? "primary" : "guest";
   const idx = party.members.findIndex((m) => m.role === role);
   if (idx < 0) return false;
 
@@ -555,8 +595,8 @@ export async function tryCapturePartyServiceTap(
     const ids = Array.isArray(pack?.service_ids)
       ? (pack!.service_ids as string[])
       : typeof pack?.service_ids === "string"
-        ? (JSON.parse(pack.service_ids as string) as string[])
-        : [];
+      ? (JSON.parse(pack.service_ids as string) as string[])
+      : [];
     if (ids.length === 0) {
       await sendMessage(
         phone,
@@ -638,12 +678,11 @@ async function prepareCartAndDatetime(
   const session = await getSession(supabase, phone);
   const ids =
     (session?.cartItems ?? []).flatMap((i: CartItem) =>
-      i.item_type === "service" ? [i.item_id] : [],
+      i.item_type === "service" ? [i.item_id] : []
     ) ?? [];
-  const memberIds =
-    party.mode === "guest_only"
-      ? (guest?.service_ids ?? [])
-      : (primary?.service_ids ?? []);
+  const memberIds = party.mode === "guest_only"
+    ? (guest?.service_ids ?? [])
+    : (primary?.service_ids ?? []);
   await sendPartyDateSelector(
     supabase,
     phone,
@@ -658,11 +697,10 @@ async function sendPartyDateSelector(
   catalog: ServiceCatalog,
   serviceIds: string[],
 ): Promise<void> {
-  const duration =
-    serviceIds.reduce((a, id) => {
-      const s = catalog.servicesById.get(id);
-      return a + (s?.duration ?? 60);
-    }, 0) || 60;
+  const duration = serviceIds.reduce((a, id) => {
+    const s = catalog.servicesById.get(id);
+    return a + (s?.duration ?? 60);
+  }, 0) || 60;
   const cap = overlapCapForCart(serviceIds, catalog);
   await sendDateSelector(
     phone,
@@ -788,4 +826,4 @@ export async function onPartyDatetimeChosen(
   return { finalize: true, party };
 }
 
-export { partyIsReady, partyCreatingCount } from "../lib/party-booking.ts";
+export { partyCreatingCount, partyIsReady } from "../lib/party-booking.ts";

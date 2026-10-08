@@ -107,14 +107,15 @@ async function rpcFindCandidates(
 
 async function loadNudgeText(tenantId: string): Promise<string> {
   const rows = (await supabaseRequest(
-    `waba_config?config_key=eq.meta_ads_bounce_nudge_text&tenant_id=eq.${encodeURIComponent(tenantId)}&select=config_value&is_active=eq.true&limit=1`,
+    `waba_config?config_key=eq.meta_ads_bounce_nudge_text&tenant_id=eq.${
+      encodeURIComponent(tenantId)
+    }&select=config_value&is_active=eq.true&limit=1`,
   )) as Array<{ config_value?: { text?: string } }> | null;
   const text = rows?.[0]?.config_value?.text;
   return typeof text === "string" && text.trim()
     ? text.trim()
     : DEFAULT_NUDGE_TEXT;
 }
-
 
 /**
  * Copy por rubro (análisis 06-oct): el texto de `waba_config` lista pestañas
@@ -131,7 +132,9 @@ async function askHaikuBounceCopy(
 ): Promise<string | null> {
   if (!ANTHROPIC_API_KEY) return null;
   const rows = (await supabaseRequest(
-    `wa_messages?phone=eq.${encodeURIComponent(phone)}&tenant_id=eq.${encodeURIComponent(tenantId)}&select=direction,content&order=created_at.desc&limit=8`,
+    `wa_messages?phone=eq.${encodeURIComponent(phone)}&tenant_id=eq.${
+      encodeURIComponent(tenantId)
+    }&select=direction,content&order=created_at.desc&limit=8`,
   )) as Array<{ direction: string; content: string | null }> | null;
   if (!rows) return null;
   const transcript = rows
@@ -233,7 +236,9 @@ async function loadBlockedPhones(tenantId: string): Promise<Set<string>> {
   const fallback = ["51907976917", "51981002000", "519810020000"];
   try {
     const rows = (await supabaseRequest(
-      `waba_config?config_key=eq.blocked_phone_numbers&tenant_id=eq.${encodeURIComponent(tenantId)}&is_active=eq.true&select=config_value&limit=1`,
+      `waba_config?config_key=eq.blocked_phone_numbers&tenant_id=eq.${
+        encodeURIComponent(tenantId)
+      }&is_active=eq.true&select=config_value&limit=1`,
     )) as Array<{ config_value?: { phones?: unknown } }> | null;
     const raw = rows?.[0]?.config_value?.phones;
     const fromCms = Array.isArray(raw)
@@ -250,7 +255,9 @@ async function loadMarketingOptOutPhones(
   tenantId: string,
 ): Promise<Set<string>> {
   const rows = (await supabaseRequest(
-    `waba_config?config_key=eq.marketing_opt_out&tenant_id=eq.${encodeURIComponent(tenantId)}&is_active=eq.true&select=config_value&limit=1`,
+    `waba_config?config_key=eq.marketing_opt_out&tenant_id=eq.${
+      encodeURIComponent(tenantId)
+    }&is_active=eq.true&select=config_value&limit=1`,
   )) as Array<{ config_value?: { phones?: unknown } }> | null;
   if (rows === null) throw new Error("marketing_opt_out query falló");
   const raw = rows[0]?.config_value?.phones;
@@ -275,7 +282,9 @@ async function loadPausedPhones(tenantId: string): Promise<Set<string>> {
   for (let attempt = 0; attempt < 2; attempt++) {
     if (attempt > 0) await new Promise((r) => setTimeout(r, 300));
     const rows = (await supabaseRequest(
-      `whatsapp_sessions?bot_paused_at=not.is.null&tenant_id=eq.${encodeURIComponent(tenantId)}&select=phone`,
+      `whatsapp_sessions?bot_paused_at=not.is.null&tenant_id=eq.${
+        encodeURIComponent(tenantId)
+      }&select=phone`,
     )) as Array<{ phone?: string }> | null;
     if (rows !== null) {
       return new Set(
@@ -299,7 +308,9 @@ async function loadRecentStaffOutboundPhones(
   for (let attempt = 0; attempt < 2; attempt++) {
     if (attempt > 0) await new Promise((r) => setTimeout(r, 300));
     const rows = (await supabaseRequest(
-      `wa_messages?direction=eq.out&source=in.(panel,staff_app)&created_at=gte.${encodeURIComponent(since)}&tenant_id=eq.${encodeURIComponent(tenantId)}&select=phone`,
+      `wa_messages?direction=eq.out&source=in.(panel,staff_app)&created_at=gte.${
+        encodeURIComponent(since)
+      }&tenant_id=eq.${encodeURIComponent(tenantId)}&select=phone`,
     )) as Array<{ phone?: string }> | null;
     if (rows !== null) {
       return new Set(
@@ -330,8 +341,8 @@ Deno.serve(async (req: Request) => {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const qaBypassHours =
-    isCron && req.headers.get("X-QA-Bypass-Hours") === "true";
+  const qaBypassHours = isCron &&
+    req.headers.get("X-QA-Bypass-Hours") === "true";
   const nowIso = new Date().toISOString();
 
   const supabase = getSupabase();
@@ -345,8 +356,9 @@ Deno.serve(async (req: Request) => {
     const creds = await getTenantWabaCredentials(supabase, tenant);
     if (!creds) continue;
 
-    await runWithRequestTenantId(tenant.tenantId, () =>
-      processTenantAdsBounce(tenant.tenantId, creds),
+    await runWithRequestTenantId(
+      tenant.tenantId,
+      () => processTenantAdsBounce(tenant.tenantId, creds),
     );
   }
 
@@ -397,13 +409,19 @@ Deno.serve(async (req: Request) => {
       try {
         // Re-leer antes de enviar (carrera con browse/watchdog a las 09:00)
         const sessions = (await supabaseRequest(
-          `whatsapp_sessions?phone=eq.${encodeURIComponent(phone)}&tenant_id=eq.${encodeURIComponent(tenantId)}&select=from_ad_at,ads_bounce_nudge_sent_at,browse_reengage_sent_at,watchdog_sent_at`,
-        )) as Array<{
-          from_ad_at?: string | null;
-          ads_bounce_nudge_sent_at?: string | null;
-          browse_reengage_sent_at?: string | null;
-          watchdog_sent_at?: string | null;
-        }> | null;
+          `whatsapp_sessions?phone=eq.${
+            encodeURIComponent(phone)
+          }&tenant_id=eq.${
+            encodeURIComponent(tenantId)
+          }&select=from_ad_at,ads_bounce_nudge_sent_at,browse_reengage_sent_at,watchdog_sent_at`,
+        )) as
+          | Array<{
+            from_ad_at?: string | null;
+            ads_bounce_nudge_sent_at?: string | null;
+            browse_reengage_sent_at?: string | null;
+            watchdog_sent_at?: string | null;
+          }>
+          | null;
         const sess = sessions?.[0];
         const fromAd = sess?.from_ad_at
           ? new Date(sess.from_ad_at).getTime()
@@ -426,10 +444,14 @@ Deno.serve(async (req: Request) => {
           (watchAt > 0 && fromAd > 0 && watchAt >= fromAd)
         ) {
           console.log(
-            `[ads-bounce-nudge] skip browse/watchdog ya habló: ${phone.slice(-4)}`,
+            `[ads-bounce-nudge] skip browse/watchdog ya habló: ${
+              phone.slice(-4)
+            }`,
           );
           await supabaseRequest(
-            `whatsapp_sessions?phone=eq.${encodeURIComponent(phone)}&tenant_id=eq.${encodeURIComponent(tenantId)}`,
+            `whatsapp_sessions?phone=eq.${
+              encodeURIComponent(phone)
+            }&tenant_id=eq.${encodeURIComponent(tenantId)}`,
             "PATCH",
             { ads_bounce_nudge_sent_at: nowIso },
           );
@@ -439,15 +461,20 @@ Deno.serve(async (req: Request) => {
         const tenantFilter = `&tenant_id=eq.${encodeURIComponent(tenantId)}`;
         const clientRows = (await supabaseRequest(
           phone.startsWith("PE.")
-            ? `clients?wa_user_id=eq.${encodeURIComponent(phone)}${tenantFilter}&select=name&limit=1`
-            : `clients?or=(phone.eq.${encodeURIComponent(phone)},phone_normalized.eq.${encodeURIComponent(phone.slice(-9))})${tenantFilter}&select=name&limit=1`,
+            ? `clients?wa_user_id=eq.${
+              encodeURIComponent(phone)
+            }${tenantFilter}&select=name&limit=1`
+            : `clients?or=(phone.eq.${
+              encodeURIComponent(phone)
+            },phone_normalized.eq.${
+              encodeURIComponent(phone.slice(-9))
+            })${tenantFilter}&select=name&limit=1`,
         )) as Array<{ name?: string }> | null;
         const clientName = clientRows?.[0]?.name ?? null;
         const haikuCopy = await askHaikuBounceCopy(supabase, phone, tenantId);
-        const copy =
-          haikuCopy === null
-            ? DEFAULT_NUDGE_TEXT
-            : haikuCopy || nudgeText;
+        const copy = haikuCopy === null
+          ? DEFAULT_NUDGE_TEXT
+          : haikuCopy || nudgeText;
         const styled = addressWithoutHello(clientName, copy);
         const ok = await sendTextWA(creds, phone, styled);
         if (!ok) {
@@ -455,7 +482,9 @@ Deno.serve(async (req: Request) => {
           continue;
         }
         await supabaseRequest(
-          `whatsapp_sessions?phone=eq.${encodeURIComponent(phone)}&tenant_id=eq.${encodeURIComponent(tenantId)}`,
+          `whatsapp_sessions?phone=eq.${
+            encodeURIComponent(phone)
+          }&tenant_id=eq.${encodeURIComponent(tenantId)}`,
           "PATCH",
           { ads_bounce_nudge_sent_at: nowIso },
         );
@@ -466,7 +495,10 @@ Deno.serve(async (req: Request) => {
     }
   }
 
-  if (skippedForHours.length > 0 && skippedForHours.length === activeTenants.length) {
+  if (
+    skippedForHours.length > 0 &&
+    skippedForHours.length === activeTenants.length
+  ) {
     return new Response(
       JSON.stringify({
         skipped: true,

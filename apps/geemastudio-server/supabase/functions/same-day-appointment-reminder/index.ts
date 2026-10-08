@@ -65,11 +65,14 @@ function getSameDayWindowLima(): { start: string; end: string } {
   const nowLima = limaNowAsUtcShiftedDate();
   const start = new Date(nowLima.getTime() - LOOKBACK_MINUTES * 60 * 1000);
   const end = new Date(
-    nowLima.getTime() + (HORIZON_HOURS * 60 + HORIZON_SLACK_MINUTES) * 60 * 1000,
+    nowLima.getTime() +
+      (HORIZON_HOURS * 60 + HORIZON_SLACK_MINUTES) * 60 * 1000,
   );
   const pad = (n: number) => String(n).padStart(2, "0");
   const fmt = (d: Date) =>
-    `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}`;
+    `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())} ${
+      pad(d.getUTCHours())
+    }:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}`;
   return { start: fmt(start), end: fmt(end) };
 }
 
@@ -119,8 +122,9 @@ Deno.serve(async (req: Request) => {
   let totalRows = 0;
 
   for (const tenant of activeTenants) {
-    await runWithRequestTenantId(tenant.tenantId, () =>
-      processTenantSameDay(tenant.tenantId),
+    await runWithRequestTenantId(
+      tenant.tenantId,
+      () => processTenantSameDay(tenant.tenantId),
     );
   }
 
@@ -219,8 +223,7 @@ Deno.serve(async (req: Request) => {
     }
 
     for (const appt of rows) {
-      const phone =
-        resolveWaDest(appt.client_phone) ??
+      const phone = resolveWaDest(appt.client_phone) ??
         (appt.client_id
           ? (waUserIdByClient.get(appt.client_id) ?? null)
           : null);

@@ -97,7 +97,10 @@ async function sendSameDayReminderTemplate(
     try {
       data = JSON.parse(raw) as typeof data;
     } catch {
-      console.error("[send-same-day-reminder] JSON inválido:", raw.slice(0, 300));
+      console.error(
+        "[send-same-day-reminder] JSON inválido:",
+        raw.slice(0, 300),
+      );
       return { ok: false, error: raw.slice(0, 300) };
     }
   }
@@ -175,8 +178,7 @@ Deno.serve(async (req: Request) => {
   }
 
   // Meta no acepta body params vacíos; placeholder si no hay match de categoría
-  const recs =
-    (recommendations ?? "").trim() ||
+  const recs = (recommendations ?? "").trim() ||
     "Te esperamos. Si tienes dudas, escríbenos.";
 
   console.log(

@@ -43,12 +43,10 @@ export function formatWaErrorPushCopy({
   const name = (contactName || "").trim().split(/\s+/)[0] || null;
   const phoneTail = phone ? String(phone).replace(/\D/g, "").slice(-4) : null;
   const who = name
-    ? phoneTail
-      ? `${name} (…${phoneTail})`
-      : name
+    ? phoneTail ? `${name} (…${phoneTail})` : name
     : phoneTail
-      ? `Clienta …${phoneTail}`
-      : "Clienta sin número";
+    ? `Clienta …${phoneTail}`
+    : "Clienta sin número";
   const cleanPreview = String(preview || "")
     .trim()
     .replace(/\s+/g, " ")
@@ -66,17 +64,17 @@ export function formatWaErrorPushCopy({
   if (kind === "skip_dispatch_lock_exhausted") {
     return fallbackSent
       ? {
-          title: "WhatsApp · Atención requerida",
-          body: cleanPreview
-            ? `${who} envió un mensaje que necesita seguimiento. "${cleanPreview}"`
-            : `${who} envió un mensaje que necesita seguimiento. Abre el chat.`,
-        }
+        title: "WhatsApp · Atención requerida",
+        body: cleanPreview
+          ? `${who} envió un mensaje que necesita seguimiento. "${cleanPreview}"`
+          : `${who} envió un mensaje que necesita seguimiento. Abre el chat.`,
+      }
       : {
-          title: "WhatsApp · Conversación sin respuesta",
-          body: cleanPreview
-            ? `${who} envió un mensaje y no recibió respuesta. "${cleanPreview}"`
-            : `${who} envió un mensaje y necesita atención. Abre el chat.`,
-        };
+        title: "WhatsApp · Conversación sin respuesta",
+        body: cleanPreview
+          ? `${who} envió un mensaje y no recibió respuesta. "${cleanPreview}"`
+          : `${who} envió un mensaje y necesita atención. Abre el chat.`,
+      };
   }
 
   if (kind === "replace_crash") {
@@ -86,13 +84,13 @@ export function formatWaErrorPushCopy({
   if (isDispatchProcessingError(rawError)) {
     return fallbackSent
       ? {
-          title: "WhatsApp · Atención requerida",
-          body: `${who} envió un mensaje que necesita seguimiento. Abre el chat.`,
-        }
+        title: "WhatsApp · Atención requerida",
+        body: `${who} envió un mensaje que necesita seguimiento. Abre el chat.`,
+      }
       : {
-          title: "WhatsApp · Conversación sin respuesta",
-          body: `${who} envió un mensaje y no recibió respuesta. Abre el chat.`,
-        };
+        title: "WhatsApp · Conversación sin respuesta",
+        body: `${who} envió un mensaje y no recibió respuesta. Abre el chat.`,
+      };
   }
 
   return technicalReviewCopy(who);
@@ -101,7 +99,8 @@ export function formatWaErrorPushCopy({
 function technicalReviewCopy(who) {
   return {
     title: "WhatsApp · Revisión técnica",
-    body: `No pudimos completar automáticamente la atención de ${who}. Revisa el chat y responde manualmente.`,
+    body:
+      `No pudimos completar automáticamente la atención de ${who}. Revisa el chat y responde manualmente.`,
   };
 }
 
@@ -152,10 +151,9 @@ export function formatQualityPushCopy({
     .slice(0, 2)
     .map((f) => QUALITY_FLAG_LABELS[f] ?? f)
     .join(" · ");
-  const title =
-    severity === "high"
-      ? `WhatsApp · Revisar YA · ${who}`
-      : `WhatsApp · Revisar · ${who}`;
+  const title = severity === "high"
+    ? `WhatsApp · Revisar YA · ${who}`
+    : `WhatsApp · Revisar · ${who}`;
   let body = flagText
     ? `${who} · ${flagText}`
     : `${who} · revisar conversación`;

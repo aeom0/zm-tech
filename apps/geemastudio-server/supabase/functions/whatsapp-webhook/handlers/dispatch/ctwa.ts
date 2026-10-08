@@ -3,8 +3,8 @@
 import { sendTypingIndicator } from "../../wa-api.ts";
 import { addressWithoutHello } from "../../lib/client-address.ts";
 import {
-  tryClaimLocationSend,
   coalesceRecentInboundText,
+  tryClaimLocationSend,
 } from "../../lib/inbound-gate.ts";
 import {
   getInteractiveId,
@@ -12,37 +12,37 @@ import {
 } from "../../lib/parse-message.ts";
 import {
   getSession,
-  upsertSession,
   markSessionFromAd,
+  upsertSession,
 } from "../../lib/supabase.ts";
 import {
-  isMetaAdsBoilerplateCta,
   isKnownCtwaCampaignCopy,
+  isMetaAdsBoilerplateCta,
   splitCtwaBoilerplateAndIntent,
 } from "../../lib/meta-ads-cta.ts";
 import {
-  matchesLocationQuestion,
   isMostlyLocationQuestion,
-  sessionHasCart,
   isSessionStale,
+  matchesLocationQuestion,
+  sessionHasCart,
 } from "../booking-flow.ts";
 import { sendMenuWithPromos } from "../menu.ts";
 import {
   detectAITrigger,
-  handleAIMessage,
-  isAIRateLimited,
   generateWelcomeGreeting,
   getFallbackGreeting,
+  handleAIMessage,
+  isAIRateLimited,
 } from "../ai-assistant.ts";
 import { getHaikuTriggerKeywordsFromWaba } from "../../lib/waba-config.ts";
 import { getPendingAppointmentsForPhone } from "../pending-appointment.ts";
 import {
-  tryHandOffUnrecognizedToHaiku,
   handleLocationQuestion,
+  tryHandOffUnrecognizedToHaiku,
 } from "./haiku-handoff.ts";
 import {
-  sendCampaignImagesIfAny,
   type CampaignPromoImage,
+  sendCampaignImagesIfAny,
 } from "./campaign-images.ts";
 import { hadRecentBotOutbound } from "./cart-booking.ts";
 import { SALUDOS } from "./menu-ids.ts";
@@ -104,10 +104,10 @@ async function sendCtwaRubroFollowUp(
 ): Promise<void> {
   let body: string;
   if (rubro === "extensiones") {
-    const examples =
-      effectHintsFromCaptions(captions) ||
+    const examples = effectHintsFromCaptions(captions) ||
       "Mega Volumen, Fox, Hawaiana, Wispy, Ánime, Clásicas";
-    body = `¿Cuál de estos looks te llama más la atención? ${examples}… Cuéntanos para agendar 💜`;
+    body =
+      `¿Cuál de estos looks te llama más la atención? ${examples}… Cuéntanos para agendar 💜`;
   } else if (rubro === "lifting") {
     body =
       "¿Qué lifting te gustaría agendar? Solo pestañas, o con diseño de cejas / tinturado / laminado. Cuéntanos y te damos precio y horario 💜";
@@ -264,8 +264,7 @@ export async function tryHandleCtwaInterestStep(
       return true;
     }
 
-    const adHasSpecificIntent =
-      !ctwaInterestId &&
+    const adHasSpecificIntent = !ctwaInterestId &&
       !isMetaAdsBoilerplateCta(freeCtwaText) &&
       (freeCtwaText.length > 4 || isKnownShortRubroWord);
 
@@ -429,11 +428,11 @@ export async function tryHandleCtwaEntry(
     const keepDatetime = rt.session?.step === "awaiting_datetime";
     rt.session = rt.session
       ? {
-          ...rt.session,
-          ...(keepDatetime ? {} : { step: "browsing" as const }),
-          from_ad_at: fromAdAtIso,
-          ads_bounce_nudge_sent_at: null,
-        }
+        ...rt.session,
+        ...(keepDatetime ? {} : { step: "browsing" as const }),
+        from_ad_at: fromAdAtIso,
+        ads_bounce_nudge_sent_at: null,
+      }
       : ((await getSession(supabase, phoneNumber)) ?? rt.session);
     console.log(
       "[WABA] from_ad_at por copy CTWA (sin referral):",
@@ -459,8 +458,8 @@ export async function tryHandleCtwaEntry(
 
   // Saltar bienvenida si: mensaje con contenido específico (no saludo puro)
   // No depende de isNew/rt.session — si el mensaje tiene contenido, siempre va a Haiku.
-  const msgHasSpecificIntent =
-    !interactiveId && !isSaludoPuro && messageText.trim().length > 4;
+  const msgHasSpecificIntent = !interactiveId && !isSaludoPuro &&
+    messageText.trim().length > 4;
 
   // Garantizar que la sesión existe aunque saltemos el bloque de saludo
   if (msgHasSpecificIntent && !rt.session) {
@@ -474,8 +473,8 @@ export async function tryHandleCtwaEntry(
   // Jessi …6106: si el coalesce ya trae copy CTWA, no mandar creativos orgánicos
   // aquí — el bloque Meta Ads / mix lo maneja (evita avalancha doble).
   const ctwaSplitEarly = splitCtwaBoilerplateAndIntent(messageText);
-  const looksLikeCtwaCopy =
-    ctwaSplitEarly.hasBoilerplate || isKnownCtwaCampaignCopy(messageText);
+  const looksLikeCtwaCopy = ctwaSplitEarly.hasBoilerplate ||
+    isKnownCtwaCampaignCopy(messageText);
   if (
     isNew &&
     !fromAd &&
@@ -495,10 +494,10 @@ export async function tryHandleCtwaEntry(
   // desde anuncio con sesión inactiva (>24h). Haiku toma el relevo en el siguiente mensaje.
   // isSessionStale = 24h → no reescribe from_ad_at dentro de la ventana ads-bounce (90–150 min).
   // También si el coalesce pegó copy CTWA sin referral en este webhook (fromAd=false).
-  const sessionStaleForAd =
-    !isNew && Boolean(rt.session) && isSessionStale(rt.session);
-  const treatAsCtwaEntry =
-    fromAd || metaAdsTest || (isNew && looksLikeCtwaCopy);
+  const sessionStaleForAd = !isNew && Boolean(rt.session) &&
+    isSessionStale(rt.session);
+  const treatAsCtwaEntry = fromAd || metaAdsTest ||
+    (isNew && looksLikeCtwaCopy);
   if (treatAsCtwaEntry && (isNew || sessionStaleForAd) && !interactiveId) {
     // Anti-duplicado CTWA (análisis 2026-07-19 …4257): dos webhooks en paralelo
     // (boilerplate + pregunta ~8s) ambos veían isNew y reenviaban welcome+lista.
@@ -517,9 +516,10 @@ export async function tryHandleCtwaEntry(
       const c = (row.content ?? "").toLowerCase();
       return (
         row.msg_type === "image" ||
-        /llamó la atención|llamo la atencion|promo|instagram|cita previa|nuestras promos|te interesa|bienvenida a zm/i.test(
-          c,
-        ) ||
+        /llamó la atención|llamo la atencion|promo|instagram|cita previa|nuestras promos|te interesa|bienvenida a zm/i
+          .test(
+            c,
+          ) ||
         (row.msg_type === "interactive" &&
           /promo|te interesa|elige una opción/i.test(c))
       );
@@ -616,12 +616,11 @@ export async function tryHandleCtwaEntry(
     // Mix boilerplate + intención orgánica (Jessi …6106): Haiku solo con la
     // intención (p. ej. "Informacion y precio"), sin creativos + lista genérica
     // sobre el copy CTWA completo (avalancha).
-    const textForHaiku =
-      ctwaSplit.hasBoilerplate && ctwaSplit.intentText
-        ? ctwaSplit.intentText
-        : adText;
-    const mixedCtwaOrganic =
-      ctwaSplit.hasBoilerplate && Boolean(ctwaSplit.intentText);
+    const textForHaiku = ctwaSplit.hasBoilerplate && ctwaSplit.intentText
+      ? ctwaSplit.intentText
+      : adText;
+    const mixedCtwaOrganic = ctwaSplit.hasBoilerplate &&
+      Boolean(ctwaSplit.intentText);
     if (!mixedCtwaOrganic) {
       await sendCampaignImagesIfAny(
         supabase,
@@ -630,8 +629,7 @@ export async function tryHandleCtwaEntry(
         rt.senders.sendImage,
       );
     }
-    const adHasSpecificIntent =
-      !interactiveId &&
+    const adHasSpecificIntent = !interactiveId &&
       textForHaiku.trim().length > 4 &&
       !isMetaAdsBoilerplateCta(textForHaiku);
     const adTextIsDuplicateLocation =
@@ -675,8 +673,9 @@ export async function tryHandleCtwaEntry(
       return true;
     }
     // Último recurso: solo texto abierto, sin lista (análisis 09-sep [entrada Ads]).
-    const wamidLastResort =
-      typeof message.id === "string" ? message.id : undefined;
+    const wamidLastResort = typeof message.id === "string"
+      ? message.id
+      : undefined;
     if (wamidLastResort) await sendTypingIndicator(wamidLastResort);
     await rt.senders.sendMessage(
       phoneNumber,
@@ -692,8 +691,7 @@ export async function tryHandleCtwaEntry(
   }
 
   // Mostrar bienvenida SOLO si: saludo puro (≤20 chars), o cliente nueva sin intención específica
-  let showWelcome =
-    !interactiveId &&
+  let showWelcome = !interactiveId &&
     !msgHasSpecificIntent &&
     (isNew || metaAdsTest || isSaludoPuro) &&
     !skipSaludoForBooking &&
@@ -761,46 +759,42 @@ export async function tryHandleCtwaEntry(
 
     if (isNew && !fromAd && !metaAdsTest) {
       // ── Cliente nueva orgánica → saludo Haiku + menú ─────────────────────
-      const promoTitles =
-        (
-          await supabase
-            .from("promotions")
-            .select("title")
-            .eq("is_active", true)
-            .limit(3)
-        ).data?.map((p: { title: string }) => p.title) ?? [];
-      const greeting =
-        (await generateWelcomeGreeting(
-          haikuRuntime,
-          firstName,
-          promoTitles,
-          false,
-          supabase,
-          phoneNumber,
-        )) ?? getFallbackGreeting(firstName, false, haikuRuntime);
-      await rt.senders.sendMessage(phoneNumber, greeting);
-      await sendMenuWithPromos(phoneNumber, supabase);
-      return true;
-    }
-
-    // ── Cliente recurrente con saludo → saludo Haiku + menú directo ─────────
-    const promoTitlesR =
-      (
+      const promoTitles = (
         await supabase
           .from("promotions")
           .select("title")
           .eq("is_active", true)
           .limit(3)
       ).data?.map((p: { title: string }) => p.title) ?? [];
-    const greetingR =
-      (await generateWelcomeGreeting(
+      const greeting = (await generateWelcomeGreeting(
         haikuRuntime,
         firstName,
-        promoTitlesR,
+        promoTitles,
         false,
         supabase,
         phoneNumber,
       )) ?? getFallbackGreeting(firstName, false, haikuRuntime);
+      await rt.senders.sendMessage(phoneNumber, greeting);
+      await sendMenuWithPromos(phoneNumber, supabase);
+      return true;
+    }
+
+    // ── Cliente recurrente con saludo → saludo Haiku + menú directo ─────────
+    const promoTitlesR = (
+      await supabase
+        .from("promotions")
+        .select("title")
+        .eq("is_active", true)
+        .limit(3)
+    ).data?.map((p: { title: string }) => p.title) ?? [];
+    const greetingR = (await generateWelcomeGreeting(
+      haikuRuntime,
+      firstName,
+      promoTitlesR,
+      false,
+      supabase,
+      phoneNumber,
+    )) ?? getFallbackGreeting(firstName, false, haikuRuntime);
     await rt.senders.sendMessage(phoneNumber, greetingR);
     await sendMenuWithPromos(phoneNumber, supabase);
     return true;

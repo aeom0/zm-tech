@@ -36,7 +36,11 @@ export class MetaPricingLookbackError extends Error {
 
   constructor(requestedStartUnix: number) {
     super(
-      `El rango solicitado (${unixToDateKey(requestedStartUnix)}) es anterior al mínimo permitido por Meta (${unixToDateKey(META_PRICING_ANALYTICS_MIN_START_UNIX)}). pricing_analytics solo está disponible desde el 1 dic 2025.`,
+      `El rango solicitado (${
+        unixToDateKey(requestedStartUnix)
+      }) es anterior al mínimo permitido por Meta (${
+        unixToDateKey(META_PRICING_ANALYTICS_MIN_START_UNIX)
+      }). pricing_analytics solo está disponible desde el 1 dic 2025.`,
     );
     this.name = "MetaPricingLookbackError";
     this.requestedStartUnix = requestedStartUnix;
@@ -100,7 +104,9 @@ function buildPricingAnalyticsUrl(
   params.append("dimensions[]", "PRICING_CATEGORY");
   params.append("dimensions[]", "PRICING_TYPE");
   params.append("dimensions[]", "COUNTRY");
-  return `${GRAPH_BASE}/${encodeURIComponent(wabaId)}/pricing_analytics?${params}`;
+  return `${GRAPH_BASE}/${
+    encodeURIComponent(wabaId)
+  }/pricing_analytics?${params}`;
 }
 
 async function parseGraphJson(
@@ -112,7 +118,9 @@ async function parseGraphJson(
     body = JSON.parse(text) as MetaPricingAnalyticsResponse;
   } catch {
     throw new MetaGraphApiError({
-      message: `Respuesta Graph API no JSON (HTTP ${res.status}): ${text.slice(0, 200)}`,
+      message: `Respuesta Graph API no JSON (HTTP ${res.status}): ${
+        text.slice(0, 200)
+      }`,
       code: res.status,
       type: "ParseError",
     });
@@ -252,7 +260,9 @@ function buildTemplateAnalyticsUrl(
   params.set("granularity", "daily");
   params.set("metric_types", "sent,delivered,read,clicked,cost");
   params.set("template_ids", `[${templateIds.join(",")}]`);
-  return `${GRAPH_BASE}/${encodeURIComponent(wabaId)}/template_analytics?${params}`;
+  return `${GRAPH_BASE}/${
+    encodeURIComponent(wabaId)
+  }/template_analytics?${params}`;
 }
 
 /**
@@ -263,8 +273,9 @@ export async function listApprovedMessageTemplates(
   token: string,
 ): Promise<MetaMessageTemplateRow[]> {
   const out: MetaMessageTemplateRow[] = [];
-  let nextUrl: string | null =
-    `${GRAPH_BASE}/${encodeURIComponent(wabaId)}/message_templates?fields=id,name,status&limit=100`;
+  let nextUrl: string | null = `${GRAPH_BASE}/${
+    encodeURIComponent(wabaId)
+  }/message_templates?fields=id,name,status&limit=100`;
   let page = 0;
   const maxPages = 20;
 
@@ -397,7 +408,9 @@ export async function fetchTemplateAnalytics(
       body = JSON.parse(text);
     } catch {
       throw new MetaGraphApiError({
-        message: `template_analytics no JSON (HTTP ${res.status}): ${text.slice(0, 200)}`,
+        message: `template_analytics no JSON (HTTP ${res.status}): ${
+          text.slice(0, 200)
+        }`,
         code: res.status,
         type: "ParseError",
       });
@@ -449,4 +462,3 @@ export async function fetchAllTemplateAnalytics(
   }
   return all;
 }
-

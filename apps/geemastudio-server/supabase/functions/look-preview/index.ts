@@ -142,13 +142,15 @@ Deno.serve(async (req: Request) => {
     const mimeType = body.mimeType ?? "image/jpeg";
 
     try {
-      const imageBytes = Uint8Array.from(atob(imageB64), (c) =>
-        c.charCodeAt(0),
+      const imageBytes = Uint8Array.from(
+        atob(imageB64),
+        (c) => c.charCodeAt(0),
       );
       const referenceBytes = body.referenceBase64?.trim()
-        ? Uint8Array.from(atob(body.referenceBase64.trim()), (c) =>
-            c.charCodeAt(0),
-          )
+        ? Uint8Array.from(
+          atob(body.referenceBase64.trim()),
+          (c) => c.charCodeAt(0),
+        )
         : undefined;
 
       const result = await vertexGeminiImageEdit({

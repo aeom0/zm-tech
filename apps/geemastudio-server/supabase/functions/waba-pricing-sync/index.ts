@@ -5,16 +5,16 @@
 
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import {
-  fetchPricingAnalytics,
-  fetchAllTemplateAnalytics,
-  listApprovedMessageTemplates,
   extractTemplateAmountSpent,
+  fetchAllTemplateAnalytics,
+  fetchPricingAnalytics,
+  listApprovedMessageTemplates,
   MetaGraphApiError,
-  MetaPricingLookbackError,
-  unixToDateKey,
-  type MetaPricingDataPoint,
-  type MetaTemplateAnalyticsDataPoint,
   type MetaMessageTemplateRow,
+  type MetaPricingDataPoint,
+  MetaPricingLookbackError,
+  type MetaTemplateAnalyticsDataPoint,
+  unixToDateKey,
 } from "../_shared/meta-pricing-client.ts";
 
 const cors = {
@@ -132,7 +132,9 @@ async function upsertDailyRows(
     }
     total += batch.length;
     console.log(
-      `[waba-pricing-sync] upsert batch ${Math.floor(i / UPSERT_BATCH_SIZE) + 1}: ${batch.length} filas`,
+      `[waba-pricing-sync] upsert batch ${
+        Math.floor(i / UPSERT_BATCH_SIZE) + 1
+      }: ${batch.length} filas`,
     );
   }
   return total;
@@ -354,7 +356,9 @@ Deno.serve(async (req: Request) => {
 
     const status = templateSync.error ? "partial" : "success";
     const logMsg = templateSync.error
-      ? `pricing_ok=${rowsUpserted}; templates_error=${templateSync.error.slice(0, 1500)}`
+      ? `pricing_ok=${rowsUpserted}; templates_error=${
+        templateSync.error.slice(0, 1500)
+      }`
       : `pricing=${rowsUpserted}; templates=${templateSync.rows} (${templateSync.templates} APPROVED)`;
 
     await insertSyncLog(supabase, {
@@ -390,7 +394,9 @@ Deno.serve(async (req: Request) => {
     } else if (e instanceof MetaGraphApiError) {
       errorMessage = `Meta Graph API (${e.code}): ${e.message}`;
       console.error(
-        `[waba-pricing-sync] Meta error code=${e.code} type=${e.type} fbtrace=${e.fbtraceId ?? "n/a"}`,
+        `[waba-pricing-sync] Meta error code=${e.code} type=${e.type} fbtrace=${
+          e.fbtraceId ?? "n/a"
+        }`,
       );
     } else {
       errorMessage = e instanceof Error ? e.message : String(e);

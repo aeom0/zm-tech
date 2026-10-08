@@ -1,12 +1,12 @@
 // handlers/payment-verification-button.ts — Tap Aprobar/Rechazar plantilla Vanessa
 
-import { sendMessage, sendImage } from "../wa-api.ts";
+import { sendImage, sendMessage } from "../wa-api.ts";
 import { formatStoredAppointmentDate } from "../format.ts";
 import { ADMIN_PHONE } from "../lib/constants.ts";
 import { isQaSimulationRangePhone } from "../lib/qa-phone.mjs";
 import {
-  getPoliticasCitaWhatsApp,
   getConsideracionesPreviasWhatsApp,
+  getPoliticasCitaWhatsApp,
 } from "../lib/policies.ts";
 import type { SupabaseClient } from "../lib/supabase.ts";
 import { getConfigText, loadWabaConfig } from "../lib/waba-config.ts";
@@ -112,12 +112,11 @@ async function createApprovedPayment(
   // parcial (o un `price` editado después) no debe contarse como abono.
   const paymentKind = verification.kind === "deposit" ? "deposit" : "service";
   const isAbono = paymentKind === "deposit";
-  const method =
-    verification.payment_method === "transfer"
-      ? "transfer"
-      : verification.payment_method === "cash"
-        ? "cash"
-        : "yape_plin";
+  const method = verification.payment_method === "transfer"
+    ? "transfer"
+    : verification.payment_method === "cash"
+    ? "cash"
+    : "yape_plin";
   const paymentPayload = {
     appointment_id: verification.appointment_id,
     amount: amount.toFixed(2),
@@ -180,8 +179,7 @@ async function sendDepositApproveMessages(
   // Genérico: políticas-text usa header+todas las categorías vía getPoliticas;
   // aquí enviamos el bloque de políticas ya enviado + consideraciones vacías
   // si no hay categorías — espejo mínimo del mobile (CONSIDERACIONES genéricas).
-  const genericConsideraciones =
-    consideraciones ||
+  const genericConsideraciones = consideraciones ||
     `📌 *Antes de tu cita:*\n\n` +
       `• Pestañas (extensiones, lifting): ven *desmaquillada* (sin rímel, sin delineador en ojos).\n\n` +
       `• Cejas y rostro: ven *desmaquillada*. Si usas retinol o ácidos, coméntalo antes.\n\n` +
@@ -244,14 +242,17 @@ export async function handlePaymentVerificationButtonTap(
   }
 
   const row = verification as VerificationRow;
-  const kind =
-    row.kind === "post_service_payment" ? "post_service_payment" : "deposit";
+  const kind = row.kind === "post_service_payment"
+    ? "post_service_payment"
+    : "deposit";
   const now = new Date().toISOString();
 
   if (row.status === "approved" || row.status === "rejected") {
     await sendMessage(
       replyTo,
-      `Ese comprobante ya estaba marcado como ${row.status === "approved" ? "aprobado" : "rechazado"}.`,
+      `Ese comprobante ya estaba marcado como ${
+        row.status === "approved" ? "aprobado" : "rechazado"
+      }.`,
     );
     return;
   }
@@ -295,7 +296,7 @@ export async function handlePaymentVerificationButtonTap(
           .eq("id", row.appointment_id);
       }
       void sendDepositApproveMessages(supabase, row).catch((err) =>
-        console.error("[pay-verify-btn] WA deposit approve:", err),
+        console.error("[pay-verify-btn] WA deposit approve:", err)
       );
     } else if (row.client_phone) {
       void sendMessage(row.client_phone, POST_SERVICE_APPROVE_MSG).catch(

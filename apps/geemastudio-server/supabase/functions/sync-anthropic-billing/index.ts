@@ -77,12 +77,11 @@ function sumCostReportMinorUnits(payload: {
   for (const bucket of payload.data ?? []) {
     for (const result of bucket.results ?? []) {
       const raw = result.amount;
-      const n =
-        typeof raw === "string"
-          ? Number.parseFloat(raw)
-          : typeof raw === "number"
-            ? raw
-            : Number.NaN;
+      const n = typeof raw === "string"
+        ? Number.parseFloat(raw)
+        : typeof raw === "number"
+        ? raw
+        : Number.NaN;
       if (Number.isFinite(n)) minor += n;
     }
   }
@@ -123,18 +122,19 @@ async function fetchAllCostReportPages(
     } catch {
       return Promise.reject(
         new Error(
-          `Anthropic cost_report no-JSON (${res.status}): ${text.slice(0, 200)}`,
+          `Anthropic cost_report no-JSON (${res.status}): ${
+            text.slice(0, 200)
+          }`,
         ),
       );
     }
 
     if (!res.ok) {
-      const msg =
-        typeof body.error === "object" &&
-        body.error !== null &&
-        "message" in (body.error as object)
-          ? String((body.error as { message?: string }).message)
-          : text.slice(0, 300);
+      const msg = typeof body.error === "object" &&
+          body.error !== null &&
+          "message" in (body.error as object)
+        ? String((body.error as { message?: string }).message)
+        : text.slice(0, 300);
       return Promise.reject(new Error(`Anthropic ${res.status}: ${msg}`));
     }
 

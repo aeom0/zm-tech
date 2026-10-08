@@ -11,8 +11,8 @@ import { loadCatalog } from "../lib/services-catalog.ts";
 import {
   addToCart,
   getSession,
-  upsertSession,
   type SupabaseClient,
+  upsertSession,
 } from "../lib/supabase.ts";
 import { waConversationKey } from "../lib/wa-recipient.mjs";
 import {
@@ -168,22 +168,21 @@ async function askHaikuFinishBooking(
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
     if (!jsonMatch) return null;
     const parsed = JSON.parse(jsonMatch[0]) as Record<string, unknown>;
-    const reply =
-      typeof parsed.reply === "string" ? parsed.reply.trim().slice(0, 500) : "";
-    const serviceId =
-      typeof parsed.service_id === "string" &&
-      /^[0-9a-f-]{36}$/i.test(parsed.service_id.trim())
-        ? parsed.service_id.trim()
-        : null;
-    const datetimeText =
-      typeof parsed.datetime_text === "string" &&
-      parsed.datetime_text.trim().length > 0
-        ? parsed.datetime_text.trim().slice(0, 200)
-        : null;
+    const reply = typeof parsed.reply === "string"
+      ? parsed.reply.trim().slice(0, 500)
+      : "";
+    const serviceId = typeof parsed.service_id === "string" &&
+        /^[0-9a-f-]{36}$/i.test(parsed.service_id.trim())
+      ? parsed.service_id.trim()
+      : null;
+    const datetimeText = typeof parsed.datetime_text === "string" &&
+        parsed.datetime_text.trim().length > 0
+      ? parsed.datetime_text.trim().slice(0, 200)
+      : null;
     const sendCalendar = parsed.send_calendar === true;
     return {
-      reply:
-        reply || "¿Seguimos con tu cita? Cuéntame qué día te queda bien 💜",
+      reply: reply ||
+        "¿Seguimos con tu cita? Cuéntame qué día te queda bien 💜",
       service_id: serviceId,
       datetime_text: datetimeText,
       send_calendar: sendCalendar,
@@ -260,7 +259,9 @@ export async function haikuFinishBookingForPhone(
     void notifyAdmins(
       supabase,
       "Haiku agenda falló",
-      `No se pudo leer el hilo de …${key.slice(-4)}. Bot quedó activo; revisa el chat.`,
+      `No se pudo leer el hilo de …${
+        key.slice(-4)
+      }. Bot quedó activo; revisa el chat.`,
       {
         type: "waba_chat",
         phone: key,
@@ -329,8 +330,8 @@ export async function haikuFinishBookingForPhone(
     detail: calendarSent
       ? "Reply + calendario enviado"
       : booked
-        ? "Cita creada"
-        : "Reply enviado",
+      ? "Cita creada"
+      : "Reply enviado",
     booked,
     calendarSent,
   };

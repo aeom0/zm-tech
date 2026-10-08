@@ -99,18 +99,16 @@ function formatDeliveryError(errors: unknown): string | null {
   if (!Array.isArray(errors) || errors.length === 0) return null;
   const first = errors[0] as Record<string, unknown>;
   const code = first?.code != null ? String(first.code) : "";
-  const title =
-    typeof first?.title === "string"
-      ? first.title
-      : typeof first?.message === "string"
-        ? first.message
-        : "";
-  const detail =
-    typeof first?.error_data === "object" &&
-    first.error_data &&
-    typeof (first.error_data as { details?: string }).details === "string"
-      ? (first.error_data as { details: string }).details
-      : "";
+  const title = typeof first?.title === "string"
+    ? first.title
+    : typeof first?.message === "string"
+    ? first.message
+    : "";
+  const detail = typeof first?.error_data === "object" &&
+      first.error_data &&
+      typeof (first.error_data as { details?: string }).details === "string"
+    ? (first.error_data as { details: string }).details
+    : "";
   const parts = [code && `#${code}`, title, detail].filter(Boolean);
   return parts.length ? parts.join(" — ").slice(0, 500) : null;
 }
@@ -137,8 +135,9 @@ export async function handleMessageStatuses(
 
   for (const st of statuses) {
     const wamid = typeof st.id === "string" ? st.id : null;
-    const statusRaw =
-      typeof st.status === "string" ? st.status.toLowerCase() : "";
+    const statusRaw = typeof st.status === "string"
+      ? st.status.toLowerCase()
+      : "";
     if (
       !wamid ||
       !KNOWN.has(statusRaw) ||
@@ -152,8 +151,9 @@ export async function handleMessageStatuses(
     }
 
     const at = parseMetaTs(st.timestamp);
-    const errText =
-      statusRaw === "failed" ? formatDeliveryError(st.errors) : null;
+    const errText = statusRaw === "failed"
+      ? formatDeliveryError(st.errors)
+      : null;
 
     const { data: row, error: selErr } = await supabase
       .from("wa_messages")
@@ -169,7 +169,9 @@ export async function handleMessageStatuses(
     if (!row?.id) {
       // Eco de plantilla enviada desde otro canal / aún no logueada
       console.log(
-        `[WABA] status ${statusRaw} sin fila wa_messages wamid=…${wamid.slice(-16)}`,
+        `[WABA] status ${statusRaw} sin fila wa_messages wamid=…${
+          wamid.slice(-16)
+        }`,
       );
       continue;
     }
@@ -204,8 +206,9 @@ export async function handleMessageStatuses(
     updated += 1;
 
     if (statusRaw === "failed") {
-      const recipient =
-        typeof st.recipient_id === "string" ? st.recipient_id : null;
+      const recipient = typeof st.recipient_id === "string"
+        ? st.recipient_id
+        : null;
       try {
         await supabase.from("wa_error_log").insert({
           phone: recipient,

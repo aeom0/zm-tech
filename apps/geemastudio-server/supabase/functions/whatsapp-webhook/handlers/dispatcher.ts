@@ -2,56 +2,56 @@
 
 import { isStalePaymentRestart } from "../lib/stale-payment-session.ts";
 import {
-  sendMessage as _sendMessage,
-  sendInteractiveList as _sendInteractiveList,
   sendImage as _sendImage,
+  sendInteractiveList as _sendInteractiveList,
+  sendMessage as _sendMessage,
 } from "../wa-api.ts";
 import {
-  formatCartSummaryFromLines,
   DEFAULT_UBICACION_TEXT,
+  formatCartSummaryFromLines,
 } from "../format.ts";
 import {
-  matchesParkingOrMovilidadQuestion,
   DEFAULT_ESTACIONAMIENTO_TEXT,
+  matchesParkingOrMovilidadQuestion,
 } from "../lib/salon-location.ts";
 import { srtaLabel } from "../lib/client-address.ts";
 import { getInteractiveId, getInteractiveTitle } from "../lib/parse-message.ts";
 import {
-  getSession,
-  upsertSession,
+  type CartItem,
   clearCart,
   expandCartItemsToServiceIds,
-  type CartItem,
+  getSession,
+  upsertSession,
 } from "../lib/supabase.ts";
 import {
-  WA_IDS,
-  LIMA_UTC_OFFSET_HOURS,
   isValidSalonSlot,
+  LIMA_UTC_OFFSET_HOURS,
+  WA_IDS,
 } from "../lib/constants.ts";
 import { runIntentShadowLog } from "../lib/intent-shadow.ts";
 import { nextHaikuFallbackState } from "../lib/haiku-fallback.ts";
 import {
-  sendMenuWithPromos,
-  sendCategoriesList,
-  sendCategoriesAndPromosListFromCatalog,
-  sendCartOptions,
   parseTimePagePayload,
+  sendCartOptions,
+  sendCategoriesAndPromosListFromCatalog,
+  sendCategoriesList,
+  sendMenuWithPromos,
 } from "./menu.ts";
 import { overlapCapForCart } from "../lib/services-catalog.ts";
-import { sendTimeSelector, hasSlotCapacityForServices } from "./agenda.ts";
+import { hasSlotCapacityForServices, sendTimeSelector } from "./agenda.ts";
 import { finalizeBookingAfterDatetimeSelection } from "./payment.ts";
 import { handleAwaitingPaymentScreenshot } from "./steps.ts";
 import {
+  attachPeMobileToBsuidClient,
   AWAITING_CLIENT_IDENTITY,
-  IDENTITY_ASK_MESSAGE,
-  parseClientIdentity,
-  updateClientIdentity,
-  isIdentityEscapeMessage,
-  matchesAlreadyHaveDataIntent,
-  looksLikeIdentityAttempt,
   buildIdentityStatusReply,
   fetchClientIdentityRow,
-  attachPeMobileToBsuidClient,
+  IDENTITY_ASK_MESSAGE,
+  isIdentityEscapeMessage,
+  looksLikeIdentityAttempt,
+  matchesAlreadyHaveDataIntent,
+  parseClientIdentity,
+  updateClientIdentity,
 } from "./client-identity.ts";
 import {
   AWAITING_NO_SHOW_REASON,
@@ -61,70 +61,70 @@ import {
 import {
   detectAITrigger,
   handleAIMessage,
-  matchesMarketingOptOut,
   isAIRateLimited,
+  matchesMarketingOptOut,
 } from "./ai-assistant.ts";
 import {
-  getPendingAppointmentsForPhone,
-  textImpliesExistingAppointment,
-  matchesTimeCorrectionIntent,
-  matchesCancelCitaIntent,
-  matchesClosingAgreementIntent,
-  CLOSING_AGREEMENT_ACK,
-  sendPendingAppointmentContext,
-  sendMiCitaMenu,
-  finalizeRescheduleAppointment,
-  shouldBlockAdditionalBooking,
-  newBookingOverlapsExisting,
   ADDITIONAL_BOOKING_BLOCK_MESSAGE,
   BOOKING_OVERLAP_MESSAGE,
-  NO_CONFIRMED_APPOINTMENT_ARRIVAL_MESSAGE,
-  wasSlotTakenRecentlySent,
-  STAFF_COORDINATION_PHONE,
+  CLOSING_AGREEMENT_ACK,
+  finalizeRescheduleAppointment,
+  getPendingAppointmentsForPhone,
   markDepositForfeitRiskIfLateChange,
+  matchesCancelCitaIntent,
+  matchesClosingAgreementIntent,
+  matchesTimeCorrectionIntent,
+  newBookingOverlapsExisting,
+  NO_CONFIRMED_APPOINTMENT_ARRIVAL_MESSAGE,
+  sendMiCitaMenu,
+  sendPendingAppointmentContext,
+  shouldBlockAdditionalBooking,
+  STAFF_COORDINATION_PHONE,
+  textImpliesExistingAppointment,
+  wasSlotTakenRecentlySent,
 } from "./pending-appointment.ts";
 import {
-  sessionHasCart,
-  matchesFirstMessageBookingIntent,
-  matchesCartCorrectionIntent,
-  matchesOpenHoursQuestion,
-  isMostlyOpenHoursQuestion,
-  matchesLocationQuestion,
-  isMostlyLocationQuestion,
-  looksLikeServiceBrowseIntent,
-  matchesCursoLeadReply,
-  looksLikeCursoLeadData,
   AWAITING_CURSO_LEAD,
+  buildTimeInputFromParsedHour,
+  COMPLAINT_MESSAGE,
   CURSO_LEAD_THANKS_TEXT,
-  matchesRetiroInfoQuestion,
-  isMostlyRetiroInfoQuestion,
   DEFAULT_CLASES_TEXT,
   DEFAULT_CURSOS_EXTENSIONES_TEXT,
   DEFAULT_RETIRO_OTRO_SALON_TEXT,
-  matchesThirdPartyBookingIntent,
-  isMostlyPartyIntent,
-  getSessionSelectedDay,
-  parseTimeText,
-  parseTimeSlot,
-  isMostlyTimeChoice,
-  formatHour12,
   formatAvailableHours,
+  formatHour12,
   formatHoursHint,
-  buildTimeInputFromParsedHour,
-  tryCompleteBookingFromText,
-  tryAnswerSpecificHourAvailability,
+  getSessionSelectedDay,
+  isMostlyLocationQuestion,
+  isMostlyOpenHoursQuestion,
+  isMostlyPartyIntent,
+  isMostlyRetiroInfoQuestion,
+  isMostlyTimeChoice,
   isSessionStale,
-  resendDatetimeSelectors,
-  stickySelectedDayFromText,
-  trySoftRescheduleFromText,
-  matchesServiceChangeIntent,
-  mentionsConflictingCatalogMidCart,
-  matchesMidAgendaBrowseOrAddIntent,
-  shouldSkipDatetimeResendAfterHaiku,
+  looksLikeCursoLeadData,
+  looksLikeServiceBrowseIntent,
+  matchesCartCorrectionIntent,
   matchesComplaintIntent,
-  COMPLAINT_MESSAGE,
+  matchesCursoLeadReply,
   matchesDateCorrectionIntent,
+  matchesFirstMessageBookingIntent,
+  matchesLocationQuestion,
+  matchesMidAgendaBrowseOrAddIntent,
+  matchesOpenHoursQuestion,
+  matchesRetiroInfoQuestion,
+  matchesServiceChangeIntent,
+  matchesThirdPartyBookingIntent,
+  mentionsConflictingCatalogMidCart,
   messageMentionsCalendarDate,
+  parseTimeSlot,
+  parseTimeText,
+  resendDatetimeSelectors,
+  sessionHasCart,
+  shouldSkipDatetimeResendAfterHaiku,
+  stickySelectedDayFromText,
+  tryAnswerSpecificHourAvailability,
+  tryCompleteBookingFromText,
+  trySoftRescheduleFromText,
 } from "./booking-flow.ts";
 import {
   isDeclineIntent,
@@ -153,8 +153,8 @@ import {
 } from "../lib/notify.ts";
 import { hasExplicitTime } from "../parse-datetime-es.ts";
 import {
-  getConfigText,
   getConfigBoolean,
+  getConfigText,
   getHaikuRuntimeSettings,
   getHaikuTriggerKeywordsFromWaba,
 } from "../lib/waba-config.ts";
@@ -167,42 +167,42 @@ import type { DispatchContext, DispatchRuntime } from "./dispatch/runtime.ts";
 export type { DispatchContext } from "./dispatch/runtime.ts";
 import { inboundSilenceReason } from "./dispatch/anti-spam.ts";
 import {
-  tryHandOffUnrecognizedToHaiku,
   handleLocationQuestion,
+  tryHandOffUnrecognizedToHaiku,
 } from "./dispatch/haiku-handoff.ts";
 import {
-  trySwapCartFromStaleCatalogTap,
-  tryAcceptPendingPriceCta,
-  tryAcceptPendingPortfolioCta,
+  applyPendingPriceCtaBeforeDatetimeTap,
   markBrowseEpisodeClosed,
   proceedToBookingWithCurrentCart,
-  applyPendingPriceCtaBeforeDatetimeTap,
+  tryAcceptPendingPortfolioCta,
+  tryAcceptPendingPriceCta,
+  trySwapCartFromStaleCatalogTap,
 } from "./dispatch/cart-booking.ts";
 import {
-  matchesTardanzaIntent,
-  matchesNaturalClosingIntent,
-  hasRecentOutboundPendingPrompt,
-  wasAppointmentReminderRecentlySent,
   formatHourOnlyLima,
+  hasRecentOutboundPendingPrompt,
+  matchesNaturalClosingIntent,
+  matchesTardanzaIntent,
   sendTardanzaPolicy,
+  wasAppointmentReminderRecentlySent,
 } from "./dispatch/closing-intents.ts";
 export {
-  matchesTardanzaIntent,
-  matchesNaturalClosingIntent,
-  PENDING_PROMPT_CLOSING_WINDOW_MS,
-  isOutboundPendingPrompt,
   hasRecentOutboundPendingPrompt,
+  isOutboundPendingPrompt,
+  matchesNaturalClosingIntent,
+  matchesTardanzaIntent,
+  PENDING_PROMPT_CLOSING_WINDOW_MS,
 } from "./dispatch/closing-intents.ts";
 import { buildCampaignPromoImages } from "./dispatch/campaign-images.ts";
 import {
+  CART_NAV_IDS,
   ECHO_TITLES,
   MENU_MAIN_OPTIONS,
-  CART_NAV_IDS,
   SALUDOS,
 } from "./dispatch/menu-ids.ts";
 import {
-  tryHandleCtwaInterestStep,
   tryHandleCtwaEntry,
+  tryHandleCtwaInterestStep,
 } from "./dispatch/ctwa.ts";
 import { tryHandleMenuTaps } from "./dispatch/menu-taps.ts";
 import { WABA_PANEL_BASE } from "../lib/panel-url.ts";
@@ -224,8 +224,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
     inboundReceivedAt,
   } = ctx;
 
-  const messagePreview =
-    messagePreviewIn?.trim() ||
+  const messagePreview = messagePreviewIn?.trim() ||
     messageText.trim() ||
     (typeof message?.type === "string" ? `[${message.type}]` : "[mensaje]");
 
@@ -414,8 +413,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
   const haikuRuntime = getHaikuRuntimeSettings(wabaConfig);
 
   const msgType = message?.type;
-  const hasInteractive =
-    message &&
+  const hasInteractive = message &&
     typeof (message as Record<string, unknown>).interactive === "object";
   let session = await getSession(supabase, phoneNumber);
 
@@ -521,7 +519,9 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
 
   if (silence === "spam") {
     console.log(
-      `[ANTI-SPAM] Mensaje ignorado de ${phoneNumber}: "${messageText.slice(0, 80)}"`,
+      `[ANTI-SPAM] Mensaje ignorado de ${phoneNumber}: "${
+        messageText.slice(0, 80)
+      }"`,
     );
     return;
   }
@@ -579,10 +579,9 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
       session.step === "browsing" ||
       session.step === "awaiting_datetime")
   ) {
-    const wamid =
-      typeof (message as { id?: unknown })?.id === "string"
-        ? (message as { id: string }).id
-        : null;
+    const wamid = typeof (message as { id?: unknown })?.id === "string"
+      ? (message as { id: string }).id
+      : null;
     void runIntentShadowLog({
       supabase,
       phone: phoneNumber,
@@ -688,20 +687,16 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
 
     if (buttonTitle) {
       const buttonLower = buttonTitle.toLowerCase();
-      const isConfirm =
-        buttonTitle === "Confirmo mi cita" ||
+      const isConfirm = buttonTitle === "Confirmo mi cita" ||
         buttonLower.includes("confirmo") ||
         buttonLower === "confirmar";
-      const isNoShow =
-        buttonTitle === "No podré asistir" ||
+      const isNoShow = buttonTitle === "No podré asistir" ||
         buttonLower.includes("no podré asistir") ||
         buttonLower.includes("no podre asistir");
-      const isReschedule =
-        buttonTitle === "Necesito reprogramar" ||
+      const isReschedule = buttonTitle === "Necesito reprogramar" ||
         buttonLower.includes("reprogramar") ||
         buttonLower.includes("cancelar");
-      const isLateArrival =
-        buttonTitle === "Voy a llegar tarde" ||
+      const isLateArrival = buttonTitle === "Voy a llegar tarde" ||
         buttonLower.includes("voy a llegar tarde") ||
         buttonLower.includes("llegaré tarde") ||
         buttonLower.includes("llegare tarde") ||
@@ -840,13 +835,12 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
     // esa alternativa matcheaba "si" como conjunción condicional en cualquier parte
     // del mensaje ("si me desocupo antes voy"), confirmando asistencia sobre texto
     // dudoso — el caso de Pilar ya queda cubierto por "asistir[ée]" sin necesitarla.
-    const phraseConfirm =
-      !/\bno\b/i.test(trimmedMsg) &&
-      /\b(asistir[ée]|voy a (ir|estar)|ah[ií] estar[ée]|confirmo(?:\s+mi\s+asistencia)?)\b/i.test(
-        trimmedMsg,
-      );
-    const confirmText =
-      (msgType === "text" || !msgType) &&
+    const phraseConfirm = !/\bno\b/i.test(trimmedMsg) &&
+      /\b(asistir[ée]|voy a (ir|estar)|ah[ií] estar[ée]|confirmo(?:\s+mi\s+asistencia)?)\b/i
+        .test(
+          trimmedMsg,
+        );
+    const confirmText = (msgType === "text" || !msgType) &&
       (!session?.step || session.step === "browsing") &&
       (exactConfirm || phraseConfirm);
     if (confirmText) {
@@ -860,10 +854,9 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
       ) {
         const srta = srtaLabel(contactName);
         const hora = formatHourOnlyLima(pendingConfirm[0]!.date);
-        const closing =
-          srta && hora
-            ? `Perfecto ${srta} 🌷, la esperamos a las ${hora} 🤗`
-            : "¡Perfecto! ✨ Tu cita está confirmada. ¡Te esperamos! 💜";
+        const closing = srta && hora
+          ? `Perfecto ${srta} 🌷, la esperamos a las ${hora} 🤗`
+          : "¡Perfecto! ✨ Tu cita está confirmada. ¡Te esperamos! 💜";
         await _sendMessage(phoneNumber, closing);
         await markBrowseEpisodeClosed(supabase, phoneNumber);
         return;
@@ -916,8 +909,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
     } else if (matchesCursoLeadReply(rawLower) || looksLikeCursoLeadData(raw)) {
       await upsertSession(supabase, phoneNumber, { step: "browsing" });
       await sendMessage(phoneNumber, CURSO_LEAD_THANKS_TEXT);
-      const who =
-        contactName?.trim() ||
+      const who = contactName?.trim() ||
         raw.split(/\n/)[0]?.trim().slice(0, 40) ||
         phoneNumber.slice(-4);
       await notifyAdmins(
@@ -1074,7 +1066,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
     // ("sí", "no", "ya?", "hola?"), lo lee Haiku. El bot queda de respaldo.
     const isExplicitMenuWord =
       messageText.trim().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "") ===
-      "menu";
+        "menu";
     if (isExplicitMenuWord) {
       await sendMenuWithPromos(phoneNumber, supabase);
       return;
@@ -1281,7 +1273,9 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
 
   // ── STOP: baja de marketing antes de cualquier saludo/menú/flujo (también en
   // el primer mensaje: sin esto caía al saludo de entrada y no se registraba).
-  if (!interactiveId && messageText.trim() && matchesMarketingOptOut(messageText)) {
+  if (
+    !interactiveId && messageText.trim() && matchesMarketingOptOut(messageText)
+  ) {
     const handledOptOut = await handleAIMessage(
       { phoneNumber, contactName, catalog, supabase, phoneCountry },
       { type: "opt_out", originalMessage: messageText.trim() },
@@ -1466,8 +1460,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
     const declineServiceIds = session?.cartItems?.length
       ? await expandCartItemsToServiceIds(supabase, session.cartItems)
       : (session?.serviceIds ?? []);
-    const useEmotionalDecline =
-      Boolean(session?.from_ad_at) &&
+    const useEmotionalDecline = Boolean(session?.from_ad_at) &&
       declineServiceIds.length > 0 &&
       isCtwaEmotionalEligible(session?.from_ad_at, declineServiceIds, catalog);
     await clearCart(supabase, phoneNumber);
@@ -1612,8 +1605,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
     if (hourAnswered) return;
   }
 
-  const skipSaludoForBooking =
-    !interactiveId &&
+  const skipSaludoForBooking = !interactiveId &&
     !!messageText.trim() &&
     (matchesFirstMessageBookingIntent(lower) ||
       userInput === "agendar_cita" ||
@@ -1622,8 +1614,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
 
   // skipSaludoForCatalog: solo cuando la intención es navegar el catálogo explícitamente.
   // "precio", "cuánto", preguntas de servicio específico → NO saltar, van a Haiku.
-  const skipSaludoForCatalog =
-    !interactiveId &&
+  const skipSaludoForCatalog = !interactiveId &&
     !!messageText.trim() &&
     [
       "ver servicios",
@@ -1738,8 +1729,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
     // ausentes); sin esto el mensaje se descartaba en silencio, sin respuesta.
     if (msgType === "interactive" || msgType === "button") {
       const title = getInteractiveTitle(message)?.trim();
-      const prompt =
-        title ||
+      const prompt = title ||
         "La clienta tocó una opción del menú que no llegó con id. Ayúdala a continuar con naturalidad.";
       const handed = await tryHandOffUnrecognizedToHaiku({
         phoneNumber,
@@ -1914,16 +1904,24 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
         requireClaim: true,
       });
       if (locResult === "maps") {
-        const { resumeCompanionAskIfNeeded } = await import("./party-booking.ts");
+        const { resumeCompanionAskIfNeeded } = await import(
+          "./party-booking.ts"
+        );
         const asked = await resumeCompanionAskIfNeeded(
           supabase,
           phoneNumber,
           catalog,
         );
         if (!asked && sessionHasCart(session) && session) {
-          await resendDatetimeSelectors(phoneNumber, supabase, session, catalog, {
-            debounce: false,
-          });
+          await resendDatetimeSelectors(
+            phoneNumber,
+            supabase,
+            session,
+            catalog,
+            {
+              debounce: false,
+            },
+          );
         }
       }
       return;
@@ -2023,14 +2021,12 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
         phoneNumber,
         supabase,
         dateKey,
-        empIds.length
-          ? empIds
-          : ((
-              await supabase
-                .from("employees")
-                .select("id")
-                .eq("is_active", true)
-            ).data?.map((e: { id: string }) => e.id) ?? []),
+        empIds.length ? empIds : ((
+          await supabase
+            .from("employees")
+            .select("id")
+            .eq("is_active", true)
+        ).data?.map((e: { id: string }) => e.id) ?? []),
         totalDuration,
         cap,
         minEmployeesFree,
@@ -2061,64 +2057,63 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
         if (fastDoneEarly) return;
       }
 
-      const promoOrPriceQuestion =
-        [
-          "promo",
-          "precio",
-          "cuánto",
-          "cuanto",
-          "descuento",
-          "hay alguna",
-          "pack",
-          "oferta",
-          "rebaja",
-          "incluye",
-          "combina",
-          "ambas",
-          "ambos",
-          "las dos",
-          "los dos",
-          "por ambas",
-          "por los dos",
-          // Alcance del servicio en carrito (Yesenia: "cualquier diseño", retoque)
-          "diseño",
-          "diseno",
-          "color",
-          "retoque",
-          "retiro",
-          "builder",
-          "rubber",
-          "servicio",
-          "igual",
-          "cobrar",
-          "cobro",
-          "foto",
-          "fotos",
-          "modelo",
-          "modelos",
-          "trabajo",
-          "trabajos",
-          "ejemplo",
-          "ejemplos",
-          "portafolio",
-          // Cambio de servicio mid-agenda (Patricia: esmalte / manicure)
-          "esmalte",
-          "manicure",
-          "pedicure",
-        ].some((k) => lower.includes(k)) ||
+      const promoOrPriceQuestion = [
+        "promo",
+        "precio",
+        "cuánto",
+        "cuanto",
+        "descuento",
+        "hay alguna",
+        "pack",
+        "oferta",
+        "rebaja",
+        "incluye",
+        "combina",
+        "ambas",
+        "ambos",
+        "las dos",
+        "los dos",
+        "por ambas",
+        "por los dos",
+        // Alcance del servicio en carrito (Yesenia: "cualquier diseño", retoque)
+        "diseño",
+        "diseno",
+        "color",
+        "retoque",
+        "retiro",
+        "builder",
+        "rubber",
+        "servicio",
+        "igual",
+        "cobrar",
+        "cobro",
+        "foto",
+        "fotos",
+        "modelo",
+        "modelos",
+        "trabajo",
+        "trabajos",
+        "ejemplo",
+        "ejemplos",
+        "portafolio",
+        // Cambio de servicio mid-agenda (Patricia: esmalte / manicure)
+        "esmalte",
+        "manicure",
+        "pedicure",
+      ].some((k) => lower.includes(k)) ||
         /\bhoy\b|\bmanana\b|\bmañana\b|\bquisiera\b/i.test(messageText) ||
         (/\?/.test(messageText) && parseTimeText(messageText) === null);
 
       // UNANSWERED_PRICE: "cuánto es / el total" con carrito → resumen S/ (no solo Haiku vacío)
       const cartForPrice = session?.cartItems ?? [];
-      const asksOwnCartPrice =
-        cartForPrice.length > 0 &&
+      const asksOwnCartPrice = cartForPrice.length > 0 &&
         !matchesServiceChangeIntent(messageText) &&
         /\b(cu[aá]nto|precios?|costo|cuesta|total|vale|sale)\b/i.test(lower) &&
         messageText.trim().length <= 48 &&
-        !/\b(lifting|cejas|extensiones|microblading|depilaci[oó]n|otro|otra)\b/i.test(
-          lower,
-        );
+        !/\b(lifting|cejas|extensiones|microblading|depilaci[oó]n|otro|otra)\b/i
+          .test(
+            lower,
+          );
       if (asksOwnCartPrice) {
         const { cartItemsToDisplayLabel } = await import("../lib/supabase.ts");
         const label = await cartItemsToDisplayLabel(supabase, cartForPrice);
@@ -2129,7 +2124,9 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
         );
         await sendMessage(
           phoneNumber,
-          `Tu selección:\n🌸 ${label.replace(/ \+ /g, "\n🌸 ")}\n\n*Total: S/ ${total.toFixed(0)}*\n\n📅 ¿Qué día y hora te quedan bien?`,
+          `Tu selección:\n🌸 ${label.replace(/ \+ /g, "\n🌸 ")}\n\n*Total: S/ ${
+            total.toFixed(0)
+          }*\n\n📅 ¿Qué día y hora te quedan bien?`,
         );
         await resendDatetimeSelectors(phoneNumber, supabase, session!, catalog);
         return;
@@ -2182,7 +2179,9 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
           });
           await sendMessage(
             phoneNumber,
-            `Tienes en selección:\n🌸 ${label.replace(/ \+ /g, "\n🌸 ")}\n\n*Total: S/ ${total.toFixed(0)}*\n\n` +
+            `Tienes en selección:\n🌸 ${
+              label.replace(/ \+ /g, "\n🌸 ")
+            }\n\n*Total: S/ ${total.toFixed(0)}*\n\n` +
               `Te muestro el catálogo para *agregar* (o escribe *cambiar a …* si quieres reemplazar) 👇`,
           );
           await sendCategoriesAndPromosListFromCatalog(
@@ -2211,7 +2210,9 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
         if (handedUnmatched) return;
         await sendMessage(
           phoneNumber,
-          `Ahora tienes en tu selección:\n🌸 ${label.replace(/ \+ /g, "\n🌸 ")}\n\n*Total: S/ ${total.toFixed(0)}*\n\n` +
+          `Ahora tienes en tu selección:\n🌸 ${
+            label.replace(/ \+ /g, "\n🌸 ")
+          }\n\n*Total: S/ ${total.toFixed(0)}*\n\n` +
             `Si quieres *agregar* otro servicio, escribe *agregar*.\n` +
             `Si quieres *cambiar* lo del carrito, escribe p. ej. *cambiar a manicure*.\n` +
             `Si sigues con esto, elige *día u hora* con los botones de abajo 👇`,
@@ -2229,11 +2230,11 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
       if (matchesDateCorrectionIntent(messageText)) {
         const correctedIntent = messageMentionsCalendarDate(messageText)
           ? await stickySelectedDayFromText(
-              supabase,
-              phoneNumber,
-              messageText,
-              session,
-            )
+            supabase,
+            phoneNumber,
+            messageText,
+            session,
+          )
           : null;
         if (!correctedIntent) {
           // Corrección sin fecha concreta ("No domingo!!") — no adivinar:
@@ -2367,17 +2368,26 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
             // cae al bloque TIME_PREFIX abajo
           } else {
             const cartIds = (session?.serviceIds ?? []) as string[];
-            const durHint =
-              cartIds.reduce((a, id) => {
-                const s = catalog.servicesById.get(id);
-                return a + (s?.duration ?? 60);
-              }, 0) || 60;
+            const durHint = cartIds.reduce((a, id) => {
+              const s = catalog.servicesById.get(id);
+              return a + (s?.duration ?? 60);
+            }, 0) || 60;
             const capHint = overlapCapForCart(cartIds, catalog);
             await sendMessage(
               phoneNumber,
-              `Las ${formatHour12(parsedSlot.hour, parsedSlot.minute)} está fuera de nuestro horario 🕐\n\n` +
+              `Las ${
+                formatHour12(parsedSlot.hour, parsedSlot.minute)
+              } está fuera de nuestro horario 🕐\n\n` +
                 `${formatHoursHint(selectedDay, dayOfWeek)}\n\n` +
-                `Horarios con cupo: ${await formatAvailableHours(supabase, selectedDay, durHint, undefined, capHint, catalog, cartIds)}\n\n` +
+                `Horarios con cupo: ${await formatAvailableHours(
+                  supabase,
+                  selectedDay,
+                  durHint,
+                  undefined,
+                  capHint,
+                  catalog,
+                  cartIds,
+                )}\n\n` +
                 `Elige uno de los botones de abajo 👇`,
             );
             await resendDatetimeSelectors(
@@ -2479,20 +2489,18 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
         supabase,
         phoneNumber,
         {
-          creatingCount:
-            partyForBlock?.collecting === "ready" ||
-            (partyForBlock?.mode === "together" &&
-              partyForBlock.slot_strategy === "same" &&
-              partyForBlock.collecting === "datetime_primary")
-              ? partyCreatingCount({
-                  ...partyForBlock!,
-                  collecting: "ready",
-                })
-              : 1,
+          creatingCount: partyForBlock?.collecting === "ready" ||
+              (partyForBlock?.mode === "together" &&
+                partyForBlock.slot_strategy === "same" &&
+                partyForBlock.collecting === "datetime_primary")
+            ? partyCreatingCount({
+              ...partyForBlock!,
+              collecting: "ready",
+            })
+            : 1,
         },
       );
-      const overlapsPick =
-        !blockedPick &&
+      const overlapsPick = !blockedPick &&
         (await newBookingOverlapsExisting(
           supabase,
           phoneNumber,
@@ -2522,7 +2530,15 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
       ) {
         await sendMessage(
           phoneNumber,
-          `Horarios con cupo: ${await formatAvailableHours(supabase, datePart, totalDurationPick, undefined, overlapCapForCart(serviceIds, catalog), catalog, serviceIds)}\n\nElige uno de los botones de abajo 👇`,
+          `Horarios con cupo: ${await formatAvailableHours(
+            supabase,
+            datePart,
+            totalDurationPick,
+            undefined,
+            overlapCapForCart(serviceIds, catalog),
+            catalog,
+            serviceIds,
+          )}\n\nElige uno de los botones de abajo 👇`,
         );
         await resendDatetimeSelectors(phoneNumber, supabase, session, catalog);
         return;
@@ -2534,9 +2550,19 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
       if (!isValidSalonSlot(hourLima, minuteLima, dayOfWeekPick, datePart)) {
         await sendMessage(
           phoneNumber,
-          `Ese horario (${formatHour12(hourLima, minuteLima)}) está fuera de nuestro horario 🕐\n\n` +
+          `Ese horario (${
+            formatHour12(hourLima, minuteLima)
+          }) está fuera de nuestro horario 🕐\n\n` +
             `${formatHoursHint(datePart, dayOfWeekPick)}\n\n` +
-            `Horarios con cupo: ${await formatAvailableHours(supabase, datePart, totalDurationPick, undefined, overlapCapForCart(serviceIds, catalog), catalog, serviceIds)}`,
+            `Horarios con cupo: ${await formatAvailableHours(
+              supabase,
+              datePart,
+              totalDurationPick,
+              undefined,
+              overlapCapForCart(serviceIds, catalog),
+              catalog,
+              serviceIds,
+            )}`,
         );
         await resendDatetimeSelectors(phoneNumber, supabase, session, catalog);
         return;
@@ -2789,9 +2815,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
         if (
           clientTypedPortion(trigger.originalMessage)
             .split(/\n+/)
-            .every((l) =>
-              isShortAffirmativeText(l.replace(/[!¡.,\s]+$/g, ""))
-            )
+            .every((l) => isShortAffirmativeText(l.replace(/[!¡.,\s]+$/g, "")))
         ) {
           await sendMessage(
             phoneNumber,
@@ -2836,7 +2860,9 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
               reason: "auto_pause_fallback",
               phone: phoneNumber,
               client_name: firstName.slice(0, 80),
-              url: `${WABA_PANEL_BASE}?phone=${encodeURIComponent(phoneNumber)}`,
+              url: `${WABA_PANEL_BASE}?phone=${
+                encodeURIComponent(phoneNumber)
+              }`,
             },
           );
           return;

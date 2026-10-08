@@ -3,87 +3,87 @@
 import { WA_IDS } from "../../lib/constants.ts";
 import { getInteractiveTitle } from "../../lib/parse-message.ts";
 import {
-  formatSoles,
   formatCartSummaryFromLines,
+  formatSoles,
   limaIsoWeekday,
 } from "../../format.ts";
 import {
+  addCartItems,
+  addToCart,
+  clearCart,
   getSession,
   upsertSession,
-  addToCart,
-  addCartItems,
-  clearCart,
 } from "../../lib/supabase.ts";
 import {
-  matchesParkingOrMovilidadQuestion,
   DEFAULT_ESTACIONAMIENTO_TEXT,
+  matchesParkingOrMovilidadQuestion,
 } from "../../lib/salon-location.ts";
 import { matchesPurePromosNavigationIntent } from "../../lib/promo-intent.ts";
 import {
-  sendMenuWithPromos,
-  sendCategoriesList,
-  sendCategoriesAndPromosListFromCatalog,
-  sendServicesList,
-  sendUnasSubcategoriesList,
-  sendExtensionesSubcategoriesList,
+  catalogBackToSubcategories,
   catalogPacksToForList,
-  filterPacksForSubcategory,
-  sendPromosListFromCatalog,
-  sendCartOptions,
-  classifyUnasService,
-  getUnasSubcategoryLabel,
   classifyExtensionesService,
+  classifyUnasService,
+  filterPacksForSubcategory,
   getExtensionesSubcategoryLabel,
-  sendCategoryViewChoice,
-  sendPacksOnlyList,
-  sendServicesOnlyList,
-  parseViewPayload,
+  getUnasSubcategoryLabel,
   parsePacksPagePayload,
   parseServicesPagePayload,
+  parseViewPayload,
+  sendCartOptions,
+  sendCategoriesAndPromosListFromCatalog,
+  sendCategoriesList,
+  sendCategoryViewChoice,
+  sendExtensionesSubcategoriesList,
+  sendMenuWithPromos,
+  sendPacksOnlyList,
+  sendPromosListFromCatalog,
+  sendServicesList,
+  sendServicesOnlyList,
+  sendUnasSubcategoriesList,
   shouldRedirectFreeTextPacksToCategories,
-  catalogBackToSubcategories,
   WA_MAX_CONTENT,
 } from "../menu.ts";
 import {
-  sessionHasCart,
-  isMostlyHorariosAvailabilityQuestion,
-  matchesLocationQuestion,
-  isMostlyLocationQuestion,
+  AWAITING_CURSO_LEAD,
   isMostlyCartInspectQuestion,
+  isMostlyHorariosAvailabilityQuestion,
+  isMostlyLocationQuestion,
+  isMostlyRetiroInfoQuestion,
   matchesClassesQuestion,
   matchesExtensionesCursoLead,
-  AWAITING_CURSO_LEAD,
+  matchesLocationQuestion,
   matchesRetiroInfoQuestion,
-  isMostlyRetiroInfoQuestion,
-  tryCompleteBookingFromText,
   resendDatetimeSelectors,
+  sessionHasCart,
+  tryCompleteBookingFromText,
 } from "../booking-flow.ts";
 import {
+  isReproInteractiveId,
+  parseReproAppointmentId,
   sendMiCitaMenu,
   startRescheduleFromAppointment,
-  parseReproAppointmentId,
-  isReproInteractiveId,
 } from "../pending-appointment.ts";
 import {
-  tryHandOffUnrecognizedToHaiku,
-  tryHaikuFirstUnlessMostly,
   handleLocationQuestion,
+  tryHaikuFirstUnlessMostly,
+  tryHandOffUnrecognizedToHaiku,
 } from "./haiku-handoff.ts";
 import {
-  proceedToBookingWithCurrentCart,
-  openBookingAfterCartAdd,
   isCatalogPageInteractiveId,
+  openBookingAfterCartAdd,
+  proceedToBookingWithCurrentCart,
 } from "./cart-booking.ts";
 import { PITEM_PREFIX } from "./menu-ids.ts";
 import type { DispatchRuntime } from "./runtime.ts";
 import {
-  promoAppliesOnWeekday,
-  formatValidDaysEs,
   type CatalogPromotion,
+  formatValidDaysEs,
+  promoAppliesOnWeekday,
 } from "../../lib/services-catalog.ts";
 import {
-  nextCatalogNavState,
   CATALOG_NAV_HELP_TEXT,
+  nextCatalogNavState,
 } from "../../lib/catalog-nav-fallback.ts";
 
 /**
@@ -123,7 +123,9 @@ async function blockIfPacksEspecialesRestricted(
   }
   await rt.senders.sendMessage(
     phoneNumber,
-    `💜 *${promo.title}* solo está disponible ${formatValidDaysEs(promo.valid_days)}.\n\nHoy no aplica, pero puedes elegir otras promos o servicios del menú. ¿Quieres que te muestre las opciones disponibles?`,
+    `💜 *${promo.title}* solo está disponible ${
+      formatValidDaysEs(promo.valid_days)
+    }.\n\nHoy no aplica, pero puedes elegir otras promos o servicios del menú. ¿Quieres que te muestre las opciones disponibles?`,
   );
   await sendPromosListFromCatalog(phoneNumber, promotions);
   return true;
@@ -216,8 +218,9 @@ export async function tryHandleMenuTaps(rt: DispatchRuntime): Promise<boolean> {
       );
       return true;
     }
-    if (rt.session?.step && rt.session.step !== "browsing")
+    if (rt.session?.step && rt.session.step !== "browsing") {
       await clearCart(supabase, phoneNumber);
+    }
     await rt.senders.sendMessage(
       phoneNumber,
       "Para agendar, primero elige el servicio o pack que quieres 💜 Después te paso al calendario.",
@@ -231,15 +234,17 @@ export async function tryHandleMenuTaps(rt: DispatchRuntime): Promise<boolean> {
   }
 
   if (userInput === "ver_packs") {
-    if (rt.session?.step && rt.session.step !== "browsing")
+    if (rt.session?.step && rt.session.step !== "browsing") {
       await clearCart(supabase, phoneNumber);
+    }
     await sendCategoriesList(phoneNumber, catalog.categories);
     return true;
   }
 
   if (userInput === "ver_servicios" || userInput === WA_IDS.VOLVER_CATEGORIAS) {
-    if (rt.session?.step && rt.session.step !== "browsing")
+    if (rt.session?.step && rt.session.step !== "browsing") {
       await clearCart(supabase, phoneNumber);
+    }
     await sendCategoriesList(phoneNumber, catalog.categories);
     return true;
   }
@@ -250,8 +255,9 @@ export async function tryHandleMenuTaps(rt: DispatchRuntime): Promise<boolean> {
   }
 
   if (userInput === "ver_promos") {
-    if (rt.session?.step && rt.session.step !== "browsing")
+    if (rt.session?.step && rt.session.step !== "browsing") {
       await clearCart(supabase, phoneNumber);
+    }
     await sendPromosListFromCatalog(phoneNumber, catalog.promotions);
     return true;
   }
@@ -363,8 +369,7 @@ export async function tryHandleMenuTaps(rt: DispatchRuntime): Promise<boolean> {
       prompt: messageText,
       locLower: lower,
       ubicacionText,
-      skipHaiku:
-        userInput === "ubicacion" ||
+      skipHaiku: userInput === "ubicacion" ||
         Boolean(interactiveId) ||
         isMostlyLocationQuestion(lower),
       requireClaim: userInput !== "ubicacion",
@@ -375,7 +380,9 @@ export async function tryHandleMenuTaps(rt: DispatchRuntime): Promise<boolean> {
     // la dirección queda sola: el menú genérico pisaba la promo que Haiku
     // estaba cotizando (Alberto VE …0417, 4-oct, "dónde están ubicados").
     if (userInput === "ubicacion" || isMostlyLocationQuestion(lower)) {
-      const { resumeCompanionAskIfNeeded } = await import("../party-booking.ts");
+      const { resumeCompanionAskIfNeeded } = await import(
+        "../party-booking.ts"
+      );
       const asked = await resumeCompanionAskIfNeeded(
         supabase,
         phoneNumber,
@@ -572,21 +579,19 @@ export async function tryHandleMenuTaps(rt: DispatchRuntime): Promise<boolean> {
     userInput.startsWith(WA_IDS.VIEW_PREFIX) ||
     isCatalogPageInteractiveId(userInput)
   ) {
-    const isPacksPage =
-      userInput.startsWith(WA_IDS.PACKS_PAGE_PREFIX) ||
+    const isPacksPage = userInput.startsWith(WA_IDS.PACKS_PAGE_PREFIX) ||
       userInput.startsWith("packspage_");
-    const isServicesPage =
-      userInput.startsWith(WA_IDS.SERVICES_PAGE_PREFIX) ||
+    const isServicesPage = userInput.startsWith(WA_IDS.SERVICES_PAGE_PREFIX) ||
       userInput.startsWith("svcspage_");
     const payload = isPacksPage
       ? userInput.startsWith(WA_IDS.PACKS_PAGE_PREFIX)
         ? userInput.slice(WA_IDS.PACKS_PAGE_PREFIX.length)
         : userInput.slice("packspage_".length)
       : isServicesPage
-        ? userInput.startsWith(WA_IDS.SERVICES_PAGE_PREFIX)
-          ? userInput.slice(WA_IDS.SERVICES_PAGE_PREFIX.length)
-          : userInput.slice("svcspage_".length)
-        : userInput.slice(WA_IDS.VIEW_PREFIX.length);
+      ? userInput.startsWith(WA_IDS.SERVICES_PAGE_PREFIX)
+        ? userInput.slice(WA_IDS.SERVICES_PAGE_PREFIX.length)
+        : userInput.slice("svcspage_".length)
+      : userInput.slice(WA_IDS.VIEW_PREFIX.length);
     let scopeId: string;
     let offset = 0;
     let mode: "services" | "packs" | "chooser";
@@ -792,7 +797,9 @@ export async function tryHandleMenuTaps(rt: DispatchRuntime): Promise<boolean> {
     if (!promo.items.length) {
       await rt.senders.sendMessage(
         phoneNumber,
-        `${promo.emoji} *${promo.title}*\n\n${promo.description ?? ""}\n\nEsta promo no tiene ítems configurados. Elige otra o escribe *menu*.`,
+        `${promo.emoji} *${promo.title}*\n\n${
+          promo.description ?? ""
+        }\n\nEsta promo no tiene ítems configurados. Elige otra o escribe *menu*.`,
       );
       return true;
     }
@@ -801,18 +808,17 @@ export async function tryHandleMenuTaps(rt: DispatchRuntime): Promise<boolean> {
     const rows: { id: string; title: string; description: string }[] = [];
     for (const i of promo.items) {
       const price = parseFloat(String(i.discounted_price)) || 0;
-      const name =
-        i.item_type === "service"
-          ? (catalog.servicesById.get(i.item_id)?.name ??
-            (console.warn(
-              `[promo items] service id=${i.item_id} no encontrado en catálogo`,
-            ),
+      const name = i.item_type === "service"
+        ? (catalog.servicesById.get(i.item_id)?.name ??
+          (console.warn(
+            `[promo items] service id=${i.item_id} no encontrado en catálogo`,
+          ),
             "Servicio"))
-          : (catalog.packsById.get(i.item_id)?.short_name ??
-            catalog.packsById.get(i.item_id)?.title ??
-            (console.warn(
-              `[promo items] pack id=${i.item_id} no encontrado en catálogo`,
-            ),
+        : (catalog.packsById.get(i.item_id)?.short_name ??
+          catalog.packsById.get(i.item_id)?.title ??
+          (console.warn(
+            `[promo items] pack id=${i.item_id} no encontrado en catálogo`,
+          ),
             "Pack"));
       const typeChar = i.item_type === "pack" ? "p" : "s";
       rows.push({
@@ -832,8 +838,7 @@ export async function tryHandleMenuTaps(rt: DispatchRuntime): Promise<boolean> {
       description: "Volver al inicio",
     });
     const desc = (promo.description ?? "").trim().slice(0, 200);
-    const body =
-      (desc ? `${desc}\n\n` : "") +
+    const body = (desc ? `${desc}\n\n` : "") +
       "Elige un ítem para agregarlo al carrito al precio de la promo:";
     const ok = await sendInteractiveList(
       phoneNumber,
@@ -842,11 +847,12 @@ export async function tryHandleMenuTaps(rt: DispatchRuntime): Promise<boolean> {
       "Elegir ítem",
       [{ title: "Ítems de la promo", rows: rows.slice(0, 10) }],
     );
-    if (!ok)
+    if (!ok) {
       await rt.senders.sendMessage(
         phoneNumber,
         body + "\n\nResponde *menu* para volver al inicio.",
       );
+    }
     return true;
   }
 
@@ -1017,8 +1023,7 @@ export async function tryHandleMenuTaps(rt: DispatchRuntime): Promise<boolean> {
         wabaConfig,
         haikuRuntime,
         session: rt.session ?? null,
-        prompt:
-          title ||
+        prompt: title ||
           "La clienta eligió un servicio que ya no está en el catálogo. Ayúdala a elegir otro.",
       });
       if (handed) return true;

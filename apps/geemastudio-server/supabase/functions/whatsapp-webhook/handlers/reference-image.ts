@@ -1,7 +1,7 @@
 // reference-image.ts — Foto(s) / link de referencia con cita scheduled → Storage + ack + push
 
 import { sendMessage } from "../wa-api.ts";
-import { uploadWhatsAppMediaToStorage, notifyAdmins } from "../lib/notify.ts";
+import { notifyAdmins, uploadWhatsAppMediaToStorage } from "../lib/notify.ts";
 import { persistInboundWaImage } from "../lib/inbound-image.ts";
 import type { SupabaseClient } from "../lib/supabase.ts";
 import { getPendingAppointmentsForPhone } from "./pending-appointment.ts";
@@ -30,8 +30,7 @@ export function extractReferenceUrl(text: string): string | null {
   if (url.length < 12 || url.length > 2048) return null;
   try {
     const host = new URL(url).hostname.toLowerCase().replace(/^www\./, "");
-    const ok =
-      host === "pin.it" ||
+    const ok = host === "pin.it" ||
       host.endsWith("pinterest.com") ||
       host === "instagram.com" ||
       host === "instagr.am" ||
@@ -99,8 +98,8 @@ async function loadPendingWithRefs(
     date: (data.date as string) || target.date,
     serviceLabels: target.serviceLabels,
     reference_image_path: data.reference_image_path as string | null,
-    reference_image_paths:
-      (data.reference_image_paths as string[] | null) ?? [],
+    reference_image_paths: (data.reference_image_paths as string[] | null) ??
+      [],
     reference_url: data.reference_url as string | null,
   };
 }
@@ -167,15 +166,18 @@ export async function tryHandleServiceReferenceImage(opts: {
   if (!apt) return false;
 
   // Panel mensajes: URL pública además del path privado de la cita
-  const caption =
-    typeof imageData?.caption === "string" ? imageData.caption : null;
+  const caption = typeof imageData?.caption === "string"
+    ? imageData.caption
+    : null;
   void persistInboundWaImage(supabase, {
     phone: phoneNumber,
     mediaId,
     caption,
   }).catch((err) => console.error("[reference] persist panel:", err));
 
-  const fileName = `${phoneNumber.replace(/\D/g, "")}/${apt.id}_${Date.now()}.jpg`;
+  const fileName = `${
+    phoneNumber.replace(/\D/g, "")
+  }/${apt.id}_${Date.now()}.jpg`;
   const uploaded = await uploadWhatsAppMediaToStorage(
     supabase,
     mediaId,

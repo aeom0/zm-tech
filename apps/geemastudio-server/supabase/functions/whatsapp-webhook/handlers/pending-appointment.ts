@@ -1,37 +1,37 @@
 // pending-appointment.ts — Citas pendientes por WA: contexto, reprogramación (UPDATE fecha)
 
-import { sendMessage, sendInteractiveList } from "../wa-api.ts";
+import { sendInteractiveList, sendMessage } from "../wa-api.ts";
 import {
-  formatDateSpanish,
-  formatSoles,
   formatCartSummary,
   formatCartSummaryFromLines,
-  orderedServicesFromIds,
-  toLimaLocalTimestamp,
-  parseLimaLocalToDate,
+  formatDateSpanish,
+  formatSoles,
   limaIsoWeekday,
+  orderedServicesFromIds,
+  parseLimaLocalToDate,
+  toLimaLocalTimestamp,
 } from "../format.ts";
 import {
-  getPhoneCountryAndNormalizedFromWa,
-  getSession,
-  upsertSession,
+  type CartItem,
   clearCart,
   expandCartItemsToServiceIds,
+  getPhoneCountryAndNormalizedFromWa,
+  getSession,
   type SupabaseClient,
-  type CartItem,
+  upsertSession,
 } from "../lib/supabase.ts";
 import { isWaBsuid } from "../lib/wa-recipient.mjs";
 import { notifyAdmins } from "../lib/notify.ts";
 import type {
-  ServiceCatalog,
   AppointmentServiceLine,
   CartPriceAdjustment,
+  ServiceCatalog,
 } from "../lib/services-catalog.ts";
 import {
-  recomputeAppointmentLinesForWeekday,
   overlapCapForCart,
+  recomputeAppointmentLinesForWeekday,
 } from "../lib/services-catalog.ts";
-import { sendDateSelector, hasSlotCapacityForServices } from "./agenda.ts";
+import { hasSlotCapacityForServices, sendDateSelector } from "./agenda.ts";
 import { getEmployeeCategories } from "../lib/constants.ts";
 
 const REPRO_PREFIX = "repro_";
@@ -157,9 +157,10 @@ export function matchesAttendanceAffirmation(text: string): boolean {
     .replace(/[\u0300-\u036f]/g, "")
     .trim();
   if (/\b(no|ya no)\s+(puedo|podre|voy|llego|estare)\b/.test(t)) return false;
-  return /\b(estare|voy a estar|llego|llegare|voy llegando|nos vemos|ahi estoy)\b/.test(
-    t,
-  );
+  return /\b(estare|voy a estar|llego|llegare|voy llegando|nos vemos|ahi estoy)\b/
+    .test(
+      t,
+    );
 }
 
 /**
@@ -172,17 +173,21 @@ export function matchesTimeCorrectionIntent(text: string): boolean {
   if (/\bno es a las?\b/.test(lower)) return true;
   if (/\bes a las?\s+\d/.test(lower)) return true;
   if (
-    /\b(a|para) las?\s+\d{1,2}(:\d{2})?\s*(am|pm|a\.?\s*m\.?|p\.?\s*m\.?)?/i.test(
-      lower,
-    )
-  )
+    /\b(a|para) las?\s+\d{1,2}(:\d{2})?\s*(am|pm|a\.?\s*m\.?|p\.?\s*m\.?)?/i
+      .test(
+        lower,
+      )
+  ) {
     return true;
+  }
   if (
-    /\b(?:era|iba a ser)\s+(?:a\s+)?(?:las?\s+)?\d{1,2}(:\d{2})?\s*(am|pm|a\.?\s*m\.?|p\.?\s*m\.?)?/i.test(
-      lower,
-    )
-  )
+    /\b(?:era|iba a ser)\s+(?:a\s+)?(?:las?\s+)?\d{1,2}(:\d{2})?\s*(am|pm|a\.?\s*m\.?|p\.?\s*m\.?)?/i
+      .test(
+        lower,
+      )
+  ) {
     return true;
+  }
   if (
     (lower.includes("coordine") ||
       lower.includes("coordiné") ||
@@ -190,8 +195,9 @@ export function matchesTimeCorrectionIntent(text: string): boolean {
       lower.includes("agendé") ||
       lower.includes("agende")) &&
     /\d/.test(lower)
-  )
+  ) {
     return true;
+  }
   return false;
 }
 
@@ -307,10 +313,9 @@ export async function getPendingAppointmentsForPhone(
       (svcLines ?? []).map((r: { service_id: string }) => r.service_id),
     ),
   ];
-  const { data: nameRows } =
-    allSids.length > 0
-      ? await supabase.from("services").select("id, name").in("id", allSids)
-      : { data: [] as { id: string; name: string }[] };
+  const { data: nameRows } = allSids.length > 0
+    ? await supabase.from("services").select("id, name").in("id", allSids)
+    : { data: [] as { id: string; name: string }[] };
   const nameById = new Map<string, string>(
     (nameRows ?? []).map(
       (r: { id: string; name: string }) => [r.id, r.name] as [string, string],
@@ -337,8 +342,9 @@ export async function getPendingAppointmentsForPhone(
         .select("name")
         .eq("id", row.service_id)
         .maybeSingle();
-      if ((s as { name?: string })?.name)
+      if ((s as { name?: string })?.name) {
         serviceLabels = [(s as { name: string }).name];
+      }
     }
     if (serviceLabels.length === 0) serviceLabels = ["Servicio"];
     out.push({
@@ -356,9 +362,11 @@ export async function getPendingAppointmentsForPhone(
 export const STAFF_COORDINATION_PHONE = "932 535 512";
 
 /** @deprecated Prefer ADDITIONAL_BOOKING_BLOCK_MESSAGE_V2 / PARTY_AT_LIMIT — tope 2 citas/chat. */
-export const ADDITIONAL_BOOKING_BLOCK_MESSAGE = `Ya tienes el máximo de *2 citas* programadas 💜 Para coordinar otra, escríbenos al 📱 *${STAFF_COORDINATION_PHONE}*.\n\nSi quieres *cambiar* una cita, escribe *mi cita*.`;
+export const ADDITIONAL_BOOKING_BLOCK_MESSAGE =
+  `Ya tienes el máximo de *2 citas* programadas 💜 Para coordinar otra, escríbenos al 📱 *${STAFF_COORDINATION_PHONE}*.\n\nSi quieres *cambiar* una cita, escribe *mi cita*.`;
 
-export const BOOKING_OVERLAP_MESSAGE = `Ese horario coincide con otra cita que ya tienes 💜 Escríbenos al 📱 *${STAFF_COORDINATION_PHONE}* para coordinar o elige otro horario disponible.`;
+export const BOOKING_OVERLAP_MESSAGE =
+  `Ese horario coincide con otra cita que ya tienes 💜 Escríbenos al 📱 *${STAFF_COORDINATION_PHONE}* para coordinar o elige otro horario disponible.`;
 /**
  * Aviso de llegada/tardanza sin cita `scheduled` (Sofia …8962, 08-sep):
  * "Ya estoy en camino" no debe disparar política de tardanza ni "te esperamos".
@@ -369,7 +377,8 @@ export const NO_CONFIRMED_APPOINTMENT_ARRIVAL_MESSAGE =
   `Escribe *agendar* para reservar, o coordina al 📱 *${STAFF_COORDINATION_PHONE}* 🌸`;
 
 /** Slot sin cupo según `overlapCapForCart` (tope 1 default / 2 si carrito 100 % especial). Ver docs/waba/WABA_CAPACITY.md. */
-export const SLOT_TAKEN_MESSAGE = `Ese horario no tiene cupo. Elige otra hora de la lista 💜`;
+export const SLOT_TAKEN_MESSAGE =
+  `Ese horario no tiene cupo. Elige otra hora de la lista 💜`;
 
 /**
  * True si acabamos de mandar SLOT_TAKEN (ráfaga peer / Haiku no debe “confirmar” esa hora).
@@ -598,42 +607,41 @@ async function sendMiCitaActionsList(
   phone: string,
   pending: PendingAppointmentRow[],
 ): Promise<void> {
-  const rows =
-    pending.length === 1
-      ? [
-          {
-            id: `${REPRO_PREFIX}${pending[0].id}`,
-            title: "📅 Cambiar fecha/hora",
-            description: "Reprogramar tu cita",
-          },
-          {
-            id: "mi_cita_ver_menu",
-            title: "🏠 Volver al menú",
-            description: "Promos y servicios",
-          },
-        ]
-      : [
-          ...pending.slice(0, 9).map((p, i) => {
-            const dt = parseLimaLocalToDate(
-              typeof p.date === "string" ? p.date : String(p.date),
-            );
-            const short = dt ? formatDateSpanish(dt).slice(0, 40) : "Cita";
-            return {
-              id: `${REPRO_PREFIX}${p.id}`,
-              title: `📅 Opción ${i + 1}`.slice(0, 24),
-              description:
-                `${serviceLabelFromRow(p).slice(0, 20)} · ${short}`.slice(
-                  0,
-                  72,
-                ),
-            };
-          }),
-          {
-            id: "mi_cita_ver_menu",
-            title: "🏠 Volver al menú",
-            description: "Promos y servicios",
-          },
-        ];
+  const rows = pending.length === 1
+    ? [
+      {
+        id: `${REPRO_PREFIX}${pending[0].id}`,
+        title: "📅 Cambiar fecha/hora",
+        description: "Reprogramar tu cita",
+      },
+      {
+        id: "mi_cita_ver_menu",
+        title: "🏠 Volver al menú",
+        description: "Promos y servicios",
+      },
+    ]
+    : [
+      ...pending.slice(0, 9).map((p, i) => {
+        const dt = parseLimaLocalToDate(
+          typeof p.date === "string" ? p.date : String(p.date),
+        );
+        const short = dt ? formatDateSpanish(dt).slice(0, 40) : "Cita";
+        return {
+          id: `${REPRO_PREFIX}${p.id}`,
+          title: `📅 Opción ${i + 1}`.slice(0, 24),
+          description: `${serviceLabelFromRow(p).slice(0, 20)} · ${short}`
+            .slice(
+              0,
+              72,
+            ),
+        };
+      }),
+      {
+        id: "mi_cita_ver_menu",
+        title: "🏠 Volver al menú",
+        description: "Promos y servicios",
+      },
+    ];
 
   const ok = await sendInteractiveList(
     phone,
@@ -790,8 +798,7 @@ export async function startRescheduleFromAppointment(
   });
 
   const session = await getSession(supabase, phone);
-  const hasCart =
-    (session?.cartItems?.length ?? 0) > 0 ||
+  const hasCart = (session?.cartItems?.length ?? 0) > 0 ||
     (session?.serviceIds?.length ?? 0) > 0;
   if (!hasCart) {
     await sendMessage(
@@ -802,8 +809,8 @@ export async function startRescheduleFromAppointment(
   }
 
   const cartItemsNow = (session?.cartItems ?? []) as CartItem[];
-  const useCartItems =
-    cartItemsNow.length > 0 && cartItemsNow.some((i: CartItem) => i.price > 0);
+  const useCartItems = cartItemsNow.length > 0 &&
+    cartItemsNow.some((i: CartItem) => i.price > 0);
   let summary: string;
   let orderedServices: {
     id: string;
@@ -918,7 +925,8 @@ export async function startRescheduleFromAppointment(
       catalog,
       serviceIdsForCap,
       {
-        introMessage: `${summary}\n\nDale, te cambio la fecha 📅 ¿A qué hora te viene mejor ese día?`,
+        introMessage:
+          `${summary}\n\nDale, te cambio la fecha 📅 ¿A qué hora te viene mejor ese día?`,
       },
     );
     return;
@@ -994,7 +1002,7 @@ async function recomputeAndPersistAppointmentPricesForDate(
       supabase
         .from("appointment_services")
         .update({ price: l.price })
-        .eq("id", l.id),
+        .eq("id", l.id)
     ),
   );
 
@@ -1033,8 +1041,7 @@ export async function finalizeRescheduleAppointment(
 
   const phoneDigits = phone.replace(/\D/g, "");
   const clientDigits = String(appt.client_phone ?? "").replace(/\D/g, "");
-  const okPhone =
-    clientDigits &&
+  const okPhone = clientDigits &&
     (phoneDigits.endsWith(clientDigits.slice(-9)) ||
       clientDigits.endsWith(phoneDigits.slice(-9)));
   if (!okPhone && phoneDigits.length > 5) {
@@ -1047,10 +1054,9 @@ export async function finalizeRescheduleAppointment(
 
   const sessionBefore = await getSession(supabase, phone);
   const cartItems = (sessionBefore?.cartItems ?? []) as CartItem[];
-  const cartServiceIds =
-    cartItems.length > 0
-      ? await expandCartItemsToServiceIds(supabase, cartItems)
-      : ((sessionBefore?.serviceIds ?? []) as string[]);
+  const cartServiceIds = cartItems.length > 0
+    ? await expandCartItemsToServiceIds(supabase, cartItems)
+    : ((sessionBefore?.serviceIds ?? []) as string[]);
 
   // Capacidad del salón (excluye esta misma cita). El soft-reschedule ya
   // chequeaba antes de llamar; el tap interactivo time_ entraba aquí sin gate.
@@ -1193,8 +1199,7 @@ export async function finalizeRescheduleAppointment(
       .from("services")
       .select("name")
       .in("id", sids);
-    svcName =
-      (names ?? []).map((n: { name: string }) => n.name).join(" + ") ||
+    svcName = (names ?? []).map((n: { name: string }) => n.name).join(" + ") ||
       "tu servicio";
   }
   const dateStr = formatDateSpanish(chosenDateUtc);
@@ -1204,7 +1209,9 @@ export async function finalizeRescheduleAppointment(
       priceAdjustments
         .map(
           (a) =>
-            `• ${a.name}: S/ ${formatSoles(a.before)} → S/ ${formatSoles(a.after)}`,
+            `• ${a.name}: S/ ${formatSoles(a.before)} → S/ ${
+              formatSoles(a.after)
+            }`,
         )
         .join("\n")
     : "";
