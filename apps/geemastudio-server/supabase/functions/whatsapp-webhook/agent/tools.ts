@@ -5,6 +5,7 @@
 // precios, montos ni disponibilidad. El cierre (adelanto o cita directa) lo
 // hace finalizeBookingAfterDatetimeSelection.
 
+import { promoValidityNote } from "../lib/haiku-prompt.ts";
 import type { SupabaseClient } from "../lib/supabase.ts";
 import {
   addCartItems,
@@ -743,7 +744,9 @@ export function searchCatalog(
     promoLines.push(
       `- promo ${promo.title}${
         promo.badge ? ` (${promo.badge})` : ""
-      }${days}: ${itemBits.join("; ") || (promo.description ?? "").trim()}`,
+      }${days} [${promoValidityNote(promo)}]: ${
+        itemBits.join("; ") || (promo.description ?? "").trim()
+      }`,
     );
   }
   for (const sv of catalog.services) {
