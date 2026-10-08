@@ -262,6 +262,8 @@ Deno.test("tools: el agente expone carrito, día, equipo y reserva; sin selector
   const names = AGENT_TOOLS.map((t) => t.name);
   for (
     const n of [
+      "buscar_servicios",
+      "ver_portafolio",
       "ver_carrito",
       "agregar_al_carrito",
       "quitar_del_carrito",
@@ -312,4 +314,38 @@ Deno.test("tools: reservar_horario valida entrada y no marca turno atendido", as
 Deno.test("tools: tool desconocida devuelve error", async () => {
   const r = await runAgentTool("pasar_a_agendar", {}, toolCtx());
   assertEquals(r.isError, true);
+});
+
+Deno.test("tools: buscar_servicios filtra por palabras sin acentos y usa categoría", async () => {
+  const catalog = {
+    ...emptyCatalog,
+    categories: [{ id: "c1", name: "Pestañas", order: 1 }],
+    services: [
+      {
+        id: "s1",
+        name: "Extensiones 3D",
+        short_name: null,
+        category_id: "c1",
+        subcategory: null,
+        price: "120",
+        duration: 90,
+        is_active: true,
+      },
+    ],
+    packs: [],
+    promotions: [],
+  } as unknown as ServiceCatalog;
+  const ctx = { ...toolCtx(), catalog };
+  const hit = await runAgentTool(
+    "buscar_servicios",
+    { consulta: "pestanas 3d", categoria_id: null },
+    ctx,
+  );
+  assertStringIncludes(hit.content, "[s1]");
+  const miss = await runAgentTool(
+    "buscar_servicios",
+    { consulta: "uñas", categoria_id: null },
+    ctx,
+  );
+  assertStringIncludes(miss.content, "Sin resultados");
 });

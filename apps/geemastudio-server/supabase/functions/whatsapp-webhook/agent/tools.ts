@@ -73,6 +73,51 @@ const idsSchema = {
 
 export const AGENT_TOOLS: AgentToolDef[] = [
   {
+    name: "buscar_servicios",
+    description:
+      "Busca servicios y packs del catálogo por texto (nombre, efecto, categoría) y devuelve id, precio vigente y duración. " +
+      "Úsala para obtener el id antes de agregar_al_carrito o cuando la clienta pregunte por un servicio.",
+    strict: true,
+    input_schema: {
+      type: "object",
+      properties: {
+        consulta: {
+          type: ["string", "null"],
+          description: "Texto a buscar, o null para listar por categoría.",
+        },
+        categoria_id: {
+          type: ["string", "null"],
+          description: "ID de categoría para filtrar, o null.",
+        },
+      },
+      required: ["consulta", "categoria_id"],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "ver_portafolio",
+    description:
+      "Envía a la clienta fotos reales de trabajos (portafolio) de un servicio o de lo que pidió. " +
+      "Después escribe un cierre breve que ancle el siguiente paso.",
+    strict: true,
+    input_schema: {
+      type: "object",
+      properties: {
+        servicio_id: {
+          type: ["string", "null"],
+          description:
+            "ID de servicio o categoría, o null para elegir según su pedido.",
+        },
+        pedido: {
+          type: ["string", "null"],
+          description: "Lo que pidió ver (efecto, fibra, estilo), o null.",
+        },
+      },
+      required: ["servicio_id", "pedido"],
+      additionalProperties: false,
+    },
+  },
+  {
     name: "ver_carrito",
     description:
       "Muestra el carrito actual: ítems, precio de cada uno, duración y total.",
@@ -350,6 +395,63 @@ async function dayFacts(
   return out;
 }
 
+const norm = (t: string) =>
+  t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+/** Búsqueda de catálogo para el modelo: todas las palabras deben aparecer. */
+export function searchCatalog(
+  catalog: ServiceCatalog,
+  consulta: string | null,
+  categoriaId: string | null,
+): string[] {
+  const words = norm(consulta ?? "").split(/\s+/).filter((w) => w.length > 1);
+  const catName = (id: string | null) =>
+    catalog.categories.find((c) => c.id === id)?.name ?? "";
+  const lines: string[] = [];
+  const matches = (hay: string) => words.every((w) => norm(hay).includes(w));
+  for (const sv of catalog.services) {
+    if (sv.is_active === false) continue;
+    if (categoriaId && sv.category_id !== categoriaId) continue;
+    const hay = `${sv.name} ${sv.short_name ?? ""} ${sv.subcategory ?? ""} ${
+      catName(sv.category_id)
+    }`;
+    if (!matches(hay)) continue;
+    const price = resolveCartItemPrice(
+      catalog,
+      "service",
+      sv.id,
+      parseFloat(sv.price) || 0,
+    );
+    lines.push(
+      `- servicio [${sv.id}] ${sv.name} · S/${
+        price.toFixed(0)
+      } · ${sv.duration} min · ${catName(sv.category_id)}`,
+    );
+  }
+  for (const pk of catalog.packs) {
+    if (pk.is_active === false) continue;
+    if (categoriaId && pk.category_id !== categoriaId) continue;
+    if (
+      !matches(`${pk.title} ${pk.short_name ?? ""} ${catName(pk.category_id)}`)
+    ) {
+      continue;
+    }
+    const price = resolveCartItemPrice(
+      catalog,
+      "pack",
+      pk.id,
+      parseFloat(String(pk.pack_price)) || 0,
+    );
+    const { duration } = resolveBookingItems([pk.id], catalog);
+    lines.push(
+      `- pack [${pk.id}] ${pk.title} · S/${
+        price.toFixed(0)
+      } · ${duration} min · ${catName(pk.category_id)}`,
+    );
+  }
+  return lines.slice(0, 15);
+}
+
 export async function runAgentTool(
   name: string,
   input: Record<string, unknown>,
@@ -357,6 +459,52 @@ export async function runAgentTool(
 ): Promise<AgentToolResult> {
   try {
     switch (name) {
+      case "buscar_servicios": {
+        const consulta = typeof input.consulta === "string"
+          ? input.consulta
+          : null;
+        const cat = typeof input.categoria_id === "string" && input.categoria_id
+          ? input.categoria_id
+          : null;
+        const lines = searchCatalog(ctx.catalog, consulta, cat);
+        if (lines.length === 0) {
+          const cats = ctx.catalog.categories.map((c) => `[${c.id}] ${c.name}`)
+            .join(", ");
+          return { content: `Sin resultados. Categorías: ${cats}` };
+        }
+        return { content: lines.join("\n") };
+      }
+
+      case "ver_portafolio": {
+        const { resolveAndSendPortfolio } = await import("../lib/portfolio.ts");
+        const session = await getSession(ctx.supabase, ctx.phoneNumber);
+        const pedido = typeof input.pedido === "string" ? input.pedido : "";
+        await resolveAndSendPortfolio({
+          supabase: ctx.supabase,
+          phoneNumber: ctx.phoneNumber,
+          param: typeof input.servicio_id === "string"
+            ? input.servicio_id
+            : null,
+          messageText: pedido || ctx.messageText,
+          cartServiceIds: (session?.serviceIds ?? []).filter(Boolean),
+          catalogServices: ctx.catalog.services.map((sv) => ({
+            id: sv.id,
+            name: sv.name,
+            short_name: sv.short_name ?? null,
+            category_id: sv.category_id ?? null,
+          })),
+          categories: ctx.catalog.categories.map((c) => ({
+            id: c.id,
+            name: c.name,
+          })),
+          portfolioIndex: ctx.catalog.portfolioIndex ?? [],
+        });
+        return {
+          content:
+            "Fotos enviadas (o enlace al Instagram si no hay). Cierra con un mensaje breve que ancle el siguiente paso.",
+        };
+      }
+
       case "ver_carrito":
         return { content: await cartSummary(ctx) };
 

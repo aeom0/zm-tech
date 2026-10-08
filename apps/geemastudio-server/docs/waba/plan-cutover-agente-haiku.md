@@ -94,6 +94,8 @@ y elimina todas las reglas del tipo «usa action:none», «NO add_to_cart» y si
 | `ver_guia` | Envía las guías educativas (pelo a pelo, mapping, efectos) |
 | `ver_mi_cita` | Citas pendientes/confirmadas de la clienta |
 | `derivar_a_persona` | Escala al staff (reclamo, reembolso, falla del salón, asesoría personal) con motivo; reutiliza `escalateToStaff` |
+| `buscar_servicios` | Busca servicios y packs por texto o categoría; devuelve id, precio vigente y duración |
+| `ver_portafolio` | Envía fotos reales del portafolio (reutiliza `resolveAndSendPortfolio`) |
 | `ver_carrito`, `agregar_al_carrito`, `quitar_del_carrito` | El agente arma el carrito; IDs validados contra el catálogo y precio puesto por el sistema |
 | `consultar_dia` | Horarios libres del carrito, duración por servicio y bloque, quién atiende cada servicio (RPC `get_available_slots`), feriados/cierres, adelanto de domingo y ausencias/coberturas del personal |
 | `consultar_equipo` | Personal activo, servicios que hace cada quien, horarios y ausencias |
