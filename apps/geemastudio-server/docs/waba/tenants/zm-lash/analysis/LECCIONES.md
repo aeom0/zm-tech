@@ -567,4 +567,18 @@ Datos de catálogo en prod (sin migración): pack "Lifting + Tinturado" desactiv
 
 ---
 
+## Cerrados 8-oct 2026 — caso SAM y reporte 2026-10-07
+
+| Patrón | Qué era | Resolución | QA / refs |
+| ------ | ------- | ---------- | --------- |
+| "Confirmo" citando un mensaje del bot caía en la regex de estacionamiento (SAM, 7-oct) | `matchesParkingOrMovilidadQuestion` y `matchesLocationQuestion` leían el texto citado (" ↳ …") y respondían ubicación sin llamar a Haiku | Ambas usan `clientTypedPortion()` (solo lo que escribió la clienta) | #73, `salon-location.test.ts` |
+| Hora suelta con el día ya elegido se ignoraba (SAM) | `openBookingCalendarForCart` volvía a mostrar el selector de horas aunque el mensaje trajera una hora explícita | Con `selected_day` y hora explícita intenta cerrar con `tryCompleteBookingFromText`; si no cierra, cae al selector | #73 |
+| `confirm_booking` sin hora tras un "Confirmo" suelto | Haiku no podía indicar la hora acordada en mensajes anteriores | Acción `confirm_booking:HH:MM` (24 h); solo se usa si el texto de la clienta no trae hora explícita | #73, `ai-assistant.test.ts` |
+| [P1 2026-10-07] Haiku no ve la plantilla promo que originó la respuesta (`…3306`, `…4278`, `…8287`) | El historial de Haiku filtraba `msg_type='text'`; las plantillas se guardan como `template` | Se incluyen en el historial sin el prefijo `[plantilla:…]` ni el nombre de la clienta (`lib/template-history.ts`) | #75 |
+| [P2 2026-10-07] Recordatorio de boleta duplicado tras el pedido de Haiku (`…3306`) | `wasDepositReminderRecentlySent` solo reconocía su propio literal, no el "nombre completo y DNI/CE" de Haiku | La verificación también reconoce un pedido previo de nombre + DNI en el texto saliente del bot | #76 |
+| [P2] Respuestas separadas a dos mensajes con 8,7 s de diferencia (`…3993`) | No es bug: la ventana de coalescencia (4,5 s + 1,5 s de quietud) cierra antes del 2.º mensaje y Haiku contesta cada uno | Sin cambio; ampliar la ventana haría más lento el bot para todas. Decisión de producto pendiente | reconstrucción en `wa_messages`, 6-oct |
+| Clientas duplicadas por BSUID (SAM / SAMANTA ASORZA) | Un BSUID crea ficha aparte sin teléfono; el bot no vincula con la ficha existente | SAM unificada a mano. Otras 8 coincidencias posibles esperan confirmación de Vanessa; sin cambio de código | datos en prod, sin migración |
+
+---
+
 _Actualizar esta tabla al cerrar Quick Wins del reporte vivo; no reabrir reportes borrados._

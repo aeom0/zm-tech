@@ -109,7 +109,13 @@ async function wasDepositReminderRecentlySent(
     .eq("phone", phone)
     .eq("direction", "out")
     .gte("created_at", since)
-    .ilike("content", "%nombre y apellido%DNI o CE%")
+    // El pedido puede ser el recordatorio literal o la respuesta de Haiku con sus
+    // palabras ("necesito tu nombre completo y DNI/CE", Liliam …3306, 6-oct). Se
+    // mira solo texto saliente del bot, no el mensaje de la clienta.
+    .or(
+      "content.ilike.%nombre y apellido%DNI o CE%," +
+        "and(content.ilike.%nombre%,content.ilike.%DNI%)",
+    )
     .limit(1);
   if (error) {
     console.error(
