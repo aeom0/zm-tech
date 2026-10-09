@@ -18,6 +18,7 @@ import { ThemedText } from '@/components/ThemedText'
 import { Spacing, BorderRadius } from '@/constants/theme'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
+import { checkPhone } from '@/lib/clientFields'
 
 import { useProductSales } from './sales/hooks/useProductSales'
 import type {
@@ -154,13 +155,18 @@ export default function ProductSalesScreen() {
       Alert.alert('Producto sin precio', 'Agrega un precio al producto antes de venderlo.')
       return
     }
+    const phoneCheck = checkPhone(form.clientPhone, config.locale.country)
+    if (phoneCheck.error) {
+      Alert.alert('Teléfono no válido', phoneCheck.error)
+      return
+    }
     createOrderMutation.mutate(
       {
         inventory_item_id: selectedProduct.id,
         quantity,
         unit_price: selectedProduct.price,
         client_name: form.clientName.trim(),
-        client_phone: form.clientPhone.trim() || null,
+        client_phone: phoneCheck.phone,
         notes: form.notes.trim() || null,
       },
       { onSuccess: closeOrderForm }

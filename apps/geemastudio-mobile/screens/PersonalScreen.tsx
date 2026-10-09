@@ -23,7 +23,9 @@ import DraggableFlatList, { type RenderItemParams } from 'react-native-draggable
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { useAuth } from '@/contexts/AuthContext'
+import { FieldNote } from '@/components/FormField'
 import { useTenant } from '@/contexts/TenantContext'
+import { checkEmail, checkPhone, phonePlaceholder } from '@/lib/clientFields'
 import { FeatureAvailabilityBanner } from '@/components/FeatureAvailabilityBanner'
 import { PlanLimitBanner } from '@/components/PlanLimitBanner'
 import { usePlan } from '@/hooks/usePlan'
@@ -275,11 +277,19 @@ export default function PersonalScreen() {
     ? null
     : (pendingAvatarUri ?? (editing?.avatar_url?.trim() ? editing.avatar_url.trim() : null))
 
+  const emailCheck = checkEmail(form.email)
+  const phoneCheck = checkPhone(form.phone, config.locale.country)
+
   const handleSave = async () => {
     if (!isCreating && !editing) return
     const name = form.name.trim()
     if (!name) {
       Alert.alert('Error', 'El nombre es obligatorio')
+      return
+    }
+    const contactError = emailCheck.error ?? phoneCheck.error
+    if (contactError) {
+      Alert.alert('Revisa los datos', contactError)
       return
     }
 
@@ -319,7 +329,7 @@ export default function PersonalScreen() {
     const sharedData: EmployeeWriteInput = {
       name,
       email: form.email.trim() || null,
-      phone: form.phone.trim() || null,
+      phone: phoneCheck.phone,
       color: form.color.trim() || config.theme.primaryColor,
       commission_percentage: commissionPercentage,
       commission_mode: commissionMode,
@@ -662,7 +672,7 @@ export default function PersonalScreen() {
                   {
                     backgroundColor: theme.backgroundSecondary,
                     color: theme.text,
-                    borderColor: theme.border,
+                    borderColor: emailCheck.error ? theme.error : theme.border,
                   },
                 ]}
                 placeholder="nombre@correo.com"
@@ -672,6 +682,7 @@ export default function PersonalScreen() {
                 keyboardType="email-address"
                 autoCapitalize="none"
               />
+              <FieldNote error={emailCheck.error} />
 
               <ThemedText style={[styles.fieldLabel, { color: theme.textSecondary }]}>
                 Teléfono
@@ -682,15 +693,16 @@ export default function PersonalScreen() {
                   {
                     backgroundColor: theme.backgroundSecondary,
                     color: theme.text,
-                    borderColor: theme.border,
+                    borderColor: phoneCheck.error ? theme.error : theme.border,
                   },
                 ]}
-                placeholder="Ej. +1 555 123 4567"
+                placeholder={`Ej. ${phonePlaceholder(config.locale.country)}`}
                 placeholderTextColor={theme.textMuted}
                 value={form.phone}
                 onChangeText={(t) => setForm((f) => ({ ...f, phone: t }))}
                 keyboardType="phone-pad"
               />
+              <FieldNote error={phoneCheck.error} hint={phoneCheck.hint} />
 
               {showGeemaExtras ? (
                 <>

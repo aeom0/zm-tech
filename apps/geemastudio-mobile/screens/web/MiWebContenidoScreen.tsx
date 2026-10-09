@@ -6,6 +6,8 @@ import { useNavigation } from '@react-navigation/native'
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack'
 
 import { ThemedText } from '@/components/ThemedText'
+import { useTenant } from '@/contexts/TenantContext'
+import { checkPhone } from '@/lib/clientFields'
 import { useTheme } from '@/hooks/useTheme'
 import { useUpdateWebSettings, useWebSettings } from '@/hooks/web/useWebSettings'
 import { Spacing } from '@/constants/theme'
@@ -20,6 +22,7 @@ export default function MiWebContenidoScreen() {
   const headerHeight = useHeaderHeight()
   const tabBarHeight = useBottomTabBarHeight()
   const { theme } = useTheme()
+  const { config } = useTenant()
   const { data } = useWebSettings()
   const update = useUpdateWebSettings()
 
@@ -69,6 +72,11 @@ export default function MiWebContenidoScreen() {
 
   const guardar = useCallback(async () => {
     if (!data) return
+    const whatsappCheck = checkPhone(whatsapp, config.locale.country)
+    if (whatsappCheck.error) {
+      Alert.alert('WhatsApp no válido', whatsappCheck.error)
+      return
+    }
     setGuardando(true)
     try {
       await update.mutateAsync({
@@ -81,7 +89,7 @@ export default function MiWebContenidoScreen() {
           marqueeSpeed: Math.max(5, parseInt(marqueeSpeed, 10) || 30),
           heroVideoUrl: emptyToNull(heroVideoUrl),
           salonVideoUrl: emptyToNull(salonVideoUrl),
-          whatsapp: emptyToNull(whatsapp),
+          whatsapp: whatsappCheck.phone,
           instagram: emptyToNull(instagram),
           facebook: emptyToNull(facebook),
           tiktok: emptyToNull(tiktok),
@@ -119,6 +127,7 @@ export default function MiWebContenidoScreen() {
     tiktok,
     update,
     whatsapp,
+    config.locale.country,
   ])
 
   const syncHeader = useWebSaveHeader(navigation, {

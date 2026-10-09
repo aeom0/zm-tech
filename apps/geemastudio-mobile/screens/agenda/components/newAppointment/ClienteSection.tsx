@@ -2,7 +2,15 @@ import React, { useMemo, useState } from 'react'
 import { View, TextInput, Pressable } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 
+import { FieldNote } from '@/components/FormField'
 import { ThemedText } from '@/components/ThemedText'
+import { useTenant } from '@/contexts/TenantContext'
+import {
+  checkDocument,
+  checkPhone,
+  documentPlaceholder,
+  phonePlaceholder,
+} from '@/lib/clientFields'
 import { Spacing } from '@/constants/theme'
 
 import { useAgendaClients, type AgendaClientOption } from '../../hooks/useAgendaClients'
@@ -26,20 +34,24 @@ export function ClienteSection({
   clientLabel = 'Clienta',
 }: ClienteSectionProps) {
   const { data: clients = [] } = useAgendaClients()
+  const country = useTenant().config.locale.country
+  const phoneCheck = checkPhone(formData.clientPhone, country)
+  const documentCheck = checkDocument(formData.clientDocument, country)
   const [isFocused, setIsFocused] = useState(false)
 
   const suggestions = useMemo(() => {
     const query = formData.clientName.trim().toUpperCase()
     if (!query) return []
-    return clients
-      .filter((c) => c.name.toUpperCase().includes(query))
-      .slice(0, MAX_SUGGESTIONS)
+    return clients.filter((c) => c.name.toUpperCase().includes(query)).slice(0, MAX_SUGGESTIONS)
   }, [clients, formData.clientName])
 
   const showSuggestions =
     isFocused &&
     suggestions.length > 0 &&
-    !(suggestions.length === 1 && suggestions[0].name.toUpperCase() === formData.clientName.trim().toUpperCase())
+    !(
+      suggestions.length === 1 &&
+      suggestions[0].name.toUpperCase() === formData.clientName.trim().toUpperCase()
+    )
 
   const selectClient = (client: AgendaClientOption) => {
     setFormData((prev) => ({
@@ -112,32 +124,35 @@ export function ClienteSection({
           {
             backgroundColor: theme.backgroundSecondary,
             color: theme.text,
-            borderColor: theme.border,
+            borderColor: phoneCheck.error ? theme.error : theme.border,
             marginTop: Spacing.sm,
           },
         ]}
-        placeholder="Teléfono (opcional)"
+        placeholder={`Teléfono (opcional), ej. ${phonePlaceholder(country)}`}
         placeholderTextColor={theme.textMuted}
         value={formData.clientPhone}
         keyboardType="phone-pad"
         onChangeText={(text) => setFormData((prev) => ({ ...prev, clientPhone: text }))}
       />
+      <FieldNote error={phoneCheck.error} hint={phoneCheck.hint} />
       <TextInput
         style={[
           styles.input,
           {
             backgroundColor: theme.backgroundSecondary,
             color: theme.text,
-            borderColor: theme.border,
+            borderColor: documentCheck.error ? theme.error : theme.border,
             marginTop: Spacing.sm,
           },
         ]}
-        placeholder="DNI (opcional)"
+        placeholder={`${documentPlaceholder(country)} (opcional)`}
         placeholderTextColor={theme.textMuted}
         value={formData.clientDocument}
-        keyboardType="number-pad"
+        autoCapitalize="characters"
+        autoCorrect={false}
         onChangeText={(text) => setFormData((prev) => ({ ...prev, clientDocument: text }))}
       />
+      <FieldNote error={documentCheck.error} hint={documentCheck.hint} />
     </View>
   )
 }

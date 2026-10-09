@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   ActivityIndicator,
   Alert,
@@ -17,10 +17,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { posChargeAmount, resolvePosFeePercent } from '@/lib/pos-fee'
 import { useAuth } from '@/contexts/AuthContext'
+import { FieldNote } from '@/components/FormField'
 import { useTenant } from '@/contexts/TenantContext'
+import { checkPhone, phonePlaceholder } from '@/lib/clientFields'
 import { useTheme } from '@/hooks/useTheme'
 import { BorderRadius, Spacing } from '@/constants/theme'
 import { formatCurrency } from '@/utils/format'
+import { useResetOnChange } from '@/hooks/useResetOnChange'
 import { ThemedText } from '@/components/ThemedText'
 import { useProfileTenantId } from '../hooks/useProfileTenantId'
 import type { FinancesAppointmentOption } from '../types'
@@ -104,10 +107,11 @@ export function ProductSaleModal({
   const total = selectedProduct ? Number(selectedProduct.price ?? 0) * parsedQuantity : 0
 
   const isPedido = !!selectedProduct && selectedProduct.quantity < parsedQuantity
-  const canSubmit = !!selectedProduct && !!clientName.trim() && total > 0
+  const phoneCheck = checkPhone(clientPhone, config.locale.country)
+  const canSubmit = !!selectedProduct && !!clientName.trim() && total > 0 && !phoneCheck.error
   const linkedAppointment = appointments.find((item) => item.id === appointmentId)
 
-  useEffect(() => {
+  useResetOnChange([visible, initialAppointmentId, initialClientName, initialClientPhone], () => {
     if (!visible) return
     setProductId('')
     setQuantity('1')
@@ -118,13 +122,13 @@ export function ProductSaleModal({
     setMethod('cash')
     setChargeNow(true)
     setNotes('')
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- reset solo al abrir
-  }, [visible, initialAppointmentId, initialClientName, initialClientPhone])
+  })
 
   const saveMutation = useMutation({
     mutationFn: async () => {
       if (!selectedProduct) throw new Error('Selecciona un producto')
       if (!clientName.trim()) throw new Error('Ingresa el nombre de la clienta')
+      if (phoneCheck.error) throw new Error(phoneCheck.error)
       if (total <= 0) throw new Error('El producto no tiene precio de venta')
       if (!tenantId) throw new Error('No se pudo identificar el negocio')
 
@@ -139,7 +143,7 @@ export function ProductSaleModal({
           quantity: parsedQuantity,
           unit_price: total / parsedQuantity,
           client_name: clientName.trim(),
-          client_phone: clientPhone.trim() || null,
+          client_phone: phoneCheck.phone,
           source: 'salon',
           notes: notes.trim() || null,
           status,
@@ -356,14 +360,22 @@ export function ProductSaleModal({
                 Vinculada a la cita · elige «Sin cita» para escribir otro nombre
               </ThemedText>
             ) : (
-              <TextInput
-                style={[styles.input, inputStyle, { marginTop: Spacing.sm }]}
-                value={clientPhone}
-                onChangeText={setClientPhone}
-                placeholder="Teléfono (opcional)"
-                placeholderTextColor={theme.textMuted}
-                keyboardType="phone-pad"
-              />
+              <>
+                <TextInput
+                  style={[
+                    styles.input,
+                    inputStyle,
+                    { marginTop: Spacing.sm },
+                    phoneCheck.error ? { borderColor: theme.error } : null,
+                  ]}
+                  value={clientPhone}
+                  onChangeText={setClientPhone}
+                  placeholder={`Teléfono (opcional), ej. ${phonePlaceholder(config.locale.country)}`}
+                  placeholderTextColor={theme.textMuted}
+                  keyboardType="phone-pad"
+                />
+                <FieldNote error={phoneCheck.error} hint={phoneCheck.hint} />
+              </>
             )}
 
             <View
