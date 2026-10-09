@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import { Feather } from '@expo/vector-icons'
+import { useHeaderHeight } from '@react-navigation/elements'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { WEEK_DAYS } from '@geemastudio/shared-schema'
 
@@ -24,6 +25,7 @@ function EquipoDisponibilidad({ mode }: { mode: Mode }) {
   const { theme } = useTheme()
   const { config } = useTenant()
   const insets = useSafeAreaInsets()
+  const headerHeight = useHeaderHeight()
   const staffSingular = config.terminology.staffSingular || 'Profesional'
 
   const employeesQuery = useEmployeesQuery()
@@ -48,7 +50,8 @@ function EquipoDisponibilidad({ mode }: { mode: Mode }) {
     return map
   }, [shifts.data])
 
-  const loading = employeesQuery.isLoading || (mode === 'horarios' ? shifts.isLoading : svc.isLoading)
+  const loading =
+    employeesQuery.isLoading || (mode === 'horarios' ? shifts.isLoading : svc.isLoading)
   const failed = mode === 'horarios' ? shifts.isError : svc.isError
 
   const summary = (id: string): string => {
@@ -62,7 +65,7 @@ function EquipoDisponibilidad({ mode }: { mode: Mode }) {
 
   return (
     <View style={[styles.root, { backgroundColor: theme.backgroundRoot }]}>
-      <ScrollView contentContainerStyle={av.content}>
+      <ScrollView contentContainerStyle={[av.content, { paddingTop: headerHeight + Spacing.lg }]}>
         <ThemedText type="small" style={{ color: theme.textMuted }}>
           {mode === 'horarios'
             ? `Toca ${staffSingular.toLowerCase()} para editar sus días y turnos.`
@@ -71,7 +74,9 @@ function EquipoDisponibilidad({ mode }: { mode: Mode }) {
         {loading ? (
           <ActivityIndicator color={theme.primary} />
         ) : failed ? (
-          <AvailabilityNote kind="error">No se pudo cargar la información del equipo.</AvailabilityNote>
+          <AvailabilityNote kind="error">
+            No se pudo cargar la información del equipo.
+          </AvailabilityNote>
         ) : (
           employees.map((e) => {
             const days = daysById.get(e.id)
@@ -80,7 +85,11 @@ function EquipoDisponibilidad({ mode }: { mode: Mode }) {
                 key={e.id}
                 onPress={() => setEditing({ id: e.id, name: e.name })}
                 accessibilityRole="button"
-                style={[av.card, av.row, { borderColor: theme.border, backgroundColor: theme.backgroundDefault }]}
+                style={[
+                  av.card,
+                  av.row,
+                  { borderColor: theme.border, backgroundColor: theme.backgroundDefault },
+                ]}
               >
                 <View style={av.grow}>
                   <ThemedText style={av.title}>{e.name}</ThemedText>
@@ -101,7 +110,10 @@ function EquipoDisponibilidad({ mode }: { mode: Mode }) {
                           >
                             <ThemedText
                               type="small"
-                              style={{ color: on ? theme.primary : theme.textMuted, fontWeight: '600' }}
+                              style={{
+                                color: on ? theme.primary : theme.textMuted,
+                                fontWeight: '600',
+                              }}
                             >
                               {d.short}
                             </ThemedText>
@@ -142,9 +154,17 @@ function EquipoDisponibilidad({ mode }: { mode: Mode }) {
           <View style={[styles.root, { paddingBottom: insets.bottom }]}>
             {editing &&
               (mode === 'horarios' ? (
-                <HorarioTab key={editing.id} employeeId={editing.id} staffSingular={staffSingular} />
+                <HorarioTab
+                  key={editing.id}
+                  employeeId={editing.id}
+                  staffSingular={staffSingular}
+                />
               ) : (
-                <ServiciosTab key={editing.id} employeeId={editing.id} staffSingular={staffSingular} />
+                <ServiciosTab
+                  key={editing.id}
+                  employeeId={editing.id}
+                  staffSingular={staffSingular}
+                />
               ))}
           </View>
         </View>

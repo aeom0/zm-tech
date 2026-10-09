@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
+import { useHeaderHeight } from '@react-navigation/elements'
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
 import { ThemedText } from '@/components/ThemedText'
@@ -25,15 +26,21 @@ const TABS: { key: TabKey; label: string }[] = [
 export default function DisponibilidadPersonalScreen({ route }: Props) {
   const { employeeId, employeeName } = route.params
   const { theme } = useTheme()
+  const headerHeight = useHeaderHeight()
   const { config } = useTenant()
   const staffSingular = config.terminology.staffSingular || 'Profesional'
   const [tab, setTab] = useState<TabKey>('servicios')
 
   return (
     <View style={[styles.root, { backgroundColor: theme.backgroundRoot }]}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: headerHeight + Spacing.md }]}>
         <ThemedText type="h4">{employeeName}</ThemedText>
-        <View style={[styles.segment, { borderColor: theme.border, backgroundColor: theme.backgroundSecondary }]}>
+        <View
+          style={[
+            styles.segment,
+            { borderColor: theme.border, backgroundColor: theme.backgroundSecondary },
+          ]}
+        >
           {TABS.map((t) => {
             const active = tab === t.key
             return (
@@ -46,7 +53,10 @@ export default function DisponibilidadPersonalScreen({ route }: Props) {
               >
                 <ThemedText
                   type="small"
-                  style={{ color: active ? theme.buttonText : theme.textSecondary, fontWeight: '600' }}
+                  style={{
+                    color: active ? theme.buttonText : theme.textSecondary,
+                    fontWeight: '600',
+                  }}
                 >
                   {t.label}
                 </ThemedText>
@@ -56,7 +66,9 @@ export default function DisponibilidadPersonalScreen({ route }: Props) {
         </View>
       </View>
 
-      {tab === 'servicios' && <ServiciosTab employeeId={employeeId} staffSingular={staffSingular} />}
+      {tab === 'servicios' && (
+        <ServiciosTab employeeId={employeeId} staffSingular={staffSingular} />
+      )}
       {tab === 'horario' && <HorarioTab employeeId={employeeId} staffSingular={staffSingular} />}
       {tab === 'ausencias' && (
         <AusenciasTab
