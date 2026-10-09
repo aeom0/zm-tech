@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
 import { supabase } from '@/lib/supabase'
@@ -63,11 +63,17 @@ export function useClientsData(
   const tenantTimezone = config.locale.timezone
   const queryEnabled = !tenantLoading && !!tenantId
 
+  // Con búsqueda activa se consulta la BD: el listado base solo trae los CLIENTS_FETCH_LIMIT más recientes.
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+  useEffect(() => {
+    const id = setTimeout(() => setDebouncedSearch(searchQuery.trim()), 300)
+    return () => clearTimeout(id)
+  }, [searchQuery])
+  // Se quitan caracteres que rompen el filtro .or() de PostgREST.
+  const serverSearch = debouncedSearch.replace(/[,()%*\\]/g, ' ').trim()
+
   const monthStartIso = useMemo(() => {
-    return formatAppointmentWallclock(
-      inicioMesActualEnZonaIANA(tenantTimezone),
-      tenantTimezone
-    )
+    return formatAppointmentWallclock(inicioMesActualEnZonaIANA(tenantTimezone), tenantTimezone)
   }, [tenantTimezone])
 
   const {
@@ -78,15 +84,21 @@ export function useClientsData(
     isError: clientsError,
     refetch: refetchClients,
   } = useQuery<Client[]>({
-    queryKey: ['clients', tenantId],
+    queryKey: ['clients', tenantId, serverSearch],
     enabled: queryEnabled,
     staleTime: 5 * 60_000,
     refetchOnWindowFocus: false,
+    placeholderData: (previous) => previous,
     queryFn: async () => {
-      const { data, error } = await supabase
+      let request = supabase
         .from('clients')
         .select('id, name, phone, email, notes, created_at')
         .eq('tenant_id', tenantId)
+      if (serverSearch.length > 0) {
+        const term = `%${serverSearch}%`
+        request = request.or(`name.ilike.${term},phone.ilike.${term},email.ilike.${term}`)
+      }
+      const { data, error } = await request
         .order('created_at', { ascending: false })
         .limit(CLIENTS_FETCH_LIMIT)
 
@@ -178,109 +190,110 @@ export function useClientsData(
   // Referencia temporal pura: momento de la última carga de datos (evita Date.now() en render).
   const now = Math.max(clientsUpdatedAt, aptsUpdatedAt, paymentsUpdatedAt)
 
-  const { clientsWithMetrics, kpis }: { clientsWithMetrics: ClientWithMetrics[]; kpis: ClientKPIs } =
-    useMemo(() => {
-      if (clients.length === 0) {
-        return { clientsWithMetrics: [], kpis: emptyKpis() }
+  const {
+    clientsWithMetrics,
+    kpis,
+  }: { clientsWithMetrics: ClientWithMetrics[]; kpis: ClientKPIs } = useMemo(() => {
+    if (clients.length === 0) {
+      return { clientsWithMetrics: [], kpis: emptyKpis() }
+    }
+
+    const appointmentsByClient: Record<string, RawAppointment[]> = {}
+    const paymentsByAppointment: Record<string, number> = {}
+
+    for (const apt of appointments) {
+      const clientId = apt.client_id
+      if (!clientId) continue
+      if (!appointmentsByClient[clientId]) {
+        appointmentsByClient[clientId] = []
       }
+      appointmentsByClient[clientId].push(apt)
+    }
 
-      const appointmentsByClient: Record<string, RawAppointment[]> = {}
-      const paymentsByAppointment: Record<string, number> = {}
+    for (const p of payments) {
+      const aptId = p.appointment_id
+      if (!aptId) continue
+      const amt = parseFloat(p.amount)
+      if (Number.isNaN(amt)) continue
+      paymentsByAppointment[aptId] = (paymentsByAppointment[aptId] ?? 0) + amt
+    }
 
-      for (const apt of appointments) {
-        const clientId = apt.client_id
-        if (!clientId) continue
-        if (!appointmentsByClient[clientId]) {
-          appointmentsByClient[clientId] = []
+    const clientsWithMetricsLocal: ClientWithMetrics[] = clients.map((client) => {
+      const completedApts = appointmentsByClient[client.id] ?? []
+
+      let totalSpent = 0
+      let lastVisitDate: string | null = null
+      const serviceFrequency: Record<string, number> = {}
+
+      for (const apt of completedApts) {
+        if (!lastVisitDate || apt.date > lastVisitDate) {
+          lastVisitDate = apt.date
         }
-        appointmentsByClient[clientId].push(apt)
-      }
 
-      for (const p of payments) {
-        const aptId = p.appointment_id
-        if (!aptId) continue
-        const amt = parseFloat(p.amount)
-        if (Number.isNaN(amt)) continue
-        paymentsByAppointment[aptId] = (paymentsByAppointment[aptId] ?? 0) + amt
-      }
-
-      const clientsWithMetricsLocal: ClientWithMetrics[] = clients.map((client) => {
-        const completedApts = appointmentsByClient[client.id] ?? []
-
-        let totalSpent = 0
-        let lastVisitDate: string | null = null
-        const serviceFrequency: Record<string, number> = {}
-
-        for (const apt of completedApts) {
-          if (!lastVisitDate || apt.date > lastVisitDate) {
-            lastVisitDate = apt.date
-          }
-
-          const paid = paymentsByAppointment[apt.id]
-          if (paid != null) {
-            totalSpent += paid
-          } else {
-            const price = parseFloat(apt.price)
-            if (!Number.isNaN(price)) {
-              totalSpent += price
-            }
-          }
-
-          if (apt.service_id) {
-            serviceFrequency[apt.service_id] = (serviceFrequency[apt.service_id] ?? 0) + 1
+        const paid = paymentsByAppointment[apt.id]
+        if (paid != null) {
+          totalSpent += paid
+        } else {
+          const price = parseFloat(apt.price)
+          if (!Number.isNaN(price)) {
+            totalSpent += price
           }
         }
 
-        const totalVisits = completedApts.length
-        const daysSinceLastVisit =
-          lastVisitDate != null
-            ? Math.floor(
-                (now - instanteCitaDesdeTexto(lastVisitDate, tenantTimezone).getTime()) /
-                  (1000 * 60 * 60 * 24)
-              )
-            : null
-
-        const [favServiceId] =
-          Object.entries(serviceFrequency).sort((a, b) => b[1] - a[1])[0] ?? []
-
-        return {
-          ...client,
-          total_visits: totalVisits,
-          total_spent: totalSpent,
-          last_visit_date: lastVisitDate,
-          favorite_service: favServiceId ?? null,
-          days_since_last_visit: daysSinceLastVisit,
-          is_vip: totalVisits >= VIP_VISITS || totalSpent >= VIP_SPEND,
-          is_new:
-            lastVisitDate != null &&
-            now - instanteCitaDesdeTexto(lastVisitDate, tenantTimezone).getTime() <
-              NEW_DAYS * 24 * 60 * 60 * 1000,
-          is_at_risk: daysSinceLastVisit != null && daysSinceLastVisit > AT_RISK_DAYS,
+        if (apt.service_id) {
+          serviceFrequency[apt.service_id] = (serviceFrequency[apt.service_id] ?? 0) + 1
         }
-      })
+      }
 
-      const totalClients = Math.max(clientsWithMetricsLocal.length, totalCount ?? 0)
-      const activeThisMonth = clientsWithMetricsLocal.filter(
-        (c) => c.last_visit_date != null && c.last_visit_date >= monthStartIso
-      ).length
-      const vipClients = clientsWithMetricsLocal.filter((c) => c.total_visits >= VIP_VISITS).length
-      const atRiskClients = clientsWithMetricsLocal.filter(
-        (c) => c.days_since_last_visit != null && c.days_since_last_visit > AT_RISK_DAYS
-      ).length
-      const totalRevenue = clientsWithMetricsLocal.reduce((sum, c) => sum + c.total_spent, 0)
-      const totalVisits = clientsWithMetricsLocal.reduce((sum, c) => sum + c.total_visits, 0)
+      const totalVisits = completedApts.length
+      const daysSinceLastVisit =
+        lastVisitDate != null
+          ? Math.floor(
+              (now - instanteCitaDesdeTexto(lastVisitDate, tenantTimezone).getTime()) /
+                (1000 * 60 * 60 * 24)
+            )
+          : null
+
+      const [favServiceId] = Object.entries(serviceFrequency).sort((a, b) => b[1] - a[1])[0] ?? []
 
       return {
-        clientsWithMetrics: clientsWithMetricsLocal,
-        kpis: {
-          total_clients: totalClients,
-          active_this_month: activeThisMonth,
-          vip_count: vipClients,
-          at_risk_count: atRiskClients,
-          avg_ticket: totalVisits > 0 ? totalRevenue / totalVisits : 0,
-        },
+        ...client,
+        total_visits: totalVisits,
+        total_spent: totalSpent,
+        last_visit_date: lastVisitDate,
+        favorite_service: favServiceId ?? null,
+        days_since_last_visit: daysSinceLastVisit,
+        is_vip: totalVisits >= VIP_VISITS || totalSpent >= VIP_SPEND,
+        is_new:
+          lastVisitDate != null &&
+          now - instanteCitaDesdeTexto(lastVisitDate, tenantTimezone).getTime() <
+            NEW_DAYS * 24 * 60 * 60 * 1000,
+        is_at_risk: daysSinceLastVisit != null && daysSinceLastVisit > AT_RISK_DAYS,
       }
-    }, [clients, appointments, payments, monthStartIso, tenantTimezone, totalCount, now])
+    })
+
+    const totalClients = Math.max(clientsWithMetricsLocal.length, totalCount ?? 0)
+    const activeThisMonth = clientsWithMetricsLocal.filter(
+      (c) => c.last_visit_date != null && c.last_visit_date >= monthStartIso
+    ).length
+    const vipClients = clientsWithMetricsLocal.filter((c) => c.total_visits >= VIP_VISITS).length
+    const atRiskClients = clientsWithMetricsLocal.filter(
+      (c) => c.days_since_last_visit != null && c.days_since_last_visit > AT_RISK_DAYS
+    ).length
+    const totalRevenue = clientsWithMetricsLocal.reduce((sum, c) => sum + c.total_spent, 0)
+    const totalVisits = clientsWithMetricsLocal.reduce((sum, c) => sum + c.total_visits, 0)
+
+    return {
+      clientsWithMetrics: clientsWithMetricsLocal,
+      kpis: {
+        total_clients: totalClients,
+        active_this_month: activeThisMonth,
+        vip_count: vipClients,
+        at_risk_count: atRiskClients,
+        avg_ticket: totalVisits > 0 ? totalRevenue / totalVisits : 0,
+      },
+    }
+  }, [clients, appointments, payments, monthStartIso, tenantTimezone, totalCount, now])
 
   const filteredClients = useMemo(() => {
     const normalizedSearch = searchQuery.trim().toLowerCase()

@@ -4,7 +4,7 @@ import { StyleSheet, Pressable } from 'react-native'
 import { ThemedText } from '@/components/ThemedText'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTheme } from '@/hooks/useTheme'
-import { Spacing, BorderRadius, Colors } from '@/constants/theme'
+import { Spacing, BorderRadius } from '@/constants/theme'
 import type { ClientSegment } from '../types'
 
 interface Props {
