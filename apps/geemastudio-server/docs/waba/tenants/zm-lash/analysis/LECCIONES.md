@@ -581,4 +581,14 @@ Datos de catálogo en prod (sin migración): pack "Lifting + Tinturado" desactiv
 
 ---
 
+## Cerrados 9-oct 2026 — reporte 2026-10-06
+
+| Patrón | Qué era | Resolución | QA / refs |
+| ------ | ------- | ---------- | --------- |
+| [P1 2026-10-06] Botón "Agendar" de retoque con servicio inactivo (`…9705`) | `loadOfferContext` no validaba que el servicio ofrecido siguiera activo: "tu servicio" + carrito vacío | Rama "ese servicio ya no lo tenemos disponible" + catálogo; la plantilla no se envía si el servicio está inactivo | `69a5b96` (6-oct 17:26 Lima); sin reincidencia 7–9-oct |
+| [P2 2026-10-06] Pack de 2: "Hola" como nombre de acompañante y re-pregunta sin tope (`…0632`, `…5630`) | `looksLikePersonName` aceptaba saludos; `resumeCompanionAskIfNeeded` sin límite | Saludos/acks rechazados; máx. 2 re-preguntas | `5cca037` (6-oct 17:30 Lima); sin tráfico para ejercerlo 7–9-oct |
+| Nudge ads-bounce con copy de pestañas a clientas de uñas | `faeace5` (6-oct 17:34 Lima) pide a Haiku el copy por rubro | 🔴 **no cerrado**: 4/4 hilos de uñas 7–8-oct siguen recibiendo el copy de `waba_config` (ver reporte 2026-10-09 [P1]) | — |
+
+---
+
 _Actualizar esta tabla al cerrar Quick Wins del reporte vivo; no reabrir reportes borrados._
