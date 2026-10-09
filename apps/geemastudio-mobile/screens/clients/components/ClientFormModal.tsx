@@ -14,7 +14,16 @@ import {
 import { Feather } from '@expo/vector-icons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
+import { FormField } from '@/components/FormField'
 import { ThemedText } from '@/components/ThemedText'
+import { useTenant } from '@/contexts/TenantContext'
+import {
+  checkDocument,
+  checkEmail,
+  checkPhone,
+  documentPlaceholder,
+  phonePlaceholder,
+} from '@/lib/clientFields'
 import { useResetOnChange } from '@/hooks/useResetOnChange'
 import { useTheme } from '@/hooks/useTheme'
 import { Spacing, BorderRadius, Colors } from '@/constants/theme'
@@ -32,9 +41,11 @@ interface Props {
 export function ClientFormModal({ visible, mode, initial, saving, onClose, onSave }: Props) {
   const { theme } = useTheme()
   const insets = useSafeAreaInsets()
+  const country = useTenant().config.locale.country
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
   const [email, setEmail] = useState('')
+  const [dni, setDni] = useState('')
   const [notes, setNotes] = useState('')
 
   useResetOnChange([visible, initial], () => {
@@ -42,15 +53,25 @@ export function ClientFormModal({ visible, mode, initial, saving, onClose, onSav
     setName(initial?.name ?? '')
     setPhone(initial?.phone ?? '')
     setEmail(initial?.email ?? '')
+    setDni(initial?.dni ?? '')
     setNotes(initial?.notes ?? '')
   })
+
+  const phoneCheck = checkPhone(phone, country)
+  const emailCheck = checkEmail(email)
+  const documentCheck = checkDocument(dni, country)
 
   const handleSave = () => {
     if (!name.trim()) {
       Alert.alert('Falta el nombre', 'Escribe el nombre del cliente.')
       return
     }
-    onSave({ name, phone, email, notes })
+    const firstError = phoneCheck.error ?? documentCheck.error ?? emailCheck.error
+    if (firstError) {
+      Alert.alert('Revisa los datos', firstError)
+      return
+    }
+    onSave({ name, phone, email, dni, notes })
   }
 
   return (
@@ -86,30 +107,40 @@ export function ClientFormModal({ visible, mode, initial, saving, onClose, onSav
               keyboardShouldPersistTaps="handled"
               contentContainerStyle={{ gap: Spacing.md, paddingBottom: Spacing.xl }}
             >
-              <Field
+              <FormField
                 label="Nombre"
                 value={name}
                 onChangeText={setName}
                 placeholder="Nombre completo"
                 autoCapitalize="words"
-                theme={theme}
               />
-              <Field
+              <FormField
                 label="Teléfono"
                 value={phone}
                 onChangeText={setPhone}
-                placeholder="Ej. 4141234567"
+                placeholder={`Ej. ${phonePlaceholder(country)}`}
                 keyboardType="phone-pad"
-                theme={theme}
+                error={phoneCheck.error}
+                hint={phoneCheck.hint}
               />
-              <Field
+              <FormField
                 label="Correo"
                 value={email}
                 onChangeText={setEmail}
                 placeholder="opcional"
                 keyboardType="email-address"
                 autoCapitalize="none"
-                theme={theme}
+                error={emailCheck.error}
+              />
+              <FormField
+                label="Documento (DNI, CE o cédula)"
+                value={dni}
+                onChangeText={setDni}
+                placeholder={documentPlaceholder(country)}
+                autoCapitalize="characters"
+                autoCorrect={false}
+                error={documentCheck.error}
+                hint={documentCheck.hint}
               />
               <View>
                 <ThemedText style={[styles.label, { color: theme.textMuted }]}>Notas</ThemedText>
@@ -134,7 +165,10 @@ export function ClientFormModal({ visible, mode, initial, saving, onClose, onSav
             </ScrollView>
 
             <Pressable
-              style={[styles.saveBtn, { backgroundColor: theme.primary, opacity: saving ? 0.7 : 1 }]}
+              style={[
+                styles.saveBtn,
+                { backgroundColor: theme.primary, opacity: saving ? 0.7 : 1 },
+              ]}
               onPress={handleSave}
               disabled={saving}
             >
@@ -150,33 +184,6 @@ export function ClientFormModal({ visible, mode, initial, saving, onClose, onSav
         </View>
       </KeyboardAvoidingView>
     </Modal>
-  )
-}
-
-function Field({
-  label,
-  theme,
-  ...inputProps
-}: {
-  label: string
-  theme: { text: string; textMuted: string; backgroundSecondary: string; border: string }
-} & React.ComponentProps<typeof TextInput>) {
-  return (
-    <View>
-      <ThemedText style={[styles.label, { color: theme.textMuted }]}>{label}</ThemedText>
-      <TextInput
-        {...inputProps}
-        style={[
-          styles.input,
-          {
-            color: theme.text,
-            backgroundColor: theme.backgroundSecondary,
-            borderColor: theme.border,
-          },
-        ]}
-        placeholderTextColor={theme.textMuted}
-      />
-    </View>
   )
 }
 

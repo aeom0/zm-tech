@@ -100,12 +100,14 @@ export function useClientsData(
     queryFn: async () => {
       let request = supabase
         .from('clients')
-        .select('id, name, phone, email, notes, created_at')
+        .select('id, name, phone, email, dni, notes, created_at')
         .eq('tenant_id', tenantId)
       if (serverSearch.length > 0) {
         // ilike distingue acentos: las letras acentuables van como comodín y foldText afina en cliente.
         const term = `%${serverSearch.replace(/[aeiounáéíóúüñ]/gi, '_')}%`
-        request = request.or(`name.ilike.${term},phone.ilike.${term},email.ilike.${term}`)
+        request = request.or(
+          `name.ilike.${term},phone.ilike.${term},email.ilike.${term},dni.ilike.${term}`
+        )
       }
       const { data, error } = await request
         .order('created_at', { ascending: false })
@@ -313,7 +315,8 @@ export function useClientsData(
         return (
           foldText(c.name).includes(normalizedSearch) ||
           foldText(c.phone ?? '').includes(normalizedSearch) ||
-          foldText(c.email ?? '').includes(normalizedSearch)
+          foldText(c.email ?? '').includes(normalizedSearch) ||
+          foldText(c.dni ?? '').includes(normalizedSearch)
         )
       })
     }

@@ -11,7 +11,9 @@ export function normalizePersonName(name: string): string {
   return name.trim().replace(/\s+/g, ' ').toUpperCase()
 }
 
-function splitCountryAndNumber(cleaned: string): { country: string; normalized: string } | null {
+export function splitCountryAndNumber(
+  cleaned: string
+): { country: string; normalized: string } | null {
   let country = 'PE'
   let number = cleaned
 

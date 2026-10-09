@@ -7,6 +7,7 @@ import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { Spacing, BorderRadius, Colors } from '@/constants/theme'
 import { useTenant } from '@/contexts/TenantContext'
+import { checkDocument, checkPhone } from '@/lib/clientFields'
 import { formatCurrency } from '@/utils/format'
 import { ClientAppointmentRow } from './ClientAppointmentRow'
 import { ClientFormModal } from './ClientFormModal'
@@ -104,6 +105,7 @@ export function ClientDetailModal({
                 <ThemedText style={[styles.subtitle, { color: theme.textSecondary }]}>
                   {client.phone?.trim() || 'Sin teléfono'}
                   {client.email?.trim() ? ` · ${client.email}` : ''}
+                  {client.dni?.trim() ? ` · ${client.dni}` : ''}
                 </ThemedText>
               </View>
               <Pressable
@@ -272,6 +274,7 @@ export function ClientDetailModal({
           name: client.name,
           phone: client.phone ?? '',
           email: client.email ?? '',
+          dni: client.dni ?? '',
           notes: client.notes ?? '',
         }}
         saving={updateMutation.isPending}
@@ -283,8 +286,9 @@ export function ClientDetailModal({
               onSuccess: () => {
                 onClientUpdated?.({
                   name: payload.name.trim(),
-                  phone: payload.phone.trim(),
+                  phone: checkPhone(payload.phone, country).phone ?? '',
                   email: payload.email.trim() || null,
+                  dni: checkDocument(payload.dni, country).value,
                   notes: payload.notes.trim() || null,
                 })
                 setEditVisible(false)

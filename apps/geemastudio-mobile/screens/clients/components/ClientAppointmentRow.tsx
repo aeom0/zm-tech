@@ -23,10 +23,10 @@ export function ClientAppointmentRow({ appointment }: Props) {
   const dateLabel = instanteCitaDesdeTexto(date, config.locale.timezone).toLocaleString(
     config.locale.language,
     {
-    day: 'numeric',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
+      day: 'numeric',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
       hour12: config.locale.timeFormat === '12',
       timeZone: zonaIANASegura(config.locale.timezone),
     }

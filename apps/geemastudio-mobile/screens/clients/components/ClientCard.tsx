@@ -9,11 +9,7 @@ import type { ClientWithMetrics, ClientSegment } from '../types'
 import { useTenant } from '@/contexts/TenantContext'
 import { formatCurrency } from '@/utils/format'
 import { instanteCitaDesdeTexto, zonaIANASegura } from '@zmtech/tenant-config'
-import {
-  buildWhatsAppUrl,
-  openExternalUrl,
-  reengageMessage,
-} from '../utils/phoneContact'
+import { buildWhatsAppUrl, openExternalUrl, reengageMessage } from '../utils/phoneContact'
 
 interface Props {
   client: ClientWithMetrics
@@ -60,8 +56,8 @@ export function ClientCard({ client, segment: _segment, onPress }: Props) {
     ? instanteCitaDesdeTexto(client.last_visit_date, config.locale.timezone).toLocaleDateString(
         config.locale.language,
         {
-        day: 'numeric',
-        month: 'short',
+          day: 'numeric',
+          month: 'short',
           timeZone: zonaIANASegura(config.locale.timezone),
         }
       )

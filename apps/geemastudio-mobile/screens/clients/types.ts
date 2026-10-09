@@ -3,6 +3,8 @@ export interface Client {
   name: string
   phone: string
   email?: string | null
+  /** DNI, CE o cédula: la BD guarda un solo campo `dni` sin tipo de documento. */
+  dni?: string | null
   notes?: string | null
   created_at: string
 }
