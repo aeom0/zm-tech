@@ -15,6 +15,7 @@ import { useSalonHolidays } from '@/hooks/useSalonHolidays'
 import { ErrorState } from '@/components/ErrorState'
 import { HolidayAlertBanner } from '@/components/HolidayAlertBanner'
 import { useTenant } from '@/contexts/TenantContext'
+import { checkDocument, checkPhone } from '@/lib/clientFields'
 import { useAuth } from '@/contexts/AuthContext'
 import { Spacing } from '@/constants/theme'
 import {
@@ -101,7 +102,7 @@ export default function AgendaScreen() {
   const [modalVisible, setModalVisible] = useState(false)
   const [detailModalVisible, setDetailModalVisible] = useState(false)
   const [productSaleVisible, setProductSaleVisible] = useState(false)
-  const [appointmentDetail, setAppointmentDetail] = useState<AgendaAppointment | null>(null)
+  const [appointmentDetailRaw, setAppointmentDetail] = useState<AgendaAppointment | null>(null)
   const [previewModalVisible, setPreviewModalVisible] = useState(false)
   const [previewAppointment, setPreviewAppointment] = useState<AgendaAppointment | null>(null)
   const [rescheduleDate, setRescheduleDate] = useState<Date | null>(null)
@@ -153,6 +154,19 @@ export default function AgendaScreen() {
     packs,
     packsLoading,
   } = useAgendaQueries()
+
+  /**
+   * `appointmentDetailRaw` es la copia local (para no perder la selección al re-render);
+   * se resuelve contra la fila fresca de `appointments` cuando invalida una query
+   * (p. ej. tras subir una foto de referencia o marcarla revisada), sin cerrar el modal.
+   */
+  const appointmentDetail = useMemo(
+    () =>
+      appointmentDetailRaw
+        ? (appointments.find((a) => a.id === appointmentDetailRaw.id) ?? appointmentDetailRaw)
+        : null,
+    [appointments, appointmentDetailRaw]
+  )
 
   const { promotions, promotionItems, isLoading: promosLoading } = usePromosData()
   const activePromotions = useMemo(
@@ -230,19 +244,6 @@ export default function AgendaScreen() {
     markReferencesReviewedMutation,
   } = useAgendaMutations({ onCreateSuccess, onDeleteSuccess, onUpdateSuccess }, tenantTz, services)
 
-  /**
-   * `appointmentDetail` es una copia local (para no perder selección al re-render);
-   * la resincronizamos con la fila fresca de `appointments` cuando invalida una query
-   * (p. ej. tras subir una foto de referencia o marcarla revisada), sin cerrar el modal.
-   */
-  useEffect(() => {
-    if (!appointmentDetail) return
-    const fresh = appointments.find((a) => a.id === appointmentDetail.id)
-    if (fresh && fresh !== appointmentDetail) {
-      setAppointmentDetail(fresh)
-    }
-  }, [appointments, appointmentDetail])
-
   const getServiceName = useCallback(
     (serviceId: string) => services.find((s) => s.id === serviceId)?.name ?? 'Servicio',
     [services]
@@ -279,17 +280,26 @@ export default function AgendaScreen() {
   const appointmentIdParam = route.params?.appointmentId
   const prefillClient = route.params?.prefillClient
 
+  // Abre el detalle de la cita pedida por parámetro de navegación (ajuste de estado en render).
+  const [handledAppointmentParam, setHandledAppointmentParam] = useState<string | undefined>()
+  if (!appointmentIdParam && handledAppointmentParam) {
+    setHandledAppointmentParam(undefined)
+  }
+  if (appointmentIdParam && appointmentIdParam !== handledAppointmentParam) {
+    const apt = appointments.find((a) => a.id === appointmentIdParam)
+    if (apt) {
+      setHandledAppointmentParam(appointmentIdParam)
+      setAppointmentDetail(apt)
+      const aptInst = instanteCitaDesdeTexto(apt.date, tenantTz)
+      setRescheduleDate(inicioDiaDelInstanteEnZona(aptInst, tenantTz))
+      setRescheduleHour(horaCalendarioEnZona(aptInst, tenantTz))
+      setRescheduleMinute(minutosDelDiaEnZona(aptInst, tenantTz) % 60)
+      setDetailModalVisible(true)
+    }
+  }
+
   useEffect(() => {
     if (appointmentIdParam && appointments.length > 0) {
-      const apt = appointments.find((a) => a.id === appointmentIdParam)
-      if (apt) {
-        setAppointmentDetail(apt)
-        const aptInst = instanteCitaDesdeTexto(apt.date, tenantTz)
-        setRescheduleDate(inicioDiaDelInstanteEnZona(aptInst, tenantTz))
-        setRescheduleHour(horaCalendarioEnZona(aptInst, tenantTz))
-        setRescheduleMinute(minutosDelDiaEnZona(aptInst, tenantTz) % 60)
-        setDetailModalVisible(true)
-      }
       ;(
         navigation as unknown as {
           setParams: (p: { appointmentId?: string }) => void
@@ -298,8 +308,10 @@ export default function AgendaScreen() {
     }
   }, [appointmentIdParam, appointments, navigation, tenantTz])
 
-  useEffect(() => {
-    if (!prefillClient?.name) return
+  // Abre "Nueva cita" con la clienta pedida por parámetro de navegación (ajuste de estado en render).
+  const [handledPrefill, setHandledPrefill] = useState<typeof prefillClient>()
+  if (prefillClient?.name && prefillClient !== handledPrefill) {
+    setHandledPrefill(prefillClient)
     const today = inicioDiaHoyEnZonaIANA(tenantTz)
     const firstHour =
       agendaHours.find((h) =>
@@ -320,22 +332,17 @@ export default function AgendaScreen() {
       serviceLines: [],
     })
     setModalVisible(true)
+  }
+
+  useEffect(() => {
+    if (!prefillClient?.name) return
     ;(
       navigation as unknown as {
         setParams: (p: { prefillClient?: undefined }) => void
       }
     ).setParams({ prefillClient: undefined })
     void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
-  }, [
-    prefillClient,
-    tenantTz,
-    agendaHours,
-    businessHoursNorm,
-    holidayIndex,
-    categories,
-    employees,
-    navigation,
-  ])
+  }, [prefillClient, navigation])
 
   const changeWeek = (delta: number) => {
     setSelectedDate((prev) => sumarSemanasEnZonaIANA(prev, delta, tenantTz))
@@ -361,15 +368,10 @@ export default function AgendaScreen() {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
   }, [])
 
-  useEffect(() => {
-    if (ownerVista && ownerViewMode === 'week') {
-      setEmployeeColumnFilterId(null)
-    }
-  }, [ownerVista, ownerViewMode])
-
-  useEffect(() => {
-    if (staffVista) setEmployeeColumnFilterId(null)
-  }, [staffVista])
+  // El filtro por columna no aplica en vista semanal ni para staff: se limpia durante el render.
+  if (employeeColumnFilterId && ((ownerVista && ownerViewMode === 'week') || staffVista)) {
+    setEmployeeColumnFilterId(null)
+  }
 
   const openNewAppointment = (date: Date, hour: number, minute = 0) => {
     setSelectedDate(date)
@@ -498,6 +500,13 @@ export default function AgendaScreen() {
       Alert.alert('Error', 'Ingresa el nombre de la clienta')
       return
     }
+    const phoneCheck = checkPhone(formData.clientPhone, config.locale.country)
+    const documentCheck = checkDocument(formData.clientDocument, config.locale.country)
+    const fieldError = phoneCheck.error ?? documentCheck.error
+    if (fieldError) {
+      Alert.alert('Revisa los datos', fieldError)
+      return
+    }
     if (formData.serviceLines.length === 0) {
       Alert.alert('Error', 'Selecciona al menos un servicio')
       return
@@ -521,8 +530,8 @@ export default function AgendaScreen() {
     const appointmentDate = instanteCitaEnZona(selectedDate, selectedHour, tenantTz, selectedMinute)
     createMutation.mutate({
       client_name: formData.clientName.trim(),
-      client_phone: formData.clientPhone.trim() || undefined,
-      client_document: formData.clientDocument.trim() || undefined,
+      client_phone: phoneCheck.phone ?? undefined,
+      client_document: documentCheck.value ?? undefined,
       date: formatAppointmentWallclock(appointmentDate, tenantTz),
       status: 'scheduled',
       lines: formData.serviceLines,
@@ -555,13 +564,17 @@ export default function AgendaScreen() {
     tenantTz,
   ])
 
-  const rescheduleEmployeeIds = useMemo(() => {
-    const fromLines = (detailServiceLinesQuery.data ?? [])
-      .map((line) => line.employee_id)
-      .filter((id): id is string => !!id)
-    if (fromLines.length > 0) return fromLines
-    return appointmentDetail?.employee_id ? [appointmentDetail.employee_id] : []
-  }, [detailServiceLinesQuery.data, appointmentDetail?.employee_id])
+  const detailEmployeeId = appointmentDetail?.employee_id
+  const detailLinesData = detailServiceLinesQuery.data
+  const detailLineEmployeeIds = (detailLinesData ?? [])
+    .map((line) => line.employee_id)
+    .filter((id): id is string => !!id)
+  const rescheduleEmployeeIds =
+    detailLineEmployeeIds.length > 0
+      ? detailLineEmployeeIds
+      : detailEmployeeId
+        ? [detailEmployeeId]
+        : []
 
   const rescheduleAvailability = useAvailabilityCheck({
     employeeIds: rescheduleEmployeeIds,
@@ -586,15 +599,17 @@ export default function AgendaScreen() {
     return Math.max(104, Math.min(140, disponible / n))
   }, [width, employees.length, TIME_COL_W, insets.left, insets.right])
 
+  const profileFullName = profile?.full_name
+  const profileEmployeeId = profile?.employee_id
   const staffNombreMostrado = useMemo(() => {
-    const nombre = profile?.full_name?.trim()
+    const nombre = profileFullName?.trim()
     if (nombre) return nombre
-    if (profile?.employee_id) {
-      const emp = employees.find((e) => e.id === profile.employee_id)
+    if (profileEmployeeId) {
+      const emp = employees.find((e) => e.id === profileEmployeeId)
       if (emp?.name) return emp.name
     }
     return config.terminology.staffSingular
-  }, [profile?.full_name, profile?.employee_id, employees, config.terminology.staffSingular])
+  }, [profileFullName, profileEmployeeId, employees, config.terminology.staffSingular])
 
   const openNewAppointmentForStaff = useCallback(() => {
     const primeraHora =
