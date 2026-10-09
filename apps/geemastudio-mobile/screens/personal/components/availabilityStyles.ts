@@ -5,6 +5,7 @@ import { BorderRadius, Spacing } from '@/constants/theme'
 /** Estilos compartidos por las pestañas de disponibilidad (los colores vienen del tema). */
 export const av = StyleSheet.create({
   content: { padding: Spacing.lg, gap: Spacing.md, paddingBottom: Spacing['3xl'] },
+  footer: { paddingHorizontal: Spacing.lg, paddingTop: Spacing.sm, paddingBottom: Spacing.xl },
   card: { borderWidth: 1, borderRadius: BorderRadius.lg, padding: Spacing.lg, gap: Spacing.sm },
   row: { flexDirection: 'row', alignItems: 'center', gap: Spacing.sm },
   grow: { flex: 1 },

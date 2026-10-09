@@ -7,7 +7,12 @@ import { ThemedText } from '@/components/ThemedText'
 import { useResetOnChange } from '@/hooks/useResetOnChange'
 import { useTheme } from '@/hooks/useTheme'
 
-import { useBookingLeadDays, useSaveBookingLeadDays, useSaveWorkShifts, useWorkShifts } from '../hooks/useAvailability'
+import {
+  useBookingLeadDays,
+  useSaveBookingLeadDays,
+  useSaveWorkShifts,
+  useWorkShifts,
+} from '../hooks/useAvailability'
 import { isValidTime } from '../lib/availabilityUi'
 import { AvailabilityNote } from './AvailabilityNote'
 import { av } from './availabilityStyles'
@@ -155,154 +160,182 @@ export function HorarioTab({
   ]
 
   return (
-    <ScrollView contentContainerStyle={av.content} keyboardShouldPersistTaps="handled">
-      <View style={[av.card, av.row, { borderColor: theme.border, backgroundColor: theme.backgroundDefault }]}>
-        <View style={av.grow}>
-          <ThemedText style={av.title}>Usa el horario del negocio</ThemedText>
-          <ThemedText type="small" style={{ color: theme.textMuted }}>
-            {`Desactívalo para definir los días y turnos de ${staffSingular.toLowerCase()}.`}
-          </ThemedText>
+    <View style={{ flex: 1 }}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={av.content}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View
+          style={[
+            av.card,
+            av.row,
+            { borderColor: theme.border, backgroundColor: theme.backgroundDefault },
+          ]}
+        >
+          <View style={av.grow}>
+            <ThemedText style={av.title}>Usa el horario del negocio</ThemedText>
+            <ThemedText type="small" style={{ color: theme.textMuted }}>
+              {`Desactívalo para definir los días y turnos de ${staffSingular.toLowerCase()}.`}
+            </ThemedText>
+          </View>
+          <Switch
+            value={!custom}
+            onValueChange={(v) => enableCustom(!v)}
+            trackColor={{ false: theme.border, true: `${theme.primary}88` }}
+            thumbColor={!custom ? theme.primary : theme.textMuted}
+          />
         </View>
-        <Switch
-          value={!custom}
-          onValueChange={(v) => enableCustom(!v)}
-          trackColor={{ false: theme.border, true: `${theme.primary}88` }}
-          thumbColor={!custom ? theme.primary : theme.textMuted}
-        />
-      </View>
 
-      {custom &&
-        WEEK_DAYS.map((d) => {
-          const shifts = week[d.weekday] ?? []
-          return (
-            <View
-              key={d.weekday}
-              style={[av.card, { borderColor: theme.border, backgroundColor: theme.backgroundDefault }]}
-            >
-              <View style={av.row}>
-                <ThemedText style={[av.title, av.grow]}>{d.label}</ThemedText>
-                {shifts.length > 0 && (
-                  <Pressable
-                    onPress={() => copyToAll(d.weekday)}
-                    accessibilityLabel={`Copiar el horario del ${d.label.toLowerCase()} a los demás días`}
-                    style={[av.iconBtn, { borderColor: theme.border }]}
-                  >
-                    <Feather name="copy" size={18} color={theme.textSecondary} />
-                  </Pressable>
-                )}
-                <Pressable
-                  onPress={() => update(d.weekday, [...shifts, nextShift(shifts)])}
-                  accessibilityLabel={`Agregar turno el ${d.label.toLowerCase()}`}
-                  style={[av.iconBtn, { borderColor: theme.border }]}
-                >
-                  <Feather name="plus" size={18} color={theme.textSecondary} />
-                </Pressable>
-              </View>
-              {shifts.length === 0 ? (
-                <ThemedText type="small" style={{ color: theme.textMuted }}>
-                  No trabaja este día.
-                </ThemedText>
-              ) : (
-                shifts.map((s, i) => (
-                  <View key={i} style={av.row}>
-                    <TextInput
-                      value={s.start}
-                      onChangeText={(t) =>
-                        update(d.weekday, shifts.map((x, j) => (j === i ? { ...x, start: t } : x)))
-                      }
-                      placeholder="09:00"
-                      placeholderTextColor={theme.textMuted}
-                      keyboardType="numbers-and-punctuation"
-                      maxLength={5}
-                      accessibilityLabel="Inicio del turno"
-                      style={inputStyle}
-                    />
-                    <ThemedText style={{ color: theme.textMuted }}>a</ThemedText>
-                    <TextInput
-                      value={s.end}
-                      onChangeText={(t) =>
-                        update(d.weekday, shifts.map((x, j) => (j === i ? { ...x, end: t } : x)))
-                      }
-                      placeholder="18:00"
-                      placeholderTextColor={theme.textMuted}
-                      keyboardType="numbers-and-punctuation"
-                      maxLength={5}
-                      accessibilityLabel="Fin del turno"
-                      style={inputStyle}
-                    />
+        {custom &&
+          WEEK_DAYS.map((d) => {
+            const shifts = week[d.weekday] ?? []
+            return (
+              <View
+                key={d.weekday}
+                style={[
+                  av.card,
+                  { borderColor: theme.border, backgroundColor: theme.backgroundDefault },
+                ]}
+              >
+                <View style={av.row}>
+                  <ThemedText style={[av.title, av.grow]}>{d.label}</ThemedText>
+                  {shifts.length > 0 && (
                     <Pressable
-                      onPress={() =>
-                        update(
-                          d.weekday,
-                          shifts.filter((_, j) => j !== i)
-                        )
-                      }
-                      accessibilityLabel="Quitar turno"
+                      onPress={() => copyToAll(d.weekday)}
+                      accessibilityLabel={`Copiar el horario del ${d.label.toLowerCase()} a los demás días`}
                       style={[av.iconBtn, { borderColor: theme.border }]}
                     >
-                      <Feather name="trash-2" size={18} color={theme.error} />
+                      <Feather name="copy" size={18} color={theme.textSecondary} />
                     </Pressable>
-                  </View>
-                ))
-              )}
-            </View>
-          )
-        })}
+                  )}
+                  <Pressable
+                    onPress={() => update(d.weekday, [...shifts, nextShift(shifts)])}
+                    accessibilityLabel={`Agregar turno el ${d.label.toLowerCase()}`}
+                    style={[av.iconBtn, { borderColor: theme.border }]}
+                  >
+                    <Feather name="plus" size={18} color={theme.textSecondary} />
+                  </Pressable>
+                </View>
+                {shifts.length === 0 ? (
+                  <ThemedText type="small" style={{ color: theme.textMuted }}>
+                    No trabaja este día.
+                  </ThemedText>
+                ) : (
+                  shifts.map((s, i) => (
+                    <View key={i} style={av.row}>
+                      <TextInput
+                        value={s.start}
+                        onChangeText={(t) =>
+                          update(
+                            d.weekday,
+                            shifts.map((x, j) => (j === i ? { ...x, start: t } : x))
+                          )
+                        }
+                        placeholder="09:00"
+                        placeholderTextColor={theme.textMuted}
+                        keyboardType="numbers-and-punctuation"
+                        maxLength={5}
+                        accessibilityLabel="Inicio del turno"
+                        style={inputStyle}
+                      />
+                      <ThemedText style={{ color: theme.textMuted }}>a</ThemedText>
+                      <TextInput
+                        value={s.end}
+                        onChangeText={(t) =>
+                          update(
+                            d.weekday,
+                            shifts.map((x, j) => (j === i ? { ...x, end: t } : x))
+                          )
+                        }
+                        placeholder="18:00"
+                        placeholderTextColor={theme.textMuted}
+                        keyboardType="numbers-and-punctuation"
+                        maxLength={5}
+                        accessibilityLabel="Fin del turno"
+                        style={inputStyle}
+                      />
+                      <Pressable
+                        onPress={() =>
+                          update(
+                            d.weekday,
+                            shifts.filter((_, j) => j !== i)
+                          )
+                        }
+                        accessibilityLabel="Quitar turno"
+                        style={[av.iconBtn, { borderColor: theme.border }]}
+                      >
+                        <Feather name="trash-2" size={18} color={theme.error} />
+                      </Pressable>
+                    </View>
+                  ))
+                )}
+              </View>
+            )
+          })}
 
-      {noShifts && (
-        <AvailabilityNote kind="warning">
-          {`Agrega al menos un turno, o vuelve a usar el horario del negocio. Guardar sin turnos borraría el horario de ${staffSingular.toLowerCase()}.`}
-        </AvailabilityNote>
-      )}
-      {error && <AvailabilityNote kind="error">{error}</AvailabilityNote>}
-      {save.error && <AvailabilityNote kind="error">{(save.error as Error).message}</AvailabilityNote>}
-      {saveLead.error && (
-        <AvailabilityNote kind="error">{(saveLead.error as Error).message}</AvailabilityNote>
-      )}
-
-      <View style={[av.card, { borderColor: theme.border, backgroundColor: theme.backgroundDefault }]}>
-        <ThemedText style={av.title}>Días de aviso para citas nuevas</ThemedText>
-        <ThemedText type="small" style={{ color: theme.textMuted }}>
-          0 permite agendar hoy. 1, desde mañana. Al asignar a mano se puede elegir igual.
-        </ThemedText>
-        <View style={av.row}>
-          <Pressable
-            onPress={() => changeLead(leadDays - 1)}
-            disabled={leadDays <= 0}
-            accessibilityLabel="Restar un día de aviso"
-            style={[av.iconBtn, { borderColor: theme.border, opacity: leadDays <= 0 ? 0.4 : 1 }]}
-          >
-            <Feather name="minus" size={18} color={theme.textSecondary} />
-          </Pressable>
-          <ThemedText style={[av.title, { minWidth: 28, textAlign: 'center' }]}>{leadDays}</ThemedText>
-          <Pressable
-            onPress={() => changeLead(leadDays + 1)}
-            disabled={leadDays >= 30}
-            accessibilityLabel="Sumar un día de aviso"
-            style={[av.iconBtn, { borderColor: theme.border, opacity: leadDays >= 30 ? 0.4 : 1 }]}
-          >
-            <Feather name="plus" size={18} color={theme.textSecondary} />
-          </Pressable>
-        </View>
-      </View>
-
-      <Pressable
-        style={[
-          av.primaryBtn,
-          { backgroundColor: theme.primary, opacity: pending || error || noShifts ? 0.6 : 1 },
-        ]}
-        disabled={pending || !!error || noShifts}
-        onPress={submit}
-      >
-        {pending ? (
-          <ActivityIndicator color={theme.buttonText} />
-        ) : (
-          <Feather name={saved ? 'check' : 'save'} size={18} color={theme.buttonText} />
+        {noShifts && (
+          <AvailabilityNote kind="warning">
+            {`Agrega al menos un turno, o vuelve a usar el horario del negocio. Guardar sin turnos borraría el horario de ${staffSingular.toLowerCase()}.`}
+          </AvailabilityNote>
         )}
-        <ThemedText style={{ color: theme.buttonText, fontWeight: '600' }}>
-          {saved ? 'Guardado' : 'Guardar horario'}
-        </ThemedText>
-      </Pressable>
-    </ScrollView>
+        {error && <AvailabilityNote kind="error">{error}</AvailabilityNote>}
+        {save.error && (
+          <AvailabilityNote kind="error">{(save.error as Error).message}</AvailabilityNote>
+        )}
+        {saveLead.error && (
+          <AvailabilityNote kind="error">{(saveLead.error as Error).message}</AvailabilityNote>
+        )}
+
+        <View
+          style={[av.card, { borderColor: theme.border, backgroundColor: theme.backgroundDefault }]}
+        >
+          <ThemedText style={av.title}>Días de aviso para citas nuevas</ThemedText>
+          <ThemedText type="small" style={{ color: theme.textMuted }}>
+            0 permite agendar hoy. 1, desde mañana. Al asignar a mano se puede elegir igual.
+          </ThemedText>
+          <View style={av.row}>
+            <Pressable
+              onPress={() => changeLead(leadDays - 1)}
+              disabled={leadDays <= 0}
+              accessibilityLabel="Restar un día de aviso"
+              style={[av.iconBtn, { borderColor: theme.border, opacity: leadDays <= 0 ? 0.4 : 1 }]}
+            >
+              <Feather name="minus" size={18} color={theme.textSecondary} />
+            </Pressable>
+            <ThemedText style={[av.title, { minWidth: 28, textAlign: 'center' }]}>
+              {leadDays}
+            </ThemedText>
+            <Pressable
+              onPress={() => changeLead(leadDays + 1)}
+              disabled={leadDays >= 30}
+              accessibilityLabel="Sumar un día de aviso"
+              style={[av.iconBtn, { borderColor: theme.border, opacity: leadDays >= 30 ? 0.4 : 1 }]}
+            >
+              <Feather name="plus" size={18} color={theme.textSecondary} />
+            </Pressable>
+          </View>
+        </View>
+      </ScrollView>
+      <View style={av.footer}>
+        <Pressable
+          style={[
+            av.primaryBtn,
+            { backgroundColor: theme.primary, opacity: pending || error || noShifts ? 0.6 : 1 },
+          ]}
+          disabled={pending || !!error || noShifts}
+          onPress={submit}
+        >
+          {pending ? (
+            <ActivityIndicator color={theme.buttonText} />
+          ) : (
+            <Feather name={saved ? 'check' : 'save'} size={18} color={theme.buttonText} />
+          )}
+          <ThemedText style={{ color: theme.buttonText, fontWeight: '600' }}>
+            {saved ? 'Guardado' : 'Guardar horario'}
+          </ThemedText>
+        </Pressable>
+      </View>
+    </View>
   )
 }
