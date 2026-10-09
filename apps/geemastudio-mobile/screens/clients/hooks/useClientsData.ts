@@ -43,6 +43,14 @@ const NEW_DAYS = 30
 /** Tope de filas en listado (paridad ZM). FlatList virtualiza; el tope acota red + métricas. */
 export const CLIENTS_FETCH_LIMIT = 300
 
+/** Minúsculas y sin acentos/diéresis/tilde de la ñ, para comparar "Ámbar" con "ambar". */
+function foldText(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+}
+
 function emptyKpis(): ClientKPIs {
   return {
     total_clients: 0,
@@ -95,7 +103,8 @@ export function useClientsData(
         .select('id, name, phone, email, notes, created_at')
         .eq('tenant_id', tenantId)
       if (serverSearch.length > 0) {
-        const term = `%${serverSearch}%`
+        // ilike distingue acentos: las letras acentuables van como comodín y foldText afina en cliente.
+        const term = `%${serverSearch.replace(/[aeiounáéíóúüñ]/gi, '_')}%`
         request = request.or(`name.ilike.${term},phone.ilike.${term},email.ilike.${term}`)
       }
       const { data, error } = await request
@@ -296,15 +305,15 @@ export function useClientsData(
   }, [clients, appointments, payments, monthStartIso, tenantTimezone, totalCount, now])
 
   const filteredClients = useMemo(() => {
-    const normalizedSearch = searchQuery.trim().toLowerCase()
+    const normalizedSearch = foldText(searchQuery.trim())
     let base = clientsWithMetrics
 
     if (normalizedSearch.length > 0) {
       base = base.filter((c) => {
         return (
-          c.name.toLowerCase().includes(normalizedSearch) ||
-          (c.phone ?? '').toLowerCase().includes(normalizedSearch) ||
-          (c.email ?? '').toLowerCase().includes(normalizedSearch)
+          foldText(c.name).includes(normalizedSearch) ||
+          foldText(c.phone ?? '').includes(normalizedSearch) ||
+          foldText(c.email ?? '').includes(normalizedSearch)
         )
       })
     }
