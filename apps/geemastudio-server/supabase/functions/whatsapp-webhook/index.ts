@@ -53,7 +53,7 @@ import {
 import { sendMessage } from "./wa-api.ts";
 import { dispatch } from "./handlers/dispatcher.ts";
 import { isAgentEnabledFor, runAgent } from "./agent/agent.ts";
-import { routeAgentInbound } from "./agent/inbound.ts";
+import { announceAgentInbound, routeAgentInbound } from "./agent/inbound.ts";
 import { AGENT_COALESCE_WINDOW_MS } from "./agent/inbound-route.ts";
 import { handleLegacyPayload } from "./handlers/legacy.ts";
 import { logWaError } from "./lib/error-log.ts";
@@ -521,7 +521,20 @@ async function processMessage(body: Record<string, unknown>): Promise<void> {
           fromAd,
         });
         if (routed.kind === "handled") return;
+        let clientChatNotified = false;
         if (routed.kind === "agent") {
+          await announceAgentInbound({
+            supabase,
+            phoneNumber,
+            contactName: displayName,
+            messageText: effectiveText,
+            messagePreview: effectivePreview,
+            interactiveId,
+            isNew,
+            fromAd,
+            referralHeadline,
+          });
+          clientChatNotified = true;
           const agentHandled = await runAgent({
             supabase,
             phoneNumber,
@@ -549,6 +562,7 @@ async function processMessage(body: Record<string, unknown>): Promise<void> {
           phoneCountry: client?.phone_country ?? null,
           messagePreview: effectivePreview,
           inboundReceivedAt,
+          clientChatNotified,
         });
       } finally {
         if (heldDispatchTurn) await releaseDispatchTurn(supabase, phoneNumber);

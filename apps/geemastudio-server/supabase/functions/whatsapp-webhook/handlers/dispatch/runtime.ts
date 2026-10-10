@@ -33,6 +33,8 @@ export interface DispatchContext {
   messagePreview?: string;
   /** Epoch ms cuando el inbound fue aceptado (antes del coalesce). Para filtro de ecos Meta. */
   inboundReceivedAt?: number;
+  /** El agente ya avisó al staff de este chat (fallback a dispatch): no repetir el push. */
+  clientChatNotified?: boolean;
 }
 
 export type DispatchSession = Awaited<ReturnType<typeof getSession>>;

@@ -559,14 +559,16 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
     return;
   }
 
-  void notifyAdminsClientChat(supabase, {
-    phone: phoneNumber,
-    clientName: contactName,
-    messagePreview,
-    isNew,
-    fromAd,
-    referralHeadline,
-  }).catch((err) => console.error("[WABA] push chat notify:", err));
+  if (!ctx.clientChatNotified) {
+    void notifyAdminsClientChat(supabase, {
+      phone: phoneNumber,
+      clientName: contactName,
+      messagePreview,
+      isNew,
+      fromAd,
+      referralHeadline,
+    }).catch((err) => console.error("[WABA] push chat notify:", err));
+  }
 
   // ── Modo sombra (piloto): regex vs Haiku — solo log, no afecta el flujo ─────
   // Dispara en paralelo (void) antes del waterfall de texto libre en

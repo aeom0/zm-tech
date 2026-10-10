@@ -20,9 +20,15 @@ import {
 import { persistInboundWaAudio } from "../lib/inbound-audio.ts";
 import {
   getSession,
+  markSessionFromAd,
   type SupabaseClient,
   upsertSession,
 } from "../lib/supabase.ts";
+import { inboundSilenceReason } from "../handlers/dispatch/anti-spam.ts";
+import { isSessionStale } from "../handlers/booking-flow.ts";
+import { matchesReclamacionesIntent } from "../lib/reclamaciones-handoff.ts";
+import { isKnownCtwaCampaignCopy } from "../lib/meta-ads-cta.ts";
+import { notifyAdminsClientChat } from "../lib/notify.ts";
 import {
   getConfigBoolean,
   getConfigText,
@@ -48,6 +54,50 @@ function imageCaption(message: Record<string, unknown>): string {
   if (!image || typeof image !== "object") return "";
   const caption = (image as Record<string, unknown>).caption;
   return typeof caption === "string" ? caption : "";
+}
+
+/**
+ * Lo que `dispatch()` hacía antes de contestar y el agente se saltaba:
+ * marca la atribución CTWA (`from_ad_at`, que alimenta ads-bounce y la venta
+ * emocional) y avisa al staff del chat (push "Meta Ads · chat WA" / nueva clienta).
+ * Nunca frena el turno.
+ */
+export async function announceAgentInbound(opts: {
+  supabase: SupabaseClient;
+  phoneNumber: string;
+  contactName: string;
+  messageText: string;
+  messagePreview: string;
+  interactiveId?: string;
+  isNew: boolean;
+  fromAd: boolean;
+  referralHeadline?: string | null;
+}): Promise<void> {
+  try {
+    const session = await getSession(opts.supabase, opts.phoneNumber);
+    // Mismas condiciones que el dispatcher: anuncio en clienta nueva o sesión
+    // inactiva (no re-atribuir mid-flujo), o copy CTWA cuando Meta omite referral.
+    const ctwaByCopy = !opts.fromAd && !opts.interactiveId &&
+      !session?.from_ad_at && opts.messageText.trim() !== "" &&
+      isKnownCtwaCampaignCopy(opts.messageText);
+    if (
+      ctwaByCopy ||
+      (opts.fromAd && !opts.interactiveId &&
+        (opts.isNew || isSessionStale(session)))
+    ) {
+      await markSessionFromAd(opts.supabase, opts.phoneNumber);
+    }
+    await notifyAdminsClientChat(opts.supabase, {
+      phone: opts.phoneNumber,
+      clientName: opts.contactName,
+      messagePreview: opts.messagePreview,
+      isNew: opts.isNew,
+      fromAd: opts.fromAd,
+      referralHeadline: opts.referralHeadline,
+    });
+  } catch (err) {
+    console.error("[AGENT] announceAgentInbound:", err);
+  }
 }
 
 /**
@@ -94,6 +144,20 @@ export async function routeAgentInbound(opts: {
   }
 
   let session = await getSession(opts.supabase, opts.phoneNumber);
+  // Pausa del staff, bloqueados/anti-spam y Libro de Reclamaciones viven en el
+  // dispatcher (silencio, push "respondió" y pausa + aviso): el agente no los toca.
+  if (session?.bot_paused_at) return { kind: "classic" };
+  if (
+    inboundSilenceReason(opts.phoneNumber, opts.messageText, opts.wabaConfig)
+  ) {
+    return { kind: "classic" };
+  }
+  if (
+    (msgType === "text" || !msgType) &&
+    matchesReclamacionesIntent(opts.messageText)
+  ) {
+    return { kind: "classic" };
+  }
   if (sessionDefersToClassic(session)) return { kind: "classic" };
 
   if (session?.step && RETIRED_PRE_SERVICE_STEPS.has(session.step)) {
