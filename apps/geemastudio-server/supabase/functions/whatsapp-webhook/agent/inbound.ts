@@ -218,6 +218,21 @@ export async function routeAgentInbound(opts: {
     });
     if (referenced) return { kind: "handled" };
 
+    // Sin cita ni comprobante: foto de diseño → guarda, pausa el bot, push al
+    // staff y acuse. El agente no ve la imagen, así que no puede cotizarla.
+    // QA genérico no pausa (devuelve false) y sigue al agente.
+    const { tryHandleDesignImageTakeover } = await import(
+      "../lib/inbound-image.ts"
+    );
+    const takenOver = await tryHandleDesignImageTakeover({
+      supabase: opts.supabase,
+      phoneNumber: opts.phoneNumber,
+      contactName: opts.contactName,
+      message: opts.message,
+      session: session as Record<string, unknown> | null,
+    });
+    if (takenOver) return { kind: "handled" };
+
     return {
       kind: "agent",
       text: imageTurnForAgent(imageCaption(opts.message), Boolean(opts.fromAd)),
