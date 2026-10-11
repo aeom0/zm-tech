@@ -11,6 +11,9 @@ import type { TenantWabaScheduleRules } from "./tenant-rules.ts";
 /** Teléfono para notificar a admins (nuevas reservas por validar). */
 export const ADMIN_PHONE = "51932535512";
 export const YAPE_PLIN_NUMBER = "932 535 512";
+/** Link de pago Culqi (tarjeta) por el adelanto fijo de S/25 de ZM Lash. */
+export const CULQI_ADELANTO_LINK =
+  "https://express.culqi.com/pago/D4DCC2B31B";
 
 /** Medios de pago para mostrar al cliente. */
 export const MEDIOS_DE_PAGO = `📲 *Medios de pago:*

@@ -308,8 +308,8 @@ export function getDateSelectorDescription(dateKey: string): string {
   const sunday = isSunday(dateKey);
   const holiday = isPeruHoliday(dateKey);
   const until = formatUntilShort(getHolidayOpenUntilHour(dateKey));
-  if (sunday && holiday) return `Dom feriado — 20% · hasta ${until}`;
-  if (sunday) return "Dom — adelanto 20%";
+  if (sunday && holiday) return `Dom feriado — adelanto S/25 · hasta ${until}`;
+  if (sunday) return "Dom — adelanto S/25";
   if (holiday) return `Feriado — hasta ${until}`;
   return "Ver horarios";
 }

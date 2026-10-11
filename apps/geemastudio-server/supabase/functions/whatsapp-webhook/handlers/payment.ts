@@ -91,7 +91,10 @@ Realiza un adelanto de S/{monto} vía Yape o Plin al:
 📲 932 535 512
 ZM Lash and Nails Beauty
 
-Cuando pagues, mándanos el print de pantalla para confirmar tu cita 💜
+💳 O paga con tarjeta (S/26.25, incluye 5% de comisión por pago en línea) desde este link, eliges cómo pagar y listo:
+https://express.culqi.com/pago/D4DCC2B31B
+
+Cuando pagues, mándanos el print de pantalla o el comprobante para confirmar tu cita 💜
 
 *Importante:*
 ⏰ Tolerancia el día de tu cita: {tolerancia} minutos.
@@ -1346,8 +1349,12 @@ export async function finalizeBookingAfterDatetimeSelection(
   await recomputeAndPersistCartPricesForDate(supabase, phone, chosenDate);
   const sessionNow = await getSession(supabase, phone);
 
-  // Historial gana sobre fecha (domingo/feriado): siempre S/25 fijo
-  if (await clientRequiresFixedDeposit(supabase, phone)) {
+  // Abono fijo S/25: clienta sin cita completada, o cualquier cita en domingo
+  // (el link de pago Culqi cobra un monto fijo, 10-oct-2026).
+  const advanceRate = getAdvancePaymentRate(dateKey);
+  if (
+    advanceRate != null || await clientRequiresFixedDeposit(supabase, phone)
+  ) {
     const wabaConfig = await loadWabaConfig(supabase);
     const fixedAmount = fixedDepositAmountFromConfig(wabaConfig);
     await sendPaymentSummary(supabase, phone, sessionNow ?? {}, {
@@ -1357,13 +1364,6 @@ export async function finalizeBookingAfterDatetimeSelection(
     return;
   }
 
-  const advanceRate = getAdvancePaymentRate(dateKey);
-  if (advanceRate != null) {
-    await sendPaymentSummary(supabase, phone, sessionNow ?? {}, {
-      advanceRate,
-    });
-    return;
-  }
   await upsertSession(supabase, phone, {
     step: "awaiting_payment_info",
     deposit_mode: null,

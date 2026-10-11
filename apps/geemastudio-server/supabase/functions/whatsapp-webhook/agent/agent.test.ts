@@ -590,7 +590,7 @@ Deno.test("dayFacts: feriado, domingo, ausencia parcial y cobertura", async () =
   assertStringIncludes(facts, "Luz de 14:00 a 16:00");
   assertStringIncludes(facts, "Luz cubre a Ana");
   assertEquals(facts.includes("vacation"), false);
-  // 2031-03-09 es domingo: adelanto 20%
+  // 2031-03-09 es domingo: adelanto fijo S/25
   const dom = (await dayFacts(ctx, "2031-03-09")).join("\n");
   assertStringIncludes(dom, "adelanto");
 });

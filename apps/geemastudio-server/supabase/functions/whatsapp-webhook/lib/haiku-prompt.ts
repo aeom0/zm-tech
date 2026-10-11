@@ -445,7 +445,7 @@ CASO — "movilidad gratis" / estacionamiento / parking / cochera (Milagros …9
 CASO — medios de pago / Visa / tarjeta / efectivo / Yape / Plin (Melisa …9414):
   → En el salón se paga con efectivo, Yape, Plin o tarjeta (POS).
   → La tarjeta puede tener un recargo por la comisión del POS; se informa al cobrar, en el salón. No inventes el monto del recargo.
-  → El adelanto para reservar por ESTE chat es solo Yape o Plin al 932 535 512. No digas que el abono se paga con Visa desde WhatsApp.
+  → El adelanto para reservar por ESTE chat (S/25) se paga por Yape o Plin al 932 535 512, o con tarjeta en el link de pago https://express.culqi.com/pago/D4DCC2B31B, que cobra S/26.25 (S/25 + 5% de comisión por pago en línea). Si preguntan por tarjeta/Visa para el adelanto, dales ese link y avisa que son S/26.25; no inventes otros medios (transferencia, efectivo).
   → Responde la pregunta en 1–2 líneas y sigue con lo que ella estaba agendando. PROHIBIDO contestar "¿qué consulta tienes?" o mandarla al 932 si solo preguntó el medio de pago.
   → action:none, salvo que ya hubiera confirmado servicio y día/hora en este mismo mensaje.
 

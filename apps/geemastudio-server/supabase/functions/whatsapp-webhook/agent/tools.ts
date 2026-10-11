@@ -624,9 +624,7 @@ export async function dayFacts(
   const rate = getAdvancePaymentRate(fecha);
   if (rate != null) {
     out.push(
-      `Este día exige adelanto del ${
-        Math.round(rate * 100)
-      }% para reservar (el sistema lo cobra en el paso siguiente).`,
+      `Este día exige un adelanto fijo de S/25 para reservar, sin importar el total (el sistema lo cobra en el paso siguiente).`,
     );
   }
   const tenant = getRequestTenantId();

@@ -1075,27 +1075,13 @@ export async function sendTimeSelector(
   }
 
   if (isSunday(dateKey) && advanceRate === 0.2) {
-    // Sin `completed` el abono es S/25 fijo — no nombrar "20%" (Estrella PE.…5896).
-    const { clientRequiresFixedDeposit } = await import(
-      "./pending-appointment.ts"
+    // Domingo: abono fijo S/25 para todas (link de pago Culqi de monto fijo).
+    await sendMessage(
+      to,
+      `📅 *Domingo — cita previa*\n\n` +
+        `Los domingos atendemos con *cita previa*. Al confirmar te indico cómo reservar tu cupo.\n\n` +
+        `Si necesitas coordinar algo antes, escríbenos al 📱 *${YAPE_PLIN_NUMBER}* 💜`,
     );
-    const fixedDeposit = await clientRequiresFixedDeposit(supabase, to);
-    if (fixedDeposit) {
-      await sendMessage(
-        to,
-        `📅 *Domingo — cita previa*\n\n` +
-          `Los domingos atendemos con *cita previa*. Al confirmar te indico cómo reservar tu cupo.\n\n` +
-          `Si necesitas coordinar algo antes, escríbenos al 📱 *${YAPE_PLIN_NUMBER}* 💜`,
-      );
-    } else {
-      await sendMessage(
-        to,
-        `📅 *Domingo — cita previa*\n\n` +
-          `Los domingos confirmamos la cita solo con *adelanto del 20%*. ` +
-          `Tras validar tu pago te confirmamos aquí.\n\n` +
-          `Si necesitas coordinar algo antes, escríbenos al 📱 *${YAPE_PLIN_NUMBER}* 💜`,
-      );
-    }
   } else if (isPeruHoliday(dateKey)) {
     await sendMessage(
       to,

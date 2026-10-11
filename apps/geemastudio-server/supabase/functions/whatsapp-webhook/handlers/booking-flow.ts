@@ -1362,10 +1362,10 @@ export function formatHoursHint(dateKey?: string, dayOfWeek?: number): string {
       return "Feriado: 10 AM – 12 PM";
     }
     if (isSunday(dateKey)) {
-      return "Dom: 10:30 AM – 1 PM (adelanto 20%)";
+      return "Dom: 10:30 AM – 1 PM (adelanto S/25)";
     }
   }
-  if (dayOfWeek === 0) return "Dom: 10:30 AM – 1 PM (adelanto 20%)";
+  if (dayOfWeek === 0) return "Dom: 10:30 AM – 1 PM (adelanto S/25)";
   return "L-S: 10 AM – 6 PM";
 }
 
