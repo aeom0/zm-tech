@@ -70,7 +70,13 @@ an appointment. Then produce an actionable report.
 - **Quién atiende (desde el cutover del 8-oct-2026):** con `agent_enabled` el **agente Haiku 5.5** (`agent/`: `agent.ts`,
   `tools.ts`, `prompt.ts`, `inbound.ts`, `inbound-route.ts`) atiende el texto, las imágenes, el audio y el tap «Mi cita»
   antes del dispatcher. El bot clásico (`handlers/dispatcher.ts`, ~2500 líneas) queda como **respaldo**: falla del agente,
-  party, curso, no-show y botones de plantilla. Lee `agent/` primero; el dispatcher solo para esos casos.
+  party, curso, no-show, botones de plantilla y, desde el 10-oct, **sesión pausada por staff, anti-spam/bloqueados y Libro
+  de Reclamaciones** (`routeAgentInbound` devuelve `classic`; el agente no los toca). Lee `agent/` primero; el dispatcher
+  solo para esos casos.
+- **Lo que el agente hace antes de contestar** (`announceAgentInbound`, desde el 10-oct): marca `from_ad_at` (atribución
+  CTWA) y avisa al staff (push «Meta Ads · chat WA» / nueva clienta). **Fotos:** sin cita ni comprobante corre
+  `tryHandleDesignImageTakeover` (`lib/inbound-image.ts`: guarda la foto, pausa el bot, push y acuse); el agente no ve
+  imágenes y nunca debe cotizarlas. En teléfonos QA no pausa.
   Confirma el estado real del flag en `waba_config` (`agent_enabled`, `agent_phone_allowlist`) y la hora del cutover en
   el contexto del tenant.
 - Plan 08 Fase 1 (merged #131): helpers en `handlers/dispatch/*` (CTWA, menu-taps, haiku-handoff,
@@ -91,7 +97,8 @@ an appointment. Then produce an actionable report.
 ## KEY TABLES
 - `wa_messages`: tenant_id, phone, direction ('in'|'out'), msg_type, content, step_before, created_at
 - `whatsapp_sessions`: tenant_id, phone, step, cart_items, parsed_datetime, selected_day (sticky cupo/hora),
-  deposit_mode ('fixed'|'rate'|null), bot_paused_at, updated_at
+  deposit_mode ('fixed'|'rate'|null; desde el 10-oct el domingo también es 'fixed', 'rate' solo en filas viejas),
+  bot_paused_at, from_ad_at (null no implica orgánico en hilos del 8 al 10-oct: el agente no lo marcaba), updated_at
 - `appointments`: tenant_id, client_id, client_phone, source ('whatsapp'|null), status, date, created_at
   (`date` = timestamp **sin** TZ → hora Lima literal)
 - `clients`: tenant_id, id, phone, phone_normalized, phone_country, name
@@ -99,6 +106,7 @@ an appointment. Then produce an actionable report.
   output_tokens, phone_hash, created_at. Sirve para saber si un turno lo llevó el agente o el bot clásico.
 - `appointment_verifications`: tenant_id, abono/comprobante vía bot; `kind` = `deposit` | `post_service_payment`;
   `status` payment_submitted|approved|rejected (presence of deposit row ≈ booking via abono WABA);
+  `amount_total` puede ser 26.25 si pagó con el link de tarjeta (S/25 + 5%): no es discrepancia de monto;
   `appointment_date` = timestamp **sin** TZ → Lima literal (igual `appointments.date`; no timestamptz)
 - `wa_error_log`: tenant_id, kind, phone, detail, created_at (retención 7d) — silences / crashes
 - `whatsapp_sessions.quality_review_sent_at`: si está set en la ventana, el cron ya alertó staff (Revisar YA)
@@ -151,6 +159,9 @@ Read these files to understand the CURRENT state on main. **Empieza por el agent
   reintentos, `sanitizeAgentReply`), inbound.ts + inbound-route.ts (qué entra al agente y qué cae al dispatcher)
 Luego el bot clásico, solo como respaldo:
 - apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/dispatcher.ts (orquestador)
+- apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/inbound-image.ts (`tryHandleDesignImageTakeover`),
+  `handlers/dispatch/anti-spam.ts` (`inboundSilenceReason`), `lib/reclamaciones-handoff.ts`, `lib/notify.ts`
+  (`notifyAdminsClientChat`): lo que decide si un turno llega al agente o se queda en el dispatcher
 - apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/dispatch/* (Plan 08 Fase 1: CTWA, menu-taps,
   haiku-handoff, cart-booking, closing-intents, campaign-images, anti-spam, …)
 - apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/ai-assistant.ts
@@ -165,7 +176,8 @@ Luego el bot clásico, solo como respaldo:
   (`awaiting_payment_screenshot` / mid-pago; excepción Haiku pregunta mid-boleta)
 - apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/payment.ts
   (`finalizeBookingAfterDatetimeSelection`, `sendPaymentSummary`, `processPaymentScreenshot`,
-   deposit fijo S/25 vs rate domingo)
+   deposit fijo S/25 — desde el 10-oct también domingo —, con link de pago Culqi de S/26.25 como alternativa a
+   Yape/Plin en el copy `deposit_fixed_instructions_text`; `rate` queda solo como camino legado)
 - apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/pending-appointment.ts
   (`clientRequiresFixedDeposit` / historial `completed`; Mi cita / reprogramación)
 - apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/image-classify.ts
@@ -192,11 +204,18 @@ Luego el bot clásico, solo como respaldo:
   No marcar como DISPATCHER_BYPASS el handoff intencional a Haiku/agente)
 - zm-tech/docs/geemastudio/docs/plans/08-PLAN-dispatcher-modular.md (Fase 1 merged #131)
 - apps/geemastudio-server/docs/waba/WABA_CAPACITY.md (tope 1 / 2 especial + ocupación real)
+- apps/geemastudio-server/docs/waba/plan-cotizador-disenos-unas.md (borrador pendiente: hoy el salón cotiza a mano los
+  diseños de uñas; no es bug que el agente no cotice una foto)
 
 **Antes/después del cutover.** El contexto del tenant da la hora del cutover. Los hilos anteriores a esa hora los llevó el
 bot clásico: sus fallos son 🟢 evidencia que motivó el cutover, **no** [P#] abiertos ni Quick Wins sobre el dispatcher
 (aplica §2b). Para cada hilo posterior, comprueba si lo llevó el agente (`ai_usage_log.trigger_type = 'agent'` cerca de
 los OUT) o cayó al clásico (fallback). Reporta la métrica «% de turnos por agente vs clásico».
+
+**Hitos posteriores al cutover.** El contexto del tenant lista los fixes con hora de deploy (tabla «Hitos»). Para cada hilo
+compara su `created_at` con ellos: un fallo anterior al deploy es 🟢 evidencia del fix; uno posterior es reincidencia.
+Esto aplica sobre todo a atribución CTWA/`from_ad_at`, push al staff, pausa por foto de diseño, respeto de pausa/spam/
+reclamos y modo de abono. Confirma la hora real del deploy con el workflow `edge-functions.yml`, no con la hora del commit.
 
 Also list commits on main **during the analysis window** (and skim their messages + touched files):
   git log --oneline --since='<window start ISO>' --until='<window end ISO>' origin/main -- apps/geemastudio-server/supabase/functions/
@@ -342,7 +361,11 @@ AG6) AGENT_AUDIO — nota de voz: hoy el agente pide que la escriban y no avisa 
    se queda sin respuesta, repórtalo como [P#] de producto (pendiente: transcripción), con el conteo de audios.
 AG7) AGENT_TOOL_MISUSE — herramienta con argumentos erróneos o doble reserva, cita duplicada, carrito que no coincide
    con lo pedido (mismo criterio que N) CART_MISMATCH).
-Los tipos A) y F) solo aplican a turnos que cayeron al dispatcher; para el agente usa AG1–AG7.
+AG8) AGENT_GUARD_BYPASS — el agente atendió algo que debía quedarse en el dispatcher o en el staff: respondió con la
+   sesión pausada (`bot_paused_at`), a un número bloqueado/spam o a un reclamo del Libro de Reclamaciones; o conversó
+   sobre una foto de diseño («no alcanzo a ver el detalle») sin pausar ni avisar; o un chat CTWA quedó sin `from_ad_at`
+   ni push al staff. Antes del 10-oct es 🟢 evidencia del fix; después es bug.
+Los tipos A) y F) solo aplican a turnos que cayeron al dispatcher; para el agente usa AG1–AG8.
 **Tipos propios del tenant (J en adelante):** ver `<TENANT_DIR>/contexto-analisis.md`.
 Usa solo esos nombres o `OTHER`.
 
@@ -474,5 +497,6 @@ Medium/High risk or product decisions.
 ## Relacionados
 
 - Tenant ZM Lash: [contexto](../tenants/zm-lash/contexto-analisis.md) · [directrices](../tenants/zm-lash/directrices-haiku.md) · [análisis](../tenants/zm-lash/analysis/README.md)
+- [plan-cutover-agente-haiku.md](../plan-cutover-agente-haiku.md) · [plan-cotizador-disenos-unas.md](../plan-cotizador-disenos-unas.md)
 - [EDGE_FUNCTIONS.md](../../ops/EDGE_FUNCTIONS.md) — arquitectura técnica del webhook
 - [WABA_MULTITENANT_ARCHITECTURE.md](../../../../../docs/geemastudio/docs/WABA_MULTITENANT_ARCHITECTURE.md) — alta de WABA por tenant

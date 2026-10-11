@@ -18,6 +18,16 @@ Directrices del bot: [directrices-haiku.md](./directrices-haiku.md) · lecciones
   atiende a todas las clientas y el dispatcher es respaldo. Confirma la hora real con la primera fila de `ai_usage_log`
   con `trigger_type = 'agent'` de un teléfono que no sea QA. Los reportes de este periodo mezclan ambos regímenes: separa
   los hilos por la hora del cutover (§2 de la rutina).
+- **Hitos posteriores al cutover** (usar con §2 de la rutina; hora UTC del commit, el deploy sale minutos después vía
+  `edge-functions.yml`):
+
+  | Hito | Commit | Qué cambia | Antes del deploy |
+  | --- | --- | --- | --- |
+  | 8-oct 19:26 | `3db2f14e` | textos de config con `\n` literal salen con salto real | `\n` visibles en OUT = evidencia |
+  | 10-oct 22:28 | `6f7b0ba1` | el agente marca `from_ad_at`, avisa al staff de chats Meta Ads y cede al dispatcher pausa/spam/reclamos | chats CTWA 8–10-oct sin `from_ad_at` ni push; agente respondiendo con bot pausado = AG8 |
+  | 10-oct 23:08 | `245258ce` | takeover de fotos de diseño en el camino del agente | foto sin cita/comprobante → agente «no alcanzo a ver el detalle» sin pausa = AG8 |
+  | 11-oct 00:18 | `c530fd9b` | link Culqi S/26.25 en el adelanto; domingo = S/25 fijo para todas | domingo con 20% a clientas con `completed` era lo correcto |
+
 - **Reglas del agente que NO son bug:** promos «Solo Halloween» (vigencia 1–31 oct) aplican todos los días salvo `valid_days`;
   el agente pide por escrito las notas de voz y no avisa al equipo (limitación conocida, ver AG6); cancelar con adelanto va
   a `escalar_a_humano` por diseño; el comprobante lo procesa el flujo por código, no el modelo.
@@ -61,10 +71,15 @@ Read directrices-haiku.md §2.2 and ROADMAP.md § "Horarios y pago al agendar" b
   "L–S = siempre sin abono":
   1. Sin ninguna cita `completed` (nueva o previa no concretada) → abono fijo **S/25** (`deposit_mode=fixed`),
      **incluso en domingo** (fijo gana sobre el 20%).
-  2. Con historial `completed` + domingo → adelanto **20%** (`deposit_mode=rate`).
+  2. Con historial `completed` + domingo → **desde el 11-oct 00:18 UTC** abono fijo **S/25** igual que a las nuevas
+     (`deposit_mode=fixed`). Antes de esa hora era adelanto **20%** (`deposit_mode=rate`) y eso era lo correcto.
   3. Con historial + L–S / feriado → confirmación directa sin voucher.
-  Pedir S/25 a una clienta sin `completed` es **producto correcto**, no bug. Pedir 20% domingo a una **sin**
-  `completed` (en vez de S/25) **sí es bug**. Confirmar cita L–S sin abono a una **sin** `completed` **sí es bug**.
+  Pedir S/25 a una clienta sin `completed` es **producto correcto**, no bug. Pedir 20% a cualquiera después del
+  deploy del 11-oct **sí es bug**. Confirmar cita L–S sin abono a una **sin** `completed` **sí es bug**.
+  **Link de pago Culqi** (`https://express.culqi.com/pago/D4DCC2B31B`, monto fijo **S/26.25** = S/25 + 5%): es una
+  alternativa a Yape/Plin dentro del copy del adelanto y el agente lo comparte si preguntan por tarjeta/Visa. Un
+  comprobante de S/26.25 es válido, no «monto incorrecto». El link no aplica al pago completo de servicios menores a S/25
+  ni se ofrece para otros montos; verificar que el agente avise que son S/26.25.
   Tras comprobante en depósito: `awaiting_payment_screenshot` → `processPaymentScreenshot` →
   `appointment_verifications.kind=deposit` + plantilla Meta `pago_recibido_validar_zm` (Vanessa).
   Comprobante **fuera** de ese step → Haiku Vision; si es pago → `kind=post_service_payment` + misma plantilla
@@ -115,8 +130,9 @@ M) UNANSWERED_PRICE — clienta pregunta precio/total concreto; bot no aclara ci
 N) CART_MISMATCH — carrito con ítems que no coinciden con lo pedido (dup pack+servicio, ítem de más)
    (caso Yoja). Sí es bug de producto/Haiku aunque el bot haya respondido texto.
 O) PROMO_IGNORED — clienta menciona descuento/%/promo del creativo y el carrito/respuesta no la refleja.
-P) DEPOSIT_MISROUTE — modo de abono incorrecto vs PRODUCT DECISIONS (ej. 20% a nueva sin `completed`;
-   cita L–S confirmada sin S/25 a nueva; fija S/25 omitida). Cruzar `deposit_mode` + historial `completed`.
+P) DEPOSIT_MISROUTE — modo de abono incorrecto vs PRODUCT DECISIONS (ej. 20% a nueva sin `completed`, o a cualquiera
+   tras el deploy del 11-oct; cita L–S confirmada sin S/25 a nueva; fija S/25 omitida; link Culqi ofrecido con un monto
+   distinto de S/25). Cruzar `deposit_mode` + historial `completed` + fecha del deploy.
 Q) PAYMENT_AS_DESIGN — imagen comprobante (Yape/Plin) tratada como foto diseño (`bot_paused_at` /
    push "Foto diseño") en vez de Vision → `post_service` o path depósito. Bug post-PR #29 si reincide.
 R) PHANTOM_BOOKING_ACK — Haiku (u otro OUT) afirma "cita confirmada" / horario reservado **sin** fila
@@ -137,6 +153,6 @@ V) STALE_OFFER_COPY — reenganche/nudge con copy falso o contradictorio (ej. "l
    posterior; "listos" para 1 servicio). Cruzar con `completed` posterior al último appointment.
 
 Also flag **positive patterns**: add_to_cart worked, natural close without menu loop, Mi cita + corrección hora,
-depósito S/25 o 20% → comprobante → plantilla/verificación, Vision distingue pago vs diseño,
+depósito S/25 (Yape/Plin o link Culqi S/26.25) → comprobante → plantilla/verificación, Vision distingue pago vs diseño,
 CUPOS REALES con día sticky, confirmación de pack cotizado → carrito (no menú Categorías),
 viñetas de precios 1 por línea.

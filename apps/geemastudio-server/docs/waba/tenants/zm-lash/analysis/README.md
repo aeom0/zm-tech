@@ -23,7 +23,7 @@ Reportes interdiarios (~48 h) de conversaciones WhatsApp → patrones donde el b
 
 Prompt completo: [`docs/waba/prompts/rutina-waba-analysis.md`](../../../prompts/rutina-waba-analysis.md).
 
-Contexto producto: [`directrices-haiku.md`](../directrices-haiku.md) · abono S/25 / 20% domingo: [`ROADMAP.md`](../../../../../../../ROADMAP.md) § Horarios y pago.  
+Contexto producto: [`directrices-haiku.md`](../directrices-haiku.md) · abono fijo S/25 (domingo incluido desde el 11-oct; antes 20% a clientas con historial) y link Culqi S/26.25: [`ROADMAP.md`](../../../../../../../ROADMAP.md) § Horarios y pago.  
 QA post-fix: [`WABA_SIMULATION_VALIDATION.md`](../../../WABA_SIMULATION_VALIDATION.md) (`:fixed-deposit`, `:payment-verification`, `:datetime-cupo`, `:price-list-bullets`, `:pack-confirm`, `:haiku-first-informational`).
 
 ## Capas de monitoreo (02-ago — no confundir con bugs de Haiku)
