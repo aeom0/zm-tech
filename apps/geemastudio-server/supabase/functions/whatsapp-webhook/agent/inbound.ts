@@ -36,6 +36,7 @@ import {
 } from "../lib/waba-config.ts";
 import { DEFAULT_UBICACION_TEXT } from "../lib/salon-location.ts";
 import { getButtonReplyText } from "../lib/parse-message.ts";
+import { ADMIN_PHONE } from "../lib/constants.ts";
 
 export type AgentInboundRoute =
   | { kind: "classic" }
@@ -133,6 +134,15 @@ export async function routeAgentInbound(opts: {
     await handlePaymentVerificationButtonTap(opts.supabase, payload, {
       replyPhone: opts.phoneNumber,
     });
+    return { kind: "handled" };
+  }
+
+  // Línea de staff (Vanessa): solo taps de verificación. El texto libre no es
+  // de una clienta; el agente no debe preguntarle «qué pasó».
+  if (
+    (msgType === "text" || !msgType) &&
+    opts.phoneNumber.replace(/\D/g, "") === ADMIN_PHONE.replace(/\D/g, "")
+  ) {
     return { kind: "handled" };
   }
 

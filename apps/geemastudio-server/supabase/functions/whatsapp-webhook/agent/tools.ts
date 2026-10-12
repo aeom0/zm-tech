@@ -1037,6 +1037,29 @@ export async function runAgentTool(
         } catch (err) {
           console.warn("[AGENT] get_available_slots:", err);
         }
+        // Traza solo cuando el agente va a decir «sin horarios»: sin esto no se
+        // puede auditar si el motor devolvió vacío o el agente leyó mal.
+        if (free.startsWith("ninguno libre")) {
+          try {
+            await ctx.supabase.from("wa_error_log").insert({
+              phone: ctx.phoneNumber,
+              step: "agent_consultar_dia",
+              msg_type: "text",
+              error_message: `consultar_dia sin horarios libres ${fecha}`,
+              context: {
+                fecha,
+                duration,
+                serviceIds,
+                free,
+                facts,
+                staff: staff || null,
+              },
+              fallback_sent: false,
+            });
+          } catch (err) {
+            console.warn("[AGENT] traza consultar_dia:", err);
+          }
+        }
         return {
           content: [
             `Día ${fecha}.`,
