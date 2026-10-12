@@ -1170,6 +1170,12 @@ export async function finalizeRescheduleAppointment(
     .update(updatePayload)
     .eq("id", appointmentId);
 
+  console.log(
+    `[WABA] reprogramar cita=${appointmentId} …${phone.slice(-4)} ` +
+      `status=${appt.status} -> date=${appointmentDateLima}` +
+      (upErr ? ` ERROR=${upErr.message}` : ""),
+  );
+
   if (upErr) {
     await sendMessage(
       phone,

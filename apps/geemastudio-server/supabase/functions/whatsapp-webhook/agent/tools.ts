@@ -1235,6 +1235,11 @@ export async function runAgentTool(
       case "reprogramar_cita": {
         const found = await resolveOwnAppointment(ctx, input.cita_id);
         if (!found.ok) return { content: found.content, isError: true };
+        console.log(
+          `[AGENT] reprogramar_cita cita=${found.row.id} actual=${found.row.date} ` +
+            `pedido=${String(input.fecha ?? "")} ${String(input.hora ?? "")} ` +
+            `…${ctx.phoneNumber.slice(-4)}`,
+        );
         const loaded = await loadAppointmentCartItems(
           ctx.supabase,
           found.row.id,

@@ -66,6 +66,8 @@ export async function handleLegacyPayload(
       price: service.price,
       notes: notes ?? "Cita creada desde WhatsApp",
       status: "scheduled",
+      // Sin source la columna cae en 'manual' y se confunde con altas del panel.
+      source: "whatsapp_legacy",
     })
     .select()
     .single();
