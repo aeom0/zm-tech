@@ -39,7 +39,7 @@ Deno.test("configurado: solo pasa lo que el motor ofrece", async () => {
     await employeeRulesAllowSlot(sb, "2030-01-02", "11:00", ["b"]),
     false,
   );
-  assertEquals(c.n, 1, "cache: una sola consulta por dia y carrito");
+  assertEquals(c.n, 1, "cache: una sola consulta por dia y selección");
 });
 
 Deno.test("error del RPC no bloquea", async () => {
@@ -51,7 +51,7 @@ Deno.test("error del RPC no bloquea", async () => {
   );
 });
 
-Deno.test("inicio fuera de la grilla de 15 min o carrito vacio no consulta", async () => {
+Deno.test("inicio fuera de la grilla de 15 min o selección vacía no consulta", async () => {
   const c = { n: 0 };
   const sb = fakeClient({ data: { configured: true, slots: [] } }, c);
   assertEquals(

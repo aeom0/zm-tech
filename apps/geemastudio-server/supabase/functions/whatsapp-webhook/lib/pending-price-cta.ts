@@ -290,7 +290,7 @@ export async function findRecentQuotedServiceId(
 }
 
 /**
- * Filtra IDs cotizados para evitar meter al carrito múltiples alternativas
+ * Filtra IDs cotizados para evitar meter a la selección múltiples alternativas
  * excluyentes de una misma categoría (ej. Clásicas, Híbridas, Volumen).
  * Si la clienta nombró uno específico en `confirmText`, retorna solo ese.
  * Si son servicios complementarios de distintas categorías (ej. Pack Manos+Pies + Mojado),
@@ -374,13 +374,13 @@ export function quotedOfferIdsFromOutboundRows(
 }
 
 /**
- * Carrito vacío pero Haiku ya cotizó una oferta (con precio promo): la
- * recupera de los OUT recientes, la mete al carrito y deja la sesión en
+ * Selección vacía pero Haiku ya cotizó una oferta (con precio promo): la
+ * recupera de los OUT recientes, la mete a la selección y deja la sesión en
  * `awaiting_datetime`. Nancy Alvites …9158 (4-oct): sin esto, "10 am" caía a
  * "Agrega servicios de nuevo" + listado de categorías en vez de seguir.
  * La ventana es de verdad `lookbackMs` (default 6 h): un nudge posterior
  * sin precio no tapa la cotización.
- * Retorna true si quedó un carrito válido.
+ * Retorna true si quedó una selección válida.
  */
 export async function recoverCartFromQuotedOffer(
   supabase: SupabaseClient,

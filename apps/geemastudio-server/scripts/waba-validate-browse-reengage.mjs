@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
  * QA browse-reengage (Haiku post-respuesta):
- * A) Último OUT hace ~40 min, browsing sin carrito → envía reenganche + guard
+ * A) Último OUT hace ~40 min, browsing sin selección → envía reenganche + guard
  * B) Tras A, segunda invocación no reenvía (browse_reengage_sent_at)
- * C) Carrito activo → no es candidata (cart-nudge territory)
+ * C) Selección activa → no es candidata (cart-nudge territory)
  * D) Sin bypass: si Lima fuera 9–22 → skipped con motivo reenganche
  * E) watchdog_sent_at posterior → no envía
  * F) Cierre por salud + OUT con «agendar» suelto → NO reenganche (Patricia …9451)
@@ -16,8 +16,11 @@
 import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
-import { ensureQaClient, seedScheduledAppointment } from "./lib/waba-sim-seed.mjs";
-import { logCaseResult, finishAndExit, sleep } from "./lib/waba-sim-assert.mjs";
+import {
+  ensureQaClient,
+  seedScheduledAppointment,
+} from "./lib/waba-sim-seed.mjs";
+import { finishAndExit, logCaseResult, sleep } from "./lib/waba-sim-assert.mjs";
 
 const PHONE = "51999000979";
 const LIMA_UTC_OFFSET = 5;
@@ -89,13 +92,13 @@ async function seedIdleBrowse(minutesAgo = 40, { withCart = false } = {}) {
     step: "browsing",
     cart_items: withCart
       ? JSON.stringify([
-          {
-            item_type: "service",
-            item_id: "3d5d6ee4-b799-4b93-86eb-b974ec125439",
-            quantity: 1,
-            price: 70,
-          },
-        ])
+        {
+          item_type: "service",
+          item_id: "3d5d6ee4-b799-4b93-86eb-b974ec125439",
+          quantity: 1,
+          price: 70,
+        },
+      ])
       : "[]",
     cart_service_ids: withCart
       ? '["3d5d6ee4-b799-4b93-86eb-b974ec125439"]'
@@ -168,8 +171,9 @@ async function caseA() {
   }
   if (!sess?.browse_reengage_sent_at) fails.push("sin browse_reengage_sent_at");
   if (outbound.length === 0) fails.push("sin outbound");
-  else if (!NUDGE_RE.test(joined))
+  else if (!NUDGE_RE.test(joined)) {
     fails.push(`copy raro: ${joined.slice(0, 100)}`);
+  }
 
   const pass = fails.length === 0;
   const caseResult = {
@@ -220,7 +224,7 @@ async function caseB() {
 }
 
 async function caseC() {
-  console.log("\n── C: con carrito → no candidata ──");
+  console.log("\n── C: con selección → no candidata ──");
   await cleanupQaPhone(supabase, PHONE, { deleteClient: true });
   await seedIdleBrowse(40, { withCart: true });
   const since = new Date().toISOString();
@@ -235,7 +239,7 @@ async function caseC() {
 
   const fails = [];
   if ((result?.sent ?? 0) > 0) fails.push(`sent=${result.sent}`);
-  if (outbound.length > 0) fails.push("envió con carrito");
+  if (outbound.length > 0) fails.push("envió con selección");
   // Puede o no marcar guard si no estaba en candidates
   if (sess?.browse_reengage_sent_at) {
     // ok if somehow marked — but shouldn't send
@@ -248,9 +252,9 @@ async function caseC() {
     outboundCount: outbound.length,
     haikuCount: 0,
   };
-  logCaseResult("C con carrito", caseResult, outbound);
+  logCaseResult("C con selección", caseResult, outbound);
   return {
-    name: "C con carrito excluido",
+    name: "C con selección excluido",
     pass,
     note: pass ? "no envía" : fails.join("; "),
   };
@@ -266,8 +270,8 @@ async function caseD() {
   let pass;
   let note;
   if (!within) {
-    pass =
-      result?.skipped === true && REENGANCHE_SKIP_RE.test(result?.reason ?? "");
+    pass = result?.skipped === true &&
+      REENGANCHE_SKIP_RE.test(result?.reason ?? "");
     note = pass
       ? `skipped OK (Lima ${limaHourNow()}h)`
       : `esperado skipped: ${JSON.stringify(result)}`;
@@ -387,7 +391,9 @@ async function caseF() {
   }
   if (outbound.length > 0) {
     fails.push(
-      `reabrió chat: ${outbound.map((m) => (m.content ?? "").slice(0, 80)).join(" | ")}`,
+      `reabrió chat: ${
+        outbound.map((m) => (m.content ?? "").slice(0, 80)).join(" | ")
+      }`,
     );
   }
 

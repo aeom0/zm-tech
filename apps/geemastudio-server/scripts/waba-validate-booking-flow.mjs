@@ -1,25 +1,25 @@
 #!/usr/bin/env node
 /**
- * Flujo agendar — carrito → calendario (fixes Alejandra 2026-07-04).
+ * Flujo agendar — selección → calendario (fixes Alejandra 2026-07-04).
  *
- * A: texto "agendar" con carrito → [lista] Elegir fecha (no Categorías)
+ * A: texto "agendar" con selección → [lista] Elegir fecha (no Categorías)
  * B: tap svc- → calendario directo (no menú "Opciones / ¿Qué deseas hacer?")
  * C: awaiting_datetime + tap agendar_ya → reenvía calendario (no silencio)
  */
 import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
-  buildTextPayload,
   buildInteractivePayload,
-  postWebhook,
+  buildTextPayload,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import {
-  pollOutboundSince,
   assertOutbound,
-  logCaseResult,
   finishAndExit,
+  logCaseResult,
+  pollOutboundSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -74,7 +74,7 @@ async function seedCartAwaitingDatetime() {
 }
 
 async function caseAgendarTexto() {
-  console.log("\n── Booking-A: carrito + texto agendar → calendario ──");
+  console.log("\n── Booking-A: selección + texto agendar → calendario ──");
   await seedCartBrowsing();
   const since = new Date().toISOString();
 
@@ -210,12 +210,10 @@ async function caseDisenoAwaitingDatetime() {
     {
       ...result,
       pass,
-      fails: pass
-        ? []
-        : [
-            ...result.fails,
-            !hasText ? "sin respuesta de texto (Haiku)" : "",
-          ].filter(Boolean),
+      fails: pass ? [] : [
+        ...result.fails,
+        !hasText ? "sin respuesta de texto (Haiku)" : "",
+      ].filter(Boolean),
     },
     outbound,
   );

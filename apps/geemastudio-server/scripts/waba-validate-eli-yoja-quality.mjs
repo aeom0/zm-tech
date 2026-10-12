@@ -2,11 +2,11 @@
 /**
  * QA chat-quality-review — recrea fallos Eli / Yoja (02-ago-2026).
  *
- * A) Eli: pidió Rubber + pies en gel / precio; bot dejó Cat Eye en carrito y
+ * A) Eli: pidió Rubber + pies en gel / precio; bot dejó Cat Eye en selección y
  *    empujó calendario → debe alertar (unanswered_price / cart_mismatch).
  * B) Yoja: citó promo 15%; bot metió pack + pedicure (doble cobro) y no dijo
  *    precio → debe alertar (promo_ignored / cart_mismatch / client_confused).
- * C) Control: chat limpio precio+carrito correcto → NO debe alertar.
+ * C) Control: chat limpio precio+selección correcto → NO debe alertar.
  *
  * Tel: 51999000986. Invoca Edge con include_qa=true (prod cron no incluye QA).
  * Push a staff se omite por isQaWaPhone; se valida alerted + quality_review_sent_at.
@@ -71,9 +71,9 @@ async function upsertSession(fields) {
   if (error) throw new Error("session: " + error.message);
 }
 
-/** A — Eli: precio de Rubber+pies; carrito Cat Eye; calendario en loop */
+/** A — Eli: precio de Rubber+pies; selección Cat Eye; calendario en loop */
 async function caseEli() {
-  console.log("\n── A: Eli — precio Rubber+pies / carrito Cat Eye ──");
+  console.log("\n── A: Eli — precio Rubber+pies / selección Cat Eye ──");
   await cleanupQaPhone(supabase, PHONE, { deleteClient: true });
   await ensureQaClient(supabase, PHONE, "QA Eli Quality");
 
@@ -174,16 +174,14 @@ async function caseEli() {
   const pass = status === 200 && reviewed && alerted && marked;
 
   logCaseResult(
-    "Eli precio/carrito",
+    "Eli precio/selección",
     {
       pass,
-      fails: pass
-        ? []
-        : [
-            !reviewed ? "no reviewed" : "",
-            !alerted ? "no alerted (esperado ≥1)" : "",
-            !marked ? "sin quality_review_sent_at" : "",
-          ].filter(Boolean),
+      fails: pass ? [] : [
+        !reviewed ? "no reviewed" : "",
+        !alerted ? "no alerted (esperado ≥1)" : "",
+        !marked ? "sin quality_review_sent_at" : "",
+      ].filter(Boolean),
       outboundCount: 0,
       haikuCount: 0,
     },
@@ -191,7 +189,7 @@ async function caseEli() {
   );
 
   return {
-    name: "A Eli (precio + carrito Cat Eye)",
+    name: "A Eli (precio + selección Cat Eye)",
     pass,
     note: pass
       ? `alerted=${json?.alerted}`
@@ -199,9 +197,9 @@ async function caseEli() {
   };
 }
 
-/** B — Yoja: promo 15% + carrito pack+pedicure + “por qué no dice” */
+/** B — Yoja: promo 15% + selección pack+pedicure + “por qué no dice” */
 async function caseYoja() {
-  console.log("\n── B: Yoja — promo 15% + carrito doble + confundida ──");
+  console.log("\n── B: Yoja — promo 15% + selección doble + confundida ──");
   await cleanupQaPhone(supabase, PHONE, { deleteClient: true });
   await ensureQaClient(supabase, PHONE, "QA Yoja Quality");
 
@@ -293,16 +291,14 @@ async function caseYoja() {
   const pass = status === 200 && reviewed && alerted && marked;
 
   logCaseResult(
-    "Yoja promo/carrito/confundida",
+    "Yoja promo/selección/confundida",
     {
       pass,
-      fails: pass
-        ? []
-        : [
-            !reviewed ? "no reviewed" : "",
-            !alerted ? "no alerted (esperado ≥1)" : "",
-            !marked ? "sin quality_review_sent_at" : "",
-          ].filter(Boolean),
+      fails: pass ? [] : [
+        !reviewed ? "no reviewed" : "",
+        !alerted ? "no alerted (esperado ≥1)" : "",
+        !marked ? "sin quality_review_sent_at" : "",
+      ].filter(Boolean),
       outboundCount: 0,
       haikuCount: 0,
     },
@@ -310,7 +306,7 @@ async function caseYoja() {
   );
 
   return {
-    name: "B Yoja (promo + carrito dup)",
+    name: "B Yoja (promo + selección dup)",
     pass,
     note: pass
       ? `alerted=${json?.alerted}`
@@ -318,7 +314,7 @@ async function caseYoja() {
   };
 }
 
-/** C — control: precio claro + carrito alineado → no alert */
+/** C — control: precio claro + selección alineado → no alert */
 async function caseControl() {
   console.log("\n── C: control — chat limpio sin fallos ──");
   await cleanupQaPhone(supabase, PHONE, { deleteClient: true });
@@ -401,13 +397,11 @@ async function caseControl() {
     "Control chat limpio",
     {
       pass,
-      fails: pass
-        ? []
-        : [
-            !reviewed ? "no reviewed" : "",
-            !alerted ? `falso positivo alerted=${json?.alerted}` : "",
-            !marked ? "sin quality_review_sent_at" : "",
-          ].filter(Boolean),
+      fails: pass ? [] : [
+        !reviewed ? "no reviewed" : "",
+        !alerted ? `falso positivo alerted=${json?.alerted}` : "",
+        !marked ? "sin quality_review_sent_at" : "",
+      ].filter(Boolean),
       outboundCount: 0,
       haikuCount: 0,
     },

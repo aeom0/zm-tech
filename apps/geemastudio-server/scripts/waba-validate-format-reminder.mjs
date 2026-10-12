@@ -10,17 +10,17 @@ import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
   buildTextPayload,
-  postWebhook,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import { seedSessionWithCart } from "./lib/waba-sim-seed.mjs";
 import {
+  fetchHaikuSince,
+  finishAndExit,
+  logCaseResult,
   pollOutboundSince,
   pollResponseSince,
-  fetchHaikuSince,
-  logCaseResult,
-  finishAndExit,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -96,8 +96,8 @@ async function scenario1ConfirmAddToCart() {
     /* ignore */
   }
   const hasLaminado = cartIds.includes(LAMINADO_ID);
-  const calendarHint =
-    /Elegir fecha|Selecciona.*d[ií]a|date_|¿Qu[eé] d[ií]a/i.test(
+  const calendarHint = /Elegir fecha|Selecciona.*d[ií]a|date_|¿Qu[eé] d[ií]a/i
+    .test(
       outText(out2),
     );
   const pass = hasLaminado || calendarHint;
@@ -116,7 +116,7 @@ async function scenario1ConfirmAddToCart() {
       pass,
       fails: pass
         ? []
-        : ["no quedó laminado en carrito ni selector de fecha"],
+        : ["no quedó laminado en selección ni selector de fecha"],
     },
     out2,
   );
@@ -193,7 +193,8 @@ async function scenario2LastDateWins() {
     name: "2 última fecha gana",
     pass,
     outbound: text,
-    note: `claimsOldBooked=${claimsOldBooked}; inventsConfirmed=${inventsConfirmed}`,
+    note:
+      `claimsOldBooked=${claimsOldBooked}; inventsConfirmed=${inventsConfirmed}`,
   };
 }
 
@@ -227,9 +228,10 @@ async function scenario3ThirdParty() {
   }
   // Gate determinístico o Haiku: mensaje de una cita / aquí mismo; sin nueva cita
   const thirdPartyOk =
-    /una cita a la vez|alguien m[aá]s|m[aá]s de una persona|aqu[ií] mismo|932\s*535\s*512/i.test(
-      text,
-    );
+    /una cita a la vez|alguien m[aá]s|m[aá]s de una persona|aqu[ií] mismo|932\s*535\s*512/i
+      .test(
+        text,
+      );
   const noConfirm = !/¡Tu cita está (confirmada|anotada)!/i.test(text);
   const pass = outbound.length > 0 && thirdPartyOk && noConfirm;
 
@@ -290,8 +292,8 @@ async function scenario4Complaint() {
   } catch {
     /* ignore */
   }
-  const empatiaOrGate =
-    /garant[ií]a|932\s*535\s*512|lamento|perdón|disculp/i.test(text);
+  const empatiaOrGate = /garant[ií]a|932\s*535\s*512|lamento|perdón|disculp/i
+    .test(text);
   const noCart = cartIds.length === 0;
   const noConfirm = !/¡Tu cita está (confirmada|anotada)!/i.test(text);
   const pass = outbound.length > 0 && empatiaOrGate && noCart && noConfirm;
@@ -303,7 +305,7 @@ async function scenario4Complaint() {
       fails: [
         ...(outbound.length === 0 ? ["sin OUT"] : []),
         ...(!empatiaOrGate ? ["sin empatía/garantía/932"] : []),
-        ...(!noCart ? [`carrito no vacío: ${JSON.stringify(cartIds)}`] : []),
+        ...(!noCart ? [`selección no vacío: ${JSON.stringify(cartIds)}`] : []),
         ...(!noConfirm ? ["confirmó cita"] : []),
       ],
     },

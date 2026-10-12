@@ -1,4 +1,4 @@
-// held-slot-lost.ts — Una cita nueva le quitó la hora a un carrito que aún no abonaba.
+// held-slot-lost.ts — Una cita nueva le quitó la hora a una selección que aún no abonaba.
 // Haiku explica por qué pedimos el adelanto y se ofrece el selector real.
 
 import { sendMessage } from "../wa-api.ts";
@@ -25,7 +25,7 @@ import {
 const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
 const MODEL = "claude-haiku-4-5-20251001";
 const HAIKU_TIMEOUT_MS = 12_000;
-/** Tope de carritos en espera de abono por revisión; si se alcanza se deja rastro en el log. */
+/** Tope de selecciones en espera de abono por revisión; si se alcanza se deja rastro en el log. */
 const HELD_SESSIONS_LIMIT = 200;
 
 /** Pasos en los que la hora ya se prometió y el abono todavía no creó la cita. */
@@ -347,7 +347,7 @@ async function lookupClientName(
 }
 
 /**
- * Tras un INSERT de cita: busca carritos con hora prometida que este cupo acaba de cerrar.
+ * Tras un INSERT de cita: busca selecciones con hora prometida que este cupo acaba de cerrar.
  * Solo avisa si el slot estaba libre antes de esta cita y ya no lo está.
  */
 export async function scanHeldSlotsForAppointment(
@@ -395,7 +395,7 @@ export async function scanHeldSlotsForAppointment(
 
   if ((sessions?.length ?? 0) >= HELD_SESSIONS_LIMIT) {
     console.warn(
-      "[held-slot-lost] tope de sesiones alcanzado, puede quedar un carrito sin revisar:",
+      "[held-slot-lost] tope de sesiones alcanzado, puede quedar una selección sin revisar:",
       HELD_SESSIONS_LIMIT,
     );
   }

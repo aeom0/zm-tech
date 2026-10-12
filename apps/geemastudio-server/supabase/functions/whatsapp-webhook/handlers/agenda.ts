@@ -122,7 +122,7 @@ function salonCloseMinutesForDateKey(dateKey: string): number {
 }
 
 /**
- * ¿El carrito entrante exige bloque de almuerzo Stephani?
+ * ¿La selección entrante exige bloque de almuerzo Stephani?
  * Solo Karelis o 100 % Vanessa especial → no aplica.
  */
 function cartNeedsStephaniMeal(
@@ -186,7 +186,7 @@ function buildCandidateInterval(
  * formal de 45 min entre 12:00-14:30 — puede almorzar antes de abrir, al
  * cerrar, o en el hueco real que quede. El gate existe para evitar que un
  * día muy cargado la deje sin almuerzo, no para bloquear un día casi vacío.
- * Decisión de Vanessa (17-sep-2026, caso real Alberto VE …4665: carrito
+ * Decisión de Vanessa (17-sep-2026, caso real Alberto VE …4665: selección
  * largo de Extensiones+Manos/Pies con Yelitza como única otra cita esa
  * tarde — el único horario viable era las 10am, sin hueco de almuerzo
  * formal, y Vanessa confirmó que sí se debe poder agendar).
@@ -569,10 +569,10 @@ export async function getOverlappingAppointmentsWithLanes(
 }
 
 /**
- * ¿El slot admite este carrito?
+ * ¿El slot admite esta selección?
  * - Sin carriles de extensiones: idéntico a hoy (`count < cap`).
  * - Con carriles: la 2.ª plaza solo existe si Karelis (recurso extra) está
- *   en el carrito o ya ocupando el slot. Sin Karelis, `cap` genérico —
+ *   en la selección o ya ocupando el slot. Sin Karelis, `cap` genérico —
  *   evita Manicure + Clásicas (ambas Stephani) con effectiveCap=2 (hotfix 23-ago).
  */
 export function isSlotFreeForLanes(
@@ -726,7 +726,7 @@ export async function hasSlotCapacityForServices(
 /**
  * Un horario está disponible si el conteo de solapes es menor que `cap`.
  * cap=1 (default): tope histórico 1 cita/franja.
- * cap=2: carrito 100% especial (Vanessa puede ejecutar en paralelo).
+ * cap=2: selección 100% especial (Vanessa puede ejecutar en paralelo).
  * Con `requiredLanes` + `catalog`: también bloquea si el carril ya está ocupado.
  */
 async function slotHasAvailability(
@@ -975,9 +975,9 @@ export async function sendDateSelector(
   }
 
   rows.push({
-    id: WA_IDS.VOLVER_CARRITO,
+    id: WA_IDS.VOLVER_SELECCION,
     title: "↩ Ver selección",
-    description: "Volver al carrito",
+    description: "Volver a la selección",
   });
 
   const ok = await sendInteractiveList(

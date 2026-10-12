@@ -51,7 +51,7 @@ export interface TenantWabaDepositRules {
 export interface TenantWabaCapacityRules {
   defaultCap: number;
   specialCap?: number;
-  /** Categorías 100% especiales: cap=specialCap si TODO el carrito cae aquí (o en specialExtraServiceIds). */
+  /** Categorías 100% especiales: cap=specialCap si TODO la selección cae aquí (o en specialExtraServiceIds). */
   specialCategoryIds?: string[];
   /** Excepciones puntuales de categorías no-100%-especiales que sí cuentan como especiales. */
   specialExtraServiceIds?: string[];

@@ -57,10 +57,10 @@ function remap(
     "ver selección → VER_SELECCION",
     r3.kind === "remapped" && r3.userInput === WA_IDS.VER_SELECCION,
   );
-  const r4 = remap("vaciar carrito");
+  const r4 = remap("vaciar selección");
   check(
-    "vaciar carrito → VACIAR_CARRITO",
-    r4.kind === "remapped" && r4.userInput === WA_IDS.VACIAR_CARRITO,
+    "vaciar selección → VACIAR_SELECCION",
+    r4.kind === "remapped" && r4.userInput === WA_IDS.VACIAR_SELECCION,
   );
   const r5 = remap("mi cita");
   check(
@@ -106,14 +106,14 @@ check(
 
 // ── Afirmativas cortas ──────────────────────────────────────────────────────
 check(
-  "sí con carrito → short_affirmative_with_cart",
+  "sí con selección → short_affirmative_with_cart",
   (() => {
     const r = remap("sí", { cartItems: [{ item_type: "service" }] });
     return r.kind === "short_affirmative_with_cart";
   })(),
 );
 check(
-  "ok sin carrito → short_affirmative_no_cart",
+  "ok sin selección → short_affirmative_no_cart",
   (() => {
     const r = remap("ok", null);
     return r.kind === "short_affirmative_no_cart";

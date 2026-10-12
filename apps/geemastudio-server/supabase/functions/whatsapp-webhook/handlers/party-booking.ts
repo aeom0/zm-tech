@@ -558,7 +558,7 @@ export async function tryHandlePartyText(
 
 /**
  * Captura svc_/pack_ mientras party pide servicio de un miembro.
- * Devuelve true si consumió el tap (no seguir al carrito normal).
+ * Devuelve true si consumió el tap (no seguir a la selección normal).
  */
 export async function tryCapturePartyServiceTap(
   supabase: SupabaseClient,
@@ -584,7 +584,7 @@ export async function tryCapturePartyServiceTap(
   if (idx < 0) return false;
 
   // Packs: expandir a service_ids vía addCartItems + expand sería ideal;
-  // para v1: solo servicios sueltos en party; packs van al carrito miembro como item.
+  // para v1: solo servicios sueltos en party; packs van a la selección miembro como item.
   if (kind === "pack") {
     // Guardar pack como pseudo: service_ids vacío + cart temporal no — expandir pack
     const { data: pack } = await supabase
@@ -609,7 +609,7 @@ export async function tryCapturePartyServiceTap(
     party.members[idx].service_ids = [serviceOrPackId];
   }
 
-  // Precio en carrito para resumen/abono del episodio (suma miembros al final)
+  // Precio en selección para resumen/abono del episodio (suma miembros al final)
   void unitPrice;
 
   if (party.mode === "guest_only") {
@@ -645,7 +645,7 @@ async function prepareCartAndDatetime(
     );
     party.slot_strategy = share ? "same" : "sequential";
     party.collecting = "datetime_primary";
-    // Carrito = servicios primary para selectores de capacidad
+    // Selección = servicios primary para selectores de capacidad
     await syncCartFromServiceIds(supabase, phone, primary.service_ids);
     await saveParty(supabase, phone, party, { step: "awaiting_datetime" });
 
@@ -758,7 +758,7 @@ async function syncCartFromServiceIds(
 /**
  * Tras elegir hora: avanza party (sequential 2.ª hora) o marca ready.
  * Devuelve true si el caller debe llamar finalizeBookingAfterDatetimeSelection
- * (carrito ya alineado al miembro / episodio).
+ * (selección ya alineado al miembro / episodio).
  */
 export async function onPartyDatetimeChosen(
   supabase: SupabaseClient,

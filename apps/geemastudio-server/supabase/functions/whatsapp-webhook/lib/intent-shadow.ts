@@ -225,9 +225,9 @@ export function wouldTryCompleteBookingFromText(
  * Prioridad del espejo: confirm → reclamo → soft → crear → otro.
  *
  * Divergencia conocida vs dispatcher real:
- *   real = confirm → … → soft (solo si NO hay carrito) → reclamo → crear
+ *   real = confirm → … → soft (solo si NO hay selección) → reclamo → crear
  *   espejo = reclamo antes que soft.
- * Si un mensaje matcheara a la vez keywords de reclamo y soft sin carrito,
+ * Si un mensaje matcheara a la vez keywords de reclamo y soft sin selección,
  * el bot real etiquetaría soft y este espejo reclamo. Las keyword lists son
  * casi disjuntas (se cayó/reclamo vs mejor/prefiero/cambiar) → overlap raro.
  * Si en shadow_log aparecen filas raras reclamo_garantia vs reprogramar_cita_soft,
@@ -281,7 +281,7 @@ export async function computeRegexShadowIntent(
   }
 
   // Soft-reschedule: el intent gate; trySoftRescheduleFromText además evita
-  // carrito mid-agendado — reflejamos ese guard para no etiquetar crear_cita como soft.
+  // selección mid-agendado — reflejamos ese guard para no etiquetar crear_cita como soft.
   if (matchesSoftRescheduleIntent(text)) {
     const midBooking = sessionHasCart(session) &&
       (step === "browsing" || step === "awaiting_datetime" || !step);

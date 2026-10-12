@@ -114,7 +114,7 @@ Si somos nosotras quienes no podemos atenderte, reprogramamos sin costo o te ree
 ¡Gracias por confiar en ZM Lash and Nails Beauty! 🌸✨`;
 
 /**
- * Cuando el total del carrito es menor al abono fijo habitual (S/25): se pide
+ * Cuando el total de la selección es menor al abono fijo habitual (S/25): se pide
  * el pago completo. Mezcla A+B (producto 12-sep-2026) — no decir "adelanto".
  */
 export const DEFAULT_DEPOSIT_FIXED_FULL_PAYMENT =
@@ -288,7 +288,7 @@ function capFixedDepositToTotal(
   return totalPrice > 0 ? Math.min(fixedAmount, totalPrice) : fixedAmount;
 }
 
-/** True cuando el monto a cobrar es el total del carrito (menor al abono fijo habitual). */
+/** True cuando el monto a cobrar es el total de la selección (menor al abono fijo habitual). */
 function isFullPrepayDeposit(
   fixedAmount: number,
   monto: number,
@@ -349,7 +349,7 @@ async function resolveFixedDepositAmount(
   return fixedDepositAmountFromConfig(await loadWabaConfig(supabase));
 }
 
-/** Total del carrito de la sesión (cart_items con precio, o cart_service_ids legacy). */
+/** Total de la selección de la sesión (cart_items con precio, o cart_service_ids legacy). */
 async function resolveCartTotalPrice(
   supabase: SupabaseClient,
   session: Record<string, unknown> & { cartItems?: CartItem[] },
@@ -956,7 +956,7 @@ export async function sendConfirmedBookingSummary(
       })),
     );
   } else {
-    // Carrito legacy (solo ids): una sola cita
+    // Selección legacy (solo ids): una sola cita
     const cartIds = JSON.parse(
       (session.cart_service_ids as string) ?? "[]",
     ) as string[];
@@ -1293,9 +1293,9 @@ export async function sendPaymentSummary(
 }
 
 /**
- * Recalcula el precio de cada ítem del carrito contra el día ISO real de la
+ * Recalcula el precio de cada ítem de la selección contra el día ISO real de la
  * cita elegida (no el día en que se escribió el mensaje) y persiste el
- * carrito corregido antes de mostrar el resumen/pago. Avisa a la clienta si
+ * selección corregido antes de mostrar el resumen/pago. Avisa a la clienta si
  * algún precio cambió (ej. promo "Lunes a Miércoles" cotizada para un
  * viernes — caso Brescia Macutela, 13-ago-2026).
  */
@@ -1394,7 +1394,7 @@ export async function processPaymentScreenshot(
 ): Promise<void> {
   if (!session) return;
 
-  // Multi-cita / party listo → 1–2 appointments + verificaciones (no 1 cita del carrito sumado)
+  // Multi-cita / party listo → 1–2 appointments + verificaciones (no 1 cita de la selección sumado)
   {
     const partyEarly = parsePartyBooking(
       (session as { party_booking?: string | null }).party_booking,

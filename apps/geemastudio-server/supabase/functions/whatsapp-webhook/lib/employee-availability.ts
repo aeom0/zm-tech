@@ -15,7 +15,7 @@ interface DaySlots {
 
 const cache = new Map<string, { at: number; value: DaySlots | null }>();
 
-/** Horarios (HH:MM, hora Lima) que el motor ofrece para el carrito ese día; null si no aplica. */
+/** Horarios (HH:MM, hora Lima) que el motor ofrece para la selección ese día; null si no aplica. */
 async function loadDaySlots(
   supabase: SupabaseClient,
   dateKey: string,

@@ -61,7 +61,7 @@ function buildFixtureCatalog(): ServiceCatalog {
 
 // LYM …5765 (10-sep-2026): `.toFixed(0)` redondeaba S/99.90 a "S/100" en el
 // catálogo del prompt de Haiku, igualándolo al precio sin descuento — Haiku
-// cotizaba S/100 mientras el carrito real cobraba S/99.90. Fix: `formatPromptPrice()`
+// cotizaba S/100 mientras la selección real cobraba S/99.90. Fix: `formatPromptPrice()`
 // solo redondea enteros; conserva los centavos si el precio no es entero.
 Deno.test("buildCatalogAppendix no trunca centavos de un servicio", () => {
   const appendix = buildCatalogAppendix(buildFixtureCatalog());

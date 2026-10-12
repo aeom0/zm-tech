@@ -1,4 +1,4 @@
-// abandoned-cart-reminders — Recordatorios de carrito abandonado (nudge1 + nudge2).
+// abandoned-cart-reminders — Recordatorios de selección abandonada (nudge1 + nudge2).
 // Cron cada 30 minutos: */30 * * * *
 // Deploy: SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) supabase functions deploy abandoned-cart-reminders --project-ref udelxwwnyivknslueerr --no-verify-jwt
 
@@ -206,7 +206,7 @@ Deno.serve(async (req: Request) => {
     .filter(hasCartItems)
     .filter((s) => !optOutPhones.has(s.phone));
   console.log(
-    `[abandoned-cart-reminders] ${allSessions.length} sesión(es) con carrito activo`,
+    `[abandoned-cart-reminders] ${allSessions.length} sesión(es) con selección activa`,
   );
 
   if (allSessions.length === 0) {

@@ -472,7 +472,7 @@ export async function handleFixedDepositSteps(
     // patrón; los datos duros de identidad siguen 100% determinísticos porque
     // pasan por `parseClientIdentity` antes de llegar aquí. `add_to_cart`
     // queda bloqueado por step (ver `ai-assistant.ts`) así que es seguro
-    // dejar que Haiku responda lo que sea sin arriesgar el carrito ya cerrado.
+    // dejar que Haiku responda lo que sea sin arriesgar la selección ya cerrado.
     if (opts?.tryHaikuOnUnmatchedIdentity) {
       const answered = await opts.tryHaikuOnUnmatchedIdentity(rawText);
       if (answered) {

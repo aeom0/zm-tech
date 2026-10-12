@@ -2,19 +2,19 @@
 /**
  * QA flujo Treysy García (jul-2026) — fixes apply:
  * A: fecha solo ("15 de agosto") → selected_day + selector hora (NO cita a las 3 PM)
- * B: "Está quiero" en awaiting_datetime → no duplicar carrito
+ * B: "Está quiero" en awaiting_datetime → no duplicar selección
  * C: "Ya" / "ya gracias" con cita → cierre PE, sin menú
  * C3: "Ya gracias" luego "Ya" (segundo cierre) → ack, sin menú
- * D: "Ya" con carrito sin cita → guía hora, sin menú
+ * D: "Ya" con selección sin cita → guía hora, sin menú
  * E: imagen mid-awaiting → calendario, sin menú
  */
 import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
-  buildTextPayload,
   buildImagePayload,
-  postWebhook,
+  buildTextPayload,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import {
@@ -22,9 +22,9 @@ import {
   seedScheduledAppointment,
 } from "./lib/waba-sim-seed.mjs";
 import {
-  pollOutboundSince,
-  logCaseResult,
   finishAndExit,
+  logCaseResult,
+  pollOutboundSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -120,8 +120,8 @@ async function caseFechaSoloAgosto() {
   const appts = await countScheduledForPhone();
 
   const dayOk = sess.selectedDay === "2026-08-15";
-  const hasTimeUi =
-    TIME_LIST_RE.test(text) || /qu[eé] hora|hora te viene/i.test(text);
+  const hasTimeUi = TIME_LIST_RE.test(text) ||
+    /qu[eé] hora|hora te viene/i.test(text);
   const noLeak = !ACTION_LEAK_RE.test(text);
   const noAppt = appts.length === 0;
   // No debe haber cerrado cita inventando 15:00 por el día "15"
@@ -150,7 +150,7 @@ async function caseFechaSoloAgosto() {
 }
 
 async function caseEstaQuieroNoDup() {
-  console.log("\n── Treysy-B: Está quiero → no duplicar carrito ──");
+  console.log("\n── Treysy-B: Está quiero → no duplicar selección ──");
   await cleanupQaPhone(supabase, TEST_PHONE, { deleteClient: true });
   await seedAwaitingCart({ selectedDay: "2026-08-15" });
   const before = await getSessionCartIds();
@@ -173,22 +173,20 @@ async function caseEstaQuieroNoDup() {
   const after = await getSessionCartIds();
   const text = outbound.map((m) => m.content ?? "").join("\n");
 
-  const dupIds =
-    after.ids.filter((id) => id === MANOS_PIES_ID).length >
+  const dupIds = after.ids.filter((id) => id === MANOS_PIES_ID).length >
     before.ids.filter((id) => id === MANOS_PIES_ID).length;
-  const grewUnexpected =
-    after.ids.length > before.ids.length &&
+  const grewUnexpected = after.ids.length > before.ids.length &&
     !/\b(agregar|añadir|también quiero)\b/i.test("Está quiero");
   const leak = ACTION_LEAK_RE.test(text);
-  const listedAdd =
-    /Listo — agregué:.*,/i.test(text) ||
+  const listedAdd = /Listo — agregué:.*,/i.test(text) ||
     (/Listo — agregué:/i.test(text) && /Pedicure/i.test(text));
 
   const pass = !dupIds && !grewUnexpected && !leak && !listedAdd;
   const fails = [];
   if (dupIds) fails.push("servicio duplicado en cart_service_ids");
-  if (grewUnexpected)
-    fails.push(`carrito creció ${before.ids.length}→${after.ids.length}`);
+  if (grewUnexpected) {
+    fails.push(`selección creció ${before.ids.length}→${after.ids.length}`);
+  }
   if (leak) fails.push("leak <action>");
   if (listedAdd) fails.push("add_to_cart con Pedicure/extra");
 
@@ -198,7 +196,7 @@ async function caseEstaQuieroNoDup() {
     outbound,
   );
   return {
-    name: "Treysy-B (no dup carrito)",
+    name: "Treysy-B (no dup selección)",
     pass,
     note: pass ? `cart size ${after.ids.length}` : fails.join("; ") || "falló",
   };
@@ -237,12 +235,10 @@ async function caseYaConCita() {
     "Treysy-C Ya con cita",
     {
       pass,
-      fails: pass
-        ? []
-        : [
-            !hasClose ? "sin acuse de cierre" : "",
-            hasMenu ? "abrió menú principal" : "",
-          ].filter(Boolean),
+      fails: pass ? [] : [
+        !hasClose ? "sin acuse de cierre" : "",
+        hasMenu ? "abrió menú principal" : "",
+      ].filter(Boolean),
       outboundCount: outbound.length,
       haikuCount: 0,
     },
@@ -338,13 +334,11 @@ async function caseYaDobleTrasCierre() {
     "Treysy-C3 Ya×2 tras cierre",
     {
       pass,
-      fails: pass
-        ? []
-        : [
-            hasMenu ? "abrió menú principal" : "",
-            !hasClose ? "sin acuse de cierre" : "",
-            outbound.length < 2 ? `outs=${outbound.length}` : "",
-          ].filter(Boolean),
+      fails: pass ? [] : [
+        hasMenu ? "abrió menú principal" : "",
+        !hasClose ? "sin acuse de cierre" : "",
+        outbound.length < 2 ? `outs=${outbound.length}` : "",
+      ].filter(Boolean),
       outboundCount: outbound.length,
       haikuCount: 0,
     },
@@ -358,7 +352,7 @@ async function caseYaDobleTrasCierre() {
 }
 
 async function caseYaConCarritoSinCita() {
-  console.log("\n── Treysy-D: Ya + carrito sin cita → guía hora ──");
+  console.log("\n── Treysy-D: Ya + selección sin cita → guía hora ──");
   await cleanupQaPhone(supabase, TEST_PHONE, { deleteClient: true });
   await seedAwaitingCart({ selectedDay: "2026-08-15" });
 
@@ -377,30 +371,27 @@ async function caseYaConCarritoSinCita() {
     timeoutMs: 25000,
   });
   const text = outbound.map((m) => m.content ?? "").join("\n");
-  const pass =
-    !MENU_RE.test(text) &&
+  const pass = !MENU_RE.test(text) &&
     HORA_GUIDE_RE.test(text) &&
     (DATE_LIST_RE.test(text) ||
       TIME_LIST_RE.test(text) ||
       outbound.length >= 1);
 
   logCaseResult(
-    "Treysy-D Ya + carrito",
+    "Treysy-D Ya + selección",
     {
       pass,
-      fails: pass
-        ? []
-        : [
-            MENU_RE.test(text) ? "menú" : "",
-            !HORA_GUIDE_RE.test(text) ? "sin guía hora" : "",
-          ].filter(Boolean),
+      fails: pass ? [] : [
+        MENU_RE.test(text) ? "menú" : "",
+        !HORA_GUIDE_RE.test(text) ? "sin guía hora" : "",
+      ].filter(Boolean),
       outboundCount: outbound.length,
       haikuCount: 0,
     },
     outbound,
   );
   return {
-    name: "Treysy-D (Ya + carrito → guía)",
+    name: "Treysy-D (Ya + selección → guía)",
     pass,
     note: pass ? "guía sin menú" : "falló",
   };
@@ -426,8 +417,7 @@ async function caseImagenMidAgenda() {
     timeoutMs: 25000,
   });
   const text = outbound.map((m) => m.content ?? "").join("\n");
-  const pass =
-    !MENU_RE.test(text) &&
+  const pass = !MENU_RE.test(text) &&
     (/d[ií]a|hora|botones/i.test(text) ||
       DATE_LIST_RE.test(text) ||
       TIME_LIST_RE.test(text));
@@ -436,12 +426,10 @@ async function caseImagenMidAgenda() {
     "Treysy-E imagen mid",
     {
       pass,
-      fails: pass
-        ? []
-        : [
-            MENU_RE.test(text) ? "menú principal" : "",
-            "sin guía calendario",
-          ].filter(Boolean),
+      fails: pass ? [] : [
+        MENU_RE.test(text) ? "menú principal" : "",
+        "sin guía calendario",
+      ].filter(Boolean),
       outboundCount: outbound.length,
       haikuCount: 0,
     },

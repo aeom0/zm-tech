@@ -1,5 +1,5 @@
 // browse-reengage — Reenganche Haiku cuando el último msg es OUT (bot ya
-// respondió), sesión browsing sin carrito, silencio ≥30 min.
+// respondió), sesión browsing sin selección, silencio ≥30 min.
 // Cron cada 15 min. Colchón 24 h para diferir noche → 9 AM Lima.
 // Horario de ENVÍO: 9–22 Lima (como cart-nudge / ads-bounce).
 // Anti-spam (2026-07-19): 1 nudge por episodio (= desde el último inbound);
@@ -269,7 +269,7 @@ Deno.serve(async (req: Request) => {
         reviewed++;
         try {
           // Mónica …0370: tras "Confirmo mi cita" la sesión sigue en browsing sin
-          // carrito → el cron reenganchaba con "¿Sigues por aquí?". Skip duro si
+          // selección → el cron reenganchaba con "¿Sigues por aquí?". Skip duro si
           // hay cita scheduled (Haiku soft no basta; bias shouldSend ?? true).
           const pendingAppts = await getPendingAppointmentsForPhone(
             supabase,

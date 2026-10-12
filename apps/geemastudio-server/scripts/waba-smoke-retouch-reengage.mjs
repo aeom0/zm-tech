@@ -4,7 +4,7 @@
  *
  * A) POST send-retouch-reengage → Meta acepta plantilla
  *    (número QA suele ser undeliverable 131026 — OK si no es rechazo de plantilla)
- * B) Botón "Agendar" (webhook sim) → texto + calendario / carrito
+ * B) Botón "Agendar" (webhook sim) → texto + calendario / selección
  * C) Botón "Más adelante" → cierre cálido
  *
  * Teléfono: 51999000980  (nunca clientas reales)
@@ -14,15 +14,15 @@ import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
   buildButtonPayload,
-  postWebhook,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import { ensureQaClient } from "./lib/waba-sim-seed.mjs";
 import {
-  pollResponseSince,
-  logCaseResult,
   finishAndExit,
+  logCaseResult,
+  pollResponseSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -107,10 +107,9 @@ async function caseA_templateMeta(clientId) {
     /131026|133010|undeliverable|not.*whatsapp|invalid.*phone|recipient/i.test(
       errStr,
     );
-  const metaAccepted =
-    res.ok && body.ok === true && Boolean(body.messageId || body.phone);
-  const pass =
-    metaAccepted ||
+  const metaAccepted = res.ok && body.ok === true &&
+    Boolean(body.messageId || body.phone);
+  const pass = metaAccepted ||
     (!templateRejected && (deliverabilityIssue || body.ok === true));
 
   const { data: sess } = await supabase
@@ -130,10 +129,12 @@ async function caseA_templateMeta(clientId) {
   }
 
   const note = metaAccepted
-    ? `Meta aceptó (messageId=${body.messageId ?? "?"}, svc=${body.serviceName ?? sess?.retouch_offer_service_id ?? "?"})`
+    ? `Meta aceptó (messageId=${body.messageId ?? "?"}, svc=${
+      body.serviceName ?? sess?.retouch_offer_service_id ?? "?"
+    })`
     : pass
-      ? "Plantilla OK (Meta rechazó solo entrega a número QA)"
-      : fails.join("; ") || errStr.slice(0, 200);
+    ? "Plantilla OK (Meta rechazó solo entrega a número QA)"
+    : fails.join("; ") || errStr.slice(0, 200);
 
   const result = {
     pass: fails.length === 0 && pass,
@@ -221,12 +222,12 @@ async function caseB_agendar() {
   } catch {
     /* ignore */
   }
-  const hasCalendar =
-    DATE_LIST_RE.test(joined) || sess?.step === "awaiting_datetime";
+  const hasCalendar = DATE_LIST_RE.test(joined) ||
+    sess?.step === "awaiting_datetime";
   const hasOffer = cart.some((i) => i.item_id === OFFER_SVC);
   const fails = [];
   if (!hasCalendar && !hasOffer) {
-    fails.push(`sin calendario/carrito: ${joined.slice(0, 180)}`);
+    fails.push(`sin calendario/selección: ${joined.slice(0, 180)}`);
   }
 
   const result = {
@@ -240,7 +241,7 @@ async function caseB_agendar() {
     name: "B Agendar",
     pass: result.pass,
     note: result.pass
-      ? `calendario/carrito OK (haiku=${haiku.length})`
+      ? `calendario/selección OK (haiku=${haiku.length})`
       : fails.join("; "),
   };
 }

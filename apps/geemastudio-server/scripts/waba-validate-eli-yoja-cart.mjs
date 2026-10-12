@@ -3,22 +3,22 @@
  * Eli/Yoja — UNANSWERED_PRICE + CART_MISMATCH (03-ago).
  *
  * A: awaiting_datetime + "cuánto es" → resumen con Total S/ (no solo "Ya tienes eso")
- * B: carrito con servicio suelto + tap pack que lo cubre → solo pack (sin dup pedicure)
+ * B: selección con servicio suelto + tap pack que lo cubre → solo pack (sin dup pedicure)
  */
 import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
-  buildTextPayload,
   buildInteractivePayload,
-  postWebhook,
+  buildTextPayload,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import {
-  pollOutboundSince,
   assertOutbound,
-  logCaseResult,
   finishAndExit,
+  logCaseResult,
+  pollOutboundSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -53,7 +53,7 @@ async function seedCartAwaitingDatetime() {
 }
 
 async function caseUnansweredPrice() {
-  console.log("\n── Eli-A: cuánto es mid-carrito → Total S/ ──");
+  console.log("\n── Eli-A: cuánto es mid-selección → Total S/ ──");
   await seedCartAwaitingDatetime();
   const since = new Date().toISOString();
   await postWebhook(
@@ -130,7 +130,7 @@ async function caseCartMismatch() {
   );
   const pass = hasPack && !hasLoosePies;
   const fails = [];
-  if (!hasPack) fails.push("pack no quedó en carrito");
+  if (!hasPack) fails.push("pack no quedó en selección");
   if (hasLoosePies) fails.push("sigue pies suelto (CART_MISMATCH)");
 
   logCaseResult(

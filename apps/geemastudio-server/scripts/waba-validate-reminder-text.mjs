@@ -11,19 +11,19 @@ import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
   buildTextPayload,
-  postWebhook,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import {
-  seedScheduledAppointment,
   seedOutboundAt,
+  seedScheduledAppointment,
 } from "./lib/waba-sim-seed.mjs";
 import {
-  pollOutboundSince,
   assertOutbound,
-  logCaseResult,
   finishAndExit,
+  logCaseResult,
+  pollOutboundSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -113,14 +113,14 @@ async function caseSiConfirm() {
 
 async function caseActiveFlowNotHijacked() {
   console.log(
-    "\n── Reminder-B: step=awaiting_datetime + carrito + cita pendiente + SIN recordatorio → no debe confirmar ──",
+    "\n── Reminder-B: step=awaiting_datetime + selección + cita pendiente + SIN recordatorio → no debe confirmar ──",
   );
   await seedScheduledAppointment(supabase, TEST_PHONE, {
     date: nextWeekdayLima(),
     clientName: "QA Reminder Sí",
     sessionStep: "awaiting_datetime",
   });
-  // Carrito activo distinto de la cita ya agendada; sin recordatorio en wa_messages.
+  // Selección activa distinto de la cita ya agendada; sin recordatorio en wa_messages.
   await seedActiveCart(TEST_PHONE, "awaiting_datetime");
   const since = new Date().toISOString();
   await postWebhook(
@@ -144,7 +144,7 @@ async function caseActiveFlowNotHijacked() {
 
 async function caseReminderSentConfirms() {
   console.log(
-    "\n── Reminder-C: step=browsing + carrito + cita pendiente + CON recordatorio reciente → sí debe confirmar ──",
+    "\n── Reminder-C: step=browsing + selección + cita pendiente + CON recordatorio reciente → sí debe confirmar ──",
   );
   await seedScheduledAppointment(supabase, TEST_PHONE, {
     date: nextWeekdayLima(),
@@ -175,7 +175,7 @@ async function caseReminderSentConfirms() {
 
 async function caseStepGuardAloneBlocks() {
   console.log(
-    "\n── Reminder-D: step=awaiting_datetime + carrito + cita pendiente + CON recordatorio reciente → guard de step solo ya debe bloquear ──",
+    "\n── Reminder-D: step=awaiting_datetime + selección + cita pendiente + CON recordatorio reciente → guard de step solo ya debe bloquear ──",
   );
   await seedScheduledAppointment(supabase, TEST_PHONE, {
     date: nextWeekdayLima(),
@@ -202,7 +202,8 @@ async function caseStepGuardAloneBlocks() {
   });
   logCaseResult("Reminder-D step guard aislado", result, outbound);
   return {
-    name: "Reminder-D (guard de step solo debe bloquear, aunque haya recordatorio)",
+    name:
+      "Reminder-D (guard de step solo debe bloquear, aunque haya recordatorio)",
     pass: result.pass,
     note: result.pass ? "no confirmó (correcto)" : result.fails.join("; "),
   };

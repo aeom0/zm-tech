@@ -11,9 +11,9 @@
 // "gracias", "listo"). Si Haiku no responde a tiempo o falla, se prioriza NO
 // dejar a la clienta en silencio (fallback genérico).
 //
-// Si la sesión tiene carrito o step=awaiting_datetime, tras el texto se reenvía
+// Si la sesión tiene selección o step=awaiting_datetime, tras el texto se reenvía
 // el selector de fecha/hora (misma lógica que cart-nudge). Haiku no debe prometer
-// "días disponibles" sin carrito — en ese caso invita a escribir *agendar*.
+// "días disponibles" sin selección — en ese caso invita a escribir *agendar*.
 //
 // Anti-spam: Haiku recibe las últimas 8 respuestas del hilo (HISTORY_LIMIT) y
 // decide needs_response=false si la charla ya se cerró sola — nunca se envía
@@ -27,7 +27,7 @@
 //
 // Fix 2026-08-02 (caso Lucía Landa): la restricción de horario original hacía
 // que un inbound de madrugada/feriado nunca cayera en la ventana 5–12 min a
-// tiempo, y luego quedaba huérfano — cart-nudge no aplica sin carrito y
+// tiempo, y luego quedaba huérfano — cart-nudge no aplica sin selección y
 // browse-reengage requiere que el bot haya sido el último en hablar. Se quitó
 // la gate de horario para que el watchdog cubra ese hueco.
 
@@ -155,10 +155,10 @@ async function askHaikuIfNeedsResponse(
       "días ni horas. Si hace falta responder, pide nombre+DNI/CE en un solo " +
       "mensaje o espera al equipo. No digas que la cita ya está reservada."
     : ctx.hasCart
-    ? "La clienta TIENE servicios en carrito (o está eligiendo fecha). " +
+    ? "La clienta TIENE servicios en selección (o está eligiendo fecha). " +
       "Puedes invitarla a elegir día: el sistema adjuntará la lista interactiva de días. " +
       'Ej: "¿Te animas a agendar? Te dejo los días disponibles 👇"'
-    : "La clienta NO tiene carrito activo. NUNCA digas que le dejas días, calendario " +
+    : "La clienta NO tiene selección activa. NUNCA digas que le dejas días, calendario " +
       "ni lista de horarios (no se enviará ninguna lista). Si conviene agendar, " +
       "invítala a escribir *agendar* o a decir qué servicio quiere.";
 
@@ -249,7 +249,7 @@ async function askHaikuIfNeedsResponse(
   }
 }
 
-/** Ajusta copy si promete calendario sin carrito; decide si adjuntar lista. */
+/** Ajusta copy si promete calendario sin selección; decide si adjuntar lista. */
 function finalizeWatchdogMessage(
   raw: string,
   ctx: SessionContext,
@@ -367,8 +367,8 @@ Deno.serve(async (req: Request) => {
             : FALLBACK_MESSAGE;
 
           // En medio de agendar: aunque Haiku diga "charla cerrada", reenganchar
-          // con calendario (caso Yesenia: "Instagram verdad" + carrito vacío ya no,
-          // pero awaiting_datetime + carrito sí).
+          // con calendario (caso Yesenia: "Instagram verdad" + selección vacía ya no,
+          // pero awaiting_datetime + selección sí).
           const midBooking = ctx.hasCart || ctx.step === "awaiting_datetime";
           if (midBooking && !needsResponse) {
             needsResponse = true;
@@ -379,7 +379,7 @@ Deno.serve(async (req: Request) => {
             needsResponse &&
             !PROMISES_CALENDAR_RE.test(rawMessage)
           ) {
-            // Asegurar CTA de calendario si hay carrito
+            // Asegurar CTA de calendario si hay selección
             if (!/agendar|d[ií]a|cita/i.test(rawMessage)) {
               rawMessage = rawMessage.trim() +
                 " ¿Seguimos con tu cita? Te dejo los días 👇";

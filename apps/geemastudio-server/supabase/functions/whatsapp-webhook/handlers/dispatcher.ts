@@ -26,6 +26,7 @@ import {
 import {
   isValidSalonSlot,
   LIMA_UTC_OFFSET_HOURS,
+  normalizeLegacyWaId,
   WA_IDS,
 } from "../lib/constants.ts";
 import { runIntentShadowLog } from "../lib/intent-shadow.ts";
@@ -1269,7 +1270,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
 
   const interactiveId = getInteractiveId(message);
   const isInteractive = msgType === "interactive" || hasInteractive;
-  let userInput = (interactiveId || messageText).trim();
+  let userInput = normalizeLegacyWaId((interactiveId || messageText).trim());
   const lower = userInput.toLowerCase();
 
   rt.interactiveId = interactiveId ?? null;
@@ -1307,7 +1308,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
       await sendMessage(phoneNumber, CLOSING_AGREEMENT_ACK);
       return;
     }
-    // Sin cita en BD pero cree que quedó: no abrir menú; guía suave si hay carrito
+    // Sin cita en BD pero cree que quedó: no abrir menú; guía suave si hay selección
     if (sessionHasCart(session ?? null)) {
       await sendMessage(
         phoneNumber,
@@ -1377,7 +1378,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
     return;
   }
 
-  // Corrección de carrito / cambio de servicio (no es despedida)
+  // Corrección de selección / cambio de servicio (no es despedida)
   if (!interactiveId && messageText && matchesCartCorrectionIntent(lower)) {
     if (session?.step === "awaiting_datetime") {
       await upsertSession(supabase, phoneNumber, {
@@ -1462,7 +1463,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
     return;
   }
 
-  // Negaciones/despedidas: limpiar carrito, suprimir nudges futuros y responder amablemente
+  // Negaciones/despedidas: limpiar selección, suprimir nudges futuros y responder amablemente
   if (!interactiveId && messageText && isDeclineIntent(lower)) {
     const declineServiceIds = session?.cartItems?.length
       ? await expandCartItemsToServiceIds(supabase, session.cartItems)
@@ -1487,7 +1488,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
     if (remap.kind === "remapped") {
       userInput = remap.userInput;
     } else if (remap.kind === "short_affirmative_with_cart") {
-      // Carrito ya tiene ítems → AGENDAR_YA; limpiar CTAs cortos pendientes
+      // Selección ya tiene ítems → AGENDAR_YA; limpiar CTAs cortos pendientes
       // (precio y/o portafolio) para que no queden vivos hasta el TTL.
       const sessCta = session as {
         pending_price_cta_service_id?: string | null;
@@ -1533,7 +1534,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
     }
   }
 
-  // Soft reschedule (sin carrito) ANTES de P0 — "mejor el 22 a las 4pm" no debe ir a Mi cita
+  // Soft reschedule (sin selección) ANTES de P0 — "mejor el 22 a las 4pm" no debe ir a Mi cita
   if (
     !interactiveId &&
     messageText.trim() &&
@@ -1565,9 +1566,9 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
     session = (await getSession(supabase, phoneNumber)) ?? session;
   }
 
-  // ── Reclamo/garantía → derivar al equipo (con o sin carrito) ───────────────
+  // ── Reclamo/garantía → derivar al equipo (con o sin selección) ───────────────
   // Caso Lili 04/05-ago: el 1.er mensaje ("se bajaron…") llegó en browsing sin
-  // carrito → Haiku hizo add_to_cart; el guard solo vivía dentro de sessionHasCart.
+  // selección → Haiku hizo add_to_cart; el guard solo vivía dentro de sessionHasCart.
   if (
     !interactiveId &&
     messageText.trim() &&
@@ -1580,7 +1581,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
     return;
   }
 
-  // ── P0: carrito + fecha/hora en texto → confirmar cita sin Haiku ───────────
+  // ── P0: selección + fecha/hora en texto → confirmar cita sin Haiku ───────────
   // Incluye awaiting_datetime (última fecha gana: "21 agosto medio dia" con sticky viejo)
   if (
     !interactiveId &&
@@ -1690,7 +1691,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
       );
       return;
     }
-    // Sin carrito: Haiku antes del dead-end estático — mismo patrón que Camino A
+    // Sin selección: Haiku antes del dead-end estático — mismo patrón que Camino A
     // CTWA (`2023b73`). Cubre copy de campaña sin referral Meta / from_ad_at
     // (análisis 05-ago [P2], PE.…4523 "quiero agendar mi cita").
     {
@@ -1826,7 +1827,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
   // sean viejos). El gate de abajo exige step==="awaiting_datetime", así que
   // el ID caía sin dueño hasta el fallback genérico (sendMenuWithPromos),
   // mostrando el menú principal en vez de reconocer la fecha — "se enreda con
-  // el reply". Si hay carrito activo, retomar el flujo con esa fecha/hora; si
+  // el reply". Si hay selección activa, retomar el flujo con esa fecha/hora; si
   // no, avisar que el calendario venció en vez de responder algo genérico.
   if (
     session?.step !== "awaiting_datetime" &&
@@ -1852,7 +1853,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
   // la clienta confirmó tocando directamente fecha/hora en la lista
   // interactiva en vez de responder texto. tryAcceptPendingPriceCta() solo se
   // dispara con texto libre (!interactiveId && messageText más abajo) — sin
-  // este bloque, el tap de fecha/hora agendaba el servicio VIEJO del carrito
+  // este bloque, el tap de fecha/hora agendaba el servicio VIEJO de la selección
   // en vez del recién cotizado. Aplicarlo ANTES de leer session.serviceIds.
   if (
     interactiveId &&
@@ -1953,7 +1954,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
       }
     }
 
-    // Tap "Agendar cita" o texto agendar con carrito — reenviar calendario (no silencio)
+    // Tap "Agendar cita" o texto agendar con selección — reenviar calendario (no silencio)
     if (userInput === WA_IDS.AGENDAR_YA && sessionHasCart(session ?? null)) {
       await proceedToBookingWithCurrentCart(
         supabase,
@@ -1964,7 +1965,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
       return;
     }
 
-    // Lista vieja svc_/pack_ mid-agenda (Jessi …6106 / Bu …0782) — swap carrito
+    // Lista vieja svc_/pack_ mid-agenda (Jessi …6106 / Bu …0782) — swap selección
     if (
       await trySwapCartFromStaleCatalogTap({
         supabase,
@@ -2082,7 +2083,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
         "los dos",
         "por ambas",
         "por los dos",
-        // Alcance del servicio en carrito (Yesenia: "cualquier diseño", retoque)
+        // Alcance del servicio en selección (Yesenia: "cualquier diseño", retoque)
         "diseño",
         "diseno",
         "color",
@@ -2111,7 +2112,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
         /\bhoy\b|\bmanana\b|\bmañana\b|\bquisiera\b/i.test(messageText) ||
         (/\?/.test(messageText) && parseTimeText(messageText) === null);
 
-      // UNANSWERED_PRICE: "cuánto es / el total" con carrito → resumen S/ (no solo Haiku vacío)
+      // UNANSWERED_PRICE: "cuánto es / el total" con selección → resumen S/ (no solo Haiku vacío)
       const cartForPrice = session?.cartItems ?? [];
       const asksOwnCartPrice = cartForPrice.length > 0 &&
         !matchesServiceChangeIntent(messageText) &&
@@ -2139,7 +2140,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
         return;
       }
 
-      // Jessi …6106: nombra otra categoría (cejas/manicure) con Pack VIP en carrito
+      // Jessi …6106: nombra otra categoría (cejas/manicure) con Pack VIP en selección
       // → no dejar que Haiku cotice otro pack a ciegas; aclarar conflicto.
       // Alberto VE …0417: "qué tienes para las uñas" / "quiero agregar" NO debe
       // spamear "Ver fechas" (debounce:false) — abrir catálogo o aclarar sin lista.
@@ -2221,7 +2222,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
             label.replace(/ \+ /g, "\n🌸 ")
           }\n\n*Total: S/ ${total.toFixed(0)}*\n\n` +
             `Si quieres *agregar* otro servicio, escribe *agregar*.\n` +
-            `Si quieres *cambiar* lo del carrito, escribe p. ej. *cambiar a manicure*.\n` +
+            `Si quieres *cambiar* lo de la selección, escribe p. ej. *cambiar a manicure*.\n` +
             `Si sigues con esto, elige *día u hora* con los botones de abajo 👇`,
         );
         // No forzar lista nueva: el selector reciente sigue usable (anti-spam …0417).
@@ -2445,7 +2446,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
       if (validServices.length === 0) {
         // Haiku-first: el listado de categorías es fallback, no respuesta.
         // Si Haiku ya cotizó una oferta, la recuperamos y seguimos con la
-        // hora que acaba de tocar (mismo cierre que un tap con carrito).
+        // hora que acaba de tocar (mismo cierre que un tap con selección).
         const { recoverCartFromQuotedOffer } = await import(
           "../lib/pending-price-cta.ts"
         );

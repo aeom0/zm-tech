@@ -5,7 +5,7 @@
  * B1: dispatcher.ts (mentionsConflictingCatalogMidCart === true,
  * matchesMidAgendaBrowseOrAddIntent === false) — antes caía directo a boilerplate
  * ("Ahora tienes en tu selección... elige día u hora") sin intentar Haiku.
- * Carrito con Extensiones Clásicas, pregunta informativa sobre otra categoría
+ * Selección con Extensiones Clásicas, pregunta informativa sobre otra categoría
  * (manicure) que NO matchea agregar/ver/tienen/qué hay → debe responder Haiku,
  * no el boilerplate estático.
  *
@@ -27,17 +27,17 @@ import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
   buildTextPayload,
-  postWebhook,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import { ensureQaClient } from "./lib/waba-sim-seed.mjs";
 import {
-  fetchOutboundSince,
-  fetchHaikuSince,
   assertOutbound,
-  logCaseResult,
+  fetchHaikuSince,
+  fetchOutboundSince,
   finishAndExit,
+  logCaseResult,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -57,7 +57,7 @@ const supabase = createClient(url, serviceKey, {
   auth: { persistSession: false },
 });
 
-/** Carrito con Extensiones Clásicas (cat-extensiones), step awaiting_datetime. */
+/** Selección con Extensiones Clásicas (cat-extensiones), step awaiting_datetime. */
 async function setupSessionContext(mode) {
   await ensureQaClient(supabase, TEST_PHONE, "QA HaikuFirst Sim");
   const cartItems = JSON.stringify([
@@ -152,7 +152,10 @@ async function runCase({
 }
 
 async function main() {
-  console.log("Validación Haiku-primero informativo — teléfono QA:", TEST_PHONE);
+  console.log(
+    "Validación Haiku-primero informativo — teléfono QA:",
+    TEST_PHONE,
+  );
   await cleanupQaPhone(supabase, TEST_PHONE, { deleteClient: true });
   if (process.env.WABA_VALIDATE_SUITE) await sleep(3000);
 
@@ -179,9 +182,8 @@ async function main() {
     results.push(
       await runCase({
         id: "B3a",
-        label: "total del carrito + lifting (no dump estático)",
-        message:
-          "cuánto sería el total si le agrego lifting de pestañas",
+        label: "total de la selección + lifting (no dump estático)",
+        message: "cuánto sería el total si le agrego lifting de pestañas",
         mustMatch: [/lifting/i],
       }),
     );
@@ -190,8 +192,7 @@ async function main() {
         id: "B3b",
         label: "ubicación + lifting en browsing (no Maps+menú solo)",
         mode: "browsing",
-        message:
-          "dónde queda el local y atienden lifting de pestañas?",
+        message: "dónde queda el local y atienden lifting de pestañas?",
         mustMatch: [/lifting/i],
         mustNotMatch: [MENU_TRAS_UBICACION_RE],
       }),

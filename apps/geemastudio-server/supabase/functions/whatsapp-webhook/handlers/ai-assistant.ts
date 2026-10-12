@@ -187,8 +187,11 @@ const CART_IDS = [
   "agregar_otro",
   "ver_seleccion",
   "agendar_ya",
-  "vaciar_carrito",
+  "vaciar_seleccion",
   "volver_categorias",
+  // ids previos a «selección»: botones ya enviados
+  "vaciar_carrito",
+  "volver_carrito",
 ];
 /** Comprueba saludo como palabra completa — evita que "hola" matchee en "hidralips" o "hi" en "hidralips". */
 function isSaludoWord(lower: string): boolean {
@@ -270,7 +273,7 @@ export function detectAITrigger(
     if (lower.startsWith(prefix)) return null;
   }
 
-  // IDs de carrito/menú
+  // IDs de selección/menú
   if (CART_IDS.includes(lower) || MENU_MAIN_OPTIONS.includes(lower)) {
     return null;
   }
@@ -409,7 +412,7 @@ export async function getClientContext(
           formatPendingSummaryLines(pending)
         }\n` +
           `Si pide CAMBIAR el servicio (ej. "ya no quiero Builder, solo esmalte/manicure"), ` +
-          `usa add_to_cart con el NUEVO servicio del catálogo (reemplaza el carrito; no duplica cita). ` +
+          `usa add_to_cart con el NUEVO servicio del catálogo (reemplaza la selección; no duplica cita). ` +
           `NO inventes hora confirmada — sigue eligiendo día/hora con los botones.`
         : `\nCITA PROGRAMADA (reserva activa en este número):\n${
           formatPendingSummaryLines(pending)
@@ -431,7 +434,7 @@ export async function getClientContext(
         ` La cita sigue reservada. Si saluda o pregunta ("hola", "hola?", "ya?", "sí", "no"), dile eso con calma. action:none. Sin menú ni add_to_cart.`;
     }
 
-    // Construir bloque de carrito con nombres reales de servicios/packs
+    // Construir bloque de selección con nombres reales de servicios/packs
     let cartBlock = "";
     try {
       const cartItems = waSession?.cart_items
@@ -493,33 +496,33 @@ export async function getClientContext(
         }
         if (names.length > 0) {
           if (pending.length > 0 && !isRescheduling) {
-            cartBlock = `\nCARRITO ACTIVO (${names.length} ítem${
+            cartBlock = `\nSELECCIÓN ACTIVA (${names.length} ítem${
               names.length > 1 ? "s" : ""
             }) pero ya hay CITA PROGRAMADA — NO uses add_to_cart ni abras otro agendado.`;
           } else if (awaitingDatetime) {
             cartBlock =
-              `\nAGENDANDO (paso fecha/hora) — carrito:\n${
+              `\nAGENDANDO (paso fecha/hora) — selección:\n${
                 names.map((n) => `- ${n}`).join("\n")
               }\n` +
               `PROHIBIDO decir "reservado", "agendado", "cita confirmada" o inventar hora.\n` +
               `Si pide el MISMO servicio otra vez: action:none e invita a elegir día/hora.\n` +
-              `Si pide CAMBIAR / reemplazar el servicio ("ya no quiero X, solo Y"): usa add_to_cart con el NUEVO ID (el sistema reemplaza el carrito).\n` +
+              `Si pide CAMBIAR / reemplazar el servicio ("ya no quiero X, solo Y"): usa add_to_cart con el NUEVO ID (el sistema reemplaza la selección).\n` +
               `Si la pregunta NO tiene que ver con elegir fecha/hora (ej. duda sobre otro producto/servicio): respóndela y cierra con UNA frase corta invitando a seguir con día/hora u otro servicio (ej. "¿Seguimos con tu cita o quieres agregar algo más?") — no repitas los botones, ya los tiene arriba.`;
           } else {
             cartBlock =
-              `\nCARRITO ACTIVO (${names.length} ítem${
+              `\nSELECCIÓN ACTIVA (${names.length} ítem${
                 names.length > 1 ? "s" : ""
               }):\n${names.map((n) => `- ${n}`).join("\n")}\n` +
               `NO uses show_menu. Si ya eligió estos servicios, NO uses add_to_cart otra vez — invita a confirmar fecha. ` +
-              `add_to_cart SOLO si pide AGREGAR un servicio distinto al carrito.`;
+              `add_to_cart SOLO si pide AGREGAR un servicio distinto a la selección.`;
           }
         }
       } else if (Array.isArray(cartIds) && cartIds.length > 0) {
         cartBlock = pending.length > 0 && !isRescheduling
-          ? "\nCARRITO ACTIVO pero ya hay CITA PROGRAMADA — NO uses add_to_cart."
+          ? "\nSELECCIÓN ACTIVA pero ya hay CITA PROGRAMADA — NO uses add_to_cart."
           : awaitingDatetime
-          ? "\nAGENDANDO fecha/hora con carrito. Si cambia de servicio → add_to_cart del nuevo. NO digas que ya está reservado."
-          : "\nCARRITO ACTIVO: la clienta ya tiene servicios seleccionados. NO uses show_menu. Invita a agendar (sin re-agregar al carrito).";
+          ? "\nAGENDANDO fecha/hora con selección. Si cambia de servicio → add_to_cart del nuevo. NO digas que ya está reservado."
+          : "\nSELECCIÓN ACTIVA: la clienta ya tiene servicios seleccionados. NO uses show_menu. Invita a agendar (sin re-agregar a la selección).";
       }
     } catch {
       // silencioso
@@ -900,7 +903,7 @@ export async function callAnthropicAPI(
     const rawText = (data?.content?.[0]?.text as string | undefined)?.trim();
     if (!rawText) return null;
     const parsed = parseAIResponse(rawText);
-    // Guarda de código (no solo prompt) — caso real 17-sep (…4665): el carrito se
+    // Guarda de código (no solo prompt) — caso real 17-sep (…4665): la selección se
     // había vaciado por cart-nudge nudge2 y Haiku igual redactó "¡Listo! Tu cita
     // quedó confirmada..." sin que exista fila real en `appointments`. El prompt ya
     // prohibía esto (REGLA CRÍTICA — NO INVENTAR CITA CONFIRMADA) pero no es 100%
@@ -1443,7 +1446,7 @@ export async function executeAIAction(
           await sm(phoneNumber, ADDITIONAL_BOOKING_BLOCK_MESSAGE);
           break;
         }
-        // Alberto …0417, 18-sep: carrito+día/hora ya cerrados y esperando
+        // Alberto …0417, 18-sep: selección+día/hora ya cerrados y esperando
         // nombre/DNI/adelanto — un add_to_cart aquí pisaría el total ya
         // mostrado en el resumen de boleta sin que nadie lo note. Aún no
         // existe fila en `appointments` (shouldBlockAdditionalBooking no lo
@@ -1503,7 +1506,7 @@ export async function executeAIAction(
             parseFloat(String(pack.pack_price)) || 0,
           );
 
-        // Evitar duplicar carrito (Treysy: "Está quiero" → 2× pack + pedicure)
+        // Evitar duplicar selección (Treysy: "Está quiero" → 2× pack + pedicure)
         const existingIds = new Set(sessNow?.serviceIds ?? []);
         const newIds = [
           ...validSvcs.map((s) => s.id),
@@ -1527,7 +1530,7 @@ export async function executeAIAction(
         const namesNewService = newIds.some((id) => !existingIds.has(id)) &&
           newIds.length > 0;
 
-        // UNANSWERED_PRICE: "cuánto es" mid-carrito → resumen con S/, no solo "Ya tienes eso"
+        // UNANSWERED_PRICE: "cuánto es" mid-selección → resumen con S/, no solo "Ya tienes eso"
         if (asksPrice) {
           const cart = sessNow?.cartItems ?? [];
           if (cart.length > 0 && (allAlreadyInCart || inDatetime)) {
@@ -1553,7 +1556,7 @@ export async function executeAIAction(
             );
             break;
           }
-          // Precio de algo fuera del carrito: el texto de Haiku ya cotizó; no cortar ni duplicar
+          // Precio de algo fuera de la selección: el texto de Haiku ya cotizó; no cortar ni duplicar
           if (!allAlreadyInCart) break;
         }
 
@@ -1838,8 +1841,8 @@ export async function executeAIAction(
         // Haiku NUNCA redacta la confirmación — pide al flujo determinístico
         // que cierre la cita real (misma función que usa el gate P0 del
         // dispatcher). Caso real 17-sep (…4665): Haiku dijo "¡Listo! Tu cita
-        // quedó confirmada" sin fila real en `appointments` porque el carrito
-        // ya se había vaciado por cart-nudge (nudge2). Si no hay carrito/fecha
+        // quedó confirmada" sin fila real en `appointments` porque la selección
+        // ya se había vaciado por cart-nudge (nudge2). Si no hay selección/fecha
         // parseable, tryCompleteBookingFromText retorna false y avisamos la
         // verdad en vez de inventar un cierre.
         const { tryCompleteBookingFromText } = await import(
@@ -1848,9 +1851,9 @@ export async function executeAIAction(
         let session = await getSession(supabase, phoneNumber);
         // Nancy Alvites …9158 (4-oct, campaña Halloween): Haiku cotizó "Rímel
         // S/50", la clienta dijo "Sí, mañana 10 am" y Haiku emitió
-        // confirm_booking SIN add_to_cart previo → carrito vacío → "tu selección
+        // confirm_booking SIN add_to_cart previo → selección vacía → "tu selección
         // se venció" + menú. Haiku decide la intención; aquí solo reparamos el
-        // estado: si no hay carrito, recuperamos la oferta que él mismo cotizó
+        // estado: si no hay selección, recuperamos la oferta que él mismo cotizó
         // (con precio promo) y seguimos con el cierre determinístico.
         if (!session?.serviceIds?.length) {
           const { recoverCartFromQuotedOffer } = await import(
@@ -1885,7 +1888,7 @@ export async function executeAIAction(
           )
           : false;
         if (!closed && session?.serviceIds?.length) {
-          // Carrito válido pero sin día/hora parseable en el texto: seguir con
+          // Selección válida pero sin día/hora parseable en el texto: seguir con
           // el selector en vez de mandarla a "agendar" desde cero.
           const { resendDatetimeSelectors } = await import(
             "./booking-flow.ts"
@@ -2103,7 +2106,7 @@ export async function handleAIMessage(
       aiSession?.step === "awaiting_deposit_datos" ||
       aiSession?.step === "awaiting_payment_screenshot"
     ) {
-      // Alberto VE …0417, 18-sep: el carrito y el día/hora de ESTA cita ya
+      // Alberto VE …0417, 18-sep: la selección y el día/hora de ESTA cita ya
       // quedaron cerrados (solo falta nombre/DNI o el comprobante). Haiku
       // respondía "le agrego el pack X, S/90" como si ya hubiera pasado,
       // pero el sistema bloquea ese add_to_cart aparte — la clienta veía
@@ -2327,7 +2330,7 @@ export async function handleAIMessage(
     // Haiku-primero (Mila …9883, 4-oct): Haiku cotizó el pack y cerró con
     // «¿Deseas agendar este pack? Solo dime qué día…», pero en el mismo turno
     // mandó add_to_cart → el bot soltaba «✅ Listo — agregué…» + la lista de
-    // fechas encima de la pregunta. Regla de oro: pregunta ANTES del carrito.
+    // fechas encima de la pregunta. Regla de oro: pregunta ANTES de la selección.
     // Si ella ya confirmó en este mensaje («sí», «agéndame», «mañana a las 4»),
     // el add_to_cart sigue y el calendario usa ese día/hora. Si no, se difiere
     // y el pending CTA espera el siguiente turno.
@@ -2357,10 +2360,10 @@ export async function handleAIMessage(
       srtaUsedCount,
       supabase,
     };
-    // Alberto …0417, 18-sep: con carrito/día ya cerrados, el prompt le pide a
+    // Alberto …0417, 18-sep: con selección/día ya cerrados, el prompt le pide a
     // Haiku no confirmar el add_to_cart, pero a veces igual lo hace (y el
     // sistema bloqueaba solo la escritura en BD, no esta burbuja) — la
-    // clienta veía "agregamos X a tu carrito" seguido de la corrección del
+    // clienta veía "agregamos X a tu selección" seguido de la corrección del
     // guard. Se suprime aquí la burbuja de Haiku cuando el add_to_cart va a
     // ser bloqueado de todas formas, para no mandar la confirmación falsa.
     const cartLockedStep = aiSession?.step === "awaiting_deposit_boleta" ||
@@ -2368,7 +2371,7 @@ export async function handleAIMessage(
       aiSession?.step === "awaiting_payment_screenshot";
     if (result.action?.type === "add_to_cart" && cartLockedStep) {
       console.log(
-        "[AI] Burbuja add_to_cart suprimida: carrito bloqueado por step",
+        "[AI] Burbuja add_to_cart suprimida: selección bloqueada por step",
         aiSession?.step,
       );
     } else if (result.action?.type === "add_to_cart") {

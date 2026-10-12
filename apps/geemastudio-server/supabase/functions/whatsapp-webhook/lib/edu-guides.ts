@@ -141,7 +141,7 @@ export function matchesMappingExplainIntent(text: string): boolean {
 }
 
 /**
- * Infere técnica de mapeo desde texto o nombre de servicio en carrito.
+ * Infere técnica de mapeo desde texto o nombre de servicio en selección.
  * Default null si no hay señal (no adivinar 3D).
  */
 export function pickMappingTechnique(
@@ -267,7 +267,7 @@ export function matchesFiberCompareGuideIntent(text: string): boolean {
 }
 
 /**
- * Elige guía a enviar según el mensaje + servicios en carrito.
+ * Elige guía a enviar según el mensaje + servicios en selección.
  * Prioridad: pelo a pelo > ficha Extensiones_* (diseños) > mapping fino > compare.
  */
 export function pickEduGuideToSend(

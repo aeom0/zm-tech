@@ -9,11 +9,11 @@
 import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
-  buildTextPayload,
   buildButtonPayload,
   buildInteractivePayload,
-  postWebhook,
+  buildTextPayload,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import {
@@ -21,11 +21,11 @@ import {
   seedScheduledAppointment,
 } from "./lib/waba-sim-seed.mjs";
 import {
-  pollOutboundSince,
-  fetchOutboundSince,
   assertOutbound,
-  logCaseResult,
+  fetchOutboundSince,
   finishAndExit,
+  logCaseResult,
+  pollOutboundSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -164,7 +164,7 @@ async function casePatriciaServiceChange() {
     );
   }
   if (cartIds.includes(BUILDER_GEL_ID) && cartIds.length === 1) {
-    result.fails.push("carrito sigue solo con Builder Gel");
+    result.fails.push("selección sigue solo con Builder Gel");
   }
   if (sess?.reschedule_appointment_id !== appointmentId) {
     result.fails.push(

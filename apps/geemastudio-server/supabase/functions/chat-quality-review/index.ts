@@ -3,7 +3,7 @@
 //
 // Flags (caso Yoja / Eli 02-ago):
 //   unanswered_price — preguntó precio/incluido y el bot no aclaró bien
-//   cart_mismatch    — carrito no refleja lo que pidió (dup / servicio equivocado)
+//   cart_mismatch    — selección no refleja lo que pidió (dup / servicio equivocado)
 //   promo_ignored    — citó promo/descuento del anuncio y el bot lo ignoró
 //   client_confused  — clienta molesta/confundida ("por qué no dice", etc.)
 //
@@ -49,7 +49,7 @@ const ALLOWED_FLAGS = new Set([
 
 const FLAG_LABELS: Record<string, string> = {
   unanswered_price: "precio sin aclarar",
-  cart_mismatch: "carrito ≠ pedido",
+  cart_mismatch: "selección ≠ pedido",
   promo_ignored: "promo ignorada",
   client_confused: "clienta confundida",
 };
@@ -123,10 +123,10 @@ async function resolveClientDisplay(
 }
 
 function parseCartLabel(cartItemsJson: string | null): string {
-  if (!cartItemsJson || cartItemsJson === "[]") return "(carrito vacío)";
+  if (!cartItemsJson || cartItemsJson === "[]") return "(selección vacía)";
   try {
     const items = JSON.parse(cartItemsJson) as Array<Record<string, unknown>>;
-    if (!Array.isArray(items) || items.length === 0) return "(carrito vacío)";
+    if (!Array.isArray(items) || items.length === 0) return "(selección vacía)";
     return items
       .map((it) => {
         const t = it.item_type ?? it.t ?? "?";
@@ -161,30 +161,30 @@ async function askHaikuQuality(
     "Revisas si el bot/equipo falló al atender a la clienta. 'in' = clienta, 'out' = bot. " +
     "NO inventes problemas: solo marca flags si hay evidencia clara en el transcript. " +
     "CTWA boilerplate + imágenes de bienvenida NO es fallo. " +
-    "CTWA con un solo inbound (sin 2.º mensaje real) y carrito vacío NO es fallo — lo cubre ads-bounce; needs_alert=false. " +
+    "CTWA con un solo inbound (sin 2.º mensaje real) y selección vacía NO es fallo — lo cubre ads-bounce; needs_alert=false. " +
     "No marques promo_ignored solo porque el CTA del anuncio menciona 15% y el welcome aún no cotizó. " +
     "Si la clienta ya eligió día/hora o cerró con gracias, needs_alert=false. " +
     "Confirmar/reprogramar un recordatorio de cita, saludar, agradecer o pedir ubicación/horario respondidos correctamente NO es fallo: needs_alert=false. " +
     "Ante la duda, needs_alert=false; una alerta solo si el equipo debe intervenir YA (severity high o medium). " +
     "EFECTOS DE EXTENSIONES (ojo de gato/cat eye, ardilla, ojo abierto, fox, wispy, etc.): " +
     "son mapeos/estilos del servicio base, NO servicios aparte ni promos. " +
-    "Si pidió 'rímel ojo de gato' / 'rimel + efecto X' y el carrito tiene Extensiones Rímel " +
+    "Si pidió 'rímel ojo de gato' / 'rimel + efecto X' y la selección tiene Extensiones Rímel " +
     "(o el servicio base correcto), NUNCA marques cart_mismatch ni unanswered_price solo por el efecto. " +
     "Responde SOLO JSON válido sin markdown:\n" +
     '{"needs_alert":boolean,"flags":string[],"summary":"1 frase en español","severity":"high|medium|low"}\n' +
     "flags permitidos (subconjunto):\n" +
     "- unanswered_price: preguntó precio/qué incluye y la respuesta no aclara o evade\n" +
-    "- cart_mismatch: el carrito no refleja lo pedido (servicios duplicados, pie cobrado 2 veces, " +
+    "- cart_mismatch: la selección no refleja lo pedido (servicios duplicados, pie cobrado 2 veces, " +
     "agregó algo que no pidió, o ignoró el pack/combo que pidió). " +
-    "NUNCA marques cart_mismatch si Carrito actual es vacío — no hay mismatch sin ítems. " +
-    "NUNCA por efecto/estilo (ojo de gato, ardilla…) si el servicio base del pedido está en el carrito.\n" +
+    "NUNCA marques cart_mismatch si Selección actual es vacía — no hay mismatch sin ítems. " +
+    "NUNCA por efecto/estilo (ojo de gato, ardilla…) si el servicio base del pedido está en la selección.\n" +
     "- promo_ignored: citó descuento/promo del anuncio (ej. 15% Lun-Miér) y el bot no la aplicó ni explicó\n" +
     "- client_confused: clienta molesta/confundida porque no le respondieron bien (ej. por qué no dice el precio)\n" +
     "Si no hay ninguno, needs_alert=false y flags=[].";
 
   const userPrompt = `Teléfono …${phone.slice(-4)}\n` +
     `Paso sesión: ${step ?? "browsing"}\n` +
-    `Carrito actual: ${cartLabel}\n\n` +
+    `Selección actual: ${cartLabel}\n\n` +
     `Transcript (más reciente al final):\n${transcript}`;
 
   const controller = new AbortController();
@@ -341,7 +341,7 @@ Deno.serve(async (req: Request) => {
             );
           }
 
-          // Karla: CTWA temprano (1 inbound desde from_ad, sin carrito) → ads-bounce, no push
+          // Karla: CTWA temprano (1 inbound desde from_ad, sin selección) → ads-bounce, no push
           const sess = existing ?? {
             from_ad_at: null as string | null,
             cart_items: row.cart_items ?? "[]",
@@ -404,7 +404,7 @@ Deno.serve(async (req: Request) => {
             );
           } else if (verdict?.needs_alert) {
             let flags = verdict.flags;
-            // Defensa: carrito vacío → no tiene sentido cart_mismatch (falso positivo SOFI)
+            // Defensa: selección vacía → no tiene sentido cart_mismatch (falso positivo SOFI)
             if (cartEmpty) {
               flags = flags.filter((f) => f !== "cart_mismatch");
             }

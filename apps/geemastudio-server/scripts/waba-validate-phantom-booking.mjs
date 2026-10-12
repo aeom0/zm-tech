@@ -6,9 +6,9 @@
  * dirección, pero no existía ninguna fila en appointments — el INSERT se hacía
  * sin revisar el campo `error`. Fix: insertAppointmentChecked() (payment.ts).
  *
- * Cómo se fuerza el fallo: se siembra el carrito con un service_id inexistente,
+ * Cómo se fuerza el fallo: se siembra la selección con un service_id inexistente,
  * que viola la FK appointments_service_id_services_id_fk. Es el escenario real
- * de catálogo desincronizado (servicio borrado con el carrito ya armado).
+ * de catálogo desincronizado (servicio borrado con la selección ya armado).
  *
  * El bot valida `cart_service_ids` contra el catálogo antes de agendar
  * (dispatcher.ts, "Tu selección ya no está disponible"), así que para ejercitar
@@ -19,7 +19,7 @@
  *  A: L–S (sendConfirmedBookingSummary) con ítem fantasma → mensaje de
  *     fallback al 932, SIN "cita confirmada/anotada", 0 citas creadas, fila en
  *     wa_error_log (step booking_insert) y sesión que no queda en `completed`.
- *  B: guard previo — carrito entero inválido → el dispatcher limpia el carrito
+ *  B: guard previo — selección entera inválido → el dispatcher limpia la selección
  *     y pide elegir de nuevo, sin llegar al INSERT (defensa en profundidad).
  *  C (control): flujo normal con servicio real → confirma y crea 1 cita.
  *  D: domingo (processPaymentScreenshot, adelanto 20%) con ítem fantasma →
@@ -30,20 +30,20 @@ import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
   buildImagePayload,
   buildInteractivePayload,
-  postWebhook,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import {
-  seedSessionWithCart,
   countScheduledAppointments,
+  seedSessionWithCart,
 } from "./lib/waba-sim-seed.mjs";
 import {
-  pollResponseSince,
   assertOutbound,
   fetchWaErrorsSince,
-  logCaseResult,
   finishAndExit,
+  logCaseResult,
+  pollResponseSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -147,7 +147,7 @@ async function sessionStep(phone) {
 
 async function validateFalloInsertNoConfirma() {
   console.log(
-    "\n── Caso A: L–S con servicio fantasma en carrito → fallback, no confirmar ──",
+    "\n── Caso A: L–S con servicio fantasma en selección → fallback, no confirmar ──",
   );
   await cleanupQaPhone(supabase, PHONE_LS, { deleteClient: true });
   await seedAwaitingDatetime(
@@ -212,7 +212,7 @@ async function validateFalloInsertNoConfirma() {
 
 async function validateGuardCarritoInvalido() {
   console.log(
-    "\n── Caso B: carrito entero inválido → guard previo, no llega al INSERT ──",
+    "\n── Caso B: selección entera inválido → guard previo, no llega al INSERT ──",
   );
   await cleanupQaPhone(supabase, PHONE_LS, { deleteClient: true });
   await seedAwaitingDatetime(PHONE_LS, PHANTOM_SERVICE_ID, WEEKDAY_KEY);
@@ -242,13 +242,13 @@ async function validateGuardCarritoInvalido() {
   if (appts !== 0) result.fails.push(`esperaba 0 citas creadas, hay ${appts}`);
 
   const pass = result.fails.length === 0;
-  logCaseResult("Fantasma-B guard carrito", { ...result, pass }, outbound);
+  logCaseResult("Fantasma-B guard selección", { ...result, pass }, outbound);
 
   return {
-    name: "Caso B (guard previo, carrito inválido)",
+    name: "Caso B (guard previo, selección inválido)",
     pass,
     note: pass
-      ? "Detecta el carrito obsoleto antes de intentar la cita y pide elegir de nuevo"
+      ? "Detecta la selección obsoleto antes de intentar la cita y pide elegir de nuevo"
       : result.fails.join("; ") || "Falló",
   };
 }

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * held-slot-watch: al crearse una cita, avisa a los carritos que esperaban el
+ * held-slot-watch: al crearse una cita, avisa a las selecciones que esperaban el
  * abono en una hora que esa cita acaba de cerrar (caso Mirta Aguayo, sep-2026).
  *
  * Requiere desplegadas `held-slot-watch` y `whatsapp-webhook`, y la migración
@@ -22,24 +22,24 @@ import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
   buildImagePayload,
-  postWebhook,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import {
-  seedScheduledAppointment,
   countScheduledAppointments,
+  seedScheduledAppointment,
 } from "./lib/waba-sim-seed.mjs";
 import {
-  pollOutboundSince,
   assertOutbound,
-  logCaseResult,
   finishAndExit,
+  logCaseResult,
+  pollOutboundSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
 const PHONE_A = "51999000990"; // agenda la cita que cierra el cupo
-const PHONE_B = "51999000991"; // carrito esperando el abono
+const PHONE_B = "51999000991"; // selección esperando el abono
 
 /** Próximo domingo con ≥14 días de margen (adelanto obligatorio). */
 function nextSundayKey(minDaysAhead = 14) {
@@ -140,7 +140,7 @@ async function caseA() {
   const pass = result.fails.length === 0;
   logCaseResult("Held-slot A", { ...result, pass }, outbound);
   return {
-    name: "Caso A (cita cierra la hora del carrito)",
+    name: "Caso A (cita cierra la hora de la selección)",
     pass,
     note: pass
       ? "B recibe el aviso y la lista de horas; no se le asigna otra hora"

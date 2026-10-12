@@ -114,7 +114,7 @@ async function askHaikuFinishBooking(
     "(prohibido: babe, baby, amor, cielo, linda, hermosa, bella, guapa). " +
     "Español peruano. reply: máx 2 líneas para la clienta. " +
     `Catálogo (id|nombre|precio):\n${catalogLines}\n` +
-    `Carrito actual: ${cartSummary}\n` +
+    `Selección actual: ${cartSummary}\n` +
     "Responde ÚNICAMENTE JSON válido:\n" +
     '{"reply":"texto","service_id":"uuid o null","datetime_text":"texto libre fecha/hora o null","send_calendar":boolean}';
 

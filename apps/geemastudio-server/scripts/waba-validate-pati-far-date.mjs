@@ -8,17 +8,17 @@
  * B: "21 agosto medio dia" → cita 21 ago 12:00 (NO julio; evita cupo real 14 ago)
  * C: awaiting_client_identity + queja "Malaso este robot" → no spamea DNI;
  *    sale a browsing
- * D: sticky 15 ago → "prefiero 14" con carrito → selected_day 14 + pide hora
+ * D: sticky 15 ago → "prefiero 14" con selección → selected_day 14 + pide hora
  * E: cita scheduled + "mejor el 22 agosto a las 4pm" → UPDATE sin menú Mi cita
- * I: cita scheduled + carrito NUEVO (awaiting_datetime, selected_day distinto)
+ * I: cita scheduled + selección NUEVA (awaiting_datetime, selected_day distinto)
  *    + "10" sin am/pm → NO reprograma la cita existente (PR #20 revisión)
  */
 import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
   buildTextPayload,
-  postWebhook,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import {
@@ -26,10 +26,10 @@ import {
   seedScheduledAppointment,
 } from "./lib/waba-sim-seed.mjs";
 import {
-  pollOutboundSince,
   assertOutbound,
-  logCaseResult,
   finishAndExit,
+  logCaseResult,
+  pollOutboundSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -189,8 +189,7 @@ async function caseBMedioDia(serviceId) {
     .limit(1)
     .maybeSingle();
 
-  const dateOk =
-    typeof appt?.date === "string" &&
+  const dateOk = typeof appt?.date === "string" &&
     appt.date.startsWith("2026-08-21") &&
     /12:00/.test(appt.date);
 
@@ -272,9 +271,9 @@ async function caseCIdentityNoSpam() {
   return result.pass;
 }
 
-/** D: sticky 15 → corrección a 14 con carrito → hora */
+/** D: sticky 15 → corrección a 14 con selección → hora */
 async function caseDStickyThenCorrect(serviceId) {
-  console.log('\n── Pati-D: sticky 15 → "prefiero 14" + carrito → hora ──');
+  console.log('\n── Pati-D: sticky 15 → "prefiero 14" + selección → hora ──');
   await cleanupQaPhone(supabase, TEST_PHONE, { deleteClient: true });
   await ensureQaClient(supabase, TEST_PHONE, "QA PATI FAR");
 
@@ -362,7 +361,7 @@ async function caseDStickyThenCorrect(serviceId) {
   }
 
   result.pass = result.fails.length === 0;
-  logCaseResult("Pati-D 15→14 sticky+carrito", result, outbound);
+  logCaseResult("Pati-D 15→14 sticky+selección", result, outbound);
   return result.pass;
 }
 
@@ -417,7 +416,9 @@ async function caseESoftReschedule(serviceId) {
 
   const result = assertOutbound(outbound, [], {
     mustMatch: [/reprogramamos|Listo|Nueva fecha|22\s+de\s+agosto/i],
-    mustNotMatch: [/Mi cita|Elige el nuevo día \(reprogramación\)|Dale, te cambio la fecha/i],
+    mustNotMatch: [
+      /Mi cita|Elige el nuevo día \(reprogramación\)|Dale, te cambio la fecha/i,
+    ],
     expectHaiku: false,
   });
 
@@ -427,8 +428,7 @@ async function caseESoftReschedule(serviceId) {
     .eq("id", appointmentId)
     .maybeSingle();
 
-  const dateOk =
-    typeof appt?.date === "string" &&
+  const dateOk = typeof appt?.date === "string" &&
     appt.date.startsWith("2026-08-22") &&
     /16:00/.test(appt.date);
 
@@ -503,12 +503,13 @@ async function caseFTimeOnlySoft(serviceId) {
     .select("date")
     .eq("id", appointmentId)
     .maybeSingle();
-  const dateOk =
-    typeof appt?.date === "string" &&
+  const dateOk = typeof appt?.date === "string" &&
     appt.date.startsWith("2026-08-28") &&
     /10:00/.test(appt.date);
   if (!dateOk) {
-    result.fails.push(`BD date=${appt?.date ?? "null"} (esperado 28 ago 10:00)`);
+    result.fails.push(
+      `BD date=${appt?.date ?? "null"} (esperado 28 ago 10:00)`,
+    );
   }
 
   result.pass = result.fails.length === 0;
@@ -654,11 +655,13 @@ async function caseHNoWelcomeWithPending(serviceId) {
 const SOFT_GEL_ID = "1e15a516-95b1-4be3-bc0d-88f530bc6011";
 
 /**
- * I: cita scheduled (vie 21 ago 12:00) + carrito nuevo awaiting_datetime
+ * I: cita scheduled (vie 21 ago 12:00) + selección nueva awaiting_datetime
  * (selected_day ≠ cita) → "10" sin am/pm no debe UPDATE la cita existente.
  */
 async function caseIBareTenDoesNotRescheduleExisting(serviceId) {
-  console.log('\n── Pati-I: carrito nuevo + "10" → no pisa cita existente ──');
+  console.log(
+    '\n── Pati-I: selección nueva + "10" → no pisa cita existente ──',
+  );
   await cleanupQaPhone(supabase, TEST_PHONE, { deleteClient: true });
   const existingDate = "2026-08-21 12:00:00";
   const { appointmentId } = await seedScheduledAppointment(
@@ -677,7 +680,7 @@ async function caseIBareTenDoesNotRescheduleExisting(serviceId) {
     .update({ whatsapp_phone: TEST_PHONE, client_phone: TEST_PHONE })
     .eq("id", appointmentId);
 
-  // Carrito de OTRO servicio + día distinto al de la cita (jue 27 ago)
+  // Selección de OTRO servicio + día distinto al de la cita (jue 27 ago)
   await supabase
     .from("whatsapp_sessions")
     .update({
@@ -775,7 +778,7 @@ async function main() {
     results.push({
       name: "Pati-D",
       pass: d,
-      note: d ? "15→14 sticky+carrito" : "falló",
+      note: d ? "15→14 sticky+selección" : "falló",
     });
     await sleep(2000);
     const e = await caseESoftReschedule(serviceId);
@@ -810,7 +813,7 @@ async function main() {
     results.push({
       name: "Pati-I",
       pass: i,
-      note: i ? '"10" no pisa cita + carrito' : "falló",
+      note: i ? '"10" no pisa cita + selección' : "falló",
     });
   } finally {
     await cleanupQaPhone(supabase, TEST_PHONE, { deleteClient: true });

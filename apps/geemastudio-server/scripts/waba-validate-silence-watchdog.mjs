@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
  * QA de silence-watchdog:
- * A) browsing sin carrito → mensaje de recuperación + watchdog_sent_at
- * B) awaiting_datetime + carrito → texto + lista "Elegir fecha" (Yesenia 2026-07-11)
+ * A) browsing sin selección → mensaje de recuperación + watchdog_sent_at
+ * B) awaiting_datetime + selección → texto + lista "Elegir fecha" (Yesenia 2026-07-11)
  * C) charla cerrada sola (ej. "gracias") → NO debe enviar nada (anti-spam Haiku)
  *
  * Invoca la función con CRON_SECRET (sin restricción de horario — el watchdog
@@ -154,7 +154,7 @@ async function fetchOutboundSince(since) {
 }
 
 async function caseA() {
-  console.log("\n── A: browsing sin carrito → texto recuperación ──");
+  console.log("\n── A: browsing sin selección → texto recuperación ──");
   await cleanupQaPhone(supabase, PHONE, { deleteClient: true });
   await seedStaleInboundBrowsing();
   const since = new Date().toISOString();
@@ -190,7 +190,7 @@ async function caseA() {
 }
 
 async function caseB() {
-  console.log("\n── B: awaiting_datetime + carrito → texto + lista fecha ──");
+  console.log("\n── B: awaiting_datetime + selección → texto + lista fecha ──");
   await cleanupQaPhone(supabase, PHONE, { deleteClient: true });
   await seedStaleInboundAwaitingDatetime();
   const since = new Date().toISOString();
@@ -218,8 +218,8 @@ async function caseB() {
   const hasDateList = DATE_LIST_RE.test(allText);
   const calendarsSent = (result?.calendarsSent ?? 0) >= 1;
   const guardUpdated = !!session?.watchdog_sent_at;
-  const pass =
-    outbound.length >= 2 && hasDateList && guardUpdated && calendarsSent;
+  const pass = outbound.length >= 2 && hasDateList && guardUpdated &&
+    calendarsSent;
 
   console.log(`  Pass: ${pass ? "sí" : "no"} (lista fecha: ${hasDateList})`);
   return {

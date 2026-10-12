@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Solapamiento condicionado — carrito ENTRANTE 100% especial → tope 2;
- * cualquier servicio no-especial en el carrito → tope 1 (sin cambios).
+ * Solapamiento condicionado — selección ENTRANTE 100% especial → tope 2;
+ * cualquier servicio no-especial en la selección → tope 1 (sin cambios).
  *
  * Casos A–G, J–K: agendado nuevo por texto libre (`tryCompleteBookingFromText`).
  * Casos H–I, L: reprogramación por tap `time_` → `finalizeRescheduleAppointment`
@@ -16,22 +16,22 @@
 import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
-  buildTextPayload,
   buildInteractivePayload,
-  postWebhook,
+  buildTextPayload,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import {
+  countScheduledAppointments,
   ensureQaClient,
   seedScheduledAppointment,
-  countScheduledAppointments,
 } from "./lib/waba-sim-seed.mjs";
 import {
-  pollResponseSince,
-  fetchOutboundSince,
   assertOutbound,
-  logCaseResult,
+  fetchOutboundSince,
   finishAndExit,
+  logCaseResult,
+  pollResponseSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -39,7 +39,7 @@ const PHONE_A = "51999000991"; // ocupante(s)
 const PHONE_B = "51999000992"; // quien agenda / reprograma
 const PHONE_C = "51999000993"; // 2.º ocupante (caso C)
 
-function nextWeekdayKey(weekday /* 0=dom */, minDaysAhead = 14) {
+function nextWeekdayKey(weekday, /* 0=dom */ minDaysAhead = 14) {
   // Fecha futura móvil: el fixture fijo se pudo en el pasado y hacía fallar los casos "horario libre".
   const d = new Date(Date.now() + minDaysAhead * 86400000);
   while (d.getUTCDay() !== weekday) d.setUTCDate(d.getUTCDate() + 1);
@@ -59,7 +59,8 @@ const LAMINADO_CEJAS_ID = "svc-laminado-cejas";
 const BOZO_ID = "96f071d5-b156-4c11-9b6e-20650e5f8cd8";
 const DISENO_TINTURADO_ID = "8a37afe6-59e9-45cd-8fc7-292ec2979bfb";
 
-const SLOT_TAKEN_RE = /no tiene cupo|Horarios con cupo|ya fue reservado por otra clienta/i;
+const SLOT_TAKEN_RE =
+  /no tiene cupo|Horarios con cupo|ya fue reservado por otra clienta/i;
 /** Capacidad pasó el gate — puede ser confirmación, abono S/25 o ajuste de precio promo. */
 const ALLOWED_RE =
   /Resumen de tu (reserva|cita)|Una precisión sobre tu cita|cita está (confirmada|anotada)|adelanto de S\/\s*25|Sigue estos pasos para agendar|Te esperamos/i;
@@ -338,14 +339,14 @@ async function caseF() {
     name: "F mixto ocupante → Microshading",
     pass: result.pass,
     note: result.pass
-      ? "mira carrito entrante (1 < 2)"
+      ? "mira selección entrante (1 < 2)"
       : result.fails?.join("; ") || "Falló",
   };
 }
 
 async function caseG() {
   console.log(
-    "\n── G: vacío → carrito mixto Builder+Laminado → permite ──",
+    "\n── G: vacío → selección mixto Builder+Laminado → permite ──",
   );
   await cleanupAll();
   await seedBookerCart([BUILDER_GEL_ID, LAMINADO_CEJAS_ID], [70, 70]);
@@ -399,9 +400,14 @@ async function caseH() {
       { wamid: newWamid("wamid.qa.spov.h"), contactName: "QA Soft H" },
     ),
   );
-  const { outbound, haiku } = await pollResponseSince(supabase, PHONE_B, since, {
-    timeoutMs: 28000,
-  });
+  const { outbound, haiku } = await pollResponseSince(
+    supabase,
+    PHONE_B,
+    since,
+    {
+      timeoutMs: 28000,
+    },
+  );
   const { data: updated } = await supabase
     .from("appointments")
     .select("date")
@@ -469,9 +475,14 @@ async function caseI() {
       { wamid: newWamid("wamid.qa.spov.i"), contactName: "QA Soft I" },
     ),
   );
-  const { outbound, haiku } = await pollResponseSince(supabase, PHONE_B, since, {
-    timeoutMs: 28000,
-  });
+  const { outbound, haiku } = await pollResponseSince(
+    supabase,
+    PHONE_B,
+    since,
+    {
+      timeoutMs: 28000,
+    },
+  );
   const { data: updated } = await supabase
     .from("appointments")
     .select("date")
@@ -490,7 +501,11 @@ async function caseI() {
       `cita se movió (date=${updated?.date})`,
     ];
   }
-  logCaseResult("Special-I reprog normal bloqueo", { ...result, pass }, outbound);
+  logCaseResult(
+    "Special-I reprog normal bloqueo",
+    { ...result, pass },
+    outbound,
+  );
   return {
     name: "I reprog normal tap (bloqueo)",
     pass,
@@ -510,7 +525,9 @@ async function caseJ() {
   return {
     name: "J Bozo = especial",
     pass: result.pass,
-    note: result.pass ? "extra ID → cap 2" : result.fails?.join("; ") || "Falló",
+    note: result.pass
+      ? "extra ID → cap 2"
+      : result.fails?.join("; ") || "Falló",
   };
 }
 
@@ -576,9 +593,14 @@ async function caseL() {
       { wamid: newWamid("wamid.qa.spov.l"), contactName: "QA Soft L" },
     ),
   );
-  const { outbound, haiku } = await pollResponseSince(supabase, PHONE_B, since, {
-    timeoutMs: 28000,
-  });
+  const { outbound, haiku } = await pollResponseSince(
+    supabase,
+    PHONE_B,
+    since,
+    {
+      timeoutMs: 28000,
+    },
+  );
   const { data: updated } = await supabase
     .from("appointments")
     .select("date")
@@ -597,7 +619,11 @@ async function caseL() {
       `cita se movió (date=${updated?.date})`,
     ];
   }
-  logCaseResult("Special-L reprog especial 2 ocupantes", { ...result, pass }, outbound);
+  logCaseResult(
+    "Special-L reprog especial 2 ocupantes",
+    { ...result, pass },
+    outbound,
+  );
   return {
     name: "L reprog especial tap (2 ocupantes → bloqueo)",
     pass,
@@ -625,14 +651,13 @@ async function main() {
     .split(",")
     .map((s) => s.trim().toUpperCase())
     .filter(Boolean);
-  const selected =
-    filterRaw.length > 0
-      ? filterRaw.map((k) => {
-          const fn = allCases[k];
-          if (!fn) throw new Error(`Caso desconocido: ${k}`);
-          return fn;
-        })
-      : Object.values(allCases);
+  const selected = filterRaw.length > 0
+    ? filterRaw.map((k) => {
+      const fn = allCases[k];
+      if (!fn) throw new Error(`Caso desconocido: ${k}`);
+      return fn;
+    })
+    : Object.values(allCases);
   if (filterRaw.length) {
     console.log("Solo casos:", filterRaw.join(", "));
   }

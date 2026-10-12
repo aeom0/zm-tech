@@ -1,4 +1,4 @@
-// menu-ids.ts — IDs de menú / carrito y ecos Meta (Plan 08)
+// menu-ids.ts — IDs de menú / selección y ecos Meta (Plan 08)
 
 import { WA_IDS } from "../../lib/constants.ts";
 
@@ -8,6 +8,8 @@ export const ECHO_TITLES = [
   "ver mi selección",
   "agregar otro servicio",
   "ver otras promos",
+  "agregar esta promo a la selección",
+  // ecos de botones previos al rename
   "agregar esta promo al carrito",
   "confirmar promo",
   "ver opciones",
@@ -15,6 +17,7 @@ export const ECHO_TITLES = [
   "opciones",
   "revisar servicios elegidos",
   "reservar con los servicios elegidos",
+  "vaciar selección",
   "vaciar carrito",
   "eliminar todo y empezar de cero",
   "ver servicios de esta categoría",
@@ -71,13 +74,13 @@ export const MENU_MAIN_OPTIONS = [
   "consultar_horarios",
 ];
 
-/** Navegación de carrito: no debe quedar atrapada en awaiting_datetime (Alberto VE …0417). */
+/** Navegación de selección: no debe quedar atrapada en awaiting_datetime (Alberto VE …0417). */
 export const CART_NAV_IDS = [
   WA_IDS.AGREGAR_OTRO,
-  WA_IDS.VACIAR_CARRITO,
+  WA_IDS.VACIAR_SELECCION,
   WA_IDS.VER_SELECCION,
   WA_IDS.AGENDAR_YA,
-  WA_IDS.VOLVER_CARRITO,
+  WA_IDS.VOLVER_SELECCION,
   WA_IDS.VOLVER_FECHAS,
 ] as const;
 

@@ -468,7 +468,7 @@ async function processMessage(body: Record<string, unknown>): Promise<void> {
       // undefined y el tap NUNCA esperaba turno. Caso Melisa …9414 (27-sep-2026):
       // tocó "Agendar" del recordatorio de retoque a los ~6s de escribir "Buenos
       // dias" + "Una cita para mañana"; ese texto seguía coalesciendo/despachando
-      // en paralelo y ambos flujos pisaron la misma sesión/carrito (menú de
+      // en paralelo y ambos flujos pisaron la misma sesión/selección (menú de
       // Depilación, foto de Cejas y un "no hay cupo" con la fecha de su cita
       // completada anterior, todo ajeno a lo que había pedido).
       const isTemplateButtonReply = msgType === "button";

@@ -13,18 +13,18 @@
 import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
-  buildTextPayload,
   buildInteractivePayload,
-  postWebhook,
+  buildTextPayload,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import {
-  pollOutboundSince,
-  fetchOutboundSince,
   assertOutbound,
-  logCaseResult,
+  fetchOutboundSince,
   finishAndExit,
+  logCaseResult,
+  pollOutboundSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -71,7 +71,7 @@ async function caseFix1_TercerosNoInterceptaScreenshot() {
   const phone = PHONE_FIX1;
   const serviceId = await getServiceId(supabase);
 
-  // Seed: sesión en awaiting_payment_screenshot con carrito de domingo
+  // Seed: sesión en awaiting_payment_screenshot con selección de domingo
   await supabase.from("whatsapp_sessions").upsert({
     phone,
     step: "awaiting_payment_screenshot",
@@ -276,7 +276,7 @@ async function caseFix4_HolidaySliceInSendDateSelector() {
       { onConflict: "phone_country,phone_normalized" },
     );
 
-  // Sesión con carrito listo, awaiting_datetime, sin selected_day
+  // Sesión con selección lista, awaiting_datetime, sin selected_day
   await supabase.from("whatsapp_sessions").upsert({
     phone,
     step: "awaiting_datetime",
@@ -323,8 +323,8 @@ async function caseFix4_HolidaySliceInSendDateSelector() {
   const note = feriadoOk
     ? "Slots solo hasta 12 PM — feriado reconocido correctamente"
     : hasTardeSlot
-      ? "⚠️  Slots de tarde presentes — feriado NO reconocido"
-      : "Respuesta recibida pero sin slots detectables en content (verificar logs manualmente)";
+    ? "⚠️  Slots de tarde presentes — feriado NO reconocido"
+    : "Respuesta recibida pero sin slots detectables en content (verificar logs manualmente)";
 
   logCaseResult(
     "Fix4 — isPeruHoliday limita slots en feriado 29-jun",
@@ -333,7 +333,9 @@ async function caseFix4_HolidaySliceInSendDateSelector() {
   );
   console.log(`  → Slots mañana (10/11h): ${hasMananaSlot ? "✅" : "—"}`);
   console.log(
-    `  → Slots tarde (13+h):    ${hasTardeSlot ? "❌ presentes" : "✅ ausentes"}`,
+    `  → Slots tarde (13+h):    ${
+      hasTardeSlot ? "❌ presentes" : "✅ ausentes"
+    }`,
   );
   console.log(
     `  → Fix4 correcto:         ${feriadoOk ? "✅ sí" : "⚠️  revisar"}`,

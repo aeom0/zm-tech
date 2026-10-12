@@ -20,7 +20,7 @@
  * N: dos preguntas sueltas seguidas en boleta → el recordatorio de nombre/DNI
  *    NO se repite en <5min (evita "se convierte en spam")
  * O: pide agregar otro servicio/pack en awaiting_deposit_boleta → NO se agrega
- *    al carrito (cart_service_ids sin cambios), Haiku no confirma como si ya
+ *    a la selección (cart_service_ids sin cambios), Haiku no confirma como si ya
  *    lo hubiera agregado
  * P: mismo intento de agregar servicio en awaiting_payment_screenshot → mismo guard
  *
@@ -37,20 +37,23 @@
 import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
-  buildTextPayload,
-  buildInteractivePayload,
   buildImagePayload,
-  postWebhook,
+  buildInteractivePayload,
+  buildTextPayload,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
-import { ensureQaClient, seedScheduledAppointment } from "./lib/waba-sim-seed.mjs";
 import {
-  pollOutboundSince,
-  fetchOutboundSince,
+  ensureQaClient,
+  seedScheduledAppointment,
+} from "./lib/waba-sim-seed.mjs";
+import {
   assertOutbound,
-  logCaseResult,
+  fetchOutboundSince,
   finishAndExit,
+  logCaseResult,
+  pollOutboundSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -63,7 +66,8 @@ const FIXED_DATOS_RE = /Datos para la boleta|Nombre y Apellidos|DNI\s*\/\s*CE/i;
 const FIXED_ADELANTO_RE =
   /Adelanto para reservar tu cupo|adelanto de S\/\s*25|para reservar tu cupo/i;
 const FIXED_COPY_RE = FIXED_ADELANTO_RE; // alias legacy en asserts
-const FIXED_TOLERANCE_RE = /tolerancia de\s*5\s*minutos|Tolerancia el día de tu cita:\s*5/i;
+const FIXED_TOLERANCE_RE =
+  /tolerancia de\s*5\s*minutos|Tolerancia el día de tu cita:\s*5/i;
 const NO_REFUND_RE = /no habr[aá] devoluci[oó]n del adelanto/i;
 /** Solo el aviso de 20% (no el copy neutro de domingo para clientas S/25). */
 const SUNDAY_RATE_RE = /adelanto del \*?20%/i;
@@ -72,13 +76,12 @@ const RECEIVED_RE = /Recibido|reservada provisionalmente/i;
 const DEPOSIT_FAQ_RE =
   /no es aparte|reservar tu cupo|se descuenta del total|saldo restante/i;
 const VOUCHER_NUDGE_RE = /foto del voucher|captura del comprobante/i;
-const IDENTITY_RETRY_RE =
-  /No pude leer bien|nombre y apellido.*DNI|DNI o CE/i;
+const IDENTITY_RETRY_RE = /No pude leer bien|nombre y apellido.*DNI|DNI o CE/i;
 const LOCATION_DUMP_RE = /Calle Artesanos 150|maps\.app\.goo\.gl/i;
 /** Fallback genérico viejo — si sale esto, Haiku NO llegó a responder la pregunta. */
 const GENERIC_UNPARSED_RE = /No pude leer bien|Casi lo tenemos/i;
 const NAME_DNI_REMINDER_RE = /nombre y apellido.*DNI o CE/i;
-/** Frases que suenan a "ya lo agregué" — prohibidas mientras el carrito está cerrado. */
+/** Frases que suenan a "ya lo agregué" — prohibidas mientras la selección está cerrado. */
 const FAKE_CART_CONFIRM_RE =
   /le agrego el (pack|servicio)|te lo agrego|anotado,? (ya )?(lo agregu|se agreg)/i;
 const CART_LOCKED_MSG_RE = /coordinamos aparte con el equipo/i;
@@ -155,13 +158,13 @@ async function countOverlaps(dateKey, hour, minute = 0, duration = 60) {
   return n;
 }
 
-async function findFreeSlot(dateKey, preferredHours = [10, 11, 12, 13, 14, 15, 16, 17]) {
+async function findFreeSlot(
+  dateKey,
+  preferredHours = [10, 11, 12, 13, 14, 15, 16, 17],
+) {
   const [y, m, d] = dateKey.split("-").map(Number);
   const dow = new Date(Date.UTC(y, m - 1, d, 17, 0, 0)).getUTCDay(); // 17 UTC = 12 Lima
-  const hours =
-    dow === 0
-      ? [10, 11, 12]
-      : preferredHours;
+  const hours = dow === 0 ? [10, 11, 12] : preferredHours;
   for (const hour of hours) {
     for (const minute of dow === 0 && hour === 10 ? [30, 0] : [0, 30]) {
       if (dow === 0 && hour === 10 && minute === 0) continue; // domingo desde 10:30
@@ -265,7 +268,11 @@ async function seedCompletedHistory() {
 
 async function seedAbandonedHistory() {
   // Cita pasada cancelled — nunca llegó a completed (mismo efecto que "no asistió")
-  const clientId = await ensureQaClient(supabase, PHONE, "QA Deposit Abandoned");
+  const clientId = await ensureQaClient(
+    supabase,
+    PHONE,
+    "QA Deposit Abandoned",
+  );
   const past = limaParts(-20).key;
   const { data: appt, error } = await supabase
     .from("appointments")
@@ -309,7 +316,9 @@ async function advanceFixedDepositSteps() {
 }
 
 async function caseANewWeekday() {
-  console.log("\n── A: nueva + L–S → S/25 (resumen+datos fusionados → adelanto) ──");
+  console.log(
+    "\n── A: nueva + L–S → S/25 (resumen+datos fusionados → adelanto) ──",
+  );
   await cleanupQaPhone(supabase, PHONE, { deleteClient: true });
   const day = nextWeekdayKey();
   const { outbound } = await tapFreeTime(day);
@@ -486,7 +495,9 @@ async function caseFScreenshot() {
       caption: "Comprobante Yape S/25\nMaria QA\nDNI 12345678\n999888777",
     }),
   );
-  console.log(`  Webhook HTTP ${status} slot=${day} ${slot.hour}:${slot.minute}`);
+  console.log(
+    `  Webhook HTTP ${status} slot=${day} ${slot.hour}:${slot.minute}`,
+  );
   const outbound = await pollOutboundSince(supabase, PHONE, since, {
     minCount: 1,
     timeoutMs: 30000,
@@ -857,7 +868,9 @@ async function seedAwaitingDepositStep(step) {
 
 /** Alberto …0417, 18-sep: pregunta suelta (no ficha) → Haiku responde de verdad. */
 async function caseMHaikuAnswersLooseQuestion() {
-  console.log("\n── M: boleta pregunta suelta → Haiku responde + recordatorio ──");
+  console.log(
+    "\n── M: boleta pregunta suelta → Haiku responde + recordatorio ──",
+  );
   await seedAwaitingDepositStep("awaiting_deposit_boleta");
 
   const since = new Date().toISOString();
@@ -893,7 +906,9 @@ async function caseMHaikuAnswersLooseQuestion() {
 
 /** No repetir el recordatorio de nombre/DNI si ya salió hace <5min (evita "spam"). */
 async function caseNReminderNoSpam() {
-  console.log("\n── N: 2 preguntas seguidas en boleta → recordatorio no se duplica ──");
+  console.log(
+    "\n── N: 2 preguntas seguidas en boleta → recordatorio no se duplica ──",
+  );
   await seedAwaitingDepositStep("awaiting_deposit_boleta");
 
   const since1 = new Date().toISOString();
@@ -910,9 +925,8 @@ async function caseNReminderNoSpam() {
   });
   await sleep(4000); // margen para que llegue el recordatorio (3ra burbuja)
   const out1 = await fetchOutboundSince(supabase, PHONE, since1);
-  const remindersIn1 = out1.filter((m) =>
-    NAME_DNI_REMINDER_RE.test(m.content ?? ""),
-  ).length;
+  const remindersIn1 =
+    out1.filter((m) => NAME_DNI_REMINDER_RE.test(m.content ?? "")).length;
   await sleep(1500);
 
   const since2 = new Date().toISOString();
@@ -929,16 +943,17 @@ async function caseNReminderNoSpam() {
   });
   await sleep(4000);
   const out2 = await fetchOutboundSince(supabase, PHONE, since2);
-  const remindersIn2 = out2.filter((m) =>
-    NAME_DNI_REMINDER_RE.test(m.content ?? ""),
-  ).length;
+  const remindersIn2 =
+    out2.filter((m) => NAME_DNI_REMINDER_RE.test(m.content ?? "")).length;
 
   const fails = [];
   if (remindersIn1 !== 1) {
     fails.push(`turno 1: recordatorio x${remindersIn1} (esperado 1)`);
   }
   if (remindersIn2 !== 0) {
-    fails.push(`turno 2 (<5min del 1ro): recordatorio x${remindersIn2} (esperado 0, evita spam)`);
+    fails.push(
+      `turno 2 (<5min del 1ro): recordatorio x${remindersIn2} (esperado 0, evita spam)`,
+    );
   }
   const result = { pass: fails.length === 0, fails };
   logCaseResult("N recordatorio no se duplica", result, [...out1, ...out2]);
@@ -947,7 +962,9 @@ async function caseNReminderNoSpam() {
 
 /** Pide agregar otro servicio en boleta → NO se agrega, sin confirmación falsa. */
 async function caseOAddToCartBlockedInBoleta() {
-  console.log("\n── O: pide agregar servicio en boleta → bloqueado, sin carrito falso ──");
+  console.log(
+    "\n── O: pide agregar servicio en boleta → bloqueado, sin selección falso ──",
+  );
   await seedAwaitingDepositStep("awaiting_deposit_boleta");
   const { data: sessBefore } = await supabase
     .from("whatsapp_sessions")
@@ -979,7 +996,9 @@ async function caseOAddToCartBlockedInBoleta() {
   const fails = [];
   const joined = outboundFull.map((m) => m.content ?? "").join("\n");
   if (FAKE_CART_CONFIRM_RE.test(joined)) {
-    fails.push("Haiku sonó como confirmación real de carrito (FAKE_CART_CONFIRM_RE)");
+    fails.push(
+      "Haiku sonó como confirmación real de selección (FAKE_CART_CONFIRM_RE)",
+    );
   }
   if (sessAfter?.cart_service_ids !== sessBefore?.cart_service_ids) {
     fails.push(
@@ -1030,7 +1049,9 @@ async function casePAddToCartBlockedInScreenshotStep() {
   const fails = [];
   const joined = outboundFull.map((m) => m.content ?? "").join("\n");
   if (FAKE_CART_CONFIRM_RE.test(joined)) {
-    fails.push("Haiku sonó como confirmación real de carrito (FAKE_CART_CONFIRM_RE)");
+    fails.push(
+      "Haiku sonó como confirmación real de selección (FAKE_CART_CONFIRM_RE)",
+    );
   }
   if (sessAfter?.cart_service_ids !== sessBefore?.cart_service_ids) {
     fails.push(
@@ -1038,12 +1059,18 @@ async function casePAddToCartBlockedInScreenshotStep() {
     );
   }
   const result = { pass: fails.length === 0, fails };
-  logCaseResult("P add_to_cart bloqueado esperando comprobante", result, outboundFull);
+  logCaseResult(
+    "P add_to_cart bloqueado esperando comprobante",
+    result,
+    outboundFull,
+  );
   return result.pass;
 }
 
 async function caseQTextThenImageOnly() {
-  console.log("\n── Q: texto en pago → ack neutro; luego imagen sola → flujo normal ──");
+  console.log(
+    "\n── Q: texto en pago → ack neutro; luego imagen sola → flujo normal ──",
+  );
   await cleanupQaPhone(supabase, PHONE, { deleteClient: true });
   const day = nextWeekdayKey();
   const slot = await findFreeSlot(day);
@@ -1064,10 +1091,14 @@ async function caseQTextThenImageOnly() {
   // 1) Texto suelto → ack, sin plantilla del voucher
   let since = new Date().toISOString();
   await send(
-    buildTextPayload(PHONE, "Hola no puedo pagar con yape, puedo hacerlo mañana?", {
-      wamid: newWamid("wamid.qa.deposit.q1"),
-      contactName: "QA Deposit",
-    }),
+    buildTextPayload(
+      PHONE,
+      "Hola no puedo pagar con yape, puedo hacerlo mañana?",
+      {
+        wamid: newWamid("wamid.qa.deposit.q1"),
+        contactName: "QA Deposit",
+      },
+    ),
   );
   const out1 = await pollOutboundSince(supabase, PHONE, since, {
     minCount: 1,
@@ -1092,7 +1123,11 @@ async function caseQTextThenImageOnly() {
   await sleep(9000);
   const out2 = await fetchOutboundSince(supabase, PHONE, since);
   if (out2.length > 0) {
-    fails.push(`"Okey" no debía responder: ${out2.map((m) => m.content).join(" | ").slice(0, 120)}`);
+    fails.push(
+      `"Okey" no debía responder: ${
+        out2.map((m) => m.content).join(" | ").slice(0, 120)
+      }`,
+    );
   }
 
   // 3) Sesión intacta tras los textos
@@ -1101,7 +1136,9 @@ async function caseQTextThenImageOnly() {
     .select("step, awaiting_screenshot")
     .eq("phone", PHONE)
     .maybeSingle();
-  if (sess?.step !== "awaiting_payment_screenshot" || !sess?.awaiting_screenshot) {
+  if (
+    sess?.step !== "awaiting_payment_screenshot" || !sess?.awaiting_screenshot
+  ) {
     fails.push(`sesión alterada: ${JSON.stringify(sess)}`);
   }
 
@@ -1139,7 +1176,23 @@ async function caseQTextThenImageOnly() {
 }
 
 const ALL_CASES = [
-  "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q",
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I",
+  "J",
+  "K",
+  "L",
+  "M",
+  "N",
+  "O",
+  "P",
+  "Q",
 ];
 
 function parseCaseFilter() {
@@ -1158,7 +1211,11 @@ function parseCaseFilter() {
   );
   const unknown = [...set].filter((c) => !ALL_CASES.includes(c));
   if (unknown.length) {
-    console.error(`Casos desconocidos: ${unknown.join(", ")} (válidos: ${ALL_CASES.join(",")})`);
+    console.error(
+      `Casos desconocidos: ${unknown.join(", ")} (válidos: ${
+        ALL_CASES.join(",")
+      })`,
+    );
     process.exit(1);
   }
   return set;
@@ -1216,11 +1273,17 @@ async function main() {
       await sleep(1500);
     }
     if (run("K")) {
-      results.push({ name: "K", pass: await caseKBoletaImageAsksWrittenData() });
+      results.push({
+        name: "K",
+        pass: await caseKBoletaImageAsksWrittenData(),
+      });
       await sleep(1500);
     }
     if (run("L")) {
-      results.push({ name: "L", pass: await caseLLocationMidBoletaResumesDatos() });
+      results.push({
+        name: "L",
+        pass: await caseLLocationMidBoletaResumesDatos(),
+      });
       await sleep(1500);
     }
     if (run("M")) {
@@ -1236,7 +1299,10 @@ async function main() {
       await sleep(1500);
     }
     if (run("P")) {
-      results.push({ name: "P", pass: await casePAddToCartBlockedInScreenshotStep() });
+      results.push({
+        name: "P",
+        pass: await casePAddToCartBlockedInScreenshotStep(),
+      });
       await sleep(1500);
     }
     if (run("Q")) {

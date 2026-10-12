@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * QA ads-bounce-nudge:
- * A) from_ad_at hace ~100 min, sin carrito, sin inbound posterior → envía reenganche
+ * A) from_ad_at hace ~100 min, sin selección, sin inbound posterior → envía reenganche
  * B) con inbound posterior a from_ad_at → no envía (no es bounce)
  * C) from_ad_at madrugada (~7 h atrás, fuera de la vieja ventana 150 min) →
  *    sigue siendo candidata (colchón 24 h) y recibe reenganche con bypass
@@ -129,15 +129,16 @@ async function caseA() {
     .eq("phone", PHONE)
     .maybeSingle();
 
-  const pass =
-    INSTAGRAM_RE.test(text) &&
+  const pass = INSTAGRAM_RE.test(text) &&
     PHONE_RE.test(text) &&
     Boolean(sess?.ads_bounce_nudge_sent_at) &&
     (result?.sent ?? 0) >= 1;
 
   console.log(
     pass ? "  PASS" : "  FAIL",
-    `| outs=${outbound.length} sent=${result?.sent} guard=${sess?.ads_bounce_nudge_sent_at ? "ok" : "null"}`,
+    `| outs=${outbound.length} sent=${result?.sent} guard=${
+      sess?.ads_bounce_nudge_sent_at ? "ok" : "null"
+    }`,
   );
   if (!pass) console.log("  text:", text.slice(0, 200));
   return {
@@ -164,8 +165,7 @@ async function caseB() {
   await sleep(1500);
   const outbound = await fetchOutboundSince(since);
   const text = outbound.map((m) => m.content ?? "").join("\n");
-  const pass =
-    (result?.sent ?? 0) === 0 &&
+  const pass = (result?.sent ?? 0) === 0 &&
     !INSTAGRAM_RE.test(text) &&
     outbound.length === 0;
 
@@ -206,8 +206,7 @@ async function caseC() {
     .eq("phone", PHONE)
     .maybeSingle();
 
-  const pass =
-    INSTAGRAM_RE.test(text) &&
+  const pass = INSTAGRAM_RE.test(text) &&
     PHONE_RE.test(text) &&
     Boolean(sess?.ads_bounce_nudge_sent_at) &&
     (result?.sent ?? 0) >= 1 &&
@@ -237,8 +236,7 @@ async function caseD() {
   const inHours = isWithinReengancheHoursNow();
 
   if (!inHours) {
-    const pass =
-      result?.skipped === true &&
+    const pass = result?.skipped === true &&
       REENGANCHE_SKIP_RE.test(String(result?.reason ?? "")) &&
       typeof result?.candidates === "number";
     console.log(
@@ -255,8 +253,7 @@ async function caseD() {
   }
 
   // Dentro de 9–22: el gate no debe saltar; puede enviar (OK) o reportar success.
-  const pass =
-    result?.skipped !== true &&
+  const pass = result?.skipped !== true &&
     (result?.success === true || (result?.sent ?? 0) >= 0);
   console.log(
     pass ? "  PASS" : "  FAIL",
@@ -295,15 +292,16 @@ async function caseE() {
     .eq("phone", PHONE)
     .maybeSingle();
 
-  const pass =
-    INSTAGRAM_RE.test(text) &&
+  const pass = INSTAGRAM_RE.test(text) &&
     PHONE_RE.test(text) &&
     Boolean(sess?.ads_bounce_nudge_sent_at) &&
     (result?.sent ?? 0) >= 1;
 
   console.log(
     pass ? "  PASS" : "  FAIL",
-    `| outs=${outbound.length} sent=${result?.sent} step=${sess?.step} guard=${sess?.ads_bounce_nudge_sent_at ? "ok" : "null"}`,
+    `| outs=${outbound.length} sent=${result?.sent} step=${sess?.step} guard=${
+      sess?.ads_bounce_nudge_sent_at ? "ok" : "null"
+    }`,
   );
   if (!pass) console.log("  text:", text.slice(0, 200));
   return {

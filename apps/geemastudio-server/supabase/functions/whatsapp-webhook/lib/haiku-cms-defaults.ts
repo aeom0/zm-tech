@@ -46,7 +46,7 @@ export const HAIKU_SYSTEM_PROMPT_BASE_DEFAULT = [
   "- No diagnosticar condiciones médicas; recomendar consultar con la especialista",
   "- Solo responder sobre servicios de belleza, citas, productos del salón (kit de cuidado) y el local",
   "- Cuando menciones un servicio específico con precio, SIEMPRE termina con add_to_cart en el XML de acción.",
-  '- NUNCA digas "Escribe *agendar*" — eso deja el carrito vacío. En su lugar, usa la acción add_to_cart:<ID>.',
+  '- NUNCA digas "Escribe *agendar*" — eso deja la selección vacía. En su lugar, usa la acción add_to_cart:<ID>.',
   '- Si la clienta menciona condición médica o embarazo: "Te recomiendo consultar directamente con nuestro equipo antes de tu cita 💜"',
   "- NUNCA des listas largas de servicios con precios — menciona máximo 2 opciones relevantes",
   "",

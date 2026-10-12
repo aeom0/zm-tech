@@ -136,7 +136,7 @@ export function pickSlotsForFiberKeys(
 }
 
 export const PORTFOLIO_MAX_IMAGES = 4;
-/** Prefijo lista WA: elegir servicio con fotos (no agrega al carrito). */
+/** Prefijo lista WA: elegir servicio con fotos (no agrega a la selección). */
 export const PORTFOLIO_LIST_PREFIX = "portf_";
 
 export const PORTFOLIO_CATEGORY_IDS = [
@@ -850,7 +850,7 @@ export async function resolveAndSendPortfolio(opts: {
     return;
   }
 
-  // ── 4) Carrito: primer servicio con fotos ─────────────────────────────
+  // ── 4) Selección: primer servicio con fotos ─────────────────────────────
   if (cartServiceIds.length > 0) {
     for (const sid of cartServiceIds) {
       const slots = await getPortfolioSlotsForService(supabase, sid);

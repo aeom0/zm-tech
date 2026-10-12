@@ -8,7 +8,7 @@
  * solapamiento real. Fix: countOverlappingAppointments() cuenta CUALQUIER cita
  * scheduled (cualquier employee_id) que se solape con el horario propuesto.
  *
- * Ago-2026: carritos 100% especiales (lifting/depilación/microblading + extras)
+ * Ago-2026: selecciones 100% especiales (lifting/depilación/microblading + extras)
  * permiten tope 2 — ver waba-validate-special-overlap.mjs. Este script usa
  * Builder Gel (cat-unas) para seguir validando el tope 1.
  *
@@ -25,29 +25,29 @@
 import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
-  buildTextPayload,
   buildInteractivePayload,
-  postWebhook,
+  buildTextPayload,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import {
+  countScheduledAppointments,
   seedScheduledAppointment,
   seedSessionWithCart,
-  countScheduledAppointments,
 } from "./lib/waba-sim-seed.mjs";
 import {
-  pollResponseSince,
   assertOutbound,
-  logCaseResult,
   finishAndExit,
+  logCaseResult,
+  pollResponseSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
 const PHONE_A = "51999000989"; // cliente con cita ya agendada (ocupa el horario)
 const PHONE_B = "51999000990"; // cliente que intenta chocar con ese horario
 
-function nextWeekdayKey(weekday /* 0=dom */, minDaysAhead = 14) {
+function nextWeekdayKey(weekday, /* 0=dom */ minDaysAhead = 14) {
   // Fecha futura móvil: el fixture fijo se pudo en el pasado y hacía fallar los casos "horario libre".
   const d = new Date(Date.now() + minDaysAhead * 86400000);
   while (d.getUTCDay() !== weekday) d.setUTCDate(d.getUTCDate() + 1);
@@ -58,7 +58,8 @@ const APPT_START = `${FUTURE_DATE_KEY} 14:00:00`; // 14:00-15:30 (90 min), emplo
 /** Builder Gel (cat-unas) — no-especial; Lifting ahora permite tope 2 y rompería este QA. */
 const BUILDER_GEL_ID = "39154b05-1b0d-4ee8-b366-161a7f0aa09d";
 
-const SLOT_TAKEN_RE = /no tiene cupo|Horarios con cupo|ya fue reservado por otra clienta/i;
+const SLOT_TAKEN_RE =
+  /no tiene cupo|Horarios con cupo|ya fue reservado por otra clienta/i;
 const CONFIRMED_RE = /¡Tu cita está (confirmada|anotada)!/i;
 const ALLOWED_RE =
   /¡Tu cita está (confirmada|anotada)!|adelanto de S\/\s*25|Sigue estos pasos para agendar|Una precisión sobre tu cita/i;

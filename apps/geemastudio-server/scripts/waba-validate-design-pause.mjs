@@ -5,37 +5,37 @@
  * A) imagen mid-browsing → bot_paused_at + ack in/off hours (no calendario)
  * B) texto con bot pausado → silencio (0 outbound nuevo)
  * C) resume_bot vía waba-staff-session → bot_paused_at null
- * D) haiku_finish_booking con carrito → unpause + reply y/o calendario
+ * D) haiku_finish_booking con selección → unpause + reply y/o calendario
  *
  * Teléfono: 51999000985 (excepción QA que SÍ pausa; no paralelizar con fanny-burst).
  */
 import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
-  buildTextPayload,
   buildImagePayload,
-  postWebhook,
+  buildTextPayload,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import { ensureQaClient } from "./lib/waba-sim-seed.mjs";
 import {
-  pollOutboundSince,
   fetchOutboundSince,
   finishAndExit,
+  pollOutboundSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 import {
-  DESIGN_PAUSE_QA_PHONE,
   DESIGN_ACK_IN_HOURS,
   DESIGN_ACK_OFF_HOURS,
-  isWithinDesignStaffHours,
+  DESIGN_PAUSE_QA_PHONE,
   getDesignAckMessage,
+  isWithinDesignStaffHours,
   shouldSkipDesignPauseForQa,
 } from "../supabase/functions/whatsapp-webhook/lib/design-staff-hours.mjs";
 import {
-  isDamagedNailsImageCaption,
   getDesignImagePushCopy,
+  isDamagedNailsImageCaption,
 } from "../supabase/functions/whatsapp-webhook/lib/design-image-push.mjs";
 
 const PHONE = DESIGN_PAUSE_QA_PHONE;
@@ -55,13 +55,13 @@ async function seedBrowsing(opts = {}) {
   await ensureQaClient(supabase, PHONE, "QA Design Pause");
   const cartItems = cart
     ? [
-        {
-          item_type: "service",
-          item_id: POLY_GEL_ID,
-          quantity: 1,
-          price: 70,
-        },
-      ]
+      {
+        item_type: "service",
+        item_id: POLY_GEL_ID,
+        quantity: 1,
+        price: 70,
+      },
+    ]
     : [];
   await supabase.from("whatsapp_sessions").upsert({
     phone: PHONE,
@@ -156,7 +156,9 @@ function runUnitHours() {
     caption: merillynCaption,
   });
   if (!/Uñas dañadas/i.test(damagedPush.title)) {
-    console.error(`  FAIL: push title esperado Uñas dañadas, got ${damagedPush.title}`);
+    console.error(
+      `  FAIL: push title esperado Uñas dañadas, got ${damagedPush.title}`,
+    );
     ok = false;
   }
   const designPush = getDesignImagePushCopy({
@@ -166,7 +168,9 @@ function runUnitHours() {
     caption: "Diseño cat eye",
   });
   if (!/Foto diseño/i.test(designPush.title)) {
-    console.error(`  FAIL: push title esperado Foto diseño, got ${designPush.title}`);
+    console.error(
+      `  FAIL: push title esperado Foto diseño, got ${designPush.title}`,
+    );
     ok = false;
   }
 
@@ -200,7 +204,8 @@ async function caseA_imagePauses() {
   const ok = paused && ackOk && noCalendar;
   return {
     pass: ok,
-    note: `paused=${paused} ack=${ackOk} noCal=${noCalendar} outs=${outbound.length}`,
+    note:
+      `paused=${paused} ack=${ackOk} noCal=${noCalendar} outs=${outbound.length}`,
   };
 }
 
@@ -271,7 +276,10 @@ async function caseD_haikuAgenda() {
   const ok = status === 200 && unpaused && hasOut && body?.ok !== false;
   return {
     pass: ok,
-    note: `http=${status} bodyOk=${body?.ok} unpaused=${unpaused} outs=${outbound.length} ${body?.detail ?? ""}`,
+    note:
+      `http=${status} bodyOk=${body?.ok} unpaused=${unpaused} outs=${outbound.length} ${
+        body?.detail ?? ""
+      }`,
   };
 }
 

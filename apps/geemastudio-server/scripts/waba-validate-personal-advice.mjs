@@ -4,19 +4,23 @@
  * A) "ojo grande … no quiero una mirada triste" → pausa + copy asesora + foto rostro/ojos
  * B) texto con bot pausado → silencio (staff toma el chat)
  * C) texto prellenado CTWA "qué estilo me queda mejor" → NO pausa (Haiku responde)
- * D) "No quiero" corto con carrito → despedida normal, sin pausa (decline intacto)
+ * D) "No quiero" corto con selección → despedida normal, sin pausa (decline intacto)
  *
  * Teléfono: 51999000985 (excepción QA que SÍ pausa; no paralelizar con design-pause/fanny-burst).
  */
 import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
-import { buildTextPayload, postWebhook, newWamid } from "./lib/waba-sim-payload.mjs";
+import {
+  buildTextPayload,
+  newWamid,
+  postWebhook,
+} from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import { ensureQaClient } from "./lib/waba-sim-seed.mjs";
 import {
-  pollOutboundSince,
   fetchOutboundSince,
   finishAndExit,
+  pollOutboundSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 import { DESIGN_PAUSE_QA_PHONE } from "../supabase/functions/whatsapp-webhook/lib/design-staff-hours.mjs";
@@ -40,7 +44,12 @@ async function seed({ cart = false, paused = false } = {}) {
     step: cart ? "awaiting_datetime" : "browsing",
     cart_items: JSON.stringify(
       cart
-        ? [{ item_type: "service", item_id: POLY_GEL_ID, quantity: 1, price: 70 }]
+        ? [{
+          item_type: "service",
+          item_id: POLY_GEL_ID,
+          quantity: 1,
+          price: 70,
+        }]
         : [],
     ),
     cart_service_ids: JSON.stringify(cart ? [POLY_GEL_ID] : []),
@@ -77,7 +86,9 @@ async function caseA_romyPauses() {
     "Mi ojo es grande pero no quiero una mirada q se vea triste",
     "a",
   );
-  if (status < 200 || status >= 300) return { pass: false, note: `webhook ${status}` };
+  if (status < 200 || status >= 300) {
+    return { pass: false, note: `webhook ${status}` };
+  }
   const outbound = await pollOutboundSince(supabase, PHONE, since, {
     timeoutMs: 18000,
     minCount: 1,
@@ -91,7 +102,8 @@ async function caseA_romyPauses() {
   const noCalendar = !DATE_LIST_RE.test(joined);
   return {
     pass: paused && copyOk && noDecline && noCalendar,
-    note: `paused=${paused} copy=${copyOk} noDecline=${noDecline} noCal=${noCalendar} outs=${outbound.length}`,
+    note:
+      `paused=${paused} copy=${copyOk} noDecline=${noDecline} noCal=${noCalendar} outs=${outbound.length}`,
   };
 }
 
@@ -100,10 +112,15 @@ async function caseB_silenceWhilePaused() {
   const since = new Date().toISOString();
   await sleep(200);
   const status = await send("Les envío mi foto en un momento", "b");
-  if (status < 200 || status >= 300) return { pass: false, note: `webhook ${status}` };
+  if (status < 200 || status >= 300) {
+    return { pass: false, note: `webhook ${status}` };
+  }
   await sleep(10000);
   const outbound = await fetchOutboundSince(supabase, PHONE, since);
-  return { pass: outbound.length === 0, note: `outs=${outbound.length} (esperado 0)` };
+  return {
+    pass: outbound.length === 0,
+    note: `outs=${outbound.length} (esperado 0)`,
+  };
 }
 
 async function caseC_ctwaPrefillNoPause() {
@@ -114,7 +131,9 @@ async function caseC_ctwaPrefillNoPause() {
     "¡Hola! Quiero saber qué estilo de pestañas me queda mejor 💜",
     "c",
   );
-  if (status < 200 || status >= 300) return { pass: false, note: `webhook ${status}` };
+  if (status < 200 || status >= 300) {
+    return { pass: false, note: `webhook ${status}` };
+  }
   const outbound = await pollOutboundSince(supabase, PHONE, since, {
     timeoutMs: 25000,
     minCount: 1,
@@ -126,7 +145,8 @@ async function caseC_ctwaPrefillNoPause() {
   const noHandoff = !ADVISOR_RE.test(joined);
   return {
     pass: notPaused && noHandoff && outbound.length >= 1,
-    note: `notPaused=${notPaused} noHandoff=${noHandoff} outs=${outbound.length}`,
+    note:
+      `notPaused=${notPaused} noHandoff=${noHandoff} outs=${outbound.length}`,
   };
 }
 
@@ -135,7 +155,9 @@ async function caseD_shortDeclineIntact() {
   await seed({ cart: true });
   const since = new Date().toISOString();
   const status = await send("No quiero", "d");
-  if (status < 200 || status >= 300) return { pass: false, note: `webhook ${status}` };
+  if (status < 200 || status >= 300) {
+    return { pass: false, note: `webhook ${status}` };
+  }
   const outbound = await pollOutboundSince(supabase, PHONE, since, {
     timeoutMs: 15000,
     minCount: 1,

@@ -4,8 +4,8 @@
  * A) Sesión con oferta → botón Agendar → texto + selector fecha (calendario)
  * B) Oferta → Otro servicio → lista de categoría
  * C) Más adelante → cierre cálido sin calendario
- * D) Agendar sin oferta → no fuerza carrito
- * E) Agendar luego Otro servicio (oferta limpia) → catálogo, no reafirma carrito
+ * D) Agendar sin oferta → no fuerza selección
+ * E) Agendar luego Otro servicio (oferta limpia) → catálogo, no reafirma selección
  * F) Oferta TTL vencida → agendar igual (1 msg + calendario; no saludo+«ya venció»)
  * G) Lifting + TTL vencida → agenda directo (sin gate aceite)
  *
@@ -16,15 +16,15 @@ import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
   buildButtonPayload,
-  postWebhook,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import { ensureQaClient } from "./lib/waba-sim-seed.mjs";
 import {
-  pollResponseSince,
-  logCaseResult,
   finishAndExit,
+  logCaseResult,
+  pollResponseSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -42,7 +42,8 @@ const OTRO_RE =
 const MAS_ADELANTE_RE =
   /sin problema|cuando quieras|aquí estamos|aqui estamos|cuando gustes|no hay prisa|cuando sientas|estamos acá|estamos aqui|nosotras estamos|aquí estaremos|aqui estaremos|cuando estés|cuando estes|perfecto/i;
 const ACEITE_CARE_RE = /aceite|ricino|cuidaste|cuidados|lash botox/i;
-const OFERTA_VENCIO_RE = /oferta ya venció|Esa oferta ya venció|oferta del recordatorio ya venció/i;
+const OFERTA_VENCIO_RE =
+  /oferta ya venció|Esa oferta ya venció|oferta del recordatorio ya venció/i;
 
 const { url, serviceKey, webhookUrl } = loadEnvFromRoot();
 const supabase = createClient(url, serviceKey, {
@@ -116,7 +117,7 @@ async function caseA() {
     }),
   );
   console.log(`  Webhook HTTP ${status}`);
-  // waitUntil: Haiku puede loguearse antes del OUT — esperar OUT o carrito
+  // waitUntil: Haiku puede loguearse antes del OUT — esperar OUT o selección
   let outbound = [];
   let haiku = [];
   const deadline = Date.now() + 25000;
@@ -148,8 +149,7 @@ async function caseA() {
   }
 
   const text = outbound.map((m) => m.content ?? "").join("\n");
-  const hasCalendar =
-    DATE_LIST_RE.test(text) ||
+  const hasCalendar = DATE_LIST_RE.test(text) ||
     outbound.some((m) => m.msg_type === "interactive");
 
   const { data: sess } = await supabase
@@ -174,13 +174,15 @@ async function caseA() {
     outboundCount: outbound.length,
     haikuCount: Array.isArray(haiku) ? haiku.length : 0,
   };
-  if (outbound.length === 0 && !hasOfferSvc)
-    result.fails.push("sin outbound ni carrito");
-  if (!hasCalendar && !hasOfferSvc)
+  if (outbound.length === 0 && !hasOfferSvc) {
+    result.fails.push("sin outbound ni selección");
+  }
+  if (!hasCalendar && !hasOfferSvc) {
     result.fails.push("sin calendario/lista fecha");
+  }
   if (!offerCleared) result.fails.push("oferta no limpiada");
-  if (!hasOfferSvc) result.fails.push("carrito sin servicio ofrecido");
-  // Si hay carrito+oferta limpia, el calendario pudo fallar en Meta pero el flujo es OK
+  if (!hasOfferSvc) result.fails.push("selección sin servicio ofrecido");
+  // Si hay selección+oferta limpia, el calendario pudo fallar en Meta pero el flujo es OK
   if (hasOfferSvc && offerCleared && !hasCalendar) {
     result.pass = true;
     result.fails = result.fails.filter((f) => !f.includes("calendario"));
@@ -193,7 +195,7 @@ async function caseA() {
     name: "A Agendar + calendario",
     pass: result.pass,
     note: result.pass
-      ? "Haiku/fallback + carrito + selector"
+      ? "Haiku/fallback + selección + selector"
       : result.fails.join("; "),
   };
 }
@@ -233,8 +235,7 @@ async function caseB() {
     /uñas|unas|soft gel|gustaría|opciones|esta vez|servicios/i.test(text) ||
     hasList;
   const wrongPath = /No tienes servicios en tu selección/i.test(text);
-  const isDateOnly =
-    hasList &&
+  const isDateOnly = hasList &&
     /Elegir fecha|Qué día prefieres/i.test(text) &&
     !/uñas|unas|servicios/i.test(text);
 
@@ -309,7 +310,7 @@ async function caseC() {
 }
 
 async function caseD() {
-  console.log("\n── D: Agendar sin oferta → no fuerza carrito retoque ──");
+  console.log("\n── D: Agendar sin oferta → no fuerza selección retoque ──");
   await cleanupQaPhone(supabase, PHONE, { deleteClient: false });
   await supabase.from("whatsapp_sessions").upsert({
     phone: PHONE,
@@ -349,7 +350,7 @@ async function caseD() {
   const forcedOffer = cart.some((i) => i.item_id === OFFER_SVC);
   const result = {
     pass: !forcedOffer,
-    fails: forcedOffer ? ["carrito forzado sin oferta"] : [],
+    fails: forcedOffer ? ["selección forzado sin oferta"] : [],
     outboundCount: outbound.length,
     haikuCount: 0,
   };
@@ -359,12 +360,12 @@ async function caseD() {
     name: "D Agendar sin oferta",
     pass: result.pass,
     note: result.pass
-      ? "No precarga carrito de retoque"
+      ? "No precarga selección de retoque"
       : result.fails.join("; "),
   };
 }
 
-/** Caso Maribel: Agendar limpia oferta → luego "Otro servicio" no debe reafirmar el carrito. */
+/** Caso Maribel: Agendar limpia oferta → luego "Otro servicio" no debe reafirmar la selección. */
 async function caseE() {
   console.log("\n── E: Agendar luego Otro servicio (oferta ya limpia) ──");
   await cleanupQaPhone(supabase, PHONE, { deleteClient: false });
@@ -403,7 +404,7 @@ async function caseE() {
     } catch {
       /* ignore */
     }
-    // Listo cuando hay carrito y la oferta ya se limpió (fin de bookOfferedService)
+    // Listo cuando hay selección y la oferta ya se limpió (fin de bookOfferedService)
     if (cartPoll.length > 0 && !sessPoll?.retouch_offer_service_id) break;
     if (agendarOut.length >= 2 && cartPoll.length > 0) break;
   }
@@ -452,11 +453,11 @@ async function caseE() {
       text,
     ) || hasList;
   const reaffirmedBooking =
-    /te confirmo que agendamos|elige el día y hora en los botones y quedas lista/i.test(
-      text,
-    );
-  const isDateOnly =
-    hasList &&
+    /te confirmo que agendamos|elige el día y hora en los botones y quedas lista/i
+      .test(
+        text,
+      );
+  const isDateOnly = hasList &&
     /Elegir fecha|Qué día prefieres/i.test(text) &&
     !/uñas|unas|servicios|opciones|gustaría/i.test(text);
 
@@ -473,8 +474,7 @@ async function caseE() {
   }
 
   const result = {
-    pass:
-      offerCleared &&
+    pass: offerCleared &&
       softOk &&
       outbound.length > 0 &&
       !reaffirmedBooking &&
@@ -485,7 +485,7 @@ async function caseE() {
     haikuCount: 0,
   };
   if (!offerCleared) result.fails.push("oferta no se limpió tras Agendar");
-  if (!hadCart) result.fails.push("Agendar no dejó carrito (precondición)");
+  if (!hadCart) result.fails.push("Agendar no dejó selección (precondición)");
   if (!softOk || outbound.length === 0) {
     result.fails.push("sin lista/copy de otro servicio");
   }
@@ -494,7 +494,7 @@ async function caseE() {
   }
   if (isDateOnly) result.fails.push("reenvió solo calendario");
   if (cartFinal.length > 0) {
-    result.fails.push("no vació carrito al cambiar de servicio");
+    result.fails.push("no vació selección al cambiar de servicio");
   }
 
   logCaseResult("Retouch-E Agendar→Otro", result, outbound);
@@ -502,7 +502,7 @@ async function caseE() {
     name: "E Agendar→Otro sin oferta",
     pass: result.pass,
     note: result.pass
-      ? "Limpia carrito + catálogo (no reafirma retoque)"
+      ? "Limpia selección + catálogo (no reafirma retoque)"
       : result.fails.join("; "),
   };
 }
@@ -571,15 +571,14 @@ async function caseF() {
   const contradiction =
     /te enviaremos el selector|enviaremos el selector de fechas/i.test(text) &&
     /Esa oferta ya venció/i.test(text);
-  const hasCalendar =
-    DATE_LIST_RE.test(text) ||
+  const hasCalendar = DATE_LIST_RE.test(text) ||
     outbound.some((m) => m.msg_type === "interactive");
 
   const fails = [];
-  if (!hasOfferSvc) fails.push("sin carrito del servicio ofrecido");
+  if (!hasOfferSvc) fails.push("sin selección del servicio ofrecido");
   if (deadendMenu) fails.push("dead-end «oferta venció» + menu sin agendar");
   if (contradiction) fails.push("saludo promete calendario + «oferta venció»");
-  if (!hasCalendar && !hasOfferSvc) fails.push("sin calendario ni carrito");
+  if (!hasCalendar && !hasOfferSvc) fails.push("sin calendario ni selección");
 
   const pass = fails.length === 0;
   const result = {
@@ -593,12 +592,12 @@ async function caseF() {
     name: "F Agendar oferta vencida",
     pass,
     note: pass
-      ? "Un mensaje + carrito/calendario (sin contradicción)"
+      ? "Un mensaje + selección/calendario (sin contradicción)"
       : fails.join("; "),
   };
 }
 
-/** Lifting + TTL vencida: agenda directo (sin gate aceite); un mensaje + carrito. */
+/** Lifting + TTL vencida: agenda directo (sin gate aceite); un mensaje + selección. */
 async function caseG() {
   console.log(
     "\n── G: Lifting + oferta TTL vencida → agenda directo (sin aceite) ──",
@@ -665,14 +664,14 @@ async function caseG() {
     /* ignore */
   }
   const askedCare = ACEITE_CARE_RE.test(text);
-  const booked =
-    Array.isArray(cart) && cart.some((i) => i.item_id === LIFTING_OFFER_SVC);
+  const booked = Array.isArray(cart) &&
+    cart.some((i) => i.item_id === LIFTING_OFFER_SVC);
   const stepCare = sess?.step === "awaiting_retouch_lifting_care";
 
   const fails = [];
   if (askedCare) fails.push("aún preguntó aceite (ya no debe)");
   if (stepCare) fails.push("step=awaiting_retouch_lifting_care");
-  if (!booked) fails.push("sin carrito lifting");
+  if (!booked) fails.push("sin selección lifting");
 
   const pass = fails.length === 0;
   const result = {
@@ -685,9 +684,7 @@ async function caseG() {
   return {
     name: "G Lifting oferta vencida → agenda",
     pass,
-    note: pass
-      ? "Carrito lifting sin gate aceite"
-      : fails.join("; "),
+    note: pass ? "Selección lifting sin gate aceite" : fails.join("; "),
   };
 }
 
@@ -708,6 +705,6 @@ async function main() {
 main().catch((err) => {
   console.error(err);
   cleanupQaPhone(supabase, PHONE, { deleteClient: true }).finally(() =>
-    process.exit(1),
+    process.exit(1)
   );
 });

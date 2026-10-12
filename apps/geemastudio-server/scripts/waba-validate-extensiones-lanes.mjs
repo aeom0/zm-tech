@@ -12,7 +12,7 @@
  * G: 1 Microshading + Lifting (especial Vanessa) → permite (regresión)
  * H: Manicure ocupando 14:00 + Clásicas → bloquea (Stephani ocupada fuera de extensiones)
  * I: Manicure ocupando 14:00 + Fox → permite (Karelis libre; control anti-overfix)
- * J: Fox ocupando 14:00 + Manicure → permite (inverso de I; carrito unas exige Stephani)
+ * J: Fox ocupando 14:00 + Manicure → permite (inverso de I; selección unas exige Stephani)
  *
  * Filtro: EXTENSIONES_LANES_CASES=A,B,C yarn waba:validate:extensiones-lanes
  * Teléfonos: 51999000994–996 (no paralelizar con luana/p4).
@@ -20,22 +20,22 @@
 import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
-  buildTextPayload,
   buildInteractivePayload,
-  postWebhook,
+  buildTextPayload,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import {
+  countScheduledAppointments,
   ensureQaClient,
   seedScheduledAppointment,
-  countScheduledAppointments,
 } from "./lib/waba-sim-seed.mjs";
 import {
-  pollResponseSince,
-  fetchOutboundSince,
   assertOutbound,
-  logCaseResult,
+  fetchOutboundSince,
   finishAndExit,
+  logCaseResult,
+  pollResponseSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -43,7 +43,7 @@ const PHONE_A = "51999000994";
 const PHONE_B = "51999000995";
 const PHONE_C = "51999000996";
 
-function nextWeekdayKey(weekday /* 0=dom */, minDaysAhead = 14) {
+function nextWeekdayKey(weekday, /* 0=dom */ minDaysAhead = 14) {
   // Fecha futura móvil: el fixture fijo (22-sep) quedó en el pasado y todos los casos "permite" fallaban.
   const d = new Date(Date.now() + minDaysAhead * 86400000);
   while (d.getUTCDay() !== weekday) d.setUTCDate(d.getUTCDate() + 1);
@@ -61,7 +61,8 @@ const LIFTING_ID = "33fbadcc-30e8-4e82-9913-3a888aea73dc";
 const MICROSHADING_ID = "0285f517-da6c-41c6-b7df-0b42517e3dc9";
 const MANICURE_GEL_ID = "f6b62575-6515-4fd8-997e-1ab4bf9271ca";
 
-const SLOT_TAKEN_RE = /no tiene cupo|Horarios con cupo|ya fue reservado por otra clienta/i;
+const SLOT_TAKEN_RE =
+  /no tiene cupo|Horarios con cupo|ya fue reservado por otra clienta/i;
 const KARELIS_AFTERNOON_RE =
   /desde la \*?1:00 PM\*?|turno tarde|Horarios con cupo ese día: 1 PM/i;
 const ALLOWED_RE =
@@ -274,7 +275,9 @@ async function caseD() {
 }
 
 async function caseE() {
-  console.log("\n── E: Rímel ocupando 11:00 + Clásicas → bloquea (Karelis solo tarde) ──");
+  console.log(
+    "\n── E: Rímel ocupando 11:00 + Clásicas → bloquea (Karelis solo tarde) ──",
+  );
   await cleanupAll();
   await seedOccupant(PHONE_A, RIMEL_ID, SLOT_1100, "QA Occ Rimel");
   await seedBookerCart([CLASICAS_ID], [90]);
@@ -325,9 +328,14 @@ async function caseF() {
     }),
   );
   console.log(`  Webhook HTTP ${status}`);
-  const { outbound, haiku } = await pollResponseSince(supabase, PHONE_B, since, {
-    timeoutMs: 28000,
-  });
+  const { outbound, haiku } = await pollResponseSince(
+    supabase,
+    PHONE_B,
+    since,
+    {
+      timeoutMs: 28000,
+    },
+  );
   const result = assertOutbound(outbound, haiku, {
     mustMatch: [RESCHEDULED_RE],
     mustNotMatch: [SLOT_TAKEN_RE],
@@ -371,9 +379,7 @@ async function caseH() {
   return {
     name: "H Manicure+Clásicas bloqueo",
     pass: result.pass,
-    note: result.pass
-      ? "unas ocupa carril Stephani"
-      : result.fails?.join("; "),
+    note: result.pass ? "unas ocupa carril Stephani" : result.fails?.join("; "),
   };
 }
 
@@ -389,7 +395,9 @@ async function caseI() {
   return {
     name: "I Manicure+Fox tarde",
     pass: result.pass,
-    note: result.pass ? "Karelis en play → 2.ª plaza" : result.fails?.join("; "),
+    note: result.pass
+      ? "Karelis en play → 2.ª plaza"
+      : result.fails?.join("; "),
   };
 }
 

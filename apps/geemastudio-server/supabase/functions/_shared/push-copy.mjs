@@ -106,7 +106,7 @@ function technicalReviewCopy(who) {
 
 const QUALITY_FLAG_LABELS = {
   unanswered_price: "precio sin aclarar",
-  cart_mismatch: "carrito ≠ pedido",
+  cart_mismatch: "selección ≠ pedido",
   promo_ignored: "promo ignorada",
   client_confused: "clienta confundida",
 };

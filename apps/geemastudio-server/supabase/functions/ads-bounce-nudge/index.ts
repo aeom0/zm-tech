@@ -1,5 +1,5 @@
 // ads-bounce-nudge — Reenganche CTWA sin 2.º mensaje (~2 h).
-// Cron cada 30 min. Solo sesiones con from_ad_at, sin carrito, sin inbound
+// Cron cada 30 min. Solo sesiones con from_ad_at, sin selección, sin inbound
 // posterior al welcome. Steps: browsing | awaiting_ctwa_interest | null.
 // Texto libre dentro de ventana 24h (sin plantilla).
 // Horario de ENVÍO propio (9–22 Lima, todos los días) — independiente del salón.

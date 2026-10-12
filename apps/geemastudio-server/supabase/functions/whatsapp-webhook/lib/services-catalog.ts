@@ -85,9 +85,9 @@ export interface ServiceCatalog {
   servicesByCategory: Map<string, CatalogService[]>;
   /** Mapa category_id → packs activos */
   packsByCategory: Map<string, CatalogPack[]>;
-  /** Mapa id → servicio (para nombres en carrito y ítems de promo) */
+  /** Mapa id → servicio (para nombres en selección y ítems de promo) */
   servicesById: Map<string, CatalogService>;
-  /** Mapa id → pack (para nombres en carrito y ítems de promo) */
+  /** Mapa id → pack (para nombres en selección y ítems de promo) */
   packsById: Map<string, CatalogPack>;
   /** Fotos de portafolio indexadas por pie de foto (puede estar vacío). */
   portfolioIndex: PortfolioIndexEntry[];
@@ -281,8 +281,8 @@ async function loadCatalogFromDb(
 }
 
 /**
- * True SOLO si TODOS los servicios del carrito son especiales
- * (Vanessa puede ejecutarlos). Un solo servicio no-especial en el carrito
+ * True SOLO si TODOS los servicios de la selección son especiales
+ * (Vanessa puede ejecutarlos). Un solo servicio no-especial en la selección
  * hace que la cita completa cuente como normal (tope 1) — ver caso
  * "Builder Gel + Laminado de Cejas" (confirmado con Alberto 22-ago-2026):
  * esa cita ocupa el slot como normal porque Stephani es la única que puede
@@ -303,7 +303,7 @@ export function isSpecialOverlapCart(
   });
 }
 
-/** Tope de citas simultáneas para un carrito dado. */
+/** Tope de citas simultáneas para una selección dada. */
 export function overlapCapForCart(
   serviceIds: string[],
   catalog: ServiceCatalog,
@@ -319,7 +319,7 @@ export type ExtensionesLane = "stephani" | "karelis";
 /**
  * Carril para un servicio de cat-extensiones.
  * Null si no es de esa categoría, o si es Retiro (sin carril).
- * Para capacidad de slot (carrito + ocupación) ver `classifyOccupiedCapacityLane`.
+ * Para capacidad de slot (selección + ocupación) ver `classifyOccupiedCapacityLane`.
  */
 export function classifyExtensionesLane(
   serviceId: string,
@@ -335,7 +335,7 @@ export function classifyExtensionesLane(
 }
 
 /**
- * Carril de capacidad (carrito entrante u ocupación del slot).
+ * Carril de capacidad (selección entrante u ocupación del slot).
  * Extensiones + categorías 100 % Stephani (`cat-unas`; `cat-cejas-rostro`
  * salvo Bozo/Cejas). Sin esto, Manicure con Fox ocupando caía al cap plano
  * y bloqueaba aunque Karelis y Stephani sean recursos distintos.
@@ -359,7 +359,7 @@ export function classifyOccupiedCapacityLane(
 }
 
 /**
- * Carriles que exige el carrito entrante (extensiones + unas/cejas Stephani).
+ * Carriles que exige la selección entrante (extensiones + unas/cejas Stephani).
  * Vacío si solo trae Retiro, Bozo/Cejas especiales, o categorías Vanessa-ambiguas.
  */
 export function cartExtensionesLanes(
@@ -375,7 +375,7 @@ export function cartExtensionesLanes(
 }
 
 /**
- * True si el carrito exige el carril Karelis → solo horarios desde la 1 PM Lima.
+ * True si la selección exige el carril Karelis → solo horarios desde la 1 PM Lima.
  * Solo mira técnicas Karelis (no unas/cejas).
  */
 export function cartRequiresKarelisAfternoon(
@@ -467,7 +467,7 @@ export function getPromoDiscountedPrice(
 /**
  * Precio a cobrar: promo si existe (y aplica ese día), si no catálogo.
  * `isoWeekday` es opcional para no romper llamadas existentes (ej. al agregar
- * al carrito, antes de saber la fecha de la cita) — se vuelve obligatorio
+ * a la selección, antes de saber la fecha de la cita) — se vuelve obligatorio
  * en la práctica al recalcular el precio final una vez elegida la fecha
  * (ver `recomputeCartPricesForDate` en payment.ts).
  */
@@ -482,7 +482,7 @@ export function resolveCartItemPrice(
   return promo != null ? promo : catalogPrice;
 }
 
-/** Ítem de carrito cuyo precio cambió al recalcular contra el día real de la cita. */
+/** Ítem de selección cuyo precio cambió al recalcular contra el día real de la cita. */
 export interface CartPriceAdjustment {
   itemType: "service" | "pack";
   itemId: string;
@@ -492,8 +492,8 @@ export interface CartPriceAdjustment {
 }
 
 /**
- * Recalcula el precio de cada ítem del carrito para el día ISO de la cita elegida
- * (1=lunes…7=domingo). Necesario porque el precio se congela al agregar al carrito
+ * Recalcula el precio de cada ítem de la selección para el día ISO de la cita elegida
+ * (1=lunes…7=domingo). Necesario porque el precio se congela al agregar a la selección
  * (antes de saber la fecha), y promos como "15% Lunes a Miércoles" solo deben
  * cobrarse si la cita realmente cae en esos días — ver caso Brescia Macutela
  * (13-ago-2026): promo cotizada y agendada para un viernes, fuera de ventana.
@@ -563,7 +563,7 @@ function splitEqually(total: number, parts: number): number[] {
 /**
  * Recalcula el precio de las líneas de una cita YA CREADA (`appointment_services`)
  * contra el día ISO real de una nueva fecha de reprogramación. A diferencia del
- * agendado inicial (que congela el precio en el carrito antes de saber la fecha),
+ * agendado inicial (que congela el precio en la selección antes de saber la fecha),
  * reprogramar una cita `scheduled` solo hacía UPDATE de `date` sin recotizar —
  * si la cita se mueve a un día donde una promo por-día ya no aplica (o donde
  * aplica una que antes no aplicaba), el monto quedaba desactualizado (gap
@@ -664,8 +664,8 @@ const WEEKDAY_NAMES_ES: Record<number, string> = {
 const WEEKDAY_ORDER_ES = Object.values(WEEKDAY_NAMES_ES);
 
 /**
- * Aviso corto si algún ítem del carrito tiene su precio actual atado a una promo
- * con días de vigencia restringidos (`valid_days`). Mientras arma el carrito, el
+ * Aviso corto si algún ítem de la selección tiene su precio actual atado a una promo
+ * con días de vigencia restringidos (`valid_days`). Mientras arma la selección, el
  * precio se congela sin conocer todavía la fecha de la cita (`resolveCartItemPrice`
  * se llama sin `isoWeekday`) — este aviso evita que la clienta piense que el
  * descuento aplica cualquier día; el precio final se confirma/ajusta recién al

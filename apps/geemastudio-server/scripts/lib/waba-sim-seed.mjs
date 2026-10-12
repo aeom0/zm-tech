@@ -121,7 +121,7 @@ export async function seedScheduledAppointment(supabase, phone, opts = {}) {
   return { appointmentId: appt.id, clientId };
 }
 
-/** Sesión con carrito listo para agendar (mismo teléfono con cita ya activa). */
+/** Sesión con selección lista para agendar (mismo teléfono con cita ya activa). */
 export async function seedSessionWithCart(supabase, phone, serviceId, price) {
   const cartItems = JSON.stringify([
     { item_type: "service", item_id: serviceId, quantity: 1, price },

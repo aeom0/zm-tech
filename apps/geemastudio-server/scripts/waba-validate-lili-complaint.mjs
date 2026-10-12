@@ -11,35 +11,35 @@
  * (fix 1, unit test del fallback de parseDatetimeES).
  *
  * Casos:
- *  A: mensaje de reclamo tipo Lili con carrito activo (browsing) → deriva al
+ *  A: mensaje de reclamo tipo Lili con selección activa (browsing) → deriva al
  *     equipo (STAFF_COORDINATION_PHONE), NO confirma cita, 0 citas creadas.
- *  B (regresión): "a las 3" con carrito activo, sin fecha aún → el gate de
+ *  B (regresión): "a las 3" con selección activa, sin fecha aún → el gate de
  *     reclamo NO debe dispararse (no es un falso positivo).
  *  C (regresión PR #8): "3,30 me viene bien" con selected_day ya fijado en
  *     sesión (awaiting_datetime) → sigue cerrando la cita normalmente.
  *  D: reclamo que también trae una fecha explícita ("se me cayó, ¿puedo ir
  *     el 10 de agosto?") → por decisión de producto, igual prioriza el gate
  *     de reclamo (deriva al equipo) en vez de agendar automático.
- *  E (05-ago [P1]): "se bajaron por completo" SIN carrito → gate igual
- *     (antes iba a Haiku → add_to_cart). 0 carrito, 0 cita.
+ *  E (05-ago [P1]): "se bajaron por completo" SIN selección → gate igual
+ *     (antes iba a Haiku → add_to_cart). 0 selección, 0 cita.
  */
 import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
   buildTextPayload,
-  postWebhook,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import {
-  seedSessionWithCart,
   countScheduledAppointments,
+  seedSessionWithCart,
 } from "./lib/waba-sim-seed.mjs";
 import {
-  pollResponseSince,
   assertOutbound,
-  logCaseResult,
   finishAndExit,
+  logCaseResult,
+  pollResponseSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -47,7 +47,7 @@ const PHONE_A = "51999000984"; // Caso A: reclamo tipo Lili
 const PHONE_B = "51999000985"; // Caso B: "a las 3" (regresión, no debe gatear)
 const PHONE_C = "51999000986"; // Caso C: "3,30" con selected_day (regresión PR #8)
 const PHONE_D = "51999000987"; // Caso D: reclamo + fecha explícita
-const PHONE_E = "51999000988"; // Caso E: reclamo plural SIN carrito (P1 05-ago)
+const PHONE_E = "51999000988"; // Caso E: reclamo plural SIN selección (P1 05-ago)
 
 const WEEKDAY_KEY = "2026-08-20"; // jueves, sin citas reales ni feriado
 const LIFTING_ID = "33fbadcc-30e8-4e82-9913-3a888aea73dc"; // servicio de control (ver waba-validate-phantom-booking.mjs)
@@ -68,7 +68,7 @@ async function seedBrowsingWithCart(phone) {
 
 async function validateComplaintGate() {
   console.log(
-    "\n── Caso A: reclamo tipo Lili con carrito activo → deriva al equipo, no confirma ──",
+    "\n── Caso A: reclamo tipo Lili con selección activa → deriva al equipo, no confirma ──",
   );
   await seedBrowsingWithCart(PHONE_A);
 
@@ -106,7 +106,7 @@ async function validateComplaintGate() {
 
 async function validateNoFalsePositive() {
   console.log(
-    "\n── Caso B: 'a las 3' con carrito activo, sin fecha → el gate NO debe dispararse ──",
+    "\n── Caso B: 'a las 3' con selección activa, sin fecha → el gate NO debe dispararse ──",
   );
   await seedBrowsingWithCart(PHONE_B);
 
@@ -222,10 +222,10 @@ async function validateComplaintWithExplicitDate() {
   };
 }
 
-/** Primer mensaje Lili: plural sin carrito → gate (no Haiku add_to_cart). */
+/** Primer mensaje Lili: plural sin selección → gate (no Haiku add_to_cart). */
 async function validateComplaintWithoutCart() {
   console.log(
-    "\n── Caso E: «se bajaron» SIN carrito → gate (no add_to_cart / Haiku) ──",
+    "\n── Caso E: «se bajaron» SIN selección → gate (no add_to_cart / Haiku) ──",
   );
   await cleanupQaPhone(supabase, PHONE_E, { deleteClient: true });
   await supabase.from("whatsapp_sessions").upsert({
@@ -268,19 +268,17 @@ async function validateComplaintWithoutCart() {
 
   const fails = [];
   if (!gated) fails.push("no envió mensaje de garantía/932");
-  if (addedCart) fails.push("Haiku/flujo agregó al carrito");
+  if (addedCart) fails.push("Haiku/flujo agregó a la selección");
   if (appts > 0) fails.push(`creó ${appts} cita(s)`);
   if (CONFIRMED_RE.test(text)) fails.push("confirmó cita");
 
   const pass = fails.length === 0;
   const result = { pass, fails, outboundCount: outbound.length, haikuCount: 0 };
-  logCaseResult("Lili-E reclamo sin carrito", result, outbound);
+  logCaseResult("Lili-E reclamo sin selección", result, outbound);
   return {
-    name: "Caso E (se bajaron sin carrito)",
+    name: "Caso E (se bajaron sin selección)",
     pass,
-    note: pass
-      ? "Gate antes de Haiku; 0 carrito / 0 cita"
-      : fails.join("; "),
+    note: pass ? "Gate antes de Haiku; 0 selección / 0 cita" : fails.join("; "),
   };
 }
 

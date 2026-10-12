@@ -1,8 +1,8 @@
-// cart-nudge — Recordatorio de carrito abandonado.
-// Cron cada 30 min. Busca sesiones con carrito activo sin actividad reciente
+// cart-nudge — Recordatorio de selección abandonada.
+// Cron cada 30 min. Busca sesiones con selección activa sin actividad reciente
 // y envía nudges dentro de la ventana de 24h (texto libre, sin plantilla).
 // Nudge 1: ≥12 min sin actividad (ideal ~12–35; colchón 24h si se difiere de noche).
-// Nudge 2: ≥90 min tras nudge1 (colchón 24h) + vacía carrito.
+// Nudge 2: ≥90 min tras nudge1 (colchón 24h) + vacía selección.
 // Si step=awaiting_datetime, nudge 1 reenvía el selector de fecha/hora.
 // Horario de ENVÍO: 9–22 Lima todos los días (como ads-bounce) — no el del salón.
 
@@ -50,7 +50,7 @@ const NUDGE1_MIN = 12;
 const NUDGE2_MIN = 90;
 /**
  * Colchón (no la ventana ideal): permite diferir noche/madrugada → 9 AM
- * sin perder el carrito (mismo patrón que ads-bounce).
+ * sin perder la selección (mismo patrón que ads-bounce).
  */
 const CANDIDATE_MAX_MINUTES = 24 * 60;
 
@@ -219,7 +219,7 @@ function getCartDescription(
 }
 
 /**
- * Horario propio del reenganche carrito: 9:00–22:00 Lima, todos los días.
+ * Horario propio del reenganche selección: 9:00–22:00 Lima, todos los días.
  * Independiente del horario de atención del salón (como ads-bounce).
  */
 function isWithinReengancheHours(): boolean {

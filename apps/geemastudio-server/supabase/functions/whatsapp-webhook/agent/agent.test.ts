@@ -324,7 +324,7 @@ function toolCtx() {
   };
 }
 
-Deno.test("tools: el agente expone carrito, día, equipo y reserva; sin selector viejo", () => {
+Deno.test("tools: el agente expone selección, día, equipo y reserva; sin selector viejo", () => {
   const names = AGENT_TOOLS.map((t) => t.name);
   for (
     const n of [
@@ -332,9 +332,9 @@ Deno.test("tools: el agente expone carrito, día, equipo y reserva; sin selector
       "info_negocio",
       "ver_guia",
       "ver_portafolio",
-      "ver_carrito",
-      "agregar_al_carrito",
-      "quitar_del_carrito",
+      "ver_seleccion",
+      "agregar_a_seleccion",
+      "quitar_de_seleccion",
       "consultar_dia",
       "consultar_equipo",
       "reservar_horario",
@@ -347,9 +347,9 @@ Deno.test("tools: el agente expone carrito, día, equipo y reserva; sin selector
   assertEquals(names.includes("pasar_a_agendar"), false);
 });
 
-Deno.test("tools: agregar_al_carrito rechaza ids fuera del catálogo", async () => {
+Deno.test("tools: agregar_a_seleccion rechaza ids fuera del catálogo", async () => {
   const r = await runAgentTool(
-    "agregar_al_carrito",
+    "agregar_a_seleccion",
     { ids: ["nope"] },
     toolCtx(),
   );

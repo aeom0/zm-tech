@@ -1,4 +1,4 @@
-// cart-booking.ts — Carrito → calendario, tap catálogo stale, CTA precio (Plan 08)
+// cart-booking.ts — Selección → calendario, tap catálogo stale, CTA precio (Plan 08)
 
 import { sendMessage } from "../../wa-api.ts";
 import {
@@ -62,7 +62,7 @@ export function isCatalogPageInteractiveId(id: string): boolean {
 
 /**
  * Tap svc_/pack_ de lista vieja mid-`awaiting_datetime` (Jessi …6106, Bu …0782).
- * Antes: el bloque cortaba con return (o "usa los botones") y no tocaba el carrito.
+ * Antes: el bloque cortaba con return (o "usa los botones") y no tocaba la selección.
  * Ahora: reemplaza la selección, conserva selected_day y reenvía hora/fecha.
  */
 export async function trySwapCartFromStaleCatalogTap(opts: {
@@ -171,7 +171,7 @@ export async function trySwapCartFromStaleCatalogTap(opts: {
 const PENDING_PRICE_CTA_TTL_MS = 10 * 60 * 1000;
 
 /**
- * Zandry …0030: "Si" tras CTA de foto proactiva (sin carrito).
+ * Zandry …0030: "Si" tras CTA de foto proactiva (sin selección).
  * detectAITrigger descarta ≤3 chars → sin este handler cae al menú genérico.
  * Retorna true si consumió el turno.
  */
@@ -227,7 +227,7 @@ export async function tryAcceptPendingPriceCta(opts: {
   // array cuando length <= 1 (early return) \u2014 copiarla antes de vaciar/
   // rellenar offerIds in-place, si no offerIds.length=0 vac\u00eda tambi\u00e9n esta
   // variable (mismo objeto) y el push posterior no agrega nada (Jacqueline
-  // 19-sep: "Si" con un solo servicio cotizado nunca se agregaba al carrito).
+  // 19-sep: "Si" con un solo servicio cotizado nunca se agregaba a la selección).
   const nonConflicting = [
     ...filterNonConflictingQuotedOfferIds(offerIds, catalog, messageText),
   ];
@@ -316,12 +316,12 @@ export async function tryAcceptPendingPriceCta(opts: {
  * vez de responder con texto. tryAcceptPendingPriceCta() de arriba solo se
  * dispara con texto libre (dispatcher.ts exige `!interactiveId && messageText`)
  * — sin este helper, el tap de fecha/hora agendaba el servicio VIEJO que ya
- * estaba en el carrito (el de la oferta de retoque) en vez del recién
- * cotizado. Reemplaza el carrito completo por el servicio/pack cotizado
+ * estaba en la selección (el de la oferta de retoque) en vez del recién
+ * cotizado. Reemplaza la selección completa por el servicio/pack cotizado
  * (mismo criterio que trySwapCartFromStaleCatalogTap) y limpia el CTA
  * pendiente. Silencioso: no envía mensaje propio, deja que el flujo de
  * fecha/hora que sigue confirme con el servicio ya corregido. Retorna true
- * si cambió el carrito (el llamador debe refrescar la sesión).
+ * si cambió la selección (el llamador debe refrescar la sesión).
  */
 export async function applyPendingPriceCtaBeforeDatetimeTap(opts: {
   supabase: SupabaseClient;

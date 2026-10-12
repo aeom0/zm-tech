@@ -40,10 +40,10 @@ export function turnoverMinutesForCategory(categoryId?: string | null): number {
 }
 
 /**
- * Minutos que ocupa el carrito en agenda: suma de duraciones + UN solo
+ * Minutos que ocupa la selección en agenda: suma de duraciones + UN solo
  * turnover al final de la cita (el más largo entre las categorías
  * presentes, ej. +30 si hay uñas). Antes se sumaba turnover por cada
- * servicio del carrito, lo que inflaba de más citas con 2+ servicios
+ * servicio de la selección, lo que inflaba de más citas con 2+ servicios
  * (ej. un pack de manicure+pedicure sumaba +60 en vez de +30) y hacía
  * que el bot mostrara "sin horarios" cuando sí había cupo real (caso
  * real Alberto VE …4665, 17-sep-2026).
@@ -64,7 +64,7 @@ export function occupiedMinutesForServices(
 }
 
 /**
- * Minutos de agenda de un carrito: si su composición coincide con un pack con
+ * Minutos de agenda de una selección: si su composición coincide con un pack con
  * `slot_minutes` (ej. Lifting + Laminado = 50, 2 Lifting = 75) se usa ese
  * valor, que ya incluye turnover. Si no, suma de servicios + turnover.
  */
@@ -123,7 +123,7 @@ export function hasFlexibleMealBreak(
 export const SALON_BEDS = 2;
 
 /**
- * Camillas que ocupa una cita o carrito: 0 si todo es uñas, 1 si trae algo
+ * Camillas que ocupa una cita o selección: 0 si todo es uñas, 1 si trae algo
  * que no es uñas (lifting, cejas, extensiones, retiro, depilación…).
  * Sin servicios conocidos asume 1 (conservador).
  */

@@ -13,16 +13,16 @@ import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
   buildTextPayload,
-  postWebhook,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import {
-  pollOutboundSince,
-  fetchHaikuSince,
   assertOutbound,
-  logCaseResult,
+  fetchHaikuSince,
   finishAndExit,
+  logCaseResult,
+  pollOutboundSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -46,9 +46,8 @@ const RIGID_BOTONES_RE = /usa los \*?botones\*?/i;
 const META_ADS_MENU_DUMP_RE = /Men[uú] principal|Elegir categor[ií]a/i;
 const AGENDAR_DEADEND_ONLY_TEXT_RE =
   /¿Cuál servicio te llama|llamo la atenci[oó]n|Escr[ií]benos y te contamos/i;
-/** Dead-end skipSaludoForBooking sin carrito (orgánico / sin referral). */
-const SKIP_SALUDO_STATIC_RE =
-  /Para agendar, primero elige el servicio o pack/i;
+/** Dead-end skipSaludoForBooking sin selección (orgánico / sin referral). */
+const SKIP_SALUDO_STATIC_RE = /Para agendar, primero elige el servicio o pack/i;
 const HANDS_FEET_OR_PROMO_RE =
   /manos|pies|uñas|gel|rubber|promo|S\/\s*\d+|pack/i;
 
@@ -169,13 +168,11 @@ async function validateCtwaPriceBurst() {
     {
       ...result,
       pass,
-      fails: pass
-        ? []
-        : [
-            ...result.fails,
-            !hasBuilderAnswer ? "sin mención Builder/precio/uñas" : "",
-            outbound.length < 2 ? "pocos OUT" : "",
-          ].filter(Boolean),
+      fails: pass ? [] : [
+        ...result.fails,
+        !hasBuilderAnswer ? "sin mención Builder/precio/uñas" : "",
+        outbound.length < 2 ? "pocos OUT" : "",
+      ].filter(Boolean),
     },
     outbound,
   );
@@ -216,8 +213,7 @@ async function validateCtwaAgendarNoDeadend() {
       m.msg_type === "interactive" ||
       /\[lista\]|promos|categor/i.test(m.content ?? ""),
   );
-  const hasHaikuOrUseful =
-    haiku.length > 0 ||
+  const hasHaikuOrUseful = haiku.length > 0 ||
     outbound.some((m) => HANDS_FEET_OR_PROMO_RE.test(m.content ?? ""));
   const onlyStaticCta =
     outbound.filter((m) => m.msg_type === "text" || !m.msg_type).length >= 1 &&
@@ -250,9 +246,7 @@ async function validateCtwaAgendarNoDeadend() {
     name: "P2-C CTWA agendar",
     pass,
     note: pass
-      ? hasInteractive
-        ? "lista/Haiku (no dead-end)"
-        : "Haiku mismo turno"
+      ? hasInteractive ? "lista/Haiku (no dead-end)" : "Haiku mismo turno"
       : fails.join("; "),
   };
 }
@@ -285,11 +279,9 @@ async function validateOrganicAgendarNoDeadend() {
       m.msg_type === "interactive" ||
       /\[lista\]|promos|categor/i.test(m.content ?? ""),
   );
-  const hasHaikuOrUseful =
-    haiku.length > 0 ||
+  const hasHaikuOrUseful = haiku.length > 0 ||
     outbound.some((m) => HANDS_FEET_OR_PROMO_RE.test(m.content ?? ""));
-  const onlySkipSaludoStatic =
-    outbound.length >= 1 &&
+  const onlySkipSaludoStatic = outbound.length >= 1 &&
     haiku.length === 0 &&
     !hasHaikuOrUseful &&
     outbound.some((m) => SKIP_SALUDO_STATIC_RE.test(m.content ?? "")) &&

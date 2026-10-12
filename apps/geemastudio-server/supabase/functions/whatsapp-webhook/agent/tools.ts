@@ -1,7 +1,7 @@
 // tools.ts — Herramientas del agente Haiku 5.5
 //
 // El modelo ve horarios, duraciones, personal y restricciones (feriados,
-// ausencias) y arma el carrito. El código valida todo: el modelo nunca decide
+// ausencias) y arma la selección. El código valida todo: el modelo nunca decide
 // precios, montos ni disponibilidad. El cierre (adelanto o cita directa) lo
 // hace finalizeBookingAfterDatetimeSelection.
 
@@ -113,7 +113,7 @@ export const AGENT_TOOLS: AgentToolDef[] = [
     name: "buscar_servicios",
     description:
       "Busca servicios y packs del catálogo por texto (nombre, efecto, categoría) y devuelve id, precio vigente y duración. " +
-      "Úsala para obtener el id antes de agregar_al_carrito o cuando la clienta pregunte por un servicio.",
+      "Úsala para obtener el id antes de agregar_a_seleccion o cuando la clienta pregunte por un servicio.",
     strict: true,
     input_schema: {
       type: "object",
@@ -158,7 +158,7 @@ export const AGENT_TOOLS: AgentToolDef[] = [
     name: "info_negocio",
     description:
       "Datos oficiales del salón: ubicación y estacionamiento, políticas de la cita (tardanza, cancelación, reprogramación, adelanto) " +
-      "y recomendaciones previas para los servicios del carrito. Úsala en vez de improvisar estos datos.",
+      "y recomendaciones previas para los servicios de la selección. Úsala en vez de improvisar estos datos.",
     strict: true,
     input_schema: {
       type: "object",
@@ -202,9 +202,9 @@ export const AGENT_TOOLS: AgentToolDef[] = [
     },
   },
   {
-    name: "ver_carrito",
+    name: "ver_seleccion",
     description:
-      "Muestra el carrito actual: ítems, precio de cada uno, duración y total.",
+      "Muestra la selección actual: ítems, precio de cada uno, duración y total.",
     strict: true,
     input_schema: {
       type: "object",
@@ -213,9 +213,9 @@ export const AGENT_TOOLS: AgentToolDef[] = [
     },
   },
   {
-    name: "agregar_al_carrito",
+    name: "agregar_a_seleccion",
     description:
-      "Agrega servicios o packs al carrito (los precios los pone el sistema, incluida la promo vigente).",
+      "Agrega servicios o packs a la selección (los precios los pone el sistema, incluida la promo vigente).",
     strict: true,
     input_schema: {
       type: "object",
@@ -225,8 +225,8 @@ export const AGENT_TOOLS: AgentToolDef[] = [
     },
   },
   {
-    name: "quitar_del_carrito",
-    description: "Quita servicios o packs del carrito.",
+    name: "quitar_de_seleccion",
+    description: "Quita servicios o packs de la selección.",
     strict: true,
     input_schema: {
       type: "object",
@@ -238,7 +238,7 @@ export const AGENT_TOOLS: AgentToolDef[] = [
   {
     name: "consultar_dia",
     description:
-      "Para el carrito actual y un día: si el salón abre (cierres, feriados con horario reducido, domingo con adelanto), " +
+      "Para la selección actual y un día: si el salón abre (cierres, feriados con horario reducido, domingo con adelanto), " +
       "duración de cada servicio y del bloque, horarios libres con quién atiende cada servicio y ausencias del personal. " +
       "Úsala SIEMPRE antes de mencionar una hora; nunca inventes horarios.",
     strict: true,
@@ -351,7 +351,7 @@ export const AGENT_TOOLS: AgentToolDef[] = [
   {
     name: "descartar_reserva",
     description:
-      "Descarta la reserva en curso (carrito, día y hora elegidos) cuando la clienta ya no quiere seguir antes de pagar el adelanto. No toca citas ya creadas.",
+      "Descarta la reserva en curso (selección, día y hora elegidos) cuando la clienta ya no quiere seguir antes de pagar el adelanto. No toca citas ya creadas.",
     strict: true,
     input_schema: {
       type: "object",
@@ -471,7 +471,7 @@ async function resolveOwnAppointment(
   };
 }
 
-/** Cita pendiente de la clienta con exactamente los mismos servicios que el carrito (posible duplicado). */
+/** Cita pendiente de la clienta con exactamente los mismos servicios que la selección (posible duplicado). */
 async function findPendingWithSameServices(
   ctx: AgentToolContext,
   cartServiceIds: string[],
@@ -568,7 +568,7 @@ async function cartSummary(ctx: AgentToolContext): Promise<string> {
   const session = await getSession(ctx.supabase, ctx.phoneNumber);
   const items = (session?.cartItems ?? []) as CartItem[];
   const real = items.filter((i) => i.item_id);
-  if (real.length === 0) return "El carrito está vacío.";
+  if (real.length === 0) return "La selección está vacía.";
   const { duration } = resolveBookingItems(
     real.map((i) => i.item_id),
     ctx.catalog,
@@ -878,7 +878,7 @@ export async function runAgentTool(
           }
           return {
             content: getConsideracionesPreviasWhatsApp([...cats]) ||
-              "Sin recomendaciones previas para lo que hay en el carrito.",
+              "Sin recomendaciones previas para lo que hay en la selección.",
           };
         }
         return { content: "tema inválido", isError: true };
@@ -903,10 +903,10 @@ export async function runAgentTool(
         };
       }
 
-      case "ver_carrito":
+      case "ver_seleccion":
         return { content: await cartSummary(ctx) };
 
-      case "agregar_al_carrito": {
+      case "agregar_a_seleccion": {
         const ids = toIdArray(input.ids);
         const { unknown } = resolveBookingItems(ids, ctx.catalog);
         if (ids.length === 0 || unknown.length > 0) {
@@ -950,7 +950,7 @@ export async function runAgentTool(
         return { content: await cartSummary(ctx) };
       }
 
-      case "quitar_del_carrito": {
+      case "quitar_de_seleccion": {
         const ids = new Set(toIdArray(input.ids));
         const session = await getSession(ctx.supabase, ctx.phoneNumber);
         const next = ((session?.cartItems ?? []) as CartItem[]).filter((i) =>
@@ -982,7 +982,7 @@ export async function runAgentTool(
         if (items.length === 0) {
           return {
             content:
-              "El carrito está vacío: primero agrega el servicio con agregar_al_carrito.",
+              "La selección está vacía: primero agrega el servicio con agregar_a_seleccion.",
             isError: true,
           };
         }
@@ -1067,7 +1067,7 @@ export async function runAgentTool(
           content: [
             `Día ${fecha}.`,
             ...facts,
-            `Carrito (${duration} min en agenda):\n${await cartSummary(ctx)}`,
+            `Selección (${duration} min en agenda):\n${await cartSummary(ctx)}`,
             `Horarios libres (autoridad: sistema): ${free}`,
             staff
               ? `Asignación de personal por horario (cada 30 min):\n${staff}`
@@ -1159,7 +1159,7 @@ export async function runAgentTool(
       case "reservar_horario": {
         const { items, duration, serviceIds } = await loadCartIds(ctx);
         if (items.length === 0) {
-          return { content: "El carrito está vacío.", isError: true };
+          return { content: "La selección está vacía.", isError: true };
         }
         const duplicate = await findPendingWithSameServices(ctx, serviceIds);
         if (duplicate) {
@@ -1274,13 +1274,13 @@ export async function runAgentTool(
             isError: true,
           };
         }
-        // finalizeRescheduleAppointment lee y limpia el carrito de la sesión:
+        // finalizeRescheduleAppointment lee y limpia la selección de la sesión:
         // se guarda el que la clienta tenía en armado para devolvérselo.
         const before = await getSession(ctx.supabase, ctx.phoneNumber);
         const prevItems = (before?.cartItems ?? []).filter((i: CartItem) =>
           i.item_id
         );
-        // finalizeRescheduleAppointment lee el carrito de la sesión: se fija el de la cita.
+        // finalizeRescheduleAppointment lee la selección de la sesión: se fija el de la cita.
         await upsertSession(ctx.supabase, ctx.phoneNumber, {
           cart_items: JSON.stringify(loaded.items),
           cart_service_ids: JSON.stringify(
@@ -1446,7 +1446,7 @@ export async function runAgentTool(
         await clearCart(ctx.supabase, ctx.phoneNumber);
         return {
           content:
-            "Reserva en curso descartada y carrito vacío. Confírmalo y ofrece retomar cuando quiera.",
+            "Reserva en curso descartada y selección vacía. Confírmalo y ofrece retomar cuando quiera.",
         };
       }
 

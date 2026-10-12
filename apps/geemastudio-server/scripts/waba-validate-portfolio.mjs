@@ -20,15 +20,15 @@ import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
   buildTextPayload,
-  postWebhook,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import {
-  pollOutboundSince,
   fetchHaikuSince,
-  logCaseResult,
   finishAndExit,
+  logCaseResult,
+  pollOutboundSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -38,7 +38,8 @@ const SAMPLE_IMAGE =
   "https://udelxwwnyivknslueerr.supabase.co/storage/v1/object/public/waba-images/campanas/meta-ads-hero.jpg";
 
 const INSTAGRAM_RE = /instagram|@zmlashandnails/i;
-const LOCATION_RE = /Calle Artesanos 150|maps\.app\.goo\.gl|Plazuelas de Surco/i;
+const LOCATION_RE =
+  /Calle Artesanos 150|maps\.app\.goo\.gl|Plazuelas de Surco/i;
 
 const { url, serviceKey, webhookUrl } = loadEnvFromRoot();
 const supabase = createClient(url, serviceKey, {
@@ -214,9 +215,7 @@ async function caseFotosBuilder() {
     name: "Portfolio-A (fotos builder → imagen)",
     pass,
     note: pass
-      ? hasBuilderHint
-        ? "imagen + caption Builder"
-        : "imagen enviada"
+      ? hasBuilderHint ? "imagen + caption Builder" : "imagen enviada"
       : "sin imagen",
   };
 }
@@ -255,12 +254,10 @@ async function caseSinFotosFallback() {
     "Portfolio-B sin fotos",
     {
       pass,
-      fails: pass
-        ? []
-        : [
-            outbound.length < 1 ? "sin respuesta" : "",
-            hasImage ? "envió imagen inesperada" : "",
-          ].filter(Boolean),
+      fails: pass ? [] : [
+        outbound.length < 1 ? "sin respuesta" : "",
+        hasImage ? "envió imagen inesperada" : "",
+      ].filter(Boolean),
       outboundCount: outbound.length,
       haikuCount: 0,
     },
@@ -273,10 +270,10 @@ async function caseSinFotosFallback() {
     note: hasIg
       ? "fallback Instagram"
       : pass
-        ? "respondió sin imagen"
-        : hasImage
-          ? "imagen inesperada"
-          : "silencio",
+      ? "respondió sin imagen"
+      : hasImage
+      ? "imagen inesperada"
+      : "silencio",
   };
 }
 
@@ -357,8 +354,8 @@ async function caseCaptionMatch() {
       ? rubberFirst
         ? "Rubber primero"
         : captionHint
-          ? "imagen + caption Rubber"
-          : "imagen enviada"
+        ? "imagen + caption Rubber"
+        : "imagen enviada"
       : "sin imagen",
   };
 }
@@ -434,13 +431,11 @@ async function caseProactivePricePhoto() {
     "Portfolio-D precio → foto proactiva",
     {
       pass,
-      fails: pass
-        ? []
-        : [
-            !exactlyOneImage ? `imágenes=${images.length} (esperado 1)` : "",
-            !hasCta ? "sin CTA de agendar" : "",
-            !hasServiceName ? "sin nombre de servicio en caption" : "",
-          ].filter(Boolean),
+      fails: pass ? [] : [
+        !exactlyOneImage ? `imágenes=${images.length} (esperado 1)` : "",
+        !hasCta ? "sin CTA de agendar" : "",
+        !hasServiceName ? "sin nombre de servicio en caption" : "",
+      ].filter(Boolean),
       outboundCount: outbound.length,
       haikuCount: haiku.length,
     },
@@ -456,7 +451,7 @@ async function caseProactivePricePhoto() {
   };
 }
 
-/** Zandry …0030: "Si" tras CTA foto → carrito + calendario, no menú genérico.
+/** Zandry …0030: "Si" tras CTA foto → selección + calendario, no menú genérico.
  * No depende de Haiku (isNew + creativos orgánicos rompen D/E en QA limpio):
  * seedea pending_price_cta_* y dispara el afirmativo corto.
  */
@@ -493,7 +488,8 @@ async function casePriceCtaSi() {
     phone: TEST_PHONE,
     direction: "out",
     msg_type: "image",
-    content: `[imagen] Mira cómo trabajamos en Rubber, así puede quedar tus manos ✨\n¿Te agendo el servicio ahora?`,
+    content:
+      `[imagen] Mira cómo trabajamos en Rubber, así puede quedar tus manos ✨\n¿Te agendo el servicio ahora?`,
     source: "bot",
     created_at: new Date(Date.now() - 30_000).toISOString(),
   });
@@ -529,12 +525,10 @@ async function casePriceCtaSi() {
     cartLen = 0;
   }
 
-  const menuGeneric =
-    /¿En qué podemos ayudarte\?/i.test(joined) &&
+  const menuGeneric = /¿En qué podemos ayudarte\?/i.test(joined) &&
     /ZM Lash & Nails Beauty/i.test(joined);
   const ackCart = /Listo:|Rubber|¿Qué día/i.test(joined);
-  const calendarish =
-    sess?.step === "awaiting_datetime" ||
+  const calendarish = sess?.step === "awaiting_datetime" ||
     /Elige (un )?d[ií]a|fecha|hora|¿Qué día/i.test(joined) ||
     afterSi.some((m) => m.msg_type === "interactive");
 
@@ -564,9 +558,7 @@ async function casePriceCtaSi() {
   return {
     name: "Portfolio-E (Si post-CTA)",
     pass,
-    note: pass
-      ? `cart=${cartLen} step=${sess?.step}`
-      : fails.join("; "),
+    note: pass ? `cart=${cartLen} step=${sess?.step}` : fails.join("; "),
   };
 }
 
@@ -612,7 +604,9 @@ async function casePhotosPlusQuestionsCombo() {
   const hasLocation = LOCATION_RE.test(joined);
 
   const fails = [];
-  if (!hasImage) fails.push("sin OUT tipo image (show_portfolio/show_category)");
+  if (!hasImage) {
+    fails.push("sin OUT tipo image (show_portfolio/show_category)");
+  }
   if (!hasLocation) {
     fails.push("no respondió la pregunta de ubicación en el mismo turno");
   }

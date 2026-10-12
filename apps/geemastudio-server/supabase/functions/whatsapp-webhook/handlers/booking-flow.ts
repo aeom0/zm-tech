@@ -54,7 +54,7 @@ import {
   isZmMallClosed,
 } from "../lib/peru-holidays.ts";
 
-/** Clienta quiere cambiar el servicio del carrito / reprogramación (Patricia …5300). */
+/** Clienta quiere cambiar el servicio de la selección / reprogramación (Patricia …5300). */
 export function matchesServiceChangeIntent(text: string): boolean {
   const t = text.toLowerCase().normalize("NFD").replace(/\p{M}/gu, "");
   if (!t.trim()) return false;
@@ -139,7 +139,7 @@ export function mentionedServiceCategoryIds(text: string): Set<string> {
   return cats;
 }
 
-/** Categorías presentes en el carrito (servicios expandidos + packs). */
+/** Categorías presentes en la selección (servicios expandidos + packs). */
 export function cartCategoryIds(
   session: {
     cartItems?: CartItem[];
@@ -165,7 +165,7 @@ export function cartCategoryIds(
 }
 
 /**
- * Mid-`awaiting_datetime`: el mensaje nombra otra categoría distinta a la del carrito
+ * Mid-`awaiting_datetime`: el mensaje nombra otra categoría distinta a la de la selección
  * (Jessi …6106: Pack VIP extensiones + "Diseño de cejas / Manicure" → Haiku cotizaba
  * otro pack sin aclarar el conflicto).
  * No aplica si ya hay intención explícita de cambio (`matchesServiceChangeIntent`).
@@ -297,7 +297,7 @@ export function matchesOpenHoursQuestion(lower: string): boolean {
  * Umbrales `stripped.length` (Batch 4, no unificar a un número):
  * `<= 2` horarios / disponibilidad / ubicación / agendar-nav / hora-cita — el strip
  * ya absorbe la frase típica; lo que queda es ruido o contenido real.
- * `<= 8` carrito — "ver mi selección" / "cuánto sería el total" dejan
+ * `<= 8` selección — "ver mi selección" / "cuánto sería el total" dejan
  * más residuo. `<= 12` retiro — "de otro salón" es más largo.
  */
 export function isMostlyOpenHoursQuestion(lower: string): boolean {
@@ -915,7 +915,7 @@ const CART_INSPECT_NAV_PHRASES = [
 /**
  * Plan 13-sep "Haiku-primero informativo", Batch 3: "qué tengo en mi
  * selección" / "ver mi selección" genéricos siguen el dump estático del
- * carrito; si tras quitar esa fraseología queda una pregunta real
+ * selección; si tras quitar esa fraseología queda una pregunta real
  * ("cuánto sería el total si le agrego lifting") → Haiku antes del resumen.
  */
 export function isMostlyCartInspectQuestion(lower: string): boolean {
@@ -955,11 +955,11 @@ export function isMostlyCartInspectQuestion(lower: string): boolean {
   return stripped.length <= 8;
 }
 
-/** Queja o corrección del carrito (no es despedida ni hora). */
+/** Queja o corrección de la selección (no es despedida ni hora). */
 export function matchesCartCorrectionIntent(lower: string): boolean {
   const folded = lower.normalize("NFD").replace(/\p{M}/gu, "");
   // Dubraska …0467 (28-sep, análisis 29-sep): "sacar cita" no es quitar un
-  // servicio. El "sacar" suelto abría el menú de carrito y Haiku no veía el
+  // servicio. El "sacar" suelto abría el menú de selección y Haiku no veía el
   // turno (Batch 4). "sacar el/la lifting" sigue siendo corrección.
   if (/\bsacar\s+(una\s+|la\s+|mi\s+)?(cita|turno|hora|cupo)\b/.test(folded)) {
     return false;
@@ -975,7 +975,7 @@ export function matchesCartCorrectionIntent(lower: string): boolean {
     "no es ese servicio",
     "quiero otro servicio",
     "cambiar servicio",
-    // Quitar/posponer un servicio del carrito
+    // Quitar/posponer un servicio de la selección
     "quitar",
     "sacar el ",
     "sacar la ",
@@ -1563,7 +1563,7 @@ export function matchesSoftRescheduleIntent(text: string): boolean {
 }
 
 /**
- * Persiste selected_day aunque aún no haya carrito (sticky mid-flujo).
+ * Persiste selected_day aunque aún no haya selección (sticky mid-flujo).
  * Retorna el intent si se guardó.
  */
 export async function stickySelectedDayFromText(
@@ -1589,7 +1589,7 @@ export async function stickySelectedDayFromText(
 }
 
 /**
- * Tras carrito: si hay selected_day (o fecha en messageText) → hora;
+ * Tras selección: si hay selected_day (o fecha en messageText) → hora;
  * si hay fecha+hora → cierra cita; si no → selector de días.
  */
 export async function openBookingCalendarForCart(
@@ -1771,7 +1771,7 @@ export async function resendDatetimeSelectors(
   const debounce = opts?.debounce !== false;
 
   // debounce: evita spam de lista tras Haiku en ráfagas ~8s (Yesenia P3).
-  // No aplica a agendar_ya / carrito→calendario / nudges (callers sin opts).
+  // No aplica a agendar_ya / selección→calendario / nudges (callers sin opts).
   // Swap mid-agenda (Jessi): pasar { debounce: false } para forzar el selector.
   if (selectedDate) {
     const sent = await sendTimeSelector(
@@ -1850,7 +1850,7 @@ export function parseBookingDatetimeFromMessage(
   return parseDatetimeES(messageText)?.date ?? null;
 }
 
-/** Cierra agendado cuando hay carrito + fecha/hora parseable en texto libre. */
+/** Cierra agendado cuando hay selección + fecha/hora parseable en texto libre. */
 export async function tryCompleteBookingFromText(
   supabase: SupabaseClient,
   phoneNumber: string,
@@ -2193,8 +2193,8 @@ export async function trySoftRescheduleFromText(
   const pending = await getPendingAppointmentsForPhone(supabase, phoneNumber);
   if (pending.length !== 1) return false;
 
-  // No interceptar mid-agendado NUEVO (carrito sin cita). Con cita scheduled,
-  // el carrito residual no debe bloquear soft (Pati-E: cleanup/seed imperfecto).
+  // No interceptar mid-agendado NUEVO (selección sin cita). Con cita scheduled,
+  // la selección residual no debe bloquear soft (Pati-E: cleanup/seed imperfecto).
   if (
     sessionHasCart(sessNow) &&
     (sessNow?.step === "browsing" ||
@@ -2202,7 +2202,7 @@ export async function trySoftRescheduleFromText(
       !sessNow?.step)
   ) {
     // Permitir soft SOLO si el mensaje trae hora explícita (am/pm) — un
-    // número suelto ("10") con carrito activo puede ser la hora de un
+    // número suelto ("10") con selección activa puede ser la hora de un
     // agendado NUEVO, no de la cita existente (mismo patrón que el bug
     // fantasma de Lili, PR #45: número corto + mensaje corto = riesgo).
     // Fix 14-ago (revisión PR #20): se retira el bypass de número suelto
@@ -2211,7 +2211,7 @@ export async function trySoftRescheduleFromText(
       return false;
     }
   }
-  // Servicio + fecha sin carrito → Haiku/add_to_cart, no pisar con soft reschedule
+  // Servicio + fecha sin selección → Haiku/add_to_cart, no pisar con soft reschedule
   if (
     /\b(lifting|pestañas|pestanas|extensiones|uñas|unas|cejas|depil|microblading|builder|soft\s*gel|rubber|retoque|laminado|manicure|pedicure|planchado|botox)\b/i
       .test(
@@ -2386,7 +2386,7 @@ export async function trySoftRescheduleFromText(
     return true;
   }
 
-  // Solo día → carrito de la cita + selected_day + pedir hora (sin lista 7 días)
+  // Solo día → selección de la cita + selected_day + pedir hora (sin lista 7 días)
   await startRescheduleFromAppointment(
     supabase,
     phoneNumber,

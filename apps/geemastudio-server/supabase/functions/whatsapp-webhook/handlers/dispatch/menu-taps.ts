@@ -1,4 +1,4 @@
-// menu-taps.ts — IDs de menú, catálogo, ubicación y carrito (Plan 08 Fase 1)
+// menu-taps.ts — IDs de menú, catálogo, ubicación y selección (Plan 08 Fase 1)
 
 import { WA_IDS } from "../../lib/constants.ts";
 import { getInteractiveTitle } from "../../lib/parse-message.ts";
@@ -376,7 +376,7 @@ export async function tryHandleMenuTaps(rt: DispatchRuntime): Promise<boolean> {
     });
     if (locResult !== "maps") return true;
     // LION …9087: "dirección de la sede" no pasaba isMostlyLocation → Haiku ×2.
-    // Tras Maps se corta. Si ya hay carrito, se reenvía el selector. Sin carrito
+    // Tras Maps se corta. Si ya hay selección, se reenvía el selector. Sin selección
     // la dirección queda sola: el menú genérico pisaba la promo que Haiku
     // estaba cotizando (Alberto VE …0417, 4-oct, "dónde están ubicados").
     if (userInput === "ubicacion" || isMostlyLocationQuestion(lower)) {
@@ -839,7 +839,7 @@ export async function tryHandleMenuTaps(rt: DispatchRuntime): Promise<boolean> {
     });
     const desc = (promo.description ?? "").trim().slice(0, 200);
     const body = (desc ? `${desc}\n\n` : "") +
-      "Elige un ítem para agregarlo al carrito al precio de la promo:";
+      "Elige un ítem para agregarlo a la selección al precio de la promo:";
     const ok = await sendInteractiveList(
       phoneNumber,
       promo.emoji + " " + promo.title,
@@ -963,7 +963,7 @@ export async function tryHandleMenuTaps(rt: DispatchRuntime): Promise<boolean> {
     return true;
   }
 
-  // Portafolio: lista de servicios con fotos (no agrega al carrito)
+  // Portafolio: lista de servicios con fotos (no agrega a la selección)
   {
     const {
       isPortfolioListId,
@@ -1062,7 +1062,7 @@ export async function tryHandleMenuTaps(rt: DispatchRuntime): Promise<boolean> {
   if (userInput === WA_IDS.AGREGAR_OTRO) {
     if (rt.session?.step === "awaiting_datetime") {
       // Conserva el día (Alberto VE …0417: 12:30 + agregar extensiones).
-      // La hora se revalida al volver al carrito (almuerzo Stephani / duración).
+      // La hora se revalida al volver a la selección (almuerzo Stephani / duración).
       await upsertSession(supabase, phoneNumber, {
         step: "browsing",
         parsed_datetime: null,
@@ -1078,7 +1078,7 @@ export async function tryHandleMenuTaps(rt: DispatchRuntime): Promise<boolean> {
 
   if (
     userInput === WA_IDS.VER_SELECCION ||
-    userInput === WA_IDS.VOLVER_CARRITO
+    userInput === WA_IDS.VOLVER_SELECCION
   ) {
     // Batch 3: tap / "ver mi selección" puro → dump estático. Texto mixto
     // ("cuánto sería el total si le agrego lifting") → Haiku primero.
@@ -1212,11 +1212,11 @@ export async function tryHandleMenuTaps(rt: DispatchRuntime): Promise<boolean> {
     return true;
   }
 
-  if (userInput === WA_IDS.VACIAR_CARRITO) {
+  if (userInput === WA_IDS.VACIAR_SELECCION) {
     await clearCart(supabase, phoneNumber);
     await rt.senders.sendMessage(
       phoneNumber,
-      "Carrito vaciado. ¿En qué más podemos ayudarte?",
+      "Selección vaciada. ¿En qué más podemos ayudarte?",
     );
     await sendMenuWithPromos(phoneNumber, supabase);
     return true;

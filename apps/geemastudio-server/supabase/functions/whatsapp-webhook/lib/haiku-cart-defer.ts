@@ -1,5 +1,5 @@
 /**
- * Haiku-primero: no armar carrito en el mismo turno en que Haiku pregunta
+ * Haiku-primero: no armar selección en el mismo turno en que Haiku pregunta
  * y espera respuesta escrita. Si ella ya confirmó (sí / agéndame / día / hora),
  * el add_to_cart sigue y el calendario usa ese mensaje.
  */
@@ -38,7 +38,7 @@ export function clientMessageAlreadyCommitsBooking(text: string): boolean {
 
 /**
  * True → descartar add_to_cart de este turno.
- * False → ella ya dijo sí, agéndame, un día o una hora: el carrito sigue.
+ * False → ella ya dijo sí, agéndame, un día o una hora: la selección sigue.
  */
 export function shouldDeferHaikuAddToCart(
   haikuText: string,

@@ -4,30 +4,30 @@
  * Origen: docs/waba/analysis/2026-06-25 (Luana/Arantxa) + plan multi-cita 24-sep-2026.
  *
  * Luana-A: 1 cita + "Necesito separar para otra persona más" → abre party (pide nombre), no 932
- * Luana-B: 1 cita + carrito + Agendar → permite 2.ª (calendario / resumen), no bloqueo “máximo 2”
+ * Luana-B: 1 cita + selección + Agendar → permite 2.ª (calendario / resumen), no bloqueo “máximo 2”
  * Luana-C: sin cita + "somos 2" → party (acompañante), no “una cita a la vez”
  * Luana-D: 2 citas + "para mi amiga" → tope / 932
  */
 import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
-  buildTextPayload,
   buildInteractivePayload,
-  postWebhook,
+  buildTextPayload,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import {
+  countScheduledAppointments,
   seedScheduledAppointment,
   seedSessionWithCart,
-  countScheduledAppointments,
 } from "./lib/waba-sim-seed.mjs";
 import {
+  assertOutbound,
+  finishAndExit,
+  logCaseResult,
   pollOutboundSince,
   pollResponseSince,
-  assertOutbound,
-  logCaseResult,
-  finishAndExit,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -134,7 +134,7 @@ async function validateSegundaCitaPermitida() {
   const advanced = outbound.some((m) =>
     /fecha|hora|d[ií]a|Resumen|adelanto|Elige|calendario|disponib/i.test(
       m.content ?? "",
-    ),
+    )
   );
   const apptsAfter = await countScheduledAppointments(supabase, TEST_PHONE);
   const pass = result.pass && advanced && apptsAfter === apptsBefore;

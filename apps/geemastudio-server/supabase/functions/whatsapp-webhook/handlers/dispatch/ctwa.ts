@@ -348,7 +348,7 @@ export async function tryHandleCtwaInterestStep(
         );
         return true;
       }
-      // Sin pending ni carrito: honrar el rubro (elección tardía legítima)
+      // Sin pending ni selección: honrar el rubro (elección tardía legítima)
       const rawFirst = contactName.split(" ")[0];
       const firstName = /^[+\d]/.test(rawFirst) ? "" : rawFirst;
       if (staleCtwaId === "ctwa_interest_extensiones") {
@@ -717,7 +717,7 @@ export async function tryHandleCtwaEntry(
   }
 
   if (showWelcome) {
-    // ── Recuperar carrito abandonado ─────────────────────────────────────────
+    // ── Recuperar selección abandonada ─────────────────────────────────────────
     if (rt.session?.cartItems?.length && !metaAdsTest) {
       const msgLower = messageText.toLowerCase();
       const hasNavIntent = [

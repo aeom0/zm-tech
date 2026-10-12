@@ -503,7 +503,7 @@ export function isIdentityEscapeMessage(
       .trim();
     // Acks cortos ("Ok", "Ya", "Sí", "No"...) NO son escape — caso Melisa
     // …9414 (27-sep-2026, QA replay `waba-validate-melisa-full-flow.mjs`):
-    // "Ok" tras la cita ya anotada (paso identidad) vaciaba el carrito y
+    // "Ok" tras la cita ya anotada (paso identidad) vaciaba la selección y
     // reabría el catálogo completo en vez de solo recordar el DNI pendiente.
     const normalizedStripped = stripped
       .toLowerCase()

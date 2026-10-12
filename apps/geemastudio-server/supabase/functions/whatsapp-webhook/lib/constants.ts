@@ -12,8 +12,7 @@ import type { TenantWabaScheduleRules } from "./tenant-rules.ts";
 export const ADMIN_PHONE = "51932535512";
 export const YAPE_PLIN_NUMBER = "932 535 512";
 /** Link de pago Culqi (tarjeta) por el adelanto fijo de S/25 de ZM Lash. */
-export const CULQI_ADELANTO_LINK =
-  "https://express.culqi.com/pago/D4DCC2B31B";
+export const CULQI_ADELANTO_LINK = "https://express.culqi.com/pago/D4DCC2B31B";
 
 /** Medios de pago para mostrar al cliente. */
 export const MEDIOS_DE_PAGO = `📲 *Medios de pago:*
@@ -35,15 +34,15 @@ export const WA_IDS = {
   AGREGAR_OTRO: "agregar_otro",
   VER_SELECCION: "ver_seleccion",
   AGENDAR_YA: "agendar_ya",
-  VACIAR_CARRITO: "vaciar_carrito",
+  VACIAR_SELECCION: "vaciar_seleccion",
   VOLVER_CATEGORIAS: "volver_categorias",
   /**
    * Volver a subcategorías Uñas/Extensiones.
    * Payload: `cat-unas` | `cat-extensiones`.
    */
   VOLVER_SUBCAT_PREFIX: "volver_sub_",
-  /** Desde selector de fecha → opciones de carrito. */
-  VOLVER_CARRITO: "volver_carrito",
+  /** Desde selector de fecha → opciones de selección. */
+  VOLVER_SELECCION: "volver_seleccion",
   /** Desde selector de hora → reabrir fechas. */
   VOLVER_FECHAS: "volver_fechas",
   DATE_PREFIX: "date_",
@@ -69,6 +68,16 @@ export const WA_IDS = {
    */
   SERVICES_PAGE_PREFIX: "pg_svc_",
 } as const;
+
+/** Ids de botón anteriores al rename «carrito» → «selección» (mensajes ya enviados). */
+const LEGACY_WA_ID_ALIASES: Record<string, string> = {
+  vaciar_carrito: WA_IDS.VACIAR_SELECCION,
+  volver_carrito: WA_IDS.VOLVER_SELECCION,
+};
+
+export function normalizeLegacyWaId(id: string): string {
+  return LEGACY_WA_ID_ALIASES[id] ?? id;
+}
 
 /** Default ZM. Los handlers deben usar `getEmployeeCategories()` (lee waba_rules). */
 export const EMPLOYEE_CATEGORIES: Record<string, string[]> = {

@@ -1,4 +1,4 @@
-// held-slot-watch — Al crearse una cita, avisa a los carritos que esperaban abono en esa hora.
+// held-slot-watch — Al crearse una cita, avisa a las selecciones que esperaban abono en esa hora.
 // Auth: Bearer CRON_SECRET o service_role. verify_jwt = false (lo llama pg_net).
 
 import { getSupabase } from "../whatsapp-webhook/lib/supabase.ts";
@@ -79,7 +79,7 @@ Deno.serve(async (req: Request) => {
       err instanceof Error ? err.message : err,
     );
     return json(
-      { success: false, error: "No se pudo revisar los carritos" },
+      { success: false, error: "No se pudo revisar las selecciones" },
       500,
     );
   }

@@ -10,9 +10,9 @@ import {
   computeRegexShadowIntent,
   isCtwaPrefillAgendarCopy,
   messageHasDateOrTimeIntent,
+  SHADOW_SYSTEM_PROMPT,
   shouldSkipIntentShadow,
   wouldTryCompleteBookingFromText,
-  SHADOW_SYSTEM_PROMPT,
 } from "../supabase/functions/whatsapp-webhook/lib/intent-shadow.ts";
 import type { SupabaseClient } from "../supabase/functions/whatsapp-webhook/lib/supabase.ts";
 
@@ -178,15 +178,15 @@ check(
   messageHasDateOrTimeIntent("Quiero extensión rímel") === false,
 );
 
-// ── Espejo regex (sin carrito = otro, no crear_cita) ─────────────────────────
+// ── Espejo regex (sin selección = otro, no crear_cita) ─────────────────────────
 check(
-  "regex: CTWA sin carrito → otro",
+  "regex: CTWA sin selección → otro",
   (await computeRegexShadowIntent(FAKE_SUPABASE, FAKE_PHONE, CTWA_15, {
     step: "browsing",
   })) === "otro",
 );
 check(
-  "regex: 'Hoy podría ser?' sin carrito → otro",
+  "regex: 'Hoy podría ser?' sin selección → otro",
   (await computeRegexShadowIntent(
     FAKE_SUPABASE,
     FAKE_PHONE,
@@ -195,7 +195,7 @@ check(
   )) === "otro",
 );
 check(
-  "wouldTryCompleteBooking sin carrito → false",
+  "wouldTryCompleteBooking sin selección → false",
   wouldTryCompleteBookingFromText("viernes a las 4", {
     step: "browsing",
   }) === false,
@@ -222,7 +222,7 @@ check(
   )) === "confirmar_cita_texto_libre",
 );
 check(
-  "wouldTryComplete 'Hoy dia' CON carrito → true",
+  "wouldTryComplete 'Hoy dia' CON selección → true",
   wouldTryCompleteBookingFromText("Hoy dia", {
     step: "awaiting_datetime",
     cartItems: [
@@ -231,7 +231,7 @@ check(
   }) === true,
 );
 check(
-  "wouldTryComplete 'En Octubre el 4 o 5' CON carrito → true",
+  "wouldTryComplete 'En Octubre el 4 o 5' CON selección → true",
   wouldTryCompleteBookingFromText("En Octubre el 4 o 5", {
     step: "awaiting_datetime",
     cartItems: [

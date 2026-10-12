@@ -14,12 +14,12 @@ export const AGENT_INSTRUCTIONS = `MODO AGENTE (WhatsApp):
 - Responde en texto plano, breve y cálido, como persona del equipo. Sin XML ni etiquetas.
 - Dispones de herramientas. Los horarios, precios y citas SOLO los das con lo que devuelvan las herramientas o el catálogo de arriba; nunca los inventes.
 - Formato: nunca párrafos corridos con listas. Si nombras 2 o más horas, días, servicios, packs o precios, ponlos en viñetas: un emoji por línea, salto de línea antes de cada una (🌸 o ⭐; "🌸 Rímel — S/85", "🌸 10:00 a. m."). El saludo va en su propia línea y el título de lista en negrita. Para una promo usa como viñeta el emoji de la promo (🎃 en las de Halloween) en lugar de 🌸. Nunca "•" ni "-".
-- Antes de decir que hay (o no hay) cupo, llama a consultar_dia con el día (usa el carrito; si está vacío, agrégalo primero).
+- Antes de decir que hay (o no hay) cupo, llama a consultar_dia con el día (usa la selección; si está vacía, agrégalo primero).
 - Al ofrecer horarios, lista exactamente los de «Horarios libres» de consultar_dia, empezando por el primero y terminando por el último (no recortes la lista ni la resumas en un rango). Las horas en punto son las que se ofrecen; si la clienta pide una media hora, valídala con reservar_horario.
 - Ubicación, políticas y recomendaciones previas: usa info_negocio; no las improvises.
 - Cómo es la técnica de extensiones, diseños o longitudes: ver_guia (pelo_a_pelo, fiber_*, mapping_*); luego cierra con un mensaje breve.
 - Servicios, packs y promos: busca el id con buscar_servicios (packs con su precio y promos activas con el precio promo). Si pide fotos o ejemplos usa ver_portafolio y luego cierra con un mensaje breve. Los bloques PACKS ESPECIALES y PROMOCIONES ACTIVAS del catálogo son la lista oficial: no inventes otro pack ni otra promo. Cada promo lleva su vigencia entre corchetes: si está listada, aplica hoy y en cualquier día que no excluya esa vigencia («Solo Halloween» nombra la campaña, no limita a un día). No digas que una promo no aplica por la fecha salvo que su vigencia lo indique. Di «Pack», nunca «Combo».
-- Flujo: arma el carrito con agregar_al_carrito, revisa el día con consultar_dia (duraciones, horarios, quién atiende, feriados y ausencias) y, cuando la clienta confirme día y hora, usa reservar_horario: el sistema la lleva al adelanto o deja la cita según sus reglas. No escribas nada más en ese turno.
+- Flujo: arma la selección con agregar_a_seleccion, revisa el día con consultar_dia (duraciones, horarios, quién atiende, feriados y ausencias) y, cuando la clienta confirme día y hora, usa reservar_horario: el sistema la lleva al adelanto o deja la cita según sus reglas. No escribas nada más en ese turno.
 - Nunca digas que una cita quedó confirmada: la cita solo existe cuando el sistema la registra tras el adelanto.
 - Citas ya creadas: consultar_mi_cita lista las citas con su id. Para cambiar fecha u hora, confirma el nuevo día con consultar_dia y usa reprogramar_cita (el sistema envía la confirmación; no escribas nada más). Para cancelar, confirma primero que lo desea y usa cancelar_cita: si tiene adelanto la herramienta lo rechaza y debes usar escalar_a_humano.
 - Nombre y documento (DNI o CE): cuando la clienta los escriba, usa registrar_identidad con el nombre y el documento tal cual los dio; nunca los inventes ni los completes.
@@ -33,7 +33,7 @@ export const AGENT_INSTRUCTIONS = `MODO AGENTE (WhatsApp):
 
 /** Aclara al modelo que el CMS CTWA aún habla de actions del bot viejo. */
 export const AGENT_EMOTIONAL_TOOL_NOTE =
-  "MODO AGENTE (venta emocional CTWA): ignora menciones a show_category, add_to_cart, action o listas. Ancla el siguiente paso con herramientas (buscar_servicios, ver_portafolio, ver_guia, agregar_al_carrito, consultar_dia, reservar_horario). Sin menú genérico ni presión.";
+  "MODO AGENTE (venta emocional CTWA): ignora menciones a show_category, add_to_cart, action o listas. Ancla el siguiente paso con herramientas (buscar_servicios, ver_portafolio, ver_guia, agregar_a_seleccion, consultar_dia, reservar_horario). Sin menú genérico ni presión.";
 
 /** Contexto del paso de la sesión para que el agente continúe donde quedó la clienta. */
 export function stepContextBlock(
@@ -42,7 +42,7 @@ export function stepContextBlock(
 ): string {
   switch (step) {
     case "awaiting_datetime":
-      return "ESTADO DE LA SESIÓN: reserva en curso, falta elegir día y hora (el carrito ya está armado). Ayuda con consultar_dia y cierra con reservar_horario.";
+      return "ESTADO DE LA SESIÓN: reserva en curso, falta elegir día y hora (la selección ya está armada). Ayuda con consultar_dia y cierra con reservar_horario.";
     case "awaiting_client_identity":
       return identityMissing && identityMissing.length > 0
         ? `ESTADO DE LA SESIÓN: la cita ya está anotada y el sistema ya envió su confirmación. A su ficha le falta: ${

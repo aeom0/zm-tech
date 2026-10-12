@@ -376,7 +376,7 @@ export const NO_CONFIRMED_APPOINTMENT_ARRIVAL_MESSAGE =
   `Un resumen en el chat *no reserva* el cupo hasta completar los pasos (o coordinar con el salón).\n\n` +
   `Escribe *agendar* para reservar, o coordina al 📱 *${STAFF_COORDINATION_PHONE}* 🌸`;
 
-/** Slot sin cupo según `overlapCapForCart` (tope 1 default / 2 si carrito 100 % especial). Ver docs/waba/WABA_CAPACITY.md. */
+/** Slot sin cupo según `overlapCapForCart` (tope 1 default / 2 si selección 100 % especial). Ver docs/waba/WABA_CAPACITY.md. */
 export const SLOT_TAKEN_MESSAGE =
   `Ese horario no tiene cupo. Elige otra hora de la lista 💜`;
 
@@ -717,7 +717,7 @@ function aggregatePackPrices(
   return items;
 }
 
-/** Reconstruye los ítems de carrito (servicios/packs) de una cita ya creada; sin efectos. */
+/** Reconstruye los ítems de selección (servicios/packs) de una cita ya creada; sin efectos. */
 export async function loadAppointmentCartItems(
   supabase: SupabaseClient,
   appointmentId: string,
@@ -766,7 +766,7 @@ export async function loadAppointmentCartItems(
 }
 
 /**
- * Carga líneas de la cita, arma carrito y abre selector de fecha (flujo reprogramación).
+ * Carga líneas de la cita, arma selección y abre selector de fecha (flujo reprogramación).
  */
 export async function startRescheduleFromAppointment(
   supabase: SupabaseClient,
@@ -1029,7 +1029,7 @@ async function recomputeAndPersistAppointmentPricesForDate(
 }
 
 /**
- * Actualiza fecha/hora de la cita existente (y servicio si el carrito cambió) y limpia sesión.
+ * Actualiza fecha/hora de la cita existente (y servicio si la selección cambió) y limpia sesión.
  */
 export async function finalizeRescheduleAppointment(
   supabase: SupabaseClient,
@@ -1112,7 +1112,7 @@ export async function finalizeRescheduleAppointment(
     date: appointmentDateLima,
   };
 
-  // Si el carrito tiene servicios distintos (cambio mid-reprogramación), sincronizar
+  // Si la selección tiene servicios distintos (cambio mid-reprogramación), sincronizar
   if (cartServiceIds.length > 0) {
     const uniqueIds = [...new Set(cartServiceIds)];
     const lines: {

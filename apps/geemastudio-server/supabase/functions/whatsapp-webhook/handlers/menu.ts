@@ -1,4 +1,4 @@
-// handlers/menu.ts — Menú principal, categorías, servicios, promos y opciones de carrito
+// handlers/menu.ts — Menú principal, categorías, servicios, promos y opciones de selección
 
 import { sendInteractiveList, sendMessage } from "../wa-api.ts";
 import { formatSoles, LIST_TITLE_MAX } from "../format.ts";
@@ -37,7 +37,7 @@ const UNAS_SUBCATEGORY_LABELS: Record<UnasSubcategoryKey, string> = {
  * Complementos (retiro) o add-ons de una sola uña (ej. "Extensión de uña" S/5)
  * — no son un set completo; sacarlos de "clasicas" evita que el orden
  * alfabético los ponga antes que Manicure/Rubber/etc. (Cielo …625683,
- * 13-sep-2026: quedó como único ítem del carrito con S/5 de abono S/25).
+ * 13-sep-2026: quedó como único ítem de la selección con S/5 de abono S/25).
  */
 function isUnasAddOnOrRetiro(name: string): boolean {
   return name.includes("retiro") || /extensi[oó]n de u[ñn]a\b/.test(name);
@@ -289,7 +289,7 @@ export async function sendCategoriesAndPromosListFromCatalog(
       {
         id: WA_IDS.VER_SELECCION,
         title: "↩ Ver mi selección",
-        description: "Volver al carrito",
+        description: "Volver a la selección",
       },
       {
         id: "menu",
@@ -1307,7 +1307,7 @@ export async function sendPromosList(to: string, supabase: SupabaseClient) {
   }
 }
 
-/** Opciones al enviar acciones de carrito: body/header cortos para no totalizar al añadir un ítem. */
+/** Opciones al enviar acciones de selección: body/header cortos para no totalizar al añadir un ítem. */
 export type SendCartOptionsOpts = {
   /** Si se pasa, se usa en lugar de summary+total (ej. "¿Reservamos tu cita?" o "✅ X agregado. ¿Reservamos tu cita?"). */
   bodyOverride?: string;
@@ -1344,8 +1344,8 @@ export async function sendCartOptions(
           description: "Reservar con los servicios elegidos",
         },
         {
-          id: WA_IDS.VACIAR_CARRITO,
-          title: "Vaciar carrito",
+          id: WA_IDS.VACIAR_SELECCION,
+          title: "Vaciar selección",
           description: "Eliminar todo y empezar de cero",
         },
       ]

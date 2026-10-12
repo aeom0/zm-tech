@@ -193,7 +193,7 @@ export function formatCatalogBulletNewlines(text: string): string {
   );
 }
 
-/** Resumen del carrito: total en S/; no se muestra duración total (promos son contenedores). */
+/** Resumen de la selección: total en S/; no se muestra duración total (promos son contenedores). */
 export function formatCartSummary(
   services: { name: string; price: string; duration: number }[],
 ): string {
@@ -208,7 +208,7 @@ export function formatCartSummary(
   return text + `\n*Total: S/ ${formatSoles(total)}*`;
 }
 
-/** Línea resuelta del carrito (nombre + precio unitario + cantidad). */
+/** Línea resuelta de la selección (nombre + precio unitario + cantidad). */
 export interface CartLine {
   name: string;
   quantity: number;
@@ -216,7 +216,7 @@ export interface CartLine {
   duration?: number;
 }
 
-/** Resumen del carrito desde líneas (servicios/packs/promos): solo total en S/, sin duración total. */
+/** Resumen de la selección desde líneas (servicios/packs/promos): solo total en S/, sin duración total. */
 export function formatCartSummaryFromLines(lines: CartLine[]): string {
   if (lines.length === 0) return "Tu selección está vacía.";
   let total = 0;

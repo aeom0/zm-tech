@@ -49,7 +49,7 @@ export function isShortAffirmativeText(text: string): boolean {
  * viene" (Edgar …2122) no se remapea: Haiku primero.
  *
  * Umbral `<= 2` igual que horarios/ubicación: el strip ya se come la
- * fraseología de cita. Carrito usa `<= 8` porque sus frases nav son más
+ * fraseología de cita. Selección usa `<= 8` porque sus frases nav son más
  * largas ("ver mi selección"); retiro `<= 12` por "otro salón".
  */
 export function isMostlyAgendarNav(lower: string): boolean {
@@ -111,14 +111,14 @@ export function isMostlyPacksNav(lower: string): boolean {
   return stripped.length <= 2;
 }
 
-/** Negaciones/despedidas que vacían carrito — guards anti falso positivo en precio/cambio servicio. */
+/** Negaciones/despedidas que vacían selección — guards anti falso positivo en precio/cambio servicio. */
 export function isDeclineIntent(lower: string): boolean {
   if (matchesCancelCitaIntent(lower)) return false;
   if (matchesCartCorrectionIntent(lower)) return false;
   if (matchesServiceChangeIntent(lower)) return false;
   if (/(?:cu[aá]nto|precio|costo|cuesta|vale|\?)/i.test(lower)) return false;
   // Alberto VE …0417 (13-sep): "No quiero cambiar, quiero agregar" — niega el
-  // copy del bot ("cambiar a manicure"), no cancela la cita/carrito.
+  // copy del bot ("cambiar a manicure"), no cancela la cita/selección.
   if (/\bno\s+quiero\s+cambiar\b/.test(lower)) return false;
   if (/\b(agregar|a[ñn]adir|sumar|tambi[eé]n\s+quiero)\b/.test(lower)) {
     return false;
@@ -186,7 +186,7 @@ export type MenuRemapSessionSlice = {
 } | null;
 
 /**
- * Remapea texto libre de la clienta a `userInput` determinístico (menú/carrito).
+ * Remapea texto libre de la clienta a `userInput` determinístico (menú/selección).
  * No ejecuta side effects — el dispatcher aplica upsert/tryAcceptPendingPriceCta.
  */
 export function remapMenuTextUserInput(opts: {
@@ -251,7 +251,7 @@ export function remapMenuTextUserInput(opts: {
       (k) => lower.includes(k),
     )
   ) {
-    return { kind: "remapped", userInput: WA_IDS.VACIAR_CARRITO };
+    return { kind: "remapped", userInput: WA_IDS.VACIAR_SELECCION };
   }
 
   if (matchesPurePromosNavigationIntent(lower)) {

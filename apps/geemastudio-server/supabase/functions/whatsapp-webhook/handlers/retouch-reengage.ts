@@ -1,6 +1,6 @@
 /**
  * Handlers post-tap de plantilla retoque_reenganche_zm.
- * Haiku personaliza el tono; el bot determinístico hace carrito + calendario.
+ * Haiku personaliza el tono; el bot determinístico hace selección + calendario.
  *
  * Ciclo Vanessa (ago 2026): lifting -> Lash Botox @30d; Botox -> lifting @25d.
  * Tip ricino = plantilla lifting_cuidados_ricino_zm ~dia 10 (no gate al Agendar).
@@ -231,7 +231,7 @@ async function clearOffer(
   });
 }
 
-/** Categoría del primer ítem del carrito (útil tras Agendar, cuando ya se limpió la oferta). */
+/** Categoría del primer ítem de la selección (útil tras Agendar, cuando ya se limpió la oferta). */
 function categoryFromSessionCart(
   session: Record<string, unknown> | null,
   catalog: ServiceCatalog,
@@ -406,7 +406,7 @@ export async function handleRetouchTemplateButton(opts: {
 
   // Maribel 2026-07-19: tras Agendar se limpia la oferta, pero el botón de la
   // plantilla sigue vivo. "Otro servicio" / "Más adelante" no deben caer a Haiku
-  // reafirmando el carrito de retoque.
+  // reafirmando la selección de retoque.
   if (!ctx && kind === "otro") {
     const fromCart = categoryFromSessionCart(session, catalog);
     await clearCart(supabase, phoneNumber);
@@ -467,7 +467,7 @@ export async function handleRetouchTemplateButton(opts: {
       phoneNumber,
       haiku ?? fallbackText(kind, safeCtx),
     );
-    // Por si había carrito a medias: quiere cambiar de servicio
+    // Por si había selección a medias: quiere cambiar de servicio
     await clearCart(supabase, phoneNumber);
     await clearOffer(supabase, phoneNumber, { step: "browsing" });
     await sendOtroServicioCatalog(
@@ -493,7 +493,7 @@ export async function handleRetouchTemplateButton(opts: {
 
   // Servicio ofrecido ya no está en el catálogo activo (desactivado tras enviar
   // la plantilla; …9705 Pedicure Clásico, análisis 06-oct [P1]): no abrir
-  // calendario con carrito vacío — avisar y mostrar el catálogo.
+  // calendario con selección vacía — avisar y mostrar el catálogo.
   if (!catalog.servicesById.has(safeCtx.serviceId)) {
     await clearCart(supabase, phoneNumber);
     await clearOffer(supabase, phoneNumber, { step: "browsing" });

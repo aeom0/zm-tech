@@ -7,7 +7,7 @@
  * Sin webhook — no requiere cleanup.
  */
 import { readFileSync } from "node:fs";
-import { resolve, dirname } from "node:path";
+import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -114,7 +114,7 @@ const cases = [
   [
     "quiero agendar para más adelante, el jueves a las 3pm",
     false,
-    "booking real — no vaciar carrito",
+    "booking real — no vaciar selección",
   ],
   [
     "todavía no sé, pero anótame para el sábado 4pm",
@@ -165,7 +165,7 @@ function assertSourceHasGuard() {
     ],
     [
       menuRemap.includes("no\\s+quiero\\s+cambiar") ||
-        menuRemap.includes("no quiero cambiar"),
+      menuRemap.includes("no quiero cambiar"),
       "menu-remap tiene guard 'no quiero cambiar' (Alberto VE)",
     ],
     [
@@ -174,7 +174,7 @@ function assertSourceHasGuard() {
     ],
     [
       menuRemap.includes("agregar|a[ñn]adir|sumar") ||
-        /agregar\|a\[ñn\]adir\|sumar/.test(menuRemap),
+      /agregar\|a\[ñn\]adir\|sumar/.test(menuRemap),
       "menu-remap tiene guard agregar mid-decline",
     ],
   ];
@@ -190,7 +190,9 @@ function main() {
     const pass = got === expectDecline;
     if (!pass) ok = false;
     console.log(
-      `  ${pass ? "✅" : "❌"} "${msg.slice(0, 50)}${msg.length > 50 ? "…" : ""}" → decline=${got} (esperado ${expectDecline}) — ${note}`,
+      `  ${pass ? "✅" : "❌"} "${msg.slice(0, 50)}${
+        msg.length > 50 ? "…" : ""
+      }" → decline=${got} (esperado ${expectDecline}) — ${note}`,
     );
   }
 
@@ -200,7 +202,9 @@ function main() {
     console.log(`  ${pass ? "✅" : "❌"} ${note}`);
   }
 
-  console.log(`\n${ok ? "✅ Todos los casos pasaron" : "❌ Hay casos fallando"}`);
+  console.log(
+    `\n${ok ? "✅ Todos los casos pasaron" : "❌ Hay casos fallando"}`,
+  );
   process.exit(ok ? 0 : 1);
 }
 

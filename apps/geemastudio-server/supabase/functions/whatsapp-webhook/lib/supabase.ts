@@ -1,4 +1,4 @@
-// supabase.ts — Cliente y helpers de sesión/carrito
+// supabase.ts — Cliente y helpers de sesión/selección
 
 import { createClient } from "@supabase/supabase-js";
 import { isWaBsuid } from "./wa-recipient.mjs";
@@ -13,7 +13,7 @@ export function getSupabase() {
 
 export type SupabaseClient = ReturnType<typeof getSupabase>;
 
-/** Ítem del carrito: servicio o pack con cantidad y precio (Yape/Plin). */
+/** Ítem de la selección: servicio o pack con cantidad y precio (Yape/Plin). */
 export interface CartItem {
   item_type: "service" | "pack";
   item_id: string;
@@ -469,7 +469,7 @@ export async function markSessionFromAd(
   });
 }
 
-/** Expande ítems de carrito a lista de service_id para compatibilidad y creación de citas. */
+/** Expande ítems de selección a lista de service_id para compatibilidad y creación de citas. */
 export async function expandCartItemsToServiceIds(
   supabase: SupabaseClient,
   items: CartItem[],
@@ -518,7 +518,7 @@ function splitTotalEqually(total: number, parts: number): number[] {
   );
 }
 
-/** Etiqueta legible del carrito (packs como "Pack · …", no solo servicios expandidos). */
+/** Etiqueta legible de la selección (packs como "Pack · …", no solo servicios expandidos). */
 export async function cartItemsToDisplayLabel(
   supabase: SupabaseClient,
   items: CartItem[],
@@ -550,7 +550,7 @@ export async function cartItemsToDisplayLabel(
   return parts.join(" + ");
 }
 
-/** Expande ítems del carrito a líneas (service_id + price) para crear citas. */
+/** Expande ítems de la selección a líneas (service_id + price) para crear citas. */
 export async function expandCartItemsToLines(
   supabase: SupabaseClient,
   items: CartItem[],
@@ -635,9 +635,9 @@ async function loadPackServiceIds(
 }
 
 /**
- * Fusiona carrito evitando CART_MISMATCH (Yoja):
+ * Fusiona selección evitando CART_MISMATCH (Yoja):
  * - al entrar un pack, quita servicios sueltos cubiertos por ese pack;
- * - al entrar un servicio ya cubierto por un pack en el carrito, lo omite.
+ * - al entrar un servicio ya cubierto por un pack en la selección, lo omite.
  */
 export async function mergeCartItemsDedup(
   supabase: SupabaseClient,
@@ -657,7 +657,7 @@ export async function mergeCartItemsDedup(
       next.push(it);
       continue;
     }
-    // servicio: skip si ya está en un pack del carrito o duplicado exacto
+    // servicio: skip si ya está en un pack de la selección o duplicado exacto
     let coveredByPack = false;
     for (const c of next) {
       if (c.item_type !== "pack") continue;
@@ -687,7 +687,7 @@ const CLEARED_PENDING_PRICE_CTA = {
   pending_price_cta_at: null,
 } as const;
 
-/** Añade un servicio al carrito (precio desde BD). */
+/** Añade un servicio a la selección (precio desde BD). */
 export async function addToCart(
   supabase: SupabaseClient,
   phone: string,
@@ -719,13 +719,13 @@ export async function addToCart(
     cart_service_ids: JSON.stringify(serviceIds),
     step: keepDatetime ? "awaiting_datetime" : "browsing",
     // Mirta …8754 (30-sep-2026): la foto había dejado pending Rímel y el
-    // add_to_cart de Clásicas no lo limpiaba; el tap de hora reemplazó el carrito.
+    // add_to_cart de Clásicas no lo limpiaba; el tap de hora reemplazó la selección.
     ...CLEARED_PENDING_PRICE_CTA,
   });
   return next;
 }
 
-/** Añade varios ítems al carrito (ej. promo con promotion_items). */
+/** Añade varios ítems a la selección (ej. promo con promotion_items). */
 export async function addCartItems(
   supabase: SupabaseClient,
   phone: string,
@@ -769,7 +769,7 @@ export async function clearCart(supabase: SupabaseClient, phone: string) {
 }
 
 /**
- * Reemplaza el carrito por estos ítems sin romper reprogramación
+ * Reemplaza la selección por estos ítems sin romper reprogramación
  * (conserva reschedule_appointment_id, selected_day y step).
  */
 export async function replaceCartKeepingSchedule(

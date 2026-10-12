@@ -1,7 +1,7 @@
 /**
  * Venta emocional CTWA v1 — Extensiones y Lifting.
  *
- * Alcance v1: solo leads con `from_ad_at` y carrito 100 % cat-extensiones / cat-lifting.
+ * Alcance v1: solo leads con `from_ad_at` y selección 100 % cat-extensiones / cat-lifting.
  * Tras días de prueba en prod se ampliará (uñas, orgánico, más momentos del funnel).
  * Ver docs/waba/tenants/zm-lash/directrices-haiku.md § Venta emocional CTWA.
  */
@@ -47,7 +47,7 @@ export const EMOTIONAL_SELLING_CTWA_EXT_LIFT_DEFAULT =
 - Tono: metáfora suave (valoración, invertir en ti, merecer verte bien). PROHIBIDO rol de psicóloga/terapeuta ni claims médicos.
 - Máx 2 burbujas cortas; siempre anclar a un paso concreto (show_category, add_to_cart, calendario). Nunca inventar precios.
 - Precio genérico pestañas: valida el deseo + beneficio emocional breve antes de la lista.
-- Carrito armado / casi agenda: nombra el servicio elegido ({servicio}) + invitación suave a elegir día.
+- Selección armada / casi agenda: nombra el servicio elegido ({servicio}) + invitación suave a elegir día.
 - Hesitación ("lo pienso", "gracias por la info"): empatía + puerta abierta; NO menú agresivo ni presión.
 Frases guía (adaptar, no copiar literal todas a la vez):
 - "Libérate del estrés un rato y date ese momento para ti en el salón."

@@ -12,14 +12,14 @@ import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
   buildTextPayload,
-  postWebhook,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import { ensureQaClient } from "./lib/waba-sim-seed.mjs";
 import {
-  pollOutboundSince,
   fetchOutboundSince,
+  pollOutboundSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -46,7 +46,8 @@ function loadApiKey() {
 }
 
 async function askHaiku(apiKey, userMsg, { prior = "" } = {}) {
-  const system = `Eres Vanessa, bot WhatsApp de ZM Lash & Nails (Lima). Español PE, breve (máx 2 burbujas).
+  const system =
+    `Eres Vanessa, bot WhatsApp de ZM Lash & Nails (Lima). Español PE, breve (máx 2 burbujas).
 
 CATÁLOGO (precios reales):
 - Extensiones Clásicas — S/70 — 90 min — UUID ${CLASICAS_ID} — 1 fibra por pestaña
@@ -192,7 +193,10 @@ BOT: Sí, una extensión por pestaña. ¿Confirmamos Clásicas S/70?`;
       }
       // Si cambia a Baby Vol en texto cuando ya hay Clásicas
       if (c.expectService === "Clásicas") {
-        if (/Baby Vol|volumen 3D|S\/100/i.test(reply) && !/cl[aá]sicas/i.test(reply)) {
+        if (
+          /Baby Vol|volumen 3D|S\/100/i.test(reply) &&
+          !/cl[aá]sicas/i.test(reply)
+        ) {
           fails.push("desvió a Baby Vol sin anclar Clásicas");
         }
         if (/add_to_cart:9d36f228/i.test(action)) {
@@ -278,7 +282,9 @@ async function partB_e2e() {
 
     const { data: sess } = await supabase
       .from("whatsapp_sessions")
-      .select("step, cart_service_ids, cart_items, bot_paused_at, pending_price_cta_service_id")
+      .select(
+        "step, cart_service_ids, cart_items, bot_paused_at, pending_price_cta_service_id",
+      )
       .eq("phone", QA_PHONE)
       .maybeSingle();
 
@@ -297,7 +303,9 @@ async function partB_e2e() {
 
     const pass = hasClasicas && !paused;
     console.log(
-      `${pass ? "✅" : "❌"} cart Clásicas=${hasClasicas} paused=${paused} step=${sess?.step} outs=${outbound.length} cal=${calendarish}`,
+      `${
+        pass ? "✅" : "❌"
+      } cart Clásicas=${hasClasicas} paused=${paused} step=${sess?.step} outs=${outbound.length} cal=${calendarish}`,
     );
     if (!pass) {
       console.log("  sess:", JSON.stringify(sess));
@@ -309,7 +317,7 @@ async function partB_e2e() {
       note: `cart=${JSON.stringify(cartIds)} step=${sess?.step}`,
     });
 
-    // B2: con Clásicas en carrito, pedir diseño ojo abierto no debe cambiar a Baby Vol
+    // B2: con Clásicas en selección, pedir diseño ojo abierto no debe cambiar a Baby Vol
     if (hasClasicas) {
       const since2 = new Date().toISOString();
       await postWebhook(
@@ -337,13 +345,16 @@ async function partB_e2e() {
           ids2 = [];
         }
       }
-      const stillClasicas =
-        Array.isArray(ids2) && ids2.includes(CLASICAS_ID) && !ids2.includes(BABY3D_ID);
+      const stillClasicas = Array.isArray(ids2) && ids2.includes(CLASICAS_ID) &&
+        !ids2.includes(BABY3D_ID);
       const text2 = out2.map((m) => m.content ?? "").join("\n");
-      const swappedToBaby = /Baby Vol|S\/100/i.test(text2) && /agreg/i.test(text2);
+      const swappedToBaby = /Baby Vol|S\/100/i.test(text2) &&
+        /agreg/i.test(text2);
       const pass2 = stillClasicas && !swappedToBaby;
       console.log(
-        `${pass2 ? "✅" : "❌"} B2 diseño ojo abierto mid-cart: stillClasicas=${stillClasicas} swappedBaby=${swappedToBaby}`,
+        `${
+          pass2 ? "✅" : "❌"
+        } B2 diseño ojo abierto mid-cart: stillClasicas=${stillClasicas} swappedBaby=${swappedToBaby}`,
       );
       if (!pass2) console.log("  out:", text2.slice(0, 400));
       results.push({

@@ -2,9 +2,9 @@
 /**
  * QA — tap servicio/pack de lista vieja mid-`awaiting_datetime` (Jessi …6106, 03-sep).
  *
- * Caso A: carrito Pack VIP + selected_day + tap svc_ Baby Vol 3D
- *   → reemplaza carrito, ack "Cambié tu selección", reenvía selector de hora.
- *   Antes: "usa los botones" / silencio y carrito VIP intacto.
+ * Caso A: selección Pack VIP + selected_day + tap svc_ Baby Vol 3D
+ *   → reemplaza selección, ack "Cambié tu selección", reenvía selector de hora.
+ *   Antes: "usa los botones" / silencio y selección VIP intacto.
  *
  * Tel: 51999000991 (compartido con booking-flow — no paralelizar).
  */
@@ -12,20 +12,20 @@ import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
   buildInteractivePayload,
-  postWebhook,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import {
-  pollOutboundSince,
   assertOutbound,
-  logCaseResult,
   finishAndExit,
+  logCaseResult,
+  pollOutboundSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
 const TEST_PHONE = "51999000991";
-/** Pack ZM LASH VIP (carrito inicial, como Jessi). */
+/** Pack ZM LASH VIP (selección inicial, como Jessi). */
 const PACK_VIP_ID = "e440201f-f882-4bda-8bf5-18375b9af465";
 /** Baby Vol. Tecnológica 3D — tap de lista vieja. */
 const BABY_VOL_3D_ID = "9d36f228-9c3e-4ef1-8804-c125aa92e863";
@@ -118,10 +118,9 @@ async function caseSwapToBabyVol() {
 
   let cart = [];
   try {
-    cart =
-      typeof sess?.cart_items === "string"
-        ? JSON.parse(sess.cart_items)
-        : (sess?.cart_items ?? []);
+    cart = typeof sess?.cart_items === "string"
+      ? JSON.parse(sess.cart_items)
+      : (sess?.cart_items ?? []);
   } catch {
     cart = [];
   }
@@ -131,8 +130,10 @@ async function caseSwapToBabyVol() {
   const stillVip = cart.some(
     (i) => i.item_type === "pack" && i.item_id === PACK_VIP_ID,
   );
-  if (!hasBaby) result.fails.push("carrito no tiene Baby Vol 3D tras el tap");
-  if (stillVip) result.fails.push("Pack VIP sigue en el carrito (no hubo swap)");
+  if (!hasBaby) result.fails.push("selección no tiene Baby Vol 3D tras el tap");
+  if (stillVip) {
+    result.fails.push("Pack VIP sigue en la selección (no hubo swap)");
+  }
   if (sess?.selected_day !== dateKey) {
     result.fails.push(
       `selected_day=${sess?.selected_day} (esperado conservar ${dateKey})`,
@@ -148,7 +149,7 @@ async function caseSwapToBabyVol() {
     name: "Jessi-A (stale svc → swap)",
     pass: result.pass,
     note: result.pass
-      ? "Carrito Baby Vol + selected_day + hora"
+      ? "Selección Baby Vol + selected_day + hora"
       : result.fails.join("; "),
   };
 }

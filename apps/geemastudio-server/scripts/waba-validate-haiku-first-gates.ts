@@ -8,20 +8,20 @@
  */
 import {
   isMostlyCartInspectQuestion,
+  isMostlyDateChoice,
   isMostlyHorariosAvailabilityQuestion,
   isMostlyLocationQuestion,
   isMostlyOpenHoursQuestion,
+  isMostlyPartyIntent,
+  isMostlyTimeChoice,
   matchesCartSelectionQuestion,
   matchesCartTotalQuestion,
   matchesDateAvailabilityQuestion,
   matchesDateCorrectionIntent,
   matchesLocationQuestion,
-  parseTimeSlot,
-  isMostlyTimeChoice,
-  isMostlyDateChoice,
   matchesServiceChangeIntent,
   matchesThirdPartyBookingIntent,
-  isMostlyPartyIntent,
+  parseTimeSlot,
 } from "../supabase/functions/whatsapp-webhook/handlers/booking-flow.ts";
 import {
   isMostlyAgendarNav,
@@ -63,7 +63,7 @@ check(
   ) === false,
 );
 
-// ── B3 carrito ─────────────────────────────────────────────────────────────
+// ── B3 selección ─────────────────────────────────────────────────────────────
 check(
   "B3 cart puro: qué tengo en mi selección → mostly",
   isMostlyCartInspectQuestion(lower("qué tengo en mi selección")),

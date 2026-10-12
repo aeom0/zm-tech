@@ -3,7 +3,7 @@
  * QA — mid-`awaiting_datetime` nombra otra categoría (Jessi …6106).
  *
  * A: Pack VIP (extensiones) + "Manicure" → gate de conflicto (no cotiza cejas/uñas a ciegas)
- * B: Pack VIP + "Información y precios" → resumen del carrito actual (precios? regex)
+ * B: Pack VIP + "Información y precios" → resumen del selección actual (precios? regex)
  *
  * Tel: 51999000991 (compartido booking/jessi-stale — no paralelizar).
  */
@@ -11,15 +11,15 @@ import { createClient } from "@supabase/supabase-js";
 import { loadEnvFromRoot } from "./lib/waba-sim-env.mjs";
 import {
   buildTextPayload,
-  postWebhook,
   newWamid,
+  postWebhook,
 } from "./lib/waba-sim-payload.mjs";
 import { cleanupQaPhone } from "./lib/waba-sim-cleanup.mjs";
 import {
-  pollOutboundSince,
   assertOutbound,
-  logCaseResult,
   finishAndExit,
+  logCaseResult,
+  pollOutboundSince,
   sleep,
 } from "./lib/waba-sim-assert.mjs";
 
@@ -28,7 +28,8 @@ const PACK_VIP_ID = "e440201f-f882-4bda-8bf5-18375b9af465";
 
 const CONFLICT_GATE_RE = /Ahora tienes en tu selección|Si quieres \*cambiar\*/i;
 const CART_SUMMARY_RE = /Tu selección:|Total: S\//i;
-const BLIND_QUOTE_RE = /Te cotizo ambos|Diseño de Cejas \+ Manicure|¿Te agendo este pack/i;
+const BLIND_QUOTE_RE =
+  /Te cotizo ambos|Diseño de Cejas \+ Manicure|¿Te agendo este pack/i;
 const LOCATION_DUMP_RE = /Calle Artesanos 150/i;
 
 const { url, serviceKey, webhookUrl } = loadEnvFromRoot();
@@ -97,7 +98,7 @@ async function caseConflictManicure() {
 
 async function caseInfoPrecios() {
   console.log(
-    "\n── Jessi-C: VIP mid-agenda + «Información y precios» → resumen carrito ──",
+    "\n── Jessi-C: VIP mid-agenda + «Información y precios» → resumen selección ──",
   );
   await seedVipAwaiting();
 
@@ -126,7 +127,7 @@ async function caseInfoPrecios() {
     name: "Jessi-C (información y precios)",
     pass: result.pass,
     note: result.pass
-      ? "Resumen carrito sin dump ubicación"
+      ? "Resumen selección sin dump ubicación"
       : result.fails.join("; "),
   };
 }
