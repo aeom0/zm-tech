@@ -44,7 +44,8 @@ export const STATUS_CHIP: { id: AgendaStatusFilter; label: string }[] = [
 ]
 
 export function matchesStatusFilter(status: string, filter: AgendaStatusFilter): boolean {
-  if (filter === 'all') return true
+  // «Todas» no incluye canceladas: se consultan en el chip «Canceladas».
+  if (filter === 'all') return status !== 'cancelled'
   if (filter === 'cancelled') return status === 'cancelled' || status === 'no_show'
   return status === filter
 }
