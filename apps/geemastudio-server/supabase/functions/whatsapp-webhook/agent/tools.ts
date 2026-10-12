@@ -1403,7 +1403,7 @@ export async function runAgentTool(
         }
         return {
           content:
-            "Ficha guardada. Agradece brevemente y continúa donde quedaron.",
+            "Ficha guardada. Agradece en una línea, sin repetir fecha, hora ni servicio, y no hagas más preguntas.",
         };
       }
 
