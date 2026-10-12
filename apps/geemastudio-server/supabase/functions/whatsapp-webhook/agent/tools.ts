@@ -55,6 +55,9 @@ import {
 } from "../handlers/payment.ts";
 import {
   AWAITING_CLIENT_IDENTITY,
+  fetchClientIdentityRow,
+  isPlaceholderClientName,
+  missingIdentityParts,
   parseClientIdentity,
   updateClientIdentity,
 } from "../handlers/client-identity.ts";
@@ -333,7 +336,7 @@ export const AGENT_TOOLS: AgentToolDef[] = [
     name: "registrar_identidad",
     description:
       "Guarda en la ficha de la clienta su nombre completo y documento (DNI de 8 dígitos o CE). Úsala cuando los escriba (para la boleta del adelanto o para completar su ficha). " +
-      "En el paso de boleta, el sistema envía solo los datos del adelanto.",
+      "Si solo faltaba un dato (p. ej. el DNI), envía solo ese: el otro se toma de la ficha. En el paso de boleta, el sistema envía solo los datos del adelanto.",
     strict: true,
     input_schema: {
       type: "object",
@@ -341,7 +344,7 @@ export const AGENT_TOOLS: AgentToolDef[] = [
         nombre: { type: "string", description: "Nombre y apellido." },
         documento: { type: "string", description: "DNI (8 dígitos) o CE." },
       },
-      required: ["nombre", "documento"],
+      required: [],
       additionalProperties: false,
     },
   },
@@ -1207,7 +1210,21 @@ export async function runAgentTool(
           ctx.phoneNumber,
           when,
           fecha,
+          { sendIdentityAsk: false },
         );
+        const afterBooking = await getSession(ctx.supabase, ctx.phoneNumber);
+        if (afterBooking?.step === AWAITING_CLIENT_IDENTITY) {
+          const missing = missingIdentityParts(
+            await fetchClientIdentityRow(ctx.supabase, ctx.phoneNumber),
+          );
+          return {
+            content:
+              "Cita registrada y resumen enviado por el sistema. Escribe UNA sola línea cálida pidiendo solo lo que falta en su ficha: " +
+              `${
+                missing.join(" y ")
+              }. No repitas fecha, hora ni servicio ni agregues otra pregunta.`,
+          };
+        }
         ctx.turnHandled = true;
         return {
           content:
@@ -1361,8 +1378,17 @@ export async function runAgentTool(
       }
 
       case "registrar_identidad": {
-        const nombre = String(input.nombre ?? "").trim();
-        const documento = String(input.documento ?? "").trim();
+        const onFile = await fetchClientIdentityRow(
+          ctx.supabase,
+          ctx.phoneNumber,
+        );
+        const fileName = onFile?.name && !isPlaceholderClientName(onFile.name)
+          ? onFile.name
+          : "";
+        // Si solo faltaba un dato, se completa con el que ya está en la ficha.
+        const nombre = String(input.nombre ?? "").trim() || fileName;
+        const documento = String(input.documento ?? "").trim() ||
+          (onFile?.dni?.trim() ?? "");
         const identity = parseClientIdentity(`${nombre} ${documento}`, {
           senderPhone: ctx.phoneNumber,
         });

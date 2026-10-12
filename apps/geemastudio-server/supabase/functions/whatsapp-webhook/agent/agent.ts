@@ -23,7 +23,11 @@ import { sendMessage } from "../wa-api.ts";
 import { notifyStaffPaymentStepText } from "../handlers/steps.ts";
 import { sessionDefersToClassic } from "./inbound-route.ts";
 import { isSimulatorQaPhone } from "../lib/qa-phone.mjs";
-import { AWAITING_CLIENT_IDENTITY } from "../handlers/client-identity.ts";
+import {
+  AWAITING_CLIENT_IDENTITY,
+  fetchClientIdentityRow,
+  missingIdentityParts,
+} from "../handlers/client-identity.ts";
 import {
   AWAITING_DEPOSIT_BOLETA,
   AWAITING_DEPOSIT_DATOS,
@@ -147,6 +151,11 @@ export async function runAgent(opts: {
       loadAgentHistory(supabase, phoneNumber, opts.messageText),
       getSession(supabase, phoneNumber),
     ]);
+    const identityMissing = session?.step === AWAITING_CLIENT_IDENTITY
+      ? missingIdentityParts(
+        await fetchClientIdentityRow(supabase, phoneNumber),
+      )
+      : undefined;
     const system = buildAgentSystem({
       wabaConfig: opts.wabaConfig,
       catalog: opts.catalog,
@@ -155,6 +164,7 @@ export async function runAgent(opts: {
       staffOutInHistory: history.staffOutInHistory,
       isCtwaLead: Boolean(session?.from_ad_at),
       sessionStep: session?.step ?? null,
+      identityMissing,
     });
     const messages: AgentMessage[] = [...history.messages];
 

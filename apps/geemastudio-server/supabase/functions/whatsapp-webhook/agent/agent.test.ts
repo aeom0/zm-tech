@@ -920,3 +920,24 @@ Deno.test("promoValidityNote expone fecha de fin y días", () => {
     "sin fecha de fin, solo lunes, sábado",
   );
 });
+
+Deno.test("ficha: pide solo lo que falta", async () => {
+  const { missingIdentityParts, buildIdentityAskMessage } = await import(
+    "../handlers/client-identity.ts"
+  );
+  assertEquals(
+    missingIdentityParts({ name: "NELIDA MESTA", dni: "07158924" }),
+    [],
+  );
+  assertEquals(missingIdentityParts({ name: "NELIDA MESTA", dni: null }), [
+    "DNI o CE",
+  ]);
+  assertEquals(
+    missingIdentityParts({ name: "Cliente WA 1234", dni: "07158924" }),
+    ["nombre y apellido"],
+  );
+  assertEquals(
+    buildIdentityAskMessage({ name: "NELIDA MESTA", dni: null }),
+    "Para completar tu ficha, ¿me pasas tu *DNI o CE*? 💜",
+  );
+});

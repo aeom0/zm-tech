@@ -44,9 +44,9 @@ import { handleAwaitingPaymentScreenshot } from "./steps.ts";
 import {
   attachPeMobileToBsuidClient,
   AWAITING_CLIENT_IDENTITY,
+  buildIdentityAskMessage,
   buildIdentityStatusReply,
   fetchClientIdentityRow,
-  IDENTITY_ASK_MESSAGE,
   isIdentityEscapeMessage,
   looksLikeIdentityAttempt,
   matchesAlreadyHaveDataIntent,
@@ -938,7 +938,12 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
   if (session?.step === AWAITING_CLIENT_IDENTITY) {
     const raw = messageText.trim();
     if (!raw || getInteractiveId(message)) {
-      await sendMessage(phoneNumber, IDENTITY_ASK_MESSAGE);
+      await sendMessage(
+        phoneNumber,
+        buildIdentityAskMessage(
+          await fetchClientIdentityRow(supabase, phoneNumber),
+        ),
+      );
       return;
     }
     // Parsear antes de escape: "Hola, Nombre Apellido DNI …" no es menú

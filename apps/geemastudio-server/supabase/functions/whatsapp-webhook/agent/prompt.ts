@@ -29,19 +29,26 @@ export const AGENT_INSTRUCTIONS = `MODO AGENTE (WhatsApp):
 - Una pregunta por mensaje, y solo si falta un dato para avanzar. No cierres con «¿necesitas algo más?», «¿te ayudo con algo más?» ni «si necesitas cambiarla, escríbeme».
 - No repitas la fecha, la hora ni el servicio de una cita que el sistema ya confirmó o que ya dijiste: dilo una sola vez.
 - Si la clienta responde con una sola palabra de cortesía (ok, gracias, 👍, listo) y no queda nada pendiente, contesta con una línea corta («¡Con gusto! 💜») sin resumen, sin repetir la cita y sin preguntas. Si tu mensaje anterior ya fue un cierre, no vuelvas a cerrar: una reacción mínima basta.
-- El sistema ya pidió nombre y documento cuando corresponde: si ves que lo acaba de pedir, no se lo pidas otra vez.`;
+- Ficha de la clienta: pide solo lo que falte (nombre y apellido, apellido o DNI/CE) y nunca un dato que ya esté en su ficha. Si tu mensaje anterior ya lo pidió, no lo repitas.`;
 
 /** Aclara al modelo que el CMS CTWA aún habla de actions del bot viejo. */
 export const AGENT_EMOTIONAL_TOOL_NOTE =
   "MODO AGENTE (venta emocional CTWA): ignora menciones a show_category, add_to_cart, action o listas. Ancla el siguiente paso con herramientas (buscar_servicios, ver_portafolio, ver_guia, agregar_al_carrito, consultar_dia, reservar_horario). Sin menú genérico ni presión.";
 
 /** Contexto del paso de la sesión para que el agente continúe donde quedó la clienta. */
-export function stepContextBlock(step: string | null | undefined): string {
+export function stepContextBlock(
+  step: string | null | undefined,
+  identityMissing?: string[],
+): string {
   switch (step) {
     case "awaiting_datetime":
       return "ESTADO DE LA SESIÓN: reserva en curso, falta elegir día y hora (el carrito ya está armado). Ayuda con consultar_dia y cierra con reservar_horario.";
     case "awaiting_client_identity":
-      return "ESTADO DE LA SESIÓN: la cita ya está anotada y el sistema ya le pidió nombre y documento para la ficha (registrar_identidad). No se los pidas de nuevo ni repitas el resumen de la cita; si no los da, no insistas.";
+      return identityMissing && identityMissing.length > 0
+        ? `ESTADO DE LA SESIÓN: la cita ya está anotada y el sistema ya envió su confirmación. A su ficha le falta: ${
+          identityMissing.join(" y ")
+        }. Pídelo en una sola línea si aún no lo pediste (registrar_identidad con ese dato); no repitas el resumen de la cita. Si no lo da, no insistas.`
+        : "ESTADO DE LA SESIÓN: la cita ya está anotada y su ficha está completa. No pidas datos ni repitas el resumen de la cita.";
     case "awaiting_deposit_datos":
     case "awaiting_deposit_boleta":
       return "ESTADO DE LA SESIÓN: reserva sin adelanto aún; faltan nombre completo y DNI/CE para la boleta (registrar_identidad envía luego los datos de pago). Si cambia de día, usa consultar_dia y reservar_horario; si desiste, descartar_reserva. El cupo no está reservado hasta recibir el comprobante.";
@@ -83,6 +90,8 @@ export function buildAgentSystem(opts: {
   isCtwaLead?: boolean;
   /** Paso actual de la sesión (reserva en curso, boleta, comprobante). */
   sessionStep?: string | null;
+  /** Qué falta en la ficha (solo en `awaiting_client_identity`). */
+  identityMissing?: string[];
   now?: Date;
 }): AgentSystemBlock[] {
   const blocks: AgentSystemBlock[] = [];
@@ -107,7 +116,7 @@ export function buildAgentSystem(opts: {
   }
   const dynamic = [
     limaNowBlock(opts.now),
-    stepContextBlock(opts.sessionStep),
+    stepContextBlock(opts.sessionStep, opts.identityMissing),
     opts.clientContext.trim(),
   ];
   if (opts.isCtwaLead) {

@@ -144,6 +144,29 @@ export function clientNeedsIdentity(
   return missingName || missingDni;
 }
 
+/** Qué falta en la ficha, en palabras para la clienta (vacío = completa). */
+export function missingIdentityParts(
+  client: IdentityClient | null,
+): string[] {
+  const rawName = client?.name?.trim() ?? "";
+  const hasRealName = !!rawName && !isPlaceholderClientName(rawName);
+  const nameWords = hasRealName ? rawName.split(/\s+/).filter(Boolean) : [];
+  const parts: string[] = [];
+  if (!hasRealName) parts.push("nombre y apellido");
+  else if (nameWords.length < 2) parts.push("apellido");
+  if (!client?.dni?.trim()) parts.push("DNI o CE");
+  return parts;
+}
+
+/** Pedido de ficha con solo lo que falta (sin repetir lo que ya está en BD). */
+export function buildIdentityAskMessage(
+  client: IdentityClient | null,
+): string {
+  const parts = missingIdentityParts(client);
+  if (parts.length === 0 || parts.length === 2) return IDENTITY_ASK_MESSAGE;
+  return `Para completar tu ficha, ¿me pasas tu *${parts[0]}*? 💜`;
+}
+
 /** Normaliza nombre a MAYÚSCULAS sin emojis (mismo criterio que getOrCreateClient). */
 export function normalizeClientName(name: string): string {
   return name
@@ -315,10 +338,15 @@ export function fetchClientIdentityRow(
   return findClientByWaRecipient(supabase, phone);
 }
 
-/** Tras confirmar cita: pide identidad solo si falta en BD. No bloquea la cita. */
+/**
+ * Tras confirmar cita: si falta la ficha, deja el paso `awaiting_client_identity`
+ * y pide solo lo que falta. No bloquea la cita. Con `send: false` (agente) solo
+ * marca el paso y devuelve qué falta: el agente lo pide en su propio mensaje.
+ */
 export async function askClientIdentityIfNeeded(
   supabase: SupabaseClient,
   phone: string,
+  opts?: { send?: boolean },
 ): Promise<boolean> {
   const client = await fetchClientIdentityRow(supabase, phone);
   if (!clientNeedsIdentity(client)) return false;
@@ -326,7 +354,9 @@ export async function askClientIdentityIfNeeded(
   await upsertSession(supabase, phone, {
     step: AWAITING_CLIENT_IDENTITY,
   });
-  await sendMessage(phone, IDENTITY_ASK_MESSAGE);
+  if (opts?.send !== false) {
+    await sendMessage(phone, buildIdentityAskMessage(client));
+  }
   return true;
 }
 

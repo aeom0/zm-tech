@@ -747,6 +747,7 @@ export async function sendConfirmedBookingSummary(
   supabase: SupabaseClient,
   phone: string,
   session: Record<string, unknown> & { cartItems?: CartItem[] },
+  opts?: { sendIdentityAsk?: boolean },
 ): Promise<void> {
   if (
     await tryFinalizePartyAppointments(supabase, phone, session, {
@@ -1106,8 +1107,11 @@ export async function sendConfirmedBookingSummary(
         `En cuanto abramos te confirmamos. El pago se realiza el día de tu cita. ¡Gracias! 🌸${consideracionesBlock}`,
   );
 
-  // Dato adicional: nombre + DNI/CE si faltan en BD (no bloquea la cita)
-  await askClientIdentityIfNeeded(supabase, phone);
+  // Dato adicional: nombre + DNI/CE si faltan en BD (no bloquea la cita).
+  // Con el agente, el pedido lo escribe Haiku (solo lo que falta).
+  await askClientIdentityIfNeeded(supabase, phone, {
+    send: opts?.sendIdentityAsk !== false,
+  });
 }
 
 /**
@@ -1338,6 +1342,7 @@ export async function finalizeBookingAfterDatetimeSelection(
   phone: string,
   chosenDate: Date,
   dateKey: string,
+  opts?: { sendIdentityAsk?: boolean },
 ): Promise<void> {
   await upsertSession(supabase, phone, {
     parsed_datetime: chosenDate.toISOString(),
@@ -1369,7 +1374,12 @@ export async function finalizeBookingAfterDatetimeSelection(
     deposit_mode: null,
   });
   const sessionConfirmed = await getSession(supabase, phone);
-  await sendConfirmedBookingSummary(supabase, phone, sessionConfirmed ?? {});
+  await sendConfirmedBookingSummary(
+    supabase,
+    phone,
+    sessionConfirmed ?? {},
+    opts,
+  );
 }
 
 /**
