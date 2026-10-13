@@ -419,7 +419,7 @@ Detalle técnico: [EDGE_FUNCTIONS.md](../../../ops/EDGE_FUNCTIONS.md) § Clasifi
 | “sí” / apartar / comprar el kit | Confirmar, preguntar retiro en salón vs Yape, derivar a Vanessa **932 535 512**. No inventar cita ni pago |
 | Quiere **agendar** un servicio además | Ahí sí flujo normal de cita (pregunta → confirmación → carrito) |
 
-Código: CASO en `FORMAT_INSTRUCTION` (`haiku-prompt.ts`); bloque **PRODUCTOS RETAIL** en `waba_config.haiku_system_prompt` (BD override) + `haiku-cms-defaults.ts`. Contrato + port Geema: [`08-PLAN-retail-productos.md`](../../plans/geema-migration/08-PLAN-retail-productos.md).
+Código: CASO en `FORMAT_INSTRUCTION` (`haiku-prompt.ts`); bloque **PRODUCTOS RETAIL** en `waba_config.haiku_system_prompt` (BD override) + `haiku-cms-defaults.ts`. Contrato + port Geema: [Plan 15 — retail y productos](../../../../../../docs/geemastudio/docs/plans/15-PLAN-retail-productos.md).
 
 ---
 

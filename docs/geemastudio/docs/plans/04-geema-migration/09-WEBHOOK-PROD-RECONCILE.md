@@ -43,7 +43,7 @@ CLI `supabase functions download` en esta versión de CLI **no** acepta `--outpu
 1. **Editar / redeploy bot** solo desde repo ZM + `yarn deploy:whatsapp-webhook` o CI `ota-production.yml`.
 2. **No** copiar ni mantener un `whatsapp-webhook` paralelo en `zm-tech` / GeemaStudio.
 3. Webhook Meta (número ZM) → URL Supabase del proyecto compartido → función **ZM** `whatsapp-webhook`.
-4. Retail bot (`add_to_cart` productos): ya **no** está bloqueado por drift; sigue pausado por producto (kit = texto Haiku, sin flujo retail en bot) — ver [08](./08-PLAN-retail-productos.md).
+4. Retail bot (`add_to_cart` productos): ya **no** está bloqueado por drift; sigue pausado por producto (kit = texto Haiku, sin flujo retail en bot) — ver [Plan 15](../15-PLAN-retail-productos.md).
 
 ---
 

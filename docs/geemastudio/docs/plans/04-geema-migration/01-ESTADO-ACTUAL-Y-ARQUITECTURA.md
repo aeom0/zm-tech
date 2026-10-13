@@ -2,6 +2,8 @@
 
 **Fecha:** 2026-08-28
 
+> Foto de agosto-2026, se conserva como contexto. Desde el 6-oct-2026 el bot, las Edge Functions y las migraciones viven en zm-tech (Geema canónico); estado vigente en [00-RESUMEN-EJECUTIVO.md](./00-RESUMEN-EJECUTIVO.md).
+
 ---
 
 ## 1. Contexto de negocio

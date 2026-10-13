@@ -1,12 +1,9 @@
 # Plan 08 — Modularización del dispatcher WABA
 
-> **Ubicación canónica consolidada:** Plan 08. El archivo de origen se conserva temporalmente como referencia legacy.
-
-
 > Extraer el waterfall de [`handlers/dispatcher.ts`](https://github.com/aeom0/zm-tech/blob/main/apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/dispatcher.ts) a módulos por flujo **sin cambiar el orden de los `if`**. No es un router nuevo ni cutover a Haiku.
 
 **Última actualización:** 2026-10-08  
-**Estado:** Fase 1 **merged** (PR [#131](https://github.com/aeom0/ZM-Lash-and-Nails-Beauty/pull/131); helpers + CTWA + taps; `dispatcher.ts` ~2500 líneas). El cutover al agente Haiku 5.5 es otro track: [`plan-cutover-agente-haiku.md`](https://github.com/aeom0/zm-tech/blob/main/apps/geemastudio-server/docs/waba/plan-cutover-agente-haiku.md) (zm-tech PR #77) — con flag, el agente corre *antes* de `dispatch`; este plan sigue siendo la modularización del fallback.
+**Estado:** Fase 1 **merged** (PR [#131](https://github.com/aeom0/ZM-Lash-and-Nails-Beauty/pull/131); helpers + CTWA + taps; `dispatcher.ts` ~2500 líneas). El cutover al agente Haiku 5.5 es otro track: [`plan-cutover-agente-haiku.md`](https://github.com/aeom0/zm-tech/blob/main/apps/geemastudio-server/docs/waba/plan-cutover-agente-haiku.md) (zm-tech PR #77) — con flag, el agente corre *antes* de `dispatch`. Desde el 8-oct-2026 el agente atiende todo ZM Lash y la Fase 3 de ese plan borra el dispatcher, así que **este plan queda congelado**: no invertir en más modularización del fallback (12-oct-2026).
 
 Relacionado (histórico): [`plan-haiku-primero-informativo.md`](https://github.com/aeom0/zm-tech/blob/main/apps/geemastudio-server/docs/waba/plan-haiku-primero-informativo.md). En el híbrido Fase 1, 🔴 pago / cita / identidad siguen determinísticos vía `dispatch`.
 

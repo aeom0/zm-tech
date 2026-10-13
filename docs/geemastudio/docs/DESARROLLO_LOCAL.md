@@ -83,7 +83,7 @@ npx supabase link --project-ref udelxwwnyivknslueerr --password [DB_PASSWORD]
 npx supabase db push
 ```
 
-**Alternativa sin TCP**: usar el MCP de Supabase en Cursor (servidor **supabase-geemastudio**) para `list_tables`, `execute_sql` o `apply_migration` contra este proyecto.
+**Alternativa sin TCP**: usar el MCP de Supabase (servidor **ClaudeSupabase** en `.mcp.json` / `.cursor/mcp.json`) para `list_tables`, `execute_sql` o `apply_migration` contra este proyecto.
 
 ## Seeds y usuarios Auth
 
@@ -102,7 +102,7 @@ y `/rest/v1/profiles`, por lo que funciona en cualquier entorno.
 
 ## Variables de entorno requeridas
 
-Ver [`.env.example`](../.env.example) (no confirmado — no existe `.env.example` en la raíz del monorepo zm-tech; verificar la ubicación vigente antes de seguir esta referencia — ver también `docs/geemastudio/.env.example`). Para migraciones solo se necesita:
+Ver [`docs/geemastudio/.env.example`](../.env.example). Para migraciones solo se necesita:
 
 ```
 DATABASE_URL=postgresql://postgres:[PASSWORD]@db.[REF].supabase.co:5432/postgres

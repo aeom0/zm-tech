@@ -1,8 +1,5 @@
 # Plan 14 — CRM y acciones de clientes
 
-> **Ubicación canónica consolidada:** Plan 14. El archivo de origen se conserva temporalmente como referencia legacy.
-
-
 > **Estado: HECHO P0+P1** (24-sep-2026). P2 pendiente.  
 > App: `apps/geemastudio-mobile` · Pantalla: `ClientsScreen` + `screens/clients/*`  
 > Paridad de referencia: ZM Lash `ClientsScreen` / `ClientDetailModal` (sin WABA reengage Edge hasta que exista en Geema).

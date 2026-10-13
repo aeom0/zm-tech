@@ -1,5 +1,3 @@
-> **Ubicación canónica consolidada:** Plan 12. El archivo de origen se conserva temporalmente como referencia legacy.
-
 # Plan 12 — Suite WABA y paridad conversacional
 
 > **Responsabilidad documental:** este plan conserva el detalle de implementación y QA de la suite WABA. El estado ejecutivo de migración vive en Plan 04; el criterio de paridad y go-live del panel completo vive en Plan 13.

@@ -87,9 +87,10 @@ de arriba a mediados de octubre.
 
 - Antes de alertar sobre "volumen que excede el free tier", correr la query de
   arriba — no un `sum(volume)` crudo por `pricing_category`.
-- El WABA (`+51 981 444 430`, `tenant_waba_numbers` seed ZM) es compartido hoy
-  entre ZM Lash & Nails (este repo) y Geema (zm-tech) — mismo `waba_pricing_daily`,
-  no hay `tenant_id` en esa tabla todavía. Este doc aplica a ambos repos; puntero
-  corto en zm-tech: `docs/geemastudio/docs/WABA_PRICING_OCT2026_ZM.md`.
+- El WABA (`+51 981 444 430`, `tenant_waba_numbers` seed ZM) es hoy el único
+  número en `tenant_waba_numbers`; `waba_pricing_daily` no tiene `tenant_id`
+  todavía. Si se agrega un segundo tenant con WABA propio, la query de arriba
+  debe filtrar por número/tenant. Este archivo es la única copia (el repo ZM
+  retiró `docs/waba` el 6-oct-2026).
 - Tarjeta de facturación Meta: confirmada por Alberto, no requiere seguimiento
   salvo que cambie de cuenta/tarjeta.

@@ -7,6 +7,13 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Docs (12-oct 2026 — consolidación y alineación con el estado real)
+
+- **Pendientes en una sola lista**: `ROADMAP.md` § Estado actual (12-oct) reemplaza el foco 22–28 sep; S4 queda ✅ (estaba ❌ en el ROADMAP y ✅ en el Plan 04). Plan 04 README/resumen, traslado WABA (F0–F5 ✅, F6 pendiente), Plan 11 (Modo D en prod, Modo A descartado), Plan 13 y Plan 08 (congelado por la Fase 3 del agente) actualizados.
+- **Retirados por duplicados**: `docs/EDGE_FUNCTIONS.md`, `docs/WABA_PRICING_OCT2026_ZM.md` (copias vigentes en `apps/geemastudio-server/docs/`) y `04-geema-migration/08-PLAN-retail-productos.md` (Plan 15). Quitada la línea «Ubicación canónica consolidada… legacy» de todos los planes.
+- **`WABA_MULTITENANT_ARCHITECTURE.md`** reescrito según el código: `tenant_waba_numbers` + flag `waba_tenant_routing_enabled` (caché 5 min), token por tenant en Vault (`waba_token_<tenant_id>`) para crons, verify token global.
+- **Deploy**: `ops/DEPLOYMENT.md` y `ops/EDGE_FUNCTIONS.md` apuntan a `edge-functions.yml` y `pnpm db:push`; fuera los comandos `yarn deploy:*` y la sección Vercel del repo ZM. `INDEX.md` suma los docs del server y el MCP `ClaudeSupabase`.
+
 ### Docs (5-oct 2026 — retiro de la UI de ZM y plan de traslado WABA)
 
 - **ZM retira `apps/mobile` y el panel web** (PR #172 del repo ZM): Geema es la única UI de gestión del tenant `zm-lash-nails`. En ZM queda landing + Edge/WABA + migraciones.

@@ -16,7 +16,7 @@ Descripción del producto, tipos de negocio, inicio rápido, stack, variables de
 
 Desarrollo local: WSL, migraciones sin TCP (SQL Editor), seeds, variables.
 
-### [WEB_ARCHITECTURE.md](WEB_ARCHITECTURE.md) ← nuevo
+### [WEB_ARCHITECTURE.md](WEB_ARCHITECTURE.md)
 
 Arquitectura web: dos productos (panel de gestión vs landing pública), modos `web_mode` (A/B/C), rutas implementadas y pendientes del panel, relación con RRSS y dominio de la plataforma.
 
@@ -32,13 +32,9 @@ Despliegue: Supabase (backend), Vercel (web), EAS (móvil).
 
 Instalación / notas de beta (si aplica al flujo actual).
 
-### [EDGE_FUNCTIONS.md](EDGE_FUNCTIONS.md)
-
-Edge Function `whatsapp-webhook`: secrets, deploy, verificación GET del webhook, SQL de tenant de prueba.
-
 ### [WABA_MULTITENANT_ARCHITECTURE.md](WABA_MULTITENANT_ARCHITECTURE.md)
 
-Arquitectura multi-tenant del bot WABA: dónde viven las credenciales por tenant, resolución en runtime, checklist de alta de un tenant nuevo.
+Arquitectura multi-tenant del bot WABA: dónde viven las credenciales por tenant (`tenant_waba_numbers` + Vault), resolución en runtime, checklist de alta de un tenant nuevo.
 
 ### [ADB_CONEXION_MOVIL.md](ADB_CONEXION_MOVIL.md)
 
@@ -75,6 +71,23 @@ La carpeta [04-geema-migration](plans/04-geema-migration/) es la única copia de
 
 Anexos Look Preview: [Vertex v1](plans/07-anexo-prompts-vertex-v1.md) · [Gemini original v1](plans/07-anexo-prompts-gemini-original-v1.md).
 
+### Docs del server (`apps/geemastudio-server/docs/`)
+
+Edge Functions, WABA y operación viven junto al código del server:
+
+| Doc | Tema |
+|---|---|
+| [ops/EDGE_FUNCTIONS.md](../../../apps/geemastudio-server/docs/ops/EDGE_FUNCTIONS.md) | Inventario de funciones, secrets, deploy por `edge-functions.yml` |
+| [ops/DEPLOYMENT.md](../../../apps/geemastudio-server/docs/ops/DEPLOYMENT.md) | Deploy de Edge Functions y migraciones |
+| [ops/SUPABASE_MCP.md](../../../apps/geemastudio-server/docs/ops/SUPABASE_MCP.md) | MCP de Supabase para `udelx…` |
+| [ops/VERTEX_AI_LOOK_PREVIEW.md](../../../apps/geemastudio-server/docs/ops/VERTEX_AI_LOOK_PREVIEW.md) | Vertex AI para Look Preview |
+| [waba/plan-cutover-agente-haiku.md](../../../apps/geemastudio-server/docs/waba/plan-cutover-agente-haiku.md) | Agente Haiku 5.5 con tools (Fases 1–2 en prod; Fase 3 pendiente) |
+| [waba/plan-haiku-primero-informativo.md](../../../apps/geemastudio-server/docs/waba/plan-haiku-primero-informativo.md) | Bot clásico: Haiku antes que regex |
+| [waba/plan-cotizador-disenos-unas.md](../../../apps/geemastudio-server/docs/waba/plan-cotizador-disenos-unas.md) | Cotizador de diseños de uñas (pendiente) |
+| [waba/WABA_PRICING_OCT2026.md](../../../apps/geemastudio-server/docs/waba/WABA_PRICING_OCT2026.md) | Pricing Meta desde 1-oct y cómo leer `waba_pricing_daily` |
+| [waba/WABA_CAPACITY.md](../../../apps/geemastudio-server/docs/waba/WABA_CAPACITY.md) · [WABA_SIMULATION_VALIDATION.md](../../../apps/geemastudio-server/docs/waba/WABA_SIMULATION_VALIDATION.md) · [auditoria-intenciones-waba.md](../../../apps/geemastudio-server/docs/waba/auditoria-intenciones-waba.md) | Capacidad, simulación y auditoría de intenciones |
+| [waba/prompts/](../../../apps/geemastudio-server/docs/waba/prompts/) · [waba/tenants/](../../../apps/geemastudio-server/docs/waba/tenants/) | Rutina de análisis de conversaciones (común) y material por tenant |
+
 ### [Audit 03 — paridad](../../audit/03-AUDIT-paridad-zmlash-geema.md)
 
 Resultado del audit: matriz feature × superficie, gaps críticos P0–P2, sección “No portar”.
@@ -91,9 +104,9 @@ docs/
 ├── README.md                       # Setup inicial
 ├── DESARROLLO_LOCAL.md             # Migraciones, seeds, WSL
 ├── WEB_ARCHITECTURE.md             # Arquitectura web: dos productos, web_mode, rutas
+├── CONSOLIDACION-DOCS-ZM-GEEMA.md  # Consolidación y equivalencias de numeración
 ├── design_guidelines.md            # Diseño UI/UX
 ├── DEPLOYMENT.md                   # Deploy Supabase / Vercel / EAS
-├── EDGE_FUNCTIONS.md               # Edge Function whatsapp-webhook: secrets, deploy
 ├── WABA_MULTITENANT_ARCHITECTURE.md # Bot WABA multi-tenant: credenciales, alta de tenant
 ├── ADB_CONEXION_MOVIL.md           # ADB al dispositivo físico (tooling, no específico GeemaStudio)
 ├── INSTALACION_BETA.md             # Beta / instalación
@@ -102,6 +115,10 @@ docs/
 │   └── 04-geema-migration/                 # Detalle del Plan 04
 
 # (fuera de docs/geemastudio/docs/)
+apps/geemastudio-server/docs/
+├── ops/                            # Edge Functions, deploy, MCP, Vertex
+└── waba/                           # Agente, pricing, análisis por tenant
+
 docs/audit/
 ├── 03-AUDIT-paridad-zmlash-geema.md              # Resultado audit
 └── 04-INVENTARIO-features-zm-lash-para-geema.md  # Backlog features a portar
@@ -149,9 +166,9 @@ docs/audit/
 - Web: `apps/geemastudio-web/src/lib/theme.ts` (`LUNARIS`)
 - Tenant en runtime: `TenantContext` + `tenant_settings` + `@zmtech/tenant-config`
 
-### MCP (Cursor)
+### MCP
 
-- Dos servidores en `.cursor/mcp.json`: **supabase-geemastudio** (este proyecto) y **supabase-zm** (referencia). Para BD de GeemaStudio usar supabase-geemastudio.
+- Claude Code: `.mcp.json` de la raíz — **ClaudeSupabase** apunta a `udelx…` (GeemaStudio); **SupabaseZMTech** es el hub `llaco…`. Detalle: [ops/SUPABASE_MCP.md](../../../apps/geemastudio-server/docs/ops/SUPABASE_MCP.md) y [docs/SUPABASE.md](../../SUPABASE.md).
 
 ### Assets de marca
 
@@ -183,4 +200,4 @@ docs/audit/
   Expo: `android.adaptiveIcon.backgroundImage` + `foregroundImage` (+ `backgroundColor` fallback).
   **Notification small icon**: 96×96 blanco+alpha (~88 % fill); tint `#3949AB`.
 
-**Última actualización**: 2026-09-03 — revisión/consolidación de `docs/geemastudio/docs/`: rutas `apps/mobile`→`apps/geemastudio-mobile` y `apps/web`→`apps/geemastudio-web` corregidas en todo el set (excepto donde el texto se refiere explícitamente al repo `ZM-Lash-and-Nails-Beauty`, que sí usa esos nombres); nota de Fase C (RLS `tenant_id`) actualizada a ✅ completada 2026-08-08; agregados `EDGE_FUNCTIONS.md`, `WABA_MULTITENANT_ARCHITECTURE.md`, `ADB_CONEXION_MOVIL.md` al índice (existían en el directorio pero no estaban listados); enlaces relativos rotos corregidos en `plans/06`, `plans/07` y `plans/geema-migration/*` (referencias a `02-PLAN-retrofit-tenant-id.md` / `03-PLAN-audit-paridad-zmlash-geema.md` con la profundidad `../` incorrecta); comandos `yarn *` desactualizados corregidos a `pnpm *` (mapeo real en `package.json` raíz) en README.md, MONOREPO_MIGRACION.md, DESARROLLO_LOCAL.md, DEPLOYMENT.md, INSTALACION_BETA.md, GEEMASTUDIO_MIGRATION_GUIDE.md (sección "Comandos útiles", no la narrativa histórica de FASE 1-6) y tech-debt/TD-001; rutas `scripts/db/` corregidas a `apps/geemastudio-server/scripts/db/` donde aplica (ubicación real tras la migración a monorepo). Queda pendiente de verificación humana: la ubicación correcta de `.env.example` (no existe en la raíz de `zm-tech`; ver nota en DESARROLLO_LOCAL.md) y el estado real de FASE 7C/7D en GEEMASTUDIO_MIGRATION_GUIDE.md.
+**Última actualización**: 2026-10-12 — consolidación: retirados `EDGE_FUNCTIONS.md` y `WABA_PRICING_OCT2026_ZM.md` de este directorio (la copia vigente vive en `apps/geemastudio-server/docs/`) y `04-geema-migration/08-PLAN-retail-productos.md` (duplicaba el Plan 15); agregada la sección de docs del server; MCP actualizado a `.mcp.json`. Estado y pendientes: [ROADMAP.md](../ROADMAP.md).

@@ -1,8 +1,5 @@
 # Plan 01 — Reestructuración a monorepo `zm-tech`
 
-> **Ubicación canónica consolidada:** Plan 01. El archivo de origen se conserva temporalmente como referencia legacy.
-
-
 > **Nota de proveniencia (agregada 27-ago-2026):** este documento es un draft local del 22-jul-2026 que nunca se había subido a ningún repositorio — se recuperó de un archivo en Descargas. Se espeja aquí siguiendo el mismo patrón que `02-PLAN-retrofit-tenant-id.md` y `03-PLAN-audit-paridad-zmlash-geema.md` (fuente canónica en `aeom0/ZM-Lash-and-Nails-Beauty/docs/plans/`). Describe la fusión de `aeom0/ZMTech` (landing) + `aeom0/geemastudio` en este mismo monorepo — ya ejecutada; este archivo queda como registro histórico del plan original.
 
 ## Estado actual verificado (22 julio 2026)

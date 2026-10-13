@@ -1,10 +1,8 @@
-> **Ubicación canónica consolidada:** Plan 13. El archivo de origen se conserva temporalmente como referencia legacy.
-
 # Plan 13 — Paridad completa del panel Geema
 
 > **Responsabilidad documental:** este plan es la fuente del scorecard de paridad del panel y del criterio de go-live Vanessa. Plan 12 conserva el detalle de implementación WABA; Plan 04 conserva el estado ejecutivo de migración.
 
-> Estado: **P2 de paridad cerrado; S4 de runtime tenant-aware pendiente** (actualizado 24-sep-2026). Complementa [`12-PLAN-waba-suite-parity.md`](12-PLAN-waba-suite-parity.md).
+> Estado: **P2 de paridad cerrado; Corte 1 validado (2-oct); S4 ✅ (PR #151 de ZM, 27-sep)** (actualizado 12-oct-2026). Pendientes vivos en [`ROADMAP.md`](../../ROADMAP.md) § Pendientes. Complementa [`12-PLAN-waba-suite-parity.md`](12-PLAN-waba-suite-parity.md).
 >
 > Meta: el panel web de Geema (`apps/geemastudio-web`) debe ser **igual o superior** al de ZM Lash canónico (`ZM-Lash-and-Nails-Beauty/apps/web`) antes de migrar a Vanessa como tenant real.
 >
@@ -221,7 +219,7 @@ BD compartida `udelxwwnyivknslueerr`: la EF **`send-notification` ya corre en pr
 - [x] **P4** — `app.config.js` inyecta `googleServicesFile`
 - [x] **P5** — **N/A Opción A** — no portar EF; canónico repo ZM
 - [x] **P6** — Secret `FCM_SERVICE_ACCOUNT` ya en `udelx…` (mismo proyecto Firebase)
-- [x] **P7** — **N/A** — CI deploy solo desde ZM (`ota-production.yml`); no espejo zm-tech
+- [x] **P7** — **N/A** en su momento (deploy desde ZM). Desde el 6-oct-2026 el deploy de Edge es `edge-functions.yml` de zm-tech
 - [x] **P8** — Smoke: APK de producción → token en `profiles` → invoke EF → push físico validado
 
 ##### P1 — Ops Vanessa (mismo día)

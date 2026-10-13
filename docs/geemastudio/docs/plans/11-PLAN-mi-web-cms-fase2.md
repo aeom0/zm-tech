@@ -1,9 +1,6 @@
 # Plan 11 — CMS Mi Web
 
-> **Ubicación canónica consolidada:** Plan 11. El archivo de origen se conserva temporalmente como referencia legacy.
-
-
-> Estado: **parcialmente cerrado** (20-sep-2026). Editor mobile + panel web + Storage RLS + middleware Fase 3 listos; queda el "go live" de dominio propio (DNS + activar fila real) y migración de contenido real de ZM.
+> Estado: **parcialmente cerrado** (actualizado 12-oct-2026). Editor mobile + panel web + Storage RLS + middleware listos. ZM Lash sirve `zmlashnails.com` en **Modo D** (su landing propia lee Mi Web; Sanity retirado el 5-oct). El Modo A (DNS a Geema) quedó descartado por las páginas legales. Falta completar el contenido real (reseñas, banner, video, imágenes a Storage).
 
 ## Contexto
 
@@ -74,8 +71,8 @@ CMS equivalente al de mobile, en el panel web:
 
 | Ítem                               | Notas                                                                                                                                     | Prioridad                           |
 | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| **Fase 3 — go live dominio propio** | Middleware ya implementado (ver arriba). Falta: apuntar DNS `zmlashnails.com` → deploy `geemastudio-web`, y setear `custom_domain`/`web_enabled=true` en fila `zm-lash-nails` | P2 — solo con OK de Vanessa/Alberto |
-| **Migrar contenido real ZM**       | Textos y estructura ya migrados y verificados contra Sanity (29-sep-2026). Falta: imágenes a Storage y `web_enabled` (ver § Modo B — ejecución) | P2 — solo con OK de Vanessa/Alberto |
+| ~~Fase 3 — go live dominio propio~~ | Descartado para ZM Lash (oct-2026): sigue en Modo D. El middleware de dominio propio queda disponible para otros tenants | — |
+| **Migrar contenido real ZM**       | Textos y estructura migrados (29-sep-2026); `web_enabled = true` desde el 1-oct. Falta: imágenes a Storage, reseñas reales, `web_team`, `web_whatsapp`, banner y video | P2 — solo con OK de Vanessa/Alberto |
 | **Sync catálogo → `web_services`** | Hoy lista curada aparte; opcional import desde `services`/`packs`                                                                         | backlog                             |
 | **`web_mode` explícito**           | Panel/mobile siguen mapeando presencia vía `web_enabled` (+ slug/custom_domain); alinear UI a enum `own_domain` / `geema_hosted` / `none` | P2                                  |
 | Smoke E2E con tenant QA            | Activar slug de prueba distinto de demos; no romper fila prod ZM sin plan de contenido                                                    | ops                                 |

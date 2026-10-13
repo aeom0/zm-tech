@@ -25,7 +25,7 @@ Complementa (no reemplaza):
 
 - [rutina-waba-analysis.md](prompts/rutina-waba-analysis.md) — análisis retrospectivo 48 h
 - [WABA_HAIKU_DIRECTRICES.md](tenants/zm-lash/directrices-haiku.md) — criterios de calidad del bot
-- [EDGE_FUNCTIONS.md](EDGE_FUNCTIONS.md) — contrato del webhook
+- [EDGE_FUNCTIONS.md](../ops/EDGE_FUNCTIONS.md) — contrato del webhook
 - [WABA_CAPACITY.md](WABA_CAPACITY.md) — tope de solape 1 vs 2 (carrito especial)
 
 ---

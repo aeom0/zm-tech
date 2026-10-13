@@ -2,7 +2,8 @@
 
 Documentación de las Edge Functions del salón (proyecto `udelxwwnyivknslueerr`).
 
-> Desde el 6-oct-2026 el código vive en `apps/geemastudio-server/supabase/functions/` y el único deployer es `.github/workflows/edge-functions.yml` de zm-tech. Las menciones de este archivo a `ota-production.yml`, `apps/mobile` de ZM o `yarn deploy:*` son anteriores al traslado.
+> Desde el 6-oct-2026 el código vive en `apps/geemastudio-server/supabase/functions/` y el único deployer es `.github/workflows/edge-functions.yml` de zm-tech (ver [DEPLOYMENT.md](DEPLOYMENT.md)).
+> Los QA citados como `yarn waba:validate:<caso>` / `yarn waba:smoke:<caso>` son scripts de `apps/geemastudio-server/scripts/` (`waba-validate-<caso>.mjs`, `waba-smoke-<caso>.mjs`); correrlos con `node` desde la raíz con el `.env` cargado.
 
 ---
 
@@ -39,24 +40,8 @@ Los crons `pg_cron` que invocan Edge Functions **no** llevan el Bearer en `cron.
 ## 1. whatsapp-webhook
 
 - **Carpeta**: `supabase/functions/whatsapp-webhook/`
-- **Deploy (recomendado)**: CLI reciente + token local. Desde la raíz del repo:
-
-```bash
-yarn deploy:whatsapp-webhook
-```
-
-Este comando ejecuta primero `yarn check:webhook` (`deno check`) y solo despliega
-si el módulo puede arrancar. El workflow CI aplica el mismo guard para evitar
-publicar una versión con `BOOT_ERROR`.
-
-Equivalente manual:
-
-```bash
-SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) npx --yes supabase@latest functions deploy whatsapp-webhook --project-ref udelxwwnyivknslueerr --no-verify-jwt
-```
-
-- **Si falla** con `Unsupported lockfile version '5'` al usar el binario global `supabase`: el `deno.lock` en `supabase/functions/` puede ser de Deno 2.x; **`npx supabase@latest`** (o actualizar el CLI) suele resolverlo. El workflow de GitHub usa `setup-cli@latest` y no depende de tu CLI local.
-- **Importante**: Evitar deploy por MCP para `whatsapp-webhook` (archivo grande) porque puede fallar silenciosamente; usar CLI.
+- **Deploy**: push a `main` (workflow `edge-functions.yml`, que corre `deno check` antes y evita publicar con `BOOT_ERROR`) o `workflow_dispatch` con `function: whatsapp-webhook`.
+- **Importante**: no desplegar `whatsapp-webhook` por MCP (archivo grande, puede fallar en silencio).
 - **CRÍTICO**: `verify_jwt: false` — Meta no envía JWT; si está en true, responde 401 y el bot deja de recibir mensajes.
 - **Healthcheck post-deploy**: un POST con `{ "object": "whatsapp_business_account", "entry": [] }` debe responder `200 ok`; `503 BOOT_ERROR` indica que el bundle se publicó pero el módulo no pudo arrancar.
 - **Staff desde app WA Business (P3)**: el webhook maneja `smb_message_echoes` → log `wa_messages.source=staff_app` + `bot_paused_at` (nudges respetan pausa). En Meta App → WhatsApp → Configuration → Webhook fields: **suscribir `smb_message_echoes`** (además de `messages`). Sin esa suscripción, los ecos no llegan y la pausa solo aplica al panel.
@@ -130,7 +115,7 @@ Orden body plantilla (código = Meta): cliente, servicio, fecha cita, app, monto
 - **Mi cita** (`mi_cita` en el menú interactivo): lista citas `scheduled` futuras del número/cliente y ofrece **Cambiar fecha/hora** sin crear una segunda fila en `appointments` (se guarda `whatsapp_sessions.reschedule_appointment_id` hasta elegir slot; luego `UPDATE` de `appointments.date`).
 - **Texto libre** (ej. “reprogramar”, “No es a las 11”, “Es a las 4:45 PM”): si hay citas `scheduled` futuras, **`sendPendingAppointmentContext`** antes del saludo→menú o del mensaje “usa los botones” en `awaiting_datetime`.
 - **Claude Haiku**: números fuera de `SPANISH_ONLY_CODES` reciben instrucción de respuesta **bilingüe** (español + idioma del país del prefijo); el contexto de sistema incluye citas pendientes cuando aplica. En **`awaiting_datetime`**, preguntas promo/precio/hoy/ambas pueden ir a Haiku sin abandonar el flujo de fecha. Archivos: `handlers/ai-assistant.ts`, `handlers/pending-appointment.ts`, `handlers/dispatcher.ts`, `handlers/booking-flow.ts` (`parseTimeSlot`).
-- **Capacidad de horarios (solape)**: tope **1** cita/franja por defecto; tope **2** si el carrito entrante es 100 % especial (Vanessa). Ver [WABA_CAPACITY.md](WABA_CAPACITY.md) — `overlapCapForCart` + `countOverlappingAppointments` (selectores, texto, pago, `finalizeRescheduleAppointment`).
+- **Capacidad de horarios (solape)**: tope **1** cita/franja por defecto; tope **2** si el carrito entrante es 100 % especial (Vanessa). Ver [WABA_CAPACITY.md](../waba/WABA_CAPACITY.md) — `overlapCapForCart` + `countOverlappingAppointments` (selectores, texto, pago, `finalizeRescheduleAppointment`).
 - **Migración BD** (si aún no está aplicada): `scripts/db/add-whatsapp-session-reschedule.sql` (`reschedule_appointment_id` en `whatsapp_sessions`).
 
 ### WABA CMS (configuración editable)
@@ -327,10 +312,7 @@ Recordatorio automático **24h antes** de la cita vía plantilla `recordatorio_c
 
 ### Deploy
 
-```bash
-SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) npx supabase@latest functions deploy appointment-reminders --project-ref udelxwwnyivknslueerr --no-verify-jwt
-SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) npx supabase@latest functions deploy send-appointment-reminder --project-ref udelxwwnyivknslueerr --no-verify-jwt
-```
+Deploy: workflow `edge-functions.yml` (push a `main` o `workflow_dispatch`).
 
 Cron sugerido: `0 14 * * *` (14:00 UTC = 9:00 AM Lima).
 
@@ -343,14 +325,7 @@ Cron sugerido: `0 14 * * *` (14:00 UTC = 9:00 AM Lima).
 - **Plantilla Meta**: `recordatorio_mismo_dia_zm` / `es_PE` (UTILITY) — **APPROVED** + smoke QA ✅ (`scripts/waba-smoke-same-day.mjs`).
 - **Ventana**: `[ahora−2 min, ahora+3 h+15 min)` hora Lima, solo si `same_day_reminder_sent_at` es null. Un fallo de Meta se reintenta en el tick siguiente. Al cambiar `appointments.date`, `trg_reset_appointment_reminders_on_date_change` limpia ese flag (y el de 24 h) en ZM y en Geema.
 - **Botones**: "Voy a llegar tarde" (reusa `TARDANZA_KEYWORDS`) · "No podré asistir" → `handlers/no-show.ts` pregunta motivo → `sendMiCitaMenu`.
-- **Deploy**:
-
-```bash
-SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) npx supabase@latest functions deploy same-day-appointment-reminder \
-  --project-ref udelxwwnyivknslueerr --no-verify-jwt
-SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) npx supabase@latest functions deploy send-same-day-reminder \
-  --project-ref udelxwwnyivknslueerr --no-verify-jwt
-```
+- **Deploy**: workflow `edge-functions.yml`.
 
 ---
 
@@ -369,15 +344,7 @@ SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) npx supabase@latest functi
   - `lifting_cuidados_ricino_zm` / `es_PE` — **creada**; Meta la reclasificó a **MARKETING** (sigue `PENDING` aprobación). 1 var `{{1}}` nombre. Copy: tip ricino ~día 10 (cuidado en casa, no servicio); sin botones de agenda. Hasta APPROVED el cron falla soft (skip + log).
 - **Garantía**: quejas → 932 (staff); el bot no evalúa ventana 24 h.
 - **QA**: `yarn waba:smoke:retouch` · `yarn waba:validate:retouch-reengage`.
-- **Deploy** (también en `ota-production.yml`):
-
-```bash
-SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) npx supabase@latest functions deploy retouch-reminders \
-  --project-ref udelxwwnyivknslueerr --no-verify-jwt
-SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) npx supabase@latest functions deploy send-retouch-reengage \
-  --project-ref udelxwwnyivknslueerr --no-verify-jwt
-yarn deploy:whatsapp-webhook   # dispatcher + retouch-reengage handler
-```
+- **Deploy**: workflow `edge-functions.yml` (`retouch-reminders`, `send-retouch-reengage` y `whatsapp-webhook` en la misma matriz).
 
 ---
 
@@ -391,7 +358,7 @@ yarn deploy:whatsapp-webhook   # dispatcher + retouch-reengage handler
   - **Costo del mes** → Cost Report oficial (gasto USD).
   - **Saldo en hero** → `app_config.anthropic_wallet_usd` (manual: Anthropic **no** expone API de balance prepaid). No confundir Cost Report con “saldo”.
   - Cupo última recarga: `anthropic_credits_usd`.
-- **Deploy**: función pequeña; se puede usar **Supabase CLI** (`npx supabase@latest functions deploy sync-anthropic-billing --project-ref udelxwwnyivknslueerr`) o MCP `deploy_edge_function` (evitar MCP solo para `whatsapp-webhook` por tamaño).
+- **Deploy**: workflow `edge-functions.yml`.
 - **Migración BD**: tabla + RLS en el baseline `00000000000000_baseline_full_schema.sql` (histórico original: `supabase/migrations_backup/20260420120500_anthropic_billing_snapshots.sql`).
 
 ---
@@ -414,12 +381,7 @@ yarn deploy:whatsapp-webhook   # dispatcher + retouch-reengage handler
 - **Vault (prod)**: secrets `waba_pricing_sync_service_jwt` + `waba_pricing_sync_secret` en **Supabase Vault** (no en `app_config`). `REVOKE EXECUTE` de `invoke_waba_pricing_sync()` para `PUBLIC`/`anon`/`authenticated`.
 - **Mobile**: `PricingBreakdownCard` en Finanzas (debajo de `AIUsageCard`, solo admin) — gasto mes actual, variación vs mes anterior, barras por categoría (`useWabaPricing` → `waba_pricing_daily`). Drill-down por plantilla: tabla `waba_template_analytics_daily` (sync en el mismo cron); UI en **Geema mobile** (S5C-7), no en `apps/mobile` ZM legacy.
 - **Quirk Meta `template_analytics`**: Graph a veces devuelve `amount_spent.value` con `sent`/`delivered`/`read` en **0** el mismo día (ej. recordatorio / retoque). El sync guarda ambos campos tal cual — **no** inferir volumen desde el costo ni “corregir” a 0 el gasto. Si `amount_spent` viene **sin** `value`, se persiste `cost = NULL` (no `0.0000`). Unit: `yarn waba:validate:template-analytics-cost`.
-- **Deploy** (sin `--no-verify-jwt`):
-
-```bash
-SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) npx supabase@latest functions deploy waba-pricing-sync \
-  --project-ref udelxwwnyivknslueerr
-```
+- **Deploy**: workflow `edge-functions.yml` (`verify_jwt` true en la matriz).
 
 - **Migraciones**: absorbidas en `00000000000000_baseline_full_schema.sql`; originales en `supabase/migrations_backup/2026072010*_waba_pricing_*.sql`. Fase 5: `20260919150754_add_waba_template_analytics_daily` (+ rename `read_count`, status `partial`, `20260919153042` timeout pg_net 60s).
 - **Fase 5 (hecha backend)**: `template_analytics` → `waba_template_analytics_daily`; requiere `is_enabled_for_insights=true` en el WABA. UI Geema: `zm-tech/docs/geemastudio/docs/plans/04-geema-migration/07-PARIDAD-MOBILE-ZM.md` S5C-7.
@@ -434,26 +396,14 @@ SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) npx supabase@latest functi
 - **WhatsApp OCR Sunat**: PDF **solo** del 932 (`ADMIN_PHONE` / `isAuthorizedSunatNpsPhone`). QA 978–999 y `51911100001` suprimen push y se limpian, pero no registran Constancia NPS. Haiku extrae período AAAAMM + total → upsert `impuestos` / `Sunat` / mes de pago = mes siguiente al período. Si no es NPS, pide reenviar (no inventa).
 - **Mobile**: Finanzas → segmented Resumen | Detalle. Resumen = KPIs + gráfico 6m/12m/Todo + lista de gastos. Detalle = vista de pagos previa.
 - **QA**: `yarn validate:executive-finance` (A/B cron día 10, D gate no-admin, RPC 24 meses). Caso C (PDF real de Vanessa) es smoke manual.
-- **Deploy**:
-
-```bash
-SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) supabase functions deploy generate-recurring-expenses \
-  --project-ref udelxwwnyivknslueerr --no-verify-jwt
-SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) supabase functions deploy sync-meta-ads-spend \
-  --project-ref udelxwwnyivknslueerr --no-verify-jwt
-```
+- **Deploy**: workflow `edge-functions.yml`.
 
 ---
 
 ## 8. cart-nudge (carrito abandonado)
 
 - **Carpeta**: `supabase/functions/cart-nudge/`
-- **Deploy**:
-
-```bash
-SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) npx supabase@latest functions deploy cart-nudge \
-  --project-ref udelxwwnyivknslueerr --no-verify-jwt
-```
+- **Deploy**: workflow `edge-functions.yml`.
 
 - **verify_jwt**: `false` (invocación por cron con `CRON_SECRET` o `service_role`).
 - **Cron**: cada ~30 min (`cart-nudge-every-30min`).
@@ -474,12 +424,7 @@ SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) npx supabase@latest functi
 
 - **Carpeta**: `supabase/functions/ads-bounce-nudge/`
 - **SQL**: `scripts/db/add-ads-bounce-nudge.sql` — columnas `from_ad_at`, `ads_bounce_nudge_sent_at`; RPC `waba_find_ads_bounce_phones`; cron `ads-bounce-nudge-every-30min`; seed `waba_config.meta_ads_bounce_nudge_text`.
-- **Deploy**:
-
-```bash
-SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) npx supabase@latest functions deploy ads-bounce-nudge \
-  --project-ref udelxwwnyivknslueerr --no-verify-jwt
-```
+- **Deploy**: workflow `edge-functions.yml`.
 
 - **Elegibilidad**: ≥90 min desde `from_ad_at` (welcome CTWA); colchón RPC hasta **24 h** para diferir madrugada → 9 AM (antes el tope 150 min descartaba el lead).
 - **Condiciones**: carrito vacío, `step` en `browsing` / `awaiting_ctwa_interest` / null, ningún inbound posterior a `from_ad_at`, sin nudge previo para ese CTWA. **26-jul**: también excluye si `browse_reengage_sent_at` / `watchdog_sent_at` ≥ `from_ad_at` (guards recíprocos); re-lectura de sesión antes de enviar. **27-ago**: `awaiting_ctwa_interest` (lista CTWA) — antes solo `browsing` y el bounce no disparaba.
@@ -493,12 +438,7 @@ SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) npx supabase@latest functi
 
 - **Carpeta**: `supabase/functions/browse-reengage/`
 - **SQL**: `scripts/db/add-browse-reengage.sql` — columna `browse_reengage_sent_at`; RPC `waba_find_idle_browse_phones`; cron `browse-reengage-every-15min`.
-- **Deploy**:
-
-```bash
-SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) npx supabase@latest functions deploy browse-reengage \
-  --project-ref udelxwwnyivknslueerr --no-verify-jwt
-```
+- **Deploy**: workflow `edge-functions.yml`.
 
 - **Elegibilidad**: último `wa_messages` = **out**; `step=browsing`; carrito vacío; silencio ≥**30 min** (colchón RPC **24 h**); inbound en últimas 24 h.
 - **1 nudge por episodio** (fix 19-jul; endurecido 26-jul): RPC compara `browse_reengage_sent_at` vs **último inbound** (no vs último OUT). Skip si ya hubo `ads_bounce_nudge` / `watchdog` en el mismo episodio. **CTWA** (`from_ad_at` ≥ último inbound) → excluida (deja ads-bounce). Guards recíprocos también en `waba_find_ads_bounce_phones`. **13-ago (Merillyn)**: skip si OUT reciente `panel`/`staff_app` (&lt;4 h) aunque `bot_paused_at` sea null (`loadRecentStaffOutboundPhoneSet` en `loadSilentPhoneSet`). SQL: `scripts/db/fix-reengage-no-double-nudge.sql`. Re-lectura de sesión antes de enviar (anti carrera 09:00). Ver [docs/waba/tenants/zm-lash/analysis/LECCIONES.md](../waba/tenants/zm-lash/analysis/LECCIONES.md).
@@ -513,12 +453,7 @@ SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) npx supabase@latest functi
 
 - **Carpeta**: `supabase/functions/chat-quality-review/`
 - **SQL**: `scripts/db/add-chat-quality-review.sql` — `quality_review_sent_at`; RPC `waba_find_quality_review_candidates`; cron `chat-quality-review-every-15min`.
-- **Deploy**:
-
-```bash
-SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) npx supabase@latest functions deploy chat-quality-review \
-  --project-ref udelxwwnyivknslueerr --no-verify-jwt
-```
+- **Deploy**: workflow `edge-functions.yml`.
 
 - **Qué hace**: Haiku clasifica hilos con actividad reciente; si hay flags (`unanswered_price`, `cart_mismatch`, `promo_ignored`, `client_confused`) → FCM owner/dev. **Nunca** escribe a la clienta.
 - **Copy push**: título `WhatsApp · Revisar YA · {nombre}`; body corto con 1–2 flags (evita truncado en la barra).
@@ -533,12 +468,7 @@ SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) npx supabase@latest functi
 - **Carpeta**: `supabase/functions/waba-staff-session/` + lógica en `whatsapp-webhook/handlers/staff-resume.ts`
 - **SQL**: `scripts/db/add-bot-paused-at.sql` — `whatsapp_sessions.bot_paused_at`
 - **Config**: `supabase/config.toml` → `verify_jwt = false` (auth JWT admin o service_role **interna**)
-- **Deploy**:
-
-```bash
-SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) npx supabase@latest functions deploy waba-staff-session \
-  --project-ref udelxwwnyivknslueerr --no-verify-jwt
-```
+- **Deploy**: workflow `edge-functions.yml`.
 
 - **Body**: `{ "phone": "51…", "action": "resume_bot" | "haiku_finish_booking" }`
 - **`resume_bot`**: limpia `bot_paused_at` (sin mensaje a la clienta).
@@ -575,11 +505,11 @@ Por tanto:
 
 ## Deploy
 
-- **CLI**: desde la raíz del repo, `supabase functions deploy <nombre> --project-ref udelxwwnyivknslueerr`. El CLI puede dar 403; en ese caso usar **MCP Supabase** > `deploy_edge_function` con el slug de la función.
+- **Workflow**: `.github/workflows/edge-functions.yml` despliega todas las funciones en cada push a `main` bajo `supabase/functions/**`; una sola por `workflow_dispatch`. CLI o MCP solo en emergencia (el próximo push lo pisa).
 - **Secrets**: configurar en Supabase Dashboard > Edge Functions > Secrets (`FCM_SERVICE_ACCOUNT`, `WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `ANTHROPIC_API_KEY` para Haiku en webhook, **`ANTHROPIC_ADMIN_API_KEY`** para `sync-anthropic-billing`, **`META_SYSTEM_USER_TOKEN`** / **`WABA_ID`** / **`WABA_SYNC_SECRET`** para `waba-pricing-sync`, etc.).
   - `WHATSAPP_ACCESS_TOKEN`: System User **permanente** (Business Settings → System Users). No el token 24 h de API Setup.
   - `WHATSAPP_PHONE_NUMBER_ID`: ID Meta del bot **+51 981 444 430** (no el staff **932 535 512**).
-  - Rotación y validación: [DEPLOYMENT.md](DEPLOYMENT.md) § Secrets; plantilla de comentarios en `.env.example`.
+  - Rotación y validación: [DEPLOYMENT.md](DEPLOYMENT.md) § Secrets; plantilla de comentarios en `docs/geemastudio/.env.example`.
 - **verify_jwt**: para webhooks externos (p. ej. whatsapp-webhook) debe ser `false`; para invocaciones desde la app o desde otras funciones, normalmente `true`.
 
 ---

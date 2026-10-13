@@ -1,8 +1,5 @@
 # Plan 05 — CTWA, collages y cierre por intención
 
-> **Ubicación canónica consolidada:** Plan 05. El archivo de origen se conserva temporalmente como referencia legacy.
-
-
 > Documento de contexto técnico para Cursor / Claude Code. Léelo completo antes de tocar creativos CMS, `dispatcher.ts` o el PASO 1 de Haiku. Unifica el chat con Gemini (psicología CTWA + listas), el análisis WABA **25-ago** y el anti-patrón Bu …0782 (cat-eye → menú Extensiones → drift a Uñas).
 
 **Última actualización:** 2026-08-25

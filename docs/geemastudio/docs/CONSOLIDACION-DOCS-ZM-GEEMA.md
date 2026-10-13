@@ -1,8 +1,9 @@
 # Consolidación documental ZM Lash → GeemaStudio
 
-> **Estado (5-oct-2026): consolidación ejecutada.** Geema es la única fuente de
-> verdad de planes y migración. ZM conserva solo docs operativos de lo que sigue
-> corriendo allí (landing, Edge Functions/WABA, BD compartida).
+> **Estado (12-oct-2026): consolidación ejecutada.** Geema es la única fuente de
+> verdad de planes, migración, Edge Functions y WABA (traslado F0–F5, 6-oct-2026).
+> El repo ZM conserva solo la landing `zmlashnails.com` y docs operativos
+> (`docs/ops/`, `docs/meta-ads.md`).
 
 ## Qué se hizo
 
@@ -13,6 +14,10 @@
   `MONOREPO_MIGRACION`, `tech-debt/TD-001`).
 - Los planes 06/07 y anexos de Look Preview se trajeron de ZM (más recientes).
 - Retirado el sync ZM ↔ Geema (script + workflow); ZM ya no guarda `docs/plans/`.
+- 12-oct-2026: retirados `docs/EDGE_FUNCTIONS.md` y `docs/WABA_PRICING_OCT2026_ZM.md`
+  (la copia vigente está en `apps/geemastudio-server/docs/ops/` y `docs/waba/`) y
+  `04-geema-migration/08-PLAN-retail-productos.md` (duplicaba el Plan 15). Pendientes
+  unificados en `docs/geemastudio/ROADMAP.md` § Pendientes.
 
 ## Equivalencias de numeración antigua
 
@@ -27,7 +32,7 @@ Los textos y CHANGELOGs anteriores a oct-2026 pueden citar el número viejo.
 | Geema Plan 11 (suite WABA) | 12 |
 | Geema Plan 12 (paridad panel) | 13 |
 | Geema Plan 13 (CRM clientes) | 14 |
-| `geema-migration/08-PLAN-retail-productos` | 15 |
+| `geema-migration/08-PLAN-retail-productos` (retirado 12-oct) | 15 |
 | ZM `docs/plans/geema-migration/` | `plans/04-geema-migration/` |
 
 Planes 01–03, 05–08 y 15–18 conservan su número.

@@ -133,7 +133,7 @@ Webhook ZM opera con `tenantId` resuelto; Geema routing integrado.
 | **Comportamiento ON** | Resolver `tenantId` desde `tenant_waba_numbers`; filtrar catálogo/config/sesiones |
 | **Activación** | Primero QA phones `978–999`; luego flag ON **solo** en fila `tenant_id = 'test-barberia'` (o tenant QA); prod ZM ON tras suite `:all` + 24 h sin `wa_error_log` nuevos |
 | **Rollback (&lt;5 min, post-S1-2)** | `UPDATE waba_config SET … WHERE tenant_id = '<tenant afectado>' AND config_key = 'waba_tenant_routing_enabled'` — **nunca** sin filtro `tenant_id`. Alternativa: secret Edge a `false` si se configuró fallback dual. Sin redeploy. |
-| **Rollback (&gt;5 min)** | Redeploy Edge versión anterior vía `ota-production.yml` / `yarn deploy:whatsapp-webhook` si el bug es de código, no de config |
+| **Rollback (&gt;5 min)** | Revertir el commit en `main` (redeploy por `edge-functions.yml`) si el bug es de código, no de config |
 
 **Anti-patrón explícito:** `ON CONFLICT (config_key)` o `getConfigBoolean('waba_tenant_routing_enabled')` sin `tenantId` — prohibido después de S1-2.
 

@@ -79,7 +79,7 @@ Cobro/checkout, bloqueo duro por límites, límite de sedes efectivo (depende de
 
 ## Decisión WABA (3-oct-2026)
 
-- Unidad del límite: **mensajes de servicio reales del mes** (`SERVICE/FREE_CUSTOMER_SERVICE` en `waba_pricing_daily`; excluye `FREE_ENTRY_POINT`), según el pricing de Meta del 1-oct-2026 (ver `docs/WABA_PRICING_OCT2026_ZM.md`).
+- Unidad del límite: **mensajes de servicio reales del mes** (`SERVICE/FREE_CUSTOMER_SERVICE` en `waba_pricing_daily`; excluye `FREE_ENTRY_POINT`), según el pricing de Meta del 1-oct-2026 (ver [`WABA_PRICING_OCT2026.md`](../../../../apps/geemastudio-server/docs/waba/WABA_PRICING_OCT2026.md)).
 - Límites: Basic 300, Pro 1.000, Elite ilimitado (`plans.waba_conversations` conserva el nombre de columna).
 - Uso: vista `tenant_waba_usage` (security_invoker; solo owner/dev del tenant ven datos). Se sincroniza con días de retraso: la UI muestra "Datos al <fecha>".
 - Pendiente: recalcular precios del add-on (`WABA_ADDON_TIERS`, hoy 50/$4, 200/$12, 500/$24) y `COMPARISON_FEATURES` aún hardcodeado en la landing.

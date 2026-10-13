@@ -1,8 +1,5 @@
 # Plan 03 — Auditoría de paridad ZM Lash → GeemaStudio
 
-> **Ubicación canónica consolidada:** Plan 03. El archivo de origen se conserva temporalmente como referencia legacy.
-
-
 > Documento de contexto técnico para Cursor / Claude Code. Léelo completo antes de tocar cualquier archivo. Este es un **audit de solo lectura** — no se espera ni se permite ningún cambio de código en esta tarea.
 
 **Fecha:** 2026-08-07

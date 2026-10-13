@@ -1,71 +1,64 @@
 # Arquitectura multi-tenant del bot WABA
 
+> Actualizado 12-oct-2026 contra el código de `apps/geemastudio-server/supabase/functions/`.
+> Inventario de funciones, secrets y deploy: [`EDGE_FUNCTIONS.md`](../../../apps/geemastudio-server/docs/ops/EDGE_FUNCTIONS.md).
+
 ## Resumen
 
 Una única Edge Function (`whatsapp-webhook`) atiende a todos los tenants. El
-enrutamiento es 100% por datos: no hay una función por tenant ni código duplicado.
+enrutamiento es por datos: no hay una función por tenant ni código duplicado.
+Hoy hay un solo número (ZM Lash, `+51 981 444 430`) y el routing multi-tenant
+está apagado (`waba_tenant_routing_enabled = false`), así que todo el tráfico
+se atribuye a `zm-lash-nails`.
 
 ## Dónde viven las credenciales
 
-Cada tenant tiene su propio WABA modelado como columnas en su fila de
-`tenant_settings`:
+| Dato | Dónde | Quién lo lee |
+|------|-------|--------------|
+| `phone_number_id` → `tenant_id` | Tabla `tenant_waba_numbers` (`is_active`) | `whatsapp-webhook/lib/tenant-resolver.ts`, `_shared/tenant-waba.ts` |
+| Token de Meta por tenant | Vault, secret `waba_token_<tenant_id>`, vía RPC `get_tenant_waba_token` | Crons y envíos (`_shared/tenant-waba.ts`: nudges, recordatorios, retoque, promos) |
+| Token y número globales | Secrets de Edge `WHATSAPP_ACCESS_TOKEN` / `WHATSAPP_PHONE_NUMBER_ID` | Webhook (`lib/notify.ts`) y respaldo de `tenant-waba.ts` si el token de Vault no es de Meta |
+| Verify token del handshake | Secret de Edge `WHATSAPP_VERIFY_TOKEN` (global) | `whatsapp-webhook/lib/auth.ts` |
+| Flag de routing | `waba_config.waba_tenant_routing_enabled` (`{"enabled": bool}`) del tenant candidato | `tenant-resolver.ts` |
+| Reglas del bot (horario, abono, staff) | `waba_rules` (S5), editables en `/panel/waba/reglas` | Webhook |
+| Agente Haiku | `waba_config.agent_enabled` y `agent_phone_allowlist` | Webhook (`routeAgentInbound`) |
 
-- `waba_phone_number_id`
-- `waba_access_token`
-- `waba_verify_token`
-- `waba_admin_phones`
-- `waba_business_hours`
-- `waba_payment_info`
-- `features_waba` (interruptor — debe estar en `true` para que el tenant reciba tráfico)
-
-Fuente SQL: `20260406_waba_multitenant.sql` (archivo retirado; ver historial de git, commit `a0926cdb`). Resolución en runtime:
-`supabase/functions/whatsapp-webhook/lib/tenant-resolver.ts`.
-
-> **Nota operativa**: también hay detalle de secrets, deploy y SQL de prueba en
-> [`EDGE_FUNCTIONS.md`](./EDGE_FUNCTIONS.md). Este documento es la guía de alta
-> multi-tenant y del handshake GET con `phone_number_id`.
+Las columnas `waba_*` de `tenant_settings` (`waba_phone_number_id`,
+`waba_access_token`, `waba_verify_token`) son del modelo anterior a S1/S4 y el
+webhook ya no las usa para resolver el tenant.
 
 ## Cómo se resuelve el tenant en cada mensaje
 
-**POST (mensajes entrantes)**: Meta incluye `metadata.phone_number_id` en el payload.
-`lib/tenant-resolver.ts` → `resolveTenantFromPhoneNumberId()` busca ese valor en
-`tenant_settings` y devuelve las credenciales correspondientes. Automático, sin
-configuración adicional por request.
+**POST (mensajes entrantes)**: Meta incluye `metadata.phone_number_id`.
+`resolveTenantFromPhoneNumberId()` busca ese número en `tenant_waba_numbers`
+y lee el flag de routing del tenant candidato:
 
-**GET (handshake de verificación de Meta)**: Meta NO incluye `phone_number_id` en
-este payload — solo `hub.mode`, `hub.verify_token`, `hub.challenge`. Por eso
-`validateGetVerify()` en `lib/auth.ts` exige `phone_number_id` como **query param
-en la URL misma**.
+- Flag `false` (o error de lectura) → `zm-lash-nails` (`DEFAULT_TENANT_ID`).
+- Flag `true` → el `tenant_id` de `tenant_waba_numbers`.
+
+El resultado se cachea 5 min por número en el isolate (`lib/ttl-cache.ts`):
+activar o apagar el flag tarda hasta 5 min en aplicarse.
+
+**GET (handshake de Meta)**: compara `hub.verify_token` con el secret global
+`WHATSAPP_VERIFY_TOKEN`. No hace falta `phone_number_id` en la URL.
 
 ## Checklist: dar de alta el WABA de un tenant nuevo
 
-1. Crear o vincular la app de Meta Business del tenant, obtener:
-   - `phone_number_id`
-   - `access_token` (permanente, tras verificación de Meta Business)
-   - Definir un `verify_token` propio para ese tenant (cualquier string secreto)
-2. Insertar/actualizar la fila en `tenant_settings` con esos tres valores +
-   `features_waba = true`.
-3. En el dashboard de Meta, configurar el webhook con esta URL exacta:
+Requiere antes la F6 del traslado (parametrizar los textos y montos de ZM que
+siguen en el código), ver
+[Plan 04/10](plans/04-geema-migration/10-PLAN-traslado-waba-a-geema.md).
 
-   ```
-   https://udelxwwnyivknslueerr.supabase.co/functions/v1/whatsapp-webhook?phone_number_id=<ID_DEL_TENANT>
-   ```
-
-   Usando como "Verify token" el mismo valor guardado en `waba_verify_token` para
-   ese tenant.
-
-4. Confirmar el handshake (Meta debe aceptar la verificación).
-5. Enviar un mensaje de prueba y confirmar que llega al `wa_messages` del tenant
-   correcto.
-
-**Error común**: si el `phone_number_id` en la URL no coincide con el guardado en
-`tenant_settings`, el handshake falla en silencio (403) sin mensaje de error claro
-del lado de Meta. Verificar primero ahí si un tenant nuevo no logra activar WABA.
+1. En Meta Business del tenant: `phone_number_id` y token permanente de System User.
+2. Insertar la fila en `tenant_waba_numbers` (`tenant_id`, `phone_number_id`, `is_active = true`).
+3. Crear el secret de Vault `waba_token_<tenant_id>` con el token.
+4. Suscribir el número a la misma URL del webhook
+   (`https://udelxwwnyivknslueerr.supabase.co/functions/v1/whatsapp-webhook`) con el verify token global.
+5. Cargar `waba_rules` y `waba_config` del tenant (panel `/panel/waba/reglas`).
+6. Activar `waba_tenant_routing_enabled` en ese tenant y esperar 5 min.
+7. Smoke con un teléfono QA (`51999000978`–`999`) y confirmar que el mensaje
+   queda en `wa_messages` con el `tenant_id` correcto.
 
 ## Pendiente
 
-- No existe UI en el panel web para dar de alta estas credenciales — hoy es manual
-  vía SQL o Supabase Dashboard. Evaluar si el formulario de alta de WABA debe
-  formar parte de PR-11 (`/panel/waba/configuracion`).
-- Capacidad ZM v3.0 (anti-doble-reserva global, silence-watchdog, portafolio,
-  referencia visual) y motor de reenganche: ver PR-10 / PR-10B en `ROADMAP.md`.
+- No hay UI en el panel para dar de alta el número y el token: hoy es SQL + Vault.
+- Smoke del flag de routing en un tenant QA (Plan 04 Track B).

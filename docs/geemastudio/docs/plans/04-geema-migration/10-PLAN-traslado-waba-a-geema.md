@@ -1,6 +1,6 @@
 # 10 — Traslado de la suite WABA a Geema (`geemastudio-server`)
 
-**Fecha:** 2026-10-05 · **Estado:** F0–F2 ✅ (6-oct-2026); F3 (cutover) pendiente — ver «Avance» abajo. PR #172 (retiro de mobile/panel) y PR #173 (caché del webhook) ya mergeados.
+**Fecha:** 2026-10-05 · **Estado:** F0–F5 ✅ (6-oct-2026): Edge y WABA viven y se despliegan solo desde zm-tech. Pendiente F6 (parametrizar hardcodes de ZM + routing multi-tenant) — ver «Avance» abajo. PR #172 (retiro de mobile/panel) y PR #173 (caché del webhook) ya mergeados.
 **Decisiones de Alberto (5-oct):** (1) renombrar la BD es **solo el nombre visible** (el ref `udelxwwnyivknslueerr` no cambia); (2) la suite WABA va al **servicio multi-tenant** (`zm-tech/apps/geemastudio-server`); (3) este documento es el plan, sin ejecución.
 **Contexto:** `apps/mobile` y panel web de ZM retirados (PR #172). Este repo queda con landing + Edge/WABA + migraciones.
 

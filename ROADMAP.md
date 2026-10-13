@@ -10,7 +10,7 @@ Próximo foco: iterar proof/casos reales. Ver [docs/landing/ROADMAP.md](docs/lan
 
 ## GeemaStudio
 
-Objetivo actual: beta v1.5. **Panel web P1 cerrado** (12-sep). Host plataforma **temporal**: [geema.zmtechdev.com](https://geema.zmtechdev.com) (hasta `geemastudio.app`). Pendientes: smoke Finanzas APK, S5C-8, P2 WABA, S4 (repo ZM), Push FCM.
+Objetivo actual: beta v1.5. ZM Lash opera 100 % en Geema (panel, app y WABA con agente Haiku 5.5 desde el 8-oct). Host plataforma **temporal**: [geema.zmtechdev.com](https://geema.zmtechdev.com) (hasta `geemastudio.app`). Pendientes priorizados: lista única en el roadmap de Geema.
 
 Ver [docs/geemastudio/ROADMAP.md](docs/geemastudio/ROADMAP.md).
 
