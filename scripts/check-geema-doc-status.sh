@@ -34,9 +34,9 @@ assert_absent() {
 }
 
 # Hitos cerrados que deben permanecer reflejados en el estado ejecutivo.
-assert_contains "$ROADMAP" "P14–P17/P2 push WABA"
+assert_contains "$ROADMAP" "Pendientes (lista única, prioridad)"
 assert_contains "$ROADMAP" "el estado de migración vive en Plan 04"
-assert_contains "$ROADMAP" "P0 + P8 + P9 + P10 ✅"
+assert_contains "$ROADMAP" "P0 + P8–P10 + P18–P23 ✅"
 assert_contains "$PLAN13" "PR-09 P0 + P8 + P9 + P10"
 assert_contains "$PLAN04" "PR-09 P0 + P8 + P9 + P10 + P18–P20 validados"
 assert_contains "$PLAN04" "[x] Historial + Portafolio en nav WABA"
@@ -49,5 +49,7 @@ assert_absent "$ROADMAP" "Historial/Portafolio/Simulador ❌"
 assert_absent "$ROADMAP" "reconciliar drift \`whatsapp-webhook\` prod v655"
 assert_absent "$ROADMAP" "P8 smoke APK pendiente"
 assert_absent "$PLAN13" "P8 smoke APK pendiente"
+assert_absent "$ROADMAP" "Foco semana 22–28 sep"
+assert_absent "$ROADMAP" "S4 ❌"
 
 echo "✓ estado documental Geema consistente"
