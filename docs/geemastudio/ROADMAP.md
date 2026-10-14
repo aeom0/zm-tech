@@ -41,26 +41,26 @@ Llegar a la primera beta de producción lo antes posible, intercalando estabiliz
 
 > Esta tabla es la única lista de pendientes de Geema. Los planes guardan el detalle; si un plan y esta tabla difieren, se corrige el plan.
 
-| #  | Ítem | Detalle | Bloqueo |
-| -- | ---- | ------- | ------- |
-| 1  | **Fase 3 del cutover del agente**: borrar el dispatcher clásico | PR aparte tras una semana estable desde el 8-oct. Hoy el dispatcher aún atiende party, curso, no-show, botones de plantilla y listas de categoría/día/hora | Estabilidad (≈ 15-oct) |
-| 2  | Notas de voz en el agente | Transcribir antes del agente y escalar solo si hay problema o pide persona | — |
-| 3  | Actualizar la regla de `AGENTS.md` «regex para dinero/citas» → «las herramientas validan en código» | Lo pide el plan de cutover al cerrar la Fase 2 (ya desplegada) | — |
-| 4  | Repartir un pago en servicio + producto | `PaymentModal` sin split; mostrar `kind` en finanzas web | — |
-| 5  | Smoke Finanzas en APK | Validación mobile pendiente | — |
-| 6  | Promo broadcast: envío real end-to-end | Wizard probado hasta preview (Plan 13 R5) | — |
-| 7  | Reenganche de retoque desde el panel/app con `send-retouch-reengage` | La EF está desplegada; el botón de la app abre WhatsApp con texto, no usa la EF (Plan 13 G6) | — |
-| 8  | Plan 18: sugerir solo profesionales elegibles al asignar + revisión visual en teléfono | — | Validar config con Vanessa |
-| 9  | Nombres de packs «tinturado» | Ver propuesta abajo | Confirmación de Vanessa |
-| 10 | Corte 2 — landing `zmlashnails.com` (Modo D, repo ZM) | Reseñas reales, `web_team`, `web_whatsapp`, banner, video, imágenes a Storage | Datos y OK de Vanessa |
-| 11 | Cotizador de diseños de uñas | [Plan](../../apps/geemastudio-server/docs/waba/plan-cotizador-disenos-unas.md): 51 fotos esperando etiquetas | Etiquetas del salón |
-| 12 | Plan 04/10 F6 + smoke `waba_tenant_routing_enabled` | Parametrizar hardcodes de ZM (nombre, dirección, abono, copy); flag hoy `false` | Antes del 2.º tenant |
-| 13 | S6 (presets L4 por vertical) y S7 (2.º tenant + loop Meta Ads) | [Plan 04](docs/plans/04-geema-migration/04-ROADMAP-SPRINTS.md) | F6 |
-| 14 | Plan 12: portar formato de quotes/plantillas al webhook (M14/M18) | Decidir si vale la pena | Decisión |
-| 15 | Plan 14 P2 (CRM clientes) · Plan 15 Inventario mobile · bot retail | Bot retail pausado por producto | Decisión de producto |
-| 16 | Push FCM: ajustes de assets · EAS canal formal | — | — |
-| 17 | Plan 17 F5 (descarga del APK) | El APK se envía por WhatsApp; Supabase Free limita a 50 MB (R2 o Pro) | Decisión de costo |
-
+| #   | Ítem                                                                                                | Detalle                                                                                                                                                                                                                                                                                                                                                   | Bloqueo                    |
+| --- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
+| 1   | **Fase 3 del cutover del agente**: borrar el dispatcher clásico                                     | PR aparte tras una semana estable desde el 8-oct. Hoy el dispatcher aún atiende party, curso, no-show, botones de plantilla y listas de categoría/día/hora                                                                                                                                                                                                | Estabilidad (≈ 15-oct)     |
+| 2   | Notas de voz en el agente                                                                           | Transcribir antes del agente y escalar solo si hay problema o pide persona                                                                                                                                                                                                                                                                                | —                          |
+| 3   | Actualizar la regla de `AGENTS.md` «regex para dinero/citas» → «las herramientas validan en código» | Lo pide el plan de cutover al cerrar la Fase 2 (ya desplegada)                                                                                                                                                                                                                                                                                            | —                          |
+| 4   | Repartir un pago en servicio + producto                                                             | `PaymentModal` sin split; mostrar `kind` en finanzas web                                                                                                                                                                                                                                                                                                  | —                          |
+| 5   | Smoke Finanzas en APK                                                                               | Validación mobile pendiente                                                                                                                                                                                                                                                                                                                               | —                          |
+| 6   | Promo broadcast: envío real end-to-end                                                              | Wizard probado hasta preview (Plan 13 R5)                                                                                                                                                                                                                                                                                                                 | —                          |
+| 7   | Reenganche de retoque desde el panel/app con `send-retouch-reengage`                                | La EF está desplegada; el botón de la app abre WhatsApp con texto, no usa la EF (Plan 13 G6)                                                                                                                                                                                                                                                              | —                          |
+| 8   | Plan 18: sugerir solo profesionales elegibles al asignar + revisión visual en teléfono              | —                                                                                                                                                                                                                                                                                                                                                         | Validar config con Vanessa |
+| 9   | Nombres de packs «tinturado»                                                                        | Ver propuesta abajo                                                                                                                                                                                                                                                                                                                                       | Confirmación de Vanessa    |
+| 10  | Corte 2 — landing `zmlashnails.com` (Modo D, repo ZM)                                               | Reseñas reales, `web_team`, `web_whatsapp`, banner, video, imágenes a Storage                                                                                                                                                                                                                                                                             | Datos y OK de Vanessa      |
+| 11  | Cotizador de diseños de uñas                                                                        | [Plan](../../apps/geemastudio-server/docs/waba/plan-cotizador-disenos-unas.md): 51 fotos esperando etiquetas                                                                                                                                                                                                                                              | Etiquetas del salón        |
+| 12  | Plan 04/10 F6 + smoke `waba_tenant_routing_enabled`                                                 | Parametrizar hardcodes de ZM (nombre, dirección, abono, copy); flag hoy `false`                                                                                                                                                                                                                                                                           | Antes del 2.º tenant       |
+| 13  | S6 (presets L4 por vertical) y S7 (2.º tenant + loop Meta Ads)                                      | [Plan 04](docs/plans/04-geema-migration/04-ROADMAP-SPRINTS.md)                                                                                                                                                                                                                                                                                            | F6                         |
+| 14  | Plan 12: portar formato de quotes/plantillas al webhook (M14/M18)                                   | Decidir si vale la pena                                                                                                                                                                                                                                                                                                                                   | Decisión                   |
+| 15  | Plan 14 P2 (CRM clientes) · Plan 15 Inventario mobile · bot retail                                  | Bot retail pausado por producto                                                                                                                                                                                                                                                                                                                           | Decisión de producto       |
+| 16  | Push FCM: ajustes de assets · EAS canal formal                                                      | —                                                                                                                                                                                                                                                                                                                                                         | —                          |
+| 17  | Plan 17 F5 (descarga del APK)                                                                       | El APK se envía por WhatsApp; Supabase Free limita a 50 MB (R2 o Pro)                                                                                                                                                                                                                                                                                     | Decisión de costo          |
+| 18  | **Plan 19: paridad mobile ↔ web**                                                                   | F0 paquete `@geemastudio/data` → F1 web: agenda, clientes y pagos con escritura + vista staff → F2 web: feriados, validación, asignar, inventario, notificaciones → F3 web: promo masiva, reordenar, dashboard → F4 mobile: bandeja WhatsApp. Absorbe #4 (F1) y la parte «solo elegibles» de #8 (F2). [Plan 19](docs/plans/19-PLAN-paridad-mobile-web.md) | —                          |
 
 ### Propuesta: `title` / `short_name` de packs y servicios «tinturado» (5-oct 2026)
 
@@ -68,12 +68,12 @@ Problema: en WhatsApp (título de lista interactiva ≤ 24 caracteres) «Lifting
 
 Regla propuesta: `title` completo y explícito; `short_name` ≤ 24 caracteres con el objeto (pestañas/cejas) siempre visible. Borrador (a validar con Vanessa, incluido si «rímel» es servicio aparte o variante):
 
-| Actual | `title` propuesto | `short_name` propuesto |
-| --- | --- | --- |
-| Lifting + Tinturado | Lifting de Pestañas + Tinte de Pestañas | Lifting + Tinte Pest. |
-| Diseño + Tinturado de Cejas | Diseño de Cejas + Tinte de Cejas | Diseño + Tinte Cejas |
-| Diseño Cejas + Tinturado | (duplicado del anterior: confirmar diferencia con Vanessa y fusionar o renombrar) | — |
-| Efecto rímel (si es variante) | Tinte de Pestañas efecto Rímel | Tinte Pest. Rímel |
+| Actual                        | `title` propuesto                                                                 | `short_name` propuesto |
+| ----------------------------- | --------------------------------------------------------------------------------- | ---------------------- |
+| Lifting + Tinturado           | Lifting de Pestañas + Tinte de Pestañas                                           | Lifting + Tinte Pest.  |
+| Diseño + Tinturado de Cejas   | Diseño de Cejas + Tinte de Cejas                                                  | Diseño + Tinte Cejas   |
+| Diseño Cejas + Tinturado      | (duplicado del anterior: confirmar diferencia con Vanessa y fusionar o renombrar) | —                      |
+| Efecto rímel (si es variante) | Tinte de Pestañas efecto Rímel                                                    | Tinte Pest. Rímel      |
 
 Pasos: confirmar con Vanessa → UPDATE de `services`/`packs` (title, short_name) vía migración o panel → revisar prompts Haiku y listas WABA que citen esos nombres. No cambiar precios ni `service_ids`.
 
@@ -85,15 +85,14 @@ Pasos: confirmar con Vanessa → UPDATE de `services`/`packs` (title, short_name
 
 ### Beta gate (actualizado 12-oct 2026)
 
-| Ítem                                      | Estado                                                        |
-| ----------------------------------------- | ------------------------------------------------------------- |
-| PR-01…PR-08                               | ✅ (ver historial abajo)                                      |
-| PR-09 Push FCM E2E                        | ✅ P0 + P8–P10 + P18–P23; ajustes de assets en curso          |
+| Ítem                                      | Estado                                                                        |
+| ----------------------------------------- | ----------------------------------------------------------------------------- |
+| PR-01…PR-08                               | ✅ (ver historial abajo)                                                      |
+| PR-09 Push FCM E2E                        | ✅ P0 + P8–P10 + P18–P23; ajustes de assets en curso                          |
 | PR-10 / PR-10B WABA avanzado + reenganche | ✅ para ZM Lash (suite trasladada 6-oct + agente 8-oct); multi-tenant tras F6 |
-| PR-11 Panel web                           | ✅ P1 + suite WABA + Productos/Ventas |
+| PR-11 Panel web                           | ✅ P1 + suite WABA + Productos/Ventas                                         |
 
 ---
-
 
 ## Sprint 1 — P0 desbloqueante
 
@@ -170,10 +169,10 @@ Este archivo no replica ese semáforo para evitar estados contradictorios.
 
 ## Landing multi-tenant
 
-| Fase | Qué                                      | Estado                                                                                              |
-| ---- | ---------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| 1    | Templates + secciones + mirror `zm-demo` | ✅                                                                                                  |
-| 2    | CMS mobile “Mi Web” (OTA preview 12-sep) | ✅ parcial — ver [`docs/plans/11-PLAN-mi-web-cms-fase2.md`](docs/plans/11-PLAN-mi-web-cms-fase2.md) |
+| Fase | Qué                                      | Estado                                                                                                                   |
+| ---- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| 1    | Templates + secciones + mirror `zm-demo` | ✅                                                                                                                       |
+| 2    | CMS mobile “Mi Web” (OTA preview 12-sep) | ✅ parcial — ver [`docs/plans/11-PLAN-mi-web-cms-fase2.md`](docs/plans/11-PLAN-mi-web-cms-fase2.md)                      |
 | 3    | Contenido real ZM en su landing propia   | 🟡 Modo D en prod (oct); faltan reseñas, banner, video e imágenes a Storage. Modo A (DNS a Geema) descartado por legales |
 
 Pendiente post–Fase 2: `web_mode` explícito en la UI y sync catálogo → `web_services` (backlog). Sanity ya se retiró (5-oct).

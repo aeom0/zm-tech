@@ -7,7 +7,7 @@
 
 ## Qué se hizo
 
-- Serie canónica única `plans/01–18` en `docs/geemastudio/docs/plans/`
+- Serie canónica única `plans/01–19` en `docs/geemastudio/docs/plans/`
   (el detalle de migración vive en `plans/04-geema-migration/`).
 - Eliminadas las copias con numeración antigua, el espejo `plans/geema-migration/`
   y los docs históricos (`GEEMASTUDIO_MIGRATION_GUIDE`, `GEEMASTUDIO_V1.3_PLAN`,

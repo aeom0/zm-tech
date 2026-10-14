@@ -44,28 +44,29 @@ Guía de conexión ADB al dispositivo físico de pruebas (Moto G54) desde WSL2 �
 
 Estado de la consolidación documental ZM → Geema y tabla de equivalencias de numeración antigua.
 
-### Planes 01–18
+### Planes 01–19
 
-| Plan | Documento | Tema |
-|---:|---|---|
-| 01 | [01-PLAN-monorepo-estructura.md](plans/01-PLAN-monorepo-estructura.md) | Monorepo y estructura |
-| 02 | [02-PLAN-retrofit-tenant-id.md](plans/02-PLAN-retrofit-tenant-id.md) | Multi-tenancy, `tenant_id` y RLS |
-| 03 | [03-PLAN-audit-paridad-zmlash-geema.md](plans/03-PLAN-audit-paridad-zmlash-geema.md) | Auditoría de paridad ZM Lash → Geema |
-| 04 | [04-geema-migration/](plans/04-geema-migration/README.md) | Migración y convergencia ZM → Geema |
-| 05 | [05-PLAN-ctwa-collages-cierre-intencion.md](plans/05-PLAN-ctwa-collages-cierre-intencion.md) | CTWA y cierre por intención |
-| 06 | [06-PLAN-preview-virtual-extensiones-ctwa.md](plans/06-PLAN-preview-virtual-extensiones-ctwa.md) | Spike y validación Vertex |
-| 07 | [07-PLAN-look-preview-multi-servicio.md](plans/07-PLAN-look-preview-multi-servicio.md) | Look Preview multi-servicio |
-| 08 | [08-PLAN-dispatcher-modular.md](plans/08-PLAN-dispatcher-modular.md) | Modularización del dispatcher WABA |
-| 09 | [09-PLAN-comisiones-pagos.md](plans/09-PLAN-comisiones-pagos.md) | Comisiones y pagos |
-| 10 | [10-PLAN-landing-multitenant-fase1.md](plans/10-PLAN-landing-multitenant-fase1.md) | Landing pública multi-tenant |
-| 11 | [11-PLAN-mi-web-cms-fase2.md](plans/11-PLAN-mi-web-cms-fase2.md) | CMS Mi Web |
-| 12 | [12-PLAN-waba-suite-parity.md](plans/12-PLAN-waba-suite-parity.md) | Suite WABA |
-| 13 | [13-PLAN-panel-parity-zm-lash.md](plans/13-PLAN-panel-parity-zm-lash.md) | Paridad completa del panel |
-| 14 | [14-PLAN-clientes-acciones-crm.md](plans/14-PLAN-clientes-acciones-crm.md) | CRM y acciones de clientes |
-| 15 | [15-PLAN-retail-productos.md](plans/15-PLAN-retail-productos.md) | Retail y productos |
-| 16 | [16-PLAN-multi-sucursal.md](plans/16-PLAN-multi-sucursal.md) | Multi-sucursal |
-| 17 | [17-PLAN-planes-suscripcion-y-descarga-apk.md](plans/17-PLAN-planes-suscripcion-y-descarga-apk.md) | Planes de suscripción y descarga del APK |
-| 18 | [18-PLAN-gestion-profesionales-disponibilidad.md](plans/18-PLAN-gestion-profesionales-disponibilidad.md) | Gestión de profesionales y disponibilidad |
+| Plan | Documento                                                                                                | Tema                                      |
+| ---: | -------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+|   01 | [01-PLAN-monorepo-estructura.md](plans/01-PLAN-monorepo-estructura.md)                                   | Monorepo y estructura                     |
+|   02 | [02-PLAN-retrofit-tenant-id.md](plans/02-PLAN-retrofit-tenant-id.md)                                     | Multi-tenancy, `tenant_id` y RLS          |
+|   03 | [03-PLAN-audit-paridad-zmlash-geema.md](plans/03-PLAN-audit-paridad-zmlash-geema.md)                     | Auditoría de paridad ZM Lash → Geema      |
+|   04 | [04-geema-migration/](plans/04-geema-migration/README.md)                                                | Migración y convergencia ZM → Geema       |
+|   05 | [05-PLAN-ctwa-collages-cierre-intencion.md](plans/05-PLAN-ctwa-collages-cierre-intencion.md)             | CTWA y cierre por intención               |
+|   06 | [06-PLAN-preview-virtual-extensiones-ctwa.md](plans/06-PLAN-preview-virtual-extensiones-ctwa.md)         | Spike y validación Vertex                 |
+|   07 | [07-PLAN-look-preview-multi-servicio.md](plans/07-PLAN-look-preview-multi-servicio.md)                   | Look Preview multi-servicio               |
+|   08 | [08-PLAN-dispatcher-modular.md](plans/08-PLAN-dispatcher-modular.md)                                     | Modularización del dispatcher WABA        |
+|   09 | [09-PLAN-comisiones-pagos.md](plans/09-PLAN-comisiones-pagos.md)                                         | Comisiones y pagos                        |
+|   10 | [10-PLAN-landing-multitenant-fase1.md](plans/10-PLAN-landing-multitenant-fase1.md)                       | Landing pública multi-tenant              |
+|   11 | [11-PLAN-mi-web-cms-fase2.md](plans/11-PLAN-mi-web-cms-fase2.md)                                         | CMS Mi Web                                |
+|   12 | [12-PLAN-waba-suite-parity.md](plans/12-PLAN-waba-suite-parity.md)                                       | Suite WABA                                |
+|   13 | [13-PLAN-panel-parity-zm-lash.md](plans/13-PLAN-panel-parity-zm-lash.md)                                 | Paridad completa del panel                |
+|   14 | [14-PLAN-clientes-acciones-crm.md](plans/14-PLAN-clientes-acciones-crm.md)                               | CRM y acciones de clientes                |
+|   15 | [15-PLAN-retail-productos.md](plans/15-PLAN-retail-productos.md)                                         | Retail y productos                        |
+|   16 | [16-PLAN-multi-sucursal.md](plans/16-PLAN-multi-sucursal.md)                                             | Multi-sucursal                            |
+|   17 | [17-PLAN-planes-suscripcion-y-descarga-apk.md](plans/17-PLAN-planes-suscripcion-y-descarga-apk.md)       | Planes de suscripción y descarga del APK  |
+|   18 | [18-PLAN-gestion-profesionales-disponibilidad.md](plans/18-PLAN-gestion-profesionales-disponibilidad.md) | Gestión de profesionales y disponibilidad |
+|   19 | [19-PLAN-paridad-mobile-web.md](plans/19-PLAN-paridad-mobile-web.md)                                     | Paridad mobile ↔ web y código compartido  |
 
 La carpeta [04-geema-migration](plans/04-geema-migration/) es la única copia del detalle de migración (ya sin sync con ZM). Equivalencias de numeración antigua: [CONSOLIDACION-DOCS-ZM-GEEMA.md](CONSOLIDACION-DOCS-ZM-GEEMA.md).
 
@@ -75,18 +76,18 @@ Anexos Look Preview: [Vertex v1](plans/07-anexo-prompts-vertex-v1.md) · [Gemini
 
 Edge Functions, WABA y operación viven junto al código del server:
 
-| Doc | Tema |
-|---|---|
-| [ops/EDGE_FUNCTIONS.md](../../../apps/geemastudio-server/docs/ops/EDGE_FUNCTIONS.md) | Inventario de funciones, secrets, deploy por `edge-functions.yml` |
-| [ops/DEPLOYMENT.md](../../../apps/geemastudio-server/docs/ops/DEPLOYMENT.md) | Deploy de Edge Functions y migraciones |
-| [ops/SUPABASE_MCP.md](../../../apps/geemastudio-server/docs/ops/SUPABASE_MCP.md) | MCP de Supabase para `udelx…` |
-| [ops/VERTEX_AI_LOOK_PREVIEW.md](../../../apps/geemastudio-server/docs/ops/VERTEX_AI_LOOK_PREVIEW.md) | Vertex AI para Look Preview |
-| [waba/plan-cutover-agente-haiku.md](../../../apps/geemastudio-server/docs/waba/plan-cutover-agente-haiku.md) | Agente Haiku 5.5 con tools (Fases 1–2 en prod; Fase 3 pendiente) |
-| [waba/plan-haiku-primero-informativo.md](../../../apps/geemastudio-server/docs/waba/plan-haiku-primero-informativo.md) | Bot clásico: Haiku antes que regex |
-| [waba/plan-cotizador-disenos-unas.md](../../../apps/geemastudio-server/docs/waba/plan-cotizador-disenos-unas.md) | Cotizador de diseños de uñas (pendiente) |
-| [waba/WABA_PRICING_OCT2026.md](../../../apps/geemastudio-server/docs/waba/WABA_PRICING_OCT2026.md) | Pricing Meta desde 1-oct y cómo leer `waba_pricing_daily` |
-| [waba/WABA_CAPACITY.md](../../../apps/geemastudio-server/docs/waba/WABA_CAPACITY.md) · [WABA_SIMULATION_VALIDATION.md](../../../apps/geemastudio-server/docs/waba/WABA_SIMULATION_VALIDATION.md) · [auditoria-intenciones-waba.md](../../../apps/geemastudio-server/docs/waba/auditoria-intenciones-waba.md) | Capacidad, simulación y auditoría de intenciones |
-| [waba/prompts/](../../../apps/geemastudio-server/docs/waba/prompts/) · [waba/tenants/](../../../apps/geemastudio-server/docs/waba/tenants/) | Rutina de análisis de conversaciones (común) y material por tenant |
+| Doc                                                                                                                                                                                                                                                                                                          | Tema                                                               |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| [ops/EDGE_FUNCTIONS.md](../../../apps/geemastudio-server/docs/ops/EDGE_FUNCTIONS.md)                                                                                                                                                                                                                         | Inventario de funciones, secrets, deploy por `edge-functions.yml`  |
+| [ops/DEPLOYMENT.md](../../../apps/geemastudio-server/docs/ops/DEPLOYMENT.md)                                                                                                                                                                                                                                 | Deploy de Edge Functions y migraciones                             |
+| [ops/SUPABASE_MCP.md](../../../apps/geemastudio-server/docs/ops/SUPABASE_MCP.md)                                                                                                                                                                                                                             | MCP de Supabase para `udelx…`                                      |
+| [ops/VERTEX_AI_LOOK_PREVIEW.md](../../../apps/geemastudio-server/docs/ops/VERTEX_AI_LOOK_PREVIEW.md)                                                                                                                                                                                                         | Vertex AI para Look Preview                                        |
+| [waba/plan-cutover-agente-haiku.md](../../../apps/geemastudio-server/docs/waba/plan-cutover-agente-haiku.md)                                                                                                                                                                                                 | Agente Haiku 5.5 con tools (Fases 1–2 en prod; Fase 3 pendiente)   |
+| [waba/plan-haiku-primero-informativo.md](../../../apps/geemastudio-server/docs/waba/plan-haiku-primero-informativo.md)                                                                                                                                                                                       | Bot clásico: Haiku antes que regex                                 |
+| [waba/plan-cotizador-disenos-unas.md](../../../apps/geemastudio-server/docs/waba/plan-cotizador-disenos-unas.md)                                                                                                                                                                                             | Cotizador de diseños de uñas (pendiente)                           |
+| [waba/WABA_PRICING_OCT2026.md](../../../apps/geemastudio-server/docs/waba/WABA_PRICING_OCT2026.md)                                                                                                                                                                                                           | Pricing Meta desde 1-oct y cómo leer `waba_pricing_daily`          |
+| [waba/WABA_CAPACITY.md](../../../apps/geemastudio-server/docs/waba/WABA_CAPACITY.md) · [WABA_SIMULATION_VALIDATION.md](../../../apps/geemastudio-server/docs/waba/WABA_SIMULATION_VALIDATION.md) · [auditoria-intenciones-waba.md](../../../apps/geemastudio-server/docs/waba/auditoria-intenciones-waba.md) | Capacidad, simulación y auditoría de intenciones                   |
+| [waba/prompts/](../../../apps/geemastudio-server/docs/waba/prompts/) · [waba/tenants/](../../../apps/geemastudio-server/docs/waba/tenants/)                                                                                                                                                                  | Rutina de análisis de conversaciones (común) y material por tenant |
 
 ### [Audit 03 — paridad](../../audit/03-AUDIT-paridad-zmlash-geema.md)
 
@@ -111,7 +112,7 @@ docs/
 ├── ADB_CONEXION_MOVIL.md           # ADB al dispositivo físico (tooling, no específico GeemaStudio)
 ├── INSTALACION_BETA.md             # Beta / instalación
 ├── plans/
-│   ├── 01–18-PLAN-*.md                     # Serie canónica consolidada
+│   ├── 01–19-PLAN-*.md                     # Serie canónica consolidada
 │   └── 04-geema-migration/                 # Detalle del Plan 04
 
 # (fuera de docs/geemastudio/docs/)
@@ -182,20 +183,22 @@ docs/audit/
 - Configuración: `apps/geemastudio-mobile/eas.json` (ejecutar `eas build` desde `apps/geemastudio-mobile`)
 - Tras SDK 56: rebuild nativo requerido (runtimeVersion por `sdkVersion`)
 - **Versiones** (especificado):
-  | Campo | Dónde | Quién lo mueve |
-  |-------|--------|----------------|
-  | `version` (user-facing, semver) | `app.json` + `package.json` | Manual en el PR (ej. `1.1.0` → `1.2.0`) |
-  | `versionCode` Android | remoto EAS | Automático en profile `production` (`autoIncrement: true`, `appVersionSource: "remote"`) |
-  | Runtime OTA | `runtimeVersion.policy: sdkVersion` | Cambia al subir SDK Expo |
+
+  | Campo                           | Dónde                               | Quién lo mueve                                                                           |
+  | ------------------------------- | ----------------------------------- | ---------------------------------------------------------------------------------------- |
+  | `version` (user-facing, semver) | `app.json` + `package.json`         | Manual en el PR (ej. `1.1.0` → `1.2.0`)                                                  |
+  | `versionCode` Android           | remoto EAS                          | Automático en profile `production` (`autoIncrement: true`, `appVersionSource: "remote"`) |
+  | Runtime OTA                     | `runtimeVersion.policy: sdkVersion` | Cambia al subir SDK Expo                                                                 |
 
   Historial reciente: preview `1.1.0`/code 1 · prod `1.1.0`/code **2** (20-sep) · prod **1.2.0**/code **3** (FCM + launcher) · fix icon capas pendiente rebuild (code **4** cancelado).
 
   **Adaptive icon (Android oficial)** — [icon_design_adaptive](https://developer.android.com/develop/ui/compose/system/icon_design_adaptive):
-  | Capa | Canvas | Contenido |
-  |------|--------|-----------|
-  | Background | 108×108 dp (full-bleed) | `adaptive-icon-background.png` — degradado índigo → cian |
-  | Foreground | 108×108 dp, logo ≤ **66×66 dp** safe | `adaptive-icon.png` — diamante transparente |
-  | Viewport OEM | ~72×72 dp (máscara) | outer 18 dp = mask / parallax |
+
+  | Capa         | Canvas                               | Contenido                                                |
+  | ------------ | ------------------------------------ | -------------------------------------------------------- |
+  | Background   | 108×108 dp (full-bleed)              | `adaptive-icon-background.png` — degradado índigo → cian |
+  | Foreground   | 108×108 dp, logo ≤ **66×66 dp** safe | `adaptive-icon.png` — diamante transparente              |
+  | Viewport OEM | ~72×72 dp (máscara)                  | outer 18 dp = mask / parallax                            |
 
   Expo: `android.adaptiveIcon.backgroundImage` + `foregroundImage` (+ `backgroundColor` fallback).
   **Notification small icon**: 96×96 blanco+alpha (~88 % fill); tint `#3949AB`.

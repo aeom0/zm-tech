@@ -129,7 +129,7 @@ Este monorepo usa la convención estándar `apps/` para aplicaciones y `packages
 │       └── seed-employees-example.sql   # Referencia: equipo de ZM Lash & Nails
 ├── migrations/                        # Salida de `pnpm db:generate` (Drizzle Kit)
 └── docs/
-    ├── plans/                       # Serie de planes 01–18 (ver docs/INDEX.md)
+    ├── plans/                       # Serie de planes 01–19 (ver docs/INDEX.md)
     └── design_guidelines.md         # Sistema de diseño
 ```
 
