@@ -578,7 +578,7 @@ Deno.test("dayFacts: feriado, domingo, ausencia parcial y cobertura", async () =
     {
       date: "2031-03-05",
       is_closed: true,
-      open_until_hour: null,
+      open_until_hour: 12,
       name: "Cierre QA",
     },
   ]);
@@ -627,6 +627,11 @@ Deno.test("dayFacts: feriado, domingo, ausencia parcial y cobertura", async () =
   // 2031-03-09 es domingo: adelanto fijo S/25
   const dom = (await dayFacts(ctx, "2031-03-09")).join("\n");
   assertStringIncludes(dom, "adelanto");
+  // Cerrado con open_until_hour = 12: no se anuncia como última cita.
+  const cerrado = (await dayFacts(ctx, "2031-03-05")).join("\n");
+  assertStringIncludes(cerrado, "cerrado");
+  assertEquals(cerrado.includes("12:00"), false);
+  assertEquals(cerrado.includes("última hora"), false);
 });
 
 Deno.test("tools: día cerrado se informa y reservar_horario lo rechaza", async () => {

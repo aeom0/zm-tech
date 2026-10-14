@@ -47,6 +47,7 @@ import {
   isPeruHoliday,
   isSalonClosed,
   isSunday,
+  specialDayScheduleNote,
 } from "../lib/peru-holidays.ts";
 
 /** Fecha/hora de gestión: todo en hora Lima (UTC-5). Convierte hora Lima → Date UTC para comparar con BD. */
@@ -116,8 +117,11 @@ function dayOfWeekFromDateKey(dateKey: string): number {
 
 /** Cierre operativo del día (Lima) para desplazar almuerzo si la mañana estuvo libre. */
 function salonCloseMinutesForDateKey(dateKey: string): number {
+  const until = isPeruHoliday(dateKey) && !isSalonClosed(dateKey)
+    ? getHolidayOpenUntilHour(dateKey)
+    : null;
+  if (until !== null) return until * 60;
   if (isSunday(dateKey)) return 13 * 60;
-  if (isPeruHoliday(dateKey)) return getHolidayOpenUntilHour(dateKey) * 60;
   return SALON_CLOSE_MINUTES;
 }
 
@@ -1074,19 +1078,23 @@ export async function sendTimeSelector(
     return false;
   }
 
+  const scheduleNote = isPeruHoliday(dateKey)
+    ? specialDayScheduleNote(dateKey)
+    : "";
+
   if (isSunday(dateKey) && advanceRate === 0.2) {
     // Domingo: abono fijo S/25 para todas (link de pago Culqi de monto fijo).
     await sendMessage(
       to,
       `📅 *Domingo — cita previa*\n\n` +
         `Los domingos atendemos con *cita previa*. Al confirmar te indico cómo reservar tu cupo.\n\n` +
-        `Si necesitas coordinar algo antes, escríbenos al 📱 *${YAPE_PLIN_NUMBER}* 💜`,
+        `Si necesitas coordinar algo antes, escríbenos al 📱 *${YAPE_PLIN_NUMBER}* 💜` +
+        (scheduleNote ? `\n\n${scheduleNote}` : ""),
     );
-  } else if (isPeruHoliday(dateKey)) {
+  } else if (scheduleNote) {
     await sendMessage(
       to,
-      `📅 *Feriado*\n\n` +
-        `Ese día atendemos solo de *10:00 AM a 12:00 PM* (CC Las Plazuelas cierra a la 1 PM).`,
+      `📅 *Horario especial*\n\n${scheduleNote}`,
     );
   }
 

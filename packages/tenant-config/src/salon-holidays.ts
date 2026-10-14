@@ -20,7 +20,10 @@ export interface SalonHoliday {
   date: string
   name: string
   isClosed: boolean
-  openUntilHour: number
+  /** Primera hora de inicio de cita; null = apertura habitual del día. */
+  openFromHour: number | null
+  /** Última hora de inicio de cita; null = cierre habitual del día. */
+  openUntilHour: number | null
 }
 
 /** Índice por YYYY-MM-DD. */
@@ -89,10 +92,16 @@ export function getHolidayCatalog(
   return HOLIDAY_CATALOGS[country.toUpperCase()] ?? []
 }
 
-function clampOpenUntil(hour: number | null | undefined): number {
+/** Rango permitido en BD (`salon_holidays_open_*_check`). */
+const MIN_SPECIAL_HOUR = 6
+const MAX_SPECIAL_HOUR = 23
+
+/** null/undefined/no numérico → null (horario habitual). */
+function clampSpecialHour(hour: number | null | undefined): number | null {
+  if (hour === null || hour === undefined) return null
   const n = Number(hour)
-  if (!Number.isFinite(n)) return DEFAULT_HOLIDAY_OPEN_UNTIL
-  return Math.min(18, Math.max(10, Math.trunc(n)))
+  if (!Number.isFinite(n)) return null
+  return Math.min(MAX_SPECIAL_HOUR, Math.max(MIN_SPECIAL_HOUR, Math.trunc(n)))
 }
 
 export function normalizeDateKey(date: string): string {
@@ -107,6 +116,8 @@ export function indexSalonHolidays(
     isClosed?: boolean
     open_until_hour?: number | null
     openUntilHour?: number | null
+    open_from_hour?: number | null
+    openFromHour?: number | null
   }>
 ): SalonHolidayIndex {
   const map: SalonHolidayIndex = new Map()
@@ -118,7 +129,8 @@ export function indexSalonHolidays(
       date: key,
       name: (row.name ?? 'Feriado').trim() || 'Feriado',
       isClosed,
-      openUntilHour: clampOpenUntil(row.open_until_hour ?? row.openUntilHour),
+      openFromHour: clampSpecialHour(row.open_from_hour ?? row.openFromHour),
+      openUntilHour: clampSpecialHour(row.open_until_hour ?? row.openUntilHour),
     })
   }
   return map
@@ -140,7 +152,7 @@ export function catalogRowsForSeed(
     date: e.date,
     name: e.name,
     is_closed: Boolean(e.isClosed),
-    open_until_hour: clampOpenUntil(e.openUntilHour ?? DEFAULT_HOLIDAY_OPEN_UNTIL),
+    open_until_hour: clampSpecialHour(e.openUntilHour) ?? DEFAULT_HOLIDAY_OPEN_UNTIL,
   }))
 }
 
@@ -156,30 +168,32 @@ export function isHolidayDate(dateKey: string, index: SalonHolidayIndex): boolea
   return index.has(normalizeDateKey(dateKey))
 }
 
-export function getHolidayOpenUntilHour(dateKey: string, index: SalonHolidayIndex): number {
-  return getHoliday(dateKey, index)?.openUntilHour ?? DEFAULT_HOLIDAY_OPEN_UNTIL
+/** Hora 0–23 → '9 AM', '12 PM', '2 PM'. */
+export function formatHourLabel(hour: number): string {
+  if (hour === 0) return '12 AM'
+  if (hour === 12) return '12 PM'
+  if (hour < 12) return `${hour} AM`
+  return `${hour - 12} PM`
 }
 
-export function formatHolidayUntilLabel(openUntilHour: number): string {
-  if (openUntilHour === 12) return '12 PM'
-  if (openUntilHour < 12) return `${openUntilHour} AM`
-  if (openUntilHour === 0) return '12 AM'
-  return `${openUntilHour - 12} PM`
-}
+/** @deprecated usar `formatHourLabel`. */
+export const formatHolidayUntilLabel = formatHourLabel
 
-const HALF_SLOT_MINUTES = [0, 30] as const
-
-/** Slots de feriado: 10:00 hasta openUntil (sin :30 en la última hora). */
-export function getHolidayTimeSlots(openUntilHour: number): { hour: number; minute: number }[] {
-  const until = clampOpenUntil(openUntilHour)
-  const slots: { hour: number; minute: number }[] = []
-  for (let hour = 10; hour <= until; hour++) {
-    for (const minute of HALF_SLOT_MINUTES) {
-      if (hour === until && minute === 30) continue
-      slots.push({ hour, minute })
-    }
+/**
+ * Resumen del horario de un día especial abierto, sin conocer el horario habitual:
+ * 'Desde 2 PM', 'Última cita 1 PM', 'De 2 PM a 6 PM (última cita)', 'Horario habitual'.
+ */
+export function describeSpecialDayHours(h: {
+  openFromHour: number | null
+  openUntilHour: number | null
+}): string {
+  const { openFromHour: from, openUntilHour: until } = h
+  if (from !== null && until !== null) {
+    return `De ${formatHourLabel(from)} a ${formatHourLabel(until)} (última cita)`
   }
-  return slots
+  if (from !== null) return `Desde ${formatHourLabel(from)}`
+  if (until !== null) return `Última cita ${formatHourLabel(until)}`
+  return 'Horario habitual'
 }
 
 function minutosDesdeMedianoche(hhmm: string): number {
@@ -191,9 +205,10 @@ function minutosDesdeMedianoche(hhmm: string): number {
 }
 
 /**
- * Franja efectiva para una fecha: cerrado → null; feriado abierto → 10:00–openUntil;
- * else businessHours del día.
- * `close` es exclusivo para “puede iniciar cita” (último inicio = openUntil:00 en feriado).
+ * Franja efectiva para una fecha: businessHours del día, recortado por el día especial
+ * (cerrado → null; openFrom sube la apertura; openUntil baja el cierre).
+ * `close` es exclusivo para “puede iniciar cita” (último inicio = openUntil:00).
+ * Misma regla que `get_available_slots` en BD.
  */
 export function resolveFranjaEfectiva(
   fecha: Date,
@@ -201,26 +216,25 @@ export function resolveFranjaEfectiva(
   holidays: SalonHolidayIndex | undefined,
   timeZone: string
 ): { open: string; close: string } | null {
-  const dateKey = dateKeyEnZona(fecha, timeZone)
-  if (holidays) {
-    const h = holidays.get(dateKey)
-    if (h?.isClosed) return null
-    if (h) {
-      const until = h.openUntilHour
-      // close exclusivo: un minuto después del último inicio permitido
-      const closeM = until * 60 + 1
-      const ch = Math.floor(closeM / 60)
-      const cm = closeM % 60
-      return {
-        open: '10:00',
-        close: `${String(ch).padStart(2, '0')}:${String(cm).padStart(2, '0')}`,
-      }
-    }
-  }
   const dayKey = diaLaboralKeyDesdeFechaEnZona(fecha, timeZone)
   const franja = businessHours[dayKey]
   if (franja === null || franja === undefined) return null
-  return { open: franja.open, close: franja.close }
+  const h = holidays?.get(dateKeyEnZona(fecha, timeZone))
+  if (!h) return { open: franja.open, close: franja.close }
+  if (h.isClosed) return null
+
+  let openM = minutosDesdeMedianoche(franja.open)
+  let closeM = minutosDesdeMedianoche(franja.close)
+  if (!Number.isFinite(openM) || !Number.isFinite(closeM)) return null
+  if (h.openFromHour !== null) openM = Math.max(openM, h.openFromHour * 60)
+  // close exclusivo: un minuto después del último inicio permitido
+  if (h.openUntilHour !== null) closeM = Math.min(closeM, h.openUntilHour * 60 + 1)
+  if (closeM <= openM) return null
+  return { open: hhmm(openM), close: hhmm(closeM) }
+}
+
+function hhmm(minutes: number): string {
+  return `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`
 }
 
 function dateKeyEnZona(fecha: Date, timeZone: string): string {
@@ -242,8 +256,8 @@ function dateKeyEnZona(fecha: Date, timeZone: string): string {
 export function scheduleHintForDate(dateKey: string, index: SalonHolidayIndex): string {
   const h = getHoliday(dateKey, index)
   if (!h) return ''
-  if (h.isClosed) return 'Cerrado — sin citas'
-  return `Feriado · 10 AM – ${formatHolidayUntilLabel(h.openUntilHour)}`
+  if (h.isClosed) return 'Cerrado, sin citas'
+  return describeSpecialDayHours(h)
 }
 
 export function getUpcomingHolidayAlerts(

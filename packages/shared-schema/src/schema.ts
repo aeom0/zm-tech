@@ -627,8 +627,10 @@ export const salonHolidays = pgTable(
     date: date('date').notNull(),
     name: text('name').notNull(),
     isClosed: boolean('is_closed').notNull().default(false),
-    /** Última hora de inicio de cita (10–18). Default 12. */
-    openUntilHour: integer('open_until_hour').notNull().default(12),
+    /** Primera hora de inicio de cita (6–23). NULL = apertura habitual. */
+    openFromHour: integer('open_from_hour'),
+    /** Última hora de inicio de cita (6–23). NULL = cierre habitual. El catálogo escribe 12 a propósito. */
+    openUntilHour: integer('open_until_hour'),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
   },

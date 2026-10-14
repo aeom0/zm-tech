@@ -20,7 +20,8 @@ export function useSalonHolidaysAdmin() {
       date: string
       name: string
       is_closed: boolean
-      open_until_hour?: number
+      open_from_hour: number | null
+      open_until_hour: number | null
     }) => {
       const tenantId = listQuery.tenantId
       if (!tenantId) throw new Error('No se pudo resolver el tenant')
@@ -31,9 +32,12 @@ export function useSalonHolidaysAdmin() {
           date: input.date,
           name: input.name.trim(),
           is_closed: input.is_closed,
-          open_until_hour: input.open_until_hour ?? 12,
+          open_from_hour: input.open_from_hour,
+          open_until_hour: input.open_until_hour,
         })
-        .select('id, date, name, is_closed, open_until_hour, created_at, updated_at')
+        .select(
+          'id, date, name, is_closed, open_from_hour, open_until_hour, created_at, updated_at'
+        )
         .single()
       if (error) {
         if (error.code === '23505') {
@@ -51,20 +55,24 @@ export function useSalonHolidaysAdmin() {
       id: string
       name?: string
       is_closed?: boolean
-      open_until_hour?: number
+      open_from_hour?: number | null
+      open_until_hour?: number | null
     }) => {
       const patch: Record<string, unknown> = {
         updated_at: new Date().toISOString(),
       }
       if (input.name !== undefined) patch.name = input.name.trim()
       if (input.is_closed !== undefined) patch.is_closed = input.is_closed
+      if (input.open_from_hour !== undefined) patch.open_from_hour = input.open_from_hour
       if (input.open_until_hour !== undefined) patch.open_until_hour = input.open_until_hour
 
       const { data, error } = await supabase
         .from('salon_holidays')
         .update(patch)
         .eq('id', input.id)
-        .select('id, date, name, is_closed, open_until_hour, created_at, updated_at')
+        .select(
+          'id, date, name, is_closed, open_from_hour, open_until_hour, created_at, updated_at'
+        )
         .single()
       if (error) throw error
       return data as SalonHolidayRecord

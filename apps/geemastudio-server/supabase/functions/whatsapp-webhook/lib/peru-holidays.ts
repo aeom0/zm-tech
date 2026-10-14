@@ -28,7 +28,7 @@ export const PERU_HOLIDAYS_CLOSED_SEED = [
   "2026-07-29",
 ] as const;
 
-/** Última hora de inicio por defecto en feriados con CC abierto. */
+/** Última hora de inicio en feriados del seed (CC abierto). En BD, NULL = cierre habitual. */
 export const DEFAULT_HOLIDAY_OPEN_UNTIL = 12;
 
 /** Excepciones de horario en seed (Batalla de Junín hasta 2 PM). */
@@ -43,7 +43,9 @@ export const PERU_HOLIDAYS_CLOSED = new Set<string>(PERU_HOLIDAYS_CLOSED_SEED);
 type HolidayState = {
   holidaySet: Set<string>;
   closedSet: Set<string>;
-  openUntilByDate: Record<string, number>;
+  /** null = apertura / cierre habitual del día. */
+  openFromByDate: Record<string, number | null>;
+  openUntilByDate: Record<string, number | null>;
   closedReasonByDate: Record<string, string | null>;
   loadedAt: number;
 };
@@ -55,6 +57,7 @@ const CACHE_TTL_MS = 5 * 60 * 1000;
 const EMPTY_STATE: HolidayState = {
   holidaySet: new Set(),
   closedSet: new Set(),
+  openFromByDate: {},
   openUntilByDate: {},
   closedReasonByDate: {},
   loadedAt: 0,
@@ -84,6 +87,7 @@ function currentState(): HolidayState {
 export type SalonHolidayRow = {
   date: string;
   is_closed: boolean;
+  open_from_hour?: number | null;
   open_until_hour?: number | null;
   name?: string | null;
 };
@@ -95,16 +99,19 @@ export type SalonHolidayRow = {
  */
 const CC_CLOSED_DATES = new Set<string>(PERU_HOLIDAYS_CLOSED_SEED);
 
-function clampOpenUntil(hour: number | null | undefined): number {
+/** null/no numérico → null (horario habitual); si no, 6–23 como el CHECK de BD. */
+function clampSpecialHour(hour: number | null | undefined): number | null {
+  if (hour === null || hour === undefined) return null;
   const n = Number(hour);
-  if (!Number.isFinite(n)) return DEFAULT_HOLIDAY_OPEN_UNTIL;
-  return Math.min(18, Math.max(10, Math.trunc(n)));
+  if (!Number.isFinite(n)) return null;
+  return Math.min(23, Math.max(6, Math.trunc(n)));
 }
 
 function buildState(rows: SalonHolidayRow[]): HolidayState {
   const st: HolidayState = {
     holidaySet: new Set(),
     closedSet: new Set(),
+    openFromByDate: {},
     openUntilByDate: {},
     closedReasonByDate: {},
     loadedAt: Date.now(),
@@ -114,9 +121,8 @@ function buildState(rows: SalonHolidayRow[]): HolidayState {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(key)) continue;
     st.holidaySet.add(key);
     if (row.is_closed) st.closedSet.add(key);
-    st.openUntilByDate[key] = clampOpenUntil(
-      row.open_until_hour ?? DEFAULT_HOLIDAY_OPEN_UNTIL,
-    );
+    st.openFromByDate[key] = clampSpecialHour(row.open_from_hour);
+    st.openUntilByDate[key] = clampSpecialHour(row.open_until_hour);
     st.closedReasonByDate[key] = row.name ?? null;
   }
   return st;
@@ -177,7 +183,7 @@ export async function ensureSalonHolidaysLoaded(
   try {
     const { data, error } = await supabase
       .from("salon_holidays")
-      .select("date, is_closed, open_until_hour, name")
+      .select("date, is_closed, open_from_hour, open_until_hour, name")
       .eq("tenant_id", tenantId);
 
     if (error || !data) {
@@ -206,11 +212,13 @@ export async function ensureSalonHolidaysLoaded(
         (r: {
           date: string;
           is_closed: boolean;
+          open_from_hour?: number | null;
           open_until_hour?: number | null;
           name?: string | null;
         }) => ({
           date: r.date,
           is_closed: !!r.is_closed,
+          open_from_hour: r.open_from_hour,
           open_until_hour: r.open_until_hour,
           name: r.name,
         }),
@@ -236,18 +244,79 @@ export function isSalonClosed(dateKey: string): boolean {
 }
 
 /**
- * Última hora de inicio de cita en feriado (default 12).
+ * Última hora de inicio de cita en el día especial; null = cierre habitual.
  * Ignorar si el día está cerrado.
  */
-export function getHolidayOpenUntilHour(dateKey: string): number {
+export function getHolidayOpenUntilHour(dateKey: string): number | null {
   const key = dateKey.slice(0, 10);
-  return currentState().openUntilByDate[key] ?? DEFAULT_HOLIDAY_OPEN_UNTIL;
+  return currentState().openUntilByDate[key] ?? null;
 }
 
-function formatUntilShort(openUntilHour: number): string {
-  if (openUntilHour === 12) return "12 PM";
-  if (openUntilHour < 12) return `${openUntilHour} AM`;
-  return `${openUntilHour - 12} PM`;
+/**
+ * Primera hora de inicio de cita en el día especial; null = apertura habitual.
+ * Ignorar si el día está cerrado.
+ */
+export function getHolidayOpenFromHour(dateKey: string): number | null {
+  const key = dateKey.slice(0, 10);
+  return currentState().openFromByDate[key] ?? null;
+}
+
+export function formatHourShort(hour: number): string {
+  if (hour === 0) return "12 AM";
+  if (hour === 12) return "12 PM";
+  if (hour < 12) return `${hour} AM`;
+  return `${hour - 12} PM`;
+}
+
+/** 'desde 2 PM', 'hasta 1 PM', 'de 2 PM a 6 PM' o '' si usa el horario habitual. */
+export function specialDayHoursLabel(dateKey: string): string {
+  const from = getHolidayOpenFromHour(dateKey);
+  const until = getHolidayOpenUntilHour(dateKey);
+  if (from !== null && until !== null) {
+    return `de ${formatHourShort(from)} a ${formatHourShort(until)}`;
+  }
+  if (from !== null) return `desde ${formatHourShort(from)}`;
+  if (until !== null) return `hasta ${formatHourShort(until)}`;
+  return "";
+}
+
+/**
+ * Frase para la clienta. Vacía si el día no recorta el horario.
+ * La hora de cierre es la última cita que puede empezar, no la hora en que cierra el salón.
+ */
+export function specialDayScheduleNote(dateKey: string): string {
+  const from = getHolidayOpenFromHour(dateKey);
+  const until = getHolidayOpenUntilHour(dateKey);
+  if (from !== null && until !== null) {
+    return `La primera cita empieza a las ${
+      formatHourShort(from)
+    } y la última a las ${formatHourShort(until)}.`;
+  }
+  if (from !== null) {
+    return `La primera cita empieza a las ${formatHourShort(from)}.`;
+  }
+  if (until !== null) {
+    return `La última cita empieza a las ${formatHourShort(until)}.`;
+  }
+  return "";
+}
+
+/** Hint corto cuando un horario pedido cae fuera de la franja del día. */
+export function formatHoursHint(dateKey?: string, dayOfWeek?: number): string {
+  if (dateKey) {
+    if (isSalonClosed(dateKey)) {
+      return isZmMallClosed(dateKey)
+        ? "Cerrado — el CC no abre ese día"
+        : "Cerrado ese día";
+    }
+    const note = specialDayScheduleNote(dateKey);
+    if (note) return note;
+    if (isSunday(dateKey)) {
+      return "Dom: 10:30 AM – 1 PM (adelanto S/25)";
+    }
+  }
+  if (dayOfWeek === 0) return "Dom: 10:30 AM – 1 PM (adelanto S/25)";
+  return "L-S: 10 AM – 6 PM";
 }
 
 export function dayOfWeekFromDateKey(dateKey: string): number {
@@ -307,10 +376,11 @@ export function getDateSelectorDescription(dateKey: string): string {
   }
   const sunday = isSunday(dateKey);
   const holiday = isPeruHoliday(dateKey);
-  const until = formatUntilShort(getHolidayOpenUntilHour(dateKey));
-  if (sunday && holiday) return `Dom feriado — adelanto S/25 · hasta ${until}`;
+  const hours = holiday ? specialDayHoursLabel(dateKey) : "";
+  const hoursSuffix = hours ? ` · ${hours}` : "";
+  if (sunday && holiday) return `Dom feriado — adelanto S/25${hoursSuffix}`;
   if (sunday) return "Dom — adelanto S/25";
-  if (holiday) return `Feriado — hasta ${until}`;
+  if (holiday) return hours ? `Horario especial — ${hours}` : "Ver horarios";
   return "Ver horarios";
 }
 

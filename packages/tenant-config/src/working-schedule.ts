@@ -99,7 +99,7 @@ function minutosDesdeMedianoche(hhmm: string): number {
 /**
  * Igual que `esCeldaAgendaEnHorarioLaboral` pero con precisión de minuto — para
  * validar un horario elegido con chips de 15 min (no solo la celda de hora entera).
- * Si se pasa `holidays`, feriado cerrado → false; feriado abierto → ventana 10–openUntil.
+ * Si se pasa `holidays`, día cerrado → false; día especial abierto → horario recortado.
  */
 export function esInstanteEnHorarioLaboral(
   fechaColumna: Date,
