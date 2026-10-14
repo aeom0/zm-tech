@@ -66,7 +66,7 @@ export function ClientCard({ client, currencyCode, timezone, onClick }: ClientCa
           )}
         </div>
         <div className="mt-0.5 truncate text-xs text-fg-muted">
-          {client.phone}
+          {client.phone ?? 'Sin teléfono'}
           {client.email ? ` · ${client.email}` : ''}
         </div>
         <div className="mt-1 flex flex-wrap gap-x-3 text-xs text-fg-subtle">

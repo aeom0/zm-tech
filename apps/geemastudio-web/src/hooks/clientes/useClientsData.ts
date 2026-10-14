@@ -232,8 +232,8 @@ export function useClientsData(searchQuery: string, segment: ClientSegment): Use
     if (normalizedSearch.length > 0) {
       base = base.filter(
         (c) =>
-          c.name.toLowerCase().includes(normalizedSearch) ||
-          c.phone.toLowerCase().includes(normalizedSearch) ||
+          (c.name ?? '').toLowerCase().includes(normalizedSearch) ||
+          (c.phone ?? '').toLowerCase().includes(normalizedSearch) ||
           (c.email ?? '').toLowerCase().includes(normalizedSearch)
       )
     }
@@ -263,7 +263,7 @@ export function useClientsData(searchQuery: string, segment: ClientSegment): Use
     })
 
     return [...filtrados].sort((a, b) =>
-      a.name.localeCompare(b.name, 'es', { sensitivity: 'base', numeric: true })
+      (a.name ?? '').localeCompare(b.name ?? '', 'es', { sensitivity: 'base', numeric: true })
     )
   }, [clientsWithMetrics, searchQuery, segment])
 

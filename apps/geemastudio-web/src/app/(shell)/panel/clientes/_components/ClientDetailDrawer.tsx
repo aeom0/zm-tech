@@ -46,7 +46,7 @@ export function ClientDetailDrawer({
           <div className="min-w-0">
             <div className="text-xs text-fg-subtle">Cliente</div>
             <h2 className="truncate text-lg font-bold text-fg">{client.name}</h2>
-            <p className="mt-1 text-sm text-fg-muted">{client.phone}</p>
+            <p className="mt-1 text-sm text-fg-muted">{client.phone ?? 'Sin teléfono'}</p>
             {client.email ? <p className="text-sm text-fg-subtle">{client.email}</p> : null}
           </div>
           <button
