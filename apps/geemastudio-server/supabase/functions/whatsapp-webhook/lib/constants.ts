@@ -1,6 +1,7 @@
 // constants.ts — IDs y configuración del flujo WABA
 
 import {
+  getHolidayOpenFromHour,
   getHolidayOpenUntilHour,
   isPeruHoliday,
   isSalonClosed,
@@ -113,24 +114,26 @@ export const SALON_HOURS_WEEKDAY = [10, 11, 12, 13, 14, 15, 16, 17];
 export const SALON_HOURS_SUNDAY = [10, 11, 12];
 export const SALON_SLOT_MINUTES = [0, 30] as const;
 
-/** Feriado nacional (CC abre): citas desde 10:00 hasta openUntil (sin :30 en la última hora). */
-function getHolidayTimeSlots(
-  openUntilHour: number,
+/** Día especial: recorta los slots normales a [openFrom:00, openUntil:00] (inclusive). */
+function clipToSpecialDay(
+  slots: { hour: number; minute: number }[],
+  dateKey: string,
 ): { hour: number; minute: number }[] {
-  const until = Math.min(18, Math.max(10, Math.trunc(openUntilHour)));
-  const slots: { hour: number; minute: number }[] = [];
-  for (let hour = 10; hour <= until; hour++) {
-    for (const minute of SALON_SLOT_MINUTES) {
-      if (hour === until && minute === 30) continue;
-      slots.push({ hour, minute });
-    }
-  }
-  return slots;
+  const from = getHolidayOpenFromHour(dateKey);
+  const until = getHolidayOpenUntilHour(dateKey);
+  if (from === null && until === null) return slots;
+  return slots.filter((s) => {
+    const t = s.hour * 60 + s.minute;
+    if (from !== null && t < from * 60) return false;
+    if (until !== null && t > until * 60) return false;
+    return true;
+  });
 }
 
 /**
  * Slots de 30 min según día (Dom sin 10:00 — abre 10:30).
- * Feriados con CC abierto: hasta open_until_hour (default 12). Feriados cerrados: [].
+ * Día especial abierto: los slots normales recortados por open_from_hour /
+ * open_until_hour (misma regla que `get_available_slots`). Cerrado: [].
  */
 export function getSalonTimeSlots(
   dayOfWeek: number,
@@ -139,9 +142,16 @@ export function getSalonTimeSlots(
   if (dateKey && isSalonClosed(dateKey)) {
     return [];
   }
+  const normal = normalSalonTimeSlots(dayOfWeek);
   if (dateKey && isPeruHoliday(dateKey)) {
-    return getHolidayTimeSlots(getHolidayOpenUntilHour(dateKey));
+    return clipToSpecialDay(normal, dateKey);
   }
+  return normal;
+}
+
+function normalSalonTimeSlots(
+  dayOfWeek: number,
+): { hour: number; minute: number }[] {
   const rules = getLoadedWabaRules()?.schedule;
   if (rules) return slotsFromSchedule(rules, dayOfWeek);
   const hours = dayOfWeek === 0 ? SALON_HOURS_SUNDAY : SALON_HOURS_WEEKDAY;

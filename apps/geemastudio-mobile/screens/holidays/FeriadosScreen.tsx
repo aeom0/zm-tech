@@ -18,15 +18,76 @@ import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { Feather } from '@expo/vector-icons'
 
 import { DateField } from '@/components/DateField'
+import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { Spacing, BorderRadius } from '@/constants/theme'
-import { formatHolidayUntilLabel, dateKeyEnZona, zonaIANASegura } from '@zmtech/tenant-config'
+import {
+  dateKeyEnZona,
+  describeSpecialDayHours,
+  formatHourLabel,
+  zonaIANASegura,
+} from '@zmtech/tenant-config'
 import { useSalonHolidaysAdmin, type SalonHolidayRecord } from './hooks/useSalonHolidaysAdmin'
 
 const DATE_RE = /^\d{4}-\d{2}-\d{2}$/
-const OPEN_UNTIL_OPTIONS = [12, 13, 14, 15, 16] as const
+/** null = horario habitual del día. */
+const OPEN_FROM_OPTIONS: (number | null)[] = [null, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
+const OPEN_UNTIL_OPTIONS: (number | null)[] = [null, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+
+function HourChips({
+  options,
+  value,
+  onChange,
+  isDisabled,
+}: {
+  options: (number | null)[]
+  value: number | null
+  onChange: (hour: number | null) => void
+  isDisabled?: (hour: number) => boolean
+}) {
+  const { theme } = useTheme()
+  return (
+    <ScrollFadeRow
+      backgroundColor={theme.backgroundDefault}
+      contentContainerStyle={styles.chips}
+      style={styles.chipsRow}
+    >
+      {options.map((h) => {
+        const active = value === h
+        const disabled = h !== null && (isDisabled?.(h) ?? false)
+        return (
+          <Pressable
+            key={h ?? 'habitual'}
+            onPress={() => onChange(h)}
+            disabled={disabled}
+            accessibilityRole="button"
+            accessibilityState={{ selected: active, disabled }}
+            style={[
+              styles.chip,
+              {
+                borderColor: active ? theme.primary : theme.border,
+                backgroundColor: active ? `${theme.primary}18` : 'transparent',
+                opacity: disabled ? 0.35 : 1,
+              },
+            ]}
+          >
+            <ThemedText
+              style={{
+                color: active ? theme.primary : theme.text,
+                fontWeight: '600',
+                fontSize: 13,
+              }}
+            >
+              {h === null ? 'Como siempre' : formatHourLabel(h)}
+            </ThemedText>
+          </Pressable>
+        )
+      })}
+    </ScrollFadeRow>
+  )
+}
 
 function formatDateEs(dateKey: string, language: string): string {
   const [y, m, d] = dateKey.slice(0, 10).split('-').map(Number)
@@ -63,7 +124,8 @@ export default function FeriadosScreen() {
   const [formDate, setFormDate] = useState('')
   const [formName, setFormName] = useState('')
   const [formClosed, setFormClosed] = useState(false)
-  const [formOpenUntil, setFormOpenUntil] = useState(12)
+  const [formOpenFrom, setFormOpenFrom] = useState<number | null>(null)
+  const [formOpenUntil, setFormOpenUntil] = useState<number | null>(null)
   const [saving, setSaving] = useState(false)
 
   const sorted = useMemo(() => {
@@ -80,7 +142,8 @@ export default function FeriadosScreen() {
     setFormDate('')
     setFormName('')
     setFormClosed(false)
-    setFormOpenUntil(12)
+    setFormOpenFrom(null)
+    setFormOpenUntil(null)
     setModalVisible(true)
   }
 
@@ -89,7 +152,8 @@ export default function FeriadosScreen() {
     setFormDate(row.date.slice(0, 10))
     setFormName(row.name)
     setFormClosed(row.is_closed)
-    setFormOpenUntil(row.open_until_hour ?? 12)
+    setFormOpenFrom(row.open_from_hour)
+    setFormOpenUntil(row.open_until_hour)
     setModalVisible(true)
   }
 
@@ -101,7 +165,16 @@ export default function FeriadosScreen() {
       return
     }
     if (!name) {
-      Alert.alert('Nombre requerido', 'Escribe un nombre para el feriado.')
+      Alert.alert('Nombre requerido', 'Escribe un nombre para el día.')
+      return
+    }
+    if (
+      !formClosed &&
+      formOpenFrom !== null &&
+      formOpenUntil !== null &&
+      formOpenFrom > formOpenUntil
+    ) {
+      Alert.alert('Horario inválido', 'La última cita no puede ser antes de la hora de apertura.')
       return
     }
     setSaving(true)
@@ -111,6 +184,7 @@ export default function FeriadosScreen() {
           id: editing.id,
           name,
           is_closed: formClosed,
+          open_from_hour: formOpenFrom,
           open_until_hour: formOpenUntil,
         })
       } else {
@@ -118,6 +192,7 @@ export default function FeriadosScreen() {
           date,
           name,
           is_closed: formClosed,
+          open_from_hour: formOpenFrom,
           open_until_hour: formOpenUntil,
         })
       }
@@ -191,9 +266,8 @@ export default function FeriadosScreen() {
         ListHeaderComponent={
           <View style={styles.headerActions}>
             <ThemedText style={[styles.hint, { color: theme.textMuted }]}>
-              País: {config.locale.country}. Toca un día para editarlo. Cerrado: no se agendan
-              citas. Horario reducido: abre a la hora de siempre y la última cita empieza a la hora
-              que elijas.
+              País: {config.locale.country}. Toca un día para editarlo. Puedes cerrarlo o recortar
+              el horario: abrir más tarde, adelantar la última cita, o ambas.
             </ThemedText>
             <Pressable
               onPress={handleReloadCatalog}
@@ -266,7 +340,10 @@ export default function FeriadosScreen() {
                   >
                     {item.is_closed
                       ? 'Cerrado, sin citas'
-                      : `Última cita ${formatHolidayUntilLabel(item.open_until_hour ?? 12)}`}
+                      : describeSpecialDayHours({
+                          openFromHour: item.open_from_hour,
+                          openUntilHour: item.open_until_hour,
+                        })}
                   </ThemedText>
                 </View>
               </View>
@@ -298,7 +375,7 @@ export default function FeriadosScreen() {
         >
           <View style={[styles.modalCard, { backgroundColor: theme.backgroundDefault }]}>
             <ThemedText style={styles.modalTitle}>
-              {editing ? 'Editar feriado' : 'Nuevo feriado'}
+              {editing ? 'Editar día' : 'Nuevo feriado o día especial'}
             </ThemedText>
             {!editing ? (
               <>
@@ -330,7 +407,7 @@ export default function FeriadosScreen() {
               ]}
               value={formName}
               onChangeText={setFormName}
-              placeholder="Navidad"
+              placeholder="Navidad, Horario de tarde…"
               placeholderTextColor={theme.textMuted}
             />
             <View style={styles.switchRow}>
@@ -346,34 +423,26 @@ export default function FeriadosScreen() {
             {!formClosed ? (
               <>
                 <ThemedText style={[styles.label, { color: theme.textMuted }]}>
-                  Última hora de inicio
+                  Abre a (primera cita)
                 </ThemedText>
-                <View style={styles.chips}>
-                  {OPEN_UNTIL_OPTIONS.map((h) => (
-                    <Pressable
-                      key={h}
-                      onPress={() => setFormOpenUntil(h)}
-                      style={[
-                        styles.chip,
-                        {
-                          borderColor: formOpenUntil === h ? theme.primary : theme.border,
-                          backgroundColor:
-                            formOpenUntil === h ? `${theme.primary}18` : 'transparent',
-                        },
-                      ]}
-                    >
-                      <ThemedText
-                        style={{
-                          color: formOpenUntil === h ? theme.primary : theme.text,
-                          fontWeight: '600',
-                          fontSize: 13,
-                        }}
-                      >
-                        {formatHolidayUntilLabel(h)}
-                      </ThemedText>
-                    </Pressable>
-                  ))}
-                </View>
+                <HourChips
+                  options={OPEN_FROM_OPTIONS}
+                  value={formOpenFrom}
+                  onChange={setFormOpenFrom}
+                  isDisabled={(h) => formOpenUntil !== null && h > formOpenUntil}
+                />
+                <ThemedText style={[styles.label, { color: theme.textMuted }]}>
+                  Última cita
+                </ThemedText>
+                <HourChips
+                  options={OPEN_UNTIL_OPTIONS}
+                  value={formOpenUntil}
+                  onChange={setFormOpenUntil}
+                  isDisabled={(h) => formOpenFrom !== null && h < formOpenFrom}
+                />
+                <ThemedText style={[styles.helper, { color: theme.textMuted }]}>
+                  “Como siempre” usa el horario normal de ese día de la semana.
+                </ThemedText>
               </>
             ) : null}
             <View style={styles.modalActions}>
@@ -490,7 +559,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: Spacing.md,
   },
-  chips: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm, marginBottom: Spacing.lg },
+  chipsRow: { marginBottom: Spacing.md },
+  chips: { flexDirection: 'row', gap: Spacing.sm },
+  helper: { fontSize: 12, lineHeight: 17, marginBottom: Spacing.lg },
   chip: {
     borderWidth: 1.5,
     borderRadius: BorderRadius.full,

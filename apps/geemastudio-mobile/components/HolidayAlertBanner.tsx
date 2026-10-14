@@ -47,7 +47,7 @@ export function HolidayAlertBanner({ withinDays = 3, onPress, embedded }: Props)
           {extra}
         </ThemedText>
         <ThemedText style={[styles.body, { color: theme.textSecondary }]}>
-          {primary.scheduleHint}. Revisá la agenda antes de agendar citas.
+          {primary.scheduleHint}. Revisa la agenda antes de agendar citas.
         </ThemedText>
       </View>
       {onPress ? <Feather name="chevron-right" size={18} color={theme.textMuted} /> : null}

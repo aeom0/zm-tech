@@ -116,8 +116,11 @@ function dayOfWeekFromDateKey(dateKey: string): number {
 
 /** Cierre operativo del día (Lima) para desplazar almuerzo si la mañana estuvo libre. */
 function salonCloseMinutesForDateKey(dateKey: string): number {
+  const until = isPeruHoliday(dateKey)
+    ? getHolidayOpenUntilHour(dateKey)
+    : null;
+  if (until !== null) return until * 60;
   if (isSunday(dateKey)) return 13 * 60;
-  if (isPeruHoliday(dateKey)) return getHolidayOpenUntilHour(dateKey) * 60;
   return SALON_CLOSE_MINUTES;
 }
 

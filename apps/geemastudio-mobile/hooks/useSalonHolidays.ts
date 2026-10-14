@@ -17,7 +17,10 @@ export type SalonHolidayRecord = {
   date: string
   name: string
   is_closed: boolean
-  open_until_hour: number
+  /** Primera hora de inicio; null = apertura habitual. */
+  open_from_hour: number | null
+  /** Última hora de inicio; null = cierre habitual. */
+  open_until_hour: number | null
   created_at?: string
   updated_at?: string
 }
@@ -35,7 +38,7 @@ async function resolveTenantId(userId: string | null | undefined): Promise<strin
 async function fetchHolidays(tenantId: string): Promise<SalonHolidayRecord[]> {
   const { data, error } = await supabase
     .from('salon_holidays')
-    .select('id, date, name, is_closed, open_until_hour, created_at, updated_at')
+    .select('id, date, name, is_closed, open_from_hour, open_until_hour, created_at, updated_at')
     .eq('tenant_id', tenantId)
     .order('date', { ascending: true })
   if (error) throw new Error(error.message)
@@ -107,7 +110,7 @@ export function useSalonHolidays(enabled = true) {
     queryClient,
   ])
 
-  const holidays = holidaysQuery.data ?? []
+  const holidays = useMemo(() => holidaysQuery.data ?? [], [holidaysQuery.data])
 
   const holidayIndex: SalonHolidayIndex = useMemo(() => indexSalonHolidays(holidays), [holidays])
 

@@ -27,6 +27,7 @@ import {
   dayOfWeekFromDateKey,
   getAdvancePaymentRate,
   getDateKeyLima,
+  getHolidayOpenFromHour,
   getHolidayOpenUntilHour,
   getSalonClosedMessage,
   isPeruHoliday,
@@ -618,11 +619,18 @@ export async function dayFacts(
 ): Promise<string[]> {
   const out: string[] = [];
   if (isPeruHoliday(fecha)) {
-    out.push(
-      `Feriado: la última hora de inicio de cita es ${
-        getHolidayOpenUntilHour(fecha)
-      }:00.`,
-    );
+    const from = getHolidayOpenFromHour(fecha);
+    const until = getHolidayOpenUntilHour(fecha);
+    if (from !== null) {
+      out.push(
+        `Horario especial: ese día la primera cita empieza a las ${from}:00.`,
+      );
+    }
+    if (until !== null) {
+      out.push(
+        `Feriado u horario especial: la última hora de inicio de cita es ${until}:00.`,
+      );
+    }
   }
   const rate = getAdvancePaymentRate(fecha);
   if (rate != null) {
