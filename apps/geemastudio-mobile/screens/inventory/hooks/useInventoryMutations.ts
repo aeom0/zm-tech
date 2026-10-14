@@ -2,6 +2,13 @@ import * as Haptics from 'expo-haptics'
 import { useMutation } from '@tanstack/react-query'
 
 import { queryClient } from '@/lib/query-client'
+import {
+  adjustInventoryQuantity,
+  createInventoryItem,
+  deleteInventoryItem,
+  updateInventoryItem,
+} from '@geemastudio/data'
+
 import { supabase } from '@/lib/supabase'
 import { useProfileTenantId } from '@/screens/finances/hooks/useProfileTenantId'
 
@@ -25,22 +32,7 @@ export function useInventoryMutations(options: UseInventoryMutationsOptions = {}
       cost: number | null
     }) => {
       if (!tenantId) throw new Error('No se pudo identificar el negocio.')
-      const payload = {
-        tenant_id: tenantId,
-        name: data.name,
-        type: 'countable',
-        category: data.category,
-        quantity: data.quantity,
-        min_stock: data.min_stock,
-        unit: data.unit,
-        price: null,
-        cost: data.cost,
-      }
-
-      const { error } = await supabase.from('inventory_items').insert(payload)
-      if (error) {
-        throw new Error(error.message)
-      }
+      await createInventoryItem(supabase, tenantId, data)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['inventory_items'] })
@@ -66,23 +58,7 @@ export function useInventoryMutations(options: UseInventoryMutationsOptions = {}
       }
     }) => {
       if (!tenantId) throw new Error('No se pudo identificar el negocio.')
-      const payload = {
-        name: data.name,
-        category: data.category,
-        quantity: data.quantity,
-        min_stock: data.min_stock,
-        unit: data.unit,
-        cost: data.cost,
-      }
-
-      const { error } = await supabase
-        .from('inventory_items')
-        .update(payload)
-        .eq('id', id)
-        .eq('tenant_id', tenantId)
-      if (error) {
-        throw new Error(error.message)
-      }
+      await updateInventoryItem(supabase, tenantId, id, data)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['inventory_items'] })
@@ -94,17 +70,11 @@ export function useInventoryMutations(options: UseInventoryMutationsOptions = {}
   })
 
   const adjustQuantityMutation = useMutation({
-    mutationFn: async ({ id, delta }: { id: string; delta: number }) => {
-      const { error } = await supabase.rpc('adjust_inventory_quantity', {
-        p_item_id: id,
-        p_delta: delta,
-      })
-      if (error) {
-        throw new Error(error.message)
-      }
-    },
+    mutationFn: ({ id, delta }: { id: string; delta: number }) =>
+      adjustInventoryQuantity(supabase, id, delta),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['inventory_items'] })
+      queryClient.invalidateQueries({ queryKey: ['inventory_movements'] })
       queryClient.invalidateQueries({ queryKey: ['dashboard_stats'] })
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
     },
@@ -113,14 +83,7 @@ export function useInventoryMutations(options: UseInventoryMutationsOptions = {}
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
       if (!tenantId) throw new Error('No se pudo identificar el negocio.')
-      const { error } = await supabase
-        .from('inventory_items')
-        .delete()
-        .eq('id', id)
-        .eq('tenant_id', tenantId)
-      if (error) {
-        throw new Error(error.message)
-      }
+      await deleteInventoryItem(supabase, tenantId, id)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['inventory_items'] })

@@ -5,7 +5,7 @@ import { useHeaderHeight } from '@react-navigation/elements'
 import * as Haptics from 'expo-haptics'
 
 import { Spacing } from '@/constants/theme'
-import { getDefaultInventoryCategories } from '@/constants/inventoryCategories'
+import { mergeInventoryCategories } from '@geemastudio/data'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
 import { useTheme } from '@/hooks/useTheme'
@@ -53,19 +53,10 @@ export default function InventoryScreen() {
   const { createMutation: createCategoryMutation, deleteMutation: deleteCategoryMutation } =
     useInventoryCategoryMutations()
 
-  const categories = useMemo<InventoryCategoryOption[]>(() => {
-    const defaults = getDefaultInventoryCategories(config.businessType).map((cat) => ({
-      ...cat,
-      isCustom: false,
-    }))
-    const custom = customCategories.map((cat) => ({
-      key: cat.key,
-      label: cat.label,
-      isCustom: true,
-      id: cat.id,
-    }))
-    return [...defaults, ...custom]
-  }, [config.businessType, customCategories])
+  const categories = useMemo<InventoryCategoryOption[]>(
+    () => mergeInventoryCategories(config.businessType, customCategories),
+    [config.businessType, customCategories]
+  )
 
   const [selectedTab, setSelectedTab] = useState<string>(categories[0]?.key ?? '')
   const [modalVisible, setModalVisible] = useState(false)

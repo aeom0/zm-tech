@@ -1,12 +1,18 @@
 'use client'
 
-import { Pencil, Plus, Trash2 } from 'lucide-react'
+import { ArrowUpDown, Pencil, Plus, Trash2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
 
 import { CategoryIcon } from '@/components/CategoryIcon'
 import type { CategoriaRow } from '@/hooks/servicios/useCategorias'
 import type { ServicioRow } from '@/hooks/servicios/useServicios'
-import { useDeleteServicio, useServicios, useToggleServicio } from '@/hooks/servicios/useServicios'
+import {
+  useDeleteServicio,
+  useReorderServicios,
+  useServicios,
+  useToggleServicio,
+} from '@/hooks/servicios/useServicios'
+import { ReorderModal } from './ReorderModal'
 import { ServiceToggle } from './ServiceToggle'
 import { FilterChips } from '@/components/ui/FilterChips'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
@@ -34,6 +40,8 @@ export function ServiciosTab({
   const serviciosQuery = useServicios(selectedCategoryId)
   const toggleMutation = useToggleServicio()
   const deleteMutation = useDeleteServicio()
+  const reorderMutation = useReorderServicios()
+  const [isReorderOpen, setIsReorderOpen] = useState(false)
 
   const categoriasById = useMemo(() => {
     const m = new Map<string, CategoriaRow>()
@@ -63,19 +71,37 @@ export function ServiciosTab({
             Carga tu carta de servicios y prende/apaga sin drama.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() =>
-            onNew(selectedCategoryId ? { category_id: selectedCategoryId } : undefined)
-          }
-          className="inline-flex items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] transition-colors hover:bg-[var(--tenant-primary-hover)] disabled:opacity-60"
-          disabled={categorias.length === 0}
-          title={categorias.length === 0 ? 'Crea una categoría primero' : undefined}
-        >
-          <Plus className="h-4 w-4" />
-          Nuevo
-        </button>
+        <div className="flex shrink-0 items-center gap-2">
+          {selectedCategoryId && servicios.length > 1 && (
+            <button
+              type="button"
+              onClick={() => setIsReorderOpen(true)}
+              className="inline-flex items-center gap-2 rounded-xl border border-fg/[0.08] bg-fg/[0.04] px-3 py-2 text-sm font-semibold text-fg-soft transition-colors hover:bg-fg/[0.06]"
+            >
+              <ArrowUpDown className="h-4 w-4" />
+              Ordenar
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() =>
+              onNew(selectedCategoryId ? { category_id: selectedCategoryId } : undefined)
+            }
+            className="inline-flex items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] transition-colors hover:bg-[var(--tenant-primary-hover)] disabled:opacity-60"
+            disabled={categorias.length === 0}
+            title={categorias.length === 0 ? 'Crea una categoría primero' : undefined}
+          >
+            <Plus className="h-4 w-4" />
+            Nuevo
+          </button>
+        </div>
       </div>
+
+      {!selectedCategoryId && categorias.length > 0 && (
+        <p className="-mt-2 text-xs text-fg-subtle">
+          Para cambiar el orden, elige una categoría y toca «Ordenar».
+        </p>
+      )}
 
       {categorias.length > 0 && (
         <FilterChips
@@ -201,7 +227,11 @@ export function ServiciosTab({
                             type="button"
                             disabled={deleteMutation.isPending}
                             onClick={async () => {
-                              const ok = await confirm({ title: `¿Eliminar el servicio "${s.name}"?`, confirmLabel: 'Eliminar', destructive: true })
+                              const ok = await confirm({
+                                title: `¿Eliminar el servicio "${s.name}"?`,
+                                confirmLabel: 'Eliminar',
+                                destructive: true,
+                              })
                               if (ok) deleteMutation.mutate(s.id)
                             }}
                             className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-red-500/20 bg-red-500/10 text-red-700 transition-colors hover:bg-red-500/15 disabled:opacity-60 dark:text-red-300 md:h-9 md:w-9"
@@ -277,7 +307,11 @@ export function ServiciosTab({
                       type="button"
                       disabled={deleteMutation.isPending}
                       onClick={async () => {
-                        const ok = await confirm({ title: `¿Eliminar el servicio "${s.name}"?`, confirmLabel: 'Eliminar', destructive: true })
+                        const ok = await confirm({
+                          title: `¿Eliminar el servicio "${s.name}"?`,
+                          confirmLabel: 'Eliminar',
+                          destructive: true,
+                        })
                         if (ok) deleteMutation.mutate(s.id)
                       }}
                       className="inline-flex items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-3 py-2 text-sm font-semibold text-red-700 transition-colors hover:bg-red-500/15 disabled:opacity-60 dark:text-red-300"
@@ -291,6 +325,15 @@ export function ServiciosTab({
             })}
           </div>
         </div>
+      )}
+      {isReorderOpen && selectedCategoryId && (
+        <ReorderModal
+          title="Ordenar servicios"
+          subtitle={categoriasById.get(selectedCategoryId)?.name}
+          items={servicios.map((s) => ({ id: s.id, name: s.name, muted: !s.is_active }))}
+          onClose={() => setIsReorderOpen(false)}
+          onSave={(ids) => reorderMutation.mutateAsync(ids)}
+        />
       )}
       {dialog}
     </section>

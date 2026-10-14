@@ -1,5 +1,9 @@
 export type AgendaStatusFilter = 'all' | 'scheduled' | 'completed' | 'cancelled'
 
+/** Columnas de `appointments` que usan las vistas de agenda (día, semana, detalle). */
+export const AGENDA_APPOINTMENT_COLUMNS =
+  'id, client_id, client_name, client_phone, date, duration, price, status, employee_id, service_id, service_ids, cancel_reason, cancel_note, cancelled_at, reference_image_paths, reference_received_at, reference_reviewed_at, client_confirmed_at'
+
 export interface AgendaAppointment {
   id: string
   client_id?: string | null
@@ -19,6 +23,8 @@ export interface AgendaAppointment {
   reference_image_paths?: string[] | null
   reference_received_at?: string | null
   reference_reviewed_at?: string | null
+  /** La clienta confirmó (botón del recordatorio WABA o marcado desde el panel). */
+  client_confirmed_at?: string | null
   created_at?: string
   tenant_id?: string
 }

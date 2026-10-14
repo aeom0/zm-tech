@@ -12,7 +12,7 @@ import {
   type TenantConfig,
 } from '@zmtech/tenant-config'
 
-import { fetchPaymentsForAppointment } from '@geemastudio/data'
+import { AGENDA_APPOINTMENT_COLUMNS, fetchPaymentsForAppointment } from '@geemastudio/data'
 import { supabase } from '@/lib/supabase'
 import { matchesStatusFilter, type AgendaAppointment, type AgendaStatusFilter } from './types'
 
@@ -90,9 +90,7 @@ export function useAgendaDayAppointments(
 
       const { data, error } = await supabase
         .from('appointments')
-        .select(
-          'id, client_name, client_phone, date, duration, price, status, employee_id, service_id, service_ids, cancel_reason, cancel_note'
-        )
+        .select(AGENDA_APPOINTMENT_COLUMNS)
         .gte('date', start)
         .lt('date', end)
         .order('date', { ascending: true })
@@ -132,9 +130,7 @@ export function useAgendaWeekAppointments(
 
       const { data, error } = await supabase
         .from('appointments')
-        .select(
-          'id, client_name, client_phone, date, duration, price, status, employee_id, service_id, service_ids, cancel_reason, cancel_note'
-        )
+        .select(AGENDA_APPOINTMENT_COLUMNS)
         .gte('date', start)
         .lt('date', end)
         .order('date', { ascending: true })

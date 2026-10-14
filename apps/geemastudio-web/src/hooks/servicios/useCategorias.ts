@@ -8,6 +8,7 @@ import {
   isMissingColumnError,
 } from './catalogAdapter'
 import { supabase } from '@/lib/supabase'
+import { reorderServiceCategories } from '@geemastudio/data'
 
 export interface CategoriaRow {
   id: string
@@ -161,5 +162,17 @@ export function useDeleteCategoria() {
       qc.invalidateQueries({ queryKey: ['web_categorias'] })
       qc.invalidateQueries({ queryKey: ['web_servicios'] })
     },
+  })
+}
+
+/** Orden de categorías (`service_categories.order`, mismo que la app). */
+export function useReorderCategorias() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (orderedIds: string[]) => {
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
+      await reorderServiceCategories(supabase, orderedIds)
+    },
+    onSuccess: () => void qc.invalidateQueries({ queryKey: ['web_categorias'] }),
   })
 }

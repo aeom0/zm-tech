@@ -1,4 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import {
+  createSalonHoliday,
+  deleteSalonHoliday,
+  updateSalonHoliday,
+  type SalonHolidayUpdateInput,
+} from '@geemastudio/data'
 
 import { supabase } from '@/lib/supabase'
 import {
@@ -25,66 +31,18 @@ export function useSalonHolidaysAdmin() {
     }) => {
       const tenantId = listQuery.tenantId
       if (!tenantId) throw new Error('No se pudo resolver el tenant')
-      const { data, error } = await supabase
-        .from('salon_holidays')
-        .insert({
-          tenant_id: tenantId,
-          date: input.date,
-          name: input.name.trim(),
-          is_closed: input.is_closed,
-          open_from_hour: input.open_from_hour,
-          open_until_hour: input.open_until_hour,
-        })
-        .select(
-          'id, date, name, is_closed, open_from_hour, open_until_hour, created_at, updated_at'
-        )
-        .single()
-      if (error) {
-        if (error.code === '23505') {
-          throw new Error('Ya existe un feriado registrado para esa fecha.')
-        }
-        throw error
-      }
-      return data as SalonHolidayRecord
+      return createSalonHoliday(supabase, { ...input, tenantId })
     },
     onSuccess: () => invalidate(),
   })
 
   const updateMutation = useMutation({
-    mutationFn: async (input: {
-      id: string
-      name?: string
-      is_closed?: boolean
-      open_from_hour?: number | null
-      open_until_hour?: number | null
-    }) => {
-      const patch: Record<string, unknown> = {
-        updated_at: new Date().toISOString(),
-      }
-      if (input.name !== undefined) patch.name = input.name.trim()
-      if (input.is_closed !== undefined) patch.is_closed = input.is_closed
-      if (input.open_from_hour !== undefined) patch.open_from_hour = input.open_from_hour
-      if (input.open_until_hour !== undefined) patch.open_until_hour = input.open_until_hour
-
-      const { data, error } = await supabase
-        .from('salon_holidays')
-        .update(patch)
-        .eq('id', input.id)
-        .select(
-          'id, date, name, is_closed, open_from_hour, open_until_hour, created_at, updated_at'
-        )
-        .single()
-      if (error) throw error
-      return data as SalonHolidayRecord
-    },
+    mutationFn: (input: SalonHolidayUpdateInput) => updateSalonHoliday(supabase, input),
     onSuccess: () => invalidate(),
   })
 
   const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from('salon_holidays').delete().eq('id', id)
-      if (error) throw error
-    },
+    mutationFn: (id: string) => deleteSalonHoliday(supabase, id),
     onSuccess: () => invalidate(),
   })
 

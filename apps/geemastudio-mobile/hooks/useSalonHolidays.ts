@@ -5,25 +5,20 @@ import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
 import {
+  fetchSalonHolidays,
+  queryKeys,
+  seedSalonHolidaysFromCatalog,
+  type SalonHolidayRecord,
+} from '@geemastudio/data'
+import {
   catalogRowsForSeed,
   indexSalonHolidays,
   type SalonHolidayIndex,
 } from '@zmtech/tenant-config'
 
-export const SALON_HOLIDAYS_QUERY_KEY = ['salon_holidays'] as const
+export const SALON_HOLIDAYS_QUERY_KEY = queryKeys.holidays.all
 
-export type SalonHolidayRecord = {
-  id: string
-  date: string
-  name: string
-  is_closed: boolean
-  /** Primera hora de inicio; null = apertura habitual. */
-  open_from_hour: number | null
-  /** Última hora de inicio; null = cierre habitual. */
-  open_until_hour: number | null
-  created_at?: string
-  updated_at?: string
-}
+export type { SalonHolidayRecord }
 
 async function resolveTenantId(userId: string | null | undefined): Promise<string | null> {
   if (!userId) return null
@@ -33,16 +28,6 @@ async function resolveTenantId(userId: string | null | undefined): Promise<strin
     .eq('id', userId)
     .maybeSingle()
   return data?.tenant_id ?? null
-}
-
-async function fetchHolidays(tenantId: string): Promise<SalonHolidayRecord[]> {
-  const { data, error } = await supabase
-    .from('salon_holidays')
-    .select('id, date, name, is_closed, open_from_hour, open_until_hour, created_at, updated_at')
-    .eq('tenant_id', tenantId)
-    .order('date', { ascending: true })
-  if (error) throw new Error(error.message)
-  return (data ?? []) as SalonHolidayRecord[]
 }
 
 /**
@@ -65,11 +50,11 @@ export function useSalonHolidays(enabled = true) {
   const country = config.locale.country
 
   const holidaysQuery = useQuery({
-    queryKey: [...SALON_HOLIDAYS_QUERY_KEY, tenantId],
+    queryKey: queryKeys.holidays.list(tenantId),
     enabled: enabled && !!tenantId,
     staleTime: 60_000,
     refetchInterval: 5 * 60_000,
-    queryFn: () => fetchHolidays(tenantId as string),
+    queryFn: () => fetchSalonHolidays(supabase, tenantId as string),
   })
 
   useEffect(() => {
@@ -80,21 +65,15 @@ export function useSalonHolidays(enabled = true) {
     if (!rows || rows.length > 0) return
     if (seedingRef.current) return
 
-    const seed = catalogRowsForSeed(country, tenantId)
-    if (seed.length === 0) return
-
     seedingRef.current = true
     void (async () => {
       try {
-        const { error } = await supabase.from('salon_holidays').upsert(seed, {
-          onConflict: 'tenant_id,date',
-          ignoreDuplicates: true,
-        })
-        if (error) {
-          console.warn('[salon_holidays] seed:', error.message)
-          return
+        const seeded = await seedSalonHolidaysFromCatalog(supabase, tenantId, country)
+        if (seeded > 0) {
+          await queryClient.invalidateQueries({ queryKey: SALON_HOLIDAYS_QUERY_KEY })
         }
-        await queryClient.invalidateQueries({ queryKey: SALON_HOLIDAYS_QUERY_KEY })
+      } catch (error) {
+        console.warn('[salon_holidays] seed:', error instanceof Error ? error.message : error)
       } finally {
         seedingRef.current = false
       }
@@ -132,13 +111,8 @@ export function useSalonHolidays(enabled = true) {
 
   const reloadCatalogMissing = useCallback(async () => {
     if (!tenantId || !country) return
-    const seed = catalogRowsForSeed(country, tenantId)
-    if (seed.length === 0) return
-    const { error } = await supabase.from('salon_holidays').upsert(seed, {
-      onConflict: 'tenant_id,date',
-      ignoreDuplicates: true,
-    })
-    if (error) throw new Error(error.message)
+    const seeded = await seedSalonHolidaysFromCatalog(supabase, tenantId, country)
+    if (seeded === 0) return
     await queryClient.invalidateQueries({ queryKey: SALON_HOLIDAYS_QUERY_KEY })
   }, [tenantId, country, queryClient])
 

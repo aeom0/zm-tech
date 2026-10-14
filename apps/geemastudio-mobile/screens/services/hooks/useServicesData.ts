@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Alert } from 'react-native'
+import { fetchCatalogServices, reorderServiceCategories, reorderServices } from '@geemastudio/data'
 
 import { supabase } from '@/lib/supabase'
 import type { Service, ServiceCategory } from '../types'
@@ -28,27 +29,7 @@ export function useServicesData() {
     refetch: refetchServices,
   } = useQuery<Service[]>({
     queryKey: ['services'],
-    queryFn: async () => {
-      const base = 'id, name, category_id, price, duration, is_active, sort_order'
-      const run = (cols: string) =>
-        supabase
-          .from('services')
-          .select(cols)
-          .order('sort_order', { ascending: true, nullsFirst: false })
-          .order('created_at', { ascending: true })
-      let res = await run(`${base}, icon`)
-      if (res.error && isMissingColumnError(res.error)) {
-        res = await run(base)
-      }
-      if (res.error) {
-        throw new Error(res.error.message)
-      }
-      return sortCatalogList((res.data ?? []) as unknown as Service[], {
-        getActive: (s) => s.is_active,
-        getOrder: (s) => s.sort_order,
-        getName: (s) => s.name,
-      })
-    },
+    queryFn: () => fetchCatalogServices(supabase),
   })
 
   const {
@@ -285,37 +266,14 @@ export function useServicesData() {
   })
 
   const reorderCategoriesMutation = useMutation({
-    mutationFn: async (orderedIds: string[]) => {
-      for (let index = 0; index < orderedIds.length; index++) {
-        const catId = orderedIds[index]
-        const { error } = await supabase
-          .from('service_categories')
-          .update({ order: index })
-          .eq('id', catId)
-        if (error) {
-          throw new Error(error.message)
-        }
-      }
-    },
+    mutationFn: (orderedIds: string[]) => reorderServiceCategories(supabase, orderedIds),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['service_categories'] })
     },
   })
 
   const reorderServicesMutation = useMutation({
-    mutationFn: async (orderedIds: string[]) => {
-      const updates = orderedIds.map((id, index) =>
-        supabase
-          .from('services')
-          .update({ sort_order: index + 1 })
-          .eq('id', id)
-      )
-      const results = await Promise.all(updates)
-      const failed = results.find((r) => r.error)
-      if (failed?.error) {
-        throw new Error(failed.error.message)
-      }
-    },
+    mutationFn: (orderedIds: string[]) => reorderServices(supabase, orderedIds),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['services'] })
       void queryClient.invalidateQueries({ queryKey: ['agenda_services'] })

@@ -1,14 +1,26 @@
 'use client'
 
-import { useState } from 'react'
-import { X, DollarSign } from 'lucide-react'
+import { useId, useState } from 'react'
+import { DollarSign } from 'lucide-react'
 import {
+  buildPaymentRows,
   completeAppointment,
+  convertDraftAmount,
   createPayment,
+  parseMoneyInput,
   paymentMethodsForCountry,
-  vesFieldsForQuickMethod,
+  paymentTypeFromPayment,
+  updatePayment,
+  type FinancesPayment,
+  type FinancesPaymentType,
 } from '@geemastudio/data'
+import { formatearBs } from '@zmtech/tasas'
+
+import { Button } from '@/components/ui/Button'
+import { Field, FormError, inputClass } from '@/components/ui/Field'
+import { Modal } from '@/components/ui/Modal'
 import { useVesRate } from '@/hooks/useVesRate'
+import { formatDashboardCurrency } from '@/lib/dashboardCurrency'
 import { supabase } from '@/lib/supabase'
 
 /** Montar solo mientras está abierto: el estado del formulario se inicializa al montar. */
@@ -17,176 +29,297 @@ interface RecordPaymentModalProps {
   clientName: string
   /** Saldo pendiente de la cita (precio menos abonos/pagos ya registrados). */
   amountDue: number
+  /** Precio total de la cita (referencia para el adelanto). */
+  appointmentPrice: number
   currencyCode: string
   tenantId: string
   country: string
+  /** Si viene, el modal edita ese pago en vez de crear uno. */
+  payment?: FinancesPayment | null
   /** Marca la cita como completada después de registrar el cobro. */
   completeAfter?: boolean
   onClose: () => void
   onSuccess: () => void
 }
 
+const TYPE_OPTIONS: { id: FinancesPaymentType; label: string }[] = [
+  { id: 'full', label: 'Pago' },
+  { id: 'abono', label: 'Adelanto' },
+  { id: 'producto', label: 'Producto' },
+]
+
 export function RecordPaymentModal({
   appointmentId,
   clientName,
   amountDue,
+  appointmentPrice,
   currencyCode,
   tenantId,
   country,
+  payment = null,
   completeAfter = false,
   onClose,
   onSuccess,
 }: RecordPaymentModalProps) {
+  const ids = useId()
+  const isEdit = !!payment
   const methods = paymentMethodsForCountry(country)
-  const { rate, formatBs } = useVesRate()
-  const [amount, setAmount] = useState(amountDue > 0 ? amountDue.toFixed(2) : '')
-  const [method, setMethod] = useState(methods[0]?.id ?? 'cash')
-  const [notes, setNotes] = useState('')
+  const { enabled: vesEnabled, rate: currentRate } = useVesRate()
+  // Al editar se respeta la tasa con la que se registró el pago.
+  const storedRate = payment?.exchange_rate != null ? Number(payment.exchange_rate) : null
+  const rate = isEdit && storedRate && Number.isFinite(storedRate) ? storedRate : currentRate
+
+  const [type, setType] = useState<FinancesPaymentType>(() =>
+    payment ? paymentTypeFromPayment(payment) : 'full'
+  )
+  const [currency, setCurrency] = useState<'USD' | 'VES'>(() =>
+    vesEnabled && payment?.paid_currency === 'VES' ? 'VES' : 'USD'
+  )
+  const [amount, setAmount] = useState(() => {
+    if (payment) {
+      return payment.paid_currency === 'VES' && payment.amount_ves != null
+        ? Number(payment.amount_ves).toFixed(2)
+        : Number(payment.amount).toFixed(2)
+    }
+    return amountDue > 0 ? amountDue.toFixed(2) : ''
+  })
+  const [productAmount, setProductAmount] = useState('')
+  const [method, setMethod] = useState(payment?.method ?? methods[0]?.id ?? 'cash')
+  const [notes, setNotes] = useState(payment?.notes ?? '')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  const changeCurrency = (next: 'USD' | 'VES') => {
+    if (next === currency) return
+    setAmount((a) => convertDraftAmount(a, currency, next, rate))
+    setProductAmount((a) => convertDraftAmount(a, currency, next, rate))
+    setCurrency(next)
+  }
+
+  const currencyLabel = currency === 'VES' ? 'Bs.' : currencyCode
+  const enteredNum = parseMoneyInput(amount)
+  const equivalent =
+    vesEnabled && rate && Number.isFinite(enteredNum) && enteredNum > 0
+      ? currency === 'VES'
+        ? `≈ ${formatDashboardCurrency(enteredNum / rate, currencyCode)}`
+        : `≈ ${formatearBs(enteredNum * rate)}`
+      : null
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!supabase) return
-    setIsSubmitting(true)
     setErrorMessage(null)
 
-    const numAmount = parseFloat(amount.replace(',', '.'))
-    if (!Number.isFinite(numAmount) || numAmount <= 0) {
-      setErrorMessage('Ingresa un monto válido')
-      setIsSubmitting(false)
-      return
-    }
-    if (completeAfter && numAmount + 0.005 < amountDue) {
-      setErrorMessage('Para completar la cita registra el saldo completo.')
-      setIsSubmitting(false)
+    const result = buildPaymentRows({
+      tenantId,
+      appointmentId,
+      type,
+      amount,
+      currency: vesEnabled ? currency : 'USD',
+      vesEnabled,
+      rate,
+      method,
+      notes,
+      serviceTotal: type === 'abono' && appointmentPrice > 0 ? String(appointmentPrice) : undefined,
+      productAmount: !isEdit && type === 'full' ? productAmount : undefined,
+      date: payment?.date ?? new Date().toISOString(),
+    })
+    if (!result.ok) {
+      setErrorMessage(result.error)
       return
     }
 
+    if (completeAfter) {
+      const serviceUsd = result.rows
+        .filter((r) => r.kind !== 'product')
+        .reduce((sum, r) => sum + Number(r.amount), 0)
+      if (serviceUsd + 0.005 < amountDue) {
+        setErrorMessage('Para completar la cita registra el saldo completo.')
+        return
+      }
+    }
+
+    setIsSubmitting(true)
     try {
-      await createPayment(supabase, {
-        tenant_id: tenantId,
-        appointment_id: appointmentId,
-        amount: numAmount.toFixed(2),
-        method,
-        date: new Date().toISOString(),
-        notes: notes.trim() || null,
-        is_abono: false,
-        ...vesFieldsForQuickMethod(method, numAmount, rate),
-      })
+      if (payment) {
+        const { tenant_id: _tenantId, ...patch } = result.rows[0]
+        void _tenantId
+        await updatePayment(supabase, payment.id, patch)
+      } else {
+        for (const row of result.rows) await createPayment(supabase, row)
+      }
       if (completeAfter) await completeAppointment(supabase, appointmentId, 'completed')
       onSuccess()
       onClose()
     } catch (err) {
-      setErrorMessage((err as Error).message || 'No se pudo registrar el pago')
+      setErrorMessage((err as Error).message || 'No se pudo guardar el pago')
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  const bsPreview = method === 'pago_movil' ? formatBs(amount) : null
+  const title = isEdit ? 'Editar pago' : completeAfter ? 'Cobrar y completar' : 'Registrar pago'
+  const submitLabel = isEdit ? 'Guardar cambios' : completeAfter ? 'Cobrar y completar' : 'Registrar pago'
+  const formId = `${ids}-form`
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-scrim/60" onClick={onClose} />
-      <div className="relative z-10 w-full max-w-md rounded-2xl border border-fg/[0.08] bg-sunken p-6 shadow-2xl">
-        <div className="flex items-center justify-between border-b border-fg/[0.08] pb-4">
-          <div className="flex items-center gap-2">
-            <DollarSign className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-            <h2 className="text-lg font-bold text-fg">
-              {completeAfter ? 'Cobrar y completar' : 'Registrar pago'}
-            </h2>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-lg p-1.5 text-fg-subtle hover:bg-fg/[0.05] hover:text-fg"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-          <p className="text-sm text-fg-muted">
-            Cobro para la cita de <strong className="text-fg">{clientName}</strong>.
-          </p>
-
-          {errorMessage && (
-            <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-700 dark:text-red-300">
-              {errorMessage}
-            </div>
+    <Modal
+      title={title}
+      icon={<DollarSign className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />}
+      description={
+        <>
+          Cita de <strong className="text-fg">{clientName}</strong>
+          {!isEdit && amountDue > 0 && (
+            <> · saldo {formatDashboardCurrency(amountDue, currencyCode)}</>
           )}
+        </>
+      }
+      onClose={onClose}
+      dismissible={!isSubmitting}
+      footer={
+        <>
+          <Button onClick={onClose} disabled={isSubmitting}>
+            Cancelar
+          </Button>
+          <Button type="submit" form={formId} variant="primary" loading={isSubmitting}>
+            {submitLabel}
+          </Button>
+        </>
+      }
+    >
+      <form id={formId} onSubmit={handleSubmit} className="space-y-4">
+        <FormError message={errorMessage} />
 
-          <div>
-            <label className="mb-1 block text-xs font-semibold text-fg-soft">
-              Monto ({currencyCode}) *
-            </label>
+        {!completeAfter && (
+          <Segmented
+            label="Tipo"
+            value={type}
+            options={TYPE_OPTIONS}
+            onChange={(next) => {
+              setType(next)
+              if (next !== 'full') setProductAmount('')
+            }}
+          />
+        )}
+
+        {vesEnabled && (
+          <Segmented
+            label="Moneda"
+            value={currency}
+            options={[
+              { id: 'USD', label: currencyCode },
+              { id: 'VES', label: 'Bs.' },
+            ]}
+            onChange={changeCurrency}
+            hint={
+              rate
+                ? `Tasa ${isEdit && storedRate ? 'del pago' : 'del día'}: ${formatearBs(rate)} por ${currencyCode}`
+                : 'Sin tasa de cambio disponible'
+            }
+          />
+        )}
+
+        <Field label={`Monto (${currencyLabel})`} htmlFor={`${ids}-amount`} hint={equivalent}>
+          <input
+            id={`${ids}-amount`}
+            type="number"
+            inputMode="decimal"
+            step="0.01"
+            min="0"
+            required
+            autoFocus
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            className={`${inputClass} text-base font-semibold`}
+          />
+        </Field>
+
+        {type === 'full' && !isEdit && (
+          <Field
+            label={`Incluye productos (${currencyLabel}, opcional)`}
+            htmlFor={`${ids}-product`}
+            hint="Si parte del cobro es por productos, se registra aparte para las comisiones."
+          >
             <input
+              id={`${ids}-product`}
               type="number"
+              inputMode="decimal"
               step="0.01"
-              required
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="w-full rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-3 py-2 text-base font-semibold text-fg outline-none focus:border-[var(--tenant-primary)]"
+              min="0"
+              value={productAmount}
+              onChange={(e) => setProductAmount(e.target.value)}
+              className={inputClass}
             />
-            {bsPreview && (
-              <p className="mt-1 text-xs text-fg-subtle">Se registra en Bs.: {bsPreview}</p>
-            )}
-          </div>
+          </Field>
+        )}
 
-          <div>
-            <label className="mb-1 block text-xs font-semibold text-fg-soft">
-              Método de pago *
-            </label>
-            <select
-              value={method}
-              onChange={(e) => setMethod(e.target.value)}
-              className="w-full rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-3 py-2 text-sm text-fg outline-none focus:border-[var(--tenant-primary)]"
-            >
-              {methods.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.label}
-                </option>
-              ))}
-            </select>
-          </div>
+        <Field label="Método de pago" htmlFor={`${ids}-method`}>
+          <select
+            id={`${ids}-method`}
+            value={method}
+            onChange={(e) => setMethod(e.target.value)}
+            className={inputClass}
+          >
+            {methods.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.label}
+              </option>
+            ))}
+          </select>
+        </Field>
 
-          <div>
-            <label className="mb-1 block text-xs font-semibold text-fg-soft">
-              Nota / Referencia (opcional)
-            </label>
-            <input
-              type="text"
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Ej. Comprobante 123456"
-              className="w-full rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-3 py-2 text-sm text-fg outline-none focus:border-[var(--tenant-primary)]"
-            />
-          </div>
+        <Field label="Nota o referencia (opcional)" htmlFor={`${ids}-notes`}>
+          <input
+            id={`${ids}-notes`}
+            type="text"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Ej. Comprobante 123456"
+            className={inputClass}
+          />
+        </Field>
+      </form>
+    </Modal>
+  )
+}
 
-          <div className="flex justify-end gap-3 pt-3">
+function Segmented<T extends string>({
+  label,
+  value,
+  options,
+  onChange,
+  hint,
+}: {
+  label: string
+  value: T
+  options: { id: T; label: string }[]
+  onChange: (next: T) => void
+  hint?: string
+}) {
+  return (
+    <div>
+      <div className="mb-1 text-xs font-semibold text-fg-soft">{label}</div>
+      <div role="radiogroup" aria-label={label} className="flex gap-1 rounded-xl bg-fg/[0.04] p-1">
+        {options.map((opt) => {
+          const active = opt.id === value
+          return (
             <button
+              key={opt.id}
               type="button"
-              onClick={onClose}
-              disabled={isSubmitting}
-              className="rounded-xl border border-fg/[0.08] px-4 py-2 text-sm font-medium text-fg-soft hover:bg-fg/[0.04]"
+              role="radio"
+              aria-checked={active}
+              onClick={() => onChange(opt.id)}
+              className={[
+                'min-h-[36px] flex-1 rounded-lg px-3 text-sm font-medium transition',
+                active ? 'bg-surface text-fg shadow-sm' : 'text-fg-muted hover:text-fg',
+              ].join(' ')}
             >
-              Cancelar
+              {opt.label}
             </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="rounded-xl bg-emerald-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-50"
-            >
-              {isSubmitting
-                ? 'Registrando…'
-                : completeAfter
-                  ? 'Cobrar y completar'
-                  : 'Confirmar pago'}
-            </button>
-          </div>
-        </form>
+          )
+        })}
       </div>
+      {hint && <p className="mt-1 text-xs text-fg-subtle">{hint}</p>}
     </div>
   )
 }

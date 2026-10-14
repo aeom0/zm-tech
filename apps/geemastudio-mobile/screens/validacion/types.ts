@@ -1,5 +1,3 @@
-export type VerificationAction = 'approved' | 'rejected'
-
 export type ValidacionFilter = 'pending' | 'approved' | 'rejected'
 
 export interface ValidacionItem {
@@ -20,8 +18,4 @@ export interface ValidacionItem {
   depositForfeited?: boolean
   /** Muestra el control para marcar / quitar «Adelanto perdido» (adelantos por validar o validados). */
   canMarkForfeit?: boolean
-}
-
-export interface RowLoadingState {
-  [appointmentId: string]: VerificationAction | null
 }

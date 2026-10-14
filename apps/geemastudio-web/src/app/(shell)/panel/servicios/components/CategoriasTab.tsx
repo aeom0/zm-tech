@@ -2,10 +2,11 @@
 
 import { onColor } from '@/lib/tenant-theme'
 
-import { Pencil, Plus, Trash2 } from 'lucide-react'
+import { ArrowUpDown, Pencil, Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 
-import type { CategoriaRow } from '@/hooks/servicios/useCategorias'
+import { useReorderCategorias, type CategoriaRow } from '@/hooks/servicios/useCategorias'
+import { ReorderModal } from './ReorderModal'
 import { CategoryIcon } from '@/components/CategoryIcon'
 import { supabase } from '@/lib/supabase'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
@@ -29,6 +30,8 @@ export function CategoriasTab({
 }) {
   const [checkingId, setCheckingId] = useState<string | null>(null)
   const { confirm, dialog } = useConfirm()
+  const reorderMutation = useReorderCategorias()
+  const [isReorderOpen, setIsReorderOpen] = useState(false)
 
   const confirmDelete = async (cat: CategoriaRow) => {
     if (!supabase) {
@@ -44,18 +47,32 @@ export function CategoriasTab({
         .eq('category_id', cat.id)
 
       if (error) {
-        const ok = await confirm({ title: `¿Eliminar la categoría "${cat.name}"?`, description: 'No se pudo validar si tiene servicios asociados.', confirmLabel: 'Eliminar', destructive: true })
+        const ok = await confirm({
+          title: `¿Eliminar la categoría "${cat.name}"?`,
+          description: 'No se pudo validar si tiene servicios asociados.',
+          confirmLabel: 'Eliminar',
+          destructive: true,
+        })
         if (ok) onDelete(cat.id)
         return
       }
 
       if ((count ?? 0) > 0) {
-        const ok = await confirm({ title: `¿Eliminar "${cat.name}"?`, description: `Tiene ${count} servicio(s). Si la eliminas, quedarán sin categoría o la acción puede fallar por restricciones.`, confirmLabel: 'Eliminar', destructive: true })
+        const ok = await confirm({
+          title: `¿Eliminar "${cat.name}"?`,
+          description: `Tiene ${count} servicio(s). Si la eliminas, quedarán sin categoría o la acción puede fallar por restricciones.`,
+          confirmLabel: 'Eliminar',
+          destructive: true,
+        })
         if (ok) onDelete(cat.id)
         return
       }
 
-      const ok = await confirm({ title: `¿Eliminar la categoría "${cat.name}"?`, confirmLabel: 'Eliminar', destructive: true })
+      const ok = await confirm({
+        title: `¿Eliminar la categoría "${cat.name}"?`,
+        confirmLabel: 'Eliminar',
+        destructive: true,
+      })
       if (ok) onDelete(cat.id)
     } finally {
       setCheckingId(null)
@@ -71,14 +88,26 @@ export function CategoriasTab({
             Agrupa servicios para que el filtro quede ordenado.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={onNew}
-          className="min-h-[44px] md:min-h-[36px] inline-flex items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] transition-colors hover:bg-[var(--tenant-primary-hover)]"
-        >
-          <Plus className="h-4 w-4" />
-          Nueva
-        </button>
+        <div className="flex shrink-0 items-center gap-2">
+          {categorias.length > 1 && (
+            <button
+              type="button"
+              onClick={() => setIsReorderOpen(true)}
+              className="inline-flex min-h-[44px] items-center gap-2 rounded-xl border border-fg/[0.08] bg-fg/[0.04] px-3 py-2 text-sm font-semibold text-fg-soft transition-colors hover:bg-fg/[0.06] md:min-h-[36px]"
+            >
+              <ArrowUpDown className="h-4 w-4" />
+              Ordenar
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={onNew}
+            className="inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] transition-colors hover:bg-[var(--tenant-primary-hover)] md:min-h-[36px]"
+          >
+            <Plus className="h-4 w-4" />
+            Nueva
+          </button>
+        </div>
       </div>
 
       {errorMessage && (
@@ -105,7 +134,7 @@ export function CategoriasTab({
           <button
             type="button"
             onClick={onNew}
-            className="min-h-[44px] md:min-h-[36px] mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] transition-colors hover:bg-[var(--tenant-primary-hover)]"
+            className="mt-5 inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] transition-colors hover:bg-[var(--tenant-primary-hover)] md:min-h-[36px]"
           >
             <Plus className="h-4 w-4" />
             Nueva categoría
@@ -154,6 +183,14 @@ export function CategoriasTab({
             )
           })}
         </div>
+      )}
+      {isReorderOpen && (
+        <ReorderModal
+          title="Ordenar categorías"
+          items={categorias.map((c) => ({ id: c.id, name: c.name }))}
+          onClose={() => setIsReorderOpen(false)}
+          onSave={(ids) => reorderMutation.mutateAsync(ids)}
+        />
       )}
       {dialog}
     </section>

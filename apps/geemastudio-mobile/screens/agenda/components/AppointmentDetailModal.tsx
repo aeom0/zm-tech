@@ -31,6 +31,8 @@ import {
 } from '@zmtech/tenant-config'
 import { useSalonHolidays } from '@/hooks/useSalonHolidays'
 
+import { useReferenceImageUrls } from '../hooks/useReferenceImageUrls'
+
 import { DAYS_ES } from '../constants'
 import { SvcPickerContent } from './SvcPickerContent'
 import type {
@@ -261,7 +263,11 @@ export function AppointmentDetailModal({
     }
   }, [editServiceLines, services, employees])
 
-  const referenceImagePaths = appointment?.reference_image_paths ?? []
+  const referenceImagePaths = useMemo(
+    () => appointment?.reference_image_paths ?? [],
+    [appointment?.reference_image_paths]
+  )
+  const { data: referenceImageUrls = [] } = useReferenceImageUrls(referenceImagePaths)
   const referenceSlotsLeft = MAX_REFERENCE_IMAGES - referenceImagePaths.length
   const referencesUnreviewed = referenceImagePaths.length > 0 && !appointment?.reference_reviewed_at
 
@@ -732,7 +738,7 @@ export function AppointmentDetailModal({
                           marginBottom: Spacing.sm,
                         }}
                       >
-                        {referenceImagePaths.map((uri) => (
+                        {referenceImageUrls.map((uri) => (
                           <Image
                             key={uri}
                             source={{ uri }}

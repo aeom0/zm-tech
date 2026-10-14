@@ -1,19 +1,12 @@
 'use client'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { fetchCatalogServices, reorderServices, type CatalogServiceRow } from '@geemastudio/data'
+
 import { supabase } from '@/lib/supabase'
 import { isMissingColumnError } from './catalogAdapter'
 
-export interface ServicioRow {
-  id: string
-  name: string
-  category_id: string
-  price: string
-  duration: number
-  is_active: boolean
-  /** Clave de @zmtech/icons; null/ausente = hereda el ícono de la categoría. */
-  icon?: string | null
-}
+export type ServicioRow = CatalogServiceRow
 
 /** true si la BD ya tiene `services.icon` (migración 20260929122147). */
 export function useServiciosIconSupport() {
@@ -33,26 +26,9 @@ export function useServiciosIconSupport() {
 export function useServicios(categoryId?: string) {
   return useQuery({
     queryKey: ['web_servicios', categoryId ?? 'all'],
-    queryFn: async () => {
-      if (!supabase) {
-        throw new Error(
-          'No se pudo conectar. Intenta de nuevo.'
-        )
-      }
-
-      const base = 'id, name, category_id, price, duration, is_active'
-      const run = (cols: string) => {
-        let q = supabase!.from('services').select(cols).order('name', { ascending: true })
-        if (categoryId) q = q.eq('category_id', categoryId)
-        return q
-      }
-
-      let res = await run(`${base}, icon`)
-      if (res.error && isMissingColumnError(res.error)) {
-        res = await run(base)
-      }
-      if (res.error) throw res.error
-      return (res.data ?? []) as unknown as ServicioRow[]
+    queryFn: () => {
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
+      return fetchCatalogServices(supabase, { categoryId })
     },
   })
 }
@@ -118,5 +94,20 @@ export function useDeleteServicio() {
       if (error) throw error
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['web_servicios'] }),
+  })
+}
+
+/** Orden manual de los servicios de una categoría (mismo `sort_order` que la app). */
+export function useReorderServicios() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: async (orderedIds: string[]) => {
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
+      await reorderServices(supabase, orderedIds)
+    },
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ['web_servicios'] })
+      void qc.invalidateQueries({ queryKey: ['web_agenda_services_list'] })
+    },
   })
 }

@@ -13,7 +13,10 @@
     "./personal": "./src/personal/index.ts",
     "./clients": "./src/clients/index.ts",
     "./agenda": "./src/agenda/index.ts",
-    "./finances": "./src/finances/index.ts"
+    "./finances": "./src/finances/index.ts",
+    "./holidays": "./src/holidays/index.ts",
+    "./verifications": "./src/verifications/index.ts",
+    "./inventory": "./src/inventory/index.ts"
   },
   "scripts": {
     "build": "tsc --noEmit",

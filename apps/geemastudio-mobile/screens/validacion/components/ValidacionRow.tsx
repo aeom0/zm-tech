@@ -5,31 +5,23 @@ import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { formatCurrency } from '@/utils/format'
-import { Spacing, BorderRadius, Colors } from '@/constants/theme'
+import { Spacing, BorderRadius } from '@/constants/theme'
 import { instanteCitaDesdeTexto, zonaIANASegura } from '@zmtech/tenant-config'
-import type { ValidacionItem, VerificationAction } from '../types'
+import type { ValidacionItem } from '../types'
 
 interface ValidacionRowProps {
   item: ValidacionItem
-  loadingAction: VerificationAction | null // null = sin spinner
-  onApprove?: () => void
-  onReject?: () => void
   onToggleForfeit?: () => void
   forfeitBusy?: boolean
 }
 
 export function ValidacionRow({
   item,
-  loadingAction,
-  onApprove,
-  onReject,
   onToggleForfeit,
   forfeitBusy = false,
 }: ValidacionRowProps) {
   const { theme } = useTheme()
   const { config } = useTenant()
-
-  const isLoading = loadingAction !== null
 
   const fecha = instanteCitaDesdeTexto(item.date, config.locale.timezone).toLocaleString(
     config.locale.language,
@@ -143,54 +135,6 @@ export function ValidacionRow({
           </Pressable>
         )}
 
-        {/* Acciones per-row */}
-        {!item.readOnly && (
-        <View style={styles.actions}>
-          {/* Botón Rechazar */}
-          <Pressable
-            style={({ pressed }) => [
-              styles.btnReject,
-              {
-                borderColor: theme.error,
-                opacity: pressed || isLoading ? 0.7 : 1,
-              },
-            ]}
-            onPress={onReject}
-            disabled={isLoading}
-          >
-            {loadingAction === 'rejected' ? (
-              <ActivityIndicator size="small" color={theme.error} />
-            ) : (
-              <>
-                <Feather name="x" size={16} color={theme.error} />
-                <ThemedText style={[styles.btnText, { color: theme.error }]}>Rechazar</ThemedText>
-              </>
-            )}
-          </Pressable>
-
-          {/* Botón Aprobar */}
-          <Pressable
-            style={({ pressed }) => [
-              styles.btnApprove,
-              {
-                backgroundColor: theme.success,
-                opacity: pressed || isLoading ? 0.7 : 1,
-              },
-            ]}
-            onPress={onApprove}
-            disabled={isLoading}
-          >
-            {loadingAction === 'approved' ? (
-              <ActivityIndicator size="small" color={Colors.light.buttonText} />
-            ) : (
-              <>
-                <Feather name="check" size={16} color={Colors.light.buttonText} />
-                <ThemedText style={[styles.btnText, { color: theme.buttonText }]}>Aprobar</ThemedText>
-              </>
-            )}
-          </Pressable>
-        </View>
-        )}
       </View>
     </View>
   )
@@ -232,32 +176,4 @@ const styles = StyleSheet.create({
   forfeitLink: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: Spacing.xs },
   forfeitLinkText: { fontSize: 12, fontWeight: '600' },
   resolvedRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  actions: {
-    flexDirection: 'row',
-    gap: Spacing.sm,
-    marginTop: Spacing.sm,
-  },
-  btnReject: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-    height: 40,
-    borderRadius: BorderRadius.md,
-    borderWidth: 1,
-  },
-  btnApprove: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-    height: 40,
-    borderRadius: BorderRadius.md,
-  },
-  btnText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
 })

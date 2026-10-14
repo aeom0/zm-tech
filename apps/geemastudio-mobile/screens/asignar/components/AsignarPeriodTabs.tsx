@@ -3,7 +3,7 @@ import { View, Pressable, StyleSheet } from 'react-native'
 
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
-import { Spacing, BorderRadius, Colors } from '@/constants/theme'
+import { Spacing, BorderRadius } from '@/constants/theme'
 import type { AsignarPeriod } from '../types'
 
 interface AsignarPeriodTabsProps {

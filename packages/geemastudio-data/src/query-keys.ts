@@ -26,11 +26,38 @@ export const queryKeys = {
     coverages: ['employee_coverages'] as const,
     workShifts: (employeeId?: string | null) => ['employee_work_shifts', employeeId] as const,
     services: (employeeId?: string | null) => ['employee_services', employeeId] as const,
+    serviceEligibility: ['service_eligibility'] as const,
   },
   agenda: {
     all: ['appointments'] as const,
     pendingVerificationsCount: ['pending_verifications_count'] as const,
     unassignedAppointmentsCount: ['unassigned_appointments_count'] as const,
+    unreviewedReferences: ['unreviewed_references'] as const,
+    assignWindow: (timeZone?: string | null) =>
+      ['appointments', 'assign_window', timeZone] as const,
+    availabilityCheck: ['availability_check'] as const,
+    referenceImageUrls: (values: readonly string[]) => ['reference_image_urls', ...values] as const,
+  },
+  holidays: {
+    all: ['salon_holidays'] as const,
+    list: (tenantId?: string | null) => ['salon_holidays', tenantId] as const,
+  },
+  verifications: {
+    all: ['payment_verifications'] as const,
+    list: (filter: string) => ['payment_verifications', filter] as const,
+  },
+  inventory: {
+    items: (tenantId?: string | null) => ['inventory_items', tenantId] as const,
+    movements: (tenantId?: string | null, limit?: number) =>
+      ['inventory_movements', tenantId, limit] as const,
+    categories: (tenantId?: string | null) => ['inventory_categories', tenantId] as const,
+  },
+  dashboard: {
+    stats: (...range: string[]) => ['dashboard_stats', ...range] as const,
+    appointments: (from: string, to: string) => ['appointments_upcoming', from, to] as const,
+    completedServices: (period: string, since?: string | null) =>
+      ['dashboard_completed_services', period, since ?? null] as const,
+    payments: (ids: string[]) => ['dashboard_payments_by_appointments', ids] as const,
   },
   clients: {
     all: ['clients'] as const,

@@ -1,14 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
+import { fetchInventoryCategories, type InventoryCategoryRow } from '@geemastudio/data'
 
 import { supabase } from '@/lib/supabase'
 import { useProfileTenantId } from '@/screens/finances/hooks/useProfileTenantId'
 
-export interface InventoryCategoryRow {
-  id: string
-  key: string
-  label: string
-  sort_order: number
-}
+export type { InventoryCategoryRow }
 
 export const INVENTORY_CATEGORIES_QUERY_KEY = ['inventory_categories'] as const
 
@@ -19,17 +15,9 @@ export function useInventoryCategoriesQuery() {
   return useQuery<InventoryCategoryRow[]>({
     queryKey: [...INVENTORY_CATEGORIES_QUERY_KEY, tenantId],
     enabled: !isTenantLoading && !!tenantId,
-    queryFn: async () => {
+    queryFn: () => {
       if (!tenantId) throw new Error('No se pudo identificar el negocio.')
-      const { data, error } = await supabase
-        .from('inventory_categories')
-        .select('id, key, label, sort_order')
-        .eq('tenant_id', tenantId)
-        .order('sort_order', { ascending: true })
-      if (error) {
-        throw new Error(error.message)
-      }
-      return data ?? []
+      return fetchInventoryCategories(supabase, tenantId)
     },
   })
 }

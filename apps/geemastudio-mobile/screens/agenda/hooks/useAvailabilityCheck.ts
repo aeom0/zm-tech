@@ -1,12 +1,10 @@
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 
+import { checkEmployeesAvailability, queryKeys } from '@geemastudio/data'
+import { formatAppointmentWallclock, formatoHoraHHMMEnZona } from '@zmtech/tenant-config'
+
 import { supabase } from '@/lib/supabase'
-import {
-  formatAppointmentWallclock,
-  formatoHoraHHMMEnZona,
-  parseAppointmentWallclock,
-} from '@zmtech/tenant-config'
 
 type AvailabilityStatus = 'idle' | 'checking' | 'free' | 'busy' | 'error'
 
@@ -16,40 +14,6 @@ interface AvailabilityResult {
   busyUntil: Date | null
   conflictingAppointmentId: string | null
   errorMessage: string | null
-}
-
-function addMinutes(date: Date, minutes: number) {
-  return new Date(date.getTime() + minutes * 60_000)
-}
-
-function computeOverlapBusyUntil(args: {
-  candidateStart: Date
-  candidateDurationMinutes: number
-  timeZone: string
-  excludeAppointmentId?: string | null
-  existing: { id: string; date: string; duration: number }[]
-}): { busyUntil: Date; conflictingAppointmentId: string } | null {
-  const candidateEnd = addMinutes(args.candidateStart, args.candidateDurationMinutes)
-
-  let best: { busyUntil: Date; conflictingAppointmentId: string } | null = null
-
-  for (const apt of args.existing) {
-    if (args.excludeAppointmentId && apt.id === args.excludeAppointmentId) {
-      continue
-    }
-    const start = parseAppointmentWallclock(apt.date, args.timeZone)
-    if (!start) continue
-    const end = addMinutes(start, apt.duration)
-
-    const overlaps = start < candidateEnd && end > args.candidateStart
-    if (!overlaps) continue
-
-    if (!best || end.getTime() < best.busyUntil.getTime()) {
-      best = { busyUntil: end, conflictingAppointmentId: apt.id }
-    }
-  }
-
-  return best
 }
 
 /**
@@ -80,7 +44,7 @@ export function useAvailabilityCheck(args: {
 
   const query = useQuery({
     queryKey: [
-      'availability_check',
+      ...queryKeys.agenda.availabilityCheck,
       uniqueEmployeeIds,
       start ? formatAppointmentWallclock(start, timeZone) : null,
       durationMinutes,
@@ -97,55 +61,13 @@ export function useAvailabilityCheck(args: {
         } as const
       }
 
-      const candidateStart = start
-      const candidateEnd = addMinutes(candidateStart, durationMinutes)
-
-      // Ventana chica para no traer toda la tabla.
-      const windowStart = addMinutes(candidateStart, -12 * 60)
-      const windowEnd = addMinutes(candidateEnd, 12 * 60)
-
-      const perEmployeeOverlaps = await Promise.all(
-        uniqueEmployeeIds.map(async (employeeId) => {
-          const { data, error } = await supabase
-            .from('appointments')
-            .select('id, date, duration')
-            .eq('employee_id', employeeId)
-            .neq('status', 'cancelled')
-            .gte('date', formatAppointmentWallclock(windowStart, timeZone))
-            .lte('date', formatAppointmentWallclock(windowEnd, timeZone))
-            .order('date', { ascending: true })
-
-          if (error) {
-            throw new Error(error.message)
-          }
-
-          const existing = (data ?? []) as {
-            id: string
-            date: string
-            duration: number
-          }[]
-
-          return computeOverlapBusyUntil({
-            candidateStart,
-            candidateDurationMinutes: durationMinutes,
-            timeZone,
-            excludeAppointmentId: args.excludeAppointmentId ?? null,
-            existing,
-          })
-        })
-      )
-
-      // Todos deben estar libres a la vez: busyUntil = cuando termina el último ocupado.
-      const overlap = perEmployeeOverlaps.reduce<{
-        busyUntil: Date
-        conflictingAppointmentId: string
-      } | null>((latest, candidate) => {
-        if (!candidate) return latest
-        if (!latest || candidate.busyUntil.getTime() > latest.busyUntil.getTime()) {
-          return candidate
-        }
-        return latest
-      }, null)
+      const overlap = await checkEmployeesAvailability(supabase, {
+        employeeIds: uniqueEmployeeIds,
+        start,
+        durationMinutes,
+        timeZone,
+        excludeAppointmentId: args.excludeAppointmentId ?? null,
+      })
 
       return {
         overlap,

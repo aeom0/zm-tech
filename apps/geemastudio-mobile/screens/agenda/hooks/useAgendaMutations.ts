@@ -192,7 +192,7 @@ export function useAgendaMutations(
 
   /**
    * Sube N fotos de referencia (galería, `expo-image-picker`) al bucket `service-references`
-   * y agrega las URLs públicas a `appointments.reference_image_paths` en una sola
+   * y agrega las rutas a `appointments.reference_image_paths` en una sola
    * actualización (evita condiciones de carrera entre subidas). Marca
    * `reference_received_at = now()` solo si la cita no tenía referencias aún.
    */

@@ -17,9 +17,14 @@ import {
   MessageCircle,
   MoreHorizontal,
   TrendingUp,
+  Package,
+  Receipt,
+  UserCheck,
 } from 'lucide-react'
 
+import { NotificationBell } from '@/components/panel/NotificationBell'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
+import { usePanelAlerts } from '@/hooks/notificaciones/usePanelAlerts'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 
@@ -92,6 +97,8 @@ export function PanelShell({
   }, [pathname])
 
   const { isAdmin, isLoading: isAuthLoading } = useAuth()
+  const alerts = usePanelAlerts()
+  const countBadge = (n: number) => (n > 0 ? (n > 99 ? '99+' : String(n)) : undefined)
 
   const agendaItem: NavItem = {
     label: 'Agenda',
@@ -102,6 +109,24 @@ export function PanelShell({
     label: 'Clientes',
     href: '/panel/clientes',
     icon: <Users className="h-4 w-4" />,
+  }
+  const asignarItem: NavItem = {
+    label: 'Asignar citas',
+    shortLabel: 'Asignar',
+    href: '/panel/asignar',
+    icon: <UserCheck className="h-4 w-4" />,
+    badge: countBadge(alerts.unassignedCount),
+  }
+  const validacionItem: NavItem = {
+    label: 'Validar pagos',
+    href: '/panel/validacion',
+    icon: <Receipt className="h-4 w-4" />,
+    badge: countBadge(alerts.pendingVerifications),
+  }
+  const inventarioItem: NavItem = {
+    label: 'Inventario',
+    href: '/panel/inventario',
+    icon: <Package className="h-4 w-4" />,
   }
   const catalogoItem: NavItem = {
     label: 'Catálogo',
@@ -150,8 +175,11 @@ export function PanelShell({
     ? []
     : isAdmin
       ? [
-          { title: 'Operación', items: [agendaItem, clientesItem] },
-          { title: 'Catálogo', items: [catalogoItem] },
+          {
+            title: 'Operación',
+            items: [agendaItem, asignarItem, validacionItem, clientesItem],
+          },
+          { title: 'Catálogo', items: [catalogoItem, inventarioItem] },
           {
             title: 'Negocio',
             items: [finanzasItem, personalItem, horarioItem, configuracionItem],
@@ -181,7 +209,11 @@ export function PanelShell({
       return Boolean(pathname?.startsWith('/finanzas') || pathname?.startsWith('/dashboard'))
     }
     if (href === '/panel/configuracion') {
-      return Boolean(pathname?.startsWith('/panel/configuracion') || pathname === '/panel/horarios')
+      return Boolean(
+        pathname?.startsWith('/panel/configuracion') ||
+          pathname === '/panel/horarios' ||
+          pathname === '/panel/feriados'
+      )
     }
     if (href === '/panel/mas') {
       return Boolean(pathname?.startsWith('/panel/mas'))
@@ -194,8 +226,11 @@ export function PanelShell({
   const activePageLabel =
     [
       agendaItem,
+      asignarItem,
+      validacionItem,
       clientesItem,
       catalogoItem,
+      inventarioItem,
       finanzasItem,
       personalItem,
       horarioItem,
@@ -237,7 +272,7 @@ export function PanelShell({
     )
 
     const right = item.badge ? (
-      <span className="rounded-full border border-fg/[0.08] bg-fg/[0.06] px-2 py-0.5 text-[11px] text-fg-muted">
+      <span className="min-w-[22px] rounded-full bg-red-600 px-1.5 py-0.5 text-center text-[11px] font-bold text-white">
         {item.badge}
       </span>
     ) : null
@@ -277,7 +312,10 @@ export function PanelShell({
               <div className="truncate text-xs text-fg-muted">GeemaStudio</div>
             </div>
           </Link>
-          <TenantLogo tenantName={tenantName} tenantLogoUrl={tenantLogoUrl} size={36} />
+          <div className="flex shrink-0 items-center gap-2">
+            <NotificationBell align="left" />
+            <TenantLogo tenantName={tenantName} tenantLogoUrl={tenantLogoUrl} size={36} />
+          </div>
         </div>
       </div>
 
@@ -334,8 +372,13 @@ export function PanelShell({
               height={32}
               className="shrink-0"
             />
-            <div className="text-sm font-semibold text-fg">Panel · {activePageLabel}</div>
-            <TenantLogo tenantName={tenantName} tenantLogoUrl={tenantLogoUrl} size={28} />
+            <div className="truncate px-2 text-sm font-semibold text-fg">
+              Panel · {activePageLabel}
+            </div>
+            <div className="flex shrink-0 items-center gap-2">
+              <NotificationBell />
+              <TenantLogo tenantName={tenantName} tenantLogoUrl={tenantLogoUrl} size={28} />
+            </div>
           </div>
         </div>
 

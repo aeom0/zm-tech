@@ -42,18 +42,19 @@ export async function addReferenceImages(
     alreadyReceived: boolean
   }
 ): Promise<string[]> {
-  const uploadedUrls: string[] = []
+  // El bucket es privado: se guarda la ruta (igual que el bot) y se firma al mostrar.
+  const uploadedPaths: string[] = []
   for (const image of args.images) {
-    const { publicUrl } = await uploadReferenceImage(
+    const { path } = await uploadReferenceImage(
       client,
       args.appointmentId,
       image.source,
       image.contentType
     )
-    uploadedUrls.push(publicUrl)
+    uploadedPaths.push(path)
   }
 
-  const newPaths = [...args.currentPaths, ...uploadedUrls]
+  const newPaths = [...args.currentPaths, ...uploadedPaths]
   const updatePayload: { reference_image_paths: string[]; reference_received_at?: string } = {
     reference_image_paths: newPaths,
   }
@@ -71,6 +72,46 @@ export async function addReferenceImages(
   }
 
   return newPaths
+}
+
+const PUBLIC_URL_MARKER = `/storage/v1/object/public/${SERVICE_REFERENCES_BUCKET}/`
+
+/** Ruta dentro del bucket a partir de una ruta o de una URL pública vieja; null si es un link externo. */
+export function referenceStoragePath(value: string): string | null {
+  if (!/^https?:\/\//i.test(value)) return value.replace(/^\/+/, '')
+  const idx = value.indexOf(PUBLIC_URL_MARKER)
+  if (idx === -1) return null
+  return decodeURIComponent(value.slice(idx + PUBLIC_URL_MARKER.length).split('?')[0])
+}
+
+/**
+ * URLs para mostrar las fotos de referencia. El bucket `service-references` es privado:
+ * las rutas (y URLs públicas guardadas antes) se firman; los links externos pasan tal cual.
+ * Mantiene el orden y descarta las que no se pudieron firmar.
+ */
+export async function resolveReferenceImageUrls(
+  client: SupabaseClient,
+  values: readonly string[],
+  expiresInSeconds: number = 3600
+): Promise<string[]> {
+  const paths = values.map(referenceStoragePath)
+  const toSign = [...new Set(paths.filter((p): p is string => !!p))]
+  const signed = new Map<string, string>()
+  if (toSign.length > 0) {
+    const { data, error } = await client.storage
+      .from(SERVICE_REFERENCES_BUCKET)
+      .createSignedUrls(toSign, expiresInSeconds)
+    if (error) throw new Error(error.message)
+    for (const row of data ?? []) {
+      if (row.path && row.signedUrl) signed.set(row.path, row.signedUrl)
+    }
+  }
+  return values
+    .map((value, i) => {
+      const path = paths[i]
+      return path ? (signed.get(path) ?? null) : value
+    })
+    .filter((url): url is string => !!url)
 }
 
 export async function markReferencesReviewed(
