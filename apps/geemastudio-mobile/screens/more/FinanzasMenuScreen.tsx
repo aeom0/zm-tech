@@ -135,7 +135,6 @@ export default function FinanzasMenuScreen() {
         formData={form.formData}
         setFormData={form.setFormData}
         selectedAppointmentId={form.selectedAppointmentId}
-        abonoAmount={form.abonoAmount}
         currencySymbol={form.currencySymbol}
         vesEnabled={form.vesEnabled}
         vesRate={form.vesRate}

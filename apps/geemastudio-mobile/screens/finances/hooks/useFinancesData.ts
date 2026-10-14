@@ -413,7 +413,7 @@ export function useFinancesData(
           comisionPendienteReal: Math.max(0, r.comision - comisionPagada),
         }
       })
-  }, [isAdmin, employeesList, payments, appointmentsInPeriod, payoutsByEmployee])
+  }, [isAdmin, employeesList, payments, appointmentsInPeriod, payoutsByEmployee, periodDays])
 
   const totalRevenue = useMemo(
     () => payments.reduce((sum, p) => sum + parseFloat(String(p.amount)), 0),

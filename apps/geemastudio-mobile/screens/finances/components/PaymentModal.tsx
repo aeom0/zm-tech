@@ -37,7 +37,6 @@ interface Props {
   formData: PaymentFormData
   setFormData: React.Dispatch<React.SetStateAction<PaymentFormData>>
   selectedAppointmentId: string | null
-  abonoAmount: string | null
   currencySymbol: string
   /** Tenant VE: permite registrar el pago en Bs con la tasa vigente. */
   vesEnabled: boolean
@@ -62,7 +61,6 @@ export function PaymentModal({
   formData,
   setFormData,
   selectedAppointmentId,
-  abonoAmount,
   currencySymbol,
   vesEnabled,
   vesRate,
@@ -84,21 +82,19 @@ export function PaymentModal({
   const enBs = vesEnabled && formData.currency === 'VES'
   const montoNum = parseFloat(formData.amount.replace(',', '.'))
   const montoValido = Number.isFinite(montoNum) && montoNum > 0
-  const abonoNum = abonoAmount != null ? parseFloat(abonoAmount) : null
   // Equivalente en la otra moneda para que el cajero verifique antes de registrar.
   const equivalente = (() => {
-    if (!vesEnabled || !vesRate) return null
-    if (paymentType === 'abono') {
-      if (abonoNum == null || !Number.isFinite(abonoNum)) return null
-      return enBs
-        ? `Cobrar ${formatearBs(convertirUsdABs(abonoNum, vesRate))}`
-        : `≈ ${formatearBs(convertirUsdABs(abonoNum, vesRate))}`
-    }
-    if (!montoValido) return null
+    if (!vesEnabled || !vesRate || !montoValido) return null
     return enBs
       ? `≈ ${currencySymbol}${convertirBsAUsd(montoNum, vesRate).toFixed(2)}`
       : `≈ ${formatearBs(convertirUsdABs(montoNum, vesRate))}`
   })()
+  const totalNum = parseFloat(formData.serviceTotal.replace(',', '.'))
+  const montoEnMonedaNegocio = enBs && vesRate ? convertirBsAUsd(montoNum, vesRate) : montoNum
+  const saldoTrasAdelanto =
+    paymentType === 'abono' && montoValido && Number.isFinite(totalNum) && totalNum > 0
+      ? totalNum - montoEnMonedaNegocio
+      : null
 
   const formatShortDate = (dateString: string) => {
     const date = instanteCitaDesdeTexto(dateString, config.locale.timezone)
@@ -153,19 +149,14 @@ export function PaymentModal({
                   {(
                     [
                       {
-                        id: 'full' as FinancesPaymentType,
-                        label: 'Pago completo',
-                        icon: 'check-circle' as const,
-                      },
-                      {
                         id: 'abono' as FinancesPaymentType,
-                        label: 'Adelanto 20%',
+                        label: 'Adelanto',
                         icon: 'smartphone' as const,
                       },
                       {
-                        id: 'completar' as FinancesPaymentType,
-                        label: 'Completar 80%',
-                        icon: 'refresh-cw' as const,
+                        id: 'full' as FinancesPaymentType,
+                        label: 'Completar pago',
+                        icon: 'check-circle' as const,
                       },
                       {
                         id: 'producto' as FinancesPaymentType,
@@ -252,10 +243,34 @@ export function PaymentModal({
               </>
             )}
 
-            {paymentType === 'abono' ? (
+            <ThemedText style={[styles.inputLabel, { color: theme.textSecondary }]}>
+              {`${paymentType === 'abono' ? 'Monto del adelanto' : 'Monto'} (${enBs ? 'Bs.' : currencySymbol})`}
+            </ThemedText>
+            <TextInput
+              style={[
+                styles.input,
+                {
+                  backgroundColor: theme.backgroundSecondary,
+                  color: theme.text,
+                  borderColor: theme.border,
+                },
+              ]}
+              placeholder="0.00"
+              placeholderTextColor={theme.textMuted}
+              keyboardType="decimal-pad"
+              value={formData.amount}
+              onChangeText={(text) => setFormData((p) => ({ ...p, amount: text }))}
+            />
+            {equivalente && (
+              <ThemedText style={[styles.noAppointmentsText, { color: theme.textMuted }]}>
+                {equivalente}
+              </ThemedText>
+            )}
+
+            {paymentType === 'abono' && (
               <>
                 <ThemedText style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                  {`Valor total del servicio (${currencySymbol})`}
+                  {`Valor total del servicio (${currencySymbol}, opcional)`}
                 </ThemedText>
                 <TextInput
                   style={[
@@ -272,48 +287,17 @@ export function PaymentModal({
                   value={formData.serviceTotal}
                   onChangeText={(text) => setFormData((p) => ({ ...p, serviceTotal: text }))}
                 />
-                {abonoAmount != null && (
+                {saldoTrasAdelanto != null && saldoTrasAdelanto > 0 && (
                   <View
                     style={[styles.abonoResult, { backgroundColor: theme.backgroundSecondary }]}
                   >
                     <ThemedText style={[styles.abonoResultLabel, { color: theme.textMuted }]}>
-                      {`20% = ${currencySymbol}`}
+                      {`Saldo pendiente ${currencySymbol}`}
                     </ThemedText>
                     <ThemedText style={[styles.abonoResultAmount, { color: theme.gold }]}>
-                      {abonoAmount}
+                      {saldoTrasAdelanto.toFixed(2)}
                     </ThemedText>
                   </View>
-                )}
-                {equivalente && (
-                  <ThemedText style={[styles.noAppointmentsText, { color: theme.textMuted }]}>
-                    {equivalente}
-                  </ThemedText>
-                )}
-              </>
-            ) : (
-              <>
-                <ThemedText style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                  {`Monto (${enBs ? 'Bs.' : currencySymbol})`}
-                </ThemedText>
-                <TextInput
-                  style={[
-                    styles.input,
-                    {
-                      backgroundColor: theme.backgroundSecondary,
-                      color: theme.text,
-                      borderColor: theme.border,
-                    },
-                  ]}
-                  placeholder="0.00"
-                  placeholderTextColor={theme.textMuted}
-                  keyboardType="decimal-pad"
-                  value={formData.amount}
-                  onChangeText={(text) => setFormData((p) => ({ ...p, amount: text }))}
-                />
-                {equivalente && (
-                  <ThemedText style={[styles.noAppointmentsText, { color: theme.textMuted }]}>
-                    {equivalente}
-                  </ThemedText>
                 )}
               </>
             )}
@@ -527,7 +511,7 @@ export function PaymentModal({
             ]}
             onPress={onSubmit}
             disabled={
-              isPending || (paymentType === 'abono' ? !abonoAmount : !formData.amount.trim())
+              isPending || !formData.amount.trim()
             }
           >
             {isPending ? (

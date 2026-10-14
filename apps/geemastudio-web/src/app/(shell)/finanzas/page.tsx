@@ -537,7 +537,7 @@ export default function FinanzasPage() {
                             </p>
                             {p.is_abono ? (
                               <p className="text-xs font-semibold text-amber-600 dark:text-amber-400">
-                                Adelanto 20%{total ? ` / ${fmtS(total)}` : ''}
+                                Adelanto{total ? ` / ${fmtS(total)}` : ''}
                               </p>
                             ) : null}
                             {p.notes ? (
@@ -600,7 +600,7 @@ export default function FinanzasPage() {
                                     {p.is_abono && (
                                       <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
                                         <Smartphone className="h-3 w-3" />
-                                        Adelanto 20%
+                                        Adelanto
                                         {total && (
                                           <span className="opacity-70"> / {fmtS(total)}</span>
                                         )}

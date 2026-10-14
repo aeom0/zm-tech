@@ -50,8 +50,8 @@ export interface FinancesEmployeeOption {
   salary_amount: string | null
 }
 
-/** Pago libre, adelanto WhatsApp (20%), completar el 80% restante, o producto (retail) */
-export type FinancesPaymentType = 'full' | 'abono' | 'completar' | 'producto'
+/** Completar pago (saldo o precio de la cita), adelanto, o producto (retail) */
+export type FinancesPaymentType = 'full' | 'abono' | 'producto'
 
 /** Concepto que se guarda en payments.kind según el tipo elegido en el modal. */
 export function paymentKindFromType(type: FinancesPaymentType): FinancesPaymentKind {

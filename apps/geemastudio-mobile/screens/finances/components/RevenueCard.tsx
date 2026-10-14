@@ -201,7 +201,7 @@ export function RevenueCard({
             <View style={styles.abonoIndicator}>
               <Feather name="smartphone" size={12} color={theme.primary} />
               <ThemedText style={[styles.abonoIndicatorText, { color: theme.primary }]}>
-                Adelantos 20%: {formatCurrency(abonoDisplayTotal, config)}
+                Adelantos: {formatCurrency(abonoDisplayTotal, config)}
               </ThemedText>
             </View>
           )}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   View,
   StyleSheet,
@@ -47,13 +47,20 @@ export function RegisterPayoutModal({
   const [method, setMethod] = useState('')
   const [notes, setNotes] = useState('')
 
-  useEffect(() => {
-    if (!visible || !row) return
-    const pendiente = row.comisionPendienteReal ?? 0
-    setAmount(pendiente > 0 ? String(pendiente.toFixed(2)).replace('.', ',') : '')
-    setMethod('')
-    setNotes('')
-  }, [visible, row])
+  // Al abrir (o cambiar de fila) se precarga la comisión pendiente durante el render.
+  const [syncedFor, setSyncedFor] = useState<{ visible: boolean; row: Props['row'] }>({
+    visible: false,
+    row: null,
+  })
+  if (syncedFor.visible !== visible || syncedFor.row !== row) {
+    setSyncedFor({ visible, row })
+    if (visible && row) {
+      const pendiente = row.comisionPendienteReal ?? 0
+      setAmount(pendiente > 0 ? String(pendiente.toFixed(2)).replace('.', ',') : '')
+      setMethod('')
+      setNotes('')
+    }
+  }
 
   if (!row) return null
 

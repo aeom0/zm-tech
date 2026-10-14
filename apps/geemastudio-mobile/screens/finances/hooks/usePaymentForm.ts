@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { Alert } from 'react-native'
 import * as Haptics from 'expo-haptics'
 import { useMutation } from '@tanstack/react-query'
@@ -10,8 +10,8 @@ import { useTenant } from '@/contexts/TenantContext'
 import { formatCurrency } from '@/utils/format'
 import { useVesRate } from '@/hooks/useVesRate'
 import { useProfileTenantId } from './useProfileTenantId'
+import { useDepositDefault } from './useDepositDefault'
 
-import { ABONO_PERCENT } from '../constants'
 import { paymentKindFromType } from '../types'
 import type {
   FinancesAppointmentOption,
@@ -52,6 +52,7 @@ export function usePaymentForm(
   const { tenantId } = useProfileTenantId()
   const currencySymbol = config.locale.currency.symbol
   const ves = useVesRate()
+  const depositDefault = useDepositDefault(tenantId)
 
   const [modalVisible, setModalVisible] = useState(false)
   const [editingPayment, setEditingPayment] = useState<FinancesPayment | null>(null)
@@ -134,18 +135,36 @@ export function usePaymentForm(
     onError: (e: Error) => Alert.alert('Error', e.message || 'No se pudo eliminar el pago'),
   })
 
+  /**
+   * Montos sugeridos según el tipo y la cita elegida:
+   * - Completar pago: saldo si la cita ya tiene adelanto; si no, el precio de la cita.
+   * - Adelanto: monto fijo del negocio (Reglas del asistente) y el precio de la cita como total.
+   */
+  const suggestedAmounts = (
+    type: FinancesPaymentType,
+    aptId: string | null | undefined
+  ): Pick<PaymentFormData, 'amount' | 'serviceTotal'> => {
+    const apt = aptId ? recentAppointments.find((a) => a.id === aptId) : undefined
+    const abono = aptId ? abonoPrevioByApt[aptId] : undefined
+    const price = apt ? parseFloat(String(apt.price)) : NaN
+    if (type === 'full') {
+      if (abono) return { amount: (abono.service_total - abono.amount).toFixed(2), serviceTotal: '' }
+      return { amount: Number.isFinite(price) ? price.toFixed(2) : '', serviceTotal: '' }
+    }
+    if (type === 'abono') {
+      return {
+        amount: depositDefault != null ? depositDefault.toFixed(2) : '',
+        serviceTotal: Number.isFinite(price) ? price.toFixed(2) : '',
+      }
+    }
+    return { amount: '', serviceTotal: '' }
+  }
+
   const openNewPayment = (prefillAptId?: string, prefillType?: FinancesPaymentType) => {
+    const type = prefillType ?? 'full'
     setEditingPayment(null)
-    setPaymentType(prefillType ?? 'full')
-    const apt = prefillAptId ? recentAppointments.find((a) => a.id === prefillAptId) : undefined
-    const abono = prefillAptId ? abonoPrevioByApt[prefillAptId] : undefined
-    const initAmount =
-      prefillType === 'completar' && abono
-        ? String((abono.service_total - abono.amount).toFixed(2))
-        : apt && !abono
-          ? String(parseFloat(String(apt.price)).toFixed(2))
-          : ''
-    setFormData({ ...EMPTY_FORM, amount: initAmount })
+    setPaymentType(type)
+    setFormData({ ...EMPTY_FORM, ...suggestedAmounts(type, prefillAptId) })
     setSelectedAppointmentId(prefillAptId ?? null)
     setModalVisible(true)
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
@@ -190,57 +209,24 @@ export function usePaymentForm(
     })
   }
 
-  const abonoAmount = useMemo(() => {
-    if (paymentType !== 'abono' || !formData.serviceTotal.trim()) return null
-    const total = parseFloat(formData.serviceTotal.replace(',', '.'))
-    if (Number.isNaN(total) || total <= 0) return null
-    return (total * ABONO_PERCENT).toFixed(2)
-  }, [paymentType, formData.serviceTotal])
-
   const onSelectAppointment = (aptId: string | null) => {
     setSelectedAppointmentId(aptId)
-    if (!aptId) return
-    const apt = recentAppointments.find((a) => a.id === aptId)
-    const abono = abonoPrevioByApt[aptId]
-    if (paymentType === 'completar' && abono) {
-      const restante = (abono.service_total - abono.amount).toFixed(2)
-      setFormData((p) => ({ ...p, amount: restante }))
-    } else if (paymentType === 'full' && apt && !abono) {
-      setFormData((p) => ({
-        ...p,
-        amount: parseFloat(String(apt.price)).toFixed(2),
-      }))
-    }
+    if (!aptId || editingPayment) return
+    applySuggestion(suggestedAmounts(paymentType, aptId))
   }
 
   const onChangePaymentType = (type: FinancesPaymentType) => {
     setPaymentType(type)
-    setFormData((p) => ({ ...p, amount: '', serviceTotal: '' }))
-    if (selectedAppointmentId) {
-      const apt = recentAppointments.find((a) => a.id === selectedAppointmentId)
-      const abono = abonoPrevioByApt[selectedAppointmentId]
-      if (type === 'completar' && abono) {
-        setFormData((p) => ({
-          ...p,
-          amount: (abono.service_total - abono.amount).toFixed(2),
-          serviceTotal: '',
-        }))
-      } else if (type === 'full' && apt && !abono) {
-        setFormData((p) => ({
-          ...p,
-          amount: parseFloat(String(apt.price)).toFixed(2),
-          serviceTotal: '',
-        }))
-      }
-    }
+    applySuggestion(suggestedAmounts(type, selectedAppointmentId))
+  }
+
+  /** Las sugerencias vienen en la moneda del negocio: si hay monto, la entrada vuelve a esa moneda. */
+  const applySuggestion = (next: Pick<PaymentFormData, 'amount' | 'serviceTotal'>) => {
+    setFormData((p) => ({ ...p, ...next, ...(next.amount ? { currency: 'USD' as const } : {}) }))
   }
 
   const handleSubmit = () => {
-    const isAbonoCalc = paymentType === 'abono' && abonoAmount
-    const amountRaw = isAbonoCalc ? abonoAmount : formData.amount
-    const amount =
-      typeof amountRaw === 'string' ? amountRaw.replace(',', '.') : String(amountRaw ?? '')
-    const num = parseFloat(amount)
+    const num = parseFloat(formData.amount.replace(',', '.'))
     if (Number.isNaN(num) || num <= 0) {
       Alert.alert('Error', 'Ingresa un monto válido')
       return
@@ -250,20 +236,24 @@ export function usePaymentForm(
       return
     }
 
-    // El adelanto se calcula siempre en USD; el resto se ingresa en la moneda elegida.
     const enBs = ves.enabled && formData.currency === 'VES'
     if (enBs && !formRate) {
       Alert.alert('Error', 'No hay tasa de cambio disponible. Configúrala en Ajustes.')
       return
     }
-    const amountUsd = enBs && !isAbonoCalc && formRate ? convertirBsAUsd(num, formRate) : num
+    const amountUsd = enBs && formRate ? convertirBsAUsd(num, formRate) : num
+    const serviceTotal = parseFloat(formData.serviceTotal.replace(',', '.'))
+    const hasServiceTotal = paymentType === 'abono' && Number.isFinite(serviceTotal) && serviceTotal > 0
+    if (hasServiceTotal && amountUsd >= serviceTotal) {
+      Alert.alert('Error', 'El adelanto debe ser menor que el valor total del servicio')
+      return
+    }
 
     const vesColumns: Partial<PaymentVesColumns> = ves.enabled
       ? {
           paid_currency: enBs ? 'VES' : 'USD',
           exchange_rate: formRate ?? null,
-          amount_ves:
-            enBs && formRate ? (isAbonoCalc ? convertirUsdABs(num, formRate) : num) : null,
+          amount_ves: enBs && formRate ? num : null,
         }
       : {}
 
@@ -274,10 +264,7 @@ export function usePaymentForm(
       notes: formData.notes.trim() || null,
       is_abono: paymentType === 'abono',
       kind: paymentKindFromType(paymentType),
-      service_total:
-        paymentType === 'abono' && formData.serviceTotal.trim()
-          ? parseFloat(formData.serviceTotal.replace(',', '.'))
-          : null,
+      service_total: hasServiceTotal ? serviceTotal : null,
       appointment_id: selectedAppointmentId,
       ...vesColumns,
     }
@@ -311,7 +298,6 @@ export function usePaymentForm(
     formData,
     setFormData,
     selectedAppointmentId,
-    abonoAmount,
     currencySymbol,
     vesEnabled: ves.enabled,
     vesRate: formRate,

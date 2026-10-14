@@ -92,7 +92,7 @@ export function PaymentList({
           <ThemedText style={[styles.emptySubtitle, { color: theme.textMuted }]}>
             {isStaffOnly
               ? 'No hay pagos de tus citas en este período'
-              : 'Registra un pago o un abono (20%)'}
+              : 'Registra un pago o un adelanto'}
           </ThemedText>
         </View>
       ) : (
@@ -200,7 +200,7 @@ export function PaymentList({
                           ]}
                           onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-                            onOpenNewPayment(payment.appointment_id ?? undefined, 'completar')
+                            onOpenNewPayment(payment.appointment_id ?? undefined, 'full')
                           }}
                         >
                           <Feather name="plus-circle" size={14} color={theme.primary} />

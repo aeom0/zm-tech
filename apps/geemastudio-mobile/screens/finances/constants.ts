@@ -2,8 +2,6 @@ import { Dimensions } from 'react-native'
 
 import { Spacing } from '@/constants/theme'
 
-export const ABONO_PERCENT = 0.2
-
 export const DAYS_SHORT = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb']
 
 /** `countries` ausente = disponible en todos los países. */

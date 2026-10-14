@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   View,
   StyleSheet,
@@ -52,18 +52,19 @@ export function ExpenseModal({
   const [label, setLabel] = useState('')
   const [amount, setAmount] = useState('')
 
-  useEffect(() => {
-    if (!visible) return
-    if (editing) {
-      setCategory(editing.category)
-      setLabel(editing.label)
-      setAmount(editing.amount ? String(editing.amount).replace('.', ',') : '')
-    } else {
-      setCategory('otros')
-      setLabel('')
-      setAmount('')
+  // Al abrir (o cambiar el gasto en edición) se reinicia el formulario durante el render.
+  const [syncedFor, setSyncedFor] = useState<{ visible: boolean; editing: OperationalExpense | null }>({
+    visible: false,
+    editing: null,
+  })
+  if (syncedFor.visible !== visible || syncedFor.editing !== editing) {
+    setSyncedFor({ visible, editing })
+    if (visible) {
+      setCategory(editing ? editing.category : 'otros')
+      setLabel(editing ? editing.label : '')
+      setAmount(editing?.amount ? String(editing.amount).replace('.', ',') : '')
     }
-  }, [visible, editing])
+  }
 
   const canSave = label.trim().length > 0
 
