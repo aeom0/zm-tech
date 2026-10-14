@@ -35,7 +35,6 @@
     "@zmtech/icons": "workspace:*",
     "@zmtech/tasas": "workspace:*",
     "@zmtech/tenant-config": "workspace:*",
-    "country-flag-icons": "^1.6.20",
     "dotenv": "^16.4.5",
     "expo": "~56.0.23",
     "expo-blur": "~56.0.4",
