@@ -2,8 +2,10 @@ import { assertEquals } from "@std/assert";
 
 import { getSalonTimeSlots } from "./constants.ts";
 import {
+  formatHoursHint,
   getDateSelectorDescription,
   hydrateSalonHolidays,
+  specialDayScheduleNote,
 } from "./peru-holidays.ts";
 
 const fmt = (s: { hour: number; minute: number }) =>
@@ -51,4 +53,21 @@ Deno.test("día especial con apertura y última cita: franja inclusiva", () => {
 Deno.test("día especial sin horas: usa el horario habitual", () => {
   assertEquals(getSalonTimeSlots(4, "2031-03-06"), getSalonTimeSlots(4));
   assertEquals(getDateSelectorDescription("2031-03-06"), "Ver horarios");
+  assertEquals(specialDayScheduleNote("2031-03-06"), "");
+  assertEquals(formatHoursHint("2031-03-06", 4), "L-S: 10 AM – 6 PM");
+});
+
+Deno.test("el aviso a la clienta usa la franja, no 10 AM–12 PM", () => {
+  assertEquals(
+    specialDayScheduleNote("2031-03-04"),
+    "La primera cita empieza a las 2 PM.",
+  );
+  assertEquals(
+    formatHoursHint("2031-03-04", 2),
+    "La primera cita empieza a las 2 PM.",
+  );
+  assertEquals(
+    specialDayScheduleNote("2031-03-05"),
+    "La primera cita empieza a las 12 PM y la última a las 3 PM.",
+  );
 });

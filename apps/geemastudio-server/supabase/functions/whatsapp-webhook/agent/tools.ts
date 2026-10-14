@@ -618,7 +618,9 @@ export async function dayFacts(
   fecha: string,
 ): Promise<string[]> {
   const out: string[] = [];
-  if (isPeruHoliday(fecha)) {
+  if (isSalonClosed(fecha)) {
+    out.push("El salón está cerrado ese día. No se agendan citas.");
+  } else if (isPeruHoliday(fecha)) {
     const from = getHolidayOpenFromHour(fecha);
     const until = getHolidayOpenUntilHour(fecha);
     if (from !== null) {

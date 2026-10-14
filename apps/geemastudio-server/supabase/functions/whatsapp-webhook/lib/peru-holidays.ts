@@ -280,6 +280,45 @@ export function specialDayHoursLabel(dateKey: string): string {
   return "";
 }
 
+/**
+ * Frase para la clienta. Vacía si el día no recorta el horario.
+ * La hora de cierre es la última cita que puede empezar, no la hora en que cierra el salón.
+ */
+export function specialDayScheduleNote(dateKey: string): string {
+  const from = getHolidayOpenFromHour(dateKey);
+  const until = getHolidayOpenUntilHour(dateKey);
+  if (from !== null && until !== null) {
+    return `La primera cita empieza a las ${
+      formatHourShort(from)
+    } y la última a las ${formatHourShort(until)}.`;
+  }
+  if (from !== null) {
+    return `La primera cita empieza a las ${formatHourShort(from)}.`;
+  }
+  if (until !== null) {
+    return `La última cita empieza a las ${formatHourShort(until)}.`;
+  }
+  return "";
+}
+
+/** Hint corto cuando un horario pedido cae fuera de la franja del día. */
+export function formatHoursHint(dateKey?: string, dayOfWeek?: number): string {
+  if (dateKey) {
+    if (isSalonClosed(dateKey)) {
+      return isZmMallClosed(dateKey)
+        ? "Cerrado — el CC no abre ese día"
+        : "Cerrado ese día";
+    }
+    const note = specialDayScheduleNote(dateKey);
+    if (note) return note;
+    if (isSunday(dateKey)) {
+      return "Dom: 10:30 AM – 1 PM (adelanto S/25)";
+    }
+  }
+  if (dayOfWeek === 0) return "Dom: 10:30 AM – 1 PM (adelanto S/25)";
+  return "L-S: 10 AM – 6 PM";
+}
+
 export function dayOfWeekFromDateKey(dateKey: string): number {
   const [y, m, d] = dateKey.split("-").map(Number);
   return new Date(Date.UTC(y, m - 1, d, 12, 0, 0)).getUTCDay();

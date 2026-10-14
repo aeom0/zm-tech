@@ -46,13 +46,13 @@ import { finalizeBookingAfterDatetimeSelection } from "./payment.ts";
 import { sendMessage } from "../wa-api.ts";
 import { formatDateSpanish, parseLimaLocalToDate } from "../format.ts";
 import {
+  formatHoursHint,
   getDateKeyLima,
   getSalonClosedMessage,
-  isPeruHoliday,
   isSalonClosed,
-  isSunday,
-  isZmMallClosed,
 } from "../lib/peru-holidays.ts";
+
+export { formatHoursHint };
 
 /** Clienta quiere cambiar el servicio de la selección / reprogramación (Patricia …5300). */
 export function matchesServiceChangeIntent(text: string): boolean {
@@ -1349,24 +1349,6 @@ export async function formatAvailableHours(
     return "ninguno libre ese día — escríbenos al 📱 932 535 512";
   }
   return shown.map((s) => formatHourCompact(s.hour, s.minute)).join(", ");
-}
-
-export function formatHoursHint(dateKey?: string, dayOfWeek?: number): string {
-  if (dateKey) {
-    if (isSalonClosed(dateKey)) {
-      return isZmMallClosed(dateKey)
-        ? "Cerrado — el CC no abre ese día"
-        : "Cerrado ese día";
-    }
-    if (isPeruHoliday(dateKey)) {
-      return "Feriado: 10 AM – 12 PM";
-    }
-    if (isSunday(dateKey)) {
-      return "Dom: 10:30 AM – 1 PM (adelanto S/25)";
-    }
-  }
-  if (dayOfWeek === 0) return "Dom: 10:30 AM – 1 PM (adelanto S/25)";
-  return "L-S: 10 AM – 6 PM";
 }
 
 export function formatHour12(hour24: number, minute = 0): string {

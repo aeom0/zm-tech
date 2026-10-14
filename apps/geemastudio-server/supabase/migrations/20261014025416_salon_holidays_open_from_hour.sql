@@ -7,7 +7,8 @@ ALTER TABLE public.salon_holidays
   ADD COLUMN IF NOT EXISTS open_from_hour smallint;
 
 ALTER TABLE public.salon_holidays
-  ALTER COLUMN open_until_hour DROP NOT NULL;
+  ALTER COLUMN open_until_hour DROP NOT NULL,
+  ALTER COLUMN open_until_hour DROP DEFAULT;
 
 ALTER TABLE public.salon_holidays
   DROP CONSTRAINT IF EXISTS salon_holidays_open_until_hour_check;
