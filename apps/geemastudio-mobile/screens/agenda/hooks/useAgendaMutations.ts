@@ -339,11 +339,25 @@ export function useAgendaMutations(
       if (insError) {
         throw new Error(insError.message)
       }
+
+      // El adelanto guarda el total del servicio: al agregar/quitar servicios, el saldo
+      // pendiente en Pagos debe usar el nuevo total.
+      const { error: payError } = await supabase
+        .from('payments')
+        .update({ service_total: totalPrice })
+        .eq('appointment_id', args.id)
+        .eq('is_abono', true)
+      if (payError) {
+        throw new Error(payError.message)
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['appointments'] })
       queryClient.invalidateQueries({ queryKey: ['dashboard_stats'] })
       queryClient.invalidateQueries({ queryKey: ['appointment_services'] })
+      queryClient.invalidateQueries({ queryKey: ['payments'] })
+      queryClient.invalidateQueries({ queryKey: ['agenda_payments'] })
+      queryClient.invalidateQueries({ queryKey: ['finances_recent_appointments'] })
       callbacks.onUpdateSuccess()
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
     },

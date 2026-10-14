@@ -13,13 +13,13 @@ import { formatearBs } from '@zmtech/tasas'
 
 import { PAYMENT_METHODS } from '../constants'
 import { financesStyles as styles } from '../financesStyles'
-import type { FinancesPayment, FinancesPaymentType } from '../types'
+import type { FinancesLinkedAppointment, FinancesPayment, FinancesPaymentType } from '../types'
 
 interface Props {
   payments: FinancesPayment[]
   serviceNameById: Record<string, string>
   pendienteByAppointmentId: Record<string, number>
-  appointmentNameById: Record<string, { client_name: string; service_id: string | null }>
+  appointmentNameById: Record<string, FinancesLinkedAppointment>
   isAdmin: boolean
   isStaffOnly: boolean
   isTablet: boolean
@@ -102,10 +102,24 @@ export function PaymentList({
               payment.appointment_id != null
                 ? appointmentNameById[payment.appointment_id]
                 : undefined
+            const lineIds =
+              linkedAppointment?.service_ids && linkedAppointment.service_ids.length > 0
+                ? linkedAppointment.service_ids
+                : linkedAppointment?.service_id != null
+                  ? [linkedAppointment.service_id]
+                  : []
             const serviceName =
-              linkedAppointment?.service_id != null
-                ? (serviceNameById[linkedAppointment.service_id] ?? null)
-                : null
+              lineIds
+                .map((id) => serviceNameById[id])
+                .filter((n): n is string => !!n)
+                .join(' + ') || null
+            const livePrice = linkedAppointment ? parseFloat(linkedAppointment.price) : NaN
+            const serviceTotal =
+              !Number.isNaN(livePrice) && livePrice > 0
+                ? livePrice
+                : payment.service_total
+                  ? parseFloat(payment.service_total)
+                  : null
             const pendiente =
               payment.appointment_id != null
                 ? pendienteByAppointmentId[payment.appointment_id]
@@ -176,10 +190,10 @@ export function PaymentList({
                       {payment.notes}
                     </ThemedText>
                   ) : null}
-                  {payment.is_abono && payment.service_total ? (
+                  {payment.is_abono && serviceTotal ? (
                     <ThemedText style={[styles.paymentNotes, { color: theme.textMuted }]}>
                       Servicio total {currencySymbol}
-                      {parseFloat(payment.service_total).toFixed(0)}
+                      {serviceTotal.toFixed(0)}
                     </ThemedText>
                   ) : null}
                   {pendiente != null && pendiente > 0.01 && (

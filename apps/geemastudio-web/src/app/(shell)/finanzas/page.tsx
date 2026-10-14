@@ -56,6 +56,18 @@ function MethodIcon({ method }: { method: string }) {
   return <Banknote className="h-3.5 w-3.5" />
 }
 
+/** Total del servicio de un adelanto: precio vigente de la cita (si se agregaron servicios) o el snapshot del pago. */
+function abonoTotal(p: {
+  is_abono: boolean
+  service_total: string | null
+  apt_price: string | null
+}): number | null {
+  if (!p.is_abono) return null
+  const live = p.apt_price ? parseFloat(p.apt_price) : NaN
+  if (!Number.isNaN(live) && live > 0) return live
+  return p.service_total ? parseFloat(p.service_total) : null
+}
+
 function fmtDate(d: string, timeZone: string) {
   return new Date(d).toLocaleString('es-419', {
     day: 'numeric',
@@ -503,7 +515,7 @@ export default function FinanzasPage() {
                     <ul className="divide-y divide-zinc-100 dark:divide-zinc-800 md:hidden">
                       {payments.map((p) => {
                         const monto = parseFloat(p.amount)
-                        const total = p.service_total ? parseFloat(p.service_total) : null
+                        const total = abonoTotal(p)
                         return (
                           <li key={p.id} className="space-y-1 px-4 py-3">
                             <div className="flex items-start justify-between gap-3">
@@ -571,7 +583,7 @@ export default function FinanzasPage() {
                         <tbody>
                           {payments.map((p) => {
                             const monto = parseFloat(p.amount)
-                            const total = p.service_total ? parseFloat(p.service_total) : null
+                            const total = abonoTotal(p)
                             return (
                               <tr
                                 key={p.id}

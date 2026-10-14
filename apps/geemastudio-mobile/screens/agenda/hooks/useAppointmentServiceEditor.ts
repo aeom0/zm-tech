@@ -101,12 +101,12 @@ export function useAppointmentServiceEditor(services: AgendaService[]) {
 
 /** Sincroniza líneas editables cuando llega el fetch de appointment_services */
 export function useSyncEditLinesFromQuery(
-  lines: Array<{
+  lines: {
     service_id: string | null
     employee_id: string | null
     pack_id: string | null
     price: string
-  }>,
+  }[],
   fallbackEmployeeId: string,
   setEditServiceLines: Dispatch<SetStateAction<AgendaServiceLine[]>>
 ) {

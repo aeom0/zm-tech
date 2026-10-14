@@ -183,7 +183,7 @@ export function useFinanzasData(fallbackColor: string = DEFAULT_TENANT_PRIMARY):
             `
             id, amount, method, date, notes, is_abono, service_total, appointment_id,
             appointments (
-              client_name, price,
+              client_name, price, service_ids,
               services ( name ),
               employees ( name, color )
             )
@@ -206,6 +206,7 @@ export function useFinanzasData(fallbackColor: string = DEFAULT_TENANT_PRIMARY):
             | {
                 client_name: string | null
                 price: string | null
+                service_ids: string[] | null
                 services: { name: string } | { name: string }[] | null
                 employees:
                   | { name: string; color: string | null }
@@ -215,6 +216,7 @@ export function useFinanzasData(fallbackColor: string = DEFAULT_TENANT_PRIMARY):
             | {
                 client_name: string | null
                 price: string | null
+                service_ids: string[] | null
                 services: { name: string } | { name: string }[] | null
                 employees:
                   | { name: string; color: string | null }
@@ -224,8 +226,24 @@ export function useFinanzasData(fallbackColor: string = DEFAULT_TENANT_PRIMARY):
             | null
         }
 
-        const mapped: PaymentRow[] = ((pData ?? []) as PaymentJoinRow[]).map((p) => {
-          const apt = Array.isArray(p.appointments) ? p.appointments[0] : p.appointments
+        const paymentRows = (pData ?? []) as PaymentJoinRow[]
+        const aptOf = (p: PaymentJoinRow) =>
+          Array.isArray(p.appointments) ? p.appointments[0] : p.appointments
+        // Citas con varios servicios: nombres de todas las líneas, no solo la primera.
+        const serviceIds = [...new Set(paymentRows.flatMap((p) => aptOf(p)?.service_ids ?? []))]
+        const serviceNameById: Record<string, string> = {}
+        if (serviceIds.length > 0) {
+          const { data: sData } = await sb.from('services').select('id, name').in('id', serviceIds)
+          for (const s of (sData ?? []) as { id: string; name: string }[]) {
+            serviceNameById[s.id] = s.name
+          }
+        }
+
+        const mapped: PaymentRow[] = paymentRows.map((p) => {
+          const apt = aptOf(p)
+          const lineNames = (apt?.service_ids ?? [])
+            .map((id) => serviceNameById[id])
+            .filter((n): n is string => !!n)
           return {
             id: p.id,
             amount: p.amount,
@@ -238,7 +256,9 @@ export function useFinanzasData(fallbackColor: string = DEFAULT_TENANT_PRIMARY):
             client_name: apt?.client_name ?? null,
             apt_price: apt?.price ?? null,
             service_name:
-              (Array.isArray(apt?.services) ? apt.services[0] : apt?.services)?.name ?? null,
+              lineNames.length > 0
+                ? lineNames.join(' + ')
+                : ((Array.isArray(apt?.services) ? apt.services[0] : apt?.services)?.name ?? null),
             employee_name:
               (Array.isArray(apt?.employees) ? apt.employees[0] : apt?.employees)?.name ?? null,
             employee_color:

@@ -50,6 +50,7 @@ import { financesStyles as styles } from './finances/financesStyles'
 import type {
   FinanceView,
   FinancesDesgloseRow,
+  FinancesLinkedAppointment,
   FinancesPeriod,
   OperationalExpense,
 } from './finances/types'
@@ -138,12 +139,9 @@ export default function FinancesScreen() {
   const form = usePaymentForm(recentAppointments, abonoPrevioByApt)
 
   const appointmentNameById = useMemo(() => {
-    const map: Record<string, { client_name: string; service_id: string | null }> = {}
+    const map: Record<string, FinancesLinkedAppointment> = {}
     for (const apt of recentAppointments) {
-      map[apt.id] = {
-        client_name: apt.client_name,
-        service_id: apt.service_id,
-      }
+      map[apt.id] = apt
     }
     return map
   }, [recentAppointments])

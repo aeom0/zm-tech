@@ -18,7 +18,7 @@ import { usePaymentForm } from '@/screens/finances/hooks/usePaymentForm'
 import { PaymentModal } from '@/screens/finances/components/PaymentModal'
 import { PaymentHistoryModal } from '@/screens/finances/components/PaymentHistoryModal'
 import { ProductSaleModal } from '@/screens/finances/components/ProductSaleModal'
-import type { FinancesPeriod } from '@/screens/finances/types'
+import type { FinancesLinkedAppointment, FinancesPeriod } from '@/screens/finances/types'
 
 type Nav = NativeStackNavigationProp<MoreStackParamList, 'FinanzasMenu'>
 
@@ -52,9 +52,9 @@ export default function FinanzasMenuScreen() {
   const form = usePaymentForm(recentAppointments, abonoPrevioByApt)
 
   const appointmentNameById = useMemo(() => {
-    const map: Record<string, { client_name: string; service_id: string | null }> = {}
+    const map: Record<string, FinancesLinkedAppointment> = {}
     for (const apt of recentAppointments) {
-      map[apt.id] = { client_name: apt.client_name, service_id: apt.service_id }
+      map[apt.id] = apt
     }
     return map
   }, [recentAppointments])

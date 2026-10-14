@@ -120,7 +120,7 @@ export function useFinancesData(
     queryFn: async () => {
       let q = supabase
         .from('appointments')
-        .select('id, client_id, client_name, date, status, price, service_id, employee_id')
+        .select('id, client_id, client_name, date, status, price, service_id, service_ids, employee_id')
         .order('date', { ascending: false })
         .limit(100)
 
@@ -228,11 +228,21 @@ export function useFinancesData(
     return buildTopServicesRanking(lines, serviceNameById, packNameById).slice(0, 8)
   }, [isAdmin, appointmentsInPeriod, serviceNameById, packNameById])
 
+  /** Precio vigente de la cita: manda sobre el `service_total` del pago si se agregaron servicios. */
+  const livePriceByApt = useMemo(() => {
+    const map: Record<string, number> = {}
+    for (const apt of recentAppointments) {
+      const price = parseFloat(String(apt.price))
+      if (!Number.isNaN(price) && price > 0) map[apt.id] = price
+    }
+    return map
+  }, [recentAppointments])
+
   const abonoPrevioByApt = useMemo(() => {
     const map: Record<string, { amount: number; service_total: number }> = {}
     for (const p of payments) {
       if (p.is_abono && p.appointment_id && p.service_total) {
-        const st = parseFloat(String(p.service_total))
+        const st = livePriceByApt[p.appointment_id] ?? parseFloat(String(p.service_total))
         const amt = parseFloat(String(p.amount))
         if (!Number.isNaN(st) && !Number.isNaN(amt)) {
           map[p.appointment_id] = { amount: amt, service_total: st }
@@ -240,7 +250,7 @@ export function useFinancesData(
       }
     }
     return map
-  }, [payments])
+  }, [payments, livePriceByApt])
 
   const pendienteByAppointmentId = useMemo(() => {
     const paidByApt: Record<string, number> = {}
@@ -258,10 +268,8 @@ export function useFinancesData(
         totalByApt[aid] = serviceTotal
       }
     }
-    for (const apt of recentAppointments) {
-      if (totalByApt[apt.id] == null) {
-        totalByApt[apt.id] = parseFloat(String(apt.price))
-      }
+    for (const [aid, price] of Object.entries(livePriceByApt)) {
+      totalByApt[aid] = price
     }
     const pendiente: Record<string, number> = {}
     for (const aid of Object.keys(paidByApt)) {
@@ -271,7 +279,7 @@ export function useFinancesData(
       if (rest > 0.01) pendiente[aid] = rest
     }
     return pendiente
-  }, [payments, recentAppointments])
+  }, [payments, livePriceByApt])
 
   const desglosePorChica = useMemo((): FinancesDesgloseRow[] => {
     if (!isAdmin || employeesList.length === 0) return []

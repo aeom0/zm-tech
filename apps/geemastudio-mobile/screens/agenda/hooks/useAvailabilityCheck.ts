@@ -27,7 +27,7 @@ function computeOverlapBusyUntil(args: {
   candidateDurationMinutes: number
   timeZone: string
   excludeAppointmentId?: string | null
-  existing: Array<{ id: string; date: string; duration: number }>
+  existing: { id: string; date: string; duration: number }[]
 }): { busyUntil: Date; conflictingAppointmentId: string } | null {
   const candidateEnd = addMinutes(args.candidateStart, args.candidateDurationMinutes)
 
@@ -119,11 +119,11 @@ export function useAvailabilityCheck(args: {
             throw new Error(error.message)
           }
 
-          const existing = (data ?? []) as Array<{
+          const existing = (data ?? []) as {
             id: string
             date: string
             duration: number
-          }>
+          }[]
 
           return computeOverlapBusyUntil({
             candidateStart,

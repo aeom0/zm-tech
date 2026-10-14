@@ -10,7 +10,7 @@ import { Spacing } from '@/constants/theme'
 import { financesStyles as financesModalStyles } from '../financesStyles'
 import { PeriodSelector } from './PeriodSelector'
 import { PaymentList } from './PaymentList'
-import type { FinancesPayment, FinancesPaymentType, FinancesPeriod } from '../types'
+import type { FinancesLinkedAppointment, FinancesPayment, FinancesPaymentType, FinancesPeriod } from '../types'
 
 interface Props {
   visible: boolean
@@ -18,7 +18,7 @@ interface Props {
   payments: FinancesPayment[]
   serviceNameById: Record<string, string>
   pendienteByAppointmentId: Record<string, number>
-  appointmentNameById: Record<string, { client_name: string; service_id: string | null }>
+  appointmentNameById: Record<string, FinancesLinkedAppointment>
   isAdmin: boolean
   isStaffOnly: boolean
   isTablet: boolean

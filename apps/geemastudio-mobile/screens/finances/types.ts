@@ -31,8 +31,16 @@ export interface FinancesAppointmentOption {
   status: string
   price: string
   service_id: string | null
+  /** Todas las líneas de la cita (agenda las resincroniza al editar). */
+  service_ids?: string[] | null
   employee_id: string | null
 }
+
+/** Cita vinculada a un pago, como la muestra la lista de pagos. */
+export type FinancesLinkedAppointment = Pick<
+  FinancesAppointmentOption,
+  'client_name' | 'service_id' | 'service_ids' | 'price'
+>
 
 export interface FinancesServiceOption {
   id: string
