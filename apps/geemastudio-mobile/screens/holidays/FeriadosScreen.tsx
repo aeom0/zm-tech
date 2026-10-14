@@ -191,8 +191,9 @@ export default function FeriadosScreen() {
         ListHeaderComponent={
           <View style={styles.headerActions}>
             <ThemedText style={[styles.hint, { color: theme.textMuted }]}>
-              País: {config.locale.country}. Los cerrados no permiten citas; el resto usa horario
-              reducido (de 10 AM hasta la hora de cierre que elijas).
+              País: {config.locale.country}. Toca un día para editarlo. Cerrado: no se agendan
+              citas. Horario reducido: abre a la hora de siempre y la última cita empieza a la hora
+              que elijas.
             </ThemedText>
             <Pressable
               onPress={handleReloadCatalog}
@@ -243,16 +244,32 @@ export default function FeriadosScreen() {
                 </View>
                 <ThemedText style={[styles.rowMeta, { color: theme.textMuted }]}>
                   {formatDateEs(item.date, config.locale.language)}
-                  {item.is_closed
-                    ? ' · Cerrado'
-                    : ` · hasta ${formatHolidayUntilLabel(item.open_until_hour ?? 12)}`}
                 </ThemedText>
+                <View
+                  style={[
+                    styles.statusChip,
+                    {
+                      backgroundColor: item.is_closed ? `${theme.error}18` : `${theme.primary}18`,
+                    },
+                  ]}
+                >
+                  <Feather
+                    name={item.is_closed ? 'slash' : 'clock'}
+                    size={12}
+                    color={item.is_closed ? theme.error : theme.primary}
+                  />
+                  <ThemedText
+                    style={[
+                      styles.statusChipText,
+                      { color: item.is_closed ? theme.error : theme.primary },
+                    ]}
+                  >
+                    {item.is_closed
+                      ? 'Cerrado, sin citas'
+                      : `Última cita ${formatHolidayUntilLabel(item.open_until_hour ?? 12)}`}
+                  </ThemedText>
+                </View>
               </View>
-              <Switch
-                value={item.is_closed}
-                onValueChange={(v) => updateHoliday.mutate({ id: item.id, is_closed: v })}
-                trackColor={{ false: theme.border, true: theme.primary }}
-              />
               <Pressable
                 onPress={() => handleDelete(item)}
                 hitSlop={10}
@@ -318,7 +335,7 @@ export default function FeriadosScreen() {
             />
             <View style={styles.switchRow}>
               <ThemedText style={{ color: theme.text, fontWeight: '600' }}>
-                Cerrado (sin citas)
+                Cerrado todo el día (sin citas)
               </ThemedText>
               <Switch
                 value={formClosed}
@@ -425,6 +442,17 @@ const styles = StyleSheet.create({
   },
   pastChipText: { fontSize: 10, fontWeight: '700' },
   rowMeta: { fontSize: 12, marginTop: 2 },
+  statusChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    alignSelf: 'flex-start',
+    marginTop: Spacing.xs,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: BorderRadius.full,
+  },
+  statusChipText: { fontSize: 11, fontWeight: '700' },
   deleteBtn: { paddingLeft: Spacing.sm },
   fab: {
     position: 'absolute',
