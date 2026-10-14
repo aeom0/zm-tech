@@ -224,7 +224,7 @@ export const HAIKU_WELCOME_GREETING_TEMPLATE_DEFAULT = [
   "Hola, bienvenida a ZM Lash & Nails Beauty 💜",
   "",
   "Gracias por escribirnos. Estamos felices de atenderte. Acá abajo te dejamos las promos y servicios para que elijas con calma.",
-  "Cuando quieras reservar, escribe *agendar* y te guiamos con el menú.",
+  "Cuando quieras reservar, cuéntanos qué servicio te interesa y te ayudamos.",
 ].join("\n");
 
 export const HAIKU_WELCOME_GENERATION_SYSTEM_DEFAULT =

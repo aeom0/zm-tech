@@ -77,8 +77,7 @@ const FALLBACK_MESSAGE =
   "Notamos que tu último mensaje quedó sin respuesta, mil disculpas 💜 " +
   "¿En qué podemos ayudarte? Escribe *menu* para ver opciones o cuéntanos qué necesitas.";
 
-const AGENDAR_HINT =
-  " Si quieres agendar, escribe *agendar* y te paso el calendario 🗓️";
+const AGENDAR_HINT = " ¿Qué día te acomoda? Te paso los horarios libres 🗓️";
 
 /** Detecta copy que promete lista de días sin enviarla. */
 const PROMISES_CALENDAR_RE =
