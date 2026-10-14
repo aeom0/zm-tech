@@ -1,7 +1,17 @@
 import { useMemo, useState } from 'react'
-import { ActivityIndicator, Alert, Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native'
+import {
+  ActivityIndicator,
+  Alert,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useHeaderHeight } from '@react-navigation/elements'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { TIME_OFF_KIND_LABELS, trimTime } from '@geemastudio/shared-schema'
 
 import { ThemedText } from '@/components/ThemedText'
@@ -33,6 +43,8 @@ export default function AusenciasEquipoScreen() {
   const { theme } = useTheme()
   const { config } = useTenant()
   const insets = useSafeAreaInsets()
+  const headerHeight = useHeaderHeight()
+  const tabBarHeight = useBottomTabBarHeight()
   const staffSingular = config.terminology.staffSingular || 'Profesional'
   const timezone = config.locale.timezone
 
@@ -62,7 +74,10 @@ export default function AusenciasEquipoScreen() {
     .slice(0, 10)
   const activeCoverages = (coverages.data ?? []).filter((c) => c.date_to >= today).reverse()
 
-  const cardStyle = [av.card, { borderColor: theme.border, backgroundColor: theme.backgroundDefault }]
+  const cardStyle = [
+    av.card,
+    { borderColor: theme.border, backgroundColor: theme.backgroundDefault },
+  ]
   const selected = employeeId ?? employees[0]?.id ?? null
 
   const renderTimeOff = (t: NonNullable<typeof timeOff.data>[number]) => (
@@ -83,8 +98,10 @@ export default function AusenciasEquipoScreen() {
         accessibilityLabel="Eliminar ausencia"
         style={[av.iconBtn, { borderColor: theme.border }]}
         onPress={() =>
-          confirmDelete('¿Eliminar esta ausencia?', 'Los horarios vuelven a estar disponibles.', () =>
-            delTimeOff.mutate(t.id)
+          confirmDelete(
+            '¿Eliminar esta ausencia?',
+            'Los horarios vuelven a estar disponibles.',
+            () => delTimeOff.mutate(t.id)
           )
         }
       >
@@ -95,16 +112,16 @@ export default function AusenciasEquipoScreen() {
 
   return (
     <View style={[styles.root, { backgroundColor: theme.backgroundRoot }]}>
-      <ScrollView contentContainerStyle={av.content}>
-        <Pressable
-          onPress={() => setModalOpen(true)}
-          accessibilityRole="button"
-          style={[av.primaryBtn, { backgroundColor: theme.primary }]}
-        >
-          <Feather name="plus" size={18} color={theme.buttonText} />
-          <ThemedText style={{ color: theme.buttonText, fontWeight: '600' }}>Nueva ausencia</ThemedText>
-        </Pressable>
-
+      <ScrollView
+        contentContainerStyle={[
+          av.content,
+          // Header transparente y tab bar flotante: el contenido no debe quedar debajo.
+          {
+            paddingTop: headerHeight + Spacing.lg,
+            paddingBottom: tabBarHeight + FAB_SIZE + Spacing.xl,
+          },
+        ]}
+      >
         {timeOff.isLoading ? (
           <ActivityIndicator color={theme.primary} />
         ) : timeOff.isError ? (
@@ -113,7 +130,9 @@ export default function AusenciasEquipoScreen() {
           <>
             <ThemedText style={av.sectionTitle}>Vigentes y próximas</ThemedText>
             {upcoming.length === 0 ? (
-              <AvailabilityNote kind="info">No hay ausencias vigentes ni próximas.</AvailabilityNote>
+              <AvailabilityNote kind="info">
+                No hay ausencias vigentes ni próximas. Toca + para registrar una.
+              </AvailabilityNote>
             ) : (
               upcoming.map(renderTimeOff)
             )}
@@ -138,7 +157,9 @@ export default function AusenciasEquipoScreen() {
                   accessibilityLabel="Eliminar cobertura"
                   style={[av.iconBtn, { borderColor: theme.border }]}
                   onPress={() =>
-                    confirmDelete('¿Eliminar esta cobertura?', undefined, () => delCoverage.mutate(c.id))
+                    confirmDelete('¿Eliminar esta cobertura?', undefined, () =>
+                      delCoverage.mutate(c.id)
+                    )
                   }
                 >
                   <Feather name="trash-2" size={18} color={theme.error} />
@@ -155,6 +176,16 @@ export default function AusenciasEquipoScreen() {
           </>
         )}
       </ScrollView>
+
+      <Pressable
+        onPress={() => setModalOpen(true)}
+        accessibilityRole="button"
+        accessibilityLabel="Nueva ausencia o cobertura"
+        hitSlop={8}
+        style={[styles.fab, { backgroundColor: theme.primary, bottom: tabBarHeight + Spacing.lg }]}
+      >
+        <Feather name="plus" size={26} color={theme.buttonText} />
+      </Pressable>
 
       <Modal
         visible={modalOpen}
@@ -190,7 +221,10 @@ export default function AusenciasEquipoScreen() {
                     },
                   ]}
                 >
-                  <ThemedText type="small" style={{ color: active ? theme.primary : theme.textSecondary }}>
+                  <ThemedText
+                    type="small"
+                    style={{ color: active ? theme.primary : theme.textSecondary }}
+                  >
                     {e.name}
                   </ThemedText>
                 </Pressable>
@@ -214,8 +248,24 @@ export default function AusenciasEquipoScreen() {
   )
 }
 
+const FAB_SIZE = 56
+
 const styles = StyleSheet.create({
   root: { flex: 1 },
+  fab: {
+    position: 'absolute',
+    right: Spacing.xl,
+    width: FAB_SIZE,
+    height: FAB_SIZE,
+    borderRadius: FAB_SIZE / 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+  },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',

@@ -444,8 +444,15 @@ export default function PersonalScreen() {
         )}
       </View>
       <View style={styles.cardMain}>
-        <View style={styles.nameRow}>
-          <ThemedText style={styles.cardName}>{emp.name}</ThemedText>
+        <ThemedText style={styles.cardName} numberOfLines={1}>
+          {emp.name}
+        </ThemedText>
+        {emp.email ? (
+          <ThemedText style={[styles.cardEmail, { color: theme.textMuted }]} numberOfLines={1}>
+            {emp.email}
+          </ThemedText>
+        ) : null}
+        <View style={styles.badges}>
           <EmployeePaymentBadge
             mode={emp.payment_mode ?? 'commission'}
             percentage={emp.payment_mode === 'salary' ? null : emp.commission_percentage}
@@ -453,13 +460,6 @@ export default function PersonalScreen() {
             houseCutFixed={emp.house_cut_fixed}
             currencySymbol={currencySymbol}
           />
-        </View>
-        {emp.email ? (
-          <ThemedText style={[styles.cardEmail, { color: theme.textMuted }]}>
-            {emp.email}
-          </ThemedText>
-        ) : null}
-        <View style={styles.badges}>
           {!emp.is_active && (
             <View style={[styles.badge, { backgroundColor: theme.error + '20' }]}>
               <ThemedText style={[styles.badgeText, { color: theme.error }]}>Inactiva</ThemedText>
@@ -474,11 +474,15 @@ export default function PersonalScreen() {
             employeeName: emp.name,
           })
         }
+        accessibilityRole="button"
         accessibilityLabel={`Servicios, horario y ausencias de ${emp.name}`}
-        hitSlop={8}
-        style={styles.dragHandle}
+        hitSlop={4}
+        style={({ pressed }) => [
+          styles.cardIconBtn,
+          { borderColor: theme.border, opacity: pressed ? 0.7 : 1 },
+        ]}
       >
-        <Feather name="calendar" size={20} color={theme.primary} />
+        <Feather name="calendar" size={18} color={theme.primary} />
       </Pressable>
       <Pressable
         onLongPress={() => {
@@ -487,12 +491,12 @@ export default function PersonalScreen() {
           drag()
         }}
         disabled={isActive}
+        accessibilityLabel={`Reordenar a ${emp.name}`}
         hitSlop={8}
         style={styles.dragHandle}
       >
         <MaterialCommunityIcons name="drag-vertical" size={22} color={theme.textMuted} />
       </Pressable>
-      <Feather name="chevron-right" size={20} color={theme.textMuted} />
     </Pressable>
   )
 
@@ -540,8 +544,8 @@ export default function PersonalScreen() {
               />
               <ThemedText style={[styles.hint, { color: theme.textSecondary }]}>
                 {showGeemaExtras
-                  ? `Toca a una ${staffSingular.toLowerCase()} para editar datos, modo de pago y foto para la agenda. Mantén presionado el ícono de la derecha para reordenar.`
-                  : `Toca a una ${staffSingular.toLowerCase()} para editar datos y foto. Mantén presionado el ícono de la derecha para reordenar; Color y Activa se ven como columna en la agenda.`}
+                  ? `Toca a una ${staffSingular.toLowerCase()} para editar datos, modo de pago y foto para la agenda. El calendario abre sus horarios, servicios y ausencias; mantén presionado el ícono de la derecha para reordenar.`
+                  : `Toca a una ${staffSingular.toLowerCase()} para editar datos y foto. El calendario abre sus horarios, servicios y ausencias; mantén presionado el ícono de la derecha para reordenar.`}
               </ThemedText>
             </>
           }
@@ -1020,20 +1024,29 @@ const styles = StyleSheet.create({
   },
   cardAvatarImg: { width: '100%', height: '100%' },
   cardAvatarLetter: { fontSize: 20, fontWeight: '700' },
-  cardMain: { flex: 1 },
-  dragHandle: {
-    padding: Spacing.xs,
-    marginRight: Spacing.xs,
-  },
-  cardName: { fontSize: 16, fontWeight: '600', marginBottom: 0 },
-  nameRow: {
-    flexDirection: 'row',
+  cardMain: { flex: 1, gap: 2, marginRight: Spacing.sm },
+  cardIconBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: BorderRadius.md,
+    borderWidth: 1,
     alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: Spacing.xs,
+    justifyContent: 'center',
   },
-  cardEmail: { fontSize: 13, marginBottom: Spacing.sm },
-  badges: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.xs },
+  dragHandle: {
+    paddingVertical: Spacing.sm,
+    paddingLeft: Spacing.xs,
+    marginRight: -Spacing.xs,
+  },
+  cardName: { fontSize: 16, fontWeight: '600' },
+  cardEmail: { fontSize: 13 },
+  badges: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: Spacing.xs,
+    marginTop: 4,
+  },
   badge: {
     paddingHorizontal: Spacing.sm,
     paddingVertical: 2,
