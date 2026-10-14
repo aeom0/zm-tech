@@ -28,12 +28,23 @@ const SPAM_PATTERNS: string[] = [
   "en que te puedo ayudar",
   "gracias por contactarnos",
   "gracias por comunicarte",
-  "horario de atención es",
-  "nuestro horario de atencion",
-  "nuestro horario de atención",
   "este chat es atendido por",
   "responderemos lo antes posible",
 ];
+
+/**
+ * Copy de horario de un autorespondedor. Solo cuenta si NO es pregunta:
+ * «¿Hasta qué hora es su horario de atención?» es una clienta (caso Nisset 13-oct).
+ */
+const HOURS_AUTO_REPLY_PATTERNS: string[] = [
+  "horario de atención es",
+  "nuestro horario de atencion",
+  "nuestro horario de atención",
+];
+
+function isQuestion(messageText: string): boolean {
+  return /[¿?]/.test(messageText);
+}
 
 export function isBlockedPhone(
   phoneNumber: string,
@@ -54,7 +65,10 @@ export function isBlockedPhone(
 
 export function isSpamOperatorCopy(messageText: string): boolean {
   const msgNormalized = messageText.trim().toLowerCase();
-  return SPAM_PATTERNS.some((pattern) =>
+  const patterns = isQuestion(messageText)
+    ? SPAM_PATTERNS
+    : [...SPAM_PATTERNS, ...HOURS_AUTO_REPLY_PATTERNS];
+  return patterns.some((pattern) =>
     msgNormalized.includes(pattern.toLowerCase())
   );
 }
@@ -66,7 +80,8 @@ export function isWaBusinessAutoReply(messageText: string): boolean {
       .test(
         messageText.trim(),
       ) ||
-    (msgNormalized.length > 40 &&
+    (!isQuestion(messageText) &&
+      msgNormalized.length > 40 &&
       msgNormalized.length < 280 &&
       /\b(horario de atenci[oó]n|responderemos lo antes posible|este chat es atendido)\b/
         .test(

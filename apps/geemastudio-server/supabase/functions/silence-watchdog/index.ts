@@ -46,7 +46,11 @@ import {
   type SupabaseClient,
 } from "../whatsapp-webhook/lib/supabase.ts";
 import { runWithRequestTenantId } from "../whatsapp-webhook/lib/tenant.ts";
-import { loadSilentPhoneSet } from "../whatsapp-webhook/lib/waba-config.ts";
+import {
+  getConfigText,
+  loadSilentPhoneSet,
+  loadWabaConfig,
+} from "../whatsapp-webhook/lib/waba-config.ts";
 import {
   addressWithoutHello,
   loadClientNameForPhone,
@@ -143,6 +147,7 @@ async function askHaikuIfNeedsResponse(
   phone: string,
   history: WaMessageRow[],
   ctx: SessionContext,
+  horariosText: string,
 ): Promise<{ needsResponse: boolean; message: string } | null> {
   if (!ANTHROPIC_API_KEY) return null;
 
@@ -176,6 +181,11 @@ async function askHaikuIfNeedsResponse(
     "retome el hilo de forma natural (no genérico) y ofrezca ayuda concreta. " +
     "DATOS REALES del salón (úsalos tal cual si la clienta preguntó; NUNCA inventes dirección, distrito, horarios ni precios): dirección: " +
     SALON_ADDRESS + ". " +
+    (horariosText
+      ? `Horario de atención (es la hora hasta la que se puede empezar; un servicio largo puede terminar después): ${
+        horariosText.replace(/[*_]/g, "").replace(/\n+/g, " | ")
+      }. `
+      : "No tienes el horario: si lo preguntan, no des horas; di que el equipo se lo confirma. ") +
     `Contexto sesión: step=${
       ctx.step ?? "browsing"
     }, has_cart=${ctx.hasCart}. ` +
@@ -313,6 +323,11 @@ Deno.serve(async (req: Request) => {
     await runWithRequestTenantId(tenant.tenantId, async () => {
       const catalog = await loadCatalog(supabase);
       const blockedPhones = await loadSilentPhoneSet(supabase);
+      const horariosText = getConfigText(
+        await loadWabaConfig(supabase, tenant.tenantId),
+        "horarios_text",
+        "",
+      );
 
       const { data: candidates, error: candidatesError } = await supabase.rpc(
         "waba_find_silent_phones",
@@ -360,6 +375,7 @@ Deno.serve(async (req: Request) => {
             row.phone,
             orderedHistory,
             ctx,
+            horariosText,
           );
           let needsResponse = verdict?.needsResponse ?? true; // bias: responder ante duda
           let rawMessage = verdict?.needsResponse && verdict.message.trim()

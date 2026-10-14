@@ -1068,7 +1068,7 @@ export async function runAgentTool(
             `Día ${fecha}.`,
             ...facts,
             `Selección (${duration} min en agenda):\n${await cartSummary(ctx)}`,
-            `Horarios libres (autoridad: sistema): ${free}`,
+            `Horarios libres (autoridad: sistema; son horas de inicio, el servicio puede terminar después del cierre): ${free}`,
             staff
               ? `Asignación de personal por horario (cada 30 min):\n${staff}`
               : "Sin reglas de personal configuradas: el sistema asigna a quien corresponda al cerrar.",
