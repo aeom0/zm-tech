@@ -30,7 +30,7 @@ let migrationDone: Promise<void> | null = null
 export function migrateLegacyAsyncStorageKeys(): Promise<void> {
   if (!migrationDone) {
     migrationDone = (async () => {
-      const pairs: Array<[string, string]> = [
+      const pairs: [string, string][] = [
         [LEGACY_TENANT, ASYNC_STORAGE_TENANT_CONFIG],
         [LEGACY_CONFIGURED, ASYNC_STORAGE_TENANT_CONFIGURED],
         [LEGACY_THEME, ASYNC_STORAGE_THEME_PREFERENCE],

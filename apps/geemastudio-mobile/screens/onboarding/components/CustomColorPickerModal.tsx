@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Modal, View, StyleSheet, Pressable, useWindowDimensions } from 'react-native'
 import Slider from '@react-native-community/slider'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -6,6 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { ThemedText } from '@/components/ThemedText'
 import { BorderRadius, Onboarding, Spacing } from '@/constants/theme'
 import { hexToRgb, hsvToHex, rgbToHsv } from '@/lib/color-hsv'
+import { useResetOnChange } from '@/hooks/useResetOnChange'
 
 export interface CustomColorPickerModalProps {
   visible: boolean
@@ -31,7 +32,8 @@ export function CustomColorPickerModal({
   const [s, setS] = useState(0.75)
   const [v, setV] = useState(0.85)
 
-  useEffect(() => {
+  // Al abrir (o si cambia el color inicial), partir del color recibido.
+  useResetOnChange([visible, initialHex], () => {
     if (!visible) return
     const rgb = hexToRgb(initialHex) ?? hexToRgb(Onboarding.lunarisAccent)
     if (rgb) {
@@ -40,7 +42,7 @@ export function CustomColorPickerModal({
       setS(next.s)
       setV(next.v)
     }
-  }, [visible, initialHex])
+  })
 
   const previewHex = useMemo(() => hsvToHex(h, s, v), [h, s, v])
 

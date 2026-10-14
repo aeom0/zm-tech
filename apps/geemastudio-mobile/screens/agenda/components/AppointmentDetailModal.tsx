@@ -234,15 +234,11 @@ export function AppointmentDetailModal({
   }
 
   const { enrichedLines, editTotal, editDur, missingServiceCount } = useMemo(() => {
-    let missing = 0
     const lines = editServiceLines
       .map((line, idx) => {
         const svc = services.find((s) => s.id === line.serviceId)
         const emp = employees.find((e) => e.id === line.employeeId)
-        if (!svc) {
-          missing += 1
-          return null
-        }
+        if (!svc) return null
         const unitPrice =
           typeof line.priceOverride === 'number' && Number.isFinite(line.priceOverride)
             ? line.priceOverride
@@ -261,7 +257,7 @@ export function AppointmentDetailModal({
       enrichedLines: lines,
       editTotal: lines.reduce((sum, s) => sum + s.unitPrice, 0),
       editDur: lines.reduce((sum, s) => sum + s.duration, 0),
-      missingServiceCount: missing,
+      missingServiceCount: editServiceLines.length - lines.length,
     }
   }, [editServiceLines, services, employees])
 
@@ -512,7 +508,9 @@ export function AppointmentDetailModal({
                           ) : (
                             <>
                               <Feather name="save" size={18} color={Colors.light.buttonText} />
-                              <ThemedText style={[styles.submitButtonText, { color: theme.buttonText }]}>
+                              <ThemedText
+                                style={[styles.submitButtonText, { color: theme.buttonText }]}
+                              >
                                 Guardar servicios
                               </ThemedText>
                             </>

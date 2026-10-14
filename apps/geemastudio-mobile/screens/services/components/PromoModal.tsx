@@ -14,12 +14,14 @@ import {
 import { Feather } from '@expo/vector-icons'
 import * as Haptics from 'expo-haptics'
 
+import { DateField } from '@/components/DateField'
 import { ThemedText } from '@/components/ThemedText'
 import { ScrollFadeRow } from '@/components/ScrollFadeRow'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
 import { BorderRadius, Spacing, Colors } from '@/constants/theme'
 import { formatCurrency } from '@/utils/format'
+import { todayIso } from '@/lib/isoDate'
 import { instanteCitaDesdeTexto, zonaIANASegura } from '@zmtech/tenant-config'
 
 import type { Pack, Promo, PromotionItem, Service } from '../types'
@@ -206,7 +208,7 @@ export function PromoModal({
     }
     const expires_at = inputToExpiresIso(expiresInput, config.locale.timezone)
     if (expiresInput.trim() && !expires_at) {
-      Alert.alert('Vencimiento', 'Usa formato AAAA-MM-DD o deja vacío si no aplica.')
+      Alert.alert('Vencimiento', 'Fecha de vencimiento inválida.')
       return
     }
     const payload: PromoSavePayload = {
@@ -449,23 +451,14 @@ export function PromoModal({
                 />
               </View>
 
-              <ThemedText style={[styles.label, { color: theme.textSecondary }]}>
-                Vence (AAAA-MM-DD, opcional)
-              </ThemedText>
-              <TextInput
-                style={[
-                  styles.input,
-                  {
-                    backgroundColor: theme.backgroundSecondary,
-                    color: theme.text,
-                    borderColor: theme.border,
-                  },
-                ]}
-                placeholder="2026-12-31"
-                placeholderTextColor={theme.textMuted}
-                value={expiresInput}
-                onChangeText={setExpiresInput}
-                autoCapitalize="none"
+              <DateField
+                label="Vence (opcional)"
+                value={expiresInput || null}
+                onChange={setExpiresInput}
+                onClear={() => setExpiresInput('')}
+                placeholder="Sin vencimiento"
+                minDate={todayIso(config.locale.timezone)}
+                backgroundColor={theme.backgroundSecondary}
               />
 
               <ThemedText style={[styles.label, { color: theme.textSecondary }]}>

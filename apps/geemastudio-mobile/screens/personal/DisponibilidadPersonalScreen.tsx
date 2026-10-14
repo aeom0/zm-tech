@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Pressable, StyleSheet, View } from 'react-native'
 import { useHeaderHeight } from '@react-navigation/elements'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import type { NativeStackScreenProps } from '@react-navigation/native-stack'
 
 import { ThemedText } from '@/components/ThemedText'
@@ -27,12 +28,16 @@ export default function DisponibilidadPersonalScreen({ route }: Props) {
   const { employeeId, employeeName } = route.params
   const { theme } = useTheme()
   const headerHeight = useHeaderHeight()
+  // El tab bar es absoluto: sin este margen tapa los botones de guardar al final de cada pestaña.
+  const tabBarHeight = useBottomTabBarHeight()
   const { config } = useTenant()
   const staffSingular = config.terminology.staffSingular || 'Profesional'
   const [tab, setTab] = useState<TabKey>('servicios')
 
   return (
-    <View style={[styles.root, { backgroundColor: theme.backgroundRoot }]}>
+    <View
+      style={[styles.root, { backgroundColor: theme.backgroundRoot, paddingBottom: tabBarHeight }]}
+    >
       <View style={[styles.header, { paddingTop: headerHeight + Spacing.md }]}>
         <ThemedText type="h4">{employeeName}</ThemedText>
         <View
@@ -74,7 +79,6 @@ export default function DisponibilidadPersonalScreen({ route }: Props) {
         <AusenciasTab
           employeeId={employeeId}
           employeeName={employeeName}
-          staffSingular={staffSingular}
           timezone={config.locale.timezone}
         />
       )}

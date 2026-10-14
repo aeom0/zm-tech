@@ -17,6 +17,7 @@ import { useHeaderHeight } from '@react-navigation/elements'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { Feather } from '@expo/vector-icons'
 
+import { DateField } from '@/components/DateField'
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { useTenant } from '@/contexts/TenantContext'
@@ -96,7 +97,7 @@ export default function FeriadosScreen() {
     const date = formDate.trim()
     const name = formName.trim()
     if (!DATE_RE.test(date)) {
-      Alert.alert('Fecha inválida', 'Usa el formato AAAA-MM-DD (ej. 2026-08-30).')
+      Alert.alert('Falta la fecha', 'Elige la fecha del feriado.')
       return
     }
     if (!name) {
@@ -284,23 +285,13 @@ export default function FeriadosScreen() {
             </ThemedText>
             {!editing ? (
               <>
-                <ThemedText style={[styles.label, { color: theme.textMuted }]}>
-                  Fecha (AAAA-MM-DD)
-                </ThemedText>
-                <TextInput
-                  style={[
-                    styles.input,
-                    {
-                      color: theme.text,
-                      borderColor: theme.border,
-                      backgroundColor: theme.backgroundSecondary,
-                    },
-                  ]}
-                  value={formDate}
-                  onChangeText={setFormDate}
-                  placeholder="2026-12-25"
-                  placeholderTextColor={theme.textMuted}
-                  autoCapitalize="none"
+                <DateField
+                  label="Fecha"
+                  value={formDate || null}
+                  onChange={setFormDate}
+                  minDate={today}
+                  backgroundColor={theme.backgroundSecondary}
+                  style={styles.dateField}
                 />
               </>
             ) : (
@@ -400,6 +391,7 @@ export default function FeriadosScreen() {
 }
 
 const styles = StyleSheet.create({
+  dateField: { marginBottom: Spacing.md },
   root: { flex: 1 },
   headerActions: { marginBottom: Spacing.md, gap: Spacing.sm },
   hint: { fontSize: 13, lineHeight: 18 },

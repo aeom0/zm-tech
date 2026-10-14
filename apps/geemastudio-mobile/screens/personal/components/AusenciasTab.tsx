@@ -16,6 +16,7 @@ import {
   type EmployeeTimeOffKind,
 } from '@geemastudio/shared-schema'
 
+import { DateField } from '@/components/DateField'
 import { ThemedText } from '@/components/ThemedText'
 import { useResetOnChange } from '@/hooks/useResetOnChange'
 import { useTheme } from '@/hooks/useTheme'
@@ -47,7 +48,11 @@ function confirmDelete(title: string, message: string | undefined, onConfirm: ()
   ])
 }
 
-function AffectedList({ items }: { items: { id: string; date: string; client_name: string | null }[] }) {
+function AffectedList({
+  items,
+}: {
+  items: { id: string; date: string; client_name: string | null }[]
+}) {
   const { theme } = useTheme()
   if (items.length === 0) return null
   return (
@@ -60,7 +65,8 @@ function AffectedList({ items }: { items: { id: string; date: string; client_nam
       </ThemedText>
       {items.slice(0, 8).map((a) => (
         <ThemedText key={a.id} type="small" style={{ color: theme.textSecondary }}>
-          {formatIsoDate(a.date.slice(0, 10))} {a.date.slice(11, 16)} · {a.client_name ?? 'Sin nombre'}
+          {formatIsoDate(a.date.slice(0, 10))} {a.date.slice(11, 16)} ·{' '}
+          {a.client_name ?? 'Sin nombre'}
         </ThemedText>
       ))}
       {items.length > 8 && (
@@ -75,12 +81,10 @@ function AffectedList({ items }: { items: { id: string; date: string; client_nam
 export function AusenciasTab({
   employeeId,
   employeeName,
-  staffSingular,
   timezone,
 }: {
   employeeId: string
   employeeName: string
-  staffSingular: string
   timezone?: string | null
 }) {
   const { theme } = useTheme()
@@ -131,9 +135,9 @@ export function AusenciasTab({
   })
 
   const effectiveTo = openEnded ? null : to
-  const rangeValid =
-    isValidIsoDate(from) && (openEnded || (isValidIsoDate(to) && to >= from))
-  const partialValid = !partial || (isValidTime(startTime) && isValidTime(endTime) && endTime > startTime)
+  const rangeValid = isValidIsoDate(from) && (openEnded || (isValidIsoDate(to) && to >= from))
+  const partialValid =
+    !partial || (isValidTime(startTime) && isValidTime(endTime) && endTime > startTime)
   const offAffected = useAffectedAppointments(
     rangeValid && partialValid
       ? {
@@ -151,14 +155,15 @@ export function AusenciasTab({
     covValid ? { employeeId, dateFrom: covFrom, dateTo: covTo } : null
   )
 
-  const offReviewing = rangeValid && partialValid && (offAffected.isLoading || offAffected.isFetching)
+  const offReviewing =
+    rangeValid && partialValid && (offAffected.isLoading || offAffected.isFetching)
   const covReviewing = covValid && (covAffected.isLoading || covAffected.isFetching)
 
   const submitTimeOff = () => {
     setOffError(null)
     if (offReviewing) return
     if (!rangeValid) {
-      return setOffError('Revisa las fechas (AAAA-MM-DD): el fin no puede ser anterior al inicio.')
+      return setOffError('Revisa las fechas: el fin no puede ser anterior al inicio.')
     }
     if (partial && !partialValid) {
       return setOffError('Usa horas en formato HH:MM y que la de fin sea posterior al inicio.')
@@ -183,7 +188,7 @@ export function AusenciasTab({
     if (covReviewing) return
     if (!covering) return setCovError(`Elige quién cubre a ${employeeName}.`)
     if (!covValid) {
-      return setCovError('Revisa las fechas (AAAA-MM-DD): el fin no puede ser anterior al inicio.')
+      return setCovError('Revisa las fechas: el fin no puede ser anterior al inicio.')
     }
     addCoverage.mutate(
       {
@@ -205,7 +210,10 @@ export function AusenciasTab({
     av.input,
     { borderColor: theme.border, color: theme.text, backgroundColor: theme.backgroundRoot },
   ]
-  const cardStyle = [av.card, { borderColor: theme.border, backgroundColor: theme.backgroundDefault }]
+  const cardStyle = [
+    av.card,
+    { borderColor: theme.border, backgroundColor: theme.backgroundDefault },
+  ]
 
   const chip = (label: string, active: boolean, onPress: () => void, key?: string) => (
     <Pressable
@@ -238,40 +246,33 @@ export function AusenciasTab({
           Motivo
         </ThemedText>
         <View style={av.chips}>
-          {EMPLOYEE_TIME_OFF_KINDS.map((k) => chip(TIME_OFF_KIND_LABELS[k], kind === k, () => setKind(k), k))}
+          {EMPLOYEE_TIME_OFF_KINDS.map((k) =>
+            chip(TIME_OFF_KIND_LABELS[k], kind === k, () => setKind(k), k)
+          )}
         </View>
         <View style={av.row}>
-          <View style={av.grow}>
-            <ThemedText style={[av.label, { color: theme.textMuted }]}>Desde (AAAA-MM-DD)</ThemedText>
-            <TextInput
-              value={from}
-              onChangeText={(t) => {
-                setDatesTouched(true)
-                setFrom(t)
-              }}
-              placeholder="2026-10-24"
-              placeholderTextColor={theme.textMuted}
-              keyboardType="numbers-and-punctuation"
-              maxLength={10}
-              style={inputStyle}
-            />
-          </View>
-          <View style={av.grow}>
-            <ThemedText style={[av.label, { color: theme.textMuted }]}>Hasta (AAAA-MM-DD)</ThemedText>
-            <TextInput
-              value={to}
-              onChangeText={(t) => {
-                setDatesTouched(true)
-                setTo(t)
-              }}
-              placeholder="2026-10-24"
-              placeholderTextColor={theme.textMuted}
-              keyboardType="numbers-and-punctuation"
-              maxLength={10}
-              editable={!openEnded}
-              style={[inputStyle, openEnded && { opacity: 0.5 }]}
-            />
-          </View>
+          <DateField
+            style={av.grow}
+            label="Desde"
+            value={from}
+            onChange={(iso) => {
+              setDatesTouched(true)
+              setFrom(iso)
+              if (to < iso) setTo(iso)
+            }}
+          />
+          <DateField
+            style={av.grow}
+            label="Hasta"
+            value={to}
+            minDate={from}
+            disabled={openEnded}
+            placeholder="Sin fecha de fin"
+            onChange={(iso) => {
+              setDatesTouched(true)
+              setTo(iso)
+            }}
+          />
         </View>
         <View style={av.row}>
           <ThemedText style={av.grow}>Hasta nuevo aviso</ThemedText>
@@ -336,7 +337,10 @@ export function AusenciasTab({
         <Pressable
           style={[
             av.primaryBtn,
-            { backgroundColor: theme.primary, opacity: addTimeOff.isPending || offReviewing ? 0.6 : 1 },
+            {
+              backgroundColor: theme.primary,
+              opacity: addTimeOff.isPending || offReviewing ? 0.6 : 1,
+            },
           ]}
           disabled={addTimeOff.isPending || offReviewing}
           onPress={submitTimeOff}
@@ -353,7 +357,7 @@ export function AusenciasTab({
       ) : timeOff.isError ? (
         <AvailabilityNote kind="error">No se pudieron cargar las ausencias.</AvailabilityNote>
       ) : (timeOff.data ?? []).length === 0 ? (
-        <AvailabilityNote kind="info">{`${staffSingular} no tiene ausencias registradas.`}</AvailabilityNote>
+        <AvailabilityNote kind="info">{`${employeeName} no tiene ausencias registradas.`}</AvailabilityNote>
       ) : (
         (timeOff.data ?? []).map((t) => (
           <View key={t.id} style={[cardStyle, av.row]}>
@@ -361,7 +365,9 @@ export function AusenciasTab({
               <ThemedText style={av.title}>{TIME_OFF_KIND_LABELS[t.kind]}</ThemedText>
               <ThemedText type="small" style={{ color: theme.textSecondary }}>
                 {rangeLabel(t.date_from, t.date_to)}
-                {t.start_time && t.end_time ? ` · ${trimTime(t.start_time)}–${trimTime(t.end_time)}` : ''}
+                {t.start_time && t.end_time
+                  ? ` · ${trimTime(t.start_time)}–${trimTime(t.end_time)}`
+                  : ''}
               </ThemedText>
               {t.reason ? (
                 <ThemedText type="small" style={{ color: theme.textMuted }} numberOfLines={1}>
@@ -373,8 +379,10 @@ export function AusenciasTab({
               accessibilityLabel="Eliminar ausencia"
               style={[av.iconBtn, { borderColor: theme.border }]}
               onPress={() =>
-                confirmDelete('¿Eliminar esta ausencia?', 'Los horarios vuelven a estar disponibles.', () =>
-                  delTimeOff.mutate(t.id)
+                confirmDelete(
+                  '¿Eliminar esta ausencia?',
+                  'Los horarios vuelven a estar disponibles.',
+                  () => delTimeOff.mutate(t.id)
                 )
               }
             >
@@ -399,36 +407,26 @@ export function AusenciasTab({
           {others.map((o) => chip(o.name, covering === o.id, () => setCovering(o.id), o.id))}
         </View>
         <View style={av.row}>
-          <View style={av.grow}>
-            <ThemedText style={[av.label, { color: theme.textMuted }]}>Desde (AAAA-MM-DD)</ThemedText>
-            <TextInput
-              value={covFrom}
-              onChangeText={(t) => {
-                setCovDatesTouched(true)
-                setCovFrom(t)
-              }}
-              placeholder="2026-10-24"
-              placeholderTextColor={theme.textMuted}
-              keyboardType="numbers-and-punctuation"
-              maxLength={10}
-              style={inputStyle}
-            />
-          </View>
-          <View style={av.grow}>
-            <ThemedText style={[av.label, { color: theme.textMuted }]}>Hasta (AAAA-MM-DD)</ThemedText>
-            <TextInput
-              value={covTo}
-              onChangeText={(t) => {
-                setCovDatesTouched(true)
-                setCovTo(t)
-              }}
-              placeholder="2026-10-24"
-              placeholderTextColor={theme.textMuted}
-              keyboardType="numbers-and-punctuation"
-              maxLength={10}
-              style={inputStyle}
-            />
-          </View>
+          <DateField
+            style={av.grow}
+            label="Desde"
+            value={covFrom}
+            onChange={(iso) => {
+              setCovDatesTouched(true)
+              setCovFrom(iso)
+              if (covTo < iso) setCovTo(iso)
+            }}
+          />
+          <DateField
+            style={av.grow}
+            label="Hasta"
+            value={covTo}
+            minDate={covFrom}
+            onChange={(iso) => {
+              setCovDatesTouched(true)
+              setCovTo(iso)
+            }}
+          />
         </View>
         <View>
           <ThemedText style={[av.label, { color: theme.textMuted }]}>Nota (opcional)</ThemedText>
@@ -447,12 +445,17 @@ export function AusenciasTab({
         <Pressable
           style={[
             av.primaryBtn,
-            { backgroundColor: theme.primary, opacity: addCoverage.isPending || covReviewing ? 0.6 : 1 },
+            {
+              backgroundColor: theme.primary,
+              opacity: addCoverage.isPending || covReviewing ? 0.6 : 1,
+            },
           ]}
           disabled={addCoverage.isPending || covReviewing}
           onPress={submitCoverage}
         >
-          {(addCoverage.isPending || covReviewing) && <ActivityIndicator color={theme.buttonText} />}
+          {(addCoverage.isPending || covReviewing) && (
+            <ActivityIndicator color={theme.buttonText} />
+          )}
           <ThemedText style={{ color: theme.buttonText, fontWeight: '600' }}>
             {submitLabel(covReviewing, covAffected.data?.length ?? 0, 'Guardar cobertura')}
           </ThemedText>

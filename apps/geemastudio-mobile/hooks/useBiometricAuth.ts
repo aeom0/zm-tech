@@ -36,45 +36,42 @@ export interface BiometricAuthResult {
   error?: string
 }
 
+async function readBiometricAvailability(): Promise<{ available: boolean; types: number[] }> {
+  if (!LocalAuthentication) return { available: false, types: [] }
+  const compatible = await LocalAuthentication.hasHardwareAsync()
+  const enrolled = await LocalAuthentication.isEnrolledAsync()
+  const types = await LocalAuthentication.supportedAuthenticationTypesAsync()
+  return { available: compatible && enrolled, types }
+}
+
 export function useBiometricAuth() {
   const [isAvailable, setIsAvailable] = useState(false)
   const [biometricType, setBiometricType] = useState<number[]>([])
   const [isEnabled, setIsEnabled] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
-  const checkBiometricAvailability = useCallback(async () => {
-    try {
-      if (!LocalAuthentication) {
-        setIsAvailable(false)
-        return
-      }
-      const compatible = await LocalAuthentication.hasHardwareAsync()
-      const enrolled = await LocalAuthentication.isEnrolledAsync()
-      const types = await LocalAuthentication.supportedAuthenticationTypesAsync()
-      setIsAvailable(compatible && enrolled)
-      setBiometricType(types)
-    } catch (error) {
-      console.error('[BIOMETRIC] availability:', error)
-      setIsAvailable(false)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
-
-  const checkBiometricEnabled = useCallback(async () => {
-    try {
-      const enabled = await AsyncStorage.getItem(ASYNC_STORAGE_BIOMETRIC_ENABLED)
-      setIsEnabled(enabled === 'true')
-    } catch (error) {
-      console.error('[BIOMETRIC] enabled check:', error)
-      setIsEnabled(false)
-    }
-  }, [])
-
   useEffect(() => {
-    void checkBiometricAvailability()
-    void checkBiometricEnabled()
-  }, [checkBiometricAvailability, checkBiometricEnabled])
+    let alive = true
+    // El estado se fija en callbacks de la promesa (no sincrónicamente en el effect).
+    readBiometricAvailability()
+      .then(({ available, types }) => {
+        if (!alive) return
+        setIsAvailable(available)
+        setBiometricType(types)
+      })
+      .catch((error) => console.error('[BIOMETRIC] availability:', error))
+      .finally(() => {
+        if (alive) setIsLoading(false)
+      })
+    AsyncStorage.getItem(ASYNC_STORAGE_BIOMETRIC_ENABLED)
+      .then((enabled) => {
+        if (alive) setIsEnabled(enabled === 'true')
+      })
+      .catch((error) => console.error('[BIOMETRIC] enabled check:', error))
+    return () => {
+      alive = false
+    }
+  }, [])
 
   const getBiometricTypeName = useCallback((): string => {
     if (!LocalAuthentication || biometricType.length === 0) {
@@ -175,7 +172,8 @@ export function useBiometricAuth() {
         return { success: true }
       } catch (error: unknown) {
         console.error('[BIOMETRIC] enable:', error)
-        const message = error instanceof Error ? error.message : 'Error al habilitar autenticación biométrica'
+        const message =
+          error instanceof Error ? error.message : 'Error al habilitar autenticación biométrica'
         return { success: false, error: message }
       }
     },

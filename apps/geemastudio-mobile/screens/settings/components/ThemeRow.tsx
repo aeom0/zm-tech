@@ -2,7 +2,7 @@ import React from 'react'
 import { View, StyleSheet, Pressable } from 'react-native'
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
-import { Spacing, BorderRadius, Colors } from '@/constants/theme'
+import { Spacing, BorderRadius } from '@/constants/theme'
 import { useThemePreference, ThemePreference } from '@/contexts/ThemeContext'
 
 const OPTIONS: { label: string; value: ThemePreference }[] = [

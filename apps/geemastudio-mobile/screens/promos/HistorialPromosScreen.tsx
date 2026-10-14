@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, StyleSheet, FlatList, Image, Alert, Pressable } from 'react-native'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { Feather } from '@expo/vector-icons'
 
@@ -24,7 +24,7 @@ function extractPromoImagePath(imageUrl: string | null): string | null {
 }
 
 export default function HistorialPromosScreen() {
-  const insets = useSafeAreaInsets()
+  const tabBarHeight = useBottomTabBarHeight()
   const headerHeight = useHeaderHeight()
   const { theme } = useTheme()
   const { isAdmin } = useAuth()
@@ -61,7 +61,9 @@ export default function HistorialPromosScreen() {
     try {
       const imagePath = extractPromoImagePath(item.image_url)
       if (imagePath) {
-        const { error: storageError } = await supabase.storage.from('promo-images').remove([imagePath])
+        const { error: storageError } = await supabase.storage
+          .from('promo-images')
+          .remove([imagePath])
         if (storageError) {
           console.error('[HistorialPromosScreen] Error eliminando imagen de Storage:', storageError)
         }
@@ -80,14 +82,18 @@ export default function HistorialPromosScreen() {
   }
 
   const handleDelete = (item: PromoBroadcast) => {
-    Alert.alert('Eliminar campaña', `¿Eliminar "${item.title}" del historial? Esta acción no se puede deshacer.`, [
-      { text: 'Cancelar', style: 'cancel' },
-      {
-        text: 'Eliminar',
-        style: 'destructive',
-        onPress: () => deleteBroadcast(item),
-      },
-    ])
+    Alert.alert(
+      'Eliminar campaña',
+      `¿Eliminar "${item.title}" del historial? Esta acción no se puede deshacer.`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Eliminar',
+          style: 'destructive',
+          onPress: () => deleteBroadcast(item),
+        },
+      ]
+    )
   }
 
   const renderStatusBadge = (status: PromoBroadcast['status']) => {
@@ -133,7 +139,9 @@ export default function HistorialPromosScreen() {
   return (
     <View style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
       {!isAdmin ? (
-        <ThemedText style={{ paddingTop: headerHeight + Spacing.lg, paddingHorizontal: Spacing.lg }}>
+        <ThemedText
+          style={{ paddingTop: headerHeight + Spacing.lg, paddingHorizontal: Spacing.lg }}
+        >
           Solo administración puede ver el historial de campañas.
         </ThemedText>
       ) : (
@@ -143,12 +151,21 @@ export default function HistorialPromosScreen() {
           style={{ flex: 1 }}
           contentContainerStyle={{
             paddingTop: headerHeight + Spacing.lg,
-            paddingBottom: insets.bottom + Spacing['2xl'],
+            paddingBottom: tabBarHeight + Spacing['2xl'],
             paddingHorizontal: Spacing.lg,
           }}
           renderItem={({ item }) => (
-            <Card elevation={1} style={{ marginBottom: Spacing.md, padding: Spacing.md, borderRadius: BorderRadius.lg }}>
-              {item.image_url ? <Image source={{ uri: item.image_url }} style={styles.image} resizeMode="cover" /> : null}
+            <Card
+              elevation={1}
+              style={{
+                marginBottom: Spacing.md,
+                padding: Spacing.md,
+                borderRadius: BorderRadius.lg,
+              }}
+            >
+              {item.image_url ? (
+                <Image source={{ uri: item.image_url }} style={styles.image} resizeMode="cover" />
+              ) : null}
               <View style={styles.row}>
                 <ThemedText style={{ fontWeight: '600', flex: 1 }}>{item.title}</ThemedText>
                 {renderStatusBadge(item.status)}
@@ -164,7 +181,10 @@ export default function HistorialPromosScreen() {
               <ThemedText type="small" style={{ color: theme.textSecondary }}>
                 {formatDate(item.sent_at ?? item.created_at)}
               </ThemedText>
-              <ThemedText type="small" style={{ marginTop: Spacing.xs, color: theme.textSecondary }}>
+              <ThemedText
+                type="small"
+                style={{ marginTop: Spacing.xs, color: theme.textSecondary }}
+              >
                 {item.total_sent} enviadas · {item.total_failed} fallidas
               </ThemedText>
             </Card>

@@ -213,9 +213,7 @@ export default function LogoNegocioScreen() {
           }}
           style={styles.removeButton}
         >
-          <ThemedText style={{ fontSize: 13, color: theme.error }}>
-            Quitar logo
-          </ThemedText>
+          <ThemedText style={{ fontSize: 13, color: theme.error }}>Quitar logo</ThemedText>
         </Pressable>
       )}
 
@@ -304,8 +302,8 @@ function BgPicker({ title, uri, selected, saving, theme, onSelect }: BgPickerPro
         <View style={styles.bgWarning}>
           <Feather name="alert-circle" size={13} color={theme.textSecondary} />
           <ThemedText style={[styles.bgWarningText, { color: theme.textSecondary }]}>
-            Revisa el logo arriba con este fondo: si no se distingue bien, elige "Fondo claro" u
-            "oscuro" en vez de transparente.
+            Revisa el logo arriba con este fondo: si no se distingue bien, elige “Fondo claro” u
+            “oscuro” en vez de transparente.
           </ThemedText>
         </View>
       )}

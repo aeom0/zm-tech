@@ -1,10 +1,11 @@
 import { useMemo, useState } from 'react'
-import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native'
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import { Feather } from '@expo/vector-icons'
 import { useHeaderHeight } from '@react-navigation/elements'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { WEEK_DAYS } from '@geemastudio/shared-schema'
 
+import { SheetModal } from '@/components/SheetModal'
 import { ThemedText } from '@/components/ThemedText'
 import { useTenant } from '@/contexts/TenantContext'
 import { useTheme } from '@/hooks/useTheme'
@@ -24,7 +25,7 @@ type Mode = 'horarios' | 'servicios'
 function EquipoDisponibilidad({ mode }: { mode: Mode }) {
   const { theme } = useTheme()
   const { config } = useTenant()
-  const insets = useSafeAreaInsets()
+  const tabBarHeight = useBottomTabBarHeight()
   const headerHeight = useHeaderHeight()
   const staffSingular = config.terminology.staffSingular || 'Profesional'
 
@@ -65,7 +66,12 @@ function EquipoDisponibilidad({ mode }: { mode: Mode }) {
 
   return (
     <View style={[styles.root, { backgroundColor: theme.backgroundRoot }]}>
-      <ScrollView contentContainerStyle={[av.content, { paddingTop: headerHeight + Spacing.lg }]}>
+      <ScrollView
+        contentContainerStyle={[
+          av.content,
+          { paddingTop: headerHeight + Spacing.lg, paddingBottom: tabBarHeight + Spacing.xl },
+        ]}
+      >
         <ThemedText type="small" style={{ color: theme.textMuted }}>
           {mode === 'horarios'
             ? `Toca ${staffSingular.toLowerCase()} para editar sus días y turnos.`
@@ -134,41 +140,20 @@ function EquipoDisponibilidad({ mode }: { mode: Mode }) {
         )}
       </ScrollView>
 
-      <Modal
-        visible={!!editing}
-        animationType="slide"
-        presentationStyle="pageSheet"
-        onRequestClose={() => setEditing(null)}
-      >
-        <View style={[styles.root, { backgroundColor: theme.backgroundRoot }]}>
-          <View style={styles.modalHeader}>
-            <ThemedText type="h4">{editing?.name}</ThemedText>
-            <Pressable
-              onPress={() => setEditing(null)}
-              accessibilityLabel="Cerrar"
-              style={[styles.close, { backgroundColor: theme.backgroundSecondary }]}
-            >
-              <Feather name="x" size={18} color={theme.text} />
-            </Pressable>
-          </View>
-          <View style={[styles.root, { paddingBottom: insets.bottom }]}>
-            {editing &&
-              (mode === 'horarios' ? (
-                <HorarioTab
-                  key={editing.id}
-                  employeeId={editing.id}
-                  staffSingular={staffSingular}
-                />
-              ) : (
-                <ServiciosTab
-                  key={editing.id}
-                  employeeId={editing.id}
-                  staffSingular={staffSingular}
-                />
-              ))}
-          </View>
+      <SheetModal visible={!!editing} onClose={() => setEditing(null)} title={editing?.name ?? ''}>
+        <View style={styles.root}>
+          {editing &&
+            (mode === 'horarios' ? (
+              <HorarioTab key={editing.id} employeeId={editing.id} staffSingular={staffSingular} />
+            ) : (
+              <ServiciosTab
+                key={editing.id}
+                employeeId={editing.id}
+                staffSingular={staffSingular}
+              />
+            ))}
         </View>
-      </Modal>
+      </SheetModal>
     </View>
   )
 }
@@ -191,18 +176,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: BorderRadius.sm,
     alignItems: 'center',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: Spacing.lg,
-  },
-  close: {
-    width: 36,
-    height: 36,
-    borderRadius: BorderRadius.full,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 })

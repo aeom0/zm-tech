@@ -1,23 +1,16 @@
 import { useMemo, useState } from 'react'
-import {
-  ActivityIndicator,
-  Alert,
-  Modal,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native'
+import { ActivityIndicator, Alert, Pressable, ScrollView, StyleSheet, View } from 'react-native'
 import { Feather } from '@expo/vector-icons'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useHeaderHeight } from '@react-navigation/elements'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { TIME_OFF_KIND_LABELS, trimTime } from '@geemastudio/shared-schema'
 
+import { SheetModal } from '@/components/SheetModal'
+import { StaffPicker } from '@/components/StaffPicker'
 import { ThemedText } from '@/components/ThemedText'
 import { useTenant } from '@/contexts/TenantContext'
 import { useTheme } from '@/hooks/useTheme'
-import { BorderRadius, Spacing } from '@/constants/theme'
+import { Spacing } from '@/constants/theme'
 
 import { AusenciasTab } from './components/AusenciasTab'
 import { AvailabilityNote } from './components/AvailabilityNote'
@@ -42,7 +35,6 @@ function confirmDelete(title: string, message: string | undefined, onConfirm: ()
 export default function AusenciasEquipoScreen() {
   const { theme } = useTheme()
   const { config } = useTenant()
-  const insets = useSafeAreaInsets()
   const headerHeight = useHeaderHeight()
   const tabBarHeight = useBottomTabBarHeight()
   const staffSingular = config.terminology.staffSingular || 'Profesional'
@@ -187,63 +179,23 @@ export default function AusenciasEquipoScreen() {
         <Feather name="plus" size={26} color={theme.buttonText} />
       </Pressable>
 
-      <Modal
+      <SheetModal
         visible={modalOpen}
-        animationType="slide"
-        presentationStyle="pageSheet"
-        onRequestClose={() => setModalOpen(false)}
+        onClose={() => setModalOpen(false)}
+        title="Nueva ausencia o cobertura"
       >
-        <View style={[styles.root, { backgroundColor: theme.backgroundRoot }]}>
-          <View style={styles.modalHeader}>
-            <ThemedText type="h4">Nueva ausencia o cobertura</ThemedText>
-            <Pressable
-              onPress={() => setModalOpen(false)}
-              accessibilityLabel="Cerrar"
-              style={[styles.close, { backgroundColor: theme.backgroundSecondary }]}
-            >
-              <Feather name="x" size={18} color={theme.text} />
-            </Pressable>
-          </View>
-          <View style={av.chips}>
-            {employees.map((e) => {
-              const active = selected === e.id
-              return (
-                <Pressable
-                  key={e.id}
-                  onPress={() => setEmployeeId(e.id)}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: active }}
-                  style={[
-                    av.chip,
-                    {
-                      borderColor: active ? theme.primary : theme.border,
-                      backgroundColor: active ? `${theme.primary}22` : 'transparent',
-                    },
-                  ]}
-                >
-                  <ThemedText
-                    type="small"
-                    style={{ color: active ? theme.primary : theme.textSecondary }}
-                  >
-                    {e.name}
-                  </ThemedText>
-                </Pressable>
-              )
-            })}
-          </View>
-          <View style={[styles.root, { paddingBottom: insets.bottom }]}>
-            {selected && (
-              <AusenciasTab
-                key={selected}
-                employeeId={selected}
-                employeeName={names.get(selected) ?? staffSingular}
-                staffSingular={staffSingular}
-                timezone={timezone}
-              />
-            )}
-          </View>
+        <StaffPicker staff={employees} selectedId={selected} onSelect={setEmployeeId} />
+        <View style={styles.root}>
+          {selected && (
+            <AusenciasTab
+              key={selected}
+              employeeId={selected}
+              employeeName={names.get(selected) ?? staffSingular}
+              timezone={timezone}
+            />
+          )}
         </View>
-      </Modal>
+      </SheetModal>
     </View>
   )
 }
@@ -265,18 +217,5 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: Spacing.lg,
-  },
-  close: {
-    width: 36,
-    height: 36,
-    borderRadius: BorderRadius.full,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 })

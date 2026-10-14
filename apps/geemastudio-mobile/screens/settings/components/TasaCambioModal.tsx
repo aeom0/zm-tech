@@ -1,16 +1,7 @@
 import React, { useState } from 'react'
-import {
-  Modal,
-  View,
-  StyleSheet,
-  Pressable,
-  SafeAreaView,
-  TextInput,
-  Switch,
-  ActivityIndicator,
-} from 'react-native'
-import { Feather } from '@expo/vector-icons'
+import { View, StyleSheet, Pressable, TextInput, Switch, ActivityIndicator } from 'react-native'
 import type { TasasDuales } from '@zmtech/tasas'
+import { SheetModal } from '@/components/SheetModal'
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { Spacing, BorderRadius, Colors } from '@/constants/theme'
@@ -88,112 +79,84 @@ export function TasaCambioModal({
   )
 
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      presentationStyle="pageSheet"
-      onRequestClose={onClose}
-    >
-      <SafeAreaView style={[styles.container, { backgroundColor: theme.backgroundRoot }]}>
-        <View style={[styles.header, { borderBottomColor: theme.border }]}>
-          <ThemedText style={[styles.titulo, { color: theme.text }]}>Tasa de cambio</ThemedText>
-          <Pressable
-            onPress={onClose}
-            hitSlop={12}
-            style={({ pressed }) => ({ opacity: pressed ? 0.6 : 1 })}
-          >
-            <Feather name="x" size={22} color={theme.textMuted} />
-          </Pressable>
+    <SheetModal visible={visible} onClose={onClose} title="Tasa de cambio">
+      <View style={styles.body}>
+        <View
+          style={[
+            styles.card,
+            { borderColor: theme.border, backgroundColor: theme.backgroundDefault },
+          ]}
+        >
+          {loading && !tasas ? (
+            <ActivityIndicator color={theme.primary} />
+          ) : (
+            <>
+              {fila('BCV (oficial)', tasas?.bcv)}
+              {fila('USDT (paralelo)', tasas?.usdt)}
+              {tasas?.bcv.disponible && tasas.usdt.disponible ? (
+                <ThemedText style={[styles.rowSub, { color: theme.textMuted }]}>
+                  {`Diferencia: Bs. ${formatTasa(tasas.spread.absoluto)} (${tasas.spread.porcentaje.toFixed(1)} %)`}
+                </ThemedText>
+              ) : null}
+            </>
+          )}
         </View>
 
-        <View style={styles.body}>
-          <View
-            style={[
-              styles.card,
-              { borderColor: theme.border, backgroundColor: theme.backgroundDefault },
-            ]}
-          >
-            {loading && !tasas ? (
-              <ActivityIndicator color={theme.primary} />
-            ) : (
-              <>
-                {fila('BCV (oficial)', tasas?.bcv)}
-                {fila('USDT (paralelo)', tasas?.usdt)}
-                {tasas?.bcv.disponible && tasas.usdt.disponible ? (
-                  <ThemedText style={[styles.rowSub, { color: theme.textMuted }]}>
-                    {`Diferencia: Bs. ${formatTasa(tasas.spread.absoluto)} (${tasas.spread.porcentaje.toFixed(1)} %)`}
-                  </ThemedText>
-                ) : null}
-              </>
-            )}
+        <View style={styles.switchRow}>
+          <View style={{ flex: 1, paddingRight: Spacing.md }}>
+            <ThemedText style={[styles.rowLabel, { color: theme.text }]}>
+              Usar tasa manual
+            </ThemedText>
+            <ThemedText style={[styles.rowSub, { color: theme.textMuted }]}>
+              Por defecto se usa la tasa BCV. Activa esta opción para fijar la tuya.
+            </ThemedText>
           </View>
-
-          <View style={styles.switchRow}>
-            <View style={{ flex: 1, paddingRight: Spacing.md }}>
-              <ThemedText style={[styles.rowLabel, { color: theme.text }]}>
-                Usar tasa manual
-              </ThemedText>
-              <ThemedText style={[styles.rowSub, { color: theme.textMuted }]}>
-                Por defecto se usa la tasa BCV. Activa esta opción para fijar la tuya.
-              </ThemedText>
-            </View>
-            <Switch value={manual} onValueChange={setManual} disabled={saving} />
-          </View>
-
-          <ThemedText style={[styles.label, { color: theme.textSecondary }]}>
-            {manual ? 'Bs. por USD' : 'Tasa de respaldo (Bs. por USD)'}
-          </ThemedText>
-          <TextInput
-            value={value}
-            onChangeText={setValue}
-            style={[
-              styles.input,
-              {
-                color: theme.text,
-                borderColor: theme.border,
-                backgroundColor: theme.backgroundDefault,
-              },
-            ]}
-            placeholder="0,00"
-            placeholderTextColor={theme.textMuted}
-            keyboardType="decimal-pad"
-            editable={!saving}
-          />
-          {error ? (
-            <ThemedText style={[styles.error, { color: theme.error }]}>{error}</ThemedText>
-          ) : null}
-
-          <Pressable
-            onPress={() => void handleSave()}
-            disabled={!canSave}
-            style={({ pressed }) => [
-              styles.saveButton,
-              { backgroundColor: theme.primary, opacity: !canSave ? 0.5 : pressed ? 0.9 : 1 },
-            ]}
-          >
-            {saving ? (
-              <ActivityIndicator color={Colors.light.buttonText} />
-            ) : (
-              <ThemedText style={styles.saveButtonText}>Guardar</ThemedText>
-            )}
-          </Pressable>
+          <Switch value={manual} onValueChange={setManual} disabled={saving} />
         </View>
-      </SafeAreaView>
-    </Modal>
+
+        <ThemedText style={[styles.label, { color: theme.textSecondary }]}>
+          {manual ? 'Bs. por USD' : 'Tasa de respaldo (Bs. por USD)'}
+        </ThemedText>
+        <TextInput
+          value={value}
+          onChangeText={setValue}
+          style={[
+            styles.input,
+            {
+              color: theme.text,
+              borderColor: theme.border,
+              backgroundColor: theme.backgroundDefault,
+            },
+          ]}
+          placeholder="0,00"
+          placeholderTextColor={theme.textMuted}
+          keyboardType="decimal-pad"
+          editable={!saving}
+        />
+        {error ? (
+          <ThemedText style={[styles.error, { color: theme.error }]}>{error}</ThemedText>
+        ) : null}
+
+        <Pressable
+          onPress={() => void handleSave()}
+          disabled={!canSave}
+          style={({ pressed }) => [
+            styles.saveButton,
+            { backgroundColor: theme.primary, opacity: !canSave ? 0.5 : pressed ? 0.9 : 1 },
+          ]}
+        >
+          {saving ? (
+            <ActivityIndicator color={Colors.light.buttonText} />
+          ) : (
+            <ThemedText style={styles.saveButtonText}>Guardar</ThemedText>
+          )}
+        </Pressable>
+      </View>
+    </SheetModal>
   )
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-  },
-  titulo: { fontSize: 17, fontWeight: '600' },
   body: { padding: Spacing.lg },
   card: {
     borderWidth: 1,

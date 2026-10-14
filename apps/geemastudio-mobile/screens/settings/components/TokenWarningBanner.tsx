@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
@@ -38,12 +38,14 @@ export function TokenWarningBanner() {
   const { theme } = useTheme()
 
   const expiryStr = config.integrations?.waba?.tokenExpiry
+  // Hora fija al montar: el banner cuenta días, no necesita actualizarse en cada render.
+  const [now] = useState(() => Date.now())
 
   if (!expiryStr || !config.features?.whatsapp) {
     return null
   }
 
-  const diffMs = new Date(expiryStr).getTime() - Date.now()
+  const diffMs = new Date(expiryStr).getTime() - now
   const daysLeft = Math.ceil(diffMs / 86_400_000)
   const colors = getBannerColors(daysLeft, theme)
 

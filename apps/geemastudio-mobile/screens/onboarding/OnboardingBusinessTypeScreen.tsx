@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { View, StyleSheet, Pressable, ScrollView } from 'react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 import { LinearGradient } from 'expo-linear-gradient'
@@ -19,6 +19,7 @@ import {
   fullAestheticPreset,
   type TenantConfig,
 } from '@zmtech/tenant-config'
+import { useResetOnChange } from '@/hooks/useResetOnChange'
 
 type BusinessType = TenantConfig['businessType']
 
@@ -113,9 +114,7 @@ export default function OnboardingBusinessTypeScreen({
   const [tipoSeleccionado, setTipoSeleccionado] = useState<BusinessType>(config.businessType)
   const [selectedSubtype, setSelectedSubtype] = useState<TenantConfig['businessSubtype']>(undefined)
 
-  useEffect(() => {
-    setSelectedSubtype(undefined)
-  }, [tipoSeleccionado])
+  useResetOnChange([tipoSeleccionado], () => setSelectedSubtype(undefined))
 
   const opcionesSubtype = SUBTYPES[tipoSeleccionado]
   const mostrarSubtypes = opcionesSubtype != null && opcionesSubtype.length > 1
