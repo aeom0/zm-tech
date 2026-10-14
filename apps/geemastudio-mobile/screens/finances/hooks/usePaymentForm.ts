@@ -3,6 +3,7 @@ import { Alert } from 'react-native'
 import * as Haptics from 'expo-haptics'
 import { useMutation } from '@tanstack/react-query'
 import { convertirBsAUsd, convertirUsdABs } from '@zmtech/tasas'
+import { createPayment, deletePayment, updatePayment } from '@geemastudio/data'
 
 import { queryClient } from '@/lib/query-client'
 import { supabase } from '@/lib/supabase'
@@ -72,19 +73,20 @@ export function usePaymentForm(
   }
 
   const createMutation = useMutation({
-    mutationFn: async (data: {
-      amount: string
-      method: string
-      date: string
-      notes: string | null
-      is_abono: boolean
-      kind: FinancesPaymentKind
-      service_total: number | null
-      appointment_id: string | null
-      tenant_id: string
-    } & Partial<PaymentVesColumns>) => {
-      const { error } = await supabase.from('payments').insert(data)
-      if (error) throw new Error(error.message)
+    mutationFn: async (
+      data: {
+        amount: string
+        method: string
+        date: string
+        notes: string | null
+        is_abono: boolean
+        kind: FinancesPaymentKind
+        service_total: number | null
+        appointment_id: string | null
+        tenant_id: string
+      } & Partial<PaymentVesColumns>
+    ) => {
+      await createPayment(supabase, data)
     },
     onSuccess: () => {
       invalidateAll()
@@ -111,8 +113,7 @@ export function usePaymentForm(
         appointment_id: string | null
       } & Partial<PaymentVesColumns>
     }) => {
-      const { error } = await supabase.from('payments').update(data).eq('id', id)
-      if (error) throw new Error(error.message)
+      await updatePayment(supabase, id, data)
     },
     onSuccess: () => {
       invalidateAll()
@@ -124,8 +125,7 @@ export function usePaymentForm(
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from('payments').delete().eq('id', id)
-      if (error) throw new Error(error.message)
+      await deletePayment(supabase, id)
     },
     onSuccess: () => {
       invalidateAll()
@@ -148,7 +148,8 @@ export function usePaymentForm(
     const abono = aptId ? abonoPrevioByApt[aptId] : undefined
     const price = apt ? parseFloat(String(apt.price)) : NaN
     if (type === 'full') {
-      if (abono) return { amount: (abono.service_total - abono.amount).toFixed(2), serviceTotal: '' }
+      if (abono)
+        return { amount: (abono.service_total - abono.amount).toFixed(2), serviceTotal: '' }
       return { amount: Number.isFinite(price) ? price.toFixed(2) : '', serviceTotal: '' }
     }
     if (type === 'abono') {
@@ -172,9 +173,7 @@ export function usePaymentForm(
 
   const openEditPayment = (payment: FinancesPayment) => {
     setEditingPayment(payment)
-    setPaymentType(
-      payment.kind === 'product' ? 'producto' : payment.is_abono ? 'abono' : 'full'
-    )
+    setPaymentType(payment.kind === 'product' ? 'producto' : payment.is_abono ? 'abono' : 'full')
     const enBs = payment.paid_currency === 'VES' && payment.amount_ves != null
     setFormData({
       amount: enBs
@@ -203,7 +202,9 @@ export function usePaymentForm(
       const n = parseFloat(p.amount.replace(',', '.'))
       let amount = p.amount
       if (formRate && Number.isFinite(n) && n > 0) {
-        amount = (next === 'VES' ? convertirUsdABs(n, formRate) : convertirBsAUsd(n, formRate)).toFixed(2)
+        amount = (
+          next === 'VES' ? convertirUsdABs(n, formRate) : convertirBsAUsd(n, formRate)
+        ).toFixed(2)
       }
       return { ...p, currency: next, amount }
     })
@@ -243,7 +244,8 @@ export function usePaymentForm(
     }
     const amountUsd = enBs && formRate ? convertirBsAUsd(num, formRate) : num
     const serviceTotal = parseFloat(formData.serviceTotal.replace(',', '.'))
-    const hasServiceTotal = paymentType === 'abono' && Number.isFinite(serviceTotal) && serviceTotal > 0
+    const hasServiceTotal =
+      paymentType === 'abono' && Number.isFinite(serviceTotal) && serviceTotal > 0
     if (hasServiceTotal && amountUsd >= serviceTotal) {
       Alert.alert('Error', 'El adelanto debe ser menor que el valor total del servicio')
       return

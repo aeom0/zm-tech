@@ -2,25 +2,32 @@
 
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Search } from 'lucide-react'
+import { Search, Plus } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
 
 import { ClientCard } from './_components/ClientCard'
 import { ClientDetailDrawer } from './_components/ClientDetailDrawer'
 import { ClientKPIStrip } from './_components/ClientKPIStrip'
 import { ClientSegmentBar } from './_components/ClientSegmentBar'
+import { ClientModal } from './_components/ClientModal'
 import { useClientsData } from '@/hooks/clientes/useClientsData'
 import type { ClientSegment, ClientWithMetrics } from '@/hooks/clientes/types'
 import { useDashboardTenant } from '@/hooks/dashboard/useDashboardTenant'
+import { useTenantId } from '@/hooks/finanzas/useTenantId'
+import { useTenantSettings } from '@/hooks/configuracion/useTenantSettings'
 import { resolveDashboardCurrencyCode } from '@/lib/dashboardCurrency'
 import { StateNote } from '@/components/ui/StateNote'
 import { PageHeader } from '@/components/ui/PageHeader'
 
 function PanelClientesContent() {
+  const queryClient = useQueryClient()
   const searchParams = useSearchParams()
   const initialSearch = searchParams.get('search') ?? ''
   const [searchQuery, setSearchQuery] = useState(initialSearch)
   const [segment, setSegment] = useState<ClientSegment>('all')
   const [selected, setSelected] = useState<ClientWithMetrics | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [editingClient, setEditingClient] = useState<ClientWithMetrics | null>(null)
 
   useEffect(() => {
     const q = searchParams.get('search')
@@ -28,6 +35,9 @@ function PanelClientesContent() {
   }, [searchParams])
 
   const tenantQuery = useDashboardTenant()
+  const { tenantId } = useTenantId()
+  const { data: tenantSettings } = useTenantSettings()
+  const country = tenantSettings?.country
   const currencyCode = resolveDashboardCurrencyCode(tenantQuery.data?.currency_code)
 
   const { filteredClients, kpis, isLoading, isError, errorMessage } = useClientsData(
@@ -44,16 +54,33 @@ function PanelClientesContent() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <PageHeader title="Clientes" description="Base de clientas, segmentos VIP / nuevos / en riesgo e historial de citas." />
-        <div className="relative w-full sm:max-w-xs">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-fg-subtle" />
-          <input
-            type="search"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar por nombre, teléfono o email"
-            className="focus:border-[var(--tenant-primary)]/40 w-full rounded-xl border border-fg/[0.08] bg-fg/[0.04] py-2.5 pl-9 pr-3 text-base text-fg outline-none placeholder:text-fg-subtle md:text-sm"
-          />
+        <PageHeader
+          title="Clientes"
+          description="Base de clientas, segmentos VIP / nuevos / en riesgo e historial de citas."
+        />
+        <div className="flex w-full items-center gap-3 sm:w-auto">
+          <div className="relative flex-1 sm:w-72">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-fg-subtle" />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Buscar por nombre, teléfono o email"
+              className="focus:border-[var(--tenant-primary)]/40 w-full rounded-xl border border-fg/[0.08] bg-fg/[0.04] py-2.5 pl-9 pr-3 text-base text-fg outline-none placeholder:text-fg-subtle md:text-sm"
+            />
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setEditingClient(null)
+              setIsModalOpen(true)
+            }}
+            disabled={!tenantId || !country}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-[var(--tenant-primary)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-95 disabled:opacity-50"
+          >
+            <Plus className="h-4 w-4" />
+            Nuevo cliente
+          </button>
         </div>
       </div>
 
@@ -70,9 +97,7 @@ function PanelClientesContent() {
         </div>
       )}
 
-      {!isError && isLoading && (
-        <StateNote kind="loading">Cargando clientes…</StateNote>
-      )}
+      {!isError && isLoading && <StateNote kind="loading">Cargando clientes…</StateNote>}
 
       {!isError && !isLoading && filteredClients.length === 0 && (
         <StateNote kind="empty">No hay clientes en este filtro.</StateNote>
@@ -98,6 +123,26 @@ function PanelClientesContent() {
           currencyCode={currencyCode}
           timezone={tenantQuery.data?.timezone ?? 'America/Caracas'}
           onClose={() => setSelected(null)}
+          onEdit={() => {
+            setEditingClient(selected)
+            setIsModalOpen(true)
+          }}
+        />
+      )}
+
+      {isModalOpen && tenantId && country && (
+        <ClientModal
+          clientToEdit={editingClient}
+          country={country}
+          tenantId={tenantId}
+          onClose={() => {
+            setIsModalOpen(false)
+            setEditingClient(null)
+          }}
+          onSuccess={() => {
+            void queryClient.invalidateQueries({ queryKey: ['web_clients'] })
+            setSelected(null)
+          }}
         />
       )}
     </div>

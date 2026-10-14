@@ -1,113 +1,17 @@
 'use client'
 
 import { supabase } from '@/lib/supabase'
-import type { TenantSettingsPanelRow, TenantSettingsPatch, WebTemplate } from './types'
-
-const SELECT_CORE =
-  'id, business_name, business_type, tagline, primary_color, accent_color, currency_code, currency_symbol, country, language, timezone, client_terminology, staff_terminology, staff_singular_terminology, appointment_terminology, logo_url, features_whatsapp, slug, web_enabled, web_template, custom_domain'
-
-/** El recargo no depende de logo_bg_*: si esas columnas faltan, igual hay que leerlo. */
-const SELECT_WITH_POS = `${SELECT_CORE}, pos_fee_percent, usar_tasa_manual, tasa_manual_usd_ves`
-
-const SELECT_WITH_LOGO_BG = `${SELECT_WITH_POS}, logo_bg_light, logo_bg_dark`
-
-function normalizeRow(raw: Record<string, unknown>): TenantSettingsPanelRow {
-  const template = raw.web_template
-  const webTemplate: WebTemplate =
-    template === 'warm' || template === 'modern' || template === 'elegant' ? template : 'elegant'
-
-  return {
-    id: String(raw.id),
-    business_name: String(raw.business_name ?? ''),
-    business_type: String(raw.business_type ?? ''),
-    tagline: String(raw.tagline ?? ''),
-    primary_color: String(raw.primary_color ?? '#40E0D0'),
-    accent_color: String(raw.accent_color ?? '#FFD700'),
-    currency_code: String(raw.currency_code ?? 'USD'),
-    currency_symbol: String(raw.currency_symbol ?? '$'),
-    country: String(raw.country ?? ''),
-    language: String(raw.language ?? 'es'),
-    timezone: String(raw.timezone ?? 'America/Caracas'),
-    client_terminology: String(raw.client_terminology ?? 'cliente'),
-    staff_terminology: String(raw.staff_terminology ?? 'Profesionales'),
-    staff_singular_terminology: String(raw.staff_singular_terminology ?? 'Profesional'),
-    appointment_terminology: String(raw.appointment_terminology ?? 'cita'),
-    logo_url: String(raw.logo_url ?? ''),
-    logo_bg_light: (raw.logo_bg_light as string | null) ?? null,
-    logo_bg_dark: (raw.logo_bg_dark as string | null) ?? null,
-    features_whatsapp: Boolean(raw.features_whatsapp),
-    pos_fee_percent: raw.pos_fee_percent != null ? Number(raw.pos_fee_percent) : 5,
-    usar_tasa_manual: Boolean(raw.usar_tasa_manual),
-    tasa_manual_usd_ves: raw.tasa_manual_usd_ves != null ? Number(raw.tasa_manual_usd_ves) : null,
-    slug: (raw.slug as string | null) ?? null,
-    web_enabled: Boolean(raw.web_enabled),
-    web_template: webTemplate,
-    custom_domain: (raw.custom_domain as string | null) ?? null,
-  }
-}
-
-async function selectByFilter(
-  column: 'id' | 'tenant_slug',
-  value: string
-): Promise<TenantSettingsPanelRow | null> {
-  if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
-
-  const withBg = await supabase
-    .from('tenant_settings')
-    .select(SELECT_WITH_LOGO_BG)
-    .eq(column, value)
-    .maybeSingle()
-
-  if (!withBg.error && withBg.data) {
-    return normalizeRow(withBg.data as unknown as Record<string, unknown>)
-  }
-
-  // logo_bg_* puede no existir; pos_fee_percent sí debe leerse en ese caso
-  const withPos = await supabase
-    .from('tenant_settings')
-    .select(SELECT_WITH_POS)
-    .eq(column, value)
-    .maybeSingle()
-
-  if (!withPos.error && withPos.data) {
-    return normalizeRow(withPos.data as unknown as Record<string, unknown>)
-  }
-
-  const core = await supabase
-    .from('tenant_settings')
-    .select(SELECT_CORE)
-    .eq(column, value)
-    .maybeSingle()
-
-  if (core.error) throw new Error(core.error.message)
-  if (!core.data) return null
-  return normalizeRow(core.data as unknown as Record<string, unknown>)
-}
+import {
+  fetchTenantSettingsForSession as fetchTenantSettingsForSessionData,
+  type TenantSettingsPanelRow,
+  type TenantSettingsPatch,
+  updateTenantSettingsRow,
+  uploadTenantLogo as uploadTenantLogoData,
+} from '@geemastudio/data'
 
 export async function fetchTenantSettingsForSession(): Promise<TenantSettingsPanelRow | null> {
   if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
-
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser()
-  if (userError || !user) throw new Error('No hay sesión activa')
-
-  const byId = await selectByFilter('id', user.id)
-  if (byId) return byId
-
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('tenant_id')
-    .eq('id', user.id)
-    .maybeSingle()
-
-  const tenantSlug = profile?.tenant_id as string | null | undefined
-  if (tenantSlug) {
-    return selectByFilter('tenant_slug', tenantSlug)
-  }
-
-  return null
+  return fetchTenantSettingsForSessionData(supabase)
 }
 
 export async function updateTenantSettings(
@@ -115,34 +19,10 @@ export async function updateTenantSettings(
   patch: TenantSettingsPatch
 ): Promise<void> {
   if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
-
-  const payload: Record<string, unknown> = { ...patch, updated_at: new Date().toISOString() }
-
-  const { error } = await supabase.from('tenant_settings').update(payload).eq('id', rowId)
-  if (!error) return
-
-  // Reintento sin logo_bg_* si la columna no existe
-  const msg = error.message.toLowerCase()
-  if (msg.includes('logo_bg') || msg.includes('schema cache') || error.code === 'PGRST204') {
-    const { logo_bg_light: _l, logo_bg_dark: _d, ...rest } = payload
-    const retry = await supabase.from('tenant_settings').update(rest).eq('id', rowId)
-    if (retry.error) throw new Error(retry.error.message)
-    return
-  }
-
-  throw new Error(error.message)
+  return updateTenantSettingsRow(supabase, rowId, patch)
 }
-
-const LOGO_BUCKET = 'tenant-logos'
 
 export async function uploadTenantLogo(userId: string, file: File): Promise<string> {
   if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
-  const path = `${userId}/logo.webp`
-  const { error } = await supabase.storage.from(LOGO_BUCKET).upload(path, file, {
-    contentType: file.type || 'image/webp',
-    upsert: true,
-  })
-  if (error) throw new Error(error.message)
-  const { data } = supabase.storage.from(LOGO_BUCKET).getPublicUrl(path)
-  return `${data.publicUrl}?t=${Date.now()}`
+  return uploadTenantLogoData(supabase, userId, file, file.type || 'image/webp')
 }

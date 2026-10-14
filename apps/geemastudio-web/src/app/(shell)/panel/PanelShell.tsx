@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import {
   ChevronDown,
   HelpCircle,
@@ -21,6 +21,7 @@ import {
 
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import { supabase } from '@/lib/supabase'
+import { useAuth } from '@/contexts/AuthContext'
 
 type NavItem = {
   label: string
@@ -90,6 +91,8 @@ export function PanelShell({
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
   }, [pathname])
 
+  const { isAdmin, isLoading: isAuthLoading } = useAuth()
+
   const agendaItem: NavItem = {
     label: 'Agenda',
     href: '/panel/agenda',
@@ -122,7 +125,7 @@ export function PanelShell({
     icon: <Settings className="h-4 w-4" />,
   }
   const finanzasItem: NavItem = {
-    label: 'Finanzas',
+    label: isAdmin ? 'Finanzas' : 'Mis pagos',
     href: '/finanzas',
     icon: <TrendingUp className="h-4 w-4" />,
   }
@@ -142,23 +145,32 @@ export function PanelShell({
     icon: <MoreHorizontal className="h-4 w-4" />,
   }
 
-  const navSections = useMemo<NavSection[]>(
-    () => [
-      { title: 'Operación', items: [agendaItem, clientesItem] },
-      { title: 'Catálogo', items: [catalogoItem] },
-      {
-        title: 'Negocio',
-        items: [finanzasItem, personalItem, horarioItem, configuracionItem],
-      },
-      { title: 'Marketing', items: [wabaItem] },
-      { title: 'Soporte', items: [ayudaItem] },
-    ],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  )
+  // Mientras carga el perfil no se sabe el rol: no mostrar ni el menú de admin ni el de staff.
+  const navSections: NavSection[] = isAuthLoading
+    ? []
+    : isAdmin
+      ? [
+          { title: 'Operación', items: [agendaItem, clientesItem] },
+          { title: 'Catálogo', items: [catalogoItem] },
+          {
+            title: 'Negocio',
+            items: [finanzasItem, personalItem, horarioItem, configuracionItem],
+          },
+          { title: 'Marketing', items: [wabaItem] },
+          { title: 'Soporte', items: [ayudaItem] },
+        ]
+      : [
+          { title: 'Mi trabajo', items: [agendaItem, finanzasItem] },
+          { title: 'Soporte', items: [ayudaItem] },
+        ]
 
-  // Ítems fijos del bottom tab bar mobile; WhatsApp en el centro y Más como pantalla completa
-  const primaryTabItems: NavItem[] = [agendaItem, clientesItem, wabaItem, catalogoItem, masItem]
+  // Ítems fijos del bottom tab bar mobile. "Más" queda también para staff (tema y cerrar
+  // sesión); esa pantalla filtra los módulos de admin.
+  const primaryTabItems: NavItem[] = isAuthLoading
+    ? []
+    : isAdmin
+      ? [agendaItem, clientesItem, wabaItem, catalogoItem, masItem]
+      : [agendaItem, finanzasItem, ayudaItem, masItem]
 
   function isNavActive(href: string): boolean {
     if (href === '/panel/waba' || href === '/panel/waba/mensajes') {
@@ -179,8 +191,8 @@ export function PanelShell({
     return pathname === href
   }
 
-  const activePageLabel = useMemo(() => {
-    const allItems = [
+  const activePageLabel =
+    [
       agendaItem,
       clientesItem,
       catalogoItem,
@@ -191,10 +203,7 @@ export function PanelShell({
       wabaItem,
       ayudaItem,
       masItem,
-    ]
-    return allItems.find((item) => isNavActive(item.href))?.label ?? 'Inicio'
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname])
+    ].find((item) => isNavActive(item.href))?.label ?? 'Inicio'
 
   const handleLogout = async () => {
     try {

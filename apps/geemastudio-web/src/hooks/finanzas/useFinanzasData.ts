@@ -2,10 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react'
 import { calculateEmployeeEarnings } from '@geemastudio/shared-schema'
-import {
-  formatAppointmentWallclock,
-  instanteCitaDesdeTexto,
-} from '@zmtech/tenant-config'
+import { formatAppointmentWallclock, instanteCitaDesdeTexto } from '@zmtech/tenant-config'
 import { supabase } from '@/lib/supabase'
 import { DEFAULT_TENANT_PRIMARY } from '@/lib/tenant-theme'
 import { useDashboardTenant } from '@/hooks/dashboard/useDashboardTenant'
@@ -25,6 +22,7 @@ export interface PaymentRow {
   client_name: string | null
   apt_price: string | null
   service_name: string | null
+  employee_id: string | null
   employee_name: string | null
   employee_color: string | null
 }
@@ -183,7 +181,7 @@ export function useFinanzasData(fallbackColor: string = DEFAULT_TENANT_PRIMARY):
             `
             id, amount, method, date, notes, is_abono, service_total, appointment_id,
             appointments (
-              client_name, price, service_ids,
+              client_name, price, service_ids, employee_id,
               services ( name ),
               employees ( name, color )
             )
@@ -207,6 +205,7 @@ export function useFinanzasData(fallbackColor: string = DEFAULT_TENANT_PRIMARY):
                 client_name: string | null
                 price: string | null
                 service_ids: string[] | null
+                employee_id: string | null
                 services: { name: string } | { name: string }[] | null
                 employees:
                   | { name: string; color: string | null }
@@ -217,6 +216,7 @@ export function useFinanzasData(fallbackColor: string = DEFAULT_TENANT_PRIMARY):
                 client_name: string | null
                 price: string | null
                 service_ids: string[] | null
+                employee_id: string | null
                 services: { name: string } | { name: string }[] | null
                 employees:
                   | { name: string; color: string | null }
@@ -259,6 +259,7 @@ export function useFinanzasData(fallbackColor: string = DEFAULT_TENANT_PRIMARY):
               lineNames.length > 0
                 ? lineNames.join(' + ')
                 : ((Array.isArray(apt?.services) ? apt.services[0] : apt?.services)?.name ?? null),
+            employee_id: apt?.employee_id ?? null,
             employee_name:
               (Array.isArray(apt?.employees) ? apt.employees[0] : apt?.employees)?.name ?? null,
             employee_color:

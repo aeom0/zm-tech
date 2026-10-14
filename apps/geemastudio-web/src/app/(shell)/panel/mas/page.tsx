@@ -14,11 +14,22 @@ import {
   Users,
 } from 'lucide-react'
 
+import { fetchProfile, isAdminRole } from '@geemastudio/data'
+
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { fetchTenantBrandForUser } from '@/lib/tenant-brand'
 import { MasLogoutButton } from './_components/MasLogoutButton'
 
-const MODULE_SECTIONS = [
+type ModuleItem = {
+  href: string
+  label: string
+  description: string
+  icon: typeof Calendar
+  /** Solo dueño/dev; staff no tiene acceso a ese módulo. */
+  adminOnly?: boolean
+}
+
+const MODULE_SECTIONS: { title: string; items: ModuleItem[] }[] = [
   {
     title: 'Operación diaria',
     items: [
@@ -33,12 +44,14 @@ const MODULE_SECTIONS = [
         label: 'Clientes',
         description: 'Historial y datos de contacto',
         icon: Users,
+        adminOnly: true,
       },
       {
         href: '/panel/waba/mensajes',
         label: 'WhatsApp',
         description: 'Bandeja de chats, asistente y respuestas',
         icon: MessageCircle,
+        adminOnly: true,
       },
     ],
   },
@@ -50,6 +63,7 @@ const MODULE_SECTIONS = [
         label: 'Catálogo',
         description: 'Servicios, categorías y precios',
         icon: LayoutGrid,
+        adminOnly: true,
       },
       {
         href: '/finanzas',
@@ -62,12 +76,14 @@ const MODULE_SECTIONS = [
         label: 'Personal',
         description: 'Equipo de trabajo y comisiones',
         icon: UserRound,
+        adminOnly: true,
       },
       {
         href: '/panel/horarios',
         label: 'Horarios',
         description: 'Turnos y disponibilidad del local',
         icon: Clock,
+        adminOnly: true,
       },
     ],
   },
@@ -79,6 +95,7 @@ const MODULE_SECTIONS = [
         label: 'Configuración',
         description: 'Identidad del negocio y web pública',
         icon: Settings,
+        adminOnly: true,
       },
       {
         href: '/panel/ayuda',
@@ -97,6 +114,19 @@ export default async function PanelMasPage() {
   const brand = data.session
     ? await fetchTenantBrandForUser(supabase, data.session.user.id)
     : { primary: null, accent: null, businessName: null, logoUrl: null }
+
+  const profile = data.session ? await fetchProfile(supabase, data.session.user.id) : null
+  const isAdmin = isAdminRole(profile?.role)
+  const sections = MODULE_SECTIONS.map((section) => ({
+    ...section,
+    items: section.items
+      .filter((m) => isAdmin || !m.adminOnly)
+      .map((m) =>
+        !isAdmin && m.href === '/finanzas'
+          ? { ...m, label: 'Mis pagos', description: 'Tus comisiones y citas cobradas' }
+          : m
+      ),
+  })).filter((section) => section.items.length > 0)
 
   const initial = brand.businessName?.trim()?.[0]?.toUpperCase() ?? 'G'
 
@@ -147,7 +177,7 @@ export default async function PanelMasPage() {
 
       {/* Secciones de módulos */}
       <div className="space-y-6">
-        {MODULE_SECTIONS.map((section) => (
+        {sections.map((section) => (
           <div key={section.title} className="space-y-3">
             <div className="px-1 text-xs font-semibold uppercase tracking-wider text-fg-muted">
               {section.title}
@@ -166,7 +196,9 @@ export default async function PanelMasPage() {
                       <Icon className="h-5 w-5" />
                     </span>
                     <span className="text-sm font-semibold text-fg">{m.label}</span>
-                    <span className="line-clamp-2 min-h-[2rem] text-xs leading-4 text-fg-subtle">{m.description}</span>
+                    <span className="line-clamp-2 min-h-[2rem] text-xs leading-4 text-fg-subtle">
+                      {m.description}
+                    </span>
                   </Link>
                 )
               })}

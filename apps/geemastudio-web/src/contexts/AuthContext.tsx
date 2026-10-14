@@ -2,18 +2,11 @@
 
 import { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import type { Session } from '@supabase/supabase-js'
+import { type AuthProfile, type Role, fetchProfile, isAdminRole } from '@geemastudio/data'
 
 import { supabase } from '@/lib/supabase'
 
-export type Role = 'dev' | 'owner' | 'staff'
-
-export interface AuthProfile {
-  id: string
-  role: Role
-  employee_id: string | null
-  full_name: string | null
-  avatar_url: string | null
-}
+export type { Role, AuthProfile }
 
 type AuthContextType = {
   isAuthenticated: boolean
@@ -36,28 +29,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const loadProfile = useCallback(async (userId: string) => {
     if (!supabase) return
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, role, employee_id, full_name, avatar_url')
-        .eq('id', userId)
-        .maybeSingle()
-
-      if (error) {
-        console.warn('Error cargando perfil:', error.message)
-        setProfile(null)
-        return
-      }
-
-      if (!data) {
-        setProfile(null)
-        return
-      }
-
-      if (data.role === 'dev' || data.role === 'owner' || data.role === 'staff') {
-        setProfile(data as AuthProfile)
-      } else {
-        setProfile(null)
-      }
+      const p = await fetchProfile(supabase, userId)
+      setProfile(p)
     } catch (err) {
       console.warn('Error inesperado cargando perfil:', err)
       setProfile(null)
@@ -172,7 +145,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       ? profile.role
       : null
 
-  const isAdmin = role === 'dev' || role === 'owner'
+  const isAdmin = isAdminRole(role)
 
   return (
     <AuthContext.Provider

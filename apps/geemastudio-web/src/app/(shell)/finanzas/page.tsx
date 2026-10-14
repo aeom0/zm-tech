@@ -1,20 +1,8 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import {
-  Lock,
-  ArrowLeft,
-  LogOut,
-  DollarSign,
-  Clock,
-  AlertCircle,
-  Smartphone,
-  CreditCard,
-  Banknote,
-  CheckCircle,
-} from 'lucide-react'
+import { DollarSign, Clock, AlertCircle, Smartphone, CheckCircle } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { OperationalSnapshot } from './components/OperationalSnapshot'
 import { useFinanzasBrand } from '../finanzas-brand-context'
@@ -32,28 +20,15 @@ import { FeatureAvailabilityNotice } from '@/components/plan/FeatureAvailability
 import { usePlan } from '@/hooks/plan/usePlan'
 import { ExecutiveDashboard } from './components/executive/ExecutiveDashboard'
 import { ViewToggle, type FinanceView } from './components/executive/ViewToggle'
+import { paymentMethodLabel } from '@geemastudio/data'
 import { SegmentedControl } from '@/components/ui/SegmentedControl'
+import { PaymentMethodIcon } from '@/components/finanzas/PaymentMethodIcon'
+import { StaffFinanzasView } from './components/StaffFinanzasView'
 
 const PERIOD_LABELS: Record<FinanzasPeriod, string> = {
   day: 'Hoy',
   week: 'Esta semana',
   month: 'Este mes',
-}
-
-const METHOD_LABELS: Record<string, string> = {
-  cash: 'Efectivo',
-  card: 'Tarjeta',
-  yape: 'Yape',
-  plin: 'Plin',
-  yape_plin: 'Yape/Plin',
-  transfer: 'Transferencia',
-}
-
-function MethodIcon({ method }: { method: string }) {
-  if (method === 'card') return <CreditCard className="h-3.5 w-3.5" />
-  if (method === 'yape' || method === 'plin' || method === 'yape_plin' || method === 'transfer')
-    return <Smartphone className="h-3.5 w-3.5" />
-  return <Banknote className="h-3.5 w-3.5" />
 }
 
 /** Total del servicio de un adelanto: precio vigente de la cita (si se agregaron servicios) o el snapshot del pago. */
@@ -80,7 +55,7 @@ function fmtDate(d: string, timeZone: string) {
 
 export default function FinanzasPage() {
   const router = useRouter()
-  const { isAuthenticated, isLoading: authLoading, isAdmin, logout } = useAuth()
+  const { isAuthenticated, isLoading: authLoading, isAdmin, profile } = useAuth()
   const brand = useFinanzasBrand()
   const { can } = usePlan()
   const finanzas = useFinanzasData(brand.primary)
@@ -99,12 +74,6 @@ export default function FinanzasPage() {
     if (!isAuthenticated) router.replace('/finanzas/login')
   }, [isAuthenticated, authLoading, router])
 
-  const handleLogout = async () => {
-    await logout()
-    router.replace('/finanzas/login')
-    router.refresh()
-  }
-
   if (authLoading) {
     return (
       <div className="flex min-h-[60dvh] items-center justify-center">
@@ -117,39 +86,17 @@ export default function FinanzasPage() {
 
   if (!isAdmin) {
     return (
-      <div>
-        <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-          <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 text-sm font-medium text-zinc-600 transition-colors hover:text-tenant-text dark:text-zinc-400"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Volver al inicio
-            </Link>
-          </div>
-        </header>
-        <main className="mx-auto max-w-md px-4 py-16 text-center">
-          <div className="mb-6 inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-500/10 text-amber-600 dark:text-amber-400">
-            <Lock className="h-7 w-7" />
-          </div>
-          <h1 className="text-xl font-bold text-zinc-900 dark:text-zinc-100">
-            Solo administración
-          </h1>
-          <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-            Este panel es solo para administradores. Tus ganancias las ves en la app móvil en Más →
-            Finanzas.
-          </p>
-          <button
-            type="button"
-            onClick={handleLogout}
-            className="mt-8 inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
-          >
-            <LogOut className="h-4 w-4" />
-            Cerrar sesión
-          </button>
-        </main>
-      </div>
+      <StaffFinanzasView
+        employeeName={profile?.full_name ?? null}
+        employeeId={profile?.employee_id ?? null}
+        desgloseChicas={finanzas.desgloseChicas}
+        payments={finanzas.payments}
+        period={finanzas.period}
+        setPeriod={finanzas.setPeriod}
+        currencyCode={currencyCode}
+        fmtS={fmtS}
+        isLoading={finanzas.isLoading}
+      />
     )
   }
 
@@ -543,8 +490,8 @@ export default function FinanzasPage() {
                                 </span>
                               ) : null}
                               <span className="inline-flex items-center gap-1">
-                                <MethodIcon method={p.method} />
-                                {METHOD_LABELS[p.method] ?? p.method}
+                                <PaymentMethodIcon method={p.method} />
+                                {paymentMethodLabel(p.method)}
                               </span>
                             </p>
                             {p.is_abono ? (
@@ -642,8 +589,8 @@ export default function FinanzasPage() {
                                 </td>
                                 <td className="px-4 py-3">
                                   <span className="inline-flex items-center gap-1.5 text-zinc-600 dark:text-zinc-400">
-                                    <MethodIcon method={p.method} />
-                                    {METHOD_LABELS[p.method] ?? p.method}
+                                    <PaymentMethodIcon method={p.method} />
+                                    {paymentMethodLabel(p.method)}
                                   </span>
                                 </td>
                                 <td className="whitespace-nowrap px-4 py-3 text-right font-semibold text-zinc-900 dark:text-zinc-100">
