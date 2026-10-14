@@ -129,6 +129,8 @@ export async function runAgent(opts: {
   wabaConfig: WabaConfigMap;
   phoneCountry?: string | null;
   messageText: string;
+  /** Texto del anuncio CTWA de este mensaje (referral de Meta), si vino de uno. */
+  adCopy?: string | null;
   callApi?: typeof callAgentMessages;
 }): Promise<boolean> {
   const { supabase, phoneNumber } = opts;
@@ -165,6 +167,7 @@ export async function runAgent(opts: {
       isCtwaLead: Boolean(session?.from_ad_at),
       sessionStep: session?.step ?? null,
       identityMissing,
+      adCopy: opts.adCopy,
     });
     const messages: AgentMessage[] = [...history.messages];
 

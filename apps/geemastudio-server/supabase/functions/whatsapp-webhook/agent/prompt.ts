@@ -18,6 +18,7 @@ export const AGENT_INSTRUCTIONS = `MODO AGENTE (WhatsApp):
 - Al ofrecer horarios, lista exactamente los de «Horarios libres» de consultar_dia, empezando por el primero y terminando por el último (no recortes la lista ni la resumas en un rango). Las horas en punto son las que se ofrecen; si la clienta pide una media hora, valídala con reservar_horario.
 - El horario de atención marca hasta qué hora se puede empezar, no la hora de salida: un servicio largo puede empezar en el último horario libre y terminar después del cierre. Nunca descartes una hora por la duración del servicio ni por la hora de cierre; si consultar_dia la lista o reservar_horario la acepta, sí calza.
 - Para invitar a reservar pregunta directo («¿Te agendo?», «¿Qué día te acomoda?»). Nunca le pidas que escriba una palabra clave (*agendar*, *menu*): la clienta responde con sus palabras y tú agendas con las tools.
+- Si la clienta pregunta por una categoría en general (uñas, pestañas, cejas) y hay promos activas de esa categoría en PROMOCIONES ACTIVAS, menciónalas con su precio promo además de las opciones que recomiendes (la promo no cuenta dentro del máximo de 2 opciones). Si no hay promo de esa categoría, no la inventes.
 - Ubicación, políticas y recomendaciones previas: usa info_negocio; no las improvises.
 - Cómo es la técnica de extensiones, diseños o longitudes: ver_guia (pelo_a_pelo, fiber_*, mapping_*); luego cierra con un mensaje breve.
 - Servicios, packs y promos: busca el id con buscar_servicios (packs con su precio y promos activas con el precio promo). Si pide fotos o ejemplos usa ver_portafolio y luego cierra con un mensaje breve. Los bloques PACKS ESPECIALES y PROMOCIONES ACTIVAS del catálogo son la lista oficial: no inventes otro pack ni otra promo. Cada promo lleva su vigencia entre corchetes: si está listada, aplica hoy y en cualquier día que no excluya esa vigencia («Solo Halloween» nombra la campaña, no limita a un día). No digas que una promo no aplica por la fecha salvo que su vigencia lo indique. Di «Pack», nunca «Combo».
@@ -82,6 +83,16 @@ export function limaNowBlock(now = new Date()): string {
   return `AHORA (Lima): ${fmt}. Fecha ISO de hoy: ${key}. Usa solo esta fecha como referencia para "hoy", "mañana" y días de la semana.`;
 }
 
+/** La clienta escribió desde un anuncio: responder primero a lo que ese anuncio ofrece. */
+export function adOriginBlock(adCopy: string): string {
+  return [
+    `ANUNCIO DE ORIGEN (lo que la clienta vio antes de escribir): «${
+      adCopy.trim().slice(0, 400)
+    }»`,
+    "Responde primero sobre lo que ofrece ese anuncio: nombra esos servicios o promos con el precio de PROMOCIONES ACTIVAS (si ya no están listadas, no las ofrezcas). Después puedes sumar una recomendación del catálogo si ayuda a decidir.",
+  ].join("\n");
+}
+
 export function buildAgentSystem(opts: {
   wabaConfig: WabaConfigMap;
   catalog: ServiceCatalog;
@@ -94,6 +105,8 @@ export function buildAgentSystem(opts: {
   sessionStep?: string | null;
   /** Qué falta en la ficha (solo en `awaiting_client_identity`). */
   identityMissing?: string[];
+  /** Texto del anuncio CTWA que abrió este turno (referral de Meta). */
+  adCopy?: string | null;
   now?: Date;
 }): AgentSystemBlock[] {
   const blocks: AgentSystemBlock[] = [];
@@ -126,6 +139,9 @@ export function buildAgentSystem(opts: {
       resolveEmotionalSellingPromptBlock(opts.wabaConfig),
       AGENT_EMOTIONAL_TOOL_NOTE,
     );
+  }
+  if (opts.adCopy?.trim()) {
+    dynamic.push(adOriginBlock(opts.adCopy));
   }
   if (opts.staffOutInHistory) {
     dynamic.push(

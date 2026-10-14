@@ -182,6 +182,10 @@ async function processMessage(body: Record<string, unknown>): Promise<void> {
       const referral = getReferral(message);
       const fromAd = isFromAd(message);
       const referralHeadline = referral?.headline ?? null;
+      const adCopy = [referral?.headline, referral?.body]
+        .map((s) => s?.trim())
+        .filter(Boolean)
+        .join(" — ") || null;
 
       const supabase = getSupabase();
       initMessageLogger(supabase);
@@ -543,6 +547,7 @@ async function processMessage(body: Record<string, unknown>): Promise<void> {
             wabaConfig,
             phoneCountry: client?.phone_country ?? null,
             messageText: routed.text,
+            adCopy: fromAd ? adCopy : null,
           });
           if (agentHandled) return;
         }

@@ -109,6 +109,8 @@ export interface WAReferal {
   source_type: string; // "ad" | "post" | "unknown"
   source_id?: string;
   headline?: string;
+  /** Texto principal del anuncio (lo que la clienta leyó antes de escribir). */
+  body?: string;
   ctwa_clid?: string;
 }
 
@@ -127,6 +129,7 @@ export function getReferral(
     source_type: r.source_type ?? "unknown",
     source_id: r.source_id,
     headline: r.headline,
+    body: r.body,
     ctwa_clid: r.ctwa_clid,
   };
 }

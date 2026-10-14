@@ -209,6 +209,40 @@ Deno.test("buildAgentSystem: CTWA inyecta venta emocional + nota de tools", () =
   );
 });
 
+Deno.test("buildAgentSystem: anuncio de origen solo cuando Meta manda el copy", () => {
+  const emptyCatalog = {
+    services: [],
+    packs: [],
+    categories: [],
+    promotions: [],
+    servicesByCategory: new Map(),
+    packsByCategory: new Map(),
+    servicesById: new Map(),
+    packsById: new Map(),
+    portfolioIndex: [],
+  } as unknown as ServiceCatalog;
+  const base = {
+    wabaConfig: cfg({}),
+    catalog: emptyCatalog,
+    clientContext: "CLIENTA: test",
+    staffOutInHistory: false,
+    isCtwaLead: true,
+    now: new Date("2026-10-13T15:00:00Z"),
+  };
+  const fromAd = buildAgentSystem({
+    ...base,
+    adCopy: "Uñas en gel a S/35 o Builder Gel a S/60",
+  });
+  const dynamic = fromAd[fromAd.length - 1]!.text;
+  assertStringIncludes(dynamic, "ANUNCIO DE ORIGEN");
+  assertStringIncludes(dynamic, "Uñas en gel a S/35 o Builder Gel a S/60");
+  const noAd = buildAgentSystem({ ...base, adCopy: null });
+  assertEquals(
+    noAd[noAd.length - 1]!.text.includes("ANUNCIO DE ORIGEN"),
+    false,
+  );
+});
+
 Deno.test("sanitizeAgentReply bloquea confirmación fabricada y promesa de reembolso", () => {
   assertEquals(
     sanitizeAgentReply("Con gusto, tenemos pack de cejas"),
