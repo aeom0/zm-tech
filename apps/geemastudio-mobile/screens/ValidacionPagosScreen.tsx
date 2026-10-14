@@ -9,12 +9,7 @@ import { useTheme } from '@/hooks/useTheme'
 import { Spacing, BorderRadius } from '@/constants/theme'
 import { ValidacionRow } from './validacion/components/ValidacionRow'
 import { useValidacionData } from './validacion/hooks/useValidacionData'
-import type {
-  ValidacionItem,
-  ValidacionFilter,
-  VerificationAction,
-  RowLoadingState,
-} from './validacion/types'
+import type { ValidacionItem, ValidacionFilter } from './validacion/types'
 
 const FILTERS: { id: ValidacionFilter; label: string }[] = [
   { id: 'pending', label: 'Por validar' },
@@ -26,31 +21,11 @@ export default function ValidacionPagosScreen() {
   const headerHeight = useHeaderHeight()
   const tabBarHeight = useBottomTabBarHeight()
   const { theme } = useTheme()
-  const { byFilter, counts, historyDays, refetchAll, verifyMutation, forfeitMutation } =
+  const { byFilter, counts, historyDays, refetchAll, forfeitMutation } =
     useValidacionData()
   const [filter, setFilter] = useState<ValidacionFilter>('pending')
 
-  // Estado per-row: { [appointmentId]: 'approved' | 'rejected' | null }
-  const [rowLoading, setRowLoading] = useState<RowLoadingState>({})
-
   const active = byFilter[filter]
-
-  const handleVerify = useCallback(
-    async (appointmentId: string, action: VerificationAction) => {
-      if (rowLoading[appointmentId]) return // ya procesando este item
-      setRowLoading((prev) => ({ ...prev, [appointmentId]: action }))
-      try {
-        await verifyMutation.mutateAsync({ appointmentId, action })
-      } finally {
-        setRowLoading((prev) => {
-          const next = { ...prev }
-          delete next[appointmentId]
-          return next
-        })
-      }
-    },
-    [rowLoading, verifyMutation]
-  )
 
   const handleForfeit = useCallback(
     (item: ValidacionItem) => {
@@ -77,14 +52,11 @@ export default function ValidacionPagosScreen() {
     ({ item }: { item: ValidacionItem }) => (
       <ValidacionRow
         item={item}
-        loadingAction={rowLoading[item.id] ?? null}
-        onApprove={() => handleVerify(item.id, 'approved')}
-        onReject={() => handleVerify(item.id, 'rejected')}
         onToggleForfeit={() => handleForfeit(item)}
         forfeitBusy={forfeitMutation.isPending && forfeitMutation.variables?.verificationId === item.id}
       />
     ),
-    [rowLoading, handleVerify, handleForfeit, forfeitMutation.isPending, forfeitMutation.variables]
+    [handleForfeit, forfeitMutation.isPending, forfeitMutation.variables]
   )
 
   const emptyCopy: Record<ValidacionFilter, { icon: 'check-circle' | 'inbox'; title: string; sub: string }> = {

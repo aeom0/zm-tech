@@ -1,21 +1,9 @@
-export interface DashboardStats {
-  todayRevenue: number
-  completedAppointments: number
-  upcomingAppointments: number
-  lowStockItems: number
-}
-
-export interface DashboardAppointment {
-  id: string
-  client_name: string
-  date: string
-  duration: number
-  price: string
-  status: string
-  employee_id: string
-  service_id: string
-  service_ids?: string[] | null
-}
+export type {
+  DashboardAppointment,
+  DashboardPayment,
+  DashboardStats,
+  DashboardTopService,
+} from '@geemastudio/data'
 
 export interface DashboardEmployeeRow {
   id: string
@@ -30,17 +18,4 @@ export interface DashboardServiceRow {
   price: string
   duration: number
   category_id: string
-}
-
-export interface DashboardPayment {
-  id: string
-  appointment_id: string | null
-  amount: string
-  is_abono: boolean
-}
-
-export interface DashboardTopService {
-  id: string
-  name: string
-  count: number
 }

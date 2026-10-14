@@ -60,7 +60,7 @@ const LOWER_ROW: FdiToothNumber[] = [
 ]
 const COLUMNS = UPPER_ROW.map((u, i) => [u, LOWER_ROW[i]] as [FdiToothNumber, FdiToothNumber])
 
-const ALL_SURFACES: Array<'mesial' | 'distal' | 'occlusal' | 'buccal' | 'palatal'> = [
+const ALL_SURFACES: ('mesial' | 'distal' | 'occlusal' | 'buccal' | 'palatal')[] = [
   'mesial',
   'distal',
   'occlusal',

@@ -1,18 +1,16 @@
 import { useQuery } from '@tanstack/react-query'
 import {
-  formatAppointmentWallclock,
-  inicioDiaHoyEnZonaIANA,
-  sumarDiasEnZonaIANA,
-} from '@zmtech/tenant-config'
+  countPendingVerifications,
+  countUnassignedAppointments,
+  fetchUnreviewedReferences,
+  queryKeys,
+  type UnreviewedReferenceAppointment,
+} from '@geemastudio/data'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
-import type { AgendaAppointment } from '@/screens/agenda/types'
 
-export type UnreviewedReferenceAppointment = Pick<
-  AgendaAppointment,
-  'id' | 'client_name' | 'date' | 'reference_image_paths'
->
+export type { UnreviewedReferenceAppointment }
 
 /**
  * Devuelve los conteos de badges para el tab Más y sus items.
@@ -24,37 +22,18 @@ export function usePendingBadgeCount() {
   const { config } = useTenant()
   const timeZone = config.locale.timezone
 
-  // Citas con pago enviado pendiente de validación
+  // Comprobantes de pago enviados por WhatsApp pendientes de validación
   const { data: paymentValidationCount = 0 } = useQuery<number>({
-    queryKey: ['badges', 'payment_submitted'],
-    queryFn: async () => {
-      const { count, error } = await supabase
-        .from('appointments')
-        .select('id', { count: 'exact', head: true })
-        .eq('status', 'payment_submitted')
-      if (error) throw new Error(error.message)
-      return count ?? 0
-    },
+    queryKey: queryKeys.agenda.pendingVerificationsCount,
+    queryFn: () => countPendingVerifications(supabase),
     refetchInterval: 60_000,
     enabled: isAdmin,
   })
 
   // Citas SIN profesional asignado en los próximos 7 días (hacia adelante)
   const { data: unassignedCount = 0 } = useQuery<number>({
-    queryKey: ['badges', 'unassigned_next_7_days', timeZone],
-    queryFn: async () => {
-      const now = inicioDiaHoyEnZonaIANA(timeZone)
-      const end = sumarDiasEnZonaIANA(now, 7, timeZone)
-      const { count, error } = await supabase
-        .from('appointments')
-        .select('id', { count: 'exact', head: true })
-        .gte('date', formatAppointmentWallclock(now, timeZone))
-        .lt('date', formatAppointmentWallclock(end, timeZone))
-        .neq('status', 'cancelled')
-        .is('employee_id', null)
-      if (error) throw new Error(error.message)
-      return count ?? 0
-    },
+    queryKey: [...queryKeys.agenda.unassignedAppointmentsCount, timeZone],
+    queryFn: () => countUnassignedAppointments(supabase, timeZone, 7),
     refetchInterval: 60_000,
     enabled: isAdmin,
   })
@@ -62,18 +41,8 @@ export function usePendingBadgeCount() {
   // Citas con fotos de referencia sin revisar (reference_image_paths no vacío
   // y reference_reviewed_at aún null)
   const { data: unreviewedReferences = [] } = useQuery<UnreviewedReferenceAppointment[]>({
-    queryKey: ['unreviewed_references'],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('appointments')
-        .select('id, client_name, date, reference_image_paths')
-        .not('reference_image_paths', 'is', null)
-        .not('reference_image_paths', 'eq', '{}')
-        .is('reference_reviewed_at', null)
-        .order('date', { ascending: true })
-      if (error) throw new Error(error.message)
-      return data ?? []
-    },
+    queryKey: queryKeys.agenda.unreviewedReferences,
+    queryFn: () => fetchUnreviewedReferences(supabase),
     refetchInterval: 60_000,
     enabled: isAdmin,
   })

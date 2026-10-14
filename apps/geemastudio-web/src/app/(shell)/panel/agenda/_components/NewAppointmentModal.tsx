@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { Plus, Trash2, X, Clock, Calendar as CalendarIcon, User, DollarSign } from 'lucide-react'
+import { useId, useState } from 'react'
+import { CalendarPlus, Clock } from 'lucide-react'
 import {
   computeServiceLinesTotals,
   createAppointment,
@@ -9,7 +9,18 @@ import {
   type AgendaServiceLine,
 } from '@geemastudio/data'
 import { formatAppointmentWallclock } from '@zmtech/tenant-config'
+
+import { Button } from '@/components/ui/Button'
+import { Field, FormError, inputClass } from '@/components/ui/Field'
+import { Modal } from '@/components/ui/Modal'
+import { useAvailabilityCheck } from '@/hooks/agenda/useAvailabilityCheck'
+import { useServiceEligibility } from '@/hooks/personal/useAvailability'
+import { useStaffLabels } from '@/hooks/personal/useStaffLabels'
+import { formatDashboardCurrency } from '@/lib/dashboardCurrency'
 import { supabase } from '@/lib/supabase'
+
+import { AvailabilityNote } from './AvailabilityNote'
+import { ServiceLinesEditor } from './ServiceLinesEditor'
 
 /** Montar solo mientras está abierto: el estado del formulario se inicializa al montar. */
 interface NewAppointmentModalProps {
@@ -33,42 +44,34 @@ export function NewAppointmentModal({
   currencyCode,
   tenantId,
 }: NewAppointmentModalProps) {
+  const ids = useId()
+  const eligibilityQuery = useServiceEligibility()
+  const { data: staffLabels } = useStaffLabels()
   const [clientName, setClientName] = useState('')
   const [clientPhone, setClientPhone] = useState('')
   const [date, setDate] = useState(
     () => initialDate || formatAppointmentWallclock(new Date(), timeZone).slice(0, 10)
   )
   const [time, setTime] = useState('10:00')
-
-  const defaultEmpId = employees[0]?.id || ''
-  const defaultSvcId = services[0]?.id || ''
-
-  const [lines, setLines] = useState<AgendaServiceLine[]>([
-    { serviceId: defaultSvcId, employeeId: defaultEmpId },
-  ])
-
+  const [lines, setLines] = useState<AgendaServiceLine[]>(() => {
+    const svc = services.find((s) => s.is_active !== false)
+    return [{ serviceId: svc?.id ?? '', employeeId: employees[0]?.id ?? '' }]
+  })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const totals = computeServiceLinesTotals(lines, services)
-
-  const handleAddLine = () => {
-    if (services.length === 0) return
-    setLines((prev) => [...prev, { serviceId: services[0].id, employeeId: defaultEmpId }])
-  }
-
-  const handleRemoveLine = (index: number) => {
-    if (lines.length <= 1) return
-    setLines((prev) => prev.filter((_, i) => i !== index))
-  }
-
-  const handleUpdateLine = (index: number, patch: Partial<AgendaServiceLine>) => {
-    setLines((prev) => prev.map((line, i) => (i === index ? { ...line, ...patch } : line)))
-  }
+  const wallclock = date && time ? `${date}T${time}:00` : null
+  const availability = useAvailabilityCheck({
+    employeeIds: lines.map((l) => l.employeeId),
+    wallclock,
+    durationMinutes: totals.totalDuration,
+    timeZone,
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!supabase) {
+    if (!supabase || !wallclock) {
       setErrorMessage('No hay conexión con el servidor')
       return
     }
@@ -81,18 +84,15 @@ export function NewAppointmentModal({
       return
     }
 
-    const dateTimeIso = `${date}T${time}:00`
-
     setIsSubmitting(true)
     setErrorMessage(null)
-
     try {
       await createAppointment(
         supabase,
         {
           client_name: clientName.trim(),
           client_phone: clientPhone.trim() || null,
-          date: dateTimeIso,
+          date: wallclock,
           status: 'scheduled',
           lines,
           tenantId,
@@ -100,7 +100,6 @@ export function NewAppointmentModal({
         },
         services
       )
-
       onSuccess()
       onClose()
     } catch (err) {
@@ -110,182 +109,105 @@ export function NewAppointmentModal({
     }
   }
 
+  const formId = `${ids}-form`
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-scrim/60" onClick={onClose} />
-      <div className="relative z-10 w-full max-w-lg rounded-2xl border border-fg/[0.08] bg-sunken p-6 shadow-2xl">
-        <div className="flex items-center justify-between border-b border-fg/[0.08] pb-4">
-          <h2 className="text-lg font-bold text-fg">Nueva Cita</h2>
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-lg p-1.5 text-fg-subtle hover:bg-fg/[0.05] hover:text-fg"
+    <Modal
+      title="Nueva cita"
+      icon={<CalendarPlus className="h-5 w-5 text-[var(--tenant-primary)]" />}
+      size="lg"
+      onClose={onClose}
+      dismissible={!isSubmitting}
+      footer={
+        <>
+          <Button onClick={onClose} disabled={isSubmitting}>
+            Cancelar
+          </Button>
+          <Button
+            type="submit"
+            form={formId}
+            variant="primary"
+            loading={isSubmitting}
+            disabled={availability.status === 'busy'}
           >
-            <X className="h-5 w-5" />
-          </button>
+            Crear cita
+          </Button>
+        </>
+      }
+    >
+      <form id={formId} onSubmit={handleSubmit} className="space-y-4">
+        <FormError message={errorMessage} />
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          <Field label="Cliente" htmlFor={`${ids}-name`}>
+            <input
+              id={`${ids}-name`}
+              type="text"
+              required
+              autoFocus
+              autoComplete="off"
+              value={clientName}
+              onChange={(e) => setClientName(e.target.value)}
+              placeholder="Nombre y apellido"
+              className={inputClass}
+            />
+          </Field>
+          <Field label="Teléfono (opcional)" htmlFor={`${ids}-phone`}>
+            <input
+              id={`${ids}-phone`}
+              type="tel"
+              autoComplete="off"
+              value={clientPhone}
+              onChange={(e) => setClientPhone(e.target.value)}
+              placeholder="Con código de país"
+              className={inputClass}
+            />
+          </Field>
+          <Field label="Fecha" htmlFor={`${ids}-date`}>
+            <input
+              id={`${ids}-date`}
+              type="date"
+              required
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className={inputClass}
+            />
+          </Field>
+          <Field label="Hora" htmlFor={`${ids}-time`}>
+            <input
+              id={`${ids}-time`}
+              type="time"
+              required
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+              className={inputClass}
+            />
+          </Field>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-          {errorMessage && (
-            <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-sm text-red-700 dark:text-red-300">
-              {errorMessage}
-            </div>
-          )}
+        <ServiceLinesEditor
+          lines={lines}
+          onChange={setLines}
+          services={services}
+          employees={employees}
+          day={date}
+          eligibility={eligibilityQuery.data}
+          currencyCode={currencyCode}
+          staffLabel={staffLabels?.singular}
+        />
 
-          {/* Cliente */}
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <div>
-              <label className="mb-1 block text-xs font-semibold text-fg-soft">Cliente *</label>
-              <div className="relative">
-                <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-fg-subtle" />
-                <input
-                  type="text"
-                  required
-                  value={clientName}
-                  onChange={(e) => setClientName(e.target.value)}
-                  placeholder="Nombre y apellido"
-                  className="w-full rounded-xl border border-fg/[0.08] bg-fg/[0.03] py-2 pl-9 pr-3 text-sm text-fg outline-none focus:border-[var(--tenant-primary)]"
-                />
-              </div>
-            </div>
+        <div className="flex items-center justify-between rounded-xl bg-fg/[0.04] px-3 py-2.5 text-sm">
+          <span className="inline-flex items-center gap-1.5 text-fg-muted">
+            <Clock className="h-4 w-4" aria-hidden />
+            {totals.totalDuration} min
+          </span>
+          <span className="font-semibold text-fg">
+            {formatDashboardCurrency(totals.totalPrice, currencyCode)}
+          </span>
+        </div>
 
-            <div>
-              <label className="mb-1 block text-xs font-semibold text-fg-soft">Teléfono</label>
-              <input
-                type="tel"
-                value={clientPhone}
-                onChange={(e) => setClientPhone(e.target.value)}
-                placeholder="Ej. +51 987654321"
-                className="w-full rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-3 py-2 text-sm text-fg outline-none focus:border-[var(--tenant-primary)]"
-              />
-            </div>
-          </div>
-
-          {/* Fecha y Hora */}
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <div>
-              <label className="mb-1 block text-xs font-semibold text-fg-soft">Fecha *</label>
-              <div className="relative">
-                <CalendarIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-fg-subtle" />
-                <input
-                  type="date"
-                  required
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="w-full rounded-xl border border-fg/[0.08] bg-fg/[0.03] py-2 pl-9 pr-3 text-sm text-fg outline-none focus:border-[var(--tenant-primary)]"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="mb-1 block text-xs font-semibold text-fg-soft">Hora *</label>
-              <div className="relative">
-                <Clock className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-fg-subtle" />
-                <input
-                  type="time"
-                  required
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                  className="w-full rounded-xl border border-fg/[0.08] bg-fg/[0.03] py-2 pl-9 pr-3 text-sm text-fg outline-none focus:border-[var(--tenant-primary)]"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Servicios y Profesionales */}
-          <div className="space-y-2 pt-2">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-semibold text-fg-soft">
-                Servicios seleccionados ({lines.length})
-              </label>
-              <button
-                type="button"
-                onClick={handleAddLine}
-                className="inline-flex items-center gap-1 text-xs font-medium text-[var(--tenant-primary)] hover:underline"
-              >
-                <Plus className="h-3.5 w-3.5" /> Agregar servicio
-              </button>
-            </div>
-
-            <div className="max-h-48 space-y-2.5 overflow-y-auto pr-1">
-              {lines.map((line, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center gap-2 rounded-xl border border-fg/[0.06] bg-fg/[0.02] p-2.5"
-                >
-                  <div className="flex-1 space-y-2 sm:flex sm:items-center sm:gap-2 sm:space-y-0">
-                    <select
-                      value={line.serviceId}
-                      onChange={(e) => handleUpdateLine(idx, { serviceId: e.target.value })}
-                      className="w-full rounded-lg border border-fg/[0.08] bg-sunken px-2.5 py-1.5 text-xs text-fg outline-none"
-                    >
-                      {services.map((svc) => (
-                        <option key={svc.id} value={svc.id}>
-                          {svc.name} ({svc.duration}m - {currencyCode} {svc.price})
-                        </option>
-                      ))}
-                    </select>
-
-                    <select
-                      value={line.employeeId}
-                      onChange={(e) => handleUpdateLine(idx, { employeeId: e.target.value })}
-                      className="w-full rounded-lg border border-fg/[0.08] bg-sunken px-2.5 py-1.5 text-xs text-fg outline-none sm:w-44"
-                    >
-                      {employees.map((emp) => (
-                        <option key={emp.id} value={emp.id}>
-                          {emp.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {lines.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveLine(idx)}
-                      className="rounded-lg p-1.5 text-fg-subtle hover:bg-red-500/10 hover:text-red-500"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Totales */}
-          <div className="flex items-center justify-between rounded-xl border border-fg/[0.08] bg-fg/[0.04] p-3 text-sm">
-            <div className="flex items-center gap-2 text-fg-subtle">
-              <Clock className="h-4 w-4" />
-              <span>Duración: {totals.totalDuration} min</span>
-            </div>
-            <div className="flex items-center gap-1 font-bold text-fg">
-              <DollarSign className="h-4 w-4 text-[var(--tenant-primary)]" />
-              <span>
-                Total: {currencyCode} {totals.totalPrice.toFixed(2)}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-3 pt-4">
-            <button
-              type="button"
-              onClick={onClose}
-              disabled={isSubmitting}
-              className="rounded-xl border border-fg/[0.08] px-4 py-2 text-sm font-medium text-fg-soft hover:bg-fg/[0.04]"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="rounded-xl bg-[var(--tenant-primary)] px-5 py-2 text-sm font-semibold text-white transition hover:opacity-95 disabled:opacity-50"
-            >
-              {isSubmitting ? 'Guardando…' : 'Crear cita'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <AvailabilityNote state={availability} />
+      </form>
+    </Modal>
   )
 }

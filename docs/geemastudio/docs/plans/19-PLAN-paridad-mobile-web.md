@@ -1,7 +1,7 @@
 # Plan 19 — Paridad Geema mobile ↔ web y código compartido
 
 **Fecha:** 2026-10-13
-**Estado:** Fase 0 completada; Fase 1 (Web P0) en curso — ver pendientes en Fase 1
+**Estado:** Fases 0–2 completadas y Fase 3 completada salvo W10 (espera el envío real, ROADMAP pendiente #6). Falta el smoke manual en `geema.zmtechdev.com` y la Fase 4 (mobile)
 **Repos afectados:** `zm-tech` (`apps/geemastudio-web`, `apps/geemastudio-mobile`, `packages/geemastudio-data`)
 **Relacionado:** Plan 13 (paridad panel ZM → Geema), Plan 14 (CRM clientes), Plan 15 (retail), Plan 18 (profesionales)
 
@@ -90,7 +90,7 @@ También en esta fase:
 
 Resultado: dominios `auth`, `tenant-settings`, `web-settings`, `catalog` (dialectos `zm`/`geema`, packs, promos, productos) y `personal` (empleados y disponibilidad), con query keys compartidas. Las dos apps delegan en el paquete y la regla quedó en `.cursor/skills/geemastudio-dev/SKILL.md`.
 
-### Fase 1 — Web P0: operación diaria (en curso)
+### Fase 1 — Web P0: operación diaria (completada)
 
 W1 agenda con escritura, W2 clientes, W3 pagos y gastos, W9 vista staff.
 
@@ -104,20 +104,42 @@ W1 agenda con escritura, W2 clientes, W3 pagos y gastos, W9 vista staff.
 - Web, W9: navegación por rol (nada visible mientras carga el perfil; «Más» filtra módulos de admin para staff) y «Mis pagos» por `employee_id`.
 - Tests del paquete: 30 en verde (5 archivos).
 
-**Pendiente para cerrar Fase 1**
+**Cierre (14-oct-2026)**
 
-- W1: editar servicios y profesionales de una cita existente (`updateAppointmentServices` ya está en el paquete), cambiar estado (confirmar, no-show), chequeo de disponibilidad al elegir hora (`useAvailabilityCheck`) y bandeja de referencias (`ReferencesInboxSheet`, `markReferencesReviewed`).
-- W3: editar y borrar pagos (`updatePayment` y `deletePayment` ya están en el paquete), elegir moneda USD/Bs al cobrar en VE, historial de pagos y repartir un pago en servicio + producto (ROADMAP pendiente #4).
-- Smoke manual W1: verificar la fila en `appointment_audit` al crear, reprogramar y cancelar desde la web.
+- W1: editar servicios y profesionales de una cita existente, confirmar asistencia y marcar no-show, chequeo de disponibilidad al elegir hora (nueva cita, reprogramar, editar servicios) y bandeja de fotos de referencia (abre la cita desde la campana; al verlas se marcan revisadas).
+- W3: editar y borrar pagos desde el drawer, elegir USD/Bs al cobrar en VE, historial de pagos de la cita y repartir un pago completo en servicio + producto (ROADMAP pendiente #4). La validación y el armado de filas viven en `buildPaymentRows` del paquete, que también usa mobile.
+
+**Pendiente (manual)**
+
+- Smoke W1: verificar la fila en `appointment_audit` al crear, reprogramar y cancelar desde la web.
 - Smoke con usuario owner y staff en `geema.zmtechdev.com`.
 
 ### Fase 2 — Web P1: administración
 
 W5 feriados, W4 validación de pagos, W7 asignar profesionales (solo elegibles, ROADMAP pendiente #8), W6 inventario completo, W8 notificaciones.
 
+**Hecho (14-oct-2026)**
+
+- Paquete: dominios `holidays`, `verifications` e `inventory`; `operationsService` (confirmar, no-show, asignar, ventana de asignación, citas sin asignar, referencias sin revisar) y `availabilityCheck`. Mobile usa los mismos servicios y las mismas query keys para los badges.
+- W5: `/panel/feriados` (días cerrados y apertura tardía) y aviso de feriado en la agenda.
+- W4: `/panel/validacion` con pendientes, aprobados y rechazados, y marca de adelanto perdido.
+- W7: `/panel/asignar` con próximas y pasadas (7 días); el selector solo ofrece profesionales que hacen todos los servicios de la cita ese día, y si nadie califica no filtra.
+- W6: `/panel/inventario` con stock, ajuste ±1 (`adjust_inventory_quantity`), movimientos recientes, categorías del rubro más las propias y filtro de stock bajo.
+- W8: campana en el panel (comprobantes, citas sin asignar, fotos de referencia nuevas) y badges en la navegación.
+
 ### Fase 3 — Web P2
 
 W10 promo masiva (después de cerrar el envío real, ROADMAP pendiente #6), W11 reordenar servicios, W12 dashboard.
+
+**Hecho (14-oct-2026)**
+
+- W11: reordenar categorías y servicios desde el catálogo web. Web lista los servicios con `fetchCatalogServices` (orden manual `sort_order`), igual que mobile y el bot.
+- W12: Inicio de la web con ingresos, completadas, por atender y stock bajo del día, pendientes del dueño, próximas citas de hoy y servicios más pedidos (mes o siempre). Los datos viven en `dashboard/` del paquete (`fetchDashboardStats`, `fetchCompletedServiceRefs`, `computeTopServices`) y mobile los usa.
+- Tests del paquete: 47 en verde (6 archivos).
+
+**Diferido**
+
+- W10 promo masiva: queda para después del envío real (ROADMAP pendiente #6).
 
 ### Fase 4 — Mobile
 

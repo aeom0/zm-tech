@@ -1,9 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import {
-  formatAppointmentWallclock,
-  inicioDiaHoyEnZonaIANA,
-  sumarDiasEnZonaIANA,
-} from '@zmtech/tenant-config'
+import { assignAppointmentEmployee, fetchAssignWindow, queryKeys } from '@geemastudio/data'
+import { formatAppointmentWallclock } from '@zmtech/tenant-config'
 import { supabase } from '@/lib/supabase'
 import { useTenant } from '@/contexts/TenantContext'
 import { useActiveEmployees } from '@/screens/personal/hooks/useEmployeesData'
@@ -34,46 +31,8 @@ export function useAsignarData() {
     isError,
     refetch,
   } = useQuery<AsignarAppointment[]>({
-    queryKey: ['appointments', 'asignar_window_14_days', timeZone],
-    queryFn: async () => {
-      const now = inicioDiaHoyEnZonaIANA(timeZone)
-      const start = sumarDiasEnZonaIANA(now, -7, timeZone)
-      const end = sumarDiasEnZonaIANA(now, 7, timeZone)
-
-      const { data, error } = await supabase
-        .from('appointments')
-        .select('id, client_name, date, price, service_id, service_ids, employee_id, status, notes')
-        .gte('date', formatAppointmentWallclock(start, timeZone))
-        .lt('date', formatAppointmentWallclock(end, timeZone))
-        .neq('status', 'cancelled')
-        .order('date', { ascending: true })
-
-      if (error) throw new Error(error.message)
-      const rows = (data ?? []) as AsignarAppointment[]
-      if (rows.length === 0) return rows
-
-      const { data: lines, error: linesError } = await supabase
-        .from('appointment_services')
-        .select('appointment_id, service_id')
-        .in(
-          'appointment_id',
-          rows.map((row) => row.id),
-        )
-      if (linesError) throw new Error(linesError.message)
-
-      const byAppointment = new Map<string, string[]>()
-      for (const line of lines ?? []) {
-        const appointmentId = String(line.appointment_id)
-        const list = byAppointment.get(appointmentId) ?? []
-        if (line.service_id) list.push(String(line.service_id))
-        byAppointment.set(appointmentId, list)
-      }
-      return rows.map((row) => ({
-        ...row,
-        service_ids: Array.isArray(row.service_ids) ? row.service_ids.map(String) : [],
-        line_service_ids: byAppointment.get(row.id) ?? [],
-      }))
-    },
+    queryKey: queryKeys.agenda.assignWindow(timeZone),
+    queryFn: () => fetchAssignWindow(supabase, { timeZone }),
     refetchInterval: 30_000,
   })
 
@@ -100,18 +59,13 @@ export function useAsignarData() {
     }: {
       appointmentId: string
       employeeId: string
-    }) => {
-      const { error } = await supabase
-        .from('appointments')
-        .update({ employee_id: employeeId })
-        .eq('id', appointmentId)
-      if (error) throw new Error(error.message)
-    },
+    }) => assignAppointmentEmployee(supabase, appointmentId, employeeId),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['appointments', 'asignar_window_14_days'],
+        queryKey: ['appointments', 'assign_window'],
       })
-      queryClient.invalidateQueries({ queryKey: ['badges', 'unassigned_next_7_days'] })
+      queryClient.invalidateQueries({ queryKey: queryKeys.agenda.unassignedAppointmentsCount })
+      queryClient.invalidateQueries({ queryKey: queryKeys.agenda.all })
     },
   })
 

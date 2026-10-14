@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { queryKeys } from '@geemastudio/data'
 
 import { EMPLOYEES_QUERY_KEY } from './useEmployeesData'
 import {
@@ -25,7 +26,7 @@ import {
   type WorkShift,
 } from '../lib/availabilityAdapter'
 
-export const SERVICE_ELIGIBILITY_KEY = ['service_eligibility'] as const
+export const SERVICE_ELIGIBILITY_KEY = queryKeys.employees.serviceEligibility
 
 const servicesKey = (id: string) => ['employee_services', id] as const
 const hoursKey = (id: string) => ['employee_work_hours', id] as const

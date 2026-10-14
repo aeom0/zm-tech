@@ -2,8 +2,15 @@ import { useState } from 'react'
 import { Alert } from 'react-native'
 import * as Haptics from 'expo-haptics'
 import { useMutation } from '@tanstack/react-query'
-import { convertirBsAUsd, convertirUsdABs } from '@zmtech/tasas'
-import { createPayment, deletePayment, updatePayment } from '@geemastudio/data'
+import {
+  buildPaymentRows,
+  convertDraftAmount,
+  createPayment,
+  deletePayment,
+  paymentTypeFromPayment,
+  updatePayment,
+  type PaymentInput,
+} from '@geemastudio/data'
 
 import { queryClient } from '@/lib/query-client'
 import { supabase } from '@/lib/supabase'
@@ -13,11 +20,9 @@ import { useVesRate } from '@/hooks/useVesRate'
 import { useProfileTenantId } from './useProfileTenantId'
 import { useDepositDefault } from './useDepositDefault'
 
-import { paymentKindFromType } from '../types'
 import type {
   FinancesAppointmentOption,
   FinancesPayment,
-  FinancesPaymentKind,
   FinancesPaymentType,
 } from '../types'
 
@@ -36,13 +41,6 @@ const EMPTY_FORM: PaymentFormData = {
   method: 'cash',
   notes: '',
   currency: 'USD',
-}
-
-/** Campos de Bs que se guardan junto al pago; solo se envían en tenants VE. */
-interface PaymentVesColumns {
-  paid_currency: 'USD' | 'VES'
-  exchange_rate: number | null
-  amount_ves: number | null
 }
 
 export function usePaymentForm(
@@ -73,19 +71,7 @@ export function usePaymentForm(
   }
 
   const createMutation = useMutation({
-    mutationFn: async (
-      data: {
-        amount: string
-        method: string
-        date: string
-        notes: string | null
-        is_abono: boolean
-        kind: FinancesPaymentKind
-        service_total: number | null
-        appointment_id: string | null
-        tenant_id: string
-      } & Partial<PaymentVesColumns>
-    ) => {
+    mutationFn: async (data: PaymentInput) => {
       await createPayment(supabase, data)
     },
     onSuccess: () => {
@@ -97,22 +83,7 @@ export function usePaymentForm(
   })
 
   const updateMutation = useMutation({
-    mutationFn: async ({
-      id,
-      data,
-    }: {
-      id: string
-      data: {
-        amount: string
-        method: string
-        date: string
-        notes: string | null
-        is_abono: boolean
-        kind: FinancesPaymentKind
-        service_total: number | null
-        appointment_id: string | null
-      } & Partial<PaymentVesColumns>
-    }) => {
+    mutationFn: async ({ id, data }: { id: string; data: Omit<PaymentInput, 'tenant_id'> }) => {
       await updatePayment(supabase, id, data)
     },
     onSuccess: () => {
@@ -173,7 +144,7 @@ export function usePaymentForm(
 
   const openEditPayment = (payment: FinancesPayment) => {
     setEditingPayment(payment)
-    setPaymentType(payment.kind === 'product' ? 'producto' : payment.is_abono ? 'abono' : 'full')
+    setPaymentType(paymentTypeFromPayment(payment))
     const enBs = payment.paid_currency === 'VES' && payment.amount_ves != null
     setFormData({
       amount: enBs
@@ -199,14 +170,7 @@ export function usePaymentForm(
   const onChangeCurrency = (next: 'USD' | 'VES') => {
     setFormData((p) => {
       if (p.currency === next) return p
-      const n = parseFloat(p.amount.replace(',', '.'))
-      let amount = p.amount
-      if (formRate && Number.isFinite(n) && n > 0) {
-        amount = (
-          next === 'VES' ? convertirUsdABs(n, formRate) : convertirBsAUsd(n, formRate)
-        ).toFixed(2)
-      }
-      return { ...p, currency: next, amount }
+      return { ...p, currency: next, amount: convertDraftAmount(p.amount, p.currency, next, formRate) }
     })
   }
 
@@ -227,54 +191,33 @@ export function usePaymentForm(
   }
 
   const handleSubmit = () => {
-    const num = parseFloat(formData.amount.replace(',', '.'))
-    if (Number.isNaN(num) || num <= 0) {
-      Alert.alert('Error', 'Ingresa un monto válido')
-      return
-    }
     if (!tenantId) {
       Alert.alert('Error', 'No se pudo identificar el negocio')
       return
     }
-
-    const enBs = ves.enabled && formData.currency === 'VES'
-    if (enBs && !formRate) {
-      Alert.alert('Error', 'No hay tasa de cambio disponible. Configúrala en Ajustes.')
-      return
-    }
-    const amountUsd = enBs && formRate ? convertirBsAUsd(num, formRate) : num
-    const serviceTotal = parseFloat(formData.serviceTotal.replace(',', '.'))
-    const hasServiceTotal =
-      paymentType === 'abono' && Number.isFinite(serviceTotal) && serviceTotal > 0
-    if (hasServiceTotal && amountUsd >= serviceTotal) {
-      Alert.alert('Error', 'El adelanto debe ser menor que el valor total del servicio')
-      return
-    }
-
-    const vesColumns: Partial<PaymentVesColumns> = ves.enabled
-      ? {
-          paid_currency: enBs ? 'VES' : 'USD',
-          exchange_rate: formRate ?? null,
-          amount_ves: enBs && formRate ? num : null,
-        }
-      : {}
-
-    const payload = {
-      amount: String(amountUsd),
+    const result = buildPaymentRows({
+      tenantId,
+      appointmentId: selectedAppointmentId,
+      type: paymentType,
+      amount: formData.amount,
+      currency: formData.currency,
+      vesEnabled: ves.enabled,
+      rate: formRate,
       method: formData.method,
+      notes: formData.notes,
+      serviceTotal: formData.serviceTotal,
       date: editingPayment ? editingPayment.date : new Date().toISOString(),
-      notes: formData.notes.trim() || null,
-      is_abono: paymentType === 'abono',
-      kind: paymentKindFromType(paymentType),
-      service_total: hasServiceTotal ? serviceTotal : null,
-      appointment_id: selectedAppointmentId,
-      ...vesColumns,
+    })
+    if (!result.ok) {
+      Alert.alert('Error', result.error)
+      return
     }
+    const [{ tenant_id: _tenantId, ...payload }] = result.rows
 
     if (editingPayment) {
       updateMutation.mutate({ id: editingPayment.id, data: payload })
     } else {
-      createMutation.mutate({ ...payload, tenant_id: tenantId })
+      createMutation.mutate(result.rows[0])
     }
   }
 

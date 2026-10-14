@@ -137,7 +137,7 @@ export function ToothComponent({
   const isMissing = state.condition === 'missing'
 
   const surfaceWedges = useMemo(() => {
-    const sides: Array<'top' | 'right' | 'bottom' | 'left'> = ['top', 'right', 'bottom', 'left']
+    const sides: ('top' | 'right' | 'bottom' | 'left')[] = ['top', 'right', 'bottom', 'left']
     return sides.map((side) => {
       const surface = ringSurfaceForSide(side, mesialIsRight)
       const condId = state.surfaces[surface]

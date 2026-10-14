@@ -3,8 +3,9 @@ import { useMutation } from '@tanstack/react-query'
 import * as Haptics from 'expo-haptics'
 
 import { queryClient } from '@/lib/query-client'
+import { createInventoryCategory, deleteInventoryCategory } from '@geemastudio/data'
+
 import { supabase } from '@/lib/supabase'
-import { slugifyCategoryKey } from '@/constants/inventoryCategories'
 import { useProfileTenantId } from '@/screens/finances/hooks/useProfileTenantId'
 
 import {
@@ -18,22 +19,7 @@ export function useInventoryCategoryMutations() {
   const createMutation = useMutation({
     mutationFn: async ({ label, sortOrder }: { label: string; sortOrder: number }) => {
       if (!tenantId) throw new Error('No se pudo identificar el negocio.')
-      const key = slugifyCategoryKey(label)
-      if (!key) {
-        throw new Error('Ingresa un nombre válido.')
-      }
-      const { error } = await supabase.from('inventory_categories').insert({
-        tenant_id: tenantId,
-        key,
-        label: label.trim(),
-        sort_order: sortOrder,
-      })
-      if (error) {
-        if (error.code === '23505') {
-          throw new Error('Ya existe una categoría con ese nombre.')
-        }
-        throw new Error(error.message)
-      }
+      await createInventoryCategory(supabase, tenantId, label, sortOrder)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: INVENTORY_CATEGORIES_QUERY_KEY })
@@ -47,25 +33,7 @@ export function useInventoryCategoryMutations() {
   const deleteMutation = useMutation({
     mutationFn: async (category: InventoryCategoryRow) => {
       if (!tenantId) throw new Error('No se pudo identificar el negocio.')
-      const { count, error: countError } = await supabase
-        .from('inventory_items')
-        .select('id', { count: 'exact', head: true })
-        .eq('category', category.key)
-        .eq('tenant_id', tenantId)
-      if (countError) {
-        throw new Error(countError.message)
-      }
-      if ((count ?? 0) > 0) {
-        throw new Error('Tiene productos asignados. Muévelos a otra categoría antes de eliminarla.')
-      }
-      const { error } = await supabase
-        .from('inventory_categories')
-        .delete()
-        .eq('id', category.id)
-        .eq('tenant_id', tenantId)
-      if (error) {
-        throw new Error(error.message)
-      }
+      await deleteInventoryCategory(supabase, tenantId, category)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: INVENTORY_CATEGORIES_QUERY_KEY })

@@ -1,7 +1,14 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
-import { formatAppointmentWallclock, horasVisiblesParaAgenda } from '@zmtech/tenant-config'
+import { Suspense, useEffect, useMemo, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useQueryClient } from '@tanstack/react-query'
+import { queryKeys } from '@geemastudio/data'
+import {
+  formatAppointmentWallclock,
+  horasVisiblesParaAgenda,
+  instanteCitaDesdeTexto,
+} from '@zmtech/tenant-config'
 
 import { AgendaDayGrid } from './_components/AgendaDayGrid'
 import {
@@ -25,13 +32,28 @@ import { useDayAvailability } from '@/hooks/personal/useAvailability'
 import { useEmployees } from '@/hooks/personal/useEmployees'
 import { StateNote } from '@/components/ui/StateNote'
 import { PageHeader } from '@/components/ui/PageHeader'
+import { Button } from '@/components/ui/Button'
+import { HolidayAlertBanner } from '@/components/feriados/HolidayAlertBanner'
 import { useAuth } from '@/contexts/AuthContext'
 import { useAgendaServicesList } from '@/hooks/agenda/useAgendaData'
 import { NewAppointmentModal } from './_components/NewAppointmentModal'
 import { Plus } from 'lucide-react'
 
 export default function PanelAgendaPage() {
+  return (
+    <Suspense fallback={<div className="text-sm text-fg-muted">Cargando agenda…</div>}>
+      <PanelAgendaContent />
+    </Suspense>
+  )
+}
+
+const DAY_PARAM = /^\d{4}-\d{2}-\d{2}$/
+
+function PanelAgendaContent() {
   const { profile } = useAuth()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const queryClient = useQueryClient()
   const scheduleQuery = useAgendaTenantSchedule()
   const employeesQuery = useEmployees()
   const servicesQuery = useAgendaServicesMap()
@@ -49,10 +71,20 @@ export default function PanelAgendaPage() {
   const [selectedApt, setSelectedApt] = useState<AgendaAppointment | null>(null)
   const [isNewModalOpen, setIsNewModalOpen] = useState(false)
 
+  // Enlace directo (campana de pendientes): ?fecha=YYYY-MM-DD&cita=<id>
+  const dayParam = searchParams.get('fecha')
+  const focusAptId = searchParams.get('cita')
+
   useEffect(() => {
     if (!scheduleQuery.data) return
-    setSelectedDate((prev) => prev ?? goToday(scheduleQuery.data!.timezone))
-  }, [scheduleQuery.data])
+    const tz = scheduleQuery.data.timezone
+    if (dayParam && DAY_PARAM.test(dayParam)) {
+      setSelectedDate(instanteCitaDesdeTexto(`${dayParam}T00:00:00`, tz))
+      setView('day')
+      return
+    }
+    setSelectedDate((prev) => prev ?? goToday(tz))
+  }, [scheduleQuery.data, dayParam])
 
   const dayQuery = useAgendaDayAppointments(selectedDate, timezone, statusFilter)
   const weekQuery = useAgendaWeekAppointments(selectedDate, timezone, statusFilter, view === 'week')
@@ -112,6 +144,35 @@ export default function PanelAgendaPage() {
     [aptsQuery.data, empById]
   )
 
+  // El drawer muestra la versión más reciente de la cita tras cada refetch.
+  const detailApt = useMemo(
+    () =>
+      selectedApt
+        ? ((aptsQuery.data ?? []).find((a) => a.id === selectedApt.id) ?? selectedApt)
+        : null,
+    [selectedApt, aptsQuery.data]
+  )
+
+  useEffect(() => {
+    if (!focusAptId || !aptsQuery.data || !selectedDate || view !== 'day') return
+    // Esperar a que la agenda ya muestre el día del enlace (no los datos del día anterior).
+    if (dayParam && formatAppointmentWallclock(selectedDate, timezone).slice(0, 10) !== dayParam) {
+      return
+    }
+    const target = aptsQuery.data.find((a) => a.id === focusAptId)
+    if (target) setSelectedApt(target)
+    // Se limpia la URL para que cerrar el detalle no lo vuelva a abrir.
+    router.replace('/panel/agenda', { scroll: false })
+  }, [focusAptId, dayParam, aptsQuery.data, selectedDate, view, timezone, router])
+
+  const refreshAll = () => {
+    void aptsQuery.refetch()
+    void queryClient.invalidateQueries({ queryKey: queryKeys.agenda.unreviewedReferences })
+    void queryClient.invalidateQueries({ queryKey: queryKeys.agenda.unassignedAppointmentsCount })
+    void queryClient.invalidateQueries({ queryKey: queryKeys.agenda.pendingVerificationsCount })
+    void queryClient.invalidateQueries({ queryKey: ['appointments', 'assign_window'] })
+  }
+
   const canCreate =
     !!profile?.tenant_id && (fullServicesQuery.data?.length ?? 0) > 0 && activeEmployees.length > 0
 
@@ -136,26 +197,27 @@ export default function PanelAgendaPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <PageHeader
-          title="Agenda"
-          description={
-            <>
-              {view === 'week' ? 'Vista semanal' : 'Vista día por profesional'} · zona {timezone}
-            </>
-          }
-        />
-        <button
-          type="button"
-          onClick={() => setIsNewModalOpen(true)}
-          disabled={!canCreate}
-          title={canCreate ? undefined : 'Cargando servicios y profesionales…'}
-          className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-95 disabled:opacity-50"
-        >
-          <Plus className="h-4 w-4" />
-          Nueva cita
-        </button>
-      </div>
+      <PageHeader
+        title="Agenda"
+        description={
+          <>
+            {view === 'week' ? 'Vista semanal' : 'Vista día por profesional'} · zona {timezone}
+          </>
+        }
+        actions={
+          <Button
+            variant="primary"
+            icon={<Plus className="h-4 w-4" />}
+            onClick={() => setIsNewModalOpen(true)}
+            disabled={!canCreate}
+            title={canCreate ? undefined : 'Cargando servicios y profesionales…'}
+          >
+            Nueva cita
+          </Button>
+        }
+      />
+
+      <HolidayAlertBanner timeZone={timezone} />
 
       <AgendaToolbar
         view={view}
@@ -249,36 +311,34 @@ export default function PanelAgendaPage() {
         </div>
       )}
 
-      {selectedApt && profile?.tenant_id && (
+      {detailApt && profile?.tenant_id && (
         <AppointmentDetailDrawer
-          apt={selectedApt}
+          apt={detailApt}
           timezone={timezone}
           timeFormat={timeFormat}
           language={language}
-          serviceName={serviceNameFor(selectedApt)}
+          serviceName={serviceNameFor(detailApt)}
           employeeName={
-            selectedApt.employee_id ? (empById.get(selectedApt.employee_id)?.name ?? null) : null
+            detailApt.employee_id ? (empById.get(detailApt.employee_id)?.name ?? null) : null
           }
           employeeColor={
-            selectedApt.employee_id
-              ? (empById.get(selectedApt.employee_id)?.color ?? 'var(--tenant-primary)')
+            detailApt.employee_id
+              ? (empById.get(detailApt.employee_id)?.color ?? 'var(--tenant-primary)')
               : '#71717a'
           }
           currencyCode={currencyCode}
           tenantId={profile.tenant_id}
+          services={fullServicesQuery.data ?? []}
+          employees={activeEmployees}
           onClose={() => setSelectedApt(null)}
-          onRefresh={() => {
-            void aptsQuery.refetch()
-          }}
+          onRefresh={refreshAll}
         />
       )}
 
       {isNewModalOpen && canCreate && profile?.tenant_id && (
         <NewAppointmentModal
           onClose={() => setIsNewModalOpen(false)}
-          onSuccess={() => {
-            void aptsQuery.refetch()
-          }}
+          onSuccess={refreshAll}
           services={fullServicesQuery.data ?? []}
           employees={activeEmployees}
           initialDate={dayIso ?? undefined}

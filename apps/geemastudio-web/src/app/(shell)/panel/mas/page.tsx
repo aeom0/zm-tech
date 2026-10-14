@@ -4,12 +4,16 @@ import Image from 'next/image'
 import { ThemeToggle } from '@/components/ui/ThemeToggle'
 import {
   Calendar,
+  CalendarOff,
   Clock,
   HelpCircle,
   LayoutGrid,
   MessageCircle,
+  Package,
+  Receipt,
   Settings,
   TrendingUp,
+  UserCheck,
   UserRound,
   Users,
 } from 'lucide-react'
@@ -40,6 +44,20 @@ const MODULE_SECTIONS: { title: string; items: ModuleItem[] }[] = [
         icon: Calendar,
       },
       {
+        href: '/panel/asignar',
+        label: 'Asignar citas',
+        description: 'Quién atiende cada cita de la semana',
+        icon: UserCheck,
+        adminOnly: true,
+      },
+      {
+        href: '/panel/validacion',
+        label: 'Validar pagos',
+        description: 'Comprobantes enviados por WhatsApp',
+        icon: Receipt,
+        adminOnly: true,
+      },
+      {
         href: '/panel/clientes',
         label: 'Clientes',
         description: 'Historial y datos de contacto',
@@ -66,6 +84,13 @@ const MODULE_SECTIONS: { title: string; items: ModuleItem[] }[] = [
         adminOnly: true,
       },
       {
+        href: '/panel/inventario',
+        label: 'Inventario',
+        description: 'Productos, insumos y stock bajo',
+        icon: Package,
+        adminOnly: true,
+      },
+      {
         href: '/finanzas',
         label: 'Finanzas',
         description: 'Balance, recaudación y medios de pago',
@@ -83,6 +108,13 @@ const MODULE_SECTIONS: { title: string; items: ModuleItem[] }[] = [
         label: 'Horarios',
         description: 'Turnos y disponibilidad del local',
         icon: Clock,
+        adminOnly: true,
+      },
+      {
+        href: '/panel/feriados',
+        label: 'Feriados',
+        description: 'Días cerrados y horarios especiales',
+        icon: CalendarOff,
         adminOnly: true,
       },
     ],

@@ -1,6 +1,7 @@
 'use client'
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { fetchServiceEligibility, queryKeys } from '@geemastudio/data'
 
 import {
   deleteCoverage,
@@ -169,5 +170,15 @@ export function useDayAvailability(dayIso: string | null) {
     enabled: !!supabase && !!dayIso,
     staleTime: 30_000,
     queryFn: () => fetchDayAvailability(dayIso!),
+  })
+}
+
+/** Quién puede hacer cada servicio (incluye coberturas), para filtrar profesionales. */
+export function useServiceEligibility() {
+  return useQuery({
+    queryKey: queryKeys.employees.serviceEligibility,
+    enabled: !!supabase,
+    staleTime: 60_000,
+    queryFn: () => fetchServiceEligibility(supabase!),
   })
 }
