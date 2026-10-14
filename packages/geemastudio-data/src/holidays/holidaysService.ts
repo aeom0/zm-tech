@@ -1,11 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { catalogRowsForSeed } from '@zmtech/tenant-config'
 
-import type {
-  SalonHolidayCreateInput,
-  SalonHolidayRecord,
-  SalonHolidayUpdateInput,
-} from './types'
+import type { SalonHolidayCreateInput, SalonHolidayRecord, SalonHolidayUpdateInput } from './types'
 
 const HOLIDAY_COLUMNS =
   'id, date, name, is_closed, open_from_hour, open_until_hour, created_at, updated_at'

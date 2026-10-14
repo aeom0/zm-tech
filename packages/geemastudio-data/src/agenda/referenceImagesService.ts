@@ -109,7 +109,7 @@ export async function resolveReferenceImageUrls(
   return values
     .map((value, i) => {
       const path = paths[i]
-      return path ? signed.get(path) ?? null : value
+      return path ? (signed.get(path) ?? null) : value
     })
     .filter((url): url is string => !!url)
 }

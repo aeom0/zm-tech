@@ -74,19 +74,31 @@ export async function fetchDashboardAppointments(
   return (data ?? []) as DashboardAppointment[]
 }
 
-/** Servicios de las citas completadas; `since` (texto de pared) acota al mes. */
+const PAGE_SIZE = 1000
+
+/**
+ * Servicios de las citas completadas; `since` (texto de pared) acota al mes.
+ * Pagina de a 1000 (tope de PostgREST) para que el histórico no quede truncado.
+ */
 export async function fetchCompletedServiceRefs(
   client: SupabaseClient,
   since?: string | null
 ): Promise<CompletedServiceRef[]> {
-  let query = client
-    .from('appointments')
-    .select('service_id, service_ids')
-    .eq('status', 'completed')
-  if (since) query = query.gte('date', since)
-  const { data, error } = await query
-  if (error) throw new Error(error.message)
-  return (data ?? []) as CompletedServiceRef[]
+  const all: CompletedServiceRef[] = []
+  for (let from = 0; ; from += PAGE_SIZE) {
+    let query = client
+      .from('appointments')
+      .select('service_id, service_ids')
+      .eq('status', 'completed')
+    if (since) query = query.gte('date', since)
+    const { data, error } = await query
+      .order('id', { ascending: true })
+      .range(from, from + PAGE_SIZE - 1)
+    if (error) throw new Error(error.message)
+    const page = (data ?? []) as CompletedServiceRef[]
+    all.push(...page)
+    if (page.length < PAGE_SIZE) return all
+  }
 }
 
 export async function fetchPaymentsForAppointments(

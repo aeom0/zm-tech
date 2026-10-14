@@ -57,18 +57,30 @@ export async function createInventoryItem(
   if (error) throw new Error(error.message)
 }
 
+/**
+ * Edita el ítem. Si cambia la cantidad, la diferencia pasa por
+ * `adjust_inventory_quantity` para que quede en `inventory_movements`.
+ */
 export async function updateInventoryItem(
   client: SupabaseClient,
   tenantId: string,
   id: string,
   input: InventoryItemInput
 ): Promise<void> {
+  const { data: current, error: readError } = await client
+    .from('inventory_items')
+    .select('quantity')
+    .eq('id', id)
+    .eq('tenant_id', tenantId)
+    .maybeSingle()
+  if (readError) throw new Error(readError.message)
+  if (!current) throw new Error('El producto ya no existe.')
+
   const { error } = await client
     .from('inventory_items')
     .update({
       name: input.name.trim(),
       category: input.category,
-      quantity: input.quantity,
       min_stock: input.min_stock,
       unit: input.unit,
       cost: input.cost,
@@ -76,6 +88,10 @@ export async function updateInventoryItem(
     .eq('id', id)
     .eq('tenant_id', tenantId)
   if (error) throw new Error(error.message)
+
+  const delta =
+    Math.max(0, Math.round(input.quantity)) - Number((current as { quantity: number }).quantity)
+  if (delta !== 0) await adjustInventoryQuantity(client, id, delta)
 }
 
 /** Ajuste de stock con registro de movimiento (RPC atómica). */

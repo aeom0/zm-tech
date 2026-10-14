@@ -74,6 +74,7 @@ export function useInventoryMutations(options: UseInventoryMutationsOptions = {}
       adjustInventoryQuantity(supabase, id, delta),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['inventory_items'] })
+      queryClient.invalidateQueries({ queryKey: ['inventory_movements'] })
       queryClient.invalidateQueries({ queryKey: ['dashboard_stats'] })
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
     },

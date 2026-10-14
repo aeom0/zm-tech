@@ -25,25 +25,39 @@ export async function setAppointmentClientConfirmed(
 }
 
 /**
- * Asigna profesional a la cita y a las líneas de servicio que no tenían uno,
- * para que la agenda por profesional y las comisiones queden consistentes.
+ * Asigna profesional a la cita y lo propaga a las líneas que no tenían uno o que
+ * eran del profesional anterior, para que la agenda por profesional y las
+ * comisiones queden consistentes. Las líneas de otro profesional (cita con dos
+ * personas) se respetan.
  */
 export async function assignAppointmentEmployee(
   client: SupabaseClient,
   appointmentId: string,
   employeeId: string
 ): Promise<void> {
+  const { data: current, error: currentError } = await client
+    .from('appointments')
+    .select('employee_id')
+    .eq('id', appointmentId)
+    .maybeSingle()
+  if (currentError) throw new Error(currentError.message)
+  const previousId = (current as { employee_id: string | null } | null)?.employee_id ?? null
+
   const { error } = await client
     .from('appointments')
     .update({ employee_id: employeeId })
     .eq('id', appointmentId)
   if (error) throw new Error(error.message)
 
-  const { error: linesError } = await client
+  if (previousId === employeeId) return
+  let lines = client
     .from('appointment_services')
     .update({ employee_id: employeeId })
     .eq('appointment_id', appointmentId)
-    .is('employee_id', null)
+  lines = previousId
+    ? lines.or(`employee_id.is.null,employee_id.eq.${previousId}`)
+    : lines.is('employee_id', null)
+  const { error: linesError } = await lines
   if (linesError) throw new Error(linesError.message)
 }
 

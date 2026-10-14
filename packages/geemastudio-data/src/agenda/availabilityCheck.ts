@@ -35,6 +35,55 @@ export function findOverlap(args: {
   return best
 }
 
+type BusySlot = { id: string; date: string; duration: number }
+
+/**
+ * Citas no canceladas de la ventana que ocupan a cada profesional: por el
+ * encabezado (`appointments.employee_id`) o por alguna línea de servicio
+ * (`appointment_services.employee_id`), así una cita con dos personas bloquea a ambas.
+ */
+export async function fetchBusySlotsByEmployee(
+  client: SupabaseClient,
+  args: { employeeIds: readonly string[]; from: string; to: string }
+): Promise<Map<string, BusySlot[]>> {
+  const wanted = new Set(args.employeeIds.filter(Boolean))
+  const result = new Map<string, BusySlot[]>([...wanted].map((id) => [id, []]))
+  if (wanted.size === 0) return result
+
+  const { data: apts, error } = await client
+    .from('appointments')
+    .select('id, date, duration, employee_id')
+    .neq('status', 'cancelled')
+    .gte('date', args.from)
+    .lte('date', args.to)
+    .order('date', { ascending: true })
+  if (error) throw new Error(error.message)
+  const rows = (apts ?? []) as (BusySlot & { employee_id: string | null })[]
+  if (rows.length === 0) return result
+
+  const { data: lines, error: linesError } = await client
+    .from('appointment_services')
+    .select('appointment_id, employee_id')
+    .in(
+      'appointment_id',
+      rows.map((r) => r.id)
+    )
+  if (linesError) throw new Error(linesError.message)
+
+  const people = new Map<string, Set<string>>()
+  for (const r of rows) people.set(r.id, new Set(r.employee_id ? [r.employee_id] : []))
+  for (const l of (lines ?? []) as { appointment_id: string; employee_id: string | null }[]) {
+    if (l.employee_id) people.get(l.appointment_id)?.add(l.employee_id)
+  }
+
+  for (const r of rows) {
+    for (const emp of people.get(r.id) ?? []) {
+      result.get(emp)?.push({ id: r.id, date: r.date, duration: r.duration })
+    }
+  }
+  return result
+}
+
 /**
  * Chequea si uno o varios profesionales (cita multi-servicio) están libres a la vez.
  * Si alguno está ocupado, devuelve cuándo termina el último de los ocupados.
@@ -54,33 +103,24 @@ export async function checkEmployeesAvailability(
 
   const candidateEnd = addMinutes(args.start, args.durationMinutes)
   // Ventana chica para no traer toda la tabla.
-  const windowStart = formatAppointmentWallclock(addMinutes(args.start, -12 * 60), args.timeZone)
-  const windowEnd = formatAppointmentWallclock(addMinutes(candidateEnd, 12 * 60), args.timeZone)
+  const busy = await fetchBusySlotsByEmployee(client, {
+    employeeIds,
+    from: formatAppointmentWallclock(addMinutes(args.start, -12 * 60), args.timeZone),
+    to: formatAppointmentWallclock(addMinutes(candidateEnd, 12 * 60), args.timeZone),
+  })
 
-  const overlaps = await Promise.all(
-    employeeIds.map(async (employeeId) => {
-      const { data, error } = await client
-        .from('appointments')
-        .select('id, date, duration')
-        .eq('employee_id', employeeId)
-        .neq('status', 'cancelled')
-        .gte('date', windowStart)
-        .lte('date', windowEnd)
-        .order('date', { ascending: true })
-      if (error) throw new Error(error.message)
-      return findOverlap({
-        candidateStart: args.start,
-        candidateDurationMinutes: args.durationMinutes,
-        timeZone: args.timeZone,
-        excludeAppointmentId: args.excludeAppointmentId,
-        existing: (data ?? []) as { id: string; date: string; duration: number }[],
-      })
+  let latest: AvailabilityOverlap | null = null
+  for (const employeeId of employeeIds) {
+    const candidate = findOverlap({
+      candidateStart: args.start,
+      candidateDurationMinutes: args.durationMinutes,
+      timeZone: args.timeZone,
+      excludeAppointmentId: args.excludeAppointmentId,
+      existing: busy.get(employeeId) ?? [],
     })
-  )
-
-  return overlaps.reduce<AvailabilityOverlap | null>((latest, candidate) => {
-    if (!candidate) return latest
-    if (!latest || candidate.busyUntil.getTime() > latest.busyUntil.getTime()) return candidate
-    return latest
-  }, null)
+    if (candidate && (!latest || candidate.busyUntil.getTime() > latest.busyUntil.getTime())) {
+      latest = candidate
+    }
+  }
+  return latest
 }

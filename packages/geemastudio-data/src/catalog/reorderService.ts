@@ -7,7 +7,10 @@ export async function reorderServices(
 ): Promise<void> {
   const results = await Promise.all(
     orderedIds.map((id, index) =>
-      client.from('services').update({ sort_order: index + 1 }).eq('id', id)
+      client
+        .from('services')
+        .update({ sort_order: index + 1 })
+        .eq('id', id)
     )
   )
   const failed = results.find((r) => r.error)

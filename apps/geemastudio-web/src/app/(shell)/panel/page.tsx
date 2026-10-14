@@ -302,6 +302,7 @@ function StatCard({
 /** Pendientes del dueño (mismos datos que la campana); se oculta si no hay nada. */
 function PendingStrip() {
   const alerts = usePanelAlerts()
+  const firstReference = alerts.unreviewedReferences[0]
   const items = [
     {
       count: alerts.pendingVerifications,
@@ -318,7 +319,10 @@ function PendingStrip() {
     {
       count: alerts.unreviewedReferences.length,
       label: (n: number) => (n === 1 ? 'foto de referencia nueva' : 'fotos de referencia nuevas'),
-      href: '/panel/agenda',
+      // Abre la próxima cita con fotos sin revisar (mismo deep link que la campana).
+      href: firstReference
+        ? `/panel/agenda?fecha=${firstReference.date.slice(0, 10)}&cita=${firstReference.id}`
+        : '/panel/agenda',
       icon: ImageIcon,
     },
   ].filter((i) => i.count > 0)

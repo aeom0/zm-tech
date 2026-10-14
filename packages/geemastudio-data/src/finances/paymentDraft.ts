@@ -22,9 +22,7 @@ export interface PaymentDraft {
   date: string
 }
 
-export type PaymentDraftResult =
-  | { ok: true; rows: PaymentInput[] }
-  | { ok: false; error: string }
+export type PaymentDraftResult = { ok: true; rows: PaymentInput[] } | { ok: false; error: string }
 
 const round2 = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100
 
@@ -75,7 +73,8 @@ export function buildPaymentRows(draft: PaymentDraft): PaymentDraftResult {
   if (hasSplit && productEntered >= entered) {
     return {
       ok: false,
-      error: 'La parte de productos debe ser menor que el total. Si es todo producto, elige «Producto».',
+      error:
+        'La parte de productos debe ser menor que el total. Si es todo producto, elige «Producto».',
     }
   }
 
