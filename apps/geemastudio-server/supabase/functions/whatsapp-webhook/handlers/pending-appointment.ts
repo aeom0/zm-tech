@@ -374,7 +374,7 @@ export const BOOKING_OVERLAP_MESSAGE =
 export const NO_CONFIRMED_APPOINTMENT_ARRIVAL_MESSAGE =
   `No encontramos una *cita confirmada* con este número todavía 💜\n\n` +
   `Un resumen en el chat *no reserva* el cupo hasta completar los pasos (o coordinar con el salón).\n\n` +
-  `Escribe *agendar* para reservar, o coordina al 📱 *${STAFF_COORDINATION_PHONE}* 🌸`;
+  `Si quieres reservar, cuéntame qué servicio y día te acomodan, o coordina al 📱 *${STAFF_COORDINATION_PHONE}* 🌸`;
 
 /** Slot sin cupo según `overlapCapForCart` (tope 1 default / 2 si selección 100 % especial). Ver docs/waba/WABA_CAPACITY.md. */
 export const SLOT_TAKEN_MESSAGE =

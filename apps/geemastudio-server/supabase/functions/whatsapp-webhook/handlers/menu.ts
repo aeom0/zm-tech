@@ -1226,7 +1226,7 @@ export async function sendPromosListFromCatalog(
     await sendMessage(
       to,
       `💜 *Promos activas:*\n\n${fallback}\n\n` +
-        "Escribe *agendar* para reservar una cita o *menu* para ver más opciones.",
+        "¿Cuál te interesa? Cuéntame y te ayudo a reservar.",
     );
   }
 }
@@ -1302,7 +1302,7 @@ export async function sendPromosList(to: string, supabase: SupabaseClient) {
     await sendMessage(
       to,
       `💜 *Promos activas:*\n\n${fallback}\n\n` +
-        "Escribe *agendar* para reservar una cita o *menu* para ver más opciones.",
+        "¿Cuál te interesa? Cuéntame y te ayudo a reservar.",
     );
   }
 }

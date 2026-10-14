@@ -75,7 +75,7 @@ const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
 
 const FALLBACK_MESSAGE =
   "Notamos que tu último mensaje quedó sin respuesta, mil disculpas 💜 " +
-  "¿En qué podemos ayudarte? Escribe *menu* para ver opciones o cuéntanos qué necesitas.";
+  "¿En qué podemos ayudarte? Cuéntanos qué necesitas.";
 
 const AGENDAR_HINT = " ¿Qué día te acomoda? Te paso los horarios libres 🗓️";
 

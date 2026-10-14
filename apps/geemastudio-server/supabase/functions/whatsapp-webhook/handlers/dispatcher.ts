@@ -1114,7 +1114,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
     }
     await sendMessage(
       phoneNumber,
-      "¡Perfecto! 💜 Cualquier cosa aquí estamos. Escribe *menu* si quieres ver más servicios.",
+      "¡Perfecto! 💜 Cualquier cosa, aquí estamos.",
     );
     return;
   }

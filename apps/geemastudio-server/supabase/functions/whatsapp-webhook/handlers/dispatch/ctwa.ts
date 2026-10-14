@@ -343,7 +343,7 @@ export async function tryHandleCtwaInterestStep(
           phoneNumber,
           addressWithoutHello(
             contactName,
-            `Ya tienes servicios en tu selección. Escribe *agendar* para elegir día, o *menu* si quieres cambiar 💜`,
+            `Ya tienes servicios en tu selección 💜 ¿Qué día te acomoda? Si quieres cambiar algo, cuéntame.`,
           ),
         );
         return true;

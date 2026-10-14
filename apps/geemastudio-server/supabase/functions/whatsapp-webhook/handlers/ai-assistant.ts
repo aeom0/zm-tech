@@ -420,7 +420,7 @@ export async function getClientContext(
           `NO uses add_to_cart ni abras otro agendado. Si pide otra cita, otra persona u otro horario, indica que escriba al 📱 932 535 512. Para cambiar fecha/hora: *Mi cita* o que escriba la hora (ej. *10 am*) — el sistema la aplica; PROHIBIDO decir que ya cambiaste la cita.`
       : `\nSIN CITA PROGRAMADA: este número no tiene ninguna reserva activa.\n` +
         `PROHIBIDO confirmar una cita, decir "te esperamos", "¿a qué hora llegas?", "nos vemos" o dar por hecho que va a venir. ` +
-        `Si dice que ya viene, que está en camino o que tiene cita, avísale con amabilidad que no encontramos su reserva y ofrécele agendar (*agendar*) o escribir al 📱 932 535 512.`;
+        `Si dice que ya viene, que está en camino o que tiene cita, avísale con amabilidad que no encontramos su reserva y ofrécele agendar o escribir al 📱 932 535 512.`;
 
     const verificationId = typeof waSession?.verification_id === "string"
       ? waSession.verification_id
@@ -1906,7 +1906,7 @@ export async function executeAIAction(
         } else if (!closed) {
           await sendMessage(
             phoneNumber,
-            "Tu selección anterior se venció 💜 ¿Retomamos? Escríbeme *agendar* y seguimos con los servicios que te interesan.",
+            "Tu selección anterior se venció 💜 ¿Retomamos? Cuéntame qué servicio te interesa y seguimos.",
           );
         }
         break;
