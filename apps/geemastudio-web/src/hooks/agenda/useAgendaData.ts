@@ -12,6 +12,7 @@ import {
   type TenantConfig,
 } from '@zmtech/tenant-config'
 
+import { fetchPaymentsForAppointment } from '@geemastudio/data'
 import { supabase } from '@/lib/supabase'
 import { matchesStatusFilter, type AgendaAppointment, type AgendaStatusFilter } from './types'
 
@@ -161,6 +162,41 @@ export function useAgendaServicesMap() {
         map.set(String((s as { id: string }).id), String((s as { name: string }).name))
       }
       return map
+    },
+  })
+}
+
+export function useAgendaServicesList() {
+  return useQuery({
+    queryKey: ['web_agenda_services_list'],
+    enabled: !!supabase,
+    staleTime: 120_000,
+    queryFn: async () => {
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
+      const { data, error } = await supabase
+        .from('services')
+        .select('id, name, price, duration, is_active')
+        .order('name')
+      if (error) throw new Error(error.message)
+      return (data ?? []).map((s) => ({
+        id: String(s.id),
+        name: String(s.name),
+        price: Number(s.price) || 0,
+        duration: Number(s.duration) || 30,
+        is_active: Boolean(s.is_active),
+      }))
+    },
+  })
+}
+
+/** Pagos (abonos + cobros) de una cita, para saldo pendiente y gate de completar. */
+export function useAppointmentPayments(appointmentId: string) {
+  return useQuery({
+    queryKey: ['web_agenda_appointment_payments', appointmentId],
+    enabled: !!supabase,
+    queryFn: async () => {
+      if (!supabase) throw new Error('No se pudo conectar. Intenta de nuevo.')
+      return fetchPaymentsForAppointment(supabase, appointmentId)
     },
   })
 }

@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { fetchProductOrders, fetchSellableProducts } from '@geemastudio/data'
 
 import { supabase } from '@/lib/supabase'
 import { useProfileTenantId } from '@/screens/finances/hooks/useProfileTenantId'
@@ -11,37 +12,19 @@ export const PRODUCT_SALES_KEYS = {
 }
 
 async function fetchProducts(tenantId: string): Promise<SellableProduct[]> {
-  const { data, error } = await supabase
-    .from('inventory_items')
-    .select('id, name, price, quantity, unit')
-    .eq('tenant_id', tenantId)
-    .eq('is_sellable', true)
-    .order('name')
-  if (error) throw new Error(error.message)
-  return (data ?? []).map((row) => ({
+  const products = await fetchSellableProducts(supabase, tenantId)
+  return products.map((row) => ({
     id: row.id,
     name: row.name,
-    price: row.price == null ? null : Number(row.price),
-    quantity: Number(row.quantity) || 0,
+    price: row.price,
+    quantity: row.quantity,
     unit: row.unit,
   }))
 }
 
 async function fetchOrders(tenantId: string): Promise<ProductOrder[]> {
-  const { data, error } = await supabase
-    .from('product_orders')
-    .select(
-      'id, inventory_item_id, quantity, unit_price, client_name, client_phone, status, payment_method, notes, created_at, paid_at, delivered_at, cancelled_at, inventory_items(name)'
-    )
-    .eq('tenant_id', tenantId)
-    .order('created_at', { ascending: false })
-    .limit(100)
-  if (error) throw new Error(error.message)
-  return (data ?? []).map((row) => ({
-    ...row,
-    quantity: Number(row.quantity),
-    unit_price: Number(row.unit_price),
-  })) as ProductOrder[]
+  const orders = await fetchProductOrders(supabase, tenantId)
+  return orders as unknown as ProductOrder[]
 }
 
 export function useProductSales() {

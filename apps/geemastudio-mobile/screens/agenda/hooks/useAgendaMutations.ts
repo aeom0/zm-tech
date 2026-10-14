@@ -2,107 +2,28 @@ import { Alert } from 'react-native'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import * as Haptics from 'expo-haptics'
 
+import {
+  addReferenceImages,
+  cancelAppointment,
+  completeAppointment,
+  createAppointment,
+  createPayment,
+  markReferencesReviewed,
+  rescheduleAppointment,
+  updateAppointmentServices,
+} from '@geemastudio/data'
+
 import { queryClient } from '@/lib/query-client'
 import { supabase } from '@/lib/supabase'
 import type { PaymentVesFields } from '@/lib/payments-ves'
-import { findOrCreateClientId } from '@/lib/clientLink'
 import { useAuth } from '@/contexts/AuthContext'
-import { subirImagenReferencia } from '@/lib/referenceImages'
-import {
-  formatAppointmentWallclock,
-  formatoHoraHHMMEnZona,
-  parseAppointmentWallclock,
-} from '@zmtech/tenant-config'
 
-import { computeServiceLinesTotals, lineDuration, lineUnitPrice } from '../agendaUtils'
 import type { AgendaService, AgendaServiceLine } from '../types'
 
 export interface AgendaMutationCallbacks {
   onCreateSuccess: () => void
   onDeleteSuccess: () => void
   onUpdateSuccess: () => void
-}
-
-function addMinutes(date: Date, minutes: number) {
-  return new Date(date.getTime() + minutes * 60_000)
-}
-
-function fmtTimeHHMM(d: Date, timeZone: string) {
-  return formatoHoraHHMMEnZona(d, timeZone)
-}
-
-async function guardOverlapBeforeInsert(args: {
-  employeeId: string
-  dateIso: string
-  durationMinutes: number
-  timeZone: string
-  excludeAppointmentId?: string | null
-}) {
-  const candidateStart = parseAppointmentWallclock(args.dateIso, args.timeZone)
-  if (!candidateStart) throw new Error('La fecha de la cita no es válida.')
-  const candidateEnd = addMinutes(candidateStart, args.durationMinutes)
-
-  const windowStart = addMinutes(candidateStart, -12 * 60)
-  const windowEnd = addMinutes(candidateEnd, 12 * 60)
-
-  const { data, error } = await supabase
-    .from('appointments')
-    .select('id, date, duration')
-    .eq('employee_id', args.employeeId)
-    .neq('status', 'cancelled')
-    .gte('date', formatAppointmentWallclock(windowStart, args.timeZone))
-    .lte('date', formatAppointmentWallclock(windowEnd, args.timeZone))
-    .order('date', { ascending: true })
-
-  if (error) {
-    throw new Error(error.message)
-  }
-
-  const existing = (data ?? []) as {
-    id: string
-    date: string
-    duration: number
-  }[]
-
-  for (const apt of existing) {
-    if (args.excludeAppointmentId && apt.id === args.excludeAppointmentId) {
-      continue
-    }
-
-    const start = parseAppointmentWallclock(apt.date, args.timeZone)
-    if (!start) continue
-    const end = addMinutes(start, apt.duration)
-    const overlaps = start < candidateEnd && end > candidateStart
-    if (!overlaps) continue
-
-    throw new Error(`Horario ocupado. Termina a las ${fmtTimeHHMM(end, args.timeZone)}.`)
-  }
-}
-
-/**
- * Verifica solape para cada profesional único entre las líneas de la cita: al ser
- * multi-servicio, dos líneas pueden tener empleados distintos y ambos quedan
- * ocupados durante toda la ventana de la cita (fecha + duración total).
- */
-async function guardOverlapForLines(args: {
-  employeeIds: string[]
-  dateIso: string
-  durationMinutes: number
-  timeZone: string
-  excludeAppointmentId?: string | null
-}) {
-  const uniqueEmployeeIds = [...new Set(args.employeeIds.filter(Boolean))]
-  await Promise.all(
-    uniqueEmployeeIds.map((employeeId) =>
-      guardOverlapBeforeInsert({
-        employeeId,
-        dateIso: args.dateIso,
-        durationMinutes: args.durationMinutes,
-        timeZone: args.timeZone,
-        excludeAppointmentId: args.excludeAppointmentId,
-      })
-    )
-  )
 }
 
 async function resolveTenantId(userId: string | null | undefined): Promise<string | null> {
@@ -113,23 +34,6 @@ async function resolveTenantId(userId: string | null | undefined): Promise<strin
     .eq('id', userId)
     .maybeSingle()
   return data?.tenant_id ?? null
-}
-
-function buildServiceRows(
-  appointmentId: string,
-  lines: AgendaServiceLine[],
-  services: AgendaService[],
-  tenantId: string
-) {
-  return lines.map((line) => ({
-    appointment_id: appointmentId,
-    service_id: line.serviceId,
-    employee_id: line.employeeId || null,
-    pack_id: line.packId ?? null,
-    price: lineUnitPrice(line, services).toFixed(2),
-    duration: lineDuration(line, services),
-    tenant_id: tenantId,
-  }))
 }
 
 export function useAgendaMutations(
@@ -155,62 +59,10 @@ export function useAgendaMutations(
       status: string
       lines: AgendaServiceLine[]
     }) => {
-      if (data.lines.length === 0) {
-        throw new Error('Selecciona al menos un servicio')
-      }
       if (!tenantId) {
         throw new Error('No se pudo resolver el tenant')
       }
-
-      const { totalPrice, totalDuration } = computeServiceLinesTotals(data.lines, services)
-      const duration = totalDuration || 60
-
-      await guardOverlapForLines({
-        employeeIds: data.lines.map((l) => l.employeeId),
-        dateIso: data.date,
-        durationMinutes: duration,
-        timeZone,
-      })
-
-      // Vincula la cita a la ficha del cliente (la crea si no existe); sin esto no aparece en Clientes ni en promos.
-      const clientId = await findOrCreateClientId({
-        name: data.client_name,
-        phone: data.client_phone,
-        tenantId,
-      }).catch(() => null)
-
-      const firstLine = data.lines[0]
-      const payload = {
-        ...(clientId ? { client_id: clientId } : {}),
-        client_name: data.client_name,
-        client_phone: data.client_phone ?? null,
-        client_document: data.client_document ?? null,
-        service_id: firstLine.serviceId,
-        employee_id: firstLine.employeeId,
-        service_ids: data.lines.map((l) => l.serviceId),
-        date: data.date,
-        duration,
-        price: totalPrice.toFixed(2),
-        status: data.status,
-      }
-
-      const { data: newApt, error } = await supabase
-        .from('appointments')
-        .insert(payload)
-        .select('id')
-        .single()
-      if (error) {
-        throw new Error(error.message)
-      }
-
-      const aptId = (newApt as { id: string }).id
-      const svcRows = buildServiceRows(aptId, data.lines, services, tenantId)
-      const { error: linesError } = await supabase.from('appointment_services').insert(svcRows)
-      if (linesError) {
-        // Evita cita huérfana sin líneas si falla el insert multi-servicio.
-        await supabase.from('appointments').delete().eq('id', aptId)
-        throw new Error(linesError.message)
-      }
+      await createAppointment(supabase, { ...data, tenantId, timeZone }, services)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['appointments'] })
@@ -225,18 +77,7 @@ export function useAgendaMutations(
 
   const cancelAppointmentMutation = useMutation({
     mutationFn: async (args: { id: string; reason: string; note: string }) => {
-      const { error } = await supabase
-        .from('appointments')
-        .update({
-          status: 'cancelled',
-          cancel_reason: args.reason,
-          cancel_note: args.note.trim() || null,
-          cancelled_at: formatAppointmentWallclock(new Date(), timeZone),
-        })
-        .eq('id', args.id)
-      if (error) {
-        throw new Error(error.message)
-      }
+      await cancelAppointment(supabase, { ...args, timeZone })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['appointments'] })
@@ -258,22 +99,7 @@ export function useAgendaMutations(
       employeeIds?: string[]
       duration: number
     }) => {
-      await guardOverlapForLines({
-        employeeIds:
-          args.employeeIds && args.employeeIds.length > 0 ? args.employeeIds : [args.employee_id],
-        dateIso: args.date,
-        durationMinutes: args.duration,
-        timeZone,
-        excludeAppointmentId: args.id,
-      })
-
-      const { error } = await supabase
-        .from('appointments')
-        .update({ date: args.date })
-        .eq('id', args.id)
-      if (error) {
-        throw new Error(error.message)
-      }
+      await rescheduleAppointment(supabase, { ...args, timeZone })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['appointments'] })
@@ -293,63 +119,10 @@ export function useAgendaMutations(
    */
   const updateAppointmentServicesMutation = useMutation({
     mutationFn: async (args: { id: string; date: string; lines: AgendaServiceLine[] }) => {
-      if (args.lines.length === 0) {
-        throw new Error('Selecciona al menos un servicio')
-      }
       if (!tenantId) {
         throw new Error('No se pudo resolver el tenant')
       }
-
-      const { totalPrice, totalDuration } = computeServiceLinesTotals(args.lines, services)
-      const duration = totalDuration || 60
-
-      await guardOverlapForLines({
-        employeeIds: args.lines.map((l) => l.employeeId),
-        dateIso: args.date,
-        durationMinutes: duration,
-        timeZone,
-        excludeAppointmentId: args.id,
-      })
-
-      const firstLine = args.lines[0]
-      const { error: aptError } = await supabase
-        .from('appointments')
-        .update({
-          service_id: firstLine.serviceId,
-          employee_id: firstLine.employeeId,
-          service_ids: args.lines.map((l) => l.serviceId),
-          duration,
-          price: totalPrice.toFixed(2),
-        })
-        .eq('id', args.id)
-      if (aptError) {
-        throw new Error(aptError.message)
-      }
-
-      const { error: delError } = await supabase
-        .from('appointment_services')
-        .delete()
-        .eq('appointment_id', args.id)
-      if (delError) {
-        throw new Error(delError.message)
-      }
-
-      const svcRows = buildServiceRows(args.id, args.lines, services, tenantId)
-      const { error: insError } = await supabase.from('appointment_services').insert(svcRows)
-      if (insError) {
-        throw new Error(insError.message)
-      }
-
-      // El adelanto guarda el total del servicio: al agregar/quitar servicios, el saldo
-      // pendiente en Pagos debe usar el nuevo total.
-      const { error: payError } = await supabase
-        .from('payments')
-        .update({ service_total: totalPrice })
-        .eq('appointment_id', args.id)
-        .eq('is_abono', true)
-      if (payError) {
-        throw new Error(payError.message)
-      }
+      await updateAppointmentServices(supabase, { ...args, services, tenantId, timeZone })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['appointments'] })
@@ -373,13 +146,7 @@ export function useAgendaMutations(
    */
   const completeAppointmentMutation = useMutation({
     mutationFn: async ({ id, data }: { id: string; data: { status: string } }) => {
-      const { error } = await supabase
-        .from('appointments')
-        .update({ status: data.status })
-        .eq('id', id)
-      if (error) {
-        throw new Error(error.message)
-      }
+      await completeAppointment(supabase, id, data.status)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['appointments'] })
@@ -399,7 +166,10 @@ export function useAgendaMutations(
       notes: string
       ves?: PaymentVesFields
     }) => {
-      const payload = {
+      if (!tenantId) {
+        throw new Error('No se pudo resolver el tenant')
+      }
+      await createPayment(supabase, {
         tenant_id: tenantId,
         appointment_id: data.appointment_id,
         amount: data.amount,
@@ -409,13 +179,7 @@ export function useAgendaMutations(
         is_abono: false,
         service_total: null,
         ...(data.ves ?? {}),
-      }
-
-      const { error } = await supabase.from('payments').insert(payload)
-
-      if (error) {
-        throw new Error(error.message)
-      }
+      })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['payments'] })
@@ -439,32 +203,12 @@ export function useAgendaMutations(
       currentPaths: string[]
       alreadyReceived: boolean
     }) => {
-      const uploadedUrls: string[] = []
-      for (const image of args.images) {
-        const { publicUrl } = await subirImagenReferencia(
-          supabase,
-          args.appointmentId,
-          image.uri,
-          image.contentType
-        )
-        uploadedUrls.push(publicUrl)
-      }
-
-      const newPaths = [...args.currentPaths, ...uploadedUrls]
-      const updatePayload: { reference_image_paths: string[]; reference_received_at?: string } = {
-        reference_image_paths: newPaths,
-      }
-      if (!args.alreadyReceived) {
-        updatePayload.reference_received_at = new Date().toISOString()
-      }
-
-      const { error } = await supabase
-        .from('appointments')
-        .update(updatePayload)
-        .eq('id', args.appointmentId)
-      if (error) {
-        throw new Error(error.message)
-      }
+      await addReferenceImages(supabase, {
+        appointmentId: args.appointmentId,
+        images: args.images.map((image) => ({ source: image.uri, contentType: image.contentType })),
+        currentPaths: args.currentPaths,
+        alreadyReceived: args.alreadyReceived,
+      })
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['appointments'] })
@@ -479,13 +223,7 @@ export function useAgendaMutations(
   /** Marca las referencias de la cita como revisadas (`reference_reviewed_at = now()`). */
   const markReferencesReviewedMutation = useMutation({
     mutationFn: async (appointmentId: string) => {
-      const { error } = await supabase
-        .from('appointments')
-        .update({ reference_reviewed_at: new Date().toISOString() })
-        .eq('id', appointmentId)
-      if (error) {
-        throw new Error(error.message)
-      }
+      await markReferencesReviewed(supabase, appointmentId)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['appointments'] })

@@ -25,11 +25,17 @@ import { useDayAvailability } from '@/hooks/personal/useAvailability'
 import { useEmployees } from '@/hooks/personal/useEmployees'
 import { StateNote } from '@/components/ui/StateNote'
 import { PageHeader } from '@/components/ui/PageHeader'
+import { useAuth } from '@/contexts/AuthContext'
+import { useAgendaServicesList } from '@/hooks/agenda/useAgendaData'
+import { NewAppointmentModal } from './_components/NewAppointmentModal'
+import { Plus } from 'lucide-react'
 
 export default function PanelAgendaPage() {
+  const { profile } = useAuth()
   const scheduleQuery = useAgendaTenantSchedule()
   const employeesQuery = useEmployees()
   const servicesQuery = useAgendaServicesMap()
+  const fullServicesQuery = useAgendaServicesList()
 
   const timezone = scheduleQuery.data?.timezone ?? 'America/Caracas'
   const timeFormat = scheduleQuery.data?.timeFormat === '12' ? '12' : '24'
@@ -41,6 +47,7 @@ export default function PanelAgendaPage() {
   const [view, setView] = useState<AgendaView>('day')
   const [statusFilter, setStatusFilter] = useState<AgendaStatusFilter>('all')
   const [selectedApt, setSelectedApt] = useState<AgendaAppointment | null>(null)
+  const [isNewModalOpen, setIsNewModalOpen] = useState(false)
 
   useEffect(() => {
     if (!scheduleQuery.data) return
@@ -105,6 +112,9 @@ export default function PanelAgendaPage() {
     [aptsQuery.data, empById]
   )
 
+  const canCreate =
+    !!profile?.tenant_id && (fullServicesQuery.data?.length ?? 0) > 0 && activeEmployees.length > 0
+
   const loading =
     scheduleQuery.isLoading ||
     employeesQuery.isLoading ||
@@ -126,15 +136,26 @@ export default function PanelAgendaPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader
-        title="Agenda"
-        description={
-          <>
-            {view === 'week' ? 'Vista semanal' : 'Vista día por profesional'} · zona {timezone} ·
-            solo lectura (edición desde la app del celular)
-          </>
-        }
-      />
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <PageHeader
+          title="Agenda"
+          description={
+            <>
+              {view === 'week' ? 'Vista semanal' : 'Vista día por profesional'} · zona {timezone}
+            </>
+          }
+        />
+        <button
+          type="button"
+          onClick={() => setIsNewModalOpen(true)}
+          disabled={!canCreate}
+          title={canCreate ? undefined : 'Cargando servicios y profesionales…'}
+          className="inline-flex items-center gap-1.5 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:opacity-95 disabled:opacity-50"
+        >
+          <Plus className="h-4 w-4" />
+          Nueva cita
+        </button>
+      </div>
 
       <AgendaToolbar
         view={view}
@@ -228,7 +249,7 @@ export default function PanelAgendaPage() {
         </div>
       )}
 
-      {selectedApt && (
+      {selectedApt && profile?.tenant_id && (
         <AppointmentDetailDrawer
           apt={selectedApt}
           timezone={timezone}
@@ -244,7 +265,26 @@ export default function PanelAgendaPage() {
               : '#71717a'
           }
           currencyCode={currencyCode}
+          tenantId={profile.tenant_id}
           onClose={() => setSelectedApt(null)}
+          onRefresh={() => {
+            void aptsQuery.refetch()
+          }}
+        />
+      )}
+
+      {isNewModalOpen && canCreate && profile?.tenant_id && (
+        <NewAppointmentModal
+          onClose={() => setIsNewModalOpen(false)}
+          onSuccess={() => {
+            void aptsQuery.refetch()
+          }}
+          services={fullServicesQuery.data ?? []}
+          employees={activeEmployees}
+          initialDate={dayIso ?? undefined}
+          timeZone={timezone}
+          currencyCode={currencyCode}
+          tenantId={profile.tenant_id}
         />
       )}
     </div>

@@ -46,7 +46,7 @@ export function useExpenses(expenseMonth: string) {
   })
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) => deleteExpense(id),
+    mutationFn: (id: string) => deleteExpense({ tenantId: tenantId ?? undefined, id }),
     onSuccess: () => {
       void queryClient.invalidateQueries({
         queryKey: ['operational_expenses'],

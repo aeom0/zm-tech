@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { MessageCircle, X } from 'lucide-react'
+import { MessageCircle, Phone, Edit, X } from 'lucide-react'
 
 import { useClientDetail } from '@/hooks/clientes/useClientDetail'
 import type { ClientWithMetrics } from '@/hooks/clientes/types'
@@ -22,6 +22,7 @@ interface ClientDetailDrawerProps {
   currencyCode: string
   timezone: string
   onClose: () => void
+  onEdit?: () => void
 }
 
 export function ClientDetailDrawer({
@@ -29,9 +30,13 @@ export function ClientDetailDrawer({
   currencyCode,
   timezone,
   onClose,
+  onEdit,
 }: ClientDetailDrawerProps) {
   const { data: history = [], isLoading, isError, error } = useClientDetail(client.id)
   const waPhone = waMessagesPhoneKey(client.phone)
+  const cleanPhone = (client.phone || '').replace(/\D/g, '')
+  const directWaUrl = cleanPhone ? `https://wa.me/${cleanPhone}` : null
+  const telUrl = client.phone ? `tel:${client.phone}` : null
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
@@ -49,27 +54,57 @@ export function ClientDetailDrawer({
             <p className="mt-1 text-sm text-fg-muted">{client.phone ?? 'Sin teléfono'}</p>
             {client.email ? <p className="text-sm text-fg-subtle">{client.email}</p> : null}
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] text-fg-soft hover:bg-fg/[0.08] md:h-9 md:w-9"
-            aria-label="Cerrar"
-          >
-            <X className="h-4 w-4" />
-          </button>
+          <div className="flex items-center gap-1.5">
+            {onEdit && (
+              <button
+                type="button"
+                onClick={onEdit}
+                className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] text-fg-soft hover:bg-fg/[0.08] md:h-9 md:w-9"
+                title="Editar cliente"
+              >
+                <Edit className="h-4 w-4" />
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={onClose}
+              className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] text-fg-soft hover:bg-fg/[0.08] md:h-9 md:w-9"
+              aria-label="Cerrar"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
         </header>
 
-        {waPhone && (
-          <div className="shrink-0 border-b border-fg/[0.08] px-5 py-3">
+        {/* Acciones de contacto rápido */}
+        <div className="flex items-center gap-2 border-b border-fg/[0.08] bg-fg/[0.02] px-5 py-2.5">
+          {directWaUrl && (
+            <a
+              href={directWaUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-700 hover:bg-emerald-500/20 dark:text-emerald-300"
+            >
+              <MessageCircle className="h-3.5 w-3.5" /> Enviar WhatsApp
+            </a>
+          )}
+          {telUrl && (
+            <a
+              href={telUrl}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-fg/[0.08] px-3 py-1.5 text-xs font-medium text-fg-soft hover:bg-fg/[0.05]"
+            >
+              <Phone className="h-3.5 w-3.5" /> Llamar
+            </a>
+          )}
+          {waPhone && (
             <Link
               href={`/panel/waba/mensajes?phone=${encodeURIComponent(waPhone)}`}
-              className="inline-flex items-center gap-1.5 text-xs font-medium text-tenant-text hover:underline"
+              className="ml-auto inline-flex items-center gap-1.5 text-xs font-medium text-tenant-text hover:underline"
             >
-              <MessageCircle className="h-3.5 w-3.5" />
-              Ver chat de WhatsApp en Mensajes
+              Bandeja WABA
             </Link>
-          </div>
-        )}
+          )}
+        </div>
 
         <div className="grid grid-cols-3 gap-2 border-b border-fg/[0.08] px-5 py-3">
           <Metric label="Visitas" value={String(client.total_visits)} />

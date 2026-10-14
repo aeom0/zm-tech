@@ -288,6 +288,14 @@ if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders }
 // supabase functions deploy send-notification --no-verify-jwt
 ```
 
+### 4.8 Código compartido (@geemastudio/data — Plan 19)
+
+Toda función de datos compartida entre web y mobile vive en `packages/geemastudio-data`:
+- **Servicios puros**: reciben `SupabaseClient` como primer argumento (`fetchPacks(client)`, `createEmployee(client, input)`).
+- **Sin hooks ni JSX**: hooks finos viven en cada app (`apps/geemastudio-web` y `apps/geemastudio-mobile`).
+- **Mappers y queries**: `rowToEmployee`, `mapConfigToRow`, `sortCatalogList`, `queryKeys`.
+- Al tocar una función existente que vive en una app, migrarla a `@geemastudio/data` en el mismo PR.
+
 ---
 
 ## 5. Design System — Lunaris
@@ -710,6 +718,7 @@ pnpm db:seed         # seeds template
 17. Usar config.locale.timeFormat (12|24) para formato de hora — NO hardcodear AM/PM
 18. Iconos Lucide en web via LucideIcons as Record<string, LucideIcon> — NO emojis en UI web
 19. Docs de migración: editar solo `docs/geemastudio/docs/plans/04-geema-migration/` (ya no hay espejo ni sync con ZM).
+20. Escribir lógica de Supabase y servicios compartidos en `@geemastudio/data` (Plan 19).
 
 ---
 

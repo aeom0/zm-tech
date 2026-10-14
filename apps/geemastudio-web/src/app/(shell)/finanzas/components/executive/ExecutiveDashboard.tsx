@@ -1,6 +1,8 @@
 'use client'
 
 import { useMemo, useState } from 'react'
+import { Plus } from 'lucide-react'
+import { useQueryClient } from '@tanstack/react-query'
 import { monthTick } from '@/hooks/finanzas/executiveDates'
 import { useExecutiveDashboard, type GrowthRange } from '@/hooks/finanzas/useExecutiveDashboard'
 import { BreakEvenCard } from './BreakEvenCard'
@@ -11,6 +13,7 @@ import { MixChart } from './MixChart'
 import { ProfitChart } from './ProfitChart'
 import { RankingList } from './RankingList'
 import { RangeToggle } from './ViewToggle'
+import { RegisterExpenseModal } from '../RegisterExpenseModal'
 
 interface Props {
   range: GrowthRange
@@ -35,7 +38,9 @@ export function ExecutiveDashboard({
   clientTerm,
   appointmentTerm,
 }: Props) {
+  const queryClient = useQueryClient()
   const [selectedMonth, setSelectedMonth] = useState<string | undefined>(undefined)
+  const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false)
   const dash = useExecutiveDashboard(range, tenantId, selectedMonth, timezone)
   const isCurrentMonth = dash.targetMonth === dash.currentMonth
 
@@ -92,6 +97,16 @@ export function ExecutiveDashboard({
               ))}
             </select>
             <RangeToggle range={range} onChange={onChangeRange} />
+            {tenantId && (
+              <button
+                type="button"
+                onClick={() => setIsExpenseModalOpen(true)}
+                className="inline-flex h-11 items-center gap-1.5 rounded-full bg-[var(--tenant-primary)] px-4 text-sm font-semibold text-white shadow-sm transition hover:opacity-95"
+              >
+                <Plus className="h-4 w-4" />
+                Registrar gasto
+              </button>
+            )}
           </div>
         </div>
 
@@ -127,7 +142,24 @@ export function ExecutiveDashboard({
           <RankingList data={dash.ranking.slice(0, 12)} loading={dash.isLoading} />
         </div>
 
-        <BreakEvenCard data={dash.breakEven} loading={dash.isLoading} />
+        <BreakEvenCard
+          data={dash.breakEven}
+          loading={dash.isLoading}
+          onOpenExpenseModal={() => setIsExpenseModalOpen(true)}
+        />
+
+        {tenantId && isExpenseModalOpen && (
+          <RegisterExpenseModal
+            tenantId={tenantId}
+            timeZone={timezone}
+            currencyCode={currencyCode}
+            onClose={() => setIsExpenseModalOpen(false)}
+            onSuccess={() => {
+              void queryClient.invalidateQueries({ queryKey: ['executive_dashboard'] })
+              void queryClient.invalidateQueries({ queryKey: ['dashboard_finanzas'] })
+            }}
+          />
+        )}
       </div>
     </ExecutiveFmtProvider>
   )

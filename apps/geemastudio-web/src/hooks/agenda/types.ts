@@ -1,19 +1,8 @@
+import type { AgendaAppointment as SharedAgendaAppointment } from '@geemastudio/data'
+
 export type AgendaStatusFilter = 'all' | 'scheduled' | 'completed' | 'cancelled'
 
-export interface AgendaAppointment {
-  id: string
-  client_name: string
-  client_phone: string | null
-  date: string
-  duration: number
-  price: string
-  status: string
-  employee_id: string | null
-  service_id: string | null
-  service_ids: string[] | null
-  cancel_reason?: string | null
-  cancel_note?: string | null
-}
+export type AgendaAppointment = SharedAgendaAppointment
 
 export interface AgendaEmployeeCol {
   id: string

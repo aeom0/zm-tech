@@ -4,8 +4,8 @@ import { useQuery } from '@tanstack/react-query'
 
 import { supabase } from '@/lib/supabase'
 
-// No depende de AuthContext: /panel no monta AuthProvider (solo /finanzas), así que
-// resolvemos el usuario directo desde la sesión de Supabase.
+// Resuelve el tenant desde la sesión de Supabase, sin depender de AuthContext,
+// para poder usarse en cualquier hook aunque el perfil aún no haya cargado.
 async function resolveTenantId(): Promise<string | null> {
   if (!supabase) return null
   const { data: sessionData } = await supabase.auth.getSession()

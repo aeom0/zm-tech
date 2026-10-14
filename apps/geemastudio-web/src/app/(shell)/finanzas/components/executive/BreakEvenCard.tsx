@@ -8,9 +8,10 @@ import { useExecutiveFmt } from './ExecutiveFmtContext'
 interface Props {
   data: BreakEven
   loading?: boolean
+  onOpenExpenseModal?: () => void
 }
 
-export function BreakEvenCard({ data, loading }: Props) {
+export function BreakEvenCard({ data, loading, onOpenExpenseModal }: Props) {
   const { fmt } = useExecutiveFmt()
   const progreso =
     data.citasNecesarias && data.citasNecesarias > 0
@@ -44,12 +45,22 @@ export function BreakEvenCard({ data, loading }: Props) {
       ) : (
         <div className="space-y-4">
           {!data.gastosCargados ? (
-            <div className="flex gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 dark:border-amber-900/50 dark:bg-amber-950/30">
-              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
-              <p className="text-sm text-amber-800 dark:text-amber-200">
-                Completa los gastos del mes en la app móvil (Finanzas → Resumen) para ver el
-                equilibrio real. Ads sí entran si el sync ya corrió.
-              </p>
+            <div className="flex flex-col gap-2 rounded-xl border border-amber-200 bg-amber-50 px-3 py-2.5 dark:border-amber-900/50 dark:bg-amber-950/30 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex gap-2">
+                <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                <p className="text-sm text-amber-800 dark:text-amber-200">
+                  Registra los gastos del mes para ver el punto de equilibrio real.
+                </p>
+              </div>
+              {onOpenExpenseModal && (
+                <button
+                  type="button"
+                  onClick={onOpenExpenseModal}
+                  className="inline-flex items-center justify-center rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-600"
+                >
+                  Registrar gasto
+                </button>
+              )}
             </div>
           ) : null}
 

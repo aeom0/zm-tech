@@ -3,18 +3,17 @@
  */
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
+import {
+  type AuthProfile,
+  type Role,
+  fetchProfile,
+  isAdminRole,
+  pollProfileOrInsert,
+} from '@geemastudio/data'
 
 import { supabase } from '@/lib/supabase'
 
-export type Role = 'dev' | 'owner' | 'staff'
-
-interface AuthProfile {
-  id: string
-  role: Role
-  employee_id: string | null
-  full_name: string | null
-  avatar_url: string | null
-}
+export type { Role, AuthProfile }
 
 type AuthContextType = {
   isAuthenticated: boolean
@@ -32,16 +31,8 @@ const AuthContext = createContext<AuthContextType | null>(null)
 /** Beta / preview: cierra sesión al arrancar para exigir login cada apertura. */
 const FORCE_FRESH_START = process.env.EXPO_PUBLIC_FORCE_FRESH_START === 'true'
 
-const POLL_PERFIL_MS = 200
-const POLL_PERFIL_INTENTOS = 30
-
 async function fetchProfileRow(userId: string): Promise<AuthProfile | null> {
-  const { data } = await supabase
-    .from('profiles')
-    .select('id, role, employee_id, full_name, avatar_url')
-    .eq('id', userId)
-    .maybeSingle()
-  return data ? (data as AuthProfile) : null
+  return fetchProfile(supabase, userId)
 }
 
 /**
@@ -50,26 +41,7 @@ async function fetchProfileRow(userId: string): Promise<AuthProfile | null> {
  * Esperamos al trigger; si sigue sin fila, intentamos INSERT owner (política bootstrap en BD).
  */
 async function esperarPerfilOInsertar(userId: string): Promise<AuthProfile | null> {
-  for (let i = 0; i < POLL_PERFIL_INTENTOS; i++) {
-    const row = await fetchProfileRow(userId)
-    if (row) return row
-    await new Promise((r) => setTimeout(r, POLL_PERFIL_MS))
-  }
-
-  const { error } = await supabase.from('profiles').insert({
-    id: userId,
-    role: 'owner',
-  })
-  if (error && __DEV__) {
-    console.warn('[AUTH] insert perfil propio tras espera:', error.message)
-  }
-
-  for (let i = 0; i < 15; i++) {
-    const row = await fetchProfileRow(userId)
-    if (row) return row
-    await new Promise((r) => setTimeout(r, POLL_PERFIL_MS))
-  }
-  return null
+  return pollProfileOrInsert(supabase, userId, { insertOwnerIfMissing: true })
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {

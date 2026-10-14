@@ -60,7 +60,7 @@ export default function MiWebPromosScreen() {
     setSyncedData(data)
     setBannerUrl(data.promoBannerUrl ?? '')
     setBannerAlt(data.promoBannerAlt ?? '')
-    setBannerActive(data.promoBannerActive)
+    setBannerActive(Boolean(data.promoBannerActive))
   }
 
   const persistBanner = useCallback(

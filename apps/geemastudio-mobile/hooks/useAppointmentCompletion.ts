@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import { Alert } from 'react-native'
 
-import { useVesRate } from './useVesRate'
-import { vesFieldsForQuickMethod, type PaymentVesFields } from '@/lib/payments-ves'
+import {
+  evaluateCompletionGate,
+  vesFieldsForQuickMethod,
+  type AppointmentCompletionPayment,
+  type PaymentVesFields,
+} from '@geemastudio/data'
 
-/** Fila mínima de `payments` necesaria para evaluar el gate de abono/pago pendiente. */
-export interface AppointmentCompletionPayment {
-  appointment_id: string | null
-  amount: number | string
-  is_abono: boolean
-}
+import { useVesRate } from './useVesRate'
+
+export type { AppointmentCompletionPayment }
 
 /** Campos mínimos de una cita necesarios para completarla y registrar su pago. */
 export interface CompletableAppointment {
@@ -107,26 +108,21 @@ export function useAppointmentCompletion<A extends CompletableAppointment>({
   }
 
   const handleMarkCompleted = (appointment: A) => {
-    const price =
-      typeof appointment.price === 'number'
-        ? appointment.price
-        : parseFloat(String(appointment.price))
-    const paymentsForApt = paymentsByAppointment.filter((p) => p.appointment_id === appointment.id)
-    const totalPaid = paymentsForApt.reduce((sum, p) => sum + parseFloat(String(p.amount)), 0)
+    const gate = evaluateCompletionGate(appointment, paymentsByAppointment)
 
-    if (totalPaid > 0 && totalPaid < price) {
+    if (gate.kind === 'partial') {
       Alert.alert(
         'Pago pendiente',
         'Esta cita solo tiene un pago parcial. Para marcarla como completada primero registra el pago del resto en Finanzas.'
       )
       return
     }
-    if (totalPaid >= price) {
+    if (gate.kind === 'paid') {
       completeAppointment(appointment)
       return
     }
     setPendingAppointment(appointment)
-    setPendingAmountDue(price - totalPaid)
+    setPendingAmountDue(gate.amountDue)
     setPendingPayMethod('cash')
     setPayMethodVisible(true)
   }
