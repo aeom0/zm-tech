@@ -397,7 +397,7 @@ Deno.serve(async (req: Request) => {
               : `Vemos que dejaste ${cartDesc} ${
                 listosWord(cartDesc)
               } para agendar en ZM Lash & Nails Beauty 💜\n\n` +
-                `Si ya no deseas continuar, no hay problema 😊 Pero si quieres tu cita, solo escribe *agendar* y te ayudamos en segundos.\n\n` +
+                `Si ya no deseas continuar, no hay problema 😊 Pero si quieres tu cita, respóndeme por aquí y te ayudamos en segundos.\n\n` +
                 `_Tu selección se liberará pronto._ ✨`;
             const msg2 = addressWithoutHello(clientName, rawMsg2);
             await sendTextWA(
@@ -461,7 +461,7 @@ Deno.serve(async (req: Request) => {
               } — solo falta elegir día y hora 💜\n\n` +
                 `Te reenviamos el calendario 👇`
             : `Tienes ${cartDesc} en tu selección y aún no confirmaste tu cita 💜\n\n` +
-              `¿Seguimos? Escribe *agendar* y te paso al calendario en segundos 🗓️`;
+              `¿Seguimos? Dime qué día te acomoda y te paso los horarios libres 🗓️`;
           const msg = addressWithoutHello(clientName, rawMsg);
           if (emotionalAlmostClose && rubro) {
             const image = resolveAlmostCloseImage(

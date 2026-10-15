@@ -13,7 +13,7 @@
 //
 // Si la sesión tiene selección o step=awaiting_datetime, tras el texto se reenvía
 // el selector de fecha/hora (misma lógica que cart-nudge). Haiku no debe prometer
-// "días disponibles" sin selección — en ese caso invita a escribir *agendar*.
+// "días disponibles" sin selección — en ese caso pregunta qué servicio o día quiere.
 //
 // Anti-spam: Haiku recibe las últimas 8 respuestas del hilo (HISTORY_LIMIT) y
 // decide needs_response=false si la charla ya se cerró sola — nunca se envía
@@ -164,7 +164,8 @@ async function askHaikuIfNeedsResponse(
       'Ej: "¿Te animas a agendar? Te dejo los días disponibles 👇"'
     : "La clienta NO tiene selección activa. NUNCA digas que le dejas días, calendario " +
       "ni lista de horarios (no se enviará ninguna lista). Si conviene agendar, " +
-      "invítala a escribir *agendar* o a decir qué servicio quiere.";
+      "pregúntale qué servicio quiere o qué día le acomoda (nunca le pidas que " +
+      "escriba una palabra clave).";
 
   const systemPrompt =
     "Eres parte del equipo de ZM Lash & Nails Beauty (salón de belleza en Perú) " +
@@ -272,12 +273,15 @@ function finalizeWatchdogMessage(
   }
 
   if (PROMISES_CALENDAR_RE.test(message)) {
-    // Quitar promesa vacía y ofrecer *agendar* (no en boleta/pago)
+    // Quitar promesa vacía y preguntar por el día (no en boleta/pago)
     message = message
       .replace(/\s*Te dejo los d[ií]as disponibles[^.]*\.?/gi, "")
       .replace(/\s*te dejo el calendario[^.]*\.?/gi, "")
       .trim();
-    if (!isDepositOrPaymentStep(ctx.step) && !/\*agendar\*/i.test(message)) {
+    if (
+      !isDepositOrPaymentStep(ctx.step) &&
+      !/qu[eé] d[ií]a te acomoda/i.test(message)
+    ) {
       message = (message || FALLBACK_MESSAGE) + AGENDAR_HINT;
     }
   }

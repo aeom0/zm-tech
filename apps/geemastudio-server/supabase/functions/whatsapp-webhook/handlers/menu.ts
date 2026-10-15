@@ -1369,8 +1369,8 @@ export async function sendCartOptions(
     await sendMessage(
       to,
       hasItems
-        ? `${summary}\n\nEscribe *agregar* para más o *agendar* para reservar.`
-        : "Escribe *agregar* para más o *agendar* para reservar.",
+        ? `${summary}\n\n¿Agregamos otro servicio o te agendo? 💜`
+        : "¿Agregamos otro servicio o te agendo? 💜",
     );
   }
 }

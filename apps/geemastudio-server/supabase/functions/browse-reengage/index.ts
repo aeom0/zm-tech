@@ -113,7 +113,8 @@ async function askHaikuReengage(
     "should_send=false SOLO si la charla cerró claro (gracias/listo/chau/ya agendé) " +
     "o hay cita confirmada. Si should_send=true, redacta 1–2 líneas en español " +
     "peruano, tono asesora profesional y cercana (NO amiga efusiva): invita a " +
-    "retomar (qué servicio te gustaría, *agendar* o *menu*). " +
+    "retomar preguntando qué servicio o qué día le acomoda. Nunca le pidas que " +
+    "escriba una palabra clave (*agendar*, *menu*). " +
     "PROHIBIDO apodos: babe, baby, amor, cielo, linda, hermosa, bella, guapa, " +
     "nena, bebé, cariño, reina, princesa, mamacita. PROHIBIDO volver a decir ¡Hola!/Hola " +
     "(el saludo ya se dio). Trata como Srta. {nombre} si lo conoces; si no, directo al tema. " +

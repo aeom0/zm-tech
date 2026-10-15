@@ -739,7 +739,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
         if (pendingConfirm.length === 0) {
           await _sendMessage(
             phoneNumber,
-            "No encontramos una cita pendiente con este número 💜 Si ya viniste o quieres agendar de nuevo, escribe *menu* o *agendar*.",
+            "No encontramos una cita pendiente con este número 💜 Si ya viniste o quieres agendar de nuevo, dime qué servicio te interesa y te ayudo.",
           );
           return;
         }
@@ -1389,7 +1389,7 @@ export async function dispatch(ctx: DispatchContext): Promise<void> {
     }
     await sendMessage(
       phoneNumber,
-      "Entiendo 💜 Revisemos tu selección. Puedes *vaciar* para empezar de cero, *agregar* otro servicio o *agendar* con lo que ya tienes.",
+      "Entiendo 💜 Revisemos tu selección. Dime si quieres empezar de cero, agregar otro servicio o agendar con lo que ya tienes.",
     );
     if (sessionHasCart(session ?? null)) {
       const cartItems = session?.cartItems ?? [];

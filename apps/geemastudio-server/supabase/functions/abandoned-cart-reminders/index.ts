@@ -2,7 +2,7 @@
 // Cron cada 30 minutos: */30 * * * *
 // Deploy: SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) supabase functions deploy abandoned-cart-reminders --project-ref udelxwwnyivknslueerr --no-verify-jwt
 
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import { metaRecipientFields } from "../_shared/wa-recipient.mjs";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
@@ -87,7 +87,7 @@ async function sendTextMessage(
 
 /** Obtiene el primer nombre del cliente desde la tabla clients. Fallback: "amiga". */
 async function getFirstName(
-  supabase: ReturnType<typeof createClient>,
+  supabase: SupabaseClient,
   phone: string,
 ): Promise<string> {
   try {
@@ -238,7 +238,7 @@ Deno.serve(async (req: Request) => {
       const firstName = await getFirstName(supabase, session.phone);
       const msg =
         `¡Hola ${firstName}! 👋 Vimos que estabas mirando nuestras promos y te quedaste con ganas 💜\n\n` +
-        `Tu selección sigue guardada. ¿Continuamos y te agendamos? Solo escribe *agendar* cuando estés lista 🗓️\n\n` +
+        `Tu selección sigue guardada. ¿Continuamos y te agendamos? Dime qué día te acomoda cuando estés lista 🗓️\n\n` +
         `O si tienes dudas sobre precios o disponibilidad, escríbeme con confianza 😊`;
 
       console.log(
@@ -295,7 +295,7 @@ Deno.serve(async (req: Request) => {
       const firstName = await getFirstName(supabase, session.phone);
       const msg =
         `Hola ${firstName} 🌸 Queremos que estrenes unas uñas o pestañas increíbles hoy 💅\n\n` +
-        `¿Te agendamos? Escribe *agendar* y en minutos tienes tu cita lista 💜\n\n` +
+        `¿Te agendamos? Dime qué día te acomoda y en minutos tienes tu cita lista 💜\n\n` +
         `¡Te esperamos en ZM Lash & Nails! ✨`;
 
       console.log(
