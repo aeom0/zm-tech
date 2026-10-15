@@ -13,19 +13,25 @@ import type {
   AppointmentServiceItemRow,
 } from './types'
 
+function buildLineRows(lines: AgendaServiceLine[], services: AgendaService[]) {
+  return lines.map((line) => ({
+    service_id: line.serviceId,
+    employee_id: line.employeeId || null,
+    pack_id: line.packId ?? null,
+    price: lineUnitPrice(line, services).toFixed(2),
+    duration: lineDuration(line, services),
+  }))
+}
+
 function buildServiceRows(
   appointmentId: string,
   lines: AgendaServiceLine[],
   services: AgendaService[],
   tenantId: string
 ) {
-  return lines.map((line) => ({
+  return buildLineRows(lines, services).map((row) => ({
     appointment_id: appointmentId,
-    service_id: line.serviceId,
-    employee_id: line.employeeId || null,
-    pack_id: line.packId ?? null,
-    price: lineUnitPrice(line, services).toFixed(2),
-    duration: lineDuration(line, services),
+    ...row,
     tenant_id: tenantId,
   }))
 }
@@ -75,26 +81,17 @@ export async function createAppointment(
     status: input.status ?? 'scheduled',
   }
 
-  const { data: newApt, error } = await client
-    .from('appointments')
-    .insert(payload)
-    .select('id')
-    .single()
+  // Cita y líneas en una sola transacción: si falla una línea no queda cita huérfana.
+  const { data: aptId, error } = await client.rpc('create_appointment_with_services', {
+    p_appointment: payload,
+    p_services: buildLineRows(input.lines, services),
+  })
 
-  if (error || !newApt) {
+  if (error || !aptId) {
     throw new Error(error?.message ?? 'No se pudo crear la cita')
   }
 
-  const aptId = String(newApt.id)
-  const svcRows = buildServiceRows(aptId, input.lines, services, input.tenantId)
-  const { error: linesError } = await client.from('appointment_services').insert(svcRows)
-  if (linesError) {
-    // Evita cita huérfana sin líneas si falla el insert multi-servicio.
-    await client.from('appointments').delete().eq('id', aptId)
-    throw new Error(linesError.message)
-  }
-
-  return aptId
+  return String(aptId)
 }
 
 /**

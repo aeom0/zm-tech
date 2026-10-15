@@ -1,7 +1,7 @@
 # Plan 19 — Paridad Geema mobile ↔ web y código compartido
 
 **Fecha:** 2026-10-13
-**Estado:** Fases 0–3 completadas (W10 el 15-oct-2026). Falta el smoke manual en `geema.zmtechdev.com`, la RPC transaccional de `createAppointment` (código listo, migración sin aplicar) y la Fase 4 (mobile)
+**Estado:** Fases 0–3 completadas (W10 el 15-oct-2026). Falta el smoke manual en `geema.zmtechdev.com` y la Fase 4 (mobile)
 **Repos afectados:** `zm-tech` (`apps/geemastudio-web`, `apps/geemastudio-mobile`, `packages/geemastudio-data`)
 **Relacionado:** Plan 13 (paridad panel ZM → Geema), Plan 14 (CRM clientes), Plan 15 (retail), Plan 18 (profesionales)
 
@@ -86,7 +86,7 @@ Primera tanda de extracción, migrando las dos apps en el mismo PR:
 También en esta fase:
 
 - Agregar la regla de código compartido a `.cursor/skills/geemastudio-dev/SKILL.md`.
-- Crear una cita hoy es un insert en `appointments` seguido de un insert en `appointment_services`, con borrado manual si el segundo falla (`createAppointment` en `@geemastudio/data`). Pendiente: evaluar pasarlo a una RPC transaccional (migración Geema alineada 1:1 con `schema_migrations`).
+- Crear una cita es una sola transacción: `createAppointment` en `@geemastudio/data` llama a la RPC `create_appointment_with_services` (migración `20261015134627`, `SECURITY INVOKER`, mismas políticas RLS que los inserts directos). Antes eran dos inserts con borrado manual si el segundo fallaba.
 
 Resultado: dominios `auth`, `tenant-settings`, `web-settings`, `catalog` (dialectos `zm`/`geema`, packs, promos, productos) y `personal` (empleados y disponibilidad), con query keys compartidas. Las dos apps delegan en el paquete y la regla quedó en `.cursor/skills/geemastudio-dev/SKILL.md`.
 
