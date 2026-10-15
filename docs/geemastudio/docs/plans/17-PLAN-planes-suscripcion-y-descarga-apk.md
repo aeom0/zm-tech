@@ -1,7 +1,7 @@
 # Plan 17 — Planes de suscripción conectados (landing, panel web, mobile) + descarga del APK
 
 **Fecha:** 2026-10-02
-**Estado:** Fases 1–4 ✅ (2/3-oct-2026); Fase 5 pospuesta (el APK se envía por WhatsApp por ahora; Supabase Free limita archivos a 50 MB, evaluar R2 o Pro al retomar)
+**Estado:** Fases 1–4 ✅ (2/3-oct-2026); Fase 5 pospuesta (el APK se envía por WhatsApp por ahora; Supabase Free limita archivos a 50 MB, evaluar R2 o Pro al retomar). Desde el 15-oct-2026 la PWA es el canal principal para negocios nuevos (Plan 19, W13); la Fase 5 queda como opción
 **Repos:** `zm-tech` (schema, web, mobile, server). BD: `udelxwwnyivknslueerr`.
 
 ## Contexto

@@ -188,7 +188,7 @@ Al primer inicio (sin `@geemastudio/tenant_configured` en AsyncStorage) o cuando
 
 En desarrollo se puede forzar siempre el onboarding con `EXPO_PUBLIC_FORCE_ONBOARDING=true` (aunque ya exista config remota).
 
-**Web (pendiente):** el onboarding también va al panel web (Plan 19, W13, Fase 3b). La escritura pasa a `@geemastudio/data` y la señal de «configurado» deja de vivir solo en AsyncStorage.
+**Web (pendiente):** el alta del negocio y el onboarding también van a la web (Plan 19, W13, Fase 3b): `/registro` crea cuenta, tenant y trial con la Edge Function `signup-tenant`. La escritura pasa a `@geemastudio/data` y la señal de «configurado» deja de vivir solo en AsyncStorage.
 
 ## Sistema de Diseño
 

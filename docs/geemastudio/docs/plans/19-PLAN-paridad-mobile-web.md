@@ -1,9 +1,9 @@
 # Plan 19 — Paridad Geema mobile ↔ web y código compartido
 
 **Fecha:** 2026-10-13
-**Estado:** Fases 0–3 completadas (W10 el 15-oct-2026). Faltan el smoke manual en `geema.zmtechdev.com`, la Fase 3b (W13 onboarding web) y la Fase 4 (mobile)
+**Estado:** Fases 0–3 completadas (W10 el 15-oct-2026). Faltan el smoke manual en `geema.zmtechdev.com`, la Fase 3b (W13 alta de negocio en la web y PWA) y la Fase 4 (mobile)
 **Repos afectados:** `zm-tech` (`apps/geemastudio-web`, `apps/geemastudio-mobile`, `packages/geemastudio-data`)
-**Relacionado:** Plan 13 (paridad panel ZM → Geema), Plan 14 (CRM clientes), Plan 15 (retail), Plan 18 (profesionales)
+**Relacionado:** Plan 13 (paridad panel ZM → Geema), Plan 14 (CRM clientes), Plan 15 (retail), Plan 17 (planes y trial), Plan 18 (profesionales)
 
 ---
 
@@ -19,7 +19,7 @@ Los Planes 12 y 13 midieron la paridad ZM → Geema, no la paridad entre las dos
 
 - **Orden:** primero el código compartido, después los huecos de la web y **al final** portar a mobile lo que solo tiene la web.
 - **Staff en la web:** sí. El panel web tiene una vista staff (su agenda y sus pagos), como la app.
-- **Onboarding:** pasa a la web también (decisión del 15-oct-2026, antes era solo de la app). Es W13, en la Fase 3b.
+- **Onboarding y alta de negocio:** pasan a la web (decisión del 15-oct-2026, antes el onboarding era solo de la app). Un negocio nuevo se crea solo desde la web, sin descargar el APK ni pasar por una tienda. La PWA es el canal principal y el APK queda como opción. Es W13, en la Fase 3b.
 - **Regla de código:** toda función de este plan se escribe primero en `@geemastudio/data` y la consumen las dos apps. Al tocar una función que ya existe en una app, se migra al paquete en el mismo PR.
 
 ## Matriz de paridad (13-oct-2026)
@@ -46,7 +46,7 @@ Catálogo (servicios, categorías, packs, promos), ventas de productos, Personal
 | W10 | Promo masiva por WhatsApp e historial (`send-promo-whatsapp`). Distinta de «Campañas» web, que configura anuncios Meta Ads                                                                                                          | `screens/promos/*`                                                                                                                                                                                           | 3    |
 | W11 | Reordenar servicios                                                                                                                                                                                                                 | `screens/services/components/ReorderServicesModal.tsx`                                                                                                                                                       | 3    |
 | W12 | Dashboard: stock bajo, top servicios, próximas citas                                                                                                                                                                                | `screens/dashboard/components/*`                                                                                                                                                                             | 3    |
-| W13 | Onboarding: configuración inicial del negocio (rubro, país, datos y colores, servicios, equipo) tras iniciar sesión, y guardado en `tenant_settings`, `service_categories` y `employees` | `screens/onboarding/*`, `contexts/TenantContext.tsx` (`markConfigured`), `services/onboardingEmployeesService.ts` | 3b   |
+| W13 | Alta de negocio self-service (cuenta del dueño, tenant y trial) y onboarding (rubro, datos y colores, servicios, equipo), más instalación de la PWA. Hoy la app no crea negocios: pide una cuenta que ya tiene tenant | `screens/onboarding/*`, `contexts/TenantContext.tsx` (`markConfigured`), `services/onboardingEmployeesService.ts` | 3b   |
 
 ### Faltan en mobile (última fase)
 
@@ -60,6 +60,7 @@ Catálogo (servicios, categorías, packs, promos), ventas de productos, Personal
 
 - **Solo web:** Asistente IA (prompt, saludo, palabras clave, números bloqueados), Reglas, Simulador, Portafolio, Campañas Meta Ads, Historial WABA. La app enlaza a la web para estas.
 - **Solo móvil:** acceso biométrico, actualizaciones OTA, modo demo.
+- **Distribución:** la PWA es el canal principal para negocios nuevos; el APK queda como opción (Plan 17 F5).
 
 ## Fases
 
@@ -146,14 +147,67 @@ W10 promo masiva (después de cerrar el envío real, ROADMAP pendiente #6), W11 
 - El envío real ya estaba probado en prod (21-sep y 6-oct-2026, 279 enviadas sin fallas, creadas con service role). Falta el primer envío desde el asistente con la sesión del dueño (QA solo a `51999000978`–`999`).
 - Tests del paquete: 70 en verde (10 archivos).
 
-### Fase 3b — Onboarding web
+### Fase 3b — Alta de negocio en la web y PWA
 
-W13. El onboarding de la app no crea el negocio: pide iniciar sesión con una cuenta que ya tiene tenant y luego guarda la configuración. La web hace lo mismo.
+W13. Un dueño entra a la landing, crea su cuenta y su negocio, configura lo básico e instala la PWA, sin APK y sin tienda.
 
-- Paquete: la escritura (`tenant_settings`, categorías iniciales del rubro y equipo) va a `onboarding/` de `@geemastudio/data`, y mobile la usa.
-- `markConfigured` en mobile hoy ignora un error de RLS y marca el negocio como configurado solo en el teléfono. Al migrarlo al paquete, el error se muestra y no se marca como configurado.
-- La señal de «ya configurado» tiene que venir de la BD y no de AsyncStorage, para que la web y la app vean lo mismo.
-- Web: ruta `/onboarding` fuera de `/panel`. Un owner sin configuración entra ahí al iniciar sesión.
+**Punto de partida (15-oct-2026)**
+
+- No hay alta de negocios. El onboarding de la app pide iniciar sesión con una cuenta que ya tiene tenant.
+- El hook `custom_access_token_hook` lanza `profile_missing_tenant_id` si el perfil no tiene tenant. Por eso un `signUp` desde el cliente no sirve: el tenant y el perfil se crean en el servidor antes del primer login.
+- No hay trigger en `auth.users`. `tenants` ya tiene `plan_code`, `subscription_status` y `trial_ends_at` (Plan 17).
+- La PWA ya existe: manifest por tenant (`app/manifest.webmanifest/route.ts`), `public/sw.js` y `PwaRegister`. Falta invitar a instalarla.
+- «Empezar gratis» en la landing lleva a `#precios` y no a un registro.
+- `markConfigured` en mobile ignora un error de RLS y marca el negocio como configurado solo en el teléfono (AsyncStorage). La web no puede ver esa marca.
+
+**Decisiones (15-oct-2026)**
+
+- El dueño entra apenas se registra y confirma el correo después. Hasta confirmarlo ve un aviso, y la conexión de WhatsApp y las promos masivas quedan bloqueadas.
+- Un negocio nuevo arranca en Pro con 14 días de trial (`subscription_status = trial`, `trial_ends_at = now() + 14 días`). Al vencer se avisa sin bloqueo duro, como en el Plan 17.
+- Anti-abuso sin servicios externos: límite de altas por IP y por correo en la Edge Function. Turnstile se puede sumar después.
+
+**Base de datos (migración)**
+
+- `tenants.onboarding_completed_at` (null = falta configurar). Backfill con `now()` para los tenants existentes. Reemplaza la marca de AsyncStorage en las dos apps.
+- Marca de correo confirmado del dueño (columna en `tenants` o `profiles`, se define al implementar).
+- Tabla `signup_attempts` (hash de IP, hash de correo, fecha), solo para `service_role`.
+- RPC `create_tenant_for_owner` (`SECURITY DEFINER`, ejecutable solo por `service_role`): en una transacción crea `tenants` (slug único a partir del nombre), `profiles` (rol `owner`) y `tenant_settings` (preset del rubro y moneda y zona horaria del país).
+- `get_advisors` de seguridad después de aplicarla.
+
+**Edge Function `signup-tenant`**
+
+- Pública (`verify_jwt = false`), con CORS. Va a la matriz de `edge-functions.yml`.
+- Recibe nombre del dueño, correo, contraseña, nombre del negocio, rubro y país. Valida y aplica el límite por IP y por correo.
+- Crea el usuario con `auth.admin.createUser` y llama a `create_tenant_for_owner`. Si la RPC falla, borra el usuario para no dejar cuentas sin tenant.
+- El cliente inicia sesión con correo y contraseña. El JWT ya trae `tenant_id`.
+- Hay que confirmar en el proyecto cómo queda «Confirm email» y cómo se confirma el correo después (por ejemplo, un enlace por OTP que marque la confirmación). Se define al implementar.
+
+**Paquete `@geemastudio/data`, dominio `onboarding/`**
+
+- `signupTenant` (llama a la Edge Function), guardado de cada paso (datos y colores, categorías iniciales del rubro, equipo) y `completeOnboarding` (fija `onboarding_completed_at`). Los errores se muestran y no se ignoran.
+- Mobile migra `markConfigured` y `onboardingEmployeesService` al paquete. «Crear nuevo negocio» en la app usa el mismo alta: primero la cuenta y después el wizard.
+
+**Web**
+
+- `/registro`: alta de cuenta y negocio. Los CTA «Empezar gratis» de la landing llevan aquí.
+- `/onboarding`, fuera de `/panel`: rubro, datos y colores, servicios y equipo, con el progreso guardado en la BD. Un owner con `onboarding_completed_at` null entra aquí al iniciar sesión. Staff nunca lo ve.
+- Pantalla final con «Instalar la app»: `beforeinstallprompt` en Android y escritorio, e instrucciones de «Compartir → Agregar a inicio» en iOS Safari.
+- Banner de instalación en el panel mientras no esté instalada (`display-mode: standalone`). Se puede descartar y el descarte se recuerda.
+- Manifest con `start_url` en `/panel` para el dueño.
+
+**Fuera de alcance**
+
+- Cobro y checkout (siguen fuera, como en el Plan 17).
+- Notificaciones push web. En iOS solo funcionan con la PWA instalada; se evalúa aparte.
+- Invitar staff por correo desde el onboarding.
+
+**Verificación**
+
+- Alta completa con un correo de prueba en `geema.zmtechdev.com`: tenant, perfil y `tenant_settings` creados, trial Pro de 14 días y JWT con el `tenant_id` nuevo.
+- RLS: el tenant nuevo no ve datos de `zm-lash-nails` y al revés.
+- Límite: la cuarta alta desde la misma IP en una hora se rechaza, y un correo repetido también.
+- Instalar la PWA en Android (Chrome) y en iOS (Safari) y abrir directo en el panel.
+- Borrar los tenants de prueba al terminar.
 
 ### Fase 4 — Mobile
 

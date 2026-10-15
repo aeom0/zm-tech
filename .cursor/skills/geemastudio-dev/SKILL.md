@@ -542,7 +542,7 @@ Paso 6: Complete     → markConfigured() → upsert tenant_settings + AsyncStor
 
 Forzar en dev: `EXPO_PUBLIC_FORCE_ONBOARDING=true`
 
-Web: pendiente en Plan 19 (W13, Fase 3b). Ruta `/onboarding` fuera de `/panel`; la escritura vive en `onboarding/` de `@geemastudio/data` y la usan las dos apps.
+Web: pendiente en Plan 19 (W13, Fase 3b). Alta en `/registro` (Edge Function `signup-tenant`, el hook de JWT exige tenant antes del primer login) y ruta `/onboarding` fuera de `/panel`; la escritura vive en `onboarding/` de `@geemastudio/data` y la usan las dos apps.
 
 ### 8.3 Navegacion (MoreStackParamList — rutas exactas del repo)
 
