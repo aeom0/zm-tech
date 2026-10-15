@@ -54,6 +54,7 @@ import { sendMessage } from "./wa-api.ts";
 import { dispatch } from "./handlers/dispatcher.ts";
 import { isAgentEnabledFor, runAgent } from "./agent/agent.ts";
 import { announceAgentInbound, routeAgentInbound } from "./agent/inbound.ts";
+import { maybeAutoResumeBotPause } from "./lib/pause-auto-resume.ts";
 import { AGENT_COALESCE_WINDOW_MS } from "./agent/inbound-route.ts";
 import { handleLegacyPayload } from "./handlers/legacy.ts";
 import { logWaError } from "./lib/error-log.ts";
@@ -511,6 +512,10 @@ async function processMessage(body: Record<string, unknown>): Promise<void> {
       }
 
       try {
+        // Pausa vencida (cita ya completada o 4 h sin el equipo): el bot retoma.
+        await maybeAutoResumeBotPause(supabase, phoneNumber).catch(
+          (err: unknown) => console.error("[pause-auto-resume]", err),
+        );
         // Cutover agente: texto, imagen, audio y «Mi cita».
         // Si el agente falla sin haber respondido, cae al dispatch.
         const routed = await routeAgentInbound({
