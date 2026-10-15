@@ -4,16 +4,13 @@ import { useQuery } from '@tanstack/react-query'
 import { format, parseISO, startOfWeek } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { toZonedTime } from 'date-fns-tz'
+import { fetchAiUsageRows, summarizeAiUsageCost } from '@geemastudio/data/finances'
 import { supabase } from '@/lib/supabase'
 
 const LIMA = 'America/Lima'
 
 /** Tope de filas cargadas por consulta (rendimiento en panel). */
 export const WABA_HISTORIAL_MSG_CAP = 5000
-
-/** Estimación de costo en USD (tarifas públicas de referencia Haiku). */
-const HAIKU_INPUT_PER_TOKEN = 0.00000025
-const HAIKU_OUTPUT_PER_TOKEN = 0.00000125
 
 export type HistorialPeriod = '7d' | '30d' | '90d'
 
@@ -216,19 +213,12 @@ async function fetchHaiku(desdeIso: string): Promise<HaikuHistorial> {
   }
 
   try {
-    const { data, error } = await supabase
-      .from('ai_usage_log')
-      .select('input_tokens, output_tokens')
-      .gte('created_at', desdeIso)
-      .limit(WABA_HISTORIAL_MSG_CAP)
-
-    if (error) {
-      const msg = String((error as { message?: string }).message ?? '')
-      if (
-        msg.includes('does not exist') ||
-        msg.includes('schema cache') ||
-        (error as { code?: string }).code === '42P01'
-      ) {
+    let rows: Awaited<ReturnType<typeof fetchAiUsageRows>>
+    try {
+      rows = await fetchAiUsageRows(supabase, desdeIso, new Date().toISOString())
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error)
+      if (msg.includes('does not exist') || msg.includes('schema cache')) {
         return {
           llamadas: 0,
           tokensEntrada: 0,
@@ -247,18 +237,16 @@ async function fetchHaiku(desdeIso: string): Promise<HaikuHistorial> {
       }
     }
 
-    const rows = (data ?? []) as Array<{
-      input_tokens?: number
-      output_tokens?: number
-    }>
     let tokensEntrada = 0
     let tokensSalida = 0
     for (const r of rows) {
-      tokensEntrada += Number(r.input_tokens) || 0
-      tokensSalida += Number(r.output_tokens) || 0
+      tokensEntrada +=
+        (r.input_tokens ?? 0) +
+        (r.cache_creation_input_tokens ?? 0) +
+        (r.cache_read_input_tokens ?? 0)
+      tokensSalida += r.output_tokens ?? 0
     }
-    const costoEstimadoUSD =
-      tokensEntrada * HAIKU_INPUT_PER_TOKEN + tokensSalida * HAIKU_OUTPUT_PER_TOKEN
+    const costoEstimadoUSD = summarizeAiUsageCost(rows).costUsd
 
     return {
       llamadas: rows.length,

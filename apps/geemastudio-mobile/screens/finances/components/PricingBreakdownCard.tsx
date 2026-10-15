@@ -5,6 +5,7 @@ import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { Spacing } from '@/constants/theme'
 import { useWabaPricing } from '../hooks/useWabaPricing'
+import { ASSISTANT_CATEGORY } from '../services/wabaPricing'
 
 function formatUSD(value: number): string {
   if (value < 0.001 && value > 0) return '< $0.001'
@@ -45,7 +46,7 @@ export function PricingBreakdownCard() {
           <View style={styles.titleGroup}>
             <Feather name="message-circle" size={15} color={theme.primary} />
             <ThemedText style={[styles.title, { color: theme.text }]}>
-              WhatsApp · Costos
+              WhatsApp y asistente · Costos
             </ThemedText>
           </View>
           {cargando && <ActivityIndicator size="small" color={theme.primary} />}
@@ -76,7 +77,7 @@ export function PricingBreakdownCard() {
           <View style={styles.titleGroup}>
             <Feather name="message-circle" size={15} color={theme.primary} />
             <ThemedText style={[styles.title, { color: theme.text }]}>
-              WhatsApp · Costos
+              WhatsApp y asistente · Costos
             </ThemedText>
           </View>
           <View style={styles.headerRight}>
@@ -122,6 +123,10 @@ export function PricingBreakdownCard() {
                 {formatMomPct(momPct)}
               </ThemedText>
             </ThemedText>
+            <ThemedText style={[styles.splitLine, { color: theme.textMuted }]}>
+              Meta {formatUSD(data.month_compare.current_month_meta_cost)} · Asistente{' '}
+              {formatUSD(data.month_compare.current_month_ai_cost)}
+            </ThemedText>
           </>
         )}
       </Pressable>
@@ -159,8 +164,7 @@ export function PricingBreakdownCard() {
 
           {!hasRows ? (
             <ThemedText style={[styles.projectionText, { color: theme.textMuted }]}>
-              Cuando el cron sincronice Meta pricing_analytics verás el desglose por categoría
-              aquí.
+              Cuando el cron sincronice Meta pricing_analytics verás el desglose por categoría aquí.
             </ThemedText>
           ) : (
             <>
@@ -177,7 +181,10 @@ export function PricingBreakdownCard() {
                         {cat.label}
                       </ThemedText>
                       <ThemedText style={[styles.triggerCalls, { color: theme.textMuted }]}>
-                        {formatUSD(cat.cost)} · {cat.volume}
+                        {formatUSD(cat.cost)} ·{' '}
+                        {cat.pricing_category === ASSISTANT_CATEGORY
+                          ? `${cat.volume} llamadas`
+                          : cat.volume}
                       </ThemedText>
                     </View>
                     <View style={styles.progressTrack}>
@@ -252,6 +259,9 @@ const styles = StyleSheet.create({
   summaryLine: {
     fontSize: 12,
     textTransform: 'capitalize',
+  },
+  splitLine: {
+    fontSize: 12,
   },
   detailBox: {
     borderTopWidth: StyleSheet.hairlineWidth,

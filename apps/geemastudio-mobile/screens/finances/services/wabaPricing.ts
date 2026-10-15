@@ -1,7 +1,9 @@
 /**
- * Datos de costo WABA (Meta pricing_analytics) desde waba_pricing_daily.
- * Capa de datos — sin UI ni React Query. Fechas en zona IANA del tenant.
+ * Costos de WhatsApp: Meta (pricing_analytics, waba_pricing_daily) + asistente Haiku
+ * (ai_usage_log). Capa de datos — sin UI ni React Query. Fechas en zona IANA del tenant.
  */
+import { fetchAiUsageRows, summarizeAiUsageCost } from '@geemastudio/data/finances'
+import { instanteCitaDesdeTexto } from '@zmtech/tenant-config'
 import { supabase } from '@/lib/supabase'
 import { getTenantBillingMonthKey, getTenantTodayString } from '../lib/billingMonth'
 
@@ -23,8 +25,11 @@ export interface WabaPricingCategoryAgg {
 }
 
 export interface WabaPricingMonthCompare {
+  /** Meta + asistente. */
   current_month_cost: number
   previous_month_cost: number
+  current_month_meta_cost: number
+  current_month_ai_cost: number
   /** Variación relativa (0.25 = +25%). null si mes anterior = 0. */
   month_over_month_pct: number | null
   current_month_key: string
@@ -42,13 +47,17 @@ export interface WabaPricingSummary {
   month_compare: WabaPricingMonthCompare
 }
 
+/** Pseudo-categoría para el gasto del asistente Haiku (no viene de Meta). */
+export const ASSISTANT_CATEGORY = 'ASSISTANT'
+
 const CATEGORY_LABELS: Record<string, string> = {
-  MARKETING: 'Marketing',
-  UTILITY: 'Utility',
-  AUTHENTICATION: 'Authentication',
-  AUTHENTICATION_INTERNATIONAL: 'Auth. internacional',
-  SERVICE: 'Service (gratis)',
-  REFERRAL_CONVERSION: 'Referral',
+  MARKETING: 'Plantillas de marketing',
+  UTILITY: 'Plantillas de utilidad',
+  AUTHENTICATION: 'Autenticación',
+  AUTHENTICATION_INTERNATIONAL: 'Autenticación internacional',
+  SERVICE: 'Conversaciones (gratis)',
+  REFERRAL_CONVERSION: 'Referidos',
+  [ASSISTANT_CATEGORY]: 'Asistente (Haiku)',
 }
 
 /** Agrupa categorías hermanas para la UI (ej. AUTH_* → Authentication). */
@@ -89,6 +98,26 @@ function monthDateBounds(year: number, monthIndex: number): { start: string; end
   const lastDay = new Date(Date.UTC(year, monthIndex + 1, 0)).getUTCDate()
   const end = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`
   return { start, end }
+}
+
+/** Instante UTC (ISO) de la medianoche de una fecha YYYY-MM-DD en la zona del tenant. */
+function tenantMidnightIso(isoDate: string, timezone: string): string {
+  return instanteCitaDesdeTexto(`${isoDate} 00:00:00`, timezone).toISOString()
+}
+
+function nextDayIso(isoDate: string): string {
+  const d = new Date(`${isoDate}T12:00:00Z`)
+  d.setUTCDate(d.getUTCDate() + 1)
+  return d.toISOString().slice(0, 10)
+}
+
+async function fetchAiCostBetween(timezone: string, startDate: string, endDateInclusive: string) {
+  const rows = await fetchAiUsageRows(
+    supabase,
+    tenantMidnightIso(startDate, timezone),
+    tenantMidnightIso(nextDayIso(endDateInclusive), timezone)
+  )
+  return { rows, ...summarizeAiUsageCost(rows) }
 }
 
 function daysAgoIso(timezone: string, days: number): string {
@@ -136,21 +165,37 @@ export async function fetchWabaPricingByCategory(
   const end = rangeEnd ?? getTenantTodayString(timezone)
   const start = rangeStart ?? daysAgoIso(timezone, 29)
 
-  const { data, error } = await supabase
-    .from('waba_pricing_daily')
-    .select('date, pricing_category, pricing_type, country_code, cost, volume')
-    .gte('date', start)
-    .lte('date', end)
-    .order('date', { ascending: true })
+  const [{ data, error }, ai] = await Promise.all([
+    supabase
+      .from('waba_pricing_daily')
+      .select('date, pricing_category, pricing_type, country_code, cost, volume')
+      .gte('date', start)
+      .lte('date', end)
+      .order('date', { ascending: true }),
+    fetchAiCostBetween(timezone, start, end),
+  ])
 
   if (error) {
     throw new Error(`waba_pricing_daily: ${error.message}`)
   }
 
   const rows = (data ?? []) as WabaPricingDailyRow[]
-  const by_category = aggregateByCategory(rows)
+  const metaCategories = aggregateByCategory(rows)
+  // Volumen = mensajes de Meta; las llamadas del asistente no son mensajes.
+  const total_volume = metaCategories.reduce((s, c) => s + c.volume, 0)
+  const by_category =
+    ai.calls > 0
+      ? [
+          ...metaCategories,
+          {
+            pricing_category: ASSISTANT_CATEGORY,
+            label: categoryLabel(ASSISTANT_CATEGORY),
+            cost: ai.costUsd,
+            volume: ai.calls,
+          },
+        ].sort((a, b) => b.cost - a.cost || b.volume - a.volume)
+      : metaCategories
   const total_cost = by_category.reduce((s, c) => s + c.cost, 0)
-  const total_volume = by_category.reduce((s, c) => s + c.volume, 0)
 
   return {
     range_start: start,
@@ -172,27 +217,34 @@ export async function fetchWabaPricingMonthCompare(
   const currentBounds = monthDateBounds(year, monthIndex)
   const previousBounds = monthDateBounds(prev.year, prev.monthIndex)
 
-  const { data, error } = await supabase
-    .from('waba_pricing_daily')
-    .select('date, cost')
-    .gte('date', previousBounds.start)
-    .lte('date', currentBounds.end)
+  const [{ data, error }, aiCurrent, aiPrevious] = await Promise.all([
+    supabase
+      .from('waba_pricing_daily')
+      .select('date, cost')
+      .gte('date', previousBounds.start)
+      .lte('date', currentBounds.end),
+    fetchAiCostBetween(timezone, currentBounds.start, currentBounds.end),
+    fetchAiCostBetween(timezone, previousBounds.start, previousBounds.end),
+  ])
 
   if (error) {
     throw new Error(`waba_pricing_daily (mes): ${error.message}`)
   }
 
-  let current_month_cost = 0
-  let previous_month_cost = 0
+  let current_month_meta_cost = 0
+  let previous_month_meta_cost = 0
   for (const row of data ?? []) {
     const cost = toNumber((row as { cost: string | number }).cost)
     const d = String((row as { date: string }).date).slice(0, 10)
     if (d >= currentBounds.start && d <= currentBounds.end) {
-      current_month_cost += cost
+      current_month_meta_cost += cost
     } else if (d >= previousBounds.start && d <= previousBounds.end) {
-      previous_month_cost += cost
+      previous_month_meta_cost += cost
     }
   }
+  const current_month_ai_cost = aiCurrent.costUsd
+  const current_month_cost = current_month_meta_cost + current_month_ai_cost
+  const previous_month_cost = previous_month_meta_cost + aiPrevious.costUsd
 
   let month_over_month_pct: number | null = null
   if (previous_month_cost > 0) {
@@ -206,6 +258,8 @@ export async function fetchWabaPricingMonthCompare(
   return {
     current_month_cost,
     previous_month_cost,
+    current_month_meta_cost,
+    current_month_ai_cost,
     month_over_month_pct,
     current_month_key: `${year}-${String(month).padStart(2, '0')}`,
     previous_month_key: `${prev.year}-${String(prev.monthIndex + 1).padStart(2, '0')}`,
