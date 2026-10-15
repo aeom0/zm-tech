@@ -1,7 +1,7 @@
 # Plan 19 — Paridad Geema mobile ↔ web y código compartido
 
 **Fecha:** 2026-10-13
-**Estado:** Fases 0–3 completadas (W10 el 15-oct-2026). Falta el smoke manual en `geema.zmtechdev.com` y la Fase 4 (mobile)
+**Estado:** Fases 0–3 completadas (W10 el 15-oct-2026). Faltan el smoke manual en `geema.zmtechdev.com`, la Fase 3b (W13 onboarding web) y la Fase 4 (mobile)
 **Repos afectados:** `zm-tech` (`apps/geemastudio-web`, `apps/geemastudio-mobile`, `packages/geemastudio-data`)
 **Relacionado:** Plan 13 (paridad panel ZM → Geema), Plan 14 (CRM clientes), Plan 15 (retail), Plan 18 (profesionales)
 
@@ -19,7 +19,7 @@ Los Planes 12 y 13 midieron la paridad ZM → Geema, no la paridad entre las dos
 
 - **Orden:** primero el código compartido, después los huecos de la web y **al final** portar a mobile lo que solo tiene la web.
 - **Staff en la web:** sí. El panel web tiene una vista staff (su agenda y sus pagos), como la app.
-- **Onboarding:** sigue solo en la app. Se revisa al preparar el 2.º tenant (Plan 17).
+- **Onboarding:** pasa a la web también (decisión del 15-oct-2026, antes era solo de la app). Es W13, en la Fase 3b.
 - **Regla de código:** toda función de este plan se escribe primero en `@geemastudio/data` y la consumen las dos apps. Al tocar una función que ya existe en una app, se migra al paquete en el mismo PR.
 
 ## Matriz de paridad (13-oct-2026)
@@ -46,6 +46,7 @@ Catálogo (servicios, categorías, packs, promos), ventas de productos, Personal
 | W10 | Promo masiva por WhatsApp e historial (`send-promo-whatsapp`). Distinta de «Campañas» web, que configura anuncios Meta Ads                                                                                                          | `screens/promos/*`                                                                                                                                                                                           | 3    |
 | W11 | Reordenar servicios                                                                                                                                                                                                                 | `screens/services/components/ReorderServicesModal.tsx`                                                                                                                                                       | 3    |
 | W12 | Dashboard: stock bajo, top servicios, próximas citas                                                                                                                                                                                | `screens/dashboard/components/*`                                                                                                                                                                             | 3    |
+| W13 | Onboarding: configuración inicial del negocio (rubro, país, datos y colores, servicios, equipo) tras iniciar sesión, y guardado en `tenant_settings`, `service_categories` y `employees` | `screens/onboarding/*`, `contexts/TenantContext.tsx` (`markConfigured`), `services/onboardingEmployeesService.ts` | 3b   |
 
 ### Faltan en mobile (última fase)
 
@@ -58,7 +59,7 @@ Catálogo (servicios, categorías, packs, promos), ventas de productos, Personal
 ### A propósito en una sola app
 
 - **Solo web:** Asistente IA (prompt, saludo, palabras clave, números bloqueados), Reglas, Simulador, Portafolio, Campañas Meta Ads, Historial WABA. La app enlaza a la web para estas.
-- **Solo móvil:** onboarding, acceso biométrico, actualizaciones OTA, modo demo.
+- **Solo móvil:** acceso biométrico, actualizaciones OTA, modo demo.
 
 ## Fases
 
@@ -144,6 +145,15 @@ W10 promo masiva (después de cerrar el envío real, ROADMAP pendiente #6), W11 
 - `send-promo-whatsapp` responde CORS (preflight `OPTIONS`) para poder llamarse desde el navegador.
 - El envío real ya estaba probado en prod (21-sep y 6-oct-2026, 279 enviadas sin fallas, creadas con service role). Falta el primer envío desde el asistente con la sesión del dueño (QA solo a `51999000978`–`999`).
 - Tests del paquete: 70 en verde (10 archivos).
+
+### Fase 3b — Onboarding web
+
+W13. El onboarding de la app no crea el negocio: pide iniciar sesión con una cuenta que ya tiene tenant y luego guarda la configuración. La web hace lo mismo.
+
+- Paquete: la escritura (`tenant_settings`, categorías iniciales del rubro y equipo) va a `onboarding/` de `@geemastudio/data`, y mobile la usa.
+- `markConfigured` en mobile hoy ignora un error de RLS y marca el negocio como configurado solo en el teléfono. Al migrarlo al paquete, el error se muestra y no se marca como configurado.
+- La señal de «ya configurado» tiene que venir de la BD y no de AsyncStorage, para que la web y la app vean lo mismo.
+- Web: ruta `/onboarding` fuera de `/panel`. Un owner sin configuración entra ahí al iniciar sesión.
 
 ### Fase 4 — Mobile
 

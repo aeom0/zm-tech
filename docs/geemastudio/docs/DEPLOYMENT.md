@@ -15,7 +15,7 @@ El “backend” ya está en Supabase:
 
 - **Auth**: email/password; perfiles y RLS por rol (dev/owner/staff).
 - **Base de datos**: schema aplicado con `pnpm db:push` o SQL Editor (ver [DESARROLLO_LOCAL.md](DESARROLLO_LOCAL.md)).
-- **tenant_settings**: configuración del negocio; se crea/actualiza desde el onboarding en la app.
+- **tenant_settings**: configuración del negocio; se crea/actualiza desde el onboarding en la app (en la web, pendiente: Plan 19 W13).
 
 No hay que desplegar ningún servidor Express ni Railway. Variables de Supabase (URL, anon key, service role) se usan en build/deploy de web y mobile.
 
