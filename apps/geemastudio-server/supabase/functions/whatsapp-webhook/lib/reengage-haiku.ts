@@ -10,11 +10,15 @@ import {
   logAIUsage,
   reportAnthropicApiFailure,
 } from "./haiku-usage.ts";
+import {
+  haikuRequestBase,
+  haikuResponseText,
+  haikuTimeoutMs,
+} from "./haiku-model.ts";
 import type { SupabaseClient } from "./supabase.ts";
 
 const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
 const HAIKU_TIMEOUT_MS = 5000;
-const HAIKU_MODEL = "claude-haiku-4-5-20251001";
 const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
 
 export interface ReengageMessageRow {
@@ -73,7 +77,10 @@ export async function askHaikuReengage(
     '{"should_send": boolean, "message": "texto o cadena vacía"}';
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), HAIKU_TIMEOUT_MS);
+  const timeoutId = setTimeout(
+    () => controller.abort(),
+    haikuTimeoutMs(HAIKU_TIMEOUT_MS),
+  );
 
   try {
     const response = await fetch(ANTHROPIC_API_URL, {
@@ -84,8 +91,7 @@ export async function askHaikuReengage(
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: HAIKU_MODEL,
-        max_tokens: 200,
+        ...haikuRequestBase(200),
         system: systemPrompt,
         messages: [{ role: "user", content: transcript }],
       }),
@@ -115,7 +121,7 @@ export async function askHaikuReengage(
       phone,
     );
 
-    const rawText = (data?.content?.[0]?.text as string | undefined)?.trim();
+    const rawText = haikuResponseText(data).trim();
     if (!rawText) return null;
 
     const jsonMatch = rawText.match(/\{[\s\S]*\}/);

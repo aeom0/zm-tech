@@ -6,8 +6,10 @@ import {
   logAIUsage,
   reportAnthropicApiFailure,
 } from "../whatsapp-webhook/lib/haiku-usage.ts";
-
-const MODEL = "claude-haiku-4-5-20251001";
+import {
+  haikuRequestBase,
+  haikuTimeoutMs,
+} from "../whatsapp-webhook/lib/haiku-model.ts";
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -96,7 +98,7 @@ Deno.serve(async (req: Request) => {
 
   const started = Date.now();
   const controller = new AbortController();
-  const t = setTimeout(() => controller.abort(), timeoutMs);
+  const t = setTimeout(() => controller.abort(), haikuTimeoutMs(timeoutMs));
   const service = createClient(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
@@ -110,8 +112,7 @@ Deno.serve(async (req: Request) => {
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: MODEL,
-        max_tokens,
+        ...haikuRequestBase(max_tokens, "medium"),
         system: systemPrompt,
         messages: [{ role: "user", content: userMessage }],
       }),

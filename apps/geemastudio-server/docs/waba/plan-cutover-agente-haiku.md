@@ -160,7 +160,7 @@ Decisiones y qué atiende ya el agente (`routeAgentInbound`). La Fase 3 (borrar 
 - `max_tokens` holgado (≥ 2000) porque el pensamiento cuenta dentro del tope.
 - Prompt caching: bloque estático (prompt base + reglas del agente) y bloque de catálogo con `cache_control` de 1 h; contexto de la clienta y fecha/hora de Lima fuera de caché. **Inyectar siempre la fecha y hora de Lima** (en la prueba el modelo asumió 2024/2025 sin ella).
 - Cambiar `system`, `tools` o mensajes previos entre turnos de un mismo bucle invalida los bloques de pensamiento: el bucle es *append-only*.
-- Resto de funciones que hoy usan `claude-haiku-4-5-20251001` (saludo, clasificador de imágenes, OCR de gastos, reenganches, watchdog, revisión de chats): migrar a 5.5 en un PR aparte, aplicando los cambios de API de arriba. No bloquea este plan.
+- Resto de funciones (saludo, asistente informativo, clasificador de imágenes, OCR de gastos, intent-shadow, reenganches, watchdog, ads-bounce, revisión de chats, staff-resume, held-slot-lost, vista previa del panel): migradas a 5.5 el 14-oct-2026 vía `whatsapp-webhook/lib/haiku-model.ts` (thinking adaptativo; effort `low`, o `medium` en asistente, OCR, staff-resume y revisión; +1024 tokens y +3 s sobre los topes del CMS para el thinking; texto leído por `type`).
 
 ## Prompt del agente (lineamientos)
 

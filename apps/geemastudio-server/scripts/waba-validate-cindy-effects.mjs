@@ -24,7 +24,7 @@ import {
 } from "./lib/waba-sim-assert.mjs";
 
 const ROOT = "/home/alber/ZM-Lash-and-Nails-Beauty";
-const MODEL = "claude-haiku-4-5-20251001";
+const MODEL = "claude-haiku-5-5";
 const CLASICAS_ID = "3d5d6ee4-b799-4b93-86eb-b974ec125439";
 const BABY3D_ID = "9d36f228-9c3e-4ef1-8804-c125aa92e863";
 const RIMEL_ID = "e7e0e977-5acf-48cf-8bdd-29430c7e1205";
@@ -74,7 +74,9 @@ FORMATO OBLIGATORIO:
     },
     body: JSON.stringify({
       model: MODEL,
-      max_tokens: 350,
+      max_tokens: 350 + 1024, // margen para thinking (Haiku 5.5)
+      thinking: { type: "adaptive" },
+      output_config: { effort: "medium" },
       system,
       messages: [{ role: "user", content: history }],
     }),

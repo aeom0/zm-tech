@@ -6,6 +6,11 @@ import {
   logAIUsage,
   reportAnthropicApiFailure,
 } from "../lib/haiku-usage.ts";
+import {
+  haikuRequestBase,
+  haikuResponseText,
+  haikuTimeoutMs,
+} from "../lib/haiku-model.ts";
 import { notifyAdmins } from "../lib/notify.ts";
 import { loadCatalog } from "../lib/services-catalog.ts";
 import {
@@ -22,7 +27,6 @@ import {
 } from "./booking-flow.ts";
 import { WABA_PANEL_BASE } from "../lib/panel-url.ts";
 
-const HAIKU_MODEL = "claude-haiku-4-5-20251001";
 const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
 const HAIKU_TIMEOUT_MS = 8000;
 const HISTORY_LIMIT = 20;
@@ -119,7 +123,10 @@ async function askHaikuFinishBooking(
     '{"reply":"texto","service_id":"uuid o null","datetime_text":"texto libre fecha/hora o null","send_calendar":boolean}';
 
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), HAIKU_TIMEOUT_MS);
+  const timer = setTimeout(
+    () => controller.abort(),
+    haikuTimeoutMs(HAIKU_TIMEOUT_MS),
+  );
   try {
     const response = await fetch(ANTHROPIC_API_URL, {
       method: "POST",
@@ -129,8 +136,7 @@ async function askHaikuFinishBooking(
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: HAIKU_MODEL,
-        max_tokens: 350,
+        ...haikuRequestBase(350, "medium"),
         system,
         messages: [{ role: "user", content: transcript.slice(0, 8000) }],
       }),
@@ -164,7 +170,7 @@ async function askHaikuFinishBooking(
       phone,
     );
 
-    const raw = String(data?.content?.[0]?.text ?? "").trim();
+    const raw = haikuResponseText(data).trim();
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
     if (!jsonMatch) return null;
     const parsed = JSON.parse(jsonMatch[0]) as Record<string, unknown>;

@@ -9,6 +9,11 @@ import {
   logAIUsage,
   reportAnthropicApiFailure,
 } from "../whatsapp-webhook/lib/haiku-usage.ts";
+import {
+  haikuRequestBase,
+  haikuResponseText,
+  haikuTimeoutMs,
+} from "../whatsapp-webhook/lib/haiku-model.ts";
 import type { SupabaseClient } from "../whatsapp-webhook/lib/supabase.ts";
 import { addressWithoutHello } from "../whatsapp-webhook/lib/client-address.ts";
 import { runWithRequestTenantId } from "../whatsapp-webhook/lib/tenant.ts";
@@ -26,7 +31,6 @@ const CRON_SECRET = Deno.env.get("CRON_SECRET");
 const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
 const LIMA_UTC_OFFSET = 5; // UTC-5
 const HAIKU_TIMEOUT_MS = 5000;
-const HAIKU_MODEL = "claude-haiku-4-5-20251001";
 const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
 
 /** Elegible tras 90 min sin 2.º inbound (no molestar si sigue activa). */
@@ -157,7 +161,10 @@ async function askHaikuBounceCopy(
     '{"message": "texto o cadena vacía"}';
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), HAIKU_TIMEOUT_MS);
+  const timeoutId = setTimeout(
+    () => controller.abort(),
+    haikuTimeoutMs(HAIKU_TIMEOUT_MS),
+  );
   try {
     const response = await fetch(ANTHROPIC_API_URL, {
       method: "POST",
@@ -167,8 +174,7 @@ async function askHaikuBounceCopy(
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: HAIKU_MODEL,
-        max_tokens: 200,
+        ...haikuRequestBase(200),
         system: systemPrompt,
         messages: [{ role: "user", content: transcript }],
       }),
@@ -194,7 +200,7 @@ async function askHaikuBounceCopy(
       (data?.usage?.output_tokens as number) ?? 0,
       phone,
     );
-    const rawText = (data?.content?.[0]?.text as string | undefined)?.trim();
+    const rawText = haikuResponseText(data).trim();
     const jsonMatch = rawText?.match(/\{[\s\S]*\}/);
     if (!jsonMatch) return null;
     const parsed = JSON.parse(jsonMatch[0]);

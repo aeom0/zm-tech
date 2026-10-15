@@ -12,6 +12,11 @@ import {
   reportAnthropicApiFailure,
 } from "./haiku-usage.ts";
 import {
+  haikuRequestBase,
+  haikuResponseText,
+  haikuTimeoutMs,
+} from "./haiku-model.ts";
+import {
   extractDateIntentFromText,
   isMostlyTimeChoice,
   matchesComplaintIntent,
@@ -95,7 +100,6 @@ async function wasAppointmentReminderRecentlySentShadow(
 }
 
 const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
-const MODEL = "claude-haiku-4-5-20251001";
 const SHADOW_MAX_TOKENS = 40;
 const SHADOW_TIMEOUT_MS = 3500;
 
@@ -345,7 +349,10 @@ export async function classifyIntentWithHaiku(
 
   const t0 = Date.now();
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), SHADOW_TIMEOUT_MS);
+  const timeoutId = setTimeout(
+    () => controller.abort(),
+    haikuTimeoutMs(SHADOW_TIMEOUT_MS),
+  );
 
   try {
     const response = await fetch(ANTHROPIC_API_URL, {
@@ -356,8 +363,7 @@ export async function classifyIntentWithHaiku(
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: MODEL,
-        max_tokens: SHADOW_MAX_TOKENS,
+        ...haikuRequestBase(SHADOW_MAX_TOKENS),
         system: SHADOW_SYSTEM_PROMPT,
         messages: [{ role: "user", content: messageText.slice(0, 500) }],
       }),
@@ -397,7 +403,7 @@ export async function classifyIntentWithHaiku(
         opts.phoneNumber,
       );
     }
-    const rawText = (data?.content?.[0]?.text as string | undefined) ?? "";
+    const rawText = haikuResponseText(data);
     return {
       intent: parseHaikuIntentJson(rawText),
       latencyMs,

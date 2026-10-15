@@ -15,10 +15,14 @@ import {
   logAIUsage,
   reportAnthropicApiFailure,
 } from "../lib/haiku-usage.ts";
+import {
+  haikuRequestBase,
+  haikuResponseText,
+  haikuTimeoutMs,
+} from "../lib/haiku-model.ts";
 
 import { getRequestTenantId } from "../lib/tenant.ts";
 const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
-const MODEL = "claude-haiku-4-5-20251001";
 const TIMEOUT_MS = 20000;
 const MAX_PDF_BYTES = 8 * 1024 * 1024;
 
@@ -87,7 +91,10 @@ async function extractNpsFromPdf(
 
   const t0 = Date.now();
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  const timeoutId = setTimeout(
+    () => controller.abort(),
+    haikuTimeoutMs(TIMEOUT_MS),
+  );
 
   try {
     const response = await fetch(ANTHROPIC_API_URL, {
@@ -96,11 +103,9 @@ async function extractNpsFromPdf(
         "Content-Type": "application/json",
         "x-api-key": apiKey,
         "anthropic-version": "2023-06-01",
-        "anthropic-beta": "pdfs-2024-09-25",
       },
       body: JSON.stringify({
-        model: MODEL,
-        max_tokens: 400,
+        ...haikuRequestBase(400, "medium"),
         messages: [
           {
             role: "user",
@@ -150,10 +155,7 @@ async function extractNpsFromPdf(
       tokensOut,
       opts.phoneNumber,
     );
-    const rawText = data?.content?.find((b: { type: string }) =>
-      b.type === "text"
-    )?.text ??
-      "";
+    const rawText = haikuResponseText(data);
     const parsed = parseSunatNpsJson(rawText);
     console.log(
       `[expense-ocr] ok=${parsed.ok} periodo=${

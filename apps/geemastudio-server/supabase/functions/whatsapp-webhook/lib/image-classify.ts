@@ -6,9 +6,13 @@ import {
   logAIUsage,
   reportAnthropicApiFailure,
 } from "./haiku-usage.ts";
+import {
+  haikuRequestBase,
+  haikuResponseText,
+  haikuTimeoutMs,
+} from "./haiku-model.ts";
 
 const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
-const MODEL = "claude-haiku-4-5-20251001";
 const TIMEOUT_MS = 8000;
 
 export type ImageKind = "comprobante_pago" | "diseno_referencia" | "otro";
@@ -135,7 +139,10 @@ export async function classifyInboundImage(
 
   const t0 = Date.now();
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  const timeoutId = setTimeout(
+    () => controller.abort(),
+    haikuTimeoutMs(TIMEOUT_MS),
+  );
 
   try {
     const response = await fetch(ANTHROPIC_API_URL, {
@@ -146,8 +153,7 @@ export async function classifyInboundImage(
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: MODEL,
-        max_tokens: 200,
+        ...haikuRequestBase(200),
         messages: [
           {
             role: "user",
@@ -201,10 +207,7 @@ export async function classifyInboundImage(
         opts.phoneNumber,
       );
     }
-    const rawText = data?.content?.find((b: { type: string }) =>
-      b.type === "text"
-    )?.text ??
-      "";
+    const rawText = haikuResponseText(data);
     const { kind, extraction } = parseClassifyResult(rawText);
     console.log(
       `[image-classify] kind=${

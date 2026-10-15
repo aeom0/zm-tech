@@ -17,13 +17,17 @@ import {
   reportAnthropicApiFailure,
 } from "../lib/haiku-usage.ts";
 import {
+  haikuRequestBase,
+  haikuResponseText,
+  haikuTimeoutMs,
+} from "../lib/haiku-model.ts";
+import {
   hasSlotCapacityForServices,
   sendDateSelector,
   sendTimeSelector,
 } from "./agenda.ts";
 
 const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
-const MODEL = "claude-haiku-4-5-20251001";
 const HAIKU_TIMEOUT_MS = 12_000;
 /** Tope de selecciones en espera de abono por revisión; si se alcanza se deja rastro en el log. */
 const HELD_SESSIONS_LIMIT = 200;
@@ -144,7 +148,10 @@ async function composeLostHoldText(
     `Termina con una pregunta para que elija otro horario de la lista que llega después. Máximo 500 caracteres.`;
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), HAIKU_TIMEOUT_MS);
+  const timeoutId = setTimeout(
+    () => controller.abort(),
+    haikuTimeoutMs(HAIKU_TIMEOUT_MS),
+  );
   try {
     const response = await fetch(ANTHROPIC_API_URL, {
       method: "POST",
@@ -154,8 +161,7 @@ async function composeLostHoldText(
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: MODEL,
-        max_tokens: 400,
+        ...haikuRequestBase(400),
         system,
         messages: [{ role: "user", content: user }],
       }),
@@ -182,7 +188,7 @@ async function composeLostHoldText(
     );
     await clearAnthropicCreditExhaustedFlag(supabase);
     const text = sanitizeHaikuText(
-      String(data?.content?.[0]?.text ?? ""),
+      haikuResponseText(data),
       alreadyPaid,
     );
     return text ?? fallback;

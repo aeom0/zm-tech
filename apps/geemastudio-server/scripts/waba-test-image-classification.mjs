@@ -24,7 +24,7 @@ import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const MODEL = "claude-haiku-4-5-20251001";
+const MODEL = "claude-haiku-5-5";
 
 const VALID_LABELS = ["comprobante_pago", "diseno_referencia", "otro"];
 
@@ -102,7 +102,9 @@ async function classifyImage(apiKey, imageUrl) {
     },
     body: JSON.stringify({
       model: MODEL,
-      max_tokens: 100,
+      max_tokens: 100 + 1024, // margen para thinking (Haiku 5.5)
+      thinking: { type: "adaptive" },
+      output_config: { effort: "low" },
       messages: [
         {
           role: "user",

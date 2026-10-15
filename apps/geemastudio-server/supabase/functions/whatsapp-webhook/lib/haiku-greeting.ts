@@ -7,10 +7,14 @@ import {
   logAIUsage,
   reportAnthropicApiFailure,
 } from "./haiku-usage.ts";
+import {
+  haikuRequestBase,
+  haikuResponseText,
+  haikuTimeoutMs,
+} from "./haiku-model.ts";
 import { clientFirstName } from "./client-address.ts";
 
 const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
-const MODEL = "claude-haiku-4-5-20251001";
 
 // ---------------------------------------------------------------------------
 // getTimeSlot
@@ -82,7 +86,7 @@ Máximo 3 líneas. Español neutro latinoamericano (Lima); tuteo (cuéntame, dim
   const controller = new AbortController();
   const timeoutId = setTimeout(
     () => controller.abort(),
-    settings.welcome_timeout_ms,
+    haikuTimeoutMs(settings.welcome_timeout_ms),
   );
 
   try {
@@ -94,8 +98,7 @@ Máximo 3 líneas. Español neutro latinoamericano (Lima); tuteo (cuéntame, dim
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: MODEL,
-        max_tokens: settings.welcome_max_tokens,
+        ...haikuRequestBase(settings.welcome_max_tokens),
         system: systemPrompt,
         messages: [{ role: "user", content: userPrompt }],
       }),
@@ -115,7 +118,7 @@ Máximo 3 líneas. Español neutro latinoamericano (Lima); tuteo (cuéntame, dim
       return null;
     }
     const data = await response.json();
-    const text = (data?.content?.[0]?.text as string | undefined)?.trim();
+    const text = haikuResponseText(data).trim();
     if (!text) return null;
     if (supabase) {
       void clearAnthropicCreditExhaustedFlag(supabase);

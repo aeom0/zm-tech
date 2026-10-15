@@ -37,7 +37,7 @@ function parseIntentJson(raw: string): WaIntent | null {
 export async function classifyWaIntent(messageText: string): Promise<WaIntent> {
   const { apiKey } = anthropicSecrets()
   const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), 3500)
+  const timeout = setTimeout(() => controller.abort(), 6500)
 
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -48,8 +48,11 @@ export async function classifyWaIntent(messageText: string): Promise<WaIntent> {
         'content-type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 30,
+        model: 'claude-haiku-5-5',
+        // Haiku 5.5: el thinking cuenta en max_tokens; effort bajo para clasificar.
+        max_tokens: 1024,
+        thinking: { type: 'adaptive' },
+        output_config: { effort: 'low' },
         system: SYSTEM_PROMPT,
         messages: [{ role: 'user', content: messageText.slice(0, 500) }],
       }),
@@ -58,8 +61,9 @@ export async function classifyWaIntent(messageText: string): Promise<WaIntent> {
 
     if (!res.ok) return 'otro'
 
-    const data = (await res.json()) as { content?: Array<{ text?: string }> }
-    const text = data.content?.[0]?.text ?? ''
+    const data = (await res.json()) as { content?: Array<{ type: string; text?: string }> }
+    // La respuesta puede empezar con bloques `thinking`: leer por type.
+    const text = data.content?.find((b) => b.type === 'text')?.text ?? ''
     return parseIntentJson(text) ?? 'otro'
   } catch {
     // Fail-soft: timeout, red caída, JSON inválido — nunca bloquea el flujo.

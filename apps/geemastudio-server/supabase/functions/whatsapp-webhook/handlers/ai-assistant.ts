@@ -84,6 +84,11 @@ import {
   reportAnthropicApiFailure,
 } from "../lib/haiku-usage.ts";
 import {
+  haikuRequestBase,
+  haikuResponseText,
+  haikuTimeoutMs,
+} from "../lib/haiku-model.ts";
+import {
   matchesFilteredPromosIntent,
   matchesPurePromosNavigationIntent,
 } from "../lib/promo-intent.ts";
@@ -109,7 +114,6 @@ export {
 } from "../lib/haiku-prompt.ts";
 
 const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
-const MODEL = "claude-haiku-4-5-20251001";
 
 // ---------------------------------------------------------------------------
 // Tipos
@@ -857,7 +861,10 @@ export async function callAnthropicAPI(
   ];
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeout_ms);
+  const timeoutId = setTimeout(
+    () => controller.abort(),
+    haikuTimeoutMs(timeout_ms),
+  );
 
   try {
     const response = await fetch(ANTHROPIC_API_URL, {
@@ -868,8 +875,7 @@ export async function callAnthropicAPI(
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: MODEL,
-        max_tokens,
+        ...haikuRequestBase(max_tokens, "medium"),
         system: systemPrompt,
         messages,
       }),
@@ -900,7 +906,7 @@ export async function callAnthropicAPI(
     if (opts?.supabase) {
       void clearAnthropicCreditExhaustedFlag(opts.supabase);
     }
-    const rawText = (data?.content?.[0]?.text as string | undefined)?.trim();
+    const rawText = haikuResponseText(data).trim();
     if (!rawText) return null;
     const parsed = parseAIResponse(rawText);
     // Guarda de código (no solo prompt) — caso real 17-sep (…4665): la selección se

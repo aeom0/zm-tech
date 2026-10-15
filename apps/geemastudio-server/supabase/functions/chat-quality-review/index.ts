@@ -16,6 +16,10 @@ import {
   logAIUsage,
   reportAnthropicApiFailure,
 } from "../whatsapp-webhook/lib/haiku-usage.ts";
+import {
+  haikuRequestBase,
+  haikuTimeoutMs,
+} from "../whatsapp-webhook/lib/haiku-model.ts";
 import { notifyAdmins } from "../whatsapp-webhook/lib/notify.ts";
 import {
   getSupabase,
@@ -37,7 +41,6 @@ const MAX_AGE_MINUTES = 30;
 const MAX_ROWS = 8;
 const HISTORY_LIMIT = 12;
 const HAIKU_TIMEOUT_MS = 6000;
-const HAIKU_MODEL = "claude-haiku-4-5-20251001";
 const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
 
 const ALLOWED_FLAGS = new Set([
@@ -188,7 +191,10 @@ async function askHaikuQuality(
     `Transcript (más reciente al final):\n${transcript}`;
 
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), HAIKU_TIMEOUT_MS);
+  const timer = setTimeout(
+    () => controller.abort(),
+    haikuTimeoutMs(HAIKU_TIMEOUT_MS),
+  );
   try {
     const response = await fetch(ANTHROPIC_API_URL, {
       method: "POST",
@@ -199,8 +205,7 @@ async function askHaikuQuality(
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: HAIKU_MODEL,
-        max_tokens: 220,
+        ...haikuRequestBase(220, "medium"),
         system: systemPrompt,
         messages: [{ role: "user", content: userPrompt }],
       }),
