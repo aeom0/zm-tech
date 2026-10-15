@@ -27,10 +27,21 @@ Directrices del bot: [directrices-haiku.md](./directrices-haiku.md) · lecciones
   | 10-oct 22:28 | `6f7b0ba1` | el agente marca `from_ad_at`, avisa al staff de chats Meta Ads y cede al dispatcher pausa/spam/reclamos | chats CTWA 8–10-oct sin `from_ad_at` ni push; agente respondiendo con bot pausado = AG8 |
   | 10-oct 23:08 | `245258ce` | takeover de fotos de diseño en el camino del agente | foto sin cita/comprobante → agente «no alcanzo a ver el detalle» sin pausa = AG8 |
   | 11-oct 00:18 | `c530fd9b` | link Culqi S/26.25 en el adelanto; domingo = S/25 fijo para todas | domingo con 20% a clientas con `completed` era lo correcto |
+  | 12-oct 23:22–23:33 | `aa6eb6c9` `e00b3276` `7118ba85` `6b581736` | ignora texto libre de la línea de staff; no repite la cita ni cierra con preguntas tras confirmar; ficha pide solo lo que falta; «carrito» → «selección» | cita repetida, cierre con pregunta o re-pedir un dato ya dado = evidencia |
+  | 12-oct 23:45 | `2a4979cb` | tabla `appointment_audit` (traza de cambios de estado y reprogramación) | sin auditoría antes de esta hora |
+  | 14-oct 01:04–01:13 | `86aad7fa` `ded0b51f` `b22908aa` | Haiku y textos fijos sin pedir que escriban *agendar*/*menu*; el agente responde según el anuncio CTWA y menciona la promo | «escribe *agendar*» = evidencia |
+  | 14-oct 02:59 | `ae8f2cf2` | feriados con apertura tardía (solo tarde) | — |
+  | 15-oct 01:45–01:57 | `d469a7ea` `40ded0c5` `eb70fada` | recordatorios sin *agendar*; con el agente, nudge 1 de cart-nudge y el watchdog los redacta Haiku leyendo el chat (sin copy fija ni listas); todo Haiku pasa a 5.5 | «aún no confirmaste tu cita» tras una oferta pendiente = evidencia |
+  | 15-oct 02:03 | `1080f882` | `SPANISH_STYLE_RULE` en todos los prompts de Haiku (sin voseo ni «te late») | «te late» (Janeth …6743) = evidencia; después = AG9 |
+  | 15-oct 02:10 | `cfc52b81` | frases ambiguas leídas contra el último mensaje; prohibido cerrar con «¿algo más?»; la cita de hoy cuenta como pendiente aunque ya pasó la hora | «No ire a las 11» leído como cancelación (Nélida …6566) = evidencia; después = AG10 |
+  | 15-oct 02:17 | `b3f43f62` | historial del agente con listas y botones (16 msgs); sin recordatorio del día para citas creadas a <3 h | recordatorio a cita recién agendada = evidencia; después = bug |
+  | 15-oct 02:52 | `84a41dc1` | pausa se levanta sola (cita `completed` o 4 h sin equipo; no en reclamos); «ya subí» ≠ fotos | pausa de días tras escalar (Yovanita …4999) = evidencia; después = AG8/AG5 |
 
 - **Reglas del agente que NO son bug:** promos «Solo Halloween» (vigencia 1–31 oct) aplican todos los días salvo `valid_days`;
   el agente pide por escrito las notas de voz y no avisa al equipo (limitación conocida, ver AG6); cancelar con adelanto va
-  a `escalar_a_humano` por diseño; el comprobante lo procesa el flujo por código, no el modelo.
+  a `escalar_a_humano` por diseño; el comprobante lo procesa el flujo por código, no el modelo; tras una escalada el bot
+  queda pausado (no es staff) hasta que el equipo escriba o la pausa se levante sola (ver rutina § Pausa); el agente no
+  envía nada al levantarse la pausa.
 - CTWA welcome (producto vigente, post 09-sep): **1.er turno = solo texto** (`sendCtwaInterestQuestion` —
   ¿extensiones / lifting / uñas / otro?). **Sin** lista interactiva y **sin** imágenes genéricas
   (`meta_ads_hero_*` / `meta_ads_image_*` suelen ir vacíos). Collages **segmentados** tras rubro Ext/Lift:

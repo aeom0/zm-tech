@@ -43,7 +43,10 @@ Haiku (Claude Haiku) es la **capa principal de interacción en texto libre**. La
 
 Los creativos son las mismas URLs opcionales que CTWA (hasta 4). Si el panel no tiene ninguna URL, el envío es no-op.
 
-**Tono**: español peruano natural, profesional y aspiracional. Ver reglas de tono en `lib/haiku-cms-defaults.ts`.
+**Tono**: español neutro latinoamericano con tuteo, profesional y aspiracional. Ver reglas de tono en `lib/haiku-cms-defaults.ts` y `lib/spanish-style.ts` (`SPANISH_STYLE_RULE`, en todos los prompts de Haiku).
+
+- **Prohibido (dialecto)**: voseo («contame», «decime», «avisame», «mirá») y mexicanismos («te late», «qué onda», «padrísimo», «órale»).
+- **Prohibido (cierre)**: cerrar ofreciendo más ayuda en cualquier variante («¿algo más?», «¿te ayudo con algo más?»), y repetir una pregunta ya respondida o la cita ya confirmada.
 
 - **Prohibido**: apodos ("amor/cielo/reina/princesa/babe/baby/guapa"), vocabulario de mimo ("consentirte", "mimar", "acicalar", "malcriarte", "date tu gustito")
 - **Preferido**: aspiracional y directo ("lucir espectacular", "pestañas deslumbrantes", "cejas perfectas", "look increíble", "lucir al 100")
@@ -163,7 +166,7 @@ Código: `lib/emotional-selling.ts`, migración `add_emotional_selling_ctwa`.
 | Confirmación final de slot con botón `time_`                           | agenda + payment                                                                                |
 | Notificaciones push / FCM al staff                                     | notify.ts                                                                                       |
 
-**Foto diseño (producto, ago 2026)**: si la clienta manda imagen y no es comprobante ni referencia de cita ya `scheduled`, el bot **se pausa**. Ack 7 AM–9 PM Lima (“asesora… tras visualizar diseño”) / fuera de horario. Staff cotiza en panel; push si la clienta escribe en pausa. Botones **Reactivar bot** / **Haiku agenda** (`waba-staff-session`). Con cita `scheduled`, sigue el flujo de referencia visual (Agenda).
+**Foto diseño (producto, ago 2026)**: si la clienta manda imagen y no es comprobante ni referencia de cita ya `scheduled`, el bot **se pausa**. Ack 7 AM–9 PM Lima (“asesora… tras visualizar diseño”) / fuera de horario. Staff cotiza en panel; push si la clienta escribe en pausa. Botones **Reactivar bot** / **Haiku agenda** (`waba-staff-session`). Con cita `scheduled`, sigue el flujo de referencia visual (Agenda). Desde el 15-oct la pausa también se levanta sola cuando la clienta vuelve a escribir, si su cita pasó a `completed` o si van 4 h sin mensajes del equipo (`lib/pause-auto-resume.ts`). Al levantarse no se envía nada. Las pausas por reclamo no se levantan solas.
 
 ### Regla de oro — pregunta antes del carrito, luego `add_to_cart`
 

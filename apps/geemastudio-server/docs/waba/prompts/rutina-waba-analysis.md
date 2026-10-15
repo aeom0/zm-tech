@@ -70,9 +70,17 @@ an appointment. Then produce an actionable report.
 - **Quién atiende (desde el cutover del 8-oct-2026):** con `agent_enabled` el **agente Haiku 5.5** (`agent/`: `agent.ts`,
   `tools.ts`, `prompt.ts`, `inbound.ts`, `inbound-route.ts`) atiende el texto, las imágenes, el audio y el tap «Mi cita»
   antes del dispatcher. El bot clásico (`handlers/dispatcher.ts`, ~2500 líneas) queda como **respaldo**: falla del agente,
-  party, curso, no-show, botones de plantilla y, desde el 10-oct, **sesión pausada por staff, anti-spam/bloqueados y Libro
+  party, curso, no-show, botones de plantilla y, desde el 10-oct, **sesión pausada, anti-spam/bloqueados y Libro
   de Reclamaciones** (`routeAgentInbound` devuelve `classic`; el agente no los toca). Lee `agent/` primero; el dispatcher
   solo para esos casos.
+- **Pausa del bot (`bot_paused_at`): quién la pone y cuándo se levanta.** La ponen un mensaje del staff (panel/app),
+  la herramienta `escalar_a_humano` del agente (`lib/staff-escalation.ts`), la foto de diseño (`lib/inbound-image.ts`) y el
+  Libro de Reclamaciones. Una pausa **no implica** que el staff escribió: mira el `source` de los OUT y si el agente escaló
+  justo antes. Los crons no escriben en chats pausados. Desde el 15-oct 02:52 UTC (`lib/pause-auto-resume.ts`) la pausa se
+  levanta sola cuando la clienta vuelve a escribir, si (a) una cita suya pasó a `completed` después de la pausa (momento
+  según `appointment_audit`) y el equipo no escribió después, o (b) pasaron 4 h desde la pausa o el último mensaje del
+  equipo. Las pausas por reclamo nunca se levantan solas, y al levantarse no se envía ningún mensaje. Log de la función:
+  `[pause-auto-resume] cita_completada|sin_equipo_4h`.
 - **Lo que el agente hace antes de contestar** (`announceAgentInbound`, desde el 10-oct): marca `from_ad_at` (atribución
   CTWA) y avisa al staff (push «Meta Ads · chat WA» / nueva clienta). **Fotos:** sin cita ni comprobante corre
   `tryHandleDesignImageTakeover` (`lib/inbound-image.ts`: guarda la foto, pausa el bot, push y acuse); el agente no ve
@@ -95,7 +103,10 @@ an appointment. Then produce an actionable report.
   🟢 evidencia que motivó el fix, **not** a new open [P#]. Do not resurrect old PR narratives as open Quick Wins without §2b.
 
 ## KEY TABLES
-- `wa_messages`: tenant_id, phone, direction ('in'|'out'), msg_type, content, step_before, created_at
+- `wa_messages`: tenant_id, phone, direction ('in'|'out'), msg_type, source (`bot`|`nudge`|`panel`|`staff_app`), content,
+  step_before, created_at
+- `appointment_audit`: appointment_id, at (timestamptz), op, actor_role, changed_fields, old_row, new_row. Es la única
+  fuente de **cuándo** una cita pasó a `completed`, porque el panel no llena `appointments.completed_at`.
 - `whatsapp_sessions`: tenant_id, phone, step, cart_items, parsed_datetime, selected_day (sticky cupo/hora),
   deposit_mode ('fixed'|'rate'|null; desde el 10-oct el domingo también es 'fixed', 'rate' solo en filas viejas),
   bot_paused_at, from_ad_at (null no implica orgánico en hilos del 8 al 10-oct: el agente no lo marcaba), updated_at
@@ -157,6 +168,11 @@ Read these files to understand the CURRENT state on main. **Empieza por el agent
   reservar_horario, reprogramar_cita, cancelar_cita, registrar_identidad, descartar_reserva, escalar_a_humano…)
 - apps/geemastudio-server/supabase/functions/whatsapp-webhook/agent/agent.ts, anthropic.ts (loop, `max_tokens`,
   reintentos, `sanitizeAgentReply`), inbound.ts + inbound-route.ts (qué entra al agente y qué cae al dispatcher)
+- agent/history.ts: lo que el agente ve son los últimos 16 mensajes de las últimas 6 h, cortados si hay un hueco de más de
+  2 h. Incluye texto, plantillas, listas y botones. Un tap de lista o botón **sí** está en su contexto; imágenes y audios no.
+- lib/spanish-style.ts (`SPANISH_STYLE_RULE`, que va en todos los prompts de Haiku), lib/reengage-haiku.ts (reenganches
+  redactados por Haiku) y lib/pause-auto-resume.ts
+- `same-day-appointment-reminder/index.ts`: no envía el recordatorio del día a citas creadas a menos de 3 h de su inicio.
 Luego el bot clásico, solo como respaldo:
 - apps/geemastudio-server/supabase/functions/whatsapp-webhook/handlers/dispatcher.ts (orquestador)
 - apps/geemastudio-server/supabase/functions/whatsapp-webhook/lib/inbound-image.ts (`tryHandleDesignImageTakeover`),
@@ -215,7 +231,7 @@ los OUT) o cayó al clásico (fallback). Reporta la métrica «% de turnos por a
 **Hitos posteriores al cutover.** El contexto del tenant lista los fixes con hora de deploy (tabla «Hitos»). Para cada hilo
 compara su `created_at` con ellos: un fallo anterior al deploy es 🟢 evidencia del fix; uno posterior es reincidencia.
 Esto aplica sobre todo a atribución CTWA/`from_ad_at`, push al staff, pausa por foto de diseño, respeto de pausa/spam/
-reclamos y modo de abono. Confirma la hora real del deploy con el workflow `edge-functions.yml`, no con la hora del commit.
+reclamos, modo de abono, estilo (AG9) y pausa automática. Confirma la hora real del deploy con el workflow `edge-functions.yml`, no con la hora del commit.
 
 Also list commits on main **during the analysis window** (and skim their messages + touched files):
   git log --oneline --since='<window start ISO>' --until='<window end ISO>' origin/main -- apps/geemastudio-server/supabase/functions/
@@ -279,9 +295,9 @@ Also scan errors (last 48h):
 
 ### 3b. Atribución de emisor (obligatoria — lección 26-sep 2026)
 `wa_messages.source` distingue **quién** habló: `bot` (webhook/Haiku), `nudge` (crons cart/browse/ads-bounce/
-watchdog/retouch) y `panel` (**staff humano** desde el panel/app). Antes de escribir "el bot dijo / se autocorrigió /
+watchdog/retouch/recordatorios) y `panel` / `staff_app` (**staff humano** desde el panel o la app). Antes de escribir "el bot dijo / se autocorrigió /
 hay un segundo emisor":
-1. Cada OUT del hilo se etiqueta con su `source`. Un OUT `panel` **nunca** es un fallo del bot (es STAFF_TAKEOVER).
+1. Cada OUT del hilo se etiqueta con su `source`. Un OUT `panel`/`staff_app` **nunca** es un fallo del bot (es STAFF_TAKEOVER).
 2. Un mensaje "correctivo" tardío (minutos después) o "sin emisor claro en el código" → primero revisar si es `panel`.
    (25-sep: la "autocorrección a los 18 min" de Nélida y el "segundo emisor" de Carmen eran ambos staff.)
 3. Para cada OUT `bot`, identificar el **camino real** con `step_before` del IN previo + el texto: buscar el literal del
@@ -356,7 +372,9 @@ AG3) AGENT_FORMAT — horas, días, servicios o precios en prosa corrida en vez 
 AG4) AGENT_FALLBACK_TO_CLASSIC — el agente falló (API, timeout, `max_tokens`) y el turno cayó al bot clásico; o el
    menú clásico apareció donde el agente debía llevar la charla.
 AG5) AGENT_MISSED_ESCALATION — la clienta tiene un problema, reclama o pide hablar con una persona y no hubo
-   `escalar_a_humano`; o escaló sin motivo.
+   `escalar_a_humano`; o escaló sin motivo. Escalar **pausa el bot**, así que una escalada innecesaria deja a la clienta
+   sin respuesta hasta que el equipo escriba o la pausa se levante sola. Ejemplo: tomar «ya subí» o «ya le mostré» (la
+   clienta ya está en el salón) como si fueran fotos.
 AG6) AGENT_AUDIO — nota de voz: hoy el agente pide que la escriban y no avisa al equipo. Si la clienta tenía un problema o
    se queda sin respuesta, repórtalo como [P#] de producto (pendiente: transcripción), con el conteo de audios.
 AG7) AGENT_TOOL_MISUSE — herramienta con argumentos erróneos o doble reserva, cita duplicada, carrito que no coincide
@@ -364,8 +382,16 @@ AG7) AGENT_TOOL_MISUSE — herramienta con argumentos erróneos o doble reserva,
 AG8) AGENT_GUARD_BYPASS — el agente atendió algo que debía quedarse en el dispatcher o en el staff: respondió con la
    sesión pausada (`bot_paused_at`), a un número bloqueado/spam o a un reclamo del Libro de Reclamaciones; o conversó
    sobre una foto de diseño («no alcanzo a ver el detalle») sin pausar ni avisar; o un chat CTWA quedó sin `from_ad_at`
-   ni push al staff. Antes del 10-oct es 🟢 evidencia del fix; después es bug.
-Los tipos A) y F) solo aplican a turnos que cayeron al dispatcher; para el agente usa AG1–AG8.
+   ni push al staff. Antes del 10-oct es 🟢 evidencia del fix; después es bug. Si el agente responde después de una
+   pausa que se levantó sola (cita `completed` o 4 h sin equipo, desde el 15-oct 02:52 UTC), es lo correcto. Una pausa
+   que dura más de 4 h y no se levanta cuando la clienta vuelve a escribir sí es bug, salvo que sea por reclamo.
+AG9) AGENT_STYLE — voseo («contame», «avisame») o mexicanismos («te late», «qué onda») contra `SPANISH_STYLE_RULE`. También
+   cerrar ofreciendo más ayuda en cualquier variante («¿algo más?», «¿te ayudo con algo más?»), repetir una pregunta
+   ya respondida o repetir la cita ya confirmada. Es el estilo «tipo ChatGPT» que el prompt prohíbe.
+AG10) AGENT_AMBIGUITY_MISREAD — una frase sin tildes ni comas («No ire a las 11») que el agente no lee como respuesta a
+   su último mensaje, o que lo lleva a cancelar o reprogramar sin preguntar cuál de las dos lecturas era. Lo mismo si
+   el agente ignora un tap de lista o botón que ya estaba en su historial.
+Los tipos A) y F) solo aplican a turnos que cayeron al dispatcher; para el agente usa AG1–AG10.
 **Tipos propios del tenant (J en adelante):** ver `<TENANT_DIR>/contexto-analisis.md`.
 Usa solo esos nombres o `OTHER`.
 
