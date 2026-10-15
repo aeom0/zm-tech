@@ -9,8 +9,17 @@ import { usePanelAlerts } from '@/hooks/notificaciones/usePanelAlerts'
 
 const MAX_REFERENCES = 5
 
-/** Campana del panel: pendientes del dueño con acceso directo a cada pantalla. */
-export function NotificationBell({ align = 'right' }: { align?: 'left' | 'right' }) {
+/**
+ * Campana del panel: pendientes del dueño con acceso directo a cada pantalla.
+ * `placement="up"` abre el panel hacia arriba (pie del sidebar).
+ */
+export function NotificationBell({
+  align = 'right',
+  placement = 'down',
+}: {
+  align?: 'left' | 'right'
+  placement?: 'down' | 'up'
+}) {
   const alerts = usePanelAlerts()
   const [open, setOpen] = useState(false)
   const rootRef = useRef<HTMLDivElement>(null)
@@ -73,7 +82,8 @@ export function NotificationBell({ align = 'right' }: { align?: 'left' | 'right'
           role="dialog"
           aria-label="Pendientes"
           className={[
-            'absolute top-11 z-50 w-[min(20rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-line bg-surface shadow-xl',
+            'absolute z-50 w-[min(20rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-line bg-surface shadow-xl',
+            placement === 'up' ? 'bottom-11' : 'top-11',
             align === 'right' ? 'right-0' : 'left-0',
           ].join(' ')}
         >
@@ -148,7 +158,7 @@ function AlertLink({
         onClick={onClick}
         className="flex items-center gap-3 px-4 py-3 transition hover:bg-fg/[0.04]"
       >
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[var(--tenant-primary)]/10 text-tenant-text">
+        <span className="bg-[var(--tenant-primary)]/10 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-tenant-text">
           {icon}
         </span>
         <span className="min-w-0 flex-1">

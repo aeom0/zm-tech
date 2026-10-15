@@ -10,6 +10,7 @@ import { ReorderModal } from './ReorderModal'
 import { CategoryIcon } from '@/components/CategoryIcon'
 import { supabase } from '@/lib/supabase'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
+import { Fab } from '@/components/ui/Fab'
 
 export function CategoriasTab({
   categorias,
@@ -99,14 +100,7 @@ export function CategoriasTab({
               Ordenar
             </button>
           )}
-          <button
-            type="button"
-            onClick={onNew}
-            className="inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] transition-colors hover:bg-[var(--tenant-primary-hover)] md:min-h-[36px]"
-          >
-            <Plus className="h-4 w-4" />
-            Nueva
-          </button>
+          <Fab label="Nueva categoría" onClick={onNew} />
         </div>
       </div>
 

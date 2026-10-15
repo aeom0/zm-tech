@@ -1,6 +1,6 @@
 'use client'
 
-import { Plus, Sparkles } from 'lucide-react'
+import { Sparkles } from 'lucide-react'
 import { useState } from 'react'
 
 import { usePromos } from '@/hooks/servicios/usePromos'
@@ -8,6 +8,7 @@ import type { Promotion } from '../../_services/promosService'
 import { PromoCard } from '../promos/PromoCard'
 import { PromoFormModal } from '../promos/PromoFormModal'
 import { StateNote } from '@/components/ui/StateNote'
+import { Fab } from '@/components/ui/Fab'
 
 export function PromosTab() {
   const { data: promos = [], isLoading } = usePromos()
@@ -35,17 +36,13 @@ export function PromosTab() {
           {inactive.length !== 1 ? 's' : ''}
         </p>
 
-        <button
-          type="button"
+        <Fab
+          label="Nueva promo"
           onClick={() => {
             setEditing(null)
             setModalOpen(true)
           }}
-          className="inline-flex items-center gap-2 rounded-lg bg-[var(--tenant-primary)] px-3 py-1.5 text-sm text-[var(--tenant-on-primary)] transition-colors hover:bg-[var(--tenant-primary-hover)]"
-        >
-          <Plus className="h-4 w-4" />
-          Nueva promo
-        </button>
+        />
       </div>
 
       {isLoading ? (

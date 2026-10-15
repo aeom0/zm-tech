@@ -17,6 +17,7 @@ import { ServiceToggle } from './ServiceToggle'
 import { FilterChips } from '@/components/ui/FilterChips'
 import { useConfirm } from '@/components/ui/ConfirmDialog'
 import { useVesRate } from '@/hooks/useVesRate'
+import { Fab } from '@/components/ui/Fab'
 
 function fmtUsd(price: string) {
   const n = Number.parseFloat(String(price))
@@ -82,18 +83,14 @@ export function ServiciosTab({
               Ordenar
             </button>
           )}
-          <button
-            type="button"
+          <Fab
+            label="Nuevo servicio"
             onClick={() =>
               onNew(selectedCategoryId ? { category_id: selectedCategoryId } : undefined)
             }
-            className="inline-flex items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-[var(--tenant-on-primary)] transition-colors hover:bg-[var(--tenant-primary-hover)] disabled:opacity-60"
             disabled={categorias.length === 0}
             title={categorias.length === 0 ? 'Crea una categoría primero' : undefined}
-          >
-            <Plus className="h-4 w-4" />
-            Nuevo
-          </button>
+          />
         </div>
       </div>
 

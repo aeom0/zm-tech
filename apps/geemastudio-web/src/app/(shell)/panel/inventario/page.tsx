@@ -1,16 +1,7 @@
 'use client'
 
 import { useId, useMemo, useState } from 'react'
-import {
-  AlertTriangle,
-  History,
-  Minus,
-  Package,
-  Pencil,
-  Plus,
-  Tag,
-  Trash2,
-} from 'lucide-react'
+import { AlertTriangle, History, Minus, Package, Pencil, Plus, Tag, Trash2 } from 'lucide-react'
 import {
   isLowStock,
   mergeInventoryCategories,
@@ -38,6 +29,7 @@ import {
 } from '@/hooks/inventario/useInventory'
 import { usePlan } from '@/hooks/plan/usePlan'
 import { formatDashboardCurrency } from '@/lib/dashboardCurrency'
+import { Fab } from '@/components/ui/Fab'
 
 const LOW_STOCK = '__low'
 
@@ -140,14 +132,11 @@ export default function PanelInventarioPage() {
             <Button icon={<Tag className="h-4 w-4" />} onClick={() => setIsCategoryModalOpen(true)}>
               Categoría
             </Button>
-            <Button
-              variant="primary"
-              icon={<Plus className="h-4 w-4" />}
+            <Fab
+              label="Nuevo producto"
               onClick={() => setEditing('new')}
               disabled={!tenantId || categories.length === 0}
-            >
-              Producto
-            </Button>
+            />
           </>
         }
       />
@@ -188,7 +177,8 @@ export default function PanelInventarioPage() {
             onClick={() => void removeCategory(selectedCategory)}
             className="inline-flex min-h-[36px] items-center gap-1.5 rounded-lg px-2 text-xs font-semibold text-fg-muted hover:bg-red-500/10 hover:text-red-600"
           >
-            <Trash2 className="h-3.5 w-3.5" aria-hidden /> Eliminar categoría «{selectedCategory.label}»
+            <Trash2 className="h-3.5 w-3.5" aria-hidden /> Eliminar categoría «
+            {selectedCategory.label}»
           </button>
         </div>
       )}
@@ -205,7 +195,11 @@ export default function PanelInventarioPage() {
           icon={<Package className="h-5 w-5" />}
           action={
             selected !== LOW_STOCK ? (
-              <Button size="sm" icon={<Plus className="h-4 w-4" />} onClick={() => setEditing('new')}>
+              <Button
+                size="sm"
+                icon={<Plus className="h-4 w-4" />}
+                onClick={() => setEditing('new')}
+              >
                 Agregar producto
               </Button>
             ) : undefined

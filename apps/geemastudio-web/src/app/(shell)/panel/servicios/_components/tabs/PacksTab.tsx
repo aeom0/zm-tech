@@ -1,6 +1,6 @@
 'use client'
 
-import { Package, Plus } from 'lucide-react'
+import { Package } from 'lucide-react'
 import { useState } from 'react'
 
 import { usePacks } from '@/hooks/servicios/usePacks'
@@ -8,6 +8,7 @@ import type { Pack } from '../../_services/packsService'
 import { PackCard } from '../packs/PackCard'
 import { PackFormModal } from '../packs/PackFormModal'
 import { StateNote } from '@/components/ui/StateNote'
+import { Fab } from '@/components/ui/Fab'
 
 export function PacksTab() {
   const { data: packs = [], isLoading } = usePacks()
@@ -30,17 +31,13 @@ export function PacksTab() {
         <p className="text-sm text-fg/50">
           {packs.length} pack{packs.length !== 1 ? 's' : ''} registrado
         </p>
-        <button
-          type="button"
+        <Fab
+          label="Nuevo pack"
           onClick={() => {
             setEditing(null)
             setModalOpen(true)
           }}
-          className="inline-flex items-center gap-2 rounded-lg bg-[var(--tenant-primary)] px-3 py-1.5 text-sm text-[var(--tenant-on-primary)] transition-colors hover:bg-[var(--tenant-primary-hover)]"
-        >
-          <Plus className="h-4 w-4" />
-          Nuevo pack
-        </button>
+        />
       </div>
 
       {isLoading ? (

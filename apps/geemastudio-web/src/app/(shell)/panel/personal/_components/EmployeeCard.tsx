@@ -1,9 +1,10 @@
 'use client'
 
-import { CalendarClock, Plus } from 'lucide-react'
+import { CalendarClock } from 'lucide-react'
 
 import type { EmployeeRow } from '@/hooks/personal/types'
 import { formatDashboardCurrency } from '@/lib/dashboardCurrency'
+import { Fab } from '@/components/ui/Fab'
 
 interface EmployeeCardProps {
   employee: EmployeeRow
@@ -39,50 +40,50 @@ export function EmployeeCard({
 
   return (
     <div className="flex w-full items-center gap-2 rounded-2xl border border-fg/[0.08] bg-card pr-3 transition-colors hover:border-fg/[0.14] hover:bg-fg/[0.04]">
-    <button
-      type="button"
-      onClick={onClick}
-      className="flex min-w-0 flex-1 items-center gap-3 px-4 py-3 text-left"
-    >
-      <div
-        className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-fg/[0.08] text-sm font-bold text-fg"
-        style={{ backgroundColor: `${employee.color}33` }}
+      <button
+        type="button"
+        onClick={onClick}
+        className="flex min-w-0 flex-1 items-center gap-3 px-4 py-3 text-left"
       >
-        {employee.avatar_url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={employee.avatar_url} alt="" className="h-full w-full object-cover" />
-        ) : (
-          <span style={{ color: employee.color }}>{initial}</span>
-        )}
-        <span
-          className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-zinc-950"
-          style={{ backgroundColor: employee.color }}
-        />
-      </div>
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          <span className="truncate text-sm font-semibold text-fg">{employee.name}</span>
-          {!employee.is_active && (
-            <span className="rounded-full border border-fg/[0.08] bg-fg/[0.06] px-2 py-0.5 text-[11px] uppercase tracking-wide text-fg-muted">
-              Inactivo
-            </span>
+        <div
+          className="relative flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-fg/[0.08] text-sm font-bold text-fg"
+          style={{ backgroundColor: `${employee.color}33` }}
+        >
+          {employee.avatar_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={employee.avatar_url} alt="" className="h-full w-full object-cover" />
+          ) : (
+            <span style={{ color: employee.color }}>{initial}</span>
           )}
+          <span
+            className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-zinc-950"
+            style={{ backgroundColor: employee.color }}
+          />
         </div>
-        <div className="mt-0.5 truncate text-xs text-fg-muted">
-          {employee.phone || employee.email || 'Sin contacto'}
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <span className="truncate text-sm font-semibold text-fg">{employee.name}</span>
+            {!employee.is_active && (
+              <span className="rounded-full border border-fg/[0.08] bg-fg/[0.06] px-2 py-0.5 text-[11px] uppercase tracking-wide text-fg-muted">
+                Inactivo
+              </span>
+            )}
+          </div>
+          <div className="mt-0.5 truncate text-xs text-fg-muted">
+            {employee.phone || employee.email || 'Sin contacto'}
+          </div>
+          <div className="mt-1 text-xs text-tenant-text">{pay}</div>
         </div>
-        <div className="mt-1 text-xs text-tenant-text">{pay}</div>
-      </div>
-    </button>
-    <button
-      type="button"
-      onClick={onAvailability}
-      aria-label={`Disponibilidad de ${employee.name}`}
-      title="Servicios, horario y ausencias"
-      className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] text-fg-soft hover:bg-fg/[0.08] md:h-9 md:w-9"
-    >
-      <CalendarClock className="h-4 w-4" />
-    </button>
+      </button>
+      <button
+        type="button"
+        onClick={onAvailability}
+        aria-label={`Disponibilidad de ${employee.name}`}
+        title="Servicios, horario y ausencias"
+        className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-fg/[0.08] bg-fg/[0.04] text-fg-soft hover:bg-fg/[0.08] md:h-9 md:w-9"
+      >
+        <CalendarClock className="h-4 w-4" />
+      </button>
     </div>
   )
 }
@@ -93,15 +94,6 @@ interface PersonalHeaderActionsProps {
 }
 
 export function PersonalHeaderActions({ onNew, staffSingular }: PersonalHeaderActionsProps) {
-  return (
-    <button
-      type="button"
-      onClick={onNew}
-      className="min-h-[44px] md:min-h-[36px] inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2.5 text-sm font-semibold text-[var(--tenant-on-primary)] hover:bg-[var(--tenant-primary-hover)] hover:text-[var(--tenant-on-primary-hover)]"
-    >
-      <Plus className="h-4 w-4" />
-      {staffSingular.trim().toLocaleLowerCase('es').endsWith('a') ? 'Nueva' : 'Nuevo'}{' '}
-      {staffSingular.toLowerCase()}
-    </button>
-  )
+  const article = staffSingular.trim().toLocaleLowerCase('es').endsWith('a') ? 'Nueva' : 'Nuevo'
+  return <Fab label={`${article} ${staffSingular.toLowerCase()}`} onClick={onNew} />
 }

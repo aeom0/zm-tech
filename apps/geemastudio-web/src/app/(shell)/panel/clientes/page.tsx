@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { Search, Plus } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
 
 import { ClientCard } from './_components/ClientCard'
@@ -18,6 +18,7 @@ import { useTenantSettings } from '@/hooks/configuracion/useTenantSettings'
 import { resolveDashboardCurrencyCode } from '@/lib/dashboardCurrency'
 import { StateNote } from '@/components/ui/StateNote'
 import { PageHeader } from '@/components/ui/PageHeader'
+import { Fab } from '@/components/ui/Fab'
 
 function PanelClientesContent() {
   const queryClient = useQueryClient()
@@ -69,18 +70,14 @@ function PanelClientesContent() {
               className="focus:border-[var(--tenant-primary)]/40 w-full rounded-xl border border-fg/[0.08] bg-fg/[0.04] py-2.5 pl-9 pr-3 text-base text-fg outline-none placeholder:text-fg-subtle md:text-sm"
             />
           </div>
-          <button
-            type="button"
+          <Fab
+            label="Nuevo cliente"
             onClick={() => {
               setEditingClient(null)
               setIsModalOpen(true)
             }}
             disabled={!tenantId || !country}
-            className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-[var(--tenant-primary)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-95 disabled:opacity-50"
-          >
-            <Plus className="h-4 w-4" />
-            Nuevo cliente
-          </button>
+          />
         </div>
       </div>
 

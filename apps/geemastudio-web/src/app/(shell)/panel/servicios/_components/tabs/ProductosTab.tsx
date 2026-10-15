@@ -1,6 +1,6 @@
 'use client'
 
-import { ShoppingBag, Plus } from 'lucide-react'
+import { ShoppingBag } from 'lucide-react'
 import { useState } from 'react'
 
 import { useProductos } from '@/hooks/servicios/useProductos'
@@ -10,6 +10,7 @@ import { ProductoFormModal } from '../productos/ProductoFormModal'
 import { VentasTab } from './VentasTab'
 import { SegmentedControl } from '@/components/ui/SegmentedControl'
 import { StateNote } from '@/components/ui/StateNote'
+import { Fab } from '@/components/ui/Fab'
 
 export function ProductosTab() {
   const { data: productos = [], isLoading } = useProductos()
@@ -40,17 +41,13 @@ export function ProductosTab() {
           ]}
         />
         {view === 'catalogo' ? (
-          <button
-            type="button"
+          <Fab
+            label="Nuevo producto"
             onClick={() => {
               setEditing(null)
               setModalOpen(true)
             }}
-            className="inline-flex items-center gap-2 rounded-lg bg-[var(--tenant-primary)] px-3 py-1.5 text-sm text-[var(--tenant-on-primary)] transition-colors hover:bg-[var(--tenant-primary-hover)]"
-          >
-            <Plus className="h-4 w-4" />
-            Nuevo producto
-          </button>
+          />
         ) : null}
       </div>
 

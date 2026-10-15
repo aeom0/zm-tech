@@ -211,8 +211,8 @@ export function PanelShell({
     if (href === '/panel/configuracion') {
       return Boolean(
         pathname?.startsWith('/panel/configuracion') ||
-          pathname === '/panel/horarios' ||
-          pathname === '/panel/feriados'
+        pathname === '/panel/horarios' ||
+        pathname === '/panel/feriados'
       )
     }
     if (href === '/panel/mas') {
@@ -312,10 +312,7 @@ export function PanelShell({
               <div className="truncate text-xs text-fg-muted">GeemaStudio</div>
             </div>
           </Link>
-          <div className="flex shrink-0 items-center gap-2">
-            <NotificationBell align="left" />
-            <TenantLogo tenantName={tenantName} tenantLogoUrl={tenantLogoUrl} size={36} />
-          </div>
+          <TenantLogo tenantName={tenantName} tenantLogoUrl={tenantLogoUrl} size={36} />
         </div>
       </div>
 
@@ -331,8 +328,9 @@ export function PanelShell({
       </nav>
 
       <div className="border-t border-fg/[0.08] p-3">
-        <div className="mb-3">
+        <div className="mb-3 flex items-center justify-between gap-2">
           <ThemeToggle compact />
+          <NotificationBell align="left" placement="up" />
         </div>
         <div className="flex items-center justify-between gap-3 rounded-xl border border-fg/[0.08] bg-fg/[0.03] px-3 py-2">
           <div className="min-w-0">
@@ -384,7 +382,7 @@ export function PanelShell({
 
         <main
           className={[
-            'p-4 pb-24 md:p-8 md:pb-8',
+            'p-4 pb-40 md:p-8 md:pb-28',
             pathname?.startsWith('/panel/waba/mensajes') ? 'p-2 pb-20 md:p-8 md:pb-8' : '',
           ].join(' ')}
         >

@@ -1,7 +1,7 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { ChevronRight, Loader2, Plus, Trash2 } from 'lucide-react'
+import { ChevronRight, Loader2, Trash2 } from 'lucide-react'
 import { TIME_OFF_KIND_LABELS, WEEK_DAYS, trimTime } from '@geemastudio/shared-schema'
 
 import { useDashboardTenant } from '@/hooks/dashboard/useDashboardTenant'
@@ -23,14 +23,16 @@ import { useConfirm } from '@/components/ui/ConfirmDialog'
 
 import { AvailabilityModal } from './AvailabilityModal'
 import { PersonalSubNav } from './PersonalSubNav'
-import { formatIsoDate, primaryBtnClass, todayIso } from './availabilityUi'
+import { formatIsoDate, todayIso } from './availabilityUi'
+import { Fab } from '@/components/ui/Fab'
 
 type Mode = 'schedule' | 'services' | 'timeoff'
 
 const COPY: Record<Mode, { title: string; description: string }> = {
   schedule: {
     title: 'Horarios',
-    description: 'Días y turnos de cada profesional. Quien no tiene horario propio usa el del negocio.',
+    description:
+      'Días y turnos de cada profesional. Quien no tiene horario propio usa el del negocio.',
   },
   services: {
     title: 'Servicios por profesional',
@@ -100,7 +102,9 @@ export function TeamAvailability({ mode }: { mode: Mode }) {
   const renderTimeOff = (t: NonNullable<typeof timeOff.data>[number]) => (
     <li key={t.id} className={rowClass}>
       <div className="min-w-0 flex-1">
-        <div className="text-sm font-semibold text-fg">{names.get(t.employee_id) ?? staffSingular}</div>
+        <div className="text-sm font-semibold text-fg">
+          {names.get(t.employee_id) ?? staffSingular}
+        </div>
         <div className="text-xs text-fg-muted">
           {TIME_OFF_KIND_LABELS[t.kind]} · {rangeLabel(t.date_from, t.date_to)}
           {t.start_time && t.end_time ? ` · ${trimTime(t.start_time)}–${trimTime(t.end_time)}` : ''}
@@ -140,9 +144,7 @@ export function TeamAvailability({ mode }: { mode: Mode }) {
           <p className="text-sm text-fg-muted">{COPY[mode].description}</p>
         </div>
         {mode === 'timeoff' && active[0] && (
-          <button type="button" className={primaryBtnClass} onClick={() => setEditing(active[0]!)}>
-            <Plus className="h-4 w-4" /> Nueva ausencia
-          </button>
+          <Fab label="Nueva ausencia" onClick={() => setEditing(active[0]!)} />
         )}
       </div>
 
@@ -151,7 +153,9 @@ export function TeamAvailability({ mode }: { mode: Mode }) {
           <Loader2 className="mr-1 inline h-4 w-4 animate-spin" /> Cargando…
         </StateNote>
       )}
-      {!loading && failed && <StateNote kind="error">No se pudo cargar la información del equipo.</StateNote>}
+      {!loading && failed && (
+        <StateNote kind="error">No se pudo cargar la información del equipo.</StateNote>
+      )}
 
       {!loading && !failed && mode !== 'timeoff' && (
         <ul className="space-y-2">
@@ -186,7 +190,9 @@ export function TeamAvailability({ mode }: { mode: Mode }) {
                         ))}
                       </div>
                     ) : (
-                      <div className="text-xs text-fg-muted">{summary ?? 'Usa el horario del negocio'}</div>
+                      <div className="text-xs text-fg-muted">
+                        {summary ?? 'Usa el horario del negocio'}
+                      </div>
                     )}
                   </div>
                   <ChevronRight className="h-4 w-4 text-fg-subtle" />
@@ -218,7 +224,9 @@ export function TeamAvailability({ mode }: { mode: Mode }) {
                         {names.get(c.covering_employee_id) ?? staffSingular} cubre a{' '}
                         {names.get(c.covered_employee_id) ?? staffSingular}
                       </div>
-                      <div className="text-xs text-fg-muted">{rangeLabel(c.date_from, c.date_to)}</div>
+                      <div className="text-xs text-fg-muted">
+                        {rangeLabel(c.date_from, c.date_to)}
+                      </div>
                     </div>
                     <button
                       type="button"

@@ -32,12 +32,11 @@ import { useDayAvailability } from '@/hooks/personal/useAvailability'
 import { useEmployees } from '@/hooks/personal/useEmployees'
 import { StateNote } from '@/components/ui/StateNote'
 import { PageHeader } from '@/components/ui/PageHeader'
-import { Button } from '@/components/ui/Button'
 import { HolidayAlertBanner } from '@/components/feriados/HolidayAlertBanner'
 import { useAuth } from '@/contexts/AuthContext'
 import { useAgendaServicesList } from '@/hooks/agenda/useAgendaData'
 import { NewAppointmentModal } from './_components/NewAppointmentModal'
-import { Plus } from 'lucide-react'
+import { Fab } from '@/components/ui/Fab'
 
 export default function PanelAgendaPage() {
   return (
@@ -204,17 +203,12 @@ function PanelAgendaContent() {
             {view === 'week' ? 'Vista semanal' : 'Vista día por profesional'} · zona {timezone}
           </>
         }
-        actions={
-          <Button
-            variant="primary"
-            icon={<Plus className="h-4 w-4" />}
-            onClick={() => setIsNewModalOpen(true)}
-            disabled={!canCreate}
-            title={canCreate ? undefined : 'Cargando servicios y profesionales…'}
-          >
-            Nueva cita
-          </Button>
-        }
+      />
+      <Fab
+        label="Nueva cita"
+        onClick={() => setIsNewModalOpen(true)}
+        disabled={!canCreate}
+        title={canCreate ? undefined : 'Cargando servicios y profesionales…'}
       />
 
       <HolidayAlertBanner timeZone={timezone} />
