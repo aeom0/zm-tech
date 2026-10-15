@@ -14,6 +14,8 @@
 // Si la sesión tiene selección o step=awaiting_datetime, tras el texto se reenvía
 // el selector de fecha/hora (misma lógica que cart-nudge). Haiku no debe prometer
 // "días disponibles" sin selección — en ese caso pregunta qué servicio o día quiere.
+// Con el agente prendido (agent_enabled) no se adjuntan listas del bot clásico:
+// el texto pregunta por el día y la clienta responde con sus palabras.
 //
 // Anti-spam: Haiku recibe las últimas 8 respuestas del hilo (HISTORY_LIMIT) y
 // decide needs_response=false si la charla ya se cerró sola — nunca se envía
@@ -46,6 +48,7 @@ import {
   type SupabaseClient,
 } from "../whatsapp-webhook/lib/supabase.ts";
 import { runWithRequestTenantId } from "../whatsapp-webhook/lib/tenant.ts";
+import { isAgentEnabledFor } from "../whatsapp-webhook/agent/agent.ts";
 import {
   getConfigText,
   loadSilentPhoneSet,
@@ -99,6 +102,8 @@ interface WaMessageRow {
 interface SessionContext {
   step: string | null;
   hasCart: boolean;
+  /** Agente prendido: sin listas interactivas del bot clásico. */
+  agent: boolean;
 }
 
 const DEPOSIT_OR_PAYMENT_STEPS = new Set([
@@ -158,6 +163,11 @@ async function askHaikuIfNeedsResponse(
     ? "La clienta está en datos de boleta o pago. NUNCA ofrezcas calendario, " +
       "días ni horas. Si hace falta responder, pide nombre+DNI/CE en un solo " +
       "mensaje o espera al equipo. No digas que la cita ya está reservada."
+    : ctx.hasCart && ctx.agent
+    ? "La clienta TIENE servicios en selección (o está eligiendo fecha). " +
+      "Retoma lo pendiente: si se le ofreció un horario, pregúntale si se lo " +
+      "reservas; si no, qué día le acomoda. NUNCA digas que le dejas días, " +
+      "calendario ni lista de horarios (no se enviará ninguna lista)."
     : ctx.hasCart
     ? "La clienta TIENE servicios en selección (o está eligiendo fecha). " +
       "Puedes invitarla a elegir día: el sistema adjuntará la lista interactiva de días. " +
@@ -265,7 +275,7 @@ function finalizeWatchdogMessage(
   ctx: SessionContext,
 ): { message: string; attachCalendar: boolean } {
   let message = raw.trim() || FALLBACK_MESSAGE;
-  const canAttach = !isDepositOrPaymentStep(ctx.step) &&
+  const canAttach = !ctx.agent && !isDepositOrPaymentStep(ctx.step) &&
     (ctx.hasCart || ctx.step === "awaiting_datetime");
 
   if (canAttach) {
@@ -326,11 +336,8 @@ Deno.serve(async (req: Request) => {
     await runWithRequestTenantId(tenant.tenantId, async () => {
       const catalog = await loadCatalog(supabase);
       const blockedPhones = await loadSilentPhoneSet(supabase);
-      const horariosText = getConfigText(
-        await loadWabaConfig(supabase, tenant.tenantId),
-        "horarios_text",
-        "",
-      );
+      const wabaConfig = await loadWabaConfig(supabase, tenant.tenantId);
+      const horariosText = getConfigText(wabaConfig, "horarios_text", "");
 
       const { data: candidates, error: candidatesError } = await supabase.rpc(
         "waba_find_silent_phones",
@@ -361,6 +368,7 @@ Deno.serve(async (req: Request) => {
           const ctx: SessionContext = {
             step: session?.step ?? row.session_step ?? "browsing",
             hasCart: sessionHasCart(session),
+            agent: isAgentEnabledFor(wabaConfig, row.phone),
           };
 
           const { data: history } = await supabase
@@ -391,8 +399,9 @@ Deno.serve(async (req: Request) => {
           const midBooking = ctx.hasCart || ctx.step === "awaiting_datetime";
           if (midBooking && !needsResponse) {
             needsResponse = true;
-            rawMessage =
-              "¿Seguimos con tu cita? 💜 Te dejo los días disponibles 👇";
+            rawMessage = ctx.agent
+              ? "¿Seguimos con tu cita? 💜" + AGENDAR_HINT
+              : "¿Seguimos con tu cita? 💜 Te dejo los días disponibles 👇";
           } else if (
             midBooking &&
             needsResponse &&
@@ -401,7 +410,9 @@ Deno.serve(async (req: Request) => {
             // Asegurar CTA de calendario si hay selección
             if (!/agendar|d[ií]a|cita/i.test(rawMessage)) {
               rawMessage = rawMessage.trim() +
-                " ¿Seguimos con tu cita? Te dejo los días 👇";
+                (ctx.agent
+                  ? AGENDAR_HINT
+                  : " ¿Seguimos con tu cita? Te dejo los días 👇");
             }
           }
 

@@ -4,6 +4,8 @@
 // Nudge 1: ≥12 min sin actividad (ideal ~12–35; colchón 24h si se difiere de noche).
 // Nudge 2: ≥90 min tras nudge1 (colchón 24h) + vacía selección.
 // Si step=awaiting_datetime, nudge 1 reenvía el selector de fecha/hora.
+// Con el agente prendido (agent_enabled), nudge 1 no usa copy fija ni listas:
+// Haiku lee el chat y retoma lo pendiente (lib/reengage-haiku.ts).
 // Horario de ENVÍO: 9–22 Lima todos los días (como ads-bounce) — no el del salón.
 
 import { resendDatetimeSelectors } from "../whatsapp-webhook/handlers/booking-flow.ts";
@@ -32,6 +34,11 @@ import {
   resolveAlmostCloseImage,
 } from "../whatsapp-webhook/lib/emotional-selling.ts";
 import { runWithRequestTenantId } from "../whatsapp-webhook/lib/tenant.ts";
+import { isAgentEnabledFor } from "../whatsapp-webhook/agent/agent.ts";
+import {
+  askHaikuReengage,
+  type ReengageMessageRow,
+} from "../whatsapp-webhook/lib/reengage-haiku.ts";
 import {
   getActiveWabaTenants,
   getTenantWabaCredentials,
@@ -53,6 +60,11 @@ const NUDGE2_MIN = 90;
  * sin perder la selección (mismo patrón que ads-bounce).
  */
 const CANDIDATE_MAX_MINUTES = 24 * 60;
+/** Historial que lee Haiku en el nudge 1 con agente. */
+const AGENT_HISTORY_LIMIT = 8;
+/** Promesa de lista de días que el agente no envía. */
+const PROMISES_CALENDAR_RE =
+  /d[ií]as?\s+disponibles|te\s+dejo\s+los\s+d[ií]as|calendario/i;
 
 interface Session {
   phone: string;
@@ -188,6 +200,41 @@ async function supabaseRequest(
   });
   if (method === "PATCH") return null;
   return res.json();
+}
+
+/**
+ * Nudge 1 con agente: Haiku retoma lo último del chat en vez de la copy fija
+ * (…1095, 14-oct-2026: el bot ya había ofrecido las 12:00 y el nudge volvió a
+ * «aún no confirmaste tu cita» con «Escribe *agendar*»). `null` = la charla
+ * ya cerró, no enviar.
+ */
+async function buildAgentNudge1Text(
+  supabase: SupabaseClient,
+  tenantId: string,
+  phone: string,
+  cartDesc: string,
+  serviceName: string,
+): Promise<string | null> {
+  const { data: history } = await supabase
+    .from("wa_messages")
+    .select("direction, content, created_at")
+    .eq("phone", phone)
+    .eq("tenant_id", tenantId)
+    .order("created_at", { ascending: false })
+    .limit(AGENT_HISTORY_LIMIT);
+  const ordered = ((history ?? []) as ReengageMessageRow[]).reverse();
+  const verdict = await askHaikuReengage(supabase, phone, ordered, {
+    source: "cart_nudge",
+    extraContext: `La clienta tiene en su selección: ${
+      serviceName || cartDesc
+    } (aún sin cita confirmada).`,
+  });
+  if (verdict && !verdict.shouldSend) return null;
+  const message = verdict?.message.trim() ?? "";
+  if (!message || PROMISES_CALENDAR_RE.test(message)) {
+    return `Tienes ${cartDesc} en tu selección 💜 ¿Qué día te acomoda? Te paso los horarios libres 🗓️`;
+  }
+  return message;
 }
 
 /** "un servicio listo" / "2 servicios listos" (concordancia; Carmen …6325, 24-sep-2026). */
@@ -430,6 +477,66 @@ Deno.serve(async (req: Request) => {
           minutesInactive >= NUDGE1_MIN &&
           minutesInactive <= CANDIDATE_MAX_MINUTES
         ) {
+          if (isAgentEnabledFor(wabaConfig, phone)) {
+            const sessionPath = `whatsapp_sessions?phone=eq.${
+              encodeURIComponent(phone)
+            }&tenant_id=eq.${encodeURIComponent(tenantId)}`;
+            const serviceIds = await resolveSessionServiceIds(
+              supabase,
+              session,
+            );
+            const agentText = await buildAgentNudge1Text(
+              supabase,
+              tenantId,
+              phone,
+              cartDesc,
+              primaryServiceLabel(serviceIds, catalog),
+            );
+            if (agentText == null) {
+              // Charla cerrada: sin nudge 1 ni nudge 2 en este episodio.
+              await supabaseRequest(sessionPath, "PATCH", {
+                nudge1_sent_at: nowIso,
+                nudge2_sent_at: nowIso,
+              });
+              continue;
+            }
+            const rubro = primaryRubroFromServiceIds(serviceIds, catalog);
+            if (
+              rubro != null &&
+              isCtwaEmotionalEligible(session.from_ad_at, serviceIds, catalog)
+            ) {
+              const image = resolveAlmostCloseImage(
+                wabaConfig,
+                catalog,
+                serviceIds,
+                primaryServiceLabel(serviceIds, catalog),
+              );
+              if (image?.url) {
+                await sendImageWA(
+                  creds,
+                  phone,
+                  image.url,
+                  image.caption ?? "",
+                  session.step,
+                  "emotional",
+                );
+              }
+            }
+            const clientName = await loadClientNameForPhone(supabase, phone);
+            await sendTextWA(
+              creds,
+              phone,
+              addressWithoutHello(clientName, agentText),
+              session.step,
+              "generic",
+            );
+            await supabaseRequest(sessionPath, "PATCH", {
+              nudge1_sent_at: nowIso,
+            });
+            nudge1Count++;
+            continue;
+          }
+
           const enCalendario = session.step === "awaiting_datetime";
           // Si ya eligió el día (solo falta hora), no invitarla a "elegir el día"
           // de nuevo — Doris …8088 recibió esa copy con el día ya elegido,

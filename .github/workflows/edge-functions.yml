@@ -101,7 +101,6 @@ jobs:
           - { name: sync-meta-ads-spend, jwt: false }
           - { name: sync-anthropic-billing, jwt: true }
           - { name: send-push-notification, jwt: true }
-          - { name: abandoned-cart-reminders, jwt: false }
     steps:
       - name: Seleccionar función
         id: sel

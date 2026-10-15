@@ -6,16 +6,11 @@
 // no se re-califica tras OUT del bot; no solapa ads-bounce/watchdog del mismo episodio.
 // Deploy: SUPABASE_ACCESS_TOKEN=$(cat ~/.supabase/access-token) npx supabase@latest functions deploy browse-reengage --project-ref udelxwwnyivknslueerr --no-verify-jwt
 
-import { SALON_ADDRESS } from "../whatsapp-webhook/lib/salon-location.ts";
 import {
-  clearAnthropicCreditExhaustedFlag,
-  logAIUsage,
-  reportAnthropicApiFailure,
-} from "../whatsapp-webhook/lib/haiku-usage.ts";
-import {
-  getSupabase,
-  type SupabaseClient,
-} from "../whatsapp-webhook/lib/supabase.ts";
+  askHaikuReengage,
+  type ReengageMessageRow,
+} from "../whatsapp-webhook/lib/reengage-haiku.ts";
+import { getSupabase } from "../whatsapp-webhook/lib/supabase.ts";
 import { loadSilentPhoneSet } from "../whatsapp-webhook/lib/waba-config.ts";
 import {
   addressWithoutHello,
@@ -32,7 +27,6 @@ import {
 } from "../_shared/tenant-waba.ts";
 
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
 const CRON_SECRET = Deno.env.get("CRON_SECRET");
 const LIMA_UTC_OFFSET = 5;
 
@@ -44,24 +38,15 @@ const NUDGE_MIN = 30;
  */
 const CANDIDATE_MAX_MINUTES = 24 * 60;
 const HISTORY_LIMIT = 8;
-const HAIKU_TIMEOUT_MS = 5000;
-const HAIKU_MODEL = "claude-haiku-4-5-20251001";
-const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
 
 const FALLBACK_MESSAGE =
-  "¿Sigues por aquí? 💜 Cuéntanos qué te gustaría (pestañas, cejas, uñas…) o escribe *menu* para ver opciones.";
+  "¿Sigues por aquí? 💜 Cuéntanos qué te gustaría (pestañas, cejas, uñas…) y te ayudamos.";
 
 interface IdleBrowseRow {
   phone: string;
   last_out_at: string;
   session_step: string | null;
   browse_reengage_sent_at: string | null;
-}
-
-interface WaMessageRow {
-  direction: "in" | "out";
-  content: string | null;
-  created_at: string;
 }
 
 function isWithinReengancheHours(): boolean {
@@ -86,110 +71,6 @@ async function sendTextWA(
   }
   const data = await res.json().catch(() => null);
   return { ok: true, wamid: extractMetaWamid(data) };
-}
-
-/**
- * Haiku decide si reenganchar (clienta ghosteó tras respuesta del bot) o skip
- * si la charla ya cerró naturalmente.
- */
-async function askHaikuReengage(
-  supabase: SupabaseClient,
-  phone: string,
-  history: WaMessageRow[],
-): Promise<{ shouldSend: boolean; message: string } | null> {
-  if (!ANTHROPIC_API_KEY) return null;
-
-  const transcript = history
-    .map((m) => `[${m.direction}] ${(m.content ?? "").slice(0, 300)}`)
-    .join("\n");
-
-  const systemPrompt =
-    "Eres parte del equipo de ZM Lash & Nails Beauty (salón en Perú). " +
-    "Revisas un chat de WhatsApp donde el equipo/bot YA respondió (último mensaje " +
-    "es 'out') y la clienta no ha vuelto a escribir en ~30–60 min. 'in' = clienta, " +
-    "'out' = equipo/bot. " +
-    "should_send=true casi siempre si el embudo quedó a medias: lista de promos, " +
-    "menú, precios, pregunta abierta, o la clienta no eligió servicio/día. " +
-    "should_send=false SOLO si la charla cerró claro (gracias/listo/chau/ya agendé) " +
-    "o hay cita confirmada. Si should_send=true, redacta 1–2 líneas en español " +
-    "peruano, tono asesora profesional y cercana (NO amiga efusiva): invita a " +
-    "retomar preguntando qué servicio o qué día le acomoda. Nunca le pidas que " +
-    "escriba una palabra clave (*agendar*, *menu*). " +
-    "PROHIBIDO apodos: babe, baby, amor, cielo, linda, hermosa, bella, guapa, " +
-    "nena, bebé, cariño, reina, princesa, mamacita. PROHIBIDO volver a decir ¡Hola!/Hola " +
-    "(el saludo ya se dio). Trata como Srta. {nombre} si lo conoces; si no, directo al tema. " +
-    "NO inventes precios. " +
-    "DATOS REALES del salón (úsalos tal cual si la clienta preguntó; NUNCA inventes dirección, distrito, horarios ni precios): dirección: " +
-    SALON_ADDRESS + ". " +
-    "NUNCA " +
-    "digas que le dejas calendario/días. NUNCA redirijas al 932 (este YA es el " +
-    "canal). Responde ÚNICAMENTE JSON: " +
-    '{"should_send": boolean, "message": "texto o cadena vacía"}';
-
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), HAIKU_TIMEOUT_MS);
-
-  try {
-    const response = await fetch(ANTHROPIC_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": ANTHROPIC_API_KEY,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: HAIKU_MODEL,
-        max_tokens: 200,
-        system: systemPrompt,
-        messages: [{ role: "user", content: transcript }],
-      }),
-      signal: controller.signal,
-    });
-    clearTimeout(timeoutId);
-
-    if (!response.ok) {
-      const errText = await response.text().catch(() => "");
-      console.error("[browse-reengage] Anthropic API error:", response.status);
-      void reportAnthropicApiFailure(supabase, {
-        status: response.status,
-        bodyText: errText,
-        source: "browse_reengage",
-        phoneNumber: phone,
-      });
-      return null;
-    }
-
-    const data = await response.json();
-    void clearAnthropicCreditExhaustedFlag(supabase);
-    void logAIUsage(
-      supabase,
-      "browse_reengage",
-      (data?.usage?.input_tokens as number) ?? 0,
-      (data?.usage?.output_tokens as number) ?? 0,
-      phone,
-    );
-
-    const rawText = (data?.content?.[0]?.text as string | undefined)?.trim();
-    if (!rawText) return null;
-
-    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) return null;
-    const parsed = JSON.parse(jsonMatch[0]);
-    if (typeof parsed.should_send !== "boolean") return null;
-
-    return {
-      shouldSend: parsed.should_send,
-      message: typeof parsed.message === "string" ? parsed.message : "",
-    };
-  } catch (err) {
-    clearTimeout(timeoutId);
-    if ((err as Error).name === "AbortError") {
-      console.warn("[browse-reengage] Timeout Haiku");
-    } else {
-      console.error("[browse-reengage] Error Anthropic:", err);
-    }
-    return null;
-  }
 }
 
 Deno.serve(async (req: Request) => {
@@ -319,11 +200,13 @@ Deno.serve(async (req: Request) => {
             continue;
           }
 
-          const orderedHistory = ((history ?? []) as WaMessageRow[]).reverse();
+          const orderedHistory = ((history ?? []) as ReengageMessageRow[])
+            .reverse();
           const verdict = await askHaikuReengage(
             supabase,
             row.phone,
             orderedHistory,
+            { source: "browse_reengage" },
           );
 
           // Bias: si Haiku falla, sí reenganchar (no perder lead)
