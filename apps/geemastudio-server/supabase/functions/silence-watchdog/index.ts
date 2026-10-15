@@ -46,6 +46,7 @@ import {
 } from "../whatsapp-webhook/lib/haiku-model.ts";
 import { initMessageLogger } from "../whatsapp-webhook/lib/message-logger.ts";
 import { SALON_ADDRESS } from "../whatsapp-webhook/lib/salon-location.ts";
+import { SPANISH_STYLE_RULE } from "../whatsapp-webhook/lib/spanish-style.ts";
 import { loadCatalog } from "../whatsapp-webhook/lib/services-catalog.ts";
 import {
   getSession,
@@ -188,8 +189,9 @@ async function askHaikuIfNeedsResponse(
     "la clienta sigue esperando una respuesta útil (needs_response=true) o si la " +
     "charla ya se cerró de forma natural — ej. dijo gracias/listo/chau, o ya " +
     "tiene toda la información que pidió (needs_response=false). Si " +
-    "needs_response=true, redacta un mensaje breve (máx 2 líneas), cálido, en " +
-    "español peruano, tono asesora profesional (NO apodos: babe, baby, amor, " +
+    "needs_response=true, redacta un mensaje breve (máx 2 líneas), cálido, " +
+    SPANISH_STYLE_RULE +
+    " Tono asesora profesional (NO apodos: babe, baby, amor, " +
     "cielo, linda, hermosa, bella, guapa, nena, bebé, cariño, reina). PROHIBIDO " +
     "¡Hola!/Hola (ya hubo saludo). Usa Srta. {nombre} si lo conoces. Que " +
     "retome el hilo de forma natural (no genérico) y ofrezca ayuda concreta. " +

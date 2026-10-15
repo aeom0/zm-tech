@@ -16,6 +16,7 @@ import {
 } from "../whatsapp-webhook/lib/haiku-model.ts";
 import type { SupabaseClient } from "../whatsapp-webhook/lib/supabase.ts";
 import { addressWithoutHello } from "../whatsapp-webhook/lib/client-address.ts";
+import { SPANISH_STYLE_RULE } from "../whatsapp-webhook/lib/spanish-style.ts";
 import { runWithRequestTenantId } from "../whatsapp-webhook/lib/tenant.ts";
 import { getSupabase } from "../whatsapp-webhook/lib/supabase.ts";
 import {
@@ -150,7 +151,8 @@ async function askHaikuBounceCopy(
     "Eres parte del equipo de ZM Lash & Nails Beauty (salón en Perú). Una clienta " +
     "llegó desde un anuncio de Instagram/Meta, recibió respuesta y no volvió a " +
     "escribir en ~2 h. 'in' = clienta, 'out' = equipo/bot. Redacta 1–2 líneas " +
-    "para retomar, en español peruano, tono asesora cercana. " +
+    "para retomar, tono asesora cercana. " +
+    SPANISH_STYLE_RULE + " " +
     "Si el hilo muestra un rubro concreto (uñas, pestañas, cejas, lifting, " +
     "depilación, etc.), habla SOLO de ese rubro e invita a elegir el servicio o " +
     "el día; NO listes otros rubros ni servicios de otro rubro. " +

@@ -5,6 +5,7 @@
 // ofrecido, duda pendiente).
 
 import { SALON_ADDRESS } from "./salon-location.ts";
+import { SPANISH_STYLE_RULE } from "./spanish-style.ts";
 import {
   clearAnthropicCreditExhaustedFlag,
   logAIUsage,
@@ -58,8 +59,9 @@ export async function askHaikuReengage(
     "should_send=true casi siempre si el embudo quedó a medias: lista de promos, " +
     "precios, horario ofrecido, pregunta abierta, o la clienta no eligió servicio/día. " +
     "should_send=false SOLO si la charla cerró claro (gracias/listo/chau/ya agendé) " +
-    "o hay cita confirmada. Si should_send=true, redacta 1–2 líneas en español " +
-    "peruano, tono asesora profesional y cercana (NO amiga efusiva): retoma lo " +
+    "o hay cita confirmada. Si should_send=true, redacta 1–2 líneas, " +
+    SPANISH_STYLE_RULE +
+    " Tono asesora profesional y cercana (NO amiga efusiva): retoma lo " +
     "último que quedó pendiente (si se le ofreció un horario, pregúntale si se lo " +
     "reservas; si no, qué servicio o qué día le acomoda). Nunca le pidas que " +
     "escriba una palabra clave (*agendar*, *menu*). " +

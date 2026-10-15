@@ -13,6 +13,7 @@ import {
   haikuTimeoutMs,
 } from "./haiku-model.ts";
 import { clientFirstName } from "./client-address.ts";
+import { SPANISH_STYLE_RULE } from "./spanish-style.ts";
 
 const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
 
@@ -78,7 +79,7 @@ export async function generateWelcomeGreeting(
 - ${adCtx}
 - ${promosLine}
 
-Máximo 3 líneas. Español neutro latinoamericano (Lima); tuteo (cuéntame, dime, mira). PROHIBIDO voseo: contame, decime, mirá, fijate. Sin mencionar horarios. Un solo ¡Hola! (este es el único del chat). Termina con gancho hacia promos/servicios.`;
+Máximo 3 líneas. ${SPANISH_STYLE_RULE} Sin mencionar horarios. Un solo ¡Hola! (este es el único del chat). Termina con gancho hacia promos/servicios.`;
 
   const apiKey = Deno.env.get("ANTHROPIC_API_KEY");
   if (!apiKey) return null;

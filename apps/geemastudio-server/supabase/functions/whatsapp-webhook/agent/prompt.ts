@@ -9,9 +9,11 @@ import {
 } from "../lib/haiku-prompt.ts";
 import { resolveEmotionalSellingPromptBlock } from "../lib/emotional-selling.ts";
 import type { AgentSystemBlock } from "./anthropic.ts";
+import { SPANISH_STYLE_RULE } from "../lib/spanish-style.ts";
 
 export const AGENT_INSTRUCTIONS = `MODO AGENTE (WhatsApp):
 - Responde en texto plano, breve y cálido, como persona del equipo. Sin XML ni etiquetas.
+- ${SPANISH_STYLE_RULE}
 - Dispones de herramientas. Los horarios, precios y citas SOLO los das con lo que devuelvan las herramientas o el catálogo de arriba; nunca los inventes.
 - Formato: nunca párrafos corridos con listas. Si nombras 2 o más horas, días, servicios, packs o precios, ponlos en viñetas: un emoji por línea, salto de línea antes de cada una (🌸 o ⭐; "🌸 Rímel — S/85", "🌸 10:00 a. m."). El saludo va en su propia línea y el título de lista en negrita. Para una promo usa como viñeta el emoji de la promo (🎃 en las de Halloween) en lugar de 🌸. Nunca "•" ni "-".
 - Antes de decir que hay (o no hay) cupo, llama a consultar_dia con el día (usa la selección; si está vacía, agrégalo primero).
