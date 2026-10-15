@@ -10,7 +10,10 @@
 import { createClient } from "@supabase/supabase-js";
 import { getConsideracionesPreviasWhatsApp } from "../whatsapp-webhook/lib/policies.ts";
 import { isWaBsuid, isWaSendableDest } from "../_shared/wa-recipient.mjs";
-import { limaNowAsUtcShiftedDate } from "../_shared/lima-datetime.ts";
+import {
+  limaNowAsUtcShiftedDate,
+  parseLimaLocalToDate,
+} from "../_shared/lima-datetime.ts";
 import { runWithRequestTenantId } from "../whatsapp-webhook/lib/tenant.ts";
 import { getActiveWabaTenants } from "../_shared/tenant-waba.ts";
 
@@ -90,6 +93,23 @@ interface AppointmentRow {
   client_id: string | null;
   date: string;
   service_id: string | null;
+  /** timestamp without time zone en UTC (default now()). */
+  created_at: string | null;
+}
+
+/**
+ * Cita agendada a menos de HORIZON_HOURS de empezar (p. ej. el equipo la crea
+ * cuando la clienta ya está en el salón): el recordatorio llegaría a la hora de
+ * la cita y sobra. Caso Nélida …6566, 14-oct-2026.
+ */
+function bookedInsideHorizon(r: AppointmentRow): boolean {
+  const start = parseLimaLocalToDate(r.date);
+  if (!start || !r.created_at) return false;
+  const created = Date.parse(
+    `${r.created_at.replace(" ", "T").replace(/Z$|[+-]\d{2}:?\d{2}$/, "")}Z`,
+  );
+  if (!Number.isFinite(created)) return false;
+  return start.getTime() - created < HORIZON_HOURS * 60 * 60 * 1000;
 }
 
 interface ServiceRow {
@@ -131,7 +151,9 @@ Deno.serve(async (req: Request) => {
   async function processTenantSameDay(tenantId: string): Promise<void> {
     const { data: appointments, error: apptError } = await supabase
       .from("appointments")
-      .select("id, client_name, client_phone, client_id, date, service_id")
+      .select(
+        "id, client_name, client_phone, client_id, date, service_id, created_at",
+      )
       .eq("tenant_id", tenantId)
       .eq("status", "scheduled")
       .gte("date", start)
@@ -146,7 +168,9 @@ Deno.serve(async (req: Request) => {
       return;
     }
 
-    const rows = (appointments ?? []) as AppointmentRow[];
+    const rows = ((appointments ?? []) as AppointmentRow[]).filter((r) =>
+      !bookedInsideHorizon(r)
+    );
     totalRows += rows.length;
     console.log(
       `[same-day-appointment-reminder] ${tenantId}: ${rows.length} cita(s) en ventana`,

@@ -4,9 +4,10 @@ import type { SupabaseClient } from "../lib/supabase.ts";
 import type { AgentMessage } from "./anthropic.ts";
 import { templateLogToHistoryText } from "../lib/template-history.ts";
 
-const HISTORY_LIMIT = 12;
+const HISTORY_LIMIT = 16;
 const HISTORY_WINDOW_MS = 6 * 60 * 60 * 1000;
 const EPISODE_GAP_MS = 2 * 60 * 60 * 1000;
+const HISTORY_MSG_TYPES = ["text", "template", "interactive", "button"];
 const STAFF_OUT_SOURCES = new Set(["panel", "staff_app"]);
 
 type Row = {
@@ -76,7 +77,9 @@ export async function loadAgentHistory(
     .from("wa_messages")
     .select("direction, msg_type, content, created_at, source")
     .eq("phone", phoneNumber)
-    .in("msg_type", ["text", "template"])
+    // Listas y botones también: sin ellos el agente no ve el día que la clienta
+    // tocó y malinterpreta lo siguiente («10 o 11» tras elegir el miércoles 14).
+    .in("msg_type", HISTORY_MSG_TYPES)
     .gte("created_at", new Date(Date.now() - HISTORY_WINDOW_MS).toISOString())
     .order("created_at", { ascending: false })
     .limit(HISTORY_LIMIT);
