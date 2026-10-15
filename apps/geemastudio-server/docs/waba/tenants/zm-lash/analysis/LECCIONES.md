@@ -581,4 +581,16 @@ Datos de catálogo en prod (sin migración): pack "Lifting + Tinturado" desactiv
 
 ---
 
+## Evidencias que motivaron fixes — reporte 2026-10-15 (13–15 oct, post-cutover)
+
+| Patrón | Qué era | Resolución | Refs |
+| ------ | ------- | ---------- | ---- |
+| Watchdog dio horario 10–7 y el agente descartó las 5 p. m. por duración (Nisset …0862, 13-oct) | La pregunta de horario quedó sin respuesta del agente; el servicio largo se descartaba por la hora de cierre | El horario marca la hora de inicio, no de salida; también en watchdog y anti-spam | `ddd814ba` (14-oct 00:49 UTC) |
+| «No ire a las 11» leído como cancelación y «no hay cita registrada» con la cita de hoy ya pasada (Nélida …6566, 14-oct) | Frase ambigua sin leer contra el último mensaje; la cita `scheduled` de hoy no contaba | Lectura contra el último mensaje; la cita de hoy cuenta como pendiente | `cfc52b81` |
+| «ya subí» tomado como foto + recordatorio del día a cita agendada <3 h antes (Yovanita …4999; Nisset …0862) | Escalada sin motivo / recordatorio redundante | `84a41dc1`, `b3f43f62` | |
+| Nudges con «escribe *agendar*», «aún no confirmaste» y «te late» (…5962, …1095, …6743, 14-oct) | Copy fija anterior al cambio a nudges redactados por Haiku | `d469a7ea`, `40ded0c5`, `1080f882` | |
+| 2.º recordatorio-hilo: reporte 2026-10-06 (4–5 oct) | Pre-cutover (bot clásico); borrado por retención sin hallazgos abiertos | n/a | |
+
+---
+
 _Actualizar esta tabla al cerrar Quick Wins del reporte vivo; no reabrir reportes borrados._
