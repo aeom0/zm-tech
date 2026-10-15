@@ -4,8 +4,8 @@
  */
 export const CONTACTO_ZMTECH = 'alberto@zmtechdev.com'
 
-/** Remitente sandbox de Resend hasta verificar el dominio para envío. */
-export const REMITENTE_RESEND = 'ZM Tech <onboarding@resend.dev>'
+/** Remitente del dominio verificado en Resend (cuenta de alberto@zmtechdev.com). */
+export const REMITENTE_RESEND = 'ZM Tech <no-responder@zmtechdev.com>'
 
 export async function enviarAvisoInterno(params: {
   subject: string
