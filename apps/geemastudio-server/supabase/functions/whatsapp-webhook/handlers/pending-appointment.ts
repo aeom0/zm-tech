@@ -291,14 +291,18 @@ export async function getPendingAppointmentsForPhone(
   if (error || !data?.length) return [];
 
   const now = Date.now();
+  const todayLima = toLimaLocalTimestamp(new Date(now)).slice(0, 10);
   const rawRows = data;
 
+  // Una cita de hoy sigue pendiente mientras el equipo no la cierre, aunque ya
+  // pasó la hora: la clienta que llega tarde pregunta por ella (Nélida …6566).
   const future = rawRows.filter((row) => {
     const d = parseLimaLocalToDate(
       typeof row.date === "string" ? row.date : String(row.date),
     );
     if (!d) return false;
-    return d.getTime() >= now - 2 * 60 * 60 * 1000;
+    return d.getTime() >= now - 2 * 60 * 60 * 1000 ||
+      toLimaLocalTimestamp(d).slice(0, 10) === todayLima;
   });
   if (future.length === 0) return [];
 
