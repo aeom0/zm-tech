@@ -180,7 +180,15 @@ W13. Un dueño entra a la landing, crea su cuenta y su negocio, configura lo bá
 - Recibe nombre del dueño, correo, contraseña, nombre del negocio, rubro y país. Valida y aplica el límite por IP y por correo.
 - Crea el usuario con `auth.admin.createUser` y llama a `create_tenant_for_owner`. Si la RPC falla, borra el usuario para no dejar cuentas sin tenant.
 - El cliente inicia sesión con correo y contraseña. El JWT ya trae `tenant_id`.
-- Hay que confirmar en el proyecto cómo queda «Confirm email» y cómo se confirma el correo después (por ejemplo, un enlace por OTP que marque la confirmación). Se define al implementar.
+- El usuario se crea confirmado para Supabase (`email_confirm: true`) para que pueda entrar enseguida. La confirmación del correo es nuestra: `email_verified_at` vacío hasta que el dueño la complete.
+
+**Confirmación del correo (código de 6 dígitos)**
+
+- Con un código y no con un enlace: un enlace se abre en el navegador y no en la PWA instalada, y deja dos sesiones.
+- En el panel, el aviso «Confirma tu correo» llama a `signInWithOtp({ email, shouldCreateUser: false })`. El dueño escribe el código ahí y `verifyOtp` lo valida. Una RPC marca `email_verified_at` solo si la sesión viene de un OTP (`amr` del JWT).
+- La plantilla «Magic Link» de Supabase Auth se cambia para mostrar `{{ .Token }}` en vez del enlace. Se hace al implementar.
+- Envío: SMTP propio de Supabase Auth con Resend (`smtp.resend.com:465`, remitente `GeemaStudio <no-responder@zmtechdev.com>`), configurado el 15-oct-2026. Dominio `zmtechdev.com` verificado en la cuenta de Resend de `alberto@zmtechdev.com` (DNS en Vercel, DMARC `p=none`). Límite de Auth: 30 correos por hora. Resend gratis: 3.000 al mes y 100 al día.
+- El mismo SMTP sirve para «Olvidé mi contraseña», que entra en esta fase.
 
 **Paquete `@geemastudio/data`, dominio `onboarding/`**
 
