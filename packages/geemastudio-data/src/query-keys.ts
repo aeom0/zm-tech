@@ -59,6 +59,12 @@ export const queryKeys = {
       ['dashboard_completed_services', period, since ?? null] as const,
     payments: (ids: string[]) => ['dashboard_payments_by_appointments', ids] as const,
   },
+  promos: {
+    all: ['promo_broadcasts'] as const,
+    history: (tenantId?: string | null) => ['promo_broadcasts', tenantId] as const,
+    segment: (tenantId: string | null, timeZone: string, category: string | null, inactiveOnly: boolean) =>
+      ['promo_segment', tenantId, timeZone, category ?? 'all', inactiveOnly] as const,
+  },
   clients: {
     all: ['clients'] as const,
     detail: (id: string) => ['client_detail', id] as const,

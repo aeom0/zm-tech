@@ -10,6 +10,7 @@ import { ThemedText } from '@/components/ThemedText'
 import { useTheme } from '@/hooks/useTheme'
 import { useHaptics } from '@/hooks/useHaptics'
 import { Spacing } from '@/constants/theme'
+import { listFailedPromoItems, normalizePromoBody } from '@geemastudio/data'
 import { supabase } from '@/lib/supabase'
 import type { MoreStackParamList } from '@/navigation/MoreStackNavigator'
 
@@ -39,10 +40,6 @@ const STEP_INDEX: Record<PromoStep, number> = {
 
 const DEFAULT_TITLE = ''
 const DEFAULT_BODY = ''
-
-function normalizeTemplateBody(text: string): string {
-  return text.replace(/\s+/g, ' ').trim()
-}
 
 export default function PromoMasivaScreen() {
   const insets = useSafeAreaInsets()
@@ -101,7 +98,7 @@ export default function PromoMasivaScreen() {
       return
     }
 
-    const normalizedBodyText = normalizeTemplateBody(bodyText)
+    const normalizedBodyText = normalizePromoBody(bodyText)
 
     Alert.alert(
       'Confirmar envío',
@@ -142,13 +139,7 @@ export default function PromoMasivaScreen() {
                 sendRequestLost
               )
 
-              const { data: items } = await supabase
-                .from('promo_broadcast_items')
-                .select('*')
-                .eq('broadcast_id', final.id)
-                .eq('status', 'failed')
-
-              setFailedItems((items ?? []) as PromoBroadcastItem[])
+              setFailedItems(await listFailedPromoItems(supabase, final.id))
               setActiveBroadcast(final)
               setStep('resultado')
               haptics.success()
@@ -226,7 +217,7 @@ export default function PromoMasivaScreen() {
           {step === 'preview' && (
             <StepPreview
               titulo={titulo}
-              bodyText={normalizeTemplateBody(bodyText)}
+              bodyText={normalizePromoBody(bodyText)}
               imageUrl={imageUrl}
               selectedCount={selectedClients.length}
               onConfirmSend={handleConfirmSend}

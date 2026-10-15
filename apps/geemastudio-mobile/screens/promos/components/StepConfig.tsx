@@ -6,7 +6,9 @@ import { ThemedText } from '@/components/ThemedText'
 import { Button } from '@/components/Button'
 import { useTheme } from '@/hooks/useTheme'
 import { useHaptics } from '@/hooks/useHaptics'
+import { PROMO_BODY_MAX, uploadPromoImage } from '@geemastudio/data'
 import { supabase } from '@/lib/supabase'
+import { useProfileTenantId } from '@/screens/finances/hooks/useProfileTenantId'
 import { Colors, Spacing, BorderRadius } from '@/constants/theme'
 
 interface StepConfigProps {
@@ -32,8 +34,9 @@ export function StepConfig({
 }: StepConfigProps) {
   const { theme } = useTheme()
   const haptics = useHaptics()
+  const { tenantId } = useProfileTenantId()
 
-  const remaining = 600 - bodyText.length
+  const remaining = PROMO_BODY_MAX - bodyText.length
   const isValid = titulo.trim().length > 0 && bodyText.trim().length > 0 && !!imageUrl
 
   const handlePickImage = async () => {
@@ -56,30 +59,24 @@ export function StepConfig({
     if (!asset.uri) return
 
     try {
-      const fileName = `${Date.now()}_${Math.random().toString(36).slice(2)}.jpg`
-
+      if (!tenantId) {
+        Alert.alert('Error', 'No se pudo resolver el negocio. Reintenta en unos segundos.')
+        return
+      }
       const formData = new FormData()
       formData.append('file', {
         uri: asset.uri,
-        name: fileName,
+        name: 'promo.jpg',
         type: 'image/jpeg',
       } as unknown as Blob)
 
-      const { data, error } = await supabase.storage.from('promo-images').upload(fileName, formData, {
+      const publicUrl = await uploadPromoImage(supabase, {
+        tenantId,
+        body: formData,
         contentType: 'multipart/form-data',
-        cacheControl: '3600',
-        upsert: true,
       })
 
-      if (error) {
-        console.error('[StepConfig] upload error:', error)
-        Alert.alert('Error', 'No se pudo subir la imagen. Intenta de nuevo.')
-        return
-      }
-
-      const { data: urlData } = supabase.storage.from('promo-images').getPublicUrl(data.path)
-
-      onChangeImage(asset.uri, urlData.publicUrl)
+      onChangeImage(asset.uri, publicUrl)
       haptics.success()
     } catch (err) {
       console.error('[StepConfig] upload error:', err)
@@ -127,7 +124,7 @@ export function StepConfig({
       <TextInput
         value={bodyText}
         onChangeText={(text) => {
-          if (text.length <= 600) onChangeBodyText(text)
+          if (text.length <= PROMO_BODY_MAX) onChangeBodyText(text)
         }}
         placeholder="Cuéntale a tus clientas la promo, con lenguaje cercano y claro..."
         placeholderTextColor={theme.textMuted}
@@ -150,7 +147,7 @@ export function StepConfig({
           color: remaining < 0 ? theme.error : theme.textSecondary,
         }}
       >
-        {bodyText.length}/600
+        {bodyText.length}/{PROMO_BODY_MAX}
       </ThemedText>
 
       <ThemedText type="small" style={{ marginTop: Spacing.lg, marginBottom: Spacing.xs }}>

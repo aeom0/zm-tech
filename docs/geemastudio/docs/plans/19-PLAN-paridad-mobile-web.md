@@ -1,7 +1,7 @@
 # Plan 19 — Paridad Geema mobile ↔ web y código compartido
 
 **Fecha:** 2026-10-13
-**Estado:** Fases 0–2 completadas y Fase 3 completada salvo W10 (espera el envío real, ROADMAP pendiente #6). Falta el smoke manual en `geema.zmtechdev.com` y la Fase 4 (mobile)
+**Estado:** Fases 0–3 completadas (W10 el 15-oct-2026). Falta el smoke manual en `geema.zmtechdev.com`, la RPC transaccional de `createAppointment` (código listo, migración sin aplicar) y la Fase 4 (mobile)
 **Repos afectados:** `zm-tech` (`apps/geemastudio-web`, `apps/geemastudio-mobile`, `packages/geemastudio-data`)
 **Relacionado:** Plan 13 (paridad panel ZM → Geema), Plan 14 (CRM clientes), Plan 15 (retail), Plan 18 (profesionales)
 
@@ -137,9 +137,13 @@ W10 promo masiva (después de cerrar el envío real, ROADMAP pendiente #6), W11 
 - W12: Inicio de la web con ingresos, completadas, por atender y stock bajo del día, pendientes del dueño, próximas citas de hoy y servicios más pedidos (mes o siempre). Los datos viven en `dashboard/` del paquete (`fetchDashboardStats`, `fetchCompletedServiceRefs`, `computeTopServices`) y mobile los usa.
 - Tests del paquete: 47 en verde (6 archivos).
 
-**Diferido**
+**Hecho (15-oct-2026)**
 
-- W10 promo masiva: queda para después del envío real (ROADMAP pendiente #6).
+- W10: `/panel/waba/promos` (pestaña «Promos» del WABA) con asistente de 3 pasos (mensaje e imagen, clientas, vista previa), progreso del envío, resultado con fallidas e historial con borrado. La lógica vive en `promos/` del paquete (`fetchPromoSegment`, `uploadPromoImage`, `createPromoBroadcast`, `sendPromoBroadcast`, `waitForPromoBroadcast`, `listPromoBroadcasts`, `deletePromoBroadcast`) y mobile la usa.
+- El segmento filtra por `tenant_id` en todas las consultas y excluye bloqueados y `marketing_opt_out` (mobile no lo hacía). El borrado elimina primero los ítems (no hay FK a `promo_broadcasts`) y la imagen de Storage.
+- `send-promo-whatsapp` responde CORS (preflight `OPTIONS`) para poder llamarse desde el navegador.
+- El envío real ya estaba probado en prod (21-sep y 6-oct-2026, 279 enviadas sin fallas, creadas con service role). Falta el primer envío desde el asistente con la sesión del dueño (QA solo a `51999000978`–`999`).
+- Tests del paquete: 70 en verde (10 archivos).
 
 ### Fase 4 — Mobile
 

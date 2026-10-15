@@ -8,6 +8,7 @@ import {
   Megaphone,
   MessageSquare,
   MessageSquareText,
+  Send,
   Settings2,
   SlidersHorizontal,
   Sparkles,
@@ -24,6 +25,7 @@ type Tab = {
 const TABS: Tab[] = [
   { href: '/panel/waba/mensajes', label: 'Mensajes', icon: MessageSquareText },
   { href: '/panel/waba/campanas', label: 'Campañas', icon: Megaphone },
+  { href: '/panel/waba/promos', label: 'Promos', icon: Send },
   { href: '/panel/waba/portafolio', label: 'Portafolio', icon: Images },
   { href: '/panel/waba/haiku', label: 'Asistente IA', icon: Sparkles },
   { href: '/panel/waba/simulador', label: 'Simulador', icon: MessageSquare },

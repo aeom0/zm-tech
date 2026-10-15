@@ -11,17 +11,11 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
 import { useHaptics } from '@/hooks/useHaptics'
 import { Spacing, BorderRadius } from '@/constants/theme'
+import { deletePromoBroadcast, listPromoBroadcasts } from '@geemastudio/data'
 import { supabase } from '@/lib/supabase'
+import { useProfileTenantId } from '@/screens/finances/hooks/useProfileTenantId'
 import type { PromoBroadcast } from './types'
 import { formatoInstanteEnZona } from '@zmtech/tenant-config'
-
-function extractPromoImagePath(imageUrl: string | null): string | null {
-  if (!imageUrl) return null
-  const marker = '/promo-images/'
-  const idx = imageUrl.indexOf(marker)
-  if (idx === -1) return null
-  return imageUrl.slice(idx + marker.length)
-}
 
 export default function HistorialPromosScreen() {
   const tabBarHeight = useBottomTabBarHeight()
@@ -30,6 +24,7 @@ export default function HistorialPromosScreen() {
   const { isAdmin } = useAuth()
   const { config } = useTenant()
   const haptics = useHaptics()
+  const { tenantId } = useProfileTenantId()
 
   const [items, setItems] = React.useState<PromoBroadcast[]>([])
   const [deletingId, setDeletingId] = React.useState<string | null>(null)
@@ -37,39 +32,25 @@ export default function HistorialPromosScreen() {
   React.useEffect(() => {
     let mounted = true
     const load = async () => {
-      const { data, error } = await supabase
-        .from('promo_broadcasts')
-        .select('*')
-        .order('created_at', { ascending: false })
-      if (!mounted) return
-      if (error) {
+      try {
+        const data = await listPromoBroadcasts(supabase, tenantId!)
+        if (mounted) setItems(data)
+      } catch (error) {
         console.error('[HistorialPromosScreen] Error cargando historial:', error)
-        return
       }
-      setItems((data ?? []) as PromoBroadcast[])
     }
-    if (isAdmin) {
+    if (isAdmin && tenantId) {
       load()
     }
     return () => {
       mounted = false
     }
-  }, [isAdmin])
+  }, [isAdmin, tenantId])
 
   const deleteBroadcast = async (item: PromoBroadcast) => {
     setDeletingId(item.id)
     try {
-      const imagePath = extractPromoImagePath(item.image_url)
-      if (imagePath) {
-        const { error: storageError } = await supabase.storage
-          .from('promo-images')
-          .remove([imagePath])
-        if (storageError) {
-          console.error('[HistorialPromosScreen] Error eliminando imagen de Storage:', storageError)
-        }
-      }
-      const { error } = await supabase.from('promo_broadcasts').delete().eq('id', item.id)
-      if (error) throw error
+      await deletePromoBroadcast(supabase, item)
       setItems((prev) => prev.filter((i) => i.id !== item.id))
       haptics.success()
     } catch (error) {
