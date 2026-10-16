@@ -8,6 +8,7 @@
     "dev:landing": "pnpm --filter landing dev",
     "dev:web": "pnpm --filter geemastudio-web dev",
     "dev:mobile": "pnpm --filter geemastudio-mobile dev",
+    "dev:promo": "pnpm --filter geemastudio-promo dev",
     "dev:odental": "turbo run dev --filter=odentalpro-web",
     "dev:odental:web": "pnpm --filter odentalpro-web dev",
     "dev:odental:mobile": "pnpm --filter odentalpro-mobile dev",

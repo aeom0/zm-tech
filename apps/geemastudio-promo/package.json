@@ -1,0 +1,29 @@
+{
+  "name": "geemastudio-promo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Videos promocionales de GeemaStudio para redes sociales (Remotion)",
+  "scripts": {
+    "dev": "remotion studio",
+    "render": "remotion render",
+    "render:reel": "remotion render ReelWhatsApp out/reel-whatsapp.mp4",
+    "still": "remotion still",
+    "lint": "tsc --noEmit",
+    "check:types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@geemastudio/mockups": "workspace:*",
+    "@remotion/cli": "4.0.535",
+    "@remotion/google-fonts": "4.0.535",
+    "@remotion/transitions": "4.0.535",
+    "lucide-react": "^0.562.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.535",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "typescript": "~6.0.3"
+  }
+}
