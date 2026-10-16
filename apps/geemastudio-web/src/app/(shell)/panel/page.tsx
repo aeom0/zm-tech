@@ -152,10 +152,13 @@ const PENDING_STATUSES = new Set(['scheduled', 'confirmed', 'payment_submitted']
 
 export default function PanelIndexPage() {
   const { isAdmin, isLoading: authLoading } = useAuth()
-  const { data: settings } = useTenantSettings()
+  const { data: settings, isPending: settingsPending, isError: settingsError } = useTenantSettings()
   const timeZone = settings ? zonaIANASegura(settings.timezone) : null
   const currencyCode = resolveDashboardCurrencyCode(settings?.currency_code)
   const range = useTodayRange(timeZone)
+  // Sin zona las cards no existen. Los accesos esperan lo mismo: si salen
+  // primero, al llegar los datos se empujan hacia abajo.
+  const esperandoZona = settingsPending && !settingsError
 
   const modules = authLoading ? [] : MODULES.filter((m) => isAdmin || !m.adminOnly)
 
@@ -169,7 +172,7 @@ export default function PanelIndexPage() {
     : null
 
   return (
-    <div className="space-y-6">
+    <div className="min-w-0 space-y-6">
       <PageHeader
         title="Inicio"
         description={
@@ -177,47 +180,72 @@ export default function PanelIndexPage() {
         }
       />
 
-      {isAdmin && range && (
+      {range && timeZone ? (
         <>
-          <StatsRow range={range} currencyCode={currencyCode} />
-          <PendingStrip />
+          {isAdmin && (
+            <>
+              <StatsRow range={range} currencyCode={currencyCode} />
+              <PendingStrip />
+            </>
+          )}
+          <div className="grid min-w-0 gap-4 lg:grid-cols-5">
+            <TodayAppointmentsCard
+              range={range}
+              timeZone={timeZone}
+              className={isAdmin ? 'lg:col-span-3' : 'lg:col-span-5'}
+            />
+            {isAdmin && <TopServicesCard monthStart={range.monthStart} className="lg:col-span-2" />}
+          </div>
         </>
-      )}
+      ) : esperandoZona ? (
+        <HomeDashboardSkeleton admin={isAdmin} />
+      ) : null}
 
-      {range && timeZone && (
-        <div className="grid gap-4 lg:grid-cols-5">
-          <TodayAppointmentsCard
-            range={range}
-            timeZone={timeZone}
-            className={isAdmin ? 'lg:col-span-3' : 'lg:col-span-5'}
-          />
-          {isAdmin && <TopServicesCard monthStart={range.monthStart} className="lg:col-span-2" />}
+      {!esperandoZona && (
+        <section aria-labelledby="home-modules" className="min-w-0 space-y-3">
+          <h2 id="home-modules" className="text-sm font-semibold text-fg-muted">
+            Módulos
+          </h2>
+          <div className="grid auto-rows-fr grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6">
+            {modules.map((m) => {
+              const Icon = m.icon
+              return (
+                <Link
+                  key={m.href}
+                  href={m.href}
+                  className="hover:border-[var(--tenant-primary)]/40 flex h-full min-h-[132px] min-w-0 flex-col items-center justify-start gap-2 rounded-2xl border border-fg/[0.08] bg-surface p-4 pt-5 text-center transition-colors hover:bg-fg/[0.04]"
+                >
+                  <span className="border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 flex h-10 w-10 items-center justify-center rounded-xl border text-tenant-text">
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <span className="text-sm font-semibold text-fg">{m.label}</span>
+                  <span className="text-xs leading-4 text-fg-subtle">{m.description}</span>
+                </Link>
+              )
+            })}
+          </div>
+        </section>
+      )}
+    </div>
+  )
+}
+
+function HomeDashboardSkeleton({ admin }: { admin: boolean }) {
+  return (
+    <div className="space-y-4" aria-hidden>
+      {admin && (
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          {Array.from({ length: 4 }, (_, i) => (
+            <div key={i} className="h-[88px] animate-pulse rounded-2xl bg-fg/[0.06]" />
+          ))}
         </div>
       )}
-
-      <section aria-labelledby="home-modules" className="space-y-3">
-        <h2 id="home-modules" className="text-sm font-semibold text-fg-muted">
-          Módulos
-        </h2>
-        <div className="grid auto-rows-fr grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6">
-          {modules.map((m) => {
-            const Icon = m.icon
-            return (
-              <Link
-                key={m.href}
-                href={m.href}
-                className="hover:border-[var(--tenant-primary)]/40 flex h-full min-h-[132px] flex-col items-center justify-start gap-2 rounded-2xl border border-fg/[0.08] bg-surface p-4 pt-5 text-center transition-colors hover:bg-fg/[0.04]"
-              >
-                <span className="border-[var(--tenant-primary)]/30 bg-[var(--tenant-primary)]/10 flex h-10 w-10 items-center justify-center rounded-xl border text-tenant-text">
-                  <Icon className="h-5 w-5" />
-                </span>
-                <span className="text-sm font-semibold text-fg">{m.label}</span>
-                <span className="text-xs leading-4 text-fg-subtle">{m.description}</span>
-              </Link>
-            )
-          })}
-        </div>
-      </section>
+      <div className="grid gap-4 lg:grid-cols-5">
+        <div
+          className={`h-40 animate-pulse rounded-2xl bg-fg/[0.06] ${admin ? 'lg:col-span-3' : 'lg:col-span-5'}`}
+        />
+        {admin && <div className="h-40 animate-pulse rounded-2xl bg-fg/[0.06] lg:col-span-2" />}
+      </div>
     </div>
   )
 }
@@ -233,7 +261,7 @@ function StatsRow({ range, currencyCode }: { range: Range; currencyCode: string 
   const low = data?.lowStockItems ?? 0
 
   return (
-    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+    <div className="grid min-w-0 grid-cols-2 gap-3 lg:grid-cols-4">
       <StatCard
         icon={Wallet}
         label="Ingresos de hoy"
@@ -280,7 +308,7 @@ function StatCard({
   return (
     <Link
       href={href}
-      className={`group flex flex-col gap-2 rounded-2xl border p-4 transition-colors ${
+      className={`group flex min-w-0 flex-col gap-2 rounded-2xl border p-4 transition-colors ${
         warn
           ? 'border-amber-500/40 bg-amber-500/[0.08] hover:bg-amber-500/[0.12]'
           : 'hover:border-[var(--tenant-primary)]/40 border-fg/[0.08] bg-surface hover:bg-fg/[0.04]'
@@ -393,15 +421,15 @@ function TodayAppointmentsCard({
   return (
     <section
       aria-labelledby="home-today"
-      className={`rounded-2xl border border-fg/[0.08] bg-surface p-4 ${className ?? ''}`}
+      className={`min-w-0 rounded-2xl border border-fg/[0.08] bg-surface p-4 ${className ?? ''}`}
     >
       <div className="mb-3 flex items-center justify-between gap-3">
-        <h2 id="home-today" className="font-semibold text-fg">
+        <h2 id="home-today" className="min-w-0 font-semibold text-fg">
           Próximas citas de hoy
         </h2>
         <Link
           href="/panel/agenda"
-          className="inline-flex items-center gap-1 text-sm font-medium text-tenant-text hover:underline"
+          className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-tenant-text hover:underline"
         >
           Ver agenda <ChevronRight className="h-4 w-4" aria-hidden />
         </Link>
@@ -498,15 +526,15 @@ function TopServicesCard({ monthStart, className }: { monthStart: string; classN
   return (
     <section
       aria-labelledby="home-top"
-      className={`rounded-2xl border border-fg/[0.08] bg-surface p-4 ${className ?? ''}`}
+      className={`min-w-0 rounded-2xl border border-fg/[0.08] bg-surface p-4 ${className ?? ''}`}
     >
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+      <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 id="home-top" className="font-semibold text-fg">
           Servicios más pedidos
         </h2>
         <SegmentedControl
           ariaLabel="Periodo de servicios más pedidos"
-          className="sm:w-auto"
+          className="w-full sm:w-auto"
           options={[
             { value: 'month', label: 'Este mes' },
             { value: 'all', label: 'Siempre' },

@@ -383,8 +383,10 @@ export function PanelShell({
 
         <main
           className={[
-            'flex min-h-0 flex-1 flex-col overflow-y-auto p-4 pb-24 md:block md:overflow-visible md:p-8 md:pb-28',
-            pathname?.startsWith('/panel/waba/mensajes') ? 'p-2 pb-4 md:p-8 md:pb-8' : '',
+            // La barra ya está en el flujo: no hace falta el padding que la despejaba.
+            // En el celular se oculta el riel del scroll; el horizontal solo vive en chips.
+            'flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden overflow-y-auto p-4 [scrollbar-width:none] md:block md:overflow-visible md:p-8 md:pb-28 md:[scrollbar-width:auto] [&::-webkit-scrollbar]:hidden md:[&::-webkit-scrollbar]:block',
+            pathname?.startsWith('/panel/waba/mensajes') ? 'p-2 md:p-8 md:pb-8' : '',
           ].join(' ')}
         >
           {children}
