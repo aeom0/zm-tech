@@ -21,10 +21,19 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null)
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({
+  children,
+  initialRole = null,
+}: {
+  children: React.ReactNode
+  /** Rol leído en el servidor: la barra de tabs no espera a getSession(). */
+  initialRole?: Role | null
+}) {
   const [session, setSession] = useState<Session | null>(null)
   const [profile, setProfile] = useState<AuthProfile | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [seedRole, setSeedRole] = useState<Role | null>(initialRole)
+  // Con rol de SSR las pestañas se pintan en el primer render.
+  const [isLoading, setIsLoading] = useState(initialRole == null)
 
   const loadProfile = useCallback(async (userId: string) => {
     if (!supabase) return
@@ -55,6 +64,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setSession(data.session ?? null)
         if (data.session?.user) {
           await loadProfile(data.session.user.id)
+        } else {
+          setSeedRole(null)
         }
       } finally {
         if (isMounted) {
@@ -69,12 +80,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, newSession) => {
+    } = supabase.auth.onAuthStateChange((_event, newSession) => {
       setSession(newSession)
       if (newSession?.user) {
-        await loadProfile(newSession.user.id)
+        const userId = newSession.user.id
+        // Fuera del callback: una consulta aquí adentro espera el lock que
+        // getSession() todavía no soltó y la barra se queda vacía.
+        setTimeout(() => {
+          void loadProfile(userId)
+        }, 0)
       } else {
         setProfile(null)
+        setSeedRole(null)
       }
     })
 
@@ -137,13 +154,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setSession(null)
       setProfile(null)
+      setSeedRole(null)
     }
   }, [])
 
-  const role: Role | null =
+  const profileRole =
     profile && (profile.role === 'dev' || profile.role === 'owner' || profile.role === 'staff')
       ? profile.role
       : null
+  const role: Role | null = profileRole ?? seedRole
 
   const isAdmin = isAdminRole(role)
 

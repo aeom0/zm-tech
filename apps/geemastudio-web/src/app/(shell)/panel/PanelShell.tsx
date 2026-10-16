@@ -96,7 +96,7 @@ export function PanelShell({
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
   }, [pathname])
 
-  const { isAdmin, isLoading: isAuthLoading } = useAuth()
+  const { isAdmin, isLoading: isAuthLoading, role } = useAuth()
   const alerts = usePanelAlerts()
   const countBadge = (n: number) => (n > 0 ? (n > 99 ? '99+' : String(n)) : undefined)
 
@@ -170,8 +170,9 @@ export function PanelShell({
     icon: <MoreHorizontal className="h-4 w-4" />,
   }
 
-  // Mientras carga el perfil no se sabe el rol: no mostrar ni el menú de admin ni el de staff.
-  const navSections: NavSection[] = isAuthLoading
+  // Sin rol todavía no se sabe qué módulos mostrar. Con el rol de SSR esto no espera al cliente.
+  const rolPendiente = isAuthLoading && role == null
+  const navSections: NavSection[] = rolPendiente
     ? []
     : isAdmin
       ? [
@@ -194,7 +195,7 @@ export function PanelShell({
 
   // Ítems fijos del bottom tab bar mobile. "Más" queda también para staff (tema y cerrar
   // sesión); esa pantalla filtra los módulos de admin.
-  const primaryTabItems: NavItem[] = isAuthLoading
+  const primaryTabItems: NavItem[] = rolPendiente
     ? []
     : isAdmin
       ? [agendaItem, clientesItem, wabaItem, catalogoItem, masItem]
@@ -353,15 +354,15 @@ export function PanelShell({
   )
 
   return (
-    <div className="flex min-h-screen bg-app text-fg">
+    <div className="flex h-dvh flex-col overflow-hidden bg-app text-fg md:h-auto md:min-h-screen md:flex-row md:overflow-visible">
       {/* Desktop sidebar */}
-      <aside className="hidden w-[240px] border-r border-fg/[0.08] bg-surface md:block">
+      <aside className="hidden w-[240px] shrink-0 border-r border-fg/[0.08] bg-surface md:block">
         {SidebarContent}
       </aside>
 
-      <div className="min-w-0 flex-1">
-        {/* Mobile top bar */}
-        <div className="sticky top-0 z-30 border-b border-fg/[0.08] bg-app/90 backdrop-blur md:hidden">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col md:block">
+        {/* Mobile top bar. Fuera del scroll para que no se vaya con el contenido. */}
+        <div className="z-30 shrink-0 border-b border-fg/[0.08] bg-app/90 backdrop-blur md:hidden">
           <div className="flex h-14 items-center justify-between px-4">
             <Image
               src="/logo-diamondSparkleNGlow.svg"
@@ -382,16 +383,17 @@ export function PanelShell({
 
         <main
           className={[
-            'p-4 pb-40 md:p-8 md:pb-28',
-            pathname?.startsWith('/panel/waba/mensajes') ? 'p-2 pb-20 md:p-8 md:pb-8' : '',
+            'flex min-h-0 flex-1 flex-col overflow-y-auto p-4 pb-24 md:block md:overflow-visible md:p-8 md:pb-28',
+            pathname?.startsWith('/panel/waba/mensajes') ? 'p-2 pb-4 md:p-8 md:pb-8' : '',
           ].join(' ')}
         >
           {children}
         </main>
 
-        {/* Mobile bottom tab bar */}
-        <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-fg/[0.08] bg-surface/95 backdrop-blur md:hidden">
-          <div className="flex items-stretch justify-between px-1 pb-[env(safe-area-inset-bottom)]">
+        {/* En el flujo de la columna (h-dvh), no fixed: en el celular fixed bottom queda
+            bajo la barra del navegador hasta el primer toque. */}
+        <nav className="z-30 shrink-0 border-t border-fg/[0.08] bg-surface/95 backdrop-blur md:hidden">
+          <div className="flex min-h-14 items-stretch justify-between px-1 pb-[env(safe-area-inset-bottom)]">
             {primaryTabItems.map((item) => {
               const isActive = isNavActive(item.href)
               return (

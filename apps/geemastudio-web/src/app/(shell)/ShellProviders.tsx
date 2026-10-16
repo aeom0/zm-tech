@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation'
 import { useMemo, useState } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-import { AuthProvider } from '@/contexts/AuthContext'
+import { AuthProvider, type Role } from '@/contexts/AuthContext'
 import { tenantCssVars } from '@/lib/tenant-theme'
 import { ThemeProvider } from '@/lib/theme-mode'
 import { PanelShell } from './panel/PanelShell'
@@ -20,6 +20,7 @@ export function ShellProviders({
   accentColor,
   tenantName,
   tenantLogoUrl,
+  initialRole = null,
 }: {
   children: React.ReactNode
   session: { userEmail: string } | null
@@ -27,6 +28,7 @@ export function ShellProviders({
   accentColor?: string | null
   tenantName?: string | null
   tenantLogoUrl?: string | null
+  initialRole?: Role | null
 }) {
   const pathname = usePathname()
   const [queryClient] = useState(() => new QueryClient())
@@ -48,7 +50,7 @@ export function ShellProviders({
       <ThemeProvider>
         <QueryClientProvider client={queryClient}>
           <FinanzasBrandContext.Provider value={brand}>
-            <AuthProvider>
+            <AuthProvider initialRole={initialRole}>
               {framed && session ? (
                 <PanelShell
                   userEmail={session.userEmail}

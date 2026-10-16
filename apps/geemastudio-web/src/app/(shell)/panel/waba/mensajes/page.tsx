@@ -117,7 +117,13 @@ function PanelWabaMensajesContent() {
   const title = conversationsQuery.isLoading ? 'Mensajes' : `Mensajes (${conversations.length})`
 
   return (
-    <div className={selectedPhone ? 'space-y-0 md:space-y-4' : 'space-y-4'}>
+    <div
+      className={
+        selectedPhone
+          ? 'flex min-h-0 flex-1 flex-col md:block md:space-y-4'
+          : 'flex min-h-0 flex-1 flex-col space-y-4 md:block'
+      }
+    >
       <div className={selectedPhone ? 'hidden md:block' : 'block'}>
         <div className="text-xs text-fg-subtle">WhatsApp</div>
         <h1 className="text-2xl font-bold text-fg">{title}</h1>
@@ -154,8 +160,8 @@ function PanelWabaMensajesContent() {
           className={[
             'grid grid-rows-[1fr] overflow-hidden rounded-2xl border border-fg/[0.08] bg-card md:grid-cols-[340px_1fr]',
             selectedPhone
-              ? 'h-[calc(100dvh-9rem-env(safe-area-inset-bottom))] md:h-[calc(100dvh-12rem)]'
-              : 'h-[calc(100dvh-15rem-env(safe-area-inset-bottom))] min-h-[440px] md:h-[calc(100dvh-12rem)]',
+              ? 'min-h-0 flex-1 md:h-[calc(100dvh-12rem)] md:flex-none'
+              : 'min-h-0 flex-1 md:h-[calc(100dvh-12rem)] md:min-h-[440px] md:flex-none',
           ].join(' ')}
         >
           <aside

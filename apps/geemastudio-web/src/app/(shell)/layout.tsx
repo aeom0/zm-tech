@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import type { Role } from '@geemastudio/data'
 
 import { createServerSupabaseClient } from '@/lib/supabase-server'
 import { fetchTenantBrandForUser, pwaIconUrl, type TenantBrand } from '@/lib/tenant-brand'
@@ -49,6 +50,17 @@ export default async function ShellLayout({ children }: { children: React.ReactN
     ? await fetchTenantBrandForUser(supabase, data.session.user.id)
     : { primary: null, accent: null, businessName: null, logoUrl: null, tenantSlug: null }
 
+  let initialRole: Role | null = null
+  if (data.session) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', data.session.user.id)
+      .maybeSingle()
+    const role = profile?.role
+    if (role === 'dev' || role === 'owner' || role === 'staff') initialRole = role
+  }
+
   // El tenant va en la URL: el manifest no depende de que el navegador envíe cookies.
   const manifestUrl = brand.tenantSlug
     ? `/manifest.webmanifest?tenant=${brand.tenantSlug}`
@@ -64,6 +76,7 @@ export default async function ShellLayout({ children }: { children: React.ReactN
         accentColor={brand.accent}
         tenantName={brand.businessName}
         tenantLogoUrl={brand.logoUrl}
+        initialRole={initialRole}
       >
         {children}
       </ShellProviders>
