@@ -67,7 +67,12 @@ vercel --prod
 
 (o push a la rama conectada si está configurado el deploy automático).
 
-**Build en Vercel (monorepo)**: cada app (`landing`, `geemastudio-web`, `repmax-web`) tiene su `vercel.json` con `git.deploymentEnabled` (`main: true`, resto de ramas `false`, así los previews no crean deployments) y un `ignoreCommand` que solo construye en producción y cuando `turbo-ignore <app>` detecta cambios en esa app o sus dependencias. El mismo comando está en *Ignored Build Step* de cada proyecto Vercel y la omisión nativa (`enableAffectedProjectsDeployments`) está desactivada a propósito: Vercel trata como cambio global todo lo que está fuera de `apps/*` y `packages/*` (`docs/`, `.cursor/`, `.github/`, archivos de la raíz) y construiría las tres apps en cada commit de docs o skills. Los builds omitidos por `ignoreCommand` aparecen como Canceled. Los checks de CI (lint, typecheck, build) corren en GitHub Actions, no en Vercel.
+**Build en Vercel (monorepo)**: cada app (`landing`, `geemastudio-web`, `repmax-web`) tiene su `vercel.json` con `git.deploymentEnabled` (`main: true`, resto de ramas `false`, así los previews no crean deployments). Hay dos filtros:
+
+1. **Omisión nativa** (`enableAffectedProjectsDeployments`, activada el 16-oct-2026 en los tres proyectos): si el push no toca la app ni sus dependencias del workspace, Vercel no crea el deployment. Vercel trata como cambio global todo lo que está fuera de los workspaces de `pnpm-workspace.yaml` y construiría las tres apps; por eso `docs/` y `.cursor/` están declarados como paquetes vacíos (`@zmtech/docs`, `@zmtech/cursor-config`). Siguen siendo globales los archivos de la raíz (`AGENTS.md`, `pnpm-lock.yaml`, etc.), `.github/` y `scripts/`.
+2. **`ignoreCommand`** (`turbo-ignore <app>`, también en *Ignored Build Step* del proyecto): para los cambios globales, solo construye en producción y si Turbo ve cambios en la app o sus dependencias. Los builds omitidos así aparecen como Canceled. Si el último deploy quedó fuera del clon superficial de Vercel (10 commits), `turbo-ignore` no puede comparar y construye.
+
+Los checks de CI (lint, typecheck, build) corren en GitHub Actions, no en Vercel.
 
 ### Rutas protegidas (panel)
 

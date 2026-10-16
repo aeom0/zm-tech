@@ -1,0 +1,5 @@
+{
+  "name": "@zmtech/cursor-config",
+  "private": true,
+  "description": "Skills y rules de agentes. Paquete vacío para que Vercel no trate .cursor/ como cambio global."
+}

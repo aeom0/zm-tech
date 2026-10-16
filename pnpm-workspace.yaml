@@ -1,6 +1,9 @@
 packages:
   - 'apps/*'
   - 'packages/*'
+  # Sin código: solo para que Vercel no trate sus cambios como globales.
+  - 'docs'
+  - '.cursor'
 
 overrides:
   typescript: ~6.0.3

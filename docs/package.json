@@ -1,0 +1,5 @@
+{
+  "name": "@zmtech/docs",
+  "private": true,
+  "description": "Documentación del monorepo. Paquete vacío para que Vercel no trate docs/ como cambio global."
+}

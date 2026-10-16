@@ -32,6 +32,8 @@ importers:
         specifier: ~6.0.3
         version: 6.0.3
 
+  .cursor: {}
+
   apps/geemastudio-mobile:
     dependencies:
       '@expo-google-fonts/poppins':
@@ -956,6 +958,8 @@ importers:
       typescript:
         specifier: ~6.0.3
         version: 6.0.3
+
+  docs: {}
 
   packages/dental-schema:
     dependencies:
