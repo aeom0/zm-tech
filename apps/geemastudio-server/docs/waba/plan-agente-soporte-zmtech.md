@@ -5,7 +5,8 @@ OdentalPro y RepMAX quedan fuera hasta que el agente esté estable con Geema.
 
 ## Objetivo
 
-Un número de WhatsApp de ZM Tech donde dueños y personal de los salones escriben sus dudas
+Un número de WhatsApp de soporte **solo para GeemaStudio** (decidido el 16-oct-2026) donde
+dueños y personal de los salones escriben sus dudas
 y problemas de la plataforma. Un agente Haiku 5.5 con herramientas resuelve lo que puede y
 escala el resto con el caso ya diagnosticado. Mismo principio que el agente de ZM Lash
 ([`plan-cutover-agente-haiku.md`](plan-cutover-agente-haiku.md)): **Haiku decide, el código
@@ -86,6 +87,9 @@ nunca lo elige ni lo recibe como parámetro.
 ### Datos nuevos (migración)
 
 - `support_contacts`: `phone`, `profile_id`, `tenant_id`, `role`, `verified_at`.
+- Las tres tablas llevan `product` (hoy siempre `geemastudio`). Viven en `udelx…` porque
+  los datos y el Auth que el agente lee y usa están ahí; si el soporte se vuelve
+  multiproducto, se mueven al hub (`hub_support_*`) y cada producto conserva sus herramientas.
 - `support_messages`: historial del número de soporte. No se mezcla con `wa_messages`, que es
   por tenant.
 - `support_tickets`: `contact`, `tenant_id`, `summary`, `diagnosis` (JSON de lo que vio el
