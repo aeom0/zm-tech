@@ -55,7 +55,7 @@ CMS equivalente al de mobile, en el panel web:
 
 - **Colores del tenant en `/s/[slug]`:** la landing Geema-hosted ya no usa la paleta de Geema. Lee `tenant_brand_public` (`primary`/`accent`) y los aplica a los 3 templates con `applyBrand` (`apps/geemastudio-web/src/components/tenant-landing/theme/brand.tsx`), con salvaguardas de contraste WCAG (texto 4.5:1; relleno casi igual al fondo cae al color legible). Un tenant que nunca eligió colores hereda los defaults de Geema.
 - **Selector de diseño en mobile:** Mi Web → Presencia muestra 3 tarjetas (Elegant Dark, Warm & Organic, Modern Minimal) con descripción y enlace "Ver ejemplo" que abre `/s/zm-demo-<template>`. La vista previa es de los demos porque el template se guarda en `tenant_settings.web_template` y recién entonces se refleja en la landing propia. Opciones en `apps/geemastudio-mobile/screens/web/constants.ts` (`WEB_TEMPLATE_OPTIONS`).
-- **Decisión:** los 3 tenants `zm-demo-*` y la landing slug de ZM Lash (`web_enabled = true`) se mantienen activos a propósito. ZM Lash tiene hoy dos landings (`zmlashnails.com` y `/s/zm-lash-nails`); la segunda es la única referencia con datos reales para ver cómo queda un template con la marca de un tenant.
+- **Decisión:** los 3 tenants `zm-demo-*` y la landing slug de ZM Lash (`web_enabled = true`) se mantienen activos a propósito. ZM Lash tiene hoy dos landings (`zmlashnails.com` y `/s/zm-lash-nails`); la segunda es la única referencia con datos reales para ver cómo queda un template con la marca de un tenant. *(Actualización 15-oct-2026: con el alta self-service (Plan 19 W13) los demos exponen el contenido real de ZM a cualquier negocio nuevo; se reemplazarán por un negocio ficticio, ver pendiente abajo y ROADMAP #19.)*
 
 ## Entregado (20-sep-2026)
 
@@ -75,6 +75,7 @@ CMS equivalente al de mobile, en el panel web:
 | **Migrar contenido real ZM**       | Textos y estructura migrados (29-sep-2026); `web_enabled = true` desde el 1-oct. Falta: imágenes a Storage, reseñas reales, `web_team`, `web_whatsapp`, banner y video | P2 — solo con OK de Vanessa/Alberto |
 | **Sync catálogo → `web_services`** | Hoy lista curada aparte; opcional import desde `services`/`packs`                                                                         | backlog                             |
 | **`web_mode` explícito**           | Panel/mobile siguen mapeando presencia vía `web_enabled` (+ slug/custom_domain); alinear UI a enum `own_domain` / `geema_hosted` / `none` | P2                                  |
+| **Reemplazar demos `zm-demo-*`**   | Hoy copian el contenido real de ZM Lash y los ve cualquier negocio nuevo desde «Ver ejemplo». Crear 3 demos genéricos (negocio ficticio, fotos de stock), apuntar `demoSlug` en mobile, borrar `zm-demo-*` y actualizar el checklist de QA | P2 |
 | Smoke E2E con tenant QA            | Activar slug de prueba distinto de demos; no romper fila prod ZM sin plan de contenido                                                    | ops                                 |
 
 ## Decisión y riesgo: tenants con dominio y landing propios (29-sep-2026)
