@@ -6,7 +6,7 @@ export const AUTH_INPUT_CLASS =
   'w-full rounded-xl border border-white/[0.10] bg-zinc-800 py-2.5 pl-10 pr-4 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#40E0D0]'
 
 export const AUTH_SUBMIT_CLASS =
-  'w-full rounded-xl bg-[#40E0D0] py-3 font-semibold text-white transition-colors hover:bg-[#00897B] focus:outline-none focus:ring-2 focus:ring-[#40E0D0] focus:ring-offset-2 focus:ring-offset-[#0F0F0F] disabled:opacity-60'
+  'w-full rounded-xl bg-geema-gradient py-3 font-semibold text-white shadow-[0_8px_30px_rgba(64,224,208,0.22)] transition hover:brightness-110 focus:outline-none focus:ring-2 focus:ring-[#40E0D0] focus:ring-offset-2 focus:ring-offset-[#0F0F0F] disabled:opacity-60'
 
 /** Marco oscuro con logo para login, registro y recuperar contraseña. */
 export function AuthScreen({
@@ -14,11 +14,14 @@ export function AuthScreen({
   subtitle,
   children,
   footer,
+  intro,
 }: {
   title: string
   subtitle: string
   children: ReactNode
   footer?: ReactNode
+  /** Contenido entre el encabezado y la tarjeta (p. ej. los pasos de /registro). */
+  intro?: ReactNode
 }) {
   return (
     <div className="dark">
@@ -37,6 +40,7 @@ export function AuthScreen({
               <h1 className="text-xl font-bold text-white">{title}</h1>
               <p className="mx-auto mt-2 max-w-xs text-sm text-zinc-400">{subtitle}</p>
             </div>
+            {intro}
             <div className="space-y-5 rounded-2xl border border-white/[0.08] bg-zinc-900 p-6 shadow-sm">
               {children}
             </div>

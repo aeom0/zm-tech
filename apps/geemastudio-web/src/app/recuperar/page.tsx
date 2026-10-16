@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Hash, KeyRound, Mail } from 'lucide-react'
+import { KeyRound, Mail } from 'lucide-react'
 import { resetPasswordWithCode, sendPasswordResetCode } from '@geemastudio/data'
 
 import {
@@ -13,6 +13,7 @@ import {
   AuthField,
   AuthScreen,
 } from '@/components/auth/AuthScreen'
+import { CodeInput } from '@/components/ui/CodeInput'
 import { supabase } from '@/lib/supabase'
 
 const ICON = 'h-4 w-4'
@@ -95,18 +96,13 @@ export default function RecuperarPage() {
         </form>
       ) : (
         <form onSubmit={reset} className="space-y-5">
-          <AuthField id="code" label="Código" icon={<Hash className={ICON} />}>
-            <input
-              id="code"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              value={code}
-              onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-              className={`${AUTH_INPUT_CLASS} font-mono tracking-[0.3em]`}
-              placeholder="000000"
-              required
-            />
-          </AuthField>
+          <div className="space-y-1.5">
+            <label htmlFor="code" className="block text-sm font-medium text-zinc-300">
+              Código
+            </label>
+            <CodeInput id="code" tone="auth" value={code} onChange={setCode} autoFocus />
+            <p className="text-xs text-zinc-500">Revisa también la carpeta de spam.</p>
+          </div>
           <AuthField
             id="password"
             label="Contraseña nueva"

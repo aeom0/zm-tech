@@ -2,7 +2,7 @@
 
 import { useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Check, Droplet, Plus, Scissors, Shield, User, X, type LucideIcon } from 'lucide-react'
+import { Check, Droplet, Plus, Scissors, Shield, Shuffle, User, UsersRound, X, type LucideIcon } from 'lucide-react'
 import {
   ONBOARDING_ACCENT_COLORS,
   ONBOARDING_CATEGORIES,
@@ -20,6 +20,11 @@ import { countriesForPicker } from '@zmtech/tenant-config'
 
 import { AuthError } from '@/components/auth/AuthScreen'
 import { supabase } from '@/lib/supabase'
+import { onColor } from '@/lib/tenant-theme'
+import { BrandPreview } from './BrandPreview'
+import { ColorChooser, randomBrandPair } from './ColorChooser'
+import { OnboardingDone } from './OnboardingDone'
+import { GradientCta, GradientOutline, NebulaBackdrop, Rise, SelectableCard, StepHeader } from './OnboardingUi'
 
 const BUSINESS_TYPES: ReadonlyArray<{
   key: OnboardingBusinessType
@@ -33,55 +38,16 @@ const BUSINESS_TYPES: ReadonlyArray<{
   { key: 'full-aesthetic', label: 'Estética integral', description: 'Faciales, corporales y más', icon: Shield },
 ]
 
-const STEPS = ['Tu negocio', 'Colores', 'Equipo', 'Servicios'] as const
+const STEPS = [
+  { title: 'Tu negocio', subtitle: 'Configuramos moneda, zona horaria y textos según tu país y rubro.' },
+  { title: 'Tu marca', subtitle: 'Elige los colores de tu app y de tu página de reservas. Puedes cambiarlos después.' },
+  { title: 'Tu equipo', subtitle: 'Agrega a quienes atienden citas. Puedes saltar este paso y hacerlo luego en Personal.' },
+  { title: 'Tus servicios', subtitle: 'Elige las categorías. Los servicios con precio los agregas en el panel.' },
+] as const
 
-const CARD = 'rounded-2xl border border-white/[0.08] bg-zinc-900 p-5 sm:p-6'
 const INPUT =
-  'w-full rounded-xl border border-white/[0.10] bg-zinc-800 px-4 py-2.5 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#40E0D0]'
-const PRIMARY_BTN =
-  'inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#40E0D0] px-5 font-semibold text-zinc-950 transition-colors hover:bg-[#2fc9b9] disabled:opacity-60'
-const SECONDARY_BTN =
-  'inline-flex min-h-[44px] items-center justify-center rounded-xl border border-white/[0.12] px-5 font-semibold text-zinc-300 transition-colors hover:bg-white/[0.06] disabled:opacity-60'
-
-function ColorSwatches({
-  colors,
-  value,
-  onChange,
-  label,
-}: {
-  colors: ReadonlyArray<{ label: string; valor: string }>
-  value: string
-  onChange: (hex: string) => void
-  label: string
-}) {
-  return (
-    <fieldset>
-      <legend className="mb-2 text-sm font-medium text-zinc-300">{label}</legend>
-      <div className="flex flex-wrap gap-3">
-        {colors.map((c) => {
-          const selected = c.valor.toLowerCase() === value.toLowerCase()
-          return (
-            <button
-              key={c.valor}
-              type="button"
-              onClick={() => onChange(c.valor)}
-              aria-label={c.label}
-              aria-pressed={selected}
-              title={c.label}
-              className={[
-                'flex h-10 w-10 items-center justify-center rounded-full border-2 transition',
-                selected ? 'border-white' : 'border-transparent hover:border-white/40',
-              ].join(' ')}
-              style={{ backgroundColor: c.valor }}
-            >
-              {selected ? <Check className="h-4 w-4 text-white mix-blend-difference" aria-hidden /> : null}
-            </button>
-          )
-        })}
-      </div>
-    </fieldset>
-  )
-}
+  'w-full rounded-xl border border-white/[0.10] bg-zinc-800/80 px-4 py-3 text-white placeholder:text-zinc-500 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#40E0D0]'
+const CARD = 'rounded-2xl border border-white/[0.08] bg-zinc-900/80 p-5 backdrop-blur sm:p-6'
 
 export function OnboardingWizard({
   tenantSlug,
@@ -93,6 +59,7 @@ export function OnboardingWizard({
   const router = useRouter()
   const countries = useMemo(() => countriesForPicker(), [])
   const [step, setStep] = useState(0)
+  const [done, setDone] = useState(false)
   const [countryCode, setCountryCode] = useState('PE')
   const [businessType, setBusinessType] = useState<OnboardingBusinessType>('spa-nails')
   const [primaryColor, setPrimaryColor] = useState(ONBOARDING_PRESETS['spa-nails'].theme.primaryColor)
@@ -113,11 +80,20 @@ export function OnboardingWizard({
     setCategories([...ONBOARDING_CATEGORIES[key]])
   }
 
+  const surprise = () => {
+    const pair = randomBrandPair()
+    setPrimaryColor(pair.primary)
+    setAccentColor(pair.accent)
+  }
+
   const addMember = () => {
     const name = memberName.trim()
     if (!name) return
     setTeam((prev) => [...prev, { name, color: memberColor }])
     setMemberName('')
+    // Siguiente integrante con otro color de la paleta para distinguirlos en la agenda.
+    const next = ONBOARDING_PRIMARY_COLORS[(team.length + 1) % ONBOARDING_PRIMARY_COLORS.length]
+    setMemberColor(next.valor)
   }
 
   const toggleCategory = (name: string) => {
@@ -147,229 +123,250 @@ export function OnboardingWizard({
         ...config,
         theme: { ...config.theme, primaryColor, accentColor },
       })
-      router.replace('/panel')
-      router.refresh()
+      setDone(true)
+      window.scrollTo({ top: 0 })
     } catch (err) {
       setError(
         err instanceof OnboardingError
           ? `No pudimos guardar: ${err.message}`
           : 'No pudimos guardar la configuración. Intenta de nuevo.'
       )
+    } finally {
       setSaving(false)
     }
   }
 
+  const goTo = (next: number) => {
+    setError(null)
+    setStep(next)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   const isLast = step === STEPS.length - 1
+  const country = countries.find((c) => c.code === countryCode)
 
   return (
     <div className="dark">
-      <div className="min-h-screen bg-[#0F0F0F] px-4 py-8 text-white sm:py-12">
-        <div className="mx-auto w-full max-w-xl space-y-6">
-          <header className="space-y-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-[#40E0D0]">
-              Paso {step + 1} de {STEPS.length}
-            </p>
-            <h1 className="text-2xl font-bold">{STEPS[step]}</h1>
-            <div className="flex gap-1.5" aria-hidden>
-              {STEPS.map((s, i) => (
-                <span
-                  key={s}
-                  className={['h-1 flex-1 rounded-full', i <= step ? 'bg-[#40E0D0]' : 'bg-white/10'].join(' ')}
-                />
-              ))}
-            </div>
-          </header>
+      <div className="relative min-h-screen bg-[#0B0B0F] px-4 pb-10 pt-8 text-white sm:pt-12">
+        <NebulaBackdrop />
+        <div className="relative mx-auto w-full max-w-xl space-y-6">
+          {done ? (
+            <OnboardingDone
+              businessName={businessName}
+              stats={[
+                { value: String(categories.length), label: categories.length === 1 ? 'Categoría' : 'Categorías' },
+                { value: String(team.length), label: team.length === 1 ? 'Profesional' : 'Profesionales' },
+                { value: country?.currency.code ?? '—', label: 'Moneda' },
+              ]}
+              onFinish={() => {
+                router.replace('/panel')
+                router.refresh()
+              }}
+            />
+          ) : (
+            <>
+              <StepHeader step={step} total={STEPS.length} title={STEPS[step].title} subtitle={STEPS[step].subtitle} />
 
-          {error ? <AuthError>{error}</AuthError> : null}
+              {error ? <AuthError>{error}</AuthError> : null}
 
-          {step === 0 ? (
-            <section className={`${CARD} space-y-5`}>
-              <p className="text-sm text-zinc-400">
-                Configuramos moneda, zona horaria y textos para <strong className="text-white">{businessName}</strong>.
-              </p>
-              <div>
-                <label htmlFor="country" className="mb-1.5 block text-sm font-medium text-zinc-300">
-                  País
-                </label>
-                <select
-                  id="country"
-                  value={countryCode}
-                  onChange={(e) => setCountryCode(e.target.value)}
-                  className={INPUT}
-                >
-                  {countries.map((c) => (
-                    <option key={c.code} value={c.code}>
-                      {c.label} ({c.currency.code})
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <fieldset>
-                <legend className="mb-2 text-sm font-medium text-zinc-300">Tipo de negocio</legend>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {BUSINESS_TYPES.map(({ key, label, description, icon: Icon }) => {
-                    const selected = key === businessType
-                    return (
-                      <button
-                        key={key}
-                        type="button"
-                        onClick={() => chooseBusinessType(key)}
-                        aria-pressed={selected}
-                        className={[
-                          'flex items-start gap-3 rounded-xl border p-4 text-left transition',
-                          selected
-                            ? 'border-[#40E0D0] bg-[#40E0D0]/10'
-                            : 'border-white/[0.08] hover:border-white/20',
-                        ].join(' ')}
+              <div key={step} className="space-y-5">
+                {step === 0 ? (
+                  <>
+                    <Rise order={1} className={CARD}>
+                      <label htmlFor="country" className="mb-1.5 block text-sm font-medium text-zinc-300">
+                        País
+                      </label>
+                      <select
+                        id="country"
+                        value={countryCode}
+                        onChange={(e) => setCountryCode(e.target.value)}
+                        className={INPUT}
                       >
-                        <Icon className="mt-0.5 h-5 w-5 shrink-0 text-[#40E0D0]" aria-hidden />
-                        <span>
-                          <span className="block font-semibold">{label}</span>
-                          <span className="block text-xs text-zinc-400">{description}</span>
-                        </span>
-                      </button>
-                    )
-                  })}
-                </div>
-              </fieldset>
-            </section>
-          ) : null}
+                        {countries.map((c) => (
+                          <option key={c.code} value={c.code}>
+                            {c.label} ({c.currency.code})
+                          </option>
+                        ))}
+                      </select>
+                    </Rise>
+                    <Rise order={2}>
+                      <fieldset>
+                        <legend className="mb-2.5 text-sm font-medium text-zinc-300">
+                          ¿Qué tipo de negocio es {businessName}?
+                        </legend>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          {BUSINESS_TYPES.map(({ key, label, description, icon: Icon }) => {
+                            const selected = key === businessType
+                            return (
+                              <SelectableCard key={key} selected={selected} onClick={() => chooseBusinessType(key)}>
+                                <span
+                                  className={[
+                                    'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition',
+                                    selected ? 'bg-geema-gradient' : 'bg-white/[0.06]',
+                                  ].join(' ')}
+                                >
+                                  <Icon className={`h-5 w-5 ${selected ? 'text-white' : 'text-[#40E0D0]'}`} aria-hidden />
+                                </span>
+                                <span>
+                                  <span className="block font-semibold text-white">{label}</span>
+                                  <span className="block text-xs text-zinc-400">{description}</span>
+                                </span>
+                              </SelectableCard>
+                            )
+                          })}
+                        </div>
+                      </fieldset>
+                    </Rise>
+                  </>
+                ) : null}
 
-          {step === 1 ? (
-            <section className={`${CARD} space-y-6`}>
-              <p className="text-sm text-zinc-400">
-                Se usan en tu panel y en tu página de reservas. Puedes cambiarlos después.
-              </p>
-              <ColorSwatches
-                label="Color principal"
-                colors={ONBOARDING_PRIMARY_COLORS}
-                value={primaryColor}
-                onChange={setPrimaryColor}
-              />
-              <ColorSwatches
-                label="Color de acento"
-                colors={ONBOARDING_ACCENT_COLORS}
-                value={accentColor}
-                onChange={setAccentColor}
-              />
-              <div
-                className="flex items-center gap-3 rounded-xl border border-white/[0.08] p-4"
-                aria-hidden
-              >
-                <span className="h-10 w-10 rounded-full" style={{ backgroundColor: primaryColor }} />
-                <span className="h-6 w-6 rounded-full" style={{ backgroundColor: accentColor }} />
-                <span className="font-semibold">{businessName}</span>
-              </div>
-            </section>
-          ) : null}
-
-          {step === 2 ? (
-            <section className={`${CARD} space-y-5`}>
-              <p className="text-sm text-zinc-400">
-                Agrega a quienes atienden citas. Puedes saltar este paso y hacerlo luego en Personal.
-              </p>
-              <div className="flex gap-2">
-                <input
-                  value={memberName}
-                  onChange={(e) => setMemberName(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault()
-                      addMember()
-                    }
-                  }}
-                  className={INPUT}
-                  placeholder="Nombre"
-                  maxLength={60}
-                  aria-label="Nombre del integrante"
-                />
-                <button
-                  type="button"
-                  onClick={addMember}
-                  className={SECONDARY_BTN}
-                  aria-label="Agregar integrante"
-                >
-                  <Plus className="h-4 w-4" aria-hidden />
-                </button>
-              </div>
-              <ColorSwatches
-                label="Color en la agenda"
-                colors={ONBOARDING_PRIMARY_COLORS}
-                value={memberColor}
-                onChange={setMemberColor}
-              />
-              {team.length > 0 ? (
-                <ul className="space-y-2">
-                  {team.map((m, i) => (
-                    <li
-                      key={`${m.name}-${i}`}
-                      className="flex items-center gap-3 rounded-xl border border-white/[0.08] px-3 py-2"
-                    >
-                      <span className="h-4 w-4 rounded-full" style={{ backgroundColor: m.color }} />
-                      <span className="flex-1">{m.name}</span>
+                {step === 1 ? (
+                  <>
+                    <Rise order={1}>
+                      <BrandPreview
+                        businessName={businessName}
+                        primary={primaryColor}
+                        accent={accentColor}
+                        services={ONBOARDING_CATEGORIES[businessType]}
+                      />
+                    </Rise>
+                    <Rise order={2} className={`${CARD} space-y-6`}>
+                      <ColorChooser
+                        label="Color principal"
+                        colors={ONBOARDING_PRIMARY_COLORS}
+                        value={primaryColor}
+                        onChange={setPrimaryColor}
+                      />
+                      <ColorChooser
+                        label="Color de acento"
+                        colors={ONBOARDING_ACCENT_COLORS}
+                        value={accentColor}
+                        onChange={setAccentColor}
+                      />
                       <button
                         type="button"
-                        onClick={() => setTeam((prev) => prev.filter((_, j) => j !== i))}
-                        className="text-zinc-500 hover:text-white"
-                        aria-label={`Quitar a ${m.name}`}
+                        onClick={surprise}
+                        className="inline-flex items-center gap-2 rounded-full border border-white/[0.12] px-4 py-2 text-sm font-medium text-zinc-200 transition hover:border-[#40E0D0]/60 hover:text-white active:scale-95"
                       >
-                        <X className="h-4 w-4" aria-hidden />
+                        <Shuffle className="h-4 w-4 text-[#40E0D0]" aria-hidden />
+                        Sorpréndeme
                       </button>
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-            </section>
-          ) : null}
+                    </Rise>
+                  </>
+                ) : null}
 
-          {step === 3 ? (
-            <section className={`${CARD} space-y-4`}>
-              <p className="text-sm text-zinc-400">
-                Elige las categorías de servicios. Los servicios con precio los agregas en el panel.
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {ONBOARDING_CATEGORIES[businessType].map((name) => {
-                  const selected = categories.includes(name)
-                  return (
-                    <button
-                      key={name}
-                      type="button"
-                      onClick={() => toggleCategory(name)}
-                      aria-pressed={selected}
-                      className={[
-                        'inline-flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm transition',
-                        selected
-                          ? 'border-[#40E0D0] bg-[#40E0D0]/10 text-white'
-                          : 'border-white/[0.12] text-zinc-400 hover:border-white/30',
-                      ].join(' ')}
-                    >
-                      {selected ? <Check className="h-3.5 w-3.5" aria-hidden /> : null}
-                      {name}
-                    </button>
-                  )
-                })}
+                {step === 2 ? (
+                  <Rise order={1} className={`${CARD} space-y-5`}>
+                    <div className="flex gap-2">
+                      <input
+                        value={memberName}
+                        onChange={(e) => setMemberName(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault()
+                            addMember()
+                          }
+                        }}
+                        className={INPUT}
+                        placeholder="Nombre (ej.: Vanessa)"
+                        maxLength={60}
+                        aria-label="Nombre del integrante"
+                      />
+                      <button
+                        type="button"
+                        onClick={addMember}
+                        disabled={!memberName.trim()}
+                        className="bg-geema-gradient inline-flex min-h-[48px] min-w-[48px] items-center justify-center rounded-xl text-white transition hover:brightness-110 active:scale-95 disabled:opacity-40"
+                        aria-label="Agregar integrante"
+                      >
+                        <Plus className="h-5 w-5" aria-hidden />
+                      </button>
+                    </div>
+                    <ColorChooser
+                      label="Su color en la agenda"
+                      colors={ONBOARDING_PRIMARY_COLORS}
+                      value={memberColor}
+                      onChange={setMemberColor}
+                      size="sm"
+                    />
+                    {team.length > 0 ? (
+                      <ul className="space-y-2">
+                        {team.map((m, i) => (
+                          <li
+                            key={`${m.name}-${i}`}
+                            className="animate-rise flex items-center gap-3 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-2.5"
+                          >
+                            <span
+                              className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold"
+                              style={{ backgroundColor: m.color, color: onColor(m.color) }}
+                            >
+                              {m.name.charAt(0).toUpperCase()}
+                            </span>
+                            <span className="flex-1 font-medium">{m.name}</span>
+                            <button
+                              type="button"
+                              onClick={() => setTeam((prev) => prev.filter((_, j) => j !== i))}
+                              className="rounded-lg p-1.5 text-zinc-500 hover:bg-white/[0.06] hover:text-white"
+                              aria-label={`Quitar a ${m.name}`}
+                            >
+                              <X className="h-4 w-4" aria-hidden />
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="flex items-center gap-2 rounded-xl border border-dashed border-white/[0.10] px-3 py-3 text-sm text-zinc-500">
+                        <UsersRound className="h-4 w-4 shrink-0" aria-hidden />
+                        ¿Atiendes sin equipo? Agrégate a ti para recibir citas.
+                      </p>
+                    )}
+                  </Rise>
+                ) : null}
+
+                {step === 3 ? (
+                  <Rise order={1} className={CARD}>
+                    <div className="flex flex-wrap gap-2.5">
+                      {ONBOARDING_CATEGORIES[businessType].map((name) => {
+                        const selected = categories.includes(name)
+                        return (
+                          <button
+                            key={name}
+                            type="button"
+                            onClick={() => toggleCategory(name)}
+                            aria-pressed={selected}
+                            className={[
+                              'inline-flex items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-medium transition active:scale-95',
+                              selected
+                                ? 'bg-geema-gradient text-white shadow-[0_4px_16px_rgba(64,224,208,0.2)]'
+                                : 'border border-white/[0.12] text-zinc-400 hover:border-white/30 hover:text-white',
+                            ].join(' ')}
+                          >
+                            {selected ? <Check className="h-3.5 w-3.5" aria-hidden /> : null}
+                            {name}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </Rise>
+                ) : null}
               </div>
-            </section>
-          ) : null}
 
-          <div className="flex justify-between gap-3">
-            <button
-              type="button"
-              onClick={() => setStep((s) => s - 1)}
-              disabled={step === 0 || saving}
-              className={`${SECONDARY_BTN} ${step === 0 ? 'invisible' : ''}`}
-            >
-              Atrás
-            </button>
-            <button
-              type="button"
-              onClick={() => (isLast ? void finish() : setStep((s) => s + 1))}
-              disabled={saving}
-              className={PRIMARY_BTN}
-            >
-              {isLast ? (saving ? 'Guardando…' : 'Ir a mi panel') : 'Continuar'}
-            </button>
-          </div>
+              <Rise order={3} className="flex gap-3">
+                {step > 0 ? (
+                  <GradientOutline onClick={() => goTo(step - 1)} disabled={saving} className="flex-1">
+                    Atrás
+                  </GradientOutline>
+                ) : null}
+                <GradientCta
+                  onClick={() => (isLast ? void finish() : goTo(step + 1))}
+                  loading={saving}
+                  className={step > 0 ? 'flex-[2]' : 'w-full'}
+                >
+                  {isLast ? (saving ? 'Guardando…' : 'Terminar') : 'Continuar'}
+                </GradientCta>
+              </Rise>
+            </>
+          )}
         </div>
       </div>
     </div>

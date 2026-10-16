@@ -222,7 +222,7 @@ function AssignRow({
         </div>
         <div className="truncate text-sm text-fg-muted">{serviceLabel}</div>
         <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
-          <span className="capitalize text-fg-subtle">{dateLabel}</span>
+          <span className="inline-block text-fg-subtle first-letter:uppercase">{dateLabel}</span>
           {!assigned && (
             <span className="inline-flex items-center gap-1 font-semibold text-amber-700 dark:text-amber-300">
               <UserX className="h-3.5 w-3.5" aria-hidden /> Sin asignar
