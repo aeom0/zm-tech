@@ -1,7 +1,7 @@
 # Plan 19 — Paridad Geema mobile ↔ web y código compartido
 
 **Fecha:** 2026-10-13
-**Estado:** Fases 0–3 completadas (W10 el 15-oct-2026). Fase 3b (W13) implementada en la rama `feat/geema-signup-tenant` (15-oct-2026), falta el QA de punta a punta. Faltan el smoke manual en `geema.zmtechdev.com` y la Fase 4 (mobile)
+**Estado:** Fases 0–3 completadas (W10 el 15-oct-2026). Fase 3b (W13) en producción (PR #88, 15-oct-2026), con QA de backend en verde; falta probar en el teléfono el código por correo, el onboarding y la instalación de la PWA. Faltan el smoke manual en `geema.zmtechdev.com` y la Fase 4 (mobile)
 **Repos afectados:** `zm-tech` (`apps/geemastudio-web`, `apps/geemastudio-mobile`, `packages/geemastudio-data`)
 **Relacionado:** Plan 13 (paridad panel ZM → Geema), Plan 14 (CRM clientes), Plan 15 (retail), Plan 17 (planes y trial), Plan 18 (profesionales)
 
@@ -222,6 +222,8 @@ W13. Un dueño entra a la landing, crea su cuenta y su negocio, configura lo bá
 - Límite: la cuarta alta desde la misma IP en una hora se rechaza, y un correo repetido también.
 - Instalar la PWA en Android (Chrome) y en iOS (Safari) y abrir directo en el panel.
 - Borrar los tenants de prueba al terminar.
+
+**QA de backend (15-oct-2026, prod):** alta 200 con tenant Pro en trial a 14 días y correo sin confirmar. El JWT trae el `tenant_id` nuevo. RLS sin filas de otros tenants en `employees`, `clients`, `appointments`, `payments` y `service_categories`. Insertar un empleado en `zm-lash-nails` da 403. `mark_owner_email_verified` rechaza una sesión por contraseña. Una promo de ZM desde el tenant nuevo da 404. Las RPC `waba_*` dan 401 con anon y 403 con authenticated. Con el correo repetido: 409, 409 y después 429. Tenant, usuario e intentos de prueba borrados.
 
 ### Fase 4 — Mobile
 
