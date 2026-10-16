@@ -10,25 +10,13 @@ import {
   GradientCTAButton,
 } from '@/screens/onboarding/components'
 import { Onboarding, Spacing } from '@/constants/theme'
+import { ONBOARDING_CATEGORIES } from '@geemastudio/data'
 import { useTenant } from '@/contexts/TenantContext'
 
 interface Categoria {
   id: string
   nombre: string
   seleccionada: boolean
-}
-
-const CATEGORIAS_POR_TIPO: Record<string, string[]> = {
-  'spa-nails': ['Uñas', 'Pestañas', 'Cejas y Rostro', 'Depilación'],
-  barbershop: ['Cortes', 'Barba y Bigote', 'Tratamientos', 'Color y Tintura'],
-  'hair-salon': ['Cortes', 'Color', 'Tratamientos', 'Peinados'],
-  'full-aesthetic': [
-    'Tratamientos Faciales',
-    'Tratamientos Corporales',
-    'Uñas',
-    'Cabello',
-    'Depilación',
-  ],
 }
 
 interface OnboardingServicesScreenProps {
@@ -43,7 +31,7 @@ export default function OnboardingServicesScreen({
   const { config, setPendingOnboardingCategories } = useTenant()
 
   const nombresIniciales =
-    CATEGORIAS_POR_TIPO[config.businessType] ?? CATEGORIAS_POR_TIPO['spa-nails']
+    ONBOARDING_CATEGORIES[config.businessType] ?? ONBOARDING_CATEGORIES['spa-nails']
 
   const [categorias, setCategorias] = useState<Categoria[]>(
     nombresIniciales.map((nombre, i) => ({

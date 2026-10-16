@@ -73,7 +73,7 @@ export function Navbar() {
           </Link>
           {/* Divider */}
           <span className="h-5 w-px bg-white/15 dark:bg-white/10" />
-          <GradientButton href="#precios" size="sm">
+          <GradientButton href="/registro" size="sm">
             Empezar gratis
           </GradientButton>
         </div>
@@ -129,7 +129,7 @@ export function Navbar() {
             Iniciar sesión
           </Link>
           <div className="pt-2">
-            <GradientButton href="#precios" size="md" className="w-full justify-center">
+            <GradientButton href="/registro" size="md" className="w-full justify-center">
               Empezar gratis — 14 días
             </GradientButton>
           </div>

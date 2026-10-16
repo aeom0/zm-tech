@@ -32,7 +32,8 @@ interface PromoBroadcastItemRow {
   phone: string;
 }
 
-async function assertAdmin(req: Request): Promise<void> {
+/** null = llamada interna con service_role; si no, el tenant del dueño/dev. */
+async function assertAdmin(req: Request): Promise<string | null> {
   const authHeader = req.headers.get("Authorization") ?? "";
   const bearerToken = authHeader.replace(/^Bearer\s+/i, "").trim();
 
@@ -44,7 +45,7 @@ async function assertAdmin(req: Request): Promise<void> {
   } catch {
     // token no es un JWT válido; se trata como llamada normal
   }
-  if (isServiceRole) return;
+  if (isServiceRole) return null;
 
   const supabaseUser = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     global: { headers: { Authorization: authHeader } },
@@ -62,7 +63,7 @@ async function assertAdmin(req: Request): Promise<void> {
   const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
   const { data: profile, error: profileError } = await supabaseAdmin
     .from("profiles")
-    .select("role")
+    .select("role, tenant_id")
     .eq("id", user.id)
     .maybeSingle();
 
@@ -74,6 +75,7 @@ async function assertAdmin(req: Request): Promise<void> {
   if (!profile || !["dev", "owner"].includes(profile.role)) {
     throw new Response("Forbidden", { status: 403 });
   }
+  return typeof profile.tenant_id === "string" ? profile.tenant_id : "";
 }
 
 async function uploadImageToWhatsApp(
@@ -171,8 +173,9 @@ async function handle(req: Request): Promise<Response> {
     return new Response("Method not allowed", { status: 405 });
   }
 
+  let callerTenantId: string | null;
   try {
-    await assertAdmin(req);
+    callerTenantId = await assertAdmin(req);
   } catch (resp) {
     if (resp instanceof Response) return resp;
     console.error("[send-promo-whatsapp] Error en assertAdmin:", resp);
@@ -211,6 +214,23 @@ async function handle(req: Request): Promise<Response> {
     : "";
   if (!broadcastTenantId) {
     return new Response("Broadcast not found", { status: 404 });
+  }
+
+  if (callerTenantId !== null) {
+    if (callerTenantId !== broadcastTenantId) {
+      return new Response("Broadcast not found", { status: 404 });
+    }
+    // Plan 19 W13: promos masivas solo con el correo del dueño confirmado.
+    const { data: tenantRow } = await supabaseAdmin
+      .from("tenants")
+      .select("owner_email_verified_at")
+      .eq("id", broadcastTenantId)
+      .maybeSingle();
+    if (!tenantRow?.owner_email_verified_at) {
+      return new Response("Confirma tu correo para enviar promos", {
+        status: 403,
+      });
+    }
   }
 
   const activeTenants = await getActiveWabaTenants(supabaseAdmin);

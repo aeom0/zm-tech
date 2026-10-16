@@ -181,14 +181,14 @@ Al primer inicio (sin `@geemastudio/tenant_configured` en AsyncStorage) o cuando
 
 1. **OnboardingBusinessTypeScreen** — elige tipo → aplica preset
 2. **OnboardingBasicInfoScreen** — nombre + colores con preview
-3. **OnboardingTeamScreen** — primer empleado (guarda en Supabase, omitible)
-4. **OnboardingServicesScreen** — categorías sugeridas (intenta insert en `service_categories`; en dev se toleran errores RLS y se continua)
-5. **OnboardingAuthScreen** — registro/login final con el mismo look del onboarding; usa `AuthContext.login`
-6. **OnboardingCompleteScreen** — éxito → llama `markConfigured()` → upsert en `tenant_settings` + marca local
+3. **OnboardingTeamScreen** — primer empleado (queda pendiente en memoria, omitible)
+4. **OnboardingServicesScreen** — categorías sugeridas (quedan pendientes en memoria; no se inserta sin sesión)
+5. **OnboardingAuthScreen** — en el wizard pide nombre y crea cuenta + negocio con `signupTenant` (Edge `signup-tenant`) y luego `AuthContext.login`
+6. **OnboardingCompleteScreen** — éxito → `markConfigured()` → `completeOnboarding` + equipo y categorías con `tenant_id` explícito (`@geemastudio/data/onboarding`); los errores se muestran
 
 En desarrollo se puede forzar siempre el onboarding con `EXPO_PUBLIC_FORCE_ONBOARDING=true` (aunque ya exista config remota).
 
-**Web (pendiente):** el alta del negocio y el onboarding también van a la web (Plan 19, W13, Fase 3b): `/registro` crea cuenta, tenant y trial con la Edge Function `signup-tenant`. La escritura pasa a `@geemastudio/data` y la señal de «configurado» deja de vivir solo en AsyncStorage.
+**Alta self-service (Plan 19, W13, Fase 3b):** la web tiene `/registro` (cuenta, tenant y trial Pro de 14 días con la Edge Function `signup-tenant`), `/onboarding` y `/recuperar`. El wizard de la app usa el mismo alta. La escritura vive en `@geemastudio/data/onboarding` y «configurado» es `tenant_settings.is_configured`.
 
 ## Sistema de Diseño
 

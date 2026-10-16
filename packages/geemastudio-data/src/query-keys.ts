@@ -65,6 +65,10 @@ export const queryKeys = {
     segment: (tenantId: string | null, timeZone: string, category: string | null, inactiveOnly: boolean) =>
       ['promo_segment', tenantId, timeZone, category ?? 'all', inactiveOnly] as const,
   },
+  onboarding: {
+    all: ['onboarding_status'] as const,
+    status: (tenantId?: string | null) => ['onboarding_status', tenantId] as const,
+  },
   clients: {
     all: ['clients'] as const,
     detail: (id: string) => ['client_detail', id] as const,
