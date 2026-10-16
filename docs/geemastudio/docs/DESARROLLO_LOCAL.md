@@ -31,6 +31,16 @@ pnpm db:generate
 
 El estado vigente de funciones (`search_path`), índices de FK y políticas RLS (cambios de **Database Advisor**, ya aplicados) está en **`apps/geemastudio-server/supabase/migrations/00000000000000_baseline_full_schema.sql`** y en las migraciones posteriores de `apps/geemastudio-server/supabase/migrations/`; ya aplicados en el proyecto Supabase GeemaStudio: `search_path` en funciones, índices de FK, políticas RLS unificadas. En WSL sin IPv6 a TCP, suele aplicarse con el **SQL Editor** del dashboard o con **MCP Supabase** (`apply_migration`) desde Cursor.
 
+**Avisos del Advisor aceptados a propósito** (revisados el 16-oct-2026; no «arreglarlos»):
+
+- `security_definer_view` en `tenant_brand_public` y `tenant_landing_public`: exponen solo columnas públicas de `tenant_settings` a `anon` sin abrir la tabla (ver «Privilegios de `anon`» en `docs/geemastudio/AGENTS.md`).
+- `authenticated_security_definer_function_executable` en `adjust_inventory_quantity`, `mark_owner_email_verified`, `mark_product_order_paid`, `save_employee_services` y `save_employee_work_hours`: las llama el panel y cada una valida `is_admin()` y `current_tenant_id()`.
+- `rls_enabled_no_policy` en `signup_attempts`: solo la usa `signup-tenant` con service role.
+- `auth_leaked_password_protection`: requiere plan Pro; activarlo al subir de plan.
+- `unused_index` (INFO): no borrar índices por este aviso mientras el volumen sea bajo; incluye los índices de FK de `20261016130554_advisors_rls_initplan_policies_fk_indexes`.
+
+Esa migración dejó en cero los avisos de rendimiento: `(select auth.uid())` en las políticas de `look_preview_*` y `waba_account_event_log`, las políticas `FOR ALL` de `service_portfolio_images` y `tenant_waba_numbers` separadas en insert/update/delete, e índices en 14 FKs.
+
 ### Avatar del personal (Storage)
 
 - **`apps/geemastudio-server/supabase/migrations/20261002031345_employee_avatars_bucket_policies.sql`**: añade `employees.avatar_url`, crea bucket **`employee-avatars`** (público, imágenes) y políticas de Storage para que solo `dev`/`owner` suban o borren archivos.

@@ -7,6 +7,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Cambiado (16-oct 2026 — Supabase Advisors)
+
+- **Migración `20261016130554_advisors_rls_initplan_policies_fk_indexes`** (aplicada en `udelx…`): `(select auth.uid())` en las políticas de `look_preview_styles/orders/results` y `waba_account_event_log`; las políticas `FOR ALL` de `service_portfolio_images` y `tenant_waba_numbers` pasan a insert/update/delete con la misma condición (ya no se suman a la de lectura); índices en 14 FKs. Mismo acceso que antes; el Performance Advisor queda sin WARN.
+- Los avisos de seguridad restantes son intencionales y quedan listados en `docs/DESARROLLO_LOCAL.md` § SQL de RLS / advisors.
+
 ### Agregado (15-oct 2026 — mockups compartidos y videos promocionales)
 
 - **`@geemastudio/mockups`** (`packages/geema-mockups`): pantallas de la app (Inicio, Agenda, Finanzas, Equipo, Inventario y chat de WhatsApp del asistente) fieles a la móvil, con estilos inline y props de progreso para animarlas. Datos de ejemplo de «Estudio Aria»; la cita del chat (Sofía, lifting 12:30 con Valeria) es la misma que aparece en la agenda.
