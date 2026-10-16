@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@geemastudio/data": "workspace:*",
+    "@geemastudio/mockups": "workspace:*",
     "@geemastudio/shared-schema": "workspace:*",
     "@supabase/ssr": "^0.9.0",
     "@supabase/supabase-js": "^2.100.0",
