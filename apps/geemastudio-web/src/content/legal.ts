@@ -28,7 +28,7 @@ export const privacyPage: LegalPage = {
     {
       heading: '1. Quiénes somos',
       paragraphs: [
-        'GeemaStudio es un software como servicio (SaaS) operado por ZM Tech (“nosotros”). Sitio de la plataforma: https://geema.zmtechdev.com. Responsable del tratamiento de los datos de la cuenta de plataforma: Alberto Orta · alberto@zmtechdev.com · WhatsApp: +58 414 494 0417.',
+        'GeemaStudio es un software como servicio (SaaS) operado por ZM Tech (“nosotros”). Sitio de la plataforma: https://geema.zmtechdev.com. Responsable del tratamiento de los datos de la cuenta de plataforma: Alberto Orta · soporte@zmtechdev.com · WhatsApp: +58 414 494 0417.',
         'Cada salón o negocio que usa GeemaStudio (el “tenant”) es responsable del tratamiento de los datos de sus clientas y de la información que carga en su cuenta. ZM Tech actúa como encargado o proveedor tecnológico respecto de esos datos, bajo las instrucciones del tenant y estas políticas.',
       ],
     },
@@ -66,7 +66,7 @@ export const privacyPage: LegalPage = {
     {
       heading: '6. Tus derechos',
       paragraphs: [
-        'Si eres dueño o personal con cuenta en GeemaStudio, puedes solicitar acceso, corrección o eliminación de tus datos de cuenta escribiendo a alberto@zmtechdev.com. Responderemos en un plazo razonable.',
+        'Si eres dueño o personal con cuenta en GeemaStudio, puedes solicitar acceso, corrección o eliminación de tus datos de cuenta escribiendo a soporte@zmtechdev.com. Responderemos en un plazo razonable.',
         'Si eres clienta de un salón, dirige primero tu solicitud al negocio que te atiende (ellos son el responsable de tus datos de cita y contacto). Si necesitas ayuda para contactarlos a través de la plataforma, escríbenos al mismo correo.',
       ],
     },
@@ -143,7 +143,7 @@ export const termsPage: LegalPage = {
     {
       heading: '8. Contacto',
       paragraphs: [
-        'Consultas sobre estos términos: alberto@zmtechdev.com · +58 414 494 0417 · https://geema.zmtechdev.com · https://zmtechdev.com',
+        'Consultas sobre estos términos: soporte@zmtechdev.com · +58 414 494 0417 · https://geema.zmtechdev.com · https://zmtechdev.com',
       ],
     },
   ],

@@ -133,7 +133,7 @@ export function PricingCard({ plan, annual }: Props) {
 
       {/* CTA */}
       <a
-        href={plan.ctaSecondary ? 'mailto:alberto@zmtechdev.com' : '/registro'}
+        href={plan.ctaSecondary ? 'mailto:soporte@zmtechdev.com' : '/registro'}
         className={`block rounded-full py-3.5 text-center font-bold transition-all duration-200 hover:scale-[1.02] hover:opacity-90 ${
           plan.highlighted
             ? 'text-white shadow-lg'
