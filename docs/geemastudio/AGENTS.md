@@ -148,6 +148,7 @@ Supabase concede `ALL` a `anon` y `authenticated` sobre todo objeto nuevo de `pu
 - Vistas públicas (`tenant_brand_public`, `tenant_landing_public`): `REVOKE ALL ... FROM anon, authenticated` y luego `GRANT SELECT`. Una vista simple con `security_invoker = false` es auto-actualizable y escribe como `postgres`, saltándose RLS.
 - `tenant_settings`: `anon` solo lee columnas de contenido web (GRANT por columna). No agregar columnas sensibles a ese GRANT.
 - Tras cada migración sobre `public`, `role_table_grants` de `anon` solo debe listar `SELECT` de las vistas públicas.
+- RPC nuevas: Supabase da `EXECUTE` a `anon` y `authenticated`. Desde el alta self-service (Plan 19 W13) cualquiera puede tener un usuario `authenticated`. Una función `SECURITY DEFINER` debe validar rol y `current_tenant_id()` o hacer `REVOKE EXECUTE ... FROM PUBLIC, anon, authenticated` si solo la usan Edge Functions o pg_cron (ver `20261016003716_harden_rpc_grants_self_signup`).
 
 ## Sistema de Tenant (`@zmtech/tenant-config`)
 

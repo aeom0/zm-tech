@@ -175,6 +175,7 @@ W13. Un dueño entra a la landing, crea su cuenta y su negocio, configura lo bá
 - RPC `create_tenant_for_owner` (`SECURITY DEFINER`, ejecutable solo por `service_role`): en una transacción crea `tenants` (slug único a partir del nombre, Pro en trial de 14 días), `profiles` (rol `owner`) y `tenant_settings` con terminología neutra e `is_configured = false`. Rubro, país, moneda y colores los completa el onboarding.
 - RPC `mark_owner_email_verified` (para `authenticated`): fija `owner_email_verified_at` solo si el JWT viene de un OTP (`amr`) y el usuario es el dueño.
 - `get_advisors` de seguridad después de aplicarla.
+- Migración `20261016003716_harden_rpc_grants_self_signup`: con el alta abierta cualquiera tiene un usuario `authenticated`. Quita `EXECUTE` a `anon` y `authenticated` en los locks y debounce del webhook (`waba_*`, sin chequeo de tenant: con la anon key se podía bloquear el bot para un teléfono) y en funciones de trigger. Quita `anon` en las RPC del panel, que validan `is_admin()` y tenant, y fija `search_path` en dos funciones. Quedan a propósito: las vistas públicas `SECURITY DEFINER`, `signup_attempts` sin políticas y `mark_owner_email_verified`. La protección de contraseñas filtradas es de pago (plan Free).
 
 **Edge Function `signup-tenant`**
 
@@ -188,7 +189,7 @@ W13. Un dueño entra a la landing, crea su cuenta y su negocio, configura lo bá
 
 - Con un código y no con un enlace: un enlace se abre en el navegador y no en la PWA instalada, y deja dos sesiones.
 - En el panel, el aviso «Confirma tu correo» llama a `signInWithOtp({ email, shouldCreateUser: false })`. El dueño escribe el código ahí y `verifyOtp` lo valida. `mark_owner_email_verified` marca `owner_email_verified_at` solo si la sesión viene de un OTP (`amr` del JWT).
-- Las plantillas «Magic Link» y «Reset Password» de Supabase Auth deben mostrar `{{ .Token }}` en vez del enlace (configuración del dashboard, pendiente).
+- Las plantillas «Magic Link» y «Reset Password» de Supabase Auth muestran `{{ .Token }}` en español en vez del enlace. Código de 6 dígitos (antes estaba en 8) que vence en 15 minutos. Configurado por Management API el 15-oct-2026; solo estos dos flujos usan esas plantillas.
 - Envío: SMTP propio de Supabase Auth con Resend (`smtp.resend.com:465`, remitente `GeemaStudio <no-responder@zmtechdev.com>`), configurado el 15-oct-2026. Dominio `zmtechdev.com` verificado en la cuenta de Resend de `alberto@zmtechdev.com` (DNS en Vercel, DMARC `p=none`). Límite de Auth: 30 correos por hora. Resend gratis: 3.000 al mes y 100 al día.
 - El mismo SMTP sirve para «Olvidé mi contraseña»: `/recuperar` pide el correo, envía un código (`resetPasswordForEmail`) y con el código fija la contraseña nueva (`verifyOtp` tipo `recovery` + `updateUser`).
 
