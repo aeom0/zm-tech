@@ -11,7 +11,10 @@ import {
   DiamondSparkle,
   NebulosaGlow,
 } from '@/screens/onboarding/components'
+import { OnboardingError, signupTenant } from '@geemastudio/data'
 import { useAuth } from '@/contexts/AuthContext'
+import { useTenant } from '@/contexts/TenantContext'
+import { supabase } from '@/lib/supabase'
 import { Colors, Onboarding, Spacing, BorderRadius } from '@/constants/theme'
 
 const LOGO_STAGE_HEIGHT = 190
@@ -33,6 +36,8 @@ export default function OnboardingAuthScreen({
 }: OnboardingAuthScreenProps) {
   const esRegreso = flow === 'returning'
   const { login } = useAuth()
+  const { config } = useTenant()
+  const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -43,14 +48,25 @@ export default function OnboardingAuthScreen({
     setError(null)
     setLoading(true)
     try {
+      // Wizard: primero el alta (usuario dueño + tenant), luego el login normal.
+      if (!esRegreso) {
+        await signupTenant(supabase, {
+          fullName: fullName.trim(),
+          email: email.trim(),
+          password,
+          businessName: config.businessName,
+        })
+      }
       const result = await login(email.trim(), password)
       if (!result.ok) {
         setError(result.error ?? 'No pudimos entrar, revisa tus datos.')
       } else {
         onSuccess()
       }
-    } catch {
-      setError('Error de conexión, inténtalo de nuevo.')
+    } catch (err) {
+      setError(
+        err instanceof OnboardingError ? err.message : 'Error de conexión, inténtalo de nuevo.'
+      )
     } finally {
       setLoading(false)
     }
@@ -87,6 +103,33 @@ export default function OnboardingAuthScreen({
         </Animated.View>
 
         <Animated.View entering={FadeInDown.delay(120).duration(400)} style={styles.card}>
+          {!esRegreso ? (
+            <View style={styles.inputGroup}>
+              <ThemedText style={styles.label}>Tu nombre</ThemedText>
+              <View style={styles.inputWrapper}>
+                <Feather
+                  name="user"
+                  size={18}
+                  color="rgba(255,255,255,0.4)"
+                  style={styles.inputIcon}
+                />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Nombre y apellido"
+                  placeholderTextColor="rgba(255,255,255,0.25)"
+                  value={fullName}
+                  onChangeText={(text) => {
+                    setFullName(text)
+                    setError(null)
+                  }}
+                  autoCapitalize="words"
+                  autoComplete="name"
+                  editable={!loading}
+                />
+              </View>
+            </View>
+          ) : null}
+
           <View style={styles.inputGroup}>
             <ThemedText style={styles.label}>Correo electrónico</ThemedText>
             <View style={styles.inputWrapper}>

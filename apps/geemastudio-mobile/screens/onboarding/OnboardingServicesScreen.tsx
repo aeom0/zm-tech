@@ -11,7 +11,6 @@ import {
 } from '@/screens/onboarding/components'
 import { Onboarding, Spacing } from '@/constants/theme'
 import { useTenant } from '@/contexts/TenantContext'
-import { supabase } from '@/lib/supabase'
 
 interface Categoria {
   id: string
@@ -41,7 +40,7 @@ export default function OnboardingServicesScreen({
   onNext,
   onBack,
 }: OnboardingServicesScreenProps) {
-  const { config } = useTenant()
+  const { config, setPendingOnboardingCategories } = useTenant()
 
   const nombresIniciales =
     CATEGORIAS_POR_TIPO[config.businessType] ?? CATEGORIAS_POR_TIPO['spa-nails']
@@ -53,7 +52,6 @@ export default function OnboardingServicesScreen({
       seleccionada: true,
     }))
   )
-  const [guardando, setGuardando] = useState(false)
 
   const toggleCategoria = (id: string) => {
     setCategorias((prev) =>
@@ -61,37 +59,10 @@ export default function OnboardingServicesScreen({
     )
   }
 
-  const guardar = async () => {
-    const seleccionadas = categorias.filter((c) => c.seleccionada)
-
-    if (seleccionadas.length === 0) {
-      onNext()
-      return
-    }
-
-    setGuardando(true)
-    try {
-      const payload = seleccionadas.map((c, index) => ({
-        name: c.nombre,
-        order: index + 1,
-      }))
-
-      const { error } = await supabase.from('service_categories').insert(payload)
-
-      if (error) {
-        console.warn(
-          '[OnboardingServices] error al crear categorías en Supabase, continuando de todos modos',
-          error
-        )
-      }
-
-      onNext()
-    } catch (error) {
-      console.warn('[OnboardingServices] excepción inesperada al crear categorías', error)
-      onNext()
-    } finally {
-      setGuardando(false)
-    }
+  // Sin sesión todavía: se guardan al cerrar el onboarding (`markConfigured`).
+  const guardar = () => {
+    setPendingOnboardingCategories(categorias.filter((c) => c.seleccionada).map((c) => c.nombre))
+    onNext()
   }
 
   const seleccionadasCount = categorias.filter((c) => c.seleccionada).length
@@ -152,7 +123,6 @@ export default function OnboardingServicesScreen({
           label="Continuar"
           icon="arrow-right"
           onPress={guardar}
-          loading={guardando}
           style={styles.btnFlexWide}
         />
       </Animated.View>
