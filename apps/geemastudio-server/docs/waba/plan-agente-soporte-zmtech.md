@@ -43,17 +43,19 @@ guard de inventario falla si falta).
 
 ### Qué se reutiliza
 
-Se mueve a `supabase/functions/_shared/agent/` lo que hoy es genérico en
-`whatsapp-webhook/agent/`:
+El cliente Messages vive en `supabase/functions/_shared/agent/anthropic.ts`
+(`callMessagesApi`, hecho el 16-oct-2026): recibe la API key y un callback de error
+como parámetros. `whatsapp-webhook/agent/anthropic.ts` quedó como envoltura con la misma
+firma de antes (`ANTHROPIC_API_KEY` + aviso de crédito agotado), así que ZM Lash no cambia.
 
-- Cliente Messages (`anthropic.ts`): hoy lee `ANTHROPIC_API_KEY` fijo (línea 72). Pasa a
-  recibir la key como parámetro.
-- Ciclo del agente (`agent.ts`) e historial (`history.ts`), sin las herramientas de reservas.
-- Validación de Meta, deduplicación y agrupado de ráfagas.
+El ciclo de `agent.ts` y el historial (`history.ts`) **no** se comparten: están atados a
+las reservas (pasos de sesión, `wa_messages`, guardas de reembolso y de reserva inventada,
+aviso al staff en pago). `support-webhook` tiene su propio ciclo corto sobre
+`callMessagesApi` y su historial en `support_messages`. Las 16 herramientas de reservas
+(`tools.ts`) y el prompt del salón (`prompt.ts`) se quedan en `whatsapp-webhook`.
 
-Las 16 herramientas de reservas (`tools.ts`) y el prompt del salón (`prompt.ts`) se quedan en
-`whatsapp-webhook`. El refactor no debe cambiar el comportamiento de ZM Lash: se valida con
-`agent.test.ts` y el simulador antes de tocar soporte.
+Pendiente de evaluar en F1: si la validación de firma de Meta, la deduplicación y el
+agrupado de ráfagas se copian o se mueven también a `_shared/`.
 
 ### API key de Anthropic
 
@@ -130,12 +132,12 @@ plantilla aprobada ("tu caso #N fue atendido").
     de ZM Tech creado y, para subir los límites de envío, verificación del negocio. Se hace
     en paralelo; el código no cambia, solo el `phone_number_id` y el token.
 - No se usa la WABA de ZM Lash: el número quedaría con la marca y los límites del salón.
-- `ZMTECH_ANTHROPIC_API_KEY` configurado, con una key nueva de la cuenta de Anthropic de
-  Alberto (no se reutiliza la de otros proyectos).
+- `ZMTECH_ANTHROPIC_API_KEY` configurado en `udelx…` con una key nueva de la cuenta de
+  Anthropic de Alberto (hecho el 16-oct-2026).
 - Alias `soporte@zmtechdev.com` en ImprovMX verificado (pendiente desde el 16-oct).
 
 **F1: nivel 1 y escalamiento**
-- Refactor a `_shared/agent/` sin cambiar ZM Lash.
+- Cliente Messages en `_shared/agent/` sin cambiar ZM Lash (hecho el 16-oct-2026).
 - `support-webhook` con `ver_guia` y `escalar_a_humano`, tablas `support_messages` y
   `support_tickets`.
 - Guía única compartida con la web.
