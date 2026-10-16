@@ -105,15 +105,29 @@ que altere un flujo actualiza esa guía en el mismo PR.
 
 `escalar_a_humano` crea el ticket y avisa a Alberto. Canal a definir (WhatsApp al número
 personal, Telegram o correo a `soporte@`). El usuario recibe un número de ticket y el aviso
-de que una persona lo contacta. Para avisar fuera de la ventana de 24 h hace falta una
+de que una persona lo contacta.
+
+Horario de atención humana: **8:00 a 20:00, hora de Venezuela (UTC−4, sin horario de
+verano)**, todos los días hasta que se defina otra cosa. El horario lo calcula el código y
+se pasa al agente: dentro del horario dice que una persona responde en breve; fuera de él,
+que el caso queda registrado y se atiende desde las 8:00. Para avisar fuera de la ventana de 24 h hace falta una
 plantilla aprobada ("tu caso #N fue atendido").
 
 ## Fases
 
 **F0: prerrequisitos**
-- Número de WhatsApp de ZM Tech en la WABA del portafolio de ZM Tech y su webhook apuntando
-  a `support-webhook`.
-- `ZMTECH_ANTHROPIC_API_KEY` configurado.
+- Número de WhatsApp **nuevo** para soporte (decidido el 16-oct).
+- ZM Tech todavía no tiene Business Manager (portafolio de negocio) de Meta, y Geema tampoco.
+  No hace falta para construir y probar F1–F3:
+  - Desarrollo: app de Meta for Developers con el producto WhatsApp. Meta crea una WABA de
+    prueba con un número de prueba, sin método de pago, que solo escribe a los teléfonos
+    destinatarios que se registren en la app. Webhook de esa app → `support-webhook`.
+  - Producción (número real, display name «ZM Tech», sin tope de destinatarios): portafolio
+    de ZM Tech creado y, para subir los límites de envío, verificación del negocio. Se hace
+    en paralelo; el código no cambia, solo el `phone_number_id` y el token.
+- No se usa la WABA de ZM Lash: el número quedaría con la marca y los límites del salón.
+- `ZMTECH_ANTHROPIC_API_KEY` configurado, con una key nueva de la cuenta de Anthropic de
+  Alberto (no se reutiliza la de otros proyectos).
 - Alias `soporte@zmtechdev.com` en ImprovMX verificado (pendiente desde el 16-oct).
 
 **F1: nivel 1 y escalamiento**
@@ -152,5 +166,7 @@ plantilla aprobada ("tu caso #N fue atendido").
 ## Decisiones abiertas
 
 - Canal del aviso de escalamiento.
-- Número de WhatsApp: nuevo o uno existente de ZM Tech.
-- Horario de atención humana que el agente comunica al escalar.
+- Días de atención (por ahora, todos los días de 8:00 a 20:00 VET).
+
+Decidido (16-oct-2026): número nuevo; horario 8:00–20:00 VET; desarrollo con el número de
+prueba de Meta mientras no exista el portafolio de ZM Tech.
