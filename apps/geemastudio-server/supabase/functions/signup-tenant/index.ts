@@ -44,10 +44,16 @@ async function sha256(value: string): Promise<string> {
     .join("");
 }
 
+/** IP del cliente: header de ingress confiable antes que XFF (spoofeable). */
 function clientIp(req: Request): string {
+  const cf = req.headers.get("cf-connecting-ip")?.trim();
+  if (cf) return cf;
+  const realIp = req.headers.get("x-real-ip")?.trim();
+  if (realIp) return realIp;
   const forwarded = req.headers.get("x-forwarded-for") ?? "";
-  return forwarded.split(",")[0]?.trim() ||
-    req.headers.get("cf-connecting-ip") || "unknown";
+  // Último hop suele ser el que agregó el proxy de confianza; el primero es spoofeable.
+  const parts = forwarded.split(",").map((p) => p.trim()).filter(Boolean);
+  return parts.at(-1) || "unknown";
 }
 
 function text(value: unknown): string {
@@ -95,32 +101,24 @@ Deno.serve(async (req) => {
 
   const ipHash = await sha256(clientIp(req));
   const emailHash = await sha256(email);
-  const hourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
-  const dayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
-  const [byIp, byEmail] = await Promise.all([
-    admin.from("signup_attempts").select("id", { count: "exact", head: true })
-      .eq("ip_hash", ipHash).gte("created_at", hourAgo),
-    admin.from("signup_attempts").select("id", { count: "exact", head: true })
-      .eq("email_hash", emailHash).gte("created_at", dayAgo),
-  ]);
-  if (byIp.error || byEmail.error) {
-    console.error("[signup-tenant] rate limit:", byIp.error ?? byEmail.error);
+  const { data: allowed, error: rateError } = await admin.rpc(
+    "record_signup_attempt",
+    {
+      p_ip_hash: ipHash,
+      p_email_hash: emailHash,
+      p_max_per_ip_hour: MAX_PER_IP_HOUR,
+      p_max_per_email_day: MAX_PER_EMAIL_DAY,
+    },
+  );
+  if (rateError) {
+    console.error("[signup-tenant] rate limit:", rateError);
     return json(500, { error: "No pudimos crear tu cuenta. Intenta de nuevo." });
   }
-  if ((byIp.count ?? 0) >= MAX_PER_IP_HOUR || (byEmail.count ?? 0) >= MAX_PER_EMAIL_DAY) {
+  if (allowed !== true) {
     return json(429, {
       error: "Demasiados intentos. Espera un rato y vuelve a intentar.",
     });
-  }
-
-  const { error: attemptError } = await admin.from("signup_attempts").insert({
-    ip_hash: ipHash,
-    email_hash: emailHash,
-  });
-  if (attemptError) {
-    console.error("[signup-tenant] attempt insert:", attemptError);
-    return json(500, { error: "No pudimos crear tu cuenta. Intenta de nuevo." });
   }
 
   // Confirmado para Auth para que pueda entrar ya; la confirmación real del

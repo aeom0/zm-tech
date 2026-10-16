@@ -175,9 +175,11 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
         return { ok: false as const, error: 'No encontramos tu negocio. Cierra sesión y vuelve a entrar.' }
       }
 
-      await completeOnboarding(supabase, tenantSlug, config)
+      // Equipo y categorías primero; is_configured solo al final (igual que web).
+      // Si se marca antes y falla un insert, el dueño entra al panel sin esos datos.
       await insertOnboardingEmployees(supabase, tenantSlug, pendingOnboardingEmployees)
       await insertOnboardingServiceCategories(supabase, tenantSlug, pendingOnboardingCategories)
+      await completeOnboarding(supabase, tenantSlug, config)
 
       setPendingOnboardingEmployees([])
       setPendingOnboardingCategories([])
