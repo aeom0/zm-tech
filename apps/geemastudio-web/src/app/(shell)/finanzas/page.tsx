@@ -163,7 +163,7 @@ export default function FinanzasPage() {
           <>
             {/* Título mes */}
             <div>
-              <h1 className="text-2xl font-bold capitalize text-zinc-900 dark:text-zinc-100">
+              <h1 className="text-2xl font-bold text-zinc-900 first-letter:uppercase dark:text-zinc-100">
                 {mesActual}
               </h1>
               <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">

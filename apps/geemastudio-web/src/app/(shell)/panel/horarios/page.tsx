@@ -16,6 +16,51 @@ import {
 import { SegmentedControl } from '@/components/ui/SegmentedControl'
 import { StateNote } from '@/components/ui/StateNote'
 
+/** Opciones cada 30 min; se guardan en 24 h (HH:MM) y se muestran según el formato elegido. */
+const OPCIONES_HORA = Array.from({ length: 48 }, (_, i) => {
+  const h = Math.floor(i / 2)
+  return `${String(h).padStart(2, '0')}:${i % 2 === 0 ? '00' : '30'}`
+})
+
+function etiquetaHora(hhmm: string, formato: TimeFormatPreference): string {
+  if (formato === '24') return hhmm
+  const [h, m] = hhmm.split(':').map(Number)
+  const sufijo = h < 12 ? 'AM' : 'PM'
+  const h12 = h % 12 === 0 ? 12 : h % 12
+  return `${h12}:${String(m).padStart(2, '0')} ${sufijo}`
+}
+
+function SelectorHora({
+  value,
+  formato,
+  label,
+  onChange,
+}: {
+  value: string
+  formato: TimeFormatPreference
+  label: string
+  onChange: (hhmm: string) => void
+}) {
+  // Un valor guardado fuera de la grilla de 30 min (p. ej. 09:15) se conserva como opción.
+  const opciones = OPCIONES_HORA.includes(value) ? OPCIONES_HORA : [...OPCIONES_HORA, value].sort()
+  return (
+    <label className="block">
+      <span className="text-[11px] uppercase tracking-wide text-fg-subtle">{label}</span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="mt-1 w-full rounded-lg border border-fg/[0.1] bg-app px-3 py-2 text-base text-fg md:text-sm"
+      >
+        {opciones.map((o) => (
+          <option key={o} value={o}>
+            {etiquetaHora(o, formato)}
+          </option>
+        ))}
+      </select>
+    </label>
+  )
+}
+
 export default function PanelHorariosPage() {
   const [cargando, setCargando] = useState(true)
   const [errorCarga, setErrorCarga] = useState<string | null>(null)
@@ -221,8 +266,7 @@ export default function PanelHorariosPage() {
       <section>
         <h2 className="mb-2 text-sm font-semibold text-fg-soft">Formato de hora en la app</h2>
         <p className="mb-3 max-w-prose text-xs text-fg-subtle">
-          Cómo se muestran las horas en la agenda móvil. Los horarios de apertura siguen en 24 h al
-          editarlos.
+          Cómo se muestran las horas en el panel, en la app y en los horarios de apertura de abajo.
         </p>
         <SegmentedControl
           className="mb-8 sm:w-auto"
@@ -290,30 +334,18 @@ export default function PanelHorariosPage() {
                 </div>
                 {abierto && slot ? (
                   <div className="mt-3 grid grid-cols-2 gap-3">
-                    <div>
-                      <span className="text-[11px] uppercase tracking-wide text-fg-subtle">
-                        Apertura
-                      </span>
-                      <input
-                        value={slot.open}
-                        onChange={(e) => setHorasDia(dia, 'open', e.target.value)}
-                        placeholder="09:00"
-                        className="mt-1 w-full rounded-lg border border-fg/[0.1] bg-app px-3 py-2 text-base text-fg placeholder:text-fg-subtle md:text-sm"
-                        maxLength={5}
-                      />
-                    </div>
-                    <div>
-                      <span className="text-[11px] uppercase tracking-wide text-fg-subtle">
-                        Cierre
-                      </span>
-                      <input
-                        value={slot.close}
-                        onChange={(e) => setHorasDia(dia, 'close', e.target.value)}
-                        placeholder="18:00"
-                        className="mt-1 w-full rounded-lg border border-fg/[0.1] bg-app px-3 py-2 text-base text-fg placeholder:text-fg-subtle md:text-sm"
-                        maxLength={5}
-                      />
-                    </div>
+                    <SelectorHora
+                      label="Apertura"
+                      value={slot.open}
+                      formato={draftTimeFormat}
+                      onChange={(v) => setHorasDia(dia, 'open', v)}
+                    />
+                    <SelectorHora
+                      label="Cierre"
+                      value={slot.close}
+                      formato={draftTimeFormat}
+                      onChange={(v) => setHorasDia(dia, 'close', v)}
+                    />
                   </div>
                 ) : null}
               </div>

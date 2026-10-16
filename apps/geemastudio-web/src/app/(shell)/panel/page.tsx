@@ -173,7 +173,7 @@ export default function PanelIndexPage() {
       <PageHeader
         title="Inicio"
         description={
-          todayLabel ? <span className="capitalize">{todayLabel}</span> : 'Resumen del día'
+          todayLabel ? <span className="inline-block first-letter:uppercase">{todayLabel}</span> : 'Resumen del día'
         }
       />
 

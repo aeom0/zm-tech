@@ -202,11 +202,13 @@ W13. Un dueño entra a la landing, crea su cuenta y su negocio, configura lo bá
 
 - `/registro`: alta de cuenta y negocio, y login directo. Los CTA «Empezar gratis» de la landing (navbar y planes) llevan aquí. `/login` enlaza a `/registro` y a `/recuperar`.
 - `/onboarding`, fuera de `/panel`: país y rubro, colores, equipo y servicios. El layout del panel manda aquí si `is_configured` es `false`. La web no pide subrubro (la app sí).
+- Pulido del 15-oct-2026 (paridad visual con la app): CTA y progreso con el gradiente Lunaris, «Atrás» desde el paso 2, color personalizado y «Sorpréndeme» con vista previa de la agenda en los colores elegidos, y pantalla final «¡Todo listo!» con la instalación (PWA recomendada; APK por WhatsApp mientras no tenga descarga pública). `/registro` muestra los 3 pasos (cuenta, configuración, instalación).
 - En el panel, solo para el dueño: aviso «Confirma tu correo» con el código de 6 dígitos y aviso de trial cuando quedan 3 días o menos (o ya venció), con enlace a Plan.
 - Gate de correo: el asistente de promos no se muestra sin correo confirmado, y la Edge `send-promo-whatsapp` responde 403. La conexión de WhatsApp no tiene UI en la web (la configura el equipo ZM), así que el gate aplica solo a promos.
 - La Edge `send-promo-whatsapp` además valida que el broadcast sea del tenant de quien llama (antes un admin podía enviar el de otro tenant).
 - «Instalar la app»: `beforeinstallprompt` en Android y escritorio, e instrucciones de «Compartir → Agregar a inicio» en iOS Safari.
 - Banner de instalación en el panel mientras no esté instalada (`display-mode: standalone`). Se puede descartar y el descarte se recuerda.
+- Si `prompt()` falla o el navegador no ofrece el evento, el banner muestra la ruta manual (menú de Chrome → «Instalar app»). `/onboarding` también declara el manifest del tenant.
 - Manifest con `start_url` en `/panel` (ya estaba).
 
 **Fuera de alcance**

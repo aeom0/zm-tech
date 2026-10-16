@@ -31,6 +31,10 @@ export default async function OnboardingPage() {
     .maybeSingle()
 
   return (
-    <OnboardingWizard tenantSlug={tenantSlug} businessName={data?.business_name ?? ''} />
+    <>
+      {/* Manifest del negocio: el paso final ofrece instalar la app con su nombre e ícono. */}
+      <link rel="manifest" href={`/manifest.webmanifest?tenant=${tenantSlug}`} />
+      <OnboardingWizard tenantSlug={tenantSlug} businessName={data?.business_name ?? ''} />
+    </>
   )
 }

@@ -17,6 +17,32 @@ import { supabase } from '@/lib/supabase'
 
 const ICON = 'h-4 w-4'
 
+const STEPS = [
+  { title: 'Crea tu cuenta', detail: 'Un minuto' },
+  { title: 'Configura tu negocio', detail: '4 pasos guiados' },
+  { title: 'Instala la app', detail: 'En tu teléfono, sin tiendas' },
+] as const
+
+function HowItWorks() {
+  return (
+    <ol className="mb-6 grid grid-cols-3 gap-2" aria-label="Cómo empezar">
+      {STEPS.map((step, i) => (
+        <li
+          key={step.title}
+          className="animate-rise rounded-xl border border-white/[0.08] bg-white/[0.03] p-3 text-center"
+          style={{ animationDelay: `${i * 90}ms` }}
+        >
+          <span className="bg-geema-gradient mx-auto flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold text-white">
+            {i + 1}
+          </span>
+          <span className="mt-2 block text-xs font-semibold leading-tight text-white">{step.title}</span>
+          <span className="mt-0.5 block text-[11px] leading-tight text-zinc-500">{step.detail}</span>
+        </li>
+      ))}
+    </ol>
+  )
+}
+
 export default function RegistroPage() {
   const router = useRouter()
   const [fullName, setFullName] = useState('')
@@ -72,6 +98,7 @@ export default function RegistroPage() {
     <AuthScreen
       title="Crea tu negocio"
       subtitle="14 días gratis con el plan Pro. Sin tarjeta de crédito."
+      intro={<HowItWorks />}
       footer={
         <>
           ¿Ya tienes cuenta?{' '}

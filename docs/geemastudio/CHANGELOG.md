@@ -7,6 +7,13 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Cambiado (15-oct 2026 — web: onboarding, código por correo, PWA y horarios)
+
+- **Onboarding web** con el estilo de la app: gradiente Lunaris en CTA y progreso, «Atrás», color personalizado, «Sorpréndeme», vista previa de la agenda con los colores elegidos y pantalla final con la instalación (PWA recomendada, APK por WhatsApp).
+- **Código de 6 dígitos** con casillas (`CodeInput`) en el aviso «Confirma tu correo» (verifica solo al completar, reenvío con espera de 60 s, «Más tarde» lo reduce a una línea) y en `/recuperar`.
+- **Instalar la PWA**: `prompt()` con manejo de error y ruta manual por el menú de Chrome cuando no abre el diálogo.
+- **Horarios**: apertura y cierre con selector cada 30 min que respeta el formato 12/24 h. Fechas del panel y Finanzas con solo la primera letra en mayúscula.
+
 ### Docs (12-oct 2026 — consolidación y alineación con el estado real)
 
 - **Pendientes en una sola lista**: `ROADMAP.md` § Estado actual (12-oct) reemplaza el foco 22–28 sep; S4 queda ✅ (estaba ❌ en el ROADMAP y ✅ en el Plan 04). Plan 04 README/resumen, traslado WABA (F0–F5 ✅, F6 pendiente), Plan 11 (Modo D en prod, Modo A descartado), Plan 13 y Plan 08 (congelado por la Fase 3 del agente) actualizados.
