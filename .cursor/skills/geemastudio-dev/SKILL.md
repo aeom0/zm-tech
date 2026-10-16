@@ -2,7 +2,8 @@
 name: geemastudio-dev
 description: >
   Skill para GeemaStudio en el monorepo zm-tech (apps/geemastudio-mobile,
-  apps/geemastudio-web, packages/shared-schema, packages/tenant-config).
+  apps/geemastudio-web, apps/geemastudio-promo, packages/shared-schema,
+  packages/tenant-config, packages/geema-mockups).
   Actívalo cuando el usuario mencione GeemaStudio, Geema, salones/barberías/spas
   multi-tenant, migración ZM Lash → Geema, tenant-config, o Lunaris (paleta
   #40E0D0/#00897B). Contiene stack, estructura de carpetas, convenciones,
@@ -89,7 +90,9 @@ Turborepo            ^2.x
 Workspaces:
   apps/geemastudio-mobile
   apps/geemastudio-web
+  apps/geemastudio-promo   → videos Remotion (README en la app)
   packages/shared-schema   → @geemastudio/shared-schema   (antes: @zm/shared-schema)
+  packages/geema-mockups   → @geemastudio/mockups (pantallas de la app: landing + videos)
   packages/tenant-config   → @zmtech/tenant-config
 ```
 

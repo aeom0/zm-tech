@@ -29,7 +29,7 @@ Monorepo multi-producto (pnpm + Turborepo). Mapa de BDs: [`docs/SUPABASE.md`](do
 | Producto | Apps | Packages |
 |----------|------|----------|
 | Landing | `apps/landing` → [zmtechdev.com](https://zmtechdev.com) (`/es`, `/en`) | `@zmtech/quote-engine` |
-| GeemaStudio | `geemastudio-mobile`, `geemastudio-web`, `geemastudio-server` | `@geemastudio/shared-schema`, `@zmtech/tenant-config` |
+| GeemaStudio | `geemastudio-mobile`, `geemastudio-web`, `geemastudio-server`, `geemastudio-promo` (videos Remotion) | `@geemastudio/shared-schema`, `@geemastudio/mockups`, `@zmtech/tenant-config` |
 | ODentalPro | `odentalpro-mobile`, `odentalpro-web`, `odentalpro-server` | `@odentalpro/dental-schema` |
 | RepMAX | `repmax-web`, `repmax-mobile` | `@repmax/repmax-schema` |
 | Hub | `apps/hub` | `@zmtech/hub-schema` |
@@ -57,6 +57,7 @@ Ver [README.md](README.md) y [ROADMAP.md](ROADMAP.md).
 pnpm dev:landing
 pnpm dev:web              # geemastudio-web
 pnpm dev:mobile           # geemastudio-mobile
+pnpm dev:promo            # geemastudio-promo (Remotion Studio)
 pnpm dev:odental:web
 pnpm dev:repmax:web
 pnpm dev:repmax:mobile

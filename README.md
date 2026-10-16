@@ -7,7 +7,7 @@ Monorepo de productos **ZM Tech** — pnpm + Turborepo.
 | Producto          | Apps                                                                         | Packages                                                                                                                                        | Docs                                                                            |
 | ----------------- | ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | **Landing**       | `apps/landing`                                                               | `@zmtech/quote-engine`                                                                                                                          | [docs/landing](docs/landing/README.md) · [zmtechdev.com](https://zmtechdev.com) |
-| **GeemaStudio**   | `apps/geemastudio-web`, `apps/geemastudio-mobile`, `apps/geemastudio-server` | `@geemastudio/shared-schema`, `@zmtech/tenant-config`                                                                                           | [docs/geemastudio](docs/geemastudio/README.md)                                  |
+| **GeemaStudio**   | `apps/geemastudio-web`, `apps/geemastudio-mobile`, `apps/geemastudio-server`, `apps/geemastudio-promo` | `@geemastudio/shared-schema`, `@geemastudio/mockups`, `@zmtech/tenant-config`                                                                   | [docs/geemastudio](docs/geemastudio/README.md)                                  |
 | **OdentalPro**    | `apps/odentalpro-web`, `apps/odentalpro-mobile`, `apps/odentalpro-server`    | `@odentalpro/dental-schema`                                                                                                                     | [docs/odentalpro](docs/odentalpro/)                                             |
 | **RepMAX**        | `apps/repmax-web`, `apps/repmax-mobile`                                      | `@repmax/repmax-schema`, `@zmtech/tasas` (tasas BCV/USDT, compartido — hoy solo RepMAX) (`@zmtech/tenant-config/repmax` preparado, no cableado) | [docs/repmax](docs/repmax/README.md)                                            |
 | **Hub** (interno) | `apps/hub` _(planificado)_                                                   | `@zmtech/hub-schema` _(planificado)_                                                                                                            | [docs/hub](docs/hub/README.md)                                                  |
@@ -27,6 +27,7 @@ pnpm install
 pnpm dev:landing        # apps/landing
 pnpm dev:web            # apps/geemastudio-web
 pnpm dev:mobile         # apps/geemastudio-mobile
+pnpm dev:promo          # apps/geemastudio-promo (Remotion Studio)
 pnpm dev:odental:web    # apps/odentalpro-web
 pnpm dev:odental:mobile # apps/odentalpro-mobile
 pnpm dev:repmax:web     # apps/repmax-web (:3003)

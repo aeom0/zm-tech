@@ -7,6 +7,13 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es/1.0.0/).
 
 ## [Unreleased]
 
+### Agregado (15-oct 2026 — mockups compartidos y videos promocionales)
+
+- **`@geemastudio/mockups`** (`packages/geema-mockups`): pantallas de la app (Inicio, Agenda, Finanzas, Equipo, Inventario y chat de WhatsApp del asistente) fieles a la móvil, con estilos inline y props de progreso para animarlas. Datos de ejemplo de «Estudio Aria»; la cita del chat (Sofía, lifting 12:30 con Valeria) es la misma que aparece en la agenda.
+- **Landing web**: hero y demo usan esos mockups; el chat de WhatsApp se reproduce en loop con «escribiendo…» (`LiveWhatsApp`) y respeta `prefers-reduced-motion`.
+- **`apps/geemastudio-promo`** (Remotion 4): primer reel 9:16 `ReelWhatsApp` (~24 s): gancho, el asistente agenda por WhatsApp, la cita entra a la agenda, finanzas y cierre. `pnpm dev:promo` abre Studio; `pnpm --filter geemastudio-promo render:reel` exporta el mp4.
+- **Skills**: Remotion (`remotion-*`) y de Anthropic (`frontend-design`, `canvas-design`, `theme-factory`, `webapp-testing`, `skill-creator`) en `.cursor/skills/`.
+
 ### Cambiado (15-oct 2026 — web: onboarding, código por correo, PWA y horarios)
 
 - **Onboarding web** con el estilo de la app: gradiente Lunaris en CTA y progreso, «Atrás», color personalizado, «Sorpréndeme», vista previa de la agenda con los colores elegidos y pantalla final con la instalación (PWA recomendada, APK por WhatsApp).

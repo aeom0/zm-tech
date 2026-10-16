@@ -96,6 +96,8 @@ Este monorepo usa la convención estándar `apps/` para aplicaciones y `packages
 | `apps/web/`               | **Web (Next.js)** — landing + `/dashboard` + `/finanzas` (auth Supabase) | Next.js 15 + Tailwind CSS       |
 | `packages/shared-schema/` | **Schema Compartido** — tablas de base de datos y validaciones           | Drizzle ORM + Zod               |
 | `packages/tenant-config/` | **Config de Tenant** — presets y configuración multi-tenant              | TypeScript                      |
+| `packages/geema-mockups/` | **Mockups de la app** — pantallas fieles a la móvil para landing y videos | React (estilos inline)          |
+| `apps/geemastudio-promo/` | **Videos promocionales** — reels para redes con los mockups              | Remotion 4                      |
 | `server/`                 | _(No usado)_ — La app conecta directo a Supabase; no hay Express         | —                               |
 | `scripts/`                | **Scripts de base de datos** — seeds y migraciones                       | SQL + Node.js                   |
 | `docs/`                   | **Documentación** — guías de migración y diseño                          | Markdown                        |

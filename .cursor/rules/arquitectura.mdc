@@ -26,9 +26,11 @@ zm-tech/
 │   │   ├── hooks/
 │   │   ├── lib/               # supabase.ts, query-client.ts
 │   │   └── constants/         # theme.ts
-│   └── geemastudio-server/    # Edge WABA, migraciones, Drizzle, seeds
+│   ├── geemastudio-server/    # Edge WABA, migraciones, Drizzle, seeds
+│   └── geemastudio-promo/     # Videos promocionales (Remotion)
 ├── packages/
 │   ├── shared-schema/         # @geemastudio/shared-schema
+│   ├── geema-mockups/         # @geemastudio/mockups (pantallas de la app para landing y videos)
 │   └── tenant-config/         # @zmtech/tenant-config
 └── docs/geemastudio/          # Docs de producto (no skills/rules)
 ```
@@ -64,6 +66,7 @@ zm-tech/
 
 - `pnpm dev:mobile` — Expo
 - `pnpm dev:web` — Next.js
+- `pnpm dev:promo` — Remotion Studio (videos)
 - `pnpm db:push` — aplicar esquema Drizzle
 - `pnpm db:seed` — cargar seeds (editar templates antes)
 - `pnpm lint` / `pnpm format` / `pnpm check:types`

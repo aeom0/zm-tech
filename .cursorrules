@@ -18,7 +18,7 @@
 | Producto | Apps | Packages |
 |----------|------|----------|
 | Landing | `apps/landing` → [zmtechdev.com](https://zmtechdev.com) (`/es`, `/en`) | `@zmtech/quote-engine` |
-| GeemaStudio | `geemastudio-mobile`, `geemastudio-web`, `geemastudio-server` | `@geemastudio/shared-schema`, `@zmtech/tenant-config` |
+| GeemaStudio | `geemastudio-mobile`, `geemastudio-web`, `geemastudio-server`, `geemastudio-promo` | `@geemastudio/shared-schema`, `@geemastudio/mockups`, `@zmtech/tenant-config` |
 | ODentalPro | `odentalpro-mobile`, `odentalpro-web`, `odentalpro-server` | `@odentalpro/dental-schema` |
 | RepMAX | `repmax-web`, `repmax-mobile` | `@repmax/repmax-schema` (`@zmtech/tenant-config/repmax` preparado, no cableado) |
 
@@ -39,6 +39,8 @@
 | Server / Drizzle | `apps/geemastudio-server/` |
 | Schema | `packages/shared-schema/` |
 | Tenant | `packages/tenant-config/` |
+| Mockups de la app (landing + videos) | `packages/geema-mockups/` |
+| Videos promocionales (Remotion) | `apps/geemastudio-promo/` |
 | Tema mobile | `apps/geemastudio-mobile/constants/theme.ts` |
 | Tema web | `apps/geemastudio-web/src/lib/theme.ts` (LUNARIS) |
 | Docs producto | `docs/geemastudio/` (sin skills/rules) |
@@ -67,6 +69,7 @@ Las carpetas `*-server` son **ops/DB/Edge**, no API JWT. RepMAX no tiene `repmax
 pnpm dev:landing
 pnpm dev:web              # geemastudio-web
 pnpm dev:mobile           # geemastudio-mobile
+pnpm dev:promo            # geemastudio-promo (Remotion Studio)
 pnpm dev:odental:web
 pnpm dev:repmax:web
 pnpm dev:repmax:mobile
