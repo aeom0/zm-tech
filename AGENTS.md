@@ -16,7 +16,7 @@ Monorepo multi-producto (pnpm + Turborepo). Mapa de BDs: [`docs/SUPABASE.md`](do
 
 ## Documentación ZM → Geema
 
-- La serie canónica de planes Geema es `docs/geemastudio/docs/plans/01–19`.
+- La serie canónica de planes Geema es `docs/geemastudio/docs/plans/01–20`.
 - El detalle de migración consolidado está en
   `docs/geemastudio/docs/plans/04-geema-migration/`.
 - Ya no hay espejo ni sync con ZM: `04-geema-migration/` es la única copia

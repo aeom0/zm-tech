@@ -44,7 +44,7 @@ Guía de conexión ADB al dispositivo físico de pruebas (Moto G54) desde WSL2 �
 
 Estado de la consolidación documental ZM → Geema y tabla de equivalencias de numeración antigua.
 
-### Planes 01–19
+### Planes 01–20
 
 | Plan | Documento                                                                                                | Tema                                      |
 | ---: | -------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
@@ -67,6 +67,7 @@ Estado de la consolidación documental ZM → Geema y tabla de equivalencias de 
 |   17 | [17-PLAN-planes-suscripcion-y-descarga-apk.md](plans/17-PLAN-planes-suscripcion-y-descarga-apk.md)       | Planes de suscripción y descarga del APK  |
 |   18 | [18-PLAN-gestion-profesionales-disponibilidad.md](plans/18-PLAN-gestion-profesionales-disponibilidad.md) | Gestión de profesionales y disponibilidad |
 |   19 | [19-PLAN-paridad-mobile-web.md](plans/19-PLAN-paridad-mobile-web.md)                                     | Paridad mobile ↔ web y código compartido  |
+|   20 | [20-PLAN-videos-promocionales-rrss.md](plans/20-PLAN-videos-promocionales-rrss.md)                       | Videos promocionales y contenido para redes |
 
 La carpeta [04-geema-migration](plans/04-geema-migration/) es la única copia del detalle de migración (ya sin sync con ZM). Equivalencias de numeración antigua: [CONSOLIDACION-DOCS-ZM-GEEMA.md](CONSOLIDACION-DOCS-ZM-GEEMA.md).
 
@@ -112,7 +113,7 @@ docs/
 ├── ADB_CONEXION_MOVIL.md           # ADB al dispositivo físico (tooling, no específico GeemaStudio)
 ├── INSTALACION_BETA.md             # Beta / instalación
 ├── plans/
-│   ├── 01–19-PLAN-*.md                     # Serie canónica consolidada
+│   ├── 01–20-PLAN-*.md                     # Serie canónica consolidada
 │   └── 04-geema-migration/                 # Detalle del Plan 04
 
 # (fuera de docs/geemastudio/docs/)

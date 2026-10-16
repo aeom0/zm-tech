@@ -23,7 +23,7 @@ description: >
 
 GeemaStudio mobile es la generalización multi-tenant de la app de **ZM Lash &
 Nails Beauty** (`aeom0/ZM-Lash-and-Nails-Beauty`, cliente real en producción).
-Desde oct-2026 **no hay sync de docs**: los planes (serie `01–19`) y el detalle
+Desde oct-2026 **no hay sync de docs**: los planes (serie `01–20`) y el detalle
 de migración (`docs/geemastudio/docs/plans/04-geema-migration/`) viven solo en
 este repo; ZM ya no guarda copia.
 
