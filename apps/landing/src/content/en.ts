@@ -276,6 +276,12 @@ export const en: Messages = {
           'We may update this policy. The “Last updated” date shows the current version. Continued use of the site after a change means you have noted the new version.',
         ],
       },
+      {
+        heading: '9. SaaS products (GeemaStudio and others)',
+        paragraphs: [
+          'ZM Tech’s operational products (for example GeemaStudio at https://geema.zmtechdev.com) have their own privacy policies and terms on the product domain. This page covers zmtechdev.com (site, quote builder, and contact), not the full data processing inside each SaaS.',
+        ],
+      },
     ],
   },
   terms: {
@@ -334,6 +340,12 @@ export const en: Messages = {
         heading: '8. Contact',
         paragraphs: [
           'Questions about these terms: alberto@zmtechdev.com · +58 414 494 0417 · https://zmtechdev.com',
+        ],
+      },
+      {
+        heading: '9. SaaS products',
+        paragraphs: [
+          'Use of GeemaStudio and other ZM Tech SaaS products is also governed by the terms published on each product’s domain (for example https://geema.zmtechdev.com/terminos).',
         ],
       },
     ],

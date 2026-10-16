@@ -50,6 +50,7 @@ export default function RegistroPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [mostrarContrasena, setMostrarContrasena] = useState(false)
+  const [aceptaLegal, setAceptaLegal] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -59,6 +60,10 @@ export default function RegistroPage() {
 
     if (!supabase) {
       setError('No se pudo conectar. Intenta de nuevo más tarde.')
+      return
+    }
+    if (!aceptaLegal) {
+      setError('Para crear la cuenta debes aceptar los términos y la política de privacidad.')
       return
     }
     if (password.length < 8) {
@@ -181,7 +186,28 @@ export default function RegistroPage() {
           </button>
         </AuthField>
 
-        <button type="submit" disabled={loading} className={AUTH_SUBMIT_CLASS}>
+        <label className="flex cursor-pointer items-start gap-3 text-sm text-zinc-400">
+          <input
+            type="checkbox"
+            checked={aceptaLegal}
+            onChange={(e) => setAceptaLegal(e.target.checked)}
+            className="mt-1 h-4 w-4 shrink-0 rounded border-white/20 bg-zinc-800 accent-[#40E0D0]"
+            required
+          />
+          <span>
+            Acepto los{' '}
+            <Link href="/terminos" className="font-medium text-[#40E0D0] hover:underline" target="_blank">
+              términos y condiciones
+            </Link>{' '}
+            y la{' '}
+            <Link href="/privacidad" className="font-medium text-[#40E0D0] hover:underline" target="_blank">
+              política de privacidad
+            </Link>
+            .
+          </span>
+        </label>
+
+        <button type="submit" disabled={loading || !aceptaLegal} className={AUTH_SUBMIT_CLASS}>
           {loading ? 'Creando tu negocio…' : 'Crear mi negocio'}
         </button>
 

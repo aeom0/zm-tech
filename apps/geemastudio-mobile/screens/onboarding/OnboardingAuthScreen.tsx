@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, TextInput, Pressable } from 'react-native'
+import { View, StyleSheet, TextInput, Pressable, Linking } from 'react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 import { Feather } from '@expo/vector-icons'
 
@@ -16,6 +16,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { useTenant } from '@/contexts/TenantContext'
 import { supabase } from '@/lib/supabase'
 import { Colors, Onboarding, Spacing, BorderRadius } from '@/constants/theme'
+import { GEEMA_SITE_URL } from '@/screens/web/constants'
 
 const LOGO_STAGE_HEIGHT = 190
 const LOGO_SIZE = 130
@@ -41,11 +42,16 @@ export default function OnboardingAuthScreen({
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [aceptaLegal, setAceptaLegal] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async () => {
     setError(null)
+    if (!esRegreso && !aceptaLegal) {
+      setError('Para crear la cuenta debes aceptar los términos y la política de privacidad.')
+      return
+    }
     setLoading(true)
     try {
       // Wizard: primero el alta (usuario dueño + tenant), luego el login normal.
@@ -191,6 +197,39 @@ export default function OnboardingAuthScreen({
             </View>
           </View>
 
+          {!esRegreso ? (
+            <Pressable
+              onPress={() => setAceptaLegal((v) => !v)}
+              style={styles.legalRow}
+              accessibilityRole="checkbox"
+              accessibilityState={{ checked: aceptaLegal }}
+              disabled={loading}
+            >
+              <Feather
+                name={aceptaLegal ? 'check-square' : 'square'}
+                size={20}
+                color={aceptaLegal ? Onboarding.lunarisAccent : 'rgba(255,255,255,0.45)'}
+              />
+              <ThemedText style={styles.legalText}>
+                Acepto los{' '}
+                <ThemedText
+                  style={styles.legalLink}
+                  onPress={() => void Linking.openURL(`${GEEMA_SITE_URL}/terminos`)}
+                >
+                  términos
+                </ThemedText>{' '}
+                y la{' '}
+                <ThemedText
+                  style={styles.legalLink}
+                  onPress={() => void Linking.openURL(`${GEEMA_SITE_URL}/privacidad`)}
+                >
+                  privacidad
+                </ThemedText>
+                .
+              </ThemedText>
+            </Pressable>
+          ) : null}
+
           {error ? (
             <Animated.View entering={FadeInDown.duration(300)} style={styles.errorBox}>
               <Feather name="alert-circle" size={16} color={Colors.dark.error} />
@@ -213,6 +252,7 @@ export default function OnboardingAuthScreen({
               icon="arrow-right"
               onPress={handleSubmit}
               loading={loading}
+              disabled={!esRegreso && !aceptaLegal}
               style={styles.btnPrimary}
             />
           </View>
@@ -338,6 +378,23 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '500',
     flex: 1,
+  },
+  legalRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: Spacing.sm,
+    marginTop: Spacing.sm,
+  },
+  legalText: {
+    flex: 1,
+    fontSize: 13,
+    lineHeight: 20,
+    color: 'rgba(255,255,255,0.55)',
+  },
+  legalLink: {
+    color: Onboarding.lunarisAccent,
+    fontWeight: '600',
+    fontSize: 13,
   },
   actionsRow: {
     marginTop: Spacing['2xl'],

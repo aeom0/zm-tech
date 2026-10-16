@@ -4,8 +4,8 @@ const NAV_LINKS = [
   { label: 'Funciones', href: '#funciones' },
   { label: 'Precios', href: '#precios' },
   { label: 'FAQ', href: '#faq' },
-  { label: 'Privacidad', href: '#' },
-  { label: 'Términos', href: '#' },
+  { label: 'Privacidad', href: '/privacidad' },
+  { label: 'Términos', href: '/terminos' },
 ]
 
 export function Footer() {
@@ -76,7 +76,7 @@ export function Footer() {
 
         <div className="border-t border-zinc-800 pt-8 text-center">
           <p className="text-sm text-zinc-500">
-            © 2026 GeemaStudio. Todos los derechos reservados. Hecho con ❤️ para LATAM.
+            © 2026 GeemaStudio. Todos los derechos reservados. Hecho con cuidado para LATAM.
           </p>
         </div>
       </div>
