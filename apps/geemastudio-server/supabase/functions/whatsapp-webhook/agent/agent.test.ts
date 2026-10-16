@@ -254,6 +254,17 @@ Deno.test("sanitizeAgentReply bloquea confirmación fabricada y promesa de reemb
   );
 });
 
+Deno.test("sanitizeAgentReply pasa la negrita de Markdown a la de WhatsApp", () => {
+  assertEquals(
+    sanitizeAgentReply("**Poly Gel (S/70)** y *Soft Gel*"),
+    "*Poly Gel (S/70)* y *Soft Gel*",
+  );
+  assertEquals(
+    sanitizeAgentReply("**Promos activas:**\n🌸 **Builder Gel** S/60"),
+    "*Promos activas:*\n🌸 *Builder Gel* S/60",
+  );
+});
+
 Deno.test("resolveBookingItems expande packs y reporta ids desconocidos", () => {
   const catalog = {
     servicesById: new Map([

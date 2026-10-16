@@ -115,10 +115,16 @@ export function trimToCompleteLines(text: string): string {
   return cut > 0 ? text.slice(0, cut).trimEnd() : text;
 }
 
+/** WhatsApp solo pone negrita con *un* asterisco; el modelo a veces manda Markdown **así**. */
+function whatsAppBold(text: string): string {
+  return text.replace(/\*\*([^*]+)\*\*/g, "*$1*");
+}
+
 export function sanitizeAgentReply(text: string): string {
-  if (hasFabricatedBookingClaim(text)) return FABRICATED_BOOKING_SAFE_REPLY;
-  if (containsRefundPromise(text)) return REFUND_SAFE_REPLY;
-  return text;
+  const normalized = whatsAppBold(text);
+  if (hasFabricatedBookingClaim(normalized)) return FABRICATED_BOOKING_SAFE_REPLY;
+  if (containsRefundPromise(normalized)) return REFUND_SAFE_REPLY;
+  return normalized;
 }
 
 export async function runAgent(opts: {
