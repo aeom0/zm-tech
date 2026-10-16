@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useQueryClient } from '@tanstack/react-query'
@@ -41,6 +41,8 @@ function EmailVerificationBanner({ email }: { email: string }) {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [cooldown, setCooldown] = useState(0)
+  // Ref para cortar re-entrada: `busy` de React llega un tick tarde y el OTP es de un solo uso.
+  const busyRef = useRef(false)
 
   useEffect(() => {
     setCollapsed(readCollapsed())
@@ -63,7 +65,8 @@ function EmailVerificationBanner({ email }: { email: string }) {
   }
 
   const run = async (action: () => Promise<void>) => {
-    if (!supabase) return
+    if (!supabase || busyRef.current) return
+    busyRef.current = true
     setBusy(true)
     setError(null)
     try {
@@ -71,6 +74,7 @@ function EmailVerificationBanner({ email }: { email: string }) {
     } catch (err) {
       setError(err instanceof OnboardingError ? err.message : 'Error de conexión. Intenta de nuevo.')
     } finally {
+      busyRef.current = false
       setBusy(false)
     }
   }
@@ -93,7 +97,7 @@ function EmailVerificationBanner({ email }: { email: string }) {
   const changeCode = (value: string) => {
     setCode(value)
     // Al completar los 6 dígitos (escritos o pegados) se confirma solo.
-    if (value.length === 6 && !busy) void verify(value)
+    if (value.length === 6 && !busyRef.current) void verify(value)
   }
 
   if (collapsed) {
@@ -145,7 +149,7 @@ function EmailVerificationBanner({ email }: { email: string }) {
           className="mt-4 space-y-3"
           onSubmit={(e) => {
             e.preventDefault()
-            void verify(code)
+            if (code.length === 6 && !busyRef.current) void verify(code)
           }}
         >
           <CodeInput value={code} onChange={changeCode} autoFocus />
@@ -154,7 +158,7 @@ function EmailVerificationBanner({ email }: { email: string }) {
               type="submit"
               variant="primary"
               loading={busy}
-              disabled={code.length !== 6}
+              disabled={busy || code.length !== 6}
               className="w-full sm:w-auto"
             >
               Confirmar correo
