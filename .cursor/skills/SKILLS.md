@@ -13,7 +13,7 @@
 | Producto            | Apps                                                          | Paquetes                                              |
 | ------------------- | ------------------------------------------------------------- | ----------------------------------------------------- |
 | **Landing ZM Tech** | `apps/landing`                                                | —                                                     |
-| **GeemaStudio**     | `geemastudio-mobile`, `geemastudio-web`, `geemastudio-server` | `@geemastudio/shared-schema`, `@zmtech/tenant-config` |
+| **GeemaStudio**     | `geemastudio-mobile`, `geemastudio-web`, `geemastudio-server`, `geemastudio-promo` | `@geemastudio/shared-schema`, `@geemastudio/mockups`, `@zmtech/tenant-config` |
 | **ODentalPro**      | `odentalpro-mobile`, `odentalpro-web`, `odentalpro-server`    | `@odentalpro/dental-schema`                           |
 | **RepMAX**          | `repmax-web`, `repmax-mobile`                                 | `@repmax/repmax-schema`                               |
 
@@ -49,6 +49,7 @@ pnpm install
 pnpm dev:landing          # landing
 pnpm dev:web              # geemastudio-web
 pnpm dev:mobile           # geemastudio-mobile
+pnpm dev:promo            # geemastudio-promo (Remotion Studio)
 pnpm dev:odental:web      # odentalpro-web
 pnpm dev:repmax:web       # repmax-web (:3003)
 pnpm dev:repmax:mobile    # repmax-mobile
@@ -85,6 +86,31 @@ pnpm db:push              # Drizzle push (geemastudio-server)
 | `slides/`               | Presentaciones HTML                                  |
 | `banner-design/`        | Banners y formatos ads                               |
 | `social-media-organic/` | Contenido orgánico IG/FB/TikTok                      |
+| `frontend-design/`      | Dirección estética al crear o rehacer UI (Anthropic) |
+| `canvas-design/`        | Posts y pósters estáticos en PNG/PDF (Anthropic)     |
+| `theme-factory/`        | Temas de color y fuentes para piezas (Anthropic)     |
+
+### Video (`apps/geemastudio-promo`, Remotion)
+
+| Ruta                       | Cuándo usarla                                          |
+| -------------------------- | ------------------------------------------------------ |
+| `remotion-best-practices/` | Entrada: decide qué skill de Remotion usar             |
+| `remotion-create/`         | Proyecto o composición nueva                           |
+| `remotion-markup/`         | Animación, layout, tipografía y tiempos en Remotion    |
+| `remotion-captions/`       | Subtítulos                                             |
+| `remotion-studio/`         | Vista previa (`pnpm dev:promo`)                        |
+| `remotion-render/`         | Render de video o still                                |
+| `remotion-docs/`           | Buscar en la documentación de Remotion                 |
+| `remotion-upgrade/`        | Actualizar Remotion y sus skills                       |
+
+### Herramientas
+
+| Ruta              | Cuándo usarla                                        |
+| ----------------- | ---------------------------------------------------- |
+| `webapp-testing/` | QA visual y capturas con Playwright (Anthropic)      |
+| `skill-creator/`  | Crear o mejorar skills propias (Anthropic)           |
+
+Las skills externas se instalan con `npx skills add <repo>` (versión en `skills-lock.json` de la raíz) y se mueven como carpeta real a `.cursor/skills/`.
 
 ### Integraciones
 
